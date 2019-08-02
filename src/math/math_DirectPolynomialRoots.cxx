@@ -60,14 +60,14 @@ const Standard_Real ZERO = 1.0e-30;
         Standard_Real IniVal = Value(N, Poly, IniSol);
         Standard_Integer Index;
 
-//      cout << "Improve\n";
+//      std::cout << "Improve\n";
         for(Index = 1; Index < 10; Index++) {
           Values(N, Poly, Sol, Val, Der);
           if(Abs(Der) <= ZERO) break;
           Delta = - Val / Der;
           if(Abs(Delta) <= EPSILON * Abs(Sol)) break;
           Sol = Sol + Delta;
-//        cout << " Iter = " << Index << " Delta = " << Delta 
+//        std::cout << " Iter = " << Index << " Delta = " << Delta 
 //             << " Val  = " << Val   << " Der   = " << Der << "\n";
         }
         if(Abs(Val) <= Abs(IniVal)) {

@@ -144,7 +144,7 @@ Standard_Integer  Interface_MSG::Read (Standard_IStream& S)
 
     Standard_Integer  Interface_MSG::Read (const Standard_CString file)
 {
-  ifstream S(file);
+  std::ifstream S(file);
   if (!S) return -1;
   return Read (S);
 }
@@ -154,7 +154,7 @@ Standard_Integer  Interface_MSG::Read (Standard_IStream& S)
 {
   Standard_Integer nb = 0;
   if (thedic.IsEmpty()) return nb;
-  if (rootkey[0] != '\0') S<<"@@ ROOT:"<<rootkey<<endl;
+  if (rootkey[0] != '\0') S<<"@@ ROOT:"<<rootkey<<std::endl;
   NCollection_DataMap<TCollection_AsciiString, Handle(TCollection_HAsciiString)>::Iterator iter(thedic);
   for (; iter.More(); iter.Next()) {
     if (!iter.Key().StartsWith(rootkey)) continue;
@@ -164,7 +164,7 @@ Standard_Integer  Interface_MSG::Read (Standard_IStream& S)
     nb ++;
     S<<str->ToCString()<<"\n";
   }
-  S<<flush;
+  S<<std::flush;
   return nb;
 }
 
@@ -185,7 +185,7 @@ Standard_CString  Interface_MSG::Translated (const Standard_CString key)
     if (thedic.Find(key, str))
       return str->ToCString();
   }
-  if (theprint) cout<<" **  Interface_MSG:Translate ?? "<<key<<"  **"<<endl;
+  if (theprint) std::cout<<" **  Interface_MSG:Translate ?? "<<key<<"  **"<<std::endl;
   if (therec) {
     if (thelist.IsBound(key)) {
       thelist.ChangeFind(key)++;
@@ -208,7 +208,7 @@ void  Interface_MSG::Record
     thedic.Bind(key,str);
     return;
   }
-  if (theprint) cout<<" **  Interface_MSG:Record ?? "<<key<<" ** "<<item<<"  **"<<endl;
+  if (theprint) std::cout<<" **  Interface_MSG:Record ?? "<<key<<" ** "<<item<<"  **"<<std::endl;
   if (therec) {
     if (thedup.IsNull()) thedup = new TColStd_HSequenceOfHAsciiString();
     dup = new TCollection_HAsciiString(key);
@@ -244,13 +244,13 @@ void  Interface_MSG::PrintTrace (Standard_OStream& S)
     dup = thedup->Value(2*i-1);
     S<<"** DUP:"<<dup->ToCString();
     dup = thedup->Value(2*i);
-    S<<" ** "<<dup->ToCString()<<endl;
+    S<<" ** "<<dup->ToCString()<<std::endl;
   }
 
   if (thelist.IsEmpty()) return;
   NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thelist);
   for (; iter.More(); iter.Next()) {
-    S<<"** MSG(NB="<<iter.Value()<<"): "<<iter.Key()<<endl;
+    S<<"** MSG(NB="<<iter.Value()<<"): "<<iter.Key()<<std::endl;
   }
 }
 

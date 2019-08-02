@@ -354,7 +354,7 @@ static void Sample()
 
   Standard_Boolean isverified =  constraint->Verified();
   if( !isverified ) {
-   cout << "Constraint is not valid"   << endl;
+   std::cout << "Constraint is not valid"   << std::endl;
   }
 
 

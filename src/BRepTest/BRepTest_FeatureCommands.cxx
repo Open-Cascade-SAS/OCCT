@@ -544,7 +544,7 @@ static Standard_Integer PRW(Draw_Interpretor& theCommands,
     }
     else {
       // il faudrait inverser V et appeler PerfomFromEnd...
-      //cout << "Not Implemented" << endl;
+      //std::cout << "Not Implemented" << std::endl;
       theCommands << "Not Implemented\n";
     }
   }
@@ -709,7 +709,7 @@ static Standard_Integer PRF(Draw_Interpretor& theCommands,
     }
     else { //FUntil.IsNull()
       // il faudrait inverser V et appeler PerfomFromEnd...
-      //cout << "Not Implemented" << endl;
+      //std::cout << "Not Implemented" << std::endl;
       theCommands << "Not Implemented\n";
     }
   }
@@ -737,16 +737,16 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
 
   if (narg < 3)
   {
-    cout << "Invalid number of arguments. Should be : splitshape result shape [splitedges] \
+    std::cout << "Invalid number of arguments. Should be : splitshape result shape [splitedges] \
             [face wire/edge/compound [wire/edge/compound ...] \
             [face wire/edge/compound [wire/edge/compound...] ...] \
-            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]" << endl;
+            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]" << std::endl;
     return 1;
   }
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull())
   {
-    cout << "Invalid input shape " << a[2]<<endl;
+    std::cout << "Invalid input shape " << a[2]<<std::endl;
     return 1;
   }
   BRepFeat_SplitShape Spls(S);
@@ -773,7 +773,7 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
     TopoDS_Shape aSh = DBRep::Get(a[i]);
     if (aSh.IsNull())
     {
-      cout << "Invalid input shape " <<a[i]<<endl;
+      std::cout << "Invalid input shape " <<a[i]<<std::endl;
       return 1;
     }
 
@@ -852,7 +852,7 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
         TopoDS_Shape aSh = DBRep::Get(a[i]);
         if (aSh.IsNull())
         {
-          cout << "Invalid input shape " <<a[i]<< endl;
+          std::cout << "Invalid input shape " <<a[i]<< std::endl;
           return 1;
         }
         TopExp_Explorer aExpE(aSh, TopAbs_EDGE, TopAbs_FACE);
@@ -861,10 +861,10 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
       }
       else
       {
-         cout << "Invalid input arguments. Should be : splitshape result shape [splitedges] \
+         std::cout << "Invalid input arguments. Should be : splitshape result shape [splitedges] \
             [face wire/edge/compound [wire/edge/compound ...] \
             [face wire/edge/compound [wire/edge/compound...] ...] \
-            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]"<<endl;
+            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]"<<std::endl;
         return 1;
       }
     }
@@ -887,7 +887,7 @@ static Standard_Integer SPLS(Draw_Interpretor& ,
     Ew = TopoDS::Edge(aLocalShape);
 //    Ew = TopoDS::Edge(DBRep::Get(a[i+1],TopAbs_EDGE));
     if (Ew.IsNull()) {
-      cout << "Invalid input shape " <<a[i+1]<< endl;
+      std::cout << "Invalid input shape " <<a[i+1]<< std::endl;
       return 1;
     }
     Spls.Add(TopoDS::Edge(Ew),TopoDS::Edge(Es));
@@ -1612,7 +1612,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       theRF.Init(Sbase, W, P, ax1, H1, H2, Fuse, Modify);
       if (!theRF.IsDone()) {
 	se = theRF.CurrentStatusError();
-	//BRepFeat::Print(se,cout) << endl;
+	//BRepFeat::Print(se,std::cout) << std::endl;
 	Standard_SStream aSStream;
 	BRepFeat::Print(se,aSStream);
 	theCommands << aSStream << "\n";
@@ -1637,7 +1637,7 @@ static Standard_Integer DEFIN(Draw_Interpretor& theCommands,
       theLF.Init(Sbase, W, P, Direct, gp_Vec(X,Y,Z), Fuse,Modify);
       if (!theLF.IsDone()) {
 	se = theLF.CurrentStatusError();
-	//BRepFeat::Print(se,cout) << endl;
+	//BRepFeat::Print(se,std::cout) << std::endl;
 	Standard_SStream aSStream;
 	BRepFeat::Print(se,aSStream);
 	theCommands << aSStream << "\n";
@@ -2010,7 +2010,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
   case 1:
     if (!thePrism.IsDone()) {
       se = thePrism.CurrentStatusError();
-      //BRepFeat::Print(se,cout) << endl;
+      //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se,aSStream);
       theCommands << aSStream << "\n";
@@ -2022,7 +2022,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
   case 2:
     if (!theRevol.IsDone()) {
       se = theRevol.CurrentStatusError();
-      //BRepFeat::Print(se,cout) << endl;
+      //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se,aSStream);
       theCommands << aSStream << "\n";
@@ -2034,7 +2034,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
   case 3:
     if (!thePipe.IsDone()) {
       se = thePipe.CurrentStatusError();
-      //BRepFeat::Print(se,cout) << endl;
+      //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se,aSStream);
       theCommands << aSStream << "\n";
@@ -2046,7 +2046,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
   case 4:
     if (!theDPrism.IsDone()) {
       se = theDPrism.CurrentStatusError();
-      //BRepFeat::Print(se,cout) << endl;
+      //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se,aSStream);
       theCommands << aSStream << "\n";
@@ -2058,7 +2058,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
   case 5:
     if (!theLF.IsDone()) {
       se = theLF.CurrentStatusError();
-      //BRepFeat::Print(se,cout) << endl;
+      //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se,aSStream);
       theCommands << aSStream << "\n";
@@ -2070,7 +2070,7 @@ static Standard_Integer PERF(Draw_Interpretor& theCommands,
   case 6:
     if (!theRF.IsDone()) {
       se = theRF.CurrentStatusError();
-      //BRepFeat::Print(se,cout) << endl;
+      //BRepFeat::Print(se,std::cout) << std::endl;
       Standard_SStream aSStream;
       BRepFeat::Print(se,aSStream);
       theCommands << aSStream << "\n";

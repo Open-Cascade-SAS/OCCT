@@ -277,7 +277,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
 {
   if (n <= 2) 
   {
-    cout<<"Invalid input arguments. Should be: curve1 [curve2 ...] shape [result] [tol]"<<endl;
+    std::cout<<"Invalid input arguments. Should be: curve1 [curve2 ...] shape [result] [tol]"<<std::endl;
     return 1;
   }
   Standard_Integer indshape = 2;
@@ -290,7 +290,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
   }
   if (S.IsNull()) 
   {
-    cout<<"Invalid input shape"<<endl;
+    std::cout<<"Invalid input shape"<<std::endl;
     return 1;
   }
 

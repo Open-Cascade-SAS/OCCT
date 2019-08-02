@@ -223,7 +223,7 @@ static void coonscnd(const Standard_Integer     nb,
 	  Standard_Real killfactor = tolang/scal1;
 	  stat[i].DoKill(killfactor);
 #ifdef OCCT_DEBUG
-	  cout<<"pb coons cnd coin : "<<i<<" fact = "<<killfactor<<endl; 
+	  std::cout<<"pb coons cnd coin : "<<i<<" fact = "<<killfactor<<std::endl; 
 #endif
 	}
       }
@@ -589,14 +589,14 @@ void GeomFill_ConstrainedFilling::Build()
   parclock.Show(partime);
   appclock.Show(apptime);
   cstclock.Show(csttime);
-  cout<<"temp total : "<<tottime<<" secondes"<<endl;
-  cout<<endl;
-  cout<<"dont"<<endl;
-  cout<<endl;
-  cout<<"reparametrage         : "<<partime<<" secondes"<<endl;
-  cout<<"approximation         : "<<apptime<<" secondes"<<endl;
-  cout<<"construction formelle : "<<csttime<<" secondes"<<endl;
-  cout<<endl;
+  std::cout<<"temp total : "<<tottime<<" secondes"<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"dont"<<std::endl;
+  std::cout<<std::endl;
+  std::cout<<"reparametrage         : "<<partime<<" secondes"<<std::endl;
+  std::cout<<"approximation         : "<<apptime<<" secondes"<<std::endl;
+  std::cout<<"construction formelle : "<<csttime<<" secondes"<<std::endl;
+  std::cout<<std::endl;
 #endif
 }
 
@@ -1331,8 +1331,8 @@ void GeomFill_ConstrainedFilling::CheckTgteField(const Standard_Integer I)
       if(Abs(alpha) > maxang) maxang = Abs(alpha);
     }
   }
-  cout<<"KAlgo angle max sur bord "<<I<<" : "<<maxang<<endl;
-  if(caplisse) cout<<"sur bord "<<I<<" le champ tangent change de cote!"<<endl;
+  std::cout<<"KAlgo angle max sur bord "<<I<<" : "<<maxang<<std::endl;
+  if(caplisse) std::cout<<"sur bord "<<I<<" le champ tangent change de cote!"<<std::endl;
 }
 
 
@@ -1377,11 +1377,11 @@ void GeomFill_ConstrainedFilling::CheckApprox(const Standard_Integer I)
     }
     if(papp.Distance(pbound) > maxdist) maxdist = papp.Distance(pbound);
   }
-  cout<<"Controle approx/contrainte sur bord "<<I<<" : "<<endl;
-  cout<<"Distance max : "<<maxdist<<endl;
+  std::cout<<"Controle approx/contrainte sur bord "<<I<<" : "<<std::endl;
+  std::cout<<"Distance max : "<<maxdist<<std::endl;
   if (donor) {
     maxang = maxang*180./M_PI;
-    cout<<"Angle max    : "<<maxang<<" deg"<<endl;
+    std::cout<<"Angle max    : "<<maxang<<" deg"<<std::endl;
   }
 }
 
@@ -1457,11 +1457,11 @@ void GeomFill_ConstrainedFilling::CheckResult(const Standard_Integer I)
     vv += dvv;
     ww += dww;
   }
-  cout<<"Controle resultat/contrainte sur bord "<<I<<" : "<<endl;
-  cout<<"Distance max : "<<maxdist<<endl;
+  std::cout<<"Controle resultat/contrainte sur bord "<<I<<" : "<<std::endl;
+  std::cout<<"Distance max : "<<maxdist<<std::endl;
   if (donor) {
     Standard_Real angdeg = maxang*180./M_PI;
-    cout<<"Angle max    : "<<angdeg<<" deg"<<endl;
+    std::cout<<"Angle max    : "<<angdeg<<" deg"<<std::endl;
   }
 #ifdef DRAW
   Standard_Boolean scale = maxang>1.e-10;

@@ -941,7 +941,7 @@ void BRepOffset_Offset::Init(const TopoDS_Face&                  Face,
 	    P2d = C2d->Value(l); TheSurf->D0(P2d.X(),P2d.Y(),P2);	  
 	    Standard_Real Tol = BRep_Tool::Tolerance(V1); 
 	    if (!P1.IsEqual(P2,Tol)) {
-	      cout <<"BRepOffset_Offset : E degenerated -> OE not degenerated"<<endl; 
+	      std::cout <<"BRepOffset_Offset : E degenerated -> OE not degenerated"<<std::endl; 
 	    }
 #endif	  
             */
@@ -1241,7 +1241,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
 #ifdef OCCT_DEBUG
     // si firstedge n est pas nul, il faut que les vertex soient partages
     if ( !VVf.IsSame(V1f) && !VVf.IsSame(V2f) ) {
-      cout << "Attention Vertex non partages !!!!!!" << endl;
+      std::cout << "Attention Vertex non partages !!!!!!" << std::endl;
     }    
 #endif
     if ( !VVf.IsSame(V1f) && !VVf.IsSame(V2f) ) {
@@ -1305,7 +1305,7 @@ void BRepOffset_Offset::Init(const TopoDS_Edge&     Path,
 #ifdef OCCT_DEBUG
       // si lastedge n est pas nul, il faut que les vertex soient partages
       if ( !VVf.IsSame(V1l) && !VVf.IsSame(V2l) ) {
-	cout << "Attention Vertex non partages !!!!!!" << endl;
+	std::cout << "Attention Vertex non partages !!!!!!" << std::endl;
       }    
 #endif
       if ( !VVf.IsSame(V1l) && !VVf.IsSame(V2l) ) {

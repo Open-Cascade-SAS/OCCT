@@ -833,7 +833,7 @@ void IntWalk_IWalking::TestArretCadre
 	    }
 #ifdef OCCT_DEBUG
 	    else { 
-	      cout<<" IntWalk_IWalking_2.gxx : bizarrerie 30 10 97 "<<endl;
+	      std::cout<<" IntWalk_IWalking_2.gxx : bizarrerie 30 10 97 "<<std::endl;
 	    }
 #endif
 	  }

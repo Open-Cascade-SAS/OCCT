@@ -178,7 +178,7 @@ void Units_Token::Update(const Standard_CString amean)
 {
   TCollection_AsciiString string = Mean();
   if(string.Search(amean) != -1)
-    cout<<Word()<<" encountered twice with the same signification : "<<amean<<endl;
+    std::cout<<Word()<<" encountered twice with the same signification : "<<amean<<std::endl;
   string = string + amean;
   themean = string;
 }
@@ -260,7 +260,7 @@ Handle(Units_Token) Units_Token::Divide (const Handle(Units_Token)& atoken)
 {
   if(fabs(atoken->Value())<1.e-40) {
 #ifdef OCCT_DEBUG
-    cout<<"Warning: division on token with value=0 => return initial token."<<endl;
+    std::cout<<"Warning: division on token with value=0 => return initial token."<<std::endl;
 #endif
     return this;
   }
@@ -364,14 +364,14 @@ void Units_Token::Dump(const Standard_Integer ashift,
   TCollection_AsciiString word = Word();
   TCollection_AsciiString mean = Mean();
 
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout << "Units_Token::Dump of " << this << endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<word.ToCString()<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"  value : "<<thevalue<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"  mean  : "<<mean.ToCString()<<endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout << "Units_Token::Dump of " << this << std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<word.ToCString()<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"  value : "<<thevalue<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"  mean  : "<<mean.ToCString()<<std::endl;
   if(alevel)thedimensions->Dump(ashift);
 }
 

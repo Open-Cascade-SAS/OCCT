@@ -508,13 +508,13 @@ Standard_Integer IntPatch_Polyhedron::TriConnex (const Standard_Integer Triang,
     OtherP=0;
     TriCon=Triang;
 #if MSG_DEBUG
-    cout<<" Probleme ds IntCurveSurface_Polyhedron : Pivot et PEdge Confondus "<<endl;
+    std::cout<<" Probleme ds IntCurveSurface_Polyhedron : Pivot et PEdge Confondus "<<std::endl;
 #endif
     return(TriCon);
   }
   if(Point(OtherP).SquareDistance(Point(Pedge))<=LONGUEUR_MINI_EDGE_TRIANGLE) { 
 #if MSG_DEBUG
-    cout<<" Probleme ds IntCurveSurface_Polyhedron : OtherP et PEdge Confondus "<<endl;
+    std::cout<<" Probleme ds IntCurveSurface_Polyhedron : OtherP et PEdge Confondus "<<std::endl;
 #endif
     return(0); //-- BUG NON CORRIGE ( a revoir le role de nbdeltaU et nbdeltaV)
 //    Standard_Integer TempTri,TempOtherP;

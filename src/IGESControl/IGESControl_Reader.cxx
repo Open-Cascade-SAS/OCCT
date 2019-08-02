@@ -172,7 +172,7 @@ void  IGESControl_Reader::PrintTransferInfo
 
         sprintf(mess,"%d\t%d\t%s\t%s", igesEnt->TypeNumber(), igesEnt->FormNumber(),
         "%d", aBinder->ResultTypeName());
-        //cout << mess << endl;
+        //std::cout << mess << std::endl;
         if (aMapCountMapping.IsBound(mess))
           aMapCountMapping.ChangeFind(mess)++;
         else
@@ -209,7 +209,7 @@ void  IGESControl_Reader::PrintTransferInfo
       }
       for(i = 1; i<= nf; i++) {
         sprintf(mess,"\t F\t%d\t%d\t%s",type,form,aCheck->CFail(i));
-        // TF << mess << endl;
+        // TF << mess << std::endl;
         if (aMapCount.IsBound(mess))
           aMapCount.ChangeFind(mess)++;
         else
@@ -247,7 +247,7 @@ void  IGESControl_Reader::PrintTransferInfo
       NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfInteger)>::Iterator aMapListIter(aMapList);
       for(; aMapCountIter.More() && aMapListIter.More();
             aMapCountIter.Next(), aMapListIter.Next()) {
-        TF << aMapCountIter.Value() << aMapCountIter.Key() << endl;
+        TF << aMapCountIter.Value() << aMapCountIter.Key() << Message_EndLine;
         if (mode == IFSelect_ListByItem) {
           Handle(TColStd_HSequenceOfInteger) entityList = aMapListIter.Value();
           Standard_Integer length = entityList->Length();
@@ -267,7 +267,7 @@ void  IGESControl_Reader::PrintTransferInfo
               TF << line;
             }
           }
-          TF << endl;
+          TF << Message_EndLine;
         }
       }
       break;
@@ -281,7 +281,7 @@ void  IGESControl_Reader::PrintTransferInfo
       NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapIter(aMapCountResult);
       for (; aMapIter.More(); aMapIter.Next())
       {
-        TF << aMapIter.Key() << aMapIter.Value() << endl;
+        TF << aMapIter.Key() << aMapIter.Value() << Message_EndLine;
       }
       break;
     }
@@ -299,7 +299,7 @@ void  IGESControl_Reader::PrintTransferInfo
 
             sprintf(mess, "%d\t%d \t%s\t%s", root->TypeNumber(), root->FormNumber(),
               "%d", "Failed");
-            //cout << mess << endl;
+            //std::cout << mess << std::endl;
             if (aMapCountMapping.IsBound(mess))
               aMapCountMapping.ChangeFind(mess)++;
             else
@@ -311,7 +311,7 @@ void  IGESControl_Reader::PrintTransferInfo
       for(; aMapCountIter.More(); aMapCountIter.Next()) {
         char mess[80];
         sprintf(mess, aMapCountIter.Key().ToCString(), aMapCountIter.Value());
-        TF << mess << endl; //dicoCountIter.Value() << dicoCountIter.Name() << endl;
+        TF << mess << Message_EndLine; //dicoCountIter.Value() << dicoCountIter.Name() << std::endl;
       }
       break;
     }

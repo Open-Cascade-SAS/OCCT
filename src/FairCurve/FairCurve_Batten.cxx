@@ -441,7 +441,7 @@ Standard_Boolean FairCurve_Batten::Compute(const gp_Vec2d& DeltaP1,
  } 
 
 // For eventual debug
-//  Newton.Dump(cout);
+//  Newton.Dump(std::cout);
    
  return OkCompute;
 } 
@@ -531,31 +531,31 @@ void FairCurve_Batten::Dump(Standard_OStream& o) const
 // ==================================================================
 {
 
-o << "  Batten       |"; o.width(7); o<< "Old  |   New" << endl;
-o << "  P1    X      |"; o.width(7); o<<  OldP1.X() << " | " << NewP1.X() << endl;
-o << "        Y      |"; o.width(7); o<<  OldP1.Y() << " | " << NewP1.Y() << endl;
-o << "  P2    X      |"; o.width(7); o<<  OldP2.X() << " | " << NewP2.X() << endl;
-o << "        Y      |"; o.width(7); o<<  OldP2.Y() << " | " << NewP2.Y() << endl;
-o << "      Angle1   |"; o.width(7); o<<  OldAngle1 << " | " << NewAngle1 << endl;
-o << "      Angle2   |"; o.width(7); o<<  OldAngle2 << " | " << NewAngle2 << endl;
-o << "      Height   |"; o.width(7); o<<  OldHeight << " | " << NewHeight << endl;
-o << "      Slope    |"; o.width(7); o<<  OldSlope  << " | " << NewSlope << endl; 
-o << " SlidingFactor |"; o.width(7); o<<  OldSlidingFactor << " | " << NewSlidingFactor << endl;
-o << " FreeSliding   |"; o.width(7); o<<  OldFreeSliding << " | " << NewFreeSliding << endl; 
-o << " ConstrOrder1  |"; o.width(7); o<<  OldConstraintOrder1 << " | " << NewConstraintOrder1 << endl; 
-o << " ConstrOrder2  |" ; o.width(7); o<<  OldConstraintOrder2 << " | " << NewConstraintOrder2 << endl;
+o << "  Batten       |"; o.width(7); o<< "Old  |   New" << std::endl;
+o << "  P1    X      |"; o.width(7); o<<  OldP1.X() << " | " << NewP1.X() << std::endl;
+o << "        Y      |"; o.width(7); o<<  OldP1.Y() << " | " << NewP1.Y() << std::endl;
+o << "  P2    X      |"; o.width(7); o<<  OldP2.X() << " | " << NewP2.X() << std::endl;
+o << "        Y      |"; o.width(7); o<<  OldP2.Y() << " | " << NewP2.Y() << std::endl;
+o << "      Angle1   |"; o.width(7); o<<  OldAngle1 << " | " << NewAngle1 << std::endl;
+o << "      Angle2   |"; o.width(7); o<<  OldAngle2 << " | " << NewAngle2 << std::endl;
+o << "      Height   |"; o.width(7); o<<  OldHeight << " | " << NewHeight << std::endl;
+o << "      Slope    |"; o.width(7); o<<  OldSlope  << " | " << NewSlope << std::endl; 
+o << " SlidingFactor |"; o.width(7); o<<  OldSlidingFactor << " | " << NewSlidingFactor << std::endl;
+o << " FreeSliding   |"; o.width(7); o<<  OldFreeSliding << " | " << NewFreeSliding << std::endl; 
+o << " ConstrOrder1  |"; o.width(7); o<<  OldConstraintOrder1 << " | " << NewConstraintOrder1 << std::endl; 
+o << " ConstrOrder2  |" ; o.width(7); o<<  OldConstraintOrder2 << " | " << NewConstraintOrder2 << std::endl;
  switch (myCode) {
    case FairCurve_OK : 
-     o  << "AnalysisCode : Ok" << endl;
+     o  << "AnalysisCode : Ok" << std::endl;
        break;
    case  FairCurve_NotConverged : 
-     o << "AnalysisCode : NotConverged" << endl;
+     o << "AnalysisCode : NotConverged" << std::endl;
        break;
    case  FairCurve_InfiniteSliding : 
-     o << "AnalysisCode : InfiniteSliding" << endl;
+     o << "AnalysisCode : InfiniteSliding" << std::endl;
        break;
    case  FairCurve_NullHeight : 
-     o << "AnalysisCode : NullHeight" << endl;
+     o << "AnalysisCode : NullHeight" << std::endl;
        break;
      } 
 }

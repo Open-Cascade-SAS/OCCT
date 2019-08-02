@@ -118,14 +118,14 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
     if (PCurve.IsNull())
     {
 #ifdef OCCT_DEBUG
-      cout << "DBRep_IsoBuilder : PCurve is null\n";
+      std::cout << "DBRep_IsoBuilder : PCurve is null\n";
 #endif
       return;
     }
     else if (U1 == U2)
     {
 #ifdef OCCT_DEBUG
-      cout << "DBRep_IsoBuilder PCurve : U1==U2\n";
+      std::cout << "DBRep_IsoBuilder PCurve : U1==U2\n";
 #endif
       return;
     }
@@ -149,8 +149,8 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
             U2 - TrimPCurve->BasisCurve()->LastParameter()  > Precision::PConfusion())
           {
 #ifdef OCCT_DEBUG
-            cout << "DBRep_IsoBuilder TrimPCurve : parameters out of range\n";
-            cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter()
+            std::cout << "DBRep_IsoBuilder TrimPCurve : parameters out of range\n";
+            std::cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter()
               << "), U2("  << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
 #endif
             return;
@@ -161,32 +161,32 @@ Geom2dHatch_Hatcher (Geom2dHatch_Intersector (IntersectorConfusion,
           if (PCurve->FirstParameter() - U1 > Precision::PConfusion())
           {
 #ifdef OCCT_DEBUG
-            cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
-            cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter() << ")\n";
+            std::cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
+            std::cout << "    U1(" << U1 << "), Umin(" << PCurve->FirstParameter() << ")\n";
 #endif
             U1 = PCurve->FirstParameter();
           }
           if (PCurve->FirstParameter() - U2 > Precision::PConfusion())
           {
 #ifdef OCCT_DEBUG
-            cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
-            cout << "    U2(" << U2 << "), Umin(" << PCurve->FirstParameter() << ")\n";
+            std::cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
+            std::cout << "    U2(" << U2 << "), Umin(" << PCurve->FirstParameter() << ")\n";
 #endif
             U2 = PCurve->FirstParameter();
           }
           if (U1 - PCurve->LastParameter() > Precision::PConfusion())
           {
 #ifdef OCCT_DEBUG
-            cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
-            cout << "    U1(" << U1 << "), Umax(" << PCurve->LastParameter() << ")\n";
+            std::cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
+            std::cout << "    U1(" << U1 << "), Umax(" << PCurve->LastParameter() << ")\n";
 #endif
             U1 = PCurve->LastParameter();
           }
           if (U2 - PCurve->LastParameter() > Precision::PConfusion())
           {
 #ifdef OCCT_DEBUG
-            cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
-            cout << "    U2(" << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
+            std::cout << "DBRep_IsoBuilder PCurve : parameters out of range\n";
+            std::cout << "    U2(" << U2 << "), Umax(" << PCurve->LastParameter() << ")\n";
 #endif
             U2 = PCurve->LastParameter();
           }
@@ -296,13 +296,13 @@ void DBRep_IsoBuilder::LoadIsos (const Handle(DBRep_Face)& Face) const
     if (UInd != 0) {
       Standard_Real UPrm = myUPrm.Value (UIso) ;
       if (!IsDone (UInd)) {
-	cout << "DBRep_IsoBuilder:: U iso of parameter: " << UPrm ;
+	std::cout << "DBRep_IsoBuilder:: U iso of parameter: " << UPrm ;
 	switch (Status (UInd)) {
-	  case HatchGen_NoProblem          : cout << " No Problem"          << endl ; break ;
-	  case HatchGen_TrimFailure        : cout << " Trim Failure"        << endl ; break ;
-	  case HatchGen_TransitionFailure  : cout << " Transition Failure"  << endl ; break ;
-	  case HatchGen_IncoherentParity   : cout << " Incoherent Parity"   << endl ; break ;
-	  case HatchGen_IncompatibleStates : cout << " Incompatible States" << endl ; break ;
+	  case HatchGen_NoProblem          : std::cout << " No Problem"          << std::endl ; break ;
+	  case HatchGen_TrimFailure        : std::cout << " Trim Failure"        << std::endl ; break ;
+	  case HatchGen_TransitionFailure  : std::cout << " Transition Failure"  << std::endl ; break ;
+	  case HatchGen_IncoherentParity   : std::cout << " Incoherent Parity"   << std::endl ; break ;
+	  case HatchGen_IncompatibleStates : std::cout << " Incompatible States" << std::endl ; break ;
 	}
       } else {
 	Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains (UInd) ;
@@ -322,13 +322,13 @@ void DBRep_IsoBuilder::LoadIsos (const Handle(DBRep_Face)& Face) const
     if (VInd != 0) {
       Standard_Real VPrm = myVPrm.Value (VIso) ;
       if (!IsDone (VInd)) {
-	cout << "DBRep_IsoBuilder:: V iso of parameter: " << VPrm ;
+	std::cout << "DBRep_IsoBuilder:: V iso of parameter: " << VPrm ;
 	switch (Status (VInd)) {
-	  case HatchGen_NoProblem          : cout << " No Problem"          << endl ; break ;
-	  case HatchGen_TrimFailure        : cout << " Trim Failure"        << endl ; break ;
-	  case HatchGen_TransitionFailure  : cout << " Transition Failure"  << endl ; break ;
-	  case HatchGen_IncoherentParity   : cout << " Incoherent Parity"   << endl ; break ;
-	  case HatchGen_IncompatibleStates : cout << " Incompatible States" << endl ; break ;
+	  case HatchGen_NoProblem          : std::cout << " No Problem"          << std::endl ; break ;
+	  case HatchGen_TrimFailure        : std::cout << " Trim Failure"        << std::endl ; break ;
+	  case HatchGen_TransitionFailure  : std::cout << " Transition Failure"  << std::endl ; break ;
+	  case HatchGen_IncoherentParity   : std::cout << " Incoherent Parity"   << std::endl ; break ;
+	  case HatchGen_IncompatibleStates : std::cout << " Incompatible States" << std::endl ; break ;
 	}
       } else {
 	Standard_Integer NbDom = Geom2dHatch_Hatcher::NbDomains (VInd) ;

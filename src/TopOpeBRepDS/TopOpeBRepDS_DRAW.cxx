@@ -38,7 +38,7 @@
 Standard_EXPORT void FUN_draw (const TopoDS_Shape& s)
 {
   char* nnn = TCollection_AsciiString("name").ToCString();
-  if (s.IsNull()) cout<<"nullshape"<<endl;
+  if (s.IsNull()) std::cout<<"nullshape"<<std::endl;
   DBRep::Set(nnn,s);
 }
 Standard_EXPORT void FUN_draw (const gp_Pnt& p)

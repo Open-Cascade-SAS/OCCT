@@ -48,16 +48,16 @@ TopLoc_Datum3D::TopLoc_Datum3D (const gp_Trsf& T) :
 
 void  TopLoc_Datum3D::ShallowDump(Standard_OStream& S) const 
 {
-  S << " TopLoc_Datum3D " << (void*)this << endl;
+  S << " TopLoc_Datum3D " << (void*)this << std::endl;
   Standard_Integer i;
   gp_Trsf T = myTrsf;
   for (i = 1; i<=3; i++) {
-    S<<"  ( "<<setw(10)<<T.Value(i,1);
-    S<<","<<setw(10)<<T.Value(i,2);
-    S<<","<<setw(10)<<T.Value(i,3);
-    S<<","<<setw(10)<<T.Value(i,4);
+    S<<"  ( "<<std::setw(10)<<T.Value(i,1);
+    S<<","<<std::setw(10)<<T.Value(i,2);
+    S<<","<<std::setw(10)<<T.Value(i,3);
+    S<<","<<std::setw(10)<<T.Value(i,4);
     S<<")\n";
   }
-  S << endl;
+  S << std::endl;
 }
     

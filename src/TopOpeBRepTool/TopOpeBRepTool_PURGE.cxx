@@ -216,7 +216,7 @@ Standard_Boolean TopOpeBRepTool::PurgeClosingEdges(const TopoDS_Face& Fin, const
 
 #ifdef OCCT_DEBUG
   Standard_Boolean trc =  TopOpeBRepTool_GettracePURGE();
-  if (trc) cout<<"\n* PurgeClosingEdges:\n\n";
+  if (trc) std::cout<<"\n* PurgeClosingEdges:\n\n";
 #endif
   TopOpeBRepTool_CORRISO CORRISO(Fin);  
   Standard_Real tolF = BRep_Tool::Tolerance(Fin);
@@ -264,7 +264,7 @@ Standard_Boolean TopOpeBRepTool::PurgeClosingEdges(const TopoDS_Face& Fin, const
     }
     
 #ifdef OCCT_DEBUG
-    if (trc && topurge) cout<<"found FAULTY edge = ed"<<endl;
+    if (trc && topurge) std::cout<<"found FAULTY edge = ed"<<std::endl;
 #endif
   } // exw
   return Standard_True;
@@ -411,7 +411,7 @@ static Standard_Boolean FUN_correctDegeneratedE
     // redefinition des parametres de v1,v2 de Ein tels que des parametres de 
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCORRISO()) {
-      cout<<"FUN_correctDegeneratedE : !mmd NYI"<<endl;
+      std::cout<<"FUN_correctDegeneratedE : !mmd NYI"<<std::endl;
     }
 #endif
     ok = Standard_False;
@@ -601,7 +601,7 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
-  if (trc) cout<<"\n####    CorrectONUVISO    ####\n\n";
+  if (trc) std::cout<<"\n####    CorrectONUVISO    ####\n\n";
   debcorrUV();
 #endif
 
@@ -704,8 +704,8 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
   
 #ifdef OCCT_DEBUG
   if (trc) {
-    cout<<"CorrectONUVISO ";
-    cout<<"iso faulty "<<tocorrectisoe<<" deg faulty "<<tocorrectdege<<endl;;
+    std::cout<<"CorrectONUVISO ";
+    std::cout<<"iso faulty "<<tocorrectisoe<<" deg faulty "<<tocorrectdege<<std::endl;;
   }
   debcorrUV();
 #endif
@@ -728,7 +728,7 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
       
 #ifdef DRAW
       if (trc) { 
-	cout<<"TopOpeBRepTool correctONUVISO : faulty iso edge"<<endl;
+	std::cout<<"TopOpeBRepTool correctONUVISO : faulty iso edge"<<std::endl;
 	FUN_tool_draw("fyf",Fsp);FUN_tool_draw("fyisoe",fyisoe);
       }
 #endif
@@ -752,7 +752,7 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
       
 #ifdef DRAW
       if (trc) { 
-	cout<<"TopOpeBRepTool correctONUVISO : faulty deg edge"<<endl;
+	std::cout<<"TopOpeBRepTool correctONUVISO : faulty deg edge"<<std::endl;
 	FUN_tool_draw("fyf",Fsp);FUN_tool_draw("fydege",fydege);
       }
 #endif

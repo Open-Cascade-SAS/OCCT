@@ -33,7 +33,7 @@ static Standard_Integer OCC281bug (Draw_Interpretor& di, Standard_Integer argc, 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) 
     { 
-    cerr << "use 'vinit' command before " << argv[0] << "\n";
+    std::cerr << "use 'vinit' command before " << argv[0] << "\n";
     return -1;
     }
   if(argc < 4) {

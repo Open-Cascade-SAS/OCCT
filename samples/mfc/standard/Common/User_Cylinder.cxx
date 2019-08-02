@@ -129,7 +129,7 @@ case 6: //color
     // This triangulation is computed with the deflection myDeflection.
 
 #ifdef DEBUG
-    cout <<"Deflection = " << myDeflection << "\n" << endl;
+    std::cout <<"Deflection = " << myDeflection << "\n" << std::endl;
 #endif
 
     Standard_Integer NumFace;
@@ -145,7 +145,7 @@ case 6: //color
       TopLoc_Location myLocation = myFace.Location();
 
 #ifdef DEBUG
-      cout << "J\'explore actuellement la face " << NumFace << "\n" << endl;
+      std::cout << "J\'explore actuellement la face " << NumFace << "\n" << std::endl;
 #endif
       Handle(Poly_Triangulation) myT = BRep_Tool::Triangulation(myFace, myLocation);
       // Returns the Triangulation of the face. It is a null handle if there is no triangulation.
@@ -153,7 +153,7 @@ case 6: //color
       if (myT.IsNull())
       {
 #ifdef DEBUG
-        // cout << "Triangulation of the face "<< i <<" is null \n"<< endl;
+        // std::cout << "Triangulation of the face "<< i <<" is null \n"<< std::endl;
 #endif
         return;
       }
@@ -200,7 +200,7 @@ case 6: //color
       TopLoc_Location myLocation = myFace.Location();
 
 #ifdef DEBUG
-      cout << "J\'explore actuellement la face " << NumFace << "\n" << endl;
+      std::cout << "J\'explore actuellement la face " << NumFace << "\n" << std::endl;
 #endif
       Handle(Poly_Triangulation) myT = BRep_Tool::Triangulation(myFace, myLocation);
       // Returns the Triangulation of the face. It is a null handle if there is no triangulation.
@@ -208,7 +208,7 @@ case 6: //color
       if (myT.IsNull())
       {
 #ifdef DEBUG
-        //cout << "Triangulation of the face "<< i <<" is null \n"<< endl;
+        //std::cout << "Triangulation of the face "<< i <<" is null \n"<< std::endl;
 #endif
         return;
       }
@@ -255,7 +255,7 @@ case 6: //color
       for (nt = 1; nt <= nnn; nt++)
       {
 #ifdef DEBUG
-        cout << "On traite actuellement le triangle : "<< nt <<"\n";
+        std::cout << "On traite actuellement le triangle : "<< nt <<"\n";
 #endif
         if (myFace.Orientation() == TopAbs_REVERSED) // si la face est "reversed"
           triangles(nt).Get(n1,n3,n2); // le triangle est n1,n3,n2

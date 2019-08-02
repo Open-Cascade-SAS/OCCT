@@ -59,7 +59,7 @@ inline Standard_Boolean Units_Sentence::IsDone() const
 inline void Units_Sentence::Dump() const
 {
   Standard_Integer index;
-  cout<<" UNIT SENTENCE with : "<<endl;
+  std::cout<<" UNIT SENTENCE with : "<<std::endl;
   for(index=1;index<=thesequenceoftokens->Length();index++)
     thesequenceoftokens->Value(index)->Dump(1,1);
 }

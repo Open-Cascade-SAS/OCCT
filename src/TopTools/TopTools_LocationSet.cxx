@@ -103,24 +103,24 @@ static void WriteTrsf(const gp_Trsf& T,
   gp_Mat M = T.VectorialPart();
 
   if (!compact) OS << "( ";
-  OS << setw(15) << M(1,1) << " ";
-  OS << setw(15) << M(1,2) << " ";
-  OS << setw(15) << M(1,3) << " ";
-  OS << setw(15) << V.Coord(1) << " ";
+  OS << std::setw(15) << M(1,1) << " ";
+  OS << std::setw(15) << M(1,2) << " ";
+  OS << std::setw(15) << M(1,3) << " ";
+  OS << std::setw(15) << V.Coord(1) << " ";
   if (!compact) OS << " )";
   OS << "\n";
   if (!compact) OS << "( ";
-  OS << setw(15) << M(2,1) << " ";
-  OS << setw(15) << M(2,2) << " ";
-  OS << setw(15) << M(2,3) << " ";
-  OS << setw(15) << V.Coord(2) << " ";
+  OS << std::setw(15) << M(2,1) << " ";
+  OS << std::setw(15) << M(2,2) << " ";
+  OS << std::setw(15) << M(2,3) << " ";
+  OS << std::setw(15) << V.Coord(2) << " ";
   if (!compact) OS << " )";
   OS << "\n";
   if (!compact) OS << "( ";
-  OS << setw(15) << M(3,1) << " ";
-  OS << setw(15) << M(3,2) << " ";
-  OS << setw(15) << M(3,3) << " ";
-  OS << setw(15) << V.Coord(3) << " ";
+  OS << std::setw(15) << M(3,1) << " ";
+  OS << std::setw(15) << M(3,2) << " ";
+  OS << std::setw(15) << M(3,3) << " ";
+  OS << std::setw(15) << V.Coord(3) << " ";
   if (!compact) OS << " )";
   OS << "\n";
 }
@@ -141,7 +141,7 @@ void  TopTools_LocationSet::Dump(Standard_OStream& OS) const
   
   for (i = 1; i <= nbLoc; i++) {
     TopLoc_Location L = myMap(i);
-    OS << setw(5) << i << " : \n";
+    OS << std::setw(5) << i << " : \n";
     
     TopLoc_Location L2 = L.NextLocation();
     Standard_Boolean simple = L2.IsIdentity();
@@ -255,7 +255,7 @@ void  TopTools_LocationSet::Read(Standard_IStream& IS)
 
   IS >> buffer;
   if (strcmp(buffer,"Locations")) {
-    cout << "Not a location table "<<endl;
+    std::cout << "Not a location table "<<std::endl;
     return;
   }
 

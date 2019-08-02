@@ -655,7 +655,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
       _Par=0.0;
       myReject=Standard_True;
 #ifdef OCCT_DEBUG
-      cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<endl;
+      std::cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<std::endl;
 #endif  
       return 0;
     }
@@ -853,7 +853,7 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   
 #ifdef OCCT_DEBUG
   if(myReject) { 
-    cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<endl;
+    std::cout<<"\nWARNING : BRepClass3d_SolidExplorer.cxx  (Solid without face)"<<std::endl;
   }
 #endif
 

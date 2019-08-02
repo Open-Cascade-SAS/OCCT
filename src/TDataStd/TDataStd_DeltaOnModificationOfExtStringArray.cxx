@@ -45,9 +45,9 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
       Arr2 = CurrAtt->Array();
 #ifdef OCCT_DEBUG
       if(Arr1.IsNull())
-	cout <<"DeltaOnModificationOfExtStringArray:: Old IntArray is Null" <<endl;
+	std::cout <<"DeltaOnModificationOfExtStringArray:: Old IntArray is Null" <<std::endl;
       if(Arr2.IsNull())
-	cout <<"DeltaOnModificationOfExtStringArray:: Current IntArray is Null" <<endl;
+	std::cout <<"DeltaOnModificationOfExtStringArray:: Current IntArray is Null" <<std::endl;
 #endif
 
       if(Arr1.IsNull() || Arr2.IsNull()) return;
@@ -85,7 +85,7 @@ TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtS
     OldAtt->RemoveArray();
 #ifdef OCCT_DEBUG
     if(OldAtt->Array().IsNull())
-      cout << "BackUp Arr is Nullified" << endl;
+      std::cout << "BackUp Arr is Nullified" << std::endl;
 #endif
   }
 }
@@ -103,7 +103,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
   Handle(TDataStd_ExtStringArray) BackAtt = Handle(TDataStd_ExtStringArray)::DownCast (TDFAttribute);
   if(BackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "DeltaOnModificationOfExtStringArray::Apply: OldAtt is Null" <<endl;
+    std::cout << "DeltaOnModificationOfExtStringArray::Apply: OldAtt is Null" <<std::endl;
 #endif
     return;
   }
@@ -116,7 +116,7 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
 
   if(aCurAtt.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "DeltaOnModificationOfExtStringArray::Apply: CurAtt is Null" <<endl;
+    std::cout << "DeltaOnModificationOfExtStringArray::Apply: CurAtt is Null" <<std::endl;
 #endif
     return;
   }
@@ -160,9 +160,9 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
     if(!myIndxes.IsNull() && !myValues.IsNull())
       for(i = 1; i <= myIndxes->Upper();i++) {
 #ifdef OCCT_DEBUG
-	cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << endl;
-	cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << endl;
-	cout << "myValues->Value(i) = " << myValues->Value(i) << endl;
+	std::cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << std::endl;
+	std::cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << std::endl;
+	std::cout << "myValues->Value(i) = " << myValues->Value(i) << std::endl;
 #endif
 	strArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));      
       }
@@ -171,11 +171,11 @@ void TDataStd_DeltaOnModificationOfExtStringArray::Apply()
 
   
 #ifdef OCCT_DEBUG
-  cout << " << Array Dump after Delta Apply >>" <<endl;
+  std::cout << " << Array Dump after Delta Apply >>" <<std::endl;
   Handle(TColStd_HArray1OfExtendedString) aStrArr2 = aCurAtt->Array();
   for(i=aStrArr2->Lower(); i<= aStrArr2->Upper() && i<= MAXUP;i++)
-    cout << aStrArr2->Value(i) << "  ";
-  cout <<endl;
+    std::cout << aStrArr2->Value(i) << "  ";
+  std::cout <<std::endl;
 #endif
 }
 

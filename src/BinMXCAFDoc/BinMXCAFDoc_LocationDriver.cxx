@@ -178,7 +178,7 @@ void BinMXCAFDoc_LocationDriver::Translate(const TopLoc_Location& theLoc,
   if( myLocations == 0 )
   {
 #ifdef OCCT_DEBUG
-    cout<<"Pointer to LocationSet is NULL\n";
+    std::cout<<"Pointer to LocationSet is NULL\n";
 #endif
     return;
   }

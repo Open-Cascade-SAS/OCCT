@@ -196,16 +196,16 @@ void  IGESSolid_ToolRightAngularWedge::OwnDump
   (const Handle(IGESSolid_RightAngularWedge)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_RightAngularWedge" << endl;
+  S << "IGESSolid_RightAngularWedge" << Message_EndLine;
 
   S << "Size   : ";
   IGESData_DumpXYZ(S, ent->Size());  S << "  ";
-  S << "XSmall : " << ent->XSmallLength() << endl;
+  S << "XSmall : " << ent->XSmallLength() << Message_EndLine;
   S << "Corner : ";
   IGESData_DumpXYZL(S,level, ent->Corner(), ent->Location());
-  S << endl << "XAxis : ";
+  S << Message_EndLine << "XAxis : ";
   IGESData_DumpXYZL(S,level, ent->XAxis(), ent->VectorLocation());
-  S << endl << "ZAxis : ";
+  S << Message_EndLine << "ZAxis : ";
   IGESData_DumpXYZL(S,level, ent->ZAxis(), ent->VectorLocation());
-  S << endl;
+  S << Message_EndLine;
 }

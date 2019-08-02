@@ -143,7 +143,7 @@ void IntPolyh_SectionLine::Dump() const{
     //(*this)[i].Dump(i);
     Value(i).Dump(i);
 //     const IntPolyh_StartPoint& SP = Value(i);
-//     cout << "point P" << i << " " << SP.X() << " " << SP.Y() << " " << SP.Z() << endl;
+//     std::cout << "point P" << i << " " << SP.X() << " " << SP.Y() << " " << SP.Z() << std::endl;
   }
   printf("\n");
 }

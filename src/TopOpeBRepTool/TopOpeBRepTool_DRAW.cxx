@@ -106,7 +106,7 @@ void TopOpeBRepTool_DrawSegment
 Standard_EXPORT void FDRAW_DINS(const TCollection_AsciiString pref,const TopoDS_Shape& SS,const TCollection_AsciiString Snam,const TCollection_AsciiString suff)
 {
   DBRep::Set(Snam.ToCString(),SS);
-  cout<<pref<<FUN_tool_PRODINS()<<" "<<Snam<<";"<<suff;
+  std::cout<<pref<<FUN_tool_PRODINS()<<" "<<Snam<<";"<<suff;
 }
 
 Standard_EXPORT void FDRAW_DINE(const TCollection_AsciiString pref,const TopoDS_Edge& EE,const TCollection_AsciiString Enam,const TCollection_AsciiString suff)
@@ -117,7 +117,7 @@ Standard_EXPORT void FDRAW_DINE(const TCollection_AsciiString pref,const TopoDS_
   if ( ! VF.IsNull() && !VR.IsNull() && !EE.IsNull() ) {
     DBRep::Set(Enam.ToCString(),EE);
     Standard_Real f,l; BRep_Tool::Range(EE,f,l);
-    cout<<pref<<FUN_tool_PRODINS()<<"-gO "<<Enam<<"; # f,l : "<<f<<","<<l<<suff;
+    std::cout<<pref<<FUN_tool_PRODINS()<<"-gO "<<Enam<<"; # f,l : "<<f<<","<<l<<suff;
     
 #if 0
     Standard_Integer nfo=0,nre=0,nin=0,nex=0;
@@ -129,26 +129,26 @@ Standard_EXPORT void FDRAW_DINE(const TCollection_AsciiString pref,const TopoDS_
       if      ( vvo == TopAbs_FORWARD ) {
 	nfo++; VFnam = Enam + ".vf" + nfo;
 	DBRep::Set(VFnam.ToCString(),vv);
-	cout<<blancV<<FUN_tool_PRODINS()<<VFnam;
+	std::cout<<blancV<<FUN_tool_PRODINS()<<VFnam;
       }
       else if ( vvo == TopAbs_REVERSED ) {
 	nre++; VRnam = Enam + ".vr" + nre;
 	DBRep::Set(VRnam.ToCString(),vv);
-	cout<<blancV<<FUN_tool_PRODINS()<<VRnam;
+	std::cout<<blancV<<FUN_tool_PRODINS()<<VRnam;
       }
       else if ( vvo == TopAbs_INTERNAL ) {
 	nin++; VInam = Enam + ".vi" + nin;
 	DBRep::Set(VInam.ToCString(),vv);
-	cout<<blancV<<FUN_tool_PRODINS()<<VInam;
+	std::cout<<blancV<<FUN_tool_PRODINS()<<VInam;
       }
       else if ( vvo == TopAbs_EXTERNAL ) {
 	nex++; VEnam = Enam + ".ve" + nex;
 	DBRep::Set(VEnam.ToCString(),vv);
-	cout<<blancV<<FUN_tool_PRODINS()<<VEnam;
+	std::cout<<blancV<<FUN_tool_PRODINS()<<VEnam;
       }
       
       Standard_Real p = BRep_Tool::Parameter(vv,EE);
-      cout<<"; #draw ; par/"<<Enam<<" : "<<p<<endl;	
+      std::cout<<"; #draw ; par/"<<Enam<<" : "<<p<<std::endl;	
     }
 #endif
     
@@ -226,9 +226,9 @@ Standard_EXPORT void FUN_tool_draw(const TCollection_AsciiString aa,const TopoDS
 }
 Standard_EXPORT void FUN_tool_draw(TCollection_AsciiString aa,const TopoDS_Edge& E, const TopoDS_Face& F,const Standard_Integer ie)
 {  
-  if (E.IsNull())  {cout<<"************* null edge\n"; return;} 
+  if (E.IsNull())  {std::cout<<"************* null edge\n"; return;} 
   Standard_Real f,l; const Handle(Geom2d_Curve)& PC = BRep_Tool::CurveOnSurface(E,F,f,l);  
-  if (PC.IsNull()) {cout<<"************* no curv on surf\n"; return;}
+  if (PC.IsNull()) {std::cout<<"************* no curv on surf\n"; return;}
   TCollection_AsciiString bb(aa); bb += TCollection_AsciiString(ie);  
   char* aaa = bb.ToCString();
 

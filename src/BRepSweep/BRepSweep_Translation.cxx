@@ -544,7 +544,7 @@ Standard_Boolean  BRepSweep_Translation::HasShape
 //	const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
 //	if (cr->IsCurveOnSurface() && 
 //	    cr->IsCurveOnClosedSurface() ) 	{
-//	  cout<<"sewing edge"<<endl;
+//	  std::cout<<"sewing edge"<<std::endl;
 //	  return Standard_False;
 //	}
 //	itcr.Next();

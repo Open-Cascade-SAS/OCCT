@@ -132,14 +132,14 @@ void TNaming_CopyShape::Translate( const TopoDS_Shape& aShape,
   TrTool->UpdateShape(aShape,aResult);
 // #ifdef OCCT_DEBUG
 //     if(fShar) {
-//       cout << "=== Shareable shape ===" << endl;
-//       cout << "aShape Type = " <<(aShape.TShape())->DynamicType() << endl;
+//       std::cout << "=== Shareable shape ===" << std::endl;
+//       std::cout << "aShape Type = " <<(aShape.TShape())->DynamicType() << std::endl;
 //       if(aShape.Orientation() == aResult.Orientation())
-// 	cout<<"\tSource and result shapes have the same Orientation"<< endl;
+// 	std::cout<<"\tSource and result shapes have the same Orientation"<< std::endl;
 //       if((aShape.Location().IsEqual(aResult.Location())))
-// 	cout <<"\tSource and result shapes have the same Locations" << endl;
+// 	std::cout <<"\tSource and result shapes have the same Locations" << std::endl;
 //       if((aShape.IsSame(aResult)))
-// 	 cout <<"\tShapes arew the same (i.e. the same TShape and the same Locations)" << endl;
+// 	 std::cout <<"\tShapes arew the same (i.e. the same TShape and the same Locations)" << std::endl;
 //     }	    
 // #endif
 }

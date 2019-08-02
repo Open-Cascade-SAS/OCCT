@@ -356,22 +356,22 @@ void IGESGeom_ToolOffsetCurve::OwnDump(const Handle(IGESGeom_OffsetCurve)& ent,
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_OffsetCurve" << endl;
+  S << "IGESGeom_OffsetCurve" << Message_EndLine;
 
-  S << "The curve to be offset     : " << endl;
+  S << "The curve to be offset     : " << Message_EndLine;
   dumper.Dump(ent->BaseCurve(),S, sublevel);
-  S << "Offset Distance Flag       : " << ent->OffsetType() << endl;
+  S << "Offset Distance Flag       : " << ent->OffsetType() << Message_EndLine;
   S << "Curve entity whose coordinate defines the offset : ";
   dumper.Dump(ent->Function(),S, sublevel);
-  S << endl;
-  S << "In which Coordinate to use : " << ent->FunctionParameter()    << endl;
-  S << "Tapered Offset Type Flag   : " << ent->TaperedOffsetType()    << endl;
+  S << Message_EndLine;
+  S << "In which Coordinate to use : " << ent->FunctionParameter()    << Message_EndLine;
+  S << "Tapered Offset Type Flag   : " << ent->TaperedOffsetType()    << Message_EndLine;
   S << "First Offset Distance      : " << ent->FirstOffsetDistance()  << "  ";
-  S << "Arc Length : " << ent->ArcLength1() << endl;
+  S << "Arc Length : " << ent->ArcLength1() << Message_EndLine;
   S << "Second Offset Distance     : " << ent->SecondOffsetDistance() << "  ";
-  S << "Arc Length : " << ent->ArcLength2() << endl;
+  S << "Arc Length : " << ent->ArcLength2() << Message_EndLine;
   S << "Normal Vector : ";
-  IGESData_DumpXYZL(S,level, ent->NormalVector(), ent->VectorLocation());  S<<endl;
+  IGESData_DumpXYZL(S,level, ent->NormalVector(), ent->VectorLocation());  S<<Message_EndLine;
   S << "Offset curve Parameters. Starting : " << ent->StartParameter() << "  ";
-  S << "Ending : " << ent->EndParameter()   << endl;
+  S << "Ending : " << ent->EndParameter()   << Message_EndLine;
 }

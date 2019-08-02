@@ -41,7 +41,7 @@ Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEINTERNAL();
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEEXTERNAL();
 Standard_EXPORT void debfillonf(const Standard_Integer iF);
 Standard_EXPORT void debON2d(const Standard_Integer iF)
-{cout<<"++ debON2d "<<iF<<" "<<endl;}
+{std::cout<<"++ debON2d "<<iF<<" "<<std::endl;}
 #endif
 
 Standard_EXPORT TopAbs_State FUN_build_TB(const TopOpeBRepBuild_PBuilder& PB,const Standard_Integer rank); // xpu290698
@@ -75,7 +75,7 @@ void TopOpeBRepBuild_BuilderON::Perform2d
 #ifdef OCCT_DEBUG
   Standard_Integer iFOR;Standard_Boolean tFOR=myPB->GtraceSPS(FOR,iFOR);
   if (tFOR) debfillonf(iFOR);
-  if (tFOR) cout<<endl<<"LI on F"<<iFOR<<endl;
+  if (tFOR) std::cout<<std::endl<<"LI on F"<<iFOR<<std::endl;
 #endif
 
   for (TopOpeBRepDS_ListIteratorOfListOfInterference itI(lFEI); itI.More(); itI.Next()){
@@ -187,7 +187,7 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const Handle(TopOpeBRepDS_Int
   //=========================================
   if ( yap6) {
 #ifdef OCCT_DEBUG
-    if (tFOR) cout<<"* yap6 = 1"<<endl;
+    if (tFOR) std::cout<<"* yap6 = 1"<<std::endl;
 #endif
     TopAbs_Orientation neworiE = TopAbs_FORWARD;
     // FF est samedomain avec FCX
@@ -213,7 +213,7 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const Handle(TopOpeBRepDS_Int
       ok = FUN_ds_shareG(myPB->DataStructure(),iFCX,iFOR,GI,TopoDS::Edge(EspON),shareG);
     if (!ok) return; // nyiFUNRAISE
 #ifdef OCCT_DEBUG
-    if (tFOR) cout<<" shareG="<<shareG<<endl;
+    if (tFOR) std::cout<<" shareG="<<shareG<<std::endl;
 #endif
 
     if (SO) {
@@ -247,7 +247,7 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const Handle(TopOpeBRepDS_Int
     newE.Orientation(neworiE);  
     myPWES->AddStartElement(newE);
 #ifdef OCCT_DEBUG
-    if (tFOR) cout<<"  add spON e"<<GI<<endl;
+    if (tFOR) std::cout<<"  add spON e"<<GI<<std::endl;
 #endif
     return;
   } // yap6

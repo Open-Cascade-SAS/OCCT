@@ -4949,9 +4949,9 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
 				((OCC_MainFrame*)AfxGetMainWnd())->SetStatusMessage("Building the tangent surface...");
 				SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
 				CString filename = dlg.GetPathName();
-				filebuf fic;
-				istream in(&fic);  
-				if (!fic.open(filename, ios::in))
+				std::filebuf fic;
+				std::istream in(&fic);  
+				if (!fic.open(filename, std::ios::in))
 					MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : Unable to open file", L"CasCade Error", MB_ICONERROR);
 				Standard_Real x,y,z;
 				BRep_Builder B;

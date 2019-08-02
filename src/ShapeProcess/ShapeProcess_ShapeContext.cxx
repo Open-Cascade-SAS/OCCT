@@ -160,14 +160,14 @@ void ShapeProcess_ShapeContext::SetResult (const TopoDS_Shape &res)
 #ifdef OCCT_DEBUG
 static void DumpMap (const TopTools_DataMapOfShapeShape &map)
 {
-  cout << "----" << endl;
-  cout << "Map:" << endl;
+  std::cout << "----" << std::endl;
+  std::cout << "Map:" << std::endl;
   for (TopTools_DataMapIteratorOfDataMapOfShapeShape It (map); It.More(); It.Next()) {
     TopoDS_Shape S0 = It.Key(), S = It.Value();
-    cout << S0.TShape()->DynamicType()->Name() << "\t" << *(void**)&S0.TShape() << 
-      "     \t->    " << S.TShape()->DynamicType()->Name() << "\t" << *(void**)&S.TShape() << endl;
+    std::cout << S0.TShape()->DynamicType()->Name() << "\t" << *(void**)&S0.TShape() << 
+      "     \t->    " << S.TShape()->DynamicType()->Name() << "\t" << *(void**)&S.TShape() << std::endl;
   }
-  cout << "----" << endl;
+  std::cout << "----" << std::endl;
 }	     
 #endif
 */
@@ -258,7 +258,7 @@ void ShapeProcess_ShapeContext::RecordModification (const TopTools_DataMapOfShap
   RecModif ( myShape, repl, msg, myMap, myMsg, myUntil );
   if ( myMap.IsBound(myShape) ) myResult = myMap.Find ( myShape );
 #ifdef OCCT_DEBUG
-//  cout << "Modifier: " << endl; DumpMap (myMap);
+//  std::cout << "Modifier: " << std::endl; DumpMap (myMap);
 #endif
 }
 
@@ -333,7 +333,7 @@ void ShapeProcess_ShapeContext::RecordModification (const Handle(ShapeBuild_ReSh
     myResult.Location(myShape.Location());
   }
 #ifdef OCCT_DEBUG
-//  cout << "ReShape: " << endl; DumpMap (myMap);
+//  std::cout << "ReShape: " << std::endl; DumpMap (myMap);
 #endif
 }
 

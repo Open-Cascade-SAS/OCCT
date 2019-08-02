@@ -538,16 +538,16 @@ NbIntervals(const GeomAbs_Shape S) const
  myPath->Intervals(ICenter, GeomFillNextShape(S));
  myCurve1->Intervals(ICb1, S);
  myCurve2->Intervals(ICb2, S);
-/* cout << "Intervals : " << S << endl;
- cout << "-- Center-> " << endl;
- for (ii=1; ii<=ICenter.Length(); ii++) cout << " , "<< ICenter(ii);
- cout << endl; cout << endl;
- cout << "-- Cb1-> " << endl;
- for (ii=1; ii<=ICb1.Length(); ii++) cout << " , "<< ICb1(ii);
- cout << endl; cout << endl;
- cout << "-- Cb2-> " << endl;
- for (ii=1; ii<=ICb2.Length(); ii++) cout << " , "<< ICb1(ii);
- cout << endl; cout << endl;*/
+/* std::cout << "Intervals : " << S << std::endl;
+ std::cout << "-- Center-> " << std::endl;
+ for (ii=1; ii<=ICenter.Length(); ii++) std::cout << " , "<< ICenter(ii);
+ std::cout << std::endl; std::cout << std::endl;
+ std::cout << "-- Cb1-> " << std::endl;
+ for (ii=1; ii<=ICb1.Length(); ii++) std::cout << " , "<< ICb1(ii);
+ std::cout << std::endl; std::cout << std::endl;
+ std::cout << "-- Cb2-> " << std::endl;
+ for (ii=1; ii<=ICb2.Length(); ii++) std::cout << " , "<< ICb1(ii);
+ std::cout << std::endl; std::cout << std::endl;*/
 
  GeomFillFusInt(ICb1, ICb2, Inter);
 

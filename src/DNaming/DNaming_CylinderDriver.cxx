@@ -83,7 +83,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theL
   Handle(TNaming_NamedShape) aNSAxis = DNaming::GetObjectValue(anObject);
   if (aNSAxis->IsEmpty()) {
 #ifdef OCCT_DEBUG
-    cout<<"CylinderDriver:: Axis is empty"<<endl;
+    std::cout<<"CylinderDriver:: Axis is empty"<<std::endl;
 #endif
     aFunction->SetFailure(WRONG_AXIS);
     return -1;
@@ -91,7 +91,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theL
   TopoDS_Shape aTopoDSAxis = aNSAxis->Get();
   if (aTopoDSAxis.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<"CylinderDriver:: Axis is null"<<endl;
+    std::cout<<"CylinderDriver:: Axis is null"<<std::endl;
 #endif
     aFunction->SetFailure(WRONG_AXIS);
     return -1;
@@ -99,7 +99,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theL
   // Creation of gp axis (gp_Ax2):
   if (aTopoDSAxis.ShapeType() != TopAbs_EDGE && aTopoDSAxis.ShapeType() != TopAbs_WIRE) {
 #ifdef OCCT_DEBUG
-    cout<<"CylinderDriver:: Wrong axis, ShapeType = " << aTopoDSAxis.ShapeType() <<endl;
+    std::cout<<"CylinderDriver:: Wrong axis, ShapeType = " << aTopoDSAxis.ShapeType() <<std::endl;
 #endif    
     aFunction->SetFailure(WRONG_AXIS);
     return -1;
@@ -123,7 +123,7 @@ Standard_Integer DNaming_CylinderDriver::Execute(Handle(TFunction_Logbook)& theL
     }
   } else {
 #ifdef OCCT_DEBUG
-    cout<<"CylinderDriver:: I don't support wires for a while"<<endl;
+    std::cout<<"CylinderDriver:: I don't support wires for a while"<<std::endl;
 #endif    
     aFunction->SetFailure(WRONG_AXIS);
     return -1;

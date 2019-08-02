@@ -54,13 +54,13 @@ static void FUN_RaiseError()
 #ifdef OCCT_DEBUG
 //  Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
   FUN_REINIT(); 
-//  if (trc) cout <<"*********failure in CORRISO***********\n";
+//  if (trc) std::cout <<"*********failure in CORRISO***********\n";
 #endif
 }
 static void FUN_Raise()
 {
 #ifdef OCCT_DEBUG
-//  cout <<"*********failure in CORRISO***********\n";
+//  std::cout <<"*********failure in CORRISO***********\n";
 #endif
 }
 
@@ -281,7 +281,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::UVClosed() const
 {  
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
-  if (trc) cout<<"** UVClosed"<<endl;
+  if (trc) std::cout<<"** UVClosed"<<std::endl;
 #endif
   TopTools_DataMapOfOrientedShapeInteger lfyE; Standard_Integer nfybounds=3; Standard_Boolean stopatfirst = Standard_True;
   Standard_Boolean foundfaulty = EdgesWithFaultyUV(myEds,nfybounds,lfyE,stopatfirst);
@@ -320,7 +320,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
   fyClEds.Clear();
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
-  if (trc) cout<<"* PurgeFyClosingE"<<endl;
+  if (trc) std::cout<<"* PurgeFyClosingE"<<std::endl;
 #endif
 //  Standard_Real xperiod = myUclosed ? myUper : myVper; 
   Standard_Real tttol = 1.e-8;
@@ -455,7 +455,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
     if (!isb) return Standard_False; // NYIRAISE
 #ifdef OCCT_DEBUG
     Standard_Integer icE = STATIC_PURGE_mapeds.Add(cE);
-    if (trc) cout<<"? e"<<icE<<" :"<<endl;
+    if (trc) std::cout<<"? e"<<icE<<" :"<<std::endl;
 #endif
 
     // isonOcE2d :
@@ -482,7 +482,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
     }
     if (!isonOcE2d) {
 #ifdef OCCT_DEBUG
-      if (trc) cout<<"-> valid edge"<<endl;
+      if (trc) std::cout<<"-> valid edge"<<std::endl;
 #endif
       continue;
     }
@@ -499,7 +499,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
 #ifdef OCCT_DEBUG
       // recall in one wire, there are 2 vertices for one non-degenerated closing edge
       Standard_Integer ivmapv = STATIC_PURGE_mapv.Add(vce);
-      if (trc) {cout<<" connexity for v("<<ivce<<")=v"<<ivmapv;FUN_tool_trace(UVvce);}
+      if (trc) {std::cout<<" connexity for v("<<ivce<<")=v"<<ivmapv;FUN_tool_trace(UVvce);}
 #ifdef DRAW	
       if (trc) {TCollection_AsciiString bb("uv_");bb += TCollection_AsciiString(ivmapv);FUN_tool_draw(bb,UVvce);}
 #endif
@@ -513,7 +513,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
 
 #ifdef OCCT_DEBUG
 	Standard_Integer iE = STATIC_PURGE_mapeds.Add(E);
-	if (trc) {cout<<"    : on e"<<iE<<endl;}
+	if (trc) {std::cout<<"    : on e"<<iE<<std::endl;}
 #endif
 //	if (E.IsSame(cE)) continue;
 	if (mapcl.Contains(E)) continue; // do NOT check connexity on closing edges 
@@ -533,7 +533,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
 	  if (!samev) continue; 
 	  Standard_Real parve = TopOpeBRepTool_TOOL::ParE(ive,E); gp_Pnt2d UVve = TopOpeBRepTool_TOOL::UVF(parve,E2d);
 #ifdef OCCT_DEBUG
-	  if (trc) {cout<<"    ve("<<ive<<")";FUN_tool_trace(UVve);}
+	  if (trc) {std::cout<<"    ve("<<ive<<")";FUN_tool_trace(UVve);}
 #endif 
 	  if (ive == ivce) continue; // vertex FORWARD connexed to REVERSED one
 	  Standard_Real tttolve = BRep_Tool::Tolerance(ve);
@@ -558,7 +558,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
 	  if (sameuv) {
 	    vceok = Standard_True;
 #ifdef OCCT_DEBUG
-	    if (trc){cout<<" connexity->ok"<<endl;}
+	    if (trc){std::cout<<" connexity->ok"<<std::endl;}
 #endif	
 	  }
 	  break;
@@ -567,7 +567,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
       } //ite(loe)     
  
 #ifdef OCCT_DEBUG
-      if (trc && !vceok) {cout<<" connexity->KO"<<endl;}	
+      if (trc && !vceok) {std::cout<<" connexity->KO"<<std::endl;}	
 #endif     
       if (vceok) nvcEok++;
     }// ivce=1..2
@@ -576,8 +576,8 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
 
 #ifdef OCCT_DEBUG
     if (trc) 
-      {if (isfycE) cout<<"-> faulty edge"<<endl; 
-       else        cout<<"-> valid edge"<<endl;}
+      {if (isfycE) std::cout<<"-> faulty edge"<<std::endl; 
+       else        std::cout<<"-> valid edge"<<std::endl;}
 #endif 
     if (isfycE) fyClEds.Append(cE);
   }//itce
@@ -725,7 +725,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
   Standard_Integer iE = STATIC_PURGE_mapeds.Add(E);
-  if (trc) cout<<"? e"<<iE<<" :"<<endl;
+  if (trc) std::cout<<"? e"<<iE<<" :"<<std::endl;
 #endif
   Ivfaulty = 0;
   Standard_Real tttol = 1.e-8;
@@ -741,7 +741,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
   Standard_Boolean closed = vEs(1).IsSame(vEs(2));
   if (closed) {
 #ifdef OCCT_DEBUG
-    if (trc) {cout<<"closed -> valid edge"<<endl;}
+    if (trc) {std::cout<<"closed -> valid edge"<<std::endl;}
 #endif     
     return Standard_False; // closed edge is assumed valid
   }
@@ -758,7 +758,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
 #ifdef OCCT_DEBUG
       // recall in one wire, there are 2 vertices for one non-degenerated closing edge
     Standard_Integer ivmapv = STATIC_PURGE_mapv.Add(vE);
-    if (trc) {cout<<" connexity for v("<<ivE<<")=v"<<ivmapv;FUN_tool_trace(UVvE);}
+    if (trc) {std::cout<<" connexity for v("<<ivE<<")=v"<<ivmapv;FUN_tool_trace(UVvE);}
 #ifdef DRAW	
     if (trc) {TCollection_AsciiString bb("uv_");bb += TCollection_AsciiString(ivmapv);FUN_tool_draw(bb,UVvE);}
 #endif
@@ -780,7 +780,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
 
 #ifdef OCCT_DEBUG
     Standard_Integer ie = STATIC_PURGE_mapeds.Add(e);
-    if (trc) {cout<<"    : on e"<<ie<<endl;}
+    if (trc) {std::cout<<"    : on e"<<ie<<std::endl;}
 #endif
 
       if (e.IsSame(E)) continue;      
@@ -798,7 +798,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
 	  
 	Standard_Real pare = TopOpeBRepTool_TOOL::ParE(ive,e); gp_Pnt2d UVve = TopOpeBRepTool_TOOL::UVF(pare,aC2DF);
 #ifdef OCCT_DEBUG
-	if (trc) {cout<<"    ve("<<ive<<")";FUN_tool_trace(UVve);}
+	if (trc) {std::cout<<"    ve("<<ive<<")";FUN_tool_trace(UVve);}
 #endif 
 	if (ive == ivE) continue;	
 	
@@ -810,7 +810,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
 	if (isequal) {
 	  vEok = Standard_True;
 #ifdef OCCT_DEBUG
-	  if (trc){cout<<" connexity->ok"<<endl;}
+	  if (trc){std::cout<<" connexity->ok"<<std::endl;}
 #endif	
 	  break;
 	}
@@ -820,13 +820,13 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
       
     if (!vEok) {nfyv++; Ivfaulty = ivE;}      
 #ifdef OCCT_DEBUG
-    if (trc && !vEok) {cout<<" connexity->KO"<<endl;}	
+    if (trc && !vEok) {std::cout<<" connexity->KO"<<std::endl;}	
 #endif      
 
   } // ivE = 1..2          
   if (nfyv == 2) Ivfaulty = 3;
 #ifdef OCCT_DEBUG
-  if (trc) {if (Ivfaulty == 0) cout<<"-> valid edge"<<endl; else cout<<"-> faulty edge"<<endl;}
+  if (trc) {if (Ivfaulty == 0) std::cout<<"-> valid edge"<<std::endl; else std::cout<<"-> faulty edge"<<std::endl;}
 #endif   
   return (Ivfaulty != 0);
 }
@@ -843,7 +843,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgesWithFaultyUV(const TopTools_ListOf
 #ifdef OCCT_DEBUG
   Standard_Integer ifault = 0;
   Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO(); 
-  if (trc) cout<<endl<<"* EdgesWithFaultyUV"<<endl;
+  if (trc) std::cout<<std::endl<<"* EdgesWithFaultyUV"<<std::endl;
 #endif
 
   // fF's checking :
@@ -862,7 +862,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgesWithFaultyUV(const TopTools_ListOf
 
 #ifdef OCCT_DEBUG
     ifault++; 
-    if (trc) cout<<"e"<<STATIC_PURGE_mapeds.FindIndex(Echk)<<" has ifyv="<<Ivfaulty<<endl;
+    if (trc) std::cout<<"e"<<STATIC_PURGE_mapeds.FindIndex(Echk)<<" has ifyv="<<Ivfaulty<<std::endl;
 #ifdef DRAW
     if (trc) {TCollection_AsciiString aa("fault"); FUN_tool_draw(aa,Echk,ifault);}
 #endif

@@ -149,7 +149,7 @@ IFSelect_ShareOutResult::IFSelect_ShareOutResult
   else {
     thenbindisp = 0;
 #if !defined No_Exception
-//    cout<<" ** **  IFSelect_ShareOutResult::Next, void dispatch ignored"<<endl;
+//    std::cout<<" ** **  IFSelect_ShareOutResult::Next, void dispatch ignored"<<std::endl;
 #endif
     return;
   }

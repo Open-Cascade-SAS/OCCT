@@ -124,14 +124,14 @@ void Units_Unit::Dump(const Standard_Integer /*ashift*/,
   TCollection_AsciiString string;
 
 //  int i;
-//  for(i=0; i<ashift; i++)cout<<"  ";
+//  for(i=0; i<ashift; i++)std::cout<<"  ";
   for(index=1;index<=thesymbolssequence->Length();index++)
     {
       string = thesymbolssequence->Value(index)->String();
-      if(index != 1) cout << " or " ;
-      cout<<"\""<<string.ToCString()<<"\"";
+      if(index != 1) std::cout << " or " ;
+      std::cout<<"\""<<string.ToCString()<<"\"";
     }
-  cout<< "		Name:  " <<Name().ToCString()<<"		(= " << thevalue << " SI)" <<endl;
+  std::cout<< "		Name:  " <<Name().ToCString()<<"		(= " << thevalue << " SI)" <<std::endl;
 }
 
 //=======================================================================

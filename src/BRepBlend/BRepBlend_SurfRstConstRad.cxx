@@ -921,7 +921,7 @@ Standard_Boolean BRepBlend_SurfRstConstRad::Section
   if (norm < Eps)  {
     norm = 1; // Not enough, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " SurfRstConstRad : Singular Surface " << endl;
+    std::cout << " SurfRstConstRad : Singular Surface " << std::endl;
 #endif
   }  
   

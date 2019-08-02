@@ -1660,7 +1660,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
   if (Case == 1) {
     GeomConvert_ApproxCurve appr(curve, Tol, Continuity, MaxSeg, MaxDeg);
     if(appr.HasResult()) {
-      //appr.Dump(cout);
+      //appr.Dump(std::cout);
       Standard_SStream aSStream;
       appr.Dump(aSStream);
       di << aSStream;
@@ -1672,7 +1672,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
   else if (Case == 2) {
     Geom2dConvert_ApproxCurve appr(curve2d, Tol, Continuity, MaxSeg, MaxDeg);
     if(appr.HasResult()) {
-      //appr.Dump(cout);
+      //appr.Dump(std::cout);
       Standard_SStream aSStream;
       appr.Dump(aSStream);
       di << aSStream;
@@ -1685,7 +1685,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
     Handle(Adaptor3d_HCurve) HACur = new GeomAdaptor_HCurve(curve);
     Approx_CurvilinearParameter appr(HACur, Tol, Continuity, MaxDeg, MaxSeg);
     if(appr.HasResult()) {
-      //appr.Dump(cout);
+      //appr.Dump(std::cout);
       Standard_SStream aSStream;
       appr.Dump(aSStream);
       di << aSStream;
@@ -1698,7 +1698,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
     Handle(Adaptor3d_HSurface) HASur = new GeomAdaptor_HSurface(surface);
     Approx_CurvilinearParameter appr(HACur2d, HASur, Tol, Continuity, MaxDeg, MaxSeg);
     if(appr.HasResult()) {
-      //appr.Dump(cout);
+      //appr.Dump(std::cout);
       Standard_SStream aSStream;
       appr.Dump(aSStream);
       di << aSStream;
@@ -1714,7 +1714,7 @@ static Standard_Integer approxcurve(Draw_Interpretor& di, Standard_Integer n, co
     Handle(Adaptor3d_HSurface) HASur2 = new GeomAdaptor_HSurface(surface2);
     Approx_CurvilinearParameter appr(HACur2d, HASur, HACur2d2, HASur2, Tol, Continuity, MaxDeg, MaxSeg);
     if(appr.HasResult()) {
-      //appr.Dump(cout);
+      //appr.Dump(std::cout);
       Standard_SStream aSStream;
       appr.Dump(aSStream);
       di << aSStream;

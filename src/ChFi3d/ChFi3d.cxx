@@ -160,7 +160,7 @@ Standard_Integer ChFi3d::ConcaveSide(const BRepAdaptor_Surface& S1,
       }
       else {
 #ifdef OCCT_DEBUG
-        cout<<"ConcaveSide : no concave face"<<endl;
+        std::cout<<"ConcaveSide : no concave face"<<std::endl;
 #endif
 	//This 10 shows that the face at end is in the extension of one of two base faces
 	return 10;

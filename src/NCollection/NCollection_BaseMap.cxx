@@ -155,7 +155,7 @@ void NCollection_BaseMap::Statistics(Standard_OStream& S) const
     if (sizes[i] > 0) 
     {
       l += sizes[i] * i;
-      S << setw(5) << sizes[i] <<" buckets of size "<<i<<"\n";
+      S << std::setw(5) << sizes[i] <<" buckets of size "<<i<<"\n";
     }
   }
 

@@ -102,7 +102,7 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands,
   if ((narg<15)||((narg)%9 != 6)) return 1;
   TopoDS_Shape V = DBRep::Get(a[2]);
   if ( V.IsNull()) {
-    //cout << a[2] << " is not a Shape" << endl;
+    //std::cout << a[2] << " is not a Shape" << std::endl;
     theCommands << a[2] << " is not a Shape\n";
     return 1;
   }
@@ -122,7 +122,7 @@ static Standard_Integer NDEP(Draw_Interpretor& theCommands,
 //    F = TopoDS::Face(DBRep::Get(a[9*ii+6],TopAbs_FACE));
 
     if ( F.IsNull()) {
-      //cout << a[9*ii+6] << " is not a face" << endl;
+      //std::cout << a[9*ii+6] << " is not a face" << std::endl;
       theCommands << a[9*ii+6] << " is not a face\n";
       return 1;
     }
@@ -208,11 +208,11 @@ static Standard_Integer draft (Draw_Interpretor& di,
   if (Internal) {
     MkDraft.SetDraft(Internal);
     di << "Internal Draft : \n";
-    //cout << "Internal Draft : " << endl;
+    //std::cout << "Internal Draft : " << std::endl;
   }
   else
     di << "External Draft : \n";
-    //cout << "External Draft : " << endl;
+    //std::cout << "External Draft : " << std::endl;
 
   TopoDS_Shape Stop = DBRep::Get(a[7]);//shape d'arret 
   if (!Stop.IsNull()) {

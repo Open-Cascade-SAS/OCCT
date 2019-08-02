@@ -161,7 +161,7 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
 Standard_Boolean Draw_ProgressIndicator::UserBreak()
 {
   if ( StopIndicator() == this ) {
-//    cout << "Progress Indicator - User Break: " << StopIndicator() << ", " << (void*)this << endl;
+//    std::cout << "Progress Indicator - User Break: " << StopIndicator() << ", " << (void*)this << std::endl;
     myBreak = Standard_True;
     ((Draw_Interpretor*)myDraw)->Eval ( "XProgress -stop 0" );
   }

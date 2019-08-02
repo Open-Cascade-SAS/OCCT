@@ -44,7 +44,7 @@ static void SAVFE(const TopoDS_Face& F1,const TopoDS_Edge& E)
 {
   TCollection_AsciiString aname_1("FE_face"), aname_2("FE_edge");
   Standard_CString name_1 = aname_1.ToCString(), name_2 = aname_2.ToCString();
-  cout<<"FaceEdgeIntersector : "<<name_1<<","<<name_2<<endl;
+  std::cout<<"FaceEdgeIntersector : "<<name_1<<","<<name_2<<std::endl;
   BRepTools::Write(F1,name_1); BRepTools::Write(E,name_2); 
 }
 extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
@@ -89,7 +89,7 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF,
   if (!myForceTolerance) ShapeTolerances(SF,SE);
   myTol = BRep_Tool::Tolerance(TopoDS::Edge(SE));
 #ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceFITOL()) cout<<"Perform : myTol = "<<myTol<<endl;
+  if (TopOpeBRep_GettraceFITOL()) std::cout<<"Perform : myTol = "<<myTol<<std::endl;
 #endif
   
   myFace = TopoDS::Face(SF); myFace.Orientation(TopAbs_FORWARD);
@@ -168,7 +168,7 @@ void TopOpeBRep_FaceEdgeIntersector::ForceTolerance(const Standard_Real Tol)
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL())
-    cout<<"ForceTolerance : myTol = "<<myTol<<endl;
+    std::cout<<"ForceTolerance : myTol = "<<myTol<<std::endl;
 #endif
 }
 
@@ -402,9 +402,9 @@ void TopOpeBRep_FaceEdgeIntersector::ShapeTolerances(const TopoDS_Shape& S1,
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL()) {
-    cout<<"ShapeTolerances on S1 = ";TopAbs::Print(S1.ShapeType(),cout);
-    cout<<" S2 = ";TopAbs::Print(S2.ShapeType(),cout);
-    cout<<" : myTol = "<<myTol<<endl;
+    std::cout<<"ShapeTolerances on S1 = ";TopAbs::Print(S1.ShapeType(),std::cout);
+    std::cout<<" S2 = ";TopAbs::Print(S2.ShapeType(),std::cout);
+    std::cout<<" : myTol = "<<myTol<<std::endl;
   }
 #endif
 }

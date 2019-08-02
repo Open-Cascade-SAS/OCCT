@@ -99,11 +99,11 @@ void Poly_CoherentNode::Dump(Standard_OStream& theStream) const
 {
   char buf[256];
   Sprintf (buf, "  X =%9.4f; Y =%9.4f; Z =%9.4f", X(), Y(), Z());
-  theStream << buf << endl;
+  theStream << buf << std::endl;
   Poly_CoherentTriPtr::Iterator anIter(* myTriangles);
   for (; anIter.More(); anIter.Next()) {
     const Poly_CoherentTriangle& aTri = anIter.Value();
     Sprintf (buf, "      %5d %5d %5d", aTri.Node(0),aTri.Node(1),aTri.Node(2));
-    theStream << buf << endl;
+    theStream << buf << std::endl;
   }
 }

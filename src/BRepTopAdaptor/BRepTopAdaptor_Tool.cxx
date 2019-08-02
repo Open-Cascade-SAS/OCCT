@@ -73,7 +73,7 @@ Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool() {
   }
   else { 
 #ifdef OCCT_DEBUG
-    cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool()\n"<<endl;
+    std::cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetTopolTool()\n"<<std::endl;
 #endif
     return(myTopolTool);
   }
@@ -85,7 +85,7 @@ Handle(Adaptor3d_HSurface)  BRepTopAdaptor_Tool::GetSurface() {
   }
   else { 
 #ifdef OCCT_DEBUG
-    cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetSurface()\n"<<endl;
+    std::cout<<"\n*** Error ds Handle(BRepTopAdaptor_TopolTool) BRepTopAdaptor_Tool::GetSurface()\n"<<std::endl;
 #endif
     return(myHSurface);
   }

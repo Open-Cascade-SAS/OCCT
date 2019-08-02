@@ -317,7 +317,7 @@ Standard_Boolean ChFi2d_FilletAlgo::Perform(const Standard_Real theRadius)
   default: // unknown: maximum
     aNBSteps = 100;
   }
-  //cout<<"aNBSteps = "<<aNBSteps<<endl;
+  //std::cout<<"aNBSteps = "<<aNBSteps<<std::endl;
 
   myRadius = theRadius;
   Standard_Real aParam, aStep, aDStep;
@@ -439,7 +439,7 @@ void ChFi2d_FilletAlgo::PerformNewton(FilletPoint* theLeft, FilletPoint* theRigh
     
     if (Abs(aA) < Precision::Confusion()) 
     { // linear case
-      //cout<<"###"<<endl;
+      //std::cout<<"###"<<std::endl;
       if (Abs(aB) > 10e-20) 
       {
         Standard_Real aX0 = - aC / aB; // use extremum
@@ -455,7 +455,7 @@ void ChFi2d_FilletAlgo::PerformNewton(FilletPoint* theLeft, FilletPoint* theRigh
     {
       if (Abs(aB) > Abs(aDet * 1000000.)) 
       {	// possible floating point operations accurancy errors
-        //cout<<"*";
+        //std::cout<<"*";
         ProcessPoint(theLeft, theRight, theLeft->getParam() + aDX / 2.0); // linear division otherwise
       } 
       else
@@ -471,7 +471,7 @@ void ChFi2d_FilletAlgo::PerformNewton(FilletPoint* theLeft, FilletPoint* theRigh
         } 
         else 
         {
-          //cout<<"%%%"<<endl;
+          //std::cout<<"%%%"<<std::endl;
           Standard_Real aX0 = - aB / aA; // use extremum
           if (aX0 > theLeft->getParam() && aX0 < theRight->getParam())
             ProcessPoint(theLeft, theRight, aX0);

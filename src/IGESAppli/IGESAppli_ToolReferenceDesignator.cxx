@@ -123,9 +123,9 @@ void  IGESAppli_ToolReferenceDesignator::OwnDump
   (const Handle(IGESAppli_ReferenceDesignator)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
-  S << "IGESAppli_ReferenceDesignator" << endl;
-  S << "Number of Property Values : " << ent->NbPropertyValues() << endl;
+  S << "IGESAppli_ReferenceDesignator" << Message_EndLine;
+  S << "Number of Property Values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "ReferenceDesignator : ";
   IGESData_DumpString(S,ent->RefDesignatorText());
-  S << endl;
+  S << Message_EndLine;
 }

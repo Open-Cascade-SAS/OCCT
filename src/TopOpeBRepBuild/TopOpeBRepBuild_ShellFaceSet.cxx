@@ -66,12 +66,12 @@ TopOpeBRepBuild_ShapeSet(TopAbs_EDGE)
     TopOpeBRepBuild_Builder* pB = ((TopOpeBRepBuild_Builder*)((void*)A));
     myDEBNumber = pB->GdumpSHASETindex();
     Standard_Integer iS; Standard_Boolean tSPS = pB->GtraceSPS(S,iS);
-    if(tSPS){cout<<"creation SFS "<<myDEBNumber<<" on ";}
-    if(tSPS){pB->GdumpSHA(S,NULL);cout<<endl;}
+    if(tSPS){std::cout<<"creation SFS "<<myDEBNumber<<" on ";}
+    if(tSPS){pB->GdumpSHA(S,NULL);std::cout<<std::endl;}
   }
 
   if (TopOpeBRepBuild_GettraceCHK() && !myCheckShape) {
-    DumpName(cout,"no checkshape in creation of ");cout<<endl;
+    DumpName(std::cout,"no checkshape in creation of ");std::cout<<std::endl;
   }
 #endif
 }

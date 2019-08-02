@@ -143,18 +143,18 @@ void IGESGeom_ToolCircularArc::OwnDump
   (const Handle(IGESGeom_CircularArc)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
-  S << "CircularArc from IGESGeom" << endl;
-  S << "Z-Plane Displacement : " << ent->ZPlane() << endl;
+  S << "CircularArc from IGESGeom" << Message_EndLine;
+  S << "Z-Plane Displacement : " << ent->ZPlane() << Message_EndLine;
   S << "Center      : ";
   IGESData_DumpXYLZ(S,level, ent->Center(), ent->Location(), ent->ZPlane());
-  S << endl;
+  S << Message_EndLine;
   S << "Start Point : ";
   IGESData_DumpXYLZ(S,level, ent->StartPoint(), ent->Location(),ent->ZPlane());
-  S << endl;
+  S << Message_EndLine;
   S << "End Point   : ";
   IGESData_DumpXYLZ(S,level, ent->EndPoint(), ent->Location(), ent->ZPlane());
-  S << endl;
+  S << Message_EndLine;
   if (level <= 5) return;
   S<< "  Normal Axis : ";  IGESData_DumpXYZL(S,level,ent->Axis(),ent->VectorLocation());
-  S << endl;
+  S << Message_EndLine;
 }

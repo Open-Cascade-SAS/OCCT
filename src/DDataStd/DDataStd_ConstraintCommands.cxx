@@ -321,7 +321,7 @@ static Standard_Integer DDataStd_DumpPattern (Draw_Interpretor& di,
     {
 //      Standard_SStream aStream;
 //      CTR->Dump(aStream);
-//      aStream << ends;
+//      aStream << std::ends;
 //      di << aStream.rdbuf()->str();
 
       TCollection_AsciiString S;

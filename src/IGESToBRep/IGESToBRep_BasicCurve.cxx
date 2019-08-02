@@ -219,8 +219,8 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBasicCurve
   } //:36
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "\n** Exception in IGESToBRep_BasicCurve::TransferBasicCurve : "; 
-    anException.Print(cout);
+    std::cout << "\n** Exception in IGESToBRep_BasicCurve::TransferBasicCurve : "; 
+    anException.Print(std::cout);
 #endif
     (void)anException;
   }
@@ -283,8 +283,8 @@ Handle(Geom2d_Curve) IGESToBRep_BasicCurve::Transfer2dBasicCurve
   } //:h8
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "\n** Exception in IGESToBRep_BasicCurve::Transfer2dBasicCurve : "; 
-    anException.Print(cout);
+    std::cout << "\n** Exception in IGESToBRep_BasicCurve::Transfer2dBasicCurve : "; 
+    anException.Print(std::cout);
 #endif
     (void)anException;
   }
@@ -1092,8 +1092,8 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve
     }
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "\n** Exception in IGESToBRep_BasicCurve::TransferBSplineCurve during creation of Geom_BSplineCurve : "; 
-      anException.Print(cout);
+      std::cout << "\n** Exception in IGESToBRep_BasicCurve::TransferBSplineCurve during creation of Geom_BSplineCurve : "; 
+      anException.Print(std::cout);
 #endif
       (void)anException;
     }

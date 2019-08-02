@@ -55,12 +55,12 @@ void XSControl_TransferWriter::PrintStats (const Standard_Integer , const Standa
   Handle(Message_Messenger) sout = myTransferWriter->Messenger();
 //  A ameliorer ... !
   sout<<"\n*******************************************************************\n";
-  sout << "******        Statistics on Transfer (Write)                 ******"<<endl;
+  sout << "******        Statistics on Transfer (Write)                 ******"<<Message_EndLine;
   sout<<"\n*******************************************************************\n";
   sout << "******        Transfer Mode = "<<myTransferMode;
   Standard_CString modehelp = myController->ModeWriteHelp (myTransferMode);
   if (modehelp && modehelp[0] != 0) sout<<"  I.E.  "<<modehelp;
-  sout<<"       ******"<<endl;
+  sout<<"       ******"<<Message_EndLine;
 }
 
 
@@ -102,14 +102,14 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteTransient
     OCC_CATCH_SIGNALS
     PrintStats(myTransferMode);
     sout << "******        Transferring Transient, CDL Type = ";
-    sout<<obj->DynamicType()->Name()<<"   ******"<<endl;
+    sout<<obj->DynamicType()->Name()<<"   ******"<<Message_EndLine;
     status = myController->TransferWriteTransient
       (obj,myTransferWriter,model,myTransferMode);
   }
   catch(Standard_Failure const& anException) {
     sout<<"****  ****  TransferWriteShape, EXCEPTION : ";
     sout<<anException.GetMessageString(); 
-    sout<<endl;
+    sout<<Message_EndLine;
     status = IFSelect_RetFail;
   }
   return status;
@@ -150,14 +150,14 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape
     OCC_CATCH_SIGNALS
     PrintStats(myTransferMode);
     sout << "******        Transferring Shape, ShapeType = " << shape.ShapeType();
-    sout<<"                      ******"<<endl;
+    sout<<"                      ******"<<Message_EndLine;
     status = myController->TransferWriteShape
       (shape,myTransferWriter,model,myTransferMode);
   }
   catch(Standard_Failure const& anException) {
     sout<<"****  ****  TransferWriteShape, EXCEPTION : "; 
     sout<<anException.GetMessageString(); 
-    sout<<endl;
+    sout<<Message_EndLine;
     status = IFSelect_RetFail;
   }
   return status;

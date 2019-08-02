@@ -77,7 +77,7 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste
       aDelta = (aDeltaValue != 0);
   }
 #ifdef OCCT_DEBUG
-    //cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<endl;
+    //std::cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<std::endl;
 #endif
   anAtt->SetDelta(aDelta);
 

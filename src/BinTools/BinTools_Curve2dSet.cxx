@@ -334,8 +334,8 @@ void BinTools_Curve2dSet::WriteCurve2d(const Handle(Geom2d_Curve)& C,
   }
   catch(Standard_Failure const& anException) {
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_Curve2dSet::WriteCurve2d(..)" << endl;
-    aMsg << anException << endl;
+    aMsg << "EXCEPTION in BinTools_Curve2dSet::WriteCurve2d(..)" << std::endl;
+    aMsg << anException << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }  
 }
@@ -680,8 +680,8 @@ Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS,
   catch(Standard_Failure const& anException) {
     C = NULL;
     Standard_SStream aMsg;
-    aMsg <<"EXCEPTION in BinTools_Curve2dSet::ReadCurve2d(...)" << endl;
-    aMsg << anException << endl;
+    aMsg <<"EXCEPTION in BinTools_Curve2dSet::ReadCurve2d(...)" << std::endl;
+    aMsg << anException << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
   return IS;
@@ -699,9 +699,9 @@ void  BinTools_Curve2dSet::Read(Standard_IStream& IS)
   IS >> buffer;
   if (IS.fail() || strcmp(buffer,"Curve2ds")) {
     Standard_SStream aMsg;
-    aMsg << "BinTools_Curve2dSet::Read:  Not a Curve2d table"<<endl;
+    aMsg << "BinTools_Curve2dSet::Read:  Not a Curve2d table"<<std::endl;
 #ifdef OCCT_DEBUG
-    cout <<"Curve2dSet buffer: " << buffer << endl;
+    std::cout <<"Curve2dSet buffer: " << buffer << std::endl;
 #endif
     throw Standard_Failure(aMsg.str().c_str());
     return;

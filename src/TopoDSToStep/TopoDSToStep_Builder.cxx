@@ -123,7 +123,7 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
 	  }
 	  else {
 	    // MakeFace Error Handling : warning only
-//	    cout << "Warning : one Face has not been mapped" << endl;
+//	    std::cout << "Warning : one Face has not been mapped" << std::endl;
 //	  Handle(TransferBRep_ShapeMapper) errShape =
 //	    new TransferBRep_ShapeMapper(Face);
 //	    FP->AddWarning(errShape, " a Face from a Shell has not been mapped");

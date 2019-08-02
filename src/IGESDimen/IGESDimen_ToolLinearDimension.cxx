@@ -134,24 +134,24 @@ void  IGESDimen_ToolLinearDimension::OwnDump
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_LinearDimension" << endl;
-  if      (ent->FormNumber() == 0) S << "     (Undetermined Form)" << endl;
-  else if (ent->FormNumber() == 1) S << "     (Diameter Form)" << endl;
-  else if (ent->FormNumber() == 2) S << "     (Radius Form)" << endl;
+  S << "IGESDimen_LinearDimension" << Message_EndLine;
+  if      (ent->FormNumber() == 0) S << "     (Undetermined Form)" << Message_EndLine;
+  else if (ent->FormNumber() == 1) S << "     (Diameter Form)" << Message_EndLine;
+  else if (ent->FormNumber() == 2) S << "     (Radius Form)" << Message_EndLine;
   S << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "First  Leader  Entity : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Leader  Entity : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "First  Witness Entity : ";
   dumper.Dump(ent->FirstWitness(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitness(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
 }
 

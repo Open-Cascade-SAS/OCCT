@@ -170,10 +170,10 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
   }
 
 #ifdef APPROXINT_KNOTTOOLS_DEBUG
-  cout << "Discrete curvature array is" << endl;
+  std::cout << "Discrete curvature array is" << std::endl;
   for(i = aCurv.Lower(); i <= aCurv.Upper(); ++i)
   {
-    cout << i << " " << aCurv(i) << endl;
+    std::cout << i << " " << aCurv(i) << std::endl;
   }
 #endif
 
@@ -219,11 +219,11 @@ void ApproxInt_KnotTools::ComputeKnotInds(const NCollection_LocalArray<Standard_
 
 #if defined(APPROXINT_KNOTTOOLS_DEBUG)
   {
-    cout << "Feature indices new: " << endl;
+    std::cout << "Feature indices new: " << std::endl;
     i;
     for(i = theInds.Lower(); i <= theInds.Upper();  ++i)
     {
-      cout << i << " : " << theInds(i) << endl;
+      std::cout << i << " : " << theInds(i) << std::endl;
     }
   }
 #endif
@@ -608,10 +608,10 @@ void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt& thePntsXYZ,
   ComputeKnotInds(aCoords, aDim, thePars, aKnots);
 
 #if defined(APPROXINT_KNOTTOOLS_DEBUG)
-    cout << "Draft knot sequence: " << endl;
+    std::cout << "Draft knot sequence: " << std::endl;
     for(i = aKnots.Lower(); i <= aKnots.Upper();  ++i)
     {
-      cout << i << " : " << aKnots(i) << endl;
+      std::cout << i << " : " << aKnots(i) << std::endl;
     }
 #endif
 
@@ -619,10 +619,10 @@ void ApproxInt_KnotTools::BuildKnots(const TColgp_Array1OfPnt& thePntsXYZ,
   FilterKnots(aKnots, theMinNbPnts, theKnots);
 
 #if defined(APPROXINT_KNOTTOOLS_DEBUG)
-    cout << "Result knot sequence: " << endl;
+    std::cout << "Result knot sequence: " << std::endl;
     for(i = theKnots.Lower(); i <= theKnots.Upper();  ++i)
     {
-      cout << i << " : " << theKnots(i) << endl;
+      std::cout << i << " : " << theKnots(i) << std::endl;
     }
 #endif
 

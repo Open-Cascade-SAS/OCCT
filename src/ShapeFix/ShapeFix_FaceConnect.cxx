@@ -171,15 +171,15 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
   //szv debug - preparation results
   //-------------------------------
   if (!myOriFreeEdges.IsEmpty()) {
-    cout<<endl<<"FACE CONNECT PREPARATION RESULTS:"<<endl;
-    cout<<"---------------------------------"<<endl;
+    std::cout<<std::endl<<"FACE CONNECT PREPARATION RESULTS:"<<std::endl;
+    std::cout<<"---------------------------------"<<std::endl;
     Standard_Integer freenum = 0, facenum = 0;
     for ( TopTools_DataMapIteratorOfDataMapOfShapeListOfShape theOFIter( myOriFreeEdges );
 	  theOFIter.More(); theOFIter.Next() ) {
       freenum += theOFIter.Value().Extent();
       facenum++;
     }
-    cout<<"TOTAL: "<<facenum<<" faces containing "<<freenum<<" free edges"<<endl;
+    std::cout<<"TOTAL: "<<facenum<<" faces containing "<<freenum<<" free edges"<<std::endl;
   }
   //-------------------------------
 #endif
@@ -245,7 +245,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	      // Process second face for the pair of different faces only
 	      if (theFirstFace.IsSame(theSecondFace)) {
 #ifdef OCCT_DEBUG
-		cout<<"Warning: ShapeFix_FaceConnect::Build: Self-connected face"<<endl;
+		std::cout<<"Warning: ShapeFix_FaceConnect::Build: Self-connected face"<<std::endl;
 #endif
 	      }
 	      else theNumOfFacesToSew = 2;
@@ -346,9 +346,9 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
     //-------------------------------
     //szv debug - sewing results
     //-------------------------------
-    cout<<endl<<"FACE CONNECT SEWING RESULTS:"<<endl;
-    cout<<"----------------------------"<<endl;
-    cout<<"Sewing tolerance was set to "<<sewtoler<<endl;
+    std::cout<<std::endl<<"FACE CONNECT SEWING RESULTS:"<<std::endl;
+    std::cout<<"----------------------------"<<std::endl;
+    std::cout<<"Sewing tolerance was set to "<<sewtoler<<std::endl;
     Standard_Integer totfree = 0, totshared = 0;
     for ( TopTools_DataMapIteratorOfDataMapOfShapeListOfShape theOF2Iter( myOriFreeEdges );
 	  theOF2Iter.More(); theOF2Iter.Next() ) {
@@ -359,7 +359,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	totshared += myResSharEdges(theOFL2Iter.Value()).Extent();
       }
     }
-    cout<<"TOTAL: "<<totfree<<" free, "<<totshared<<" shared edges"<<endl;
+    std::cout<<"TOTAL: "<<totfree<<" free, "<<totshared<<" shared edges"<<std::endl;
     //-------------------------------
 #endif
 
@@ -476,12 +476,12 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
       result = TopoDS::Shell(tmpReShape);
       if (theReShape->Status(ShapeExtend_OK)) {
 #ifdef OCCT_DEBUG
-	cout<<"Warning: ShapeFix_FaceConnect::Build: Edges not replaced by ReShape"<<endl;
+	std::cout<<"Warning: ShapeFix_FaceConnect::Build: Edges not replaced by ReShape"<<std::endl;
 #endif	
       }
       else if (theReShape->Status(ShapeExtend_FAIL1)) {
 #ifdef OCCT_DEBUG
-	cout<<"Error: ShapeFix_FaceConnect::Build: ReShape failed on edges"<<endl;
+	std::cout<<"Error: ShapeFix_FaceConnect::Build: ReShape failed on edges"<<std::endl;
 #endif	
       }
       else {
@@ -631,7 +631,7 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 
 	  if (theReShape->Status(ShapeExtend_FAIL1)) {
 #ifdef OCCT_DEBUG
-	    cout<<"Error: ShapeFix_FaceConnect::Build: ReShape failed on vertices"<<endl;
+	    std::cout<<"Error: ShapeFix_FaceConnect::Build: ReShape failed on vertices"<<std::endl;
 #endif	
 	  }
 	}
@@ -640,8 +640,8 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	//-------------------------------
 	//szv debug - reshape results
 	//-------------------------------
-	cout<<endl<<"FACE CONNECT REPLACEMENT RESULTS:"<<endl;
-	cout<<"---------------------------------"<<endl;
+	std::cout<<std::endl<<"FACE CONNECT REPLACEMENT RESULTS:"<<std::endl;
+	std::cout<<"---------------------------------"<<std::endl;
 	TopTools_MapOfShape theTmpMap;
 	Standard_Integer toteold = 0, totenew = 0;
 	for ( TopTools_DataMapIteratorOfDataMapOfShapeShape theR1Iter( theRepEdges );
@@ -662,8 +662,8 @@ ShapeFix_FaceConnect::ShapeFix_FaceConnect() {}
 	    totvnew++;
 	  }
 	}
-	cout<<"TOTAL: "<<toteold<<" edges, "<<totvold<<" vertices replaced by "
-	    <<totenew<<" edges, "<<totvnew<<" vertices"<<endl<<endl;
+	std::cout<<"TOTAL: "<<toteold<<" edges, "<<totvold<<" vertices replaced by "
+	    <<totenew<<" edges, "<<totvnew<<" vertices"<<std::endl<<std::endl;
 	//-------------------------------
 #endif
 

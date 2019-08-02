@@ -348,11 +348,11 @@ static void TestMap(QANCollection_MapFunc& theM, Draw_Interpretor& theDI)
     Standard_Integer i;
 
     printf ("Info: testing Map(l=%d)\n", iExt);
-    theM.Statistics(cout);
+    theM.Statistics(std::cout);
     // Resize
     theM.ReSize(8);
-    theM.Statistics(cout);
-    cout.flush();
+    theM.Statistics(std::cout);
+    std::cout.flush();
     // Constructor
     ////////////////////////////////QANCollection_Map aM;
     QANCollection_MapFunc aM;
@@ -371,7 +371,7 @@ static void TestMap(QANCollection_MapFunc& theM, Draw_Interpretor& theDI)
     else
     {
       aM.Remove(aKey);
-      cout << "      successfully removed item, l=%d\n" << aM.Size() << "\n";
+      std::cout << "      successfully removed item, l=%d\n" << aM.Size() << "\n";
     }
     // Copy constructor (including operator=)
     ////////////////////////////////QANCollection_Map aM2 = QANCollection_Map(aM);
@@ -416,11 +416,11 @@ static void TestDataMap  (QANCollection_DataMapFunc& theM)
   Standard_Integer i;
 
   printf ("Info: testing DataMap(l=%d)\n", iExt);
-  theM.Statistics(cout);
+  theM.Statistics(std::cout);
   // Resize
   theM.ReSize(8);
-  theM.Statistics(cout);
-  cout.flush();
+  theM.Statistics(std::cout);
+  std::cout.flush();
   // Constructor
   ////////////////////////////////QANCollection_DataMap aM;
   QANCollection_DataMapFunc aM;
@@ -467,11 +467,11 @@ static void TestDoubleMap  (QANCollection_DoubleMapFunc& theM)
   Standard_Integer i;
 
   printf ("Info: testing DoubleMap(l=%d)\n", iExt);
-  theM.Statistics(cout);
+  theM.Statistics(std::cout);
   // Resize
   theM.ReSize(8);
-  theM.Statistics(cout);
-  cout.flush();
+  theM.Statistics(std::cout);
+  std::cout.flush();
   // Constructor
   ////////////////////////////////QANCollection_DoubleMap aM;
   QANCollection_DoubleMapFunc aM;
@@ -530,11 +530,11 @@ static void TestIndexedMap  (QANCollection_IndexedMapFunc& theM)
   Standard_Integer i;
 
   printf ("Info: testing IndexedMap(l=%d)\n", iExt);
-  theM.Statistics(cout);
+  theM.Statistics(std::cout);
   // Resize
   theM.ReSize(8);
-  theM.Statistics(cout);
-  cout.flush();
+  theM.Statistics(std::cout);
+  std::cout.flush();
   // Constructor
   ////////////////////////////////QANCollection_IndexedMap aM;
   QANCollection_IndexedMapFunc aM;
@@ -591,11 +591,11 @@ static void TestIndexedDataMap  (QANCollection_IDMapFunc& theM)
   Standard_Integer i;
 
   printf ("Info: testing IndexedDataMap(l=%d)\n", iExt);
-  theM.Statistics(cout);
+  theM.Statistics(std::cout);
   // Resize
   theM.ReSize(8);
-  theM.Statistics(cout);
-  cout.flush();
+  theM.Statistics(std::cout);
+  std::cout.flush();
   // Constructor
   ////////////////////////////////QANCollection_IDMap aM;
   QANCollection_IDMapFunc aM;
@@ -865,14 +865,14 @@ static Standard_Integer QANColTestVector (Draw_Interpretor&, Standard_Integer, c
 
   aVec.Append(5);
   if (aVec(0) != 5)
-    std::cout << "Error: wrong value in original vector!" << endl;
+    std::cout << "Error: wrong value in original vector!" << std::endl;
   aVec2.Append(5);
   if (aVec2(0) != 5)
-    std::cout << "Error: wrong value in copy-constructed vector!" << endl;
+    std::cout << "Error: wrong value in copy-constructed vector!" << std::endl;
   aVec3.Append(5);
   if (aVec3(0) != 5)
-    std::cout << "Error: wrong value in copied vector!" << endl;
-  std::cout << "Test OK" << endl;
+    std::cout << "Error: wrong value in copied vector!" << std::endl;
+  std::cout << "Test OK" << std::endl;
 
   return 0;
 }

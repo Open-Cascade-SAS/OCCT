@@ -111,10 +111,10 @@ void IGESGraph_ToolPick::OwnDump
   (const Handle(IGESGraph_Pick)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_Pick" << endl;
+  S << "IGESGraph_Pick" << Message_EndLine;
 
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "Pick flag : " << ent->PickFlag();
   S << (ent->PickFlag() == 0 ? " NO" : " YES" );
-  S << endl;
+  S << Message_EndLine;
 }

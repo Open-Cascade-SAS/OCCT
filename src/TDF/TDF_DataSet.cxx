@@ -56,27 +56,27 @@ void TDF_DataSet::Clear()
 
 Standard_OStream& TDF_DataSet::Dump(Standard_OStream& anOS) const
 {
-  anOS<<"\t\t=====< TDF_DataSet dump >====="<<endl;
-  anOS<<"Root Labels :"<<endl<<"============="<<endl;
+  anOS<<"\t\t=====< TDF_DataSet dump >====="<<std::endl;
+  anOS<<"Root Labels :"<<std::endl<<"============="<<std::endl;
   for (TDF_ListIteratorOfLabelList itr1(myRootLabels);
        itr1.More(); itr1.Next()) {
     itr1.Value().EntryDump(anOS);
     anOS<<" | ";
   }
-  anOS<<endl<<"Labels :"<<endl<<"========"<<endl;
+  anOS<<std::endl<<"Labels :"<<std::endl<<"========"<<std::endl;
   for (TDF_MapIteratorOfLabelMap itr2(myLabelMap);
        itr2.More(); itr2.Next()) {
     itr2.Key().EntryDump(anOS);
     anOS<<" | ";
   }
-  anOS<<endl<<"Attributes :"<<endl<<"============"<<endl<<endl;
+  anOS<<std::endl<<"Attributes :"<<std::endl<<"============"<<std::endl<<std::endl;
   for (TDF_MapIteratorOfAttributeMap itr3(myAttributeMap);
        itr3.More(); itr3.Next()) {
     itr3.Key()->Label().EntryDump(anOS);
     anOS<<" \t";
     itr3.Key()->Dump(anOS);
-    anOS<<endl;
+    anOS<<std::endl;
   }
-  anOS<<endl;
+  anOS<<std::endl;
   return anOS;
 }

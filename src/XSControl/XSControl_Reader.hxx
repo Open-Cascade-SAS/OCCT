@@ -197,7 +197,7 @@ public:
   Standard_EXPORT TopoDS_Shape OneShape() const;
   
   //! Prints the check list attached to loaded data, on the Standard
-  //! Trace File (starts at cout)
+  //! Trace File (starts at std::cout)
   //! All messages or fails only, according to <failsonly>
   //! mode = 0 : per entity, prints messages
   //! mode = 1 : per message, just gives count of entities per check

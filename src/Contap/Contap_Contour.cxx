@@ -288,11 +288,11 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                               //-- on decoupe la ligne en portions  entre 2 vertex 
                               Standard_Real Tol = Precision::PConfusion();
                               Contap_IType typl = L.TypeContour();
-                              //-- cout<<"\n ----------- Ligne Constructor "<<endl;
+                              //-- std::cout<<"\n ----------- Ligne Constructor "<<std::endl;
                               if(typl == Contap_Walking) { 
                                 Standard_Real u1,v1,u2,v2;
                                 Standard_Integer nbvtx = L.NbVertex();
-                                //-- cout<<" WLine -> "<<nbvtx<<" vtx"<<endl;
+                                //-- std::cout<<" WLine -> "<<nbvtx<<" vtx"<<std::endl;
                                 for(Standard_Integer i=1;i<nbvtx;i++) { 
                                   Standard_Integer firstp = (Standard_Integer) L.Vertex(i).ParameterOnLine();
                                   Standard_Integer lastp =  (Standard_Integer) L.Vertex(i+1).ParameterOnLine();
@@ -305,7 +305,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                     if(in2 == TopAbs_OUT) { 
                                     }
                                     else { 
-                                      //-- cout<<"ContapWLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
+                                      //-- std::cout<<"ContapWLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
                                       Handle(IntSurf_LineOn2S) LineOn2S = new IntSurf_LineOn2S();
                                       LineOn2S->Add(L.Point(firstp));
                                       for (Standard_Integer j = firstp + 1; j <= lastp; j++) {
@@ -334,7 +334,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                               else if(typl==Contap_Lin) { 
                                 Standard_Real u2,v2;// u1,v1;
                                 Standard_Integer nbvtx = L.NbVertex();
-                                //-- cout<<" Lin -> "<<nbvtx<<" vtx"<<endl;
+                                //-- std::cout<<" Lin -> "<<nbvtx<<" vtx"<<std::endl;
                                 for(Standard_Integer i=1;i<nbvtx;i++) { 
                                   Standard_Real firstp = L.Vertex(i).ParameterOnLine();
                                   Standard_Real lastp =  L.Vertex(i+1).ParameterOnLine();
@@ -348,7 +348,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                       ElSLib::Parameters(Adaptor3d_HSurfaceTool::Cone(Surf),Pmid,u2,v2);
                                     }
                                     else { 
-                                      //-- cout<<" Pb ds Contap_ContourGen_2.gxx (type)"<<endl;
+                                      //-- std::cout<<" Pb ds Contap_ContourGen_2.gxx (type)"<<std::endl;
                                     }
 
                                     Recadre(Surf,u2,v2);
@@ -356,7 +356,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                     if(in2 == TopAbs_OUT) { 
                                     }
                                     else { 
-                                      //-- cout<<"Contap Lin      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
+                                      //-- std::cout<<"Contap Lin      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
                                       Contap_Line Line;
                                       Line.SetValue(L.Line());
                                       Contap_Point pvtx = L.Vertex(i);
@@ -373,7 +373,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                               else if(typl==Contap_Circle) { 
                                 Standard_Real u2,v2; //u1,v1,
                                 Standard_Integer nbvtx = L.NbVertex();
-                                //-- cout<<" Circ -> "<<nbvtx<<" vtx"<<endl;
+                                //-- std::cout<<" Circ -> "<<nbvtx<<" vtx"<<std::endl;
                                 Standard_Boolean novtx = Standard_True;
                                 if(nbvtx) novtx=Standard_False;
                                 for(Standard_Integer i=1;i<nbvtx  || novtx;i++) { 
@@ -395,7 +395,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                       ElSLib::Parameters(Adaptor3d_HSurfaceTool::Sphere(Surf),Pmid,u2,v2);
                                     }
                                     else { 
-                                      //-- cout<<" Pb ds Contap_ContourGen_2.gxx (typep)"<<endl;
+                                      //-- std::cout<<" Pb ds Contap_ContourGen_2.gxx (typep)"<<std::endl;
                                     }
 
                                     Recadre(Surf,u2,v2);
@@ -403,7 +403,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                     if(in2 == TopAbs_OUT) { 
                                     }
                                     else { 
-                                      //-- cout<<"Contap Circle     : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
+                                      //-- std::cout<<"Contap Circle     : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
                                       Contap_Line Line;
                                       Line.SetValue(L.Circle());
                                       if(novtx == Standard_False) { 
@@ -434,7 +434,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                       ElSLib::Parameters(Adaptor3d_HSurfaceTool::Sphere(Surf),Pmid,u2,v2);
                                     }
                                     else { 
-                                      //-- cout<<" Pb ds Contap_ContourGen_2.gxx (typep)"<<endl;
+                                      //-- std::cout<<" Pb ds Contap_ContourGen_2.gxx (typep)"<<std::endl;
                                     }
 
                                     Recadre(Surf,u2,v2);
@@ -442,7 +442,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                     if(in2 == TopAbs_OUT) { 
                                     }
                                     else { 
-                                      //-- cout<<"Contap Circle  *Compl* : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
+                                      //-- std::cout<<"Contap Circle  *Compl* : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
                                       Contap_Line Line;
                                       Line.SetValue(L.Circle());
                                       Contap_Point pvtx = L.Vertex(nbvtx);
@@ -457,7 +457,7 @@ static void LineConstructor(Contap_TheSequenceOfLine& slin,
                                 }
                               }
                               else { 
-                                //-- cout<<" ni WLine ni Lin ni Circ "<<endl;
+                                //-- std::cout<<" ni WLine ni Lin ni Circ "<<std::endl;
                                 slin.Append(L);
                               }
                               //-- 
@@ -613,7 +613,7 @@ static void ComputeTangency (const Contap_TheSearch& solrst,
           tg3drst = tg2drst.X()*v1 + tg2drst.Y()*v2;
           //	normale = v1.Crossed(v2);
           if(normale.SquareMagnitude() < RealEpsilon()) { 
-            //-- cout<<"\n*** Contap_ContourGen_2.gxx  Normale Nulle en U:"<<X(1)<<" V:"<<X(2)<<endl;
+            //-- std::cout<<"\n*** Contap_ContourGen_2.gxx  Normale Nulle en U:"<<X(1)<<" V:"<<X(2)<<std::endl;
           }
           else { 
             test = vectg.Dot(normale.Crossed(tg3drst));
@@ -815,7 +815,7 @@ IntSurf_TypeTrans ComputeTransitionOnLine(Contap_SurfFunction& SFunc,
   det = normu2 * normv2 - d1ud1v * d1ud1v;
   if(det<RealEpsilon()) { 
     //-- On ne doit pas passer ici !!
-    //-- cout<<" Probleme !!!"<<endl ;
+    //-- std::cout<<" Probleme !!!"<<std::endl ;
     return IntSurf_Undecided;
   }
 
@@ -1082,7 +1082,7 @@ void ComputeInternalPointsOnRstr
     else {
       if (vectest.Dot(vecref) < 0.) {
         // Essayer de converger
-        // cout << "Changement de signe detecte" << endl;
+        // std::cout << "Changement de signe detecte" << std::endl;
         solution = Standard_False;
         while (!solution) {
           paramp = (paraminf+paramsup)/2.;
@@ -1235,7 +1235,7 @@ void ComputeInternalPoints
     else {
       if (vectest.Dot(vecref) < 0.) {
         // Essayer de converger
-        // cout << "Changement de signe detecte" << endl;
+        // std::cout << "Changement de signe detecte" << std::endl;
         solution = Standard_False;
         while (!solution) {
           X(1) = (XInf(1) + XSup(1)) /2.;
@@ -1243,7 +1243,7 @@ void ComputeInternalPoints
           rsnld.Perform(SFunc,X,infb,supb);
 
           if (!rsnld.IsDone()) {
-            cout << "Echec recherche internal points" << endl;
+            std::cout << "Echec recherche internal points" << std::endl;
             solution = Standard_True;
             ok = Standard_False;
           }
@@ -1281,7 +1281,7 @@ void ComputeInternalPoints
               }
             }
             else { // on n est pas sur une solution
-              cout << "Echec recherche internal points" << endl;
+              std::cout << "Echec recherche internal points" << std::endl;
               solution = Standard_True;
               ok = Standard_False;
             }
@@ -2134,9 +2134,9 @@ void Contap_Contour::PerformAna(const Handle(Adaptor3d_TopolTool)& Domain)
     Standard_Integer nblinto = slin.Length();
     TColStd_SequenceOfInteger SeqToDestroy;
 
-    //-- cout<<" Construct Contour_3   nblin = "<<nblinto<<endl;
+    //-- std::cout<<" Construct Contour_3   nblin = "<<nblinto<<std::endl;
     for(i=1; i<= nblinto ; i++) { 
-      //-- cout<<" nbvtx : "<<slin.Value(i).NbVertex()<<endl;
+      //-- std::cout<<" nbvtx : "<<slin.Value(i).NbVertex()<<std::endl;
       //--if(slin.Value(i).NbVertex() > 1) { 
       if(slin.Value(i).TypeContour() != Contap_Restriction) { 
         LineConstructor(slin,Domain,slin.ChangeValue(i),Surf);

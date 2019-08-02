@@ -214,26 +214,26 @@ void IGESGeom_ToolTransformationMatrix::OwnDump
   (const Handle(IGESGeom_TransformationMatrix)& ent, const IGESData_IGESDumper& /*dumper*/,
   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGeom_TransformationMatrix" << endl;
+  S << "IGESGeom_TransformationMatrix" << Message_EndLine;
 
   S << "| R11, R12, R13, T1 |       "
     << ent->Data(1, 1) << ", " << ent->Data(1, 2) << ", "
-    << ent->Data(1, 3) << ", " << ent->Data(1, 4) << endl;
+    << ent->Data(1, 3) << ", " << ent->Data(1, 4) << Message_EndLine;
 
   S << "| R21, R22, R23, T2 |       "
     << ent->Data(2, 1) << ", " << ent->Data(2, 2) << ", "
-    << ent->Data(2, 3) << ", " << ent->Data(2, 4) << endl;
+    << ent->Data(2, 3) << ", " << ent->Data(2, 4) << Message_EndLine;
 
   S << "| R31, R32, R33, T3 |       "
     << ent->Data(3, 1) << ", " << ent->Data(3, 2) << ", "
-    << ent->Data(3, 3) << ", " << ent->Data(3, 4) << endl;
+    << ent->Data(3, 3) << ", " << ent->Data(3, 4) << Message_EndLine;
 
   switch (ent->FormNumber()) {
-    case  0 : S << "-- Direct Orthogonal Matrix"      << endl;  break;
-    case  1 : S << "-- Reverse Orthogonal Matrix"     << endl;  break;
-    case 10 : S << "-- Cartesien Coordinate System"   << endl;  break;
-    case 11 : S << "-- Cylindrical Coordinate System" << endl;  break;
-    case 12 : S << "-- Spherical Coordinate System"   << endl;  break;
-    default : S << "--  (Incorrect Form Number)"      << endl;  break;
+    case  0 : S << "-- Direct Orthogonal Matrix"      << Message_EndLine;  break;
+    case  1 : S << "-- Reverse Orthogonal Matrix"     << Message_EndLine;  break;
+    case 10 : S << "-- Cartesien Coordinate System"   << Message_EndLine;  break;
+    case 11 : S << "-- Cylindrical Coordinate System" << Message_EndLine;  break;
+    case 12 : S << "-- Spherical Coordinate System"   << Message_EndLine;  break;
+    default : S << "--  (Incorrect Form Number)"      << Message_EndLine;  break;
   }
 }

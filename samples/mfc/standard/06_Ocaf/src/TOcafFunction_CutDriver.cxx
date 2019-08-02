@@ -76,7 +76,7 @@ Standard_Boolean TOcafFunction_CutDriver::MustExecute(const Handle(TFunction_Log
 */
   TCollection_AsciiString aEntry;
   TDF_Tool::Entry(Label(), aEntry);
-  cout << "Entry: "<<aEntry.ToCString()<<endl;
+  std::cout << "Entry: "<<aEntry.ToCString()<<std::endl;
   Label().FindChild(1).FindAttribute(TDF_Reference::GetID(),OriginalRef);
   if (log->IsModified(OriginalRef->Get()))   return Standard_True; // Original shape.
 

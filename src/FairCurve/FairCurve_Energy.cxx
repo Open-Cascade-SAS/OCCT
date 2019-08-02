@@ -444,8 +444,8 @@ void FairCurve_Energy::ComputePoles(const math_Vector& X)
                                                            // is free as the last value of X is reserved.
 // calculation of pole constraints
 // for (ii=MyPoles->Lower();ii<=MyPoles->Upper();ii++) {
-// cout << ii << " X = " <<  MyPoles->Value(ii).X() << 
-//                " Y = " <<  MyPoles->Value(ii).Y() << endl;}
+// std::cout << ii << " X = " <<  MyPoles->Value(ii).X() << 
+//                " Y = " <<  MyPoles->Value(ii).Y() << std::endl;}
   
   if (MyContrOrder1 >= 1) {
      IndexDeb1 += 1;

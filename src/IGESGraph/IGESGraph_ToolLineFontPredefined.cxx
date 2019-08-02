@@ -108,9 +108,9 @@ void IGESGraph_ToolLineFontPredefined::OwnDump
   (const Handle(IGESGraph_LineFontPredefined)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_LineFontPredefined" << endl;
+  S << "IGESGraph_LineFontPredefined" << Message_EndLine;
 
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
-  S << "Line font pattern code : " << ent->LineFontPatternCode() << endl;
-  S << endl;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "Line font pattern code : " << ent->LineFontPatternCode() << Message_EndLine;
+  S << Message_EndLine;
 }

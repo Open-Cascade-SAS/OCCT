@@ -179,7 +179,7 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
     }
   }
 
-//  cout << "new law" << endl;
+//  std::cout << "new law" << std::endl;
 
   //  Is the law closed by U ?
   uclosed = W.Closed();
@@ -372,8 +372,8 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 				   Standard_True, Standard_False, 20);
 #ifdef OCCT_DEBUG
 	if (!Bof) 
-	  cout << "BRepFill_ShapeLaw::ConcatenedLaw INCOMPLET !!!" 
-	  << endl;
+	  std::cout << "BRepFill_ShapeLaw::ConcatenedLaw INCOMPLET !!!" 
+	  << std::endl;
 #endif
       }
       Composite = Concat.BSplineCurve();

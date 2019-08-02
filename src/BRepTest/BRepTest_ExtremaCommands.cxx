@@ -58,7 +58,7 @@ static Standard_Integer distance (Draw_Interpretor& di,
   gp_Pnt P1,P2;
   Standard_Real D;
   if (!BRepExtrema_Poly::Distance(S1,S2,P1,P2,D)) return 1;
-  //cout << " distance : " << D << endl;
+  //std::cout << " distance : " << D << std::endl;
   di << " distance : " << D << "\n";
   TopoDS_Edge E = BRepLib_MakeEdge(P1,P2);
   DBRep::Set("distance",E);
@@ -82,7 +82,7 @@ static Standard_Integer distmini(Draw_Interpretor& di, Standard_Integer n, const
   if (dst.IsDone()) 
   { 
 #ifdef OCCT_DEBUG
-    //dst.Dump(cout);
+    //dst.Dump(std::cout);
     di << "*** Dump of \"BRepExtrema_DistShapeShape\" in DEBUG mode (begin) *****\n";
     Standard_SStream aSStream;
     dst.Dump(aSStream);

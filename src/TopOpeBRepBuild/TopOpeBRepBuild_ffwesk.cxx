@@ -48,7 +48,7 @@
 #ifdef OCCT_DEBUG
 Standard_EXPORT void debfctwesmess(const Standard_Integer i,const TCollection_AsciiString& s = "");
 Standard_EXPORT void debffwesON(const Standard_Integer i);
-Standard_EXPORT void debffwesk(const Standard_Integer i) {cout<<"++ debffwesk "<<i<<endl;}
+Standard_EXPORT void debffwesk(const Standard_Integer i) {std::cout<<"++ debffwesk "<<i<<std::endl;}
 #endif
 
 Standard_Boolean TopOpeBRepBuild_FUN_aresamegeom(const TopoDS_Shape& S1,const TopoDS_Shape& S2);
@@ -82,7 +82,7 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
 
 #ifdef OCCT_DEBUG
   Standard_Boolean tSPS = GtraceSPS(F1,iF1);
-  if(tSPS) cout<<"\n%%%%%%%%%%%%% K = "<<Kfill<<" %%%%%%%%%%%%% ";
+  if(tSPS) std::cout<<"\n%%%%%%%%%%%%% K = "<<Kfill<<" %%%%%%%%%%%%% ";
   if(tSPS) GdumpSHASTA(iF1,TB1,WES,"GFillFacesWESK","myFaceReference");
   if(tSPS) debffwesk(iF1);
 #endif
@@ -99,11 +99,11 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
 
 #ifdef OCCT_DEBUG
   if(tSPS){
-    cout<<"\n^^^^^^^^ GFillFacesWESK : traitement de 1/2";
+    std::cout<<"\n^^^^^^^^ GFillFacesWESK : traitement de 1/2";
     TopAbs_State TB11,TB21; G.StatesON(TB11,TB21);
-    cout<<" TB = ";TopAbs::Print(TB,cout); cout<<" ";
-    cout<<"(TB1 = ";TopAbs::Print(TB11,cout);cout<<",";
-    cout<<" TB2 = ";TopAbs::Print(TB21,cout);cout<<")\n\n";
+    std::cout<<" TB = ";TopAbs::Print(TB,std::cout); std::cout<<" ";
+    std::cout<<"(TB1 = ";TopAbs::Print(TB11,std::cout);std::cout<<",";
+    std::cout<<" TB2 = ";TopAbs::Print(TB21,std::cout);std::cout<<")\n\n";
   }
 #endif
 
@@ -171,11 +171,11 @@ void TopOpeBRepBuild_Builder::GFillFacesWESK(const TopTools_ListOfShape& LS1,con
 
 #ifdef OCCT_DEBUG
   if(tSPS){
-    cout<<"\n^^^^^^^^ GFillFacesWESK : traitement de 2/1";
+    std::cout<<"\n^^^^^^^^ GFillFacesWESK : traitement de 2/1";
     TopAbs_State TB12,TB22; G.StatesON(TB12,TB22);
-    cout<<" TB = ";TopAbs::Print(TB,cout); cout<<" ";
-    cout<<"(TB1 = ";TopAbs::Print(TB12,cout);cout<<",";
-    cout<<" TB2 = ";TopAbs::Print(TB22,cout);cout<<")\n\n";
+    std::cout<<" TB = ";TopAbs::Print(TB,std::cout); std::cout<<" ";
+    std::cout<<"(TB1 = ";TopAbs::Print(TB12,std::cout);std::cout<<",";
+    std::cout<<" TB2 = ";TopAbs::Print(TB22,std::cout);std::cout<<")\n\n";
   }
 #endif
 

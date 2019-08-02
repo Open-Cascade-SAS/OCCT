@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 060302: Input from istream
+//AGV 060302: Input from std::istream
 //            AGV 130302: Return error if there are data after the root element
 
 //#define LDOM_PARSER_TRACE
@@ -111,7 +111,7 @@ const TCollection_AsciiString& LDOMParser::GetError
 //purpose  :
 //=======================================================================
 
-Standard_Boolean LDOMParser::parse (istream& anInput,
+Standard_Boolean LDOMParser::parse (std::istream& anInput,
                                     const Standard_Boolean theTagPerStep,
                                     const Standard_Boolean theWithoutRoot)
 {
@@ -153,7 +153,7 @@ Standard_Boolean LDOMParser::parse (const char * const aFileName)
 //purpose  : parse the whole document (abstracted from the XML source)
 //=======================================================================
 
-Standard_Boolean LDOMParser::ParseDocument (istream& theIStream, const Standard_Boolean theWithoutRoot)
+Standard_Boolean LDOMParser::ParseDocument (std::istream& theIStream, const Standard_Boolean theWithoutRoot)
 {
   Standard_Boolean      isError   = Standard_False;
   Standard_Boolean      isElement = Standard_False;

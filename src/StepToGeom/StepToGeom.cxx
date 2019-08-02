@@ -1544,8 +1544,8 @@ Handle(Geom_Surface) StepToGeom::MakeSurface (const Handle(StepGeom_Surface)& SS
 #ifdef OCCT_DEBUG
 //   ShapeTool_DB ?
 //:s5
-    cout<<"Warning: MakeSurface: Exception:";
-    anException.Print(cout); cout << endl;
+    std::cout<<"Warning: MakeSurface: Exception:";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
   }

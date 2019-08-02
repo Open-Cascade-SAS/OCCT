@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#define Debug(expr)  cout<<" MAT2d_Tool2d.cxx  :  expr :"<<expr<<endl;
+#define Debug(expr)  std::cout<<" MAT2d_Tool2d.cxx  :  expr :"<<expr<<std::endl;
 //#define OCCT_DEBUG
 //#define DRAW
 #ifdef DRAW
@@ -339,18 +339,18 @@ void MAT2d_Tool2d::CreateBisector(const Handle(MAT_Bisector)& abisector)
 #ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
   if (Affich) {
-    cout<<endl; 
-    cout<<"BISECTOR number :  "<<theNumberOfBisectors+1<<endl;
-    cout<<"  Item 1 : "<<endl;
-    cout<<edge1number<<endl;
-    cout<<endl;
+    std::cout<<std::endl; 
+    std::cout<<"BISECTOR number :  "<<theNumberOfBisectors+1<<std::endl;
+    std::cout<<"  Item 1 : "<<std::endl;
+    std::cout<<edge1number<<std::endl;
+    std::cout<<std::endl;
     //    elt1->Dump(1,1);
-    cout<<endl;
-    cout<<"  Item 2 : "<<endl;
-    cout<<edge2number<<endl;
-    cout<<endl;
+    std::cout<<std::endl;
+    std::cout<<"  Item 2 : "<<std::endl;
+    std::cout<<edge2number<<std::endl;
+    std::cout<<std::endl;
     //  elt2->Dump(1,1);
-    cout<<endl;
+    std::cout<<std::endl;
   }
 #endif
 
@@ -500,7 +500,7 @@ Standard_Boolean MAT2d_Tool2d::TrimBisector
 
 #ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
-  if (Affich) cout<<"TRIM de "<<abisector->BisectorNumber()<<endl;
+  if (Affich) std::cout<<"TRIM de "<<abisector->BisectorNumber()<<std::endl;
 #endif
 
   Handle(Geom2d_TrimmedCurve) bisector = 
@@ -717,7 +717,7 @@ Standard_Boolean MAT2d_Tool2d::IsSameDistance (
 #ifdef OCCT_DEBUG
   if (AffichDist)
     for (Standard_Integer j = 1; j <= 4;j++){
-      cout <<"Distance number : "<<j<<" is :"<< Dist(j)<<endl;
+      std::cout <<"Distance number : "<<j<<" is :"<< Dist(j)<<std::endl;
     }
 #endif
 
@@ -806,21 +806,21 @@ Standard_Real MAT2d_Tool2d::IntersectBisector (
 #ifdef OCCT_DEBUG
   Standard_Boolean Affich = Standard_False;
   if (Affich) {
-    cout<<endl;
-    cout<<"INTERSECTION de "<<BisectorOne->BisectorNumber()<<
-      " et de "<<BisectorTwo->BisectorNumber()<<endl;
-    cout<<"  Bisector 1 : "<<endl;
+    std::cout<<std::endl;
+    std::cout<<"INTERSECTION de "<<BisectorOne->BisectorNumber()<<
+      " et de "<<BisectorTwo->BisectorNumber()<<std::endl;
+    std::cout<<"  Bisector 1 : "<<std::endl;
     //    (Bisector1->BasisCurve())->Dump(-1,1);
-    cout<<endl;
+    std::cout<<std::endl;
     Debug(Domain1.FirstParameter());
     Debug(Domain1.LastParameter());
-    cout<<"-----------------"<<endl;
-    cout<<"  Bisector 2 : "<<endl;
+    std::cout<<"-----------------"<<std::endl;
+    std::cout<<"  Bisector 2 : "<<std::endl;
     //    (Bisector2->BasisCurve())->Dump(-1,1);
-    cout<<endl;
+    std::cout<<std::endl;
     Debug(Domain2.FirstParameter());
     Debug(Domain2.LastParameter());
-    cout<<"-----------------"<<endl;
+    std::cout<<"-----------------"<<std::endl;
   }
 #endif
 
@@ -1034,10 +1034,10 @@ Standard_Real MAT2d_Tool2d::IntersectBisector (
   
 #ifdef OCCT_DEBUG
   if (Affich) {
-    cout<<"   coordonnees    : "<<GeomPnt  (IntPnt).X()<<" "
-      <<GeomPnt  (IntPnt).Y()<<endl;
-    cout<<"   parametres     : "<<Param1<<" "<<Param2<<endl;
-    cout<<"   distancemini   : "<<DistanceMini<<endl;
+    std::cout<<"   coordonnees    : "<<GeomPnt  (IntPnt).X()<<" "
+      <<GeomPnt  (IntPnt).Y()<<std::endl;
+    std::cout<<"   parametres     : "<<Param1<<" "<<Param2<<std::endl;
+    std::cout<<"   distancemini   : "<<DistanceMini<<std::endl;
   }
 #endif
 

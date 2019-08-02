@@ -1729,7 +1729,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     }
 #ifdef OCCT_DEBUG
     else {
-      cout<<"erreur"<<endl;
+      std::cout<<"erreur"<<std::endl;
     }
 #endif
     trafil1 = TopAbs::Compose(trafil1,Fd->Orientation());
@@ -1737,7 +1737,7 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     trafil1 = TopAbs::Compose(TopAbs::Reverse(Fi1.Transition()),trafil1);
   }
 #ifdef OCCT_DEBUG
-  else cout<<"erreur"<<endl;
+  else std::cout<<"erreur"<<std::endl;
 #endif
   // eap, Apr 22 2002, occ 293
 //   Fi1.PCurveOnFace()->D0(Fi1.LastParameter(),p2d);
@@ -3631,7 +3631,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
 {
   if (P1.IsVertex() || P2.IsVertex()) {
 #ifdef OCCT_DEBUG
-    cout<<"change of face on vertex"<<endl;
+    std::cout<<"change of face on vertex"<<std::endl;
 #endif
   }
   if (!(P1.IsOnArc() && P2.IsOnArc())) {
@@ -3658,7 +3658,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
     }
   }
   if(!ContainsV){
-    cout<<"FindFace : the extremity of the spine is not in the end face"<<endl;
+    std::cout<<"FindFace : the extremity of the spine is not in the end face"<<std::endl;
   }
 #else
   (void)V; // avoid compiler warning on unused variable

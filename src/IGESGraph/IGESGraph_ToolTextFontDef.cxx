@@ -293,27 +293,27 @@ void IGESGraph_ToolTextFontDef::OwnDump
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   Standard_Integer nbchars  = ent->NbCharacters();
 
-  S << "IGESGraph_TextFontDef" << endl;
+  S << "IGESGraph_TextFontDef" << Message_EndLine;
 
-  S << "Font Code : " << ent->FontCode() << endl;
+  S << "Font Code : " << ent->FontCode() << Message_EndLine;
   S << "Font Name : ";
   IGESData_DumpString(S,ent->FontName());
-  S << endl;
+  S << Message_EndLine;
   if ( ent->IsSupersededFontEntity() ) {
     S << "Text Definition Entity : ";
     dumper.Dump(ent->SupersededFontEntity(),S, sublevel);
   }
   else  S << "Superseding Font Number : " << ent->SupersededFontCode();
-  S << endl; 
-  S << "No. of Grid Units eqvt to 1 Text Height : " << ent->Scale() << endl;
-  S << "ASCII Codes                              : " << endl
-    << "Grid Locations of next character origins : " << endl
-    << "Pen Motions                              : " << endl
-    << "Pen Positions                            : " << endl
+  S << Message_EndLine; 
+  S << "No. of Grid Units eqvt to 1 Text Height : " << ent->Scale() << Message_EndLine;
+  S << "ASCII Codes                              : " << Message_EndLine
+    << "Grid Locations of next character origins : " << Message_EndLine
+    << "Pen Motions                              : " << Message_EndLine
+    << "Pen Positions                            : " << Message_EndLine
     << "Grid Locations the pen moves to          : ";
-  S << "Count = "      << nbchars << endl;
+  S << "Count = "      << nbchars << Message_EndLine;
   IGESData_DumpVals(S,-level,1,nbchars,ent->ASCIICode);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4 )
     {
       Handle(TColgp_HArray1OfXY) arrXY;
@@ -322,25 +322,25 @@ void IGESGraph_ToolTextFontDef::OwnDump
 	{
 	  Standard_Integer IX,IY;
 	  S << "[" << I << "]: ";
-	  S << "ASCII Code : " << ent->ASCIICode(I) << endl;
+	  S << "ASCII Code : " << ent->ASCIICode(I) << Message_EndLine;
 	  S << "Grid Location of next character's origin : ";
 	  ent->NextCharOrigin(I,IX,IY);
 	  S << "X=" << IX << " Y=" << IY;
 	  nbmotions = ent->NbPenMotions(I);
 	  S << "  No. of Pen Motions : " << nbmotions;
-	  if (level <= 5) S << " [ ask level > 5 for Details ]" << endl;
+	  if (level <= 5) S << " [ ask level > 5 for Details ]" << Message_EndLine;
 	  else {
-	    S << endl;
+	    S << Message_EndLine;
 	    for (J = 1; J <= nbmotions; J++)
 	      {
 		S << "Pen up(1) / down(0) flag : " << (Standard_Integer)ent->IsPenUp(I,J);
 		S << " Next Pen Position : ";
 		ent->NextPenPosition(I,J, IX,IY);
 		S << " X="<<IX<<" Y="<<IY;
-		S << endl;
+		S << Message_EndLine;
 	      }
 	  }
 	}
     }
-  S << endl;
+  S << Message_EndLine;
 }

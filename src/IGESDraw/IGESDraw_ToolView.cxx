@@ -157,20 +157,20 @@ void IGESDraw_ToolView::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_View" << endl;
+  S << "IGESDraw_View" << Message_EndLine;
 
-  S << "View Number  : " << ent->ViewNumber()  << endl;
-  S << "Scale Factor : " << ent->ScaleFactor() << endl;
+  S << "View Number  : " << ent->ViewNumber()  << Message_EndLine;
+  S << "Scale Factor : " << ent->ScaleFactor() << Message_EndLine;
   S << "Left Plane Of View Volume   : ";
-  dumper.Dump(ent->LeftPlane(),S, tempSubLevel);    S << endl;
+  dumper.Dump(ent->LeftPlane(),S, tempSubLevel);    S << Message_EndLine;
   S << "Top Plane Of View Volume    : ";
-  dumper.Dump(ent->TopPlane(),S, tempSubLevel);     S << endl;
+  dumper.Dump(ent->TopPlane(),S, tempSubLevel);     S << Message_EndLine;
   S << "Right Plane Of View Volume  : ";
-  dumper.Dump(ent->RightPlane(),S, tempSubLevel);   S << endl;
+  dumper.Dump(ent->RightPlane(),S, tempSubLevel);   S << Message_EndLine;
   S << "Bottom Plane Of View Volume : ";
-  dumper.Dump(ent->BottomPlane(),S, tempSubLevel);  S << endl;
+  dumper.Dump(ent->BottomPlane(),S, tempSubLevel);  S << Message_EndLine;
   S << "Back Plane Of View Volume   : ";
-  dumper.Dump(ent->BackPlane(),S, tempSubLevel);    S << endl;
+  dumper.Dump(ent->BackPlane(),S, tempSubLevel);    S << Message_EndLine;
   S << "Front Plane Of View Volume  : ";
-  dumper.Dump(ent->FrontPlane(),S, tempSubLevel);   S << endl;
+  dumper.Dump(ent->FrontPlane(),S, tempSubLevel);   S << Message_EndLine;
 }

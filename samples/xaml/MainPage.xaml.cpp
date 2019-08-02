@@ -273,7 +273,7 @@ Standard_Boolean MainPage::SaveBREP(const wchar_t* theFilePath, const TopoDS_Sha
   std::filebuf aFileBuf;
   std::ostream aStream(&aFileBuf);
 
-  if (!aFileBuf.open(theFilePath, ios::out)) {
+  if (!aFileBuf.open(theFilePath, std::ios::out)) {
     Output_TextBlock->Text += L"Error: cannot open file for export (brep)\n";
     return Standard_False;
   }
@@ -291,7 +291,7 @@ Standard_Boolean MainPage::SaveIGES(const wchar_t* theFilePath, const TopoDS_Sha
   std::filebuf aFileBuf;
   std::ostream aStream(&aFileBuf);
 
-  if (!aFileBuf.open(theFilePath, ios::out)) {
+  if (!aFileBuf.open(theFilePath, std::ios::out)) {
     Output_TextBlock->Text += L"Error: cannot open file for export (iges)\n";
     return Standard_False;
   }
@@ -319,7 +319,7 @@ Standard_Boolean MainPage::SaveSTEP(const wchar_t* theFilePath, const TopoDS_Sha
   std::filebuf aFileBuf;
   std::ostream aStream(&aFileBuf);
 
-  if (!aFileBuf.open(theFilePath, ios::out)) {
+  if (!aFileBuf.open(theFilePath, std::ios::out)) {
     Output_TextBlock->Text += L"Error: cannot open file for export (step)\n";
     return Standard_False;
   }

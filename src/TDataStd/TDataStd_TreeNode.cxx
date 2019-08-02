@@ -684,6 +684,6 @@ Standard_OStream& TDataStd_TreeNode::Dump (Standard_OStream& anOS) const
     anOS<<"  Last=";
     if (!myLast->Label().IsNull()) myLast->Label().EntryDump(anOS);
   }
-  anOS<<endl;
+  anOS<<std::endl;
   return anOS;
 }

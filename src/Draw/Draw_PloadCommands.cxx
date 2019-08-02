@@ -50,7 +50,7 @@ static Standard_Boolean FindPluginFile (TCollection_AsciiString& thePluginName, 
   if (thePluginName.IsEmpty()) {
     thePluginName += "DrawPlugin";
 #ifdef OCCT_DEBUG
-    cout << "Plugin file name has not been specified. Defaults to " << thePluginName.ToCString() << endl;
+    std::cout << "Plugin file name has not been specified. Defaults to " << thePluginName.ToCString() << std::endl;
 #endif
   }
 
@@ -94,16 +94,16 @@ static Standard_Boolean FindPluginFile (TCollection_AsciiString& thePluginName, 
         OSD_Environment aCSFVarEnv ( aCSFVariable, aPluginDir );
         aCSFVarEnv.Build();
 #ifdef OCCT_DEBUG
-        cout << "Variable " << aCSFVariable.ToCString() << " has not been explicitly defined. Set to " << aPluginDir.ToCString() << endl;
+        std::cout << "Variable " << aCSFVariable.ToCString() << " has not been explicitly defined. Set to " << aPluginDir.ToCString() << std::endl;
 #endif
         if ( aCSFVarEnv.Failed() ) {
           aResult = Standard_False;
-          cout << FAILSTR "Failed to initialize " << aCSFVariable.ToCString() << " with " << aPluginDir.ToCString() << endl;
+          std::cout << FAILSTR "Failed to initialize " << aCSFVariable.ToCString() << " with " << aPluginDir.ToCString() << std::endl;
         }
       }
     } else {
       aResult = Standard_False;
-      cout << FAILSTR "File " << aPluginFileName.ToCString() << " not found" << endl;
+      std::cout << FAILSTR "File " << aPluginFileName.ToCString() << " not found" << std::endl;
     }
   }
   
@@ -127,7 +127,7 @@ static void Parse (Draw_MapOfAsciiString& theMap)
       TCollection_AsciiString aResource = aKey;
       if(myResources->Find(aResource.ToCString())) {
 #ifdef OCCT_DEBUG
-	cout << "Parse Value ==> " << myResources->Value(aResource.ToCString()) << endl;
+	std::cout << "Parse Value ==> " << myResources->Value(aResource.ToCString()) << std::endl;
 #endif
 	TCollection_AsciiString aValue(myResources->Value(aResource.ToCString()));
 	// parse aValue string
@@ -135,7 +135,7 @@ static void Parse (Draw_MapOfAsciiString& theMap)
 	for(;;) {
 	  TCollection_AsciiString aCurKey = aValue.Token(" \t,", i++);
 #ifdef OCCT_DEBUG
-	  cout << "Parse aCurKey = " << aCurKey.ToCString() << endl;
+	  std::cout << "Parse aCurKey = " << aCurKey.ToCString() << std::endl;
 #endif
 	  if(aCurKey.IsEmpty()) break;
 	  if(!myResources->Find(aCurKey.ToCString())) {
@@ -146,7 +146,7 @@ static void Parse (Draw_MapOfAsciiString& theMap)
 	    aMap2.Add(aCurKey);
 	}
       } else
-	cout <<"Pload : Resource = " << aResource << " is not found" << endl;
+	std::cout <<"Pload : Resource = " << aResource << " is not found" << std::endl;
       if(!aMap2.IsEmpty())
 	Parse(aMap2);
       //
@@ -223,12 +223,12 @@ static Standard_Integer Pload (Draw_Interpretor& di,
     const TCollection_AsciiString& aKey = aMap.FindKey(j);
     TCollection_AsciiString aResource = aKey;
 #ifdef OCCT_DEBUG
-      cout << "aResource = " << aResource << endl;
+      std::cout << "aResource = " << aResource << std::endl;
 #endif
     if(myResources->Find(aResource.ToCString())) {
       const TCollection_AsciiString& aValue = myResources->Value(aResource.ToCString()); 
 #ifdef OCCT_DEBUG
-      cout << "Value ==> " << aValue << endl;
+      std::cout << "Value ==> " << aValue << std::endl;
 #endif
 	
       //Draw::Load(di, aKey, aPluginFileName);
@@ -246,18 +246,18 @@ static Standard_Integer Pload (Draw_Interpretor& di,
       OSD_File aTclScriptFileDefaults ( aTclScriptFileNameDefaults );
       if (!aTclScriptDir.IsEmpty() && aTclScriptFile.Exists()) {
 #ifdef OCCT_DEBUG
-	cout << "Load " << aTclScriptFileName << " TclScript" << endl;
+	std::cout << "Load " << aTclScriptFileName << " TclScript" << std::endl;
 #endif
 	di.EvalFile( aTclScriptFileName.ToCString() );
       } else if (!aPluginDir.IsEmpty() && aTclScriptFileDefaults.Exists()) {
 #ifdef OCCT_DEBUG
-	cout << "Load " << aTclScriptFileNameDefaults << " TclScript" << endl;
+	std::cout << "Load " << aTclScriptFileNameDefaults << " TclScript" << std::endl;
 #endif
 	di.EvalFile( aTclScriptFileNameDefaults.ToCString() );
       }
   
     } else 
-      cout <<"Pload : Resource = " << aResource << " is not found" << endl;
+      std::cout <<"Pload : Resource = " << aResource << " is not found" << std::endl;
   }
   return 0;
 }
@@ -271,7 +271,7 @@ static Standard_Integer dtryload (Draw_Interpretor& di, Standard_Integer n, cons
 {
   if (n != 2)
   {
-    cout << "Error: specify path to library to be loaded" << endl;
+    std::cout << "Error: specify path to library to be loaded" << std::endl;
     return 1;
   }
 

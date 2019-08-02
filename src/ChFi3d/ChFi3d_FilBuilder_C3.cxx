@@ -284,7 +284,7 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
     pivot = SearchPivot(sens,p,tol2d);
     if(pivot < 0){ 
 #ifdef OCCT_DEBUG
-      cout<<"pivot not found, plate is called"<<endl;
+      std::cout<<"pivot not found, plate is called"<<std::endl;
 #endif
       PerformMoreThreeCorner(Jndex, 3);
       return;
@@ -306,14 +306,14 @@ void ChFi3d_FilBuilder::PerformThreeCorner(const Standard_Integer Jndex)
   ifacfin = CD[fin]->ChangeSetOfSurfData()->Value(i[fin][pivot])->Index(3-jf[fin][pivot]);
   if(ifacfin != ifacdeb){
 #ifdef OCCT_DEBUG
-    cout<<"several base faces, plate is called"<<endl;
+    std::cout<<"several base faces, plate is called"<<std::endl;
 #endif
     PerformMoreThreeCorner(Jndex, 3);
     return;
   }
   if(i[pivot][deb] != i[pivot][fin]){
 #ifdef OCCT_DEBUG
-    cout<<"load surfdata on the pivot, plate is called"<<endl;
+    std::cout<<"load surfdata on the pivot, plate is called"<<std::endl;
 #endif
     PerformMoreThreeCorner(Jndex, 3);
     return;

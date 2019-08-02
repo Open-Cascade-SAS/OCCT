@@ -356,7 +356,7 @@ void GeomFill_SweepSectionGenerator::Perform(const Standard_Boolean Polynomial)
       else
 	if (D1Ref.IsOpposite(D1, Precision::Angular()))
 #ifdef OCCT_DEBUG
-	  cout <<"Que fais-je ???? " << endl;
+	  std::cout <<"Que fais-je ???? " << std::endl;
 #endif
 
       // TR is the transformation between (i-1) section and the i-th.
@@ -630,8 +630,8 @@ void GeomFill_SweepSectionGenerator::Section
       gp_Vec dummyD1 = myAdpPath->DN(U,1);
       gp_Vec dummyTg = Axis.Direction();
       Standard_Real Cos = dummyD1.Dot(dummyTg);
-      if ( Cos > 0.) cout << "+" ;
-      else           cout << "-" ;
+      if ( Cos > 0.) std::cout << "+" ;
+      else           std::cout << "-" ;
     }
 */
 #endif

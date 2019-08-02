@@ -272,7 +272,7 @@ void IGESGeom_ToolCopiousData::OwnDump(const Handle(IGESGeom_CopiousData)& ent,
   gp_GTrsf locv = ent->VectorLocation();
   Standard_Boolean yatr = (level > 5 && ent->HasTransf());
 
-  S << "IGESGeom_CopiousData" << endl;
+  S << "IGESGeom_CopiousData" << Message_EndLine;
 
   if (ent->IsPointSet())          S << "Point Set  ";
   else if (ent->IsPolyline())     S << "Polyline  ";
@@ -281,12 +281,12 @@ void IGESGeom_ToolCopiousData::OwnDump(const Handle(IGESGeom_CopiousData)& ent,
   S << "Number of T-uples = " << nbPnts << "  ";
   if (dtype == 1) {
     S << "(Points 2D)  ";
-    S << "ZPlane = " << ent->ZPlane() << endl;
+    S << "ZPlane = " << ent->ZPlane() << Message_EndLine;
   }
   else if (dtype == 2)
-    S << "(Points 3D)" << endl;
+    S << "(Points 3D)" << Message_EndLine;
   else if (dtype == 3)
-    S << "(Points 3D + Vectors 3D)" << endl;
+    S << "(Points 3D + Vectors 3D)" << Message_EndLine;
 
   if (level > 4) {
     for (i = 1; i <= nbPnts; i ++) {
@@ -309,9 +309,9 @@ void IGESGeom_ToolCopiousData::OwnDump(const Handle(IGESGeom_CopiousData)& ent,
 	  S << " Transformed ("<< T.X() << "," << T.Y() << "," << T.Z() << ")";
 	}
       }
-      S << endl;
+      S << Message_EndLine;
     }
   }
   else S << " [ for content, ask level > 4 ]";
-  S << endl;
+  S << Message_EndLine;
 }

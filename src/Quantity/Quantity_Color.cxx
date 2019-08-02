@@ -3634,7 +3634,7 @@ void TestOfColor ();
 	}
 
 	catch (Standard_Failure const& anException) {
-		cout << anException << endl;
+		std::cout << anException << std::endl;
 	}
 
 }
@@ -3646,7 +3646,7 @@ Standard_Real R, G, B;
 Standard_Real DC, DI;
 Standard_Integer i;
 
-cout << "definition color tests\n----------------------\n";
+std::cout << "definition color tests\n----------------------\n";
 
 Quantity_Color C1;
 Quantity_Color C2 (Quantity_NOC_ROYALBLUE2);
@@ -3662,20 +3662,20 @@ Standard_Real RR, GG, BB;
 
 const Standard_Real DELTA = 1.0e-4;
 
-cout << "Get values and names of color tests\n-----------------------------------\n";
+std::cout << "Get values and names of color tests\n-----------------------------------\n";
 
 	C1.Values (R, G, B, Quantity_TOC_RGB);
 	if ( (R!=1.0) || (G!=1.0) || (B!=0.0) ) {
-		cout << "TEST_ERROR : Values () bad default color\n";
-		cout << "R, G, B values: " << R << " " << G << " " << B << "\n";
+		std::cout << "TEST_ERROR : Values () bad default color\n";
+		std::cout << "R, G, B values: " << R << " " << G << " " << B << "\n";
 	}
 	if ( (C1.Red ()!=1.0) || (C1.Green ()!=1.0) || (C1.Blue ()!=0.0) ) {
-		cout << "TEST_ERROR : Values () bad default color\n";
-		cout << "R, G, B values: " << C1.Red () << " " << C1.Green ()
+		std::cout << "TEST_ERROR : Values () bad default color\n";
+		std::cout << "R, G, B values: " << C1.Red () << " " << C1.Green ()
 			<< " " << C1.Blue () << "\n";
 	}
 	if (strcmp (Quantity_Color::StringName (C1.Name()), cyan) != 0)
-		cout << "TEST_ERROR : StringName () " <<
+		std::cout << "TEST_ERROR : StringName () " <<
 			Quantity_Color::StringName (C1.Name()) << 
                                         " != YELLOW\n";
 
@@ -3685,66 +3685,66 @@ cout << "Get values and names of color tests\n----------------------------------
 	if ( (Abs (RR-R) > DELTA) ||
 	     (Abs (GG-G) > DELTA) ||
 	     (Abs (BB-B) > DELTA) ) {
-		cout << "TEST_ERROR : Values () bad default color\n";
-		cout << "R, G, B values: " << R << " " << G << " " << B << "\n";
+		std::cout << "TEST_ERROR : Values () bad default color\n";
+		std::cout << "R, G, B values: " << R << " " << G << " " << B << "\n";
 	}
 
 	if (C2 != C1) {
-		cout << "TEST_ERROR : IsDifferent ()\n";
+		std::cout << "TEST_ERROR : IsDifferent ()\n";
 	}
 	if (C3 == C1) {
-		cout << "TEST_ERROR : IsEqual ()\n";
+		std::cout << "TEST_ERROR : IsEqual ()\n";
 	}
 
-	cout << "Distance C1,C2 " << C1.Distance (C2) << "\n";
-	cout << "Distance C1,C3 " << C1.Distance (C3) << "\n";
-	cout << "Distance C2,C3 " << C2.Distance (C3) << "\n";
-	cout << "SquareDistance C1,C2 " << C1.SquareDistance (C2) << "\n";
-	cout << "SquareDistance C1,C3 " << C1.SquareDistance (C3) << "\n";
-	cout << "SquareDistance C2,C3 " << C2.SquareDistance (C3) << "\n";
+	std::cout << "Distance C1,C2 " << C1.Distance (C2) << "\n";
+	std::cout << "Distance C1,C3 " << C1.Distance (C3) << "\n";
+	std::cout << "Distance C2,C3 " << C2.Distance (C3) << "\n";
+	std::cout << "SquareDistance C1,C2 " << C1.SquareDistance (C2) << "\n";
+	std::cout << "SquareDistance C1,C3 " << C1.SquareDistance (C3) << "\n";
+	std::cout << "SquareDistance C2,C3 " << C2.SquareDistance (C3) << "\n";
 
 	if (strcmp (Quantity_Color::StringName (C2.Name()), blue) != 0)
-		cout << "TEST_ERROR : StringName () " <<
+		std::cout << "TEST_ERROR : StringName () " <<
 			Quantity_Color::StringName (C2.Name()) << 
                         " != ROYALBLUE2\n";
 
-cout << "conversion rgbhls tests\n-----------------------\n";
+std::cout << "conversion rgbhls tests\n-----------------------\n";
 	Quantity_Color::RgbHls (R, G, B, H, L, S);
 	Quantity_Color::HlsRgb (H, L, S, R, G, B);
 	RR=0.262745; GG=0.431373; BB=0.933333;
 	if ( (Abs (RR-R) > DELTA) ||
 	     (Abs (GG-G) > DELTA) ||
 	     (Abs (BB-B) > DELTA) ) {
-		cout << "TEST_ERROR : RgbHls or HlsRgb bad conversion\n";
-		cout << "RGB init : " << RR << " " << GG << " " << BB << "\n";
-		cout << "RGB values : " << R << " " << G << " " << B << "\n";
-		cout << "Difference RGB : "
+		std::cout << "TEST_ERROR : RgbHls or HlsRgb bad conversion\n";
+		std::cout << "RGB init : " << RR << " " << GG << " " << BB << "\n";
+		std::cout << "RGB values : " << R << " " << G << " " << B << "\n";
+		std::cout << "Difference RGB : "
 			<< RR-R << " " << GG-G << " " << BB-B << "\n";
 	}
 
-cout << "distance tests\n--------------\n";
+std::cout << "distance tests\n--------------\n";
 	R = (float ) 0.9568631; G = (float ) 0.6431371; B = (float ) 0.3764711;
 	C2.SetValues (R, G, B, Quantity_TOC_RGB);
 	if (C2.Distance (C3) > DELTA) {
-		cout << "TEST_ERROR : Distance () bad result\n";
-		cout << "Distance C2 and C3 : " << C2.Distance (C3) << "\n";
+		std::cout << "TEST_ERROR : Distance () bad result\n";
+		std::cout << "Distance C2 and C3 : " << C2.Distance (C3) << "\n";
 	}
 
 	C2.Delta (C3, DC, DI);
 	if (Abs (DC) > DELTA)
-		cout << "TEST_ERROR : Delta () bad result for DC\n";
+		std::cout << "TEST_ERROR : Delta () bad result for DC\n";
 	if (Abs (DI) > DELTA)
-		cout << "TEST_ERROR : Delta () bad result for DI\n";
+		std::cout << "TEST_ERROR : Delta () bad result for DI\n";
 
-cout << "name tests\n----------\n";
+std::cout << "name tests\n----------\n";
 	R = (float ) 0.9568631; G = (float ) 0.6431371; B = (float ) 0.3764711;
 	C2.SetValues (R, G, B, Quantity_TOC_RGB);
 	if (strcmp (Quantity_Color::StringName (C2.Name()), brown) != 0)
-		cout << "TEST_ERROR : StringName () " <<
+		std::cout << "TEST_ERROR : StringName () " <<
 			Quantity_Color::StringName (C2.Name()) << 
                         " != SANDYBROWN\n";
 
-cout << "contrast change tests\n---------------------\n";
+std::cout << "contrast change tests\n---------------------\n";
 	for (i=1; i<=10; i++) {
 		C2.ChangeContrast (10.);
 		C2.ChangeContrast (-9.09090909);
@@ -3754,9 +3754,9 @@ cout << "contrast change tests\n---------------------\n";
 	if ( (Abs (RR-R) > DELTA) ||
 	     (Abs (GG-G) > DELTA) ||
 	     (Abs (BB-B) > DELTA) ) {
-		cout << "TEST_ERROR : ChangeContrast () bad values\n";
-		cout << "RGB init : " << RR << " " << GG << " " << BB << "\n";
-		cout << "RGB values : " << R << " " << G << " " << B << "\n";
+		std::cout << "TEST_ERROR : ChangeContrast () bad values\n";
+		std::cout << "RGB init : " << RR << " " << GG << " " << BB << "\n";
+		std::cout << "RGB values : " << R << " " << G << " " << B << "\n";
 	}
 
 }

@@ -459,7 +459,7 @@ void  Transfer_TransferProcess::SendMsg(const TheStart& start,
     themessenger << amsg.Value();
     if (amsg.IsEdited()&&thetrace>2)
       themessenger << " [from: " << amsg.Original() << "]";
-    themessenger << endl;
+    themessenger << Message_EndLine;
   }
 }
 
@@ -483,7 +483,7 @@ void Transfer_TransferProcess::AddFail(const TheStart& start,
     StartTrace (binder,start,thelevel,1);
     themessenger << "    --> Fail : " << mess;
     if (orig[0] != '\0'&&thetrace>2) themessenger << " [from: " << orig << "]";
-    themessenger << endl;
+    themessenger << Message_EndLine;
   }
 }
 
@@ -534,7 +534,7 @@ void Transfer_TransferProcess::AddWarning(const TheStart& start,
     StartTrace (binder,start,thelevel,2);
     themessenger << "    --> Warning : " << mess;
     if (orig[0] != '\0'&&thetrace>2) themessenger << " [from: " << orig << "]";
-    themessenger << endl;
+    themessenger << Message_EndLine;
   }
 }
 
@@ -1014,7 +1014,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	break;
       case Transfer_StatusDone :                  // Transfert deja fait
 //#ifdef TRANSLOG
-	themessenger << " .. and Transfer done" << endl;
+	themessenger << " .. and Transfer done" << Message_EndLine;
 //#endif
 //	if (former->HasResult()) former->SetAlreadyUsed();
 	return former;
@@ -1023,7 +1023,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	return former;
       case Transfer_StatusError :                 // pas propre, ca ...
 	if (thetrace) {
-	  themessenger << "                  *** Transfer in Error Status  :" << endl;
+	  themessenger << "                  *** Transfer in Error Status  :" << Message_EndLine;
 	  StartTrace (former, start, thelevel,0);
 //	  (*themessenger->Out()) << flush;
 	}
@@ -1031,7 +1031,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	throw Transfer_TransferFailure("TransferProcess : Transfer in Error Status");
       case Transfer_StatusLoop :                  // la boucle est bouclee ...
 	if (thetrace) {
-	  themessenger << "                  *** Transfer  Head of Dead Loop  :" << endl;
+	  themessenger << "                  *** Transfer  Head of Dead Loop  :" << Message_EndLine;
 	  StartTrace (former, start, thelevel,0);
 //	  (*themessenger->Out()) << flush;
 	}
@@ -1039,7 +1039,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	throw Transfer_TransferDeadLoop("TransferProcess : Transfer at Head of a Dead Loop");
     }
 #ifdef TRANSLOG
-    cout << "Transfer,level "<<thelevel<<Message_Flush;
+    std::cout << "Transfer,level "<<thelevel<<Message_Flush;
 #endif
   //}
 
@@ -1048,7 +1048,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     former->SetStatusExec(Transfer_StatusRun);
   }
 #ifdef TRANSLOG
-  cout << " GO .." << endl;
+  std::cout << " GO .." << std::endl;
 #endif
 
   Handle(Transfer_Binder) binder;
@@ -1064,13 +1064,13 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     //    ...  Exceptions a Rattraper : elles ne se ressemblent pas toutes ... !
     catch (Transfer_TransferDeadLoop const&) {
       if (binder.IsNull()) {
-	themessenger << "                  *** Dead Loop with no Result" << endl;
+	themessenger << "                  *** Dead Loop with no Result" << Message_EndLine;
 	if (thetrace) StartTrace (binder, start, thelevel-1,0);
 	binder = new Transfer_VoidBinder;
 	Bind (start,binder);  newbind = Standard_True;
       } else if (binder->StatusExec() == Transfer_StatusLoop) {
 	if (thetrace) {
-	  themessenger << "                  *** Dead Loop : Finding head of Loop :" << endl;
+	  themessenger << "                  *** Dead Loop : Finding head of Loop :" << Message_EndLine;
 	  StartTrace (binder, start, thelevel-1,0);
 	}
 	else StartTrace (binder, start,thelevel-1,4);
@@ -1078,7 +1078,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 // Autrement dit, on change d exception (on est sorti de la boucle)
       } else {
 	if (thetrace) {
-	  themessenger << "                  *** Dead Loop : Actor in Loop :" << endl;
+	  themessenger << "                  *** Dead Loop : Actor in Loop :" << Message_EndLine;
 	  StartTrace (binder, start, thelevel-1,0);
 	}
       }
@@ -1087,13 +1087,13 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     }
     catch (Standard_Failure const& anException) {
       if (binder.IsNull()) {
-	themessenger << "                  *** Exception Raised with no Result" << endl;
+	themessenger << "                  *** Exception Raised with no Result" << Message_EndLine;
 	binder = new Transfer_VoidBinder;
 	Bind (start,binder);  newbind = Standard_True;
       }
       binder->AddFail("Transfer stopped by exception raising");
       if (thetrace) {
-	themessenger << "    *** Raised : " << anException.GetMessageString() << endl;
+	themessenger << "    *** Raised : " << anException.GetMessageString() << Message_EndLine;
 	StartTrace (binder, start, thelevel-1,4);
       }
       thelevel = oldlev;
@@ -1119,7 +1119,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     else Rebind(start,binder);
 //  (du coup, <thelastbnd> vaut <binder>)
 #ifdef TRANSLOG
-    cout << " ... OK" << endl;
+    std::cout << " ... OK" << std::endl;
 #endif
   }
   else {
@@ -1268,7 +1268,7 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
     }
 //old    if (isused) sout << "  --    (Already Used in another Transfer)";
   }
-  themessenger << endl;
+  themessenger << Message_EndLine;
 }
 
 

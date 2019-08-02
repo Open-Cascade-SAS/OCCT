@@ -78,11 +78,11 @@ void IGESData_IGESModel::DumpHeader
   (const Handle(Message_Messenger)& S, const Standard_Integer ) const
 {
   Standard_Integer ns = thestart->Length();
-  S<<"****    Dump of IGES Model , Start and Global Sections   ****"<<endl;
+  S<<"****    Dump of IGES Model , Start and Global Sections   ****"<<Message_EndLine;
   if (ns > 0) {
     S << "****    Start Section : "<<ns<<" Line(s)   ****\n";
     for (Standard_Integer i = 1; i <= ns; i ++)
-      S<<"["<<(i<10 ? " ": "")<<i<<"]:"<<thestart->Value(i)->ToCString()<<endl;
+      S<<"["<<(i<10 ? " ": "")<<i<<"]:"<<thestart->Value(i)->ToCString()<<Message_EndLine;
   }
   S << "\n****    Global Section    ****\n";
   char sep = theheader.Separator();
@@ -94,16 +94,16 @@ void IGESData_IGESModel::DumpHeader
   S<<"\n";
   Handle(TCollection_HAsciiString) str;
   str = theheader.SendName();
-  if (!str.IsNull()) S<<"[ 3]  Sender                : "<<str->ToCString()<<endl;
+  if (!str.IsNull()) S<<"[ 3]  Sender                : "<<str->ToCString()<<Message_EndLine;
   str = theheader.FileName();
-  if (!str.IsNull()) S<<"[ 4]  (recorded) File Name  : "<<str->ToCString()<<endl;
+  if (!str.IsNull()) S<<"[ 4]  (recorded) File Name  : "<<str->ToCString()<<Message_EndLine;
   str = theheader.SystemId();
-  if (!str.IsNull()) S<<"[ 5]  System Identification : "<<str->ToCString()<<endl;
+  if (!str.IsNull()) S<<"[ 5]  System Identification : "<<str->ToCString()<<Message_EndLine;
   str = theheader.InterfaceVersion();
-  if (!str.IsNull()) S<<"[ 6]  Interface Version     : "<<str->ToCString()<<endl;
-  S<<endl;
+  if (!str.IsNull()) S<<"[ 6]  Interface Version     : "<<str->ToCString()<<Message_EndLine;
+  S<<Message_EndLine;
   S << "[ 7]  Integer Bits          : " << theheader.IntegerBits()
-    << "          Features for Reals : " << endl;
+    << "          Features for Reals : " << Message_EndLine;
   S << "[ 8]  Single Max.Power(10)  : " << theheader.MaxPower10Single();
   S << "         [ 9]  Digits   : " << theheader.MaxDigitsSingle()<<"\n";
   S << "[10]  Double Max.Power(10)  : " << theheader.MaxPower10Double();
@@ -143,21 +143,21 @@ void IGESData_IGESModel::DumpHeader
   num = theheader.DraftingStandard();
   S << "\n[24]  Drafting Standard     : " << num;
   if (num > 0) S<< "   -> Name : " << IGESData_BasicEditor::DraftingName(num);
-  S<<endl;
+  S<<Message_EndLine;
 
   if (theheader.HasLastChangeDate()) {
     str = theheader.LastChangeDate();
     S <<  "[25]  Last Change Date      : " << str->ToCString() 
-      <<"  i.e. "<<IGESData_GlobalSection::NewDateString(str,1)->ToCString()<<endl;
+      <<"  i.e. "<<IGESData_GlobalSection::NewDateString(str,1)->ToCString()<<Message_EndLine;
   }
-  else S<<"[25]  Last Change Date        not defined (version IGES < 5.1)" << endl;
+  else S<<"[25]  Last Change Date        not defined (version IGES < 5.1)" << Message_EndLine;
 
   if (theheader.HasApplicationProtocol()) {
     str = theheader.ApplicationProtocol();
-    S <<  "[26]  Application Protocol  : " << str->ToCString() <<endl;
+    S <<  "[26]  Application Protocol  : " << str->ToCString() <<Message_EndLine;
   }
 
-  S << " ****     End of Dump      ****"<<endl;
+  S << " ****     End of Dump      ****"<<Message_EndLine;
 }
 
 

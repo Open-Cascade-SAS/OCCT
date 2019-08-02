@@ -148,18 +148,18 @@ static Standard_Integer OCC73_SelectionMode (Draw_Interpretor& di, Standard_Inte
   }
 
   Handle(TDocStd_Document) D;
-  //cout << "OCC73_SelectionMode  1" << endl;
+  //std::cout << "OCC73_SelectionMode  1" << std::endl;
   if (!DDocStd::GetDocument(argv[1],D)) return 1;  
   TDF_Label L;
-  //cout << "OCC73_SelectionMode  2" << endl;
+  //std::cout << "OCC73_SelectionMode  2" << std::endl;
   if (!DDF::FindLabel(D->GetData(),argv[2],L)) return 1;  
 
   Handle(TPrsStd_AISViewer) viewer;
-  //cout << "OCC73_SelectionMode  3" << endl;
+  //std::cout << "OCC73_SelectionMode  3" << std::endl;
   if( !TPrsStd_AISViewer::Find(L, viewer) ) return 1;  
 
   Handle(TPrsStd_AISPresentation) prs;
-  //cout << "OCC73_SelectionMode  4" << endl;
+  //std::cout << "OCC73_SelectionMode  4" << std::endl;
   if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
     if( argc == 4 ) {
       prs->SetSelectionMode((Standard_Integer)Draw::Atoi(argv[3]));
@@ -167,11 +167,11 @@ static Standard_Integer OCC73_SelectionMode (Draw_Interpretor& di, Standard_Inte
     }
     else {
       Standard_Integer SelectionMode = prs->SelectionMode();
-      //cout << "SelectionMode = " << SelectionMode << endl;
+      //std::cout << "SelectionMode = " << SelectionMode << std::endl;
       di<<SelectionMode;
     }
   }
-  //cout << "OCC73_SelectionMode  5" << endl;
+  //std::cout << "OCC73_SelectionMode  5" << std::endl;
 
   return 0;
 }

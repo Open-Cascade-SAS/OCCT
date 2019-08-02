@@ -42,9 +42,9 @@ void Units_Quantity::Dump(const Standard_Integer ashift,
 			  const Standard_Integer alevel) const
 {
   Standard_Integer index;
-  cout<<endl;
-  for(int i=0; i<ashift; i++)cout<<"  ";
-  cout<<Name()<<endl;
+  std::cout<<std::endl;
+  for(int i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<Name()<<std::endl;
 //  thedimensions->Dump(ashift+1);
   if(alevel > 0)
     {

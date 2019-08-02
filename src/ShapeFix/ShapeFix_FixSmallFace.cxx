@@ -252,7 +252,7 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
 	  TopoDS_Shell Sh = TopoDS::Shell (exp_s.Current());
 	  TopExp_Explorer ex_sh(Sh,TopAbs_FACE);
 	  if (!ex_sh.More())  { Context()->Remove(Sh);
-// 				cout << "Empty shell was removed" << endl; 
+// 				std::cout << "Empty shell was removed" << std::endl; 
 			      }
 	}
 	myShape = Context()->Apply(myShape);
@@ -449,7 +449,7 @@ ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
 	} 
       else {
 #ifdef OCCT_DEBUG
-	cout << "The face is not strip face"  << endl;
+	std::cout << "The face is not strip face"  << std::endl;
 #endif
 	return theNewEdge;
       }

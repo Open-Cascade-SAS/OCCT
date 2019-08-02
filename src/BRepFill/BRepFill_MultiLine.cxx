@@ -612,8 +612,8 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
       }
       else {
 #ifdef OCCT_DEBUG
-        cout << "MultiLine : D1 = D2 and the Curve is not a circle" << endl;
-        cout << "  ---> ValueOnFace failed at parameter U = " << U << endl;
+        std::cout << "MultiLine : D1 = D2 and the Curve is not a circle" << std::endl;
+        std::cout << "  ---> ValueOnFace failed at parameter U = " << U << std::endl;
 #endif
         throw Standard_ConstructionError("BRepFill_MultiLine: ValueOnFace");
       }
@@ -665,8 +665,8 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
 
     if ( !Intersector.IsDone()) {
 #ifdef OCCT_DEBUG
-      cout << "Intersector not done" << endl;
-      cout << "  ---> ValueonFace failed at parameter U = " << U << endl;
+      std::cout << "Intersector not done" << std::endl;
+      std::cout << "  ---> ValueonFace failed at parameter U = " << U << std::endl;
 #endif
       return gp_Pnt2d(0.,0.);
     }
@@ -685,8 +685,8 @@ static gp_Pnt2d ValueOnFace(const Standard_Real        U,
       }
       else {
 #ifdef OCCT_DEBUG
-        cout << "Intersector done, but no points found" << endl;
-        cout << "  ---> ValueonFace failed at parameter U = " << U << endl;
+        std::cout << "Intersector done, but no points found" << std::endl;
+        std::cout << "  ---> ValueonFace failed at parameter U = " << U << std::endl;
 #endif
         if (Abs(Dist - PL.Y()) < Abs(Dist - PF.Y()))
           VV = TheV.LastParameter();

@@ -1189,7 +1189,7 @@ static Standard_Integer addClippingPlane(Draw_Interpretor& di, Standard_Integer 
   gp_Pln aPlane;
   Handle(Geom_Plane) aSurf = Handle(Geom_Plane)::DownCast(DrawTrSurf::GetSurface(argv[2]));
   if (aSurf.IsNull()) {
-    cout << argv[2] << " is not a plane" << endl;
+    std::cout << argv[2] << " is not a plane" << std::endl;
     return 1;
   }
   aPlane = aSurf->Pln();

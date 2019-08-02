@@ -268,30 +268,30 @@ void IGESGeom_ToolCurveOnSurface::OwnDump(const Handle(IGESGeom_CurveOnSurface)&
                                           const Handle(Message_Messenger)& S,
                                           const Standard_Integer level)  const
 {
-  S << "IGESGeom_CurveOnSurface" << endl << endl;
+  S << "IGESGeom_CurveOnSurface" << Message_EndLine << Message_EndLine;
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   Standard_Integer crem = ent->CreationMode();
   S << "Creation Mode : " << crem << "  i.e. ";
-  if      (crem == 0) S << " <Unspecified>" << endl;
-  else if (crem == 1) S << " Projection of a Curve on a Surface" << endl;
-  else if (crem == 2) S << " Intersection of two Surfaces" << endl;
-  else if (crem == 3) S << " Isoparametric Curve (either U or V)" << endl;
-  else S << " <Incorrect Value>" << endl;
+  if      (crem == 0) S << " <Unspecified>" << Message_EndLine;
+  else if (crem == 1) S << " Projection of a Curve on a Surface" << Message_EndLine;
+  else if (crem == 2) S << " Intersection of two Surfaces" << Message_EndLine;
+  else if (crem == 3) S << " Isoparametric Curve (either U or V)" << Message_EndLine;
+  else S << " <Incorrect Value>" << Message_EndLine;
   S << "The Surface on which the curve lies : ";
   dumper.Dump(ent->Surface(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "The curve B (in the parametric space (u, v))  : ";
   dumper.Dump(ent->CurveUV(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "The curve C (in the 3D Space) : ";
   dumper.Dump(ent->Curve3D(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   Standard_Integer pref = ent->PreferenceMode();
   S << "Preferred representation mode : " << pref << "  i.e. ";
-  if      (pref == 0) S << " <Unspecified>" << endl;
-  else if (pref == 1) S << " Curve B on Surface" << endl;
-  else if (pref == 2) S << " Curve C in 3D Space" << endl;
-  else if (pref == 3) S << " Curves B & C equally preferred" << endl;
-  else S << " <Incorrect Value>" << endl;
+  if      (pref == 0) S << " <Unspecified>" << Message_EndLine;
+  else if (pref == 1) S << " Curve B on Surface" << Message_EndLine;
+  else if (pref == 2) S << " Curve C in 3D Space" << Message_EndLine;
+  else if (pref == 3) S << " Curves B & C equally preferred" << Message_EndLine;
+  else S << " <Incorrect Value>" << Message_EndLine;
 }

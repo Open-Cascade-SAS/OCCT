@@ -133,12 +133,12 @@ void  IGESAppli_ToolNodalConstraint::OwnDump
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
-  S << "IGESAppli_NodalConstraint" << endl;
-  S << "Type of Constraint : " << ent->Type() << endl;
+  S << "IGESAppli_NodalConstraint" << Message_EndLine;
+  S << "Type of Constraint : " << ent->Type() << Message_EndLine;
   S << "Node : ";
   dumper.Dump(ent->NodeEntity(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Tabular Data Properties : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbCases(),ent->TabularData);
-  S << endl;
+  S << Message_EndLine;
 }

@@ -70,7 +70,7 @@ GeomToStep_MakeBoundedCurve::GeomToStep_MakeBoundedCurve ( const Handle(Geom_Bou
   }
   else {
 #ifdef OCCT_DEBUG
-    cout<<"MakeBoundedCurve, type : "<<C->DynamicType()->Name()<<" not processed"<<endl;
+    std::cout<<"MakeBoundedCurve, type : "<<C->DynamicType()->Name()<<" not processed"<<std::endl;
 #endif
     done = Standard_False;
   }

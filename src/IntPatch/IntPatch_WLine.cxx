@@ -269,18 +269,18 @@ void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol)
   nbvtx = NbVertex();
 
 #if DEBUGV  
-  cout<<"\n----------- avant ComputeVertexParameters -------------"<<endl;
+  std::cout<<"\n----------- avant ComputeVertexParameters -------------"<<std::endl;
   for(i=1;i<=nbvtx;i++) { 
     Vertex(i).Dump();
     Standard_Real  polr = Vertex(i).ParameterOnLine();
     Standard_Real pol = (Standard_Integer)polr;
     if(pol>=1 && pol<=nbvtx) { 
-      cout<<"----> IntSurf_PntOn2S : "<<polr<<"  Pnt ("<<Vertex(pol).Value().X()
+      std::cout<<"----> IntSurf_PntOn2S : "<<polr<<"  Pnt ("<<Vertex(pol).Value().X()
 	<<","<<Vertex(pol).Value().Y()
-	  <<","<<Vertex(pol).Value().Z()<<")"<<endl;
+	  <<","<<Vertex(pol).Value().Z()<<")"<<std::endl;
     }
   }
-  cout<<"\n----------------------------------------------------------"<<endl;
+  std::cout<<"\n----------------------------------------------------------"<<std::endl;
 #endif  
 
   
@@ -924,18 +924,18 @@ void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol)
   //-- Dump();
 
 #if DEBUGV  
-  cout<<"\n----------- apres ComputeVertexParameters -------------"<<endl;
+  std::cout<<"\n----------- apres ComputeVertexParameters -------------"<<std::endl;
   for(i=1;i<=nbvtx;i++) { 
     Vertex(i).Dump();
     Standard_Real  polr = Vertex(i).ParameterOnLine();
     Standard_Real pol = (Standard_Integer)polr;
     if(pol>=1 && pol<=nbvtx) { 
-      cout<<"----> IntSurf_PntOn2S : "<<polr<<"  Pnt ("<<Vertex(pol).Value().X()
+      std::cout<<"----> IntSurf_PntOn2S : "<<polr<<"  Pnt ("<<Vertex(pol).Value().X()
 	<<","<<Vertex(pol).Value().Y()
-	  <<","<<Vertex(pol).Value().Z()<<")"<<endl;
+	  <<","<<Vertex(pol).Value().Z()<<")"<<std::endl;
     }
   }
-  cout<<"\n----------------------------------------------------------"<<endl;
+  std::cout<<"\n----------------------------------------------------------"<<std::endl;
 #endif  
 
 
@@ -970,7 +970,7 @@ const Handle(Adaptor2d_HCurve2d)& IntPatch_WLine::GetArcOnS2() const  {
 
 void IntPatch_WLine::Dump(const Standard_Integer theMode) const
 { 
-  cout<<" ----------- D u m p    I n t P a t c h  _  W L i n e  -(begin)------"<<endl;
+  std::cout<<" ----------- D u m p    I n t P a t c h  _  W L i n e  -(begin)------"<<std::endl;
   const Standard_Integer aNbPoints = NbPnts();
   const Standard_Integer aNbVertex = NbVertex();
 
@@ -995,10 +995,10 @@ void IntPatch_WLine::Dump(const Standard_Integer theMode) const
 
       if(pol>=1 && pol<=aNbVertex)
       {
-        cout<<"----> IntSurf_PntOn2S : "<<
+        std::cout<<"----> IntSurf_PntOn2S : "<<
                       polr <<", Pnt (" << Vertex(pol).Value().X() << "," <<
                                           Vertex(pol).Value().Y() << "," <<
-                                          Vertex(pol).Value().Z() <<")" <<endl;
+                                          Vertex(pol).Value().Z() <<")" <<std::endl;
       }
     }
 
@@ -1032,6 +1032,6 @@ void IntPatch_WLine::Dump(const Standard_Integer theMode) const
 
     break;
   }
-  cout<<"\n--------------------------------------------------- (end) -------"<<endl;  
+  std::cout<<"\n--------------------------------------------------- (end) -------"<<std::endl;  
 }
 

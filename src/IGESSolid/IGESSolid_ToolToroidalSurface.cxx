@@ -140,22 +140,22 @@ void  IGESSolid_ToolToroidalSurface::OwnDump
   (const Handle(IGESSolid_ToroidalSurface)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_ToroidalSurface" << endl;
+  S << "IGESSolid_ToroidalSurface" << Message_EndLine;
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "Center : ";
   dumper.Dump(ent->Center(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Axis direction : ";
   dumper.Dump(ent->Axis(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Major Radius : " << ent->MajorRadius() << "  ";
-  S << "Minor Radius : " << ent->MinorRadius() << endl;
+  S << "Minor Radius : " << ent->MinorRadius() << Message_EndLine;
   if (ent->IsParametrised())
     {
       S << "Surface is Parametrised  -  Reference direction : ";
       dumper.Dump(ent->ReferenceDir(),S, sublevel);
-      S << endl;
+      S << Message_EndLine;
     }
-  else S << "Surface is UnParametrised" << endl;
+  else S << "Surface is UnParametrised" << Message_EndLine;
 }

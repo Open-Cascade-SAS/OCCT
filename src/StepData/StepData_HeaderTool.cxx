@@ -125,28 +125,28 @@ static Interface_ReaderLib lib;
   Standard_Integer nb = thenames.Length();
   Standard_Integer lng = 0;  Standard_Integer ln1;
   S << " ---  StepData_HeaderTool : List of Protocol Names  ---  Count : "
-    << nb << endl;
+    << nb << std::endl;
   Standard_Integer i; // svv Jan11 2000 : porting on DEC
   for (i = 1; i <= nb; i ++) {
     ln1 = thenames.Value(i).Length() + 8;  lng += ln1;
-    if (lng > 80) {  S << endl;  lng = ln1;  }
+    if (lng > 80) {  S << std::endl;  lng = ln1;  }
     S << "  " << i << " : " << thenames.Value(i);
   }
-  if (lng == 0) S << endl;
+  if (lng == 0) S << std::endl;
 
   nb = theignored.Length();
   if (!thedone) {
-    S << " ---   Evaluation of Protocol not Done   ---" << endl;
+    S << " ---   Evaluation of Protocol not Done   ---" << std::endl;
   } else if (nb == 0) {
-    S << " ---   All Names correspond to a known Protocol  ---" << endl;
+    S << " ---   All Names correspond to a known Protocol  ---" << std::endl;
   } else {
     lng = ln1 = 0;
-    S << " ---   Among them, " << nb << " remain unrecognized  ---" << endl;
+    S << " ---   Among them, " << nb << " remain unrecognized  ---" << std::endl;
     for (i = 1; i <= nb; i ++) {
       ln1 = theignored.Value(i).Length() + 3;  lng += ln1;
-      if (lng > 80) {  S << endl;  lng = ln1;  }
+      if (lng > 80) {  S << std::endl;  lng = ln1;  }
       S << " : " << theignored.Value(i);
     }
-    if (lng == 0) S << endl;
+    if (lng == 0) S << std::endl;
   }
 }

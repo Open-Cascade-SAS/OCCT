@@ -175,20 +175,20 @@ void MAT_Bisector::Dump(const Standard_Integer ashift,
 {
   Standard_Integer i;
 
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<" BISECTOR : "<<thebisectornumber<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"   First edge     : "<<thefirstedge->EdgeNumber()<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"   Second edge    : "<<thesecondedge->EdgeNumber()<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<" BISECTOR : "<<thebisectornumber<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"   First edge     : "<<thefirstedge->EdgeNumber()<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"   Second edge    : "<<thesecondedge->EdgeNumber()<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
   if(alevel)
     {
       if(!thelistofbisectors->More())
 	{
-	  cout<<"   Bisectors List : "<<endl;
+	  std::cout<<"   Bisectors List : "<<std::endl;
 	  thelistofbisectors->Dump(ashift+1,1);
 	}
     }
-  cout<<endl;
+  std::cout<<std::endl;
 }

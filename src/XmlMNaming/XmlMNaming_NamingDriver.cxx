@@ -194,13 +194,13 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
         TDF_Tool::Label(aNg->Label().Data(), anEntry, tLab, Standard_True);
         aNgName.ContextLabel(tLab);
 #ifdef OCCT_DEBUG
-        cout << "Retrieving Context Label = " << anEntry.ToCString() <<endl;
+        std::cout << "Retrieving Context Label = " << anEntry.ToCString() <<std::endl;
 #endif
       }
     }
 #ifdef OCCT_DEBUG
     else
-      cout << "Retrieving Context Label is NULL" <<endl;
+      std::cout << "Retrieving Context Label is NULL" <<std::endl;
 #endif
 
     if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 4 && 
@@ -239,7 +239,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
   }
 #ifdef OCCT_DEBUG
   else 
-    cout << "Current Document Format Version = "  << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<endl;
+    std::cout << "Current Document Format Version = "  << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<std::endl;
 #endif
   return Standard_True;
 }
@@ -309,13 +309,13 @@ void XmlMNaming_NamingDriver::Paste
   XmlObjMgt::SetTagEntryString (aDOMString, anEntry);
   anElem.setAttribute(::ContextLabelString(), aDOMString);
 #ifdef OCCT_DEBUG
-  cout << "XmlMNaming_NamingDriver::Store: ContextLabel Entry = " << anEntry << endl;
+  std::cout << "XmlMNaming_NamingDriver::Store: ContextLabel Entry = " << anEntry << std::endl;
   if (aDOMString != NULL)
   {
     Standard_CString aStr = Standard_CString(aDOMString.GetString());
-    cout << "XmlMNaming_NamingDriver::Store: ContextLabel DOMString = " << aStr << endl;
+    std::cout << "XmlMNaming_NamingDriver::Store: ContextLabel DOMString = " << aStr << std::endl;
   } else
-    cout << "XmlMNaming_NamingDriver::Store: aDOMString is NULL" <<endl;
+    std::cout << "XmlMNaming_NamingDriver::Store: aDOMString is NULL" <<std::endl;
 #endif
 
   // orientation

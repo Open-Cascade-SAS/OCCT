@@ -196,8 +196,8 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
       }
       catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	cout << "Warning: StepToTopoDS_TranslateCompositeCurve: Exception: ";
-	anException.Print(cout); cout << endl;
+	std::cout << "Warning: StepToTopoDS_TranslateCompositeCurve: Exception: ";
+	anException.Print(std::cout); std::cout << std::endl;
 #endif
 	(void)anException;
       }
@@ -234,8 +234,8 @@ Standard_Boolean StepToTopoDS_TranslateCompositeCurve::Init (const Handle(StepGe
       }
       catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	cout << "Warning: StepToTopoDS_TranslateCompositeCurve: Exception: ";
-	anException.Print(cout); cout << endl;
+	std::cout << "Warning: StepToTopoDS_TranslateCompositeCurve: Exception: ";
+	anException.Print(std::cout); std::cout << std::endl;
 #endif
 	(void)anException;
       }

@@ -167,7 +167,7 @@ Standard_Integer DNaming_RevolutionDriver::Execute(Handle(TFunction_Logbook)& th
     }
     if(!anAxisOK) {
 #ifdef OCCT_DEBUG
-      cout<<"RevolutionDriver:: Axis is not correct"<<endl;
+      std::cout<<"RevolutionDriver:: Axis is not correct"<<std::endl;
 #endif
       aFunction->SetFailure(WRONG_ARGUMENT);
       return -1;
@@ -419,8 +419,8 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 #ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
-	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape().get() <<endl;
+	      std::cout <<"mkRevol has degenerated" <<std::endl;
+	    std::cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape().get() <<std::endl;
 	  }
 #endif
 	}
@@ -436,8 +436,8 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 #ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
-	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape().get() <<endl;
+	      std::cout <<"mkRevol has degenerated" <<std::endl;
+	    std::cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape().get() <<std::endl;
 	  }
 #endif
 	}
@@ -505,8 +505,8 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 #ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
-	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape().get() <<endl;
+	      std::cout <<"mkRevol has degenerated" <<std::endl;
+	    std::cout << "BRep_Tool found degenerated edge (from Vfirst) TS = " << it.Value().TShape().get() <<std::endl;
 	  }
 #endif
 	}
@@ -521,8 +521,8 @@ void DNaming_RevolutionDriver::LoadNamingDS (const TDF_Label& theResultLabel,
 #ifdef OCCT_DEBUG
 	  else {
 	    if(MS.HasDegenerated())
-	      cout <<"mkRevol has degenerated" <<endl;
-	    cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape().get() <<endl;
+	      std::cout <<"mkRevol has degenerated" <<std::endl;
+	    std::cout << "BRep_Tool found degenerated edge (from Vlast) TS = " << it.Value().TShape().get() <<std::endl;
 	  }
 #endif
 	}

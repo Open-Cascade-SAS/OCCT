@@ -187,9 +187,9 @@ void Contap_HContTool::SamplePoint (const Handle(Adaptor3d_HSurface)& S,
       U = uinf + ((usup-uinf)/((Standard_Real)(nbIntU+1)))*(Standard_Real)(indU+1);
       V = vinf + ((vsup-vinf)/((Standard_Real)(nbIntV+2)))*(Standard_Real)(indV+1);
 
-      //-- cout<<"Index :"<<Index<<"  uinf:"<<uinf<<"  usup:"<<usup<<"  vinf:"<<vinf<<" vsup:"<<vsup<<"  ";
-      //-- cout<<"  ("<<indU<<"/"<<nbIntU<<" ->U:"<<U<<"  ";
-      //-- cout<<"  ("<<indV<<"/"<<nbIntV<<" ->V:"<<V<<endl;
+      //-- std::cout<<"Index :"<<Index<<"  uinf:"<<uinf<<"  usup:"<<usup<<"  vinf:"<<vinf<<" vsup:"<<vsup<<"  ";
+      //-- std::cout<<"  ("<<indU<<"/"<<nbIntU<<" ->U:"<<U<<"  ";
+      //-- std::cout<<"  ("<<indV<<"/"<<nbIntV<<" ->V:"<<V<<std::endl;
       return;
     }
   }

@@ -91,17 +91,17 @@ void PrintEntry(const TDF_Label&       label)
 {
   TCollection_AsciiString entry;
   TDF_Tool::Entry(label, entry);
-  cout << "LabelEntry = "<< entry << endl;
+  std::cout << "LabelEntry = "<< entry << std::endl;
 }
 //=======================================================================
 void PrintEntries(const TDF_LabelMap& map)
 {
-  cout << "=== Labels Map ===" <<endl;
+  std::cout << "=== Labels Map ===" <<std::endl;
   TCollection_AsciiString entry;
   TDF_MapIteratorOfLabelMap it(map);
   for(;it.More();it.Next()) {
     TDF_Tool::Entry(it.Key(), entry);
-      cout << "LabelEntry = "<< entry << endl;
+      std::cout << "LabelEntry = "<< entry << std::endl;
     }
 }
 #ifdef OCCT_DEBUG_DBGTOOLS_WRITE
@@ -118,10 +118,10 @@ static void DbgTools_Write(const TopoDS_Shape& shape,
       *p = '-';
     p++;
   }
-  ofstream save (buf);
+  std::ofstream save (buf);
   if(!save) 
-    cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << endl;
-  save << "DBRep_DrawableShape" << endl << endl;
+    std::cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << std::endl;
+  save << "DBRep_DrawableShape" << std::endl << std::endl;
   if(!shape.IsNull()) BRepTools::Write(shape, save);
   save.close();
 }
@@ -169,7 +169,7 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
     const Handle(TNaming_NamedShape)& aNS = it.Value();
     if(aNS.IsNull()) {
 #ifdef OCCT_DEBUG_ARG 
-      cout << "ValidArgs:: NS (Naming argument) is NULL" <<endl;
+      std::cout << "ValidArgs:: NS (Naming argument) is NULL" <<std::endl;
 #endif	
       return Standard_False;
     }
@@ -178,7 +178,7 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
 #ifdef OCCT_DEBUG_ARG
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(aNS->Label(), entry);
-	cout << "ValidArgs:: Empty NS, Label = " << entry <<endl;
+	std::cout << "ValidArgs:: Empty NS, Label = " << entry <<std::endl;
 #endif	
       return Standard_False;
     }
@@ -187,7 +187,7 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
 #ifdef OCCT_DEBUG_ARG 
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(aNS->Label(), entry);
-	  cout << "ValidArgs::Not valid NS Label = " << entry <<endl;
+	  std::cout << "ValidArgs::Not valid NS Label = " << entry <<std::endl;
 #endif	
 	  return Standard_False; 
 	}
@@ -580,7 +580,7 @@ static void SearchModifUntil (const TDF_LabelMap&               /*Valid*/,
 	  theMS.Add(S);
 	  found = Standard_True;
 #ifdef OCCT_DEBUG_MODUN
-	  cout << aNam2 << " is Same with " << aNam1 <<endl;
+	  std::cout << aNam2 << " is Same with " << aNam1 <<std::endl;
 #endif
 	  break;
 	}
@@ -616,7 +616,7 @@ static Standard_Boolean ModifUntil (const TDF_Label&                  L,
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); // fills Forbidden from Stop
 
 #ifdef OCCT_DEBUG_GEN  
-  cout <<"Regenerating ModifUntil => ";
+  std::cout <<"Regenerating ModifUntil => ";
   PrintEntry(L);
   DbgTools_WriteNSOnLabel(Args.Last(), "ModifUntil-");
  
@@ -635,7 +635,7 @@ static Standard_Boolean ModifUntil (const TDF_Label&                  L,
 #ifdef OCCT_DEBUG_GEN  
     TCollection_AsciiString aName = aNam + ++i + ext;
     DbgTools_Write(S, aName.ToCString()) ;
-    cout << aName.ToCString() << " TS = " << S.TShape()->This() <<endl;
+    std::cout << aName.ToCString() << " TS = " << S.TShape()->This() <<std::endl;
 #endif
   }
   return Standard_True;
@@ -715,17 +715,17 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
     DbgTools_Write(Stop->Get(), "Ints_Stop.brep");
     PrintEntry(Stop->Label());
   }
-  cout <<"Ints: ShapeType = " << ShapeType << endl;
-  cout <<"Argument 1 at ";
+  std::cout <<"Ints: ShapeType = " << ShapeType << std::endl;
+  std::cout <<"Argument 1 at ";
   PrintEntry(it.Value()->Label());
 #endif 
 
   TNaming_NamingTool::BuildDescendants (Stop, Forbiden); // <==<1>
 
 #ifdef OCCT_DEBUG_INT
-  cout << "Intersection:: Valid Map: "<<endl;
+  std::cout << "Intersection:: Valid Map: "<<std::endl;
   PrintEntries(Valid);
-  cout << "Intersection:: Forbidden Map: "<<endl;
+  std::cout << "Intersection:: Forbidden Map: "<<std::endl;
   PrintEntries(Forbiden);
 #endif
   TopTools_ListOfShape aListOfAnc;
@@ -750,7 +750,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
 #ifdef OCCT_DEBUG_INT
     TCollection_AsciiString aName = aNam + i++ + ext;      
     DbgTools_Write(CS, aName.ToCString()) ;
-    cout <<"Argument " << i << " at ";
+    std::cout <<"Argument " << i << " at ";
     PrintEntry(it.Value()->Label());
 #endif  
 
@@ -791,7 +791,7 @@ static Standard_Boolean Intersection (const TDF_Label&                  L,
       }      
     }
 #ifdef OCCT_DEBUG_INT
-    cout <<"Kept: indxE = " << indxE  <<" maxENum = " << nbE << " indxW = " <<indxW << " nbW = " <<nbW<<endl;
+    std::cout <<"Kept: indxE = " << indxE  <<" maxENum = " << nbE << " indxW = " <<indxW << " nbW = " <<nbW<<std::endl;
 #endif      
     Standard_Integer aCaseW(0);
     Standard_Integer aNbW = aS.NbChildren();
@@ -956,7 +956,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
     ii++;
     TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
     DbgTools_Write(CS, aNm.ToCString());
-    cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<endl;
+    std::cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<std::endl;
 #endif
   }
 
@@ -974,7 +974,7 @@ static Standard_Boolean Union (const TDF_Label&                  L,
 #ifdef OCCT_DEBUG_UNN 
       TCollection_AsciiString anEntry;
       TDF_Tool::Entry(ContextLabel, anEntry);
-      cout << "UNION: Context Label = " <<  anEntry << endl;
+      std::cout << "UNION: Context Label = " <<  anEntry << std::endl;
       DbgTools_Write(aContext, "Union_Context.brep");
       TCollection_AsciiString aN ("aMap_");
       TopTools_MapIteratorOfMapOfShape it(S.Map());
@@ -989,17 +989,17 @@ static Standard_Boolean Union (const TDF_Label&                  L,
     for(;anExpl.More(); anExpl.Next()) 
       aList.Append(anExpl.Current());
 #ifdef OCCT_DEBUG_UNN
-    cout <<"UNION: ShapeType = " << ShapeType << " List ext = " << aList.Extent()<<endl;
+    std::cout <<"UNION: ShapeType = " << ShapeType << " List ext = " << aList.Extent()<<std::endl;
     TopAbs_ShapeEnum aTyp = TopAbs_SHAPE;
     TopTools_MapIteratorOfMapOfShape it1 (S.Map());
     for (int i=1;it1.More();it1.Next(),i++) {
-      cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<endl;
+      std::cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<std::endl;
       aTyp = it1.Key().ShapeType();
     }
     
     TopExp_Explorer exp(aContext, aTyp);
     for(int i =1;exp.More();exp.Next(), i++) {
-     cout << "Context("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<endl;
+     std::cout << "Context("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<std::endl;
     }
 	    
 #endif
@@ -1026,8 +1026,8 @@ static Standard_Boolean Union (const TDF_Label&                  L,
   TNaming_Builder B(L);
 #ifdef OCCT_DEBUG_UNN
   if(!ContextLabel.IsNull()) {
-    if(found) cout << "UNION: Shape is found in Context" <<endl;
-    else cout << "UNION: Shape is NOT found in Context" <<endl;
+    if(found) std::cout << "UNION: Shape is found in Context" <<std::endl;
+    else std::cout << "UNION: Shape is NOT found in Context" <<std::endl;
   }
 #endif
   if(found) 
@@ -1134,7 +1134,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
     aSelection = aNaming->GetName().Shape();
 #ifdef OCCT_DEBUG_GEN
   DbgTools_Write(aSelection,  "G_Selection.brep") ;
-  cout << "Generated::SearchModifUntil aMS.Extent() = " << aMS.Extent() <<endl;
+  std::cout << "Generated::SearchModifUntil aMS.Extent() = " << aMS.Extent() <<std::endl;
   DbgTools_Write(aMS, "SearchModifUntil_Result");
 #endif
    Handle(TNaming_NamedShape) anOldNS;
@@ -1214,11 +1214,11 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 #endif
       if(!aShape.IsNull()) found = Standard_True;
 #ifdef OCCT_DEBUG_GEN
-      cout << "Generated ==>aGenerators.Extent() = " <<aGenerators.Extent() <<" aMS.Extent()= " <<aMS.Extent()<<endl;
+      std::cout << "Generated ==>aGenerators.Extent() = " <<aGenerators.Extent() <<" aMS.Extent()= " <<aMS.Extent()<<std::endl;
 #endif
       if(found) {
 #ifdef OCCT_DEBUG_GEN
-      cout << "Generated ==> Shape is found!" <<endl;
+      std::cout << "Generated ==> Shape is found!" <<std::endl;
 #endif
 	TopTools_ListOfShape aLM;
 	Standard_Boolean aHas = Standard_False;
@@ -1226,7 +1226,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 	if(aGenerators.Extent() != aMS.Extent()) { //missed generators
 	  aHas = Standard_True;//has lost generatos
 #ifdef OCCT_DEBUG_GEN
-      cout << "Generated ==> has lost generatos!" <<endl;
+      std::cout << "Generated ==> has lost generatos!" <<std::endl;
 #endif
 	  for (TNaming_ListIteratorOfListOfNamedShape itg(aGenerators); itg.More(); itg.Next()) {
 	    if(!aMS.Contains(itg.Value()->Get())) 
@@ -1263,9 +1263,9 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
 // 		if(it.Value().ShapeType() == TopAbs_EDGE) {
 // 		  const TopoDS_Shape& aV1 = TopExp::FirstVertex(TopoDS::Edge(it.Value()));
 // 		  const TopoDS_Shape& aV2 = TopExp::LastVertex(TopoDS::Edge(it.Value()));
-// 		  if(aShape.IsSame(aV1)) {aShape2 =  aV2; 	cout << "##### => V2 " <<endl;break;}
+// 		  if(aShape.IsSame(aV1)) {aShape2 =  aV2; 	std::cout << "##### => V2 " <<std::endl;break;}
 // 		  else 
-// 		    if(aShape.IsSame(aV2)) {aShape2 =  aV1;	cout << "##### => V1 " <<endl;break;}
+// 		    if(aShape.IsSame(aV2)) {aShape2 =  aV1;	std::cout << "##### => V1 " <<std::endl;break;}
 // 		}	  
 // 	      }
 // 	    }
@@ -1286,7 +1286,7 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
     } else 
       {	//not found
 #ifdef OCCT_DEBUG_GEN
-	cout << "Generated ==> Shape is NOT found! Probably Compound will be built" <<endl;
+	std::cout << "Generated ==> Shape is NOT found! Probably Compound will be built" <<std::endl;
 #endif
 
 	TopTools_ListIteratorOfListOfShape it2(aList2);
@@ -1368,9 +1368,9 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
   TCollection_AsciiString aNam("Cand_");
   TCollection_AsciiString ext(".brep");
   DbgTools_WriteNSOnLabel(Cand, aNam.ToCString());  
-  cout << "Cand (Args.First()) Label = ";
+  std::cout << "Cand (Args.First()) Label = ";
   PrintEntry(Cand->Label());  
-  cout << "Valid Label map:" <<endl;
+  std::cout << "Valid Label map:" <<std::endl;
   PrintEntries(Valid);
 #endif
 
@@ -1380,7 +1380,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
 #ifdef OCCT_DEBUG_FNB
   TCollection_AsciiString aNam2("SCand");
   DbgTools_Write(SCand, aNam2.ToCString());  
-  cout <<"SCand Extent = " << SCand.Extent() << " Expected ShapeType = " << ShapeType << endl;
+  std::cout <<"SCand Extent = " << SCand.Extent() << " Expected ShapeType = " << ShapeType << std::endl;
 #endif 
 
   //------------------------------------------------------------
@@ -1424,7 +1424,7 @@ static Standard_Boolean  FilterByNeighbourgs (const TDF_Label&                L,
     it.Next(); 
     Standard_Boolean Keep = 1;
 #ifdef OCCT_DEBUG_FNB
-    cout <<"Args number = " << Args.Extent() <<endl;
+    std::cout <<"Args number = " << Args.Extent() <<std::endl;
     i=1;
     aNam = "Boundaries";
 #endif
@@ -1489,7 +1489,7 @@ static const TopoDS_Shape FindSubShapeInAncestor(const TopoDS_Shape& Selection, 
   for(;expl1.More(); expl1.Next()) {      
     if(expl1.Current().IsSame(Selection)) {
       i++;
-      cout <<"FindSubShape:  = " <<expl1.Current().ShapeType() << " TS = " <<expl1.Current().TShape() << endl;
+      std::cout <<"FindSubShape:  = " <<expl1.Current().ShapeType() << " TS = " <<expl1.Current().TShape() << std::endl;
       TCollection_AsciiString nam = SS + i + ".brep";
       DbgTools_Write(expl1.Current(), nam.ToCString());	
     }
@@ -1499,7 +1499,7 @@ static const TopoDS_Shape FindSubShapeInAncestor(const TopoDS_Shape& Selection, 
     TopExp_Explorer anExpl(Context, Selection.ShapeType());
     for(;anExpl.More(); anExpl.Next()) {
 #ifdef OCCT_DEBUG_OR_AG
-      cout <<"FindSubShape:  = " <<anExpl.Current().ShapeType() << " TS = " <<anExpl.Current().TShape()->This() << endl;
+      std::cout <<"FindSubShape:  = " <<anExpl.Current().ShapeType() << " TS = " <<anExpl.Current().TShape()->This() << std::endl;
       DbgTools_Write(anExpl.Current(), "Orientation_Current.brep");
 #endif    
       if(anExpl.Current().IsSame(Selection)) 
@@ -1603,7 +1603,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
   if(aSList.Extent() == 0) {
     const Handle(TNaming_NamedShape)& Anc = Args.Last();
 #ifdef OCCT_DEBUG_OR
-    cout << "### ORIENTATION: Ancestor ";
+    std::cout << "### ORIENTATION: Ancestor ";
     PrintEntry(Anc->Label());
 #endif
     MSC.Clear();
@@ -1623,7 +1623,7 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 		CS = it.Value();
 		found = Standard_True;
 #ifdef OCCT_DEBUG_OR
-		cout << "ORIENTATION => ORDER = " << i <<endl;
+		std::cout << "ORIENTATION => ORDER = " << i <<std::endl;
 #endif
 		break;
 	      }
@@ -1634,8 +1634,8 @@ static Standard_Boolean ORientation (const TDF_Label&                L,
 	  CS =  FindSubShapeInAncestor(aShape, AS);
 // <=== end 21.10.2009
 #ifdef OCCT_DEBUG_OR
-	cout << "ORIENTATION: Selection TShape = " <<CS.TShape() <<" Orientation = " << CS.Orientation() <<endl;
-	cout << "ORIENTATION: Context ShapeType = "<<AS.ShapeType() << " TShape = " <<AS.TShape() <<endl;
+	std::cout << "ORIENTATION: Selection TShape = " <<CS.TShape() <<" Orientation = " << CS.Orientation() <<std::endl;
+	std::cout << "ORIENTATION: Context ShapeType = "<<AS.ShapeType() << " TShape = " <<AS.TShape() <<std::endl;
 	DbgTools_Write(AS, "Orientation_Cnt.brep");
 #endif
 	if(!CS.IsNull()) {
@@ -1741,7 +1741,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
   if (aMapOfSh.Extent() != 1) return aResult;
   const TopoDS_Shape& aCF = aMapOfSh(1);
 #ifdef OCCT_DEBUG_WIN
-  cout <<"MS Extent = " <<MS.Extent() <<endl;
+  std::cout <<"MS Extent = " <<MS.Extent() <<std::endl;
   DbgTools_Write(aCF, "Context_Face.brep");
 #endif
   TNaming_Builder B(L);
@@ -1789,21 +1789,21 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
       ii++;
       TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
       DbgTools_Write(CS, aNm.ToCString());
-      cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<endl;
+      std::cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<std::endl;
 #endif
 	}
 
 #ifdef OCCT_DEBUG_WIN
-    cout <<"WIREIN:  Internal Map ext = " << aSet.Map().Extent()<<endl;
+    std::cout <<"WIREIN:  Internal Map ext = " << aSet.Map().Extent()<<std::endl;
     TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
     for (int i=1;it1.More();it1.Next(),i++) {
-      cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<
-		  it1.Key().ShapeType()<<endl;
+      std::cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<
+		  it1.Key().ShapeType()<<std::endl;
     }
     
     TopExp_Explorer exp(aCF, TopAbs_EDGE);
     for(int i =1;exp.More();exp.Next(), i++) {
-     cout << "Context_Face("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<endl;
+     std::cout << "Context_Face("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<std::endl;
     }	    
 #endif
 //end for edges
@@ -1813,7 +1813,7 @@ static Standard_Boolean WireIN(const TDF_Label&                L,
 	if(!S.IsNull()) {
 #ifdef OCCT_DEBUG_WIN    
       DbgTools_Write(S, "WireIN_S.brep");
-      cout <<"WIREIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<endl;
+      std::cout <<"WIREIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<std::endl;
 #endif       
       if(S.ShapeType() == TopAbs_WIRE) {
 		TopTools_MapOfShape aView;
@@ -1877,7 +1877,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
   if (aMapOfSh.Extent() != 1) return aResult;
   const TopoDS_Shape& aCSO = aMapOfSh(1);
 #ifdef OCCT_DEBUG_SHELL
-  cout <<"MS Extent = " <<MS.Extent() <<endl;
+  std::cout <<"MS Extent = " <<MS.Extent() <<std::endl;
   DbgTools_Write(aCSO, "Context_Solid.brep");
 #endif
   TNaming_Builder B(L);
@@ -1888,7 +1888,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
       B.Select(anOuterShell, anOuterShell);
 	  aResult = Standard_True;
 #ifdef OCCT_DEBUG_SHELL      
-	  cout << "Outer Shell case" <<endl;
+	  std::cout << "Outer Shell case" <<std::endl;
       PrintEntry(L);
 	  DbgTools_Write(anOuterShell, "ShellOut_S.brep");
 	  TopoDS_Iterator it (aCSO);
@@ -1934,21 +1934,21 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
       ii++;
       TCollection_AsciiString aNm = Nam + entry + "_" + ii + ".brep";
       DbgTools_Write(CS, aNm.ToCString());
-      cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<endl;
+      std::cout <<"Arg: Entry = " <<entry <<"  TShape = " << CS.TShape() <<std::endl;
 #endif
 	}
 
 #ifdef OCCT_DEBUG_SHELL
-    cout <<"SHELLIN:  Internal Map ext = " << aSet.Map().Extent()<<endl;
+    std::cout <<"SHELLIN:  Internal Map ext = " << aSet.Map().Extent()<<std::endl;
     TopTools_MapIteratorOfMapOfShape it1 (aSet.Map());
     for (int i=1;it1.More();it1.Next(),i++) {
-      cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<
-		  it1.Key().ShapeType()<<endl;
+      std::cout << "Map("<<i<<"): TShape = " << it1.Key().TShape() << " Orient = " << it1.Key().Orientation() <<" Type = " <<
+		  it1.Key().ShapeType()<<std::endl;
     }
     
     TopExp_Explorer exp(aCSO, TopAbs_FACE);
     for(int i = 1;exp.More();exp.Next(), i++) {
-     cout << "Context_Solid("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<endl;
+     std::cout << "Context_Solid("<<i<<"): TShape = " << exp.Current().TShape() << " Orient = " << exp.Current().Orientation() <<std::endl;
     }	    
 #endif
 //end for faces
@@ -1958,7 +1958,7 @@ static Standard_Boolean ShellIN(const TDF_Label&                L,
 	if(!S.IsNull()) {
 #ifdef OCCT_DEBUG_SHELL    
       DbgTools_Write(S, "ShellIN_S.brep");
-      cout <<"SHELLIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<endl;
+      std::cout <<"SHELLIN: ShapeType = " << S.ShapeType() << " TS = " << S.TShape()->This() <<std::endl;
 #endif       
 	  if(S.ShapeType() == TopAbs_SHELL) {
 		TopTools_MapOfShape aView;
@@ -2090,7 +2090,7 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
   case TNaming_WIREIN: 
     {
 #ifdef OCCT_DEBUG_WIN  
-      cout << "Name::Solve: NameType = " << myType << "  ";
+      std::cout << "Name::Solve: NameType = " << myType << "  ";
   PrintEntry(aLab);
 #endif
       Done = WireIN (aLab,Valid,myArgs,myStop,myIndex);
@@ -2099,7 +2099,7 @@ Standard_Boolean TNaming_Name::Solve(const TDF_Label&    aLab,
 case TNaming_SHELLIN: 
     {
 #ifdef OCCT_DEBUG_SHELL
-      cout << "Name::Solve: NameType = " << myType << "  ";
+      std::cout << "Name::Solve: NameType = " << myType << "  ";
       PrintEntry(aLab);
 #endif
       Done = ShellIN (aLab,Valid,myArgs,myStop,myIndex);      
@@ -2108,7 +2108,7 @@ case TNaming_SHELLIN:
   }
 } catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
-  cout << "Name::Solve: EXCEPTION==> NameType = " << NameTypeToString(myType) << "  ";
+  std::cout << "Name::Solve: EXCEPTION==> NameType = " << NameTypeToString(myType) << "  ";
   PrintEntry(aLab);
 #endif
 }

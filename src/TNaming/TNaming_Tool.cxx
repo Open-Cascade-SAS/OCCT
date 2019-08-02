@@ -526,8 +526,8 @@ void TNamingTool_DumpLabel (const TopoDS_Shape& S,
 			    const TDF_Label&    Acces)
 {
   Handle(TNaming_NamedShape) NS = TNaming_Tool::NamedShape(S,Acces);
-  NS->Label().EntryDump(cout);
-  cout<<endl;
+  NS->Label().EntryDump(std::cout);
+  std::cout<<std::endl;
 }
 
 #include <BRepTools.hxx>
@@ -561,7 +561,7 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
   Handle(TNaming_Naming) aNaming;
   if (!Arg->FindAttribute(TNaming_Naming::GetID(), aNaming)) {
 #ifdef OCCT_DEBUG
-//    cout<<"TNaming_Tool::FindShape(): Naming attribute hasn't been found attached at the Argument label"<<endl;
+//    std::cout<<"TNaming_Tool::FindShape(): Naming attribute hasn't been found attached at the Argument label"<<std::endl;
 #endif
     return;
   }
@@ -571,7 +571,7 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
   TopExp_Explorer anExpl(Arg->Get(), (TopAbs_ShapeEnum)((int)(aNaming->GetName().ShapeType()) + 1));
   for (; anExpl.More(); anExpl.Next()) subShapes.Add(anExpl.Current());
 #ifdef OCCT_DEBUG
-//  cout<<"TNaming_Tool::FindShape(): Nb of sub shapes = "<<subShapes.Extent()<<endl;
+//  std::cout<<"TNaming_Tool::FindShape(): Nb of sub shapes = "<<subShapes.Extent()<<std::endl;
 #endif
 
   // Looking for external arguments:
@@ -580,7 +580,7 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
   TDF_Tool::OutReferences(Arg->Label(), outRefs);
   if (outRefs.IsEmpty()) {
 #ifdef OCCT_DEBUG
-//    cout<<"TNaming_Tool::FindShape(): No out references have been found"<<endl;
+//    std::cout<<"TNaming_Tool::FindShape(): No out references have been found"<<std::endl;
 #endif
     return;
   }
@@ -595,8 +595,8 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
 	extArgs.Append(aCurrentExtArg);
 #ifdef OCCT_DEBUG
 //      if (extArgs.Extent() - 1 == nbExtArgs) {
-//	cout<<"TNaming_Tool::FindShape(): An external reference has been found at ";
-//	itr.Key()->Label().EntryDump(cout); cout<<endl;
+//	std::cout<<"TNaming_Tool::FindShape(): An external reference has been found at ";
+//	itr.Key()->Label().EntryDump(std::cout); std::cout<<std::endl;
 //      }
 #endif
     }
@@ -613,14 +613,14 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
 	!anExtArg->Label().Father().FindAttribute(TNaming_NamedShape::GetID(), aContextNS)) {
       aContextNS = anExtArg;
 // #ifdef OCCT_DEBUG
-//       cout<<"TNaming_Tool::FindShape(): A context shape hasn't been found at the father label of the external argument"<<endl;
+//       std::cout<<"TNaming_Tool::FindShape(): A context shape hasn't been found at the father label of the external argument"<<std::endl;
 // #endif
 //       continue;
     }
 
 #ifdef OCCT_DEBUG
-//    cout<<"TNaming_Tool::FindShape(): Searching in the external reference ";
-//    aContextNS->Label().EntryDump(cout); cout<<"  ";
+//    std::cout<<"TNaming_Tool::FindShape(): Searching in the external reference ";
+//    aContextNS->Label().EntryDump(std::cout); std::cout<<"  ";
 #endif
     
     // Lets find the sub shape of the context which coincides with our sub shapes (subShapes map):
@@ -637,14 +637,14 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
       for (TopTools_MapIteratorOfMapOfShape itrR(subShapesOfResult); itrR.More(); itrR.Next()) {
 	for (TopTools_MapIteratorOfMapOfShape itr1(subShapes); itr1.More(); itr1.Next()) {
 	  if (itrR.Key().IsSame(itr1.Key())) {
-	    DoesCoincide++; //cout<<".";
+	    DoesCoincide++; //std::cout<<".";
 	    break;
 	  }
 	}
       }
       if (DoesCoincide == subShapes.Extent()) {
 #ifdef OCCT_DEBUG
-//	cout<<"TNaming_Tool::FindShape(): Found! ";
+//	std::cout<<"TNaming_Tool::FindShape(): Found! ";
 #endif
 	S = possibleResult;
 	break;
@@ -653,14 +653,14 @@ void TNaming_Tool::FindShape(const TDF_LabelMap&               Valid,
 
     if (!S.IsNull()) break;
 #ifdef OCCT_DEBUG
-//    cout<<endl;
+//    std::cout<<std::endl;
 #endif
 
   }
 
 #ifdef OCCT_DEBUG
   if (S.IsNull()) {
-    cout<<"TNaming_Tool::FindShape(): There hasn't been found a sub shape of the context shape coinciding with the sub shapes of naming"<<endl;
+    std::cout<<"TNaming_Tool::FindShape(): There hasn't been found a sub shape of the context shape coinciding with the sub shapes of naming"<<std::endl;
   }
 #endif
       

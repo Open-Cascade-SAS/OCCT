@@ -119,11 +119,11 @@ void TNaming_Translator::DumpMap(const Standard_Boolean isWrite) const
 
   if (!myMap.Extent()) return;
   else 
-    cout <<"TNaming_Translator:: IndexedDataMap Extent = "<< myMap.Extent() << endl;
+    std::cout <<"TNaming_Translator:: IndexedDataMap Extent = "<< myMap.Extent() << std::endl;
   
   for (Standard_Integer i=1; i <= myMap.Extent(); i++)
     {
-      cout <<"TNaming_Translator::DumpMap:  Index = "<< i << " Type = "<< (myMap.FindKey(i))->DynamicType() << endl;
+      std::cout <<"TNaming_Translator::DumpMap:  Index = "<< i << " Type = "<< (myMap.FindKey(i))->DynamicType() << std::endl;
       Handle(Standard_Type) T = (myMap.FindKey(i))->DynamicType();
       if((T == STANDARD_TYPE (BRep_TVertex)) ||(T == STANDARD_TYPE (BRep_TEdge)) ||
 	 T == STANDARD_TYPE (BRep_TFace)|| T == STANDARD_TYPE (TopoDS_TWire)||
@@ -144,14 +144,14 @@ void TNaming_Translator::DumpMap(const Standard_Boolean isWrite) const
 	  if(isWrite) {
 	    const Handle(TopLoc_Datum3D) key = Handle(TopLoc_Datum3D)::DownCast(myMap.FindKey(i));
 	    const Handle(TopLoc_Datum3D) Item = Handle(TopLoc_Datum3D)::DownCast(myMap.FindFromIndex(i));
-	    cout << "TNaming_Translator::DumpMap: Location_Key_name  = "<< keyname.Cat(i).ToCString()<< endl;
-	    key->ShallowDump(cout);
-	    cout << "TNaming_Translator::DumpMap: Location_Item_name = "<< itemname.Cat(i).ToCString()<< endl;
-	    Item->ShallowDump(cout);
+	    std::cout << "TNaming_Translator::DumpMap: Location_Key_name  = "<< keyname.Cat(i).ToCString()<< std::endl;
+	    key->ShallowDump(std::cout);
+	    std::cout << "TNaming_Translator::DumpMap: Location_Item_name = "<< itemname.Cat(i).ToCString()<< std::endl;
+	    Item->ShallowDump(std::cout);
 	  }						       
 	}
       else {
-	cout <<"TNaming_Translator::DumpMap: Unexpected Type >> Idex = "<< i << " Type = "<<(myMap.FindKey(i))->DynamicType()<< endl;
+	std::cout <<"TNaming_Translator::DumpMap: Unexpected Type >> Idex = "<< i << " Type = "<<(myMap.FindKey(i))->DynamicType()<< std::endl;
 	continue;
       }
     }

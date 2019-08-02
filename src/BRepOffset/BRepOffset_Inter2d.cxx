@@ -347,7 +347,7 @@ static void EdgeInter(const TopoDS_Face&              F,
           if (Precision::IsInfinite(aT1) || Precision::IsInfinite(aT2))
             {
 #ifdef OCCT_DEBUG
-              cout << "Inter2d : Solution rejected due to infinite parameter"<<endl;
+              std::cout << "Inter2d : Solution rejected due to infinite parameter"<<std::endl;
 #endif
               continue;
             }
@@ -370,22 +370,22 @@ static void EdgeInter(const TopoDS_Face&              F,
 #ifdef OCCT_DEBUG
           if (aT1 < f[1]-Tol  || aT1 > l[1]+Tol)
             {
-              cout << "out of limit"<<endl;
-              cout<<"aT1 = "<<aT1<<", f[1] = "<<f[1]<<", l[1] = "<<l[1]<<endl;
+              std::cout << "out of limit"<<std::endl;
+              std::cout<<"aT1 = "<<aT1<<", f[1] = "<<f[1]<<", l[1] = "<<l[1]<<std::endl;
             }
           if (aT2 < f[2]-Tol  || aT2 > l[2]+Tol)
             {
-              cout << "out of limit"<<endl;
-              cout<<"aT2 = "<<aT2<<", f[2] = "<<f[2]<<", l[2] = "<<l[2]<<endl;
+              std::cout << "out of limit"<<std::endl;
+              std::cout<<"aT2 = "<<aT2<<", f[2] = "<<f[2]<<", l[2] = "<<l[2]<<std::endl;
             }
           Standard_Real MilTol2 = 1000*Tol*Tol;
           if (P1.SquareDistance(P) >  MilTol2 || P2.SquareDistance(P) > MilTol2 || P1.Distance(P2) > 2.*Tol)
             {
-              cout << "Inter2d : Solution rejected "<<endl;
-              cout<<"P  = "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<endl;
-              cout<<"P1 = "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z()<<endl;
-              cout<<"P2 = "<<P2.X()<<" "<<P2.Y()<<" "<<P2.Z()<<endl;
-              cout<<"MaxDist = "<<dist1<<endl;
+              std::cout << "Inter2d : Solution rejected "<<std::endl;
+              std::cout<<"P  = "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<std::endl;
+              std::cout<<"P1 = "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z()<<std::endl;
+              std::cout<<"P2 = "<<P2.X()<<" "<<P2.Y()<<" "<<P2.Z()<<std::endl;
+              std::cout<<"MaxDist = "<<dist1<<std::endl;
             }
 #endif
           //define the orientation of a new vertex
@@ -405,7 +405,7 @@ static void EdgeInter(const TopoDS_Face&              F,
               Standard_Real CrossProd = V2or ^ V1;
 #ifdef OCCT_DEBUG
               if (Abs(CrossProd) <= gp::Resolution())
-                cout<<endl<<"CrossProd = "<<CrossProd<<endl;
+                std::cout<<std::endl<<"CrossProd = "<<CrossProd<<std::endl;
 #endif
               if (CrossProd > 0.)
                 OO1 = TopAbs_FORWARD;
@@ -489,7 +489,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 //  Modified by skv - Thu Jan 22 18:19:05 2004 OCC4455 End
             LV1.Remove(it1LV1);
             LV2.Remove(it1LV2);
-            if (AffichPurge) cout <<"Doubles removed in EdgeInter."<<endl;
+            if (AffichPurge) std::cout <<"Doubles removed in EdgeInter."<<std::endl;
             Purge = Standard_True;
             break;
           }
@@ -616,7 +616,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
       if (Precision::IsInfinite(aT1) || Precision::IsInfinite(aT2))
         {
 #ifdef OCCT_DEBUG
-          cout << "Inter2d : Solution rejected due to infinite parameter"<<endl;
+          std::cout << "Inter2d : Solution rejected due to infinite parameter"<<std::endl;
 #endif
           continue;
         }
@@ -639,22 +639,22 @@ static void RefEdgeInter(const TopoDS_Face&              F,
 #ifdef OCCT_DEBUG
       if (aT1 < f[1]-Tol  || aT1 > l[1]+Tol)
         {
-          cout << "out of limit"<<endl;
-          cout<<"aT1 = "<<aT1<<", f[1] = "<<f[1]<<", l[1] = "<<l[1]<<endl;
+          std::cout << "out of limit"<<std::endl;
+          std::cout<<"aT1 = "<<aT1<<", f[1] = "<<f[1]<<", l[1] = "<<l[1]<<std::endl;
         }
       if (aT2 < f[2]-Tol  || aT2 > l[2]+Tol)
         {
-          cout << "out of limit"<<endl;
-          cout<<"aT2 = "<<aT2<<", f[2] = "<<f[2]<<", l[2] = "<<l[2]<<endl;
+          std::cout << "out of limit"<<std::endl;
+          std::cout<<"aT2 = "<<aT2<<", f[2] = "<<f[2]<<", l[2] = "<<l[2]<<std::endl;
         }
       Standard_Real MilTol2 = 1000*Tol*Tol;
       if (P1.SquareDistance(P) >  MilTol2 || P2.SquareDistance(P) > MilTol2 || P1.Distance(P2) > 2.*Tol)
         {
-          cout << "Inter2d : Solution rejected"<<endl;
-          cout<<"P  = "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<endl;
-          cout<<"P1 = "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z()<<endl;
-          cout<<"P2 = "<<P2.X()<<" "<<P2.Y()<<" "<<P2.Z()<<endl;
-          cout<<"MaxDist = "<<dist1<<endl;
+          std::cout << "Inter2d : Solution rejected"<<std::endl;
+          std::cout<<"P  = "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<std::endl;
+          std::cout<<"P1 = "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z()<<std::endl;
+          std::cout<<"P2 = "<<P2.X()<<" "<<P2.Y()<<" "<<P2.Z()<<std::endl;
+          std::cout<<"MaxDist = "<<dist1<<std::endl;
         }
 #endif
       //define the orientation of a new vertex
@@ -674,7 +674,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
           Standard_Real CrossProd = V2or ^ V1;
 #ifdef OCCT_DEBUG
           if (Abs(CrossProd) <= gp::Resolution())
-            cout<<endl<<"CrossProd = "<<CrossProd<<endl;
+            std::cout<<std::endl<<"CrossProd = "<<CrossProd<<std::endl;
 #endif
           if (CrossProd > 0.)
             OO1 = TopAbs_FORWARD;
@@ -746,7 +746,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
           if (P1.IsEqual(P2,10*Tol)) {
             LV1.Remove(it1LV1);
             LV2.Remove(it1LV2);
-            if (AffichPurge) cout <<"Doubles removed in EdgeInter."<<endl;
+            if (AffichPurge) std::cout <<"Doubles removed in EdgeInter."<<std::endl;
             Purge = Standard_True;
             break;
           }
@@ -762,7 +762,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
     //---------------------------------
 ////-----------------------------------------------------
     if(LV1.Extent() > 1) {
-      //cout << "IFV - RefEdgeInter: remove vertex" << endl;
+      //std::cout << "IFV - RefEdgeInter: remove vertex" << std::endl;
       Standard_Real dmin = RealLast();
       TopoDS_Vertex Vmin;
       for (it1LV1.Initialize(LV1); it1LV1.More(); it1LV1.Next()) {
@@ -1135,7 +1135,7 @@ void BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const 
                     f = Projector.LowerDistanceParameter();
 #ifdef OCCT_DEBUG
                   else
-                    cout<<"ProjectPointOnCurve not done"<<endl;
+                    std::cout<<"ProjectPointOnCurve not done"<<std::endl;
 #endif
                 }
               if (!Precision::IsInfinite(LastParOnPC))
@@ -1148,7 +1148,7 @@ void BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge& E,TopoDS_Edge& NE, const 
                     l = Projector.LowerDistanceParameter();
 #ifdef OCCT_DEBUG
                   else
-                    cout<<"ProjectPointOnCurve not done"<<endl;
+                    std::cout<<"ProjectPointOnCurve not done"<<std::endl;
 #endif
                 }
             }

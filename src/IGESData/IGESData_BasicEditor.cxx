@@ -196,7 +196,7 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
 	Standard_Integer nums = themodel->Number(sh.Value());
 	if (igt == 402 || igt == 404) subs.SetValue (nums,subs.Value(nums) | 2);
 	else subs.SetValue (nums,subs.Value(nums) | 1);
-////	cout<<"ComputeStatus : nums = "<<nums<<" ->"<<subs.Value(nums)<<endl;
+////	std::cout<<"ComputeStatus : nums = "<<nums<<" ->"<<subs.Value(nums)<<std::endl;
       }
     }
 //  UseFlag (a propager)
@@ -232,7 +232,7 @@ Standard_Boolean IGESData_BasicEditor::SetUnitName (const Standard_CString name)
     Standard_Integer uf = ent->UseFlag();
     if (uf == 0) uf = G.Status(i);
     Standard_Integer hy = ent->HierarchyStatus();
-////    cout<<" Ent.n0."<<i<<" Subord="<<subs.Value(i)<<" Use="<<uf<<endl;
+////    std::cout<<" Ent.n0."<<i<<" Subord="<<subs.Value(i)<<" Use="<<uf<<std::endl;
     ent->InitStatus(bl,subs.Value(i),uf,hy);
   }
 }

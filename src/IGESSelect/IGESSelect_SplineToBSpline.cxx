@@ -54,8 +54,8 @@ Standard_Boolean  IGESSelect_SplineToBSpline::Perform
     if (it == 112 || it == 126) {
       thefound = Standard_True;
 #ifdef OCCT_DEBUG
-      cout<<"IGESSelect_SplineToBSpline : n0."<<i
-	<< (it == 112 ? ", Curve" : ", Surface")<<" to convert"<<endl;
+      std::cout<<"IGESSelect_SplineToBSpline : n0."<<i
+	<< (it == 112 ? ", Curve" : ", Surface")<<" to convert"<<std::endl;
 #endif
     }
   }

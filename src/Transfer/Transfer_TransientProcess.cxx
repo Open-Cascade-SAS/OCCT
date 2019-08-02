@@ -238,16 +238,16 @@ void Transfer_TransientProcess::PrintStats(const Standard_Integer /*mode*/,
 {
   S<<"\n*******************************************************************\n";
 //  if (mode == 1) {    //  Statistiques de base
-    S << "********                 Basic Statistics                  ********"<<endl;
+    S << "********                 Basic Statistics                  ********"<<Message_EndLine;
 
     Handle(Interface_InterfaceModel) model = Model();
-    if (model.IsNull())      S<<"****        Model unknown"<<endl;
+    if (model.IsNull())      S<<"****        Model unknown"<<Message_EndLine;
     else
-      S<<"****        Nb Entities         : "<<model->NbEntities()<<endl;
+      S<<"****        Nb Entities         : "<<model->NbEntities()<<Message_EndLine;
 
     Standard_Integer nbr = 0, nbe = 0, nbw = 0;
     Standard_Integer i, max = NbMapped(), nbroots = NbRoots();
-    S << "****        Nb Final Results    : "<<nbroots<<endl;
+    S << "****        Nb Final Results    : "<<nbroots<<Message_EndLine;
 
     for (i = 1; i <= max; i ++) {
       const Handle(Transfer_Binder)& binder = MapItem(i);
@@ -269,7 +269,7 @@ void Transfer_TransientProcess::PrintStats(const Standard_Integer /*mode*/,
       S<<"****                Warnings on : "<<Interface_MSG::Blanks(nbw,4)<<nbw<<" Entities\n";
     S<<"*******************************************************************";
 //  }
-  S<<endl;
+  S<<Message_EndLine;
 }
 
 

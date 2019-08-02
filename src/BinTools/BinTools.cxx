@@ -165,9 +165,9 @@ void BinTools::Read (TopoDS_Shape& theShape, Standard_IStream& theStream)
 
 Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape, const Standard_CString theFile)
 {
-  ofstream aStream;
+  std::ofstream aStream;
   aStream.precision (15);
-  OSD_OpenStream (aStream, theFile, ios::out | ios::binary);
+  OSD_OpenStream (aStream, theFile, std::ios::out | std::ios::binary);
   if (!aStream.good())
     return Standard_False;
 
@@ -183,8 +183,8 @@ Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape, const Standard_C
 
 Standard_Boolean BinTools::Read (TopoDS_Shape& theShape, const Standard_CString theFile)
 {
-  filebuf aBuf;
-  OSD_OpenStream (aBuf, theFile, ios::in | ios::binary);
+  std::filebuf aBuf;
+  OSD_OpenStream (aBuf, theFile, std::ios::in | std::ios::binary);
   if (!aBuf.is_open())
     return Standard_False;
 

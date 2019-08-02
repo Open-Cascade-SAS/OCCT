@@ -109,7 +109,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeLinearForm::Init" << endl;
+  if (trc) std::cout << "BRepFeat_MakeLinearForm::Init" << std::endl;
 #endif
   Standard_Boolean RevolRib = Standard_False;
   Done();
@@ -146,8 +146,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     myFuse   = Standard_True;
 #ifdef OCCT_DEBUG
   if (trc) {
-    if (myFuse)  cout << " Fuse" << endl;
-    if (!myFuse)  cout << " Cut" << endl;
+    if (myFuse)  std::cout << " Fuse" << std::endl;
+    if (!myFuse)  std::cout << " Cut" << std::endl;
   }
 #endif
 
@@ -177,7 +177,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
     Standard_Real ang = myDir1.Angle(myDir);
     if(ang != M_PI) {
 #ifdef OCCT_DEBUG
-      if (trc) cout << " Directions must be opposite" << endl;
+      if (trc) std::cout << " Directions must be opposite" << std::endl;
 #endif
       myStatusError = BRepFeat_BadDirect;
       NotDone();
@@ -188,7 +188,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 
 // Rib is centre in the middle of translation
 #ifdef OCCT_DEBUG
-    if (trc)  cout << " Rib is centre" << endl;
+    if (trc)  std::cout << " Rib is centre" << std::endl;
 #endif
     const gp_Vec& DirTranslation = (Direc + Direc1) * 0.5;
     gp_Trsf T;
@@ -251,7 +251,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
  
   if(!Data) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " No Extreme faces" << endl;
+    if (trc) std::cout << " No Extreme faces" << std::endl;
 #endif
     myStatusError = BRepFeat_NoExtFace;
     NotDone();
@@ -277,7 +277,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 
   if(Sliding) {    // sliding
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Sliding" << endl;
+    if (trc) std::cout << " Sliding" << std::endl;
 #endif
     Sliding = Standard_False;
     Handle(Geom_Surface) s = BRep_Tool::Surface(FirstFace);
@@ -353,7 +353,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 // ---case of sliding : construction of the profile face 
   if(Sliding) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " still Sliding" << endl;
+    if (trc) std::cout << " still Sliding" << std::endl;
 #endif
     TopoDS_Face Prof;
     Standard_Boolean ProfileOK;
@@ -365,8 +365,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 #ifdef OCCT_DEBUG
       if (trc)
       {
-        cout << "Not computable" << endl;
-        cout << "Face profile not computable" << endl;
+        std::cout << "Not computable" << std::endl;
+        std::cout << "Face profile not computable" << std::endl;
       }
 #endif
       myStatusError = BRepFeat_NoFaceProf;
@@ -382,7 +382,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 // Control if there is everything required to have the material at the proper side
     if(falseside == Standard_False) {
 #ifdef OCCT_DEBUG
-      cout << "Verify plane and wire orientation" << endl;
+      std::cout << "Verify plane and wire orientation" << std::endl;
 #endif
       myStatusError = BRepFeat_FalseSide;
       NotDone();
@@ -683,8 +683,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
   if(!Sliding) {
 #ifdef OCCT_DEBUG
     if (trc) {
-      if (Modify) cout << " Sliding failure" << endl;
-      cout << " no Sliding" << endl;
+      if (Modify) std::cout << " Sliding failure" << std::endl;
+      std::cout << " no Sliding" << std::endl;
     }
 #endif
     TopoDS_Face Prof;
@@ -698,8 +698,8 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 #ifdef OCCT_DEBUG
       if (trc)
       {
-        cout << "Not computable" << endl;
-        cout << " Face profile not computable" << endl;
+        std::cout << "Not computable" << std::endl;
+        std::cout << " Face profile not computable" << std::endl;
       }
 #endif
       myStatusError = BRepFeat_NoFaceProf;
@@ -715,7 +715,7 @@ void BRepFeat_MakeLinearForm::Init(const TopoDS_Shape& Sbase,
 // Control if there is everything required to have the material at the proper side
     if(falseside == Standard_False) {
 #ifdef OCCT_DEBUG
-      cout << "Verify plane and wire orientation" << endl;
+      std::cout << "Verify plane and wire orientation" << std::endl;
 #endif
       myStatusError = BRepFeat_FalseSide;
       NotDone();
@@ -763,7 +763,7 @@ void BRepFeat_MakeLinearForm::Add(const TopoDS_Edge& E,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeLinearForm::Add" << endl;
+  if (trc) std::cout << "BRepFeat_MakeLinearForm::Add" << std::endl;
 #endif
   if(mySlface.IsEmpty()) {
     TopExp_Explorer exp;
@@ -803,11 +803,11 @@ void BRepFeat_MakeLinearForm::Perform()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeLinearForm::Perform()" << endl;
+  if (trc) std::cout << "BRepFeat_MakeLinearForm::Perform()" << std::endl;
 #endif
   if(mySbase.IsNull() || mySkface.IsNull() || myPbase.IsNull()) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Fields not initialized" << endl;
+    if (trc) std::cout << " Fields not initialized" << std::endl;
 #endif
     myStatusError = BRepFeat_NotInitialized;
     NotDone();
@@ -846,7 +846,7 @@ void BRepFeat_MakeLinearForm::Perform()
     const TopoDS_Edge& e = TopoDS::Edge(exx.Current());
     if(!myMap.IsBound(e)) {
 #ifdef OCCT_DEBUG
-      if (trc) cout << " Sliding face not in Base shape" << endl;
+      if (trc) std::cout << " Sliding face not in Base shape" << std::endl;
 #endif
       myStatusError = BRepFeat_IncSlidFace;
       NotDone();
@@ -861,8 +861,8 @@ void BRepFeat_MakeLinearForm::Perform()
 #ifdef OCCT_DEBUG
     if (trc)
     {
-      cout << "The case is not computable" << endl;
-      cout << " Glued faces not empty and Until shape not null" << endl;
+      std::cout << "The case is not computable" << std::endl;
+      std::cout << " Glued faces not empty and Until shape not null" << std::endl;
     }
 #endif
     myStatusError = BRepFeat_InvShape;
@@ -922,7 +922,7 @@ void BRepFeat_MakeLinearForm::Perform()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEATRIB();
-  if (trc) cout << "BRepFeat_MakeLinearForm::Propagate" << endl;
+  if (trc) std::cout << "BRepFeat_MakeLinearForm::Propagate" << std::endl;
 #endif
   gp_Pnt Firstpoint = Firstpnt;
   gp_Pnt Lastpoint = Lastpnt;
@@ -1181,7 +1181,7 @@ static void SetGluedFaces(const TopTools_DataMapOfShapeListOfShape& theSlmap,
 	const TopTools_ListOfShape& gfac = thePrism.Shapes(it.Value());
 	if (gfac.Extent() != 1) {
 #ifdef OCCT_DEBUG
-	  cout << "Pb SetGluedFace" << endl;
+	  std::cout << "Pb SetGluedFace" << std::endl;
 #endif
 	}
 	theMap.Bind(gfac.First(),fac);

@@ -82,12 +82,12 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label& aRefLabel, const TDF_Lab
     itr.Value()->References(ds);
     const TDF_AttributeMap& attMap = ds->Attributes(); //attMap
 //     TDF_Tool::Entry(itr.Value()->Label(), entr1);  //d
-//     cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<" Label = "<<entr1 <<endl;
+//     std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<" Label = "<<entr1 <<std::endl;
     for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More(); attMItr.Next()) {
       Handle(TDF_Attribute) att = attMItr.Key();
 
 //       TDF_Tool::Entry(att->Label(), entr1);  
-//       cout<<"\t\tReferences attribute dynamic type = "<<att->DynamicType()<<" Label = "<<entr1 <<endl;
+//       std::cout<<"\t\tReferences attribute dynamic type = "<<att->DynamicType()<<" Label = "<<entr1 <<std::endl;
       if (!att.IsNull() && !att->Label().IsNull())
       {
         if (aFilter.IsKept(att) && att->Label().IsDifferent(aRefLabel) &&
@@ -100,7 +100,7 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label& aRefLabel, const TDF_Lab
 //     const TDF_LabelMap& labMap = ds->Labels();
 //     for (TDF_MapIteratorOfLabelMap labMItr(labMap);labMItr.More(); labMItr.Next()) {
 //       TDF_Tool::Entry(labMItr.Key(), entr1);  
-// 	cout<<"\t\tLABELS from DS of Attr:: Lab = "<<entr1<<endl;
+// 	std::cout<<"\t\tLABELS from DS of Attr:: Lab = "<<entr1<<std::endl;
 //       if (!labMItr.Key().IsDescendant(aRefLabel) && labMItr.Key().IsDifferent(aRefLabel)) {
 // //	aExternals.Add(itr.Value()); // ??? LabelMap of Attribute has label which don't
 // 	// belongs to source hierarchy. So, what we should do ?
@@ -109,7 +109,7 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label& aRefLabel, const TDF_Lab
 // 	TCollection_AsciiString entr1, entr2;
 // 	TDF_Tool::Entry(labMItr.Key(), entr1); 
 // 	TDF_Tool::Entry(aRefLabel, entr2);
-// 	cout<<"\t\t\tNot descendant label:: Lab1 = "<<entr1<<" and RefLab = "<<entr2<<endl;
+// 	std::cout<<"\t\t\tNot descendant label:: Lab1 = "<<entr1<<" and RefLab = "<<entr2<<std::endl;
 //       }
 //     }
 
@@ -142,12 +142,12 @@ static void PrintEntry(const TDF_Label&       label, const Standard_Boolean allL
 {
   TCollection_AsciiString entry;
   TDF_Tool::Entry(label, entry);
-  cout << "\tShareable attribute on the label = "<< entry << endl;
+  std::cout << "\tShareable attribute on the label = "<< entry << std::endl;
   TDF_ChildIterator it (label, allLevels);
   for (; it.More(); it.Next())
     {
       TDF_Tool::Entry(it.Value(), entry);
-	cout << "\tChildLabelEntry = "<< entry << endl;
+	std::cout << "\tChildLabelEntry = "<< entry << std::endl;
     }  
 }
 #endif

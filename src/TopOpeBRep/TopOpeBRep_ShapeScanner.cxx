@@ -146,8 +146,8 @@ Standard_OStream& TopOpeBRep_ShapeScanner::DumpCurrent(Standard_OStream& OS)cons
     TopAbs_ShapeEnum    T = S.ShapeType();
     TopAbs_Orientation  O = S.Orientation();
     Standard_Integer    I = Index();
-    TopAbs::Print(T,cout);
-    cout<<"("<<I<<","; TopAbs::Print(O,cout); cout<<") ";
+    TopAbs::Print(T,std::cout);
+    std::cout<<"("<<I<<","; TopAbs::Print(O,std::cout); std::cout<<") ";
   }
 #endif
   return OS;

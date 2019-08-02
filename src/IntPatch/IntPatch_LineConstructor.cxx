@@ -899,7 +899,7 @@ static Standard_Boolean TestIfWLineIsRestriction(const IntPatch_SequenceOfLine& 
   }
   if(allon1==NbPnts || allon2==NbPnts) {
 #ifdef OCCT_DEBUG
-    cout<<" IntPatch_LineConstructor.gxx :  CC**ONS"<<(allon1==NbPnts?1:2)<<"** Traitement WLIne + ARC CLASS "<<endl;
+    std::cout<<" IntPatch_LineConstructor.gxx :  CC**ONS"<<(allon1==NbPnts?1:2)<<"** Traitement WLIne + ARC CLASS "<<std::endl;
 #endif
     Standard_Real tol2d = Max(tol2d1,tol2d2);
     return TestWLineIsARLine(slinref,wlin,tol2d);
@@ -1060,7 +1060,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 	}
 	if (!iv1 || !iv2) {
 #ifdef OCCT_DEBUG
-	  cout<<" Pb getting vertices linked with arc"<<endl;
+	  std::cout<<" Pb getting vertices linked with arc"<<std::endl;
 #endif
 	  continue;
 	}
@@ -1071,7 +1071,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 			      ? (WLine->Vertex(iv2).*pParOnArc)()
 			      : paramsResolved(iv2));
 #ifdef OCCT_DEBUG
-	cout<<"****** Parameters on arc on S"<<is+1<<": "<<par1<<" "<<par2<<endl;
+	std::cout<<"****** Parameters on arc on S"<<is+1<<": "<<par1<<" "<<par2<<std::endl;
 #endif
 
 	// check that the middle point is on arc
@@ -1085,7 +1085,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 	Standard_Real par,dist;
 	if (!ProjectOnArc(utst,vtst,arc,surf,TolArc,par,dist)) {
 #ifdef OCCT_DEBUG
-	  cout<<" Pb en projection ds IntPatch_LineConstructor"<<endl;
+	  std::cout<<" Pb en projection ds IntPatch_LineConstructor"<<std::endl;
 #endif
 	  continue;
 	}
@@ -1224,7 +1224,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	if(in1 == TopAbs_OUT || in2 == TopAbs_OUT) { 
 	}
 	else { 
-	  //-- cout<<"Analytic   : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;	  
+	  //-- std::cout<<"Analytic   : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;	  
 	  TabIndex[i]=TabIndex[i+1]=++numline;
 	  AddLine(L,i,i+1,typs1,typs2,TabIndex,slin);
 	}
@@ -1380,7 +1380,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	      }
 	    }
 	    if(LignetropPetite==Standard_False) { 	    
-	      //-- cout<<"WLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
+	      //-- std::cout<<"WLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
 	      TabIndex[i]=TabIndex[i+1]=++numline;
 	      AddLine(L,i,i+1,typs1,typs2,TabIndex,slin);
 	      TestWLineToRLine(slinref,slin,mySurf1,myDom1,mySurf2,myDom2,TolArc); //-- on teste la derniere entree de slin
@@ -1468,7 +1468,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	if(in1 == TopAbs_OUT || in2 == TopAbs_OUT) { 
 	}
 	else { 
-	  //-- cout<<"GLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
+	  //-- std::cout<<"GLine      : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
 	  TabIndex[i]=TabIndex[i+1]=++numline;
 	  AddLine(L,i,i+1,typs1,typs2,TabIndex,slin); 
 	}
@@ -1505,7 +1505,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	  if(in1 == TopAbs_OUT || in2 == TopAbs_OUT) { 
 	  }
 	  else { 
-	    //-- cout<<"GLine  bis : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<endl;
+	    //-- std::cout<<"GLine  bis : firtsp="<<firstp<<" lastp="<<lastp<<" Vtx:"<<i<<","<<i+1<<std::endl;
 	    TabIndex[nbvtx]=TabIndex[1]=++numline;
 	    AddLine(L,nbvtx,1,typs1,typs2,TabIndex,slin); 
 	  }
@@ -1630,7 +1630,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	    }
 	    
 	    if(in2!=TopAbs_OUT) { 
-	      //-- cout<<"RLine ons1 : u0    ="<<u0<<" u1   ="<<u1<<" Vtx:"<<i<<","<<i+1<<endl;
+	      //-- std::cout<<"RLine ons1 : u0    ="<<u0<<" u1   ="<<u1<<" Vtx:"<<i<<","<<i+1<<std::endl;
 	      AddLine(L,i,i+1,typs1,typs2,TabIndex,slin); 
 	    }
 	  }
@@ -1710,7 +1710,7 @@ void IntPatch_LineConstructor::Perform(const IntPatch_SequenceOfLine& slinref,
 	    }
 	    
 	    if(in2!=TopAbs_OUT) { 
-	      //-- cout<<"RLine ons2 : u0    ="<<u0<<" u1   ="<<u1<<" Vtx:"<<i<<","<<i+1<<endl;
+	      //-- std::cout<<"RLine ons2 : u0    ="<<u0<<" u1   ="<<u1<<" Vtx:"<<i<<","<<i+1<<std::endl;
 	      
 	      AddLine(L,i,i+1,typs1,typs2,TabIndex,slin); 
 	    }

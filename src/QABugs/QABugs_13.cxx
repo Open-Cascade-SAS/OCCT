@@ -932,7 +932,7 @@ static Standard_Integer OCC817 (Draw_Interpretor& di, Standard_Integer argc, con
       BRepGProp::VolumeProperties (SubvolumeSolid(l), subvolumeVProps);
       const Standard_Real vol = subvolumeVProps.Mass();
       const Standard_Boolean err = (vol > SubvolumeVol(l)) || (vol <= 0.0);
-      //cout << (err? "ERROR" : "Info") << ": final subvolume " << l << " volume = " << vol << endl;
+      //std::cout << (err? "ERROR" : "Info") << ": final subvolume " << l << " volume = " << vol << std::endl;
       if (err)
 	di << "ERROR: final subvolume " << l << " volume = " << vol << "\n";
       else

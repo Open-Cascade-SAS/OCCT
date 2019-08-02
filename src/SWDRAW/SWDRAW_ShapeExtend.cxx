@@ -40,7 +40,7 @@ static Standard_Integer sortcompound (Draw_Interpretor& di, Standard_Integer arg
     for (int i = 0; i < 2; i ++) {
       Standard_Boolean viaCompound = (i != 0);
       TopAbs_ShapeEnum ts = sbx.ShapeType(Shape, viaCompound);
-      //cout<<"   Type "<<(i ? " (via Compound) : " : "(True) : ");
+      //std::cout<<"   Type "<<(i ? " (via Compound) : " : "(True) : ");
       if (!viaCompound) {
 	di<<"   Type (True) : ";
       } else {

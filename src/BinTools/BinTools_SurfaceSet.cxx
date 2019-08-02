@@ -269,8 +269,8 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const Handle(Geom_Bez
   Standard_Boolean vrational = S->IsVRational() ? 1:0;
   BinTools::PutBool(OS, urational); //rational
   BinTools::PutBool(OS, vrational);
-//  cout << "Bezier Surface:"<< endl;
-//  cout << "\turational = "<<urational<<" vrational = " <<vrational<<endl;
+//  std::cout << "Bezier Surface:"<< std::endl;
+//  std::cout << "\turational = "<<urational<<" vrational = " <<vrational<<std::endl;
 
 // poles and weights
   Standard_Integer i,j,udegree,vdegree;
@@ -425,8 +425,8 @@ void BinTools_SurfaceSet::WriteSurface(const Handle(Geom_Surface)& S,
   }
    catch(Standard_Failure const& anException) {
      Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_SurfaceSet::WriteSurface(..)" << endl;
-    aMsg << anException << endl;
+    aMsg << "EXCEPTION in BinTools_SurfaceSet::WriteSurface(..)" << std::endl;
+    aMsg << anException << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }  
 }
@@ -617,12 +617,12 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
 static Standard_IStream& operator>>(Standard_IStream& IS,
 				    Handle(Geom_BezierSurface)& S)
 {
-//  cout << "BezierSurface:" <<endl;
+//  std::cout << "BezierSurface:" <<std::endl;
   Standard_Boolean urational=Standard_False, vrational=Standard_False;
   BinTools::GetBool(IS, urational);
   BinTools::GetBool(IS, vrational);
 
-//  cout << "\turational = " << urational << " vrational = " << vrational<<endl;
+//  std::cout << "\turational = " << urational << " vrational = " << vrational<<std::endl;
   Standard_Integer udegree=0, vdegree=0;
   Standard_ExtCharacter aVal='\0';
   BinTools::GetExtChar(IS, aVal);
@@ -630,7 +630,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   udegree = (Standard_Integer)aVal;
   BinTools::GetExtChar(IS, aVal);
   vdegree = (Standard_Integer)aVal;
-//  cout << "\ttudegree  = " << udegree << ", vdegree = " << vdegree << endl;
+//  std::cout << "\ttudegree  = " << udegree << ", vdegree = " << vdegree << std::endl;
 
   TColgp_Array2OfPnt poles(1,udegree+1,1,vdegree+1);
   TColStd_Array2OfReal weights(1,udegree+1,1,vdegree+1);
@@ -639,7 +639,7 @@ static Standard_IStream& operator>>(Standard_IStream& IS,
   for (i = 1; i <= udegree+1; i++) {
     for (j = 1; j <= vdegree+1; j++) {
       IS >> poles(i,j);//Pnt
-//      cout <<"Pole X = " <<poles(i,j).X()<< " Y = " <<poles(i,j).Y()<< " Z = " << poles(i,j).Z()<<endl;
+//      std::cout <<"Pole X = " <<poles(i,j).X()<< " Y = " <<poles(i,j).Y()<< " Z = " << poles(i,j).Z()<<std::endl;
       if (urational || vrational)
 	BinTools::GetReal(IS, weights(i,j));
     }
@@ -861,8 +861,8 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream& IS,
   catch(Standard_Failure const& anException) {
     S = NULL;
     Standard_SStream aMsg;
-    aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << endl;
-    aMsg << anException << endl;
+    aMsg << "EXCEPTION in BinTools_SurfaceSet::ReadSurface(..)" << std::endl;
+    aMsg << anException << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
   return IS;
@@ -879,9 +879,9 @@ void  BinTools_SurfaceSet::Read(Standard_IStream& IS)
   IS >> buffer;
   if (IS.fail() || strcmp(buffer,"Surfaces")) {
     Standard_SStream aMsg;
-    aMsg << "BinTools_SurfaceSet::Read:  Not a surface table"<<endl;
+    aMsg << "BinTools_SurfaceSet::Read:  Not a surface table"<<std::endl;
 #ifdef OCCT_DEBUG
-    cout <<"SurfaceSet buffer: " << buffer << endl;
+    std::cout <<"SurfaceSet buffer: " << buffer << std::endl;
 #endif
     throw Standard_Failure(aMsg.str().c_str());
     return;

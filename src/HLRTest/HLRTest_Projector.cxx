@@ -66,11 +66,11 @@ void HLRTest_Projector::Dump (Standard_OStream& S) const
   for (Standard_Integer i = 1; i <= 3; i++) {
 
     for (Standard_Integer j = 1; j <= 4; j++) {
-      S << setw(15) << myProjector.Transformation().Value(i,j);
+      S << std::setw(15) << myProjector.Transformation().Value(i,j);
     }
     S << "\n";
   }
-  S << endl;
+  S << std::endl;
 }
 
 //=======================================================================

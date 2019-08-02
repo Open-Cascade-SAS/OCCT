@@ -312,13 +312,13 @@ Standard_OStream& TDataStd_ExtStringArray::Dump (Standard_OStream& anOS) const
     lower = myValue->Lower();
     upper = myValue->Upper();
     for(i = lower; i<=upper; i++)
-      anOS << "\t" <<myValue->Value(i)<<endl;
+      anOS << "\t" <<myValue->Value(i)<<std::endl;
   }
   anOS << " Delta is " << (myIsDelta ? "ON":"OFF");
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-  anOS << endl;
+  anOS << std::endl;
   return anOS;
 }
 

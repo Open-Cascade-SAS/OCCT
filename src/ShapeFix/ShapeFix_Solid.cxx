@@ -223,8 +223,8 @@ static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells ,
     }
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
-      anException.Print(cout); cout << endl;
+      std::cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       continue;
@@ -301,8 +301,8 @@ static Standard_Boolean CreateSolids(const TopoDS_Shape theShape,TopTools_Indexe
       }
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
-      anException.Print(cout); cout << endl;
+      std::cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       ShellSolid.Add(aShell,aSolid);
@@ -584,8 +584,8 @@ TopoDS_Solid ShapeFix_Solid::SolidFromShell (const TopoDS_Shell& shell)
   }
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeFix_Solid::SolidFromShell: Exception: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     return solid;

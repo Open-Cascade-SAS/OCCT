@@ -124,7 +124,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_HCur
   if (Norm < 1.e-12) {
     Norm = 1;
 #ifdef OCCT_DEBUG
-    cout << "GuideTrihedronAC : Normal indefinie" << endl;
+    std::cout << "GuideTrihedronAC : Normal indefinie" << std::endl;
 #endif
   }
   

@@ -100,7 +100,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
   myBotFace = theCylinder.BottomFace();
   myValidate = Standard_False;
 
-//  BRepTools::Dump(theTool,cout);
+//  BRepTools::Dump(theTool,std::cout);
   Standard_Boolean Fuse = Standard_False;
   //
   AddTool(theTool);
@@ -524,7 +524,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
   myTopFace = theCylinder.TopFace();
   myBotFace.Nullify();
 
-  //  BRepTools::Dump(theTool,cout);
+  //  BRepTools::Dump(theTool,std::cout);
   Standard_Boolean Fuse = Standard_False;
   //myBuilder.Perform(theTool,theList,Fuse);
   //myBuilder.BuildPartsOfTool();

@@ -1210,7 +1210,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
             {
               Arrive=Standard_True;
 #ifdef OCCT_DEBUG
-              cout << "IntWalk_PWalking_1.gxx: Problems with intersection"<<endl;
+              std::cout << "IntWalk_PWalking_1.gxx: Problems with intersection"<<std::endl;
 #endif
             }
 
@@ -1705,7 +1705,7 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
 
     if((nbIterWithoutAppend > 20) || (nbEqualPoints > 20)) {
 #ifdef OCCT_DEBUG
-      cout<<"Infinite loop detected. Stop iterations (IntWalk_PWalking_1.gxx)" << endl;
+      std::cout<<"Infinite loop detected. Stop iterations (IntWalk_PWalking_1.gxx)" << std::endl;
 #endif
       bStop = Standard_True;
       break;

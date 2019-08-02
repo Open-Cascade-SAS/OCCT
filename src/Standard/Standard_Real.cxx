@@ -255,7 +255,7 @@ Standard_Real     ATanh(const Standard_Real Value)
 { 
   if ( (Value <= -1.) || (Value >= 1.) ){
 #ifdef OCCT_DEBUG
-    cout << "Illegal agument in ATanh" << endl ;
+    std::cout << "Illegal agument in ATanh" << std::endl ;
 #endif
     throw Standard_NumericError("Illegal agument in ATanh");
   }
@@ -273,7 +273,7 @@ Standard_Real     ACosh (const Standard_Real Value)
 { 
   if ( Value < 1. ){
 #ifdef OCCT_DEBUG
-    cout << "Illegal agument in ACosh" << endl ;
+    std::cout << "Illegal agument in ACosh" << std::endl ;
 #endif
     throw Standard_NumericError("Illegal agument in ACosh");
   }
@@ -291,7 +291,7 @@ Standard_Real     Cosh (const Standard_Real Value)
 { 
   if ( Abs(Value) > 0.71047586007394394e+03 ){
 #ifdef OCCT_DEBUG
-    cout << "Result of Cosh exceeds the maximum value Standard_Real" << endl ;
+    std::cout << "Result of Cosh exceeds the maximum value Standard_Real" << std::endl ;
 #endif
     throw Standard_NumericError("Result of Cosh exceeds the maximum value Standard_Real");
   } 
@@ -305,7 +305,7 @@ Standard_Real     Sinh (const Standard_Real Value)
 { 
   if ( Abs(Value) > 0.71047586007394394e+03 ){
 #ifdef OCCT_DEBUG
-    cout << "Result of Sinh exceeds the maximum value Standard_Real" << endl ;
+    std::cout << "Result of Sinh exceeds the maximum value Standard_Real" << std::endl ;
 #endif
     throw Standard_NumericError("Result of Sinh exceeds the maximum value Standard_Real");
   } 
@@ -318,7 +318,7 @@ Standard_Real     Sinh (const Standard_Real Value)
 Standard_Real     Log (const Standard_Real Value) 
 {   if ( Value <= 0. ){
 #ifdef OCCT_DEBUG
-    cout << "Illegal agument in Log" << endl ;
+    std::cout << "Illegal agument in Log" << std::endl ;
 #endif
     throw Standard_NumericError("Illegal agument in Log");
   } 
@@ -331,7 +331,7 @@ Standard_Real     Sqrt (const Standard_Real Value)
 { 
   if (  Value < 0. ){
 #ifdef OCCT_DEBUG
-    cout << "Illegal agument in Sqrt" << endl ;
+    std::cout << "Illegal agument in Sqrt" << std::endl ;
 #endif
     throw Standard_NumericError("Illegal agument in Sqrt");
   } 

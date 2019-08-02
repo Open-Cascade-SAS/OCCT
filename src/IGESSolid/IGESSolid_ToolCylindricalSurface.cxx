@@ -136,21 +136,21 @@ void  IGESSolid_ToolCylindricalSurface::OwnDump
   (const Handle(IGESSolid_CylindricalSurface)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_CylindricalSurface" << endl;
+  S << "IGESSolid_CylindricalSurface" << Message_EndLine;
 
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   S << "Point on axis  : ";
   dumper.Dump(ent->LocationPoint(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Axis direction : ";
   dumper.Dump(ent->Axis(),S, sublevel);
-  S << endl;
-  S << "Radius         : " << ent->Radius() << endl;
+  S << Message_EndLine;
+  S << "Radius         : " << ent->Radius() << Message_EndLine;
   if (ent->IsParametrised())
     {
       S << "Surface is Parametrised  -  Reference direction : ";
       dumper.Dump(ent->ReferenceDir(),S, sublevel);
-      S << endl;
+      S << Message_EndLine;
     }
-  else S << "Surface is UnParametrised" << endl;
+  else S << "Surface is UnParametrised" << Message_EndLine;
 }

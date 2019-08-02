@@ -53,7 +53,7 @@ static gp_Pnt OnSurface_Value(const Standard_Real U,
     }
   }
   if ( Index == 0 ) {
-    cout << " Extrema non trouve pour U = " << U << endl;
+    std::cout << " Extrema non trouve pour U = " << U << std::endl;
     return gp_Pnt(0.,0.,0.);
   }
   else {

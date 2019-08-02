@@ -181,7 +181,7 @@ void BRepTools_ReShape::replace (const TopoDS_Shape& ashape,
 #ifdef OCCT_DEBUG
   if ( IsRecorded ( shape ) && ((myConsiderLocation && ! Value ( shape ).IsPartner ( newshape )) ||
                                  (!myConsiderLocation && ! Value ( shape ).IsSame ( newshape )))) 
-    cout << "Warning: BRepTools_ReShape::Replace: shape already recorded" << endl;
+    std::cout << "Warning: BRepTools_ReShape::Replace: shape already recorded" << std::endl;
 #endif
 
   myShapeToReplacement.Bind(shape, TReplacement(newshape, theKind));

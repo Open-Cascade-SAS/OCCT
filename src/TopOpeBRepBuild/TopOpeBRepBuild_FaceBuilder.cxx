@@ -130,7 +130,7 @@ Standard_Integer FUN_AnalyzemapVon1E(const TopTools_IndexedDataMapOfShapeShape& 
 {
 #ifdef DRAW
   Standard_Boolean trc = TopOpeBRepBuild_GettracePURGE();
-  if (trc) cout<<endl<<"* DetectUnclosedWire :"<<endl;
+  if (trc) std::cout<<std::endl<<"* DetectUnclosedWire :"<<std::endl;
 #endif
 
   Standard_Integer res = ISUNKNOWN;
@@ -191,34 +191,34 @@ void FUN_AnalyzemapVon1EDRAW(const Standard_Integer res,
 {
   Standard_Boolean trc = TopOpeBRepBuild_GettracePURGE();
   if (!trc) return;
-  cout<<"wire "<<iiwi;
+  std::cout<<"wire "<<iiwi;
   if      (res == ISVERTEX) {
-    cout<<" is vertex"<<endl;
+    std::cout<<" is vertex"<<std::endl;
   }
   else if (res == CLOSEDW) {
-    cout<<" is closed"<<endl;
+    std::cout<<" is closed"<<std::endl;
   }
   else if (res == GCLOSEDW) {
-    cout<<" is Gclosed :"<<endl;
+    std::cout<<" is Gclosed :"<<std::endl;
     TCollection_AsciiString aa("w_");FUN_tool_draw(aa,W,iiwi);
     Standard_Integer i ;
     for ( i = 1;i <= mapVV.Extent();i++) {
       Standard_Integer iV = mapVVsameGDRAW.Add(mapVV.FindKey(i),mapVV.FindFromIndex(i));
-      cout<<" on vve_"<<iV; aa = "vve_";
+      std::cout<<" on vve_"<<iV; aa = "vve_";
       FUN_tool_draw(aa,mapVVsameGDRAW.FindKey(iV),iV);
     }
     for (i = 1;i <= mapVon1E.Extent();i++) {
       Standard_Integer iE = mapVon1EdgeDRAW.Add(mapVon1E.FindKey(i),mapVon1E.FindFromIndex(i));
-      cout<<" on eed_"<<iE; aa = "eed_";
+      std::cout<<" on eed_"<<iE; aa = "eed_";
       FUN_tool_draw(aa,mapVon1EdgeDRAW.FindFromIndex(iE),iE);
     }
-    cout<<endl;
+    std::cout<<std::endl;
   }
   else if (res == UNCLOSEDW) {
-    cout<<" is unclosed "<<endl;
+    std::cout<<" is unclosed "<<std::endl;
     TCollection_AsciiString aa("w_");FUN_tool_draw(aa,W,iiwi);
   }
-  cout<<endl;
+  std::cout<<std::endl;
 } // FUN_AnalyzemapVon1EDRAW
 #endif
 
@@ -246,7 +246,7 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(TopTools_IndexedDataMapOfSh
 #ifdef DRAW
   TopTools_IndexedDataMapOfShapeShape mapVon1EdgeDRAW,mapVVsameGDRAW;
   Standard_Boolean trc = TopOpeBRepBuild_GettracePURGE();
-  if (trc) cout<<endl<<"* DetectUnclosedWire :"<<endl<<endl;
+  if (trc) std::cout<<std::endl<<"* DetectUnclosedWire :"<<std::endl<<std::endl;
 #endif
 
   Standard_Integer iiwi = 0; // DEB
@@ -258,7 +258,7 @@ void TopOpeBRepBuild_FaceBuilder::DetectUnclosedWire(TopTools_IndexedDataMapOfSh
       iiwi++;
       Standard_Boolean isold = IsOldWire();
 #ifdef DRAW
-      if ( trc && isold ) cout<<"wire "<<iiwi<<" is old wire => closed"<<endl;
+      if ( trc && isold ) std::cout<<"wire "<<iiwi<<" is old wire => closed"<<std::endl;
 #endif
       if (isold) continue;
       
@@ -369,7 +369,7 @@ void TopOpeBRepBuild_FaceBuilder::CorrectGclosedWire(const TopTools_IndexedDataM
   // prequesitory : edges described by <mapVon1Edge> are not closed,not degenerated
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettracePURGE()) {
-    cout<<endl<<"* CorrectGclosedWire :"<<endl<<endl;
+    std::cout<<std::endl<<"* CorrectGclosedWire :"<<std::endl<<std::endl;
   }
 #endif
   

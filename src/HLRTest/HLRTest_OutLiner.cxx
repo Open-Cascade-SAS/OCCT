@@ -61,7 +61,7 @@ Handle(Draw_Drawable3D) HLRTest_OutLiner::Copy () const
 
 void HLRTest_OutLiner::Dump (Standard_OStream& S) const 
 {
-  S << "This is an outliner" << endl;
+  S << "This is an outliner" << std::endl;
 }
 
 //=======================================================================

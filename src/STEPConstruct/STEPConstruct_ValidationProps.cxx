@@ -149,11 +149,11 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
         Context = CDSR->RepresentationRelation()->Rep2()->ContextOfItems();
       }
 #ifdef OCCT_DEBUG
-      else cout << "INSTANCE: CDRS from NAUO NOT found" << endl;
+      else std::cout << "INSTANCE: CDRS from NAUO NOT found" << std::endl;
 #endif
     }
 #ifdef OCCT_DEBUG
-    else cout << "INSTANCE: NAUO NOT found" << endl;
+    else std::cout << "INSTANCE: NAUO NOT found" << std::endl;
 #endif
 */
   }
@@ -169,12 +169,12 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
       }
       target.SetValue ( PDS );
 #ifdef OCCT_DEBUG
-//      cout << "COMPOUND: SDR found: " << sdr->DynamicType()->Name() << endl;
+//      std::cout << "COMPOUND: SDR found: " << sdr->DynamicType()->Name() << std::endl;
 #endif
     }
     else {
 #ifdef OCCT_DEBUG
-      cout << "COMPOUND: ProdDef NOT found" << endl;
+      std::cout << "COMPOUND: ProdDef NOT found" << std::endl;
 #endif
       Handle(StepShape_ShapeRepresentation) SR;
       if(FinderProcess()->FindTypedTransient(mapper,STANDARD_TYPE(StepShape_ShapeRepresentation),SR)) {
@@ -220,14 +220,14 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
     Handle(StepGeom_GeometricRepresentationItem) item;
     if ( FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepGeom_GeometricRepresentationItem), item) ) {
 #ifdef OCCT_DEBUG
-//      cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem found: " << item->DynamicType()->Name() << endl;
+//      std::cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem found: " << item->DynamicType()->Name() << std::endl;
 #endif
       // find PDS (GRI <- SR <- SDR -> PDS)
       Handle(StepRepr_ProductDefinitionShape) PDS;
       Interface_EntityIterator subs = Graph().Sharings(item);
       for (subs.Start(); PDS.IsNull() && subs.More(); subs.Next()) {
 #ifdef OCCT_DEBUG
-//	cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << endl;
+//	std::cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << std::endl;
 #endif
         if ( ! subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)) ) continue;
         Handle(StepShape_ShapeRepresentation) sr = 
@@ -262,7 +262,7 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
 //	if ( ! FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepRepr_ShapeAspect), aspect ) ||
 //	     aspect->OfShape() != PDS )
 #ifdef OCCT_DEBUG
-          cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT NOT found, creating" << endl;
+          std::cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT NOT found, creating" << std::endl;
 #endif
 	  // create aspect and all related data
           Handle(TCollection_HAsciiString) AspectName = new TCollection_HAsciiString ( "" );
@@ -299,7 +299,7 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
 	// SHAPE_ASPECT found, but we also need context: FIND IT !!!!
         else { 
 #ifdef OCCT_DEBUG
-          cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT found" << endl;
+          std::cout << Shape.TShape()->DynamicType()->Name() << ": SHAPE_ASPECT found" << std::endl;
 #endif
           Handle(StepRepr_ProductDefinitionShape) aPDS = aspect->OfShape();
           Interface_EntityIterator asubs = Graph().Sharings(aPDS);
@@ -314,11 +314,11 @@ Standard_Boolean STEPConstruct_ValidationProps::FindTarget (const TopoDS_Shape &
         if ( ! aspect.IsNull() ) target.SetValue ( aspect );
       }
 #ifdef OCCT_DEBUG
-      else  cout << Shape.TShape()->DynamicType()->Name() << ": PDS NOT found, fail to create SHAPE_ASPECT" << endl;
+      else  std::cout << Shape.TShape()->DynamicType()->Name() << ": PDS NOT found, fail to create SHAPE_ASPECT" << std::endl;
 #endif
     }
 #ifdef OCCT_DEBUG
-    else cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem NOT found" << endl;
+    else std::cout << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem NOT found" << std::endl;
 #endif
   }
 
@@ -533,7 +533,7 @@ Handle(StepBasic_ProductDefinition) STEPConstruct_ValidationProps::GetPropPD (co
       Handle(Message_Messenger) sout = Message::DefaultMessenger();
       sout << "Error: Cannot find target entity (SA) for geometric_validation_property "; 
       Model()->PrintLabel ( PD, sout ); 
-      sout << endl;
+      sout << Message_EndLine;
 #endif
       return ProdDef;
     }
@@ -558,7 +558,7 @@ Handle(StepBasic_ProductDefinition) STEPConstruct_ValidationProps::GetPropPD (co
     Handle(Message_Messenger) sout = Message::DefaultMessenger();
     sout << "Error: Cannot find target entity (SDR) for geometric_validation_property "; 
     Model()->PrintLabel ( PD, sout ); 
-    sout << endl;
+    sout << Message_EndLine;
   }
 #endif
   return ProdDef;
@@ -611,7 +611,7 @@ TopoDS_Shape STEPConstruct_ValidationProps::GetPropShape (const Handle(StepBasic
     Handle(Message_Messenger) sout = Message::DefaultMessenger();
     sout << "Warning: Entity "; 
     Model()->PrintLabel ( ProdDef, sout ); 
-    sout << " is not mapped to shape" << endl;
+    sout << " is not mapped to shape" << Message_EndLine;
   }
 #endif
   return S;
@@ -682,7 +682,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropReal (const Handle(StepRe
   else if ( Name == "VOLUME_MEASURE" ) isArea = Standard_False; 
   else {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Measure " << Model()->StringLabel ( M )->String() << " is neither area not volume" << endl;
+    std::cout << "Warning: Measure " << Model()->StringLabel ( M )->String() << " is neither area not volume" << std::endl;
 #endif
     return Standard_False;
   }
@@ -705,7 +705,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropPnt (const Handle(StepRep
   Handle(StepGeom_CartesianPoint) P = Handle(StepGeom_CartesianPoint)::DownCast ( item );
   if ( P.IsNull() || P->NbCoordinates() != 3 ) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Point " << Model()->StringLabel ( P )->String() << " is not valid for centroid" << endl;
+    std::cout << "Warning: Point " << Model()->StringLabel ( P )->String() << " is not valid for centroid" << std::endl;
 #endif
     return Standard_False;;
   }

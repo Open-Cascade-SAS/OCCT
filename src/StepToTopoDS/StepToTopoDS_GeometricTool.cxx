@@ -239,26 +239,26 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
     if (w1 < cf)
     {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge First Parameter to Curve First Parameter" << endl;
+      std::cout << "Update Edge First Parameter to Curve First Parameter" << std::endl;
 #endif
       w1 = cf;
     }
     else if (w1 > cl)
     {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge First Parameter to Curve Last Parameter" << endl;
+      std::cout << "Update Edge First Parameter to Curve Last Parameter" << std::endl;
 #endif
       w1 = cl;
     }
     if (w2 < cf) {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge Last Parameter to Curve First Parameter" << endl;
+      std::cout << "Update Edge Last Parameter to Curve First Parameter" << std::endl;
 #endif
       w2 = cf;
     }
     else if (w2 > cl) {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge Last Parameter to Curve Last Parameter" << endl;
+      std::cout << "Update Edge Last Parameter to Curve Last Parameter" << std::endl;
 #endif
       w2 = cl;
     }
@@ -308,7 +308,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
       else if (w1 > w2)
       {
 #ifdef OCCT_DEBUG
-        cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
+        std::cout << "Warning : parameter range of edge crossing non periodic curve origin" << std::endl;
 #endif
         Standard_Real tmp = w1;
         w1 = w2;
@@ -344,7 +344,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
       else
       {
 #ifdef OCCT_DEBUG
-        cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
+        std::cout << "Warning : parameter range of edge crossing non periodic curve origin" << std::endl;
 #endif
         Standard_Real tmp = w1;
         w1 = w2;
@@ -355,7 +355,7 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
     else if (w1 > w2)
     {
 #ifdef OCCT_DEBUG
-      cout << "Warning: parameter range is bad; curve reversed" << endl;
+      std::cout << "Warning: parameter range is bad; curve reversed" << std::endl;
 #endif
       w1 = theCurve->ReversedParameter(w1);
       w2 = theCurve->ReversedParameter(w2);
@@ -372,16 +372,16 @@ Standard_Boolean  StepToTopoDS_GeometricTool::UpdateParam3d(
   else
   {
 #ifdef OCCT_DEBUG
-    cout << "UpdateParam3d Failed" << endl;
-    cout << "  - Curve Type : " << theCurve->DynamicType() << endl;
-    cout << "  - Param 1    : " << w1 << endl;
-    cout << "  - Param 2    : " << w2 << endl;
+    std::cout << "UpdateParam3d Failed" << std::endl;
+    std::cout << "  - Curve Type : " << theCurve->DynamicType() << std::endl;
+    std::cout << "  - Param 1    : " << w1 << std::endl;
+    std::cout << "  - Param 2    : " << w2 << std::endl;
 #endif
     //abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     if (w1 > w2)
     {
 #ifdef OCCT_DEBUG
-      cout << "Warning: parameter range is bad; curve reversed" << endl;
+      std::cout << "Warning: parameter range is bad; curve reversed" << std::endl;
 #endif
       w1 = theCurve->ReversedParameter(w1);
       w2 = theCurve->ReversedParameter(w2);

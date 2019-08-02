@@ -145,8 +145,8 @@ Handle(Geom2d_Curve) BRepBuilderAPI_Sewing::SameRange(const Handle(Geom2d_Curve)
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Exception in BRepBuilderAPI_Sewing::SameRange: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Exception in BRepBuilderAPI_Sewing::SameRange: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
   }
@@ -318,8 +318,8 @@ void BRepBuilderAPI_Sewing::SameParameter(const TopoDS_Edge& edge) const
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Exception in BRepBuilderAPI_Sewing::SameParameter: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Exception in BRepBuilderAPI_Sewing::SameParameter: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
   }
@@ -1827,7 +1827,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
   if (myAnalysis)
   {
 #ifdef OCCT_DEBUG
-    cout << "Begin face analysis..." << endl;
+    std::cout << "Begin face analysis..." << std::endl;
     chr_local.Reset();
     chr_local.Start();
 #endif
@@ -1838,7 +1838,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
 #ifdef OCCT_DEBUG
     chr_local.Stop();
     chr_local.Show(t_analysis);
-    cout << "Face analysis finished after " << t_analysis << " s" << endl;
+    std::cout << "Face analysis finished after " << t_analysis << " s" << std::endl;
 #endif
   }
 
@@ -1851,7 +1851,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
     {
 
 #ifdef OCCT_DEBUG
-      cout << "Begin vertices assembling..." << endl;
+      std::cout << "Begin vertices assembling..." << std::endl;
       chr_local.Reset();
       chr_local.Start();
 #endif
@@ -1862,12 +1862,12 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
 #ifdef OCCT_DEBUG
       chr_local.Stop();
       chr_local.Show(t_assembling);
-      cout << "Vertices assembling finished after " << t_assembling << " s" << endl;
+      std::cout << "Vertices assembling finished after " << t_assembling << " s" << std::endl;
 #endif
       if (myCutting)
       {
 #ifdef OCCT_DEBUG
-        cout << "Begin cutting..." << endl;
+        std::cout << "Begin cutting..." << std::endl;
         chr_local.Reset();
         chr_local.Start();
 #endif
@@ -1878,11 +1878,11 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
 #ifdef OCCT_DEBUG
         chr_local.Stop();
         chr_local.Show(t_cutting);
-        cout << "Cutting finished after " << t_cutting << " s" << endl;
+        std::cout << "Cutting finished after " << t_cutting << " s" << std::endl;
 #endif
       }
 #ifdef OCCT_DEBUG
-      cout << "Begin merging..." << endl;
+      std::cout << "Begin merging..." << std::endl;
       chr_local.Reset();
       chr_local.Start();
 #endif
@@ -1893,7 +1893,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
 #ifdef OCCT_DEBUG
       chr_local.Stop();
       chr_local.Show(t_merging);
-      cout << "Merging finished after " << t_merging << " s" << endl;
+      std::cout << "Merging finished after " << t_merging << " s" << std::endl;
 #endif
     }
     else
@@ -1910,7 +1910,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
     {
 
 #ifdef OCCT_DEBUG
-      cout << "Creating sewed shape..." << endl;
+      std::cout << "Creating sewed shape..." << std::endl;
 #endif
       // examine the multiple edges if any and process sameparameter for edges if necessary
       EdgeProcessing (thePI);
@@ -1933,7 +1933,7 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
         return;
       }
 #ifdef OCCT_DEBUG
-      cout << "Sewed shape created" << endl;
+      std::cout << "Sewed shape created" << std::endl;
 #endif
     }
 
@@ -1948,12 +1948,12 @@ void BRepBuilderAPI_Sewing::Perform(const Handle(Message_ProgressIndicator)& the
 #ifdef OCCT_DEBUG
   chr_total.Stop();
   chr_total.Show(t_total);
-  cout << "Sewing finished!" << endl;
-  cout << " analysis time   : " << t_analysis << " s" << endl;
-  cout << " assembling time : " << t_assembling << " s" << endl;
-  cout << " cutting time    : " << t_cutting << " s" << endl;
-  cout << " merging time    : " << t_merging << " s" << endl;
-  cout << "Total time       : " << t_total << " s" << endl;
+  std::cout << "Sewing finished!" << std::endl;
+  std::cout << " analysis time   : " << t_analysis << " s" << std::endl;
+  std::cout << " assembling time : " << t_assembling << " s" << std::endl;
+  std::cout << " cutting time    : " << t_cutting << " s" << std::endl;
+  std::cout << " merging time    : " << t_merging << " s" << std::endl;
+  std::cout << "Total time       : " << t_total << " s" << std::endl;
 #endif
 }
 
@@ -2205,23 +2205,23 @@ void BRepBuilderAPI_Sewing::Dump() const
       mapVertices.Add(V2);
     }
   }
-  cout << " " << endl;
-  cout << "                        Informations                        " << endl;
-  cout << " ===========================================================" << endl;
-  cout << " " << endl;
-  cout << " Number of input shapes      : " << myOldShapes.Extent() << endl;
-  cout << " Number of actual shapes     : " << myNbShapes << endl;
-  cout << " Number of Bounds            : " << NbBounds << endl;
-  cout << " Number of Sections          : " << NbSections << endl;
-  cout << " Number of Edges             : " << mapEdges.Extent() << endl;
-  cout << " Number of Vertices          : " << myNbVertices << endl;
-  cout << " Number of Nodes             : " << mapVertices.Extent() << endl;
-  cout << " Number of Free Edges        : " << myFreeEdges.Extent() << endl;
-  cout << " Number of Contigous Edges   : " << myContigousEdges.Extent() << endl;
-  cout << " Number of Multiple Edges    : " << myMultipleEdges.Extent() << endl;
-  cout << " Number of Degenerated Edges : " << myDegenerated.Extent() << endl;
-  cout << " ===========================================================" << endl;
-  cout << " " << endl;
+  std::cout << " " << std::endl;
+  std::cout << "                        Informations                        " << std::endl;
+  std::cout << " ===========================================================" << std::endl;
+  std::cout << " " << std::endl;
+  std::cout << " Number of input shapes      : " << myOldShapes.Extent() << std::endl;
+  std::cout << " Number of actual shapes     : " << myNbShapes << std::endl;
+  std::cout << " Number of Bounds            : " << NbBounds << std::endl;
+  std::cout << " Number of Sections          : " << NbSections << std::endl;
+  std::cout << " Number of Edges             : " << mapEdges.Extent() << std::endl;
+  std::cout << " Number of Vertices          : " << myNbVertices << std::endl;
+  std::cout << " Number of Nodes             : " << mapVertices.Extent() << std::endl;
+  std::cout << " Number of Free Edges        : " << myFreeEdges.Extent() << std::endl;
+  std::cout << " Number of Contigous Edges   : " << myContigousEdges.Extent() << std::endl;
+  std::cout << " Number of Multiple Edges    : " << myMultipleEdges.Extent() << std::endl;
+  std::cout << " Number of Degenerated Edges : " << myDegenerated.Extent() << std::endl;
+  std::cout << " ===========================================================" << std::endl;
+  std::cout << " " << std::endl;
 }
 
 //=======================================================================
@@ -2297,7 +2297,7 @@ void BRepBuilderAPI_Sewing::FaceAnalysis(const Handle(Message_ProgressIndicator)
 	    Handle(Geom_Curve) c3d = BRep_Tool::Curve(edge,first,last);
 	    if (c3d.IsNull()) {
 #ifdef OCCT_DEBUG
-	      cout << "Warning: Possibly small edge can be sewed: No 3D curve" << endl;
+	      std::cout << "Warning: Possibly small edge can be sewed: No 3D curve" << std::endl;
 #endif
 	    }
 	    else {
@@ -2318,8 +2318,8 @@ void BRepBuilderAPI_Sewing::FaceAnalysis(const Handle(Message_ProgressIndicator)
 	      }
 	      catch (Standard_Failure) {
 #ifdef OCCT_DEBUG
-		cout << "Warning: Possibly small edge can be sewed: ";
-		Standard_Failure::Caught()->Print(cout); cout << endl;
+		std::cout << "Warning: Possibly small edge can be sewed: ";
+		Standard_Failure::Caught()->Print(std::cout); std::cout << std::endl;
 #endif
 	      }*/
 	    }
@@ -2377,7 +2377,7 @@ void BRepBuilderAPI_Sewing::FaceAnalysis(const Handle(Message_ProgressIndicator)
 	  // Replace small edge
 	  if (isSmall) {
 #ifdef OCCT_DEBUG
-	    cout << "Warning: Small edge made degenerated by FaceAnalysis" << endl;
+	    std::cout << "Warning: Small edge made degenerated by FaceAnalysis" << std::endl;
 #endif
 	    nbSmall++;
 	    // Create new degenerated edge
@@ -2414,7 +2414,7 @@ void BRepBuilderAPI_Sewing::FaceAnalysis(const Handle(Message_ProgressIndicator)
       // Remove small face
       if (nbSmall == nbEdges) {
 #ifdef OCCT_DEBUG
-	cout << "Warning: Small face removed by FaceAnalysis" << endl;
+	std::cout << "Warning: Small face removed by FaceAnalysis" << std::endl;
 #endif
 	myLittleFace.Add(face);
 	myReShape->Remove(face);
@@ -2801,7 +2801,7 @@ static Standard_Boolean GlueVertices(TopTools_IndexedDataMapOfShapeShape& aVerte
   }
   Standard_Integer nbNodes = NodeVertices.Extent();
 #ifdef OCCT_DEBUG
-  cout << "Glueing " << nbNodes << " nodes..." << endl;
+  std::cout << "Glueing " << nbNodes << " nodes..." << std::endl;
 #endif
   // Merge nearest nodes
   TopTools_IndexedDataMapOfShapeShape NodeNearestNode;
@@ -2962,7 +2962,7 @@ void BRepBuilderAPI_Sewing::VerticesAssembling(const Handle(Message_ProgressIndi
     // Glue vertices
     if (nbVert) {
 #ifdef OCCT_DEBUG
-      cout << "Assemble " << nbVert << " vertices on faces..." << endl;
+      std::cout << "Assemble " << nbVert << " vertices on faces..." << std::endl;
 #endif
       while (GlueVertices(myVertexNode,myNodeSections,myBoundFaces,myTolerance, thePI));
     }
@@ -2971,7 +2971,7 @@ void BRepBuilderAPI_Sewing::VerticesAssembling(const Handle(Message_ProgressIndi
     aPS.Next();
     if (nbVertFree) {
 #ifdef OCCT_DEBUG
-      cout << "Assemble " << nbVertFree << " vertices on floating edges..." << endl;
+      std::cout << "Assemble " << nbVertFree << " vertices on floating edges..." << std::endl;
 #endif
       while (GlueVertices(myVertexNodeFree,myNodeSections,myBoundFaces,myTolerance, thePI));
     }
@@ -3737,8 +3737,8 @@ void BRepBuilderAPI_Sewing::Cutting(const Handle(Message_ProgressIndicator)& the
     }
   }
 #ifdef OCCT_DEBUG
-  cout << "From " << nbBounds << " bounds " << myBoundSections.Extent()
-    << " were cut into " << mySectionBound.Extent() << " sections" << endl;
+  std::cout << "From " << nbBounds << " bounds " << myBoundSections.Extent()
+    << " were cut into " << mySectionBound.Extent() << " sections" << std::endl;
 #endif
 }
 
@@ -4364,8 +4364,8 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
     }
     catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "Exception in BRepBuilderAPI_Sewing::ProjectPointsOnCurve: ";
-      anException.Print(cout); cout << endl;
+      std::cout << "Exception in BRepBuilderAPI_Sewing::ProjectPointsOnCurve: ";
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       worktol = MinTolerance();
@@ -4704,8 +4704,8 @@ void BRepBuilderAPI_Sewing::CreateSections(const TopoDS_Shape& section,
       //}
       /*catch (Standard_Failure) {
       #ifdef OCCT_DEBUG
-      cout << "Exception in CreateSections: segment [" << par1 << "," << par2 << "]: ";
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+      std::cout << "Exception in CreateSections: segment [" << par1 << "," << par2 << "]: ";
+      Standard_Failure::Caught()->Print(std::cout); std::cout << std::endl;
       #endif
       Handle(Geom2d_TrimmedCurve) c2dT = new Geom2d_TrimmedCurve(c2dNew,Max(first2d,par1),Min(par2,last2d));
       c2dNew = c2dT;
@@ -4746,7 +4746,7 @@ void BRepBuilderAPI_Sewing::SameParameterShape()
     }
     catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
-      cout << "Fail: BRepBuilderAPI_Sewing::SameParameterShape exception in BRepLib::SameParameter" << endl;
+      std::cout << "Fail: BRepBuilderAPI_Sewing::SameParameterShape exception in BRepLib::SameParameter" << std::endl;
 #endif
       continue;
     }

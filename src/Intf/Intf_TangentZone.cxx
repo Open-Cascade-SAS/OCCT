@@ -84,7 +84,7 @@ void Intf_TangentZone::Append            (const Intf_TangentZone& Tzi)
 Standard_Boolean Intf_TangentZone::Insert (const Intf_SectionPoint& )
 {
 #if DEBUG_TANGENTZONE
-  cout<<" Standard_Boolean Intf_TangentZone::Insert (const Intf_SectionPoint& Pi) ???? "<<endl;
+  std::cout<<" Standard_Boolean Intf_TangentZone::Insert (const Intf_SectionPoint& Pi) ???? "<<std::endl;
 #endif
   Standard_Boolean Inserted=Standard_False;
 /*
@@ -334,10 +334,10 @@ Standard_Boolean Intf_TangentZone::HasCommonRange
 void Intf_TangentZone::Dump (const Standard_Integer /*Indent*/) const
 {
 #if DEBUG_TANGENTZONE
-  for (Standard_Integer id=0; id<Indent; id++) cout << " ";
-  cout << "TZ \n" ;
-  cout<<"  ParamOnFirstMin Max    : "<<ParamOnFirstMin<<" "<<ParamOnFirstMax<<endl;
-  cout<<"  ParamOnSecondMin Max   : "<<ParamOnSecondMin<<" "<<ParamOnSecondMax<<endl;
+  for (Standard_Integer id=0; id<Indent; id++) std::cout << " ";
+  std::cout << "TZ \n" ;
+  std::cout<<"  ParamOnFirstMin Max    : "<<ParamOnFirstMin<<" "<<ParamOnFirstMax<<std::endl;
+  std::cout<<"  ParamOnSecondMin Max   : "<<ParamOnSecondMin<<" "<<ParamOnSecondMax<<std::endl;
   for (Standard_Integer p=1; p<=Result.Length(); p++) {
     Result(p).Dump(Indent+2);
   }

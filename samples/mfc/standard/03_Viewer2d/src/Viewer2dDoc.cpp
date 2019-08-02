@@ -233,7 +233,7 @@ void CViewer2dDoc::OnBUTTONTestFace()
 
     std::filebuf aFileBuf;
     std::istream aStream (&aFileBuf);
-    if (!aFileBuf.open (dlg.GetPathName(), ios::in))
+    if (!aFileBuf.open (dlg.GetPathName(), std::ios::in))
     {
       AfxMessageBox (L"The shape must be not a null Face");
       return;

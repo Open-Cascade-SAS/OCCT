@@ -84,7 +84,7 @@ Standard_Real IntCurve_ProjectOnPConicTool::FindParameter
 					const gp_Pnt2d& P,
 					const Standard_Real)  {
 
-  //cout<<"\n\n---- Dans ProjectOnPConicTool::FindParameter  Point : "<<P.X()<<","<<P.Y();
+  //std::cout<<"\n\n---- Dans ProjectOnPConicTool::FindParameter  Point : "<<P.X()<<","<<P.Y();
 
   Standard_Real Param=0;
 

@@ -120,7 +120,7 @@ Standard_Integer XmlMDF::WriteSubTree
 #ifdef OCCT_DEBUG
     else if (!UnsuppTypesMap().Contains (aType))
     {
-      cout << "attribute driver for type "<< aType -> Name()<< " not found"<< endl;
+      std::cout << "attribute driver for type "<< aType -> Name()<< " not found"<< std::endl;
       UnsuppTypesMap().Add (aType);
     }
 #endif
@@ -232,8 +232,8 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
 	TCollection_AsciiString  newName;	
 	if(Storage_Schema::CheckTypeMigration(aName, newName)) {
 #ifdef OCCT_DEBUG
-	  cout << "CheckTypeMigration:OldType = " <<aName.GetString() << " Len = "<<strlen(aName.GetString())<<endl;
-	  cout << "CheckTypeMigration:NewType = " <<newName  << " Len = "<< newName.Length()<<endl;
+	  std::cout << "CheckTypeMigration:OldType = " <<aName.GetString() << " Len = "<<strlen(aName.GetString())<<std::endl;
+	  std::cout << "CheckTypeMigration:NewType = " <<newName  << " Len = "<< newName.Length()<<std::endl;
 #endif
 	  aName = newName.ToCString();
 	}
@@ -296,8 +296,8 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
         else
         {
           const TCollection_AsciiString anAsciiName = aName;
-          cerr << "XmlDriver warning: "
-               << "label contains object of unknown type "<< anAsciiName<< endl;
+          std::cerr << "XmlDriver warning: "
+               << "label contains object of unknown type "<< anAsciiName<< std::endl;
         }
 #endif
       }

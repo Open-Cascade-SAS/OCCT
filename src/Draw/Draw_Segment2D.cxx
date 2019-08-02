@@ -109,6 +109,6 @@ void  Draw_Segment2D::Whatis(Draw_Interpretor& S) const
 
 void  Draw_Segment2D::Dump(Standard_OStream& S) const
 {
-  S << setw(17) << myFirst.X() << " " << setw(17) << myFirst.Y() << " - "
-    << setw(17) << myLast.X() << " " << setw(17) << myLast.Y() << "\n";
+  S << std::setw(17) << myFirst.X() << " " << std::setw(17) << myFirst.Y() << " - "
+    << std::setw(17) << myLast.X() << " " << std::setw(17) << myLast.Y() << "\n";
 }

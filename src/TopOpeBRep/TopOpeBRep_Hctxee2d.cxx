@@ -81,8 +81,8 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
-    cout<<"ed1 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"),first="<<first<<"\n";
-    cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<endl;}
+    std::cout<<"ed1 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"),first="<<first<<"\n";
+    std::cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<std::endl;}
 #endif
 
   Standard_Boolean memesfaces = F1.IsSame(F2);
@@ -101,8 +101,8 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
 
 #ifdef OCCT_DEBUG
     if (trc) {
-      cout<<"ed2 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"),first="<<first<<"\n";
-      cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<endl;
+      std::cout<<"ed2 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"),first="<<first<<"\n";
+      std::cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<std::endl;
     }
 #endif
   }
@@ -153,12 +153,12 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
       myDomain2.SetValues(pfirst,first,tole,plast,last,tole);
 #ifdef OCCT_DEBUG
       if ( TopOpeBRep_GettracePROEDG() ) {
-        cout<<"------------ projection de curve"<<endl;
-        cout<<"--- Curve : "<<endl;GeomTools_CurveSet::PrintCurve(NC,cout);
-        cout<<"--- nouvelle PCurve : "<<endl;GeomTools_Curve2dSet::PrintCurve2d(PC2on1,cout);
+        std::cout<<"------------ projection de curve"<<std::endl;
+        std::cout<<"--- Curve : "<<std::endl;GeomTools_CurveSet::PrintCurve(NC,std::cout);
+        std::cout<<"--- nouvelle PCurve : "<<std::endl;GeomTools_Curve2dSet::PrintCurve2d(PC2on1,std::cout);
         Handle(Geom_Surface) aS1 = BRep_Tool::Surface(F1);
-        cout<<"--- sur surface : "<<endl;GeomTools_SurfaceSet::PrintSurface(aS1,cout);
-        cout<<endl;
+        std::cout<<"--- sur surface : "<<std::endl;GeomTools_SurfaceSet::PrintSurface(aS1,std::cout);
+        std::cout<<std::endl;
       }
 #endif
     }

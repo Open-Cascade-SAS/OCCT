@@ -58,15 +58,15 @@ namespace {
   {
     for (int i=0; i < argc; i++)
       os << argv[i] << " ";
-    os << endl;
+    os << std::endl;
   }
 
   void flush_standard_streams ()
   {
     fflush (stderr);
     fflush (stdout);
-    cerr << flush;
-    cout << flush;
+    std::cerr << std::flush;
+    std::cout << std::flush;
   }
 
   int capture_start (int theFDStd, int theFDLog)
@@ -140,7 +140,7 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
   }
 
   if (doEcho || doLog)
-    dumpArgs (cout, argc, argv);
+    dumpArgs (std::cout, argc, argv);
 
   // run command
   try {
@@ -170,7 +170,7 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
 
     // get the error message
     Standard_SStream ss;
-    ss << "** Exception ** " << anException << ends;
+    ss << "** Exception ** " << anException << std::ends;
     Tcl_SetResult(interp,(char*)(ss.str().c_str()),TCL_VOLATILE);
     code = TCL_ERROR;
   }
@@ -189,7 +189,7 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
 
     // get the error message
     Standard_SStream ss;
-    ss << "** Exception ** " << theStdException.what() << " [" << typeid(theStdException).name() << "]" << ends;
+    ss << "** Exception ** " << theStdException.what() << " [" << typeid(theStdException).name() << "]" << std::ends;
     Tcl_SetResult (interp, (char*)(ss.str().c_str()), TCL_VOLATILE);
     code = TCL_ERROR;
   }
@@ -208,7 +208,7 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
 
     // get the error message
     Standard_SStream ss;
-    ss << "** Exception ** UNKNOWN" << ends;
+    ss << "** Exception ** UNKNOWN" << std::ends;
     Tcl_SetResult (interp, (char* )(ss.str().c_str()), TCL_VOLATILE);
     code = TCL_ERROR;
   }
@@ -553,7 +553,7 @@ Draw_Interpretor::~Draw_Interpretor()
   }
   catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
-    cout <<"Tcl_Exit have an exeption" << endl;
+    std::cout <<"Tcl_Exit have an exeption" << std::endl;
 #endif
   }
 #else

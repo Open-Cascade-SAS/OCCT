@@ -207,7 +207,7 @@ const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity
     }
   ////sln 21.01.2002 OCC133: Exception handling
  // catch (Standard_OutOfRange) {
- //   cout<<" Catch of sln"<<endl;
+ //   std::cout<<" Catch of sln"<<std::endl;
 
  //   return dummy;
  // }
@@ -216,12 +216,12 @@ const Handle(Standard_Transient)& Interface_FileReaderData::BoundEntity
     // some work-around, the best would be to modify CDL to
     // return "Handle(Standard_Transient)" not "const Handle(Standard_Transient)&"
       static Handle(Standard_Transient) dummy;
-     // cout<<" Catch of smh"<<endl;
+     // std::cout<<" Catch of smh"<<std::endl;
     return dummy;
     }
   }
-   //cout<<" Normal"<<endl;
-  if (theents.Value(num).IsImmutable()) cout << "IMMUTABLE:"<<num<<endl;
+   //std::cout<<" Normal"<<std::endl;
+  if (theents.Value(num).IsImmutable()) std::cout << "IMMUTABLE:"<<num<<std::endl;
   return theents(num);
 }
 */
@@ -232,7 +232,7 @@ void Interface_FileReaderData::BindEntity
 {
 //  #ifdef OCCT_DEBUG
 //    if (ent.IsImmutable())
-//      cout << "Bind IMMUTABLE:"<<num<<endl;
+//      std::cout << "Bind IMMUTABLE:"<<num<<std::endl;
 //  #endif
   theents.SetValue(num,ent);
 }

@@ -396,34 +396,34 @@ Standard_Boolean BlendFunc_ChAsymInv::Values(const math_Vector& X,
   F = FX;
   D = DX;
   return Error;
-/*  cout<<endl;
-  cout<<" test ChAsymInv"<<endl;
-  cout<<"calcul exact  <-->  approche"<<endl;
+/*  std::cout<<std::endl;
+  std::cout<<" test ChAsymInv"<<std::endl;
+  std::cout<<"calcul exact  <-->  approche"<<std::endl;
 
   math_Vector X1(1,4);
   math_Vector F1(1,4); 
   X1 = X; X1(1) += 1.e-10;
   Value(X1,F1);
-  cout<<"D(1,1) : "<<D(1,1)<<" "<<(F1(1) - F(1)) * 1.e10<<endl;
-  cout<<"D(2,1) : "<<D(2,1)<<" "<<(F1(2) - F(2)) * 1.e10<<endl;
-  cout<<"D(3,1) : "<<D(3,1)<<" "<<(F1(3) - F(3)) * 1.e10<<endl;
-  cout<<"D(4,1) : "<<D(4,1)<<" "<<(F1(4) - F(4)) * 1.e10<<endl;
+  std::cout<<"D(1,1) : "<<D(1,1)<<" "<<(F1(1) - F(1)) * 1.e10<<std::endl;
+  std::cout<<"D(2,1) : "<<D(2,1)<<" "<<(F1(2) - F(2)) * 1.e10<<std::endl;
+  std::cout<<"D(3,1) : "<<D(3,1)<<" "<<(F1(3) - F(3)) * 1.e10<<std::endl;
+  std::cout<<"D(4,1) : "<<D(4,1)<<" "<<(F1(4) - F(4)) * 1.e10<<std::endl;
   X1 = X; X1(2) += 1.e-10;
   Value(X1,F1);
-  cout<<"D(1,2) : "<<D(1,2)<<" "<<(F1(1) - F(1)) * 1.e10<<endl;
-  cout<<"D(2,2) : "<<D(2,2)<<" "<<(F1(2) - F(2)) * 1.e10<<endl;
-  cout<<"D(3,2) : "<<D(3,2)<<" "<<(F1(3) - F(3)) * 1.e10<<endl;
-  cout<<"D(4,2) : "<<D(4,2)<<" "<<(F1(4) - F(4)) * 1.e10<<endl;
+  std::cout<<"D(1,2) : "<<D(1,2)<<" "<<(F1(1) - F(1)) * 1.e10<<std::endl;
+  std::cout<<"D(2,2) : "<<D(2,2)<<" "<<(F1(2) - F(2)) * 1.e10<<std::endl;
+  std::cout<<"D(3,2) : "<<D(3,2)<<" "<<(F1(3) - F(3)) * 1.e10<<std::endl;
+  std::cout<<"D(4,2) : "<<D(4,2)<<" "<<(F1(4) - F(4)) * 1.e10<<std::endl;
   X1 = X; X1(3) += 1.e-10;
   Value(X1,F1);
-  cout<<"D(1,3) : "<<D(1,3)<<" "<<(F1(1) - F(1)) * 1.e10<<endl;
-  cout<<"D(2,3) : "<<D(2,3)<<" "<<(F1(2) - F(2)) * 1.e10<<endl;
-  cout<<"D(3,3) : "<<D(3,3)<<" "<<(F1(3) - F(3)) * 1.e10<<endl;
-  cout<<"D(4,3) : "<<D(4,3)<<" "<<(F1(4) - F(4)) * 1.e10<<endl;
+  std::cout<<"D(1,3) : "<<D(1,3)<<" "<<(F1(1) - F(1)) * 1.e10<<std::endl;
+  std::cout<<"D(2,3) : "<<D(2,3)<<" "<<(F1(2) - F(2)) * 1.e10<<std::endl;
+  std::cout<<"D(3,3) : "<<D(3,3)<<" "<<(F1(3) - F(3)) * 1.e10<<std::endl;
+  std::cout<<"D(4,3) : "<<D(4,3)<<" "<<(F1(4) - F(4)) * 1.e10<<std::endl;
   X1 = X; X1(4) += 1.e-10;
   Value(X1,F1);
-  cout<<"D(1,4) : "<<D(1,4)<<" "<<(F1(1) - F(1)) * 1.e10<<endl;
-  cout<<"D(2,4) : "<<D(2,4)<<" "<<(F1(2) - F(2)) * 1.e10<<endl;
-  cout<<"D(3,4) : "<<D(3,4)<<" "<<(F1(3) - F(3)) * 1.e10<<endl;
-  cout<<"D(4,4) : "<<D(4,4)<<" "<<(F1(4) - F(4)) * 1.e10<<endl;*/
+  std::cout<<"D(1,4) : "<<D(1,4)<<" "<<(F1(1) - F(1)) * 1.e10<<std::endl;
+  std::cout<<"D(2,4) : "<<D(2,4)<<" "<<(F1(2) - F(2)) * 1.e10<<std::endl;
+  std::cout<<"D(3,4) : "<<D(3,4)<<" "<<(F1(3) - F(3)) * 1.e10<<std::endl;
+  std::cout<<"D(4,4) : "<<D(4,4)<<" "<<(F1(4) - F(4)) * 1.e10<<std::endl;*/
 }

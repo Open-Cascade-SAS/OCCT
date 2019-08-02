@@ -100,7 +100,7 @@ void Print_Entry(const TDF_Label&       label)
 {
   TCollection_AsciiString entry;
   TDF_Tool::Entry(label, entry);
-  cout << "LabelEntry = "<< entry << endl;
+  std::cout << "LabelEntry = "<< entry << std::endl;
 }
 static void Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
@@ -114,10 +114,10 @@ static void Write(const TopoDS_Shape& shape,
       *p = '-';
     p++;
   }
-  ofstream save (buf);
+  std::ofstream save (buf);
   if(!save) 
-    cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << endl;
-  save << "DBRep_DrawableShape" << endl << endl;
+    std::cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << std::endl;
+  save << "DBRep_DrawableShape" << std::endl << std::endl;
   if(!shape.IsNull()) BRepTools::Write(shape, save);
   save.close();
 }
@@ -132,10 +132,10 @@ void WriteNSOnLabel(const Handle(TNaming_NamedShape) & NS, const TCollection_Asc
       Write(Sh, Entry.ToCString());
     }
     else
-      cout << "WriteNSOnLabel>>> TopoDS_Shape IS NULL on Entry = "<< entry << endl;
+      std::cout << "WriteNSOnLabel>>> TopoDS_Shape IS NULL on Entry = "<< entry << std::endl;
   }
   else
-    cout << "WriteNSOnLabel >>>  NamedShape IS NULL" << endl;
+    std::cout << "WriteNSOnLabel >>>  NamedShape IS NULL" << std::endl;
 }
 #endif
 
@@ -163,7 +163,7 @@ Standard_Boolean  TNaming_Naming::Solve (TDF_LabelMap& Valid)
 #ifdef OCCT_DEBUG_NBS
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(it.Value(), anEntry);
-    cout << "TNaming_Naming::Solve: Label to be solved = " << anEntry << endl;
+    std::cout << "TNaming_Naming::Solve: Label to be solved = " << anEntry << std::endl;
 #endif
     if (it.Value().FindAttribute(TNaming_Naming::GetID(),subname)) {
       if (!subname->Solve (Valid)) {
@@ -173,12 +173,12 @@ Standard_Boolean  TNaming_Naming::Solve (TDF_LabelMap& Valid)
   }
 #ifdef OCCT_DEBUG_CC
   TDF_MapIteratorOfLabelMap anItr(Valid);
-  cout << "TNaming_Naming::Solve:: Valid label Map" << endl;
+  std::cout << "TNaming_Naming::Solve:: Valid label Map" << std::endl;
   for (; anItr.More(); anItr.Next()) {
     const TDF_Label& aLabel = anItr.Key();
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(aLabel, anEntry);
-    cout << "Label = " << anEntry << endl;
+    std::cout << "Label = " << anEntry << std::endl;
   }
 #endif
   if (Regenerate(Valid)) {
@@ -280,9 +280,9 @@ static Standard_Boolean GetShapeEvolutions(const TopoDS_Shape&               the
   Handle(TNaming_NamedShape) aTarget = TNaming_Tool::NamedShape(theTarget,theSource->Label());
   if (!aTarget.IsNull()) {
 #ifdef OCCT_DEBUG_71
-    cout <<"GetShapeEvolutions: target NS = ";
+    std::cout <<"GetShapeEvolutions: target NS = ";
     Print_Entry(aTarget->Label());
-    cout <<"GetShapeEvolutions: Source NS = ";
+    std::cout <<"GetShapeEvolutions: Source NS = ";
     Print_Entry(theSource->Label());
     TCollection_AsciiString aNam("GetShapeEvolutions");
     WriteNSOnLabel(aTarget,aNam);
@@ -295,11 +295,11 @@ static Standard_Boolean GetShapeEvolutions(const TopoDS_Shape&               the
 #ifdef OCCT_DEBUG_71
     if(!anIter.OldShape().IsNull()) {
       Write(anIter.OldShape(), "Target_OldS.brep");
-      cout <<"Target OldS TS =" <<anIter.OldShape().TShape()->This() <<endl;
+      std::cout <<"Target OldS TS =" <<anIter.OldShape().TShape()->This() <<std::endl;
     }
     if(!anIter.NewShape().IsNull()) {
       Write(anIter.NewShape(), "Target_NewS.brep");
-      cout <<"Target NewS TS =" <<anIter.NewShape().TShape()->This() <<endl;
+      std::cout <<"Target NewS TS =" <<anIter.NewShape().TShape()->This() <<std::endl;
     }  
 #endif
     if (anIter.OldShape().IsNull() || anIter.NewShape().IsNull()) continue;
@@ -323,7 +323,7 @@ static Handle(TNaming_NamedShape) CompareInModification (const Handle(TNaming_Na
   Handle(TNaming_NamedShape) aResult;
   if (S.IsNull() || NS.IsNull()) return aResult;
 #ifdef OCCT_DEBUG_71
-  cout <<"CompareInModification: parent NS = ";
+  std::cout <<"CompareInModification: parent NS = ";
   Print_Entry(NS->Label());
   Write(S, "CompareInM_S.brep");
   TCollection_AsciiString aNam("CompareInM");
@@ -383,7 +383,7 @@ static Standard_Boolean FillSMap(const TopoDS_Shape& S, TopTools_MapOfShape& MS)
   for (; it.More(); it.Next()) {
     const TopAbs_ShapeEnum aType = it.Value().ShapeType();      
 #ifdef OCCT_DEBUG_CC
-    cout <<"TestSolution_FillMap: S_Type = :" << it.Value().ShapeType() <<" TShape = " << it.Value().TShape()->This() <<endl;
+    std::cout <<"TestSolution_FillMap: S_Type = :" << it.Value().ShapeType() <<" TShape = " << it.Value().TShape()->This() <<std::endl;
 #endif
     if(aType > TopAbs_COMPSOLID) {
       MS.Add(it.Value());
@@ -419,13 +419,13 @@ static Standard_Boolean Compare (const Handle(TNaming_NamedShape)& NS,
   TNaming_NamingTool::CurrentShape(MDF.GetValid(),Forbiden,NS,MS);
 #ifdef OCCT_DEBUG_NBS
   Write(S, "Compare_S.brep");
-  cout <<  "S: TShape = " <<S.TShape()->This() <<endl;
+  std::cout <<  "S: TShape = " <<S.TShape()->This() <<std::endl;
   TCollection_AsciiString aNam("Compare_MS_");
   TCollection_AsciiString ext(".brep");
   for (Standard_Integer anItMS = 1; anItMS <= MS.Extent(); ++anItMS) {
     TCollection_AsciiString aName = aNam + anItMS + ext;
     Write (MS (anItMS), aName.ToCString());
-    cout << aName.ToCString()<< ": TShape = " << MS (anItMS).TShape()->This() << endl;
+    std::cout << aName.ToCString()<< ": TShape = " << MS (anItMS).TShape()->This() << std::endl;
   }
 #endif
   return (MS.Contains(S) && MS.Extent() == 1);
@@ -604,7 +604,7 @@ static Standard_Boolean IsMultipleCase(const TopoDS_Shape&        S,
 	aDMM.Bind(it.Key(), aMS);
     } else {
 #ifdef OCCT_DEBUG
-      cout << "Key is not BOUND!" <<endl;
+      std::cout << "Key is not BOUND!" <<std::endl;
 #endif
       return Standard_False;
     }
@@ -699,7 +699,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 
   if (Neighbourg.IsEmpty()) {
 #ifdef OCCT_DEBUG
-    cout <<"FindNeighbourg: impossible"<<endl;
+    std::cout <<"FindNeighbourg: impossible"<<std::endl;
 #endif
     return 0;  
   } else {
@@ -707,7 +707,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
     Write(Neighbourg, "Neighbourgs");
 #endif
     aLev++;
-    //cout <<"Filter: Lev = " << aLev << endl;
+    //std::cout <<"Filter: Lev = " << aLev << std::endl;
   }
   if(aLev > 3) return 0; 
 #ifdef ALLOW_CHILD_NBS	 
@@ -724,7 +724,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
     //check the applicability
     if(!NS.IsNull() && !NS->Get().IsNull() && NS->Get().ShapeType() == TopAbs_COMPOUND)
       if(IsMultipleCase(S, Context, Neighbourg)) {
-	//cout << "Filter: ==> MultipleCase!" << endl;
+	//std::cout << "Filter: ==> MultipleCase!" << std::endl;
 	NS->Label().FindAttribute(TNaming_Naming::GetID(), aFNaming);
 	if(!aFNaming.IsNull()) {
 	  TNaming_Name& aName = aFNaming->ChangeName();
@@ -735,7 +735,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 	      const TopoDS_Shape& aFace = TNaming_Tool::CurrentShape(itA.Value());
 #ifdef OCCT_DEBUG_MOD
 	      Write(aFace, "First_Face.brep");
-	      cout <<"Selection TS = " << S.TShape()->This() <<endl;
+	      std::cout <<"Selection TS = " << S.TShape()->This() <<std::endl;
 #endif
 	      Standard_Integer i(1), indxW(0),indxE(0),nbW(0),nbE(0), indxF(0);
 	      Standard_Boolean isFound(Standard_False);
@@ -752,7 +752,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 		    nbE++;
 #ifdef OCCT_DEBUG_MOD
 		    Write(it2.Value(), "First_Wire.brep");
-		    cout <<"Edge TS = " << it2.Value().TShape()->This() <<endl;
+		    std::cout <<"Edge TS = " << it2.Value().TShape()->This() <<std::endl;
 #endif
 		    if(S.IsEqual(it2.Value())) {
 		      indxE = j;
@@ -803,9 +803,9 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   theName.Append(NS);
   theName.StopNamedShape (Until);
 #ifdef OCCT_DEBUG_NBS
-  cout << "FilterByNBS: ";
+  std::cout << "FilterByNBS: ";
   Print_Entry(NF->Label());
-  cout <<"AppendNS = " ;
+  std::cout <<"AppendNS = " ;
   Print_Entry(NS->Label());
 #endif
   //---------------------
@@ -821,13 +821,13 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
 #ifdef OCCT_DEBUG_NBS
     const TopoDS_Shape& aS2 = aNS->Get(); 
     if(!aS.IsNull())
-      cout << "Shape arg type = " << aS.ShapeType() <<" TSH = " << aS.TShape()->This()<<endl;
+      std::cout << "Shape arg type = " << aS.ShapeType() <<" TSH = " << aS.TShape()->This()<<std::endl;
     if(!aS2.IsNull()) {
-      cout << "Build shape type = " << aS2.ShapeType() <<" TSH = " << aS2.TShape()->This()<<endl;
+      std::cout << "Build shape type = " << aS2.ShapeType() <<" TSH = " << aS2.TShape()->This()<<std::endl;
       Write (aS2, "NBS_BuildShape.brep");
     }
     if(aNS.IsNull()) {
-     cout <<"AppendNS = " ;
+     std::cout <<"AppendNS = " ;
      Print_Entry(aNS->Label());
     }
 #endif
@@ -840,7 +840,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
        aSNS.ShapeType() == TopAbs_COMPOUND)
       { // aLev < 3 
 #ifdef OCCT_DEBUG_NBS
-	cout <<"Father label = ";
+	std::cout <<"Father label = ";
 	Print_Entry(aNS->Label().Father());
 	Write(aS,"SelectionS.brep");
 	Write(aSNS,"SelectionSNS.brep");
@@ -875,7 +875,7 @@ static Standard_Boolean Filter (const TDF_Label&                  F,
   //-----------------
   if (Compare (NS,MDF,Stop,S)) return 1;
 #ifdef OCCT_DEBUG
-  cout <<"TNaming_Naming::Name Filter insufficient"<<endl;
+  std::cout <<"TNaming_Naming::Name Filter insufficient"<<std::endl;
 #endif
   return 0;
 }
@@ -915,16 +915,16 @@ static Handle(TNaming_NamedShape) BuildNameInNS (const TDF_Label&               
     Father.FindAttribute(TNaming_NamedShape::GetID(),NewStop);
 #ifdef OCCT_DEBUG_INNS
     if(!Stop.IsNull())
-      {cout <<" Stop NS : "; Print_Entry( Stop->Label());}
+      {std::cout <<" Stop NS : "; Print_Entry( Stop->Label());}
     if(!NewStop.IsNull())
-      {cout <<" NewStop : ";  Print_Entry( NewStop->Label());}
-    cout <<"ContextLabel: "; Print_Entry( Context->Label());
-    cout <<"Father      : "; Print_Entry( Father);
+      {std::cout <<" NewStop : ";  Print_Entry( NewStop->Label());}
+    std::cout <<"ContextLabel: "; Print_Entry( Context->Label());
+    std::cout <<"Father      : "; Print_Entry( Father);
 #endif
   }
 #ifdef OCCT_DEBUG_INNS
   if(NewStop.IsNull())
-    cout <<"BuildNameInNS:: NewStop shape is  NULL" << endl;  
+    std::cout <<"BuildNameInNS:: NewStop shape is  NULL" << std::endl;  
 #endif 
   return BuildName (F,MDF,S,SC,NewStop,Geometry);
 }
@@ -948,9 +948,9 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
   Standard_Boolean OnlyOne      = !Geom;
   Standard_Boolean IsGeneration = Standard_False;
 #ifdef OCCT_DEBUG_MOD
-  cout <<"BuildName: F =>  ";
+  std::cout <<"BuildName: F =>  ";
   Print_Entry(F);
-  cout <<" Selection type = " << Selection.ShapeType() << " TS = " << Selection.TShape()->This() << endl;
+  std::cout <<" Selection type = " << Selection.ShapeType() << " TS = " << Selection.TShape()->This() << std::endl;
   Write(Selection, "BName_Selection.brep");
   Write(Context, "BName_Context.brep");
 #endif
@@ -983,9 +983,9 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
 	theName.Orientation(Selection.Orientation());
     theName.Type(Ident.Type());
 #ifdef OCCT_DEBUG_MOD
-    cout <<"BuildName: Inserted Naming Att at ";
+    std::cout <<"BuildName: Inserted Naming Att at ";
     Print_Entry(Naming->Label());
-    cout <<" NameType = " << theName.Type() <<endl;		
+    std::cout <<" NameType = " << theName.Type() <<std::endl;		
 #endif
     if (Ident.IsFeature()) {
       theName.Append(Ident.FeatureArg());
@@ -1005,7 +1005,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     if(!Stop.IsNull()) {
         TCollection_AsciiString Es;
       TDF_Tool::Entry(Stop->Label(), Es);
-      cout <<"StopNS at Label = "<< Es << endl;
+      std::cout <<"StopNS at Label = "<< Es << std::endl;
     }
 #endif 
     //---------------------------------
@@ -1019,15 +1019,15 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
 	if(!Ident.FeatureArg().IsNull()) {
 	  TCollection_AsciiString E;
 	  TDF_Tool::Entry(Ident.FeatureArg()->Label(), E);
-	  cout <<"Added argument NS from Label = "<< E << endl;
+	  std::cout <<"Added argument NS from Label = "<< E << std::endl;
 	}
 #endif 
       }
       else {
 #ifdef OCCT_DEBUG_MOD
-	  cout <<"BuildName: NameType = " <<theName.Type() << " NS ";
+	  std::cout <<"BuildName: NameType = " <<theName.Type() << " NS ";
 	  Print_Entry(Naming->Label());
-	  cout <<"Ident.ShapeArg() type = " << Ident.ShapeArg().ShapeType() << " TS = " << Ident.ShapeArg().TShape()->This() << endl;	
+	  std::cout <<"Ident.ShapeArg() type = " << Ident.ShapeArg().ShapeType() << " TS = " << Ident.ShapeArg().TShape()->This() << std::endl;	
 	   Write(Ident.ShapeArg(), "BName_ShapeArg.brep");
 #endif	
 	  if (theName.Type() == TNaming_GENERATION)
@@ -1044,7 +1044,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
 #ifdef OCCT_DEBUG_MOD
     TCollection_AsciiString E2;
     TDF_Tool::Entry(Naming->Label(), E2);
-    cout <<"Regenerated Naming Att at Label = "<< E2 << endl;
+    std::cout <<"Regenerated Naming Att at Label = "<< E2 << std::endl;
 #endif 
     Naming->Label().FindAttribute(TNaming_NamedShape::GetID(),NS);
     if(NS.IsNull()) return NS; 
@@ -1053,7 +1053,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     if(!NS.IsNull()) {
       TCollection_AsciiString E;
       TDF_Tool::Entry(NS->Label(), E);
-      cout <<"Regenerated NS at Label = "<< E << endl;
+      std::cout <<"Regenerated NS at Label = "<< E << std::endl;
     }
 #endif 
   }
@@ -1085,9 +1085,9 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
       } else if (Ident.Type() == TNaming_MODIFUNTIL ||
 		 (Ident.Type() == TNaming_INTERSECTION && Naming->ChangeName().Arguments().Extent() == 1)) {
 #ifdef OCCT_DEBUG_MOD
-	cout <<"BuildName(CompareInModification): NameType = " <<Ident.Type() << " NS ";
+	std::cout <<"BuildName(CompareInModification): NameType = " <<Ident.Type() << " NS ";
 	Print_Entry(Ident.Type() == TNaming_MODIFUNTIL ? NS->Label() : Naming->ChangeName().Arguments().First()->Label());
-	cout <<"Selection type = " << Selection.ShapeType() << " TS = " << Selection.TShape()->This() << endl;	
+	std::cout <<"Selection type = " << Selection.ShapeType() << " TS = " << Selection.TShape()->This() << std::endl;	
 #endif
 	Handle(TNaming_NamedShape) NewNS =
 	  CompareInModification(Ident.Type() == TNaming_MODIFUNTIL ? NS : Naming->ChangeName().Arguments().First(), Selection);
@@ -1119,7 +1119,7 @@ static Handle(TNaming_NamedShape) BuildName (const TDF_Label&                  F
     if(!NS.IsNull()) {
       TCollection_AsciiString E;
       TDF_Tool::Entry(NS->Label(), E);
-      cout <<"Returned NS from Label = "<< E << endl;
+      std::cout <<"Returned NS from Label = "<< E << std::endl;
     }
 #endif 
   return NS;
@@ -1222,7 +1222,7 @@ static Standard_Boolean HasAncFace(const TopoDS_Shape& Context,
 	    Face = exp.Current();
 	    if(!Face.IsNull()) {
 	      hasFace = Standard_True;
-	//	  cout << "HasAncFace: TS = " <<theFace.TShape()->This() <<endl;
+	//	  std::cout << "HasAncFace: TS = " <<theFace.TShape()->This() <<std::endl;
 		  const TopoDS_Face aFace(TopoDS::Face(Face));
 		  TopoDS_Wire anOuterW; 
 		  if(TNaming::OuterWire(aFace, anOuterW)) {
@@ -1346,13 +1346,13 @@ static Standard_Boolean IsAllIn (const TopoDS_Shape& S, const TopoDS_Shape& Cont
   Standard_Integer num1(0), num2(0);
   for(TopoDS_Iterator it(S);it.More();it.Next(),num1++) {
 #ifdef OCCT_DEBUG_CC
-  cout <<"S sub-shape type = " << it.Value().ShapeType() <<endl;
+  std::cout <<"S sub-shape type = " << it.Value().ShapeType() <<std::endl;
   Write (it.Value(), "Sel_ItValue.brep");
 #endif
   if(it.Value().ShapeType() != TopAbs_COMPOUND)
     for (TopExp_Explorer exp(Context,it.Value().ShapeType()); exp.More(); exp.Next()) {
 #ifdef OCCT_DEBUG_CC
-  cout <<"Context sub-shape type = " << exp.Current().ShapeType() <<endl;
+  std::cout <<"Context sub-shape type = " << exp.Current().ShapeType() <<std::endl;
   Write(exp.Current(), "Contex_Curnt.brep");
 #endif
       if (exp.Current().IsEqual(it.Value())) { 
@@ -1369,7 +1369,7 @@ static Standard_Boolean IsAllIn (const TopoDS_Shape& S, const TopoDS_Shape& Cont
     found = Standard_True;
 #ifdef OCCT_DEBUG_CC
   else
-    cout <<"Compound case : selected num1 = " << num1 << " context contains num2 = " << num2 << endl;
+    std::cout <<"Compound case : selected num1 = " << num1 << " context contains num2 = " << num2 << std::endl;
 #endif
   return found;
 }
@@ -1406,7 +1406,7 @@ static Standard_Integer RepeatabilityInContext(const TopoDS_Shape& Selection,
     } 
   }
 #ifdef OCCT_DEBUG_OR
-      cout <<"RepeatabilityInContext: = " <<aNum <<endl;
+      std::cout <<"RepeatabilityInContext: = " <<aNum <<std::endl;
 #endif 
   return aNum;
 }
@@ -1589,7 +1589,7 @@ static void BuildAggregationName (const TDF_Label&                  F,
 	theName.Orientation(S.Orientation());
   } 
 #ifdef OCCT_DEBUG_CC
-  cout <<"BuildAggregationName ==> ";
+  std::cout <<"BuildAggregationName ==> ";
   Print_Entry(Naming->Label());
 #endif
   TNaming_Name& theName = Naming->ChangeName();  
@@ -1636,7 +1636,7 @@ static void BuildAggregationName (const TDF_Label&                  F,
 	}
       } else {
 #ifdef OCCT_DEBUG_CC
-	cout << "atomic type is NOT defined ... ==> Aggregation" <<endl;
+	std::cout << "atomic type is NOT defined ... ==> Aggregation" <<std::endl;
 #endif
 	BuildAggregationName(aNaming->Label(),MDF, aS, Context,Stop,Geom);
       }
@@ -1672,7 +1672,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
   Handle(TNaming_NamedShape) aNamedShape;
   if (KeepOrientation) {
 #ifdef OCCT_DEBUG_INNS
-    cout <<"KeepOR = 1: "; Print_Entry(F);
+    std::cout <<"KeepOR = 1: "; Print_Entry(F);
 #endif
     Standard_Integer aNum = RepeatabilityInContext(S, Context);
 
@@ -1708,7 +1708,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
     aNamedShape = TNaming_Naming::Name(Naming->Label(),S,Context,Geom,0);
 	theName.Append (aNamedShape);
 #ifdef MDTV_OR
-	cout << " Sel Label ==> "; Print_Entry(NS->Label());
+	std::cout << " Sel Label ==> "; Print_Entry(NS->Label());
 #endif
 //szy 21.10.2009	
 	if(S.ShapeType() == TopAbs_EDGE && UC.ShapeType() == TopAbs_FACE) {
@@ -1722,7 +1722,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 		  theName.Index(i);//We use this field to save a Seam Shape Index; Before this field was used for GENERATED only
 		  found = Standard_True;
 #ifdef MDTV_OR
-		  cout << "ORDER = " << i <<endl;
+		  std::cout << "ORDER = " << i <<std::endl;
 #endif
 		  break;
 		}
@@ -1742,7 +1742,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
     aNamedShape = TNaming_Naming::Name(Naming->Label(),UC,Context, Geom, 1, aBNproblem);
 	  theName.Append (aNamedShape);
 #ifdef MDTV_OR
-	cout << " Cont Label ==> "; Print_Entry(NS->Label());
+	std::cout << " Cont Label ==> "; Print_Entry(NS->Label());
 #endif
 	}
       //Naming->Update();
@@ -1753,12 +1753,12 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
 	theName.ContextLabel(aNamedShape->Label());
 	if (Geom) return aNamedShape;
 	if(aNamedShape.IsNull()) {
-	cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<endl;
+	std::cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<std::endl;
 	return BuildNS (F,S, TNaming_UNKNOWN);
       }
 
         if (!Geom && TestSolution(MDF, aNamedShape,S)) return aNamedShape;
-	cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<endl;
+	std::cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<std::endl;
 
 	// Naming n is  unsatisfactory
 	return BuildNS (F,S, TNaming_UNKNOWN);
@@ -1860,7 +1860,7 @@ Handle(TNaming_NamedShape) TNaming_Naming::Name (const TDF_Label&       F,
     if (!Geom && TestSolution(MDF,NS,S)) return NS; 
   }
   
-      cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<endl;
+      std::cout <<" %%% WARNING: TNaming_Naming::Name:  FAILED"<<std::endl;
 
   // Naming n is not satisfactory
   return BuildNS (F,S, TNaming_UNKNOWN); 
@@ -1995,6 +1995,6 @@ void TNaming_Naming::ExtendedDump(Standard_OStream& anOS,
                                   TDF_AttributeIndexedMap& /*aMap*/) const
 {
   anOS << "TNaming_Naming ExtendedDump  ";
-  //anOS<<"myContext: #" <<aMap.Add(myContext)<<endl; 
+  //anOS<<"myContext: #" <<aMap.Add(myContext)<<std::endl; 
 }
 

@@ -229,7 +229,7 @@ void StepToTopoDS_TranslateFace::Init
   for (Standard_Integer i = 1; i <= NbBnd; i ++) {
 
 #ifdef OCCT_DEBUG
-    cout << "    Processing Wire : " << i << endl;
+    std::cout << "    Processing Wire : " << i << std::endl;
 #endif    
     FaceBound = FS->BoundsValue(i);
     Loop      = FaceBound->Bound();
@@ -354,7 +354,7 @@ void StepToTopoDS_TranslateFace::Init
       // Type not yet implemented or non sens
       TP->AddFail(Loop," Type of loop not yet implemented");
 #ifdef OCCT_DEBUG
-      cout << Loop->DynamicType() << endl;
+      std::cout << Loop->DynamicType() << std::endl;
 #endif
       continue;
     }

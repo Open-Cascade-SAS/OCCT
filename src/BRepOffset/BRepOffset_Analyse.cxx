@@ -190,7 +190,7 @@ void BRepOffset_Analyse::Perform (const TopoDS_Shape& S,
       }
       else {  
 #ifdef OCCT_DEBUG
-	cout <<"edge shared by more than two faces"<<endl;
+	std::cout <<"edge shared by more than two faces"<<std::endl;
 #endif	
       }
     }
@@ -577,7 +577,7 @@ BRepOffset_Type DefineConnectType(const TopoDS_Edge&     E,
     else  {                   
       //Mixed not finished!
 #ifdef OCCT_DEBUG
-      cout <<" faces locally mixed"<<endl;
+      std::cout <<" faces locally mixed"<<std::endl;
 #endif
       return BRepOffset_Convex;
     }

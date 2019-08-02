@@ -70,7 +70,7 @@
 //
 //              On NT platforms (in BRepTools_ShapeSet):
 //              ----------------
-//                In Visual C++ 5 (or higher) the fstream::tellg method is not 
+//                In Visual C++ 5 (or higher) the std::fstream::tellg method is not 
 //                conform to Standard C++ because it modifies the file pointer
 //                position and returns a wrong position. After that the next
 //                readings are shifted and the reading process stop with errors.
@@ -1111,7 +1111,7 @@ void  BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
     {
     // create a face :
     TopoDS_Face& F = TopoDS::Face(S);
-//    streampos pos;
+//    std::streampos pos;
     myBuilder.MakeFace(F);
 
     IS >> val; // natural restriction
@@ -1390,12 +1390,12 @@ void BRepTools_ShapeSet::WritePolygon3D(Standard_OStream&      OS,
     Standard_Integer i1, nbNodes = P->NbNodes();
     const TColgp_Array1OfPnt& Nodes = P->Nodes();
     for (j = 1; j <= nbNodes; j++) {
-      if (!Compact) OS << setw(10) << j << " : ";
-      if (!Compact) OS << setw(17);
+      if (!Compact) OS << std::setw(10) << j << " : ";
+      if (!Compact) OS << std::setw(17);
       OS << Nodes(j).X() << " ";
-      if (!Compact) OS << setw(17);
+      if (!Compact) OS << std::setw(17);
       OS << Nodes(j).Y() << " ";
-      if (!Compact) OS << setw(17);
+      if (!Compact) OS << std::setw(17);
       OS << Nodes(j).Z();
       if (!Compact) OS << "\n";
       else OS << " ";
@@ -1518,12 +1518,12 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
     nbNodes = T->NbNodes();
     const TColgp_Array1OfPnt& Nodes = T->Nodes();
     for (j = 1; j <= nbNodes; j++) {
-      if (!Compact) OS << setw(10) << j << " : ";
-      if (!Compact) OS << setw(17);
+      if (!Compact) OS << std::setw(10) << j << " : ";
+      if (!Compact) OS << std::setw(17);
       OS << Nodes(j).X() << " ";
-      if (!Compact) OS << setw(17);
+      if (!Compact) OS << std::setw(17);
       OS << Nodes(j).Y() << " ";
-      if (!Compact) OS << setw(17);
+      if (!Compact) OS << std::setw(17);
       OS << Nodes(j).Z();
       if (!Compact) OS << "\n";
       else OS << " ";
@@ -1533,10 +1533,10 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
       if (!Compact) OS << "\nUV Nodes :\n";
       const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
       for (j = 1; j <= nbNodes; j++) {
-        if (!Compact) OS << setw(10) << j << " : ";
-        if (!Compact) OS << setw(17);
+        if (!Compact) OS << std::setw(10) << j << " : ";
+        if (!Compact) OS << std::setw(17);
         OS << UVNodes(j).X() << " ";
-        if (!Compact) OS << setw(17);
+        if (!Compact) OS << std::setw(17);
         OS << UVNodes(j).Y();
         if (!Compact) OS << "\n";
         else OS << " ";
@@ -1547,13 +1547,13 @@ void BRepTools_ShapeSet::WriteTriangulation(Standard_OStream&      OS,
     nbTriangles = T->NbTriangles();
     const Poly_Array1OfTriangle& Triangles = T->Triangles();
     for (j = 1; j <= nbTriangles; j++) {
-      if (!Compact) OS << setw(10) << j << " : ";
+      if (!Compact) OS << std::setw(10) << j << " : ";
       Triangles(j).Get(n1, n2, n3);
-      if (!Compact) OS << setw(10);
+      if (!Compact) OS << std::setw(10);
       OS << n1 << " ";
-      if (!Compact) OS << setw(10);
+      if (!Compact) OS << std::setw(10);
       OS << n2 << " ";
-      if (!Compact) OS << setw(10);
+      if (!Compact) OS << std::setw(10);
       OS << n3;
       if (!Compact) OS << "\n";
       else OS << " ";

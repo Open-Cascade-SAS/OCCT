@@ -73,7 +73,7 @@ Standard_Boolean DDocStd::GetDocument (Standard_CString&         Name,
 {
   Handle(DDocStd_DrawDocument) DD = Handle(DDocStd_DrawDocument)::DownCast (Draw::GetExisting (Name));
   if (DD.IsNull()) {
-    if (Complain) cout << Name << " is not a Document" << endl; 
+    if (Complain) std::cout << Name << " is not a Document" << std::endl; 
     return Standard_False;
   }
   Handle(TDocStd_Document) STDDOC = DD->GetDocument();
@@ -81,7 +81,7 @@ Standard_Boolean DDocStd::GetDocument (Standard_CString&         Name,
     DOC = STDDOC;
     return Standard_True;
   }
-  if (Complain) cout << Name << " is not a CAF Document" << endl; 
+  if (Complain) std::cout << Name << " is not a CAF Document" << std::endl; 
   return Standard_False;
 }
 
@@ -98,7 +98,7 @@ Standard_Boolean DDocStd::Find (const Handle(TDocStd_Document)& D,
 {
   Label.Nullify();
   TDF_Tool::Label(D->GetData(),Entry,Label,Standard_False);
-  if (Label.IsNull() && Complain) cout<<"No label for entry "<<Entry<<endl;
+  if (Label.IsNull() && Complain) std::cout<<"No label for entry "<<Entry<<std::endl;
   return !Label.IsNull();
 }
 
@@ -116,7 +116,7 @@ Standard_Boolean DDocStd::Find (const Handle(TDocStd_Document)& D,
   TDF_Label L;
   if (Find(D,Entry,L,Complain)) {
     if (L.FindAttribute(ID,A)) return Standard_True;
-    if (Complain) cout <<"attribute not found for entry : "<< Entry <<endl; 
+    if (Complain) std::cout <<"attribute not found for entry : "<< Entry <<std::endl; 
   }
   return Standard_False;   
 }

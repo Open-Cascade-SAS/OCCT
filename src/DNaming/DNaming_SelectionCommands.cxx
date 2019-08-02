@@ -83,12 +83,12 @@ static void DumpNaming (const Handle(TNaming_Naming)& naming, Draw_Interpretor& 
 {
   TCollection_AsciiString Entry;
   const TNaming_Name& AName = naming->GetName();
-  //TNaming::Print(AName.Type(),cout);
+  //TNaming::Print(AName.Type(),std::cout);
   Standard_SStream aStream1;
   TNaming::Print(AName.Type(),aStream1);
   di << aStream1;
   di << " ";
-  //TopAbs::Print(AName.ShapeType(),cout);
+  //TopAbs::Print(AName.ShapeType(),std::cout);
   Standard_SStream aStream2;
   TopAbs::Print(AName.ShapeType(),aStream2);
   di << aStream2;
@@ -146,7 +146,7 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
 #ifdef OCCT_DEBUG_SELN
 	  TCollection_AsciiString entr1;
       TDF_Tool::Entry(theLabel, entr1);  
-      cout<<"\tNaming Attribute at = "<< entr1 <<endl;
+      std::cout<<"\tNaming Attribute at = "<< entr1 <<std::endl;
 #endif
   TDF_ChildIterator itr(theLabel, Standard_True);
   for ( ;itr.More(); itr.Next()) {
@@ -157,14 +157,14 @@ Standard_Boolean FillValidMap(const TDF_Label& theLabel, TDF_LabelMap& theValidM
 	  if(aNaming.IsNull()) continue;
 #ifdef OCCT_DEBUG_SELN	  
       TDF_Tool::Entry(aLabel, entr1);  
-      cout<<"\tNaming Attribute at = "<< entr1 <<endl;
+      std::cout<<"\tNaming Attribute at = "<< entr1 <<std::endl;
 #endif
 	  TDF_Tool::OutReferences(aLabel,anExtMap);
 	  for (TDF_MapIteratorOfAttributeMap attMItr(anExtMap);attMItr.More(); attMItr.Next()) {
         Handle(TDF_Attribute) att = attMItr.Key();
 #ifdef OCCT_DEBUG_SELN
         TDF_Tool::Entry(att->Label(), entr1);
-	    cout<<"## References attribute dynamic type = "<<att->DynamicType()<<" at Label = "<<entr1 <<endl;
+	    std::cout<<"## References attribute dynamic type = "<<att->DynamicType()<<" at Label = "<<entr1 <<std::endl;
 #endif	
 	    if (att->Label().IsDifferent(aLabel) && !att->Label().IsDescendant(theLabel)) {
         theValidMap.Add(att->Label());
@@ -195,20 +195,20 @@ static Standard_Integer DNaming_SolveSelection (Draw_Interpretor& di, Standard_I
 
     Handle(TNaming_Naming) naming;    
     if (!L.FindAttribute(TNaming_Naming::GetID(),naming)) {  
-      cout <<"DNaming__SolveSelection  : not a selection" << endl;
+      std::cout <<"DNaming__SolveSelection  : not a selection" << std::endl;
       return 1;
     }
 	TDF_LabelMap aValidMap;
     if(!FillValidMap(L,aValidMap)) 
 		di << "Valid map is empty\n";
 #ifdef OCCT_DEBUG_SELN
-	cout<<"== Valid Label map =="<<endl;
+	std::cout<<"== Valid Label map =="<<std::endl;
 	for (TDF_MapIteratorOfLabelMap mapItr(aValidMap);mapItr.More(); mapItr.Next()) {
       const TDF_Label& aLab = mapItr.Key();
 
        TCollection_AsciiString entr1;
        TDF_Tool::Entry(aLab, entr1);
-	   cout<<"  Label = "<<entr1 <<endl;
+	   std::cout<<"  Label = "<<entr1 <<std::endl;
 	}
 #endif
 

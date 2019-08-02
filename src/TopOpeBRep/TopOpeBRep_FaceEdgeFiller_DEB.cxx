@@ -35,9 +35,9 @@ void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,
   FEINT.InitPoint(); 
   if ( ! FEINT.MorePoint() ) return;
   
-  cout<<endl;
-  cout<<"---------- F/E : "<<FEINT.NbPoints()<<" p ";
-  cout<<endl;
+  std::cout<<std::endl;
+  std::cout<<"---------- F/E : "<<FEINT.NbPoints()<<" p ";
+  std::cout<<std::endl;
   
   const TopoDS_Shape& FF = FEINT.Shape(1);
   const TopoDS_Shape& EE = FEINT.Shape(2);
@@ -47,10 +47,10 @@ void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,
   
   TopAbs_Orientation FFori = FF.Orientation();
   TopAbs_Orientation EEori = EE.Orientation();
-  cout<<"FF = "<<FFindex<<" ";TopAbs::Print(FFori,cout);
-  cout<<", ";
-  cout<<"EE = "<<EEindex<<" ";TopAbs::Print(EEori,cout);
-  cout<<endl;
+  std::cout<<"FF = "<<FFindex<<" ";TopAbs::Print(FFori,std::cout);
+  std::cout<<", ";
+  std::cout<<"EE = "<<EEindex<<" ";TopAbs::Print(EEori,std::cout);
+  std::cout<<std::endl;
   
   Standard_Integer ip = 1;
   for (; FEINT.MorePoint(); FEINT.NextPoint(), ip++ ) {
@@ -67,17 +67,17 @@ void FEINT_DUMPPOINTS(TopOpeBRep_FaceEdgeIntersector& FEINT,
     TopoDS_Vertex V2;
     Standard_Boolean isvertexE = FEINT.IsVertex(2,V2);
     
-    cout<<endl;
-    cout<<"P"<<ip<<" : "; 
+    std::cout<<std::endl;
+    std::cout<<"P"<<ip<<" : "; 
     gp_Pnt P3D = FEINT.Value(); 
-    cout<<"\t"<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z()<<endl;
+    std::cout<<"\t"<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z()<<std::endl;
     
-    cout<<"\t"; if (isvertexF) cout<<"IS VERTEX, ";
-    cout<<" pUV = "<<pUV.X()<<" "<<pUV.Y()<<endl;
-    cout<<" sta = "; TopAbs::Print(sta,cout);cout<<endl;
+    std::cout<<"\t"; if (isvertexF) std::cout<<"IS VERTEX, ";
+    std::cout<<" pUV = "<<pUV.X()<<" "<<pUV.Y()<<std::endl;
+    std::cout<<" sta = "; TopAbs::Print(sta,std::cout);std::cout<<std::endl;
     
-    cout<<"\t"; if (isvertexE) cout<<"IS VERTEX, ";
-    cout<<" parE = "<<parE<<endl;
+    std::cout<<"\t"; if (isvertexE) std::cout<<"IS VERTEX, ";
+    std::cout<<" parE = "<<parE<<std::endl;
   }
 }
 

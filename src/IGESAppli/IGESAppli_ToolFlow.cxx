@@ -297,34 +297,34 @@ void  IGESAppli_ToolFlow::OwnDump
   (const Handle(IGESAppli_Flow)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_Flow" << endl;
-  S << "Number of Context Flags : " << ent->NbContextFlags() << endl;
+  S << "IGESAppli_Flow" << Message_EndLine;
+  S << "Number of Context Flags : " << ent->NbContextFlags() << Message_EndLine;
   Standard_Integer tf = ent->TypeOfFlow();
   S << "Type of Flow : " << tf;
-  if      (tf == 1) S << " (logical)" << endl;
-  else if (tf == 2) S << " (physical)" << endl;
-  else              S << " (not specified)" << endl;
+  if      (tf == 1) S << " (logical)" << Message_EndLine;
+  else if (tf == 2) S << " (physical)" << Message_EndLine;
+  else              S << " (not specified)" << Message_EndLine;
   tf = ent->FunctionFlag();
   S << "Function Flag : " << tf;
-  if      (tf == 1) S << " (electrical signal)" << endl;
-  else if (tf == 2) S << " (fluid flow path)" << endl;
-  else              S << " (not specified)" << endl;
+  if      (tf == 1) S << " (electrical signal)" << Message_EndLine;
+  else if (tf == 2) S << " (fluid flow path)" << Message_EndLine;
+  else              S << " (not specified)" << Message_EndLine;
   S << "Flow Associativities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbFlowAssociativities(),
 			ent->FlowAssociativity);
-  S << endl << "Connect Points : ";
+  S << Message_EndLine << "Connect Points : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbConnectPoints(),
 			ent->ConnectPoint);
-  S << endl << "Joins : ";
+  S << Message_EndLine << "Joins : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbJoins(),ent->Join);
-  S << endl << "Flow Names : ";
+  S << Message_EndLine << "Flow Names : ";
   IGESData_DumpStrings(S ,level,1, ent->NbFlowNames(),ent->FlowName);
-  S << endl << "Text Display Templates : ";
+  S << Message_EndLine << "Text Display Templates : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbTextDisplayTemplates(),
 			ent->TextDisplayTemplate);
-  S << endl << "Continuation Flow Associativities : ";
+  S << Message_EndLine << "Continuation Flow Associativities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbContFlowAssociativities(),
 			ent->ContFlowAssociativity);
-  S << endl;
+  S << Message_EndLine;
 }
 

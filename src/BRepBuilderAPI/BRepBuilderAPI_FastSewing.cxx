@@ -330,7 +330,7 @@ void BRepBuilderAPI_FastSewing::Perform(void)
   {
     SetStatus(FS_Exception);
 #ifdef OCCT_DEBUG
-    //Standard_Failure::Caught()->Print(cout);
+    //Standard_Failure::Caught()->Print(std::cout);
 #endif
     return;
   }

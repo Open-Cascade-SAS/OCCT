@@ -254,32 +254,32 @@ Standard_Boolean FEmTool_ProfileMatrix::IsInProfile(const Standard_Integer i,
  void FEmTool_ProfileMatrix::OutM() const
 {
   Standard_Integer i, j;
-  cout<<"Matrix A"<<endl;
+  std::cout<<"Matrix A"<<std::endl;
   for(i = 1; i <= RowNumber(); i++) {
     for(j = 1; j < i - profile(1, i); j++) 
-      cout<<"0 ";
+      std::cout<<"0 ";
 
     for(j = profile(2, i) - profile(1, i); j <= profile(2, i); j++) 
-      cout<<ProfileMatrix->Value(j)<<" ";
-    cout<<endl;
+      std::cout<<ProfileMatrix->Value(j)<<" ";
+    std::cout<<std::endl;
   }
 
-  cout<<"NextCoeff"<<endl;
+  std::cout<<"NextCoeff"<<std::endl;
   for(i = 1; i <= profile(2, RowNumber()); i++)
-    cout<<NextCoeff->Value(i)<<" ";
-  cout<<endl;
+    std::cout<<NextCoeff->Value(i)<<" ";
+  std::cout<<std::endl;
 }
 
  void FEmTool_ProfileMatrix::OutS() const
 {
   Standard_Integer i, j;
-  cout<<"Matrix S"<<endl;
+  std::cout<<"Matrix S"<<std::endl;
   for(i = 1; i <= RowNumber(); i++) {
     for(j = 1; j < i - profile(1, i); j++) 
-      cout<<"0 ";
+      std::cout<<"0 ";
 
     for(j = profile(2, i) - profile(1, i); j <= profile(2, i); j++) 
-      cout<<SMatrix->Value(j)<<" ";
-    cout<<endl;
+      std::cout<<SMatrix->Value(j)<<" ";
+    std::cout<<std::endl;
   }
 }

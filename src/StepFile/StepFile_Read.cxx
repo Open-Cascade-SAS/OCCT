@@ -129,7 +129,7 @@ Standard_Integer StepFile_Read
   OSD_Timer c ; 
   c.Reset () ; 
   c.Start();
-  sout << "      ...    Step File Reading : " << ficnom << "" << endl;  
+  sout << "      ...    Step File Reading : " << ficnom << "" << Message_EndLine;  
 #endif
 
   try {
@@ -138,9 +138,9 @@ Standard_Integer StepFile_Read
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    sout << " ...  Exception Raised while reading Step File : " << ficnom << ":\n" << endl;
+    sout << " ...  Exception Raised while reading Step File : " << ficnom << ":\n" << Message_EndLine;
     sout << anException.GetMessageString();  
-    sout << "    ..." << endl;
+    sout << "    ..." << Message_EndLine;
 #endif
     (void)anException;
     lir_file_fin(3);  
@@ -150,7 +150,7 @@ Standard_Integer StepFile_Read
   // Continue reading of file despite of possible fails
   //if (checkread->HasFailed()) {  lir_file_fin(3);  stepread_endinput (newin,ficnom);  return 1;  }
 #ifdef CHRONOMESURE
-  sout << "      ...    STEP File   Read    ... " << endl;  
+  sout << "      ...    STEP File   Read    ... " << Message_EndLine;  
   c.Show(); 
 #endif
 
@@ -193,10 +193,10 @@ Standard_Integer StepFile_Read
 //  on a undirec pret pour la suite
 
 #ifdef CHRONOMESURE
-  sout << "      ... Step File loaded  ... " << endl; 
+  sout << "      ... Step File loaded  ... " << Message_EndLine; 
   c.Show();
   sout << "   "<< undirec->NbRecords () <<
-      " records (entities,sub-lists,scopes), "<< nbpar << " parameters\n" << endl;
+      " records (entities,sub-lists,scopes), "<< nbpar << " parameters\n" << Message_EndLine;
 #endif
 
 //   Analyse : par StepReaderTool
@@ -219,10 +219,10 @@ Standard_Integer StepFile_Read
   readtool.Clear();
   undirec.Nullify();
 #ifdef CHRONOMESURE
-  sout << "      ...   Objets analysed  ... " << endl; 
+  sout << "      ...   Objets analysed  ... " << Message_EndLine; 
   c.Show();
   n = stepmodel->NbEntities() ;
-  sout << "  STEP Loading done : " << n << " Entities" << endl;
+  sout << "  STEP Loading done : " << n << " Entities" << Message_EndLine;
 #endif
   
   stepread_endinput (newin,ficnom);  return 0 ;
@@ -232,7 +232,7 @@ void StepFile_Interrupt (char* mess)
 {
 #ifdef OCCT_DEBUG
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout << "    ****    StepFile Error : " << mess << "    ****" << endl;
+  sout << "    ****    StepFile Error : " << mess << "    ****" << Message_EndLine;
 #endif
   checkread->AddFail(mess);
 }

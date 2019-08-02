@@ -163,7 +163,7 @@ Handle(Geom2d_Curve) UnitsMethods::RadianToDegree
   }
   else {
 //  debug
-//    cout <<"UnitsMethods: SurfType = "<< aSurface->DynamicType();
+//    std::cout <<"UnitsMethods: SurfType = "<< aSurface->DynamicType();
     return aCurve2d;
   }
 
@@ -194,14 +194,14 @@ Handle(Geom2d_Curve) UnitsMethods::RadianToDegree
     } 
     else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Parabola))) {
 #ifdef OCCT_DEBUG
-      cout << "PCURVE of Parabola type in U or V Periodic Surface" << endl;
-      cout << "Parameters Not transformed to Degree" << endl;
+      std::cout << "PCURVE of Parabola type in U or V Periodic Surface" << std::endl;
+      std::cout << "Parameters Not transformed to Degree" << std::endl;
 #endif
     }
     else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Hyperbola))) {
 #ifdef OCCT_DEBUG
-      cout << "PCURVE of Hyperbola type in U or V Periodic Surface" << endl;
-      cout << "Parameters Not transformed to Degree" << endl;
+      std::cout << "PCURVE of Hyperbola type in U or V Periodic Surface" << std::endl;
+      std::cout << "Parameters Not transformed to Degree" << std::endl;
 #endif
     }
     
@@ -229,8 +229,8 @@ Handle(Geom2d_Curve) UnitsMethods::RadianToDegree
     }
     else {
 #ifdef OCCT_DEBUG
-      cout << "PCURVE of Other Types of Bounded Curve in U or V Periodic Surface" << endl;
-      cout << "Parameters Not transformed to Degree" << endl;
+      std::cout << "PCURVE of Other Types of Bounded Curve in U or V Periodic Surface" << std::endl;
+      std::cout << "Parameters Not transformed to Degree" << std::endl;
 #endif
     }
   }
@@ -292,7 +292,7 @@ Handle(Geom2d_Curve) UnitsMethods::DegreeToRadian
   }
   else {
 //  debug
-//    cout <<"UnitsMethods: SurfType = "<< aSurface->DynamicType();
+//    std::cout <<"UnitsMethods: SurfType = "<< aSurface->DynamicType();
     return aPcurve;
   }
 
@@ -305,15 +305,15 @@ Handle(Geom2d_Curve) UnitsMethods::DegreeToRadian
     }
     else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Parabola))) {
 #ifdef OCCT_DEBUG
-      cout << "PCURVE of Parabola type" << endl;
-      cout << "Parameters Not Yet transformed according to LenghtUnit" << endl;
+      std::cout << "PCURVE of Parabola type" << std::endl;
+      std::cout << "Parameters Not Yet transformed according to LenghtUnit" << std::endl;
 #endif
       return aPcurve;
     }
     else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Hyperbola))) {
 #ifdef OCCT_DEBUG
-      cout << "PCURVE of Hyperbola type" << endl;
-      cout << "Parameters Not Yet transformed according to LenghtUnit" << endl;
+      std::cout << "PCURVE of Hyperbola type" << std::endl;
+      std::cout << "Parameters Not Yet transformed according to LenghtUnit" << std::endl;
 #endif
       return aPcurve;
     }
@@ -359,8 +359,8 @@ Handle(Geom2d_Curve) UnitsMethods::DegreeToRadian
   }
   else {
 #ifdef OCCT_DEBUG
-    cout << "DegreeToRadian : Type " << aPcurve->DynamicType();
-    cout << " not yet implemented" << endl;
+    std::cout << "DegreeToRadian : Type " << aPcurve->DynamicType();
+    std::cout << " not yet implemented" << std::endl;
 #endif
   }
   return aPcurve;

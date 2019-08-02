@@ -53,7 +53,7 @@ class Message_Messenger : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(Message_Messenger, Standard_Transient)
 public:
 
-  //! Empty constructor; initializes by single printer directed to cout.
+  //! Empty constructor; initializes by single printer directed to std::cout.
   //! Note: the default messenger is not empty but directed to cout
   //! in order to protect against possibility to forget defining printers.
   //! If printing to cout is not needed, clear messenger by GetPrinters().Clear()
@@ -176,6 +176,13 @@ inline const Handle(Message_Messenger)&
                     const Handle(Message_Messenger)& (*pman) (const Handle(Message_Messenger)&))
 {
   return pman (theMessenger);
+}
+
+// Message_EndLine
+inline const Handle(Message_Messenger)& Message_EndLine (const Handle(Message_Messenger)& theMessenger)
+{
+  theMessenger->Send ("", Message_Info, Standard_True);
+  return theMessenger;
 }
 
 // endl

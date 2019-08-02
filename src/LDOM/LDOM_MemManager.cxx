@@ -258,8 +258,8 @@ LDOM_MemManager::~LDOM_MemManager ()
     aBlock = aBlock -> Next();
   }
   if (aCount > 1)
-    cout << ".. Destroying " << aCount << " LDOM memory allocations: "
-         << aSomme / 256 << " kB" << endl;
+    std::cout << ".. Destroying " << aCount << " LDOM memory allocations: "
+         << aSomme / 256 << " kB" << std::endl;
 //fclose (out);
 #endif
   delete myFirstBlock;

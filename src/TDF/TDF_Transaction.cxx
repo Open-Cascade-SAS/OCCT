@@ -91,7 +91,7 @@ void TDF_Transaction::Initialize(const Handle(TDF_Data)& aDF)
 Standard_Integer TDF_Transaction::Open()
 {
 #ifdef OCCT_DEBUG_TRANSACTION
-  cout<<"Transaction "<<myName<<" opens #"<<myDF->Transaction()+1<<endl;
+  std::cout<<"Transaction "<<myName<<" opens #"<<myDF->Transaction()+1<<std::endl;
 #endif
   if (IsOpen())
     throw Standard_DomainError("This transaction is already open.");
@@ -109,27 +109,27 @@ Standard_Integer TDF_Transaction::Open()
 Handle(TDF_Delta) TDF_Transaction::Commit(const Standard_Boolean withDelta)
 {
 #ifdef OCCT_DEBUG_TRANSACTION
-  cout<<"Transaction "<<myName<<" commits ";
+  std::cout<<"Transaction "<<myName<<" commits ";
 #endif
   Handle(TDF_Delta) delta;
   if (IsOpen()) {
 #ifdef OCCT_DEBUG_TRANSACTION
-    cout<<"from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<endl;
+    std::cout<<"from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<std::endl;
 #endif
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    cout<<"DF before commit"<<endl;
-    TDF_Tool::DeepDump(cout,myDF);
+    std::cout<<"DF before commit"<<std::endl;
+    TDF_Tool::DeepDump(std::cout,myDF);
 #endif
     Standard_Integer until = myUntilTransaction;
     myUntilTransaction = 0;
     delta = myDF->CommitUntilTransaction(until, withDelta);
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    cout<<"DF after commit"<<endl;
-    TDF_Tool::DeepDump(cout,myDF);
+    std::cout<<"DF after commit"<<std::endl;
+    TDF_Tool::DeepDump(std::cout,myDF);
 #endif
   }
 #ifdef OCCT_DEBUG_TRANSACTION
-  else cout<<"but this transaction is not open!"<<endl;
+  else std::cout<<"but this transaction is not open!"<<std::endl;
 #endif
   return delta;
 }
@@ -144,17 +144,17 @@ void TDF_Transaction::Abort()
 {
   if (IsOpen()) {
 #ifdef OCCT_DEBUG_TRANSACTION
-    cout<<"Transaction "<<myName<<" aborts from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<endl;
+    std::cout<<"Transaction "<<myName<<" aborts from #"<<myDF->Transaction()<<" until #"<<myUntilTransaction<<" while current is #"<<myDF->Transaction()<<std::endl;
 #endif
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    cout<<"DF before abort"<<endl;
-    TDF_Tool::DeepDump(cout,myDF);
+    std::cout<<"DF before abort"<<std::endl;
+    TDF_Tool::DeepDump(std::cout,myDF);
 #endif
     myDF->AbortUntilTransaction(myUntilTransaction);
     myUntilTransaction = 0;
 #ifdef OCCT_DEBUG_TRANSACTION_DUMP
-    cout<<"DF after abort"<<endl;
-    TDF_Tool::DeepDump(cout,myDF);
+    std::cout<<"DF after abort"<<std::endl;
+    TDF_Tool::DeepDump(std::cout,myDF);
 #endif
   }
 }

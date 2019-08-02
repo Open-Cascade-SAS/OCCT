@@ -101,7 +101,7 @@ void ShapeFix_EdgeProjAux::Compute (const Standard_Real preci)
     Standard_Real U2 = LastParam();
     if (U1>=U2) {
 #ifdef OCCT_DEBUG
-      cout << "Parametres inverses ... " << endl;
+      std::cout << "Parametres inverses ... " << std::endl;
 #endif
       Standard_Real tmp = U1;
       U1 = U2; U2 = tmp;
@@ -212,8 +212,8 @@ static Standard_Boolean FindParameterWithExt (const gp_Pnt& Pt1,
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 //:s5
-    cout << "Warning: ShapeFix_EdgeProjAux, FindParameterWithExt(): Exception: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeFix_EdgeProjAux, FindParameterWithExt(): Exception: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     return Standard_False;
@@ -268,7 +268,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
         }
       } 
 #ifdef OCCT_DEBUG
-      else cout <<"Other type of deg curve"<<endl;
+      else std::cout <<"Other type of deg curve"<<std::endl;
 #endif
 
     }
@@ -357,7 +357,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
         cl= 10000;
         //pdn not cutted by bounds
 #ifdef OCCT_DEBUG
-        cout<<"Infinite Surface"<<endl;
+        std::cout<<"Infinite Surface"<<std::endl;
 #endif	
       }
     }
@@ -377,7 +377,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
       }
 
 #ifdef OCCT_DEBUG
-      cout<<"Some infinite curve"<<endl;
+      std::cout<<"Some infinite curve"<<std::endl;
 #endif 
     }
   }
@@ -424,7 +424,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
     myLastParam  = theCurve2d->ReversedParameter(Uinf);
     theCurve2d->Reverse();
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeFix_EdgeProjAux: pcurve reversed" << endl;
+    std::cout << "Warning: ShapeFix_EdgeProjAux: pcurve reversed" << std::endl;
 #endif
     return;
   }
@@ -465,7 +465,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
       else {
         myLastParam+=period;
 #ifdef OCCT_DEBUG
-        cout <<" Added"<<endl;
+        std::cout <<" Added"<<std::endl;
 #endif	
       }
     }
@@ -474,7 +474,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
         myLastParam -=period;
         UpdateParam2d(theCurve2d);
 #ifdef OCCT_DEBUG
-        cout <<" Added & Inverted"<<endl;
+        std::cout <<" Added & Inverted"<<std::endl;
 #endif	
       } else if (w2 < wmid) {
         myFirstParam += period;
@@ -587,8 +587,8 @@ void ShapeFix_EdgeProjAux::UpdateParam2d (const Handle(Geom2d_Curve)& theCurve2d
     else if ( Abs ( myLastParam  - cf ) <= preci2d ) myLastParam  = cl;
     else {
 #ifdef OCCT_DEBUG
-      cout << "Error : curve 2d range crossing non periodic curve origin";
-      cout <<  endl;
+      std::cout << "Error : curve 2d range crossing non periodic curve origin";
+      std::cout <<  std::endl;
 #endif
       // add fail result;
       return;
@@ -605,13 +605,13 @@ void ShapeFix_EdgeProjAux::UpdateParam2d (const Handle(Geom2d_Curve)& theCurve2d
   }
   else {
 #ifdef OCCT_DEBUG
-    cout << "Warning : non increasing parameters for 2d curve." << endl;
-    cout << "          update parameter 2d uncertain." << endl;
+    std::cout << "Warning : non increasing parameters for 2d curve." << std::endl;
+    std::cout << "          update parameter 2d uncertain." << std::endl;
 #endif
     Standard_Real tmp1 = myFirstParam, tmp2 = myLastParam;
     myFirstParam = theCurve2d->ReversedParameter(tmp1);
     myLastParam = theCurve2d->ReversedParameter(tmp2);
     theCurve2d->Reverse();
-    //cout<<"Reversed case 2"<<endl;
+    //std::cout<<"Reversed case 2"<<std::endl;
   }
 }

@@ -209,7 +209,7 @@ Standard_Boolean ChFiKPart_MakeChamfer(TopOpeBRepDS_DataStructure& DStr,
     if ( Abs(ChamfRad)<=Precision::Confusion() ) pointu = Standard_True;
     if( ChamfRad < 0 ) {
 #ifdef OCCT_DEBUG
-      cout<<"le chanfrein ne passe pas"<<endl;
+      std::cout<<"le chanfrein ne passe pas"<<std::endl;
 #endif
       return Standard_False;
     }

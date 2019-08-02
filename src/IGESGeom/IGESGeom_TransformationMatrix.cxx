@@ -53,7 +53,7 @@ IGESGeom_TransformationMatrix::IGESGeom_TransformationMatrix ()    {  }
     void  IGESGeom_TransformationMatrix::SetFormNumber (const Standard_Integer fm)
 {
   if(theData.IsNull()) 
-    cout<<"Inavalid Transformation Data"<<endl;
+    std::cout<<"Inavalid Transformation Data"<<std::endl;
   if ((fm < 0 || fm > 1) && (fm < 10 || fm > 12)) throw Standard_OutOfRange("IGESGeom_TransformationMatrix : SetFormNumber");
   InitTypeAndForm(124,fm);
 }

@@ -60,7 +60,7 @@ Units_Measurement::Units_Measurement(const Standard_Real avalue,
   Units_UnitSentence unit(aunit);
   if(!unit.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout<<"can not create Units_Measurement - incorrect unit"<<endl;
+    std::cout<<"can not create Units_Measurement - incorrect unit"<<std::endl;
 #endif
     myHasToken = Standard_False;
   }
@@ -83,7 +83,7 @@ void Units_Measurement::Convert(const Standard_CString aunit)
   Handle(Units_Token) oldtoken = thetoken;
   Units_UnitSentence newunit(aunit);
   if(!newunit.IsDone()) {
-    cout<<"Units_Measurement: can not convert - incorrect unit => result is not correct"<<endl;
+    std::cout<<"Units_Measurement: can not convert - incorrect unit => result is not correct"<<std::endl;
     return;
   }
   Handle(Units_Token) newtoken=newunit.Evaluate();
@@ -99,7 +99,7 @@ void Units_Measurement::Convert(const Standard_CString aunit)
   }
 #ifdef OCCT_DEBUG
   else {
-    cout<<" The units don't have the same physical dimensions"<<endl;
+    std::cout<<" The units don't have the same physical dimensions"<<std::endl;
   }
 #endif
 }
@@ -276,7 +276,7 @@ Standard_Boolean Units_Measurement::HasToken() const
 
 void Units_Measurement::Dump() const
 {
-  cout<<" Measurement : "<<themeasurement<<endl;
+  std::cout<<" Measurement : "<<themeasurement<<std::endl;
   thetoken->Dump(1,1);
 }
 

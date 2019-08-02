@@ -130,7 +130,7 @@ ShapeExtend_ComplexCurve::ShapeExtend_ComplexCurve()
       (Curve (i + 1)->Value (Curve(i + 1)->FirstParameter()), Preci);
   }
 #ifdef OCCT_DEBUG
-  if (!ok) cout << "Warning: ShapeExtend_ComplexCurve: not connected in 3d" << endl;
+  if (!ok) std::cout << "Warning: ShapeExtend_ComplexCurve: not connected in 3d" << std::endl;
 #endif
   return ok;
 }

@@ -182,26 +182,26 @@ Standard_Boolean Units_Dimensions::IsNotEqual
 void Units_Dimensions::Dump(const Standard_Integer ashift) const
 {
   int i;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<" with the physical dimensions : "<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         mass                      : "<<themass<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         length                    : "<<thelength<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         time                      : "<<thetime<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         electric current          : "<<theelectriccurrent<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         thermodynamic temperature : "<<thethermodynamictemperature<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         amount of substance       : "<<theamountofsubstance<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         luminous intensity        : "<<theluminousintensity<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         plane angle               : "<<theplaneangle<<endl;
-  for(i=0; i<ashift; i++)cout<<"  ";
-  cout<<"         solid angle               : "<<thesolidangle<<endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<" with the physical dimensions : "<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         mass                      : "<<themass<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         length                    : "<<thelength<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         time                      : "<<thetime<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         electric current          : "<<theelectriccurrent<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         thermodynamic temperature : "<<thethermodynamictemperature<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         amount of substance       : "<<theamountofsubstance<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         luminous intensity        : "<<theluminousintensity<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         plane angle               : "<<theplaneangle<<std::endl;
+  for(i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"         solid angle               : "<<thesolidangle<<std::endl;
 }
 
 //=======================================================================

@@ -66,8 +66,8 @@ static Standard_Integer DDocStd_ListDocuments (Draw_Interpretor& di,
       if (D->IsSaved()) {
 	TCollection_AsciiString GetNameAsciiString(D->GetName().ToExtString(),'?');
 	TCollection_AsciiString GetPathAsciiString(D->GetPath().ToExtString(),'?');
-	//cout << " name : " << D->GetName();
-	//cout << " path : " << D->GetPath();
+	//std::cout << " name : " << D->GetName();
+	//std::cout << " path : " << D->GetPath();
 	di << " name : " << GetNameAsciiString.ToCString();
 	di << " path : " << GetPathAsciiString.ToCString();
       }
@@ -411,10 +411,10 @@ static Standard_Integer DDocStd_Path (Draw_Interpretor& di,
 {   
   if (nb == 2) { 
     TDocStd_PathParser path (a[1]);
-    //cout << "Trek      : " << path.Trek() << endl;  
-    //cout << "Name      : " << path.Name() << endl; 
-    //cout << "Extension : " << path.Extension() << endl;
-    //cout << "Path      : " << path.Path() << endl;
+    //std::cout << "Trek      : " << path.Trek() << std::endl;  
+    //std::cout << "Name      : " << path.Name() << std::endl; 
+    //std::cout << "Extension : " << path.Extension() << std::endl;
+    //std::cout << "Path      : " << path.Path() << std::endl;
     TCollection_AsciiString TrekAsciiString(path.Trek().ToExtString(),'?');
     TCollection_AsciiString NameAsciiString(path.Name().ToExtString(),'?');
     TCollection_AsciiString ExtensionAsciiString(path.Extension().ToExtString(),'?');
@@ -467,7 +467,7 @@ static Standard_Integer DDocStd_PrintComments (Draw_Interpretor& di,
 
     for (int i = 1; i <= comments.Length(); i++)
     {
-      //cout << comments(i) << endl;
+      //std::cout << comments(i) << std::endl;
       TCollection_AsciiString commentAsciiString(comments(i).ToExtString(),'?');
       di << commentAsciiString.ToCString() << "\n";
     }

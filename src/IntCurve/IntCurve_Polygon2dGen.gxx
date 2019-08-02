@@ -260,7 +260,7 @@ Standard_Real IntCurve_Polygon2dGen::ApproxParamOnCurve( const Standard_Integer 
   Standard_Integer Indexp1,Index = Aindex;
   Standard_Real    ParamOnLine = TheParamOnLine;
   if (Index > NbPntIn) {
-    cout << "OutOfRange Polygon2d::ApproxParamOnCurve " <<endl;
+    std::cout << "OutOfRange Polygon2d::ApproxParamOnCurve " <<std::endl;
   }
   if((Index == NbPntIn) && (ParamOnLine == 0.0)) { 
     Index--; ParamOnLine=1.0;
@@ -306,21 +306,21 @@ void IntCurve_Polygon2dGen::Dump(void) const {
   if(debug) { 
     Standard_Real bx0,bx1,by0,by1;
     
-    cout<<"\n ----- Dump of IntCurve_Polygon2dGen -----"<<endl;
+    std::cout<<"\n ----- Dump of IntCurve_Polygon2dGen -----"<<std::endl;
     if(myBox.IsVoid()) { 
-      cout<<"  Polygone Vide "<<endl;
+      std::cout<<"  Polygone Vide "<<std::endl;
       return;
     }
     myBox.Get(bx0,by0,bx1,by1);
-    cout<<"  bx0:"<<bx0  <<endl;
-    cout<<"  by0:"<<by0<<endl;
-    cout<<"  bx1:"<<bx1<<endl;
-    cout<<"  by1:"<<by1<<endl;
+    std::cout<<"  bx0:"<<bx0  <<std::endl;
+    std::cout<<"  by0:"<<by0<<std::endl;
+    std::cout<<"  bx1:"<<bx1<<std::endl;
+    std::cout<<"  by1:"<<by1<<std::endl;
     
     Standard_Integer i;
     for(i=1;i<=NbPntIn; i++) { 
       const gp_Pnt2d& P = ThePnts(TheIndex(i));
-      cout<<"  ("<<i<<") u:"<<TheParams.Value(TheIndex(i))<<" X:"<<P.X()<<"  Y:"<<P.Y()<<endl;
+      std::cout<<"  ("<<i<<") u:"<<TheParams.Value(TheIndex(i))<<" X:"<<P.X()<<"  Y:"<<P.Y()<<std::endl;
     }
   }
 } 

@@ -380,7 +380,7 @@ static Standard_Integer BUC60944 (Draw_Interpretor& di, Standard_Integer argc, c
   else
     di << "Faulty : The convertion is incorrect : " << out.ToCString() << "\n";
   di << out.ToCString() << "\n";
-//  cout << aPath->Trek() << " !" << endl;
+//  std::cout << aPath->Trek() << " !" << std::endl;
   return 0;
 }
 
@@ -587,7 +587,7 @@ static Standard_Integer  BUC60920(Draw_Interpretor& di, Standard_Integer /*argc*
 
   Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
   if(myAISContext.IsNull()) {
-    cerr << "use 'vinit' command before " << argv[0] << "\n";
+    std::cerr << "use 'vinit' command before " << argv[0] << "\n";
     return -1;
   }
 
@@ -608,17 +608,17 @@ static Standard_Integer  BUC60920(Draw_Interpretor& di, Standard_Integer /*argc*
   
   double Xv,Yv;
   myV3dView->Project(20,20,0,Xv,Yv);
-//  cout<<Xv<<"\t"<<Yv<<endl;
+//  std::cout<<Xv<<"\t"<<Yv<<std::endl;
   
   Standard_Integer Xp,Yp;
   myV3dView->Convert(Xv,Yv,Xp,Yp);
-//  cout<<Xp<<"\t"<<Yp<<endl;
+//  std::cout<<Xp<<"\t"<<Yp<<std::endl;
 
   myAISContext->MoveTo (Xp,Yp, myV3dView, Standard_True);
 
 //   if (myAISContext->IsHilighted(anAISShape)) 
-//              cout << "has hilighted shape : OK"   << endl;
-//   else       cout << "has hilighted shape : bugged - Faulty "   << endl;
+//              std::cout << "has hilighted shape : OK"   << std::endl;
+//   else       std::cout << "has hilighted shape : bugged - Faulty "   << std::endl;
   
   return 0;
 }
@@ -716,7 +716,7 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
 //{
 //  if( argc != 1)
 //  {
-//    cout << "Usage : " << argv[0] << endl;
+//    std::cout << "Usage : " << argv[0] << std::endl;
 //    return 1;
 //  }
 //
@@ -733,7 +733,7 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
 //    }
 //    catch ( Standard_Failure ) {
 //      isCaught = Standard_True;
-//      cout << "OCC1723 Case 1 : OK" << endl;
+//      std::cout << "OCC1723 Case 1 : OK" << std::endl;
 //    }
 //  }
 //  isBad = isBad || !isCaught;
@@ -748,7 +748,7 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
 //    }
 //    catch ( Standard_Failure ) {
 //      isCaught = Standard_True;
-//      cout << "OCC1723 Case 2 : OK" << endl;
+//      std::cout << "OCC1723 Case 2 : OK" << std::endl;
 //    }
 //  }
 //  isBad = isBad || !isCaught;
@@ -764,7 +764,7 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
 //    }
 //    catch ( Standard_Failure ) {
 //      isCaught = Standard_True;
-//      cout << "OCC1723 Case 3 : OK" << endl;
+//      std::cout << "OCC1723 Case 3 : OK" << std::endl;
 //    }
 //  }
 //  // MSV: underflow is not caught
@@ -781,15 +781,15 @@ static Standard_Integer  OCC984 (Draw_Interpretor& di, Standard_Integer argc, co
 //    }
 //    catch ( Standard_Failure ) {
 //      isCaught = Standard_True;
-//      cout << "OCC1723 Case 4 : OK" << endl;
+//      std::cout << "OCC1723 Case 4 : OK" << std::endl;
 //    }
 //  }
 //  isBad = isBad || !isCaught;
 //
 //  if (isBad) {
-//    cout << "OCC1723 : Error" << endl;
+//    std::cout << "OCC1723 : Error" << std::endl;
 //  } else {
-//    cout << "OCC1723 : OK" << endl;
+//    std::cout << "OCC1723 : OK" << std::endl;
 //  }
 //
 //  return 0;
@@ -955,7 +955,7 @@ static Standard_Integer OCC3277 (Draw_Interpretor& di, Standard_Integer argc, co
   TCollection_ExtendedString ExtendedString;
   TCollection_ExtendedString InputString(argv[1]);
   ExtendedString.Cat(InputString);
-  //ExtendedString.Print(cout);
+  //ExtendedString.Print(std::cout);
   Standard_SStream aSStream;
   ExtendedString.Print(aSStream);
   di << aSStream;
@@ -1022,15 +1022,15 @@ static Standard_Integer OCC16485 (Draw_Interpretor& di, Standard_Integer argc, c
   
   Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
   Box.Get (xmin, ymin, zmin, xmax, ymax, zmax);
-  //cout.precision(16);
-  //cout << "Resulting dimensions: Xmin = " << xmin << " , Xmax = " << xmax << " , Tolerance = " << tol << endl;
+  //std::cout.precision(16);
+  //std::cout << "Resulting dimensions: Xmin = " << xmin << " , Xmax = " << xmax << " , Tolerance = " << tol << std::endl;
   di << "Resulting dimensions: Xmin = " << xmin << " , Xmax = " << xmax << " , Tolerance = " << tol << "\n";
   if ( Abs ( xmin + tol ) > 1e-10 )
       di << "TEST FAILED: Xmin must be equal to -1e3!\n";
   else
       di << "TEST OK\n";
-      //cout << "TEST FAILED: Xmin must be equal to -1e3!" << endl;
-      //cout << "TEST OK" << endl;
+      //std::cout << "TEST FAILED: Xmin must be equal to -1e3!" << std::endl;
+      //std::cout << "TEST OK" << std::endl;
       //di << "TEST FAILED: Xmin must be equal to -1e3!\n";
       //di << "TEST OK\n";
   return 0;

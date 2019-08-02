@@ -242,7 +242,7 @@ Standard_EXPORT void FDSCNX_DumpIndex(const Handle(TopOpeBRepDS_HDataStructure)&
 
     for (; ils.More(); ils.Next())
     {
-      cout<<BDS.Shape(ils.Value())<<" ";
+      std::cout<<BDS.Shape(ils.Value())<<" ";
     }
   }
   else if (ts == TopAbs_FACE)
@@ -264,7 +264,7 @@ Standard_EXPORT void FDSCNX_DumpIndex(const Handle(TopOpeBRepDS_HDataStructure)&
       }
       for (; ilf.More(); ilf.Next())
       {
-        cout<<BDS.Shape(ilf.Value())<<" ";
+        std::cout<<BDS.Shape(ilf.Value())<<" ";
       }
     }
   }
@@ -295,12 +295,12 @@ Standard_EXPORT void FDSCNX_Dump(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
       return;
     }
 
-    cout<<"clear;";
+    std::cout<<"clear;";
     for (; ils.More(); ils.Next())
     {
-      cout<<"tsee f "<<BDS.Shape(ils.Value())<<";";
+      std::cout<<"tsee f "<<BDS.Shape(ils.Value())<<";";
     }
-    cout<<"tsee e "<<is<<";### edge "<<is<<" connexity"<<endl;
+    std::cout<<"tsee e "<<is<<";### edge "<<is<<" connexity"<<std::endl;
   }
   else if (ts == TopAbs_FACE)
   {
@@ -319,12 +319,12 @@ Standard_EXPORT void FDSCNX_Dump(const Handle(TopOpeBRepDS_HDataStructure)& HDS,
         continue;
       }
 
-      cout<<"clear;";cout<<"tsee f "<<is<<";";
+      std::cout<<"clear;";std::cout<<"tsee f "<<is<<";";
       for (;ilf.More(); ilf.Next())
       {
-        cout<<"tsee f "<<BDS.Shape(ilf.Value())<<";";
+        std::cout<<"tsee f "<<BDS.Shape(ilf.Value())<<";";
       }
-      cout<<"tsee e "<<ie<<";### face "<<is<<" connexity"<<endl;
+      std::cout<<"tsee e "<<ie<<";### face "<<is<<" connexity"<<std::endl;
     }
   }
 }

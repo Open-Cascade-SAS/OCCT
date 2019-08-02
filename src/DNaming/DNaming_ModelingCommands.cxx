@@ -198,7 +198,7 @@ static Handle(TFunction_Driver) GetDriver(const TCollection_AsciiString& name)
   else if(name == "Section") 
     aDrv = new DNaming_BooleanOperationDriver();
   else 
-    cout << "the specified driver is not supported" <<endl;
+    std::cout << "the specified driver is not supported" <<std::endl;
   return aDrv;
 }
 //=======================================================================
@@ -219,13 +219,13 @@ static Standard_Integer DNaming_AddDriver (Draw_Interpretor& /*theDI*/,
       if(!GetFuncGUID(theArg[i],drvGUID)) continue;      
       aFunctionDrvTable->AddDriver(drvGUID, GetDriver(theArg[i]));
 #ifdef OCCT_DEBUG
-      cout << "DNaming_AddDriver : " << theArg[i] << " driver is added" <<endl;
+      std::cout << "DNaming_AddDriver : " << theArg[i] << " driver is added" <<std::endl;
 #endif
     }
     return 0;
   }
 #ifdef OCCT_DEBUG
-  cout << "DNaming_AddDriver : Error" << endl;
+  std::cout << "DNaming_AddDriver : Error" << std::endl;
 #endif
   return 1;  
 }
@@ -333,7 +333,7 @@ static Standard_Integer DNaming_AddBox (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, anObj->Label());
     return 0;
   }
-  cout << "DNaming_AddBox : Error" << endl;
+  std::cout << "DNaming_AddBox : Error" << std::endl;
   return 1;  
 }
 
@@ -385,7 +385,7 @@ static Standard_Integer DNaming_BoxDX (Draw_Interpretor& theDI,
       return 0;
     }
   }
-  cout << "DNaming_BoxDX : Error" << endl;
+  std::cout << "DNaming_BoxDX : Error" << std::endl;
   return 1;  
 }
 
@@ -418,7 +418,7 @@ static Standard_Integer DNaming_BoxDY (Draw_Interpretor& theDI,
       return 0;
     }
   }
-  cout << "DNaming_BoxDY : Error" << endl;
+  std::cout << "DNaming_BoxDY : Error" << std::endl;
   return 1;  
 }
 
@@ -451,7 +451,7 @@ static Standard_Integer DNaming_BoxDZ (Draw_Interpretor& theDI,
       return 0;
     }
   }
-  cout << "DNaming_BoxDZ : Error" << endl;
+  std::cout << "DNaming_BoxDZ : Error" << std::endl;
   return 1;  
 }
 
@@ -498,7 +498,7 @@ static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& /*theDI*/,
     TCollection_AsciiString entry;   
     TDF_Tool::Entry(FatherLab, entry);
 #ifdef OCCT_DEBUG
-    cout << "DNaming_SolveFlatFrom: Father label = " << entry << endl;
+    std::cout << "DNaming_SolveFlatFrom: Father label = " << entry << std::endl;
 #endif
     Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(FatherLab);
     Standard_Boolean found(Standard_False);
@@ -515,7 +515,7 @@ static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& /*theDI*/,
       Handle(TFunction_Function) aFun;
       funLabel.FindAttribute(TFunction_Function::GetID(), aFun);
       if(aFun.IsNull()) {
-	cout << "DNaming_SolveFlatFrom:: Null function is found!" << endl;
+	std::cout << "DNaming_SolveFlatFrom:: Null function is found!" << std::endl;
 	continue;
       } 
       else {
@@ -525,21 +525,21 @@ static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& /*theDI*/,
       logbook->Clear();
 	  Standard_Integer aRes = ComputeFunction(aFun, logbook);
 	  if(aRes != 0) {
-	    cout << "DNaming_SolveFlatFrom: Driver failed at label = " << entry << endl;
+	    std::cout << "DNaming_SolveFlatFrom: Driver failed at label = " << entry << std::endl;
 	    return 1;
 	  }
 #ifdef OCCT_DEBUG
-	  cout <<"DNaming_SolveFlatFrom : function from label " << entry << " is recomputed" << endl;
+	  std::cout <<"DNaming_SolveFlatFrom : function from label " << entry << " is recomputed" << std::endl;
 #endif
 	} catch (EXCEPTION) {
-	  cout <<"DNaming_SolveFlatFrom : Exception computing function at label " << entry << endl;
+	  std::cout <<"DNaming_SolveFlatFrom : Exception computing function at label " << entry << std::endl;
 	}
       }
     }
     return 0;
   }   
  ERR:
-  cout << "DNaming_SolveFlatFrom : Error" << endl;
+  std::cout << "DNaming_SolveFlatFrom : Error" << std::endl;
   return 1;  
 }
 
@@ -558,18 +558,18 @@ static Standard_Integer DNaming_InitLogBook (Draw_Interpretor& /*theDI*/,
     Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(aDoc->Main());
     if(logbook->IsEmpty()) {
 #ifdef OCCT_DEBUG
-      cout << "DNaming_InitLogBook : is empty" <<endl;
+      std::cout << "DNaming_InitLogBook : is empty" <<std::endl;
 #endif
     }
     else {
       logbook->Clear();
 #ifdef OCCT_DEBUG
-      cout << "DNaming_InitLogBook : cleaned" <<endl;
+      std::cout << "DNaming_InitLogBook : cleaned" <<std::endl;
 #endif
     }
     return 0;
   }
-  cout << "DNaming_InitLogBook : Error - No document ==> " <<theNb <<endl;
+  std::cout << "DNaming_InitLogBook : Error - No document ==> " <<theNb <<std::endl;
   return 1;  
 }
 
@@ -587,20 +587,20 @@ static Standard_Integer DNaming_CheckLogBook (Draw_Interpretor& /*theDI*/,
     if (!DDocStd::GetDocument(aDocS, aDoc)) return 1;
     Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(aDoc->Main());
     if(logbook->IsEmpty())
-      cout << "DNaming_CheckLogBook : is empty" <<endl;
+      std::cout << "DNaming_CheckLogBook : is empty" <<std::endl;
     else {
       const TDF_LabelMap& aMap = logbook->GetValid();
       TDF_MapIteratorOfLabelMap it(aMap);
       TCollection_AsciiString entry;
-      cout << "DNaming_CheckLogBook : LogBook current state:" <<endl;
+      std::cout << "DNaming_CheckLogBook : LogBook current state:" <<std::endl;
       for (;it.More();it.Next()) {
 	TDF_Tool::Entry(it.Key(), entry);
-	cout << entry <<endl;
+	std::cout << entry <<std::endl;
       }
     }
     return 0;
   }
-  cout << "DNaming_CheckLogBook : Error - No document ==> " <<theNb <<endl;
+  std::cout << "DNaming_CheckLogBook : Error - No document ==> " <<theNb <<std::endl;
   return 1;  
 }
 
@@ -626,16 +626,16 @@ static Standard_Integer DNaming_ComputeFun (Draw_Interpretor& /*theDI*/,
       Handle(TFunction_Logbook) logbook = TFunction_Logbook::Set(funLabel);
       Standard_Integer aRes = ComputeFunction(aFun, logbook);
       if(aRes != 0) {
-	 cout << "DNaming_ComputeFun : No Driver or Driver failed" << endl;
+	 std::cout << "DNaming_ComputeFun : No Driver or Driver failed" << std::endl;
 	 return 1;
        }
 #ifdef OCCT_DEBUG
-      cout <<"DNaming_ComputeFun : function from label " << theArg[2] << " is recomputed" << endl;
+      std::cout <<"DNaming_ComputeFun : function from label " << theArg[2] << " is recomputed" << std::endl;
 #endif
       return 0;
     }
   }
-  cout << "DNaming_ComputeFun : Error" << endl;
+  std::cout << "DNaming_ComputeFun : Error" << std::endl;
   return 1;  
 }
 
@@ -689,7 +689,7 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
 	  Handle(TNaming_NamedShape) aCont =  DNaming::GetObjectValue(aContext);
 #ifdef OCCT_DEBUG
 	  if(aCont.IsNull() || aCont->IsEmpty())
-	    cout <<"Wrong Context ..." <<endl;
+	    std::cout <<"Wrong Context ..." <<std::endl;
 #endif
 	  try{
 	    TopoDS_Shape aCONTEXT = aCont->Get();	
@@ -698,14 +698,14 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
 	      return 1;
 	  }
           catch (Standard_Failure const&) {
-	    cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
+	    std::cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<std::endl;
 	  }
     
 	  if(!aCont.IsNull()) {
 #ifdef OCCT_DEBUG
 	    TCollection_AsciiString entry;
 	    TDF_Tool::Entry(aCont->Label(), entry);
-	    cout << "ContextNS Label = " << entry <<endl;
+	    std::cout << "ContextNS Label = " << entry <<std::endl;
 #endif
 	    Handle(TFunction_Function) aCntFun;
 	    if(aCont->Label().Father().FindAttribute(TFunction_Function::GetID(), aCntFun)) { //Fun:2 ==> result
@@ -723,7 +723,7 @@ static Standard_Integer DNaming_AttachShape (Draw_Interpretor& di,
       }
     } //###
   }
-  cout << "DNaming_AttachShape : Error" << endl;
+  std::cout << "DNaming_AttachShape : Error" << std::endl;
   return 1;  
 }
 
@@ -766,7 +766,7 @@ static Standard_Integer DNaming_XAttachShape (Draw_Interpretor& di,
 	  Handle(TNaming_NamedShape) aCont =  DNaming::GetObjectValue(aContext);
 
 	  if(aCont.IsNull() || aCont->IsEmpty())
-	    cout <<"Wrong Context ..." <<endl;
+	    std::cout <<"Wrong Context ..." <<std::endl;
 	  else {
 	    TopoDS_Shape aCONTEXT = aCont->Get();
 	    try{
@@ -775,7 +775,7 @@ static Standard_Integer DNaming_XAttachShape (Draw_Interpretor& di,
 		return 1;
 	    }
             catch (Standard_Failure const&) {
-	      cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
+	      std::cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<std::endl;
 	    }
     
 	    TDF_Reference::Set(aFun->Label().FindChild(FUNCTION_ARGUMENTS_LABEL).FindChild(ATTACH_ARG), 
@@ -788,7 +788,7 @@ static Standard_Integer DNaming_XAttachShape (Draw_Interpretor& di,
       }
     }
   }
-  cout << "DNaming_XAttachShape : Error" << endl;
+  std::cout << "DNaming_XAttachShape : Error" << std::endl;
   return 1;  
 }
 
@@ -829,7 +829,7 @@ static Standard_Integer DNaming_AddCylinder (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, anObj->Label());
     return 0;
   }
-  cout << "DNaming_AddCylinder : Error" << endl;
+  std::cout << "DNaming_AddCylinder : Error" << std::endl;
   return 1;  
 }
 
@@ -862,7 +862,7 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
       return 0;
     }
   }
-  cout << "DNaming_CylRadius : Error" << endl;
+  std::cout << "DNaming_CylRadius : Error" << std::endl;
   return 1;  
 }
 
@@ -895,7 +895,7 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
   }
-   cout << "DModel_AddFuse : Error" << endl;
+   std::cout << "DModel_AddFuse : Error" << std::endl;
    return 1;  
  }
 
@@ -929,7 +929,7 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
   }
-   cout << "DModel_AddCut : Error" << endl;
+   std::cout << "DModel_AddCut : Error" << std::endl;
    return 1;  
  }
 
@@ -962,7 +962,7 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
   }
-   cout << "DModel_AddComm : Error" << endl;
+   std::cout << "DModel_AddComm : Error" << std::endl;
    return 1;  
  }
 
@@ -994,7 +994,7 @@ static Standard_Integer DNaming_CylRad (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, aFun->Label());
     return 0;
   }
-   cout << "DModel_AddSection : Error" << endl;
+   std::cout << "DModel_AddSection : Error" << std::endl;
    return 1;  
  }
 
@@ -1007,7 +1007,7 @@ static Standard_Integer DNaming_AddFillet (Draw_Interpretor& theDI,
 					   const char** theArg)
 {
   if (theNb < 5) {
-    cout<<"DNaming_AddFillet(): Wrong number of arguments"<<endl;
+    std::cout<<"DNaming_AddFillet(): Wrong number of arguments"<<std::endl;
     return 1;
   }
 
@@ -1045,7 +1045,7 @@ static Standard_Integer DNaming_PTranslateDXYZ (Draw_Interpretor& di,
 {
   if (nb > 3) {
 #ifdef OCCT_DEBUG
-    cout << "NB = " << nb <<endl;
+    std::cout << "NB = " << nb <<std::endl;
 #endif
     Handle(TDocStd_Document) aDocument;   
     Standard_CString aDocS(a[1]);
@@ -1062,13 +1062,13 @@ static Standard_Integer DNaming_PTranslateDXYZ (Draw_Interpretor& di,
     
     Standard_Real aDx=0., aDy=0., aDz=0.;
     aDx = Draw::Atof(a[3]);
-    //cout << "DX = " << aDx<<endl;
+    //std::cout << "DX = " << aDx<<std::endl;
     if(nb > 4) {
       aDy = Draw::Atof(a[4]);
-      //cout << "DY = " << aDy<<endl;
+      //std::cout << "DY = " << aDy<<std::endl;
       if(nb > 5) {
 	aDz = Draw::Atof(a[5]);
-	//cout << "DZ = " << aDz<<endl;
+	//std::cout << "DZ = " << aDz<<std::endl;
       }
     }
 
@@ -1079,7 +1079,7 @@ static Standard_Integer DNaming_PTranslateDXYZ (Draw_Interpretor& di,
     DDF::ReturnLabel(di, aFun->Label());
     return 0;
   }
-  cout << "DNaming_Translate : Error" << endl;
+  std::cout << "DNaming_Translate : Error" << std::endl;
   return 1;  
 }
 //=======================================================================
@@ -1092,7 +1092,7 @@ static Standard_Integer DNaming_PTranslateLine (Draw_Interpretor& di,
 {
   if (nb > 4) {
 #ifdef OCCT_DEBUG
-    cout << "NB = " << nb <<endl;
+    std::cout << "NB = " << nb <<std::endl;
 #endif
     Handle(TDocStd_Document) aDocument;   
     Standard_CString aDocS(a[1]);
@@ -1118,7 +1118,7 @@ static Standard_Integer DNaming_PTranslateLine (Draw_Interpretor& di,
     DDF::ReturnLabel(di, aFun->Label());
     return 0;
   }
-  cout << "DNaming_PTranslateAlongLine : Error" << endl;
+  std::cout << "DNaming_PTranslateAlongLine : Error" << std::endl;
   return 1;  
 }
 
@@ -1157,7 +1157,7 @@ static Standard_Integer DNaming_PRotateLine(Draw_Interpretor& di,
     DDF::ReturnLabel(di, aFun->Label());
     return 0;    
   }
-  cout << "DNaming_PRotateRoundLine : Error" << endl;
+  std::cout << "DNaming_PRotateRoundLine : Error" << std::endl;
   return 1;  
 }
 
@@ -1190,7 +1190,7 @@ static Standard_Integer DNaming_PMirrorObject(Draw_Interpretor& di,
     DDF::ReturnLabel(di, aFun->Label());
     return 0;
   }
-  cout << "DNaming_PMirrorObject : Error" << endl;
+  std::cout << "DNaming_PMirrorObject : Error" << std::endl;
   return 1;  
 }
 //=======================================================================
@@ -1202,7 +1202,7 @@ static Standard_Integer DNaming_AddPrism (Draw_Interpretor& theDI,
 					 const char** theArg)
 {
   if (theNb < 5 ) {
-    cout<<"DNaming_AddPrism(): Wrong number of arguments"<<endl;
+    std::cout<<"DNaming_AddPrism(): Wrong number of arguments"<<std::endl;
     return 1;
   }
 //
@@ -1260,7 +1260,7 @@ static Standard_Integer DNaming_PrismHeight (Draw_Interpretor& theDI,
     }
     
   }
-  cout << "DNaming_PrismHeight : Error" << endl;
+  std::cout << "DNaming_PrismHeight : Error" << std::endl;
   return 1;  
 }
 
@@ -1275,7 +1275,7 @@ static Standard_Integer DNaming_AddRevol (Draw_Interpretor& theDI,
 					  const char** theArg)
 {
   if (theNb < 4 ) {
-    cout<<"DNaming_AddRevol(): Wrong number of arguments"<<endl;
+    std::cout<<"DNaming_AddRevol(): Wrong number of arguments"<<std::endl;
     return 1;
   }
 
@@ -1352,7 +1352,7 @@ static Standard_Integer DNaming_RevolutionAngle (Draw_Interpretor& theDI,
       return 0;
     }    
   }
-  cout << "DNaming_RevolutionAngle : Error" << endl;
+  std::cout << "DNaming_RevolutionAngle : Error" << std::endl;
   return 1;  
 }
 
@@ -1365,7 +1365,7 @@ static Standard_Integer DNaming_AddSphere (Draw_Interpretor& theDI,
 					  const char** theArg)
 {
   if (theNb != 4) {
-    cout<<"DNaming_AddSphere(): Wrong number of arguments"<<endl;
+    std::cout<<"DNaming_AddSphere(): Wrong number of arguments"<<std::endl;
     return 1;
   }
   Handle(TDocStd_Document) aDocument;   
@@ -1421,7 +1421,7 @@ static Standard_Integer DNaming_SphereRadius (Draw_Interpretor& theDI,
     }
   }
 
-  cout << "DNaming_SphRadius : Error" << endl;
+  std::cout << "DNaming_SphRadius : Error" << std::endl;
   return 1;  
 }
 //=======================================================================
@@ -1459,7 +1459,7 @@ static Standard_Integer DNaming_AddPoint (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, anObj->Label());
     return 0;
   }
-  cout << "DNaming_AddPoint : Error" << endl;
+  std::cout << "DNaming_AddPoint : Error" << std::endl;
   return 1;  
 }
 
@@ -1504,7 +1504,7 @@ static Standard_Integer DNaming_AddPointRlt (Draw_Interpretor& theDI,
     DDF::ReturnLabel(theDI, anObj->Label());
     return 0;
   }
-  cout << "DNaming_AddPoint : Error" << endl;
+  std::cout << "DNaming_AddPoint : Error" << std::endl;
   return 1;  
 }
 
@@ -1554,11 +1554,11 @@ static Standard_Integer DNaming_PntOffset (Draw_Interpretor& theDI,
       if(isDX || isDY || isDZ)
 	DDF::ReturnLabel(theDI, objLabel);
       else
-	cout <<"DNaming_PntOffset : Nothing changed" << endl; 
+	std::cout <<"DNaming_PntOffset : Nothing changed" << std::endl; 
       return 0;
     }
   }
-  cout << "DNaming_PntOffset : Error" << endl;
+  std::cout << "DNaming_PntOffset : Error" << std::endl;
   return 1;  
 }
 
@@ -1572,7 +1572,7 @@ static Standard_Integer DNaming_Line3D (Draw_Interpretor& theDI,
 					  const char** theArg)
 {
   if (theNb < 5) {
-    cout<<"DNaming_AddLine3D: Wrong number of arguments"<<endl;
+    std::cout<<"DNaming_AddLine3D: Wrong number of arguments"<<std::endl;
     return 1;
   }
   Handle(TDocStd_Document) aDocument;   
@@ -1698,14 +1698,14 @@ static Standard_Boolean MakeSelection (const Handle(TDataStd_UAttribute)& Obj,
 	  if(!aSelector.Select(Selection, aContext, Geometry, KeepOrientation))
 	    return Standard_False;
 	}catch (...) {
-	  cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
+	  std::cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<std::endl;
 	}
 
 	if(!aNS.IsNull()) {
 
 	    //TCollection_AsciiString entry;
 	    //TDF_Tool::Entry(aNS->Label(), entry);
-	    //cout << "ContextNS Label = " << entry <<endl;
+	    //std::cout << "ContextNS Label = " << entry <<std::endl;
 	  Handle(TFunction_Function) aCntFun;
 	  if(aNS->Label().Father().FindAttribute(TFunction_Function::GetID(), aCntFun)) { //Fun:2 ==> result
 	      // First argument of Selection function refers to father function (of context object) 
@@ -1756,14 +1756,14 @@ static Standard_Boolean MakeXSelection (const Handle(TDataStd_UAttribute)& Obj,
 	  if(!aSelector.Select(Selection, aContext, Geometry, KeepOrientation))
 	    return Standard_False;
 	}catch (...) {
-	  cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<endl;
+	  std::cout << "EXCEPTION: SELECTION_IMPOSSIBLE" <<std::endl;
 	}
 
 	if(!aNS.IsNull()) {
 
 	    //TCollection_AsciiString entry;
 	    //TDF_Tool::Entry(aNS->Label(), entry);
-	    //cout << "ContextNS Label = " << entry <<endl;
+	    //std::cout << "ContextNS Label = " << entry <<std::endl;
 	  Handle(TFunction_Function) aCntFun;
 	  if(aNS->Label().Father().FindAttribute(TFunction_Function::GetID(), aCntFun)) { //Fun:2 ==> result
 	      // First argument of Selection function refers to father function (of context object) 
@@ -1915,7 +1915,7 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(FirstAuxObj->Label(), entry);
 #ifdef OCCT_DEBUG
-	  cout << "First Selection function at " << entry <<endl;
+	  std::cout << "First Selection function at " << entry <<std::endl;
 #endif
 	}
 	Standard_Boolean isSelected (Standard_False);
@@ -1929,11 +1929,11 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 	    }
 	}
 	catch (Standard_Failure const& anException) {
-	  cout << "%%%INFO:Error: ::TestSingleSelection failed :";
-	  cout << anException.GetMessageString() << endl;
+	  std::cout << "%%%INFO:Error: ::TestSingleSelection failed :";
+	  std::cout << anException.GetMessageString() << std::endl;
 	}
 	catch(...) {
-	  cout << "%%%INFO:Error: ::TestSingleSelection selection failed : unknown exception type";
+	  std::cout << "%%%INFO:Error: ::TestSingleSelection selection failed : unknown exception type";
 	}
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(auxObj->Label(), entry);
@@ -1967,14 +1967,14 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 	}
 	if(aResult.Length()) {
 	  if(aResult.Search("Warning") == -1)
-	    cout << "Failed units: " << aResult << " at " << entry << endl;
+	    std::cout << "Failed units: " << aResult << " at " << entry << std::endl;
 	  else 
-	    cout << aResult << " at " << entry << endl;
+	    std::cout << aResult << " at " << entry << std::endl;
 	  TDataStd_Name::Set(auxObj->Label(), aResult);
 	}
       } 
       if(aFailedList.Extent()) {
-	cout << "Failed units are kept at: ";
+	std::cout << "Failed units are kept at: ";
 	TopTools_ListIteratorOfListOfShape it1(aFailedList);
 	for(; it1.More(); it1.Next()) {
 	  const TDF_Label& aLabel = TDF_TagSource::NewChild(aDoc->Main());
@@ -1983,7 +1983,7 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
 	  B.Generated(it1.Value());
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(aLabel, entry);
-	  cout << "\t" <<entry <<endl;
+	  std::cout << "\t" <<entry <<std::endl;
 	}
       }
       if(!FirstAuxObj.IsNull())
@@ -1992,7 +1992,7 @@ static Standard_Integer DNaming_TestSingle (Draw_Interpretor& theDI,
     }
   }
 
-  cout << "DNaming_TestSingle : Error" << endl;
+  std::cout << "DNaming_TestSingle : Error" << std::endl;
   return 1;  
 }
 
@@ -2049,7 +2049,7 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
 #ifdef OCCT_DEBUG
 	  TCollection_AsciiString entry;
 	  TDF_Tool::Entry(FirstAuxObj->Label(), entry);
-	  cout << "First Selection function at " << entry <<endl;
+	  std::cout << "First Selection function at " << entry <<std::endl;
 #endif
 	}
 	Standard_Boolean isSelected (Standard_False);
@@ -2063,11 +2063,11 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
 	    }
 	}
 	catch (Standard_Failure const& anException) {
-	  cout << "%%%INFO:Error: ::TestSingleSelection failed :";
-	  cout << anException.GetMessageString() << endl;
+	  std::cout << "%%%INFO:Error: ::TestSingleSelection failed :";
+	  std::cout << anException.GetMessageString() << std::endl;
 	}
 	catch(...) {
-	  cout << "%%%INFO:Error: ::TestSingleSelection selection failed : unknown exception type";
+	  std::cout << "%%%INFO:Error: ::TestSingleSelection selection failed : unknown exception type";
 	}
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(auxObj->Label(), entry);
@@ -2100,7 +2100,7 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
 	  aFailedList.Append(aCurShape);
 	}
 	if(aResult.Length())
-	  cout << "Failed units: " << aResult << endl;
+	  std::cout << "Failed units: " << aResult << std::endl;
       }
  
       if(aFailedList.Extent()) {
@@ -2118,7 +2118,7 @@ static Standard_Integer DNaming_Multiple (Draw_Interpretor& theDI,
     }
   }
 
-  cout << "DNaming_TestMultiple : Error" << endl;
+  std::cout << "DNaming_TestMultiple : Error" << std::endl;
   return 1;  
 }
 

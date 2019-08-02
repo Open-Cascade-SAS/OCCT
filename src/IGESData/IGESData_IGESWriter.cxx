@@ -121,7 +121,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
 
   Standard_Integer nb = themodel->NbEntities();
 #ifdef PATIENCELOG
-  sout<< " IGESWriter : " << nb << " Entities (* = 1000 Ent.s)" << endl;
+  sout<< " IGESWriter : " << nb << " Entities (* = 1000 Ent.s)" << std::endl;
 #endif
   SectionS   ();
   Standard_Integer ns = themodel->NbStartLines();
@@ -133,11 +133,11 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
     Handle(IGESData_IGESEntity) ent = themodel->Entity(i);
     Handle(IGESData_IGESEntity) cnt = ent;
 #ifdef PATIENCELOG
-    if (i % 1000 == 1) cout << "*" << flush;
+    if (i % 1000 == 1) std::cout << "*" << std::flush;
 #endif
 //  Attention aux cas d erreur : contenu redefini
     if (themodel->IsRedefinedContent(i)) {
-      sout << " --  IGESWriter : Erroneous Entity N0."<<i<<"  --"<<endl;
+      sout << " --  IGESWriter : Erroneous Entity N0."<<i<<"  --"<<Message_EndLine;
       Handle(Interface_ReportEntity) rep = themodel->ReportEntity(i);
       if (!rep.IsNull()) cnt = GetCasted(IGESData_IGESEntity,rep->Content());
       if (cnt.IsNull())  cnt = ent;    // secours
@@ -156,14 +156,14 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
       undent->WriteOwnParams (*this);
     }
     else sout<<" -- IGESWriter : Not Processed for n0."<<i<<" in file,  Type "
-      <<cnt->TypeNumber()<<"  Form "<<cnt->FormNumber()<<endl;
+      <<cnt->TypeNumber()<<"  Form "<<cnt->FormNumber()<<Message_EndLine;
 
     Associativities (cnt);
     Properties      (cnt);
     EndEntity ();
   }
 #ifdef PATIENCELOG
-  cout << " Envoi des Entites Termine"<<endl;
+  std::cout << " Envoi des Entites Termine"<<std::endl;
 #endif
   SectionT();
 }
@@ -502,12 +502,12 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
   Standard_Integer nbs = 1;
   if (thestar.IsNull()) {
     if (fnes) {
-      S << "                              ***  EUCLID/STRIM  DESKTOP CLIPBOARD  ***"<<endl;
+      S << "                              ***  EUCLID/STRIM  DESKTOP CLIPBOARD  ***"<<std::endl;
       writefnes (S,"                                                                        S0000001");
     }
     else S<<"                                                                        S0000001";
 //      123456789 123456789 123456789 123456789 123456789 123456789 123456789 12
-    S << endl;
+    S << std::endl;
   } else {
     nbs = thestar->Length();
     for (i = 1; i <= nbs; i ++) {
@@ -521,11 +521,11 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
       S << &blancs[line->Length()];
       if (fnes) writefnes (S,finlin);
       else S << finlin;
-      S << endl;
+      S << std::endl;
     }
   }
 #ifdef PATIENCELOG
-  cout << "Global Section : " << flush;
+  std::cout << "Global Section : " << std::flush;
 #endif
   isGood = S.good();
 //  Global Section  :  convertie dans <thehead>
@@ -541,19 +541,19 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
     S << &blancs[line->Length()];
     if (fnes) writefnes (S,finlin);
     else S << finlin;
-    S << endl;
+    S << std::endl;
     isGood = S.good();
   }
   if(!isGood)
     return isGood;
 #ifdef PATIENCELOG
-  cout << nbg << " lines" << endl;
+  std::cout << nbg << " lines" << std::endl;
 #endif
 
 //  Directory Section
   Standard_Integer nbd = thedirs.Upper();   // 0 -> NbEnts
 #ifdef PATIENCELOG
-  cout << "\nDirectory section : " << nbd << " Entites" << endl;
+  std::cout << "\nDirectory section : " << nbd << " Entites" << std::endl;
 #endif
   for (i = 1; i <= nbd && isGood ; i ++) {
     Standard_Integer v[17]; char res1[9],res2[9],lab[9],num[9];
@@ -573,18 +573,18 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
     if (fnes) writefnes (S,ligne);
     else S << ligne;
     S<< "\n";
-//    cout << "Ent.no "<<i<<" No en P "<<thepnum.Value(i)<<
-//      " Lignes P:"<<thepnum.Value(i+1)-thepnum.Value(i)<<endl;
+//    std::cout << "Ent.no "<<i<<" No en P "<<thepnum.Value(i)<<
+//      " Lignes P:"<<thepnum.Value(i+1)-thepnum.Value(i)<<std::endl;
 //    for (j = 0; j < 17; j ++) S<<v[j]<<" ";
-//    S<<res1<<res2<<" label:"<<lab<<" subnum:"<<num<<endl;
+//    S<<res1<<res2<<" label:"<<lab<<" subnum:"<<num<<std::endl;
     isGood = S.good();
   }
   if(!isGood)
     return isGood;
 //  Parameter Section
 #ifdef PATIENCELOG
-  cout<<" Parameter Section : "<<thepnum.Value(nbd)-1
-      <<" lines (* = 1000 lines) "<<flush;
+  std::cout<<" Parameter Section : "<<thepnum.Value(nbd)-1
+      <<" lines (* = 1000 lines) "<<std::flush;
 #endif
 
   blancs[MaxcarsP] = '\0';
@@ -601,11 +601,11 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
       S << &blancs[line->Length()];
       if (fnes) writefnes (S,finlin);
       else S << finlin;
-      S << endl;
+      S << std::endl;
       isGood = S.good();
 #ifdef PATIENCELOG
       lignespatience --;
-      if (lignespatience <= 0) {  cout<<"*"<<flush;  lignespatience = 1000;  }
+      if (lignespatience <= 0) {  std::cout<<"*"<<std::flush;  lignespatience = 1000;  }
 #endif
     }
   }
@@ -622,8 +622,8 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
   S.flush();
   isGood = S.good();
 #ifdef PATIENCELOG
-  cout <<"\n Section T (lines counts) : G "<<nbg<<"   D "<<nbd
-       <<"   P "<<thepnum.Value(thepnum.Length())-1<<"   T 1"<<endl;
+  std::cout <<"\n Section T (lines counts) : G "<<nbg<<"   D "<<nbd
+       <<"   P "<<thepnum.Value(thepnum.Length())-1<<"   T 1"<<std::endl;
 #endif
   return isGood;
 }

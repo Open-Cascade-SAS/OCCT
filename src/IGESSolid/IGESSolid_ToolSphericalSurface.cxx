@@ -143,22 +143,22 @@ void  IGESSolid_ToolSphericalSurface::OwnDump
   (const Handle(IGESSolid_SphericalSurface)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_SphericalSurface" << endl;
+  S << "IGESSolid_SphericalSurface" << Message_EndLine;
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "Center : ";
   dumper.Dump(ent->Center(),S, sublevel);
-  S << endl;
-  S << "Radius : " << ent->Radius() << endl;
+  S << Message_EndLine;
+  S << "Radius : " << ent->Radius() << Message_EndLine;
   if (ent->IsParametrised())
     {
-      S << "Surface is Parametrised" << endl;
+      S << "Surface is Parametrised" << Message_EndLine;
       S << "Axis direction      : ";
       dumper.Dump(ent->Axis(),S, sublevel);
-      S << endl;
+      S << Message_EndLine;
       S << "Reference direction : ";
       dumper.Dump(ent->ReferenceDir(),S, sublevel);
-      S << endl;
+      S << Message_EndLine;
     }
-  else S << "Surface is UnParametrised" << endl;
+  else S << "Surface is UnParametrised" << Message_EndLine;
 }

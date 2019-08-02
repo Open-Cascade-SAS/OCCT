@@ -161,17 +161,17 @@ void IGESGraph_ToolUniformRectGrid::OwnDump
   (const Handle(IGESGraph_UniformRectGrid)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_UniformRectGrid" << endl;
+  S << "IGESGraph_UniformRectGrid" << Message_EndLine;
 
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "Grid         : " << ( ent->IsFinite() ? "Finite" : "Infinite");
   S << "  -  Composed of " << ( ent->IsLine() ? "Lines" : "Points");
-  S << "  -  " << ( ent->IsWeighted() ? "Weighted" : "Unweighted") << endl;
+  S << "  -  " << ( ent->IsWeighted() ? "Weighted" : "Unweighted") << Message_EndLine;
   S << "Grid Point   : ";
   IGESData_DumpXY(S, ent->GridPoint());
   S << "  Grid Spacing : ";
-  IGESData_DumpXY(S, ent->GridSpacing());  S << endl;
+  IGESData_DumpXY(S, ent->GridSpacing());  S << Message_EndLine;
   if (ent->IsFinite())
     S << "No. of points/lines in direction :  X : " << ent->NbPointsX()
-      << "  -  Y : " << ent->NbPointsY() << endl;
+      << "  -  Y : " << ent->NbPointsY() << Message_EndLine;
 }

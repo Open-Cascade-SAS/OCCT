@@ -357,14 +357,14 @@ Standard_Boolean BlendFunc_EvolRad::ComputeValues(const math_Vector& X,
   else {
     invnorm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
   if (invnorm2 > Eps) invnorm2 = ((Standard_Real) 1) /invnorm2;
   else {
     invnorm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
 
@@ -956,7 +956,7 @@ Standard_Boolean BlendFunc_EvolRad::IsSolution(const math_Vector& Sol,
 	 Abs(controle(3)) > tolerances(3) ||
 	 Abs(controle(4)) > tolerances(4)){
 #ifdef OCCT_DEBUG
-	cout<<"Cheminement : echec calcul des derivees"<<endl;
+	std::cout<<"Cheminement : echec calcul des derivees"<<std::endl;
 #endif
 	istangent = Standard_True;
       }
@@ -1081,7 +1081,7 @@ void BlendFunc_EvolRad::Tangent(const Standard_Real U1,
     gp_Vec d1u,d1v;
     gp_Pnt bid;
 #ifdef OCCT_DEBUG
-    cout << " erreur de tengent !!!!!!!!!!!!!!!!!!!!" << endl;
+    std::cout << " erreur de tengent !!!!!!!!!!!!!!!!!!!!" << std::endl;
 #endif
     surf1->D1(U1,V1,bid,d1u,d1v);  
     NmF = ns1 = d1u.Crossed(d1v);
@@ -1456,13 +1456,13 @@ void BlendFunc_EvolRad::Section(const Blend_Point& P,
   if (norm1 < Eps) {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
   if (norm2 < Eps) {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
 
@@ -1589,13 +1589,13 @@ Standard_Boolean BlendFunc_EvolRad::Section
   if (norm1 < Eps)  {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
   if (norm2 < Eps) {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
 
@@ -1742,36 +1742,36 @@ Standard_Boolean BlendFunc_EvolRad::Section
   pdiff = (d_plan - dnplan)*(1/deltat);
   if ((pdiff-d2nplan).Magnitude() > 1.e-4*(pdiff.Magnitude()+1.e-1))
     {
-      cout << "d2nplan = (" << d2nplan.X() << ","<< d2nplan.Y() << ","<< d2nplan.Z() << ")"<<endl;
-      cout << "Diff fi = (" << pdiff.X() << ","<<  pdiff.Y() << ","<<  pdiff.Z() << ")"<<endl;
+      std::cout << "d2nplan = (" << d2nplan.X() << ","<< d2nplan.Y() << ","<< d2nplan.Z() << ")"<<std::endl;
+      std::cout << "Diff fi = (" << pdiff.X() << ","<<  pdiff.Y() << ","<<  pdiff.Z() << ")"<<std::endl;
     }
 
   pdiff = (d1 - dn1w)*(1/deltat);
   if ((pdiff-d2n1w).Magnitude() > 1.e-4*(pdiff.Magnitude()+1.e-1))
     {
-      cout << "d2n1w   = (" << d2n1w.X() << ","<< d2n1w.Y() << ","<< d2n1w.Z() << ")"<<endl;
-      cout << "Diff fi = (" << pdiff.X() << ","<<  pdiff.Y() << ","<<  pdiff.Z() << ")"<<endl;
+      std::cout << "d2n1w   = (" << d2n1w.X() << ","<< d2n1w.Y() << ","<< d2n1w.Z() << ")"<<std::endl;
+      std::cout << "Diff fi = (" << pdiff.X() << ","<<  pdiff.Y() << ","<<  pdiff.Z() << ")"<<std::endl;
     }
   pdiff = (d2 - dn2w)*(1/deltat);
   if ((pdiff-d2n2w).Magnitude() > 1.e-4*(pdiff.Magnitude()+1.e-1))
     {
-      cout << "d2n2w   = (" << d2n2w.X() << ","<< d2n2w.Y() << ","<< d2n2w.Z() << ")"<<endl;
-      cout << "Diff fi = (" << pdiff.X() << ","<<  pdiff.Y() << ","<<  pdiff.Z() << ")"<<endl;
+      std::cout << "d2n2w   = (" << d2n2w.X() << ","<< d2n2w.Y() << ","<< d2n2w.Z() << ")"<<std::endl;
+      std::cout << "Diff fi = (" << pdiff.X() << ","<<  pdiff.Y() << ","<<  pdiff.Z() << ")"<<std::endl;
     }
  
 
   for ( ii=1; ii<=4; ii++) {
     if (Abs(VDiff(ii)-D2EDT2(ii)) > 1.e-4*(Abs(D2EDT2(ii))+1.e-1)) 
 	{
-	  cout << "erreur sur D2EDT2 : "<< ii << endl;
-          cout << D2EDT2(ii) << " D.F = " << VDiff(ii) << endl;
+	  std::cout << "erreur sur D2EDT2 : "<< ii << std::endl;
+          std::cout << D2EDT2(ii) << " D.F = " << VDiff(ii) << std::endl;
 	} 
 	for (jj=1; jj<=4; jj++) {
 	  if (Abs(MDiff(ii,jj)-D2EDXDT(ii, jj)) > 
 	      1.e-3*(Abs(D2EDXDT(ii, jj))+1.e-2)) 
 	      {
-		cout << "erreur sur D2EDXDT : "<< ii << " , " << jj << endl;
-		cout << D2EDXDT(ii,jj) << " D.F = " << MDiff(ii,jj) << endl;
+		std::cout << "erreur sur D2EDXDT : "<< ii << " , " << jj << std::endl;
+		std::cout << D2EDXDT(ii,jj) << " D.F = " << MDiff(ii,jj) << std::endl;
 	      }
 	}
   }
@@ -1782,8 +1782,8 @@ Standard_Boolean BlendFunc_EvolRad::Section
       if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 1)) > 
 	  1.e-4*(Abs(D2EDX2(ii, jj, 1))+1.e-1)) 
 	{
-	  cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 1 << endl;
-	  cout << D2EDX2(ii,jj, 1) << " D.F = " << MDiff(ii,jj) << endl;
+	  std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 1 << std::endl;
+	  std::cout << D2EDX2(ii,jj, 1) << " D.F = " << MDiff(ii,jj) << std::endl;
 	}
     }
   }
@@ -1795,8 +1795,8 @@ Standard_Boolean BlendFunc_EvolRad::Section
       if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 2)) > 
 	  1.e-4*(Abs(D2EDX2(ii, jj, 2))+1.e-1)) 
 	{
-	  cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 2 << endl;
-	  cout << D2EDX2(ii,jj, 2) << " D.F = " << MDiff(ii,jj) << endl;
+	  std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 2 << std::endl;
+	  std::cout << D2EDX2(ii,jj, 2) << " D.F = " << MDiff(ii,jj) << std::endl;
 	}
     }
   }
@@ -1807,8 +1807,8 @@ Standard_Boolean BlendFunc_EvolRad::Section
       if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 3)) > 
 	  1.e-4*(Abs(D2EDX2(ii, jj, 3))+1.e-1)) 
 	{
-	  cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 3 << endl;
-	  cout << D2EDX2(ii,jj, 3) << " D.F = " << MDiff(ii,jj) << endl;
+	  std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " << 3 << std::endl;
+	  std::cout << D2EDX2(ii,jj, 3) << " D.F = " << MDiff(ii,jj) << std::endl;
 	}
     }
   }
@@ -1820,9 +1820,9 @@ Standard_Boolean BlendFunc_EvolRad::Section
       if (Abs(MDiff(ii,jj)-D2EDX2(ii, jj, 4)) > 
 	  1.e-4*(Abs(D2EDX2(ii, jj, 4))+1.e-1)) 
 	{
-	  cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " 
-	  << 4 << endl;
-	  cout << D2EDX2(ii,jj, 4) << " D.F = " << MDiff(ii,jj) << endl;
+	  std::cout << "erreur sur D2EDX2 : "<< ii << " , " << jj << " , " 
+	  << 4 << std::endl;
+	  std::cout << D2EDX2(ii,jj, 4) << " D.F = " << MDiff(ii,jj) << std::endl;
 	}
     }
   }
@@ -1935,13 +1935,13 @@ Standard_Boolean BlendFunc_EvolRad::Section
   if (norm1 < Eps)  {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
   if (norm2 < Eps)  {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " EvolRad : Surface singuliere " << endl;
+    std::cout << " EvolRad : Surface singuliere " << std::endl;
 #endif
   }
 

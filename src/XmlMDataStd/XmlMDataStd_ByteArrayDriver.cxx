@@ -144,7 +144,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
       aDelta = aDeltaValue != 0;
   }
 #ifdef OCCT_DEBUG
-    cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<endl;
+    std::cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<std::endl;
 #endif
   aByteArray->SetDelta(aDelta);
 

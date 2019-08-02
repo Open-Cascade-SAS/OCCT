@@ -1984,7 +1984,7 @@ Handle(Geom2d_BSplineCurve)
     }
 #ifdef OCCT_DEBUG
     if (!OK) {
-      cout << "ProjLib_ComputeApproxOnPolarSurface : Smoothing echoue"<<endl;
+      std::cout << "ProjLib_ComputeApproxOnPolarSurface : Smoothing echoue"<<std::endl;
     }
 #endif 
     return Dummy;

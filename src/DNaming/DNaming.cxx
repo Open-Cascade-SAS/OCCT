@@ -133,7 +133,7 @@ TopoDS_Shape DNaming::CurrentShape (const Standard_CString  LabelName,
   Standard_Boolean Found =  DDF::AddLabel (DF, LabelName, Label);
   if (!Found) {
 #ifdef OCCT_DEBUG
-    cout <<"no labels"<<endl;
+    std::cout <<"no labels"<<std::endl;
 #endif
     return S;
   }
@@ -143,7 +143,7 @@ TopoDS_Shape DNaming::CurrentShape (const Standard_CString  LabelName,
     S =  TNaming_Tool::CurrentShape(NS);
     if (S.IsNull())
 #ifdef OCCT_DEBUG
-      cout <<"current shape from "<< LabelName <<" is deleted"<<endl;
+      std::cout <<"current shape from "<< LabelName <<" is deleted"<<std::endl;
 #endif
     return S;
   }
@@ -895,7 +895,7 @@ Standard_Boolean DNaming::ComputeSweepDir (const TopoDS_Shape& theShape,
     Handle(Geom_Surface) aSurf = BRep_Tool::Surface(TopoDS::Face(theShape));
 #ifdef OCCT_DEBUG
     Standard_CString s = aSurf->DynamicType()->Name();
-    cout<<"Surface Dynamic TYPE = "<<s<<endl;
+    std::cout<<"Surface Dynamic TYPE = "<<s<<std::endl;
 #endif
     if (aSurf->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) 
       aSurf = Handle(Geom_RectangularTrimmedSurface)::DownCast (aSurf)->BasisSurface();

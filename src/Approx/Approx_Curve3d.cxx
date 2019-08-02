@@ -174,8 +174,8 @@ Approx_Curve3d::Approx_Curve3d(const Handle(Adaptor3d_HCurve)& Curve,
 
  void Approx_Curve3d::Dump(Standard_OStream& o) const
 {
-  o << "******* Dump of ApproxCurve *******" << endl;
-  o << "*******Degree     " << Curve()->Degree() << endl;
-  o << "*******NbSegments " << Curve()->NbKnots() - 1 << endl;
-  o << "*******Error      " << MaxError() << endl;
+  o << "******* Dump of ApproxCurve *******" << std::endl;
+  o << "*******Degree     " << Curve()->Degree() << std::endl;
+  o << "*******NbSegments " << Curve()->NbKnots() - 1 << std::endl;
+  o << "*******Error      " << MaxError() << std::endl;
 }

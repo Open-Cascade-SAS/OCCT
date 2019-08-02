@@ -465,9 +465,9 @@ Handle(Geom_Curve) TopOpeBRep_LineInter::Curve
   Handle(Geom_TrimmedCurve) TC3D = new Geom_TrimmedCurve(C3D,parmin,parmax);
 #ifdef OCCT_DEBUG
   if ( TopOpeBRep_GettraceCONIC() ) {
-    cout<<"TopOpeBRep_LineInter::Curve on a ";
-    TopOpeBRep::Print(myTypeLineCurve,cout);cout<<endl;
-    cout<<"  ... Trimmed from "<<parmin<<" to "<<parmax<<endl;
+    std::cout<<"TopOpeBRep_LineInter::Curve on a ";
+    TopOpeBRep::Print(myTypeLineCurve,std::cout);std::cout<<std::endl;
+    std::cout<<"  ... Trimmed from "<<parmin<<" to "<<parmax<<std::endl;
   }
 #endif
   return TC3D;
@@ -569,7 +569,7 @@ const TopOpeBRepDS_Transition& TopOpeBRep_LineInter::FaceFaceTransition
 void TopOpeBRep_LineInter::DumpType()const
 {
 #ifdef OCCT_DEBUG
-  TopOpeBRep::Print(myTypeLineCurve,cout);
+  TopOpeBRep::Print(myTypeLineCurve,std::cout);
 #endif
 }
 
@@ -591,11 +591,11 @@ void TopOpeBRep_LineInter::DumpVPoint
 {
   const TopOpeBRep_VPointInter& VP = VPoint(I);
   const gp_Pnt& P = VP.Value();
-  cout<<s1;
-  cout<<"L"<<Index()<<"P"<<VP.Index();
-  if (VP.Keep()) cout<<"K";
-  cout<<" "<<P.X()<<" "<<P.Y()<<" "<<P.Z();
-  cout<<s2;
+  std::cout<<s1;
+  std::cout<<"L"<<Index()<<"P"<<VP.Index();
+  if (VP.Keep()) std::cout<<"K";
+  std::cout<<" "<<P.X()<<" "<<P.Y()<<" "<<P.Z();
+  std::cout<<s2;
 #endif
 }
 
@@ -617,9 +617,9 @@ void TopOpeBRep_LineInter::DumpBipoint
 {
   Standard_Integer i1 = bip.I1();
   Standard_Integer i2 = bip.I2();
-  cout<<s1;
-  cout<<"("<<i1<<","<<i2<<")";
-  cout<<s2;
+  std::cout<<s1;
+  std::cout<<"("<<i1<<","<<i2<<")";
+  std::cout<<s2;
 #endif
 }
 

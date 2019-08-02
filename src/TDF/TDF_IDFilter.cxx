@@ -165,11 +165,11 @@ void TDF_IDFilter::Dump(Standard_OStream& anOS) const
   if (myIgnore) anOS<<"ignores"; else anOS<<"keeps  "; anOS<<" all IDs";
   TDF_MapIteratorOfIDMap itr(myIDMap);
   if (itr.More()) {
-    anOS<<" BUT:"<<endl;
+    anOS<<" BUT:"<<std::endl;
     for (; itr.More(); itr.Next()) {
       const Standard_GUID& guid = itr.Key();
       guid.ShallowDump(anOS);
-      anOS<<endl;
+      anOS<<std::endl;
     }
   }
 }

@@ -126,7 +126,7 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
       anIt++;
       if (anIt == theArgsNb)
       {
-        cout << "Empty argument of '" << aParam << "'.\n";
+        std::cout << "Empty argument of '" << aParam << "'.\n";
         return 1;
       }
       TCollection_AsciiString aPluginName;
@@ -138,14 +138,14 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
       anIt++;
       if (anIt == theArgsNb)
       {
-        cout << "Empty argument of '" << aParam << "'.\n";
+        std::cout << "Empty argument of '" << aParam << "'.\n";
         return 1;
       }
       TopoDS_Shape aShape = DBRep::Get (theArgs[anIt]);
       anIt++;
       if (aShape.IsNull())
       {
-        cout << "Wrong shape name: " << aParam << ".\n";
+        std::cout << "Wrong shape name: " << aParam << ".\n";
         return 1;
       }
       NCollection_List<TCollection_AsciiString> anArgPlugins;
@@ -174,7 +174,7 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
       anIt++;
       if (anIt == theArgsNb)
       {
-        cout << "Empty argument of '" << aParam << "'.\n";
+        std::cout << "Empty argument of '" << aParam << "'.\n";
         return 1;
       }
       TCollection_AsciiString aFileName (theArgs[anIt]);
@@ -200,7 +200,7 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
       anIt++;
       if (anIt == theArgsNb)
       {
-        cout << "Empty argument of '" << aParam << "'.\n";
+        std::cout << "Empty argument of '" << aParam << "'.\n";
         return 1;
       }
       aNeedDirectory = true;
@@ -220,7 +220,7 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
       anIt++;
       if (anIt == theArgsNb)
       {
-        cout << "Empty argument of '" << aParam << "'.\n";
+        std::cout << "Empty argument of '" << aParam << "'.\n";
         return 1;
       }
       // search shape with given name
@@ -254,7 +254,7 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
       anIt++;
       if (anIt == theArgsNb)
       {
-        cout << "Empty argument of '" << aParam << "'.\n";
+        std::cout << "Empty argument of '" << aParam << "'.\n";
         return 1;
       }
       aNeedToHideInspector = Draw::Atoi (theArgs[anIt]) == 0;
@@ -262,7 +262,7 @@ static int tinspector (Draw_Interpretor& di, Standard_Integer theArgsNb, const c
     }
     else
     {
-      cout << "Wrong argument of command: " << aParam.ToCString() << "\n";
+      std::cout << "Wrong argument of command: " << aParam.ToCString() << "\n";
       return 1;
     }
   }

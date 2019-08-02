@@ -315,12 +315,12 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const Standard_Integer I,const To
                     TopOpeBRepTool_ShapeTool::Closed(E,F);
 
 #ifdef OCCT_DEBUG
-  if (closingedge) OS<<"on closing edge "; else OS<<"on edge "; TopAbs::Print(O,cout);
-  cout<<" of "<<I<<" : par : "<<Epar<<endl;
+  if (closingedge) OS<<"on closing edge "; else OS<<"on edge "; TopAbs::Print(O,std::cout);
+  std::cout<<" of "<<I<<" : par : "<<Epar<<std::endl;
   TopOpeBRep_FFTransitionTool::ProcessLineTransition(*this,I,O);
   OS<<"line transition ";
-  if (closingedge) OS<<"on closing edge "; else OS<<"on edge "; TopAbs::Print(O,cout);
-  OS<<" of "<<I<<endl;
+  if (closingedge) OS<<"on closing edge "; else OS<<"on edge "; TopAbs::Print(O,std::cout);
+  OS<<" of "<<I<<std::endl;
 #endif
   
   return OS;
@@ -338,15 +338,15 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face& FF1,const Topo
   OS<<"VP "<<myIndex<<" on "<<myShapeIndex<<" :";
   Standard_Real Cpar = ParameterOnLine(); OS<<" on curve : "<<Cpar; 
   if (!myKeep) OS<<" NOT kept";
-  OS<<endl;
+  OS<<std::endl;
   const gp_Pnt& P = Value(); 
   OS<<PRODINP<<"P"<<myIndex<<" "; OS<<P.X()<<" "<<P.Y()<<" "<<P.Z();
-  OS<<"; #draw"<<endl;
+  OS<<"; #draw"<<std::endl;
    
-  if (IsVertexOnS1()) { OS<<"is vertex of 1"<<endl; }
-  if (IsVertexOnS2()) { OS<<"is vertex of 2"<<endl; }
-  if (IsMultiple())   { OS<<"is multiple"<<endl; }
-  if (IsInternal())   { OS<<"is internal"<<endl; }
+  if (IsVertexOnS1()) { OS<<"is vertex of 1"<<std::endl; }
+  if (IsVertexOnS2()) { OS<<"is vertex of 2"<<std::endl; }
+  if (IsMultiple())   { OS<<"is multiple"<<std::endl; }
+  if (IsInternal())   { OS<<"is internal"<<std::endl; }
 
   if      (myShapeIndex == 1) { 
     Dump(1,F1,OS); 

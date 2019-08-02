@@ -133,13 +133,13 @@ void  IGESDimen_ToolGeneralLabel::OwnDump
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_GeneralLabel" << endl;
+  S << "IGESDimen_GeneralLabel" << Message_EndLine;
   S << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
-  S << "Number of Leaders : " << ent->NbLeaders() << endl;
+  S << Message_EndLine;
+  S << "Number of Leaders : " << ent->NbLeaders() << Message_EndLine;
   S << "Leaders : "; 
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbLeaders(),ent->Leader);
-  S << endl;
+  S << Message_EndLine;
 }
 

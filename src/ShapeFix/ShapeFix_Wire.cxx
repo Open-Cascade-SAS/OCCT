@@ -608,7 +608,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
 	  }
 	  if ( seq.Length() >0 ) { // supposed that edge is SP
 #ifdef OCCT_DEBUG
-	    cout << "Edge going over singularity detected; splitted" << endl;
+	    std::cout << "Edge going over singularity detected; splitted" << std::endl;
 #endif
       Standard_Boolean isFwd = ( E.Orientation() == TopAbs_FORWARD );
       E.Orientation ( TopAbs_FORWARD );
@@ -723,7 +723,7 @@ Standard_Boolean ShapeFix_Wire::FixEdgeCurves()
 	myFixEdge->FixAddPCurve ( sbwd->Edge(overdegen), face, sbwd->IsSeam(overdegen), myAnalyzer->Surface(), Precision());
       }
 #ifdef OCCT_DEBUG
-      cout << "Edge going over singularity detected; pcurve adjusted" << endl;
+      std::cout << "Edge going over singularity detected; pcurve adjusted" << std::endl;
 #endif
     }
   }
@@ -960,7 +960,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
         num = ( myClosedMode ? 1 : 2 );
         nb = sbwd->NbEdges();
 #ifdef OCCT_DEBUG
-        cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Edge removed" << endl;
+        std::cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Edge removed" << std::endl;
 #endif
       }
       else
@@ -996,8 +996,8 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
     }
 #ifdef OCCT_DEBUG
     if (StatusSelfIntersection (ShapeExtend_DONE5))
-      cout<<"Warning: ShapeFix_Wire::FixIntersection: Non-adjacent intersection fixed (split-"
-        <<NbSplit<<", cut-"<<NbCut<<", removed-"<<NbRemoved<<")"<<endl;
+      std::cout<<"Warning: ShapeFix_Wire::FixIntersection: Non-adjacent intersection fixed (split-"
+        <<NbSplit<<", cut-"<<NbCut<<", removed-"<<NbRemoved<<")"<<std::endl;
 #endif	  
 
 /*
@@ -1043,7 +1043,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersection()
       myStatusSelfIntersection |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );
 #ifdef OCCT_DEBUG
     if (StatusSelfIntersection (ShapeExtend_DONE5))
-      cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Non ajacent intersection fixed" << endl;
+      std::cout << "Warning: ShapeFix_Wire::FixSelfIntersection: Non ajacent intersection fixed" << std::endl;
 #endif	  
 */
   }
@@ -1388,7 +1388,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
       VRange = aBaseCrv->Period();
       IsVCrvClosed = Standard_True;
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeFix_Wire::FixShifted set vclosed True for Surface of Revolution" << endl;
+      std::cout << "Warning: ShapeFix_Wire::FixShifted set vclosed True for Surface of Revolution" << std::endl;
 #endif
     }
   }
@@ -1572,7 +1572,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
             }
             myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
 #ifdef OCCT_DEBUG
-            cout << "Info: ShapeFix_Wire::FixShifted(): bi - meridian case fixed" << endl;
+            std::cout << "Info: ShapeFix_Wire::FixShifted(): bi - meridian case fixed" << std::endl;
 #endif
             continue;
           }
@@ -1869,14 +1869,14 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
     return Standard_False;
 
 #ifdef OCCT_DEBUG
-  cout << "Cut Loop: params (" << t1 << ", " << t2;
+  std::cout << "Cut Loop: params (" << t1 << ", " << t2;
 #endif
   GeomAdaptor_Curve GAC ( crv, f, l );
   Standard_Real dt = tolfact * GAC.Resolution(prec);
   t1 -= dt; //1e-3;//::Precision::PConfusion();
   t2 += dt; //1e-3;//::Precision::PConfusion();
 #ifdef OCCT_DEBUG
-  cout << ") -> (" << t1 << ", " << t2 << ")" << endl;
+  std::cout << ") -> (" << t1 << ", " << t2 << ")" << std::endl;
 #endif
       
   if ( t1 <= a || t2 >= b ) { // should not be so, but to be sure ..
@@ -1946,7 +1946,7 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
   
     Standard_Real tol = BRep_Tool::Tolerance ( E );
 #ifdef OCCT_DEBUG
-    cout << "Cut Loop: tol orig " << tol << ", prec " << prec << ", new tol " << newtol << endl;
+    std::cout << "Cut Loop: tol orig " << tol << ", prec " << prec << ", new tol " << newtol << std::endl;
 #endif
     if ( newtol > Max ( prec, tol ) ) return Standard_False;
     //:s2  bs = BRep_Tool::CurveOnSurface ( edge, face, a, b );
@@ -2055,7 +2055,7 @@ static Standard_Boolean RemoveLoop (TopoDS_Edge &E, const TopoDS_Face &face,
                                     TopoDS_Edge &E2)
 {
 #ifdef OCCT_DEBUG
-  cout<<"Info: ShapeFix_Wire::FixSelfIntersection : Try insert vertex"<<endl;
+  std::cout<<"Info: ShapeFix_Wire::FixSelfIntersection : Try insert vertex"<<std::endl;
 #endif
 
   if ( BRep_Tool::IsClosed ( E, face ) ) return Standard_False;
@@ -2484,8 +2484,8 @@ Standard_Boolean ShapeFix_Wire::FixIntersectingEdges (const Standard_Integer num
         if ( BRep_Tool::Tolerance(E1) < te1 || BRep_Tool::Tolerance(E2) < te2 )
         {
 #ifdef OCCT_DEBUG
-          cout << "Warning: ShapeFix_Wire::FixIE: edges tolerance increased: (" <<
-            te1 << ", " << te2 << ") / " << newtol << endl;
+          std::cout << "Warning: ShapeFix_Wire::FixIE: edges tolerance increased: (" <<
+            te1 << ", " << te2 << ") / " << newtol << std::endl;
 #endif
 
           // Make copy of edges.
@@ -2915,7 +2915,7 @@ static Standard_Boolean TryBendingPCurve (const TopoDS_Edge &E, const TopoDS_Fac
   }
   catch ( Standard_Failure const& ) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeFix_Wire::FixLacking: Exception in Geom2d_BSplineCurve::Segment()" << endl;
+    std::cout << "Warning: ShapeFix_Wire::FixLacking: Exception in Geom2d_BSplineCurve::Segment()" << std::endl;
 #endif
     return Standard_False;
   }
@@ -3146,7 +3146,7 @@ Standard_Boolean ShapeFix_Wire::FixLacking (const Standard_Integer num,
     if ( doAddDegen ) {
       myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeFix_Wire::FixLacking: degenerated edge added" << endl;
+      std::cout << "Warning: ShapeFix_Wire::FixLacking: degenerated edge added" << std::endl;
 #endif
     }
     else if ( ! doAddLong ) {
@@ -3179,7 +3179,7 @@ Standard_Boolean ShapeFix_Wire::FixLacking (const Standard_Integer num,
     FixSelfIntersectingEdge ( n2 );
     FixIntersectingEdges ( n2 ); //skl 24.04.2003 for OCC58
 #ifdef OCCT_DEBUG
-    cout << "Info: ShapeFix_Wire::FixLacking: Bending pcurves" << endl;
+    std::cout << "Info: ShapeFix_Wire::FixLacking: Bending pcurves" << std::endl;
 #endif
     myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );
   }

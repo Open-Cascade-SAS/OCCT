@@ -48,7 +48,7 @@ void math_Jacobi::Dump(Standard_OStream& o) const {
   o <<"math_Jacobi ";
    if (Done) {
      o << " Status = Done \n";
-     o << " The eigenvalues vector is: " << EigenValues << endl;
+     o << " The eigenvalues vector is: " << EigenValues << std::endl;
    }
    else {
      o << "Status = not Done \n";

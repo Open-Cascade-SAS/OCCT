@@ -68,7 +68,7 @@ public:
   //! (it.Initialize(aLabel,Standard_True);
   //! it.More(); it.Next()){
   //! TDF_Tool::Entry(it.Value(),es);
-  //! cout << as.ToCString() << endl;
+  //! std::cout << as.ToCString() << std::endl;
   //! }
   //! }
   Standard_EXPORT void Initialize (const TDF_Label& aLabel, const Standard_Boolean allLevels = Standard_False);

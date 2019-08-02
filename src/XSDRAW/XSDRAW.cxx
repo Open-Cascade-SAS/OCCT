@@ -149,9 +149,9 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
     void  XSDRAW::SetController (const Handle(XSControl_Controller)& control)
 {
   if (thepilot.IsNull()) XSDRAW::LoadSession();
-  if (control.IsNull()) cout<<"XSTEP Controller not defined"<<endl;
+  if (control.IsNull()) std::cout<<"XSTEP Controller not defined"<<std::endl;
   else if (!Session().IsNull()) Session()->SetController (control);
-  else cout<<"XSTEP Session badly or not defined"<<endl;
+  else std::cout<<"XSTEP Session badly or not defined"<<std::endl;
 }
 
 
@@ -236,10 +236,10 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
   Handle(TColStd_HSequenceOfTransient) list;
   if (!first || first[0] == '\0') {
     char ligne[80];  ligne[0] = '\0'; char truc;
-//    cin.clear();  cin.get (ligne,79,'\n');
-    cin >> ligne;  Standard_Size ln = strlen(ligne);
+//    std::cin.clear();  std::cin.get (ligne,79,'\n');
+    std::cin >> ligne;  Standard_Size ln = strlen(ligne);
     char *ff = &ligne[0], *ss = NULL;
-    cin.get(truc);  if (truc != '\n') { cin>>&ligne[ln+1]; ss = &ligne[ln+1]; }
+    std::cin.get(truc);  if (truc != '\n') { std::cin>>&ligne[ln+1]; ss = &ligne[ln+1]; }
     return  XSDRAW::GetList (ff,ss);
   }
 //  return IFSelect_Functions::GiveList (Session(),first,second);
@@ -263,11 +263,11 @@ void XSDRAW::LoadDraw (Draw_Interpretor& theCommands)
 
 Standard_Integer XSDRAW_WHAT (const Handle(Standard_Transient)& ent)
 {
-  if (ent.IsNull()) { cout<<"(Null Handle)"<<endl; return 0; }
+  if (ent.IsNull()) { std::cout<<"(Null Handle)"<<std::endl; return 0; }
   Handle(Interface_InterfaceModel) model = XSDRAW::Model();
-  if (model.IsNull()) { cout<<"(No model)  Type:"<<ent->DynamicType()->Name()<<endl; return 0; }
-  cout<<" Num/Id :";  
+  if (model.IsNull()) { std::cout<<"(No model)  Type:"<<ent->DynamicType()->Name()<<std::endl; return 0; }
+  std::cout<<" Num/Id :";  
   model->Print (ent, Message::DefaultMessenger(), 0);
-  cout<<"  --  Recorded Type:"<<model->TypeName (ent)<<endl;
+  std::cout<<"  --  Recorded Type:"<<model->TypeName (ent)<<std::endl;
   return model->Number(ent);
 }

@@ -247,9 +247,9 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
 
   if (!status) {
 #ifdef OCCT_DEBUG
-    cout<<"** SameParameter not complete. On "<<numedge<<" Edges:";
-    if (nbfail > 0) cout<<"  "<<nbfail<<" Failed";
-    cout<<endl;
+    std::cout<<"** SameParameter not complete. On "<<numedge<<" Edges:";
+    if (nbfail > 0) std::cout<<"  "<<nbfail<<" Failed";
+    std::cout<<std::endl;
 #endif
   }
   return status;

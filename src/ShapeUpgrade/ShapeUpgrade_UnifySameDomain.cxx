@@ -1450,7 +1450,7 @@ static Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& theChain,
     }
     if(NeedUnion) {
 #ifdef OCCT_DEBUG
-      cout<<"can not make analitical union => make approximation"<<endl;
+      std::cout<<"can not make analitical union => make approximation"<<std::endl;
 #endif
       TopoDS_Edge E = GlueEdgesWithPCurves(theChain, VF, VL);
       OutEdge = E;
@@ -1458,7 +1458,7 @@ static Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& theChain,
     }
     else {
 #ifdef OCCT_DEBUG
-      cout<<"can not make approximation for such types of curves"<<endl;
+      std::cout<<"can not make approximation for such types of curves"<<std::endl;
 #endif
       return Standard_False;
     }

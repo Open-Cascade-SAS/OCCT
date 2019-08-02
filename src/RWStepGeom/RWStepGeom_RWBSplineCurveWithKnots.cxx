@@ -254,8 +254,8 @@ void RWStepGeom_RWBSplineCurveWithKnots::Check
   Standard_Integer nbMult = ent->NbKnotMultiplicities();
   Standard_Integer nbKno  = ent->NbKnots();
   Standard_Integer sumMult = 0;
-//  cout << "BSplineCurveWithKnots: nbMult=" << nbMult << " nbKno= " << 
-//    nbKno << " nbCPL= " << nbCPL << " degree= " << dgBSC << endl;
+//  std::cout << "BSplineCurveWithKnots: nbMult=" << nbMult << " nbKno= " << 
+//    nbKno << " nbCPL= " << nbCPL << " degree= " << dgBSC << std::endl;
   if(nbMult != nbKno) {
     ach->AddFail("ERROR: No.of KnotMultiplicities not equal No.of Knots");
   }
@@ -266,8 +266,8 @@ void RWStepGeom_RWBSplineCurveWithKnots::Check
   Standard_Integer sumNonP = nbCPL + dgBSC + 1;
   Standard_Integer mult1 = ent->KnotMultiplicitiesValue(1);
   Standard_Integer multN = ent->KnotMultiplicitiesValue(nbMult);
-//  cout << "BSplineCurveWithKnots: mult1=" << mult1 << " multN= " <<
-//    multN << " sumMult= " << sumMult << endl;
+//  std::cout << "BSplineCurveWithKnots: mult1=" << mult1 << " multN= " <<
+//    multN << " sumMult= " << sumMult << std::endl;
   if((sumMult + multN) == sumNonP) {
   }
   else if((sumMult == nbCPL) && (mult1 == multN)) {

@@ -195,10 +195,10 @@ static Standard_Integer MiniDumpDF (Draw_Interpretor& di,
 
   di<<"*********** Dump of "<<a[1]<<" ***********\n";
 
-  //DDF->DataFramework()->Dump(cout);
+  //DDF->DataFramework()->Dump(std::cout);
   Standard_SStream aSStream;
   DDF->DataFramework()->Dump(aSStream);
-  aSStream << ends;
+  aSStream << std::ends;
   di << aSStream << "\n";
   
   return 0;
@@ -237,7 +237,7 @@ static Standard_Integer XDumpDF (Draw_Interpretor& di,
   //TDF_Tool::ExtendedDeepDump(cout,DDF->DataFramework(),filter);
   Standard_SStream aSStream;
   TDF_Tool::ExtendedDeepDump(aSStream,DDF->DataFramework(),filter);
-  aSStream << ends;
+  aSStream << std::ends;
   di << aSStream <<"\n";
   
   return 0;
@@ -293,30 +293,30 @@ static Standard_Integer  DDF_CheckAttrs (Draw_Interpretor& di,Standard_Integer n
     Standard_Boolean Shar = Standard_False;
     for (TDF_AttributeIterator itr(SOURCE); itr.More(); itr.Next()) {
       itr.Value()->References(ds1);
-//      cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<endl;
+//      std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<std::endl;
       const TDF_AttributeMap& attMap = ds1->Attributes(); //attMap
       for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More(); attMItr.Next()) {
 	Handle(TDF_Attribute) sAtt = attMItr.Key();
-//	cout<<"\t\tSource references attribute dynamic type = "<<sAtt->DynamicType()<<endl;
+//	std::cout<<"\t\tSource references attribute dynamic type = "<<sAtt->DynamicType()<<std::endl;
 	for (TDF_AttributeIterator itr2(TARGET); itr2.More(); itr2.Next()) {
 	  itr2.Value()->References(ds2);
-//	  cout<<"\t\t\tTARGET attribute dynamic type = "<<itr2.Value()->DynamicType()<<endl;
+//	  std::cout<<"\t\t\tTARGET attribute dynamic type = "<<itr2.Value()->DynamicType()<<std::endl;
 	  const TDF_AttributeMap& attMap2 = ds2->Attributes(); //attMap
 	  for (TDF_MapIteratorOfAttributeMap attMItr2(attMap2);attMItr2.More(); attMItr2.Next()) {
 	    Handle(TDF_Attribute) tAtt = attMItr2.Key();
-//	    cout<<"\t\t\t\tTarget reference attribute dynamic type = "<<tAtt->DynamicType()<<endl;
+//	    std::cout<<"\t\t\t\tTarget reference attribute dynamic type = "<<tAtt->DynamicType()<<std::endl;
 	    if (tAtt->IsInstance(sAtt->DynamicType()))
 	      if(tAtt == sAtt) {
 		TCollection_AsciiString entr1,entr2;
 		if(!Shar) {
 		  TDF_Tool::Entry(SOURCE, entr1);  
 		  TDF_Tool::Entry(TARGET, entr2);
-		  //cout<<"\tSHAREABLE attribute(s) found between Lab1 = "<<entr1<<" and Lab2 = "<<entr2<<endl;
+		  //std::cout<<"\tSHAREABLE attribute(s) found between Lab1 = "<<entr1<<" and Lab2 = "<<entr2<<std::endl;
 		  di<<"\tSHAREABLE attribute(s) found between Lab1 = "<<entr1.ToCString()<<" and Lab2 = "<<entr2.ToCString()<<"\n";
 		  Shar = Standard_True;
 		}
 		TDF_Tool::Entry(sAtt->Label(), entr1);
-		//cout<<"\tAttribute dynamic type = "<<sAtt->DynamicType()<<",\tlocated on Label = "<<entr1<<endl;
+		//std::cout<<"\tAttribute dynamic type = "<<sAtt->DynamicType()<<",\tlocated on Label = "<<entr1<<std::endl;
 		di<<"\tAttribute dynamic type = " << sAtt->DynamicType()->Name();
 		di<<",\tlocated on Label = "<<entr1.ToCString()<<"\n";
 	      }
@@ -351,14 +351,14 @@ static Standard_Integer  DDF_CheckLabel (Draw_Interpretor& di,Standard_Integer n
     Handle(TDF_DataSet) ds1 = new TDF_DataSet();
     for (TDF_AttributeIterator itr(SOURCE); itr.More(); itr.Next()) {
       itr.Value()->References(ds1);
-      //cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<endl;
+      //std::cout<<"\tSource Attribute dynamic type = "<<itr.Value()->DynamicType()<<std::endl;
       di<<"\tSource Attribute dynamic type = " << itr.Value()->DynamicType()->Name() << "\n";
       const TDF_AttributeMap& attMap = ds1->Attributes(); //attMap
       for (TDF_MapIteratorOfAttributeMap attMItr(attMap);attMItr.More(); attMItr.Next()) {
 	Handle(TDF_Attribute) sAtt = attMItr.Key();
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(sAtt->Label(), entry);
-	//cout<<"\t\tReferences attribute dynamic type = "<<sAtt->DynamicType()<<",\tLabel = "<<entry<<endl;
+	//std::cout<<"\t\tReferences attribute dynamic type = "<<sAtt->DynamicType()<<",\tLabel = "<<entry<<std::endl;
 	di<<"\t\tReferences attribute dynamic type = " << sAtt->DynamicType()->Name();
 	di<<",\tLabel = "<<entry.ToCString()<<"\n";
       }

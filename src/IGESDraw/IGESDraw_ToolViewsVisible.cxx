@@ -229,15 +229,15 @@ void IGESDraw_ToolViewsVisible::OwnDump
   (const Handle(IGESDraw_ViewsVisible)& ent, const IGESData_IGESDumper& dumper,
   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
-  S << "IGESDraw_ViewsVisible" << endl;
+  S << "IGESDraw_ViewsVisible" << Message_EndLine;
 
   S << "Views Visible : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbViews(),ent->ViewItem);
-  S << endl;
+  S << Message_EndLine;
   S << "Entities Displayed : ";
   IGESData_DumpEntities
     (S,dumper ,level,1, ent->NbDisplayedEntities(),ent->DisplayedEntity);
-  S << endl;
+  S << Message_EndLine;
 }
 
 Standard_Boolean  IGESDraw_ToolViewsVisible::OwnCorrect

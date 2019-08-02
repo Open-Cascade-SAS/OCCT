@@ -133,18 +133,18 @@ void  IGESAppli_ToolPartNumber::OwnDump
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
   //Standard_Integer sublevel = (level > 4) ? 1 : 0; //szv#4:S4163:12Mar99 unused
-  S << "IGESAppli_PartNumber" << endl;
-  S << "Number of property values : " << ent->NbPropertyValues() << endl;
+  S << "IGESAppli_PartNumber" << Message_EndLine;
+  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "Generic  Number or Name : ";
   IGESData_DumpString(S,ent->GenericNumber());
-  S << endl;
+  S << Message_EndLine;
   S << "Military Number or Name : ";
   IGESData_DumpString(S,ent->MilitaryNumber());
-  S << endl;
+  S << Message_EndLine;
   S << "Vendor   Number or Name : ";
   IGESData_DumpString(S,ent->VendorNumber());
-  S << endl;
+  S << Message_EndLine;
   S << "Internal Number or Name : ";
   IGESData_DumpString(S,ent->InternalNumber());
-  S << endl;
+  S << Message_EndLine;
 }

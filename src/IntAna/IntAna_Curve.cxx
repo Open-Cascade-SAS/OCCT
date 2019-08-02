@@ -517,7 +517,7 @@ void IntAna_Curve::FindParameter(const gp_Pnt& theP,
 gp_Pnt IntAna_Curve::InternalValue(const Standard_Real U,
                                    const Standard_Real _V) const
 {
-  //-- cout<<" ["<<U<<","<<V<<"]";
+  //-- std::cout<<" ["<<U<<","<<V<<"]";
   Standard_Real V = _V;
   if(V > 100000.0 )   {   V= 100000.0; }       
   if(V < -100000.0 )  {   V=-100000.0; }      

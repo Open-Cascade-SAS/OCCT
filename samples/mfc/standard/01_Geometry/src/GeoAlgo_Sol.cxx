@@ -80,7 +80,7 @@ void GeoAlgo_Sol::Build(const TColgp_SequenceOfXYZ& seqOfXYZ)
 
   //Filling plate
   Plate_Plate myPlate;
-  cout<<"  * Nunber of points  = "<< nbPnt << endl;
+  std::cout<<"  * Nunber of points  = "<< nbPnt << std::endl;
   for (i=1; i<= nbPnt; i++) {
     gp_Pnt ptProj(seqOfXYZ.Value(i).X(), seqOfXYZ.Value(i).Y(), 0. );
     gp_Vec aVec( ptProj, seqOfXYZ.Value(i));
@@ -90,7 +90,7 @@ void GeoAlgo_Sol::Build(const TColgp_SequenceOfXYZ& seqOfXYZ)
   }
   myPlate.SolveTI(2, 1.);// resolution 
   if (!myPlate.IsDone()) {
-    cout<<" plate computation has failed"<< endl;
+    std::cout<<" plate computation has failed"<< std::endl;
     myIsDone=Standard_False;
   }
 
@@ -144,11 +144,11 @@ Handle(Geom_BSplineSurface) GeoAlgo_Sol::Read(const Standard_CString aGroundName
   Standard_Integer nbPnt=0;
 
   // Read points from the file
-  filebuf fic;
-  istream in(&fic);
+  std::filebuf fic;
+  std::istream in(&fic);
 
-  if (!fic.open(aGroundName,ios::in)){
-    cout << " impossible to open a file : "<<aGroundName<<endl;
+  if (!fic.open(aGroundName,std::ios::in)){
+    std::cout << " impossible to open a file : "<<aGroundName<<std::endl;
     myIsDone = Standard_False;
     return 0;
   }

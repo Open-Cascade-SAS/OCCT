@@ -90,7 +90,7 @@ Standard_Boolean ChFiKPart_Sphere(TopOpeBRepDS_DataStructure& DStr,
     dz = gp_Dir(gp_Vec(p1,cen));
     if(Abs(ds1.Dot(dz)-1.)>ptol){
 #ifdef OCCT_DEBUG
-      cout<<"center of the spherical corner not found"<<endl;
+      std::cout<<"center of the spherical corner not found"<<std::endl;
 #endif
       return Standard_False;
     }

@@ -137,7 +137,7 @@ static void TraceRevol(const Standard_Real t,
   
   // Surface de revolution
   Handle (Geom_Surface) Revol = new(Geom_SurfaceOfRevolution) (S, Ax);
-  cout << "Surf Revol at parameter t = " << t << endl;
+  std::cout << "Surf Revol at parameter t = " << t << std::endl;
 
 #if DRAW
   Standard_CString aName = "TheRevol" ;
@@ -350,7 +350,7 @@ static void InGoodPeriod(const Standard_Real Prec,
     
     if (!DistMini.IsDone() || DistMini.NbExt() == 0) {
 #ifdef OCCT_DEBUG
-      cout <<"LocationGuide : Pas d'intersection"<<endl;
+      std::cout <<"LocationGuide : Pas d'intersection"<<std::endl;
       TraceRevol(t, U, myLaw, mySec, myCurve, Trans);
 #endif 
       Standard_Boolean SOS=Standard_False;
@@ -369,7 +369,7 @@ static void InGoodPeriod(const Standard_Real Prec,
         if (Result.IsDone() && 
           (Result.FunctionSetErrors().Norm() < TolRes(1)*TolRes(1)) ) {
 #ifdef OCCT_DEBUG
-            cout << "Ratrappage Reussi !" << endl;
+            std::cout << "Ratrappage Reussi !" << std::endl;
 #endif
             SOS = Standard_True;
             math_Vector RR(1,3);
@@ -380,7 +380,7 @@ static void InGoodPeriod(const Standard_Real Prec,
         }
         else {
 #ifdef OCCT_DEBUG
-          cout << "Echec du Ratrappage !" << endl;
+          std::cout << "Echec du Ratrappage !" << std::endl;
 #endif
         }
       }
@@ -427,8 +427,8 @@ static void InGoodPeriod(const Standard_Real Prec,
       
 #ifdef OCCT_DEBUG
       if (Abs(Diff) > DeltaG) {
-	cout << "Location :: Diff on Guide : " << 
-	  Diff << endl;
+	std::cout << "Location :: Diff on Guide : " << 
+	  Diff << std::endl;
       }
 #endif
     }
@@ -443,7 +443,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 	}
 #ifdef OCCT_DEBUG
       if (Abs(Diff) > M_PI/4) {
-	cout << "Diff d'angle trop grand !!" << endl;
+	std::cout << "Diff d'angle trop grand !!" << std::endl;
       } 
 #endif
     }
@@ -459,7 +459,7 @@ static void InGoodPeriod(const Standard_Real Prec,
       Diff = v -  myPoles2d->Value(2, ii-1).Y();
 #ifdef OCCT_DEBUG
       if (Abs(Diff) > (Ul-Uf)/(2+NbKnots)) {
-	cout << "Diff sur section trop grand !!" << endl;
+	std::cout << "Diff sur section trop grand !!" << std::endl;
       } 
 #endif
     }
@@ -637,7 +637,7 @@ static void InGoodPeriod(const Standard_Real Prec,
     }
     else {
 #ifdef OCCT_DEBUG
-      cout << "LocationGuide::D0 : No Result !"<<endl;
+      std::cout << "LocationGuide::D0 : No Result !"<<std::endl;
       TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
 	myStatus = GeomFill_ImpossibleContact;
@@ -710,7 +710,7 @@ static void InGoodPeriod(const Standard_Real Prec,
     else {
 #ifdef OCCT_DEBUG
       Standard_Real U = myFirstS + ratio*(Param-myCurve->FirstParameter());
-      cout << "LocationGuide::D0 : No Result !"<<endl;
+      std::cout << "LocationGuide::D0 : No Result !"<<std::endl;
       TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
       myStatus = GeomFill_ImpossibleContact;
@@ -808,8 +808,8 @@ static void InGoodPeriod(const Standard_Real Prec,
 	    }//if
 	  else {
 #ifdef OCCT_DEBUG
-	    cout << "DEDX = " << DEDX << endl;
-	    cout << "DEDT = " << DEDT << endl;
+	    std::cout << "DEDX = " << DEDX << std::endl;
+	    std::cout << "DEDT = " << DEDT << std::endl;
 #endif
 	    throw Standard_ConstructionError(
 	     "LocationGuide::D1 : No Result dans la derivee");
@@ -872,7 +872,7 @@ static void InGoodPeriod(const Standard_Real Prec,
 
       else {
 #ifdef OCCT_DEBUG
-	cout << "LocationGuide::D1 : No Result !!"<<endl;
+	std::cout << "LocationGuide::D1 : No Result !!"<<std::endl;
 	TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
 	myStatus = GeomFill_ImpossibleContact;
@@ -972,7 +972,7 @@ Standard_Boolean GeomFill_LocationGuide::D2(const Standard_Real Param,
 	      //gp_Vec2d dp (DSDT(2), DSDT(3));    // surface
 	      //DPoles2d.SetValue(1, dp);
 	    }//if
-	  else cout <<"LocationGuide::D2 : No Result dans la derivee premiere"<<endl;
+	  else std::cout <<"LocationGuide::D2 : No Result dans la derivee premiere"<<std::endl;
 
 	  // deuxieme derivee
 	  GeomFill_Tensor D2EDX2(3,3,3);
@@ -1003,7 +1003,7 @@ Standard_Boolean GeomFill_LocationGuide::D2(const Standard_Real Param,
 	      //D2Poles2d.SetValue(1, d2p);
 	    }//if
 	  else {
-           cout <<"LocationGuide::D2 : No Result dans la derivee seconde"<<endl;
+           std::cout <<"LocationGuide::D2 : No Result dans la derivee seconde"<<std::endl;
 	   myStatus = GeomFill_ImpossibleContact;
 	   }
 
@@ -1123,7 +1123,7 @@ Standard_Boolean GeomFill_LocationGuide::D2(const Standard_Real Param,
 	}//if_result
       else {
 #ifdef OCCT_DEBUG
-	cout << "LocationGuide::D2 : No Result !!" <<endl;
+	std::cout << "LocationGuide::D2 : No Result !!" <<std::endl;
 	TraceRevol(Param, U, myLaw, mySec, myCurve, Trans);
 #endif
 	return Standard_False;

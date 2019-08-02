@@ -51,7 +51,7 @@ public:
 	   Standard_OStream& OS);
 private: 
   TCollection_AsciiString mybrep1,mybrep2,myfilename;
-  filebuf myfilebuf;
+  std::filebuf myfilebuf;
   Standard_Boolean myopen;
 };
 

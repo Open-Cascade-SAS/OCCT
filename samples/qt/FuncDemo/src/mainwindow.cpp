@@ -214,7 +214,7 @@ void MainWindow::compute()
     }
 
     aTimer.Show(seconds, minutes, hours, CPUTime);
-    cout << "Execution of "<<graph->getNbThreads()<< " threads took          " << hours << " hours, " << minutes << " minutes, " << seconds << " seconds" << endl;
+    std::cout << "Execution of "<<graph->getNbThreads()<< " threads took          " << hours << " hours, " << minutes << " minutes, " << seconds << " seconds" << std::endl;
 
     // Redraw the nodes (change their colour).            
     redrawGraph();

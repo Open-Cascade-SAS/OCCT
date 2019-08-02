@@ -208,7 +208,7 @@ void TopOpeBRepBuild_Area2dBuilder::InitAreaBuilder
     if ( myArea.IsEmpty() )  {
 #ifdef OCCT_DEBUG
       if (TopOpeBRepBuild_GettraceAREA())
-	cout<<"---"<<endl<<"--- purge"<<endl<<"---"<<endl;
+	std::cout<<"---"<<std::endl<<"--- purge"<<std::endl<<"---"<<std::endl;
 #endif
       TopOpeBRepBuild_ListOfLoop newArea3;
       newArea3.Append(boundaryloops);

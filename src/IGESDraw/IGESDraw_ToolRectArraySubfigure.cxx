@@ -178,23 +178,23 @@ void IGESDraw_ToolRectArraySubfigure::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_RectArraySubfigure" << endl;
+  S << "IGESDraw_RectArraySubfigure" << Message_EndLine;
 
   S << "Base Entity : ";
   dumper.Dump(ent->BaseEntity(),S, tempSubLevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Scale Factor : " << ent->ScaleFactor() << "  ";
   S << "Lower Left Corner Of Array : ";
   IGESData_DumpXYZL(S,level, ent->LowerLeftCorner(),gp_GTrsf()); // no location
   S << "Number Of Columns : " << ent->NbColumns()   << "  ";
-  S << "Number Of Rows    : " << ent->NbRows()      << endl;
-  S << "Horizontal Distance Between Columns : " << ent->ColumnSeparation()<<endl;
-  S << "Vertical Distance Between Rows      : " << ent->RowSeparation() <<endl;
-  S << "Rotation Angle (in radians)         : " << ent->RotationAngle() <<endl;
+  S << "Number Of Rows    : " << ent->NbRows()      << Message_EndLine;
+  S << "Horizontal Distance Between Columns : " << ent->ColumnSeparation()<<Message_EndLine;
+  S << "Vertical Distance Between Rows      : " << ent->RowSeparation() <<Message_EndLine;
+  S << "Rotation Angle (in radians)         : " << ent->RotationAngle() <<Message_EndLine;
   S << "Do-Dont Flag : ";
   if (ent->DoDontFlag()) S << "(1)Dont  ";
   else                   S << "(0)Do  ";
   S << "Do-Dont List : ";
   IGESData_DumpVals(S ,level,1, ent->ListCount(),ent->ListPosition);
-  S << endl;
+  S << Message_EndLine;
 }

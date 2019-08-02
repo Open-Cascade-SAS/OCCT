@@ -151,13 +151,13 @@ void IGESGeom_ToolOffsetSurface::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_OffsetSurface" << endl;
+  S << "IGESGeom_OffsetSurface" << Message_EndLine;
 
   S << "Offset Indicator     : ";
   IGESData_DumpXYZL(S,level, ent->OffsetIndicator(), ent->VectorLocation());
-  S << endl;
+  S << Message_EndLine;
   S << "Offset Distance      : " << ent->Distance() << "  ";
   S << "Surface to be offset : ";
   dumper.Dump(ent->Surface(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
 }

@@ -175,7 +175,7 @@ static Standard_Integer DDataStd_DrawDisplay (Draw_Interpretor& di,
 //     DDataStd_DrawPresentation::Display(L,Standard_True);
 //     return 0;
 //   }
-//   cout << "DDataStd_DrawRedisplay : Error" << endl;
+//   std::cout << "DDataStd_DrawRedisplay : Error" << std::endl;
 //   return 1;
 // }
 

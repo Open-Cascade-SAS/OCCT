@@ -747,7 +747,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
 
 #ifdef DRAW
   if (AffichEdge) {
-    cout << " End Construction of geometric primitives"<<endl;
+    std::cout << " End Construction of geometric primitives"<<std::endl;
   }
 #endif
 
@@ -1056,7 +1056,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
 
 #ifdef DRAW
   if (AffichEdge) {
-    cout << " End of Construction of edges and vertices on bissectrices"<<endl;
+    std::cout << " End of Construction of edges and vertices on bissectrices"<<std::endl;
   }
 #endif
 
@@ -1169,7 +1169,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
 
 #ifdef DRAW
   if (AffichEdge) {
-    cout <<" End Construction of parallel edges "<<endl;
+    std::cout <<" End Construction of parallel edges "<<std::endl;
   }
 #endif
 
@@ -1240,7 +1240,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
 
 #ifdef DRAW  
   if (AffichEdge) {	  
-    cout <<" End of construction of an elementary volevo."<<endl;	    
+    std::cout <<" End of construction of an elementary volevo."<<std::endl;	    
     char name[100];
     sprintf(name,"VEVO_%d",++NbVEVOS);	
     DBRep::Set(name,myShape);
@@ -2598,8 +2598,8 @@ void TrimFace(const TopoDS_Face&              Face,
   Standard_Integer NB = TheEdges.Length();
   if ( AffichEdge) {
     char name[100];
-    cout << " TrimFace " << ++NbTRIMFACES;
-    cout << " : " << NB << " edges within the restriction" << endl;
+    std::cout << " TrimFace " << ++NbTRIMFACES;
+    std::cout << " : " << NB << " edges within the restriction" << std::endl;
     for ( Standard_Integer j = 1; j <= NB; j++) {
       sprintf(name,"TRIMEDGE_%d_%d",NbTRIMFACES,j);
       DBRep::Set(name,TopoDS::Edge(TheEdges.Value(j)));

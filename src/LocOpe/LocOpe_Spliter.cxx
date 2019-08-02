@@ -292,7 +292,7 @@ void LocOpe_Spliter::Perform(const Handle(LocOpe_WiresOnShape)& PW)
     }
     else {
 #ifdef OCCT_DEBUG
-      cout << "Pb pour substitution" << endl;
+      std::cout << "Pb pour substitution" << std::endl;
 #endif
     }
   }

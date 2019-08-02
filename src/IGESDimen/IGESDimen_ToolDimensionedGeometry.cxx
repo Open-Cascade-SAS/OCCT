@@ -149,16 +149,16 @@ void  IGESDimen_ToolDimensionedGeometry::OwnDump
   (const Handle(IGESDimen_DimensionedGeometry)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)&  S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_DimensionedGeometry" << endl;
+  S << "IGESDimen_DimensionedGeometry" << Message_EndLine;
 
   //Standard_Integer lower = 1; //szv#4:S4163:12Mar99 unused
 //  Standard_Integer upper = ent->NbGeometryEntities();
 
-  S << "Number of Dimensions : " << ent->NbDimensions() << endl;
+  S << "Number of Dimensions : " << ent->NbDimensions() << Message_EndLine;
   S << "Dimension Entity : ";
   dumper.Dump(ent->DimensionEntity(),S,(level <= 4) ? 0 : 1);
-  S << endl;
+  S << Message_EndLine;
   S << "Geometry Entities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbGeometryEntities(),ent->GeometryEntity);
-  S << endl;
+  S << Message_EndLine;
 }

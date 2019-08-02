@@ -82,8 +82,8 @@ Standard_Boolean ShapeUpgrade_FixSmallBezierCurves::Approx(Handle(Geom_Curve)& C
     }
     catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeUpgrade_FixSmallBezierCurve::Approx(): Exception in Segment      :";
-      anException.Print(cout); cout << endl;
+      std::cout << "Warning: ShapeUpgrade_FixSmallBezierCurve::Approx(): Exception in Segment      :";
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       return Standard_False;
@@ -119,8 +119,8 @@ Standard_Boolean ShapeUpgrade_FixSmallBezierCurves::Approx(Handle(Geom_Curve)& C
     }
     catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeUpgrade_FixSmallBezierCurve::Approx(): Exception in Segment      :";
-      anException.Print(cout); cout << endl;
+      std::cout << "Warning: ShapeUpgrade_FixSmallBezierCurve::Approx(): Exception in Segment      :";
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       return Standard_False;
@@ -157,8 +157,8 @@ Standard_Boolean ShapeUpgrade_FixSmallBezierCurves::Approx(Handle(Geom_Curve)& C
       }
       catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	  cout << "Warning: ShapeUpgrade_FixSmallBezierCurve::Approx(): Exception in Segment      :";
-	  anException.Print(cout); cout << endl;
+	  std::cout << "Warning: ShapeUpgrade_FixSmallBezierCurve::Approx(): Exception in Segment      :";
+	  anException.Print(std::cout); std::cout << std::endl;
 #endif
 	  (void)anException;
 	  return Standard_False;

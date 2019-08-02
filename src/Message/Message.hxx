@@ -48,7 +48,7 @@ public:
   
   //! Defines default messenger for OCCT applications.
   //! This is global static instance of the messenger.
-  //! By default, it contains single printer directed to cout.
+  //! By default, it contains single printer directed to std::cout.
   //! It can be customized according to the application needs.
   Standard_EXPORT static const Handle(Message_Messenger)& DefaultMessenger();
   

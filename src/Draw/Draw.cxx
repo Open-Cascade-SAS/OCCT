@@ -64,9 +64,9 @@ static const char* ColorNames[MAXCOLOR] = {
   "Maroon","Orange","Pink","Salmon","Violet","Yellow","Khaki","Coral"
   };
 
-filebuf Draw_Spyfile;
+std::filebuf Draw_Spyfile;
 
-static ostream spystream(&Draw_Spyfile);
+static std::ostream spystream(&Draw_Spyfile);
 
 static Handle(Draw_ProgressIndicator) PInd = NULL;
 
@@ -393,7 +393,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 #endif
   else
   {
-    cout << "DRAW is running in batch mode" << endl;
+    std::cout << "DRAW is running in batch mode" << std::endl;
     theCommands.Init();
     Tcl_Init(theCommands.Interp());
   }
@@ -413,7 +413,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   // *****************************************************************
   // set maximum precision for cout
   // *****************************************************************
-  cout.precision(15);
+  std::cout.precision(15);
 
   // *****************************************************************
   // standard commands
@@ -486,8 +486,8 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
 #ifdef _WIN32
       ReadInitFile ("ddefault");
 #else
-      cout << " the CASROOT variable is mandatory to Run OpenCascade "<< endl;
-      cout << "No default file" << endl;
+      std::cout << " the CASROOT variable is mandatory to Run OpenCascade "<< std::endl;
+      std::cout << "No default file" << std::endl;
 #endif
     }
   }
@@ -545,8 +545,8 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     char cmd[MAXCMD];
     for (int ncmd = 1;; ++ncmd)
     {
-      cout << "Draw[" << ncmd << "]> ";
-      if (cin.getline (cmd, MAXCMD).fail())
+      std::cout << "Draw[" << ncmd << "]> ";
+      if (std::cin.getline (cmd, MAXCMD).fail())
       {
         break;
       }
@@ -654,7 +654,7 @@ Standard_Integer Tcl_AppInit (Tcl_Interp *)
 Standard_Integer  Draw_Call (char *c)
 {
    Standard_Integer r = theCommands.Eval(c);
-   cout << theCommands.Result() << endl;
+   std::cout << theCommands.Result() << std::endl;
    return r;
 }
 
@@ -676,8 +676,8 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
 
     if(!aPluginResource->Find(theKey.ToCString())) {
       Standard_SStream aMsg; aMsg << "Could not find the resource:";
-      aMsg << theKey.ToCString()<< endl;
-      cout << "could not find the resource:"<<theKey.ToCString()<< endl;
+      aMsg << theKey.ToCString()<< std::endl;
+      std::cout << "could not find the resource:"<<theKey.ToCString()<< std::endl;
       throw Draw_Failure(aMsg.str().c_str());
     }
 
@@ -703,7 +703,7 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
       aMsg << "; reason: ";
       aMsg << error.ToCString();
 #ifdef OCCT_DEBUG
-      cout << "could not open: "  << aPluginResource->Value(theKey.ToCString())<< " ; reason: "<< error.ToCString() << endl;
+      std::cout << "could not open: "  << aPluginResource->Value(theKey.ToCString())<< " ; reason: "<< error.ToCString() << std::endl;
 #endif
       throw Draw_Failure(aMsg.str().c_str());
     }

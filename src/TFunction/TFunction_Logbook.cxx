@@ -300,24 +300,24 @@ Standard_OStream& TFunction_Logbook::Dump(Standard_OStream& stream) const
   TDF_MapIteratorOfLabelMap itr;
   TCollection_AsciiString as;
   
-  stream<<"Done = "<<isDone<<endl;
-  stream<<"Touched labels: "<<endl;
+  stream<<"Done = "<<isDone<<std::endl;
+  stream<<"Touched labels: "<<std::endl;
   for (itr.Initialize(myTouched); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream<<as<<endl;
+    stream<<as<<std::endl;
   }
-  stream<<"Impacted labels: "<<endl;
+  stream<<"Impacted labels: "<<std::endl;
   for (itr.Initialize(myImpacted); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream<<as<<endl;
+    stream<<as<<std::endl;
   }  
-  stream<<"Valid labels: "<<endl;
+  stream<<"Valid labels: "<<std::endl;
   for (itr.Initialize(myValid); itr.More(); itr.Next())
   {
     TDF_Tool::Entry(itr.Key(), as);
-    stream<<as<<endl;
+    stream<<as<<std::endl;
   }  
 
   return stream;

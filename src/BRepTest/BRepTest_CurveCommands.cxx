@@ -170,7 +170,7 @@ static Standard_Integer trim(Draw_Interpretor& di, Standard_Integer n, const cha
     DBRep::Set(a[1],ne);
   }
   else {
-    //cout <<"Error creating edge"<<endl;
+    //std::cout <<"Error creating edge"<<std::endl;
     di <<"Error creating edge\n";
   }
   return 0;
@@ -255,7 +255,7 @@ static Standard_Integer wire(Draw_Interpretor& di, Standard_Integer n, const cha
   }
 
   if (!MW.IsDone()) {
-    //cout << "Wire not done" << endl;
+    //std::cout << "Wire not done" << std::endl;
     di << "Wire not done with an error:\n";
     switch (MW.Error()) 
     {
@@ -288,7 +288,7 @@ static Standard_Integer mkedge(Draw_Interpretor& di, Standard_Integer n, const c
   Handle(Geom_Curve)   C   = DrawTrSurf::GetCurve(a[2]);
   Handle(Geom2d_Curve) C2d = DrawTrSurf::GetCurve2d(a[2]);
   if (C.IsNull() && C2d.IsNull()) {
-    //cout << a[2] << " is not a curve" << endl;
+    //std::cout << a[2] << " is not a curve" << std::endl;
     di << a[2] << " is not a curve\n";
     return 1;
   }
@@ -369,7 +369,7 @@ static Standard_Integer mkcurve(Draw_Interpretor& di, Standard_Integer n, const 
 
   Handle(Geom_Curve) C = BRep_Tool::Curve(TopoDS::Edge(S),L,f,l);
   if (C.IsNull()) {
-    //cout << a[2] << " has no 3d curve" << endl;
+    //std::cout << a[2] << " has no 3d curve" << std::endl;
     di << a[2] << " has no 3d curve\n";
     return 1;
   }
@@ -455,8 +455,8 @@ static Standard_Integer mk2dcurve(Draw_Interpretor& di,
   }
 
   if (C.IsNull()) {
-    //cout << a[2] << " has no 2d curve"; if (na == 4) cout << " on " << a[3];
-    //cout << endl;
+    //std::cout << a[2] << " has no 2d curve"; if (na == 4) std::cout << " on " << a[3];
+    //std::cout << std::endl;
     di << a[2] << " has no 2d curve";
     
     if (hasFace)
@@ -569,35 +569,35 @@ static Standard_Integer profile(Draw_Interpretor& di,
   if (n == 1) {
     // print help
 
-    //cout << "profile name [code values] [code values] ...\n";
-    //cout << "  Build a profile in the XY plane from a moving point and direction\n";
-    //cout << "  The original point and direction are 0 0 and 1 0\n";
-    //cout << "  Codes and values describe the point or direction change\n";
-    //cout << "  When the point change the direction becomes the tangent\n";
-    //cout << "  All angles are in degree (may be negative)\n";
-    //cout << "  By default the profile is closed and a face is built\n";
-    //cout << "\n";
-    //cout << "  Instruction Parameters         Action\n";
-    //cout << "  O           X Y Z              Set the origin of the plane\n";
-    //cout << "  P           DX DY DZ UX UY UZ  Set the normal and X of the plane\n";
-    //cout << "  S           Face               Set the Plane (Face must be a Face)\n";
-    //cout << "  F           X Y                Set the first point\n";
-    //cout << "  X           DX                 Translate point along X\n";
-    //cout << "  Y           DY                 Translate point along Y\n";
-    //cout << "  L           DL                 Translate point along direction\n";
-    //cout << "  XX          X                  Set point X coordinate\n";
-    //cout << "  YY          Y                  Set point Y coordinate\n";
-    //cout << "  T           DX DY              Translate point\n";
-    //cout << "  TT          X Y                Set point\n";
-    //cout << "  R           Angle              Rotate direction\n";
-    //cout << "  RR          Angle              Set direction\n";
-    //cout << "  D           DX DY              Set direction\n";
-    //cout << "  IX          X                  Intersect with vertical\n";
-    //cout << "  IY          Y                  Intersect with horizontal\n";
-    //cout << "  C           Radius Angle       Arc of circle tangent to direction\n";
-    //cout << "  W                              Make a closed wire\n";
-    //cout << "  WW                             Make an open wire\n";
-    //cout << endl;
+    //std::cout << "profile name [code values] [code values] ...\n";
+    //std::cout << "  Build a profile in the XY plane from a moving point and direction\n";
+    //std::cout << "  The original point and direction are 0 0 and 1 0\n";
+    //std::cout << "  Codes and values describe the point or direction change\n";
+    //std::cout << "  When the point change the direction becomes the tangent\n";
+    //std::cout << "  All angles are in degree (may be negative)\n";
+    //std::cout << "  By default the profile is closed and a face is built\n";
+    //std::cout << "\n";
+    //std::cout << "  Instruction Parameters         Action\n";
+    //std::cout << "  O           X Y Z              Set the origin of the plane\n";
+    //std::cout << "  P           DX DY DZ UX UY UZ  Set the normal and X of the plane\n";
+    //std::cout << "  S           Face               Set the Plane (Face must be a Face)\n";
+    //std::cout << "  F           X Y                Set the first point\n";
+    //std::cout << "  X           DX                 Translate point along X\n";
+    //std::cout << "  Y           DY                 Translate point along Y\n";
+    //std::cout << "  L           DL                 Translate point along direction\n";
+    //std::cout << "  XX          X                  Set point X coordinate\n";
+    //std::cout << "  YY          Y                  Set point Y coordinate\n";
+    //std::cout << "  T           DX DY              Translate point\n";
+    //std::cout << "  TT          X Y                Set point\n";
+    //std::cout << "  R           Angle              Rotate direction\n";
+    //std::cout << "  RR          Angle              Set direction\n";
+    //std::cout << "  D           DX DY              Set direction\n";
+    //std::cout << "  IX          X                  Intersect with vertical\n";
+    //std::cout << "  IY          Y                  Intersect with horizontal\n";
+    //std::cout << "  C           Radius Angle       Arc of circle tangent to direction\n";
+    //std::cout << "  W                              Make a closed wire\n";
+    //std::cout << "  WW                             Make an open wire\n";
+    //std::cout << std::endl;
     di << "profile name [code values] [code values] ...\n";
     di << "  Build a profile in the XY plane from a moving point and direction\n";
     di << "  The original point and direction are 0 0 and 1 0\n";
@@ -974,15 +974,15 @@ static Standard_Integer bsplineprof(Draw_Interpretor& di,
   if (n == 1) {
     // print help
 
-    //cout << " bsplineprof name [S face] [W WW]  "              << endl;
-    //cout << " for an edge : <digitizes> ... <mouse button 2> " << endl ;
-    //cout << " to end profile : <mouse button 3> "              << endl ;
-    //cout << "  Build a profile in the XY plane from digitizes" << endl ;
-    //cout << "  By default the profile is closed and a face is built\n";
-    //cout << "\n";
-    //cout << "  W                              Make a closed wire\n";
-    //cout << "  WW                             Make an open wire\n";
-    //cout << endl;
+    //std::cout << " bsplineprof name [S face] [W WW]  "              << std::endl;
+    //std::cout << " for an edge : <digitizes> ... <mouse button 2> " << std::endl ;
+    //std::cout << " to end profile : <mouse button 3> "              << std::endl ;
+    //std::cout << "  Build a profile in the XY plane from digitizes" << std::endl ;
+    //std::cout << "  By default the profile is closed and a face is built\n";
+    //std::cout << "\n";
+    //std::cout << "  W                              Make a closed wire\n";
+    //std::cout << "  WW                             Make an open wire\n";
+    //std::cout << std::endl;
     di << " bsplineprof name [S face] [W WW]  "              << "\n";
     di << " for an edge : <digitizes> ... <mouse button 2> " <<  "\n";
     di << " to end profile : <mouse button 3> "              <<  "\n";
@@ -1215,31 +1215,31 @@ static Standard_Integer profile2d(Draw_Interpretor& di,
   if (n == 1) {
     // print help
 
-    //cout << "profile name [code values] [code values] ...\n";
-    //cout << "  Build a profile in the UV plane from a moving point and direction\n";
-    //cout << "  The original point and direction are 0 0 and 1 0\n";
-    //cout << "  Codes and values describe the point or direction change\n";
-    //cout << "  When the point change the direction becomes the tangent\n";
-    //cout << "  All angles are in degree (may be negative)\n";
-    //cout << "  By default the profile is closed \n";
-    //cout << "\n";
-    //cout << "  Instruction Parameters         Action\n";
-    //cout << "  F           X Y                Set the first point\n";
-    //cout << "  X           DX                 Translate point along X\n";
-    //cout << "  Y           DY                 Translate point along Y\n";
-    //cout << "  L           DL                 Translate point along direction\n";
-    //cout << "  XX          X                  Set point X coordinate\n";
-    //cout << "  YY          Y                  Set point Y coordinate\n";
-    //cout << "  T           DX DY              Translate point\n";
-    //cout << "  TT          X Y                Set point\n";
-    //cout << "  R           Angle              Rotate direction\n";
-    //cout << "  RR          Angle              Set direction\n";
-    //cout << "  D           DX DY              Set direction\n";
-    //cout << "  IX          X                  Intersect with vertical\n";
-    //cout << "  IY          Y                  Intersect with horizontal\n";
-    //cout << "  C           Radius Angle       Arc of circle tangent to direction\n";
-    //cout << "  W                              Make a closed wire\n";
-    //cout << endl;
+    //std::cout << "profile name [code values] [code values] ...\n";
+    //std::cout << "  Build a profile in the UV plane from a moving point and direction\n";
+    //std::cout << "  The original point and direction are 0 0 and 1 0\n";
+    //std::cout << "  Codes and values describe the point or direction change\n";
+    //std::cout << "  When the point change the direction becomes the tangent\n";
+    //std::cout << "  All angles are in degree (may be negative)\n";
+    //std::cout << "  By default the profile is closed \n";
+    //std::cout << "\n";
+    //std::cout << "  Instruction Parameters         Action\n";
+    //std::cout << "  F           X Y                Set the first point\n";
+    //std::cout << "  X           DX                 Translate point along X\n";
+    //std::cout << "  Y           DY                 Translate point along Y\n";
+    //std::cout << "  L           DL                 Translate point along direction\n";
+    //std::cout << "  XX          X                  Set point X coordinate\n";
+    //std::cout << "  YY          Y                  Set point Y coordinate\n";
+    //std::cout << "  T           DX DY              Translate point\n";
+    //std::cout << "  TT          X Y                Set point\n";
+    //std::cout << "  R           Angle              Rotate direction\n";
+    //std::cout << "  RR          Angle              Set direction\n";
+    //std::cout << "  D           DX DY              Set direction\n";
+    //std::cout << "  IX          X                  Intersect with vertical\n";
+    //std::cout << "  IY          Y                  Intersect with horizontal\n";
+    //std::cout << "  C           Radius Angle       Arc of circle tangent to direction\n";
+    //std::cout << "  W                              Make a closed wire\n";
+    //std::cout << std::endl;
     di << "profile name [code values] [code values] ...\n";
     di << "  Build a profile in the UV plane from a moving point and direction\n";
     di << "  The original point and direction are 0 0 and 1 0\n";
@@ -1705,7 +1705,7 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
   EInter.Perform (E[0],E[1],reducesegments);
 
   if (EInter.IsEmpty()) {
-    //cout << " No intersection found" << endl;
+    //std::cout << " No intersection found" << std::endl;
     di << " No intersection found\n";
     return 0;
   }
@@ -1745,13 +1745,13 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
       else if (P2D.Transition(i).Before() == TopAbs_OUT) {
         OO = TopAbs_FORWARD;
       }
-      //cout << " Orientation of vertex " << NbV << " on " << a[i+1] << ": ";
+      //std::cout << " Orientation of vertex " << NbV << " on " << a[i+1] << ": ";
       di << " Orientation of vertex " << NbV << " on " << a[i+1] << ": ";
       if (OO == TopAbs_FORWARD) {
-        //cout << "FORWARD" << endl;
+        //std::cout << "FORWARD" << std::endl;
         di << "FORWARD\n";
       } else {
-        //cout << "REVERSED" << endl;
+        //std::cout << "REVERSED" << std::endl;
         di << "REVERSED\n";
       }
     }
@@ -1820,7 +1820,7 @@ Standard_Integer  build3d(Draw_Interpretor& di,
 {
 
   if ( (n <2) || (n>3) ) {
-    //cout << " 1 or 2 arguments expected" << endl;
+    //std::cout << " 1 or 2 arguments expected" << std::endl;
     di << " 1 or 2 arguments expected\n";
     return 1;
   }
@@ -1831,7 +1831,7 @@ Standard_Integer  build3d(Draw_Interpretor& di,
 
   if (n==2) { Ok = BRepLib::BuildCurves3d(S); }
   else      { Ok = BRepLib::BuildCurves3d(S,Draw::Atof(a[2])); }
-  //if (!Ok) {cout << " one of the computation failed" << endl;}
+  //if (!Ok) {std::cout << " one of the computation failed" << std::endl;}
   if (!Ok) {di << " one of the computation failed\n";}
 
   return 0;
@@ -1852,7 +1852,7 @@ Standard_Integer reducepcurves(Draw_Interpretor& di,
   {
     TopoDS_Shape aShape = DBRep::Get(a[i]);
     if (aShape.IsNull())
-      //cout << a[i] << " is not a valid shape" << endl;
+      //std::cout << a[i] << " is not a valid shape" << std::endl;
       di << a[i] << " is not a valid shape\n";
     else
       BRepTools::RemoveUnusedPCurves(aShape);

@@ -292,8 +292,8 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
       for(k = 1; k <= Projector.NbCurves(); k++){
 	if(Projector.IsSinglePnt(k, P2d)){
 #ifdef OCCT_DEBUG
-	  cout << "Projection of edge "<<i<<" on face "<<j;
-	  cout << " is punctual"<<endl<<endl;
+	  std::cout << "Projection of edge "<<i<<" on face "<<j;
+	  std::cout << " is punctual"<<std::endl<<std::endl;
 #endif
 	  Projector.GetSurface()->D0(P2d.X(), P2d.Y(), P);
 	  prj = BRepLib_MakeVertex(P).Shape();
@@ -310,8 +310,8 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	  /**************************************************************/
 	  if (Projector.IsUIso(k, UIso)) {
 #ifdef OCCT_DEBUG
-	    cout << "Projection of edge "<<i<<" on face "<<j;
-	    cout << " is U-isoparametric"<<endl<<endl;
+	    std::cout << "Projection of edge "<<i<<" on face "<<j;
+	    std::cout << " is U-isoparametric"<<std::endl<<std::endl;
 #endif
 	    Projector.D0(Udeb, Pdeb);
 	    Projector.D0(Ufin, Pfin);
@@ -327,8 +327,8 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	  }
 	  else if (Projector.IsVIso(k, VIso)) {
 #ifdef OCCT_DEBUG
-	    cout << "Projection of edge "<<i<<" on face "<<j;
-	    cout << " is V-isoparametric"<<endl<<endl;
+	    std::cout << "Projection of edge "<<i<<" on face "<<j;
+	    std::cout << " is V-isoparametric"<<std::endl<<std::endl;
 #endif
 	    Projector.D0(Udeb, Pdeb);
 	    Projector.D0(Ufin, Pfin);
@@ -370,12 +370,12 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 	    ResultChron(chr_approx,t_approx);
 	    approx_count++;
 	    
-	    cout<<"Approximation.IsDone = "<<appr.IsDone()<<endl;
+	    std::cout<<"Approximation.IsDone = "<<appr.IsDone()<<std::endl;
 	    if(!Only2d)
-	      cout<<"MaxError3d = "<<appr.MaxError3d()<<endl<<endl;
+	      std::cout<<"MaxError3d = "<<appr.MaxError3d()<<std::endl<<std::endl;
 	    if(!Only3d) {
-	      cout<<"MaxError2dU = "<<appr.MaxError2dU()<<endl;
-	      cout<<"MaxError2dV = "<<appr.MaxError2dV()<<endl<<endl;
+	      std::cout<<"MaxError2dU = "<<appr.MaxError2dU()<<std::endl;
+	      std::cout<<"MaxError2dV = "<<appr.MaxError2dV()<<std::endl<<std::endl;
 	    }
 #endif
 
@@ -440,8 +440,8 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
               }
 	      if (Degenerated) {
 #ifdef OCCT_DEBUG
-	          cout << "Projection of edge "<<i<<" on face "<<j;
-	          cout << " is degenerated "<<endl<<endl;
+	          std::cout << "Projection of edge "<<i<<" on face "<<j;
+	          std::cout << " is degenerated "<<std::endl<<std::endl;
 #endif
 		TopoDS_Vertex VV;
 		BB.MakeVertex(VV);
@@ -511,7 +511,7 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
             }
             else {
 #ifdef OCCT_DEBUG
-                 cout << " BooleanOperations : no solution " << endl;
+                 std::cout << " BooleanOperations : no solution " << std::endl;
 #endif
 
 	      BRepTopAdaptor_FClass2d classifier(TopoDS::Face(Faces->Value(j)),
@@ -557,13 +557,13 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_total,t_total);
   
-  cout<<"Build - Total time  : "<<t_total<<" includes:" <<endl;
-  cout<<"- Projection           : "<<t_init<<endl;
-  cout<<"  -- Initial point search : "<<t_init_point<<endl;
-  cout<<"  -- DichoBound search : "<<t_dicho_bound<<endl;
-  cout<<"- Approximation        : "<<t_approx<<endl;
-  cout<<"- Boolean operation    : "<<t_booltool<<endl;
-  cout<<"- Rest of time         : "<<t_total-(t_init + t_approx + t_booltool )<<endl<<endl;
+  std::cout<<"Build - Total time  : "<<t_total<<" includes:" <<std::endl;
+  std::cout<<"- Projection           : "<<t_init<<std::endl;
+  std::cout<<"  -- Initial point search : "<<t_init_point<<std::endl;
+  std::cout<<"  -- DichoBound search : "<<t_dicho_bound<<std::endl;
+  std::cout<<"- Approximation        : "<<t_approx<<std::endl;
+  std::cout<<"- Boolean operation    : "<<t_booltool<<std::endl;
+  std::cout<<"- Rest of time         : "<<t_total-(t_init + t_approx + t_booltool )<<std::endl<<std::endl;
   if (init_count != 0)
     t_init /= init_count;
   if (init_point_count != 0)
@@ -575,13 +575,13 @@ void BRepAlgo_NormalProjection::SetDefaultParams()
   if (booltool_count != 0)
     t_booltool /= booltool_count;
   
-  cout<<"Unitary average time  : "<<endl;
-  cout<<"- Projection          : "<<t_init<<endl;
-  cout<<"  -- Initial point search: "<<t_init_point<<endl;
-  cout<<"  -- DichoBound search : "<<t_dicho_bound<<endl;
-  cout<<"- Approximation       : "<<t_approx<<endl;
-  cout<<"- Boolean operation   :"<<t_booltool<<endl;
-  cout<<endl<<"Number of initial point computations is "<<init_point_count<<endl<<endl;
+  std::cout<<"Unitary average time  : "<<std::endl;
+  std::cout<<"- Projection          : "<<t_init<<std::endl;
+  std::cout<<"  -- Initial point search: "<<t_init_point<<std::endl;
+  std::cout<<"  -- DichoBound search : "<<t_dicho_bound<<std::endl;
+  std::cout<<"- Approximation       : "<<t_approx<<std::endl;
+  std::cout<<"- Boolean operation   :"<<t_booltool<<std::endl;
+  std::cout<<std::endl<<"Number of initial point computations is "<<init_point_count<<std::endl<<std::endl;
 #endif
 }
 

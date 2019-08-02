@@ -260,15 +260,15 @@ Standard_Boolean Intf_Interference::Contains
 //----------------------------------------------------
 void Intf_Interference::Dump() const
 {
-  cout << "Mes SectionPoint :" << endl;
+  std::cout << "Mes SectionPoint :" << std::endl;
   for (Standard_Integer p=1; p<=mySPoins.Length(); p++) {
     mySPoins(p).Dump(2);
   }
-  cout << "Mes SectionLine :" << endl;
+  std::cout << "Mes SectionLine :" << std::endl;
   for (Standard_Integer l=1; l<=mySLines.Length(); l++) {
     mySLines(l).Dump(2);
   }
-  cout << "Mes TangentZone :" << endl;
+  std::cout << "Mes TangentZone :" << std::endl;
   for (Standard_Integer t=1; t<=myTZones.Length(); t++) {
     myTZones(t).Dump(2);
   }

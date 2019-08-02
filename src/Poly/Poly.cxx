@@ -98,8 +98,8 @@ void Poly::Write(const Handle(Poly_Triangulation)& T,
     OS << ((T->HasUVNodes()) ? "1" : "0") << "\n";
   }
   else {
-    OS << setw(8) << T->NbNodes() << " Nodes\n";
-    OS << setw(8) << T->NbTriangles() << " Triangles\n";
+    OS << std::setw(8) << T->NbNodes() << " Nodes\n";
+    OS << std::setw(8) << T->NbTriangles() << " Triangles\n";
     OS << ((T->HasUVNodes()) ? "with" : "without") << " UV nodes\n";
   }
 
@@ -115,12 +115,12 @@ void Poly::Write(const Handle(Poly_Triangulation)& T,
   Standard_Integer i, nbNodes = T->NbNodes();
   const TColgp_Array1OfPnt& Nodes = T->Nodes();
   for (i = 1; i <= nbNodes; i++) {
-    if (!Compact) OS << setw(10) << i << " : ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(10) << i << " : ";
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).X() << " ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).Y() << " ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).Z() << "\n";
   }
 
@@ -128,10 +128,10 @@ void Poly::Write(const Handle(Poly_Triangulation)& T,
     if (!Compact) OS << "\nUV Nodes :\n";
     const TColgp_Array1OfPnt2d& UVNodes = T->UVNodes();
     for (i = 1; i <= nbNodes; i++) {
-      if (!Compact) OS << setw(10) << i << " : ";
-    if (!Compact) OS << setw(17);
+      if (!Compact) OS << std::setw(10) << i << " : ";
+    if (!Compact) OS << std::setw(17);
       OS << UVNodes(i).X() << " ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(17);
       OS << UVNodes(i).Y() << "\n";
     }
   }
@@ -141,13 +141,13 @@ void Poly::Write(const Handle(Poly_Triangulation)& T,
   Standard_Integer n1, n2, n3;
   const Poly_Array1OfTriangle& Triangles = T->Triangles();
   for (i = 1; i <= nbTriangles; i++) {
-    if (!Compact) OS << setw(10) << i << " : ";
+    if (!Compact) OS << std::setw(10) << i << " : ";
     Triangles(i).Get(n1, n2, n3);
-    if (!Compact) OS << setw(10);
+    if (!Compact) OS << std::setw(10);
     OS << n1 << " ";
-    if (!Compact) OS << setw(10);
+    if (!Compact) OS << std::setw(10);
     OS << n2 << " ";
-    if (!Compact) OS << setw(10);
+    if (!Compact) OS << std::setw(10);
     OS << n3 << "\n";
   }
 
@@ -168,7 +168,7 @@ void Poly::Write(const Handle(Poly_Polygon3D)& P,
     OS << ((P->HasParameters()) ? "1" : "0") << "\n";
   }
   else {
-    OS << setw(8) << P->NbNodes() << " Nodes\n";
+    OS << std::setw(8) << P->NbNodes() << " Nodes\n";
     OS << ((P->HasParameters()) ? "with" : "without") << " parameters\n";
   }
 
@@ -184,12 +184,12 @@ void Poly::Write(const Handle(Poly_Polygon3D)& P,
   Standard_Integer i, nbNodes = P->NbNodes();
   const TColgp_Array1OfPnt& Nodes = P->Nodes();
   for (i = 1; i <= nbNodes; i++) {
-    if (!Compact) OS << setw(10) << i << " : ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(10) << i << " : ";
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).X() << " ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).Y() << " ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).Z() << "\n";
   }
 
@@ -220,7 +220,7 @@ void Poly::Write(const Handle(Poly_Polygon2D)& P,
     OS << P->NbNodes() << " ";
   }
   else {
-    OS << setw(8) << P->NbNodes() << " Nodes\n";
+    OS << std::setw(8) << P->NbNodes() << " Nodes\n";
   }
 
   // write the deflection
@@ -235,10 +235,10 @@ void Poly::Write(const Handle(Poly_Polygon2D)& P,
   Standard_Integer i, nbNodes = P->NbNodes();
   const TColgp_Array1OfPnt2d& Nodes = P->Nodes();
   for (i = 1; i <= nbNodes; i++) {
-    if (!Compact) OS << setw(10) << i << " : ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(10) << i << " : ";
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).X() << " ";
-    if (!Compact) OS << setw(17);
+    if (!Compact) OS << std::setw(17);
     OS << Nodes(i).Y() << "\n";
   }
 }
@@ -291,7 +291,7 @@ Handle(Poly_Triangulation) Poly::ReadTriangulation(Standard_IStream& IS)
   IS >> line;
   if (strcmp(line,"Poly_Triangulation")) {
 #ifdef OCCT_DEBUG
-    cout << "Not a Triangulation in the file" << endl;
+    std::cout << "Not a Triangulation in the file" << std::endl;
 #endif
     return Handle(Poly_Triangulation)();
   }
@@ -357,7 +357,7 @@ Handle(Poly_Polygon3D) Poly::ReadPolygon3D(Standard_IStream& IS)
   IS >> line;
   if (strcmp(line,"Poly_Polygon3D")) {
 #ifdef OCCT_DEBUG
-    cout << "Not a Polygon3D in the file" << endl;
+    std::cout << "Not a Polygon3D in the file" << std::endl;
 #endif
     return Handle(Poly_Polygon3D)();
   }
@@ -412,7 +412,7 @@ Handle(Poly_Polygon2D) Poly::ReadPolygon2D(Standard_IStream& IS)
   IS >> line;
   if (strcmp(line,"Poly_Polygon2D")) {
 #ifdef OCCT_DEBUG
-    cout << "Not a Polygon2D in the file" << endl;
+    std::cout << "Not a Polygon2D in the file" << std::endl;
 #endif
     return Handle(Poly_Polygon2D)();
   }

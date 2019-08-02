@@ -121,14 +121,14 @@ void IGESGraph_ToolLineFontDefTemplate::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGraph_LineFontDefTemplate" << endl;
+  S << "IGESGraph_LineFontDefTemplate" << Message_EndLine;
 
-  S << "Orientation : " << ent->Orientation() << endl;
+  S << "Orientation : " << ent->Orientation() << Message_EndLine;
   S << "Subfigure Display Entity For Template Display : ";
   dumper.Dump(ent->TemplateEntity(),S, tempSubLevel);
-  S << endl;
-  S << "Length Between Successive Template Figure : " << ent->Distance()<<endl;
-  S << "Scale Factor for Subfigure : " << ent->Scale() << endl;
-  S << endl;
+  S << Message_EndLine;
+  S << "Length Between Successive Template Figure : " << ent->Distance()<<Message_EndLine;
+  S << "Scale Factor for Subfigure : " << ent->Scale() << Message_EndLine;
+  S << Message_EndLine;
 }
 

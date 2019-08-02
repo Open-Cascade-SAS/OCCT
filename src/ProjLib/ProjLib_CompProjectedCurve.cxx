@@ -805,7 +805,7 @@ void ProjLib_CompProjectedCurve::Init()
             myTolU, myTolV, myCurve, mySurface)) 
           {
 #ifdef OCCT_DEBUG
-            cout<<"There is a problem with ExactBound computation"<<endl;
+            std::cout<<"There is a problem with ExactBound computation"<<std::endl;
 #endif
             DichExactBound(Triple, t - Step, Tol, myTolU, myTolV, 
               myCurve, mySurface);
@@ -879,7 +879,7 @@ void ProjLib_CompProjectedCurve::Init()
             myCurve, mySurface)) 
           {
 #ifdef OCCT_DEBUG
-            cout<<"There is a problem with ExactBound computation"<<endl;
+            std::cout<<"There is a problem with ExactBound computation"<<std::endl;
 #endif
             DichExactBound(Triple, t, Tol, myTolU, myTolV, 
               myCurve, mySurface);
@@ -1548,7 +1548,7 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
   TColStd_SequenceOfReal TUdisc;
 
   for(k = 2; k <= NbIntSurU; k++) {
-    //    cout<<"CutPntsU("<<k<<") = "<<CutPntsU(k)<<endl;
+    //    std::cout<<"CutPntsU("<<k<<") = "<<CutPntsU(k)<<std::endl;
     for(i = 1; i <= myNbCurves; i++)
     {
       for(j = 1; j < mySequence->Value(i)->Length(); j++)
@@ -1616,7 +1616,7 @@ void ProjLib_CompProjectedCurve::BuildIntervals(const GeomAbs_Shape S) const
   {
     for(i = 1; i <= myNbCurves; i++)
     {
-      //      cout<<"CutPntsV("<<k<<") = "<<CutPntsV(k)<<endl;
+      //      std::cout<<"CutPntsV("<<k<<") = "<<CutPntsV(k)<<std::endl;
       for(j = 1; j < mySequence->Value(i)->Length(); j++) {
 
         Vl = mySequence->Value(i)->Value(j).Z();

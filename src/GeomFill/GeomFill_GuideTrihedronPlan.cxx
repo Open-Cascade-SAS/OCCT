@@ -49,7 +49,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_GuideTrihedronPlan,GeomFill_TrihedronWithGui
 #ifdef OCCT_DEBUG
 static void TracePlan(const Handle(Geom_Surface)& /*Plan*/)
 {
-  cout << "Pas d'intersection Guide/Plan" << endl;	
+  std::cout << "Pas d'intersection Guide/Plan" << std::endl;	
 #if DRAW
   char* Temp = "ThePlan" ;
   DrawTrSurf::Set(Temp, Plan);
@@ -182,8 +182,8 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
         
 #ifdef OCCT_DEBUG
         if (Abs(Diff) > DeltaG) {
-          cout << "Trihedron Plan Diff on Guide : " << 
-            Diff << endl;
+          std::cout << "Trihedron Plan Diff on Guide : " << 
+            Diff << std::endl;
         }
 #endif
       }
@@ -256,7 +256,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
     }
   else { // Erreur...
 #ifdef OCCT_DEBUG
-    cout << "D0 :";
+    std::cout << "D0 :";
     // plan ortho a la trajectoire pour determiner Pprime
     Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent);
     TracePlan(Plan);
@@ -329,7 +329,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
       E.Value(Res, e);
       E.Value(Res+h, etg);
       if ( Abs( (etg-e)/h - dedx) > 1.e-4) {
-	cout << "err :" <<  (etg-e)/h - dedx << endl;
+	std::cout << "err :" <<  (etg-e)/h - dedx << std::endl;
       }
       gp_Pnt pdbg;
       gp_Vec td, nb, bnb;
@@ -339,7 +339,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
       GeomFill_PlanFunc Edeb(pdbg, td, myGuide); 
       Edeb.Value(Res, etc);
       if ( Abs( (etc-e)/h - dedt) > 1.e-4) {
-	cout << "err :" <<  (etc-e)/h - dedt << endl;
+	std::cout << "err :" <<  (etc-e)/h - dedt << std::endl;
       } */           
 
       dn.SetLinearForm(dtg_dt, TG, -1, To);
@@ -351,7 +351,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
     }
   else {// Erreur...
 #ifdef OCCT_DEBUG
-    cout << "D1 :";
+    std::cout << "D1 :";
     // plan ortho a la trajectoire
     Handle(Geom_Plane) Plan = new (Geom_Plane)(P, Tangent);
     TracePlan(Plan);
@@ -450,7 +450,7 @@ void GeomFill_GuideTrihedronPlan::SetCurve(const Handle(Adaptor3d_HCurve)& C)
     }
   else {// Erreur...
 #ifdef OCCT_DEBUG
-    cout << "D2 :";
+    std::cout << "D2 :";
     TracePlan(Plan);
 #endif
     myStatus = GeomFill_PlaneNotIntersectGuide;

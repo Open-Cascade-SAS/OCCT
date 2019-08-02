@@ -262,7 +262,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
     while ( nbPini < minPnt ) nbPini += NCONTROL - 1;
 #ifdef OCCT_DEBUG
     if ( nbPini > NCONTROL ) 
-      cout << "Warning: number of points for projecting is " << nbPini << endl;
+      std::cout << "Warning: number of points for projecting is " << nbPini << std::endl;
 #endif
   }
 
@@ -481,8 +481,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   }
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(): Exception: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(): Exception: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL3);
@@ -1127,7 +1127,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   const Standard_Real TolOnVPeriod = Precision::Confusion() * Vp;
 #ifdef OCCT_DEBUG
   if (mySurf->IsUClosed(myPreci) && mySurf->IsVClosed(myPreci)) {//#78 rln 12.03.99 S4135
-    cout << "WARNING : Recadrage incertain sur U & VClosed" << endl;
+    std::cout << "WARNING : Recadrage incertain sur U & VClosed" << std::endl;
   }
 #endif
   // Si la surface est UCLosed, on recadre les points
@@ -1330,7 +1330,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
 #ifdef OCCT_DEBUG
 	dist2d = pnt2d (aPntIter - 1).Distance(pnt2d (aPntIter));
 	if (dist2d > ( Vp / 2) ) {
-	  cout << "Echec dans le recadrage" << endl;
+	  std::cout << "Echec dans le recadrage" << std::endl;
 	}
 #endif
       }
@@ -1518,9 +1518,9 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(con
     //    debug ...
     Standard_Integer nbp = params->Length();
     Standard_Integer nb2 = points2d->Length();
-    cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(): Exception: ";
-    anException.Print(cout); 
-    cout<<"Pb Geom2dAPI_Approximate, tol2d="<<theTolerance2d<<" NbParams="<<nbp<<" NbPnts="<<nb2<<endl;
+    std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(): Exception: ";
+    anException.Print(std::cout); 
+    std::cout<<"Pb Geom2dAPI_Approximate, tol2d="<<theTolerance2d<<" NbParams="<<nbp<<" NbPnts="<<nb2<<std::endl;
 //     if (nb2 > nbp) nb2 = nbp;
 //     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
 //     //    dbl.AddString ("NbP2d/NbParams puis  X Y Param -> mini");
@@ -1564,9 +1564,9 @@ Handle(Geom2d_Curve) ShapeConstruct_ProjectCurveOnSurface::ApproximatePCurve(con
 // //    debug ...
     Standard_Integer nbp = params->Length();
     Standard_Integer nb2 = points2d->Length();
-    cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(): Exception: ";
-    anException.Print(cout); 
-    cout<<"Pb Geom2dAPI_Interpolate, tol2d="<<theTolerance2d<<" NbParams="<<nbp<<" NbPnts="<<nb2<<endl;
+    std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolatePCurve(): Exception: ";
+    anException.Print(std::cout); 
+    std::cout<<"Pb Geom2dAPI_Interpolate, tol2d="<<theTolerance2d<<" NbParams="<<nbp<<" NbPnts="<<nb2<<std::endl;
 //     if (nb2 > nbp) nb2 = nbp;
 //     Standard_Real rbp,rb2; rbp = nbp; rb2 = nb2;
 // //    dbl.AddString ("NbP2d/NbParams puis  X Y Param -> mini");
@@ -1604,8 +1604,8 @@ Handle(Geom_Curve) ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(cons
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
  //:s5
-    cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(): Exception: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::InterpolateCurve3d(): Exception: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     C3d.Nullify();
@@ -1855,13 +1855,13 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
     return;
 
 #ifdef OCCT_DEBUG
-  cout << "Warning : removing 3d points for interpolation" << endl;
+  std::cout << "Warning : removing 3d points for interpolation" << std::endl;
 #endif
   // Build new HArrays
   Standard_Integer newLast = lastElem - nbPntDropped;
   if ((newLast - firstElem + 1)  < 2) {
 #ifdef OCCT_DEBUG
-    cout << "Too many degenerated points for 3D interpolation" << endl;
+    std::cout << "Too many degenerated points for 3D interpolation" << std::endl;
 #endif
     return;
   }
@@ -1926,13 +1926,13 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
     return;
 
 #ifdef OCCT_DEBUG
-  cout << "Warning : removing 2d points for interpolation" << endl;
+  std::cout << "Warning : removing 2d points for interpolation" << std::endl;
 #endif
   // Build new HArrays
   Standard_Integer newLast = lastElem - nbPntDropped;
   if ((newLast - firstElem + 1)  < 2) {
 #ifdef OCCT_DEBUG
-    cout << "Too many degenerated points for 2D interpolation" << endl;
+    std::cout << "Too many degenerated points for 2D interpolation" << std::endl;
 #endif
     //pdn 12.02.99 S4135 Creating pcurve with minimal length.
     tmpParam.SetValue(firstElem,1);
@@ -1951,7 +1951,7 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
   for (i = firstElem; i <= lastElem ; i++) {
     if (tmpParam.Value(i) == 1) { 
 #ifdef OCCT_DEBUG
-      cout << "Point " << i << " : " << points->Value(i).X() << " " << points->Value(i).Y() << " at param " <<  params->Value(i) << endl;
+      std::cout << "Point " << i << " : " << points->Value(i).X() << " " << points->Value(i).Y() << " at param " <<  params->Value(i) << std::endl;
 #endif
       newPnts->SetValue(newCurr, points->Value(i));
       newParams->SetValue(newCurr, params->Value(i));
@@ -1959,7 +1959,7 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
     }
     else {
 #ifdef OCCT_DEBUG
-      cout << "Removed " << i << " : " << points->Value(i).X() << " " << points->Value(i).Y() << " at param " <<  params->Value(i) << endl;
+      std::cout << "Removed " << i << " : " << points->Value(i).X() << " " << points->Value(i).Y() << " at param " <<  params->Value(i) << std::endl;
 #endif
     }
   }
@@ -2209,11 +2209,11 @@ InsertAdditionalPointOrAdjust(Standard_Boolean& ToAdjust,
 #ifdef OCCT_DEBUG
 //  pb : on affiche ce qu on peut
     for (Standard_Integer numpnt = 1; numpnt <= nbrPnt; numpnt ++) {
-      cout<<"["<<numpnt<<"]param="<<params(numpnt)<<" point=("<<
-	points(numpnt).X()<<"  "<<points(numpnt).Y()<<"  "<<points(numpnt).Z()<<")"<<endl;
+      std::cout<<"["<<numpnt<<"]param="<<params(numpnt)<<" point=("<<
+	points(numpnt).X()<<"  "<<points(numpnt).Y()<<"  "<<points(numpnt).Z()<<")"<<std::endl;
     }
-    cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(): Exception: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeConstruct_ProjectCurveOnSurface::IsAnIsoparametric(): Exception: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     return Standard_False;

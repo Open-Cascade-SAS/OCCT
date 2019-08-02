@@ -176,15 +176,15 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
     }
   }
 
-  cout << "//What is?// NB COMPOUNDS: " << nbCompounds << endl;
-  cout << "//What is?// NB SOLIDS: " << nbSolids << endl;
-  cout << "//What is?// NB SHELLS: " << nbShells << endl;
-  cout << "//What is?//    OPEN SHELLS: " << nbOpenShells << endl;
-  cout << "//What is?//    CLOSED SHELLS: " << nbShells - nbOpenShells << endl;
-  cout << "//What is?// NB FACES: " << nbFaces << endl;
-  cout << "//What is?// NB WIRES: " << nbWires << endl;
-  cout << "//What is?// NB EDGES: " << nbEdges << endl;
-  cout << "//What is?// NB VERTEXES: " << nbVertexes << endl;
+  std::cout << "//What is?// NB COMPOUNDS: " << nbCompounds << std::endl;
+  std::cout << "//What is?// NB SOLIDS: " << nbSolids << std::endl;
+  std::cout << "//What is?// NB SHELLS: " << nbShells << std::endl;
+  std::cout << "//What is?//    OPEN SHELLS: " << nbOpenShells << std::endl;
+  std::cout << "//What is?//    CLOSED SHELLS: " << nbShells - nbOpenShells << std::endl;
+  std::cout << "//What is?// NB FACES: " << nbFaces << std::endl;
+  std::cout << "//What is?// NB WIRES: " << nbWires << std::endl;
+  std::cout << "//What is?// NB EDGES: " << nbEdges << std::endl;
+  std::cout << "//What is?// NB VERTEXES: " << nbVertexes << std::endl;
 }
 #endif
 
@@ -284,12 +284,12 @@ Handle(Transfer_Binder)  STEPControl_ActorRead::Transfer
       if(aPPVersion.IsNull())
         continue;
       #ifdef OCCT_DEBUG
-      cout << "Preprocessor version detected: " << aPPVersion->ToCString() << endl;
+      std::cout << "Preprocessor version detected: " << aPPVersion->ToCString() << std::endl;
       #endif
       Standard_Integer anIDeasResult = aPPVersion->Search("I-DEAS");
       if (anIDeasResult != -1) {
         #ifdef OCCT_DEBUG
-        cout << "Recognized as I-DEAS STP" << endl;
+        std::cout << "Recognized as I-DEAS STP" << std::endl;
         #endif
         myNMTool.SetIDEASCase(Standard_True);
       }
@@ -542,7 +542,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
       
 #ifdef TRANSLOG
     if (TP->TraceLevel() > 1) 
-      sout<<" -- Actor : Ent.n0 "<<TP->Model()->Number(PD)<<" -> Shared Ent.no"<<TP->Model()->Number(NAUO)<<endl;
+      sout<<" -- Actor : Ent.n0 "<<TP->Model()->Number(PD)<<" -> Shared Ent.no"<<TP->Model()->Number(NAUO)<<Message_EndLine;
 #endif
     Handle(Transfer_Binder) binder;
     if (!TP->IsBound(NAUO)) binder = TransferEntity(NAUO,TP);
@@ -762,7 +762,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   Handle(Message_Messenger) sout = TP->Messenger();
   #ifdef TRANSLOG
   if (TP->TraceLevel() > 2) 
-    sout<<" -- Actor : case  ShapeRepr. NbItems="<<nb<<endl;
+    sout<<" -- Actor : case  ShapeRepr. NbItems="<<nb<<Message_EndLine;
   #endif
   
     // Compute unit convertion factors and geometric Accuracy
@@ -784,7 +784,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
     NM_DETECTED = Standard_True;
     #ifdef OCCT_DEBUG
     Standard_Integer NMSSRItemsLen = sr->Items()->Length();
-    cout << "NMSSR with " << NMSSRItemsLen << " items detected" << endl;
+    std::cout << "NMSSR with " << NMSSRItemsLen << " items detected" << std::endl;
     #endif
   } 
   // Special processing for I-DEAS STP case (ssv; 15.11.2010)
@@ -794,12 +794,12 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
       isManifold = Standard_False;
       NM_DETECTED = Standard_True;
       #ifdef OCCT_DEBUG
-      cout << "I-DEAS post processing for non-manifold topology ENABLED" << endl;
+      std::cout << "I-DEAS post processing for non-manifold topology ENABLED" << std::endl;
       #endif
     }
     #ifdef OCCT_DEBUG
     else if ( myNMTool.IsIDEASCase() )
-      cout << "I-DEAS post processing for non-manifold topology DISABLED" << endl;
+      std::cout << "I-DEAS post processing for non-manifold topology DISABLED" << std::endl;
     #endif
   }
   myNMTool.CleanUp();
@@ -811,7 +811,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   //for (i = 1; i <= nb ; i ++) {
     #ifdef TRANSLOG
     if (TP->TraceLevel() > 2) 
-      sout<<" -- Actor, shape_representation.item n0. "<<i<<endl;
+      sout<<" -- Actor, shape_representation.item n0. "<<i<<Message_EndLine;
     #endif
     Handle(StepRepr_RepresentationItem) anitem = sr->ItemsValue(i);
     Handle(Transfer_Binder) binder;
@@ -1099,7 +1099,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::OldWay(const Handle(Stan
     
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 2) 
-    sout<<" -- Actor : case  shape_definition_representation."<<endl;
+    sout<<" -- Actor : case  shape_definition_representation."<<Message_EndLine;
 #endif
   Handle(Transfer_Binder) binder = TP->Find(rep);
   if (binder.IsNull()) binder = TP->Transferring(rep);
@@ -1140,7 +1140,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::OldWay(const Handle(Stan
 //      if (anitem.IsNull()) continue;
 #ifdef TRANSLOG
     if (TP->TraceLevel() > 1) 
-      sout<<" -- Actor : Ent.n0 "<<TP->Model()->Number(start)<<" -> Shared Ent.no"<<TP->Model()->Number(anitem)<<endl;
+      sout<<" -- Actor : Ent.n0 "<<TP->Model()->Number(start)<<" -> Shared Ent.no"<<TP->Model()->Number(anitem)<<Message_EndLine;
 #endif
 
     if (!TP->IsBound(anitem)) binder = TP->Transferring(anitem);
@@ -1179,7 +1179,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
   OSD_Timer chrono;
   if (TP->TraceLevel() > 2) 
     sout << "Begin transfer STEP -> CASCADE, Type "
-         << start->DynamicType()->Name() << endl;
+         << start->DynamicType()->Name() << Message_EndLine;
   chrono.Start();
 #endif
   
@@ -1260,7 +1260,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(const Han
 #ifdef TRANSLOG
   chrono.Stop();
   if (TP->TraceLevel() > 2) 
-    sout<<"End transfer STEP -> CASCADE :" << (found ? "OK" : " : no result")<<endl;
+    sout<<"End transfer STEP -> CASCADE :" << (found ? "OK" : " : no result")<<Message_EndLine;
   if (TP->TraceLevel() > 2) 
     chrono.Show();
 #endif
@@ -1419,7 +1419,7 @@ Handle(Transfer_Binder) STEPControl_ActorRead::TransferShape(const Handle(Standa
 #ifdef TRANSLOG
 //  POUR MISE AU POINT, a supprimer ensuite
   if (TP->TraceLevel() > 1) 
-    sout<<" -- Actor : Transfer Ent.n0 "<<TP->Model()->Number(start)<<"  Type "<<start->DynamicType()->Name()<<endl;
+    sout<<" -- Actor : Transfer Ent.n0 "<<TP->Model()->Number(start)<<"  Type "<<start->DynamicType()->Name()<<Message_EndLine;
 #endif
   
   Handle(TransferBRep_ShapeBinder) shbinder;
@@ -1576,7 +1576,7 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
   // Assign uncertainty
 #ifdef TRANSLOG
   if (TP->TraceLevel() > 1) 
-    TP->Messenger() <<"  Cc1ToTopoDS : Length Unit = "<<myUnit.LengthFactor()<<"  Tolerance CASCADE = "<<myPrecision<<endl;
+    TP->Messenger() <<"  Cc1ToTopoDS : Length Unit = "<<myUnit.LengthFactor()<<"  Tolerance CASCADE = "<<myPrecision<<Message_EndLine;
 #endif
 }
 
@@ -1757,7 +1757,7 @@ TopoDS_Shell STEPControl_ActorRead::closeIDEASShell(const TopoDS_Shell& shell,
       brepBuilder.Add(result, currentFace);
     else {
       #ifdef OCCT_DEBUG
-      cout << "Redundant closing face detected: REMOVED from shell";
+      std::cout << "Redundant closing face detected: REMOVED from shell";
       #endif
     }
   }

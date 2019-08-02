@@ -6084,7 +6084,7 @@ static int VDisplayType(Draw_Interpretor& , Standard_Integer argc, const char** 
 
 static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a)
 {
-  ifstream s(a[1]);
+  std::ifstream s(a[1]);
   BRep_Builder builder;
   TopoDS_Shape shape;
   BRepTools::Read(shape, s, builder);
@@ -6852,14 +6852,14 @@ static Standard_Boolean IsValid(const TopTools_ListOfShape& theArgs,
   Standard_Boolean ToCheck = Standard_True;
   if (!checkValid.IsEmpty()) {
 #ifdef OCCT_DEBUG
-    cout <<"DONT_SWITCH_IS_VALID positionnee a :"<<checkValid.ToCString()<<"\n";
+    std::cout <<"DONT_SWITCH_IS_VALID positionnee a :"<<checkValid.ToCString()<<"\n";
 #endif
     if ( checkValid=="true" || checkValid=="TRUE" ) {
       ToCheck= Standard_False;
     }
   } else {
 #ifdef OCCT_DEBUG
-    cout <<"DONT_SWITCH_IS_VALID non positionne\n";
+    std::cout <<"DONT_SWITCH_IS_VALID non positionne\n";
 #endif
   }
   Standard_Boolean IsValid = Standard_True;

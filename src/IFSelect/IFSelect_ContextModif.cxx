@@ -349,7 +349,7 @@ void IFSelect_ContextModif::TraceModifier
   if (modif.IsNull()) return;
 
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout << "---   Run Modifier:" << endl;
+  sout << "---   Run Modifier:" << Message_EndLine;
   Handle(IFSelect_Selection) sel = modif->Selection();
   if (!sel.IsNull()) sout<<"      Selection:"<<sel->Label();
   else               sout<<"  (no Selection)";
@@ -359,8 +359,8 @@ void IFSelect_ContextModif::TraceModifier
   for (Standard_Integer i = 1; i <= nb; i ++) {
     if (thelist.Value(i) != ' ') ne ++;
   }
-  if (nb == ne) sout<<"  All Model ("<<nb<<" Entities)"<<endl;
-  else          sout<<"  Entities,Total:"<<nb<<" Concerned:"<<ne<<endl;
+  if (nb == ne) sout<<"  All Model ("<<nb<<" Entities)"<<Message_EndLine;
+  else          sout<<"  Entities,Total:"<<nb<<" Concerned:"<<ne<<Message_EndLine;
 }
 
 
@@ -375,11 +375,11 @@ void IFSelect_ContextModif::Trace (const Standard_CString mess)
   if (thecurr <= 0) return;
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (ValueOriginal() == ValueResult())
-    sout<<"--  ContextModif. Entity  n0 "<<thecurr<<endl;
+    sout<<"--  ContextModif. Entity  n0 "<<thecurr<<Message_EndLine;
   else
     sout<<"--  ContextModif. Entity in Original, n0 "<<thecurr<<" in Result, n0 "
-      <<thecurt<<endl;
-  if (mess[0] != '\0') sout<<"--  Message:"<<mess<<endl;
+      <<thecurt<<Message_EndLine;
+  if (mess[0] != '\0') sout<<"--  Message:"<<mess<<Message_EndLine;
 }
 
 

@@ -55,7 +55,7 @@ static const Standard_ExtString   voidext = { 0 };
     void  XSControl_Utils::TraceLine (const Standard_CString line) const
 {
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout<<line<<endl;
+  sout<<line<<Message_EndLine;
 }
 
     void  XSControl_Utils::TraceLines (const Handle(Standard_Transient)& lines) const
@@ -66,14 +66,14 @@ static const Standard_ExtString   voidext = { 0 };
   if (!linha.IsNull()) {
     nb = linha->Length();
     for (i = 1; i <= nb; i ++)
-      if (!linha->Value(i).IsNull()) sout<<linha->Value(i)->ToCString()<<endl;
+      if (!linha->Value(i).IsNull()) sout<<linha->Value(i)->ToCString()<<Message_EndLine;
     return;
   }
   DeclareAndCast(TColStd_HSequenceOfAsciiString,lina,lines);
   if (!lina.IsNull()) {
     nb = lina->Length();
     for (i = 1; i <= nb; i ++)
-      sout<<lina->Value(i).ToCString()<<endl;
+      sout<<lina->Value(i).ToCString()<<Message_EndLine;
     return;
   }
   DeclareAndCast(TColStd_HSequenceOfHExtendedString,linhe,lines);
@@ -81,14 +81,14 @@ static const Standard_ExtString   voidext = { 0 };
     nb = linhe->Length();
     for (i = 1; i <= nb; i ++)
       if (!linhe->Value(i).IsNull())
-	sout << linhe->Value(i) << endl;
+	sout << linhe->Value(i) << Message_EndLine;
     return;
   }
   DeclareAndCast(TColStd_HSequenceOfExtendedString,linee,lines);
   if (!linee.IsNull()) {
     nb = linee->Length();
     for (i = 1; i <= nb; i ++)
-      sout << linee->Value(i) << endl;
+      sout << linee->Value(i) << Message_EndLine;
     return;
   }
   DeclareAndCast(TCollection_HAsciiString,lin1a,lines);

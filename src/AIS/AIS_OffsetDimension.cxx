@@ -79,7 +79,7 @@ mySAttach(0.,0.,0.)
   myArrowSize = fabs (myVal/10.0);
   if (myArrowSize > 30.) myArrowSize = 30.;
   if (myArrowSize < 15.) myArrowSize = 15.;
-  //cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<endl;
+  //std::cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<std::endl;
 }
 
 //=======================================================================
@@ -95,7 +95,7 @@ void AIS_OffsetDimension::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   myArrowSize = fabs (myVal/10.0);
   if (myArrowSize > 30.) myArrowSize = 30.;
   if (myArrowSize < 15.) myArrowSize = 15.;
-  //cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<endl;
+  //std::cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<std::endl;
   
   BRepAdaptor_Surface surf1(TopoDS::Face(myFShape));
   BRepAdaptor_Surface surf2(TopoDS::Face(mySShape));
@@ -163,7 +163,7 @@ void AIS_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)& aS
   myArrowSize = fabs (myVal/10.0);
   if (myArrowSize > 30.) myArrowSize = 30.;
   if (myArrowSize < 15.) myArrowSize = 15.;
-  //cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<endl;
+  //std::cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<std::endl;
   gp_Pnt myTFAttach = myFAttach.Transformed (myRelativePos);
   gp_Pnt myTSAttach = mySAttach.Transformed (myRelativePos);
   gp_Dir myTDirAttach = myDirAttach.Transformed (myRelativePos);
@@ -325,7 +325,7 @@ void AIS_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentation)&
 
   Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
   Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
-  //cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<endl;
+  //std::cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<std::endl;
   arr->SetLength(myArrowSize);
   arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
@@ -431,7 +431,7 @@ void AIS_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentation)
   
   Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
   Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
-  //cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<endl;
+  //std::cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<std::endl;
   arr->SetLength(myArrowSize);
   arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);

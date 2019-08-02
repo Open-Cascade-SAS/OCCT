@@ -74,7 +74,7 @@ void PrintE(const TDF_Label&       label)
 {
   TCollection_AsciiString entry;
   TDF_Tool::Entry(label, entry);
-  cout << "LabelEntry = "<< entry << endl;
+  std::cout << "LabelEntry = "<< entry << std::endl;
 }
 #endif
 //=======================================================================
@@ -118,7 +118,7 @@ Standard_Integer DNaming_TransformationDriver::Execute(Handle(TFunction_Logbook)
   aLab.FindAttribute(TNaming_NamedShape::GetID(), aContextNS);
   if (aContextNS.IsNull() || aContextNS->IsEmpty()) {
 #ifdef OCCT_DEBUG
-    cout<<"TransformationDriver:: Context is empty"<<endl;
+    std::cout<<"TransformationDriver:: Context is empty"<<std::endl;
 #endif
     aFunction->SetFailure(WRONG_CONTEXT);
     return -1;
@@ -349,7 +349,7 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
   const TopoDS_Shape& aSrcShape  = theSourceNS->Get();
   if (aSrcShape.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<"DNaming_TransformationDriver::LoadNamingDS: The result of the Transform operation is null"<<endl;
+    std::cout<<"DNaming_TransformationDriver::LoadNamingDS: The result of the Transform operation is null"<<std::endl;
 #endif
     return;
   }
@@ -357,7 +357,7 @@ void DNaming_TransformationDriver::LoadNamingDS (const TDF_Label& theResultLabel
   if(theSourceNS->Evolution() == TNaming_PRIMITIVE) isPrimitive = Standard_True;
   const TDF_Label& aSrcLabel     = theSourceNS->Label();
 #ifdef OCCT_DEBUG_TRSF
-  cout <<"TransformationDriver: ";
+  std::cout <<"TransformationDriver: ";
   PrintE(aSrcLabel);
 #endif
 

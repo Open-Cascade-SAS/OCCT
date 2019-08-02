@@ -120,7 +120,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                    anOStream,
 	qnt++;
       }
 
-//   cout << "Quantity of Curves  = " << qnt << endl;
+//   std::cout << "Quantity of Curves  = " << qnt << std::endl;
 
 // Wire (without any neighbour)
 
@@ -200,7 +200,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                    anOStream,
 	qnt++;
       }
 
-//   cout << "Quantity of Vertexes  = " << qnt << endl;
+//   std::cout << "Quantity of Vertexes  = " << qnt << std::endl;
 
     if (qnt != 0)
       {

@@ -67,11 +67,11 @@ Transfer_FinderProcess::Transfer_FinderProcess (const Standard_Integer nb)
 {
   S<<"\n*******************************************************************\n";
   if (mode == 1) {    //  Statistiques de base
-    S << "********                 Basic Statistics                  ********"<<endl;
+    S << "********                 Basic Statistics                  ********"<<Message_EndLine;
 
     Standard_Integer nbr = 0, nbe = 0, nbw = 0;
     Standard_Integer i, max = NbMapped(), nbroots = NbRoots();
-    S << "****        Nb Final Results    : "<<nbroots<<endl;
+    S << "****        Nb Final Results    : "<<nbroots<<Message_EndLine;
 
     for (i = 1; i <= max; i ++) {
       const Handle(Transfer_Binder)& binder = MapItem(i);
@@ -93,5 +93,5 @@ Transfer_FinderProcess::Transfer_FinderProcess (const Standard_Integer nb)
       S<<"****                Warnings on : "<<Interface_MSG::Blanks(nbw,4)<<nbw<<" Entities\n";
     S<<"*******************************************************************";
   }
-  S<<endl;
+  S<<Message_EndLine;
 }

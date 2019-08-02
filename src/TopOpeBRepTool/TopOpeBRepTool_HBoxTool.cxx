@@ -86,7 +86,7 @@ void TopOpeBRepTool_HBoxTool::AddBox(const TopoDS_Shape& S)
   myIMS.Add(S,B);
 #ifdef OCCT_DEBUG
   if (TBOX) {
-    DumpB(Box(S));cout<<"; # HBT::AddBox "<<Index(S)<<" : ";TopAbs::Print(t,cout);cout<<"\n";cout<<endl;
+    DumpB(Box(S));std::cout<<"; # HBT::AddBox "<<Index(S)<<" : ";TopAbs::Print(t,std::cout);std::cout<<"\n";std::cout<<std::endl;
   }
 #endif
 }
@@ -232,13 +232,13 @@ void TopOpeBRepTool_HBoxTool::DumpB
 #ifdef OCCT_DEBUG
 (const Bnd_Box& B)
 {
-  if      (B.IsVoid()) cout<<"# IsVoid";
-  else if (B.IsWhole()) cout<<"# IsWhole";
+  if      (B.IsVoid()) std::cout<<"# IsVoid";
+  else if (B.IsWhole()) std::cout<<"# IsWhole";
   else {
     Standard_Real x,y,z,X,Y,Z; 
     B.Get(x,y,z,X,Y,Z);
-    cout<<"bounding "<<x<<" "<<y<<" "<<z<<" "<<X<<" "<<Y<<" "<<Z;
-    cout.flush();
+    std::cout<<"bounding "<<x<<" "<<y<<" "<<z<<" "<<X<<" "<<Y<<" "<<Z;
+    std::cout.flush();
   }
 }
 #else

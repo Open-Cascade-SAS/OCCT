@@ -75,7 +75,7 @@ static Standard_Integer mkface(Draw_Interpretor& , Standard_Integer n, const cha
   
   Handle(Geom_Surface) S = DrawTrSurf::GetSurface(a[2]);
   if (S.IsNull()) {
-    cout << a[2] << " is not a surface" << endl;
+    std::cout << a[2] << " is not a surface" << std::endl;
     return 1;
   }
   
@@ -254,7 +254,7 @@ static Standard_Integer pcurve(Draw_Interpretor& , Standard_Integer n, const cha
       const Handle(Geom2d_Curve) c = BRep_Tool::CurveOnSurface
 	(TopoDS::Edge(ex.Current()),TopoDS::Face(S),f,l);
       if ( c.IsNull() ) {
-        cout << "Error: Edge " << i << " does not have pcurve" << endl;
+        std::cout << "Error: Edge " << i << " does not have pcurve" << std::endl;
         continue;
       }
       col = DBRep_ColorOrientation(ex.Current().Orientation());
@@ -504,7 +504,7 @@ Standard_Integer fastsewing (Draw_Interpretor& theDI,
   {
     theDI << "Error: There are some problems while adding (" <<
                         (static_cast<Standard_Integer>(aStatus)) << ")\n";
-    aFS.GetStatuses(&cout);
+    aFS.GetStatuses(&std::cout);
   }
 
   aFS.Perform();
@@ -515,7 +515,7 @@ Standard_Integer fastsewing (Draw_Interpretor& theDI,
   {
     theDI << "Error: There are some problems while performing (" <<
                         (static_cast<Standard_Integer>(aStatus)) << ")\n";
-    aFS.GetStatuses(&cout);
+    aFS.GetStatuses(&std::cout);
   }
 
   DBRep::Set(theArgVal[1], aFS.GetResult());
@@ -580,7 +580,7 @@ static Standard_Integer getedgeregul
 {
   if( argc < 3)
   {
-    cout<<"Invalid number of arguments. Should be: checkedgeregularity edge face1 [face2]"<<endl;
+    std::cout<<"Invalid number of arguments. Should be: checkedgeregularity edge face1 [face2]"<<std::endl;
     return 1;
   }
   
@@ -589,7 +589,7 @@ static Standard_Integer getedgeregul
   TopoDS_Shape aFace2 = (argc > 3  ? DBRep::Get(argv[3],TopAbs_FACE) : aFace1);
   if( anEdge.IsNull() || aFace1.IsNull() || aFace2.IsNull())
   {
-    cout<<"Invalid number of arguments. Should be: getedgeregularity edge face1 [face2]"<<endl;
+    std::cout<<"Invalid number of arguments. Should be: getedgeregularity edge face1 [face2]"<<std::endl;
     return 1;
   }
  

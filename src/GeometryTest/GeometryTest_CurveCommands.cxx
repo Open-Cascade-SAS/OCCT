@@ -309,7 +309,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
     Sprintf(newname,"%s_%d",name,k);
     Sprintf(newname1,"%s2d_%d",name,k);
     if(Projector.IsSinglePnt(k, P2d)){
-//      cout<<"Part "<<k<<" of the projection is punctual"<<endl;
+//      std::cout<<"Part "<<k<<" of the projection is punctual"<<std::endl;
       Projector.GetSurface()->D0(P2d.X(), P2d.Y(), P);
       DrawTrSurf::Set(temp, P);
       DrawTrSurf::Set(temp1, P2d);
@@ -322,7 +322,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
       gp_Dir2d Dir; // Only for isoparametric projection
       
       if (Projector.IsUIso(k, UIso)) {
-//      cout<<"Part "<<k<<" of the projection is U-isoparametric curve"<<endl;
+//      std::cout<<"Part "<<k<<" of the projection is U-isoparametric curve"<<std::endl;
         Projector.D0(Udeb, Pdeb);
         Projector.D0(Ufin, Pfin);
         Udeb = Pdeb.Y();
@@ -338,7 +338,7 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
         Only3d = Standard_True;
       }
       else if(Projector.IsVIso(k, VIso)) {
-//      cout<<"Part "<<k<<" of the projection is V-isoparametric curve"<<endl;
+//      std::cout<<"Part "<<k<<" of the projection is V-isoparametric curve"<<std::endl;
         Projector.D0(Udeb, Pdeb);
         Projector.D0(Ufin, Pfin);
         Udeb = Pdeb.X();
@@ -945,7 +945,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
     TopoDS_Wire aWire = TopoDS::Wire(DBRep::Get(a[2], TopAbs_WIRE));
     if (aWire.IsNull())
     {
-      cout << "cannot evaluate the argument " << a[2] << " as a curve" << endl;
+      std::cout << "cannot evaluate the argument " << a[2] << " as a curve" << std::endl;
       return 1;
     }
     BRepAdaptor_CompCurve aCompCurve(aWire);
@@ -1019,7 +1019,7 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
     TopoDS_Wire aWire = TopoDS::Wire(DBRep::Get(a[2], TopAbs_WIRE));
     if (aWire.IsNull())
     {
-      cout << "cannot evaluate the argument " << a[2] << " as a curve" << endl;
+      std::cout << "cannot evaluate the argument " << a[2] << " as a curve" << std::endl;
       return 1;
     }
     BRepAdaptor_CompCurve aCompCurve(aWire);
@@ -1681,7 +1681,7 @@ static Standard_Integer intersection (Draw_Interpretor& di,
       Standard_Integer Compt = 1;
 
       if(nblines >= 1)
-        cout << "   Lines: " << endl;
+        std::cout << "   Lines: " << std::endl;
 
       for (i = 1; i <= nblines; i++, Compt++)
       {
@@ -1693,7 +1693,7 @@ static Standard_Integer intersection (Draw_Interpretor& di,
       }
 
       if(nbpoints >= 1)
-        cout << "   Points: " << endl;
+        std::cout << "   Points: " << std::endl;
 
       const Standard_Integer imax = nblines+nbpoints;
 

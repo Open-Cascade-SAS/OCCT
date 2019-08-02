@@ -46,7 +46,7 @@ static Standard_Boolean lesparam(const Standard_Integer iordre,
   else {
     nbpnts = 50;
 #ifdef OCCT_DEBUG
-    cout << "F(U, V) : Not enough points of discretization" << endl; 
+    std::cout << "F(U, V) : Not enough points of discretization" << std::endl; 
 #endif
   }
 

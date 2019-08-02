@@ -23,6 +23,6 @@
 
 inline void Units_UnitsLexicon::Dump() const
 {
-  cout<<" UNITSLEXICON : "<<endl;
+  std::cout<<" UNITSLEXICON : "<<std::endl;
   Units_Lexicon::Dump();
 }

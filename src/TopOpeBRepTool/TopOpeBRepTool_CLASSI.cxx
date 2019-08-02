@@ -145,7 +145,7 @@ Standard_Integer TopOpeBRepTool_CLASSI::ClassiBnd2d(const TopoDS_Shape& S1,const
   Standard_Boolean trc = Standard_False;
   if (trc) {
     for (Standard_Integer j = 1; j <= 2; j++)
-      cout<<"B("<<j<<") = ("<<UV(j,1)<<" "<<UV(j,3)<<" "<<UV(j,2)<<" "<<UV(j,4)<<")"<<endl;
+      std::cout<<"B("<<j<<") = ("<<UV(j,1)<<" "<<UV(j,3)<<" "<<UV(j,2)<<" "<<UV(j,4)<<")"<<std::endl;
   }
 #endif
 

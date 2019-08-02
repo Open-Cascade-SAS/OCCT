@@ -222,7 +222,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&              t
   if (aParser.parse(theIStream, Standard_False, aWithoutRoot))
   {
     TCollection_AsciiString aData;
-    cout << aParser.GetError(aData) << ": " << aData << endl;
+    std::cout << aParser.GetError(aData) << ": " << aData << std::endl;
     myReaderStatus = PCDM_RS_FormatFailure;
     return;
   }
@@ -294,7 +294,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         theNewDocument->SetReferenceCounter(aRefCounter);
       }
       catch (Standard_Failure const&) {
-        //    cout << "warning: could not read the reference counter in " << aFileName << endl;
+        //    std::cout << "warning: could not read the reference counter in " << aFileName << std::endl;
         TCollection_ExtendedString aMsg("Warning: ");
         aMsg = aMsg.Cat("could not read the reference counter").Cat("\0");
         if(!aMsgDriver.IsNull()) 
@@ -343,7 +343,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     if(!anAbsolutePath.IsEmpty()) aPath=anAbsolutePath;
         }
         if(!aMsgDriver.IsNull()) {
-    //      cout << "reference found; ReferenceIdentifier: " << theReferenceIdentifier << "; File:" << thePath << ", version:" << theDocumentVersion;
+    //      std::cout << "reference found; ReferenceIdentifier: " << theReferenceIdentifier << "; File:" << thePath << ", version:" << theDocumentVersion;
           TCollection_ExtendedString aMsg("Warning: ");
           aMsg = aMsg.Cat("reference found; ReferenceIdentifier:  ").Cat(aRefId).Cat("; File:").Cat(aPath).Cat(", version:").Cat(aDocumentVersion).Cat("\0");
           aMsgDriver->Send(aMsg.ToExtString(), Message_Warning);

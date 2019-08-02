@@ -21,7 +21,7 @@
 #include <math_FunctionSetRoot.hxx>
 #include <Precision.hxx>
 
-#define Debug(expr)  cout<<" expr :"<<expr;
+#define Debug(expr)  std::cout<<" expr :"<<expr;
 #define MySurf1 MyIntersectionOn2S.Function().AuxillarSurface1()
 #define MySurf2 MyIntersectionOn2S.Function().AuxillarSurface2()
 

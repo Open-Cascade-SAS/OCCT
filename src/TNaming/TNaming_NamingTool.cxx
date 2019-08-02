@@ -45,10 +45,10 @@ static void WriteS(const TopoDS_Shape& shape,
       *p = '-';
     p++;
   }
-  ofstream save (buf);
+  std::ofstream save (buf);
   if(!save) 
-    cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << endl;
-  save << "DBRep_DrawableShape" << endl << endl;
+    std::cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << std::endl;
+  save << "DBRep_DrawableShape" << std::endl << std::endl;
   if(!shape.IsNull()) BRepTools::Write(shape, save);
   save.close();
 }
@@ -88,7 +88,7 @@ static void LastModif(      TNaming_NewShapeIterator& it,
 #ifdef OCCT_DEBUG_DESC
     TCollection_AsciiString entry;
     TDF_Tool::Entry(Lab, entry);
-    cout << "NamingTool:: LastModif LabelEntry = "<< entry <<  endl;
+    std::cout << "NamingTool:: LastModif LabelEntry = "<< entry <<  std::endl;
 #endif
     if (!Updated.IsEmpty() && !Updated.Contains(Lab))  continue;
     if (IsForbiden(Forbiden, Lab))                     continue; 
@@ -112,9 +112,9 @@ static void ApplyOrientation (TopTools_IndexedMapOfShape& MS,
 {
 #ifdef OCCT_DEBUG_APPLY
  if (!MS.IsEmpty ()) {
-   cout <<"OrientationToApply = " <<OrientationToApply <<endl;
+   std::cout <<"OrientationToApply = " <<OrientationToApply <<std::endl;
    for (Standard_Integer anItMS1 = 1; anItMS1 <= MS.Extent(); ++anItMS1) {
-     cout << "ApplyOrientation: TShape = " << MS (anItMS1).TShape()->This() << " OR = " << MS (anItMS1).Orientation() <<endl;
+     std::cout << "ApplyOrientation: TShape = " << MS (anItMS1).TShape()->This() << " OR = " << MS (anItMS1).Orientation() <<std::endl;
    }
  }
 #endif
@@ -136,13 +136,13 @@ void TNaming_NamingTool::CurrentShape(const TDF_LabelMap&               Valid,
 #ifdef OCCT_DEBUG_DESC
     TCollection_AsciiString entry;
     TDF_Tool::Entry(Lab, entry);
-    cout << "NamingTool:: LabelEntry = "<< entry <<  endl;
+    std::cout << "NamingTool:: LabelEntry = "<< entry <<  std::endl;
 #endif
   if (!Valid.IsEmpty() && !Valid.Contains(Lab)) {
 #ifdef OCCT_DEBUG_DESC
     TCollection_AsciiString entry;
     TDF_Tool::Entry(Lab, entry);
-    cout << "NamingTool:: LabelEntry = "<< entry << " is out of Valid map" <<  endl;
+    std::cout << "NamingTool:: LabelEntry = "<< entry << " is out of Valid map" <<  std::endl;
 #endif
     return;
   }
@@ -154,7 +154,7 @@ void TNaming_NamingTool::CurrentShape(const TDF_LabelMap&               Valid,
 #ifdef OCCT_DEBUG_DESC
     WriteS(S, "CS_NewShape.brep");
     if(itL.OldShape().IsNull())
-      cout <<"OldShape is Null" <<endl;
+      std::cout <<"OldShape is Null" <<std::endl;
     else 
         WriteS(itL.OldShape(), "CS_OldShape.brep");
 #endif
@@ -241,7 +241,7 @@ static void MakeDescendants (TNaming_NewShapeIterator&         it,
 #ifdef OCCT_DEBUG_DESC
     TCollection_AsciiString entry;
     TDF_Tool::Entry(it.Label(), entry);
-    cout<< "MakeDescendants: Label = " <<entry <<endl;
+    std::cout<< "MakeDescendants: Label = " <<entry <<std::endl;
 #endif
     if (!it.Shape().IsNull()) {
       TNaming_NewShapeIterator it2(it);
@@ -259,7 +259,7 @@ void BuildDescendants2 (const Handle(TNaming_NamedShape)& NS, const TDF_Label& F
 #ifdef OCCT_DEBUG_DESC
       TCollection_AsciiString entry;
       TDF_Tool::Entry(it.Label(), entry);
-      cout<< "MakeDescendants2: Label = " <<entry <<endl;
+      std::cout<< "MakeDescendants2: Label = " <<entry <<std::endl;
 #endif      
       if(ForbLab == it.Label()) continue;
       Descendants.Add(it.Label());
@@ -282,7 +282,7 @@ void TNaming_NamingTool::BuildDescendants (const Handle(TNaming_NamedShape)& NS,
 #ifdef OCCT_DEBUG_DESC
     TCollection_AsciiString entry;
     TDF_Tool::Entry(NS->Label(), entry);
-    cout<< "MakeDescendants: Label = " <<entry <<endl;
+    std::cout<< "MakeDescendants: Label = " <<entry <<std::endl;
 #endif
   MakeDescendants (it,Descendants);
   TNaming_OldShapeIterator it2(NS); 
@@ -293,7 +293,7 @@ void TNaming_NamingTool::BuildDescendants (const Handle(TNaming_NamedShape)& NS,
 #ifdef OCCT_DEBUG_DESC
 	TCollection_AsciiString entry;
 	TDF_Tool::Entry(ONS->Label(), entry);
-	cout<< "MakeDescendants_Old: Label = " <<entry <<endl;	  
+	std::cout<< "MakeDescendants_Old: Label = " <<entry <<std::endl;	  
 #endif
 	BuildDescendants2(ONS, NS->Label(), Descendants);
       }

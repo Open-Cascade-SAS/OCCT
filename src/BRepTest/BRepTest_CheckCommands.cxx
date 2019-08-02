@@ -257,7 +257,7 @@ static Standard_Integer computetolerance(Draw_Interpretor& di,
 					 Standard_Integer narg, const char** a)
 {
   if (narg < 2) {
-    //cout << "Usage: computetolerance shape" << endl;
+    //std::cout << "Usage: computetolerance shape" << std::endl;
     di << "Usage: computetolerance shape\n";
     return 1;
   }
@@ -266,7 +266,7 @@ static Standard_Integer computetolerance(Draw_Interpretor& di,
   if (S.ShapeType() == TopAbs_EDGE) {
     BRepCheck_Edge bce(TopoDS::Edge(S));
     tol=bce.Tolerance();
-    //cout<< "Tolerance de " << (void*) &(*S.TShape()) << " : " << tol << endl;
+    //std::cout<< "Tolerance de " << (void*) &(*S.TShape()) << " : " << tol << std::endl;
     Standard_SStream aSStream1;
     aSStream1<< "Tolerance de " << (void*) &(*S.TShape()) << " : " << tol << "\n";
     di << aSStream1;
@@ -278,13 +278,13 @@ static Standard_Integer computetolerance(Draw_Interpretor& di,
       if (theEdges.Add(exp.Current())) {
 	BRepCheck_Edge bce(TopoDS::Edge(exp.Current()));
 	tol=bce.Tolerance();
-	//cout<< "Tolerance de " << (void*) &(*exp.Current().TShape()) << " : " << tol << "\n";
+	//std::cout<< "Tolerance de " << (void*) &(*exp.Current().TShape()) << " : " << tol << "\n";
 	Standard_SStream aSStream2;
 	aSStream2<< "Tolerance de " << (void*) &(*exp.Current().TShape()) << " : " << tol << "\n";
 	di << aSStream2;
       }
     }
-    //cout << endl;
+    //std::cout << std::endl;
     di << "\n";
   }
   return 0;
@@ -323,7 +323,7 @@ static Standard_Integer checksection(Draw_Interpretor& di,
     if (!theVertices.Add(exp.Current())) 
       theVertices.Remove(exp.Current());
   }
-  //cout << " nb alone Vertices : " << theVertices.Extent() << endl;
+  //std::cout << " nb alone Vertices : " << theVertices.Extent() << std::endl;
   di << " nb alone Vertices : " << theVertices.Extent() << "\n";
 
   if (aCompareValue >= 0)
@@ -346,10 +346,10 @@ static Standard_Integer checksection(Draw_Interpretor& di,
     ipp++;
     Sprintf(Name,"alone_%d",ipp);
     DBRep::Set(Name, itvx.Key());
-    //cout << Name << " " ;
+    //std::cout << Name << " " ;
     di << Name << " " ;
   }
-  //cout << endl;
+  //std::cout << std::endl;
   di << "\n";
   return 0;
 }
@@ -367,13 +367,13 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
     if (narg==2) {
       Standard_Integer bcrtrace=Draw::Atoi(a[narg-1]);
       bcrtrace=BRepCheck_Trace(bcrtrace);
-      //cout << "BRepCheck_Trace : " << bcrtrace << endl;
+      //std::cout << "BRepCheck_Trace : " << bcrtrace << std::endl;
       di << "BRepCheck_Trace : " << bcrtrace << "\n";
-      //cout << syntaxe << endl;
+      //std::cout << syntaxe << std::endl;
       di << syntaxe << "\n";
       return 0;
     }
-    //cout << syntaxe << endl;
+    //std::cout << syntaxe << std::endl;
     di << syntaxe << "\n";
     return 1;
   }
@@ -384,7 +384,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
   TopoDS_Shape resu = DBRep::Get(a[narg-1]);
   if (resu.IsNull()) {
     if (narg < 4) {
-      //cout << syntaxe << endl;
+      //std::cout << syntaxe << std::endl;
       di << syntaxe << "\n";
       return 1;
     }
@@ -393,7 +393,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
     lastArg=narg-3;
     if (resu.IsNull()) {
       if (narg < 5) {
-	//cout << syntaxe << endl;
+	//std::cout << syntaxe << std::endl;
 	di << syntaxe << "\n";
 	return 1;
       }
@@ -402,7 +402,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
       resu = DBRep::Get(a[narg-3]);
       lastArg=narg-4;
       if (resu.IsNull()) {
-	//cout << syntaxe << endl;
+	//std::cout << syntaxe << std::endl;
 	di << syntaxe << "\n";
 	return 1;
       }
@@ -415,10 +415,10 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
   }
 
   if (BRepAlgo::IsValid(lesArgs, resu, closedSolid, geomCtrl)) {
-    //cout << "Difference is Valid." << endl;
+    //std::cout << "Difference is Valid." << std::endl;
     di << "Difference is Valid.\n";
   } else {
-    //cout << "error : Difference is Not Valid !" << endl;
+    //std::cout << "error : Difference is Not Valid !" << std::endl;
     di << "error : Difference is Not Valid !\n";
   }
 
@@ -444,7 +444,7 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
 
 //   TopoDS_Shape S = DBRep::Get(a[1]);
 //   if (S.IsNull()) {
-//     cout<<"not a topological shape"<<endl;
+//     std::cout<<"not a topological shape"<<std::endl;
 //     return 1;
 //   }
 
@@ -464,11 +464,11 @@ static Standard_Integer checkdiff(Draw_Interpretor& di,
 //     theMap.Clear();
 //     if (doprint) {
 //       Print(cout,ana,S);
-//       cout<<"\n";
+//       std::cout<<"\n";
 //       theMap.Clear();
 //       if (nbfaulty !=0)
-// 	cout<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
-//       cout<<endl;
+// 	std::cout<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
+//       std::cout<<std::endl;
 //     }
 //     else {
 //       theCommands<<"This shape has faulty shapes";
@@ -496,15 +496,15 @@ void ContextualDump(Draw_Interpretor& theCommands,
   Standard_SStream aSStream;
   Print(aSStream, theAna, theShape);
   theCommands << aSStream;
-  //cout<<"\n";
+  //std::cout<<"\n";
   theCommands<<"\n";
   theMap.Clear();
 
   if (nbfaulty !=0)
     theCommands<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
-    //cout<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
+    //std::cout<<"Faulty shapes in variables "<<checkfaultyname<<"1 to "<<checkfaultyname<<nbfaulty<<" \n";
 
-  //cout<<endl;
+  //std::cout<<std::endl;
   theCommands<<"\n";
 }
 
@@ -638,10 +638,10 @@ void StructuralDump(Draw_Interpretor& theCommands,
 		    const TopoDS_Shape       &theShape)
 {
   Standard_Integer i;
-  //cout << "StructuralDump" << endl;
-  //cout << " -- The Shape " << ShName << " has problems :"<<endl;
-  //cout<<"  Check                                    Count"<<endl;
-  //cout<<" ------------------------------------------------"<<endl;
+  //std::cout << "StructuralDump" << std::endl;
+  //std::cout << " -- The Shape " << ShName << " has problems :"<<std::endl;
+  //std::cout<<"  Check                                    Count"<<std::endl;
+  //std::cout<<" ------------------------------------------------"<<std::endl;
   theCommands << " -- The Shape " << ShName << " has problems :\n";
   theCommands<<"  Check                                    Count\n";
   theCommands<<" ------------------------------------------------\n";
@@ -835,7 +835,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_v",Pref);
     DBRep::Set(aName,comp);
-    //cout<<"VERTEX	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
+    //std::cout<<"VERTEX	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"VERTEX	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -850,7 +850,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_e",Pref);
     DBRep::Set(aName,comp);
-    //cout<<"EDGE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
+    //std::cout<<"EDGE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"EDGE	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -865,7 +865,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_w",Pref);
     DBRep::Set(aName,comp);
-    //cout<<"WIRE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
+    //std::cout<<"WIRE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"WIRE	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -880,7 +880,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_f",Pref);
     DBRep::Set(aName,comp);
-    //cout<<"FACE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
+    //std::cout<<"FACE	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"FACE	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -895,7 +895,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_s",Pref);
     DBRep::Set(aName,comp);
-    //cout<<"SHELL	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
+    //std::cout<<"SHELL	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"SHELL	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -910,7 +910,7 @@ void StructuralDump(Draw_Interpretor& theCommands,
     char aName[20];
     Sprintf(aName,"%s_o",Pref);
     DBRep::Set(aName,comp);
-    //cout<<"SOLID	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<endl;
+    //std::cout<<"SOLID	: "<<(nb > 9 ? "" : " ")<<nb<<" Items -> compound named "<<aName<<std::endl;
     if (nb > 9)
       theCommands<<"SOLID	: "<<nb<<" Items -> compound named "<<aName<<"\n";
     else
@@ -927,15 +927,15 @@ static Standard_Integer checkshape(Draw_Interpretor& theCommands,
 				   Standard_Integer narg, const char** a)
 {
   if (narg == 1) {
-    //cout << endl;
-    //cout << "Usage : checkshape [-top] shape [result] [-short]" << endl;
-    //cout << endl;
-    //cout << "Where :" << endl;
-    //cout << "   -top   - check topology only." << endl;
-    //cout << "   shape  - the name of the shape to test." << endl;
-    //cout << "   result - the prefix of the output shape names. If it is used, structural" << endl;
-    //cout << "            output style will be used. Otherwise - contextual one." << endl;
-    //cout << "   -short - short description of check." << endl;
+    //std::cout << std::endl;
+    //std::cout << "Usage : checkshape [-top] shape [result] [-short]" << std::endl;
+    //std::cout << std::endl;
+    //std::cout << "Where :" << std::endl;
+    //std::cout << "   -top   - check topology only." << std::endl;
+    //std::cout << "   shape  - the name of the shape to test." << std::endl;
+    //std::cout << "   result - the prefix of the output shape names. If it is used, structural" << std::endl;
+    //std::cout << "            output style will be used. Otherwise - contextual one." << std::endl;
+    //std::cout << "   -short - short description of check." << std::endl;
     theCommands << "\n";
     theCommands << "Usage : checkshape [-top] shape [result] [-short]\n";
     theCommands << "\n";
@@ -950,8 +950,8 @@ static Standard_Integer checkshape(Draw_Interpretor& theCommands,
   }
 
   if (narg > 5) {
-    //cout << "Invalid number of args!!!" << endl;
-    //cout << "No args to have help." << endl;
+    //std::cout << "Invalid number of args!!!" << std::endl;
+    //std::cout << "No args to have help." << std::endl;
     theCommands << "Invalid number of args!!!\n";
     theCommands << "No args to have help.\n";
 
@@ -967,8 +967,8 @@ static Standard_Integer checkshape(Draw_Interpretor& theCommands,
   }
 
   if (aCurInd > narg - 1) {
-    //cout << "Invalid number of args!!!" << endl;
-    //cout << "No args to have help." << endl;
+    //std::cout << "Invalid number of args!!!" << std::endl;
+    //std::cout << "No args to have help." << std::endl;
     theCommands << "Invalid number of args!!!\n";
     theCommands << "No args to have help.\n";
 
@@ -979,7 +979,7 @@ static Standard_Integer checkshape(Draw_Interpretor& theCommands,
   TopoDS_Shape     aShape     = DBRep::Get(aShapeName);
 
   if (aShape.IsNull()) {
-    //cout << a[aCurInd] << " is not a topological shape!!!" << endl;
+    //std::cout << a[aCurInd] << " is not a topological shape!!!" << std::endl;
     theCommands << a[aCurInd] << " is not a topological shape!!!\n";
 
     return 1;
@@ -997,8 +997,8 @@ static Standard_Integer checkshape(Draw_Interpretor& theCommands,
   }
 
   if (aCurInd < aBackInd - 1) {
-    //cout << "Invalid number of args!!!" << endl;
-    //cout << "No args to have help." << endl;
+    //std::cout << "Invalid number of args!!!" << std::endl;
+    //std::cout << "No args to have help." << std::endl;
     theCommands << "Invalid number of args!!!\n";
     theCommands << "No args to have help.\n";
 
@@ -1170,12 +1170,12 @@ static Standard_Integer shapeG1continuity (Draw_Interpretor& di, Standard_Intege
      }
    while ((nb<nbeval)&& isdone );
 
-  //if (!isdone)  { cout<<" Problem in computation "<<endl; return 1;}
+  //if (!isdone)  { std::cout<<" Problem in computation "<<std::endl; return 1;}
   //if (ISG1) 
-  //    {cout<<" the continuity is G1 "<<endl;}
-  //else { cout<<" the continuity is not G1  "<<endl;}
-  //cout<<"MaxG0Value :"<< MaxG0Value << endl;
-  //cout<<"MaxG1Angle:"<<  MaxG1Angle << endl;
+  //    {std::cout<<" the continuity is G1 "<<std::endl;}
+  //else { std::cout<<" the continuity is not G1  "<<std::endl;}
+  //std::cout<<"MaxG0Value :"<< MaxG0Value << std::endl;
+  //std::cout<<"MaxG1Angle:"<<  MaxG1Angle << std::endl;
   if (!isdone)  { di<<" Problem in computation \n"; return 1;}
   if (ISG1) 
       {di<<" the continuity is G1 \n";}
@@ -1293,12 +1293,12 @@ static Standard_Integer shapeG0continuity (Draw_Interpretor& di, Standard_Intege
      }
    while ((nb<nbeval)&& isdone );
 
-  //f (!isdone)  { cout<<" Problem in computation "<<endl; return 1;}
+  //f (!isdone)  { std::cout<<" Problem in computation "<<std::endl; return 1;}
   //if (ISG0) 
-  //    {cout<<" the continuity is G0 "<<endl;}
+  //    {std::cout<<" the continuity is G0 "<<std::endl;}
 
-  //else { cout<<" the continuity is not G0  "<<endl;}
-  //cout<<"MaxG0Value :"<< MaxG0Value << endl;
+  //else { std::cout<<" the continuity is not G0  "<<std::endl;}
+  //std::cout<<"MaxG0Value :"<< MaxG0Value << std::endl;
   if (!isdone)  { di<<" Problem in computation \n"; return 1;}
   if (ISG0) 
       {di<<" the continuity is G0 \n";}
@@ -1432,13 +1432,13 @@ static Standard_Integer shapeG2continuity (Draw_Interpretor& di, Standard_Intege
      }
    while ((nb<nbeval)&& isdone );
 
-  //if (!isdone)  { cout<<" Problem in computation "<<endl; return 1;}
+  //if (!isdone)  { std::cout<<" Problem in computation "<<std::endl; return 1;}
   //if (ISG2) 
-  //cout<<" the continuity is G2 "<<endl;
-  //else cout<<" the continuity is not G2  "<<endl;
-  //cout<<"MaxG0Value :"<< MaxG0Value << endl;
-  //cout<<"MaxG1Angle:"<<  MaxG1Angle << endl;
-  //cout<<"MaxG2Curvature:"<<MaxG2Curvature<<endl;
+  //std::cout<<" the continuity is G2 "<<std::endl;
+  //else std::cout<<" the continuity is not G2  "<<std::endl;
+  //std::cout<<"MaxG0Value :"<< MaxG0Value << std::endl;
+  //std::cout<<"MaxG1Angle:"<<  MaxG1Angle << std::endl;
+  //std::cout<<"MaxG2Curvature:"<<MaxG2Curvature<<std::endl;
   if (!isdone)  { di<<" Problem in computation \n"; return 1;}
   if (ISG2) 
   di<<" the continuity is G2 \n";
@@ -1460,7 +1460,7 @@ static Standard_Integer clintedge(Draw_Interpretor& di,
   char newname[255];
 
   if (narg < 2) {
-    //cout << "Usage: clintedge shape" << endl;
+    //std::cout << "Usage: clintedge shape" << std::endl;
     di << "Usage: clintedge shape\n";
     return 1;
   }
@@ -1471,7 +1471,7 @@ static Standard_Integer clintedge(Draw_Interpretor& di,
   Standard_Integer nbedges = mypurgealgo.NbEdges();
   if (nbedges > 0)
   {
-    //cout<<nbedges<<" internal (or external) edges to be removed"<<endl;
+    //std::cout<<nbedges<<" internal (or external) edges to be removed"<<std::endl;
     di<<nbedges<<" internal (or external) edges to be removed\n";
 
     Standard_Integer i = 1;
@@ -1479,15 +1479,15 @@ static Standard_Integer clintedge(Draw_Interpretor& di,
 
     Sprintf(newname,"%s_%d",a[1],i);
     DBRep::Set(temp,mypurgealgo.Shape());
-    //cout<<newname<<" ";
+    //std::cout<<newname<<" ";
     di<<newname<<" ";
 
-    //cout<<endl;
+    //std::cout<<std::endl;
     di<<"\n";
   }
   else
     di << "no internal (or external) edges\n";
-    //cout << "no internal (or external) edges"<<endl;
+    //std::cout << "no internal (or external) edges"<<std::endl;
 
   return 0;
 }
@@ -1503,7 +1503,7 @@ static Standard_Integer facintedge(Draw_Interpretor& di,
   char newname[255];
 
   if (narg < 2) {
-    //cout << "Usage: facintedge shape" << endl;
+    //std::cout << "Usage: facintedge shape" << std::endl;
     di << "Usage: facintedge shape\n";
     return 1;
   }
@@ -1520,12 +1520,12 @@ static Standard_Integer facintedge(Draw_Interpretor& di,
   for (itFacEdg.Initialize(mymap); itFacEdg.More(); itFacEdg.Next()) {
       Sprintf(newname,"%s_%d",a[1],i);
       DBRep::Set(temp,itFacEdg.Key());
-      //cout<<newname<<" ";
+      //std::cout<<newname<<" ";
       di<<newname<<" ";
       i++;
     }
 
-  //cout<<endl;
+  //std::cout<<std::endl;
   di<<"\n";
 
   return 0;
@@ -1541,7 +1541,7 @@ static Standard_Integer fuseedge(Draw_Interpretor& di,
   char newname[255];
 
   if (narg < 2) {
-    //cout << "Usage: fuseedge shape" << endl;
+    //std::cout << "Usage: fuseedge shape" << std::endl;
     di << "Usage: fuseedge shape\n";
     return 1;
   }
@@ -1556,7 +1556,7 @@ static Standard_Integer fuseedge(Draw_Interpretor& di,
 
   if (nbvertices > 0) {
 
-    //cout<<nbvertices<<" vertices to be removed"<<endl;
+    //std::cout<<nbvertices<<" vertices to be removed"<<std::endl;
     di<<nbvertices<<" vertices to be removed\n";
 
     Standard_Integer i = 1;
@@ -1564,15 +1564,15 @@ static Standard_Integer fuseedge(Draw_Interpretor& di,
 
     Sprintf(newname,"%s_%d",a[1],i);
     DBRep::Set(temp,myfusealgo.Shape());
-    //cout<<newname<<" ";
+    //std::cout<<newname<<" ";
     di<<newname<<" ";
 
-    //cout<<endl;
+    //std::cout<<std::endl;
     di<<"\n";
   }
   else
     di << "no vertices to remove\n";
-    //cout << "no vertices to remove"<<endl;
+    //std::cout << "no vertices to remove"<<std::endl;
 
   return 0;
 }
@@ -1588,7 +1588,7 @@ static Standard_Integer listfuseedge(Draw_Interpretor& di,
   char newname[255];
 
   if (narg < 2) {
-    //cout << "Usage: listfuseedge shape" << endl;
+    //std::cout << "Usage: listfuseedge shape" << std::endl;
     di << "Usage: listfuseedge shape\n";
     return 1;
   }
@@ -1610,14 +1610,14 @@ static Standard_Integer listfuseedge(Draw_Interpretor& di,
       for (itEdg.Initialize(LmapEdg); itEdg.More(); itEdg.Next()) {
 	Sprintf(newname,"%s_%d_%d",a[1],iLst,i);
 	DBRep::Set(temp,itEdg.Value());
-	//cout<<newname<<" ";
+	//std::cout<<newname<<" ";
 	di<<newname<<" ";
 	i++;
       }
 
     }
 
-  //cout<<endl;
+  //std::cout<<std::endl;
   di<<"\n";
 
   return 0;

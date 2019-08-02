@@ -267,7 +267,7 @@ static Handle(Geom2d_Curve) TranslatePCurve (const Handle(Geom_Surface)& aSurf,
 */
     // Other case not yet implemented
 #ifdef OCCT_DEBUG
-    cout << "TranslatePCurve not performed" << endl;
+    std::cout << "TranslatePCurve not performed" << std::endl;
 #endif
     return theNewL2d;//*theL2d;
   }
@@ -277,7 +277,7 @@ static Handle(Geom2d_Curve) TranslatePCurve (const Handle(Geom_Surface)& aSurf,
       aBC = Handle(Geom2d_BSplineCurve)::DownCast(aC2d);
     if (aBC.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "Untreated curve type in TranslatePCurve" << endl;
+      std::cout << "Untreated curve type in TranslatePCurve" << std::endl;
 #endif
       return aC2d;
     }
@@ -558,8 +558,8 @@ Standard_Boolean ShapeFix_Edge::FixAddPCurve (const TopoDS_Edge& edge,
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
 //:s5
-    cout << "Warning: ShapeFix_Edge::FixAddPCurve(): Exception: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeFix_Edge::FixAddPCurve(): Exception: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     myStatus |= ShapeExtend::EncodeStatus (ShapeExtend_FAIL2);
@@ -787,8 +787,8 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
     }
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "\nWarning: ShapeFix_Edge: Exception in SameParameter: "; 
-      anException.Print(cout); cout << endl;
+      std::cout << "\nWarning: ShapeFix_Edge: Exception in SameParameter: "; 
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );

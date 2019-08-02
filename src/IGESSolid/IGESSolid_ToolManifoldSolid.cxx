@@ -209,22 +209,22 @@ void  IGESSolid_ToolManifoldSolid::OwnDump
   (const Handle(IGESSolid_ManifoldSolid)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_ManifoldSolid" << endl;
+  S << "IGESSolid_ManifoldSolid" << Message_EndLine;
 
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   S << "Shell : ";
   dumper.Dump(ent->Shell(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   if (ent->OrientationFlag())
-    S << "Orientation agrees with the underlying surface" << endl;
+    S << "Orientation agrees with the underlying surface" << Message_EndLine;
   else
-    S << "Orientation does not agrees with the underlying surface" << endl;
-  S << "Void shells :" << endl << "Orientation flags : ";
+    S << "Orientation does not agrees with the underlying surface" << Message_EndLine;
+  S << "Void shells :" << Message_EndLine << "Orientation flags : ";
   IGESData_DumpEntities(S,dumper,-level,1, ent->NbVoidShells(),ent->VoidShell);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
-      S << "[ " << endl;
+      S << "[ " << Message_EndLine;
       if (ent->NbVoidShells() > 0)
 	{
           Standard_Integer upper = ent->NbVoidShells();
@@ -234,12 +234,12 @@ void  IGESSolid_ToolManifoldSolid::OwnDump
               S << "Void shell : ";
               dumper.Dump (ent->VoidShell(i),S, sublevel);
               S << "  - Orientation flag : ";
-              if (ent->VoidOrientationFlag(i)) S << "True"  << endl;
-              else		               S << "False" << endl;
+              if (ent->VoidOrientationFlag(i)) S << "True"  << Message_EndLine;
+              else		               S << "False" << Message_EndLine;
 	    }
 	}
-      S << " ]" << endl;
+      S << " ]" << Message_EndLine;
     }
-  S << endl;
+  S << Message_EndLine;
 }
 

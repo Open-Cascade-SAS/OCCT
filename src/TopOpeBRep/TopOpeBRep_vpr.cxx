@@ -76,12 +76,12 @@ Standard_Boolean GLOBAL_bvpr = Standard_False;
 
 void debvpr(){};
 void debvprmess(Standard_Integer f1,Standard_Integer f2,Standard_Integer il,Standard_Integer vp,Standard_Integer si)
-{cout<<"f1,f2,il,vp,si : "<<f1<<","<<f2<<","<<il<<","<<vp<<","<<si<<endl;cout.flush();debvpr();}
-void debpoint(Standard_Integer i) {cout<<"+ debpoint"<<i<<endl;}
-void debvertex(Standard_Integer i){cout<<"+ debvertex"<<i<<endl;}
+{std::cout<<"f1,f2,il,vp,si : "<<f1<<","<<f2<<","<<il<<","<<vp<<","<<si<<std::endl;std::cout.flush();debvpr();}
+void debpoint(Standard_Integer i) {std::cout<<"+ debpoint"<<i<<std::endl;}
+void debvertex(Standard_Integer i){std::cout<<"+ debvertex"<<i<<std::endl;}
 
-Standard_EXPORT void debarc(const Standard_Integer i)   {cout<<"+ debarc "<<i<<endl;}
-Standard_EXPORT void debooarc(const Standard_Integer i) {cout<<"+ debooarc "<<i<<endl;}
+Standard_EXPORT void debarc(const Standard_Integer i)   {std::cout<<"+ debarc "<<i<<std::endl;}
+Standard_EXPORT void debooarc(const Standard_Integer i) {std::cout<<"+ debooarc "<<i<<std::endl;}
 #endif
 
 Standard_EXPORT Standard_Boolean FDS_LOIinfsup(const TopOpeBRepDS_DataStructure& BDS,const TopoDS_Edge& E,const Standard_Real pE,const Standard_Integer GIP,
@@ -602,7 +602,7 @@ static Standard_Boolean FUN_onedge(const TopOpeBRepDS_Point& PDS, const TopoDS_E
 }
 
 #ifdef OCCT_DEBUG
-Standard_EXPORT void funraise() {cout<<"!!!!!!!!!! PVIndex = 0 !!!!!!!!!!"<<endl;}
+Standard_EXPORT void funraise() {std::cout<<"!!!!!!!!!! PVIndex = 0 !!!!!!!!!!"<<std::endl;}
 #endif
 
 //=======================================================================

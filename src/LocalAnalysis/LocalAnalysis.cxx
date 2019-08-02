@@ -23,80 +23,80 @@
 /*********************************************************************************/
 void LocalAnalysis::Dump(const LocalAnalysis_SurfaceContinuity& surfconti, Standard_OStream& o)
 { if (!surfconti.IsDone()) 
-      { o<<"Problem in the computation "<<endl;
+      { o<<"Problem in the computation "<<std::endl;
         if (surfconti.StatusError()==LocalAnalysis_NullFirstDerivative) 
-           o<<"one of the first derivatives is null" <<endl;
+           o<<"one of the first derivatives is null" <<std::endl;
         else if(surfconti.StatusError()==LocalAnalysis_NullSecondDerivative)
-            o<<"one of the  second derivatives is null" <<endl; 
+            o<<"one of the  second derivatives is null" <<std::endl; 
         else if(surfconti.StatusError()==LocalAnalysis_NormalNotDefined) 
-            o<<"one (or both) normal is undefined" <<endl;
+            o<<"one (or both) normal is undefined" <<std::endl;
         else if(surfconti.StatusError()==LocalAnalysis_CurvatureNotDefined) 
-            o<<"one of the mean curvatures is undefined" <<endl; } 
+            o<<"one of the mean curvatures is undefined" <<std::endl; } 
   else 
   switch(surfconti.ContinuityStatus())
     { case GeomAbs_C0 :{  if (surfconti.IsC0() )
-                             o<<" Continuity Status : C0 " <<endl;
-                          else o<<" Continuity Status : No C0 "<<endl; 
-                          o<<" C0Value = "<<surfconti.C0Value() <<endl;
+                             o<<" Continuity Status : C0 " <<std::endl;
+                          else o<<" Continuity Status : No C0 "<<std::endl; 
+                          o<<" C0Value = "<<surfconti.C0Value() <<std::endl;
 		       } break; 
       case GeomAbs_C1 :{ if (surfconti.IsC1()) 
-			   o<<" Continuity Status : C1 " <<endl;
+			   o<<" Continuity Status : C1 " <<std::endl;
                          else 
                            {if (surfconti.IsC0() ) 
-			        o<<" Continuity Status : C0 " <<endl;
-                             else o<<" Continuity Status : NoC0 "<<endl;
+			        o<<" Continuity Status : C0 " <<std::endl;
+                             else o<<" Continuity Status : NoC0 "<<std::endl;
                            }  
-			 o<<" C0Value = "<<surfconti.C0Value()<<endl;
-			 o<<" C1UAngle = "<<surfconti.C1UAngle()<<endl;
-                         o<<" C1URatio = "<<surfconti.C1URatio()<<endl; 
-			 o<<" C1VAngle = "<<surfconti.C1VAngle()<<endl;
-                         o<<" C1VRatio = "<<surfconti.C1VRatio()<<endl;
+			 o<<" C0Value = "<<surfconti.C0Value()<<std::endl;
+			 o<<" C1UAngle = "<<surfconti.C1UAngle()<<std::endl;
+                         o<<" C1URatio = "<<surfconti.C1URatio()<<std::endl; 
+			 o<<" C1VAngle = "<<surfconti.C1VAngle()<<std::endl;
+                         o<<" C1VRatio = "<<surfconti.C1VRatio()<<std::endl;
                          
 		       } break;  
       case GeomAbs_C2 :{  if (surfconti.IsC2()) 
-			   o<<" Continuity Status : C2 " <<endl;
+			   o<<" Continuity Status : C2 " <<std::endl;
                          else 
                            {if (surfconti.IsC1() )
-                                o<<" Continuity Status : C1 " <<endl;
+                                o<<" Continuity Status : C1 " <<std::endl;
                             else
 			       { if (surfconti.IsC0() )
-                                  o<<" Continuity Status : C0 " <<endl;
-                                else o<<" Continuity Status : NoC0 "<<endl;}
+                                  o<<" Continuity Status : C0 " <<std::endl;
+                                else o<<" Continuity Status : NoC0 "<<std::endl;}
                            } 
                          
-			 o<<" C0Value = "<<surfconti.C0Value()<<endl;
-			 o<<" C1UAngle = "<<surfconti.C1UAngle()<<endl;
-			 o<<" C1VAngle = "<<surfconti.C1VAngle()<<endl;
-			 o<<" C2UAngle = "<<surfconti.C2UAngle()<<endl;
-			 o<<" C2VAngle = "<<surfconti.C2VAngle()<<endl;
-			 o<<" C1URatio = "<<surfconti.C1URatio()<<endl;
-			 o<<" C1VRatio = "<<surfconti.C1VRatio()<<endl;
-			 o<<" C2URatio = "<<surfconti.C2URatio()<<endl;
-			 o<<" C2VRatio = "<<surfconti.C2VRatio()<<endl;
+			 o<<" C0Value = "<<surfconti.C0Value()<<std::endl;
+			 o<<" C1UAngle = "<<surfconti.C1UAngle()<<std::endl;
+			 o<<" C1VAngle = "<<surfconti.C1VAngle()<<std::endl;
+			 o<<" C2UAngle = "<<surfconti.C2UAngle()<<std::endl;
+			 o<<" C2VAngle = "<<surfconti.C2VAngle()<<std::endl;
+			 o<<" C1URatio = "<<surfconti.C1URatio()<<std::endl;
+			 o<<" C1VRatio = "<<surfconti.C1VRatio()<<std::endl;
+			 o<<" C2URatio = "<<surfconti.C2URatio()<<std::endl;
+			 o<<" C2VRatio = "<<surfconti.C2VRatio()<<std::endl;
 		       } break; 
       case GeomAbs_G1 :{ if (surfconti.IsG1()) 
-			   o<<" Continuity Status : G1 " <<endl;
+			   o<<" Continuity Status : G1 " <<std::endl;
                           else 
                            {if (surfconti.IsC0() ) 
-			        o<<" Continuity Status : G0 " <<endl;
-                            else o<<" Continuity Status : NoG0 "<<endl;
+			        o<<" Continuity Status : G0 " <<std::endl;
+                            else o<<" Continuity Status : NoG0 "<<std::endl;
                            }  
-			 o<<" G0Value = "<<surfconti.C0Value()<<endl; 
-			 o<<" G1Angle = "<<surfconti.G1Angle()<<endl<<endl;
+			 o<<" G0Value = "<<surfconti.C0Value()<<std::endl; 
+			 o<<" G1Angle = "<<surfconti.G1Angle()<<std::endl<<std::endl;
 		       } break;
       case GeomAbs_G2 :{ if (surfconti.IsG2()) 
-			   o<<" Continuity Status : G2 " <<endl;
+			   o<<" Continuity Status : G2 " <<std::endl;
                          else 
                            {if (surfconti.IsG1() )
-                                o<<" Continuity Status : G1 " <<endl;
+                                o<<" Continuity Status : G1 " <<std::endl;
                             else
 			       { if (surfconti.IsC0() )
-                                  o<<" Continuity Status : G0 " <<endl;
-                                else o<<" Continuity Status : NoG0 "<<endl;}
+                                  o<<" Continuity Status : G0 " <<std::endl;
+                                else o<<" Continuity Status : NoG0 "<<std::endl;}
                            } 
-			 o<<" G0Value = "<<surfconti.C0Value()<<endl; 
-			 o<<" G1Value = "<<surfconti.G1Angle()<<endl;
-			 o<<" G2CurvatureGap = "<<surfconti.G2CurvatureGap()<<endl;
+			 o<<" G0Value = "<<surfconti.C0Value()<<std::endl; 
+			 o<<" G1Value = "<<surfconti.G1Angle()<<std::endl;
+			 o<<" G2CurvatureGap = "<<surfconti.G2CurvatureGap()<<std::endl;
 		   	} break;  
 
       default         : {}
@@ -107,75 +107,75 @@ void LocalAnalysis::Dump(const LocalAnalysis_SurfaceContinuity& surfconti, Stand
 
 void LocalAnalysis::Dump(const LocalAnalysis_CurveContinuity& curvconti, Standard_OStream& o)
 { if (!curvconti.IsDone()) 
-      { o<<"Problem in the computation "<<endl;
+      { o<<"Problem in the computation "<<std::endl;
         if (curvconti.StatusError()==LocalAnalysis_NullFirstDerivative) 
-           o<<"one (or both) first derivative is null" <<endl;
+           o<<"one (or both) first derivative is null" <<std::endl;
         else if(curvconti.StatusError()==LocalAnalysis_NullSecondDerivative)
-            o<<"one (or both) second derivative is null" <<endl; 
+            o<<"one (or both) second derivative is null" <<std::endl; 
         else if(curvconti.StatusError()==LocalAnalysis_TangentNotDefined)
-             o<<"one (or both) tangent is undefined " <<endl; 
+             o<<"one (or both) tangent is undefined " <<std::endl; 
         else if(curvconti.StatusError()==LocalAnalysis_NormalNotDefined) 
-             o<<"one (or both) normal is undefined" <<endl;}  
+             o<<"one (or both) normal is undefined" <<std::endl;}  
   else     
   switch(curvconti.ContinuityStatus())
     { case GeomAbs_C0 :{  if (curvconti.IsC0() )
-                             o<<" Continuity Status : C0 " <<endl;
-                          else o<<" Continuity Status : No C0 "<<endl; 
-                          o<<" C0Value = "<<curvconti.C0Value() <<endl;
+                             o<<" Continuity Status : C0 " <<std::endl;
+                          else o<<" Continuity Status : No C0 "<<std::endl; 
+                          o<<" C0Value = "<<curvconti.C0Value() <<std::endl;
 		       } break; 
       case GeomAbs_C1 :{ if (curvconti.IsC1()) 
-			   o<<" Continuity Status : C1 " <<endl;
+			   o<<" Continuity Status : C1 " <<std::endl;
                          else 
                            {if (curvconti.IsC0() ) 
-			        o<<" Continuity Status : C0 " <<endl;
-                             else o<<" Continuity Status : NoC0 "<<endl;
+			        o<<" Continuity Status : C0 " <<std::endl;
+                             else o<<" Continuity Status : NoC0 "<<std::endl;
                            }  
-			 o<<" C0Value = "<<curvconti.C0Value()<<endl;
-			 o<<" C1Angle = "<<curvconti.C1Angle()<<endl;
-                         o<<" C1Ratio = "<<curvconti.C1Ratio()<<endl;
+			 o<<" C0Value = "<<curvconti.C0Value()<<std::endl;
+			 o<<" C1Angle = "<<curvconti.C1Angle()<<std::endl;
+                         o<<" C1Ratio = "<<curvconti.C1Ratio()<<std::endl;
                                
                       } break; 
       case GeomAbs_C2 :{ if (curvconti.IsC2()) 
-			   o<<" Continuity Status : C2 " <<endl;
+			   o<<" Continuity Status : C2 " <<std::endl;
                          else 
                            {if (curvconti.IsC1() )
-                                o<<" Continuity Status : C1 " <<endl;
+                                o<<" Continuity Status : C1 " <<std::endl;
                             else
 			       { if (curvconti.IsC0() )
-                                  o<<" Continuity Status : C0 " <<endl;
-                                else o<<" Continuity Status : NoC0 "<<endl;}
+                                  o<<" Continuity Status : C0 " <<std::endl;
+                                else o<<" Continuity Status : NoC0 "<<std::endl;}
                            } 
-			 o<<" C0Value = "<<curvconti.C0Value()<<endl;
-			 o<<" C1Angle = "<<curvconti.C1Angle()<<endl;
-			 o<<" C2Angle = "<<curvconti.C2Angle()<<endl;
-			 o<<" C1Ratio = "<<curvconti.C1Ratio()<<endl;
-			 o<<" C2Ratio = "<<curvconti.C2Ratio()<<endl;
+			 o<<" C0Value = "<<curvconti.C0Value()<<std::endl;
+			 o<<" C1Angle = "<<curvconti.C1Angle()<<std::endl;
+			 o<<" C2Angle = "<<curvconti.C2Angle()<<std::endl;
+			 o<<" C1Ratio = "<<curvconti.C1Ratio()<<std::endl;
+			 o<<" C2Ratio = "<<curvconti.C2Ratio()<<std::endl;
 		       }break; 
                          
       case GeomAbs_G1 :{  if (curvconti.IsG1()) 
-			   o<<" Continuity Status : G1 " <<endl;
+			   o<<" Continuity Status : G1 " <<std::endl;
                           else 
                            {if (curvconti.IsC0() ) 
-			        o<<" Continuity Status : G0 " <<endl;
-                            else o<<" Continuity Status : NoG0 "<<endl;
+			        o<<" Continuity Status : G0 " <<std::endl;
+                            else o<<" Continuity Status : NoG0 "<<std::endl;
                            }  
-			 o<<" G0Value = "<<curvconti.C0Value()<<endl; 
-			 o<<" G1Angle = "<<curvconti.G1Angle()<<endl;
+			 o<<" G0Value = "<<curvconti.C0Value()<<std::endl; 
+			 o<<" G1Angle = "<<curvconti.G1Angle()<<std::endl;
 		       } break;
       case GeomAbs_G2 :{ if (curvconti.IsG2()) 
-			   o<<" Continuity Status : G2 " <<endl;
+			   o<<" Continuity Status : G2 " <<std::endl;
                          else 
                            {if (curvconti.IsG1() )
-                                o<<" Continuity Status : G1 " <<endl;
+                                o<<" Continuity Status : G1 " <<std::endl;
                             else
 			       { if (curvconti.IsC0() )
-                                  o<<" Continuity Status : G0 " <<endl;
-                                else o<<" Continuity Status : NoG0 "<<endl;}
+                                  o<<" Continuity Status : G0 " <<std::endl;
+                                else o<<" Continuity Status : NoG0 "<<std::endl;}
                            } 
-			 o<<" G0Value = "<<curvconti.C0Value()<<endl; 
-			 o<<" G1Angle = "<<curvconti.G1Angle()<<endl;
-			 o<<" G2Angle = "<<curvconti.G2Angle()<<endl;
-			 o<<" Relative curvature variation = "<<curvconti.G2CurvatureVariation()<<endl;
+			 o<<" G0Value = "<<curvconti.C0Value()<<std::endl; 
+			 o<<" G1Angle = "<<curvconti.G1Angle()<<std::endl;
+			 o<<" G2Angle = "<<curvconti.G2Angle()<<std::endl;
+			 o<<" Relative curvature variation = "<<curvconti.G2CurvatureVariation()<<std::endl;
 
 		       } break;  
 

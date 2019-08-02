@@ -308,7 +308,7 @@ void Sample()
   BRepAlgo_Cut mkCUT (OBJECT, TOOL);
 
   if (!mkCUT.IsDone()) {
-    cout << "CUT: Algorithm failed" << endl;
+    std::cout << "CUT: Algorithm failed" << std::endl;
     return; 
   } else 
     {
@@ -318,7 +318,7 @@ void Sample()
 
       if (!BRepAlgo::IsValid(Larg, mkCUT.Shape(), Standard_True, Standard_False)) {
 
-	cout << "CUT: Result is not valid" << endl;
+	std::cout << "CUT: Result is not valid" << std::endl;
 	return;
       } else 
 	{

@@ -138,34 +138,34 @@ void  IGESAppli_ToolLineWidening::OwnDump
   (const Handle(IGESAppli_LineWidening)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
 {
-  S << "IGESAppli_LineWidening" << endl;
+  S << "IGESAppli_LineWidening" << Message_EndLine;
 
-  S << "Number of property values : " << ent->NbPropertyValues()     << endl;
-  S << "Width of metalization : " << ent->WidthOfMetalization()      << endl;
+  S << "Number of property values : " << ent->NbPropertyValues()     << Message_EndLine;
+  S << "Width of metalization : " << ent->WidthOfMetalization()      << Message_EndLine;
   S << "Cornering Code : " ;
-  if      (ent->CorneringCode() == 0) S << "0 (rounded)" << endl;
-  else if (ent->CorneringCode() == 1) S << "1 (squared)" << endl;
-  else                                S << "incorrect value" << endl;
+  if      (ent->CorneringCode() == 0) S << "0 (rounded)" << Message_EndLine;
+  else if (ent->CorneringCode() == 1) S << "1 (squared)" << Message_EndLine;
+  else                                S << "incorrect value" << Message_EndLine;
 
   S << "Extension Flag : " ;
-  if      (ent->ExtensionFlag() == 0) S << "0 (No Extension)" << endl;
-  else if (ent->ExtensionFlag() == 1) S << "1 (One-half width extension)" << endl;
-  else if (ent->ExtensionFlag() == 2) S << "2 (Extension set by ExtensionValue)" << endl;
-  else    S << "incorrect value" << endl;
+  if      (ent->ExtensionFlag() == 0) S << "0 (No Extension)" << Message_EndLine;
+  else if (ent->ExtensionFlag() == 1) S << "1 (One-half width extension)" << Message_EndLine;
+  else if (ent->ExtensionFlag() == 2) S << "2 (Extension set by ExtensionValue)" << Message_EndLine;
+  else    S << "incorrect value" << Message_EndLine;
 
   S << "Justification Flag : " ;
   if (ent->JustificationFlag() == 0)
-    S << "0 (Centre justified)" << endl;
+    S << "0 (Centre justified)" << Message_EndLine;
   else if (ent->JustificationFlag() == 1)
-    S << "1 (left justified)" << endl;
+    S << "1 (left justified)" << Message_EndLine;
   else if (ent->JustificationFlag() == 2)
-    S << "2 (right justified)" << endl;
+    S << "2 (right justified)" << Message_EndLine;
   else
-    S << "incorrect value" << endl;
+    S << "incorrect value" << Message_EndLine;
 
   if (ent->ExtensionFlag() == 2)
-    S << "Extension Value : " << ent->ExtensionValue()  << endl;
+    S << "Extension Value : " << ent->ExtensionValue()  << Message_EndLine;
   else
-    S << "No Extension Value (Extension Flag != 2)" << endl;
+    S << "No Extension Value (Extension Flag != 2)" << Message_EndLine;
 }
 

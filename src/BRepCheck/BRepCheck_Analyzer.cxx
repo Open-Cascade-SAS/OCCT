@@ -135,9 +135,9 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
       }
       catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-        cout<<"BRepCheck_Analyzer : ";
-        anException.Print(cout);  
-        cout<<endl;
+        std::cout<<"BRepCheck_Analyzer : ";
+        anException.Print(std::cout);  
+        std::cout<<std::endl;
 #endif
         (void)anException;
         if ( ! myMap(S).IsNull() )
@@ -164,9 +164,9 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-          cout<<"BRepCheck_Analyzer : ";
-          anException.Print(cout);  
-          cout<<endl;
+          std::cout<<"BRepCheck_Analyzer : ";
+          anException.Print(std::cout);  
+          std::cout<<std::endl;
 #endif
           (void)anException;
           if ( ! myMap(S).IsNull() )
@@ -202,9 +202,9 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-          cout<<"BRepCheck_Analyzer : ";
-          anException.Print(cout);  
-          cout<<endl;
+          std::cout<<"BRepCheck_Analyzer : ";
+          anException.Print(std::cout);  
+          std::cout<<std::endl;
 #endif
           (void)anException;
           if ( ! myMap(S).IsNull() )
@@ -262,9 +262,9 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-          cout<<"BRepCheck_Analyzer : ";
-          anException.Print(cout);  
-          cout<<endl;
+          std::cout<<"BRepCheck_Analyzer : ";
+          anException.Print(std::cout);  
+          std::cout<<std::endl;
 #endif
           (void)anException;
           if ( ! myMap(S).IsNull() )
@@ -315,9 +315,9 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
         }
         catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-          cout<<"BRepCheck_Analyzer : ";
-          anException.Print(cout);  
-          cout<<endl;
+          std::cout<<"BRepCheck_Analyzer : ";
+          anException.Print(std::cout);  
+          std::cout<<std::endl;
 #endif
           (void)anException;
           if ( ! myMap(S).IsNull() )
@@ -362,9 +362,9 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
       }
       catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-        cout<<"BRepCheck_Analyzer : ";
-        anException.Print(cout);  
-        cout<<endl;
+        std::cout<<"BRepCheck_Analyzer : ";
+        anException.Print(std::cout);  
+        std::cout<<std::endl;
 #endif
         (void)anException;
         if ( ! myMap(S).IsNull() )
@@ -403,9 +403,9 @@ void BRepCheck_Analyzer::Perform(const TopoDS_Shape& S)
             }
           catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-              cout<<"BRepCheck_Analyzer : ";
-              anException.Print(cout);  
-              cout<<endl;
+              std::cout<<"BRepCheck_Analyzer : ";
+              anException.Print(std::cout);  
+              std::cout<<std::endl;
 #endif
               (void)anException;
               if ( ! myMap(S).IsNull() )

@@ -114,9 +114,9 @@ void HLRBRep_InternalAlgo::Update ()
       catch(Standard_Failure const& anException) {
         if (myDebug)
         {
-          cout << "An exception was catched when preparing the Shape " << i;
-          cout << " and computing its OutLines " << endl;
-          cout << anException << endl;
+          std::cout << "An exception was catched when preparing the Shape " << i;
+          std::cout << " and computing its OutLines " << std::endl;
+          std::cout << anException << std::endl;
         }
 	DS[i-1] = new HLRBRep_Data(0,0,0);
 	dv = 0;
@@ -556,7 +556,7 @@ void HLRBRep_InternalAlgo::PartialHide ()
     Standard_Integer i,n = myShapes.Length();
 
     if (myDebug)
-      cout << " Partial hiding" << endl << endl;
+      std::cout << " Partial hiding" << std::endl << std::endl;
 
     for (i = 1; i <= n; i++)
       Hide(i);
@@ -576,7 +576,7 @@ void HLRBRep_InternalAlgo::Hide ()
     Standard_Integer i,j,n = myShapes.Length();
 
     if (myDebug)
-      cout << " Total hiding" << endl;
+      std::cout << " Total hiding" << std::endl;
 
     for (i = 1; i <= n; i++)
       Hide(i);
@@ -602,7 +602,7 @@ void HLRBRep_InternalAlgo::Hide (const Standard_Integer I)
        "HLRBRep_InternalAlgo::Hide : unknown Shape");
     
     if (myDebug)
-      cout << " hiding the shape " << I << " by itself" << endl;
+      std::cout << " hiding the shape " << I << " by itself" << std::endl;
     
     Select(I);
     InitEdgeStatus();
@@ -643,8 +643,8 @@ void HLRBRep_InternalAlgo::Hide (const Standard_Integer I,
 	  ((MinMaxShBJ->Max[6] - MinMaxShBI->Min[6]) & 0x80008000) == 0 &&
 	  ((MinMaxShBJ->Max[7] - MinMaxShBI->Min[7]) & 0x80008000) == 0) {
 	if (myDebug) {
-	  cout << " hiding the shape " << I;
-	  cout << " by the shape : " << J << endl;
+	  std::cout << " hiding the shape " << I;
+	  std::cout << " by the shape : " << J << std::endl;
 	}
 	SelectEdge(I);
 	SelectFace(J);
@@ -717,17 +717,17 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
       
       if (myDebug)
       {
-        cout << endl;
-        cout << "Vertices  : " << setw(5) << myDS->NbVertices() << endl;
-        cout << "Edges     : " << setw(5) << myDS->NbEdges()    << " , ";
-        cout << "Selected  : " << setw(5) << nbSelEdges         << " , ";
-        cout << "Visibles  : " << setw(5) << nbVisEdges         << endl;
-        cout << "Faces     : " << setw(5) << myDS->NbFaces()    << " , ";
-        cout << "Selected  : " << setw(5) << nbSelFaces         << " , ";
-        cout << "Simple    : " << setw(5) << nbFSimp            << endl;
+        std::cout << std::endl;
+        std::cout << "Vertices  : " << std::setw(5) << myDS->NbVertices() << std::endl;
+        std::cout << "Edges     : " << std::setw(5) << myDS->NbEdges()    << " , ";
+        std::cout << "Selected  : " << std::setw(5) << nbSelEdges         << " , ";
+        std::cout << "Visibles  : " << std::setw(5) << nbVisEdges         << std::endl;
+        std::cout << "Faces     : " << std::setw(5) << myDS->NbFaces()    << " , ";
+        std::cout << "Selected  : " << std::setw(5) << nbSelFaces         << " , ";
+        std::cout << "Simple    : " << std::setw(5) << nbFSimp            << std::endl;
         if (SideFace)
-          cout << "Side      : " << setw(5) << nbFSide            << " , ";
-        cout << "Cachantes : " << setw(5) << nbCache            << endl << endl;
+          std::cout << "Side      : " << std::setw(5) << nbFSide            << " , ";
+        std::cout << "Cachantes : " << std::setw(5) << nbCache            << std::endl << std::endl;
       }
     }
 
@@ -748,13 +748,13 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	      if(++QWE>QWEQWE) { 
 		QWE=0; 
                 if (myDebug)
-                  cout<<"*";
+                  std::cout<<"*";
 	      } 
 	    }
 	    else {  
 	      if (myDebug && HLRBRep_InternalAlgo_TRACE) {
 		j++;
-		cout << " OwnHiding " << j << " of face : " << f << endl;
+		std::cout << " OwnHiding " << j << " of face : " << f << std::endl;
 	      }
 	    }
 	    Cache.OwnHiding(f);
@@ -867,7 +867,7 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	  if(HLRBRep_InternalAlgo_TRACE10 && HLRBRep_InternalAlgo_TRACE==Standard_False) { 
 	    if(++QWE>QWEQWE) { 
 	      if (myDebug)
-                cout<<".";
+                std::cout<<".";
 	      QWE=0;
 	    }
 	  }
@@ -892,22 +892,22 @@ void HLRBRep_InternalAlgo::HideSelected (const Standard_Integer I,
 	  nbFSimp++;
       }
 
-      cout << "\n";
-      cout << "Simple Faces                  : ";
-      cout << nbFSimp  << "\n";
-      cout << "Intersections calculees       : ";
-      cout << nbCal2Intersection << "\n";
-      cout << "Intersections Ok              : ";
-      cout << nbOkIntersection << "\n";
-      cout << "Points                        : ";
-      cout << nbPtIntersection << "\n";
-      cout << "Segments                      : ";
-      cout << nbSegIntersection << "\n";
-      cout << "Classification                : ";
-      cout << nbClassification << "\n";
-      cout << "Intersections curve-surface   : ";
-      cout << nbCal3Intersection << "\n";
-      cout << endl << endl;
+      std::cout << "\n";
+      std::cout << "Simple Faces                  : ";
+      std::cout << nbFSimp  << "\n";
+      std::cout << "Intersections calculees       : ";
+      std::cout << nbCal2Intersection << "\n";
+      std::cout << "Intersections Ok              : ";
+      std::cout << nbOkIntersection << "\n";
+      std::cout << "Points                        : ";
+      std::cout << nbPtIntersection << "\n";
+      std::cout << "Segments                      : ";
+      std::cout << nbSegIntersection << "\n";
+      std::cout << "Classification                : ";
+      std::cout << nbClassification << "\n";
+      std::cout << "Intersections curve-surface   : ";
+      std::cout << nbCal3Intersection << "\n";
+      std::cout << std::endl << std::endl;
     }
 #endif
   }

@@ -207,7 +207,7 @@ static Standard_Boolean splitangle (const Handle(ShapeProcess_Context)& context)
 
   if ( ! SDA.Perform() && SDA.Status (ShapeExtend_FAIL) ) {
 #ifdef OCCT_DEBUG
-    cout<<"ShapeDivideAngle failed"<<endl;
+    std::cout<<"ShapeDivideAngle failed"<<std::endl;
 #endif
     return Standard_False;
   }
@@ -382,7 +382,7 @@ static Standard_Boolean shapetobezier (const Handle(ShapeProcess_Context)& conte
  
   if ( ! SCB.Perform() && SCB.Status (ShapeExtend_FAIL) ) { 
 #ifdef OCCT_DEBUG
-    cout<<"Shape::ShapeConvertToBezier failed"<<endl; // !!!!
+    std::cout<<"Shape::ShapeConvertToBezier failed"<<std::endl; // !!!!
 #endif
     return Standard_False;
   }
@@ -458,7 +458,7 @@ static Standard_Boolean splitcontinuity (const Handle(ShapeProcess_Context)& con
   
   if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
 #ifdef OCCT_DEBUG
-    cout<<"SplitContinuity failed"<<endl; 
+    std::cout<<"SplitContinuity failed"<<std::endl; 
 #endif
     return Standard_False; 
   }
@@ -500,7 +500,7 @@ static Standard_Boolean splitclosedfaces (const Handle(ShapeProcess_Context)& co
   tool.SetSurfaceSegmentMode(hasSeg);
   if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
 #ifdef OCCT_DEBUG
-    cout<<"Splitting of closed faces failed"<<endl; 
+    std::cout<<"Splitting of closed faces failed"<<std::endl; 
 #endif
     return Standard_False; 
   }
@@ -819,7 +819,7 @@ static Standard_Boolean spltclosededges (const Handle(ShapeProcess_Context)& con
   
   if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
 #ifdef OCCT_DEBUG
-    cout<<"Splitting of closed edges failed"<<endl; 
+    std::cout<<"Splitting of closed edges failed"<<std::endl; 
 #endif
     return Standard_False; 
   }

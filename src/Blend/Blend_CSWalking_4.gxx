@@ -252,7 +252,7 @@ void Blend_CSWalking::InternalPerform(Blend_CSFunction& Func,
     case Blend_SamePoints :
       {
 	// On arrete
-	cout << " Points confondus dans le cheminement" << endl;
+	std::cout << " Points confondus dans le cheminement" << std::endl;
 /*
 	Exts.SetValue(previousP.PointOnS(),sol(1),sol(2),tolesp);
 	Extc.SetValue(previousP.PointOnC(),sol(3),tolesp);

@@ -156,7 +156,7 @@ Standard_EXPORT gp_Dir FUN_tool_ngS(const gp_Pnt2d& p2d,const Handle(Geom_Surfac
       }
     }
 #ifdef OCCT_DEBUG
-    cout<<"FUN_tool_nggeomF NYI"<<endl;
+    std::cout<<"FUN_tool_nggeomF NYI"<<std::endl;
 #endif
     return gp_Dir(0,0,1);
   }

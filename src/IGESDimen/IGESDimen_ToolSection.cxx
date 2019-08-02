@@ -159,12 +159,12 @@ void  IGESDimen_ToolSection::OwnDump
   (const Handle(IGESDimen_Section)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_Section" << endl;
+  S << "IGESDimen_Section" << Message_EndLine;
   S << "Data Type   : "           << ent->Datatype() << "  ";
   S << "Number of Data Points : " << ent->NbPoints()  << "  ";
-  S << "Common Z displacement : " << ent->ZDisplacement() << endl;
+  S << "Common Z displacement : " << ent->ZDisplacement() << Message_EndLine;
   S << "Data Points : "; 
   IGESData_DumpListXYLZ(S ,level,1, ent->NbPoints(),ent->Point,
 			ent->Location(), ent->ZDisplacement());
-  S << endl;
+  S << Message_EndLine;
 }

@@ -171,14 +171,14 @@ void  IGESSolid_ToolConeFrustum::OwnDump
   (const Handle(IGESSolid_ConeFrustum)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_ConeFrustum" << endl;
+  S << "IGESSolid_ConeFrustum" << Message_EndLine;
 
   S << "Height : " << ent->Height() << "  ";
   S << "Larger face Radius : "  << ent->LargerRadius() << "  ";
-  S << "Smaller face Radius : " << ent->SmallerRadius() << endl;
+  S << "Smaller face Radius : " << ent->SmallerRadius() << Message_EndLine;
   S << "Face Center : ";
   IGESData_DumpXYZL(S,level, ent->FaceCenter(), ent->Location());
-  S << endl << "Axis : ";
+  S << Message_EndLine << "Axis : ";
   IGESData_DumpXYZL(S,level, ent->Axis(), ent->VectorLocation());
-  S << endl;
+  S << Message_EndLine;
 }

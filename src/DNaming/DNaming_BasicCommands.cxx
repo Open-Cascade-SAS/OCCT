@@ -286,7 +286,7 @@ static Standard_Integer Exploreshape (Draw_Interpretor& di, Standard_Integer n, 
     return 0;
   }
 
-  //TNaming::Print(NS->Evolution(),cout);
+  //TNaming::Print(NS->Evolution(),std::cout);
   Standard_SStream aStream;
   TNaming::Print(NS->Evolution(),aStream);
   di << aStream << "\n";
@@ -461,7 +461,7 @@ static Standard_Integer DNaming_ImportShape (Draw_Interpretor& di,
     DDF::ReturnLabel(di, L);
     return 0;
   }
-  cout << "DNaming_NewShape : Error" << endl;
+  std::cout << "DNaming_NewShape : Error" << std::endl;
   return 1;  
 }
 //=======================================================================

@@ -309,7 +309,7 @@ static void Print(const Handle(Geom2d_BezierCurve)& B,
   OS << degree << " ";
   
   for (i = 1; i <= degree+1; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     Print(B->Pole(i),OS,compact);
     if (rational)
       OS << " " << B->Weight(i);
@@ -369,7 +369,7 @@ static void Print(const Handle(Geom2d_BSplineCurve)& B,
   
   if (!compact) OS << "Poles :\n";
   for (i = 1; i <= nbpoles; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     else OS << " ";
     Print(B->Pole(i),OS,compact);
     if (rational)
@@ -379,7 +379,7 @@ static void Print(const Handle(Geom2d_BSplineCurve)& B,
 
   if (!compact) OS << "Knots :\n";
   for (i = 1; i <= nbknots; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     else OS << " ";
     OS << B->Knot(i) << " " << B->Multiplicity(i);
   }
@@ -468,7 +468,7 @@ void GeomTools_Curve2dSet::PrintCurve2d(const Handle(Geom2d_Curve)& C,
     //if (!compact)
     //  OS << "****** UNKNOWN CURVE2d TYPE ******\n";
     //else 
-    //  cout << "****** UNKNOWN CURVE2d TYPE ******" << endl;
+    //  std::cout << "****** UNKNOWN CURVE2d TYPE ******" << std::endl;
   }
 }
 
@@ -485,7 +485,7 @@ void  GeomTools_Curve2dSet::Dump(Standard_OStream& OS)const
   OS << "\n -------\n\n";
 
   for (i = 1; i <= nbsurf; i++) {
-    OS << setw(4) << i << " : ";
+    OS << std::setw(4) << i << " : ";
     PrintCurve2d(Handle(Geom2d_Curve)::DownCast(myMap(i)),OS,Standard_False);
   }
 }
@@ -827,8 +827,8 @@ Handle(Geom2d_Curve) GeomTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS)
   }
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout <<"EXCEPTION in GeomTools_Curve2dSet::ReadCurve2d(..)!!!" << endl;
-    cout << anException << endl;
+    std::cout <<"EXCEPTION in GeomTools_Curve2dSet::ReadCurve2d(..)!!!" << std::endl;
+    std::cout << anException << std::endl;
 #endif
     (void)anException;
   }
@@ -845,7 +845,7 @@ void  GeomTools_Curve2dSet::Read(Standard_IStream& IS)
   char buffer[255];
   IS >> buffer;
   if (strcmp(buffer,"Curve2ds")) {
-    cout << "Not a Curve2d table"<<endl;
+    std::cout << "Not a Curve2d table"<<std::endl;
     return;
   }
 

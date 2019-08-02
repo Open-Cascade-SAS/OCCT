@@ -188,8 +188,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
         TCollection_AsciiString  newName;	
         if(Storage_Schema::CheckTypeMigration(aStr, newName)) {
 #ifdef OCCT_DEBUG
-          cout << "CheckTypeMigration:OldType = " <<aStr << " Len = "<<aStr.Length()<<endl;
-          cout << "CheckTypeMigration:NewType = " <<newName  << " Len = "<< newName.Length()<<endl;
+          std::cout << "CheckTypeMigration:OldType = " <<aStr << " Len = "<<aStr.Length()<<std::endl;
+          std::cout << "CheckTypeMigration:NewType = " <<newName  << " Len = "<< newName.Length()<<std::endl;
 #endif
           aStr = newName;
         }
@@ -222,7 +222,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   mySections.Clear();
   myPAtt.Init();
   Handle(TDF_Data) aData = new TDF_Data();
-  streampos aDocumentPos = -1;
+  std::streampos aDocumentPos = -1;
 
   // 2b. Read the TOC of Sections
   if (aFileVer >= 3) {
@@ -245,7 +245,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
     for (; anIterS.More(); anIterS.Next()) {
       BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
       if (aCurSection.IsPostRead() == Standard_False) {
-        theIStream.seekg ((streampos) aCurSection.Offset());
+        theIStream.seekg ((std::streampos) aCurSection.Offset());
         if (aCurSection.Name().IsEqual ((Standard_CString)SHAPESECTION_POS)) 
           ReadShapeSection (aCurSection, theIStream);
         else
@@ -278,11 +278,11 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
       aShapeSectionPos = InverseInt (aShapeSectionPos);
 #endif
 #ifdef OCCT_DEBUG
-      cout <<"aShapeSectionPos = " <<aShapeSectionPos <<endl;
+      std::cout <<"aShapeSectionPos = " <<aShapeSectionPos <<std::endl;
 #endif
       if(aShapeSectionPos) { 
         aDocumentPos = theIStream.tellg();
-        theIStream.seekg((streampos) aShapeSectionPos);
+        theIStream.seekg((std::streampos) aShapeSectionPos);
 
         CheckShapeSection(aShapeSectionPos, theIStream);
         // Read Shapes
@@ -317,7 +317,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
     for (; aSectIter.More(); aSectIter.Next()) {
       BinLDrivers_DocumentSection& aCurSection = aSectIter.ChangeValue();
       if (aCurSection.IsPostRead()) {
-        theIStream.seekg ((streampos) aCurSection.Offset());
+        theIStream.seekg ((std::streampos) aCurSection.Offset());
         ReadSection (aCurSection, theDoc, theIStream); 
       }
     }
@@ -487,7 +487,7 @@ void BinLDrivers_DocumentRetrievalDriver::CheckShapeSection(
   {
     const std::streamoff endPos = IS.rdbuf()->pubseekoff(0L, std::ios_base::end, std::ios_base::in);
 #ifdef OCCT_DEBUG
-    cout << "endPos = " << endPos <<endl;
+    std::cout << "endPos = " << endPos <<std::endl;
 #endif
     if(ShapeSectionPos != endPos) {
       const TCollection_ExtendedString aMethStr ("BinLDrivers_DocumentRetrievalDriver: ");

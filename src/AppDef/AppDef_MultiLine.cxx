@@ -97,8 +97,8 @@ AppDef_MultiPointConstraint AppDef_MultiLine::Value (const Standard_Integer Inde
 
 void AppDef_MultiLine::Dump(Standard_OStream& o) const
 {
-  o << "AppDef_MultiLine dump:" << endl;
+  o << "AppDef_MultiLine dump:" << std::endl;
 //  AppDef_MultiPointConstraint MP = tabMult->Value(1);
-  o << "It contains " <<  tabMult->Length() << " MultiPointConstraint"<< endl;
-//  o << MP->NbPoints() << " 3d and " << MP->NbPoints2d() << endl;
+  o << "It contains " <<  tabMult->Length() << " MultiPointConstraint"<< std::endl;
+//  o << MP->NbPoints() << " 3d and " << MP->NbPoints2d() << std::endl;
 }

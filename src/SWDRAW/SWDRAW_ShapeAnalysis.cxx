@@ -656,7 +656,7 @@ static Standard_Integer XSHAPE_comptoledge
 	  if ( ! num1 ) di << "Concerned faces saved to shapes ";
 	  Sprintf ( name, "%.10s_%d", prefix, num1+1 );
 	  DBRep::Set (name,face);
-	  //cout << ( num1 ? ", " : "" ) << name;
+	  //std::cout << ( num1 ? ", " : "" ) << name;
 	  if (num1 == 0) {
 	    di << "" << name;
 	  } else {

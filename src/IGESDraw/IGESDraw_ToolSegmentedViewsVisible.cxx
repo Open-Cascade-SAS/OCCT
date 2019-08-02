@@ -281,20 +281,20 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_SegmentedViewsVisible" << endl;
+  S << "IGESDraw_SegmentedViewsVisible" << Message_EndLine;
 
-  S << "View Entities            : " << endl
-    << "Breakpoint parameters    : " << endl
-    << "Display flags            : " << endl
-    << "Color Values             : " << endl
-    << "Color Definitions        : " << endl
-    << "LineFont Values          : " << endl
-    << "LineFont Definitions     : " << endl
-    << "Line Weights : " << endl;
-  S << "Count Of Blocks = "      << ent->NbSegmentBlocks() << endl;
+  S << "View Entities            : " << Message_EndLine
+    << "Breakpoint parameters    : " << Message_EndLine
+    << "Display flags            : " << Message_EndLine
+    << "Color Values             : " << Message_EndLine
+    << "Color Definitions        : " << Message_EndLine
+    << "LineFont Values          : " << Message_EndLine
+    << "LineFont Definitions     : " << Message_EndLine
+    << "Line Weights : " << Message_EndLine;
+  S << "Count Of Blocks = "      << ent->NbSegmentBlocks() << Message_EndLine;
   switch (level)
     {
-    case 4 : S << " [ for content, ask level > 4 ]" << endl;
+    case 4 : S << " [ for content, ask level > 4 ]" << Message_EndLine;
       break; // Nothing to be dumped here
     case 5 :        // Presently level 5 and 6 have the same Dump
     case 6 :
@@ -303,12 +303,12 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump
 	Standard_Integer up  = ent->NbSegmentBlocks();
 	for (I = 1; I <= up; I++)
           {
-	    S << "[" << I << "]:" << endl;
+	    S << "[" << I << "]:" << Message_EndLine;
 	    S << "View Entity : ";
 	    dumper.Dump (ent->ViewItem(I),S, sublevel);
-	    S << endl;
-	    S << "Breakpoint parameter : " <<ent->BreakpointParameter(I)<<endl;
-	    S << "Display Flag : " << ent->DisplayFlag(I) << endl;
+	    S << Message_EndLine;
+	    S << "Breakpoint parameter : " <<ent->BreakpointParameter(I)<<Message_EndLine;
+	    S << "Display Flag : " << ent->DisplayFlag(I) << Message_EndLine;
 	    if ( (ent->ColorDefinition(I)).IsNull() )
               {
 		S << "Color Value : ";
@@ -319,7 +319,7 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump
 		S << "Color Definition : ";
 		dumper.Dump (ent->ColorDefinition(I),S, sublevel);
               }
-	    S << endl;
+	    S << Message_EndLine;
 	    if ( (ent->LineFontDefinition(I)).IsNull() )
               {
 		S << "LineFont Value : " << ent->LineFontValue(I);
@@ -329,11 +329,11 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump
 		S << "LineFont Definition : ";
 		dumper.Dump (ent->LineFontDefinition(I),S, sublevel);
               }
-	    S << endl;
-	    S << "Line Weight : " << ent->LineWeightItem(I) << endl;
+	    S << Message_EndLine;
+	    S << "Line Weight : " << ent->LineWeightItem(I) << Message_EndLine;
           }
       }
       break;
     }
-  S << endl;
+  S << Message_EndLine;
 }

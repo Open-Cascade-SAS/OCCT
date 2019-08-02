@@ -393,7 +393,7 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
     return myRelocTable.Extent();
   }
 #ifdef OCCT_DEBUG
-  cout << "First step failed" << endl;  // No MessageDriver available
+  std::cout << "First step failed" << std::endl;  // No MessageDriver available
 #endif
   return -1; // error
 }

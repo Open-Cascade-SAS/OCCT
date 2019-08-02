@@ -1397,7 +1397,7 @@ void SectionPointToParameters(const Intf_SectionPoint& Sp,
     }
   default: 
     {
-      //-- cout<<" Default dans SectionPointToParameters "<<endl;
+      //-- std::cout<<" Default dans SectionPointToParameters "<<std::endl;
       break;
     }
   }
@@ -1442,7 +1442,7 @@ void SectionPointToParameters(const Intf_SectionPoint& Sp,
     }
   default: 
     {
-      //-- cout<<" Default dans SectionPointToParameters "<<endl;
+      //-- std::cout<<" Default dans SectionPointToParameters "<<std::endl;
       break;
     }
   }
@@ -1882,7 +1882,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_HSurface)&    S
   //    Standard_Real nIncrement=Increment;
   //    if(MaxOscill>10) { 
   //  #ifdef OCCT_DEBUG
-  //      cout<<"\n IntPatch_PrmPrmIntersection.gxx : Increment:"<<Increment<<" -> "<<Increment/(0.5*MaxOscill)<<endl;
+  //      std::cout<<"\n IntPatch_PrmPrmIntersection.gxx : Increment:"<<Increment<<" -> "<<Increment/(0.5*MaxOscill)<<std::endl;
   //  #endif
   //      nIncrement/=0.5*MaxOscill;
   //    }
@@ -2740,7 +2740,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
               }
               else
               {
-                //-- cout<<" ----- REJET DE LIGNE (POINT DE DEPART) ----- "<<endl;
+                //-- std::cout<<" ----- REJET DE LIGNE (POINT DE DEPART) ----- "<<std::endl;
               }
               //------------------------------------------------------------		
             }
@@ -2938,7 +2938,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
             }
             else
             { 
-              //-- cout<<" ----- REJET DE LIGNE (POINT DE DEPART) ----- "<<endl;
+              //-- std::cout<<" ----- REJET DE LIGNE (POINT DE DEPART) ----- "<<std::endl;
             }
             //------------------------------------------------------------		
           }
@@ -3227,7 +3227,7 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
       }
     }
   }
-  //-- cout<<" Grille  du 1 fini "<<endl;
+  //-- std::cout<<" Grille  du 1 fini "<<std::endl;
   for(i=0;i<SU2;i++) { 
     for(j=0;j<SV2;j++) { 
       aIPD.xIP2(i, j)=-1;

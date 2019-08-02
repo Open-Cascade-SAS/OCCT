@@ -76,29 +76,29 @@ Storage_Error FSD_CmpFile::Open(const TCollection_AsciiString& aName, const Stor
     }
     case Storage_VSRead:
     {
-      // ios::nocreate is not portable
+      // std::ios::nocreate is not portable
 #if !defined(IRIX) && !defined(DECOSF1)
-      anOpenMode = ios::in | ios::binary;
+      anOpenMode = std::ios::in | std::ios::binary;
 #else
-      anOpenMode = ios::in;
+      anOpenMode = std::ios::in;
 #endif
       break;
     }
     case Storage_VSWrite:
     {
 #if !defined(IRIX) && !defined(DECOSF1)
-      anOpenMode = ios::out | ios::binary;
+      anOpenMode = std::ios::out | std::ios::binary;
 #else
-      anOpenMode = ios::out;
+      anOpenMode = std::ios::out;
 #endif
       break;
     }
     case Storage_VSReadWrite:
     {
 #if !defined(IRIX) && !defined(DECOSF1)
-      anOpenMode = ios::in | ios::out | ios::binary;
+      anOpenMode = std::ios::in | std::ios::out | std::ios::binary;
 #else
-      anOpenMode = ios::in | ios::out;
+      anOpenMode = std::ios::in | std::ios::out;
 #endif
       break;
     }
@@ -348,7 +348,7 @@ void FSD_CmpFile::ReadPersistentObjectHeader(Standard_Integer& aRef,
   }
 
   if (!(myStream >> aType)) throw Storage_StreamTypeMismatchError();
-  //  cout << "REF:" << aRef << " TYPE:"<< aType << endl;
+  //  std::cout << "REF:" << aRef << " TYPE:"<< aType << std::endl;
 }
 
 //=======================================================================
@@ -358,7 +358,7 @@ void FSD_CmpFile::ReadPersistentObjectHeader(Standard_Integer& aRef,
 
 void FSD_CmpFile::BeginReadPersistentObjectData()
 {
-  //cout << "BeginReadPersistentObjectData" << endl;
+  //std::cout << "BeginReadPersistentObjectData" << std::endl;
 }
 
 //=======================================================================
@@ -368,7 +368,7 @@ void FSD_CmpFile::BeginReadPersistentObjectData()
 
 void FSD_CmpFile::BeginReadObjectData()
 {
-  //  cout << "BeginReadObjectData" << endl;
+  //  std::cout << "BeginReadObjectData" << std::endl;
 }
 
 //=======================================================================
@@ -378,7 +378,7 @@ void FSD_CmpFile::BeginReadObjectData()
 
 void FSD_CmpFile::EndReadObjectData()
 {
-  //  cout << "EndReadObjectData" << endl;
+  //  std::cout << "EndReadObjectData" << std::endl;
 }
 
 //=======================================================================
@@ -400,5 +400,5 @@ void FSD_CmpFile::EndReadPersistentObjectData()
   if (c == '\r') {
     myStream.get(c);
   }
-  //  cout << "EndReadPersistentObjectData" << endl;
+  //  std::cout << "EndReadPersistentObjectData" << std::endl;
 }

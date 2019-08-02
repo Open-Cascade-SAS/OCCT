@@ -404,7 +404,7 @@ static void AttachLayer (const Handle(Transfer_FinderProcess) &FP,
       Igesent->InitLevel( 0, localIntName );
     }
 #ifdef OCCT_DEBUG
-    else cout << "Warning: Can't find entity for shape in mapper" << endl;
+    else std::cout << "Warning: Can't find entity for shape in mapper" << std::endl;
 #endif
   }
 }

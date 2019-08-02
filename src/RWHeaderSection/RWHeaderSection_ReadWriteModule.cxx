@@ -66,7 +66,7 @@ Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep (const TColStd_Sequen
 {
   Standard_Integer NbComp = types.Length();
   if (NbComp < 2) {
-    cout << "Plex Instance illegal " << endl;
+    std::cout << "Plex Instance illegal " << std::endl;
   }
   return 0;
 }

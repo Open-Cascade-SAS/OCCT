@@ -118,9 +118,9 @@ void  IGESAppli_ToolPinNumber::OwnDump
   (const Handle(IGESAppli_PinNumber)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
-  S << "IGESAppli_PinNumber" << endl;
-  S << "Number of Property Values : " << ent->NbPropertyValues() << endl;
+  S << "IGESAppli_PinNumber" << Message_EndLine;
+  S << "Number of Property Values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "PinNumber : ";
   IGESData_DumpString(S,ent->PinNumberVal());
-  S << endl;
+  S << Message_EndLine;
 }

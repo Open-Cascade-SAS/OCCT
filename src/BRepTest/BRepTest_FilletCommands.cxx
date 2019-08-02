@@ -70,21 +70,21 @@ static char name[100];
 static Standard_Integer contblend(Draw_Interpretor& di, Standard_Integer narg, const char** a)
 {
   if(narg ==1) {
-    //cout<<"tolerance angular of approximation  : "<< tapp_angle <<endl;
-    //cout<<"internal continuity                 : ";
+    //std::cout<<"tolerance angular of approximation  : "<< tapp_angle <<std::endl;
+    //std::cout<<"internal continuity                 : ";
     di<<"tolerance angular of approximation  : "<< tapp_angle <<"\n";
     di<<"internal continuity                 : ";
     switch (blend_cont) {
       case GeomAbs_C0:
-         //cout << ""<<endl;
+         //std::cout << ""<<std::endl;
          di << "C0\n";
 	 break;
       case GeomAbs_C1:
-         //cout << "C1"<<endl;
+         //std::cout << "C1"<<std::endl;
          di << "C1\n";
 	 break;
       case GeomAbs_C2:
-         //cout << "C2"<<endl;
+         //std::cout << "C2"<<std::endl;
          di << "C2\n";
 	 break;
        default:
@@ -112,12 +112,12 @@ static Standard_Integer contblend(Draw_Interpretor& di, Standard_Integer narg, c
 
 static void printtolblend(Draw_Interpretor& di)
 {
-  //cout<<"tolerance ang : "<<ta<<endl;
-  //cout<<"tolerance 3d  : "<<t3d<<endl;
-  //cout<<"tolerance 2d  : "<<t2d<<endl;
-  //cout<<"fleche        : "<<fl<<endl;
+  //std::cout<<"tolerance ang : "<<ta<<std::endl;
+  //std::cout<<"tolerance 3d  : "<<t3d<<std::endl;
+  //std::cout<<"tolerance 2d  : "<<t2d<<std::endl;
+  //std::cout<<"fleche        : "<<fl<<std::endl;
 
-  //cout<<"tolblend "<<ta<<" "<<t3d<<" "<<t2d<<" "<<fl<<endl;
+  //std::cout<<"tolblend "<<ta<<" "<<t3d<<" "<<t2d<<" "<<fl<<std::endl;
 
   di<<"tolerance ang : "<<ta<<"\n";
   di<<"tolerance 3d  : "<<t3d<<"\n";
@@ -220,12 +220,12 @@ static Standard_Integer CheckHist(Draw_Interpretor& di,
 				  const char** )
 {
   if(Rakk == 0) {
-    //cout<<"No active Builder"<<endl;
+    //std::cout<<"No active Builder"<<std::endl;
     di<<"No active Builder\n";
     return 1;
   }
   if(!Rakk->IsDone()) {
-    //cout<<"Active Builder Not Done"<<endl;
+    //std::cout<<"Active Builder Not Done"<<std::endl;
     di<<"Active Builder Not Done\n";
     return 1;
   }
@@ -247,7 +247,7 @@ static Standard_Integer CheckHist(Draw_Interpretor& di,
     It.Initialize(Rakk->Generated(curshape));
     PrintHist(curshape,It,nbgen);
   }
-  //cout<<"foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }"<<endl;
+  //std::cout<<"foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }"<<std::endl;
   di<<"foreach g [lsort [dir gen*]] { wclick; puts [dname $g]; donl $g; }\n";
   return 0;
 }
@@ -282,7 +282,7 @@ static Standard_Integer UPDATEVOL(Draw_Interpretor& di,
 				  const char** a)
 {
   if(Rake == 0){
-    //cout << "MakeFillet not initialized"<<endl;
+    //std::cout << "MakeFillet not initialized"<<std::endl;
     di << "MakeFillet not initialized\n";
     return 1 ;
   }
@@ -306,7 +306,7 @@ static Standard_Integer BUILDEVOL(Draw_Interpretor& di,
 				  const char**)
 {
   if(Rake == 0){
-    //cout << "MakeFillet not initialized"<<endl;
+    //std::cout << "MakeFillet not initialized"<<std::endl;
     di << "MakeFillet not initialized\n";
     return 1 ;
   }
@@ -333,7 +333,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   printtolblend(di);
   if(narg < 5)
   {
-    cout << "Use <command name> result shape1 shape2 radius [-d]" << endl;
+    std::cout << "Use <command name> result shape1 shape2 radius [-d]" << std::endl;
     return 1;
   }
 
@@ -466,16 +466,16 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
 
   //if (Rakk.IsDone()==FilletSurf_IsNotOk) 
   // { FilletSurf_ErrorTypeStatus err=Rakk.StatusError();
-  //   if (err==FilletSurf_EmptyList) cout<< "StatusError=EmptyList"<<endl;
-  //   else if (err==FilletSurf_EdgeNotG1) cout<< "StatusError=NotG1"<<endl;
-  //   else if (err==FilletSurf_FacesNotG1) cout<< "StatusError=facesNotG1"<<endl;   
+  //   if (err==FilletSurf_EmptyList) std::cout<< "StatusError=EmptyList"<<std::endl;
+  //   else if (err==FilletSurf_EdgeNotG1) std::cout<< "StatusError=NotG1"<<std::endl;
+  //   else if (err==FilletSurf_FacesNotG1) std::cout<< "StatusError=facesNotG1"<<std::endl;   
   //   else if (err==FilletSurf_EdgeNotOnShape) 
-  //   cout<< "StatusError=edgenotonshape"<<endl;
-  //   else if (err==FilletSurf_NotSharpEdge ) cout<< "StatusError=notsharpedge"<<endl;
-  //   else if (err==FilletSurf_PbFilletCompute) cout <<"StatusError=PBFillet"<<endl;
+  //   std::cout<< "StatusError=edgenotonshape"<<std::endl;
+  //   else if (err==FilletSurf_NotSharpEdge ) std::cout<< "StatusError=notsharpedge"<<std::endl;
+  //   else if (err==FilletSurf_PbFilletCompute) std::cout <<"StatusError=PBFillet"<<std::endl;
   // }
   // else {
-  //  if (Rakk.IsDone()==FilletSurf_IsPartial) cout <<"resultat partiel"<<endl; 
+  //  if (Rakk.IsDone()==FilletSurf_IsPartial) std::cout <<"resultat partiel"<<std::endl; 
   if (aRakk.IsDone()==FilletSurf_IsNotOk)
    { FilletSurf_ErrorTypeStatus err=aRakk.StatusError();
      if (err==FilletSurf_EmptyList) di<< "StatusError=EmptyList\n";
@@ -498,11 +498,11 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
    if (!simul)
    { 
     //if (Rakk.StartSectionStatus()==FilletSurf_NoExtremityOnEdge)
-    //  {cout<<" type deb conges = WLBLOUT"<<endl;}
+    //  {std::cout<<" type deb conges = WLBLOUT"<<std::endl;}
     //else if (Rakk.StartSectionStatus()==FilletSurf_OneExtremityOnEdge )
-    //  { cout<<" type deb conges = WLBLSTOP"<<endl;}
+    //  { std::cout<<" type deb conges = WLBLSTOP"<<std::endl;}
     //else if (Rakk.StartSectionStatus()==FilletSurf_TwoExtremityOnEdge)
-    //  {cout<<" type deb conges = WLBLEND"<<endl;}
+    //  {std::cout<<" type deb conges = WLBLEND"<<std::endl;}
     if (aRakk.StartSectionStatus()==FilletSurf_NoExtremityOnEdge)
       {di<<" type start fillets = WLBLOUT\n";}
     else if (aRakk.StartSectionStatus()==FilletSurf_OneExtremityOnEdge)
@@ -511,11 +511,11 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
       {di<<" type start fillets = WLBLEND\n";}
     
     //if (Rakk.EndSectionStatus()==FilletSurf_NoExtremityOnEdge) 
-    //  {cout<<" type fin  conges = WLBLOUT"<<endl;}
+    //  {std::cout<<" type fin  conges = WLBLOUT"<<std::endl;}
     //else if (Rakk.EndSectionStatus()==FilletSurf_OneExtremityOnEdge) 
-    //  {cout<<" type fin  conges = WLBLSTOP"<<endl;}
+    //  {std::cout<<" type fin  conges = WLBLSTOP"<<std::endl;}
     //else if (Rakk.EndSectionStatus()==FilletSurf_TwoExtremityOnEdge) 
-    //  { cout<<" type fin  conges = WLBLEND"<<endl;}
+    //  { std::cout<<" type fin  conges = WLBLEND"<<std::endl;}
     if (aRakk.EndSectionStatus()==FilletSurf_NoExtremityOnEdge)
       {di<<" type end fillets = WLBLOUT\n";}
     else if (aRakk.EndSectionStatus()==FilletSurf_OneExtremityOnEdge)
@@ -525,13 +525,13 @@ static Standard_Integer blend1(Draw_Interpretor& di, Standard_Integer narg, cons
     Standard_Real f,l;
     f = aRakk.FirstParameter();
     l = aRakk.LastParameter();
-    //cout<<"parameter on edge start : "<<f<<endl;
-    //cout<<"parameter on edge end   : "<<l<<endl;
+    //std::cout<<"parameter on edge start : "<<f<<std::endl;
+    //std::cout<<"parameter on edge end   : "<<l<<std::endl;
     di<<"parametre on edge start : "<<f<<"\n";
     di<<"parametre on edge end   : "<<l<<"\n";
     for (i=1;i<=nb;i++){
       //precision 
-      //cout<<"precision "<< i << "= "<<Rakk.TolApp3d(i)<<endl;
+      //std::cout<<"precision "<< i << "= "<<Rakk.TolApp3d(i)<<std::endl;
       di<<"precision "<< i << "= "<<aRakk.TolApp3d(i)<<"\n";
       
       // display resulting surfaces  
@@ -628,7 +628,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
       TopoDS_Face F1 = TopoDS::Face(aLocalFace);
 //      TopoDS_Face F1 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
       if ( F1.IsNull()) {
-	//cout << " Stop face not referenced." << endl;
+	//std::cout << " Stop face not referenced." << std::endl;
 	di << " Stop face not referenced.\n";
 	return 1;
       }
@@ -640,7 +640,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
 //      TopoDS_Face F1 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
       i++;
       if ( !strcmp(a[i],"@")) {
-	//cout << " Even number of ball support faces is required " << endl;
+	//std::cout << " Even number of ball support faces is required " << std::endl;
 	di << " Even number of ball support faces is required \n";
 	return 1;
       }
@@ -648,7 +648,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
       TopoDS_Face F2 = TopoDS::Face(aLocalFace);
 //      TopoDS_Face F2 = TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE));
       if ( F1.IsNull() || F2.IsNull()) {
-	//cout << " Support face not referenced." << endl;
+	//std::cout << " Support face not referenced." << std::endl;
 	di << " Support face not referenced.\n";
 	return 1;
       }
@@ -659,7 +659,7 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
       TopoDS_Edge E = TopoDS::Edge(aLocalShape);
 //      TopoDS_Edge E = TopoDS::Edge(DBRep::Get(a[i],TopAbs_EDGE));
       if ( E.IsNull()) {
-	//cout << " Edge not referenced." << endl;
+	//std::cout << " Edge not referenced." << std::endl;
 	di << " Edge not referenced.\n";
 	return 1;
       }
@@ -678,8 +678,8 @@ Standard_Integer rollingball(Draw_Interpretor& di, Standard_Integer n, const cha
     for (Standard_Integer i = 1; i <= NbBranches; i++) {
       Standard_Integer From,To;
       Roll.IndicesOfBranche(i,From,To);
-      //cout << " Indexes of the " << i << "th Branch : ";
-      //cout << "   " << From << "     " << To << endl;
+      //std::cout << " Indexes of the " << i << "th Branch : ";
+      //std::cout << "   " << From << "     " << To << std::endl;
       di << " Indexes of the " << i << "th Branch : ";
       di << "   " << From << "     " << To << "\n";
       for (Standard_Integer j = From; j <= To; j++) {

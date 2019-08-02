@@ -989,7 +989,7 @@ void BRepOffsetAPI_MiddlePath::Build()
       Interpol.Perform();
       if (!Interpol.IsDone())
       {
-        cout<<endl<<"Interpolation failed"<<endl;
+        std::cout<<std::endl<<"Interpolation failed"<<std::endl;
       }
       Handle(Geom_Curve) InterCurve (Interpol.Curve());
       MidEdges(i) = BRepLib_MakeEdge(InterCurve);

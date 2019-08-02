@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 060302: Input from istream
+//AGV 060302: Input from std::istream
 
 #ifndef LDOMParser_HeaderFile
 #define LDOMParser_HeaderFile
@@ -22,7 +22,7 @@
 #include <LDOM_OSStream.hxx>
 
 class LDOM_XmlReader;
-//class istream;
+//class std::istream;
 
 //  Class LDOMParser
 //
@@ -48,7 +48,7 @@ class LDOMParser
   // Returns True if error occurred, then GetError() can be called
 
   Standard_EXPORT Standard_Boolean
-                        parse           (istream& anInput,
+                        parse           (std::istream& anInput,
                                          const Standard_Boolean theTagPerStep  = Standard_False,
                                          const Standard_Boolean theWithoutRoot = Standard_False);
   // Parse a C++ stream

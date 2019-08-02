@@ -96,7 +96,7 @@ HLRTest_DrawablePolyEdgeTool (const Handle(HLRBRep_PolyAlgo)& Alg,
   }
   if (myDebug) {
     ChronHide.Stop();
-    cout << " Temps Hide   :";
+    std::cout << " Temps Hide   :";
     ChronHide.Show(); 
   }
 }

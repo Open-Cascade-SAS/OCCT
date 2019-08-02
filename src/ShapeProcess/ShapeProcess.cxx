@@ -35,7 +35,7 @@ Standard_Boolean ShapeProcess::RegisterOperator (const Standard_CString name,
 {
   if (aMapOfOperators.IsBound(name)) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: operator with name " << name << " is already registered!" << endl;
+    std::cout << "Warning: operator with name " << name << " is already registered!" << std::endl;
 #endif
     return Standard_False;
   }
@@ -53,7 +53,7 @@ Standard_Boolean ShapeProcess::FindOperator (const Standard_CString name,
 {
   if (!aMapOfOperators.IsBound(name)) {
 #ifdef OCCT_DEBUG
-    cout << "Error: no operator with name " << name << " registered!" << endl;
+    std::cout << "Error: no operator with name " << name << " registered!" << std::endl;
 #endif
     return Standard_False;
   }
@@ -75,7 +75,7 @@ Standard_Boolean ShapeProcess::Perform (const Handle(ShapeProcess_Context)& cont
   TCollection_AsciiString sequence;
   if ( ! context->GetString ( "exec.op", sequence ) ) {
 #ifdef OCCT_DEBUG
-    cout << "Error: ShapeProcess_Performer::Perform: sequence not defined for " << seq << endl;
+    std::cout << "Error: ShapeProcess_Performer::Perform: sequence not defined for " << seq << std::endl;
 #endif
     if ( context->TraceLevel() >0 ) {
       Message_Msg SMSG3 ("SP.Sequence.Warn.NoSeq"); // Sequence %s not found

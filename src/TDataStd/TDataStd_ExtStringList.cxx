@@ -363,6 +363,6 @@ Standard_OStream& TDataStd_ExtStringList::Dump (Standard_OStream& anOS) const
   Standard_Character sguid[Standard_GUID_SIZE_ALLOC];
   myID.ToCString(sguid);
   anOS << sguid;
-  anOS << endl;
+  anOS << std::endl;
   return anOS;
 }

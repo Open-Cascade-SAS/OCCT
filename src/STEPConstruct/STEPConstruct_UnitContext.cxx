@@ -235,7 +235,7 @@ Standard_Boolean STEPConstruct_UnitContext::SiUnitNameFactor(const Handle(StepBa
   case StepBasic_sunSteradian: 
     return Standard_True;
   default:
-//	cout << "Unknown SiUnitName : " << aSiUnit->Name() << endl;
+//	std::cout << "Unknown SiUnitName : " << aSiUnit->Name() << std::endl;
     return Standard_False;
   }
 }
@@ -260,7 +260,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr
   
   if (aContext.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<" -- STEPConstruct_UnitContext:ComputeFactor, Context undefined -> default"<<endl;
+    std::cout<<" -- STEPConstruct_UnitContext:ComputeFactor, Context undefined -> default"<<std::endl;
 #endif
     return 1;
   }
@@ -274,7 +274,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepRepr
     status = ComputeFactors(theNamedUnit);
 #ifdef OCCT_DEBUG
     if(status == -1)
-      cout << " -- STEPConstruct_UnitContext:ComputeFactor: Unit item no." << i << " is not recognized" << endl;
+      std::cout << " -- STEPConstruct_UnitContext:ComputeFactor: Unit item no." << i << " is not recognized" << std::endl;
 #endif    
   }
   return status;
@@ -327,11 +327,11 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
 	}
 	// Treat the SiUnitName
 	if (!SiUnitNameFactor(theSIU,theSIUNF)) status = 11; // et continue
-	//cout << "The SiUnitNameFactor is :";
-	//cout << theSIUNF << endl;
+	//std::cout << "The SiUnitNameFactor is :";
+	//std::cout << theSIUNF << std::endl;
       }
       else {
-	//      cout << "Recursive algo required - Aborted" << endl;
+	//      std::cout << "Recursive algo required - Aborted" << std::endl;
 	return 3;
       }
       Standard_Real theMVAL = theMWU->ValueComponent();
@@ -344,7 +344,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     else {
       status = 14;
 #ifdef OCCT_DEBUG
-      cout << "Error in the file : parameter double defined" << endl;
+      std::cout << "Error in the file : parameter double defined" << std::endl;
 #endif
     }
   }    
@@ -369,7 +369,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     else {
       status = 14;
 #ifdef OCCT_DEBUG
-      cout << "Error in the file : parameter double defined" << endl;
+      std::cout << "Error in the file : parameter double defined" << std::endl;
 #endif
     }
   }
@@ -377,7 +377,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
   // Defining a type of unit
   if(!parameterDone) {
 #ifdef OCCT_DEBUG
-    cout << "Unit Type not implemented" << endl;
+    std::cout << "Unit Type not implemented" << std::endl;
 #endif 
     return 0;
   }
@@ -394,7 +394,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     else {
       status = 14;
 #ifdef OCCT_DEBUG
-      cout << "Error in the file : LengthFactor double defined" << endl;
+      std::cout << "Error in the file : LengthFactor double defined" << std::endl;
 #endif    
     }
   }  // end of LengthUnit
@@ -455,7 +455,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance
     Handle(StepBasic_UncertaintyMeasureWithUnit) aUMWU = aContext->UncertaintyValue(un);
     if (aUMWU.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout<<"BAD Uncertainty Measure with Units, n0."<<un<<endl;
+      std::cout<<"BAD Uncertainty Measure with Units, n0."<<un<<std::endl;
 #endif
       continue;
     }
@@ -485,7 +485,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeTolerance
   }
 
 #ifdef OCCT_DEBUG
-  if (hasUncertainty) cout << "UNCERTAINTY read as " << theUncertainty << endl;
+  if (hasUncertainty) std::cout << "UNCERTAINTY read as " << theUncertainty << std::endl;
 #endif
   return status;
 }

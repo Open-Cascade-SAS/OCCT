@@ -186,7 +186,7 @@ void GeomConvert_ApproxCurve::Approximate(
 
  void GeomConvert_ApproxCurve::Dump(Standard_OStream& o) const
 {
-  o << "******* Dump of ApproxCurve *******" << endl;
-  o << "*******Error   " << MaxError() << endl;
+  o << "******* Dump of ApproxCurve *******" << std::endl;
+  o << "*******Error   " << MaxError() << std::endl;
 }
 

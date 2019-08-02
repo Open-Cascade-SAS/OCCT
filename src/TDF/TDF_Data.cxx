@@ -48,18 +48,18 @@ IMPLEMENT_STANDARD_RTTIEXT(TDF_Data,Standard_Transient)
 
 #ifdef OCCT_DEBUG_DELTA
 #define TDF_Data_DebugModified(ACTION) \
-  cout<<"After "<<ACTION<<" #"<<myTransaction+1<<", DF "<<this<<" had "<<myNbTouchedAtt<<" attribute(s) touched. Time = "<<myTime<<endl; \
+  std::cout<<"After "<<ACTION<<" #"<<myTransaction+1<<", DF "<<this<<" had "<<myNbTouchedAtt<<" attribute(s) touched. Time = "<<myTime<<std::endl; \
 if (!myTransaction) { \
   TCollection_AsciiString entry; \
   for (TDF_ChildIterator itr(Root(),Standard_True); itr.More(); itr.Next()) { \
     const TDF_LabelNode* lnp = itr.Value().myLabelNode; \
     if (lnp->AttributesModified() || lnp->MayBeModified()) { \
       TDF_Tool::Entry(itr.Value(),entry); \
-      cout<<ACTION<<" on "<<entry<<" : flag(s) "; \
-      if (lnp->AttributesModified()) cout<<"AttributesModified "; \
-      if (lnp->MayBeModified()) cout<<"MayBeModified already set in transaction 0! Please contact TDF developer."; \
-      cout<<endl; \
-      cout<<itr.Value()<<endl; \
+      std::cout<<ACTION<<" on "<<entry<<" : flag(s) "; \
+      if (lnp->AttributesModified()) std::cout<<"AttributesModified "; \
+      if (lnp->MayBeModified()) std::cout<<"MayBeModified already set in transaction 0! Please contact TDF developer."; \
+      std::cout<<std::endl; \
+      std::cout<<itr.Value()<<std::endl; \
       entry.Clear(); \
     }}}
 #else
@@ -71,7 +71,7 @@ if (!myTransaction) { \
 { \
 TCollection_AsciiString entry; \
 TDF_Tool::Entry(currentAtt->Label(),entry); \
-cout<<"Creation of a DeltaOn"<<DELTATYPE<<" \tat "<<entry<<" \ton "<<currentAtt->DynamicType()<<endl; \
+std::cout<<"Creation of a DeltaOn"<<DELTATYPE<<" \tat "<<entry<<" \ton "<<currentAtt->DynamicType()<<std::endl; \
 }
 #else
 #define TDF_DataDebugDeltaCreation(DELTATYPE)
@@ -138,7 +138,7 @@ Handle(TDF_Delta) TDF_Data::CommitTransaction
   if (myTransaction>0) {
     if (withDelta) delta = new TDF_Delta();
 #ifdef OCCT_DEBUG_DELTA
-    cout<<"TDF_Data::Begin Commit #"<<myTransaction<<endl;    
+    std::cout<<"TDF_Data::Begin Commit #"<<myTransaction<<std::endl;    
 #endif
 #ifdef TDF_DATA_COMMIT_OPTIMIZED
     myNbTouchedAtt = 0;
@@ -154,15 +154,15 @@ Handle(TDF_Delta) TDF_Data::CommitTransaction
         delta->Validity(myTimes.First(),myTime);
 #ifdef OCCT_DEBUG_DELTA
         if (myTransaction == 0) {
-          cout<<"TDF_Data::Commit generated this delta in t=0:"<<endl;
-          delta->Dump(cout);
+          std::cout<<"TDF_Data::Commit generated this delta in t=0:"<<std::endl;
+          delta->Dump(std::cout);
         }
 #endif
       }
 #ifdef OCCT_DEBUG_DELTA
       else {
         if (myTransaction == 0)
-          cout<<"TDF_Data::Commit generated NO delta."<<endl;
+          std::cout<<"TDF_Data::Commit generated NO delta."<<std::endl;
       }
 #endif
     }
@@ -408,8 +408,8 @@ Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta,
     if (aDelta->IsApplicable(myTime)) {
       if (withDelta) OpenTransaction();
 #ifdef OCCT_DEBUG_DELTA
-      cout<<"TDF_Data::Undo applies this delta:"<<endl;
-      aDelta->Dump(cout);
+      std::cout<<"TDF_Data::Undo applies this delta:"<<std::endl;
+      aDelta->Dump(std::cout);
 #endif
       aDelta->BeforeOrAfterApply(Standard_True);
       myNotUndoMode = Standard_False;
@@ -420,7 +420,7 @@ Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta,
         newDelta = CommitTransaction(Standard_True);
         newDelta->Validity(aDelta->EndTime(),aDelta->BeginTime());
 #ifdef OCCT_DEBUG_DELTA
-        cout<<"TDF_Data::Undo, after validity correction, Delta is now available from time \t#"<<newDelta->BeginTime()<<" to time \t#"<<newDelta->EndTime()<<endl;
+        std::cout<<"TDF_Data::Undo, after validity correction, Delta is now available from time \t#"<<newDelta->BeginTime()<<" to time \t#"<<newDelta->EndTime()<<std::endl;
 #endif
       }
       myTime = aDelta->BeginTime();
@@ -439,8 +439,8 @@ Handle(TDF_Delta) TDF_Data::Undo(const Handle(TDF_Delta)& aDelta,
 
 Standard_OStream& TDF_Data::Dump(Standard_OStream& anOS) const
 {
-  anOS<<"Dump of a TDF_Data."<<endl;
+  anOS<<"Dump of a TDF_Data."<<std::endl;
   anOS<<"Current transaction: "<<myTransaction;
-  anOS<<"; Current tick: "<<myTime<<";"<<endl;
+  anOS<<"; Current tick: "<<myTime<<";"<<std::endl;
   return anOS;
 }

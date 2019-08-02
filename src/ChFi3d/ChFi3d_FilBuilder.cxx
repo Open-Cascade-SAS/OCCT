@@ -466,11 +466,11 @@ void ChFi3d_FilBuilder::Simulate (const Standard_Integer IC)
 #ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
     simul.Stop();
-    cout<<"Total simulation time : ";
+    std::cout<<"Total simulation time : ";
     simul.Show();
-    cout<<"Spine construction time : ";
+    std::cout<<"Spine construction time : ";
     elspine.Show();
-    cout<<"and process time : ";
+    std::cout<<"and process time : ";
     chemine.Show();
   }
 #endif
@@ -1756,7 +1756,7 @@ void ChFi3d_FilBuilder::SplitSurf(ChFiDS_SequenceOfSurfData&    SeqData,
       }
       else {
 # if CHFI3D_DEB
-	cout << "Failed calculation of the minimum length" << endl;
+	std::cout << "Failed calculation of the minimum length" << std::endl;
 # endif
       }
     }

@@ -78,17 +78,17 @@ void Units_UnitSentence::Analyse()
 
   currenttoken = sequence->Value(1);
 
-  //cout<<endl;
+  //std::cout<<std::endl;
   //for(int ind=1; ind<=sequence->Length(); ind++) {
   //  Handle(Units_Token) tok = sequence->Value(ind);
-  //  cout<<tok->Word()<<" ";
+  //  std::cout<<tok->Word()<<" ";
   //}
-  //cout<<endl;
+  //std::cout<<std::endl;
   //for(ind=1; ind<=sequence->Length(); ind++) {
   //  Handle(Units_Token) tok = sequence->Value(ind);
-  //  cout<<tok->Mean()<<" ";
+  //  std::cout<<tok->Mean()<<" ";
   //}
-  //cout<<endl;
+  //std::cout<<std::endl;
 
   for(index=2;index<=sequence->Length();index++) {
     previoustoken = currenttoken;

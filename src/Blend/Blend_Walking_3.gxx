@@ -270,7 +270,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     rsnld.Perform(FuncInv,solrst,infb,supb);  
     if (!rsnld.IsDone()) {
 #ifdef OCCT_DEBUG
-      cout << "Walking::Recadre : RSNLD not done " << endl;
+      std::cout << "Walking::Recadre : RSNLD not done " << std::endl;
 #endif
       recadre = Standard_False;
     }
@@ -318,7 +318,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
   
     if (!aRsnld.IsDone()) {
 #ifdef OCCT_DEBUG
-      cout << "Walking::Recadre : RSNLD not done " << endl;
+      std::cout << "Walking::Recadre : RSNLD not done " << std::endl;
 #endif
       recadre = Standard_False;
     }
@@ -429,7 +429,7 @@ void Blend_Walking::Transition(const Standard_Boolean OnFirst,
     normale.SetXYZ(thenormal.XYZ());
 #ifdef OCCT_DEBUG
     if (stat == CSLib_InfinityOfSolutions)
-      cout << "Blend_Walking::Transition : Infinite de Normal" << endl;
+      std::cout << "Blend_Walking::Transition : Infinite de Normal" << std::endl;
 #endif 
   }
 

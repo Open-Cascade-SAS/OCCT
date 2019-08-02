@@ -375,7 +375,7 @@ void TDF_Label::InternalDump
     if (AttributesModified()) anOS<<"HAS attributes"; else anOS<<"NO attribute"; anOS<<" modified; ";
     if (HasAttribute()) {
       Standard_Integer nba = NbAttributes();
-      anOS<<"has "<<nba<<" attribute"; if (nba > 1) anOS<<"s"; anOS<<"."<<endl;
+      anOS<<"has "<<nba<<" attribute"; if (nba > 1) anOS<<"s"; anOS<<"."<<std::endl;
       for (TDF_AttributeIterator itr(myLabelNode); itr.More(); itr.Next()) {
         // CLE
         // const Handle(TDF_Attribute)& att = itr.Value();
@@ -386,7 +386,7 @@ void TDF_Label::InternalDump
       }
     }
     else {
-      anOS<<" has no attribute"<<endl;
+      anOS<<" has no attribute"<<std::endl;
     }
   }
 }

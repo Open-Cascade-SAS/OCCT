@@ -103,13 +103,13 @@ void Units_ShiftedUnit::Dump(const Standard_Integer ,
   TCollection_AsciiString string;
 
 //  int i;
-//  for(i=0; i<ashift; i++)cout<<"  ";
+//  for(i=0; i<ashift; i++)std::cout<<"  ";
   for(index=1;index<=thesymbolssequence->Length();index++)
     {
       string = thesymbolssequence->Value(index)->String();
-      if(index != 1) cout << " or " ;
-      cout<<"\""<<string.ToCString()<<"\"";
+      if(index != 1) std::cout << " or " ;
+      std::cout<<"\""<<string.ToCString()<<"\"";
     }
-  cout<< "		Name:  " <<Name().ToCString()<<"		(= *" << thevalue << " SI + " << themove << ")"<<endl;
+  std::cout<< "		Name:  " <<Name().ToCString()<<"		(= *" << thevalue << " SI + " << themove << ")"<<std::endl;
 }
 

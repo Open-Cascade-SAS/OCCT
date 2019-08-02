@@ -84,7 +84,7 @@ void IntPatch_ALine::AddVertex (const IntPatch_Point& VTXj) {
 	if((VTXi.IsOnDomS1()==Standard_False) && (VTXi.IsOnDomS2()==Standard_False)) {
 	  if(Abs(par-VTXi.ParameterOnLine())<=PCONFUSION) { 
 #if DEBUG
-	    cout<<" Rejet  IntPatch_ALine::AddVertex   (0) "<<endl;
+	    std::cout<<" Rejet  IntPatch_ALine::AddVertex   (0) "<<std::endl;
 #endif
 	    return;
 	  }
@@ -98,7 +98,7 @@ void IntPatch_ALine::AddVertex (const IntPatch_Point& VTXj) {
 	  if(Abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1())<=PCONFUSION) { 
 	    if(VTXi.ArcOnS1() == VTXj.ArcOnS1()) {
 #if DEBUG
-	      cout<<" Rejet  IntPatch_ALine::AddVertex   (1) "<<endl;
+	      std::cout<<" Rejet  IntPatch_ALine::AddVertex   (1) "<<std::endl;
 #endif
 	      return;
 	    }
@@ -113,7 +113,7 @@ void IntPatch_ALine::AddVertex (const IntPatch_Point& VTXj) {
 	  if(Abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2())<=PCONFUSION) { 
 	    if(VTXi.ArcOnS2() == VTXj.ArcOnS2()) {
 #if DEBUG
-	      cout<<" Rejet  IntPatch_ALine::AddVertex   (2) "<<endl;
+	      std::cout<<" Rejet  IntPatch_ALine::AddVertex   (2) "<<std::endl;
 #endif
 	      return;
 	    }
@@ -130,7 +130,7 @@ void IntPatch_ALine::AddVertex (const IntPatch_Point& VTXj) {
 	      if(VTXi.ArcOnS2() == VTXj.ArcOnS2()) {
 		if(VTXi.ArcOnS1() == VTXj.ArcOnS1()) {
 #if DEBUG
-		  cout<<" Rejet  IntPatch_ALine::AddVertex   (3) "<<endl;
+		  std::cout<<" Rejet  IntPatch_ALine::AddVertex   (3) "<<std::endl;
 #endif
 		  return;
 		}
@@ -148,12 +148,12 @@ void IntPatch_ALine::AddVertex (const IntPatch_Point& VTXj) {
 	if((VTXi.IsOnDomS2()==Standard_False) && (VTXi.IsOnDomS1()==Standard_True)) {
 	  Standard_Real p = Abs(VTXi.ParameterOnArc1()-VTXj.ParameterOnArc1());
 #if DEBUG
-	  cout<<" Est ce que VTXj present sur 1 et 2  remplace un point VTXi present sur 1 : "<<p<<endl;
+	  std::cout<<" Est ce que VTXj present sur 1 et 2  remplace un point VTXi present sur 1 : "<<p<<std::endl;
 #endif
 	  if(p<=PCONFUSION) { 
 	    if(VTXi.ArcOnS1() == VTXj.ArcOnS1()) {
 #if DEBUG
-	      cout<<" Replace  IntPatch_ALine::AddVertex   (1) "<<endl;
+	      std::cout<<" Replace  IntPatch_ALine::AddVertex   (1) "<<std::endl;
 #endif
 	      Replace(i,VTXj);
 	      return;
@@ -169,12 +169,12 @@ void IntPatch_ALine::AddVertex (const IntPatch_Point& VTXj) {
 	if((VTXi.IsOnDomS2()==Standard_True) && (VTXi.IsOnDomS1()==Standard_False)) {
 	  Standard_Real p = Abs(VTXi.ParameterOnArc2()-VTXj.ParameterOnArc2());
 #if DEBUG
-	  cout<<" Est ce que VTXj present sur 1 et 2  remplace un point VTXi present sur 2 : "<<p<<endl;
+	  std::cout<<" Est ce que VTXj present sur 1 et 2  remplace un point VTXi present sur 2 : "<<p<<std::endl;
 #endif
 	  if(p<=PCONFUSION) { 
 	    if(VTXi.ArcOnS2() == VTXj.ArcOnS2()) {
 #if DEBUG
-	      cout<<" Replace  IntPatch_ALine::AddVertex   (2) "<<endl;
+	      std::cout<<" Replace  IntPatch_ALine::AddVertex   (2) "<<std::endl;
 #endif
 	      Replace(i,VTXj);
 	      return;
@@ -194,7 +194,7 @@ void IntPatch_ALine::AddVertex (const IntPatch_Point& VTXj) {
 	  if(p<=PCONFUSION) { 
 	    if(VTXi.ArcOnS1() == VTXj.ArcOnS1()) {
 #if DEBUG
-	      cout<<" Replace  IntPatch_ALine::AddVertex   (1)  -> RIEN "<<endl;
+	      std::cout<<" Replace  IntPatch_ALine::AddVertex   (1)  -> RIEN "<<std::endl;
 #endif
 	      return;
 	    }
@@ -639,7 +639,7 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol) {
 	  
 
 	  SortIsOK=Standard_False;
-	  //-- cout<<" IntPatch_ALine : ComputeVertexParameters : Ajust "<<endl;
+	  //-- std::cout<<" IntPatch_ALine : ComputeVertexParameters : Ajust "<<std::endl;
 	}
       }
     }

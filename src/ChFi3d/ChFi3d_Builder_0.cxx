@@ -4273,7 +4273,7 @@ void ChFi3d_PerformElSpine(Handle(ChFiDS_HElSpine)& HES,
       BSpline = C1;
     }
     else {
-      //cout << "Attention : Echec de C0BSplineToC1 !" << endl;
+      //std::cout << "Attention : Echec de C0BSplineToC1 !" << std::endl;
     }
   }
   //

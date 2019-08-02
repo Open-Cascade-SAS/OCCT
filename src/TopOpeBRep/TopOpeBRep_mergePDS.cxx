@@ -114,18 +114,18 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 #ifdef OCCT_DEBUG
       if (editITF) {
 	if (ivp1 != 0) {
-	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS_CURVE,ic,"# BREP_mergePDS "," : ");
-	  cout<<TopOpeBRepDS::SPrint(GK,GI,""," = ");
+	  std::cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS_CURVE,ic,"# BREP_mergePDS "," : ");
+	  std::cout<<TopOpeBRepDS::SPrint(GK,GI,""," = ");
 	  TCollection_AsciiString str (BDS.HasShape(v1) ? "old" : "new ");
-	  cout<<TopOpeBRepDS::SPrint(k1,iv1,str);
-	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(f1.ShapeType()),if1," de ")<<endl;
+	  std::cout<<TopOpeBRepDS::SPrint(k1,iv1,str);
+	  std::cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(f1.ShapeType()),if1," de ")<<std::endl;
 	}
 	if (ivp2 != 0) {
-	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS_CURVE,ic,"# BREP_mergePDS "," : ");
-	  cout<<TopOpeBRepDS::SPrint(GK,GI,""," = ");
+	  std::cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS_CURVE,ic,"# BREP_mergePDS "," : ");
+	  std::cout<<TopOpeBRepDS::SPrint(GK,GI,""," = ");
 	  TCollection_AsciiString str (BDS.HasShape(v2) ? "old" : "new ");
-	  cout<<TopOpeBRepDS::SPrint(k2,iv2,str);
-	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(f2.ShapeType()),if2," de ")<<endl;
+	  std::cout<<TopOpeBRepDS::SPrint(k2,iv2,str);
+	  std::cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(f2.ShapeType()),if2," de ")<<std::endl;
 	}
       }
 #endif

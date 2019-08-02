@@ -363,9 +363,9 @@ void IntRes2d_Intersection::Append( const IntRes2d_Intersection& Other
 #if DEBUGPOSITION
 void AffPosition(IntRes2d_Transition& T,const Standard_Real u,const char *Texte);
 void AffPosition(IntRes2d_Transition& T,const Standard_Real u,const char *Texte) { 
-  if(T.PositionOnCurve() == IntRes2d_End) { cout <<Texte<<" Param :"<<u<<" End "<<endl; } 
-  if(T.PositionOnCurve() == IntRes2d_Middle) { cout <<Texte<<" Param :"<<u<<" Middle "<<endl; } 
-  if(T.PositionOnCurve() == IntRes2d_Head) { cout <<Texte<<" Param :"<<u<<" Head "<<endl; }
+  if(T.PositionOnCurve() == IntRes2d_End) { std::cout <<Texte<<" Param :"<<u<<" End "<<std::endl; } 
+  if(T.PositionOnCurve() == IntRes2d_Middle) { std::cout <<Texte<<" Param :"<<u<<" Middle "<<std::endl; } 
+  if(T.PositionOnCurve() == IntRes2d_Head) { std::cout <<Texte<<" Param :"<<u<<" Head "<<std::endl; }
 } 
 #endif
 
@@ -413,7 +413,7 @@ AffPosition(T2,PParamOnSecond," Point 2 ");
 
 #if 0 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#define Debug(q) cout<<"IntRes2d_Intersectionq ="<<q<<endl;
+#define Debug(q) std::cout<<"IntRes2d_Intersectionq ="<<q<<std::endl;
 
 char *DebugPos(const IntRes2d_Position P);
 
@@ -423,7 +423,7 @@ Debug(FirstParam2);
 Debug(LastParam2);
 Debug(PParamOnFirst);
 Debug(PParamOnSecond);
-cout<<" ##### T1  <> Middle ###### "<<DebugPos(T1.PositionOnCurve())<<endl;
+std::cout<<" ##### T1  <> Middle ###### "<<DebugPos(T1.PositionOnCurve())<<std::endl;
 char *DebugPos(const IntRes2d_Position P) {
   if(P==IntRes2d_Middle) return(" Middle ");
   if(P==IntRes2d_Head) return(" Head ");

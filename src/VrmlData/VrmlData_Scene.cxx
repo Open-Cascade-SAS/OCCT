@@ -208,11 +208,11 @@ VrmlData_ErrorStatus VrmlData_Scene::readLine (VrmlData_InBuffer& theBuffer)
     theBuffer.Input.getline (theBuffer.Line, sizeof(theBuffer.Line));
     theBuffer.LineCount++;
     const int stat = theBuffer.Input.rdstate();
-    if (stat & ios::badbit) {
+    if (stat & std::ios::badbit) {
       aStatus = VrmlData_UnrecoverableError;
     }
-    else if (stat & ios::failbit) {
-      if (stat & ios::eofbit) {
+    else if (stat & std::ios::failbit) {
+      if (stat & std::ios::eofbit) {
         aStatus = VrmlData_EndOfFile;
       }
       else {
@@ -981,10 +981,10 @@ VrmlData_ErrorStatus VrmlData_Scene::WriteLine
       (* myOutput) << "\n";
     }
     const int stat = myOutput->rdstate();
-    if (stat & ios::badbit)
+    if (stat & std::ios::badbit)
       aStatus = VrmlData_UnrecoverableError;
-    else if (stat & ios::failbit)
-//       if (stat & ios::eofbit)
+    else if (stat & std::ios::failbit)
+//       if (stat & std::ios::eofbit)
 //         aStatus = VrmlData_EndOfFile;
 //       else
       aStatus = VrmlData_GeneralError;

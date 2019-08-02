@@ -142,8 +142,8 @@ void TopOpeBRepTool_BoxSort::MakeHAB(const TopoDS_Shape& S,const TopAbs_ShapeEnu
 
 #ifdef OCCT_DEBUG
   if (TBOX) {
-    cout<<"# BS::MakeHAB : ";TopAbs::Print(t,cout);cout<<" : "<<n<<"\n";
-    cout.flush();
+    std::cout<<"# BS::MakeHAB : ";TopAbs::Print(t,std::cout);std::cout<<" : "<<n<<"\n";
+    std::cout.flush();
   }
 #endif
 
@@ -200,7 +200,7 @@ void TopOpeBRepTool_BoxSort::MakeCOB(const TopoDS_Shape& S,const TopAbs_ShapeEnu
   MakeHABCOB(myHAB,myCOB);
   myBSB.Initialize(myCOB,myHAB);
 #ifdef OCCT_DEBUG
-  if (TBOX) {myHBT->DumpB(myCOB);cout<<";# BS::MakeCOB"<<endl;}
+  if (TBOX) {myHBT->DumpB(myCOB);std::cout<<";# BS::MakeCOB"<<std::endl;}
 #endif
 }
 
@@ -268,14 +268,14 @@ const MTClioloi& TopOpeBRepTool_BoxSort::Compare(const TopoDS_Shape &S)
 #ifdef OCCT_DEBUG
   if (TBOX) {
     Standard_Integer nl = (*L).Extent();
-    cout<<"#------------------------"<<endl;
-    myHBT->DumpB(myLastCompareShapeBox);cout<<"; # BS::Compare"<<endl;
-    cout<<"# touche "<<nl<<" boites ";cout.flush();
+    std::cout<<"#------------------------"<<std::endl;
+    myHBT->DumpB(myLastCompareShapeBox);std::cout<<"; # BS::Compare"<<std::endl;
+    std::cout<<"# touche "<<nl<<" boites ";std::cout.flush();
     Standard_Integer il;
     for (MTClioloi idd((*L));idd.More();idd.Next()) {
-      il=idd.Value();cout<<il<<" ";cout.flush();
+      il=idd.Value();std::cout<<il<<" ";std::cout.flush();
     }
-    cout<<endl<<"#------------------------"<<endl;
+    std::cout<<std::endl<<"#------------------------"<<std::endl;
   }
 #endif
  

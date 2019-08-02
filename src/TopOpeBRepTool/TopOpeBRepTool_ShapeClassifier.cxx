@@ -560,7 +560,7 @@ void TopOpeBRepTool_ShapeClassifier::StateP2DReference
 	else if (o == TopAbs_INTERNAL) myState = TopAbs_IN;
 	else {
 #ifdef OCCT_DEBUG
-	  cout<<"StateP2DReference o<>E,I"<<endl;
+	  std::cout<<"StateP2DReference o<>E,I"<<std::endl;
 #endif
 	  break;
 	}
@@ -738,8 +738,8 @@ static Standard_Boolean FindAPointInTheFace
       
       Standard_Real x=T.X();
       Standard_Real y=T.Y();
-      //-- cout<<"Param:"<<(c.IntervalFirst() + c.IntervalLast()) * param<<" U:"<<P.X()<<" V:"<<P.Y();
-      //-- cout<<" tguv x:"<<x<<" , y:"<<y<<endl;
+      //-- std::cout<<"Param:"<<(c.IntervalFirst() + c.IntervalLast()) * param<<" U:"<<P.X()<<" V:"<<P.Y();
+      //-- std::cout<<" tguv x:"<<x<<" , y:"<<y<<std::endl;
       
       
       if(Edge.Orientation() == TopAbs_FORWARD) { 
@@ -770,7 +770,7 @@ static Standard_Boolean FindAPointInTheFace
 	  BRepClass_Edge AEdge(OtherEdge,face);
 	  FClassifier.Compare(AEdge,OtherEdge.Orientation());
 	  if(FClassifier.ClosestIntersection()) { 
-	    //-- cout<<" ---> Edge : "<<FClassifier.Parameter()<<endl;
+	    //-- std::cout<<" ---> Edge : "<<FClassifier.Parameter()<<std::endl;
 	    if(ParamInit > FClassifier.Parameter()) { 
 	      ParamInit = FClassifier.Parameter();
 	      APointExist = Standard_True;
@@ -786,7 +786,7 @@ static Standard_Boolean FindAPointInTheFace
 	Standard_Boolean computerestriction = Standard_False;
 	s.Initialize(face,computerestriction);
 	s.D0(u,v,APoint);
-	//-- cout<<" u="<<u<<" v="<<v<<"  -> ("<<APoint.X()<<","<<APoint.Y()<<","<<APoint.Z()<<endl;
+	//-- std::cout<<" u="<<u<<" v="<<v<<"  -> ("<<APoint.X()<<","<<APoint.Y()<<","<<APoint.Z()<<std::endl;
 	return(Standard_True);
       }
     }

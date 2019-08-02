@@ -223,8 +223,8 @@ Handle(Geom_Surface) IGESToBRep_BasicSurface::TransferBasicSurface
   } //:36
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "\n** Exception in IGESToBRep_BasicSurface::TransferBasicSurface : "; 
-    anException.Print(cout);
+    std::cout << "\n** Exception in IGESToBRep_BasicSurface::TransferBasicSurface : "; 
+    anException.Print(std::cout);
 #endif
     (void)anException;
   }

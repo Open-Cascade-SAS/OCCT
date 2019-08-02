@@ -40,7 +40,7 @@ void MoniTool_Timer::Dump(Standard_OStream &ostr)
   Sprintf ( buff, "Elapsed:%6.1f sec, CPU User:%9.4f sec, CPU Sys:%9.4f sec, hits: %d",
                    elapsed, user, system, myCount );
     
-  ostr << buff << endl;
+  ostr << buff << std::endl;
 }
 
 //=======================================================================
@@ -93,7 +93,7 @@ void MoniTool_Timer::DumpTimers (Standard_OStream &ostr)
 
   Standard_Integer NbTimers = dic.Extent();
 
-  ostr << "DUMP OF TIMERS:" << endl;
+  ostr << "DUMP OF TIMERS:" << std::endl;
   Standard_CString *keys = new Standard_CString[NbTimers];
   Standard_Integer i=0;
   for( ; iter.More() && i < NbTimers; iter.Next()) {
@@ -115,7 +115,7 @@ void MoniTool_Timer::DumpTimers (Standard_OStream &ostr)
     //iter.Value()->Dump ( ostr );
     Timer(stmp)->Dump(ostr);
     keys[ntmp]=0;
-    if ( Timer(stmp)->IsRunning() ) cerr << "Warning: timer " << stmp << " is running" << endl;
+    if ( Timer(stmp)->IsRunning() ) std::cerr << "Warning: timer " << stmp << " is running" << std::endl;
   }
   delete[] keys;
 }
@@ -194,12 +194,12 @@ void MoniTool_Timer::ComputeAmendments ()
   amAccess   += ( 0.5 * ( cpu3 - cpu1 ) ) / NBTESTS;
   amError     = Abs ( cpu1 + cpu3 - 2 * cpu2 ) / NBTESTS;
   
-  cout << "CPU 0: " << cpu0 << endl;
-  cout << "CPU 1: " << cpu1 << " INTERNAL: " << cput1 << endl;
-  cout << "CPU 2: " << cpu2 << " INTERNAL: " << cput2 << endl;
-  cout << "CPU 3: " << cpu3 << " INTERNAL: " << cput3 << endl;
-  cout << "Access: " << amAccess << ", External: " << amExternal << 
-          ", Internal: " << amInternal << ", Error: " << amError << endl;
+  std::cout << "CPU 0: " << cpu0 << std::endl;
+  std::cout << "CPU 1: " << cpu1 << " INTERNAL: " << cput1 << std::endl;
+  std::cout << "CPU 2: " << cpu2 << " INTERNAL: " << cput2 << std::endl;
+  std::cout << "CPU 3: " << cpu3 << " INTERNAL: " << cput3 << std::endl;
+  std::cout << "Access: " << amAccess << ", External: " << amExternal << 
+          ", Internal: " << amInternal << ", Error: " << amError << std::endl;
   
 }
   

@@ -224,11 +224,11 @@ static void DrawCurve (Adaptor3d_Curve&          aCurve,
     }
   }
 
-//cout  << " Array HAI1 - coordIndex " << endl;  
+//std::cout  << " Array HAI1 - coordIndex " << std::endl;  
 //     
 //for ( i=HAI1->Lower(); i <= HAI1->Upper(); i++ )
 //  {
-//    cout << HAI1->Value(i) << endl;
+//    std::cout << HAI1->Value(i) << std::endl;
 //  } 
 
 
@@ -267,8 +267,8 @@ static Standard_Real GetDeflection(const Adaptor3d_Curve&        aCurve,
 	  diagonal =1000000.;
 	  theRequestedDeflection = aDrawer->DeviationCoefficient() * diagonal;  
 	}
-//      cout << "diagonal = " << diagonal << endl;
-//      cout << "theRequestedDeflection = " << theRequestedDeflection << endl;
+//      std::cout << "diagonal = " << diagonal << std::endl;
+//      std::cout << "theRequestedDeflection = " << theRequestedDeflection << std::endl;
     }
   else 
     {

@@ -152,7 +152,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom,
 	  else {
 	    // Cas non traite : on est a cheval
 #ifdef OCCT_DEBUG
-	    cout <<" cas a cheval."<< endl;
+	    std::cout <<" cas a cheval."<< std::endl;
 #endif
 
 //	    myLFrom.Append(edgf);
@@ -204,7 +204,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom,
 	  else {
 	    // Cas non traite : on est a cheval
 #ifdef OCCT_DEBUG
-	    cout <<" cas a cheval."<< endl;
+	    std::cout <<" cas a cheval."<< std::endl;
 #endif
 //	    myLFrom.Append(edgf);
 //	    myLTo.Append(edgt);
@@ -287,7 +287,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom,
 
 	      if (IsSame) {
 #ifdef OCCT_DEBUG
-		cout <<"memes bsplines."<< endl;
+		std::cout <<"memes bsplines."<< std::endl;
 #endif
 		myLFrom.Append(edgf);
 		myLTo.Append(edgt);
@@ -347,7 +347,7 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom,
 	    
 	    if (IsSame) {
 #ifdef OCCT_DEBUG
-	      cout <<"memes beziers."<< endl;
+	      std::cout <<"memes beziers."<< std::endl;
 #endif
 	      myLFrom.Append(edgf);
 	      myLTo.Append(edgt);

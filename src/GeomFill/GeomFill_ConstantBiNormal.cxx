@@ -129,12 +129,12 @@ GeomFill_ConstantBiNormal::GeomFill_ConstantBiNormal(const gp_Dir& BiNormal) : B
   cTangent = (Tangent_ - cTangent)/h;
   cNormal = (Normal_ - cNormal)/h;
   cBiNormal = (BiNormal_ - cBiNormal)/h;
-  cout<<"DTangent = ("<<DTangent.X()<<", "<<DTangent.Y()<<", "<<DTangent.Z()<<")"<<endl;
-  cout<<"CTangent = ("<<cTangent.X()<<", "<<cTangent.Y()<<", "<<cTangent.Z()<<")"<<endl;
-  cout<<"DNormal = ("<<DNormal.X()<<", "<<DNormal.Y()<<", "<<DNormal.Z()<<")"<<endl;
-  cout<<"CNormal = ("<<cNormal.X()<<", "<<cNormal.Y()<<", "<<cNormal.Z()<<")"<<endl;
-  cout<<"DBiNormal = ("<<DBiNormal.X()<<", "<<DBiNormal.Y()<<", "<<DBiNormal.Z()<<")"<<endl;
-  cout<<"CBiNormal = ("<<cBiNormal.X()<<", "<<cBiNormal.Y()<<", "<<cBiNormal.Z()<<")"<<endl;
+  std::cout<<"DTangent = ("<<DTangent.X()<<", "<<DTangent.Y()<<", "<<DTangent.Z()<<")"<<std::endl;
+  std::cout<<"CTangent = ("<<cTangent.X()<<", "<<cTangent.Y()<<", "<<cTangent.Z()<<")"<<std::endl;
+  std::cout<<"DNormal = ("<<DNormal.X()<<", "<<DNormal.Y()<<", "<<DNormal.Z()<<")"<<std::endl;
+  std::cout<<"CNormal = ("<<cNormal.X()<<", "<<cNormal.Y()<<", "<<cNormal.Z()<<")"<<std::endl;
+  std::cout<<"DBiNormal = ("<<DBiNormal.X()<<", "<<DBiNormal.Y()<<", "<<DBiNormal.Z()<<")"<<std::endl;
+  std::cout<<"CBiNormal = ("<<cBiNormal.X()<<", "<<cBiNormal.Y()<<", "<<cBiNormal.Z()<<")"<<std::endl;
 */
   return Standard_True;
 }
@@ -181,14 +181,14 @@ GeomFill_ConstantBiNormal::GeomFill_ConstantBiNormal(const gp_Dir& BiNormal) : B
     DNormal = BiNormal.Crossed(DTangent);
     D2Normal = BiNormal.Crossed(D2Tangent);
   }
-/*  cout<<"Param = "<<Param<<endl;
-  cout<<"Tangent = ("<<Tangent.X()<<", "<<Tangent.Y()<<", "<<Tangent.Z()<<")"<<endl;
-  cout<<"DTangent = ("<<DTangent.X()<<", "<<DTangent.Y()<<", "<<DTangent.Z()<<")"<<endl;
-  cout<<"D2Tangent = ("<<D2Tangent.X()<<", "<<D2Tangent.Y()<<", "<<D2Tangent.Z()<<")"<<endl;
+/*  std::cout<<"Param = "<<Param<<std::endl;
+  std::cout<<"Tangent = ("<<Tangent.X()<<", "<<Tangent.Y()<<", "<<Tangent.Z()<<")"<<std::endl;
+  std::cout<<"DTangent = ("<<DTangent.X()<<", "<<DTangent.Y()<<", "<<DTangent.Z()<<")"<<std::endl;
+  std::cout<<"D2Tangent = ("<<D2Tangent.X()<<", "<<D2Tangent.Y()<<", "<<D2Tangent.Z()<<")"<<std::endl;
 
-  cout<<"BiNormal = ("<<BiNormal.X()<<", "<<BiNormal.Y()<<", "<<BiNormal.Z()<<")"<<endl;
-  cout<<"DBiNormal = ("<<DBiNormal.X()<<", "<<DBiNormal.Y()<<", "<<DBiNormal.Z()<<")"<<endl;
-  cout<<"D2BiNormal = ("<<D2BiNormal.X()<<", "<<D2BiNormal.Y()<<", "<<D2BiNormal.Z()<<")"<<endl;
+  std::cout<<"BiNormal = ("<<BiNormal.X()<<", "<<BiNormal.Y()<<", "<<BiNormal.Z()<<")"<<std::endl;
+  std::cout<<"DBiNormal = ("<<DBiNormal.X()<<", "<<DBiNormal.Y()<<", "<<DBiNormal.Z()<<")"<<std::endl;
+  std::cout<<"D2BiNormal = ("<<D2BiNormal.X()<<", "<<D2BiNormal.Y()<<", "<<D2BiNormal.Z()<<")"<<std::endl;
 */  
   return Standard_True;
 }

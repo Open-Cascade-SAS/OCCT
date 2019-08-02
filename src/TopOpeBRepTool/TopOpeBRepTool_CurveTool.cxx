@@ -314,7 +314,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   
   Standard_Boolean CompC3D = myGeomTool.CompC3D();
 
-  //cout << "MakeCurves begin" << endl;
+  //std::cout << "MakeCurves begin" << std::endl;
   if (!CompC3D) return Standard_False;
 
   Standard_Boolean CompPC1 = myGeomTool.CompPC1();
@@ -352,7 +352,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
 //--------------------- IFV - "improving" initial curves
 #ifdef CurveImprovement
   Standard_Integer nbpol = HC3D->NbPoles();
-  //cout <<"nbpol = " << nbpol << endl;
+  //std::cout <<"nbpol = " << nbpol << std::endl;
   if(nbpol > 100) {
     TColgp_Array1OfPnt PolC3D(1, nbpol);
     TColgp_Array1OfPnt2d PolPC1(1, nbpol);
@@ -433,7 +433,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
     
     if(NbPol < nbpol) {
 #ifdef IFV
-      cout << "NbPol < nbpol : " << NbPol << " " <<  nbpol << endl;
+      std::cout << "NbPol < nbpol : " << NbPol << " " <<  nbpol << std::endl;
 #endif
       TColgp_Array1OfPnt Polc3d(1, NbPol);
       TColgp_Array1OfPnt2d Polpc1(1, NbPol);
@@ -577,8 +577,8 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
     }
 
   }
-  //cout << NbCalls << " ksi = " << ksi << endl;
-  //cout << "IsBad = " << IsBad << endl;
+  //std::cout << NbCalls << " ksi = " << ksi << std::endl;
+  //std::cout << "IsBad = " << IsBad << std::endl;
 
   if(IsBad){
     Standard_Real tt = Min(10.*tol3d,Precision::Approximation());
@@ -677,7 +677,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
   TolReached3d = Approx.TolReached3d();
   TolReached2d = Approx.TolReached2d();
 #ifdef IFV
-  cout << NbCalls << " : Tol = " << TolReached3d << " " << TolReached2d << endl;
+  std::cout << NbCalls << " : Tol = " << TolReached3d << " " << TolReached2d << std::endl;
 #endif
 
   Standard_Boolean bf, bl;
@@ -690,8 +690,8 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {
       if(bf || bl) {
-	cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
-	cout<<" Last = "<<bl<<endl;
+	std::cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
+	std::cout<<" Last = "<<bl<<std::endl;
       }
     }
 #endif
@@ -705,8 +705,8 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {
       if(bf || bl) {
-	cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
-	cout<<" Last = "<<bl<<endl;
+	std::cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
+	std::cout<<" Last = "<<bl<<std::endl;
       }
     }
 #endif
@@ -720,8 +720,8 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceCHKBSPL()) {
       if(bf || bl) {
-	cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
-	cout<<" Last = "<<bl<<endl;
+	std::cout<<"Problem orientation GeomLib_CheckBSplineCurve : First = "<<bf;
+	std::cout<<" Last = "<<bl<<std::endl;
       }
     }
 #endif
@@ -731,7 +731,7 @@ Standard_Boolean  TopOpeBRepTool_CurveTool::MakeCurves
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceKRO()) KRO_CURVETOOL_APPRO.Stop();
 #endif
-//  cout << "MakeCurves end" << endl;
+//  std::cout << "MakeCurves end" << std::endl;
 
   return Standard_True;
 }
@@ -865,9 +865,9 @@ Standard_Boolean TopOpeBRepTool_CurveTool::IsProjectable
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettracePCURV()) {
-    cout<<"--- IsProjectable : "; 
-    if (projectable) cout<<"projectable"<<endl;
-    else cout<<"NOT projectable"<<endl;
+    std::cout<<"--- IsProjectable : "; 
+    if (projectable) std::cout<<"projectable"<<std::endl;
+    else std::cout<<"NOT projectable"<<std::endl;
   }
 #endif
   

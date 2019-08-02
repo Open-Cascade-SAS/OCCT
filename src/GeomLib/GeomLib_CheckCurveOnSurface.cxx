@@ -679,8 +679,8 @@ Standard_Integer FillSubIntervals(const Handle(Geom_Curve)& theCurve3d,
   catch(Standard_Failure const&)
   {
 #ifdef OCCT_DEBUG
-    cout << "ERROR! BRepLib_CheckCurveOnSurface.cxx, "
-            "FillSubIntervals(): Incorrect filling!" << endl;
+    std::cout << "ERROR! BRepLib_CheckCurveOnSurface.cxx, "
+            "FillSubIntervals(): Incorrect filling!" << std::endl;
 #endif
 
     aNbSubIntervals = 0;
@@ -765,7 +765,7 @@ Standard_Boolean MinComputing (
                     theBestValue, anOutputParam))
     {
 #ifdef OCCT_DEBUG
-      cout << "BRepLib_CheckCurveOnSurface::Compute(): math_PSO is failed!" << endl;
+      std::cout << "BRepLib_CheckCurveOnSurface::Compute(): math_PSO is failed!" << std::endl;
 #endif
       return Standard_False;
     }
@@ -804,7 +804,7 @@ Standard_Boolean MinComputing (
   catch(Standard_Failure const&)
   {
 #ifdef OCCT_DEBUG
-    cout << "BRepLib_CheckCurveOnSurface.cxx: Exception in MinComputing()!" << endl;
+    std::cout << "BRepLib_CheckCurveOnSurface.cxx: Exception in MinComputing()!" << std::endl;
 #endif
     return Standard_False;
   }

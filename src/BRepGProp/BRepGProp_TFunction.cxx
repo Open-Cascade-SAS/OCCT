@@ -149,7 +149,7 @@ Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X,
 
     F         += anIntegral.Value();
     aLocalErr += anIntegral.AbsolutError();
-    //cout << " TFunction : " << anIntegral.NbIterReached() << " " << anIntegral.AbsolutError() << endl;
+    //std::cout << " TFunction : " << anIntegral.NbIterReached() << " " << anIntegral.AbsolutError() << std::endl;
   }
 
   F            *= aCoeff;

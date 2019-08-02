@@ -286,24 +286,24 @@ void AppParCurves_MultiBSpCurve::D2 (const Standard_Integer CuIndex,
 
 void AppParCurves_MultiBSpCurve::Dump(Standard_OStream& o) const
 {
-  o << "AppParCurves_MultiBSpCurve dump:" << endl;
-  o << " It contains " << NbCurves() << " BSpline curves "<< endl;
-  o << " The poles are: " << endl;
+  o << "AppParCurves_MultiBSpCurve dump:" << std::endl;
+  o << " It contains " << NbCurves() << " BSpline curves "<< std::endl;
+  o << " The poles are: " << std::endl;
 /*  for (Standard_Integer i = 1; i <= NbCurves(); i++) {
-    o << " Curve No. " << i << endl;
+    o << " Curve No. " << i << std::endl;
     if (Dimension(i) == 3) {
       for (Standard_Integer j = 1; j <= tabPoint->Length(); j++) {
-	o << " Pole No. " << j << ": " << endl;
-	o << " Pole x = " << (tabPoint->Value(j)->Point(i)).X() << endl;
-	o << " Pole y = " << (tabPoint->Value(j)->Point(i)).Y() << endl;
-	o << " Pole z = " << (tabPoint->Value(j)->Point(i)).Z() << endl;
+	o << " Pole No. " << j << ": " << std::endl;
+	o << " Pole x = " << (tabPoint->Value(j)->Point(i)).X() << std::endl;
+	o << " Pole y = " << (tabPoint->Value(j)->Point(i)).Y() << std::endl;
+	o << " Pole z = " << (tabPoint->Value(j)->Point(i)).Z() << std::endl;
       }
     }
     else {
       for (Standard_Integer j = 1; j <= tabPoint->Length(); j++) {
-	o << " Pole No. " << j << ": " << endl;
-	o << " Pole x = " << (tabPoint->Value(j)->Point2d(i)).X() << endl;
-	o << " Pole y = " << (tabPoint->Value(j)->Point2d(i)).Y() << endl;
+	o << " Pole No. " << j << ": " << std::endl;
+	o << " Pole x = " << (tabPoint->Value(j)->Point2d(i)).X() << std::endl;
+	o << " Pole y = " << (tabPoint->Value(j)->Point2d(i)).Y() << std::endl;
       }
     }
   }

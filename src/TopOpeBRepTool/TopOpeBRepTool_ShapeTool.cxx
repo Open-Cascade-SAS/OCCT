@@ -337,11 +337,11 @@ Standard_Real TopOpeBRepTool_ShapeTool::PeriodizeParameter
 
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceVC()) {
-      cout<<"TopOpeBRepTool_ShapeTool PC on edge is ";
-      if      (isoU) cout<<"isoU f,l "<<Ufirst<<" "<<Ulast<<endl;
-      else if (isoV) cout<<"isoV f,l "<<Vfirst<<" "<<Vlast<<endl;
-      else           cout<<"not isoU, not isoV"<<endl;
-      cout<<"par = "<<par<<" --> "<<periopar<<endl;
+      std::cout<<"TopOpeBRepTool_ShapeTool PC on edge is ";
+      if      (isoU) std::cout<<"isoU f,l "<<Ufirst<<" "<<Ulast<<std::endl;
+      else if (isoV) std::cout<<"isoV f,l "<<Vfirst<<" "<<Vlast<<std::endl;
+      else           std::cout<<"not isoU, not isoV"<<std::endl;
+      std::cout<<"par = "<<par<<" --> "<<periopar<<std::endl;
     }
 #endif
 
@@ -452,8 +452,8 @@ Standard_Boolean TopOpeBRepTool_ShapeTool::SurfacesSameOriented
     // au meme point 3d.
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceNYI()) {
-      cout<<"TopOpeBRepTool_ShapeTool::SurfacesSameOriented surfaces non traitees : NYI";
-      cout<<endl;
+      std::cout<<"TopOpeBRepTool_ShapeTool::SurfacesSameOriented surfaces non traitees : NYI";
+      std::cout<<std::endl;
     }
 #endif
   }
@@ -516,8 +516,8 @@ Standard_Boolean TopOpeBRepTool_ShapeTool::CurvesSameOriented
     // au meme point 3d.
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceNYI()) { 
-      cout<<"TopOpeBRepTool_ShapeTool::CurvesSameOriented non lineaires : NYI";
-      cout<<endl;
+      std::cout<<"TopOpeBRepTool_ShapeTool::CurvesSameOriented non lineaires : NYI";
+      std::cout<<std::endl;
     }
 #endif
   }

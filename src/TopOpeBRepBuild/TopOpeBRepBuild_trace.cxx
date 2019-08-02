@@ -103,7 +103,7 @@ static Standard_Boolean TopOpeBRepBuild_contextNOPURGE = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextNOPURGE(const Standard_Boolean b) { TopOpeBRepBuild_contextNOPURGE = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOPURGE() { 
   Standard_Boolean b = TopOpeBRepBuild_contextNOPURGE;
-  if (b) cout<<"context (TopOpeBRepBuild) NOPURGE actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) NOPURGE actif"<<std::endl;
   return b;
 }
 
@@ -111,7 +111,7 @@ static Standard_Boolean TopOpeBRepBuild_contextNOREGUFA = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextNOREGUFA(const Standard_Boolean b) { TopOpeBRepBuild_contextNOREGUFA = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUFA() { 
   Standard_Boolean b = TopOpeBRepBuild_contextNOREGUFA;
-  if (b) cout<<"context (TopOpeBRepBuild) NOREGUFA actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) NOREGUFA actif"<<std::endl;
   return b;
 }
 
@@ -119,7 +119,7 @@ static Standard_Boolean TopOpeBRepBuild_contextNOREGUSO = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextNOREGUSO(const Standard_Boolean b) { TopOpeBRepBuild_contextNOREGUSO = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUSO() {
   Standard_Boolean b = TopOpeBRepBuild_contextNOREGUSO;
-  if (b) cout<<"context (TopOpeBRepBuild) NOREGUSO actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) NOREGUSO actif"<<std::endl;
   return b;
 }
 
@@ -135,7 +135,7 @@ static Standard_Boolean TopOpeBRepBuild_contextEINTERNAL = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextEINTERNAL(const Standard_Boolean b) { TopOpeBRepBuild_contextEINTERNAL = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEINTERNAL() { 
   Standard_Boolean b = TopOpeBRepBuild_contextEINTERNAL;
-  if (b) cout<<"context (TopOpeBRepBuild) EINTERNAL actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) EINTERNAL actif"<<std::endl;
   return b;
 }
 
@@ -143,7 +143,7 @@ static Standard_Boolean TopOpeBRepBuild_contextEEXTERNAL = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextEEXTERNAL(const Standard_Boolean b) { TopOpeBRepBuild_contextEEXTERNAL = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEEXTERNAL() { 
   Standard_Boolean b = TopOpeBRepBuild_contextEEXTERNAL;
-  if (b) cout<<"context (TopOpeBRepBuild) EEXTERNAL actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) EEXTERNAL actif"<<std::endl;
   return b;
 }
 
@@ -151,7 +151,7 @@ static Standard_Boolean TopOpeBRepBuild_contextNOSG = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextNOSG(const Standard_Boolean b) { TopOpeBRepBuild_contextNOSG = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOSG() {
   Standard_Boolean b = TopOpeBRepBuild_contextNOSG;
-  if (b) cout<<"context (TopOpeBRepBuild) NOSG actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) NOSG actif"<<std::endl;
   return b;
 }
 
@@ -159,7 +159,7 @@ static Standard_Boolean TopOpeBRepBuild_contextNOFUFA = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextNOFUFA(const Standard_Boolean b) { TopOpeBRepBuild_contextNOFUFA = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOFUFA() { 
   Standard_Boolean b = TopOpeBRepBuild_contextNOFUFA;
-  if (b) cout<<"context (TopOpeBRepBuild) NOFUFA actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) NOFUFA actif"<<std::endl;
   return b;
 }
 
@@ -167,7 +167,7 @@ static Standard_Boolean TopOpeBRepBuild_contextNOFE = Standard_False;
 Standard_EXPORT void TopOpeBRepBuild_SetcontextNOFE(const Standard_Boolean b) { TopOpeBRepBuild_contextNOFE = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOFE() { 
   Standard_Boolean b = TopOpeBRepBuild_contextNOFE;
-  if (b) cout<<"context (TopOpeBRepBuild) NOFE actif"<<endl;
+  if (b) std::cout<<"context (TopOpeBRepBuild) NOFE actif"<<std::endl;
   return b;
 }
 

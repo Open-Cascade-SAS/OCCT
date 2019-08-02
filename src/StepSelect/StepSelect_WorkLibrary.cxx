@@ -88,12 +88,12 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
   DeclareAndCast(StepData_Protocol,stepro,ctx.Protocol());
   if (stepmodel.IsNull() || stepro.IsNull()) return Standard_False;
 
-  ofstream fout;
-  OSD_OpenStream(fout,ctx.FileName(),ios::out|ios::trunc);
+  std::ofstream fout;
+  OSD_OpenStream(fout,ctx.FileName(),std::ios::out|std::ios::trunc);
 
   if (!fout || !fout.is_open()) {
     ctx.CCheck(0)->AddFail("Step File could not be created");
-    sout<<" Step File could not be created : " << ctx.FileName() << endl; return 0;
+    sout<<" Step File could not be created : " << ctx.FileName() << Message_EndLine; return 0;
   }
   sout << " Step File Name : "<<ctx.FileName();
   StepData_StepWriter SW(stepmodel);
@@ -109,7 +109,7 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
     sout << " .. FileMod." << numod << filemod->Label();
     if (ctx.IsForAll()) sout << " (all model)";
     else  sout << " (" << ctx.NbEntities() << " entities)";
-//    sout << flush;
+//    sout << std::flush;
   }
 
 //  Envoi
@@ -119,13 +119,13 @@ Standard_Boolean  StepSelect_WorkLibrary::WriteFile
     ctx.CCheck(chl.Number())->GetMessages(chl.Value());
   sout<<" Write ";
   Standard_Boolean isGood = SW.Print(fout);                 
-  sout<<" Done"<<endl;
+  sout<<" Done"<<Message_EndLine;
       
   errno = 0;
   fout.close();
   isGood = fout.good() && isGood && !errno;
   if(errno)
-    sout << strerror(errno) << endl;
+    sout << strerror(errno) << Message_EndLine;
   return isGood;  
 }
 
@@ -154,14 +154,14 @@ void  StepSelect_WorkLibrary::DumpEntity
   Handle(Standard_Transient) ent, con;  ent = entity;
   S<<" --- (STEP) Entity ";  model->Print(entity,S);
   if (iserr) con = model->ReportEntity(nument)->Content();
-  if (entity.IsNull()) {  S<<" Null"<<endl; return;  }
+  if (entity.IsNull()) {  S<<" Null"<<Message_EndLine; return;  }
 
 //  On attaque le dump : d abord cas de l Erreur
-  S << " Type cdl : " << entity->DynamicType()->Name() << endl;
+  S << " Type cdl : " << entity->DynamicType()->Name() << Message_EndLine;
   if (iserr)
-    S<<" ***  NOT WELL LOADED : CONTENT FROM FILE  ***"<<endl;
+    S<<" ***  NOT WELL LOADED : CONTENT FROM FILE  ***"<<Message_EndLine;
   else if (model->IsUnknownEntity(nument))
-    S<<" ***  UNKNOWN TYPE  ***"<<endl;
+    S<<" ***  UNKNOWN TYPE  ***"<<Message_EndLine;
 
   StepData_StepDumper dump(GetCasted(StepData_StepModel,model),
                            GetCasted(StepData_Protocol,protocol),thelabmode);

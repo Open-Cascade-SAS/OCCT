@@ -178,10 +178,10 @@ Standard_Integer Poly_MakeLoops::Perform()
       if (aStartNumber > 1)
         if (doDebug)
         {
-          cout << "--- found contour with hanging links:" << endl;
+          std::cout << "--- found contour with hanging links:" << std::endl;
           for (i = 1; i <= aContour.Extent(); i++)
-            cout << " " << aContour(i);
-          cout << endl;
+            std::cout << " " << aContour(i);
+          std::cout << std::endl;
         }
 #endif
       if (aStartNumber == 0)
@@ -223,8 +223,8 @@ Standard_Integer Poly_MakeLoops::Perform()
   }
 #ifdef OCCT_DEBUG
   if (doDebug && nbLoopsOnPass2)
-    cout << "MakeLoops: " << nbLoopsOnPass2
-      << " contours accepted on the second pass" << endl;
+    std::cout << "MakeLoops: " << nbLoopsOnPass2
+      << " contours accepted on the second pass" << std::endl;
 #endif
 
   if (!myLoops.IsEmpty())
@@ -545,13 +545,13 @@ void Poly_MakeLoops::showBoundaryBreaks() const
       if (isFirst)
       {
         isFirst = Standard_False;
-        cout << "boundary breaks are found in the following nodes:" << endl;
+        std::cout << "boundary breaks are found in the following nodes:" << std::endl;
       }
-      cout << aNode << " ";
+      std::cout << aNode << " ";
     }
   }
   if (!isFirst)
-    cout << endl;
+    std::cout << std::endl;
 }
 #endif
 

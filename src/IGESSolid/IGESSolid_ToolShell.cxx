@@ -232,25 +232,25 @@ void IGESSolid_ToolShell::OwnDump(const Handle(IGESSolid_Shell)& ent,
                                   const Handle(Message_Messenger)& S,
                                   const Standard_Integer level) const
 {
-  S << "IGESSolid_Shell" << endl;
+  S << "IGESSolid_Shell" << Message_EndLine;
   Standard_Integer upper = ent->NbFaces();
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "Faces : " << endl << "Orientation flags : ";
+  S << "Faces : " << Message_EndLine << "Orientation flags : ";
   IGESData_DumpEntities(S,dumper,-level,1, ent->NbFaces(),ent->Face);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
-      S << "[" << endl;
+      S << "[" << Message_EndLine;
       for (Standard_Integer i = 1; i <= upper; i ++)
 	{
           S << "[" << i << "]:  ";
           S << "Face : ";
           dumper.Dump (ent->Face(i),S, sublevel);
           S << "  - Orientation flag : ";
-          if (ent->Orientation(i)) S << "True" << endl;
-          else                     S << "False" << endl;
+          if (ent->Orientation(i)) S << "True" << Message_EndLine;
+          else                     S << "False" << Message_EndLine;
 	}
     }
-  S << endl;
+  S << Message_EndLine;
 }

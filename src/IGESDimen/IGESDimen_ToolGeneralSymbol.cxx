@@ -176,12 +176,12 @@ void  IGESDimen_ToolGeneralSymbol::OwnDump
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
-  S << "IGESDimen_GeneralSymbol" << endl;
+  S << "IGESDimen_GeneralSymbol" << Message_EndLine;
   S << "General Note : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl << "Geometric Entities : ";
+  S << Message_EndLine << "Geometric Entities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbGeomEntities(),ent->GeomEntity);
-  S << endl << "Leader Arrows : ";
+  S << Message_EndLine << "Leader Arrows : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbLeaders(),ent->LeaderArrow);
-  S << endl;
+  S << Message_EndLine;
 }

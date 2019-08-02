@@ -1420,7 +1420,7 @@ Standard_Real Bisector_BisecCC::LinkCurveBis(const Standard_Real U) const
 //=============================================================================
 static void Indent(const Standard_Integer Offset) {
   if (Offset > 0) {
-    for (Standard_Integer i = 0; i < Offset; i++) {cout << " ";}
+    for (Standard_Integer i = 0; i < Offset; i++) {std::cout << " ";}
   }
 }
 
@@ -1465,19 +1465,19 @@ void Bisector_BisecCC::Dump(const Standard_Integer ,
   const Standard_Integer Offset) const 
 {
   Indent (Offset);
-  cout <<"Bisector_BisecCC :"<<endl;
+  std::cout <<"Bisector_BisecCC :"<<std::endl;
   Indent (Offset);
-  //  cout <<"Curve1 :"<<curve1<<endl;
-  //  cout <<"Curve2 :"<<curve2<<endl;
-  cout <<"Sign1  :"<<sign1<<endl;
-  cout <<"Sign2  :"<<sign2<<endl;
+  //  std::cout <<"Curve1 :"<<curve1<<std::endl;
+  //  std::cout <<"Curve2 :"<<curve2<<std::endl;
+  std::cout <<"Sign1  :"<<sign1<<std::endl;
+  std::cout <<"Sign2  :"<<sign2<<std::endl;
 
-  cout <<"Number Of Intervals :"<<startIntervals.Length()<<endl;
+  std::cout <<"Number Of Intervals :"<<startIntervals.Length()<<std::endl;
   for (Standard_Integer i = 1; i <= startIntervals.Length(); i++) {
-    cout <<"Interval number :"<<i<<"Start :"<<startIntervals.Value(i)
-      <<"  end :"<<  endIntervals.Value(i)<<endl ;
+    std::cout <<"Interval number :"<<i<<"Start :"<<startIntervals.Value(i)
+      <<"  end :"<<  endIntervals.Value(i)<<std::endl ;
   }
-  cout <<"Index Current Interval :"<<currentInterval<<endl;
+  std::cout <<"Index Current Interval :"<<currentInterval<<std::endl;
 }
 
 //=============================================================================

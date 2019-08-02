@@ -112,16 +112,16 @@ void IGESGeom_ToolLine::OwnDump
 {
   Standard_Integer infin = ent->Infinite();
   switch (infin) {
-    case 1 : S << "Semi-Infinite Line"<<endl;  break;
-    case 2 : S << "Infinite Line"<<endl;  break;
-    default : S << "Bounded Line"<<endl; break;
+    case 1 : S << "Semi-Infinite Line"<<Message_EndLine;  break;
+    case 2 : S << "Infinite Line"<<Message_EndLine;  break;
+    default : S << "Bounded Line"<<Message_EndLine; break;
   }
 
-  S << "Line from IGESGeom" << endl;
+  S << "Line from IGESGeom" << Message_EndLine;
   S << "Starting Point : ";
   IGESData_DumpXYZL(S,level, ent->StartPoint(), ent->Location());
-  S << endl;
+  S << Message_EndLine;
   S << "End Point : ";
   IGESData_DumpXYZL(S,level, ent->EndPoint(), ent->Location());
-  S << endl;
+  S << Message_EndLine;
 }

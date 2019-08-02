@@ -326,7 +326,7 @@ HLRAlgo_PolyInternalData::AddNode (
     Nod3RValues.Normal = gp_XYZ(1., 0., 0.);
 #ifdef OCCT_DEBUG
     if (HLRAlgo_PolyInternalData_ERROR)
-      cout << "HLRAlgo_PolyInternalData::AddNode" << endl;
+      std::cout << "HLRAlgo_PolyInternalData::AddNode" << std::endl;
 #endif
   }
   return ip3;
@@ -415,8 +415,8 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
     myNbPISeg--;
 #ifdef OCCT_DEBUG
     if (HLRAlgo_PolyInternalData_ERROR) {
-      cout << "HLRAlgo_PolyInternalData::UpdateLinks : segment error";
-      cout << endl;
+      std::cout << "HLRAlgo_PolyInternalData::UpdateLinks : segment error";
+      std::cout << std::endl;
     }
 #endif
   }
@@ -520,8 +520,8 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
 	}
 #ifdef OCCT_DEBUG
 	else if (HLRAlgo_PolyInternalData_ERROR) {
-	  cout << "HLRAlgo_PolyInternalData::UpdateLinks : triangle error ";
-	  cout << endl;
+	  std::cout << "HLRAlgo_PolyInternalData::UpdateLinks : triangle error ";
+	  std::cout << std::endl;
 	}
 #endif
       }
@@ -640,33 +640,33 @@ void HLRAlgo_PolyInternalData::Dump () const
     const Handle(HLRAlgo_PolyInternalNode)* pi = &PINod->ChangeValue(i);
     HLRAlgo_PolyInternalNode::NodeIndices& aNodIndices1 = (*pi)->Indices();
     HLRAlgo_PolyInternalNode::NodeData& Nod1RValues = (*pi)->Data();
-    cout << "Node " << setw(6) << i << " : ";
-    cout << setw(6) << aNodIndices1.NdSg;
-    cout << setw(20)<< Nod1RValues.Point.X();
-    cout << setw(20)<< Nod1RValues.Point.Y();
-    cout << setw(20)<< Nod1RValues.Point.Z();
-    cout << endl;
+    std::cout << "Node " << std::setw(6) << i << " : ";
+    std::cout << std::setw(6) << aNodIndices1.NdSg;
+    std::cout << std::setw(20)<< Nod1RValues.Point.X();
+    std::cout << std::setw(20)<< Nod1RValues.Point.Y();
+    std::cout << std::setw(20)<< Nod1RValues.Point.Z();
+    std::cout << std::endl;
   }
 
   for (i = 1; i <= myNbPISeg; i++) {
     HLRAlgo_PolyInternalSegment* aSegIndices = &PISeg->ChangeValue(i);
-    cout << "Segment " << setw(6) << i << " : ";
-    cout << setw(6) << aSegIndices->LstSg1;
-    cout << setw(6) << aSegIndices->LstSg2;
-    cout << setw(6) << aSegIndices->NxtSg1;
-    cout << setw(6) << aSegIndices->NxtSg2;
-    cout << setw(6) << aSegIndices->Conex1;
-    cout << setw(6) << aSegIndices->Conex2;
-    cout << endl;
+    std::cout << "Segment " << std::setw(6) << i << " : ";
+    std::cout << std::setw(6) << aSegIndices->LstSg1;
+    std::cout << std::setw(6) << aSegIndices->LstSg2;
+    std::cout << std::setw(6) << aSegIndices->NxtSg1;
+    std::cout << std::setw(6) << aSegIndices->NxtSg2;
+    std::cout << std::setw(6) << aSegIndices->Conex1;
+    std::cout << std::setw(6) << aSegIndices->Conex2;
+    std::cout << std::endl;
   }
 
   for (i = 1; i <= myNbTData; i++) {
     HLRAlgo_TriangleData& aTriangle = TData->ChangeValue(i);
-    cout << "Triangle " << setw(6) << i << " : ";
-    cout << setw(6) << aTriangle.Node1;
-    cout << setw(6) << aTriangle.Node2;
-    cout << setw(6) << aTriangle.Node3;
-    cout << endl;
+    std::cout << "Triangle " << std::setw(6) << i << " : ";
+    std::cout << std::setw(6) << aTriangle.Node1;
+    std::cout << std::setw(6) << aTriangle.Node2;
+    std::cout << std::setw(6) << aTriangle.Node3;
+    std::cout << std::endl;
   }
 }
 
@@ -681,7 +681,7 @@ void HLRAlgo_PolyInternalData::IncTData(
   if (myNbTData >= myMxTData) {
 #ifdef OCCT_DEBUG
     if (HLRAlgo_PolyInternalData_TRACE)
-      cout << "HLRAlgo_PolyInternalData::IncTData : " << myMxTData << endl;
+      std::cout << "HLRAlgo_PolyInternalData::IncTData : " << myMxTData << std::endl;
 #endif
     Standard_Integer i,j,k;
     j = myMxTData;
@@ -720,7 +720,7 @@ void HLRAlgo_PolyInternalData::IncPISeg(
   if (myNbPISeg >= myMxPISeg) {
 #ifdef OCCT_DEBUG
     if (HLRAlgo_PolyInternalData_TRACE)
-      cout << "HLRAlgo_PolyInternalData::IncPISeg : " << myMxPISeg << endl;
+      std::cout << "HLRAlgo_PolyInternalData::IncPISeg : " << myMxPISeg << std::endl;
 #endif
     Standard_Integer i,j,k;
     j = myMxPISeg;
@@ -758,7 +758,7 @@ void HLRAlgo_PolyInternalData::IncPINod(
   if (myNbPINod >= myMxPINod) {
 #ifdef OCCT_DEBUG
     if (HLRAlgo_PolyInternalData_TRACE)
-      cout << "HLRAlgo_PolyInternalData::IncPINod : " << myMxPINod << endl;
+      std::cout << "HLRAlgo_PolyInternalData::IncPINod : " << myMxPINod << std::endl;
 #endif
     Standard_Integer i,j,k;
     j = myMxPINod;

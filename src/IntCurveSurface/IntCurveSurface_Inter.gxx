@@ -1251,11 +1251,11 @@ void IntCurveSurface_Inter::AppendIntAna(const TheCurve& curve,
 					 const IntAna_IntConicQuad& intana_ConicQuad) {
   if(intana_ConicQuad.IsDone()) { 
     if(intana_ConicQuad.IsInQuadric()) { 
-      //-- cout<<" Courbe Dans la Quadrique !!! Non Traite !!!"<<endl;
+      //-- std::cout<<" Courbe Dans la Quadrique !!! Non Traite !!!"<<std::endl;
       myIsParallel = Standard_True;
     }
     else if(intana_ConicQuad.IsParallel()) { 
-      //-- cout<<" Courbe // a la Quadrique !!! Non Traite !!!"<<endl;
+      //-- std::cout<<" Courbe // a la Quadrique !!! Non Traite !!!"<<std::endl;
       myIsParallel = Standard_True;
     }
     else { 
@@ -1270,7 +1270,7 @@ void IntCurveSurface_Inter::AppendIntAna(const TheCurve& curve,
     }
   }
   else { 
-    //-- cout<<" IntAna Conic Quad Not Done  "<<endl;
+    //-- std::cout<<" IntAna Conic Quad Not Done  "<<std::endl;
   }
 }
 //=======================================================================
@@ -1334,8 +1334,8 @@ void IntCurveSurface_Inter::AppendSegment(const TheCurve& ,
 					  const Standard_Real ,
 					  const Standard_Real ,
 					  const TheSurface& ) { 
-  //cout<<" !!! Not Yet Implemented 
-  //IntCurveSurface_Inter::Append(const IntCurveSurf ...)"<<endl;
+  //std::cout<<" !!! Not Yet Implemented 
+  //IntCurveSurface_Inter::Append(const IntCurveSurf ...)"<<std::endl;
 }
 
 //=======================================================================
@@ -1400,7 +1400,7 @@ void SectionPointToParameters(const Intf_SectionPoint&              Sp,
     }
   default: 
     {
-      cout<<" Default dans SectionPointToParameters "<<endl;
+      std::cout<<" Default dans SectionPointToParameters "<<std::endl;
       break;
     }
   }
@@ -1694,9 +1694,9 @@ void ProjectIntersectAndEstLim(const gp_Lin&        theLine,
   ProjLib_Plane aLineProj( thePln, theLine );
   if (!aLineProj.IsDone()) {
 #ifdef OCCT_DEBUG
-  cout
+  std::cout
   << "Info: IntCurveSurface_Inter::ProjectIntersectAndEstLim(), !aLineProj.IsDone()"
-  << endl;
+  << std::endl;
 #endif
     return;
   }
@@ -1821,7 +1821,7 @@ void EstLimForInfRevl(const gp_Lin&   Line,
   }
   if (!aBasCurvProj.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "Info: IntCurveSurface_Inter::EstLimForInfRevl(), !aBasCurvProj.IsDone()" << endl;
+    std::cout << "Info: IntCurveSurface_Inter::EstLimForInfRevl(), !aBasCurvProj.IsDone()" << std::endl;
 #endif
     return;
   }
@@ -1859,7 +1859,7 @@ void EstLimForInfRevl(const gp_Lin&   Line,
   if (V1inf) V1new = aVmin;
   if (V2inf) V2new = aVmax;
 
-  //cout << "EstLimForInfRevl: Vmin " << V1new << " Vmax " << V2new << endl;
+  //std::cout << "EstLimForInfRevl: Vmin " << V1new << " Vmax " << V2new << std::endl;
   
   return;
 }

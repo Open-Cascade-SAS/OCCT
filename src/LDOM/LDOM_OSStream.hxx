@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <stdio.h> /* EOF */
 
-//! Class LDOM_SBuffer inherits streambuf and
+//! Class LDOM_SBuffer inherits std::streambuf and
 //! redefines some virtual methods of it (overflow() and xsputn()).
 //! This class contains pointers on first and current element 
 //! of sequence, also it has methods for the sequence management.
@@ -67,7 +67,7 @@ public:
   //! Clears first element of sequence and removes all others
   Standard_EXPORT void Clear ();
 
-  // Methods of streambuf
+  // Methods of std::streambuf
 
   Standard_EXPORT virtual int overflow(int c = EOF) Standard_OVERRIDE;
   Standard_EXPORT virtual int underflow() Standard_OVERRIDE;
@@ -93,8 +93,8 @@ private:
 //! of outputting data into a string avoiding reallocation of buffer.
 //! Class LDOM_OSStream implements output into a sequence of
 //! strings and getting the result as a string.
-//! It inherits Standard_OStream (ostream).
-//! Beside methods of ostream, it also has additional
+//! It inherits Standard_OStream (std::ostream).
+//! Beside methods of std::ostream, it also has additional
 //! useful methods: str(), Length() and Clear().
 class LDOM_OSStream : public Standard_OStream
 {

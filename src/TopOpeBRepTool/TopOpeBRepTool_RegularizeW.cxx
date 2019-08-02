@@ -57,13 +57,13 @@ Standard_EXPORT void FUN_tool_coutsta(const Standard_Integer& sta, const Standar
 {
   switch (sta) {
   case SAME:
-    cout<<i1<<" gives SAME bnd with "<<i2<<endl; break;
+    std::cout<<i1<<" gives SAME bnd with "<<i2<<std::endl; break;
   case DIFF:
-    cout<<i1<<" gives  OUT bnd with "<<i2<<endl; break;
+    std::cout<<i1<<" gives  OUT bnd with "<<i2<<std::endl; break;
   case oneINtwo:
-    cout<<i1<<" is IN "<<i2<<endl; break;
+    std::cout<<i1<<" is IN "<<i2<<std::endl; break;
   case twoINone:
-    cout<<i2<<" is IN "<<i1<<endl; break;
+    std::cout<<i2<<" is IN "<<i1<<std::endl; break;
   }
 }
 #endif
@@ -196,7 +196,7 @@ Standard_Boolean TopOpeBRepTool::Regularize(const TopoDS_Face& theFace,
   Standard_Boolean trc = Standard_False;
   if (trc) {
     for (Standard_Integer i = 1; i <= 2; i++)
-      cout<<"B("<<i<<") = ("<<UV(i,1)<<" "<<UV(i,3)<<" "<<UV(i,2)<<" "<<UV(i,4)<<")"<<endl;
+      std::cout<<"B("<<i<<") = ("<<UV(i,1)<<" "<<UV(i,3)<<" "<<UV(i,2)<<" "<<UV(i,4)<<")"<<std::endl;
   }
 #endif
 
@@ -339,7 +339,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc) cout<<"** ClassifW :"<<endl;
+  if (trc) std::cout<<"** ClassifW :"<<std::endl;
   STATIC_mapw.Clear();    
 #endif  
 
@@ -406,7 +406,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 	nite++;
 	if ((sta == SAME)||(sta == UNKNOWN)) sta = FUN_tool_classiwithp2d(wi);
 #ifdef OCCT_DEBUG	
-	if (trc) {cout<<"#wi :";FUN_tool_coutsta(sta,FUN_adds(wi(1)),FUN_adds(wi(2)));}
+	if (trc) {std::cout<<"#wi :";FUN_tool_coutsta(sta,FUN_adds(wi(1)),FUN_adds(wi(2)));}
 #endif		
 	if ((sta == SAME)||(sta == UNKNOWN)) return Standard_False;    	 
 	if ((sta == DIFF) && itmap.More()) {OUTall = Standard_True; continue;}// w(1) OUT w(2)    
@@ -491,7 +491,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
       osta = FUN_tool_classiBnd2d(OBnd2d);
       if ((osta == SAME)||(osta == UNKNOWN)) osta = FUN_tool_classiwithp2d(Owi);
 #ifdef OCCT_DEBUG	
-      if (trc) {cout<<"wi : "; FUN_tool_coutsta(osta,FUN_adds(Owi(1)),FUN_adds(Owi(2)));}
+      if (trc) {std::cout<<"wi : "; FUN_tool_coutsta(osta,FUN_adds(Owi(1)),FUN_adds(Owi(2)));}
 #endif		
       if ((osta == SAME)||(osta == UNKNOWN)) return Standard_False;      
       if (osta == DIFF)                    continue; // Ow(1), Ow(2) are disjoint		
@@ -541,7 +541,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 	  // Classifying wi(1)  with wi(2) :
 	  sta = FUN_tool_classiBnd2d(Bnd2d); 
 #ifdef OCCT_DEBUG
-	  if (trc) {cout<<"wi : "; FUN_tool_coutsta(sta,STATIC_mapw.FindIndex(wi(1)),
+	  if (trc) {std::cout<<"wi : "; FUN_tool_coutsta(sta,STATIC_mapw.FindIndex(wi(1)),
 						    STATIC_mapw.FindIndex(wi(2)));}
 #endif
 	  if ((sta == SAME)||(sta == UNKNOWN)) sta = FUN_tool_classiwithp2d(wi);
@@ -579,7 +579,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_MakeFaces(const TopoDS_Face& theFace,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc) cout<<"** MakeFaces :"<<endl;
+  if (trc) std::cout<<"** MakeFaces :"<<std::endl;
 #endif
   Standard_Boolean toreverse = M_REVERSED(theFace.Orientation());
   TopoDS_Face F = TopoDS::Face(theFace.Oriented(TopAbs_FORWARD));
@@ -603,10 +603,10 @@ Standard_EXPORT Standard_Boolean FUN_tool_MakeFaces(const TopoDS_Face& theFace,
 
 #ifdef OCCT_DEBUG
   if (trc) {
-    cout<<"sp(fa"<<FUN_adds(theFace)<<")=";
+    std::cout<<"sp(fa"<<FUN_adds(theFace)<<")=";
     TopTools_ListIteratorOfListOfShape it(aListOfFaces);
-    for (; it.More(); it.Next()) cout<<" fa"<<FUN_adds(it.Value());
-    cout<<endl;
+    for (; it.More(); it.Next()) std::cout<<" fa"<<FUN_adds(it.Value());
+    std::cout<<std::endl;
   }
 #endif
 
@@ -619,7 +619,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 {  
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = TopOpeBRepTool_GettraceREGUFA();
-  if (trc) cout<<"** ClassifW :"<<endl;
+  if (trc) std::cout<<"** ClassifW :"<<std::endl;
 #endif  
   Standard_Real tolF = BRep_Tool::Tolerance(F);
   Standard_Real toluv = TopOpeBRepTool_TOOL::TolUV(F,tolF);
@@ -698,15 +698,15 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
       TopTools_ListIteratorOfListOfShape itw(ldone);
       for (; itw.More(); itw.Next()) mapdone.Add(itw.Value());
 #ifdef OCCT_DEBUG
-      if (trc) cout<<"old wires :wi"<<FUN_adds(Ow1)<<" is OUT all old wires"<<endl;
+      if (trc) std::cout<<"old wires :wi"<<FUN_adds(Ow1)<<" is OUT all old wires"<<std::endl;
 #endif      
       lOws.RemoveFirst();
     }//OUTall    
     else {
 #ifdef OCCT_DEBUG
-      if (trc) {cout<<"old wires :wi -> ";
+      if (trc) {std::cout<<"old wires :wi -> ";
 		FUN_tool_coutsta(sta12,FUN_adds(Ow1),FUN_adds(Ow2));
-		cout<<endl;}
+		std::cout<<std::endl;}
 #endif
       const TopTools_ListOfShape& lw2 = mapOwNw.Find(Ow2);
      
@@ -733,9 +733,9 @@ Standard_EXPORT Standard_Boolean FUN_tool_ClassifW(const TopoDS_Face& F,
 	  Standard_Integer stabnd2d = CLASSI.ClassiBnd2d(wsma,wgre,toluv,Standard_True);
 	  Standard_Integer sta = CLASSI.Classip2d(wsma,wgre, stabnd2d);
 #ifdef OCCT_DEBUG
-      if (trc) {cout<<" wires :wi -> ";
+      if (trc) {std::cout<<" wires :wi -> ";
 		FUN_tool_coutsta(sta,FUN_adds(wsma),FUN_adds(wgre));
-		cout<<endl;}
+		std::cout<<std::endl;}
 #endif
 	
 	  if      (sta == DIFF) continue;

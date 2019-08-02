@@ -228,29 +228,29 @@ void IGESDefs_ToolTabularData::OwnDump
   Standard_Integer nbIndeps = ent->NbIndependents(); //szv#4:S4163:12Mar99 i unused
   Standard_Integer nbDeps = ent->NbDependents();
 
-  S << "IGESDefs_TabularData" << endl;
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
-  S << "Property type : " << ent->PropertyType() << endl;
-  S << "No. of Dependent variables    : " << nbDeps << endl;
-  S << "No. of Independent variables  : " << nbIndeps << endl;
+  S << "IGESDefs_TabularData" << Message_EndLine;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "Property type : " << ent->PropertyType() << Message_EndLine;
+  S << "No. of Dependent variables    : " << nbDeps << Message_EndLine;
+  S << "No. of Independent variables  : " << nbIndeps << Message_EndLine;
   S << "Type of independent variables : ";
   IGESData_DumpVals(S ,level,1, nbIndeps,ent->TypeOfIndependents);
-  S << endl << "Number of values of independent variables : ";
+  S << Message_EndLine << "Number of values of independent variables : ";
   IGESData_DumpVals(S ,level,1, nbIndeps,ent->NbValues);
 // ?? JAGGED ??
-  S << endl << "Values of the independent variable : ";
+  S << Message_EndLine << "Values of the independent variable : ";
   if (level < 5) S << " [ask level > 4]";
   else {
     for (Standard_Integer ind = 1; ind <= nbIndeps; ind ++) {
-      S << endl << "[" << ind << "]:";
+      S << Message_EndLine << "[" << ind << "]:";
       Standard_Integer nbi = ent->NbValues(ind);
       for (Standard_Integer iv = 1; iv <= nbi; iv ++)
 	S << " " << ent->IndependentValue(ind,iv);
     }
   }
 //  IGESData_DumpVals(S ,level,1, nbIndeps,ent->IndependentValue);
-  S << endl << "Values of the dependent variable : ";
+  S << Message_EndLine << "Values of the dependent variable : ";
 //  IGESData_DumpVals(S ,level,1, nbDeps,ent->DependentValue);
   S << "  TO BE DONE";
-  S << endl;
+  S << Message_EndLine;
 }

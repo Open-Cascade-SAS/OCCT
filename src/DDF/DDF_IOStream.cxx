@@ -72,7 +72,7 @@ Storage_Error DDF_IOStream::Open(const TCollection_AsciiString& aName,const Stor
   if (OpenMode() == Storage_VSNone) {
     if (aMode == Storage_VSRead) {
       if (myIStream != NULL) delete myIStream;
-      myIStream = new ifstream(aName.ToCString(),ios::in); // ios::nocreate is not portable
+      myIStream = new std::ifstream(aName.ToCString(),std::ios::in); // std::ios::nocreate is not portable
       if (myIStream->fail()) {
 	result = Storage_VSOpenError;
       }
@@ -84,7 +84,7 @@ Storage_Error DDF_IOStream::Open(const TCollection_AsciiString& aName,const Stor
     }
     else if (aMode == Storage_VSWrite) {
       if (myOStream != NULL) delete myOStream;
-      myOStream = new ofstream(aName.ToCString(),ios::out);
+      myOStream = new std::ofstream(aName.ToCString(),std::ios::out);
       if (myOStream->fail()) {
 	result = Storage_VSOpenError;
       }
@@ -104,10 +104,10 @@ Storage_Error DDF_IOStream::Open(const TCollection_AsciiString& aName,const Stor
 
 //=======================================================================
 //function : Open
-//purpose  : "Opens" an istream.
+//purpose  : "Opens" an std::istream.
 //=======================================================================
 
-Storage_Error DDF_IOStream::Open(istream* anIStream)
+Storage_Error DDF_IOStream::Open(std::istream* anIStream)
 {
   myOStream = NULL;
   SetOpenMode(Storage_VSRead);
@@ -120,10 +120,10 @@ Storage_Error DDF_IOStream::Open(istream* anIStream)
 
 //=======================================================================
 //function : Open
-//purpose  : "Opens" an ostream.
+//purpose  : "Opens" an std::ostream.
 //=======================================================================
 
-Storage_Error DDF_IOStream::Open(ostream* anOStream)
+Storage_Error DDF_IOStream::Open(std::ostream* anOStream)
 {
   myIStream = NULL;
   SetOpenMode(Storage_VSWrite);
@@ -263,7 +263,7 @@ void DDF_IOStream::ReadExtendedLine(TCollection_ExtendedString& buffer)
     myIStream->get(c);
     check++;
 //    if ((check % 2) != 0) throw Storage_StreamExtCharParityError();
-//    cout << check << endl;
+//    std::cout << check << std::endl;
     j = (Standard_ExtCharacter)c;
     if (c != '\n') fin = Standard_False;
     i |= (0x00FF & j);
@@ -271,7 +271,7 @@ void DDF_IOStream::ReadExtendedLine(TCollection_ExtendedString& buffer)
   }
 
 //  if ((check % 2) != 0) throw Storage_StreamExtCharParityError();
-//  cout << check << endl;
+//  std::cout << check << std::endl;
 }
 
 //=======================================================================
@@ -647,7 +647,7 @@ Storage_Error DDF_IOStream::BeginReadInfoSection()
   
   if (strncmp(DDF_IOStream::MagicNumber(),l.ToCString(),len) != 0) {
 #ifdef OCCT_DEBUG
-    cout<<"BeginReadInfoSection: format error"<<endl;
+    std::cout<<"BeginReadInfoSection: format error"<<std::endl;
 #endif
     s = Storage_VSFormatError;
   }
@@ -1339,7 +1339,7 @@ Storage_Error DDF_IOStream::EndReadDataSection()
 //purpose  : 
 //=======================================================================
 
-Storage_Error DDF_IOStream::IsGoodFileType(istream* anIStream)
+Storage_Error DDF_IOStream::IsGoodFileType(std::istream* anIStream)
 {
   DDF_IOStream      f;
   Storage_Error s;
@@ -1356,7 +1356,7 @@ Storage_Error DDF_IOStream::IsGoodFileType(istream* anIStream)
 
     if (strncmp(DDF_IOStream::MagicNumber(),l.ToCString(),len) != 0) {
 #ifdef OCCT_DEBUG
-    cout<<"IsGoodFileType: format error"<<endl;
+    std::cout<<"IsGoodFileType: format error"<<std::endl;
 #endif
       s = Storage_VSFormatError;
     }

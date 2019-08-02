@@ -127,8 +127,8 @@ void StepData_StepWriter::SetScope (const Standard_Integer numscope,
   }
   else if (thescopenext->Value(numin) != 0) {
 #ifdef OCCT_DEBUG
-    cout << "StepWriter : SetScope (scope : " << numscope << " entity : "
-      << numin << "), Entity already in a Scope"<<endl;
+    std::cout << "StepWriter : SetScope (scope : " << numscope << " entity : "
+      << numin << "), Entity already in a Scope"<<std::endl;
 #endif
     throw Interface_InterfaceMismatch("StepWriter : SetScope, already set");
   }
@@ -1153,7 +1153,7 @@ Standard_Boolean StepData_StepWriter::Print (Standard_OStream& S)
   for (Standard_Integer i = 1; i <= nb && isGood; i ++) 
     S << thefile->Value(i)->ToCString() << "\n";
   
-  S<< flush;
+  S<< std::flush;
   isGood = (S && S.good());
   
   return  isGood;

@@ -166,7 +166,7 @@ Standard_Integer STEPControl_Reader::NbRootsForTransfer()
         }
         if (iSexclude) {
 #ifdef OCCT_DEBUG
-          cout << "Warning: STEPControl_Reader::NbRootsForTransfer exclude PDWAD from roots" << endl;
+          std::cout << "Warning: STEPControl_Reader::NbRootsForTransfer exclude PDWAD from roots" << std::endl;
 #endif
           continue;
         }

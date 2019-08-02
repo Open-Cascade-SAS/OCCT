@@ -50,14 +50,14 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
 {
   if (n<2)
   {
-    cout << "Use: " << a[0] << " document [brower_name]" << endl;
+    std::cout << "Use: " << a[0] << " document [brower_name]" << std::endl;
     return 1;
   }
   
   Handle(TDF_Data) DF;
   if (!DDF::GetDF (a[1], DF)) 
   {
-    cout << "Error: document " << a[1] << " is not found" << endl;
+    std::cout << "Error: document " << a[1] << " is not found" << std::endl;
     return 1;
   }
 
@@ -72,14 +72,14 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
   OSD_File aTclScriptFile (aTclScript);
   if (aTclScriptFile.Exists()) {
 #ifdef OCCT_DEBUG
-    cout << "Load " << aTclScript << endl;
+    std::cout << "Load " << aTclScript << std::endl;
 #endif
     di.EvalFile( aTclScript.ToCString() );
   }
   else
   {
-    cout << "Error: Could not load script " << aTclScript << endl;
-    cout << "Check environment variable CSF_DrawPluginDefaults" << endl;
+    std::cout << "Error: Could not load script " << aTclScript << std::endl;
+    std::cout << "Check environment variable CSF_DrawPluginDefaults" << std::endl;
   }
 
   // Call command dftree defined in dftree.tcl

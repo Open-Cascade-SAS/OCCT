@@ -116,12 +116,12 @@ void  IGESAppli_ToolPWBArtworkStackup::OwnDump
   (const Handle(IGESAppli_PWBArtworkStackup)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_PWBArtworkStackup" << endl;
-  S << "Number of property values : " << ent->NbPropertyValues() << endl;
+  S << "IGESAppli_PWBArtworkStackup" << Message_EndLine;
+  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "Artwork Stackup Identification : ";
   IGESData_DumpString(S,ent->Identification());
-  S << endl;
+  S << Message_EndLine;
   S << "Level Numbers : ";
   IGESData_DumpVals(S ,level,1, ent->NbLevelNumbers(),ent->LevelNumber);
-  S << endl;
+  S << Message_EndLine;
 }

@@ -102,7 +102,7 @@ void RWStepGeom_RWToroidalSurface::Check
    const Interface_ShareTool& ,
    Handle(Interface_Check)& ach) const
 {
-//  cout << "------ calling CheckToroidalSurface ------" << endl;
+//  std::cout << "------ calling CheckToroidalSurface ------" << std::endl;
   if (ent->MajorRadius() < 0.0)
     ach->AddFail("ERROR: ToroidalSurface: MajorRadius < 0.0");
   if (ent->MinorRadius() < 0.0)

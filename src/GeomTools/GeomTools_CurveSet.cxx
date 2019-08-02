@@ -323,7 +323,7 @@ static void Print(const Handle(Geom_BezierCurve)& B,
   OS << degree << " ";
   
   for (i = 1; i <= degree+1; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     Print(B->Pole(i),OS,compact);
     if (rational)
       OS << " " << B->Weight(i);
@@ -383,7 +383,7 @@ static void Print(const Handle(Geom_BSplineCurve)& B,
   
   if (!compact) OS << "Poles :\n";
   for (i = 1; i <= nbpoles; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     else OS << " ";
     Print(B->Pole(i),OS,compact);
     if (rational)
@@ -393,7 +393,7 @@ static void Print(const Handle(Geom_BSplineCurve)& B,
 
   if (!compact) OS << "Knots :\n";
   for (i = 1; i <= nbknots; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     OS << " " << B->Knot(i) << " " << B->Multiplicity(i);
   }
 
@@ -485,7 +485,7 @@ void GeomTools_CurveSet::PrintCurve(const Handle(Geom_Curve)& C,
     //if (!compact)
     //  OS << "****** UNKNOWN CURVE TYPE ******\n";
     //else 
-    //  cout << "****** UNKNOWN CURVE TYPE ******" << endl;
+    //  std::cout << "****** UNKNOWN CURVE TYPE ******" << std::endl;
   }
 }
 
@@ -502,7 +502,7 @@ void  GeomTools_CurveSet::Dump(Standard_OStream& OS)const
   OS << "\n -------\n\n";
 
   for (i = 1; i <= nbsurf; i++) {
-    OS << setw(4) << i << " : ";
+    OS << std::setw(4) << i << " : ";
     PrintCurve(Handle(Geom_Curve)::DownCast(myMap(i)),OS,Standard_False);
   }
 }
@@ -848,8 +848,8 @@ Handle(Geom_Curve) GeomTools_CurveSet::ReadCurve (Standard_IStream& IS)
   }
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout <<"EXCEPTION in GeomTools_CurveSet::ReadCurve(..)!!!" << endl;
-    cout << anException << endl;
+    std::cout <<"EXCEPTION in GeomTools_CurveSet::ReadCurve(..)!!!" << std::endl;
+    std::cout << anException << std::endl;
 #endif
     (void)anException;
   }
@@ -866,7 +866,7 @@ void  GeomTools_CurveSet::Read(Standard_IStream& IS)
   char buffer[255];
   IS >> buffer;
   if (strcmp(buffer,"Curves")) {
-    cout << "Not a Curve table"<<endl;
+    std::cout << "Not a Curve table"<<std::endl;
     return;
   }
 

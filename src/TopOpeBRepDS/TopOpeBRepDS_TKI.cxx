@@ -188,15 +188,15 @@ void TopOpeBRepDS_TKI::Add(const TopOpeBRepDS_Kind K,const Standard_Integer G,co
 //=======================================================================
 void TopOpeBRepDS_TKI::DumpTKIIterator(const TCollection_AsciiString& s1,const TCollection_AsciiString& s2)
 {
-  cout<<s1;
+  std::cout<<s1;
   Init();
   while (More()) {
     TopOpeBRepDS_Kind K;Standard_Integer G;
     Value(K,G);
     Next();
   }
-  cout<<s2;
-  cout.flush();
+  std::cout<<s2;
+  std::cout.flush();
 }
 
 //=======================================================================

@@ -186,10 +186,10 @@ void IGESGraph_ToolTextDisplayTemplate::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGraph_TextDisplayTemplate" << endl;
+  S << "IGESGraph_TextDisplayTemplate" << Message_EndLine;
 
   S << "Character box width  : "  << ent->BoxWidth() << "  ";
-  S << "Character box height : "  << ent->BoxHeight() << endl;
+  S << "Character box height : "  << ent->BoxHeight() << Message_EndLine;
   if ( ent->IsFontEntity() )
     {
       S << "Font Entity : ";
@@ -197,15 +197,15 @@ void IGESGraph_ToolTextDisplayTemplate::OwnDump
     }
   else
     S << "Font code : " << ent->FontCode();
-  S << endl;
+  S << Message_EndLine;
   S << "Slant angle    : "  << ent->SlantAngle() << "  ";
-  S << "Rotation angle : "  << ent->RotationAngle() << endl;
+  S << "Rotation angle : "  << ent->RotationAngle() << Message_EndLine;
   S << "Mirror flag    : "  << ent->MirrorFlag() << "  ";
-  S << "Rotate flag    : "  << ent->RotateFlag() << endl;
+  S << "Rotate flag    : "  << ent->RotateFlag() << Message_EndLine;
   if ( ent->FormNumber() == 0 )
     S << "Lower Left Corner coordinates : ";
   else
     S << "Increments from coordinates : "; 
   IGESData_DumpXYZL(S,level, ent->StartingCorner(), ent->Location());
-  S << endl;
+  S << Message_EndLine;
 }

@@ -38,8 +38,8 @@
 #ifdef OCCT_DEBUG
 #include <TopOpeBRepDS_CurvePointInterference.hxx>
 extern Standard_Boolean TopOpeBRep_GettraceEEFF();
-Standard_EXPORT void debposesd(void) {/*cout<<"+++ debposesd"<<endl;*/}
-Standard_EXPORT void debposnesd(void) {cout<<"+++ debposnesd"<<endl;}
+Standard_EXPORT void debposesd(void) {/*std::cout<<"+++ debposesd"<<std::endl;*/}
+Standard_EXPORT void debposnesd(void) {std::cout<<"+++ debposnesd"<<std::endl;}
 Standard_EXPORT void debeeff() {}
 #endif
 
@@ -114,11 +114,11 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
       Standard_Real tol2 = BRep_Tool::Tolerance(V2);
       Standard_Real dpp = P3D1.Distance(P3D2);
       if (dpp> tol1+tol2) {
-	cout<<endl;
-	cout<<"*** TopOpeBRep_EdgesFiller : isvertex1 && isvertex2 : P3D non confondus"<<endl;
-	cout<<"point PV1 "<<P3D1.X()<<" "<<P3D1.Y()<<" "<<P3D1.Z()<<endl;
-	cout<<"point PV2 "<<P3D2.X()<<" "<<P3D2.Y()<<" "<<P3D2.Z()<<endl;
-	cout<<endl;
+	std::cout<<std::endl;
+	std::cout<<"*** TopOpeBRep_EdgesFiller : isvertex1 && isvertex2 : P3D non confondus"<<std::endl;
+	std::cout<<"point PV1 "<<P3D1.X()<<" "<<P3D1.Y()<<" "<<P3D1.Z()<<std::endl;
+	std::cout<<"point PV2 "<<P3D2.X()<<" "<<P3D2.Y()<<" "<<P3D2.Z()<<std::endl;
+	std::cout<<std::endl;
       }
     }
 #endif
@@ -141,10 +141,10 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     if (faulty) {
 #ifdef OCCT_DEBUG
       Standard_Boolean foundvertex = (found)  && (K == TopOpeBRepDS_VERTEX);
-      cout<<"- - - faulty EdgesFiller : G "<<G<<" K ";TopOpeBRepDS::Print(K,cout);cout.flush();
-      cout<<" isvertex="<<isvertex;cout.flush();
-      cout<<" isop="<<foundpoint<<" isov="<<foundvertex;cout.flush();
-      cout<<" isnp="<<isnewpoint<<" isnv="<<isnewvertex<<endl;cout.flush();
+      std::cout<<"- - - faulty EdgesFiller : G "<<G<<" K ";TopOpeBRepDS::Print(K,std::cout);std::cout.flush();
+      std::cout<<" isvertex="<<isvertex;std::cout.flush();
+      std::cout<<" isop="<<foundpoint<<" isov="<<foundvertex;std::cout.flush();
+      std::cout<<" isnp="<<isnewpoint<<" isnv="<<isnewvertex<<std::endl;std::cout.flush();
 #endif
     }
 
@@ -186,8 +186,8 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
 	    evi->SupportType(kevi);
 
 #ifdef OCCT_DEBUG
-	    TopOpeBRepDS::Print(K,G,cout,"TopOpeBRep_EdgesFiller : remplacer "," ");
-	    TopOpeBRepDS::Print(TopOpeBRepDS_VERTEX,gevi,cout,"par "," dans les courbes NYI\n");
+	    TopOpeBRepDS::Print(K,G,std::cout,"TopOpeBRep_EdgesFiller : remplacer "," ");
+	    TopOpeBRepDS::Print(TopOpeBRepDS_VERTEX,gevi,std::cout,"par "," dans les courbes NYI\n");
 #endif
 	    linew.Append(evi);
 	    li.Remove(it);

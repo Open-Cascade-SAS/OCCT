@@ -233,7 +233,7 @@ Standard_Boolean IGESControl_Writer::Write
   ComputeModel();
   Standard_Integer nbEnt = myModel->NbEntities();
 #ifdef OCCT_DEBUG
-  cout<<" IGES Write : "<<nbEnt<<" ent.s"<< flush;
+  std::cout<<" IGES Write : "<<nbEnt<<" ent.s"<< std::flush;
 #endif
   if(!nbEnt)
     return Standard_False;
@@ -241,12 +241,12 @@ Standard_Boolean IGESControl_Writer::Write
 //  ne pas oublier le mode fnes ... a transmettre a IW
   IW.SendModel (IGESSelect_WorkLibrary::DefineProtocol());
 #ifdef OCCT_DEBUG
-  cout<<" ...  ecriture  ..."<<flush;
+  std::cout<<" ...  ecriture  ..."<<std::flush;
 #endif
   if (fnes) IW.WriteMode() = 10;
   Standard_Boolean status = IW.Print(S);
 #ifdef OCCT_DEBUG
-  cout<<" ...  fichier ecrit  ..."<<endl;
+  std::cout<<" ...  fichier ecrit  ..."<<std::endl;
 #endif
   return status;
 }
@@ -254,11 +254,11 @@ Standard_Boolean IGESControl_Writer::Write
 Standard_Boolean IGESControl_Writer::Write
   (const Standard_CString file, const Standard_Boolean fnes)
 {
-  ofstream fout;
-  OSD_OpenStream(fout,file,ios::out);
+  std::ofstream fout;
+  OSD_OpenStream(fout,file,std::ios::out);
   if (!fout) return Standard_False;
 #ifdef OCCT_DEBUG
-  cout<<" Ecriture fichier ("<< (fnes ? "fnes" : "IGES") <<"): "<<file<<endl;
+  std::cout<<" Ecriture fichier ("<< (fnes ? "fnes" : "IGES") <<"): "<<file<<std::endl;
 #endif
   Standard_Boolean res = Write (fout,fnes);
 

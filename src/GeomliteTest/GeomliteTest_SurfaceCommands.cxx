@@ -1381,14 +1381,14 @@ static Standard_Integer compBsplSur (Draw_Interpretor& , Standard_Integer n, con
 {
   if (n < 2) 
   {
-    cout<<"Invalid number of parameters"<<endl;
+    std::cout<<"Invalid number of parameters"<<std::endl;
     return 1;
   }
 
   Handle(Geom_BSplineSurface) GBs1 = DrawTrSurf::GetBSplineSurface(a[1]);
   Handle(Geom_BSplineSurface) GBs2 = DrawTrSurf::GetBSplineSurface(a[2]);
   if (GBs1.IsNull() || GBs2.IsNull()) {
-    cout<<"Invalid surface"<<endl;
+    std::cout<<"Invalid surface"<<std::endl;
     return 1;
   }
    
@@ -1423,7 +1423,7 @@ static Standard_Integer compBsplSur (Draw_Interpretor& , Standard_Integer n, con
       {
         nbErr++;
         Standard_Real aD = sqrt(aDist);
-        cout<<"Surfaces differ for U,V,Dist: "<<aU<<" "<<aV<<" "<<aD<<endl;
+        std::cout<<"Surfaces differ for U,V,Dist: "<<aU<<" "<<aV<<" "<<aD<<std::endl;
       }
     }
   }

@@ -638,8 +638,8 @@ void  DBRep_DrawableShape::DrawOn(Draw_Display& dis) const
       BRep_Tool::Range(E->Edge(), aCheckU1, aCheckU2);
       if (aCheckU2 < aCheckU1) {
 	// bad orientation
-	cout << "DBRep_DrawableShape : Bad parameters on edge."<<endl;
-	BRepTools::Dump(E->Edge(),cout);
+	std::cout << "DBRep_DrawableShape : Bad parameters on edge."<<std::endl;
+	BRepTools::Dump(E->Edge(),std::cout);
 	ite.Next();
 	continue;
       }
@@ -1100,7 +1100,7 @@ void  DBRep_DrawableShape::display(const Handle(Poly_Triangulation)& T,
 
   // Display the edges
   const TColgp_Array1OfPnt& Nodes = T->Nodes();
-//  cout<<"nb nodes = "<<Nodes.Length()<<endl;
+//  std::cout<<"nb nodes = "<<Nodes.Length()<<std::endl;
   
   // free edges
   Standard_Integer nn;

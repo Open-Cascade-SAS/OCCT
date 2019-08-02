@@ -114,11 +114,11 @@ static void NormalD0(const Standard_Real U, const Standard_Real V, const Handle(
     
     if (NStatus != CSLib_Defined) {
 #ifdef OCCT_DEBUG
-      cout << U << ", " << V<< endl;
+      std::cout << U << ", " << V<< std::endl;
       for(i=0;i<=MaxOrder;i++)
 	for(j=0;j<=MaxOrder;j++){
-	  cout <<"("<<i <<"," << j << ") = "<< DerSurf(i,j).X() <<","
-	       << DerSurf(i,j).Y() <<"," << DerSurf(i,j).Z() << endl;
+	  std::cout <<"("<<i <<"," << j << ") = "<< DerSurf(i,j).X() <<","
+	       << DerSurf(i,j).Y() <<"," << DerSurf(i,j).Z() << std::endl;
 	}
 #endif
       throw Geom_UndefinedValue();

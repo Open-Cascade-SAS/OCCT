@@ -36,18 +36,18 @@ void IntPatch_Polygo::Dump () const
 {
   static int num=0;
   num++; 
-  cout<<"\n#------------- D u m p     B o x 2 d   ("<<num<<")"<<endl;
+  std::cout<<"\n#------------- D u m p     B o x 2 d   ("<<num<<")"<<std::endl;
   Bounding().Dump();
-  cout<<"\n#-----------------------------------------------"<<endl;
+  std::cout<<"\n#-----------------------------------------------"<<std::endl;
   
   const Standard_Integer nbs = NbSegments();
-  cout<<"\npol2d "<<num<<" "<<nbs<<" ";
-  cout<<DeflectionOverEstimation()<<endl;
+  std::cout<<"\npol2d "<<num<<" "<<nbs<<" ";
+  std::cout<<DeflectionOverEstimation()<<std::endl;
   
   gp_Pnt2d P, PF;
   for(Standard_Integer i=1;i<=nbs;i++) {
     Segment(i,P,PF);
-    cout<<"pnt2d "<<num<<"  "<< P.X()<<" "<<P.Y()<<endl;
+    std::cout<<"pnt2d "<<num<<"  "<< P.X()<<" "<<P.Y()<<std::endl;
   }
-  cout<<"pnt2d "<<num<<"  "<< PF.X()<<" "<<PF.Y()<<endl;
+  std::cout<<"pnt2d "<<num<<"  "<< PF.X()<<" "<<PF.Y()<<std::endl;
 }

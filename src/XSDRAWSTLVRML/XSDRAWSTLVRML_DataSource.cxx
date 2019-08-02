@@ -36,7 +36,7 @@ XSDRAWSTLVRML_DataSource::XSDRAWSTLVRML_DataSource (const Handle(Poly_Triangulat
     const TColgp_Array1OfPnt& aCoords = myMesh->Nodes();
     Standard_Integer len = aCoords.Length(), i, j;
     myNodeCoords = new TColStd_HArray2OfReal(1, len, 1, 3);
-    cout << "Nodes : " << len << endl;
+    std::cout << "Nodes : " << len << std::endl;
 
     gp_XYZ xyz;
 
@@ -55,7 +55,7 @@ XSDRAWSTLVRML_DataSource::XSDRAWSTLVRML_DataSource (const Handle(Poly_Triangulat
     myElemNormals = new TColStd_HArray2OfReal(1, len, 1, 3);
     myElemNodes = new TColStd_HArray2OfInteger(1, len, 1, 3);
 
-    cout << "Elements : " << len << endl;
+    std::cout << "Elements : " << len << std::endl;
 
     for( i = 1; i <= len; i++ )
     {
@@ -89,7 +89,7 @@ XSDRAWSTLVRML_DataSource::XSDRAWSTLVRML_DataSource (const Handle(Poly_Triangulat
       myElemNormals->SetValue (i, 3, aN.Z());
     }
   }
-  cout << "Construction is finished" << endl;
+  std::cout << "Construction is finished" << std::endl;
 }
 
 //================================================================

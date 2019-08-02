@@ -147,24 +147,24 @@ void  IGESDimen_ToolAngularDimension::OwnDump
 { 
   Standard_Integer sublevel  = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_AngularDimension" << endl;
+  S << "IGESDimen_AngularDimension" << Message_EndLine;
   S << "General Note Entity   : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "First  Witness Entity : ";
   dumper.Dump(ent->FirstWitnessLine(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitnessLine(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Vertex Point Co-ords  : ";
-  IGESData_DumpXYL(S,level, ent->Vertex(), ent->Location());  S << endl;
-  S << "Radius of Leader arcs : " << ent->Radius() << endl;
+  IGESData_DumpXYL(S,level, ent->Vertex(), ent->Location());  S << Message_EndLine;
+  S << "Radius of Leader arcs : " << ent->Radius() << Message_EndLine;
   S << "First  Leader Entity  : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Leader Entity  : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
 }
 

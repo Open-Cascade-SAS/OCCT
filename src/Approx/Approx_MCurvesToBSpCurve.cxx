@@ -36,17 +36,17 @@ static void DEBUG(const AppParCurves_MultiCurve& MC) {
   TColgp_Array1OfPnt2d Poles2d(1, nbpoles);
 
   for (i = 1; i <= nbcu; i++) {
-    cout << " Curve No. " << i << endl;
+    std::cout << " Curve No. " << i << std::endl;
     if (MC.Dimension(i) == 3) {
       MC.Curve(i, Poles);
       for (j = 1; j <= nbpoles; j++) {
-	cout<< " Pole = " << Poles(j).X() <<" "<<Poles(j).Y()<<" "<<Poles(j).Z()<< endl;
+	std::cout<< " Pole = " << Poles(j).X() <<" "<<Poles(j).Y()<<" "<<Poles(j).Z()<< std::endl;
       }
     }
     else {
       MC.Curve(i, Poles2d);
       for (j = 1; j <= nbpoles; j++) {
-	cout<< " Pole = " << Poles2d(j).X() <<" "<<Poles2d(j).Y()<< endl;
+	std::cout<< " Pole = " << Poles2d(j).X() <<" "<<Poles2d(j).Y()<< std::endl;
       }
     }
   }

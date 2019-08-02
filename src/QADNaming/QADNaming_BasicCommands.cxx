@@ -290,7 +290,7 @@ static Standard_Integer Exploreshape (Draw_Interpretor& di, Standard_Integer n, 
     return 0;
   }
 
-  //TNaming::Print(NS->Evolution(),cout);
+  //TNaming::Print(NS->Evolution(),std::cout);
   Standard_SStream aSStream;
   TNaming::Print(NS->Evolution(),aSStream);
   di << aSStream;

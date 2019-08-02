@@ -61,7 +61,7 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
 				      const Standard_Real First,
 				      const Standard_Real Last) 
 {
-//  if (ShapeUpgrade::Debug()) cout << "SplitCurve3d::Init"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout << "SplitCurve3d::Init"<<std::endl;
   Handle(Geom_Curve) CopyOfC = Handle(Geom_Curve)::DownCast(C->Copy());
   myCurve = CopyOfC;
   Standard_Real precision = Precision::PConfusion();
@@ -80,13 +80,13 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
       lastPar = lP;
     if(firstPar < fP){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the curve domain" <<std::endl;
 #endif
       firstPar = fP;
     }
     if(lastPar > lP){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the curve domain" <<std::endl;
 #endif
       lastPar = lP;
     }
@@ -97,7 +97,7 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
   ShapeUpgrade_SplitCurve::Init (firstPar, lastPar);
 
   // first, we make a copy of C to prevent modification:
-//  if (ShapeUpgrade::Debug()) cout << ". copy of the curve"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout << ". copy of the curve"<<std::endl;
   
   myNbCurves = 1;
 }
@@ -109,7 +109,7 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
 
  void ShapeUpgrade_SplitCurve3d::Build(const Standard_Boolean Segment) 
 {
-//  if (ShapeUpgrade::Debug()) cout<<"ShapeUpgrade_SplitCurve3d::Build"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout<<"ShapeUpgrade_SplitCurve3d::Build"<<std::endl;
   Standard_Real First =  mySplitValues->Value(1);
   Standard_Real Last =  mySplitValues->Value(mySplitValues->Length());
     
@@ -167,14 +167,14 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
       Last = lastPar;
     if(First < firstPar){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the curve domain" <<std::endl;
 #endif
       First = firstPar;
       mySplitValues->SetValue(1,First);
     }
     if(Last > lastPar){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the curve domain" <<std::endl;
 #endif
       Last = lastPar;
       mySplitValues->SetValue(mySplitValues->Length(),Last);
@@ -203,8 +203,8 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
 	}
       catch (Standard_Failure) {
 #ifdef OCCT_DEBUG
-	  cout << "Warning: ShapeUpgrade_Split3dCurve::Build(): Exception in Segment      :";
-	  Standard_Failure::Caught()->Print(cout); cout << endl;
+	  std::cout << "Warning: ShapeUpgrade_Split3dCurve::Build(): Exception in Segment      :";
+	  Standard_Failure::Caught()->Print(std::cout); std::cout << std::endl;
 #endif
 	  theNewCurve = new Geom_TrimmedCurve(Handle(Geom_Curve)::DownCast(myCurve->Copy()),First,Last);  
 	}
@@ -252,8 +252,8 @@ ShapeUpgrade_SplitCurve3d::ShapeUpgrade_SplitCurve3d()
 	}
 	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	  cout << "Warning: ShapeUpgrade_Split3dCurve::Build(): Exception in Segment      :";
-	  anException.Print(cout); cout << endl;
+	  std::cout << "Warning: ShapeUpgrade_Split3dCurve::Build(): Exception in Segment      :";
+	  anException.Print(std::cout); std::cout << std::endl;
 #endif
 	  (void)anException;
 	  theNewCurve = new Geom_TrimmedCurve(Handle(Geom_Curve)::DownCast(myCurve->Copy()),Firstt,Lastt);  

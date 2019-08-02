@@ -265,10 +265,10 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 /*
 #ifdef OCCT_DEBUG
 
-	  cout << endl;
-	  cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probablement FAUX **" << endl;
-	  cout << "*** WireExplorer does not find all edges " << endl;
-	  cout << "*** Connect old classifier" << endl;
+	  std::cout << std::endl;
+	  std::cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probablement FAUX **" << std::endl;
+	  std::cout << "*** WireExplorer does not find all edges " << std::endl;
+	  std::cout << "*** Connect old classifier" << std::endl;
 #endif
 */
 	  TColgp_Array1OfPnt2d PClass(1,2);
@@ -408,7 +408,7 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	      
 	      if(FlecheU<Toluv) FlecheU = Toluv;
 	      if(FlecheV<Toluv) FlecheV = Toluv;
-	      //-- cout<<" U:"<<FlecheU<<" V:"<<FlecheV<<endl;
+	      //-- std::cout<<" U:"<<FlecheU<<" V:"<<FlecheV<<std::endl;
 	      TabClass.Append((void *)new CSLib_Class2d(PClass,FlecheU,FlecheV,Umin,Vmin,Umax,Vmax));
 
 //	      if((angle<2 && angle>-2)||(angle>10)||(angle<-10))
@@ -416,10 +416,10 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 //		  BadWire=1;
 //		  TabOrien.Append(-1);
 //#ifdef OCCT_DEBUG
-//		  cout << endl;
-//		  cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << endl;
-//		  cout << "*** Total rotation angle of the wire : " << angle << endl;
-//		  cout << "*** Connect the old classifier" << endl;
+//		  std::cout << std::endl;
+//		  std::cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << std::endl;
+//		  std::cout << "*** Total rotation angle of the wire : " << angle << std::endl;
+//		  std::cout << "*** Connect the old classifier" << std::endl;
 //#endif
 //		} 
 //	      else TabOrien.Append(((angle>0.0)? 1 : 0));
@@ -427,10 +427,10 @@ BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const 
 	  else
 	    { 
 #ifdef OCCT_DEBUG
-	      cout << endl;
-	      cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << endl;
-	      cout << "*** The sample wire contains less than 3 points" << endl;
-	      cout << "*** Connect the old classifier" << endl;
+	      std::cout << std::endl;
+	      std::cout << "*** BRepTopAdaptor_Fclass2d  ** Wire Probably FALSE **" << std::endl;
+	      std::cout << "*** The sample wire contains less than 3 points" << std::endl;
+	      std::cout << "*** Connect the old classifier" << std::endl;
 #endif       
 	      BadWire=1;
 	      TabOrien.Append(-1);
@@ -772,7 +772,7 @@ void BRepTopAdaptor_FClass2d::Destroy() {
 //const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d& Other) const { 
 const BRepTopAdaptor_FClass2d &  BRepTopAdaptor_FClass2d::Copy(const BRepTopAdaptor_FClass2d& ) const { 
 #ifdef OCCT_DEBUG
-  cerr<<"Copy not allowed in BRepTopAdaptor_FClass2d"<<endl;
+  std::cerr<<"Copy not allowed in BRepTopAdaptor_FClass2d"<<std::endl;
 #endif
   throw Standard_ConstructionError();
 }

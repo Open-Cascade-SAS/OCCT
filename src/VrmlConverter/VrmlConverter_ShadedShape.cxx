@@ -122,8 +122,8 @@ void VrmlConverter_ShadedShape::Add( Standard_OStream& anOStream,
     nbVertices += T->NbNodes();
   }      
 
-//     cout << "nbTriangles = "<< nbTriangles << endl;
-//     cout  << "nbVertices = "<< nbVertices << endl << endl;  
+//     std::cout << "nbTriangles = "<< nbTriangles << std::endl;
+//     std::cout  << "nbVertices = "<< nbVertices << std::endl << std::endl;  
 
 //----------------------------
   // now we are going to iterate again to build graphic data from the triangle.   
@@ -242,44 +242,44 @@ void VrmlConverter_ShadedShape::Add( Standard_OStream& anOStream,
 
 //-----------------------------
 /*
-  cout  << " ******************** " << endl;  
-     cout  << " Array HAV1 - Coordinare3 " << endl;  
+  std::cout  << " ******************** " << std::endl;  
+     std::cout  << " Array HAV1 - Coordinare3 " << std::endl;  
 
      for ( i=HAV1->Lower(); i <= HAV1->Upper(); i++ )
        {
-	 cout << HAV1->Value(i).X() << " " << HAV1->Value(i).Y()<< " " << HAV1->Value(i).Z() << endl; 
+	 std::cout << HAV1->Value(i).X() << " " << HAV1->Value(i).Y()<< " " << HAV1->Value(i).Z() << std::endl; 
        }
 
      if(SA->HasNormals())
        {
 
-	 cout  << " ******************** " << endl;         
-	 cout  << " Array HAV2 - Normals " << endl;  
+	 std::cout  << " ******************** " << std::endl;         
+	 std::cout  << " Array HAV2 - Normals " << std::endl;  
 
 	 for ( i=HAV2->Lower(); i <= HAV2->Upper(); i++ )
 	   {
-	     cout << HAV2->Value(i).X() << " " << HAV2->Value(i).Y()<< " " << HAV2->Value(i).Z() << endl; 
+	     std::cout << HAV2->Value(i).X() << " " << HAV2->Value(i).Y()<< " " << HAV2->Value(i).Z() << std::endl; 
 	   }
 
-	 cout  << " ******************** " << endl;  
-	 cout  << " Array HAI3 - normalIndex " << endl;  
+	 std::cout  << " ******************** " << std::endl;  
+	 std::cout  << " Array HAI3 - normalIndex " << std::endl;  
 
 	 for ( i=HAI3->Lower(); i <= HAI3->Upper(); i++ )
 	   {
-	     cout << HAI3->Value(i) << endl;
+	     std::cout << HAI3->Value(i) << std::endl;
 	   }
 
        }
 
-     cout  << " ******************** " << endl;         
-     cout  << " Array HAI1 - coordIndex " << endl;  
+     std::cout  << " ******************** " << std::endl;         
+     std::cout  << " Array HAI1 - coordIndex " << std::endl;  
        
      for ( i=HAI1->Lower(); i <= HAI1->Upper(); i++ )
        {
-	 cout << HAI1->Value(i) << endl;
+	 std::cout << HAI1->Value(i) << std::endl;
        }
    
-     cout  << " ******************** " << endl;       
+     std::cout  << " ******************** " << std::endl;       
 */
 //----------------------------
 

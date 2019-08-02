@@ -156,7 +156,7 @@ Standard_Boolean CImportExport::ReadBREP(CString      aFileName,
 
   std::filebuf aFileBuf;
   std::istream aStream (&aFileBuf);
-  if (!aFileBuf.open (aFileName, ios::in))
+  if (!aFileBuf.open (aFileName, std::ios::in))
   {
     return Standard_False;
   }
@@ -230,7 +230,7 @@ Standard_Boolean CImportExport::SaveBREP (CString             aFileName,
 {
   std::filebuf aFileBuf;
   std::ostream aStream (&aFileBuf);
-  if (!aFileBuf.open (aFileName, ios::out))
+  if (!aFileBuf.open (aFileName, std::ios::out))
   {
     return Standard_False;
   }
@@ -811,7 +811,7 @@ Standard_Boolean CImportExport::SaveVRML(const Standard_CString&                
     } // iterator of shapes
 
     // Call VRML writer
-    ofstream writer(aFileName);
+    std::ofstream writer(aFileName);
     writer<<scene;
     writer.close();
 

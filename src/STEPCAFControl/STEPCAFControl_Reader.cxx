@@ -615,26 +615,26 @@ Standard_Boolean STEPCAFControl_Reader::Transfer(STEPControl_Reader &reader,
       if (!format->IsSameString(ap203, Standard_False) &&
         !format->IsSameString(ap214, Standard_False)) {
 #ifdef OCCT_DEBUG
-        cout << "Warning: STEPCAFControl_Reader::Transfer: Extern document is neither STEP AP203 nor AP214" << endl;
+        std::cout << "Warning: STEPCAFControl_Reader::Transfer: Extern document is neither STEP AP203 nor AP214" << std::endl;
 #else
         continue;
 #endif
       }
     }
 #ifdef OCCT_DEBUG
-    else cout << "Warning: STEPCAFControl_Reader::Transfer: Extern document format not defined" << endl;
+    else std::cout << "Warning: STEPCAFControl_Reader::Transfer: Extern document format not defined" << std::endl;
 #endif
 
     // get and check filename of the current extern ref
     const Standard_CString filename = ExtRefs.FileName(i);
 
 #ifdef OCCT_DEBUG
-    cout << "filename=" << filename << endl;
+    std::cout << "filename=" << filename << std::endl;
 #endif
 
     if (!filename || !filename[0]) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: STEPCAFControl_Reader::Transfer: Extern reference file name is empty" << endl;
+      std::cout << "Warning: STEPCAFControl_Reader::Transfer: Extern reference file name is empty" << std::endl;
 #endif
       continue; // not a valid extern ref
     }
@@ -785,9 +785,9 @@ TDF_Label STEPCAFControl_Reader::AddShape(const TopoDS_Shape &S,
       }
 #ifdef OCCT_DEBUG
       if (!EF->GetLabel().IsNull())
-        cout << "Warning: STEPCAFControl_Reader::AddShape: Non-empty shape with external ref; ref is ignored" << endl;
+        std::cout << "Warning: STEPCAFControl_Reader::AddShape: Non-empty shape with external ref; ref is ignored" << std::endl;
       else if (nbComponents <= 0)
-        cout << "Warning: STEPCAFControl_Reader::AddShape: Result of reading extern ref is Null" << endl;
+        std::cout << "Warning: STEPCAFControl_Reader::AddShape: Result of reading extern ref is Null" << std::endl;
 #endif
     }
   }
@@ -835,7 +835,7 @@ Handle(STEPCAFControl_ExternFile) STEPCAFControl_Reader::ReadExternFile(const St
   }
 
 #ifdef OCCT_DEBUG
-  cout << "Reading extern file: " << fullname << endl;
+  std::cout << "Reading extern file: " << fullname << std::endl;
 #endif
 
   // create new WorkSession and Reader
@@ -939,7 +939,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadColors(const Handle(XSControl_WorkSe
   STEPConstruct_Styles Styles(WS);
   if (!Styles.LoadStyles()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: no styles are found in the model" << endl;
+    std::cout << "Warning: no styles are found in the model" << std::endl;
 #endif
     return Standard_False;
   }
@@ -1147,7 +1147,7 @@ TDF_Label STEPCAFControl_Reader::FindInstance(const Handle(StepRepr_NextAssembly
   Handle(Transfer_Binder) binder = TP->Find(NAUO);
   if (binder.IsNull() || !binder->HasResult()) {
 #ifdef OCCT_DEBUG
-    cout << "Error: STEPCAFControl_Reader::FindInstance: NAUO is not mapped to shape" << endl;
+    std::cout << "Error: STEPCAFControl_Reader::FindInstance: NAUO is not mapped to shape" << std::endl;
 #endif
     return L;
   }
@@ -1155,7 +1155,7 @@ TDF_Label STEPCAFControl_Reader::FindInstance(const Handle(StepRepr_NextAssembly
   TopoDS_Shape S = TransferBRep::ShapeResult(TP, binder);
   if (S.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "Error: STEPCAFControl_Reader::FindInstance: NAUO is not mapped to shape" << endl;
+    std::cout << "Error: STEPCAFControl_Reader::FindInstance: NAUO is not mapped to shape" << std::endl;
 #endif
     return L;
   }
@@ -1300,7 +1300,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadValProps(const Handle(XSControl_Work
   STEPConstruct_ValidationProps Props(WS);
   if (!Props.LoadProps(props)) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: no validation props found in the model" << endl;
+    std::cout << "Warning: no validation props found in the model" << std::endl;
 #endif
     return Standard_False;
   }
@@ -1463,7 +1463,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadLayers(const Handle(XSControl_WorkSe
     for (subs.Start(); subs.More(); subs.Next()) {
       if (!subs.Value()->IsKind(STANDARD_TYPE(StepVisual_Invisibility))) continue;
 #ifdef OCCT_DEBUG
-      cout << "\tLayer \"" << aLayerName << "\" is invisible" << endl;
+      std::cout << "\tLayer \"" << aLayerName << "\" is invisible" << std::endl;
 #endif
       //TDF_Label InvLayerLab = LTool->FindLayer(aLayerName);
       TDF_Label InvLayerLab = LTool->AddLayer(aLayerName); //skl for OCC3926
@@ -1537,7 +1537,7 @@ static TDF_Label setSHUOintoDoc(const Handle(XSControl_WorkSession) &WS,
   Handle(StepRepr_NextAssemblyUsageOccurrence) NUNAUO = SHUO->NextUsage();
   if (UUNAUO.IsNull() || NUNAUO.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: " << __FILE__ << ": Upper_usage or Next_usage of styled SHUO is null. Skip it" << endl;
+    std::cout << "Warning: " << __FILE__ << ": Upper_usage or Next_usage of styled SHUO is null. Skip it" << std::endl;
 #endif
     return aMainLabel;
   }
@@ -1596,7 +1596,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(const Handle(XSControl_WorkSes
   STEPConstruct_Styles Styles(WS);
   if (!Styles.LoadStyles()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: no styles are found in the model" << endl;
+    std::cout << "Warning: no styles are found in the model" << std::endl;
 #endif
     return Standard_False;
   }
@@ -1616,7 +1616,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(const Handle(XSControl_WorkSes
         continue;
       // found that current style is invisible.
 #ifdef OCCT_DEBUG
-      cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name() << ") is invisible" << endl;
+      std::cout << "Warning: item No " << i << "(" << style->Item()->DynamicType()->Name() << ") is invisible" << std::endl;
 #endif
       IsVisible = Standard_False;
       break;
@@ -1655,7 +1655,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadSHUOs(const Handle(XSControl_WorkSes
       TDF_Label aLabelForStyle = setSHUOintoDoc(WS, SHUO, STool, PDFileMap, ShapeLabelMap);
       if (aLabelForStyle.IsNull()) {
 #ifdef OCCT_DEBUG
-        cout << "Warning: " << __FILE__ << ": coudnot create SHUO structure in the document" << endl;
+        std::cout << "Warning: " << __FILE__ << ": coudnot create SHUO structure in the document" << std::endl;
 #endif
         continue;
       }
@@ -2867,7 +2867,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
             }
             if (dim1 < 0) continue;
             if (dim2 < 0) dim2 = dim1;
-            //cout<<"DimensionalSize: dim1="<<dim1<<"  dim2="<<dim2<<endl;
+            //std::cout<<"DimensionalSize: dim1="<<dim1<<"  dim2="<<dim2<<std::endl;
             // now we know edge_curve and value range therefore
             // we can create corresponding D&GT labels
             Standard_Integer index = aTP->MapIndex(EC);
@@ -2900,7 +2900,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
             STEPConstruct_UnitContext anUnitCtx;
             anUnitCtx.ComputeFactors(NU);
             dim = dim * anUnitCtx.LengthFactor();
-            //cout<<"GeometricTolerance: Magnitude = "<<dim<<endl;
+            //std::cout<<"GeometricTolerance: Magnitude = "<<dim<<std::endl;
             Handle(TColStd_HArray1OfReal) arr = new TColStd_HArray1OfReal(1, 1);
             arr->SetValue(1, dim);
             Handle(TCollection_HAsciiString) aName = GT->Name();
@@ -2947,7 +2947,7 @@ TDF_Label STEPCAFControl_Reader::createGDTObjectInXCAF(const Handle(Standard_Tra
               else if (GTWDR->IsKind(STANDARD_TYPE(StepDimTol_PerpendicularityTolerance))) kind = 29;
               else if (GTWDR->IsKind(STANDARD_TYPE(StepDimTol_SymmetryTolerance)))         kind = 30;
               else if (GTWDR->IsKind(STANDARD_TYPE(StepDimTol_TotalRunoutTolerance)))      kind = 31;
-              //cout<<"GTWDR: kind="<<kind<<endl;
+              //std::cout<<"GTWDR: kind="<<kind<<std::endl;
               TDF_Label TolerL = aDGTTool->SetDimTol(shL, kind, arr, aName, aDescription);
               ReadDatums(aSTool, aDGTTool, aGraph, aTP, TolerL, GTWDR);
             }

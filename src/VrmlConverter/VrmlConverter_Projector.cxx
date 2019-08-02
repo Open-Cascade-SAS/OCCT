@@ -79,8 +79,8 @@ VrmlConverter_Projector::VrmlConverter_Projector (const TopTools_Array1OfShape& 
   Ytarget = (Ymin + Ymax)/2;
   Ztarget = (Zmin + Zmax)/2;
 
-//  cout << " target: " << endl;
-//  cout << " X: " << Xtarget << " Y: " << Ytarget  << " Z: " << Ztarget  <<  endl;
+//  std::cout << " target: " << std::endl;
+//  std::cout << " X: " << Xtarget << " Y: " << Ytarget  << " Z: " << Ztarget  <<  std::endl;
 
 //  gp_Pnt Target(Xtarget, Ytarget, Ztarget);
 //  gp_Vec VTarget(Target.X(),Target.Y(),Target.Z());
@@ -97,14 +97,14 @@ VrmlConverter_Projector::VrmlConverter_Projector (const TopTools_Array1OfShape& 
   Source.SetY(Ytarget+aVec.Y());
   Source.SetZ(Ztarget+aVec.Z());
 
-//  cout << " source: " << endl;
-//  cout << " X: " << Source.X() << " Y: " << Source.Y() << " Z: " << Source.Z()  <<  endl;
+//  std::cout << " source: " << std::endl;
+//  std::cout << " X: " << Source.X() << " Y: " << Source.Y() << " Z: " << Source.Z()  <<  std::endl;
 
   gp_Vec VSource(Source.X(),Source.Y(),Source.Z());
 
 //  gp_Vec Proj(Source,Target);
-//  cout << " Vec(source-target): " << endl;
-//  cout << " X: " << Proj.X() << " Y: " << Proj.Y() << " Z: " << Proj.Z()  <<  endl;
+//  std::cout << " Vec(source-target): " << std::endl;
+//  std::cout << " X: " << Proj.X() << " Y: " << Proj.Y() << " Z: " << Proj.Z()  <<  std::endl;
 
   gp_Dir Ypers (XUp,YUp,ZUp);
 
@@ -114,10 +114,10 @@ VrmlConverter_Projector::VrmlConverter_Projector (const TopTools_Array1OfShape& 
     }
   gp_Dir Xpers = Ypers.Crossed(Zpers);
 
-//  cout << " Dir(Zpers): " << endl;
-//  cout << " X: " << Zpers.X() << " Y: " << Zpers.Y() << " Z: " << Zpers.Z()  <<  endl;
-//  cout << " Dir(Xpers): " << endl;
-//  cout << " X: " << Xpers.X() << " Y: " << Xpers.Y() << " Z: " << Xpers.Z()  <<  endl;
+//  std::cout << " Dir(Zpers): " << std::endl;
+//  std::cout << " X: " << Zpers.X() << " Y: " << Zpers.Y() << " Z: " << Zpers.Z()  <<  std::endl;
+//  std::cout << " Dir(Xpers): " << std::endl;
+//  std::cout << " X: " << Xpers.X() << " Y: " << Xpers.Y() << " Z: " << Xpers.Z()  <<  std::endl;
 
   gp_Ax3 Axe (Source, Zpers, Xpers);
 
@@ -231,39 +231,39 @@ if (Light == VrmlConverter_SpotLight || Camera != VrmlConverter_NoCamera )
       V2.SetY(0);
       V2.SetZ(P2.Z());
 
-//  cout << " Angle: " << V1.Angle(V2) << endl;
-//  cout << " ****************** " << endl;
+//  std::cout << " Angle: " << V1.Angle(V2) << std::endl;
+//  std::cout << " ****************** " << std::endl;
       if ( Abs(V1.Angle(V2)) > Abs(MaxAngle) ) MaxAngle = Abs(V1.Angle(V2)); 
 
       V2.SetX(0);
       V2.SetY(P2.Y());
       V2.SetZ(P2.Z());
 
-//  cout << " Angle: " << V1.Angle(V2) << endl;
-//  cout << " ****************** " << endl;
+//  std::cout << " Angle: " << V1.Angle(V2) << std::endl;
+//  std::cout << " ****************** " << std::endl;
       if ( Abs(V1.Angle(V2)) > Abs(MaxAngle) ) MaxAngle = Abs(V1.Angle(V2)); 
 
       if ( Abs(P2.Y()) > Abs(MaxHeight) ) 
 	{
-//  cout << " Height Y: " << P2.Y() << endl;
-//  cout << " ****************** " << endl;
+//  std::cout << " Height Y: " << P2.Y() << std::endl;
+//  std::cout << " ****************** " << std::endl;
 	  MaxHeight = Abs(P2.Y()); 
 	}
 
       if ( Abs(P2.X()) > Abs(MaxHeight) ) 
 	{
-//  cout << " Height X: " << P2.X() << endl;
-//  cout << " ****************** " << endl;
+//  std::cout << " Height X: " << P2.X() << std::endl;
+//  std::cout << " ****************** " << std::endl;
 	  MaxHeight = Abs(P2.X()); 
 	}
     }
   Height = MaxHeight;
-//  cout << " MaxHeight: " << Height << endl;
-//  cout << " ****************** " << endl;
+//  std::cout << " MaxHeight: " << Height << std::endl;
+//  std::cout << " ****************** " << std::endl;
 
   Angle = MaxAngle;
-//  cout << " MaxAngle: " << Angle << endl;
-//  cout << " ****************** " << endl;
+//  std::cout << " MaxAngle: " << Angle << std::endl;
+//  std::cout << " ****************** " << std::endl;
 
 if (Light == VrmlConverter_SpotLight)
   {

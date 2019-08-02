@@ -52,11 +52,11 @@ const char* BRepTools_Dump (void* theShapePtr)
   try {
     OCC_CATCH_SIGNALS
 
-    cout <<"\n\n";
-    BRepTools::Dump (*(TopoDS_Shape*)theShapePtr, cout);
-    cout << endl;
+    std::cout <<"\n\n";
+    BRepTools::Dump (*(TopoDS_Shape*)theShapePtr, std::cout);
+    std::cout << std::endl;
 
-    return "Shape dumped to cout";
+    return "Shape dumped to std::cout";
   }
   catch (Standard_Failure const& anException)
   {
@@ -74,13 +74,13 @@ const char* BRepTools_DumpLoc (void* theLocationPtr)
   try {
     OCC_CATCH_SIGNALS
 
-      cout <<"\n\n";
+      std::cout <<"\n\n";
     TopTools_LocationSet LS;
     LS.Add(*(TopLoc_Location*)theLocationPtr);
-    LS.Dump(cout);
-    cout <<endl;
+    LS.Dump(std::cout);
+    std::cout <<std::endl;
 
-    return "Location dumped to cout";
+    return "Location dumped to std::cout";
   }
   catch (Standard_Failure const& anException)
   {

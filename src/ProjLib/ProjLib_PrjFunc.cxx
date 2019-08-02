@@ -111,11 +111,11 @@ ProjLib_PrjFunc::ProjLib_PrjFunc(const Adaptor3d_CurvePtr & C,const Standard_Rea
     D(2, 2) = (DS1_v*DS1_u + V*DS2_uv)*myNorm;// dE2/du
   }
 
-/*  cout<<"F = ("<<F(1)<<", "<<F(2)<<")"<<endl;
-  cout<<"dE1/dt = "<<D(1,1)<<endl;
-  cout<<"dE1/dv = "<<D(1,2)<<endl;
-  cout<<"dE2/dt = "<<D(2,1)<<endl;
-  cout<<"dE2/dv = "<<D(2,2)<<endl;
+/*  std::cout<<"F = ("<<F(1)<<", "<<F(2)<<")"<<std::endl;
+  std::cout<<"dE1/dt = "<<D(1,1)<<std::endl;
+  std::cout<<"dE1/dv = "<<D(1,2)<<std::endl;
+  std::cout<<"dE2/dt = "<<D(2,1)<<std::endl;
+  std::cout<<"dE2/dv = "<<D(2,2)<<std::endl;
 */
 
 

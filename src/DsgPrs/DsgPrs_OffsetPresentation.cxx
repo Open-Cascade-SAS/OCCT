@@ -58,7 +58,7 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     L3 = gce_MakeLin(Proj1,Proj2);
   }
   else {
-    //cout<<"DsgPrs_OffsetPresentation Cote nulle"<<endl;
+    //std::cout<<"DsgPrs_OffsetPresentation Cote nulle"<<std::endl;
     DimNulle = Standard_True;
     L3 = gp_Lin(Proj1,aDirection); 
     gp_Vec v4 (Proj1,OffsetPoint);

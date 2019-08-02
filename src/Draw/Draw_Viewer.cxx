@@ -47,7 +47,7 @@ static Standard_Boolean highlight = Standard_False;
 static Standard_Integer ps_vx, ps_vy;
 static Standard_Real ps_kx, ps_ky;
 static Standard_Integer ps_px, ps_py;
-static ostream* ps_stream;
+static std::ostream* ps_stream;
 static Standard_Integer ps_width[MAXCOLOR];
 static Standard_Real    ps_gray[MAXCOLOR];
 
@@ -645,7 +645,7 @@ void Draw_Viewer::PostScriptView (const Standard_Integer id,
 				  const Standard_Integer PYmin,
 				  const Standard_Integer PXmax,
 				  const Standard_Integer PYmax,
-				  ostream& sortie) const
+				  std::ostream& sortie) const
 {
   if (Draw_Batch) return;
   if (myViews[id]) {

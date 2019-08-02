@@ -76,8 +76,8 @@ void WriteShape(const TopoDS_Shape& shape, const Standard_Integer number)
 {
   char fname[110];
   sprintf(fname, "Shape_%d",number);
-  ofstream f(fname,ios::out);
-  cout << "Output file name : " << fname << endl;
+  std::ofstream f(fname,std::ios::out);
+  std::cout << "Output file name : " << fname << std::endl;
   f << "DBRep_DrawableShape\n";
   
   BRepTools::Write(shape, f);
@@ -155,12 +155,12 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
     //mode OnlyVisible does not work.
     // nent = Reader.NbRootsForTransfer();
     if (!fromtcl) {
-      cout<<"Mode (0 End, 1 Visible Roots, 2 All Roots, 3 Only One Entity, 4 Selection) :"<<flush;
+      std::cout<<"Mode (0 End, 1 Visible Roots, 2 All Roots, 3 Only One Entity, 4 Selection) :"<<std::flush;
       modepri = -1;
       
 // amv 26.09.2003 : this is used to avoid error of enter's simbol        
       char str[80];                                                             
-      cin>>str;                                                                 
+      std::cin>>str;                                                                 
       modepri = Draw::Atoi(str);   
     }
 
@@ -191,11 +191,11 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
       di<<"Count of shapes produced : "<<Reader.NbShapes()<<"\n";
       Standard_Integer answer = 1;
       if (Reader.NbShapes() > 1) {
-	cout << " pass(0)  one shape for all (1)\n or one shape per root (2)\n + WriteBRep (one for all : 3) (one per root : 4) : " << flush;
+	std::cout << " pass(0)  one shape for all (1)\n or one shape per root (2)\n + WriteBRep (one for all : 3) (one per root : 4) : " << std::flush;
         answer = -1;
         //amv 26.09.2003                                                        
         char str_a[80];                                                         
-        cin >> str_a;                                                           
+        std::cin >> str_a;                                                           
         answer = Draw::Atoi(str_a);    
       }
       if ( answer == 0) continue;
@@ -245,10 +245,10 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
     }
 
     else if (modepri == 3) {  // One Entity
-      cout << "Only One Entity"<<endl;
-      cout<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)"<<endl;
-      cout<<"  To modify : command  param read.iges.bspline.continuity"<<endl;
-      cout << " give the number of the Entity : " << flush;
+      std::cout << "Only One Entity"<<std::endl;
+      std::cout<<"spline_continuity (read) : "<<Interface_Static::IVal("read.iges.bspline.continuity")<<" (0 : no modif, 1 : C1, 2 : C2)"<<std::endl;
+      std::cout<<"  To modify : command  param read.iges.bspline.continuity"<<std::endl;
+      std::cout << " give the number of the Entity : " << std::flush;
       nent = XSDRAW::GetEntityNumber();
 
       if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result\n";
@@ -325,9 +325,9 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
         }
       }
       else {
-	cout<<"Name of Selection :"<<flush;
+	std::cout<<"Name of Selection :"<<std::flush;
 	list = XSDRAW::GetList();
-	if (list.IsNull()) { cout<<"No list defined"<<endl; continue; }
+	if (list.IsNull()) { std::cout<<"No list defined"<<std::endl; continue; }
       }
 
       Standard_Integer nbl = list->Length();
@@ -335,11 +335,11 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
       if (nbl == 0) continue;
       while (answer) {
 	if (!fromtcl) {
-	  cout<<"Choice: 0 abandon  1 transfer all  2 with confirmation  3 list n0s ents :"<<flush;
+	  std::cout<<"Choice: 0 abandon  1 transfer all  2 with confirmation  3 list n0s ents :"<<std::flush;
           answer = -1;
           // anv 26.09.2003                                                     
           char str_answer[80];                                                  
-          cin>>str_answer;                                                      
+          std::cin>>str_answer;                                                      
           answer = Draw::Atoi(str_answer);    
 	}
 	if (answer <= 0 || answer > 3) continue;

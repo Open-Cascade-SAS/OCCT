@@ -179,53 +179,53 @@ Standard_Boolean HatchGen_PointOnHatching::IsGreater (const HatchGen_PointOnHatc
 
 void HatchGen_PointOnHatching::Dump (const Standard_Integer Index) const
 {
-  cout << "--- Point on hatching " ;
+  std::cout << "--- Point on hatching " ;
   if (Index > 0) {
-    cout << "# " << setw(3) << Index << " " ;
+    std::cout << "# " << std::setw(3) << Index << " " ;
   } else {
-    cout << "------" ;
+    std::cout << "------" ;
   }
-  cout << "------------------" << endl ;
+  std::cout << "------------------" << std::endl ;
 
-  cout << "    Index of the hatching = " << myIndex << endl ;
-  cout << "    Parameter on hatching = " << myParam << endl ;
-  cout << "    Position  on hatching = " ;
+  std::cout << "    Index of the hatching = " << myIndex << std::endl ;
+  std::cout << "    Parameter on hatching = " << myParam << std::endl ;
+  std::cout << "    Position  on hatching = " ;
   switch (myPosit) {
-      case TopAbs_FORWARD  : cout << "FORWARD  (i.e. BEGIN  )" ; break ;
-      case TopAbs_INTERNAL : cout << "INTERNAL (i.e. MIDDLE )" ; break ;
-      case TopAbs_REVERSED : cout << "REVERSED (i.e. END    )" ; break ;
-      case TopAbs_EXTERNAL : cout << "EXTERNAL (i.e. UNKNOWN)" ; break ;
+      case TopAbs_FORWARD  : std::cout << "FORWARD  (i.e. BEGIN  )" ; break ;
+      case TopAbs_INTERNAL : std::cout << "INTERNAL (i.e. MIDDLE )" ; break ;
+      case TopAbs_REVERSED : std::cout << "REVERSED (i.e. END    )" ; break ;
+      case TopAbs_EXTERNAL : std::cout << "EXTERNAL (i.e. UNKNOWN)" ; break ;
   }
-  cout << endl ;
-  cout << "    State Before          = " ;
+  std::cout << std::endl ;
+  std::cout << "    State Before          = " ;
   switch (myBefore) {
-      case TopAbs_IN      : cout << "IN"      ; break ;
-      case TopAbs_OUT     : cout << "OUT"     ; break ;
-      case TopAbs_ON      : cout << "ON"      ; break ;
-      case TopAbs_UNKNOWN : cout << "UNKNOWN" ; break ;
+      case TopAbs_IN      : std::cout << "IN"      ; break ;
+      case TopAbs_OUT     : std::cout << "OUT"     ; break ;
+      case TopAbs_ON      : std::cout << "ON"      ; break ;
+      case TopAbs_UNKNOWN : std::cout << "UNKNOWN" ; break ;
   }
-  cout << endl ;
-  cout << "    State After           = " ;
+  std::cout << std::endl ;
+  std::cout << "    State After           = " ;
   switch (myAfter) {
-      case TopAbs_IN      : cout << "IN"      ; break ;
-      case TopAbs_OUT     : cout << "OUT"     ; break ;
-      case TopAbs_ON      : cout << "ON"      ; break ;
-      case TopAbs_UNKNOWN : cout << "UNKNOWN" ; break ;
+      case TopAbs_IN      : std::cout << "IN"      ; break ;
+      case TopAbs_OUT     : std::cout << "OUT"     ; break ;
+      case TopAbs_ON      : std::cout << "ON"      ; break ;
+      case TopAbs_UNKNOWN : std::cout << "UNKNOWN" ; break ;
   }
-  cout << endl ;
-  cout << "    Beginning of segment  = " << (mySegBeg ? "TRUE" : "FALSE") << endl ;
-  cout << "    End       of segment  = " << (mySegEnd ? "TRUE" : "FALSE") << endl ;
+  std::cout << std::endl ;
+  std::cout << "    Beginning of segment  = " << (mySegBeg ? "TRUE" : "FALSE") << std::endl ;
+  std::cout << "    End       of segment  = " << (mySegEnd ? "TRUE" : "FALSE") << std::endl ;
 
   Standard_Integer NbPnt = myPoints.Length () ;
   if (NbPnt == 0) {
-    cout << "    No points on element" << endl ;
+    std::cout << "    No points on element" << std::endl ;
   } else {
-    cout << "    Contains " << NbPnt << " points on element" << endl ;
+    std::cout << "    Contains " << NbPnt << " points on element" << std::endl ;
     for (Standard_Integer IPnt = 1 ; IPnt <= NbPnt ; IPnt++) {
       const HatchGen_PointOnElement& Point = myPoints.Value (IPnt) ;
       Point.Dump (IPnt) ;
     }
   }
 
-  cout << "----------------------------------------------" << endl ;
+  std::cout << "----------------------------------------------" << std::endl ;
 }

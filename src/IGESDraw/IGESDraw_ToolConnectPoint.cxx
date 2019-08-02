@@ -207,28 +207,28 @@ void IGESDraw_ToolConnectPoint::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_ConnectPoint" << endl;
+  S << "IGESDraw_ConnectPoint" << Message_EndLine;
 
   S << "Connection Point Coordinate : ";
   IGESData_DumpXYZL(S, level, ent->Point(), ent->Location());
   S << "Display Symbol Geometry Entity : ";
   dumper.Dump(ent->DisplaySymbol(),S, tempSubLevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Type Flag : "     << ent->TypeFlag() << "  "
-    << "Function Flag : " << ent->FunctionFlag() << endl;
+    << "Function Flag : " << ent->FunctionFlag() << Message_EndLine;
   S << "Function Identifier : ";
   IGESData_DumpString(S,ent->FunctionIdentifier());
-  S << endl << "Text Display Template Entity for CID : ";
+  S << Message_EndLine << "Text Display Template Entity for CID : ";
   dumper.Dump(ent->IdentifierTemplate(),S, tempSubLevel);
-  S << endl << "Function Name : ";
+  S << Message_EndLine << "Function Name : ";
   IGESData_DumpString(S,ent->FunctionName());
-  S << endl << "Text Display Template Entity for CFN : ";
+  S << Message_EndLine << "Text Display Template Entity for CFN : ";
   dumper.Dump(ent->FunctionTemplate(),S, tempSubLevel);
-  S << endl;
-  S << "Point Identifier : " << ent->PointIdentifier() << endl
+  S << Message_EndLine;
+  S << "Point Identifier : " << ent->PointIdentifier() << Message_EndLine
     << "Function Code : "    << ent->FunctionCode()
-    << "Swap Flag : "        << ( ent->SwapFlag() ? "True" : "False" ) << endl;
+    << "Swap Flag : "        << ( ent->SwapFlag() ? "True" : "False" ) << Message_EndLine;
   S << "Owner Subfigure Entity : ";
   dumper.Dump(ent->OwnerSubfigure(),S, tempSubLevel);
-  S << endl;
+  S << Message_EndLine;
 }

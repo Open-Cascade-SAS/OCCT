@@ -497,7 +497,7 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
   case GeomFill_IsDarboux :
 #ifdef OCCT_DEBUG
     {
-      cout << "Option Darboux: non realisable" << endl; 
+      std::cout << "Option Darboux: non realisable" << std::endl; 
     }
 #endif
   case GeomFill_IsFrenet :
@@ -871,9 +871,9 @@ void GeomFill_Pipe::Perform(const Standard_Real Tol,
 		 Tol, Tol, 0., 0.01,
 		 TheConti, DegMax, NbMaxSegment);
 #ifdef OCCT_DEBUG
-   cout << "Tuyau : ";
-   App.Dump(cout);
-   cout << endl;
+   std::cout << "Tuyau : ";
+   App.Dump(std::cout);
+   std::cout << std::endl;
 #endif
      if (App.IsDone()) {
        mySurface = new Geom_BSplineSurface(App.SurfPoles(),

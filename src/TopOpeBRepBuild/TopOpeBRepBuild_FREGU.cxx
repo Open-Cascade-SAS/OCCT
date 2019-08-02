@@ -245,7 +245,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace
   }
   
 #ifdef OCCT_DEBUG
-  if (tSPSFF) { cout<<"RegularizeFace "<<iF<<endl; debregufa(iF); }
+  if (tSPSFF) { std::cout<<"RegularizeFace "<<iF<<std::endl; debregufa(iF); }
 #endif
   
   // LOF = nouvelles faces regularisees de newFace
@@ -350,7 +350,7 @@ void TopOpeBRepBuild_Builder::RegularizeFace
   if (tSPSFF && savfregu) {
     TCollection_AsciiString str("fregu"); str = str + iF;
     DBRep::Set(str.ToCString(),newFace);
-    cout<<"newFace "<<str<<" built on face "<<iF<<" saved"<<endl;
+    std::cout<<"newFace "<<str<<" built on face "<<iF<<" saved"<<std::endl;
   }
 #endif
   

@@ -146,7 +146,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     if ( Abs(Rad) <= Precision::Confusion() ) pointu = Standard_True;
     if(Rad < 0 ) {
 #ifdef OCCT_DEBUG
-      cout<<"the chamfer can't pass"<<endl;
+      std::cout<<"the chamfer can't pass"<<std::endl;
 #endif
       return Standard_False;
     }
@@ -402,7 +402,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 
     if (dis2 < -1.E-09) {
 #ifdef OCCT_DEBUG
-      cout<<"too great angle of chamfer"<<endl;
+      std::cout<<"too great angle of chamfer"<<std::endl;
 #endif
       return Standard_False;
     }

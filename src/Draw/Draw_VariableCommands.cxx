@@ -76,8 +76,8 @@ static Draw_SaveAndRestore* Draw_First = NULL;
 Draw_SaveAndRestore::Draw_SaveAndRestore
   (const char* name,
    Standard_Boolean (*test)(const Handle(Draw_Drawable3D)&),
-  void (*save)(const Handle(Draw_Drawable3D)&, ostream&),
-  Handle(Draw_Drawable3D) (*restore) (istream&),
+  void (*save)(const Handle(Draw_Drawable3D)&, std::ostream&),
+  Handle(Draw_Drawable3D) (*restore) (std::istream&),
   Standard_Boolean display) :
   myName(name),
   myTest(test),
@@ -93,10 +93,10 @@ Standard_Boolean Draw_SaveAndRestore::Test(const Handle(Draw_Drawable3D)&d)
 {return (*myTest) (d);}
 
 void Draw_SaveAndRestore::Save(const Handle(Draw_Drawable3D)& d, 
-			       ostream& os) const
+			       std::ostream& os) const
 { (*mySave) (d,os);}
 
-Handle(Draw_Drawable3D) Draw_SaveAndRestore::Restore(istream& is) const
+Handle(Draw_Drawable3D) Draw_SaveAndRestore::Restore(std::istream& is) const
 {return (*myRestore) (is);}
 
 //=======================================================================
@@ -109,18 +109,18 @@ static Standard_Boolean numtest(const Handle(Draw_Drawable3D)& d)
 }
 
 static void numsave (const Handle(Draw_Drawable3D)& theDrawable,
-                     ostream&                       theStream)
+                     std::ostream&                       theStream)
 {
   Handle(Draw_Number) aNum = Handle(Draw_Number)::DownCast (theDrawable);
-  ios::fmtflags aFlags = theStream.flags();
-  theStream.setf      (ios::scientific);
+  std::ios::fmtflags aFlags = theStream.flags();
+  theStream.setf      (std::ios::scientific);
   theStream.precision (15);
   theStream.width     (30);
   theStream << aNum->Value() << "\n";
   theStream.setf      (aFlags);
 }
 
-static Handle(Draw_Drawable3D) numrestore (istream& is)
+static Handle(Draw_Drawable3D) numrestore (std::istream& is)
 {
   Standard_Real val;
   is >> val;
@@ -142,9 +142,9 @@ static Standard_Integer save(Draw_Interpretor& di, Standard_Integer n, const cha
   if (n <= 2) return 1;
 
   const char* name = a[2];
-  ofstream os;
+  std::ofstream os;
   os.precision(15);
-  OSD_OpenStream(os, name, ios::out);
+  OSD_OpenStream(os, name, std::ios::out);
   if (!os.is_open() || !os.good())
   {
     di << "Cannot open file for writing "<<name;
@@ -208,9 +208,9 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
   const char* fname = a[1];
   const char* name  = a[2];
   
-  filebuf fic;
-  istream in(&fic);
-  OSD_OpenStream (fic, fname, ios::in);
+  std::filebuf fic;
+  std::istream in(&fic);
+  OSD_OpenStream (fic, fname, std::ios::in);
   if (!fic.is_open()) {
     di << "Cannot open file for reading : "<<fname;
     return 1;
@@ -239,7 +239,7 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
     {
       //assume that this file stores a DBRep_DrawableShape variable
       tool = aDBRepTool;
-      in.seekg(0, ios::beg);
+      in.seekg(0, std::ios::beg);
     }
 
     if (tool)
@@ -308,7 +308,7 @@ static Standard_Integer erase(Draw_Interpretor& di, Standard_Integer n, const ch
 	Handle(Draw_Drawable3D) D = Draw::Get(a[i]);
 	if (D.IsNull()) {
 	  if ((a[i][0] == '.') && (a[i][1] == '\0'))
-	    cout << "Missed !!!" << endl;
+	    std::cout << "Missed !!!" << std::endl;
 	  return 0;
 	}
       }
@@ -388,7 +388,7 @@ static Standard_Integer draw(Draw_Interpretor& , Standard_Integer n, const char*
   if (n < 3) return 1;
   Standard_Integer id = Draw::Atoi(a[1]);
   if (!dout.HasView(id)) {
-    cout << "bad view number in draw"<<endl;
+    std::cout << "bad view number in draw"<<std::endl;
     return 1;
   }
   Standard_Integer mo = Draw::Atoi(a[2]);
@@ -587,7 +587,7 @@ static Standard_Integer set(Draw_Interpretor& di, Standard_Integer n, const char
 static Standard_Integer dsetenv(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) {
-    cout << "Use: " << argv[0] << " {varname} [value]" << endl;
+    std::cout << "Use: " << argv[0] << " {varname} [value]" << std::endl;
     return 1;
   }
 
@@ -610,7 +610,7 @@ static Standard_Integer dsetenv(Draw_Interpretor& /*di*/, Standard_Integer argc,
 static Standard_Integer dgetenv(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) {
-    cout << "Use: " << argv[0] << " {varname}" << endl;
+    std::cout << "Use: " << argv[0] << " {varname}" << std::endl;
     return 1;
   }
 
@@ -786,7 +786,7 @@ void Draw::Set(const Standard_CString name,
     Handle(Draw_Drawable3D) anOldD(reinterpret_cast<Draw_Drawable3D*>(aCD));
     if (!anOldD.IsNull()) {
       if (theVariables.Contains(anOldD) && anOldD->Protected()) {
-        cout << "variable is protected" << endl;
+        std::cout << "variable is protected" << std::endl;
         return;
       }
       anOldD.Nullify();
@@ -958,7 +958,7 @@ static Standard_Real ParseValue(char*& name)
     name++;
     x = Parse(name);
     if (*name != ')') 
-      cout << "Mismatched parenthesis" << endl;
+      std::cout << "Mismatched parenthesis" << std::endl;
     name++;
     break;
 
@@ -1008,7 +1008,7 @@ static Standard_Real ParseValue(char*& name)
 	      q++;
 	    }
 	    if (pc > 0) {
-	      cout << "Unclosed parenthesis"<< endl;
+	      std::cout << "Unclosed parenthesis"<< std::endl;
 	      x = 0;
 	    }
 	    else {
@@ -1044,7 +1044,7 @@ static Standard_Real ParseValue(char*& name)
 		  aCommands.Reset();
 		}
 		if (aCommands.Eval(name) != 0) {
-		  cout << "Call of function " << name << " failed" << endl;
+		  std::cout << "Call of function " << name << " failed" << std::endl;
 		  x = 0;
 		}
 		else

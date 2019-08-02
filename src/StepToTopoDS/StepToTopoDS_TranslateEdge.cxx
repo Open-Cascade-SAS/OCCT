@@ -87,8 +87,8 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
   Handle(Transfer_TransientProcess) TP = aTool.TransientProcess();
 
 #ifdef OCCT_DEBUG
-  cout << "------------------------------------" << endl;
-  cout << "MakeEdge Error  : " << ME.Error()<<" - ";
+  std::cout << "------------------------------------" << std::endl;
+  std::cout << "MakeEdge Error  : " << ME.Error()<<" - ";
 #endif
   switch(ME.Error())
     {
@@ -116,22 +116,22 @@ static void DecodeMakeEdgeError(const BRepLib_MakeEdge&   ME,
       break;
     }
 #ifdef OCCT_DEBUG
-  cout << "Original Type   : " << orig->DynamicType() << endl;
-  cout << "3D Curve Type   : " << myCurve->DynamicType() << endl;
-  cout << "First Parameter : " << U1 << endl;
+  std::cout << "Original Type   : " << orig->DynamicType() << std::endl;
+  std::cout << "3D Curve Type   : " << myCurve->DynamicType() << std::endl;
+  std::cout << "First Parameter : " << U1 << std::endl;
   gp_Pnt p1 = BRep_Tool::Pnt(V1);
-//  cout << "First Point     : ";
-  cout << "First Vertex    : "<<p1.X()<<"  "<<p1.Y()<<"  "<<p1.Z()<<"  ";
-  cout << "Distance Point - Vertex : ";
+//  std::cout << "First Point     : ";
+  std::cout << "First Vertex    : "<<p1.X()<<"  "<<p1.Y()<<"  "<<p1.Z()<<"  ";
+  std::cout << "Distance Point - Vertex : ";
   Standard_Real d1 = p1.Distance(myCurve->Value(U1)); 
-  cout << d1 << endl;
-  cout << "Last  Parameter : " << U2 << endl;
+  std::cout << d1 << std::endl;
+  std::cout << "Last  Parameter : " << U2 << std::endl;
   gp_Pnt p2 = BRep_Tool::Pnt(V2);
-//  cout << "Last  Point     : ";
-  cout << "Last  Vertex    : "<<p2.X()<<"  "<<p2.Y()<<"  "<<p2.Z()<<"  ";
-  cout << "Distance Point - Vertex : ";
+//  std::cout << "Last  Point     : ";
+  std::cout << "Last  Vertex    : "<<p2.X()<<"  "<<p2.Y()<<"  "<<p2.Z()<<"  ";
+  std::cout << "Distance Point - Vertex : ";
   Standard_Real d2 = BRep_Tool::Pnt(V2).Distance(myCurve->Value(U2)); 
-  cout << d2 << endl;
+  std::cout << d2 << std::endl;
 #endif
 }
 

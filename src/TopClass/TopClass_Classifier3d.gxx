@@ -37,7 +37,7 @@ void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
 				    const TopAbs_Orientation) {  
   if(!isSet) { 
 #ifdef OCCT_DEBUG
-    cout<<" Call to TopClass_Classifier3d::Compare  without a Reset ! ";
+    std::cout<<" Call to TopClass_Classifier3d::Compare  without a Reset ! ";
 #endif
     return;
   }
@@ -53,7 +53,7 @@ void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
 	if(Abs(myParam)<=myTolerance) { 
 	  //-- #########################################
 #ifdef OCCT_DEBUG
-	  cout<<" myParam = "<<myParam<<" ds TopClass_Classifier3d.gxx  "<<endl;
+	  std::cout<<" myParam = "<<myParam<<" ds TopClass_Classifier3d.gxx  "<<std::endl;
 #endif
 	  //-- #########################################
 	  myState = TopAbs_ON;
@@ -70,7 +70,7 @@ void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
 	  }
 #ifdef OCCT_DEBUG
     else { 
-	    cout<<" -------- Probleme ds TopClass_Classifier3d.gxx "<<endl;
+	    std::cout<<" -------- Probleme ds TopClass_Classifier3d.gxx "<<std::endl;
     }
 #endif
 	}

@@ -82,8 +82,8 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 #ifdef OCCT_DEBUG
 		    if (trace) {
 		      //-- #########################################
-		      cout<<" parmin = "<<parmin<< " avec Par = "<<Par;
-		      cout<<" ds TopClass_SolidClassifier.gxx  "<<endl;
+		      std::cout<<" parmin = "<<parmin<< " avec Par = "<<Par;
+		      std::cout<<" ds TopClass_SolidClassifier.gxx  "<<std::endl;
 		      //-- #########################################
 		    }
 #endif
@@ -105,7 +105,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 		    }
 		    else {
 #ifdef OCCT_DEBUG
-		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx"<<endl;
+		      std::cout<<"*Probleme ds TopClass_SolidClassifier.gxx"<<std::endl;
 #endif
 		    }
 		    myFace  = Intersector.Face();
@@ -124,7 +124,7 @@ void TopClass_SolidClassifier::Perform(TheSolidExplorer& SolidExplorer,
 		    }
 		    else { 
 #ifdef OCCT_DEBUG
-		      cout<<"*Probleme ds TopClass_SolidClassifier.gxx "<<endl;
+		      std::cout<<"*Probleme ds TopClass_SolidClassifier.gxx "<<std::endl;
 #endif
 		    }
 #ifdef OCCT_DEBUG

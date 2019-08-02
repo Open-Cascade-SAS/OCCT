@@ -80,7 +80,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H,
     MyDirectPolynomialRoots Sol(px4,px3,px2,px1,px0);
 
     if(!Sol.IsDone()) {
-      //-- cout<<" Done = False ds IntAna2d_AnaIntersection_8.cxx "<<endl;
+      //-- std::cout<<" Done = False ds IntAna2d_AnaIntersection_8.cxx "<<std::endl;
       done=Standard_False;
       return;
     }

@@ -80,9 +80,9 @@ Standard_Boolean verifD1(const TColgp_Array1OfPnt& P1,
     dw = (W2(ii)-W1(ii)) / pas;
     if (Abs(dw-DWeights(ii))>wTol) {
       if (Affich) {
-        cout<<"erreur dans la derivee 1ere du poids pour l'indice "<<ii<<endl;
-        cout<<"par diff finies : "<<dw<<endl;
-        cout<<"resultat obtenu : "<<DWeights(ii)<<endl;
+        std::cout<<"erreur dans la derivee 1ere du poids pour l'indice "<<ii<<std::endl;
+        std::cout<<"par diff finies : "<<dw<<std::endl;
+        std::cout<<"resultat obtenu : "<<DWeights(ii)<<std::endl;
       }
       ok = Standard_False;
     }
@@ -90,13 +90,13 @@ Standard_Boolean verifD1(const TColgp_Array1OfPnt& P1,
     gp_Vec diff = dP - DPoles(ii);
     if (diff.Magnitude()>pTol) {
       if (Affich) {
-        cout<<"erreur dans la derivee 1ere du pole pour l'indice "<<ii<<endl;
-        cout<<"par diff finies : ("<<dP.X()
+        std::cout<<"erreur dans la derivee 1ere du pole pour l'indice "<<ii<<std::endl;
+        std::cout<<"par diff finies : ("<<dP.X()
                               <<" "<<dP.Y()
-                              <<" "<<dP.Z()<<")"<<endl;
-        cout<<"resultat obtenu : ("<<DPoles(ii).X()
+                              <<" "<<dP.Z()<<")"<<std::endl;
+        std::cout<<"resultat obtenu : ("<<DPoles(ii).X()
                               <<" "<<DPoles(ii).Y()
-                              <<" "<<DPoles(ii).Z()<<")"<<endl;
+                              <<" "<<DPoles(ii).Z()<<")"<<std::endl;
       }
       ok = Standard_False;
     }
@@ -123,9 +123,9 @@ Standard_Boolean verifD2(const TColgp_Array1OfVec& DP1,
     d2w = (dw2-dw1) / pas;
     if (Abs(d2w-D2Weights(ii))>wTol) {
       if (Affich) {
-        cout<<"erreur dans la derivee 2nde du poids pour l'indice "<<ii<<endl;
-        cout<<"par diff finies : "<<d2w<<endl;
-        cout<<"resultat obtenu : "<<D2Weights(ii)<<endl;
+        std::cout<<"erreur dans la derivee 2nde du poids pour l'indice "<<ii<<std::endl;
+        std::cout<<"par diff finies : "<<d2w<<std::endl;
+        std::cout<<"resultat obtenu : "<<D2Weights(ii)<<std::endl;
       }
       ok = Standard_False;
     }
@@ -133,13 +133,13 @@ Standard_Boolean verifD2(const TColgp_Array1OfVec& DP1,
     gp_Vec diff = d2P - D2Poles(ii);
     if (diff.Magnitude()>pTol) {
       if (Affich) {
-        cout<<"erreur dans la derivee 2nde du pole pour l'indice "<<ii<<endl;
-        cout<<"par diff finies : ("<<d2P.X()
+        std::cout<<"erreur dans la derivee 2nde du pole pour l'indice "<<ii<<std::endl;
+        std::cout<<"par diff finies : ("<<d2P.X()
                               <<" "<<d2P.Y()
-                              <<" "<<d2P.Z()<<")"<<endl;
-        cout<<"resultat obtenu : ("<<D2Poles(ii).X()
+                              <<" "<<d2P.Z()<<")"<<std::endl;
+        std::cout<<"resultat obtenu : ("<<D2Poles(ii).X()
                               <<" "<<D2Poles(ii).Y()
-                              <<" "<<D2Poles(ii).Z()<<")"<<endl;
+                              <<" "<<D2Poles(ii).Z()<<")"<<std::endl;
       }
       ok = Standard_False;
     }
@@ -385,9 +385,9 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     V2 = V+pas;
     ok1 = D0(V1,P1,W1);
     ok2 = D0(V2,P2,W2);
-    if (!ok1 || !ok2) cout<<"probleme en D0"<<endl;
+    if (!ok1 || !ok2) std::cout<<"probleme en D0"<<std::endl;
     Standard_Boolean check = verifD1(P1,W1,P2,W2,DPoles,DWeights,pTol,wTol,pas);
-    if (!check) cout<<"D1 incorrecte en V = "<<V<<endl;
+    if (!check) std::cout<<"D1 incorrecte en V = "<<V<<std::endl;
   }
 #endif
   
@@ -485,9 +485,9 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     V2 = V+pas;
     ok1 = D1(V1,P1,DP1,W1,DW1);
     ok2 = D1(V2,P2,DP2,W2,DW2);
-    if (!ok1 || !ok2) cout<<"probleme en D0 ou en D1"<<endl;
+    if (!ok1 || !ok2) std::cout<<"probleme en D0 ou en D1"<<std::endl;
     Standard_Boolean check = verifD2(DP1,DW1,DP2,DW2,D2Poles,D2Weights,pTol,wTol,pas);
-    if (!check) cout<<"D2 incorrecte en V = "<<V<<endl;
+    if (!check) std::cout<<"D2 incorrecte en V = "<<V<<std::endl;
   }
 #endif
   
@@ -635,7 +635,7 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     char name[256];
     sprintf(name,"NS_Surf_%d",NbSurf);
     DrawTrSurf::Set(name,BS);
-    cout<<endl<<"RESULTAT de ComputeSurface : NS_Surf_"<<NbSurf<<endl<<endl;
+    std::cout<<std::endl<<"RESULTAT de ComputeSurface : NS_Surf_"<<NbSurf<<std::endl<<std::endl;
 #endif
   }
 #endif

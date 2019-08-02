@@ -94,8 +94,8 @@ void  IGESBasic_ToolExternalRefName::OwnDump
   (const Handle(IGESBasic_ExternalRefName)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_ExternalRefName" << endl;
+  S << "IGESBasic_ExternalRefName" << Message_EndLine;
   S << "External Reference Symbolic Name : ";
   IGESData_DumpString(S,ent->ReferenceName());
-  S << endl;
+  S << Message_EndLine;
 }

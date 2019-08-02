@@ -82,7 +82,7 @@ void TopOpeBRepBuild_Builder::BuildFaces(const Standard_Integer iS,
     Standard_Integer iC = SCurves.Current();
     const TopOpeBRepDS_Curve& CDS = HDS->Curve(iC);
 #ifdef OCCT_DEBUG
-    if (tSE) cout<<endl<<"BuildFaces : C "<<iC<<" on S "<<iS<<endl;
+    if (tSE) std::cout<<std::endl<<"BuildFaces : C "<<iC<<" on S "<<iS<<std::endl;
 #endif
     TopoDS_Shape anEdge;
     TopTools_ListIteratorOfListOfShape Iti(NewEdges(iC)); 

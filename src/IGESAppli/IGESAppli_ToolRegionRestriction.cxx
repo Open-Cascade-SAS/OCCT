@@ -128,12 +128,12 @@ void  IGESAppli_ToolRegionRestriction::OwnDump
   (const Handle(IGESAppli_RegionRestriction)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
 {
-  S << "IGESAppli_RegionRestriction" << endl;
-  S << "Number of property values : " << ent->NbPropertyValues() << endl;
+  S << "IGESAppli_RegionRestriction" << Message_EndLine;
+  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "Electrical vias restriction       : "
-    << ent->ElectricalViasRestriction() << endl;
+    << ent->ElectricalViasRestriction() << Message_EndLine;
   S << "Electrical components restriction : "
-    << ent->ElectricalComponentRestriction() << endl;
+    << ent->ElectricalComponentRestriction() << Message_EndLine;
   S << "Electrical circuitary restriction : "
-    << ent->ElectricalCktRestriction()  << endl;
+    << ent->ElectricalCktRestriction()  << Message_EndLine;
 }

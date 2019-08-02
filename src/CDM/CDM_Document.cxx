@@ -599,7 +599,7 @@ Handle(CDM_Document) CDM_Document::FindFromPresentation
   if(!getPresentations().IsBound(x)) {
     Standard_SStream aMsg;
     aMsg <<"No document having this presentation: " << x << " does exist."
-         << endl << (char)0;
+         << std::endl << (char)0;
     throw Standard_NoSuchObject(aMsg.str().c_str());
   }
   return getPresentations()(x);
@@ -1125,7 +1125,7 @@ Handle(Resource_Manager) CDM_Document::StorageResource()
   if(myApplication.IsNull()) {
     Standard_SStream aMsg;
     aMsg << "this document of format "<< StorageFormat()
-         << " has not yet been opened by any application. "<< endl;
+         << " has not yet been opened by any application. "<< std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
   return myApplication->Resources();
@@ -1155,7 +1155,7 @@ void CDM_Document::LoadResources()
     
     myResourcesAreLoaded=Standard_True;
     
-//    cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" << myFileExtension << ", Description:" << myDescription << endl;
+//    std::cout << "resource Loaded: Format: " << theFormat << ", FileExtension:" << myFileExtension << ", Description:" << myDescription << std::endl;
   }
   return;
 }

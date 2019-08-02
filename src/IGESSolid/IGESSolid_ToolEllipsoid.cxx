@@ -190,15 +190,15 @@ void  IGESSolid_ToolEllipsoid::OwnDump
   (const Handle(IGESSolid_Ellipsoid)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_Ellipsoid" << endl;
+  S << "IGESSolid_Ellipsoid" << Message_EndLine;
 
   S << "Size   : ";
   IGESData_DumpXYZ(S, ent->Size());
-  S << endl << "Center : ";
+  S << Message_EndLine << "Center : ";
   IGESData_DumpXYZL(S,level, ent->Center(), ent->Location());
-  S << endl << "XAxis  : ";
+  S << Message_EndLine << "XAxis  : ";
   IGESData_DumpXYZL(S,level, ent->XAxis(), ent->VectorLocation());
-  S << endl << "ZAxis  : ";
+  S << Message_EndLine << "ZAxis  : ";
   IGESData_DumpXYZL(S,level, ent->ZAxis(), ent->VectorLocation());
-  S << endl;
+  S << Message_EndLine;
 }

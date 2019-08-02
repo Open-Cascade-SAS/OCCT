@@ -235,7 +235,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      ILOn.Remove(It);                            break;
 	    case TopAbs_UNKNOWN : 
 #ifdef OCCT_DEBUG
-              cout << "UNKNOWN state staft" << endl;
+              std::cout << "UNKNOWN state staft" << std::endl;
 #endif
 	    case TopAbs_ON      :
 	      It.Next();                                  break;
@@ -249,7 +249,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      ILOn.Remove(It);                            break;
 	    case TopAbs_UNKNOWN :
 #ifdef OCCT_DEBUG
-              cout << "UNKNOWN state stbef" << endl;
+              std::cout << "UNKNOWN state stbef" << std::endl;
 #endif
 	    case TopAbs_ON      :
 	      It.Next();                                  break;
@@ -279,7 +279,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 		ILOn.Remove(It);                          break;
 	      case TopAbs_UNKNOWN :
 #ifdef OCCT_DEBUG
-		cout << "UNKNOWN state after" << endl;
+		std::cout << "UNKNOWN state after" << std::endl;
 #endif
 		It.Next();                                break;
 	      }                                           break;
@@ -299,7 +299,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 		Int.Transition(TopAbs_REVERSED);          break;
 	      case TopAbs_UNKNOWN :
 #ifdef OCCT_DEBUG
-		cout << "UNKNOWN state after" << endl;
+		std::cout << "UNKNOWN state after" << std::endl;
 #endif
                 break;
 	      }	    
@@ -317,13 +317,13 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 		ILOn.Remove(It);                          break;
 	      case TopAbs_UNKNOWN :
 #ifdef OCCT_DEBUG
-		cout << "UNKNOWN state after" << endl;
+		std::cout << "UNKNOWN state after" << std::endl;
 #endif
 		It.Next();                                break;
 	      }                                           break;
 	    case TopAbs_UNKNOWN :
 #ifdef OCCT_DEBUG
-	      cout << "UNKNOWN state stbef" << endl;
+	      std::cout << "UNKNOWN state stbef" << std::endl;
 #endif
               break;
 	    }
@@ -370,14 +370,14 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
                 {
                   ToRemove.Append(Int.Intersection().Parameter());
 #ifdef OCCT_DEBUG
-                  cout<<"Two adjacent interferences with transition FORWARD"<<endl;
+                  std::cout<<"Two adjacent interferences with transition FORWARD"<<std::endl;
 #endif
                 }
                 else if (aTrans == TopAbs_REVERSED)
                 {
                   ToRemove.Append(PrevParam);
 #ifdef OCCT_DEBUG
-                  cout<<"Two adjacent interferences with transition REVERSED"<<endl;
+                  std::cout<<"Two adjacent interferences with transition REVERSED"<<std::endl;
 #endif
                 }
               }
@@ -698,9 +698,9 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "An exception was catched when hiding edge " << E;
-      cout << " by the face " << FI << endl;
-      cout << anException << endl;
+      std::cout << "An exception was catched when hiding edge " << E;
+      std::cout << " by the face " << FI << std::endl;
+      std::cout << anException << std::endl;
 #endif
       (void)anException;
     }

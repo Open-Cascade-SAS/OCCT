@@ -422,8 +422,8 @@ Standard_Boolean CheckEdgeParameter(const Handle(TopOpeBRepDS_HDataStructure)& m
 //=======================================================================
 Standard_OStream& TopOpeBRepDS_Check::PrintIntg(Standard_OStream& OS)
 {
-  OS<<endl<<endl<<"************************************************"<<endl;
-  OS<<"state of the DS : (only the tested elements)"<<endl<<endl;
+  OS<<std::endl<<std::endl<<"************************************************"<<std::endl;
+  OS<<"state of the DS : (only the tested elements)"<<std::endl<<std::endl;
   
   //Display of the geometry
   PrintMap(myMapSurfaceStatus, "Surface", OS);
@@ -455,7 +455,7 @@ Standard_OStream& TopOpeBRepDS_Check::PrintIntg(Standard_OStream& OS)
   PrintMap(MapFace, "Face",   OS);
   PrintMap(MapSolid, "Solid",  OS);
   
-  OS<<endl<<endl;
+  OS<<std::endl<<std::endl;
   return OS;
 }
 
@@ -475,9 +475,9 @@ Standard_OStream& TopOpeBRepDS_Check::PrintMap(TopOpeBRepDS_DataMapOfCheckStatus
     OS<<" "<<eltstr<<"\t(/"<<MapStat.Extent()<<")\tnumber ";
     
     PrintElts(MapStat, TopOpeBRepDS_OK,  b, OS);
-    if(!b) OS<<" = OK"<<endl;
+    if(!b) OS<<" = OK"<<std::endl;
     PrintElts(MapStat, TopOpeBRepDS_NOK, b, OS);
-    if(!b) OS<<" = NOK"<<endl;
+    if(!b) OS<<" = NOK"<<std::endl;
   }    
   return OS;
 }
@@ -558,7 +558,7 @@ Standard_OStream& TopOpeBRepDS_Check::PrintShape
     return OS;
   }
   if(!myMapShapeStatus.IsBound(index)) {
-    OS<<"NO CHECK HAS PROCESSING"<<endl;
+    OS<<"NO CHECK HAS PROCESSING"<<std::endl;
     return OS;
   }
   OS<<" ";

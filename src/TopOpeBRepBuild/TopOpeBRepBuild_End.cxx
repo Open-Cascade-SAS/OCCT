@@ -263,8 +263,8 @@ void TopOpeBRepBuild_Builder::End()
       Standard_Real d = P1.Distance(P2);
       if (d > newtol) {
 #ifdef OCCT_DEBUG
-        cout<<"\npoint P"<<iv<<" "<<Pv.X()<<" "<<Pv.Y()<<" "<<Pv.Z()<<endl;
-        cout<<"TopOpeBRepBuild_Builder::End BOX newtol "<<newtol<<" -> "<<d<<endl;
+        std::cout<<"\npoint P"<<iv<<" "<<Pv.X()<<" "<<Pv.Y()<<" "<<Pv.Z()<<std::endl;
+        std::cout<<"TopOpeBRepBuild_Builder::End BOX newtol "<<newtol<<" -> "<<d<<std::endl;
 #endif
         newtol = d;
         B.UpdateVertex(V,newtol);

@@ -154,10 +154,10 @@ void  IGESBasic_ToolOrderedGroupWithoutBackP::OwnDump
   (const Handle(IGESBasic_OrderedGroupWithoutBackP)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_OrderedGroupWithoutBackP" << endl;
+  S << "IGESBasic_OrderedGroupWithoutBackP" << Message_EndLine;
 
   S << "Entries in the Group : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << endl;
+  S << Message_EndLine;
 }
 

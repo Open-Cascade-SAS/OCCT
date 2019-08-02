@@ -300,7 +300,7 @@ static Standard_Integer triarea (Draw_Interpretor& di, int n, const char ** a)
       TopLoc_Location aLoc;
       Handle(Poly_Triangulation) aPoly = BRep_Tool::Triangulation(aFace,aLoc);
       if (aPoly.IsNull()) {
-        cout << "face "<<i<<" has no triangulation"<<endl;
+        std::cout << "face "<<i<<" has no triangulation"<<std::endl;
         continue;
       }
       const Poly_Array1OfTriangle& triangles = aPoly->Triangles();

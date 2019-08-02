@@ -160,18 +160,18 @@ void IGESDimen_ToolSectionedArea::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDimen_SectionedArea" << endl;
+  S << "IGESDimen_SectionedArea" << Message_EndLine;
   S << (ent->IsInverted() ? "Inverted Cross Hatches" : "Standard Cross Hatches");
 
   S << " - Exterior curve : ";
   dumper.Dump(ent->ExteriorCurve(),S, sublevel);
-  S << endl;
-  S << "Fill pattern code : " << ent->Pattern() << endl;
+  S << Message_EndLine;
+  S << "Fill pattern code : " << ent->Pattern() << Message_EndLine;
   S << "Passing point : ";
-  IGESData_DumpXYZL(S,level, ent->PassingPoint(), ent->Location());  S << endl;
-  S << "Distance between lines : " << ent->Distance() << endl;
-  S << "Angle between lines and X axis : " << ent->Angle() << endl;
+  IGESData_DumpXYZL(S,level, ent->PassingPoint(), ent->Location());  S << Message_EndLine;
+  S << "Distance between lines : " << ent->Distance() << Message_EndLine;
+  S << "Angle between lines and X axis : " << ent->Angle() << Message_EndLine;
   S << "Island Curve : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbIslands(),ent->IslandCurve);
-  S << endl;
+  S << Message_EndLine;
 }

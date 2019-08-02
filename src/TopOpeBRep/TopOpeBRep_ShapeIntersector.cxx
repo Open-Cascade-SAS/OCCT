@@ -35,7 +35,7 @@ extern Standard_Integer SAVFFi2; // FacesIntersector
 extern void TopOpeBRep_SettraceEEFF(const Standard_Boolean b);
 extern Standard_Boolean TopOpeBRep_GettraceEEFF(const Standard_Integer e1,const Standard_Integer e2,const Standard_Integer f1,const Standard_Integer f2);
 void seteeff(const Standard_Boolean b,const Standard_Integer e1,const Standard_Integer e2, const Standard_Integer f1,const Standard_Integer f2)
-{cout<<"b,e1,e2,f1,f2 : "<<b<<" "<<e1<<","<<e2<<","<<f1<<","<<f2<<endl;TopOpeBRep_SettraceEEFF(b);}
+{std::cout<<"b,e1,e2,f1,f2 : "<<b<<" "<<e1<<","<<e2<<","<<f1<<","<<f2<<std::endl;TopOpeBRep_SettraceEEFF(b);}
 void seteefft(const Standard_Integer e1,const Standard_Integer e2, const Standard_Integer f1,const Standard_Integer f2) {seteeff(Standard_True,e1,e2,f1,f2);}
 void seteefff(const Standard_Integer e1,const Standard_Integer e2, const Standard_Integer f1,const Standard_Integer f2) {seteeff(Standard_False,e1,e2,f1,f2);}
 #endif
@@ -393,20 +393,20 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceSI() && res) {
-    if      ( myFFDone )   cout<<"FF : ";
-    else if ( myEEFFDone ) cout<<"    EE : ";
+    if      ( myFFDone )   std::cout<<"FF : ";
+    else if ( myEEFFDone ) std::cout<<"    EE : ";
     DumpCurrent(1);
     DumpCurrent(2);
-    if      ( myFFDone && myFFSameDomain ) cout<<"(FF SameDomain)";
-    else if ( myEEFFDone )                 cout<<"(EE of FF SameDomain)";
-    else if ( myEEDone )                   cout<<"EE : ";
-    cout<<endl;
+    if      ( myFFDone && myFFSameDomain ) std::cout<<"(FF SameDomain)";
+    else if ( myEEFFDone )                 std::cout<<"(EE of FF SameDomain)";
+    else if ( myEEDone )                   std::cout<<"EE : ";
+    std::cout<<std::endl;
     if (myEEFFDone) {
       Standard_Integer ie1 = myEdgeScanner.Index();
       Standard_Integer ie2 = myEdgeExplorer.Index();
       Standard_Integer if1 = myFaceScanner.Index();
       Standard_Integer if2 = myFaceExplorer.Index();
-      cout<<"    trc teeff 1 "<<ie1<<" "<<ie2<<" "<<if1<<" "<<if2<<"; # ie1 ie2 if1 if2"<<endl;
+      std::cout<<"    trc teeff 1 "<<ie1<<" "<<ie2<<" "<<if1<<" "<<if2<<"; # ie1 ie2 if1 if2"<<std::endl;
       Standard_Boolean b = TopOpeBRep_GettraceEEFF(ie1,ie2,if1,if2);
       if (b) seteefft(ie1,ie2,if1,if2);
       else   seteefff(ie1,ie2,if1,if2);
@@ -427,24 +427,24 @@ Standard_Boolean TopOpeBRep_ShapeIntersector::MoreIntersection() const
 void TopOpeBRep_ShapeIntersector::DumpCurrent(const Standard_Integer K) const
 {
   if      ( myFFDone ) {
-    if      ( K == 1 ) myFaceScanner.DumpCurrent(cout);
-    else if ( K == 2 ) myFaceExplorer.DumpCurrent(cout);
+    if      ( K == 1 ) myFaceScanner.DumpCurrent(std::cout);
+    else if ( K == 2 ) myFaceExplorer.DumpCurrent(std::cout);
   }
   else if ( myEEFFDone ) {
-    if      ( K == 1 ) myEdgeScanner.DumpCurrent(cout);
-    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(cout);
+    if      ( K == 1 ) myEdgeScanner.DumpCurrent(std::cout);
+    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(std::cout);
   }
   else if ( myFEDone ) {
-    if      ( K == 1 ) myFaceScanner.DumpCurrent(cout);
-    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(cout);
+    if      ( K == 1 ) myFaceScanner.DumpCurrent(std::cout);
+    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(std::cout);
   }
   else if ( myEFDone ) {
-    if      ( K == 1 ) myEdgeScanner.DumpCurrent(cout);
-    else if ( K == 2 ) myFaceExplorer.DumpCurrent(cout);
+    if      ( K == 1 ) myEdgeScanner.DumpCurrent(std::cout);
+    else if ( K == 2 ) myFaceExplorer.DumpCurrent(std::cout);
   }
   else if ( myEEDone ) {
-    if      ( K == 1 ) myEdgeScanner.DumpCurrent(cout);
-    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(cout);
+    if      ( K == 1 ) myEdgeScanner.DumpCurrent(std::cout);
+    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(std::cout);
   }
 }
 #else
@@ -602,9 +602,9 @@ void TopOpeBRep_ShapeIntersector::FindFFIntersection()
 #ifdef OCCT_DEBUG
     SAVFFi1 = myFaceScanner.Index(); SAVFFi2 = myFaceExplorer.Index(); 
     if (TopOpeBRep_GettraceSI()) {
-      cout<<"?? FF : ";
-      myFaceScanner.DumpCurrent(cout); myFaceExplorer.DumpCurrent(cout);
-      cout<<endl;
+      std::cout<<"?? FF : ";
+      myFaceScanner.DumpCurrent(std::cout); myFaceExplorer.DumpCurrent(std::cout);
+      std::cout<<std::endl;
     }    
 #endif
 
@@ -701,7 +701,7 @@ void TopOpeBRep_ShapeIntersector::InitEEFFIntersection()
   if (TopOpeBRep_GetcontextFFOR()) {
     face1.Orientation(TopAbs_FORWARD); //-05/07
     face2.Orientation(TopAbs_FORWARD); //-05/07
-    cout<<"ctx : InitEEFFIntersection : faces FORWARD"<<endl;
+    std::cout<<"ctx : InitEEFFIntersection : faces FORWARD"<<std::endl;
   }
 #endif
 
@@ -736,12 +736,12 @@ void TopOpeBRep_ShapeIntersector::FindEEFFIntersection()
 
 #ifdef OCCT_DEBUG
     if (TopOpeBRep_GettraceSI() && myEEIntersector.IsEmpty()) {
-      cout<<"    EE : ";
-      myEdgeScanner.DumpCurrent(cout);
-      myEdgeExplorer.DumpCurrent(cout);
-      cout<<"(EE of FF SameDomain)";
-      cout<<" : EMPTY INTERSECTION";
-      cout<<endl;
+      std::cout<<"    EE : ";
+      myEdgeScanner.DumpCurrent(std::cout);
+      myEdgeExplorer.DumpCurrent(std::cout);
+      std::cout<<"(EE of FF SameDomain)";
+      std::cout<<" : EMPTY INTERSECTION";
+      std::cout<<std::endl;
     }    
 #endif
 
@@ -1188,7 +1188,7 @@ static Standard_Integer OneShapeIsHalfSpace(const TopoDS_Shape& S1,const TopoDS_
 	}
 #ifdef OCCT_DEBUG
       if( result != 0 )
-	cout << "# one of the SOLIDs probably is a HALF SPACE" << endl;
+	std::cout << "# one of the SOLIDs probably is a HALF SPACE" << std::endl;
 #endif
     }
 

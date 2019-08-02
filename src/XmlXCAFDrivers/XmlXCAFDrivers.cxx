@@ -31,7 +31,7 @@ const Handle(Standard_Transient)& XmlXCAFDrivers::Factory(const Standard_GUID& a
   if(aGUID == XSStorageDriver)  
   {
 #ifdef OCCT_DEBUG
-    cout << "XmlXCAFDrivers : Storage Plugin" << endl;
+    std::cout << "XmlXCAFDrivers : Storage Plugin" << std::endl;
 #endif
     static Handle(Standard_Transient) model_sd 
       = new XmlXCAFDrivers_DocumentStorageDriver
@@ -41,7 +41,7 @@ const Handle(Standard_Transient)& XmlXCAFDrivers::Factory(const Standard_GUID& a
   if(aGUID == XSRetrievalDriver) 
   {  
 #ifdef OCCT_DEBUG
-    cout << "XmlXCAFDrivers : Retrieval Plugin" << endl;
+    std::cout << "XmlXCAFDrivers : Retrieval Plugin" << std::endl;
 #endif
     static Handle (Standard_Transient) model_rd 
       = new XmlXCAFDrivers_DocumentRetrievalDriver;

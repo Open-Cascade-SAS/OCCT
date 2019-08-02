@@ -220,12 +220,12 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
     Standard_SStream aMsg;
     switch (CanRetrieve(aMetaData)) {
     case PCDM_RS_UnknownDocument: 
-      aMsg << "could not find the referenced document: " << aMetaData->Path() << "; not found."  <<(char)0 << endl;
+      aMsg << "could not find the referenced document: " << aMetaData->Path() << "; not found."  <<(char)0 << std::endl;
       myRetrievableStatus = PCDM_RS_UnknownDocument;
       throw Standard_Failure(aMsg.str().c_str());
       break;
     case PCDM_RS_PermissionDenied:      
-      aMsg << "Could not find the referenced document: " << aMetaData->Path() << "; permission denied. " <<(char)0 << endl;
+      aMsg << "Could not find the referenced document: " << aMetaData->Path() << "; permission denied. " <<(char)0 << std::endl;
       myRetrievableStatus = PCDM_RS_PermissionDenied;
       throw Standard_Failure(aMsg.str().c_str());
       break;
@@ -271,7 +271,7 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
       myRetrievableStatus = theReader->GetStatus();
       if(myRetrievableStatus  > PCDM_RS_AlreadyRetrieved){
 	Standard_SStream aMsg;
-	aMsg << anException << endl;
+	aMsg << anException << std::endl;
 	throw Standard_Failure(aMsg.str().c_str());
       }	
     }
@@ -338,7 +338,7 @@ Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream)
     myRetrievableStatus = PCDM_RS_FormatFailure;
     
     Standard_SStream aMsg;
-    aMsg << anException << endl;
+    aMsg << anException << std::endl;
     throw Standard_Failure(aMsg.str().c_str());
   }
 
@@ -367,7 +367,7 @@ Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream)
     if (myRetrievableStatus  > PCDM_RS_AlreadyRetrieved)
     {
       Standard_SStream aMsg;
-      aMsg << anException << endl;
+      aMsg << anException << std::endl;
       throw Standard_Failure(aMsg.str().c_str());
     }	
   }

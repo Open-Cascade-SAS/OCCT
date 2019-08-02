@@ -204,9 +204,9 @@ void IGESSolid_ToolVertexList::OwnDump(const Handle(IGESSolid_VertexList)& ent,
                                        const Handle(Message_Messenger)& S,
                                        const Standard_Integer level) const
 {
-  S << "IGESSolid_VertexList" << endl;
+  S << "IGESSolid_VertexList" << Message_EndLine;
 
   S << "Vertices : ";
   IGESData_DumpListXYZL(S ,level,1, ent->NbVertices(),ent->Vertex,ent->Location());
-  S << endl;
+  S << Message_EndLine;
 }

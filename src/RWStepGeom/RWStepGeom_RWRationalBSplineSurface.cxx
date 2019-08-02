@@ -259,10 +259,10 @@ void RWStepGeom_RWRationalBSplineSurface::Check
   Standard_Integer nbCPLV = ent->NbControlPointsListJ();
   Standard_Integer i;
   Standard_Integer j;
-//  cout << "RationalBSplineCurve: nbWgtU=" << nbWgtU << " nbCPLU: " << 
-//    nbCPLU << endl;
-//  cout << "                      nbWgtV=" << nbWgtV << " nbCPLV: " << 
-//    nbCPLV << endl;
+//  std::cout << "RationalBSplineCurve: nbWgtU=" << nbWgtU << " nbCPLU: " << 
+//    nbCPLU << std::endl;
+//  std::cout << "                      nbWgtV=" << nbWgtV << " nbCPLV: " << 
+//    nbCPLV << std::endl;
   if(nbWgtU != nbCPLU) {
     ach->AddFail("ERROR: No.of ControlPoints not equal No.of Weights in U");
   }

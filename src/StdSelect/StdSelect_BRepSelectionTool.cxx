@@ -637,7 +637,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
     if (Abs (wf - wl) <= Precision::Confusion())
     {
     #ifdef OCCT_DEBUG
-      cout<<" StdSelect_BRepSelectionTool : Curve where ufirst = ulast ...."<<endl;
+      std::cout<<" StdSelect_BRepSelectionTool : Curve where ufirst = ulast ...."<<std::endl;
     #endif
       continue;
     }

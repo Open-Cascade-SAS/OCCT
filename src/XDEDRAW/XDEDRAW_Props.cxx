@@ -708,9 +708,9 @@ static Standard_Integer ShapeVolume (Draw_Interpretor& di, Standard_Integer argc
     tol = -tol;
   }
   localVolume = CalculVolume(aShape, aPoint, tol, withForce, di);
-  //cout << "Volume : " << setw(15) << localVolume << "\n" << endl;
+  //std::cout << "Volume : " << std::setw(15) << localVolume << "\n" << std::endl;
   Standard_SStream aSStream;
-  aSStream << "Volume : " << setw(15) << localVolume << "\n";
+  aSStream << "Volume : " << std::setw(15) << localVolume << "\n";
   di << aSStream;
   return 0;
 }

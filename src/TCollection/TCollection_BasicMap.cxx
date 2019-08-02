@@ -141,7 +141,7 @@ void TCollection_BasicMap::Statistics(Standard_OStream& S) const
   for (i = 0; i<= mySize; i++) {
     if (sizes[i] > 0) {
       l += sizes[i] * i;
-      S << setw(5) << sizes[i] <<" buckets of size "<<i<<"\n";
+      S << std::setw(5) << sizes[i] <<" buckets of size "<<i<<"\n";
     }
   }
 

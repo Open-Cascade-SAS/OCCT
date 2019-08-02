@@ -934,7 +934,7 @@ TColStd_Array1OfReal& DWeigths)
   if (norm < Eps)  {
     norm = 1; // Not enough, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " SurfRstEvolRad : Surface single " << endl;
+    std::cout << " SurfRstEvolRad : Surface single " << std::endl;
 #endif
   }
   

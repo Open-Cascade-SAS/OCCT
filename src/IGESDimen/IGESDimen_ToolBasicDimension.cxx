@@ -121,16 +121,16 @@ void  IGESDimen_ToolBasicDimension::OwnDump
   (const Handle(IGESDimen_BasicDimension)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 { 
-  S << "IGESDimen_BasicDimension" << endl;
-  S << "Number of Property Values : " << ent->NbPropertyValues() << endl;
-  S << endl << "  Lower left corner  : " ;
+  S << "IGESDimen_BasicDimension" << Message_EndLine;
+  S << "Number of Property Values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << Message_EndLine << "  Lower left corner  : " ;
   IGESData_DumpXY(S, ent->LowerLeft());
-  S << endl << "  Lower right corner : " ;
+  S << Message_EndLine << "  Lower right corner : " ;
   IGESData_DumpXY(S, ent->LowerRight());
-  S << endl << "  Upper right corner : " ;
+  S << Message_EndLine << "  Upper right corner : " ;
   IGESData_DumpXY(S, ent->UpperRight());
-  S << endl << "  Upper left corner  : ";
+  S << Message_EndLine << "  Upper left corner  : ";
   IGESData_DumpXY(S, ent->UpperLeft());
-  S << endl;
+  S << Message_EndLine;
 }
 

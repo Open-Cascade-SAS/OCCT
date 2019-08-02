@@ -734,7 +734,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
             }
             else{
 #ifdef OCCT_DEBUG
-	    cout<<"top has more than 3 edges"<<endl;
+	    std::cout<<"top has more than 3 edges"<<std::endl;
 #endif
               sommetpourri = Standard_True;
               break;
@@ -767,7 +767,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     if(nbf>3) {
       Spine->SetFirstStatus(ChFiDS_BreakPoint);
 #ifdef OCCT_DEBUG
-      cout<<"top has : "<<nbf<<" faces."<<endl;
+      std::cout<<"top has : "<<nbf<<" faces."<<std::endl;
 #endif
     }
     nbf = 0, jf = 0;
@@ -784,7 +784,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
     if(nbf>3) {
       Spine->SetLastStatus(ChFiDS_BreakPoint);
 #ifdef OCCT_DEBUG
-      cout<<"top has : "<<nbf<<" faces."<<endl;
+      std::cout<<"top has : "<<nbf<<" faces."<<std::endl;
 #endif
     }
   }

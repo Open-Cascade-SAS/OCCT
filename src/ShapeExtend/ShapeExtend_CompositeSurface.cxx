@@ -91,7 +91,7 @@ Standard_Boolean ShapeExtend_CompositeSurface::Init (const Handle(TColGeom_HArra
     ok = Standard_False;
     ComputeJointValues ( ShapeExtend_Natural );
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeExtend_CompositeSurface::Init: bad joint values" << endl;
+    std::cout << "Warning: ShapeExtend_CompositeSurface::Init: bad joint values" << std::endl;
 #endif
   }
   
@@ -838,7 +838,7 @@ Standard_Boolean ShapeExtend_CompositeSurface::CheckConnectivity (const Standard
   }
 
 #ifdef OCCT_DEBUG
-  if ( ! ok ) cout << "Warning: ShapeExtend_CompositeSurface: not connected in 3d" << endl;
+  if ( ! ok ) std::cout << "Warning: ShapeExtend_CompositeSurface: not connected in 3d" << std::endl;
 #endif
   return ok;
 }

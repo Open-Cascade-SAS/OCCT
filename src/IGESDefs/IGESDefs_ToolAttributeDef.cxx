@@ -445,19 +445,19 @@ void IGESDefs_ToolAttributeDef::OwnDump
 {
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDefs_AttributeDef" << endl;
+  S << "IGESDefs_AttributeDef" << Message_EndLine;
   S << "Attribute Table Name: ";
   IGESData_DumpString(S,ent->TableName());
-  S << endl;
-  S << "Attribute List Type  : " << ent->ListType() << endl;
-  S << "Number of Attributes : " << ent->NbAttributes() << endl;
-  S << "Attribute Types : " << endl;
-  S << "Attribute Value Data Types : " << endl;
-  S << "Attribute Value Counts : " << endl;
-  if (ent->HasValues())       S << "Attribute Values : " << endl;
-  if (ent->HasTextDisplay())  S << "Attribute Value Entities : " << endl;
+  S << Message_EndLine;
+  S << "Attribute List Type  : " << ent->ListType() << Message_EndLine;
+  S << "Number of Attributes : " << ent->NbAttributes() << Message_EndLine;
+  S << "Attribute Types : " << Message_EndLine;
+  S << "Attribute Value Data Types : " << Message_EndLine;
+  S << "Attribute Value Counts : " << Message_EndLine;
+  if (ent->HasValues())       S << "Attribute Values : " << Message_EndLine;
+  if (ent->HasTextDisplay())  S << "Attribute Value Entities : " << Message_EndLine;
   IGESData_DumpVals(S,-level,1, ent->NbAttributes(),ent->AttributeType);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
       Standard_Integer upper = ent->NbAttributes();
@@ -478,11 +478,11 @@ void IGESDefs_ToolAttributeDef::OwnDump
 	    case 6 : S << " : Logical ";  break;
 	    default :   break;
 	  }
-          S << "   Count : " << avc << endl;
+          S << "   Count : " << avc << Message_EndLine;
           if (ent->HasValues())
 	    {
 	      if (level <= 5) {
-		S << " [ content (Values) : ask level > 5 ]" << endl;
+		S << " [ content (Values) : ask level > 5 ]" << Message_EndLine;
 		continue;
 	      }
               for (Standard_Integer j = 1; j <= avc; j ++)
@@ -512,10 +512,10 @@ void IGESDefs_ToolAttributeDef::OwnDump
                       S << "  Attribute Value Pointer : ";
                       dumper.Dump (ent->AttributeTextDisplay(i,j),S, sublevel);
 		    }
-		  S << endl;
+		  S << Message_EndLine;
 		}
 	    }
 	}
     }
-  S << endl;
+  S << Message_EndLine;
 }

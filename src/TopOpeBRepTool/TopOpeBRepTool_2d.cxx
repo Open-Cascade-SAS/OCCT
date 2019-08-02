@@ -214,7 +214,7 @@ static Handle(Geom2d_Curve) FC2D_make2d(const TopoDS_Edge& E,const TopoDS_Face& 
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceC2D() && C2D.IsNull()) {
-    cout<<"#FC2D_make2d1 --> PCurve IsNull"<<endl;
+    std::cout<<"#FC2D_make2d1 --> PCurve IsNull"<<std::endl;
   }
 #endif
 
@@ -227,10 +227,10 @@ Standard_EXPORT Handle(Geom2d_Curve) FC2D_MakeCurveOnSurface(const TopoDS_Edge& 
 {
 #ifdef DRAW
   if (TopOpeBRepTool_GettraceC2D()) {
-    cout<<"\n#FC2D_MakeCurveOnSurface : "<<endl;
+    std::cout<<"\n#FC2D_MakeCurveOnSurface : "<<std::endl;
     TCollection_AsciiString fnam("c2df");GLOBAL_C2D_i++;fnam=fnam+GLOBAL_C2D_i;FDRAW_DINS("",F,fnam,"");
     TCollection_AsciiString enam("c2de");GLOBAL_C2D_i++;enam=enam+GLOBAL_C2D_i;FDRAW_DINE(" ",E,enam,"\n");
-    cout.flush(); debc2dnull();
+    std::cout.flush(); debc2dnull();
   }
 #endif
   
@@ -353,7 +353,7 @@ static Handle(Geom2d_Curve) FC2D_make2d(const TopoDS_Edge& E,const TopoDS_Face& 
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceC2D() && C2D.IsNull()) {
-    cout<<"#FC2D_make2d2 --> PCurve IsNull"<<endl;
+    std::cout<<"#FC2D_make2d2 --> PCurve IsNull"<<std::endl;
   }
 #endif
 
@@ -378,10 +378,10 @@ Standard_EXPORT Handle(Geom2d_Curve) FC2D_CurveOnSurface(const TopoDS_Edge& E,co
   
 #ifdef DRAW
   if (TopOpeBRepTool_GettraceC2D()) {
-    cout<<"\n#FC2D_CurveOnSurface : "<<endl;
+    std::cout<<"\n#FC2D_CurveOnSurface : "<<std::endl;
     TCollection_AsciiString fnam("c2df");GLOBAL_C2D_i++;fnam=fnam+GLOBAL_C2D_i;FDRAW_DINS("",F,fnam,"");
     TCollection_AsciiString enam("c2de");GLOBAL_C2D_i++;enam=enam+GLOBAL_C2D_i;FDRAW_DINE(" ",E,enam,"\n");
-    cout.flush();debc2dnull();
+    std::cout.flush();debc2dnull();
   }
 #endif
   

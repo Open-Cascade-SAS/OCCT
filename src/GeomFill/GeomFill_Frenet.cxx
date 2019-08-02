@@ -307,7 +307,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
     }
 #ifdef OCCT_DEBUG
     for(i = 1; i <= mySngl->Length(); i++) {
-      cout<<"Sngl("<<i<<") = "<<mySngl->Value(i)<<" Length = "<<mySnglLen->Value(i)<<endl;
+      std::cout<<"Sngl("<<i<<") = "<<mySngl->Value(i)<<" Length = "<<mySnglLen->Value(i)<<std::endl;
     }
 #endif
     if(mySngl->Length() > 1) {
@@ -333,9 +333,9 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
     }
   }    
 #ifdef OCCT_DEBUG
-    cout<<"After merging"<<endl;
+    std::cout<<"After merging"<<std::endl;
     for(i = 1; i <= mySngl->Length(); i++) {
-      cout<<"Sngl("<<i<<") = "<<mySngl->Value(i)<<" Length = "<<mySnglLen->Value(i)<<endl;
+      std::cout<<"Sngl("<<i<<") = "<<mySngl->Value(i)<<" Length = "<<mySnglLen->Value(i)<<std::endl;
     }
 #endif
     isSngl = Standard_True;
@@ -521,7 +521,7 @@ Standard_Boolean
       if(RotateTrihedron(Tangent,Normal,BiNormal,aTn) == Standard_False)
         {
 #ifdef OCCT_DEBUG
-        cout << "Cannot coincide two tangents." << endl;
+        std::cout << "Cannot coincide two tangents." << std::endl;
 #endif
         return Standard_False;
         }

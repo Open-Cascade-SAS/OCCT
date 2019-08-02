@@ -183,13 +183,13 @@ void BRepFill_LocationLaw::BiNormalIsMain()
 
 #ifdef OCCT_DEBUG
       if (N2.Dot(T1) > 1.e-9) {
-	cout << "Inprecision in TransformInCompatibleLaw" << endl;
-        cout << "--- T1.R(N2) = " << N2.Dot(T1) << endl;
+	std::cout << "Inprecision in TransformInCompatibleLaw" << std::endl;
+        std::cout << "--- T1.R(N2) = " << N2.Dot(T1) << std::endl;
 	gp_Vec tt;
 	tt = T1;
 	tt.Rotate(axe, alpha);
-	cout << "--- T1.R(T2) = " << tt.Dot(T1) << endl;
-	cout << "--- R(N2).R(T2) = " << N2.Dot(tt) << endl;
+	std::cout << "--- T1.R(T2) = " << tt.Dot(T1) << std::endl;
+	std::cout << "--- R(N2).R(T2) = " << N2.Dot(tt) << std::endl;
       }      
 #endif
       Angle = N2.AngleWithRef(N1, T1);
@@ -620,8 +620,8 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
   else {
     W.Nullify();
 #ifdef OCCT_DEBUG
-    cout << "BRepFill_LocationLaw::D0 : Attention position out of limits" 
-         << endl;
+    std::cout << "BRepFill_LocationLaw::D0 : Attention position out of limits" 
+         << std::endl;
 #endif
   }
 }

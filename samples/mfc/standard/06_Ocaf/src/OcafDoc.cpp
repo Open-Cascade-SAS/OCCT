@@ -925,7 +925,7 @@ void COcafDoc::OnFileSaveAs()
 	CWaitCursor aWaitCursor;
 	CString CSPath = dlg.GetPathName();
 
-	cout << "Save As " << CSPath << endl;
+	std::cout << "Save As " << CSPath << std::endl;
 	PathName=CSPath;
         const wchar_t* SPath = CSPath;
 	TCollection_ExtendedString TPath (SPath);

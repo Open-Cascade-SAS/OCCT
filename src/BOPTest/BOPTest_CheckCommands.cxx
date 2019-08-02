@@ -255,9 +255,8 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
   //
   const BOPDS_MapOfPair& aMPK=aDS.Interferences();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  using namespace std;
-  vector <BOPTest_Interf> aVec;
-  vector <BOPTest_Interf>::iterator aIt;
+  std::vector <BOPTest_Interf> aVec;
+  std::vector <BOPTest_Interf>::iterator aIt;
   BOPTest_Interf aBInterf;
   //
   aItMPK.Initialize(aMPK);
@@ -281,7 +280,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di,
     aVec.push_back(aBInterf);
   }
   //
-  sort( aVec.begin(), aVec.end(), less<BOPTest_Interf>());
+  sort( aVec.begin(), aVec.end(), std::less<BOPTest_Interf>());
   //
   iCnt=0;
   for (aIt=aVec.begin(); aIt!=aVec.end(); aIt++) {

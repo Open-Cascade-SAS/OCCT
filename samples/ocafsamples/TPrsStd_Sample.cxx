@@ -101,9 +101,9 @@ static void Sample()
   Handle(TPrsStd_NamedShapeDriver) driver;
 
   if( table->FindDriver(driverguid,  driver) ) 
-    cout << "Driver was found " << endl;
+    std::cout << "Driver was found " << std::endl;
   else 
-    cout << "Driver wasn't found" << endl;
+    std::cout << "Driver wasn't found" << std::endl;
 
   // Driver can be used to build AIS_InteractiveObject for presenting the given label
 

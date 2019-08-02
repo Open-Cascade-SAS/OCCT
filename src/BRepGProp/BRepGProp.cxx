@@ -186,12 +186,12 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
       }
       Props.Add(G);
 #ifdef OCCT_DEBUG
-      if(AffichEps) cout<<"\n"<<i<<":\tEpsArea = "<< G.GetEpsilon();
+      if(AffichEps) std::cout<<"\n"<<i<<":\tEpsArea = "<< G.GetEpsilon();
 #endif
     }
   }
 #ifdef OCCT_DEBUG
-  if(AffichEps) cout<<"\n-----------------\n"<<iErrorMax<<":\tMaxError = "<<ErrorMax<<"\n";
+  if(AffichEps) std::cout<<"\n-----------------\n"<<iErrorMax<<":\tMaxError = "<<ErrorMax<<"\n";
 #endif
   return ErrorMax;
 }
@@ -300,13 +300,13 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
         }
         Props.Add(G);
 #ifdef OCCT_DEBUG
-        if(AffichEps) cout<<"\n"<<i<<":\tEpsVolume = "<< G.GetEpsilon();
+        if(AffichEps) std::cout<<"\n"<<i<<":\tEpsVolume = "<< G.GetEpsilon();
 #endif
       }
     }
   }
 #ifdef OCCT_DEBUG
-  if(AffichEps) cout<<"\n-----------------\n"<<iErrorMax<<":\tMaxError = "<<ErrorMax<<"\n";
+  if(AffichEps) std::cout<<"\n-----------------\n"<<iErrorMax<<":\tMaxError = "<<ErrorMax<<"\n";
 #endif
   return ErrorMax;
 }
@@ -367,7 +367,7 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
     }
   } else ErrorMax = volumeProperties(S,Props,Eps,SkipShared, Standard_False);
 #ifdef OCCT_DEBUG
-  if(AffichEps) cout<<"\n\n==================="<<iErrorMax<<":\tMaxEpsVolume = "<<ErrorMax<<"\n";
+  if(AffichEps) std::cout<<"\n\n==================="<<iErrorMax<<":\tMaxEpsVolume = "<<ErrorMax<<"\n";
 #endif
   return ErrorMax;
 } 

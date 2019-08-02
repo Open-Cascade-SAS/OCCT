@@ -263,14 +263,14 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
 	}
 	else {
 #ifdef OCCT_DEBUG
-	  cout << "Error in MakeWire" << endl;
+	  std::cout << "Error in MakeWire" << std::endl;
 #endif 
 	  throw Standard_ConstructionError("BRepFill_Draft");
 	}
       }
       else {
 #ifdef OCCT_DEBUG
-	  cout << "No Free Borders !" << endl;
+	  std::cout << "No Free Borders !" << std::endl;
 #endif 
 	  throw Standard_ConstructionError("BRepFill_Draft");
       }
@@ -899,7 +899,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
     }    
   }
 #ifdef OCCT_DEBUG
-  else cout << "Draft : No assembly !" << endl;
+  else std::cout << "Draft : No assembly !" << std::endl;
 #endif
   return Ok;
 }

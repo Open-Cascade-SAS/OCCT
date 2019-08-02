@@ -60,8 +60,8 @@
 #endif
 
 #ifdef OCCT_DEBUG
-Standard_EXPORT void debrest(const Standard_Integer i)   {cout<<"+ debrest "<<i<<endl;}
-Standard_EXPORT void debrline()   {cout<<"+ debrline"<<endl;}
+Standard_EXPORT void debrest(const Standard_Integer i)   {std::cout<<"+ debrest "<<i<<std::endl;}
+Standard_EXPORT void debrline()   {std::cout<<"+ debrline"<<std::endl;}
 
 extern Standard_Boolean TopOpeBRep_GettraceNVP(Standard_Integer a,Standard_Integer b,Standard_Integer c,Standard_Integer d,Standard_Integer e);
 extern Standard_Boolean GLOBAL_bvpr;
@@ -350,7 +350,7 @@ static Standard_Boolean FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
 
 Standard_EXPORT Standard_Boolean GLOBAL_btcx = Standard_False;
 Standard_EXPORT void debtcxmess(Standard_Integer f1,Standard_Integer f2,Standard_Integer il)
-{cout<<"f1,f2,il : "<<f1<<","<<f2<<","<<il<<endl;cout.flush();}
+{std::cout<<"f1,f2,il : "<<f1<<","<<f2<<","<<il<<std::endl;std::cout.flush();}
 
 //=======================================================================
 //function : ProcessLine
@@ -418,7 +418,7 @@ void TopOpeBRep_FacesFiller::ProcessVPnotonR(const TopOpeBRep_VPointInter& VP)
   if ( !CPIfound ) {
     if (iVP != iINON1 && iVP != iINONn) {
 #ifdef OCCT_DEBUG
-      cout<<"VP "<<iVP<<" on "<<0<<" : point d'intersection anormal : rejet"<<endl;
+      std::cout<<"VP "<<iVP<<" on "<<0<<" : point d'intersection anormal : rejet"<<std::endl;
 #endif
       return;
     }
@@ -678,8 +678,8 @@ void TopOpeBRep_FacesFiller::ProcessRLine()
 
     if ((obRest == EXTERNAL)||(obOO == EXTERNAL)){
 #ifdef OCCT_DEBUG
-      if(obRest==EXTERNAL) cout<<"***********ProcessRLine : faulty parameter on Erest"<<endl;
-      if(obOO==EXTERNAL)   cout<<"***********ProcessRLine : faulty parameter on OOE"<<endl;
+      if(obRest==EXTERNAL) std::cout<<"***********ProcessRLine : faulty parameter on Erest"<<std::endl;
+      if(obOO==EXTERNAL)   std::cout<<"***********ProcessRLine : faulty parameter on OOE"<<std::endl;
 #endif
     }
 

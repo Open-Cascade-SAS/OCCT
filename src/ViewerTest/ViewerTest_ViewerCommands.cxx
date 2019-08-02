@@ -2340,7 +2340,7 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
 {
   if (!ViewerTest_myViews.IsBound1(theViewName))
   {
-    cout << "Wrong view name\n";
+    std::cout << "Wrong view name\n";
     return;
   }
 
@@ -2421,7 +2421,7 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
       ViewerTest_myContexts.UnBind2(aCurrentContext);
     }
   }
-  cout << "3D View - " << theViewName << " was deleted.\n";
+  std::cout << "3D View - " << theViewName << " was deleted.\n";
   if (ViewerTest_EventManager::ToExitOnCloseView())
   {
     Draw_Interprete ("exit");

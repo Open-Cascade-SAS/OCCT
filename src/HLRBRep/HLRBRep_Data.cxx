@@ -105,7 +105,7 @@ public:
   //-- ============================================================
   void SetDim(const Standard_Integer n) {
 #ifdef OCCT_DEBUG
-    cout<<"\n@#@#@#@#@# SetDim "<<n<<endl;
+    std::cout<<"\n@#@#@#@#@# SetDim "<<n<<std::endl;
 #endif
     if(UV) 
       Destroy();
@@ -132,7 +132,7 @@ public:
   }
   //-- ============================================================
   ~TableauRejection() { 
-    //-- cout<<"\n Destructeur TableauRejection"<<endl;
+    //-- std::cout<<"\n Destructeur TableauRejection"<<std::endl;
     Destroy(); 
   } 
   //-- ============================================================
@@ -173,7 +173,7 @@ public:
 	}
 #ifdef OCCT_DEBUG
 	else
-          cout<<" IndUV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+          std::cout<<" IndUV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<std::endl;
 #endif
       }
       for(i=0;i<N;i++) { 
@@ -182,7 +182,7 @@ public:
 	  UV[i]=NULL;
 	}
 #ifdef OCCT_DEBUG
-	else { cout<<" UV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl; } 
+	else { std::cout<<" UV ~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<std::endl; } 
 #endif
       }
       
@@ -211,7 +211,7 @@ public:
       //-- declaration de la Nv ligne de taille : ancienne taille + SIZEUV
       //-- 
       
-      //-- cout<<" \n alloc nbUV["<<i0<<"]="<<nbUV[i0];
+      //-- std::cout<<" \n alloc nbUV["<<i0<<"]="<<nbUV[i0];
 
       Standard_Real    *NvLigneUV  = (Standard_Real *)   malloc((nbUV[i0]+SIZEUV)*sizeof(Standard_Real));
       Standard_Integer *NvLigneInd = (Standard_Integer *)malloc((nbUV[i0]+SIZEUV)*sizeof(Standard_Integer));
@@ -280,7 +280,7 @@ public:
   }
   //-- ============================================================
   void ResetTabBit(const Standard_Integer nbedgs) { 
-    //-- cout<<"\n ResetTabBit"<<endl;
+    //-- std::cout<<"\n ResetTabBit"<<std::endl;
     if(TabBit) { 
       for(Standard_Integer i=0;i<nbedgs;i++) { 
 	if(TabBit[i]) {
@@ -295,7 +295,7 @@ public:
   }
   //-- ============================================================
   void InitTabBit(const Standard_Integer nbedgs) { 
-    //--  cout<<"\n InitTabBit"<<endl;
+    //--  std::cout<<"\n InitTabBit"<<std::endl;
     if(TabBit && nTabBit) { 
       ResetTabBit(nTabBit);
     }
@@ -312,7 +312,7 @@ public:
   }
   //-- ============================================================
   void SetNoIntersection(Standard_Integer i0,Standard_Integer i1) {
-    //  cout<<" SetNoIntersection : "<<i0<<" "<<i1<<endl;
+    //  std::cout<<" SetNoIntersection : "<<i0<<" "<<i1<<std::endl;
     i0--;
     i1--;
     if(i0>i1) { 
@@ -324,7 +324,7 @@ public:
   }
   //-- ============================================================
   Standard_Boolean NoIntersection(Standard_Integer i0,Standard_Integer i1) { 
-    //  cout<<" ??NoIntersection : "<<i0<<" "<<i1<<" ";
+    //  std::cout<<" ??NoIntersection : "<<i0<<" "<<i1<<" ";
     i0--;
     i1--;
     if(i0>i1) { 
@@ -333,10 +333,10 @@ public:
     Standard_Integer c=i1>>5;
     Standard_Integer o=i1 & 31;
     if(TabBit[i0][c] & Mask32[o]) { 
-      //--    cout<<" TRUE "<<endl;
+      //--    std::cout<<" TRUE "<<std::endl;
       return(Standard_True);
     }
-    //--  cout<<" FALSE "<<endl;
+    //--  std::cout<<" FALSE "<<std::endl;
     return(Standard_False);
   }
   //-- ============================================================
@@ -418,7 +418,7 @@ HLRBRep_Data::HLRBRep_Data (const Standard_Integer NV,
 }
 
 void HLRBRep_Data::Destroy() { 
-  //-- cout<<"\n HLRBRep_Data::~HLRBRep_Data()"<<endl;
+  //-- std::cout<<"\n HLRBRep_Data::~HLRBRep_Data()"<<std::endl;
   ((TableauRejection *)myReject)->Destroy();
   delete ((TableauRejection *)myReject);
 }
@@ -1190,7 +1190,7 @@ void HLRBRep_Data::NextInterference ()
 		    GetSingleIntersection(myLE,myFE,su,sv);
 		  if(su!=RealLast()) { 
 		    myIntersector.SimulateOnePoint(myLEData,su,myFEData,sv);
-		    //-- cout<<"p";
+		    //-- std::cout<<"p";
 		  }
 		  else { 
 		    myIntersector.Perform
@@ -1224,13 +1224,13 @@ void HLRBRep_Data::NextInterference ()
 		  else {
 		    myNbPoints = myNbSegments = 0;
 #ifdef OCCT_DEBUG
-		    cout << "HLRBRep_Data::NextInterference : "; 
+		    std::cout << "HLRBRep_Data::NextInterference : "; 
 		    if (myLE == myFE) 
-		      cout << "Edge " << myLE 
-			<< " : Intersection not done" << endl;
+		      std::cout << "Edge " << myLE 
+			<< " : Intersection not done" << std::endl;
 		    else
-		      cout << "Edges " << myLE << " , " << myFE
-			<< " : Intersection not done" << endl;
+		      std::cout << "Edges " << myLE << " , " << myFE
+			<< " : Intersection not done" << std::endl;
 #endif
 		  }
 		}
@@ -1246,7 +1246,7 @@ void HLRBRep_Data::NextInterference ()
 	  }
 	}
 	else { 
-	  //-- cout<<"+";
+	  //-- std::cout<<"+";
 	}
       }
     }
@@ -1391,7 +1391,7 @@ void HLRBRep_Data::EdgeState (const Standard_Real p1,
       stbef = TopAbs_OUT;
       staft = TopAbs_OUT;
 #ifdef OCCT_DEBUG
-    cout << "HLRBRep_Data::EdgeState : undefined" << endl;
+    std::cout << "HLRBRep_Data::EdgeState : undefined" << std::endl;
 #endif
     }
   }
@@ -1399,7 +1399,7 @@ void HLRBRep_Data::EdgeState (const Standard_Real p1,
     stbef = TopAbs_OUT;
     staft = TopAbs_OUT; 
 #ifdef OCCT_DEBUG
-    cout << "HLRBRep_Data::EdgeState : undefined" << endl;
+    std::cout << "HLRBRep_Data::EdgeState : undefined" << std::endl;
 #endif
   }
 }
@@ -1464,8 +1464,8 @@ HLRBRep_Data::HidingStartLevel (const Standard_Integer E,
       Loop = Standard_False;
     else {
 #ifdef OCCT_DEBUG
-      cout << "HLRBRep_Data::HidingStartLevel : ";
-      cout << "Bad Parameter." << endl;
+      std::cout << "HLRBRep_Data::HidingStartLevel : ";
+      std::cout << "Bad Parameter." << std::endl;
 #endif
     }
     It.Next();
@@ -1548,9 +1548,9 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_
 	  gp_Vec Nm = mySLProps.Normal();
 	  if (curv == 0) {
 #ifdef OCCT_DEBUG
-	    cout << "HLRBRep_Data::OrientOutLine " << I;
-	    cout << " Edge " << myFE << " : ";
-	    cout << "CurvatureValue == 0." << endl;
+	    std::cout << "HLRBRep_Data::OrientOutLine " << I;
+	    std::cout << " Edge " << myFE << " : ";
+	    std::cout << "CurvatureValue == 0." << std::endl;
 #endif
 	  }
 	  if (curv > 0)
@@ -1561,9 +1561,9 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_
 	  Nm.Cross(Tg);
 	  if (Tg.Magnitude() < gp::Resolution()) {
 #ifdef OCCT_DEBUG
-	    cout << "HLRBRep_Data::OrientOutLine " << I;
-	    cout << " Edge " << myFE << " : ";
-	    cout << "Tg.Magnitude() == 0." << endl;
+	    std::cout << "HLRBRep_Data::OrientOutLine " << I;
+	    std::cout << " Edge " << myFE << " : ";
+	    std::cout << "Tg.Magnitude() == 0." << std::endl;
 #endif  
 	  }
 	  if (myProj.Perspective())
@@ -1583,9 +1583,9 @@ Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_
 	}
 	else {
 #ifdef OCCT_DEBUG
-	  cout << "HLRBRep_Data::OrientOutLine " << I;
-	  cout << " Edge " << myFE << " : ";
-	  cout << "UVPoint not found, OutLine not Oriented" << endl;
+	  std::cout << "HLRBRep_Data::OrientOutLine " << I;
+	  std::cout << " Edge " << myFE << " : ";
+	  std::cout << "UVPoint not found, OutLine not Oriented" << std::endl;
 #endif
 	}
 	ed1.Used(Standard_True);
@@ -1644,9 +1644,9 @@ void HLRBRep_Data::OrientOthEdge (const Standard_Integer I,
 	}
 #ifdef OCCT_DEBUG
 	else {
-	  cout << "HLRBRep_Data::OrientOthEdge " << I;
-	  cout << " Edge " << myFE << " : ";
-	  cout << "UVPoint not found, Edge not Oriented" << endl;
+	  std::cout << "HLRBRep_Data::OrientOthEdge " << I;
+	  std::cout << " Edge " << myFE << " : ";
+	  std::cout << "UVPoint not found, Edge not Oriented" << std::endl;
 	}
 #else
         (void)I; // avoid compiler warning
@@ -1863,7 +1863,7 @@ HLRBRep_Data::Classify (const Standard_Integer E,
 	    q2 = (q& 0x0000FFFF);
 	    printf("\nmot: %3d    q1 = %+10d    q2=%+10d    Mask : %d",qwe+8,(q1>32768)? (32768-q1) : q1,(q2>32768)? (32768-q2) : q2,q&0x80008000);
 	  }
-	  cout<<endl;
+	  std::cout<<std::endl;
 	}
  #endif
     */

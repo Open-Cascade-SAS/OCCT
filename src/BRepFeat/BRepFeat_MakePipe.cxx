@@ -68,7 +68,7 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePipe::Init" << endl;
+  if (trc) std::cout << "BRepFeat_MakePipe::Init" << std::endl;
 #endif
   mySbase  = Sbase;
   BasisShapeValid();
@@ -111,10 +111,10 @@ void BRepFeat_MakePipe::Init(const TopoDS_Shape& Sbase,
   }
 #ifdef OCCT_DEBUG
   if (trc) {
-    if (myJustFeat)  cout << " Just Feature" << endl;
-    if (myFuse)  cout << " Fuse" << endl;
-    if (!myFuse)  cout << " Cut" << endl;
-    if (!myModify) cout << " Modify = 0" << endl;
+    if (myJustFeat)  std::cout << " Just Feature" << std::endl;
+    if (myFuse)  std::cout << " Fuse" << std::endl;
+    if (!myFuse)  std::cout << " Cut" << std::endl;
+    if (!myModify) std::cout << " Modify = 0" << std::endl;
   }
 #endif 
 }
@@ -130,7 +130,7 @@ void BRepFeat_MakePipe::Add(const TopoDS_Edge& E,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePipe::Add(Edge,face)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePipe::Add(Edge,face)" << std::endl;
 #endif
   TopExp_Explorer exp;
   for (exp.Init(mySbase,TopAbs_FACE);exp.More();exp.Next()) {
@@ -176,7 +176,7 @@ void BRepFeat_MakePipe::Perform()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePipe::Perform()" << endl;
+  if (trc) std::cout << "BRepFeat_MakePipe::Perform()" << std::endl;
 #endif
   mySFrom.Nullify();
   ShapeFromValid();
@@ -232,7 +232,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePipe::Perform(Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePipe::Perform(Until)" << std::endl;
 #endif
   if (Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -276,7 +276,7 @@ void BRepFeat_MakePipe::Perform(const TopoDS_Shape& From,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePipe::Perform(From,Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePipe::Perform(From,Until)" << std::endl;
 #endif
   if (From.IsNull() || Until.IsNull()) {
     throw Standard_ConstructionError();

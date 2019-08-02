@@ -374,7 +374,7 @@ void XmlMNaming_NamedShapeDriver::WriteShapeSection
 //    ostrstream aStream;
 //    aStream.rdbuf() -> setbuf (0, 16380);
     myShapeSet.Write (aStream);
-    aStream << ends;
+    aStream << std::ends;
     char * aStr = (char *)aStream.str();
     LDOM_Text aText = aDoc.createTextNode (aStr);
     delete [] aStr;

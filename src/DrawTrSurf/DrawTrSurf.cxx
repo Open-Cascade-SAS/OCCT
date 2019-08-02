@@ -1430,13 +1430,13 @@ static Standard_Boolean ctest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_Curve));
 }
 
-static void csave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void csave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_Curve) N = Handle(DrawTrSurf_Curve)::DownCast(d);
   GeomTools_CurveSet::PrintCurve(N->GetCurve(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) crestore (istream& is)
+static Handle(Draw_Drawable3D) crestore (std::istream& is)
 {
   Handle(Geom_Curve) G = GeomTools_CurveSet::ReadCurve(is);
   Handle(DrawTrSurf_Curve) N = 
@@ -1460,14 +1460,14 @@ static Standard_Boolean bzctest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_BezierCurve));
 }
 
-static void bzcsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void bzcsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_BezierCurve) 
     N = Handle(DrawTrSurf_BezierCurve)::DownCast(d);
   GeomTools_CurveSet::PrintCurve(N->GetCurve(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) bzcrestore (istream& is)
+static Handle(Draw_Drawable3D) bzcrestore (std::istream& is)
 {
   Handle(Geom_BezierCurve) G = 
     Handle(Geom_BezierCurve)::DownCast (GeomTools_CurveSet::ReadCurve(is));
@@ -1493,14 +1493,14 @@ static Standard_Boolean bsctest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_BSplineCurve));
 }
 
-static void bscsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void bscsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_BSplineCurve) 
     N = Handle(DrawTrSurf_BSplineCurve)::DownCast(d);
   GeomTools_CurveSet::PrintCurve(N->GetCurve(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) bscrestore (istream& is)
+static Handle(Draw_Drawable3D) bscrestore (std::istream& is)
 {
   Handle(Geom_BSplineCurve) G =
     Handle(Geom_BSplineCurve)::DownCast (GeomTools_CurveSet::ReadCurve(is));
@@ -1527,13 +1527,13 @@ static Standard_Boolean c2dtest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_Curve2d));
 }
 
-static void c2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void c2dsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_Curve2d) N = Handle(DrawTrSurf_Curve2d)::DownCast(d);
   GeomTools_Curve2dSet::PrintCurve2d(N->GetCurve(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) c2drestore (istream& is)
+static Handle(Draw_Drawable3D) c2drestore (std::istream& is)
 {
   Handle(Geom2d_Curve) G = GeomTools_Curve2dSet::ReadCurve2d(is);
   Handle(DrawTrSurf_Curve2d) N = 
@@ -1557,14 +1557,14 @@ static Standard_Boolean bzc2dtest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_BezierCurve2d));
 }
 
-static void bzc2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void bzc2dsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_BezierCurve2d) 
     N = Handle(DrawTrSurf_BezierCurve2d)::DownCast(d);
   GeomTools_Curve2dSet::PrintCurve2d(N->GetCurve(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) bzc2drestore (istream& is)
+static Handle(Draw_Drawable3D) bzc2drestore (std::istream& is)
 {
   Handle(Geom2d_BezierCurve) G =
     Handle(Geom2d_BezierCurve)::DownCast (GeomTools_Curve2dSet::ReadCurve2d(is));
@@ -1590,14 +1590,14 @@ static Standard_Boolean bsc2dtest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_BSplineCurve2d));
 }
 
-static void bsc2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void bsc2dsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_BSplineCurve2d) 
     N = Handle(DrawTrSurf_BSplineCurve2d)::DownCast(d);
   GeomTools_Curve2dSet::PrintCurve2d(N->GetCurve(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) bsc2drestore (istream& is)
+static Handle(Draw_Drawable3D) bsc2drestore (std::istream& is)
 {
   Handle(Geom2d_BSplineCurve) G =
     Handle(Geom2d_BSplineCurve)::DownCast (GeomTools_Curve2dSet::ReadCurve2d(is));
@@ -1624,13 +1624,13 @@ static Standard_Boolean stest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_Surface));
 }
 
-static void ssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void ssave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_Surface) N = Handle(DrawTrSurf_Surface)::DownCast(d);
   GeomTools_SurfaceSet::PrintSurface(N->GetSurface(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) srestore (istream& is)
+static Handle(Draw_Drawable3D) srestore (std::istream& is)
 {
   Handle(Geom_Surface) G = GeomTools_SurfaceSet::ReadSurface(is);
   Handle(DrawTrSurf_Surface) N = 
@@ -1657,14 +1657,14 @@ static Standard_Boolean bzstest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_BezierSurface));
 }
 
-static void bzssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void bzssave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_BezierSurface) 
     N = Handle(DrawTrSurf_BezierSurface)::DownCast(d);
   GeomTools_SurfaceSet::PrintSurface(N->GetSurface(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) bzsrestore (istream& is)
+static Handle(Draw_Drawable3D) bzsrestore (std::istream& is)
 {
   Handle(Geom_BezierSurface) G =
     Handle(Geom_BezierSurface)::DownCast (GeomTools_SurfaceSet::ReadSurface(is));
@@ -1692,14 +1692,14 @@ static Standard_Boolean bsstest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_BSplineSurface));
 }
 
-static void bsssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void bsssave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_BSplineSurface) 
     N = Handle(DrawTrSurf_BSplineSurface)::DownCast(d);
   GeomTools_SurfaceSet::PrintSurface(N->GetSurface(),OS,Standard_True);
 }
 
-static Handle(Draw_Drawable3D) bssrestore (istream& is)
+static Handle(Draw_Drawable3D) bssrestore (std::istream& is)
 {
   Handle(Geom_BSplineSurface) G =
     Handle(Geom_BSplineSurface)::DownCast (GeomTools_SurfaceSet::ReadSurface(is));
@@ -1737,16 +1737,16 @@ static Standard_Boolean pnttest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_Point));
 }
 
-static void pntsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void pntsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_Point) 
     N = Handle(DrawTrSurf_Point)::DownCast(d);
 #if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
-  ios::fmtflags F = OS.flags();
-  OS.setf(ios::scientific,ios::floatfield);
+  std::ios::fmtflags F = OS.flags();
+  OS.setf(std::ios::scientific,std::ios::floatfield);
   OS.precision(15);
 #else
-  long form = OS.setf(ios::scientific);
+  long form = OS.setf(std::ios::scientific);
   std::streamsize prec = OS.precision(15);
 #endif
   gp_Pnt P = N->Point();
@@ -1766,7 +1766,7 @@ static void pntsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 #endif
 }
 
-static Handle(Draw_Drawable3D) pntrestore (istream& is)
+static Handle(Draw_Drawable3D) pntrestore (std::istream& is)
 {
   Standard_Integer is3d;
   is >> is3d;
@@ -1799,16 +1799,16 @@ static Standard_Boolean triatest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_Triangulation));
 }
 
-static void triasave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void triasave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_Triangulation) 
     T = Handle(DrawTrSurf_Triangulation)::DownCast(d);
 #if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
-  ios::fmtflags F = OS.flags();
-  OS.setf(ios::scientific,ios::floatfield);
+  std::ios::fmtflags F = OS.flags();
+  OS.setf(std::ios::scientific,std::ios::floatfield);
   OS.precision(15);
 #else
-  long form = OS.setf(ios::scientific);
+  long form = OS.setf(std::ios::scientific);
   std::streamsize prec = OS.precision(15);
 #endif
   Poly::Write(T->Triangulation(),OS);
@@ -1820,7 +1820,7 @@ static void triasave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 #endif
 }
 
-static Handle(Draw_Drawable3D) triarestore (istream& is)
+static Handle(Draw_Drawable3D) triarestore (std::istream& is)
 {
   return new DrawTrSurf_Triangulation(Poly::ReadTriangulation(is));
 }
@@ -1840,16 +1840,16 @@ static Standard_Boolean poly3dtest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_Polygon3D));
 }
 
-static void poly3dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void poly3dsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_Polygon3D) 
     T = Handle(DrawTrSurf_Polygon3D)::DownCast(d);
 #if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
-  ios::fmtflags F = OS.flags();
-  OS.setf(ios::scientific,ios::floatfield);
+  std::ios::fmtflags F = OS.flags();
+  OS.setf(std::ios::scientific,std::ios::floatfield);
   OS.precision(15);
 #else
-  long form = OS.setf(ios::scientific);
+  long form = OS.setf(std::ios::scientific);
   std::streamsize prec = OS.precision(15);
 #endif
   Poly::Write(T->Polygon3D(),OS);
@@ -1861,7 +1861,7 @@ static void poly3dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 #endif
 }
 
-static Handle(Draw_Drawable3D) poly3drestore (istream& is)
+static Handle(Draw_Drawable3D) poly3drestore (std::istream& is)
 {
   return new DrawTrSurf_Polygon3D(Poly::ReadPolygon3D(is));
 }
@@ -1880,16 +1880,16 @@ static Standard_Boolean poly2dtest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DrawTrSurf_Polygon2D));
 }
 
-static void poly2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void poly2dsave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DrawTrSurf_Polygon2D) 
     T = Handle(DrawTrSurf_Polygon2D)::DownCast(d);
 #if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
-  ios::fmtflags F = OS.flags();
-  OS.setf(ios::scientific, ios::floatfield);
+  std::ios::fmtflags F = OS.flags();
+  OS.setf(std::ios::scientific, std::ios::floatfield);
   OS.precision(15);
 #else
-  long form = OS.setf(ios::scientific);
+  long form = OS.setf(std::ios::scientific);
   std::streamsize prec = OS.precision(15);
 #endif
   Poly::Write(T->Polygon2D(),OS);
@@ -1901,7 +1901,7 @@ static void poly2dsave(const Handle(Draw_Drawable3D)&d, ostream& OS)
 #endif
 }
 
-static Handle(Draw_Drawable3D) poly2drestore (istream& is)
+static Handle(Draw_Drawable3D) poly2drestore (std::istream& is)
 {
   return new DrawTrSurf_Polygon2D(Poly::ReadPolygon2D(is));
 }

@@ -83,7 +83,7 @@ void DrawDim_Radius::DrawOn(Draw_Display& dis) const
 //void AIS_RadiusDimension::ComputeOneFaceRadius(const Handle(Prs3d_Presentation)& aPresentation)
 //{
 #ifdef OCCT_DEBUG
-  cout << "entree dans computeonefaceradius"<< endl;
+  std::cout << "entree dans computeonefaceradius"<< std::endl;
 #endif
   BRepAdaptor_Surface surfAlgo (TopoDS::Face(myFShape));
   Standard_Real uFirst, uLast, vFirst, vLast;

@@ -165,21 +165,21 @@ void IGESDraw_ToolCircArraySubfigure::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_CircArraySubfigure" << endl;
+  S << "IGESDraw_CircArraySubfigure" << Message_EndLine;
 
   S << "Base Entity : ";
   dumper.Dump(ent->BaseEntity(),S, tempSubLevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Total Number Of Possible Instance Locations : " << ent->NbLocations()
-    << endl;
+    << Message_EndLine;
   S << "Imaginary Circle. Radius : " << ent->CircleRadius() << "  Center : ";
-  IGESData_DumpXYZL(S, level, ent->CenterPoint(), ent->Location());  S << endl;
+  IGESData_DumpXYZL(S, level, ent->CenterPoint(), ent->Location());  S << Message_EndLine;
   S << "Start Angle (in radians) : " << ent->StartAngle() << "  ";
-  S << "Delta Angle (in radians) : " << ent->DeltaAngle() << endl;
+  S << "Delta Angle (in radians) : " << ent->DeltaAngle() << Message_EndLine;
   S << "Do-Dont Flag : ";
-  if (ent->DoDontFlag())     S << "Dont" << endl;
-  else                       S << "Do" << endl;
+  if (ent->DoDontFlag())     S << "Dont" << Message_EndLine;
+  else                       S << "Do" << Message_EndLine;
   S << "The Do-Dont List : ";
   IGESData_DumpVals(S ,level,1, ent->ListCount(),ent->ListPosition);
-  S << endl;
+  S << Message_EndLine;
 }

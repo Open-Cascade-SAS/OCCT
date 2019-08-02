@@ -391,8 +391,8 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
       mytol2d = Max(TheTol2d, mytol2d);
     }
 #ifdef OCCT_DEBUG
-    cout << " Tolerances obtenues  --> 3d : "<< mytol3d << endl;
-    cout << "                      --> 2d : "<< mytol2d << endl;
+    std::cout << " Tolerances obtenues  --> 3d : "<< mytol3d << std::endl;
+    std::cout << "                      --> 2d : "<< mytol2d << std::endl;
 #endif
     multC = theapprox.SplineValue();
   }  
@@ -436,8 +436,8 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
       theapprox.Perform(multL);
       theapprox.Error(mytol3d,mytol2d);
 #ifdef OCCT_DEBUG
-      cout << " Tolerances obtenues  --> 3d : "<< mytol3d << endl;
-      cout << "                      --> 2d : "<< mytol2d << endl;
+      std::cout << " Tolerances obtenues  --> 3d : "<< mytol3d << std::endl;
+      std::cout << "                      --> 2d : "<< mytol2d << std::endl;
 #endif    
       tol3dreached = mytol3d;
       tol2dreached = mytol2d;
@@ -498,8 +498,8 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
       mytol3d = Variation.MaxError();
       mytol2d = 0.;
 #ifdef OCCT_DEBUG
-      cout << " Tolerances obtenues  --> 3d : "<< mytol3d << endl;
-      cout << "                      --> 2d : "<< mytol2d << endl;
+      std::cout << " Tolerances obtenues  --> 3d : "<< mytol3d << std::endl;
+      std::cout << "                      --> 2d : "<< mytol2d << std::endl;
 #endif    
       tol3dreached = mytol3d;
       tol2dreached = mytol2d;
@@ -827,8 +827,8 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
 //  modified by EAP Thu Jan  3 15:45:27 2002 ___END___
   }
 #ifdef OCCT_DEBUG
-  cout << "   Tolerances obtenues  --> 3d : "<< mytol3d << endl;
-  cout << "                        --> 2d : "<< mytol2d << endl;
+  std::cout << "   Tolerances obtenues  --> 3d : "<< mytol3d << std::endl;
+  std::cout << "                        --> 2d : "<< mytol2d << std::endl;
 #endif
   tol3dreached = mytol3d;
   tol2dreached = mytol2d;
@@ -852,8 +852,8 @@ void AppBlend_AppSurf::Perform(const Handle(TheLine)& Lin,
 			      tabVKnots->ChangeArray1()
 			      );
 #ifdef OCCT_DEBUG
-      cout << "Warning: AppBlend_AppSurf::Perform(), bad length of aParamSeq: " <<
-	aParamSeq.Length() << " instead of " << tabVKnots->Length() << endl;
+      std::cout << "Warning: AppBlend_AppSurf::Perform(), bad length of aParamSeq: " <<
+	aParamSeq.Length() << " instead of " << tabVKnots->Length() << std::endl;
 #endif
     }
     else

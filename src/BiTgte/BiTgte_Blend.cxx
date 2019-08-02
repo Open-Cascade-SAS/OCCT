@@ -794,7 +794,7 @@ static void CutEdge (const TopoDS_Edge&          E,
     SV.Remove(1);
     
     if ( V1.IsSame(V2)) {
-      cout << "Vertex Confondus dans CutEdges" << endl;
+      std::cout << "Vertex Confondus dans CutEdges" << std::endl;
       continue;
     }
     //-------------------------------------------
@@ -1065,12 +1065,12 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
 
 #ifdef OCCT_DEBUG
   ChFi3d_ResultChron(cl_total, t_total);
-  cout<<endl; 
-  cout<<"Blend_PERFORM: temps total "<<t_total<<" s  dont :"<<endl;
-  cout<<"- ComputeCenters  "<<t_center<<" s"<<endl;  
-  cout<<"- ComputeSurfaces "<<t_surface<<" s"<<endl;
-  cout<<"----> MakeCurve   "<<t_mkcurve<<" s"<<endl;
-  if ( myBuildShape)  cout<<"- ComputeShape "<<t_shape<<" s"<<endl;
+  std::cout<<std::endl; 
+  std::cout<<"Blend_PERFORM: temps total "<<t_total<<" s  dont :"<<std::endl;
+  std::cout<<"- ComputeCenters  "<<t_center<<" s"<<std::endl;  
+  std::cout<<"- ComputeSurfaces "<<t_surface<<" s"<<std::endl;
+  std::cout<<"----> MakeCurve   "<<t_mkcurve<<" s"<<std::endl;
+  if ( myBuildShape)  std::cout<<"- ComputeShape "<<t_shape<<" s"<<std::endl;
 #endif
 
   myDone = Standard_True;
@@ -1852,7 +1852,7 @@ void BiTgte_Blend::ComputeCenters()
 
 #ifdef OCCT_DEBUG
   if ( myResult.IsNull()) {
-    cout << " No Lines of Generated Centers" << endl;
+    std::cout << " No Lines of Generated Centers" << std::endl;
   }
 #ifdef DRAW
   else {
@@ -2014,8 +2014,8 @@ void BiTgte_Blend::ComputeSurfaces()
 	BRep_Tool::CurveOnSurface(CurCutE,F2,f2,l2);
       if ( PC1.IsNull() || PC2.IsNull()) {
 #ifdef OCCT_DEBUG
-	cout << "No PCurves on Intersections : No tubes constructed";
-	cout << endl;
+	std::cout << "No PCurves on Intersections : No tubes constructed";
+	std::cout << std::endl;
 #endif	
 	continue;
       }
@@ -2069,7 +2069,7 @@ void BiTgte_Blend::ComputeSurfaces()
 	if (MKE.IsDone()) 
 	  E1 = MKE.Edge();
 	else  {
-	  cout << "Edge Not Done" << endl;
+	  std::cout << "Edge Not Done" << std::endl;
 	  E1 = MKE.Edge();
 	}
 	  
@@ -2108,7 +2108,7 @@ void BiTgte_Blend::ComputeSurfaces()
 	if (MKE.IsDone()) 
 	  E2 = MKE.Edge();
 	else {
-	  cout << "edge not Done" << endl;
+	  std::cout << "edge not Done" << std::endl;
 	  E2 = MKE.Edge();
 	}
 	KPartCurve3d(E2,PC2,GS2);
@@ -2591,8 +2591,8 @@ Standard_Boolean BiTgte_Blend::Intersect
 
 #ifdef OCCT_DEBUG
     if ( F1surBordLibre && F2surBordLibre) {
-      cout << "Rejection : 2 tubes on free border are not intersected";
-      cout << endl;
+      std::cout << "Rejection : 2 tubes on free border are not intersected";
+      std::cout << std::endl;
     }
 #endif
 
@@ -2630,9 +2630,9 @@ Standard_Boolean BiTgte_Blend::Intersect
 	  Standard_Boolean IsOnR2 = IsOnRestriction(V1,CurE,F2,E2);
 #ifdef OCCT_DEBUG
 	  if (IsOnR1 && IsOnR2) {
-	    cout << "Leave in the same tps on 2 faces, ";
-	    cout << "propagation only on free border";
-	    cout << endl;
+	    std::cout << "Leave in the same tps on 2 faces, ";
+	    std::cout << "propagation only on free border";
+	    std::cout << std::endl;
 	  }
 #endif
 	  if ( IsOnR1 ) {
@@ -2659,9 +2659,9 @@ Standard_Boolean BiTgte_Blend::Intersect
 	  // A priori, only facet is closed.
 #ifdef OCCT_DEBUG
 	  if (IsOnR1 && IsOnR2) {
-	    cout << "Leave with the same tps on 2 faces, ";
-	    cout << "propagate only if the border is free";
-	    cout << endl;
+	    std::cout << "Leave with the same tps on 2 faces, ";
+	    std::cout << "propagate only if the border is free";
+	    std::cout << std::endl;
 	  }
 #endif
 	  if ( IsOnR1) {

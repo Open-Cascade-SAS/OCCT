@@ -105,45 +105,45 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Inte
   Standard_Boolean isvertex2 = IsVertex(2); TopoDS_Vertex V2; if (isvertex2) V2 = Vertex(2);
 
   Standard_Integer ia1,ia2; SegmentAncestors(ia1,ia2);
-  cout<<endl<<"p2d "<<index<<"  k="<<keep<<" pos="<<pos;
+  std::cout<<std::endl<<"p2d "<<index<<"  k="<<keep<<" pos="<<pos;
   switch (sts) {
-  case TopOpeBRep_P2DUNK : cout<<" sts=u";break;
-  case TopOpeBRep_P2DSGF : cout<<" sts=f";break;
-  case TopOpeBRep_P2DSGL : cout<<" sts=l";break;
+  case TopOpeBRep_P2DUNK : std::cout<<" sts=u";break;
+  case TopOpeBRep_P2DSGF : std::cout<<" sts=f";break;
+  case TopOpeBRep_P2DSGL : std::cout<<" sts=l";break;
   case TopOpeBRep_P2DNEW :
-    cout<<" sts=n";
-    cout<<" anc="<<ia1<<","<<ia2;
+    std::cout<<" sts=n";
+    std::cout<<" anc="<<ia1<<","<<ia2;
     break;
-  case TopOpeBRep_P2DINT : cout<<" sts=i";break;
+  case TopOpeBRep_P2DINT : std::cout<<" sts=i";break;
   } // switch
-  cout<<" cfg=";TopOpeBRepDS::Print(myedgesconfig,cout);
-  cout<<endl;
+  std::cout<<" cfg=";TopOpeBRepDS::Print(myedgesconfig,std::cout);
+  std::cout<<std::endl;
   
   gp_Pnt P3D = Value();
 #ifdef DRAW
-  cout<<FUN_tool_PRODINP()<<"P"<<Index()<<" "<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z()<<"; # tol = "<<tol<<endl;
+  std::cout<<FUN_tool_PRODINP()<<"P"<<Index()<<" "<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z()<<"; # tol = "<<tol<<std::endl;
 #endif
-  cout<<"     on (1) :";
-  cout<<" vertex(1) : ";
-  cout<<(isvertex1?1:0);
-  cout<<"  T "<<E1index<<"(1)";
-  cout<<" par(1) = "<<par1;
+  std::cout<<"     on (1) :";
+  std::cout<<" vertex(1) : ";
+  std::cout<<(isvertex1?1:0);
+  std::cout<<"  T "<<E1index<<"(1)";
+  std::cout<<" par(1) = "<<par1;
   if (isvertex1) {
     P3D = BRep_Tool::Pnt(V1);
-    cout<<" PV(1) : "<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z();
+    std::cout<<" PV(1) : "<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z();
   }
-  cout<<endl;
+  std::cout<<std::endl;
   
-  cout<<"     on (2) :";
-  cout<<" vertex(2) : ";
-  cout<<(isvertex2?1:0);
-  cout<<"  T "<<E2index<<"(2)";
-  cout<<" par(2) = "<<par2;
+  std::cout<<"     on (2) :";
+  std::cout<<" vertex(2) : ";
+  std::cout<<(isvertex2?1:0);
+  std::cout<<"  T "<<E2index<<"(2)";
+  std::cout<<" par(2) = "<<par2;
   if (isvertex2) {
     P3D = BRep_Tool::Pnt(V2);
-    cout<<" PV(2) : "<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z();
+    std::cout<<" PV(2) : "<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z();
   }
-  cout<<endl;
+  std::cout<<std::endl;
 }
 #else
 void TopOpeBRep_Point2d::Dump(const Standard_Integer,const Standard_Integer) const {}

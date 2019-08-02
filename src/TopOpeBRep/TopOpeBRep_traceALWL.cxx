@@ -96,13 +96,13 @@ void TopOpeBRep_ALWL::Set(const Standard_Boolean b,
 
 void TopOpeBRep_ALWL::Print()
 {
-  cout<<myname<<" defined :";
+  std::cout<<myname<<" defined :";
   Standard_Integer n = 0;
-  if (mydefdef) { cout<<" Def = "<<mydeflectionmax; n++; }
-  if (mypasdef) { cout<<" Pas = "<<mypasUVmax; n++; }
-  if (mynbpdef) { cout<<" Nbp = "<<mynbpointsmax; n++; }
-  if (!n) cout<<" none";
-  cout<<endl;
+  if (mydefdef) { std::cout<<" Def = "<<mydeflectionmax; n++; }
+  if (mypasdef) { std::cout<<" Pas = "<<mypasUVmax; n++; }
+  if (mynbpdef) { std::cout<<" Nbp = "<<mynbpointsmax; n++; }
+  if (!n) std::cout<<" none";
+  std::cout<<std::endl;
 }
 
 static TopOpeBRep_ALWL TopOpeBRep_contextALWL

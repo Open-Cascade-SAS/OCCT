@@ -37,7 +37,7 @@ static Standard_Integer qcurve (Draw_Interpretor&, Standard_Integer theArgsNb, c
 {
   if (theArgsNb < 5)
   {
-    cout << "Error: wrong number of arguments.\n";
+    std::cout << "Error: wrong number of arguments.\n";
     return 1;
   }
 
@@ -61,7 +61,7 @@ static Standard_Integer qcurve (Draw_Interpretor&, Standard_Integer theArgsNb, c
   {
     if (theArgsNb < 6)
     {
-      cout << "Error: wrong number of arguments.\n";
+      std::cout << "Error: wrong number of arguments.\n";
       return 1;
     }
     aResult2d = new Geom2d_Line (gp_Pnt2d (Draw::Atof (theArgVec[2]), Draw::Atof (theArgVec[3])),
@@ -71,7 +71,7 @@ static Standard_Integer qcurve (Draw_Interpretor&, Standard_Integer theArgsNb, c
   }
   else
   {
-    cout << "Error: wrong command name.\n";
+    std::cout << "Error: wrong command name.\n";
     return 1;
   }
 
@@ -95,7 +95,7 @@ static Standard_Integer solutions (Draw_Interpretor& theDI, GccAna_Circ2d3Tan& t
 {
   if (!theCirTan3.IsDone())
   {
-    cout << "GccAna_Circ2d3Tan is not done";
+    std::cout << "GccAna_Circ2d3Tan is not done";
     return 1;
   }
 
@@ -159,7 +159,7 @@ static Standard_Integer circ2d3Tan (Draw_Interpretor& theDI, Standard_Integer th
 {
   if (theArgsNb < 5)
   {
-    cout << "Error: wrong number of arguments.\n";
+    std::cout << "Error: wrong number of arguments.\n";
     return 1;
   }
 
@@ -183,7 +183,7 @@ static Standard_Integer circ2d3Tan (Draw_Interpretor& theDI, Standard_Integer th
   {
     if (!anIsPoint1 || !anIsPoint2 || !anIsPoint3)
     {
-      cout << "Error: wrong points definition.\n";
+      std::cout << "Error: wrong points definition.\n";
       return 1;
     }
     GccAna_Circ2d3Tan aCircBuilder (aPoint1, aPoint2, aPoint3, aTolerance);
@@ -195,7 +195,7 @@ static Standard_Integer circ2d3Tan (Draw_Interpretor& theDI, Standard_Integer th
   {
     if (!anIsPoint2 || !anIsPoint3)
     {
-      cout << "Error: wrong points definition.\n";
+      std::cout << "Error: wrong points definition.\n";
       return 1;
     }
     Geom2dAdaptor_Curve anAdaptorCurve1 (aQCurve1->GetCurve());
@@ -211,7 +211,7 @@ static Standard_Integer circ2d3Tan (Draw_Interpretor& theDI, Standard_Integer th
       GccAna_Circ2d3Tan aCircBuilder (aQualifiedLin1, aPoint2, aPoint3, aTolerance);
       return solutions (theDI, aCircBuilder, theArgVec[1]);
     }
-    cout << "Error: wrong curve type.\n";
+    std::cout << "Error: wrong curve type.\n";
     return 1;
   }
 
@@ -220,7 +220,7 @@ static Standard_Integer circ2d3Tan (Draw_Interpretor& theDI, Standard_Integer th
   {
     if (!anIsPoint3)
     {
-      cout << "Error: wrong point definition.\n";
+      std::cout << "Error: wrong point definition.\n";
       return 1;
     }
     Geom2dAdaptor_Curve anAdaptorCurve1 (aQCurve1->GetCurve());
@@ -246,7 +246,7 @@ static Standard_Integer circ2d3Tan (Draw_Interpretor& theDI, Standard_Integer th
       GccAna_Circ2d3Tan aCircBuilder (aQualifiedLin1, aQualifiedLin2, aPoint3, aTolerance);
       return solutions (theDI, aCircBuilder, theArgVec[1]);
     }
-    cout << "Error: wrong curve type.\n";
+    std::cout << "Error: wrong curve type.\n";
     return 1;
   }
 
@@ -292,7 +292,7 @@ static Standard_Integer circ2d3Tan (Draw_Interpretor& theDI, Standard_Integer th
     return solutions (theDI, aCircBuilder, theArgVec[1]);
   }
 
-  cout << "Error: wrong curve type.\n";
+  std::cout << "Error: wrong curve type.\n";
   return 1;
 }
 

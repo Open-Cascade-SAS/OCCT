@@ -140,12 +140,12 @@ static int deja = 0;
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
 
   SplitLine (headerline);
-  if (theline.Length() != 4) { sout<<"File Form Incorrect"<<endl; return Standard_False; }
+  if (theline.Length() != 4) { sout<<"File Form Incorrect"<<Message_EndLine; return Standard_False; }
   Handle(Standard_Type) sesstype = thesess->DynamicType();
   if (!theline.Value(1).IsEqual("!XSTEP")  ||
       !theline.Value(2).IsEqual("SESSION") ||
       !theline.Value(4).IsEqual(sesstype->Name()) )
-    { sout<<"Lineno."<<thenl<<" : File Header Description Incorrect"<<endl; return Standard_False; }
+    { sout<<"Lineno."<<thenl<<" : File Header Description Incorrect"<<Message_EndLine; return Standard_False; }
 //   Value(3) definit la VERSION du format de fichier
   return Standard_True;
 }
@@ -425,12 +425,12 @@ static int deja = 0;
   thenames.Clear();
 //  ..  Donnees generales, controle
   if (!ReadLine()) return 1;
-  if (theline.Length() != 4) { sout<<"File Form Incorrect"<<endl; return 1; }
+  if (theline.Length() != 4) { sout<<"File Form Incorrect"<<Message_EndLine; return 1; }
   Handle(Standard_Type) sesstype = thesess->DynamicType();
   if (!theline.Value(1).IsEqual("!XSTEP")  ||
       !theline.Value(2).IsEqual("SESSION") ||
       !theline.Value(4).IsEqual(sesstype->Name()) )
-    { sout<<"Lineno."<<thenl<<" : File Header Description Incorrect"<<endl; return 1; }
+    { sout<<"Lineno."<<thenl<<" : File Header Description Incorrect"<<Message_EndLine; return 1; }
 //   Value(3) definit la VERSION du format de fichier
   if (!ReadLine()) return 1;
 
@@ -444,15 +444,15 @@ static int deja = 0;
     if (ungen.Value(1) == '!') break;  // fin des generaux
     if (ungen.IsEqual("ErrorHandle")) {
       if (theline.Length() != 2)
-	{ sout<<"Lineno."<<thenl<<" : ErrorHandle Description Incorrect"<<endl; continue; }
+	{ sout<<"Lineno."<<thenl<<" : ErrorHandle Description Incorrect"<<Message_EndLine; continue; }
       if      (theline.Value(2).IsEqual("0"))
 	thesess->SetErrorHandle(Standard_False);
       else if (theline.Value(2).IsEqual("1"))
 	thesess->SetErrorHandle(Standard_True);
-      else { sout<<"Lineno."<<thenl<<" : ErrorHandle Incorrect : "<<theline.Value(2)<<endl; continue; }
+      else { sout<<"Lineno."<<thenl<<" : ErrorHandle Incorrect : "<<theline.Value(2)<<Message_EndLine; continue; }
       continue;
     }
-    else sout<<"Lineno."<<thenl<<" : Unknown General Parameter : "<<ungen<<" , ignored"<<endl;
+    else sout<<"Lineno."<<thenl<<" : Unknown General Parameter : "<<ungen<<" , ignored"<<Message_EndLine;
   }
 
 //  ..  IntParams
@@ -462,7 +462,7 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() != 2)
-      { sout<<"Lineno."<<thenl<<" : An Integer Parameter is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : An Integer Parameter is badly defined"<<Message_EndLine; continue; }
     Handle(IFSelect_IntParam) par = new IFSelect_IntParam;
     par->SetValue ( atoi(theline.Value(2).ToCString()) );
     AddItem (par);
@@ -474,7 +474,7 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() != 2)
-      { sout<<"Lineno."<<thenl<<" : A Text Parameter is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Text Parameter is badly defined"<<Message_EndLine; continue; }
 //    Attention, un texte peut contenir des blancs ...  repartir de line(thenl)
     TCollection_AsciiString oneline = thelist.Value(thenl);
     Standard_Integer iw = 0, inc = 0;
@@ -494,7 +494,7 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() < 2)
-      { sout<<"Lineno."<<thenl<<" : A Selection is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Selection is badly defined"<<Message_EndLine; continue; }
 //  ..  Analyse de certains cas generaux
     Handle(IFSelect_IntParam) low,up;
     Standard_Integer firstown = 3;
@@ -518,12 +518,12 @@ static int deja = 0;
     if (item.IsNull()) continue;
     DeclareAndCast(IFSelect_SelectExtract,sxt,item);
     if (!sxt.IsNull()) {
-      if (direct == 0) sout<<"Lineno."<<thenl<<" : A SelectExtract is badly defined"<<endl;
+      if (direct == 0) sout<<"Lineno."<<thenl<<" : A SelectExtract is badly defined"<<Message_EndLine;
       else  sxt->SetDirect( (direct > 0) );
     }
     DeclareAndCast(IFSelect_SelectAnyList,sli,item);
     if (!sli.IsNull()) {
-      if (numlist == 0) sout<<"Lineno."<<thenl<<" : A SelectAnyList is badly defined"<<endl;
+      if (numlist == 0) sout<<"Lineno."<<thenl<<" : A SelectAnyList is badly defined"<<Message_EndLine;
       else sli->SetRange(low,up);
     }
     AddItem(item);
@@ -535,29 +535,29 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() < 3)
-      { sout<<"Lineno."<<thenl<<" : A Selection Source List is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Selection Source List is badly defined"<<Message_EndLine; continue; }
     DeclareAndCast(IFSelect_Selection,sel,ItemValue(1));
     if (sel.IsNull())
-      { sout<<"Lineno."<<thenl<<" : A Source List is not for a Selection"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Source List is not for a Selection"<<Message_EndLine; continue; }
     Standard_Integer nbs = atoi(theline.Value(2).ToCString());
 //  .. Differents cas reconnus
     DeclareAndCast(IFSelect_SelectExtract,sxt,sel);
     if (!sxt.IsNull()) {
       if (nbs > 1)
-	sout<<"Lineno."<<thenl<<" : SelectExtract, more than one source, followings ignored"<<endl;
+	sout<<"Lineno."<<thenl<<" : SelectExtract, more than one source, followings ignored"<<Message_EndLine;
       DeclareAndCast(IFSelect_Selection,source,ItemValue(3));
       sxt->SetInput(source);
     }
     DeclareAndCast(IFSelect_SelectDeduct,sdt,sel);
     if (!sdt.IsNull()) {
       if (nbs > 1)
-	sout<<"Lineno."<<thenl<<" : SelectDeduct, more than one source, followings ignored"<<endl;
+	sout<<"Lineno."<<thenl<<" : SelectDeduct, more than one source, followings ignored"<<Message_EndLine;
       sdt->SetInput(GetCasted(IFSelect_Selection,ItemValue(3)));
     }
     DeclareAndCast(IFSelect_SelectControl,sct,sel);
     if (!sct.IsNull()) {
       if (nbs != 2)
-	sout<<"Lineno."<<thenl<<" : SelectControl, not two sources, followings ignored"<<endl;
+	sout<<"Lineno."<<thenl<<" : SelectControl, not two sources, followings ignored"<<Message_EndLine;
       sct->SetMainInput   (GetCasted(IFSelect_Selection,ItemValue(3)));
       sct->SetSecondInput (GetCasted(IFSelect_Selection,ItemValue(4)));
     }
@@ -574,13 +574,13 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() < 2)
-      { sout<<"Lineno."<<thenl<<" : A Modifier is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Modifier is badly defined"<<Message_EndLine; continue; }
     Handle(Standard_Transient) item;   // a fournir ...
     ReadOwn(item);
     if (item.IsNull()) continue;
     DeclareAndCast(IFSelect_GeneralModifier,modif,item);
     if (modif.IsNull())
-      { sout<<"Lineno."<<thenl<<" : A Modifier has not been Recognized"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Modifier has not been Recognized"<<Message_EndLine; continue; }
     AddItem(modif,Standard_False);  // active plus tard
   }
 
@@ -590,13 +590,13 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() < 2)
-      { sout<<"Lineno."<<thenl<<" : A Transformer is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Transformer is badly defined"<<Message_EndLine; continue; }
     Handle(Standard_Transient) item;   // a fournir ...
     ReadOwn(item);
     if (item.IsNull()) continue;
     DeclareAndCast(IFSelect_Transformer,trf,item);
     if (trf.IsNull())
-      { sout<<"Lineno."<<thenl<<" : A Transformer has not been Recognized"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Transformer has not been Recognized"<<Message_EndLine; continue; }
     AddItem(trf,Standard_False);  // active plus tard
   }
 
@@ -606,7 +606,7 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() < 3)
-      { sout<<"Lineno."<<thenl<<" : A Dispatch is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Dispatch is badly defined"<<Message_EndLine; continue; }
     DeclareAndCast(IFSelect_Selection,input,ItemValue(3));
     SetLastGeneral(3);
     Handle(Standard_Transient) item;   // a fournir ...
@@ -614,7 +614,7 @@ static int deja = 0;
     if (item.IsNull()) continue;
     DeclareAndCast(IFSelect_Dispatch,disp,item);
     if (disp.IsNull())
-      { sout<<"Lineno."<<thenl<<" : A Dispatch has not been Recognized"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A Dispatch has not been Recognized"<<Message_EndLine; continue; }
     AddItem(disp);
     thesess->SetItemSelection(disp,input);
   }
@@ -631,7 +631,7 @@ static int deja = 0;
     if (!ReadLine()) return 1;
     if (theline.Value(1).Value(1) == '!') break;    // liste suivante
     if (theline.Length() != 2)
-      { sout<<"Lineno."<<thenl<<" : A File Root is badly defined"<<endl; continue; }
+      { sout<<"Lineno."<<thenl<<" : A File Root is badly defined"<<Message_EndLine; continue; }
     DeclareAndCast(IFSelect_Dispatch,disp,ItemValue(1));
     thesess->SetFileRoot (disp,theline.Value(2).ToCString());
   }
@@ -644,20 +644,20 @@ static int deja = 0;
 	      (formod == 0 && theline.Value(1).IsEqual("!FILEMODIFIERS"))  ) );
 //    if ( formod == 1 && ( theline.Length() != 1 ||
 //			 !theline.Value(1).IsEqual("!MODELMODIFIERS")) )
-//      { sout<<"Lineno."<<thenl<<" : Model Modifier List Incorrect"<<endl;  return 1; }
+//      { sout<<"Lineno."<<thenl<<" : Model Modifier List Incorrect"<<std::endl;  return 1; }
 //    if ( formod == 0 && ( theline.Length() != 1 ||
 //			 !theline.Value(1).IsEqual("!FILEMODIFIERS")) )
-//      { sout<<"Lineno."<<thenl<<" : File Modifier List Incorrect"<<endl;  return 1; }
+//      { sout<<"Lineno."<<thenl<<" : File Modifier List Incorrect"<<std::endl;  return 1; }
     while (rubr) {
       if (!ReadLine()) return 1;
       if (theline.Value(1).Value(1) == '!') break;    // liste suivante
       if (theline.Length() < 3)
-	{ sout<<"Lineno."<<thenl<<" : A General Modifier is badly defined"<<endl; continue; }
+	{ sout<<"Lineno."<<thenl<<" : A General Modifier is badly defined"<<Message_EndLine; continue; }
       DeclareAndCast(IFSelect_GeneralModifier,modif,ItemValue(1));
       DeclareAndCast(IFSelect_Selection,input,ItemValue(2));
       DeclareAndCast(IFSelect_Dispatch,disp,ItemValue(3));
       if (modif.IsNull())
-	{ sout<<"Lineno."<<thenl<<" : A General Modifier has not been Recognized"<<endl; continue; }
+	{ sout<<"Lineno."<<thenl<<" : A General Modifier has not been Recognized"<<Message_EndLine; continue; }
       thesess->SetItemSelection   (modif,input);
       if (!disp.IsNull()) thesess->SetAppliedModifier (modif,disp);
       else                thesess->SetAppliedModifier (modif,thesess->ShareOut());
@@ -674,7 +674,7 @@ static int deja = 0;
   if ( theline.Length() != 2 ||
       !theline.Value(1).IsEqual("!XSTEP") ||
       !theline.Value(2).IsEqual("END"))
-    { sout<<"End of File Incorrect, lineno"<<thenl<<endl;  return 1; }
+    { sout<<"End of File Incorrect, lineno"<<thenl<<Message_EndLine;  return 1; }
   return 0;
 }
 
@@ -730,7 +730,7 @@ static int deja = 0;
     if (dumper->ReadOwn(*this,type,item)) break;
     dumper = dumper->Next();
   }
-  if (dumper.IsNull()) sout<<" -- Lineno."<<thenl<<" : an Item could not be read"<<endl;
+  if (dumper.IsNull()) sout<<" -- Lineno."<<thenl<<" : an Item could not be read"<<Message_EndLine;
   return (!dumper.IsNull());    // IsNull -> echec
 }
 
@@ -749,7 +749,7 @@ static int deja = 0;
     else id = thesess->AddNamedItem(name.ToCString(),item,active);
   }
   else sout<<"Lineno."<<thenl<<" -- Name : "<<name
-    <<" : Item could not be defined" << endl;
+    <<" : Item could not be defined" << Message_EndLine;
   thenames.Bind(name,id);
 }
 
@@ -793,7 +793,7 @@ static int deja = 0;
   if (id != 0) filenum = thenums->Value(id);
   if (filenum == 0) {
     if (!par.IsNull()) sout << "Lineno " << thenl << " --  Unknown Item : "
-       << " Type:" << par->DynamicType()->Name() << endl;  //sout<<Handle par
+       << " Type:" << par->DynamicType()->Name() << Message_EndLine;  //sout<<Handle par
     SendVoid();
     thedone = Standard_False;
     return;
@@ -876,7 +876,7 @@ static int deja = 0;
   if (name.IsEqual("$")) return res;    // item non-defini justement
   if (!thenames.Find(name, id)) {
     sout << " -- Item Unknown in File : " << name
-      << " lineno " << thenl << " param." << nm << endl;
+      << " lineno " << thenl << " param." << nm << Message_EndLine;
     id = 0;
   }
   return thesess->Item(id);

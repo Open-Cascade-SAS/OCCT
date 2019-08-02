@@ -230,20 +230,20 @@ void IGESDraw_ToolNetworkSubfigure::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_NetworkSubfigure" << endl;
+  S << "IGESDraw_NetworkSubfigure" << Message_EndLine;
 
   S << "Network Subfigure Definition Entity : ";
   dumper.Dump(ent->SubfigureDefinition(),S, sublevel);
-  S << endl << "Translation Data : ";
+  S << Message_EndLine << "Translation Data : ";
   IGESData_DumpXYZL(S,level, ent->Translation(), ent->Location());
-  S << endl << "Scale Factors    : ";
+  S << Message_EndLine << "Scale Factors    : ";
   IGESData_DumpXYZ(S, ent->ScaleFactors());
-  S << endl << "Type Flag : " << ent->TypeFlag() << endl;
+  S << Message_EndLine << "Type Flag : " << ent->TypeFlag() << Message_EndLine;
   S << "Primary Reference Designator : ";
   IGESData_DumpString(S,ent->ReferenceDesignator());
-  S << endl << "Text Display Template Entity : ";
+  S << Message_EndLine << "Text Display Template Entity : ";
   dumper.Dump(ent->DesignatorTemplate(),S, sublevel);
-  S << endl << "Connect Points  : ";
+  S << Message_EndLine << "Connect Points  : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbConnectPoints(),ent->ConnectPoint);
-  S << endl;
+  S << Message_EndLine;
 }

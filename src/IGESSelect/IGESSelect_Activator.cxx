@@ -126,24 +126,24 @@ IGESSelect_Activator::IGESSelect_Activator()
       Standard_Integer listmode = 0;
       if (argc == 2 && arg1[0] == '?') argc = -1;
       if (argc < 2) {
-	cout<<"Ajouter un argument pour avoir :\n"<<
+	std::cout<<"Ajouter un argument pour avoir :\n"<<
 	  " l : liste resumee"<<
 	  " c : liste complete par item (mais pas pour remaining)\n"<<
 	  " r : idem + liste complete remaining\n"<<
-	  "  sur tout le modele. Ajouter nom selection pour lister sur une partie"<<endl;
+	  "  sur tout le modele. Ajouter nom selection pour lister sur une partie"<<std::endl;
 	return  (argc >= 0 ? IFSelect_RetError : IFSelect_RetVoid);
       }
       if (arg1[0] == 'l') {
-	listmode = 0;  cout<<"Liste resumee";
+	listmode = 0;  std::cout<<"Liste resumee";
       }
       else if (arg1[0] == 'c') {
-	listmode = 1;  cout<<"Liste complete par item (pas pour Remaining)"<<endl;
+	listmode = 1;  std::cout<<"Liste complete par item (pas pour Remaining)"<<std::endl;
       }
       else if (arg1[0] == 'r') {
-	listmode = 2;  cout<<"Liste complete par item et pour Remaining"<<endl;
+	listmode = 2;  std::cout<<"Liste complete par item et pour Remaining"<<std::endl;
       }
       else {
-	cout<<"Parametre de listage non compris"<<endl; return IFSelect_RetError;
+	std::cout<<"Parametre de listage non compris"<<std::endl; return IFSelect_RetError;
       }
 
       Handle(IGESSelect_ViewSorter) vs = new IGESSelect_ViewSorter;
@@ -153,7 +153,7 @@ IGESSelect_Activator::IGESSelect_Activator()
 //   on demande une selection
 	DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg2));
 	if (sel.IsNull()) {
-	  cout<<"Pas une selection : "<<arg2<<endl;
+	  std::cout<<"Pas une selection : "<<arg2<<std::endl;
 	  return IFSelect_RetError;
 	}
 	vs->AddList (WS->SelectionResult(sel));
@@ -163,24 +163,24 @@ IGESSelect_Activator::IGESSelect_Activator()
       if (number == 7) vs->SortSingleViews(Standard_True);
       Handle(IFSelect_PacketList) sets = vs->Sets(listdr);
       Standard_Integer nb = vs->NbSets(listdr);
-      cout<<" --  ViewSorter for";
-      if (number == 5) cout<<" Views & Drawings";
-      if (number == 6) cout<<" Drawings only (complete)";
-      if (number == 7) cout<<" Single Views & Drawing Frames";
-      cout<<", on "<<vs->NbEntities()<<" ent.s, give "<<nb<<" Sets"<<endl;
+      std::cout<<" --  ViewSorter for";
+      if (number == 5) std::cout<<" Views & Drawings";
+      if (number == 6) std::cout<<" Drawings only (complete)";
+      if (number == 7) std::cout<<" Single Views & Drawing Frames";
+      std::cout<<", on "<<vs->NbEntities()<<" ent.s, give "<<nb<<" Sets"<<std::endl;
 
       Interface_EntityIterator iter;
       for (Standard_Integer i = 1; i <= nb; i ++) {
-	cout<<" --  Set n0 "<<i<<" Item=entity n0: "<<
+	std::cout<<" --  Set n0 "<<i<<" Item=entity n0: "<<
 	  WS->Model()->Number(vs->SetItem(i,listdr))<<"  List:";
-        cout<<sets->NbEntities(i)<<" ent.s:"<<endl;
+        std::cout<<sets->NbEntities(i)<<" ent.s:"<<std::endl;
 	if (listmode == 0) continue;
 	iter = sets->Entities(i);
 	WS->ListEntities (iter,0);
       }
 
-      cout <<" --  Remaining Entities (not yet sorted) :"
-	<<sets->NbDuplicated(0,Standard_False)<<endl;
+      std::cout <<" --  Remaining Entities (not yet sorted) :"
+	<<sets->NbDuplicated(0,Standard_False)<<std::endl;
       if (listmode < 2) return IFSelect_RetVoid;
       iter = sets->Duplicated(0,Standard_False);
       WS->ListEntities(iter,0);
@@ -189,8 +189,8 @@ IGESSelect_Activator::IGESSelect_Activator()
 
     case 10 : {   //        ****    IGESType (form Type/Form)
       if (argc < 2) {
-	cout<<"Donner le n0 de type desire, + en option la forme\n"
-	  <<"  Si pas de forme, prend toutes les formes du type demande"<<endl;
+	std::cout<<"Donner le n0 de type desire, + en option la forme\n"
+	  <<"  Si pas de forme, prend toutes les formes du type demande"<<std::endl;
 	return IFSelect_RetError;
       }
       char signature[20];
@@ -207,7 +207,7 @@ IGESSelect_Activator::IGESSelect_Activator()
 
     case 12 :  {  //        ****    IGES Name
       if (argc < 2) {
-        cout<<"Donner un Nom de TextParam pour IGESName"<<endl;
+        std::cout<<"Donner un Nom de TextParam pour IGESName"<<std::endl;
         return IFSelect_RetError;
       }
       Handle(IGESSelect_SelectName) sel = new IGESSelect_SelectName;
@@ -222,12 +222,12 @@ IGESSelect_Activator::IGESSelect_Activator()
 
     case 14 : {   //        ****    IGES LevelNumber
       if (argc < 2) {
-        cout<<"Donner nom IntParam pour Level"<<endl;
+        std::cout<<"Donner nom IntParam pour Level"<<std::endl;
         return IFSelect_RetError;
       }
       DeclareAndCast(IFSelect_IntParam,lev,WS->NamedItem(arg1));
       if (lev.IsNull()) {
-        cout<<arg1<<" : pas un IntParam (pour Level)"<<endl;
+        std::cout<<arg1<<" : pas un IntParam (pour Level)"<<std::endl;
         return IFSelect_RetError;
       }
       Handle(IGESSelect_SelectLevelNumber) sel = new IGESSelect_SelectLevelNumber;
@@ -259,7 +259,7 @@ IGESSelect_Activator::IGESSelect_Activator()
       char prem = ' ';
       if (argc < 2) prem = '?';
       else if (argc == 5) {
-        cout<<"floatformat tout court donne les formes admises"<<endl;
+        std::cout<<"floatformat tout court donne les formes admises"<<std::endl;
         return IFSelect_RetError;
       }
       else prem = arg1[0];
@@ -269,21 +269,21 @@ IGESSelect_Activator::IGESSelect_Activator()
       else if (prem == 'Z' || prem == 'z') zerosup = Standard_True;
       else if (prem >= 48  && prem <= 57)  digits  = atoi(arg1);
       else {
-	cout<<"floatformat digits, digits=nb de chiffres signifiants, ou\n"
+	std::cout<<"floatformat digits, digits=nb de chiffres signifiants, ou\n"
 	  <<  "floatformat NZ %mainformat [%rangeformat [Rmin Rmax]]\n"
 	  <<"  NZ : N ou n pour Non-zero-suppress, Z ou z pour zero-suppress\n"
 	  <<" %mainformat  : format principal type printf, ex,: %E\n"
 	  <<" + optionnel  : format secondaire (flottants autour de 1.) :\n"
 	  <<" %rangeformat Rmin Rmax : format type printf entre Rmin et Rmax\n"
 	  <<" %rangeformat tout seul : format type printf entre 0.1 et 1000.\n"
-	    <<flush;
+	    <<std::flush;
 	return (prem == '?' ? IFSelect_RetVoid : IFSelect_RetError);
       }
       Standard_Real Rmin=0., Rmax=0.;
       if (argc > 4) {
 	Rmin = Atof(pilot->Word(4).ToCString());
 	Rmax = Atof(pilot->Word(5).ToCString());
-	if (Rmin <= 0 || Rmax <= 0) { cout<<"intervalle : donner reels > 0"<<endl; return IFSelect_RetError; }
+	if (Rmin <= 0 || Rmax <= 0) { std::cout<<"intervalle : donner reels > 0"<<std::endl; return IFSelect_RetError; }
       }
       Handle(IGESSelect_FloatFormat) fm = new IGESSelect_FloatFormat;
       if (argc == 2) fm->SetDefault(digits);
@@ -299,17 +299,17 @@ IGESSelect_Activator::IGESSelect_Activator()
 
     case 41 : {   //        ****    SetGlobalParameter
       if (argc < 3) {
-        cout<<"Donner entier=n0 param a changer + nom TextParam pour la valeur"<<endl;
+        std::cout<<"Donner entier=n0 param a changer + nom TextParam pour la valeur"<<std::endl;
         return IFSelect_RetError;
       }
       Standard_Integer numpar = atoi(arg1);
       if (numpar <= 0) {
-        cout<<"Pas un n0 de param global correct:"<<arg1<<endl;
+        std::cout<<"Pas un n0 de param global correct:"<<arg1<<std::endl;
         return IFSelect_RetError;
       }
       DeclareAndCast(TCollection_HAsciiString,val,WS->NamedItem(arg2));
       if (val.IsNull()) {
-        cout<<"Pas un nom de TextParam:"<<arg2<<endl;
+        std::cout<<"Pas un nom de TextParam:"<<arg2<<std::endl;
         return IFSelect_RetError;
       }
       Handle(IGESSelect_SetGlobalParameter) mod =
@@ -349,8 +349,8 @@ IGESSelect_Activator::IGESSelect_Activator()
 
     case 60 : {   //        ****    Spline To BSpline
       if (argc < 2) {
-        cout<<"Pour SplineToBSpline, donner mode :\n"<<
-			" n pour normal, t pour tryC2"<<endl;
+        std::cout<<"Pour SplineToBSpline, donner mode :\n"<<
+			" n pour normal, t pour tryC2"<<std::endl;
         return IFSelect_RetError;
       }
       Standard_Boolean tryC2;
@@ -359,7 +359,7 @@ IGESSelect_Activator::IGESSelect_Activator()
       else if (arg1[0] == 't' || arg1[0] == 'T')
         tryC2 = Standard_True;
       else {
-        cout<<" Mode incorrect : "<<arg1<<endl;
+        std::cout<<" Mode incorrect : "<<arg1<<std::endl;
         return IFSelect_RetError;
       }
       Handle(IGESSelect_SplineToBSpline) conv =

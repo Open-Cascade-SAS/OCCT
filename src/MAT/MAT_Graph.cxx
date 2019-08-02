@@ -512,8 +512,8 @@ static Handle(MAT_Arc) MakeArc(const Handle(MAT_Bisector)&     aBisector,
   Standard_Real                DistExt;
   
 #ifdef OCCT_DEBUG_Graph
-  cout<<"Construction Arc : Index"<<aBisector->IndexNumber()<<endl;
-  cout<<"Construction Arc : Bisector"<<aBisector->BisectorNumber()<<endl;
+  std::cout<<"Construction Arc : Index"<<aBisector->IndexNumber()<<std::endl;
+  std::cout<<"Construction Arc : Bisector"<<aBisector->BisectorNumber()<<std::endl;
 #endif
   
   CurrentArc = new MAT_Arc(IndTabArcs,
@@ -525,7 +525,7 @@ static Handle(MAT_Arc) MakeArc(const Handle(MAT_Bisector)&     aBisector,
   if (DistExt == Precision::Infinite()) {
     DistExt = 1.0;
 #ifdef OCCT_DEBUG_Graph
-    cout<<"PB:RECUPERATION DISTANCE SUR ISSUEPOINT."<<endl;
+    std::cout<<"PB:RECUPERATION DISTANCE SUR ISSUEPOINT."<<std::endl;
 #endif
   }
   
@@ -563,8 +563,8 @@ static Handle(MAT_Arc) MakeArc(const Handle(MAT_Bisector)&     aBisector,
   }
   
 #ifdef OCCT_DEBUG_Graph
-  cout<<"IndTabArcs = "<<IndTabArcs<<endl;
-  cout<<"ArcIndex   = "<<CurrentArc->ArcIndex()<<endl;
+  std::cout<<"IndTabArcs = "<<IndTabArcs<<std::endl;
+  std::cout<<"ArcIndex   = "<<CurrentArc->ArcIndex()<<std::endl;
 #endif  
   CurrentArc->SetIndex(IndTabArcs);
   TheArcs.Bind(IndTabArcs,CurrentArc);

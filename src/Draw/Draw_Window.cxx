@@ -1106,7 +1106,7 @@ Standard_Boolean Init_Appli()
     OCC_CATCH_SIGNALS
     Tk_Init(interp) ;
   } catch  (Standard_Failure const&) {
-    cout <<" Pb au lancement de TK_Init "<<endl;
+    std::cout <<" Pb au lancement de TK_Init "<<std::endl;
   }
 
   Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc *) NULL);
@@ -2034,7 +2034,7 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
                            0,                       // use default creation flags
                            &IDThread);
   if (!hThread) {
-    cout << "Failed to create Tcl/Tk main loop thread. Switching to batch mode..." << endl;
+    std::cout << "Failed to create Tcl/Tk main loop thread. Switching to batch mode..." << std::endl;
     Draw_Batch = Standard_True;
     Draw_Interpretor& aCommands = Draw::GetInterpretor();
     aCommands.Init();
@@ -2045,7 +2045,7 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
       OCC_CATCH_SIGNALS
       Tk_Init(interp);
     } catch  (Standard_Failure& anExcept) {
-      cout << "Failed to initialize Tk: " << anExcept.GetMessageString() << endl;
+      std::cout << "Failed to initialize Tk: " << anExcept.GetMessageString() << std::endl;
     }
 
     Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc *) NULL);
@@ -2303,15 +2303,15 @@ static DWORD WINAPI tkLoop(VOID)
       if (res != TCL_OK)
       {
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
-        cout << "tkLoop: error in Tk initialization. Tcl reported: " << Tcl_GetStringResult(interp) << endl;
+        std::cout << "tkLoop: error in Tk initialization. Tcl reported: " << Tcl_GetStringResult(interp) << std::endl;
 #else
-        cout << "tkLoop: error in Tk initialization. Tcl reported: " << interp->result << endl;
+        std::cout << "tkLoop: error in Tk initialization. Tcl reported: " << interp->result << std::endl;
 #endif
       }
     }
     catch (Standard_Failure)
     {
-      cout << "tkLoop: exception in TK_Init\n";
+      std::cout << "tkLoop: exception in TK_Init\n";
     }
     Tcl_StaticPackage (interp, "Tk", Tk_Init, (Tcl_PackageInitProc* ) NULL);
     mainWindow = Tk_MainWindow (interp);
@@ -2322,7 +2322,7 @@ static DWORD WINAPI tkLoop(VOID)
 #else
       fprintf (stderr, "%s\n", interp->result);
 #endif
-      cout << "tkLoop: Tk_MainWindow() returned NULL. Exiting...\n";
+      std::cout << "tkLoop: Tk_MainWindow() returned NULL. Exiting...\n";
       Tcl_Exit (0);
     }
     Tk_Name(mainWindow) = Tk_GetUid (Tk_SetAppName (mainWindow, "Draw"));
@@ -2396,7 +2396,7 @@ void Run_Appli(HWND hWnd)
                            0,                       // use default creation flags
                            &IDThread);              // returns thread identifier
     if (!hThread) {
-      cout << "pb in creation of the thread reading stdin" << endl;
+      std::cout << "pb in creation of the thread reading stdin" << std::endl;
       Draw_IsConsoleSubsystem = Standard_False;
       Init_Appli (GetModuleHandleW (NULL),
                   GetModuleHandleW (NULL),

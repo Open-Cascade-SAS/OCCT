@@ -508,8 +508,8 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 	  }
 #ifdef OCCT_DEBUG
 	  else if (DoError) {
-	    cout << " HLRBRep_PolyAlgo::StoreShell : Face ";
-	    cout << f << " non triangulated" << endl;
+	    std::cout << " HLRBRep_PolyAlgo::StoreShell : Face ";
+	    std::cout << f << " non triangulated" << std::endl;
 	  }
 #endif
 	  NT = &(((HLRAlgo_Array1OfTData*)TData)->ChangeValue(1));
@@ -534,8 +534,8 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
       }
 #ifdef OCCT_DEBUG
       else if (DoError) {
-	cout << "HLRBRep_PolyAlgo::StoreShell : Face ";
-	cout << f << " deja stockee" << endl;
+	std::cout << "HLRBRep_PolyAlgo::StoreShell : Face ";
+	std::cout << f << " deja stockee" << std::endl;
       }
 #endif
     }
@@ -663,8 +663,8 @@ Normal (const Standard_Integer iNode,
     Nod1RValues.Normal = gp_XYZ(1., 0., 0.);
 #ifdef OCCT_DEBUG
     if (DoError) {
-      cout << "HLRBRep_PolyAlgo::Normal : AverageNormal error";
-      cout << endl;
+      std::cout << "HLRBRep_PolyAlgo::Normal : AverageNormal error";
+      std::cout << std::endl;
     }
 #endif
   }
@@ -740,8 +740,8 @@ HLRBRep_PolyAlgo::AverageNormal(const Standard_Integer iNode,
     OK = Standard_False;
 #ifdef OCCT_DEBUG
     if (DoError) {
-      cout << "HLRAlgo_PolyInternalData:: inverted normals on ";
-      cout << "node " << iNode << endl;
+      std::cout << "HLRAlgo_PolyInternalData:: inverted normals on ";
+      std::cout << "node " << iNode << std::endl;
     }
 #endif
   }
@@ -882,8 +882,8 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	else if (aNode12Indices->Edg2 == e) U2 = Nod12RValues->PCu2;
 #ifdef OCCT_DEBUG
 	else {
-	  cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
-	  cout << "Parameter error on Node " << i1p2 << endl;
+	  std::cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
+	  std::cout << "Parameter error on Node " << i1p2 << std::endl;
 	}
 #endif
 	aNode12Indices->Flag |= NMsk_Edge;
@@ -913,10 +913,10 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	      if (Nod11RValues->Normal.X()*Nod12RValues->Normal.X() +
 		  Nod11RValues->Normal.Y()*Nod12RValues->Normal.Y() +
 		  Nod11RValues->Normal.Z()*Nod12RValues->Normal.Z() < 0) {
-		cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
-		cout << "Too big angle between " << i1p1 << setw(6);
-		cout << " and " << i1p2 << setw(6);
-		cout << " in face " << i1 << endl;
+		std::cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
+		std::cout << "Too big angle between " << i1p1 << std::setw(6);
+		std::cout << " and " << i1p2 << std::setw(6);
+		std::cout << " in face " << i1 << std::endl;
 	      }
 	    }
 #endif
@@ -934,8 +934,8 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	    else if (aNode12Indices->Edg2 == e) U2 = Nod12RValues->PCu2;
 #ifdef OCCT_DEBUG
 	    else {
-	      cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
-	      cout << "Parameter error on Node " << i1p2 << endl;
+	      std::cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
+	      std::cout << "Parameter error on Node " << i1p2 << std::endl;
 	    }
 #endif
 	    aNode12Indices->Flag |= NMsk_Edge;
@@ -952,8 +952,8 @@ InitBiPointsWithConnexity (const Standard_Integer e,
       }
 #ifdef OCCT_DEBUG
       else if (DoError) {
-	cout << "HLRBRep_PolyAlgo::InitBiPointsWithConnexity : Edge ";
-	cout << e << " connex 1 sans PolygonOnTriangulation" << endl;
+	std::cout << "HLRBRep_PolyAlgo::InitBiPointsWithConnexity : Edge ";
+	std::cout << e << " connex 1 sans PolygonOnTriangulation" << std::endl;
       }
 #endif
     }
@@ -1048,8 +1048,8 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	else if (aNode12Indices->Edg2 == e) U2 = Nod12RValues->PCu2;
 #ifdef OCCT_DEBUG
 	else {
-	  cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
-	  cout << "Parameter error on Node " << i1p2 << endl;
+	  std::cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
+	  std::cout << "Parameter error on Node " << i1p2 << std::endl;
 	}
 #endif
 	aNode12Indices->Flag |= NMsk_Edge;
@@ -1092,18 +1092,18 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	      if (Nod11RValues->Normal.X()*Nod12RValues->Normal.X() +
 		  Nod11RValues->Normal.Y()*Nod12RValues->Normal.Y() +
 		  Nod11RValues->Normal.Z()*Nod12RValues->Normal.Z() < 0) {
-		cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
-		cout << "To big angle between " << i1p1 << setw(6);
-		cout << " and " << i1p2 << setw(6);
-		cout << " in face " << i1 << endl;
+		std::cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
+		std::cout << "To big angle between " << i1p1 << std::setw(6);
+		std::cout << " and " << i1p2 << std::setw(6);
+		std::cout << " in face " << i1 << std::endl;
 	      }
 	      if (Nod21RValues->Normal.X()*Nod22RValues->Normal.X() +
 		  Nod21RValues->Normal.Y()*Nod22RValues->Normal.Y() +
 		  Nod21RValues->Normal.Z()*Nod22RValues->Normal.Z() < 0) {
-		cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
-		cout << "To big angle between " << i2p1 << setw(6);
-		cout << " and " << i2p2 << setw(6);
-		cout<< " in face " << i2 << endl;
+		std::cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
+		std::cout << "To big angle between " << i2p1 << std::setw(6);
+		std::cout << " and " << i2p2 << std::setw(6);
+		std::cout<< " in face " << i2 << std::endl;
 	      }
 	    }
 #endif
@@ -1121,8 +1121,8 @@ InitBiPointsWithConnexity (const Standard_Integer e,
 	    else if (aNode12Indices->Edg2 == e) U2 = Nod12RValues->PCu2;
 #ifdef OCCT_DEBUG
 	    else {
-	      cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
-	      cout << "Parameter error on Node " << i1p2 << endl;
+	      std::cout << " HLRBRep_PolyAlgo::InitBiPointsWithConnexity : ";
+	      std::cout << "Parameter error on Node " << i1p2 << std::endl;
 	    }
 #endif
 	    aNode12Indices->Flag |= NMsk_Edge;
@@ -1143,8 +1143,8 @@ InitBiPointsWithConnexity (const Standard_Integer e,
       }
 #ifdef OCCT_DEBUG
       else if (DoError) {
-	cout << "HLRBRep_PolyAlgo::InitBiPointsWithConnexity : Edge ";
-	cout << e << " connect 2 without PolygonOnTriangulation" << endl;
+	std::cout << "HLRBRep_PolyAlgo::InitBiPointsWithConnexity : Edge ";
+	std::cout << e << " connect 2 without PolygonOnTriangulation" << std::endl;
       }
 #endif
     }
@@ -1205,8 +1205,8 @@ InitBiPointsWithConnexity (const Standard_Integer e,
     }
 #ifdef OCCT_DEBUG
     else if (DoError) {
-      cout << "HLRBRep_PolyAlgo::InitBiPointsWithConnexity : Edge ";
-      cout << e << " Isolated, without Polygone 3D" << endl;
+      std::cout << "HLRBRep_PolyAlgo::InitBiPointsWithConnexity : Edge ";
+      std::cout << e << " Isolated, without Polygone 3D" << std::endl;
     }
 #endif
   }
@@ -1496,8 +1496,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod11Indices.Edg2 == e) Nod11RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i1p1 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i1p1 << std::endl;
       }
 #endif
       Nod11RValues.Scal  = 0;
@@ -1528,8 +1528,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod12Indices.Edg2 == e) Nod12RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i1p2 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i1p2 << std::endl;
       }
 #endif
       Nod12RValues.Scal  = 0;
@@ -1651,8 +1651,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod11Indices.Edg2 == e) Nod11RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i1p1 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i1p1 << std::endl;
       }
 #endif
       Nod11RValues.Scal  = 0;
@@ -1663,8 +1663,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod21Indices.Edg2 == e) Nod21RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i2p1 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i2p1 << std::endl;
       }
 #endif
       Nod21RValues.Scal  = 0;
@@ -1700,8 +1700,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod12Indices.Edg2 == e) Nod12RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i1p2 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i1p2 << std::endl;
       }
 #endif
       Nod12RValues.Scal  = 0;
@@ -1712,8 +1712,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod22Indices.Edg2 == e) Nod22RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i2p2 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i2p2 << std::endl;
       }
 #endif
       Nod22RValues.Scal = 0;
@@ -1860,8 +1860,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod11Indices.Edg2 == e) Nod11RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i1p1 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i1p1 << std::endl;
       }
 #endif
       Nod11RValues.Scal  = 0;
@@ -1872,8 +1872,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod21Indices.Edg2 == e) Nod21RValues.PCu2 = U3;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i2p1 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i2p1 << std::endl;
       }
 #endif
       Nod21RValues.Scal  = 0;
@@ -1909,8 +1909,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod12Indices.Edg2 == e) Nod12RValues.PCu2 = U4;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i1p2 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i1p2 << std::endl;
       }
 #endif
       Nod12RValues.Scal  = 0;
@@ -1921,8 +1921,8 @@ MoveOrInsertPoint (HLRAlgo_ListOfBPoint& List,
       else if (Nod22Indices.Edg2 == e) Nod22RValues.PCu2 = U4;
 #ifdef OCCT_DEBUG
       else {
-	cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
-	cout << "Parameter error on Node " << i2p2 << endl;
+	std::cout << " HLRBRep_PolyAlgo::MoveOrInsertPoint : ";
+	std::cout << "Parameter error on Node " << i2p2 << std::endl;
       }
 #endif
       Nod22RValues.Scal  = 0;
@@ -2085,9 +2085,9 @@ HLRBRep_PolyAlgo::InsertOnOutLine (TColStd_Array1OfTransient& PID)
 
 #ifdef OCCT_DEBUG
       if (DoTrace) {
-	cout << " InsertOnOutLine : NbTData " << (*pid)->NbTData() << endl;
-	cout << " InsertOnOutLine : NbPISeg " << (*pid)->NbPISeg() << endl;
-	cout << " InsertOnOutLine : NbPINod " << (*pid)->NbPINod() << endl;
+	std::cout << " InsertOnOutLine : NbTData " << (*pid)->NbTData() << std::endl;
+	std::cout << " InsertOnOutLine : NbPISeg " << (*pid)->NbPISeg() << std::endl;
+	std::cout << " InsertOnOutLine : NbPINod " << (*pid)->NbPINod() << std::endl;
       }
 #endif
 
@@ -2169,9 +2169,9 @@ HLRBRep_PolyAlgo::InsertOnOutLine (TColStd_Array1OfTransient& PID)
 
 #ifdef OCCT_DEBUG
       if (DoTrace) {
-	cout << " InsertOnOutLine : NbTData " << (*pid)->NbTData() << endl;
-	cout << " InsertOnOutLine : NbPISeg " << (*pid)->NbPISeg() << endl;
-	cout << " InsertOnOutLine : NbPINod " << (*pid)->NbPINod() << endl;
+	std::cout << " InsertOnOutLine : NbTData " << (*pid)->NbTData() << std::endl;
+	std::cout << " InsertOnOutLine : NbPISeg " << (*pid)->NbPISeg() << std::endl;
+	std::cout << " InsertOnOutLine : NbPINod " << (*pid)->NbPINod() << std::endl;
       }
 #endif
     }
@@ -2248,7 +2248,7 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	      (tdata->Flags & HLRAlgo_PolyMask_FMskFrBack)) {
 #ifdef OCCT_DEBUG
 	    if (DoTrace)
-	      cout << " face : " << f << " , triangle " << i << endl;
+	      std::cout << " face : " << f << " , triangle " << i << std::endl;
 #endif
 	    Modif        = Standard_True;
 	    const Handle(HLRAlgo_PolyInternalNode)* pi1p1 =
@@ -2317,8 +2317,8 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	      FrBackInList = Standard_True;
 #ifdef OCCT_DEBUG
 	      if (DoTrace) {
-		cout << tdata->Node1 << " modifies  : DX,DY ";
-		cout << X1 << " , " << Y1 << endl;
+		std::cout << tdata->Node1 << " modifies  : DX,DY ";
+		std::cout << X1 << " , " << Y1 << std::endl;
 	      }
 #endif
 	    }
@@ -2330,8 +2330,8 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	      FrBackInList = Standard_True;
 #ifdef OCCT_DEBUG
 	      if (DoTrace) {
-		cout << tdata->Node2 << " modifies  : DX,DY ";
-		cout << X2 << " , " << Y2 << endl;
+		std::cout << tdata->Node2 << " modifies  : DX,DY ";
+		std::cout << X2 << " , " << Y2 << std::endl;
 	      }
 #endif
 	    }
@@ -2343,14 +2343,14 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	      FrBackInList = Standard_True;
 #ifdef OCCT_DEBUG
 	      if (DoTrace) {
-		cout << tdata->Node3 << " modifies  : DX,DY ";
-		cout << X3 << " , " << Y3 << endl;
+		std::cout << tdata->Node3 << " modifies  : DX,DY ";
+		std::cout << X3 << " , " << Y3 << std::endl;
 	      }
 #endif
 	    }
 #ifdef OCCT_DEBUG
 	    else if (DoTrace)
-	      cout << "modification error" << endl;
+	      std::cout << "modification error" << std::endl;
 #endif
 	  }
 	  tdata++;
@@ -2390,7 +2390,7 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	  if (Nod11Indices->Flag & NMsk_Move) {
 #ifdef OCCT_DEBUG
 	    if (DoTrace)
-	      cout << theIndices.Face1Pt1 << " modifies 11" << endl;
+	      std::cout << theIndices.Face1Pt1 << " modifies 11" << std::endl;
 #endif
 	    Nod11RValues = &PINod1->ChangeValue(theIndices.Face1Pt1)->Data();
 	    HLRAlgo_BiPoint::PointsT& aPoints = BP.Points();
@@ -2409,7 +2409,7 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	  if (Nod11Indices->Flag & NMsk_Move) {
 #ifdef OCCT_DEBUG
 	    if (DoTrace)
-	      cout << theIndices.Face1Pt2 << " modifies 12" << endl;
+	      std::cout << theIndices.Face1Pt2 << " modifies 12" << std::endl;
 #endif
 	    Nod11RValues = &PINod1->ChangeValue(theIndices.Face1Pt2)->Data();
 	    HLRAlgo_BiPoint::PointsT& aPoints = BP.Points();
@@ -2433,7 +2433,7 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	  if (Nod11Indices->Flag & NMsk_Move) {
 #ifdef OCCT_DEBUG
 	    if (DoTrace)
-	      cout << theIndices.Face2Pt1 << " modifies 21" << endl;
+	      std::cout << theIndices.Face2Pt1 << " modifies 21" << std::endl;
 #endif
 	    Nod11RValues = &PINod2->ChangeValue(theIndices.Face2Pt1)->Data();
 	    HLRAlgo_BiPoint::PointsT& aPoints = BP.Points();
@@ -2452,7 +2452,7 @@ HLRBRep_PolyAlgo::CheckFrBackTriangles (HLRAlgo_ListOfBPoint& List,
 	  if (Nod11Indices->Flag & NMsk_Move) {
 #ifdef OCCT_DEBUG
 	    if (DoTrace)
-	      cout << theIndices.Face2Pt2 << " modifies 22" << endl;
+	      std::cout << theIndices.Face2Pt2 << " modifies 22" << std::endl;
 #endif
 	    Nod11RValues = &PINod2->ChangeValue(theIndices.Face2Pt2)->Data();
 	    HLRAlgo_BiPoint::PointsT& aPoints = BP.Points();
@@ -2570,8 +2570,8 @@ void HLRBRep_PolyAlgo::ChangeNode (const Standard_Integer ip1,
       Nod1RValues.Normal = gp_XYZ(1., 0., 0.);
 #ifdef OCCT_DEBUG
       if (DoError) {
-	cout << "HLRBRep_PolyAlgo::ChangeNode between " << ip1;
-	cout << " and " << ip2 << endl;
+	std::cout << "HLRBRep_PolyAlgo::ChangeNode between " << ip1;
+	std::cout << " and " << ip2 << std::endl;
       }
 #endif
     }
@@ -2590,8 +2590,8 @@ void HLRBRep_PolyAlgo::ChangeNode (const Standard_Integer ip1,
       Nod2RValues.Normal = gp_XYZ(1., 0., 0.);
 #ifdef OCCT_DEBUG
       if (DoError) {
-	cout << "HLRBRep_PolyAlgo::ChangeNode between " << ip2;
-	cout << " and " << ip1 << endl;
+	std::cout << "HLRBRep_PolyAlgo::ChangeNode between " << ip2;
+	std::cout << " and " << ip1 << std::endl;
       }
 #endif
     }
@@ -2691,8 +2691,8 @@ HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer,
     theTriangle.Flags |=  HLRAlgo_PolyMask_FMskOnOutL;
 #ifdef OCCT_DEBUG
     if (DoTrace) {
-      cout << "HLRBRep_PolyAlgo::OrientTriangle : OnOutL";
-      cout << " triangle " << iTri << endl;
+      std::cout << "HLRBRep_PolyAlgo::OrientTriangle : OnOutL";
+      std::cout << " triangle " << iTri << std::endl;
     }
 #endif
   }
@@ -2724,8 +2724,8 @@ HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer,
     if (aD12Norm <= 1.e-10) {
 #ifdef OCCT_DEBUG
       if (DoTrace) {
-	cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
-	cout << " triangle " << iTri << endl;
+	std::cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
+	std::cout << " triangle " << iTri << std::endl;
       }
 #endif
       theTriangle.Flags |=  HLRAlgo_PolyMask_FMskFlat;
@@ -2738,8 +2738,8 @@ HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer,
       if (aD23Norm < 1.e-10) {
 #ifdef OCCT_DEBUG
 	if (DoTrace) {
-	  cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
-	  cout << " triangle " << iTri << endl;
+	  std::cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
+	  std::cout << " triangle " << iTri << std::endl;
 	}
 #endif
 	theTriangle.Flags |=  HLRAlgo_PolyMask_FMskFlat;
@@ -2752,8 +2752,8 @@ HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer,
         if (aD31Norm < 1.e-10) {
 #ifdef OCCT_DEBUG
 	  if (DoTrace) {
-	    cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
-	    cout << " triangle " << iTri << endl;
+	    std::cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
+	    std::cout << " triangle " << iTri << std::endl;
 	  }
 #endif
 	  theTriangle.Flags |=  HLRAlgo_PolyMask_FMskFlat;
@@ -2768,8 +2768,8 @@ HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer,
 	  if (aDNorm < 1.e-5) {
 #ifdef OCCT_DEBUG
 	    if (DoTrace) {
-	      cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
-	      cout << " triangle " << iTri << endl;
+	      std::cout << "HLRBRep_PolyAlgo::OrientTriangle : Flat";
+	      std::cout << " triangle " << iTri << std::endl;
 	    }
 #endif
 	    theTriangle.Flags |=  HLRAlgo_PolyMask_FMskFlat;
@@ -2845,8 +2845,8 @@ HLRBRep_PolyAlgo::Triangles(const Standard_Integer ip1,
   iTri2 = 0;
 #ifdef OCCT_DEBUG
   if (DoError) {
-    cout << "HLRBRep_PolyAlgo::Triangles : error";
-    cout << " between " << ip1 << " and " << ip2 << endl;
+    std::cout << "HLRBRep_PolyAlgo::Triangles : error";
+    std::cout << " between " << ip1 << " and " << ip2 << std::endl;
   }
 #endif
   return Standard_False;
@@ -2982,8 +2982,8 @@ HLRBRep_PolyAlgo::UpdateOutLines (HLRAlgo_ListOfBPoint& List,
 		aTriangle.Flags |=  HLRAlgo_PolyMask_EMskOutLin3;
 #ifdef OCCT_DEBUG
 	      else if (DoError) {
-		cout << "HLRAlgo_PolyInternalData::UpdateOutLines";
-		cout << " : segment not found" << endl;
+		std::cout << "HLRAlgo_PolyInternalData::UpdateOutLines";
+		std::cout << " : segment not found" << std::endl;
 	      }
 #endif
 	      tn1 = aTriangle2.Node1;
@@ -3002,8 +3002,8 @@ HLRBRep_PolyAlgo::UpdateOutLines (HLRAlgo_ListOfBPoint& List,
 		aTriangle2.Flags |=  HLRAlgo_PolyMask_EMskOutLin3;
 #ifdef OCCT_DEBUG
 	      else if (DoError) {
-		cout << "HLRAlgo_PolyInternalData::UpdateOutLines";
-		cout << " : segment not found" << endl;
+		std::cout << "HLRAlgo_PolyInternalData::UpdateOutLines";
+		std::cout << " : segment not found" << std::endl;
 	      }
 #endif
 	      HLRAlgo_PolyInternalNode::NodeData& Nod1RValues =
@@ -3088,9 +3088,9 @@ UpdateEdgesBiPoints (HLRAlgo_ListOfBPoint& List,
       }
 #ifdef OCCT_DEBUG
       else if (DoError) {
-	cout << "HLRBRep_PolyAlgo::UpdateEdgesBiPoints : error ";
-	cout << " between " << aIndices.FaceConex1 << setw(6);
-	cout << " and " << aIndices.FaceConex2 << endl;
+	std::cout << "HLRBRep_PolyAlgo::UpdateEdgesBiPoints : error ";
+	std::cout << " between " << aIndices.FaceConex1 << std::setw(6);
+	std::cout << " and " << aIndices.FaceConex2 << std::endl;
       }
 #endif
     }
@@ -3140,9 +3140,9 @@ HLRBRep_PolyAlgo::UpdatePolyData (TColStd_Array1OfTransient& PD,
 	if (!(OT->Flags & HLRAlgo_PolyMask_FMskSide)) {
 #ifdef OCCT_DEBUG
 	  if ((OT->Flags & HLRAlgo_PolyMask_FMskFrBack) && DoTrace) {
-	    cout << "HLRBRep_PolyAlgo::ReverseBackTriangle :";
-	    cout << " face " << f << setw(6);
-	    cout << " triangle " << i << endl;
+	    std::cout << "HLRBRep_PolyAlgo::ReverseBackTriangle :";
+	    std::cout << " face " << f << std::setw(6);
+	    std::cout << " triangle " << i << std::endl;
 	  }
 #endif
 	  if (OT->Flags & HLRAlgo_PolyMask_FMskOrBack) {

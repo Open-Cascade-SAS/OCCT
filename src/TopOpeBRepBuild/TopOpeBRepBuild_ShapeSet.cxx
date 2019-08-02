@@ -78,7 +78,7 @@ void TopOpeBRepBuild_ShapeSet::AddShape(const TopoDS_Shape& S)
 {
   Standard_Boolean chk = CheckShape(S);
 #ifdef OCCT_DEBUG
-  DumpCheck(cout," AddShape",S,chk);
+  DumpCheck(std::cout," AddShape",S,chk);
 #endif
 
   if (!chk) return;
@@ -93,7 +93,7 @@ void TopOpeBRepBuild_ShapeSet::AddStartElement(const TopoDS_Shape& S)
 {
   Standard_Boolean chk = CheckShape(S);
 #ifdef OCCT_DEBUG
-  DumpCheck(cout," AddStartElement",S,chk);
+  DumpCheck(std::cout," AddStartElement",S,chk);
 #endif
 
   if (!chk) return;
@@ -108,7 +108,7 @@ void TopOpeBRepBuild_ShapeSet::AddElement(const TopoDS_Shape& S)
 {
   Standard_Boolean chk = CheckShape(S);
 #ifdef OCCT_DEBUG
-  DumpCheck(cout," AddElement",S,chk);
+  DumpCheck(std::cout," AddElement",S,chk);
 #endif
 
   if (!chk) return;
@@ -369,7 +369,7 @@ void TopOpeBRepBuild_ShapeSet::CheckShape(const Standard_Boolean checkshape)
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceCHK() && !myCheckShape) {
-    DumpName(cout,"no checkshape set on ");cout<<endl;
+    DumpName(std::cout,"no checkshape set on ");std::cout<<std::endl;
   }
 #endif
 }
@@ -436,14 +436,14 @@ void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
     if (TopOpeBRepBuild_GettraceCHK() ||
 	TopOpeBRepBuild_GettraceCHKNOK() ) {
       DumpName(OS,"*********************** ");
-      OS<<str<<" ";TopAbs::Print(t,OS);OS<<" : incorrect"<<endl;
+      OS<<str<<" ";TopAbs::Print(t,OS);OS<<" : incorrect"<<std::endl;
     }
   }
   else {
     if (TopOpeBRepBuild_GettraceCHK() ||
 	TopOpeBRepBuild_GettraceCHKOK() ) {
       DumpName(OS,"");
-      OS<<str<<" ";TopAbs::Print(t,OS);OS<<" : correct"<<endl;
+      OS<<str<<" ";TopAbs::Print(t,OS);OS<<" : correct"<<std::endl;
     }
   }
   if (!chk) debaddss();
@@ -457,26 +457,26 @@ void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
 void TopOpeBRepBuild_ShapeSet::DumpSS()
 {
 #ifdef DRAW
-  DumpName(cout,"\nDumpSS start ");
+  DumpName(std::cout,"\nDumpSS start ");
   TopTools_ListIteratorOfListOfShape it;
   Standard_Integer i,j,ne;
   TCollection_AsciiString s1("   ");
   InitShapes();
-  cout<<endl<<"#Shapes : ";if (!MoreShapes()) cout<<0;cout<<endl;
+  std::cout<<std::endl<<"#Shapes : ";if (!MoreShapes()) std::cout<<0;std::cout<<std::endl;
   for (i=1;MoreShapes();NextShape(),i++) {
     TCollection_AsciiString ns = SNameori(Shape());
-    cout<<PRODINS<<ns<<"; # "<<i<<" draw"<<endl;
+    std::cout<<PRODINS<<ns<<"; # "<<i<<" draw"<<std::endl;
     DBRep::Set(ns.ToCString(),Shape());
   }
 
   InitStartElements();
-  cout<<"#StartElements : ";if (!MoreStartElements()) cout<<0;cout<<endl;
+  std::cout<<"#StartElements : ";if (!MoreStartElements()) std::cout<<0;std::cout<<std::endl;
   for (i=1;MoreStartElements();NextStartElement(),i++) {
-    cout<<PRODINS<<SNameori(StartElement())<<"; # "<<i<<" draw"<<endl;
+    std::cout<<PRODINS<<SNameori(StartElement())<<"; # "<<i<<" draw"<<std::endl;
   }
 
   InitStartElements();
-  cout<<"#Neighbours of StartElements : ";if (!MoreStartElements()) cout<<0;cout<<endl;
+  std::cout<<"#Neighbours of StartElements : ";if (!MoreStartElements()) std::cout<<0;std::cout<<std::endl;
   for (i=1;MoreStartElements();NextStartElement(),i++) {
     const TopoDS_Shape& e = StartElement();
     TCollection_AsciiString enam = SNameori(e);
@@ -488,12 +488,12 @@ void TopOpeBRepBuild_ShapeSet::DumpSS()
 	sne=sne+" "+SNameori(N);
       }
       sne=sne+"; wclick; #draw";
-      cout<<sne<<endl;
+      std::cout<<sne<<std::endl;
     }
   }
 
   Standard_Integer ism,nsm=mySubShapeMap.Extent();
-  cout<<"#Incident shapes : ";if (!nsm) cout<<0;cout<<endl;
+  std::cout<<"#Incident shapes : ";if (!nsm) std::cout<<0;std::cout<<std::endl;
   for (i=1,ism=1;ism<=nsm;ism++,i++) {
     const TopoDS_Shape& v = mySubShapeMap.FindKey(ism);
     const TopTools_ListOfShape& lsv = mySubShapeMap.FindFromIndex(ism);
@@ -506,10 +506,10 @@ void TopOpeBRepBuild_ShapeSet::DumpSS()
 	sle=sle+" "+SNameori(e);
       }
       sle=sle+"; wclick; #draw";
-      cout<<sle<<endl;
+      std::cout<<sle<<std::endl;
     } 
   }
-  DumpName(cout,"DumpSS end ");
+  DumpName(std::cout,"DumpSS end ");
 #endif
 }
 
@@ -520,15 +520,15 @@ void TopOpeBRepBuild_ShapeSet::DumpSS()
 void TopOpeBRepBuild_ShapeSet::DumpBB()
 {
 #ifdef DRAW
-  DumpName(cout,"\nDumpBB ");
+  DumpName(std::cout,"\nDumpBB ");
   TopTools_ListIteratorOfListOfShape it;
   Standard_Integer i,j,ne = 0, nb = 1, curr, currloc;
   TCollection_AsciiString s1("   "),stt,enam,nnam,vnam;
   InitShapes();
 
-  cout<<endl<<"#Shapes : (block old) ";if (!MoreShapes()) cout<<0;cout<<endl;
+  std::cout<<std::endl<<"#Shapes : (block old) ";if (!MoreShapes()) std::cout<<0;std::cout<<std::endl;
   for (i=1;MoreShapes();NextShape(),i++, nb++) {
-    cout<<"Block number"<<nb<<" (old)."<<endl;
+    std::cout<<"Block number"<<nb<<" (old)."<<std::endl;
     const TopoDS_Shape& e = Shape();
     TopoDS_Iterator ShapIter(e);
     for(ne = 1;ShapIter.More();ShapIter.Next(), ne++) {
@@ -536,19 +536,19 @@ void TopOpeBRepBuild_ShapeSet::DumpBB()
       ShapeEnumToString(subsha.ShapeType(),stt);
       enam = stt+ne+"ShaB"+nb;
       DBRep::Set(enam.ToCString(),subsha); 
-      cout<<"clear; "<<PRODINS<<enam<<"; #draw"<<endl;
+      std::cout<<"clear; "<<PRODINS<<enam<<"; #draw"<<std::endl;
     }
   }
 
   InitStartElements();
   TopTools_IndexedMapOfShape mos;
-  cout<<"#Elements : (block new) : ";if (!MoreStartElements()) cout<<0;cout<<endl;
+  std::cout<<"#Elements : (block new) : ";if (!MoreStartElements()) std::cout<<0;std::cout<<std::endl;
   mos.Clear();
   for (;MoreStartElements();NextStartElement()) {
     const TopoDS_Shape& e = StartElement();
     curr = mos.Extent();
     if(mos.Add(e) > curr) {
-      cout<<"#Block number"<<nb<<" (new)."<<endl;
+      std::cout<<"#Block number"<<nb<<" (new)."<<std::endl;
       nb++;ne++;
       enam = "";
       enam = enam+"ste"+ne+"newB"+nb;
@@ -577,7 +577,7 @@ void TopOpeBRepBuild_ShapeSet::DumpBB()
 	    } else {
 	      enam = enam+"ele"+ne+"newB"+nb;
 	      DBRep::Set(enam.ToCString(),N); 
-	      cout<<PRODINS<<enam<<"; #draw"<<endl;
+	      std::cout<<PRODINS<<enam<<"; #draw"<<std::endl;
 	    }	  
 	  }
 	}

@@ -145,14 +145,14 @@ void  IGESDefs_ToolMacroDef::OwnDump
   (const Handle(IGESDefs_MacroDef)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const 
 { 
-  S << "IGESDefs_MacroDef" << endl;
+  S << "IGESDefs_MacroDef" << Message_EndLine;
   S << "MACRO : ";
   IGESData_DumpString(S,ent->MACRO());
-  S << endl;
-  S << "Entity Type ID : " << ent->EntityTypeID() << endl;
+  S << Message_EndLine;
+  S << "Entity Type ID : " << ent->EntityTypeID() << Message_EndLine;
   S << "Language Statement : ";
   IGESData_DumpStrings(S ,level,1, ent->NbStatements(),ent->LanguageStatement);
   S << "END MACRO : ";
   IGESData_DumpString(S,ent->ENDMACRO());
-  S << endl;
+  S << Message_EndLine;
 }

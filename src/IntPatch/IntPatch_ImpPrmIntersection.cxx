@@ -1917,7 +1917,7 @@ static Standard_Boolean InsertSeamVertices(Handle(IntSurf_LineOn2S)&       Line,
               // Line->InsertBefore(ip,Line->Value(ipn));
               // Line->RemovePoint(ip+2);
               // result = Standard_True;
-              // cout << "swap vertex " << endl;
+              // std::cout << "swap vertex " << std::endl;
               // break;
             }
           }

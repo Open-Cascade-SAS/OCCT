@@ -83,7 +83,7 @@ void StepToTopoDS_TranslateShell::Init
     Message_ProgressSentry PS ( TP->GetProgress(), "Face", 0, NbFc, 1 );
     for (Standard_Integer i = 1; i <= NbFc && PS.More(); i++, PS.Next()) {
 #ifdef OCCT_DEBUG
-      cout << "Processing Face : " << i << endl;
+      std::cout << "Processing Face : " << i << std::endl;
 #endif
       StepFace = CFS->CfsFacesValue(i);
       Handle(StepShape_FaceSurface) theFS =

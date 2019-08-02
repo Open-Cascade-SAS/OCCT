@@ -128,11 +128,11 @@ void  IGESAppli_ToolFiniteElement::OwnDump
   (const Handle(IGESAppli_FiniteElement)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_FiniteElement" << endl;
+  S << "IGESAppli_FiniteElement" << Message_EndLine;
 
-  S << "Topology type : " << ent->Topology() << endl;
+  S << "Topology type : " << ent->Topology() << Message_EndLine;
   S << "Nodes : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbNodes(),ent->Node);
-  S << endl << "Element Name : " << ent->Name();
-  S << endl;
+  S << Message_EndLine << "Element Name : " << ent->Name();
+  S << Message_EndLine;
 }

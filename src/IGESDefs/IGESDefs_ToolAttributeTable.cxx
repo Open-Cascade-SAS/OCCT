@@ -303,18 +303,18 @@ void  IGESDefs_ToolAttributeTable::OwnDump
   (const Handle(IGESDefs_AttributeTable)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 { 
-  S << "IGESDefs_AttributeTable" << endl;
+  S << "IGESDefs_AttributeTable" << Message_EndLine;
 
   Handle(IGESDefs_AttributeDef) ab = ent->Definition();
 
   Standard_Integer na = ent->NbAttributes();
   Standard_Integer nr = ent->NbRows();
   if (ent->FormNumber() == 1)
-    S << "Number of Rows (i.e. complete sets of Attributes) : " << nr << endl;
-  else S << "One set of Attributes" << endl;
-  S << "Number of defined Attributes : " << na << endl;
+    S << "Number of Rows (i.e. complete sets of Attributes) : " << nr << Message_EndLine;
+  else S << "One set of Attributes" << Message_EndLine;
+  S << "Number of defined Attributes : " << na << Message_EndLine;
   if (level <= 4) S <<
-    " [ structure : see Structure in Directory Entry; content : level > 4 ]" <<endl;
+    " [ structure : see Structure in Directory Entry; content : level > 4 ]" <<Message_EndLine;
   else
     for (Standard_Integer k = 1; k <= nr; k ++)
       {
@@ -347,8 +347,8 @@ void  IGESDefs_ToolAttributeTable::OwnDump
 		default : break;
 	      }
 	    }
-	    S << endl;
+	    S << Message_EndLine;
 	  }
       }
-  S << endl;
+  S << Message_EndLine;
 }

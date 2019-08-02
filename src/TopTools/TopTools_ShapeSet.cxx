@@ -622,7 +622,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
     
   } while ( ! IS.fail() && strcmp(vers,Version) && strcmp(vers,Version2) );
   if (IS.fail()) {
-    cout << "File was not written with this version of the topology"<<endl;
+    std::cout << "File was not written with this version of the topology"<<std::endl;
     IS.imbue (anOldLocale);
     return;
   }
@@ -635,7 +635,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
 
   //OCC19559
   if (!myProgress.IsNull() && myProgress->UserBreak()) {
-    cout << "Interrupted by the user"<<endl;
+    std::cout << "Interrupted by the user"<<std::endl;
     // on remet le LC_NUMERIC a la precedente valeur
     IS.imbue (anOldLocale);
     return;
@@ -650,7 +650,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
   }
   //OCC19559
   if (!myProgress.IsNull() && myProgress->UserBreak()) {
-    cout << "Interrupted by the user"<<endl;
+    std::cout << "Interrupted by the user"<<std::endl;
     // on remet le LC_NUMERIC a la precedente valeur
     IS.imbue (anOldLocale);
     return;
@@ -674,7 +674,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS)
   char buffer[255];
   IS >> buffer;
   if (strcmp(buffer,"TShapes")) {
-    cout << "Not a TShape table"<<endl;
+    std::cout << "Not a TShape table"<<std::endl;
     // on remet le LC_NUMERIC a la precedente valeur
     IS.imbue (anOldLocale);
     return;

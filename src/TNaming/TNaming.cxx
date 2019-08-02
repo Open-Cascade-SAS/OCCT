@@ -113,7 +113,7 @@ static void SubstituteShape(const TopoDS_Shape& oldShape,
 			    TNaming_DataMapOfShapePtrRefShape& amap) 
 {
   if (oldShape.IsSame(newShape)) {
-    cout <<"import_tool::Substitute : oldShape IsSame newShape"<<endl;
+    std::cout <<"import_tool::Substitute : oldShape IsSame newShape"<<std::endl;
   }
 
   if (!amap.IsBound(oldShape)) {
@@ -725,7 +725,7 @@ Standard_OStream& TNaming::Print (const TDF_Label& ACCESS,  Standard_OStream& s)
   Handle(TNaming_UsedShapes) US;
   if (!ACCESS.Root().FindAttribute(TNaming_UsedShapes::GetID(), US)) {
 #ifdef OCCT_DEBUG
-    cout<<"TNaming::Print(US): Bad access"<<endl;
+    std::cout<<"TNaming::Print(US): Bad access"<<std::endl;
 #endif
     return s;
   }
@@ -747,9 +747,9 @@ static void BuildMapIn(const TopoDS_Shape& Context, const TopAbs_ShapeEnum StopT
   for (TopExp_Explorer exp(Context,aType); exp.More(); exp.Next()) {
 #ifdef OCCT_DEBUG
     if(!Map.Bind(exp.Current(), Context))
-      cout << "Not bind = " <<exp.Current().ShapeType() <<endl; 
+      std::cout << "Not bind = " <<exp.Current().ShapeType() <<std::endl; 
     else 
-      cout <<"Bind = " <<exp.Current().ShapeType() << " to Context = " <<Context.ShapeType()<<endl;
+      std::cout <<"Bind = " <<exp.Current().ShapeType() << " to Context = " <<Context.ShapeType()<<std::endl;
 #else
     Map.Bind(exp.Current(), Context);
 #endif
@@ -763,7 +763,7 @@ static void BuildMapIn(const TopoDS_Shape& Context, const TopAbs_ShapeEnum StopT
     for(;it.More();it.Next()) {
       if(it.Value().Orientation() != TopAbs_FORWARD && it.Value().Orientation() != TopAbs_REVERSED) {
 	Map.Bind(it.Value(), Context);
-	//cout << "INTERNAL || EXTERNAL Orientation found" <<endl;
+	//std::cout << "INTERNAL || EXTERNAL Orientation found" <<std::endl;
       }
     }
   }
@@ -780,7 +780,7 @@ static void BuildMapC0(const TopoDS_Shape& Context, const TopoDS_Shape& C0, cons
     const TopoDS_Shape& aKey = anIt.Value();
 #ifdef OCCT_DEBUG
     if(!Map.Bind(aKey, C0)) 
-      cout << "Not bind = " <<aKey.ShapeType() <<endl;      
+      std::cout << "Not bind = " <<aKey.ShapeType() <<std::endl;      
 #else
     Map.Bind(aKey, C0);
 #endif
@@ -807,7 +807,7 @@ static void BuildMap(const TopoDS_Shape& Context, const TopAbs_ShapeEnum StopTyp
     const TopoDS_Shape& aKey = anIt.Value();
 #ifdef OCCT_DEBUG
     if(!Map.Bind(aKey, Context)) 
-      cout << "Not bind = " <<aKey.ShapeType() <<endl;      
+      std::cout << "Not bind = " <<aKey.ShapeType() <<std::endl;      
 #else
     Map.Bind(aKey, Context);
 #endif
@@ -831,8 +831,8 @@ TopoDS_Shape TNaming::FindUniqueContext(const TopoDS_Shape& Selection, const Top
 #ifdef OCCT_DEBUG
   TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape it (aMap);
   for (;it.More();it.Next()) {
-    cout <<"FindUniqueContext: Key - " <<it.Key().ShapeType()<< " " << it.Key().TShape().get() <<" OR = " <<it.Key().Orientation() <<
-      "  Context - " << it.Value().ShapeType() << "  " << it.Value().TShape().get()  << " OR = " <<it.Value().Orientation() <<endl;
+    std::cout <<"FindUniqueContext: Key - " <<it.Key().ShapeType()<< " " << it.Key().TShape().get() <<" OR = " <<it.Key().Orientation() <<
+      "  Context - " << it.Value().ShapeType() << "  " << it.Value().TShape().get()  << " OR = " <<it.Value().Orientation() <<std::endl;
   }
 #endif
   if(aMap.IsBound(Selection))
@@ -897,7 +897,7 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection, const 
 	}
 	if(n == 1) {
 #ifdef OCCT_DEBUG_FSET
-	  cout << "FindUniqueContextSet: n = " << n <<endl;
+	  std::cout << "FindUniqueContextSet: n = " << n <<std::endl;
 #endif
 	  return aCmp;
 	}

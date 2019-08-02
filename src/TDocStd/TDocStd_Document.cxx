@@ -250,7 +250,7 @@ void TDocStd_Document::NewCommand()
   OpenTransaction();
 
 #ifdef OCCT_DEBUG_TRANS
-  cout<<"End NewCommand"<<endl;
+  std::cout<<"End NewCommand"<<std::endl;
 #endif
 }
 
@@ -574,12 +574,12 @@ Standard_Boolean TDocStd_Document::Undo()
     // Apply the Undo
     // should test the applicability before.
 #ifdef OCCT_DEBUG_DELTA
-    cout<<"DF before Undo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
+    std::cout<<"DF before Undo =================================="<<std::endl; TDF_Tool::DeepDump(std::cout,myData);
 #endif
     Handle(TDF_Delta) D = myData->Undo(myUndos.Last(),Standard_True);
     D->SetName(myUndos.Last()->Name());
 #ifdef OCCT_DEBUG_DELTA
-    cout<<"DF after Undo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
+    std::cout<<"DF after Undo =================================="<<std::endl; TDF_Tool::DeepDump(std::cout,myData);
 #endif
     // Push the redo
     myRedos.Prepend(D);
@@ -633,12 +633,12 @@ Standard_Boolean TDocStd_Document::Redo()
 
     // Apply the Redo
 #ifdef OCCT_DEBUG_DELTA
-    cout<<"DF before Redo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
+    std::cout<<"DF before Redo =================================="<<std::endl; TDF_Tool::DeepDump(std::cout,myData);
 #endif
     Handle(TDF_Delta) D = myData->Undo(myRedos.First(),Standard_True);
     D->SetName(myRedos.First()->Name());
 #ifdef OCCT_DEBUG_DELTA
-    cout<<"DF after Redo =================================="<<endl; TDF_Tool::DeepDump(cout,myData);
+    std::cout<<"DF after Redo =================================="<<std::endl; TDF_Tool::DeepDump(std::cout,myData);
 #endif
     // Push the redo of the redo as an undo (got it !)
     myUndos.Append(D);

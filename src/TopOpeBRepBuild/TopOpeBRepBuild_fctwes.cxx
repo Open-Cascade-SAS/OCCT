@@ -51,7 +51,7 @@
 #ifdef OCCT_DEBUG
 Standard_EXPORT void debfctwes(const Standard_Integer /*i*/) {}
 Standard_EXPORT void debfctwesmess(const Standard_Integer i,const TCollection_AsciiString& s = "")
-{cout<<"+ + + debfctwes "<<s<<"F"<<i<<endl;debfctwes(i);}
+{std::cout<<"+ + + debfctwes "<<s<<"F"<<i<<std::endl;debfctwes(i);}
 extern void debaddpwes(const Standard_Integer iFOR,const TopAbs_State TB1,const Standard_Integer iEG,const TopAbs_Orientation neworiE,
                        const TopOpeBRepBuild_PBuilder& PB,const TopOpeBRepBuild_PWireEdgeSet& PWES,const TCollection_AsciiString& str1,const TCollection_AsciiString& str2);
 #endif
@@ -77,7 +77,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopoDS_Shape& F1,const
 #ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(F1,iF);
   if(tSPS) GdumpSHASTA(iF,TB1,WES,"--- GFillCurveTopologyWES");
-  if(tSPS) {cout<<" ShapeInterf ";TopAbs::Print(ShapeInterf,cout);cout<<endl;}
+  if(tSPS) {std::cout<<" ShapeInterf ";TopAbs::Print(ShapeInterf,std::cout);std::cout<<std::endl;}
   if(tSPS) {debfctwesmess(iF);}
 #endif
   
@@ -164,9 +164,9 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
 #ifdef OCCT_DEBUG
   Standard_Boolean tSPS = GtraceSPS(iWESF);
   if(tSPS){
-    cout<<"ifil : "<<ifil<<" iref : "<<iref<<" iwes : "<<iWESF<<endl;
-    cout<<"face "<<ifil<<" is ";TopOpeBRepDS::Print(Conf,cout);cout<<endl;
-    cout<<"ComOfCut "<<ComOfCut<<endl;
+    std::cout<<"ifil : "<<ifil<<" iref : "<<iref<<" iwes : "<<iWESF<<std::endl;
+    std::cout<<"face "<<ifil<<" is ";TopOpeBRepDS::Print(Conf,std::cout);std::cout<<std::endl;
+    std::cout<<"ComOfCut "<<ComOfCut<<std::endl;
     debfctwesmess(iWESF);
   }
 #endif
@@ -211,7 +211,7 @@ void TopOpeBRepBuild_Builder::GFillCurveTopologyWES(const TopOpeBRepDS_CurveIter
 
 #ifdef OCCT_DEBUG
       EhasPConWESF = FC2D_HasCurveOnSurface(E,WESF);
-      if (!EhasPConWESF) cout<<"TopOpeBRepBuild_Builder::GFillCurveTopologyWES : Null PCurve on F"<<iWESF<<endl;
+      if (!EhasPConWESF) std::cout<<"TopOpeBRepBuild_Builder::GFillCurveTopologyWES : Null PCurve on F"<<iWESF<<std::endl;
 #endif
     }
 

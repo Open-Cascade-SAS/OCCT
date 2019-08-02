@@ -150,7 +150,7 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
   di << "Adding Edges ..... \n";
   for(int i = 1; i <= edgemap.Extent(); i++)
     {
-      // cout << "Adding Edge : " << i << endl;
+      // std::cout << "Adding Edge : " << i << std::endl;
       TopoDS_Edge edg = TopoDS::Edge( edgemap.FindKey(i) );
       if(!edg.IsNull()) blend.Add(1, edg);
     }
@@ -372,9 +372,9 @@ static Standard_Integer OCC712 (Draw_Interpretor& di, Standard_Integer argc, con
                 }
             }
 
-	  di << "All Faces added. Building... \n"; //cout.flush();
+	  di << "All Faces added. Building... \n"; //std::cout.flush();
 	  draftSlab.Build();
-	  di << "Build done...\n"; //cout.flush();
+	  di << "Build done...\n"; //std::cout.flush();
 	  if (!draftSlab.IsDone())  //--------------> STEP:1
             {
 	      di << " Error in Build \n";
@@ -1017,13 +1017,13 @@ static Standard_Integer OCC828 (Draw_Interpretor& di,Standard_Integer argc, cons
         }
       if (index < argc) DBRep::Set(argv[index++], slab.Shape());
 
-//       cout << "Slab Successfully Created !   Now Blending ..." << endl;
+//       std::cout << "Slab Successfully Created !   Now Blending ..." << std::endl;
 //       TopoDS_Shape aShape;
 //       int ret = performBlend(slab.Shape(), radius, aShape);
 //       if (ret) return 1;
 //       if (index < argc) DBRep::Set(argv[index++], aShape);
 
-//       cout << "Blending Successfully Done !   Now Triangulating ..." << endl;
+//       std::cout << "Blending Successfully Done !   Now Triangulating ..." << std::endl;
 //       performTriangulation(aShape);
     }
   catch ( Standard_Failure const& )

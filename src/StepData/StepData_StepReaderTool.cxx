@@ -184,7 +184,7 @@ void StepData_StepReaderTool::BeginRead
       Handle(Interface_Check) mch = model->GlobalCheck();
       Standard_Integer nbmess = ach->NbWarnings();
       sout<<nbmess<<" Warnings on Reading Header Entity N0."<<i<<":";
-      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << endl;
+      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << Message_EndLine;
       for (Standard_Integer nf = 1; nf <= nbmess; nf ++)
 	sout << ach->CWarning(nf) << "\n";
     }
@@ -192,7 +192,7 @@ void StepData_StepReaderTool::BeginRead
       Handle(Interface_Check) mch = model->GlobalCheck();
       Standard_Integer nbmess = ach->NbFails();
       sout << " Errors on Reading Header Entity N0."<<i<<":";
-      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << endl;
+      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << Message_EndLine;
       for (Standard_Integer nf = 1; nf <= nbmess; nf ++)
 	sout << ach->CFail(nf) << "\n";
     }

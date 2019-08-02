@@ -639,8 +639,8 @@ Standard_Boolean ShapeBuild_Edge::BuildCurve3d (const TopoDS_Edge& edge) const
   }
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "\nWarning: ShapeBuild_Edge: Exception in BuildCurve3d: "; 
-    anException.Print(cout); cout << endl;
+    std::cout << "\nWarning: ShapeBuild_Edge: Exception in BuildCurve3d: "; 
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
   }
@@ -668,7 +668,7 @@ void ShapeBuild_Edge::MakeEdge(TopoDS_Edge& edge,const Handle(Geom_Curve)& curve
   BRepBuilderAPI_MakeEdge ME (curve, p1, p2);
   if (!ME.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "\nWarning: ShapeBuild_Edge::MakeEdge BRepAPI_NotDone";
+    std::cout << "\nWarning: ShapeBuild_Edge::MakeEdge BRepAPI_NotDone";
 #endif
     return;
   }
@@ -733,7 +733,7 @@ void ShapeBuild_Edge::MakeEdge(TopoDS_Edge& edge,const Handle(Geom2d_Curve)& pcu
   BRepBuilderAPI_MakeEdge ME (pcurve, S, p1, p2);
   if (!ME.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "\nWarning: ShapeBuild_Edge::MakeEdge BRepAPI_NotDone";
+    std::cout << "\nWarning: ShapeBuild_Edge::MakeEdge BRepAPI_NotDone";
 #endif
     return;
   }

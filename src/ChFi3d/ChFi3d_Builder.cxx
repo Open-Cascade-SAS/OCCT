@@ -265,7 +265,7 @@ void  ChFi3d_Builder::Compute()
     }
     catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout <<"EXCEPTION Stripe compute " << anException << endl;
+      std::cout <<"EXCEPTION Stripe compute " << anException << std::endl;
 #endif
       (void)anException;
       badstripes.Append(itel.Value());
@@ -295,7 +295,7 @@ void  ChFi3d_Builder::Compute()
       }
       catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-        cout <<"EXCEPTION Corner compute " << anException << endl;
+        std::cout <<"EXCEPTION Corner compute " << anException << std::endl;
 #endif
         (void)anException;
         badvertices.Append(myVDataMap.FindKey(j));
@@ -350,7 +350,7 @@ void  ChFi3d_Builder::Compute()
 	}
 	catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	  cout <<"EXCEPTION Fillets compute " << anException << endl;
+	  std::cout <<"EXCEPTION Fillets compute " << anException << std::endl;
 #endif
 	  (void)anException;
 	  badstripes.Append(itel.Value());
@@ -503,67 +503,67 @@ void  ChFi3d_Builder::Compute()
   
 #ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
-    cout<<endl; 
-    cout<<"COMPUTE: temps total "<<t_total<<"s  dont :"<<endl;
-    cout<<"- Init + ExtentAnalyse "<<t_extent<<"s"<<endl;  
-    cout<<"- PerformSetOfSurf "<<t_perfsetofsurf<<"s"<<endl;
-    cout<<"- PerformFilletOnVertex "<<t_perffilletonvertex<<"s"<<endl; 
-    cout<<"- FilDS "<<t_filds<<"s"<<endl; 
-    cout<<"- Reconstruction "<<t_reconstruction<<"s"<<endl;
-    cout<<"- SetRegul "<<t_setregul<<"s"<<endl<<endl;
+    std::cout<<std::endl; 
+    std::cout<<"COMPUTE: temps total "<<t_total<<"s  dont :"<<std::endl;
+    std::cout<<"- Init + ExtentAnalyse "<<t_extent<<"s"<<std::endl;  
+    std::cout<<"- PerformSetOfSurf "<<t_perfsetofsurf<<"s"<<std::endl;
+    std::cout<<"- PerformFilletOnVertex "<<t_perffilletonvertex<<"s"<<std::endl; 
+    std::cout<<"- FilDS "<<t_filds<<"s"<<std::endl; 
+    std::cout<<"- Reconstruction "<<t_reconstruction<<"s"<<std::endl;
+    std::cout<<"- SetRegul "<<t_setregul<<"s"<<std::endl<<std::endl;
 
-    cout<<endl;
-    cout <<"temps PERFORMSETOFSURF "<<t_perfsetofsurf <<"s  dont : "<<endl;
-    cout <<"- SetofKPart "<<t_perfsetofkpart<<"s"<<endl;
-    cout <<"- SetofKGen "<< t_perfsetofkgen <<"s"<<endl;
-    cout <<"- MakeExtremities "<<t_makextremities<<"s"<<endl<<endl;
+    std::cout<<std::endl;
+    std::cout <<"temps PERFORMSETOFSURF "<<t_perfsetofsurf <<"s  dont : "<<std::endl;
+    std::cout <<"- SetofKPart "<<t_perfsetofkpart<<"s"<<std::endl;
+    std::cout <<"- SetofKGen "<< t_perfsetofkgen <<"s"<<std::endl;
+    std::cout <<"- MakeExtremities "<<t_makextremities<<"s"<<std::endl<<std::endl;
     
     
-    cout <<"temps SETOFKGEN "<< t_perfsetofkgen<<"s dont : "<<endl;
-    cout<<"- PerformSurf "<<t_performsurf<<"s"<<endl;
-    cout<<"- starsol "<< t_startsol <<"s"<<endl<<endl;
+    std::cout <<"temps SETOFKGEN "<< t_perfsetofkgen<<"s dont : "<<std::endl;
+    std::cout<<"- PerformSurf "<<t_performsurf<<"s"<<std::endl;
+    std::cout<<"- starsol "<< t_startsol <<"s"<<std::endl<<std::endl;
     
-    cout<<"temps PERFORMSURF "<<t_performsurf<<"s  dont : "  << endl;
-    cout<<"- computedata "<<t_computedata<<"s"<<endl;
-    cout<<"- completedata "<<t_completedata<<"s"<<endl<<endl;
-    
-    
-    cout<<"temps PERFORMFILLETVERTEX "<<t_perffilletonvertex <<"s dont : "  << endl;
-    cout<<"- PerformOneCorner "<<t_perform1corner<<"s"<<endl;
-    cout<<"- PerformIntersectionAtEnd "<<t_performatend<<"s"<<endl;
-    cout<<"- PerformTwoCorner "<<t_perform2corner<<"s"<<endl;
-    cout<<"- PerformThreeCorner "<<t_perform3corner<<"s"<<endl;
-    cout<<"- PerformMoreThreeCorner "<<t_performmore3corner<<"s"<<endl<<endl;
+    std::cout<<"temps PERFORMSURF "<<t_performsurf<<"s  dont : "  << std::endl;
+    std::cout<<"- computedata "<<t_computedata<<"s"<<std::endl;
+    std::cout<<"- completedata "<<t_completedata<<"s"<<std::endl<<std::endl;
     
     
-    cout<<"temps PerformOneCorner "<<t_perform1corner<<"s dont:"<<endl;
-    cout<<"- temps condition if (same) "<<t_same << "s "<<endl; 
-    cout<<"- temps condition if (inter) "<<t_inter<<"s " <<endl;
-    cout<<"- temps condition if (same inter) "<<t_sameinter<<"s " <<endl<<endl;
+    std::cout<<"temps PERFORMFILLETVERTEX "<<t_perffilletonvertex <<"s dont : "  << std::endl;
+    std::cout<<"- PerformOneCorner "<<t_perform1corner<<"s"<<std::endl;
+    std::cout<<"- PerformIntersectionAtEnd "<<t_performatend<<"s"<<std::endl;
+    std::cout<<"- PerformTwoCorner "<<t_perform2corner<<"s"<<std::endl;
+    std::cout<<"- PerformThreeCorner "<<t_perform3corner<<"s"<<std::endl;
+    std::cout<<"- PerformMoreThreeCorner "<<t_performmore3corner<<"s"<<std::endl<<std::endl;
     
-    cout<<"temps PerformTwocorner "<<t_perform2corner<<"s  dont:"<<endl;
-    cout<<"- temps initialisation "<< t_t2cornerinit<<"s"<<endl;
-    cout<<"- temps PerformTwoCornerbyInter "<<t_perf2cornerbyinter<<"s"<<endl;
-    cout<<"- temps ChFiKPart_ComputeData "<<t_chfikpartcompdata <<"s"<<endl;
-    cout<<"- temps cheminement "<<t_cheminement<<"s"<<endl;
-    cout<<"- temps remplissage "<<t_remplissage<<"s"<<endl;
-    cout<<"- temps mise a jour stripes  "<<t_t2cornerDS<<"s"<<endl<<endl;
     
-    cout<<" temps PerformThreecorner "<<t_perform3corner<<"s  dont:"<<endl;
-    cout<<"- temps initialisation "<< t_t3cornerinit<<"s"<<endl;
-    cout<<"- temps cas spherique  "<<t_spherique<<"s"<<endl;
-    cout<<"- temps cas torique  "<<t_torique<<"s"<<endl;
-    cout<<"- temps notfilling "<<t_notfilling<<"s"<<endl;
-    cout<<"- temps filling "<<t_filling<<"s"<<endl;
-    cout<<"- temps mise a jour stripes  "<<t_t3cornerDS<<"s"<<endl<<endl;
+    std::cout<<"temps PerformOneCorner "<<t_perform1corner<<"s dont:"<<std::endl;
+    std::cout<<"- temps condition if (same) "<<t_same << "s "<<std::endl; 
+    std::cout<<"- temps condition if (inter) "<<t_inter<<"s " <<std::endl;
+    std::cout<<"- temps condition if (same inter) "<<t_sameinter<<"s " <<std::endl<<std::endl;
     
-    cout<<"temps PerformMore3Corner "<<t_performmore3corner<<"s dont:"<<endl;
-    cout<<"-temps plate "<<t_plate << "s "<<endl; 
-    cout<<"-temps approxplate "<<t_approxplate<<"s " <<endl;
-    cout<<"-temps batten "<< t_batten<<"s " <<endl<<endl;
+    std::cout<<"temps PerformTwocorner "<<t_perform2corner<<"s  dont:"<<std::endl;
+    std::cout<<"- temps initialisation "<< t_t2cornerinit<<"s"<<std::endl;
+    std::cout<<"- temps PerformTwoCornerbyInter "<<t_perf2cornerbyinter<<"s"<<std::endl;
+    std::cout<<"- temps ChFiKPart_ComputeData "<<t_chfikpartcompdata <<"s"<<std::endl;
+    std::cout<<"- temps cheminement "<<t_cheminement<<"s"<<std::endl;
+    std::cout<<"- temps remplissage "<<t_remplissage<<"s"<<std::endl;
+    std::cout<<"- temps mise a jour stripes  "<<t_t2cornerDS<<"s"<<std::endl<<std::endl;
     
-    cout <<"TEMPS DIVERS "<<endl;
-    cout<<"-temps ChFi3d_sameparameter "<<t_sameparam<<"s"<<endl<<endl;
+    std::cout<<" temps PerformThreecorner "<<t_perform3corner<<"s  dont:"<<std::endl;
+    std::cout<<"- temps initialisation "<< t_t3cornerinit<<"s"<<std::endl;
+    std::cout<<"- temps cas spherique  "<<t_spherique<<"s"<<std::endl;
+    std::cout<<"- temps cas torique  "<<t_torique<<"s"<<std::endl;
+    std::cout<<"- temps notfilling "<<t_notfilling<<"s"<<std::endl;
+    std::cout<<"- temps filling "<<t_filling<<"s"<<std::endl;
+    std::cout<<"- temps mise a jour stripes  "<<t_t3cornerDS<<"s"<<std::endl<<std::endl;
+    
+    std::cout<<"temps PerformMore3Corner "<<t_performmore3corner<<"s dont:"<<std::endl;
+    std::cout<<"-temps plate "<<t_plate << "s "<<std::endl; 
+    std::cout<<"-temps approxplate "<<t_approxplate<<"s " <<std::endl;
+    std::cout<<"-temps batten "<< t_batten<<"s " <<std::endl<<std::endl;
+    
+    std::cout <<"TEMPS DIVERS "<<std::endl;
+    std::cout<<"-temps ChFi3d_sameparameter "<<t_sameparam<<"s"<<std::endl<<std::endl;
   }
 #endif
   //

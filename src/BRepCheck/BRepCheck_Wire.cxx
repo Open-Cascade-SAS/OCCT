@@ -380,13 +380,13 @@ Standard_Boolean IsDistanceIn3DTolerance (const gp_Pnt& thePnt_f,
     return Standard_True;
 
 #ifdef OCCT_DEBUG
-  cout << endl;
-  cout << "--------Function IsDistanceIn3DTolerance(...)----------"												<< endl;
-  cout << "--- BRepCheck Wire: Closed3d -> Error"																					<< endl;
-  cout << "--- Dist (" << Dist << ") > Tol3d (" << aTol3d << ")"													<< endl;
-  cout << "Pnt1(" << thePnt_f.X() << "; " << thePnt_f.Y() << "; " << thePnt_f.Z() << ")"	<< endl;
-  cout << "Pnt2(" << thePnt_l.X() << "; " << thePnt_l.Y() << "; " << thePnt_l.Z() << ")"	<< endl;
-  cout << "------------------------------------------------------"												<< endl;
+  std::cout << std::endl;
+  std::cout << "--------Function IsDistanceIn3DTolerance(...)----------"												<< std::endl;
+  std::cout << "--- BRepCheck Wire: Closed3d -> Error"																					<< std::endl;
+  std::cout << "--- Dist (" << Dist << ") > Tol3d (" << aTol3d << ")"													<< std::endl;
+  std::cout << "Pnt1(" << thePnt_f.X() << "; " << thePnt_f.Y() << "; " << thePnt_f.Z() << ")"	<< std::endl;
+  std::cout << "Pnt2(" << thePnt_l.X() << "; " << thePnt_l.Y() << "; " << thePnt_l.Z() << ")"	<< std::endl;
+  std::cout << "------------------------------------------------------"												<< std::endl;
 #endif
 
   return Standard_False;
@@ -418,19 +418,19 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
 #ifdef OCCT_DEBUG
   if(PrintWarnings)
     {
-    cout << endl;
-    cout << "--------Function IsDistanceIn2DTolerance(...)----------"								<< endl;
-    cout << "--- BRepCheck Wire: Not closed in 2D"																  << endl;
-    cout << "*****************************************************"									<< endl;
-    cout << "*dumin = " << dumin << "; dumax = " << dumax														<< endl;
-    cout << "* dvmin = " << dvmin << "; dvmax = " << dvmax													<< endl;
-    cout << "* (dumin > dumax) or (dvmin > dvmax)."																	<< endl;
-    cout << "*****************************************************"									<< endl;
-    cout << endl;
-    cout << "UFirst = "  << aFaceSurface.FirstUParameter();
-    cout << "; ULast = " << aFaceSurface.LastUParameter()														<< endl;
-    cout << "VFirst = " << aFaceSurface.FirstVParameter();
-    cout << "; VLast = " << aFaceSurface.LastVParameter()														<< endl;
+    std::cout << std::endl;
+    std::cout << "--------Function IsDistanceIn2DTolerance(...)----------"								<< std::endl;
+    std::cout << "--- BRepCheck Wire: Not closed in 2D"																  << std::endl;
+    std::cout << "*****************************************************"									<< std::endl;
+    std::cout << "*dumin = " << dumin << "; dumax = " << dumax														<< std::endl;
+    std::cout << "* dvmin = " << dvmin << "; dvmax = " << dvmax													<< std::endl;
+    std::cout << "* (dumin > dumax) or (dvmin > dvmax)."																	<< std::endl;
+    std::cout << "*****************************************************"									<< std::endl;
+    std::cout << std::endl;
+    std::cout << "UFirst = "  << aFaceSurface.FirstUParameter();
+    std::cout << "; ULast = " << aFaceSurface.LastUParameter()														<< std::endl;
+    std::cout << "VFirst = " << aFaceSurface.FirstVParameter();
+    std::cout << "; VLast = " << aFaceSurface.LastVParameter()														<< std::endl;
     }
 #endif
   dumax = aFaceSurface.UResolution(aTol3d);
@@ -454,9 +454,9 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
 #ifdef OCCT_DEBUG
   if(PrintWarnings)
     {
-    cout << "aTol3d = " << aTol3d <<"; URes = " << dumax << "; VRes = " << dvmax		<< endl;
-    cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")"										<< endl;
-    cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")"						<< endl;
+    std::cout << "aTol3d = " << aTol3d <<"; URes = " << dumax << "; VRes = " << dvmax		<< std::endl;
+    std::cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")"										<< std::endl;
+    std::cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")"						<< std::endl;
     }
 #endif
 
@@ -465,8 +465,8 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
 #ifdef OCCT_DEBUG
   if((aTol2d <= 0.0) && (PrintWarnings))
     {
-    cout<<"BRepCheck_Wire : UResolution and VResolution = 0.0 (Face too small ?)"<<endl;
-    cout.flush();
+    std::cout<<"BRepCheck_Wire : UResolution and VResolution = 0.0 (Face too small ?)"<<std::endl;
+    std::cout.flush();
     }
 #endif
 
@@ -478,15 +478,15 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
 #ifdef OCCT_DEBUG
   if(PrintWarnings)
     {
-    cout << endl;
-    cout << "--------Function IsDistanceIn2DTolerance(...)----------"							<< endl;
-    cout << "--- BRepCheck Wire: Not closed in 2d"  															<< endl;
-    cout << "*****************************************************"								<< endl;
-    cout << "* Dist = " << Dist	<< " > Tol2d = " <<	aTol2d												<< endl;
-    cout << "*****************************************************"								<< endl;
-    cout << "aTol3d = " << aTol3d <<"; URes = " << dumax << "; VRes = " << dvmax	<< endl;
-    cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")"									<< endl;
-    cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")"					<< endl;
+    std::cout << std::endl;
+    std::cout << "--------Function IsDistanceIn2DTolerance(...)----------"							<< std::endl;
+    std::cout << "--- BRepCheck Wire: Not closed in 2d"  															<< std::endl;
+    std::cout << "*****************************************************"								<< std::endl;
+    std::cout << "* Dist = " << Dist	<< " > Tol2d = " <<	aTol2d												<< std::endl;
+    std::cout << "*****************************************************"								<< std::endl;
+    std::cout << "aTol3d = " << aTol3d <<"; URes = " << dumax << "; VRes = " << dvmax	<< std::endl;
+    std::cout << "thePnt(" << thePnt.X() << "; " << thePnt.Y() << ")"									<< std::endl;
+    std::cout << "thePntRef(" << thePntRef.X() << "; " << thePntRef.Y() << ")"					<< std::endl;
     }
 #endif
 
@@ -1071,7 +1071,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	    delete [] tabDom;
 #ifdef OCCT_DEBUG
 	    static Standard_Integer numpoint=0;
-	    cout<<"point p"<<++numpoint<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;cout.flush();
+	    std::cout<<"point p"<<++numpoint<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<std::endl;std::cout.flush();
 #endif
 	    return(BRepCheck_SelfIntersectingWire);
 	  }
@@ -1103,7 +1103,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	else {
 	  delete [] tabDom;
 #ifdef OCCT_DEBUG
-	  cout<<"BRepCheck_NoCurveOnSurface or BRepCheck_InvalidRange"<<endl;cout.flush();
+	  std::cout<<"BRepCheck_NoCurveOnSurface or BRepCheck_InvalidRange"<<std::endl;std::cout.flush();
 #endif
 	  if(tabCur(j).IsNull()) {
 	    return(BRepCheck_NoCurveOnSurface);
@@ -1225,8 +1225,8 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	    //-- the point of intersection with vertex (if exists)
 	    if (localok == Standard_False && !CommonVertices.IsEmpty()) {
 #ifdef OCCT_DEBUG
-	      cout << "\n------------------------------------------------------\n" <<endl;
-	      cout << "\n--- BRepCheck Wire: AutoIntersection Phase1 -> Erreur \n" <<endl;
+	      std::cout << "\n------------------------------------------------------\n" <<std::endl;
+	      std::cout << "\n--- BRepCheck Wire: AutoIntersection Phase1 -> Erreur \n" <<std::endl;
 	      
 #endif
 	      Standard_Real distauvtxleplusproche,VParaOnEdge1,VParaOnEdge2;
@@ -1356,8 +1356,8 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 		}
 #ifdef OCCT_DEBUG
 	      static Standard_Integer numpoint1=0;
-	      cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;
-	      cout.flush();
+	      std::cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<std::endl;
+	      std::cout.flush();
 #endif
 	      delete [] tabDom;
 	      return(BRepCheck_SelfIntersectingWire);
@@ -1490,8 +1490,8 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 	      }
 #ifdef OCCT_DEBUG
 	      static Standard_Integer numpoint1=0;
-	      cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<endl;
-	      cout.flush();
+	      std::cout<<"point p"<<++numpoint1<<" "<<P3d.X()<<" "<<P3d.Y()<<" "<<P3d.Z()<<std::endl;
+	      std::cout.flush();
 #endif
 	      delete [] tabDom;
 	      return(BRepCheck_SelfIntersectingWire);

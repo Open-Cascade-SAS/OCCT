@@ -77,6 +77,6 @@ void TObj_Persistence::DumpTypes (Standard_OStream &theOs)
   TObj_DataMapOfStringPointer::Iterator it ( getMapOfTypes() );
   for ( ; it.More(); it.Next() )
   {
-    theOs << it.Key() << endl;
+    theOs << it.Key() << std::endl;
   }
 }

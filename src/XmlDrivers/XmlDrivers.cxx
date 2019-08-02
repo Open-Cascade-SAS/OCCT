@@ -43,7 +43,7 @@ const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGU
   if (theGUID == XmlStorageDriver)
   {
 #ifdef OCCT_DEBUG
-    cout << "XmlDrivers : Storage Plugin" << endl;
+    std::cout << "XmlDrivers : Storage Plugin" << std::endl;
 #endif
     static Handle(Standard_Transient) model_sd =
       new XmlDrivers_DocumentStorageDriver
@@ -54,7 +54,7 @@ const Handle(Standard_Transient)& XmlDrivers::Factory(const Standard_GUID& theGU
   if (theGUID == XmlRetrievalDriver)
   {
 #ifdef OCCT_DEBUG
-    cout << "XmlDrivers : Retrieval Plugin" << endl;
+    std::cout << "XmlDrivers : Retrieval Plugin" << std::endl;
 #endif
     static Handle (Standard_Transient) model_rd =
       new XmlDrivers_DocumentRetrievalDriver ();

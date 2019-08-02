@@ -311,7 +311,7 @@ VrmlData_ErrorStatus VrmlData_Group::Read (VrmlData_InBuffer& theBuffer)
       if (OK(aStatus, ReadMultiString (theBuffer, lstURL))) {
         NCollection_List<TCollection_AsciiString>::Iterator anIter (lstURL);
         for (; anIter.More(); anIter.Next()) {
-          ifstream aStream;
+          std::ifstream aStream;
           const TCollection_AsciiString& aFileName = anIter.Value();
           if (!OK(aStatus, openFile (aStream, aFileName)))
             break;
@@ -423,7 +423,7 @@ VrmlData_ErrorStatus VrmlData_Group::openFile
                                 (Standard_IStream&              theStream,
                                  const TCollection_AsciiString& theFilename)
 {
-  ifstream& aStream = static_cast<ifstream&> (theStream);
+  std::ifstream& aStream = static_cast<std::ifstream&> (theStream);
   VrmlData_ErrorStatus aStatus (VrmlData_EmptyData);
   NCollection_List<TCollection_ExtendedString>::Iterator aDirIter =
     Scene().VrmlDirIterator();
@@ -432,7 +432,7 @@ VrmlData_ErrorStatus VrmlData_Group::openFile
       continue;
     const TCollection_AsciiString aFullName =
       TCollection_AsciiString (aDirIter.Value()) + theFilename;
-    aStream.open (aFullName.ToCString(), ios::in);
+    aStream.open (aFullName.ToCString(), std::ios::in);
     if (aStream.fail())
       aStream.clear();
     else {
@@ -441,7 +441,7 @@ VrmlData_ErrorStatus VrmlData_Group::openFile
     }
   }
   if (aStatus == VrmlData_EmptyData) {
-    aStream.open (theFilename.ToCString(), ios::in);
+    aStream.open (theFilename.ToCString(), std::ios::in);
     if (!aStream.fail())
       aStatus = VrmlData_StatusOK;
   }

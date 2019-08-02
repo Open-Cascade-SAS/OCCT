@@ -29,8 +29,6 @@
 #include "../Shaders/Shaders_RaytraceSmooth_fs.pxx"
 #include "../Shaders/Shaders_Display_fs.pxx"
 
-using namespace OpenGl_Raytrace;
-
 //! Use this macro to output ray-tracing debug info
 // #define RAY_TRACE_PRINT_INFO
 

@@ -111,14 +111,14 @@ void TopOpeBRep_Hctxff2d::SetHSurfacesPrivate()
 #ifdef OCCT_DEBUG
   Standard_Integer DEBi = 0;
   if ( DEBi ) {
-    cout<<"TopOpeBRep_Hctxff2d::SetSurfacesPrivate : ";
-    cout<<"f1 "; TopAbs::Print(myFace1.Orientation(),cout);
-    cout<< " / f1F : ";
-    if (so11) cout<<"sameoriented"; else cout<<"difforiented"; cout<<endl;
-    cout <<"  ";
-    cout<<"f2 "; TopAbs::Print(myFace2.Orientation(),cout);
-    cout<< " / f1F : ";
-    if (so21) cout<<"sameoriented"; else cout<<"difforiented"; cout<<endl;
+    std::cout<<"TopOpeBRep_Hctxff2d::SetSurfacesPrivate : ";
+    std::cout<<"f1 "; TopAbs::Print(myFace1.Orientation(),std::cout);
+    std::cout<< " / f1F : ";
+    if (so11) std::cout<<"sameoriented"; else std::cout<<"difforiented"; std::cout<<std::endl;
+    std::cout <<"  ";
+    std::cout<<"f2 "; TopAbs::Print(myFace2.Orientation(),std::cout);
+    std::cout<< " / f1F : ";
+    if (so21) std::cout<<"sameoriented"; else std::cout<<"difforiented"; std::cout<<std::endl;
   }
 #endif
 } // SetHSurfacesPrivate

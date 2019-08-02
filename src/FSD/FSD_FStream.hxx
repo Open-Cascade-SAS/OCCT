@@ -18,6 +18,6 @@
 #include <stdio.h>
 #include <Standard_Stream.hxx>
 
-typedef fstream FSD_FStream;
+typedef std::fstream FSD_FStream;
 
 #endif

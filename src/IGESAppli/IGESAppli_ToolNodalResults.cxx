@@ -216,20 +216,20 @@ void  IGESAppli_ToolNodalResults::OwnDump
 {
 //  Standard_Integer nbnodes = ent->NbNodes();
 //  Standard_Integer nbdata  = ent->NbData ();
-  S << "IGESAppli_NodalResults" << endl;
+  S << "IGESAppli_NodalResults" << Message_EndLine;
 
   S << "General Note : ";
   dumper.Dump(ent->Note(),S, (level <= 4) ? 0 : 1);
-  S << endl;
+  S << Message_EndLine;
   S << "Analysis subcase number : " << ent->SubCaseNumber() << "  ";
-  S << "Time used : " << ent->Time() << endl;
+  S << "Time used : " << ent->Time() << Message_EndLine;
   S << "No. of nodes : " << ent->NbNodes() << "  ";
-  S << "No. of values for a node : " << ent->NbData() << endl;
-  S << "Node Identifiers : " << endl;
-  S << "Nodes : " << endl;
+  S << "No. of values for a node : " << ent->NbData() << Message_EndLine;
+  S << "Node Identifiers : " << Message_EndLine;
+  S << "Nodes : " << Message_EndLine;
   S << "Data : ";  if (level < 6) S << " [ask level > 5]";
 //  IGESData_DumpRectVals(S ,-level,1, ent->NbData(),ent->Data);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
       for (Standard_Integer i=1; i <= ent->NbNodes(); i++)
@@ -238,12 +238,12 @@ void  IGESAppli_ToolNodalResults::OwnDump
           S << "NodeIdentifier : " << ent->NodeIdentifier(i) << "  ";
           S << "Node : ";
           dumper.Dump (ent->Node(i),S, 1);
-          S << endl;
+          S << Message_EndLine;
 	  if (level < 6) continue;
           S << "Data : [ ";
           for (Standard_Integer j = 1; j <= ent->NbData(); j ++)
               S << "  " << ent->Data(i,j);
-	  S << " ]" << endl;
+	  S << " ]" << Message_EndLine;
 	}
     }
 }

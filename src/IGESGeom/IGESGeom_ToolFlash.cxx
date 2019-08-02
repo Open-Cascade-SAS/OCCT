@@ -178,9 +178,9 @@ void IGESGeom_ToolFlash::OwnDump
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   Standard_Integer fn = ent->FormNumber();
 
-  S << "IGESGeom_Flash" << endl;
+  S << "IGESGeom_Flash" << Message_EndLine;
   switch (fn) {
-    case 0 : S << " --    Form defined by reference entity   --" << endl; break;
+    case 0 : S << " --    Form defined by reference entity   --" << Message_EndLine; break;
     case 1 : S << " --    Circular    --  ";  break;
     case 2 : S << " --    Rectangle   --  ";  break;
     case 3 : S << " --    Donut    --  ";  break;
@@ -191,9 +191,9 @@ void IGESGeom_ToolFlash::OwnDump
   S << "Flash reference point    : ";
   IGESData_DumpXYL(S,level, ent->ReferencePoint(), ent->Location());
   S << " First sizing parameter  : " << ent->Dimension1() << "  ";
-  S << " Second sizing parameter : " << ent->Dimension2() << endl;
-  S << " Rotation about reference entity : " << ent->Rotation() << endl;
+  S << " Second sizing parameter : " << ent->Dimension2() << Message_EndLine;
+  S << " Rotation about reference entity : " << ent->Rotation() << Message_EndLine;
   S << "Reference Entity         : ";
   dumper.Dump(ent->ReferenceEntity(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
 }

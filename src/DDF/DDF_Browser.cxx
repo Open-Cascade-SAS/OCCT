@@ -64,7 +64,7 @@ DDF_Browser::DDF_Browser(const Handle(TDF_Data)& aDF)
 
 void DDF_Browser::DrawOn(Draw_Display& /*dis*/) const
 { 
-  //cout<<"DDF_Browser"<<endl; 
+  //std::cout<<"DDF_Browser"<<std::endl; 
 }
 
 
@@ -84,7 +84,7 @@ Handle(Draw_Drawable3D) DDF_Browser::Copy() const
 
 void DDF_Browser::Dump(Standard_OStream& S) const
 {
-  S<<"DDF_Browser on a DF:"<<endl;
+  S<<"DDF_Browser on a DF:"<<std::endl;
   S<<myDF;
 }
 

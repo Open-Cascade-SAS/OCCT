@@ -66,7 +66,7 @@
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
 Standard_EXPORT void debsplitse(const Standard_Integer) {}
 Standard_EXPORT void debsplitsemess(const Standard_Integer i,const TCollection_AsciiString& s = "");
-Standard_EXPORT void debsplitsemess(const Standard_Integer i,const TCollection_AsciiString& s){cout<<"+++ debsplitse "<<s<<" E"<<i<<endl;debsplitse(i);}
+Standard_EXPORT void debsplitsemess(const Standard_Integer i,const TCollection_AsciiString& s){std::cout<<"+++ debsplitse "<<s<<" E"<<i<<std::endl;debsplitse(i);}
 Standard_EXPORT void debspseou(const Standard_Integer i) {debsplitsemess(i,"OUT");}
 Standard_EXPORT void debspsein(const Standard_Integer i) {debsplitsemess(i,"IN ");}
 Standard_EXPORT void debspseon(const Standard_Integer i) {debsplitsemess(i,"ON ");}
@@ -298,8 +298,8 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       if (tSPS) {
 	TCollection_AsciiString str("# edge ");str=str+iE+" sd3d edge "+iESD;
 	TCollection_AsciiString stru(str.Length(),'-');
-	cout<<endl;if(DEBiESD==1)cout<<stru<<endl;
-	DEBiESD++;cout<<str<<endl;debsplitsemess(iE);
+	std::cout<<std::endl;if(DEBiESD==1)std::cout<<stru<<std::endl;
+	DEBiESD++;std::cout<<str<<std::endl;debsplitsemess(iE);
       }
 #endif
 
@@ -348,10 +348,10 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 
 #ifdef DRAW
       if (tSPS) {
-	cout<<"# edges ON "<<iE<<" ";
-	TopAbs::Print(TopAbs_IN,cout); cout<<" / esd";
-	cout<<" "<<iESD;
-	cout<<" : ("<<nLE1inE2<<")"<<endl;
+	std::cout<<"# edges ON "<<iE<<" ";
+	TopAbs::Print(TopAbs_IN,std::cout); std::cout<<" / esd";
+	std::cout<<" "<<iESD;
+	std::cout<<" : ("<<nLE1inE2<<")"<<std::endl;
 	TCollection_AsciiString str("ON");str=str+iE+"IN"+iESD;
 	FDRAW_DINLOE("   ",LE1inE2,str,"");
       }
@@ -409,11 +409,11 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 
 #ifdef DRAW
     if (tSPS) {
-      cout<<endl<<"# edges ON "<<iE<<" ";
-      TopAbs::Print(TopAbs_OUT,cout);cout<<" / lesd";
+      std::cout<<std::endl<<"# edges ON "<<iE<<" ";
+      TopAbs::Print(TopAbs_OUT,std::cout);std::cout<<" / lesd";
       for(TopTools_ListIteratorOfListOfShape it(LESD);it.More();it.Next())
-	cout<<" "<<myDataStructure->Shape(it.Value());
-      Standard_Integer n=LEoutLESD.Extent();cout<<" : ("<<n<<")"<<endl;
+	std::cout<<" "<<myDataStructure->Shape(it.Value());
+      Standard_Integer n=LEoutLESD.Extent();std::cout<<" : ("<<n<<")"<<std::endl;
       TCollection_AsciiString str("ON");str=str+iE+"OUT";
       FDRAW_DINLOE("   ",LEoutLESD,str,"");
     }
@@ -530,8 +530,8 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
 	if (hasPC) continue;
 #ifdef OCCT_DEBUG
 	if (TopOpeBRepTool_GettraceC2D()) {
-	  cout<<"\n#TopOpeBRepBuild_Builder::SSE : hasPC = 0 ES"<<i<<" E"<<idebE<<" sur F"<<iF<<endl;
-	  cout<<"tsee s "<<iF<<" "<<idebE<<";"<<endl;
+	  std::cout<<"\n#TopOpeBRepBuild_Builder::SSE : hasPC = 0 ES"<<i<<" E"<<idebE<<" sur F"<<iF<<std::endl;
+	  std::cout<<"tsee s "<<iF<<" "<<idebE<<";"<<std::endl;
 	}
 #endif
 //	Standard_Real tolpc; MGhc2 PC = FC2D_CurveOnSurface(eon,F,esdF,f,l,tolpc);
@@ -703,8 +703,8 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
 #ifdef OCCT_DEBUG
     if(tSPS) {
       GdumpSHA(EF, (char *) "SplitSectionEdges done : ");
-      if (issplit) cout<<" "<<Splits(EOR,TopAbs_ON).Extent()<<" edges splitON"<<endl;
-      else cout<<" !IsSplit"<<endl;
+      if (issplit) std::cout<<" "<<Splits(EOR,TopAbs_ON).Extent()<<" edges splitON"<<std::endl;
+      else std::cout<<" !IsSplit"<<std::endl;
     }
 #endif
     return;
@@ -712,7 +712,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
   
 #ifdef OCCT_DEBUG
   if(tSPS)GdumpSHASTA(EF,TopAbs_ON,"--- SplitSectionEdges ");
-  if(tSPS)cout<<" (hg="<<hg<<"||hsd3d="<<hsd3d<<")="<<cond<<endl;
+  if(tSPS)std::cout<<" (hg="<<hg<<"||hsd3d="<<hsd3d<<")="<<cond<<std::endl;
 #endif   
 
   // xpu161198 BUC60382(e3on) SE EOR has all its interferences "on bounds"
@@ -784,9 +784,9 @@ void TopOpeBRepBuild_Builder::SplitSectionEdge(const TopoDS_Shape& EA)
 #ifdef OCCT_DEBUG
   if(tSPS)GdumpSHASTA(EF,TopAbs_ON,"--- SplitSectionEdges ");
   if(tSPS){ 
-    cout<<" (hg="<<hg<<"||hsd3d="<<hsd3d<<")="<<cond<<endl;
+    std::cout<<" (hg="<<hg<<"||hsd3d="<<hsd3d<<")="<<cond<<std::endl;
     GdumpSHA(EOR, (char *) "SplitSectionEdge");
-    cout<<endl;
+    std::cout<<std::endl;
     GdumpSAMDOM(LESD1, (char *) "LESD1 : ");
     GdumpSAMDOM(LESD2, (char *) "LESD2 : ");
   }
@@ -984,8 +984,8 @@ void TopOpeBRepBuild_Builder::SectionEdges(TopTools_ListOfShape& LSE)
     Standard_Integer iii; Standard_Boolean tSPS = GtraceSPS(es,iii);
     if (tSPS) {
       GdumpSHA(es, (char *) "--- Section ");
-      cout<<" splitIN "<<issplitIN<<" "<<Splits(es,TopAbs_IN).Extent()<<endl;
-      cout<<" splitON "<<issplitON<<" "<<Splits(es,TopAbs_ON).Extent()<<endl;
+      std::cout<<" splitIN "<<issplitIN<<" "<<Splits(es,TopAbs_IN).Extent()<<std::endl;
+      std::cout<<" splitON "<<issplitON<<" "<<Splits(es,TopAbs_ON).Extent()<<std::endl;
     }
 #endif
     

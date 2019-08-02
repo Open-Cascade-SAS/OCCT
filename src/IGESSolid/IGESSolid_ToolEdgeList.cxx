@@ -351,8 +351,8 @@ void IGESSolid_ToolEdgeList::OwnDump(const Handle(IGESSolid_EdgeList)& ent,
 {
   Standard_Integer i, length = ent->NbEdges();
 
-  S << "IGESSolid_EdgeList" << endl;
-  S << "Number of edge tuples : " << length << endl;
+  S << "IGESSolid_EdgeList" << Message_EndLine;
+  S << "Number of edge tuples : " << length << Message_EndLine;
   switch (level)
     {
     case 4 :
@@ -360,15 +360,15 @@ void IGESSolid_ToolEdgeList::OwnDump(const Handle(IGESSolid_EdgeList)& ent,
       S << "Start Vertex List : ";
       S << "Start Vertex Index : ";
       IGESData_DumpVals(S ,level,1, length,ent->StartVertexIndex);
-      S << endl;
+      S << Message_EndLine;
       S << "End Vertex List : ";
       S << "End Vertex Index : ";
       IGESData_DumpVals(S ,level,1, length,ent->EndVertexIndex);
-      S << endl;
+      S << Message_EndLine;
       break;
     case 5 :
     case 6 :
-      S<<" Curve - Vertices. Start : (VertexList,Index)  End : (VertexList,Index)"<<endl;
+      S<<" Curve - Vertices. Start : (VertexList,Index)  End : (VertexList,Index)"<<Message_EndLine;
       for (i = 1; i <= length; i ++)
 	{
 //[123]:Curve : #1234 - Vertices. Start = (#5678 , 3467)  End = (#1234 , 4664)
@@ -380,11 +380,11 @@ void IGESSolid_ToolEdgeList::OwnDump(const Handle(IGESSolid_EdgeList)& ent,
 	  S << ")  End : (";
 	  dumper.Dump (ent->EndVertexList(i),S, 0);
 	  S << " , " << ent->EndVertexIndex(i);
-	  S << ")"   << endl;
+	  S << ")"   << Message_EndLine;
 	}
       break;
       default :
 	break;
     }
-  S << endl;
+  S << Message_EndLine;
 }

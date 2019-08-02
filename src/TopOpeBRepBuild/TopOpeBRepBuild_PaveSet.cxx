@@ -170,7 +170,7 @@ void  TopOpeBRepBuild_PaveSet::Prepare()
   Standard_Integer iv=0;//,nv=myVertices.Extent();
   if (trc) {
     TopOpeBRepBuild_ListIteratorOfListOfPave itd(myVertices);
-    cout<<endl;
+    std::cout<<std::endl;
     for(;itd.More();itd.Next() ) {
       const Handle(TopOpeBRepBuild_Pave)& PV = itd.Value(); 
       TopoDS_Vertex& VI = TopoDS::Vertex(PV->ChangeVertex());
@@ -178,7 +178,7 @@ void  TopOpeBRepBuild_PaveSet::Prepare()
       TopoDS_Vertex VSD; if (hasVSD) VSD = TopoDS::Vertex(PV->SameDomain());
       TopAbs_Orientation VIori = VI.Orientation(); 
       Standard_Real p = PV->Parameter();
-      cout<<"pvs : v "<<++iv<<" par "<<p<<" ";TopAbs::Print(VIori,cout);cout<<endl;
+      std::cout<<"pvs : v "<<++iv<<" par "<<p<<" ";TopAbs::Print(VIori,std::cout);std::cout<<std::endl;
     }
   }
 #endif
@@ -278,7 +278,7 @@ void  TopOpeBRepBuild_PaveSet::Prepare()
 #ifdef OCCT_DEBUG
   if ( TopOpeBRepTool_GettraceVC() ) {
     myVerticesIt.Initialize(myVertices);
-    if ( MoreLoop() ) cout<<"--- PaveSet : Prepare"<<endl;
+    if ( MoreLoop() ) std::cout<<"--- PaveSet : Prepare"<<std::endl;
     for (; MoreLoop(); NextLoop() ) {
       Handle(TopOpeBRepBuild_Pave) PV = 
 	Handle(TopOpeBRepBuild_Pave)::DownCast(Loop());
@@ -286,8 +286,8 @@ void  TopOpeBRepBuild_PaveSet::Prepare()
       Standard_Real p = PV->Parameter();
       Standard_Boolean b = PV->IsShape();
       TopOpeBRepBuild_Builder::GdumpORIPARPNT(v.Orientation(),p,BRep_Tool::Pnt(v));
-      if (b) cout<<" is bound"; else cout<<" is not bound";
-      cout<<endl;
+      if (b) std::cout<<" is bound"; else std::cout<<" is not bound";
+      std::cout<<std::endl;
     }
   }
 #endif
@@ -381,7 +381,7 @@ Standard_Boolean  TopOpeBRepBuild_PaveSet::HasEqualParameters()
       Standard_Real d = Abs(p1-p2);
 #ifdef OCCT_DEBUG
       if (TopOpeBRepTool_GettraceVC()) {
-	cout<<"VertexSet : p1,p2  d "<<p1<<","<<p2<<"  "<<d<<endl;
+	std::cout<<"VertexSet : p1,p2  d "<<p1<<","<<p2<<"  "<<d<<std::endl;
       }
 #endif
       if (d < Precision::PConfusion()) { 
@@ -413,9 +413,9 @@ Standard_Boolean  TopOpeBRepBuild_PaveSet::HasEqualParameters()
 	  myEqualParameters = f;
 #ifdef OCCT_DEBUG
 	  if (TopOpeBRepTool_GettraceVC()) {
-	    cout<<"=*=*=*=*=*=*=*=*=*=*=*=*=*=*"<<endl;
-	    cout<<"PaveSet : p1,f  d "<<p1<<","<<f<<"  "<<d<<endl;
-	    cout<<"=*=*=*=*=*=*=*=*=*=*=*=*=*=*"<<endl;
+	    std::cout<<"=*=*=*=*=*=*=*=*=*=*=*=*=*=*"<<std::endl;
+	    std::cout<<"PaveSet : p1,f  d "<<p1<<","<<f<<"  "<<d<<std::endl;
+	    std::cout<<"=*=*=*=*=*=*=*=*=*=*=*=*=*=*"<<std::endl;
 	  }
 #endif
 	}

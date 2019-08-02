@@ -190,7 +190,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical (const Standard_Re
 		     0.5*(p1(i).Y()+p2(i).Y()), 
 		     0.5*(p1(i).Z()+p2(i).Z()));
       R(i) = p3(i).Distance(p1(i));
-//	cout<<"sphere, i="<<i<<" V="<<V<<" R="<<R(i)<<" p1="<<p1(i).X()<<","<<p1(i).Y()<<","<<p1(i).Z()<<" p2="<<p2(i).X()<<","<<p2(i).Y()<<","<<p2(i).Z()<<" p3="<<p3(i).X()<<","<<p3(i).Y()<<","<<p3(i).Z()<<endl;
+//	std::cout<<"sphere, i="<<i<<" V="<<V<<" R="<<R(i)<<" p1="<<p1(i).X()<<","<<p1(i).Y()<<","<<p1(i).Z()<<" p2="<<p2(i).X()<<","<<p2(i).Y()<<","<<p2(i).Z()<<" p3="<<p3(i).X()<<","<<p3(i).Y()<<","<<p3(i).Z()<<std::endl;
     }
       
     iso->D1 (0.,origPnt,origD1U);
@@ -203,7 +203,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical (const Standard_Re
     //gp_Dir AXY = aAx3.YDirection(); // AXY not used (skl)
     if (aAx3.YDirection().Dot (origD1U) < 0) {
 #ifdef OCCT_DEBUG
-      cout<<" Surface Analytique : sens a inverser"<<endl;
+      std::cout<<" Surface Analytique : sens a inverser"<<std::endl;
 #endif
       aAx3.YReverse();    //  mais X reste !
     }
@@ -303,7 +303,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical (const Standard_Re
 	anObject->D1 (0.,0.,resPnt,resD1U,resD1V);
 #ifdef OCCT_DEBUG
 	if (resD1U.Dot(origD1U) < 0 && j != 2)
-	  cout<<" Tore a inverser !"<<endl;
+	  std::cout<<" Tore a inverser !"<<std::endl;
 #endif
 	newSurf = anObject;
 	isFound = Standard_True;
@@ -508,7 +508,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToPeriodic (const Standard_Bool
   }
   
 #ifdef OCCT_DEBUG
-  cout << "Warning: ShapeCustom_Surface: Closed BSplineSurface is caused to be periodic" << endl;
+  std::cout << "Warning: ShapeCustom_Surface: Closed BSplineSurface is caused to be periodic" << std::endl;
 #endif
   if ( ! converted ) return newSurf;
   newSurf = BSpl;

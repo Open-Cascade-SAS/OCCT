@@ -160,7 +160,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
   }
 
   if (!FinS) {
-    cout << "LocOpe_SplitDrafts:!Fins throw Standard_ConstructionError()" << endl;
+    std::cout << "LocOpe_SplitDrafts:!Fins throw Standard_ConstructionError()" << std::endl;
     throw Standard_ConstructionError();
   }    
 
@@ -197,7 +197,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 
   TopoDS_Wire theW = W;
   if (i2s.IsDone() && i2s.NbLines() > 0) {
-    // on split le wire" << endl;
+    // on split le wire" << std::endl;
 
     GeomFill_Pipe thePipe;
     thePipe.GenerateParticularCase(Standard_True);
@@ -658,7 +658,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 	  }
 	}
 	if (!itl.More()) {
-	  cout << "LocOpe_SplitDrafts: betite probleme "<< endl;
+	  std::cout << "LocOpe_SplitDrafts: betite probleme "<< std::endl;
 	  return;
 	}
 
@@ -907,7 +907,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
       }
       else {
 #ifdef OCCT_DEBUG
-	cout << "Pb d'analyse" << endl;
+	std::cout << "Pb d'analyse" << std::endl;
 #endif
 	return;
       }
@@ -1253,7 +1253,7 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
 	if (theSubs.IsCopied(itl.Value())) {
 	  if (theSubs.Copy(itl.Value()).Extent() != 1) {
 #ifdef OCCT_DEBUG
-	    cout << "Invalid number of descendant" << endl;
+	    std::cout << "Invalid number of descendant" << std::endl;
 #endif
 	    return;
 	  }
@@ -1388,7 +1388,7 @@ static Standard_Boolean NewPlane(const TopoDS_Face& F,
       }
     }
   }
-  cout << "fin newplane return standard_false" << endl;
+  std::cout << "fin newplane return standard_false" << std::endl;
   return Standard_False;
 }
 
@@ -1457,7 +1457,7 @@ static void MakeFace(TopoDS_Face& F,
 	}
       }
       if (C2d.IsNull()) {
-	cout << "Ca merde violemment" << endl;
+	std::cout << "Ca merde violemment" << std::endl;
       }
     }
   }
@@ -1547,7 +1547,7 @@ static void MakeFace(TopoDS_Face& F,
     B.Add(F,lwires.First());
   }
   else {
-    cout << "Not yet implemented : nbwire >= 2" << endl;
+    std::cout << "Not yet implemented : nbwire >= 2" << std::endl;
   }
 
 }
@@ -1728,7 +1728,7 @@ static TopoDS_Edge  NewEdge(const TopoDS_Edge& edg,
       Standard_Real ptol = Precision::PConfusion();
       if (prmf < imf - ptol || prmf > iml + ptol ||
 	  prml < imf - ptol || prml > iml + ptol) {
-	cout << "Ca ne va pas aller" << endl;
+	std::cout << "Ca ne va pas aller" << std::endl;
       }
 #endif
 

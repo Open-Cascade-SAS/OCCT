@@ -36,7 +36,7 @@
 //{
 //  TCollection_AsciiString aname_1("cc_1"), aname_2("cc_2");
 //  Standard_CString name_1 = aname_1.ToCString(), name_2 = aname_2.ToCString();
-//  cout<<"compositeclassifier : "<<name_1<<","<<name_2<<endl;
+//  std::cout<<"compositeclassifier : "<<name_1<<","<<name_2<<std::endl;
 //  BRepTools::Write(S1,name_1); BRepTools::Write(S2,name_2); 
 //}
 #endif

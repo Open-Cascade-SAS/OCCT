@@ -104,9 +104,9 @@ void TDocStd_MultiTransactionManager::Redo() {
 void TDocStd_MultiTransactionManager::OpenCommand() {
   if (myOpenTransaction) {
 #ifdef OCCT_DEBUG
-    cout << "TDocStd_MultiTransactionManager::OpenCommand(): "
+    std::cout << "TDocStd_MultiTransactionManager::OpenCommand(): "
             "Can't start new application transaction while a "
-            "previous one is not commited or aborted" << endl;
+            "previous one is not commited or aborted" << std::endl;
 #endif
     throw Standard_Failure("Can't start new application transaction"
                             "while a previous one is not commited or aborted");
@@ -189,7 +189,7 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
 {
   Standard_Integer i;
   if(myDocuments.Length() == 0)
-    anOS << "Manager is empty" << endl;
+    anOS << "Manager is empty" << std::endl;
   else {
     if(myDocuments.Length() == 1)
       anOS << "There is one document ( ";
@@ -200,14 +200,14 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
       anOS << "\"" << aDoc.get();
       anOS << "\" ";
     }
-    anOS << ") in the manager "  << endl;
+    anOS << ") in the manager "  << std::endl;
 
     if(myIsNestedTransactionMode)
-      anOS << "Nested transaction mode is on" << endl;
+      anOS << "Nested transaction mode is on" << std::endl;
     else
-      anOS << "Nested transaction mode is off" << endl;
+      anOS << "Nested transaction mode is off" << std::endl;
 
-    anOS << " " << endl;
+    anOS << " " << std::endl;
   }
 
   for (i = myUndos.Length(); i > 0; i--) {
@@ -215,16 +215,16 @@ void TDocStd_MultiTransactionManager::DumpTransaction(Standard_OStream& anOS) co
     anOS<<" Undo: ";
     delta->Dump(anOS);
     if (i == 1) {
-      anOS<<"  < Last action"<<endl;
+      anOS<<"  < Last action"<<std::endl;
     } else {
-      anOS<<endl;
+      anOS<<std::endl;
     }
   }
   for (i = 1; i <= myRedos.Length(); i++) {
     Handle(TDocStd_ApplicationDelta) delta = myRedos.Value(i);
     anOS<<" Redo: ";
     delta->Dump(anOS);
-    anOS<<endl;
+    anOS<<std::endl;
   }
 }
 

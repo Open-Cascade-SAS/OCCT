@@ -306,31 +306,31 @@ void  IGESAppli_ToolElementResults::OwnDump
    const Handle(Message_Messenger)& S, const Standard_Integer level) const // UNFINISHED
 {
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
-  S << "IGESAppli_ElementResults" << endl;
+  S << "IGESAppli_ElementResults" << Message_EndLine;
   S << "General Note   : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
-  S << "Subcase Number : " << ent->SubCaseNumber() << endl;
-  S << "Time           : " << ent->Time() << endl;
-  S << "Number of Result Values : " << ent->NbResultValues() << endl;
-  S << "Result Report Flag  : " << ent->ResultReportFlag() << endl;
+  S << Message_EndLine;
+  S << "Subcase Number : " << ent->SubCaseNumber() << Message_EndLine;
+  S << "Time           : " << ent->Time() << Message_EndLine;
+  S << "Number of Result Values : " << ent->NbResultValues() << Message_EndLine;
+  S << "Result Report Flag  : " << ent->ResultReportFlag() << Message_EndLine;
   S << "Element Identifiers : ";
   IGESData_DumpVals(S ,level,1, ent->NbElements(),ent->ElementIdentifier);
-  S << endl << "Elements : ";
+  S << Message_EndLine << "Elements : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbElements(),ent->Element);
-  S << endl << "Element Topology Types : ";
+  S << Message_EndLine << "Element Topology Types : ";
   IGESData_DumpVals(S ,level,1, ent->NbElements(),ent->ElementTopologyType);
-  S << endl << "Numbers of Layers      : ";
+  S << Message_EndLine << "Numbers of Layers      : ";
   IGESData_DumpVals(S ,level,1, ent->NbElements(),ent->NbLayers);
-  S << endl << "Data Layer Flags       : ";
+  S << Message_EndLine << "Data Layer Flags       : ";
   IGESData_DumpVals(S ,level,1, ent->NbElements(),ent->DataLayerFlag);
-  S << endl << "Numbers of Result Data Locations : ";
+  S << Message_EndLine << "Numbers of Result Data Locations : ";
   IGESData_DumpVals(S ,level,1, ent->NbElements(),ent->NbResultDataLocs);
-  S << endl << "Result Data Locations : ";  S << " TO BE DONE  ";
+  S << Message_EndLine << "Result Data Locations : ";  S << " TO BE DONE  ";
 
 //  ??  A VERIFIER DE PRES, pas du tout sur que ce soit bon
 //      cf aussi Write et Copy
-  if (level <= 4) S << " [ ask level > 4 for more, > 5 for complete ]" << endl;
+  if (level <= 4) S << " [ ask level > 4 for more, > 5 for complete ]" << Message_EndLine;
   else {
     Standard_Integer i;// svv Jan 10 2000 : porting on DEC 
     for (i = 1; i <= ent->NbElements(); i ++) {
@@ -338,14 +338,14 @@ void  IGESAppli_ToolElementResults::OwnDump
       S << " ["<<i<<":NbLoc="<<nloc<<"]:";
       for (Standard_Integer j = 1; j <= nloc; j ++)
 	S << " " << ent->ResultDataLoc (i,j);
-      S << endl;
+      S << Message_EndLine;
     }
     S << "Result Data : ";
 
     for (i = 1; i <= ent->NbElements(); i ++) {
       Standard_Integer nres = ent->NbResults(i);
       S << " ["<<i<<":NbRes="<<nres<<"]:";
-      if (level <= 5) S << " [ ask level > 5 for complete Data ]" << endl;
+      if (level <= 5) S << " [ ask level > 5 for complete Data ]" << Message_EndLine;
       else {
 	for (Standard_Integer j = 1; j <= nres; j ++)
 	  S << " " << ent->ResultData(i,j);    // ?? is it all ?? UNFINISHED

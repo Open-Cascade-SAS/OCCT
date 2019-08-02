@@ -708,8 +708,8 @@ Handle(Geom_Curve) LocOpe_DPrism::BarycCurve() const
 #ifdef OCCT_DEBUG
     Standard_Boolean trc = BRepFeat_GettraceFEAT();
     if (trc) {
-      cout << "LocOpe_DPrism::BarycCurve()" << endl;
-      cout << " Reversed Spine orientation" << endl;
+      std::cout << "LocOpe_DPrism::BarycCurve()" << std::endl;
+      std::cout << " Reversed Spine orientation" << std::endl;
     }
 #endif
 //    Normale.Reverse();  //cts20871

@@ -68,7 +68,7 @@ extern Standard_Boolean TopOpeBRepBuild_GettraceKPB();
 
 static void FUN_Raise() {
 #ifdef OCCT_DEBUG
-  cout<<"******************************ERROR"<<endl;
+  std::cout<<"******************************ERROR"<<std::endl;
   throw Standard_ProgramError("KPart.cxx");
 #endif
 }
@@ -120,7 +120,7 @@ Standard_Integer TopOpeBRepBuild_Builder::FindIsKPart()
   
 #ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
-  if(TKPB){cout<<endl<<"--- IsKPart ? ---"<<endl;}
+  if(TKPB){std::cout<<std::endl<<"--- IsKPart ? ---"<<std::endl;}
 #endif
   
   Standard_Integer isfafa = KPisfafa();
@@ -522,7 +522,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskoletge()
             myDataStructure->Shape(fac2); //DEB
 
 #ifdef OCCT_DEBUG
-  if (TKPB) {cout<<""<<endl;cout<<"face "<<iF1<<" : ";cout<<iF2<<endl;}
+  if (TKPB) {std::cout<<""<<std::endl;std::cout<<"face "<<iF1<<" : ";std::cout<<iF2<<std::endl;}
 #endif
     
   TopOpeBRepDS_Config config2 = BDS.SameDomainOri(fac2);
@@ -800,7 +800,7 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
       }    
       else {
 #ifdef OCCT_DEBUG
-	cout<<"TopOpeBRepBuild_MergeKPart soldisj : ires = "<<ires<<endl;
+	std::cout<<"TopOpeBRepBuild_MergeKPart soldisj : ires = "<<ires<<std::endl;
 #endif
 	return;
       }
@@ -1031,9 +1031,9 @@ Standard_Integer TopOpeBRepBuild_Builder::KPiskoletge()
   Standard_Boolean tSPS2 = GtraceSPS(f2,iF2);
   if(tSPS1 || tSPS2) 
     {GdumpSHA( f1, (char *) "KPiskoletge ");
-    cout<<endl; 
+    std::cout<<std::endl; 
     GdumpSHA(  f2, (char *)"KPiskoletge ");
-    cout<<endl;}
+    std::cout<<std::endl;}
 #endif
 
   TopoDS_Wire outerw1 = BRepTools::OuterWire(f1);
@@ -1095,7 +1095,7 @@ Standard_Integer TopOpeBRepBuild_Builder::KPisdisj()
   
 #ifdef OCCT_DEBUG
   if (TKPB) {
-    cout<<"isdisj : "<<isdisj1<<" "<<isdisj2<<endl;
+    std::cout<<"isdisj : "<<isdisj1<<" "<<isdisj2<<std::endl;
   }
 #endif
   
@@ -1238,8 +1238,8 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclasSS(const TopoDS_Shape& S1,const TopT
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) {
     const gp_Pnt& P1 = myShapeClassifier.P3D();
-    cout<<"point P1 "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z();
-    cout<<"  "; TopAbs::Print(state,cout);cout<<endl;
+    std::cout<<"point P1 "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z();
+    std::cout<<"  "; TopAbs::Print(state,std::cout);std::cout<<std::endl;
   }
 #endif
   
@@ -1262,8 +1262,8 @@ TopAbs_State TopOpeBRepBuild_Builder::KPclasSS(const TopoDS_Shape& S1,const Topo
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) {
     const gp_Pnt& P1 = myShapeClassifier.P3D();
-    cout<<"point P1 "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z();
-    cout<<"  "; TopAbs::Print(state,cout);cout<<endl;
+    std::cout<<"point P1 "<<P1.X()<<" "<<P1.Y()<<" "<<P1.Z();
+    std::cout<<"  "; TopAbs::Print(state,std::cout);std::cout<<std::endl;
   }
 #endif
   
@@ -1329,12 +1329,12 @@ Standard_Boolean TopOpeBRepBuild_Builder::KPiskoletgesh(const TopoDS_Shape& Sarg
 
 #ifdef OCCT_DEBUG
     Standard_Integer isol = myDataStructure->Shape(Sarg); Standard_Integer ifac = myDataStructure->Shape(fac); 
-    if(TKPB){cout<<"isol "<<isol<<endl;}
-    if(TKPB){cout<<"nfhsd  "<<nfhsd<<endl;}
-    if(TKPB){cout<<"ifac "<<ifac<<endl;}
-    if(TKPB){cout<<"isplan "<<isplan<<endl;}
-    if(TKPB){cout<<"iscylinder "<<iscylinder<<endl;}
-    if(TKPB){cout<<endl;}
+    if(TKPB){std::cout<<"isol "<<isol<<std::endl;}
+    if(TKPB){std::cout<<"nfhsd  "<<nfhsd<<std::endl;}
+    if(TKPB){std::cout<<"ifac "<<ifac<<std::endl;}
+    if(TKPB){std::cout<<"isplan "<<isplan<<std::endl;}
+    if(TKPB){std::cout<<"iscylinder "<<iscylinder<<std::endl;}
+    if(TKPB){std::cout<<std::endl;}
 #endif
   }
   
@@ -1615,7 +1615,7 @@ void TopOpeBRepBuild_Builder::KPiskoletgeanalyse(const TopOpeBRepDS_Config confi
 
 #ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
-  if (TKPB) cout<<"ires = "<<ires<<endl;
+  if (TKPB) std::cout<<"ires = "<<ires<<std::endl;
 #endif
 }
 
@@ -1677,7 +1677,7 @@ void TopOpeBRepBuild_Builder::KPisdisjanalyse(const TopAbs_State Stsol1, const T
   
 #ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
-  if (TKPB) cout<<"ires = "<<ires<<" icla1 "<<icla1<<" icla2 "<<icla2<<endl;
+  if (TKPB) std::cout<<"ires = "<<ires<<" icla1 "<<icla1<<" icla2 "<<icla2<<std::endl;
 #endif
 }
 
@@ -1756,8 +1756,8 @@ void TopOpeBRepBuild_Builder::KPclassFF(const TopoDS_Shape& F1,const TopoDS_Shap
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) { 
-    cout<<"Stf1 ";TopAbs::Print(St1,cout); cout<<" ";
-    cout<<"Stf2 ";TopAbs::Print(St2,cout); cout<<endl;
+    std::cout<<"Stf1 ";TopAbs::Print(St1,std::cout); std::cout<<" ";
+    std::cout<<"Stf2 ";TopAbs::Print(St2,std::cout); std::cout<<std::endl;
   }
 #endif
 }
@@ -1776,8 +1776,8 @@ Standard_Boolean TopOpeBRepBuild_Builder::KPiskoleFF(const TopoDS_Shape& F1,cons
   Standard_Boolean tSPS1 = GtraceSPS(F1,iF1);
   Standard_Integer iF2; 
   Standard_Boolean tSPS2 = GtraceSPS(F2,iF2);
-  if(tSPS1) { GdumpSHA(F1, (char *) "KPiskoleFF ");cout<<endl; }
-  if(tSPS2) { GdumpSHA(F2, (char *) "KPiskoleFF ");cout<<endl; }
+  if(tSPS1) { GdumpSHA(F1, (char *) "KPiskoleFF ");std::cout<<std::endl; }
+  if(tSPS2) { GdumpSHA(F2, (char *) "KPiskoleFF ");std::cout<<std::endl; }
 #endif
   
   KPclassFF(F1,F2,St1,St2);
@@ -1815,11 +1815,11 @@ Standard_Integer TopOpeBRepBuild_Builder::KPreturn(const Standard_Integer b)
 {
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceKPB()) {
-    cout<<"--- IsKPart "<<b;
-    if ( b == 1 ) cout<<" iskole";
-    if ( b == 2 ) cout<<" isdisj";
-    if ( b == 3 ) cout<<" isfafa";
-    cout<<" ---"<<endl;
+    std::cout<<"--- IsKPart "<<b;
+    if ( b == 1 ) std::cout<<" iskole";
+    if ( b == 2 ) std::cout<<" isdisj";
+    if ( b == 3 ) std::cout<<" isfafa";
+    std::cout<<" ---"<<std::endl;
   }
 #endif
   return b;
@@ -1885,7 +1885,7 @@ static void LocalKPisdisjanalyse(const TopAbs_State Stsol1, const TopAbs_State  
     break;
   }
   default: {
-    cout << "Warning: given operation is unknown"   << endl;
+    std::cout << "Warning: given operation is unknown"   << std::endl;
     break;
   }
   } //end switch
@@ -2071,7 +2071,7 @@ static Standard_Boolean disjPerformFuse(const TopTools_IndexedMapOfShape& theMap
       Standard_Integer ires=RESUNDEF, icla1=SHEUNDEF, icla2=SHEUNDEF;
       LocalKPisdisjanalyse(stsol1, stsol2, TopOpeBRepBuild_KPart_Operation_Fuse, ires, icla1, icla2);
       if (ires == RESUNDEF || icla1 == SHEUNDEF || icla2 == SHEUNDEF || ires == RESNULL) {
-	cout << "Warning: disjPerformFuse: can not determine solid's states"  << endl;
+	std::cout << "Warning: disjPerformFuse: can not determine solid's states"  << std::endl;
 	continue;
       }
       if(ires == RESSHAPE12)
@@ -2087,7 +2087,7 @@ static Standard_Boolean disjPerformFuse(const TopTools_IndexedMapOfShape& theMap
       }
     } //end while(j)
     if(acheckiterator > aMaxNumberOfIterations) {
-      cout << "disjPerformFuse: programming error"  << endl;
+      std::cout << "disjPerformFuse: programming error"  << std::endl;
       return Standard_False;
     }
     theMapOfResult.Add(acurrentsolid);
@@ -2135,7 +2135,7 @@ static Standard_Boolean disjPerformCommon(const TopTools_IndexedMapOfShape& theM
 
       LocalKPisdisjanalyse(stsol1, stsol2, TopOpeBRepBuild_KPart_Operation_Common, ires, icla1, icla2);
       if (ires == RESUNDEF || icla1 == SHEUNDEF || icla2 == SHEUNDEF) {
-	cout << "Warning: disjPerformCommon: can not determine solid's states"  << endl;
+	std::cout << "Warning: disjPerformCommon: can not determine solid's states"  << std::endl;
 	continue;
       }      
       switch (ires) {
@@ -2212,7 +2212,7 @@ static Standard_Boolean disjPerformCut(const TopTools_IndexedMapOfShape& theMapO
 
       LocalKPisdisjanalyse(stsol1, stsol2, TopOpeBRepBuild_KPart_Operation_Cut12, ires, icla1, icla2);
       if (ires == RESUNDEF || icla1 == SHEUNDEF || icla2 == SHEUNDEF) {
-	cout << "Warning: disjPerformCut: can not determine solid's states"  << endl;
+	std::cout << "Warning: disjPerformCut: can not determine solid's states"  << std::endl;
 	continue;
       }
       switch (ires) {

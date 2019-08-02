@@ -132,19 +132,19 @@ void IGESGraph_ToolLineFontDefPattern::OwnDump
   (const Handle(IGESGraph_LineFontDefPattern)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
-  S << "IGESGraph_LineFontDefPattern" << endl;
+  S << "IGESGraph_LineFontDefPattern" << Message_EndLine;
 
   S << "Visible-Blank Segments : ";
   Standard_Integer nb = ent->NbSegments();
   IGESData_DumpVals(S ,level,1, nb,ent->Length);
-  S <<endl << "Display Pattern : ";
+  S <<Message_EndLine << "Display Pattern : ";
   IGESData_DumpString(S,ent->DisplayPattern());
-  S << endl;
+  S << Message_EndLine;
   if (level > 4) {
-    S << " -> Which Segments are Visible (the others are Blank) : " << endl;
+    S << " -> Which Segments are Visible (the others are Blank) : " << Message_EndLine;
     for (Standard_Integer I = 1; I <= nb; I ++) {
       if (ent->IsVisible(I)) S << "  " << I;
     }
-    S << endl;
+    S << Message_EndLine;
   }
 }

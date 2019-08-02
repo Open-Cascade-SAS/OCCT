@@ -135,7 +135,7 @@ void OSD_Timer::Restart ()
 
 void OSD_Timer::Show() const
 {
-  Show (cout);
+  Show (std::cout);
 }
 
 //=======================================================================

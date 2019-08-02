@@ -508,8 +508,8 @@ static Handle(Geom_Curve) ComputeIso
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     //:s5
-    cout << "\nWarning: ShapeAnalysis_Surface, ComputeIso(): Exception in UVIso(): ";
-    anException.Print(cout); cout << endl;
+    std::cout << "\nWarning: ShapeAnalysis_Surface, ComputeIso(): Exception in UVIso(): ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     iso.Nullify();
@@ -1044,12 +1044,12 @@ Standard_Integer ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
     //  if ( rs2 > 100 * preci * preci ) { fail = 6; break; }
 
     // OK, return the result
-    //	cout << "Newton: solution found in " << i+1 << " iterations" << endl;
+    //	std::cout << "Newton: solution found in " << i+1 << " iterations" << std::endl;
     sol.SetCoord(U, V);
 
     return (nrm2 < 0.01 * ru2 * rv2 ? 2 : 1); //:q6
   }
-  //      cout << "Newton: failed after " << i+1 << " iterations (fail " << fail << " )" << endl;
+  //      std::cout << "Newton: failed after " << i+1 << " iterations (fail " << fail << " )" << std::endl;
   return Standard_False;
 }
 
@@ -1200,12 +1200,12 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
           if (SurfaceNewton(prev, P3D, preci, solution) != 0)
           {
 #ifdef OCCT_DEBUG
-            cout << "Newton found point on conic extrusion" << endl;
+            std::cout << "Newton found point on conic extrusion" << std::endl;
 #endif
             return solution;
           }
 #ifdef OCCT_DEBUG
-          cout << "Newton failed point on conic extrusion" << endl;
+          std::cout << "Newton failed point on conic extrusion" << std::endl;
 #endif
           uf = -500;
           ul = 500;
@@ -1318,7 +1318,7 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
         }
         else {
 #ifdef OCCT_DEBUG
-          cout << "Warning: ShapeAnalysis_Surface::ValueOfUV(): Extrema failed, doing Newton" << endl;
+          std::cout << "Warning: ShapeAnalysis_Surface::ValueOfUV(): Extrema failed, doing Newton" << std::endl;
 #endif
           // on essai sur les bords
           Standard_Real UU = S, VV = T;//, DistMinOnIso;
@@ -1355,8 +1355,8 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const Standard_Real
       //   En attendant, on met une valeur "pas idiote" mais surement fausse ...
       //szv#4:S4163:12Mar99 optimized
       //:s5
-      cout << "\nWarning: ShapeAnalysis_Surface::ValueOfUV(): Exception: ";
-      anException.Print(cout); cout << endl;
+      std::cout << "\nWarning: ShapeAnalysis_Surface::ValueOfUV(): Exception: ";
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       S = (Precision::IsInfinite(uf)) ? 0 : (uf + ul) / 2.;
@@ -1403,7 +1403,7 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
       Bnd_Box aPBox;
     aPBox.Set(P3d);
 
-    //cout<<"Adaptor3d()->Surface().GetType() = "<<Adaptor3d()->Surface().GetType()<<endl;
+    //std::cout<<"Adaptor3d()->Surface().GetType() = "<<Adaptor3d()->Surface().GetType()<<std::endl;
 
     //modified by rln on 04/12/97 in order to use theese variables later
     Standard_Boolean UV = Standard_True;
@@ -1551,8 +1551,8 @@ Standard_Real ShapeAnalysis_Surface::UVFromIso(const gp_Pnt& P3d, const Standard
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
     //:s5
-    cout << "\nWarning: ShapeAnalysis_Curve::UVFromIso(): Exception: ";
-    anException.Print(cout); cout << endl;
+    std::cout << "\nWarning: ShapeAnalysis_Curve::UVFromIso(): Exception: ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     theMin = RealLast();    // theMin de depart

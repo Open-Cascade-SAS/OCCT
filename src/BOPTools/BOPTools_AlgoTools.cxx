@@ -988,7 +988,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff
                            aDN1, aDBF, theContext, aProjPL, aDt3D);
   if (!bIsComputed) {
 #ifdef OCCT_DEBUG
-    cout << "BOPTools_AlgoTools::GetFaceOff(): incorrect computation of bi-normal direction." << endl;
+    std::cout << "BOPTools_AlgoTools::GetFaceOff(): incorrect computation of bi-normal direction." << std::endl;
 #endif
   }
   //
@@ -1006,7 +1006,7 @@ Standard_Boolean BOPTools_AlgoTools::GetFaceOff
                              aDBF2, theContext, aProjPL, aDt3D);
     if (!bIsComputed) {
 #ifdef OCCT_DEBUG
-      cout << "BOPTools_AlgoTools::GetFaceOff(): incorrect computation of bi-normal direction." << endl;
+      std::cout << "BOPTools_AlgoTools::GetFaceOff(): incorrect computation of bi-normal direction." << std::endl;
 #endif
     }
     //Angle

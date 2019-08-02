@@ -50,7 +50,7 @@ int AFXAPI AfxWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //  int i = setvbuf( stdout, NULL, _IONBF, 0 );
 //  filebuf ff(hCrt);
 //  cout = &ff;
-  cout<<"This Debug Window is defined in WinMain.cpp and will disappear in release mode"<<endl;
+  std::cout<<"This Debug Window is defined in WinMain.cpp and will disappear in release mode"<<std::endl;
 
 #endif //  DISPLAYCONSOLE  // By Matra
 

@@ -71,11 +71,11 @@ TopOpeBRepBuild_ShapeSet(TopAbs_VERTEX)
   if (LOCAL_PBUILDER_DEB != NULL) {
     myDEBNumber = LOCAL_PBUILDER_DEB->GdumpSHASETindex();
     Standard_Integer iF; Standard_Boolean tSPS = LOCAL_PBUILDER_DEB->GtraceSPS(F,iF);
-    if(tSPS){DumpName(cout,"creation ");cout<<" on ";}
-    if(tSPS){LOCAL_PBUILDER_DEB->GdumpSHA(F,NULL);cout<<endl;}
+    if(tSPS){DumpName(std::cout,"creation ");std::cout<<" on ";}
+    if(tSPS){LOCAL_PBUILDER_DEB->GdumpSHA(F,NULL);std::cout<<std::endl;}
   }
   if (TopOpeBRepBuild_GettraceCHK() && !myCheckShape) {
-    DumpName(cout,"no checkshape in creation of ");cout<<endl;
+    DumpName(std::cout,"no checkshape in creation of ");std::cout<<std::endl;
   }
 #endif
 }
@@ -99,8 +99,8 @@ void TopOpeBRepBuild_WireEdgeSet::AddShape(const TopoDS_Shape& S)
   
 #ifdef DRAW
   if (TopOpeBRepBuild_GettraceCHK() && CheckShape()) {
-    if (!tocheck) DumpCheck(cout," AddShape WIRE on closed face",S,chk);
-    else DumpCheck(cout," AddShape redefined",S,chk);
+    if (!tocheck) DumpCheck(std::cout," AddShape WIRE on closed face",S,chk);
+    else DumpCheck(std::cout," AddShape redefined",S,chk);
   }
 #endif
 
@@ -165,7 +165,7 @@ void  TopOpeBRepBuild_WireEdgeSet::InitNeighbours(const TopoDS_Shape& E)
     TCollection_AsciiString str("#**** InitNeighbours");
     if (tsh) str = str + " on WES edge " + SNameori(E);
     str = str + " #****";
-    cout<<endl<<str<<endl;
+    std::cout<<std::endl<<str<<std::endl;
     if (tsh) debwesclo(ista);
   }
 #endif
@@ -217,7 +217,7 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
   Standard_Boolean traceSS = TopOpeBRepBuild_GettraceSS();
   if ( traceSS ) {
     TCollection_AsciiString svel = SNameVEL(V,E,l);
-    cout<<PRODINS<<svel<<"; #---- WES MNL"<<endl;
+    std::cout<<PRODINS<<svel<<"; #---- WES MNL"<<std::endl;
   }
 #endif
 
@@ -239,8 +239,8 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
 	if ( traceSS ) {
 	  Standard_Integer rang = myCurrentShapeNeighbours.Extent();
 	  const TopoDS_Edge& EE = TopoDS::Edge(curn);
-	  cout <<"+ EE "<<iapp<<" , rang "<<rang<<" ";
-	  TCollection_AsciiString svee=SNameVEE(V,E,EE);cout<<svee<<endl;
+	  std::cout <<"+ EE "<<iapp<<" , rang "<<rang<<" ";
+	  TCollection_AsciiString svee=SNameVEE(V,E,EE);std::cout<<svee<<std::endl;
 	}
 #endif
       }
@@ -249,9 +249,9 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
     Standard_Integer newn = NbClosingShapes(myCurrentShapeNeighbours);
 #ifdef DRAW
     if ( traceSS ) {
-      cout<<"#~~~~connexes apres VertexConnectsEdgesClosing : ";
+      std::cout<<"#~~~~connexes apres VertexConnectsEdgesClosing : ";
       TCollection_AsciiString svel=SNameVEL(V,E,myCurrentShapeNeighbours);
-      cout<<svel<<endl;
+      std::cout<<svel<<std::endl;
     }
 #endif
 
@@ -307,22 +307,22 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
 
 #ifdef DRAW
 	if ( traceSS ) {
-	  cout<<"#-------- rang "<<rang<<endl;
-	  TCollection_AsciiString svee=SNameVEE(V,E,EE);cout<<svee<<endl;
+	  std::cout<<"#-------- rang "<<rang<<std::endl;
+	  TCollection_AsciiString svee=SNameVEE(V,E,EE);std::cout<<svee<<std::endl;
 	  
-	  cout<<"  fiE,laE : "<<fiE<<" "<<laE<<endl;
-	  cout<<" parE "<<parE<<endl;
-	  cout<<"  puE,pvE "<<pE.X()<<" "<<pE.Y();
-	  cout<<" d1uE,d1vE "<<d1E.X()<<" "<<d1E.Y()<<endl;
-	  cout<<endl;
-	  cout<<"  fiEE,laEE : "<<fiEE<<" "<<laEE<<endl;
-	  cout<<" parEE "<<parEE<<endl;
-	  cout<<"  puEE,pvEE "<<pEE.X()<<" "<<pEE.Y();
-	  cout<<" d1uEE,d1vEE "<<d1EE.X()<<" "<<d1EE.Y()<<endl;
-	  cout<<"  --> cross  "<<cross<<endl;
+	  std::cout<<"  fiE,laE : "<<fiE<<" "<<laE<<std::endl;
+	  std::cout<<" parE "<<parE<<std::endl;
+	  std::cout<<"  puE,pvE "<<pE.X()<<" "<<pE.Y();
+	  std::cout<<" d1uE,d1vE "<<d1E.X()<<" "<<d1E.Y()<<std::endl;
+	  std::cout<<std::endl;
+	  std::cout<<"  fiEE,laEE : "<<fiEE<<" "<<laEE<<std::endl;
+	  std::cout<<" parEE "<<parEE<<std::endl;
+	  std::cout<<"  puEE,pvEE "<<pEE.X()<<" "<<pEE.Y();
+	  std::cout<<" d1uEE,d1vEE "<<d1EE.X()<<" "<<d1EE.Y()<<std::endl;
+	  std::cout<<"  --> cross  "<<cross<<std::endl;
 
-	  if ( t2 ) cout<<" t2 --> on garde EE"<<endl<<endl;
-	  else 	  cout<<" t2 --> on vire EE"<<endl<<endl;
+	  if ( t2 ) std::cout<<" t2 --> on garde EE"<<std::endl<<std::endl;
+	  else 	  std::cout<<" t2 --> on vire EE"<<std::endl<<std::endl;
 	}
 #endif
 	
@@ -338,8 +338,8 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
 
 #ifdef DRAW
       if ( traceSS ) {
-	cout<<"#~~~~connexes apres filtre geom : ";
-	TCollection_AsciiString svel=SNameVEL(Varg,Earg,myCurrentShapeNeighbours);cout<<svel<<endl;
+	std::cout<<"#~~~~connexes apres filtre geom : ";
+	TCollection_AsciiString svel=SNameVEL(Varg,Earg,myCurrentShapeNeighbours);std::cout<<svel<<std::endl;
       }
 #endif
 

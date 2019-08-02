@@ -84,12 +84,12 @@ static Standard_Boolean TopOpeBRep_contextREST1 = Standard_False;
 Standard_EXPORT void TopOpeBRep_SetcontextREST1(const Standard_Boolean b) { TopOpeBRep_contextREST1 = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextREST1(char* str) { 
   if (TopOpeBRep_contextREST1) {
-    cout<<"context REST1 actif"; if (str!=NULL) cout<<str; cout<<endl;
+    std::cout<<"context REST1 actif"; if (str!=NULL) std::cout<<str; std::cout<<std::endl;
   }
   return TopOpeBRep_contextREST1; 
 }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextREST1() { 
-  if (TopOpeBRep_contextREST1) cout<<"context REST1 actif"<<endl; 
+  if (TopOpeBRep_contextREST1) std::cout<<"context REST1 actif"<<std::endl; 
   return TopOpeBRep_contextREST1; 
 }
 
@@ -97,12 +97,12 @@ static Standard_Boolean TopOpeBRep_contextREST2 = Standard_False;
 Standard_EXPORT void TopOpeBRep_SetcontextREST2(const Standard_Boolean b) { TopOpeBRep_contextREST2 = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextREST2(char* str) { 
   if (TopOpeBRep_contextREST2) {
-    cout<<"context REST2 actif"; if (str!=NULL) cout<<str; cout<<endl;
+    std::cout<<"context REST2 actif"; if (str!=NULL) std::cout<<str; std::cout<<std::endl;
   }
   return TopOpeBRep_contextREST2; 
 }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextREST2() { 
-  if (TopOpeBRep_contextREST2) cout<<"context REST2 actif"<<endl; 
+  if (TopOpeBRep_contextREST2) std::cout<<"context REST2 actif"<<std::endl; 
   return TopOpeBRep_contextREST2; 
 }
 
@@ -110,12 +110,12 @@ static Standard_Boolean TopOpeBRep_contextINL = Standard_False;
 Standard_EXPORT void TopOpeBRep_SetcontextINL(const Standard_Boolean b) { TopOpeBRep_contextINL = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextINL(char* str) { 
   if (TopOpeBRep_contextINL) {
-    cout<<"context INL actif"; if (str!=NULL) cout<<str; cout<<endl;
+    std::cout<<"context INL actif"; if (str!=NULL) std::cout<<str; std::cout<<std::endl;
   }
   return TopOpeBRep_contextINL; 
 }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextINL() { 
-  if (TopOpeBRep_contextINL) cout<<"context INL actif"<<endl; 
+  if (TopOpeBRep_contextINL) std::cout<<"context INL actif"<<std::endl; 
   return TopOpeBRep_contextINL; 
 }
 
@@ -123,12 +123,12 @@ static Standard_Boolean TopOpeBRep_contextNEWKP = Standard_False;
 Standard_EXPORT void TopOpeBRep_SetcontextNEWKP(const Standard_Boolean b) { TopOpeBRep_contextNEWKP = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextNEWKP(char* str) { 
   if (TopOpeBRep_contextNEWKP) {
-    cout<<"context NEWKP actif"; if (str!=NULL) cout<<str; cout<<endl;
+    std::cout<<"context NEWKP actif"; if (str!=NULL) std::cout<<str; std::cout<<std::endl;
   }
   return TopOpeBRep_contextNEWKP; 
 }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextNEWKP() { 
-  if (TopOpeBRep_contextNEWKP) cout<<"context NEWKP actif"<<endl; 
+  if (TopOpeBRep_contextNEWKP) std::cout<<"context NEWKP actif"<<std::endl; 
   return TopOpeBRep_contextNEWKP; 
 }
 
@@ -140,7 +140,7 @@ Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextTOL0(char* /*str*/) {
   return TopOpeBRep_contextTOL0; 
 }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextTOL0() { 
-  if (TopOpeBRep_contextTOL0) cout<<"context TOL0 actif"<<endl; 
+  if (TopOpeBRep_contextTOL0) std::cout<<"context TOL0 actif"<<std::endl; 
   return TopOpeBRep_contextTOL0; 
 }
 
@@ -148,12 +148,12 @@ static Standard_Boolean TopOpeBRep_contextNONOG = Standard_False;
 Standard_EXPORT void TopOpeBRep_SetcontextNONOG(const Standard_Boolean b) { TopOpeBRep_contextNONOG = b; }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextNONOG(char* str) { 
   if (TopOpeBRep_contextNONOG) {
-    cout<<"context NONOG actif"; if (str!=NULL) cout<<str; cout<<endl;
+    std::cout<<"context NONOG actif"; if (str!=NULL) std::cout<<str; std::cout<<std::endl;
   }
   return TopOpeBRep_contextNONOG; 
 }
 Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextNONOG() { 
-  if (TopOpeBRep_contextNONOG) cout<<"context NONOG actif"<<endl; 
+  if (TopOpeBRep_contextNONOG) std::cout<<"context NONOG actif"<<std::endl; 
   return TopOpeBRep_contextNONOG; 
 }
 

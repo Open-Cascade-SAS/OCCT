@@ -481,7 +481,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
           Handle(Geom_SurfaceOfRevolution) newRevol = new Geom_SurfaceOfRevolution(ResCurve,Surface->Axis());
           aSurf = newRevol;
 #ifdef OCCT_DEBUG
-          cout <<" Revolution on offset converted" << endl;
+          std::cout <<" Revolution on offset converted" << std::endl;
 #endif
         }
       }
@@ -683,10 +683,10 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
             nbOfSpan = (anApprox.Surface()->NbUKnots()-1)*(anApprox.Surface()->NbVKnots()-1);
 #ifdef OCCT_DEBUG
             if((imax-i+1)!=1) {
-              cout << " iteration = " << i
+              std::cout << " iteration = " << i
                 <<    "\terror = " << anApprox.MaxError()
-                <<    "\tspans = " << nbOfSpan << endl;
-              cout<< " Surface is aproximated with continuity " << IntegerToGeomAbsShape(Min(aCU,aCV)) <<endl;
+                <<    "\tspans = " << nbOfSpan << std::endl;
+              std::cout<< " Surface is aproximated with continuity " << IntegerToGeomAbsShape(Min(aCU,aCV)) <<std::endl;
             }
 #endif
             S = anApprox.Surface();
@@ -729,8 +729,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
 
         catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-          cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
-          anException.Print(cout); cout << endl;
+          std::cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
+          anException.Print(std::cout); std::cout << std::endl;
 #endif
           (void)anException;
           //szv: protection against loop
@@ -757,7 +757,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
       }
       else { 
 #ifdef OCCT_DEBUG
-        cout<<" Approximation iteration out. Surface is not aproximated." << endl;
+        std::cout<<" Approximation iteration out. Surface is not aproximated." << std::endl;
 #endif
         return Standard_False;
       }
@@ -767,7 +767,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
       { MaxDeg = myParameters->GMaxDegree(); continue;}
       else {
 #ifdef OCCT_DEBUG	
-        cout<<" Approximation iteration out. Surface is not aproximated." << endl;
+        std::cout<<" Approximation iteration out. Surface is not aproximated." << std::endl;
 #endif
         return Standard_False;
       }
@@ -1033,7 +1033,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
                   if(MaxSeg < myParameters->GMaxSeg()) { MaxSeg = myParameters->GMaxSeg(); aC =aC1; continue;}
                   else {
 #ifdef OCCT_DEBUG
-                    cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
+                    std::cout << "Curve is not aproxed with continuity  "<< aCont<<std::endl;
 #endif	      
                     if(IsConvert) {
                       C = Handle(Geom_Curve)::DownCast(aCurve->Copy());
@@ -1049,7 +1049,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
                   }
                   else {
 #ifdef OCCT_DEBUG
-                    cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
+                    std::cout << "Curve is not aproxed with continuity  "<< aCont<<std::endl;
 #endif
                     if(IsConvert) {
                       C = Handle(Geom_Curve)::DownCast(aCurve->Copy());
@@ -1066,8 +1066,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve(const Handle(Geom_
         }
         catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-          cout << "Warning: GeomConvert_ApproxCurve Exception: Wrong Coefficient : Decrease continuity    ";
-          anException.Print(cout); cout << endl;
+          std::cout << "Warning: GeomConvert_ApproxCurve Exception: Wrong Coefficient : Decrease continuity    ";
+          anException.Print(std::cout); std::cout << std::endl;
 #endif
           (void)anException;
           continue;
@@ -1342,7 +1342,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
               if(MaxSeg < myParameters->GMaxSeg()) { MaxSeg = myParameters->GMaxSeg(); aC =aC1; continue;}
               else {
 #ifdef OCCT_DEBUG
-                cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
+                std::cout << "Curve is not aproxed with continuity  "<< aCont<<std::endl;
 #endif
                 if(IsConvert) {
                   C = Handle(Geom2d_Curve)::DownCast(aCurve->Copy());
@@ -1358,7 +1358,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
               }
               else {
 #ifdef OCCT_DEBUG
-                cout << "Curve is not aproxed with continuity  "<< aCont<<endl;
+                std::cout << "Curve is not aproxed with continuity  "<< aCont<<std::endl;
 #endif
                 if(IsConvert) {
                   C = Handle(Geom2d_Curve)::DownCast(aCurve->Copy());
@@ -1375,8 +1375,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(const Handle(Geo
         }
         catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-          cout << "Warning: Geom2dConvert_ApproxCurve Exception: Wrong Cofficient :Decrease Continuity    ";
-          anException.Print(cout); cout << endl;
+          std::cout << "Warning: Geom2dConvert_ApproxCurve Exception: Wrong Cofficient :Decrease Continuity    ";
+          anException.Print(std::cout); std::cout << std::endl;
 #endif
           (void)anException;
           continue;

@@ -159,7 +159,7 @@ static void DEBVerticesControl (const TopTools_IndexedMapOfShape& NewEdges,
       for (it1LE.Initialize(AsDes->Descendant(NE)); it1LE.More(); it1LE.Next()) {
         if (AsDes->Ascendant(it1LE.Value()).Extent() < 3) {
           LVP.Append(it1LE.Value());
-          cout <<"Vertex on at least 3 edges."<<endl;
+          std::cout <<"Vertex on at least 3 edges."<<std::endl;
 #ifdef DRAW
           if (AffichInt2d) {
             sprintf (name,"VP_%d",NVP++);
@@ -168,7 +168,7 @@ static void DEBVerticesControl (const TopTools_IndexedMapOfShape& NewEdges,
 #endif
         }
         else if (AsDes->Ascendant(it1LE.Value()).Extent() > 3) {
-          cout <<"Vertex on more than 3 edges."<<endl;
+          std::cout <<"Vertex on more than 3 edges."<<std::endl;
 #ifdef DRAW
           if (AffichInt2d) {
             sprintf (name,"VM_%d",NVM++);
@@ -235,7 +235,7 @@ static void DEBVerticesControl (const TopTools_IndexedMapOfShape& NewEdges,
       j++;
     }
     i++;
-    cout <<" distmin between VP : "<<distmin<<endl;
+    std::cout <<" distmin between VP : "<<distmin<<std::endl;
   }
 }  
 #endif
@@ -953,14 +953,14 @@ void BRepOffset_MakeOffset::MakeThickSolid()
 #ifdef OCCT_DEBUG
       if(YaResult == 0)
         {
-        cout << "OffsetShape does not contain a FACES." << endl;
+        std::cout << "OffsetShape does not contain a FACES." << std::endl;
         }
 #endif
       }
 #ifdef OCCT_DEBUG
     else
       {
-      cout << "OffsetShape is null!" << endl;
+      std::cout << "OffsetShape is null!" << std::endl;
       }
 #endif
 
@@ -1089,7 +1089,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
 {
 #ifdef OCCT_DEBUG
   if ( ChronBuild) {
-    cout << " CONSTRUCTION OF OFFSETS :" << endl;
+    std::cout << " CONSTRUCTION OF OFFSETS :" << std::endl;
     Clock.Reset();
     Clock.Start();
   }
@@ -1445,7 +1445,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
 {
 #ifdef OCCT_DEBUG
   if ( ChronBuild) {
-    cout << " CONSTRUCTION OF OFFSETS :" << endl;
+    std::cout << " CONSTRUCTION OF OFFSETS :" << std::endl;
     Clock.Reset();
     Clock.Start();
   }
@@ -1654,7 +1654,7 @@ void BRepOffset_MakeOffset::SelfInter(TopTools_MapOfShape& /*Modif*/)
 {
 #ifdef OCCT_DEBUG
   if ( ChronBuild) {
-    cout << " AUTODEBOUCLAGE:" << endl;
+    std::cout << " AUTODEBOUCLAGE:" << std::endl;
     Clock.Reset();
     Clock.Start();
   }    
@@ -2290,7 +2290,7 @@ void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d& Inter)
 {
 #ifdef OCCT_DEBUG
   if (ChronBuild) {
-    cout << " INTERSECTION 3D:" << endl;
+    std::cout << " INTERSECTION 3D:" << std::endl;
     Clock.Reset();
     Clock.Start();  
   }
@@ -2350,7 +2350,7 @@ void BRepOffset_MakeOffset::Intersection2D(const TopTools_IndexedMapOfShape& Mod
 {
 #ifdef OCCT_DEBUG
   if (ChronBuild) {
-    cout << " INTERSECTION 2D:" << endl;
+    std::cout << " INTERSECTION 2D:" << std::endl;
     Clock.Reset();
     Clock.Start();  
   }
@@ -2390,7 +2390,7 @@ void BRepOffset_MakeOffset::MakeLoops(TopTools_IndexedMapOfShape& Modif)
 {
 #ifdef OCCT_DEBUG
   if (ChronBuild) {
-     cout << " DEBOUCLAGE 2D:" << endl;
+     std::cout << " DEBOUCLAGE 2D:" << std::endl;
      Clock.Reset();
      Clock.Start(); 
   }
@@ -2438,7 +2438,7 @@ void BRepOffset_MakeOffset::MakeFaces(TopTools_IndexedMapOfShape& /*Modif*/)
 {
 #ifdef OCCT_DEBUG
   if (ChronBuild) {  
-    cout << " RECONSTRUCTION OF FACES:" << endl;
+    std::cout << " RECONSTRUCTION OF FACES:" << std::endl;
     Clock.Reset();
     Clock.Start();
   }
@@ -2946,7 +2946,7 @@ void BRepOffset_MakeOffset::MakeShells ()
 {
 #ifdef OCCT_DEBUG
   if (ChronBuild) {  
-    cout << " RECONSTRUCTION OF SHELLS:" << endl;
+    std::cout << " RECONSTRUCTION OF SHELLS:" << std::endl;
     Clock.Reset();
     Clock.Start();
   }
@@ -3200,7 +3200,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
 {
 #ifdef OCCT_DEBUG
   if (ChronBuild) {  
-    cout << " CODING OF REGULARITIES:" << endl;
+    std::cout << " CODING OF REGULARITIES:" << std::endl;
     Clock.Reset();
     Clock.Start();
   }
@@ -3227,7 +3227,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
     
     if (LofOF.Extent() != 2) {
 #ifdef OCCT_DEBUG_VERB
-    cout << " Edge shared by " << LofOF.Extent() << " Faces" << endl;
+    std::cout << " Edge shared by " << LofOF.Extent() << " Faces" << std::endl;
 #endif
       continue;
     }

@@ -349,7 +349,7 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::Write (const Standard_CString filen
     TCollection_AsciiString fname = OSD_Path::AbsolutePath ( dpath, EF->GetName()->String() );
     if ( fname.Length() <= 0 ) fname = EF->GetName()->String();
 #ifdef OCCT_DEBUG
-    cout << "Writing external file: " << fname.ToCString() << endl;
+    std::cout << "Writing external file: " << fname.ToCString() << std::endl;
 #endif
     
     EF->SetWriteStatus ( EF->GetWS()->SendAll ( fname.ToCString() ) );
@@ -829,7 +829,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
     if ( ! FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation), SDR ) ) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << endl;
+      std::cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << std::endl;
 #endif
       continue;
     }
@@ -841,7 +841,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
     Handle(StepRepr_PropertyDefinition) aPropDef = RD.PropertyDefinition();
     if (aPropDef.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: STEPCAFControl_Writer::WriteExternRefs StepRepr_PropertyDefinition is null for " << S.TShape()->DynamicType()->Name() << endl;
+      std::cout << "Warning: STEPCAFControl_Writer::WriteExternRefs StepRepr_PropertyDefinition is null for " << S.TShape()->DynamicType()->Name() << std::endl;
 #endif
       continue;
     }
@@ -849,7 +849,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteExternRefs (const Handle(XSControl_
     Handle(StepBasic_ProductDefinition) PD = CharDef.ProductDefinition();
     if (PD.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: STEPCAFControl_Writer::WriteExternRefs StepBasic_ProductDefinition is null for " << S.TShape()->DynamicType()->Name() << endl;
+      std::cout << "Warning: STEPCAFControl_Writer::WriteExternRefs StepBasic_ProductDefinition is null for " << S.TShape()->DynamicType()->Name() << std::endl;
 #endif
       continue;
     }
@@ -1082,7 +1082,7 @@ static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
       TColStd_SequenceOfTransient seqRI;
       Standard_Integer nb = FindEntities ( Styles.FinderProcess(), S, L, seqRI );
 #ifdef OCCT_DEBUG
-      if ( nb <=0 ) cout << "Warning: Cannot find RI for " << S.TShape()->DynamicType()->Name() << endl;
+      if ( nb <=0 ) std::cout << "Warning: Cannot find RI for " << S.TShape()->DynamicType()->Name() << std::endl;
 #endif
       //Get overridden style gka 10.06.03
       if ( isComponent && nb) 
@@ -1176,8 +1176,8 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
     // are not supported (it is not clear how to encode that in STEP)
     if ( XCAFDoc_ShapeTool::IsAssembly ( L ) ) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: Cannot write color  for Assembly" << endl;
-      cout << "Info: Check for colors assigned to components in assembly" << endl;
+      std::cout << "Warning: Cannot write color  for Assembly" << std::endl;
+      std::cout << "Info: Check for colors assigned to components in assembly" << std::endl;
 #endif
       // PTV 22.01.2003 Write color for instances.
       TDF_LabelSequence compLabels;
@@ -1262,7 +1262,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
     if (!isComponent) {
       if ( myMapCompMDGPR.IsBound( aTopSh )) {
 #ifdef OCCT_DEBUG
-        cerr << "Error: Current Top-Level shape have MDGPR already " << endl;
+        std::cerr << "Error: Current Top-Level shape have MDGPR already " << std::endl;
 #endif
       }
       Styles.CreateMDGPR ( Context, aMDGPR );
@@ -1371,7 +1371,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteNames (const Handle(XSControl_WorkS
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
     if ( ! FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_ShapeDefinitionRepresentation), SDR ) ) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << endl;
+      std::cout << "Warning: Cannot find SDR for " << S.TShape()->DynamicType()->Name() << std::endl;
 #endif
       continue;
     }
@@ -1607,7 +1607,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
       Standard_Integer nb = 
 	FindEntities ( FP, oneShape, Loc, seqRI );
       if ( nb <=0 ) 
-	FP->Messenger() << "Warning: Cannot find RI for " << oneShape.TShape()->DynamicType()->Name() << endl;
+	FP->Messenger() << "Warning: Cannot find RI for " << oneShape.TShape()->DynamicType()->Name() << Message_EndLine;
     }
     if ( seqRI.Length() <= 0 ) continue;
 
@@ -1619,7 +1619,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
     if (L.FindAttribute(XCAFDoc::InvisibleGUID(), aUAttr)) {
       descr = new TCollection_HAsciiString ("invisible");
 #ifdef OCCT_DEBUG
-      FP->Messenger() << "\tLayer \"" << hName->String().ToCString() << "\" is invisible"<<endl;
+      FP->Messenger() << "\tLayer \"" << hName->String().ToCString() << "\" is invisible"<<Message_EndLine;
 #endif
       isLinv = Standard_True;
     }
@@ -1788,7 +1788,7 @@ static Standard_Boolean writeSHUO (const Handle(XCAFDoc_GraphNode)& theSHUO,
     // store SHUO recursive
 #ifdef OCCT_DEBUG
     if ( aNextUsageLabs.Length() > 1 )
-      cout << "Warning: store only one next_usage of current SHUO"  << endl;
+      std::cout << "Warning: store only one next_usage of current SHUO"  << std::endl;
 #endif    
     theSTool->GetSHUO( aNextUsageLabs.Value(1), NuSHUO );
     Handle(StepRepr_SpecifiedHigherUsageOccurrence) aNUEntSHUO =
@@ -1807,7 +1807,7 @@ static Standard_Boolean writeSHUO (const Handle(XCAFDoc_GraphNode)& theSHUO,
     if (!getProDefinitionOfNAUO( WS, aUUSh, nullPD, UUNAUO, Standard_True ) ||
         !getProDefinitionOfNAUO( WS, aNUSh, aRelatedPD, NUNAUO, Standard_False )) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: cannot get related or relating PD" << endl;
+      std::cout << "Warning: cannot get related or relating PD" << std::endl;
 #endif
       return Standard_False;
     }
@@ -1892,7 +1892,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   FindEntities ( FP, Sh, L, seqRI );
 #ifdef OCCT_DEBUG
   if ( seqRI.Length() <=0 ) 
-    FP->Messenger() << "Warning: Cannot find RI for " << Sh.TShape()->DynamicType()->Name() << endl;
+    FP->Messenger() << "Warning: Cannot find RI for " << Sh.TShape()->DynamicType()->Name() << Message_EndLine;
 #endif
   item = Handle(StepRepr_RepresentationItem)::DownCast(seqRI(1));
   //get overridden styled item
@@ -1908,7 +1908,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   if ( !aTopSh.IsNull() &&  !myMapCompMDGPR.IsBound( aTopSh ) ) {
     // create MDGPR and record it in model
 #ifdef OCCT_DEBUG
-    cout << "Warning: " << __FILE__ << ": Create new MDGPR for SHUO instance"  << endl;
+    std::cout << "Warning: " << __FILE__ << ": Create new MDGPR for SHUO instance"  << std::endl;
 #endif
     Handle(StepVisual_MechanicalDesignGeometricPresentationRepresentation) aMDGPR;
     Styles.CreateMDGPR ( Context, aMDGPR );
@@ -1939,7 +1939,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   else {
     WS->Model()->AddWithRefs ( STEPstyle ); // add as root to the model, but it is not good
 #ifdef OCCT_DEBUG
-    cout << "Warning: " << __FILE__ << ": adds styled item of SHUO as root, casue cannot find MDGPR" << endl;
+    std::cout << "Warning: " << __FILE__ << ": adds styled item of SHUO as root, casue cannot find MDGPR" << std::endl;
 #endif
   }
   // create invisibility item for the styled item
@@ -2011,7 +2011,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
           XCAFPrs_Style SHUOstyle;
           if ( !getSHUOstyle ( aSHUOlab, CTool, SHUOstyle ) ) {
 #ifdef OCCT_DEBUG
-            cout << "Warning: " << __FILE__ << ": do not store SHUO without any style to the STEP model" << endl;
+            std::cout << "Warning: " << __FILE__ << ": do not store SHUO without any style to the STEP model" << std::endl;
 #endif
             continue;
           }
@@ -2024,13 +2024,13 @@ Standard_Boolean STEPCAFControl_Writer::WriteSHUOs (const Handle(XSControl_WorkS
           writeSHUO( aSHUO, CTool->ShapeTool(), WS, anEntOfSHUO, NAUOShape, aRelatingPD, isDeepest );
           if ( anEntOfSHUO.IsNull() || NAUOShape.IsNull() ) {
 #ifdef OCCT_DEBUG
-            cout << "Warning: " << __FILE__ << ": Cannot store SHUO" << endl;
+            std::cout << "Warning: " << __FILE__ << ": Cannot store SHUO" << std::endl;
 #endif
             continue;
           }
           // create new Product Definition Shape for TOP SHUO
 #ifdef OCCT_DEBUG
-            cout << "Info: " << __FILE__ << ": Create NEW PDS for current SHUO " << endl;
+            std::cout << "Info: " << __FILE__ << ": Create NEW PDS for current SHUO " << std::endl;
 #endif
           Handle(StepRepr_ProductDefinitionShape) PDS = new StepRepr_ProductDefinitionShape;
           Handle(TCollection_HAsciiString) aPDSname = new TCollection_HAsciiString("SHUO");
@@ -2320,7 +2320,7 @@ Handle(StepRepr_ShapeAspect) STEPCAFControl_Writer::WriteShapeAspect (const Hand
   TColStd_SequenceOfTransient aSeqRI;
   FindEntities( FP, theShape, aLoc, aSeqRI );
   if ( aSeqRI.Length() <= 0 ) {
-    FP->Messenger() << "Warning: Cannot find RI for "<<theShape.TShape()->DynamicType()->Name()<<endl;
+    FP->Messenger() << "Warning: Cannot find RI for "<<theShape.TShape()->DynamicType()->Name()<<Message_EndLine;
     return NULL;
   }
 
@@ -2492,7 +2492,7 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::WriteDatumAP242(const Handle(XSC
     aShape = XCAFDoc_ShapeTool::GetShape(theShapeL.Value(i));
     FindEntities(FP, aShape, aLoc, aSeqRI);
     if (aSeqRI.Length() <= 0) {
-      FP->Messenger() << "Warning: Cannot find RI for " << aShape.TShape()->DynamicType()->Name() << endl;
+      FP->Messenger() << "Warning: Cannot find RI for " << aShape.TShape()->DynamicType()->Name() << Message_EndLine;
       continue;
     }
     anEnt = aSeqRI.Value(1);
@@ -3404,7 +3404,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     TColStd_SequenceOfTransient seqRI;
     FindEntities( FP, aShape, Loc, seqRI );
     if ( seqRI.Length() <= 0 ) {
-      FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<endl;
+      FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<Message_EndLine;
       continue;
     }
     Handle(StepRepr_ProductDefinitionShape) PDS;
@@ -3414,7 +3414,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     Handle(StepShape_EdgeCurve) EC;
     FindPDSforDGT(aGraph,ent,PDS,RC,AF,EC);
     if(PDS.IsNull()) continue;
-    //cout<<"Model->Number(PDS)="<<Model->Number(PDS)<<endl;
+    //std::cout<<"Model->Number(PDS)="<<Model->Number(PDS)<<std::endl;
     Handle(XCAFDoc_Datum) DatumAttr;
     if(!DatumL.FindAttribute(XCAFDoc_Datum::GetID(),DatumAttr)) continue;
     Handle(TCollection_HAsciiString) aName = DatumAttr->GetName();
@@ -3486,7 +3486,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     TColStd_SequenceOfTransient seqRI;
     FindEntities( FP, aShape, Loc, seqRI );
     if ( seqRI.Length() <= 0 ) {
-      FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<endl;
+      FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<Message_EndLine;
       continue;
     }
     Handle(StepRepr_ProductDefinitionShape) PDS;
@@ -3496,7 +3496,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     Handle(StepShape_EdgeCurve) EC;
     FindPDSforDGT(aGraph,ent,PDS,RC,AF,EC);
     if(PDS.IsNull()) continue;
-    //cout<<"Model->Number(PDS)="<<Model->Number(PDS)<<endl;
+    //std::cout<<"Model->Number(PDS)="<<Model->Number(PDS)<<std::endl;
 
     Handle(XCAFDoc_DimTol) DimTolAttr;
     if(!DimTolL.FindAttribute(XCAFDoc_DimTol::GetID(),DimTolAttr)) continue;

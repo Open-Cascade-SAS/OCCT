@@ -60,8 +60,8 @@ static Standard_Real GetDeflection(const Handle(BRepAdaptor_HSurface)& aFace,
 	  diagonal =1000000.;
 	  theRequestedDeflection = aDrawer->DeviationCoefficient() * diagonal;  
 	}
-//      cout << "diagonal = " << diagonal << endl;
-//      cout << "theRequestedDeflection = " << theRequestedDeflection << endl;
+//      std::cout << "diagonal = " << diagonal << std::endl;
+//      std::cout << "theRequestedDeflection = " << theRequestedDeflection << std::endl;
     }
   else 
     {
@@ -164,7 +164,7 @@ void VrmlConverter_WFDeflectionRestrictedFace::Add
 	  }
 	}
 	else {
-	  cout << "Cannot evaluate curve on surface"<<endl;
+	  std::cout << "Cannot evaluate curve on surface"<<std::endl;
 	}
       }
       else {

@@ -624,9 +624,9 @@ void TDF_Tool::ExtendedDeepDump
   TDF_Tool_ExtendedDeepDump(anOS,aLabel,aFilter,map);
 
   anOS<<map.Extent()<<" attribute"; if (map.Extent()>1) anOS<<"s";
-  anOS<<" referenced by the label structure."<<endl;
+  anOS<<" referenced by the label structure."<<std::endl;
 
-  anOS<<endl<<"Extended dump of filtered attribute(s):"<<endl;
+  anOS<<std::endl<<"Extended dump of filtered attribute(s):"<<std::endl;
   Standard_Integer nba = 0;
   TCollection_AsciiString entry;
   Standard_Integer i ;
@@ -636,18 +636,18 @@ void TDF_Tool::ExtendedDeepDump
       ++nba;
       anOS<<"# "<<i;
       if (att->Label().IsNull()) {
-	anOS<<" (no label)"<<endl;
+	anOS<<" (no label)"<<std::endl;
       }
       else {
 	TDF_Tool::Entry(att->Label(),entry);
-	anOS<<" (label: "<<entry<<")"<<endl;
+	anOS<<" (label: "<<entry<<")"<<std::endl;
       }
-      att->ExtendedDump(anOS,aFilter,map); anOS<<endl;
+      att->ExtendedDump(anOS,aFilter,map); anOS<<std::endl;
     }
   }
-  anOS<<endl<<nba<<" attribute";
+  anOS<<std::endl<<nba<<" attribute";
   if (nba>1) anOS<<"s";
-  anOS<<" dumped between "<<--i<<endl;
+  anOS<<" dumped between "<<--i<<std::endl;
 }
 
 

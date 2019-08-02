@@ -397,23 +397,23 @@ static Standard_Address GeomConvertTest (Standard_Address data)
 
   GeomConvert_ApproxSurface aGAS (info->surf, 1e-4, GeomAbs_C1, GeomAbs_C1, 9, 9, 100, 1);
   if (!aGAS.IsDone()) {
-    cout << "Error: ApproxSurface is not done!" << endl;
+    std::cout << "Error: ApproxSurface is not done!" << std::endl;
     return 0;
   }
   const Handle(Geom_BSplineSurface)& aBSurf = aGAS.Surface();
   if (aBSurf.IsNull()) {
-    cout << "Error: BSplineSurface is not created!" << endl;
+    std::cout << "Error: BSplineSurface is not created!" << std::endl;
     return 0;
   }
-  cout << "Number of UPoles:" << aBSurf->NbUPoles();
+  std::cout << "Number of UPoles:" << aBSurf->NbUPoles();
   if (aBSurf->NbUPoles() == info->nbupoles)
   {
-    cout << ": OK" << endl;
+    std::cout << ": OK" << std::endl;
     return data; // any non-null pointer
   }
   else
   {
-    cout << ": Error, must be " << info->nbupoles << endl;
+    std::cout << ": Error, must be " << info->nbupoles << std::endl;
     return 0;
   }
 }
@@ -421,7 +421,7 @@ static Standard_Address GeomConvertTest (Standard_Address data)
 static Standard_Integer OCC23952sweep (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 3) {
-    cout << "Error: invalid number of arguments" << endl;
+    std::cout << "Error: invalid number of arguments" << std::endl;
     return 1;
   }
 
@@ -430,7 +430,7 @@ static Standard_Integer OCC23952sweep (Draw_Interpretor& di, Standard_Integer ar
   aStorage.surf = DrawTrSurf::GetSurface(argv[2]);
   if (aStorage.surf.IsNull())
   {
-    cout << "Error: " << argv[2] << " is not a DRAW surface!" << endl;
+    std::cout << "Error: " << argv[2] << " is not a DRAW surface!" << std::endl;
     return 0;
   }
 
@@ -471,19 +471,19 @@ static Standard_Address GeomIntSSTest (Standard_Address data)
   GeomInt_IntSS anInter;
   anInter.Perform (info->surf1, info->surf2, Precision::Confusion(), Standard_True);
   if (!anInter.IsDone()) {
-    cout << "An intersection is not done!" << endl;
+    std::cout << "An intersection is not done!" << std::endl;
     return 0;
   }
 
-  cout << "Number of Lines:" << anInter.NbLines();
+  std::cout << "Number of Lines:" << anInter.NbLines();
   if (anInter.NbLines() == info->nbsol)
   {
-    cout << ": OK" << endl;
+    std::cout << ": OK" << std::endl;
     return data; // any non-null pointer
   }
   else
   {
-    cout << ": Error, must be " << info->nbsol << endl;
+    std::cout << ": Error, must be " << info->nbsol << std::endl;
     return 0;
   }
 }
@@ -491,7 +491,7 @@ static Standard_Address GeomIntSSTest (Standard_Address data)
 static Standard_Integer OCC23952intersect (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc != 4) {
-    cout << "Error: invalid number of arguments" << endl;
+    std::cout << "Error: invalid number of arguments" << std::endl;
     return 1;
   }
 
@@ -501,7 +501,7 @@ static Standard_Integer OCC23952intersect (Draw_Interpretor& di, Standard_Intege
   aStorage.surf2 = DrawTrSurf::GetSurface(argv[3]);
   if (aStorage.surf1.IsNull() || aStorage.surf2.IsNull())
   {
-    cout << "Error: Either " << argv[2] << " or " << argv[3] << " is not a DRAW surface!" << endl;
+    std::cout << "Error: Either " << argv[2] << " or " << argv[3] << " is not a DRAW surface!" << std::endl;
     return 0;
   }
 
@@ -3288,7 +3288,7 @@ static Standard_Integer OCC24881 (Draw_Interpretor& di, Standard_Integer narg , 
     di<<"Usage: "<<a[0]<<" invalid number of arguments\n";
     return 1;
   }
-//    cout <<"FileName1: " << argv[1] <<endl;
+//    std::cout <<"FileName1: " << argv[1] <<std::endl;
 
   TopoDS_Shape aShape = DBRep::Get (a[1]);
 
@@ -4424,7 +4424,7 @@ static Standard_Integer OCC24537(
     aF.open(argv[1]);
     if (!aF.is_open())
     {
-      cout << "cannot create file " << argv[1] << endl;
+      std::cout << "cannot create file " << argv[1] << std::endl;
       return 1;
     }
   }
@@ -4636,7 +4636,7 @@ static Standard_Integer OCC24537(
     theDI << "Conversion was done OK";
   if (aF.is_open())
   {
-    cout << "the file " << argv[1] << " has been created" << endl;
+    std::cout << "the file " << argv[1] << " has been created" << std::endl;
     aF.close();
   }
   return 0;

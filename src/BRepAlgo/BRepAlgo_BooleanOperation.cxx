@@ -149,7 +149,7 @@ BRepAlgo_BooleanOperation::~BRepAlgo_BooleanOperation()
   }
   myBuilderCanWork = (esp || tede) ;
 #ifdef OCCT_DEBUG
-  if (!esp) cout<<"BRepAlgo_BooleanOperation(DEB) some edges not SameParameter"<<endl;
+  if (!esp) std::cout<<"BRepAlgo_BooleanOperation(DEB) some edges not SameParameter"<<std::endl;
 #endif  
   if (!myBuilderCanWork) return;
   
@@ -241,8 +241,8 @@ BRepAlgo_BooleanOperation::~BRepAlgo_BooleanOperation()
       Vertex2.Append(Ex.Current()); nbv2++;
     }
 
-    //-- cout<<"Solids1: "<<nbs1<<"  Faces1: "<<nbf1<<" Edges1:"<<nbe1<<" Vtx1:"<<nbv1<<endl;
-    //-- cout<<"Solids2: "<<nbs2<<"  Faces2: "<<nbf2<<" Edges2:"<<nbe2<<" Vtx2:"<<nbv2<<endl;
+    //-- std::cout<<"Solids1: "<<nbs1<<"  Faces1: "<<nbf1<<" Edges1:"<<nbe1<<" Vtx1:"<<nbv1<<std::endl;
+    //-- std::cout<<"Solids2: "<<nbs2<<"  Faces2: "<<nbf2<<" Edges2:"<<nbe2<<" Vtx2:"<<nbv2<<std::endl;
 
     //== 
 
@@ -253,14 +253,14 @@ BRepAlgo_BooleanOperation::~BRepAlgo_BooleanOperation()
 //    Standard_Boolean Correct = Standard_True;
     if(    (nbs1 && nbs2==0 && St1==TopAbs_OUT && St2==TopAbs_IN) 
        ||  (nbs2 && nbs1==0 && St2==TopAbs_OUT && St1==TopAbs_IN)) { 
-      //-- cout<<"*****  Invalid Operation : Cut of a Solid by a Non Solid "<<endl;
+      //-- std::cout<<"*****  Invalid Operation : Cut of a Solid by a Non Solid "<<std::endl;
       Done();
       return;
     }
 
     if(    (nbs1 && nbs2==0 && St1==TopAbs_OUT && St2==TopAbs_OUT) 
        ||  (nbs2 && nbs1==0 && St2==TopAbs_OUT && St1==TopAbs_OUT)) { 
-      //-- cout<<"*****  Invalid Operation : Fusion of a Solid and a Non Solid "<<endl;
+      //-- std::cout<<"*****  Invalid Operation : Fusion of a Solid and a Non Solid "<<std::endl;
       Done();
       return;
     }
@@ -268,7 +268,7 @@ BRepAlgo_BooleanOperation::~BRepAlgo_BooleanOperation()
 
     if(    (nbs1>0 && nbs2>0) 
        &&  (nbe1 || nbe2 || nbf1 || nbf2 || nbv1 || nbv2)) { 
-      //-- cout<<"***** Not Yet Implemented : Compound of solid and non Solid"<<endl;
+      //-- std::cout<<"***** Not Yet Implemented : Compound of solid and non Solid"<<std::endl;
       Done();
       return;
     }

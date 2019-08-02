@@ -217,7 +217,7 @@ Standard_OStream& TDataStd_IntPackedMap::Dump(Standard_OStream& theOS) const
   Standard_OStream& anOS = TDF_Attribute::Dump( theOS );
   anOS << "IntPackedMap size = " << Extent();
   anOS << " Delta is " << (myIsDelta ? "ON":"OFF");
-  anOS << endl;
+  anOS << std::endl;
   return anOS;
 }
 

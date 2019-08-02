@@ -448,7 +448,7 @@ Standard_OStream& XCAFDoc_GraphNode::Dump (Standard_OStream& anOS) const
     for (; i <= NbFathers(); i++) {
       if ( !myFathers(i)->Label().IsNull() ) 
 	myFathers(i)->Label().EntryDump(anOS);
-      anOS<<endl;
+      anOS<<std::endl;
     }
   }
   i = 1;
@@ -457,10 +457,10 @@ Standard_OStream& XCAFDoc_GraphNode::Dump (Standard_OStream& anOS) const
     for (; i <= NbChildren(); i++) {
       if ( !myChildren(i)->Label().IsNull() )
 	myChildren(i)->Label().EntryDump(anOS);
-      anOS<<endl;
+      anOS<<std::endl;
     }
   }
-//  anOS<<endl;
+//  anOS<<std::endl;
   return anOS;
 }
 

@@ -85,9 +85,9 @@ Standard_Boolean DNaming_PrismDriver::MustExecute(const Handle(TFunction_Logbook
 static void Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
 {
-  ofstream save;
+  std::ofstream save;
   save.open(filename);
-  save << "DBRep_DrawableShape" << endl << endl;
+  save << "DBRep_DrawableShape" << std::endl << std::endl;
   if(!shape.IsNull()) BRepTools::Write(shape, save);
   save.close();
 }

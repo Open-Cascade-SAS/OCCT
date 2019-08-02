@@ -64,10 +64,10 @@ extern Draw_Viewer dout;
 
 Standard_EXPORT void DBRep_WriteColorOrientation ()
 {
-  cout << "\nrouge  FORWARD";
-  cout << "\nbleu   REVERSED";
-  cout << "\nrose   EXTERNAL";
-  cout << "\norange INTERNAL"<<endl;
+  std::cout << "\nrouge  FORWARD";
+  std::cout << "\nbleu   REVERSED";
+  std::cout << "\nrose   EXTERNAL";
+  std::cout << "\norange INTERNAL"<<std::endl;
 }
 
 Standard_EXPORT Draw_Color DBRep_ColorOrientation (const TopAbs_Orientation Or) 
@@ -341,8 +341,8 @@ static Standard_Integer triangles(Draw_Interpretor& ,
   if (n == 1) {
     disptriangles = !disptriangles;
 #ifdef OCCT_DEBUG
-    if (disptriangles) cout <<"Triangulations are always displayed"<<endl;
-    else cout <<"Triangulations are displayed only if there is no geometric representation"<<endl;
+    if (disptriangles) std::cout <<"Triangulations are always displayed"<<std::endl;
+    else std::cout <<"Triangulations are displayed only if there is no geometric representation"<<std::endl;
 #endif
   }
   else {
@@ -402,8 +402,8 @@ static Standard_Integer polygons(Draw_Interpretor& ,
   if (n == 1) {
     disppolygons = !disppolygons;
 #ifdef OCCT_DEBUG
-    if (disppolygons) cout <<"Polygons are always displayed"<<endl;
-    else cout <<"Polygons are displayed only if there is no geometric representation"<<endl;
+    if (disppolygons) std::cout <<"Polygons are always displayed"<<std::endl;
+    else std::cout <<"Polygons are displayed only if there is no geometric representation"<<std::endl;
 #endif
   }
   else {
@@ -1523,7 +1523,7 @@ static Standard_Boolean stest(const Handle(Draw_Drawable3D)& d)
   return d->IsInstance(STANDARD_TYPE(DBRep_DrawableShape));
 }
 
-static void ssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void ssave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(DBRep_DrawableShape) 
     N = Handle(DBRep_DrawableShape)::DownCast(d);
@@ -1538,7 +1538,7 @@ static void ssave(const Handle(Draw_Drawable3D)&d, ostream& OS)
   S.Write(N->Shape(),OS);
 }
 
-static Handle(Draw_Drawable3D) srestore (istream& IS)
+static Handle(Draw_Drawable3D) srestore (std::istream& IS)
 {
   BRep_Builder B;
   BRepTools_ShapeSet S(B);
@@ -1572,7 +1572,7 @@ static Draw_SaveAndRestore ssr("DBRep_DrawableShape",
 
 void dumps (const TopoDS_Shape& S)
 {
- BRepTools::Dump(S,cout);
+ BRepTools::Dump(S,std::cout);
 }
 
 //=======================================================================

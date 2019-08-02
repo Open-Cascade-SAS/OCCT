@@ -312,7 +312,7 @@ Handle(StepRepr_RepresentationContext) STEPConstruct_Styles::FindContext (const 
   Handle(StepShape_ShapeRepresentation) sr;
   if ( FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepShape_ShapeRepresentation), sr) ) {
 #ifdef OCCT_DEBUG
-//    cout << "Context of " << Shape.TShape()->DynamicType()->Name() << ": SR found: " << sr->DynamicType()->Name() << endl;
+//    std::cout << "Context of " << Shape.TShape()->DynamicType()->Name() << ": SR found: " << sr->DynamicType()->Name() << std::endl;
 #endif
     Context = sr->ContextOfItems();
   }
@@ -320,12 +320,12 @@ Handle(StepRepr_RepresentationContext) STEPConstruct_Styles::FindContext (const 
     Handle(StepGeom_GeometricRepresentationItem) item;
     if ( FinderProcess()->FindTypedTransient (mapper,STANDARD_TYPE(StepGeom_GeometricRepresentationItem), item) ) {
 #ifdef OCCT_DEBUG
-//      cout << "Context of " << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem found: " << item->DynamicType()->Name() << endl;
+//      std::cout << "Context of " << Shape.TShape()->DynamicType()->Name() << ": GeomRepItem found: " << item->DynamicType()->Name() << std::endl;
 #endif
       Interface_EntityIterator subs = Graph().Sharings(item);
       for (subs.Start(); Context.IsNull() && subs.More(); subs.Next()) {
 #ifdef OCCT_DEBUG
-//	cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << endl;
+//	std::cout << "Parsing back refs: found " << subs.Value()->DynamicType()->Name() << std::endl;
 #endif
 	if ( ! subs.Value()->IsKind(STANDARD_TYPE(StepShape_ShapeRepresentation)) ) continue;
 	sr = Handle(StepShape_ShapeRepresentation)::DownCast ( subs.Value() );
@@ -335,7 +335,7 @@ Handle(StepRepr_RepresentationContext) STEPConstruct_Styles::FindContext (const 
   }
 #ifdef OCCT_DEBUG
   if ( Context.IsNull() ) {
-    cout << Shape.TShape()->DynamicType()->Name() << ": Cannot find context" << endl;
+    std::cout << Shape.TShape()->DynamicType()->Name() << ": Cannot find context" << std::endl;
   }
 #endif
 
@@ -495,7 +495,7 @@ Handle(StepVisual_PresentationStyleAssignment) STEPConstruct_Styles::MakeColorPS
   
   if ( items.Length() <1 ) {
 #ifdef OCCT_DEBUG
-    cout << "Error: no color is supplied" << endl;
+    std::cout << "Error: no color is supplied" << std::endl;
 #endif
     return PSA;
   }
@@ -724,7 +724,7 @@ Standard_Boolean STEPConstruct_Styles::DecodeColor (const Handle(StepVisual_Colo
     else if ( name.IsEqual ( "white"   ) ) Col.SetValues ( Quantity_NOC_WHITE );
     else {
 #ifdef OCCT_DEBUG
-      cout << "Error: color name \"" << name << "\" is not recognized" << endl;
+      std::cout << "Error: color name \"" << name << "\" is not recognized" << std::endl;
 #endif
       return Standard_False;
     }

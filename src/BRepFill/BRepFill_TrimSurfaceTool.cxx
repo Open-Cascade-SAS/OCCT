@@ -103,7 +103,7 @@ myFace1(Face1),
 #ifdef OCCT_DEBUG
   if ( Affich) {
     NBCALL++;
-    cout << " ---------->TrimSurfaceTool : NBCALL = " << NBCALL << endl;
+    std::cout << " ---------->TrimSurfaceTool : NBCALL = " << NBCALL << std::endl;
 #ifdef DRAW
     char name[256];
 
@@ -279,8 +279,8 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
 
     if (NbSegments > 0) {
 #ifdef OCCT_DEBUG
-      cout << " IntersectWith : " << NbSegments  
-        << " Segments of intersection" << endl;
+      std::cout << " IntersectWith : " << NbSegments  
+        << " Segments of intersection" << std::endl;
 #endif
       IntRes2d_IntersectionSegment Seg;
       for ( Standard_Integer i = 1; i <= NbSegments; i++) {
@@ -305,7 +305,7 @@ static void EvalParameters(const TopoDS_Edge&          Edge,
       P1 = Seq.Value(i);
       P2 = Seq.Value(i+1);
       if ( P2.X()-P1.X() < Tol ) {
-        //	cout<<"REMOVE "<<P1.X()<<endl;
+        //	std::cout<<"REMOVE "<<P1.X()<<std::endl;
         Seq.Remove(i--);
         NbPoints--;
       }
@@ -432,7 +432,7 @@ void BRepFill_TrimSurfaceTool::IntersectWith
     PSeq = Points(i);
     PSeq.SetZ((Points2.Value(i)).Y());
     Points.SetValue(i,PSeq);
-    //    cout<<"BisPar "<<PSeq.X()<<endl;
+    //    std::cout<<"BisPar "<<PSeq.X()<<std::endl;
   }
 }
 
@@ -488,9 +488,9 @@ Standard_Real BRepFill_TrimSurfaceTool::ProjOn(const gp_Pnt2d& Point,
 #ifdef OCCT_DEBUG
   Standard_Real Dist = Projector.LowerDistance();
   if ( Dist > Precision::Confusion() ) {
-    cout << " *** WARNING  TrimSurfaceTool:  *** " << endl;
-    cout << "      --> the point is not on the edge" <<endl;
-    cout << "          distance  = " << Dist << endl;
+    std::cout << " *** WARNING  TrimSurfaceTool:  *** " << std::endl;
+    std::cout << "      --> the point is not on the edge" <<std::endl;
+    std::cout << "          distance  = " << Dist << std::endl;
   }
 #endif
 

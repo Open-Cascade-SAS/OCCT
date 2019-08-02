@@ -189,7 +189,7 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const Standard_Boolean Se
 
 #ifdef OCCT_DEBUG
     if(NbVFiltered || NbUFiltered)
-      cout<<"Warning: ShapeUpgrade_ConvertSurfaceToBezierBasis: thin patches dropped."<<endl;
+      std::cout<<"Warning: ShapeUpgrade_ConvertSurfaceToBezierBasis: thin patches dropped."<<std::endl;
 #endif
     
     TColGeom_Array2OfBezierSurface Surfaces(1, nbUPatches, 1, nbVPatches);
@@ -455,7 +455,7 @@ static Handle(Geom_Surface) GetSegment(const Handle(Geom_Surface) surf,
     }
     else {
 #ifdef OCCT_DEBUG
-      cout <<"Warning: Resulting path is not surface of revolution basis on bezier curve"<<endl;
+      std::cout <<"Warning: Resulting path is not surface of revolution basis on bezier curve"<<std::endl;
 #endif
     }
     if(Abs(U1-Umin) < Precision::PConfusion() &&

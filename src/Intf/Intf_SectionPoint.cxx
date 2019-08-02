@@ -123,7 +123,7 @@ Standard_Boolean Intf_SectionPoint::IsOnSameEdge
     }
     else if (Other.DimenObje==Intf_VERTEX) {
 #if DEBUG_INTFSECTIONPOINT
-      cout << " IsOnSameEdge on Intersection VERTEX VERTEX Obje !" << endl;
+      std::cout << " IsOnSameEdge on Intersection VERTEX VERTEX Obje !" << std::endl;
 #endif
 	isOn=(IndexT1==Other.IndexT1);
     }
@@ -143,7 +143,7 @@ Standard_Boolean Intf_SectionPoint::IsOnSameEdge
       }
       else if (Other.DimenTool==Intf_VERTEX) {
 #if DEBUG_INTFSECTIONPOINT
-	cout << " IsOnSameEdge on Intersection VERTEX VERTEX Tool !" << endl;
+	std::cout << " IsOnSameEdge on Intersection VERTEX VERTEX Tool !" << std::endl;
 #endif
 	isOn=(IndexT1==Other.IndexT1);
       }
@@ -253,19 +253,19 @@ void Intf_SectionPoint::Dump (const Standard_Integer
                              ) const
 {
 #if DEBUG_INTFSECTIONPOINT 
-  for (Standard_Integer id=0; id<Indent; id++) cout << " ";
+  for (Standard_Integer id=0; id<Indent; id++) std::cout << " ";
 
-  cout << "PIType(" << DimenObje << "," << DimenTool << ")  entre(" 
+  std::cout << "PIType(" << DimenObje << "," << DimenTool << ")  entre(" 
         << IndexO1 << "," << IndexO2 << ") par(" << ParamObje 
 	  << ") et ("
 	<< IndexT1 << "," << IndexT2 << ") par(" << ParamTool  
-	  << ")" << endl;
+	  << ")" << std::endl;
 
-  for (id=0; id<Indent; id++) cout << " ";
+  for (id=0; id<Indent; id++) std::cout << " ";
 
-  cout << "  Lieu(" << myPnt.X() << ","
+  std::cout << "  Lieu(" << myPnt.X() << ","
                     << myPnt.Y() << "," 
                     << myPnt.Z() << 
-	 ")  Incidence(" << Incide << ")" << endl;
+	 ")  Incidence(" << Incide << ")" << std::endl;
 #endif
 }

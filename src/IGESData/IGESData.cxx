@@ -142,7 +142,7 @@ static Handle(IGESData_DefaultSpecific)   speci;
   gsys->AssignCat
 #ifdef HPUX
     ("HP-UX");
-  cout<<"--  OSD_Path::SystemVersion, does not work well on HP-UX"<<endl;
+  std::cout<<"--  OSD_Path::SystemVersion, does not work well on HP-UX"<<std::endl;
 #endif
 #ifndef HPUX
     (host.SystemVersion().ToCString());

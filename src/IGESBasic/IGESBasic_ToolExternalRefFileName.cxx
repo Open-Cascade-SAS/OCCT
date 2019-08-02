@@ -102,11 +102,11 @@ void  IGESBasic_ToolExternalRefFileName::OwnDump
   (const Handle(IGESBasic_ExternalRefFileName)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_ExternalRefFileName" << endl;
+  S << "IGESBasic_ExternalRefFileName" << Message_EndLine;
   S << "External Reference File Identifier : ";
   IGESData_DumpString(S,ent->FileId());
-  S << endl;
+  S << Message_EndLine;
   S << "External Reference Symbolic Name : ";
   IGESData_DumpString(S,ent->ReferenceName());
-  S << endl;
+  S << Message_EndLine;
 }

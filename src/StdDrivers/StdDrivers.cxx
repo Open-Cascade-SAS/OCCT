@@ -39,7 +39,7 @@ Handle(Standard_Transient) StdDrivers::Factory (const Standard_GUID& aGUID)
   if (aGUID == StdRetrievalDriver)
   {
 #ifdef OCCT_DEBUG
-    cout << "StdDrivers : Retrieval Plugin" << endl;
+    std::cout << "StdDrivers : Retrieval Plugin" << std::endl;
 #endif
 
     static Handle(StdDrivers_DocumentRetrievalDriver) model_rd = new StdDrivers_DocumentRetrievalDriver;

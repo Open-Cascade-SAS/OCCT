@@ -125,7 +125,7 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     if(Abs(Rad) <= Precision::Confusion()){ c1sphere = Standard_True; }
     else if(Rad < 0){ 
 #ifdef OCCT_DEBUG
-      cout<<"the fillet does not pass"<<endl; 
+      std::cout<<"the fillet does not pass"<<std::endl; 
 #endif
       return Standard_False;
     }

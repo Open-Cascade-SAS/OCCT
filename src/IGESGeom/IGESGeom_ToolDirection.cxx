@@ -117,9 +117,9 @@ void IGESGeom_ToolDirection::OwnDump
   (const Handle(IGESGeom_Direction)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
-  S << "IGESGeom_Direction" << endl << endl;
+  S << "IGESGeom_Direction" << Message_EndLine << Message_EndLine;
 
   S << "Value : ";
   IGESData_DumpXYZL(S,level, ent->Value(), ent->VectorLocation());
-  S << endl;
+  S << Message_EndLine;
 }

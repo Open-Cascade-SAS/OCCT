@@ -71,25 +71,25 @@ HatchGen_Domain::HatchGen_Domain (const HatchGen_PointOnHatching& P,
 
 void HatchGen_Domain::Dump (const Standard_Integer Index) const
 {
-  cout << "=== Domain " ;
+  std::cout << "=== Domain " ;
   if (Index > 0) {
-    cout << "# " << setw(3) << Index << " " ;
+    std::cout << "# " << std::setw(3) << Index << " " ;
   } else {
-    cout << "======" ;
+    std::cout << "======" ;
   }
-  cout << "=============================" << endl ;
+  std::cout << "=============================" << std::endl ;
 
   if (myHasFirstPoint) {
     myFirstPoint.Dump (1) ;
   } else {
-    cout << "    Has not a first point" << endl ;
+    std::cout << "    Has not a first point" << std::endl ;
   }
 
   if (myHasSecondPoint) {
     mySecondPoint.Dump (2) ;
   } else {
-    cout << "    Has not a second point" << endl ;
+    std::cout << "    Has not a second point" << std::endl ;
   }
 
-  cout << "==============================================" << endl ;
+  std::cout << "==============================================" << std::endl ;
 }

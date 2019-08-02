@@ -114,10 +114,10 @@ void  IGESBasic_ToolAssocGroupType::OwnDump
   (const Handle(IGESBasic_AssocGroupType)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_AssocGroupType" << endl;
-  S << "Number of data fields : " << ent->NbData() << endl;
-  S << "Type of attached associativity : " << ent->AssocType() << endl;
+  S << "IGESBasic_AssocGroupType" << Message_EndLine;
+  S << "Number of data fields : " << ent->NbData() << Message_EndLine;
+  S << "Type of attached associativity : " << ent->AssocType() << Message_EndLine;
   S << "Name of attached associativity : ";
   IGESData_DumpString(S,ent->Name());
-  S << endl;
+  S << Message_EndLine;
 }

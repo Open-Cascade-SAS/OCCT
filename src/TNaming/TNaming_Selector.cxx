@@ -46,12 +46,12 @@ void PrintEntry(const TDF_Label&       label, const Standard_Boolean allLevels)
 {
   TCollection_AsciiString entry;
   TDF_Tool::Entry(label, entry);
-  cout << "LabelEntry = "<< entry << endl;
+  std::cout << "LabelEntry = "<< entry << std::endl;
   if(allLevels) {
     TDF_ChildIterator it (label, allLevels);
     for (; it.More(); it.Next()) {
       TDF_Tool::Entry(it.Value(), entry);
-	cout << "ChildLabelEntry = "<< entry << endl;
+	std::cout << "ChildLabelEntry = "<< entry << std::endl;
       }
   }
 }
@@ -72,10 +72,10 @@ static void Write(const TopoDS_Shape& shape,
       *p = '-';
     p++;
   }
-  ofstream save (buf);
+  std::ofstream save (buf);
   if(!save) 
-    cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << endl;
-  save << "DBRep_DrawableShape" << endl << endl;
+    std::cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << std::endl;
+  save << "DBRep_DrawableShape" << std::endl << std::endl;
   if(!shape.IsNull()) BRepTools::Write(shape, save);
   save.close();
 }
@@ -162,7 +162,7 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
 	if(aS.IsNull()) continue;
 #ifdef OCCT_DEBUG_BNP
 	PrintEntry(NS->Label(), 0);
-	cout <<"ShapeType =" << aS.ShapeType() <<endl;
+	std::cout <<"ShapeType =" << aS.ShapeType() <<std::endl;
 	Write (aS, "BNProblem.brep");
 #endif	
 	if(aS.ShapeType() != TopAbs_COMPOUND) {//single shape at the child label
@@ -178,11 +178,11 @@ static Standard_Boolean IsSpecificCase(const  TDF_Label& F, const TopoDS_Shape& 
 	  for(;it.More();it.Next()) {	      
 	    if(!shapesOfContext.Contains(it.Key())) {
 #ifdef OCCT_DEBUG_BNP
-	      cout <<"BNProblem: ShapeType in AtomicMap = " << it.Key().ShapeType() << " TShape = " <<it.Key().TShape() <<" OR = " <<it.Key().Orientation()  <<endl;
+	      std::cout <<"BNProblem: ShapeType in AtomicMap = " << it.Key().ShapeType() << " TShape = " <<it.Key().TShape() <<" OR = " <<it.Key().Orientation()  <<std::endl;
 	      Write (it.Key(), "BNProblem_AtomicMap_Item.brep");	      
 	      TopTools_MapIteratorOfMapOfOrientedShape itC(shapesOfContext);
 	      for(;itC.More(); itC.Next())
-		cout <<" ShapeType = " << itC.Key().ShapeType() << " TShape = " << itC.Key().TShape() << " OR = " << itC.Key().Orientation() << endl;
+		std::cout <<" ShapeType = " << itC.Key().ShapeType() << " TShape = " << itC.Key().TShape() << " OR = " << itC.Key().Orientation() << std::endl;
 	      
 #endif	
 	      isFound = Standard_True;
@@ -335,7 +335,7 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
    if(E.IsSame(Selection) && E.Orientation() != Selection.Orientation()) {
      selection = E;
    found = Standard_True;
-   cout <<" FOUND: Entity orientation = " << selection.Orientation() <<endl;
+   std::cout <<" FOUND: Entity orientation = " << selection.Orientation() <<std::endl;
    }
  }
  if (!found)
@@ -343,10 +343,10 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
   */
 
 #ifdef OCCT_DEBUG_SEL
-  cout << "SELECTION ORIENTATION = " << Selection.Orientation() <<", TShape = " << Selection.TShape() <<endl;
-  //cout << "SELECTION ORIENTATION = " << selection.Orientation() <<", TShape = " << selection.TShape() <<endl;
+  std::cout << "SELECTION ORIENTATION = " << Selection.Orientation() <<", TShape = " << Selection.TShape() <<std::endl;
+  //std::cout << "SELECTION ORIENTATION = " << selection.Orientation() <<", TShape = " << selection.TShape() <<std::endl;
   PrintEntry(myLabel, 0);
-  TNaming::Print(myLabel, cout);
+  TNaming::Print(myLabel, std::cout);
 #endif
 
   if(aKeepOrientation) {
@@ -374,8 +374,8 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
   if(!Selection.IsSame(aSelection) && Selection.ShapeType() != TopAbs_COMPOUND) {
     TCollection_AsciiString entry;
     TDF_Tool::Entry(NS->Label(), entry);
-    cout << "Selection is Not Same (NSLabel = " <<entry<<"): TShape1 = " << 
-      Selection.TShape()->This() << " TShape2 = " <<aSelection.TShape()->This() <<endl;
+    std::cout << "Selection is Not Same (NSLabel = " <<entry<<"): TShape1 = " << 
+      Selection.TShape()->This() << " TShape2 = " <<aSelection.TShape()->This() <<std::endl;
   }
 #endif
   if(aSelection.ShapeType() == TopAbs_COMPOUND && aSelection.ShapeType() != Selection.ShapeType())
@@ -420,7 +420,7 @@ Standard_Boolean TNaming_Selector::Solve (TDF_LabelMap& Valid) const
 {
   Handle(TNaming_Naming) name;
 #ifdef OCCT_DEBUG_SEL
-	cout <<"TNaming_Selector::Solve==> "; 
+	std::cout <<"TNaming_Selector::Solve==> "; 
 	PrintEntry(myLabel,0);
 #endif
   if (myLabel.FindAttribute(TNaming_Naming::GetID(),name)) {

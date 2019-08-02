@@ -47,7 +47,7 @@
 
 #ifdef OCCT_DEBUG
 extern void debfillp(const Standard_Integer i);
-extern void debedbu(const Standard_Integer i) {cout<<"++ debedbu "<<i<<endl;}
+extern void debedbu(const Standard_Integer i) {std::cout<<"++ debedbu "<<i<<std::endl;}
 #endif
 
 #ifdef DRAW
@@ -73,7 +73,7 @@ void TopOpeBRepBuild_Builder::GPVSMakeEdges
   PVS.InitLoop();
   Standard_Boolean novertex = ( ! PVS.MoreLoop() );
 #ifdef OCCT_DEBUG
-  if(tSPS&&novertex)cout<<"#--- GPVSMakeEdges : no vertex from edge "<<iE<<endl;
+  if(tSPS&&novertex)std::cout<<"#--- GPVSMakeEdges : no vertex from edge "<<iE<<std::endl;
 #endif
   if (novertex) return;
   
@@ -93,7 +93,7 @@ void TopOpeBRepBuild_Builder::GEDBUMakeEdges
 {
 #ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(EF,iE);
-  if(tSPS){cout<<endl;GdumpSHA(EF, (char *) "#--- GEDBUMakeEdges ");cout<<endl;}
+  if(tSPS){std::cout<<std::endl;GdumpSHA(EF, (char *) "#--- GEDBUMakeEdges ");std::cout<<std::endl;}
   if(tSPS){GdumpEDBU(EDBU);}
   if(tSPS){debedbu(iE);}
 #endif

@@ -114,7 +114,7 @@ gp_Pnt2d IntCurve_IConicTool::Value(const Standard_Real X) const {
   case GeomAbs_Circle:    return(ElCLib::CircleValue(X,Axis,Circle_r));
   case GeomAbs_Parabola:  return(ElCLib::ParabolaValue(X,Axis,Parab_f));
   case GeomAbs_Hyperbola: return(ElCLib::HyperbolaValue(X,Axis,Hypr_a,Hypr_b));
-  default: { cout<<"### Erreur sur le  type de la courbe ###";
+  default: { std::cout<<"### Erreur sur le  type de la courbe ###";
 	    return(gp_Pnt2d(0.0,0.0)); }
   }
 }
@@ -130,7 +130,7 @@ void IntCurve_IConicTool::D1(const Standard_Real X,
   case GeomAbs_Circle:     ElCLib::CircleD1(X,Axis,Circle_r,Pt,Tan); break;
   case GeomAbs_Parabola:     ElCLib::ParabolaD1(X,Axis,Parab_f,Pt,Tan); break;
   case GeomAbs_Hyperbola:     ElCLib::HyperbolaD1(X,Axis,Hypr_a,Hypr_b,Pt,Tan); break;
-  default: { cout<<"### Erreur sur le  type de la courbe ###"; }
+  default: { std::cout<<"### Erreur sur le  type de la courbe ###"; }
   }
 }
 
@@ -146,7 +146,7 @@ void IntCurve_IConicTool::D2(const Standard_Real X,
   case GeomAbs_Circle:     ElCLib::CircleD2(X,Axis,Circle_r,Pt,Tan,Norm); break;
   case GeomAbs_Parabola:     ElCLib::ParabolaD2(X,Axis,Parab_f,Pt,Tan,Norm); break;
   case GeomAbs_Hyperbola:     ElCLib::HyperbolaD2(X,Axis,Hypr_a,Hypr_b,Pt,Tan,Norm); break;
-  default: { cout<<"### Erreur sur le  type de la courbe ###"; }
+  default: { std::cout<<"### Erreur sur le  type de la courbe ###"; }
   }			     
 }
 //----------------------------------------------------------------------
@@ -207,7 +207,7 @@ Standard_Real IntCurve_IConicTool::Distance(const gp_Pnt2d& ThePoint) const {
 	return((-P.X()*P.X())/Hypr_aa 
 	       -(P.Y()*P.Y())/Hypr_bb -1.0);
     }			     
-  default: { cout<<"### Erreur sur le  type de la courbe ###";
+  default: { std::cout<<"### Erreur sur le  type de la courbe ###";
 	    return(0.0); }
   }
 }
@@ -290,7 +290,7 @@ gp_Vec2d IntCurve_IConicTool::GradDistance(const gp_Pnt2d& ThePoint) const {
     Gradient.Transform(Object_To_Abs);
     return(Gradient);
   }
-  default: { cout<<"### Erreur sur le  type de la courbe ###";
+  default: { std::cout<<"### Erreur sur le  type de la courbe ###";
 	    return(gp_Vec2d(0.0,0.0)); }
   }
 }

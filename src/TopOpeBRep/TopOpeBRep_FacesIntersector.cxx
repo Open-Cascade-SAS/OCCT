@@ -58,9 +58,9 @@ static void SAVFF(const TopoDS_Face& F1,const TopoDS_Face& F2)
   TCollection_AsciiString an2("SAVB");if (SAVFFi2) an2=an2+SAVFFi2;
   Standard_CString n1=an1.ToCString();Standard_CString n2=an2.ToCString();
 #ifdef DRAW
-  cout<<"FaceIntersector :   set "<<n1<<","<<n2<<endl;DBRep::Set(n1,F1);DBRep::Set(n2,F2);
+  std::cout<<"FaceIntersector :   set "<<n1<<","<<n2<<std::endl;DBRep::Set(n1,F1);DBRep::Set(n2,F2);
 #endif
-  cout<<"FaceIntersector : write "<<n1<<","<<n2<<endl;BRepTools::Write(F1,n1);BRepTools::Write(F2,n2); 
+  std::cout<<"FaceIntersector : write "<<n1<<","<<n2<<std::endl;BRepTools::Write(F1,n1);BRepTools::Write(F2,n2); 
 }
 
 extern Standard_Boolean TopOpeBRepTool_GettraceKRO();
@@ -209,9 +209,9 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,const TopoDS_Sh
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL()) {
-    cout<<"FacesIntersector : Perform tol1 = "<<tol1<<endl;
-    cout<<"                           tol2 = "<<tol2<<endl;
-    cout<<"                           defl = "<<Deflection<<"  MaxUV = "<<MaxUV<<endl;
+    std::cout<<"FacesIntersector : Perform tol1 = "<<tol1<<std::endl;
+    std::cout<<"                           tol2 = "<<tol2<<std::endl;
+    std::cout<<"                           defl = "<<Deflection<<"  MaxUV = "<<MaxUV<<std::endl;
   }
 #endif
 
@@ -246,7 +246,7 @@ void TopOpeBRep_FacesIntersector::Perform(const TopoDS_Shape& F1,const TopoDS_Sh
   }
   
 #ifdef OCCT_DEBUG
-  if (TopOpeBRep_GettraceFI()) cout<<"Perform : isempty "<<IsEmpty()<<endl;
+  if (TopOpeBRep_GettraceFI()) std::cout<<"Perform : isempty "<<IsEmpty()<<std::endl;
 #endif
 }
 
@@ -594,7 +594,7 @@ void TopOpeBRep_FacesIntersector::ForceTolerances(const Standard_Real Tol1,
   myForceTolerances = Standard_True;
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL())
-    cout<<"ForceTolerances : myTol1,myTol2 = "<<myTol1<<","<<myTol2<<endl;
+    std::cout<<"ForceTolerances : myTol1,myTol2 = "<<myTol1<<","<<myTol2<<std::endl;
 #endif
 }
 
@@ -629,9 +629,9 @@ void TopOpeBRep_FacesIntersector::ShapeTolerances(const TopoDS_Shape& ,
   myForceTolerances = Standard_False;
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL()) {
-    cout<<"ShapeTolerances on S1 = ";TopAbs::Print(S1.ShapeType(),cout);
-    cout<<" S2 = ";TopAbs::Print(S2.ShapeType(),cout);
-    cout<<" : myTol1,myTol2 = "<<myTol1<<","<<myTol2<<endl;
+    std::cout<<"ShapeTolerances on S1 = ";TopAbs::Print(S1.ShapeType(),std::cout);
+    std::cout<<" S2 = ";TopAbs::Print(S2.ShapeType(),std::cout);
+    std::cout<<" : myTol1,myTol2 = "<<myTol1<<","<<myTol2<<std::endl;
   }
 #endif
 }
@@ -1189,8 +1189,8 @@ static void MergeWLinesIfAllSegmentsAlongRestriction(IntPatch_SequenceOfLine&   
     theSlin.Clear();
     theSlin.Append(anWLine);
 #ifdef OCCT_DEBUG
-    cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction " 
-         << ((WLineRank == 1) ? "S1" : "S2") << " to WLine***" << endl;
+    std::cout << "*** TopOpeBRep_FaceIntersector: Merge WLines on Restriction " 
+         << ((WLineRank == 1) ? "S1" : "S2") << " to WLine***" << std::endl;
 #endif
   }
 }

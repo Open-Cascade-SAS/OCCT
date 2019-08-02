@@ -761,7 +761,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
 	      break;
 	    }
 #ifdef OCCT_DEBUG
-	    cout << "Storage_Sheme:: Line: = " << aLine <<endl;
+	    std::cout << "Storage_Sheme:: Line: = " << aLine <<std::endl;
 #endif
 	    TCollection_AsciiString aKey, aValue;
 	    aKey = aLine.Token();
@@ -785,7 +785,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
         aDMap.Bind("TPrsStd_AISPresentation", "TDataXtd_Presentation");
       }
 #ifdef OCCT_DEBUG
-      cout << "Storage_Sheme:: aDataMap.Size = " << aDMap.Extent() << endl;
+      std::cout << "Storage_Sheme:: aDataMap.Size = " << aDMap.Extent() << std::endl;
 #endif
     }
   }
@@ -796,7 +796,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
       newName = aDMap.Find(oldName);
       aMigration = Standard_True;
 #ifdef OCCT_DEBUG
-      cout << " newName = " << newName << endl;
+      std::cout << " newName = " << newName << std::endl;
 #endif
     }
   } 
@@ -840,7 +840,7 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
   if (time(&nowbin) == (time_t)-1)
   {
 #ifdef OCCT_DEBUG
-    cerr << "Storage ERROR : Could not get time of day from time()" << endl;
+    std::cerr << "Storage ERROR : Could not get time of day from time()" << std::endl;
 #endif
   }
 
@@ -849,7 +849,7 @@ TCollection_AsciiString Storage_Schema::ICreationDate()
   if (strftime(nowstr, SLENGTH, "%m/%d/%Y", nowstruct) == (size_t) 0)
   {
 #ifdef OCCT_DEBUG
-    cerr << "Storage ERROR : Could not get string from strftime()" << endl;
+    std::cerr << "Storage ERROR : Could not get string from strftime()" << std::endl;
 #endif
   }
 

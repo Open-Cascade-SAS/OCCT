@@ -65,7 +65,7 @@ GeomToStep_MakeConic::GeomToStep_MakeConic ( const Handle(Geom_Conic)& C)
   }
   else {
 #ifdef OCCT_DEBUG
-    cout << "3D Curve Type   : " << C->DynamicType() << endl;
+    std::cout << "3D Curve Type   : " << C->DynamicType() << std::endl;
 #endif
     done = Standard_False;
   }
@@ -102,7 +102,7 @@ GeomToStep_MakeConic::GeomToStep_MakeConic ( const Handle(Geom2d_Conic)& C)
     // Attention : Other 2d conics shall be implemented ...
     //             To be performed later !
 #ifdef OCCT_DEBUG
-    cout << "2D conic not yet implemented" << endl;
+    std::cout << "2D conic not yet implemented" << std::endl;
 #endif
     done = Standard_False;
   }

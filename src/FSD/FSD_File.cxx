@@ -91,18 +91,18 @@ Storage_Error FSD_File::Open(const TCollection_AsciiString& aName,const Storage_
       }
       case Storage_VSRead:
       {
-        // ios::nocreate is not portable
-        anOpenMode = ios::in;
+        // std::ios::nocreate is not portable
+        anOpenMode = std::ios::in;
         break;
       }
       case Storage_VSWrite:
       {
-        anOpenMode = ios::out;
+        anOpenMode = std::ios::out;
         break;
       }
       case Storage_VSReadWrite:
       {
-        anOpenMode = ios::in | ios::out;
+        anOpenMode = std::ios::in | std::ios::out;
         break;
       }
     }
@@ -511,10 +511,10 @@ Storage_BaseDriver& FSD_File::GetCharacter(Standard_Character& aValue)
   unsigned short i = 0;
   if (!(myStream >> i)) {
     // SGI : donne une erreur mais a une bonne valeur pour les caracteres ecrits
-    //       signes (-80 fait ios::badbit, mais la variable i est initialisee)
+    //       signes (-80 fait std::ios::badbit, mais la variable i est initialisee)
     //
     if (i == 0) throw Storage_StreamTypeMismatchError();
-    myStream.clear(ios::goodbit); // .clear(0) is not portable
+    myStream.clear(std::ios::goodbit); // .clear(0) is not portable
   }
   aValue = (char)i;
 
@@ -1267,7 +1267,7 @@ void FSD_File::ReadPersistentObjectHeader(Standard_Integer& aRef,
   }
 
   if (!(myStream >> aType)) throw Storage_StreamTypeMismatchError();
-//  cout << "REF:" << aRef << " TYPE:"<< aType << endl;
+//  std::cout << "REF:" << aRef << " TYPE:"<< aType << std::endl;
 }
 
 //=======================================================================
@@ -1286,7 +1286,7 @@ void FSD_File::BeginReadPersistentObjectData()
     myStream.get(c);
   }
 
-//cout << "BeginReadPersistentObjectData" << endl;
+//std::cout << "BeginReadPersistentObjectData" << std::endl;
 }
 
 //=======================================================================
@@ -1305,7 +1305,7 @@ void FSD_File::BeginReadObjectData()
     myStream.get(c);
   }
 
-//  cout << "BeginReadObjectData" << endl;
+//  std::cout << "BeginReadObjectData" << std::endl;
 }
 
 //=======================================================================
@@ -1324,7 +1324,7 @@ void FSD_File::EndReadObjectData()
     myStream.get(c);
   }
 
-//  cout << "EndReadObjectData" << endl;
+//  std::cout << "EndReadObjectData" << std::endl;
 }
 
 //=======================================================================
@@ -1351,7 +1351,7 @@ void FSD_File::EndReadPersistentObjectData()
     }
     myStream.get(c);
   }
-//  cout << "EndReadPersistentObjectData" << endl;
+//  std::cout << "EndReadPersistentObjectData" << std::endl;
 }
 
 //=======================================================================

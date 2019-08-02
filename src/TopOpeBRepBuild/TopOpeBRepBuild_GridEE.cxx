@@ -93,7 +93,7 @@ void TopOpeBRepBuild_Builder::GMergeEdges(const TopTools_ListOfShape& LE1,const 
 #ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS1 = GtraceSPS(E1,iE);
   if(tSPS1){
-    cout<<endl;cout<<"--- GMergeEdges "<<endl;
+    std::cout<<std::endl;std::cout<<"--- GMergeEdges "<<std::endl;
     GdumpEDG(E1);
     GdumpSAMDOM(LE1, (char *) "1 : ");
     GdumpSAMDOM(LE2, (char *) "2 : ");
@@ -152,8 +152,8 @@ void TopOpeBRepBuild_Builder::GFillEdgesPVS(const TopTools_ListOfShape& LE1,cons
 #ifdef OCCT_DEBUG
     Standard_Integer i1; Standard_Boolean tSPS1 = GtraceSPS(E11,i1);
     if(tSPS1){
-      cout<<endl;cout<<"--- GFillEdgesPVS ";GdumpSHA(E11);
-      cout<<" ismerged : "<<ismerged<<" ";TopAbs::Print(TB1,cout);cout<<endl;
+      std::cout<<std::endl;std::cout<<"--- GFillEdgesPVS ";GdumpSHA(E11);
+      std::cout<<" ismerged : "<<ismerged<<" ";TopAbs::Print(TB1,std::cout);std::cout<<std::endl;
     }
 #endif
     
@@ -170,9 +170,9 @@ void TopOpeBRepBuild_Builder::GFillEdgesPVS(const TopTools_ListOfShape& LE1,cons
 #ifdef OCCT_DEBUG
     Standard_Integer i2; Standard_Boolean tSPS2 = GtraceSPS(E2,i2);
     if(tSPS2){
-      cout<<endl;
-      cout<<"--- GFillEdgesPVS ";GdumpSHA(E2);
-      cout<<" ismerged : "<<ismerged<<" ";TopAbs::Print(TB2,cout);cout<<endl;
+      std::cout<<std::endl;
+      std::cout<<"--- GFillEdgesPVS ";GdumpSHA(E2);
+      std::cout<<" ismerged : "<<ismerged<<" ";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;
     }
 #endif
     
@@ -247,11 +247,11 @@ static Standard_Integer FUN_getTRASHA(const Standard_Integer geti,
 #endif*/
 
 #ifdef OCCT_DEBUG
-void debfillp(const Standard_Integer i) {cout <<"+ + debfillp "<<i<<endl;}
-void debfillpon(const Standard_Integer i) {cout <<"+ + debfillpon "<<i<<endl;}
-void debfillpin(const Standard_Integer i) {cout <<"+ + debfillpin "<<i<<endl;}
-void debfillpou(const Standard_Integer i) {cout <<"+ + debfillpou "<<i<<endl;}
-void debfillp2(const Standard_Integer i) {cout <<"+ + debfillp2 "<<i<<endl;}
+void debfillp(const Standard_Integer i) {std::cout <<"+ + debfillp "<<i<<std::endl;}
+void debfillpon(const Standard_Integer i) {std::cout <<"+ + debfillpon "<<i<<std::endl;}
+void debfillpin(const Standard_Integer i) {std::cout <<"+ + debfillpin "<<i<<std::endl;}
+void debfillpou(const Standard_Integer i) {std::cout <<"+ + debfillpou "<<i<<std::endl;}
+void debfillp2(const Standard_Integer i) {std::cout <<"+ + debfillp2 "<<i<<std::endl;}
 #endif
 
 //Standard_IMPORT extern Standard_Boolean GLOBAL_faces2d;
@@ -326,11 +326,11 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   const TopoDS_Shape& EPVS=PVS.Edge();Standard_Integer iEPVS;Standard_Boolean tSPSEPVS=GtraceSPS(EPVS,iEPVS);
   Standard_Boolean tSPS = tSPSE || tSPSEPVS;
   if(tSPS){
-    cout<<endl;
-    cout<<"--- GFillPointTopologyPVS : ShapeInterf ";TopAbs::Print(ShapeInterf,cout);
-    cout<<",efil ";GdumpSHA(E);cout<<",eref ";GdumpSHA(myEdgeReference);
-    cout<<",ffil ";GdumpSHA(myFaceToFill);cout<<",fref ";GdumpSHA(myFaceReference);
-    cout<<endl;
+    std::cout<<std::endl;
+    std::cout<<"--- GFillPointTopologyPVS : ShapeInterf ";TopAbs::Print(ShapeInterf,std::cout);
+    std::cout<<",efil ";GdumpSHA(E);std::cout<<",eref ";GdumpSHA(myEdgeReference);
+    std::cout<<",ffil ";GdumpSHA(myFaceToFill);std::cout<<",fref ";GdumpSHA(myFaceReference);
+    std::cout<<std::endl;
     debfillp(iEDS);
   }
 #endif
@@ -554,12 +554,12 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
 #ifdef OCCT_DEBUG
 	    Standard_Boolean id2d = (I1 == i2d);
 	    if (tSPS) {
-	      cout<<"DEB : GFillPointTopologyPVS E"<<iEDS<<" has2d3d"<<endl;
-	      if (id3d) cout<<"--> Interference 3d ";
-	      if (id2d) cout<<"--> Interference 2d ";
-	      if (keepinterf1) cout<<" traitee"<<endl;
-	      else             cout<<" non traitee"<<endl;
-	      cout<<endl;
+	      std::cout<<"DEB : GFillPointTopologyPVS E"<<iEDS<<" has2d3d"<<std::endl;
+	      if (id3d) std::cout<<"--> Interference 3d ";
+	      if (id2d) std::cout<<"--> Interference 2d ";
+	      if (keepinterf1) std::cout<<" traitee"<<std::endl;
+	      else             std::cout<<" non traitee"<<std::endl;
+	      std::cout<<std::endl;
 	    }
 #endif
 	  }
@@ -664,8 +664,8 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     GParamOnReference(VPV,EE,parref);
 #ifdef OCCT_DEBUG
     if(tSPS){
-      cout<<"par "<<par<<" / ";GdumpSHA(E);cout<<" --> parref "<<parref<<" / ";GdumpSHA(EPVS);
-      cout<<endl;
+      std::cout<<"par "<<par<<" / ";GdumpSHA(E);std::cout<<" --> parref "<<parref<<" / ";GdumpSHA(EPVS);
+      std::cout<<std::endl;
     }
 #endif
     par = parref;
@@ -711,8 +711,8 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     
 #ifdef OCCT_DEBUG
     gp_Pnt P = BRep_Tool::Pnt(VPV);
-    if(tSPS){cout<<"+";if(ispoint)cout<<" PDS ";else cout<<" VDS ";}
-    if(tSPS){cout<<iG<<" : ";GdumpORIPARPNT(ori,par,P);cout<<endl;}
+    if(tSPS){std::cout<<"+";if(ispoint)std::cout<<" PDS ";else std::cout<<" VDS ";}
+    if(tSPS){std::cout<<iG<<" : ";GdumpORIPARPNT(ori,par,P);std::cout<<std::endl;}
     if(tSPS) {
 //      Standard_Boolean trc = Standard_False;
 #ifdef DRAW
@@ -744,8 +744,8 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     
 #ifdef OCCT_DEBUG
     gp_Pnt PF = BRep_Tool::Pnt(VPV);
-    if(tSPS){cout<<"+";if(ispoint)cout<<" PDS ";else cout<<" VDS ";}
-    if(tSPS){cout<<iG<<" : ";GdumpORIPARPNT(ovpv,parf,PF);cout<<endl;}
+    if(tSPS){std::cout<<"+";if(ispoint)std::cout<<" PDS ";else std::cout<<" VDS ";}
+    if(tSPS){std::cout<<iG<<" : ";GdumpORIPARPNT(ovpv,parf,PF);std::cout<<std::endl;}
 #endif
 
     ovpv = TopAbs_REVERSED;
@@ -764,8 +764,8 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     PVS.Append(PVR);
 #ifdef OCCT_DEBUG
     gp_Pnt PR = BRep_Tool::Pnt(VPV);
-    if(tSPS){cout<<"+";if(ispoint)cout<<" PDS ";else cout<<" VDS ";}
-    if(tSPS){cout<<iG<<" : ";GdumpORIPARPNT(ovpv,parl,PR);cout<<endl;}
+    if(tSPS){std::cout<<"+";if(ispoint)std::cout<<" PDS ";else std::cout<<" VDS ";}
+    if(tSPS){std::cout<<iG<<" : ";GdumpORIPARPNT(ovpv,parl,PR);std::cout<<std::endl;}
 #endif
 
     PVS.RemovePV(Standard_False); // jyl + 980217
@@ -790,7 +790,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GParamOnReference(const TopoDS_Vertex&
   Handle(Geom_Plane) suplan = Handle(Geom_Plane)::DownCast(su);
   if ( suplan.IsNull() ) { 
 #ifdef OCCT_DEBUG
-    cout<<"NYI : GParamOnReference : not planar"<<endl;
+    std::cout<<"NYI : GParamOnReference : not planar"<<std::endl;
 #endif
     return Standard_False;
   }
@@ -816,7 +816,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::GParamOnReference(const TopoDS_Vertex&
     P = ElCLib::Parameter(AC.Parabola(),p2); break;
     default : 
 #ifdef OCCT_DEBUG
-      cout<<"NYI : GParamOnReference : OtherCurve on planar surface"<<endl;
+      std::cout<<"NYI : GParamOnReference : OtherCurve on planar surface"<<std::endl;
 #endif
     return Standard_False;
   }

@@ -157,14 +157,14 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
     }
   }
 
-  cout << "//What is?// NB SOLIDS: " << nbSolids << endl;
-  cout << "//What is?// NB SHELLS: " << nbShells << endl;
-  cout << "//What is?//    OPEN SHELLS: " << nbOpenShells << endl;
-  cout << "//What is?//    CLOSED SHELLS: " << nbShells - nbOpenShells << endl;
-  cout << "//What is?// NB FACES: " << nbFaces << endl;
-  cout << "//What is?// NB WIRES: " << nbWires << endl;
-  cout << "//What is?// NB EDGES: " << nbEdges << endl;
-  cout << "//What is?// NB VERTEXES: " << nbVertexes << endl;
+  std::cout << "//What is?// NB SOLIDS: " << nbSolids << std::endl;
+  std::cout << "//What is?// NB SHELLS: " << nbShells << std::endl;
+  std::cout << "//What is?//    OPEN SHELLS: " << nbOpenShells << std::endl;
+  std::cout << "//What is?//    CLOSED SHELLS: " << nbShells - nbOpenShells << std::endl;
+  std::cout << "//What is?// NB FACES: " << nbFaces << std::endl;
+  std::cout << "//What is?// NB WIRES: " << nbWires << std::endl;
+  std::cout << "//What is?// NB EDGES: " << nbEdges << std::endl;
+  std::cout << "//What is?// NB VERTEXES: " << nbVertexes << std::endl;
 }
 #endif
 
@@ -199,7 +199,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
 
   Standard_Integer aNbEdges = aMapEdgeFaces.Extent();
   #ifdef OCCT_DEBUG
-  cout << "Checking whether the topology passed is manifold..." << endl;
+  std::cout << "Checking whether the topology passed is manifold..." << std::endl;
   #endif
 
   // Check topology
@@ -215,8 +215,8 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
   }
 
   #ifdef OCCT_DEBUG
-  cout << "Check result: "
-       << (aResult ? "TRUE" : "FALSE") << endl;
+  std::cout << "Check result: "
+       << (aResult ? "TRUE" : "FALSE") << std::endl;
   #endif
 
   return aResult;
@@ -256,13 +256,13 @@ Handle(StepShape_NonManifoldSurfaceShapeRepresentation) STEPControl_ActorWrite::
 
   if ( aResult.IsNull() ) {
     #ifdef OCCT_DEBUG
-    cout << "\nNew NMSSR created" << endl;
+    std::cout << "\nNew NMSSR created" << std::endl;
     #endif
     aResult = new StepShape_NonManifoldSurfaceShapeRepresentation;
     isNMSSRCreated = Standard_True;
   } else {
     #ifdef OCCT_DEBUG
-    cout << "\nExisting NMSSR is used" << endl;
+    std::cout << "\nExisting NMSSR is used" << std::endl;
     #endif
     isNMSSRCreated = Standard_False;
   }
@@ -633,7 +633,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferShape (const Handle(Tran
     // as assembly - while face already translated, it should be 
     // re-translated to break sharing
 #ifdef OCCT_DEBUG
-    cout << "Warning: STEPControl_ActorWrite::TransferShape(): shape already translated" << endl;
+    std::cout << "Warning: STEPControl_ActorWrite::TransferShape(): shape already translated" << std::endl;
 #endif
 //    return binder;
   }
@@ -1299,7 +1299,7 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
  
   #ifdef OCCT_DEBUG
   if (!isManifold)
-    cout << "Exploding Solids to Shells if any..." << endl;
+    std::cout << "Exploding Solids to Shells if any..." << std::endl;
   #endif
 
   for (TopoDS_Iterator iter(theShape); iter.More(); iter.Next()) {

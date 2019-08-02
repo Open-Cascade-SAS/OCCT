@@ -160,12 +160,12 @@ void  IGESSolid_ToolSolidAssembly::OwnDump
 {
 //  Standard_Integer upper = ent->NbItems();
 
-  S << "IGESSolid_SolidAssembly" << endl;
+  S << "IGESSolid_SolidAssembly" << Message_EndLine;
 
   S << "Items : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbItems(),ent->Item);
-  S << endl;
+  S << Message_EndLine;
   S << "Matrices : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbItems(),ent->TransfMatrix);
-  S << endl;
+  S << Message_EndLine;
 }

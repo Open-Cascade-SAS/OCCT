@@ -425,7 +425,7 @@ void Tesselate_Presentation::sample(const Standard_CString aFileName)
 
   std::filebuf aFileBuf;
   std::istream aStream (&aFileBuf);
-  if (!aFileBuf.open (initfile, ios::in))
+  if (!aFileBuf.open (initfile, std::ios::in))
   {
     initfile += L" was not found. The sample can not be shown.";
     GetDocument()->PocessTextInDialog ("Compute the triangulation on a shape", initfile);

@@ -39,23 +39,23 @@ Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEINTERNAL();
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextEEXTERNAL();
 Standard_EXPORT Standard_Boolean TopOpeBRepBuild_GetcontextNOSG();
 Standard_EXPORT void debON(const Standard_Integer iF)
-{cout<<"++ debON "<<iF<<" "<<endl;}
+{std::cout<<"++ debON "<<iF<<" "<<std::endl;}
 Standard_EXPORT void debON(const Standard_Integer iF, const TopAbs_State TB1,const TopAbs_State TB2)
-{cout<<"++ debON "<<iF<<" :TB1=";TopAbs::Print(TB1,cout);cout<<",TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+{std::cout<<"++ debON "<<iF<<" :TB1=";TopAbs::Print(TB1,std::cout);std::cout<<",TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 Standard_EXPORT void debfillonf(const Standard_Integer iF)
-{cout<<"++ debfillonf "<<iF<<" "<<endl;}
+{std::cout<<"++ debfillonf "<<iF<<" "<<std::endl;}
 Standard_EXPORT void debfillone(const Standard_Integer iE)
-{cout<<"++ debfillone "<<iE<<" "<<endl;}
+{std::cout<<"++ debfillone "<<iE<<" "<<std::endl;}
 Standard_EXPORT void debfillonfe(){}
 Standard_EXPORT void debfillonfemess(const Standard_Integer f,const Standard_Integer e)
-{cout<<"++ debfillonfe f"<<f<<" e"<<e<<endl;debfillonfe();}
+{std::cout<<"++ debfillonfe f"<<f<<" e"<<e<<std::endl;debfillonfe();}
 Standard_EXPORT void debfillonfe3d(){}
 Standard_EXPORT void debfillonfemess3d(const Standard_Integer f,const Standard_Integer e)
-{cout<<"++ debfillonfe3d f"<<f<<" e"<<e<<endl;debfillonfe3d();}
+{std::cout<<"++ debfillonfe3d f"<<f<<" e"<<e<<std::endl;debfillonfe3d();}
 Standard_EXPORT void debfillonfemess(const Standard_Integer iFOR,const Standard_Integer iEG,const TopOpeBRepBuild_PBuilder& PB,const TopOpeBRepBuild_PWireEdgeSet& PWES,const TCollection_AsciiString& str)
 {PB->GdumpSHASTA(iEG,TopAbs_ON,*PWES,str); debfillonfemess(iFOR,iEG); }
 Standard_EXPORT void debaddpwes(const Standard_Integer iFOR,const TopAbs_State TB1,const Standard_Integer iEG,const TopAbs_Orientation neworiE,const TopOpeBRepBuild_PBuilder& PB,const TopOpeBRepBuild_PWireEdgeSet& PWES,const TCollection_AsciiString& str1,const TCollection_AsciiString& str2)
-{PB->GdumpSHASTA(iFOR,TB1,*PWES,str1,str2);cout<<iEG<<" : 1 edge ";TopAbs::Print(neworiE,cout);cout<<endl; }
+{PB->GdumpSHASTA(iFOR,TB1,*PWES,str1,str2);std::cout<<iEG<<" : 1 edge ";TopAbs::Print(neworiE,std::cout);std::cout<<std::endl; }
 Standard_EXPORT Standard_Boolean DEBTEFOR(const TopOpeBRepBuild_Builder& B,const Standard_Integer iFOR,const Standard_Integer GI)
 {return B.GtraceSPS(iFOR,GI); }
 #endif
@@ -66,10 +66,10 @@ Standard_EXPORT void FUN_RaiseON()
 static void FUN_cout(const TopoDS_Shape& eON)
 {
   TopAbs_Orientation oE = eON.Orientation();
-  if (oE == TopAbs_FORWARD)  cout<<"-> + eONF"<<endl;
-  if (oE == TopAbs_REVERSED) cout<<"-> + eONR"<<endl;
-  if (oE == TopAbs_INTERNAL) cout<<"-> + eONI"<<endl;
-  if (oE == TopAbs_EXTERNAL) cout<<"-> + eONE"<<endl;
+  if (oE == TopAbs_FORWARD)  std::cout<<"-> + eONF"<<std::endl;
+  if (oE == TopAbs_REVERSED) std::cout<<"-> + eONR"<<std::endl;
+  if (oE == TopAbs_INTERNAL) std::cout<<"-> + eONI"<<std::endl;
+  if (oE == TopAbs_EXTERNAL) std::cout<<"-> + eONE"<<std::endl;
 }
 #endif
 
@@ -213,7 +213,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES1(const Handle(TopOpeBRepDS_Inter
 #ifdef OCCT_DEBUG
 Standard_EXPORT void FUN_coutmess(const TCollection_AsciiString& m)
 {
-    cout<<m;
+    std::cout<<m;
 }
 #else
 Standard_EXPORT void FUN_coutmess(const TCollection_AsciiString&)
@@ -295,10 +295,10 @@ Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
 #ifdef OCCT_DEBUG
   if (tFFEG || tFSEG) {
     if ( keep1 != keep2 || keep1 != keep3 || keep2 != keep3 ) {
-      cout<<"\nkeepEON : EGB "<<EGBoundFOR<<" EG "<<iEG<<" FOR "<<iFF<<" FS "<<iFS;
-      cout<<" keep1 "<<keep1<<" keep2 "<<keep2<<" keep3 "<<keep3;
-      cout<<" !=!=!=!=!=!=!=!=!=!=!=!=!=!=!=";
-      cout<<endl;
+      std::cout<<"\nkeepEON : EGB "<<EGBoundFOR<<" EG "<<iEG<<" FOR "<<iFF<<" FS "<<iFS;
+      std::cout<<" keep1 "<<keep1<<" keep2 "<<keep2<<" keep3 "<<keep3;
+      std::cout<<" !=!=!=!=!=!=!=!=!=!=!=!=!=!=!=";
+      std::cout<<std::endl;
     }
   }
 #endif
@@ -581,8 +581,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap00 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap0 GFillON");
-    if (tE) {cout<<"yap00(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap00(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
 
     TopAbs_Orientation oeff;
@@ -621,8 +621,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap0 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap0 GFillON");
-    if (tE) {cout<<"yap0(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap0(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
 
     TopAbs_Orientation oeff;
@@ -792,8 +792,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yapc1 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yapc1 GFillON");
-    if (tE) {cout<<"yapc1(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yapc1(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
     const TopoDS_Edge& e3d = TopoDS::Edge(BDS.Shape(ie3d));
     
@@ -822,7 +822,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     else if (oe3dk == TopAbs_EXTERNAL) keep3d = Standard_False;
 
 #ifdef OCCT_DEBUG
-//    if(tEFOR) {cout<<endl<<"yapc1 keep3d : "<<keep3d<<endl;debfillonfemess3d(iFOR,iEG);}
+//    if(tEFOR) {std::cout<<std::endl<<"yapc1 keep3d : "<<keep3d<<std::endl;debfillonfemess3d(iFOR,iEG);}
 #endif
 
     if (keep3d) {
@@ -845,8 +845,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yapc2 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yapc2 GFillON");
-    if (tE) {cout<<"yapc2(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yapc2(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
 
     Standard_Boolean keep = Standard_False;
@@ -911,8 +911,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yapc3 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yapc3 GFillON");
-    if (tE) {cout<<"yapc3(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yapc3(FOR"<<iFOR<<" FS"<<iFS<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
 
     Standard_Boolean keep = Standard_False;
@@ -1148,8 +1148,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   TopAbs_State staFS = (rankFS == rankFOR) ? TB1 : TB2;
   
 #ifdef OCCT_DEBUG
-//  if(tEFOR) cout<<endl<<"yap1 yap2 yap3 yap4 = ";
-//  if(tEFOR) cout<<yap1<<" "<<yap2<<" "<<yap3<<" "<<yap4<<endl<<endl;
+//  if(tEFOR) std::cout<<std::endl<<"yap1 yap2 yap3 yap4 = ";
+//  if(tEFOR) std::cout<<yap1<<" "<<yap2<<" "<<yap3<<" "<<yap4<<std::endl<<std::endl;
 //  if(tEFOR) debfillonfemess(iFOR,iEG);
 #endif
   
@@ -1157,8 +1157,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap1 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap1 GFillON");
-    if (tE) {cout<<"yap1(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap1(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
     
 #endif
     
@@ -1305,8 +1305,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap2 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap2 GFillON");
-    if (tE) {cout<<"yap2(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap2(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
     
     // FF est samedomain avec FCX
@@ -1345,7 +1345,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
       else    FUN_coutmess("DEBUG GFillONPartsWES2_4 orientation != F,R\n");
     }    
 //#ifdef OCCT_DEBUG
-//    if(tEFOR) {cout<<endl<<"yap2 : b3d,b2d "<<b3d<<","<<b2d<<endl;debfillonfemess(iFOR,iEG);}
+//    if(tEFOR) {std::cout<<std::endl<<"yap2 : b3d,b2d "<<b3d<<","<<b2d<<std::endl;debfillonfemess(iFOR,iEG);}
 //#endif
     
     // bcl1;bcl2; c12;tsp(f9),tspON(e7)
@@ -1428,7 +1428,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
 	}
       }
 //#ifdef OCCT_DEBUG
-//      if(tEFOR) {cout<<endl<<"yap2 : keep "<<keep<<endl;debfillonfemess(iFOR,iEG);}
+//      if(tEFOR) {std::cout<<std::endl<<"yap2 : keep "<<keep<<std::endl;debfillonfemess(iFOR,iEG);}
 //#endif
       if (!keep) return;
     } // !isfafa
@@ -1510,8 +1510,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap6 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap6 GFillON");
-    if (tE) {cout<<"yap6(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap6(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
     TopAbs_Orientation neworiE;
     // FF est samedomain avec FCX
@@ -1729,8 +1729,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap3 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap3 GFillON");
-    if (tE) {cout<<"yap3(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap3(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
     
     ie3d = ::FUN_findeSD(BDS,eON,EG,FOR,oe3d,3);
@@ -1762,7 +1762,7 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     else if (oe3dk == TopAbs_EXTERNAL) keep3d = Standard_False;
 
 #ifdef OCCT_DEBUG
-    if(tEFOR) {cout<<endl<<"yap3 keep3d : "<<keep3d<<endl;debfillonfemess3d(iFOR,iEG);}
+    if(tEFOR) {std::cout<<std::endl<<"yap3 keep3d : "<<keep3d<<std::endl;debfillonfemess3d(iFOR,iEG);}
 #endif
     
     if (keep3d) {
@@ -1785,8 +1785,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap5 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap5 GFillON");
-    if (tE) {cout<<"yap5(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap5(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
     ie2d = ::FUN_findeSD(BDS,eON,EG,FOR,oe2d,2);
     if (ie2d == 0) return; 
@@ -1835,8 +1835,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
   if ( yap4 ) {
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap4 GFillON");
-    if (tE) {cout<<"yap4(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap4(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif    
 
     TopAbs_Orientation oTFE = TFE.Orientation(TB1);
@@ -1858,8 +1858,8 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     // xpu290598 : CTS20212
 #ifdef OCCT_DEBUG
     if (tEFOR) debfillonfemess(iFOR,iEG,myPB,myPWES,"yap7 GFillON");
-    if (tE) {cout<<"yap7(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
-	     cout<<"TB1=";TopAbs::Print(TB1,cout);cout<<" TB2=";TopAbs::Print(TB2,cout);cout<<endl;}
+    if (tE) {std::cout<<"yap7(FOR"<<iFOR<<" FCX"<<iFCX<<" EG"<<GI<<") ";
+	     std::cout<<"TB1=";TopAbs::Print(TB1,std::cout);std::cout<<" TB2=";TopAbs::Print(TB2,std::cout);std::cout<<std::endl;}
 #endif
     Standard_Boolean isbound = Standard_False;
     for (TopTools_ListIteratorOfListOfShape it(BDS.ShapeSameDomain(iFOR)); it.More(); it.Next()){

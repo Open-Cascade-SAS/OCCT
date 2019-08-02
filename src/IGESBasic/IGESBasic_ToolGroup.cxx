@@ -165,9 +165,9 @@ void IGESBasic_ToolGroup::OwnDump
   (const Handle(IGESBasic_Group)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_Group" << endl;
+  S << "IGESBasic_Group" << Message_EndLine;
   S << "Entries in the Group : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << endl;
+  S << Message_EndLine;
 }
 

@@ -226,9 +226,9 @@ Standard_Boolean RWStl_Reader::IsAscii (Standard_IStream& theStream)
   #define sscanf_l(theBuffer, theLocale, theFormat, ...) sscanf(theBuffer, theFormat, __VA_ARGS__)
 #endif
 
-// Macro to get 64-bit position of the file from streampos
+// Macro to get 64-bit position of the file from std::streampos
 #if defined(_MSC_VER) && _MSC_VER < 1700
-  // In MSVC 2010, cast of streampos to 64-bit int is implemented incorrectly;
+  // In MSVC 2010, cast of std::streampos to 64-bit int is implemented incorrectly;
   // work-around (relevant for files larger than 4 GB) is to use internal function seekpos(). 
   // Since MSVC 15.8, seekpos() is deprecated and is said to always return 0.
   #define GETPOS(aPos) aPos.seekpos()

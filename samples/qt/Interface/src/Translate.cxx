@@ -340,7 +340,7 @@ TranslateDlg* Translate::getDialog( const int format, const bool import )
 		filter.append( "\t" );
 	}
 
-  cout << filter.toLatin1().constData() << endl;
+  std::cout << filter.toLatin1().constData() << std::endl;
   QStringList filters = filter.split( "\t" );
   myDlg->setNameFilters ( filters );
 

@@ -462,7 +462,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
       // union vertexes V1F and V2F
       B.UpdateVertex(V1F,tolv);
       TopoDS_Edge NewE = sbe.CopyReplaceVertices(edge2,V1F,V2L);
-//      cout<<"union vertexes V1F and V2F"<<endl;
+//      std::cout<<"union vertexes V1F and V2F"<<std::endl;
 //      gp_Pnt Ptmp = BRep_Tool::Pnt(V1F);
 //      B.MakeVertex(V,Ptmp,tolv);
 //      myContext->Replace(V1F,V);
@@ -525,7 +525,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
       // union vertexes V1F and V2L
       B.UpdateVertex(V1F,tolv);
       TopoDS_Edge NewE = sbe.CopyReplaceVertices(edge2,V2F,V1F);
-//      cout<<"union vertexes V1F and V2L"<<endl;
+//      std::cout<<"union vertexes V1F and V2L"<<std::endl;
 //      gp_Pnt Ptmp = BRep_Tool::Pnt(V1F);
 //      B.MakeVertex(V,Ptmp,tolv);
 //      myContext->Replace(V1F,V);
@@ -589,7 +589,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
       // union vertexes V1L and V2F
       B.UpdateVertex(V1L,tolv);
       TopoDS_Edge NewE = sbe.CopyReplaceVertices(edge2,V1L,V2L);
-//      cout<<"union vertexes V1L and V2F"<<endl;
+//      std::cout<<"union vertexes V1L and V2F"<<std::endl;
 //      gp_Pnt Ptmp = BRep_Tool::Pnt(V1L);
 //      B.MakeVertex(V,Ptmp,tolv);
 //      myContext->Replace(V1L,V);
@@ -652,7 +652,7 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
       // union vertexes V1L and V2L
       B.UpdateVertex(V1L,tolv);
       TopoDS_Edge NewE = sbe.CopyReplaceVertices(edge2,V2F,V1L);
-//      cout<<"union vertexes V1L and V2L"<<endl;
+//      std::cout<<"union vertexes V1L and V2L"<<std::endl;
 //      gp_Pnt Ptmp = BRep_Tool::Pnt(V1L);
 //      B.MakeVertex(V,Ptmp,tolv);
 //      myContext->Replace(V1L,V);

@@ -1362,7 +1362,7 @@ static Standard_Integer OCC1642 (Draw_Interpretor& di, Standard_Integer argc, co
     IntRes2d_SequenceOfIntersectionPoint points2d;
     TColgp_SequenceOfPnt points3d;
 
-    cout << "\n j =" << j << ",  CheckSelfIntersectingEdge = " <<
+    std::cout << "\n j =" << j << ",  CheckSelfIntersectingEdge = " <<
       advWA->CheckSelfIntersectingEdge(j, points2d, points3d);
 
 

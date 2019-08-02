@@ -207,7 +207,7 @@ Standard_Boolean FEmTool_Assembly::Solve()
 
 #ifdef OCCT_DEBUG
   if (!IsSolved) {
-    cout << "Solve Echec  H = " << endl;
+    std::cout << "Solve Echec  H = " << std::endl;
     H->OutM();
   }
 #endif
@@ -289,7 +289,7 @@ Standard_Boolean FEmTool_Assembly::Solve()
       }
 //-----------------------------------------------------------------------
 //      for(i = FirstIndexes.Lower(); i <= FirstIndexes.Upper(); i++)
-//	cout << "FirstIndexes(" << i << ") = " << FirstIndexes(i) << endl;
+//	std::cout << "FirstIndexes(" << i << ") = " << FirstIndexes(i) << std::endl;
       //      FirstIndexes.Init(1); // temporary GHGt is full matrix
       GHGt = new FEmTool_ProfileMatrix(FirstIndexes);
     }

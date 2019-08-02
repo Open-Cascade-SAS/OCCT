@@ -114,7 +114,7 @@ class Draw_Viewer {
 				    const Standard_Integer PYmin,
 				    const Standard_Integer PXmax,
 				    const Standard_Integer PYmax,
-				    ostream& sortie) const;
+				    std::ostream& sortie) const;
   Standard_EXPORT void   PostColor(const Standard_Integer icol,
 			      const Standard_Integer width,
 			      const Standard_Real    gray);

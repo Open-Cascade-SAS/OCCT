@@ -112,10 +112,10 @@ static IFSelect_ReturnStatus funstatus
 //        ****    Version & cie     ****
   //#58 rln
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout<<"Processor Version : "<<XSTEP_PROCESSOR_VERSION<<endl;
-  sout<<"OL Version        : "<<XSTEP_SYSTEM_VERSION<<endl;
-  sout<<"Configuration     : "<<XSTEP_Config<<endl;
-  sout<<"UL Names          : "<<XSTEP_ULNames<<endl;
+  sout<<"Processor Version : "<<XSTEP_PROCESSOR_VERSION<<Message_EndLine;
+  sout<<"OL Version        : "<<XSTEP_SYSTEM_VERSION<<Message_EndLine;
+  sout<<"Configuration     : "<<XSTEP_Config<<Message_EndLine;
+  sout<<"UL Names          : "<<XSTEP_ULNames<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -126,8 +126,8 @@ static IFSelect_ReturnStatus fun1
 //        ****    ToggleHandler     ****
   Standard_Boolean hand = !WS->ErrorHandle();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (hand) sout << " --  Mode Catch Error now Active"   <<endl;
-  else      sout << " --  Mode Catch Error now Inactive" <<endl;
+  if (hand) sout << " --  Mode Catch Error now Active"   <<Message_EndLine;
+  else      sout << " --  Mode Catch Error now Inactive" <<Message_EndLine;
   WS->SetErrorHandle(hand);
   return IFSelect_RetDone;
 }
@@ -140,23 +140,23 @@ static IFSelect_ReturnStatus fun3
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    XRead / Load         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Read/Load : give file name !"<<endl; return IFSelect_RetError; }
-  if (WS->Protocol().IsNull()) { sout<<"Protocol not defined"<<endl; return IFSelect_RetError; }
-  if (WS->WorkLibrary().IsNull()) { sout<<"WorkLibrary not defined"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Read/Load : give file name !"<<Message_EndLine; return IFSelect_RetError; }
+  if (WS->Protocol().IsNull()) { sout<<"Protocol not defined"<<Message_EndLine; return IFSelect_RetError; }
+  if (WS->WorkLibrary().IsNull()) { sout<<"WorkLibrary not defined"<<Message_EndLine; return IFSelect_RetError; }
 
   IFSelect_ReturnStatus status = WS->ReadFile (arg1);
 // status : 0 OK, 1 erreur lecture, 2 Fail(try/catch),
 //          -1 fichier non trouve, -2 lecture faite mais resultat vide
   switch (status) {
-    case IFSelect_RetVoid  : sout<<"file:"<<arg1<<" gives empty result"<<endl; break;
-    case IFSelect_RetError : sout<<"file:"<<arg1<<" could not be opened"<<endl; break;
-    case IFSelect_RetDone  : sout<<"file:"<<arg1<<" read"<<endl; break;
-    case IFSelect_RetFail  : sout<<"file:"<<arg1<<" : error while reading"<<endl; break;
-    case IFSelect_RetStop  : sout<<"file:"<<arg1<<" : EXCEPTION while reading"<<endl; break;
-    default : sout<<"file:"<<arg1<<" could not be read"<<endl; break;
+    case IFSelect_RetVoid  : sout<<"file:"<<arg1<<" gives empty result"<<Message_EndLine; break;
+    case IFSelect_RetError : sout<<"file:"<<arg1<<" could not be opened"<<Message_EndLine; break;
+    case IFSelect_RetDone  : sout<<"file:"<<arg1<<" read"<<Message_EndLine; break;
+    case IFSelect_RetFail  : sout<<"file:"<<arg1<<" : error while reading"<<Message_EndLine; break;
+    case IFSelect_RetStop  : sout<<"file:"<<arg1<<" : EXCEPTION while reading"<<Message_EndLine; break;
+    default : sout<<"file:"<<arg1<<" could not be read"<<Message_EndLine; break;
   }
   if (status != IFSelect_RetDone) return status;
-//      sout<<" - clearing list of already written files"<<endl;
+//      sout<<" - clearing list of already written files"<<std::endl;
   WS->BeginSentFiles(Standard_True);
   return status;
 }
@@ -169,7 +169,7 @@ static IFSelect_ReturnStatus fun4
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Write All         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Write All : give file name !"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Write All : give file name !"<<Message_EndLine; return IFSelect_RetError; }
   return WS->SendAll (arg1);
 }
 
@@ -182,11 +182,11 @@ static IFSelect_ReturnStatus fun5
 //  const Standard_CString arg2 = pilot->Arg(2);
 //        ****    Write Selected         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Write Selected : give file name + givelist !"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Write Selected : give file name + givelist !"<<Message_EndLine; return IFSelect_RetError; }
   Handle(TColStd_HSequenceOfTransient) result =
     IFSelect_Functions::GiveList (WS,pilot->CommandPart( 2));
-  if (result.IsNull()) { sout<<"No entity selected"<<endl; return IFSelect_RetError; }
-  else sout<<"Nb Entities selected : "<<result->Length()<<endl;
+  if (result.IsNull()) { sout<<"No entity selected"<<Message_EndLine; return IFSelect_RetError; }
+  else sout<<"Nb Entities selected : "<<result->Length()<<Message_EndLine;
   Handle(IFSelect_SelectPointed) sp = new IFSelect_SelectPointed;
   sp->SetList (result);
   return WS->SendSelected (arg1,sp);
@@ -200,19 +200,19 @@ static IFSelect_ReturnStatus fun6
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Write Entite(s)         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Write Entitie(s) : give file name + n0s entitie(s)!"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Write Entitie(s) : give file name + n0s entitie(s)!"<<Message_EndLine; return IFSelect_RetError; }
   int ko = 0;
   Handle(IFSelect_SelectPointed) sp = new IFSelect_SelectPointed;
   for (Standard_Integer ia = 2; ia < argc ; ia ++) {
     Standard_Integer id = pilot->Number(pilot->Arg(ia));
     if (id > 0) {
       Handle(Standard_Transient) item = WS->StartingEntity(id);
-      if (sp->Add(item)) sout<<"Added:no."<<id<<endl;
-      else { sout<<" Fail Add n0."<<id<<endl; ko ++; }
+      if (sp->Add(item)) sout<<"Added:no."<<id<<Message_EndLine;
+      else { sout<<" Fail Add n0."<<id<<Message_EndLine; ko ++; }
     }
-    else { sout<<"Not an entity number:"<<pilot->Arg(ia)<<endl; ko ++; }
+    else { sout<<"Not an entity number:"<<pilot->Arg(ia)<<Message_EndLine; ko ++; }
   }
-  if (ko > 0) { sout<<ko<<" bad arguments, abandon"<<endl; return IFSelect_RetError; }
+  if (ko > 0) { sout<<ko<<" bad arguments, abandon"<<Message_EndLine; return IFSelect_RetError; }
   return WS->SendSelected (arg1,sp);
 }
 
@@ -224,14 +224,14 @@ static IFSelect_ReturnStatus fun7
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Entity Label       ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give entity number"<<endl; return IFSelect_RetError; }
-  if (!WS->HasModel()) { sout<<"No loaded model, abandon"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give entity number"<<Message_EndLine; return IFSelect_RetError; }
+  if (!WS->HasModel()) { sout<<"No loaded model, abandon"<<Message_EndLine; return IFSelect_RetError; }
   Standard_Integer nument = WS->NumberFromLabel (arg1);
   if (nument <= 0 || nument > WS->NbStartingEntities())
-    { sout<<"Not a suitable number: "<<arg1<<endl;  return IFSelect_RetError; }
+    { sout<<"Not a suitable number: "<<arg1<<Message_EndLine;  return IFSelect_RetError; }
   sout<<"N0."<<nument<<" ->Label in Model : ";
   WS->Model()->PrintLabel(WS->StartingEntity(nument),sout);  
-  sout<<endl;
+  sout<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -243,21 +243,21 @@ static IFSelect_ReturnStatus fun8
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Entity Number      ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give label to search"<<endl; return IFSelect_RetError; }
-  if (!WS->HasModel()) { sout<<"No loaded model, abandon"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give label to search"<<Message_EndLine; return IFSelect_RetError; }
+  if (!WS->HasModel()) { sout<<"No loaded model, abandon"<<Message_EndLine; return IFSelect_RetError; }
   const Handle(Interface_InterfaceModel) &model = WS->Model();
   Standard_Integer i, cnt = 0;
   Standard_Boolean exact = Standard_False;
-  sout<<" **  Search Entity Number for Label : "<<arg1<<endl;
+  sout<<" **  Search Entity Number for Label : "<<arg1<<Message_EndLine;
   for (i = model->NextNumberForLabel (arg1, 0, exact)  ; i != 0;
        i = model->NextNumberForLabel (arg1, i, exact)) {
     cnt ++;
-    sout<<" **  Found n0/id:"; model->Print (model->Value(i),sout); sout<<endl;
+    sout<<" **  Found n0/id:"; model->Print (model->Value(i),sout); sout<<Message_EndLine;
   }
   
-  if (cnt == 0) sout<<" **  No Match"<<endl;
-  else if (cnt == 1) sout<<" **  1 Match"<<endl;
-  else sout<<cnt<<" Matches"<<endl;
+  if (cnt == 0) sout<<" **  No Match"<<Message_EndLine;
+  else if (cnt == 1) sout<<" **  1 Match"<<Message_EndLine;
+  else sout<<cnt<<" Matches"<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -285,10 +285,10 @@ static IFSelect_ReturnStatus funcount
 
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) {
-    sout<<"Designer signature ou compteur, + facultatif selection + facultatif entite"<<endl;
-    sout<<" signature/compteur seul -> tout le modele"<<endl
-      <<  " sign/compteur + selection -> cette selection, evaluation normale"<<endl
-	<<" sign/compteur + sel + num -> cette selection evaluee sur entite n0 num"<<endl;
+    sout<<"Designer signature ou compteur, + facultatif selection + facultatif entite"<<Message_EndLine;
+    sout<<" signature/compteur seul -> tout le modele"<<Message_EndLine
+      <<  " sign/compteur + selection -> cette selection, evaluation normale"<<Message_EndLine
+	<<" sign/compteur + sel + num -> cette selection evaluee sur entite n0 num"<<Message_EndLine;
     return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_SignCounter,counter,WS->NamedItem(arg1));
@@ -301,7 +301,7 @@ static IFSelect_ReturnStatus funcount
 //  if (argc > 2) sel = GetCasted(IFSelect_Selection,WS->NamedItem(arg2));
 //  if (counter.IsNull() || (argc > 2 && n3 <= 0 && sel.IsNull()) ) {
 //    sout<<"Nom:"<<arg1; if (argc > 2) sout<<" et/ou "<<arg2;
-//    sout<<" incorrect (demande: compteur ou signature [selection])"<<endl;
+//    sout<<" incorrect (demande: compteur ou signature [selection])"<<std::endl;
 //    return IFSelect_RetError;
 //  }
 
@@ -322,7 +322,7 @@ static IFSelect_ReturnStatus funcount
       for (i = 1; i < onflag; i ++) {
 	sel = WS->GiveSelection(pilot->Arg(i));
 	if (!suite->AddInput(sel)) {
-	  sout<<"Incorrect definition for applied selection"<<endl;
+	  sout<<"Incorrect definition for applied selection"<<Message_EndLine;
 	  return IFSelect_RetError;
 	}
       }
@@ -335,7 +335,7 @@ static IFSelect_ReturnStatus funcount
   }
 
   if (counter.IsNull()) {
-    sout<<"Neither Counter nor Signature : "<<arg1<<endl;
+    sout<<"Neither Counter nor Signature : "<<arg1<<Message_EndLine;
     return IFSelect_RetError;
   }
 
@@ -355,26 +355,26 @@ static IFSelect_ReturnStatus funsigntype
 //        ****    Sign Type              ****
   Handle(IFSelect_Signature) signtype = WS->SignType();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (signtype.IsNull()) sout<<"signtype actually undefined"<<endl;
+  if (signtype.IsNull()) sout<<"signtype actually undefined"<<Message_EndLine;
   else {
     Handle(TCollection_HAsciiString) str = WS->Name (signtype);
     Standard_Integer id = WS->ItemIdent (signtype);
-    sout<<signtype->Label()<<endl;
+    sout<<signtype->Label()<<Message_EndLine;
     if (str.IsNull()) {
-      if (id > 0) sout<<"signtype : item n0 "<<id<<endl;
+      if (id > 0) sout<<"signtype : item n0 "<<id<<Message_EndLine;
     } else {
-      sout<<"signtype : also named as "<<str->ToCString()<<endl;
+      sout<<"signtype : also named as "<<str->ToCString()<<Message_EndLine;
     }
   }
-  if (argc < 2) sout<<"signtype newitem  to change, signtype . to clear"<<endl;
+  if (argc < 2) sout<<"signtype newitem  to change, signtype . to clear"<<Message_EndLine;
   else {
     if (arg1[0] == '.' && arg1[1] == '\0') {
       signtype.Nullify();
-      sout<<"signtype now cleared"<<endl;
+      sout<<"signtype now cleared"<<Message_EndLine;
     } else {
       signtype = GetCasted(IFSelect_Signature,WS->NamedItem(arg1));
-      if (signtype.IsNull()) { sout<<"Not a Signature : "<<arg1<<endl; return IFSelect_RetError; }
-      else sout<<"signtype now set to "<<arg1<<endl;
+      if (signtype.IsNull()) { sout<<"Not a Signature : "<<arg1<<Message_EndLine; return IFSelect_RetError; }
+      else sout<<"signtype now set to "<<arg1<<Message_EndLine;
     }
     WS->SetSignType(signtype);
     return IFSelect_RetDone;
@@ -390,22 +390,22 @@ static IFSelect_ReturnStatus funsigncase
 //        ****    Sign Case              ****
   Handle(IFSelect_Signature) signcase = GetCasted(IFSelect_Signature,WS->NamedItem(arg1));
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (signcase.IsNull()) sout<<"Not a Signature : "<<arg1<<endl;
+  if (signcase.IsNull()) sout<<"Not a Signature : "<<arg1<<Message_EndLine;
   else {
     Standard_Boolean hasmin,hasmax;  Standard_Integer valmin,valmax;
     if (signcase->IsIntCase(hasmin,valmin,hasmax,valmax)) {
       sout<<"Signature "<<arg1<<" : Integer Case";
       if (hasmin) sout<<" - Mini:"<<valmin;
       if (hasmax) sout<<" - Maxi:"<<valmax;
-      sout<<endl;
+      sout<<Message_EndLine;
     }
     Handle(TColStd_HSequenceOfAsciiString) caselist = signcase->CaseList();
-    if (caselist.IsNull()) sout<<"Signature "<<arg1<<" : no predefined case, see command  count "<<arg1<<endl;
+    if (caselist.IsNull()) sout<<"Signature "<<arg1<<" : no predefined case, see command  count "<<arg1<<Message_EndLine;
     else {
       Standard_Integer i, nb = caselist->Length();
-      sout<<"Signature "<<arg1<<" : "<<nb<<" basic cases :"<<endl;
+      sout<<"Signature "<<arg1<<" : "<<nb<<" basic cases :"<<Message_EndLine;
       for (i = 1; i <= nb; i ++) sout<<"  "<<caselist->Value(i);
-      sout<<endl;
+      sout<<Message_EndLine;
     }
   }
   return IFSelect_RetVoid;
@@ -426,12 +426,12 @@ static IFSelect_ReturnStatus fun10
     sout<<" Categories defined :"<<nb<<" i.e. :\n";
     for (i = 0; i <= nb; i ++)
       sout<<"Cat."<<i<<"  : "<<Interface_Category::Name(i)<<"\n";
-    sout<<" On a given entity : give its number"<<endl;
+    sout<<" On a given entity : give its number"<<Message_EndLine;
     return IFSelect_RetVoid;
   }
   Standard_Integer num = pilot->Number(arg1);
   if (num <= 0 || num > WS->NbStartingEntities())
-    { sout<<"Not a suitable entity number : "<<arg1<<endl; return IFSelect_RetError; }
+    { sout<<"Not a suitable entity number : "<<arg1<<Message_EndLine; return IFSelect_RetError; }
   Handle(Standard_Transient) ent = WS->StartingEntity(num);
   WS->PrintEntityStatus(ent,sout);
   return IFSelect_RetVoid;
@@ -459,7 +459,7 @@ static IFSelect_ReturnStatus fun11
 	<<" check      CheckList (complete) per message (counting)\n"
 	<<" totalcheck CheckList (complete) per message (listing n0 ents)\n"
 	<<" FAILS      CheckList (fails)    per message (listing complete)\n"
-	<<" TOTALCHECK CheckList (complete) per message (listing complete)"<<endl;
+	<<" TOTALCHECK CheckList (complete) per message (listing complete)"<<Message_EndLine;
      return IFSelect_RetVoid;
     case 'g' : niv = 0; break;
     case 'r' : niv = 1; break;
@@ -471,7 +471,7 @@ static IFSelect_ReturnStatus fun11
     case 'T' : niv = 7; break;
     case 'f' : niv = 8; break;
     case 'F' : niv =10; break;
-    default  : sout<<"Unknown Mode .  data tout court pour help"<<endl; return IFSelect_RetError;
+    default  : sout<<"Unknown Mode .  data tout court pour help"<<Message_EndLine; return IFSelect_RetError;
   }
   WS->TraceDumpModel(niv);
   return IFSelect_RetVoid;
@@ -488,11 +488,11 @@ static IFSelect_ReturnStatus fundumpent
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2 || (argc == 2 && levmax < 0)) {
     sout<<"Give n0 or id of entity";
-    if (levmax < 0) sout<<"  and dump level"<<endl;
-    else sout<<"  + optinal, dump level in [0 - "<<levmax<<"] , default = "<<levdef<<endl;
+    if (levmax < 0) sout<<"  and dump level"<<Message_EndLine;
+    else sout<<"  + optinal, dump level in [0 - "<<levmax<<"] , default = "<<levdef<<Message_EndLine;
     for (level = 0; level <= levmax; level ++) {
       Standard_CString help = WL->DumpHelp (level);
-      if (help[0] != '\0') sout<<level<<" : "<<help<<endl;
+      if (help[0] != '\0') sout<<level<<" : "<<help<<Message_EndLine;
     }
     return IFSelect_RetError;
   }
@@ -505,16 +505,16 @@ static IFSelect_ReturnStatus fundumpent
   if (argc > 2) level = atoi(arg2);
   Handle(Standard_Transient) ent = WS->StartingEntity(num);
   if ( ent.IsNull() ) {
-    sout << "No entity with given id " << arg1 << " (" << num << ") is found in the current model" << endl;
+    sout << "No entity with given id " << arg1 << " (" << num << ") is found in the current model" << Message_EndLine;
   }
   else {
-    sout << "  --   DUMP  Entity n0 " << num << "  level " << level << endl;
+    sout << "  --   DUMP  Entity n0 " << num << "  level " << level << Message_EndLine;
     WL->DumpEntity (WS->Model(),WS->Protocol(),ent,sout,level);
 
     Interface_CheckIterator chl = WS->CheckOne (ent);
     if (!chl.IsEmpty(Standard_False)) chl.Print(sout,WS->Model(),Standard_False);
   }
-//  sout << flush;
+//  sout << std::flush;
 
   return IFSelect_RetVoid;
 }
@@ -527,13 +527,13 @@ static IFSelect_ReturnStatus funsign
   const Standard_CString arg1 = pilot->Arg(1);
   const Standard_CString arg2 = pilot->Arg(2);
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<" Give signature name + n0 or id of entity"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<" Give signature name + n0 or id of entity"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Signature,sign,WS->NamedItem(arg1));
-  if (sign.IsNull()) { sout<<"Not a signature : "<<arg1<<endl; return IFSelect_RetError; }
+  if (sign.IsNull()) { sout<<"Not a signature : "<<arg1<<Message_EndLine; return IFSelect_RetError; }
   Standard_Integer num = pilot->Number(arg2);
   Handle(Standard_Transient) ent = WS->StartingEntity (num);
   if (num == 0) return IFSelect_RetError;
-  sout<<"Entity n0 "<<num<<" : "<<WS->SignValue(sign,ent)<<endl;
+  sout<<"Entity n0 "<<num<<" : "<<WS->SignValue(sign,ent)<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -545,15 +545,15 @@ static IFSelect_ReturnStatus funqp
   const Standard_CString arg1 = pilot->Arg(1);
   const Standard_CString arg2 = pilot->Arg(2);
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<" Give 2 numeros or labels : dad son"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<" Give 2 numeros or labels : dad son"<<Message_EndLine; return IFSelect_RetError; }
   Standard_Integer n1 = WS->NumberFromLabel(arg1);
   Standard_Integer n2 = WS->NumberFromLabel(arg2);
-  sout<<"QueryParent for dad:"<<arg1<<":"<<n1<<" and son:"<<arg2<<":"<<n2<<endl;
+  sout<<"QueryParent for dad:"<<arg1<<":"<<n1<<" and son:"<<arg2<<":"<<n2<<Message_EndLine;
   Standard_Integer qp = WS->QueryParent(WS->StartingEntity(n1),WS->StartingEntity(n2));
-  if (qp < 0) sout<<arg1<<" is not super-entity of "<<arg2<<endl;
-  else if (qp == 0) sout<<arg1<<" is same as "<<arg2<<endl;
-  else sout<<arg1<<" is super-entity of "<<arg2<<" , max level found="<<qp<<endl;
-//  sout<<" Trouve "<<qp<<endl;
+  if (qp < 0) sout<<arg1<<" is not super-entity of "<<arg2<<Message_EndLine;
+  else if (qp == 0) sout<<arg1<<" is same as "<<arg2<<Message_EndLine;
+  else sout<<arg1<<" is super-entity of "<<arg2<<" , max level found="<<qp<<Message_EndLine;
+//  sout<<" Trouve "<<qp<<std::endl;
   return IFSelect_RetVoid;
 }
   
@@ -582,7 +582,7 @@ static IFSelect_ReturnStatus fun14
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    NewInt            ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 1) { sout<<"Donner la valeur entiere pour IntParam"<<endl; return IFSelect_RetError; }
+  if (argc < 1) { sout<<"Donner la valeur entiere pour IntParam"<<Message_EndLine; return IFSelect_RetError; }
   Handle(IFSelect_IntParam) intpar = new IFSelect_IntParam;
   if (argc >= 1)       intpar->SetValue(atoi(arg1));
   return pilot->RecordItem (intpar);
@@ -598,7 +598,7 @@ static IFSelect_ReturnStatus fun15
 //        ****    SetInt            ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 3)
-    { sout<<"Donner 2 arguments : nom Parametre et Valeur"<<endl; return IFSelect_RetError; }
+    { sout<<"Donner 2 arguments : nom Parametre et Valeur"<<Message_EndLine; return IFSelect_RetError; }
   Standard_Integer val = atoi(arg2);
   DeclareAndCast(IFSelect_IntParam,par,WS->NamedItem(arg1));
   if (!WS->SetIntValue(par,val)) return IFSelect_RetFail;
@@ -613,7 +613,7 @@ static IFSelect_ReturnStatus fun16
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    NewText           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 1) { sout<<"Donner la valeur texte pour TextParam"<<endl; return IFSelect_RetError; }
+  if (argc < 1) { sout<<"Donner la valeur texte pour TextParam"<<Message_EndLine; return IFSelect_RetError; }
   Handle(TCollection_HAsciiString) textpar = new TCollection_HAsciiString();
   if (argc >= 1) textpar->AssignCat(arg1);
   return pilot->RecordItem (textpar);
@@ -629,7 +629,7 @@ static IFSelect_ReturnStatus fun17
 //        ****    SetText           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 3)
-    { sout<<"Donner 2 arguments : nom Parametre et Valeur"<<endl; return IFSelect_RetError; }
+    { sout<<"Donner 2 arguments : nom Parametre et Valeur"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(TCollection_HAsciiString,par,WS->NamedItem(arg1));
   if (!WS->SetTextValue(par,arg2)) return IFSelect_RetFail;
   return IFSelect_RetDone;
@@ -643,7 +643,7 @@ static IFSelect_ReturnStatus fun19
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    DumpSel           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give 1 argument : Selection Name"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give 1 argument : Selection Name"<<Message_EndLine; return IFSelect_RetError; }
   WS->DumpSelection (GetCasted(IFSelect_Selection,WS->NamedItem(arg1)));
   return IFSelect_RetVoid;
 }
@@ -660,7 +660,7 @@ static IFSelect_ReturnStatus fun20
   char mode = pilot->Arg(0)[0];  // givelist/makelist
   if (mode == 'g') mode = pilot->Arg(0)[4];  // l list  s short  p pointed
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give Entity ID, or Selection Name [+ optional other selection or entity]"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give Entity ID, or Selection Name [+ optional other selection or entity]"<<Message_EndLine; return IFSelect_RetError; }
 
 //    MakeList : sur Pointed existante ou a creer
   Handle(IFSelect_SelectPointed) pnt;
@@ -669,10 +669,10 @@ static IFSelect_ReturnStatus fun20
     Handle(Standard_Transient) item = WS->NamedItem (arg1);
     pnt = GetCasted(IFSelect_SelectPointed,item);
     if (!pnt.IsNull()) {
-      sout<<arg1<<":Already existing Selection for List, cleared then filled"<<endl;
+      sout<<arg1<<":Already existing Selection for List, cleared then filled"<<Message_EndLine;
       pnt->Clear();
     } else if (!item.IsNull()) {
-      sout<<arg1<<":Already existing Item not for a List, command ignored"<<endl;
+      sout<<arg1<<":Already existing Item not for a List, command ignored"<<Message_EndLine;
       return IFSelect_RetFail;
     } else {
       pnt = new IFSelect_SelectPointed;
@@ -691,13 +691,13 @@ static IFSelect_ReturnStatus fun20
     sout<<iter.NbEntities()<<" Entities : ";
     for (iter.Start(); iter.More(); iter.Next())
       sout<<" +"<<WS->StartingNumber (iter.Value());
-    sout<<endl;
+    sout<<Message_EndLine;
   }
 
   if (!pnt.IsNull()) {
     pnt->SetList (result);
-    sout<<"List set to a SelectPointed : "<<pilot->Arg(1)<<endl;
-    sout<<"Later editable by command setlist"<<endl;
+    sout<<"List set to a SelectPointed : "<<pilot->Arg(1)<<Message_EndLine;
+    sout<<"Later editable by command setlist"<<Message_EndLine;
   }
 
   return IFSelect_RetVoid;
@@ -710,12 +710,12 @@ static IFSelect_ReturnStatus fun20c
   Standard_Integer argc = pilot->NbWords();
 //        ****    GiveCount         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give Entity ID, or Selection Name [+ optional other selection or entity]"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give Entity ID, or Selection Name [+ optional other selection or entity]"<<Message_EndLine; return IFSelect_RetError; }
 //  WS->EvaluateSelection(GetCasted(IFSelect_Selection,WS->NamedItem(arg1)));
   Handle(TColStd_HSequenceOfTransient) result =
     IFSelect_Functions::GiveList (WS,pilot->CommandPart(1));
   if (result.IsNull()) return IFSelect_RetError;
-  sout<<pilot->CommandPart(1)<<" : List of "<<result->Length()<<" Entities"<<endl;
+  sout<<pilot->CommandPart(1)<<" : List of "<<result->Length()<<" Entities"<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -726,14 +726,14 @@ static IFSelect_ReturnStatus funselsuite
   Standard_Integer argc = pilot->NbWords();
 //        ****    SelSuite         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give Entity ID, or Selection Name [+ optional other selection or entity]"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give Entity ID, or Selection Name [+ optional other selection or entity]"<<Message_EndLine; return IFSelect_RetError; }
 //  WS->EvaluateSelection(GetCasted(IFSelect_Selection,WS->NamedItem(arg1)));
   Handle(IFSelect_SelectSuite) selsuite = new IFSelect_SelectSuite;
 
   for (Standard_Integer i = 1; i < argc; i ++) {
     Handle(IFSelect_Selection) sel = WS->GiveSelection(pilot->Arg(i));
     if (!selsuite->AddInput(sel)) {
-      sout<<pilot->Arg(i-1)<<" : not a SelectDeduct, no more can be added. Abandon"<<endl;
+      sout<<pilot->Arg(i-1)<<" : not a SelectDeduct, no more can be added. Abandon"<<Message_EndLine;
       return IFSelect_RetError;
     }
   }
@@ -771,7 +771,7 @@ static IFSelect_ReturnStatus fun22
   if (mode <= 0) {
     if (mode < 0) sout<<"Give a suitable mode";
     sout<<"  Available Modes :\n"
-      <<" a : all data    g : graph+check  c : check  p : selectpointed"<<endl;
+      <<" a : all data    g : graph+check  c : check  p : selectpointed"<<Message_EndLine;
     return (mode < 0 ? IFSelect_RetError : IFSelect_RetVoid);
   }
   WS->ClearData (mode);
@@ -786,7 +786,7 @@ static IFSelect_ReturnStatus fun24
 //        ****    Item Label         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   TCollection_AsciiString label;
-  if (argc < 2) { sout<<" Give  label to search"<<endl;  return IFSelect_RetError;  }
+  if (argc < 2) { sout<<" Give  label to search"<<Message_EndLine;  return IFSelect_RetError;  }
   for (int i = 1; i < argc; i ++) {
     label.AssignCat(pilot->Arg(i));
     if (i < argc-1) label.AssignCat(" ");
@@ -794,14 +794,14 @@ static IFSelect_ReturnStatus fun24
   for (int mode = 0; mode <= 2; mode ++) {
     int nbitems = 0;  int id;
     sout<<"Searching label : "<<label<<". in mode ";
-    if (mode == 0) sout <<" exact" << endl;
-    if (mode == 1) sout <<" same head" << endl;
-    if (mode == 2) sout <<" search if present" << endl;
+    if (mode == 0) sout <<" exact" << Message_EndLine;
+    if (mode == 1) sout <<" same head" << Message_EndLine;
+    if (mode == 2) sout <<" search if present" << Message_EndLine;
     for (id = WS->NextIdentForLabel(label.ToCString(), 0,mode)  ; id != 0;
 	 id = WS->NextIdentForLabel(label.ToCString(),id,mode)) {
       sout<<" "<<id;  nbitems ++;
     }
-    sout<<" -- giving " << nbitems << " found" << endl;
+    sout<<" -- giving " << nbitems << " found" << Message_EndLine;
   }
   return IFSelect_RetVoid;
 }
@@ -814,7 +814,7 @@ static IFSelect_ReturnStatus fun25
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Save (Dump)       ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner nom du Fichier"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner nom du Fichier"<<Message_EndLine; return IFSelect_RetError; }
   IFSelect_SessionFile dumper(WS,arg1);
   if (!dumper.IsDone()) return IFSelect_RetFail;
   return IFSelect_RetDone;
@@ -828,12 +828,12 @@ static IFSelect_ReturnStatus fun26
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Restore (Dump)    ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner nom du Fichier"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner nom du Fichier"<<Message_EndLine; return IFSelect_RetError; }
   IFSelect_SessionFile dumper(WS);
   Standard_Integer readstat = dumper.Read(arg1);
   if      (readstat == 0) return IFSelect_RetDone;
-  else if (readstat >  0) sout << "-- Erreur Lecture Fichier "<<arg1<<endl;
-  else                    sout << "-- Pas pu ouvrir Fichier "<<arg1<<endl;
+  else if (readstat >  0) sout << "-- Erreur Lecture Fichier "<<arg1<<Message_EndLine;
+  else                    sout << "-- Pas pu ouvrir Fichier "<<arg1<<Message_EndLine;
   return IFSelect_RetDone;
 }
 
@@ -849,29 +849,29 @@ static IFSelect_ReturnStatus fun27
   if (argc < 2) {
     Handle(TColStd_HSequenceOfHAsciiString) li = Interface_Static::Items();
     Standard_Integer i,nb = li->Length();
-    sout<<" List of parameters : "<<nb<<" items : "<<endl;
+    sout<<" List of parameters : "<<nb<<" items : "<<Message_EndLine;
     for (i = 1; i <= nb; i ++) {
       sout<<li->Value(i);
-      sout<<" : "<<Interface_Static::CVal(li->Value(i)->ToCString())<<endl;
+      sout<<" : "<<Interface_Static::CVal(li->Value(i)->ToCString())<<Message_EndLine;
     }
     return IFSelect_RetVoid;
   } else if (atoi(arg1) > 0) {
     Standard_Integer use = atoi (arg1);
     WS->TraceStatics (use);
   } else {
-    if (argc > 2) sout<<"     FORMER STATUS of Static Parameter "<<arg1<<endl;
-    else          sout<<"     ACTUAL STATUS of Static Parameter "<<arg1<<endl;
-    if (!Interface_Static::IsPresent(arg1)) { sout<<" Parameter "<<arg1<<" undefined"<<endl; return IFSelect_RetError; }
-    if (!Interface_Static::IsSet(arg1)) sout<<" Parameter "<<arg1<<" not valued"<<endl;
+    if (argc > 2) sout<<"     FORMER STATUS of Static Parameter "<<arg1<<Message_EndLine;
+    else          sout<<"     ACTUAL STATUS of Static Parameter "<<arg1<<Message_EndLine;
+    if (!Interface_Static::IsPresent(arg1)) { sout<<" Parameter "<<arg1<<" undefined"<<Message_EndLine; return IFSelect_RetError; }
+    if (!Interface_Static::IsSet(arg1)) sout<<" Parameter "<<arg1<<" not valued"<<Message_EndLine;
     else if (argc == 2) Interface_Static::Static (arg1) -> Print(sout);
-    else sout<<" Value : "<<Interface_Static::CVal(arg1)<<endl;
+    else sout<<" Value : "<<Interface_Static::CVal(arg1)<<Message_EndLine;
 
-    if (argc == 2) sout<<"To modify, param name_param new_val"<<endl;
+    if (argc == 2) sout<<"To modify, param name_param new_val"<<Message_EndLine;
     else {
       sout<<" New demanded value : "<<arg2;
       if (Interface_Static::SetCVal (arg1,arg2))
-	{  sout<<"   OK"<<endl;  return IFSelect_RetDone;  }
-      else  {  sout <<" , refused"<<endl;  return IFSelect_RetError;  }
+	{  sout<<"   OK"<<Message_EndLine;  return IFSelect_RetDone;  }
+      else  {  sout <<" , refused"<<Message_EndLine;  return IFSelect_RetError;  }
     }
   }
   return IFSelect_RetVoid;
@@ -889,21 +889,21 @@ static IFSelect_ReturnStatus fun28
   if (argc < 2) {
     Handle(TColStd_HSequenceOfHAsciiString) li = Interface_Static::Items();
     Standard_Integer i,nb = li->Length();
-    sout<<" List of parameters : "<<nb<<" items :"<<endl;
+    sout<<" List of parameters : "<<nb<<" items :"<<Message_EndLine;
     for (i = 1; i <= nb; i ++) sout<<"  "<<li->Value(i)->ToCString();
-    sout<<endl<<"  defparam name_param  to known more about one"<<endl;
-    sout<<"  defparam nom_param e options  to edit a definition"<<endl;
+    sout<<Message_EndLine<<"  defparam name_param  to known more about one"<<Message_EndLine;
+    sout<<"  defparam nom_param e options  to edit a definition"<<Message_EndLine;
 
   } else if (argc == 2) {
-    sout<<" Definition of Parameter : "<<arg1<<endl;
+    sout<<" Definition of Parameter : "<<arg1<<Message_EndLine;
     Handle(Interface_Static) unst = Interface_Static::Static (arg1);
-    if (unst.IsNull()) sout<<"  undefined"<<endl;
+    if (unst.IsNull()) sout<<"  undefined"<<Message_EndLine;
     else unst->Print(sout);
     return IFSelect_RetVoid;
 
   } else if (arg2[0] == 'i') {
 //  initialisation : arg1=nompar  a2='i'  a3=family  a4=type  [a5=val]
-    if (argc < 5) { sout<<" name init family type [valinit]"<<endl; return IFSelect_RetVoid; }
+    if (argc < 5) { sout<<" name init family type [valinit]"<<Message_EndLine; return IFSelect_RetVoid; }
     char typ = (pilot->Arg(4))[0];
     Standard_Boolean ok= (argc==5 ? Interface_Static::Init(arg3,arg1,typ) :
 			  Interface_Static::Init(arg3,arg1,typ,pilot->Arg(5)));
@@ -916,20 +916,20 @@ static IFSelect_ReturnStatus fun28
       sout<<" give name and options !  Options (according type), 1 a time\n"
 	  <<" imin ival / imax ival / rmin rval / rmax rval /\n"
 	  <<" enum stnum / enum stnum match / eval e1 e2 e3 ... (maxi 10)\n"
-	  <<endl;
+	  <<Message_EndLine;
       return IFSelect_RetVoid;
     }
-    if (argc > 4) sout<<"Only the command and ONE more arg are considered"<<endl;
+    if (argc > 4) sout<<"Only the command and ONE more arg are considered"<<Message_EndLine;
     sprintf(comm,"%s %s",pilot->Arg(3),pilot->Arg(4));
-    sout<<"Editing parameter : "<<arg1<<" , by command : "<<comm<<endl;
+    sout<<"Editing parameter : "<<arg1<<" , by command : "<<comm<<Message_EndLine;
 
     Handle(Interface_Static) unst = Interface_Static::Static (arg1);
-    if (unst.IsNull()) { sout<<arg1<<"  undefined"<<endl; return IFSelect_RetError; }
+    if (unst.IsNull()) { sout<<arg1<<"  undefined"<<Message_EndLine; return IFSelect_RetError; }
     if (Interface_Static::Init(unst->Family(),arg1,'&',comm))
-      {  sout<<"Editing done"<<endl;  return IFSelect_RetDone;  }
-    else  {  sout<<"Command not processed : "<<comm<<endl; return IFSelect_RetFail;  }
+      {  sout<<"Editing done"<<Message_EndLine;  return IFSelect_RetDone;  }
+    else  {  sout<<"Command not processed : "<<comm<<Message_EndLine; return IFSelect_RetFail;  }
   }
-  sout<<"Unknown Option : "<<arg2<<endl;
+  sout<<"Unknown Option : "<<arg2<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -941,11 +941,11 @@ static IFSelect_ReturnStatus fun29
   Handle(TColStd_HSequenceOfHAsciiString) list = WS->SentFiles();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (list.IsNull())
-    { sout<<"List of Sent Files not enabled"<<endl; return IFSelect_RetVoid; }
+    { sout<<"List of Sent Files not enabled"<<Message_EndLine; return IFSelect_RetVoid; }
   Standard_Integer i, nb = list->Length();
-  sout<<"  Sent Files : "<<nb<<" : "<<endl;
+  sout<<"  Sent Files : "<<nb<<" : "<<Message_EndLine;
   for (i = 1; i <= nb; i ++)
-    sout<<list->Value(i)->ToCString()<<endl; 
+    sout<<list->Value(i)->ToCString()<<Message_EndLine; 
   return IFSelect_RetVoid;
 }
 
@@ -958,9 +958,9 @@ static IFSelect_ReturnStatus fun30
 //        ****    FilePrefix        ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) {
-    if (WS->FilePrefix().IsNull()) sout<<"Pas de prefixe defini"<<endl;
-    else sout<<"Prefixe : "<<WS->FilePrefix()->ToCString()<<endl;
-    sout<<"Pour changer :  filepref newprefix"<<endl;
+    if (WS->FilePrefix().IsNull()) sout<<"Pas de prefixe defini"<<Message_EndLine;
+    else sout<<"Prefixe : "<<WS->FilePrefix()->ToCString()<<Message_EndLine;
+    sout<<"Pour changer :  filepref newprefix"<<Message_EndLine;
     return IFSelect_RetVoid;
   }
   WS->SetFilePrefix(arg1);
@@ -976,9 +976,9 @@ static IFSelect_ReturnStatus fun31
 //        ****    FileExtension     ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) {
-    if (WS->FileExtension().IsNull()) sout<<"Pas d extension definie"<<endl;
-    else sout<<"Extension : "<<WS->FileExtension()->ToCString()<<endl;
-    sout<<"Pour changer :  fileext newext"<<endl;
+    if (WS->FileExtension().IsNull()) sout<<"Pas d extension definie"<<Message_EndLine;
+    else sout<<"Extension : "<<WS->FileExtension()->ToCString()<<Message_EndLine;
+    sout<<"Pour changer :  fileext newext"<<Message_EndLine;
     return IFSelect_RetVoid;
   }
   WS->SetFileExtension(arg1);
@@ -994,12 +994,12 @@ static IFSelect_ReturnStatus fun32
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    FileRoot          ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Dispatch et nom de Root"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner Dispatch et nom de Root"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(arg1));
   if (argc < 3) {
-    if (WS->FileRoot(disp).IsNull()) sout<<"Pas de racine definie pour "<<arg1<<endl;
-    else sout<<"Racine pour "<<arg1<<" : "<<WS->FileRoot(disp)->ToCString()<<endl;
-    sout<<"Pour changer :  fileroot nomdisp newroot"<<endl;
+    if (WS->FileRoot(disp).IsNull()) sout<<"Pas de racine definie pour "<<arg1<<Message_EndLine;
+    else sout<<"Racine pour "<<arg1<<" : "<<WS->FileRoot(disp)->ToCString()<<Message_EndLine;
+    sout<<"Pour changer :  fileroot nomdisp newroot"<<Message_EndLine;
     return IFSelect_RetVoid;
   }
   if (!WS->SetFileRoot(disp,arg2)) return IFSelect_RetFail;
@@ -1015,9 +1015,9 @@ static IFSelect_ReturnStatus fun33
 //        ****    Default File Root     ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) {
-    if (WS->DefaultFileRoot().IsNull()) sout<<"Pas de racine par defaut definie"<<endl;
-    else sout<<"Racine par defaut : "<<WS->DefaultFileRoot()->ToCString()<<endl;
-    sout<<"Pour changer :  filedef newdef"<<endl;
+    if (WS->DefaultFileRoot().IsNull()) sout<<"Pas de racine par defaut definie"<<Message_EndLine;
+    else sout<<"Racine par defaut : "<<WS->DefaultFileRoot()->ToCString()<<Message_EndLine;
+    sout<<"Pour changer :  filedef newdef"<<Message_EndLine;
     return IFSelect_RetVoid;
   }
   WS->SetDefaultFileRoot(arg1);
@@ -1031,18 +1031,18 @@ static IFSelect_ReturnStatus fun34
 //        ****    EvalFile          ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (!WS->HasModel()) 
-    {  sout<<"Pas de Modele charge, abandon"<<endl;  return IFSelect_RetFail; }
+    {  sout<<"Pas de Modele charge, abandon"<<Message_EndLine;  return IFSelect_RetFail; }
 
-  sout<<"Evaluation avec Memorisation des resultats"<<endl;
+  sout<<"Evaluation avec Memorisation des resultats"<<Message_EndLine;
   WS->EvaluateFile();
   Standard_Integer nbf = WS->NbFiles();
   for (Standard_Integer i = 1; i <= nbf; i ++) {
     Handle(Interface_InterfaceModel) mod = WS->FileModel(i);
     if (mod.IsNull())
-      {  sout<<"Modele "<<i<<" Model non genere ..."<<endl; continue;  }
+      {  sout<<"Modele "<<i<<" Model non genere ..."<<Message_EndLine; continue;  }
     TCollection_AsciiString name = WS->FileName(i);
     sout<<"Fichier n0 "<<i<<" Nb Entites : "<<mod->NbEntities()<<"  Nom: ";
-    sout<<name<<endl;
+    sout<<name<<Message_EndLine;
   }
   return IFSelect_RetDone;
 }
@@ -1063,13 +1063,13 @@ static IFSelect_ReturnStatus fun36
 //        ****    Split              ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   IFSelect_ReturnStatus stat = IFSelect_RetVoid;
-  if (argc < 2) sout<<"Split : derniere liste de dispatches definie"<<endl;
+  if (argc < 2) sout<<"Split : derniere liste de dispatches definie"<<Message_EndLine;
   else {
     WS->ClearShareOut(Standard_True);
     for (Standard_Integer i = 1; i < argc; i ++) {
       DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(pilot->Arg(i)));
       if (disp.IsNull()) {
-	sout<<"Pas un dispatch:"<<pilot->Arg(i)<<", Splitt abandonne"<<endl;
+	sout<<"Pas un dispatch:"<<pilot->Arg(i)<<", Splitt abandonne"<<Message_EndLine;
 	stat = IFSelect_RetError;
       }
       else WS->SetActive(disp,Standard_True);
@@ -1097,7 +1097,7 @@ static IFSelect_ReturnStatus fun37
   else {
     Handle(Message_Messenger) sout = Message::DefaultMessenger();
     if (argc<2) sout<<"Donner un Mode - ";
-    sout<<"Modes possibles : l  list, c compute, u undo, f forget"<<endl;
+    sout<<"Modes possibles : l  list, c compute, u undo, f forget"<<Message_EndLine;
     if (mode == '?') return IFSelect_RetDone;   else return IFSelect_RetError;
   }
   if (!WS->SetRemaining(numod)) return IFSelect_RetVoid;
@@ -1113,17 +1113,17 @@ static IFSelect_ReturnStatus fun38
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    SetModelContent    ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Donner nom selection et mode (k=keep,r=remove)"<<endl;  return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Donner nom selection et mode (k=keep,r=remove)"<<Message_EndLine;  return IFSelect_RetError; }
   Standard_Boolean keepmode;
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg1));
   if (sel.IsNull())
-    { sout<<"Pas de Selection de Nom : "<<arg1<<endl; return IFSelect_RetError; }
+    { sout<<"Pas de Selection de Nom : "<<arg1<<Message_EndLine; return IFSelect_RetError; }
   if      (arg2[0] == 'k') {  sout<<" -- SetContent keep ..."; keepmode = Standard_True; }
   else if (arg2[0] == 'r') {  sout<<" -- SetContent remove ..."; keepmode = Standard_False; }
-  else { sout<<"Donner nom selection et mode (k=keep,r=remove)"<<endl;  return IFSelect_RetError; }
+  else { sout<<"Donner nom selection et mode (k=keep,r=remove)"<<Message_EndLine;  return IFSelect_RetError; }
   
-  if (WS->SetModelContent(sel,keepmode)) sout<<" Done"<<endl;
-  else sout<<" Result empty, ignored"<<endl;
+  if (WS->SetModelContent(sel,keepmode)) sout<<" Done"<<Message_EndLine;
+  else sout<<" Result empty, ignored"<<Message_EndLine;
   return IFSelect_RetDone;
 }
 
@@ -1144,29 +1144,29 @@ static IFSelect_ReturnStatus fun41
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Modifier           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom du Modifier"<<endl;  return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner Nom du Modifier"<<Message_EndLine;  return IFSelect_RetError; }
   DeclareAndCast(IFSelect_GeneralModifier,modif,WS->NamedItem(arg1));
   if (modif.IsNull())
-    { sout<<"Pas de Modifier de Nom : "<<arg1<<endl; return IFSelect_RetVoid; }
+    { sout<<"Pas de Modifier de Nom : "<<arg1<<Message_EndLine; return IFSelect_RetVoid; }
   Handle(IFSelect_IntParam) low,up;
 
   Handle(IFSelect_Dispatch) disp = modif->Dispatch();
-  sout<<"Modifier : "<<arg1<<" Label : "<<modif->Label()<<endl;
+  sout<<"Modifier : "<<arg1<<" Label : "<<modif->Label()<<Message_EndLine;
   Standard_Integer rank = WS->ModifierRank(modif);
   if (modif->IsKind(STANDARD_TYPE(IFSelect_Modifier)))
     sout<< "Model Modifier n0." << rank;
   else sout<< "File Modifier n0." << rank;
-  if (disp.IsNull()) sout<<"  Applique a tous les Dispatchs" << endl;
+  if (disp.IsNull()) sout<<"  Applique a tous les Dispatchs" << Message_EndLine;
   else {
     sout << "  Dispatch : "<<disp->Label();
     if (WS->HasName(disp)) sout << " - Nom:"<<WS->Name(disp)->ToCString();
-    sout<<endl;
+    sout<<Message_EndLine;
   }
 
   Handle(IFSelect_Selection) sel = modif->Selection();
   if (!sel.IsNull()) sout<<"  Selection : "<< sel->Label();
   if (WS->HasName(sel)) sout<<" - Nom:"<< WS->Name(sel)->ToCString();
-  sout<<endl;
+  sout<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -1180,15 +1180,15 @@ static IFSelect_ReturnStatus fun42
 //        ****    ModifSel           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) { sout<<"Donner Nom Modifier; + Nom Selection optionnel\n"
-	              <<"Selection pour Mettre une Selection, sinon Annule"<<endl; return IFSelect_RetError; }
+	              <<"Selection pour Mettre une Selection, sinon Annule"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_GeneralModifier,modif,WS->NamedItem(arg1));
   if (modif.IsNull())
-    { sout<<"Pas un nom de Modifier : "<<arg1<<endl; return IFSelect_RetError;  }
+    { sout<<"Pas un nom de Modifier : "<<arg1<<Message_EndLine; return IFSelect_RetError;  }
   Handle(IFSelect_Selection) sel;
   if (arg2[0] != '\0') {
     sel = GetCasted(IFSelect_Selection,WS->NamedItem(arg2));
     if (sel.IsNull())
-      { sout<<"Pas un nom de Selection : "<<arg2<<endl;  return IFSelect_RetError;  }
+      { sout<<"Pas un nom de Selection : "<<arg2<<Message_EndLine;  return IFSelect_RetError;  }
   }
   if (!WS->SetItemSelection(modif,sel)) return IFSelect_RetFail;
   return IFSelect_RetDone;
@@ -1205,16 +1205,16 @@ static IFSelect_ReturnStatus fun43
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) { sout<<"Donner Nom Modifier; + Nom Dispatch ou Transformer optionnel :\n"
 		      <<" - rien : tous Dispatches\n - Dispatch : ce Dispatch seul\n"
-		      <<" - Transformer : pas un Dispatch mais un Transformer"<<endl;
+		      <<" - Transformer : pas un Dispatch mais un Transformer"<<Message_EndLine;
 		  return IFSelect_RetError;  }
   DeclareAndCast(IFSelect_GeneralModifier,modif,WS->NamedItem(arg1));
   if (modif.IsNull())
-    { sout<<"Pas un nom de Modifier : "<<arg1<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de Modifier : "<<arg1<<Message_EndLine;  return IFSelect_RetError;  }
   Handle(Standard_Transient) item;
   if (arg2[0] != '\0') {
     item = WS->NamedItem(arg2);
     if (item.IsNull())
-      { sout<<"Pas un nom connu : "<<arg2<<endl;  return IFSelect_RetError;  }
+      { sout<<"Pas un nom connu : "<<arg2<<Message_EndLine;  return IFSelect_RetError;  }
   }
   else item = WS->ShareOut();
   if (!WS->SetAppliedModifier(modif,item)) return IFSelect_RetFail;
@@ -1229,10 +1229,10 @@ static IFSelect_ReturnStatus fun44
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    ResetApplied (modifier)    ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Designer un modifier"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Designer un modifier"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_GeneralModifier,modif,WS->NamedItem(arg1));
   if (modif.IsNull())
-    { sout<<"Pas un nom de Modifier : "<<arg1<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de Modifier : "<<arg1<<Message_EndLine;  return IFSelect_RetError;  }
   if (!WS->ResetAppliedModifier(modif)) return IFSelect_RetFail;
   return IFSelect_RetDone;
 }
@@ -1247,14 +1247,14 @@ static IFSelect_ReturnStatus fun45
   const Standard_CString arg3 = pilot->Arg(3);
 //        ****    ModifMove         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 4) { sout<<"modifmove MF rang1 rang2, M pour Model F pour File"<<endl; return IFSelect_RetError; }
+  if (argc < 4) { sout<<"modifmove MF rang1 rang2, M pour Model F pour File"<<Message_EndLine; return IFSelect_RetError; }
   Standard_Boolean formodel;
   if      (arg1[0] == 'm' || arg1[0] == 'M') formodel = Standard_True;
   else if (arg1[0] == 'f' || arg1[0] == 'F') formodel = Standard_False;
-  else { sout<<"preciser M pour Model, F pour File"<<endl; return IFSelect_RetError; }
+  else { sout<<"preciser M pour Model, F pour File"<<Message_EndLine; return IFSelect_RetError; }
   Standard_Integer before = atoi(arg2);
   Standard_Integer after  = atoi(arg3);
-  if (before == 0 || after == 0) { sout<<"Donner 2 Entiers Positifs"<<endl; return IFSelect_RetError; }
+  if (before == 0 || after == 0) { sout<<"Donner 2 Entiers Positifs"<<Message_EndLine; return IFSelect_RetError; }
   if (!WS->ChangeModifierRank(formodel,before,after)) return IFSelect_RetFail;
   return IFSelect_RetDone;
 }
@@ -1268,13 +1268,13 @@ static IFSelect_ReturnStatus fun51
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    DispSel           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Donner Noms Dispatch et Selection Finale"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Donner Noms Dispatch et Selection Finale"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(arg1));
   if (disp.IsNull())
-    { sout<<"Pas un nom de Dispatch : "<<arg1<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de Dispatch : "<<arg1<<Message_EndLine;  return IFSelect_RetError;  }
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg2));
   if (sel.IsNull())
-    { sout<<"Pas un nom de Selection : "<<arg2<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de Selection : "<<arg2<<Message_EndLine;  return IFSelect_RetError;  }
   if (!WS->SetItemSelection(disp,sel)) return IFSelect_RetFail;
   return IFSelect_RetDone;
 }
@@ -1305,10 +1305,10 @@ static IFSelect_ReturnStatus fun_dispcount
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    DispCount         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom IntParam pour Count"<<endl;  return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner Nom IntParam pour Count"<<Message_EndLine;  return IFSelect_RetError; }
   DeclareAndCast(IFSelect_IntParam,par,WS->NamedItem(arg1));
   if (par.IsNull())
-    { sout<<"Pas un nom de IntParam : "<<arg1<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de IntParam : "<<arg1<<Message_EndLine;  return IFSelect_RetError;  }
   Handle(IFSelect_DispPerCount) disp = new IFSelect_DispPerCount;
   disp->SetCount (par);
   return pilot->RecordItem(disp);
@@ -1322,10 +1322,10 @@ static IFSelect_ReturnStatus fun_dispfiles
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    DispFiles         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom IntParam pour NbFiles"<<endl;  return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner Nom IntParam pour NbFiles"<<Message_EndLine;  return IFSelect_RetError; }
   DeclareAndCast(IFSelect_IntParam,par,WS->NamedItem(arg1));
   if (par.IsNull())
-    { sout<<"Pas un nom de IntParam : "<<arg1<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de IntParam : "<<arg1<<Message_EndLine;  return IFSelect_RetError;  }
   Handle(IFSelect_DispPerFiles) disp = new IFSelect_DispPerFiles;
   disp->SetCount (par);
   return pilot->RecordItem(disp);
@@ -1340,10 +1340,10 @@ static IFSelect_ReturnStatus fun_dispsign
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    DispFiles         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom Signature"<<endl;  return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner Nom Signature"<<Message_EndLine;  return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Signature,sig,WS->NamedItem(arg1));
   if (sig.IsNull())
-    { sout<<"Pas un nom de Signature : "<<arg1<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de Signature : "<<arg1<<Message_EndLine;  return IFSelect_RetError;  }
   Handle(IFSelect_DispPerSignature) disp = new IFSelect_DispPerSignature;
   disp->SetSignCounter (new IFSelect_SignCounter(sig));
   return pilot->RecordItem(disp);
@@ -1358,18 +1358,18 @@ static IFSelect_ReturnStatus fun56
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Dispatch           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom du Dispatch"<<endl;  return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner Nom du Dispatch"<<Message_EndLine;  return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(arg1));
-  if (disp.IsNull()) { sout<<"Pas un dispatch : "<<arg1<<endl; return IFSelect_RetError;  }
+  if (disp.IsNull()) { sout<<"Pas un dispatch : "<<arg1<<Message_EndLine; return IFSelect_RetError;  }
   Standard_Integer num = WS->DispatchRank(disp);
   sout<<"Dispatch de Nom : "<<arg1<<" , en ShareOut, Numero "<<num<<" : ";
   Handle(IFSelect_Selection) sel = WS->ItemSelection(disp);
   Handle(TCollection_HAsciiString) selname = WS->Name(sel);
-  if (sel.IsNull())  sout<<"Pas de Selection Finale"<<endl;
-  else if (selname.IsNull()) sout<<"Selection Finale : #"<<WS->ItemIdent(sel)<<endl;
-  else sout<<"Selection Finale : "<<selname->ToCString()<<endl;
+  if (sel.IsNull())  sout<<"Pas de Selection Finale"<<Message_EndLine;
+  else if (selname.IsNull()) sout<<"Selection Finale : #"<<WS->ItemIdent(sel)<<Message_EndLine;
+  else sout<<"Selection Finale : "<<selname->ToCString()<<Message_EndLine;
   if (disp->HasRootName()) sout<<"-- Racine nom de fichier : "
-    <<disp->RootName()->ToCString()<<endl;
+    <<disp->RootName()->ToCString()<<Message_EndLine;
   return IFSelect_RetVoid;
 }
 
@@ -1381,7 +1381,7 @@ static IFSelect_ReturnStatus fun57
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    Remove           ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give Name to Remove !"<<endl;  return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give Name to Remove !"<<Message_EndLine;  return IFSelect_RetError; }
   if (!WS->RemoveNamedItem(arg1)) return IFSelect_RetFail;
   return IFSelect_RetDone;
 }
@@ -1395,18 +1395,18 @@ static IFSelect_ReturnStatus fun58
 //        ****    EvalDisp          ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 3) { sout<<"evaldisp mode disp [disp ...] :  Mode + Name(s) of Dispatch(es). Mode:\n"
-		    <<"  0 brief  1 +forgotten ents  2 +duplicata  3 1+2"<<endl
-		    <<"See also : evaladisp  writedisp  xsplit"<<endl;
+		    <<"  0 brief  1 +forgotten ents  2 +duplicata  3 1+2"<<Message_EndLine
+		    <<"See also : evaladisp  writedisp  xsplit"<<Message_EndLine;
 		  return IFSelect_RetVoid;  }
   Standard_Boolean OK = Standard_True;
   Standard_Integer i , mode = atoi(arg1);  sout<<" Mode "<<mode<<"\n";
   for (i = 2; i < argc; i ++) {
     DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(pilot->Arg(i)));
     if (disp.IsNull())
-      { sout<<"Not a dispatch:"<<pilot->Arg(i)<<endl; OK = Standard_False; }
+      { sout<<"Not a dispatch:"<<pilot->Arg(i)<<Message_EndLine; OK = Standard_False; }
   }
   if (!OK) {
-    sout<<"Some of the parameters are not correct"<<endl;
+    sout<<"Some of the parameters are not correct"<<Message_EndLine;
     return IFSelect_RetError;
   }
 
@@ -1430,15 +1430,15 @@ static IFSelect_ReturnStatus fun_evaladisp
 //        ****    EvalADisp [GiveList]         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 3) { sout<<"evaladisp mode(=0-1-2-3) disp [givelist] :  Mode + Dispatch [+ GiveList]\n  If GiveList not given, computed from Selection of the Dispatch. Mode:\n"
-		    <<"  0 brief  1 +forgotten ents  2 +duplicata  3 1+2"<<endl
-		    <<"See also : writedisp"<<endl;
+		    <<"  0 brief  1 +forgotten ents  2 +duplicata  3 1+2"<<Message_EndLine
+		    <<"See also : writedisp"<<Message_EndLine;
 		  return IFSelect_RetVoid;  }
-  if (arg1[1] != '\0') { sout<<"first parameter : mode, must be a number between 0 and 3"<<endl; return IFSelect_RetError; }
+  if (arg1[1] != '\0') { sout<<"first parameter : mode, must be a number between 0 and 3"<<Message_EndLine; return IFSelect_RetError; }
   Standard_Integer mode = atoi(arg1);  sout<<" Mode "<<mode<<"\n";
 //  DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(pilot->Arg(2)));
   Handle(IFSelect_Dispatch) disp = IFSelect_Functions::GiveDispatch (WS,pilot->Arg(2),Standard_True);
   if (disp.IsNull())
-    { sout<<"Not a dispatch:"<<pilot->Arg(2)<<endl; return IFSelect_RetError; }
+    { sout<<"Not a dispatch:"<<pilot->Arg(2)<<Message_EndLine; return IFSelect_RetError; }
   Handle(IFSelect_Selection) selsav = disp->FinalSelection();
   Handle(IFSelect_Selection) sel;
   if (argc > 3) {
@@ -1450,9 +1450,9 @@ static IFSelect_ReturnStatus fun_evaladisp
   }
 
   if (sel.IsNull() && selsav.IsNull())
-    { sout<<"No Selection nor GiveList defined"<<endl; return IFSelect_RetError; }
+    { sout<<"No Selection nor GiveList defined"<<Message_EndLine; return IFSelect_RetError; }
   if (sel.IsNull() && !selsav.IsNull()) {
-    if (argc > 3) sout<<"GiveList is empty, hence computed from the Selection of the Dispatch"<<endl;
+    if (argc > 3) sout<<"GiveList is empty, hence computed from the Selection of the Dispatch"<<Message_EndLine;
     sel = selsav;
   }
   disp->SetFinalSelection(sel);
@@ -1475,19 +1475,19 @@ static IFSelect_ReturnStatus fun_writedisp
   if (argc < 3) { sout<<"writedisp filename disp [givelist] :  FileName + Dispatch [+ GiveList]\n  If GiveList not given, computed from Selection of the Dispatch.\n"
 		    <<"FileName : rootname.ext will gives rootname_1.ext etc...\n"
 		    <<"  path/rootname.ext gives  path/rootname_1.ext etc...\n"
-		    <<"See also : evaladisp"<<endl;
+		    <<"See also : evaladisp"<<Message_EndLine;
 		  return IFSelect_RetVoid;  }
   TCollection_AsciiString prefix,rootname,suffix;
   SplitFileName (arg1,prefix,rootname,suffix);
   if (rootname.Length() == 0 || suffix.Length() == 0) {
-    sout<<"Empty Root Name or Extension"<<endl;
+    sout<<"Empty Root Name or Extension"<<Message_EndLine;
     return IFSelect_RetError;
   }
 
 //  DeclareAndCast(IFSelect_Dispatch,disp,WS->NamedItem(pilot->Arg(2)));
   Handle(IFSelect_Dispatch) disp = IFSelect_Functions::GiveDispatch (WS,pilot->Arg(2),Standard_True);
   if (disp.IsNull())
-    { sout<<"Not a dispatch:"<<pilot->Arg(2)<<endl; return IFSelect_RetError; }
+    { sout<<"Not a dispatch:"<<pilot->Arg(2)<<Message_EndLine; return IFSelect_RetError; }
   Handle(IFSelect_Selection) selsav = disp->FinalSelection();
   Handle(IFSelect_Selection) sel;
   if (argc > 3) {
@@ -1499,9 +1499,9 @@ static IFSelect_ReturnStatus fun_writedisp
   }
 
   if (sel.IsNull() && selsav.IsNull())
-    { sout<<"No Selection nor GiveList defined"<<endl; return IFSelect_RetError; }
+    { sout<<"No Selection nor GiveList defined"<<Message_EndLine; return IFSelect_RetError; }
   if (sel.IsNull() && !selsav.IsNull()) {
-    if (argc > 3) sout<<"GiveList is empty, hence computed from the Selection of the Dispatch"<<endl;
+    if (argc > 3) sout<<"GiveList is empty, hence computed from the Selection of the Dispatch"<<Message_EndLine;
     sel = selsav;
   }
 
@@ -1530,7 +1530,7 @@ static IFSelect_ReturnStatus fun59
   Standard_Integer mode = 0;
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (argc < 2) sout << " -- mode par defaut 0\n";
-  else { mode = atoi(arg1); sout << " -- mode : " << mode << endl;  }
+  else { mode = atoi(arg1); sout << " -- mode : " << mode << Message_EndLine;  }
   WS->EvaluateComplete(mode);  return IFSelect_RetVoid;
 }
 
@@ -1554,23 +1554,23 @@ static IFSelect_ReturnStatus fun61
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    RunTransformer    ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom de Transformer"<<endl; return IFSelect_RetError;  }
+  if (argc < 2) { sout<<"Donner Nom de Transformer"<<Message_EndLine; return IFSelect_RetError;  }
   DeclareAndCast(IFSelect_Transformer,tsf,WS->NamedItem(arg1));
   Standard_Integer effect = WS->RunTransformer(tsf);
   switch (effect) {
-    case -4 : sout<<"Edition sur place, nouveau Protocole, erreur recalcul graphe"<<endl; break;
-    case -3 : sout<<"Erreur, Transformation ignoree"<<endl; break;
-    case -2 : sout<<"Erreur sur edition sur place, risque de corruption (verifier)"<<endl; break;
-    case -1 : sout<<"Erreur sur edition locale, risque de corruption (verifier)"<<endl; break;
+    case -4 : sout<<"Edition sur place, nouveau Protocole, erreur recalcul graphe"<<Message_EndLine; break;
+    case -3 : sout<<"Erreur, Transformation ignoree"<<Message_EndLine; break;
+    case -2 : sout<<"Erreur sur edition sur place, risque de corruption (verifier)"<<Message_EndLine; break;
+    case -1 : sout<<"Erreur sur edition locale, risque de corruption (verifier)"<<Message_EndLine; break;
     case  0 :
-      if   (tsf.IsNull()) sout<<"Erreur, pas un Transformer: "<<arg1<<endl;
-      else sout<<"Execution non faite"<<endl;
+      if   (tsf.IsNull()) sout<<"Erreur, pas un Transformer: "<<arg1<<Message_EndLine;
+      else sout<<"Execution non faite"<<Message_EndLine;
 	      break;
-    case  1 : sout<<"Transformation locale (graphe non touche)"<<endl; break;
-    case  2 : sout<<"Edition sur place (graphe recalcule)"<<endl;  break;
-    case  3 : sout<<"Modele reconstruit"<<endl; break;
-    case  4 : sout<<"Edition sur place, nouveau Protocole"<<endl;  break;
-    case  5 : sout<<"Nouveau Modele avec nouveau Protocole"<<endl; break;
+    case  1 : sout<<"Transformation locale (graphe non touche)"<<Message_EndLine; break;
+    case  2 : sout<<"Edition sur place (graphe recalcule)"<<Message_EndLine;  break;
+    case  3 : sout<<"Modele reconstruit"<<Message_EndLine; break;
+    case  4 : sout<<"Edition sur place, nouveau Protocole"<<Message_EndLine;  break;
+    case  5 : sout<<"Nouveau Modele avec nouveau Protocole"<<Message_EndLine; break;
     default : break;
   }
   return ((effect > 0) ? IFSelect_RetDone : IFSelect_RetFail);
@@ -1612,7 +1612,7 @@ static IFSelect_ReturnStatus fun6465
   }
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (modif.IsNull())
-    { sout<<"Pas un nom de Modifier : "<<arg1<<endl;  return IFSelect_RetError;  }
+    { sout<<"Pas un nom de Modifier : "<<arg1<<Message_EndLine;  return IFSelect_RetError;  }
 
   Handle(TColStd_HSequenceOfTransient) list;
   Handle(IFSelect_SelectPointed) sp;
@@ -1624,21 +1624,21 @@ static IFSelect_ReturnStatus fun6465
 
   Standard_Integer effect = 0;
   effect = WS->RunModifierSelected (modif,sp,runcopy);
-//      sout<<"Modifier applique sur TransformStandard #"<<WS->ItemIdent(tsf)<<endl;
+//      sout<<"Modifier applique sur TransformStandard #"<<WS->ItemIdent(tsf)<<std::endl;
   switch (effect) {
-    case -4 : sout<<"Edition sur place, nouveau Protocole, erreur recalcul graphe"<<endl; break;
-    case -3 : sout<<"Erreur, Transformation ignoree"<<endl; break;
-    case -2 : sout<<"Erreur sur edition sur place, risque de corruption (verifier)"<<endl; break;
-    case -1 : sout<<"Erreur sur edition locale, risque de corruption (verifier)"<<endl; break;
+    case -4 : sout<<"Edition sur place, nouveau Protocole, erreur recalcul graphe"<<Message_EndLine; break;
+    case -3 : sout<<"Erreur, Transformation ignoree"<<Message_EndLine; break;
+    case -2 : sout<<"Erreur sur edition sur place, risque de corruption (verifier)"<<Message_EndLine; break;
+    case -1 : sout<<"Erreur sur edition locale, risque de corruption (verifier)"<<Message_EndLine; break;
     case  0 :
-      if   (modif.IsNull()) sout<<"Erreur, pas un Modifier: "<<arg1<<endl;
-      else sout<<"Execution non faite"<<endl;
+      if   (modif.IsNull()) sout<<"Erreur, pas un Modifier: "<<arg1<<Message_EndLine;
+      else sout<<"Execution non faite"<<Message_EndLine;
 	      break;
-    case  1 : sout<<"Transformation locale (graphe non touche)"<<endl; break;
-    case  2 : sout<<"Edition sur place (graphe recalcule)"<<endl;  break;
-    case  3 : sout<<"Modele reconstruit"<<endl; break;
-    case  4 : sout<<"Edition sur place, nouveau Protocole"<<endl;  break;
-    case  5 : sout<<"Nouveau Modele avec nouveau Protocole"<<endl; break;
+    case  1 : sout<<"Transformation locale (graphe non touche)"<<Message_EndLine; break;
+    case  2 : sout<<"Edition sur place (graphe recalcule)"<<Message_EndLine;  break;
+    case  3 : sout<<"Modele reconstruit"<<Message_EndLine; break;
+    case  4 : sout<<"Edition sur place, nouveau Protocole"<<Message_EndLine;  break;
+    case  5 : sout<<"Nouveau Modele avec nouveau Protocole"<<Message_EndLine; break;
     default : break;
   }
   return ((effect > 0) ? IFSelect_RetDone : IFSelect_RetFail);
@@ -1653,7 +1653,7 @@ static IFSelect_ReturnStatus fun66
   if (argc >= 2) opt = pilot->Word(1).Value(1);
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (opt != 'f' && opt != 'l')
-    { sout<<"Donner option : f -> root-first  l -> root-last"<<endl; return IFSelect_RetError; }
+    { sout<<"Donner option : f -> root-first  l -> root-last"<<Message_EndLine; return IFSelect_RetError; }
   return pilot->RecordItem(new IFSelect_ModifReorder(opt == 'l'));
 }
 
@@ -1665,12 +1665,12 @@ static IFSelect_ReturnStatus fun70
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    SelToggle         ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom de Selection"<<endl; return IFSelect_RetError;  }
+  if (argc < 2) { sout<<"Donner Nom de Selection"<<Message_EndLine; return IFSelect_RetError;  }
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg1));
   if (!WS->ToggleSelectExtract(sel))
-    { sout<<"Pas une SelectExtract : "<<arg1<<endl; return IFSelect_RetFail;  }
-  if (WS->IsReversedSelectExtract(sel)) sout<<arg1<<" a present Reversed"<<endl;
-  else sout<<arg1<<" a present Directe"<<endl;
+    { sout<<"Pas une SelectExtract : "<<arg1<<Message_EndLine; return IFSelect_RetFail;  }
+  if (WS->IsReversedSelectExtract(sel)) sout<<arg1<<" a present Reversed"<<Message_EndLine;
+  else sout<<arg1<<" a present Directe"<<Message_EndLine;
   return IFSelect_RetDone;
 }
 
@@ -1683,13 +1683,13 @@ static IFSelect_ReturnStatus fun71
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    SelInput          ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Donner Noms Selections cible et input"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Donner Noms Selections cible et input"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection,sou,WS->NamedItem(arg2));
   if (sel.IsNull() || sou.IsNull())
-    {  sout<<"Incorrect : "<<arg1<<","<<arg2<<endl;  return IFSelect_RetError;  }
+    {  sout<<"Incorrect : "<<arg1<<","<<arg2<<Message_EndLine;  return IFSelect_RetError;  }
   if (!WS->SetInputSelection(sel,sou)) { 
-    sout<<"Nom incorrect ou Selection "<<arg1<<" ni Extract ni Deduct"<<endl;
+    sout<<"Nom incorrect ou Selection "<<arg1<<" ni Extract ni Deduct"<<Message_EndLine;
     return IFSelect_RetFail;
   }
   return IFSelect_RetDone;
@@ -1717,7 +1717,7 @@ static IFSelect_ReturnStatus fun73
     sout<<"Donner la description du SelectRange"
       <<"    Formes admises :\n <n1> <n2>  : Range de <n1> a <n2>\n"
       <<" <n1> tout seul : Range n0 <n1>\n  from <n1>  : Range From <n1>\n"
-      <<"  until <n2> : Range Until <n2>"<<endl;
+      <<"  until <n2> : Range Until <n2>"<<Message_EndLine;
     return IFSelect_RetVoid;
   }
 
@@ -1725,13 +1725,13 @@ static IFSelect_ReturnStatus fun73
   Handle(IFSelect_SelectRange) sel;
 //                                         Range From
   if (pilot->Word(1).IsEqual("from")) {
-    if (argc < 3) { sout<<"Forme admise : from <i>"<<endl; return IFSelect_RetError; }
+    if (argc < 3) { sout<<"Forme admise : from <i>"<<Message_EndLine; return IFSelect_RetError; }
     low = GetCasted(IFSelect_IntParam,WS->NamedItem(arg2));
     sel = new IFSelect_SelectRange;
     sel->SetFrom (low);
 //                                         Range Until
   } else if (pilot->Word(1).IsEqual("until")) {
-    if (argc < 3) { sout<<"Forme admise : until <i>"<<endl; return IFSelect_RetError; }
+    if (argc < 3) { sout<<"Forme admise : until <i>"<<Message_EndLine; return IFSelect_RetError; }
     up  = GetCasted(IFSelect_IntParam,WS->NamedItem(arg2));
     sel = new IFSelect_SelectRange;
     sel->SetUntil (up);
@@ -1777,15 +1777,15 @@ static IFSelect_ReturnStatus fun76
   Handle(IFSelect_Selection) sel = new IFSelect_SelectDiff;
   if (sel.IsNull()) return IFSelect_RetFail;
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) sout<<"Diff sans input : ne pas oublier de les definir (ctlmain, ctlsec)!"<<endl;
+  if (argc < 3) sout<<"Diff sans input : ne pas oublier de les definir (ctlmain, ctlsec)!"<<Message_EndLine;
   DeclareAndCast(IFSelect_Selection,selmain,WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection,selsec ,WS->NamedItem(arg2));
   if (argc >= 2)
     if (!WS->SetControl(sel,selmain,Standard_True))
-      sout<<"Echec ControlMain:"<<arg1<<" , a refaire (ctlmain)"<<endl;
+      sout<<"Echec ControlMain:"<<arg1<<" , a refaire (ctlmain)"<<Message_EndLine;
   if (argc >= 3)
     if (!WS->SetControl(sel,selsec,Standard_False))
-      sout<<"Echec ControlSecond:"<<arg2<<" , a refaire (ctlsec)"<<endl;
+      sout<<"Echec ControlSecond:"<<arg2<<" , a refaire (ctlsec)"<<Message_EndLine;
   return pilot->RecordItem (sel);
 }
 
@@ -1798,11 +1798,11 @@ static IFSelect_ReturnStatus fun77
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    SelControlMain       ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Donner Noms de Control et MainInput"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Donner Noms de Control et MainInput"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection,selmain,WS->NamedItem(arg2));
   if (WS->SetControl(sel,selmain,Standard_True)) return IFSelect_RetDone;
-  sout<<"Nom incorrect ou Selection "<<arg1<<" pas de type Control"<<endl;
+  sout<<"Nom incorrect ou Selection "<<arg1<<" pas de type Control"<<Message_EndLine;
   return IFSelect_RetFail;
 }
 
@@ -1815,11 +1815,11 @@ static IFSelect_ReturnStatus fun78
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    SelControlSecond       ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Donner Noms de Control et SecondInput"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Donner Noms de Control et SecondInput"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection,seldif,WS->NamedItem(arg2));
   if (WS->SetControl(sel,seldif,Standard_False))  return IFSelect_RetDone;
-  sout<<"Nom incorrect ou Selection "<<arg1<<" pas de type Control"<<endl;
+  sout<<"Nom incorrect ou Selection "<<arg1<<" pas de type Control"<<Message_EndLine;
   return IFSelect_RetFail;
 }
 
@@ -1840,11 +1840,11 @@ static IFSelect_ReturnStatus fun80
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    SelCombAdd        ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Donner n0 Combine et une Input"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Donner n0 Combine et une Input"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection,seladd,WS->NamedItem(arg2));
   if (WS->CombineAdd(sel,seladd)) return IFSelect_RetDone;
-  sout<<"Nom incorrect ou Selection "<<arg1<<" pas Combine"<<endl;
+  sout<<"Nom incorrect ou Selection "<<arg1<<" pas Combine"<<Message_EndLine;
   return IFSelect_RetFail;
 }
 
@@ -1857,11 +1857,11 @@ static IFSelect_ReturnStatus fun81
   const Standard_CString arg2 = pilot->Arg(2);
 //        ****    SelCombRem        ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Donner n0 Combine et RANG a supprimer"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Donner n0 Combine et RANG a supprimer"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Selection,sel,WS->NamedItem(arg1));
   DeclareAndCast(IFSelect_Selection,inp,WS->NamedItem(arg2));
   if (WS->CombineRemove(sel,inp)) return IFSelect_RetDone;
-  sout<<"Nom incorrect ou Selection "<<arg1<<" ni Union ni Intersection"<<endl;
+  sout<<"Nom incorrect ou Selection "<<arg1<<" ni Union ni Intersection"<<Message_EndLine;
   return IFSelect_RetFail;
 }
 
@@ -1873,7 +1873,7 @@ static IFSelect_ReturnStatus fun82
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    SelEntNumber      ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner Nom IntParam pour n0 Entite"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner Nom IntParam pour n0 Entite"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_IntParam,par,WS->NamedItem(arg1));
   Handle(IFSelect_SelectEntityNumber) sel = new IFSelect_SelectEntityNumber;
   sel->SetNumber(par);
@@ -1903,7 +1903,7 @@ static IFSelect_ReturnStatus fun85
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    SelTextType Exact ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner le TYPE a selectionner"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner le TYPE a selectionner"<<Message_EndLine; return IFSelect_RetError; }
   return pilot->RecordItem (new IFSelect_SelectSignature
 			    (new IFSelect_SignType,arg1,Standard_True));
 }
@@ -1936,7 +1936,7 @@ static IFSelect_ReturnStatus fun89
   const Standard_CString arg1 = pilot->Arg(1);
 //        ****    SelTextType Contain **
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner le TYPE a selectionner"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner le TYPE a selectionner"<<Message_EndLine; return IFSelect_RetError; }
   return pilot->RecordItem (new IFSelect_SelectSignature
 			    (new IFSelect_SignType,arg1,Standard_False));
 }
@@ -1951,7 +1951,7 @@ static IFSelect_ReturnStatus fun90
     (pilot->Session(),pilot->CommandPart(1));
     if (list.IsNull()) return IFSelect_RetFail;
     Handle(Message_Messenger) sout = Message::DefaultMessenger();
-    sout<<"SelectPointed : "<<list->Length()<<" entities"<<endl;
+    sout<<"SelectPointed : "<<list->Length()<<" entities"<<Message_EndLine;
     sp->AddList (list);
   }
   return pilot->RecordItem (sp);
@@ -1968,22 +1968,22 @@ static IFSelect_ReturnStatus fun91
   if (argc < 2) {
     sout<<"Donner NOM SelectPointed + Option(s) :\n"
         <<" aucune : liste des entites pointees\n"
-	<<" 0: Clear  +nn ajout entite nn  -nn enleve nn  /nn toggle nn"<<endl;
+	<<" 0: Clear  +nn ajout entite nn  -nn enleve nn  /nn toggle nn"<<Message_EndLine;
 	return IFSelect_RetError;
   }
   DeclareAndCast(IFSelect_SelectPointed,sp,WS->NamedItem(arg1));
-  if (sp.IsNull()) { sout<<"Pas une SelectPointed:"<<arg1<<endl; return IFSelect_RetError; }
+  if (sp.IsNull()) { sout<<"Pas une SelectPointed:"<<arg1<<Message_EndLine; return IFSelect_RetError; }
   const Handle(Interface_InterfaceModel) &model = WS->Model();  // pour Print
   if (argc == 2) {    // listage simple
     Standard_Integer nb = sp->NbItems();
-    sout<<" SelectPointed : "<<arg1<<" : "<<nb<<" Items :"<<endl;
+    sout<<" SelectPointed : "<<arg1<<" : "<<nb<<" Items :"<<Message_EndLine;
     for (Standard_Integer i = 1; i <= nb; i ++) {
       Handle(Standard_Transient) pointed = sp->Item(i);
       Standard_Integer id = WS->StartingNumber(pointed);
       if (id == 0) sout <<" (inconnu)";
       else  {  sout<<"  "; model->Print(pointed,sout);  }
     }
-    if (nb > 0) sout<<endl;
+    if (nb > 0) sout<<Message_EndLine;
     return IFSelect_RetDone;
   }
 
@@ -1991,25 +1991,25 @@ static IFSelect_ReturnStatus fun91
     const TCollection_AsciiString argi = pilot->Word(ia);
     Standard_Integer id = pilot->Number(&(argi.ToCString())[1]);
     if (id == 0) {
-      if (!argi.IsEqual("0")) sout<<"Incorrect,ignore:"<<argi<<endl;
-      else {  sout<<"Clear SelectPointed"<<endl; sp->Clear(); }
+      if (!argi.IsEqual("0")) sout<<"Incorrect,ignore:"<<argi<<Message_EndLine;
+      else {  sout<<"Clear SelectPointed"<<Message_EndLine; sp->Clear(); }
     } else if (argi.Value(1) == '-') {
       Handle(Standard_Transient) item = WS->StartingEntity(id);
       if (sp->Remove(item)) sout<<"Removed:no."<<id;
       else sout<<" Echec Remove "<<id;
-      sout<<": "; model->Print(item,sout);  sout<<endl;
+      sout<<": "; model->Print(item,sout);  sout<<Message_EndLine;
     } else if (argi.Value(1) == '/') {
       Handle(Standard_Transient) item = WS->StartingEntity(id);
       if (sp->Remove(item)) sout<<"Toggled:n0."<<id;
       else sout<<" Echec Toggle "<<id;
-      sout<<": "; model->Print(item,sout);  sout<<endl;
+      sout<<": "; model->Print(item,sout);  sout<<Message_EndLine;
     } else if (argi.Value(1) == '+') {
       Handle(Standard_Transient) item = WS->StartingEntity(id);
       if (sp->Add(item)) sout<<"Added:no."<<id;
       else sout<<" Echec Add "<<id;
-      sout<<": "; model->Print(item,sout);  sout<<endl;
+      sout<<": "; model->Print(item,sout);  sout<<Message_EndLine;
     } else {
-      sout<<"Ignore:"<<argi<<" , donner n0 PRECEDE de + ou - ou /"<<endl;
+      sout<<"Ignore:"<<argi<<" , donner n0 PRECEDE de + ou - ou /"<<Message_EndLine;
     }
   }
   return IFSelect_RetDone;
@@ -2033,7 +2033,7 @@ static IFSelect_ReturnStatus fun93
   Handle(IFSelect_WorkSession) WS = pilot->Session();
 //        ****    SelSignature        ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Give name of Signature or Counter, text + option exact(D) else contains"<<endl; return IFSelect_RetError; }
+  if (argc < 3) { sout<<"Give name of Signature or Counter, text + option exact(D) else contains"<<Message_EndLine; return IFSelect_RetError; }
   Standard_Boolean exact = Standard_True;
   if (argc > 3) { if (pilot->Arg(3)[0] == 'c') exact = Standard_False; }
 
@@ -2043,7 +2043,7 @@ static IFSelect_ReturnStatus fun93
 
   if (!sign.IsNull())     sel = new IFSelect_SelectSignature (sign,arg2,exact);
   else if (!cnt.IsNull()) sel = new IFSelect_SelectSignature (cnt,arg2,exact);
-  else { sout<<arg1<<":neither Signature nor Counter"<<endl; return IFSelect_RetError; }
+  else { sout<<arg1<<":neither Signature nor Counter"<<Message_EndLine; return IFSelect_RetError; }
 
   return pilot->RecordItem(sel);
 }
@@ -2056,9 +2056,9 @@ static IFSelect_ReturnStatus fun94
   Handle(IFSelect_WorkSession) WS = pilot->Session();
 //        ****    SignCounter        ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner nom signature"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner nom signature"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_Signature,sign,WS->NamedItem(arg1));
-  if (sign.IsNull()) { sout<<arg1<<":pas une signature"<<endl; return IFSelect_RetError; }
+  if (sign.IsNull()) { sout<<arg1<<":pas une signature"<<Message_EndLine; return IFSelect_RetError; }
   Handle(IFSelect_SignCounter) cnt = new IFSelect_SignCounter (sign,Standard_True,Standard_True);
   return pilot->RecordItem(cnt);
 }
@@ -2071,9 +2071,9 @@ static IFSelect_ReturnStatus funbselected
   Handle(IFSelect_WorkSession) WS = pilot->Session();
 //        ****    NbSelected = GraphCounter        ****
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Donner nom selection (deduction) a appliquer"<<endl; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Donner nom selection (deduction) a appliquer"<<Message_EndLine; return IFSelect_RetError; }
   DeclareAndCast(IFSelect_SelectDeduct,applied,WS->GiveSelection(arg1));
-  if (applied.IsNull()) { sout<<arg1<<":pas une SelectDeduct"<<endl; return IFSelect_RetError; }
+  if (applied.IsNull()) { sout<<arg1<<":pas une SelectDeduct"<<Message_EndLine; return IFSelect_RetError; }
   Handle(IFSelect_GraphCounter) cnt = new IFSelect_GraphCounter (Standard_True,Standard_True);
   cnt->SetApplied (applied);
   return pilot->RecordItem(cnt);
@@ -2088,7 +2088,7 @@ static IFSelect_ReturnStatus fun_editlist
 {
   Standard_Integer argc = pilot->NbWords();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give the name of an EditForm or an Editor"<<endl;
+  if (argc < 2) { sout<<"Give the name of an EditForm or an Editor"<<Message_EndLine;
 		  return IFSelect_RetError;  }
   const Standard_CString arg1 = pilot->Arg(1);
   const Standard_CString arg2 = pilot->Arg(2);
@@ -2099,7 +2099,7 @@ static IFSelect_ReturnStatus fun_editlist
   DeclareAndCast(IFSelect_EditForm,edf,WS->NamedItem(arg1));
   Handle(IFSelect_Editor) edt;
   if (!edf.IsNull()) {
-    sout<<"Print EditForm "<<arg1<<endl;
+    sout<<"Print EditForm "<<arg1<<Message_EndLine;
     edt = edf->Editor();
     if (argc < 3) {
 
@@ -2108,14 +2108,14 @@ static IFSelect_ReturnStatus fun_editlist
       if (edt.IsNull()) edt = GetCasted(IFSelect_Editor,WS->NamedItem(arg1));
       if (edt.IsNull()) return IFSelect_RetVoid;
 
-      sout<<"Editor, Label : "<<edt->Label()<<endl;
-      sout<<endl<<" --  Names (short - complete) + Labels of Values"<<endl;
+      sout<<"Editor, Label : "<<edt->Label()<<Message_EndLine;
+      sout<<Message_EndLine<<" --  Names (short - complete) + Labels of Values"<<Message_EndLine;
       edt->PrintNames(sout);
-      sout<<endl<<" --  Definitions  --"<<endl;
+      sout<<Message_EndLine<<" --  Definitions  --"<<Message_EndLine;
       edt->PrintDefs (sout);
       if (!edf.IsNull()) {
 	edf->PrintDefs(sout);
-	sout<<endl<<"To display values, add an option : o original  f final  m modified"<<endl;
+	sout<<Message_EndLine<<"To display values, add an option : o original  f final  m modified"<<Message_EndLine;
       }
 
       return IFSelect_RetVoid;
@@ -2138,17 +2138,17 @@ static IFSelect_ReturnStatus fun_editvalue
 {
   Standard_Integer argc = pilot->NbWords();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 3) { sout<<"Give the name of an EditForm + name of Value [+ newvalue or . to nullify]"<<endl;
+  if (argc < 3) { sout<<"Give the name of an EditForm + name of Value [+ newvalue or . to nullify]"<<Message_EndLine;
 		  return IFSelect_RetError;  }
   const Standard_CString arg1 = pilot->Arg(1);
   const Standard_CString arg2 = pilot->Arg(2);
   Handle(IFSelect_WorkSession) WS = pilot->Session();
   DeclareAndCast(IFSelect_EditForm,edf,WS->NamedItem(arg1));
   if (edf.IsNull())
-    {  sout<<"Not an EditForm : "<<arg1<<endl; return IFSelect_RetError;  }
+    {  sout<<"Not an EditForm : "<<arg1<<Message_EndLine; return IFSelect_RetError;  }
   Standard_Integer num = edf->NameNumber (arg2);
-  if (num == 0) sout<<"Unknown Value Name : "<<arg2<<endl;
-  if (num <  0) sout<<"Not Extracted Value Name : "<<arg2<<endl;
+  if (num == 0) sout<<"Unknown Value Name : "<<arg2<<Message_EndLine;
+  if (num <  0) sout<<"Not Extracted Value Name : "<<arg2<<Message_EndLine;
   if (num <= 0) return IFSelect_RetError;
 
   Standard_Boolean islist = edf->Editor()->IsList(num);
@@ -2159,19 +2159,19 @@ static IFSelect_ReturnStatus fun_editvalue
 
   if (islist) {
     listr = edf->EditedList(num);
-    if (listr.IsNull()) sout<<"(NULL LIST)"<<endl;
+    if (listr.IsNull()) sout<<"(NULL LIST)"<<Message_EndLine;
     else {
       Standard_Integer ilist,nblist = listr->Length();
-      sout<<"(List : "<<nblist<<" Items)"<<endl;
+      sout<<"(List : "<<nblist<<" Items)"<<Message_EndLine;
       for (ilist = 1; ilist <= nblist; ilist ++) {
 	str = listr->Value(ilist);
-	sout<<"  ["<<ilist<<"]	"<< (str.IsNull() ? "(NULL)" : str->ToCString())<<endl;
+	sout<<"  ["<<ilist<<"]	"<< (str.IsNull() ? "(NULL)" : str->ToCString())<<Message_EndLine;
       }
     }
-    if (argc < 4) sout<<"To Edit, options by editval edit-form value-name ?"<<endl;
+    if (argc < 4) sout<<"To Edit, options by editval edit-form value-name ?"<<Message_EndLine;
   } else {
     str = edf->EditedValue (num);
-    sout<<(str.IsNull() ? "(NULL)" : str->ToCString())<<endl;
+    sout<<(str.IsNull() ? "(NULL)" : str->ToCString())<<Message_EndLine;
   }
   if (argc < 4) return IFSelect_RetVoid;
 
@@ -2182,10 +2182,10 @@ static IFSelect_ReturnStatus fun_editvalue
   const Standard_CString argval = pilot->Arg(numarg);
   if (islist) {
     if (argval[0] == '?') {
-      sout<<"To Edit, options"<<endl<<" + val : add value at end (blanks allowed)"
-	<<endl<<" +nn text : insert val before item nn"<<endl
-	<<" nn text : replace item nn with a new value"<<endl
-	<<" -nn : remove item nn"<<endl<<" . : clear the list"<<endl;
+      sout<<"To Edit, options"<<Message_EndLine<<" + val : add value at end (blanks allowed)"
+	<<Message_EndLine<<" +nn text : insert val before item nn"<<Message_EndLine
+	<<" nn text : replace item nn with a new value"<<Message_EndLine
+	<<" -nn : remove item nn"<<Message_EndLine<<" . : clear the list"<<Message_EndLine;
       return IFSelect_RetVoid;
     }
     Standard_Boolean stated = Standard_False;
@@ -2207,15 +2207,15 @@ static IFSelect_ReturnStatus fun_editvalue
 	(new TCollection_HAsciiString(pilot->CommandPart(numarg+1)),numset);
     }
     if (stated) stated = edf->ModifyList (num,listed,Standard_True);
-    if (stated) sout<<"List Edition done"<<endl;
-    else sout<<"List Edition not done, option"<<argval<<endl;
+    if (stated) sout<<"List Edition done"<<Message_EndLine;
+    else sout<<"List Edition not done, option"<<argval<<Message_EndLine;
   } else {
     if (argval[0] == '.' && argval[1] == '\0') str.Nullify();
     else str = new TCollection_HAsciiString (pilot->CommandPart(numarg));
     if (edf->Modify (num,str,Standard_True)) {
-      sout<<"Now set to "<<(str.IsNull() ? "(NULL)" : str->ToCString())<<endl;
+      sout<<"Now set to "<<(str.IsNull() ? "(NULL)" : str->ToCString())<<Message_EndLine;
     } else {
-      sout<<"Modify not done"<<endl;  return IFSelect_RetFail;
+      sout<<"Modify not done"<<Message_EndLine;  return IFSelect_RetFail;
     }
   }
   return IFSelect_RetDone;
@@ -2226,24 +2226,24 @@ static IFSelect_ReturnStatus fun_editclear
 {
   Standard_Integer argc = pilot->NbWords();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give the name of an EditForm [+ name of Value  else all]"<<endl;
+  if (argc < 2) { sout<<"Give the name of an EditForm [+ name of Value  else all]"<<Message_EndLine;
 		  return IFSelect_RetError;  }
   const Standard_CString arg1 = pilot->Arg(1);
   const Standard_CString arg2 = pilot->Arg(2);
   Handle(IFSelect_WorkSession) WS = pilot->Session();
   DeclareAndCast(IFSelect_EditForm,edf,WS->NamedItem(arg1));
   if (edf.IsNull())
-    {  sout<<"Not an EditForm : "<<arg1<<endl; return IFSelect_RetError;  }
-  if (argc < 3) { edf->ClearEdit(); sout<<"All Modifications Cleared"<<endl; }
+    {  sout<<"Not an EditForm : "<<arg1<<Message_EndLine; return IFSelect_RetError;  }
+  if (argc < 3) { edf->ClearEdit(); sout<<"All Modifications Cleared"<<Message_EndLine; }
   else {
     Standard_Integer num = edf->NameNumber (arg2);
-    if (num == 0) sout<<"Unknown Value Name : "<<arg2<<endl;
-    if (num <  0) sout<<"Not Extracted Value Name : "<<arg2<<endl;
+    if (num == 0) sout<<"Unknown Value Name : "<<arg2<<Message_EndLine;
+    if (num <  0) sout<<"Not Extracted Value Name : "<<arg2<<Message_EndLine;
     if (num <= 0) return IFSelect_RetError;
     if (!edf->IsModified(num))
-      { sout<<"Value "<<arg2<<" was not modified"<<endl; return IFSelect_RetVoid; }
+      { sout<<"Value "<<arg2<<" was not modified"<<Message_EndLine; return IFSelect_RetVoid; }
     edf->ClearEdit (num);
-    sout<<"Modification on Value "<<arg2<<" Cleared"<<endl;
+    sout<<"Modification on Value "<<arg2<<" Cleared"<<Message_EndLine;
   }
   return IFSelect_RetDone;
 }
@@ -2253,39 +2253,39 @@ static IFSelect_ReturnStatus fun_editapply
 {
   Standard_Integer argc = pilot->NbWords();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give the name of an EditForm [+ option keep to re-apply edited values]"<<endl;
+  if (argc < 2) { sout<<"Give the name of an EditForm [+ option keep to re-apply edited values]"<<Message_EndLine;
 		  return IFSelect_RetError;  }
   const Standard_CString arg1 = pilot->Arg(1);
   const Standard_CString arg2 = pilot->Arg(2);
   Handle(IFSelect_WorkSession) WS = pilot->Session();
   DeclareAndCast(IFSelect_EditForm,edf,WS->NamedItem(arg1));
   if (edf.IsNull())
-    {  sout<<"Not an EditForm : "<<arg1<<endl; return IFSelect_RetError;  }
+    {  sout<<"Not an EditForm : "<<arg1<<Message_EndLine; return IFSelect_RetError;  }
 
   Handle(Standard_Transient) ent = edf->Entity();
   Handle(Interface_InterfaceModel) model = edf->Model();
   if (!model.IsNull()) {
-    if (ent.IsNull()) sout<<"Applying modifications on loaded model"<<endl;
+    if (ent.IsNull()) sout<<"Applying modifications on loaded model"<<Message_EndLine;
     else {
       sout<<"Applying modifications on loaded entity : ";
       model->PrintLabel (ent,sout);
     }
   }
-  else sout<<"Applying modifications"<<endl;
+  else sout<<"Applying modifications"<<Message_EndLine;
 
   if (!edf->ApplyData (edf->Entity(),edf->Model())) {
-    sout<<"Modifications could not be applied"<<endl;
+    sout<<"Modifications could not be applied"<<Message_EndLine;
     return IFSelect_RetFail;
   }
-  sout<<"Modifications have been applied"<<endl;
+  sout<<"Modifications have been applied"<<Message_EndLine;
 
   Standard_Boolean stat = Standard_True;
   if (argc > 2 && arg2[0] == 'k') stat = Standard_False;
   if (stat) {
     edf->ClearEdit();
-    sout<<"Edited values are cleared"<<endl;
+    sout<<"Edited values are cleared"<<Message_EndLine;
   }
-  else sout<<"Edited values are kept for another loading/applying"<<endl;
+  else sout<<"Edited values are kept for another loading/applying"<<Message_EndLine;
 
   return IFSelect_RetDone;
 }
@@ -2295,33 +2295,33 @@ static IFSelect_ReturnStatus fun_editload
 {
   Standard_Integer argc = pilot->NbWords();
   Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (argc < 2) { sout<<"Give the name of an EditForm [+ Entity-Ident]"<<endl;
+  if (argc < 2) { sout<<"Give the name of an EditForm [+ Entity-Ident]"<<Message_EndLine;
 		  return IFSelect_RetError;  }
   const Standard_CString arg1 = pilot->Arg(1);
   const Standard_CString arg2 = pilot->Arg(2);
   Handle(IFSelect_WorkSession) WS = pilot->Session();
   DeclareAndCast(IFSelect_EditForm,edf,WS->NamedItem(arg1));
   if (edf.IsNull())
-    {  sout<<"Not an EditForm : "<<arg1<<endl; return IFSelect_RetError;  }
+    {  sout<<"Not an EditForm : "<<arg1<<Message_EndLine; return IFSelect_RetError;  }
 
   Standard_Integer num = (argc < 3 ? 0 : pilot->Number (arg2));
   Standard_Boolean stat = Standard_False;
   if (argc < 3) {
-    sout<<"EditForm "<<arg1<<" : Loading Model"<<endl;
+    sout<<"EditForm "<<arg1<<" : Loading Model"<<Message_EndLine;
     stat = edf->LoadModel(WS->Model());
   } else if (num <= 0) {
-    sout<<"Not an entity ident : "<<arg2<<endl;
+    sout<<"Not an entity ident : "<<arg2<<Message_EndLine;
     return IFSelect_RetError;
   } else {
-    sout<<"EditForm "<<arg1<<" : Loading Entity "<<arg2<<endl;
+    sout<<"EditForm "<<arg1<<" : Loading Entity "<<arg2<<Message_EndLine;
     stat = edf->LoadData (WS->StartingEntity(num),WS->Model());
   }
 
   if (!stat) {
-    sout<<"Loading not done"<<endl;
+    sout<<"Loading not done"<<Message_EndLine;
     return IFSelect_RetFail;
   }
-  sout<<"Loading done"<<endl;
+  sout<<"Loading done"<<Message_EndLine;
   return IFSelect_RetDone;
 }
 
@@ -2346,8 +2346,8 @@ static IFSelect_ReturnStatus fun_editload
   Standard_Integer num = 0;
   if (!name || name[0] == '\0') {
     char ligne[80];  ligne[0] = '\0';
-    cin >> ligne;
-//    cin.clear();  cin.getline (ligne,79);
+    std::cin >> ligne;
+//    std::cin.clear();  std::cin.getline (ligne,79);
     if (ligne[0] == '\0') return 0;
     num    = WS->NumberFromLabel (ligne);
   }
@@ -2392,7 +2392,7 @@ Handle(IFSelect_Dispatch)  IFSelect_Functions::GiveDispatch
   if (!dc.IsNull()) {
     Standard_Integer nb = atoi( &(nam.ToCString())[paro]);
     if (nb <= 0) {
-      sout<<" DispPerCount, count is not positive"<<endl;
+      sout<<" DispPerCount, count is not positive"<<Message_EndLine;
       disp.Nullify();
       return disp;
     }
@@ -2407,7 +2407,7 @@ Handle(IFSelect_Dispatch)  IFSelect_Functions::GiveDispatch
   if (!dp.IsNull()) {
     Standard_Integer nb = atoi( &(nam.ToCString())[paro]);
     if (nb <= 0) {
-      sout<<" DispPerFiles, count is not positive"<<endl;
+      sout<<" DispPerFiles, count is not positive"<<Message_EndLine;
       disp.Nullify();
       return disp;
     }
@@ -2422,14 +2422,14 @@ Handle(IFSelect_Dispatch)  IFSelect_Functions::GiveDispatch
   if (!ds.IsNull()) {
     DeclareAndCast(IFSelect_Signature,sg,WS->NamedItem( &(nam.ToCString())[paro]));
     if (sg.IsNull()) {
-      sout<<"DispPerSignature "<<nam<<" , Signature not valid : "<<&(nam.ToCString())[paro]<<endl;
+      sout<<"DispPerSignature "<<nam<<" , Signature not valid : "<<&(nam.ToCString())[paro]<<Message_EndLine;
       disp.Nullify();
       return disp;
     }
     if (mode) ds->SetSignCounter (new IFSelect_SignCounter(sg));
     return ds;
   }
-  sout<<"Dispatch : "<<name<<" , Parameter : "<<&(nam.ToCString())[paro]<<endl;
+  sout<<"Dispatch : "<<name<<" , Parameter : "<<&(nam.ToCString())[paro]<<Message_EndLine;
   return disp;
 }
 

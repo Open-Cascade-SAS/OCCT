@@ -234,8 +234,8 @@ void VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,const Standard_CString 
 {
   OSD_Path thePath(aFile);
   TCollection_AsciiString theFile;thePath.SystemName(theFile);
-  ofstream outfile;
-  OSD_OpenStream(outfile, theFile.ToCString(), ios::out);
+  std::ofstream outfile;
+  OSD_OpenStream(outfile, theFile.ToCString(), std::ios::out);
   Handle(VrmlConverter_IsoAspect) ia = new VrmlConverter_IsoAspect;  // UIso
   Handle(VrmlConverter_IsoAspect) ia1 = new VrmlConverter_IsoAspect; //VIso
   ia->SetMaterial(myUisoMaterial);

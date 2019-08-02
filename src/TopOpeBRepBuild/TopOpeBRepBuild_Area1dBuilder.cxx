@@ -43,10 +43,10 @@ void TopOpeBRepBuild_Area1dBuilder::DumpList(const TopOpeBRepBuild_ListOfLoop& L
   Standard_Integer iLOL;
   TopOpeBRepBuild_ListIteratorOfListOfLoop  itLOL;
   for (iLOL = 0, itLOL.Initialize(LOL); itLOL.More(); iLOL++, itLOL.Next()) {
-    if (iLOL) cout<<"               ";
-    else     cout<<"DUMP_AREA    : ";
+    if (iLOL) std::cout<<"               ";
+    else     std::cout<<"DUMP_AREA    : ";
     const Handle(TopOpeBRepBuild_Loop)& L = itLOL.Value();
-    L->Dump();cout<<endl;
+    L->Dump();std::cout<<std::endl;
   }
 #else
 void TopOpeBRepBuild_Area1dBuilder::DumpList(const TopOpeBRepBuild_ListOfLoop&)
@@ -105,9 +105,9 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder
                 
 #ifdef OCCT_DEBUG
     if (TopOpeBRepBuild_GettraceAREA()) {
-      cout<<"++++ new loop : "; L->Dump();
-      if (boundaryL) cout<<" is bound"; else cout<<" is not bound";
-      cout<<endl;
+      std::cout<<"++++ new loop : "; L->Dump();
+      if (boundaryL) std::cout<<" is bound"; else std::cout<<" is not bound";
+      std::cout<<std::endl;
     }
 #endif
 
@@ -244,10 +244,10 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     if ( ! myArea.IsEmpty() ) {
-      cout<<"------- Areas -------"<<endl;
+      std::cout<<"------- Areas -------"<<std::endl;
       for (AreaIter.Initialize(myArea);AreaIter.More();AreaIter.Next())
 	DumpList(AreaIter.Value());
-      cout<<"---------------------"<<endl;
+      std::cout<<"---------------------"<<std::endl;
     }
   }
 #endif
@@ -273,11 +273,11 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
-    cout<<"--------------------- add area loop to area : ";
-    L->Dump(); cout<<endl;
-    if (ss != NULL) cout<<(char*)ss<<endl;
+    std::cout<<"--------------------- add area loop to area : ";
+    L->Dump(); std::cout<<std::endl;
+    if (ss != NULL) std::cout<<(char*)ss<<std::endl;
     DumpList(LOL);
-    cout<<"---------------------"<<endl;
+    std::cout<<"---------------------"<<std::endl;
   }
 #endif
  }
@@ -302,9 +302,9 @@ const Standard_Address) const
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     if (ITA.More()) {
-      cout<<"--------------------- remove area loop from area : ";
-      ITA.Value()->Dump(); cout<<endl;
-      if (s != NULL) cout<<s<<endl;
+      std::cout<<"--------------------- remove area loop from area : ";
+      ITA.Value()->Dump(); std::cout<<std::endl;
+      if (s != NULL) std::cout<<s<<std::endl;
     }
   }
 #endif
@@ -314,7 +314,7 @@ const Standard_Address) const
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
     DumpList(A);
-    cout<<"---------------------"<<endl;
+    std::cout<<"---------------------"<<std::endl;
   }
 #endif
 }
@@ -343,9 +343,9 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop
   char* s2 = (char*)ss2;
 
   if (TopOpeBRepBuild_GettraceAREA()) {
-    cout<<"--------------------- add area 1 to area 2 : ";
-    if (s != NULL) cout<<s;  cout<<endl;
-    cout<<"1 : "; if (s1 != NULL) cout<<s1; cout<<endl;
+    std::cout<<"--------------------- add area 1 to area 2 : ";
+    if (s != NULL) std::cout<<s;  std::cout<<std::endl;
+    std::cout<<"1 : "; if (s1 != NULL) std::cout<<s1; std::cout<<std::endl;
     DumpList(A1);
   }
 #endif
@@ -354,9 +354,9 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRepBuild_GettraceAREA()) {
-    cout<<"2 : "; if (s2 != NULL) cout<<s2; cout<<endl;
+    std::cout<<"2 : "; if (s2 != NULL) std::cout<<s2; std::cout<<std::endl;
     DumpList(A2);
-    cout<<"---------------------"<<endl;
+    std::cout<<"---------------------"<<std::endl;
   }
 #endif
 }

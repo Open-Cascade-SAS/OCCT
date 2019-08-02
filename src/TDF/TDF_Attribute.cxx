@@ -389,7 +389,7 @@ Standard_OStream& TDF_Attribute::Dump(Standard_OStream& anOS) const
   //
   pStr=toto;
   ID().ToCString(pStr);
-  anOS<<";\tID = "<<toto<<endl;
+  anOS<<";\tID = "<<toto<<std::endl;
   return anOS;
 }
 

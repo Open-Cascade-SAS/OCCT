@@ -137,12 +137,12 @@ void IGESGeom_ToolTabulatedCylinder::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_TabulatedCylinder" << endl;
+  S << "IGESGeom_TabulatedCylinder" << Message_EndLine;
 
   S << "Directrix       : ";
   dumper.Dump(ent->Directrix(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Terminate Point : ";
   IGESData_DumpXYZL(S,level, ent->EndPoint(), ent->Location());
-  S << endl;
+  S << Message_EndLine;
 }

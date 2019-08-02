@@ -93,7 +93,7 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
 
   /**
    * Check the filled tree for the total number of items and the balance
-   * outputting these results to ostream.
+   * outputting these results to std::ostream.
    * @return
    *   the tree size (the same value is returned by method Fill()).
    */ 
@@ -107,8 +107,8 @@ template <class TheObjType, class TheBndType> class NCollection_UBTreeFiller
   {
     if (mySeqPtr.Length() > 0)
 #ifdef OCCT_DEBUG_UBTREE
-      cout << "~NCollection_UBTreeFiller: " << Fill()
-           << " objects added to the tree" << endl;
+      std::cout << "~NCollection_UBTreeFiller: " << Fill()
+           << " objects added to the tree" << std::endl;
 #else
       Fill();
 #endif
@@ -181,7 +181,7 @@ Standard_Integer NCollection_UBTreeFiller<TheObjType,TheBndType>::CheckTree
   char buf[128];
   sprintf (buf,  "Checking UBTree:%8d leaves, balance =%7.2f",
            aNumber, aLen1 / aLen0);
-  theStream << buf << endl;
+  theStream << buf << std::endl;
   return aNumber;
 }
 

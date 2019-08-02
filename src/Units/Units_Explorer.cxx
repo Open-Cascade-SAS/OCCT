@@ -132,7 +132,7 @@ void Units_Explorer::Init(const Handle(Units_UnitsSystem)& aunitssystem,
     }
 
 #ifdef OCCT_DEBUG
-  cout<<" La grandeur physique "<<aquantity<<" n'existe pas."<<endl;
+  std::cout<<" La grandeur physique "<<aquantity<<" n'existe pas."<<std::endl;
 #endif
 }
 
@@ -167,7 +167,7 @@ void Units_Explorer::Init(const Handle(Units_UnitsDictionary)& aunitsdictionary,
     }
 
 #ifdef OCCT_DEBUG
-  cout<<" La grandeur physique "<<aquantity<<" n'existe pas."<<endl;
+  std::cout<<" La grandeur physique "<<aquantity<<" n'existe pas."<<std::endl;
 #endif
 }
 

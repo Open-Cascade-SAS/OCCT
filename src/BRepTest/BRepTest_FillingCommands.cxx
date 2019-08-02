@@ -174,7 +174,7 @@ static Standard_Integer plate (Draw_Interpretor & di,Standard_Integer n,const ch
   Henri.Perform();
 
   Standard_Real ErrG0 = 1.1*Henri.G0Error();
-  //cout<<" dist. max = "<<Henri.G0Error()<<" ; angle max = "<<Henri.G1Error()<<endl;
+  //std::cout<<" dist. max = "<<Henri.G0Error()<<" ; angle max = "<<Henri.G1Error()<<std::endl;
   di<<" dist. max = "<<Henri.G0Error()<<" ; angle max = "<<Henri.G1Error()<<"\n";
 
   BRepBuilderAPI_MakeWire MW;
@@ -375,7 +375,7 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
 
   Standard_Real dmax = Henri.G0Error(),
                 anmax = Henri.G1Error();
-  //cout<<" dist. max = "<<dmax<<" ; angle max = "<<anmax<<endl;
+  //std::cout<<" dist. max = "<<dmax<<" ; angle max = "<<anmax<<std::endl;
   di<<" dist. max = "<<dmax<<" ; angle max = "<<anmax<<"\n";
 
   Tol3d = Draw::Atof(a[3*NbCurFront+4]);
@@ -507,7 +507,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 	{
 	  if (F.IsNull())
 	    {
-	      //cout<<endl<<"Wrong parameters"<<endl<<endl;
+	      //std::cout<<std::endl<<"Wrong parameters"<<std::endl<<std::endl;
 	      di<<"\nWrong parameters\n\n";
 	      return 1;
 	    }
@@ -526,7 +526,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
       E = TopoDS::Edge( DBRep::Get(a[i++], TopAbs_EDGE) );
       if (E.IsNull())
 	{
-	  //cout<<"Wrong parameters"<<endl;
+	  //std::cout<<"Wrong parameters"<<std::endl;
 	  di<<"Wrong parameters\n";
 	  return 1;
 	}
@@ -558,7 +558,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 	  F = TopoDS::Face( DBRep::Get(a[i++], TopAbs_FACE));
 	  if (F.IsNull()) 
 	    {
-	      //cout<<"Wrong parameters"<<endl;
+	      //std::cout<<"Wrong parameters"<<std::endl;
 	      di<<"Wrong parameters\n";
 	      return 1;
 	    }
@@ -571,7 +571,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   MakeFilling.Build();
   if (! MakeFilling.IsDone())
     {
-      //cout<<"filling failed"<<endl;
+      //std::cout<<"filling failed"<<std::endl;
       di<<"filling failed\n";
       return 0;
     }
@@ -579,7 +579,7 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   Standard_Real dmax = MakeFilling.G0Error(),
                 angmax = MakeFilling.G1Error(),
                 curvmax = MakeFilling.G2Error();
-  //cout<<" dist. max = "<<dmax<<" ; angle max = "<<angmax<<" ; diffcurv max = "<<curvmax<<endl;
+  //std::cout<<" dist. max = "<<dmax<<" ; angle max = "<<angmax<<" ; diffcurv max = "<<curvmax<<std::endl;
   di<<" dist. max = "<<dmax<<" ; angle max = "<<angmax<<" ; diffcurv max = "<<curvmax<<"\n";
 
   TopoDS_Face ResFace= TopoDS::Face( MakeFilling.Shape() );
@@ -589,8 +589,8 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   Chrono.Stop();
   Standard_Real Tps;
   Chrono.Show(Tps);
-  //cout<<"*** FIN DE FILLING ***"<<endl;
-  //cout<<"Temps de calcul  : "<<Tps<<endl;
+  //std::cout<<"*** FIN DE FILLING ***"<<std::endl;
+  //std::cout<<"Temps de calcul  : "<<Tps<<std::endl;
   di<<"*** FIN DE FILLING ***\n";
   di<<"Temps de calcul  : "<<Tps<<"\n";
 #endif
@@ -602,12 +602,12 @@ static Standard_Integer fillingparam( Draw_Interpretor & di, Standard_Integer n,
 {
   if ( n == 1) {
 
-    //cout << "fillingparam : options are"  <<endl;
-    //cout << "-l : to list current values" << endl;
-    //cout << "-i : to set default values"   << endl;
-    //cout << "-r deg nbPonC nbIt anis : to set filling options" <<endl;
-    //cout << "-c t2d t3d tang tcur : to set tolerances" << endl;
-    //cout << "-a maxdeg maxseg : Approximation option" << endl;
+    //std::cout << "fillingparam : options are"  <<std::endl;
+    //std::cout << "-l : to list current values" << std::endl;
+    //std::cout << "-i : to set default values"   << std::endl;
+    //std::cout << "-r deg nbPonC nbIt anis : to set filling options" <<std::endl;
+    //std::cout << "-c t2d t3d tang tcur : to set tolerances" << std::endl;
+    //std::cout << "-a maxdeg maxseg : Approximation option" << std::endl;
     di << "fillingparam : options are"  <<"\n";
     di << "-l : to list current values\n";
     di << "-i : to set default values"   << "\n";
@@ -622,19 +622,19 @@ static Standard_Integer fillingparam( Draw_Interpretor & di, Standard_Integer n,
       const char* flag = AS.ToCString();
       if (strcmp( flag, "-l" ) == 0 && n == 2)
 	{
-	  //cout<<endl;
-	  //cout<<"Degree = "<<Degree<<endl;
-	  //cout<<"NbPtsOnCur = "<<NbPtsOnCur<<endl;
-	  //cout<<"NbIter = "<<NbIter<<endl;
-	  //cout<<"Anisotropie = "<<Anisotropie<<endl<<endl;
+	  //std::cout<<std::endl;
+	  //std::cout<<"Degree = "<<Degree<<std::endl;
+	  //std::cout<<"NbPtsOnCur = "<<NbPtsOnCur<<std::endl;
+	  //std::cout<<"NbIter = "<<NbIter<<std::endl;
+	  //std::cout<<"Anisotropie = "<<Anisotropie<<std::endl<<std::endl;
 	  //
-	  //cout<<"Tol2d = "<<Tol2d<<endl;
-	  //cout<<"Tol3d = "<<Tol3d<<endl;
-	  //cout<<"TolAng = "<<TolAng<<endl;
-	  //cout<<"TolCurv = "<<TolCurv<<endl<<endl;
+	  //std::cout<<"Tol2d = "<<Tol2d<<std::endl;
+	  //std::cout<<"Tol3d = "<<Tol3d<<std::endl;
+	  //std::cout<<"TolAng = "<<TolAng<<std::endl;
+	  //std::cout<<"TolCurv = "<<TolCurv<<std::endl<<std::endl;
 	  //
-	  //cout<<"MaxDeg = "<<MaxDeg<<endl;
-	  //cout<<"MaxSegments = "<<MaxSegments<<endl<<endl;
+	  //std::cout<<"MaxDeg = "<<MaxDeg<<std::endl;
+	  //std::cout<<"MaxSegments = "<<MaxSegments<<std::endl<<std::endl;
 	  di<<"\n";
 	  di<<"Degree = "<<Degree<<"\n";
 	  di<<"NbPtsOnCur = "<<NbPtsOnCur<<"\n";
@@ -685,7 +685,7 @@ static Standard_Integer fillingparam( Draw_Interpretor & di, Standard_Integer n,
 	}
       else
 	{
-	  //cout<<"Wrong parameters"<<endl;
+	  //std::cout<<"Wrong parameters"<<std::endl;
 	  di<<"Wrong parameters\n";
 	  return 1;
 	}

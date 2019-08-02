@@ -785,9 +785,9 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution
     }
     catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: IgesToBRep_TopoSurface::"
+      std::cout << "Warning: IgesToBRep_TopoSurface::"
                     "TransferSurfaceOfRevolution(): exception by Geom: ";
-      anException.Print ( cout ); cout << endl;
+      anException.Print ( std::cout ); std::cout << std::endl;
 #endif
       (void)anException;
     }//catch (Standard_Failure)
@@ -918,8 +918,8 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: IgesToBRep_TopoSurface::TransferTabulatedCylinder(): exception by Geom: ";
-    anException.Print ( cout ); cout << endl;
+    std::cout << "Warning: IgesToBRep_TopoSurface::TransferTabulatedCylinder(): exception by Geom: ";
+    anException.Print ( std::cout ); std::cout << std::endl;
 #endif
     (void)anException;
   }
@@ -1310,7 +1310,7 @@ TopoDS_Shape  IGESToBRep_TopoSurface::TransferBoundedSurface
   if (myshape.IsNull()) {
     //#55 rln 24.12.98 UKI60878 entity D593
 #ifdef OCCT_DEBUG
-    cout << "Fail: IGESToBRep_TopoSurface::TransferBoundedSurface  UntrimmedSurface is translated into Null" << endl;
+    std::cout << "Fail: IGESToBRep_TopoSurface::TransferBoundedSurface  UntrimmedSurface is translated into Null" << std::endl;
 #endif
     return res;
   }

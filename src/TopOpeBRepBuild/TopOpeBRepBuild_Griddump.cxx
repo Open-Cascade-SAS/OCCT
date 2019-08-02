@@ -132,18 +132,18 @@ void TopOpeBRepBuild_Builder::PrintSur(const TopoDS_Face& F)
   BRepAdaptor_Surface STA_Surface(F);
   GeomAbs_SurfaceType t =  STA_Surface.GetType();
   switch(t) {
-  case GeomAbs_Plane               : cout<<"PLANE";               break;
-  case GeomAbs_Cylinder            : cout<<"CYLINDER";            break;
-  case GeomAbs_Cone                : cout<<"CONE";                break;
-  case GeomAbs_Sphere              : cout<<"SPHERE";              break;
-  case GeomAbs_Torus               : cout<<"TORUS";               break;
-  case GeomAbs_BezierSurface       : cout<<"BEZIERSURFACE";       break;
-  case GeomAbs_BSplineSurface      : cout<<"BSPLINESURFACE";      break;
-  case GeomAbs_SurfaceOfRevolution : cout<<"SURFACEOFREVOLUTION"; break;
-  case GeomAbs_SurfaceOfExtrusion  : cout<<"SURFACEOFEXTRUSION";  break;
-  case GeomAbs_OtherSurface : default : cout<<"OTHERSURFACE";     break;
+  case GeomAbs_Plane               : std::cout<<"PLANE";               break;
+  case GeomAbs_Cylinder            : std::cout<<"CYLINDER";            break;
+  case GeomAbs_Cone                : std::cout<<"CONE";                break;
+  case GeomAbs_Sphere              : std::cout<<"SPHERE";              break;
+  case GeomAbs_Torus               : std::cout<<"TORUS";               break;
+  case GeomAbs_BezierSurface       : std::cout<<"BEZIERSURFACE";       break;
+  case GeomAbs_BSplineSurface      : std::cout<<"BSPLINESURFACE";      break;
+  case GeomAbs_SurfaceOfRevolution : std::cout<<"SURFACEOFREVOLUTION"; break;
+  case GeomAbs_SurfaceOfExtrusion  : std::cout<<"SURFACEOFEXTRUSION";  break;
+  case GeomAbs_OtherSurface : default : std::cout<<"OTHERSURFACE";     break;
   }
-  cout.flush();
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::PrintSur(const TopoDS_Face& )
@@ -165,17 +165,17 @@ void TopOpeBRepBuild_Builder::PrintCur(const TopoDS_Edge& E)
   GeomAbs_CurveType t = GC.GetType();
 
   switch(t) {
-  case GeomAbs_Line                : cout<<"LINE";              break;
-  case GeomAbs_Circle              : cout<<"CIRCLE";            break;
-  case GeomAbs_Ellipse             : cout<<"ELLIPSE";           break;
-  case GeomAbs_Hyperbola           : cout<<"HYPERBOLA";         break;
-  case GeomAbs_Parabola            : cout<<"PARABOLA";          break;
-  case GeomAbs_BezierCurve         : cout<<"BEZIERCURVE";       break;
-  case GeomAbs_BSplineCurve        : cout<<"BSPLINECURVE "<<GC.BSpline()->Degree(); break;
-  case GeomAbs_OffsetCurve         : cout<<"OFFSETCURVE";       break;
-  case GeomAbs_OtherCurve          : cout<<"OTHERCURVE";        break;
+  case GeomAbs_Line                : std::cout<<"LINE";              break;
+  case GeomAbs_Circle              : std::cout<<"CIRCLE";            break;
+  case GeomAbs_Ellipse             : std::cout<<"ELLIPSE";           break;
+  case GeomAbs_Hyperbola           : std::cout<<"HYPERBOLA";         break;
+  case GeomAbs_Parabola            : std::cout<<"PARABOLA";          break;
+  case GeomAbs_BezierCurve         : std::cout<<"BEZIERCURVE";       break;
+  case GeomAbs_BSplineCurve        : std::cout<<"BSPLINECURVE "<<GC.BSpline()->Degree(); break;
+  case GeomAbs_OffsetCurve         : std::cout<<"OFFSETCURVE";       break;
+  case GeomAbs_OtherCurve          : std::cout<<"OTHERCURVE";        break;
   }
-  cout.flush();
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::PrintCur(const TopoDS_Edge&)
@@ -205,8 +205,8 @@ void TopOpeBRepBuild_Builder::PrintPnt(const TopoDS_Vertex&)
 #ifdef OCCT_DEBUG
 void TopOpeBRepBuild_Builder::PrintOri(const TopoDS_Shape& S) 
 { 
-  TopAbs::Print(S.Orientation(),cout);
-  cout.flush(); 
+  TopAbs::Print(S.Orientation(),std::cout);
+  std::cout.flush(); 
 }
 #else
 void TopOpeBRepBuild_Builder::PrintOri(const TopoDS_Shape& /*S*/) 
@@ -243,7 +243,7 @@ TCollection_AsciiString TopOpeBRepBuild_Builder::StringState(const TopAbs_State)
 #ifdef OCCT_DEBUG
 void TopOpeBRepBuild_Builder::GdumpPNT(const gp_Pnt& P)
 { 
-  cout<<P.X()<<" "<<P.Y()<<" "<<P.Z();  cout.flush();
+  std::cout<<P.X()<<" "<<P.Y()<<" "<<P.Z();  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpPNT(const gp_Pnt&)
@@ -260,7 +260,7 @@ void TopOpeBRepBuild_Builder::GdumpORIPARPNT(const TopAbs_Orientation o,
                                              const Standard_Real p,
                                              const gp_Pnt& Pnt)
 { 
-  TopAbs::Print(o,cout); cout<<" "<<p<<" pnt "; GdumpPNT(Pnt);  cout.flush();
+  TopAbs::Print(o,std::cout); std::cout<<" "<<p<<" pnt "; GdumpPNT(Pnt);  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpORIPARPNT(const TopAbs_Orientation, 
@@ -278,13 +278,13 @@ void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape& E,
                                           const TopoDS_Shape& V,
                                           const Standard_Address s) const 
 { 
-  char* c = (char*)s; if (c) cout<<c;
+  char* c = (char*)s; if (c) std::cout<<c;
   const TopoDS_Edge& EE = TopoDS::Edge(E);
   const TopoDS_Vertex& VV = TopoDS::Vertex(V);
   Standard_Real par = BRep_Tool::Parameter(VV,EE);
   gp_Pnt P = BRep_Tool::Pnt(VV);
   GdumpORIPARPNT(VV.Orientation(),par,P);
-  cout.flush();
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape&,
@@ -302,29 +302,29 @@ void TopOpeBRepBuild_Builder::GdumpEDGVER(const TopoDS_Shape&,
 void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape& E,
                                        const Standard_Address s) const 
 {
-  char* c = (char*)s; if (c) cout<<c;
+  char* c = (char*)s; if (c) std::cout<<c;
   const TopoDS_Edge& EE = TopoDS::Edge(E);
   Standard_Integer n = 0;
-  GdumpSHAORI(E, (char *) "vertices of ");cout<<endl;
+  GdumpSHAORI(E, (char *) "vertices of ");std::cout<<std::endl;
   TopOpeBRepTool_ShapeExplorer ex(E,TopAbs_VERTEX);
   char strpar[256]; 
   Sprintf(strpar," #");
   for (; ex.More(); ex.Next()) {
     const TopoDS_Vertex& VV = TopoDS::Vertex(ex.Current());
     TopAbs_Orientation o = VV.Orientation();
-    cout<<"vertex v";
-    if      (o == TopAbs_FORWARD)  cout<<"F";
-    else if (o == TopAbs_REVERSED) cout<<"R";
-    else if (o == TopAbs_INTERNAL) cout<<"I";
-    else if (o == TopAbs_EXTERNAL) cout<<"E";
-    cout<<++n<<" "; TopOpeBRepBuild_Builder::PrintPnt(VV); cout<<";";
+    std::cout<<"vertex v";
+    if      (o == TopAbs_FORWARD)  std::cout<<"F";
+    else if (o == TopAbs_REVERSED) std::cout<<"R";
+    else if (o == TopAbs_INTERNAL) std::cout<<"I";
+    else if (o == TopAbs_EXTERNAL) std::cout<<"E";
+    std::cout<<++n<<" "; TopOpeBRepBuild_Builder::PrintPnt(VV); std::cout<<";";
     Standard_Real par = BRep_Tool::Parameter(VV,EE);
     char spar[255];
     Sprintf(spar," par%d %f",n,par); 
     strcat(strpar,spar);
   }
-  if(n) cout<<strpar<<endl;
-  cout.flush();
+  if(n) std::cout<<strpar<<std::endl;
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpEDG(const TopoDS_Shape&,
@@ -341,8 +341,8 @@ void TopOpeBRepBuild_Builder::GdumpSAMDOM(const TopTools_ListOfShape& L,
                                           const Standard_Address astr) const 
 {
   TopOpeBRepDS_Dumper Dumper(myDataStructure);
-  cout<<Dumper.SPrintShapeRefOri(L,(char*)astr)<<endl;
-  cout.flush();
+  std::cout<<Dumper.SPrintShapeRefOri(L,(char*)astr)<<std::endl;
+  std::cout.flush();
 }
 
 //=======================================================================
@@ -353,12 +353,12 @@ void TopOpeBRepBuild_Builder::GdumpSAMDOM(const TopTools_ListOfShape& L,
 void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape& S,
                                        const Standard_Address str) const 
 {
-  char* c = (char*)str; if (c) cout<<c;
+  char* c = (char*)str; if (c) std::cout<<c;
   if (S.IsNull()) return;
   TopAbs_ShapeEnum tS = S.ShapeType(); Standard_Integer iS = 0;
   if ( ! myDataStructure.IsNull() ) iS = myDataStructure->Shape(S);
-  TopOpeBRepDS::Print(tS,iS,cout);
-  cout.flush();
+  TopOpeBRepDS::Print(tS,iS,std::cout);
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape&,
@@ -375,9 +375,9 @@ void TopOpeBRepBuild_Builder::GdumpSHA(const TopoDS_Shape&,
 void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape& S,
                                           const Standard_Address str) const
 {
-  char* c = (char*)str; if (c) cout<<c;
-  GdumpSHA(S,NULL); cout<<","; PrintOri(S);
-  cout.flush();
+  char* c = (char*)str; if (c) std::cout<<c;
+  GdumpSHA(S,NULL); std::cout<<","; PrintOri(S);
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape& ,
@@ -393,9 +393,9 @@ void TopOpeBRepBuild_Builder::GdumpSHAORI(const TopoDS_Shape& ,
 void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape& S,
                                              const Standard_Address str) const
 {
-  char* c = (char*)str; if (c) cout<<c;
-  GdumpSHAORI(S,NULL); cout<<","; PrintGeo(S);
-  cout.flush();
+  char* c = (char*)str; if (c) std::cout<<c;
+  GdumpSHAORI(S,NULL); std::cout<<","; PrintGeo(S);
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpSHAORIGEO(const TopoDS_Shape& ,
@@ -413,10 +413,10 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const TopoDS_Shape& S,
                                           const TCollection_AsciiString& a,
                                           const TCollection_AsciiString& b) const 
 {
-  cout<<a;
-  GdumpSHAORIGEO(S,NULL); cout<<","<<StringState(T).ToCString();
-  cout<<b;
-  cout.flush();
+  std::cout<<a;
+  GdumpSHAORIGEO(S,NULL); std::cout<<","<<StringState(T).ToCString();
+  std::cout<<b;
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpSHASTA(const TopoDS_Shape& ,
@@ -439,7 +439,7 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer iS,
 {
   const TopoDS_Shape& S = myDataStructure->Shape(iS);
   GdumpSHASTA(S,T,a,b);
-  cout.flush();
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer ,
@@ -465,7 +465,7 @@ void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer iS,
   const TopoDS_Shape& S = myDataStructure->Shape(iS);
   TCollection_AsciiString aib = a + " " + SS.DEBNumber() + " " + b;
   GdumpSHASTA(S,T,aib,c);
-  cout.flush();
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpSHASTA(const Standard_Integer ,
@@ -511,15 +511,15 @@ void TopOpeBRepBuild_Builder::GdumpEXP(const TopOpeBRepTool_ShapeExplorer& Ex) c
 {
   if ( ! Ex.More() ) return;
   TopAbs_ShapeEnum t = Ex.Current().ShapeType();
-  if      (t == TopAbs_SOLID) cout<<"";
-  else if (t == TopAbs_FACE)  cout<<"  ";
-  else if (t == TopAbs_EDGE)  cout<<"     ";
-  else cout<<"??";
-  Ex.DumpCurrent(cout);
+  if      (t == TopAbs_SOLID) std::cout<<"";
+  else if (t == TopAbs_FACE)  std::cout<<"  ";
+  else if (t == TopAbs_EDGE)  std::cout<<"     ";
+  else std::cout<<"??";
+  Ex.DumpCurrent(std::cout);
   Standard_Integer I = myDataStructure->Shape(Ex.Current());
-  if ( I != 0 ) cout<<" :  shape "<<I;
-  cout<<endl;
-  cout.flush();
+  if ( I != 0 ) std::cout<<" :  shape "<<I;
+  std::cout<<std::endl;
+  std::cout.flush();
 }
 #else
 void TopOpeBRepBuild_Builder::GdumpEXP(const TopOpeBRepTool_ShapeExplorer& ) const 
@@ -556,14 +556,14 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
 
   Standard_Integer nf,nw,ne;
   ME.InitFace();
-  if ( ME.MoreFace() ) cout<<"clear;"<<endl;
+  if ( ME.MoreFace() ) std::cout<<"clear;"<<std::endl;
   for (nf=0;ME.MoreFace();ME.NextFace()) { 
     nf++;
-    cout<<"# face "<<nf<<endl;
+    std::cout<<"# face "<<nf<<std::endl;
     for (nw=0,ME.InitWire();ME.MoreWire();ME.NextWire()) { 
       nw++;
       Standard_Boolean ow = ME.IsOldWire();
-      cout<<"#  wire "<<nw;if(ow)cout<<" (old)";else cout<<" (new)";cout<<endl;
+      std::cout<<"#  wire "<<nw;if(ow)std::cout<<" (old)";else std::cout<<" (new)";std::cout<<std::endl;
       if (!ow) {
 	TCollection_AsciiString whatis("whatis");
 	for(ne=0,ME.InitEdge();ME.MoreEdge();ME.NextEdge()) { 
@@ -576,7 +576,7 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
 	  if (PWES) Enam = Enam + PWES->DEBName() + PWES->DEBNumber();
 	  VFnam = VFnam + ne + "NF" + nf + "F" + iF;
 	  VRnam = VRnam + ne + "NF" + nf + "F" + iF;
-//	  cout<<"    puts \"edge "<<ne<<" : "<<Enam<<"\"";cout<<"; ";
+//	  std::cout<<"    puts \"edge "<<ne<<" : "<<Enam<<"\"";std::cout<<"; ";
 	  TopoDS_Vertex VF,VR; TopExp::Vertices(EE,VF,VR);
 	  if ( ! VF.IsNull() && !VR.IsNull() && !EE.IsNull()) {
 #ifdef DRAW
@@ -584,24 +584,24 @@ void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ME) const
 	    DBRep::Set(VFnam.ToCString(),VF);
 	    DBRep::Set(VRnam.ToCString(),VR);
 #endif
-	    cout<<PRODINS<<"-O -p 0.5 "<<Enam; cout<<"; ";
-//	    cout<<PRODINS<<VFnam; cout<<"; ";
-//	    cout<<PRODINS<<VRnam; cout<<"; ";
+	    std::cout<<PRODINS<<"-O -p 0.5 "<<Enam; std::cout<<"; ";
+//	    std::cout<<PRODINS<<VFnam; std::cout<<"; ";
+//	    std::cout<<PRODINS<<VRnam; std::cout<<"; ";
 //	    gp_Pnt PF = BRep_Tool::Pnt(VF); 
 //	    gp_Pnt PR = BRep_Tool::Pnt(VR);
-//	    cout<<endl;
-//	    cout<<"# ";
-//	    cout<<"dinp "<<VFnam<<" ";TopOpeBRepBuild_Builder::PrintPnt(VF);cout<<"; ";
-//	    cout<<"dinp "<<VRnam<<" ";TopOpeBRepBuild_Builder::PrintPnt(VR);cout<<"; ";
-	    cout<<endl;
+//	    std::cout<<std::endl;
+//	    std::cout<<"# ";
+//	    std::cout<<"dinp "<<VFnam<<" ";TopOpeBRepBuild_Builder::PrintPnt(VF);std::cout<<"; ";
+//	    std::cout<<"dinp "<<VRnam<<" ";TopOpeBRepBuild_Builder::PrintPnt(VR);std::cout<<"; ";
+	    std::cout<<std::endl;
 	    whatis += " "; whatis += Enam;
 	  }
 	}
-	if (ne) cout<<"    "<<whatis<<endl<<endl;
+	if (ne) std::cout<<"    "<<whatis<<std::endl<<std::endl;
       }
     }
   }
-  cout.flush();
+  std::cout.flush();
 } // GdumpFABU
 #else
 void TopOpeBRepBuild_Builder::GdumpFABU(TopOpeBRepBuild_FaceBuilder& ) const 

@@ -239,10 +239,10 @@ void TopLoc_Location::ShallowDump(Standard_OStream& S) const
 {
   S << "TopLoc_Location : ";
   TopLoc_SListOfItemLocation items  = myItems;
-  if (items.IsEmpty()) S << "Identity"<<endl;
+  if (items.IsEmpty()) S << "Identity"<<std::endl;
   while (items.More()) {
     S<<"\n";
-    S << "       Exponent : " << items.Value().myPower <<endl;
+    S << "       Exponent : " << items.Value().myPower <<std::endl;
     items.Value().myDatum->ShallowDump(S);
     items.Next();
   }

@@ -293,7 +293,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
       line2   = L2->Lin2d();
     }
     else {
-      cout << "Not yet implemented" << endl;
+      std::cout << "Not yet implemented" << std::endl;
     }
   }
   else if (type1 == STANDARD_TYPE(Geom2d_Line)) {
@@ -312,11 +312,11 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
       line2   = L2->Lin2d();
     }
     else {
-      cout << "Not yet implemented" << endl;
+      std::cout << "Not yet implemented" << std::endl;
     }
   }
   else {
-    cout << "Not yet implemented" << endl;
+    std::cout << "Not yet implemented" << std::endl;
   }
 
   switch(cas) {
@@ -852,7 +852,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
     line   = L1->Lin2d();
   }
   else {
-    cout << "Not yet implemented" << endl;
+    std::cout << "Not yet implemented" << std::endl;
   }
 
   switch(cas) {
@@ -1007,7 +1007,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 
     default:
       {
-	cout << "Not yet implemented" << endl;
+	std::cout << "Not yet implemented" << std::endl;
 	break;
       }
     }
@@ -1630,7 +1630,7 @@ Standard_Boolean Degenerate(Handle(GccInt_Bisec)& aBisector,
 
 static void Indent (const Standard_Integer Offset) {
   if (Offset > 0) {
-    for (Standard_Integer i = 0; i < Offset; i++) { cout << " "; }
+    for (Standard_Integer i = 0; i < Offset; i++) { std::cout << " "; }
   }
 }
 
@@ -1643,7 +1643,7 @@ void Bisector_BisecAna::Dump(const Standard_Integer ,
 			     const Standard_Integer Offset) const 
 {
   Indent (Offset);
-  cout<<"Bisector_BisecAna"<<endl;
+  std::cout<<"Bisector_BisecAna"<<std::endl;
   Indent (Offset);
 //  thebisector->Dump();
 }

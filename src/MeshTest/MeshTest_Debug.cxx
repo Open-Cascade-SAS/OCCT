@@ -42,7 +42,7 @@ Standard_EXPORT const char* MeshTest_DrawLinks(const char* theNameStr, void* the
     if (aMeshData.IsNull())
       return "Null mesh data structure";
     Standard_Integer nbLinks = aMeshData->NbLinks();
-    cout << "nblink=" << nbLinks << endl;
+    std::cout << "nblink=" << nbLinks << std::endl;
     TCollection_AsciiString aName(theNameStr);
     for (Standard_Integer i = 1; i <= nbLinks; i++)
     {
@@ -83,7 +83,7 @@ Standard_EXPORT const char* MeshTest_DrawTriangles(const char* theNameStr, void*
     if (aMeshData.IsNull())
       return "Null mesh data structure";
     Standard_Integer nbElem = aMeshData->NbElements();
-    cout << "nbelem=" << nbElem << endl;
+    std::cout << "nbelem=" << nbElem << std::endl;
     TCollection_AsciiString aName(theNameStr);
     for (Standard_Integer i = 1; i <= nbElem; i++)
     {

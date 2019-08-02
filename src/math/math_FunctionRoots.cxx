@@ -65,8 +65,8 @@ static void  AppendRoot(TColStd_SequenceOfReal& Sol,
   Standard_Real t;
 #ifdef OCCT_DEBUG
  if (myDebug) {
-   cout << "   Ajout de la solution numero : " << n+1 << endl;
-   cout << "   Valeur de la racine :" << X << endl;
+   std::cout << "   Ajout de la solution numero : " << n+1 << std::endl;
+   std::cout << "   Valeur de la racine :" << X << std::endl;
  } 
 #endif
   
@@ -115,9 +115,9 @@ static void  Solve(math_FunctionWithDerivative& F,
 		   TColStd_SequenceOfInteger& NbStateSol) { 
 #ifdef OCCT_DEBUG
   if (myDebug) {
-    cout <<"--> Resolution :" << ++nbsolve << endl;
-    cout <<"   x1 =" << x1 << " y1 =" << y1 << endl;
-    cout <<"   x2 =" << x2 << " y2 =" << y2 << endl;
+    std::cout <<"--> Resolution :" << ++nbsolve << std::endl;
+    std::cout <<"   x1 =" << x1 << " y1 =" << y1 << std::endl;
+    std::cout <<"   x2 =" << x2 << " y2 =" << y2 << std::endl;
   }
 #endif
 
@@ -206,7 +206,7 @@ static void  Solve(math_FunctionWithDerivative& F,
     fb-=K;
   }
 #ifdef OCCT_DEBUG
-  cout<<" Non Convergence dans math_FunctionRoots.cxx "<<endl;
+  std::cout<<" Non Convergence dans math_FunctionRoots.cxx "<<std::endl;
 #endif
 }
 
@@ -227,7 +227,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 { 
 #ifdef OCCT_DEBUG
   if (myDebug) {
-    cout << "---- Debut de math_FunctionRoots ----" << endl;
+    std::cout << "---- Debut de math_FunctionRoots ----" << std::endl;
     nbsolve = 0;
   }
 #endif
@@ -627,7 +627,7 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
   Standard_Real NEpsX  = 0.0000000001 * DeltaU;
   if(EpsX < NEpsX) { 
     EpsX = NEpsX; 
-    //-- cout<<" \n EpsX Init = "<<_EpsX<<" devient : (deltaU : "<<DeltaU<<" )   EpsX = "<<EpsX<<endl;
+    //-- std::cout<<" \n EpsX Init = "<<_EpsX<<" devient : (deltaU : "<<DeltaU<<" )   EpsX = "<<EpsX<<std::endl;
   }
   //-- 
   Null2 = EpsNull*EpsNull;
@@ -1083,9 +1083,9 @@ void math_FunctionRoots::Dump(Standard_OStream& o) const
   o << "math_FunctionRoots ";
   if(Done) {
     o << " Status = Done \n";
-    o << " Number of solutions = " << Sol.Length() << endl;
+    o << " Number of solutions = " << Sol.Length() << std::endl;
     for (Standard_Integer i = 1; i <= Sol.Length(); i++) {
-      o << " Solution Number " << i << "= " << Sol.Value(i) << endl;
+      o << " Solution Number " << i << "= " << Sol.Value(i) << std::endl;
     }
   }
   else {

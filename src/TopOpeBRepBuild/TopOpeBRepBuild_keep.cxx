@@ -45,7 +45,7 @@ extern Standard_Integer GLOBAL_iexE;
 extern Standard_Integer GLOBAL_iexF;
 Standard_Boolean STATIC_trace_iexE = Standard_False;
 Standard_Boolean STATIC_trace_iexF = Standard_False;
-Standard_EXPORT void debkeep(const Standard_Integer i) {cout<<"++ debkeep "<<i<<endl;}
+Standard_EXPORT void debkeep(const Standard_Integer i) {std::cout<<"++ debkeep "<<i<<std::endl;}
 #endif
 
 //=======================================================================
@@ -97,12 +97,12 @@ Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape1
   Standard_Boolean tr = tSPS || tSPSface || tSPSsoli;
   if(tr){
     if (tSPS) GdumpSHA(S);
-    else if (tSPSface) cout<<"EDGE exploration "<<GLOBAL_iexE;
-    else if (tSPSsoli) cout<<"FACE exploration "<<GLOBAL_iexF;
-    if(keep)cout<<" is kept";else cout<<" is NOT kept";
-    cout<<" ";TopAbs::Print(TB,cout);cout<<" / ";
-    if(LSclass.IsEmpty())cout<<"empty list";else GdumpLS(LSclass);cout<<endl;
-    cout.flush();
+    else if (tSPSface) std::cout<<"EDGE exploration "<<GLOBAL_iexE;
+    else if (tSPSsoli) std::cout<<"FACE exploration "<<GLOBAL_iexF;
+    if(keep)std::cout<<" is kept";else std::cout<<" is NOT kept";
+    std::cout<<" ";TopAbs::Print(TB,std::cout);std::cout<<" / ";
+    if(LSclass.IsEmpty())std::cout<<"empty list";else GdumpLS(LSclass);std::cout<<std::endl;
+    std::cout.flush();
   }
 #endif
   
@@ -146,11 +146,11 @@ void TopOpeBRepBuild_Builder::GKeepShapes
     
 #ifdef OCCT_DEBUG
     TopAbs_ShapeEnum t = SL.ShapeType();
-    if(tSPS){cout<<"GKeepShapes : ";}
-    if(tSPS){cout<<"new ";TopAbs::Print(t,cout);cout<<" "<<++n;}
-    if(tSPS){cout<<" from ";GdumpSHA(S);if(keep)cout<<" is kept";else cout<<" is NOT kept";}
-    if(tSPS){cout<<" ";TopAbs::Print(TB,cout);cout<<" / ";}
-    if(tSPS){if(LSclass.IsEmpty())cout<<"empty list";else GdumpLS(LSclass);cout<<endl;}
+    if(tSPS){std::cout<<"GKeepShapes : ";}
+    if(tSPS){std::cout<<"new ";TopAbs::Print(t,std::cout);std::cout<<" "<<++n;}
+    if(tSPS){std::cout<<" from ";GdumpSHA(S);if(keep)std::cout<<" is kept";else std::cout<<" is NOT kept";}
+    if(tSPS){std::cout<<" ";TopAbs::Print(TB,std::cout);std::cout<<" / ";}
+    if(tSPS){if(LSclass.IsEmpty())std::cout<<"empty list";else GdumpLS(LSclass);std::cout<<std::endl;}
 #endif
     
     if (keep) Lou.Append(SL);

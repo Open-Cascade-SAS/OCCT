@@ -65,7 +65,7 @@ void DFBrowser_DumpView::OnTreeViewSelectionChanged (const QItemSelection& theSe
   aFileName += "/dfbrowser.txt";
   // print dump to file(not in a string stream because result might be too long)
   std::ofstream aFileStream;
-  OSD_OpenStream(aFileStream, aFileName, ios::out);
+  OSD_OpenStream(aFileStream, aFileName, std::ios::out);
   if (anItem->HasAttribute())
   {
     Handle(TDF_Attribute) anAttribute = anItem->GetAttribute();

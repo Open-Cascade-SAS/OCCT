@@ -1754,7 +1754,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
         BRepLib::SameParameter(anEdge, aSameParTol, Standard_True);
         Standard_Real EdgeTol = BRep_Tool::Tolerance(anEdge);
 #ifdef OCCT_DEBUG
-        cout<<"Tolerance of glued E =      "<<EdgeTol<<endl;
+        std::cout<<"Tolerance of glued E =      "<<EdgeTol<<std::endl;
 #endif
         if (EdgeTol > 1.e-2)
           continue;
@@ -1764,7 +1764,7 @@ void BRepOffset_Tool::Inter3D(const TopoDS_Face& F1,
           ReconstructPCurves(anEdge);
           BRepLib::SameParameter(anEdge, aSameParTol, Standard_True);
 #ifdef OCCT_DEBUG
-          cout<<"After projection tol of E = "<<BRep_Tool::Tolerance(anEdge)<<endl;
+          std::cout<<"After projection tol of E = "<<BRep_Tool::Tolerance(anEdge)<<std::endl;
 #endif
         }
         
@@ -2087,16 +2087,16 @@ static Standard_Boolean  ProjectVertexOnEdge(TopoDS_Vertex&     V,
   if (AffichExtent) {
     Standard_Real Dist = P.Distance(C.Value(U));
     if (Dist > TolConf) {
-      cout << " ProjectVertexOnEdge :distance vertex edge :"<<Dist<<endl;
+      std::cout << " ProjectVertexOnEdge :distance vertex edge :"<<Dist<<std::endl;
     }
     if (U < f - Precision::Confusion() || 
 	U > l + Precision::Confusion()) {
-      cout << " ProjectVertexOnEdge : hors borne :"<<endl;
-      cout << " f = "<<f<<" l ="<<l<< " U ="<<U<<endl;
+      std::cout << " ProjectVertexOnEdge : hors borne :"<<std::endl;
+      std::cout << " f = "<<f<<" l ="<<l<< " U ="<<U<<std::endl;
     }
   }
   if (!found) {
-    cout <<"BRepOffset_Tool::ProjectVertexOnEdge Parameter no found"<<endl;
+    std::cout <<"BRepOffset_Tool::ProjectVertexOnEdge Parameter no found"<<std::endl;
     if (Abs(f) < Precision::Infinite() && 
 	Abs(l) < Precision::Infinite()) {
 #ifdef DRAW
@@ -2187,7 +2187,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 //						    F,fl2[0],fl2[1]);
 #ifdef OCCT_DEBUG
 	if (C1.IsNull() || C2.IsNull()) {
-	  cout <<"Inter2d : Pas de pcurve"<<endl;
+	  std::cout <<"Inter2d : Pas de pcurve"<<std::endl;
 #ifdef DRAW
 	  DBRep::Set("E1",E1); 
 	  DBRep::Set("E2",E2);
@@ -2304,11 +2304,11 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 	    Standard_Real U2on1 = IntP1.ParamOnSecond();
 	    Standard_Real U2on2 = IntP2.ParamOnSecond();
 #ifdef OCCT_DEBUG
-	    cout << " BRepOffset_Tool::Inter2d SEGMENT d intersection" << endl;
-	    cout << "     ===> Parametres sur Curve1 : ";
-	    cout << U1on1 << " " << U1on2 << endl;
-	    cout << "     ===> Parametres sur Curve2 : ";
-	    cout << U2on1 << " " << U2on2 << endl;
+	    std::cout << " BRepOffset_Tool::Inter2d SEGMENT d intersection" << std::endl;
+	    std::cout << "     ===> Parametres sur Curve1 : ";
+	    std::cout << U1on1 << " " << U1on2 << std::endl;
+	    std::cout << "     ===> Parametres sur Curve2 : ";
+	    std::cout << U2on1 << " " << U2on2 << std::endl;
 #endif
 	    U1 = (U1on1 + U1on2)/2.;
 	    U2 = (U2on1 + U2on2)/2.;
@@ -2363,7 +2363,7 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 
 #ifdef OCCT_DEBUG
   if (!YaSol) {
-    cout <<"Inter2d : Pas de solution"<<endl;
+    std::cout <<"Inter2d : Pas de solution"<<std::endl;
 #ifdef DRAW
     DBRep::Set("E1",E1); 
     DBRep::Set("E2",E2);

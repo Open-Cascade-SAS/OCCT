@@ -114,10 +114,10 @@ void IGESGraph_ToolDefinitionLevel::OwnDump
   (const Handle(IGESGraph_DefinitionLevel)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
-  S << "IGESGraph_DefinitionLevel" << endl;
+  S << "IGESGraph_DefinitionLevel" << Message_EndLine;
 
   S << "Level Numbers : ";
   IGESData_DumpVals(S ,level,1, ent->NbPropertyValues(),ent->LevelNumber);
-  S << endl;
+  S << Message_EndLine;
 }
 

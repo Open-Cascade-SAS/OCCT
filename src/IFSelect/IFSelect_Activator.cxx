@@ -37,7 +37,7 @@ static TColStd_SequenceOfTransient theacts;
 {
 #ifdef OCCT_DEBUG
   if (thedico.IsBound(command)) {
-    cout << "****  XSTEP commands, name conflict on " << command << " first defined remains  ****" << endl;
+    std::cout << "****  XSTEP commands, name conflict on " << command << " first defined remains  ****" << std::endl;
 //    throw Standard_DomainError("IFSelect_Activator : Add");
   }
 #endif

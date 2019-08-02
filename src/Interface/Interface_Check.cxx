@@ -692,7 +692,7 @@ void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_I
 
   if (level >= 1) {
     nb = NbFails();
-//    if (nb > 0) S<<" -->   Fails    : "<<nb<<endl;
+//    if (nb > 0) S<<" -->   Fails    : "<<nb<<std::endl;
     for (j = 1; j <= nb; j ++) {
       if (final >= 0) 
 	S<<CFail(j,Standard_True)<<"\n";
@@ -706,7 +706,7 @@ void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_I
 
   if (level >= 2) {
     nb = NbWarnings();
-//    if (nb > 0) S<<" -->   Warnings : "<<nb<<endl;
+//    if (nb > 0) S<<" -->   Warnings : "<<nb<<std::endl;
     for (j = 1; j <= nb; j ++) {
       if (final >= 0)
 	S<<CWarning(j,Standard_True)<<"\n";
@@ -721,7 +721,7 @@ void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_I
 //   InfoMsg : regle causant (user message)
   if (level >= 0) {
     nb = NbInfoMsgs();
-//    if (nb > 0) S<<" -->   Infos    : "<<nb<<endl;
+//    if (nb > 0) S<<" -->   Infos    : "<<nb<<std::endl;
     for (j = 1; j <= nb; j ++) {
       if (final >= 0) 
 	S<<CInfoMsg(j,Standard_True)<<"\n";

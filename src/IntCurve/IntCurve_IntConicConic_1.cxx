@@ -251,10 +251,10 @@ void CircleCircleGeometricIntersection(const gp_Circ2d& C1
     }
   }
 
-  //-- cout<<" C1_binf1:"<<C1_binf1;
-  //-- cout<<" C1_bsup1:"<<C1_bsup1;
-  //-- cout<<" C1_binf2:"<<C1_binf2;
-  //-- cout<<" C1_bsup2:"<<C1_bsup2<<endl;
+  //-- std::cout<<" C1_binf1:"<<C1_binf1;
+  //-- std::cout<<" C1_bsup1:"<<C1_bsup1;
+  //-- std::cout<<" C1_binf2:"<<C1_binf2;
+  //-- std::cout<<" C1_bsup2:"<<C1_bsup2<<std::endl;
   //----------------------------------------------------------------
   //-- Mise en forme des resultats : 
   //--    Les calculs ont ete fait dans le repere x1,y1, (O1,O2)
@@ -868,8 +868,8 @@ void IntCurve_IntConicConic::Perform(const gp_Circ2d& Circle1
     ((Circle1.Location().SquareDistance(Circle2.Location())) > (R1*R1+R2*R2)) ? 
           Standard_True : Standard_False;
 
-  //if(Circle1.IsDirect()) { cout<<" C1 Direct"<<endl; } else { cout<<" C1 INDirect"<<endl; }
-  //if(Circle2.IsDirect()) { cout<<" C2 Direct"<<endl; } else { cout<<" C2 INDirect"<<endl; }
+  //if(Circle1.IsDirect()) { std::cout<<" C1 Direct"<<std::endl; } else { std::cout<<" C1 INDirect"<<std::endl; }
+  //if(Circle2.IsDirect()) { std::cout<<" C2 Direct"<<std::endl; } else { std::cout<<" C2 INDirect"<<std::endl; }
 
   for(i=0; i<NbSolTotal; i++)
   {

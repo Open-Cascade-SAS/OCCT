@@ -39,9 +39,9 @@
 /*static void ModDbgTools_Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
 {
-  ofstream save;
+  std::ofstream save;
   save.open(filename);
-  save << "DBRep_DrawableShape" << endl << endl;
+  save << "DBRep_DrawableShape" << std::endl << std::endl;
   if(!shape.IsNull()) BRepTools::Write(shape, save);
   save.close();
 }
@@ -58,10 +58,10 @@ static void ModDbgTools_WriteCurrentShape(const Handle(TNaming_NamedShape) & NS)
 	ModDbgTools_Write(Sh, Entry.ToCString());
       }
       else 
-	cout << "ModDbgTools::Write>>> TopoDS_Shape IS NULL on Entry = "<< entry << endl;
+	std::cout << "ModDbgTools::Write>>> TopoDS_Shape IS NULL on Entry = "<< entry << std::endl;
     }
   else
-    cout << "ModDbgTools::Write>>>  CurrentShape of TNaming_NamedShape IS NULL on Entry = "<< entry << endl;
+    std::cout << "ModDbgTools::Write>>>  CurrentShape of TNaming_NamedShape IS NULL on Entry = "<< entry << std::endl;
 }*/
 #endif
 
@@ -117,7 +117,7 @@ void TNaming_Identifier::Init(const TopoDS_Shape&     Context)
 #ifdef OCCT_DEBUG_IDF
   TCollection_AsciiString entry;
   TDF_Tool::Entry(NS->Label(), entry);
-  cout << "Identifier:: (S) Label = " << entry <<endl;
+  std::cout << "Identifier:: (S) Label = " << entry <<std::endl;
 #endif
   //-------------------------------------
   // S est New dans un NamedShape
@@ -309,7 +309,7 @@ Standard_Boolean IsImported(const Handle(TNaming_NamedShape)& NS)
   it.Next();  if (!it.More()) return 0;
   //plus d un shape.
 #ifdef OCCT_DEBUG
-  cout <<"WARNING IMPORTED"<<endl;
+  std::cout <<"WARNING IMPORTED"<<std::endl;
 #endif
   return 1;
 }

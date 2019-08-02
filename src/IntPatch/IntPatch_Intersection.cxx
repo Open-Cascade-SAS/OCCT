@@ -1562,15 +1562,15 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   myTolTang = TolTang;
   if(myFleche == 0.0) {
 #if DEBUG
-    //cout<<" -- IntPatch_Intersection::myFleche fixe par defaut a 0.01 --"<<endl;
-    //cout<<" -- Utiliser la Methode SetTolerances( ... ) "<<endl;
+    //std::cout<<" -- IntPatch_Intersection::myFleche fixe par defaut a 0.01 --"<<std::endl;
+    //std::cout<<" -- Utiliser la Methode SetTolerances( ... ) "<<std::endl;
 #endif
     myFleche = 0.01;
   }
   if(myUVMaxStep==0.0) {
 #if DEBUG
-    //cout<<" -- IntPatch_Intersection::myUVMaxStep fixe par defaut a 0.01 --"<<endl;
-    //cout<<" -- Utiliser la Methode SetTolerances( ... ) "<<endl;
+    //std::cout<<" -- IntPatch_Intersection::myUVMaxStep fixe par defaut a 0.01 --"<<std::endl;
+    //std::cout<<" -- Utiliser la Methode SetTolerances( ... ) "<<std::endl;
 #endif
     myUVMaxStep = 0.01;
   }

@@ -64,20 +64,20 @@ static void DUMP(const MultiLine& Line)
   TColgp_Array1OfPnt tabP(1, mynbP3d);
   TColgp_Array1OfPnt2d tabP2d(1, mynbP2d);
   
-  cout <<"DUMP de la MultiLine entre "<<firstP <<" et "<<lastP<<": "<<endl;
+  std::cout <<"DUMP de la MultiLine entre "<<firstP <<" et "<<lastP<<": "<<std::endl;
   for (i = firstP; i <= lastP; i++) {
     if (nbP3d != 0 && nbP2d != 0) LineTool::Value(Line, i, tabP, tabP2d);
     else if (nbP2d != 0)          LineTool::Value(Line, i, tabP2d);
     else if (nbP3d != 0)          LineTool::Value(Line, i, tabP);
     
-    cout << "point "<<i<<":"<< endl;
+    std::cout << "point "<<i<<":"<< std::endl;
     for (j = 1; j <= nbP3d; j++) {
       P1 = tabP(j);
-      cout <<P1.X()<<" "<<P1.Y()<<" "<<P1.Z()<<endl;
+      std::cout <<P1.X()<<" "<<P1.Y()<<" "<<P1.Z()<<std::endl;
     }
     for (j = 1; j <= nbP2d; j++) {
       P12d = tabP2d(j);
-      cout <<P12d.X()<<" "<<P12d.Y()<<endl;
+      std::cout <<P12d.X()<<" "<<P12d.Y()<<std::endl;
     }
   }
 
@@ -197,7 +197,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
       if (ScalProd < MinScalProd)
       {
 #ifdef DRAW
-        cout<<"ScalProd("<<indp-2<<","<<indp-1<<")-("<<indp-1<<","<<indp<<") = "<<ScalProd<<endl;
+        std::cout<<"ScalProd("<<indp-2<<","<<indp-1<<")-("<<indp-1<<","<<indp<<") = "<<ScalProd<<std::endl;
 #endif
         LoopFound = Standard_True;
         break;
@@ -329,7 +329,7 @@ static Standard_Boolean CheckMultiCurve(const AppParCurves_MultiCurve& theMultiC
       if (ScalProd < MinScalProd)
       {
 #ifdef DRAW
-        cout<<"ScalProd("<<k-2<<","<<k-1<<")-("<<k-1<<","<<k<<") = "<<ScalProd<<endl;
+        std::cout<<"ScalProd("<<k-2<<","<<k-1<<")-("<<k-1<<","<<k<<") = "<<ScalProd<<std::endl;
 #endif
         LoopFound = Standard_True;
         break;
@@ -1486,7 +1486,7 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 
 #ifdef OCCT_DEBUG
     if (!Parallel) {
-      if (mydebug) cout <<"droite mais tangentes pas vraiment paralleles!!"<< endl;
+      if (mydebug) std::cout <<"droite mais tangentes pas vraiment paralleles!!"<< std::endl;
     }
 #endif
     AppParCurves_MultiCurve mySCU(mydegremin+1);

@@ -551,10 +551,10 @@ static Standard_Integer loadvrml
     VrmlData_DataMapOfShapeAppearance aShapeAppMap;
 
     //-----------------------------------------------------------
-    filebuf aFic;
-    istream aStream (&aFic);
+    std::filebuf aFic;
+    std::istream aStream (&aFic);
 
-    if (aFic.open(argv[2], ios::in)) {
+    if (aFic.open(argv[2], std::ios::in)) {
 
       // Get path of the VRML file.
       OSD_Path aPath(argv[2]);

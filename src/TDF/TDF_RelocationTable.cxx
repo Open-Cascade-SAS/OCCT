@@ -267,14 +267,14 @@ Standard_OStream& TDF_RelocationTable::Dump
   if (mySelfRelocate) anOS<<"IS"; else anOS<<"NOT";
   anOS<<" self relocate ";
   if (myAfterRelocate) anOS<<"WITH"; else anOS<<"WITHOUT";
-  anOS<<" after relocate"<<endl;
+  anOS<<" after relocate"<<std::endl;
   anOS<<"Nb labels="<<myLabelTable.Extent();
   anOS<<"  Nb attributes="<<myAttributeTable.Extent();
-  anOS<<"  Nb transients="<<myTransientTable.Extent()<<endl;
+  anOS<<"  Nb transients="<<myTransientTable.Extent()<<std::endl;
 
   Standard_Integer nb = 0;
   if (dumpLabels) {
-    anOS<<"Label Table:"<<endl;
+    anOS<<"Label Table:"<<std::endl;
     for (TDF_DataMapIteratorOfLabelDataMap itr(myLabelTable);
 	 itr.More(); itr.Next()) {
       ++nb;
@@ -284,12 +284,12 @@ Standard_OStream& TDF_RelocationTable::Dump
       itr.Value().EntryDump(anOS);
       anOS<<"| ";
     }
-    cout<<endl;
+    std::cout<<std::endl;
   }
 
   nb = 0;
   if (dumpAttributes) {
-    anOS<<"Attribute Table:"<<endl;
+    anOS<<"Attribute Table:"<<std::endl;
     for (TDF_DataMapIteratorOfAttributeDataMap itr(myAttributeTable);
 	 itr.More(); itr.Next()) {
       ++nb;
@@ -298,12 +298,12 @@ Standard_OStream& TDF_RelocationTable::Dump
       anOS<<"<=>";
       itr.Value()->Dump(anOS);
       anOS<<"| ";
-      anOS<<endl;
+      anOS<<std::endl;
     }
   }
   
   if (dumpTransients) {
-    anOS<<"Transient Table:"<<myTransientTable.Extent()<<" transient(s) in table."<<endl;
+    anOS<<"Transient Table:"<<myTransientTable.Extent()<<" transient(s) in table."<<std::endl;
   }
 
   return anOS;

@@ -40,7 +40,7 @@ IGESData_DefaultSpecific::IGESData_DefaultSpecific ()
 
   Standard_Integer dstat = lent->DirStatus();
   if (dstat != 0) S
-    << " --  Directory Entry Error Status = " << dstat << "  --" << endl;
+    << " --  Directory Entry Error Status = " << dstat << "  --" << Message_EndLine;
   Handle(Interface_UndefinedContent) cont = lent->UndefinedContent();
   Standard_Integer nb = cont->NbParams();
   S << " UNDEFINED ENTITY ...\n"<<nb
@@ -54,7 +54,7 @@ IGESData_DefaultSpecific::IGESData_DefaultSpecific ()
       dumper.PrintDNum(anent,S);
     }
     else {  S<<"	["<<i<<"]=" << cont->ParamValue(i);  }
-    if ( i == (i%5)*5) S << endl;
+    if ( i == (i%5)*5) S << Message_EndLine;
   }
-  S << endl;
+  S << Message_EndLine;
 }

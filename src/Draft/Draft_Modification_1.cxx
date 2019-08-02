@@ -1363,9 +1363,9 @@ void Draft_Modification::Perform ()
 #ifdef OCCT_DEBUG
           static Standard_Integer VertexRecomp = 1;
           if (VertexRecomp!=0) {
-            cout << "pori :" << vtori.X() << " " << vtori.Y() << " " << vtori.Z() << endl;
-            cout << "  Edg 1 :" << Vinf.Parameter(Edg1) << endl;
-            cout << "pvt :" << pvt.X() << " " << pvt.Y() << " " << pvt.Z() << endl;
+            std::cout << "pori :" << vtori.X() << " " << vtori.Y() << " " << vtori.Z() << std::endl;
+            std::cout << "  Edg 1 :" << Vinf.Parameter(Edg1) << std::endl;
+            std::cout << "pvt :" << pvt.X() << " " << pvt.Y() << " " << pvt.Z() << std::endl;
           }
 #endif
 
@@ -1381,8 +1381,8 @@ void Draft_Modification::Perform ()
 
 #ifdef OCCT_DEBUG
             if (VertexRecomp!=0) {
-              cout << "  Edg 2 :" << Vinf.Parameter(Vinf.Edge()) << endl;
-              cout << "opvt " << opvt.X() << " " << opvt.Y() << " " << opvt.Z() << endl;
+              std::cout << "  Edg 2 :" << Vinf.Parameter(Vinf.Edge()) << std::endl;
+              std::cout << "opvt " << opvt.X() << " " << opvt.Y() << " " << opvt.Z() << std::endl;
             }
 #endif
 
@@ -1671,7 +1671,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     Standard_Real testdir = Direction.Dot(NeutralPlane.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {	
 #ifdef OCCT_DEBUG
-      cout << "NewSurfaceCyl:Draft_Direction_and_Neutral_Perpendicular" << endl;
+      std::cout << "NewSurfaceCyl:Draft_Direction_and_Neutral_Perpendicular" << std::endl;
 #endif
       return NewS;	
     }	  
@@ -1679,7 +1679,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     testdir = Direction.Dot(Cy.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {
 #ifdef OCCT_DEBUG
-      cout << "NewSurfaceCyl:Draft_Direction_and_Cylinder_Perpendicular" << endl;
+      std::cout << "NewSurfaceCyl:Draft_Direction_and_Cylinder_Perpendicular" << std::endl;
 #endif
       return NewS;
     }
@@ -1699,7 +1699,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
 
       if (!isIntDone || i2s.TypeInter() != IntAna_Circle) {
 #ifdef OCCT_DEBUG
-        cout << "NewSurfaceCyl:Draft_Intersection_Neutral_Cylinder_NotDone" << endl;
+        std::cout << "NewSurfaceCyl:Draft_Intersection_Neutral_Cylinder_NotDone" << std::endl;
 #endif
         return NewS;
       } 
@@ -1736,7 +1736,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     Standard_Real testdir = Direction.Dot(NeutralPlane.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {	
 #ifdef OCCT_DEBUG
-      cout << "NewSurfaceCone:Draft_Direction_and_Neutral_Perpendicular" << endl;
+      std::cout << "NewSurfaceCone:Draft_Direction_and_Neutral_Perpendicular" << std::endl;
 #endif
       return NewS;	
     }	
@@ -1746,7 +1746,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     testdir = Direction.Dot(Co1.Axis().Direction());
     if (Abs(testdir) <= 1.-Precision::Angular()) {
 #ifdef OCCT_DEBUG
-      cout << "NewSurfaceCone:Draft_Direction_and_Cone_Perpendicular" << endl;
+      std::cout << "NewSurfaceCone:Draft_Direction_and_Cone_Perpendicular" << std::endl;
 #endif
       return NewS;
     }
@@ -1756,7 +1756,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
     i2s.Perform(NeutralPlane,Co1,Precision::Angular(),Precision::Confusion());
     if (!i2s.IsDone() || i2s.TypeInter() != IntAna_Circle) {
 #ifdef OCCT_DEBUG
-      cout << "NewSurfaceCone:Draft_Intersection_Neutral_Conical_NotDone" << endl;
+      std::cout << "NewSurfaceCone:Draft_Intersection_Neutral_Conical_NotDone" << std::endl;
 #endif
       return NewS;
     }
@@ -1797,7 +1797,7 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
   }
   else {
 #ifdef OCCT_DEBUG
-    cout << "NewSurface:Draft_SurfNotYetImplemented" << endl;
+    std::cout << "NewSurface:Draft_SurfNotYetImplemented" << std::endl;
 #endif
   }
   return NewS;

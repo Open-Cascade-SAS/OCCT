@@ -63,7 +63,7 @@ Standard_Boolean Standard_Type::SubType (const Standard_CString theName) const
 // ------------------------------------------------------------------
 void Standard_Type::Print (Standard_OStream& AStream) const
 {
-  AStream << hex << (Standard_Address)this << " : " << dec << myName ;
+  AStream << std::hex << (Standard_Address)this << " : " << std::dec << myName ;
 }
 
 //============================================================================
@@ -120,7 +120,7 @@ Standard_Type* Standard_Type::Register (const char* theSystemName, const char* t
   // then add it to registry and return (the reference to the handle stored in the registry)
   aRegistry.Bind (aType->mySystemName, aType);
 
-//  cout << "Registering " << theSystemName << ": " << aRegistry.Extent() << endl;
+//  std::cout << "Registering " << theSystemName << ": " << aRegistry.Extent() << std::endl;
 
   return aType;
 }
@@ -131,7 +131,7 @@ Standard_Type::~Standard_Type ()
   registry_type& aRegistry = GetRegistry();
   Standard_ASSERT(aRegistry.UnBind (mySystemName), "Standard_Type::~Standard_Type() cannot find itself in registry",);
 
-//  cout << "Unregistering " << mySystemName << ": " << aRegistry.Extent() << endl;
+//  std::cout << "Unregistering " << mySystemName << ": " << aRegistry.Extent() << std::endl;
   Standard::Free (mySystemName);
   Standard::Free (myName);
 }

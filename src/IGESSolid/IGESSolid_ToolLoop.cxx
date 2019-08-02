@@ -375,15 +375,15 @@ void IGESSolid_ToolLoop::OwnDump(const Handle(IGESSolid_Loop)& ent,
   Standard_Integer nbedges  = ent->NbEdges();
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESSolid_Loop" << endl;
+  S << "IGESSolid_Loop" << Message_EndLine;
 
-  S << "Edge types : " << endl;
-  S << "Edges      : " << endl;
-  S << "List index : " << endl;
-  S << "Orientation flags : " << endl;
+  S << "Edge types : " << Message_EndLine;
+  S << "Edges      : " << Message_EndLine;
+  S << "List index : " << Message_EndLine;
+  S << "Orientation flags : " << Message_EndLine;
   S << "Parametric flags  : ";
   IGESData_DumpEntities(S,dumper,-level,1, nbedges,ent->Edge);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
       S << "[ ";
@@ -409,14 +409,14 @@ void IGESSolid_ToolLoop::OwnDump(const Handle(IGESSolid_Loop)& ent,
 		      << ( ent->IsIsoparametric(i,j) ? "True" : "False" ) << "  ";
 		    S << "Parametric curve : ";
 		    dumper.Dump (ent->ParametricCurve(i,j),S, sublevel);
-		    S << endl;
+		    S << Message_EndLine;
 		  }
 		S << " ]";
 	      }
 	    }
-	  S << endl;
+	  S << Message_EndLine;
 	}
       S << " ]";
     }
-  S << endl;
+  S << Message_EndLine;
 }

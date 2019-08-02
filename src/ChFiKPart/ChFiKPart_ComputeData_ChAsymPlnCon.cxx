@@ -132,7 +132,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
       if ( Abs(ChamfRad) < Precision::Confusion() ) pointu = Standard_True;
       if( ChamfRad < 0 ) {
 #ifdef OCCT_DEBUG
-	cout<<"the chamfer can't pass"<<endl;
+	std::cout<<"the chamfer can't pass"<<std::endl;
 #endif
 	return Standard_False;
       }
@@ -146,7 +146,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
     if (ouvert) {
       if (Abs(angCon) - Abs(SemiAngl) > -Precision::Confusion() ) {
 #ifdef OCCT_DEBUG
-	cout<<"wrong choice of angle for the chamfer"<<endl;
+	std::cout<<"wrong choice of angle for the chamfer"<<std::endl;
 #endif
 	return Standard_False; 
       } 
@@ -160,7 +160,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
 
       if ( (M_PI / 2. - SemiAngl) < Precision::Confusion() ) {
 #ifdef OCCT_DEBUG
-	cout <<"wrong choice of angle for the chamfer"<<endl;
+	std::cout <<"wrong choice of angle for the chamfer"<<std::endl;
 #endif
 	return Standard_False;
       }
@@ -194,7 +194,7 @@ Standard_Boolean ChFiKPart_MakeChAsym(TopOpeBRepDS_DataStructure& DStr,
       if ( Abs(ChamfRad) < Precision::Confusion() ) pointu = Standard_True;
       if( ChamfRad < 0 ) {
 #ifdef OCCT_DEBUG
-	cout<<"the chamfer can't pass"<<endl;
+	std::cout<<"the chamfer can't pass"<<std::endl;
 #endif
 	return Standard_False;
       }

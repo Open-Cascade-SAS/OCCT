@@ -60,7 +60,7 @@ DDataStd_TreeBrowser::DDataStd_TreeBrowser(const TDF_Label& aLabel)
 //=======================================================================
 
 void DDataStd_TreeBrowser::DrawOn(Draw_Display& /*dis*/) const
-{ cout<<"DDataStd_TreeBrowser"<<endl; }
+{ std::cout<<"DDataStd_TreeBrowser"<<std::endl; }
 
 
 //=======================================================================
@@ -79,7 +79,7 @@ Handle(Draw_Drawable3D) DDataStd_TreeBrowser::Copy() const
 
 void DDataStd_TreeBrowser::Dump(Standard_OStream& S) const
 {
-  S<<"DDataStd_TreeBrowser on a label: "<<endl;
+  S<<"DDataStd_TreeBrowser on a label: "<<std::endl;
   S<<myRoot;
 }
 

@@ -135,11 +135,11 @@ void  IGESBasic_ToolExternalRefFileIndex::OwnDump
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
   Standard_Integer i, num;
-  S << "IGESBasic_ExternalRefFileIndex" << endl;
-  S << "External Reference Names : " << endl;
+  S << "IGESBasic_ExternalRefFileIndex" << Message_EndLine;
+  S << "External Reference Names : " << Message_EndLine;
   S << "Internal Entities : ";
   IGESData_DumpEntities(S,dumper,-level,1, ent->NbEntries(),ent->Entity);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     for ( num = ent->NbEntries(), i = 1; i <= num; i++ )
       {
@@ -148,7 +148,7 @@ void  IGESBasic_ToolExternalRefFileIndex::OwnDump
 	IGESData_DumpString(S,ent->Name(i));
 	S << "  Internal Entity : ";
 	dumper.Dump (ent->Entity(i),S, 1);
-	S << endl;
+	S << Message_EndLine;
       }
-  S << endl;
+  S << Message_EndLine;
 }

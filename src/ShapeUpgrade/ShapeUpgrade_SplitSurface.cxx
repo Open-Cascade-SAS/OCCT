@@ -412,8 +412,8 @@ void ShapeUpgrade_SplitSurface::Build(const Standard_Boolean Segment)
     for(Standard_Integer  icol = 2; icol <= myVSplitValues->Length(); icol++) {
       V2 = myVSplitValues->Value(icol);
 //      if (ShapeUpgrade::Debug())  {
-//	cout<<".. bounds    ="<<U1    <<","<<U2   <<","<<V1    <<","<<V2   <<endl;
-//	cout<<".. -> pos ="<<irow  <<","<<icol<<endl;
+//	std::cout<<".. bounds    ="<<U1    <<","<<U2   <<","<<V1    <<","<<V2   <<std::endl;
+//	std::cout<<".. -> pos ="<<irow  <<","<<icol<<std::endl;
 //      }
       // creates a copy of theSurf before to segment:
       Handle(Geom_Surface) theNew = Handle(Geom_Surface)::DownCast ( mySurface->Copy() );
@@ -439,8 +439,8 @@ void ShapeUpgrade_SplitSurface::Build(const Standard_Boolean Segment)
 	}
 	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	  cout << "Warning: ShapeUpgrade_SplitSurface::Build(): Exception in Segment      :";
-	  anException.Print(cout); cout << endl;
+	  std::cout << "Warning: ShapeUpgrade_SplitSurface::Build(): Exception in Segment      :";
+	  anException.Print(std::cout); std::cout << std::endl;
 #endif
 	  (void)anException;
 	  Handle(Geom_Surface) theNewSurf = theNew;
@@ -471,7 +471,7 @@ void ShapeUpgrade_SplitSurface::Build(const Standard_Boolean Segment)
   for(i = 1; i <= nbV; i++)
     VJoints(i) = myVSplitValues->Value(i);
   myResSurfaces->Init(Surfaces,UJoints,VJoints);
-//  if (ShapeUpgrade::Debug()) cout<<"SplitSurface::Build - end"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout<<"SplitSurface::Build - end"<<std::endl;
 }
 
 

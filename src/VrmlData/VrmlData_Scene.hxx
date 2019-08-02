@@ -335,7 +335,7 @@ class VrmlData_Scene
 
  protected:
   /**
-   * Read whatever line from the input checking the istream flags.
+   * Read whatever line from the input checking the std::istream flags.
    */ 
   Standard_EXPORT static VrmlData_ErrorStatus
                                 readLine    (VrmlData_InBuffer&     theBuffer);

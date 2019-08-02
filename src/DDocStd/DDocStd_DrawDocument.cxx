@@ -89,7 +89,7 @@ void DDocStd_DrawDocument::Dump (Standard_OStream& S) const
     DDF_Data::Dump(S);
   }
   else {  
-    S << myDocument->DynamicType()->Name() << " is not a CAF document" << endl;
+    S << myDocument->DynamicType()->Name() << " is not a CAF document" << std::endl;
   }
 }
 

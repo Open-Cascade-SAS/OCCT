@@ -542,7 +542,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
       {
         //Projector
 #ifdef OCCT_DEBUG
-        cout << "Projection not done" << endl;
+        std::cout << "Projection not done" << std::endl;
 #endif
       }
     }
@@ -558,7 +558,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     // If not already SameP and tangent to mill, abandon.
     mySameParameter = Standard_False;
 #ifdef OCCT_DEBUG
-    cout<<"SameParameter problem  : zero tangent to extremities"<<endl;
+    std::cout<<"SameParameter problem  : zero tangent to extremities"<<std::endl;
 #endif
     return;
   }
@@ -653,7 +653,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
         }
         else {
 #ifdef OCCT_DEBUG
-          cout << "Projection not done" << endl;
+          std::cout << "Projection not done" << std::endl;
 #endif
         }
       }
@@ -687,7 +687,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     if (Precision::IsInfinite(algtol)) {
       mySameParameter = Standard_False;
 #ifdef OCCT_DEBUG
-      cout<<"SameParameter problem  : function of interpolation of parametration at mills !!"<<endl;
+      std::cout<<"SameParameter problem  : function of interpolation of parametration at mills !!"<<std::endl;
 #endif
       return;
     }
@@ -778,7 +778,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
         }
         else {
 #ifdef OCCT_DEBUG
-          cout << "Projection not done" << endl;
+          std::cout << "Projection not done" << std::endl;
 #endif
         }
       }

@@ -1415,7 +1415,7 @@ static Standard_Integer OCC27021(Draw_Interpretor& theDI,
 {
   if (theNArg != 2)
   {
-    cout << "Use: " << theArgVal[0] << " shape" << endl;
+    std::cout << "Use: " << theArgVal[0] << " shape" << std::endl;
     return 1;
   }
 
@@ -1547,7 +1547,7 @@ static Standard_Integer OCC26930(Draw_Interpretor& theDI,
 {
   if (theNArg != 5)
   {
-    cout << "Use: " << theArgVal[0] <<" surface curve start end" << endl;
+    std::cout << "Use: " << theArgVal[0] <<" surface curve start end" << std::endl;
     return 1;
   }
 
@@ -1599,7 +1599,7 @@ static Standard_Integer OCC27466(Draw_Interpretor& theDI,
 {
   if (theNArg != 4)
   {
-    cout << "Use: " << theArgVal[0] << " face point start_pnt2d" << endl;
+    std::cout << "Use: " << theArgVal[0] << " face point start_pnt2d" << std::endl;
     return 1;
   }
 
@@ -2517,11 +2517,11 @@ Standard_Boolean IsSameGuid (const Standard_GUID& aGuidNull, const Standard_GUID
 {
   Standard_Boolean isSame (Standard_False);
   if(Standard_GUID::IsEqual(aGuidNull, aGuid2)) {
-    aGuid2.ShallowDump(cout);
+    aGuid2.ShallowDump(std::cout);
     isSame = Standard_True;
   } else {
-    aGuid2.ShallowDump(cout);
-    cout <<endl;
+    aGuid2.ShallowDump(std::cout);
+    std::cout <<std::endl;
   }
   return isSame;
 }
@@ -2722,7 +2722,7 @@ static Standard_Integer OCC29064 (Draw_Interpretor& theDI, Standard_Integer theA
 {
   if (theArgc < 2)
   {
-    cout << "Error: give argument indicating type of map (map, doublemap, datamap, indexedmap, indexeddatamap)" << endl;
+    std::cout << "Error: give argument indicating type of map (map, doublemap, datamap, indexedmap, indexeddatamap)" << std::endl;
     return 1;
   }
 
@@ -2739,7 +2739,7 @@ static Standard_Integer OCC29064 (Draw_Interpretor& theDI, Standard_Integer theA
     AllocDummyArr<NCollection_IndexedDataMap<int, int> > (theDI, nbm1, nbm2);
   else
   {
-    cout << "Error: unrecognized argument " << theArgv[1] << endl;
+    std::cout << "Error: unrecognized argument " << theArgv[1] << std::endl;
     return 1;
   }
   return 0;

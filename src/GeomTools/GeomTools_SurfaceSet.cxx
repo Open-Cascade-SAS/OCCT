@@ -400,7 +400,7 @@ static void Print(const Handle(Geom_BezierSurface)& S,
   
   for (i = 1; i <= udegree+1; i++) {
     for (j = 1; j <= vdegree+1; j++) {
-      if (!compact) OS << "\n  "<<setw(2)<<i<<", "<<setw(2)<<j<<" : ";
+      if (!compact) OS << "\n  "<<std::setw(2)<<i<<", "<<std::setw(2)<<j<<" : ";
       Print(S->Pole(i,j),OS,compact);
       if (urational || vrational)
 	OS << " " << S->Weight(i,j);
@@ -486,7 +486,7 @@ static void Print(const Handle(Geom_BSplineSurface)& S,
   if (!compact) OS << "\n Poles :\n";
   for (i = 1; i <= nbupoles; i++) {
     for (j = 1; j <= nbvpoles; j++) {
-      if (!compact) OS << "\n  "<<setw(2)<<i<<", "<<setw(2)<<j<<" : ";
+      if (!compact) OS << "\n  "<<std::setw(2)<<i<<", "<<std::setw(2)<<j<<" : ";
       Print(S->Pole(i,j),OS,compact);
       if (urational || vrational)
 	OS << " " << S->Weight(i,j);
@@ -498,13 +498,13 @@ static void Print(const Handle(Geom_BSplineSurface)& S,
   OS << "\n";
   if (!compact) OS << "\n UKnots :\n";
   for (i = 1; i <= nbuknots; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     OS << S->UKnot(i) << " " << S->UMultiplicity(i) <<"\n";
   }
   OS << "\n";
   if (!compact) OS << "\n VKnots :\n";
   for (i = 1; i <= nbvknots; i++) {
-    if (!compact) OS << "\n  "<<setw(2)<<i<<" : ";
+    if (!compact) OS << "\n  "<<std::setw(2)<<i<<" : ";
     OS << S->VKnot(i) << " " << S->VMultiplicity(i) <<"\n";
   }
   OS << "\n";
@@ -605,7 +605,7 @@ void GeomTools_SurfaceSet::PrintSurface(const Handle(Geom_Surface)& S,
     //if (!compact)
     //  OS << "***** Unknown Surface ********\n";
     //else
-    //  cout << "***** Unknown Surface ********"<<endl;
+    //  std::cout << "***** Unknown Surface ********"<<std::endl;
   }
 }
 
@@ -622,7 +622,7 @@ void  GeomTools_SurfaceSet::Dump(Standard_OStream& OS)const
   OS << "\n -------\n\n";
 
   for (i = 1; i <= nbsurf; i++) {
-    OS << setw(4) << i << " : ";
+    OS << std::setw(4) << i << " : ";
     PrintSurface(Handle(Geom_Surface)::DownCast(myMap(i)),OS,Standard_False);
   }
 }
@@ -1039,8 +1039,8 @@ Handle(Geom_Surface) GeomTools_SurfaceSet::ReadSurface(Standard_IStream& IS)
   }
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout <<"EXCEPTION in GeomTools_SurfaceSet::ReadSurface(..)!!!" << endl;
-    cout << anException << endl;
+    std::cout <<"EXCEPTION in GeomTools_SurfaceSet::ReadSurface(..)!!!" << std::endl;
+    std::cout << anException << std::endl;
 #endif
     (void)anException;
   }
@@ -1057,7 +1057,7 @@ void  GeomTools_SurfaceSet::Read(Standard_IStream& IS)
   char buffer[255];
   IS >> buffer;
   if (strcmp(buffer,"Surfaces")) {
-    cout << "Not a surface table"<<endl;
+    std::cout << "Not a surface table"<<std::endl;
     return;
   }
 

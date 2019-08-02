@@ -144,13 +144,13 @@ void  IGESBasic_ToolSubfigureDef::OwnDump
   (const Handle(IGESBasic_SubfigureDef)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_SubfigureDef" << endl;
+  S << "IGESBasic_SubfigureDef" << Message_EndLine;
 
-  S << "Depth of the subfigure : " << ent->Depth() << endl;
+  S << "Depth of the subfigure : " << ent->Depth() << Message_EndLine;
   S << "Name of subfigure : ";
   IGESData_DumpString(S,ent->Name());
-  S << endl;
+  S << Message_EndLine;
   S << "The Associated Entities : " ;
   IGESData_DumpEntities(S,dumper,level,1,ent->NbEntities(),ent->AssociatedEntity);
-  S << endl;
+  S << Message_EndLine;
 }

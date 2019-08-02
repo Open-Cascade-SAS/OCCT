@@ -737,19 +737,19 @@ Standard_Real Approx_SweepApproximation::TolCurveOnSurf(const Standard_Integer I
 
  void Approx_SweepApproximation::Dump(Standard_OStream& o) const
 {
-  o << "Dump of SweepApproximation" << endl;
+  o << "Dump of SweepApproximation" << std::endl;
   if (done) { 
-    o << "Error 3d = " << MaxErrorOnSurf() << endl;
+    o << "Error 3d = " << MaxErrorOnSurf() << std::endl;
 
     if (Num2DSS>0) {
       o << "Error 2d = ";
       for (Standard_Integer ii=1; ii<=Num2DSS; ii++) 
 	{  o << Max2dError(ii);
-	   if (ii < Num2DSS) o << " , " << endl;
+	   if (ii < Num2DSS) o << " , " << std::endl;
 	 }
-      cout << endl;
+      std::cout << std::endl;
     }
-    o <<  tabVKnots->Length()-1 <<" Segment(s) of degree " << vdeg << endl;
+    o <<  tabVKnots->Length()-1 <<" Segment(s) of degree " << vdeg << std::endl;
   }
-  else cout << " Not Done " << endl;
+  else std::cout << " Not Done " << std::endl;
 }

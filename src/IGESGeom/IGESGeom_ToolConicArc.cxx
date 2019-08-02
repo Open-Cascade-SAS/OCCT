@@ -283,42 +283,42 @@ void IGESGeom_ToolConicArc::OwnDump(const Handle(IGESGeom_ConicArc)& ent,
 {
   Standard_Real A,B,C,D,E,F;
   ent->Equation(A,B,C,D,E,F);
-  S << "IGESGeom_ConicArc" << endl;
+  S << "IGESGeom_ConicArc" << Message_EndLine;
   Standard_Integer cf = ent->FormNumber();
   if (cf == 0) cf = ent->ComputedFormNumber();
-  if (cf == 1)      S << " --     Ellipse     --" << endl;
-  else if (cf == 2) S << " --    Hyperbola    --" << endl;
-  else if (cf == 3) S << " --    Parabola    --"  << endl;
-  else              S << " --    (Undetermined type of Conic)    --" << endl;
-  S << "Conic Coefficient A : " << A << endl;
-  S << "Conic Coefficient B : " << B << endl;
-  S << "Conic Coefficient C : " << C << endl;
-  S << "Conic Coefficient D : " << D << endl;
-  S << "Conic Coefficient E : " << E << endl;
-  S << "Conic Coefficient F : " << F << endl;
-  S << "Z-Plane shift : " << ent->ZPlane() << endl;
+  if (cf == 1)      S << " --     Ellipse     --" << Message_EndLine;
+  else if (cf == 2) S << " --    Hyperbola    --" << Message_EndLine;
+  else if (cf == 3) S << " --    Parabola    --"  << Message_EndLine;
+  else              S << " --    (Undetermined type of Conic)    --" << Message_EndLine;
+  S << "Conic Coefficient A : " << A << Message_EndLine;
+  S << "Conic Coefficient B : " << B << Message_EndLine;
+  S << "Conic Coefficient C : " << C << Message_EndLine;
+  S << "Conic Coefficient D : " << D << Message_EndLine;
+  S << "Conic Coefficient E : " << E << Message_EndLine;
+  S << "Conic Coefficient F : " << F << Message_EndLine;
+  S << "Z-Plane shift : " << ent->ZPlane() << Message_EndLine;
   S << "Start Point : ";
   IGESData_DumpXYLZ(S,level, ent->StartPoint(), ent->Location(),ent->ZPlane());
-  S << endl;
+  S << Message_EndLine;
   S << "End   Point : ";
   IGESData_DumpXYLZ(S,level, ent->EndPoint(), ent->Location(), ent->ZPlane());
-  S << endl;
-  if (level <= 4) S<<" -- Computed Definition : ask level > 4" << endl;
+  S << Message_EndLine;
+  if (level <= 4) S<<" -- Computed Definition : ask level > 4" << Message_EndLine;
   else {
     gp_Pnt Cen;  gp_Dir Ax;  Standard_Real Rmin,Rmax;
     ent->Definition (Cen,Ax,Rmin,Rmax);
-    S << " -- Computed Definition (and Transformed if level > 5)" << endl;
+    S << " -- Computed Definition (and Transformed if level > 5)" << Message_EndLine;
 
     if (cf != 3) {
       S<<" Center        : "; IGESData_DumpXYZL(S,level,Cen,ent->Location());
-      S<<endl;
+      S<<Message_EndLine;
     }
     S << " Main Axis   : "; IGESData_DumpXYZL(S,level,Ax,ent->VectorLocation());
-    S<<endl;
-    if (cf == 3) S << " Focal : " << Rmin << endl;
-    else if (Rmin == Rmax) S << " Radius (Major = Minor) : " << Rmin << endl;
-    else S << " Major Radius : " << Rmax << "  Minor Radius : " << Rmin <<endl;
+    S<<Message_EndLine;
+    if (cf == 3) S << " Focal : " << Rmin << Message_EndLine;
+    else if (Rmin == Rmax) S << " Radius (Major = Minor) : " << Rmin << Message_EndLine;
+    else S << " Major Radius : " << Rmax << "  Minor Radius : " << Rmin <<Message_EndLine;
     S<< "  Normal Axis : ";  IGESData_DumpXYZL(S,level,ent->Axis(),ent->VectorLocation());
-    S << endl;
+    S << Message_EndLine;
   }
 }

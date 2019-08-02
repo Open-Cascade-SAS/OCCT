@@ -182,7 +182,7 @@ void StdPrs_WFDeflectionRestrictedFace::Add
 	}
 #ifdef OCCT_DEBUG
 	else {
-	  cout << "Cannot evaluate curve on surface"<<endl;
+	  std::cout << "Cannot evaluate curve on surface"<<std::endl;
 	}
 #endif
       }
@@ -456,7 +456,7 @@ Standard_Boolean StdPrs_WFDeflectionRestrictedFace::Match
       }
 #ifdef OCCT_DEBUG
       else {
-	cout << "Cannot evaluate curve on surface"<<endl;
+	std::cout << "Cannot evaluate curve on surface"<<std::endl;
       }
 #endif
   }

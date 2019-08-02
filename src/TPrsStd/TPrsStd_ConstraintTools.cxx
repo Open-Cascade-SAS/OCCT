@@ -238,7 +238,7 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
   if (aGeomNum < 1 || aGeomNum > 2)
   {
 #ifdef OCCT_DEBUG
-    cout <<  "TPrsStd_ConstraintTools::ComputeDistance: 1 or 2 geometries are needed" << endl;
+    std::cout <<  "TPrsStd_ConstraintTools::ComputeDistance: 1 or 2 geometries are needed" << std::endl;
 #endif
     NullifyAIS(theAIS);
     return;
@@ -256,7 +256,7 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
     if (aShape1.IsNull())
     {
       #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << std::endl;
       #endif
       NullifyAIS (theAIS);
       return;
@@ -269,7 +269,7 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
     if (aShape1.IsNull() || aShape2.IsNull())
     {
       #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeDistance : null shape" << std::endl;
       #endif
       NullifyAIS (theAIS);
       return;
@@ -318,7 +318,7 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
     if (aShape1.ShapeType () != TopAbs_EDGE)
     {
       #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeDistance : shape should be edge" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeDistance : shape should be edge" << std::endl;
       #endif
       NullifyAIS (theAIS);
       return;
@@ -406,7 +406,7 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
   if (isCheckPlane && aPlane.IsNull())
   {
     #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeDistance : null plane" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeDistance : null plane" << std::endl;
     #endif
     NullifyAIS (theAIS);
     return;
@@ -465,7 +465,7 @@ void TPrsStd_ConstraintTools::ComputePerpendicular(const Handle(TDataXtd_Constra
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputePerpendicular: at leat two constraintes are needed" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputePerpendicular: at leat two constraintes are needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -479,7 +479,7 @@ void TPrsStd_ConstraintTools::ComputePerpendicular(const Handle(TDataXtd_Constra
   else GetTwoShapes(aConst,shape1,shape2); 
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputePerpendicular : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputePerpendicular : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -504,7 +504,7 @@ void TPrsStd_ConstraintTools::ComputePerpendicular(const Handle(TDataXtd_Constra
     Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom3);
     if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputePerpendicular: nul plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputePerpendicular: nul plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -524,7 +524,7 @@ void TPrsStd_ConstraintTools::ComputeParallel(const Handle(TDataXtd_Constraint)&
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeParallel: at least 2 constraintes are needed" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeParallel: at least 2 constraintes are needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -532,7 +532,7 @@ void TPrsStd_ConstraintTools::ComputeParallel(const Handle(TDataXtd_Constraint)&
   
   if (!aConst->IsPlanar()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeParallel: must be a planar constraint" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeParallel: must be a planar constraint" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -544,7 +544,7 @@ void TPrsStd_ConstraintTools::ComputeParallel(const Handle(TDataXtd_Constraint)&
   GetShapesAndGeom(aConst,shape1,shape2,ageom3);
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeParallel : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeParallel : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -552,7 +552,7 @@ void TPrsStd_ConstraintTools::ComputeParallel(const Handle(TDataXtd_Constraint)&
   Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom3);
   if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeParallel: nul plane" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeParallel: nul plane" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -585,7 +585,7 @@ void TPrsStd_ConstraintTools::ComputeSymmetry(const Handle(TDataXtd_Constraint)&
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 3) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeSymmetry: at least 3 constraintes are needed" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: at least 3 constraintes are needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -594,7 +594,7 @@ void TPrsStd_ConstraintTools::ComputeSymmetry(const Handle(TDataXtd_Constraint)&
   Standard_Boolean is_planar(aConst->IsPlanar());
   if (!is_planar) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeSymmetry: must be a planar constraint" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: must be a planar constraint" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -606,7 +606,7 @@ void TPrsStd_ConstraintTools::ComputeSymmetry(const Handle(TDataXtd_Constraint)&
 
   if (shape1.IsNull() || shape2.IsNull() || shape3.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeSymmetry : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -617,7 +617,7 @@ void TPrsStd_ConstraintTools::ComputeSymmetry(const Handle(TDataXtd_Constraint)&
   Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom3);
   if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeSymmetry: null plane" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: null plane" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -651,7 +651,7 @@ void TPrsStd_ConstraintTools::ComputeMidPoint(const Handle(TDataXtd_Constraint)&
   if (nbgeom < 3)
     {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeSymmetry: at least 3 constraints are needed" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: at least 3 constraints are needed" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -661,7 +661,7 @@ void TPrsStd_ConstraintTools::ComputeMidPoint(const Handle(TDataXtd_Constraint)&
   if ( !is_planar )
     {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeSymmetry: must be a planar constraint" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: must be a planar constraint" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -674,7 +674,7 @@ void TPrsStd_ConstraintTools::ComputeMidPoint(const Handle(TDataXtd_Constraint)&
   if (shape1.IsNull() || shape2.IsNull() || shape3.IsNull())
     {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeSymmetry : null shape" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry : null shape" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -687,7 +687,7 @@ void TPrsStd_ConstraintTools::ComputeMidPoint(const Handle(TDataXtd_Constraint)&
   if (aplane.IsNull())
     {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeSymmetry: null plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeSymmetry: null plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -724,14 +724,14 @@ void TPrsStd_ConstraintTools::ComputeTangent (const Handle(TDataXtd_Constraint)&
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeTangent: at leat two constraintes are needed" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeTangent: at leat two constraintes are needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
   }
   if (!aConst->IsPlanar()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeTangent: must be a planar constraint" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeTangent: must be a planar constraint" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -742,7 +742,7 @@ void TPrsStd_ConstraintTools::ComputeTangent (const Handle(TDataXtd_Constraint)&
   GetShapesAndGeom(aConst,shape1,shape2,ageom3);
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeTangent : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeTangent : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -752,7 +752,7 @@ void TPrsStd_ConstraintTools::ComputeTangent (const Handle(TDataXtd_Constraint)&
   Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom3);
   if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeTangent: nul plane" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeTangent: nul plane" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;    
@@ -797,7 +797,7 @@ void TPrsStd_ConstraintTools::ComputeAngleForOneFace (const Handle(TDataXtd_Cons
   GetOneShape( aConst, shape ); 
   if (shape.IsNull() ) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeAngleForOneFace : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeAngleForOneFace : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -847,7 +847,7 @@ static Standard_Boolean CheckIsShapeCompound(TopoDS_Shape& shape, TopoDS_Face& a
       }
   }
 #ifdef OCCT_DEBUG
-  cout << "TPrsStd::Compute angle : Shape is not Compound or is Null" <<endl;
+  std::cout << "TPrsStd::Compute angle : Shape is not Compound or is Null" <<std::endl;
 #endif
   return (Standard_False);
 }
@@ -864,7 +864,7 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
   if (nbgeom < 2) {
     if( nbgeom == 1 ) { ComputeAngleForOneFace( aConst, anAIS ); return; }
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeAngle: at least 2 constraints are needed" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeAngle: at least 2 constraints are needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -876,7 +876,7 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
   GetShapesAndGeom (aConst,shape1,shape2,ageom3);
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeAngle : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeAngle : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -900,8 +900,8 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
       else
 	if(!CheckIsShapeCompound(shape1, aFace)) {
 #ifdef OCCT_DEBUG
-	cout << "Compute angle : Geom type = " << shape1.ShapeType()
-	  << " non traite"<<endl;
+	std::cout << "Compute angle : Geom type = " << shape1.ShapeType()
+	  << " non traite"<<std::endl;
 #endif
 	NullifyAIS(anAIS);
 	return;      
@@ -926,7 +926,7 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
       anax1aFace1 = aTore.Axis();  
     } else {
 #ifdef OCCT_DEBUG
-      cout<<"Compute angle"<<aTypeaFace<<" non traite"<<endl;
+      std::cout<<"Compute angle"<<aTypeaFace<<" non traite"<<std::endl;
 #endif
       NullifyAIS(anAIS);
       return;      
@@ -947,8 +947,8 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
     else  
       if(!CheckIsShapeCompound(shape2, aFace)) {
 #ifdef OCCT_DEBUG
-	cout << "Compute angle : Geom type = " << shape2.ShapeType()
-	  << " non traite"<<endl;
+	std::cout << "Compute angle : Geom type = " << shape2.ShapeType()
+	  << " non traite"<<std::endl;
 #endif
 	NullifyAIS(anAIS);
 	return;      
@@ -970,7 +970,7 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
       anax1aFace2 = aTore.Axis();  
     } else {
 #ifdef OCCT_DEBUG
-      cout << "Compute angle " << aTypeaFace << " non traite"<<endl;
+      std::cout << "Compute angle " << aTypeaFace << " non traite"<<std::endl;
 #endif
       NullifyAIS(anAIS);
       return;      
@@ -987,7 +987,7 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
 	  ageom3 = computedgeom3;
 	} else {
 #ifdef OCCT_DEBUG
-	  cout<<"Compute angle insertection of planes failed"<<endl;
+	  std::cout<<"Compute angle insertection of planes failed"<<std::endl;
 #endif
 	  NullifyAIS(anAIS);
 	  return;            
@@ -995,7 +995,7 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
       } else {
 	
 #ifdef OCCT_DEBUG
-	cout<<"Compute angle faces are //"<<endl;
+	std::cout<<"Compute angle faces are //"<<std::endl;
 #endif
 	NullifyAIS(anAIS);
 	return;            
@@ -1014,7 +1014,7 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
     else if (ageom3->IsKind(STANDARD_TYPE(Geom_Line))) isplan = Standard_False;
     else {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeAngle: unknown 3rd arg " << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeAngle: unknown 3rd arg " << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1092,7 +1092,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
   }
   if (!aConst->IsPlanar()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeConcentric: must be a planar constraint" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric: must be a planar constraint" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1103,7 +1103,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
   GetShapesAndGeom(aConst,shape1,shape2,ageom3);
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeConcentric : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1115,7 +1115,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
 //ota : to allow concentric constraint display between vertex and edge
   if (shape1.ShapeType() != TopAbs_EDGE && shape2.ShapeType() != TopAbs_EDGE) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeConcentric: concentric between two vertexes : NOT DISPLAYED" << endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric: concentric between two vertexes : NOT DISPLAYED" << std::endl;;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1124,7 +1124,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
   Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom3);
   if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeConcentric: nul plane" << endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric: nul plane" << std::endl;;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1159,7 +1159,7 @@ void TPrsStd_ConstraintTools::ComputeRadius (const Handle(TDataXtd_Constraint)& 
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeRadius: at least one constrainte is needed" << endl;    
+    std::cout << "TPrsStd_ConstraintTools::ComputeRadius: at least one constrainte is needed" << std::endl;    
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1169,7 +1169,7 @@ void TPrsStd_ConstraintTools::ComputeRadius (const Handle(TDataXtd_Constraint)& 
   GetOneShape (aConst,shape1);
   if (shape1.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeRadius: null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeRadius: null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1181,7 +1181,7 @@ void TPrsStd_ConstraintTools::ComputeRadius (const Handle(TDataXtd_Constraint)& 
       shape1.ShapeType()==TopAbs_SOLID ||
       shape1.ShapeType()==TopAbs_SHELL ) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeRadius: not good shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeRadius: not good shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1216,7 +1216,7 @@ void TPrsStd_ConstraintTools::ComputeRadius (const Handle(TDataXtd_Constraint)& 
     Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom2);
     if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeRadius: nul plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeRadius: nul plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1236,7 +1236,7 @@ void TPrsStd_ConstraintTools::ComputeMinRadius (const Handle(TDataXtd_Constraint
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeMinRadius: at least one constrainte is needed" << endl;    
+    std::cout << "TPrsStd_ConstraintTools::ComputeMinRadius: at least one constrainte is needed" << std::endl;    
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1246,7 +1246,7 @@ void TPrsStd_ConstraintTools::ComputeMinRadius (const Handle(TDataXtd_Constraint
   GetOneShape (aConst,shape1);
   if (shape1.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeMinradius: null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeMinradius: null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1258,7 +1258,7 @@ void TPrsStd_ConstraintTools::ComputeMinRadius (const Handle(TDataXtd_Constraint
       shape1.ShapeType()==TopAbs_SOLID ||
       shape1.ShapeType()==TopAbs_SHELL ) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeMinRadius: not good shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeMinRadius: not good shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1295,7 +1295,7 @@ void TPrsStd_ConstraintTools::ComputeMinRadius (const Handle(TDataXtd_Constraint
     Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom2);
     if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeMinRadius: nul plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeMinRadius: nul plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1315,7 +1315,7 @@ void TPrsStd_ConstraintTools::ComputeMaxRadius (const Handle(TDataXtd_Constraint
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeMaxRadius: at least one constrainte is needed" << endl;    
+    std::cout << "TPrsStd_ConstraintTools::ComputeMaxRadius: at least one constrainte is needed" << std::endl;    
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1325,7 +1325,7 @@ void TPrsStd_ConstraintTools::ComputeMaxRadius (const Handle(TDataXtd_Constraint
   GetOneShape (aConst,shape1);
   if (shape1.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeMaxradius: null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeMaxradius: null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1337,7 +1337,7 @@ void TPrsStd_ConstraintTools::ComputeMaxRadius (const Handle(TDataXtd_Constraint
       shape1.ShapeType()==TopAbs_SOLID ||
       shape1.ShapeType()==TopAbs_SHELL ) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeMaxRadius: not good shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeMaxRadius: not good shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1374,7 +1374,7 @@ void TPrsStd_ConstraintTools::ComputeMaxRadius (const Handle(TDataXtd_Constraint
     Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom2);
     if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeMaxRadius: nul plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeMaxRadius: nul plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1394,7 +1394,7 @@ void TPrsStd_ConstraintTools::ComputeEqualDistance(const Handle(TDataXtd_Constra
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 4) {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeEqual: at least four geometries are needed" << endl;;
+      std::cout << "TPrsStd_ConstraintTools::ComputeEqual: at least four geometries are needed" << std::endl;;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1405,7 +1405,7 @@ void TPrsStd_ConstraintTools::ComputeEqualDistance(const Handle(TDataXtd_Constra
    if (aShape1.IsNull()||aShape2.IsNull()||
        aShape3.IsNull()||aShape4.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeEqualDistance : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeEqualDistance : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1419,7 +1419,7 @@ void TPrsStd_ConstraintTools::ComputeEqualDistance(const Handle(TDataXtd_Constra
   if (!CheckShapesPair(aShape1, aShape2) || 
       !CheckShapesPair(aShape3, aShape4)){
 #ifdef OCCT_DEBUG
-	cout << "TPrsStd_ConstraintTools::ComputeEqualDistance : at least one pair of shapes is incorrect"<<endl;
+	std::cout << "TPrsStd_ConstraintTools::ComputeEqualDistance : at least one pair of shapes is incorrect"<<std::endl;
 #endif
 	NullifyAIS(anAIS);
 	return;
@@ -1433,7 +1433,7 @@ void TPrsStd_ConstraintTools::ComputeEqualDistance(const Handle(TDataXtd_Constra
   if (!IsPlanar || aPlane.IsNull()) {
     //create the plane
 #ifdef OCCT_DEBUG
-    cout<< "The constraint plane is not assigned "<< endl;
+    std::cout<< "The constraint plane is not assigned "<< std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1488,7 +1488,7 @@ static Standard_Boolean CheckShapesPair(const TopoDS_Shape& aShape1,
 	  gp_Dir aDir2 = aCurve2.Line().Direction();
 	  if (!(aDir1.IsParallel(aDir2, Precision::Confusion()))) {
 #ifdef OCCT_DEBUG
-	    cout << " Lines are not parallel"<<endl;
+	    std::cout << " Lines are not parallel"<<std::endl;
 #endif
 	    return Standard_False;
 	  }
@@ -1499,14 +1499,14 @@ static Standard_Boolean CheckShapesPair(const TopoDS_Shape& aShape1,
 	  gp_Pnt aCntr2 = aCurve2.Circle().Location(); //get the circle center
 	  if (!aCntr1.IsEqual(aCntr2,Precision::Confusion())){
 #ifdef OCCT_DEBUG
-	    cout << " Circles are not concentric"<<endl;
+	    std::cout << " Circles are not concentric"<<std::endl;
 #endif
 	    return Standard_False;
 	  }
 	}
       else {
 #ifdef OCCT_DEBUG
-	cout << "Incorrect pair of curves "<<endl;
+	std::cout << "Incorrect pair of curves "<<std::endl;
 #endif
 	return Standard_False;
       }
@@ -1528,7 +1528,7 @@ static Standard_Boolean CheckShapesPair(const TopoDS_Shape& aShape1,
 	  gp_Pnt aCntr = aCurve.Circle().Location();
 	  if (!aCntr.IsEqual(aPnt, Precision::Confusion())){
 #ifdef OCCT_DEBUG
-	    cout << " The point doesn't coincide with the circle center"<<endl;
+	    std::cout << " The point doesn't coincide with the circle center"<<std::endl;
 #endif
 	    return Standard_False;
 	  }
@@ -1547,7 +1547,7 @@ void TPrsStd_ConstraintTools::ComputeEqualRadius(const Handle(TDataXtd_Constrain
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeEqualRadius: at least two geometries are needed" << endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeEqualRadius: at least two geometries are needed" << std::endl;;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1558,7 +1558,7 @@ void TPrsStd_ConstraintTools::ComputeEqualRadius(const Handle(TDataXtd_Constrain
   GetShapesAndGeom(aConst, shape1, shape2, ageom3);
   if (shape1.IsNull()||shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeEqualRadius : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeEqualRadius : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1602,7 +1602,7 @@ void TPrsStd_ConstraintTools::ComputeEqualRadius(const Handle(TDataXtd_Constrain
       aplane = aPlane2;
     else {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeRadiusRelation: nul plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeRadiusRelation: nul plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1639,7 +1639,7 @@ void TPrsStd_ConstraintTools::ComputeDiameter(const Handle(TDataXtd_Constraint)&
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeDiameter: at least one constrainte is needed" << endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeDiameter: at least one constrainte is needed" << std::endl;;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1649,7 +1649,7 @@ void TPrsStd_ConstraintTools::ComputeDiameter(const Handle(TDataXtd_Constraint)&
   GetOneShape(aConst,shape1);
   if (shape1.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeDiameter : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeDiameter : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1679,7 +1679,7 @@ void TPrsStd_ConstraintTools::ComputeDiameter(const Handle(TDataXtd_Constraint)&
     Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom2);
     if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeDiameter: nul plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeDiameter: nul plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1700,14 +1700,14 @@ void TPrsStd_ConstraintTools::ComputeFix(const Handle(TDataXtd_Constraint)& aCon
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeFix: at least one constrainte is needed" << endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeFix: at least one constrainte is needed" << std::endl;;
 #endif
     NullifyAIS(anAIS);
     return;
   }
   if (!aConst->IsPlanar()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeFix: must be a planar constraint" << endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeFix: must be a planar constraint" << std::endl;;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1719,7 +1719,7 @@ void TPrsStd_ConstraintTools::ComputeFix(const Handle(TDataXtd_Constraint)& aCon
   GetOneShape(aConst,shape1);
   if (shape1.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeFix : null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeFix : null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1729,7 +1729,7 @@ void TPrsStd_ConstraintTools::ComputeFix(const Handle(TDataXtd_Constraint)& aCon
   Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom2);
   if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeFix: nul plane" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeFix: nul plane" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1767,7 +1767,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
     aplane = Handle(Geom_Plane)::DownCast (ageom);
     if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout << "TPrsStd_ConstraintTools::ComputeOffset: null plane" << endl;
+      std::cout << "TPrsStd_ConstraintTools::ComputeOffset: null plane" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1794,7 +1794,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
 
   if (S1.IsNull() || S2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeOffset: null shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeOffset: null shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1926,7 +1926,7 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
   }
 
 #ifdef OCCT_DEBUG
-  cout << "TPrsStd_ConstraintTools::ComputeOffset: Case not implemented" << endl;
+  std::cout << "TPrsStd_ConstraintTools::ComputeOffset: Case not implemented" << std::endl;
 #endif
   NullifyAIS(anAIS);
 }
@@ -1948,7 +1948,7 @@ void TPrsStd_ConstraintTools::ComputePlacement
   GetTwoShapes(aConst,shape1,shape2);
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputePlacement: nul shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputePlacement: nul shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -2079,7 +2079,7 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const Handle(TDataXtd_Constraint
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeCoincident: at leat two constraintes are needed" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeCoincident: at leat two constraintes are needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return; 
@@ -2087,7 +2087,7 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const Handle(TDataXtd_Constraint
   
   if (!aConst->IsPlanar()) { 
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeCoincident: must be a planar constraint" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeCoincident: must be a planar constraint" << std::endl;
 #endif
     anAIS.Nullify() ; 
     return;
@@ -2099,7 +2099,7 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const Handle(TDataXtd_Constraint
   Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast (ageom);
   if (shape1.IsNull() || shape2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeCoincident: nul shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeCoincident: nul shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -2109,7 +2109,7 @@ void TPrsStd_ConstraintTools::ComputeCoincident(const Handle(TDataXtd_Constraint
   GetGoodShape(shape2);
   if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeCoincident: nul plane" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeCoincident: nul plane" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -2142,7 +2142,7 @@ void TPrsStd_ConstraintTools::ComputeRound(const Handle(TDataXtd_Constraint)& aC
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputeRound: at leat one geometry is needed" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputeRound: at leat one geometry is needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return; 
@@ -2151,7 +2151,7 @@ void TPrsStd_ConstraintTools::ComputeRound(const Handle(TDataXtd_Constraint)& aC
   GetOneShape (aConst,shape1);
   if (shape1.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "TPrsStd_ConstraintTools::ComputePlacement: nul shape" << endl;
+    std::cout << "TPrsStd_ConstraintTools::ComputePlacement: nul shape" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -2196,7 +2196,7 @@ void TPrsStd_ConstraintTools::GetGeom(const Handle(TDataXtd_Constraint)& aConst,
   Handle(TNaming_NamedShape) atgeom = aConst->GetPlane();
   if (atgeom.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<"TPrsStd_ConstraintTools::GetGeom : aConst->GetPlane().IsNull()"<<endl;
+    std::cout<<"TPrsStd_ConstraintTools::GetGeom : aConst->GetPlane().IsNull()"<<std::endl;
 #endif
     return;
   }
@@ -2217,7 +2217,7 @@ void TPrsStd_ConstraintTools::GetGeom(const Handle(TDataXtd_Constraint)& aConst,
   else if (TDataXtd_Geometry::Point(label,apoint)) aGeom =  new Geom_CartesianPoint(apoint);
 #ifdef OCCT_DEBUG
   else {
-    cout << "TPrsStd_ConstraintTools::GetGeom no geom on label " << endl;
+    std::cout << "TPrsStd_ConstraintTools::GetGeom no geom on label " << std::endl;
   }
 #endif  
 }

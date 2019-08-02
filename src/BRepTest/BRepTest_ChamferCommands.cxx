@@ -76,7 +76,7 @@ static Standard_Integer chamf_throat_with_penetration(Draw_Interpretor& di,
   // compute the chamfer and display the result
   if (aMCh.NbContours() == 0 )
   {
-    //cout<<"No suitable edges to chamfer"<<endl;
+    //std::cout<<"No suitable edges to chamfer"<<std::endl;
     di<<"No suitable edges to chamfer\n";
     return 1;
   }
@@ -87,7 +87,7 @@ static Standard_Integer chamf_throat_with_penetration(Draw_Interpretor& di,
     return 0;
   }
   else {
-    //cout<<"compute of chamfer failed"<<endl;
+    //std::cout<<"compute of chamfer failed"<<std::endl;
     di<<"compute of chamfer failed\n";
     return 1;
   }
@@ -132,7 +132,7 @@ static Standard_Integer chamf_throat(Draw_Interpretor& di,
   // compute the chamfer and display the result
   if (aMCh.NbContours() == 0 )
   {
-    //cout<<"No suitable edges to chamfer"<<endl;
+    //std::cout<<"No suitable edges to chamfer"<<std::endl;
     di<<"No suitable edges to chamfer\n";
     return 1;
   }
@@ -143,7 +143,7 @@ static Standard_Integer chamf_throat(Draw_Interpretor& di,
     return 0;
   }
   else {
-    //cout<<"compute of chamfer failed"<<endl;
+    //std::cout<<"compute of chamfer failed"<<std::endl;
     di<<"compute of chamfer failed\n";
     return 1;
   }
@@ -235,7 +235,7 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
     // compute the chamfer and display the result
     if (aMCh.NbContours() == 0 )
       {
-	//cout<<"No suitable edges to chamfer"<<endl;
+	//std::cout<<"No suitable edges to chamfer"<<std::endl;
 	di<<"No suitable edges to chamfer\n";
 	return 1;
       }
@@ -246,7 +246,7 @@ static Standard_Integer chamfer(Draw_Interpretor& di,
       return 0;
     }
     else {
-      //cout<<"compute of chamfer failed"<<endl;
+      //std::cout<<"compute of chamfer failed"<<std::endl;
       di<<"compute of chamfer failed\n";
       return 1;
     }

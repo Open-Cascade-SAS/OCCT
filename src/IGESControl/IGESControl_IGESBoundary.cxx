@@ -309,7 +309,7 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
 	  if (!IGESToBRep::TransferPCurve (edge2d, edge3d, myface)) continue;
 	  if (sfe->FixReversed2d (edge3d, myface)) {
 #ifdef OCCT_DEBUG
-	    cout << "Warning: IGESToBRep_IGESBoundary: 2D curve of edge was reversed" << endl;
+	    std::cout << "Warning: IGESToBRep_IGESBoundary: 2D curve of edge was reversed" << std::endl;
 #endif
 	  }
 	  //#74 rln 10.03.99 S4135: handling use of BRepLib::SameParameter by new static parameter
@@ -329,19 +329,19 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
 	  //pdn 08.04.99 S4135 recomputing only if deviation is greater than maxtol
 	  if (maxdev > maxtol) { //:e2
 #ifdef OCCT_DEBUG
-	    cout << "Warning: IGESToBRep_IGESBoundary: Deviation = " << maxdev << endl;
+	    std::cout << "Warning: IGESToBRep_IGESBoundary: Deviation = " << maxdev << std::endl;
 #endif
 	    ShapeFix_ShapeTolerance().SetTolerance (edge3d, Precision::Confusion());
 	    for (Standard_Integer ie = 1; ie <= iedge; ie++)
 	      ShapeBuild_Edge().RemovePCurve (Lsewd3d->Edge (ie), myface);
 	    if (Preferred3d) {
 #ifdef OCCT_DEBUG
-	      cout << "Warning: IGESToBRep_IGESBoundary: 3D and 2D curves are inconsistent; 2D is ignored" << endl;
+	      std::cout << "Warning: IGESToBRep_IGESBoundary: 3D and 2D curves are inconsistent; 2D is ignored" << std::endl;
 #endif
 	    }
 	    else {
 #ifdef OCCT_DEBUG
-	      cout << "Warning: IGESToBRep_IGESBoundary: 3D and 2D curves are inconsistent; 3D is ignored" << endl;
+	      std::cout << "Warning: IGESToBRep_IGESBoundary: 3D and 2D curves are inconsistent; 3D is ignored" << std::endl;
 #endif
 	      Lsewd = Lsewd2d;
 	    }
@@ -352,7 +352,7 @@ static Standard_Boolean Connect (const Handle(ShapeAnalysis_Wire)& theSAW,
       okCurve = okCurve && ShapeAlgo::AlgoContainer()->ConnectNextWire (saw, Lsewd, maxtol, distmin, revsewd, revnextsewd);
       if (!okCurve) {
 #ifdef OCCT_DEBUG
-	cout << "Warning: IGESToBRep_IGESBoundary: Curves " << i - 1 << " and " << i << " cannot be connected" << endl;
+	std::cout << "Warning: IGESToBRep_IGESBoundary: Curves " << i - 1 << " and " << i << " cannot be connected" << std::endl;
 #endif
         Gsewd3d = new ShapeExtend_WireData;
         for (Standard_Integer j = 1; j <= len3d; j++) {

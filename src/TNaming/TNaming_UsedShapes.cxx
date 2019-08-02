@@ -156,14 +156,14 @@ void  TNaming_UsedShapes::Paste(const Handle(TDF_Attribute)&,
 
 Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
 {
-  anOS<<"The content of UsedShapes attribute:"<<endl;
+  anOS<<"The content of UsedShapes attribute:"<<std::endl;
   TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape itr(myMap);
   for (; itr.More(); itr.Next()) {
     if (itr.Key().IsNull())
     {
       anOS << "Empty Shape at label =";
       itr.Value()->Label().EntryDump(anOS);
-      anOS << endl;
+      anOS << std::endl;
       continue;
     }
     anOS << "  ";
@@ -172,7 +172,7 @@ Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
     itr.Value()->Label().EntryDump(anOS);
     anOS << " Key_TShape   = " <<itr.Key().TShape()->This();
     anOS << " Value_TShape = " <<itr.Value()->Shape().TShape()->This();    
-    anOS<<endl;
+    anOS<<std::endl;
   }
   return anOS;
 }

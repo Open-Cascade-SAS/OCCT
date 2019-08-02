@@ -442,7 +442,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
     (Points2.Length() == 0 && Params.Length() == 0) ) ) {
 
 #ifdef OCCT_DEBUG
-      cout << "BRepFill_TrimEdgeTool: incoherent intersection. Try with a greater tolerance" << endl;
+      std::cout << "BRepFill_TrimEdgeTool: incoherent intersection. Try with a greater tolerance" << std::endl;
 #endif
 
       Params.Clear();
@@ -456,16 +456,16 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
   }
 
 #ifdef OCCT_DEBUG
-  if(SeanceDeRattrapage != 0) cout << "SeanceDeRattrapage = " << SeanceDeRattrapage << endl;
+  if(SeanceDeRattrapage != 0) std::cout << "SeanceDeRattrapage = " << SeanceDeRattrapage << std::endl;
   if(SeanceDeRattrapage == nn) { 
-    cout << "BRepFill_TrimEdgeTool: incoherent intersection" << endl;
+    std::cout << "BRepFill_TrimEdgeTool: incoherent intersection" << std::endl;
   }
 #endif
 
 
   if(Params.Length() == 0 && Points2.Length() == 1) {
 
-    //cout << "Params.Length() == 0 && Points2.Length() == 1" << endl;
+    //std::cout << "Params.Length() == 0 && Points2.Length() == 1" << std::endl;
     Standard_Real dmin, dmax = 0.25*myOffset*myOffset;
     Standard_Real tBis = Points2(1).X();
     gp_Pnt2d PBis = myBis.Value(tBis);
@@ -492,7 +492,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
   }
   else if(Params.Length() == 1 && Points2.Length() == 0) {
 
-    //cout << "Params.Length() == 1 && Points2.Length() == 0" << endl;
+    //std::cout << "Params.Length() == 1 && Points2.Length() == 0" << std::endl;
     Standard_Real dmin, dmax = 0.25*myOffset*myOffset;
     Standard_Real tBis = Params(1).X();
     gp_Pnt2d PBis = myBis.Value(tBis);
@@ -529,7 +529,7 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
   Standard_Integer NbPoints = Params.Length();
 
   if(NbPoints == 1 && Points2.Length() == 1) {
-    //cout << "NbPoints == 1 && Points2.Length() == 1" << endl;
+    //std::cout << "NbPoints == 1 && Points2.Length() == 1" << std::endl;
     for ( i = 1; i <= NbPoints; i++) {
       PSeq = Params(i);
       PSeq.SetZ((Points2.Value(i)).Y());
@@ -546,11 +546,11 @@ void BRepFill_TrimEdgeTool::IntersectWith(const TopoDS_Edge& Edge1,
 
     if ( P1xP2x > Tol ) {
 #ifdef OCCT_DEBUG
-      cout << "BRepFill_TrimEdgeTool: no same parameter on the bissectrice" << endl;
+      std::cout << "BRepFill_TrimEdgeTool: no same parameter on the bissectrice" << std::endl;
 #endif
       if(P1xP2x>TolInit) { 
 #ifdef OCCT_DEBUG
-        cout << "BRepFill_TrimEdgeTool: Continue somehow" << endl;
+        std::cout << "BRepFill_TrimEdgeTool: Continue somehow" << std::endl;
 #endif	
         i++;
       }
@@ -690,7 +690,7 @@ void BRepFill_TrimEdgeTool::AddOrConfuse(const Standard_Boolean  Start,
 
   if (ToProj) {
 #ifdef OCCT_DEBUG
-    cout << " project extremity bissectrice on parallel."<<endl;
+    std::cout << " project extremity bissectrice on parallel."<<std::endl;
 #endif
 
     // Project point on parallels and add in Params
@@ -704,25 +704,25 @@ void BRepFill_TrimEdgeTool::AddOrConfuse(const Standard_Boolean  Start,
 
     if (Projector1.NbPoints() == 0) {
 #ifdef OCCT_DEBUG
-      cout << "Failed projection in BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
+      std::cout << "Failed projection in BRepFill_TrimEdgeTool::AddOrConfuse"<<std::endl;
 #endif
       return;
     }
     if (!Projector1.NearestPoint().IsEqual(PBis,Tol)) {
 #ifdef OCCT_DEBUG
-      cout <<"Incorrect solution in BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
+      std::cout <<"Incorrect solution in BRepFill_TrimEdgeTool::AddOrConfuse"<<std::endl;
 #endif
       return;
     }
     if (Projector2.NbPoints() == 0) {
 #ifdef OCCT_DEBUG
-      cout << "Failed projection in BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
+      std::cout << "Failed projection in BRepFill_TrimEdgeTool::AddOrConfuse"<<std::endl;
 #endif
       return;
     }
     if (!Projector2.NearestPoint().IsEqual(PBis,Tol)) {
 #ifdef OCCT_DEBUG
-      cout <<" Mauvaisesolution dans BRepFill_TrimEdgeTool::AddOrConfuse"<<endl;
+      std::cout <<" Mauvaisesolution dans BRepFill_TrimEdgeTool::AddOrConfuse"<<std::endl;
 #endif
       return;
     }

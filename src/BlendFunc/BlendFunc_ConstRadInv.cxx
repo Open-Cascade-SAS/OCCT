@@ -299,13 +299,13 @@ Standard_Boolean BlendFunc_ConstRadInv::Derivatives(const math_Vector& X,
   if (norm1 < Eps)  {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " ConstRadInv : Surface singuliere " << endl;
+    std::cout << " ConstRadInv : Surface singuliere " << std::endl;
 #endif
   }
   if (norm2 < Eps)  {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " ConstRadInv : Surface singuliere " << endl;
+    std::cout << " ConstRadInv : Surface singuliere " << std::endl;
 #endif
   } 
 
@@ -480,13 +480,13 @@ Standard_Boolean BlendFunc_ConstRadInv::Values(const math_Vector& X,
   if (norm1 < Eps)  {
     norm1 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " ConstRadInv : Surface singuliere " << endl;
+    std::cout << " ConstRadInv : Surface singuliere " << std::endl;
 #endif
   }
   if (norm2 < Eps)  {
     norm2 = 1; // Unsatisfactory, but it is not necessary to stop
 #ifdef OCCT_DEBUG
-    cout << " ConstRadInv : Surface singuliere " << endl;
+    std::cout << " ConstRadInv : Surface singuliere " << std::endl;
 #endif
   } 
 

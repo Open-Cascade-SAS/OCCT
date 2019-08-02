@@ -374,63 +374,63 @@ void Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH)
 static void IntersectionPointDump (const IntRes2d_IntersectionPoint& Pnt,
 				   const Standard_Integer Index)
 {
-  Standard_Integer SavedPrecision = cout.precision() ;
-  cout.precision (15) ;
-  cout << "----- IntRes2d:: Point # " << setw(3) << Index << " ---------------" << endl ;
-  cout << "-- U: "<<Pnt.Value().X()<<"    V: "<<Pnt.Value().Y()<<endl;
-  cout << "-- Parameter on first   : " << Pnt.ParamOnFirst()  << endl ;
-  cout << "-- Position  on first   : " ;
+  Standard_Integer SavedPrecision = std::cout.precision() ;
+  std::cout.precision (15) ;
+  std::cout << "----- IntRes2d:: Point # " << std::setw(3) << Index << " ---------------" << std::endl ;
+  std::cout << "-- U: "<<Pnt.Value().X()<<"    V: "<<Pnt.Value().Y()<<std::endl;
+  std::cout << "-- Parameter on first   : " << Pnt.ParamOnFirst()  << std::endl ;
+  std::cout << "-- Position  on first   : " ;
   switch (Pnt.TransitionOfFirst().PositionOnCurve()) {
-      case IntRes2d_Head   : cout << "HEAD"   ; break ;
-      case IntRes2d_Middle : cout << "MIDDLE" ; break ;
-      case IntRes2d_End    : cout << "END"    ; break ;
+      case IntRes2d_Head   : std::cout << "HEAD"   ; break ;
+      case IntRes2d_Middle : std::cout << "MIDDLE" ; break ;
+      case IntRes2d_End    : std::cout << "END"    ; break ;
   }
-  cout << endl ;
-  cout << "-- IntRes2d:: Transition on first  : " ;
+  std::cout << std::endl ;
+  std::cout << "-- IntRes2d:: Transition on first  : " ;
   switch (Pnt.TransitionOfFirst().TransitionType()) {
-      case IntRes2d_In        : cout << "IN"        ; break ;
-      case IntRes2d_Out       : cout << "OUT"       ; break ;
-      case IntRes2d_Touch     : cout << "TOUCH"     ; break ;
-      case IntRes2d_Undecided : cout << "UNDECIDED" ; break ;
+      case IntRes2d_In        : std::cout << "IN"        ; break ;
+      case IntRes2d_Out       : std::cout << "OUT"       ; break ;
+      case IntRes2d_Touch     : std::cout << "TOUCH"     ; break ;
+      case IntRes2d_Undecided : std::cout << "UNDECIDED" ; break ;
   }
-  cout << endl ;
+  std::cout << std::endl ;
   if (Pnt.TransitionOfFirst().TransitionType() == IntRes2d_Touch) {
-    cout << "-- IntRes2d:: Situation on first   : " ;
+    std::cout << "-- IntRes2d:: Situation on first   : " ;
     switch (Pnt.TransitionOfFirst().Situation()) {
-	case IntRes2d_Inside  : cout << "INSIDE"  ; break ;
-	case IntRes2d_Outside : cout << "OUTSIDE" ; break ;
-	case IntRes2d_Unknown : cout << "UNKNOWN" ; break ;
+	case IntRes2d_Inside  : std::cout << "INSIDE"  ; break ;
+	case IntRes2d_Outside : std::cout << "OUTSIDE" ; break ;
+	case IntRes2d_Unknown : std::cout << "UNKNOWN" ; break ;
     }
-    cout << endl ;
+    std::cout << std::endl ;
   }
-  cout << "--------------------------------------------" << endl ;
-  cout << "-- Parameter on second  : " << Pnt.ParamOnSecond() << endl ;
-  cout << "-- Position  on second  : " ;
+  std::cout << "--------------------------------------------" << std::endl ;
+  std::cout << "-- Parameter on second  : " << Pnt.ParamOnSecond() << std::endl ;
+  std::cout << "-- Position  on second  : " ;
   switch (Pnt.TransitionOfSecond().PositionOnCurve()) {
-      case IntRes2d_Head   : cout << "HEAD"   ; break ;
-      case IntRes2d_Middle : cout << "MIDDLE" ; break ;
-      case IntRes2d_End    : cout << "END"    ; break ;
+      case IntRes2d_Head   : std::cout << "HEAD"   ; break ;
+      case IntRes2d_Middle : std::cout << "MIDDLE" ; break ;
+      case IntRes2d_End    : std::cout << "END"    ; break ;
   }
-  cout << endl ;
-  cout << "-- IntRes2d:: Transition on second : " ;
+  std::cout << std::endl ;
+  std::cout << "-- IntRes2d:: Transition on second : " ;
   switch (Pnt.TransitionOfSecond().TransitionType()) {
-      case IntRes2d_In        : cout << "IN"        ; break ;
-      case IntRes2d_Out       : cout << "OUT"       ; break ;
-      case IntRes2d_Touch     : cout << "TOUCH"     ; break ;
-      case IntRes2d_Undecided : cout << "UNDECIDED" ; break ;
+      case IntRes2d_In        : std::cout << "IN"        ; break ;
+      case IntRes2d_Out       : std::cout << "OUT"       ; break ;
+      case IntRes2d_Touch     : std::cout << "TOUCH"     ; break ;
+      case IntRes2d_Undecided : std::cout << "UNDECIDED" ; break ;
   }
-  cout << endl ;
+  std::cout << std::endl ;
   if (Pnt.TransitionOfSecond().TransitionType() == IntRes2d_Touch) {
-    cout << "-- IntRes2d:: Situation on second  : " ;
+    std::cout << "-- IntRes2d:: Situation on second  : " ;
     switch (Pnt.TransitionOfSecond().Situation()) {
-	case IntRes2d_Inside  : cout << "INSIDE"  ; break ;
-	case IntRes2d_Outside : cout << "OUTSIDE" ; break ;
-	case IntRes2d_Unknown : cout << "UNKNOWN" ; break ;
+	case IntRes2d_Inside  : std::cout << "INSIDE"  ; break ;
+	case IntRes2d_Outside : std::cout << "OUTSIDE" ; break ;
+	case IntRes2d_Unknown : std::cout << "UNKNOWN" ; break ;
     }
-    cout << endl ;
+    std::cout << std::endl ;
   }
-  cout << "--------------------------------------------" << endl ;
-  cout.precision (SavedPrecision) ;
+  std::cout << "--------------------------------------------" << std::endl ;
+  std::cout.precision (SavedPrecision) ;
 }
 
 #endif
@@ -458,28 +458,28 @@ Standard_Boolean Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH,
   myIntersector.Intersect (hatching, element) ;
   
 #if TRACE_HATCHER
-  cout << "--- Hatcher - Trim:: Hatching # " << setw(3);
-  cout << IndH << " with Element # " << setw(3);
-  cout << IndE << " ----------" << endl ;
+  std::cout << "--- Hatcher - Trim:: Hatching # " << std::setw(3);
+  std::cout << IndH << " with Element # " << std::setw(3);
+  std::cout << IndE << " ----------" << std::endl ;
 #endif    
   
   if (!myIntersector.IsDone())  { 
-    cout<<" Intersector -> Done = False ";
+    std::cout<<" Intersector -> Done = False ";
     return Standard_False ;
   }
   
 #if TRACE_HATCHER
   if (myIntersector.IsEmpty()) {
-    cout << "No intersection" << endl ;
-    cout << "--------------------------------------------------------------------" << endl ;
+    std::cout << "No intersection" << std::endl ;
+    std::cout << "--------------------------------------------------------------------" << std::endl ;
   }
 #endif    
   
   if (myIntersector.IsEmpty()) return Standard_True ;
   
 #if TRACE_HATCHER
-  cout << "Number of intersection points   : " << setw(3) << (myIntersector.NbPoints())   << endl ;
-  cout << "Number of intersection segments : " << setw(3) << (myIntersector.NbSegments()) << endl ;
+  std::cout << "Number of intersection points   : " << std::setw(3) << (myIntersector.NbPoints())   << std::endl ;
+  std::cout << "Number of intersection segments : " << std::setw(3) << (myIntersector.NbSegments()) << std::endl ;
 #endif    
   
   //-----------------------------------------------------------------------
@@ -512,7 +512,7 @@ Standard_Boolean Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH,
     const IntRes2d_IntersectionSegment& Seg = myIntersector.Segment (ISeg) ;
     
 #if TRACE_HATCHER
-    cout << "----- Segment # " << setw(3) << ISeg << " -------------" << endl ;
+    std::cout << "----- Segment # " << std::setw(3) << ISeg << " -------------" << std::endl ;
 #endif
     
     Standard_Boolean FirstPoint = Seg.HasFirstPoint() ;
@@ -646,9 +646,9 @@ Standard_Boolean Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH,
 #if TRACE_HATCHER
 	IntersectionPointDump (Pnt1, 1) ;
 	IntersectionPointDump (Pnt2, 2) ;
-	cout << "THESE TWO POINTS ARE "
+	std::cout << "THESE TWO POINTS ARE "
 	     << (Conf2d ? "2D" : "3D")
-	     << " CONFUSED INTO THE FOLLOWING" << endl ;
+	     << " CONFUSED INTO THE FOLLOWING" << std::endl ;
 	PntH.Dump() ;
 #endif
 	continue ;
@@ -681,8 +681,8 @@ Standard_Boolean Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH,
 #if TRACE_HATCHER
       } 
       else {
-	cout << "----- Has no first point --------" << endl ;
-	cout << "---------------------------------" << endl ;
+	std::cout << "----- Has no first point --------" << std::endl ;
+	std::cout << "---------------------------------" << std::endl ;
 #endif
 	
       }
@@ -713,13 +713,13 @@ Standard_Boolean Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH,
 #if TRACE_HATCHER
       } 
       else {
-	cout << "----- Has no last point ---------" << endl ;
-	cout << "---------------------------------" << endl ;
+	std::cout << "----- Has no last point ---------" << std::endl ;
+	std::cout << "---------------------------------" << std::endl ;
 #endif
       }
     }
 #if TRACE_HATCHER
-    cout << "--------------------------------------------------------------------" << endl ;
+    std::cout << "--------------------------------------------------------------------" << std::endl ;
 #endif    
     
   }
@@ -971,7 +971,7 @@ void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
 
   if(NbPnt == 0)
   {
-    //-- cout << "The hatching # " << setw(3) << IndH << " has to be classified" << endl ;
+    //-- std::cout << "The hatching # " << std::setw(3) << IndH << " has to be classified" << std::endl ;
     Geom2dHatch_Classifier Classifier(myElements,Hatching.ClassificationPoint(),0.0000001); 
     if(Classifier.State() == TopAbs_IN)
     { 
@@ -993,9 +993,9 @@ void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
     const HatchGen_PointOnHatching& CurPnt = Hatching.Point (IPnt) ;
 
 #if TRACE_HATCHER
-    cout << "===== ComputeDomains:: Hatching # " << setw(3) << IndH << " =====" << endl ;
+    std::cout << "===== ComputeDomains:: Hatching # " << std::setw(3) << IndH << " =====" << std::endl ;
     CurPnt.Dump (IPnt) ;
-    cout << "==========================================" << endl ;
+    std::cout << "==========================================" << std::endl ;
 #endif
     
     
@@ -1596,74 +1596,74 @@ const HatchGen_Domain& Geom2dHatch_Hatcher::Domain (const Standard_Integer IndH,
 
 void Geom2dHatch_Hatcher::Dump () const
 {
-  cout << endl ;
-  cout << "========================================================" << endl ;
-  cout << "=== Dump of the hatcher ================================" << endl ;
-  cout << "========================================================" << endl ;
-  cout << endl ;
+  std::cout << std::endl ;
+  std::cout << "========================================================" << std::endl ;
+  std::cout << "=== Dump of the hatcher ================================" << std::endl ;
+  std::cout << "========================================================" << std::endl ;
+  std::cout << std::endl ;
 
-  cout << "The points   are "
+  std::cout << "The points   are "
        << (myKeepPoints   ? "    " : "not ")
        << "considered."
-       << endl ;
-  cout << "The segments are "
+       << std::endl ;
+  std::cout << "The segments are "
        << (myKeepSegments ? "    " : "not ")
        << "considered."
-       << endl ;
-  cout << "2D Confusion tolerance : " << myConfusion2d << endl ;
-  cout << "3D Confusion tolerance : " << myConfusion3d << endl ;
+       << std::endl ;
+  std::cout << "2D Confusion tolerance : " << myConfusion2d << std::endl ;
+  std::cout << "3D Confusion tolerance : " << myConfusion3d << std::endl ;
   
-  cout << myNbHatchings
+  std::cout << myNbHatchings
        << " hatching"
        << ((myNbHatchings == 1) ? "" : "s")
-       << endl ;
-  cout << myNbElements
+       << std::endl ;
+  std::cout << myNbElements
        << " element"
        << ((myNbElements  == 1) ? "" : "s")
-       << endl ;
+       << std::endl ;
   
-  cout << endl ;
-  cout << "========================================================" << endl ;
-  cout << "=== Hatchings ==========================================" << endl ;
-  cout << "========================================================" << endl ;
-  cout << endl ;
+  std::cout << std::endl ;
+  std::cout << "========================================================" << std::endl ;
+  std::cout << "=== Hatchings ==========================================" << std::endl ;
+  std::cout << "========================================================" << std::endl ;
+  std::cout << std::endl ;
   
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
-    cout << "Hatching # " << IndH ;
+    std::cout << "Hatching # " << IndH ;
     if (!myHatchings.IsBound (IndH)) {
-      cout << " is not bound" << endl ;
+      std::cout << " is not bound" << std::endl ;
     } else {
       const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
       Standard_Integer NbPnt = Hatching.NbPoints() ;
-      cout << " contains " << NbPnt << " restriction points :"  << endl ;
+      std::cout << " contains " << NbPnt << " restriction points :"  << std::endl ;
       for (Standard_Integer IPnt = 1 ; IPnt <= NbPnt ; IPnt++) {
 	const HatchGen_PointOnHatching& PntH = Hatching.Point (IPnt) ;
         PntH.Dump (IPnt) ;
       }
-      cout << "----------------------------------------------" << endl ;
+      std::cout << "----------------------------------------------" << std::endl ;
     }
   }
 
-  cout << endl ;
-  cout << "========================================================" << endl ;
-  cout << "=== Elements ===========================================" << endl ;
-  cout << "========================================================" << endl ;
-  cout << endl ;
+  std::cout << std::endl ;
+  std::cout << "========================================================" << std::endl ;
+  std::cout << "=== Elements ===========================================" << std::endl ;
+  std::cout << "========================================================" << std::endl ;
+  std::cout << std::endl ;
   
   for (Standard_Integer IndE = 1 ; IndE <= myNbElements ; IndE++) {
-    cout << "Element # " << IndE ;
+    std::cout << "Element # " << IndE ;
     if (!myElements.IsBound (IndE)) {
-      cout << " is not bound" << endl ;
+      std::cout << " is not bound" << std::endl ;
     } else {
       const Geom2dHatch_Element& Element = myElements.Find (IndE) ;
       switch (Element.Orientation()) {
-        case TopAbs_FORWARD  : cout << " is FORWARD"  << endl ; break ;
-        case TopAbs_REVERSED : cout << " is REVERSED" << endl ; break ;
-        case TopAbs_INTERNAL : cout << " is INTERNAL" << endl ; break ;
-        case TopAbs_EXTERNAL : cout << " is EXTERNAL" << endl ; break ;
+        case TopAbs_FORWARD  : std::cout << " is FORWARD"  << std::endl ; break ;
+        case TopAbs_REVERSED : std::cout << " is REVERSED" << std::endl ; break ;
+        case TopAbs_INTERNAL : std::cout << " is INTERNAL" << std::endl ; break ;
+        case TopAbs_EXTERNAL : std::cout << " is EXTERNAL" << std::endl ; break ;
       }
     }
   }
 
-  cout << endl ;
+  std::cout << std::endl ;
 }

@@ -91,7 +91,7 @@ static void DrawCurve (const Adaptor3d_Curve&          aCurve,
   
   if (aCurve.GetType() == GeomAbs_BSplineCurve) {
     nbintervals = aCurve.NbKnots() - 1;
-//     cout << "NbKnots "<<aCurve.NbKnots() << endl;
+//     std::cout << "NbKnots "<<aCurve.NbKnots() << std::endl;
     nbintervals = Max(1, nbintervals/3);
   }
 
@@ -124,8 +124,8 @@ static void DrawCurve (const Adaptor3d_Curve&          aCurve,
       Standard_Real U;
       Standard_Integer N = Max(2, NbP*nbintervals);
 
-//     cout << "nbintervals " << nbintervals << endl;
-//     cout <<  "N " << N << endl;
+//     std::cout << "nbintervals " << nbintervals << std::endl;
+//     std::cout <<  "N " << N << std::endl;
 
       gp_Vec V;
       HAV1 = new TColgp_HArray1OfVec(1, N);
@@ -166,17 +166,17 @@ static void DrawCurve (const Adaptor3d_Curve&          aCurve,
     }
   }
   
-//  cout  << " Array HAI1 - coordIndex " << endl;  
+//  std::cout  << " Array HAI1 - coordIndex " << std::endl;  
 //  for ( i=HAI1->Lower(); i <= HAI1->Upper(); i++ )
 //    {
-//      cout << HAI1->Value(i) << endl;
+//      std::cout << HAI1->Value(i) << std::endl;
 //       } 
 
 // creation of Vrml objects
   Handle(VrmlConverter_LineAspect) LA = new VrmlConverter_LineAspect;
   LA = aDrawer->LineAspect();
 
-//     cout << "LA->HasMaterial() = " << LA->HasMaterial()  << endl;
+//     std::cout << "LA->HasMaterial() = " << LA->HasMaterial()  << std::endl;
 
 // Separator 1 {
   Vrml_Separator SE1;
@@ -216,10 +216,10 @@ void VrmlConverter_Curve::Add(const Adaptor3d_Curve&                aCurve,
   Standard_Real aLimit = aDrawer->MaximalParameterValue();
   FindLimits(aCurve, aLimit, V1, V2);
 
-//     cout << "V1 = "<< V1 << endl;
-//     cout << "V2 = "<< V2 << endl;
-//     cout << "NbPoints = "<< NbPoints << endl;
-//     cout << "aLimit = "<< aLimit << endl;
+//     std::cout << "V1 = "<< V1 << std::endl;
+//     std::cout << "V2 = "<< V2 << std::endl;
+//     std::cout << "NbPoints = "<< NbPoints << std::endl;
+//     std::cout << "aLimit = "<< aLimit << std::endl;
 
   DrawCurve(aCurve,
  	    NbPoints,
@@ -245,9 +245,9 @@ void VrmlConverter_Curve::Add(const Adaptor3d_Curve&                aCurve,
   if (Precision::IsNegativeInfinite(V1)) V1 = -aDrawer->MaximalParameterValue();
   if (Precision::IsPositiveInfinite(V2)) V2 = aDrawer->MaximalParameterValue();
 
-//     cout << "V1 = "<< V1 << endl;
-//     cout << "V2 = "<< V2 << endl;
-//     cout << "NbPoints = "<< NbPoints << endl;
+//     std::cout << "V1 = "<< V1 << std::endl;
+//     std::cout << "V2 = "<< V2 << std::endl;
+//     std::cout << "NbPoints = "<< NbPoints << std::endl;
  
   DrawCurve(aCurve,
 	     NbPoints,
@@ -276,9 +276,9 @@ void VrmlConverter_Curve::Add(const Adaptor3d_Curve&   aCurve,
   if (Precision::IsNegativeInfinite(V1)) V1 = -aDrawer->MaximalParameterValue();
   if (Precision::IsPositiveInfinite(V2)) V2 = aDrawer->MaximalParameterValue();
 
-//     cout << "V1 = "<< V1 << endl;
-//     cout << "V2 = "<< V2 << endl;
-//     cout << "NbPoints = "<< aNbPoints << endl;
+//     std::cout << "V1 = "<< V1 << std::endl;
+//     std::cout << "V2 = "<< V2 << std::endl;
+//     std::cout << "NbPoints = "<< aNbPoints << std::endl;
 
   DrawCurve(aCurve,
 	    aNbPoints,

@@ -74,13 +74,13 @@ static void Descendants(const TopoDS_Shape&,
 
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_Form::GlobalPerform ()" << endl;
+  if (trc) std::cout << "BRepFeat_Form::GlobalPerform ()" << std::endl;
 #endif
 
   if (!mySbOK || !myGSOK || !mySFOK || !mySUOK || !myGFOK || 
       !mySkOK || !myPSOK) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Fields not initialized in BRepFeat_Form" << endl;
+    if (trc) std::cout << " Fields not initialized in BRepFeat_Form" << std::endl;
 #endif
     myStatusError = BRepFeat_NotInitialized;
     NotDone();
@@ -94,7 +94,7 @@ static void Descendants(const TopoDS_Shape&,
 
   if(myJustFeat && !myFuse) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Invalid option : myJustFeat + Cut" << endl;
+    if (trc) std::cout << " Invalid option : myJustFeat + Cut" << std::endl;
 #endif
     myStatusError = BRepFeat_InvOption;
     NotDone();
@@ -124,7 +124,7 @@ static void Descendants(const TopoDS_Shape&,
       if (!exp.More()) {
         FromInShape = Standard_False;
 #ifdef OCCT_DEBUG
-        if (trc) cout << " From not in Shape" << endl;
+        if (trc) std::cout << " From not in Shape" << std::endl;
 #endif
         break;
       }
@@ -143,7 +143,7 @@ static void Descendants(const TopoDS_Shape&,
       if (!exp.More()) {
         UntilInShape = Standard_False;
 #ifdef OCCT_DEBUG
-        if (trc) cout << " Until not in Shape" << endl;
+        if (trc) std::cout << " Until not in Shape" << std::endl;
 #endif
         break;
       }
@@ -292,7 +292,7 @@ static void Descendants(const TopoDS_Shape&,
 
   if (theOpe == 1) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Gluer" << endl;
+    if (trc) std::cout << " Gluer" << std::endl;
 #endif
     Standard_Boolean Collage = Standard_True;  
     // cut by FFrom && FUntil
@@ -499,7 +499,7 @@ static void Descendants(const TopoDS_Shape&,
 
   if (theOpe == 1) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " still Gluer" << endl;
+    if (trc) std::cout << " still Gluer" << std::endl;
 #endif
     theGlue.Perform();
     if (theGlue.IsDone()) {
@@ -510,7 +510,7 @@ static void Descendants(const TopoDS_Shape&,
         myNewEdges = theGlue.Edges();
         myTgtEdges = theGlue.TgtEdges();
 #ifdef OCCT_DEBUG
-          if (trc) cout << " Gluer result" << endl;
+          if (trc) std::cout << " Gluer result" << std::endl;
 #endif
         Done();
         myShape = theGlue.ResultingShape();
@@ -531,7 +531,7 @@ static void Descendants(const TopoDS_Shape&,
 
   if (theOpe == 2 && ChangeOpe && myJustGluer) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Gluer failure" << endl;
+    if (trc) std::cout << " Gluer failure" << std::endl;
 #endif
     myJustGluer = Standard_False;
     theOpe = 0;
@@ -543,12 +543,12 @@ static void Descendants(const TopoDS_Shape&,
 
   if (theOpe == 2) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " No Gluer" << endl;
+    if (trc) std::cout << " No Gluer" << std::endl;
 #endif
     TopoDS_Shape theGShape = myGShape;
     if (ChangeOpe) {
 #ifdef OCCT_DEBUG
-      if (trc) cout << " Passage to topological operations" << endl;
+      if (trc) std::cout << " Passage to topological operations" << std::endl;
 #endif
     }    
 
@@ -946,7 +946,7 @@ static void Descendants(const TopoDS_Shape&,
 // Case when no part of the tool is preserved
         if (!KeepParts) {
 #ifdef OCCT_DEBUG
-          if (trc) cout << " No parts of tool kept" << endl;
+          if (trc) std::cout << " No parts of tool kept" << std::endl;
 #endif
           myStatusError = BRepFeat_NoParts;
           NotDone();
@@ -1170,7 +1170,7 @@ Standard_Boolean BRepFeat_Form::TransformShapeFU(const Standard_Integer flag)
   TopExp_Explorer exp(shapefu, TopAbs_FACE);
   if (!exp.More()) { // no faces... It is necessary to return an error
 #ifdef OCCT_DEBUG
-    if (trc) cout << " BRepFeat_Form::TransformShapeFU : invalid Shape" << endl;
+    if (trc) std::cout << " BRepFeat_Form::TransformShapeFU : invalid Shape" << std::endl;
 #endif
     return Trf;
   }
@@ -1228,8 +1228,8 @@ Standard_Boolean BRepFeat_Form::TransformShapeFU(const Standard_Integer flag)
   }
 #ifdef OCCT_DEBUG
   if (trc) {
-    if (Trf && (flag == 0)) cout << " TransformShapeFU From" << endl;
-    if (Trf && (flag == 1)) cout << " TransformShapeFU Until" << endl;
+    if (Trf && (flag == 0)) std::cout << " TransformShapeFU From" << std::endl;
+    if (Trf && (flag == 1)) std::cout << " TransformShapeFU Until" << std::endl;
   }
 #endif
   return Trf;

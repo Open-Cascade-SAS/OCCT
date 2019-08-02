@@ -88,7 +88,7 @@ TopoDSToStep_MakeBrepWithVoids::
 	      aCShell = new StepShape_ClosedShell;
 	      aCShell->Init (aOShell->Name(),aOShell->CfsFaces());
 #ifdef OCCT_DEBUG
-	      cout<<"Warning: MakeBRepWithVoids: Open shell in the solid; treated as closed"<<endl;
+	      std::cout<<"Warning: MakeBRepWithVoids: Open shell in the solid; treated as closed"<<std::endl;
 #endif
 	    }
 	  }
@@ -99,11 +99,11 @@ TopoDSToStep_MakeBrepWithVoids::
 	      S.Append(aCShell);
 	  }
 #ifdef OCCT_DEBUG
-	  else cout<<"*** MakeBRepWithVoids : Shell not mapped"<<endl;
+	  else std::cout<<"*** MakeBRepWithVoids : Shell not mapped"<<std::endl;
 #endif
 	}
 #ifdef OCCT_DEBUG
-	else cout << "Shell not mapped" << endl;
+	else std::cout << "Shell not mapped" << std::endl;
 #endif
 /* //:d7 
 	if (It.Value().Closed()) {
@@ -119,7 +119,7 @@ TopoDSToStep_MakeBrepWithVoids::
 	  }
 	  else {
 #ifdef OCCT_DEBUG
-	    cout << "Shell not mapped" << endl;
+	    std::cout << "Shell not mapped" << std::endl;
 #endif
 	    done = Standard_False;
 	  }

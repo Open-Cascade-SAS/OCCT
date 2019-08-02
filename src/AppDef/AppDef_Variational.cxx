@@ -582,11 +582,11 @@ void AppDef_Variational::Approximate()
         {
           for (jp3d=1;jp3d<=myNbP3d;jp3d++)
           {
-            //                       cout << "\n Poles(ipole,1)" << PolesPtr->Value(ipole,index);
+            //                       std::cout << "\n Poles(ipole,1)" << PolesPtr->Value(ipole,index);
             P3d.SetX(PolesPtr->Value(ipole,index++));
-            //                       cout << "\n Poles(ipole,1)" << PolesPtr->Value(ipole,index);
+            //                       std::cout << "\n Poles(ipole,1)" << PolesPtr->Value(ipole,index);
             P3d.SetY(PolesPtr->Value(ipole,index++));
-            //                       cout << "\n Poles(ipole,1)" << PolesPtr->Value(ipole,index);
+            //                       std::cout << "\n Poles(ipole,1)" << PolesPtr->Value(ipole,index);
             P3d.SetZ(PolesPtr->Value(ipole,index++)); 
             TabP3d.SetValue(jp3d,P3d);
           } 
@@ -897,32 +897,32 @@ Standard_Integer AppDef_Variational::NbIterations() const
 //
 void AppDef_Variational::Dump(Standard_OStream& o) const 
 {
-  o << " \nVariational Smoothing " << endl;
-  o << " Number of multipoints                   "  << myNbPoints << endl;
-  o << " Number of 2d par multipoint "  << myNbP2d << endl;
-  o << " Nombre of 3d par multipoint "  << myNbP3d << endl;
-  o << " Number of PassagePoint      "  << myNbPassPoints << endl;
-  o << " Number of TangencyPoints    "  << myNbTangPoints << endl;
-  o << " Number of CurvaturePoints   "  << myNbCurvPoints << endl;
-  o << " \nTolerance " << o.setf(ios::scientific) << setprecision(3) << setw(9) << myTolerance;
-  if ( WithMinMax()) { o << "  as Max Error." << endl;}
-  else { o << "  as size Error." << endl;}
+  o << " \nVariational Smoothing " << std::endl;
+  o << " Number of multipoints                   "  << myNbPoints << std::endl;
+  o << " Number of 2d par multipoint "  << myNbP2d << std::endl;
+  o << " Nombre of 3d par multipoint "  << myNbP3d << std::endl;
+  o << " Number of PassagePoint      "  << myNbPassPoints << std::endl;
+  o << " Number of TangencyPoints    "  << myNbTangPoints << std::endl;
+  o << " Number of CurvaturePoints   "  << myNbCurvPoints << std::endl;
+  o << " \nTolerance " << o.setf(std::ios::scientific) << std::setprecision(3) << std::setw(9) << myTolerance;
+  if ( WithMinMax()) { o << "  as Max Error." << std::endl;}
+  else { o << "  as size Error." << std::endl;}
   o << "CriteriumWeights : " << myPercent[0] << " , " 
-    << myPercent[1] << " , " << myPercent[2] << endl;
+    << myPercent[1] << " , " << myPercent[2] << std::endl;
 
   if (myIsDone ) {
-    o << " MaxError             " << setprecision(3) << setw(9) << myMaxError << endl;
-    o << " Index of  MaxError   " << myMaxErrorIndex << endl;
-    o << " Average Error        " << setprecision(3) << setw(9) << myAverageError << endl;
-    o << " Quadratic Error      " << setprecision(3) << setw(9) << myCriterium[0] << endl;
-    o << " Tension Criterium    " << setprecision(3) << setw(9) << myCriterium[1] << endl;
-    o << " Flexion  Criterium   " << setprecision(3) << setw(9) << myCriterium[2] << endl;
-    o << " Jerk  Criterium      " << setprecision(3) << setw(9) << myCriterium[3] << endl;
-    o << " NbSegments           "  << myKnots->Length()-1 << endl;
+    o << " MaxError             " << std::setprecision(3) << std::setw(9) << myMaxError << std::endl;
+    o << " Index of  MaxError   " << myMaxErrorIndex << std::endl;
+    o << " Average Error        " << std::setprecision(3) << std::setw(9) << myAverageError << std::endl;
+    o << " Quadratic Error      " << std::setprecision(3) << std::setw(9) << myCriterium[0] << std::endl;
+    o << " Tension Criterium    " << std::setprecision(3) << std::setw(9) << myCriterium[1] << std::endl;
+    o << " Flexion  Criterium   " << std::setprecision(3) << std::setw(9) << myCriterium[2] << std::endl;
+    o << " Jerk  Criterium      " << std::setprecision(3) << std::setw(9) << myCriterium[3] << std::endl;
+    o << " NbSegments           "  << myKnots->Length()-1 << std::endl;
   }
   else
-  { if (myIsOverConstr) o << "The probleme is overconstraint " << endl;
-  else o << " Erreur dans l''approximation" << endl;
+  { if (myIsOverConstr) o << "The probleme is overconstraint " << std::endl;
+  else o << " Erreur dans l''approximation" << std::endl;
   }   
 }
 //
@@ -2539,7 +2539,7 @@ void AppDef_Variational::Adjusting(
                                    TColStd_Array1OfReal& Ecarts) 
 {
 
-  //  cout << "=========== Adjusting =============" << endl;
+  //  std::cout << "=========== Adjusting =============" << std::endl;
 
   /* Initialized data */
 

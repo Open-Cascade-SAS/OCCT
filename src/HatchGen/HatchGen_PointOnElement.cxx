@@ -216,50 +216,50 @@ Standard_Boolean HatchGen_PointOnElement::IsDifferent (const HatchGen_PointOnEle
 
 void HatchGen_PointOnElement::Dump (const Standard_Integer Index) const
 {
-  cout << "    --- Point on element " ;
+  std::cout << "    --- Point on element " ;
   if (Index > 0) {
-    cout << "# " << setw(3) << Index << " " ;
+    std::cout << "# " << std::setw(3) << Index << " " ;
   } else {
-    cout << "------" ;
+    std::cout << "------" ;
   }
-  cout << "---------------" << endl ;
+  std::cout << "---------------" << std::endl ;
 
-  cout << "        Index of the element = " << myIndex << endl ;
-  cout << "        Parameter on element = " << myParam << endl ;
-  cout << "        Position  on element = " ;
+  std::cout << "        Index of the element = " << myIndex << std::endl ;
+  std::cout << "        Parameter on element = " << myParam << std::endl ;
+  std::cout << "        Position  on element = " ;
   switch (myPosit) {
-      case TopAbs_FORWARD  : cout << "FORWARD  (i.e. BEGIN  )" ; break ;
-      case TopAbs_INTERNAL : cout << "INTERNAL (i.e. MIDDLE )" ; break ;
-      case TopAbs_REVERSED : cout << "REVERSED (i.e. END    )" ; break ;
-      case TopAbs_EXTERNAL : cout << "EXTERNAL (i.e. UNKNOWN)" ; break ;
+      case TopAbs_FORWARD  : std::cout << "FORWARD  (i.e. BEGIN  )" ; break ;
+      case TopAbs_INTERNAL : std::cout << "INTERNAL (i.e. MIDDLE )" ; break ;
+      case TopAbs_REVERSED : std::cout << "REVERSED (i.e. END    )" ; break ;
+      case TopAbs_EXTERNAL : std::cout << "EXTERNAL (i.e. UNKNOWN)" ; break ;
   }
-  cout << endl ;
-  cout << "        Intersection Type    = " ;
+  std::cout << std::endl ;
+  std::cout << "        Intersection Type    = " ;
   switch (myType) {
-      case HatchGen_TRUE         : cout << "TRUE"         ; break ;
-      case HatchGen_TOUCH        : cout << "TOUCH"        ; break ;
-      case HatchGen_TANGENT      : cout << "TANGENT"      ; break ;
-      case HatchGen_UNDETERMINED : cout << "UNDETERMINED" ; break ;
+      case HatchGen_TRUE         : std::cout << "TRUE"         ; break ;
+      case HatchGen_TOUCH        : std::cout << "TOUCH"        ; break ;
+      case HatchGen_TANGENT      : std::cout << "TANGENT"      ; break ;
+      case HatchGen_UNDETERMINED : std::cout << "UNDETERMINED" ; break ;
   }
-  cout << endl ;
-  cout << "        State Before         = " ;
+  std::cout << std::endl ;
+  std::cout << "        State Before         = " ;
   switch (myBefore) {
-      case TopAbs_IN      : cout << "IN"      ; break ;
-      case TopAbs_OUT     : cout << "OUT"     ; break ;
-      case TopAbs_ON      : cout << "ON"      ; break ;
-      case TopAbs_UNKNOWN : cout << "UNKNOWN" ; break ;
+      case TopAbs_IN      : std::cout << "IN"      ; break ;
+      case TopAbs_OUT     : std::cout << "OUT"     ; break ;
+      case TopAbs_ON      : std::cout << "ON"      ; break ;
+      case TopAbs_UNKNOWN : std::cout << "UNKNOWN" ; break ;
   }
-  cout << endl ;
-  cout << "        State After          = " ;
+  std::cout << std::endl ;
+  std::cout << "        State After          = " ;
   switch (myAfter) {
-      case TopAbs_IN      : cout << "IN"      ; break ;
-      case TopAbs_OUT     : cout << "OUT"     ; break ;
-      case TopAbs_ON      : cout << "ON"      ; break ;
-      case TopAbs_UNKNOWN : cout << "UNKNOWN" ; break ;
+      case TopAbs_IN      : std::cout << "IN"      ; break ;
+      case TopAbs_OUT     : std::cout << "OUT"     ; break ;
+      case TopAbs_ON      : std::cout << "ON"      ; break ;
+      case TopAbs_UNKNOWN : std::cout << "UNKNOWN" ; break ;
   }
-  cout << endl ;
-  cout << "        Beginning of segment = " << (mySegBeg ? "TRUE" : "FALSE") << endl ;
-  cout << "        End       of segment = " << (mySegEnd ? "TRUE" : "FALSE") << endl ;
+  std::cout << std::endl ;
+  std::cout << "        Beginning of segment = " << (mySegBeg ? "TRUE" : "FALSE") << std::endl ;
+  std::cout << "        End       of segment = " << (mySegEnd ? "TRUE" : "FALSE") << std::endl ;
 
-  cout << "    ------------------------------------------" << endl ;
+  std::cout << "    ------------------------------------------" << std::endl ;
 }

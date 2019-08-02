@@ -44,11 +44,11 @@ static OSD_SysType whereAmI()
 #else
   struct utsname info;
   uname(&info);
-  cout << info.sysname << endl;
-  cout << info.nodename << endl;
-  cout << info.release << endl;
-  cout << info.version << endl;
-  cout << info.machine << endl;
+  std::cout << info.sysname << std::endl;
+  std::cout << info.nodename << std::endl;
+  std::cout << info.release << std::endl;
+  std::cout << info.version << std::endl;
+  std::cout << info.machine << std::endl;
   return OSD_Default;
 #endif
 }
@@ -356,7 +356,7 @@ OSD_Path::OSD_Path(const TCollection_AsciiString& aDependentName,
      break;
   default:
 #ifdef OCCT_DEBUG
-       cout << " WARNING WARNING : OSD Path for an Unknown SYSTEM : " << (Standard_Integer)todo << endl;
+       std::cout << " WARNING WARNING : OSD Path for an Unknown SYSTEM : " << (Standard_Integer)todo << std::endl;
 #endif 
      break ;
  } 

@@ -91,9 +91,9 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
 	if(a0>0.0000000001) { 
           aNbBadSol++;
 #if 0 
-	   cout<<" ------- Erreur : P Ligne < > P Tore "<<endl;
-           cout<<"Ligne :  X:"<<PSolL.X()<<"  Y:"<<PSolL.Y()<<"  Z:"<<PSolL.Z()<<" l:"<<t<<endl;
-	   cout<<"Tore  :  X:"<<PSolT.X()<<"  Y:"<<PSolT.Y()<<"  Z:"<<PSolT.Z()<<" u:"<<u<<" v:"<<v<<endl;
+	   std::cout<<" ------- Erreur : P Ligne < > P Tore "<<std::endl;
+           std::cout<<"Ligne :  X:"<<PSolL.X()<<"  Y:"<<PSolL.Y()<<"  Z:"<<PSolL.Z()<<" l:"<<t<<std::endl;
+	   std::cout<<"Tore  :  X:"<<PSolT.X()<<"  Y:"<<PSolT.Y()<<"  Z:"<<PSolT.Z()<<" u:"<<u<<" v:"<<v<<std::endl;
 #endif
 	   }         
         else { 
@@ -355,12 +355,12 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
 
 
 
-  cout<<"\n ---------- Coefficients Line - Torus  : "<<endl;
-  cout<<" a0 : "<<a0<<endl;
-  cout<<" a1 : "<<a1<<endl;
-  cout<<" a2 : "<<a2<<endl;
-  cout<<" a3 : "<<a3<<endl;
-  cout<<" a4 : "<<a4<<endl;
+  std::cout<<"\n ---------- Coefficients Line - Torus  : "<<std::endl;
+  std::cout<<" a0 : "<<a0<<std::endl;
+  std::cout<<" a1 : "<<a1<<std::endl;
+  std::cout<<" a2 : "<<a2<<std::endl;
+  std::cout<<" a3 : "<<a3<<std::endl;
+  std::cout<<" a4 : "<<a4<<std::endl;
 
   Standard_Real u,v;
   math_DirectPolynomialRoots mdpr(a4,a3,a2,a1,a0);
@@ -375,9 +375,9 @@ void IntAna_IntLinTorus::Perform (const gp_Lin& L, const gp_Torus& T) {
         
         a0 = PSolT.SquareDistance(PSolL); 
 	if(a0>0.0000000001) { 
-	   cout<<" ------- Erreur : P Ligne < > P Tore ";
-           cout<<"Ligne :  X:"<<PSolL.X()<<"  Y:"<<PSolL.Y()<<"  Z:"<<PSolL.Z()<<" l:"<<t<<endl;
-	   cout<<"Tore  :  X:"<<PSolL.X()<<"  Y:"<<PSolL.Y()<<"  Z:"<<PSolL.Z()<<" u:"<<u<<" v:"<<v<<endl;
+	   std::cout<<" ------- Erreur : P Ligne < > P Tore ";
+           std::cout<<"Ligne :  X:"<<PSolL.X()<<"  Y:"<<PSolL.Y()<<"  Z:"<<PSolL.Z()<<" l:"<<t<<std::endl;
+	   std::cout<<"Tore  :  X:"<<PSolL.X()<<"  Y:"<<PSolL.Y()<<"  Z:"<<PSolL.Z()<<" u:"<<u<<" v:"<<v<<std::endl;
 	   }         
         else { 
 	  theParam[nbsolvalid] = t;

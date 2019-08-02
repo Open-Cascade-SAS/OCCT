@@ -158,7 +158,7 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
   Handle(Poly_Triangulation) aT;
   TopLoc_Location aL;
 
-//   cout << "Quantity of Curves  = " << qnt << endl;
+//   std::cout << "Quantity of Curves  = " << qnt << std::endl;
 
 // Wire (without any neighbour)
 
@@ -250,7 +250,7 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 	qnt++;
       }
 
-//   cout << "Quantity of Vertexes  = " << qnt << endl;
+//   std::cout << "Quantity of Vertexes  = " << qnt << std::endl;
 
     if (qnt != 0)
       {

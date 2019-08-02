@@ -16,7 +16,7 @@
 
 #include <Standard_DomainError.hxx>
 
-ostream& operator << (ostream&, IntRes2d_Transition&);
+std::ostream& operator << (std::ostream&, IntRes2d_Transition&);
 
 inline IntRes2d_Transition::IntRes2d_Transition (const Standard_Boolean Tangent, 
 					  const IntRes2d_Position Pos,

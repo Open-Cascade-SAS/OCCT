@@ -460,9 +460,9 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessSphere(const IntSurf_PntOn2S& th
     //of the pole.
 
 #ifdef INTPATCH_ADDSPECIALPOINTS_DEBUG
-    cout << "Cannot find UV-coordinate for quadric in the pole."
+    std::cout << "Cannot find UV-coordinate for quadric in the pole."
       " See considered comment above. IntPatch_SpecialPoints.cxx,"
-      " ProcessSphere(...)" << endl;
+      " ProcessSphere(...)" << std::endl;
 #endif
     Standard_Real aUIso = 0.0, aVIso = 0.0;
     if (theIsReversed)
@@ -672,8 +672,8 @@ Standard_Boolean IntPatch_SpecialPoints::ProcessCone(const IntSurf_PntOn2S& theP
   if (theIsIsoChoosen)
   {
 #ifdef INTPATCH_ADDSPECIALPOINTS_DEBUG
-    cout << "Cannot find UV-coordinate for quadric in the pole."
-      " IntPatch_AddSpecialPoints.cxx, ProcessCone(...)" << endl;
+    std::cout << "Cannot find UV-coordinate for quadric in the pole."
+      " IntPatch_AddSpecialPoints.cxx, ProcessCone(...)" << std::endl;
 #endif
     theIsIsoChoosen = Standard_True;
 

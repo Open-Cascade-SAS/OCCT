@@ -222,7 +222,7 @@ static Standard_Integer deform(Draw_Interpretor& di,Standard_Integer n,const cha
   //    TopoDS_Shape S = DBRep::Get(a[i]);
   TopoDS_Shape S = DBRep::Get(a[2]);    
   if (S.IsNull()) {
-    //cout << a[2] << " is not a valid shape" << endl;
+    //std::cout << a[2] << " is not a valid shape" << std::endl;
     di << a[2] << " is not a valid shape\n";
   }
   else {
@@ -268,9 +268,9 @@ static Standard_Integer tcopy(Draw_Interpretor& di,Standard_Integer n,const char
   }
 
   if (n < 3 || (n - iFirst) % 2) {
-    cout << "Use: " << a[0] << " [-n(ogeom)] [-m(esh)] shape1 copy1 [shape2 copy2 [...]]" << endl;
-    cout << "Option -n forbids copying of geometry (it will be shared)" << endl;
-    cout << "Option -m forces copying of mesh (disabled by default)" << endl;
+    std::cout << "Use: " << a[0] << " [-n(ogeom)] [-m(esh)] shape1 copy1 [shape2 copy2 [...]]" << std::endl;
+    std::cout << "Option -n forbids copying of geometry (it will be shared)" << std::endl;
+    std::cout << "Option -m forces copying of mesh (disabled by default)" << std::endl;
     return 1;
   }
 
@@ -297,7 +297,7 @@ static Standard_Integer nurbsconvert(Draw_Interpretor& di,Standard_Integer n,con
   for (Standard_Integer i=0; i<(n-1)/2; i++) {
     TopoDS_Shape S = DBRep::Get(a[2*i+2]);
     if (S.IsNull()) {
-      //cout << a[2*i+2] << " is not a valid shape" << endl;
+      //std::cout << a[2*i+2] << " is not a valid shape" << std::endl;
       di << a[2*i+2] << " is not a valid shape\n";
     }
     else {
@@ -899,7 +899,7 @@ static Standard_Integer findplane(Draw_Interpretor& di,Standard_Integer n,const 
   BRepBuilderAPI_FindPlane a_plane_finder(S,
 				   tolerance) ;
   if (a_plane_finder.Found()) {
-    //cout << " a plane is found "   ;
+    //std::cout << " a plane is found "   ;
     di << " a plane is found \n";
     const Handle(Geom_Geometry)& aSurf = a_plane_finder.Plane(); // to avoid ambiguity
     DrawTrSurf::Set(a[2],aSurf) ;
@@ -916,7 +916,7 @@ static Standard_Integer precision(Draw_Interpretor& di,Standard_Integer n,const 
   n--;
 
   if ( n == 0) {
-    //cout << " Current Precision = " << BRepBuilderAPI::Precision() << endl;
+    //std::cout << " Current Precision = " << BRepBuilderAPI::Precision() << std::endl;
     di << " Current Precision = " << BRepBuilderAPI::Precision() << "\n";
   }
   else {
@@ -941,7 +941,7 @@ static Standard_Integer reperageshape(Draw_Interpretor& di, Standard_Integer nar
   const char *id1 = a[1];
   TopoDS_Shape TheShape1 = DBRep::Get(id1);
   
-  //cout << "Pick positions with button "<<endl;
+  //std::cout << "Pick positions with button "<<std::endl;
   di << "Pick positions with button \n";
   Standard_Integer id,X,Y,b;
   gp_Trsf T;
@@ -963,7 +963,7 @@ static Standard_Integer reperageshape(Draw_Interpretor& di, Standard_Integer nar
   
   Inter.Perform(Axe,-RealLast(),RealLast());
   
-  //cout<<"\n --> ";
+  //std::cout<<"\n --> ";
   di <<"\n --> ";
   if(Inter.NbPnt()) { 
     for(Standard_Integer i=1; i<=Inter.NbPnt(); i++) { 
@@ -974,7 +974,7 @@ static Standard_Integer reperageshape(Draw_Interpretor& di, Standard_Integer nar
 	  ExF.Next(),numface++) { 
 	TopoDS_Face Face=TopoDS::Face(ExF.Current());
 	if(Face.IsEqual(Inter.Face(i))) { 
-	  //cout<<" "<<a[1]<<"_"<<numface;
+	  //std::cout<<" "<<a[1]<<"_"<<numface;
 	  di<<" "<<a[1]<<"_"<<numface;
 	  continue;	  
 	}
@@ -982,7 +982,7 @@ static Standard_Integer reperageshape(Draw_Interpretor& di, Standard_Integer nar
       const gp_Pnt& P = Inter.Pnt(i);
       Standard_Real PMin = Inter.WParameter(i);
       if(details) { 
-	//cout<<" w:"<<PMin<<endl;
+	//std::cout<<" w:"<<PMin<<std::endl;
 	di<<" w:"<<PMin<< "\n";
       }
       if(Inter.Transition(i) == IntCurveSurface_In) { 
@@ -1009,7 +1009,7 @@ static Standard_Integer reperageshape(Draw_Interpretor& di, Standard_Integer nar
       }
     }
   }
-  //cout<<endl;
+  //std::cout<<std::endl;
   di << "\n";
   return(0);
 }
@@ -1071,10 +1071,10 @@ static Standard_Integer maxtolerance(Draw_Interpretor& theCommands,
   sss << "\n## Tolerances on the shape " << a[1] << "  (nbFaces:" << nbF
       << "  nbEdges:" << nbE << " nbVtx:" << nbV << ")\n" ;
   sss.precision(5);
-  sss.setf(ios::scientific);
-  if(TmF<=TMF) sss << "\n    Face   : Min " << setw(8) << TmF <<"    Max  " << setw(8) << TMF << " \n ";
-  if(TmE<=TME) sss << "\n    Edge   : Min " << setw(8) << TmE <<"    Max  " << setw(8) << TME << " \n ";
-  if(TmV<=TMV) sss << "\n    Vertex : Min " << setw(8) << TmV <<"    Max  " << setw(8) << TMV << " \n ";
+  sss.setf(std::ios::scientific);
+  if(TmF<=TMF) sss << "\n    Face   : Min " << std::setw(8) << TmF <<"    Max  " << std::setw(8) << TMF << " \n ";
+  if(TmE<=TME) sss << "\n    Edge   : Min " << std::setw(8) << TmE <<"    Max  " << std::setw(8) << TME << " \n ";
+  if(TmV<=TMV) sss << "\n    Vertex : Min " << std::setw(8) << TmV <<"    Max  " << std::setw(8) << TMV << " \n ";
   theCommands << sss;
 
   return 0;
@@ -1082,7 +1082,7 @@ static Standard_Integer maxtolerance(Draw_Interpretor& theCommands,
 
 
 static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char** ) {
-  //cout << "Pick positions with button "<<endl;
+  //std::cout << "Pick positions with button "<<std::endl;
   di << "Pick positions with button \n";
 
   Standard_Integer id,X,Y,b;
@@ -1133,16 +1133,16 @@ static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char*
   Handle(Draw_Segment3D) d = new Draw_Segment3D(P1,PP1,Draw_blanc);
   dout << d;
   dout.Flush();
-  //cout<<"\nttran   "<<PP1.X()-P1.X()<<" "<<PP1.Y()-P1.Y()<<" "<<PP1.Z()-P1.Z()<<endl;
+  //std::cout<<"\nttran   "<<PP1.X()-P1.X()<<" "<<PP1.Y()-P1.Y()<<" "<<PP1.Z()-P1.Z()<<std::endl;
   di <<"\nttran   "<<PP1.X()-P1.X()<<" "<<PP1.Y()-P1.Y()<<" "<<PP1.Z()-P1.Z()<< "\n";
 
   static Standard_Integer nboxvecdp=0;
-  //cout<<"\nbox  b"<<++nboxvecdp<<" "<<Min(P1.X(),PP1.X())<<" "<<Min(P1.Y(),PP1.Y())<<" "<<Min(PP1.Z(),P1.Z());
-  //cout<<"  "<<Abs(PP1.X()-P1.X())<<" "<<Abs(PP1.Y()-P1.Y())<<" "<<Abs(PP1.Z()-P1.Z())<<endl;
+  //std::cout<<"\nbox  b"<<++nboxvecdp<<" "<<Min(P1.X(),PP1.X())<<" "<<Min(P1.Y(),PP1.Y())<<" "<<Min(PP1.Z(),P1.Z());
+  //std::cout<<"  "<<Abs(PP1.X()-P1.X())<<" "<<Abs(PP1.Y()-P1.Y())<<" "<<Abs(PP1.Z()-P1.Z())<<std::endl;
 
-  //cout<<"\nDistance :"<<sqrt( (PP1.X()-P1.X())*(PP1.X()-P1.X())
+  //std::cout<<"\nDistance :"<<sqrt( (PP1.X()-P1.X())*(PP1.X()-P1.X())
 	//		     +(PP1.Y()-P1.Y())*(PP1.Y()-P1.Y())
-	//		     +(PP1.Z()-P1.Z())*(PP1.Z()-P1.Z()))<<endl;
+	//		     +(PP1.Z()-P1.Z())*(PP1.Z()-P1.Z()))<<std::endl;
 
   di <<"\nbox  b"<<++nboxvecdp<<" "<<Min(P1.X(),PP1.X())<<" "<<Min(P1.Y(),PP1.Y())<<" "<<Min(PP1.Z(),P1.Z());
   di <<"  "<<Abs(PP1.X()-P1.X())<<" "<<Abs(PP1.Y()-P1.Y())<<" "<<Abs(PP1.Z()-P1.Z())<< "\n";
@@ -1220,7 +1220,7 @@ static Standard_Integer vecdc(Draw_Interpretor& di,Standard_Integer ,const char*
   TopTools_ListOfShape Wire;
   Standard_Boolean IsWire=OrtProj.BuildWire(Wire);
   if (IsWire) {
-    //cout << " BuildWire OK " << endl;
+    //std::cout << " BuildWire OK " << std::endl;
     di << " BuildWire OK \n";
   }
   DBRep::Set(a[1], OrtProj.Shape());

@@ -627,7 +627,7 @@ const
 #ifdef OCCT_DEBUG
     if (AffichCircuit) {
       for (i = 1; i <= 2*NbItems - 2; i++) {
-        cout<< "Correspondance "<< i<<" -> "<<Corres(i)<<endl;
+        std::cout<< "Correspondance "<< i<<" -> "<<Corres(i)<<std::endl;
       }
     }
 #endif

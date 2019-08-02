@@ -104,9 +104,9 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
       default         :
       case GeomAbs_C1 : BasCriterion = GeomAbs_C2; break;
       case GeomAbs_C2 : BasCriterion = GeomAbs_C3; break;
-      case GeomAbs_C3 : // if (ShapeUpgrade::Debug()) cout<<". this criterion is not suitable for a Offset curve"<<endl; 
+      case GeomAbs_C3 : // if (ShapeUpgrade::Debug()) std::cout<<". this criterion is not suitable for a Offset curve"<<std::endl; 
 #ifdef OCCT_DEBUG
-			cout << "Warning: ShapeUpgrade_SplitCurve3dContinuity: criterion C3 for Offset curve" << endl; 
+			std::cout << "Warning: ShapeUpgrade_SplitCurve3dContinuity: criterion C3 for Offset curve" << std::endl; 
 #endif
       case GeomAbs_CN : BasCriterion = GeomAbs_CN; break;
     }
@@ -129,16 +129,16 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
   
   Handle(Geom_BSplineCurve) MyBSpline = Handle(Geom_BSplineCurve)::DownCast (myCurve);
   if (MyBSpline.IsNull()) {
-//    if (ShapeUpgrade::Debug()) cout<<". curve is not a Bspline"<<endl;
+//    if (ShapeUpgrade::Debug()) std::cout<<". curve is not a Bspline"<<std::endl;
     return ;
   }
   // it is a BSplineCurve
-//  if (ShapeUpgrade::Debug()) cout<<". curve is a Bspline"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout<<". curve is a Bspline"<<std::endl;
 
   myNbCurves=1;
   Standard_Integer Deg=MyBSpline->Degree();
   Standard_Integer NbKnots= MyBSpline->NbKnots(); 
-//  if (ShapeUpgrade::Debug()) cout<<". NbKnots="<<NbKnots<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout<<". NbKnots="<<NbKnots<<std::endl;
   if (NbKnots <= 2) {
     return;
   }
@@ -174,7 +174,7 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
 	}
 	if (corrected) {
 	  // at this knot, the continuity is now C1. Nothing else to do.
-//	  if (ShapeUpgrade::Debug()) cout<<". Correction at Knot "<<iknot<<endl;
+//	  if (ShapeUpgrade::Debug()) std::cout<<". Correction at Knot "<<iknot<<std::endl;
 	  myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
           if(newMultiplicity == 0) {
             //in case if knot is completelly removed
@@ -188,7 +188,7 @@ void ShapeUpgrade_SplitCurve3dContinuity::Compute()
 	  // this knot will be a splitting value.
 	  mySplitValues->InsertBefore(j++,MyBSpline->Knot(iknot));
 	  myNbCurves++;
-//	  if (ShapeUpgrade::Debug()) cout<<". Splitting at Knot "<<iknot<<endl;
+//	  if (ShapeUpgrade::Debug()) std::cout<<". Splitting at Knot "<<iknot<<std::endl;
 	}
       }
     }

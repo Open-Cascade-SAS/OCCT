@@ -363,10 +363,10 @@ static Standard_Integer DDataStd_Self (Draw_Interpretor& di,
     TDF_Label L;
     if (!DDF::FindLabel(DF,arg[2],L)) return 1; 
 //    TDataStd::MakeSelfContained(L,removed);
-//    if (removed.IsEmpty()) cout << "noone attriburte removed" << endl;
+//    if (removed.IsEmpty()) std::cout << "noone attriburte removed" << std::endl;
 //    for (TDF_ListIteratorOfAttributeList it(removed);it.More();it.Next()) {
-//      TDF_Tool::Entry(it.Value()->Label(),s); cout  << s << " ";
-//      cout << endl;
+//      TDF_Tool::Entry(it.Value()->Label(),s); std::cout  << s << " ";
+//      std::cout << std::endl;
 //    }
     return 0;
   } 
@@ -394,7 +394,7 @@ static Standard_Integer DDataStd_Self (Draw_Interpretor& di,
 //     return 0;
 //   }
 
-//   cout << "Wrong arguments"  << endl;  
+//   std::cout << "Wrong arguments"  << std::endl;  
 //   return 1;
 // } 
 
@@ -466,7 +466,7 @@ static Standard_Integer DDataStd_GetUAttribute (Draw_Interpretor& di,
 //     if (!DDF::GetDF(arg[1],DF)) return 1;  
 //     TDF_Label label;
 //     if( !DDF::FindLabel(DF, arg[2], label) ) { 
-//      cout << "No label for entry"  << endl;
+//      std::cout << "No label for entry"  << std::endl;
 //      return 1; 
 //     }
 //     Handle(TDataStd_Object) O;
@@ -474,18 +474,18 @@ static Standard_Integer DDataStd_GetUAttribute (Draw_Interpretor& di,
 //     Standard_GUID guidUO(arg[3]);
 
 //     if( !label.FindAttribute( TDataStd_Object::GetID(), O) ) {
-//       cout << "No Object Attribute on label"   << endl;
+//       std::cout << "No Object Attribute on label"   << std::endl;
 //     }
 //     else { 
-//       cout << "UObject is found with ObjectID = ";
+//       std::cout << "UObject is found with ObjectID = ";
 //       O->Find(label, guidUO, UO);
-//       UO->ObjectID().ShallowDump(cout);
-//       cout << endl; 
+//       UO->ObjectID().ShallowDump(std::cout);
+//       std::cout << std::endl; 
 //     }
 //     return 0;   
 //   }
 
-//   cout << "Wrong arguments"  << endl;  
+//   std::cout << "Wrong arguments"  << std::endl;  
 //   return 1;  
 // }
 
@@ -610,7 +610,7 @@ static Standard_Integer DDataStd_GetIntArray (Draw_Interpretor& di,
     }
 
     for(Standard_Integer i = A->Lower(); i<=A->Upper(); i++){
-      //cout <<  A->Value(i)   << endl;
+      //std::cout <<  A->Value(i)   << std::endl;
       di  <<  A->Value(i);
       if(i<A->Upper())  
         di<<" ";
@@ -856,14 +856,14 @@ static Standard_Integer DDataStd_GetRealArray (Draw_Interpretor& di,
     if ( !label.FindAttribute(aGuid, A) ) {
       di << "There is no TDataStd_RealArray with the specified GUID at the label"  << "\n";
 #ifdef DEB_DDataStd
-      aGuid.ShallowDump(cout);
+      aGuid.ShallowDump(std::cout);
 #endif
       return 1; 
     }
 
     for(Standard_Integer i = A->Lower(); i<=A->Upper(); i++){
 #ifdef DEB_DDataStd
-      cout <<  A->Value(i)   << endl; 
+      std::cout <<  A->Value(i)   << std::endl; 
 #endif
       di   <<  A->Value(i);
       if(i<A->Upper())  
@@ -1415,13 +1415,13 @@ static Standard_Integer DDataStd_KeepUTF (Draw_Interpretor& di,
     Standard_CString aFileName(arg[3]);
 
 #ifdef _MSC_VER
-      ifstream anIS (aFileName, ios::in | ios::binary);
+      std::ifstream anIS (aFileName, std::ios::in | std::ios::binary);
 #else
-      ifstream anIS (aFileName);
+      std::ifstream anIS (aFileName);
 #endif
     if (!anIS) {
       // Can not open file
-      cout << "Error: can't open file " << aFileName <<endl;;
+      std::cout << "Error: can't open file " << aFileName <<std::endl;;
       return 1;
     }
     char buf[1024];
@@ -1480,21 +1480,21 @@ static Standard_Integer DDataStd_GetUTFtoFile (Draw_Interpretor& di,
     }
 
     if(!aES.Length()) {
-      cout << "Data is not found in the Document" <<endl;
+      std::cout << "Data is not found in the Document" <<std::endl;
       return 1;
     }
 
     Standard_CString aFileName(arg[3]);
 
 #ifdef _MSC_VER
-    ofstream anOS (aFileName, ios::in | ios::binary | ios::ate);
+    std::ofstream anOS (aFileName, std::ios::in | std::ios::binary | std::ios::ate);
 #else
-    ofstream anOS (aFileName, ios::ate);
+    std::ofstream anOS (aFileName, std::ios::ate);
 #endif
     if (!anOS) {
       // A problem with the stream
 #ifdef OCCT_DEBUG
-      cout << "Error: problem with the file stream, rdstate = " <<anOS.rdstate() <<endl;
+      std::cout << "Error: problem with the file stream, rdstate = " <<anOS.rdstate() <<std::endl;
 #endif
     }
     unsigned char prefix[4] = {0xEF,0xBB,0xBF, 0x00};
@@ -1556,7 +1556,7 @@ static Standard_Integer DDataStd_SetByteArray (Draw_Interpretor& di,
       for(Standard_Integer i = From; i<=To; ++i) {
         Standard_Integer ival = Draw::Atoi(arg[j]);
         if(ival < 0 || 255 < ival) {
-          cout << "Bad value = " << ival<< endl;
+          std::cout << "Bad value = " << ival<< std::endl;
           return 1;
         }
         A->SetValue(i, (Standard_Byte)ival); 
@@ -1592,7 +1592,7 @@ static Standard_Integer DDataStd_SetByteArrayValue (Draw_Interpretor&,
 
   // Check the value.
   if(value < 0 || 255 < value) {
-    cout << "Bad value = " << value << endl;
+    std::cout << "Bad value = " << value << std::endl;
     return 1;
   }
 
@@ -1657,7 +1657,7 @@ static Standard_Integer DDataStd_SetBooleanArray (Draw_Interpretor& di,
         Standard_Integer ival = Draw::Atoi(arg[j]);
         if(ival > 1) 
         {
-          cout << "Bad value (" <<i <<") = " << ival<< ". 0 or 1 is expected." << endl;
+          std::cout << "Bad value (" <<i <<") = " << ival<< ". 0 or 1 is expected." << std::endl;
           return 1;
         }
         A->SetValue(i, ival != 0); 
@@ -1852,7 +1852,7 @@ static Standard_Integer DDataStd_SetBooleanList (Draw_Interpretor& di,
       Standard_Integer ival = Draw::Atoi(arg[i]);
       if(ival > 1) 
       {
-        cout << "Bad value = " << ival<< ". 0 or 1 is expected." << endl;
+        std::cout << "Bad value = " << ival<< ". 0 or 1 is expected." << std::endl;
         return 1;
       }
       A->Append (ival != 0);
@@ -2475,7 +2475,7 @@ static Standard_Integer DDataStd_GetByteArray (Draw_Interpretor& di,
     }
 
     for(Standard_Integer i = A->Lower(); i<=A->Upper(); i++){
-      //cout <<  A->Value(i)   << endl;
+      //std::cout <<  A->Value(i)   << std::endl;
       di  <<  A->Value(i);
       if(i<A->Upper())  
         di<<" ";
@@ -2973,7 +2973,7 @@ static Standard_Integer DDataStd_SetIntPackedMap (Draw_Interpretor& di,
     }
     const Handle(TColStd_HPackedMapOfInteger)& aHMap = new TColStd_HPackedMapOfInteger(aMap);
     anAtt->ChangeMap(aHMap);
-    cout << "Map extent = " << anAtt->Extent()<<endl;
+    std::cout << "Map extent = " << anAtt->Extent()<<std::endl;
     return 0; 
   }
   di << "DDataStd_SetIntPackedMap : Error\n";
@@ -3171,7 +3171,7 @@ static Standard_Integer DDataStd_SetIntPHugeMap (Draw_Interpretor& di,
     }
     const Handle(TColStd_HPackedMapOfInteger)& aHMap = new TColStd_HPackedMapOfInteger(aMap);
     anAtt->ChangeMap(aHMap);
-    cout << "Map extent = " << anAtt->Extent()<<endl;
+    std::cout << "Map extent = " << anAtt->Extent()<<std::endl;
     return 0; 
   }
   di << "DDataStd_SetIntPHugeMap : Error\n";
@@ -3237,7 +3237,7 @@ static Standard_Integer DDataStd_SetNDataIntAr2 (Draw_Interpretor& di,
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if(anAtt.IsNull()) {
-      cout<< "NamedData attribute is not found or not set"  << endl;
+      std::cout<< "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
   
     j = 15;
@@ -3285,7 +3285,7 @@ static Standard_Integer DDataStd_SetAsciiString (Draw_Interpretor& di,
       return 1;
     }
   
-    cout << "String = " << anAtt->Get().ToCString() << " is kept in DF" << endl;
+    std::cout << "String = " << anAtt->Get().ToCString() << " is kept in DF" << std::endl;
     return 0; 
   }
   di << "DDataStd_SetAsciiString : Error\n";
@@ -3316,12 +3316,12 @@ static Standard_Integer DDataStd_GetAsciiString (Draw_Interpretor& di,
     }
     Handle(TDataStd_AsciiString) anAtt;
     if( !aLabel.FindAttribute(aGuid, anAtt) ) {
-      cout << "AsciiString attribute is not found or not set"  << endl;
+      std::cout << "AsciiString attribute is not found or not set"  << std::endl;
       return 1;
     }
 
 #ifdef DEB_DDataStd
-      cout << "String = " << anAtt->Get().ToCString()  << endl;
+      std::cout << "String = " << anAtt->Get().ToCString()  << std::endl;
 #endif
     di << anAtt->Get().ToCString();
     return 0; 
@@ -3347,12 +3347,12 @@ static Standard_Integer DDataStd_SetNDataIntegers (Draw_Interpretor& di,
 //
 //     TCollection_ExtendedString aString("123456789 0_abcde");
 //     Standard_Integer aPos = aString.Search(" ");
-//     cout << "From Start = " <<aPos<<endl;
+//     std::cout << "From Start = " <<aPos<<std::endl;
 //     aPos = aString.SearchFromEnd(" ");
-//     cout << "From Start = " <<aPos<<endl;
+//     std::cout << "From Start = " <<aPos<<std::endl;
 //     TCollection_ExtendedString aValue = aString.Split(aPos);
-//     cout << "Value = |"<<aValue<<endl;
-//     cout << "aKey = " << aString << "|"<<endl;
+//     std::cout << "Value = |"<<aValue<<std::endl;
+//     std::cout << "aKey = " << aString << "|"<<std::endl;
 // 
     Standard_Integer aNumP = Draw::Atoi(arg[3]), j;
     Handle(TDataStd_NamedData) anAtt;
@@ -3393,17 +3393,17 @@ static Standard_Integer DDataStd_GetNDIntegers (Draw_Interpretor& di,
 
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;
     const TColStd_DataMapOfStringInteger& aMap = anAtt->GetIntegersContainer();
     TColStd_DataMapIteratorOfDataMapOfStringInteger itr(aMap);
     for (; itr.More(); itr.Next()){
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
       Standard_Integer aValue = itr.Value();
-       cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<endl;;
+       std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<std::endl;;
       }
 
     return 0; 
@@ -3429,16 +3429,16 @@ static Standard_Integer DDataStd_GetNDInteger (Draw_Interpretor& di,
 
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
 
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;    
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     if(!anAtt->HasInteger(arg[3])) {
-      cout << "There is no data specified by Key = "<< arg[3]  << endl;
+      std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
-      cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetInteger(arg[3])<<endl;
+      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetInteger(arg[3])<<std::endl;
       if(nb == 5) 
         Draw::Set(arg[4], anAtt->GetInteger(arg[3]));
       return 0; 
@@ -3469,7 +3469,7 @@ static Standard_Integer DDataStd_SetNDataReals (Draw_Interpretor& di,
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if(anAtt.IsNull()) {
-      cout << "NamedData attribute is not found or not set"  << endl;;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;;
       return 1;}
   
     j = 4;
@@ -3499,11 +3499,11 @@ static Standard_Integer DDataStd_GetNDReals (Draw_Interpretor& di,
     TDF_Label aLabel;
     if(!DDF::FindLabel(DF, arg[2], aLabel)) return 1;
  
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
     
     const TDataStd_DataMapOfStringReal& aMap = anAtt->GetRealsContainer();
@@ -3512,7 +3512,7 @@ static Standard_Integer DDataStd_GetNDReals (Draw_Interpretor& di,
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
       Standard_Real aValue = itr.Value();
-       cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<endl;
+       std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<std::endl;
       }
     return 0; 
   }
@@ -3537,16 +3537,16 @@ static Standard_Integer DDataStd_GetNDReal (Draw_Interpretor& di,
 
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
 
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;    
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     if(!anAtt->HasReal(arg[3])) {
-      cout << "There is no data specified by Key = "<< arg[3]  << endl;
+      std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
-      cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetReal(arg[3])<<endl;
+      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetReal(arg[3])<<std::endl;
       if(nb == 5) 
         Draw::Set(arg[4], anAtt->GetReal(arg[3]));
       return 0; 
@@ -3610,10 +3610,10 @@ static Standard_Integer DDataStd_GetNDStrings (Draw_Interpretor& di,
 
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;    
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     const TDataStd_DataMapOfStringString& aMap = anAtt->GetStringsContainer();
     TDataStd_DataMapIteratorOfDataMapOfStringString itr(aMap);
     for (; itr.More(); itr.Next()){
@@ -3621,7 +3621,7 @@ static Standard_Integer DDataStd_GetNDStrings (Draw_Interpretor& di,
       TCollection_AsciiString aStr(aKey,'?');
       TCollection_ExtendedString aVal(itr.Value());
       TCollection_AsciiString aStrValue(aVal,'?');
-      cout << "Key = "  << aStr.ToCString() << " Value = " <<aStrValue.ToCString()<< endl;
+      std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aStrValue.ToCString()<< std::endl;
       }
     return 0; 
   }
@@ -3649,14 +3649,14 @@ static Standard_Integer DDataStd_GetNDString (Draw_Interpretor& di,
       di << "NamedData attribute is not found or not set"  << "\n";
       return 1;}
 
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;    
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     if(!anAtt->HasString(arg[3])) {
-      cout << "There is no data specified by Key = "<< arg[3]  << endl;
+      std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
       TCollection_AsciiString aValue (anAtt->GetString(arg[3]), '?');
-      cout << "Key = "  << arg[3]  << " Value = " << aValue.ToCString() << endl;
+      std::cout << "Key = "  << arg[3]  << " Value = " << aValue.ToCString() << std::endl;
       if(nb == 5) 
         Draw::Set(arg[4], aValue.ToCString());
       return 0; 
@@ -3687,7 +3687,7 @@ static Standard_Integer DDataStd_SetNDataBytes (Draw_Interpretor& di,
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if(anAtt.IsNull()) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
   
     j = 4;
@@ -3720,17 +3720,17 @@ static Standard_Integer DDataStd_GetNDBytes (Draw_Interpretor& di,
 
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;      
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     const TDataStd_DataMapOfStringByte& aMap = anAtt->GetBytesContainer();
     TDataStd_DataMapIteratorOfDataMapOfStringByte itr(aMap);
     for (; itr.More(); itr.Next()){
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
       Standard_Byte aValue = itr.Value();
-      cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<endl;
+      std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<std::endl;
       }
     return 0; 
   }
@@ -3755,16 +3755,16 @@ static Standard_Integer DDataStd_GetNDByte (Draw_Interpretor& di,
 
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
 
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;      
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     if(!anAtt->HasByte(arg[3])) {
-      cout << "There is no data specified by Key = "<< arg[3]  << endl;
+      std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
-      cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetByte(arg[3])<< endl;
+      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetByte(arg[3])<< std::endl;
       if(nb == 5) 
         Draw::Set(arg[4], anAtt->GetByte(arg[3]));
       return 0; 
@@ -3797,7 +3797,7 @@ static Standard_Integer DDataStd_SetNDataIntAr (Draw_Interpretor& di,
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if(anAtt.IsNull()) {
-      cout<< "NamedData attribute is not found or not set"  << endl;
+      std::cout<< "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
   
     j = 5;
@@ -3832,26 +3832,26 @@ static Standard_Integer DDataStd_GetNDIntArrays (Draw_Interpretor& di,
     
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;      
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     const TDataStd_DataMapOfStringHArray1OfInteger& aMap = anAtt->GetArraysOfIntegersContainer();
     TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger itr(aMap);
     for (; itr.More(); itr.Next()){
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
-      cout << "Key = "  << aStr.ToCString()<< endl;
+      std::cout << "Key = "  << aStr.ToCString()<< std::endl;
       Handle(TColStd_HArray1OfInteger) anArrValue = itr.Value();      
       if(!anArrValue.IsNull()) {
         Standard_Integer lower = anArrValue->Lower();
         Standard_Integer upper = anArrValue->Upper();
         for(Standard_Integer i = lower; i<=upper;i++) {
           Standard_Integer aValue = anArrValue->Value(i);
-          cout << "\tValue("<<i<<") = " <<aValue<<endl;
+          std::cout << "\tValue("<<i<<") = " <<aValue<<std::endl;
         }
       } else 
-        cout << "\tthe specified array is Null "<<endl;
+        std::cout << "\tthe specified array is Null "<<std::endl;
     }
     return 0; 
   }
@@ -3876,16 +3876,16 @@ static Standard_Integer DDataStd_GetNDIntArray (Draw_Interpretor& di,
 
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
 
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;      
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     if(!anAtt->HasArrayOfIntegers(arg[3])) {
-      cout << "There is no data specified by Key = "<< arg[3]  << endl;
+      std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
-      cout << "Key = "  << arg[3] <<endl;
+      std::cout << "Key = "  << arg[3] <<std::endl;
 
       Handle(TColStd_HArray1OfInteger) anArrValue = anAtt->GetArrayOfIntegers(arg[3]);      
       if(!anArrValue.IsNull()) {
@@ -3893,10 +3893,10 @@ static Standard_Integer DDataStd_GetNDIntArray (Draw_Interpretor& di,
         Standard_Integer upper = anArrValue->Upper();
         for(Standard_Integer i = lower; i<=upper;i++) {
           Standard_Integer aValue = anArrValue->Value(i);
-          cout << "\tValue("<<i<<") = " <<aValue<<endl;
+          std::cout << "\tValue("<<i<<") = " <<aValue<<std::endl;
         }
       } else 
-        cout << "\tthe specified array is Null or not found"<<endl;
+        std::cout << "\tthe specified array is Null or not found"<<std::endl;
       return 0; 
     }
   }
@@ -3927,7 +3927,7 @@ static Standard_Integer DDataStd_SetNDataRealAr (Draw_Interpretor& di,
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if(anAtt.IsNull()) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
   
     j = 5;
@@ -3962,26 +3962,26 @@ static Standard_Integer DDataStd_GetNDRealArrays (Draw_Interpretor& di,
     
     Handle(TDataStd_NamedData) anAtt;
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt)) {
-      cout << "NamedData attribute is not found or not set"  << endl;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;      
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     const TDataStd_DataMapOfStringHArray1OfReal& aMap = anAtt->GetArraysOfRealsContainer();
     TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal itr(aMap);
     for (; itr.More(); itr.Next()){
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
-      cout << "Key = "  << aStr.ToCString()<<endl;
+      std::cout << "Key = "  << aStr.ToCString()<<std::endl;
       Handle(TColStd_HArray1OfReal) anArrValue = itr.Value();      
       if(!anArrValue.IsNull()) {
         Standard_Integer lower = anArrValue->Lower();
         Standard_Integer upper = anArrValue->Upper();
         for(Standard_Integer i = lower; i<=upper;i++) {
           Standard_Real aValue = anArrValue->Value(i);
-          cout << "\tValue("<<i<<") = " <<aValue<<endl;
+          std::cout << "\tValue("<<i<<") = " <<aValue<<std::endl;
         }
       } else 
-        cout << "\tthe specified array is Null "<<endl;
+        std::cout << "\tthe specified array is Null "<<std::endl;
     }
     return 0; 
   }
@@ -4009,13 +4009,13 @@ static Standard_Integer DDataStd_GetNDRealArray (Draw_Interpretor& di,
       di << "NamedData attribute is not found or not set"  << "\n";
       return 1;}
 
-    cout <<endl;
-    cout <<"NamedData attribute at Label = " << arg[2] <<endl;      
+    std::cout <<std::endl;
+    std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     if(!anAtt->HasArrayOfReals(arg[3])) {
-      cout << "There is no data specified by Key = "<< arg[3]  << endl;
+      std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
-      cout << "Key = "  << arg[3] <<endl;
+      std::cout << "Key = "  << arg[3] <<std::endl;
 
       Handle(TColStd_HArray1OfReal) anArrValue = anAtt->GetArrayOfReals(arg[3]);      
       if(!anArrValue.IsNull()) {
@@ -4023,10 +4023,10 @@ static Standard_Integer DDataStd_GetNDRealArray (Draw_Interpretor& di,
         Standard_Integer upper = anArrValue->Upper();
         for(Standard_Integer i = lower; i<=upper;i++) {
           Standard_Real aValue = anArrValue->Value(i);
-          cout << "\tValue("<<i<<") = " <<aValue<<endl;
+          std::cout << "\tValue("<<i<<") = " <<aValue<<std::endl;
         }
       } else 
-        cout << "\tthe specified array is Null or not found"<<endl;
+        std::cout << "\tthe specified array is Null or not found"<<std::endl;
       return 0; 
     }
   }

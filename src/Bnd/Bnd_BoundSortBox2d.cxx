@@ -376,29 +376,29 @@ void Bnd_BoundSortBox2d::Dump() const
 {
   Standard_Integer lacase;
 
-  cout <<   "axis X : " << discrX << " intervalles de " << deltaX << endl;
+  std::cout <<   "axis X : " << discrX << " intervalles de " << deltaX << std::endl;
   if (discrX>1) {
     const TColStd_Array1OfListOfInteger & tabList=axisX->Array1();
     for (lacase=1; lacase<=discrX; lacase++) {
-      cout << "     X " << lacase << " : " ;
+      std::cout << "     X " << lacase << " : " ;
       TColStd_ListIteratorOfListOfInteger theList(tabList(lacase));
       for (; theList.More(); theList.Next()) {
-	cout << theList.Value() << " ";
+	std::cout << theList.Value() << " ";
       }
-      cout << "\n";
+      std::cout << "\n";
     }
   }
 
-  cout <<   "axis Y : " << discrY << " intervalles de " << deltaY << endl;
+  std::cout <<   "axis Y : " << discrY << " intervalles de " << deltaY << std::endl;
   if (discrY>1) {
     const TColStd_Array1OfListOfInteger & tabList=axisY->Array1();
     for (lacase=1; lacase<=discrY; lacase++) {
-      cout << "     Y " << lacase << " : " ;
+      std::cout << "     Y " << lacase << " : " ;
       TColStd_ListIteratorOfListOfInteger theList(tabList(lacase));
       for (; theList.More(); theList.Next()) {
-	cout << theList.Value() << " ";
+	std::cout << theList.Value() << " ";
       }
-      cout << "\n";
+      std::cout << "\n";
     }
   }
 }

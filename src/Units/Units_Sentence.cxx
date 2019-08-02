@@ -89,7 +89,7 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
         // unknown expression - not create sentene
         thesequenceoftokens->Clear();
 #ifdef OCCT_DEBUG
-        cout<<"Warning: can not create correct sentence from string: "<<astring<<endl;
+        std::cout<<"Warning: can not create correct sentence from string: "<<astring<<std::endl;
 #endif
         return;
       }
@@ -110,7 +110,7 @@ Units_Sentence::Units_Sentence(const Handle(Units_Lexicon)& alexicon,
         // incorrect situation
         thesequenceoftokens->Clear();
 #ifdef OCCT_DEBUG
-        cout<<"Warning: can not create correct sentence from string: "<<astring<<endl;
+        std::cout<<"Warning: can not create correct sentence from string: "<<astring<<std::endl;
 #endif
         return;
       }
@@ -156,12 +156,12 @@ void Units_Sentence::SetConstants()
 //=======================================================================
 static Handle(Units_Token) CalculateLocal(const Handle(Units_TokensSequence)& aSeq)
 {
-  //cout<<endl;
+  //std::cout<<std::endl;
   //for(int index=1; index<=aSeq->Length(); index++) {
   //  Handle(Units_Token) tok = aSeq->Value(index);
-  //  cout<<tok->Word()<<" ";
+  //  std::cout<<tok->Word()<<" ";
   //}
-  //cout<<endl;
+  //std::cout<<std::endl;
   Handle(Units_Token) tok1,tok2;
   Standard_Integer i,j;
 
@@ -283,20 +283,20 @@ Handle(Units_Token) Units_Sentence::Evaluate()
   }
 
   //if(IPrint==1) {
-  //  cout<<endl;
+  //  std::cout<<std::endl;
   //  for(index=1; index<=thesequenceoftokens->Length(); index++) {
   //    Handle(Units_Token) tok = thesequenceoftokens->Value(index);
-  //    cout<<tok->Word()<<" ";
+  //    std::cout<<tok->Word()<<" ";
   //  }
-  //  cout<<endl;
+  //  std::cout<<std::endl;
   //  for(index=1; index<=thesequenceoftokens->Length(); index++) {
-  //    cout<<level[index-1]<<" ";
+  //    std::cout<<level[index-1]<<" ";
   //  }
-  //  cout<<endl;
+  //  std::cout<<std::endl;
   //}
 
   if(curlevel) {
-    cout<<" Incorrect number of brackets"<<endl;
+    std::cout<<" Incorrect number of brackets"<<std::endl;
     return new Units_Token();
   }
 
@@ -363,7 +363,7 @@ Handle(Units_Token) Units_Sentence::Evaluate()
   rtoken = thesequenceoftokens->Value(1)->Creates();
 
   if( rtoken->Value()==0. ) {
-    cout << "*BAD token value from unit '" << rtoken->Word() << "'" << endl;
+    std::cout << "*BAD token value from unit '" << rtoken->Word() << "'" << std::endl;
     rtoken->Value(1.);
   }
 */ // end old variant

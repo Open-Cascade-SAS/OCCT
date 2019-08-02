@@ -49,7 +49,7 @@ Handle(TColStd_HArray2OfReal) ReadRegularGrid(CString FileName,
   if (fp) 
     {
       fscanf_s(fp, "%d %d", &R2, &C2);
-      cout << "Reading Grid : ( " << R2 << " , " << C2 << " )." << endl;
+      std::cout << "Reading Grid : ( " << R2 << " , " << C2 << " )." << std::endl;
       
       H = new TColStd_HArray2OfReal(C1, C2, R1, R2);
       
@@ -83,14 +83,14 @@ Handle(TColStd_HArray2OfReal) ReadRegularGrid(CString FileName,
 	    }
 	}
       
-      cout << "Deltax = " << Deltax << endl;
-      cout << "Deltay = " << Deltay << endl;
+      std::cout << "Deltax = " << Deltax << std::endl;
+      std::cout << "Deltay = " << Deltay << std::endl;
       
       fclose(fp);
     } 
   else 
     {
-      cout << "cannot open file : " << FileName << endl;
+      std::cout << "cannot open file : " << FileName << std::endl;
     }
   return H;
 }

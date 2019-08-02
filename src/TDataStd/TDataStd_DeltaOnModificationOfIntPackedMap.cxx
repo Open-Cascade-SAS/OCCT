@@ -46,9 +46,9 @@ TDataStd_DeltaOnModificationOfIntPackedMap::TDataStd_DeltaOnModificationOfIntPac
     aMap2 = CurrAtt->GetHMap();
 #ifdef OCCT_DEBUG_disable
     if (aMap1.IsNull())
-      cout <<"DeltaOnModificationOfIntPackedMap:: Old Map is Null" <<endl;
+      std::cout <<"DeltaOnModificationOfIntPackedMap:: Old Map is Null" <<std::endl;
     if (aMap2.IsNull())
-      cout <<"DeltaOnModificationOfIntPackedMap:: Current Map is Null" <<endl;
+      std::cout <<"DeltaOnModificationOfIntPackedMap:: Current Map is Null" <<std::endl;
 #endif
       
     if (aMap1.IsNull() || aMap2.IsNull()) return;
@@ -87,7 +87,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   Handle(TDataStd_IntPackedMap) aBackAtt = Handle(TDataStd_IntPackedMap)::DownCast (aTDFAttribute);
   if(aBackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" <<endl;
+    std::cout << "DeltaOnModificationOfIntPAckedMap::Apply: OldAtt is Null" <<std::endl;
 #endif
     return;
   }
@@ -100,7 +100,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 
   if(aCurAtt.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "DeltaOnModificationOfIntAPckedMAp::Apply: CurAtt is Null" <<endl;
+    std::cout << "DeltaOnModificationOfIntAPckedMAp::Apply: CurAtt is Null" <<std::endl;
 #endif
     return;
   }
@@ -125,11 +125,11 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
   }
   
 #ifdef OCCT_DEBUG_disable
-  cout << " << Map Dump after Delta Apply >>" <<endl;
+  std::cout << " << Map Dump after Delta Apply >>" <<std::endl;
   Handle(TColStd_HPackedMapOfInteger) aIntMap = aCurAtt->GetHMap();
   TColStd_MapIteratorOfPackedMapOfInteger it(aIntMap->Map());
   for (Standard_Integer i=1;it.More() && i <= MAXUP; it.Next(), i++) 
-    cout << it.Key() << "  ";
-  cout <<endl;
+    std::cout << it.Key() << "  ";
+  std::cout <<std::endl;
 #endif
 }

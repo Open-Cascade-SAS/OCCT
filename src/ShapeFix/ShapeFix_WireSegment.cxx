@@ -243,7 +243,7 @@ void ShapeFix_WireSegment::DefineIUMin (const Standard_Integer i,
   if ( myIUMin->Value(i) < iumin ) myIUMin->SetValue ( i, iumin );
 #ifdef OCCT_DEBUG
   if ( myIUMin->Value(i) > myIUMax->Value(i) )
-    cout << "Warning: ShapeFix_WireSegment::DefineIUMin: indexation error" << endl;
+    std::cout << "Warning: ShapeFix_WireSegment::DefineIUMin: indexation error" << std::endl;
 #endif
 }
 
@@ -259,7 +259,7 @@ void ShapeFix_WireSegment::DefineIUMax (const Standard_Integer i,
 #ifdef OCCT_DEBUG
   Standard_Integer iun = myIUMin->Value(i), iux = myIUMax->Value(i);
   if ( iun > iux )
-    cout << "Warning: ShapeFix_WireSegment::DefineIUMax: indexation error" << endl;
+    std::cout << "Warning: ShapeFix_WireSegment::DefineIUMax: indexation error" << std::endl;
 #endif
 }
 
@@ -275,7 +275,7 @@ void ShapeFix_WireSegment::DefineIVMin (const Standard_Integer i,
 #ifdef OCCT_DEBUG
   Standard_Integer ivn = myIVMin->Value(i), ivx = myIVMax->Value(i);
   if ( ivn > ivx )
-    cout << "Warning: ShapeFix_WireSegment::DefineIVMin: indexation error" << endl;
+    std::cout << "Warning: ShapeFix_WireSegment::DefineIVMin: indexation error" << std::endl;
 #endif
 }
 
@@ -291,7 +291,7 @@ void ShapeFix_WireSegment::DefineIVMax (const Standard_Integer i,
 #ifdef OCCT_DEBUG
   Standard_Integer ivn = myIVMin->Value(i), ivx = myIVMax->Value(i);
   if ( ivn > ivx )
-    cout << "Warning: ShapeFix_WireSegment::DefineIVMax: indexation error" << endl;
+    std::cout << "Warning: ShapeFix_WireSegment::DefineIVMax: indexation error" << std::endl;
 #endif
 }
 
@@ -324,7 +324,7 @@ Standard_Boolean ShapeFix_WireSegment::CheckPatchIndex (const Standard_Integer i
   Standard_Boolean ok = ( dU ==0 || dU ==1 ) && ( dV ==0 || dV ==1 );
 #ifdef OCCT_DEBUG
   if ( ! ok )
-    cout << "Warning: ShapeFix_WireSegment::CheckPatchIndex: incomplete indexation" << endl;
+    std::cout << "Warning: ShapeFix_WireSegment::CheckPatchIndex: incomplete indexation" << std::endl;
 #endif
   return ok;
 }

@@ -133,9 +133,9 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
   if(!fromtcl)
     fromtcl = argc > k;
   if(aFullMode)
-    cout<<"Full model for translation with additional info will be used \n"<<flush;
+    std::cout<<"Full model for translation with additional info will be used \n"<<std::flush;
   else
-    cout<<"Reduced model for translation without additional info will be used \n"<<flush;
+    std::cout<<"Reduced model for translation without additional info will be used \n"<<std::flush;
   
   sr.WS()->SetModeStat(aFullMode);
 
@@ -166,15 +166,15 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
         di<<" Type:"<<sr.RootForTransfer(i)->DynamicType()->Name()<<"\n";
       }
 
-      cout<<"Mode (0 End, 1 root n0 1, 2 one root/n0, 3 one entity/n0, 4 Selection) : "<<flush;
-      cin>>modepri;
+      std::cout<<"Mode (0 End, 1 root n0 1, 2 one root/n0, 3 one entity/n0, 4 Selection) : "<<std::flush;
+      std::cin>>modepri;
     }
 
     if (modepri == 0) { di<<"End Reading STEP\n"; return 0; }
     if (modepri <= 2) {
       num = 1;
       if (modepri == 2) {
-        cout<<"Root N0 : "<<flush;  cin>>num;
+        std::cout<<"Root N0 : "<<std::flush;  std::cin>>num;
       }
 
       progress->NewScope ( 80, "Translation" );
@@ -196,7 +196,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
       progress->Show();
     }
     else if (modepri == 3) {
-      cout<<"Entity : "<<flush;  num = XSDRAW::GetEntityNumber();
+      std::cout<<"Entity : "<<std::flush;  num = XSDRAW::GetEntityNumber();
       if (!sr.TransferOne (num)) di<<"Transfer entity n0 "<<num<<" : no result\n";
       else {
         nbs = sr.NbShapes();
@@ -230,7 +230,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
         }
         if (list.IsNull()) { di<<"No list defined. Give a selection name or * for all transferrable roots\n"; continue; }
       } else {
-        cout<<"Name of Selection :"<<flush;
+        std::cout<<"Name of Selection :"<<std::flush;
         list = XSDRAW::GetList();
         if (list.IsNull()) { di<<"No list defined\n"; continue; }
       }
@@ -491,7 +491,7 @@ static Standard_Integer dumpassembly
   const Interface_Graph& graph = WS->Graph();
   
   STEPSelections_AssemblyExplorer exp(graph);
-  exp.Dump(cout);
+  exp.Dump(std::cout);
   return 0;
 }
 
@@ -500,7 +500,7 @@ static Standard_Integer stepfileunits (Draw_Interpretor& di, Standard_Integer ar
 
   if(  argc < 2)
   {
-    cout<<"Error: Invalid number of parameters. Should be: getfileunits name_file"<<endl;
+    std::cout<<"Error: Invalid number of parameters. Should be: getfileunits name_file"<<std::endl;
     return 1;
   }
   STEPControl_Reader aStepReader;

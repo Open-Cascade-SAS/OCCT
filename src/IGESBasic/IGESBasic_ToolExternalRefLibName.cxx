@@ -99,11 +99,11 @@ void  IGESBasic_ToolExternalRefLibName::OwnDump
   (const Handle(IGESBasic_ExternalRefLibName)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S,const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_ExternalRefLibName" << endl;
+  S << "IGESBasic_ExternalRefLibName" << Message_EndLine;
   S << "Name of Library : ";
   IGESData_DumpString(S,ent->LibraryName());
-  S << endl;
+  S << Message_EndLine;
   S << "External Reference Symbolic Name : ";
   IGESData_DumpString(S,ent->ReferenceName());
-  S << endl;
+  S << Message_EndLine;
 }

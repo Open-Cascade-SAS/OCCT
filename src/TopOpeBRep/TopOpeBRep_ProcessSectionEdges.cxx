@@ -79,7 +79,7 @@ void TopOpeBRep_FacesFiller::GetESL(TopTools_ListOfShape& LES)
 #ifdef OCCT_DEBUG
       if (trRL) {
 	TopOpeBRep_VPointInterIterator VPI;VPI.Init(L);
-	cout<<endl<<"------------ Dump Rline  --------------------"<<endl;
+	std::cout<<std::endl<<"------------ Dump Rline  --------------------"<<std::endl;
 	for (; VPI.More(); VPI.Next()) myHFFD->DumpVP(VPI.CurrentVP());
       }
 #endif
@@ -217,10 +217,10 @@ Standard_Boolean TopOpeBRep_FacesFiller::KeepRLine
   keeprline = keeprline||(stVPbip==TopAbs_ON); // REST1
 #ifdef OCCT_DEBUG
 //  if (trc) {
-//    cout<<" bip("<<vpf.Index()<<","<<vpl.Index()<<") of line restriction ";
-//    cout<<L.Index()<<" is ";TopAbs::Print(stVPbip,cout);
-//    if (keeprline) cout<<" : edge restriction kept"<<endl;
-//    else cout<<" : edge restriction kept not kept"<<endl; 
+//    std::cout<<" bip("<<vpf.Index()<<","<<vpl.Index()<<") of line restriction ";
+//    std::cout<<L.Index()<<" is ";TopAbs::Print(stVPbip,std::cout);
+//    if (keeprline) std::cout<<" : edge restriction kept"<<std::endl;
+//    else std::cout<<" : edge restriction kept not kept"<<std::endl; 
 //  }
 #endif	
     

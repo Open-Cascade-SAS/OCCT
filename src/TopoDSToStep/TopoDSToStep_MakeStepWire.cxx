@@ -246,7 +246,7 @@ void TopoDSToStep_MakeStepWire::Init(const TopoDS_Wire& aWire,
 //#11 CurrentEdge = ItW.Current();
       
       //if (ItW.Current().Orientation() != ItW.Orientation())
-      //cout << "DEBUG : Attention WireExplorer Orientation" << endl;
+      //std::cout << "DEBUG : Attention WireExplorer Orientation" << std::endl;
 
       // ---------------------------------
       // --- Is the edge Degenerated ? ---

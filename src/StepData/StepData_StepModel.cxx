@@ -119,9 +119,9 @@ void StepData_StepModel::DumpHeader
     S << "  "  << iter.Value()->DynamicType()->Name() << "\n";
   }
   if (!iapro || nb == 0) return;
-  S << " --  --        STEP MODEL    HEADER  CONTENT      --  --" << endl;
+  S << " --  --        STEP MODEL    HEADER  CONTENT      --  --" << Message_EndLine;
   S << " --   Dumped with Protocol : " << stepro->DynamicType()->Name()
-    << "   --"<<endl;
+    << "   --"<<Message_EndLine;
 
   Standard_SStream aSStream;
   Handle(StepData_StepModel) me (this);

@@ -540,11 +540,11 @@ void Interface_CheckIterator::Print(const Handle(Message_Messenger)& S,
 //  mesnum = mesnum0;
 //    if (yamod) mesnum = (nm0 > 0 ? mesnum1 : mesnum2);
 
-    if (!titre)        S<<" **  " << Name() << "  **"<<endl;
+    if (!titre)        S<<" **  " << Name() << "  **"<<Message_EndLine;
     titre = Standard_True;
     S<<"Check:"; if(nb > 9 && i < 10) S<<" "; if (nb > 99 && i < 100) S<<" ";
     S<<i;
-    if      (num <  0) S<<" -- Global Check"<<endl;
+    if      (num <  0) S<<" -- Global Check"<<Message_EndLine;
     else if (num == 0) S<<" -- Entity n0 ??:";
     else {
       if (yamod) { S<<" -- Entity (n0:id) "; model->Print (ent,S); }
@@ -552,16 +552,16 @@ void Interface_CheckIterator::Print(const Handle(Message_Messenger)& S,
 //      S<<" -- Entity n0 "<<num<<mesnum;
 //      if (yamod) model->PrintLabel(ent,S);
     }
-    if      (num >= 0 &&  entnul) S<<" (unknown Type)"<<endl;
+    if      (num >= 0 &&  entnul) S<<" (unknown Type)"<<Message_EndLine;
     else if (num >= 0 && !entnul) {
-      if (yamod) S<<"   Type:"<<model->TypeName(ent)<<endl;
-      else       S<<"   Type:"<<ent->DynamicType()->Name()<<endl;
+      if (yamod) S<<"   Type:"<<model->TypeName(ent)<<Message_EndLine;
+      else       S<<"   Type:"<<ent->DynamicType()->Name()<<Message_EndLine;
     }
 
     nbch ++;
     ach->Print (S, (failsonly ? 1 : 3));
   }
-//  if (nbch > 0)  S<<" ----  Checks : "<<nbch<<"  ----"<<endl;
+//  if (nbch > 0)  S<<" ----  Checks : "<<nbch<<"  ----"<<std::endl;
 }
 
 

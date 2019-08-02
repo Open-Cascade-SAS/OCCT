@@ -52,7 +52,7 @@
 extern Standard_Boolean TopOpeBRepBuild_GetcontextNOREGUSO();
 extern Standard_Boolean TopOpeBRepBuild_GetcontextREGUXPU();
 extern Standard_Boolean TopOpeBRepBuild_GettraceSAVSREGU();
-Standard_EXPORT void debreguso(const Standard_Integer iS) {cout<<"++ debreguso "<<iS<<endl;}
+Standard_EXPORT void debreguso(const Standard_Integer iS) {std::cout<<"++ debreguso "<<iS<<std::endl;}
 #endif
 
 #ifdef DRAW
@@ -217,7 +217,7 @@ void TopOpeBRepBuild_Builder::RegularizeSolid
   
 #ifdef OCCT_DEBUG
   if (tSPS) {
-    cout<<"RegularizeSolid "<<iS<<endl;
+    std::cout<<"RegularizeSolid "<<iS<<std::endl;
     debreguso(iS);
   }
 #endif
@@ -317,7 +317,7 @@ void TopOpeBRepBuild_Builder::RegularizeSolid
   if (tSPS && savsregu) {
     TCollection_AsciiString str("sregu"); str = str + iS;
     DBRep::Set(str.ToCString(),newSolid);
-    cout<<"newSolid "<<str<<" built on Solid "<<iS<<" saved"<<endl;
+    std::cout<<"newSolid "<<str<<" built on Solid "<<iS<<" saved"<<std::endl;
   }
 #endif
   

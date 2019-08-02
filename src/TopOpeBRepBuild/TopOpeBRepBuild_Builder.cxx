@@ -68,9 +68,9 @@ extern Standard_Boolean TopOpeBRepBuild_GettraceCUV();
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPF();
 extern Standard_Boolean TopOpeBRepBuild_GettraceSPS();
 extern Standard_Boolean TopOpeBRepBuild_GetcontextSF2();
-Standard_EXPORT void debmarksplit(const Standard_Integer i) {cout<<"++ debmarksplit "<<i<<endl;}
-Standard_EXPORT void debchangesplit(const Standard_Integer i) {cout<<"++ debchangesplit "<<i<<endl;}
-Standard_EXPORT void debspf(const Standard_Integer i) {cout<<"++  debspf"<<i<<endl;}
+Standard_EXPORT void debmarksplit(const Standard_Integer i) {std::cout<<"++ debmarksplit "<<i<<std::endl;}
+Standard_EXPORT void debchangesplit(const Standard_Integer i) {std::cout<<"++ debchangesplit "<<i<<std::endl;}
+Standard_EXPORT void debspf(const Standard_Integer i) {std::cout<<"++  debspf"<<i<<std::endl;}
 #endif
 
 static  Standard_Integer STATIC_SOLIDINDEX = 0;
@@ -318,8 +318,8 @@ Standard_Boolean TopOpeBRepBuild_Builder::ToSplit(const TopoDS_Shape& S,const To
 #ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if (tSPS) { 
-    cout<<"tosplit "<<tosplit<<" : !issplit "<<(!issplit);
-    cout<<" && (hasgeom || hassame) ("<<hasgeom<<" || "<<hassame<<")"<<endl;
+    std::cout<<"tosplit "<<tosplit<<" : !issplit "<<(!issplit);
+    std::cout<<" && (hasgeom || hassame) ("<<hasgeom<<" || "<<hassame<<")"<<std::endl;
   }
 #endif
 
@@ -347,7 +347,7 @@ void TopOpeBRepBuild_Builder::MarkSplit(const TopoDS_Shape& S,const TopAbs_State
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if(tSPS){
     GdumpSHA(S, (char *) "MarkSplit ");
-    cout<<" ";TopAbs::Print(ToBuild,cout);cout<<" "<<Bval<<endl;
+    std::cout<<" ";TopAbs::Print(ToBuild,std::cout);std::cout<<" "<<Bval<<std::endl;
     debmarksplit(iS);
   }
 #endif
@@ -407,7 +407,7 @@ TopTools_ListOfShape& TopOpeBRepBuild_Builder::ChangeSplit(const TopoDS_Shape& S
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if(tSPS){
     GdumpSHA(S, (char *) "ChangeSplit ");
-    cout<<" ";TopAbs::Print(ToBuild,cout);cout<<endl;
+    std::cout<<" ";TopAbs::Print(ToBuild,std::cout);std::cout<<std::endl;
     debchangesplit(iS);
   }
 #endif
@@ -793,9 +793,9 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
 #ifdef OCCT_DEBUG
   Standard_Integer iEdge; Standard_Boolean tSPS = GtraceSPS(Eoriented,iEdge);
   if(tSPS){
-    cout<<endl;
+    std::cout<<std::endl;
     GdumpSHASTA(Eoriented,ToBuild1,"--- SplitEdge ");
-    cout<<endl;
+    std::cout<<std::endl;
   }
 #endif
   
@@ -814,9 +814,9 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
 #ifdef OCCT_DEBUG
   if(tSPS){GdumpSAMDOM(LE1, (char *) "1 : ");}
   if(tSPS){GdumpSAMDOM(LE2, (char *) "2 : ");}
-  if(tSPS){cout<<endl;}
-  if(tSPS){cout<<"V of edge ";TopAbs::Print(Eforward.Orientation(),cout);}
-  if(tSPS){cout<<endl;}
+  if(tSPS){std::cout<<std::endl;}
+  if(tSPS){std::cout<<"V of edge ";TopAbs::Print(Eforward.Orientation(),std::cout);}
+  if(tSPS){std::cout<<std::endl;}
   if(tSPS){GdumpEDG(Eforward);}
 #endif
   
@@ -844,7 +844,7 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   if ( !PVS.MoreLoop() ) {
 #ifdef OCCT_DEBUG
     if(tSPS) {
-      cout<<"NO VERTEX split "; TopAbs::Print(ToBuild1,cout);cout<<endl;
+      std::cout<<"NO VERTEX split "; TopAbs::Print(ToBuild1,std::cout);std::cout<<std::endl;
     }
 #endif
     return;
@@ -898,7 +898,7 @@ void TopOpeBRepBuild_Builder::SplitEdge2(const TopoDS_Shape& Eoriented,
 
 #ifdef OCCT_DEBUG
   Standard_Integer iEdge; Standard_Boolean tSPS = GtraceSPS(Eoriented,iEdge);
-  if(tSPS){cout<<endl;}
+  if(tSPS){std::cout<<std::endl;}
   if(tSPS){GdumpSHASTA(Eoriented,ToBuild1,"--- SplitEdge2 ");}
 #endif
   
@@ -922,7 +922,7 @@ void TopOpeBRepBuild_Builder::SplitEdge2(const TopoDS_Shape& Eoriented,
   PVS.InitLoop();
   if ( !PVS.MoreLoop() ) {
 #ifdef OCCT_DEBUG
-    if(tSPS) {cout<<"NO VERTEX split ";TopAbs::Print(ToBuild1,cout);cout<<endl;}
+    if(tSPS) {std::cout<<"NO VERTEX split ";TopAbs::Print(ToBuild1,std::cout);std::cout<<std::endl;}
 #endif
     return;
   }
@@ -1003,7 +1003,7 @@ void TopOpeBRepBuild_Builder::SplitFace1(const TopoDS_Shape& Foriented,
 #ifdef OCCT_DEBUG
   Standard_Boolean tSPF=TopOpeBRepBuild_GettraceSPF();
   Standard_Integer iFace=myDataStructure->Shape(Foriented);
-  if(tSPF){cout<<endl;GdumpSHASTA(Foriented,ToBuild1,"=== SplitFace ");}
+  if(tSPF){std::cout<<std::endl;GdumpSHASTA(Foriented,ToBuild1,"=== SplitFace ");}
   if(tSPF){GdumpSAMDOM(LF1, (char *) "1 : ");GdumpSAMDOM(LF2, (char *) "2 : ");}
   if(tSPF) debspf(iFace);
 #endif
@@ -1101,7 +1101,7 @@ void TopOpeBRepBuild_Builder::SplitFace2(const TopoDS_Shape& Foriented,
   Standard_Boolean tSPF = TopOpeBRepBuild_GettraceSPF();
 //  Standard_Integer iFace = myDataStructure->Shape(Foriented);
   if (tSPF) {
-    cout<<endl;
+    std::cout<<std::endl;
     GdumpSHASTA(Foriented,ToBuild1,"=== SplitFace ");
     GdumpSAMDOM(LF1, (char *) "samedomain 1 : ");
     GdumpSAMDOM(LF2, (char *) "samedomain 2 : ");
@@ -1321,7 +1321,7 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
   Standard_Boolean tSPS = TopOpeBRepBuild_GettraceSPS();
 //  Standard_Integer iSolid = myDataStructure->Shape(S1oriented);
   if (tSPS) {
-    cout<<endl;
+    std::cout<<std::endl;
     GdumpSHASTA(S1oriented,ToBuild1,"___ SplitSolid ");
     GdumpSAMDOM(LS1, (char *) "1 : "); 
     GdumpSAMDOM(LS2, (char *) "2 : ");
@@ -1360,8 +1360,8 @@ void TopOpeBRepBuild_Builder::SplitSolid(const TopoDS_Shape& S1oriented,
           TCollection_AsciiString ss("--- SplitSolid ");
           ss = ss + SFS.DEBNumber() + " AddElement SFS+ face ";
 	  GdumpSHA(aFace,(Standard_Address)ss.ToCString());
-	  cout<<" ";TopAbs::Print(ToBuild1,cout)<<" : 1 face ";
-	  TopAbs::Print(ori,cout); cout<<endl;
+	  std::cout<<" ";TopAbs::Print(ToBuild1,std::cout)<<" : 1 face ";
+	  TopAbs::Print(ori,std::cout); std::cout<<std::endl;
 	}
 #endif
 	SFS.AddElement(aFace);
@@ -1570,9 +1570,9 @@ void TopOpeBRepBuild_Builder::FillShape(const TopoDS_Shape& S1,
       RevOri = ! RevOri;
 #ifdef OCCT_DEBUG
 //      Standard_Integer iFace = myDataStructure->Shape(S1);
-//      cout<<endl<<"********** ";
-//      cout<<"retournement d'orientation de ";TopAbs::Print(t,cout);
-//      cout<<" "<<iFace<<endl;
+//      std::cout<<std::endl<<"********** ";
+//      std::cout<<"retournement d'orientation de ";TopAbs::Print(t,std::cout);
+//      std::cout<<" "<<iFace<<std::endl;
 #endif
     }
   }
@@ -1621,7 +1621,7 @@ void TopOpeBRepBuild_Builder::FillFace(const TopoDS_Shape& F1,
 #ifdef OCCT_DEBUG
   Standard_Boolean tSPF = TopOpeBRepBuild_GettraceSPF();
 //  Standard_Integer iFace = myDataStructure->Shape(F1);
-  if(tSPF){cout<<endl;}
+  if(tSPF){std::cout<<std::endl;}
   if(tSPF){GdumpSHASTA(F1,ToBuild1,"=-= FillFace ");}
 #endif
   myListOfFace = LF2;
@@ -1694,10 +1694,10 @@ void TopOpeBRepBuild_Builder::FillVertexSetOnValue
   const TopoDS_Edge& EDEB = PVS.Edge();
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(EDEB,iE);
   if (tSPS) {
-    if (keep) cout<<"+"; else cout<<"-";
-    if (ispoint) cout<<" PDS "; else cout<<" VDS ";
-    cout<<ind<<" : "; GdumpORIPARPNT(ori,par,BRep_Tool::Pnt(TopoDS::Vertex(V)));
-    cout<<endl;
+    if (keep) std::cout<<"+"; else std::cout<<"-";
+    if (ispoint) std::cout<<" PDS "; else std::cout<<" VDS ";
+    std::cout<<ind<<" : "; GdumpORIPARPNT(ori,par,BRep_Tool::Pnt(TopoDS::Vertex(V)));
+    std::cout<<std::endl;
   }
 #endif
 }

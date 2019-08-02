@@ -148,7 +148,7 @@ TransferBRep_Reader::TransferBRep_Reader ()
     Handle(Message_Messenger) sout = theProc->Messenger();
     sout<<"--  Transfer(Read) : ";  
     theModel->Print (ent,sout);  
-    sout<<endl;
+    sout<<Message_EndLine;
   }
   TP.Transfer(ent);
   theProc->SetRoot(ent);
@@ -166,7 +166,7 @@ TransferBRep_Reader::TransferBRep_Reader ()
   Handle(Message_Messenger) sout = theProc->Messenger();
 
   if (theProc->TraceLevel() > 1) 
-    sout<<"--  Transfer(Read-List) : "<<nb<<" Items"<<endl;
+    sout<<"--  Transfer(Read-List) : "<<nb<<" Items"<<Message_EndLine;
   for (i = 1; i <= nb; i ++) {
     Handle(Standard_Transient) ent = list->Value(i);
     if (theModel->Number(ent) == 0) continue;
@@ -175,7 +175,7 @@ TransferBRep_Reader::TransferBRep_Reader ()
     {
       sout<<"--  Transfer(Read-List), Item "<<i<<" : ";  
       theModel->Print (ent,sout);  
-      sout<<endl;
+      sout<<Message_EndLine;
     }
     TP.Transfer(ent);
     theProc->SetRoot(ent);

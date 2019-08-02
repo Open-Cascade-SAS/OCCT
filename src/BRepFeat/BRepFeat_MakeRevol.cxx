@@ -104,7 +104,7 @@ void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevol::Init" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevol::Init" << std::endl;
 #endif
   myAxis   = Axis;
   myPbase  = Pbase;
@@ -148,10 +148,10 @@ void BRepFeat_MakeRevol::Init(const TopoDS_Shape& Sbase,
   }
 #ifdef OCCT_DEBUG
   if (trc) {
-    if (myJustFeat)  cout << " Just Feature" << endl;
-    if (myFuse)  cout << " Fuse" << endl;
-    if (!myFuse)  cout << " Cut" << endl;
-    if (!myModify) cout << " Modify = 0" << endl;
+    if (myJustFeat)  std::cout << " Just Feature" << std::endl;
+    if (myFuse)  std::cout << " Fuse" << std::endl;
+    if (!myFuse)  std::cout << " Cut" << std::endl;
+    if (!myModify) std::cout << " Modify = 0" << std::endl;
   }
 #endif 
 }
@@ -167,7 +167,7 @@ void BRepFeat_MakeRevol::Add(const TopoDS_Edge& E,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevol::Add(Edge,face)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevol::Add(Edge,face)" << std::endl;
 #endif
   TopExp_Explorer exp;
   for (exp.Init(mySbase,TopAbs_FACE);exp.More();exp.Next()) {
@@ -213,7 +213,7 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevol::Perform(Angle)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevol::Perform(Angle)" << std::endl;
 #endif
   mySFrom.Nullify();
   ShapeFromValid();
@@ -329,7 +329,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevol::Perform(Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevol::Perform(Until)" << std::endl;
 #endif
   Standard_Real Angle = 0.;
   Standard_Boolean TourComplet = Standard_False;
@@ -360,7 +360,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
   if(!TourComplet) {
     Angle = 2.*M_PI- 3*M_PI/180.;
 #ifdef OCCT_DEBUG
-    if (trc) cout << " No complete Revolution" << endl;
+    if (trc) std::cout << " No complete Revolution" << std::endl;
 #endif
   }
   theRevol.Perform(myPbase, myAxis, Angle);
@@ -449,7 +449,7 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevol::Perform(From,Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevol::Perform(From,Until)" << std::endl;
 #endif
   if (From.IsNull() || Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -601,7 +601,7 @@ void BRepFeat_MakeRevol::PerformThruAll()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevol::PerformThruAll()" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevol::PerformThruAll()" << std::endl;
 #endif
   Perform(2.*M_PI);
 }
@@ -616,7 +616,7 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevol::PerformUntilAngle(Until,Angle)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevol::PerformUntilAngle(Until,Angle)" << std::endl;
 #endif
   if (Until.IsNull()) {
     Perform(Angle);
@@ -790,7 +790,7 @@ static void VerifGluedFaces(const TopoDS_Face& theSkface,
     if (!GluedFaces) {
 #ifdef OCCT_DEBUG
       Standard_Boolean trc = BRepFeat_GettraceFEAT();
-      if (trc) cout << " Intersection Revol/skface : no gluing" << endl;
+      if (trc) std::cout << " Intersection Revol/skface : no gluing" << std::endl;
 #endif
       theMap.Clear();
     }

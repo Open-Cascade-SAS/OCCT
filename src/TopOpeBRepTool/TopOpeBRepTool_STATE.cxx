@@ -79,10 +79,10 @@ Standard_Boolean TopOpeBRepTool_STATE::Get(const TopAbs_State S)
 
 void TopOpeBRepTool_STATE::Print()
 {
-  cout<<myname<<" : ";
-  cout<<"IN/OUT/ON/UNKNOWN = ";
-  cout<<Get(TopAbs_IN)<<Get(TopAbs_OUT)<<Get(TopAbs_ON)<<Get(TopAbs_UNKNOWN);
-  cout<<endl;
+  std::cout<<myname<<" : ";
+  std::cout<<"IN/OUT/ON/UNKNOWN = ";
+  std::cout<<Get(TopAbs_IN)<<Get(TopAbs_OUT)<<Get(TopAbs_ON)<<Get(TopAbs_UNKNOWN);
+  std::cout<<std::endl;
 }
 
 #endif

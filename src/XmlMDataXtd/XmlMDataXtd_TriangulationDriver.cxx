@@ -185,7 +185,7 @@ void XmlMDataXtd_TriangulationDriver::Paste(const Handle(TDF_Attribute)& theSour
              << n3 << " ";
     }
 
-    stream << ends;
+    stream << std::ends;
 
     Standard_Character* dump = (Standard_Character*)stream.str(); // copying! Don't forget to delete it.
     XmlObjMgt::SetStringValue(theTarget, dump, Standard_True);

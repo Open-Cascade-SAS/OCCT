@@ -237,7 +237,7 @@ static Standard_Integer ifbatch(Draw_Interpretor& DI, Standard_Integer , const c
 //=======================================================================
 
 extern Standard_Boolean Draw_Spying;
-extern filebuf Draw_Spyfile;
+extern std::filebuf Draw_Spyfile;
 
 static Standard_Integer spy(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
@@ -245,7 +245,7 @@ static Standard_Integer spy(Draw_Interpretor& di, Standard_Integer n, const char
     Draw_Spyfile.close();
   Draw_Spying = Standard_False;
   if (n > 1) {
-    if (!Draw_Spyfile.open(a[1],ios::out)) {
+    if (!Draw_Spyfile.open(a[1],std::ios::out)) {
       di << "Cannot open "<<a[1]<<" for writing\n";
       return 1;
     }
@@ -258,16 +258,16 @@ static Standard_Integer dlog(Draw_Interpretor& di, Standard_Integer n, const cha
 {
   if (n != 2 && n != 3)
   {
-    cout << "Enable or disable logging: " << a[0] << " {on|off}" << endl;
-    cout << "Reset log: " << a[0] << " reset" << endl;
-    cout << "Get log content: " << a[0] << " get" << endl;
+    std::cout << "Enable or disable logging: " << a[0] << " {on|off}" << std::endl;
+    std::cout << "Reset log: " << a[0] << " reset" << std::endl;
+    std::cout << "Get log content: " << a[0] << " get" << std::endl;
     return 1;
   }
 
   if (! strcmp (a[1], "on") && n == 2)
   {
     di.SetDoLog (Standard_True);
-//    di.Log() << "dlog on" << endl; // for symmetry
+//    di.Log() << "dlog on" << std::endl; // for symmetry
   }
   else if (! strcmp (a[1], "off") && n == 2)
   {
@@ -291,7 +291,7 @@ static Standard_Integer dlog(Draw_Interpretor& di, Standard_Integer n, const cha
     di << (di.GetDoLog() ? "on" : "off");
   }
   else {
-    cout << "Unrecognized option(s): " << a[1] << endl;
+    std::cout << "Unrecognized option(s): " << a[1] << std::endl;
     return 1;
   }
   return 0;
@@ -301,7 +301,7 @@ static Standard_Integer decho(Draw_Interpretor& di, Standard_Integer n, const ch
 {
   if (n != 2)
   {
-    cout << "Enable or disable echoing: " << a[0] << " {on|off}" << endl;
+    std::cout << "Enable or disable echoing: " << a[0] << " {on|off}" << std::endl;
     return 1;
   }
 
@@ -314,7 +314,7 @@ static Standard_Integer decho(Draw_Interpretor& di, Standard_Integer n, const ch
     di.SetDoEcho (Standard_False);
   }
   else {
-    cout << "Unrecognized option: " << a[1] << endl;
+    std::cout << "Unrecognized option: " << a[1] << std::endl;
     return 1;
   }
   return 0;
@@ -518,7 +518,7 @@ static unsigned int __stdcall CpuFunc (void * /*param*/)
 #else
 static void cpulimitSignalHandler (int)
 {
-  cout << "Process killed by CPU limit  (" << CPU_LIMIT << " sec)" << endl;
+  std::cout << "Process killed by CPU limit  (" << CPU_LIMIT << " sec)" << std::endl;
   exit(2);
 }
 static void *CpuFunc(void* /*threadarg*/)
@@ -529,7 +529,7 @@ static void *CpuFunc(void* /*threadarg*/)
     sleep (5);
     anElapCurrent = clock_t(aTimer.ElapsedTime());
     if (CPU_LIMIT >0 && (anElapCurrent) >= CPU_LIMIT) {
-      cout << "Process killed by elapsed limit  (" << CPU_LIMIT << " sec)" << endl;
+      std::cout << "Process killed by elapsed limit  (" << CPU_LIMIT << " sec)" << std::endl;
       exit(2);
     }
   }
@@ -745,7 +745,7 @@ static int dlocale (Draw_Interpretor& di, Standard_Integer n, const char** argv)
     else if ( ! strcmp (cat, "LC_TIME") ) category = LC_TIME;
     else 
     {
-      cout << "Error: cannot recognize argument " << cat << " as one of LC_ macros" << endl;
+      std::cout << "Error: cannot recognize argument " << cat << " as one of LC_ macros" << std::endl;
       return 1;
     }
   }
@@ -754,7 +754,7 @@ static int dlocale (Draw_Interpretor& di, Standard_Integer n, const char** argv)
   if (result)
     di << result;
   else 
-    cout << "Error: unsupported locale specification: " << locale << endl;
+    std::cout << "Error: unsupported locale specification: " << locale << std::endl;
   return 0;
 }
 
@@ -1030,7 +1030,7 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
   if (Done) return;
   Done = Standard_True;
 
-  ios::sync_with_stdio();
+  std::ios::sync_with_stdio();
 
   const char* g = "DRAW General Commands";
 

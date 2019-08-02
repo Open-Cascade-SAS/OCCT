@@ -1256,16 +1256,16 @@ TCollection_AsciiString TCollection_AsciiString::Token
   Standard_Integer BeginIndex=0 ;
   Standard_Integer EndIndex=0 ;
 
-//  cout << "'" << mystring <<  "'" << endl ;
+//  std::cout << "'" << mystring <<  "'" << std::endl ;
   for ( theOne = 0 ; theOne < whichone ; theOne++ ) {
      BeginIndex = 0 ;
      EndIndex = 0 ;
-//     cout << "theOne " << theOne << endl ;
+//     std::cout << "theOne " << theOne << std::endl ;
      if ( StringIndex == mylength )
        break ;
      for (; StringIndex < mylength && EndIndex == 0 ; StringIndex++ ) {
         SeparatorIndex = 0 ;
-//        cout << "StringIndex " << StringIndex << endl ;
+//        std::cout << "StringIndex " << StringIndex << std::endl ;
         while ( separators [ SeparatorIndex ] ) {
              if ( mystring [ StringIndex ] == separators [ SeparatorIndex ] ) {
                break ;
@@ -1275,22 +1275,22 @@ TCollection_AsciiString TCollection_AsciiString::Token
         if ( separators [ SeparatorIndex ] != '\0' ) { // We have a Separator
           if ( BeginIndex && EndIndex == 0 ) {
             EndIndex = StringIndex ;
-//            cout << "EndIndex " << EndIndex << " '" << SubString( BeginIndex , EndIndex ).ToCString() << "'" << endl ;
+//            std::cout << "EndIndex " << EndIndex << " '" << SubString( BeginIndex , EndIndex ).ToCString() << "'" << std::endl ;
             break ;
           }
         }
         else if ( BeginIndex == 0 ) {               // We have not a Separator
           BeginIndex = StringIndex + 1 ;
-//          cout << "BeginIndex " << BeginIndex << endl ;
+//          std::cout << "BeginIndex " << BeginIndex << std::endl ;
         }
      }
-//     cout << "BeginIndex " << BeginIndex << " EndIndex " << EndIndex << endl ;
+//     std::cout << "BeginIndex " << BeginIndex << " EndIndex " << EndIndex << std::endl ;
   }
   if ( BeginIndex == 0 )
     return TCollection_AsciiString("",0) ;
   if ( EndIndex == 0 )
     EndIndex = mylength ;
-//    cout << "'" << SubString( BeginIndex , EndIndex ).ToCString() << "'" << endl ;
+//    std::cout << "'" << SubString( BeginIndex , EndIndex ).ToCString() << "'" << std::endl ;
   return TCollection_AsciiString( &mystring [ BeginIndex - 1 ] ,
                                   EndIndex - BeginIndex + 1 ) ;
 }

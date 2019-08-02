@@ -1029,7 +1029,7 @@ static Standard_Integer splitface
   if ( uval.Length() >0 ) {
     di << "Splitting by U: ";
     for ( Standard_Integer j=1; j <= uval.Length(); j++ ) {
-      //cout << ( i >j ? ", " : "" ) << uval(j);
+      //std::cout << ( i >j ? ", " : "" ) << uval(j);
       if (i >j) {
 	di << ", ";
       } else {
@@ -1042,7 +1042,7 @@ static Standard_Integer splitface
   if ( vval.Length() >0 ) {
     di << "Splitting by V: ";
     for ( Standard_Integer j=1; j <= vval.Length(); j++ ) {
-      //cout << ( j >1 ? ", " : "" ) << vval(j);
+      //std::cout << ( j >1 ? ", " : "" ) << vval(j);
       if (j >1) {
 	di << ", ";
       } else {
@@ -1401,14 +1401,14 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
 {
   if ( theArgc < 4 )
   {
-    cout << "Error: wrong number of arguments. Type 'help " << theArgv[0] << "'\n";
+    std::cout << "Error: wrong number of arguments. Type 'help " << theArgv[0] << "'\n";
     return 1;
   }
 
   TopoDS_Shape aSource = DBRep::Get(theArgv[2]);
   if ( aSource.IsNull() )
   {
-    cout << "Error: source shape ('" << theArgv[2] << "') is null\n";
+    std::cout << "Error: source shape ('" << theArgv[2] << "') is null\n";
     return 1;
   }
 
@@ -1425,21 +1425,21 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
     {
       if ( theArgc - i < 3 )
       {
-        cout << "Error: not enough arguments for replacement\n";
+        std::cout << "Error: not enough arguments for replacement\n";
         return 1;
       }
 
       TopoDS_Shape aWhat = DBRep::Get(theArgv[++i]);
       if ( aWhat.IsNull() )
       {
-        cout << "Error: argument shape ('" << theArgv[i] << "') is null\n";
+        std::cout << "Error: argument shape ('" << theArgv[i] << "') is null\n";
         return 1;
       }
 
       TopoDS_Shape aWith = DBRep::Get(theArgv[++i]);
       if ( aWith.IsNull() )
       {
-        cout << "Error: replacement shape ('" << theArgv[i] << "') is null\n";
+        std::cout << "Error: replacement shape ('" << theArgv[i] << "') is null\n";
         return 1;
       }
 
@@ -1449,14 +1449,14 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
     {
       if ( theArgc - i < 2 )
       {
-        cout << "Error: not enough arguments for removal\n";
+        std::cout << "Error: not enough arguments for removal\n";
         return 1;
       }
 
       TopoDS_Shape aWhat = DBRep::Get(theArgv[++i]);
       if ( aWhat.IsNull() )
       {
-        cout << "Error: shape to remove ('" << theArgv[i] << "') is null\n";
+        std::cout << "Error: shape to remove ('" << theArgv[i] << "') is null\n";
         return 1;
       }
 
@@ -1464,7 +1464,7 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
     }
     else
     {
-      cout << "Error: invalid syntax at " << anOpt << "\n" ;
+      std::cout << "Error: invalid syntax at " << anOpt << "\n" ;
       return 1;
     }
   }
@@ -1473,7 +1473,7 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
   TopoDS_Shape aResult = aReShaper->Apply(aSource);
   if ( aResult.IsNull() )
   {
-    cout << "Error: result shape is null\n";
+    std::cout << "Error: result shape is null\n";
     return 1;
   }
 

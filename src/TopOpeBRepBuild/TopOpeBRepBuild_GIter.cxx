@@ -85,5 +85,5 @@ void TopOpeBRepBuild_GIter::Dump(Standard_OStream& OS) const
   if ( !More()) return;
   TopAbs_State s1,s2; Current(s1,s2);
   Standard_Boolean b = MYGTOPO.Value(s1,s2);
-  TopOpeBRepBuild_GTopo::DumpSSB(OS,s1,s2,b); OS<<endl;
+  TopOpeBRepBuild_GTopo::DumpSSB(OS,s1,s2,b); OS<<std::endl;
 }

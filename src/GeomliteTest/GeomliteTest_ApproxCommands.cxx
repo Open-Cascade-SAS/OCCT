@@ -209,7 +209,7 @@ static Standard_Integer PointsByPick
 //=======================================================================
 static void PointsByFile(Handle(AppDef_HArray1OfMultiPointConstraint)& MPC,
 			 Handle(AppParCurves_HArray1OfConstraintCouple)& TABofCC,
-			 ifstream& iFile,
+			 std::ifstream& iFile,
 			 Draw_Interpretor& di)
 {
   Standard_Integer nbp, i, nbc;
@@ -379,7 +379,7 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
       // lecture du fichier.
     // nbpoints, 2d ou 3d, puis valeurs.
       const char* nomfic = a[ific];
-      ifstream iFile(nomfic, ios::in);
+      std::ifstream iFile(nomfic, std::ios::in);
       if (!iFile) { 
 	di << a[ific] <<"do not exist !\n";
 	return 1;
@@ -423,7 +423,7 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
     Variation.Approximate();
 
 #  ifdef GEOMLITETEST_DEB
-    //Variation.Dump(cout);
+    //Variation.Dump(std::cout);
     Standard_SStream aSStream;
     Variation.Dump(aSStream);
     di << aSStream;
@@ -468,7 +468,7 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
     if (Tolerance>0) { Variation.SetWithMinMax(Standard_True);}
     Variation.Approximate();
 #     ifdef GEOMLITETEST_DEB
-    //Variation.Dump(cout);
+    //Variation.Dump(std::cout);
     Standard_SStream aSStream;
     Variation.Dump(aSStream);
     di << aSStream;
@@ -549,7 +549,7 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
       // lecture du fichier.
       // nbpoints, 2d ou 3d, puis valeurs.
       const char* nomfic = a[5];
-      ifstream iFile(nomfic, ios::in);
+      std::ifstream iFile(nomfic, std::ios::in);
       if (!iFile) { 
 	di << a[6] <<"do not exist !\n";
 	return 1;

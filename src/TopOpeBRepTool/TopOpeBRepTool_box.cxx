@@ -25,7 +25,7 @@ Standard_EXPORT void FBOX_Prepare()
   hbt->Clear();
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceBOX()) {
-    cout<<endl<<"TOOLBOX : Prepare"<<endl;
+    std::cout<<std::endl<<"TOOLBOX : Prepare"<<std::endl;
   }
 #endif
 }
@@ -47,7 +47,7 @@ Standard_EXPORT const Bnd_Box& FBOX_Box(const TopoDS_Shape& S)
   if (TopOpeBRepTool_GettraceBOX()) {
     Standard_Integer i = hbt->Index(S);
     Standard_Integer n = hbt->Extent();
-    cout<<"TOOLBOX : "<<i<<"/"<<n<<endl;
+    std::cout<<"TOOLBOX : "<<i<<"/"<<n<<std::endl;
   }
 #endif
   return b;

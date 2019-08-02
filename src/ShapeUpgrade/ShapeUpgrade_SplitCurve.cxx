@@ -45,7 +45,7 @@ ShapeUpgrade_SplitCurve::ShapeUpgrade_SplitCurve() : myStatus(0)
 				    const Standard_Real Last) 
 {
   myStatus = ShapeExtend::EncodeStatus (ShapeExtend_OK);
-//  if (ShapeUpgrade::Debug()) cout << "SplitCurve::Init"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout << "SplitCurve::Init"<<std::endl;
 
   myNbCurves = 1;
  // mySplitValues.Clear();

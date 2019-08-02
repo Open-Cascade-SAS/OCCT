@@ -61,41 +61,41 @@ IFSelect_ReturnStatus  StepSelect_Activator::Do
 
     case  1 : {   //        ****    StepSchema
       if (argc < 2) {
-        cout<<"Identify an entity"<<endl;
+        std::cout<<"Identify an entity"<<std::endl;
         return IFSelect_RetError;
       }
       Standard_Integer num = pilot->Number(arg1);
       if (num <= 0) {
-        cout<<"Not an entity : "<<arg2<<endl;
+        std::cout<<"Not an entity : "<<arg2<<std::endl;
         return IFSelect_RetError;
       }
       Handle(Standard_Transient) ent = pilot->Session()->StartingEntity(num);
       DeclareAndCast(StepData_UndefinedEntity,und,ent);
       if (!und.IsNull()) {
-	cout<<"Entity "<<arg2<<" : No Binding known"<<endl;
+	std::cout<<"Entity "<<arg2<<" : No Binding known"<<std::endl;
 	return IFSelect_RetVoid;
       }
       DeclareAndCast(StepData_Simple,sim,ent);
       if (!sim.IsNull()) {
-	cout<<"Entity "<<arg2<<" : Late Binding"<<endl;
-	cout<<"Simple Type : "<<sim->StepType()<<endl;
+	std::cout<<"Entity "<<arg2<<" : Late Binding"<<std::endl;
+	std::cout<<"Simple Type : "<<sim->StepType()<<std::endl;
 	return IFSelect_RetVoid;
       }
       DeclareAndCast(StepData_Plex,plx,ent);
       if (!plx.IsNull()) {
-	cout<<"Entity "<<arg2<<" : Late Binding"<<endl;
-	cout<<"Complex Type"<<endl;
+	std::cout<<"Entity "<<arg2<<" : Late Binding"<<std::endl;
+	std::cout<<"Complex Type"<<std::endl;
       }
 //       reste Early Binding
-      cout<<"Entity "<<arg2<<" : Early Binding"<<endl;
-      cout<<"CDL Type : "<<ent->DynamicType()->Name()<<endl;
+      std::cout<<"Entity "<<arg2<<" : Early Binding"<<std::endl;
+      std::cout<<"CDL Type : "<<ent->DynamicType()->Name()<<std::endl;
       return IFSelect_RetVoid;
     }
 
     case 40 : {   //        ****    FloatFormat
       char prem = ' ';
       if (argc < 2) prem = '?';
-      else if (argc == 5) { cout<<"floatformat tout court donne les formes admises"<<endl; return IFSelect_RetError; }
+      else if (argc == 5) { std::cout<<"floatformat tout court donne les formes admises"<<std::endl; return IFSelect_RetError; }
       else prem = arg1[0];
       Standard_Boolean zerosup=Standard_False;
       Standard_Integer digits = 0;
@@ -103,21 +103,21 @@ IFSelect_ReturnStatus  StepSelect_Activator::Do
       else if (prem == 'Z' || prem == 'z') zerosup = Standard_True;
       else if (prem >= 48  && prem <= 57)  digits  = atoi(arg1);
       else {
-	cout<<"floatformat digits, digits=nb de chiffres signifiants, ou\n"
+	std::cout<<"floatformat digits, digits=nb de chiffres signifiants, ou\n"
 	  <<  "floatformat NZ %mainformat [%rangeformat [Rmin Rmax]]\n"
 	  <<"  NZ : N ou n pour Non-zero-suppress, Z ou z pour zero-suppress\n"
 	  <<" %mainformat  : format principal type printf, ex,: %E\n"
 	  <<" + optionnel  : format secondaire (flottants autour de 1.) :\n"
 	  <<" %rangeformat Rmin Rmax : format type printf entre Rmin et Rmax\n"
 	  <<" %rangeformat tout seul : format type printf entre 0.1 et 1000.\n"
-	    <<flush;
+	    <<std::flush;
 	return (prem == '?' ? IFSelect_RetVoid : IFSelect_RetError);
       }
       Standard_Real Rmin=0., Rmax=0.;
       if (argc > 4) {
 	Rmin = Atof(pilot->Word(4).ToCString());
 	Rmax = Atof(pilot->Word(5).ToCString());
-	if (Rmin <= 0 || Rmax <= 0) { cout<<"intervalle : donner reels > 0"<<endl; return IFSelect_RetError; }
+	if (Rmin <= 0 || Rmax <= 0) { std::cout<<"intervalle : donner reels > 0"<<std::endl; return IFSelect_RetError; }
       }
       Handle(StepSelect_FloatFormat) fm = new StepSelect_FloatFormat;
       if (argc == 2) fm->SetDefault(digits);

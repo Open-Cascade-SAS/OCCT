@@ -46,23 +46,23 @@ Standard_EXPORT void FUN_tool_tori(const TopAbs_Orientation Or)
 {
   switch (Or) {
   case TopAbs_FORWARD:
-    cout<<"FOR";break;
+    std::cout<<"FOR";break;
   case TopAbs_REVERSED:
-    cout<<"REV";break;
+    std::cout<<"REV";break;
   case TopAbs_INTERNAL:
-    cout<<"INT";break;
+    std::cout<<"INT";break;
   case TopAbs_EXTERNAL:
-    cout<<"EXT";break;
+    std::cout<<"EXT";break;
   }    
 }
 #endif
 
 Standard_EXPORT void FUN_tool_trace(const Standard_Integer Index)
 {
-  if (Index == 1) cout <<"FORWARD ";
-  if (Index == 2) cout <<"REVERSED ";
+  if (Index == 1) std::cout <<"FORWARD ";
+  if (Index == 2) std::cout <<"REVERSED ";
 }
 Standard_EXPORT void FUN_tool_trace(const gp_Pnt2d p2d)
 {
-  cout<<" = ("<<p2d.X()<<" "<<p2d.Y()<<")"<<endl;
+  std::cout<<" = ("<<p2d.X()<<" "<<p2d.Y()<<")"<<std::endl;
 }

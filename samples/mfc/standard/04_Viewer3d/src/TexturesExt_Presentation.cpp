@@ -164,7 +164,7 @@ Standard_Boolean TexturesExt_Presentation::loadShape(TopoDS_Shape& aShape,
 
   std::filebuf aFileBuf;
   std::istream aStream (&aFileBuf);
-  if (!aFileBuf.open (initfile, ios::in))
+  if (!aFileBuf.open (initfile, std::ios::in))
   {
     initfile += L" was not found. The sample can not be shown.";
     getDocument()->UpdateResultMessageDlg ("Textured Shape", initfile);

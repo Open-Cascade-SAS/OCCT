@@ -108,22 +108,22 @@ Standard_Boolean TopoDSToStep_Tool::Faceted() const
 void TopoDSToStep_Tool::SetCurrentShell(const TopoDS_Shell& S)
 {
 #ifdef OCCT_DEBUG
-  cout << "Process a Shell which is ";
+  std::cout << "Process a Shell which is ";
   switch(S.Orientation())
     {
     case TopAbs_FORWARD:
       {
-	cout << "FORWARD in the Solid;" << endl;
+	std::cout << "FORWARD in the Solid;" << std::endl;
 	break;
       }
     case TopAbs_REVERSED:
       {
-	cout << "REVERSED in the Solid;" << endl;
+	std::cout << "REVERSED in the Solid;" << std::endl;
 	break;
       }
     default:
       {
-	cout << "INTERNAL OR EXTERNAL SHELL" << endl;
+	std::cout << "INTERNAL OR EXTERNAL SHELL" << std::endl;
       }
     }
 #endif
@@ -148,22 +148,22 @@ const TopoDS_Shell& TopoDSToStep_Tool::CurrentShell() const
 void TopoDSToStep_Tool::SetCurrentFace(const TopoDS_Face& F)
 {
 #ifdef OCCT_DEBUG
-  cout << "  Process a Face which is ";
+  std::cout << "  Process a Face which is ";
   switch(F.Orientation())
     {
     case TopAbs_FORWARD:
       {
-	cout << "FORWARD in the Shell;" << endl;
+	std::cout << "FORWARD in the Shell;" << std::endl;
 	break;
       }
     case TopAbs_REVERSED:
       {
-	cout << "REVERSED in the Shell;" << endl;
+	std::cout << "REVERSED in the Shell;" << std::endl;
 	break;
       }
     default:
       {
-	cout << "INTERNAL OR EXTERNAL FACE" << endl;
+	std::cout << "INTERNAL OR EXTERNAL FACE" << std::endl;
       }
     }
 #endif  
@@ -191,22 +191,22 @@ const TopoDS_Face& TopoDSToStep_Tool::CurrentFace() const
 void TopoDSToStep_Tool::SetCurrentWire(const TopoDS_Wire& W)
 {
 #ifdef OCCT_DEBUG
-  cout << "    Process a Wire which is ";
+  std::cout << "    Process a Wire which is ";
   switch(W.Orientation())
     {
     case TopAbs_FORWARD:
       {
-	cout << "FORWARD in the Face" << endl;
+	std::cout << "FORWARD in the Face" << std::endl;
 	break;
       }
     case TopAbs_REVERSED:
       {
-	cout << "REVERSED in the Face;" << endl;
+	std::cout << "REVERSED in the Face;" << std::endl;
 	break;
       }
     default:
       {
-	cout << "INTERNAL OR EXTERNAL Wire" << endl;
+	std::cout << "INTERNAL OR EXTERNAL Wire" << std::endl;
       }
     }
 #endif  
@@ -231,22 +231,22 @@ const TopoDS_Wire& TopoDSToStep_Tool::CurrentWire() const
 void TopoDSToStep_Tool::SetCurrentEdge(const TopoDS_Edge& E)
 {
 #ifdef OCCT_DEBUG
-  cout << "      Process Edge which is ";
+  std::cout << "      Process Edge which is ";
   switch(E.Orientation())
     {
     case TopAbs_FORWARD:
       {
-	cout << "FORWARD in the Wire" << endl;
+	std::cout << "FORWARD in the Wire" << std::endl;
 	break;
       }
     case TopAbs_REVERSED:
       {
-	cout << "REVERSED in the Wire" << endl;
+	std::cout << "REVERSED in the Wire" << std::endl;
 	break;
       }
     default:
       {
-	cout << "INTERNAL OR EXTERNAL EDGE" << endl;
+	std::cout << "INTERNAL OR EXTERNAL EDGE" << std::endl;
       }
     }
 #endif  

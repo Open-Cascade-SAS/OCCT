@@ -33,7 +33,7 @@ Standard_Boolean XCAFPrs_Driver::Update (const TDF_Label& L,
 					 Handle(AIS_InteractiveObject)& ais)
 
 {
-//  cout << "XCAFPrs_Driver::Update" << endl;
+//  std::cout << "XCAFPrs_Driver::Update" << std::endl;
 // WARNING! The label L can be out of any document 
 // (this is a case for reading from the file)
 //  Handle(TDocStd_Document) DOC = TDocStd_Document::Get(L);

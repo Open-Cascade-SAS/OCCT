@@ -19,15 +19,15 @@ void IntCurveSurface_PolygonTool::Dump(const ThePolygon& L) {
   static Standard_Integer num=0;
   num++;
   Standard_Integer nbs = IntCurveSurface_PolygonTool::NbSegments(L);
-  cout<<"\npol2d "<<num<<" "<<nbs<<endl;
-  cout<<"Deflection "<<IntCurveSurface_PolygonTool::DeflectionOverEstimation(L)<<endl;
+  std::cout<<"\npol2d "<<num<<" "<<nbs<<std::endl;
+  std::cout<<"Deflection "<<IntCurveSurface_PolygonTool::DeflectionOverEstimation(L)<<std::endl;
   
   for(Standard_Integer i=1;i<=nbs;i++) {
     gp_Pnt P(IntCurveSurface_PolygonTool::BeginOfSeg(L,i));
-    cout<<"pnt "<<num<<" "<<i<<" "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<endl;
+    std::cout<<"pnt "<<num<<" "<<i<<" "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<std::endl;
   }
   gp_Pnt PF(IntCurveSurface_PolygonTool::EndOfSeg(L,nbs));
-  cout<<"pnt "<<num<<" "<<nbs<<" "<< PF.X()<<" "<<PF.Y()<<" "<<PF.Z()<<endl;
+  std::cout<<"pnt "<<num<<" "<<nbs<<" "<< PF.X()<<" "<<PF.Y()<<" "<<PF.Z()<<std::endl;
 }
 
 

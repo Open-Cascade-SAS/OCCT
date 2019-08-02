@@ -589,7 +589,7 @@ Standard_Boolean LocOpe_SplitShape::Add(const TopoDS_Wire& W,
     }
   } catch (Standard_Failure const&) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: SpliShape internal problem detected, some faces may be lost. Check input edges/wires" <<endl;
+    std::cout << "Warning: SpliShape internal problem detected, some faces may be lost. Check input edges/wires" <<std::endl;
 #endif
     return Standard_False;
   }
@@ -961,7 +961,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
       }
       //MODIFICATION PIERRE SMEYERS : si pas de possibilite, on sort avec erreur
       else{
-        cout<<"erreur Spliter : pas de chainage du wire"<<endl;
+        std::cout<<"erreur Spliter : pas de chainage du wire"<<std::endl;
         return Standard_False;
       }
       //fin MODIF.
@@ -1045,7 +1045,7 @@ Standard_Boolean LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
         else {
           // Ce wire est ni dans newF2 ni dans newF1
           // Peut etre faut il construire une troisieme face
-          cout << "WARNING: LocOpe_SPlitShape : Ce wire est ni dans newF2 ni dans newF1" << endl;
+          std::cout << "WARNING: LocOpe_SPlitShape : Ce wire est ni dans newF2 ni dans newF1" << std::endl;
         }
       }
     }
@@ -1227,7 +1227,7 @@ const TopTools_ListOfShape& LocOpe_SplitShape::DescendantShapes
   }
 #ifdef OCCT_DEBUG
   if (!myDblE.IsEmpty()) {
-    cout << "Le shape comporte des faces invalides" << endl;
+    std::cout << "Le shape comporte des faces invalides" << std::endl;
   }
 #endif
   return myMap(S);
@@ -1373,7 +1373,7 @@ static Standard_Boolean IsInside(const TopoDS_Face& F,
   Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg,F,f,l);
   if(C2d.IsNull()) {
 #ifdef OCCT_DEBUG
-	  cout << "Edge is not on surface" <<endl;
+	  std::cout << "Edge is not on surface" <<std::endl;
 #endif
       return Standard_False;
   }

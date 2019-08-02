@@ -89,7 +89,7 @@ Standard_Integer DNaming_PointDriver::Execute(Handle(TFunction_Logbook)& theLog)
     Handle(TNaming_NamedShape) aRefPntNS = DNaming::GetObjectValue(aRefPnt);
     if (aRefPntNS.IsNull() || aRefPntNS->IsEmpty()) {
 #ifdef OCCT_DEBUG
-      cout<<"PointDriver:: Ref Point is empty"<<endl;
+      std::cout<<"PointDriver:: Ref Point is empty"<<std::endl;
 #endif
       aFunction->SetFailure(WRONG_ARGUMENT);
       return -1;

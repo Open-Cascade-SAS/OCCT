@@ -406,7 +406,7 @@ static Standard_Boolean IsInside(const TopoDS_Shape& S1,
     }
   }
 #ifdef OCCT_DEBUG
-  cout << "Classification impossible sur vertex " << endl;
+  std::cout << "Classification impossible sur vertex " << std::endl;
 #endif
   
   return Standard_True;

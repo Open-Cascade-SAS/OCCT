@@ -99,7 +99,7 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::Init" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::Init" << std::endl;
 #endif
   mySkface = Skface;
   SketchFaceValid();
@@ -144,11 +144,11 @@ void BRepFeat_MakeDPrism::Init(const TopoDS_Shape&    Sbase,
   myAngle = Angle;
 #ifdef OCCT_DEBUG
   if (trc) {
-    if (myJustFeat)  cout << " Just Feature" << endl;
-    if (myFuse)  cout << " Fuse" << endl;
-    if (!myFuse)  cout << " Cut" << endl;
-    if (!myModify) cout << " Modify = 0" << endl;
-    //    cout <<" Angle = " << myAngle << endl;
+    if (myJustFeat)  std::cout << " Just Feature" << std::endl;
+    if (myFuse)  std::cout << " Fuse" << std::endl;
+    if (!myFuse)  std::cout << " Cut" << std::endl;
+    if (!myModify) std::cout << " Modify = 0" << std::endl;
+    //    std::cout <<" Angle = " << myAngle << std::endl;
   }
 #endif 
 }
@@ -164,7 +164,7 @@ void BRepFeat_MakeDPrism::Add(const TopoDS_Edge& E,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::Add(Edge,face)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::Add(Edge,face)" << std::endl;
 #endif
   TopExp_Explorer exp;
   for (exp.Init(mySbase,TopAbs_FACE);exp.More();exp.Next()) {
@@ -210,7 +210,7 @@ void BRepFeat_MakeDPrism::Perform(const Standard_Real Height)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::Perform(Height)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::Perform(Height)" << std::endl;
 #endif
   mySFrom.Nullify();
   ShapeFromValid();
@@ -281,7 +281,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::Perform(Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::Perform(Until)" << std::endl;
 #endif
   if (Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -403,7 +403,7 @@ void BRepFeat_MakeDPrism::Perform(const TopoDS_Shape& From,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::Perform(From,Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::Perform(From,Until)" << std::endl;
 #endif
   if (From.IsNull() || Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -574,7 +574,7 @@ void BRepFeat_MakeDPrism::PerformUntilEnd()
 {  
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::PerformUntilEnd()" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::PerformUntilEnd()" << std::endl;
 #endif 
   myPerfSelection = BRepFeat_SelectionSh;
   PerfSelectionValid();
@@ -608,7 +608,7 @@ void BRepFeat_MakeDPrism::PerformFromEnd(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::PerformFromEnd(From,Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::PerformFromEnd(From,Until)" << std::endl;
 #endif
   if (Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -754,7 +754,7 @@ void BRepFeat_MakeDPrism::PerformThruAll()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::PerformThruAll()" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::PerformThruAll()" << std::endl;
 #endif
   mySUntil.Nullify();
   ShapeUntilValid();
@@ -806,7 +806,7 @@ void BRepFeat_MakeDPrism::PerformUntilHeight(const TopoDS_Shape& Until,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::PerformUntilHeight(Until,Height)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::PerformUntilHeight(Until,Height)" << std::endl;
 #endif
   if (Until.IsNull()) {
     Perform(Height);
@@ -924,7 +924,7 @@ void BRepFeat_MakeDPrism::BossEdges (const Standard_Integer signature)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeDPrism::BossEdges (integer)" << endl;
+  if (trc) std::cout << "BRepFeat_MakeDPrism::BossEdges (integer)" << std::endl;
 #endif
   TopTools_ListOfShape theLastShape;
   theLastShape.Clear();
@@ -1073,7 +1073,7 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,  // shape initial
   //  Standard_Real par = Max(  Max( abs(c[1] - c[0]), abs(c[3] - c[2]) ), abs(c[5] - c[4]) );
   //#endif
 #ifdef OCCT_DEBUG
-  cout << "Height = > " <<  par  << endl;
+  std::cout << "Height = > " <<  par  << std::endl;
 #endif
   return par;
 }

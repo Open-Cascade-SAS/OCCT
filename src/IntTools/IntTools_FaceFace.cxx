@@ -534,7 +534,7 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
         Sprintf(aBuff, "%s -p %+10.20f %+10.20f %+10.20f %+10.20f", aBuff, u1, v1, u2, v2);
       }
 
-      cout << aBuff << endl;
+      std::cout << aBuff << std::endl;
     }
 #endif
 

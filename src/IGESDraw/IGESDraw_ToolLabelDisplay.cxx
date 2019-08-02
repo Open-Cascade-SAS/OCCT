@@ -208,35 +208,35 @@ void IGESDraw_ToolLabelDisplay::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_LabelDisplay" << endl;
+  S << "IGESDraw_LabelDisplay" << Message_EndLine;
 
-  S << "View Entities       : " << endl
-    << "Text Locations      : " << endl
-    << "Leader Entities     : " << endl
-    << "Label Level Numbers : " << endl
+  S << "View Entities       : " << Message_EndLine
+    << "Text Locations      : " << Message_EndLine
+    << "Leader Entities     : " << Message_EndLine
+    << "Label Level Numbers : " << Message_EndLine
     << "Displayed Entities  : ";
-  S << "Count = "      << ent->NbLabels() << endl;
+  S << "Count = "      << ent->NbLabels() << Message_EndLine;
   if (level > 4)  // Level = 4 : no Dump. Level = 5 & 6 : same Dump
     {
       Standard_Integer I;
       Standard_Integer up  = ent->NbLabels();
       for (I = 1; I <= up; I ++)
 	{
-	  S << "[" << I << "]:" << endl;
+	  S << "[" << I << "]:" << Message_EndLine;
 	  S << "View Entity : ";
 	  dumper.Dump (ent->ViewItem(I),S, sublevel);
-	  S << endl;
+	  S << Message_EndLine;
 	  S << "Text Location in View : ";
 	  IGESData_DumpXYZL(S,level, ent->TextLocation(I), ent->Location());
 	  S << "  Leader Entity in View : ";
 	  dumper.Dump (ent->LeaderEntity(I),S, sublevel);
-	  S << endl;
+	  S << Message_EndLine;
 	  S << "Entity Label Level Number : ";
 	  S << ent->LabelLevel(I) << "  ";
 	  S << "Displayed Entity : ";
 	  dumper.Dump (ent->DisplayedEntity(I),S, sublevel);
-	  S << endl;
+	  S << Message_EndLine;
 	}
     }
-  S << endl;
+  S << Message_EndLine;
 }

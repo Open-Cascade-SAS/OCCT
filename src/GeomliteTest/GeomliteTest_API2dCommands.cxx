@@ -442,7 +442,7 @@ static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, 
 {
   if (n < 2)
   {
-    cout << "2dintana circle circle " << endl;
+    std::cout << "2dintana circle circle " << std::endl;
     return 1;
   }
 
@@ -483,21 +483,21 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
 {
   if( n < 2) 
   {
-    cout<< "intconcon con1 con2 "<<endl;
+    std::cout<< "intconcon con1 con2 "<<std::endl;
     return 1;
   }
   
   Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
   if (C1.IsNull())
   {
-    cout << a[1] << " is Null " << endl;
+    std::cout << a[1] << " is Null " << std::endl;
     return 1;
   }
 
   Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[2]);
   if (C2.IsNull())
   {
-    cout << a[2] << " is Null " << endl;
+    std::cout << a[2] << " is Null " << std::endl;
     return 1;
   }
 
@@ -536,7 +536,7 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
     break;
   }
   default:
-    cout << a[2] << " is not conic " << endl;
+    std::cout << a[2] << " is not conic " << std::endl;
     return 1;
   }
 
@@ -559,7 +559,7 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
     Intersector.Perform(AC1.Parabola(), *pCon);
     break;
   default:
-    cout << a[1] << " is not conic " << endl;
+    std::cout << a[1] << " is not conic " << std::endl;
     return 1;
   }
   

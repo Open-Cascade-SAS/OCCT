@@ -286,7 +286,7 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
        {
 	 Curve2d.Nullify(); // No continuous solution
 #ifdef OCCT_DEBUG
-	 cout << "BuildPlateSurace :: No continuous projection" << endl;
+	 std::cout << "BuildPlateSurace :: No continuous projection" << std::endl;
 #endif
        }
    }
@@ -332,7 +332,7 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
      
      HProjector.Nullify(); // No continuous solution
 #ifdef OCCT_DEBUG
-     cout << "BuildPlateSurace :: No continuous projection" << endl;
+     std::cout << "BuildPlateSurace :: No continuous projection" << std::endl;
 #endif
    }
  else
@@ -354,7 +354,7 @@ Handle(Adaptor2d_HCurve2d)  GeomPlate_BuildPlateSurface::ProjectedCurve( Handle(
      {
          HProjector.Nullify(); // No continuous solution
 #ifdef OCCT_DEBUG
-         cout << "BuildPlateSurace :: No complete projection" << endl;
+         std::cout << "BuildPlateSurace :: No complete projection" << std::endl;
 #endif
      }
    }
@@ -471,7 +471,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
   if ((NTLinCont + NTPntCont) == 0)
   {
 #ifdef OCCT_DEBUG
-    cout << "WARNING : GeomPlate : The number of constraints is null." << endl;
+    std::cout << "WARNING : GeomPlate : The number of constraints is null." << std::endl;
 #endif
 
     return;
@@ -492,7 +492,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
 	  if (!CourbeJointive(myTol3d)) 
 	    {//    throw Standard_Failure("Curves are not joined");
 #ifdef OCCT_DEBUG
-	      cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<endl;
+	      std::cout<<"WARNING : Courbes non jointives a "<<myTol3d<<" pres"<<std::endl;
 #endif	  
 	    }
 	  TrierTab(myInitOrder); // Reorder the table of transformations
@@ -621,12 +621,12 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
     {
 #ifdef OCCT_DEBUG
       if (Affich && NbBoucle) {   
-	cout<<"Resultats boucle"<< NbBoucle << endl;
-	cout<<"DistMax="<<myG0Error<<endl;
+	std::cout<<"Resultats boucle"<< NbBoucle << std::endl;
+	std::cout<<"DistMax="<<myG0Error<<std::endl;
 	if (myG1Error!=0)
-	  cout<<"AngleMax="<<myG1Error<<endl; 
+	  std::cout<<"AngleMax="<<myG1Error<<std::endl; 
 	if (myG2Error!=0)
-	  cout<<"CourbMax="<<myG2Error<<endl;
+	  std::cout<<"CourbMax="<<myG2Error<<std::endl;
       }
 #endif
       NbBoucle++;
@@ -662,7 +662,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
           if (!myPlate.IsDone())
           {
 #ifdef OCCT_DEBUG
-            cout << "WARNING : GeomPlate : calculation of Plate failed" << endl;
+            std::cout << "WARNING : GeomPlate : calculation of Plate failed" << std::endl;
 #endif
             return;
           }
@@ -676,7 +676,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
 	  if ((NbBoucle >= myNbIter)&&(!Fini))
 	    { 
 #ifdef OCCT_DEBUG
-	      cout<<"Warning: objective was not reached"<<endl;
+	      std::cout<<"Warning: objective was not reached"<<std::endl;
 #endif
 	      Fini = Standard_True;
 	    }
@@ -701,7 +701,7 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
           if (!myPlate.IsDone())
           {
 #ifdef OCCT_DEBUG
-            cout << "WARNING : GeomPlate : calculation of Plate failed" << endl;
+            std::cout << "WARNING : GeomPlate : calculation of Plate failed" << std::endl;
 #endif
             return;
           }
@@ -717,19 +717,19 @@ void GeomPlate_BuildPlateSurface::Perform(const Handle(Message_ProgressIndicator
     } while (!Fini); // End loop for better surface
 #ifdef OCCT_DEBUG
   if (NTLinCont != 0)
-    { cout<<"======== Global results ==========="<<endl;
-      cout<<"DistMax="<<myG0Error<<endl;
+    { std::cout<<"======== Global results ==========="<<std::endl;
+      std::cout<<"DistMax="<<myG0Error<<std::endl;
       if (myG1Error!=0)
-	cout<<"AngleMax="<<myG1Error<<endl; 
+	std::cout<<"AngleMax="<<myG1Error<<std::endl; 
       if (myG2Error!=0)
-	cout<<"CourbMax="<<myG2Error<<endl;
+	std::cout<<"CourbMax="<<myG2Error<<std::endl;
     }  
   Chrono.Stop();
   Standard_Real Tps;
   Chrono.Show(Tps);
-  cout<<"*** END OF GEOMPLATE ***"<<endl;
-  cout<<"Time of calculation : "<<Tps<<endl;
-  cout<<"Number of loops : "<<NbBoucle<<endl;
+  std::cout<<"*** END OF GEOMPLATE ***"<<std::endl;
+  std::cout<<"Time of calculation : "<<Tps<<std::endl;
+  std::cout<<"Number of loops : "<<NbBoucle<<std::endl;
 #endif
 }  
 
@@ -834,7 +834,7 @@ void GeomPlate_BuildPlateSurface::
 {
 #ifdef OCCT_DEBUG
   if (Seq2d.Length()!=4)
-    cout<<"Number of points should be equal to 4 for Disc2dContour"<<endl;
+    std::cout<<"Number of points should be equal to 4 for Disc2dContour"<<std::endl;
 #endif
   //  initialization
   Seq2d.Clear();
@@ -971,9 +971,9 @@ Disc3dContour (const Standard_Integer /*nbp*/,
 {
 #ifdef OCCT_DEBUG
   if (Seq3d.Length()!=4)
-    cout<<"nbp should be equal to 4 for Disc3dContour"<<endl;
+    std::cout<<"nbp should be equal to 4 for Disc3dContour"<<std::endl;
   if (iordre!=0&&iordre!=1)
-    cout<<"incorrect order for Disc3dContour"<<endl;
+    std::cout<<"incorrect order for Disc3dContour"<<std::endl;
 #endif
   //  initialization
   Seq3d.Clear();
@@ -1517,7 +1517,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
       if (!isHalfSpace)
 	{
 #ifdef OCCT_DEBUG
-	  cout<<endl<<"Normals are not in half space"<<endl<<endl;
+	  std::cout<<std::endl<<"Normals are not in half space"<<std::endl<<std::endl;
 #endif
 	  myIsLinear = Standard_False;
 	  nopt = 2;
@@ -1534,7 +1534,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
       else if (!CourbeJoint || NTLinCont != myNbBounds)
 	{//    throw Standard_Failure("Curves are not joined");
 #ifdef OCCT_DEBUG	    
-	  cout << "WARNING : Curves are non-adjacent with tolerance " << myTol3d << endl;
+	  std::cout << "WARNING : Curves are non-adjacent with tolerance " << myTol3d << std::endl;
 #endif	  
 	  nopt = 1;
 	}
@@ -1583,7 +1583,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
       if (!BAP.IsPlane())
       {
 #ifdef OCCT_DEBUG
-        cout << "WARNING : GeomPlate : the initial surface is not a plane." << endl;
+        std::cout << "WARNING : GeomPlate : the initial surface is not a plane." << std::endl;
 #endif
 
         return;
@@ -1651,7 +1651,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
 	}
 #ifdef OCCT_DEBUG
       if (! myIsLinear)
-	cout <<"Metrics are too different :"<< Ratio<<endl;
+	std::cout <<"Metrics are too different :"<< Ratio<<std::endl;
 #endif
 //      myIsLinear =  Standard_True; // !!
     } //comparing metrics of curves and projected curves
@@ -1733,7 +1733,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit(const Handle(Message_ProgressI
       if (!myPlate.IsDone())
       {
 #ifdef OCCT_DEBUG
-        cout << "WARNING : GeomPlate : calculation of Plate failed" << endl;
+        std::cout << "WARNING : GeomPlate : calculation of Plate failed" << std::endl;
 #endif
         return;
       }
@@ -1809,9 +1809,9 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 #ifdef OCCT_DEBUG
 		  if (Affich> 1)
 		    {
-		      cout << " Intersection "<< k << " entre " << i 
-			<< " &" << j << endl;
-		      cout <<"  Distance = "<<  P1.Distance(P2) << endl;
+		      std::cout << " Intersection "<< k << " entre " << i 
+			<< " &" << j << std::endl;
+		      std::cout <<"  Distance = "<<  P1.Distance(P2) << std::endl;
 		    }
 #endif
 		  if (P1.Distance( P2 ) < myTol3d)
@@ -1861,8 +1861,8 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				A1= M_PI - A1;
 			      if (Abs(Abs(A1)-M_PI)<myTolAng) Tol = 100000 * myTol3d;
 #ifdef OCCT_DEBUG
-			      if (Affich) cout <<"Angle between curves "<<i<<","<<j
-				<<" "<<Abs(Abs(A1)-M_PI)<<endl;
+			      if (Affich) std::cout <<"Angle between curves "<<i<<","<<j
+				<<" "<<Abs(Abs(A1)-M_PI)<<std::endl;
 #endif
 			      
 			      coin = Ci.Resolution(Tol);
@@ -1915,15 +1915,15 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				A1= M_PI - A1;
 			      if (Abs(Abs(A1) - M_PI) < myTolAng) Tol = 100000 * myTol3d;
 #ifdef OCCT_DEBUG
-			      if (Affich) cout <<"Angle entre Courbe "<<i<<","<<j
-				<<" "<<Abs(Abs(A1)-M_PI)<<endl;
+			      if (Affich) std::cout <<"Angle entre Courbe "<<i<<","<<j
+				<<" "<<Abs(Abs(A1)-M_PI)<<std::endl;
 #endif
 			      if (myLinCont->Value(i)->Order() == 1)
 				{
 				  coin = Ci.Resolution(Tol);
 				  coin *=  Angle / myTolAng * 10.;
 #ifdef OCCT_DEBUG
-				  cout<<endl<<"coin = "<<coin<<endl;
+				  std::cout<<std::endl<<"coin = "<<coin<<std::endl;
 #endif
 				  Standard_Real Par1 = int2d.ParamOnFirst() - coin;
 				  Standard_Real Par2 = int2d.ParamOnFirst() + coin;
@@ -1936,7 +1936,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 				  coin = Cj.Resolution(Tol);
 				  coin *= Angle / myTolAng * 10.;
 #ifdef OCCT_DEBUG
-				  cout<<endl<<"coin = "<<coin<<endl;
+				  std::cout<<std::endl<<"coin = "<<coin<<std::endl;
 #endif
 				  Standard_Real Par1 = int2d.ParamOnSecond() - coin;
 				  Standard_Real Par2 = int2d.ParamOnSecond() + coin;
@@ -1970,7 +1970,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 		      }		       
 		    
 #ifdef OCCT_DEBUG
-		    cout << "Attention: Two points 3d have the same projection dist = " << Dist << endl;
+		    std::cout << "Attention: Two points 3d have the same projection dist = " << Dist << std::endl;
 #endif	
 #ifdef DRAW
 		    if (Affich > 1)
@@ -2066,9 +2066,9 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 
 #ifdef OCCT_DEBUG
     if (Affich > 1) {
-      cout << "Courbe : " << i << endl;
-      cout << "  NbPnt, NbPtInter, NbPtG1G1 :" << NbPnt_i << ", " 
-           << NbPtInter << ", " << NbPtG1G1 << endl;
+      std::cout << "Courbe : " << i << std::endl;
+      std::cout << "  NbPnt, NbPtInter, NbPtG1G1 :" << NbPnt_i << ", " 
+           << NbPtInter << ", " << NbPtG1G1 << std::endl;
     }
 #endif
     for (Standard_Integer j=1; j<=NbPnt_i; j++)  

@@ -44,7 +44,7 @@ const Handle(Standard_Transient)& XmlLDrivers::Factory(const Standard_GUID& theG
   if (theGUID == XmlLStorageDriver)
   {
 #ifdef OCCT_DEBUG
-    cout << "XmlLDrivers : Storage Plugin" << endl;
+    std::cout << "XmlLDrivers : Storage Plugin" << std::endl;
 #endif
     static Handle(Standard_Transient) model_sd =
       new XmlLDrivers_DocumentStorageDriver
@@ -55,7 +55,7 @@ const Handle(Standard_Transient)& XmlLDrivers::Factory(const Standard_GUID& theG
   if (theGUID == XmlLRetrievalDriver)
   {
 #ifdef OCCT_DEBUG
-    cout << "XmlLDrivers : Retrieval Plugin" << endl;
+    std::cout << "XmlLDrivers : Retrieval Plugin" << std::endl;
 #endif
     static Handle (Standard_Transient) model_rd =
       new XmlLDrivers_DocumentRetrievalDriver ();
@@ -79,7 +79,7 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
   if (time(&nowbin) == (time_t) - 1)
   {
 #ifdef OCCT_DEBUG
-    cerr << "Storage ERROR : Could not get time of day from time()" << endl;
+    std::cerr << "Storage ERROR : Could not get time of day from time()" << std::endl;
 #endif
   }
   
@@ -88,7 +88,7 @@ TCollection_AsciiString XmlLDrivers::CreationDate ()
   if (strftime(nowstr, SLENGTH, "%Y-%m-%d", nowstruct) == (size_t) 0)
   {
 #ifdef OCCT_DEBUG
-    cerr << "Storage ERROR : Could not get string from strftime()" << endl;
+    std::cerr << "Storage ERROR : Could not get string from strftime()" << std::endl;
 #endif
   }
 

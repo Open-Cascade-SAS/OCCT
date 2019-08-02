@@ -300,15 +300,15 @@ PCDM_ReaderStatus TDocStd_Application::Open(const TCollection_ExtendedString& pa
 //    status = GetRetrieveStatus();
     if (!MessageDriver().IsNull()) {
 //      Standard_SStream aMsg;
-//      aMsg << Standard_Failure::Caught() << endl;
-//      cout << "TDocStd_Application::Open(): " << aMsg.rdbuf()->str() << endl;
+//      aMsg << Standard_Failure::Caught() << std::endl;
+//      std::cout << "TDocStd_Application::Open(): " << aMsg.rdbuf()->str() << std::endl;
       TCollection_ExtendedString aString (anException.GetMessageString());
       MessageDriver()->Send(aString.ToExtString(), Message_Fail);
     }
   }
   status = GetRetrieveStatus();
 #ifdef OCCT_DEBUG
-  cout<<"TDocStd_Application::Open(): The status = "<<status<<endl;
+  std::cout<<"TDocStd_Application::Open(): The status = "<<status<<std::endl;
 #endif
   return status;
 }
@@ -378,7 +378,7 @@ PCDM_StoreStatus TDocStd_Application::SaveAs(const Handle(TDocStd_Document)& D,c
   if(storer.StoreStatus() == PCDM_SS_OK)
     D->SetSaved();
 #ifdef OCCT_DEBUG
-  cout<<"TDocStd_Application::SaveAs(): The status = "<<storer.StoreStatus()<<endl;
+  std::cout<<"TDocStd_Application::SaveAs(): The status = "<<storer.StoreStatus()<<std::endl;
 #endif
   return storer.StoreStatus();
 }
@@ -449,7 +449,7 @@ PCDM_StoreStatus TDocStd_Application::Save (const Handle(TDocStd_Document)& D) {
     status = PCDM_SS_Failure;
   }
 #ifdef OCCT_DEBUG
-  cout<<"TDocStd_Application::Save(): The status = "<<status<<endl;
+  std::cout<<"TDocStd_Application::Save(): The status = "<<status<<std::endl;
 #endif
   return status;
 }

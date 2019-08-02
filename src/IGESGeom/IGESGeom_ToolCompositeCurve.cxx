@@ -123,8 +123,8 @@ void  IGESGeom_ToolCompositeCurve::OwnDump
   (const Handle(IGESGeom_CompositeCurve)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
-  S << "IGESGeom_CompositeCurve" << endl;
-  S << "Curve Entities : " << endl;
+  S << "IGESGeom_CompositeCurve" << Message_EndLine;
+  S << "Curve Entities : " << Message_EndLine;
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbCurves(),ent->Curve);
-  S << endl;
+  S << Message_EndLine;
 }

@@ -90,8 +90,8 @@ Handle(Geom_BSplineCurve) ShapeConstruct::ConvertCurveToBSpline(const Handle(Geo
     }
     catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	    cout << "Warning: GeomConvert_ApproxSurface Exception:  ";
-	    anException.Print(cout); cout << endl;
+	    std::cout << "Warning: GeomConvert_ApproxSurface Exception:  ";
+	    anException.Print(std::cout); std::cout << std::endl;
 #endif 
 	    (void)anException;
 	    aBSpline = GeomConvert::CurveToBSplineCurve(C3D,Convert_QuasiAngular);    
@@ -222,7 +222,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
       gp_Ax1 axis = revol->Axis();
       Handle(Geom_SurfaceOfRevolution) newRevol = new Geom_SurfaceOfRevolution(bspl,axis);
 #ifdef OCCT_DEBUG
-      cout <<" Revolution on offset converted" << endl;
+      std::cout <<" Revolution on offset converted" << std::endl;
 #endif
       S = newRevol;
     }
@@ -240,8 +240,8 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
 	
 #ifdef OCCT_DEBUG
 	Standard_Integer nbOfSpan = (anApprox.Surface()->NbUKnots()-1)*(anApprox.Surface()->NbVKnots()-1);
-	cout << "\terror = " << anApprox.MaxError() << "\tspans = " << nbOfSpan << endl;
-	cout << " Surface is aproximated with continuity " << (GeomAbs_Shape)cnt <<endl;
+	std::cout << "\terror = " << anApprox.MaxError() << "\tspans = " << nbOfSpan << std::endl;
+	std::cout << " Surface is aproximated with continuity " << (GeomAbs_Shape)cnt <<std::endl;
 #endif
 	S = anApprox.Surface();
 	Handle(Geom_BSplineSurface) Bsc = Handle(Geom_BSplineSurface)::DownCast(S);
@@ -251,7 +251,7 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
 	if(anApprox.HasResult()) 
 	  errSpl = anApprox.Surface();
 #ifdef OCCT_DEBUG
-	cout << "\terror = " << anApprox.MaxError() <<endl;
+	std::cout << "\terror = " << anApprox.MaxError() <<std::endl;
 #endif
 	break;
       }
@@ -259,8 +259,8 @@ Handle(Geom_BSplineSurface) ShapeConstruct::ConvertSurfaceToBSpline(const Handle
 	
     catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
-      anException.Print(cout); cout << endl;
+      std::cout << "Warning: GeomConvert_ApproxSurface Exception: try to decrease continuity ";
+      anException.Print(std::cout); std::cout << std::endl;
 #endif
       (void)anException;
       if(cnt > 0) cnt--;
@@ -364,8 +364,8 @@ Standard_Boolean ShapeConstruct::JoinPCurves(const Handle(TopTools_HSequenceOfSh
   }
   catch ( Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout<<"Error: ShapeConstruct::JoinPCurves Exception in GeomConvert_CompCurveToBSplineCurve: ";
-    anException.Print(cout); cout<<endl;
+    std::cout<<"Error: ShapeConstruct::JoinPCurves Exception in GeomConvert_CompCurveToBSplineCurve: ";
+    anException.Print(std::cout); std::cout<<std::endl;
 #endif
     (void)anException;
   }

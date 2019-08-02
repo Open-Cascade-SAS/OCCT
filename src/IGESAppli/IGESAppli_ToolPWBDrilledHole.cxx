@@ -120,9 +120,9 @@ void  IGESAppli_ToolPWBDrilledHole::OwnDump
   (const Handle(IGESAppli_PWBDrilledHole)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
 {
-  S << "IGESAppli_PWBDrilledHole" << endl;
-  S << "Number of property values : " << ent->NbPropertyValues() << endl;
-  S << "Drill Diameter Size  : " << ent->DrillDiameterSize() << endl;
-  S << "Finish Diameter Size : " << ent->FinishDiameterSize() << endl;
-  S << "Drilled Hole Function Code : " << ent->FunctionCode() << endl;
+  S << "IGESAppli_PWBDrilledHole" << Message_EndLine;
+  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "Drill Diameter Size  : " << ent->DrillDiameterSize() << Message_EndLine;
+  S << "Finish Diameter Size : " << ent->FinishDiameterSize() << Message_EndLine;
+  S << "Drilled Hole Function Code : " << ent->FunctionCode() << Message_EndLine;
 }

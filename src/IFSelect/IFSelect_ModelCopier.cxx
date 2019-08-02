@@ -134,7 +134,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
    Interface_CopyTool& TC)
 {
   Message::DefaultMessenger() <<
-    "** WorkSession : Copying split data before sending"<<endl;
+    "** WorkSession : Copying split data before sending"<<Message_EndLine;
   const Interface_Graph& G = eval.Graph();
   Interface_CheckIterator checks;
   theshareout = eval.ShareOut();
@@ -164,7 +164,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
    const Handle(Interface_Protocol)& protocol)
 {
   Message::DefaultMessenger() <<
-    "** WorkSession : Sending split data already copied"<<endl;
+    "** WorkSession : Sending split data already copied"<<Message_EndLine;
   Standard_Integer nb = NbFiles();
   Interface_CheckIterator checks;
   if (nb > 0) {
@@ -177,14 +177,14 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
       checks.Merge(checklst);
 //	(FileName(i).ToCString(), FileModel(i),protocol,curapp,checks);
 //      if (!checks.IsEmpty(Standard_False)) {
-//	sout<<"  **  On Sending File n0."<<i<<", Check Messages :  **"<<endl;
+//	sout<<"  **  On Sending File n0."<<i<<", Check Messages :  **"<<std::endl;
 //	checks.Print (sout,Standard_False);
 //      }
       if (!res) {
 	char mess[100];  sprintf(mess,"Split Send (WriteFile) abandon on file n0.%d",i);
 	checks.CCheck(0)->AddFail (mess);
 	Message::DefaultMessenger() << 
-	  "  **  Sending File n0."<<i<<" has failed, abandon  **"<<endl;
+	  "  **  Sending File n0."<<i<<" has failed, abandon  **"<<Message_EndLine;
 	return checks;
       }
       AddSentFile (FileName(i).ToCString());
@@ -217,7 +217,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   Interface_CheckIterator checks;
   Standard_Integer i = 0;
   Message::DefaultMessenger() <<
-    "** WorkSession : Copying then sending split data"<<endl;
+    "** WorkSession : Copying then sending split data"<<Message_EndLine;
   theshareout = eval.ShareOut();
   theremain = new TColStd_HArray1OfInteger(0,G.Size()); theremain->Init(0);
   for (eval.Evaluate(); eval.More(); eval.Next()) {
@@ -236,14 +236,14 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
     checks.Merge(checklst);
 //      (filename.ToCString(), model, protocol, curapp, checks);
 //    if (!checks.IsEmpty(Standard_False)) {
-//      sout<<"  **  On Sending File "<<filename<<", Check Messages :  **"<<endl;
+//      sout<<"  **  On Sending File "<<filename<<", Check Messages :  **"<<std::endl;
 //      checks.Print (sout,model,Standard_False);
 //    }
     if (!res) {
       char mess[100];  sprintf(mess,"Split Send (WriteFile) abandon on file n0.%d",i);
       checks.CCheck(0)->AddFail (mess);
       Message::DefaultMessenger() <<
-	"  **  Sending File "<<filename<<" has failed, abandon  **"<<endl;
+	"  **  Sending File "<<filename<<" has failed, abandon  **"<<Message_EndLine;
       checks.SetName ("X-STEP WorkSession : Split Send (only Write)");
       return checks;
     }
@@ -265,7 +265,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   Interface_CheckIterator checks;
   checks.SetName ("X-STEP WorkSession : Send All");
   Message::DefaultMessenger() <<
-    "** WorkSession : Sending all data"<<endl;
+    "** WorkSession : Sending all data"<<Message_EndLine;
   Handle(Interface_InterfaceModel)  model = G.Model();
   if (model.IsNull() || protocol.IsNull() || WL.IsNull()) return checks;
 
@@ -286,7 +286,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   if (!res) checks.CCheck(0)->AddFail ("SendAll (WriteFile) has failed");
 //  if (!checks.IsEmpty(Standard_False)) {
 //    Message::DefaultMessenger() <<
-//      "  **    SendAll has produced Check Messages :    **"<<endl;
+//      "  **    SendAll has produced Check Messages :    **"<<std::endl;
 //    checks.Print (sout,model,Standard_False);
 //  }
   return checks;
@@ -305,7 +305,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   Interface_CheckIterator checks;
   checks.SetName ("X-STEP WorkSession : Send Selected");
   Message::DefaultMessenger() <<
-    "** WorkSession : Sending selected data"<<endl;
+    "** WorkSession : Sending selected data"<<Message_EndLine;
   Handle(Interface_InterfaceModel)  original = G.Model();
   if (original.IsNull() || protocol.IsNull() || WL.IsNull()) return checks;
   Handle(Interface_InterfaceModel) newmod  = original->NewEmptyModel();
@@ -340,7 +340,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
   if (!res) checks.CCheck(0)->AddFail ("SendSelected (WriteFile) has failed");
 //  if (!checks.IsEmpty(Standard_False)) {
 //    Message::DefaultMessenger() <<
-//      "  **    SendSelected has produced Check Messages :    **"<<endl;
+//      "  **    SendSelected has produced Check Messages :    **"<<std::endl;
 //    checks.Print (sout,original,Standard_False);
 //  }
   return checks;
@@ -410,7 +410,7 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
 //    Faut-il enregistrer les erreurs dans newmod ? bonne question
 //    if (!checks.IsEmpty(Standard_False)) {
 //      Message::DefaultMessenger() <<
-//        " Messages on Copied Model n0 "<<numod<<", Dispatch Rank "<<dispnum<<endl;
+//        " Messages on Copied Model n0 "<<numod<<", Dispatch Rank "<<dispnum<<std::endl;
 //      checks.Print(sout,newmod,Standard_False);
 //    }
   }
@@ -473,16 +473,16 @@ IFSelect_ModelCopier::IFSelect_ModelCopier ()    {  }
     }
 //  qq impressions de mise au point
 #ifdef MISOPOINT
-    cout << " Remaining Model : " << newmod->NbEntities() << " Entities"<<endl;
+    std::cout << " Remaining Model : " << newmod->NbEntities() << " Entities"<<std::endl;
     Standard_Integer ne = 0;
     for (i = 1; i <= nb; i ++) {
       if (theremain->Value(i) == 0) {
-	if (ne == 0)     cout << " Refractaires : ";
-	ne ++;  cout << " " << i;
+	if (ne == 0)     std::cout << " Refractaires : ";
+	ne ++;  std::cout << " " << i;
       }
     }
-    if (ne > 0) cout << "  -- " << ne << " Entities" << endl;
-    else cout<<"  -- Remaining data complete"<<endl;
+    if (ne > 0) std::cout << "  -- " << ne << " Entities" << std::endl;
+    else std::cout<<"  -- Remaining data complete"<<std::endl;
 #endif
   }
 }

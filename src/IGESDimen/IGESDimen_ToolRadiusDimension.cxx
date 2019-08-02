@@ -128,22 +128,22 @@ void IGESDimen_ToolRadiusDimension::OwnDump
   (const Handle(IGESDimen_RadiusDimension)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S,const Standard_Integer level) const
 {
-  S << "IGESDimen_RadiusDimension" << endl;
+  S << "IGESDimen_RadiusDimension" << Message_EndLine;
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "General note : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Leader arrow : ";
   dumper.Dump(ent->Leader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Arc center : ";
   IGESData_DumpXYLZ(S,level,ent->Center(),ent->Location(),ent->Leader()->ZDepth());
   if (ent->HasLeader2())
     {
-      S << endl << "Leader arrow 2 : ";
+      S << Message_EndLine << "Leader arrow 2 : ";
       dumper.Dump(ent->Leader2(),S, sublevel);
-      S << endl;
+      S << Message_EndLine;
     }
-  S << endl;
+  S << Message_EndLine;
 }

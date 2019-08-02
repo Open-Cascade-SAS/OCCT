@@ -197,23 +197,23 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 	Hatcher.ComputeDomains (IndH);
       if (!Hatcher.IsDone (IndH)) {
 #ifdef OCCT_DEBUG
-        cout << "HLRTopoBRep::MakeIsoLines : Face " << FI << endl;
-	cout << "U iso of parameter: " << UPrm;
+        std::cout << "HLRTopoBRep::MakeIsoLines : Face " << FI << std::endl;
+	std::cout << "U iso of parameter: " << UPrm;
 	switch (Hatcher.Status (IndH)) {
 	case HatchGen_NoProblem          :
-	  cout << " No Problem"          << endl;
+	  std::cout << " No Problem"          << std::endl;
 	  break;
 	case HatchGen_TrimFailure        :
-	  cout << " Trim Failure"        << endl;
+	  std::cout << " Trim Failure"        << std::endl;
 	  break;
 	case HatchGen_TransitionFailure  :
-	  cout << " Transition Failure"  << endl;
+	  std::cout << " Transition Failure"  << std::endl;
 	  break;
 	case HatchGen_IncoherentParity   :
-	  cout << " Incoherent Parity"   << endl;
+	  std::cout << " Incoherent Parity"   << std::endl;
 	  break;
 	case HatchGen_IncompatibleStates :
-	  cout << " Incompatible States" << endl;
+	  std::cout << " Incompatible States" << std::endl;
 	  break;
 	}
 #endif
@@ -291,23 +291,23 @@ void HLRTopoBRep_FaceIsoLiner::Perform (const Standard_Integer FI,
 	Hatcher.ComputeDomains (IndH);
       if (!Hatcher.IsDone (IndH)) {
 #ifdef OCCT_DEBUG
-	cout << "HLRTopoBRep::MakeIsoLines : Face " << FI << endl;
-	cout << "V iso of parameter: " << VPrm;
+	std::cout << "HLRTopoBRep::MakeIsoLines : Face " << FI << std::endl;
+	std::cout << "V iso of parameter: " << VPrm;
 	switch (Hatcher.Status (IndH)) {
 	case HatchGen_NoProblem          :
-	  cout << " No Problem"          << endl;
+	  std::cout << " No Problem"          << std::endl;
 	  break;
 	case HatchGen_TrimFailure        :
-	  cout << " Trim Failure"        << endl;
+	  std::cout << " Trim Failure"        << std::endl;
 	  break;
 	case HatchGen_TransitionFailure  :
-	  cout << " Transition Failure"  << endl;
+	  std::cout << " Transition Failure"  << std::endl;
 	  break;
 	case HatchGen_IncoherentParity   :
-	  cout << " Incoherent Parity"   << endl;
+	  std::cout << " Incoherent Parity"   << std::endl;
 	  break;
 	case HatchGen_IncompatibleStates :
-	  cout << " Incompatible States" << endl;
+	  std::cout << " Incompatible States" << std::endl;
 	  break;
 	}
 #endif

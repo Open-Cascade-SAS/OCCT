@@ -42,7 +42,7 @@ void  IGESData_ReadWriteModule::Read
    Handle(Interface_Check)& , const Handle(Standard_Transient)& ) const 
 {
 #ifdef OCCT_DEBUG
-  cout<<"IGESData_ReadWriteModule, Read called"<<endl;
+  std::cout<<"IGESData_ReadWriteModule, Read called"<<std::endl;
 #endif
 }
   // IGESReaderTool fait tout

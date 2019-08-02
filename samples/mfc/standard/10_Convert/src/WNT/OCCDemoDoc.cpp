@@ -153,7 +153,7 @@ void COCCDemoDoc::DoSample()
     catch (Standard_Failure const& anException)
     {
       Standard_SStream aSStream;
-      aSStream << "An exception was caught: " << anException << ends;
+      aSStream << "An exception was caught: " << anException << std::ends;
       CString aMsg = aSStream.str().c_str();
       AfxMessageBox (aMsg);
     }

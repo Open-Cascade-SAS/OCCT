@@ -537,7 +537,7 @@ static Standard_Integer interpol (Draw_Interpretor& di,Standard_Integer n, const
     // lecture du fichier.
     // nbpoints, 2d ou 3d, puis valeurs.
     const char* nomfic = a[2];
-    ifstream iFile(nomfic, ios::in);
+    std::ifstream iFile(nomfic, std::ios::in);
     if (!iFile) return 1;
     Standard_Integer nbp, i;
     Standard_Real x, y, z;

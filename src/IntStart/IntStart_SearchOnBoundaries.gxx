@@ -873,8 +873,8 @@ void PointProcess (const gp_Pnt& Pt,
     toler = TheSOBTool::Tolerance(vtx,A);
 #ifdef OCCT_DEBUG
     if(toler>0.1) { 
-      cout<<"IntStart_SearchOnBoundaries_1.gxx  : ** WARNING ** Tol Vertex="<<toler<<endl;
-      cout<<"                                     Ou Edge degenere Ou Kro pointu"<<endl;
+      std::cout<<"IntStart_SearchOnBoundaries_1.gxx  : ** WARNING ** Tol Vertex="<<toler<<std::endl;
+      std::cout<<"                                     Ou Edge degenere Ou Kro pointu"<<std::endl;
       if(toler>10000) toler=1e-7;
     }
 #endif

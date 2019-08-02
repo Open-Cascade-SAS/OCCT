@@ -861,7 +861,7 @@ void BRepFill::SearchOrigin(TopoDS_Wire & W,
   } 
 #ifdef OCCT_DEBUG
   else {
-    cout << "BRepFill::SearchOrigine : Echec Distance" << endl;
+    std::cout << "BRepFill::SearchOrigine : Echec Distance" << std::endl;
   }
 #endif
 

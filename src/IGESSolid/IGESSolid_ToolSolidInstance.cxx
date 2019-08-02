@@ -93,9 +93,9 @@ void  IGESSolid_ToolSolidInstance::OwnDump
   (const Handle(IGESSolid_SolidInstance)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_SolidInstance" << endl;
+  S << "IGESSolid_SolidInstance" << Message_EndLine;
 
   S << "Solid entity : ";
   dumper.Dump(ent->Entity(),S, (level <= 4) ? 0 : 1);
-  S << endl;
+  S << Message_EndLine;
 }

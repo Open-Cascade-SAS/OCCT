@@ -138,7 +138,7 @@ static void CorrectEdgeOrientation(TopoDS_Shape& aWire)
 
 static void CorrectUnclosedWire(TopoDS_Shape& aWire)
 {
-//  cout << "-------CorrectUnclosedWire" << endl;
+//  std::cout << "-------CorrectUnclosedWire" << std::endl;
   BRep_Builder BB;
   TopoDS_Iterator tdi(aWire, Standard_False, Standard_False);
   Standard_Integer nbe = 0;
@@ -146,9 +146,9 @@ static void CorrectUnclosedWire(TopoDS_Shape& aWire)
     nbe++;
     const TopoDS_Shape& ed = tdi.Value();
     Standard_Integer nbv = ed.NbChildren();
-//    cout << "Edge " << nbe << " : " << nbv << endl;
+//    std::cout << "Edge " << nbe << " : " << nbv << std::endl;
     if(nbv <= 1) {
-//      cout << "Remove bad edge" << endl;
+//      std::cout << "Remove bad edge" << std::endl;
       BB.Remove(aWire, ed);
     }
   }
@@ -162,7 +162,7 @@ static void CorrectUnclosedWire(TopoDS_Shape& aWire)
     const TopTools_ListOfShape& Elist = VElists.FindFromIndex(i);
     if(Elist.Extent() == 1) {
       TopoDS_Shape anEdge = Elist.First();
-//      cout << "Remove redundant edge" << endl;
+//      std::cout << "Remove redundant edge" << std::endl;
       BB.Remove(aWire, anEdge);
     }
   }
@@ -179,7 +179,7 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,const TopAbs_St
   Standard_Boolean lesmemes = S1.IsEqual(S2);
   if (lesmemes) {
 #ifdef OCCT_DEBUG
-    cout<<"TopOpeBRepBuild : S1 == S2"<<endl;
+    std::cout<<"TopOpeBRepBuild : S1 == S2"<<std::endl;
 #endif
     return;
   }
@@ -538,8 +538,8 @@ void TopOpeBRepBuild_Builder::MakeEdges(const TopoDS_Shape& anEdge,TopOpeBRepBui
     } // loop on vertices of new edge newEdge
     
 #ifdef OCCT_DEBUG
-    if(tSPS){cout<<endl;}
-    if(tSPS){cout<<"V of new edge "<<++ne<<endl;}
+    if(tSPS){std::cout<<std::endl;}
+    if(tSPS){std::cout<<"V of new edge "<<++ne<<std::endl;}
     if(tSPS){GdumpEDG(newEdge);} 
 #endif
     

@@ -96,6 +96,6 @@ void DBRep_Get(char* name, TopoDS_Shape& S)
   Standard_CString cs = (Standard_CString)n;
   S = DBRep::Get(cs);
   if (*name == '.')
-    cout << "Name : " << n << endl;
+    std::cout << "Name : " << n << std::endl;
 }
 */

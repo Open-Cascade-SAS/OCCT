@@ -137,7 +137,7 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_HCurve2d)& Line ,
     if(IndexInf > IndexSup) { 
       r+=r; 
       r2 = r*r*49.;
-      //-- cout<<" Le rayon : "<<r<<" est insuffisant "<<endl;
+      //-- std::cout<<" Le rayon : "<<r<<" est insuffisant "<<std::endl;
     }
     else {
       //----------------------------------------------
@@ -146,7 +146,7 @@ IntPatch_PolyArc::IntPatch_PolyArc(const Handle(Adaptor2d_HCurve2d)& Line ,
       //-- encore
       //----------------------------------------------
       if((IndexSup-IndexInf)<(NbSample/2)) { 
-	//-- cout<<" --- On remet ca entre les index "<<IndexInf<<" et "<<IndexSup<<endl;
+	//-- std::cout<<" --- On remet ca entre les index "<<IndexInf<<" et "<<IndexSup<<std::endl;
 	nbloop = 10;
 	//if(IndexInf>1) IndexInf--;
 	//if(IndexSup<NbSample) IndexSup++;

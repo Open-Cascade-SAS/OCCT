@@ -209,15 +209,15 @@ void  IGESAppli_ToolNodalDisplAndRot::OwnDump
   (const Handle(IGESAppli_NodalDisplAndRot)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_NodalDisplAndRot" << endl;
+  S << "IGESAppli_NodalDisplAndRot" << Message_EndLine;
 
   Standard_Integer nbcases = ent->NbCases();
   Standard_Integer nbnodes = ent->NbNodes();
 
-  S << "No. of analysis cases : " << nbcases << endl;
+  S << "No. of analysis cases : " << nbcases << Message_EndLine;
   S << "General Notes : ";
   IGESData_DumpEntities(S,dumper ,level,1, nbcases,ent->Note);
-  S << endl;
+  S << Message_EndLine;
 
 //  gp_GTrsf loca;  // true location n.u.
   switch (level)
@@ -232,7 +232,7 @@ void  IGESAppli_ToolNodalDisplAndRot::OwnDump
 //      IGESData_DumpListXYZL(S,-level,1,nbcases,ent->TranslationParameter,loca);
       S << "Rotational Parameters : ";
 //      IGESData_DumpListXYZL(S,-level,1,nbcases,ent->RotationalParameter,loca);
-      S << "  TO BE DONE" << endl;
+      S << "  TO BE DONE" << Message_EndLine;
       break;
     case 5:
     case 6: {
@@ -240,39 +240,39 @@ void  IGESAppli_ToolNodalDisplAndRot::OwnDump
 	{
 	  S << "[" << i << "]: ";
 	  dumper.Dump (ent->Note(i),S, 1);
-	  S << endl;
+	  S << Message_EndLine;
 	}
-      S << "Nodes : " << endl;
-      S << "Node Identifiers : "  << endl;
-      S << "Translation Parameters : " << endl;
+      S << "Nodes : " << Message_EndLine;
+      S << "Node Identifiers : "  << Message_EndLine;
+      S << "Translation Parameters : " << Message_EndLine;
       S << "Rotational Parameters : Count = " << nbcases;
 //     IGESData_DumpListXYZL(S,-level,1,nbcases,ent->RotationalParameter,loca);
-      S << endl;
+      S << Message_EndLine;
       for (Standard_Integer j = 1; j <= nbnodes; j ++)
 	{
 	  S << "[" << j << "]:  -  NodeIdentifier : "
-	    << ent->NodeIdentifier(j) << "  -  Node :"<<endl; ;
+	    << ent->NodeIdentifier(j) << "  -  Node :"<<Message_EndLine; ;
 	  S << "Node : ";
 	  dumper.Dump (ent->Node(j),S, 1);
-	  S << "  -  Parameters : " << endl;
+	  S << "  -  Parameters : " << Message_EndLine;
 	  for (Standard_Integer k = 1; k <= nbcases; k ++)
 	    {
-	      S << " [" << k << "]: "  << endl;
+	      S << " [" << k << "]: "  << Message_EndLine;
 	      S << "Translational Parameter : X="
 		<< ent->TranslationParameter(j,k).X() << ", Y="
 		<< ent->TranslationParameter(j,k).Y() << ", Z="
-		<< ent->TranslationParameter(j,k).Z() << endl;
+		<< ent->TranslationParameter(j,k).Z() << Message_EndLine;
 	      S << "Rotational Parameter : X="
 		<< ent->RotationalParameter(j,k).X() << ", Y="
 		<< ent->RotationalParameter(j,k).Y() << ", Z="
 		<< ent->RotationalParameter(j,k).Z();
 	      if (k == nbcases) S << "] ";
-	      S << endl;
+	      S << Message_EndLine;
 	    }
 	}
     }
       break;
     default: break;
     }
-  S << endl;
+  S << Message_EndLine;
 }

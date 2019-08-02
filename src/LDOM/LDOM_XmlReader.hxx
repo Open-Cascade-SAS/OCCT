@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//AGV 060302: Input from istream
+//AGV 060302: Input from std::istream
 //            AGV 130302: bug corr: was error if strlen(root_elem_name) < 7
 
 #ifndef LDOM_XmlReader_HeaderFile
@@ -51,7 +51,7 @@ class LDOM_XmlReader
                   TCollection_AsciiString& anErrorString,
                   const Standard_Boolean theTagPerStep = Standard_False);
   // Constructor - takes a file descriptor for input
-  // Constructor - takes an istream for input
+  // Constructor - takes an std::istream for input
 
   RecordType            ReadRecord      (Standard_IStream& theIStream, LDOM_OSStream& theData);
   // reading a markup or other element of XML format

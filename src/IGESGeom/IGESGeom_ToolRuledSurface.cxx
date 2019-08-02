@@ -157,17 +157,17 @@ void IGESGeom_ToolRuledSurface::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_RuledSurface" << endl;
+  S << "IGESGeom_RuledSurface" << Message_EndLine;
 
   S << "First  Curve   : ";
   dumper.Dump(ent->FirstCurve(),S, tempSubLevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Curve   : ";
   dumper.Dump(ent->SecondCurve(),S, tempSubLevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Direction Flag : " << ent->DirectionFlag() << "  i.e.";
-  if (ent->DirectionFlag() == 0) S<< "Join First to First, Last to Last"<<endl;
-  else                           S<< "Join First to Last, Last to First"<<endl;
-  if (ent->IsDevelopable()) S << " .. Is Developable" << endl;
-  else                      S << " .. Is possibly not developable .." << endl;
+  if (ent->DirectionFlag() == 0) S<< "Join First to First, Last to Last"<<Message_EndLine;
+  else                           S<< "Join First to Last, Last to First"<<Message_EndLine;
+  if (ent->IsDevelopable()) S << " .. Is Developable" << Message_EndLine;
+  else                      S << " .. Is possibly not developable .." << Message_EndLine;
 }

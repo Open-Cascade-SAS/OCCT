@@ -266,17 +266,17 @@ void IGESDraw_ToolDrawing::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_Drawing" << endl;
+  S << "IGESDraw_Drawing" << Message_EndLine;
 
-  S << "View Entities            : " << endl
+  S << "View Entities            : " << Message_EndLine
     << "Transformed View Origins : ";
   S << "Count = "      << ent->NbViews();
   switch (level)
     {
-    case 4 : S << " [ ask level > 4 for content ]" << endl;
+    case 4 : S << " [ ask level > 4 for content ]" << Message_EndLine;
       break; // Nothing to be dumped here
     case 5 :        // Presently level 5 and 6 have the same Dump
-      S << endl;
+      S << Message_EndLine;
       Standard_FALLTHROUGH
     case 6 :
       {
@@ -284,17 +284,17 @@ void IGESDraw_ToolDrawing::OwnDump
 	Standard_Integer up  = ent->NbViews();
 	for (I = 1; I <= up; I++)
 	  {
-	    S << endl << "[" << I << "] ";
+	    S << Message_EndLine << "[" << I << "] ";
 	    S << "View Entity : ";
 	    dumper.Dump (ent->ViewItem(I),S, sublevel);
-	    S << endl;
+	    S << Message_EndLine;
 	    S << "Transformed View Origin : ";
 	    IGESData_DumpXY(S, ent->ViewOrigin(I));
 	  }
       }
       break;
     }
-  S << endl << "Annotation Entities : ";
+  S << Message_EndLine << "Annotation Entities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbAnnotations(),ent->Annotation);
-  S << endl;
+  S << Message_EndLine;
 }

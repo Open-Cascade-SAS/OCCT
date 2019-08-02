@@ -81,13 +81,13 @@ static void DumpNaming (const Handle(TNaming_Naming)& naming, Draw_Interpretor& 
   TCollection_AsciiString Entry;
   const TNaming_Name& AName = naming->GetName();
 
-  //TNaming::Print(AName.Type(),cout);
+  //TNaming::Print(AName.Type(),std::cout);
   Standard_SStream aSStream1;
   TNaming::Print(AName.Type(),aSStream1);
   di << aSStream1;
   di << " ";
 
-  //TopAbs::Print(AName.ShapeType(),cout);
+  //TopAbs::Print(AName.ShapeType(),std::cout);
   Standard_SStream aSStream2;
   TopAbs::Print(AName.ShapeType(),aSStream2);
   di << aSStream2;

@@ -45,7 +45,7 @@ IGESSelect_SelectName::IGESSelect_SelectName ()    {  }
   if (!igesent->HasName()) return Standard_False;
   if (thename.IsNull()) return Standard_False;
   Handle(TCollection_HAsciiString) name = igesent->NameValue();
-//  cout<<"SelectName:"<<thename->ToCString()<<",with:"<<name->ToCString()<<",IsSameString="<<thename->IsSameString (name,Standard_False)<<endl;
+//  std::cout<<"SelectName:"<<thename->ToCString()<<",with:"<<name->ToCString()<<",IsSameString="<<thename->IsSameString (name,Standard_False)<<std::endl;
   Standard_Integer nb0 = thename->Length();
   Standard_Integer nb1 = name->Length();
   Standard_Integer nbf = (nb1 <= nb0 ? nb1 : nb0);

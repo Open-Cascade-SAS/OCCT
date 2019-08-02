@@ -548,8 +548,8 @@ static void CalculBatten (const Handle (GeomAdaptor_HSurface) ASurf,
     Ok = Bat.Compute(Iana,25,1.e-2);
 #ifdef OCCT_DEBUG
     if (!Ok) { 
-      cout<<"no batten :";
-      Bat.Dump(cout);
+      std::cout<<"no batten :";
+      Bat.Dump(std::cout);
     }    
 #endif  
     if (Ok) {
@@ -1351,7 +1351,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   }
   if ( isOnSameDiff ) {
 #ifdef OCCT_DEBUG
-    cout << "OnSame + OnDiff, PerformMoreThreeCorner() calls PerformOneCorner()" << endl;
+    std::cout << "OnSame + OnDiff, PerformMoreThreeCorner() calls PerformOneCorner()" << std::endl;
 #endif
     PerformOneCorner (Jndex, Standard_True);
   }
@@ -2061,7 +2061,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       jfp = 3 - jf.Value(ic);
       Calcul_P2dOnSurf(CD.Value(ic),jfp,i.Value(ic,icmoins),p.Value(ic,icmoins),p2d1);
       Calcul_P2dOnSurf(CD.Value(ic),jf.Value(ic),i.Value(ic,icplus),p.Value(ic,icplus),p2d2);
-//      if (i[ic][icplus]!=  i[ic][icmoins]) cout<<"probleme surface"<<endl;
+//      if (i[ic][icplus]!=  i[ic][icmoins]) std::cout<<"probleme surface"<<std::endl;
       indice= SurfIndex(CD, ic, i.Value(ic,icplus), ChFiSURFACE);
       Handle (GeomAdaptor_HSurface) Asurf =
 	new GeomAdaptor_HSurface(DStr.Surface(indice).Surface());

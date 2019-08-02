@@ -62,11 +62,11 @@ extern void* GFABUMAKEFACEPWES_DEB;
 Standard_Integer GLOBAL_iexE = 0;
 Standard_EXPORT void debfillw(const Standard_Integer /*i*/) {}
 Standard_EXPORT void debfille(const Standard_Integer /*i*/) {}
-Standard_EXPORT void debffwesON(const Standard_Integer i) {cout<<"++ debffwesON "<<i<<endl;}
-Standard_EXPORT void debffwesmf(const Standard_Integer i) {cout<<"++ debffwesmf "<<i<<endl;}
-Standard_EXPORT void debfillf(const Standard_Integer i) {cout<<"++ debfillf "<<i<<endl;}
-Standard_EXPORT void debsplite(const Standard_Integer i) {cout<<"++ debsplite "<<i<<endl;}
-Standard_EXPORT void debmergef(const Standard_Integer i) {cout<<"++ debmergef "<<i<<endl;}
+Standard_EXPORT void debffwesON(const Standard_Integer i) {std::cout<<"++ debffwesON "<<i<<std::endl;}
+Standard_EXPORT void debffwesmf(const Standard_Integer i) {std::cout<<"++ debffwesmf "<<i<<std::endl;}
+Standard_EXPORT void debfillf(const Standard_Integer i) {std::cout<<"++ debfillf "<<i<<std::endl;}
+Standard_EXPORT void debsplite(const Standard_Integer i) {std::cout<<"++ debsplite "<<i<<std::endl;}
+Standard_EXPORT void debmergef(const Standard_Integer i) {std::cout<<"++ debmergef "<<i<<std::endl;}
 Standard_IMPORT void debfctwesmess(const Standard_Integer i,
 				   const TCollection_AsciiString& s = "");
 extern void debaddpwes(const Standard_Integer iFOR, const TopAbs_State TB1, const Standard_Integer iEG,
@@ -297,7 +297,7 @@ Standard_EXPORT TopOpeBRepDS_PDataStructure GLOBAL_DS2d = NULL;
 #ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(F1,iF);
   if(tSPS){
-    cout<<endl<<"--- GMergeFaces "<<endl;
+    std::cout<<std::endl<<"--- GMergeFaces "<<std::endl;
     GdumpSAMDOM(LF1, (char *) "1 : ");
     GdumpSAMDOM(LF2, (char *) "2 : ");
     debmergef(iF);
@@ -585,11 +585,11 @@ static Standard_Boolean FUN_validF1edge(const TopoDS_Shape& F)
 #ifdef OCCT_DEBUG
   Standard_Integer iW; Standard_Boolean tSPS = GtraceSPS(W,iW);
   if(tSPS){
-    cout<<endl;DEBSHASET(s,"--- GFillWireWES ",WES," ");
-    GdumpSHA(W,(Standard_Address)s.ToCString()); cout<<endl;
+    std::cout<<std::endl;DEBSHASET(s,"--- GFillWireWES ",WES," ");
+    GdumpSHA(W,(Standard_Address)s.ToCString()); std::cout<<std::endl;
     Standard_Integer nbe = 0;
     TopOpeBRepTool_ShapeExplorer exE(W,TopAbs_EDGE);for (;exE.More(); exE.Next()) nbe++;
-    cout<<"--- GFillWireWES on W "<<iW<<" with "<<nbe<<" edges "<<endl;
+    std::cout<<"--- GFillWireWES on W "<<iW<<" with "<<nbe<<" edges "<<std::endl;
     debfillw(iW);
   }
   GLOBAL_iexE = 0;
@@ -633,7 +633,7 @@ static Standard_Boolean FUN_validF1edge(const TopoDS_Shape& F)
 
 #ifdef OCCT_DEBUG
   Standard_Integer iE; Standard_Boolean tSPS = GtraceSPS(EOR,iE);
-  if(tSPS)cout<<endl;
+  if(tSPS)std::cout<<std::endl;
 #endif
 
 #ifdef OCCT_DEBUG
@@ -647,7 +647,7 @@ static Standard_Boolean FUN_validF1edge(const TopoDS_Shape& F)
 
 #ifdef OCCT_DEBUG
   if(tSPS) GdumpSHASTA(iE,TB1,WES,"--- GFillEdgeWES ");
-  if(tSPS) cout<<" tosplit "<<tosplit<<" tomerge "<<tomerge<<endl;
+  if(tSPS) std::cout<<" tosplit "<<tosplit<<" tomerge "<<tomerge<<std::endl;
   if(tSPS) debfille(iE);
 #endif
   
@@ -736,7 +736,7 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
   Standard_Integer iEOR; Standard_Boolean tSPS = GtraceSPS(EOR,iEOR);
   Standard_Integer iWESF; /*Standard_Boolean tSPSW = */GtraceSPS(WES.Face(),iWESF);
   if(tSPS) GdumpSHASTA(iEOR,TB1,WES,"\n--- GSplitEdgeWES","START");
-  if(tSPS) cout<<" RevOri1 : "<<RevOri1<<endl;
+  if(tSPS) std::cout<<" RevOri1 : "<<RevOri1<<std::endl;
   if(tSPS) debsplite(iEOR);
 #endif  
     
@@ -786,8 +786,8 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
 #ifdef OCCT_DEBUG
     if(tSPS) {
       GdumpSHASTA(iEOR,TB1,WES,"--- GSplitEdgeWES","WES+ Split");
-      cout<<" ";TopAbs::Print(TB1,cout)<<" : "<<LSE.Extent()<<" edge(s) ";
-      TopAbs::Print(neworiE,cout); cout<<endl;
+      std::cout<<" ";TopAbs::Print(TB1,std::cout)<<" : "<<LSE.Extent()<<" edge(s) ";
+      TopAbs::Print(neworiE,std::cout); std::cout<<std::endl;
     }
 #endif
 
@@ -806,7 +806,7 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
 	  Standard_Boolean ok = FUN_tool_curvesSO(newE,par,TopoDS::Edge(EOR),so);
 	  if (!ok) {
 #ifdef OCCT_DEBUG
-            cout<<"GSplitEdgeWES: cannot orient SDM split of an edge"<<endl;
+            std::cout<<"GSplitEdgeWES: cannot orient SDM split of an edge"<<std::endl;
 #endif
 	    //return; // nyiFUNRAISE
 	  }
@@ -850,10 +850,10 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
       }
       
 #ifdef OCCT_DEBUG
-      cout<<"o-o GridFF ffil F"<<ifil<<" se E"<<iEOR<<" / "<<iWESF<<" ";
-      TopAbs::Print(TB1,cout);cout.flush();
-      if (!ftg) {cout<<" : !ftg --> "; GKeepShape(EOR,LSclass,TB1);cout.flush();}
-      else      {cout<<" : ftg --> non gardee"<<endl;cout.flush();}
+      std::cout<<"o-o GridFF ffil F"<<ifil<<" se E"<<iEOR<<" / "<<iWESF<<" ";
+      TopAbs::Print(TB1,std::cout);std::cout.flush();
+      if (!ftg) {std::cout<<" : !ftg --> "; GKeepShape(EOR,LSclass,TB1);std::cout.flush();}
+      else      {std::cout<<" : ftg --> non gardee"<<std::endl;std::cout.flush();}
 #endif
 
     }
@@ -863,7 +863,7 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
       testkeep = hs && (!hg);
       if (testkeep) {
 #ifdef OCCT_DEBUG
-	if(tSPS){cout<<"--- GSplitEdgeWES ";}
+	if(tSPS){std::cout<<"--- GSplitEdgeWES ";}
 #endif
         TopAbs_State pos;
 	Standard_Boolean keep = GKeepShape1(EOR,LSclass,TB1,pos);
@@ -888,8 +888,8 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
       if(tSPS){
 	DEBSHASET(ss,"--- GSplitEdgeWES ",WES," WES+ edge ");  
 	GdumpSHA(newE,(Standard_Address)ss.ToCString());
-	cout<<" ";TopAbs::Print(TB1,cout)<<" : 1 edge ";
-	TopAbs::Print(neworiE,cout); cout<<endl;
+	std::cout<<" ";TopAbs::Print(TB1,std::cout)<<" : 1 edge ";
+	TopAbs::Print(neworiE,std::cout); std::cout<<std::endl;
       }
 #endif
 
@@ -926,7 +926,7 @@ static void FUN_samgeomori(const TopOpeBRepDS_DataStructure& BDS, const Standard
 	  Standard_Boolean ok = FUN_tool_curvesSO(newE,par,TopoDS::Edge(EOR),so);
 	  if (!ok) {
 #ifdef OCCT_DEBUG
-            cout<<"GSplitEdgeWES: cannot orient SDM split of an edge"<<endl;
+            std::cout<<"GSplitEdgeWES: cannot orient SDM split of an edge"<<std::endl;
 #endif
           }
 	  if (!so) newE.Reverse();
@@ -965,7 +965,7 @@ void debmergee(const Standard_Integer /*i*/) {}
   Standard_Integer iEOR; Standard_Boolean tSPS = GtraceSPS(EOR,iEOR);
   if(tSPS){ debmergee(iEOR);
     DEBSHASET(s,"\n--- GMergeEdgeWES ",WES," START ");  
-    GdumpSHAORIGEO(EOR,(Standard_Address)s.ToCString()); cout<<endl;
+    GdumpSHAORIGEO(EOR,(Standard_Address)s.ToCString()); std::cout<<std::endl;
   }
 #endif
 
@@ -1028,8 +1028,8 @@ void debmergee(const Standard_Integer /*i*/) {}
   if(tSPS){
     DEBSHASET(s,"GMergeEdgeWES(1) ",WES," WES+ Merged ");  
     GdumpSHA(EOR,(Standard_Address)s.ToCString());
-    cout<<" ";TopAbs::Print(TBEOR,cout);
-    cout<<" : "<<ME.Extent()<<" edge"<<endl;
+    std::cout<<" ";TopAbs::Print(TBEOR,std::cout);
+    std::cout<<" : "<<ME.Extent()<<" edge"<<std::endl;
   }
 #endif
   for(TopTools_ListIteratorOfListOfShape it(ME);it.More();it.Next()) {
@@ -1041,7 +1041,7 @@ void debmergee(const Standard_Integer /*i*/) {}
 #ifdef OCCT_DEBUG
   if(tSPS){
     DEBSHASET(sss,"GMergeEdgeWES ",WES," END ");
-    GdumpSHA(EOR,(Standard_Address)sss.ToCString());cout<<endl;
+    GdumpSHA(EOR,(Standard_Address)sss.ToCString());std::cout<<std::endl;
   }
 #endif
   
@@ -1074,7 +1074,7 @@ void debmergee(const Standard_Integer /*i*/) {}
   Standard_Boolean takeON = (TB1 == TopAbs_IN) && (isse) && (issplitON);
   takeON = Standard_False;
 #ifdef OCCT_DEBUG
-  if (tSPS) cout<<"---- takeON mis a 0"<<endl;
+  if (tSPS) std::cout<<"---- takeON mis a 0"<<std::endl;
 #endif
 
   if ( takeON ) {

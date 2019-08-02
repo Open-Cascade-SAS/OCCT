@@ -61,11 +61,11 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S,const T
 #ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
   if (tSPS) { 
-    cout<<"GToSplit ";GdumpSHA(S);cout<<" ";TopAbs::Print(TB,cout);
-    cout<<" "<<tosplit<<" : !issplit "<<(!issplit);
-    cout<<" && (facshap || hasgeom || hassame) ";
-    cout<<"("<<facshap<<" || "<<hasgeom<<" || "<<hassame<<")"<<endl;
-    cout.flush();
+    std::cout<<"GToSplit ";GdumpSHA(S);std::cout<<" ";TopAbs::Print(TB,std::cout);
+    std::cout<<" "<<tosplit<<" : !issplit "<<(!issplit);
+    std::cout<<" && (facshap || hasgeom || hassame) ";
+    std::cout<<"("<<facshap<<" || "<<hasgeom<<" || "<<hassame<<")"<<std::endl;
+    std::cout.flush();
   }
 #endif
   
@@ -86,9 +86,9 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToSplit(const TopoDS_Shape& S,const T
       } //CONTEXT
     } //CONTEXT
     Standard_Boolean tosplitH = tosplit || hasON; //CONTEXT
-    if(tSPS){cout<<"GToSplit context SPEON";} //CONTEXT
-    if(tSPS){cout<<" "<<tosplitH<<" : tosplit "<<tosplit;} //CONTEXT
-    if(tSPS){cout<<" || hasON "<<hasON<<endl;} //CONTEXT
+    if(tSPS){std::cout<<"GToSplit context SPEON";} //CONTEXT
+    if(tSPS){std::cout<<" "<<tosplitH<<" : tosplit "<<tosplit;} //CONTEXT
+    if(tSPS){std::cout<<" || hasON "<<hasON<<std::endl;} //CONTEXT
   } //CONTEXT
 #endif
   
@@ -110,8 +110,8 @@ Standard_Boolean TopOpeBRepBuild_Builder::GToMerge(const TopoDS_Shape& S) const
   
 #ifdef OCCT_DEBUG
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);
-  if(tSPS){cout<<"GToMerge ";GdumpSHA(S);cout<<" ";TopAbs::Print(TB,cout);}
-  if(tSPS){cout<<" "<<tomerge<<" : !ismerged "<<(!ismerged)<<" && hassame "<<hassame<<endl;}
+  if(tSPS){std::cout<<"GToMerge ";GdumpSHA(S);std::cout<<" ";TopAbs::Print(TB,std::cout);}
+  if(tSPS){std::cout<<" "<<tomerge<<" : !ismerged "<<(!ismerged)<<" && hassame "<<hassame<<std::endl;}
 #endif
   
   return tomerge;
@@ -254,7 +254,7 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(TopTools_ListOfShape& LSO,TopTools
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(sref,iS);
   if(tSPS) {
     TCollection_AsciiString ss("GFindSamDom result on ");  
-    GdumpSHA(sref,(Standard_Address)ss.ToCString());cout<<endl;
+    GdumpSHA(sref,(Standard_Address)ss.ToCString());std::cout<<std::endl;
     GdumpSAMDOM(LSO, (char *) "L1 : ");
     GdumpSAMDOM(LDO, (char *) "L2 : ");
   }

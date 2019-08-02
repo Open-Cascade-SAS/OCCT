@@ -798,7 +798,7 @@ Standard_Integer XSControl_TransferReader::TransferOne
     Standard_Integer num = myModel->Number(ent);
     Handle(TCollection_HAsciiString) lab = myModel->StringLabel(ent);
     sout<<"\n*******************************************************************\n";
-    sout << "******           Transferring one Entity                     ******"<<endl;
+    sout << "******           Transferring one Entity                     ******"<<Message_EndLine;
     if (!lab.IsNull())
       sout<<"******    N0 in file : "<<Interface_MSG::Blanks(num,5)<<num
 	  <<"      Ident : "<<lab->ToCString()
@@ -851,7 +851,7 @@ Standard_Integer XSControl_TransferReader::TransferList
   //   Pour le log-file
   if (level > 0) {
     sout<<"\n*******************************************************************\n";
-    sout << "******           Transferring a list of "<<Interface_MSG::Blanks(nb,5)<<" Entities       ******"<<endl;
+    sout << "******           Transferring a list of "<<Interface_MSG::Blanks(nb,5)<<" Entities       ******"<<Message_EndLine;
     sout<<"\n*******************************************************************\n";
 
     Handle(IFSelect_SignatureList) sl = new IFSelect_SignatureList;
@@ -908,7 +908,7 @@ Standard_Integer XSControl_TransferReader::TransferRoots(const Interface_Graph& 
     Interface_EntityIterator roots = G.RootEntities();
     Standard_Integer nb = roots.NbEntities();
     sout<<"\n*******************************************************************\n";
-    sout << "******           Transferring the "<<Interface_MSG::Blanks(nb,5)<<" Root Entities        ******"<<endl;
+    sout << "******           Transferring the "<<Interface_MSG::Blanks(nb,5)<<" Root Entities        ******"<<Message_EndLine;
     sout<<"\n*******************************************************************\n";
     Handle(IFSelect_SignatureList) sl = new IFSelect_SignatureList;
     for (roots.Start(); roots.More(); roots.Next())
@@ -965,16 +965,16 @@ void XSControl_TransferReader::PrintStats
   Handle(Message_Messenger) sout = myTP->Messenger();
   //  A ameliorer ... !
   sout<<"\n*******************************************************************\n";
-  sout << "******        Statistics on Transfer (Read)                  ******"<<endl;
+  sout << "******        Statistics on Transfer (Read)                  ******"<<Message_EndLine;
   sout<<"\n*******************************************************************\n";
-  if (what > 10)  {  sout<<" ***  Not yet implemented"<<endl;  return;  }
+  if (what > 10)  {  sout<<" ***  Not yet implemented"<<Message_EndLine;  return;  }
   if (what < 10)  {
-    sout << "******        Data recorded on Last Transfer                 ******"<<endl;
+    sout << "******        Data recorded on Last Transfer                 ******"<<Message_EndLine;
     PrintStatsProcess (myTP,what,mode);
   }
   //  reste  what = 10 : on liste les racines des final results
-  sout << "******        Final Results                                  ******"<<endl;
-  if (myModel.IsNull())  {  sout<<"****    Model unknown"<<endl;  return;  }
+  sout << "******        Final Results                                  ******"<<Message_EndLine;
+  if (myModel.IsNull())  {  sout<<"****    Model unknown"<<Message_EndLine;  return;  }
   Handle(TColStd_HSequenceOfTransient) list = RecordedList();
   Standard_Integer i, nb = list->Length();
   Handle(IFSelect_SignatureList) counter;
@@ -997,7 +997,7 @@ void XSControl_TransferReader::PrintStats
   }
   if (!counter.IsNull()) counter->PrintList(sout,myModel,pcm);
 
-  sout<<endl;
+  sout<<Message_EndLine;
 }
 
 
@@ -1110,9 +1110,9 @@ static void PrintPercent(const Handle(Message_Messenger)& sout, const Standard_C
 {
   if (nb <= 0 || nl == 0) return;
   sout<<"******      "<<mess<<": ";
-  if      (nb == nl)       sout<<"100 %"<<endl;
-  else if (nb*100/nl == 0) sout<<"< 1 %"<<endl;
-  else            sout<<(nb*100/nl < 10 ? "  " : " ")<<nb*100/nl<<" %"<<endl;
+  if      (nb == nl)       sout<<"100 %"<<Message_EndLine;
+  else if (nb*100/nl == 0) sout<<"< 1 %"<<Message_EndLine;
+  else            sout<<(nb*100/nl < 10 ? "  " : " ")<<nb*100/nl<<" %"<<Message_EndLine;
 }
 
 
@@ -1146,7 +1146,7 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
   if (what == 0) {  TP->PrintStats(0,sout);  return;  }
 
   sout<<"\n*******************************************************************\n";
-  sout << "******        Statistics on Transfer Process (Read)          ******"<<endl;
+  sout << "******        Statistics on Transfer Process (Read)          ******"<<Message_EndLine;
   if (what == 1) sout << "******        Individual Transfers  (Roots)                  ******\n";
   if (what == 2) sout << "******        All recorded data about Transfer               ******\n";
   if (what == 3) sout << "******        Abnormal records                               ******\n";
@@ -1184,10 +1184,10 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
     IFSelect_PrintCount pcm = IFSelect_CountByItem;
     if (mode == 6) pcm = IFSelect_ListByItem;
 
-    sout  <<"****        Entities in Model   : "<<model->NbEntities()<<endl;
-    sout  <<"****        Nb Items (Transfer) : "<<nb<<endl;
+    sout  <<"****        Entities in Model   : "<<model->NbEntities()<<Message_EndLine;
+    sout  <<"****        Nb Items (Transfer) : "<<nb<<Message_EndLine;
     if (!nolist)
-      sout<<"****        Nb Items (Listed)   : "<<nl<<endl;
+      sout<<"****        Nb Items (Listed)   : "<<nl<<Message_EndLine;
 
     for (itrp.Start(); itrp.More(); itrp.Next()) {
       nbi ++;
@@ -1199,7 +1199,7 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
 	else if (mode == 1 || mode == 2) {
 	  sout<<"["<<Interface_MSG::Blanks (nbi,4)<<nbi<<" ]:";
 	  model->Print (ent,sout);
-	  sout<<"   "<<model->TypeName(ent,Standard_False)<<"  (not recorded)"<<endl;
+	  sout<<"   "<<model->TypeName(ent,Standard_False)<<"  (not recorded)"<<Message_EndLine;
 	  continue;
 	}
       }
@@ -1221,7 +1221,7 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
 	sout<<"["<<Interface_MSG::Blanks (i,4)<<i<<" ]:";
 	model->Print (ent,sout);
 	sout<<"   "<<model->TypeName(ent,Standard_False);
-	sout<<"	Result:"<<mess<<endl;
+	sout<<"	Result:"<<mess<<Message_EndLine;
 	if (mode == 1) continue;
 
 	const Handle(Interface_Check)& ch = binder->Check();
@@ -1229,11 +1229,11 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
 
 	if (newnbw > 0) {
 	  sout<<" - Warnings : "<<newnbw<<":\n";
-	  for (newi = 1; newi <= newnbw; newi ++) sout<<ch->CWarning(newi)<<endl;
+	  for (newi = 1; newi <= newnbw; newi ++) sout<<ch->CWarning(newi)<<Message_EndLine;
 	}
 	if (newnbf > 0) {
 	  sout<<" - Fails : "<<newnbf<<":\n";
-	  for (newi = 1; newi <= newnbf; newi ++) sout<<ch->CFail(newi)<<endl;
+	  for (newi = 1; newi <= newnbf; newi ++) sout<<ch->CFail(newi)<<Message_EndLine;
 	}
 	continue;
       }
@@ -1260,25 +1260,25 @@ void XSControl_TransferReader::PrintStatsOnList(const Handle(Transfer_TransientP
       //    Fin de l iteration
     }
     if (!counter.IsNull()) counter->PrintList(sout,model,pcm);
-    else sout<<endl;
+    else sout<<Message_EndLine;
     //    Pourcentages
     if (mode != 3 && nbi > 0) {
-      sout << "******        Percentages according Transfer Status          ******"<<endl;
+      sout << "******        Percentages according Transfer Status          ******"<<Message_EndLine;
       PrintPercent (sout,"Result          ",nbr+nbrw,nl);
       PrintPercent (sout,"Result + FAIL   ",nbrf,nl);
       PrintPercent (sout,"FAIL, no Result ",nbf,nl);
       PrintPercent (sout,"Just Warning    ",nbw,nl);
       PrintPercent (sout,"Nothing Recorded",nbnr,nl);
 /*      if (nbr+nbrw > 0)
-	sout<<"******      Result          : "<< (nbr+nbrw)*100/nl<<" %"<<endl;
+	sout<<"******      Result          : "<< (nbr+nbrw)*100/nl<<" %"<<std::endl;
       if (nbrf > 0)
-	sout<<"******      Result + FAIL   : "<< (nbrf)*100/nl<<" %"<<endl;
+	sout<<"******      Result + FAIL   : "<< (nbrf)*100/nl<<" %"<<std::endl;
       if (nbf > 0)
-	sout<<"******      FAIL, no Result : "<< (nbf)*100/nl<<" %"<<endl;
+	sout<<"******      FAIL, no Result : "<< (nbf)*100/nl<<" %"<<std::endl;
       if (nbw > 0)
-	sout<<"******      Just Warning    : "<< (nbw)*100/nl<<" %"<<endl;
+	sout<<"******      Just Warning    : "<< (nbw)*100/nl<<" %"<<std::endl;
       if (nbnr > 0)
-	sout<<"******      Nothing Recorded: "<< (nbnr)*100/nl<<" %"<<endl; */
+	sout<<"******      Nothing Recorded: "<< (nbnr)*100/nl<<" %"<<std::endl; */
     }
     return;
   }

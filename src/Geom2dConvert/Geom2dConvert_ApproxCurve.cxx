@@ -187,7 +187,7 @@ void Geom2dConvert_ApproxCurve::Approximate(const Handle(Adaptor2d_HCurve2d)& th
 
  void Geom2dConvert_ApproxCurve::Dump(Standard_OStream& o) const
 {
-  o << "******* Dump of ApproxCurve *******" << endl;
-  o << "******* Error   " << MaxError() << endl;
+  o << "******* Dump of ApproxCurve *******" << std::endl;
+  o << "******* Error   " << MaxError() << std::endl;
 }
 

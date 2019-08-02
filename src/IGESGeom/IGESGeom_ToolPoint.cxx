@@ -144,12 +144,12 @@ void IGESGeom_ToolPoint::OwnDump
   (const Handle(IGESGeom_Point)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
-  S << "IGESGeom_Point" << endl;
+  S << "IGESGeom_Point" << Message_EndLine;
 
   S << " Value         : ";
   IGESData_DumpXYZL(S,level, ent->Value(), ent->Location());
-  S << endl;
+  S << Message_EndLine;
   S << " Display Symbol : ";
   dumper.Dump(ent->DisplaySymbol(),S, (level <= 4) ? 0 : 1);
-  S << endl;
+  S << Message_EndLine;
 }

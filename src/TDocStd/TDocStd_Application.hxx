@@ -80,7 +80,7 @@ public:
   //! by the application constructor
   Standard_EXPORT Standard_Boolean IsDriverLoaded() const;
 
-  //! Redefines message driver, by default outputs to cout.
+  //! Redefines message driver, by default outputs to std::cout.
   Standard_EXPORT virtual Handle(Message_Messenger) MessageDriver() Standard_OVERRIDE;
   
   //! Returns resource manager defining supported persistent formats.
@@ -215,7 +215,7 @@ public:
   //! Example:
   //! Standard_Integer insession = A->IsInSession(aDoc);
   //! if (insession > 0) {
-  //! cout << "document " << insession << " is already in session" << endl;
+  //! std::cout << "document " << insession << " is already in session" << std::endl;
   //! return 0;
   //! }
   Standard_EXPORT Standard_Integer IsInSession (const TCollection_ExtendedString& path) const;

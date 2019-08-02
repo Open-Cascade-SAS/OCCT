@@ -82,7 +82,7 @@ Standard_Integer DNaming_SphereDriver::Execute(Handle(TFunction_Logbook)& theLog
   Handle(TNaming_NamedShape) aNSCnt = DNaming::GetObjectValue(anObject);
   if (aNSCnt.IsNull() || aNSCnt->IsEmpty()) {
 #ifdef OCCT_DEBUG
-    cout<<"SphereDriver:: Center point is null or empty"<<endl;
+    std::cout<<"SphereDriver:: Center point is null or empty"<<std::endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);
     return -1;
@@ -99,7 +99,7 @@ Standard_Integer DNaming_SphereDriver::Execute(Handle(TFunction_Logbook)& theLog
   TopoDS_Shape aCntShape = aNSCnt->Get();
   if(aCntShape.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<"SphereDriver:: Center point is null"<<endl;
+    std::cout<<"SphereDriver:: Center point is null"<<std::endl;
 #endif
     aFunction->SetFailure(WRONG_ARGUMENT);
     return -1;

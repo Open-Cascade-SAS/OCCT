@@ -75,15 +75,15 @@ Standard_Boolean TopOpeBRep_traceSIFF::Start(const TCollection_AsciiString& s,
 {
   Standard_CString cs = myfilename.ToCString();
   myopen = Standard_True;
-  if (!myfilebuf.open(cs,ios::out)) {
+  if (!myfilebuf.open(cs,std::ios::out)) {
     myopen = Standard_False;
   }
   if (!myopen) {
     return myopen;
   }
-  ostream osfic(&myfilebuf); osfic.precision(15);
+  std::ostream osfic(&myfilebuf); osfic.precision(15);
   if (s.Length()) {
-    OS<<s<<myfilename<<endl;
+    OS<<s<<myfilename<<std::endl;
   }
   return myopen;
 }
@@ -96,7 +96,7 @@ void TopOpeBRep_traceSIFF::Add(const Standard_Integer I1,
   }
   TCollection_AsciiString n1 = Name1(I1);
   TCollection_AsciiString n2 = Name2(I2);
-  ostream osfic(&myfilebuf);
+  std::ostream osfic(&myfilebuf);
   osfic<<n1<<" "<<n2<<"\n";
 }
 
@@ -107,7 +107,7 @@ void TopOpeBRep_traceSIFF::End(const TCollection_AsciiString& s,
     return;
   }
   if (s.Length()) {
-    OS<<s<<myfilename<<endl;
+    OS<<s<<myfilename<<std::endl;
   }
   myopen = Standard_False;
 }  

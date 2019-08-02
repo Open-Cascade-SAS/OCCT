@@ -84,8 +84,8 @@ static  Handle(IGESData_FileProtocol) IGESProto;
   char* pname=(char*) name;
   Standard_Integer status = IGESFile_Read (pname,igesmod,prot);
 
-  if (status < 0) sout<<"File not found : "<<name<<endl;
-  if (status > 0) sout<<"Error when reading file : "<<name<<endl;
+  if (status < 0) sout<<"File not found : "<<name<<Message_EndLine;
+  if (status > 0) sout<<"Error when reading file : "<<name<<Message_EndLine;
   if (status == 0) model = igesmod;
   else             model.Nullify();
   return status;
@@ -101,11 +101,11 @@ static  Handle(IGESData_FileProtocol) IGESProto;
   DeclareAndCast(IGESData_Protocol,prot,ctx.Protocol());
 
   if (igesmod.IsNull() || prot.IsNull()) return Standard_False;
-  ofstream fout;
-  OSD_OpenStream(fout,ctx.FileName(),ios::out );
+  std::ofstream fout;
+  OSD_OpenStream(fout,ctx.FileName(),std::ios::out );
   if (!fout) {
     ctx.CCheck(0)->AddFail("IGES File could not be created");
-    sout<<" - IGES File could not be created : " << ctx.FileName() << endl; return 0;
+    sout<<" - IGES File could not be created : " << ctx.FileName() << Message_EndLine; return 0;
   }
   sout<<" IGES File Name : "<<ctx.FileName();
   IGESData_IGESWriter VW(igesmod);  
@@ -121,20 +121,20 @@ static  Handle(IGESData_FileProtocol) IGESProto;
     sout << " .. FileMod." << numod <<" "<< filemod->Label();
     if (ctx.IsForAll()) sout << " (all model)";
     else  sout << " (" << ctx.NbEntities() << " entities)";
-//    sout << flush;
+//    sout << std::flush;
   }
 
 //  Envoi
   VW.SendModel(prot);            
   sout<<" Write ";
   if (themodefnes) VW.WriteMode() = 10;
-  Standard_Boolean status = VW.Print(fout);                sout<<" Done"<<endl;
+  Standard_Boolean status = VW.Print(fout);                sout<<" Done"<<Message_EndLine;
 
   errno = 0;
   fout.close();
   status = fout.good() && status && !errno;
   if(errno)
-    sout << strerror(errno) << endl;
+    sout << strerror(errno) << Message_EndLine;
 
   return status;
 }
@@ -169,13 +169,13 @@ static  Handle(IGESData_FileProtocol) IGESProto;
   Standard_Boolean iserr = model->IsRedefinedContent(num);
   Handle(Standard_Transient) con;
   if (iserr) con = model->ReportEntity(num)->Content();
-  if (entity.IsNull()) { S<<" Null"<<endl; return ;  }
+  if (entity.IsNull()) { S<<" Null"<<Message_EndLine; return ;  }
 
 //  On attaque le dump : d abord cas de l Erreur
   if (iserr) {
     S << " ERRONEOUS, Content, Type cdl : ";
     if (!con.IsNull()) S << con->DynamicType()->Name();
-    else S << "(undefined)" << endl;
+    else S << "(undefined)" << Message_EndLine;
     igesent = GetCasted(IGESData_IGESEntity,con);
     con.Nullify();
     Handle(Interface_Check) check = model->ReportEntity(num)->Check();
@@ -192,6 +192,6 @@ static  Handle(IGESData_FileProtocol) IGESProto;
     dump.Dump(igesent,S,level,(level-1)/3);
   }
   catch (Standard_Failure const&) {
-    S << " **  Dump Interrupt **" << endl;
+    S << " **  Dump Interrupt **" << Message_EndLine;
   }
 }

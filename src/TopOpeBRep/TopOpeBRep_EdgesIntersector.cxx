@@ -174,14 +174,14 @@ void TopOpeBRep_EdgesIntersector::SetFaces(const TopoDS_Shape& F1,const TopoDS_S
 #ifdef OCCT_DEBUG
   Standard_Integer DEBi = 0;
   if ( DEBi ) {
-    cout<<"TopOpeBRep_EdgesIntersector::SetFaces : ";
-    cout<<"f1 "; TopAbs::Print(myFace1.Orientation(),cout);
-    cout<< " / f1F : ";
-    if (so11) cout<<"sameoriented"; else cout<<"difforiented"; cout<<endl;
-    cout <<"  ";
-    cout<<"f2 "; TopAbs::Print(myFace2.Orientation(),cout);
-    cout<< " / f1F : ";
-    if (so21) cout<<"sameoriented"; else cout<<"difforiented"; cout<<endl;
+    std::cout<<"TopOpeBRep_EdgesIntersector::SetFaces : ";
+    std::cout<<"f1 "; TopAbs::Print(myFace1.Orientation(),std::cout);
+    std::cout<< " / f1F : ";
+    if (so11) std::cout<<"sameoriented"; else std::cout<<"difforiented"; std::cout<<std::endl;
+    std::cout <<"  ";
+    std::cout<<"f2 "; TopAbs::Print(myFace2.Orientation(),std::cout);
+    std::cout<< " / f1F : ";
+    if (so21) std::cout<<"sameoriented"; else std::cout<<"difforiented"; std::cout<<std::endl;
   }
 #endif
 }
@@ -339,8 +339,8 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = Standard_False;
   if (trc) {
-    cout<<"ed1 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"), first="<<first<<"\n";
-    cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<endl;}
+    std::cout<<"ed1 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"), first="<<first<<"\n";
+    std::cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<std::endl;}
 #endif  
   
   Standard_Boolean memesfaces = myFace1.IsSame(myFace2);
@@ -359,8 +359,8 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
     
 #ifdef OCCT_DEBUG
     if (trc) {
-      cout<<"ed2 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"), first="<<first<<"\n";
-      cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<endl;}
+      std::cout<<"ed2 on fa1 : {pfirst=("<<pfirst.X()<<" "<<pfirst.Y()<<"), first="<<first<<"\n";
+      std::cout<<"              plast =("<<plast.X()<<" "<<plast.Y()<<"),last="<<last<<"}"<<std::endl;}
 #endif
     
   }
@@ -426,15 +426,15 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
       myDomain2.SetValues(pfirst,first,tole,plast,last,tole);
 #ifdef OCCT_DEBUG
       if ( TopOpeBRep_GettracePROEDG() ) {
-	cout<<"------------ projection de curve"<<endl;
-	cout<<"--- Curve : "<<endl;
-	GeomTools_CurveSet::PrintCurve(NC,cout);
-	cout<<"--- nouvelle PCurve : "<<endl;
-	GeomTools_Curve2dSet::PrintCurve2d(PC2on1,cout);
+	std::cout<<"------------ projection de curve"<<std::endl;
+	std::cout<<"--- Curve : "<<std::endl;
+	GeomTools_CurveSet::PrintCurve(NC,std::cout);
+	std::cout<<"--- nouvelle PCurve : "<<std::endl;
+	GeomTools_Curve2dSet::PrintCurve2d(PC2on1,std::cout);
 	Handle(Geom_Surface) aS1 = BRep_Tool::Surface(myFace1);
-	cout<<"--- sur surface : "<<endl;
-	GeomTools_SurfaceSet::PrintSurface(aS1,cout);
-	cout<<endl;
+	std::cout<<"--- sur surface : "<<std::endl;
+	GeomTools_SurfaceSet::PrintSurface(aS1,std::cout);
+	std::cout<<std::endl;
       }
 #endif
     }
@@ -462,16 +462,16 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceFITOL()) {
-    cout<<"EdgesIntersector : Perform";
+    std::cout<<"EdgesIntersector : Perform";
 #ifdef DRAW
     GeomAbs_CurveType t1 = myCurve1.GetType();
     GeomAbs_CurveType t2 = myCurve2.GetType();
-    TCollection_AsciiString s1;CurveToString(t1,s1);cout<<" "<<s1;
-    TCollection_AsciiString s2;CurveToString(t2,s2);cout<<" "<<s2;
+    TCollection_AsciiString s1;CurveToString(t1,s1);std::cout<<" "<<s1;
+    TCollection_AsciiString s2;CurveToString(t2,s2);std::cout<<" "<<s2;
 #endif
-    cout<<endl;
-    cout<<"                   tol1 = "<<tol1<<endl;
-    cout<<"                   tol2 = "<<tol2<<endl;
+    std::cout<<std::endl;
+    std::cout<<"                   tol1 = "<<tol1<<std::endl;
+    std::cout<<"                   tol2 = "<<tol2<<std::endl;
   }
 #endif
 
@@ -503,7 +503,7 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
 	   || TransitionEqualAndExtremity(P1.TransitionOfSecond(),P2.TransitionOfSecond()) ) { 
 #ifdef OCCT_DEBUG
 	  Standard_Boolean TRC = Standard_True;
-	  if (TRC) cout<<"\n Egalite de transitions \n"<<endl;
+	  if (TRC) std::cout<<"\n Egalite de transitions \n"<<std::endl;
 #endif
 	  fin = Standard_False;
 	  mylpnt.Remove(p);
@@ -638,7 +638,7 @@ Standard_Boolean TopOpeBRep_EdgesIntersector::ComputeSameDomain()
   if (t1 != GeomAbs_Circle) {
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceNYI()) 
-      cout<<"TopOpeBRep_EdgesIntersector : EdgesSameDomain on NYI curve type"<<endl;
+      std::cout<<"TopOpeBRep_EdgesIntersector : EdgesSameDomain on NYI curve type"<<std::endl;
 #endif
     return SetSameDomain(Standard_False);
   }
@@ -1036,11 +1036,11 @@ void TopOpeBRep_EdgesIntersector::Dump(const TCollection_AsciiString& ,const Sta
 void TopOpeBRep_EdgesIntersector::Dump(const TCollection_AsciiString& str,const Standard_Integer E1index,const Standard_Integer E2index)
 {
   InitPoint();if (!MorePoint()) return;
-  cout<<endl<<"---- "<<str<<" ---- E/E : "<<NbPoints()<<" p , ";
-  cout<<NbSegments()<<" s : "<<myTrueNbPoints<<" true points"<<endl;
-  cout<<"E1 = "<<E1index<<" ";TopAbs::Print(Edge(1).Orientation(),cout)<<", ";
-  cout<<"E2 = "<<E2index<<" ";TopAbs::Print(Edge(2).Orientation(),cout)<<"  ";
-  cout<<"hs="<<HasSegment()<<" hsd="<<SameDomain()<<endl;
+  std::cout<<std::endl<<"---- "<<str<<" ---- E/E : "<<NbPoints()<<" p , ";
+  std::cout<<NbSegments()<<" s : "<<myTrueNbPoints<<" true points"<<std::endl;
+  std::cout<<"E1 = "<<E1index<<" ";TopAbs::Print(Edge(1).Orientation(),std::cout)<<", ";
+  std::cout<<"E2 = "<<E2index<<" ";TopAbs::Print(Edge(2).Orientation(),std::cout)<<"  ";
+  std::cout<<"hs="<<HasSegment()<<" hsd="<<SameDomain()<<std::endl;
  
   for (InitPoint(); MorePoint(); NextPoint()) {
     const TopOpeBRep_Point2d P2d = Point();
@@ -1049,11 +1049,11 @@ void TopOpeBRep_EdgesIntersector::Dump(const TCollection_AsciiString& str,const 
       Standard_Integer ip1,ip2; P2d.SegmentAncestors(ip1,ip2);
       Standard_Real d1 = Point(ip1).Value().Distance(Point(ip2).Value());
       Standard_Real d2 = d1 + Point(ip1).Tolerance()/2. + Point(ip2).Tolerance()/2.;
-      cout<<"ancestor segment : d P"<<ip1<<",P"<<ip2<<" = "<<d1<<endl;
-      cout<<"     t1/2 + d + t2/2 P"<<ip1<<",P"<<ip2<<" = "<<d2<<endl;
+      std::cout<<"ancestor segment : d P"<<ip1<<",P"<<ip2<<" = "<<d1<<std::endl;
+      std::cout<<"     t1/2 + d + t2/2 P"<<ip1<<",P"<<ip2<<" = "<<d2<<std::endl;
     }
   }
-  cout<<endl;
+  std::cout<<std::endl;
 #endif
 }
 

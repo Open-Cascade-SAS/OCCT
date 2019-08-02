@@ -253,7 +253,7 @@ Standard_Boolean MAT2d_Connexion::IsAfter(const Handle(MAT2d_Connexion)& C2,
 
 static void Indent(const Standard_Integer Offset) {
   if (Offset > 0) {
-    for (Standard_Integer i = 0; i <Offset; i++) {cout <<" ";}
+    for (Standard_Integer i = 0; i <Offset; i++) {std::cout <<" ";}
   }
 }
 
@@ -266,28 +266,28 @@ void MAT2d_Connexion::Dump (const Standard_Integer ,
 {
   Standard_Integer MyOffset = Offset;
   Indent (Offset);
-  cout<<"MAT2d_Connexion :"<<endl;
+  std::cout<<"MAT2d_Connexion :"<<std::endl;
   MyOffset++;
   Indent (MyOffset);
-  cout <<"IndexFirstLine    :"<<lineA<<endl;
+  std::cout <<"IndexFirstLine    :"<<lineA<<std::endl;
   Indent (MyOffset);
-  cout <<"IndexSecondLine   :"<<lineB<<endl;
+  std::cout <<"IndexSecondLine   :"<<lineB<<std::endl;
   Indent (MyOffset);
-  cout <<"IndexItemOnFirst  :"<<itemA<<endl;
+  std::cout <<"IndexItemOnFirst  :"<<itemA<<std::endl;
   Indent (MyOffset);
-  cout <<"IndexItemOnSecond :"<<itemB<<endl;
+  std::cout <<"IndexItemOnSecond :"<<itemB<<std::endl;
   Indent (MyOffset);
-  cout <<"ParameterOnFirst  :"<<parameterOnA<<endl;
+  std::cout <<"ParameterOnFirst  :"<<parameterOnA<<std::endl;
   Indent (MyOffset);
-  cout <<"ParameterOnSecond :"<<parameterOnB<<endl;
+  std::cout <<"ParameterOnSecond :"<<parameterOnB<<std::endl;
   Indent (MyOffset);
-  cout <<"PointOnFirst      :"<<endl;
-  cout <<"  X = "<<pointA.X()<<endl;
-  cout <<"  Y = "<<pointA.Y()<<endl;
+  std::cout <<"PointOnFirst      :"<<std::endl;
+  std::cout <<"  X = "<<pointA.X()<<std::endl;
+  std::cout <<"  Y = "<<pointA.Y()<<std::endl;
   Indent (MyOffset);
-  cout <<"PointOnSecond     :"<<endl;
-  cout <<"  X = "<<pointB.X()<<endl;
-  cout <<"  Y = "<<pointB.Y()<<endl;
+  std::cout <<"PointOnSecond     :"<<std::endl;
+  std::cout <<"  X = "<<pointB.X()<<std::endl;
+  std::cout <<"  Y = "<<pointB.Y()<<std::endl;
   Indent (MyOffset);
-  cout <<"Distance          :"<<distance<<endl;
+  std::cout <<"Distance          :"<<distance<<std::endl;
 }

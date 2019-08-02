@@ -228,7 +228,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
 		
                 if(ipL-ipF < 1) { 
                   InsuffisantNumberOfPoints=Standard_True;
-                  //cout<<"\n !! Pb ds HLRTopoBRep_DSFiller.cxx (Contour App Nbp <3)"<<endl;
+                  //std::cout<<"\n !! Pb ds HLRTopoBRep_DSFiller.cxx (Contour App Nbp <3)"<<std::endl;
                 }
 /*
 		else if(ipL-ipF < 6) { 
@@ -390,7 +390,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
                   TOL3d=TOL*Maxx; if(TOL3d<1e-12) TOL3d=1e-12; else if(TOL3d>0.1) TOL3d=0.1;
                   TOL2d=TOL*Maxu; if(TOL2d<1e-12) TOL2d=1e-12; else if(TOL2d>0.1) TOL2d=0.1;
 		  
-                  //-- cout<<"\nHLRTopoBRep_DSFiller : nbp="<<nbp<<"  Tol3d="<<TOL3d<<"   Tol2d="<<TOL2d<<endl;
+                  //-- std::cout<<"\nHLRTopoBRep_DSFiller : nbp="<<nbp<<"  Tol3d="<<TOL3d<<"   Tol2d="<<TOL2d<<std::endl;
 
                   Approx.SetParameters(TOL3d, TOL2d, dmin, dmax, niter, 30, tg);
                   Approx.Perform(AppLine,Standard_True,Standard_True,Standard_False,1,nbp);

@@ -3278,7 +3278,7 @@ Standard_Integer RWStepAP214_ReadWriteModule::CaseStep
   Standard_Integer NbComp = theTypes.Length();
   if (NbComp < 2) {
 #ifdef OCCT_DEBUG
-    cout << "Not a Plex" << endl;
+    std::cout << "Not a Plex" << std::endl;
 #endif
   }
   else {
@@ -4897,7 +4897,7 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
 {
   if (CN == 0) {
 #ifdef OCCT_DEBUG
-    cout << "CN = 0 for num = " << num << endl;
+    std::cout << "CN = 0 for num = " << num << std::endl;
 #endif
     return;
   }

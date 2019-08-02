@@ -203,11 +203,11 @@ void math_Uzawa::Perform(const math_Matrix& Cont, const math_Vector& Secont,
       if (NbIter > 1) {                   
 	if (Xmax <= EpsLix) {
 	  if (ErrMax <= EpsLic) {
-//	    cout <<"Convergence atteinte dans Uzawa"<<endl;
+//	    std::cout <<"Convergence atteinte dans Uzawa"<<std::endl;
 	    Done = Standard_True;
 	  }
 	  else {
-//	    cout <<"convergence non atteinte pour le probleme dual"<<endl;
+//	    std::cout <<"convergence non atteinte pour le probleme dual"<<std::endl;
 	    Done = Standard_False;
 	    return;
 	  }
@@ -235,8 +235,8 @@ void math_Uzawa::Dump(Standard_OStream& o) const {
   o << "math_Uzawa";
   if(Done) {
     o << " Status = Done \n";
-    o << " Number of iterations = " << NbIter << endl;
-    o << " The solution vector is: " << Resul << endl;
+    o << " Number of iterations = " << NbIter << std::endl;
+    o << " The solution vector is: " << Resul << std::endl;
   }
   else {
     o << " Status = not Done \n";

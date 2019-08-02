@@ -242,7 +242,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 	ok = theSource >> entry;
 	if(ok) {
 #ifdef OCCT_DEBUG
-	  cout << "NamingDriver:: Retrieved Context Label = " << entry << " Ok = " << theSource.IsOK()  <<endl;
+	  std::cout << "NamingDriver:: Retrieved Context Label = " << entry << " Ok = " << theSource.IsOK()  <<std::endl;
 #endif
 	 
 //6. context label
@@ -281,7 +281,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
         OrientationToApply = (TopAbs_Orientation)anIndx;
 		aName.Orientation(OrientationToApply);
 #ifdef OCCT_DEBUG
-	    cout << "NamingDriver:: Retrieved Orientation = " << OrientationToApply << " Ok = " << theSource.IsOK()  <<endl;
+	    std::cout << "NamingDriver:: Retrieved Orientation = " << OrientationToApply << " Ok = " << theSource.IsOK()  <<std::endl;
 #endif
 	  } else {
           aMsg = TCollection_ExtendedString("BinMNaming_NamingDriver: "
@@ -291,7 +291,7 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 	}
 	}
 #ifdef OCCT_DEBUG
-	      cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<endl;      
+	      std::cout << "Current Document Format Version = " << theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() <<std::endl;      
 #endif
 	}
   }

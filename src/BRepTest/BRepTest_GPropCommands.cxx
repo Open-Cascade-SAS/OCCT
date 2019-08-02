@@ -120,36 +120,36 @@ Standard_Integer props(Draw_Interpretor& di, Standard_Integer n, const char** a)
   {
     Standard_SStream aSStream1;
     aSStream1 << "\n\n";
-    aSStream1 << "Mass : " << setw(15) << G.Mass() << "\n\n";
-    if(witheps && *a[0] != 'l') aSStream1 << "Relative error of mass computation : " <<  setw(15) << eps <<  "\n\n";
+    aSStream1 << "Mass : " << std::setw(15) << G.Mass() << "\n\n";
+    if(witheps && *a[0] != 'l') aSStream1 << "Relative error of mass computation : " <<  std::setw(15) << eps <<  "\n\n";
   
     aSStream1 << "Center of gravity : \n";
-    aSStream1 << "X = " << setw(15) << P.X() << "\n";
-    aSStream1 << "Y = " << setw(15) << P.Y() << "\n";
-    aSStream1 << "Z = " << setw(15) << P.Z() << "\n";
+    aSStream1 << "X = " << std::setw(15) << P.X() << "\n";
+    aSStream1 << "Y = " << std::setw(15) << P.Y() << "\n";
+    aSStream1 << "Z = " << std::setw(15) << P.Z() << "\n";
     aSStream1 << "\n";
   
     aSStream1 << "Matrix of Inertia : \n";
-    aSStream1 << setw(15) << I(1,1);
-    aSStream1 << " " << setw(15) << I(1,2);
-    aSStream1 << " " << setw(15) << I(1,3) << "\n";
-    aSStream1 << setw(15) << I(2,1);
-    aSStream1 << " " << setw(15) << I(2,2);
-    aSStream1 << " " << setw(15) << I(2,3) << "\n";
-    aSStream1 << setw(15) << I(3,1);
-    aSStream1 << " " << setw(15) << I(3,2);
-    aSStream1 << " " << setw(15) << I(3,3) << "\n";
+    aSStream1 << std::setw(15) << I(1,1);
+    aSStream1 << " " << std::setw(15) << I(1,2);
+    aSStream1 << " " << std::setw(15) << I(1,3) << "\n";
+    aSStream1 << std::setw(15) << I(2,1);
+    aSStream1 << " " << std::setw(15) << I(2,2);
+    aSStream1 << " " << std::setw(15) << I(2,3) << "\n";
+    aSStream1 << std::setw(15) << I(3,1);
+    aSStream1 << " " << std::setw(15) << I(3,2);
+    aSStream1 << " " << std::setw(15) << I(3,3) << "\n";
     aSStream1 << "\n";
-    aSStream1 << ends;
+    aSStream1 << std::ends;
     di << aSStream1;
 
     Standard_SStream aSStream2;
     aSStream2 << "Moments : \n";
-    aSStream2 << "IX = " << setw(15) << Ix << "\n";
-    aSStream2 << "IY = " << setw(15) << Iy << "\n";
-    aSStream2 << "IZ = " << setw(15) << Iz << "\n";
+    aSStream2 << "IX = " << std::setw(15) << Ix << "\n";
+    aSStream2 << "IY = " << std::setw(15) << Iy << "\n";
+    aSStream2 << "IZ = " << std::setw(15) << Iz << "\n";
     aSStream2 << "\n";
-    aSStream2 << ends;
+    aSStream2 << std::ends;
     di << aSStream2;
   }
   else
@@ -249,9 +249,9 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 
   aSStream0.precision(15);
   aSStream0 << "\n\n";
-  aSStream0 << "Mass : " << setw(anOutWidth) << G.Mass() << "\n\n";
-  aSStream0 << "Relative error of mass computation : " <<  setw(anOutWidth) << eps <<  "\n\n";
-  aSStream0 << ends;
+  aSStream0 << "Mass : " << std::setw(anOutWidth) << G.Mass() << "\n\n";
+  aSStream0 << "Relative error of mass computation : " <<  std::setw(anOutWidth) << eps <<  "\n\n";
+  aSStream0 << std::ends;
   di << aSStream0;
 
   if(CGFlag || IFlag) {
@@ -269,27 +269,27 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
   
     aSStream1.precision(15);
     aSStream1 << "Center of gravity : \n";
-    aSStream1 << "X = " << setw(anOutWidth) << P.X() << "\n";
-    aSStream1 << "Y = " << setw(anOutWidth) << P.Y() << "\n";
-    aSStream1 << "Z = " << setw(anOutWidth) << P.Z() << "\n";
+    aSStream1 << "X = " << std::setw(anOutWidth) << P.X() << "\n";
+    aSStream1 << "Y = " << std::setw(anOutWidth) << P.Y() << "\n";
+    aSStream1 << "Z = " << std::setw(anOutWidth) << P.Z() << "\n";
     aSStream1 << "\n";
  
     if(IFlag) {
       gp_Mat I = G.MatrixOfInertia();
 
       aSStream1 << "Matrix of Inertia : \n";
-      aSStream1 << setw(anOutWidth) << I(1,1);
-      aSStream1 << " " << setw(anOutWidth) << I(1,2);
-      aSStream1 << " " << setw(anOutWidth) << I(1,3) << "\n";
-      aSStream1 << setw(anOutWidth) << I(2,1);
-      aSStream1 << " " << setw(anOutWidth) << I(2,2);
-      aSStream1 << " " << setw(anOutWidth) << I(2,3) << "\n";
-      aSStream1 << setw(anOutWidth) << I(3,1);
-      aSStream1 << " " << setw(anOutWidth) << I(3,2);
-      aSStream1 << " " << setw(anOutWidth) << I(3,3) << "\n";
+      aSStream1 << std::setw(anOutWidth) << I(1,1);
+      aSStream1 << " " << std::setw(anOutWidth) << I(1,2);
+      aSStream1 << " " << std::setw(anOutWidth) << I(1,3) << "\n";
+      aSStream1 << std::setw(anOutWidth) << I(2,1);
+      aSStream1 << " " << std::setw(anOutWidth) << I(2,2);
+      aSStream1 << " " << std::setw(anOutWidth) << I(2,3) << "\n";
+      aSStream1 << std::setw(anOutWidth) << I(3,1);
+      aSStream1 << " " << std::setw(anOutWidth) << I(3,2);
+      aSStream1 << " " << std::setw(anOutWidth) << I(3,3) << "\n";
       aSStream1 << "\n";
     }
-    aSStream1 << ends;
+    aSStream1 << std::ends;
     di << aSStream1;
   }
 
@@ -305,12 +305,12 @@ Standard_Integer vpropsgk(Draw_Interpretor& di, Standard_Integer n, const char**
 
     aSStream2.precision(15);
     aSStream2 << "Moments : \n";
-    aSStream2 << "IX = " << setw(anOutWidth) << Ix << "\n";
-    aSStream2 << "IY = " << setw(anOutWidth) << Iy << "\n";
-    aSStream2 << "IZ = " << setw(anOutWidth) << Iz << "\n";
+    aSStream2 << "IX = " << std::setw(anOutWidth) << Ix << "\n";
+    aSStream2 << "IY = " << std::setw(anOutWidth) << Iy << "\n";
+    aSStream2 << "IZ = " << std::setw(anOutWidth) << Iz << "\n";
     aSStream2 << "\n";
     aSStream2 << "\n";
-    aSStream2 << ends;
+    aSStream2 << std::ends;
     di << aSStream2;
 
     gp_Ax2 axes(P,Pr.ThirdAxisOfInertia(),Pr.FirstAxisOfInertia());

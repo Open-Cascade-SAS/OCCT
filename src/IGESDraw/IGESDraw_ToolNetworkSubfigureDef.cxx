@@ -227,19 +227,19 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_NetworkSubfigureDef" << endl;
+  S << "IGESDraw_NetworkSubfigureDef" << Message_EndLine;
 
-  S << "Depth Of Subfigure(Nesting)  : " << ent->Depth() << endl;
+  S << "Depth Of Subfigure(Nesting)  : " << ent->Depth() << Message_EndLine;
   S << "Name Of Subfigure            : ";
   IGESData_DumpString(S,ent->Name());
-  S << endl << "Associated Entities          : ";
+  S << Message_EndLine << "Associated Entities          : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << endl << "Type Flag : " << ent->TypeFlag() << endl;
+  S << Message_EndLine << "Type Flag : " << ent->TypeFlag() << Message_EndLine;
   S << "Primary Reference Designator : ";
   IGESData_DumpString(S,ent->Designator());
-  S << endl << "Text Display Template Entity : ";
+  S << Message_EndLine << "Text Display Template Entity : ";
   dumper.Dump(ent->DesignatorTemplate(),S, tempSubLevel);
-  S << endl << "Connect Point Entities       : ";
+  S << Message_EndLine << "Connect Point Entities       : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbPointEntities(),ent->PointEntity);
-  S << endl;
+  S << Message_EndLine;
 }

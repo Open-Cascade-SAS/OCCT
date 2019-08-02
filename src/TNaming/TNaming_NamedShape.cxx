@@ -259,7 +259,7 @@ void TNaming_NamedShape::Clear()
 {
   if (Label().IsNull()) {
 #ifdef OCCT_DEBUG_BUILDER
-    cout << "attention etat fantomatique" << endl;
+    std::cout << "attention etat fantomatique" << std::endl;
 #endif
     return;
   }
@@ -668,7 +668,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& newShape)
   
   if (myShapes->myMap.IsBound(newShape)) {
 #ifdef OCCT_DEBUG_BUILDER
-    cout <<"TNaming_Builder::Generate : the shape is already in the attribute"<<endl;
+    std::cout <<"TNaming_Builder::Generate : the shape is already in the attribute"<<std::endl;
 #endif
     pns = myShapes->myMap.ChangeFind(newShape);
     if (pns->FirstUse()->myAtt  == myAtt.operator->()) {
@@ -709,7 +709,7 @@ void TNaming_Builder::Delete(const TopoDS_Shape& oldShape)
     pos = myShapes->myMap.ChangeFind(oldShape); 
   else {
 #ifdef OCCT_DEBUG_BUILDER
-    cout <<"TNaming_Builder::Delete : the shape is not in the data"<<endl;
+    std::cout <<"TNaming_Builder::Delete : the shape is not in the data"<<std::endl;
 #endif
     pos = new TNaming_RefShape(oldShape);  
     myShapes->myMap.Bind(oldShape, pos);
@@ -741,7 +741,7 @@ void TNaming_Builder::Generated(const TopoDS_Shape& oldShape,
 
   if (oldShape.IsSame(newShape)) {
 #ifdef OCCT_DEBUG_BUILDER
-    cout <<"TNaming_Builder::Generate : oldShape IsSame newShape"<<endl;
+    std::cout <<"TNaming_Builder::Generate : oldShape IsSame newShape"<<std::endl;
 #endif
     return;
   }
@@ -784,7 +784,7 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape,
 
   if (oldShape.IsSame(newShape)) {
 #ifdef OCCT_DEBUG_BUILDER
-    cout <<"TNaming_Builder::Modify : oldShape IsSame newShape"<<endl;
+    std::cout <<"TNaming_Builder::Modify : oldShape IsSame newShape"<<std::endl;
 #endif
     return;
   }
@@ -894,7 +894,7 @@ TNaming_Iterator::TNaming_Iterator(const TDF_Label&       Lab,
   else {
     myNode = 0L;
 #ifdef OCCT_DEBUG
-    cout <<"TNaming_Iterator : No Shape for this label"<<endl;
+    std::cout <<"TNaming_Iterator : No Shape for this label"<<std::endl;
 #endif
   }
 }
@@ -1490,7 +1490,7 @@ Standard_Boolean TNaming_Tool::HasLabel (const TDF_Label&    access,
     return (US->Map().IsBound(S));
   }
 #ifdef OCCT_DEBUG_HASL
-  cout << "##==> Sub-Shape has no Label!" <<endl;
+  std::cout << "##==> Sub-Shape has no Label!" <<std::endl;
 #endif
   return Standard_False;
 }

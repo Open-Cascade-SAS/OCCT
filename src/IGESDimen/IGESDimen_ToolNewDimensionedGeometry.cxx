@@ -215,28 +215,28 @@ void  IGESDimen_ToolNewDimensionedGeometry::OwnDump
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
   Standard_Integer i, num, sublevel = (level > 4) ? 1 : 0;
-  S << "IGESDimen_NewDimensionedGeometry" << endl;
-  S << "Number of Dimensions : " << ent->NbDimensions() << endl;
+  S << "IGESDimen_NewDimensionedGeometry" << Message_EndLine;
+  S << "Number of Dimensions : " << ent->NbDimensions() << Message_EndLine;
   S << "Dimension Entity : ";
   dumper.Dump(ent->DimensionEntity(),S, sublevel);
-  S << endl;
-  S << "Dimension Orientation Flag : " << ent->DimensionOrientationFlag() << endl;
-  S << "Angle Value Flag : " << ent->AngleValue() << endl;
-  S << "Geometry Entities : " << endl;
-  S << "Dimension Location Flags : " << endl;
+  S << Message_EndLine;
+  S << "Dimension Orientation Flag : " << ent->DimensionOrientationFlag() << Message_EndLine;
+  S << "Angle Value Flag : " << ent->AngleValue() << Message_EndLine;
+  S << "Geometry Entities : " << Message_EndLine;
+  S << "Dimension Location Flags : " << Message_EndLine;
   S << "Points : ";
   IGESData_DumpEntities(S,dumper,-level,1, ent->NbGeometries(),ent->GeometryEntity);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     for ( num = ent->NbGeometries(), i = 1; i <= num; i++ )
       {
-	S << "[" << i << "]: " << endl;
+	S << "[" << i << "]: " << Message_EndLine;
 	S << "Geometry Entity : ";
 	dumper.Dump (ent->GeometryEntity(i),S, 1);
-	S << endl;
-	S << "Dimension Location Flag : " << ent->DimensionLocationFlag(i) << endl;
+	S << Message_EndLine;
+	S << "Dimension Location Flag : " << ent->DimensionLocationFlag(i) << Message_EndLine;
 	S << "Point : ";
 	IGESData_DumpXYZL(S,level, ent->Point(i), ent->Location());
       }
-  S << endl;
+  S << Message_EndLine;
 }

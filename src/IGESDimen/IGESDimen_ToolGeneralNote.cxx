@@ -337,48 +337,48 @@ void  IGESDimen_ToolGeneralNote::OwnDump
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
   Standard_Integer upper = ent->NbStrings();
 
-  S << "IGESDimen_GeneralNote" << endl;
-  S << "Number of Text Strings : " << upper << endl;
-  S << "Number of Characters : " << endl;
-  S << "Box Widths : " << endl;
-  S << "Box Heights : " << endl;
-  S << "Font Codes : " << endl;
-  S << "Font Entities : " << endl;
-  S << "Slant Angles : " << endl;
-  S << "Rotation Angles : " << endl;
-  S << "Mirror Flags : " << endl;
-  S << "Rotate Flags : " << endl;
-  S << "Start Points : " << endl;
+  S << "IGESDimen_GeneralNote" << Message_EndLine;
+  S << "Number of Text Strings : " << upper << Message_EndLine;
+  S << "Number of Characters : " << Message_EndLine;
+  S << "Box Widths : " << Message_EndLine;
+  S << "Box Heights : " << Message_EndLine;
+  S << "Font Codes : " << Message_EndLine;
+  S << "Font Entities : " << Message_EndLine;
+  S << "Slant Angles : " << Message_EndLine;
+  S << "Rotation Angles : " << Message_EndLine;
+  S << "Mirror Flags : " << Message_EndLine;
+  S << "Rotate Flags : " << Message_EndLine;
+  S << "Start Points : " << Message_EndLine;
   S << "Texts : ";
   IGESData_DumpVals(S,-level,1, ent->NbStrings(),ent->NbCharacters);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
-      S << "Details of each String" << endl;
+      S << "Details of each String" << Message_EndLine;
       for ( Standard_Integer i = 1; i <= upper; i++)
 	{
-          S << "[" << i << "]: " << endl;
+          S << "[" << i << "]: " << Message_EndLine;
           S << "Number of Characters : " << ent->NbCharacters(i) << "  ";
           S << "Box Width  : " << ent->BoxWidth(i)  << "  ";
-          S << "Box Height : " << ent->BoxHeight(i) << endl;
+          S << "Box Height : " << ent->BoxHeight(i) << Message_EndLine;
           if (ent->IsFontEntity(i))
 	    {
               S << "Font Entity : ";
               dumper.Dump (ent->FontEntity(i),S, sublevel);
-              S << endl;
+              S << Message_EndLine;
 	    }
           else
-	    S << "Font Code : " << ent->FontCode(i) << endl;
+	    S << "Font Code : " << ent->FontCode(i) << Message_EndLine;
           S << "Slant Angle : " << ent->SlantAngle(i) << "  ";
           S << "Rotation Angle : " << ent->RotationAngle(i) << "  ";
           S << "Mirror Flag : " << ent->MirrorFlag(i) << "  ";
-          S << "Rotate Flag : " << ent->RotateFlag(i) << endl;
+          S << "Rotate Flag : " << ent->RotateFlag(i) << Message_EndLine;
           S << "Start Point : ";
           IGESData_DumpXYZL(S,level, ent->StartPoint(i), ent->Location());
           S << "\nText : ";
           IGESData_DumpString(S,ent->Text(i));
-          S << endl;
+          S << Message_EndLine;
 	}
     }
-  S << endl;
+  S << Message_EndLine;
 }

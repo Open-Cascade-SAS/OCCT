@@ -1296,15 +1296,15 @@ static Standard_Integer OCC524 (Draw_Interpretor& di, Standard_Integer argc, con
   math_Vector Vector(LowerVector, UpperVector, InitialValueVector);
   math_Matrix Matrix(LowerRowMatrix, UpperRowMatrix, LowerColMatrix, UpperColMatrix, InitialValueMatrix);
 
-  //Vector.Dump(cout);
-  //cout<<endl;
+  //Vector.Dump(std::cout);
+  //std::cout<<std::endl;
 
-  //Matrix.Dump(cout);
-  //cout<<endl;
+  //Matrix.Dump(std::cout);
+  //std::cout<<std::endl;
 
   Vector1.Multiply(Vector, Matrix);
 
-  //Vector1.Dump(cout);
+  //Vector1.Dump(std::cout);
   Standard_SStream aSStream1;
   Vector1.Dump(aSStream1);
   di << aSStream1;
@@ -1315,7 +1315,7 @@ static Standard_Integer OCC524 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   Vector2.TMultiply(Vector, Matrix);
 
-  //Vector2.Dump(cout);
+  //Vector2.Dump(std::cout);
   Standard_SStream aSStream2;
   Vector2.Dump(aSStream2);
   di << aSStream2;
@@ -1452,7 +1452,7 @@ static Standard_Integer OCC669 (Draw_Interpretor& di, Standard_Integer argc, con
     return -1;
   }
   Standard_GUID guid(argv[1]);
-  //guid.ShallowDump(cout);
+  //guid.ShallowDump(std::cout);
   Standard_SStream aSStream;
   guid.ShallowDump(aSStream);
   di << aSStream;
@@ -1472,7 +1472,7 @@ static Standard_Integer OCC738_ShapeRef (Draw_Interpretor& di, Standard_Integer 
     return -1;
   }
   const Standard_GUID& guid = XCAFDoc::ShapeRefGUID ();
-  //guid.ShallowDump(cout);
+  //guid.ShallowDump(std::cout);
   Standard_SStream aSStream;
   guid.ShallowDump(aSStream);
   di << aSStream;
@@ -1490,7 +1490,7 @@ static Standard_Integer OCC738_Assembly (Draw_Interpretor& di, Standard_Integer 
     return -1;
   }
   const Standard_GUID& guid = XCAFDoc::AssemblyGUID ();
-  //guid.ShallowDump(cout);
+  //guid.ShallowDump(std::cout);
   Standard_SStream aSStream;
   guid.ShallowDump(aSStream);
   di << aSStream;
@@ -1510,7 +1510,7 @@ static Standard_Integer OCC739_DrawPresentation (Draw_Interpretor& di, Standard_
     return -1;
   }
   const Standard_GUID& guid = DDataStd_DrawPresentation::GetID() ;
-  //guid.ShallowDump(cout);
+  //guid.ShallowDump(std::cout);
   Standard_SStream aSStream;
   guid.ShallowDump(aSStream);
   di << aSStream;
@@ -1576,7 +1576,7 @@ static Standard_Integer OCC670 (Draw_Interpretor& di, Standard_Integer argc, con
   }
   catch (Standard_Failure const& anException) {
     std::cout << "Caught successfully: ";
-    std::cout << anException << endl;
+    std::cout << anException << std::endl;
   }
   return 0;
 }
@@ -2137,7 +2137,7 @@ static Standard_Integer OCC6046 (Draw_Interpretor& di, Standard_Integer argc, co
     pv[i] = new math_Vector (1, sz, val);
     if ((i % (nb/10)) == 0) {
       di<<" "<<i;
-      //cout.flush();
+      //std::cout.flush();
       di<<"\n";
     }
   }
@@ -2147,7 +2147,7 @@ static Standard_Integer OCC6046 (Draw_Interpretor& di, Standard_Integer argc, co
     delete pv[i];
     if ((i % (nb/10)) == 0) {
       di<<" "<<i;
-      //cout.flush();
+      //std::cout.flush();
       di<<"\n";
     }
   }
@@ -2184,7 +2184,7 @@ static Standard_Integer OCC5698 (Draw_Interpretor& di, Standard_Integer argc, co
   // check that points are coinsiding
   Standard_Real error_dist = pnt.Distance(check_pnt);
   if (error_dist > Precision::Confusion()) {
-    //cout.precision(3);
+    //std::cout.precision(3);
     di<<"error_dist = "<<error_dist<<
       "  ( "<<error_dist/need_length*100<<" %)\n";
     return 0;
@@ -2213,7 +2213,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc != 1)
     {
-      cout << "Usage : " << argv[0] << "\n";
+      std::cout << "Usage : " << argv[0] << "\n";
       return 1;
     }
   Standard_Boolean Succes;
@@ -2224,9 +2224,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Divide ByZero (Integer) ========================================
     try{
       OCC_CATCH_SIGNALS
-      cout << "(Integer) Divide By Zero..." << endl;
+      std::cout << "(Integer) Divide By Zero..." << std::endl;
       di << "(Integer) Divide By Zero...";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       Standard_Integer res, a =4, b = 0 ;
       res = a / b;
@@ -2257,9 +2257,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Divide ByZero (Real) ===========================================
     try{
       OCC_CATCH_SIGNALS
-      cout << "(Real) Divide By Zero..." << endl;
+      std::cout << "(Real) Divide By Zero..." << std::endl;
       di << "(Real) Divide By Zero...";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       Standard_Real res, a= 4.0, b=0.0;
       res = a / b;
@@ -2275,7 +2275,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
+      //std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
       di << anException.GetMessageString();
       di << ")... KO\n";
@@ -2286,13 +2286,13 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Overflow (Integer) =============================================
     try{
       OCC_CATCH_SIGNALS
-      cout << "(Integer) Overflow..." << endl;
+      std::cout << "(Integer) Overflow..." << std::endl;
       di << "(Integer) Overflow...";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       Standard_Integer res, i=IntegerLast();
       res = i + 1;
-      //++++ cout << " -- "<<res<<"="<<i<<"+1   Does not Caught... KO"<< endl;
+      //++++ std::cout << " -- "<<res<<"="<<i<<"+1   Does not Caught... KO"<< std::endl;
       //++++ Succes = Standard_False;
       di << "Not caught: " << i << " + 1 = " << res << ", still OK\n";
     }
@@ -2300,7 +2300,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
+      //std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
       di << anException.GetMessageString();
       di << ")... KO\n";
@@ -2311,9 +2311,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Overflow (Real) ================================================ 
     try{
       OCC_CATCH_SIGNALS
-      cout << "(Real) Overflow..." << endl;
+      std::cout << "(Real) Overflow..." << std::endl;
       di << "(Real) Overflow...";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       Standard_Real res, r=RealLast();
       res = r * r;
@@ -2332,7 +2332,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
+      //std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
       di << anException.GetMessageString();
       di << ")... KO\n";
@@ -2343,14 +2343,14 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Underflow (Real) ===============================================
     try{
       OCC_CATCH_SIGNALS
-      cout << "(Real) Underflow" << endl; // to have message in log even if process crashed
+      std::cout << "(Real) Underflow" << std::endl; // to have message in log even if process crashed
       di << "(Real) Underflow";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       Standard_Real res, r = RealSmall();
       res = r * r;
       //res = res + 1.;
-      //++++ cout<<"-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<<endl;
+      //++++ std::cout<<"-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<<std::endl;
       //++++ Succes = Standard_False;
       di << "Not caught: " << r << "*" << r << " = " << res << ", still OK\n";
     }
@@ -2365,7 +2365,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       Succes = Standard_False;
     }
     catch(Standard_Failure const& anException) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
+      //std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
       di << anException.GetMessageString();
       di << ")... KO\n";
@@ -2376,9 +2376,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Invalid Operation (Real) ===============================================
     try{
       OCC_CATCH_SIGNALS
-      cout << "(Real) Invalid Operation..." << endl;
+      std::cout << "(Real) Invalid Operation..." << std::endl;
       di << "(Real) Invalid Operation...";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       Standard_Real res, r=-1;
       res = sqrt(r);
@@ -2389,7 +2389,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
+      //std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
       di << anException.GetMessageString();
       di << ")... KO\n";
@@ -2400,9 +2400,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Access Violation ===============================================
     try {
       OCC_CATCH_SIGNALS
-      cout << "Segmentation Fault..." << endl;
+      std::cout << "Segmentation Fault..." << std::endl;
       di << "Segmentation Fault...";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       int* pint=NULL;
       *pint = 4;
@@ -2417,7 +2417,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
     {
       di << "Caught, OK\n";
     } catch(Standard_Failure const& anException) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
+      //std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
       di << anException.GetMessageString();
       di << ")... KO\n";
@@ -2429,9 +2429,9 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Stack Overflow ===============================================
     try {
       OCC_CATCH_SIGNALS
-      cout << "Stack Overflow..." << endl;
+      std::cout << "Stack Overflow..." << std::endl;
       di << "Stack Overflow...";
-      //cout.flush();
+      //std::cout.flush();
       di << "\n";
       StackOverflow();
       di << "Error - no exception is raised!\n";
@@ -2441,7 +2441,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "Caught, OK\n";
     }
     catch(Standard_Failure const& anException) {
-      //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
+      //std::cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << std::endl;
       di << " Caught (";
       di << anException.GetMessageString();
       di << ")... KO\n";
@@ -2513,7 +2513,7 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
   }
   catch (Standard_Failure const& anException) {
     di << "Failed :\n\n";
-    //cout << Standard_Failure::Caught() << endl;
+    //std::cout << Standard_Failure::Caught() << std::endl;
     di << anException.GetMessageString();
   }
   di << argv[0] << " : Finish\n";
@@ -2665,10 +2665,10 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   Handle(TDataStd_RealArray) array;
   if (label1.FindAttribute(TDataStd_RealArray::GetID(), array) && 
       array->Lower() == LOWER && array->Upper() == UPPER)
-    cout<<"1: OK"<<endl;
+    std::cout<<"1: OK"<<std::endl;
   else
   {
-    cout<<"1: Failed.."<<endl;
+    std::cout<<"1: Failed.."<<std::endl;
     return 1;
   }
   doc->CommitCommand();
@@ -2682,11 +2682,11 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   {  
     if (array->Value(i) != i)
     {
-      cout<<"2: Failed.."<<endl;
+      std::cout<<"2: Failed.."<<std::endl;
       return 2;
     }
   }
-  cout<<"2: OK"<<endl;
+  std::cout<<"2: OK"<<std::endl;
   doc->CommitCommand();
 
   //! 3. Re-init the array
@@ -2694,7 +2694,7 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   array->Init(LOWER + 2, UPPER + 4);
   if (array->Lower() != LOWER + 2 && array->Upper() != UPPER + 4)
   {
-    cout<<"3: Failed.."<<endl;
+    std::cout<<"3: Failed.."<<std::endl;
     return 3;
   }
   for (i = LOWER + 2; i <= UPPER + 4; i++)
@@ -2703,11 +2703,11 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   {  
     if (array->Value(i) != i)
     {
-      cout<<"3: Failed.."<<endl;
+      std::cout<<"3: Failed.."<<std::endl;
       return 3;
     }
   }
-  cout<<"3: OK"<<endl;
+  std::cout<<"3: OK"<<std::endl;
   doc->CommitCommand();
 
   //! 4. Change array
@@ -2720,11 +2720,11 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   {  
     if (array->Value(i) != i)
     {
-      cout<<"4: Failed.."<<endl;
+      std::cout<<"4: Failed.."<<std::endl;
       return 4;
     }
   }
-  cout<<"4: OK"<<endl;
+  std::cout<<"4: OK"<<std::endl;
   doc->CommitCommand();
 
   //! 5. Copy the array
@@ -2733,24 +2733,24 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   copier.Perform();
   if (!copier.IsDone())
   {
-    cout<<"5: Failed.."<<endl;
+    std::cout<<"5: Failed.."<<std::endl;
     return 5;
   }
   Handle(TDataStd_RealArray) array2;
   if (!label2.FindAttribute(TDataStd_RealArray::GetID(), array2))
   {
-    cout<<"5: Failed.."<<endl;
+    std::cout<<"5: Failed.."<<std::endl;
     return 5;
   }
   for (i = LOWER + 5; i <= UPPER + 5; i++)
   {  
     if (array->Value(i) != i)
     {
-      cout<<"5: Failed.."<<endl;
+      std::cout<<"5: Failed.."<<std::endl;
       return 5;
     }
   }
-  cout<<"5: OK"<<endl;
+  std::cout<<"5: OK"<<std::endl;
   doc->CommitCommand();
 
   //! 6. Undo/Redo
@@ -2759,7 +2759,7 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   if (!label1.FindAttribute(TDataStd_RealArray::GetID(), array) ||
       label2.FindAttribute(TDataStd_RealArray::GetID(), array2))
   {
-    cout<<"6.a: Failed.."<<endl;
+    std::cout<<"6.a: Failed.."<<std::endl;
     return 6;
   }
   //! 6.b: undoes the 4th action: the array should be changed to (lower+2,upper+4)
@@ -2768,14 +2768,14 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
       array->Lower() != LOWER + 2 ||
       array->Upper() != UPPER + 4)
   {
-    cout<<"6.b: Failed.."<<endl;
+    std::cout<<"6.b: Failed.."<<std::endl;
     return 6;
   }
   for (i = LOWER + 2; i <= UPPER + 4; i++)
   {
     if (array->Value(i) != i)
     {
-      cout<<"6.b: Failed.."<<endl;
+      std::cout<<"6.b: Failed.."<<std::endl;
       return 6;
     }
   }
@@ -2785,14 +2785,14 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
       array->Lower() != LOWER ||
       array->Upper() != UPPER)
   {
-    cout<<"6.c: Failed.."<<endl;
+    std::cout<<"6.c: Failed.."<<std::endl;
     return 6;
   }
   for (i = LOWER; i <= UPPER; i++)
   {
     if (array->Value(i) != i)
     {
-      cout<<"6.c: Failed.."<<endl;
+      std::cout<<"6.c: Failed.."<<std::endl;
       return 6;
     }
   }
@@ -2803,25 +2803,25 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
       array->Lower() != LOWER ||
       array->Upper() != UPPER)
   {
-    cout<<"6.d: Failed.."<<endl;
+    std::cout<<"6.d: Failed.."<<std::endl;
     return 6;
   }
   for (i = LOWER; i <= UPPER; i++)
   {
     if (array->Value(i) != i)
     {
-      cout<<"6.d: Failed.."<<endl;
+      std::cout<<"6.d: Failed.."<<std::endl;
       return 6;
     }
   }
-  cout<<"6: OK"<<endl;
+  std::cout<<"6: OK"<<std::endl;
 
   //! 7. Re-set the array
   doc->OpenCommand();
   array = TDataStd_RealArray::Set(label1, LOWER + 1, UPPER + 1);
   if (array->Lower() != LOWER + 1 && array->Upper() != UPPER + 1)
   {
-    cout<<"7: Failed.."<<endl;
+    std::cout<<"7: Failed.."<<std::endl;
     return 7;
   }
   for (i = LOWER + 1; i <= UPPER + 1; i++)
@@ -2830,11 +2830,11 @@ static Standard_Integer OCC10138 (Draw_Interpretor& di, Standard_Integer argc, c
   {  
     if (array->Value(i) != i)
     {
-      cout<<"7: Failed.."<<endl;
+      std::cout<<"7: Failed.."<<std::endl;
       return 7;
     }
   }
-  cout<<"7: OK"<<endl;
+  std::cout<<"7: OK"<<std::endl;
   doc->CommitCommand();
 
   //! 8.Test of speed: set LOWER and UPPER equal to great integer number and 
@@ -2924,16 +2924,16 @@ static Standard_Integer OCC8797 (Draw_Interpretor& di, Standard_Integer argc, co
   GeomAdaptor_Curve adaptor_spline(spline);
   GCPnts_AbscissaPoint temp;
   l_abcissa=temp.Length(adaptor_spline);
-  cout<<"Length Spline(abcissa_Pnt): "<<l_abcissa<<endl;
+  std::cout<<"Length Spline(abcissa_Pnt): "<<l_abcissa<<std::endl;
 
   //length!! 2.
   TopoDS_Edge edge = BRepBuilderAPI_MakeEdge (spline);
   GProp_GProps prop;
   BRepGProp::LinearProperties(edge,prop);
   l_gprop=prop.Mass();
-  cout<<"Length Spline(GProp_GProps): "<<l_gprop<<endl;
+  std::cout<<"Length Spline(GProp_GProps): "<<l_gprop<<std::endl;
 
-  cout<<"Difference (abcissa_Pnt<->GProp_GProps): "<<l_gprop-l_abcissa<<endl;
+  std::cout<<"Difference (abcissa_Pnt<->GProp_GProps): "<<l_gprop-l_abcissa<<std::endl;
 
   return 0;
 }

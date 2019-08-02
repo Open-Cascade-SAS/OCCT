@@ -46,6 +46,6 @@ void TDF_DeltaOnForget::Apply()
   Label().ResumeAttribute(Attribute());
   Attribute()->mySavedTransaction = 0;
 #ifdef OCCT_DEBUG
-  cout<<"Resume attribute"<<endl;
+  std::cout<<"Resume attribute"<<std::endl;
 #endif
 }

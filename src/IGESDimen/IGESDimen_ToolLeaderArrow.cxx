@@ -144,15 +144,15 @@ void  IGESDimen_ToolLeaderArrow::OwnDump
   (const Handle(IGESDimen_LeaderArrow)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_LeaderArrow" << endl;
-  S << "Number of Segments : " << ent->NbSegments() << endl;
-  S << "Arrowhead Height   : " << ent->ArrowHeadHeight() << endl;
-  S << "Arrowhead Width    : " << ent->ArrowHeadWidth() << endl;
-  S << "Z depth            : " << ent->ZDepth() << endl;
+  S << "IGESDimen_LeaderArrow" << Message_EndLine;
+  S << "Number of Segments : " << ent->NbSegments() << Message_EndLine;
+  S << "Arrowhead Height   : " << ent->ArrowHeadHeight() << Message_EndLine;
+  S << "Arrowhead Width    : " << ent->ArrowHeadWidth() << Message_EndLine;
+  S << "Z depth            : " << ent->ZDepth() << Message_EndLine;
   S << "Arrowhead co-ords  : ";
   IGESData_DumpXYLZ(S,level,ent->ArrowHead(),ent->Location(),ent->ZDepth());
-  S << endl << "Segment Tails : "; 
+  S << Message_EndLine << "Segment Tails : "; 
   IGESData_DumpListXYLZ(S ,level,1, ent->NbSegments(),ent->SegmentTail,
 			ent->Location(), ent->ZDepth());
-  S << endl;
+  S << Message_EndLine;
 }

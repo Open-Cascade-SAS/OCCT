@@ -27,7 +27,7 @@ IntRes2d_Transition::IntRes2d_Transition() : tangent(Standard_True),
 }
 
 
-ostream& operator << (ostream& os, IntRes2d_Transition& Trans) {
+std::ostream& operator << (std::ostream& os, IntRes2d_Transition& Trans) {
 
   os << "   Position : ";
   if (Trans.PositionOnCurve()==IntRes2d_Head) {

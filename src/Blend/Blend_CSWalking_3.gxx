@@ -106,7 +106,7 @@ Standard_Boolean Blend_CSWalking::Recadre(Blend_FuncInv& FuncInv,
 
   if (!rsnld.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "RSNLD not done "<< endl << endl;
+    std::cout << "RSNLD not done "<< std::endl << std::endl;
 #endif
     return Standard_False;
   }

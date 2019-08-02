@@ -107,7 +107,7 @@ static void CopyShape(const TopoDS_Edge& E,TopTools_IndexedDataMapOfShapeShape& 
 }*/
 void BRepTools_Quilt::Add(const TopoDS_Shape& S)
 {
-  //cout <<" Version of sewing with free edges"<<endl;
+  //std::cout <<" Version of sewing with free edges"<<std::endl;
   // Binds all the faces of S
   //  - to the face itself if it is not copied
   //  - to the copy if it is copied

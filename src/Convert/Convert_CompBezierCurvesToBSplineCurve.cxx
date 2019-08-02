@@ -53,7 +53,7 @@ void  Convert_CompBezierCurvesToBSplineCurve::AddCurve
 
 #ifdef OCCT_DEBUG
     if (!P1.IsEqual(P2, Precision::Confusion()))
-      cout << "Convert_CompBezierCurvesToBSplineCurve::Addcurve" << endl;
+      std::cout << "Convert_CompBezierCurvesToBSplineCurve::Addcurve" << std::endl;
 #endif
   }
   myDone = Standard_False;
@@ -239,7 +239,7 @@ void Convert_CompBezierCurvesToBSplineCurve::Perform()
 
   // Correct nodal values to make them variable within [0.,1.].
   CurveKnots.Append(0.0);
-//  cout << "Convert : Det = " << Det << endl;
+//  std::cout << "Convert : Det = " << Det << std::endl;
   for (i = 2 ; i <= NbrCurv ; i++) {
     CurveKnots.Append(CurveKnots(i-1) + (CurveKnVals(i-1)/Det));
   }

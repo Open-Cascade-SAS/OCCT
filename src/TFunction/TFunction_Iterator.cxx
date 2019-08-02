@@ -294,7 +294,7 @@ void TFunction_Iterator::SetStatus(const TDF_Label& func,
 //=======================================================================
 Standard_OStream& TFunction_Iterator::Dump (Standard_OStream& anOS) const
 {  
-  anOS << "Functions:" << endl ;
+  anOS << "Functions:" << std::endl ;
 
   if (myCurrent.IsEmpty())
     return anOS;
@@ -345,7 +345,7 @@ Standard_OStream& TFunction_Iterator::Dump (Standard_OStream& anOS) const
 
     fIterator.Next();
     
-    anOS << endl;
+    anOS << std::endl;
   }
 
   // Recover the status of functions

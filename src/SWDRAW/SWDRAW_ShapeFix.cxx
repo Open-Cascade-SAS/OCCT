@@ -214,7 +214,7 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
     Standard_Integer nb = sfw->NbEdges();
     for (i = 1; i <= nb; i ++) {
       Standard_Boolean stat = sfw->FixSmall (i, Standard_True, 0.0);
-      //cout<<"FixSmall for"<<i<<(stat ? " done" : " not done"); //:sw <<" StatusFix="<<STW.StatusFix()<<"\n";
+      //std::cout<<"FixSmall for"<<i<<(stat ? " done" : " not done"); //:sw <<" StatusFix="<<STW.StatusFix()<<"\n";
       di<<"FixSmall for"<<i;
       if (!stat) {
 	di<<" not done";
@@ -355,7 +355,7 @@ static Standard_Integer reface (Draw_Interpretor& di, Standard_Integer argc, con
     char opt = argv[i][0];
     if (opt == '+')   opt = argv[i][1];
     if (opt == '-') { opt = argv[i][1]; valopt = Standard_False; }
-    //cout<<(valopt ? ".." : ".. NO");
+    //std::cout<<(valopt ? ".." : ".. NO");
     if (!valopt) {
       di<<".. NO";
     } else {
@@ -515,11 +515,11 @@ static Standard_Integer fixshape (Draw_Interpretor& di, Standard_Integer argc, c
       }
     }
     
-    aSStream << " Fix" << setw (58) << "Count\n";
+    aSStream << " Fix" << std::setw (58) << "Count\n";
     aSStream << " ------------------------------------------------------------\n";
     for ( TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger anIter ( aMapOfNumberOfFixes ); anIter.More(); anIter.Next() )
     {
-      aSStream << " " << anIter.Key() << setw ( 60 - anIter.Key().Length() ) << anIter.Value() << "\n";
+      aSStream << " " << anIter.Key() << std::setw ( 60 - anIter.Key().Length() ) << anIter.Value() << "\n";
     }
     aSStream << " ------------------------------------------------------------\n";
     di << aSStream;

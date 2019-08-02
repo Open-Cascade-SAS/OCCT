@@ -167,15 +167,15 @@ void IGESGeom_ToolSurfaceOfRevolution::OwnDump
    const Handle(Message_Messenger)& S, const Standard_Integer level)  const
 {
 
-  S << "IGESGeom_SurfaceOfRevolution" << endl << endl;
+  S << "IGESGeom_SurfaceOfRevolution" << Message_EndLine << Message_EndLine;
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "Axis Of Revolution : ";
   dumper.Dump(ent->AxisOfRevolution(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Generatrix         : ";
   dumper.Dump(ent->Generatrix(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Start Angle        : " << ent->StartAngle() << "  ";
-  S << "End Angle   : " << ent->EndAngle() << endl;
+  S << "End Angle   : " << ent->EndAngle() << Message_EndLine;
 }

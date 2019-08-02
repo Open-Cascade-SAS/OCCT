@@ -297,15 +297,15 @@ Standard_Boolean IGESToBRep::IsBRepEntity(const Handle(IGESData_IGESEntity)& sta
 	}
 	else {
 #ifdef OCCT_DEBUG
-	  cout << "Warning: IGESToBRep::TransferPCurve: pcurves are not SameRange" << endl;
+	  std::cout << "Warning: IGESToBRep::TransferPCurve: pcurves are not SameRange" << std::endl;
 #endif
 	  result = Standard_False;
 	}
       }
       catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	cout << "\n**IGESToBRep::TransferPCurve: Exception in SameRange : "; 
-	anException.Print(cout);
+	std::cout << "\n**IGESToBRep::TransferPCurve: Exception in SameRange : "; 
+	anException.Print(std::cout);
 #endif
 	(void)anException;
 	result = Standard_False;

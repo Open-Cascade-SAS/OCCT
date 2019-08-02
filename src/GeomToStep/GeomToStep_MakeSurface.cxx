@@ -72,7 +72,7 @@ GeomToStep_MakeSurface::GeomToStep_MakeSurface ( const Handle(Geom_Surface)& S)
   else {
     done = Standard_False;
 #ifdef OCCT_DEBUG
-    cout << " unknown type " << S->DynamicType()->Name() << endl;
+    std::cout << " unknown type " << S->DynamicType()->Name() << std::endl;
 #endif
   }
 }

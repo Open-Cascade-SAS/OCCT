@@ -172,7 +172,7 @@ void IGESDraw_ToolPlanar::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_Planar" << endl;
+  S << "IGESDraw_Planar" << Message_EndLine;
 
   S << "No. of Transformation Matrices : " << ent->NbMatrices() << "  ";
   S << "i.e. : ";
@@ -180,8 +180,8 @@ void IGESDraw_ToolPlanar::OwnDump
     S << "Null Handle";
   else
     dumper.OwnDump (ent->TransformMatrix(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Array of Entities on the specified plane : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << endl;
+  S << Message_EndLine;
 }

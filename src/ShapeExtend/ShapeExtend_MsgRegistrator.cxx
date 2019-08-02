@@ -42,7 +42,7 @@ void ShapeExtend_MsgRegistrator::Send(const Handle(Standard_Transient)& object,
 {
   if (object.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeExtend_MsgRegistrator::Send: null object" << endl;
+    std::cout << "Warning: ShapeExtend_MsgRegistrator::Send: null object" << std::endl;
 #endif
     return;
   }
@@ -68,7 +68,7 @@ void ShapeExtend_MsgRegistrator::Send(const Handle(Standard_Transient)& object,
 {
   if (shape.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeExtend_MsgRegistrator::Send: null shape" << endl;
+    std::cout << "Warning: ShapeExtend_MsgRegistrator::Send: null shape" << std::endl;
 #endif
     return;
   }

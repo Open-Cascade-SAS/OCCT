@@ -434,32 +434,32 @@ void IGESGeom_ToolBoundary::OwnDump(const Handle(IGESGeom_Boundary)& ent,
                                     const Standard_Integer level)  const
 {
   Standard_Integer i, num, sublevel = (level > 4) ? 1 : 0;
-  S << "IGESGeom_Boundary" << endl;
-  S << "Bounded Surface Representation Type : " << ent->BoundaryType() << endl;
-  S << "Trimming Curves Representation : " << ent->PreferenceType() << endl;
+  S << "IGESGeom_Boundary" << Message_EndLine;
+  S << "Bounded Surface Representation Type : " << ent->BoundaryType() << Message_EndLine;
+  S << "Trimming Curves Representation : " << ent->PreferenceType() << Message_EndLine;
   S << "Bounded Surface    : ";
   dumper.Dump(ent->Surface(),S, sublevel);
-  S << endl;
-  S << "Model Space Curves : " << endl;
-  S << "Orientation Flags  : " << endl;
+  S << Message_EndLine;
+  S << "Model Space Curves : " << Message_EndLine;
+  S << "Orientation Flags  : " << Message_EndLine;
   S << "Parameter Curves Set : ";
   IGESData_DumpEntities
     (S,dumper,-level,1,ent->NbModelSpaceCurves(),ent->ModelSpaceCurve);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     for ( num = ent->NbModelSpaceCurves(), i = 1; i <= num; i++ )
       {
 	S << "[" << i << "]: ";
 	S << "Model Space Curve : ";
 	dumper.Dump (ent->ModelSpaceCurve(i),S, 1);
-	S << "  Orientation Flags : " << ent->Sense(i) << endl;
+	S << "  Orientation Flags : " << ent->Sense(i) << Message_EndLine;
 	S << "  Parameter Curves : ";
 	Handle(IGESData_HArray1OfIGESEntity) curves = ent->ParameterCurves(i);
 	if (!curves.IsNull()) {
 	  IGESData_DumpEntities(S,dumper, level,1,curves->Length(),curves->Value);
 	}
 	else S << " List Empty";
-	S << endl;
+	S << Message_EndLine;
       }
-  S << endl;
+  S << Message_EndLine;
 }

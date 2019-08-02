@@ -466,7 +466,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 	// Sinon echec recadrage. On sort avec PointsConfondus
 	else {
 #ifdef OCCT_DEBUG
-	  cout << "Echec recadrage" << endl;
+	  std::cout << "Echec recadrage" << std::endl;
 #endif	  
 	  State = Blend_SamePoints;
 	}
@@ -723,7 +723,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
       {
 	// On arrete
 #ifdef OCCT_DEBUG
-	cout << " Points confondus dans le cheminement" << endl;
+	std::cout << " Points confondus dans le cheminement" << std::endl;
 #endif
 	Ext1.SetValue(previousP.PointOnS1(),
 		      sol(1),sol(2),

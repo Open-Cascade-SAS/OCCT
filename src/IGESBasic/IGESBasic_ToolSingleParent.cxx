@@ -178,13 +178,13 @@ void  IGESBasic_ToolSingleParent::OwnDump
   (const Handle(IGESBasic_SingleParent)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_SingleParent" << endl;
+  S << "IGESBasic_SingleParent" << Message_EndLine;
 
-  S << "Number of ParentEntities : " << ent->NbParentEntities() << endl;
+  S << "Number of ParentEntities : " << ent->NbParentEntities() << Message_EndLine;
   S << "ParentEntity : ";
   dumper.Dump(ent->SingleParent(),S,(level <= 4) ? 0 : 1);
-  S << endl;
+  S << Message_EndLine;
   S << "Children : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbChildren(),ent->Child);
-  S << endl;
+  S << Message_EndLine;
 }

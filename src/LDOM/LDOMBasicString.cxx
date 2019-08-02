@@ -356,7 +356,7 @@ char * db_pretty_print (const LDOMBasicString * aString, int fl, char *)
     out << str;
   out << '\"';
  finis:
-  out << ends;
+  out << std::ends;
   return (char *)out.str();
 }
 #endif

@@ -653,7 +653,7 @@ Standard_Boolean  ShapeAnalysis_CheckSmallFace::CheckPin (const TopoDS_Face& F, 
   case 2: myStatusPin = ShapeExtend::EncodeStatus (ShapeExtend_DONE2); break;
     default : break;
   }
-  //  cout<<(whatstat == 1 ? "Smooth" : "Sharp")<<" Pin on "<<(sens == 1 ? "U" : "V")<<" Row n0 "<<whatrow<<endl;
+  //  std::cout<<(whatstat == 1 ? "Smooth" : "Sharp")<<" Pin on "<<(sens == 1 ? "U" : "V")<<" Row n0 "<<whatrow<<std::endl;
   if (stat == 1 ) 
     {
       // Standard_Boolean EqualPoles = Standard_False;
@@ -878,11 +878,11 @@ Standard_Boolean  ShapeAnalysis_CheckSmallFace::CheckTwisted (const TopoDS_Face&
 //   }
 //   catch (Standard_Failure)
 //     {
-//       cout << "Couldn't compute angle between derivative vectors"  <<endl;
+//       std::cout << "Couldn't compute angle between derivative vectors"  <<std::endl;
 //       return Standard_False;
 //     }
-//   cout << "angle1 "   << angle1<< endl;
-//   cout << "angle2 "   << angle2<< endl;
+//   std::cout << "angle1 "   << angle1<< std::endl;
+//   std::cout << "angle2 "   << angle2<< std::endl;
 //   if (angle1<=0.0001) return Standard_True;
   gp_Pnt proj;
   if (p1.Distance(p2)<pp1.Distance(pp2)) 
@@ -927,12 +927,12 @@ Standard_Boolean  ShapeAnalysis_CheckSmallFace::CheckTwisted (const TopoDS_Face&
       catch (Standard_Failure const&)
 	{
 #ifdef OCCT_DEBUG
-          cout << "Couldn't compute angle between derivative vectors"  <<endl;
+          std::cout << "Couldn't compute angle between derivative vectors"  <<std::endl;
 #endif
 	  return Standard_False;
 	}
-//       cout << "angle1 "   << angle1<< endl;
-//       cout << "angle2 "   << angle2<< endl;
+//       std::cout << "angle1 "   << angle1<< std::endl;
+//       std::cout << "angle2 "   << angle2<< std::endl;
       if ((angle1<=0.001 && angle2<=0.01) || ((M_PI-angle2)<= 0.001 && (M_PI-angle2)<= 0.01)) return Standard_True;
       else return Standard_False;
     } 

@@ -48,7 +48,7 @@ Handle(TPrsStd_DriverTable) TPrsStd_DriverTable::Get()
   {
     drivertable = new TPrsStd_DriverTable;
 #ifdef OCCT_DEBUG
-    cout << "The new TPrsStd_DriverTable was created" << endl;
+    std::cout << "The new TPrsStd_DriverTable was created" << std::endl;
 #endif
   }
   return drivertable;

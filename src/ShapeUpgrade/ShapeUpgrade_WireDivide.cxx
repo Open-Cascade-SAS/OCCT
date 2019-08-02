@@ -72,7 +72,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_WireDivide,ShapeUpgrade_Tool)
 ShapeUpgrade_WireDivide::ShapeUpgrade_WireDivide():
        ShapeUpgrade_Tool(), myStatus(0)
 {
-//  if (ShapeUpgrade::Debug()) cout <<"ShapeUpgrade_WireDivide"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout <<"ShapeUpgrade_WireDivide"<<std::endl;
   mySplitCurve3dTool = new ShapeUpgrade_SplitCurve3d;
   mySplitCurve2dTool = new ShapeUpgrade_SplitCurve2d;
   myTransferParamTool = new ShapeAnalysis_TransferParametersProj;
@@ -89,7 +89,7 @@ ShapeUpgrade_WireDivide::ShapeUpgrade_WireDivide():
 void ShapeUpgrade_WireDivide::Init(const TopoDS_Wire& W,
 				   const TopoDS_Face& F) 
 {
-//  if (ShapeUpgrade::Debug()) cout <<"ShapeUpgrade_WireDivide::Init with Wire, Face"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout <<"ShapeUpgrade_WireDivide::Init with Wire, Face"<<std::endl;
   myWire = W;
   myFace = F;
   myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
@@ -103,7 +103,7 @@ void ShapeUpgrade_WireDivide::Init(const TopoDS_Wire& W,
 void ShapeUpgrade_WireDivide::Init(const TopoDS_Wire& W,
 				   const Handle(Geom_Surface)& S) 
 {
-//  if (ShapeUpgrade::Debug()) cout <<"ShapeUpgrade_WireDivide::Init with Wire, Surface "<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout <<"ShapeUpgrade_WireDivide::Init with Wire, Surface "<<std::endl;
   myWire = W;
   BRepLib_MakeFace mkf(S, Precision::Confusion());
   myFace = mkf.Face();
@@ -275,7 +275,7 @@ void ShapeUpgrade_WireDivide::Perform ()
   
   myStatus = ShapeExtend::EncodeStatus ( ShapeExtend_OK );
   
-//  if (ShapeUpgrade::Debug()) cout << "ShapeUpgrade_WireDivide::Perform" << endl;
+//  if (ShapeUpgrade::Debug()) std::cout << "ShapeUpgrade_WireDivide::Perform" << std::endl;
   
   BRep_Builder B;
   ShapeAnalysis_Edge sae;
@@ -302,7 +302,7 @@ void ShapeUpgrade_WireDivide::Perform ()
     TopoDS_Shape sh = Context()->Apply(ItW.Value(),TopAbs_SHAPE);
     for(TopExp_Explorer exp(sh,TopAbs_EDGE); exp.More(); exp.Next()) {
       TopoDS_Edge E = TopoDS::Edge(exp.Current());
-//      if (ShapeUpgrade::Debug()) cout << ".. Edge " << (void*) &(*E.TShape()) << endl;
+//      if (ShapeUpgrade::Debug()) std::cout << ".. Edge " << (void*) &(*E.TShape()) << std::endl;
       
       // skip degenerated edges (and also INTERNAL/EXTERNAL, to avoid failures)
       if ( E.Orientation() == TopAbs_INTERNAL || E.Orientation() == TopAbs_EXTERNAL ) {
@@ -380,7 +380,7 @@ void ShapeUpgrade_WireDivide::Perform ()
 	  if(revKnots2d->Length()!=theKnots2d->Length()) {
 	    isSeam = Standard_False;
 #ifdef OCCT_DEBUG
-	    cout << "Error: ShapeUpgrade_WireDivide: seam has different splitting values on pcurvesd" << endl;
+	    std::cout << "Error: ShapeUpgrade_WireDivide: seam has different splitting values on pcurvesd" << std::endl;
 #endif
 	  }
 	  else
@@ -460,7 +460,7 @@ void ShapeUpgrade_WireDivide::Perform ()
 	  Standard_Integer nbc2d = theSegments2d->Length();
 	  if (nbc!=nbc2d) {
 #ifdef OCCT_DEBUG
-	    cout<<"Error: Number of intervals are not equal for 2d 3d. Ignored."<<endl;
+	    std::cout<<"Error: Number of intervals are not equal for 2d 3d. Ignored."<<std::endl;
 #endif
 	    nbc = Min( nbc,nbc2d);
 	  }
@@ -597,9 +597,9 @@ void ShapeUpgrade_WireDivide::Perform ()
 	  else V = V2;
 	 // else  V2;
 	 // }
-//	  if (ShapeUpgrade::Debug()) cout <<"... New intermediate Vertex (" 
+//	  if (ShapeUpgrade::Debug()) std::cout <<"... New intermediate Vertex (" 
 //	    <<P.X()<<","<<P.Y()<<","<<P.Z()<<") :"<<(void*) &(*V.TShape())
-//	      <<" with Tolerance "<<TolEdge <<endl;
+//	      <<" with Tolerance "<<TolEdge <<std::endl;
 	}
 	//else V = V2;
 	
@@ -728,10 +728,10 @@ void ShapeUpgrade_WireDivide::Perform ()
           n--;
         }
 
-//	if (ShapeUpgrade::Debug()) cout <<"... New Edge "
+//	if (ShapeUpgrade::Debug()) std::cout <<"... New Edge "
 //	  <<(void*) &(*newEdge.TShape())<<" on vertices "
 //	    <<(void*) &(*V1.TShape())<<", " <<(void*) &(*V.TShape())
-//	      <<" with Tolerance "<<TolEdge <<endl;
+//	      <<" with Tolerance "<<TolEdge <<std::endl;
 	B.Add ( resWire, newEdge );
 	B.Add ( newWire, newEdge );
 	numE++;

@@ -286,12 +286,12 @@ void IGESDraw_ToolDrawingWithRotation::OwnDump
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_DrawingWithRotation" << endl;
+  S << "IGESDraw_DrawingWithRotation" << Message_EndLine;
 
-  S << "View Entities            : " << endl
-    << "Transformed View Origins : " << endl
+  S << "View Entities            : " << Message_EndLine
+    << "Transformed View Origins : " << Message_EndLine
     << "Orientation Angles : ";
-  S << "Count = "      << ent->NbViews() << endl;
+  S << "Count = "      << ent->NbViews() << Message_EndLine;
 
   if (level > 4)    // Level = 4 : no Dump. Level = 5 & 6 have same Dump
     {
@@ -299,16 +299,16 @@ void IGESDraw_ToolDrawingWithRotation::OwnDump
       Standard_Integer up  = ent->NbViews();
       for (I = 1; I <= up; I++)
 	{
-	  S << "[" << I << "]:" << endl;
+	  S << "[" << I << "]:" << Message_EndLine;
 	  S << "View Entity : ";
 	  dumper.Dump (ent->ViewItem(I),S, sublevel);
-	  S << endl;
+	  S << Message_EndLine;
 	  S << "Transformed View Origin : ";
 	  IGESData_DumpXY(S, ent->ViewOrigin(I));
-	  S << "  Orientation Angle : " << ent->OrientationAngle(I) << endl;
+	  S << "  Orientation Angle : " << ent->OrientationAngle(I) << Message_EndLine;
 	}
     }
   S << "Annotation Entities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbAnnotations(),ent->Annotation);
-  S << endl;
+  S << Message_EndLine;
 }

@@ -64,9 +64,9 @@ Standard_Boolean DNaming_SelectionDriver::MustExecute(const Handle(TFunction_Log
 static void Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
 {
-  ofstream save;
+  std::ofstream save;
   save.open(filename);
-  save << "DBRep_DrawableShape" << endl << endl;
+  save << "DBRep_DrawableShape" << std::endl << std::endl;
   if(!shape.IsNull()) BRepTools::Write(shape, save);
   save.close();
 }
@@ -109,13 +109,13 @@ Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& the
   TDF_LabelMap aMap;
   theLog->GetValid(aMap);
 #ifdef OCCT_DEBUG
-  cout <<"#E_DNaming_SelectionDriver:: Valid Label Map:"<<endl;
+  std::cout <<"#E_DNaming_SelectionDriver:: Valid Label Map:"<<std::endl;
   TDF_MapIteratorOfLabelMap anItr(aMap);
   for (; anItr.More(); anItr.Next()) {
     const TDF_Label& aLabel = anItr.Key();
     TCollection_AsciiString anEntry;
     TDF_Tool::Entry(aLabel, anEntry);
-    cout << "\tLabel = " << anEntry << endl;
+    std::cout << "\tLabel = " << anEntry << std::endl;
   }
 #endif
 //***
@@ -131,20 +131,20 @@ Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& the
     theLog->SetValid(aRLabel);
     Handle(TNaming_NamedShape) aNS;
     if(!aRLabel.FindAttribute(TNaming_NamedShape::GetID(),aNS)) {
-      cout <<"%%%WARNING: DNaming_SelectionDriver::NamedShape is not found"<<endl;
+      std::cout <<"%%%WARNING: DNaming_SelectionDriver::NamedShape is not found"<<std::endl;
     }
     else {
       if(aNS.IsNull()) {
-	cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is NULL" <<endl;
+	std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is NULL" <<std::endl;
       } else 
 	if(aNS->IsEmpty()) {
-	  cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is EMPTY on Label = ";
-	  aNS->Label().EntryDump(cout); cout << endl;
+	  std::cout << "%%%WARNING: DNaming_SelectionDriver::NamedShape is EMPTY on Label = ";
+	  aNS->Label().EntryDump(std::cout); std::cout << std::endl;
 	  
 	} else {
 #ifdef OCCT_DEBUG
 	  Write(aNS->Get(), "Selection_Result.brep");
-	  cout << "TShape = " << aNS->Get().TShape().get() <<endl;
+	  std::cout << "TShape = " << aNS->Get().TShape().get() <<std::endl;
 #endif 
 	  if(aIsWire && aNS->Get().ShapeType()== TopAbs_COMPOUND) {
 	    TopoDS_Shape aWireShape;
@@ -157,7 +157,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& the
 	      aFunction->SetFailure(DONE);
 	    } else {
 #ifdef OCCT_DEBUG	    
-	      cout <<"%%%WARNING: DNaming_SelectionDriver::Execute: The Shape after solving changed type = "<<aNS->Get().ShapeType()<< endl;
+	      std::cout <<"%%%WARNING: DNaming_SelectionDriver::Execute: The Shape after solving changed type = "<<aNS->Get().ShapeType()<< std::endl;
 #endif
 	      aFunction->SetFailure(DONE);
 	    }
@@ -166,7 +166,7 @@ Standard_Integer DNaming_SelectionDriver::Execute(Handle(TFunction_Logbook)& the
   }
   else {
     aFunction->SetFailure(NOTDONE);
-    cout << "%%%WARNING: DNaming_SelectionDriver::Execute: Selection is Not solved !!!" << endl;
+    std::cout << "%%%WARNING: DNaming_SelectionDriver::Execute: Selection is Not solved !!!" << std::endl;
     return 1;
   }
   return 0;

@@ -341,44 +341,44 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnDump
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_ViewsVisibleWithAttr" << endl;
+  S << "IGESDraw_ViewsVisibleWithAttr" << Message_EndLine;
 
-  S << "View Entities            : " << endl
-    << "Line Font Values         : " << endl
-    << "Line Font Definitions    : " << endl
-    << "Color Number/Definitions : " << endl
-    << "Line Weights             : " << endl;
-  S << "Count of View Blocks : "     << ent->NbViews() << endl;
+  S << "View Entities            : " << Message_EndLine
+    << "Line Font Values         : " << Message_EndLine
+    << "Line Font Definitions    : " << Message_EndLine
+    << "Color Number/Definitions : " << Message_EndLine
+    << "Line Weights             : " << Message_EndLine;
+  S << "Count of View Blocks : "     << ent->NbViews() << Message_EndLine;
   if (level > 4) {   // Level = 4 : nothing to Dump. Level = 5 & 6 : same Dump
     Standard_Integer I;
     Standard_Integer upper  = ent->NbViews();
     for (I = 1; I <= upper; I++) {
-      S << "[" << I << "]: " << endl;
+      S << "[" << I << "]: " << Message_EndLine;
       S << "View Entity : ";
       dumper.Dump (ent->ViewItem(I),S, tempSubLevel);
-      S << endl;
+      S << Message_EndLine;
 
       if (ent->IsFontDefinition(I)) {
 	S << "Line Font Definition  : ";
 	dumper.Dump (ent->FontDefinition(I),S, tempSubLevel);
-	S << endl;
+	S << Message_EndLine;
       }
-      else S << "Line Font Value       : " << ent->LineFontValue(I) << endl;
+      else S << "Line Font Value       : " << ent->LineFontValue(I) << Message_EndLine;
 
       if (ent->IsColorDefinition(I)) {
 	S << "Color Definition : ";
 	dumper.Dump (ent->ColorDefinition(I),S, tempSubLevel);
-	S << endl;
+	S << Message_EndLine;
       }
-      else S << "Color Value      : " << ent->ColorValue(I) << endl;
+      else S << "Color Value      : " << ent->ColorValue(I) << Message_EndLine;
 
-      S      << "Line Weight      : " << ent->LineWeightItem(I) << endl;
+      S      << "Line Weight      : " << ent->LineWeightItem(I) << Message_EndLine;
     }
   }
   S << "Displayed Entities : ";
   IGESData_DumpEntities
     (S,dumper ,level,1, ent->NbDisplayedEntities(),ent->DisplayedEntity);
-  S << endl;
+  S << Message_EndLine;
 }
 
 Standard_Boolean  IGESDraw_ToolViewsVisibleWithAttr::OwnCorrect

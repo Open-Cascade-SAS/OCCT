@@ -403,7 +403,7 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform
       Standard_Real err1 = 0.;
       while (i < iU) {
 
-        //cout << "-------------- Span " << i << " nbp: " << aNbPnts << endl;
+        //std::cout << "-------------- Span " << i << " nbp: " << aNbPnts << std::endl;
         Standard_Real aT1 = aTKnots->Value(i++);
         Standard_Real aT2 = aTKnots->Value(i);
 
@@ -422,9 +422,9 @@ Standard_Real BRepGProp_VinertGK::PrivatePerform
 
         aLocalValue(k)      += anIntegral.Value();
         err1 = aTFunc.AbsolutError()*(aT2 - aT1); 
-        //cout << "Errors: " << anIntegral.NbIterReached() << " " << anIntegral.AbsolutError() << " " << err1 << endl;
+        //std::cout << "Errors: " << anIntegral.NbIterReached() << " " << anIntegral.AbsolutError() << " " << err1 << std::endl;
         aLocalTolReached(k) += anIntegral.AbsolutError() + err1; 
-        //cout << "--- Errors: " << anIntegral.NbIterReached() << " " << anIntegral.AbsolutError() << " " << err1 << endl;
+        //std::cout << "--- Errors: " << anIntegral.NbIterReached() << " " << anIntegral.AbsolutError() << " " << err1 << std::endl;
       }
 
       aValue(k)      += aLocalValue(k);

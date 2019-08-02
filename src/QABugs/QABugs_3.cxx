@@ -525,7 +525,7 @@ static Standard_Integer coordload (Draw_Interpretor& theDi,
     return 1;
   }
 
-  std::ifstream aFile (theArgVec[2], ios::in);
+  std::ifstream aFile (theArgVec[2], std::ios::in);
   if (!aFile)
   {
     theDi << "unable to open " << theArgVec[2] << " for input\n";
@@ -951,7 +951,7 @@ static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char ** a
     Handle(TDF_Delta) D = IDL.Value();
     TCollection_ExtendedString S(Names[i-1]);
     D->SetName(S);
-//    cout<<" U"<<i<<"="<<D->Name()<<endl;
+//    std::cout<<" U"<<i<<"="<<D->Name()<<std::endl;
   }
   
   aDocument->Undo();
@@ -962,7 +962,7 @@ static int BUC60836(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 
   for(IDL.Initialize(Us),i=1;IDL.More();IDL.Next(),i++){
     Handle(TDF_Delta) D = IDL.Value();
-//    cout<<" U"<<i<<"="<<D->Name()<<endl;
+//    std::cout<<" U"<<i<<"="<<D->Name()<<std::endl;
   }
 
   TCollection_ExtendedString n2name ("n2");
@@ -1151,7 +1151,7 @@ static int AISWidth(Draw_Interpretor& di, Standard_Integer argc, const char ** a
       }
       else {
        if (prs->HasOwnWidth()){ 
-//         cout << "Width = " << prs->Width() << endl;
+//         std::cout << "Width = " << prs->Width() << std::endl;
          di<<prs->Width();
        }
        else{

@@ -343,13 +343,13 @@ TCollection_AsciiString Units_UnitsDictionary::ActiveUnit(const Standard_CString
         return unitssequence->Value(1)->SymbolsSequence()->Value(1)->String();
       else {
 #ifdef OCCT_DEBUG
-        cout<<" Pas d'unite active pour "<<aquantity<<endl;
+        std::cout<<" Pas d'unite active pour "<<aquantity<<std::endl;
 #endif
         return "";
       }
     }
   }
 
-  cout<<" La grandeur physique "<<aquantity<<" n'existe pas."<<endl;
+  std::cout<<" La grandeur physique "<<aquantity<<" n'existe pas."<<std::endl;
   return "";
 }

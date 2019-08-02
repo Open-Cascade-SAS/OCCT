@@ -144,7 +144,7 @@ static void CheckPCurves (TopoDS_Wire& aWire, const TopoDS_Face& aFace,
     if (w1 == w2) {
       RemoveSinglePCurve(myEdge,aFace);
 #ifdef OCCT_DEBUG
-      cout<<"Removing pcuve w1=w2"<<endl;
+      std::cout<<"Removing pcuve w1=w2"<<std::endl;
 #endif      
       continue;
     }
@@ -307,8 +307,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       }
       catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-        cout << "Warning: StepToTopoDS_TranslateEdgeLoop: Exception: ";
-        anException.Print(cout); cout << endl;
+        std::cout << "Warning: StepToTopoDS_TranslateEdgeLoop: Exception: ";
+        anException.Print(std::cout); std::cout << std::endl;
 #endif
         (void)anException;
         TP->AddFail(C,"Exeption was raised. Curve geometry definition is incorrect");
@@ -405,7 +405,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     Standard_Boolean ThereIsLikeSeam = Standard_False;
     
 #ifdef OCCT_DEBUG
-    cout << "      Processing Edge :" << j << endl;
+    std::cout << "      Processing Edge :" << j << std::endl;
 #endif
 
     OrEdge1  = EL->EdgeListValue(j);
@@ -674,7 +674,7 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       else {
         RemoveSinglePCurve(edge, Face);
 #ifdef OCCT_DEBUG
-        cout <<"Removing after prj"<<endl;
+        std::cout <<"Removing after prj"<<std::endl;
 #endif
       }
     }       

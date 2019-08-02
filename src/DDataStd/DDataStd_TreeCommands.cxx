@@ -461,11 +461,11 @@ static Standard_Integer DDataStd_ChildNodeMore (Draw_Interpretor& di,
 						const char**            /*a*/)
 {
   if (cni.More()) {
-    //cout<<"TRUE"<<endl;
+    //std::cout<<"TRUE"<<std::endl;
     di<<"TRUE\n";
   }
   else {
-    //cout<<"FALSE"<<endl;
+    //std::cout<<"FALSE"<<std::endl;
     di<<"FALSE\n";  
   }
   return 0;
@@ -508,7 +508,7 @@ static Standard_Integer DDataStd_ChildNodeValue (Draw_Interpretor& di,
 {
   TCollection_AsciiString entry;
   TDF_Tool::Entry(cni.Value()->Label(), entry);
-  //cout<<entry<<endl;
+  //std::cout<<entry<<std::endl;
   di  <<entry<<"\n";
   return 0;
 }  

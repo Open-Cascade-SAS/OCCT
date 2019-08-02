@@ -103,7 +103,7 @@ void Units_UnitsSystem::Specify(const Standard_CString aquantity,const Standard_
 
   Units_UnitSentence unitsentence(aunit);
   if(!unitsentence.IsDone()) {
-    cout<<"Units_UnitsSystem::Specify : incorrect unit"<<endl;
+    std::cout<<"Units_UnitsSystem::Specify : incorrect unit"<<std::endl;
     return;
   }
   Handle(Units_Token) token = unitsentence.Evaluate();
@@ -133,7 +133,7 @@ void Units_UnitsSystem::Specify(const Standard_CString aquantity,const Standard_
   
 //  Units_NoSuchType_Raise_if(quantity.IsNull(),aquantity);
   if( quantity.IsNull() ) {
-    cout<<"Warning: in Units_UnitsSystem : Units_NoSuchType '" << aquantity << "'" << endl;
+    std::cout<<"Warning: in Units_UnitsSystem : Units_NoSuchType '" << aquantity << "'" << std::endl;
     return;
   }
   
@@ -269,7 +269,7 @@ TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const Standard_CString aqu
         return unitssequence->Value(index2)->SymbolsSequence()->Value(1)->String();
       else {
 #ifdef OCCT_DEBUG
-        cout<<" Pas d'unite active pour "<<aquantity<<endl;
+        std::cout<<" Pas d'unite active pour "<<aquantity<<std::endl;
 #endif
         return TCollection_AsciiString() ;
       }
@@ -292,7 +292,7 @@ Standard_Real Units_UnitsSystem::ConvertValueToUserSystem
 {
   Units_UnitSentence unitsentence(aunit);
   if(!unitsentence.IsDone()) {
-    cout<<"Units_UnitsSystem::ConvertValueToUserSystem : incorrect unit => return 0"<<endl;
+    std::cout<<"Units_UnitsSystem::ConvertValueToUserSystem : incorrect unit => return 0"<<std::endl;
     return 0.;
   }
   return ConvertSIValueToUserSystem(aquantity,avalue*(unitsentence.Evaluate())->Value());
@@ -406,11 +406,11 @@ void Units_UnitsSystem::Dump() const
   Handle(Standard_Transient) transient = This();
   Handle(Units_UnitsSystem) unitssystem = Handle(Units_UnitsSystem)::DownCast (transient);
   Units_Explorer explorer(unitssystem);
-  cout<<" UNITSSYSTEM : "<<endl;
+  std::cout<<" UNITSSYSTEM : "<<std::endl;
   for(; explorer.MoreQuantity(); explorer.NextQuantity()) {
-    cout<<explorer.Quantity()<<endl;
+    std::cout<<explorer.Quantity()<<std::endl;
     for(; explorer.MoreUnit(); explorer.NextUnit())
-      cout<<"  "<<explorer.Unit()<<endl;
+      std::cout<<"  "<<explorer.Unit()<<std::endl;
   }
 }
 

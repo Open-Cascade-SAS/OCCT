@@ -197,11 +197,11 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_total, t_total);
 
-  cout<<" total reparametrization time = "<<t_total<<endl;
-  cout<<"initialization time = "<<t_init<<endl;
-  cout<<"approximation time = "<<t_approx<<endl;
-  cout<<"total time for uparam computation = "<<t_uparam<<endl;
-  cout<<"number uparam calles = "<<uparam_count<<endl;
+  std::cout<<" total reparametrization time = "<<t_total<<std::endl;
+  std::cout<<"initialization time = "<<t_init<<std::endl;
+  std::cout<<"approximation time = "<<t_approx<<std::endl;
+  std::cout<<"total time for uparam computation = "<<t_uparam<<std::endl;
+  std::cout<<"number uparam calles = "<<uparam_count<<std::endl;
 #endif
 }
 
@@ -358,11 +358,11 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_total, t_total);
 
-  cout<<" total reparametrization time = "<<t_total<<endl;
-  cout<<"initialization time = "<<t_init<<endl;
-  cout<<"approximation time = "<<t_approx<<endl;
-  cout<<"total time for uparam computation = "<<t_uparam<<endl;
-  cout<<"number uparam calles = "<<uparam_count<<endl;
+  std::cout<<" total reparametrization time = "<<t_total<<std::endl;
+  std::cout<<"initialization time = "<<t_init<<std::endl;
+  std::cout<<"approximation time = "<<t_approx<<std::endl;
+  std::cout<<"total time for uparam computation = "<<t_uparam<<std::endl;
+  std::cout<<"number uparam calles = "<<uparam_count<<std::endl;
 #endif
 }
 
@@ -531,11 +531,11 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 #ifdef OCCT_DEBUG_CHRONO
   ResultChron(chr_total, t_total);
 
-  cout<<" total reparametrization time = "<<t_total<<endl;
-  cout<<"initialization time = "<<t_init<<endl;
-  cout<<"approximation time = "<<t_approx<<endl;
-  cout<<"total time for uparam computation = "<<t_uparam<<endl;
-  cout<<"number uparam calles = "<<uparam_count<<endl;
+  std::cout<<" total reparametrization time = "<<t_total<<std::endl;
+  std::cout<<"initialization time = "<<t_init<<std::endl;
+  std::cout<<"approximation time = "<<t_approx<<std::endl;
+  std::cout<<"total time for uparam computation = "<<t_uparam<<std::endl;
+  std::cout<<"number uparam calles = "<<uparam_count<<std::endl;
 #endif
 }
 
@@ -628,12 +628,12 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor2d_
 
 void Approx_CurvilinearParameter::Dump(Standard_OStream& o) const
 {
-  o << "Dump of Approx_CurvilinearParameter" << endl;
+  o << "Dump of Approx_CurvilinearParameter" << std::endl;
   if (myCase==2 || myCase==3) 
-    o << "myMaxError2d1 = " << myMaxError2d1 << endl;
+    o << "myMaxError2d1 = " << myMaxError2d1 << std::endl;
   if (myCase==3) 
-    o << "myMaxError2d2 = " << myMaxError2d2 << endl;
-  o << "myMaxError3d = " << myMaxError3d << endl;
+    o << "myMaxError2d2 = " << myMaxError2d2 << std::endl;
+  o << "myMaxError3d = " << myMaxError3d << std::endl;
 }
 
 //=======================================================================
@@ -665,7 +665,7 @@ void Approx_CurvilinearParameter::ToleranceComputation(const Handle(Adaptor2d_HC
   TolW = Tol / (4.*Max_dS_dw);
 
 #ifdef OCCT_DEBUG
-  cout << "TolV = " << TolV << endl;
-  cout << "TolW = " << TolW << endl;
+  std::cout << "TolV = " << TolV << std::endl;
+  std::cout << "TolW = " << TolW << std::endl;
 #endif
 }

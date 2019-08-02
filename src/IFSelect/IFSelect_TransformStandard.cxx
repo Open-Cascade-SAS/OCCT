@@ -176,11 +176,11 @@ IFSelect_TransformStandard::IFSelect_TransformStandard ()
     Interface_CheckIterator checklist = ctx.CheckList();
     if (!checklist.IsEmpty(Standard_False)) {
       checks.Merge(checklist);
-      sout<<"IFSelect_TransformStandard :  Messages from Modifier n0 "<<i<<" of "<<nb<<endl;
+      sout<<"IFSelect_TransformStandard :  Messages from Modifier n0 "<<i<<" of "<<nb<<Message_EndLine;
       checklist.Print(sout,newmod,Standard_False);
     }
     if (!checklist.IsEmpty(Standard_True)) {
-      sout<<" --  Abandon TransformStandard  --"<<endl;
+      sout<<" --  Abandon TransformStandard  --"<<Message_EndLine;
       res = Standard_False;  break;
     }
   }

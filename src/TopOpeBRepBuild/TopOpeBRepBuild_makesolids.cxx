@@ -64,7 +64,7 @@ void TopOpeBRepBuild_Builder::GSFSMakeSolids
 {
 #ifdef OCCT_DEBUG
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SOF,iSO);
-  if(tSPS){GdumpSHA(SOF, (char *) "#--- GSFSMakeSolids ");cout<<endl;}
+  if(tSPS){GdumpSHA(SOF, (char *) "#--- GSFSMakeSolids ");std::cout<<std::endl;}
 #endif
   
   Standard_Boolean ForceClass = Standard_True;
@@ -83,7 +83,7 @@ void TopOpeBRepBuild_Builder::GSOBUMakeSolids
 {
 #ifdef OCCT_DEBUG
   Standard_Integer iSO; Standard_Boolean tSPS = GtraceSPS(SOF,iSO);
-  if(tSPS){GdumpSHA(SOF, (char *) "#--- GSOBUMakeSolids ");cout<<endl;}
+  if(tSPS){GdumpSHA(SOF, (char *) "#--- GSOBUMakeSolids ");std::cout<<std::endl;}
   if(tSPS){GdumpSOBU(SOBU);debgsobu(iSO);}
 #endif
   

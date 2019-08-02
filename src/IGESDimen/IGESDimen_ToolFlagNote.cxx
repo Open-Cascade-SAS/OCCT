@@ -152,14 +152,14 @@ void  IGESDimen_ToolFlagNote::OwnDump
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_FlagNote" << endl;
+  S << "IGESDimen_FlagNote" << Message_EndLine;
   S << "LowerLeftCorner : ";
   IGESData_DumpXYZL(S,level, ent->LowerLeftCorner(), ent->Location());
-  S << endl << "Rotation Angle: " << ent->Angle() << endl;
+  S << Message_EndLine << "Rotation Angle: " << ent->Angle() << Message_EndLine;
   S << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Number of Leaders : " << ent->NbLeaders() << "   Leaders : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbLeaders(),ent->Leader);
-  S << endl;
+  S << Message_EndLine;
 }

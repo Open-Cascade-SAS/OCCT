@@ -40,26 +40,26 @@ const char* GeomTools_Dump (void* theHandlePtr)
 
     Handle(Geom_Surface) GS = Handle(Geom_Surface)::DownCast(aHandle);
     if (!GS.IsNull()) {
-      cout << "\n\n";
-      GeomTools_SurfaceSet::PrintSurface (GS,cout);
-      cout << endl;
-      return "Found Geom_Surface, see dump in cout";
+      std::cout << "\n\n";
+      GeomTools_SurfaceSet::PrintSurface (GS,std::cout);
+      std::cout << std::endl;
+      return "Found Geom_Surface, see dump in std::cout";
     }
 
     Handle(Geom_Curve) GC = Handle(Geom_Curve)::DownCast(aHandle);
     if (!GC.IsNull()) {
-      cout << "\n\n";
-      GeomTools_CurveSet::PrintCurve(GC,cout);
-      cout << endl;
-      return "Found Geom_Curve, see dump in cout";
+      std::cout << "\n\n";
+      GeomTools_CurveSet::PrintCurve(GC,std::cout);
+      std::cout << std::endl;
+      return "Found Geom_Curve, see dump in std::cout";
     }
 
     Handle(Geom2d_Curve) GC2d = Handle(Geom2d_Curve)::DownCast(aHandle);
     if (!GC2d.IsNull()) {
-      cout << "\n\n";
-      GeomTools_Curve2dSet::PrintCurve2d(GC2d,cout);
-      cout << endl;
-      return "Found Geom2d_Curve, see dump in cout";
+      std::cout << "\n\n";
+      GeomTools_Curve2dSet::PrintCurve2d(GC2d,std::cout);
+      std::cout << std::endl;
+      return "Found Geom2d_Curve, see dump in std::cout";
     }
 
     return "Error: Not a geometric object";

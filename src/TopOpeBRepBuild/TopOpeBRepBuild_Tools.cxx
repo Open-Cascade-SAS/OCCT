@@ -329,7 +329,7 @@ const Standard_Real PAR_T = 0.43213918;
         aSubsh = aSubshMap(i);
     if (aSubsh.IsNull()) {
 #ifdef OCCT_DEBUG
-      cout<<"FindStateThroughVertex: warning: all vertices are avoided"<<endl;
+      std::cout<<"FindStateThroughVertex: warning: all vertices are avoided"<<std::endl;
 #endif
       return TopAbs_UNKNOWN;    // failure
     }
@@ -691,7 +691,7 @@ void TopOpeBRepBuild_Tools::UpdateEdgeOnPeriodicalFace(const TopoDS_Edge& aEdgeT
   Handle(Geom2d_Curve) cc = BRep_Tool::CurveOnSurface(newE, tFace, fc, lc);
 
   if(!cc.IsNull()) {
-    //cout << "Pcurves exist" << endl;
+    //std::cout << "Pcurves exist" << std::endl;
     return;
   }
 

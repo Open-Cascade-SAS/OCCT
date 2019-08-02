@@ -605,11 +605,11 @@ void ChFi3d_ChBuilder::Simulate (const Standard_Integer IC)
 #ifdef OCCT_DEBUG
   if(ChFi3d_GettraceCHRON()){
     simul.Stop();
-    cout<<"Total simulation time : ";
+    std::cout<<"Total simulation time : ";
     simul.Show();
-    cout<<"Spine construction time : ";
+    std::cout<<"Spine construction time : ";
     elspine.Show();
-    cout<<"and progression time : ";
+    std::cout<<"and progression time : ";
     chemine.Show();
   }
 #endif
@@ -912,7 +912,7 @@ ChFi3d_ChBuilder::SimulSurf(Handle(ChFiDS_SurfData)&            Data,
       
       if (OffsetHGuide.IsNull())
       {
-        cout<<endl<<"Construction of offset guide failed!"<<endl;
+        std::cout<<std::endl<<"Construction of offset guide failed!"<<std::endl;
         //exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1,S2,OffsetHGuide));
@@ -1297,7 +1297,7 @@ Standard_Boolean ChFi3d_ChBuilder::PerformFirstSection
       
       if (OffsetHGuide.IsNull())
       {
-        cout<<endl<<"Construction of offset guide failed!"<<endl;
+        std::cout<<std::endl<<"Construction of offset guide failed!"<<std::endl;
         //exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1,S2,OffsetHGuide));
@@ -1554,7 +1554,7 @@ ChFi3d_ChBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData,
       
       if (OffsetHGuide.IsNull())
       {
-        cout<<endl<<"Construction of offset guide failed!"<<endl;
+        std::cout<<std::endl<<"Construction of offset guide failed!"<<std::endl;
         //exception
       }
       pFunc.reset(new BRepBlend_ConstThroatWithPenetration(S1,S2,OffsetHGuide));

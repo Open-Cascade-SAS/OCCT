@@ -871,7 +871,7 @@ void BuildSplitsOfFaces(const TopTools_ListOfShape& theLF,
     BRepAlgoAPI_Check aChecker(aCE);
     if (!aChecker.IsValid())
     {
-      cout << "Offset_i_c Error: set of edges to build faces is self-intersecting\n";
+      std::cout << "Offset_i_c Error: set of edges to build faces is self-intersecting\n";
     }
 #endif
     // build splits

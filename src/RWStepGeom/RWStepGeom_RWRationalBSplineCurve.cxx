@@ -193,8 +193,8 @@ void RWStepGeom_RWRationalBSplineCurve::Check
 {
   Standard_Integer nbWght = ent->NbWeightsData();
   Standard_Integer nbCPL  = ent->NbControlPointsList();
-//  cout << "RationalBSplineCurve: nbWght=" << nbWght << " nbCPL: " << 
-//    nbCPL << endl;
+//  std::cout << "RationalBSplineCurve: nbWght=" << nbWght << " nbCPL: " << 
+//    nbCPL << std::endl;
   if(nbWght != nbCPL) {
     ach->AddFail("ERROR: No.of ControlPoints not equal No.of Weights");
   }

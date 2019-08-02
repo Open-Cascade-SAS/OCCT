@@ -109,9 +109,9 @@ void IGESGraph_ToolHighLight::OwnDump
   (const Handle(IGESGraph_HighLight)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_HighLight" << endl;
+  S << "IGESGraph_HighLight" << Message_EndLine;
 
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
-  S << "Highlight Status : " << ent->HighLightStatus() << endl;
-  S << endl;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "Highlight Status : " << ent->HighLightStatus() << Message_EndLine;
+  S << Message_EndLine;
 }

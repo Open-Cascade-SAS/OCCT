@@ -89,10 +89,10 @@ static void  MAPDBN(const Standard_Integer dimension,
 
  
    if ( (Diff-Der).Norm() > eps * (Der.Norm()+1) ) {
-     cout << " Debug Ft au parametre t+ = " << t << endl;
-     cout << " Positionement sur la derive "<< OrdreDer 
-          << " : " << Der << endl;
-     cout << " Erreur estime : " << (Der-Diff) << endl;
+     std::cout << " Debug Ft au parametre t+ = " << t << std::endl;
+     std::cout << " Positionement sur la derive "<< OrdreDer 
+          << " : " << Der << std::endl;
+     std::cout << " Erreur estime : " << (Der-Diff) << std::endl;
    }
 
   // Verif a la fin
@@ -112,10 +112,10 @@ static void  MAPDBN(const Standard_Integer dimension,
 
  
    if ( (Diff-Der).Norm() > eps * (Der.Norm()+1) ) {
-     cout << " Debug Ft au parametre t- = " << t << endl;
-     cout << " Positionement sur la derive "<< OrdreDer 
-        << " : " << Der << endl;
-     cout << " Erreur estime : " << (Der-Diff) << endl;
+     std::cout << " Debug Ft au parametre t- = " << t << std::endl;
+     std::cout << " Positionement sur la derive "<< OrdreDer 
+        << " : " << Der << std::endl;
+     std::cout << " Erreur estime : " << (Der-Diff) << std::endl;
    }
  }
 }
@@ -1092,25 +1092,25 @@ Standard_Real  AdvApprox_ApproxAFunction::AverageError(
 void  AdvApprox_ApproxAFunction::Dump(Standard_OStream& o) const 
 {
   Standard_Integer ii;
-  o << "Dump of ApproxAFunction" << endl;
+  o << "Dump of ApproxAFunction" << std::endl;
   if (myNumSubSpaces[0] > 0) {
-    o << "Error(s) 1d = " << endl;
+    o << "Error(s) 1d = " << std::endl;
     for (ii=1; ii <= myNumSubSpaces[0]; ii++) {
-      o << "   " << MaxError(1, ii) << endl;
+      o << "   " << MaxError(1, ii) << std::endl;
     }
   }
 
   if (myNumSubSpaces[1] > 0) {
-    o << "Error(s) 2d = " << endl;
+    o << "Error(s) 2d = " << std::endl;
     for (ii=1; ii <= myNumSubSpaces[1]; ii++) {
-      o << "   " << MaxError(2, ii) << endl;
+      o << "   " << MaxError(2, ii) << std::endl;
     }
   }
 
   if (myNumSubSpaces[2] > 0) {
-    o << "Error(s) 3d = " << endl;
+    o << "Error(s) 3d = " << std::endl;
     for (ii=1; ii <= myNumSubSpaces[2]; ii++) {
-      o << "   " << MaxError(3, ii) << endl;
+      o << "   " << MaxError(3, ii) << std::endl;
     }
   }
 }

@@ -1105,8 +1105,8 @@ void ProjLib_ComputeApprox::Perform
     //  for ( Standard_Integer i = 1; i <= Nb+1; i++) {
     //   U = U1 + (i-1)*dU;
     //   Poles(i) = F.Value(U);
-    //   cout << "i = " << i << ": U = " << U << 
-    //      ", p(" << Poles(i).X() << ", " << Poles(i).Y() << ");" << endl;
+    //   std::cout << "i = " << i << ": U = " << U << 
+    //      ", p(" << Poles(i).X() << ", " << Poles(i).Y() << ");" << std::endl;
     //   Knots(i) = i;
     //   Mults(i) = 1;
     //  }

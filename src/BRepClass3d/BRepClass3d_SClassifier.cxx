@@ -443,7 +443,7 @@ void BRepClass3d_SClassifier::Perform(BRepClass3d_SolidExplorer& SolidExplorer,
                       if (tran == IntCurveSurface_Tangent)
                       {
 #ifdef OCCT_DEBUG
-                        cout<<"*Problem ds BRepClass3d_SClassifier.cxx"<<endl;
+                        std::cout<<"*Problem ds BRepClass3d_SClassifier.cxx"<<std::endl;
 #endif
                         continue; // ignore this point
                       }

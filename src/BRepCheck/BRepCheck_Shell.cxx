@@ -477,11 +477,11 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
   if (BRepCheck_Trace(0) > 1) {
     TopTools_DataMapIteratorOfDataMapOfShapeInteger itt(MapOfShapeOrientation);
     Standard_Integer upper = MapOfShapeOrientation.NbBuckets();
-    cout << "La map shape Orientation :" << endl;
+    std::cout << "La map shape Orientation :" << std::endl;
     for (; itt.More(); itt.Next()) {
       PrintShape(itt.Key(), upper);
     }
-    cout << endl;
+    std::cout << std::endl;
   }
 #endif
 
@@ -666,7 +666,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 
 #ifdef OCCT_DEBUG
   if (BRepCheck_Trace(0) > 3) {
-    cout << "Fref : " ;
+    std::cout << "Fref : " ;
     PrintShape(Fref, MapOfShapeOrientation.NbBuckets());
   }
 #endif
@@ -709,7 +709,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
 
 #ifdef OCCT_DEBUG
   if (BRepCheck_Trace(0) > 3) {
-    cout << "    Fcur : " ;
+    std::cout << "    Fcur : " ;
     PrintShape(Fcur, MapOfShapeOrientation.NbBuckets());
   }
 #endif
@@ -731,8 +731,8 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
   if (BRepCheck_Trace(0) > 3) {
     orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
     Fcur.Orientation(orf);
-    cout << "    Error : this face has been already examined " << endl;
-    cout << "    Imposible to return it ";
+    std::cout << "    Error : this face has been already examined " << std::endl;
+    std::cout << "    Imposible to return it ";
     PrintShape(Fcur, MapOfShapeOrientation.NbBuckets());
   }
 #endif
@@ -746,7 +746,7 @@ BRepCheck_Status BRepCheck_Shell::Orientation(const Standard_Boolean Update)
   if (BRepCheck_Trace(0) > 3) {
     orf = (TopAbs_Orientation)MapOfShapeOrientation.Find(Fcur);
     Fcur.Orientation(orf);
-    cout << "    Resulting Fcur is returned : " ;
+    std::cout << "    Resulting Fcur is returned : " ;
     PrintShape(Fcur, MapOfShapeOrientation.NbBuckets());
   }
 #endif

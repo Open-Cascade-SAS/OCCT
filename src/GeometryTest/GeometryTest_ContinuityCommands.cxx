@@ -158,7 +158,7 @@ static Standard_Integer surfaceCcontinuity (Draw_Interpretor& di, Standard_Integ
 
   LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
                                        TypeCont, epsnl, epsC0, epsC1, epsC2, epsG1, perce, maxlen);
-  //LocalAnalysis::Dump(RES,cout);    
+  //LocalAnalysis::Dump(RES,std::cout);    
   Standard_SStream aSStream;
   LocalAnalysis::Dump(RES,aSStream);    
   di << aSStream;
@@ -252,7 +252,7 @@ static Standard_Integer surfaceGcontinuity (Draw_Interpretor& di, Standard_Integ
   
   LocalAnalysis_SurfaceContinuity RES (surf1, U1, V1, surf2, U2, V2, 
                                        TypeCont, epsnl, epsC0, epsC1, epsC2, epsG1, perce, maxlen);
-  //LocalAnalysis::Dump(RES,cout);
+  //LocalAnalysis::Dump(RES,std::cout);
   Standard_SStream aSStream;
   LocalAnalysis::Dump(RES,aSStream);
   di << aSStream;
@@ -343,7 +343,7 @@ static Standard_Integer curveGcontinuity(Draw_Interpretor& di, Standard_Integer 
 
   LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont,
                                      epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, percent, maxlen);
-  //LocalAnalysis::Dump(RES,cout);   
+  //LocalAnalysis::Dump(RES,std::cout);   
   Standard_SStream aSStream;
   LocalAnalysis::Dump(RES,aSStream);   
   di << aSStream;
@@ -447,7 +447,7 @@ static Standard_Integer curveCcontinuity(Draw_Interpretor& di, Standard_Integer 
 
   LocalAnalysis_CurveContinuity RES (curv1, U1, curv2, U2, TypeCont, 
                                      epsnl, epsC0, epsC1, epsC2, epsG1, epsG2, percent, maxlen);
-  //LocalAnalysis::Dump(RES,cout);   
+  //LocalAnalysis::Dump(RES,std::cout);   
   Standard_SStream aSStream;
   LocalAnalysis::Dump(RES,aSStream);   
   di << aSStream;

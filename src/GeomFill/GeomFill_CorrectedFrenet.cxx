@@ -152,7 +152,7 @@ static void smoothlaw(Handle(Law_BSpline)& Law,
       tol = (Tol-tol)/2;
     else {
 #ifdef OCCT_DEBUG
-      cout << "smooth law echec" << endl;
+      std::cout << "smooth law echec" << std::endl;
 #endif
       return; // Echec
     } 
@@ -180,7 +180,7 @@ static void smoothlaw(Handle(Law_BSpline)& Law,
     }
     if (!Ok) {
 #ifdef OCCT_DEBUG
-      cout << "smooth law echec" << endl;
+      std::cout << "smooth law echec" << std::endl;
 #endif
     } 
   }
@@ -188,9 +188,9 @@ static void smoothlaw(Handle(Law_BSpline)& Law,
 
 #ifdef OCCT_DEBUG
   if (Affich) {
-    cout << "Knots Law : " << endl;
+    std::cout << "Knots Law : " << std::endl;
     for (ii=1; ii<=BS->NbKnots(); ii++) {
-      cout << ii << " : " << BS->Knot(ii) << endl;
+      std::cout << ii << " : " << BS->Knot(ii) << std::endl;
     }
   }
 #endif
@@ -591,11 +591,11 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
 
 #ifdef OCCT_DEBUG
     if (Affich) {
-      cout<<"NormalEvolution"<<endl; 
+      std::cout<<"NormalEvolution"<<std::endl; 
       for (i = 1; i <= Length; i++) {
-	cout<<"("<<pararr->Value(i)<<", "<<angleATarr->Value(i)<<")" << endl;
+	std::cout<<"("<<pararr->Value(i)<<", "<<angleATarr->Value(i)<<")" << std::endl;
       }
-      cout<<endl;
+      std::cout<<std::endl;
     } 
 #endif
 
@@ -757,9 +757,9 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
   if (Param + h > myTrimmed->LastParameter()) h = -h;
   D0(Param + h, Tf, Nf, BNf);
   FDN = (Nf - Normal)/h;
-  cout<<"Param = "<<Param<<endl;
-  cout<<"DN = ("<<DNormal.X()<<", "<<DNormal.Y()<<", "<<DNormal.Z()<<")"<<endl;
-  cout<<"FDN = ("<<FDN.X()<<", "<<FDN.Y()<<", "<<FDN.Z()<<")"<<endl;
+  std::cout<<"Param = "<<Param<<std::endl;
+  std::cout<<"DN = ("<<DNormal.X()<<", "<<DNormal.Y()<<", "<<DNormal.Z()<<")"<<std::endl;
+  std::cout<<"FDN = ("<<FDN.X()<<", "<<FDN.Y()<<", "<<FDN.Z()<<")"<<std::endl;
 */
 
   return Standard_True;
@@ -858,13 +858,13 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
   FD2N = (DNf - DNormal)/h;
   FD2T = (DTf - DTangent)/h;
   FD2BN = (DBNf - DBiNormal)/h;
-  cout<<"Param = "<<Param<<endl;
-  cout<<"D2N = ("<<D2Normal.X()<<", "<<D2Normal.Y()<<", "<<D2Normal.Z()<<")"<<endl;
-  cout<<"FD2N = ("<<FD2N.X()<<", "<<FD2N.Y()<<", "<<FD2N.Z()<<")"<<endl<<endl;
-  cout<<"D2T = ("<<D2Tangent.X()<<", "<<D2Tangent.Y()<<", "<<D2Tangent.Z()<<")"<<endl;
-  cout<<"FD2T = ("<<FD2T.X()<<", "<<FD2T.Y()<<", "<<FD2T.Z()<<")"<<endl<<endl;
-  cout<<"D2BN = ("<<D2BiNormal.X()<<", "<<D2BiNormal.Y()<<", "<<D2BiNormal.Z()<<")"<<endl;
-  cout<<"FD2BN = ("<<FD2BN.X()<<", "<<FD2BN.Y()<<", "<<FD2BN.Z()<<")"<<endl<<endl;  
+  std::cout<<"Param = "<<Param<<std::endl;
+  std::cout<<"D2N = ("<<D2Normal.X()<<", "<<D2Normal.Y()<<", "<<D2Normal.Z()<<")"<<std::endl;
+  std::cout<<"FD2N = ("<<FD2N.X()<<", "<<FD2N.Y()<<", "<<FD2N.Z()<<")"<<std::endl<<std::endl;
+  std::cout<<"D2T = ("<<D2Tangent.X()<<", "<<D2Tangent.Y()<<", "<<D2Tangent.Z()<<")"<<std::endl;
+  std::cout<<"FD2T = ("<<FD2T.X()<<", "<<FD2T.Y()<<", "<<FD2T.Z()<<")"<<std::endl<<std::endl;
+  std::cout<<"D2BN = ("<<D2BiNormal.X()<<", "<<D2BiNormal.Y()<<", "<<D2BiNormal.Z()<<")"<<std::endl;
+  std::cout<<"FD2BN = ("<<FD2BN.X()<<", "<<FD2BN.Y()<<", "<<FD2BN.Z()<<")"<<std::endl<<std::endl;  
 */
 //
   return Standard_True;

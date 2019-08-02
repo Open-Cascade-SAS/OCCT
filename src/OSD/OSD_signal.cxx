@@ -115,59 +115,59 @@ static LONG CallHandler (DWORD dwExceptionCode,
 
   buffer[0] = '\0' ;
 
-// cout << "CallHandler " << dwExceptionCode << endl ;
+// std::cout << "CallHandler " << dwExceptionCode << std::endl ;
   switch ( dwExceptionCode ) {
     case EXCEPTION_FLT_DENORMAL_OPERAND:
-//      cout << "CallHandler : EXCEPTION_FLT_DENORMAL_OPERAND:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_DENORMAL_OPERAND:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT DENORMAL OPERAND");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-//      cout << "CallHandler : EXCEPTION_FLT_DIVIDE_BY_ZERO:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_DIVIDE_BY_ZERO:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT DIVIDE BY ZERO");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_INEXACT_RESULT:
-//      cout << "CallHandler : EXCEPTION_FLT_INEXACT_RESULT:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_INEXACT_RESULT:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT INEXACT RESULT");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_INVALID_OPERATION:
-//      cout << "CallHandler : EXCEPTION_FLT_INVALID_OPERATION:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_INVALID_OPERATION:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT INVALID OPERATION");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_OVERFLOW:
-//      cout << "CallHandler : EXCEPTION_FLT_OVERFLOW:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_OVERFLOW:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT OVERFLOW");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_STACK_CHECK:
-//      cout << "CallHandler : EXCEPTION_FLT_STACK_CHECK:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_STACK_CHECK:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT STACK CHECK");
       flterr = 1 ;
       break ;
     case EXCEPTION_FLT_UNDERFLOW:
-//      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT UNDERFLOW");
       flterr = 1 ;
       break ;
     case STATUS_FLOAT_MULTIPLE_TRAPS:
-//      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT MULTIPLE TRAPS (possible overflow in conversion of double to integer)");
       flterr = 1 ;
       break ;
     case STATUS_FLOAT_MULTIPLE_FAULTS:
-//      cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_FLT_UNDERFLOW:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"FLT MULTIPLE FAULTS");
       flterr = 1 ;
       break ;
     case STATUS_NO_MEMORY:
-//      cout << "CallHandler : STATUS_NO_MEMORY:" << endl ;
+//      std::cout << "CallHandler : STATUS_NO_MEMORY:" << std::endl ;
       THROW_OR_JUMP (OSD_Exception_STATUS_NO_MEMORY, "MEMORY ALLOCATION ERROR ( no room in the process heap )");
       break;
     case EXCEPTION_ACCESS_VIOLATION:
-//      cout << "CallHandler : EXCEPTION_ACCESS_VIOLATION:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_ACCESS_VIOLATION:" << std::endl ;
       StringCchPrintfW (buffer, _countof(buffer), L"%s%s%s0x%.8p%s%s%s", L"ACCESS VIOLATION",
                  fMsgBox ? L"\n" : L" ", L"at address ",
                  ExceptionInformation1 ,
@@ -176,51 +176,51 @@ static LONG CallHandler (DWORD dwExceptionCode,
                  L"' operation");
       break;
     case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
-//      cout << "CallHandler : EXCEPTION_ARRAY_BOUNDS_EXCEEDED:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_ARRAY_BOUNDS_EXCEEDED:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"ARRAY BOUNDS EXCEEDED");
       break;
     case EXCEPTION_DATATYPE_MISALIGNMENT:
-//      cout << "CallHandler : EXCEPTION_DATATYPE_MISALIGNMENT:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_DATATYPE_MISALIGNMENT:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"DATATYPE MISALIGNMENT");
       break;
 
     case EXCEPTION_ILLEGAL_INSTRUCTION:
-//      cout << "CallHandler : EXCEPTION_ILLEGAL_INSTRUCTION:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_ILLEGAL_INSTRUCTION:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"ILLEGAL INSTRUCTION");
       break;
 
     case EXCEPTION_IN_PAGE_ERROR:
-//      cout << "CallHandler : EXCEPTION_IN_PAGE_ERROR:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_IN_PAGE_ERROR:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"IN_PAGE ERROR");
       break;
 
     case EXCEPTION_INT_DIVIDE_BY_ZERO:
-//      cout << "CallHandler : EXCEPTION_INT_DIVIDE_BY_ZERO:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_INT_DIVIDE_BY_ZERO:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"INTEGER DIVISION BY ZERO");
       break;
 
     case EXCEPTION_INT_OVERFLOW:
-//      cout << "CallHandler : EXCEPTION_INT_OVERFLOW:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_INT_OVERFLOW:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"INTEGER OVERFLOW");
       break;
 
     case EXCEPTION_INVALID_DISPOSITION:
-//      cout << "CallHandler : EXCEPTION_INVALID_DISPOSITION:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_INVALID_DISPOSITION:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"INVALID DISPOSITION");
       break;
 
     case EXCEPTION_NONCONTINUABLE_EXCEPTION:
-//      cout << "CallHandler : EXCEPTION_NONCONTINUABLE_EXCEPTION:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_NONCONTINUABLE_EXCEPTION:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"NONCONTINUABLE EXCEPTION");
       break;
 
     case EXCEPTION_PRIV_INSTRUCTION:
-//      cout << "CallHandler : EXCEPTION_PRIV_INSTRUCTION:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_PRIV_INSTRUCTION:" << std::endl ;
       StringCchCopyW (buffer, _countof(buffer), L"PRIVELEGED INSTRUCTION ENCOUNTERED");
       break;
 
     case EXCEPTION_STACK_OVERFLOW:
-//      cout << "CallHandler : EXCEPTION_STACK_OVERFLOW:" << endl ;
+//      std::cout << "CallHandler : EXCEPTION_STACK_OVERFLOW:" << std::endl ;
 #if defined( _MSC_VER ) && ( _MSC_VER >= 1300 ) && !defined(OCCT_UWP)
     // try recovering from stack overflow: available in MS VC++ 7.0
       if (!_resetstkoflw())
@@ -262,7 +262,7 @@ static LONG CallHandler (DWORD dwExceptionCode,
    _fpreset () ;
    _clearfp() ;
    _controlfp ( 0, _OSD_FPX ) ;          // JR add :
-//     cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << hex << _controlfp(0,0) << dec << endl ;
+//     std::cout << "OSD::WntHandler _controlfp( 0, _OSD_FPX ) " << std::hex << _controlfp(0,0) << std::dec << std::endl ;
   }
 
   char aBufferA[2048];
@@ -282,7 +282,7 @@ static void SIGWntHandler (int signum, int sub_code)
   switch( signum ) {
     case SIGFPE :
       if ( signal( signum , (void(*)(int))SIGWntHandler ) == SIG_ERR )
-        cout << "signal error" << endl ;
+        std::cout << "signal error" << std::endl ;
       switch( sub_code ) {
         case _FPE_INVALID :
           CallHandler( EXCEPTION_FLT_INVALID_OPERATION ,0,0) ;
@@ -303,23 +303,23 @@ static void SIGWntHandler (int signum, int sub_code)
           CallHandler( EXCEPTION_FLT_INEXACT_RESULT ,0,0) ;
           break ;
         default:
-          cout << "SIGWntHandler(default) -> throw Standard_NumericError(\"Floating Point Error\");" << endl;
+          std::cout << "SIGWntHandler(default) -> throw Standard_NumericError(\"Floating Point Error\");" << std::endl;
 	  THROW_OR_JUMP (Standard_NumericError, "Floating Point Error");
           break ;
       }
       break ;
     case SIGSEGV :
       if ( signal( signum, (void(*)(int))SIGWntHandler ) == SIG_ERR )
-        cout << "signal error" << endl ;
+        std::cout << "signal error" << std::endl ;
       CallHandler( EXCEPTION_ACCESS_VIOLATION ,0,0) ;
       break ;
     case SIGILL :
       if ( signal( signum, (void(*)(int))SIGWntHandler ) == SIG_ERR )
-        cout << "signal error" << endl ;
+        std::cout << "signal error" << std::endl ;
       CallHandler( EXCEPTION_ILLEGAL_INSTRUCTION ,0,0) ;
       break ;
     default:
-      cout << "SIGWntHandler unexpected signal : " << signum << endl ;
+      std::cout << "SIGWntHandler unexpected signal : " << signum << std::endl ;
       break ;
   }
 #ifndef OCCT_UWP
@@ -379,7 +379,7 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   TCollection_AsciiString val = env.Value();
   if (!env.Failed())
   {
-    cout << "Environment variable CSF_DEBUG_MODE setted.\n";
+    std::cout << "Environment variable CSF_DEBUG_MODE setted.\n";
     fMsgBox = Standard_True;
   }
   else
@@ -397,11 +397,11 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   // Signal handlers will only be used when the method ::raise() will be used
   // Handlers must be set for every thread
   if (signal (SIGSEGV, (void(*)(int))SIGWntHandler) == SIG_ERR)
-    cout << "signal(OSD::SetSignal) error\n";
+    std::cout << "signal(OSD::SetSignal) error\n";
   if (signal (SIGFPE,  (void(*)(int))SIGWntHandler) == SIG_ERR)
-    cout << "signal(OSD::SetSignal) error\n";
+    std::cout << "signal(OSD::SetSignal) error\n";
   if (signal (SIGILL,  (void(*)(int))SIGWntHandler) == SIG_ERR)
-    cout << "signal(OSD::SetSignal) error\n";
+    std::cout << "signal(OSD::SetSignal) error\n";
 
   // Set Ctrl-C and Ctrl-Break handler
   fCtrlBrk = Standard_False;
@@ -562,40 +562,40 @@ LONG _osd_debug ( void ) {
       si.cb      = sizeof ( STARTUPINFO );
       si.dwFlags = STARTF_FORCEONFEEDBACK;
 
-  //   cout << "_osd_debug -> CreateProcess" << endl ;
+  //   std::cout << "_osd_debug -> CreateProcess" << std::endl ;
       if (  !CreateProcess (
               NULL, cmdLine, NULL, NULL, TRUE, CREATE_DEFAULT_ERROR_MODE,
               NULL, NULL, &si, &pi
              )
       ) __leave;
 
-  //   cout << "_osd_debug -> WaitForSingleObject " << endl ;
+  //   std::cout << "_osd_debug -> WaitForSingleObject " << std::endl ;
       WaitForSingleObject ( hEvent, INFINITE );
-  //   cout << "_osd_debug <- WaitForSingleObject -> CloseHandle " << endl ;
+  //   std::cout << "_osd_debug <- WaitForSingleObject -> CloseHandle " << std::endl ;
 
       CloseHandle ( pi.hProcess );
       CloseHandle ( pi.hThread  );
 
-  //   cout << "_osd_debug fDbgLoaded  " << endl ;
+  //   std::cout << "_osd_debug fDbgLoaded  " << std::endl ;
       fDbgLoaded = TRUE;
 
     }  // end __try
 
     __finally {
 
-//   cout << "_osd_debug -> CloseHandle(hKey) " << endl ;
+//   std::cout << "_osd_debug -> CloseHandle(hKey) " << std::endl ;
       if ( hKey   != INVALID_HANDLE_VALUE ) CloseHandle ( hKey   );
-//   cout << "_osd_debug -> CloseHandle(hEvent) " << endl ;
+//   std::cout << "_osd_debug -> CloseHandle(hEvent) " << std::endl ;
       if ( hEvent != INVALID_HANDLE_VALUE ) CloseHandle ( hEvent );
-//   cout << "_osd_debug end __finally " << endl ;
+//   std::cout << "_osd_debug end __finally " << std::endl ;
 
     }  // end __finally
 
   }  /* end if */
 
   action = fDbgLoaded ? EXCEPTION_CONTINUE_EXECUTION : EXCEPTION_EXECUTE_HANDLER;
-// cout << "_osd_debug return " << action << " EXCEPTION_CONTINUE_EXECUTION("
-//      << EXCEPTION_CONTINUE_EXECUTION << ")" << endl ;
+// std::cout << "_osd_debug return " << action << " EXCEPTION_CONTINUE_EXECUTION("
+//      << EXCEPTION_CONTINUE_EXECUTION << ")" << std::endl ;
   return action ;
 
 }  // end _osd_debug
@@ -686,14 +686,14 @@ static void Handler (const int theSignal)
   struct sigaction oldact, act;
   // re-install the signal
   if ( ! sigaction (theSignal, NULL, &oldact) ) {
-    // cout << " signal is " << theSignal << " handler is " <<  oldact.sa_handler << endl;
+    // std::cout << " signal is " << theSignal << " handler is " <<  oldact.sa_handler << std::endl;
     if (sigaction (theSignal, &oldact, &act)) perror ("sigaction");
   }
   else {
     perror ("sigaction");
   }
 
-  // cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  endl ;
+  // std::cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  std::endl ;
   if ( ADR_ACT_SIGIO_HANDLER != NULL )
     (*ADR_ACT_SIGIO_HANDLER)() ;
 #ifdef __linux__
@@ -796,7 +796,7 @@ static void Handler (const int theSignal)
 #endif
   default:
 #ifdef OCCT_DEBUG
-    cout << "Unexpected signal " << theSignal << endl ;
+    std::cout << "Unexpected signal " << theSignal << std::endl ;
 #endif
     break;
   }
@@ -819,7 +819,7 @@ static void SegvHandler(const int theSignal,
     feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
     //feenableexcept (FE_INVALID | FE_DIVBYZERO);
 #endif
-//  cout << "OSD::SegvHandler activated(SA_SIGINFO)" << endl ;
+//  std::cout << "OSD::SegvHandler activated(SA_SIGINFO)" << std::endl ;
   if ( ip != NULL ) {
      sigset_t set;
      sigemptyset(&set);
@@ -835,7 +835,7 @@ static void SegvHandler(const int theSignal,
   }
 #ifdef OCCT_DEBUG
   else {
-    cout << "Wrong undefined address." << endl ;
+    std::cout << "Wrong undefined address." << std::endl ;
   }
 #endif
   exit(SIGSEGV);
@@ -856,7 +856,7 @@ static void SegvHandler(const int theSignal,
   if ( theContext != NULL ) {
     Space = ((struct sigcontext *)theContext)->sc_sl.sl_ss.ss_cr20 ;
     Offset = ((struct sigcontext *)theContext)->sc_sl.sl_ss.ss_cr21 ;
-//    cout << "Wrong address = " << hex(Offset) << endl ;
+//    std::cout << "Wrong address = " << hex(Offset) << std::endl ;
     {
       sprintf(Msg,"SIGSEGV 'segmentation violation' detected. Address %lx",Offset) ;
       OSD_SIGSEGV::Jump(Msg);
@@ -866,7 +866,7 @@ static void SegvHandler(const int theSignal,
   }
 #ifdef OCCT_DEBUG
   else {
-    cout << "Wrong undefined address." << endl ;
+    std::cout << "Wrong undefined address." << std::endl ;
   }
 #endif
   exit(SIGSEGV);
@@ -897,7 +897,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 
     if (stat) {
 #ifdef OCCT_DEBUG
-      cerr << "ieee_handler does not work !!! KO " << endl;
+      std::cerr << "ieee_handler does not work !!! KO " << std::endl;
 #endif
     }
 #elif defined (__linux__)
@@ -917,9 +917,9 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
  char *TRAP_FPE = getenv("TRAP_FPE") ;
  if ( TRAP_FPE == NULL ) {
 #ifdef OCCT_DEBUG
-   cout << "On SGI you must set TRAP_FPE environment variable : " << endl ;
-   cout << "set env(TRAP_FPE) \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\" or" << endl ;
-   cout << "setenv TRAP_FPE \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\"" << endl ;
+   std::cout << "On SGI you must set TRAP_FPE environment variable : " << std::endl ;
+   std::cout << "set env(TRAP_FPE) \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\" or" << std::endl ;
+   std::cout << "setenv TRAP_FPE \"UNDERFL=FLUSH_ZERO;OVERFL=DEFAULT;DIVZERO=DEFAULT;INT_OVERFL=DEFAULT\"" << std::endl ;
 #endif
  }
 #endif
@@ -944,7 +944,7 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
   stat = sigaction(SIGFPE,&act,&oact);   // ...... floating point exception
   if (stat) {
 #ifdef OCCT_DEBUG
-     cerr << "sigaction does not work !!! KO " << endl;
+     std::cerr << "sigaction does not work !!! KO " << std::endl;
 #endif
      perror("sigaction ");
   }

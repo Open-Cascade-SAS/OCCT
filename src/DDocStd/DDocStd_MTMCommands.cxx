@@ -142,7 +142,7 @@ static int mtmDump (Draw_Interpretor& di, int /*n*/, const char** /*a*/)
     return 1;
   }
   di <<         "*** Dump of MTM ***\n";
-  //sMultiTransactionManager->DumpTransaction(cout);
+  //sMultiTransactionManager->DumpTransaction(std::cout);
   Standard_SStream aStream;
   sMultiTransactionManager->DumpTransaction(aStream);
   di << aStream;

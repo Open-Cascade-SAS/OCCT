@@ -213,8 +213,8 @@ TopAbs_State TopOpeBRepBuild_ShellFaceClassifier::State()
     TCollection_AsciiString sname("shell_"); sname = home + sname + STATIC_ishell;
     TCollection_AsciiString vname("vertex_"); vname = home + vname + STATIC_ishell;
     BRep_Builder B;TopoDS_Vertex V;B.MakeVertex(V,myPoint3d,tol3d);
-    cout<<"TopOpeBRepBuild_ShellFaceClassifier : write shell "<<sname;
-    cout<<" vertex "<<vname<<endl;
+    std::cout<<"TopOpeBRepBuild_ShellFaceClassifier : write shell "<<sname;
+    std::cout<<" vertex "<<vname<<std::endl;
     BRepTools::Write(myShell,sname.ToCString());
     BRepTools::Write(V,vname.ToCString());
   }

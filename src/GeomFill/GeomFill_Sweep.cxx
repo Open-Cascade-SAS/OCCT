@@ -281,7 +281,7 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
     Ok = Standard_True;
 
 #ifdef OCCT_DEBUG
-    Approx.Dump(cout);
+    Approx.Dump(std::cout);
 #endif
     
     // La surface
@@ -450,7 +450,7 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
 				   eval,
 				   Preferentiel);
 #ifdef OCCT_DEBUG
-  Approx.Dump(cout);
+  Approx.Dump(std::cout);
 #endif
 
   Ok = Approx.HasResult();
@@ -1036,13 +1036,13 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 
 #ifdef OCCT_DEBUG
   if (isUPeriodic && !mySurface->IsUPeriodic()) 
-    cout<<"Pb de periodicite en U" << endl;
+    std::cout<<"Pb de periodicite en U" << std::endl;
   if (isUPeriodic && !mySurface->IsUClosed())
-    cout<<"Pb de fermeture en U" << endl;
+    std::cout<<"Pb de fermeture en U" << std::endl;
   if (isVPeriodic && !mySurface->IsVPeriodic()) 
-    cout << "Pb de periodicite en V" << endl;
+    std::cout << "Pb de periodicite en V" << std::endl;
   if (isVPeriodic && !mySurface->IsVClosed())
-    cout<<"Pb de fermeture en V" << endl;
+    std::cout<<"Pb de fermeture en V" << std::endl;
 #endif
   }
 

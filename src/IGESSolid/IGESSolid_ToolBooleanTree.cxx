@@ -178,31 +178,31 @@ void  IGESSolid_ToolBooleanTree::OwnDump
 {
   Standard_Integer i, length = ent->Length();
 
-  S << "IGESSolid_Boolean Tree" << endl;
+  S << "IGESSolid_Boolean Tree" << Message_EndLine;
 
-  S << "Length of the post-order notation :" << length << endl;
+  S << "Length of the post-order notation :" << length << Message_EndLine;
 
   if (level > 4)
     {
-      S << "Post-order notation of the Boolean Tree :" << endl;
+      S << "Post-order notation of the Boolean Tree :" << Message_EndLine;
       for (i = 1; i <= length; i++)
 	{
           if (ent->IsOperand(i))
 	    {
               S << "[" << i << "] Operand : ";
               dumper.Dump (ent->Operand(i),S, 1);
-              S << endl;
+              S << Message_EndLine;
 	    }
           else
 	    {
 	      Standard_Integer opcode = ent->Operation(i);
 	      S << "[" << i << "] Operator : " << opcode;
 	      if      (opcode == 1) S << " (Union)";
-	      else if (opcode == 2) S << " (Intersection)" << endl;
-	      else if (opcode == 3) S << " (Difference)" << endl;
-	      else                  S << " (incorrect value)" << endl;
+	      else if (opcode == 2) S << " (Intersection)" << Message_EndLine;
+	      else if (opcode == 3) S << " (Difference)" << Message_EndLine;
+	      else                  S << " (incorrect value)" << Message_EndLine;
 	    }
 	}
     }
-//  S << endl;
+//  S << std::endl;
 }

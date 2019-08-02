@@ -179,7 +179,7 @@ void TNaming_TranslateTool::UpdateVertex
 
   // Representations
   BRep_ListIteratorOfListOfPointRepresentation itpr(TTV1->Points());
-//  cout << "Vertex List Extent = "<<  TTV1->Points().Extent()<< endl;//  == 0 ???
+//  std::cout << "Vertex List Extent = "<<  TTV1->Points().Extent()<< std::endl;//  == 0 ???
   BRep_ListOfPointRepresentation& lpr = TTV2->ChangePoints();
   lpr.Clear();
 

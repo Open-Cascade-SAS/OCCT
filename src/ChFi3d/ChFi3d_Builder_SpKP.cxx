@@ -289,17 +289,17 @@ static Standard_Real ParamOnSpine(const TopOpeBRepDS_DataStructure& DStr,
       found = ChFi3d_InterPlaneEdge(plan,HE,Nl,First,tolc);
       gp_Pnt point = CE.Value(Nl);
 #ifdef OCCT_DEBUG
-      cout<<"******* ParamOnSpine() for edge "<<iedge<<endl;
-      cout<<Nl<<endl;
-      cout<<"point ped "<<point.X()<<" "<<point.Y()<<" "<<point.Z()<<endl;
+      std::cout<<"******* ParamOnSpine() for edge "<<iedge<<std::endl;
+      std::cout<<Nl<<std::endl;
+      std::cout<<"point ped "<<point.X()<<" "<<point.Y()<<" "<<point.Z()<<std::endl;
 #endif
       if(found) Nl = Spine->Absc(Nl,ii);
       point = Spine->Value(Nl);
 #ifdef OCCT_DEBUG
-      if (found) cout << "found by edge " << ii << " : ";
-      cout<<Nl<<endl;
-      cout<<"point psp "<<point.X()<<" "<<point.Y()<<" "<<point.Z()<<endl;
-      cout<<endl;
+      if (found) std::cout << "found by edge " << ii << " : ";
+      std::cout<<Nl<<std::endl;
+      std::cout<<"point psp "<<point.X()<<" "<<point.Y()<<" "<<point.Z()<<std::endl;
+      std::cout<<std::endl;
 #endif
       
       ii +=sens;
@@ -534,7 +534,7 @@ static Standard_Boolean Tri(const Geom2dHatch_Hatcher& H,
   if (iSansFirst != 0) {
     if (iSansLast == 0) {
 #ifdef OCCT_DEBUG
-      cout<<"Parsing : Pb of Hatcher"<<endl;
+      std::cout<<"Parsing : Pb of Hatcher"<<std::endl;
 #endif
       return 0;
     }
@@ -704,7 +704,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     Nb1 = H1.NbDomains(iH1);
     if(Nb1 == 0) {
 #ifdef OCCT_DEBUG
-      cout<<"SplitKPart : tangency line out of the face"<<endl;
+      std::cout<<"SplitKPart : tangency line out of the face"<<std::endl;
 #endif
       return Standard_False;
     }
@@ -730,7 +730,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
     Nb2 = H2.NbDomains(iH2);
     if(Nb2 == 0) {
 #ifdef OCCT_DEBUG
-      cout<<"SplitKPart : tangency line out of the face"<<endl;
+      std::cout<<"SplitKPart : tangency line out of the face"<<std::endl;
 #endif
       return Standard_False;
     }
@@ -772,7 +772,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
   
   if (C1.IsNull() && C2.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<"SplitData : 2 zero lines hatching impossible"<<endl;
+    std::cout<<"SplitData : 2 zero lines hatching impossible"<<std::endl;
 #endif
     return Standard_False;
   }
@@ -995,7 +995,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
 	  onS = 2;
 #ifdef OCCT_DEBUG	
 	if (threeE[0].IsSame(threeE[1]))
-	  cout << "SplitKPart(), wrong corner vertex at switcher search" << endl;
+	  std::cout << "SplitKPart(), wrong corner vertex at switcher search" << std::endl;
 #endif
 	cntlFiOnS = 3 - onS;
       }
@@ -1090,7 +1090,7 @@ Standard_Boolean ChFi3d_Builder::SplitKPart
           onS = 2;
 #ifdef OCCT_DEBUG
         if (threeE[0].IsSame(threeE[1]))
-          cout << "SplitKPart(), wrong corner vertex at switcher search" << endl;
+          std::cout << "SplitKPart(), wrong corner vertex at switcher search" << std::endl;
 #endif
 	cntlFiOnS = 3 - onS;
       }

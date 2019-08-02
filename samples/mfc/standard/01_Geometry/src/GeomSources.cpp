@@ -1217,7 +1217,7 @@ Standard_Real ang = D1.Angle(D2);                \n\
   Handle(ISession_Direction) aDirection2 = new ISession_Direction(gp_Pnt(0,0,0),D2,3);
   aDoc->GetAISContext()->Display(aDirection2, Standard_False);
 
-  cout<<" D1.Angle(D2) : "<<ang<<endl;
+  std::cout<<" D1.Angle(D2) : "<<ang<<std::endl;
 
   TCollection_AsciiString Message2 (ang);
   TCollection_AsciiString Message3 (ang/M_PI/180);

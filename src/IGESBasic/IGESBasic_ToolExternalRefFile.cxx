@@ -94,8 +94,8 @@ void  IGESBasic_ToolExternalRefFile::OwnDump
   (const Handle(IGESBasic_ExternalRefFile)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_ExternalRefFile" << endl;
+  S << "IGESBasic_ExternalRefFile" << Message_EndLine;
   S << "External Reference File Identifier : ";
   IGESData_DumpString(S,ent->FileId());
-  S << endl;
+  S << Message_EndLine;
 }

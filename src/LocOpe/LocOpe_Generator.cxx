@@ -574,7 +574,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		      B.UpdateEdge(edg,C2d,newface,tol);
 		    }
 		    //		else {
-		    //		  cout << "Edge double bizarre... " << endl;
+		    //		  std::cout << "Edge double bizarre... " << std::endl;
 		    //		}
 		  }
 		}
@@ -890,7 +890,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		    B.UpdateEdge(edg,C2d,newface,tol);
 		  }
 		  //		else {
-		  //		  cout << "Edge double bizarre... " << endl;
+		  //		  std::cout << "Edge double bizarre... " << std::endl;
 		  //		}
 		}
 	      }

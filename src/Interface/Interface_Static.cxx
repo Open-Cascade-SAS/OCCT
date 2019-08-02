@@ -89,10 +89,10 @@ void  Interface_Static::PrintStatic (const Handle(Message_Messenger)& S) const
   S<<"--- Static Value : "<<Name()<<"  Family:"<<Family();
   Print (S);
   if (!thewild.IsNull())
-    S<<" -- Attached to wild-card : "<<thewild->Name()<<endl;
+    S<<" -- Attached to wild-card : "<<thewild->Name()<<Message_EndLine;
   S<<"--- Actual status : "<<(theupdate ? "" : "original")<<"  Value : ";
 
-  if (thesatisf) S<<" -- Specific Function for Satisfies : "<<thesatisn.ToCString()<<endl;
+  if (thesatisf) S<<" -- Specific Function for Satisfies : "<<thesatisn.ToCString()<<Message_EndLine;
 }
 
 
@@ -304,7 +304,7 @@ Standard_CString  Interface_Static::CVal  (const Standard_CString name)
   Handle(Interface_Static) item = Interface_Static::Static(name);
   if (item.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Interface_Static::CVal: incorrect parameter " << name << endl;
+    std::cout << "Warning: Interface_Static::CVal: incorrect parameter " << name << std::endl;
 #endif
     return "";
   }
@@ -317,7 +317,7 @@ Standard_Integer  Interface_Static::IVal  (const Standard_CString name)
   Handle(Interface_Static) item = Interface_Static::Static(name);
   if (item.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Interface_Static::IVal: incorrect parameter " << name << endl;
+    std::cout << "Warning: Interface_Static::IVal: incorrect parameter " << name << std::endl;
 #endif
     return 0;
   }
@@ -330,7 +330,7 @@ Standard_Real Interface_Static::RVal (const Standard_CString name)
   Handle(Interface_Static) item = Interface_Static::Static(name);
   if (item.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Interface_Static::RVal: incorrect parameter " << name << endl;
+    std::cout << "Warning: Interface_Static::RVal: incorrect parameter " << name << std::endl;
 #endif
     return 0.0;
   }

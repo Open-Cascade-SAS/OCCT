@@ -211,5 +211,5 @@ Interface_ShareTool::Interface_ShareTool (const Handle(Interface_HGraph)& ahgrap
     Handle(Standard_Transient) ent = iter.Value();
     S << " n0/id:"; Model()->Print(ent,S);
   }
-  S<<endl;
+  S<<Message_EndLine;
 }

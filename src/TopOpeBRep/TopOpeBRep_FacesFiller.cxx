@@ -221,7 +221,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
   if ( t == TopOpeBRep_WALKING ) {
     if ( nbvp < 2 ) {
 #ifdef OCCT_DEBUG
-      cout<<"\n=== Nb de IntPatch_Point sur WL incorrect : "<<nbvp<<" ===\n";
+      std::cout<<"\n=== Nb de IntPatch_Point sur WL incorrect : "<<nbvp<<" ===\n";
 #endif
       check = Standard_False;
     }
@@ -311,7 +311,7 @@ Standard_Boolean TopOpeBRep_FacesFiller::CheckLine(TopOpeBRep_LineInter& L) cons
   }
   
 #ifdef OCCT_DEBUG
-  if (!check) { cout<<"# DEB CheckLine : rejet de ";TopOpeBRep::Print(t,cout);cout<<" a "<<nbvp<<" points"<<endl; }
+  if (!check) { std::cout<<"# DEB CheckLine : rejet de ";TopOpeBRep::Print(t,std::cout);std::cout<<" a "<<nbvp<<" points"<<std::endl; }
 #endif
 
   return check;

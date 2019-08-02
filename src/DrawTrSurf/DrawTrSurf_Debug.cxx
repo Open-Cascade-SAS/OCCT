@@ -125,7 +125,7 @@ const char* DrawTrSurf_Set (const char* theName, const gp_Pnt2d& thePnt2d)
 void DrawTrSurf_Get(const char* name, Handle(Standard_Transient)& G)
 {
   Handle(Geom_Geometry) GG = DrawTrSurf::Get(name);
-  cout << "Nom : " << name << endl;
+  std::cout << "Nom : " << name << std::endl;
   if (!GG.IsNull()) {
     G = GG;
     return;
@@ -137,6 +137,6 @@ void DrawTrSurf_Get(const char* name, Handle(Standard_Transient)& G)
     return;
   }
 
-  cout << "*** Not a geometric object ***" << endl;
+  std::cout << "*** Not a geometric object ***" << std::endl;
 }
 */

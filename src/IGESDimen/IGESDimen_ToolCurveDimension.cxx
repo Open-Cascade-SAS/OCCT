@@ -157,26 +157,26 @@ void  IGESDimen_ToolCurveDimension::OwnDump
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_CurveDimension" << endl;
+  S << "IGESDimen_CurveDimension" << Message_EndLine;
   S << "General Note Entity   : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "First  Curve   Entity : ";
   dumper.Dump(ent->FirstCurve(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Curve   Entity : ";
   dumper.Dump(ent->SecondCurve(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "First  Leader  Entity : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Leader  Entity : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "First  Witness Entity : ";
   dumper.Dump(ent->FirstWitnessLine(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitnessLine(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
 }

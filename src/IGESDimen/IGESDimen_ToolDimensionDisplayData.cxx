@@ -271,88 +271,88 @@ void  IGESDimen_ToolDimensionDisplayData::OwnDump
   (const Handle(IGESDimen_DimensionDisplayData)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESDimen_DimensionDisplayData" << endl;
+  S << "IGESDimen_DimensionDisplayData" << Message_EndLine;
 
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
 
   S << "DimensionType : "  << ent->DimensionType() ;
   switch (ent->DimensionType()) {
-    case 0  :  S << " (Ordinary)"  << endl;  break;
-    case 1  :  S << " (Reference)" << endl;  break;
-    case 2  :  S << " (Basic)"     << endl;  break;
-    default :  S << " (Incorrect Value)" << endl;  break;
+    case 0  :  S << " (Ordinary)"  << Message_EndLine;  break;
+    case 1  :  S << " (Reference)" << Message_EndLine;  break;
+    case 2  :  S << " (Basic)"     << Message_EndLine;  break;
+    default :  S << " (Incorrect Value)" << Message_EndLine;  break;
   }
 
   S << "Preferred Label Position : "  << ent->LabelPosition();
   switch (ent->LabelPosition()) {
-    case 0  :  S << " (Does not exist)"     << endl;  break;
-    case 1  :  S << " (Before Measurement)" << endl;  break;
-    case 2  :  S << " (After Measurement)"  << endl;  break;
-    case 3  :  S << " (Above Measurement)"  << endl;  break;
-    case 4  :  S << " (Below Measurement)"  << endl;  break;
-    default :  S << " (Incorrect Value)"    << endl;  break;
+    case 0  :  S << " (Does not exist)"     << Message_EndLine;  break;
+    case 1  :  S << " (Before Measurement)" << Message_EndLine;  break;
+    case 2  :  S << " (After Measurement)"  << Message_EndLine;  break;
+    case 3  :  S << " (Above Measurement)"  << Message_EndLine;  break;
+    case 4  :  S << " (Below Measurement)"  << Message_EndLine;  break;
+    default :  S << " (Incorrect Value)"    << Message_EndLine;  break;
   }
 
   S << "Character set interpretation : " << ent->CharacterSet() ;
   switch (ent->CharacterSet()) 
     {
-    case 1    : S << " (Standard ASCII)" << endl; break;
-    case 1001 : S << " (Symbol Font 1)" << endl; break;
-    case 1002 : S << " (Symbol Font 2)" << endl; break;
-    case 1003 : S << " (Drafting Font)" << endl; break;
-    default   : S << " (Not meaningful)" << endl; break;
+    case 1    : S << " (Standard ASCII)" << Message_EndLine; break;
+    case 1001 : S << " (Symbol Font 1)" << Message_EndLine; break;
+    case 1002 : S << " (Symbol Font 2)" << Message_EndLine; break;
+    case 1003 : S << " (Drafting Font)" << Message_EndLine; break;
+    default   : S << " (Not meaningful)" << Message_EndLine; break;
   }
 
   S << "LString : ";
   IGESData_DumpString(S,ent->LString());
-  S << endl;
+  S << Message_EndLine;
 
   S << "Decimal Symbol : ";
-  if (ent->DecimalSymbol() == 0)  S << "0 (.)" << endl;
-  else                            S << "1 (,)" << endl;
+  if (ent->DecimalSymbol() == 0)  S << "0 (.)" << Message_EndLine;
+  else                            S << "1 (,)" << Message_EndLine;
 
-  S << "Witness Line Angle : " << ent->WitnessLineAngle() << endl;
+  S << "Witness Line Angle : " << ent->WitnessLineAngle() << Message_EndLine;
   S << "Text Alignment : " ;
-  if      (ent->TextAlignment() == 0 )    S << "0 (Horizontal)" << endl;
-  else if (ent->TextAlignment() == 1 )    S << "1 (Parallel)" << endl;
-  else     S <<  ent->TextAlignment() << " (Incorrect Value)" << endl;
+  if      (ent->TextAlignment() == 0 )    S << "0 (Horizontal)" << Message_EndLine;
+  else if (ent->TextAlignment() == 1 )    S << "1 (Parallel)" << Message_EndLine;
+  else     S <<  ent->TextAlignment() << " (Incorrect Value)" << Message_EndLine;
 
   S << "Text Level : " << ent->TextLevel();
   switch (ent->TextLevel()) {
-    case 0  :  S << " (Neither above nor below)" << endl;  break;
-    case 1  :  S << " (Above)"                   << endl;  break;
-    case 2  :  S << " (Below)"                   << endl;  break;
-    default :  S << " (Incorrect Value)"         << endl;  break;
+    case 0  :  S << " (Neither above nor below)" << Message_EndLine;  break;
+    case 1  :  S << " (Above)"                   << Message_EndLine;  break;
+    case 2  :  S << " (Below)"                   << Message_EndLine;  break;
+    default :  S << " (Incorrect Value)"         << Message_EndLine;  break;
   }
 
   S << "Preferred Text placement : " << ent->TextPlacement();
   switch (ent->TextPlacement()) {
-    case 0  :  S << " (Between witness lines)"               << endl;  break;
-    case 1  :  S << " (Outside near the first witness line)" << endl;  break;
-    case 2  :  S << " (Outside near second witness line)"    << endl;  break;
-    default :  S << " (Incorrect Value)"                     << endl;  break;
+    case 0  :  S << " (Between witness lines)"               << Message_EndLine;  break;
+    case 1  :  S << " (Outside near the first witness line)" << Message_EndLine;  break;
+    case 2  :  S << " (Outside near second witness line)"    << Message_EndLine;  break;
+    default :  S << " (Incorrect Value)"                     << Message_EndLine;  break;
   }
 
   S << "Arrow Head Orientation : "  << ent->ArrowHeadOrientation();
-  if      (ent->ArrowHeadOrientation() == 0) S << " (In, pointing out)" <<endl;
-  else if (ent->ArrowHeadOrientation() == 1) S << " (Out, pointing in)" <<endl;
-  else                                       S << " (Incorrect Value)" << endl;
+  if      (ent->ArrowHeadOrientation() == 0) S << " (In, pointing out)" <<Message_EndLine;
+  else if (ent->ArrowHeadOrientation() == 1) S << " (Out, pointing in)" <<Message_EndLine;
+  else                                       S << " (Incorrect Value)" << Message_EndLine;
 
   Standard_Integer nbnotes = ent->NbSupplementaryNotes();
-  S << " Primary Dimension Value : " << ent->InitialValue() << endl;
-  S << " Number of Supplementary Notes : " << nbnotes <<endl;
+  S << " Primary Dimension Value : " << ent->InitialValue() << Message_EndLine;
+  S << " Number of Supplementary Notes : " << nbnotes <<Message_EndLine;
   S << "Supplementary Notes , ";
   S << " Start Index , ";
-  S << " End   Index : " << endl;
+  S << " End   Index : " << Message_EndLine;
   IGESData_DumpVals(S,-level,1, nbnotes,ent->EndIndex);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     for (Standard_Integer i = 1; i <= nbnotes; i ++)
       {
-	S << "[" << i << "]: " << endl;
+	S << "[" << i << "]: " << Message_EndLine;
 	S << "Supplementary Note : " << ent->SupplementaryNote(i);
 	S << ", Start Index : " << ent->StartIndex(i);
-	S << ", End Index : "   << ent->EndIndex(i) << endl;
+	S << ", End Index : "   << ent->EndIndex(i) << Message_EndLine;
       }
-  S << endl;
+  S << Message_EndLine;
 }

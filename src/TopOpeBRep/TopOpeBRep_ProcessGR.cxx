@@ -78,7 +78,7 @@
 #include <Geom_Line.hxx>
 extern Standard_Boolean TopOpeBRep_GettraceBIPS(); 
 extern Standard_Boolean TopOpeBRep_GettraceDEGEN();
-extern Standard_Boolean FUN_debnull(const TopoDS_Shape& s){Standard_Boolean isnull = s.IsNull(); if (isnull) cout <<"***"; return isnull;}
+extern Standard_Boolean FUN_debnull(const TopoDS_Shape& s){Standard_Boolean isnull = s.IsNull(); if (isnull) std::cout <<"***"; return isnull;}
 #endif
 
 //Standard_EXPORT extern Standard_Real GLOBAL_tolFF;
@@ -121,8 +121,8 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF
   if (isperiodic) { 
 #ifdef OCCT_DEBUG
 //    TopOpeBRep_FFDumper FFD(*this); 
-//    cout <<"vpf :"; FFD.DumpVP(vpf,cout);
-//    cout <<"vpl :"; FFD.DumpVP(vpl,cout);
+//    std::cout <<"vpf :"; FFD.DumpVP(vpf,std::cout);
+//    std::cout <<"vpl :"; FFD.DumpVP(vpl,std::cout);
 #endif
 
     Standard_Integer IArc = 0; 

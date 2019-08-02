@@ -197,7 +197,7 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
     // -------------------------
 
 #ifdef OCCT_DEBUG
-    cout << "Warning: TopoDSToStep_MakeStepEdge: edge without 3d curve; creating..." << endl;
+    std::cout << "Warning: TopoDSToStep_MakeStepEdge: edge without 3d curve; creating..." << std::endl;
 #endif
     if ((SA.GetType() == GeomAbs_Plane) &&
 	(CA.GetType() == GeomAbs_Line)) {

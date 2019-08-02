@@ -125,7 +125,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 { 
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevolutionForm::Init" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevolutionForm::Init" << std::endl;
 #endif
   Standard_Boolean RevolRib = Standard_True;
   Done();
@@ -174,7 +174,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     GeomAPI_ProjectPointOnCurve proj2(p2, Line);
     if(proj1.NbPoints() < 1 || proj2.NbPoints() < 1) {
 #ifdef OCCT_DEBUG
-      if (trc) cout << " No projection points" << endl;
+      if (trc) std::cout << " No projection points" << std::endl;
 #endif
       myStatusError = BRepFeat_NoProjPt;
       NotDone();
@@ -208,8 +208,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     myFuse   = Standard_True;
 #ifdef OCCT_DEBUG
   if (trc) {
-    if (myFuse)  cout << " Fuse" << endl;
-    if (!myFuse)  cout << " Cut" << endl;
+    if (myFuse)  std::cout << " Fuse" << std::endl;
+    if (!myFuse)  std::cout << " Cut" << std::endl;
   }
 #endif
 
@@ -294,7 +294,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
   
   if(!Data) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " No Extreme faces" << endl;
+    if (trc) std::cout << " No Extreme faces" << std::endl;
 #endif
     myStatusError = BRepFeat_NoExtFace;
     NotDone();
@@ -320,7 +320,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
   
   if(Sliding) {    // sliding
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Sliding" << endl;
+    if (trc) std::cout << " Sliding" << std::endl;
 #endif
     Handle(Geom_Surface) s = BRep_Tool::Surface(FirstFace);
     if (s->DynamicType() == 
@@ -360,7 +360,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     GeomAPI_ProjectPointOnCurve proj(myFirstPnt, Line);
     if(proj.NbPoints() < 1) {
 #ifdef OCCT_DEBUG
-      if (trc) cout << " No First Point projection" << endl;
+      if (trc) std::cout << " No First Point projection" << std::endl;
 #endif
       myStatusError = BRepFeat_NoProjPt;
       NotDone();
@@ -372,7 +372,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     GeomAPI_ProjectPointOnCurve proj1(myLastPnt, Line);
     if(proj.NbPoints() < 1) {
 #ifdef OCCT_DEBUG
-      if (trc) cout << " No Last Point projection" << endl;
+      if (trc) std::cout << " No Last Point projection" << std::endl;
 #endif
       myStatusError = BRepFeat_NoProjPt;
       NotDone();
@@ -474,7 +474,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 // ---case of sliding : construction of the face profile
   if(Sliding) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " still Sliding" << endl;
+    if (trc) std::cout << " still Sliding" << std::endl;
 #endif
     TopoDS_Face Prof;
     Standard_Boolean ProfileOK;
@@ -486,8 +486,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 #ifdef OCCT_DEBUG
       if (trc)
       {
-        cout << "Not computable" << endl;
-        cout << "Face profile not computable" << endl;
+        std::cout << "Not computable" << std::endl;
+        std::cout << "Face profile not computable" << std::endl;
       }
 #endif
       myStatusError = BRepFeat_NoFaceProf;
@@ -503,7 +503,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 // Control if there is everything required to have the material at the proper side
     if(falseside == Standard_False) {
 #ifdef OCCT_DEBUG
-      cout << " Verify plane and wire orientation" << endl;
+      std::cout << " Verify plane and wire orientation" << std::endl;
 #endif
       myStatusError = BRepFeat_FalseSide;
       NotDone();
@@ -800,8 +800,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
   if(!Sliding) {
 #ifdef OCCT_DEBUG
     if (trc) {
-      if (Modify) cout << " Sliding failure" << endl;
-      cout << " no Sliding" << endl;
+      if (Modify) std::cout << " Sliding failure" << std::endl;
+      std::cout << " no Sliding" << std::endl;
     }
 #endif
     TopExp_Explorer explo1(BndFace, TopAbs_WIRE);
@@ -891,7 +891,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
     
     if(!BRepAlgo::IsValid(NewBndFace)) {
 #ifdef OCCT_DEBUG
-      cout << "Invalid new bounding face" << endl;
+      std::cout << "Invalid new bounding face" << std::endl;
 #endif
       myStatusError = BRepFeat_InvShape;
       NotDone();
@@ -912,8 +912,8 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 #ifdef OCCT_DEBUG
       if (trc)
       {
-        cout << "Not computable" << endl;
-        cout << " Face profile not computable" << endl;
+        std::cout << "Not computable" << std::endl;
+        std::cout << " Face profile not computable" << std::endl;
       }
 #endif
       myStatusError = BRepFeat_NoFaceProf;
@@ -929,7 +929,7 @@ void BRepFeat_MakeRevolutionForm::Init(const TopoDS_Shape& Sbase,
 // Control if there is everything required to have the material at the proper side
     if(falseside == Standard_False) {
 #ifdef OCCT_DEBUG
-      cout << " Verify plane and wire orientation" << endl;
+      std::cout << " Verify plane and wire orientation" << std::endl;
 #endif
       myStatusError = BRepFeat_FalseSide;
       NotDone();
@@ -978,7 +978,7 @@ void BRepFeat_MakeRevolutionForm::Add(const TopoDS_Edge& E,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevolutionForm::Add" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevolutionForm::Add" << std::endl;
 #endif 
   if(mySlface.IsEmpty()) {
     TopExp_Explorer exp;
@@ -1018,11 +1018,11 @@ void BRepFeat_MakeRevolutionForm::Perform()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakeRevolutionForm::Perform()" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevolutionForm::Perform()" << std::endl;
 #endif
   if(mySbase.IsNull() || mySkface.IsNull() || myPbase.IsNull()) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Fields not initialized" << endl;
+    if (trc) std::cout << " Fields not initialized" << std::endl;
 #endif
     myStatusError = BRepFeat_NotInitialized;
     NotDone();
@@ -1124,7 +1124,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
   if(!ASI1.IsDone() || !ASI2.IsDone() ||
      ASI1.NbPoints(1) != 1 || ASI2.NbPoints(1) != 1) {
 #ifdef OCCT_DEBUG
-    if (trc) cout << " Intersection failure" << endl;
+    if (trc) std::cout << " Intersection failure" << std::endl;
 #endif
     myStatusError = BRepFeat_BadIntersect;
     NotDone();
@@ -1217,7 +1217,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
     const TopoDS_Edge& e = TopoDS::Edge(exx.Current());
     if(!myMap.IsBound(e)) {
 #ifdef OCCT_DEBUG
-      if (trc) cout << " Sliding face not in Base shape" << endl;
+      if (trc) std::cout << " Sliding face not in Base shape" << std::endl;
 #endif
       myStatusError = BRepFeat_IncSlidFace;
       NotDone();
@@ -1231,8 +1231,8 @@ void BRepFeat_MakeRevolutionForm::Perform()
 #ifdef OCCT_DEBUG
     if (trc)
     {
-      cout << "The case is not computable" << endl;
-      cout << " Glued faces not empty and Until shape not null" << endl;
+      std::cout << "The case is not computable" << std::endl;
+      std::cout << " Glued faces not empty and Until shape not null" << std::endl;
     }
 #endif
     myStatusError = BRepFeat_InvShape;
@@ -1258,7 +1258,7 @@ Standard_Boolean BRepFeat_MakeRevolutionForm::Propagate(TopTools_ListOfShape& Sl
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEATRIB();
-  if (trc) cout << "BRepFeat_MakeRevolutionForm::Propagate" << endl;
+  if (trc) std::cout << "BRepFeat_MakeRevolutionForm::Propagate" << std::endl;
 #endif
   gp_Pnt Firstpoint = Firstpnt;
   gp_Pnt Lastpoint = Lastpnt;
@@ -1703,7 +1703,7 @@ static void SetGluedFaces(const TopTools_DataMapOfShapeListOfShape& theSlmap,
 	const TopTools_ListOfShape& gfac = thePrism.Shapes(it.Value());
 	if (gfac.Extent() != 1) {
 #ifdef OCCT_DEBUG
-	  cout << "Pb SetGluedFace" << endl;
+	  std::cout << "Pb SetGluedFace" << std::endl;
 #endif
 	}
 	TopTools_DataMapIteratorOfDataMapOfShapeListOfShape iterm(SlidingMap);

@@ -323,7 +323,7 @@ public:
 
   Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& theDumpLog) const Standard_OVERRIDE;
 
-  //! Print to ostream <theDumpLog> type of shape found on <L> label
+  //! Print to std::ostream <theDumpLog> type of shape found on <L> label
   //! and the entry of <L>, with <level> tabs before.
   //! If <deep>, print also TShape and Location addresses
   Standard_EXPORT static void DumpShape (Standard_OStream& theDumpLog, const TDF_Label& L, const Standard_Integer level = 0, const Standard_Boolean deep = Standard_False);

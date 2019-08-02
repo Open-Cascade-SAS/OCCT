@@ -463,77 +463,77 @@ void  IGESDimen_ToolNewGeneralNote::OwnDump
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
   Standard_Integer nbval = ent->NbStrings();
 
-  S << "IGESDimen_NewGeneralNote" << endl;
+  S << "IGESDimen_NewGeneralNote" << Message_EndLine;
   S << "Text Area  : Width : " << ent->TextWidth() << "  ";
   S << "Height : " << ent->TextHeight() << "  ";
-  S << "Justification Code  : " << ent->JustifyCode() << endl;
+  S << "Justification Code  : " << ent->JustifyCode() << Message_EndLine;
   S << "Text Area Location Point : ";
   IGESData_DumpXYZL(S,level, ent->AreaLocation(), ent->Location());
-  S << "Rotation Angle of Text : " << ent->AreaRotationAngle() << endl;
+  S << "Rotation Angle of Text : " << ent->AreaRotationAngle() << Message_EndLine;
   S << "Base Line Position : ";
   IGESData_DumpXYZL(S,level, ent->BaseLinePosition(), ent->Location());
-  S << "Normal Interline Spacing : " << ent->NormalInterlineSpace() << endl;
-  S << "Number of Text Strings : " << nbval << endl;
+  S << "Normal Interline Spacing : " << ent->NormalInterlineSpace() << Message_EndLine;
+  S << "Number of Text Strings : " << nbval << Message_EndLine;
 
-  S << "Character Display : " << endl; 
-  S << "Character Width : " << endl; 
-  S << "Character Height : " << endl; 
-  S << "Inter Character Spacing : " << endl; 
-  S << "Interline Spacing : " << endl; 
-  S << "Font Styles : " << endl; 
-  S << "Character Angle : " << endl; 
-  S << "Control Code String : " << endl; 
-  S << "Number of Characters : " << endl; 
-  S << "Box Widths : " << endl; 
-  S << "Box Heights : " << endl; 
-  S << "Character Set Codes : " << endl; 
-  S << "Character Set Entities : " << endl; 
-  S << "Slant Angles : " << endl; 
-  S << "Rotation Angles : " << endl; 
-  S << "Mirror Flags : " << endl; 
-  S << "Rotate Flags : " << endl; 
-  S << "Start Points : " << endl; 
+  S << "Character Display : " << Message_EndLine; 
+  S << "Character Width : " << Message_EndLine; 
+  S << "Character Height : " << Message_EndLine; 
+  S << "Inter Character Spacing : " << Message_EndLine; 
+  S << "Interline Spacing : " << Message_EndLine; 
+  S << "Font Styles : " << Message_EndLine; 
+  S << "Character Angle : " << Message_EndLine; 
+  S << "Control Code String : " << Message_EndLine; 
+  S << "Number of Characters : " << Message_EndLine; 
+  S << "Box Widths : " << Message_EndLine; 
+  S << "Box Heights : " << Message_EndLine; 
+  S << "Character Set Codes : " << Message_EndLine; 
+  S << "Character Set Entities : " << Message_EndLine; 
+  S << "Slant Angles : " << Message_EndLine; 
+  S << "Rotation Angles : " << Message_EndLine; 
+  S << "Mirror Flags : " << Message_EndLine; 
+  S << "Rotate Flags : " << Message_EndLine; 
+  S << "Start Points : " << Message_EndLine; 
   S << "Texts : "; 
   IGESData_DumpVals(S,-level,1, nbval, ent->NbCharacters);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
-      S << "Details of each String" << endl;
+      S << "Details of each String" << Message_EndLine;
       for ( Standard_Integer i = 1; i <= nbval; i++)
 	{
-          S << "[" << i << "]: " << endl;
+          S << "[" << i << "]: " << Message_EndLine;
           S << "Character Display : " << ent->CharacterDisplay(i) << "  ";
           S << "Character Width   : " << ent->CharacterWidth(i)   << "  ";
-          S << "Character Height  : " << ent->CharacterHeight(i)  << endl;
+          S << "Character Height  : " << ent->CharacterHeight(i)  << Message_EndLine;
           S << "Inter Character Spacing : "<<ent->InterCharacterSpace(i)<<"  ";
-          S << "Interline Spacing : " << ent->InterlineSpace(i) << endl;
-          S << "Font Styles       : " << ent->FontStyle(i) << endl;
-          S << "Character Angle   : " << ent->CharacterAngle(i) << endl;
+          S << "Interline Spacing : " << ent->InterlineSpace(i) << Message_EndLine;
+          S << "Font Styles       : " << ent->FontStyle(i) << Message_EndLine;
+          S << "Character Angle   : " << ent->CharacterAngle(i) << Message_EndLine;
           S << "Control Code String : " ;
           IGESData_DumpString(S,ent->ControlCodeString(i));
-          S << endl;
+          S << Message_EndLine;
           S << "Number of Characters : " << ent->NbCharacters(i) << "  ";
           S << "Box Width  : " << ent->BoxWidth(i)  << "  ";
-          S << "Box Height : " << ent->BoxHeight(i) << endl;
+          S << "Box Height : " << ent->BoxHeight(i) << Message_EndLine;
           if (ent->IsCharSetEntity(i))
 	    {
               S << "Character Set Entity : ";
               dumper.Dump (ent->CharSetEntity(i),S, sublevel);
-              S << endl;
+              S << Message_EndLine;
 	    }
           else
-	    S << "Character Set Code : " << ent->CharSetCode(i) << endl;
+	    S << "Character Set Code : " << ent->CharSetCode(i) << Message_EndLine;
 
           S << "Slant Angle : "    << ent->SlantAngle(i) << "  ";
           S << "Rotation Angle : " << ent->RotationAngle(i) << "  ";
           S << "Mirror Flag : "    << ent->MirrorFlag(i) << "  ";
-          S << "Rotate Flag : "    << ent->RotateFlag(i) << endl;
+          S << "Rotate Flag : "    << ent->RotateFlag(i) << Message_EndLine;
           S << "Start Point : ";
           IGESData_DumpXYZL(S,level, ent->StartPoint(i), ent->Location());
           S << "Text : ";
           IGESData_DumpString(S,ent->Text(i));
-          S << endl;
+          S << Message_EndLine;
 	}
     }
-  else S << endl;
+  else S << Message_EndLine;
 }

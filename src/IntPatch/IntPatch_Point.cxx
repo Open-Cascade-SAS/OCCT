@@ -128,28 +128,28 @@ void IntPatch_Point::ReverseTransition()
 static void DumpTransition(const IntSurf_Transition& T)
 {
   IntSurf_TypeTrans typetrans = T.TransitionType(); 
-  if(typetrans == IntSurf_In)             cout<<" In  ";
-  else if(typetrans == IntSurf_Out)       cout<<" Out ";
-  else if(typetrans == IntSurf_Undecided) cout<<" Und.";
+  if(typetrans == IntSurf_In)             std::cout<<" In  ";
+  else if(typetrans == IntSurf_Out)       std::cout<<" Out ";
+  else if(typetrans == IntSurf_Undecided) std::cout<<" Und.";
   else if(typetrans == IntSurf_Touch) { 
-    cout<<" Touch ";
-    if(T.Situation() == IntSurf_Inside)       cout<<" Inside ";
-    else if(T.Situation() == IntSurf_Outside) cout<<" Outside";
-    else                                      cout<<" Unknown";
-    if(T.IsOpposite()) cout<<"     Opposite "; 
-    else               cout<<" Non_Opposite ";
+    std::cout<<" Touch ";
+    if(T.Situation() == IntSurf_Inside)       std::cout<<" Inside ";
+    else if(T.Situation() == IntSurf_Outside) std::cout<<" Outside";
+    else                                      std::cout<<" Unknown";
+    if(T.IsOpposite()) std::cout<<"     Opposite "; 
+    else               std::cout<<" Non_Opposite ";
   }
 
   if(typetrans != IntSurf_Undecided) { 
-    if(T.IsTangent()) cout<<" Tangent    ";
-    else              cout<<" Non_Tangent";
+    if(T.IsTangent()) std::cout<<" Tangent    ";
+    else              std::cout<<" Non_Tangent";
   }
 }
     
 #include <Standard_Transient.hxx>
 
 void IntPatch_Point::Dump() const { 
-  cout<<"----------- IntPatch_Point : "<<endl;
+  std::cout<<"----------- IntPatch_Point : "<<std::endl;
   Standard_Real u1,v1,u2,v2;
   pt.Parameters(u1,v1,u2,v2);
 
@@ -173,17 +173,17 @@ void IntPatch_Point::Dump() const {
   fflush(stdout);
 
   if(onS1 || onS2) { 
-    cout<<" tgt:"<<((tgt)? 1 : 0) <<"   mult:"<<((mult)? 1 :0);
+    std::cout<<" tgt:"<<((tgt)? 1 : 0) <<"   mult:"<<((mult)? 1 :0);
     if(onS1) { 
-      cout<<"\n-traline1  : ";   DumpTransition(traline1);
-      cout<<"  -tra1  : ";       DumpTransition(tra1);
+      std::cout<<"\n-traline1  : ";   DumpTransition(traline1);
+      std::cout<<"  -tra1  : ";       DumpTransition(tra1);
     }
     if(onS2) { 
-      cout<<"\n-traline2  : ";   DumpTransition(traline2);
-      cout<<"  -tra2  : ";      DumpTransition(tra2);
+      std::cout<<"\n-traline2  : ";   DumpTransition(traline2);
+      std::cout<<"  -tra2  : ";      DumpTransition(tra2);
     }
-    cout<<endl;
+    std::cout<<std::endl;
   }
-  cout << "\nToler = " << Tolerance();
-  cout << endl;
+  std::cout << "\nToler = " << Tolerance();
+  std::cout << std::endl;
 }

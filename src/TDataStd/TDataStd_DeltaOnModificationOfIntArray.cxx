@@ -45,9 +45,9 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(c
       Arr2 = CurrAtt->Array();
 #ifdef OCCT_DEBUG
       if(Arr1.IsNull())
-	cout <<"DeltaOnModificationOfIntArray:: Old IntArray is Null" <<endl;
+	std::cout <<"DeltaOnModificationOfIntArray:: Old IntArray is Null" <<std::endl;
       if(Arr2.IsNull())
-	cout <<"DeltaOnModificationOfIntArray:: Current IntArray is Null" <<endl;
+	std::cout <<"DeltaOnModificationOfIntArray:: Current IntArray is Null" <<std::endl;
 #endif
 
       if(Arr1.IsNull() || Arr2.IsNull()) return;
@@ -84,7 +84,7 @@ TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(c
     OldAtt->RemoveArray();
 #ifdef OCCT_DEBUG
     if(OldAtt->Array().IsNull())
-      cout << "BackUp Arr is Nullified" << endl;
+      std::cout << "BackUp Arr is Nullified" << std::endl;
 #endif
   }
 }
@@ -102,7 +102,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   Handle(TDataStd_IntegerArray) BackAtt = Handle(TDataStd_IntegerArray)::DownCast (TDFAttribute);
   if(BackAtt.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "DeltaOnModificationOfIntArray::Apply: OldAtt is Null" <<endl;
+    std::cout << "DeltaOnModificationOfIntArray::Apply: OldAtt is Null" <<std::endl;
 #endif
     return;
   }
@@ -115,7 +115,7 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
 
   if(aCurAtt.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout << "DeltaOnModificationOfIntArray::Apply: CurAtt is Null" <<endl;
+    std::cout << "DeltaOnModificationOfIntArray::Apply: CurAtt is Null" <<std::endl;
 #endif
     return;
   }
@@ -156,9 +156,9 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
     if(!myIndxes.IsNull() && !myValues.IsNull())
       for(i = 1; i <= myIndxes->Upper();i++) {
 #ifdef OCCT_DEBUG
-	cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << endl;
-	cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << endl;
-	cout << "myValues->Value(i) = " << myValues->Value(i) << endl;
+	std::cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << std::endl;
+	std::cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << std::endl;
+	std::cout << "myValues->Value(i) = " << myValues->Value(i) << std::endl;
 #endif
 	intArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));      
       }
@@ -166,11 +166,11 @@ void TDataStd_DeltaOnModificationOfIntArray::Apply()
   }
   
 #ifdef OCCT_DEBUG
-  cout << " << Array Dump after Delta Apply >>" <<endl;
+  std::cout << " << Array Dump after Delta Apply >>" <<std::endl;
   Handle(TColStd_HArray1OfInteger) IntArr2 = aCurAtt->Array();
   for(i=IntArr2->Lower(); i<=IntArr2->Upper() && i <= MAXUP;i++)
-    cout << IntArr2->Value(i) << "  ";
-  cout <<endl;
+    std::cout << IntArr2->Value(i) << "  ";
+  std::cout <<std::endl;
 #endif
 }
 

@@ -223,12 +223,12 @@ void IGESGraph_ToolDrawingUnits::OwnDump
   (const Handle(IGESGraph_DrawingUnits)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_DrawingUnits" << endl;
+  S << "IGESGraph_DrawingUnits" << Message_EndLine;
 
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
   S << "  Units Flag : " << ent->Flag();
   S << "  Units Name : ";
   IGESData_DumpString(S,ent->Unit());
   S << "  computed Value (in meters) : " << ent->UnitValue();
-  S << endl;
+  S << Message_EndLine;
 }

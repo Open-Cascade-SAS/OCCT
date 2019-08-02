@@ -122,10 +122,10 @@ void  IGESSolid_ToolSphere::OwnDump
   (const Handle(IGESSolid_Sphere)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_Sphere" << endl;
+  S << "IGESSolid_Sphere" << Message_EndLine;
 
-  S << "Radius : " << ent->Radius() << endl;
+  S << "Radius : " << ent->Radius() << Message_EndLine;
   S << "Center : ";
   IGESData_DumpXYZL(S,level, ent->Center(), ent->Location());
-  S << endl;
+  S << Message_EndLine;
 }

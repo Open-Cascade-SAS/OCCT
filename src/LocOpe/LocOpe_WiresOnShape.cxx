@@ -686,8 +686,8 @@ Standard_Boolean Project(const TopoDS_Vertex& V,
   }
 #ifdef OCCT_DEBUG_MESH
   else {
-    cout <<"LocOpe_WiresOnShape::Project --> le vertex projete est a une "; 
-    cout <<"distance / la face = "<<dmin <<" superieure a la tolerance = "<<ttol<<endl;
+    std::cout <<"LocOpe_WiresOnShape::Project --> le vertex projete est a une "; 
+    std::cout <<"distance / la face = "<<dmin <<" superieure a la tolerance = "<<ttol<<std::endl;
   }
 #endif
   return valret;

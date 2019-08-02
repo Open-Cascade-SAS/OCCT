@@ -99,9 +99,9 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
 
 #ifdef DUMP_ML
   i = 1;
-  cout << "--Point " << i << endl;
-  cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << endl;
-  cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << endl;
+  std::cout << "--Point " << i << std::endl;
+  std::cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << std::endl;
+  std::cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << std::endl;
 #endif
 
   
@@ -116,9 +116,9 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
     AppDef_MultiPointConstraint MPC( 1, 2);
     ML.Value3dOnF1OnF2(U,P3d,PF1,PF2);
 #ifdef DUMP_ML
-    cout << "--Point " << i << endl;
-    cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << endl;
-    cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << endl;
+    std::cout << "--Point " << i << std::endl;
+    std::cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << std::endl;
+    std::cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << std::endl;
 #endif
     MPC.SetPoint  (1, P3d);
     MPC.SetPoint2d(2, PF1);
@@ -130,9 +130,9 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   ML.Value3dOnF1OnF2(U2,P3d,PF1,PF2);
 #ifdef DUMP_ML
   i = NbPoints;
-  cout << "--Point " << i << endl;
-  cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << endl;
-  cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << endl;
+  std::cout << "--Point " << i << std::endl;
+  std::cout << "P3d:    " << P3d.X() << " " << P3d.Y() << " " << P3d.Z() << std::endl;
+  std::cout << "P2d1;2: " << PF1.X() << " " << PF1.Y() << " ; " << PF2.X() << " " << PF2.Y() << std::endl;
 #endif
   MPE.SetPoint  (1, P3d);
   MPE.SetPoint2d(2, PF1);
@@ -146,7 +146,7 @@ void BRepFill_ApproxSeewing::Perform(const BRepFill_MultiLine& ML)
   
   if ( NbCurves == 0) {
 #ifdef OCCT_DEBUG
-    cout << " TrimSurfaceTool : Approx echoue, on met les polygones" << endl;
+    std::cout << " TrimSurfaceTool : Approx echoue, on met les polygones" << std::endl;
 #endif
 
     TColStd_Array1OfReal    Knots(1,NbPoints);

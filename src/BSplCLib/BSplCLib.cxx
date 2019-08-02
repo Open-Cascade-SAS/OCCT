@@ -2917,7 +2917,7 @@ BSplCLib::SolveBandedSystem(const math_Matrix&  Matrix,
       Inverse = 1.0e0 / divizor ;
     else {
       Inverse = 1.0e0;
-//      cout << "  BSplCLib::SolveBandedSystem() : zero determinant " << endl;
+//      std::cout << "  BSplCLib::SolveBandedSystem() : zero determinant " << std::endl;
       ReturnCode = 1;
       goto FINISH;
     }
@@ -3518,7 +3518,7 @@ void  BSplCLib::TangExtendToConstraint
 {
 #ifdef OCCT_DEBUG
   if (CDegree<Continuity+1) {
-    cout<<"The BSpline degree must be greater than the order of continuity"<<endl;
+    std::cout<<"The BSpline degree must be greater than the order of continuity"<<std::endl;
   }
 #endif
   Standard_Real * Padr = &Poles ;

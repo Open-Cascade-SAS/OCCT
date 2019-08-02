@@ -610,7 +610,7 @@ static Standard_Boolean stest(const Handle(Draw_Drawable3D)& d)
 //purpose  : 
 //=======================================================================
 
-static void ssave (const Handle(Draw_Drawable3D)&d, ostream& OS)
+static void ssave (const Handle(Draw_Drawable3D)&d, std::ostream& OS)
 {
   Handle(HLRTest_Projector) HP =
     Handle(HLRTest_Projector)::DownCast(d);
@@ -647,7 +647,7 @@ static void ssave (const Handle(Draw_Drawable3D)&d, ostream& OS)
 //purpose  : 
 //=======================================================================
 
-static Handle(Draw_Drawable3D) srestore (istream& IS)
+static Handle(Draw_Drawable3D) srestore (std::istream& IS)
 {
   Standard_Boolean pers;
   IS >> pers;

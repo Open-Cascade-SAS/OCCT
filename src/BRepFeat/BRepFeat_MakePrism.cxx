@@ -98,7 +98,7 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape& Sbase,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::Init" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::Init" << std::endl;
 #endif
   mySkface = Skface;
   SketchFaceValid();
@@ -144,10 +144,10 @@ void BRepFeat_MakePrism::Init(const TopoDS_Shape& Sbase,
   }
 #ifdef OCCT_DEBUG
   if (trc) {
-    if (myJustFeat)  cout << " Just Feature" << endl;
-    if (myFuse)  cout << " Fuse" << endl;
-    if (!myFuse)  cout << " Cut" << endl;
-    if (!myModify) cout << " Modify = 0" << endl;
+    if (myJustFeat)  std::cout << " Just Feature" << std::endl;
+    if (myFuse)  std::cout << " Fuse" << std::endl;
+    if (!myFuse)  std::cout << " Cut" << std::endl;
+    if (!myModify) std::cout << " Modify = 0" << std::endl;
   }
 #endif 
 }
@@ -163,7 +163,7 @@ void BRepFeat_MakePrism::Add(const TopoDS_Edge& E,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::Add(Edge,face)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::Add(Edge,face)" << std::endl;
 #endif
   TopExp_Explorer exp;
   for (exp.Init(mySbase,TopAbs_FACE);exp.More();exp.Next()) {
@@ -210,7 +210,7 @@ void BRepFeat_MakePrism::Perform(const Standard_Real Length)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::Perform(Length)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::Perform(Length)" << std::endl;
 #endif
   mySFrom.Nullify();
   ShapeFromValid();
@@ -310,7 +310,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::Perform(Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::Perform(Until)" << std::endl;
 #endif
   if (Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -407,7 +407,7 @@ void BRepFeat_MakePrism::Perform(const TopoDS_Shape& From,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::Perform(From,Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::Perform(From,Until)" << std::endl;
 #endif
   if (From.IsNull() || Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -587,7 +587,7 @@ void BRepFeat_MakePrism::PerformUntilEnd()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::PerformUntilEnd()" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::PerformUntilEnd()" << std::endl;
 #endif
   myPerfSelection = BRepFeat_SelectionSh;
   PerfSelectionValid();
@@ -632,7 +632,7 @@ void BRepFeat_MakePrism::PerformFromEnd(const TopoDS_Shape& Until)
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::PerformFromEnd(From,Until)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::PerformFromEnd(From,Until)" << std::endl;
 #endif
   if (Until.IsNull()) {
     throw Standard_ConstructionError();
@@ -764,7 +764,7 @@ void BRepFeat_MakePrism::PerformThruAll()
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::PerformThruAll()" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::PerformThruAll()" << std::endl;
 #endif
   mySUntil.Nullify();
   ShapeUntilValid();
@@ -815,7 +815,7 @@ void BRepFeat_MakePrism::PerformUntilHeight(const TopoDS_Shape& Until,
 {
 #ifdef OCCT_DEBUG
   Standard_Boolean trc = BRepFeat_GettraceFEAT();
-  if (trc) cout << "BRepFeat_MakePrism::PerformUntilHeight(Until,Length)" << endl;
+  if (trc) std::cout << "BRepFeat_MakePrism::PerformUntilHeight(Until,Length)" << std::endl;
 #endif
   if (Until.IsNull()) {
     Perform(Length);

@@ -112,13 +112,13 @@ void  IGESAppli_ToolNode::OwnDump
   (const Handle(IGESAppli_Node)& ent, const IGESData_IGESDumper& dumper,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_Node" << endl;
+  S << "IGESAppli_Node" << Message_EndLine;
   S << " Nodal Coords : 1st " << ent->Coord().X()
-    << "  2nd : " << ent->Coord().Y() << "  3rd : " << ent->Coord().Z() <<endl;
+    << "  2nd : " << ent->Coord().Y() << "  3rd : " << ent->Coord().Z() <<Message_EndLine;
   S << "Nodal Displacement Coordinate System : ";
   if (!ent->System().IsNull())
     dumper.Dump(ent->System(),S, level);
   else
     S << "Global Cartesian Coordinate System (default)";
-  S << endl;
+  S << Message_EndLine;
 }

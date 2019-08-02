@@ -348,7 +348,7 @@ static Standard_Boolean SplitWire(const TopoDS_Face &face, const TopoDS_Wire& wi
 
   if(aResWires.Length()>1) {
 #ifdef OCCT_DEBUG
-    cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< endl;
+    std::cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< std::endl;
 #endif
   }
 
@@ -995,7 +995,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
   
 /**/
 #ifdef OCCT_DEBUG
-  cout<<"Natural bound on sphere or torus with holes added"<<endl; // mise au point !
+  std::cout<<"Natural bound on sphere or torus with holes added"<<std::endl; // mise au point !
 #endif
   SendWarning ( myFace, Message_Msg ( "FixAdvFace.FixOrientation.MSG0" ) );// Face created with natural bounds
   return Standard_True;
@@ -1106,7 +1106,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
       SendWarning ( sbdw->Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
       done = Standard_True;
 #ifdef OCCT_DEBUG
-      cout<<"Wire reversed"<<endl; // mise au point !
+      std::cout<<"Wire reversed"<<std::endl; // mise au point !
 #endif
     }
   }
@@ -1403,7 +1403,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     for( ; k <= aSeqReversed.Length(); k++ )
     {
 #ifdef OCCT_DEBUG
-      cout<<"Wire no "<<aSeqReversed.Value(k)<<" of "<<nb<<" reversed"<<endl; // mise au point !
+      std::cout<<"Wire no "<<aSeqReversed.Value(k)<<" of "<<nb<<" reversed"<<std::endl; // mise au point !
 #endif
     }
       
@@ -1567,18 +1567,18 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
         else {
           w2.Reverse();
 #ifdef OCCT_DEBUG
-          if ( ! isdeg2 ) cout << "Warning: ShapeFix_Face::FixMissingSeam(): wire reversed" << endl;
+          if ( ! isdeg2 ) std::cout << "Warning: ShapeFix_Face::FixMissingSeam(): wire reversed" << std::endl;
 #endif
         }
       }
 #ifdef OCCT_DEBUG
-      else cout << "Warning: ShapeFix_Face::FixMissingSeam(): incompatible open wires" << endl;
+      else std::cout << "Warning: ShapeFix_Face::FixMissingSeam(): incompatible open wires" << std::endl;
 #endif
     }
 //    else return Standard_False; //  abort
     else {
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeFix_Face::FixMissingSeam(): more than two open wires detected!" << endl;
+      std::cout << "Warning: ShapeFix_Face::FixMissingSeam(): more than two open wires detected!" << std::endl;
 #endif
       //:abv 30.08.09: if more than one open wires and more than two of them are
       // completely degenerated, remove any of them
@@ -1588,7 +1588,7 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
         w2.Nullify();
         i = 0;
 #ifdef OCCT_DEBUG
-        cout << "Warning: ShapeFix_Face::FixMissingSeam(): open degenerated wire removed" << endl;
+        std::cout << "Warning: ShapeFix_Face::FixMissingSeam(): open degenerated wire removed" << std::endl;
 #endif
         continue;
       }
@@ -1921,7 +1921,7 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire(const Standard_Boolean theIsRem
   if ( nbWires <= 0 )
   {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeFix_Face: All wires on a face have small area; left untouched" << endl;
+    std::cout << "Warning: ShapeFix_Face: All wires on a face have small area; left untouched" << std::endl;
 #endif
     if ( theIsRemoveSmallFace && !Context().IsNull() )
       Context()->Remove(myFace);
@@ -1929,7 +1929,7 @@ Standard_Boolean ShapeFix_Face::FixSmallAreaWire(const Standard_Boolean theIsRem
     return Standard_False;
   }
 #ifdef OCCT_DEBUG
-  cout << "Warning: ShapeFix_Face: " << nbRemoved << " small area wire(s) removed" << endl;
+  std::cout << "Warning: ShapeFix_Face: " << nbRemoved << " small area wire(s) removed" << std::endl;
 #endif
   if ( !Context().IsNull() )
     Context()->Replace(myFace, aFace);
@@ -2146,7 +2146,7 @@ Standard_Boolean ShapeFix_Face::FixLoopWire(TopTools_SequenceOfShape& aResWires)
   if(isDone && aResWires.Length() >1)
   {
 #ifdef OCCT_DEBUG
-    cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< endl;
+    std::cout<<"Wire was splitted on "<<aResWires.Length()<<" wires"<< std::endl;
 #endif
   }
 
@@ -2421,7 +2421,7 @@ Standard_Boolean ShapeFix_Face::FixSplitFace(const TopTools_DataMapOfShapeListOf
       V2=sae.LastVertex(E2);
       if(!V1.IsSame(V2)) {
 #ifdef OCCT_DEBUG
-        cout<<"wire not closed --> stop split"<<endl;
+        std::cout<<"wire not closed --> stop split"<<std::endl;
 #endif
         return Standard_False;
       }

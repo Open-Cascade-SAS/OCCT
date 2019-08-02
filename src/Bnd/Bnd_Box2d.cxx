@@ -280,23 +280,23 @@ Standard_Boolean Bnd_Box2d::IsOut (const Bnd_Box2d& Other) const
 
 void Bnd_Box2d::Dump () const
 {
-  cout << "Box2d : ";
-  if      (IsVoid())  cout << "Void";
-  else if (IsWhole()) cout << "Whole";
+  std::cout << "Box2d : ";
+  if      (IsVoid())  std::cout << "Void";
+  else if (IsWhole()) std::cout << "Whole";
   else {
-    cout << "\n Xmin : ";
-    if (IsOpenXmin()) cout << "Infinite";
-    else              cout << Xmin;
-    cout << "\n Xmax : ";
-    if (IsOpenXmax()) cout << "Infinite";
-    else              cout << Xmax;
-    cout << "\n Ymin : ";
-    if (IsOpenYmin()) cout << "Infinite";
-    else              cout << Ymin;
-    cout << "\n Ymax : ";
-    if (IsOpenYmax()) cout << "Infinite";
-    else              cout << Ymax;
+    std::cout << "\n Xmin : ";
+    if (IsOpenXmin()) std::cout << "Infinite";
+    else              std::cout << Xmin;
+    std::cout << "\n Xmax : ";
+    if (IsOpenXmax()) std::cout << "Infinite";
+    else              std::cout << Xmax;
+    std::cout << "\n Ymin : ";
+    if (IsOpenYmin()) std::cout << "Infinite";
+    else              std::cout << Ymin;
+    std::cout << "\n Ymax : ";
+    if (IsOpenYmax()) std::cout << "Infinite";
+    else              std::cout << Ymax;
   }
-  cout << "\n Gap : " << Gap;
-  cout << "\n";
+  std::cout << "\n Gap : " << Gap;
+  std::cout << "\n";
 }

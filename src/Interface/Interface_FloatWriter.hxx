@@ -30,7 +30,7 @@
 
 //! This class converts a floting number (Real) to a string
 //! It can be used if the standard C-C++ output functions
-//! (sprintf or cout<<) are not convenient. That is to say :
+//! (sprintf or std::cout<<) are not convenient. That is to say :
 //! - to suppress trailing '0' and 'E+00' (if desired)
 //! - to control exponant output and floating point output
 //!

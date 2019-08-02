@@ -1784,7 +1784,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
 
     if (NullWeight) {
 #ifdef OCCT_DEBUG
-      cout << "Echec de l'Extension rationnelle" << endl;    
+      std::cout << "Echec de l'Extension rationnelle" << std::endl;    
 #endif
       lambmin /= 3.;
       NullWeight = Standard_False;
@@ -1884,8 +1884,8 @@ void GeomLib::Inertia(const TColgp_Array1OfPnt& Points,
   math_Jacobi J(M);
   if (!J.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "Erreur dans Jacobbi" << endl;
-    M.Dump(cout);
+    std::cout << "Erreur dans Jacobbi" << std::endl;
+    M.Dump(std::cout);
 #endif
   }
 

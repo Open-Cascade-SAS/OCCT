@@ -55,7 +55,7 @@ extern Standard_Boolean TopOpeBRepBuild_GettraceCU();
 void TopOpeBRepBuild_Builder::BuildEdges(const Standard_Integer iC,const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 {
 #ifdef OCCT_DEBUG
-  if (TopOpeBRepBuild_GettraceCU()) cout<<"\nBuildEdges on C "<<iC<<endl;
+  if (TopOpeBRepBuild_GettraceCU()) std::cout<<"\nBuildEdges on C "<<iC<<std::endl;
 #endif
   const TopOpeBRepDS_Curve& C = HDS->Curve(iC);
   const Handle(Geom_Curve)& C3D = C.Curve(); 

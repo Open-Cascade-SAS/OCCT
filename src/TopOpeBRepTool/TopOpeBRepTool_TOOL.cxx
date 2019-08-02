@@ -276,7 +276,7 @@ void TopOpeBRepTool_TOOL::Vertices(const TopoDS_Edge& E, TopTools_Array1OfShape&
   Standard_Real par1 = BRep_Tool::Parameter(v1,E);
   Standard_Real par2 = BRep_Tool::Parameter(v2,E);
 #ifdef OCCT_DEBUG
-//  if (par1>par2) cout<<"TopOpeBRepTool_TOOL::Vertices ERROR"<<endl;
+//  if (par1>par2) std::cout<<"TopOpeBRepTool_TOOL::Vertices ERROR"<<std::endl;
 #endif
   Standard_Integer ivparSMA = (par1<par2) ? FORWARD : REVERSED; 
   Standard_Integer ivparSUP = (par1<par2) ? REVERSED : FORWARD;
@@ -1282,7 +1282,7 @@ static Standard_Boolean FUN_ngF(const gp_Pnt2d& uv, const TopoDS_Face& F, gp_Vec
       }
     }
 #ifdef OCCT_DEBUG
-    cout<<"FUN_tool_nggeomF NYI"<<endl;
+    std::cout<<"FUN_tool_nggeomF NYI"<<std::endl;
 #endif
     return Standard_False;
   } //kpart

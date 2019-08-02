@@ -94,10 +94,10 @@ IGESData_IGESDumper::IGESData_IGESDumper
   case 5 :    S<<"Complete";  break;
   default :   S<<"Complete + Transformed Values";  break;
   }
-  S<<" )    ****"<<endl;
+  S<<" )    ****"<<Message_EndLine;
 
 // ****    Entity 1234:D2467  **  Type:102 Form:56  **  CompositeCurve  **
-  S<<"\n****    Entity ";  PrintShort (ent,S);  S<<endl;
+  S<<"\n****    Entity ";  PrintShort (ent,S);  S<<Message_EndLine;
 
   S<<"              Directory Part\n";
 // **      Status :   Blank:1    Subordinate:2    UseFlag:3    Hierarchy:4
@@ -109,7 +109,7 @@ IGESData_IGESDumper::IGESData_IGESDumper
   if (own >= 1) {
     if (ent->HasShortLabel()) S<<"****    Label         :"<<ent->ShortLabel()->ToCString();
     if (ent->HasSubScriptNumber()) S<<"    SubScript:"<<ent->SubScriptNumber();
-    if (ent->HasShortLabel())  S<<endl;
+    if (ent->HasShortLabel())  S<<Message_EndLine;
 
     if (ent->HasTransf())
       {  S<<"**      Transf.Matrix :";  PrintDNum(ent->Transf(),S); S<<"\n"; }
@@ -141,13 +141,13 @@ IGESData_IGESDumper::IGESData_IGESDumper
     if (ent->LineWeightNumber() != 0) {
       S   <<"**      LineWeight Num:"<<ent->LineWeightNumber();
       if (diratt > 0) S<<"    ->  Value:"<<ent->LineWeight();
-      S<<endl;
+      S<<Message_EndLine;
     }
     if (ent->DefColor() == IGESData_DefValue)
       {  S<<"**      Color Value   :"<<ent->RankColor();  }
     else if (ent->DefColor() == IGESData_DefReference)
       {  S<<"**      Color Ref     :";  PrintDNum (ent->Color(),S); }
-    S<<endl;
+    S<<Message_EndLine;
 
     if (own > 3) {
       S<<"****             Own Data             ****\n\n";
@@ -178,7 +178,7 @@ IGESData_IGESDumper::IGESData_IGESDumper
     }
   }
   if (iasuit) {  if (att <= 1) S << "\n";  }
-  S<<"\n****             End of Dump          ****\n"<<endl;
+  S<<"\n****             End of Dump          ****\n"<<Message_EndLine;
 }
 
 
@@ -191,8 +191,8 @@ IGESData_IGESDumper::IGESData_IGESDumper
   if (thelib.Select(ent,module,CN))
     module->OwnDump(CN,ent,*this,S,own);
   else if (themodel.IsNull())
-    S <<"  ****  Dump impossible. Type "<<ent->DynamicType()->Name()<<endl;
+    S <<"  ****  Dump impossible. Type "<<ent->DynamicType()->Name()<<Message_EndLine;
   else
     S <<"  ****  Dump Impossible, n0:id:"<<themodel->Number(ent)<<":D"
-      <<themodel->DNum(ent)<<" Type "<<ent->DynamicType()->Name()<<endl;
+      <<themodel->DNum(ent)<<" Type "<<ent->DynamicType()->Name()<<Message_EndLine;
 }

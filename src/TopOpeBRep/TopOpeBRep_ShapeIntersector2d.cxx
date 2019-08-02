@@ -132,8 +132,8 @@ Standard_Boolean TopOpeBRep_ShapeIntersector2d::MoreIntersection() const
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRep_GettraceSI() && res) {
-    if      ( myFFDone )   cout<<"FF : ";
-    else if ( myEEFFDone ) cout<<"    EE : ";
+    if      ( myFFDone )   std::cout<<"FF : ";
+    else if ( myEEFFDone ) std::cout<<"    EE : ";
     DumpCurrent(1);
     DumpCurrent(2);
   }    
@@ -152,12 +152,12 @@ Standard_Boolean TopOpeBRep_ShapeIntersector2d::MoreIntersection() const
 void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer K) const
 {
   if      ( myFFDone ) {
-    if      ( K == 1 ) myFaceScanner.DumpCurrent(cout);
-    else if ( K == 2 ) myFaceExplorer.DumpCurrent(cout);
+    if      ( K == 1 ) myFaceScanner.DumpCurrent(std::cout);
+    else if ( K == 2 ) myFaceExplorer.DumpCurrent(std::cout);
   }
   else if ( myEEFFDone ) {
-    if      ( K == 1 ) myEdgeScanner.DumpCurrent(cout);
-    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(cout);
+    if      ( K == 1 ) myEdgeScanner.DumpCurrent(std::cout);
+    else if ( K == 2 ) myEdgeExplorer.DumpCurrent(std::cout);
   }
 #else
 void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer) const
@@ -269,10 +269,10 @@ void TopOpeBRep_ShapeIntersector2d::FindFFIntersection()
     
 #ifdef OCCT_DEBUG
     if (TopOpeBRep_GettraceSI()) {
-      cout<<"?? FF : ";
-      myFaceScanner.DumpCurrent(cout); 
-      myFaceExplorer.DumpCurrent(cout);
-      cout<<endl;
+      std::cout<<"?? FF : ";
+      myFaceScanner.DumpCurrent(std::cout); 
+      myFaceExplorer.DumpCurrent(std::cout);
+      std::cout<<std::endl;
     }    
 #endif
 
@@ -341,7 +341,7 @@ void TopOpeBRep_ShapeIntersector2d::InitEEFFIntersection()
   if (TopOpeBRep_GetcontextFFOR()) {
     face1.Orientation(TopAbs_FORWARD); //-05/07
     face2.Orientation(TopAbs_FORWARD); //-05/07
-    cout<<"ctx : InitEEFFIntersection : faces FORWARD"<<endl;
+    std::cout<<"ctx : InitEEFFIntersection : faces FORWARD"<<std::endl;
   }
 #endif
   
@@ -373,12 +373,12 @@ void TopOpeBRep_ShapeIntersector2d::FindEEFFIntersection()
     
 #ifdef OCCT_DEBUG
     if (TopOpeBRep_GettraceSI() && myEEIntersector.IsEmpty()) {
-      cout<<"    EE : ";
-      myEdgeScanner.DumpCurrent(cout);
-      myEdgeExplorer.DumpCurrent(cout);
-      cout<<"(EE of FF SameDomain)";
-      cout<<" : EMPTY INTERSECTION";
-      cout<<endl;
+      std::cout<<"    EE : ";
+      myEdgeScanner.DumpCurrent(std::cout);
+      myEdgeExplorer.DumpCurrent(std::cout);
+      std::cout<<"(EE of FF SameDomain)";
+      std::cout<<" : EMPTY INTERSECTION";
+      std::cout<<std::endl;
     }    
 #endif
     

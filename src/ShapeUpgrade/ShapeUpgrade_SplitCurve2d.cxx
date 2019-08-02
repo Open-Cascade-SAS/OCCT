@@ -61,7 +61,7 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 				      const Standard_Real First,
 				      const Standard_Real Last) 
 {
-//  if (ShapeUpgrade::Debug()) cout << "SplitCurve2d::Init"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout << "SplitCurve2d::Init"<<std::endl;
   Handle(Geom2d_Curve) CopyOfC = Handle(Geom2d_Curve)::DownCast(C->Copy());
   myCurve = CopyOfC;
   
@@ -81,13 +81,13 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
       lastPar = lP;
     if(firstPar < fP){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the curve domain" <<std::endl;
 #endif
       firstPar = fP;
     }
     if(lastPar > lP){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the curve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the curve domain" <<std::endl;
 #endif
       lastPar = lP;
     }
@@ -98,7 +98,7 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
   ShapeUpgrade_SplitCurve::Init (firstPar, lastPar);
 
   // first, we make a copy of C to prevent modification:
-//  if (ShapeUpgrade::Debug()) cout << ". copy of the curve"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout << ". copy of the curve"<<std::endl;
   
   myNbCurves = 1;
 }
@@ -110,7 +110,7 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 
  void ShapeUpgrade_SplitCurve2d::Build(const Standard_Boolean Segment) 
 {
-//  if (ShapeUpgrade::Debug()) cout<<"ShapeUpgrade_SplitCurve2d::Build"<<endl;
+//  if (ShapeUpgrade::Debug()) std::cout<<"ShapeUpgrade_SplitCurve2d::Build"<<std::endl;
   Standard_Real First =  mySplitValues->Value(1);
   Standard_Real Last = mySplitValues->Value(mySplitValues->Length());
   //PrepareKnots();
@@ -176,8 +176,8 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 	}
 	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	  cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
-	  anException.Print(cout); cout << endl;
+	  std::cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
+	  anException.Print(std::cout); std::cout << std::endl;
 #endif
 	  (void)anException;
 	  theNewCurve = new Geom2d_TrimmedCurve(Handle(Geom2d_Curve)::DownCast(myCurve->Copy()),First,Last);
@@ -230,8 +230,8 @@ ShapeUpgrade_SplitCurve2d::ShapeUpgrade_SplitCurve2d()
 	}
 	catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	  cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
-	  anException.Print(cout); cout << endl;
+	  std::cout << "Warning: ShapeUpgrade_Split2dCurve::Build(): Exception in Segment      :";
+	  anException.Print(std::cout); std::cout << std::endl;
 #endif
 	  (void)anException;
 	  theNewCurve = new Geom2d_TrimmedCurve(Handle(Geom2d_Curve)::DownCast(myCurve->Copy()),Firstt,Lastt);

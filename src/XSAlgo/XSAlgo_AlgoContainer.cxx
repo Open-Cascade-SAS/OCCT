@@ -129,8 +129,8 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
     {
       static Standard_Integer time = 0;
       if ( ! time )
-	cout << "Warning: XSAlgo_AlgoContainer::ProcessShape(): Sequence " << str.ToCString() << 
-	        " is not defined in " << prscfile << " resource; do default processing" << endl;
+	std::cout << "Warning: XSAlgo_AlgoContainer::ProcessShape(): Sequence " << str.ToCString() << 
+	        " is not defined in " << prscfile << " resource; do default processing" << std::endl;
       time++;
     }
 #endif
@@ -156,8 +156,8 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
       }
       catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-	cout << "Error: XSAlgo_AlgoContainer::ProcessShape(): Exception in ShapeFix::Shape" << endl;
-        anException.Print(cout); cout << endl;
+	std::cout << "Error: XSAlgo_AlgoContainer::ProcessShape(): Exception in ShapeFix::Shape" << std::endl;
+        anException.Print(std::cout); std::cout << std::endl;
 #endif
 	(void)anException;
       }
@@ -244,7 +244,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::PerformFixShape(const TopoDS_Shape& S,
   }
   catch (Standard_Failure) {
 #ifdef OCCT_DEBUG
-    cout << "Error: XSAlgo_AlgoContainer::PerformFixShape(): Exception in ShapeFix::Shape" << endl;
+    std::cout << "Error: XSAlgo_AlgoContainer::PerformFixShape(): Exception in ShapeFix::Shape" << std::endl;
 #endif
   }   
   return shape;
@@ -306,7 +306,7 @@ Standard_Boolean XSAlgo_AlgoContainer::CheckPCurve (const TopoDS_Edge& E,
   if ( DU/8. > (UL/6. - UF/6.) || DV/8. > (VL/6. - VF/6.) ) {
     ShapeBuild_Edge().RemovePCurve(E,face);
 #ifdef OCCT_DEBUG
-    cout<<"Removing pcuve periodic"<<endl;
+    std::cout<<"Removing pcuve periodic"<<std::endl;
 #endif      
     return Standard_False;
   }
@@ -331,7 +331,7 @@ Standard_Boolean XSAlgo_AlgoContainer::CheckPCurve (const TopoDS_Edge& E,
   if (!((Dist11 <= preci) && (Dist22 <= preci))) {
     ShapeBuild_Edge().RemovePCurve(E,face);
 #ifdef OCCT_DEBUG
-    cout<<"Removing pcurve points"<<endl;
+    std::cout<<"Removing pcurve points"<<std::endl;
 #endif      
     return Standard_False;
   }
@@ -535,12 +535,12 @@ void XSAlgo_AlgoContainer::MergeTransferInfo(const Handle(Transfer_FinderProcess
           resBinder->AddResult(TransientListBinder);
 //	  resBinder->SetNext(TransientListBinder, Standard_True);
 #ifdef OCCT_DEBUG
-	  cout<<"Info: TransientListBinder created for splitted shape"<<endl;
+	  std::cout<<"Info: TransientListBinder created for splitted shape"<<std::endl;
 	} 
 	else {
-	  cout<<"Warning: XSAlgo_AlgoContainer::MergeTransferInfo() "
-	    <<"No results were found for splitted shape. "<<endl;
-	  //<<"Transfer_FinderProcess->NbMapped() = "<<FP->NbMapped()<<endl;
+	  std::cout<<"Warning: XSAlgo_AlgoContainer::MergeTransferInfo() "
+	    <<"No results were found for splitted shape. "<<std::endl;
+	  //<<"Transfer_FinderProcess->NbMapped() = "<<FP->NbMapped()<<std::endl;
 #endif	  
 	}
       }

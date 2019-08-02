@@ -61,7 +61,7 @@ void DPrsStd::Factory(Draw_Interpretor& theDI)
   DPrsStd::AllCommands(theDI);
   DDocStd::AllCommands(theDI);
 #ifdef OCCT_DEBUG
-  cout << "Draw Plugin : All DF commands are loaded" << endl;
+  std::cout << "Draw Plugin : All DF commands are loaded" << std::endl;
 #endif
 }
 

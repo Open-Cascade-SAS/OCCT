@@ -920,10 +920,10 @@ void PrintProblematicPoint(const gp_Pnt& problematic_point,
   const Standard_Real Error,
   const Standard_Real Tol)
 {
-  cout << " **** probleme de SameParameter au point :" << endl;
-  cout << "         " << problematic_point.Coord(1) << " " 
-    << problematic_point.Coord(2) << " " << problematic_point.Coord(3) << endl ;
-  cout << "   Erreur detectee :" << Error << " Tolerance :" << Tol << endl;
+  std::cout << " **** probleme de SameParameter au point :" << std::endl;
+  std::cout << "         " << problematic_point.Coord(1) << " " 
+    << problematic_point.Coord(2) << " " << problematic_point.Coord(3) << std::endl ;
+  std::cout << "   Erreur detectee :" << Error << " Tolerance :" << Tol << std::endl;
 }
 #else
 void PrintProblematicPoint(const gp_Pnt&,

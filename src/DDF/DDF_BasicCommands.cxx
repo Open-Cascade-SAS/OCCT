@@ -179,49 +179,49 @@ static Standard_Integer DDF_ForgetAttribute(Draw_Interpretor& di,
 
 void ErrorMessage (const Storage_Error n) 
 {
-  cout << "Storage Error: " << flush;
+  std::cout << "Storage Error: " << std::flush;
 
   switch (n) {
   case Storage_VSOk:
-    cout << "no problem" << endl;
+    std::cout << "no problem" << std::endl;
     break;
   case Storage_VSOpenError:
-    cout << "while opening the stream" << endl;
+    std::cout << "while opening the stream" << std::endl;
     break;
   case Storage_VSModeError:
-    cout << "the stream is opened with a wrong mode for operation " << endl;
+    std::cout << "the stream is opened with a wrong mode for operation " << std::endl;
     break;
   case Storage_VSCloseError:
-    cout << "while closing the stream" << endl;
+    std::cout << "while closing the stream" << std::endl;
     break;
   case Storage_VSAlreadyOpen:
-    cout << "stream is already opened" << endl;
+    std::cout << "stream is already opened" << std::endl;
     break;
   case Storage_VSNotOpen:
-    cout << "stream not opened" << endl;
+    std::cout << "stream not opened" << std::endl;
     break;
   case Storage_VSSectionNotFound:
-    cout << "the section is not found" << endl;
+    std::cout << "the section is not found" << std::endl;
     break;
   case Storage_VSWriteError:
-    cout << "error during writing" << endl;
+    std::cout << "error during writing" << std::endl;
     break;
   case Storage_VSFormatError:
-    cout << "wrong format error occured while reading" << endl;
+    std::cout << "wrong format error occured while reading" << std::endl;
     break;
   case Storage_VSUnknownType:
-    cout << "try to read an unknown type" << endl;
+    std::cout << "try to read an unknown type" << std::endl;
     break;
   case Storage_VSTypeMismatch:
-    cout << "try to read a wrong primitive type (read a char while expecting a real)" << endl;
+    std::cout << "try to read a wrong primitive type (read a char while expecting a real)" << std::endl;
     break;
   case Storage_VSInternalError:
-    cout << "internal error" << endl;
+    std::cout << "internal error" << std::endl;
     break;
-  case Storage_VSExtCharParityError:      cout << "parity error" << endl;
+  case Storage_VSExtCharParityError:      std::cout << "parity error" << std::endl;
     break;
   default:
-    cout << "unknown error code" << endl;
+    std::cout << "unknown error code" << std::endl;
     break;
   }
 }

@@ -102,7 +102,7 @@ void RWStepShape_RWEdgeLoop::Check
    const Interface_ShareTool& ,
    Handle(Interface_Check)& ach) const
 {
-//  cout << "------ calling CheckEdgeLoop ------" << endl;
+//  std::cout << "------ calling CheckEdgeLoop ------" << std::endl;
   Standard_Boolean headToTail = Standard_True;
   //Standard_Boolean noIdentVtx = Standard_True; //szv#4:S4163:12Mar99 unused
   Standard_Integer nbEdg = ent->NbEdgeList();

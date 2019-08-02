@@ -136,7 +136,7 @@ IGESSelect_CounterOfLevelNumber::IGESSelect_CounterOfLevelNumber
   (const Handle(Message_Messenger)& S) const
 {
   IFSelect_SignatureList::PrintCount(S);
-  S<<" Highest value : " << thehigh << endl;
+  S<<" Highest value : " << thehigh << Message_EndLine;
   if (thenblists > 0) S<<"REMARK for LEVEL LIST : Entities are counted in"
-    <<" <LEVEL LIST>\n, and in each Level value of their list"<<endl;
+    <<" <LEVEL LIST>\n, and in each Level value of their list"<<Message_EndLine;
 }

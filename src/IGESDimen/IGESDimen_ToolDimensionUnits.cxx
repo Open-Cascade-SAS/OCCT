@@ -151,16 +151,16 @@ void  IGESDimen_ToolDimensionUnits::OwnDump
   (const Handle(IGESDimen_DimensionUnits)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
 {
-  S << "IGESDimen_DimensionUnits" << endl;
-  S << "Number of property values : " << ent->NbPropertyValues() << endl;
-  S << "Secondary Dimension Position : " << ent->SecondaryDimenPosition() << endl;
-  S << "Units Indicator : " << ent->UnitsIndicator() << endl;
-  S << "Character Set   : " << ent->CharacterSet() << endl;
+  S << "IGESDimen_DimensionUnits" << Message_EndLine;
+  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "Secondary Dimension Position : " << ent->SecondaryDimenPosition() << Message_EndLine;
+  S << "Units Indicator : " << ent->UnitsIndicator() << Message_EndLine;
+  S << "Character Set   : " << ent->CharacterSet() << Message_EndLine;
   S << "Format String   : ";
   IGESData_DumpString(S,ent->FormatString());
-  S << endl;
+  S << Message_EndLine;
   S << "Fraction Flag   : " << ent->FractionFlag();
   if (ent->FractionFlag() == 0) S << " Decimal  , Precision   : ";
   else                          S << " Fraction , Denominator : ";
-  S << ent->PrecisionOrDenominator() << endl;
+  S << ent->PrecisionOrDenominator() << Message_EndLine;
 }

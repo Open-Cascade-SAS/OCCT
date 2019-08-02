@@ -76,14 +76,14 @@ TopOpeBRepBuild_PaveClassifier::TopOpeBRepBuild_PaveClassifier
     
 #ifdef OCCT_DEBUG
     if (TopOpeBRepTool_GettraceVC()) {
-      cout<<endl;
+      std::cout<<std::endl;
       if (myEdgePeriodic) {
-	cout<<"VC : periodic edge : myFirst "<<myFirst<<" myPeriod "<<myPeriod<<endl;
-	if (mySameParameters)cout<<"VC same parameters "<<endl;
-	else                 cout<<"VC no same parameters"<<endl;
+	std::cout<<"VC : periodic edge : myFirst "<<myFirst<<" myPeriod "<<myPeriod<<std::endl;
+	if (mySameParameters)std::cout<<"VC same parameters "<<std::endl;
+	else                 std::cout<<"VC no same parameters"<<std::endl;
       }
       else {
-	cout<<"VC : non periodic edge : f "<<f<<" l "<<l<<endl;
+	std::cout<<"VC : non periodic edge : f "<<f<<" l "<<l<<std::endl;
       }
     }
 #endif
@@ -126,11 +126,11 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::CompareOnNonPeriodic()
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {
-    cout<<"VC_NP : ";
-    if      (myP1 == myP2) cout<<" p1 = p2";
-    else if (myP1  < myP2) cout<<" p1 < p2";
-    else if (myP1  > myP2) cout<<" p1 > p2";
-    cout<<" --> state "; TopAbs::Print(state,cout); cout<<endl;
+    std::cout<<"VC_NP : ";
+    if      (myP1 == myP2) std::cout<<" p1 = p2";
+    else if (myP1  < myP2) std::cout<<" p1 < p2";
+    else if (myP1  > myP2) std::cout<<" p1 > p2";
+    std::cout<<" --> state "; TopAbs::Print(state,std::cout); std::cout<<std::endl;
   }
 #endif
 
@@ -200,8 +200,8 @@ void TopOpeBRepBuild_PaveClassifier::AdjustOnPeriodic()
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {
-    cout<<"p1 "<<p1<<" ";TopAbs::Print(myO1,cout);cout<<" --> "<<myP1<<endl;
-    cout<<"p2 "<<p2<<" ";TopAbs::Print(myO2,cout);cout<<" --> "<<myP2<<endl;
+    std::cout<<"p1 "<<p1<<" ";TopAbs::Print(myO1,std::cout);std::cout<<" --> "<<myP1<<std::endl;
+    std::cout<<"p2 "<<p2<<" ";TopAbs::Print(myO2,std::cout);std::cout<<" --> "<<myP2<<std::endl;
   }
 #endif
 
@@ -245,8 +245,8 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::CompareOnPeriodic()
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {
-    cout<<"VC_P : cas "<<myCas1<<"__"<<myCas2;
-    cout<<" --> state "; TopAbs::Print(state,cout); cout<<endl;
+    std::cout<<"VC_P : cas "<<myCas1<<"__"<<myCas2;
+    std::cout<<" --> state "; TopAbs::Print(state,std::cout); std::cout<<std::endl;
   }
 #endif
 
@@ -276,10 +276,10 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::Compare
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) {  
-    cout<<endl<<"VC : "<<myP1<<" "<<myP2<<" ";
-    TopAbs::Print(myO1,cout); cout<<" "; TopAbs::Print(myO2,cout);
-    cout<<" (p "<<myEdgePeriodic;
-    cout<<" s "<<mySameParameters<<" c "<<myClosedVertices<<")"<<endl;
+    std::cout<<std::endl<<"VC : "<<myP1<<" "<<myP2<<" ";
+    TopAbs::Print(myO1,std::cout); std::cout<<" "; TopAbs::Print(myO2,std::cout);
+    std::cout<<" (p "<<myEdgePeriodic;
+    std::cout<<" s "<<mySameParameters<<" c "<<myClosedVertices<<")"<<std::endl;
   }
 #endif
   
@@ -295,7 +295,7 @@ TopAbs_State  TopOpeBRepBuild_PaveClassifier::Compare
   
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC()) { 
-    cout<<"VC : --> final state "; TopAbs::Print(state,cout); cout<<endl;
+    std::cout<<"VC : --> final state "; TopAbs::Print(state,std::cout); std::cout<<std::endl;
   }
 #endif
   
@@ -315,7 +315,7 @@ void TopOpeBRepBuild_PaveClassifier::SetFirstParameter
 
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceVC())
-    cout<<endl<<"VC : set first parameter "<<myFirst<<endl;
+    std::cout<<std::endl<<"VC : set first parameter "<<myFirst<<std::endl;
 #endif
 }
 
@@ -332,10 +332,10 @@ void TopOpeBRepBuild_PaveClassifier::ClosedVertices
 #ifdef OCCT_DEBUG
   if (TopOpeBRepTool_GettraceCLOV()) {
     myEdgePeriodic = Closed;
-    cout<<"::::::::::::::::::::::::"<<endl;
-    cout<<"VC : myClosedVertices"<<myClosedVertices<<endl;
-    cout<<"VC : myEdgePeriodic  "<<myEdgePeriodic<<endl;
-    cout<<"::::::::::::::::::::::::"<<endl;
+    std::cout<<"::::::::::::::::::::::::"<<std::endl;
+    std::cout<<"VC : myClosedVertices"<<myClosedVertices<<std::endl;
+    std::cout<<"VC : myEdgePeriodic  "<<myEdgePeriodic<<std::endl;
+    std::cout<<"::::::::::::::::::::::::"<<std::endl;
   }
 #endif
 }

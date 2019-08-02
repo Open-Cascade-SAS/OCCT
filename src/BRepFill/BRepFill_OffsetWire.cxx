@@ -521,7 +521,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
     if(!BadEdges.IsEmpty())
     {
       // Modification of myWorkSpine;
-      //cout << "Modification of myWorkSpine : " << BadEdges.Extent() << endl;
+      //std::cout << "Modification of myWorkSpine : " << BadEdges.Extent() << std::endl;
       BRepTools_Substitution aSubst;
       TopTools_ListIteratorOfListOfShape it(BadEdges);
       TopTools_ListOfShape aL;
@@ -548,7 +548,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
         Standard_Integer NPnts = Points.Length();
         if(NPnts > 2)
         {
-          //cout << NPnts << " points " << endl;
+          //std::cout << NPnts << " points " << std::endl;
           TopoDS_Vertex FV = Vf;
           TopoDS_Vertex LV;
           TopoDS_Edge newE;
@@ -566,7 +566,7 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
         }
         else
         {
-          //cout << " 2 points " << endl;
+          //std::cout << " 2 points " << std::endl;
           TopoDS_Edge newE = BRepLib_MakeEdge(Vf, Vl);
           aL.Append(newE);
         }
@@ -642,9 +642,9 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout<<"An exception was caught in BRepFill_OffsetWire::Perform : ";
-    anException.Print(cout);
-    cout<<endl;
+    std::cout<<"An exception was caught in BRepFill_OffsetWire::Perform : ";
+    anException.Print(std::cout);
+    std::cout<<std::endl;
 #endif
     (void)anException;
     myShape.Nullify();
@@ -831,7 +831,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
 #ifdef OCCT_DEBUG
 #ifdef DRAW
   if (AffichEdge) {
-    cout << " End Construction of geometric primitives "<<endl;
+    std::cout << " End Construction of geometric primitives "<<std::endl;
   }
 #endif
 #endif
@@ -1019,7 +1019,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
 #ifdef OCCT_DEBUG
 #ifdef DRAW
   if (AffichEdge) {
-    cout << " End Construction of vertices on offsets"<<endl;
+    std::cout << " End Construction of vertices on offsets"<<std::endl;
   }
 #endif
 #endif
@@ -1469,7 +1469,7 @@ void BRepFill_OffsetWire::MakeWires()
 
       if (!End) {
         if (MVE.FindFromKey(CV).Extent() > 2) {
-          //cout <<"vertex on more that 2 edges in a face."<<endl;
+          //std::cout <<"vertex on more that 2 edges in a face."<<std::endl;
         }
         for ( itl.Initialize(MVE.FindFromKey(CV)); itl.More(); itl.Next()) {
           if (itl.Value().IsSame(CE)) {
@@ -2521,7 +2521,7 @@ static void CheckBadEdges(const TopoDS_Face& Spine, const Standard_Real Offset,
 
 
         if (aMap.Contains(SE)) {
-          //cout << "Edge is treated second time" << endl;
+          //std::cout << "Edge is treated second time" << std::endl;
           continue;
         }
 

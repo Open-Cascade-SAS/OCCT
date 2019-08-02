@@ -581,7 +581,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl,
 	    //-- Si il n y a que 2 racines alors on prend tout l interval
 	    //----------------------------------------------------------------
 	    if(Abs(Theta2-Theta1)<=1e-12) {
-	      //-- cout<<"\n####### Un Point de Tangence en Theta = "<<Theta1<<endl;
+	      //-- std::cout<<"\n####### Un Point de Tangence en Theta = "<<Theta1<<std::endl;
 	      //-- i++;
 	    }
 	    else {  //-- On evite les pbs numeriques (Tout est du meme signe entre les racines) 
@@ -760,10 +760,10 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone,
 	  Standard_Real Theta=PolZ1.Value(ii);
 	  if(Abs(MTFZ1.Value(Theta))<=myEpsilon) {
 	    //-- Une droite Solution  Z=  -INF -> +INF  pour Theta
-	    //-- cout<<"######## Droite Solution Pour Theta = "<<Theta<<endl;
+	    //-- std::cout<<"######## Droite Solution Pour Theta = "<<Theta<<std::endl;
 	  }
 	  else {
-	    //-- cout<<"\n#### _+_+_+_+_+ CAS A(t) Z + B = 0   avec A et B ==0 "<<endl;
+	    //-- std::cout<<"\n#### _+_+_+_+_+ CAS A(t) Z + B = 0   avec A et B ==0 "<<std::endl;
 	  }
 	}
 	*/
@@ -1242,7 +1242,7 @@ void IntAna_IntQuadQuad::Parameters (const Standard_Integer, //i,
 				     Standard_Real& , 
 				     Standard_Real& ) const
 {
-  cout << "IntAna_IntQuadQuad::Parameters(...) is not yet implemented" << endl;
+  std::cout << "IntAna_IntQuadQuad::Parameters(...) is not yet implemented" << std::endl;
 }
 
 /*********************************************************************************

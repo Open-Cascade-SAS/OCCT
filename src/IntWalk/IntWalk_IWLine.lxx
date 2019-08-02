@@ -19,7 +19,7 @@
 
 inline void IntWalk_IWLine::Cut(const Standard_Integer Index)
 {
-//--   cout<<" split : "<<Index<<endl;
+//--   std::cout<<" split : "<<Index<<std::endl;
   Handle(IntSurf_LineOn2S) lost = line->Split(Index);
 }
 
@@ -146,7 +146,7 @@ inline void IntWalk_IWLine::SetTangentVector (const gp_Vec& V,
   indextg = Index;
   vcttg = V;
   
-  //-- cout<<"\n IntWalk_IWLine::SetTangentVector : "<<V.X()<<" "<<V.Y()<<" "<<V.Z()<<"   Ind:"<<Index<<"  NbPts:"<<NbPoints()<<endl;
+  //-- std::cout<<"\n IntWalk_IWLine::SetTangentVector : "<<V.X()<<" "<<V.Y()<<" "<<V.Z()<<"   Ind:"<<Index<<"  NbPts:"<<NbPoints()<<std::endl;
   
 }
 
@@ -165,7 +165,7 @@ inline void IntWalk_IWLine::SetTangencyAtEnd
 inline const gp_Vec& IntWalk_IWLine::TangentVector
   (Standard_Integer& Index) const {
 //--    if(istgtend == Standard_False && istgtbeg == Standard_False) { 
-//--      cout<<" IntWalk_IWLine.lxx : Pb "<<endl;
+//--      std::cout<<" IntWalk_IWLine.lxx : Pb "<<std::endl;
 //--    }
   Index = indextg;
   return vcttg;

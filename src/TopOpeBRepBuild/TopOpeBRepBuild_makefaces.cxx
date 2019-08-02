@@ -66,12 +66,12 @@ extern Standard_Boolean TopOpeBRepBuild_GetcontextNOCORRISO();
 extern Standard_Boolean TopOpeBRepBuild_GettraceCHK();
 #define DEBSHASET(sarg,meth,shaset,str) \
 TCollection_AsciiString sarg((meth));(sarg)=(sarg)+(shaset).DEBNumber()+(str);
-Standard_EXPORT void debgfabu(const Standard_Integer i) {cout<<"++ debgfabu "<<i<<endl;}
-Standard_EXPORT void debwesmf(const Standard_Integer i) {cout<<"++ debwesmf "<<i<<endl;}
+Standard_EXPORT void debgfabu(const Standard_Integer i) {std::cout<<"++ debgfabu "<<i<<std::endl;}
+Standard_EXPORT void debwesmf(const Standard_Integer i) {std::cout<<"++ debwesmf "<<i<<std::endl;}
 Standard_EXPORT Standard_Boolean DEBpurclo = Standard_False;
 void debpurclo() {}
-void debpurclomess(Standard_Integer i){cout<<"++ debpurclo "<<i<<endl;debpurclo();}
-Standard_EXPORT void debcorriso(const Standard_Integer i) {cout<<"++ debcorriso "<<i<<endl;}
+void debpurclomess(Standard_Integer i){std::cout<<"++ debpurclo "<<i<<std::endl;debpurclo();}
+Standard_EXPORT void debcorriso(const Standard_Integer i) {std::cout<<"++ debcorriso "<<i<<std::endl;}
 extern void* GFABUMAKEFACEPWES_DEB;
 #endif
 
@@ -83,7 +83,7 @@ extern void* GFABUMAKEFACEPWES_DEB;
 Standard_EXPORT Standard_Boolean FUN_tool_ClosedW(const TopoDS_Wire& W);
 // Unused :
 /*#ifdef OCCT_DEBUG
-static void FUN_Raise(){cout<<"--------- ERROR in GWESMakeFaces ---------"<<endl;}
+static void FUN_Raise(){std::cout<<"--------- ERROR in GWESMakeFaces ---------"<<std::endl;}
 #endif*/
 
 //=======================================================================
@@ -96,7 +96,7 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces
 #ifdef OCCT_DEBUG
   Standard_Integer iF; Standard_Boolean tSPS = GtraceSPS(FF,iF);
   DEBSHASET(s,"#--- GWESMakeFaces ",WES," ");
-  if(tSPS){ GdumpSHA(FF,(Standard_Address)s.ToCString());cout<<endl; WES.DumpSS();}
+  if(tSPS){ GdumpSHA(FF,(Standard_Address)s.ToCString());std::cout<<std::endl; WES.DumpSS();}
   if(tSPS){debwesmf(iF);}
   GFABUMAKEFACEPWES_DEB = (void*)&WES;
 #endif
@@ -192,13 +192,13 @@ void TopOpeBRepBuild_Builder::GWESMakeFaces
 
 #ifdef DRAW
     if (tSPS) {
-      cout<<endl<<"#<< AVANT PurgeClosingEdges "<<endl; 
+      std::cout<<std::endl<<"#<< AVANT PurgeClosingEdges "<<std::endl; 
       GdumpFABU(FABU);
       TopTools_ListOfShape dLOF;TopTools_DataMapOfShapeInteger dMWisOld;
       GFABUMakeFaces(FF,FABU,dLOF,dMWisOld);
       TopTools_ListIteratorOfListOfShape X(dLOF); for (Standard_Integer i=1;X.More();X.Next(),i++) {
 	TCollection_AsciiString ss("purclo");ss=ss+i;DBRep::Set(ss.ToCString(),X.Value());
-	cout<<"... face "<<ss<<endl;
+	std::cout<<"... face "<<ss<<std::endl;
       }
       debpurclomess(iF);
       DEBpurclo = Standard_True;
@@ -334,7 +334,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 #ifdef OCCT_DEBUG
   Standard_Integer iF;Standard_Boolean tSPS=GtraceSPS(FF,iF);
   if(tSPS) {
-    cout<<endl;GdumpSHA(FF,(char *) "#--- GFABUMakeFaces ");cout<<endl;
+    std::cout<<std::endl;GdumpSHA(FF,(char *) "#--- GFABUMakeFaces ");std::cout<<std::endl;
     GdumpFABU(FABU);debgfabu(iF);
   }
 #endif
@@ -547,7 +547,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 	  //--ofv.
 
 #ifdef OCCT_DEBUG
-      if ( tSPS ) cout<<"#--- GFABUMakeFaces "<<iF<<" : "<<ne<<" edges"<<endl; 
+      if ( tSPS ) std::cout<<"#--- GFABUMakeFaces "<<iF<<" : "<<ne<<" edges"<<std::endl; 
 #endif	  
 
       // xpu : 13-11-97
@@ -606,7 +606,7 @@ void TopOpeBRepBuild_Builder::GFABUMakeFaces(const TopoDS_Shape& FF,TopOpeBRepBu
 
 #ifdef OCCT_DEBUG
   if(tSPS) {
-    cout<<endl;GdumpSHA(FF, (char *) "#--- GFABUMakeFaces avant regularize");cout<<endl;
+    std::cout<<std::endl;GdumpSHA(FF, (char *) "#--- GFABUMakeFaces avant regularize");std::cout<<std::endl;
     GdumpFABU(FABU);debgfabu(iF);
   }
 #endif

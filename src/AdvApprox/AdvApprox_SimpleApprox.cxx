@@ -232,7 +232,7 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
     }
   }
 //  for (i=0; i<(WorkDegree+1)*TotalDimension; i++)
-//    cout << "  Coeff(" << i << ") = " << Coeff(i) << endl;
+//    std::cout << "  Coeff(" << i << ") = " << Coeff(i) << std::endl;
   // the computing of NewDegree
   TColStd_Array1OfReal JacCoeff(0, myTotalDimension*(myWorkDegree+1)-1);
  
@@ -380,9 +380,9 @@ Standard_Real AdvApprox_SimpleApprox::AverageError(const Standard_Integer Index)
 void AdvApprox_SimpleApprox::Dump(Standard_OStream& o) const
 {
   Standard_Integer ii;
-  o << "Dump of SimpleApprox " << endl;
+  o << "Dump of SimpleApprox " << std::endl;
   for (ii=1; ii <= myTotalNumSS; ii++) {
-    o << "Error   " << MaxError(ii) << endl;
+    o << "Error   " << MaxError(ii) << std::endl;
   }
 }
 

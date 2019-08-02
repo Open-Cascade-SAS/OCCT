@@ -79,7 +79,7 @@ static Standard_Integer DDocStd_Format (Draw_Interpretor& di,Standard_Integer n,
   Handle(TDocStd_Document) D;
   if (n == 2) {
     if (!DDocStd::GetDocument(a[1],D)) return 1;    
-    //cout << "FORMAT : " << D->StorageFormat() << endl;
+    //std::cout << "FORMAT : " << D->StorageFormat() << std::endl;
     di << "FORMAT : ";
     Standard_SStream aStream;
     D->StorageFormat().Print(aStream);
@@ -316,7 +316,7 @@ static Standard_Integer DDocStd_DumpDocument (Draw_Interpretor& di,
       di << "DOCUMENT      : not saved";
     di << "\n";
     // format
-    //cout << "FORMAT        : " << D->StorageFormat();
+    //std::cout << "FORMAT        : " << D->StorageFormat();
     di << "FORMAT        : ";
     Standard_SStream aStream;
     D->StorageFormat().Print(aStream);
@@ -332,11 +332,11 @@ static Standard_Integer DDocStd_DumpDocument (Draw_Interpretor& di,
     di << " undos :" << D->GetAvailableUndos() << " ";  
     di << " redos :" << D->GetAvailableRedos(); 
     di << "\n";
-    // cout << "CURRENT :";   
+    // std::cout << "CURRENT :";   
     //     TCollection_AsciiString string;  
     //     TDF_Tool::Entry(D->CurrentLabel(),string); 
-    //     cout << string;
-    //     cout << endl;
+    //     std::cout << string;
+    //     std::cout << std::endl;
     // modified  
     di << "MODIFIED      : ";
     if (D->IsModified()) di << "true";
@@ -392,12 +392,12 @@ static Standard_Integer DDocStd_Propagate (Draw_Interpretor& di,Standard_Integer
 //     Handle(TDocStd_Document) D;
 //     if (!DDocStd::GetDocument(a[1],D)) return 1;
 //     if (D->IsValid()) {
-//       cout << "the document is valid" << endl;
+//       std::cout << "the document is valid" << std::endl;
 //       return 0;
 //     }
 //     Handle(TDesign_Function) F; 
 //     if (!D->Main().FindAttribute(TDesign_Function::GetID(),F)) {
-//       cout << "no function found at main" << endl;
+//       std::cout << "no function found at main" << std::endl;
 //       return 0;
 //     }
 //     TFunction_Logbook mdf (Standard_True);   

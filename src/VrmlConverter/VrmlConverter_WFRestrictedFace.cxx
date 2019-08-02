@@ -151,16 +151,16 @@ void VrmlConverter_WFRestrictedFace::Add
   laU = aDrawer->UIsoAspect();
   laV = aDrawer->VIsoAspect();
 
-//     cout << endl;
+//     std::cout << std::endl;
 
-//     cout << "Face:aDrawer>UMaterial1 = " << aDrawer->UIsoAspect()->HasMaterial() << endl;
-//     cout << "Face:aDrawer>VMaterial1 = " << aDrawer->VIsoAspect()->HasMaterial() << endl;
-//     cout << "Face:aDrawer>LineAspect1 = " << aDrawer->LineAspect()->HasMaterial() << endl;
-//     cout << "Face:la1 = " << latmp->HasMaterial() << endl;
-//     cout << "Face:laU1 = " << laU->HasMaterial() << endl;
-//     cout << "Face:laV1 = " << laV->HasMaterial() << endl;
-//     cout << "Face:iau1 = " << iautmp->HasMaterial() << endl;
-//     cout << "Face:iav1 = " << iavtmp->HasMaterial() << endl;
+//     std::cout << "Face:aDrawer>UMaterial1 = " << aDrawer->UIsoAspect()->HasMaterial() << std::endl;
+//     std::cout << "Face:aDrawer>VMaterial1 = " << aDrawer->VIsoAspect()->HasMaterial() << std::endl;
+//     std::cout << "Face:aDrawer>LineAspect1 = " << aDrawer->LineAspect()->HasMaterial() << std::endl;
+//     std::cout << "Face:la1 = " << latmp->HasMaterial() << std::endl;
+//     std::cout << "Face:laU1 = " << laU->HasMaterial() << std::endl;
+//     std::cout << "Face:laV1 = " << laV->HasMaterial() << std::endl;
+//     std::cout << "Face:iau1 = " << iautmp->HasMaterial() << std::endl;
+//     std::cout << "Face:iav1 = " << iavtmp->HasMaterial() << std::endl;
 
 
 // creation of Vrml objects
@@ -268,16 +268,16 @@ void VrmlConverter_WFRestrictedFace::Add
   aDrawer->SetUIsoAspect(iautmp);
   aDrawer->SetVIsoAspect(iavtmp);
 
-//     cout << endl;
+//     std::cout << std::endl;
 
-//     cout << "Face:aDrawer>UMaterial4 = " << aDrawer->UIsoAspect()->HasMaterial() << endl;
-//     cout << "Face:aDrawer>VMaterial4 = " << aDrawer->VIsoAspect()->HasMaterial() << endl;
-//     cout << "Face:aDrawer>LineAspect4 = " << aDrawer->LineAspect()->HasMaterial() << endl;
-//     cout << "Face:la4 = " << latmp->HasMaterial() << endl;
-//     cout << "Face:laU4 = " << laU->HasMaterial() << endl;
-//     cout << "Face:laV4 = " << laV->HasMaterial() << endl;
-//     cout << "Face:iau4 = " << iautmp->HasMaterial() << endl;
-//     cout << "Face:iav4 = " << iavtmp->HasMaterial() << endl;
+//     std::cout << "Face:aDrawer>UMaterial4 = " << aDrawer->UIsoAspect()->HasMaterial() << std::endl;
+//     std::cout << "Face:aDrawer>VMaterial4 = " << aDrawer->VIsoAspect()->HasMaterial() << std::endl;
+//     std::cout << "Face:aDrawer>LineAspect4 = " << aDrawer->LineAspect()->HasMaterial() << std::endl;
+//     std::cout << "Face:la4 = " << latmp->HasMaterial() << std::endl;
+//     std::cout << "Face:laU4 = " << laU->HasMaterial() << std::endl;
+//     std::cout << "Face:laV4 = " << laV->HasMaterial() << std::endl;
+//     std::cout << "Face:iau4 = " << iautmp->HasMaterial() << std::endl;
+//     std::cout << "Face:iav4 = " << iavtmp->HasMaterial() << std::endl;
 
 } 
 

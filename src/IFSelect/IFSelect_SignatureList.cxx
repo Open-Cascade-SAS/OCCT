@@ -151,15 +151,15 @@ IFSelect_SignatureList::IFSelect_SignatureList
 {
   Standard_Integer nbtot = 0, nbsign = 0;
   NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
-  S << " Count	"<<thename->ToCString()<<"\n -----	-----------"<<endl;
+  S << " Count	"<<thename->ToCString()<<"\n -----	-----------"<<Message_EndLine;
   for (; iter.More(); iter.Next()) {
     Standard_Integer val = iter.Value();
-    S << Interface_MSG::Blanks(val,6) << val <<"	"<<iter.Key()<<endl;
+    S << Interface_MSG::Blanks(val,6) << val <<"	"<<iter.Key()<<Message_EndLine;
     nbtot += val;
     nbsign ++;
   }
-  if (thenbnuls > 0) S << thename->ToCString()<< " Nul : " << thenbnuls<<endl;
-  S<<"    Nb Total:"<<nbtot<<"  for "<<nbsign<<" items"<<endl;
+  if (thenbnuls > 0) S << thename->ToCString()<< " Nul : " << thenbnuls<<Message_EndLine;
+  S<<"    Nb Total:"<<nbtot<<"  for "<<nbsign<<" items"<<Message_EndLine;
 }
 
     void  IFSelect_SignatureList::PrintList
@@ -170,7 +170,7 @@ IFSelect_SignatureList::IFSelect_SignatureList
   if (mod == IFSelect_CountByItem)   {  PrintCount (S);  return;  }
   if (mod == IFSelect_CountSummary)  {  PrintSum   (S);  return;  }
   if (!HasEntities()) {
-    S <<" SignatureList "<<Name()<<" : PrintList, list not available"<<endl;
+    S <<" SignatureList "<<Name()<<" : PrintList, list not available"<<Message_EndLine;
     PrintCount(S);
     return;
   }
@@ -178,8 +178,8 @@ IFSelect_SignatureList::IFSelect_SignatureList
   NCollection_IndexedDataMap<TCollection_AsciiString, Handle(Standard_Transient)>::Iterator iter(thediclist);
   for (; iter.More(); iter.Next()) {
     DeclareAndCast(TColStd_HSequenceOfTransient,list,iter.Value());
-    S<<Name()<<" : "<<iter.Key()<<endl;
-    if (list.IsNull())  {  S<<"  - (empty list)"<<endl; continue;  }
+    S<<Name()<<" : "<<iter.Key()<<Message_EndLine;
+    if (list.IsNull())  {  S<<"  - (empty list)"<<Message_EndLine; continue;  }
     Standard_Integer nb = list->Length();
     S<<"  - Nb: "<<nb<<" : ";
     Standard_Integer nc = nb;  if (nb > 5 && mod == IFSelect_ShortByItem) nc = 5;
@@ -195,18 +195,18 @@ IFSelect_SignatureList::IFSelect_SignatureList
 	{  S<<":";  model->PrintLabel(list->Value(i),S);  }
     }
     if (nc < nb) S<<"  .. etc";
-    S<<endl;
+    S<<Message_EndLine;
     nbtot += nb;
     nbsign ++;
   }
-  S<<" Nb Total:"<<nbtot<<"  for "<<nbsign<<" items"<<endl;
+  S<<" Nb Total:"<<nbtot<<"  for "<<nbsign<<" items"<<Message_EndLine;
 }
 
 
     void  IFSelect_SignatureList::PrintSum (const Handle(Message_Messenger)& S) const
 {
   NCollection_IndexedDataMap<TCollection_AsciiString, Standard_Integer>::Iterator iter(thedicount);
-  S << " Summary "<<thename->ToCString()<<"\n -----	-----------"<<endl;
+  S << " Summary "<<thename->ToCString()<<"\n -----	-----------"<<Message_EndLine;
   Standard_Integer nbtot = 0, nbsign = 0, maxent = 0, nbval = 0, nbve = 0, minval = 0, maxval = 0, totval = 0;
   for (; iter.More(); iter.Next()) {
     Standard_Integer nbent = iter.Value();
@@ -232,18 +232,18 @@ IFSelect_SignatureList::IFSelect_SignatureList
     nbve += nbent;
     totval += (val*nbent);
   }
-  S << "    Nb Total:"<<nbtot<<"  for "<<nbsign<<" items"<<endl;
-  S << "    Highest count of entities : "<<maxent<<" on one item"<<endl;
+  S << "    Nb Total:"<<nbtot<<"  for "<<nbsign<<" items"<<Message_EndLine;
+  S << "    Highest count of entities : "<<maxent<<" on one item"<<Message_EndLine;
   if (nbval > 0) {
-    S<<"    Summary on Integer Values"<<endl;
-    S<<"    Nb Integer Items : "<<nbval<<endl;
-    S<<"    For Nb Entities  : "<<nbve<<endl;
-    S<<"    Cumulated Values : "<<totval<<endl;
-    S<<"    Maximum Value    : "<<maxval<<endl;
+    S<<"    Summary on Integer Values"<<Message_EndLine;
+    S<<"    Nb Integer Items : "<<nbval<<Message_EndLine;
+    S<<"    For Nb Entities  : "<<nbve<<Message_EndLine;
+    S<<"    Cumulated Values : "<<totval<<Message_EndLine;
+    S<<"    Maximum Value    : "<<maxval<<Message_EndLine;
     Standard_Integer avg1, avg2;
     avg1 = totval/nbve;
     avg2 = ((totval - (avg1*nbve)) * 10) / nbve;
-    S<<"    Average Value    : "<<avg1<<" "<<avg2<<"/10"<<endl;
-    S<<"    Minimum Value    : "<<minval<<endl;
+    S<<"    Average Value    : "<<avg1<<" "<<avg2<<"/10"<<Message_EndLine;
+    S<<"    Minimum Value    : "<<minval<<Message_EndLine;
   }
 }

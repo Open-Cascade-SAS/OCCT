@@ -150,7 +150,7 @@ static void SetLabelNameByLink(const TDF_Label L)
   if (! L.FindAttribute(XCAFDoc::ShapeRefGUID(), Node) ||
       ! Node->HasFather()) {
 #ifdef OCCT_DEBUG
-    cout<<"Error: XCAFDoc_ShapeTool, SetLabelNameByLink(): NO NODE"<<endl;
+    std::cout<<"Error: XCAFDoc_ShapeTool, SetLabelNameByLink(): NO NODE"<<std::endl;
 #endif
     return;
   }
@@ -1278,7 +1278,7 @@ static void DumpAssembly(Standard_OStream& theDumpLog,
       theDumpLog<<", "<< *(void**)&S.Location();
     theDumpLog<<") ";
   }
-  theDumpLog<<endl;
+  theDumpLog<<std::endl;
   
   Handle(TDataStd_TreeNode) Node;
   TDF_ChildIterator NodeIterator(L);
@@ -1286,7 +1286,7 @@ static void DumpAssembly(Standard_OStream& theDumpLog,
     DumpAssembly(theDumpLog, NodeIterator.Value(), level+1, deep);
   }
   if(level == 0)
-    theDumpLog<<endl;
+    theDumpLog<<std::endl;
 }
 
 //=======================================================================
@@ -1301,7 +1301,7 @@ Standard_OStream& XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog, const St
   TDF_LabelSequence SeqLabels;
   GetShapes( SeqLabels);
 
-  if (SeqLabels.Length()>0) theDumpLog<<endl;
+  if (SeqLabels.Length()>0) theDumpLog<<std::endl;
   Standard_Integer i;
   for (i=1; i<=SeqLabels.Length(); i++) {
     DumpAssembly(theDumpLog, SeqLabels.Value(i), level, deep);
@@ -1309,10 +1309,10 @@ Standard_OStream& XCAFDoc_ShapeTool::Dump(Standard_OStream& theDumpLog, const St
 
   SeqLabels.Clear();
   GetFreeShapes(SeqLabels);
-  theDumpLog<<endl<<"Free Shapes: "<<SeqLabels.Length()<<endl;
+  theDumpLog<<std::endl<<"Free Shapes: "<<SeqLabels.Length()<<std::endl;
   for (i = 1; i<=SeqLabels.Length(); i++) {
     DumpShape(theDumpLog, SeqLabels.Value(i), level, deep);
-    theDumpLog<<endl;
+    theDumpLog<<std::endl;
   }
   return theDumpLog;
 }
@@ -1366,7 +1366,7 @@ void XCAFDoc_ShapeTool::DumpShape(Standard_OStream& theDumpLog, const TDF_Label&
     TDF_Tool::Entry(aRef->Father()->Label(), Entry);
     theDumpLog<<" (refers to "<<Entry<<")";
   }
-  //cout<<endl;
+  //std::cout<<std::endl;
   Handle(TDataStd_Name) Name;
   if (L.FindAttribute(TDataStd_Name::GetID(),Name)) 
     theDumpLog<<" \""<<Name->Get()<<"\" ";

@@ -1360,7 +1360,7 @@ static Standard_Integer testDoc (Draw_Interpretor&,
 {
   if( argc < 2 )
   {
-    cout<<"Invalid numbers of arguments should be: XTestDoc shape"<<endl;
+    std::cout<<"Invalid numbers of arguments should be: XTestDoc shape"<<std::endl;
     return 1;
   }
   TopoDS_Shape shape = DBRep::Get(argv[1]);

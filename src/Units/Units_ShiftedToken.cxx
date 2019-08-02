@@ -88,6 +88,6 @@ void Units_ShiftedToken::Dump(const Standard_Integer ashift,
 			      const Standard_Integer alevel) const
 {
   Units_Token::Dump(ashift,alevel);
-  for(int i=0; i<ashift; i++)cout<<"  ";
-  cout<<"  move  : "<<themove<<endl;
+  for(int i=0; i<ashift; i++)std::cout<<"  ";
+  std::cout<<"  move  : "<<themove<<std::endl;
 }

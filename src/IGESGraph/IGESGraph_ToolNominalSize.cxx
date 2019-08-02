@@ -146,14 +146,14 @@ void IGESGraph_ToolNominalSize::OwnDump
   (const Handle(IGESGraph_NominalSize)& ent, const IGESData_IGESDumper& /*dumper*/,
    const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_NominalSize" << endl;
+  S << "IGESGraph_NominalSize" << Message_EndLine;
 
-  S << "No. of property values : " << ent->NbPropertyValues() << endl;
-  S << "Nominal size value : "     << ent->NominalSizeValue() << endl;
+  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "Nominal size value : "     << ent->NominalSizeValue() << Message_EndLine;
   S << "Nominal size name  : ";
   IGESData_DumpString(S,ent->NominalSizeName());
-  S << endl;
+  S << Message_EndLine;
   S << "Name of relevant engineering standard : ";
   IGESData_DumpString(S,ent->StandardName());
-  S << endl;
+  S << Message_EndLine;
 }

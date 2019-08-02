@@ -167,7 +167,7 @@ static Standard_Integer DPrsStd_AISSet (Draw_Interpretor& di,
     Standard_GUID guid;
     TCollection_ExtendedString str = arg[3];
 #ifdef OCCT_DEBUG
-    cout << "Inputed parameter > " << str   << endl;
+    std::cout << "Inputed parameter > " << str   << std::endl;
 #endif
     if ( str == "A" )  //axis
       guid = TDataXtd_Axis::GetID();     //"2a96b601-ec8b-11d0-bee7-080009dc3333" 
@@ -188,9 +188,9 @@ static Standard_Integer DPrsStd_AISSet (Draw_Interpretor& di,
 
     Handle(TPrsStd_AISPresentation) prs= TPrsStd_AISPresentation::Set(L, guid);
 #ifdef OCCT_DEBUG
-    cout << "Driver GUID = ";
-    prs->GetDriverGUID().ShallowDump(cout);
-    cout << "\n";
+    std::cout << "Driver GUID = ";
+    prs->GetDriverGUID().ShallowDump(std::cout);
+    std::cout << "\n";
 #endif
     Standard_Character resS[37];
     Standard_PCharacter presS;
@@ -233,7 +233,7 @@ static Standard_Integer DPrsStd_AISDriver (Draw_Interpretor& di,
       else {
 	TCollection_ExtendedString str = arg[3];
 #ifdef OCCT_DEBUG
-	cout << "Inputed parameter > " << str   << endl;
+	std::cout << "Inputed parameter > " << str   << std::endl;
 #endif
 	if ( str == "A" )  //axis
 	  guid = TDataXtd_Axis::GetID();     //"2a96b601-ec8b-11d0-bee7-080009dc3333" 

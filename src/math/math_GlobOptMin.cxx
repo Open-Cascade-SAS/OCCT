@@ -221,7 +221,7 @@ void math_GlobOptMin::Perform(const Standard_Boolean isFindSingleSolution)
   if (minLength < Precision::PConfusion())
   {
     #ifdef OCCT_DEBUG
-    cout << "math_GlobOptMin::Perform(): Degenerated parameters space" << endl;
+    std::cout << "math_GlobOptMin::Perform(): Degenerated parameters space" << std::endl;
     #endif
 
     return;

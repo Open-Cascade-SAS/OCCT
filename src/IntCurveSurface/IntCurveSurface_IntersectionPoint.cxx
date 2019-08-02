@@ -56,18 +56,18 @@ void IntCurveSurface_IntersectionPoint::Values(gp_Pnt& P,
 }
 //================================================================================
 void IntCurveSurface_IntersectionPoint::Dump() const { 
-  cout<<"IntersectionPoint: P("<<myP.X()<<","<<myP.Y()<<","<<myP.Z()<<")"<<endl;
-  cout<<"                 : USurf("<<myUSurf<<")  VSurf("<<myVSurf<<")   UCurve("<<myUCurv<<")"<<endl;
-  cout<<"                 : TransitionOnSurf ";
+  std::cout<<"IntersectionPoint: P("<<myP.X()<<","<<myP.Y()<<","<<myP.Z()<<")"<<std::endl;
+  std::cout<<"                 : USurf("<<myUSurf<<")  VSurf("<<myVSurf<<")   UCurve("<<myUCurv<<")"<<std::endl;
+  std::cout<<"                 : TransitionOnSurf ";
 
   switch(myTrOnCurv) { 
-  case IntCurveSurface_Tangent: cout<<" Tangent "; break;
-  case IntCurveSurface_In: cout<<" In "; break;
-  case IntCurveSurface_Out: cout<<" Out "; break;
+  case IntCurveSurface_Tangent: std::cout<<" Tangent "; break;
+  case IntCurveSurface_In: std::cout<<" In "; break;
+  case IntCurveSurface_Out: std::cout<<" Out "; break;
 
-  default: cout<< " XXXXX ";
+  default: std::cout<< " XXXXX ";
   }  
-  cout<<endl;
+  std::cout<<std::endl;
 }
 
 

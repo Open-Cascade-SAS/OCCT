@@ -2233,9 +2233,9 @@ static void EncodeRegularity(const TopoDS_Shape&        theShape,
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: Exception in BRepLib::EncodeRegularity(): ";
-    anException.Print(cout);
-    cout << endl;
+    std::cout << "Warning: Exception in BRepLib::EncodeRegularity(): ";
+    anException.Print(std::cout);
+    std::cout << std::endl;
 #endif
     (void)anException;
   }
@@ -2300,7 +2300,7 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
     catch(Standard_Failure const&)
     {
 #ifdef OCCT_DEBUG
-      cout << "Failure: Exception in BRepLib::EncodeRegularity" << endl;
+      std::cout << "Failure: Exception in BRepLib::EncodeRegularity" << std::endl;
 #endif
     }
   }
@@ -2351,7 +2351,7 @@ Standard_Boolean BRepLib::
       if(!aSLP.IsNormalDefined())
       {
 #ifdef OCCT_DEBUG
-        cout << "BRepLib::EnsureNormalConsistency(): Cannot find normal!" << endl;
+        std::cout << "BRepLib::EnsureNormalConsistency(): Cannot find normal!" << std::endl;
 #endif
       }
       else

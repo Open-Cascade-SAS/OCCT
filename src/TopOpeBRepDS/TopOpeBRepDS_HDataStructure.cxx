@@ -143,7 +143,7 @@ void TopOpeBRepDS_HDataStructure::ChkIntg()
   // Check the integrity of the DS
   Handle(TopOpeBRepDS_Check) chk = new TopOpeBRepDS_Check(this);
   chk->ChkIntg();
-//  chk->PrintIntg(cout);
+//  chk->PrintIntg(std::cout);
 }
 
 //=======================================================================

@@ -347,7 +347,7 @@ void IntPatch_RLine::ComputeVertexParameters(const Standard_Real )
 
 void IntPatch_RLine::Dump(const Standard_Integer theMode) const
 { 
-  cout<<" ----------- D u m p    I n t P a t c h  _  R L i n e  -(begin)------"<<endl;
+  std::cout<<" ----------- D u m p    I n t P a t c h  _  R L i n e  -(begin)------"<<std::endl;
   const Standard_Integer aNbPoints = NbPnts();
   const Standard_Integer aNbVertex = NbVertex();
 
@@ -372,10 +372,10 @@ void IntPatch_RLine::Dump(const Standard_Integer theMode) const
 
       if(pol>=1 && pol<=aNbVertex)
       {
-        cout<<"----> IntSurf_PntOn2S : "<<
+        std::cout<<"----> IntSurf_PntOn2S : "<<
                       polr <<", Pnt (" << Vertex(pol).Value().X() << "," <<
                                           Vertex(pol).Value().Y() << "," <<
-                                          Vertex(pol).Value().Z() <<")" <<endl;
+                                          Vertex(pol).Value().Z() <<")" <<std::endl;
       }
     }
 
@@ -409,6 +409,6 @@ void IntPatch_RLine::Dump(const Standard_Integer theMode) const
 
     break;
   }
-  cout<<"\n--------------------------------------------------- (end) -------"<<endl;  
+  std::cout<<"\n--------------------------------------------------- (end) -------"<<std::endl;  
 }
 

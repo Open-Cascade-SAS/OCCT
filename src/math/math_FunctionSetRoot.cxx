@@ -63,7 +63,7 @@
 //========================================================== 
 //static Standard_Boolean mydebug = Standard_True;
 //#undef FSR_DEBUG
-//#define FSR_DEBUG(arg) {if (mydebug) { cout << arg << endl; }}
+//#define FSR_DEBUG(arg) {if (mydebug) { std::cout << arg << std::endl; }}
 //===========================================================
 
 class MyDirFunction : public math_Function
@@ -764,7 +764,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // de faire une seconde iteration...
   Save(0) = Max (F2, EpsSqrt);
   Standard_Real aTol_Func = Epsilon(F2);
-  FSR_DEBUG("=== Mode Debug de Function Set Root" << endl);
+  FSR_DEBUG("=== Mode Debug de Function Set Root" << std::endl);
   FSR_DEBUG("    F2 Initial = " << F2);
 
   if ((F2 <= Eps) || (Gnr1 <= Eps2)) {

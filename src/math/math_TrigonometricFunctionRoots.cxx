@@ -372,14 +372,14 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
 	  //-- est ce une racine double ou une erreur numerique ? 
 	  Standard_Real qw=Zer(i+1);
 	  Standard_Real va=ko(4)+qw*(2.0*ko(3)+qw*(3.0*ko(2)+qw*(4.0*ko(1))));
-	  //-- cout<<"   Val Double ("<<qw<<")=("<<va<<")"<<endl;
+	  //-- std::cout<<"   Val Double ("<<qw<<")=("<<va<<")"<<std::endl;
 	  if(Abs(va)>Eps) { 
 	    bko=Standard_True;
 	    nbko++;
 #ifdef OCCT_DEBUG
 	    //if(nbko==1) { 
-	    //  cout<<"Pb ds math_TrigonometricFunctionRoots CC="
-	    //	<<A<<" CS="<<B<<" C="<<C<<" S="<<D<<" Cte="<<E<<endl;
+	    //  std::cout<<"Pb ds math_TrigonometricFunctionRoots CC="
+	    //	<<A<<" CS="<<B<<" C="<<C<<" S="<<D<<" Cte="<<E<<std::endl;
 	    //}
 #endif
 	    break;
@@ -428,7 +428,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
       //-- lbr le 7 mars 97 (newton converge tres tres loin de la solution initilale)
       Standard_Real DeltaNewton = TetaNewton-Teta;
       if((DeltaNewton > SupmInfs100) || (DeltaNewton < -SupmInfs100)) { 
-	//-- cout<<"\n Newton X0="<<Teta<<" -> "<<TetaNewton<<endl;
+	//-- std::cout<<"\n Newton X0="<<Teta<<" -> "<<TetaNewton<<std::endl;
       }
       else { 
 	Teta=TetaNewton;

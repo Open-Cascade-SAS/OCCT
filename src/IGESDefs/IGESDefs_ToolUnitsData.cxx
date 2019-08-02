@@ -155,27 +155,27 @@ void  IGESDefs_ToolUnitsData::OwnDump
   (const Handle(IGESDefs_UnitsData)& ent, const IGESData_IGESDumper& /* dumper */,
    const Handle(Message_Messenger)& S, const Standard_Integer level) const 
 { 
-  S << "IGESDefs_UnitsData" << endl;
-  S << "Number of Units : " << ent->NbUnits() << endl;
-  S << "Type of Unit : " << endl;
-  S << "Value of Unit : " << endl;
-  S << "Scale Factor : " << endl;
+  S << "IGESDefs_UnitsData" << Message_EndLine;
+  S << "Number of Units : " << ent->NbUnits() << Message_EndLine;
+  S << "Type of Unit : " << Message_EndLine;
+  S << "Value of Unit : " << Message_EndLine;
+  S << "Scale Factor : " << Message_EndLine;
   IGESData_DumpStrings(S,-level,1, ent->NbUnits(),ent->UnitType);
-  S << endl;
+  S << Message_EndLine;
   if (level > 4)
     {
-      S << "Details of the Units" << endl;
+      S << "Details of the Units" << Message_EndLine;
       Standard_Integer upper = ent->NbUnits();
       for (Standard_Integer i = 1; i <= upper; i++)
 	{
           S << "[" << i << "] Type  : ";
           IGESData_DumpString(S,ent->UnitType(i));
-          S << endl;
+          S << Message_EndLine;
           S << "     Value : ";
           IGESData_DumpString(S,ent->UnitValue(i));
-          S << endl;
-          S << "     ScaleFactor: " << ent->ScaleFactor(i) << endl;
+          S << Message_EndLine;
+          S << "     ScaleFactor: " << ent->ScaleFactor(i) << Message_EndLine;
 	}
     }
-  S << endl;
+  S << Message_EndLine;
 }

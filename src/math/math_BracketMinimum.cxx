@@ -240,10 +240,10 @@ Standard_Boolean math_BracketMinimum::LimitAndMayBeSwap
        o << "math_BracketMinimum ";
        if(Done) {
          o << " Status = Done \n";
-	 o << " The bracketed triplet is: " << endl;
-	 o << Ax << ", " << Bx << ", " << Cx << endl;
-	 o << " The corresponding function values are: "<< endl;
-	 o << FAx << ", " << FBx << ", " << FCx << endl;
+	 o << " The bracketed triplet is: " << std::endl;
+	 o << Ax << ", " << Bx << ", " << Cx << std::endl;
+	 o << " The corresponding function values are: "<< std::endl;
+	 o << FAx << ", " << FBx << ", " << FCx << std::endl;
        }
        else {
          o << " Status = not Done \n";

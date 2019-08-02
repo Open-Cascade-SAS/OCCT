@@ -96,28 +96,28 @@ static void tracederiv(Blend_SurfRstFunction& Func,
   Standard_Real param2 = BP2.Parameter();
   Standard_Real scal = 1./(param1-param2);
 
-  cout<<endl;
-  cout<<"control derivatives at point : "<<param1<<endl;
+  std::cout<<std::endl;
+  std::cout<<"control derivatives at point : "<<param1<<std::endl;
 
   for(i = 1; i <= hp; i++){
-    cout<<endl;
-    cout<<"point : "<<i<<endl;
-    cout<<"dx calculated : "<<TDP1(i).X()<<endl;
-    cout<<"dx estimated  : "<<scal*(TP1(i).X()-TP2(i).X())<<endl;
-    cout<<"dy calculated : "<<TDP1(i).Y()<<endl;
-    cout<<"dy estimated  : "<<scal*(TP1(i).Y()-TP2(i).Y())<<endl;
-    cout<<"dz calculated : "<<TDP1(i).Z()<<endl;
-    cout<<"dz estimated  : "<<scal*(TP1(i).Z()-TP2(i).Z())<<endl;
-    cout<<"dw calculated : "<<TDW1(i)<<endl;
-    cout<<"dw estimated  : "<<scal*(TW1(i)-TW2(i))<<endl;
+    std::cout<<std::endl;
+    std::cout<<"point : "<<i<<std::endl;
+    std::cout<<"dx calculated : "<<TDP1(i).X()<<std::endl;
+    std::cout<<"dx estimated  : "<<scal*(TP1(i).X()-TP2(i).X())<<std::endl;
+    std::cout<<"dy calculated : "<<TDP1(i).Y()<<std::endl;
+    std::cout<<"dy estimated  : "<<scal*(TP1(i).Y()-TP2(i).Y())<<std::endl;
+    std::cout<<"dz calculated : "<<TDP1(i).Z()<<std::endl;
+    std::cout<<"dz estimated  : "<<scal*(TP1(i).Z()-TP2(i).Z())<<std::endl;
+    std::cout<<"dw calculated : "<<TDW1(i)<<std::endl;
+    std::cout<<"dw estimated  : "<<scal*(TW1(i)-TW2(i))<<std::endl;
   }
   for(i = 1; i <= hp2d; i++){
-    cout<<endl;
-    cout<<"point 2d : "<<i<<endl;
-    cout<<"dx calculated : "<<TDP2d1(i).X()<<endl;
-    cout<<"dx estimated  : "<<scal*(TP2d1(i).X()-TP2d2(i).X())<<endl;
-    cout<<"dy calculated : "<<TDP2d1(i).Y()<<endl;
-    cout<<"dy estimated  : "<<scal*(TP2d1(i).Y()-TP2d2(i).Y())<<endl;
+    std::cout<<std::endl;
+    std::cout<<"point 2d : "<<i<<std::endl;
+    std::cout<<"dx calculated : "<<TDP2d1(i).X()<<std::endl;
+    std::cout<<"dx estimated  : "<<scal*(TP2d1(i).X()-TP2d2(i).X())<<std::endl;
+    std::cout<<"dy calculated : "<<TDP2d1(i).Y()<<std::endl;
+    std::cout<<"dy estimated  : "<<scal*(TP2d1(i).Y()-TP2d2(i).Y())<<std::endl;
   }
 }
 #endif
@@ -717,7 +717,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       else{
 	// Failed reframing. Leave with PointsConfondus
 #ifdef OCCT_DEBUG
-	cout<<"SurfRstLineBuilder : failed reframing"<<endl;
+	std::cout<<"SurfRstLineBuilder : failed reframing"<<std::endl;
 #endif
 	State = Blend_SamePoints;
       }
@@ -772,7 +772,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
 	  if (line->NbPoints()>=2) {
 	    // Indicate that one stops during the processing
 #ifdef OCCT_DEBUG
-	    cout<<"SurfRstLineBuilder : No advancement in the processing"<<endl;
+	    std::cout<<"SurfRstLineBuilder : No advancement in the processing"<<std::endl;
 #endif
 	  }
 	}
@@ -878,7 +878,7 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
       {
 	// Stop
 #ifdef OCCT_DEBUG
-	cout << "SurfRstLineBuilder Points mixed in the processing" << endl;
+	std::cout << "SurfRstLineBuilder Points mixed in the processing" << std::endl;
 #endif
 	previousP.ParametersOnS(U,V);
 	Exts.SetValue(previousP.PointOnS(),U,V,
@@ -951,7 +951,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
 
   if (!rsnld.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "SurfRstLineBuilder : RSNLD not done "<< endl << endl;
+    std::cout << "SurfRstLineBuilder : RSNLD not done "<< std::endl << std::endl;
 #endif
   }
   else {
@@ -990,7 +990,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfCurvFuncInv&   
 
     if (!aRsnld.IsDone()) {
 #ifdef OCCT_DEBUG
-      cout << "SurfRstLineBuilder : RSNLD not done "<< endl << endl;
+      std::cout << "SurfRstLineBuilder : RSNLD not done "<< std::endl << std::endl;
 #endif
     }
     else {
@@ -1051,7 +1051,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfRstFunction&   
   rsnld.Perform(Finv,Solinv,infb,supb);
   if (!rsnld.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "SurfRstLineBuilder :RSNLD not done "<< endl;
+    std::cout << "SurfRstLineBuilder :RSNLD not done "<< std::endl;
 #endif
     return Standard_False;
   }
@@ -1135,7 +1135,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::Recadre(Blend_SurfPointFuncInv&  
   rsnld.Perform(FinvP,Solinv,infb,supb);
   if (!rsnld.IsDone()) {
 #ifdef OCCT_DEBUG
-    cout << "SurfRstLineBuilder :RSNLD not done "<< endl;
+    std::cout << "SurfRstLineBuilder :RSNLD not done "<< std::endl;
 #endif
     return Standard_False;
   }

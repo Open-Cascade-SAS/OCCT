@@ -61,7 +61,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& Circle,
    math_TrigonometricFunctionRoots Sol(pcc,p2sc,pc,ps,pcte,0.0,2.0*M_PI);
 
    if(!Sol.IsDone()) {
-     cout << "\n\nmath_TrigonometricFunctionRoots -> NotDone\n\n"<<endl;
+     std::cout << "\n\nmath_TrigonometricFunctionRoots -> NotDone\n\n"<<std::endl;
      done=Standard_False;
      return;
    }

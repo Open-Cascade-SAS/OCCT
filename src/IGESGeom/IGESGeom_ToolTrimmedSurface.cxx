@@ -304,16 +304,16 @@ void IGESGeom_ToolTrimmedSurface::OwnDump(const Handle(IGESGeom_TrimmedSurface)&
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_TrimmedSurface" << endl;
+  S << "IGESGeom_TrimmedSurface" << Message_EndLine;
 
   S << "Surface to be trimmed : ";
   dumper.Dump(ent->Surface(),S, tempSubLevel);
-  S << endl;
-  S << "Boundary type    : " << ent->OuterBoundaryType() << endl;
+  S << Message_EndLine;
+  S << "Boundary type    : " << ent->OuterBoundaryType() << Message_EndLine;
   S << "Outer Boundary   : ";
   dumper.Dump(ent->OuterContour(),S, tempSubLevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Inner Boundaries : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbInnerContours(),ent->InnerContour);
-  S << endl;
+  S << Message_EndLine;
 }

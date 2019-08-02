@@ -1791,10 +1791,10 @@ Standard_Boolean PLib::HermiteInterpolate
   //  If FirstOrder=LastOrder=0 then 2,3,5,6th rows and 3,4,5,6th columns are missing
 
   math_Gauss Equations(A);
-  //  cout << "A=" << A << endl;
+  //  std::cout << "A=" << A << std::endl;
 
   for (Standard_Integer idim=1; idim<=Dimension; idim++) {
-    //  cout << "idim=" << idim << endl;
+    //  std::cout << "idim=" << idim << std::endl;
 
     math_Vector B(0,FirstOrder+LastOrder+1);
     Standard_Integer icol ;
@@ -1803,11 +1803,11 @@ Standard_Boolean PLib::HermiteInterpolate
 
     for (icol=0; icol<=LastOrder; icol++) 
       B(FirstOrder+1+icol) = LastConstr(idim,icol);
-    //  cout << "B=" << B << endl;
+    //  std::cout << "B=" << B << std::endl;
 
     //  The solving of equations system A * X = B. Then B = X
     Equations.Solve(B);         
-    //  cout << "After Solving" << endl << "B=" << B << endl;
+    //  std::cout << "After Solving" << std::endl << "B=" << B << std::endl;
 
     if (Equations.IsDone()==Standard_False) return Standard_False;
     

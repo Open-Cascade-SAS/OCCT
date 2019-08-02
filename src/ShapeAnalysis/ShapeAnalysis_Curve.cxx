@@ -79,7 +79,7 @@ static void ProjectOnSegments (const Adaptor3d_Curve& AC, const gp_Pnt& P3D,
   if (aHasChanged)
     distmin = Sqrt (distmin2);
 #ifdef OCCT_DEBUG
-  cout<<"ShapeAnalysis_Geom:Project, param="<<param<<" -> distmin="<<distmin<<endl;
+  std::cout<<"ShapeAnalysis_Geom:Project, param="<<param<<" -> distmin="<<distmin<<std::endl;
 #endif
 
   uMax = Min (uMax, param+delta);
@@ -259,8 +259,8 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
   catch(Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
  //:s5
-    cout << "\nWarning: ShapeAnalysis_Curve::ProjectAct(): Exception in Extrema_ExtPC: "; 
-    anException.Print(cout); cout << endl;
+    std::cout << "\nWarning: ShapeAnalysis_Curve::ProjectAct(): Exception in Extrema_ExtPC: "; 
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
     OK = Standard_False;
@@ -362,7 +362,7 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
           if (aDistNewton < aModMin)
             return aDistNewton;
         }
-        // cout <<"newton failed"<<endl;    
+        // std::cout <<"newton failed"<<std::endl;    
 	ProjectOnSegments (C3D,P3D,40,uMin,uMax,distmin,proj,param);
 	if (distmin <= preci) return distmin;
 	ProjectOnSegments (C3D,P3D,20,uMin,uMax,distmin,proj,param);
@@ -497,25 +497,25 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange (const Handle(Geom_Curve)& t
   if (theCurve->IsKind(STANDARD_TYPE(Geom_BoundedCurve)) && !theCurve->IsClosed()) {
     if (First < cf) {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge First Parameter to Curve First Parameter" << endl;
+      std::cout << "Update Edge First Parameter to Curve First Parameter" << std::endl;
 #endif
       First = cf;
     }
     else if (First > cl) {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge First Parameter to Curve Last Parameter" << endl;
+      std::cout << "Update Edge First Parameter to Curve Last Parameter" << std::endl;
 #endif
       First = cl;
     }
     if (Last < cf) {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge Last Parameter to Curve First Parameter" << endl;
+      std::cout << "Update Edge Last Parameter to Curve First Parameter" << std::endl;
 #endif
       Last = cf;
     }
     else if (Last > cl) {
 #ifdef OCCT_DEBUG
-      cout << "Update Edge Last Parameter to Curve Last Parameter" << endl;
+      std::cout << "Update Edge Last Parameter to Curve Last Parameter" << std::endl;
 #endif
       Last = cl;
     }
@@ -547,7 +547,7 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange (const Handle(Geom_Curve)& t
       if ( theCurve->Value(Last).Distance(theCurve->Value(cl)) < preci ) Last = cl;
       if ( First > Last ) {
 #ifdef OCCT_DEBUG
-	cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
+	std::cout << "Warning : parameter range of edge crossing non periodic curve origin" << std::endl;
 #endif
 	Standard_Real tmp = First;
 	First = Last;
@@ -575,7 +575,7 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange (const Handle(Geom_Curve)& t
       // on inverse quand meme les parametres !!!!!!
       else {
 #ifdef OCCT_DEBUG
-	cout << "Warning : parameter range of edge crossing non periodic curve origin" << endl;
+	std::cout << "Warning : parameter range of edge crossing non periodic curve origin" << std::endl;
 #endif
 	Standard_Real tmp = First;
 	First = Last;
@@ -585,7 +585,7 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange (const Handle(Geom_Curve)& t
     //abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     else if ( First > Last ) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: parameter range is bad; curve reversed" << endl;
+      std::cout << "Warning: parameter range is bad; curve reversed" << std::endl;
 #endif
       First = theCurve->ReversedParameter ( First );
       Last = theCurve->ReversedParameter ( Last );
@@ -599,15 +599,15 @@ Standard_Boolean ShapeAnalysis_Curve::ValidateRange (const Handle(Geom_Curve)& t
   }
   else {
 #ifdef OCCT_DEBUG
-    cout << "UpdateParam3d Failed" << endl;
-    cout << "  - Curve Type : " << theCurve->DynamicType() << endl;
-    cout << "  - Param 1    : " << First << endl;
-    cout << "  - Param 2    : " << Last << endl;
+    std::cout << "UpdateParam3d Failed" << std::endl;
+    std::cout << "  - Curve Type : " << theCurve->DynamicType() << std::endl;
+    std::cout << "  - Param 1    : " << First << std::endl;
+    std::cout << "  - Param 2    : " << Last << std::endl;
 #endif
     //abv 15.03.00 #72 bm1_pe_t4 protection of exceptions in draw
     if ( First > Last ) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: parameter range is bad; curve reversed" << endl;
+      std::cout << "Warning: parameter range is bad; curve reversed" << std::endl;
 #endif
       First = theCurve->ReversedParameter ( First );
       Last = theCurve->ReversedParameter ( Last );

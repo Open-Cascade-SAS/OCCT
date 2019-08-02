@@ -549,7 +549,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
     D.SetEquivalentParameters(DE.FirstParameter(),DE.FirstParameter()+M_PI+M_PI);
   }  
 
-  //-- cout<<" Parab Elips "<<endl;
+  //-- std::cout<<" Parab Elips "<<std::endl;
 
   Standard_Real binf = Precision::Infinite(),bsup = -Precision::Infinite(),maxtol;
   gp_Pnt2d Pntinf,Pntsup;
@@ -568,7 +568,7 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
     theIntAna2d.Perform(P,Ep);
     SetBinfBsupFromIntAna2d(theIntAna2d,binf,Pntinf,bsup,Pntsup,P,maxtol,PARAM_MAX_ON_PARABOLA);
   }
-  //-- cout<<" binf,bsup "<<binf<<" "<<bsup<<endl;
+  //-- std::cout<<" binf,bsup "<<binf<<" "<<bsup<<std::endl;
   if(binf<=bsup) { 
     if(!BOUNDED_DOMAIN(DP)) { 
       Standard_Real tolinf = 0.0;
@@ -599,8 +599,8 @@ void IntCurve_IntConicConic::Perform(const gp_Elips2d&      E,
 	  done=Standard_True; return;
 	}
       }
-      //-- cout<<"BOUNDED  binf,bsup "<<binf<<" "<<bsup<<endl;
-      //-- cout<<"Domain   "<<DP.FirstParameter()<<" "<<DP.LastParameter()<<endl;
+      //-- std::cout<<"BOUNDED  binf,bsup "<<binf<<" "<<bsup<<std::endl;
+      //-- std::cout<<"Domain   "<<DP.FirstParameter()<<" "<<DP.LastParameter()<<std::endl;
       IntRes2d_Domain DPModif(Pntinf,binf,ft,Pntsup,bsup,lt);
       Inter.Perform(ITool,D,PCurve,DPModif,TolConf,Tol);
     }

@@ -90,7 +90,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
 {
   if ( n < 5)
   {
-    cout << " Use proj curve/surf x y z [{extrema algo: g(grad)/t(tree)}|{u v}]" << endl;
+    std::cout << " Use proj curve/surf x y z [{extrema algo: g(grad)/t(tree)}|{u v}]" << std::endl;
     return 1;
   }
 
@@ -155,7 +155,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
 
     if(proj.NbPoints() == 0)
     {
-      cout << "No project point was found." << endl;
+      std::cout << "No project point was found." << std::endl;
       return 0;
     }
 

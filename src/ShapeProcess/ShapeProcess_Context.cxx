@@ -117,8 +117,8 @@ Handle(Resource_Manager) ShapeProcess_Context::LoadResourceManager (const Standa
   }
   if ( sRC.IsNull() ) {
 #ifdef OCCT_DEBUG
-    cout << "Info: ShapeProcess_Context: Reload Resource_Manager: " 
-         << sName.ToCString() << " -> " << name << endl;
+    std::cout << "Info: ShapeProcess_Context: Reload Resource_Manager: " 
+         << sName.ToCString() << " -> " << name << std::endl;
 #endif
     sRC = new Resource_Manager ( name );
     if (!isFileModified)
@@ -205,7 +205,7 @@ Standard_Boolean ShapeProcess_Context::GetString (const Standard_CString param,
   Handle(TCollection_HAsciiString) pname = MakeName ( myScope, param );
   if ( ! myRC->Find ( pname->ToCString() ) ) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << pname->ToCString() << " is not defined" << endl;
+    std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << pname->ToCString() << " is not defined" << std::endl;
 #endif
     return Standard_False;
   }
@@ -239,7 +239,7 @@ Standard_Boolean ShapeProcess_Context::GetReal (const Standard_CString param,
     ref.RightAdjust();
     if ( ! myRC->Find ( ref.ToCString() ) ) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString() << " is not defined" << endl;
+      std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString() << " is not defined" << std::endl;
 #endif
       return Standard_False;
     }
@@ -250,7 +250,7 @@ Standard_Boolean ShapeProcess_Context::GetReal (const Standard_CString param,
     }
   }
 #ifdef OCCT_DEBUG
-  cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param << " is neither Real nor reference to Real";
+  std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param << " is neither Real nor reference to Real";
 #endif
   return Standard_False;
 }
@@ -281,7 +281,7 @@ Standard_Boolean ShapeProcess_Context::GetInteger (const Standard_CString param,
     ref.RightAdjust();
     if ( ! myRC->Find ( ref.ToCString() ) ) {
 #ifdef OCCT_DEBUG
-      cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString() << " is not defined" << endl;
+      std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << ref.ToCString() << " is not defined" << std::endl;
 #endif
       return Standard_False;
     }
@@ -292,7 +292,7 @@ Standard_Boolean ShapeProcess_Context::GetInteger (const Standard_CString param,
     }
   }
 #ifdef OCCT_DEBUG
-  cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param << " is neither Integer nor reference to Integer";
+  std::cout << "Warning: ShapeProcess_Context::GetInteger(): Parameter " << param << " is neither Integer nor reference to Integer";
 #endif
   return Standard_False;
 }
@@ -313,8 +313,8 @@ Standard_Boolean ShapeProcess_Context::GetBoolean (const Standard_CString param,
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeProcess_Context::GetInteger(): " << param << ": ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeProcess_Context::GetInteger(): " << param << ": ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
   }
@@ -372,8 +372,8 @@ Standard_CString ShapeProcess_Context::StringVal (const Standard_CString param,
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    cout << "Warning: ShapeProcess_Context::GetInteger(): " << param << ": ";
-    anException.Print(cout); cout << endl;
+    std::cout << "Warning: ShapeProcess_Context::GetInteger(): " << param << ": ";
+    anException.Print(std::cout); std::cout << std::endl;
 #endif
     (void)anException;
   }

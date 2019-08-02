@@ -160,14 +160,14 @@ void ShapeUpgrade_ConvertCurve2dToBezier::Compute()
       Last = bl;
     if(First < bf){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the pcurve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the pcurve domain" <<std::endl;
 #endif
       First = bf;
       mySplitValues->SetValue(1,First);
     }
     if(Last > bl){
 #ifdef OCCT_DEBUG
-      cout <<"Warning: The range of the edge exceeds the pcurve domain" <<endl;
+      std::cout <<"Warning: The range of the edge exceeds the pcurve domain" <<std::endl;
 #endif
       Last = bl;
       mySplitValues->SetValue(mySplitValues->Length(),Last);

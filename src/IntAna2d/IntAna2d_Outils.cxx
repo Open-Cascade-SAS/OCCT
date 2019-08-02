@@ -23,7 +23,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
 						 const Standard_Real A2,
 						 const Standard_Real A1,
 						 const Standard_Real A0) { 
-  //-- cout<<" IntAna2d : A4..A0 "<<A4<<" "<<A3<<" "<<A2<<" "<<A1<<" "<<A0<<" "<<endl;
+  //-- std::cout<<" IntAna2d : A4..A0 "<<A4<<" "<<A3<<" "<<A2<<" "<<A1<<" "<<A0<<" "<<std::endl;
   nbsol = 0;
   same = Standard_False;
 //  Modified by Sergey KHROMOV - Thu Oct 24 13:10:14 2002 Begin
@@ -53,7 +53,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
     NbsolPolyComplet = nbp;
     for(i=1;i<=nbp;i++) { 
       Standard_Real x = MATH_A43210.Value(i);
-      //-- cout<<" IntAna2d : x Pol Complet :"<<x<<endl;
+      //-- std::cout<<" IntAna2d : x Pol Complet :"<<x<<std::endl;
       val[nbsol] = A0 + x*(A1+x*(A2+x*(A3+x*A4)));
       sol[nbsol] = x;
       if(val[nbsol]> tol  ||  val[nbsol]<-tol) {
@@ -153,7 +153,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
     //------------------------------------------------------------
     //-- On trie les valeurs par ordre decroissant de val
     //-- for(i=0;i<nbsol;i++) { 
-    //--  cout<<" IntAna2d Sol,Val"<<sol[i]<<"  "<<val[i]<<endl;
+    //--  std::cout<<" IntAna2d Sol,Val"<<sol[i]<<"  "<<val[i]<<std::endl;
     //-- }
     Standard_Boolean TriOK = Standard_False;
     do {
@@ -177,7 +177,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
     //-- Au moins autant que le polynome Complet 
     //-- 
     for(nbsol=0; nbsol<NbsolPolyComplet || Abs(val[nbsol])<Epsilon(10000.0); nbsol++) ;
-    //-- cout<<" IntAna2d : nbsol:"<<nbsol<<endl;
+    //-- std::cout<<" IntAna2d : nbsol:"<<nbsol<<std::endl;
   }
   if(nbsol==0) { 
     nbsol=-1;
@@ -192,7 +192,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A4,
 MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A2,
 						 const Standard_Real A1,
 						 const Standard_Real A0) { 
-  //-- cout<<" IntAna2d : A2..A0 "<<A2<<" "<<A1<<" "<<A0<<" "<<endl;
+  //-- std::cout<<" IntAna2d : A2..A0 "<<A2<<" "<<A1<<" "<<A0<<" "<<std::endl;
   nbsol=0;
   if((Abs(A2)+Abs(A1)+Abs(A0))<Epsilon(10000.0))  { 
     same = Standard_True;
@@ -205,7 +205,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const Standard_Real A2,
       Standard_Real x = MATH_A210.Value(i);
       val[nbsol] = A0 + x*(A1+x*A2);
       sol[nbsol] = x;
-      //-- cout<<" IntAna2d : x Pol Complet :"<<x<<"  Val:"<<val[nbsol]<<endl;
+      //-- std::cout<<" IntAna2d : x Pol Complet :"<<x<<"  Val:"<<val[nbsol]<<std::endl;
       nbsol++;
     }
   }

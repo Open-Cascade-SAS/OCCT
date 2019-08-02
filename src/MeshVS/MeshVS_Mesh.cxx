@@ -1063,11 +1063,11 @@ void MeshVS_Mesh::HilightSelected ( const Handle(PrsMgr_PresentationManager3d)& 
     Standard_Integer min, hour;
 
     gTimer.Show ( sec, min, hour, cpu );
-    cout << "HilightSelected : " << endl;
-    cout << aSelNodes.Extent() << " nodes " << endl;
-    cout << aSelElements.Extent() << " elements " << endl;
-    cout << "Time : " << sec << " sec" << endl;
-    cout << "CPU time : " << cpu << " sec" << endl << endl;
+    std::cout << "HilightSelected : " << std::endl;
+    std::cout << aSelNodes.Extent() << " nodes " << std::endl;
+    std::cout << aSelElements.Extent() << " elements " << std::endl;
+    std::cout << "Time : " << sec << " sec" << std::endl;
+    std::cout << "CPU time : " << cpu << " sec" << std::endl << std::endl;
     gTimer.Stop();
 #endif
 }

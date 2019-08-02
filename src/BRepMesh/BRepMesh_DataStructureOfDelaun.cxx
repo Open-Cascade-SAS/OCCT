@@ -472,14 +472,14 @@ void BRepMesh_DataStructureOfDelaun::Statistics(Standard_OStream& theStream) con
 {
   theStream << " Map of nodes : \n";
   myNodes->Statistics(theStream);
-  theStream << "\n Deleted nodes : " << myNodes->GetListOfDelNodes().Extent() << endl;
+  theStream << "\n Deleted nodes : " << myNodes->GetListOfDelNodes().Extent() << std::endl;
 
   theStream << "\n\n Map of Links : \n";
   myLinks.Statistics(theStream);
-  theStream << "\n Deleted links : " << myDelLinks.Extent() << endl;
+  theStream << "\n Deleted links : " << myDelLinks.Extent() << std::endl;
 
   theStream << "\n\n Map of elements : \n";
-  theStream << "\n Elements : " << myElements.Size() << endl;
+  theStream << "\n Elements : " << myElements.Size() << std::endl;
 }
 
 //=======================================================================

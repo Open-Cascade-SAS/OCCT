@@ -195,8 +195,8 @@ Standard_Real IntCurveSurface_Polygon::ApproxParamOnCurve(const Standard_Integer
   //ddout << "IntCurveSurface_Polygon::ApproxParamOnCurve" << endl;
   if(TheParamOnLine < 0.0 || TheParamOnLine >1.0) { 
 #ifdef OCCT_DEBUG
-    cout<<" ParamOnLine  =  "<<TheParamOnLine<<"  avec Index = "
-      <<TheIndex<<"  dans IntCurveSurface_Polygon::ApproxParamOnCurve"<<endl;
+    std::cout<<" ParamOnLine  =  "<<TheParamOnLine<<"  avec Index = "
+      <<TheIndex<<"  dans IntCurveSurface_Polygon::ApproxParamOnCurve"<<std::endl;
 #endif
     return(Binf+(TheParamOnLine*(Bsup-Binf))/(Standard_Real)(NbPntIn-1));
   }
@@ -205,7 +205,7 @@ Standard_Real IntCurveSurface_Polygon::ApproxParamOnCurve(const Standard_Integer
   Standard_Real    ParamOnLine = TheParamOnLine;
 #ifdef OCCT_DEBUG
   if (Index > NbPntIn) {
-    cout << "OutOfRange Polygon::ApproxParamOnCurve " <<endl;
+    std::cout << "OutOfRange Polygon::ApproxParamOnCurve " <<std::endl;
   }
 #endif
   if((Index == NbPntIn) && (ParamOnLine == 0.0)) { 
@@ -236,11 +236,11 @@ void IntCurveSurface_Polygon::Dump(void) const {
   char tamp[100];
   Compteur++;
   sprintf(tamp,"Poly%d",Compteur);
-  cout<<"  @@@@@@@@@@@ F i c h i e r   :   "<<tamp<<" @@@@@@@@@@"<<endl;
+  std::cout<<"  @@@@@@@@@@@ F i c h i e r   :   "<<tamp<<" @@@@@@@@@@"<<std::endl;
   FILE *fp;
   fp=fopen(tamp,"w");
   if(fp==NULL) {
-    cout<<"PolyGonGen::Erreur en Ouverture Fichier"<<tamp<<endl;
+    std::cout<<"PolyGonGen::Erreur en Ouverture Fichier"<<tamp<<std::endl;
     return;
   }
   fprintf(fp,"\n#Discretisation de : %f ---> %f \n",Binf,Bsup);

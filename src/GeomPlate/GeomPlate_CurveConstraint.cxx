@@ -142,14 +142,14 @@ Standard_Real GeomPlate_CurveConstraint :: Length() const
   if (my3dCurve.IsNull())
 {//   GCPnts_AbscissaPoint A(myFrontiere->Curve(),AP.Length(myFrontiere->Curve())/2,myFrontiere->FirstParameter());
   //  Standard_Real toto=A.Parameter();
-//cout<<toto<<endl;
+//std::cout<<toto<<std::endl;
 return AP.Length(myFrontiere->GetCurve()); 
     
 }
  else
 { //  GCPnts_AbscissaPoint A(my3dCurve->Curve(),AP.Length(my3dCurve->Curve())/2,my3dCurve->FirstParameter());
   //  Standard_Real toto=A.Parameter();
-//cout<<toto<<endl;
+//std::cout<<toto<<std::endl;
 
  return AP.Length(my3dCurve->GetCurve());
 }

@@ -2237,7 +2237,7 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       // Get isFilled
       Standard_Boolean isFilled;
       std::cout << "Enter filled status (0 or 1)\n";
-      cin >> isFilled;
+      std::cin >> isFilled;
 
       // Construction of the circle
       gp_Pnt A = BRep_Tool::Pnt (TopoDS::Vertex (aShapeA));
@@ -2268,13 +2268,13 @@ static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const
       do 
       {
         std::cout << " Enter the value of the radius:\n";
-        cin >> theRad;
+        std::cin >> theRad;
       } while (theRad <= 0);
       
       // Get filled status
       Standard_Boolean isFilled;
       std::cout << "Enter filled status (0 or 1)\n";
-      cin >> isFilled;
+      std::cin >> isFilled;
 
       // Recover the normal to the plane. tag
       TopoDS_Face myFace = TopoDS::Face(aShapeA);

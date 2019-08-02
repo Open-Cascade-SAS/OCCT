@@ -1081,9 +1081,9 @@ void CGeometryDoc::OnCreateSol()
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     CString filename = dlg.GetPathName();
 
-    filebuf fic;
-    istream in(&fic);  
-    if (!fic.open (filename, ios::in))
+    std::filebuf fic;
+    std::istream in(&fic);  
+    if (!fic.open (filename, std::ios::in))
       MessageBoxW (AfxGetApp()->m_pMainWnd->m_hWnd, L"Error : Unable to open file", L"CasCade Error", MB_ICONERROR);
 
     TColgp_SequenceOfXYZ seqOfXYZ;
@@ -1162,7 +1162,7 @@ void CGeometryDoc::OnSimplify()
 
   std::filebuf aFileBuf;
   std::istream aStream (&aFileBuf);
-  if (!aFileBuf.open (initfile, ios::in))
+  if (!aFileBuf.open (initfile, std::ios::in))
   {
     initfile += L" was not found. The sample can not be shown.";
     myCResultDialog.SetText (initfile);

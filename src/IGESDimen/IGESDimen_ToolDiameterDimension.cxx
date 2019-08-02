@@ -123,18 +123,18 @@ void  IGESDimen_ToolDiameterDimension::OwnDump
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_DiameterDimension" << endl;
+  S << "IGESDimen_DiameterDimension" << Message_EndLine;
   S << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "First  Leader Entity : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Second Leader Entity : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << endl;
+  S << Message_EndLine;
   S << "Center Point : ";
   IGESData_DumpXYL(S,level, ent->Center(), ent->Location());
-  S << endl;
+  S << Message_EndLine;
 }
 

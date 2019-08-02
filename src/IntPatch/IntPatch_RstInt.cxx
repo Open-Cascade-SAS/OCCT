@@ -480,7 +480,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
       PLast = myInfinite;
     //if (Precision::IsNegativeInfinite(PFirst) || 
 	   // Precision::IsPositiveInfinite(PLast)) { 
-    //  //-- cout<<" IntPatch_RstInt::PutVertexOnLine  ---> Restrictions Infinies :"<<endl;
+    //  //-- std::cout<<" IntPatch_RstInt::PutVertexOnLine  ---> Restrictions Infinies :"<<std::endl;
     //  return;
     //}
 
@@ -596,7 +596,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 	
 	static int debug_polygon2d =0;
 	if(debug_polygon2d) { 
-	  cout<<" ***** Numero Restriction : "<<NumeroEdge<<" *****"<<endl;
+	  std::cout<<" ***** Numero Restriction : "<<NumeroEdge<<" *****"<<std::endl;
 	  PLin.Dump();
 	  Brise.Dump();
 	}
@@ -891,7 +891,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 		    }
 		  }
 		  else {
-		    //-- cout << "pb dans RstInt  Type 1 " << endl;
+		    //-- std::cout << "pb dans RstInt  Type 1 " << std::endl;
 		  }
 		}
 		else {
@@ -974,7 +974,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 
 		  }
 		  else {
-		    //-- cout << "pb dans RstInt  Type 2 " << endl;
+		    //-- std::cout << "pb dans RstInt  Type 2 " << std::endl;
 		  }
 		}
 	      }
@@ -1020,14 +1020,14 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 	}
 	else if(Surf1->IsUClosed()) { 
 	  pu1=Surf1->LastUParameter() - Surf1->FirstUParameter();
-	  //cout<<" UClosed1 "<<pu1<<endl;
+	  //std::cout<<" UClosed1 "<<pu1<<std::endl;
 	}
 	if(   Surf1->IsVPeriodic()) {
 	  pv1=Surf1->VPeriod();
 	}
 	else if(Surf1->IsVClosed()) { 
 	  pv1=Surf1->LastVParameter() - Surf1->FirstVParameter();
-	  //cout<<" VClosed1 "<<pv1<<endl;
+	  //std::cout<<" VClosed1 "<<pv1<<std::endl;
 	}
 
 	break;
@@ -1051,7 +1051,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 	}
 	else if(Surf2->IsUClosed()) { 
 	  pu2=Surf2->LastUParameter() - Surf2->FirstUParameter();
-	  //cout<<" UClosed2 "<<pu2<<endl;
+	  //std::cout<<" UClosed2 "<<pu2<<std::endl;
 	}
 
 	if(   Surf2->IsVPeriodic())  {
@@ -1059,7 +1059,7 @@ void IntPatch_RstInt::PutVertexOnLine (const Handle(IntPatch_Line)& L,
 	}
 	else if(Surf2->IsVClosed()) { 
 	  pv2=Surf2->LastVParameter() - Surf2->FirstVParameter();
-	  //cout<<" VClosed2 "<<pv2<<endl;
+	  //std::cout<<" VClosed2 "<<pv2<<std::endl;
 	}
 
 	break;

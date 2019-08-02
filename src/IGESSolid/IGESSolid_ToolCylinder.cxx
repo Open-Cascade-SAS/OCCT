@@ -165,13 +165,13 @@ void  IGESSolid_ToolCylinder::OwnDump
 //  gp_Pnt TCenter = ent->TransformedFaceCenter();
 //  gp_Dir TAxis   = ent->TransformedAxis();
 
-  S << "IGESSolid_Cylinder" << endl;
+  S << "IGESSolid_Cylinder" << Message_EndLine;
 
   S << "Height : " << ent->Height() << "  ";
-  S << "Radius : " << ent->Radius() << endl;
+  S << "Radius : " << ent->Radius() << Message_EndLine;
   S << "Center : ";
   IGESData_DumpXYZL(S,level, ent->FaceCenter(), ent->Location());
-  S << endl << "Axis : ";
+  S << Message_EndLine << "Axis : ";
   IGESData_DumpXYZL(S,level, ent->Axis(), ent->VectorLocation());
-  S << endl;
+  S << Message_EndLine;
 }

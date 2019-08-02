@@ -596,8 +596,8 @@ void GeomConstraints_Presentation::sample3()
   aFileName += "\\points.dat";
 
   // open file
-  ifstream aFile;
-  aFile.open(aFileName.ToCString(), ios::failbit);
+  std::ifstream aFile;
+  aFile.open(aFileName.ToCString(), std::ios::failbit);
   if(!aFile)
   {
     aFileName += " was not found.  The sample can not be shown.";

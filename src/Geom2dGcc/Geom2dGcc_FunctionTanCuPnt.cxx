@@ -93,7 +93,7 @@ Values (const Standard_Real  X     ,
             (Vec1.Dot(Vec2)/(NormeD1*NormeD1)+
             Vec1.Dot(TheDirection)/(NormeDir*NormeDir));
 
-          //  cout  << "U = "<< X << " F ="<< Fval <<" DF ="<< Deriv<<endl;
+          //  std::cout  << "U = "<< X << " F ="<< Fval <<" DF ="<< Deriv<<std::endl;
 
           return Standard_True;
 }

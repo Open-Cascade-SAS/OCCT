@@ -300,8 +300,8 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
   if (myDebug) {
     gp_Pnt P_Path;
     P_Path = adpPath->Value(theParam);
-    cout << "Point on Path" << P_Path.X() << ", " 
-      <<  P_Path.Y() << ", " << P_Path.Z() << ", " << endl; 
+    std::cout << "Point on Path" << P_Path.X() << ", " 
+      <<  P_Path.Y() << ", " << P_Path.Z() << ", " << std::endl; 
   }
 #endif
   

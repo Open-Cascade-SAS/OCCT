@@ -158,7 +158,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
   if (theEdge.Orientation() == TopAbs_INTERNAL  ||
       theEdge.Orientation() == TopAbs_EXTERNAL ) {
 #ifdef OCCT_DEBUG
-    cout <<"Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Edge is internal or external; dropped" << endl;
+    std::cout <<"Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Edge is internal or external; dropped" << std::endl;
 #endif
     return Standard_False;
   }
@@ -272,7 +272,7 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 //				 (anEdge.Orientation() == TopAbs_FORWARD));
       }
 #ifdef OCCT_DEBUG
-      else cout << "Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Null-length curve not mapped" << endl;
+      else std::cout << "Warning: TopoDSToStep_WireframeBuilder::GetTrimmedCurveFromEdge: Null-length curve not mapped" << std::endl;
 #endif
     }
     else {
@@ -366,8 +366,8 @@ Standard_Boolean TopoDSToStep_WireframeBuilder::
 	if (GetTrimmedCurveFromFace(curFace, aMap, aCurveList)) result = Standard_True;
 #ifdef OCCT_DEBUG
 	if(!result) {
-	  cout << "ERROR extracting trimmedCurve from Face" << endl;
-	  //BRepTools::Dump(curFace,cout);  cout<<endl;
+	  std::cout << "ERROR extracting trimmedCurve from Face" << std::endl;
+	  //BRepTools::Dump(curFace,std::cout);  std::cout<<std::endl;
 	}
 #endif
       }

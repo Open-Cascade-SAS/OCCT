@@ -107,19 +107,19 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   
 #ifdef OCCT_DEBUG
   if (TKPB) {
-    cout<<""<<endl;
+    std::cout<<""<<std::endl;
     for (; itm1.More();itm1.Next()) {
       const TopoDS_Shape& f = itm1.Key();
       Standard_Integer fi = myDataStructure->Shape(f);
-      cout<<"face "<<fi<<" : ";
+      std::cout<<"face "<<fi<<" : ";
       const TopTools_ListOfShape& l = itm1.Value();
       TopTools_ListIteratorOfListOfShape it(l);
       for(; it.More(); it.Next()) {
 	const TopoDS_Shape& ff = it.Value();      
 	Standard_Integer ffi = myDataStructure->Shape(ff);
-	cout<<ffi<<" ";
+	std::cout<<ffi<<" ";
       }
-      cout<<endl;
+      std::cout<<std::endl;
     }
     itm1.Initialize(myKPMAPf1f2);
   }
@@ -152,7 +152,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   if(tSPS || TKPB) { 
 //    Standard_Integer iOU = myDataStructure->Shape(*pfOU);
 //    Standard_Integer iIN = myDataStructure->Shape(*pfIN);
-    GdumpSHA(*pfOU, (char *) "MergeKPartiskole pfOU ");cout<<endl;
+    GdumpSHA(*pfOU, (char *) "MergeKPartiskole pfOU ");std::cout<<std::endl;
     GdumpSAMDOM(LFIN, (char *) "LFIN : ");
     debiskole();
   }
@@ -211,8 +211,8 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   ChangeMerged(she2,myState2);
   
 #ifdef OCCT_DEBUG
-  if (TKPB) { cout<<"stsol1 ";TopAbs::Print(stsol1,cout); cout<<" "; }
-  if (TKPB) { cout<<"stsol2 ";TopAbs::Print(stsol2,cout); cout<<endl; }
+  if (TKPB) { std::cout<<"stsol1 ";TopAbs::Print(stsol1,std::cout); std::cout<<" "; }
+  if (TKPB) { std::cout<<"stsol2 ";TopAbs::Print(stsol2,std::cout); std::cout<<std::endl; }
   debiskole();
 #endif
   
@@ -353,7 +353,7 @@ void TopOpeBRepBuild_Builder::MergeKPartiskole()
   
   else {
 #ifdef OCCT_DEBUG
-    cout<<"MergeKPartiskole : ires = "<<ires<<endl;
+    std::cout<<"MergeKPartiskole : ires = "<<ires<<std::endl;
 #endif
   }
   
@@ -472,7 +472,7 @@ Standard_Integer TopOpeBRepBuild_Builder::KPiskole()
 #ifdef OCCT_DEBUG
     Standard_Integer iF1; Standard_Boolean tSPS1 = GtraceSPS(f1,iF1);
     if(tSPS1) { 
-      GdumpSHA(f1, (char *) "KPiskole ");cout<<endl;
+      GdumpSHA(f1, (char *) "KPiskole ");std::cout<<std::endl;
       GdumpSAMDOM(lf2, (char *) "lf2 : ");
     }
 #endif
@@ -590,7 +590,7 @@ void TopOpeBRepBuild_Builder::KPiskoleanalyse(const TopAbs_State Stfac1, const T
   
 #ifdef OCCT_DEBUG
   Standard_Boolean TKPB = TopOpeBRepBuild_GettraceKPB();
-  if (TKPB) cout<<"ires = "<<ires<<" icla1 "<<icla1<<" icla2 "<<icla2<<endl;
+  if (TKPB) std::cout<<"ires = "<<ires<<" icla1 "<<icla1<<" icla2 "<<icla2<<std::endl;
 #endif
 } // TopOpeBRepBuild_Builder::KPiskoleanalyse
 
@@ -612,7 +612,7 @@ Standard_EXPORT void FUNKP_KPmakefaces(const TopOpeBRepBuild_Builder& BU,
   
 #ifdef OCCT_DEBUG
   Standard_Integer iF1; Standard_Boolean tSPS = BU.GtraceSPS(Fac1,iF1);
-  if(tSPS) { BU.GdumpSHA(Fac1, (char *) "KPmakeFace ");cout<<endl; }
+  if(tSPS) { BU.GdumpSHA(Fac1, (char *) "KPmakeFace ");std::cout<<std::endl; }
 #endif
   
   if (Stfac1 == TopAbs_OUT) {
@@ -699,7 +699,7 @@ TopoDS_Shape TopOpeBRepBuild_Builder::KPmakeface(const TopoDS_Shape& Fac1,
   Standard_Boolean tSPS = GtraceSPS(Fac1,iF1);
   if(tSPS) {
     GdumpSHA(Fac1, (char *) "KPmakeFace ");
-    cout<<endl;
+    std::cout<<std::endl;
   }
 #endif
   
@@ -826,12 +826,12 @@ Standard_Boolean TopOpeBRepBuild_Builder::KPiskolesh(const TopoDS_Shape& Sarg,
 #ifdef OCCT_DEBUG
     Standard_Integer isol = myDataStructure->Shape(Sarg);
     Standard_Integer ifac = myDataStructure->Shape(fac); 
-    if(TKPB){cout<<"isol "<<isol<<endl;}
-    if(TKPB){cout<<"nfhsd  "<<nfhsd<<endl;}
-    if(TKPB){cout<<"ifac "<<ifac<<endl;}
-    if(TKPB){cout<<"isplan "<<isplan<<endl;}
-    if(TKPB){cout<<"nehg "<<nehg<<endl;}
-    if(TKPB){cout<<endl;}
+    if(TKPB){std::cout<<"isol "<<isol<<std::endl;}
+    if(TKPB){std::cout<<"nfhsd  "<<nfhsd<<std::endl;}
+    if(TKPB){std::cout<<"ifac "<<ifac<<std::endl;}
+    if(TKPB){std::cout<<"isplan "<<isplan<<std::endl;}
+    if(TKPB){std::cout<<"nehg "<<nehg<<std::endl;}
+    if(TKPB){std::cout<<std::endl;}
 #endif
   }
   

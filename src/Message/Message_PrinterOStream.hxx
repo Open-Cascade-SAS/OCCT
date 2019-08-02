@@ -23,8 +23,8 @@
 class Message_PrinterOStream;
 DEFINE_STANDARD_HANDLE(Message_PrinterOStream, Message_Printer)
 
-//! Implementation of a message printer associated with an ostream
-//! The ostream may be either externally defined one (e.g. cout),
+//! Implementation of a message printer associated with an std::ostream
+//! The std::ostream may be either externally defined one (e.g. std::cout),
 //! or file stream maintained internally (depending on constructor).
 class Message_PrinterOStream : public Message_Printer
 {

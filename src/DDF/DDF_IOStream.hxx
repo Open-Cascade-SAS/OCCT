@@ -46,11 +46,11 @@ public:
  // 
 DDF_IOStream();
   Storage_Error Open(const TCollection_AsciiString& aName,const Storage_OpenMode aMode) ;
-  Storage_Error Open(istream* anIStream) ;
-  Storage_Error Open(ostream* anOStream) ;
+  Storage_Error Open(std::istream* anIStream) ;
+  Storage_Error Open(std::ostream* anOStream) ;
   Standard_Boolean IsEnd() ;
   Storage_Position Tell() { return -1; }
-static  Storage_Error IsGoodFileType(istream* anIStream) ;
+static  Storage_Error IsGoodFileType(std::istream* anIStream) ;
   Storage_Error BeginWriteInfoSection() ;
   void WriteInfo(const Standard_Integer nbObj,const TCollection_AsciiString& dbVersion,const TCollection_AsciiString& date,const TCollection_AsciiString& schemaName,const TCollection_AsciiString& schemaVersion,const TCollection_ExtendedString& appName,const TCollection_AsciiString& appVersion,const TCollection_ExtendedString& objectType,const TColStd_SequenceOfAsciiString& userInfo) ;
   Storage_Error EndWriteInfoSection() ;
@@ -217,8 +217,8 @@ static Standard_CString MagicNumber() ;
  // Fields PRIVATE
  //
 //FSD_FStream myStream;
-istream* myIStream;
-ostream* myOStream;
+std::istream* myIStream;
+std::ostream* myOStream;
 
 
 };

@@ -80,14 +80,14 @@ Handle(Units_UnitsDictionary) Units::DictionaryOfUnits(const Standard_Boolean am
 {
   if(unitsdictionary.IsNull())
     {
-//      cout<<"Allocation du dictionnaire"<<endl;
+//      std::cout<<"Allocation du dictionnaire"<<std::endl;
       unitsdictionary = new Units_UnitsDictionary();
-//      cout<<"Creation du dictionnaire"<<endl;
+//      std::cout<<"Creation du dictionnaire"<<std::endl;
       unitsdictionary->Creates();
     }
   else if(amode)
     {
-//      cout<<"Creation du dictionnaire"<<endl;
+//      std::cout<<"Creation du dictionnaire"<<std::endl;
       unitsdictionary->Creates();
     }
   return unitsdictionary;
@@ -114,7 +114,7 @@ Handle(Units_Quantity) Units::Quantity(const Standard_CString aquantity)
     }
 
 #ifdef OCCT_DEBUG
-  cout<<"Warning: BAD Quantity = Units::Quantity(quantity('" << aquantity << "'))" << endl;
+  std::cout<<"Warning: BAD Quantity = Units::Quantity(quantity('" << aquantity << "'))" << std::endl;
 #endif
   return nullquantity;
 }
@@ -156,7 +156,7 @@ Standard_CString Units::FirstQuantity(const Standard_CString aunit)
   }
 
 #ifdef OCCT_DEBUG
-  cout<<"Warning: BAD Quantity = Units::Quantity(unit('" << symbol << "'))" << endl;
+  std::cout<<"Warning: BAD Quantity = Units::Quantity(unit('" << symbol << "'))" << std::endl;
 #endif
   return NULL;
 }
@@ -170,9 +170,9 @@ Standard_CString Units::FirstQuantity(const Standard_CString aunit)
 Handle(Units_Lexicon) Units::LexiconUnits(const Standard_Boolean amode)
 {
   if(lexiconunits.IsNull()) {
-//      cout<<"Allocation du lexique d'unites"<<endl;
+//      std::cout<<"Allocation du lexique d'unites"<<std::endl;
     lexiconunits = new Units_UnitsLexicon();
-//      cout<<"Creation du lexique d'unites"<<endl;
+//      std::cout<<"Creation du lexique d'unites"<<std::endl;
     lexiconunits->Creates(amode);
   }
   return lexiconunits;
@@ -187,9 +187,9 @@ Handle(Units_Lexicon) Units::LexiconUnits(const Standard_Boolean amode)
 Handle(Units_Lexicon) Units::LexiconFormula()
 {
   if(lexiconformula.IsNull()) {
-//      cout<<"Allocation du lexique d'expression"<<endl;
+//      std::cout<<"Allocation du lexique d'expression"<<std::endl;
     lexiconformula = new Units_Lexicon();
-//      cout<<"Creation du lexique d'expression"<<endl;
+//      std::cout<<"Creation du lexique d'expression"<<std::endl;
     lexiconformula->Creates();
   }
   return lexiconformula;
@@ -251,7 +251,7 @@ Standard_Real Units::ToSI(const Standard_Real aData,
     Units_UnitSentence unitsentence(aUnit);
     if(!unitsentence.IsDone()) {
 #ifdef OCCT_DEBUG
-      cout<<"can not convert - incorrect unit => return 0.0"<<endl;
+      std::cout<<"can not convert - incorrect unit => return 0.0"<<std::endl;
 #endif
       return 0.0;
     }
@@ -296,7 +296,7 @@ Standard_Real Units::FromSI(const Standard_Real aData,
     Units_UnitSentence unitsentence(aUnit);
     if(!unitsentence.IsDone()) {
 #ifdef OCCT_DEBUG
-      cout<<"Warning: can not convert - incorrect unit => return 0.0"<<endl;
+      std::cout<<"Warning: can not convert - incorrect unit => return 0.0"<<std::endl;
 #endif
       return 0.0;
     }

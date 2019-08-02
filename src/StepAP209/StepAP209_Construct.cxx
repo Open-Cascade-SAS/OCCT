@@ -809,14 +809,14 @@ Standard_Boolean StepAP209_Construct::CreateFeaStructure (const Handle(StepBasic
 {
   if(Prod.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<"Prod.IsNull()"<<endl;
+    std::cout<<"Prod.IsNull()"<<std::endl;
 #endif
     return Standard_False;
   }
   Handle(StepShape_ShapeRepresentation) AnaSR = IdealShape(Prod);
   if(AnaSR.IsNull()) {
 #ifdef OCCT_DEBUG
-    cout<<"AnaSR.IsNull()"<<endl;
+    std::cout<<"AnaSR.IsNull()"<<std::endl;
 #endif
     return Standard_False;
   }
