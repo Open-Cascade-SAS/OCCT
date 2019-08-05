@@ -28,6 +28,7 @@
 class AIS_AnimationCamera;
 class AIS_ViewCubeOwner;
 class Graphic3d_ArrayOfTriangles;
+class V3d_View;
 
 //! Interactive object for displaying the view manipulation cube.
 //!
@@ -466,6 +467,12 @@ protected:
   //! @return FALSE if animation has been finished
   Standard_EXPORT Standard_Boolean updateAnimation();
 
+  //! Fit selected/all into view.
+  //! @param theView [in] view definition to retrieve scene bounding box
+  //! @param theCamera [in,out] camera definition
+  Standard_EXPORT virtual void viewFitAll (const Handle(V3d_View)& theView,
+                                           const Handle(Graphic3d_Camera)& theCamera);
+
 protected: //! @name protected virtual API
 
   //! Method that is called after one step of transformation.
@@ -536,26 +543,60 @@ public: //! @name Presentation computation
 protected: //! @name Auxiliary classes to fill presentation with proper primitives
 
   //! Create triangulation for a box part - for presentation and selection purposes.
-  Standard_EXPORT virtual Handle(Graphic3d_ArrayOfTriangles) createBoxPartTriangles (V3d_TypeOfOrientation theDir) const;
+  //! @param theTris    [in,out] triangulation to fill, or NULL to return size
+  //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
+  //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
+  //! @param theDir     [in] part to define
+  Standard_EXPORT virtual void createBoxPartTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                                       Standard_Integer& theNbNodes,
+                                                       Standard_Integer& theNbTris,
+                                                       V3d_TypeOfOrientation theDir) const;
 
   //! Create triangulation for a box side.
-  Standard_EXPORT virtual Handle(Graphic3d_ArrayOfTriangles) createBoxSideTriangles (V3d_TypeOfOrientation theDir) const;
+  //! @param theTris    [in,out] triangulation to fill, or NULL to return size
+  //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
+  //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
+  //! @param theDir     [in] part to define
+  Standard_EXPORT virtual void createBoxSideTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                                       Standard_Integer& theNbNodes,
+                                                       Standard_Integer& theNbTris,
+                                                       V3d_TypeOfOrientation theDir) const;
 
   //! Create triangulation for a box edge.
-  Standard_EXPORT virtual Handle(Graphic3d_ArrayOfTriangles) createBoxEdgeTriangles (V3d_TypeOfOrientation theDir) const;
+  //! @param theTris    [in,out] triangulation to fill, or NULL to return size
+  //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
+  //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
+  //! @param theDir     [in] part to define
+  Standard_EXPORT virtual void createBoxEdgeTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                                       Standard_Integer& theNbNodes,
+                                                       Standard_Integer& theNbTris,
+                                                       V3d_TypeOfOrientation theDir) const;
 
   //! Create triangulation for a box corner (vertex).
-  Standard_EXPORT virtual Handle(Graphic3d_ArrayOfTriangles) createBoxCornerTriangles (V3d_TypeOfOrientation theDir) const;
+  //! @param theTris    [in,out] triangulation to fill, or NULL to return size
+  //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
+  //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
+  //! @param theDir     [in] part to define
+  Standard_EXPORT virtual void createBoxCornerTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                                         Standard_Integer& theNbNodes,
+                                                         Standard_Integer& theNbTris,
+                                                         V3d_TypeOfOrientation theDir) const;
 
 protected:
 
   //! Create triangulation for a rectangle with round corners.
-  //! @param theSize   rectangle dimensions
-  //! @param theRadius radius at corners
-  //! @param theTrsf   transformation
-  Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) createRoundRectangleTriangles (const gp_XY& theSize,
-                                                                                           Standard_Real theRadius,
-                                                                                           const gp_Trsf& theTrsf);
+  //! @param theTris    [in,out] triangulation to fill, or NULL to return size
+  //! @param theNbNodes [in,out] should be incremented by a number of nodes defining this triangulation
+  //! @param theNbTris  [in,out] should be incremented by a number of triangles defining this triangulation
+  //! @param theSize    [in] rectangle dimensions
+  //! @param theRadius  [in] radius at corners
+  //! @param theTrsf    [in] transformation
+  Standard_EXPORT static void createRoundRectangleTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                                             Standard_Integer& theNbNodes,
+                                                             Standard_Integer& theNbTris,
+                                                             const gp_XY& theSize,
+                                                             Standard_Real theRadius,
+                                                             const gp_Trsf& theTrsf);
 
 protected:
 

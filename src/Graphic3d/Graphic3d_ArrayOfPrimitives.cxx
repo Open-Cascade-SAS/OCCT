@@ -260,6 +260,79 @@ Standard_Integer Graphic3d_ArrayOfPrimitives::AddEdge (const Standard_Integer th
 }
 
 // =======================================================================
+// function : AddTriangleStripEdges
+// purpose  :
+// =======================================================================
+void Graphic3d_ArrayOfPrimitives::AddTriangleStripEdges (Standard_Integer theVertexLower,
+                                                         Standard_Integer theVertexUpper)
+{
+  if (myType != Graphic3d_TOPA_TRIANGLES)
+  {
+    throw Standard_TypeMismatch ("Not array of triangles");
+  }
+
+  Standard_Boolean isOdd = Standard_True;
+  for (Standard_Integer aNodeIter = theVertexLower + 2; aNodeIter <= theVertexUpper; ++aNodeIter)
+  {
+    if (isOdd)
+    {
+      AddTriangleEdges (aNodeIter - 2, aNodeIter - 1, aNodeIter);
+    }
+    else
+    {
+      AddTriangleEdges (aNodeIter - 1, aNodeIter - 2, aNodeIter);
+    }
+    isOdd = !isOdd;
+  }
+}
+
+// =======================================================================
+// function : AddTriangleFanEdges
+// purpose  :
+// =======================================================================
+void Graphic3d_ArrayOfPrimitives::AddTriangleFanEdges (Standard_Integer theVertexLower,
+                                                       Standard_Integer theVertexUpper,
+                                                       Standard_Boolean theToClose)
+{
+  if (myType != Graphic3d_TOPA_TRIANGLES)
+  {
+    throw Standard_TypeMismatch ("Not array of triangles");
+  }
+
+  for (Standard_Integer aNodeIter = theVertexLower + 1; aNodeIter <= theVertexUpper; ++aNodeIter)
+  {
+    AddTriangleEdges (theVertexLower, aNodeIter - 1, aNodeIter);
+  }
+  if (theToClose)
+  {
+    AddTriangleEdges (theVertexLower, theVertexUpper, theVertexLower + 1);
+  }
+}
+
+// =======================================================================
+// function : AddPolylineEdges
+// purpose  :
+// =======================================================================
+void Graphic3d_ArrayOfPrimitives::AddPolylineEdges (Standard_Integer theVertexLower,
+                                                    Standard_Integer theVertexUpper,
+                                                    Standard_Boolean theToClose)
+{
+  if (myType != Graphic3d_TOPA_SEGMENTS)
+  {
+    throw Standard_TypeMismatch ("Not array of segments");
+  }
+
+  for (Standard_Integer aNodeIter = theVertexLower; aNodeIter < theVertexUpper; ++aNodeIter)
+  {
+    AddSegmentEdges (aNodeIter, aNodeIter + 1);
+  }
+  if (theToClose)
+  {
+    AddSegmentEdges (theVertexUpper, theVertexLower);
+  }
+}
+
+// =======================================================================
 // function : StringType
 // purpose  :
 // =======================================================================

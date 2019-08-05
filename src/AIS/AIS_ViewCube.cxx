@@ -346,98 +346,107 @@ void AIS_ViewCube::SetRoundRadius (const Standard_Real theValue)
 //function : createRoundRectangleTriangles
 //purpose  :
 //=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createRoundRectangleTriangles (const gp_XY& theSize,
-                                                                                Standard_Real theRadius,
-                                                                                const gp_Trsf& theTrsf)
+void AIS_ViewCube::createRoundRectangleTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                                  Standard_Integer& theNbNodes,
+                                                  Standard_Integer& theNbTris,
+                                                  const gp_XY& theSize,
+                                                  Standard_Real theRadius,
+                                                  const gp_Trsf& theTrsf)
 {
   const Standard_Real aRadius = Min (theRadius, Min (theSize.X(), theSize.Y()) * 0.5);
   const gp_XY  aHSize (theSize.X() * 0.5 - aRadius, theSize.Y() * 0.5 - aRadius);
   const gp_Dir aNorm = gp::DZ().Transformed (theTrsf);
-  Handle(Graphic3d_ArrayOfTriangles) aTris;
+  const Standard_Integer aVertFirst = !theTris.IsNull() ? theTris->VertexNumber() : 0;
   if (aRadius > 0.0)
   {
     const Standard_Integer aNbNodes = (THE_NB_ROUND_SPLITS + 1) * 4 + 1;
-    aTris = new Graphic3d_ArrayOfTriangles (aNbNodes, aNbNodes * 3, Graphic3d_ArrayFlags_VertexNormal);
+    theNbNodes += aNbNodes;
+    theNbTris  += aNbNodes;
+    if (theTris.IsNull())
+    {
+      return;
+    }
 
-    aTris->AddVertex (gp_Pnt (0.0, 0.0, 0.0).Transformed (theTrsf));
+    theTris->AddVertex (gp_Pnt (0.0, 0.0, 0.0).Transformed (theTrsf));
     for (Standard_Integer aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
       const Standard_Real anAngle = NCollection_Lerp<Standard_Real>::Interpolate (M_PI * 0.5, 0.0, Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      aTris->AddVertex (gp_Pnt (aHSize.X() + aRadius * Cos (anAngle), aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
+      theTris->AddVertex (gp_Pnt (aHSize.X() + aRadius * Cos (anAngle), aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
     }
     for (Standard_Integer aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
       const Standard_Real anAngle = NCollection_Lerp<Standard_Real>::Interpolate (0.0, -M_PI * 0.5, Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      aTris->AddVertex (gp_Pnt (aHSize.X() + aRadius * Cos (anAngle), -aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
+      theTris->AddVertex (gp_Pnt (aHSize.X() + aRadius * Cos (anAngle), -aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
     }
     for (Standard_Integer aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
       const Standard_Real anAngle = NCollection_Lerp<Standard_Real>::Interpolate (-M_PI * 0.5, -M_PI, Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      aTris->AddVertex (gp_Pnt (-aHSize.X() + aRadius * Cos (anAngle), -aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
+      theTris->AddVertex (gp_Pnt (-aHSize.X() + aRadius * Cos (anAngle), -aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
     }
     for (Standard_Integer aNodeIter = 0; aNodeIter <= THE_NB_ROUND_SPLITS; ++aNodeIter)
     {
       const Standard_Real anAngle = NCollection_Lerp<Standard_Real>::Interpolate (-M_PI, -M_PI * 1.5, Standard_Real(aNodeIter) / Standard_Real(THE_NB_ROUND_SPLITS));
-      aTris->AddVertex (gp_Pnt (-aHSize.X() + aRadius * Cos (anAngle), aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
+      theTris->AddVertex (gp_Pnt (-aHSize.X() + aRadius * Cos (anAngle), aHSize.Y() + aRadius * Sin (anAngle), 0.0).Transformed (theTrsf));
     }
 
     // split triangle fan
-    for (Standard_Integer aNodeIter = 2; aNodeIter <= aTris->VertexNumber(); ++aNodeIter)
-    {
-      aTris->AddEdge (1);
-      aTris->AddEdge (aNodeIter - 1);
-      aTris->AddEdge (aNodeIter);
-    }
-    aTris->AddEdge (1);
-    aTris->AddEdge (aTris->VertexNumber());
-    aTris->AddEdge (2);
+    theTris->AddTriangleFanEdges (aVertFirst + 1, theTris->VertexNumber(), true);
   }
   else
   {
-    aTris = new Graphic3d_ArrayOfTriangles (4, 6, Graphic3d_ArrayFlags_VertexNormal);
-    aTris->AddVertex (gp_Pnt (-aHSize.X(), -aHSize.Y(), 0.0).Transformed (theTrsf));
-    aTris->AddVertex (gp_Pnt (-aHSize.X(),  aHSize.Y(), 0.0).Transformed (theTrsf));
-    aTris->AddVertex (gp_Pnt ( aHSize.X(),  aHSize.Y(), 0.0).Transformed (theTrsf));
-    aTris->AddVertex (gp_Pnt ( aHSize.X(), -aHSize.Y(), 0.0).Transformed (theTrsf));
-    aTris->AddEdges (3, 1, 2);
-    aTris->AddEdges (1, 3, 4);
+    theNbNodes += 4;
+    theNbTris  += 2;
+    if (theTris.IsNull())
+    {
+      return;
+    }
+
+    theTris->AddVertex (gp_Pnt (-aHSize.X(), -aHSize.Y(), 0.0).Transformed (theTrsf));
+    theTris->AddVertex (gp_Pnt (-aHSize.X(),  aHSize.Y(), 0.0).Transformed (theTrsf));
+    theTris->AddVertex (gp_Pnt ( aHSize.X(),  aHSize.Y(), 0.0).Transformed (theTrsf));
+    theTris->AddVertex (gp_Pnt ( aHSize.X(), -aHSize.Y(), 0.0).Transformed (theTrsf));
+    theTris->AddQuadTriangleEdges (aVertFirst + 1, aVertFirst + 2, aVertFirst + 3, aVertFirst + 4);
   }
 
-  for (Standard_Integer aVertIter = 1; aVertIter <= aTris->VertexNumber(); ++aVertIter)
+  for (Standard_Integer aVertIter = aVertFirst + 1; aVertIter <= theTris->VertexNumber(); ++aVertIter)
   {
-    aTris->SetVertexNormal (aVertIter, -aNorm);
+    theTris->SetVertexNormal (aVertIter, -aNorm);
   }
-  return aTris;
 }
 
 //=======================================================================
 //function : createBoxPartTriangles
 //purpose  :
 //=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createBoxPartTriangles (V3d_TypeOfOrientation theDir) const
+void AIS_ViewCube::createBoxPartTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                           Standard_Integer& theNbNodes,
+                                           Standard_Integer& theNbTris,
+                                           V3d_TypeOfOrientation theDir) const
 {
   if (IsBoxSide (theDir))
   {
-    return createBoxSideTriangles (theDir);
+    createBoxSideTriangles (theTris, theNbNodes, theNbTris, theDir);
   }
   else if (IsBoxEdge (theDir)
         && myToDisplayEdges)
   {
-    return createBoxEdgeTriangles (theDir);
+    createBoxEdgeTriangles (theTris, theNbNodes, theNbTris, theDir);
   }
   else if (IsBoxCorner (theDir)
         && myToDisplayVertices)
   {
-    return createBoxCornerTriangles (theDir);
+    createBoxCornerTriangles (theTris, theNbNodes, theNbTris, theDir);
   }
-  return Handle(Graphic3d_ArrayOfTriangles)();
 }
 
 //=======================================================================
 //function : createBoxSideTriangles
 //purpose  :
 //=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createBoxSideTriangles (V3d_TypeOfOrientation theDirection) const
+void AIS_ViewCube::createBoxSideTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                           Standard_Integer& theNbNodes,
+                                           Standard_Integer& theNbTris,
+                                           V3d_TypeOfOrientation theDirection) const
 {
   const gp_Dir aDir = V3d::GetProjAxis (theDirection);
   const gp_Pnt aPos = aDir.XYZ() * (mySize * 0.5 + myBoxFacetExtension);
@@ -447,14 +456,18 @@ Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createBoxSideTriangles (V3d_Typ
   gp_Trsf aTrsf;
   aTrsf.SetTransformation (aSystem, gp_Ax3());
 
-  return createRoundRectangleTriangles (gp_XY (mySize, mySize), myRoundRadius * mySize, aTrsf);
+  createRoundRectangleTriangles (theTris, theNbNodes, theNbTris,
+                                 gp_XY (mySize, mySize), myRoundRadius * mySize, aTrsf);
 }
 
 //=======================================================================
 //function : createBoxEdgeTriangles
 //purpose  :
 //=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createBoxEdgeTriangles (V3d_TypeOfOrientation theDirection) const
+void AIS_ViewCube::createBoxEdgeTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                           Standard_Integer& theNbNodes,
+                                           Standard_Integer& theNbTris,
+                                           V3d_TypeOfOrientation theDirection) const
 {
   const Standard_Real aThickness = Max (myBoxFacetExtension * gp_XY (1.0, 1.0).Modulus() - myBoxEdgeGap, myBoxEdgeMinSize);
 
@@ -466,20 +479,32 @@ Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createBoxEdgeTriangles (V3d_Typ
   gp_Trsf aTrsf;
   aTrsf.SetTransformation (aSystem, gp_Ax3());
 
-  return createRoundRectangleTriangles (gp_XY (aThickness, mySize), myRoundRadius * mySize, aTrsf);
+  createRoundRectangleTriangles (theTris, theNbNodes, theNbTris,
+                                 gp_XY (aThickness, mySize), myRoundRadius * mySize, aTrsf);
 }
 
 //=======================================================================
 //function : createBoxCornerTriangles
 //purpose  :
 //=======================================================================
-Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createBoxCornerTriangles (V3d_TypeOfOrientation theDir) const
+void AIS_ViewCube::createBoxCornerTriangles (const Handle(Graphic3d_ArrayOfTriangles)& theTris,
+                                             Standard_Integer& theNbNodes,
+                                             Standard_Integer& theNbTris,
+                                             V3d_TypeOfOrientation theDir) const
 {
   const Standard_Real aHSize = mySize * 0.5;
   const gp_Dir aDir = V3d::GetProjAxis (theDir);
   const gp_XYZ aHSizeDir = aDir.XYZ() * (aHSize * gp_Vec (1.0, 1.0, 1.0).Magnitude());
+  const Standard_Integer aVertFirst = !theTris.IsNull() ? theTris->VertexNumber() : 0;
   if (myRoundRadius > 0.0)
   {
+    theNbNodes += THE_NB_DISK_SLICES + 1;
+    theNbTris  += THE_NB_DISK_SLICES + 1;
+    if (theTris.IsNull())
+    {
+      return;
+    }
+
     const Standard_Real anEdgeHWidth = myBoxFacetExtension * gp_XY (1.0, 1.0).Modulus() * 0.5;
     const Standard_Real aHeight = anEdgeHWidth * Sqrt (2.0 / 3.0); // tetrahedron height
     const gp_Pnt aPos = aDir.XYZ() * (aHSize * gp_Vec (1.0, 1.0, 1.0).Magnitude() + aHeight);
@@ -488,33 +513,46 @@ Handle(Graphic3d_ArrayOfTriangles) AIS_ViewCube::createBoxCornerTriangles (V3d_T
     gp_Trsf aTrsf;
     aTrsf.SetTransformation (aSystem, gp_Ax3());
     const Standard_Real aRadius = Max (myBoxFacetExtension * 0.5 / Cos (M_PI_4), myCornerMinSize);
-    return Prs3d_ToolDisk::Create (0.0, aRadius, THE_NB_DISK_SLICES, 1, aTrsf);
-  }
 
-  Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (3, 3, Graphic3d_ArrayFlags_VertexNormal);
-
-  aTris->AddVertex (aHSizeDir + myBoxFacetExtension * gp_Dir (aDir.X(), 0.0, 0.0).XYZ());
-  aTris->AddVertex (aHSizeDir + myBoxFacetExtension * gp_Dir (0.0, aDir.Y(), 0.0).XYZ());
-  aTris->AddVertex (aHSizeDir + myBoxFacetExtension * gp_Dir (0.0, 0.0, aDir.Z()).XYZ());
-
-  const gp_XYZ aNode1 = aTris->Vertice (1).XYZ();
-  const gp_XYZ aNode2 = aTris->Vertice (2).XYZ();
-  const gp_XYZ aNode3 = aTris->Vertice (3).XYZ();
-  const gp_XYZ aNormTri = ((aNode2 - aNode1).Crossed (aNode3 - aNode1));
-  if (aNormTri.Dot (aDir.XYZ()) < 0.0)
-  {
-    aTris->AddEdges (1, 3, 2);
+    theTris->AddVertex (gp_Pnt (0.0, 0.0, 0.0).Transformed (aTrsf));
+    for (Standard_Integer aNodeIter = 0; aNodeIter < THE_NB_DISK_SLICES; ++aNodeIter)
+    {
+      const Standard_Real anAngle = NCollection_Lerp<Standard_Real>::Interpolate (2.0 * M_PI, 0.0, Standard_Real(aNodeIter) / Standard_Real(THE_NB_DISK_SLICES));
+      theTris->AddVertex (gp_Pnt (aRadius * Cos (anAngle), aRadius * Sin (anAngle), 0.0).Transformed (aTrsf));
+    }
+    theTris->AddTriangleFanEdges (aVertFirst + 1, theTris->VertexNumber(), true);
   }
   else
   {
-    aTris->AddEdges (1, 2, 3);
+    theNbNodes += 3;
+    theNbTris  += 1;
+    if (theTris.IsNull())
+    {
+      return;
+    }
+
+    theTris->AddVertex (aHSizeDir + myBoxFacetExtension * gp_Dir (aDir.X(), 0.0, 0.0).XYZ());
+    theTris->AddVertex (aHSizeDir + myBoxFacetExtension * gp_Dir (0.0, aDir.Y(), 0.0).XYZ());
+    theTris->AddVertex (aHSizeDir + myBoxFacetExtension * gp_Dir (0.0, 0.0, aDir.Z()).XYZ());
+
+    const gp_XYZ aNode1 = theTris->Vertice (aVertFirst + 1).XYZ();
+    const gp_XYZ aNode2 = theTris->Vertice (aVertFirst + 2).XYZ();
+    const gp_XYZ aNode3 = theTris->Vertice (aVertFirst + 3).XYZ();
+    const gp_XYZ aNormTri = ((aNode2 - aNode1).Crossed (aNode3 - aNode1));
+    if (aNormTri.Dot (aDir.XYZ()) < 0.0)
+    {
+      theTris->AddTriangleEdges (aVertFirst + 1, aVertFirst + 3, aVertFirst + 2);
+    }
+    else
+    {
+      theTris->AddTriangleEdges (aVertFirst + 1, aVertFirst + 2, aVertFirst + 3);
+    }
   }
 
-  for (Standard_Integer aVertIter = 1; aVertIter <= aTris->VertexNumber(); ++aVertIter)
+  for (Standard_Integer aVertIter = aVertFirst + 1; aVertIter <= theTris->VertexNumber(); ++aVertIter)
   {
-    aTris->SetVertexNormal (aVertIter, aDir);
+    theTris->SetVertexNormal (aVertIter, aDir);
   }
-  return aTris;
 }
 
 //=======================================================================
@@ -590,73 +628,144 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
     }
   }
 
-  // Display box
+  // Display box sides
   {
-    Handle(Graphic3d_Group) aGroupSides = thePrs->NewGroup(), aGroupEdges = thePrs->NewGroup(), aGroupCorners = thePrs->NewGroup();
-    aGroupSides->SetClosed (true); // should be replaced by forced back-face culling aspect
-    aGroupSides->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+    Standard_Integer aNbNodes = 0, aNbTris = 0;
+    for (Standard_Integer aPartIter = V3d_Xpos; aPartIter <= Standard_Integer(V3d_Zneg); ++aPartIter)
+    {
+      createBoxPartTriangles (Handle(Graphic3d_ArrayOfTriangles)(), aNbNodes, aNbTris, (V3d_TypeOfOrientation )aPartIter);
+    }
+    if (aNbNodes > 0)
+    {
+      Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
+      Handle(Graphic3d_ArrayOfSegments) aSegs;
+      if (myDrawer->FaceBoundaryDraw())
+      {
+        aSegs = new Graphic3d_ArrayOfSegments (aNbNodes, aNbNodes * 2, Graphic3d_ArrayFlags_None);
+      }
+      aNbNodes = aNbTris = 0;
+      for (Standard_Integer aPartIter = V3d_Xpos; aPartIter <= Standard_Integer(V3d_Zneg); ++aPartIter)
+      {
+        Standard_Integer aTriNodesFrom = aTris->VertexNumber();
+        const Standard_Integer aTriFrom = aNbTris;
+        createBoxPartTriangles (aTris, aNbNodes, aNbTris, (V3d_TypeOfOrientation )aPartIter);
+        if (aSegs.IsNull())
+        {
+          continue;
+        }
 
-    aGroupEdges->SetClosed (true);
-    aGroupEdges->SetGroupPrimitivesAspect (myBoxEdgeAspect->Aspect());
+        const Standard_Integer aFirstNode = aSegs->VertexNumber();
+        for (Standard_Integer aVertIter = (aNbTris - aTriFrom) > 2 ? aTriNodesFrom + 2 : aTriNodesFrom + 1; // skip triangle fan center
+             aVertIter <= aTris->VertexNumber(); ++aVertIter)
+        {
+          aSegs->AddVertex (aTris->Vertice (aVertIter));
+        }
+        aSegs->AddPolylineEdges (aFirstNode + 1, aSegs->VertexNumber(), true);
+      }
 
-    aGroupCorners->SetClosed (true);
-    aGroupCorners->SetGroupPrimitivesAspect (myBoxCornerAspect->Aspect());
+      {
+        Handle(Graphic3d_Group) aGroupSides = thePrs->NewGroup();
+        aGroupSides->SetClosed (true); // should be replaced by forced back-face culling aspect
+        aGroupSides->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
+        aGroupSides->AddPrimitiveArray (aTris);
+      }
 
+      if (!aSegs.IsNull())
+      {
+        Handle(Graphic3d_Group) aGroupSegs = thePrs->NewGroup();
+        aGroupSegs->SetGroupPrimitivesAspect (myDrawer->FaceBoundaryAspect()->Aspect());
+        aGroupSegs->AddPrimitiveArray (aSegs);
+      }
+    }
+
+    // Display box sides labels
     Handle(Graphic3d_Group) aTextGroup = thePrs->NewGroup();
-    //aTextGroup->SetClosed (true);
     aTextGroup->SetGroupPrimitivesAspect (myDrawer->TextAspect()->Aspect());
-    for (Standard_Integer aPartIter = 0; aPartIter <= Standard_Integer(V3d_XnegYnegZneg); ++aPartIter)
+    for (Standard_Integer aPartIter = V3d_Xpos; aPartIter <= Standard_Integer(V3d_Zneg); ++aPartIter)
     {
       const V3d_TypeOfOrientation anOrient = (V3d_TypeOfOrientation )aPartIter;
-      if (Handle(Graphic3d_ArrayOfTriangles) aTris = createBoxPartTriangles (anOrient))
+
+      TCollection_AsciiString aLabel;
+      if (!myBoxSideLabels.Find (anOrient, aLabel)
+        || aLabel.IsEmpty())
       {
-        if (IsBoxSide (anOrient))
-        {
-          aGroupSides->AddPrimitiveArray (aTris);
+        continue;
+      }
 
-          TCollection_AsciiString aLabel;
-          if (!myBoxSideLabels.Find (anOrient, aLabel)
-            || aLabel.IsEmpty())
-          {
-            continue;
-          }
-
-          const gp_Dir aDir = V3d::GetProjAxis (anOrient);
-          gp_Dir anUp = myIsYup ? gp::DY() : gp::DZ();
-          if (myIsYup)
-          {
-            if (anOrient == V3d_Ypos
-             || anOrient == V3d_Yneg)
-            {
-              anUp = -gp::DZ();
-            }
-          }
-          else
-          {
-            if (anOrient == V3d_Zpos)
-            {
-              anUp = gp::DY();
-            }
-            else if (anOrient == V3d_Zneg)
-            {
-              anUp = -gp::DY();
-            }
-          }
-
-          const Standard_Real anOffset = 2.0; // extra offset to avoid overlapping with triangulation
-          const gp_Pnt aPos = aDir.XYZ() * (mySize * 0.5 + myBoxFacetExtension + anOffset);
-          const gp_Ax2 aPosition (aPos, aDir, anUp.Crossed (aDir));
-          Prs3d_Text::Draw (aTextGroup, myDrawer->TextAspect(), aLabel, aPosition);
-        }
-        else if (IsBoxEdge (anOrient))
+      const gp_Dir aDir = V3d::GetProjAxis (anOrient);
+      gp_Dir anUp = myIsYup ? gp::DY() : gp::DZ();
+      if (myIsYup)
+      {
+        if (anOrient == V3d_Ypos
+          || anOrient == V3d_Yneg)
         {
-          aGroupEdges->AddPrimitiveArray (aTris);
-        }
-        else if (IsBoxCorner (anOrient))
-        {
-          aGroupCorners->AddPrimitiveArray (aTris);
+          anUp = -gp::DZ();
         }
       }
+      else
+      {
+        if (anOrient == V3d_Zpos)
+        {
+          anUp = gp::DY();
+        }
+        else if (anOrient == V3d_Zneg)
+        {
+          anUp = -gp::DY();
+        }
+      }
+
+      const Standard_Real anOffset = 2.0; // extra offset to avoid overlapping with triangulation
+      const gp_Pnt aPos = aDir.XYZ() * (mySize * 0.5 + myBoxFacetExtension + anOffset);
+      const gp_Ax2 aPosition (aPos, aDir, anUp.Crossed (aDir));
+      Prs3d_Text::Draw (aTextGroup, myDrawer->TextAspect(), aLabel, aPosition);
+    }
+  }
+
+  // Display box edges
+  {
+    Standard_Integer aNbNodes = 0, aNbTris = 0;
+    for (Standard_Integer aPartIter = V3d_XposYpos; aPartIter <= Standard_Integer(V3d_YposZneg); ++aPartIter)
+    {
+      createBoxPartTriangles (Handle(Graphic3d_ArrayOfTriangles)(), aNbNodes, aNbTris, (V3d_TypeOfOrientation )aPartIter);
+    }
+    if (aNbNodes > 0)
+    {
+      Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
+      aNbNodes = aNbTris = 0;
+      for (Standard_Integer aPartIter = V3d_XposYpos; aPartIter <= Standard_Integer(V3d_YposZneg); ++aPartIter)
+      {
+        const V3d_TypeOfOrientation anOrient = (V3d_TypeOfOrientation )aPartIter;
+        createBoxPartTriangles (aTris, aNbNodes, aNbTris, anOrient);
+      }
+
+      Handle(Graphic3d_Group) aGroupEdges = thePrs->NewGroup();
+      aGroupEdges->SetClosed (true);
+      aGroupEdges->SetGroupPrimitivesAspect (myBoxEdgeAspect->Aspect());
+      aGroupEdges->AddPrimitiveArray (aTris);
+    }
+  }
+
+  // Display box corners
+  {
+    Standard_Integer aNbNodes = 0, aNbTris = 0;
+    for (Standard_Integer aPartIter = V3d_XposYposZpos; aPartIter <= Standard_Integer(V3d_XnegYnegZneg); ++aPartIter)
+    {
+      createBoxPartTriangles (Handle(Graphic3d_ArrayOfTriangles)(), aNbNodes, aNbTris, (V3d_TypeOfOrientation )aPartIter);
+    }
+    if (aNbNodes > 0)
+    {
+      Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
+      aNbNodes = aNbTris = 0;
+      for (Standard_Integer aPartIter = V3d_XposYposZpos; aPartIter <= Standard_Integer(V3d_XnegYnegZneg); ++aPartIter)
+      {
+        const V3d_TypeOfOrientation anOrient = (V3d_TypeOfOrientation )aPartIter;
+        createBoxPartTriangles (aTris, aNbNodes, aNbTris, anOrient);
+      }
+
+      Handle(Graphic3d_Group) aGroupCorners = thePrs->NewGroup();
+      aGroupCorners->SetClosed (true);
+      aGroupCorners->SetGroupPrimitivesAspect (myBoxCornerAspect->Aspect());
+      aGroupCorners->AddPrimitiveArray (aTris);
     }
   }
 }
@@ -676,22 +785,30 @@ void AIS_ViewCube::ComputeSelection (const Handle(SelectMgr_Selection)& theSelec
   for (Standard_Integer aPartIter = 0; aPartIter <= Standard_Integer(V3d_XnegYnegZneg); ++aPartIter)
   {
     const V3d_TypeOfOrientation anOri = (V3d_TypeOfOrientation )aPartIter;
-    if (Handle(Graphic3d_ArrayOfTriangles) aTris = createBoxPartTriangles (anOri))
+    Standard_Integer aNbNodes = 0, aNbTris = 0;
+    createBoxPartTriangles (Handle(Graphic3d_ArrayOfTriangles)(), aNbNodes, aNbTris, anOri);
+    if (aNbNodes <= 0)
     {
-      Standard_Integer aSensitivity = 2;
-      if (IsBoxCorner (anOri))
-      {
-        aSensitivity = 8;
-      }
-      else if (IsBoxEdge (anOri))
-      {
-        aSensitivity = 4;
-      }
-      Handle(AIS_ViewCubeOwner) anOwner = new AIS_ViewCubeOwner (this, anOri);
-      Handle(AIS_ViewCubeSensitive) aTriSens = new AIS_ViewCubeSensitive (anOwner, aTris);
-      aTriSens->SetSensitivityFactor (aSensitivity);
-      theSelection->Add (aTriSens);
+      continue;
     }
+
+    Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_None);
+    aNbNodes = aNbTris = 0;
+    createBoxPartTriangles (aTris, aNbNodes, aNbTris, anOri);
+
+    Standard_Integer aSensitivity = 2;
+    if (IsBoxCorner (anOri))
+    {
+      aSensitivity = 8;
+    }
+    else if (IsBoxEdge (anOri))
+    {
+      aSensitivity = 4;
+    }
+    Handle(AIS_ViewCubeOwner) anOwner = new AIS_ViewCubeOwner (this, anOri);
+    Handle(AIS_ViewCubeSensitive) aTriSens = new AIS_ViewCubeSensitive (anOwner, aTris);
+    aTriSens->SetSensitivityFactor (aSensitivity);
+    theSelection->Add (aTriSens);
   }
 }
 
@@ -702,6 +819,25 @@ void AIS_ViewCube::ComputeSelection (const Handle(SelectMgr_Selection)& theSelec
 Standard_Boolean AIS_ViewCube::HasAnimation() const
 {
   return !myViewAnimation->IsStopped();
+}
+
+//=======================================================================
+//function : viewFitAll
+//purpose  :
+//=======================================================================
+void AIS_ViewCube::viewFitAll (const Handle(V3d_View)& theView,
+                               const Handle(Graphic3d_Camera)& theCamera)
+{
+  Bnd_Box aBndBox = myToFitSelected ? GetContext()->BoundingBoxOfSelection() : theView->View()->MinMaxValues();
+  if (aBndBox.IsVoid()
+   && myToFitSelected)
+  {
+    aBndBox = theView->View()->MinMaxValues();
+  }
+  if (!aBndBox.IsVoid())
+  {
+    theView->FitMinMax (theCamera, aBndBox, 0.01, 10.0 * Precision::Confusion());
+  }
 }
 
 //=======================================================================
@@ -721,25 +857,28 @@ void AIS_ViewCube::StartAnimation (const Handle(AIS_ViewCubeOwner)& theOwner)
   myEndState  ->Copy (aView->Camera());
 
   {
-    Handle(Graphic3d_Camera) aBackupCamera = new Graphic3d_Camera (aView->Camera());
+    {
+      Handle(Graphic3d_Camera) aBackupCamera = aView->Camera();
+      const bool wasImmediateUpdate = aView->SetImmediateUpdate (false);
+      aView->SetCamera (myEndState);
+      aView->SetProj (theOwner->MainOrientation(), myIsYup);
+      aView->SetCamera (aBackupCamera);
+      aView->SetImmediateUpdate (wasImmediateUpdate);
+    }
 
-    const bool wasImmediateUpdate = aView->SetImmediateUpdate (false);
-    aView->SetCamera (myEndState);
-    aView->SetProj (theOwner->MainOrientation(), myIsYup);
-
-    const gp_Dir aNewDir = aView->Camera()->Direction();
+    const gp_Dir aNewDir = myEndState->Direction();
     if (!myToResetCameraUp
-     && !aNewDir.IsEqual (aBackupCamera->Direction(), Precision::Angular()))
+     && !aNewDir.IsEqual (myStartState->Direction(), Precision::Angular()))
     {
       // find the Up direction closest to current instead of default one
       const gp_Ax1 aNewDirAx1 (gp::Origin(), aNewDir);
-      const gp_Dir anOldUp = aBackupCamera->Up();
+      const gp_Dir anOldUp = myStartState->Up();
       const gp_Dir anUpList[4] =
       {
-        aView->Camera()->Up(),
-        aView->Camera()->Up().Rotated (aNewDirAx1, M_PI_2),
-        aView->Camera()->Up().Rotated (aNewDirAx1, M_PI),
-        aView->Camera()->Up().Rotated (aNewDirAx1, M_PI * 1.5),
+        myEndState->Up(),
+        myEndState->Up().Rotated (aNewDirAx1, M_PI_2),
+        myEndState->Up().Rotated (aNewDirAx1, M_PI),
+        myEndState->Up().Rotated (aNewDirAx1, M_PI * 1.5),
       };
 
       Standard_Real aBestAngle = Precision::Infinite();
@@ -753,20 +892,10 @@ void AIS_ViewCube::StartAnimation (const Handle(AIS_ViewCubeOwner)& theOwner)
           anUpBest = anUpList[anUpIter];
         }
       }
-      aView->Camera()->SetUp (anUpBest);
+      myEndState->SetUp (anUpBest);
     }
 
-    const Bnd_Box aBndSelected = myToFitSelected ? GetContext()->BoundingBoxOfSelection() : Bnd_Box();
-    if (!aBndSelected.IsVoid())
-    {
-      aView->FitAll (aBndSelected, 0.01, false);
-    }
-    else
-    {
-      aView->FitAll (0.01, false);
-    }
-    aView->SetCamera (aBackupCamera);
-    aView->SetImmediateUpdate (wasImmediateUpdate);
+    viewFitAll (aView, myEndState);
   }
 
   myViewAnimation->SetView (aView);
@@ -864,8 +993,13 @@ void AIS_ViewCube::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManage
   {
     Handle(Graphic3d_Group) aGroup = aHiPrs->NewGroup();
     aGroup->SetGroupPrimitivesAspect (theStyle->ShadingAspect()->Aspect());
-    if (Handle(Graphic3d_ArrayOfTriangles) aTris = createBoxPartTriangles (aCubeOwner->MainOrientation()))
+    Standard_Integer aNbNodes = 0, aNbTris = 0;
+    createBoxPartTriangles (Handle(Graphic3d_ArrayOfTriangles)(), aNbNodes, aNbTris, aCubeOwner->MainOrientation());
+    if (aNbNodes > 0)
     {
+      Handle(Graphic3d_ArrayOfTriangles) aTris = new Graphic3d_ArrayOfTriangles (aNbNodes, aNbTris * 3, Graphic3d_ArrayFlags_None);
+      aNbNodes = aNbTris = 0;
+      createBoxPartTriangles (aTris, aNbNodes, aNbTris, aCubeOwner->MainOrientation());
       aGroup->AddPrimitiveArray (aTris);
     }
   }

@@ -5,6 +5,7 @@ puts "=================================="
 
 vclear
 vinit View1
+vrenderparams -rendScale 1
 
 vviewcube vc -edges 0
 if {[vreadpixel 70 295 name rgb] != "BLACK"} { puts "Error: Invalid display of View Cube without edges." }
@@ -23,6 +24,7 @@ vdump $imagedir/${casename}_noedgeandvert.png
 vclear
 
 # Color
+vrenderparams -rendScale 2
 vviewcube vc1 -boxColor 0.69 0.88 1 -textColor 0 0.4 0.54
 vdisplay vc1 -trihedron bottomLeft 100 100
 
@@ -33,10 +35,12 @@ vdisplay vc2 -trihedron topLeft 100 100
 # Font
 vviewcube vc3 -reset -boxSideColor WHITE -font "monospace" -fontHeight 16
 vdisplay vc3 -trihedron bottomRight 100 100
+vaspects vc3 -setFaceBoundaryDraw 1 -setFaceBoundaryWidth 2
 
 # Corner radius
 vviewcube vc4 -reset -boxSideColor WHITE -roundRadius 0.2 -boxEdgeGap 2
 vdisplay vc4 -trihedron topRight 100 100
+vaspects vc4 -setFaceBoundaryDraw 1
 
 # Padding
 vviewcube vc5 -reset -boxFacetExtension 0 -axesPadding 0
