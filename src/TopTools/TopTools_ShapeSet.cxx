@@ -32,8 +32,8 @@
 
 #include <locale.h>
 #include <string.h>
-const char* Version  = "CASCADE Topology V1, (c) Matra-Datavision";
-const char* Version2 = "CASCADE Topology V2, (c) Matra-Datavision";
+static const char* Version  = "CASCADE Topology V1, (c) Matra-Datavision";
+static const char* Version2 = "CASCADE Topology V2, (c) Matra-Datavision";
 
 //=======================================================================
 //function : TopTools_ShapeSet
