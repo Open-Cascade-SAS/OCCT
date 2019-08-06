@@ -1,0 +1,7 @@
+# test for OCC logo sample
+source $env(CSF_OCCTSamplesPath)/tcl/logo2019.tcl
+
+# make a snapshot
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"
