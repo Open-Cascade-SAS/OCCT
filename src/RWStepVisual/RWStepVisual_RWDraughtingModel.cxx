@@ -56,11 +56,14 @@ void RWStepVisual_RWDraughtingModel::ReadStep (const Handle(StepData_StepReaderD
   if ( data->ReadSubList (num, 2, "representation.items", ach, sub2) ) {
     Standard_Integer num2 = sub2;
     Standard_Integer nb0 = data->NbParams(num2);
-    aRepresentation_Items = new StepRepr_HArray1OfRepresentationItem (1, nb0);
-    for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
-      Handle(StepRepr_RepresentationItem) anIt0;
-      data->ReadEntity (num2, i0, "representation.items", ach, STANDARD_TYPE(StepRepr_RepresentationItem), anIt0);
-      aRepresentation_Items->SetValue(i0, anIt0);
+    if (nb0 > 0)
+    {
+      aRepresentation_Items = new StepRepr_HArray1OfRepresentationItem (1, nb0);
+      for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
+        Handle(StepRepr_RepresentationItem) anIt0;
+        data->ReadEntity (num2, i0, "representation.items", ach, STANDARD_TYPE(StepRepr_RepresentationItem), anIt0);
+        aRepresentation_Items->SetValue(i0, anIt0);
+      }
     }
   }
 
