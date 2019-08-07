@@ -3271,6 +3271,58 @@ static Standard_Integer OCC30708_2 (Draw_Interpretor& di, Standard_Integer, cons
   return 0;
 }
 
+//=======================================================================
+//function : OCC30869
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC30869 (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc != 2)
+  {
+    theDI.PrintHelp (theArgv[0]);
+    return 1;
+  }
+
+  TopoDS_Shape aWire = DBRep::Get (theArgv[1]);
+  if (aWire.IsNull() || aWire.ShapeType() != TopAbs_WIRE)
+  {
+    theDI << theArgv[1] << " is not a wire.\n";
+    return 1;
+  }
+
+  BRepAdaptor_CompCurve aBACC (TopoDS::Wire (aWire));
+
+  Standard_Real aFirst = aBACC.FirstParameter();
+  Standard_Real aLast  = aBACC.LastParameter();
+
+  gp_Pnt aPFirst, aPLast;
+  gp_Vec aVFirst, aVLast;
+
+  aBACC.D1 (aFirst, aPFirst, aVFirst);
+  aBACC.D1 (aLast,  aPLast,  aVLast);
+
+  if (aVFirst.SquareMagnitude() > gp::Resolution())
+    aVFirst.Normalize();
+  if (aVLast.SquareMagnitude() > gp::Resolution())
+    aVLast.Normalize();
+
+  theDI << aFirst << ": point " << aPFirst.X() << " "
+                                << aPFirst.Y() << " "
+                                << aPFirst.Z()
+                  << ", tangent " << aVFirst.X() << " "
+                                  << aVFirst.Y() << " "
+                                  << aVFirst.Z() << "\n";
+
+  theDI << aLast << ": point " << aPLast.X() << " "
+                              << aPLast.Y() << " "
+                              << aPLast.Z()
+                 << ", tangent " << aVLast.X() << " "
+                                 << aVLast.Y() << " "
+                                 << aVLast.Z() << "\n";
+
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3326,6 +3378,10 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
 
   theCommands.Add ("OCC30708_2", "Tests initialization of the BRepLib_MakeWire with null shape",
                    __FILE__, OCC30708_2, group);
+
+  theCommands.Add ("OCC30869", "Prints bounding points of the given wire and tangent vectors at these points.\n"
+                               "Usage: OCC30869 wire",
+                   __FILE__, OCC30869, group);
 
   return;
 }

@@ -1,0 +1,55 @@
+puts "========"
+puts "0030869: Modeling Data - BRepAdaptor_CompCurve incorrectly evaluates the boundary points"
+puts "========"
+puts ""
+
+pload QAcommands
+
+# create wire consisting of a single edge based on a trimmed circle
+circle c 1 0 0 0 -1 0 0 0 -1 1
+trim c c 1.5707963267949 4.71238898038469
+mkedge e c
+orientation e R
+wire w e
+
+# compute boundary points using BRepAdaptor_CompCurve
+set log [OCC30869 w]
+
+set lines [split $log "\n"]
+
+if {![regexp {([-0-9.+eE]*): point ([-0-9.+eE]*) ([-0-9.+eE]*) ([-0-9.+eE]*), tangent ([-0-9.+eE]*) ([-0-9.+eE]*) ([-0-9.+eE]*)} [lindex $lines 0] full t1 x1 y1 z1 dx1 dy1 dz1]} {
+  puts "Error: first point is not computed"
+}
+
+if {![regexp {([-0-9.+eE]*): point ([-0-9.+eE]*) ([-0-9.+eE]*) ([-0-9.+eE]*), tangent ([-0-9.+eE]*) ([-0-9.+eE]*) ([-0-9.+eE]*)} [lindex $lines 1] full t2 x2 y2 z2 dx2 dy2 dz2]} {
+  puts "Error: last point is not computed"
+}
+
+# compute reference values
+
+# inverse the curve as the edge in the wire is reversed
+circle ci 1 0 0 0 1 0 0 0 -1 1
+trim ci ci 1.5707963267949 4.71238898038469
+
+cvalue ci 1.5707963267949  x1_ref y1_ref z1_ref dx1_ref dy1_ref dz1_ref
+cvalue ci 4.71238898038469 x2_ref y2_ref z2_ref dx2_ref dy2_ref dz2_ref
+
+# compare the values
+set tol_abs 1.e-7
+set tol_rel 1.e-7
+
+checkreal first_pnt_x $x1 [dval x1_ref] $tol_abs $tol_rel
+checkreal first_pnt_y $y1 [dval y1_ref] $tol_abs $tol_rel
+checkreal first_pnt_z $z1 [dval z1_ref] $tol_abs $tol_rel
+
+checkreal first_tgt_x $dx1 [dval dx1_ref] $tol_abs $tol_rel
+checkreal first_tgt_y $dy1 [dval dy1_ref] $tol_abs $tol_rel
+checkreal first_tgt_z $dz1 [dval dz1_ref] $tol_abs $tol_rel
+
+checkreal last_pnt_x $x2 [dval x2_ref] $tol_abs $tol_rel
+checkreal last_pnt_y $y2 [dval y2_ref] $tol_abs $tol_rel
+checkreal last_pnt_z $z2 [dval z2_ref] $tol_abs $tol_rel
+
+checkreal last_tgt_x $dx2 [dval dx2_ref] $tol_abs $tol_rel
+checkreal last_tgt_y $dy2 [dval dy2_ref] $tol_abs $tol_rel
+checkreal last_tgt_z $dz2 [dval dz2_ref] $tol_abs $tol_rel
