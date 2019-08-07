@@ -393,7 +393,6 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
   aResourceName += ".RetrievalPlugin";
   if (!UTL::Find(Resources(), aResourceName))
   {
-    myReaders.Add(theFormat, aReader);
     Standard_SStream aMsg; 
     aMsg << "Could not found the item:" << aResourceName <<(char)0;
     myRetrievableStatus = PCDM_RS_WrongResource;
@@ -416,7 +415,6 @@ Handle(PCDM_Reader) CDF_Application::ReaderFromFormat(const TCollection_Extended
   } 
   catch (Standard_Failure const& anException)
   {
-    myReaders.Add(theFormat, aReader);
     myRetrievableStatus = PCDM_RS_WrongResource;
     throw anException;
   }	
