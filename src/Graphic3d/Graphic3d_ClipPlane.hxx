@@ -291,6 +291,28 @@ public:
     return aState;
   }
 
+  //! Check if the given bounding box is In and touch the clipping planes
+  Standard_Boolean ProbeBoxTouch (const Graphic3d_BndBox3d& theBox) const
+  {
+    for (const Graphic3d_ClipPlane* aPlaneIter = this; aPlaneIter != NULL; aPlaneIter = aPlaneIter->myNextInChain.get())
+    {
+      if (aPlaneIter->IsBoxFullInHalfspace (theBox))
+      {
+        // within union operation, if box is entirely inside at least one half-space, others can be ignored
+        return Standard_False;
+      }
+      else if (!aPlaneIter->IsBoxFullOutHalfspace (theBox))
+      {
+        // the box is not fully out, and not fully in, check is it on (but not intersect)
+        if (ProbeBoxMaxPointHalfspace (theBox) != Graphic3d_ClipState_Out)
+        {
+          return Standard_True;
+        }
+      }
+    }
+    return Standard_False;
+  }
+
 public:
 
   //! Check if the given point is outside of the half-space (e.g. should be discarded by clipping plane).
@@ -327,6 +349,16 @@ public:
                                    myEquation.z() > 0.0 ? theBox.CornerMax().z() : theBox.CornerMin().z(),
                                    1.0);
     return IsPointOutHalfspace (aMaxPnt);
+  }
+
+  //! Check if the given bounding box is fully outside of the half-space (e.g. should be discarded by clipping plane).
+  Graphic3d_ClipState ProbeBoxMaxPointHalfspace (const Graphic3d_BndBox3d& theBox) const
+  {
+    const Graphic3d_Vec4d aMaxPnt (myEquation.x() > 0.0 ? theBox.CornerMax().x() : theBox.CornerMin().x(),
+                                   myEquation.y() > 0.0 ? theBox.CornerMax().y() : theBox.CornerMin().y(),
+                                   myEquation.z() > 0.0 ? theBox.CornerMax().z() : theBox.CornerMin().z(),
+                                   1.0);
+    return ProbePointHalfspace (aMaxPnt);
   }
 
   //! Check if the given bounding box is fully inside (or touches from inside) the half-space (e.g. NOT discarded by clipping plane).

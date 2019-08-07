@@ -160,6 +160,8 @@ void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPMin,
   mySelectingVolumeMgr.BuildSelectingVolume (aMinMousePos,
                                              aMaxMousePos);
 
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)());
+
   TraverseSensitives();
 }
 
@@ -177,6 +179,8 @@ void StdSelect_ViewerSelector3d::Pick (const TColgp_Array1OfPnt2d& thePolyline,
   theView->Window()->Size (aWidth, aHeight);
   mySelectingVolumeMgr.SetWindowSize (aWidth, aHeight);
   mySelectingVolumeMgr.BuildSelectingVolume (thePolyline);
+
+  mySelectingVolumeMgr.SetViewClipping (theView->ClipPlanes(), Handle(Graphic3d_SequenceOfHClipPlane)());
 
   TraverseSensitives();
 }

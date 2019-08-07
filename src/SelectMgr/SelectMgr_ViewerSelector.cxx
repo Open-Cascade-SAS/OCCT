@@ -378,6 +378,30 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     aMgr.SetViewClipping (theMgr.ViewClipping(), theObject->ClipPlanes());
   }
 
+  if (!theMgr.ViewClipping().IsNull() &&
+      theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Box)
+  {
+    Graphic3d_BndBox3d aBBox (aSensitivesTree->MinPoint (0), aSensitivesTree->MaxPoint (0));
+    // If box selection is active, and the whole sensitive tree is out of the clip planes
+    // selection is empty for this object
+    const Handle(Graphic3d_SequenceOfHClipPlane)& aViewPlanes = theMgr.ViewClipping();
+
+    for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aViewPlanes); aPlaneIt.More(); aPlaneIt.Next())
+    {
+      const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+      if (!aPlane->IsOn())
+      {
+        continue;
+      }
+
+      Graphic3d_ClipState aState = aPlane->ProbeBox (aBBox);
+      if (aState == Graphic3d_ClipState_Out) // do not process only whole trees, next check on the tree node
+      {
+        return;
+      }
+    }
+  }
+
   const Standard_Integer aFirstStored = mystored.Extent() + 1;
 
   Standard_Integer aStack[BVH_Constants_MaxTreeDepth];
@@ -419,17 +443,51 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
     }
     else
     {
-      Standard_Integer aStartIdx = aSensitivesTree->BegPrimitive (aNode);
-      Standard_Integer anEndIdx = aSensitivesTree->EndPrimitive (aNode);
-      for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
+      bool aClipped = false;
+      if (!theMgr.ViewClipping().IsNull() &&
+          theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Box)
       {
-        const Handle(SelectMgr_SensitiveEntity)& aSensitive = anEntitySet->GetSensitiveById (anIdx);
-        if (aSensitive->IsActiveForSelection())
+        Graphic3d_BndBox3d aBBox (aSensitivesTree->MinPoint (aNode), aSensitivesTree->MaxPoint (aNode));
+        // If box selection is active, and the whole sensitive tree is out of the clip planes
+        // selection is empty for this object
+        const Handle(Graphic3d_SequenceOfHClipPlane)& aViewPlanes = theMgr.ViewClipping();
+
+        for (Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (*aViewPlanes); aPlaneIt.More(); aPlaneIt.Next())
         {
-          const Handle(Select3D_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
-          SelectMgr_SelectingVolumeManager aTmpMgr = aMgr;
-          computeFrustum (anEnt, theMgr, aInversedTrsf, aScaledTrnsfFrustums, aTmpMgr);
-          checkOverlap (anEnt, aInversedTrsf, aTmpMgr);
+          const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+          if (!aPlane->IsOn())
+          {
+            continue;
+          }
+          Graphic3d_ClipState aState = aPlane->ProbeBox (aBBox);
+          if (aState == Graphic3d_ClipState_Out)
+          {
+            aClipped = true;
+            break;
+          }
+          if (aState == Graphic3d_ClipState_On && !mySelectingVolumeMgr.IsOverlapAllowed()) // partially clipped
+          {
+            if (aPlane->ProbeBoxTouch (aBBox))
+              continue;
+            aClipped = true;
+            break;
+          }
+        }
+      }
+      if (!aClipped)
+      {
+        Standard_Integer aStartIdx = aSensitivesTree->BegPrimitive (aNode);
+        Standard_Integer anEndIdx = aSensitivesTree->EndPrimitive (aNode);
+        for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
+        {
+          const Handle(SelectMgr_SensitiveEntity)& aSensitive = anEntitySet->GetSensitiveById (anIdx);
+          if (aSensitive->IsActiveForSelection())
+          {
+            const Handle(Select3D_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
+            SelectMgr_SelectingVolumeManager aTmpMgr = aMgr;
+            computeFrustum (anEnt, theMgr, aInversedTrsf, aScaledTrnsfFrustums, aTmpMgr);
+            checkOverlap (anEnt, aInversedTrsf, aTmpMgr);
+          }
         }
       }
       if (aHead < 0)
