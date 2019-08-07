@@ -593,6 +593,12 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   {
     U1 = parameters(i);
     U2 = parameters(i + 1);
+
+    if (U2 - U1 <= uTol)
+    {
+      continue;
+    }
+
     // Check maximal deflection on interval;
     Standard_Real dmax = 0.;
     Standard_Real umax = 0.;
