@@ -109,6 +109,12 @@ public:
   Standard_EXPORT virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
                                                 const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes) Standard_OVERRIDE;
 
+  //! Return clipping range.
+  const SelectMgr_ViewClipRange& ViewClipRanges() const { return myViewClipRange; }
+
+  //! Set clipping range.
+  void SetViewClipRanges (const SelectMgr_ViewClipRange& theRange) { myViewClipRange = theRange; }
+
   //! A set of helper functions that return rectangular selecting frustum data
   inline const gp_Pnt* GetVertices() const { return myVertices; }
 

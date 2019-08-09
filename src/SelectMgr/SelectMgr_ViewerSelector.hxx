@@ -290,14 +290,13 @@ private:
   //! removes a Selection from the Selector
   void Remove (const Handle(SelectMgr_Selection)& aSelection);
 
-  //! Internal function that checks if a current selecting frustum
-  //! needs to be scaled and transformed for the entity and performs
-  //! necessary calculations
+  //! Internal function that checks if a current selecting frustum needs to be scaled and transformed for the entity and performs necessary calculations.
   void computeFrustum (const Handle(Select3D_SensitiveEntity)& theEnt,
-                       const SelectMgr_SelectingVolumeManager&     theMgr,
-                       const gp_GTrsf&                             theInvTrsf,
-                       SelectMgr_FrustumCache&                     theCachedMgrs,
-                       SelectMgr_SelectingVolumeManager&           theResMgr);
+                       const SelectMgr_SelectingVolumeManager& theMgrGlobal,
+                       const SelectMgr_SelectingVolumeManager& theMgrObject,
+                       const gp_GTrsf& theInvTrsf,
+                       SelectMgr_FrustumCache& theCachedMgrs,
+                       SelectMgr_SelectingVolumeManager& theResMgr);
 
 
 private: // implementation of deprecated methods

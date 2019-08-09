@@ -250,15 +250,14 @@ void SelectMgr_ViewerSelector::checkOverlap (const Handle(Select3D_SensitiveEnti
 
 //=======================================================================
 // function: computeFrustum
-// purpose : Internal function that checks if a current selecting frustum
-//           needs to be scaled and transformed for the entity and performs
-//           necessary calculations
+// purpose :
 //=======================================================================
 void SelectMgr_ViewerSelector::computeFrustum (const Handle(Select3D_SensitiveEntity)& theEnt,
-                                               const SelectMgr_SelectingVolumeManager&     theMgr,
-                                               const gp_GTrsf&                             theInvTrsf,
-                                               SelectMgr_FrustumCache&                     theCachedMgrs,
-                                               SelectMgr_SelectingVolumeManager&           theResMgr)
+                                               const SelectMgr_SelectingVolumeManager& theMgrGlobal,
+                                               const SelectMgr_SelectingVolumeManager& theMgrObject,
+                                               const gp_GTrsf& theInvTrsf,
+                                               SelectMgr_FrustumCache& theCachedMgrs,
+                                               SelectMgr_SelectingVolumeManager& theResMgr)
 {
   Standard_Integer aScale = isToScaleFrustum (theEnt) ? sensitivity (theEnt) : 1;
   const gp_GTrsf aTrsfMtr = theEnt->HasInitLocation() ? theEnt->InvInitLocation() * theInvTrsf : theInvTrsf;
@@ -266,19 +265,26 @@ void SelectMgr_ViewerSelector::computeFrustum (const Handle(Select3D_SensitiveEn
   const Standard_Boolean toTransform = aTrsfMtr.Form() != gp_Identity;
   if (toScale && toTransform)
   {
-    theResMgr = theMgr.ScaleAndTransform (aScale, aTrsfMtr, NULL);
+    theResMgr = theMgrGlobal.ScaleAndTransform (aScale, aTrsfMtr, NULL);
+    theResMgr.SetViewClipping (theMgrObject);
   }
   else if (toScale)
   {
-    if (!theCachedMgrs.IsBound (aScale))
+    if (!theCachedMgrs.Find (aScale, theResMgr))
     {
-      theCachedMgrs.Bind (aScale, theMgr.ScaleAndTransform (aScale, gp_Trsf(), NULL));
+      theResMgr = theMgrGlobal.ScaleAndTransform (aScale, gp_Trsf(), NULL);
+      theCachedMgrs.Bind (aScale, theResMgr);
     }
-    theResMgr = theCachedMgrs.Find (aScale);
+    theResMgr.SetViewClipping (theMgrObject);
   }
   else if (toTransform)
   {
-    theResMgr = theMgr.ScaleAndTransform (1, aTrsfMtr, NULL);
+    theResMgr = theMgrGlobal.ScaleAndTransform (1, aTrsfMtr, NULL);
+    theResMgr.SetViewClipping (theMgrObject);
+  }
+  else
+  {
+    theResMgr = theMgrObject;
   }
 }
 
@@ -408,6 +414,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   Standard_Integer aHead = -1;
   Standard_Integer aNode = 0; // a root node
   SelectMgr_FrustumCache aScaledTrnsfFrustums;
+  SelectMgr_SelectingVolumeManager aTmpMgr;
   for (;;)
   {
     if (!aSensitivesTree->IsOuter (aNode))
@@ -484,8 +491,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
           if (aSensitive->IsActiveForSelection())
           {
             const Handle(Select3D_SensitiveEntity)& anEnt = aSensitive->BaseSensitive();
-            SelectMgr_SelectingVolumeManager aTmpMgr = aMgr;
-            computeFrustum (anEnt, theMgr, aInversedTrsf, aScaledTrnsfFrustums, aTmpMgr);
+            computeFrustum (anEnt, theMgr, aMgr, aInversedTrsf, aScaledTrnsfFrustums, aTmpMgr);
             checkOverlap (anEnt, aInversedTrsf, aTmpMgr);
           }
         }

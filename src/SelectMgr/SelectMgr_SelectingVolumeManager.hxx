@@ -178,6 +178,9 @@ public:
   Standard_EXPORT void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
                                         const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes);
 
+  //! Copy clipping planes from another volume manager.
+  Standard_EXPORT void SetViewClipping (const SelectMgr_SelectingVolumeManager& theOther);
+
   //! A set of helper functions that return rectangular selecting frustum data
   Standard_EXPORT const gp_Pnt* GetVertices() const;
 

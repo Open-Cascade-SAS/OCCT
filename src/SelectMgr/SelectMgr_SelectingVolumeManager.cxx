@@ -465,3 +465,18 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_S
 
   mySelectingVolumes[Frustum]->SetViewClipping (theViewPlanes, theObjPlanes);
 }
+
+//=======================================================================
+// function : SetViewClipping
+// purpose  :
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::SetViewClipping (const SelectMgr_SelectingVolumeManager& theOther)
+{
+  myViewClipPlanes   = theOther.ViewClipping();
+  myObjectClipPlanes = theOther.ObjectClipping();
+  if (myActiveSelectionType != Point)
+    return;
+
+  const SelectMgr_RectangularFrustum* aFrOther = reinterpret_cast<const SelectMgr_RectangularFrustum*>(theOther.mySelectingVolumes[Frustum].get());
+  reinterpret_cast<SelectMgr_RectangularFrustum*>(mySelectingVolumes[Frustum].get())->SetViewClipRanges (aFrOther->ViewClipRanges());
+}
