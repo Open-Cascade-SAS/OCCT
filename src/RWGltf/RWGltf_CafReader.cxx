@@ -174,7 +174,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
       for (int aChunkIter = 0; !aFile.eof() && aChunkIter < 2; ++aChunkIter)
       {
         char aChunkHeader2[8] = {};
-        if (int64_t(aFile.tellg()) + int64_t(sizeof(aChunkHeader2)) > int64_t(aLen))
+        if (int64_t(aFile.tellg()) + int64_t(sizeof(aChunkHeader2)) > int64_t(*aLen))
         {
           break;
         }
@@ -251,7 +251,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
     }
     TCollection_AsciiString anErrDesc (RWGltf_GltfJsonParser::FormatParseError (aRes.Code()));
     Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' defines invalid JSON document!\n"
-                                     + anErrDesc + ".", Message_Fail);
+                                     + anErrDesc + " [at offset " + (int )aRes.Offset() + "].", Message_Fail);
     return false;
   }
 #endif
