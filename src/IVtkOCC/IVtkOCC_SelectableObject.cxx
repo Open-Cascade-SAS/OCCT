@@ -166,8 +166,7 @@ const Bnd_Box& IVtkOCC_SelectableObject::BoundingBox()
 
   if (myBndBox.IsVoid())
   {
-    // Add only edges and vertices, in case of troubles this should work anyway
-    BRepBndLib::AddClose (anOcctShape, myBndBox);
+    BRepBndLib::Add (anOcctShape, myBndBox, true);
   }
 
   return myBndBox;
