@@ -185,11 +185,4 @@ inline const Handle(Message_Messenger)& Message_EndLine (const Handle(Message_Me
   return theMessenger;
 }
 
-// endl
-inline const Handle(Message_Messenger)& endl (const Handle(Message_Messenger)& theMessenger)
-{
-  theMessenger->Send ("", Message_Info, Standard_True);
-  return theMessenger;
-}
-
 #endif // _Message_Messenger_HeaderFile

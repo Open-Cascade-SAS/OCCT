@@ -1761,3 +1761,6 @@ The following API changes have been made:
 * Methods BOPTools_BoxSelector::Reject and BOPTools_BoxSelector::Accept have been removed as unused.
 * The RunParallel flag has been removed from the list of parameters of BOPAlgo_Tools::IntersectVertices method. Earlier, it performed selection from the UB tree in parallel mode. Now all interfering pairs are found in one pass, using pair traverse of the same BVH tree.
 
+@subsection upgrade_740_stdnamespace Standard_Stream.hxx no more has "using std::" statements
+*Standard_Stream.hxx* header, commonly included by other OCCT header files, does no more add entities from *std namespace* related to streams (like *std::cout*, *std::istream* and others) into global namespace.
+The application code relying on this matter should be updated to either specify std namespace explicitly (like std::cout) or add "using std::" statements locally.

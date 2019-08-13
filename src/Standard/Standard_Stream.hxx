@@ -21,26 +21,4 @@
 #include <iomanip>
 #include <fstream>
 
-// "using" declaration for STL types is still necessary
-// as OCCT code contains too much of this staff without std:: prefix
-using std::istream;
-using std::ostream;
-using std::ofstream;
-using std::ifstream;
-using std::fstream;
-using std::filebuf;
-using std::streambuf;
-using std::streampos;
-using std::ios;
-using std::cout;
-using std::cerr;
-using std::cin;
-using std::endl;
-using std::ends;
-using std::flush;
-using std::setw;
-using std::setprecision;
-using std::hex;
-using std::dec;
-
 #endif // _Standard_Stream_HeaderFile
