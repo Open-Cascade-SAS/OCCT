@@ -377,7 +377,7 @@ static void InsertWiresIntoFaces(const TopTools_SequenceOfShape& theWires,
     const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
     BRepAdaptor_Curve2d BAcurve2d(anEdge, theRefFace);
     gp_Pnt2d aPnt2d = BAcurve2d.Value((BAcurve2d.FirstParameter() + BAcurve2d.LastParameter())/2.);
-    TopoDS_Face RequiredFace;
+    TopoDS_Shape RequiredFace;
     for (Standard_Integer jj = 1; jj <= theFaces.Length(); jj++)
     {
       const TopoDS_Face& aFace = TopoDS::Face(theFaces(jj));
@@ -385,11 +385,18 @@ static void InsertWiresIntoFaces(const TopTools_SequenceOfShape& theWires,
       TopAbs_State aStatus = Classifier.Perform(aPnt2d);
       if (aStatus == TopAbs_IN)
       {
-        RequiredFace = aFace;
+        RequiredFace = aFace.Oriented (TopAbs_FORWARD);
         break;
       }
     }
-    BB.Add(RequiredFace, aWire);
+    if (!RequiredFace.IsNull())
+    {
+      BB.Add(RequiredFace, aWire);
+    }
+    else
+    {
+      Standard_ASSERT_INVOKE ("ShapeUpgrade_UnifySameDomain: wire remains unclassified");
+    }
   }
 }
 
