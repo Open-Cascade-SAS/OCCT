@@ -110,7 +110,7 @@ namespace
               // multi-line syntax
               aLine[aTailIter] = ' ';
               const ptrdiff_t aFullLen = aLine + aTailIter + 1 - &this->Line.First();
-              if (LineBuffLen < aNbRead + MaxLineLen)
+              if (LineBuffLen < aFullLen + MaxLineLen)
               {
                 LineBuffLen += MaxLineLen;
                 this->Line.Resize (0, LineBuffLen - 1, true);
