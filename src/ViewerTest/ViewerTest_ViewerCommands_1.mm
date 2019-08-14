@@ -26,8 +26,11 @@
 
 #if !defined(MAC_OS_X_VERSION_10_12) || (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12)
   // replacements for macOS versions before 10.12
-  #define NSEventModifierFlagControl NSControlKeyMask
-  #define NSEventModifierFlagShift   NSShiftKeyMask
+  #define NSEventModifierFlagControl  NSControlKeyMask
+  #define NSEventModifierFlagShift    NSShiftKeyMask
+  #define NSEventModifierFlagOption   NSAlternateKeyMask
+  #define NSEventModifierFlagCommand  NSCommandKeyMask
+  #define NSEventModifierFlagFunction NSFunctionKeyMask
 #endif
 
 //! Custom Cocoa view to handle events
