@@ -1,4 +1,4 @@
-puts "TODO CR30056 ALL: Meshing statuses: Failure"
+puts "TODO CR30056 ALL: Meshing statuses: SelfIntersectingWire Failure"
 
 puts "============"
 puts "OCC22849"

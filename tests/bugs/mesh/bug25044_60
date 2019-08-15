@@ -1,0 +1,20 @@
+puts "======="
+puts "0025588: BRepMesh_ShapeTool::FindUV check for 2d points to be the same is inconsistent with ShapeAnalysis_Wire::CheckLacking"
+puts "======="
+puts ""
+
+pload XDE
+
+stepread [locate_data_file Median_cx-fs01_bicycle.stp] a *
+renamevar a_1 result
+tclean result
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+
+tricheck result
+
+checktrinfo result -tri
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png

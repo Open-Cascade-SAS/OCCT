@@ -4,5 +4,4 @@ set max_rel_tol_diff 0.1
 if { [string compare $command "shading"] == 0 } {
   set bug_area "OCC22687"
   set bug_withouttri "OCC22687"
-  set nbwithouttri(ALL) 74
 }

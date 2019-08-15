@@ -126,8 +126,8 @@ void BRepMesh_DefaultRangeSplitter::computeTolerance(
   const Standard_Real aDiffV = myRangeV.second - myRangeV.first;
 
   const Standard_Real aDeflectionUV = 1.e-05;
-  myTolerance.first  = Max(aDeflectionUV, Precision::Confusion() * aDiffU);
-  myTolerance.second = Max(aDeflectionUV, Precision::Confusion() * aDiffV);
+  myTolerance.first  = Max(Min(aDeflectionUV, 0.1 * aDiffU), 1e-7 * aDiffU);
+  myTolerance.second = Max(Min(aDeflectionUV, 0.1 * aDiffV), 1e-7 * aDiffV);
 }
 
 //=======================================================================

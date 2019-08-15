@@ -245,6 +245,30 @@ void BRepMesh_ModelHealer::process(const IMeshData::IFaceHandle& theDFace) const
 #endif
         aIntersections = aChecker.GetIntersectingEdges();
       }
+      else
+      {
+        if (theDFace->WiresNb () == 1)
+        {
+          const IMeshData::IWireHandle& aDWire = theDFace->GetWire (0);
+
+          if (aDWire->EdgesNb () == 2)
+          {
+            const IMeshData::IEdgePtr& aDEdge0 = aDWire->GetEdge (0);
+            const IMeshData::IEdgePtr& aDEdge1 = aDWire->GetEdge (1);
+
+            const IMeshData::IPCurveHandle& aPCurve0 = aDEdge0->GetPCurve (theDFace.get (), aDWire->GetEdgeOrientation (0));
+            const IMeshData::IPCurveHandle& aPCurve1 = aDEdge1->GetPCurve (theDFace.get (), aDWire->GetEdgeOrientation (1));
+
+            if (aPCurve0->ParametersNb () == 2 && aPCurve1->ParametersNb () == 2)
+            {
+              aIntersections = new IMeshData::MapOfIEdgePtr;
+              // a kind of degenerated face - 1 wire, 2 edges and both edges are very small
+              aIntersections->Add (aDEdge0);
+              aIntersections->Add (aDEdge1);
+            }
+          }
+        }
+      }
     }
   }
   catch (Standard_Failure const&)
