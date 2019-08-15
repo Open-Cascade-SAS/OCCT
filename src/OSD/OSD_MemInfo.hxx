@@ -66,7 +66,10 @@ public:
 public:
 
   //! Create and initialize
-  Standard_EXPORT OSD_MemInfo();
+  Standard_EXPORT OSD_MemInfo (const Standard_Boolean theImmediateUpdate = Standard_True);
+
+  //! Clear counters
+  Standard_EXPORT void Clear();
 
   //! Update counters
   Standard_EXPORT void Update();
@@ -74,15 +77,20 @@ public:
   //! Return the string representation for all available counter.
   Standard_EXPORT TCollection_AsciiString ToString() const;
 
-  //! Return value or specified counter in bytes.
+  //! Return value of specified counter in bytes.
   //! Notice that NOT all counters are available on various systems.
   //! Standard_Size(-1) means invalid (unavailable) value.
   Standard_EXPORT Standard_Size Value (const OSD_MemInfo::Counter theCounter) const;
 
-  //! Return value or specified counter in MiB.
+  //! Return value of specified counter in MiB.
   //! Notice that NOT all counters are available on various systems.
   //! Standard_Size(-1) means invalid (unavailable) value.
   Standard_EXPORT Standard_Size ValueMiB (const OSD_MemInfo::Counter theCounter) const;
+
+  //! Return floating value of specified counter in MiB.
+  //! Notice that NOT all counters are available on various systems.
+  //! Standard_Real(-1) means invalid (unavailable) value.
+  Standard_EXPORT Standard_Real ValuePreciseMiB (const OSD_MemInfo::Counter theCounter) const;
 
 public:
 

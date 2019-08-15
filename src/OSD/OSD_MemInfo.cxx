@@ -41,9 +41,29 @@
 // function : OSD_MemInfo
 // purpose  :
 // =======================================================================
-OSD_MemInfo::OSD_MemInfo()
+OSD_MemInfo::OSD_MemInfo (const Standard_Boolean theImmediateUpdate)
 {
-  Update();
+  if (theImmediateUpdate)
+  {
+    Update();
+  }
+  else
+  {
+    Clear();
+  }
+}
+
+
+// =======================================================================
+// function : Clear
+// purpose  :
+// =======================================================================
+void OSD_MemInfo::Clear()
+{
+  for (Standard_Integer anIter = 0; anIter < MemCounter_NB; ++anIter)
+  {
+    myCounters[anIter] = Standard_Size(-1);
+  }
 }
 
 // =======================================================================
@@ -52,11 +72,7 @@ OSD_MemInfo::OSD_MemInfo()
 // =======================================================================
 void OSD_MemInfo::Update()
 {
-  // reset values
-  for (Standard_Integer anIter = 0; anIter < MemCounter_NB; ++anIter)
-  {
-    myCounters[anIter] = Standard_Size(-1);
-  }
+  Clear();
 #ifndef OCCT_UWP
 #if defined(_WIN32)
 #if (_WIN32_WINNT >= 0x0500)
@@ -235,6 +251,20 @@ Standard_Size OSD_MemInfo::ValueMiB (const OSD_MemInfo::Counter theCounter) cons
   }
   return (myCounters[theCounter] == Standard_Size(-1))
        ? Standard_Size(-1) : (myCounters[theCounter] / (1024 * 1024));
+}
+
+// =======================================================================
+// function : ValuePreciseMiB
+// purpose  :
+// =======================================================================
+Standard_Real OSD_MemInfo::ValuePreciseMiB (const OSD_MemInfo::Counter theCounter) const
+{
+  if (theCounter < 0 || theCounter >= MemCounter_NB)
+  {
+    return -1.0;
+  }
+  return (myCounters[theCounter] == Standard_Size(-1))
+       ? -1.0 : ((Standard_Real )myCounters[theCounter] / (1024.0 * 1024.0));
 }
 
 // =======================================================================
