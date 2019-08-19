@@ -1395,7 +1395,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 		if (aCT1==GeomAbs_Line && aCT2==GeomAbs_Line) {
 		  // check for the two lines coincidence
 		  Standard_Real aPAR_T, aT11, aT12, aT21, aT22, aT1m, aT2m;
-		  Standard_Real aD2, aTolE1, aTolE2,  aTol2, aDot;
+		  Standard_Real aD2, aTolE1, aTolE2,  aTol2;
 		  gp_Lin2d aL1, aL2;
 		  gp_Pnt2d aP1m;
 		  //
@@ -1423,14 +1423,10 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 		    if (aT2m>aT21 && aT2m<aT22) {
 		      const gp_Dir2d& aDir1=aL1.Direction();
 		      const gp_Dir2d& aDir2=aL2.Direction();
-		      aDot=aDir1*aDir2;
-		      if (aDot<0.) {
-			aDot=-aDot;
-		      }
-		      //
-		      if ((1.-aDot)<5.e-11){//0.00001 rad
-			localok = Standard_False;
-			break;// from for (k = 0; k < 2; ++k){...
+		      if (aDir1.IsParallel (aDir2, Precision::Angular()))
+		      {
+		        localok = Standard_False;
+			      break;// from for (k = 0; k < 2; ++k){...
 		      }
 		    }//if (aT2m>aT21 && aT2m<aT22) {
 		  }//if (aD2<aTol2) {
