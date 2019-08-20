@@ -62,6 +62,7 @@ SelectMgr_SelectingVolumeManager SelectMgr_SelectingVolumeManager::ScaleAndTrans
   aMgr.mySelectingVolumes[myActiveSelectionType / 2]->SetBuilder (theBuilder);
   aMgr.myViewClipPlanes = myViewClipPlanes;
   aMgr.myObjectClipPlanes = myObjectClipPlanes;
+  aMgr.myViewClipRange = myViewClipRange;
 
   return aMgr;
 }
@@ -242,7 +243,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const SelectMgr_Vec
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBoxMin, theBoxMax, thePickResult);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theBoxMin, theBoxMax, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -269,8 +270,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePn
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePnt,
-                                                                  thePickResult);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePnt, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -299,9 +299,8 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const Handle(TColgp
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPnts->Array1(),
-                                                                  (Select3D_TypeOfSensitivity)theSensType,
-                                                                  thePickResult);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPnts->Array1(), (Select3D_TypeOfSensitivity)theSensType,
+                                                                  myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -318,9 +317,8 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const TColgp_Array1
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPnts,
-                                                                  (Select3D_TypeOfSensitivity)theSensType,
-                                                                  thePickResult);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (theArrayOfPnts, (Select3D_TypeOfSensitivity)theSensType,
+                                                                  myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -334,7 +332,7 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePt1, thePt2, thePickResult);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePt1, thePt2, myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -353,11 +351,8 @@ Standard_Boolean SelectMgr_SelectingVolumeManager::Overlaps (const gp_Pnt& thePt
   if (myActiveSelectionType == Unknown)
     return Standard_False;
 
-  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePt1,
-                                                                  thePt2,
-                                                                  thePt3,
-                                                                  (Select3D_TypeOfSensitivity)theSensType,
-                                                                  thePickResult);
+  return mySelectingVolumes[myActiveSelectionType / 2]->Overlaps (thePt1, thePt2, thePt3, (Select3D_TypeOfSensitivity)theSensType,
+                                                                  myViewClipRange, thePickResult);
 }
 
 //=======================================================================
@@ -463,7 +458,18 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_S
   if (myActiveSelectionType != Point)
     return;
 
-  mySelectingVolumes[Frustum]->SetViewClipping (theViewPlanes, theObjPlanes);
+  const SelectMgr_RectangularFrustum* aFrustum = reinterpret_cast<const SelectMgr_RectangularFrustum*>(mySelectingVolumes[Frustum].get());
+  myViewClipRange.SetVoid();
+  if (!theViewPlanes.IsNull()
+   && !theViewPlanes->IsEmpty())
+  {
+    myViewClipRange.AddClippingPlanes (*theViewPlanes, gp_Ax1 (aFrustum->GetNearPnt(), aFrustum->GetViewRayDirection()));
+  }
+  if (!theObjPlanes.IsNull()
+   && !theObjPlanes->IsEmpty())
+  {
+    myViewClipRange.AddClippingPlanes (*theObjPlanes, gp_Ax1 (aFrustum->GetNearPnt(), aFrustum->GetViewRayDirection()));
+  }
 }
 
 //=======================================================================
@@ -472,11 +478,7 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_S
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::SetViewClipping (const SelectMgr_SelectingVolumeManager& theOther)
 {
-  myViewClipPlanes   = theOther.ViewClipping();
-  myObjectClipPlanes = theOther.ObjectClipping();
-  if (myActiveSelectionType != Point)
-    return;
-
-  const SelectMgr_RectangularFrustum* aFrOther = reinterpret_cast<const SelectMgr_RectangularFrustum*>(theOther.mySelectingVolumes[Frustum].get());
-  reinterpret_cast<SelectMgr_RectangularFrustum*>(mySelectingVolumes[Frustum].get())->SetViewClipRanges (aFrOther->ViewClipRanges());
+  myViewClipPlanes   = theOther.myViewClipPlanes;
+  myObjectClipPlanes = theOther.myObjectClipPlanes;
+  myViewClipRange    = theOther.myViewClipRange;
 }

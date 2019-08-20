@@ -127,11 +127,12 @@ Handle(SelectMgr_BaseFrustum) SelectMgr_TriangularFrustumSet::ScaleAndTransform 
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                            const SelectMgr_Vec3& theMaxPnt,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, thePickResult))
+    if (anIter.Value()->Overlaps (theMinPnt, theMaxPnt, theClipRange, thePickResult))
       return Standard_True;
   }
 
@@ -160,11 +161,12 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const SelectMgr_Vec3&
 // purpose  :
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (thePnt, thePickResult))
+    if (anIter.Value()->Overlaps (thePnt, theClipRange, thePickResult))
       return Standard_True;
   }
 
@@ -177,11 +179,12 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt,
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1OfPnt& theArrayOfPts,
                                                            Select3D_TypeOfSensitivity theSensType,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (theArrayOfPts, theSensType, thePickResult))
+    if (anIter.Value()->Overlaps (theArrayOfPts, theSensType, theClipRange, thePickResult))
       return Standard_True;
   }
 
@@ -194,11 +197,12 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const TColgp_Array1Of
 // =======================================================================
 Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1,
                                                            const gp_Pnt& thePnt2,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (thePnt1, thePnt2, thePickResult))
+    if (anIter.Value()->Overlaps (thePnt1, thePnt2, theClipRange, thePickResult))
       return Standard_True;
   }
 
@@ -213,11 +217,12 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::Overlaps (const gp_Pnt& thePnt1
                                                            const gp_Pnt& thePnt2,
                                                            const gp_Pnt& thePnt3,
                                                            Select3D_TypeOfSensitivity theSensType,
+                                                           const SelectMgr_ViewClipRange& theClipRange,
                                                            SelectBasics_PickResult& thePickResult) const
 {
   for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
   {
-    if (anIter.Value()->Overlaps (thePnt1, thePnt2, thePnt3, theSensType, thePickResult))
+    if (anIter.Value()->Overlaps (thePnt1, thePnt2, thePnt3, theSensType, theClipRange, thePickResult))
       return Standard_True;
   }
 

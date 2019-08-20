@@ -19,6 +19,11 @@
 #include <Bnd_Range.hxx>
 #include <Standard_TypeDef.hxx>
 
+#include <vector>
+
+class gp_Ax1;
+class Graphic3d_SequenceOfHClipPlane;
+
 //! Class for handling depth clipping range.
 //! It is used to perform checks in case if global (for the whole view)
 //! clipping planes are defined inside of SelectMgr_RectangularFrustum class methods.
@@ -93,12 +98,18 @@ public:
     return !theRange.IsOut (theDepth);
   }
 
+public:
+
   //! Clears clipping range.
   void SetVoid()
   {
     myClipRanges.resize (0);
     myUnclipRange = Bnd_Range (RealFirst(), RealLast());
   }
+
+  //! Add clipping planes. Planes and picking ray should be defined in the same coordinate system.
+  Standard_EXPORT void AddClippingPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes,
+                                          const gp_Ax1& thePickRay);
 
   //! Returns the main unclipped range; [-inf, inf] by default.
   Bnd_Range& ChangeUnclipRange() { return myUnclipRange; }

@@ -17,7 +17,6 @@
 #define _SelectMgr_RectangularFrustum_HeaderFile
 
 #include <SelectMgr_Frustum.hxx>
-#include <SelectMgr_ViewClipRange.hxx>
 
 //! This class contains representation of rectangular selecting frustum, created in case
 //! of point and box selection, and algorithms for overlap detection between selecting
@@ -59,6 +58,7 @@ public:
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                      const SelectMgr_Vec3& theBoxMax,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
@@ -69,6 +69,7 @@ public:
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Intersection test between defined volume and given point
@@ -79,11 +80,13 @@ public:
   //! boundary line defined by segments depending on given sensitivity type
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
@@ -93,6 +96,7 @@ public:
                                                      const gp_Pnt& thePnt2,
                                                      const gp_Pnt& thePnt3,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Measures distance between 3d projection of user-picked
@@ -101,19 +105,6 @@ public:
 
   //! Calculates the point on a view ray that was detected during the run of selection algo by given depth
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
-
-  //! Valid for point selection only!
-  //! Computes depth range for clipping planes.
-  //! @param theViewPlanes global view planes
-  //! @param theObjPlanes  object planes
-  Standard_EXPORT virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
-                                                const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes) Standard_OVERRIDE;
-
-  //! Return clipping range.
-  const SelectMgr_ViewClipRange& ViewClipRanges() const { return myViewClipRange; }
-
-  //! Set clipping range.
-  void SetViewClipRanges (const SelectMgr_ViewClipRange& theRange) { myViewClipRange = theRange; }
 
   //! A set of helper functions that return rectangular selecting frustum data
   inline const gp_Pnt* GetVertices() const { return myVertices; }
@@ -127,6 +118,9 @@ public:
   //! of center of 2d rectangle (for point and rectangular selection
   //! correspondingly) onto far view frustum plane
   inline const gp_Pnt& GetFarPnt() const { return myFarPickedPnt; }
+
+  //! Return view ray direction.
+  const gp_Vec& GetViewRayDirection() const { return myViewRayDir; }
 
   //! Return mouse coordinates.
   const gp_Pnt2d& GetMousePosition() const { return myMousePos; }
@@ -145,13 +139,6 @@ protected:
                                                  const gp_Pnt& thePntOnPlane,
                                                  SelectBasics_PickResult& thePickResult) const;
 
-  //! Computes valid depth range for the given clipping planes
-  Standard_EXPORT void computeClippingRange (const Graphic3d_SequenceOfHClipPlane& thePlanes,
-                                             SelectMgr_ViewClipRange& theRange) const;
-
-  //! Returns false if theDepth must be clipped by current view clip range
-  Standard_EXPORT Standard_Boolean isViewClippingOk (const SelectBasics_PickResult& thePickResult) const;
-
 private:
 
   void cacheVertexProjections (SelectMgr_RectangularFrustum* theFrustum) const;
@@ -169,7 +156,6 @@ private:
   gp_Vec                  myViewRayDir;
   gp_Pnt2d                myMousePos;                  //!< Mouse coordinates
   Standard_Real           myScale;                     //!< Scale factor of applied transformation, if there was any
-  SelectMgr_ViewClipRange myViewClipRange;
 
 };
 

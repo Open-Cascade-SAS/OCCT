@@ -181,6 +181,12 @@ public:
   //! Copy clipping planes from another volume manager.
   Standard_EXPORT void SetViewClipping (const SelectMgr_SelectingVolumeManager& theOther);
 
+  //! Return clipping range.
+  const SelectMgr_ViewClipRange& ViewClipRanges() const { return myViewClipRange; }
+
+  //! Set clipping range.
+  void SetViewClipRanges (const SelectMgr_ViewClipRange& theRange) { myViewClipRange = theRange; }
+
   //! A set of helper functions that return rectangular selecting frustum data
   Standard_EXPORT const gp_Pnt* GetVertices() const;
 
@@ -236,6 +242,7 @@ private:
   Handle(SelectMgr_BaseFrustum)          mySelectingVolumes[VolumeTypesNb]; //!< Array of selecting volumes
   Handle(Graphic3d_SequenceOfHClipPlane) myViewClipPlanes;                  //!< view clipping planes
   Handle(Graphic3d_SequenceOfHClipPlane) myObjectClipPlanes;                //!< object clipping planes
+  SelectMgr_ViewClipRange                myViewClipRange;
   Standard_Boolean                       myToAllowOverlap;                  //!< Defines if partially overlapped entities will me detected or not
 };
 

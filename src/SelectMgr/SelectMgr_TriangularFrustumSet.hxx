@@ -52,6 +52,7 @@ public:
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                      const SelectMgr_Vec3& theMaxPnt,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
@@ -59,20 +60,24 @@ public:
                                                      Standard_Boolean* theInside) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
                                                      const gp_Pnt& thePnt3,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Stores plane equation coefficients (in the following form:

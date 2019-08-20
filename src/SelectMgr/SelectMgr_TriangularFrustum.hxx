@@ -48,6 +48,7 @@ public:
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theMinPnt,
                                                      const SelectMgr_Vec3& theMaxPnt,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
@@ -58,6 +59,7 @@ public:
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given ordered set of points,
@@ -65,11 +67,13 @@ public:
   //! boundary line defined by segments depending on given sensitivity type
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! SAT intersection test between defined volume and given triangle. The test may
@@ -79,6 +83,7 @@ public:
                                                      const gp_Pnt& thePnt2,
                                                      const gp_Pnt& thePnt3,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const Standard_OVERRIDE;
 
   //! Nullifies the handle to corresponding builder instance to prevent memory leaks

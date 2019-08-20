@@ -414,7 +414,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   Standard_Integer aHead = -1;
   Standard_Integer aNode = 0; // a root node
   SelectMgr_FrustumCache aScaledTrnsfFrustums;
-  SelectMgr_SelectingVolumeManager aTmpMgr;
+  SelectMgr_SelectingVolumeManager aTmpMgr (false);
   for (;;)
   {
     if (!aSensitivesTree->IsOuter (aNode))

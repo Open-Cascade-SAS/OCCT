@@ -17,23 +17,16 @@
 #define _SelectMgr_BaseFrustum_HeaderFile
 
 #include <gp_GTrsf.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Pln.hxx>
-
 #include <Graphic3d_Camera.hxx>
-#include <Graphic3d_ClipPlane.hxx>
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_WorldViewProjState.hxx>
-
-#include <TColgp_HArray1OfPnt.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-
 #include <Select3D_BndBox3d.hxx>
-#include <SelectMgr_FrustumBuilder.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
+#include <SelectMgr_FrustumBuilder.hxx>
 #include <SelectMgr_VectorTypes.hxx>
-
+#include <SelectMgr_ViewClipRange.hxx>
 #include <SelectBasics_PickResult.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
 
 //! This class is an interface for different types of selecting frustums,
 //! defining different selection types, like point, box or polyline
@@ -120,6 +113,7 @@ public:
   //! SAT intersection test between defined volume and given axis-aligned box
   Standard_EXPORT virtual Standard_Boolean Overlaps (const SelectMgr_Vec3& theBoxMin,
                                                      const SelectMgr_Vec3& theBoxMax,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const;
 
   //! Returns true if selecting volume is overlapped by axis-aligned bounding box
@@ -130,6 +124,7 @@ public:
 
   //! Intersection test between defined volume and given point
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const;
 
   //! Intersection test between defined volume and given point
@@ -143,11 +138,13 @@ public:
   //! boundary line defined by segments depending on given sensitivity type
   Standard_EXPORT virtual Standard_Boolean Overlaps (const TColgp_Array1OfPnt& theArrayOfPnts,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const;
 
   //! Checks if line segment overlaps selecting frustum
   Standard_EXPORT virtual Standard_Boolean Overlaps (const gp_Pnt& thePnt1,
                                                      const gp_Pnt& thePnt2,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const;
 
   //! SAT intersection test between defined volume and given triangle. The test may
@@ -157,6 +154,7 @@ public:
                                                      const gp_Pnt& thePt2,
                                                      const gp_Pnt& thePt3,
                                                      Select3D_TypeOfSensitivity theSensType,
+                                                     const SelectMgr_ViewClipRange& theClipRange,
                                                      SelectBasics_PickResult& thePickResult) const;
 
   //! Measures distance between 3d projection of user-picked
@@ -164,17 +162,6 @@ public:
   Standard_EXPORT virtual Standard_Real DistToGeometryCenter (const gp_Pnt& theCOG) const;
 
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const;
-
-  //! Valid for point selection only!
-  //! Computes depth range for clipping planes.
-  //! @param theViewPlanes global view planes
-  //! @param theObjPlanes  object planes
-  virtual void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
-                                const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes)
-  {
-    (void )theViewPlanes;
-    (void )theObjPlanes;
-  }
 
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
