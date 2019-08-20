@@ -2691,10 +2691,11 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
       }
       else if (NewFaces.Length() == 1)
       {
+        TopoDS_Shape aNewFace = NewFaces(1).Oriented (TopAbs_FORWARD);
         for (Standard_Integer ii = 1; ii <= NewWires.Length(); ii++)
-          BB.Add(NewFaces(1), NewWires(ii));
+          BB.Add(aNewFace, NewWires(ii));
         for (Standard_Integer ii = 1; ii <= InternalWires.Length(); ii++)
-          BB.Add(NewFaces(1), InternalWires(ii));
+          BB.Add(aNewFace, InternalWires(ii));
         myContext->Merge(faces, NewFaces(1));
       }
       else

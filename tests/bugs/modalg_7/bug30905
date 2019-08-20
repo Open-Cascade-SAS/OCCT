@@ -1,0 +1,16 @@
+puts "======================================================="
+puts "0030905: Modeling Algorithms - Invalid shapes in UnifySameDomain"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug30905.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 56 -wire 61 -edge 148 -vertex 93 -t
+
+checkprops result -s 835.815 -v 339.409
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
