@@ -19,7 +19,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepTools.hxx>
 #include <Geom_Curve.hxx>
-#include <BRepClass_FaceClassifier.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_HSurface.hxx>
@@ -94,8 +94,14 @@ void BRepExtrema_ExtCF::Perform(const TopoDS_Edge& E, const TopoDS_Face& F2)
   else
   {
     // Exploration of points and classification
-    BRepClass_FaceClassifier classifier;
-    const Standard_Real Tol = BRep_Tool::Tolerance(F2);
+    const Standard_Real Tol = BRep_Tool::Tolerance (F2);
+    BRepTopAdaptor_FClass2d classifier (F2, Tol);
+
+    // If the underlying surface of the face is periodic
+    // Extrema should return the point within the period,
+    // so there is no point to adjust it in classifier.
+    Standard_Boolean isAdjustPeriodic = Standard_False;
+
     Extrema_POnCurv P1;
     Extrema_POnSurf P2;
 
@@ -104,8 +110,7 @@ void BRepExtrema_ExtCF::Perform(const TopoDS_Edge& E, const TopoDS_Face& F2)
       myExtCS.Points(i, P1, P2);
       P2.Parameter(U1, U2);
       const gp_Pnt2d Puv(U1, U2);
-      classifier.Perform(F2, Puv, Tol);
-      const TopAbs_State state = classifier.State();
+      const TopAbs_State state = classifier.Perform (Puv, isAdjustPeriodic);
       if (state == TopAbs_ON || state == TopAbs_IN)
       {
         mySqDist.Append(myExtCS.SquareDistance(i));

@@ -3239,6 +3239,76 @@ static Standard_Integer OCC30869 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+#include <BRepExtrema_ExtCF.hxx>
+//=======================================================================
+//function : OCC30880
+//purpose  :
+//=======================================================================
+static Standard_Integer OCC30880 (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
+{
+  if (theArgc != 3)
+  {
+    theDI.PrintHelp (theArgv[0]);
+    return 1;
+  }
+
+  TopoDS_Shape anEdge = DBRep::Get (theArgv[1]);
+  if (anEdge.IsNull() || anEdge.ShapeType() != TopAbs_EDGE)
+  {
+    theDI << theArgv[1] << " is not an edge.\n";
+    return 1;
+  }
+
+  TopoDS_Shape aFace = DBRep::Get (theArgv[2]);
+  if (aFace.IsNull() || aFace.ShapeType() != TopAbs_FACE)
+  {
+    theDI << theArgv[2] << " is not a face.\n";
+    return 1;
+  }
+
+  BRepExtrema_ExtCF anExtCF (TopoDS::Edge (anEdge),
+                             TopoDS::Face (aFace));
+  if (!anExtCF.IsDone())
+  {
+    theDI << "Not done\n";
+    return 0;
+  }
+
+  if (!anExtCF.NbExt())
+  {
+    theDI << "No solutions\n";
+    return 0;
+  }
+
+  if (anExtCF.IsParallel())
+  {
+    theDI << "Infinite number of solutions, distance - " << Sqrt (anExtCF.SquareDistance (1)) << "\n";
+    return 0;
+  }
+
+  Standard_Real aDistMin = RealLast();
+  Standard_Integer aSolMin = -1;
+  // Look for the minimal solution
+  for (int i = 1; i <= anExtCF.NbExt(); ++i)
+  {
+    Standard_Real aDist = anExtCF.SquareDistance (i);
+    if (aDist < aDistMin)
+    {
+      aDistMin = aDist;
+      aSolMin = i;
+    }
+  }
+
+  if (aSolMin < 0)
+  {
+    theDI << "Failed\n";
+    return 0;
+  }
+
+  theDI << "Minimal distance - " << Sqrt (aDistMin) << "\n";
+  return 0;
+}
+
 #include <BRepPrimAPI_MakeBox.hxx>
 static Standard_Integer OCC30704(Draw_Interpretor& di, Standard_Integer, const char**)
 {
@@ -3327,6 +3397,10 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC30869", "Prints bounding points of the given wire and tangent vectors at these points.\n"
                                "Usage: OCC30869 wire",
                    __FILE__, OCC30869, group);
+
+  theCommands.Add ("OCC30880", "Looks for extrema between edge and face.\n"
+                               "Usage: OCC30880 edge face",
+                   __FILE__, OCC30880, group);
 
   theCommands.Add("OCC30704", "OCC30704", __FILE__, OCC30704, group);
   theCommands.Add("OCC30704_1", "OCC30704_1", __FILE__, OCC30704_1, group);
