@@ -206,75 +206,27 @@ void OpenGl_Group::AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theTy
 }
 
 // =======================================================================
-// function : Text
+// function : AddText
 // purpose  :
 // =======================================================================
-void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
-                         const Graphic3d_Vertex&                 thePoint,
-                         const Standard_Real                     theHeight,
-                         const Standard_Real                     theAngle,
-                         const Graphic3d_TextPath                theTp,
-                         const Graphic3d_HorizontalTextAlignment theHta,
-                         const Graphic3d_VerticalTextAlignment   theVta,
-                         const Standard_Boolean                  theToEvalMinMax)
+void OpenGl_Group::AddText (const Handle(Graphic3d_Text)& theTextParams,
+                            const Standard_Boolean theToEvalMinMax)
 {
   if (IsDeleted())
   {
     return;
   }
 
-  OpenGl_TextParam  aParams;
-  OpenGl_Structure* aStruct = GlStruct();
-  aParams.Height = int ((theHeight < 2.0) ? aStruct->GlDriver()->DefaultTextHeight() : theHeight);
-  aParams.HAlign = theHta;
-  aParams.VAlign = theVta;
-  const OpenGl_Vec3 aPoint (thePoint.X(), thePoint.Y(), thePoint.Z());
-  OpenGl_Text* aText = new OpenGl_Text (theTextUtf, aPoint, aParams);
-  AddElement (aText);
-  Graphic3d_Group::Text (theTextUtf, thePoint, theHeight, theAngle,
-                         theTp, theHta, theVta, theToEvalMinMax);
-}
-
-// =======================================================================
-// function : Text
-// purpose  :
-// =======================================================================
-void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
-                         const gp_Ax2&                           theOrientation,
-                         const Standard_Real                     theHeight,
-                         const Standard_Real                     theAngle,
-                         const Graphic3d_TextPath                theTp,
-                         const Graphic3d_HorizontalTextAlignment theHTA,
-                         const Graphic3d_VerticalTextAlignment   theVTA,
-                         const Standard_Boolean                  theToEvalMinMax,
-                         const Standard_Boolean                  theHasOwnAnchor)
-{
-  if (IsDeleted())
+  if (theTextParams->Height() < 2.0)
   {
-    return;
+    // TODO - this should be handled in different way (throw exception / take default text height without modifying Graphic3d_Text / log warning, etc.)
+    OpenGl_Structure* aStruct = GlStruct();
+    theTextParams->SetHeight (aStruct->GlDriver()->DefaultTextHeight());
   }
-
-  OpenGl_TextParam  aParams;
-  OpenGl_Structure* aStruct = GlStruct();
-
-  aParams.Height      = int ((theHeight < 2.0) ? aStruct->GlDriver()->DefaultTextHeight() : theHeight);
-  aParams.HAlign      = theHTA;
-  aParams.VAlign      = theVTA;
-
-  OpenGl_Text* aText = new OpenGl_Text (theTextUtf, theOrientation, aParams, theHasOwnAnchor != Standard_False);
+  OpenGl_Text* aText = new OpenGl_Text (theTextParams);
 
   AddElement (aText);
-
-  Graphic3d_Group::Text (theTextUtf,
-                         theOrientation,
-                         theHeight,
-                         theAngle,
-                         theTp,
-                         theHTA,
-                         theVTA,
-                         theToEvalMinMax,
-                         theHasOwnAnchor);
-
+  Graphic3d_Group::AddText (theTextParams, theToEvalMinMax);
 }
 
 // =======================================================================

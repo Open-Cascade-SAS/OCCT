@@ -19,13 +19,13 @@
 #include <OpenGl_Element.hxx>
 
 #include <OpenGl_Aspects.hxx>
-#include <OpenGl_TextParam.hxx>
 #include <OpenGl_TextBuilder.hxx>
 
 #include <TCollection_ExtendedString.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_RenderingParams.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 
 #include <gp_Ax2.hxx>
@@ -36,33 +36,30 @@ class OpenGl_Text : public OpenGl_Element
 
 public:
 
-  //! Main constructor
-  Standard_EXPORT OpenGl_Text (const Standard_Utf8Char* theText,
-                               const OpenGl_Vec3&       thePoint,
-                               const OpenGl_TextParam&  theParams);
-
   //! Creates new text in 3D space.
-  Standard_EXPORT OpenGl_Text (const Standard_Utf8Char* theText,
-                               const gp_Ax2&            theOrientation,
-                               const OpenGl_TextParam&  theParams,
-                               const bool               theHasOwnAnchor = true);
+  Standard_EXPORT OpenGl_Text (const Handle(Graphic3d_Text)& theTextParams);
 
   //! Destructor
   Standard_EXPORT virtual ~OpenGl_Text();
 
-  //! Setup new string and position
-  Standard_EXPORT void Init (const Handle(OpenGl_Context)& theCtx,
-                             const Standard_Utf8Char*      theText,
-                             const OpenGl_Vec3&            thePoint);
+  //! Release cached VBO resources and the previous font if height changed.
+  //! Cached structures will be refilled by the next render.
+  //! Call Reset after modifying text parameters.
+  Standard_EXPORT void Reset (const Handle(OpenGl_Context)& theCtx);
 
-  //! Setup new string and parameters
-  Standard_EXPORT void Init (const Handle(OpenGl_Context)& theCtx,
-                             const Standard_Utf8Char*      theText,
-                             const OpenGl_Vec3&            thePoint,
-                             const OpenGl_TextParam&       theParams);
+  //! Returns text parameters
+  //! @sa Reset()
+  const Handle(Graphic3d_Text)& Text() const { return myText; }
 
-  //! Setup new position
-  Standard_EXPORT void SetPosition (const OpenGl_Vec3& thePoint);
+  //! Sets text parameters
+  //! @sa Reset()
+  void SetText (const Handle(Graphic3d_Text)& theText) { myText = theText; }
+
+  //! Return true if text is 2D
+  Standard_Boolean Is2D() const { return myIs2d; }
+
+  //! Set true if text is 2D
+  void Set2D (const Standard_Boolean theEnable) { myIs2d = theEnable; }
 
   //! Setup new font size
   Standard_EXPORT void SetFontSize (const Handle(OpenGl_Context)& theContext,
@@ -70,12 +67,6 @@ public:
 
   Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
-
-  //! Return defined text.
-  const NCollection_String& Text() const { return myString; }
-
-  //! Return text formatting parameters.
-  const OpenGl_TextParam& FormatParams() const { return myParams; }
 
 public: //! @name methods for compatibility with layers
 
@@ -98,22 +89,29 @@ public: //! @name methods for compatibility with layers
   Standard_EXPORT static void StringSize (const Handle(OpenGl_Context)& theCtx,
                                           const NCollection_String&     theText,
                                           const OpenGl_Aspects&         theTextAspect,
-                                          const OpenGl_TextParam&       theParams,
+                                          const Standard_ShortReal      theHeight,
                                           const unsigned int            theResolution,
                                           Standard_ShortReal&           theWidth,
                                           Standard_ShortReal&           theAscent,
                                           Standard_ShortReal&           theDescent);
 
-  //! Setup new string and parameters
-  Standard_EXPORT void Init (const Handle(OpenGl_Context)&     theCtx,
-                             const TCollection_ExtendedString& theText,
-                             const OpenGl_Vec2&                thePoint,
-                             const OpenGl_TextParam&           theParams);
-
   //! Perform rendering
   Standard_EXPORT void Render (const Handle(OpenGl_Context)& theCtx,
                                const OpenGl_Aspects& theTextAspect,
                                unsigned int theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
+
+//! @name obsolete methods
+public:
+
+  //! Setup new string and position
+  Standard_DEPRECATED("Deprecated method Init() with obsolete arguments, use Init() and Text() instead of it")
+  Standard_EXPORT void Init (const Handle(OpenGl_Context)& theCtx,
+                             const Standard_Utf8Char*      theText,
+                             const OpenGl_Vec3&            thePoint);
+
+  //! Setup new position
+  Standard_DEPRECATED("Deprecated method SetPosition(), use Graphic3d_Text for it")
+  Standard_EXPORT void SetPosition (const OpenGl_Vec3& thePoint);
 
 protected:
 
@@ -148,6 +146,7 @@ private:
 
 protected:
 
+  Handle(Graphic3d_Text)                                  myText;     //!< text parameters
   mutable Handle(OpenGl_Font)                             myFont;
   mutable NCollection_Vector<GLuint>                      myTextures;   //!< textures' IDs
   mutable NCollection_Vector<Handle(OpenGl_VertexBuffer)> myVertsVbo;   //!< VBOs of vertices
@@ -162,18 +161,10 @@ protected:
   mutable OpenGl_Mat4d myOrientationMatrix;
   mutable OpenGl_Vec3d myWinXYZ;
   mutable GLdouble myScaleHeight;
-  mutable GLdouble myExportHeight;
 
 protected:
 
-  OpenGl_TextParam   myParams;
-  NCollection_String myString;
-  OpenGl_Vec3        myPoint;
-  bool               myIs2d;
-  gp_Ax2             myOrientation; //!< Text orientation in 3D space.
-  bool               myHasPlane;    //!< Check if text have orientation in 3D space.
-  bool               myHasAnchorPoint; //!< Shows if it has own attach point
-
+  Standard_Boolean myIs2d;
 public:
 
   DEFINE_STANDARD_ALLOC

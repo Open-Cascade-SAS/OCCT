@@ -136,6 +136,8 @@ Graphic3d_StructureDefinitionError.hxx
 Graphic3d_StructureManager.cxx
 Graphic3d_StructureManager.hxx
 Graphic3d_TextPath.hxx
+Graphic3d_Text.cxx
+Graphic3d_Text.hxx
 Graphic3d_Texture1D.cxx
 Graphic3d_Texture1D.hxx
 Graphic3d_Texture1Dmanual.cxx

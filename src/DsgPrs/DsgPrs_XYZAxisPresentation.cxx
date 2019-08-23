@@ -19,6 +19,7 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
@@ -36,7 +37,7 @@ void DsgPrs_XYZAxisPresentation::Add(
 		       const Handle(Prs3d_LineAspect)& aLineAspect,	     
 		       const gp_Dir & aDir, 
 		       const Standard_Real aVal,
-		       const Standard_CString aText,
+		       const Standard_CString theText,
 		       const gp_Pnt& aPfirst,
 		       const gp_Pnt& aPlast)
 {
@@ -50,10 +51,12 @@ void DsgPrs_XYZAxisPresentation::Add(
  
   Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPlast,aDir, M_PI/180.*10., aVal/10.);
 
-  if (*aText != '\0')
+  if (*theText != '\0')
   {
-    Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
+    Handle(Graphic3d_Text) aText = new Graphic3d_Text (1.0f/81.0f);
+    aText->SetText (theText);
+    aText->SetPosition (aPlast);
+    Prs3d_Root::CurrentGroup(aPresentation)->AddText (aText);
   }
 }
 
@@ -64,7 +67,7 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 				     const Handle(Prs3d_TextAspect)& aTextAspect,
 				     const gp_Dir & aDir, 
 				     const Standard_Real aVal,
-				     const Standard_CString aText,
+				     const Standard_CString theText,
 				     const gp_Pnt& aPfirst,
 				     const gp_Pnt& aPlast)
 {
@@ -81,9 +84,11 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 
   G->SetPrimitivesAspect(aTextAspect->Aspect());
 
-  if (*aText != '\0')
+  if (*theText != '\0')
   {
-    Graphic3d_Vertex a2(aPlast.X(),aPlast.Y(),aPlast.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Text(aText,a2,1./81.);
+    Handle(Graphic3d_Text) aText = new Graphic3d_Text (1.0f/81.0f);
+    aText->SetText (theText);
+    aText->SetPosition (aPlast);
+    Prs3d_Root::CurrentGroup(aPresentation)->AddText(aText);
   }
 }

@@ -91,41 +91,45 @@ void OpenGl_FrameStatsPrs::Update (const Handle(OpenGl_Workspace)& theWorkspace)
   myTextAspect.SetAspect (aRendParams.StatsTextAspect);
 
   // adjust text alignment depending on corner
-  OpenGl_TextParam aParams;
-  aParams.Height = aRendParams.StatsTextHeight;
-  aParams.HAlign = Graphic3d_HTA_CENTER;
-  aParams.VAlign = Graphic3d_VTA_CENTER;
+  Graphic3d_Text aParams ((Standard_ShortReal)aRendParams.StatsTextHeight);
+  aParams.SetHorizontalAlignment (Graphic3d_HTA_CENTER);
+  aParams.SetVerticalAlignment (Graphic3d_VTA_CENTER);
   if (!myCountersTrsfPers.IsNull() && (myCountersTrsfPers->Corner2d() & Aspect_TOTP_LEFT) != 0)
   {
-    aParams.HAlign = Graphic3d_HTA_LEFT;
+    aParams.SetHorizontalAlignment (Graphic3d_HTA_LEFT);
   }
   else if (!myCountersTrsfPers.IsNull() && (myCountersTrsfPers->Corner2d() & Aspect_TOTP_RIGHT) != 0)
   {
-    aParams.HAlign = Graphic3d_HTA_RIGHT;
+    aParams.SetHorizontalAlignment (Graphic3d_HTA_RIGHT);
   }
   if (!myCountersTrsfPers.IsNull() && (myCountersTrsfPers->Corner2d() & Aspect_TOTP_TOP) != 0)
   {
-    aParams.VAlign = Graphic3d_VTA_TOP;
+    aParams.SetVerticalAlignment (Graphic3d_VTA_TOP);
   }
   else if (!myCountersTrsfPers.IsNull() && (myCountersTrsfPers->Corner2d() & Aspect_TOTP_BOTTOM) != 0)
   {
-    aParams.VAlign = Graphic3d_VTA_BOTTOM;
+    aParams.SetVerticalAlignment (Graphic3d_VTA_BOTTOM);
   }
-  if (aParams.Height != myCountersText.FormatParams().Height
-   || aParams.HAlign != myCountersText.FormatParams().HAlign
-   || aParams.VAlign != myCountersText.FormatParams().VAlign)
+  if (aParams.Height() != myCountersText.Text()->Height()
+   || aParams.HorizontalAlignment() != myCountersText.Text()->HorizontalAlignment()
+   || aParams.VerticalAlignment() != myCountersText.Text()->VerticalAlignment())
   {
     myCountersText.Release (aCtx.operator->());
   }
 
   if (!aStats->IsFrameUpdated (myStatsPrev)
-   && !myCountersText.Text().IsEmpty())
+   && !myCountersText.Text()->Text().IsEmpty())
   {
     return;
   }
 
-  TCollection_AsciiString aText = aStats->FormatStats (aRendParams.CollectedStats);
-  myCountersText.Init (aCtx, aText.ToCString(), OpenGl_Vec3 (0.0f, 0.0f, 0.0f), aParams);
+  Handle(Graphic3d_Text) aText = myCountersText.Text();
+  aText->SetText (aStats->FormatStats (aRendParams.CollectedStats).ToCString());
+  aText->SetHeight (aParams.Height());
+  aText->SetPosition (gp_Pnt());
+  aText->SetHorizontalAlignment (aParams.HorizontalAlignment());
+  aText->SetVerticalAlignment (aParams.VerticalAlignment());
+  myCountersText.Reset (aCtx);
 
   updateChart (theWorkspace);
 }
@@ -323,14 +327,13 @@ void OpenGl_FrameStatsPrs::updateChart (const Handle(OpenGl_Workspace)& theWorks
   }
 
   {
-    OpenGl_TextParam aParams;
-    aParams.Height = aRendParams.StatsTextHeight;
-    aParams.HAlign = (!myChartTrsfPers.IsNull()
+    Graphic3d_Text aParams ((Standard_ShortReal)aRendParams.StatsTextHeight);
+    aParams.SetHorizontalAlignment ((!myChartTrsfPers.IsNull()
                     && myChartTrsfPers->IsTrihedronOr2d()
                     && (myChartTrsfPers->Corner2d() & Aspect_TOTP_RIGHT) != 0)
                     ? Graphic3d_HTA_RIGHT
-                    : Graphic3d_HTA_LEFT;
-    aParams.VAlign = Graphic3d_VTA_CENTER;
+                    : Graphic3d_HTA_LEFT);
+    aParams.SetVerticalAlignment (Graphic3d_VTA_CENTER);
     TCollection_AsciiString aLabels[3] =
     {
       TCollection_AsciiString() + 0 + " ms",
@@ -338,12 +341,27 @@ void OpenGl_FrameStatsPrs::updateChart (const Handle(OpenGl_Workspace)& theWorks
       formatTimeMs(aMaxDuration)
     };
 
-    const float aLabX = aParams.HAlign == Graphic3d_HTA_RIGHT
+    const float aLabX = aParams.HorizontalAlignment() == Graphic3d_HTA_RIGHT
                       ? float(anOffset.x())
                       : float(anOffset.x() + aCharSize.x());
-    myChartLabels[0].Init (aCtx, aLabels[isTopDown ? 0 : 2].ToCString(), OpenGl_Vec3 (aLabX, float(anOffset.y()),                    0.0f), aParams);
-    myChartLabels[1].Init (aCtx, aLabels[isTopDown ? 1 : 1].ToCString(), OpenGl_Vec3 (aLabX, float(anOffset.y() - aBinSize.y() / 2), 0.0f), aParams);
-    myChartLabels[2].Init (aCtx, aLabels[isTopDown ? 2 : 0].ToCString(), OpenGl_Vec3 (aLabX, float(anOffset.y() - aBinSize.y()),     0.0f), aParams);
+
+    myChartLabels[0].Text()->SetText (aLabels[isTopDown ? 0 : 2].ToCString());
+    myChartLabels[0].Text()->SetPosition (gp_Pnt (aLabX, float(anOffset.y()), 0.0f));
+
+    myChartLabels[1].Text()->SetText (aLabels[isTopDown ? 1 : 1].ToCString());
+    myChartLabels[1].Text()->SetPosition (gp_Pnt (aLabX, float(anOffset.y() - aBinSize.y() / 2), 0.0f));
+
+    myChartLabels[2].Text()->SetText (aLabels[isTopDown ? 2 : 0].ToCString());
+    myChartLabels[2].Text()->SetPosition (gp_Pnt (aLabX, float(anOffset.y() - aBinSize.y()), 0.0f));
+
+    for (int i = 0; i < 3; i++)
+    {
+      myChartLabels[i].Text()->SetHeight (aParams.Height());
+      myChartLabels[i].Text()->SetHorizontalAlignment (aParams.HorizontalAlignment());
+      myChartLabels[i].Text()->SetVerticalAlignment (aParams.VerticalAlignment());
+
+      myChartLabels[i].Reset(aCtx);
+    }
   }
 }
 

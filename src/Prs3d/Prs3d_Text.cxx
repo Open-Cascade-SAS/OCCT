@@ -18,6 +18,7 @@
 
 #include <gp_Pnt.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -33,17 +34,14 @@ void Prs3d_Text::Draw (const Handle(Graphic3d_Group)& theGroup,
                        const TCollection_ExtendedString& theText,
                        const gp_Pnt& theAttachmentPoint)
 {
-  Standard_Real x, y, z;
-  theAttachmentPoint.Coord(x,y,z);
-
   theGroup->SetPrimitivesAspect (theAspect->Aspect());
-  theGroup->Text (theText,
-                  Graphic3d_Vertex(x,y,z),
-                  theAspect->Height(),
-                  theAspect->Angle(),
-                  theAspect->Orientation(),
-                  theAspect->HorizontalJustification(),
-                  theAspect->VerticalJustification());
+
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theAspect->Height());
+  aText->SetText (theText.ToExtString());
+  aText->SetPosition (theAttachmentPoint);
+  aText->SetHorizontalAlignment (theAspect->HorizontalJustification());
+  aText->SetVerticalAlignment (theAspect->VerticalJustification());
+  theGroup->AddText (aText);
 }
 
 // =======================================================================
@@ -57,13 +55,12 @@ void Prs3d_Text::Draw (const Handle(Graphic3d_Group)&    theGroup,
                        const Standard_Boolean            theHasOwnAnchor)
 {
   theGroup->SetPrimitivesAspect (theAspect->Aspect());
-  theGroup->Text (theText,
-                  theOrientation,
-                  theAspect->Height(),
-                  theAspect->Angle(),
-                  theAspect->Orientation(),
-                  theAspect->HorizontalJustification(),
-                  theAspect->VerticalJustification(),
-                  Standard_True,
-                  theHasOwnAnchor);
+
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theAspect->Height());
+  aText->SetText (theText.ToExtString());
+  aText->SetOrientation (theOrientation);
+  aText->SetOwnAnchorPoint (theHasOwnAnchor);
+  aText->SetHorizontalAlignment (theAspect->HorizontalJustification());
+  aText->SetVerticalAlignment (theAspect->VerticalJustification());
+  theGroup->AddText (aText);
 }

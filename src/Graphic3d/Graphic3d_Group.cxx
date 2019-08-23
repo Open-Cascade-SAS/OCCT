@@ -29,6 +29,7 @@
 #include <Graphic3d_Structure.hxx>
 #include "Graphic3d_Structure.pxx"
 #include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
 #include <Message.hxx>
@@ -310,31 +311,21 @@ void Graphic3d_Group::Marker (const Graphic3d_Vertex& thePoint,
 // function : Text
 // purpose  :
 // =======================================================================
-void Graphic3d_Group::Text (const Standard_CString                  /*theText*/,
+void Graphic3d_Group::Text (const Standard_CString                  theText,
                             const Graphic3d_Vertex&                 thePoint,
-                            const Standard_Real                     /*theHeight*/,
+                            const Standard_Real                     theHeight,
                             const Standard_Real                     /*theAngle*/,
                             const Graphic3d_TextPath                /*theTp*/,
-                            const Graphic3d_HorizontalTextAlignment /*theHta*/,
-                            const Graphic3d_VerticalTextAlignment   /*theVta*/,
+                            const Graphic3d_HorizontalTextAlignment theHta,
+                            const Graphic3d_VerticalTextAlignment   theVta,
                             const Standard_Boolean                  theToEvalMinMax)
 {
-  if (IsDeleted())
-  {
-    return;
-  }
-
-  if (theToEvalMinMax)
-  {
-    Standard_ShortReal x, y, z;
-    thePoint.Coord (x, y, z);
-    myStructure->CStructure()->Is2dText = Standard_True;
-    myBounds.Add (Graphic3d_Vec4 (static_cast<Standard_ShortReal> (x),
-                                  static_cast<Standard_ShortReal> (y),
-                                  static_cast<Standard_ShortReal> (z),
-                                  1.0f));
-  }
-  Update();
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theHeight);
+  aText->SetText (theText);
+  aText->SetPosition (gp_Pnt (thePoint.X(), thePoint.Y(), thePoint.Z()));
+  aText->SetHorizontalAlignment (theHta);
+  aText->SetVerticalAlignment (theVta);
+  AddText (aText, theToEvalMinMax);
 }
 
 // =======================================================================
@@ -346,8 +337,10 @@ void Graphic3d_Group::Text (const Standard_CString  theText,
                             const Standard_Real     theHeight,
                             const Standard_Boolean  theToEvalMinMax)
 {
-  Text (theText, thePoint, theHeight, 0.0,
-        Graphic3d_TP_RIGHT, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM, theToEvalMinMax);
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theHeight);
+  aText->SetText (theText);
+  aText->SetPosition (gp_Pnt (thePoint.X(), thePoint.Y(), thePoint.Z()));
+  AddText (aText, theToEvalMinMax);
 }
 
 // =======================================================================
@@ -357,15 +350,18 @@ void Graphic3d_Group::Text (const Standard_CString  theText,
 void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
                             const Graphic3d_Vertex&                 thePoint,
                             const Standard_Real                     theHeight,
-                            const Standard_Real                     theAngle,
-                            const Graphic3d_TextPath                theTp,
+                            const Standard_Real                     /*theAngle*/,
+                            const Graphic3d_TextPath                /*theTp*/,
                             const Graphic3d_HorizontalTextAlignment theHta,
                             const Graphic3d_VerticalTextAlignment   theVta,
                             const Standard_Boolean                  theToEvalMinMax)
 {
-  const NCollection_String aText (theText.ToExtString());
-  Text (aText.ToCString(), thePoint, theHeight, theAngle,
-        theTp, theHta, theVta, theToEvalMinMax);
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theHeight);
+  aText->SetText (theText.ToExtString());
+  aText->SetPosition (gp_Pnt (thePoint.X(), thePoint.Y(), thePoint.Z()));
+  aText->SetHorizontalAlignment (theHta);
+  aText->SetVerticalAlignment (theVta);
+  AddText (aText, theToEvalMinMax);
 }
 
 // =======================================================================
@@ -375,53 +371,43 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
 void Graphic3d_Group::Text (const TCollection_ExtendedString&       theText,
                             const gp_Ax2&                           theOrientation,
                             const Standard_Real                     theHeight,
-                            const Standard_Real                     theAngle,
-                            const Graphic3d_TextPath                theTP,
-                            const Graphic3d_HorizontalTextAlignment theHTA,
-                            const Graphic3d_VerticalTextAlignment   theVTA,
+                            const Standard_Real                     /*theAngle*/,
+                            const Graphic3d_TextPath                /*theTP*/,
+                            const Graphic3d_HorizontalTextAlignment theHta,
+                            const Graphic3d_VerticalTextAlignment   theVta,
                             const Standard_Boolean                  theToEvalMinMax,
                             const Standard_Boolean                  theHasOwnAnchor)
 {
-  const NCollection_String aText (theText.ToExtString());
-  Text (aText.ToCString(),
-        theOrientation,
-        theHeight,
-        theAngle,
-        theTP,
-        theHTA,
-        theVTA,
-        theToEvalMinMax,
-        theHasOwnAnchor);
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theHeight);
+  aText->SetText (theText.ToExtString());
+  aText->SetOrientation (theOrientation);
+  aText->SetOwnAnchorPoint (theHasOwnAnchor);
+  aText->SetHorizontalAlignment (theHta);
+  aText->SetVerticalAlignment (theVta);
+  AddText (aText, theToEvalMinMax);
 }
 
 // =======================================================================
 // function : Text
 // purpose  :
 // =======================================================================
-void Graphic3d_Group::Text (const Standard_CString                  /*theText*/,
+void Graphic3d_Group::Text (const Standard_CString                  theText,
                             const gp_Ax2&                           theOrientation,
-                            const Standard_Real                     /*theHeight*/,
+                            const Standard_Real                     theHeight,
                             const Standard_Real                     /*theAngle*/,
                             const Graphic3d_TextPath                /*theTp*/,
-                            const Graphic3d_HorizontalTextAlignment /*theHta*/,
-                            const Graphic3d_VerticalTextAlignment   /*theVta*/,
+                            const Graphic3d_HorizontalTextAlignment theHta,
+                            const Graphic3d_VerticalTextAlignment   theVta,
                             const Standard_Boolean                  theToEvalMinMax,
-                            const Standard_Boolean                  /*theHasOwnAnchor*/)
+                            const Standard_Boolean                  theHasOwnAnchor)
 {
-  if (IsDeleted())
-  {
-    return;
-  }
-
-  if (theToEvalMinMax)
-  {
-    myStructure->CStructure()->Is2dText = Standard_False;
-    myBounds.Add (Graphic3d_Vec4 (static_cast<Standard_ShortReal> (theOrientation.Location().X()),
-                                  static_cast<Standard_ShortReal> (theOrientation.Location().Y()),
-                                  static_cast<Standard_ShortReal> (theOrientation.Location().Z()),
-                                  1.0f));
-  }
-  Update();
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theHeight);
+  aText->SetText (theText);
+  aText->SetOrientation (theOrientation);
+  aText->SetOwnAnchorPoint (theHasOwnAnchor);
+  aText->SetHorizontalAlignment (theHta);
+  aText->SetVerticalAlignment (theVta);
+  AddText (aText, theToEvalMinMax);
 }
 
 // =======================================================================
@@ -433,7 +419,31 @@ void Graphic3d_Group::Text (const TCollection_ExtendedString& theText,
                             const Standard_Real               theHeight,
                             const Standard_Boolean            theToEvalMinMax)
 {
-  const NCollection_String aText (theText.ToExtString());
-  Text (aText.ToCString(), thePoint, theHeight, 0.0,
-        Graphic3d_TP_RIGHT, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM, theToEvalMinMax);
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)theHeight);
+  aText->SetText (theText.ToExtString());
+  aText->SetPosition (gp_Pnt (thePoint.X(), thePoint.Y(), thePoint.Z()));
+  AddText (aText, theToEvalMinMax);
+}
+
+// =======================================================================
+// function : AddText
+// purpose  :
+// =======================================================================
+void Graphic3d_Group::AddText (const Handle(Graphic3d_Text)& theTextParams,
+                               const Standard_Boolean theToEvalMinMax)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
+
+  if (theToEvalMinMax)
+  {
+    myStructure->CStructure()->Is2dText = !theTextParams->HasPlane();
+
+    gp_Pnt aPosition = theTextParams->Position();
+    myBounds.Add (Graphic3d_Vec4 ((Standard_ShortReal)aPosition.X(), (Standard_ShortReal)aPosition.Y(), (Standard_ShortReal)aPosition.Z(), 1.0f));
+  }
+
+  Update();
 }

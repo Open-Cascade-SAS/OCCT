@@ -43,7 +43,6 @@ OpenGl_Material.hxx
 OpenGl_MaterialState.hxx
 OpenGl_Matrix.hxx
 OpenGl_MatrixState.hxx
-OpenGl_TextParam.hxx
 OpenGl_LineAttributes.hxx
 OpenGl_LineAttributes.cxx
 OpenGl_Window.hxx

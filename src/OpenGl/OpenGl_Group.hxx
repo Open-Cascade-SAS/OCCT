@@ -71,27 +71,9 @@ public:
                                                   const Handle(Graphic3d_BoundBuffer)& theBounds,
                                                   const Standard_Boolean               theToEvalMinMax) Standard_OVERRIDE;
 
-  //! Add text element
-  Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
-                                     const Graphic3d_Vertex&                 thePoint,
-                                     const Standard_Real                     theHeight,
-                                     const Standard_Real                     theAngle,
-                                     const Graphic3d_TextPath                theTp,
-                                     const Graphic3d_HorizontalTextAlignment theHta,
-                                     const Graphic3d_VerticalTextAlignment   theVta,
-                                     const Standard_Boolean                  theToEvalMinMax) Standard_OVERRIDE;
-
-  //! Add text element in 3D space.
-  Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
-                                     const gp_Ax2&                           theOrientation,
-                                     const Standard_Real                     theHeight,
-                                     const Standard_Real                     theAngle,
-                                     const Graphic3d_TextPath                theTp,
-                                     const Graphic3d_HorizontalTextAlignment theHTA,
-                                     const Graphic3d_VerticalTextAlignment   theVTA,
-                                     const Standard_Boolean                  theToEvalMinMax,
-                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True) Standard_OVERRIDE;
-
+  //! Adds a text for display
+  Standard_EXPORT virtual void AddText (const Handle(Graphic3d_Text)& theTextParams,
+                                        const Standard_Boolean theToEvalMinMax) Standard_OVERRIDE;
   //! Add flipping element
   Standard_EXPORT virtual void SetFlippingOptions (const Standard_Boolean theIsEnabled,
                                                    const gp_Ax2&          theRefPlane) Standard_OVERRIDE;

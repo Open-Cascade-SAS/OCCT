@@ -18,6 +18,7 @@
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <MeshVS_Buffer.hxx>
@@ -251,8 +252,11 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
         }
 
         aPnts.Append (Graphic3d_Vec3 ((float )X, (float )Y, (float )Z));
-        Graphic3d_Vertex aPoint (X, Y, Z);
-        aTextGroup->Text (aStr.ToCString(), aPoint, aHeight);
+
+        Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)aHeight);
+        aText->SetText (aStr);
+        aText->SetPosition (gp_Pnt (X, Y, Z));
+        aTextGroup->AddText(aText);
       }
     }
   }

@@ -22,6 +22,7 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Type.hxx>
 #include <V3d.hxx>
@@ -547,17 +548,26 @@ void V3d_Viewer::DisplayPrivilegedPlane (const Standard_Boolean theOnOff, const 
   const gp_Pnt pX (p0.XYZ() + myDisplayPlaneLength * myPrivilegedPlane.XDirection().XYZ());
   aPrims->AddVertex (p0);
   aPrims->AddVertex (pX);
-  aGroup->Text ("X", Graphic3d_Vertex (pX.X(), pX.Y(), pX.Z()), 1.0 / 81.0);
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text (1.0f / 81.0f);
+  aText->SetText ("X");
+  aText->SetPosition (pX);
+  aGroup->AddText (aText);
 
   const gp_Pnt pY (p0.XYZ() + myDisplayPlaneLength * myPrivilegedPlane.YDirection().XYZ());
   aPrims->AddVertex (p0);
   aPrims->AddVertex (pY);
-  aGroup->Text ("Y", Graphic3d_Vertex (pY.X(), pY.Y(), pY.Z()), 1.0 / 81.0);
+  aText = new Graphic3d_Text (1.0f / 81.0f);
+  aText->SetText ("Y");
+  aText->SetPosition (pY);
+  aGroup->AddText (aText);
 
   const gp_Pnt pZ (p0.XYZ() + myDisplayPlaneLength * myPrivilegedPlane.Direction().XYZ());
   aPrims->AddVertex (p0);
   aPrims->AddVertex (pZ);
-  aGroup->Text ("Z", Graphic3d_Vertex (pZ.X(), pZ.Y(), pZ.Z()), 1.0 / 81.0);
+  aText = new Graphic3d_Text (1.0f / 81.0f);
+  aText->SetText ("Z");
+  aText->SetPosition (pZ);
+  aGroup->AddText (aText);
 
   aGroup->AddPrimitiveArray (aPrims);
 

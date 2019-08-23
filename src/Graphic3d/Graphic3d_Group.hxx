@@ -37,6 +37,7 @@
 
 class Graphic3d_Structure;
 class Graphic3d_ArrayOfPrimitives;
+class Graphic3d_Text;
 
 //! This class allows the definition of groups
 //! of primitives inside of graphic objects (presentations).
@@ -110,87 +111,16 @@ public:
   //! Replace aspects specified in the replacement map.
   virtual void ReplaceAspects (const Graphic3d_MapOfAspectsToAspects& theMap) = 0;
 
-public:
-
-  //! Creates the string <AText> at position <APoint>.
-  //! The 3D point of attachment is projected. The text is
-  //! written in the plane of projection.
-  //! The attributes are given with respect to the plane of
-  //! projection.
-  //! AHeight : Height of text.
-  //! (Relative to the Normalized Projection
-  //! Coordinates (NPC) Space).
-  //! AAngle  : Orientation of the text
-  //! (with respect to the horizontal).
-  Standard_EXPORT virtual void Text (const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Real AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
-
-  //! Creates the string <AText> at position <APoint>.
-  //! The 3D point of attachment is projected. The text is
-  //! written in the plane of projection.
-  //! The attributes are given with respect to the plane of
-  //! projection.
-  //! AHeight : Height of text.
-  //! (Relative to the Normalized Projection
-  //! Coordinates (NPC) Space).
-  //! The other attributes have the following default values:
-  //! AAngle  : PI / 2.
-  //! ATp     : TP_RIGHT
-  //! AHta    : HTA_LEFT
-  //! AVta    : VTA_BOTTOM
-  Standard_EXPORT void Text (const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Boolean EvalMinMax = Standard_True);
-
-  //! Creates the string <AText> at position <APoint>.
-  //! The 3D point of attachment is projected. The text is
-  //! written in the plane of projection.
-  //! The attributes are given with respect to the plane of
-  //! projection.
-  //! AHeight : Height of text.
-  //! (Relative to the Normalized Projection
-  //! Coordinates (NPC) Space).
-  //! AAngle  : Orientation of the text
-  //! (with respect to the horizontal).
-  Standard_EXPORT void Text (const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Real AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
-
-  //! Creates the string <AText> at position <APoint>.
-  //! The 3D point of attachment is projected. The text is
-  //! written in the plane of projection.
-  //! The attributes are given with respect to the plane of
-  //! projection.
-  //! AHeight : Height of text.
-  //! (Relative to the Normalized Projection
-  //! Coordinates (NPC) Space).
-  //! The other attributes have the following default values:
-  //! AAngle  : PI / 2.
-  //! ATp     : TP_RIGHT
-  //! AHta    : HTA_LEFT
-  //! AVta    : VTA_BOTTOM
-  Standard_EXPORT void Text (const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Boolean EvalMinMax = Standard_True);
-
-  //! Creates the string <theText> at orientation <theOrientation> in 3D space.
-  Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
-                                     const gp_Ax2&                           theOrientation,
-                                     const Standard_Real                     theHeight,
-                                     const Standard_Real                     theAngle,
-                                     const Graphic3d_TextPath                theTp,
-                                     const Graphic3d_HorizontalTextAlignment theHTA,
-                                     const Graphic3d_VerticalTextAlignment   theVTA,
-                                     const Standard_Boolean                  theToEvalMinMax = Standard_True,
-                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True);
-
-  //! Creates the string <theText> at orientation <theOrientation> in 3D space.
-  Standard_EXPORT virtual void Text (const TCollection_ExtendedString&       theText,
-                                     const gp_Ax2&                           theOrientation,
-                                     const Standard_Real                     theHeight,
-                                     const Standard_Real                     theAngle,
-                                     const Graphic3d_TextPath                theTp,
-                                     const Graphic3d_HorizontalTextAlignment theHTA,
-                                     const Graphic3d_VerticalTextAlignment   theVTA,
-                                     const Standard_Boolean                  theToEvalMinMax = Standard_True,
-                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True);
-
+  //! Adds a text for display
+  Standard_EXPORT virtual void AddText (const Handle(Graphic3d_Text)& theTextParams,
+                                        const Standard_Boolean theToEvalMinMax = Standard_True);
 
   //! Adds an array of primitives for display
-  Standard_EXPORT virtual void AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType, const Handle(Graphic3d_IndexBuffer)& theIndices, const Handle(Graphic3d_Buffer)& theAttribs, const Handle(Graphic3d_BoundBuffer)& theBounds, const Standard_Boolean theToEvalMinMax = Standard_True);
+  Standard_EXPORT virtual void AddPrimitiveArray (const Graphic3d_TypeOfPrimitiveArray theType,
+                                                  const Handle(Graphic3d_IndexBuffer)& theIndices,
+                                                  const Handle(Graphic3d_Buffer)& theAttribs,
+                                                  const Handle(Graphic3d_BoundBuffer)& theBounds,
+                                                  const Standard_Boolean theToEvalMinMax = Standard_True);
 
   //! Adds an array of primitives for display
   Standard_EXPORT void AddPrimitiveArray (const Handle(Graphic3d_ArrayOfPrimitives)& thePrim, const Standard_Boolean theToEvalMinMax = Standard_True);
@@ -239,6 +169,112 @@ public:
 
   //! Return true if primitive arrays within this graphic group form closed volume (do no contain open shells).
   bool IsClosed() const { return myIsClosed; }
+
+//! @name obsolete methods
+public:
+
+  //! Creates the string <AText> at position <APoint>.
+  //! The 3D point of attachment is projected. The text is
+  //! written in the plane of projection.
+  //! The attributes are given with respect to the plane of
+  //! projection.
+  //! AHeight : Height of text.
+  //! (Relative to the Normalized Projection
+  //! Coordinates (NPC) Space).
+  //! AAngle  : Orientation of the text
+  //! (with respect to the horizontal).
+  Standard_DEPRECATED("Deprecated method Text() with obsolete arguments, use AddText() instead of it")
+  Standard_EXPORT virtual void Text (const Standard_CString AText,
+                                     const Graphic3d_Vertex& APoint,
+                                     const Standard_Real AHeight,
+                                     const Standard_Real AAngle,
+                                     const Graphic3d_TextPath ATp,
+                                     const Graphic3d_HorizontalTextAlignment AHta,
+                                     const Graphic3d_VerticalTextAlignment AVta,
+                                     const Standard_Boolean EvalMinMax = Standard_True);
+
+  //! Creates the string <AText> at position <APoint>.
+  //! The 3D point of attachment is projected. The text is
+  //! written in the plane of projection.
+  //! The attributes are given with respect to the plane of
+  //! projection.
+  //! AHeight : Height of text.
+  //! (Relative to the Normalized Projection
+  //! Coordinates (NPC) Space).
+  //! The other attributes have the following default values:
+  //! AAngle  : PI / 2.
+  //! ATp     : TP_RIGHT
+  //! AHta    : HTA_LEFT
+  //! AVta    : VTA_BOTTOM
+  Standard_DEPRECATED("Deprecated method Text() with obsolete arguments, use AddText() instead of it")
+  Standard_EXPORT void Text (const Standard_CString AText,
+                             const Graphic3d_Vertex& APoint,
+                             const Standard_Real AHeight,
+                             const Standard_Boolean EvalMinMax = Standard_True);
+
+  //! Creates the string <AText> at position <APoint>.
+  //! The 3D point of attachment is projected. The text is
+  //! written in the plane of projection.
+  //! The attributes are given with respect to the plane of
+  //! projection.
+  //! AHeight : Height of text.
+  //! (Relative to the Normalized Projection
+  //! Coordinates (NPC) Space).
+  //! AAngle  : Orientation of the text
+  //! (with respect to the horizontal).
+  Standard_DEPRECATED("Deprecated method Text() with obsolete arguments, use AddText() instead of it")
+  Standard_EXPORT void Text (const TCollection_ExtendedString& AText,
+                             const Graphic3d_Vertex& APoint,
+                             const Standard_Real AHeight,
+                             const Standard_Real AAngle,
+                             const Graphic3d_TextPath ATp,
+                             const Graphic3d_HorizontalTextAlignment AHta,
+                             const Graphic3d_VerticalTextAlignment AVta,
+                             const Standard_Boolean EvalMinMax = Standard_True);
+
+  //! Creates the string <AText> at position <APoint>.
+  //! The 3D point of attachment is projected. The text is
+  //! written in the plane of projection.
+  //! The attributes are given with respect to the plane of
+  //! projection.
+  //! AHeight : Height of text.
+  //! (Relative to the Normalized Projection
+  //! Coordinates (NPC) Space).
+  //! The other attributes have the following default values:
+  //! AAngle  : PI / 2.
+  //! ATp     : TP_RIGHT
+  //! AHta    : HTA_LEFT
+  //! AVta    : VTA_BOTTOM
+  Standard_DEPRECATED("Deprecated method Text() with obsolete arguments, use AddText() instead of it")
+  Standard_EXPORT void Text (const TCollection_ExtendedString& AText,
+                             const Graphic3d_Vertex& APoint,
+                             const Standard_Real AHeight,
+                             const Standard_Boolean EvalMinMax = Standard_True);
+
+  //! Creates the string <theText> at orientation <theOrientation> in 3D space.
+  Standard_DEPRECATED("Deprecated method Text() with obsolete arguments, use AddText() instead of it")
+  Standard_EXPORT virtual void Text (const Standard_CString                  theTextUtf,
+                                     const gp_Ax2&                           theOrientation,
+                                     const Standard_Real                     theHeight,
+                                     const Standard_Real                     theAngle,
+                                     const Graphic3d_TextPath                theTp,
+                                     const Graphic3d_HorizontalTextAlignment theHTA,
+                                     const Graphic3d_VerticalTextAlignment   theVTA,
+                                     const Standard_Boolean                  theToEvalMinMax = Standard_True,
+                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True);
+
+  //! Creates the string <theText> at orientation <theOrientation> in 3D space.
+  Standard_DEPRECATED("Deprecated method Text() with obsolete arguments, use AddText() instead of it")
+  Standard_EXPORT virtual void Text (const TCollection_ExtendedString&       theText,
+                                     const gp_Ax2&                           theOrientation,
+                                     const Standard_Real                     theHeight,
+                                     const Standard_Real                     theAngle,
+                                     const Graphic3d_TextPath                theTp,
+                                     const Graphic3d_HorizontalTextAlignment theHTA,
+                                     const Graphic3d_VerticalTextAlignment   theVTA,
+                                     const Standard_Boolean                  theToEvalMinMax = Standard_True,
+                                     const Standard_Boolean                  theHasOwnAnchor = Standard_True);
+
 
 protected:
 

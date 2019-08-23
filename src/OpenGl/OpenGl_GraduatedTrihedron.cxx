@@ -20,6 +20,7 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 #include <gp_Ax3.hxx>
@@ -33,10 +34,9 @@
 
 namespace
 {
-  static const OpenGl_TextParam THE_LABEL_PARAMS =
-  {
-    16, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM
-  };
+  static Standard_ShortReal THE_LABEL_HEIGHT = 16;
+  static Graphic3d_HorizontalTextAlignment THE_LABEL_HALIGH = Graphic3d_HTA_LEFT;
+  static Graphic3d_VerticalTextAlignment THE_LABEL_VALIGH = Graphic3d_VTA_BOTTOM;
 }
 
 // =======================================================================
@@ -522,7 +522,7 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
 
     myAspectLabels.Aspect()->SetColor (anAxis.NameColor);
     theWorkspace->SetAspects (&myAspectLabels);
-    anAxis.Label.SetPosition (aMiddle);
+    anAxis.Label.Text()->SetPosition (gp_Pnt (aMiddle.x(), aMiddle.y(), aMiddle.z()));
     anAxis.Label.Render (theWorkspace);
   }
 
@@ -536,7 +536,12 @@ void OpenGl_GraduatedTrihedron::renderTickmarkLabels (const Handle(OpenGl_Worksp
     {
       sprintf (aTextValue, "%g", theGridAxes.Ticks[theIndex].GetData()[theIndex] + anIt * aStep);
       OpenGl_Vec3 aPos (theGridAxes.Ticks[theIndex] + anAxis.Direction* (Standard_ShortReal) (anIt * aStep) + aDir * (Standard_ShortReal) (theDpix * anOffset));
-      myLabelValues.Init (theWorkspace->GetGlContext(), aTextValue, aPos);
+
+      Handle(Graphic3d_Text) aText = myLabelValues.Text();
+      aText->SetText (aTextValue);
+      aText->SetPosition (gp_Pnt(aPos.x(), aPos.y(), aPos.z()));
+
+      myLabelValues.Reset (theWorkspace->GetGlContext());
       myLabelValues.Render (theWorkspace);
     }
   }
@@ -715,11 +720,16 @@ void OpenGl_GraduatedTrihedron::SetMinMax (const OpenGl_Vec3& theMin, const Open
 OpenGl_GraduatedTrihedron::Axis::Axis (const Graphic3d_AxisAspect& theAspect,
                                        const OpenGl_Vec3&          theDirection)
 : Direction (theDirection),
-  Label     (NCollection_String ((Standard_Utf16Char* )theAspect.Name().ToExtString()).ToCString(), theDirection, THE_LABEL_PARAMS),
   Tickmark  (NULL),
   Line      (NULL),
   Arrow     (NULL)
 {
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text (THE_LABEL_HEIGHT);
+  aText->SetText ((Standard_Utf16Char* )theAspect.Name().ToExtString());
+  aText->SetPosition (gp_Pnt (theDirection.x(), theDirection.y(), theDirection.z()));
+  aText->SetHorizontalAlignment (THE_LABEL_HALIGH);
+  aText->SetVerticalAlignment (THE_LABEL_VALIGH);
+  Label = OpenGl_Text (aText);
   NameColor = theAspect.NameColor();
   LineAspect.Aspect()->SetColor (theAspect.Color());
 }

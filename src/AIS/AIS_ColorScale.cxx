@@ -26,6 +26,7 @@
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
+#include <Graphic3d_Text.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -796,16 +797,14 @@ void AIS_ColorScale::drawText (const Handle(Graphic3d_Group)& theGroup,
                                const Graphic3d_VerticalTextAlignment theVertAlignment)
 {
   const Handle(Prs3d_TextAspect)& anAspect = myDrawer->TextAspect();
-  theGroup->Text (theText,
-                  gp_Ax2 (gp_Pnt (theX, theY, 0.0), gp::DZ()),
-                  anAspect->Height(),
-                  anAspect->Angle(),
-                  anAspect->Orientation(),
-                  Graphic3d_HTA_LEFT,
-                  theVertAlignment,
-                  Standard_True,
-                  Standard_False); // has own anchor
 
+  Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)anAspect->Height());
+  aText->SetText (theText.ToExtString());
+  aText->SetOrientation (gp_Ax2 (gp_Pnt (theX, theY, 0.0), gp::DZ()));
+  aText->SetOwnAnchorPoint (Standard_False);
+  aText->SetVerticalAlignment (theVertAlignment);
+
+  theGroup->AddText (aText);
 }
 
 //=======================================================================

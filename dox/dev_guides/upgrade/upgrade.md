@@ -1716,6 +1716,41 @@ aGroup->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect()); //!< next array 
 aGroup->AddPrimitiveArray (aLines);
 ~~~~
 
+@subsection upgrade_740_text Changes in Graphic3d_Text and OpenGl_Text API
+
+Parameters of *Text* in *Graphic3d_Group* are moved into a new *Graphic3d_Text* class. *AddText* of *Graphic3d_Group* should be used instead of the previous *Text*.
+
+The previous code:
+~~~~
+Standard_Real x, y, z;
+theAttachmentPoint.Coord(x,y,z);
+theGroup->Text (theText,
+                Graphic3d_Vertex(x,y,z),
+                theAspect->Height(),
+                theAspect->Angle(),
+                theAspect->Orientation(),
+                theAspect->HorizontalJustification(),
+                theAspect->VerticalJustification());
+~~~~
+should be replaced by the new code:
+~~~~
+Handle(Graphic3d_Text) aText = new Graphic3d_Text (theAspect->Height());
+aText->SetText (theText.ToExtString());
+aText->SetPosition (theAttachmentPoint);
+aText->SetHorizontalAlignment (theAspect->HorizontalJustification());
+aText->SetVerticalAlignment (theAspect->VerticalJustification());
+theGroup->AddText (aText);
+~~~~
+
+*OpenGl_Text* contains *Graphic3d_Text* field.
+
+*OpenGl_TextParam* struct is removed. Constructor and *Init* of *OpenGl_Text* with *OpenGl_TextParam* are also removed.
+Instead of using them, change *OpenGl_Text*.
+
+Please, note, that after modifying *OpenGl_Text*, *Reset* of *OpenGl_Text* should be called.
+
+*FormatParams* of *OpenGl_Text* is replaced by *Text*.
+
 @subsection upgrade_740_prsupdate Presentation invalidation
 
 Historically AIS_InteractiveObject provided two independent mechanisms invalidating presentation (asking presentation manager to recompute specific display mode or all modes):
