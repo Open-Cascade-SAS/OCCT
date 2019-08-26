@@ -1671,7 +1671,8 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
   TopTools_IndexedDataMapOfShapeListOfShape aMapVE;
   Standard_Integer j;
   TopTools_MapOfShape VerticesToAvoid;
-  for (j = 1; j <= SeqEdges.Length(); j++)
+  const Standard_Integer aNbE = SeqEdges.Length();
+  for (j = 1; j <= aNbE; j++)
   {
     TopoDS_Edge anEdge = TopoDS::Edge(SeqEdges(j));
     // fill in the map V-E
@@ -1690,22 +1691,16 @@ static Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
 
   // do loop while there are unused edges
   TopTools_MapOfShape aUsedEdges;
-  for (;;)
+
+  for (Standard_Integer iE = 1; iE <= aNbE; ++iE)
   {
-    TopoDS_Edge edge;
-    for(j=1; j <= SeqEdges.Length(); j++)
-    {
-      edge = TopoDS::Edge(SeqEdges.Value(j));
-      if (!aUsedEdges.Contains(edge))
-        break;
-    }
-    if (j > SeqEdges.Length())
-      break; // all edges have been used
+    TopoDS_Edge edge = TopoDS::Edge (SeqEdges (iE));
+    if (!aUsedEdges.Add (edge))
+      continue;
 
     // make chain for unite
     TopTools_SequenceOfShape aChain;
     aChain.Append(edge);
-    aUsedEdges.Add(edge);
     TopoDS_Vertex V[2];
     TopExp::Vertices(edge, V[0], V[1], Standard_True);
 
@@ -2214,32 +2209,16 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
     //Correct orientation of edges
     for (Standard_Integer ii = 1; ii <= edges.Length(); ii++)
     {
-      const TopoDS_Shape& anEdge = edges(ii);
-      const TopTools_ListOfShape& aLF = aMapEF.FindFromKey(anEdge);
+      const TopoDS_Shape& anEdge = edges (ii);
+      Standard_Integer indE = aMapEF.FindIndex (anEdge);
+      const TopTools_ListOfShape& aLF = aMapEF (indE);
       if (myAllowInternal &&
           myKeepShapes.Contains(anEdge) &&
           aLF.Extent() == 2)
         edges(ii).Orientation(TopAbs_INTERNAL);
       
       if (anEdge.Orientation() != TopAbs_INTERNAL)
-        for (Standard_Integer jj = 1; jj <= faces.Length(); jj++)
-        {
-          const TopoDS_Shape aCurFace = faces(jj);
-          Standard_Boolean found = Standard_False;
-          TopExp_Explorer Explo(aCurFace, TopAbs_EDGE);
-          for (; Explo.More(); Explo.Next())
-          {
-            const TopoDS_Shape& aCurEdge = Explo.Current();
-            if (anEdge.IsSame(aCurEdge))
-            {
-              edges(ii) = aCurEdge;
-              found = Standard_True;
-              break;
-            }
-          }
-          if (found)
-            break;
-        }
+        edges (ii) = aMapEF.FindKey (indE);
     }
 
     //Exclude internal edges
