@@ -79,6 +79,31 @@ namespace
     Standard_Real aSaturation = NCollection_Lerp<Standard_Real>::Interpolate (theHlsMin[2], theHlsMax[2], aValue);
     return Quantity_Color (AIS_ColorScale::hueToValidRange (aHue), aLightness, aSaturation, Quantity_TOC_HLS);
   }
+
+  //! Return the index of discrete interval for specified value.
+  //! Note that when value lies exactly on the border between two intervals,
+  //! determining which interval to return is undefined operation;
+  //! Current implementation returns the following interval in this case.
+  //! @param theValue [in] value to map
+  //! @param theMin   [in] values range, lower value
+  //! @param theMax   [in] values range, upper value
+  //! @param theNbIntervals [in] number of discrete intervals
+  //! @return index of interval within [1, theNbIntervals] range
+  static Standard_Integer colorDiscreteInterval (Standard_Real theValue,
+                                                 Standard_Real theMin,
+                                                 Standard_Real theMax,
+                                                 Standard_Integer theNbIntervals)
+  {
+    if (Abs (theMax - theMin) <= Precision::Approximation())
+    {
+      return 1;
+    }
+
+    Standard_Integer anInterval = 1 + (Standard_Integer )Floor (Standard_Real (theNbIntervals) * (theValue - theMin) / (theMax - theMin));
+    // map the very upper value (theValue==theMax) to the largest color interval
+    anInterval = Min (anInterval, theNbIntervals);
+    return anInterval;
+  }
 }
 
 //=======================================================================
@@ -348,21 +373,14 @@ Standard_Boolean AIS_ColorScale::FindColor (const Standard_Real theValue,
 
   if (myColorType == Aspect_TOCSD_USER)
   {
-    Standard_Integer anIndex = 0;
-    if (Abs (myMax - myMin) > Precision::Approximation())
-    {
-      anIndex = (theValue - myMin < Precision::Confusion()) 
-        ? 1
-        : Standard_Integer (Ceiling (( theValue - myMin ) / ( (myMax - myMin) / myNbIntervals)));
-    }
-
-    if (anIndex <= 0 || anIndex > myColors.Length())
+    const Standard_Integer anInterval = colorDiscreteInterval (theValue, myMin, myMax, myNbIntervals);
+    if (anInterval < myColors.Lower() || anInterval > myColors.Upper())
     {
       theColor = Quantity_Color();
       return Standard_False;
     }
 
-    theColor = myColors.Value (anIndex);
+    theColor = myColors.Value (anInterval);
     return Standard_True;
   }
 
@@ -386,13 +404,8 @@ Standard_Boolean AIS_ColorScale::FindColor (const Standard_Real theValue,
     return Standard_False;
   }
 
-  Standard_Real anInterval = 0.0;
-  if (Abs (theMax - theMin) > Precision::Approximation())
-  {
-    anInterval = Floor (Standard_Real (theColorsCount) * (theValue - theMin) / (theMax - theMin));
-  }
-
-  theColor = colorFromValueEx (anInterval, 0, theColorsCount - 1, theColorHlsMin, theColorHlsMax);
+  const Standard_Integer anInterval = colorDiscreteInterval (theValue, theMin, theMax, theColorsCount);
+  theColor = colorFromValueEx (anInterval - 1, 0, theColorsCount - 1, theColorHlsMin, theColorHlsMax);
   return Standard_True;
 }
 
