@@ -2539,6 +2539,15 @@ static int VDrawText (Draw_Interpretor& theDI,
     {
       aTextPrs->SetFlipping (Standard_True);
     }
+    else if (aParam == "-ownanchor")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        return 1;
+      }
+      aTextPrs->SetOwnAnchorPoint (Draw::Atoi (theArgVec[anArgIt]) == 1);
+    }
     else if (aParam == "-disptype"
           || aParam == "-displaytype")
     {
@@ -6512,6 +6521,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-noupdate]"
                    "\n\t\t: [-plane NormX NormY NormZ DirX DirY DirZ]"
                    "\n\t\t: [-flipping]"
+                   "\n\t\t: [-ownanchor {0|1}=1]"
                    "\n\t\t: Display text label at specified position.",
     __FILE__, VDrawText, group);
 

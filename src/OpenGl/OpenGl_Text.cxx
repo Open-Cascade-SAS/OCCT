@@ -472,6 +472,12 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_Context)& theCtx,
   {
     OpenGl_Mat4d aCurrentWorldViewMat;
     aCurrentWorldViewMat.Convert (theCtx->WorldViewState.Current());
+
+    // apply local transformation
+    OpenGl_Mat4d aModelWorld;
+    aModelWorld.Convert (theCtx->ModelWorldState.Current());
+    aCurrentWorldViewMat = aCurrentWorldViewMat * aModelWorld;
+
     theCtx->WorldViewState.SetCurrent<Standard_Real> (aCurrentWorldViewMat * aModViewMat);
   }
   else
