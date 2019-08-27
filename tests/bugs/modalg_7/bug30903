@@ -1,0 +1,12 @@
+puts "======================================================="
+puts "0030903: Bug in IntCurvesFace_ShapeIntersector"
+puts "======================================================="
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug30903_shell.brep] s
+
+if {![regexp "status = -1" [OCC17424 s 132.319855705359 32.8066746022481 -61.4897311243957 0 -0.634115797726033 -0.77323809727294 -1]]} {
+  puts "Error: there must be no intersection point"
+}

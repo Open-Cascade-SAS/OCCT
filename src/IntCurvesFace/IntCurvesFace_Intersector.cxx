@@ -42,7 +42,7 @@
 #include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
 #include <TopoDS.hxx>
-#include <Geom2dAPI_ProjectPointOnCurve.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 //
 static void ComputeSamplePars(const Handle(Adaptor3d_HSurface)& Hsurface, 
                               const Standard_Integer nbsu,
@@ -259,16 +259,12 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter &HICS,
           for(; anExp.More(); anExp.Next())
           {
             TopoDS_Edge anE = TopoDS::Edge(anExp.Current());
-            Standard_Real curtol = BRep_Tool::Tolerance(anE);
-            Standard_Real tol2d = Max(Hsurface->UResolution(curtol), Hsurface->VResolution(curtol));
-            tol2d = Max(tol2d, Tol);
             Standard_Real f, l;
-            Handle(Geom2d_Curve) aPC = BRep_Tool::CurveOnSurface(anE, face, f, l);
-            Geom2dAPI_ProjectPointOnCurve aProj(Puv, aPC, f, l);
-            if(aProj.NbPoints() > 0)
+            Handle(Geom_Curve) aPC = BRep_Tool::Curve (anE, f, l);
+            GeomAPI_ProjectPointOnCurve aProj (HICSPointindex.Pnt(), aPC, f, l);
+            if (aProj.NbPoints() > 0)
             {
-              Standard_Real d = aProj.LowerDistance();
-              if(d <= tol2d)
+              if (aProj.LowerDistance() <= maxtol3d)
               {
                 //Nearest edge is found, state is really ON
                 currentstate = TopAbs_ON;
