@@ -19,6 +19,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <gp_Ax2.hxx>
 #include <Graphic3d_ViewAffinity.hxx>
+#include <Graphic3d_Text.hxx>
 #include <NCollection_Lerp.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Arrow.hxx>
@@ -193,6 +194,7 @@ void AIS_ViewCube::setDefaultAttributes()
   myDrawer->TextAspect()->SetColor (Quantity_NOC_BLACK);
   myDrawer->TextAspect()->SetFont (Font_NOF_SANS_SERIF);
   myDrawer->TextAspect()->SetHeight (16.0);
+  myDrawer->TextAspect()->Aspect()->SetTextZoomable (true); // the whole object is drawn within transformation-persistence
   // this should be forced back-face culling regardless Closed flag
   myDrawer->TextAspect()->Aspect()->SetSuppressBackFaces (true);
 
@@ -717,7 +719,14 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       const Standard_Real anOffset = 2.0; // extra offset to avoid overlapping with triangulation
       const gp_Pnt aPos = aDir.XYZ() * (mySize * 0.5 + myBoxFacetExtension + anOffset);
       const gp_Ax2 aPosition (aPos, aDir, anUp.Crossed (aDir));
-      Prs3d_Text::Draw (aTextGroup, myDrawer->TextAspect(), aLabel, aPosition);
+
+      Handle(Graphic3d_Text) aText = new Graphic3d_Text ((Standard_ShortReal)myDrawer->TextAspect()->Height());
+      aText->SetText (aLabel);
+      aText->SetOrientation (aPosition);
+      aText->SetOwnAnchorPoint (false);
+      aText->SetHorizontalAlignment(myDrawer->TextAspect()->HorizontalJustification());
+      aText->SetVerticalAlignment  (myDrawer->TextAspect()->VerticalJustification());
+      aTextGroup->AddText (aText);
     }
   }
 
