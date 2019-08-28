@@ -25,14 +25,14 @@
 //! Class implements functionality of model healer tool.
 //! Iterates over model's faces and checks consistency of their wires, 
 //! i.e.whether wires are closed and do not contain self - intersections.
-//! In case if wire contains disconnected parts, ends of adjacent edges 
-//! forming the gaps are connected in parametric space forcibly. The notion 
-//! of this operation is to create correct discrete model defined relatively 
+//! In case if wire contains disconnected parts, ends of adjacent edges
+//! forming the gaps are connected in parametric space forcibly. The notion
+//! of this operation is to create correct discrete model defined relatively
 //! parametric space of target face taking into account connectivity and 
 //! tolerances of 3D space only. This means that there are no specific 
 //! computations are made for the sake of determination of U and V tolerance.
-//! Registers intersections on edges forming the face’s shape and tries to 
-//! amplify discrete represenation by decreasing of deflection for the target edge. 
+//! Registers intersections on edges forming the face's shape and tries to
+//! amplify discrete represenation by decreasing of deflection for the target edge.
 //! Checks can be performed in parallel mode.
 class BRepMesh_ModelHealer : public IMeshTools_ModelAlgo
 {

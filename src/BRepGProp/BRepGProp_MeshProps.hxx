@@ -1,23 +1,19 @@
 // Copyright (c) 2018 OPEN CASCADE SAS
-// This file is part of commercial software by OPEN CASCADE SAS, 
-// furnished in accordance with the terms and conditions of the contract 
-// and with the inclusion of this copyright notice. 
-// This file or any part thereof may not be provided or otherwise 
-// made available to any third party. 
-// 
-// No ownership title to the software is transferred hereby. 
-// 
-// OPEN CASCADE SAS makes no representation or warranties with respect to the 
-// performance of this software, and specifically disclaims any responsibility 
-// for any damages, special or consequential, connected with its use.
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
 
 #ifndef _BRepGProp_MeshProps_HeaderFile
 #define _BRepGProp_MeshProps_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-#include <Standard_Type.hxx>
 #include <GProp_GProps.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Poly_Array1OfTriangle.hxx>
@@ -36,11 +32,11 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-    //! Describes types of geometric objects.
-    //! - Vinert is 3D closed region of space delimited with
-    //!   Point and surface mesh;
-    //! - Sinert is surface mesh in 3D space.
-    typedef enum { Vinert = 0, Sinert } BRepGProp_MeshObjType;
+  //! Describes types of geometric objects.
+  //! - Vinert is 3D closed region of space delimited with
+  //!   Point and surface mesh;
+  //! - Sinert is surface mesh in 3D space.
+  typedef enum { Vinert = 0, Sinert } BRepGProp_MeshObjType;
 
   //! Constructor takes the type of object.
   BRepGProp_MeshProps(const BRepGProp_MeshObjType theType) :
