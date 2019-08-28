@@ -2108,3 +2108,38 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
 
   return isModified;
 }
+
+//=======================================================================
+//function : GetNamedProperties
+//purpose  :
+//=======================================================================
+
+Handle(TDataStd_NamedData) XCAFDoc_ShapeTool::GetNamedProperties (const TDF_Label& theLabel,
+                                                                  const Standard_Boolean theToCreate) const
+{
+  Handle(TDataStd_NamedData) aNamedProperty;
+  if (!theLabel.FindAttribute(TDataStd_NamedData::GetID(), aNamedProperty) && theToCreate)
+  {
+    aNamedProperty = TDataStd_NamedData::Set(theLabel);
+  }
+
+  return aNamedProperty;
+}
+
+//=======================================================================
+//function : GetNamedProperties
+//purpose  :
+//=======================================================================
+
+Handle(TDataStd_NamedData) XCAFDoc_ShapeTool::GetNamedProperties (const TopoDS_Shape& theShape,
+                                                                  const Standard_Boolean theToCreate) const
+{
+  Handle(TDataStd_NamedData) aNamedProperty;
+  TDF_Label aLabel;
+  if (!Search (theShape, aLabel))
+    return aNamedProperty;
+
+  aNamedProperty = GetNamedProperties (aLabel, theToCreate);
+
+  return aNamedProperty;
+}

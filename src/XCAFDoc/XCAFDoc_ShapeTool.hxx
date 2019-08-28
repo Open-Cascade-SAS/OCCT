@@ -21,6 +21,7 @@
 
 #include <XCAFDoc_DataMapOfShapeLabel.hxx>
 #include <Standard_Boolean.hxx>
+#include <TDataStd_NamedData.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <Standard_Integer.hxx>
@@ -410,8 +411,19 @@ public:
   Standard_EXPORT static Standard_Boolean FindSHUO (const TDF_LabelSequence& Labels, Handle(XCAFDoc_GraphNode)& theSHUOAttr);
   
   //! Convert Shape (compound/compsolid/shell/wire) to assembly
-  Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape) ;
+  Standard_EXPORT Standard_Boolean Expand (const TDF_Label& Shape);
 
+  //! Method to get NamedData attribute assigned to the given shape label.
+  //! @param theLabel    [in] the shape Label
+  //! @param theToCreate [in] create and assign attribute if it doesn't exist
+  //! @return Handle to the NamedData attribute or Null if there is none
+  Standard_EXPORT Handle(TDataStd_NamedData) GetNamedProperties (const TDF_Label& theLabel, const Standard_Boolean theToCreate = Standard_False) const;
+
+  //! Method to get NamedData attribute assigned to a label of the given shape.
+  //! @param theShape    [in] input shape
+  //! @param theToCreate [in] create and assign attribute if it doesn't exist
+  //! @return Handle to the NamedData attribute or Null if there is none
+  Standard_EXPORT Handle(TDataStd_NamedData) GetNamedProperties(const TopoDS_Shape& theShape, const Standard_Boolean theToCreate = Standard_False) const;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_ShapeTool,TDF_Attribute)
 

@@ -20,6 +20,7 @@
 #include <Draw.hxx>
 #include <gp_Trsf.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TDataStd_NamedData.hxx>
 #include <TDF_AttributeSequence.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
@@ -927,6 +928,64 @@ static Standard_Integer updateAssemblies(Draw_Interpretor& di, Standard_Integer 
   return 0;
 }
 
+static Standard_Integer XGetProperties(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\nUse: " << argv[0] << " Doc Label\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  TDF_Label aLabel;
+  TDF_Tool::Label(aDoc->GetData(), argv[2], aLabel);
+
+  // Get XDE shape tool
+  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool(aDoc->Main());
+
+  Handle(TDataStd_NamedData) aNamedData = aShapeTool->GetNamedProperties(aLabel);
+
+  if (aNamedData.IsNull())
+  {
+    di << argv[2] << " has no properties\n";
+    return 0;
+  }
+
+  if (aNamedData->HasIntegers())
+  {
+    TColStd_DataMapOfStringInteger anIntProperties = aNamedData->GetIntegersContainer();
+    for (TColStd_DataMapIteratorOfDataMapOfStringInteger anIter(anIntProperties); anIter.More(); anIter.Next())
+    {
+      di << anIter.Key() << " : " << anIter.Value() << "\n";
+    }
+  }
+  if (aNamedData->HasReals())
+  {
+    TDataStd_DataMapOfStringReal aRealProperties = aNamedData->GetRealsContainer();
+    for (TDataStd_DataMapIteratorOfDataMapOfStringReal anIter(aRealProperties); anIter.More(); anIter.Next())
+    {
+      di << anIter.Key() << " : " << anIter.Value() << "\n";
+    }
+  }
+  if (aNamedData->HasStrings())
+  {
+    TDataStd_DataMapOfStringString aStringProperties = aNamedData->GetStringsContainer();
+    for (TDataStd_DataMapIteratorOfDataMapOfStringString anIter(aStringProperties); anIter.More(); anIter.Next())
+    {
+      di << anIter.Key() << " : " << anIter.Value() << "\n";
+    }
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : InitCommands
 //purpose  : 
@@ -1039,4 +1098,7 @@ void XDEDRAW_Shapes::InitCommands(Draw_Interpretor& di)
   
   di.Add ("XUpdateAssemblies","Doc \t: updates assembly compounds",
                    __FILE__, updateAssemblies, g);
+
+  di.Add("XGetProperties", "Doc Label \t: prints named properties assigned to the Label",
+         __FILE__, XGetProperties, g);
 }
