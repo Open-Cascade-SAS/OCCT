@@ -2567,6 +2567,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
             RemoveEdgeFromMap(CurEdge, VEmap);
           }
         } //for (;;)
+        aNewWire.Closed(Standard_True);
         UsedEdges.Add(StartEdge);
         
         //Remove used edges from sequence

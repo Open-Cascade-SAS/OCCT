@@ -1,0 +1,15 @@
+puts "============================================================================"
+puts "0030927: Modeling Algorithms - UnifySameDom looses the Closed flag for wires"
+puts "============================================================================"
+puts ""
+
+box b1 10 10 10
+box b2 5 0 -5 10 10 20
+bfuse s b1 b2
+unifysamedom result s
+
+foreach w [explode result w] {
+  if {![regexp "Closed" [whatis $w]]} {
+    puts "Error: Wire $w is not closed"
+  }
+}
