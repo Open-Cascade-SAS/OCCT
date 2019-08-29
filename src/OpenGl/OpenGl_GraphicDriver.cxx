@@ -408,6 +408,8 @@ Standard_Integer OpenGl_GraphicDriver::InquireLimit (const Graphic3d_TypeOfLimit
       return (!aCtx.IsNull() && aCtx->HasRayTracingAdaptiveSampling()) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasRayTracingAdaptiveSamplingAtomic:
       return (!aCtx.IsNull() && aCtx->HasRayTracingAdaptiveSamplingAtomic()) ? 1 : 0;
+    case Graphic3d_TypeOfLimit_HasSRGB:
+      return (!aCtx.IsNull() && aCtx->HasSRGB()) ? 1 : 0;
     case Graphic3d_TypeOfLimit_HasBlendedOit:
       return (!aCtx.IsNull()
             && aCtx->hasDrawBuffers != OpenGl_FeatureNotAvailable

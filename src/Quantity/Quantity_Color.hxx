@@ -27,6 +27,11 @@
 #include <NCollection_Vec4.hxx>
 
 //! This class allows the definition of an RGB color as triplet of 3 normalized floating point values (red, green, blue).
+//!
+//! Although Quantity_Color can be technically used for pass-through storage of RGB triplet in any color space,
+//! other OCCT interfaces taking/returning Quantity_Color would expect them in linear space.
+//! Therefore, take a look into methods converting to and from non-linear sRGB color space, if needed;
+//! for instance, application usually providing color picking within 0..255 range in sRGB color space.
 class Quantity_Color
 {
 public:
@@ -83,10 +88,10 @@ public:
   //! Returns the Hue component (hue angle) of the color
   //! in degrees within range [0.0; 360.0], 0.0 being Red.
   //! -1.0 is a special value reserved for grayscale color (S should be 0.0)
-  Standard_Real Hue() const { return Convert_sRGB_To_HLS (myRgb)[0]; }
+  Standard_Real Hue() const { return Convert_LinearRGB_To_HLS (myRgb)[0]; }
 
   //! Returns the Light component (value of the lightness) of the color within range [0.0; 1.0].
-  Standard_Real Light() const { return Convert_sRGB_To_HLS (myRgb)[1]; }
+  Standard_Real Light() const { return Convert_LinearRGB_To_HLS (myRgb)[1]; }
 
   //! Increases or decreases the intensity (variation of the lightness).
   //! The delta is a percentage. Any value greater than zero will increase the intensity.
@@ -94,7 +99,7 @@ public:
   Standard_EXPORT void ChangeIntensity (const Standard_Real theDelta);
 
   //! Returns the Saturation component (value of the saturation) of the color within range [0.0; 1.0].
-  Standard_Real Saturation() const { return Convert_sRGB_To_HLS (myRgb)[2]; }
+  Standard_Real Saturation() const { return Convert_LinearRGB_To_HLS (myRgb)[2]; }
 
   //! Increases or decreases the contrast (variation of the saturation).
   //! The delta is a percentage. Any value greater than zero will increase the contrast.
@@ -102,13 +107,13 @@ public:
   Standard_EXPORT void ChangeContrast (const Standard_Real theDelta);
 
   //! Returns TRUE if the distance between two colors is greater than Epsilon().
-  Standard_Boolean IsDifferent (const Quantity_Color& theOther) const { return (Distance (theOther) > Epsilon()); }
+  Standard_Boolean IsDifferent (const Quantity_Color& theOther) const { return (SquareDistance (theOther) > Epsilon() * Epsilon()); }
 
   //! Alias to IsDifferent().
   Standard_Boolean operator!=  (const Quantity_Color& theOther) const { return IsDifferent (theOther); }
 
   //! Returns TRUE if the distance between two colors is no greater than Epsilon().
-  Standard_Boolean IsEqual    (const Quantity_Color& theOther) const { return (Distance (theOther) <= Epsilon()); }
+  Standard_Boolean IsEqual    (const Quantity_Color& theOther) const { return (SquareDistance (theOther) <= Epsilon() * Epsilon()); }
 
   //! Alias to IsEqual().
   Standard_Boolean operator== (const Quantity_Color& theOther) const { return IsEqual (theOther); }
@@ -175,7 +180,7 @@ public:
   static TCollection_AsciiString ColorToHex (const Quantity_Color& theColor,
                                              const bool theToPrefixHash = true)
   {
-    NCollection_Vec3<Standard_ShortReal> anSRgb = (NCollection_Vec3<Standard_ShortReal> )theColor;
+    NCollection_Vec3<Standard_ShortReal> anSRgb = Convert_LinearRGB_To_sRGB ((NCollection_Vec3<Standard_ShortReal> )theColor);
     NCollection_Vec3<Standard_Integer> anSRgbInt (anSRgb * 255.0f + NCollection_Vec3<Standard_ShortReal> (0.5f));
     char aBuff[10];
     Sprintf (aBuff, theToPrefixHash ? "#%02X%02X%02X" : "%02X%02X%02X",
@@ -203,6 +208,8 @@ public:
 
   //! Convert the color value to ARGB integer value, with alpha equals to 0.
   //! So the output is formatted as 0x00RRGGBB.
+  //! Note that this unpacking does NOT involve non-linear sRGB -> linear RGB conversion,
+  //! as would be usually expected for RGB color packed into 4 bytes.
   //! @param theColor [in] color to convert
   //! @param theARGB [out] result color encoded as integer
   static void Color2argb (const Quantity_Color& theColor,
@@ -216,14 +223,16 @@ public:
              |  (aColor.b() & 0xff));
   }
 
-  //! Convert integer ARGB value to Color. Alpha bits are ignored
+  //! Convert integer ARGB value to Color. Alpha bits are ignored.
+  //! Note that this packing does NOT involve linear -> non-linear sRGB conversion,
+  //! as would be usually expected to preserve higher (for human eye) color precision in 4 bytes.
   static void Argb2color (const Standard_Integer theARGB,
                           Quantity_Color& theColor)
   {
     const NCollection_Vec3<Standard_Real> aColor (static_cast <Standard_Real> ((theARGB & 0xff0000) >> 16),
                                                   static_cast <Standard_Real> ((theARGB & 0x00ff00) >> 8),
                                                   static_cast <Standard_Real> ((theARGB & 0x0000ff)));
-    theColor.SetValues (aColor.r() / 255.0, aColor.g() / 255.0, aColor.b() / 255.0, Quantity_TOC_RGB);
+    theColor.SetValues (aColor.r() / 255.0, aColor.g() / 255.0, aColor.b() / 255.0, Quantity_TOC_sRGB);
   }
 
 public:
@@ -310,7 +319,7 @@ public:
   //! Set the value used to compare two colors for equality.
   Standard_EXPORT static void SetEpsilon (const Standard_Real theEpsilon);
 
-  //! Converts HLS components into RGB ones.
+  //! Converts HLS components into sRGB ones.
   static void HlsRgb (const Standard_Real theH, const Standard_Real theL, const Standard_Real theS,
                       Standard_Real& theR, Standard_Real& theG, Standard_Real& theB)
   {
@@ -320,7 +329,7 @@ public:
     theB = anRgb[2];
   }
 
-  //! Converts RGB components into HLS ones.
+  //! Converts sRGB components into HLS ones.
   static void RgbHls (const Standard_Real theR, const Standard_Real theG, const Standard_Real theB,
                       Standard_Real& theH, Standard_Real& theL, Standard_Real& theS)
   {

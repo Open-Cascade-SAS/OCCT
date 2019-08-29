@@ -271,19 +271,6 @@ protected:
 
 protected:
 
-  //! Determine data type from texture sized format.
-  Standard_EXPORT static bool getDepthDataFormat (GLint   theTextFormat,
-                                                  GLenum& thePixelFormat,
-                                                  GLenum& theDataType);
-
-  //! Determine data type from texture sized format.
-  Standard_EXPORT static bool getColorDataFormat (const Handle(OpenGl_Context)& theCtx,
-                                                  GLint   theTextFormat,
-                                                  GLenum& thePixelFormat,
-                                                  GLenum& theDataType);
-
-protected:
-
   typedef NCollection_Vector<Handle(OpenGl_Texture)> OpenGl_TextureArray;
 
 protected:

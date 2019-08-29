@@ -20,15 +20,15 @@ vanimation anim -clear
 vanimation anim/movecam -view -at1 116 355 327 -at2 -174 47 330 -eye1 225 253 413 -eye2 -65 -55 415 -duration 2
 
 vanimation anim -play 0.0 0.0
-if {[vreadpixel 60  360 rgb name] != "GOLDENROD3"} { puts "Error: Camera translation result is wrong!" }
+if {[vreadpixel 60  360 rgb name] != "DARKGOLDENROD"} { puts "Error: Camera translation result is wrong!" }
 vdump $imagedir/${casename}_0.png
 
 vanimation anim -play 1.0 0.0
-if {[vreadpixel 160 360 rgb name] != "GOLDENROD3"} { puts "Error: Camera translation result is wrong!" }
+if {[vreadpixel 160 360 rgb name] != "DARKGOLDENROD"} { puts "Error: Camera translation result is wrong!" }
 vdump $imagedir/${casename}_1.png
 
 vanimation anim -play 2.0 0.0
-if {[vreadpixel 260 360 rgb name] != "GOLDENROD3"} { puts "Error: Camera translation result is wrong!" }
+if {[vreadpixel 260 360 rgb name] != "DARKGOLDENROD"} { puts "Error: Camera translation result is wrong!" }
 vdump $imagedir/${casename}_2.png
 
 puts "Put the following command to start interactive animation:"

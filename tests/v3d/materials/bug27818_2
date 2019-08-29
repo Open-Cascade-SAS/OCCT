@@ -29,7 +29,7 @@ vselect 50 200 1
 vselect 200 200 1
 vselect 350 200 1
 
-if {[vreadpixel 350 200 name rgba] != "RED3 1" || [vreadpixel 350 200 name rgba] == [vreadpixel 200 200 name rgba]} {
+if {[vreadpixel 350 200 name rgba] != "RED2 1" || [vreadpixel 350 200 name rgba] == [vreadpixel 200 200 name rgba]} {
   puts "ERROR: selection highlight of 3rd box is displayed with wrong color!"
 }
 

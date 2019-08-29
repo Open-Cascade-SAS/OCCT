@@ -18,13 +18,11 @@
 
 Vrml_PointLight::Vrml_PointLight():
   myOnOff(Standard_True),
-  myIntensity(1)
+  myIntensity(1),
+  myColor (Quantity_NOC_WHITE),
+  myLocation (0, 0, 1)
 {
-  gp_Vec tmpVec(0,0,1);
-  myLocation = tmpVec;
-
-  Quantity_Color tmpColor(1,1,1,Quantity_TOC_RGB);
-  myColor = tmpColor;
+  //
 }
 
  Vrml_PointLight::Vrml_PointLight( const Standard_Boolean aOnOff, 
@@ -106,8 +104,10 @@ Standard_OStream& Vrml_PointLight::Print(Standard_OStream& anOStream) const
       Abs(myColor.Green() - 1) > 0.0001 || 
       Abs(myColor.Blue() - 1) > 0.0001 )
    {
+    NCollection_Vec3<Standard_Real> aColor_sRGB;
+    myColor.Values (aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
     anOStream  << "    color\t";
-    anOStream << myColor.Red() << " " << myColor.Green() << " " << myColor.Blue() << "\n";
+    anOStream << aColor_sRGB.r() << " " << aColor_sRGB.g() << " " << aColor_sRGB.b() << "\n";
    }
 
  if ( Abs(myLocation.X() - 0) > 0.0001 || 

@@ -91,6 +91,19 @@ public:
   //! @return low-level texture parameters
   const Handle(Graphic3d_TextureParams)& GetParams() const { return myParams; }
 
+  //! Return flag indicating color nature of values within the texture; TRUE by default.
+  //!
+  //! This flag will be used to interpret 8-bit per channel RGB(A) images as sRGB(A) textures
+  //! with implicit linearizion of color components.
+  //! Has no effect on images with floating point values (always considered linearized).
+  //!
+  //! When set to FALSE, such images will be interpreted as textures will be linear component values,
+  //! which is useful for RGB(A) textures defining non-color properties (like Normalmap/Metalness/Roughness).
+  Standard_Boolean IsColorMap() const { return myIsColorMap; }
+
+  //! Set flag indicating color nature of values within the texture.
+  void SetColorMap (Standard_Boolean theIsColor) { myIsColorMap = theIsColor; }
+
 protected:
 
   //! Creates a texture from a file
@@ -108,12 +121,13 @@ protected:
 
 protected:
 
-  Handle(Graphic3d_TextureParams) myParams;   //!< associated texture parameters
-  TCollection_AsciiString         myTexId;    //!< unique identifier of this resource (for sharing graphic resource); should never be modified outside constructor
-  Handle(Image_PixMap)            myPixMap;   //!< image pixmap - as one of the ways for defining the texture source
-  OSD_Path                        myPath;     //!< image file path - as one of the ways for defining the texture source
-  Standard_Size                   myRevision; //!< image revision - for signaling changes in the texture source (e.g. file update, pixmap update)
-  Graphic3d_TypeOfTexture         myType;     //!< texture type
+  Handle(Graphic3d_TextureParams) myParams;     //!< associated texture parameters
+  TCollection_AsciiString         myTexId;      //!< unique identifier of this resource (for sharing graphic resource); should never be modified outside constructor
+  Handle(Image_PixMap)            myPixMap;     //!< image pixmap - as one of the ways for defining the texture source
+  OSD_Path                        myPath;       //!< image file path - as one of the ways for defining the texture source
+  Standard_Size                   myRevision;   //!< image revision - for signaling changes in the texture source (e.g. file update, pixmap update)
+  Graphic3d_TypeOfTexture         myType;       //!< texture type
+  Standard_Boolean                myIsColorMap; //!< flag indicating color nature of values within the texture
 
 };
 

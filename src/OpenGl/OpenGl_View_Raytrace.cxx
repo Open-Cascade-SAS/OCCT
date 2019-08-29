@@ -393,6 +393,11 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theA
                                     anIndex == 0 ? 1.0f : anIndex,
                                     anIndex == 0 ? 1.0f : 1.0f / anIndex);
 
+  aResMat.Ambient  = theGlContext->Vec4FromQuantityColor (aResMat.Ambient);
+  aResMat.Diffuse  = theGlContext->Vec4FromQuantityColor (aResMat.Diffuse);
+  aResMat.Specular = theGlContext->Vec4FromQuantityColor (aResMat.Specular);
+  aResMat.Emission = theGlContext->Vec4FromQuantityColor (aResMat.Emission);
+
   // Serialize physically-based material properties
   const Graphic3d_BSDF& aBSDF = aSrcMat.BSDF();
 
@@ -1094,6 +1099,10 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
   if (myRaytraceParameters.TransparentShadows)
   {
     aPrefixString += TCollection_AsciiString ("\n#define TRANSPARENT_SHADOWS");
+  }
+  if (!theGlContext->ToRenderSRGB())
+  {
+    aPrefixString += TCollection_AsciiString ("\n#define THE_SHIFT_sRGB");
   }
 
   // If OpenGL driver supports bindless textures and texturing
@@ -1866,12 +1875,16 @@ Standard_Boolean OpenGl_View::updateRaytraceBuffers (const Standard_Integer     
       // workaround for some NVIDIA drivers
       myRaytraceVisualErrorTexture[aViewIter]->Release (theGlContext.operator->());
       myRaytraceTileSamplesTexture[aViewIter]->Release (theGlContext.operator->());
-      myRaytraceVisualErrorTexture[aViewIter]->Init (theGlContext, GL_R32I, GL_RED_INTEGER, GL_INT,
-                                                     myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
+      myRaytraceVisualErrorTexture[aViewIter]->Init (theGlContext,
+                                                     OpenGl_TextureFormat::FindSizedFormat (theGlContext, GL_R32I),
+                                                     Graphic3d_Vec2i (myTileSampler.NbTilesX(), myTileSampler.NbTilesY()),
+                                                     Graphic3d_TOT_2D);
       if (!myRaytraceParameters.AdaptiveScreenSamplingAtomic)
       {
-        myRaytraceTileSamplesTexture[aViewIter]->Init (theGlContext, GL_R32I, GL_RED_INTEGER, GL_INT,
-                                                       myTileSampler.NbTilesX(), myTileSampler.NbTilesY(), Graphic3d_TOT_2D);
+        myRaytraceTileSamplesTexture[aViewIter]->Init (theGlContext,
+                                                       OpenGl_TextureFormat::FindSizedFormat (theGlContext, GL_R32I),
+                                                       Graphic3d_Vec2i (myTileSampler.NbTilesX(), myTileSampler.NbTilesY()),
+                                                       Graphic3d_TOT_2D);
       }
     }
     else // non-adaptive mode
@@ -2564,24 +2577,18 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
       static_cast<GLsizei> (aTextures.size()), reinterpret_cast<const OpenGl_Vec2u*> (&aTextures.front()));
   }
 
-  // Set background colors (only gradient background supported)
+  // Set background colors (only vertical gradient background supported)
+  OpenGl_Vec4 aBackColorTop = myBgColor, aBackColorBot = myBgColor;
   if (myBackgrounds[Graphic3d_TOB_GRADIENT] != NULL
    && myBackgrounds[Graphic3d_TOB_GRADIENT]->IsDefined())
   {
-    theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (0));
-    theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (1));
+    aBackColorTop = myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (0);
+    aBackColorBot = myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (1);
   }
-  else
-  {
-    const OpenGl_Vec4& aBackColor = myBgColor;
-
-    theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], aBackColor);
-    theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], aBackColor);
-  }
+  aBackColorTop = theGlContext->Vec4FromQuantityColor (aBackColorTop);
+  aBackColorBot = theGlContext->Vec4FromQuantityColor (aBackColorBot);
+  theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uBackColorTop], aBackColorTop);
+  theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], aBackColorBot);
 
   // Set environment map parameters
   const Standard_Boolean toDisableEnvironmentMap = myTextureEnv.IsNull()

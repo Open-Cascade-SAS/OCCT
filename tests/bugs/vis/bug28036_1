@@ -21,8 +21,8 @@ vaspects c                -setColor BLUE
 vaspects c -subshapes b1  -setColor RED
 vaspects c -subshapes c12 -setColor GREEN
 
-if { [vreadpixel 100 100 rgb name] != "RED3"   } { puts "Error: wrong subshape color" }
-if { [vreadpixel 200 100 rgb name] != "GREEN3" } { puts "Error: wrong subshape color" }
-if { [vreadpixel 200 300 rgb name] != "BLUE3"  } { puts "Error: wrong subshape color" }
+if { [vreadpixel 100 100 rgb name] != "RED2"   } { puts "Error: wrong subshape color" }
+if { [vreadpixel 200 100 rgb name] != "GREEN2" } { puts "Error: wrong subshape color" }
+if { [vreadpixel 200 300 rgb name] != "BLUE2"  } { puts "Error: wrong subshape color" }
 
 vdump $imagedir/${casename}.png

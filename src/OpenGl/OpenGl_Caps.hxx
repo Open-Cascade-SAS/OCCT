@@ -27,7 +27,8 @@ class OpenGl_Caps : public Standard_Transient
 
 public: //! @name flags to disable particular functionality, should be used only for testing purposes!
 
-  Standard_Boolean vboDisable;        //!< flag permits VBO usage, will significantly affect performance (OFF by default)
+  Standard_Boolean sRGBDisable;       //!< Disables sRGB rendering (OFF by default)
+  Standard_Boolean vboDisable;        //!< disallow VBO usage for debugging purposes (OFF by default)
   Standard_Boolean pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
   Standard_Boolean keepArrayData;     //!< Disables freeing CPU memory after building VBOs (OFF by default)
   Standard_Boolean ffpEnable;         //!< Enables FFP (fixed-function pipeline), do not use built-in GLSL programs (OFF by default)

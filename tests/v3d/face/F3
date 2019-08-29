@@ -10,7 +10,7 @@ vfit
 
 vselmode b1 4 1
 vmoveto 220 220
-if { [vreadpixel 220 220 rgb name] != "TURQUOISE3" } { puts "Error: box b2 should be highlighted" }
+if { [vreadpixel 220 220 rgb name] != "TURQUOISE2" } { puts "Error: box b2 should be highlighted" }
 
 vselfilter -type FACE
 vmoveto 0 0

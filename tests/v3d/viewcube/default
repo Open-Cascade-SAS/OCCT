@@ -24,13 +24,13 @@ vdump $imagedir/${casename}_side.png
 
 # check FRONT/TOP edge
 vselect 100 270
-if {[vreadpixel 100 300 name rgb] != "GRAY51"} { puts "Error: Position of FRONT-TOP camera is wrong." }
-if {[vreadpixel 100 310 name rgb] != "CYAN"}  { puts "Error: Position of FRONT-TOP camera is wrong." }
+if {[vreadpixel 100 300 name rgb] != "GRAY52"} { puts "Error: Position of FRONT-TOP camera is wrong." }
+if {[vreadpixel 100 310 name rgb] != "CYAN"}   { puts "Error: Position of FRONT-TOP camera is wrong." }
 vdump $imagedir/${casename}_edge.png
 
 # Check vertex
 vselect 140 310
-if {[vreadpixel 100 290 name rgb] != "GRAY42"}    { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
-if {[vreadpixel 100 310 name rgb] != "CYAN"}     { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
-if {[vreadpixel 100 320 name rgb] != "MATRAGRAY"} { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
+if {[vreadpixel 100 290 name rgb] != "GRAY47"} { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
+if {[vreadpixel 100 310 name rgb] != "CYAN"}   { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
+if {[vreadpixel 100 320 name rgb] != "GRAY59"} { puts "Error: Position of TOP-FRONT-RIGHT camera is wrong." }
 vdump $imagedir/${casename}_corner.png

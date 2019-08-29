@@ -147,15 +147,11 @@ bool OpenGl_Font::createTexture (const Handle(OpenGl_Context)& theCtx)
 
   Image_PixMap aBlackImg;
   if (!aBlackImg.InitZero (Image_Format_Alpha, Standard_Size(aTextureSizeX), Standard_Size(aTextureSizeY))
-   || !aTexture->Init (theCtx, aBlackImg, Graphic3d_TOT_2D)) // myTextureFormat
+   || !aTexture->Init (theCtx, aBlackImg, Graphic3d_TOT_2D, true)) // myTextureFormat
   {
-    TCollection_ExtendedString aMsg;
-    aMsg += "New texture initialization of size ";
-    aMsg += aTextureSizeX;
-    aMsg += "x";
-    aMsg += aTextureSizeY;
-    aMsg += " for textured font has failed.";
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("New texture initialization of size ")
+                       + aTextureSizeX + "x" + aTextureSizeY + " for textured font has failed.");
     return false;
   }
 

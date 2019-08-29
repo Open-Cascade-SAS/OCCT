@@ -180,9 +180,19 @@ void OpenGl_View::Redraw()
   ++myFrameCounter;
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
   Graphic3d_Camera::Projection aProjectType = myCamera->ProjectionType();
-  Handle(OpenGl_Context)       aCtx         = myWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aCtx        = myWorkspace->GetGlContext();
   aCtx->FrameStats()->FrameStart (myWorkspace->View(), false);
   aCtx->SetLineFeather (myRenderParams.LineFeather);
+
+  const Standard_Integer anSRgbState = aCtx->ToRenderSRGB() ? 1 : 0;
+  if (mySRgbState != -1
+   && mySRgbState != anSRgbState)
+  {
+    releaseSrgbResources (aCtx);
+    initTextureEnv (aCtx);
+  }
+  mySRgbState = anSRgbState;
+  aCtx->ShaderManager()->UpdateSRgbState();
 
   // release pending GL resources
   aCtx->ReleaseDelayed();
@@ -799,7 +809,7 @@ void OpenGl_View::redraw (const Graphic3d_Camera::Projection theProjection,
   glClearDepthf (1.0f);
 #endif
 
-  const OpenGl_Vec4& aBgColor = myBgColor;
+  const OpenGl_Vec4 aBgColor = aCtx->Vec4FromQuantityColor (myBgColor);
   glClearColor (aBgColor.r(), aBgColor.g(), aBgColor.b(), 0.0f);
 
   glClear (toClear);
@@ -1143,6 +1153,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
           else
           {
             aCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, 0);
+            aCtx->SetFrameBufferSRGB (false);
           }
 
           // Render non-polygonal elements in default layer
@@ -1158,6 +1169,7 @@ void OpenGl_View::renderStructs (Graphic3d_Camera::Projection theProjection,
       else
       {
         aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, 0);
+        aCtx->SetFrameBufferSRGB (false);
       }
 
       // Reset OpenGl aspects state to default to avoid enabling of
@@ -1355,6 +1367,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
   else
   {
     aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+    aCtx->SetFrameBufferSRGB (false);
   }
   const Standard_Integer aViewport[4] = { 0, 0, aDrawSizeX, aDrawSizeY };
   aCtx->ResizeViewport (aViewport);
@@ -1366,8 +1379,10 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
 #endif
   aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+  const bool toApplyGamma = aCtx->ToRenderSRGB() != aCtx->IsFrameBufferSRGB();
   if (aCtx->arbFBOBlit != NULL
-   && theReadFbo->NbSamples() != 0)
+  && !toApplyGamma
+  &&  theReadFbo->NbSamples() != 0)
   {
     GLbitfield aCopyMask = 0;
     theReadFbo->BindReadBuffer (aCtx);
@@ -1397,6 +1412,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
         aCopyMask |= GL_DEPTH_BUFFER_BIT;
       }
       aCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+      aCtx->SetFrameBufferSRGB (false);
     }
 
     // we don't copy stencil buffer here... does it matter for performance?
@@ -1437,6 +1453,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     else
     {
       aCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, OpenGl_FrameBuffer::NO_FRAMEBUFFER);
+      aCtx->SetFrameBufferSRGB (false);
     }
   }
   else
@@ -1460,7 +1477,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     OpenGl_VertexBuffer* aVerts = initBlitQuad (theToFlip);
     const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
     if (aVerts->IsValid()
-     && aManager->BindFboBlitProgram())
+     && aManager->BindFboBlitProgram (theReadFbo != NULL ? theReadFbo->NbSamples() : 0, toApplyGamma))
     {
       aCtx->SetSampleAlphaToCoverage (false);
       theReadFbo->ColorTexture()->Bind (aCtx, Graphic3d_TextureUnit_0);

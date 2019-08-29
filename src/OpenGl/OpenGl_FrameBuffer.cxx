@@ -41,119 +41,6 @@ namespace
 }
 
 // =======================================================================
-// function : getDepthDataFormat
-// purpose  :
-// =======================================================================
-bool OpenGl_FrameBuffer::getDepthDataFormat (GLint   theTextFormat,
-                                             GLenum& thePixelFormat,
-                                             GLenum& theDataType)
-{
-  switch (theTextFormat)
-  {
-    case GL_DEPTH24_STENCIL8:
-    {
-      thePixelFormat = GL_DEPTH_STENCIL;
-      theDataType    = GL_UNSIGNED_INT_24_8;
-      return true;
-    }
-    case GL_DEPTH32F_STENCIL8:
-    {
-      thePixelFormat = GL_DEPTH_STENCIL;
-      theDataType    = GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
-      return true;
-    }
-    case GL_DEPTH_COMPONENT16:
-    {
-      thePixelFormat = GL_DEPTH_COMPONENT;
-      theDataType    = GL_UNSIGNED_SHORT;
-      return true;
-    }
-    case GL_DEPTH_COMPONENT24:
-    {
-      thePixelFormat = GL_DEPTH_COMPONENT;
-      theDataType    = GL_UNSIGNED_INT;
-      return true;
-    }
-    case GL_DEPTH_COMPONENT32F:
-    {
-      thePixelFormat = GL_DEPTH_COMPONENT;
-      theDataType    = GL_FLOAT;
-      return true;
-    }
-  }
-  return false;
-}
-
-// =======================================================================
-// function : getColorDataFormat
-// purpose  :
-// =======================================================================
-bool OpenGl_FrameBuffer::getColorDataFormat (const Handle(OpenGl_Context)& theGlContext,
-                                             GLint   theTextFormat,
-                                             GLenum& thePixelFormat,
-                                             GLenum& theDataType)
-{
-  switch (theTextFormat)
-  {
-    case GL_RGBA32F:
-    {
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_FLOAT;
-      return true;
-    }
-    case GL_R32F:
-    {
-      thePixelFormat = GL_RED;
-      theDataType    = GL_FLOAT;
-      return true;
-    }
-    case GL_RGBA16F:
-    {
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_HALF_FLOAT;
-      if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
-      {
-      #if defined(GL_ES_VERSION_2_0)
-        theDataType = GL_HALF_FLOAT_OES;
-      #else
-        theDataType = GL_FLOAT;
-      #endif
-      }
-      return true;
-    }
-    case GL_R16F:
-    {
-      thePixelFormat = GL_RED;
-      theDataType    = GL_HALF_FLOAT;
-      if (theGlContext->hasHalfFloatBuffer == OpenGl_FeatureInExtensions)
-      {
-      #if defined(GL_ES_VERSION_2_0)
-        theDataType = GL_HALF_FLOAT_OES;
-      #else
-        theDataType = GL_FLOAT;
-      #endif
-      }
-      return true;
-    }
-    case GL_RGBA8:
-    case GL_RGBA:
-    {
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case GL_RGB8:
-    case GL_RGB:
-    {
-      thePixelFormat = GL_RGB;
-      theDataType = GL_UNSIGNED_BYTE;
-      return true;
-    }
-  }
-  return false;
-}
-
-// =======================================================================
 // function : OpenGl_FrameBuffer
 // purpose  :
 // =======================================================================
@@ -265,7 +152,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
       && !aColorTexture->Init2DMultisample (theGlContext, theNbSamples,
                                             aColorFormat, aSizeX, aSizeY))
       {
-        Release (theGlContext.operator->());
+        Release (theGlContext.get());
         return Standard_False;
       }
     }
@@ -274,17 +161,13 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   {
     for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
-      GLenum aPixelFormat = 0;
-      GLenum aDataType    = 0;
       const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
       const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
-      if (aColorFormat != 0
-      &&  getColorDataFormat (theGlContext, aColorFormat, aPixelFormat, aDataType)
-      && !aColorTexture->Init (theGlContext, aColorFormat,
-                               aPixelFormat, aDataType,
-                               aSizeX, aSizeY, Graphic3d_TOT_2D))
+      const OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindSizedFormat (theGlContext, aColorFormat);
+      if (aFormat.IsValid()
+      && !aColorTexture->Init (theGlContext, aFormat, Graphic3d_Vec2i (aSizeX, aSizeY), Graphic3d_TOT_2D))
       {
-        Release (theGlContext.operator->());
+        Release (theGlContext.get());
         return Standard_False;
       }
     }
@@ -402,18 +285,13 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   }
   else
   {
-    GLenum aPixelFormat = 0;
-    GLenum aDataType    = 0;
-
     for (Standard_Integer aColorBufferIdx = 0; aColorBufferIdx < myColorTextures.Length(); ++aColorBufferIdx)
     {
       const Handle(OpenGl_Texture)& aColorTexture = myColorTextures (aColorBufferIdx);
       const GLint                   aColorFormat  = myColorFormats  (aColorBufferIdx);
-      if (aColorFormat != 0
-      &&  getColorDataFormat (theGlContext, aColorFormat, aPixelFormat, aDataType)
-      && !aColorTexture->Init (theGlContext, aColorFormat,
-                               aPixelFormat, aDataType,
-                               aSizeX, aSizeY, Graphic3d_TOT_2D))
+      const OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindSizedFormat (theGlContext, aColorFormat);
+      if (aFormat.IsValid()
+      && !aColorTexture->Init (theGlContext, aFormat, Graphic3d_Vec2i (aSizeX, aSizeY), Graphic3d_TOT_2D))
       {
         Release (theGlContext.operator->());
         return Standard_False;
@@ -422,21 +300,14 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 
     // extensions (GL_OES_packed_depth_stencil, GL_OES_depth_texture) + GL version might be used to determine supported formats
     // instead of just trying to create such texture
-    if (myDepthFormat != 0
-    &&  getDepthDataFormat (myDepthFormat, aPixelFormat, aDataType)
-    && !myDepthStencilTexture->Init (theGlContext, myDepthFormat,
-                                      aPixelFormat, aDataType,
-                                      aSizeX, aSizeY, Graphic3d_TOT_2D))
+    const OpenGl_TextureFormat aDepthFormat = OpenGl_TextureFormat::FindSizedFormat (theGlContext, myDepthFormat);
+    if (aDepthFormat.IsValid()
+    && !myDepthStencilTexture->Init (theGlContext, aDepthFormat, Graphic3d_Vec2i (aSizeX, aSizeY), Graphic3d_TOT_2D))
     {
-      TCollection_ExtendedString aMsg = TCollection_ExtendedString()
-        + "Warning! Depth textures are not supported by hardware!";
-      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                                 GL_DEBUG_TYPE_PORTABILITY,
-                                 0,
-                                 GL_DEBUG_SEVERITY_HIGH,
-                                 aMsg);
+      theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                                 "Warning! Depth textures are not supported by hardware!");
 
-      hasStencilRB = aPixelFormat == GL_DEPTH_STENCIL
+      hasStencilRB = aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL
                   && theGlContext->extPDS;
       GLint aDepthStencilFormat = hasStencilRB
                                 ? GL_DEPTH24_STENCIL8
@@ -599,10 +470,8 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
   bool hasStencilRB = false;
   if (myDepthFormat != 0)
   {
-    GLenum aPixelFormat = 0;
-    GLenum aDataType    = 0;
-    getDepthDataFormat (myDepthFormat, aPixelFormat, aDataType);
-    hasStencilRB = aPixelFormat == GL_DEPTH_STENCIL;
+    const OpenGl_TextureFormat aDepthFormat = OpenGl_TextureFormat::FindSizedFormat (theGlCtx, myDepthFormat);
+    hasStencilRB = aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL;
 
     theGlCtx->arbFBO->glGenRenderbuffers (1, &myGlDepthRBufferId);
     theGlCtx->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBufferId);
@@ -789,6 +658,7 @@ void OpenGl_FrameBuffer::ChangeViewport (const GLsizei theVPSizeX,
 void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
+  theGlCtx->SetFrameBufferSRGB (true);
 }
 
 // =======================================================================
@@ -798,6 +668,7 @@ void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 void OpenGl_FrameBuffer::BindDrawBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
   theGlCtx->arbFBO->glBindFramebuffer (GL_DRAW_FRAMEBUFFER, myGlFBufferId);
+  theGlCtx->SetFrameBufferSRGB (true);
 }
 
 // =======================================================================
@@ -823,6 +694,7 @@ void OpenGl_FrameBuffer::UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx)
   else
   {
     theGlCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, NO_FRAMEBUFFER);
+    theGlCtx->SetFrameBufferSRGB (false);
   }
 }
 

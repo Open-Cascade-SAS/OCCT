@@ -46,10 +46,7 @@ VrmlAPI_Writer::VrmlAPI_Writer()
 {
   myDrawer = new VrmlConverter_Drawer;
   myDeflection = -1;
-  Quantity_Color color;
-  color.SetValues(0, 0, 0, Quantity_TOC_RGB);
-  Handle(Quantity_HArray1OfColor) Col1 = new Quantity_HArray1OfColor(1,1);
-  Col1->SetValue(1,color);
+  Handle(Quantity_HArray1OfColor) Col1 = new Quantity_HArray1OfColor (1, 1, Quantity_NOC_BLACK);
   Handle(TColStd_HArray1OfReal) kik1 = new TColStd_HArray1OfReal(1,1,0.0);
   Handle(TColStd_HArray1OfReal) kik2 = new TColStd_HArray1OfReal(1,1,0.1);
   myFrontMaterial = new Vrml_Material(Col1,Col1, Col1, Col1, kik1, kik2);
@@ -76,10 +73,7 @@ void VrmlAPI_Writer::ResetToDefaults()
   myShininess = 0.1;
   Handle(TColStd_HArray1OfReal) kik1 = new TColStd_HArray1OfReal(1,1,myTransparency);
   Handle(TColStd_HArray1OfReal) kik2 = new TColStd_HArray1OfReal(1,1,myShininess);
-  Handle(Quantity_HArray1OfColor) Col = new Quantity_HArray1OfColor(1,1);
-  Quantity_Color color; 
-  color.SetValues(0, 0, 0, Quantity_TOC_RGB);
-  Col->SetValue(1,color);
+  Handle(Quantity_HArray1OfColor) Col = new Quantity_HArray1OfColor(1, 1, Quantity_NOC_BLACK);
   //
   myFrontMaterial->SetAmbientColor(Col); myFrontMaterial->SetTransparency(kik1);myFrontMaterial->SetShininess(kik2);
   myPointsMaterial->SetAmbientColor(Col); myPointsMaterial->SetTransparency(kik1);myPointsMaterial->SetShininess(kik2);
@@ -91,13 +85,8 @@ void VrmlAPI_Writer::ResetToDefaults()
   myUnfreeBoundsMaterial->SetAmbientColor(Col); myUnfreeBoundsMaterial->SetTransparency(kik1);myUnfreeBoundsMaterial->SetShininess(kik2);
   //
   //
-  Handle(Quantity_HArray1OfColor) Col2 = new Quantity_HArray1OfColor(1,1);
-  color.SetValues(0.75, 0.75, 0.75, Quantity_TOC_RGB);
-  Col2->SetValue(1,color);
-  Handle(Quantity_HArray1OfColor) Col3 = new Quantity_HArray1OfColor(1,1);
-  color.SetValues(0.82, 0.79, 0.42, Quantity_TOC_RGB);
-  Col3->SetValue(1,color);
-  
+  Handle(Quantity_HArray1OfColor) Col2 = new Quantity_HArray1OfColor(1, 1, Quantity_Color (0.75, 0.75, 0.75, Quantity_TOC_sRGB));
+  Handle(Quantity_HArray1OfColor) Col3 = new Quantity_HArray1OfColor(1, 1, Quantity_Color (0.82, 0.79, 0.42, Quantity_TOC_sRGB));
   myUisoMaterial->SetDiffuseColor(Col2);
   myVisoMaterial->SetDiffuseColor(Col2);
   myFreeBoundsMaterial->SetDiffuseColor(Col2);

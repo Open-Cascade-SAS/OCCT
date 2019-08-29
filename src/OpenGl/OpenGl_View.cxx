@@ -57,7 +57,8 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myCurrLightSourceState (theCounter->Increment()),
   myLightsRevision       (0),
   myLastLightSourceState (0, 0),
-  myFboColorFormat       (GL_RGBA8),
+  mySRgbState            (-1),
+  myFboColorFormat       (GL_SRGB8_ALPHA8), // note that GL_SRGB8 is not required to be renderable, unlike GL_RGB8, GL_RGBA8, GL_SRGB8_ALPHA8
   myFboDepthFormat       (GL_DEPTH24_STENCIL8),
   myToFlipOutput         (Standard_False),
   myFrameCounter         (0),
@@ -132,13 +133,12 @@ OpenGl_View::~OpenGl_View()
 }
 
 // =======================================================================
-// function : ReleaseGlResources
+// function : releaseSrgbResources
 // purpose  :
 // =======================================================================
-void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
+void OpenGl_View::releaseSrgbResources (const Handle(OpenGl_Context)& theCtx)
 {
-  myGraduatedTrihedron.Release (theCtx.get());
-  myFrameStatsPrs.Release (theCtx.get());
+  myRenderParams.RebuildRayTracingShaders = true;
 
   if (!myTextureEnv.IsNull())
   {
@@ -183,6 +183,22 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
   myOpenGlFBO2              ->Release (theCtx.get());
   myFullScreenQuad           .Release (theCtx.get());
   myFullScreenQuadFlip       .Release (theCtx.get());
+
+  // Technically we should also re-initialize all sRGB/RGB8 color textures.
+  // But for now consider this sRGB disabling/enabling to be done at application start-up
+  // and re-create dynamically only frame buffers.
+}
+
+// =======================================================================
+// function : ReleaseGlResources
+// purpose  :
+// =======================================================================
+void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
+{
+  myGraduatedTrihedron.Release (theCtx.get());
+  myFrameStatsPrs.Release (theCtx.get());
+
+  releaseSrgbResources (theCtx);
 
   releaseRaytraceResources (theCtx);
 }
@@ -259,7 +275,7 @@ void OpenGl_View::initTextureEnv (const Handle(OpenGl_Context)& theContext)
   Handle(Image_PixMap) anImage = myTextureEnvData->GetImage();
   if (!anImage.IsNull())
   {
-    aTextureEnv->Init (theContext, *anImage.operator->(), myTextureEnvData->Type());
+    aTextureEnv->Init (theContext, *anImage, myTextureEnvData->Type(), true);
   }
 }
 

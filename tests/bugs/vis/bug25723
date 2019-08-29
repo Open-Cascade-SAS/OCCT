@@ -24,6 +24,6 @@ verase
 
 # rotation
 vrotate -mouseStart 100 100 -mouseMove 300 300
-if {"[vreadpixel 220 50 rgb name]" != "GOLDENROD2"} { puts "Error: Rotation is not correct" }
+if {"[vreadpixel 220 50 rgb name]" != "GOLDENROD3"} { puts "Error: Rotation is not correct" }
 
 vdump ${imagedir}/${casename}.png

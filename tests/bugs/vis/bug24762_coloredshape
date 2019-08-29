@@ -37,12 +37,6 @@ vdump $imagedir/${casename}.png
 set aWireColor  [vreadpixel 54  150 rgb name]
 set anEdgeColor [vreadpixel 100  90 rgb name]
 set aFaceColor  [vreadpixel 30  200 rgb name]
-if {"$aWireColor"  != "HOTPINK"} {
-  puts "Error: wrong Wire color"
-}
-if {"$anEdgeColor" != "RED"} {
-  puts "Error: wrong Edge color"
-}
-if {"$aFaceColor"  != "GRAY62"} {
-  puts "Error: wrong Face color"
-}
+if {"$aWireColor"  != "HOTPINK"} { puts "Error: wrong Wire color" }
+if {"$anEdgeColor" != "RED"}     { puts "Error: wrong Edge color" }
+if {"$aFaceColor"  != "GRAY69"}  { puts "Error: wrong Face color" }

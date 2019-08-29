@@ -36,14 +36,8 @@ if { "$aColor1" != "RED" || "$aColor2" != "RED" } {
   puts "Error: expected color near the light spot is RED"
 }
 
-set aColor3 [vreadpixel 205 132 rgb name]
-set aColor4 [vreadpixel 205 280 rgb name]
-if { "$aColor3" != "RED3" || "$aColor4" != "RED4" } {
-  puts "Error: expected color mid from the light spot is RED4"
-}
-
-set aColor5 [vreadpixel 205 100 rgb name]
-set aColor6 [vreadpixel 205 306 rgb name]
-if { "$aColor5" != "RED4" || "$aColor6" != "RED4" } {
+set aColor3 [vreadpixel 205 100 rgb name]
+set aColor4 [vreadpixel 205 306 rgb name]
+if { "$aColor3" != "RED4" || "$aColor4" != "RED4" } {
   puts "Error: expected color far from the light spot is RED4"
 }

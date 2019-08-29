@@ -50,6 +50,9 @@ public:
   //! Release all resources.
   Standard_EXPORT void clear();
 
+  //! Fetch sRGB state from caps and invalidates programs, if necessary.
+  Standard_EXPORT void UpdateSRgbState();
+
   //! Return local camera transformation.
   const gp_XYZ& LocalOrigin() const { return myLocalOrigin; }
 
@@ -198,15 +201,10 @@ public:
   }
 
   //! Bind program for FBO blit operation.
-  Standard_Boolean BindFboBlitProgram()
-  {
-    if (myBlitProgram.IsNull())
-    {
-      prepareStdProgramFboBlit();
-    }
-    return !myBlitProgram.IsNull()
-         && myContext->BindProgram (myBlitProgram);
-  }
+  //! @param theNbSamples       [in] number of samples within source MSAA texture
+  //! @param theIsFallback_sRGB [in] flag indicating that destination buffer is not sRGB-ready
+  Standard_EXPORT Standard_Boolean BindFboBlitProgram (Standard_Integer theNbSamples,
+                                                       Standard_Boolean theIsFallback_sRGB);
 
   //! Bind program for blended order-independent transparency buffers compositing.
   Standard_Boolean BindOitCompositingProgram (const Standard_Boolean theIsMSAAEnabled)
@@ -631,7 +629,9 @@ protected:
   Standard_EXPORT Standard_Boolean prepareStdProgramFont();
 
   //! Prepare standard GLSL program for FBO blit operation.
-  Standard_EXPORT Standard_Boolean prepareStdProgramFboBlit();
+  Standard_EXPORT Standard_Boolean prepareStdProgramFboBlit (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                             Standard_Integer theNbSamples,
+                                                             Standard_Boolean theIsFallback_sRGB);
 
   //! Prepare standard GLSL programs for OIT compositing operation.
   Standard_EXPORT Standard_Boolean prepareStdProgramOitCompositing (const Standard_Boolean theMsaa);
@@ -763,7 +763,8 @@ protected:
   Handle(OpenGl_SetOfPrograms)       myUnlitPrograms;      //!< programs matrix without lighting
   Handle(OpenGl_SetOfPrograms)       myOutlinePrograms;    //!< programs matrix without lighting for outline presentation
   Handle(OpenGl_ShaderProgram)       myFontProgram;        //!< standard program for textured text
-  Handle(OpenGl_ShaderProgram)       myBlitProgram;        //!< standard program for FBO blit emulation
+  NCollection_Array1<Handle(OpenGl_ShaderProgram)>
+                                     myBlitPrograms[2];    //!< standard program for FBO blit emulation
   Handle(OpenGl_ShaderProgram)       myBoundBoxProgram;    //!< standard program for bounding box
   Handle(OpenGl_ShaderProgram)       myOitCompositingProgram[2]; //!< standard program for OIT compositing (default and MSAA).
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on lights configuration
@@ -775,6 +776,7 @@ protected:
   Handle(OpenGl_VertexBuffer)        myBoundBoxVertBuffer; //!< bounding box vertex buffer
 
   OpenGl_Context*                    myContext;            //!< OpenGL context
+  Standard_Boolean                   mySRgbState;          //!< track sRGB state
 
 protected:
 

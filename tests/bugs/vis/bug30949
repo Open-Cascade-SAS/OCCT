@@ -5,9 +5,9 @@ puts "============="
 pload VISUALIZATION
 vinit View1
 
-set pred 0.329
-set pgreen 0.224
-set pblue 0.027
+set pred   0.088428
+set pgreen 0.041081
+set pblue  0.00209
 
 set dump_aligned_off [vaspects -defaults -dumpJson -dumpCompact on]
 

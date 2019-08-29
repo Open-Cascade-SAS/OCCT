@@ -1098,7 +1098,7 @@ static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
         }
         else {
           // default white color
-          surfColor = Styles.EncodeColor(Quantity_Color(1,1,1,Quantity_TOC_RGB),DPDCs,ColRGBs);
+          surfColor = Styles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE),DPDCs,ColRGBs);
           PSA = Styles.MakeColorPSA ( item, surfColor, curvColor, isComponent );
           if ( isComponent ) 
             setDefaultInstanceColor( override, PSA);
@@ -1857,7 +1857,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   // set default color for invisible SHUO.
   Standard_Boolean isSetDefaultColor = Standard_False;
   if (surfColor.IsNull() && curvColor.IsNull() && !style.IsVisible() ) {
-    surfColor = Styles.EncodeColor ( Quantity_Color( 1, 1, 1, Quantity_TOC_RGB ) );
+    surfColor = Styles.EncodeColor ( Quantity_Color(Quantity_NOC_WHITE) );
     isSetDefaultColor = Standard_True;
   }
   Handle(StepVisual_PresentationStyleAssignment) PSA =

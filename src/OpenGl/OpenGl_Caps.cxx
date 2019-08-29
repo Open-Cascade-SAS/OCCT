@@ -17,7 +17,6 @@
 
 #include <OpenGl_GlCore20.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps,Standard_Transient)
 
 // =======================================================================
@@ -25,7 +24,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps,Standard_Transient)
 // purpose  :
 // =======================================================================
 OpenGl_Caps::OpenGl_Caps()
-: vboDisable        (Standard_False),
+: sRGBDisable       (Standard_False),
+  vboDisable        (Standard_False),
   pntSpritesDisable (Standard_False),
   keepArrayData     (Standard_False),
   ffpEnable         (Standard_False),
@@ -67,6 +67,7 @@ OpenGl_Caps::OpenGl_Caps()
 // =======================================================================
 OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
 {
+  sRGBDisable       = theCopy.sRGBDisable;
   vboDisable        = theCopy.vboDisable;
   pntSpritesDisable = theCopy.pntSpritesDisable;
   keepArrayData     = theCopy.keepArrayData;

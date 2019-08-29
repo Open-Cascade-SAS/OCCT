@@ -16,7 +16,7 @@
 #define _OpenGl_Texture_H__
 
 #include <Graphic3d_CubeMap.hxx>
-#include <OpenGl_GlCore13.hxx>
+#include <OpenGl_TextureFormat.hxx>
 #include <OpenGl_NamedResource.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <Graphic3d_TextureUnit.hxx>
@@ -24,262 +24,6 @@
 
 class Graphic3d_TextureParams;
 class Image_PixMap;
-
-//! Selects preferable texture format for specified parameters.
-template<class T>
-struct OpenGl_TextureFormatSelector
-{
-  // Not implemented
-};
-
-template<>
-struct OpenGl_TextureFormatSelector<GLubyte>
-{
-  static GLint Internal (GLuint theChannels)
-  {
-    switch (theChannels)
-    {
-      case 1:
-        return GL_R8;
-      case 2:
-        return GL_RG8;
-      case 3:
-        return GL_RGB8;
-      case 4:
-        return GL_RGBA8;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  static GLint DataType()
-  {
-    return GL_UNSIGNED_BYTE;
-  }
-};
-
-template<>
-struct OpenGl_TextureFormatSelector<GLushort>
-{
-  static GLint Internal (GLuint theChannels)
-  {
-    switch (theChannels)
-    {
-      case 1:
-        return GL_R16;
-      case 2:
-        return GL_RG16;
-      case 3:
-        return GL_RGB16;
-      case 4:
-        return GL_RGBA16;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  static GLint DataType()
-  {
-    return GL_UNSIGNED_SHORT;
-  }
-};
-
-template<>
-struct OpenGl_TextureFormatSelector<GLfloat>
-{
-  static GLint Internal (GLuint theChannels)
-  {
-    switch (theChannels)
-    {
-      case 1:
-        return GL_R32F;
-      case 2:
-        return GL_RG32F;
-      case 3:
-        return GL_RGB32F;
-      case 4:
-        return GL_RGBA32F;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  static GLint DataType()
-  {
-    return GL_FLOAT;
-  }
-};
-
-template<>
-struct OpenGl_TextureFormatSelector<GLuint>
-{
-  static GLint Internal (GLuint theChannels)
-  {
-    switch (theChannels)
-    {
-      case 1:
-        return GL_RED;
-      case 2:
-        return GL_RG;
-      case 3:
-        return GL_RGB;
-      case 4:
-        return GL_RGBA;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  static GLint DataType()
-  {
-    return GL_UNSIGNED_INT;
-  }
-};
-
-//! Only unsigned formats are available in OpenGL ES 2.0
-#if !defined(GL_ES_VERSION_2_0)
-template<>
-struct OpenGl_TextureFormatSelector<GLbyte>
-{
-  static GLint Internal (GLuint theChannels)
-  {
-    switch (theChannels)
-    {
-      case 1:
-        return GL_R8_SNORM;
-      case 2:
-        return GL_RG8_SNORM;
-      case 3:
-        return GL_RGB8_SNORM;
-      case 4:
-        return GL_RGBA8_SNORM;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  static GLint DataType()
-  {
-    return GL_BYTE;
-  }
-};
-
-template<>
-struct OpenGl_TextureFormatSelector<GLshort>
-{
-  static GLint Internal (GLuint theChannels)
-  {
-    switch (theChannels)
-    {
-      case 1:
-        return GL_R16_SNORM;
-      case 2:
-        return GL_RG16_SNORM;
-      case 3:
-        return GL_RGB16_SNORM;
-      case 4:
-        return GL_RGBA16_SNORM;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  static GLint DataType()
-  {
-    return GL_SHORT;
-  }
-};
-
-template<>
-struct OpenGl_TextureFormatSelector<GLint>
-{
-  static GLint Internal (GLuint theChannels)
-  {
-    switch (theChannels)
-    {
-      case 1:
-        return GL_RED_SNORM;
-      case 2:
-        return GL_RG_SNORM;
-      case 3:
-        return GL_RGB_SNORM;
-      case 4:
-        return GL_RGBA_SNORM;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  static GLint DataType()
-  {
-    return GL_INT;
-  }
-};
-#endif
-
-//! Stores parameters of OpenGL texture format.
-class OpenGl_TextureFormat
-{
-  friend class OpenGl_Texture;
-
-public:
-
-  //! Returns OpenGL format of the pixel data.
-  inline GLenum Format() const
-  {
-    switch (myChannels)
-    {
-      case 1:
-        return GL_RED;
-      case 2:
-        return GL_RG;
-      case 3:
-        return GL_RGB;
-      case 4:
-        return GL_RGBA;
-      default:
-        return GL_NONE;
-    }
-  }
-
-  //! Returns OpenGL internal format of the pixel data.
-  inline GLint Internal() const
-  {
-    return myInternal;
-  }
-
-  //! Returns OpenGL data type of the pixel data.
-  inline GLint DataType() const
-  {
-    return myDataType;
-  }
-
-  //! Returns texture format for specified type and number of channels.
-  template<class T, int N>
-  static OpenGl_TextureFormat Create()
-  {
-    return OpenGl_TextureFormat (N,
-                                 OpenGl_TextureFormatSelector<T>::Internal(N),
-                                 OpenGl_TextureFormatSelector<T>::DataType());
-  }
-
-private:
-
-  //! Creates new texture format.
-  OpenGl_TextureFormat (const GLint theChannels,
-                        const GLint theInternal,
-                        const GLint theDataType)
-  : myInternal (theInternal),
-    myChannels (theChannels),
-    myDataType (theDataType) {}
-
-private:
-
-  GLint myInternal; //!< OpenGL internal format of the pixel data
-  GLint myChannels; //!< Number of channels for each pixel (from 1 to 4)
-  GLint myDataType; //!< OpenGL data type of input pixel data
-
-};
 
 //! Texture resource.
 class OpenGl_Texture : public OpenGl_NamedResource
@@ -305,59 +49,32 @@ public:
   Standard_EXPORT virtual ~OpenGl_Texture();
 
   //! @return true if current object was initialized
-  inline bool IsValid() const
-  {
-    return myTextureId != NO_TEXTURE;
-  }
+  bool IsValid() const { return myTextureId != NO_TEXTURE; }
 
   //! @return target to which the texture is bound (GL_TEXTURE_1D, GL_TEXTURE_2D)
-  inline GLenum GetTarget() const
-  {
-    return myTarget;
-  }
+  GLenum GetTarget() const { return myTarget; }
 
   //! @return texture width (0 LOD)
-  inline GLsizei SizeX() const
-  {
-    return mySizeX;
-  }
+  GLsizei SizeX() const { return mySizeX; }
 
   //! @return texture height (0 LOD)
-  inline GLsizei SizeY() const
-  {
-    return mySizeY;
-  }
+  GLsizei SizeY() const { return mySizeY; }
 
   //! @return texture ID
-  inline GLuint TextureId() const
-  {
-    return myTextureId;
-  }
+  GLuint TextureId() const { return myTextureId; }
 
   //! @return texture format (not sized)
-  inline GLenum GetFormat() const
-  {
-    return myTextFormat;
-  }
+  GLenum GetFormat() const { return myTextFormat; }
   
   //! @return texture format (sized)
-  GLint SizedFormat() const
-  {
-    return mySizedFormat;
-  }
+  GLint SizedFormat() const { return mySizedFormat; }
 
   //! Return true for GL_RED and GL_ALPHA formats.
-  bool IsAlpha() const
-  {
-    return myIsAlpha;
-  }
+  bool IsAlpha() const { return myIsAlpha; }
 
   //! Setup to interprete the format as Alpha by Shader Manager
   //! (should be GL_ALPHA within compatible context or GL_RED otherwise).
-  void SetAlpha (const bool theValue)
-  {
-    myIsAlpha = theValue;
-  }
+  void SetAlpha (const bool theValue) { myIsAlpha = theValue; }
 
   //! Creates Texture id if not yet generated.
   //! Data should be initialized by another method.
@@ -409,17 +126,15 @@ public:
   //! Notice that texture will be unbound after this call.
   Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theCtx,
                              const Image_PixMap&           theImage,
-                             const Graphic3d_TypeOfTexture theType);
+                             const Graphic3d_TypeOfTexture theType,
+                             const Standard_Boolean        theIsColorMap);
 
   //! Initialize the texture with specified format, size and texture type.
   //! If theImage is empty the texture data will contain trash.
   //! Notice that texture will be unbound after this call.
   Standard_EXPORT bool Init (const Handle(OpenGl_Context)& theCtx,
-                             const GLint                   theTextFormat,
-                             const GLenum                  thePixelFormat,
-                             const GLenum                  theDataType,
-                             const GLsizei                 theSizeX,
-                             const GLsizei                 theSizeY,
+                             const OpenGl_TextureFormat&   theFormat,
+                             const Graphic3d_Vec2i&        theSizeXY,
                              const Graphic3d_TypeOfTexture theType,
                              const Image_PixMap*           theImage = NULL);
 
@@ -445,54 +160,12 @@ public:
 
   //! Initializes 3D texture rectangle with specified format and size.
   Standard_EXPORT bool Init3D (const Handle(OpenGl_Context)& theCtx,
-                               const GLint                   theTextFormat,
-                               const GLenum                  thePixelFormat,
-                               const GLenum                  theDataType,
-                               const Standard_Integer        theSizeX,
-                               const Standard_Integer        theSizeY,
-                               const Standard_Integer        theSizeZ,
+                               const OpenGl_TextureFormat&   theFormat,
+                               const Graphic3d_Vec3i&        theSizeXYZ,
                                const void*                   thePixels);
-
-  //! Initializes 6 sides of cubemap.
-  //! If theCubeMap is not NULL then size and format will be taken from it
-  //! and corresponding arguments will be ignored.
-  //! Otherwise this parametres will be taken from arguments.
-  //! theToGenMipmap allows to generate mipmaped cubemap.
-  Standard_EXPORT bool InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
-                                    const Handle(Graphic3d_CubeMap)& theCubeMap,
-                                    Standard_Size                    theSize = 0,
-                                    Image_Format                     theFormat = Image_Format_RGB,
-                                    Standard_Boolean                 theToGenMipmap = Standard_False);
-
-  //! The same InitCubeMap but there is another order of arguments.
-  bool InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
-                    const Handle(Graphic3d_CubeMap)& theCubeMap,
-                    Standard_Boolean                 theToGenMipmap,
-                    Standard_Size                    theSize = 0,
-                    Image_Format                     theFormat = Image_Format_RGB)
-  {
-    return InitCubeMap (theCtx, theCubeMap, theSize, theFormat, theToGenMipmap);
-  }
 
   //! @return true if texture was generated within mipmaps
   Standard_Boolean HasMipmaps() const { return myHasMipmaps; }
-
-  //! Return texture type and format by Image_Format.
-  Standard_EXPORT static bool GetDataFormat (const Handle(OpenGl_Context)& theCtx,
-                                             const Image_Format            theFromat,
-                                             GLint&                        theTextFormat,
-                                             GLenum&                       thePixelFormat,
-                                             GLenum&                       theDataType);
-
-  //! Return texture type and format by Image_PixMap data format.
-  static bool GetDataFormat (const Handle(OpenGl_Context)& theCtx,
-                             const Image_PixMap&           theData,
-                             GLint&                        theTextFormat,
-                             GLenum&                       thePixelFormat,
-                             GLenum&                       theDataType)
-  {
-    return GetDataFormat (theCtx, theData.Format(), theTextFormat, thePixelFormat, theDataType);
-  }
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
@@ -500,10 +173,98 @@ public:
   //! Returns TRUE for point sprite texture.
   virtual bool IsPointSprite() const { return false; }
 
+public:
+
+  Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used instead")
+  static bool GetDataFormat (const Handle(OpenGl_Context)& theCtx,
+                             const Image_Format            theFormat,
+                             GLint&                        theTextFormat,
+                             GLenum&                       thePixelFormat,
+                             GLenum&                       theDataType)
+  {
+    OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat (theCtx, theFormat, false);
+    theTextFormat  = aFormat.InternalFormat();
+    thePixelFormat = aFormat.PixelFormat();
+    theDataType    = aFormat.DataType();
+    return aFormat.IsValid();
+  }
+
+  Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat::FindFormat() should be used instead")
+  static bool GetDataFormat (const Handle(OpenGl_Context)& theCtx,
+                             const Image_PixMap&           theData,
+                             GLint&                        theTextFormat,
+                             GLenum&                       thePixelFormat,
+                             GLenum&                       theDataType)
+  {
+    OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat (theCtx, theData.Format(), false);
+    theTextFormat  = aFormat.InternalFormat();
+    thePixelFormat = aFormat.PixelFormat();
+    theDataType    = aFormat.DataType();
+    return aFormat.IsValid();
+  }
+
+  Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of separate parameters")
+  bool Init (const Handle(OpenGl_Context)& theCtx,
+             const GLint                   theTextFormat,
+             const GLenum                  thePixelFormat,
+             const GLenum                  theDataType,
+             const GLsizei                 theSizeX,
+             const GLsizei                 theSizeY,
+             const Graphic3d_TypeOfTexture theType,
+             const Image_PixMap*           theImage = NULL)
+  {
+    OpenGl_TextureFormat aFormat;
+    aFormat.SetInternalFormat (theTextFormat);
+    aFormat.SetPixelFormat (thePixelFormat);
+    aFormat.SetDataType (theDataType);
+    return Init (theCtx, aFormat, Graphic3d_Vec2i (theSizeX, theSizeY), theType, theImage);
+  }
+
+  Standard_DEPRECATED("Deprecated method, theIsColorMap parameter should be explicitly specified")
+  bool Init (const Handle(OpenGl_Context)& theCtx,
+             const Image_PixMap& theImage,
+             const Graphic3d_TypeOfTexture theType)
+  {
+    return Init (theCtx, theImage, theType, true);
+  }
+
+  Standard_DEPRECATED("Deprecated method, OpenGl_TextureFormat should be passed instead of separate parameters")
+  bool Init3D (const Handle(OpenGl_Context)& theCtx,
+               const GLint  theTextFormat,
+               const GLenum thePixelFormat,
+               const GLenum theDataType,
+               const Standard_Integer theSizeX,
+               const Standard_Integer theSizeY,
+               const Standard_Integer theSizeZ,
+               const void* thePixels)
+  {
+    OpenGl_TextureFormat aFormat;
+    aFormat.SetInternalFormat (theTextFormat);
+    aFormat.SetPixelFormat (thePixelFormat);
+    aFormat.SetDataType (theDataType);
+    return Init3D (theCtx, aFormat, Graphic3d_Vec3i (theSizeX, theSizeY, theSizeZ), thePixels);
+  }
+
 protected:
 
   //! Apply default sampler parameters after texture creation.
   Standard_EXPORT void applyDefaultSamplerParams (const Handle(OpenGl_Context)& theCtx);
+
+  //! Initializes 6 sides of cubemap.
+  //! If theCubeMap is not NULL then size and format will be taken from it and corresponding arguments will be ignored.
+  //! Otherwise this parametres will be taken from arguments.
+  //! @param theCtx         [in] active OpenGL context
+  //! @param theCubeMap     [in] cubemap definition, can be NULL
+  //! @param theSize        [in] cubemap dimensions
+  //! @param theFormat      [in] image format
+  //! @param theToGenMipmap [in] flag to generate mipmaped cubemap
+  //! @param theIsColorMap  [in] flag indicating cubemap storing color values
+  Standard_EXPORT bool initCubeMap (const Handle(OpenGl_Context)&    theCtx,
+                                    const Handle(Graphic3d_CubeMap)& theCubeMap,
+                                    Standard_Size    theSize,
+                                    Image_Format     theFormat,
+                                    Standard_Boolean theToGenMipmap,
+                                    Standard_Boolean theIsColorMap);
 
 protected:
 

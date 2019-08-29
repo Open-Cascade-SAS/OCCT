@@ -89,7 +89,8 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& the
 : myParams   (new Graphic3d_TextureParams()),
   myPath     (theFileName),
   myRevision (0),
-  myType     (theType)
+  myType     (theType),
+  myIsColorMap (true)
 {
   generateId();
 }
@@ -103,7 +104,8 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Image_PixMap)&   theP
 : myParams   (new Graphic3d_TextureParams()),
   myPixMap   (thePixMap),
   myRevision (0),
-  myType     (theType)
+  myType     (theType),
+  myIsColorMap (true)
 {
   generateId();
 }

@@ -12,9 +12,9 @@ vfit
 vsetdispmode 1
 vselprops dynHighlight -dispMode -1
 vmoveto 300 200
-if { [vreadpixel 250 200 rgb name] != "DARKTURQUOISE" } { puts "Error: object is NOT picked" }
+if { [vreadpixel 250 200 rgb name] != "CYAN2" } { puts "Error: object is NOT picked" }
 vmoveto 200 250
-if { [vreadpixel 200 250 rgb name] != "BLACK"} { puts "Error: hidden part is displayed" }
-if { [vreadpixel 250 200 rgb name] != "RED4" } { puts "Error: object is picked by hidden part" }
+if { [vreadpixel 200 250 rgb name] != "BLACK" } { puts "Error: hidden part is displayed" }
+if { [vreadpixel 250 200 rgb name] != "RED4"  } { puts "Error: object is picked by hidden part" }
 
 vdump ${imagedir}/${casename}.png

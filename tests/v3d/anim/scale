@@ -18,15 +18,15 @@ vanimation anim -clear
 vanimation anim/zoom -view -scale1 1.2 -scale2 4.8 -duration 2
 
 vanimation anim -play 0.0 0.0
-if {[vreadpixel 230 220 rgb name] != "DARKGOLDENROD3" || [vreadpixel 250 220 rgb name] != "BLACK"} { puts "Error: Camera scale result is wrong!" }
+if {[vreadpixel 230 220 rgb name] != "DARKGOLDENROD" || [vreadpixel 250 220 rgb name] != "BLACK"} { puts "Error: Camera scale result is wrong!" }
 vdump $imagedir/${casename}_0.png
 
 vanimation anim -play 1.0 0.0
-if {[vreadpixel 250 220 rgb name] != "DARKGOLDENROD3" || [vreadpixel 270 220 rgb name] != "BLACK"} { puts "Error: Camera scale result is wrong!" }
+if {[vreadpixel 250 220 rgb name] != "DARKGOLDENROD" || [vreadpixel 270 220 rgb name] != "BLACK"} { puts "Error: Camera scale result is wrong!" }
 vdump $imagedir/${casename}_1.png
 
 vanimation anim -play 2.0 0.0
-if {[vreadpixel 334 220 rgb name] != "DARKGOLDENROD3" || [vreadpixel 350 220 rgb name] != "BLACK"} { puts "Error: Camera scale result is wrong!" }
+if {[vreadpixel 334 220 rgb name] != "DARKGOLDENROD" || [vreadpixel 350 220 rgb name] != "BLACK"} { puts "Error: Camera scale result is wrong!" }
 vdump $imagedir/${casename}_2.png
 
 puts "Put the following command to start interactive animation:"

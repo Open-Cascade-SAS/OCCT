@@ -19,6 +19,8 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <OpenGl_Vec.hxx>
 
+class OpenGl_Context;
+
 //! OpenGL material definition
 struct OpenGl_Material
 {
@@ -52,8 +54,9 @@ struct OpenGl_Material
     Params  (1.0f, 0.0f, 0.0f, 0.0f) {}
 
   //! Initialize material
-  void Init (const Graphic3d_MaterialAspect& theProp,
-             const Quantity_Color&           theInteriorColor);
+  void Init (const OpenGl_Context& theCtx,
+             const Graphic3d_MaterialAspect& theProp,
+             const Quantity_Color& theInteriorColor);
 
   //! Returns packed (serialized) representation of material properties
   const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }

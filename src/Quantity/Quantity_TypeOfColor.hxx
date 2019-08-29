@@ -21,6 +21,7 @@
 enum Quantity_TypeOfColor
 {
   Quantity_TOC_RGB,  //!< normalized linear RGB (red, green, blue) values within range [0..1] for each component
+  Quantity_TOC_sRGB, //!< normalized non-linear gamma-shifted RGB (red, green, blue) values within range [0..1] for each component
   Quantity_TOC_HLS,  //!< hue + light + saturation components, where:
                      //!  - First component is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red;
                      //!    value -1.0 is a special value reserved for grayscale color (S should be 0.0).

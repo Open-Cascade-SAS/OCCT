@@ -79,7 +79,7 @@ namespace
     for (Standard_Integer aColorComponentIndex = 2; aColorComponentIndex >= 0; --aColorComponentIndex)
     {
       const Standard_ShortReal aColorComponent = takeColorComponentFromInteger (theColorInteger, theColorComponentBase);
-      aColor[aColorComponentIndex]             = aColorComponent;
+      aColor[aColorComponentIndex]             = Quantity_Color::Convert_sRGB_To_LinearRGB (aColorComponent);
     }
     if (theColorInteger != 0)
     {

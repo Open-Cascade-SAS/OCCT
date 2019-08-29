@@ -27,7 +27,7 @@ vdump $imagedir/${casename}_1.png
 vanimation anim -play 2.0 0.0
 vdump $imagedir/${casename}_2.png
 
-if {[vreadpixel 270  20 rgb name] != "DARKGOLDENROD3"} { puts "Error: Box moving result is wrong!" }
+if {[vreadpixel 270  20 rgb name] != "DARKGOLDENROD" } { puts "Error: Box moving result is wrong!" }
 if {[vreadpixel 120 255 rgb name] != "DARKGOLDENROD4"} { puts "Error: Sphere moving result is wrong!" }
 
 puts "Put the following command to start interactive animation:"

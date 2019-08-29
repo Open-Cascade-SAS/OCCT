@@ -10,7 +10,7 @@ vaxo
 
 # create default color scale
 vcolorscale cs1 -demo -xy 0 0
-foreach {y aColor} {20 RED 60 DARKORANGE1 100 GOLD 140 GREENYELLOW 180 CHARTREUSE2 220 GREEN 250 MEDIUMSPRINGGREEN 290 CYAN 330 DODGERBLUE1 370 BLUE} { if { [vreadpixel 15 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+foreach {y aColor} {20 RED 60 DARKORANGE1 100 GOLD 140 GREENYELLOW 220 GREEN 250 MEDIUMSPRINGGREEN 290 CYAN 330 DODGERBLUE1 370 BLUE} { if { [vreadpixel 15 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
 
 # reduce color scale range and number of intervals
 vcolorscale cs2 -range 0 20 5 -xy 60 0
@@ -26,5 +26,5 @@ vcolorscale cs4 -color 1 0.42 0.35 0.8
 vcolorscale cs4 -color 5 pink
 vcolorscale cs4 -label 6 "last"
 vcolorscale cs4 -title "My color scale"
-foreach {y aColor} {60 PINK 120 RED 200 GREEN 280 BLUE 350 SLATEBLUE} { if { [vreadpixel 215 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
+foreach {y aColor} {60 PINK 120 RED 200 GREEN 280 BLUE 350 LIGHTSTEELBLUE3} { if { [vreadpixel 215 $y rgb name] != "$aColor" } { puts "Error: wrong color at $y" } }
 vdump ${imagedir}/${casename}.png

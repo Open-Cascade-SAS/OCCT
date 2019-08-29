@@ -52,7 +52,7 @@ class VrmlData_Color : public VrmlData_ArrayVec3d
    */
   inline const Quantity_Color Color (const Standard_Integer i) const
   { return Quantity_Color (Value(i).X(), Value(i).Y(), Value(i).Z(),
-                           Quantity_TOC_RGB); }
+                           Quantity_TOC_sRGB); }
 
   /**
    * Set the array data

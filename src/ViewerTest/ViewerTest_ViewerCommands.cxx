@@ -5824,7 +5824,7 @@ void V3d_LineItem::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePre
                             const Standard_Integer /*theMode*/)
 {
   thePresentation->Clear();
-  Quantity_Color aColor (1.0, 0, 0, Quantity_TOC_RGB);
+  Quantity_Color aColor (Quantity_NOC_RED);
   Standard_Integer aWidth, aHeight;
   ViewerTest::CurrentView()->Window()->Size (aWidth, aHeight);
   Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
@@ -6759,6 +6759,7 @@ static int VCaps (Draw_Interpretor& theDI,
 
   if (theArgNb < 2)
   {
+    theDI << "sRGB:    " << (aCaps->sRGBDisable       ? "0" : "1") << "\n";
     theDI << "VBO:     " << (aCaps->vboDisable        ? "0" : "1") << "\n";
     theDI << "Sprites: " << (aCaps->pntSpritesDisable ? "0" : "1") << "\n";
     theDI << "SoftMode:" << (aCaps->contextNoAccel    ? "1" : "0") << "\n";
@@ -6813,6 +6814,16 @@ static int VCaps (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aCaps->usePolygonMode = toEnable;
+    }
+    else if (anArgCase == "-srgb")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->sRGBDisable = !toEnable;
     }
     else if (anArgCase == "-vbo")
     {
@@ -7042,16 +7053,19 @@ static int VReadPixel (Draw_Interpretor& theDI,
     return 1;
   }
 
-  bool toShowName = false, toShowHls = false, toShowHex = false;
+  bool toShowName = false, toShowHls = false, toShowHex = false, toShow_sRGB = false;
   for (Standard_Integer anIter = 3; anIter < theArgNb; ++anIter)
   {
     TCollection_AsciiString aParam (theArgVec[anIter]);
     aParam.LowerCase();
     if (aParam == "-rgb"
-     || aParam == "rgb")
+     || aParam == "rgb"
+     || aParam == "-srgb"
+     || aParam == "srgb")
     {
       aFormat     = Image_Format_RGB;
       aBufferType = Graphic3d_BT_RGB;
+      toShow_sRGB = aParam == "-srgb" || aParam == "srgb";
     }
     else if (aParam == "-hls"
           || aParam == "hls")
@@ -7067,10 +7081,13 @@ static int VReadPixel (Draw_Interpretor& theDI,
       aBufferType = Graphic3d_BT_RGB;
     }
     else if (aParam == "-rgba"
-          || aParam == "rgba")
+          || aParam == "rgba"
+          || aParam == "-srgba"
+          || aParam == "srgba")
     {
       aFormat     = Image_Format_RGBA;
       aBufferType = Graphic3d_BT_RGBA;
+      toShow_sRGB = aParam == "-srgba" || aParam == "srgba";
     }
     else if (aParam == "-rgbaf"
           || aParam == "rgbaf")
@@ -7123,7 +7140,7 @@ static int VReadPixel (Draw_Interpretor& theDI,
   }
   theDI.Reset();
 
-  Quantity_ColorRGBA aColor = anImage.PixelColor (anX, anY);
+  Quantity_ColorRGBA aColor = anImage.PixelColor (anX, anY, true);
   if (toShowName)
   {
     if (aBufferType == Graphic3d_BT_RGBA)
@@ -7157,6 +7174,11 @@ static int VReadPixel (Draw_Interpretor& theDI,
         {
           theDI << aColor.GetRGB().Hue() << " " << aColor.GetRGB().Light() << " " << aColor.GetRGB().Saturation();
         }
+        else if (toShow_sRGB)
+        {
+          const Graphic3d_Vec4 aColor_sRGB = Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB ((Graphic3d_Vec4 )aColor);
+          theDI << aColor_sRGB.r() << " " << aColor_sRGB.g() << " " << aColor_sRGB.b();
+        }
         else
         {
           theDI << aColor.GetRGB().Red() << " " << aColor.GetRGB().Green() << " " << aColor.GetRGB().Blue();
@@ -7165,7 +7187,8 @@ static int VReadPixel (Draw_Interpretor& theDI,
       }
       case Graphic3d_BT_RGBA:
       {
-        theDI << aColor.GetRGB().Red() << " " << aColor.GetRGB().Green() << " " << aColor.GetRGB().Blue() << " " << aColor.Alpha();
+        const Graphic3d_Vec4 aVec4 = toShow_sRGB ? Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB ((Graphic3d_Vec4 )aColor) : (Graphic3d_Vec4 )aColor;
+        theDI << aVec4.r() << " " << aVec4.g() << " " << aVec4.b() << " " << aVec4.a();
         break;
       }
       case Graphic3d_BT_Depth:
@@ -13884,13 +13907,14 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  greenMagentaSimple",
     __FILE__, VStereo, group);
   theCommands.Add ("vcaps",
-            "vcaps [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}] [-polygonMode {0|1}]"
+            "vcaps [-sRGB {0|1}] [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}] [-polygonMode {0|1}]"
     "\n\t\t:       [-compatibleProfile {0|1}]"
     "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}]"
     "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
     "\n\t\t:       [-noExtensions {0|1}] [-maxVersion Major Minor]"
     "\n\t\t: Modify particular graphic driver options:"
+    "\n\t\t:  sRGB     - enable/disable sRGB rendering"
     "\n\t\t:  FFP      - use fixed-function pipeline instead of"
     "\n\t\t:             built-in GLSL programs"
     "\n\t\t:            (requires compatible profile)"
@@ -13916,7 +13940,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     " with f option returns free memory in bytes",
     __FILE__, VMemGpu, group);
   theCommands.Add ("vreadpixel",
-    "vreadpixel xPixel yPixel [{rgb|rgba|depth|hls|rgbf|rgbaf}=rgba] [-name|-hex]"
+    "vreadpixel xPixel yPixel [{rgb|rgba|sRGB|sRGBa|depth|hls|rgbf|rgbaf}=rgba] [-name|-hex]"
     " : Read pixel value for active view",
     __FILE__, VReadPixel, group);
   theCommands.Add("diffimage",

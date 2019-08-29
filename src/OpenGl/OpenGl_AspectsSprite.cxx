@@ -1767,7 +1767,7 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
 
     theMarkerSize = Max ((Standard_ShortReal )anImage->Width(),(Standard_ShortReal )anImage->Height());
 
-    aSprite->Init (theCtx, *anImage.operator->(), Graphic3d_TOT_2D);
+    aSprite->Init (theCtx, *anImage, Graphic3d_TOT_2D, true);
     if (!hadAlreadyAlpha)
     {
       if (anImageA.IsNull()
@@ -1778,7 +1778,7 @@ void OpenGl_AspectsSprite::build (const Handle(OpenGl_Context)& theCtx,
       }
       if (!anImageA.IsNull())
       {
-        aSpriteA->Init (theCtx, *anImageA.operator->(), Graphic3d_TOT_2D);
+        aSpriteA->Init (theCtx, *anImageA, Graphic3d_TOT_2D, true);
       }
     }
   }

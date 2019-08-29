@@ -54,8 +54,9 @@ namespace
 // function : Init
 // purpose  :
 // =======================================================================
-void OpenGl_Material::Init (const Graphic3d_MaterialAspect& theMat,
-                            const Quantity_Color&           theInteriorColor)
+void OpenGl_Material::Init (const OpenGl_Context& theCtx,
+                            const Graphic3d_MaterialAspect& theMat,
+                            const Quantity_Color& theInteriorColor)
 {
   ChangeShine()        = 128.0f * theMat.Shininess();
   ChangeTransparency() = theMat.Alpha();
@@ -82,6 +83,11 @@ void OpenGl_Material::Init (const Graphic3d_MaterialAspect& theMat,
       break;
     }
   }
+
+  Ambient  = theCtx.Vec4FromQuantityColor (Ambient);
+  Diffuse  = theCtx.Vec4FromQuantityColor (Diffuse);
+  Specular = theCtx.Vec4FromQuantityColor (Specular);
+  Emission = theCtx.Vec4FromQuantityColor (Emission);
 }
 
 // =======================================================================
@@ -341,7 +347,7 @@ Handle(OpenGl_FrameBuffer) OpenGl_Workspace::FBOCreate (const Standard_Integer t
   const Handle(OpenGl_Context)& aCtx = GetGlContext();
   aCtx->BindTextures (Handle(OpenGl_TextureSet)());
   Handle(OpenGl_FrameBuffer) aFrameBuffer = new OpenGl_FrameBuffer();
-  if (!aFrameBuffer->Init (aCtx, theWidth, theHeight, GL_RGBA8, GL_DEPTH24_STENCIL8, 0))
+  if (!aFrameBuffer->Init (aCtx, theWidth, theHeight, GL_SRGB8_ALPHA8, GL_DEPTH24_STENCIL8, 0))
   {
     aFrameBuffer->Release (aCtx.operator->());
     return Handle(OpenGl_FrameBuffer)();

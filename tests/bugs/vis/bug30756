@@ -12,8 +12,8 @@ vaxo
 vdisplay -dispMode 1 b
 vfit
 vclipplane p 1 -equation  0 1 0 -1 -set -capping 1
-if { [vreadpixel 200 200 rgb name] != "GRAY13" } { puts "Error: capping does not work with zero origin" }
+if { [vreadpixel 200 200 rgb name] != "GRAY14" } { puts "Error: capping does not work with zero origin" }
 vzlayer DEFAULT -origin 0 10 0
-if { [vreadpixel 200 200 rgb name] != "GRAY13" } { puts "Error: capping does not work with non-zero origin" }
+if { [vreadpixel 200 200 rgb name] != "GRAY14" } { puts "Error: capping does not work with non-zero origin" }
 
 vdump ${imagedir}/${casename}.png

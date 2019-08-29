@@ -23,7 +23,7 @@ vzbufftrihedron -on -position left_upper
 
 vsettransparency b 0.5
 
-if { [vreadpixel 150 150 rgb name] != "GREEN3" } { puts "Error: wrong color - GREEN box should overlap RED one" }
-if { [vreadpixel  84  64 rgb name] == "RED3"   } { puts "Error: wrong color - Trihedron should overlap RED box" }
+if { [vreadpixel 150 150 rgb name] != "GREEN2" } { puts "Error: wrong color - GREEN box should overlap RED one" }
+if { [vreadpixel  84  64 rgb name] == "RED2"   } { puts "Error: wrong color - Trihedron should overlap RED box" }
 
 vdump $imagedir/${casename}.png

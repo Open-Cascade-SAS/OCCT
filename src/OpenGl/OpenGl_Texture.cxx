@@ -177,240 +177,22 @@ bool OpenGl_Texture::InitSamplerObject (const Handle(OpenGl_Context)& theCtx)
       && mySampler->Init (theCtx, *this);
 }
 
-//=======================================================================
-//function : GetDataFormat
-//purpose  :
-//=======================================================================
-bool OpenGl_Texture::GetDataFormat (const Handle(OpenGl_Context)& theCtx,
-                                    const Image_Format            theFormat,
-                                    GLint&                        theTextFormat,
-                                    GLenum&                       thePixelFormat,
-                                    GLenum&                       theDataType)
-{
-  theTextFormat  = GL_RGBA8;
-  thePixelFormat = 0;
-  theDataType    = 0;
-  switch (theFormat)
-  {
-    case Image_Format_GrayF:
-    {
-      if (theCtx->core11 == NULL)
-      {
-        theTextFormat  = GL_R8;  // GL_R32F
-        thePixelFormat = GL_RED;
-      }
-      else
-      {
-      #if !defined(GL_ES_VERSION_2_0)
-        theTextFormat  = GL_LUMINANCE8;
-      #else
-        theTextFormat  = GL_LUMINANCE;
-      #endif
-        thePixelFormat = GL_LUMINANCE;
-      }
-      theDataType = GL_FLOAT;
-      return true;
-    }
-    case Image_Format_AlphaF:
-    {
-      if (theCtx->core11 == NULL)
-      {
-        theTextFormat  = GL_R8;  // GL_R32F
-        thePixelFormat = GL_RED;
-      }
-      else
-      {
-      #if !defined(GL_ES_VERSION_2_0)
-        theTextFormat  = GL_ALPHA8;
-      #else
-        theTextFormat  = GL_ALPHA;
-      #endif
-        thePixelFormat = GL_ALPHA;
-      }
-      theDataType = GL_FLOAT;
-      return true;
-    }
-    case Image_Format_RGBAF:
-    {
-      theTextFormat  = GL_RGBA8; // GL_RGBA32F
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_FLOAT;
-      return true;
-    }
-    case Image_Format_BGRAF:
-    {
-      if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
-      {
-        return false;
-      }
-      theTextFormat  = GL_RGBA8;    // GL_RGBA32F
-      thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
-      theDataType    = GL_FLOAT;
-      return true;
-    }
-    case Image_Format_RGBF:
-    {
-      theTextFormat  = GL_RGB8; // GL_RGB32F
-      thePixelFormat = GL_RGB;
-      theDataType    = GL_FLOAT;
-      return true;
-    }
-    case Image_Format_BGRF:
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      theTextFormat  = GL_RGB8; // GL_RGB32F
-      thePixelFormat = GL_BGR;  // equals to GL_BGR_EXT
-      theDataType    = GL_FLOAT;
-      return true;
-    #else
-      return false;
-    #endif
-    }
-    case Image_Format_RGBA:
-    {
-      theTextFormat = GL_RGBA8;
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case Image_Format_BGRA:
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
-      {
-        return false;
-      }
-      theTextFormat  = GL_RGBA8;
-    #else
-      if (!theCtx->extBgra)
-      {
-        return false;
-      }
-      theTextFormat  = GL_BGRA_EXT;
-    #endif
-      thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case Image_Format_RGB32:
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      // ask driver to convert data to RGB8 to save memory
-      theTextFormat  = GL_RGB8;
-    #else
-      // conversion is not supported
-      theTextFormat  = GL_RGBA8;
-    #endif
-      thePixelFormat = GL_RGBA;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case Image_Format_BGR32:
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      if (!theCtx->IsGlGreaterEqual(1, 2) && !theCtx->extBgra)
-      {
-        return false;
-      }
-      theTextFormat  = GL_RGB8;
-    #else
-      if (!theCtx->extBgra)
-      {
-        return false;
-      }
-      theTextFormat  = GL_BGRA_EXT;
-    #endif
-      thePixelFormat = GL_BGRA_EXT; // equals to GL_BGRA
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case Image_Format_RGB:
-    {
-      theTextFormat = GL_RGB8;
-      thePixelFormat = GL_RGB;
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case Image_Format_BGR:
-    {
-    #if !defined(GL_ES_VERSION_2_0)
-      if (!theCtx->IsGlGreaterEqual (1, 2) && !theCtx->extBgra)
-      {
-        return false;
-      }
-      theTextFormat = GL_RGB8;
-      thePixelFormat = GL_BGR; // equals to GL_BGR_EXT
-      theDataType    = GL_UNSIGNED_BYTE;
-      return true;
-    #else
-      return false;
-    #endif
-    }
-    case Image_Format_Gray:
-    {
-      if (theCtx->core11 == NULL)
-      {
-        theTextFormat  = GL_R8;
-        thePixelFormat = GL_RED;
-      }
-      else
-      {
-      #if !defined(GL_ES_VERSION_2_0)
-        theTextFormat  = GL_LUMINANCE8;
-      #else
-        theTextFormat  = GL_LUMINANCE;
-      #endif
-        thePixelFormat = GL_LUMINANCE;
-      }
-      theDataType = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case Image_Format_Alpha:
-    {
-      if (theCtx->core11 == NULL)
-      {
-        theTextFormat  = GL_R8;
-        thePixelFormat = GL_RED;
-      }
-      else
-      {
-      #if !defined(GL_ES_VERSION_2_0)
-        theTextFormat  = GL_ALPHA8;
-      #else
-        theTextFormat  = GL_ALPHA;
-      #endif
-        thePixelFormat = GL_ALPHA;
-      }
-      theDataType = GL_UNSIGNED_BYTE;
-      return true;
-    }
-    case Image_Format_UNKNOWN:
-    {
-      return false;
-    }
-  }
-  return false;
-}
-
 // =======================================================================
 // function : Init
 // purpose  :
 // =======================================================================
 bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
-                           const Standard_Integer        theTextFormat,
-                           const GLenum                  thePixelFormat,
-                           const GLenum                  theDataType,
-                           const Standard_Integer        theSizeX,
-                           const Standard_Integer        theSizeY,
+                           const OpenGl_TextureFormat&   theFormat,
+                           const Graphic3d_Vec2i&        theSizeXY,
                            const Graphic3d_TypeOfTexture theType,
                            const Image_PixMap*           theImage)
 {
-  if (theSizeX < 1
-   || theSizeY < 1)
+  if (theSizeXY.x() < 1
+   || theSizeXY.y() < 1)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "Error: texture of 0 size cannot be created.");
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     return false;
   }
 
@@ -423,14 +205,14 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 #endif
   const Standard_Boolean toCreateMipMaps = (theType == Graphic3d_TOT_2D_MIPMAP);
   const bool toPatchExisting = IsValid()
-                            && myTextFormat == thePixelFormat
+                            && myTextFormat == theFormat.PixelFormat()
                             && myTarget == aTarget
                             && myHasMipmaps == toCreateMipMaps
-                            && mySizeX  == theSizeX
-                            && (mySizeY == theSizeY || theType == Graphic3d_TOT_1D);
+                            && mySizeX  == theSizeXY.x()
+                            && (mySizeY == theSizeXY.y() || theType == Graphic3d_TOT_1D);
   if (!Create (theCtx))
   {
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     return false;
   }
 
@@ -441,37 +223,37 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   }
   else
   {
-    myIsAlpha = thePixelFormat == GL_ALPHA;
+    myIsAlpha = theFormat.PixelFormat() == GL_ALPHA;
   }
 
   myHasMipmaps             = toCreateMipMaps;
-  myTextFormat             = thePixelFormat;
-  mySizedFormat            = theTextFormat;
+  myTextFormat             = theFormat.PixelFormat();
+  mySizedFormat            = theFormat.InternalFormat();
   myNbSamples              = 1;
 #if !defined(GL_ES_VERSION_2_0)
-  const GLint anIntFormat  = theTextFormat;
+  const GLint anIntFormat  = theFormat.InternalFormat();
 #else
   // ES 2.0 does not support sized formats and format conversions - them detected from data type
-  const GLint anIntFormat  = theCtx->IsGlGreaterEqual (3, 0) ? theTextFormat : thePixelFormat;
+  const GLint anIntFormat  = theCtx->IsGlGreaterEqual (3, 0) ? theFormat.InternalFormat() : theFormat.PixelFormat();
 #endif
 
-  if (theDataType == GL_FLOAT && !theCtx->arbTexFloat)
+  if (theFormat.DataType() == GL_FLOAT
+  && !theCtx->arbTexFloat)
   {
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          "Error: floating-point textures are not supported by hardware.");
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     return false;
   }
 
   const GLsizei aMaxSize = theCtx->MaxTextureSize();
-  if (theSizeX > aMaxSize
-   || theSizeY > aMaxSize)
+  if (theSizeXY.x() > aMaxSize
+   || theSizeXY.y() > aMaxSize)
   {
-    TCollection_ExtendedString aWarnMessage = TCollection_ExtendedString ("Error: Texture dimension - ")
-      + theSizeX + "x" + theSizeY + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")";
-
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
-    Release (theCtx.operator->());
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         TCollection_AsciiString ("Error: Texture dimension - ") + theSizeXY.x() + "x" + theSizeXY.y()
+                       + " exceeds hardware limits (" + aMaxSize + "x" + aMaxSize + ")");
+    Release (theCtx.get());
     return false;
   }
 #if !defined(GL_ES_VERSION_2_0)
@@ -481,18 +263,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     // however some hardware (NV30 - GeForce FX, RadeOn 9xxx and Xxxx) supports GLSL but not NPOT!
     // Trying to create NPOT textures on such hardware will not fail
     // but driver will fall back into software rendering,
-    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeX, aMaxSize);
-    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeY, aMaxSize);
-
-    if (theSizeX != aWidthP2
-     || (theType != Graphic3d_TOT_1D && theSizeY != aHeightP2))
+    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeXY.x(), aMaxSize);
+    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeXY.y(), aMaxSize);
+    if (theSizeXY.x() != aWidthP2
+     || (theType != Graphic3d_TOT_1D && theSizeXY.y() != aHeightP2))
     {
-      TCollection_ExtendedString aWarnMessage =
-        TCollection_ExtendedString ("Error: NPOT Textures (") + theSizeX + "x" + theSizeY + ") are not supported by hardware.";
-
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
-
-      Release (theCtx.operator->());
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                           TCollection_AsciiString ("Error: NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
+                           " are not supported by hardware.");
+      Release (theCtx.get());
       return false;
     }
   }
@@ -500,18 +279,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   else if (!theCtx->IsGlGreaterEqual (3, 0) && theType == Graphic3d_TOT_2D_MIPMAP)
   {
     // Mipmap NPOT textures are not supported by OpenGL ES 2.0.
-    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeX, aMaxSize);
-    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeY, aMaxSize);
-
-    if (theSizeX != aWidthP2
-     || theSizeY != aHeightP2)
+    const GLsizei aWidthP2  = OpenGl_Context::GetPowerOfTwo (theSizeXY.x(), aMaxSize);
+    const GLsizei aHeightP2 = OpenGl_Context::GetPowerOfTwo (theSizeXY.y(), aMaxSize);
+    if (theSizeXY.x() != aWidthP2
+     || theSizeXY.y() != aHeightP2)
     {
-      TCollection_ExtendedString aWarnMessage =
-        TCollection_ExtendedString ("Error: Mipmap NPOT Textures (") + theSizeX + "x" + theSizeY + ") are not supported by OpenGL ES 2.0";
-
-      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
-
-      Release (theCtx.operator->());
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                           TCollection_AsciiString ("Error: Mipmap NPOT Textures (") + theSizeXY.x() + "x" + theSizeXY.y() + ")"
+                           " are not supported by OpenGL ES 2.0");
+      Release (theCtx.get());
       return false;
     }
   }
@@ -551,15 +327,15 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       if (toPatchExisting)
       {
         glTexSubImage1D (GL_TEXTURE_1D, 0, 0,
-                         theSizeX, thePixelFormat, theDataType, aDataPtr);
+                         theSizeXY.x(), theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
         Unbind (theCtx);
         return true;
       }
 
       // use proxy to check texture could be created or not
       glTexImage1D (GL_PROXY_TEXTURE_1D, 0, anIntFormat,
-                    theSizeX, 0,
-                    thePixelFormat, theDataType, NULL);
+                    theSizeXY.x(), 0,
+                    theFormat.PixelFormat(), theFormat.DataType(), NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_1D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
       if (aTestWidth == 0)
@@ -571,16 +347,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       glTexImage1D (GL_TEXTURE_1D, 0, anIntFormat,
-                    theSizeX, 0,
-                    thePixelFormat, theDataType, aDataPtr);
+                    theSizeXY.x(), 0,
+                    theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
       if (glGetError() != GL_NO_ERROR)
       {
         Unbind (theCtx);
-        Release (theCtx.operator->());
+        Release (theCtx.get());
         return false;
       }
 
-      mySizeX = theSizeX;
+      mySizeX = theSizeXY.x();
       mySizeY = 1;
 
       Unbind (theCtx);
@@ -588,7 +364,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     #else
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                            "Error: 1D textures are not supported by hardware.");
-      Release (theCtx.operator->());
+      Release (theCtx.get());
       return false;
     #endif
     }
@@ -600,8 +376,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         glTexSubImage2D (GL_TEXTURE_2D, 0,
                          0, 0,
-                         theSizeX, theSizeY,
-                         thePixelFormat, theDataType, aDataPtr);
+                         theSizeXY.x(), theSizeXY.y(),
+                         theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
         Unbind (theCtx);
         return true;
       }
@@ -609,8 +385,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     #if !defined(GL_ES_VERSION_2_0)
       // use proxy to check texture could be created or not
       glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                    theSizeX, theSizeY, 0,
-                    thePixelFormat, theDataType, NULL);
+                    theSizeXY.x(), theSizeXY.y(), 0,
+                    theFormat.PixelFormat(), theFormat.DataType(), NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
@@ -618,28 +394,29 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         // no memory or broken input parameters
         Unbind (theCtx);
-        Release (theCtx.operator->());
+        Release (theCtx.get());
         return false;
       }
     #endif
 
       glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
-                    theSizeX, theSizeY, 0,
-                    thePixelFormat, theDataType, aDataPtr);
+                    theSizeXY.x(), theSizeXY.y(), 0,
+                    theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
       const GLenum anErr = glGetError();
       if (anErr != GL_NO_ERROR)
       {
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                             TCollection_AsciiString ("Error: 2D texture ") + theSizeX + "x" + theSizeY
-                                                   + " IF: " + int(anIntFormat) + " PF: " + int(thePixelFormat) + " DT: " + int(theDataType)
+                             TCollection_AsciiString ("Error: 2D texture ") + theSizeXY.x() + "x" + theSizeXY.y()
+                                                   + " IF: " + int(anIntFormat) + " PF: " + int(theFormat.PixelFormat())
+                                                   + " DT: " + int(theFormat.DataType())
                                                    + " can not be created with error " + int(anErr) + ".");
         Unbind (theCtx);
-        Release (theCtx.operator->());
+        Release (theCtx.get());
         return false;
       }
 
-      mySizeX = theSizeX;
-      mySizeY = theSizeY;
+      mySizeX = theSizeXY.x();
+      mySizeY = theSizeXY.y();
 
       Unbind (theCtx);
       return true;
@@ -652,8 +429,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         glTexSubImage2D (GL_TEXTURE_2D, 0,
                          0, 0,
-                         theSizeX, theSizeY,
-                         thePixelFormat, theDataType, aDataPtr);
+                         theSizeXY.x(), theSizeXY.y(),
+                         theFormat.PixelFormat(), theFormat.DataType(), aDataPtr);
         if (theCtx->arbFBO != NULL)
         {
           // generate mipmaps
@@ -661,7 +438,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
           if (glGetError() != GL_NO_ERROR)
           {
             Unbind (theCtx);
-            Release (theCtx.operator->());
+            Release (theCtx.get());
             return false;
           }
         }
@@ -673,8 +450,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     #if !defined(GL_ES_VERSION_2_0)
       // use proxy to check texture could be created or not
       glTexImage2D (GL_PROXY_TEXTURE_2D, 0, anIntFormat,
-                    theSizeX, theSizeY, 0,
-                    thePixelFormat, theDataType, NULL);
+                    theSizeXY.x(), theSizeXY.y(), 0,
+                    theFormat.PixelFormat(), theFormat.DataType(), NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &aTestHeight);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
@@ -682,29 +459,30 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         // no memory or broken input parameters
         Unbind (theCtx);
-        Release (theCtx.operator->());
+        Release (theCtx.get());
         return false;
       }
     #endif
 
       // upload main picture
       glTexImage2D (GL_TEXTURE_2D, 0, anIntFormat,
-                    theSizeX, theSizeY, 0,
-                    thePixelFormat, theDataType, theImage->Data());
+                    theSizeXY.x(), theSizeXY.y(), 0,
+                    theFormat.PixelFormat(), theFormat.DataType(), theImage->Data());
       const GLenum aTexImgErr = glGetError();
       if (aTexImgErr != GL_NO_ERROR)
       {
         theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                             TCollection_AsciiString ("Error: 2D texture ") + theSizeX + "x" + theSizeY
-                                                    + " IF: " + int(anIntFormat) + " PF: " + int(thePixelFormat) + " DT: " + int(theDataType)
+                             TCollection_AsciiString ("Error: 2D texture ") + theSizeXY.x() + "x" + theSizeXY.y()
+                                                    + " IF: " + int(anIntFormat) + " PF: " + int(theFormat.PixelFormat())
+                                                    + " DT: " + int(theFormat.DataType())
                                                     + " can not be created with error " + int(aTexImgErr) + ".");
         Unbind (theCtx);
-        Release (theCtx.operator->());
+        Release (theCtx.get());
         return false;
       }
 
-      mySizeX = theSizeX;
-      mySizeY = theSizeY;
+      mySizeX = theSizeXY.x();
+      mySizeY = theSizeXY.y();
 
       if (theCtx->arbFBO != NULL)
       {
@@ -715,18 +493,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         if (glGetError() != GL_NO_ERROR)
         {
           Unbind (theCtx);
-          Release (theCtx.operator->());
+          Release (theCtx.get());
           return false;
         }
       }
       else
       {
-        const TCollection_ExtendedString aWarnMessage ("Warning: generating mipmaps requires GL_ARB_framebuffer_object extension which is missing.");
-
-        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
-
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Warning: generating mipmaps requires GL_ARB_framebuffer_object extension which is missing.");
         Unbind (theCtx);
-        Release (theCtx.operator->());
+        Release (theCtx.get());
         return false;
       }
 
@@ -741,7 +517,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     }
   }
 
-  Release (theCtx.operator->());
+  Release (theCtx.get());
   return false;
 }
 
@@ -751,27 +527,23 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
                            const Image_PixMap&           theImage,
-                           const Graphic3d_TypeOfTexture theType)
+                           const Graphic3d_TypeOfTexture theType,
+                           const Standard_Boolean        theIsColorMap)
 {
   if (theImage.IsEmpty())
   {
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     return false;
   }
 
-  GLenum aPixelFormat;
-  GLenum aDataType;
-  GLint aTextFormat;
-  if (!GetDataFormat (theCtx, theImage, aTextFormat, aPixelFormat, aDataType))
+  const OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat (theCtx, theImage.Format(), theIsColorMap);
+  if (!aFormat.IsValid())
   {
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     return false;
   }
 
-  return Init (theCtx,
-               aTextFormat, aPixelFormat, aDataType,
-               (Standard_Integer)theImage.SizeX(),
-               (Standard_Integer)theImage.SizeY(),
+  return Init (theCtx, aFormat, Graphic3d_Vec2i ((Standard_Integer)theImage.SizeX(), (Standard_Integer)theImage.SizeY()),
                theType, &theImage);
 }
 
@@ -791,7 +563,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)&       theCtx,
   {
     case Graphic3d_TOT_CUBEMAP:
     {
-      return InitCubeMap (theCtx, Handle(Graphic3d_CubeMap)::DownCast(theTextureMap));
+      return initCubeMap (theCtx, Handle(Graphic3d_CubeMap)::DownCast(theTextureMap),
+                          0, Image_Format_RGB, false, theTextureMap->IsColorMap());
     }
     default:
     {
@@ -800,7 +573,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)&       theCtx,
       {
         return false;
       }
-      return Init (theCtx, *anImage, theTextureMap->Type());
+      return Init (theCtx, *anImage, theTextureMap->Type(), theTextureMap->IsColorMap());
     }
   }
 }
@@ -935,24 +708,14 @@ bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
 // purpose  :
 // =======================================================================
 bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
-                             const GLint                   theTextFormat,
-                             const GLenum                  thePixelFormat,
-                             const GLenum                  theDataType,
-                             const Standard_Integer        theSizeX,
-                             const Standard_Integer        theSizeY,
-                             const Standard_Integer        theSizeZ,
+                             const OpenGl_TextureFormat&   theFormat,
+                             const Graphic3d_Vec3i&        theSizeXYZ,
                              const void*                   thePixels)
 {
   if (theCtx->Functions()->glTexImage3D == NULL)
   {
-    TCollection_ExtendedString aMsg ("Error: three-dimensional textures are not supported by hardware.");
-
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                         GL_DEBUG_TYPE_ERROR,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH,
-                         aMsg);
-
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         "Error: three-dimensional textures are not supported by hardware.");
     return false;
   }
 
@@ -965,83 +728,80 @@ bool OpenGl_Texture::Init3D (const Handle(OpenGl_Context)& theCtx,
   myNbSamples = 1;
   myHasMipmaps = false;
 
-  const GLsizei aSizeX = Min (theCtx->MaxTextureSize(), theSizeX);
-  const GLsizei aSizeY = Min (theCtx->MaxTextureSize(), theSizeY);
-  const GLsizei aSizeZ = Min (theCtx->MaxTextureSize(), theSizeZ);
-
+  const Graphic3d_Vec3i aSizeXYZ = theSizeXYZ.cwiseMin (Graphic3d_Vec3i (theCtx->MaxTextureSize()));
+  if (aSizeXYZ != theSizeXYZ)
+  {
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         "Error: 3D texture dimensions exceed hardware limits.");
+    Release (theCtx.get());
+    Unbind (theCtx);
+    return false;
+  }
   Bind (theCtx);
 
-  if (theDataType == GL_FLOAT && !theCtx->arbTexFloat)
+  if (theFormat.DataType() == GL_FLOAT
+  && !theCtx->arbTexFloat)
   {
-    TCollection_ExtendedString aMsg ("Error: floating-point textures are not supported by hardware.");
-
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-                         GL_DEBUG_TYPE_ERROR,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH,
-                         aMsg);
-
-    Release (theCtx.operator->());
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                         "Error: floating-point textures are not supported by hardware.");
+    Release (theCtx.get());
     Unbind (theCtx);
     return false;
   }
 
-  mySizedFormat = theTextFormat;
+  mySizedFormat = theFormat.InternalFormat();
 
   // setup the alignment
   OpenGl_UnpackAlignmentSentry::Reset();
 
 #if !defined (GL_ES_VERSION_2_0)
   theCtx->core15fwd->glTexImage3D (GL_PROXY_TEXTURE_3D, 0, mySizedFormat,
-                                   aSizeX, aSizeY, aSizeZ, 0,
-                                   thePixelFormat, theDataType, NULL);
+                                   aSizeXYZ.x(), aSizeXYZ.y(), aSizeXYZ.z(), 0,
+                                   theFormat.PixelFormat(), theFormat.DataType(), NULL);
 
-  GLint aTestSizeX = 0;
-  GLint aTestSizeY = 0;
-  GLint aTestSizeZ = 0;
-
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH, &aTestSizeX);
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_HEIGHT, &aTestSizeY);
-  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_DEPTH, &aTestSizeZ);
+  NCollection_Vec3<GLint> aTestSizeXYZ;
+  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_WIDTH,  &aTestSizeXYZ.x());
+  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_HEIGHT, &aTestSizeXYZ.y());
+  glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_DEPTH,  &aTestSizeXYZ.z());
   glGetTexLevelParameteriv (GL_PROXY_TEXTURE_3D, 0, GL_TEXTURE_INTERNAL_FORMAT, &mySizedFormat);
-
-  if (aTestSizeX == 0 || aTestSizeY == 0 || aTestSizeZ == 0)
+  if (aTestSizeXYZ.x() == 0 || aTestSizeXYZ.y() == 0 || aTestSizeXYZ.z() == 0)
   {
     Unbind (theCtx);
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     return false;
   }
 #endif
 
   applyDefaultSamplerParams (theCtx);
   theCtx->Functions()->glTexImage3D (myTarget, 0, mySizedFormat,
-                                     aSizeX, aSizeY, aSizeZ, 0,
-                                     thePixelFormat, theDataType, thePixels);
+                                     aSizeXYZ.x(), aSizeXYZ.y(), aSizeXYZ.z(), 0,
+                                     theFormat.PixelFormat(), theFormat.DataType(), thePixels);
 
   if (glGetError() != GL_NO_ERROR)
   {
     Unbind (theCtx);
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     return false;
   }
 
-  mySizeX = aSizeX;
-  mySizeY = aSizeY;
-  mySizeZ = aSizeZ;
+  mySizeX = aSizeXYZ.x();
+  mySizeY = aSizeXYZ.y();
+  mySizeZ = aSizeXYZ.z();
 
   Unbind (theCtx);
   return true;
 }
 
 // =======================================================================
-// function : InitCubeMap
+// function : initCubeMap
 // purpose  :
 // =======================================================================
-bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
+bool OpenGl_Texture::initCubeMap (const Handle(OpenGl_Context)&    theCtx,
                                   const Handle(Graphic3d_CubeMap)& theCubeMap,
-                                  Standard_Size                    theSize,
-                                  Image_Format                     theFormat,
-                                  Standard_Boolean                 theToGenMipmap)
+                                  Standard_Size    theSize,
+                                  Image_Format     theFormat,
+                                  Standard_Boolean theToGenMipmap,
+                                  Standard_Boolean theIsColorMap)
 {
   if (!Create (theCtx))
   {
@@ -1051,8 +811,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
 
   if (!theCubeMap.IsNull())
   {
-    Handle(Image_PixMap) anImage = theCubeMap->Reset().Value();
-    if (!anImage.IsNull())
+    if (Handle(Image_PixMap) anImage = theCubeMap->Reset().Value())
     {
       theSize   = anImage->SizeX();
       theFormat = anImage->Format();
@@ -1060,17 +819,14 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     else
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-        "Unable to get the first side of cubemap");
+                           "Unable to get the first side of cubemap");
       Release(theCtx.get());
       return false;
     }
   }
 
-  GLenum aPixelFormat = GL_RGB;
-  GLenum aDataType = 0;
-  GLint aTextFormat = 0;
-
-  if (!GetDataFormat (theCtx, theFormat, aTextFormat, aPixelFormat, aDataType))
+  OpenGl_TextureFormat aFormat = OpenGl_TextureFormat::FindFormat (theCtx, theFormat, theIsColorMap);
+  if (!aFormat.IsValid())
   {
     Unbind(theCtx);
     Release(theCtx.get());
@@ -1123,8 +879,8 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
       }
       else
       {
-        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, TCollection_AsciiString() +
-          "Unable to get [" + i + "] side of cubemap");
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             TCollection_AsciiString() + "Unable to get [" + i + "] side of cubemap");
         Unbind (theCtx);
         Release (theCtx.get());
         return false;
@@ -1133,17 +889,18 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     }
 
     glTexImage2D (GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-                  aTextFormat,
+                  aFormat.InternalFormat(),
                   GLsizei(theSize), GLsizei(theSize),
-                  0, aPixelFormat, aDataType,
+                  0, aFormat.PixelFormat(), aFormat.DataType(),
                   aData);
 
     OpenGl_UnpackAlignmentSentry::Reset();
 
-    if (glGetError() != GL_NO_ERROR)
+    const GLenum anErr = glGetError();
+    if (anErr != GL_NO_ERROR)
     {
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-        "Unable to initialize side of cubemap");
+                           TCollection_AsciiString ("Unable to initialize side of cubemap. Error #") + int(anErr));
       Unbind (theCtx);
       Release (theCtx.get());
       return false;
@@ -1152,16 +909,16 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
 
   if (theToGenMipmap && theCtx->arbFBO != NULL)
   {
-      theCtx->arbFBO->glGenerateMipmap (myTarget);
-
-      if (glGetError() != GL_NO_ERROR)
-      {
-        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-          "Unable to generate mipmap of cubemap");
-        Unbind(theCtx);
-        Release(theCtx.get());
-        return false;
-      }
+    theCtx->arbFBO->glGenerateMipmap (myTarget);
+    const GLenum anErr = glGetError();
+    if (anErr != GL_NO_ERROR)
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           TCollection_AsciiString ("Unable to generate mipmap of cubemap. Error #") + int(anErr));
+      Unbind (theCtx);
+      Release (theCtx.get());
+      return false;
+    }
   }
 
   Unbind (theCtx.get());

@@ -546,11 +546,11 @@ Handle(VrmlData_Appearance) VrmlData_ShapeConvert::defaultMaterialFace () const
     const Handle(VrmlData_Material) aMaterial =
       new VrmlData_Material (myScene, 0L, 1.0, 0.022, 0.);
     aMaterial->SetDiffuseColor (Quantity_Color(0.780392, 0.568627, 0.113725,
-                                               Quantity_TOC_RGB));
+                                               Quantity_TOC_sRGB));
     aMaterial->SetEmissiveColor(Quantity_Color(0.329412, 0.223529, 0.027451,
-                                               Quantity_TOC_RGB));
+                                               Quantity_TOC_sRGB));
     aMaterial->SetSpecularColor(Quantity_Color(0.992157, 0.941176, 0.807843,
-                                               Quantity_TOC_RGB));
+                                               Quantity_TOC_sRGB));
     myScene.AddNode (aMaterial, Standard_False);
     anAppearance = new VrmlData_Appearance (myScene, aNodeName);
     anAppearance->SetMaterial (aMaterial);
@@ -903,11 +903,13 @@ Handle(VrmlData_Appearance) VrmlData_ShapeConvert::makeMaterialFromColor(
   }
   else
   {
-    aNodeName.AssignCat(aColor.GetRGB().Red());
+    NCollection_Vec3<Standard_Real> aColor_sRGB;
+    aColor.GetRGB().Values (aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
+    aNodeName.AssignCat(aColor_sRGB.r());
     aNodeName.AssignCat("_");
-    aNodeName.AssignCat(aColor.GetRGB().Green());
+    aNodeName.AssignCat(aColor_sRGB.g());
     aNodeName.AssignCat("_");
-    aNodeName.AssignCat(aColor.GetRGB().Blue());
+    aNodeName.AssignCat(aColor_sRGB.b());
   }
 
   Handle(VrmlData_Appearance) anAppearance =

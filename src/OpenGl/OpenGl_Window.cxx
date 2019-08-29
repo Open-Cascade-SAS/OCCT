@@ -192,6 +192,13 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
   EGLSurface anEglSurf = EGL_NO_SURFACE;
   if ((EGLContext )theGContext == EGL_NO_CONTEXT)
   {
+    // EGL_KHR_gl_colorspace extension specifies if OpenGL should write into window buffer as into sRGB or RGB framebuffer
+    //const int aSurfAttribs[] =
+    //{
+    //  EGL_GL_COLORSPACE_KHR, !theCaps->sRGBDisable ? EGL_GL_COLORSPACE_SRGB_KHR : EGL_GL_COLORSPACE_LINEAR_KHR,
+    //  EGL_NONE,
+    //};
+
     // create new surface
     anEglSurf = eglCreateWindowSurface (anEglDisplay,
                                         anEglConfig,
@@ -221,6 +228,8 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
         {
           EGL_WIDTH,  myWidth,
           EGL_HEIGHT, myHeight,
+          // EGL_KHR_gl_colorspace extension specifies if OpenGL should write into window buffer as into sRGB or RGB framebuffer
+          //EGL_GL_COLORSPACE_KHR, !theCaps->sRGBDisable ? EGL_GL_COLORSPACE_SRGB_KHR : EGL_GL_COLORSPACE_LINEAR_KHR,
           EGL_NONE
         };
         anEglSurf = eglCreatePbufferSurface (anEglDisplay, anEglConfig, aSurfAttribs);
@@ -365,6 +374,10 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
         WGL_COLOR_BITS_ARB,     24,
         WGL_DEPTH_BITS_ARB,     24,
         WGL_STENCIL_BITS_ARB,   8,
+        // WGL_EXT_colorspace extension specifies if OpenGL should write into window buffer as into sRGB or RGB framebuffer
+        //WGL_COLORSPACE_EXT, !theCaps->sRGBDisable ? WGL_COLORSPACE_SRGB_EXT : WGL_COLORSPACE_LINEAR_EXT,
+        // requires WGL_ARB_framebuffer_sRGB or WGL_EXT_framebuffer_sRGB extensions
+        //WGL_FRAMEBUFFER_SRGB_CAPABLE_EXT, !theCaps->sRGBDisable ? GL_TRUE : GL_FALSE,
         WGL_ACCELERATION_ARB,   theCaps->contextNoAccel ? WGL_NO_ACCELERATION_ARB : WGL_FULL_ACCELERATION_ARB,
         0, 0,
       };

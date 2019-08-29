@@ -18,7 +18,7 @@ verase m
 
 vdisplay -dispMode 1 -highMode 1 b
 vfit
-if { [vreadpixel 165 400 rgb name] != "DARKGOLDENROD3" } { puts "Error: fit all produces incorrect result after Erase" }
+if { [vreadpixel 165 400 rgb name] != "DARKGOLDENROD" } { puts "Error: fit all produces incorrect result after Erase" }
 vdump $::imagedir/${::casename}_1.png
 
 verase b
@@ -30,5 +30,5 @@ vremove m
 
 vdisplay -dispMode 1 -highMode 1 b
 vfit
-if { [vreadpixel 165 400 rgb name] != "DARKGOLDENROD3" } { puts "Error: fit all produces incorrect result after Remove" }
+if { [vreadpixel 165 400 rgb name] != "DARKGOLDENROD" } { puts "Error: fit all produces incorrect result after Remove" }
 vdump $::imagedir/${::casename}_2.png

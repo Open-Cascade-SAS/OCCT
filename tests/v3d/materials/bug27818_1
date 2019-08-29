@@ -19,7 +19,7 @@ vviewparams -scale 17.8 -proj 0.892687 -0.331602 0.305206 -up -0.162521 0.394789
 vselprops dynHighlight -transp 0.3 -color PALEGREEN2 -dispMode 1
 
 vmoveto 285 212
-if { [vreadpixel 285 212 name rgb] != "DARKKHAKI" }     { puts "Error: highlighting of a box is not transparent!" }
+if { [vreadpixel 285 212 name rgb] != "KHAKI3" }        { puts "Error: highlighting of a box is not transparent!" }
 
 vmoveto -reset
 if { [vreadpixel 285 212 name rgb] != "RED" }           { puts "Error: highlighting of a box is not reset!" }

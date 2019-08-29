@@ -193,14 +193,11 @@ Standard_Boolean D3DHost_FrameBuffer::InitD3dInterop (const Handle(OpenGl_Contex
   myIsOwnDepth  = true;
   theCtx->arbFBO->glGenFramebuffers (1, &myGlFBufferId);
 
-  GLenum aPixelFormat = 0, aDataType = 0;
-  if (myDepthFormat != 0
-  &&  getDepthDataFormat (myDepthFormat, aPixelFormat, aDataType)
-  && !myDepthStencilTexture->Init (theCtx, myDepthFormat,
-                                   aPixelFormat, aDataType,
-                                   aSizeX, aSizeY, Graphic3d_TOT_2D))
+  const OpenGl_TextureFormat aDepthFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, myDepthFormat);
+  if (aDepthFormat.IsValid()
+  && !myDepthStencilTexture->Init (theCtx, aDepthFormat, Graphic3d_Vec2i (aSizeX, aSizeY), Graphic3d_TOT_2D))
   {
-    Release (theCtx.operator->());
+    Release (theCtx.get());
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
                          TCollection_AsciiString("D3DHost_FrameBuffer, could not initialize GL_DEPTH24_STENCIL8 texture ") + aSizeX + "x" + aSizeY);
     return Standard_False;
@@ -288,17 +285,16 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
   theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                           myColorTextures (0)->GetTarget(), myColorTextures (0)->TextureId(), 0);
 
-  GLenum aDepthPixelFormat = 0, aDepthDataType = 0;
-  getDepthDataFormat (myDepthFormat, aDepthPixelFormat, aDepthDataType);
+  const OpenGl_TextureFormat aDepthFormat = OpenGl_TextureFormat::FindSizedFormat (theCtx, myDepthFormat);
   if (myDepthStencilTexture->IsValid())
   {
   #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthPixelFormat == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
+    theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
                                             myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
   #else
     theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                             myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-    if (aDepthPixelFormat == GL_DEPTH_STENCIL)
+    if (aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL)
     {
       theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
                                               myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
@@ -310,12 +306,12 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
     if (myDepthStencilTexture->IsValid())
     {
     #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthPixelFormat == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
+      theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
                                               myDepthStencilTexture->GetTarget(), 0, 0);
     #else
       theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                               myDepthStencilTexture->GetTarget(), 0, 0);
-      if (aDepthPixelFormat == GL_DEPTH_STENCIL)
+      if (aDepthFormat.PixelFormat() == GL_DEPTH_STENCIL)
       {
         theCtx->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
                                                 myDepthStencilTexture->GetTarget(), 0, 0);

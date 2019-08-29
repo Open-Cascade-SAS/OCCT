@@ -14,7 +14,7 @@ vpoint p0 0 0 0
 vclipplane c1 -equation 0 1 0  1 -setOverrideGlobal b1
 vclipplane c2 -equation 0 1 0 -1 -set
 vmoveto 200 200
-if { [vreadpixel 250 200 -rgb -name] != "DARKGOLDENROD3" } { puts "Error: selection of clipped object" }
-if { [vreadpixel 150 200 -rgb -name] != "DARKTURQUOISE"  } { puts "Error: object is not selected" }
+if { [vreadpixel 250 200 -rgb -name] != "DARKGOLDENROD" } { puts "Error: selection of clipped object" }
+if { [vreadpixel 150 200 -rgb -name] != "CYAN2"         } { puts "Error: object is not selected" }
 
 vdump ${imagedir}/${casename}.png

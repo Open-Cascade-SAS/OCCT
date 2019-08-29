@@ -408,6 +408,7 @@ OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
   myShadingModel (Graphic3d_TOSM_VERTEX),
   myUnlitPrograms (new OpenGl_SetOfPrograms()),
   myContext  (theContext),
+  mySRgbState (theContext->ToRenderSRGB()),
   myHasLocalOrigin (Standard_False),
   myLastView (NULL)
 {
@@ -435,7 +436,8 @@ void OpenGl_ShaderManager::clear()
   myOutlinePrograms.Nullify();
   myMapOfLightPrograms.Clear();
   myFontProgram.Nullify();
-  myBlitProgram.Nullify();
+  myBlitPrograms[0].Init (Handle(OpenGl_ShaderProgram)());
+  myBlitPrograms[1].Init (Handle(OpenGl_ShaderProgram)());
   myBoundBoxProgram.Nullify();
   myBoundBoxVertBuffer.Nullify();
   for (Standard_Integer aModeIter = 0; aModeIter < Graphic3d_StereoMode_NB; ++aModeIter)
@@ -560,6 +562,23 @@ void OpenGl_ShaderManager::switchLightPrograms()
     myLightPrograms = new OpenGl_SetOfShaderPrograms();
     myMapOfLightPrograms.Bind (aKey, myLightPrograms);
   }
+}
+
+// =======================================================================
+// function : UpdateSRgbState
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::UpdateSRgbState()
+{
+  if (mySRgbState == myContext->ToRenderSRGB())
+  {
+    return;
+  }
+
+  mySRgbState = myContext->ToRenderSRGB();
+
+  // special cases - GLSL programs dealing with sRGB/linearRGB internally
+  myStereoPrograms[Graphic3d_StereoMode_Anaglyph].Nullify();
 }
 
 // =======================================================================
@@ -744,6 +763,8 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
       continue;
     }
 
+    // ignoring OpenGl_Context::ToRenderSRGB() for light colors,
+    // as non-absolute colors for lights are rare and require tuning anyway
     aLightType.Type        = aLight.Type();
     aLightType.IsHeadlight = aLight.IsHeadlight();
     aLightParams.Color     = aLight.PackedColor();
@@ -1227,7 +1248,7 @@ void OpenGl_ShaderManager::PushInteriorState (const Handle(OpenGl_ShaderProgram)
     }
     else
     {
-      theProgram->SetUniform (myContext, aLocWireframeColor, theAspect->EdgeColorRGBA());
+      theProgram->SetUniform (myContext, aLocWireframeColor, myContext->Vec4FromQuantityColor (theAspect->EdgeColorRGBA()));
     }
   }
   if (const OpenGl_ShaderUniformLocation aLocQuadModeState = theProgram->GetStateLocation (OpenGl_OCCT_QUAD_MODE_STATE))
@@ -1314,10 +1335,35 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFont()
 }
 
 // =======================================================================
+// function : BindFboBlitProgram
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderManager::BindFboBlitProgram (Standard_Integer theNbSamples,
+                                                           Standard_Boolean theIsFallback_sRGB)
+{
+  NCollection_Array1<Handle(OpenGl_ShaderProgram)>& aList = myBlitPrograms[theIsFallback_sRGB ? 1 : 0];
+  Standard_Integer aNbSamples = Max (theNbSamples, 1);
+  if (aNbSamples > aList.Upper())
+  {
+    aList.Resize (1, aNbSamples, true);
+  }
+
+  Handle(OpenGl_ShaderProgram)& aProg = aList[aNbSamples];
+  if (aProg.IsNull())
+  {
+    prepareStdProgramFboBlit (aProg, aNbSamples, theIsFallback_sRGB);
+  }
+  return !aProg.IsNull()
+       && myContext->BindProgram (aProg);
+}
+
+// =======================================================================
 // function : prepareStdProgramFboBlit
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit (Handle(OpenGl_ShaderProgram)& theProgram,
+                                                                 Standard_Integer theNbSamples,
+                                                                 Standard_Boolean theIsFallback_sRGB)
 {
   OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
   aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec2 TexCoord", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
@@ -1329,18 +1375,63 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
       EOL"  gl_Position = vec4(occVertex.x, occVertex.y, 0.0, 1.0);"
       EOL"}";
 
-  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uColorSampler", Graphic3d_TOS_FRAGMENT));
-  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uDepthSampler", Graphic3d_TOS_FRAGMENT));
-  TCollection_AsciiString aSrcFrag =
-      EOL"void main()"
+  TCollection_AsciiString aSrcFrag;
+  if (theNbSamples > 1)
+  {
+  #if defined(GL_ES_VERSION_2_0)
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("highp sampler2DMS uColorSampler", Graphic3d_TOS_FRAGMENT));
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("highp sampler2DMS uDepthSampler", Graphic3d_TOS_FRAGMENT));
+  #else
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2DMS uColorSampler", Graphic3d_TOS_FRAGMENT));
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2DMS uDepthSampler", Graphic3d_TOS_FRAGMENT));
+  #endif
+    aSrcFrag = TCollection_AsciiString()
+    + EOL"#define THE_NUM_SAMPLES " + theNbSamples
+    + (theIsFallback_sRGB ? EOL"#define THE_SHIFT_sRGB" : "")
+    + EOL"void main()"
+      EOL"{"
+      EOL"  ivec2 aSize  = textureSize (uColorSampler);"
+      EOL"  ivec2 anUV   = ivec2 (vec2 (aSize) * TexCoord);"
+      EOL"  gl_FragDepth = texelFetch (uDepthSampler, anUV, THE_NUM_SAMPLES / 2 - 1).r;"
+      EOL
+      EOL"  vec4 aColor = vec4 (0.0);"
+      EOL"  for (int aSample = 0; aSample < THE_NUM_SAMPLES; ++aSample)"
+      EOL"  {"
+      EOL"    vec4 aVal = texelFetch (uColorSampler, anUV, aSample);"
+      EOL"    aColor += aVal;"
+      EOL"  }"
+      EOL"  aColor /= float(THE_NUM_SAMPLES);"
+      EOL"#ifdef THE_SHIFT_sRGB"
+      EOL"  aColor.rgb = pow (aColor.rgb, vec3 (1.0 / 2.2));"
+      EOL"#endif"
+      EOL"  occSetFragColor (aColor);"
+      EOL"}";
+  }
+  else
+  {
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uColorSampler", Graphic3d_TOS_FRAGMENT));
+    aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("sampler2D uDepthSampler", Graphic3d_TOS_FRAGMENT));
+    aSrcFrag = TCollection_AsciiString()
+    + (theIsFallback_sRGB ? EOL"#define THE_SHIFT_sRGB" : "")
+    + EOL"void main()"
       EOL"{"
       EOL"  gl_FragDepth = occTexture2D (uDepthSampler, TexCoord).r;"
-      EOL"  occSetFragColor (occTexture2D (uColorSampler, TexCoord));"
+      EOL"  vec4  aColor = occTexture2D (uColorSampler, TexCoord);"
+      EOL"#ifdef THE_SHIFT_sRGB"
+      EOL"  aColor.rgb = pow (aColor.rgb, vec3 (1.0 / 2.2));"
+      EOL"#endif"
+      EOL"  occSetFragColor (aColor);"
       EOL"}";
+  }
 
   Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
 #if defined(GL_ES_VERSION_2_0)
-  if (myContext->IsGlGreaterEqual (3, 0))
+  if (myContext->IsGlGreaterEqual (3, 1))
+  {
+    // required for MSAA sampler
+    aProgramSrc->SetHeader ("#version 310 es");
+  }
+  else if (myContext->IsGlGreaterEqual (3, 0))
   {
     aProgramSrc->SetHeader ("#version 300 es");
   }
@@ -1364,22 +1455,31 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramFboBlit()
     aProgramSrc->SetHeader ("#version 150");
   }
 #endif
-  aProgramSrc->SetId ("occt_blit");
+  TCollection_AsciiString anId = "occt_blit";
+  if (theNbSamples > 1)
+  {
+    anId += TCollection_AsciiString ("_msaa") + theNbSamples;
+  }
+  if (theIsFallback_sRGB)
+  {
+    anId += "_gamma";
+  }
+  aProgramSrc->SetId (anId);
   aProgramSrc->SetDefaultSampler (false);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbClipPlanesMax (0);
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
   aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
   TCollection_AsciiString aKey;
-  if (!Create (aProgramSrc, aKey, myBlitProgram))
+  if (!Create (aProgramSrc, aKey, theProgram))
   {
-    myBlitProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    theProgram = new OpenGl_ShaderProgram(); // just mark as invalid
     return Standard_False;
   }
 
-  myContext->BindProgram (myBlitProgram);
-  myBlitProgram->SetSampler (myContext, "uColorSampler", Graphic3d_TextureUnit_0);
-  myBlitProgram->SetSampler (myContext, "uDepthSampler", Graphic3d_TextureUnit_1);
+  myContext->BindProgram (theProgram);
+  theProgram->SetSampler (myContext, "uColorSampler", Graphic3d_TextureUnit_0);
+  theProgram->SetSampler (myContext, "uDepthSampler", Graphic3d_TextureUnit_1);
   myContext->BindProgram (NULL);
   return Standard_True;
 }
@@ -2432,19 +2532,21 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
       aName = "anaglyph";
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("mat4 uMultL", Graphic3d_TOS_FRAGMENT));
       aUniforms.Append (OpenGl_ShaderObject::ShaderVariable ("mat4 uMultR", Graphic3d_TOS_FRAGMENT));
-      aSrcFrag =
-          EOL"const vec4 THE_POW_UP   =       vec4 (2.2, 2.2, 2.2, 1.0);"
-          EOL"const vec4 THE_POW_DOWN = 1.0 / vec4 (2.2, 2.2, 2.2, 1.0);"
-          EOL
-          EOL"void main()"
-          EOL"{"
-          EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
-          EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
-          EOL"  aColorL = pow (aColorL, THE_POW_UP);" // normalize
-          EOL"  aColorR = pow (aColorR, THE_POW_UP);"
-          EOL"  vec4 aColor = uMultR * aColorR + uMultL * aColorL;"
-          EOL"  occSetFragColor (pow (aColor, THE_POW_DOWN));"
-          EOL"}";
+      const TCollection_AsciiString aNormalize = mySRgbState
+                                               ? EOL"#define sRgb2linear(theColor) theColor"
+                                                 EOL"#define linear2sRgb(theColor) theColor"
+                                               : EOL"#define sRgb2linear(theColor) pow(theColor, vec4(2.2, 2.2, 2.2, 1.0))"
+                                                 EOL"#define linear2sRgb(theColor) pow(theColor, 1.0 / vec4(2.2, 2.2, 2.2, 1.0))";
+      aSrcFrag = aNormalize
+      + EOL"void main()"
+        EOL"{"
+        EOL"  vec4 aColorL = occTexture2D (uLeftSampler,  TexCoord);"
+        EOL"  vec4 aColorR = occTexture2D (uRightSampler, TexCoord);"
+        EOL"  aColorL = sRgb2linear (aColorL);"
+        EOL"  aColorR = sRgb2linear (aColorR);"
+        EOL"  vec4 aColor = uMultR * aColorR + uMultL * aColorL;"
+        EOL"  occSetFragColor (linear2sRgb (aColor));"
+        EOL"}";
       break;
     }
     case Graphic3d_StereoMode_RowInterlaced:

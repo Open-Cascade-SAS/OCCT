@@ -301,9 +301,11 @@ bool OpenGl_TileSampler::upload (const Handle(OpenGl_Context)& theContext,
     ||  theOffsetsTexture->SizeY() != (int )anOffsets.SizeY
     || !theOffsetsTexture->IsValid())
     {
-      theOffsetsTexture->Release (theContext.operator->());
-      if (!theOffsetsTexture->Init (theContext, GL_RG32I, GL_RG_INTEGER, GL_INT,
-                                    (int )anOffsets.SizeX, (int )anOffsets.SizeY, Graphic3d_TOT_2D))
+      theOffsetsTexture->Release (theContext.get());
+      if (!theOffsetsTexture->Init (theContext,
+                                    OpenGl_TextureFormat::FindSizedFormat (theContext, GL_RG32I),
+                                    Graphic3d_Vec2i ((int )anOffsets.SizeX, (int )anOffsets.SizeY),
+                                    Graphic3d_TOT_2D))
       {
         hasErrors = true;
       }

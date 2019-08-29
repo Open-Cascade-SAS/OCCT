@@ -51,21 +51,10 @@ Vrml_Material::Vrml_Material(const Handle(Quantity_HArray1OfColor)& aAmbientColo
 
  Vrml_Material::Vrml_Material()
 {
- Quantity_Color tmpcolor;
-// myAmbientColor  = new Quantity_HArray1OfColor(1,1);
-    tmpcolor.SetValues(0.2, 0.2, 0.2, Quantity_TOC_RGB);
- myAmbientColor  = new Quantity_HArray1OfColor(1,1,tmpcolor);
-//    myAmbientColor->SetValue(1, tmpcolor);
-// myDiffuseColor  = new Quantity_HArray1OfColor(1,1);
-    tmpcolor.SetValues(0.8, 0.8, 0.8, Quantity_TOC_RGB);
- myDiffuseColor  = new Quantity_HArray1OfColor(1,1,tmpcolor);
-//    myDiffuseColor->SetValue(1, tmpcolor);
- mySpecularColor = new Quantity_HArray1OfColor(1,1);
-    tmpcolor.SetValues(0, 0, 0, Quantity_TOC_RGB);
-    mySpecularColor->SetValue(1, tmpcolor);
- myEmissiveColor = new Quantity_HArray1OfColor(1,1);
-    tmpcolor.SetValues(0, 0, 0, Quantity_TOC_RGB);
-    myEmissiveColor->SetValue(1, tmpcolor);
+ myAmbientColor  = new Quantity_HArray1OfColor (1, 1, Quantity_Color (0.2, 0.2, 0.2, Quantity_TOC_sRGB));
+ myDiffuseColor  = new Quantity_HArray1OfColor (1, 1, Quantity_Color (0.8, 0.8, 0.8, Quantity_TOC_sRGB));
+ mySpecularColor = new Quantity_HArray1OfColor (1, 1, Quantity_NOC_BLACK);
+ myEmissiveColor = new Quantity_HArray1OfColor (1, 1, Quantity_NOC_BLACK);
 
  myShininess     = new TColStd_HArray1OfReal (1,1,0.2);
  myTransparency  = new TColStd_HArray1OfReal (1,1,0);
@@ -149,6 +138,7 @@ Handle(TColStd_HArray1OfReal) Vrml_Material::Transparency() const
 
 Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const 
 {
+ NCollection_Vec3<Standard_Real> aColor_sRGB;
  Standard_Integer i;
  anOStream  << "Material {\n";
 
@@ -160,7 +150,8 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   anOStream  << "    ambientColor [\n\t";
   for ( i = myAmbientColor->Lower(); i <= myAmbientColor->Upper(); i++ )
     {
-     anOStream << myAmbientColor->Value(i).Red() << ' ' << myAmbientColor->Value(i).Green() << ' ' << myAmbientColor->Value(i).Blue();
+     myAmbientColor->Value(i).Values (aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
+     anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
      if ( i < myAmbientColor->Length() )
 	anOStream  << ",\n\t"; // ,,,,,,,,,,
     }
@@ -175,7 +166,8 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   anOStream  << "    diffuseColor [\n\t";
   for ( i = myDiffuseColor->Lower(); i <= myDiffuseColor->Upper(); i++ )
     {
-     anOStream << myDiffuseColor->Value(i).Red() << ' ' << myDiffuseColor->Value(i).Green() << ' ' << myDiffuseColor->Value(i).Blue();
+     myDiffuseColor->Value(i).Values (aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
+     anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
      if ( i < myDiffuseColor->Length() )
 	anOStream  << ",\n\t";
     }
@@ -190,7 +182,8 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
    anOStream  << "    specularColor [\n\t";
    for ( i = mySpecularColor->Lower(); i <= mySpecularColor->Upper(); i++ )
      {
-     anOStream << mySpecularColor->Value(i).Red() << ' ' << mySpecularColor->Value(i).Green() << ' ' << mySpecularColor->Value(i).Blue();
+     mySpecularColor->Value(i).Values (aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
+     anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
      if ( i < mySpecularColor->Length() )
 	anOStream  << ",\n\t";
      }
@@ -205,7 +198,8 @@ Standard_OStream& Vrml_Material::Print(Standard_OStream& anOStream) const
   anOStream  << "    emissiveColor [\n\t";
   for ( i = myEmissiveColor->Lower(); i <= myEmissiveColor->Upper(); i++ )
     {
-     anOStream << myEmissiveColor->Value(i).Red() << ' ' << myEmissiveColor->Value(i).Green() << ' ' << myEmissiveColor->Value(i).Blue();
+     myEmissiveColor->Value(i).Values (aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
+     anOStream << aColor_sRGB.r() << ' ' << aColor_sRGB.g() << ' ' << aColor_sRGB.b();
      if ( i < myEmissiveColor->Length() )
 	anOStream  << ",\n\t";
     }

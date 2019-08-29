@@ -385,7 +385,7 @@ bool RWGltf_GltfJsonParser::gltfParseStdMaterial (Handle(RWGltf_MaterialCommon)&
   else if (gltfReadVec4   (anAmb, anAmbVal)
         && validateColor4 (anAmb))
   {
-    theMat->AmbientColor = Quantity_Color (anAmb.r(), anAmb.g(), anAmb.b(), Quantity_TOC_RGB);
+    theMat->AmbientColor = Quantity_Color (anAmb.r(), anAmb.g(), anAmb.b(), Quantity_TOC_sRGB);
   }
 
   if (aDiffVal != NULL
@@ -396,14 +396,14 @@ bool RWGltf_GltfJsonParser::gltfParseStdMaterial (Handle(RWGltf_MaterialCommon)&
   else if (gltfReadVec4   (aDiff, aDiffVal)
         && validateColor4 (aDiff))
   {
-    theMat->DiffuseColor = Quantity_Color (aDiff.r(), aDiff.g(), aDiff.b(), Quantity_TOC_RGB);
+    theMat->DiffuseColor = Quantity_Color (aDiff.r(), aDiff.g(), aDiff.b(), Quantity_TOC_sRGB);
     theMat->Transparency = float(1.0 - aDiff.a());
   }
 
   if (gltfReadVec4   (anEmi, anEmiVal)
    && validateColor4 (anEmi))
   {
-    theMat->EmissiveColor = Quantity_Color (anEmi.r(), anEmi.g(), anEmi.b(), Quantity_TOC_RGB);
+    theMat->EmissiveColor = Quantity_Color (anEmi.r(), anEmi.g(), anEmi.b(), Quantity_TOC_sRGB);
   }
 
   if (aSpecVal != NULL
@@ -414,7 +414,7 @@ bool RWGltf_GltfJsonParser::gltfParseStdMaterial (Handle(RWGltf_MaterialCommon)&
   if (gltfReadVec4   (aSpec, aSpecVal)
    && validateColor4 (aSpec))
   {
-    theMat->SpecularColor = Quantity_Color (aSpec.r(), aSpec.g(), aSpec.b(), Quantity_TOC_RGB);
+    theMat->SpecularColor = Quantity_Color (aSpec.r(), aSpec.g(), aSpec.b(), Quantity_TOC_sRGB);
   }
 
   if (aShinVal != NULL

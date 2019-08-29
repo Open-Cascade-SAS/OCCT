@@ -213,7 +213,7 @@ namespace
     }
 
     const Graphic3d_Vec4 aRealColor = Graphic3d_Vec4 (anIntegerColor) / static_cast<Standard_ShortReal> (THE_MAX_INTEGER_COLOR_COMPONENT);
-    theColor = Quantity_ColorRGBA (aRealColor);
+    theColor = Quantity_ColorRGBA (Quantity_ColorRGBA::Convert_sRGB_To_LinearRGB (aRealColor));
     return true;
   }
 
@@ -2490,7 +2490,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
         aChangeSet->FaceBoundaryColor = Quantity_Color (aNames.Value (3).IntegerValue() / 255.0,
                                                         aNames.Value (4).IntegerValue() / 255.0,
                                                         aNames.Value (5).IntegerValue() / 255.0,
-                                                        Quantity_TOC_RGB);
+                                                        Quantity_TOC_sRGB);
         aNames.Remove (5);
         aNames.Remove (4);
         aNames.Remove (3);

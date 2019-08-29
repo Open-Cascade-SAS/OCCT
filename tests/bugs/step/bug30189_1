@@ -37,14 +37,8 @@ if {$nb != "3"} {
 }  
 
 # Check colors
-set color [XGetShapeColor DD 0:1:1:3 surf]
-if {$color != "RED"} {
-  puts "Error: wrong color."
-}
-set color [XGetShapeColor DD 0:1:1:4 surf]
-if {$color != "DARKORANGE1"} {
-  puts "Error: wrong color."
-}
+if {[XGetShapeColor DD 0:1:1:3 surf] != "RED"}            { puts "Error: wrong color." }
+if {[XGetShapeColor DD 0:1:1:4 surf] != "DARKGOLDENROD1"} { puts "Error: wrong color." }
 
 Close D
 Close DD

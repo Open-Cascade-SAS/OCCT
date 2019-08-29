@@ -14,8 +14,8 @@ vlocation b -setLocation 2 0 0
 vdisplay -dispMode 1 b
 vmoveto 200 200
 if { [vreadpixel 150 150 -rgb -name] != "BLACK" } { puts "Error: wrong prs location" }
-if { [vreadpixel 300 300 -rgb -name] != "DARKGOLDENROD3" } { puts "Error: wrong sel location" }
+if { [vreadpixel 300 300 -rgb -name] != "DARKGOLDENROD" } { puts "Error: wrong sel location" }
 vmoveto 300 300
-if { [vreadpixel 300 300 -rgb -name] != "DARKTURQUOISE" } { puts "Error: wrong highlighting" }
+if { [vreadpixel 300 300 -rgb -name] != "CYAN2" } { puts "Error: wrong highlighting" }
 
 vdump $imagedir/${casename}.png

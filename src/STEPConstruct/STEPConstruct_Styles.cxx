@@ -632,7 +632,9 @@ Handle(StepVisual_Colour) STEPConstruct_Styles::EncodeColor(const Quantity_Color
   else {
     Handle(TCollection_HAsciiString) ColName = new TCollection_HAsciiString ( "" );
     Handle(StepVisual_ColourRgb) ColRGB = new StepVisual_ColourRgb;
-    ColRGB->Init ( ColName, C.Red(), C.Green(), C.Blue() );
+    NCollection_Vec3<Standard_Real> aColor_sRGB;
+    C.Values (aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b(), Quantity_TOC_sRGB);
+    ColRGB->Init ( ColName, aColor_sRGB.r(), aColor_sRGB.g(), aColor_sRGB.b() );
     return ColRGB;
   }
 }
@@ -675,14 +677,18 @@ Handle(StepVisual_Colour) STEPConstruct_Styles::EncodeColor
   }
   else {
     Handle(StepVisual_ColourRgb) ColRGB;
-    gp_Pnt P(C.Red(),C.Green(),C.Blue());
+    gp_Pnt P;
+    C.Values (P.ChangeCoord().ChangeData()[0],
+              P.ChangeCoord().ChangeData()[1],
+              P.ChangeCoord().ChangeData()[2],
+              Quantity_TOC_sRGB);
     if(ColRGBs.IsBound(P)) {
       ColRGB = Handle(StepVisual_ColourRgb)::DownCast(ColRGBs.Find(P));
       if(!ColRGB.IsNull()) return ColRGB;
     }
     Handle(TCollection_HAsciiString) ColName = new TCollection_HAsciiString ( "" );
     ColRGB = new StepVisual_ColourRgb;
-    ColRGB->Init ( ColName, C.Red(), C.Green(), C.Blue() );
+    ColRGB->Init ( ColName, P.Coord (1), P.Coord (2), P.Coord (3) );
     ColRGBs.Bind(P,ColRGB);
     return ColRGB;
   }
@@ -703,10 +709,10 @@ Standard_Boolean STEPConstruct_Styles::DecodeColor (const Handle(StepVisual_Colo
       if(norm<rgb->Green()) norm = rgb->Green();
       if(norm<rgb->Blue()) norm = rgb->Blue();
       Col.SetValues(rgb->Red()/norm, rgb->Green()/norm,
-                    rgb->Blue()/norm, Quantity_TOC_RGB);
+                    rgb->Blue()/norm, Quantity_TOC_sRGB);
     }
     else
-      Col.SetValues(rgb->Red(), rgb->Green(), rgb->Blue(), Quantity_TOC_RGB);
+      Col.SetValues(rgb->Red(), rgb->Green(), rgb->Blue(), Quantity_TOC_sRGB);
     return Standard_True;
   }
   else if ( Colour->IsKind (STANDARD_TYPE(StepVisual_PreDefinedColour)) ) {

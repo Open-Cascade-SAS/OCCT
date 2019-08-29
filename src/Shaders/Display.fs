@@ -144,8 +144,12 @@ void main (void)
   aColor = ToneMappingFilmic (aColor, uWhitePoint);
 #endif // TONE_MAPPING
 
+#ifdef THE_SHIFT_sRGB
   // apply gamma correction (we use gamma = 2)
   OutColor = vec4 (sqrt (aColor.rgb), 0.f);
+#else
+  OutColor = vec4 (aColor.rgb, 0.f);
+#endif
 
 #else // not PATH_TRACING
 

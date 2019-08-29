@@ -1,24 +1,21 @@
 puts "========"
-puts "OCC25340"
+puts "0025340: Visualization, AIS_InteractiveContext - properly apply selection filters at Neutral point"
 puts "========"
 puts ""
-#############################################################################################
-# Visualization, AIS_InteractiveContext - properly apply selection filters at Neutral point
-#############################################################################################
 
 pload QAcommands
 
-vinit
+vinit View1
 
 box b 1 2 3
 vdisplay b
 vfit
 vtrihedron t
-set color_1 [vreadpixel 87 25]
+set color_1 [vreadpixel 87 25 -rgb -name]
 
 OCC25340
 vselect 87 25
-set color_2 [vreadpixel 87 25]
+set color_2 [vreadpixel 87 25 -rgb -name]
 
 if {$color_2 != $color_1} {
   puts "ERROR: OCC25340 is reproduced"
@@ -26,11 +23,11 @@ if {$color_2 != $color_1} {
   puts "       final color of trihedron is:   $color_2"
 }
 
-if {$color_2 != "0.43137255311012268 0.48235294222831726 0.54509806632995605 1"} {
+if {$color_2 != "LIGHTSTEELBLUE4"} {
   puts "ERROR: OCC25340 is reproduced"
   puts "       additional investigation is needed"
-  puts "       expected color is: 0.43137255311012268 0.48235294222831726 0.54509806632995605 1"
-  puts "       current color is:  $_color_2"
+  puts "       expected color is: LIGHTSTEELBLUE4"
+  puts "       current color is:  $color_2"
 }
 
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+vdump ${imagedir}/${test_image}.png

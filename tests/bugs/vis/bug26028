@@ -49,7 +49,7 @@ set aColor3 [vreadpixel 225 150 rgb name]
 set aColor4 [vreadpixel 325 200 rgb name]
 
 # note that aColor2 is not expected to be capped
-if { "$aColor0" != "GRAY61" || "$aColor1" != "GRAY61" || "$aColor2" == "GRAY61" || "$aColor3" != "GRAY61" || "$aColor4" != "GRAY61" } {
+if { "$aColor0" != "GRAY72" || "$aColor1" != "GRAY72" || "$aColor2" == "GRAY72" || "$aColor3" != "GRAY72" || "$aColor4" != "GRAY72" } {
   puts "Error: capping color does not match"
 }
 

@@ -76,7 +76,7 @@ vfit
 vdisplay pp1 pp2
 
 vclipplane pln -set {*}$aCapParams -equation1 0 0 -1 40 -equation2  0 1 0 -15
-if { [vreadpixel 200 360 rgb name] != "DARKTURQUOISE" } { puts "Error: bb should NOT be clipped" }
+if { [vreadpixel 200 360 rgb name] != "CYAN2" } { puts "Error: bb should NOT be clipped" }
 vdump $::imagedir/${::casename}_2.png
 
 vclipplane pln -set {*}$aCapParams -equation1 0 0 -1 40 -equation2  0 1 0 -15 -equation3 -1 0 0 5

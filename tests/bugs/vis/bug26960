@@ -1,10 +1,7 @@
 puts "========"
-puts "OCC26960"
+puts "0026960: Visualization, TKOpenGl - update transformation of dynamically highlighted presentation"
 puts "========"
 puts ""
-##################################################################
-puts "Visualization, TKOpenGl - update transformation of dynamically highlighted presentation"
-##################################################################
 
 pload VISUALIZATION MODELING
 
@@ -17,12 +14,8 @@ vdisplay -dispmode 1 -highmode 1 b
 vfit
 vselmode 4 1
 vmoveto 250 250
-if {[vreadpixel 350 140 rgb name] != "BLACK"} {
-  puts "ERROR: wrong inital location"
-}
+if {[vreadpixel 350 140 rgb name] != "BLACK"} { puts "ERROR: wrong inital location" }
 vsetlocation b 0.5 0 0
-if {[vreadpixel 350 140 rgb name] != "DARKTURQUOISE"} {
-  puts "ERROR: the transformation was not applied to highlight structure"
-}
+if {[vreadpixel 350 140 rgb name] != "CYAN2"} { puts "ERROR: the transformation was not applied to highlight structure" }
 
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+vdump ${imagedir}/${test_image}.png

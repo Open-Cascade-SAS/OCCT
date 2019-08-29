@@ -57,16 +57,16 @@ compound b2_3 b3_3 b23_3
 vaspects b123_123 -subshapes b1_3    -setColor BLUE
 vaspects b123_123 -subshapes b23_3   -setColor BLUE
 
-if { [vreadpixel  50 250 rgb name] != "RED3"  } { puts "Error: wrong color" }
-if { [vreadpixel 175 175 rgb name] != "RED3"  } { puts "Error: wrong color" }
-if { [vreadpixel 300 100 rgb name] != "RED3"  } { puts "Error: wrong color" }
+if { [vreadpixel  50 250 rgb name] != "RED2"  } { puts "Error: wrong color" }
+if { [vreadpixel 175 175 rgb name] != "RED2"  } { puts "Error: wrong color" }
+if { [vreadpixel 300 100 rgb name] != "RED2"  } { puts "Error: wrong color" }
 
-if { [vreadpixel 100 310 rgb name] != "GREEN3"} { puts "Error: wrong color" }
-if { [vreadpixel 200 230 rgb name] != "GREEN3"} { puts "Error: wrong color" }
-if { [vreadpixel 320 170 rgb name] != "GREEN3"} { puts "Error: wrong color" }
+if { [vreadpixel 100 310 rgb name] != "GREEN2"} { puts "Error: wrong color" }
+if { [vreadpixel 200 230 rgb name] != "GREEN2"} { puts "Error: wrong color" }
+if { [vreadpixel 320 170 rgb name] != "GREEN2"} { puts "Error: wrong color" }
 
-if { [vreadpixel 130 280 rgb name] != "BLUE3" } { puts "Error: wrong color" }
-if { [vreadpixel 250 200 rgb name] != "BLUE3" } { puts "Error: wrong color" }
-if { [vreadpixel 350 150 rgb name] != "BLUE3" } { puts "Error: wrong color" }
+if { [vreadpixel 130 280 rgb name] != "BLUE2" } { puts "Error: wrong color" }
+if { [vreadpixel 250 200 rgb name] != "BLUE2" } { puts "Error: wrong color" }
+if { [vreadpixel 350 150 rgb name] != "BLUE2" } { puts "Error: wrong color" }
 
 vdump $imagedir/${casename}.png

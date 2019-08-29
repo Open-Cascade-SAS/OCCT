@@ -9,9 +9,9 @@ vinit View1
 catch { Close D }
 NewDocument D BinXCAF
 XAddShape D b
-XSetColor D b 0 0 1
+XSetColor D b BLUE
 explode b f
-XSetColor D b_1 1 0 0
+XSetColor D b_1 RED
 
 XDisplay D
 vviewparams -proj 1 0.1 0.1
@@ -23,16 +23,12 @@ vclipplane create pln
 vclipplane set pln view Driver1/Viewer1/View1
 vclipplane change pln equation -1 0 0 5
 
-# FFP on, pixel is RED3, which is expected
+# FFP on
 vcaps -ffp 1
 set aColorFfp [vreadpixel 200 200 rgb name]
-if { "$aColorFfp" != "RED3" } {
-  puts "Error: RED3 color is expected at the back side (FFP)"
-}
+if { "$aColorFfp" != "RED" } { puts "Error: RED color is expected at the back side (FFP)" }
 
-# GLSL on, pixel should has the same color RED3, but actual color is KHAKI1
+# GLSL on
 vcaps -ffp 0
 set aColorGlsl [vreadpixel 200 200 rgb name]
-if { "$aColorGlsl" != "RED3" } {
-  puts "Error: RED3 color is expected at the back side (GLSL)"
-}
+if { "$aColorGlsl" != "FIREBRICK" } { puts "Error: FIREBRICK color is expected at the back side (GLSL)" }

@@ -538,6 +538,55 @@ public:
   //! @return TRUE if atomic adaptive screen sampling in ray tracing mode is supported
   Standard_Boolean HasRayTracingAdaptiveSamplingAtomic() const { return myHasRayTracingAdaptiveSamplingAtomic; }
 
+  //! Returns TRUE if sRGB rendering is supported.
+  bool HasSRGB() const
+  {
+    return hasTexSRGB
+       &&  hasFboSRGB;
+  }
+
+  //! Returns TRUE if sRGB rendering is supported and permitted.
+  bool ToRenderSRGB() const
+  {
+    return HasSRGB()
+       && !caps->sRGBDisable
+       && !caps->ffpEnable;
+  }
+
+  //! Returns TRUE if window/surface buffer is sRGB-ready.
+  //!
+  //! When offscreen FBOs are created in sRGB, but window is not sRGB-ready,
+  //! blitting into window should be done with manual gamma correction.
+  //!
+  //! In desktop OpenGL, window buffer can be considered as sRGB-ready by default,
+  //! even when application has NOT requested sRGB-ready pixel format,
+  //! and rendering is managed via GL_FRAMEBUFFER_SRGB state.
+  //!
+  //! In OpenGL ES, sRGB-ready window surface should be explicitly requested on construction,
+  //! and cannot be disabled/enabled without GL_EXT_sRGB_write_control extension afterwards
+  //! (GL_FRAMEBUFFER_SRGB can be considered as always tuned ON).
+  bool IsWindowSRGB() const { return myIsSRgbWindow; }
+
+  //! Convert Quantity_ColorRGBA into vec4
+  //! with conversion or no conversion into non-linear sRGB
+  //! basing on ToRenderSRGB() flag.
+  OpenGl_Vec4 Vec4FromQuantityColor (const OpenGl_Vec4& theColor) const
+  {
+    return ToRenderSRGB()
+         ? Vec4LinearFromQuantityColor(theColor)
+         : Vec4sRGBFromQuantityColor  (theColor);
+  }
+
+  //! Convert Quantity_ColorRGBA into vec4.
+  //! Quantity_Color is expected to be linear RGB, hence conversion is NOT required
+  const OpenGl_Vec4& Vec4LinearFromQuantityColor (const OpenGl_Vec4& theColor) const { return theColor; }
+
+  //! Convert Quantity_ColorRGBA (linear RGB) into non-linear sRGB vec4.
+  OpenGl_Vec4 Vec4sRGBFromQuantityColor (const OpenGl_Vec4& theColor) const
+  {
+    return Quantity_ColorRGBA::Convert_LinearRGB_To_sRGB (theColor);
+  }
+
   //! Returns true if VBO is supported and permitted.
   inline bool ToUseVbo() const
   {
@@ -687,6 +736,20 @@ public: //! @name methods to alter or retrieve current state
     SetReadBuffer (theBuffer);
     SetDrawBuffer (theBuffer);
   }
+
+  //! Returns cached GL_FRAMEBUFFER_SRGB state.
+  //! If TRUE, GLSL program is expected to write linear RGB color.
+  //! Otherwise, GLSL program might need manually converting result color into sRGB color space.
+  bool IsFrameBufferSRGB() const { return myIsSRgbActive; }
+
+  //! Enables/disables GL_FRAMEBUFFER_SRGB flag.
+  //! This flag can be set to:
+  //! - TRUE when writing into offscreen FBO (always expected to be in sRGB or RGBF formats).
+  //! - TRUE when writing into sRGB-ready window buffer (might require choosing proper pixel format on window creation).
+  //! - FALSE if sRGB rendering is not supported or sRGB-not-ready window buffer is used for drawing.
+  //! @param theIsFbo [in] flag indicating writing into offscreen FBO (always expected sRGB-ready when sRGB FBO is supported)
+  //!                      or into window buffer (FALSE, sRGB-readiness might vary).
+  Standard_EXPORT void SetFrameBufferSRGB (bool theIsFbo);
 
   //! Return cached flag indicating writing into color buffer is enabled or disabled (glColorMask).
   bool ColorMask() const { return myColorMask; }
@@ -893,6 +956,9 @@ public: //! @name extensions
   Standard_Boolean       hasHighp;           //!< highp in GLSL ES fragment shader is supported
   Standard_Boolean       hasUintIndex;       //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
   Standard_Boolean       hasTexRGBA8;        //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
+  Standard_Boolean       hasTexSRGB;         //!< sRGB texture    formats (desktop OpenGL 2.0, OpenGL ES 3.0 or GL_EXT_texture_sRGB)
+  Standard_Boolean       hasFboSRGB;         //!< sRGB FBO render targets (desktop OpenGL 2.1, OpenGL ES 3.0)
+  Standard_Boolean       hasSRGBControl;     //!< sRGB write control (any desktop OpenGL, OpenGL ES + GL_EXT_sRGB_write_control extension)
   OpenGl_FeatureFlag     hasFlatShading;     //!< Complex flag indicating support of Flat shading (Graphic3d_TOSM_FACET) (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_standard_derivatives)
   OpenGl_FeatureFlag     hasGlslBitwiseOps;  //!< GLSL supports bitwise operations; OpenGL 3.0 / OpenGL ES 3.0 (GLSL 130 / GLSL ES 300) or OpenGL 2.1 + GL_EXT_gpu_shader4
   OpenGl_FeatureFlag     hasDrawBuffers;     //!< Complex flag indicating support of multiple draw buffers (desktop OpenGL 2.0, OpenGL ES 3.0, GL_ARB_draw_buffers, GL_EXT_draw_buffers)
@@ -1015,6 +1081,8 @@ private: //! @name fields tracking current state
   Standard_Boolean              myAllowAlphaToCov; //!< flag allowing   GL_SAMPLE_ALPHA_TO_COVERAGE usage
   Standard_Boolean              myAlphaToCoverage; //!< flag indicating GL_SAMPLE_ALPHA_TO_COVERAGE state
   Standard_Boolean              myIsGlDebugCtx;    //!< debug context initialization state
+  Standard_Boolean              myIsSRgbWindow;    //!< indicates that window buffer is sRGB-ready
+  Standard_Boolean              myIsSRgbActive;    //!< flag indicating GL_FRAMEBUFFER_SRGB state
   TCollection_AsciiString       myVendor;          //!< Graphics Driver's vendor
   TColStd_PackedMapOfInteger    myFilters[6];      //!< messages suppressing filter (for sources from GL_DEBUG_SOURCE_API_ARB to GL_DEBUG_SOURCE_OTHER_ARB)
   unsigned int                  myResolution;      //!< Pixels density (PPI), defines scaling factor for parameters like text size

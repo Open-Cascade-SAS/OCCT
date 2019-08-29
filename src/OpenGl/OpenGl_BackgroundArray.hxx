@@ -79,7 +79,7 @@ protected:
   Standard_EXPORT Standard_Boolean init (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Initializes gradient arrays.
-  Standard_EXPORT Standard_Boolean createGradientArray() const;
+  Standard_EXPORT Standard_Boolean createGradientArray (const Handle(OpenGl_Context)& theCtx) const;
 
   //! Initializes texture arrays.
   //! @param theWorkspace OpenGl workspace that stores texture in the current enabled face aspect.

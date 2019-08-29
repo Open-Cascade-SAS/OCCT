@@ -1103,8 +1103,8 @@ static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, 
 
   Handle(AIS_Shape) anAisIO = new AIS_Shape(aShape);
 
-  Quantity_Color aColF(0.0, 0.4, 0.0, Quantity_TOC_RGB);
-  Quantity_Color aColB(0.0, 0.0, 0.6, Quantity_TOC_RGB);
+  Quantity_Color aColF(0.0, 0.4, 0.0, Quantity_TOC_sRGB);
+  Quantity_Color aColB(0.0, 0.0, 0.6, Quantity_TOC_sRGB);
 
   Handle(Prs3d_Drawer) aDrawer = anAisIO->Attributes();
   Handle(Prs3d_ShadingAspect) aShadingAspect = aDrawer->ShadingAspect();
@@ -1130,9 +1130,9 @@ static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, 
   anAISContext->Display (anAisIO, 1, 0, Standard_True);
 
   Standard_Real r, g, b; 
-  aShadingAspect->Color(Aspect_TOFM_FRONT_SIDE).Values(r,g,b, Quantity_TOC_RGB);
+  aShadingAspect->Color(Aspect_TOFM_FRONT_SIDE).Values(r,g,b, Quantity_TOC_sRGB);
   di << "Info: color on front side (" << r << "," << g << "," << b << ")\n";
-  aShadingAspect->Color(Aspect_TOFM_BACK_SIDE).Values(r,g,b, Quantity_TOC_RGB);
+  aShadingAspect->Color(Aspect_TOFM_BACK_SIDE).Values(r,g,b, Quantity_TOC_sRGB);
   di << "Info: color on back side (" << r << "," << g << "," << b << ")\n";
 
   return 0;
@@ -1163,8 +1163,8 @@ static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, 
   AISContext->Display (ais, 1, 0, Standard_False);
   AISContext->SetMaterial (ais, Graphic3d_NOM_SHINY_PLASTIC, Standard_False);
 
-  Quantity_Color colf(0.0, 0.4, 0.0, Quantity_TOC_RGB); 
-  Quantity_Color colb(0.0, 0.0, 0.6, Quantity_TOC_RGB); 
+  Quantity_Color colf(0.0, 0.4, 0.0, Quantity_TOC_sRGB);
+  Quantity_Color colb(0.0, 0.0, 0.6, Quantity_TOC_sRGB);
   Handle(Prs3d_ShadingAspect) sa = ais->Attributes()->ShadingAspect(); 
 
   Graphic3d_MaterialAspect front = sa->Material(Aspect_TOFM_FRONT_SIDE); 

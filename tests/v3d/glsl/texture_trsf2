@@ -6,34 +6,34 @@ set aTexture [locate_data_file bug26122_texture_trsf_ref.png]
 pload MODELING VISUALIZATION
 box b 1 1 1
 explode b F
-vclear
-vclose ALL
-vinit View1 w=512 h=512
-vtop
-vsetdispmode 1
-vdisplay b_6
-vfit
 
-vcaps -ffp 1
-vtexture b_6 $aTexture -modulate off
-vdump $::imagedir/${::casename}_identity_ffp.png
-vcaps -ffp 0
-vdump $::imagedir/${::casename}_identity_glsl.png
+for { set aPass 0 } { $aPass < 2 } { incr aPass } {
+  vclear
+  vclose ALL
 
-vcaps -ffp 1
-vtexture b_6 $aTexture -trsfTranslate 0.0 0.0 -trsfScale 0.8 2.0
-vdump $::imagedir/${::casename}_scale_ffp.png
-vcaps -ffp 0
-vdump $::imagedir/${::casename}_scale_glsl.png
+  set aSuffix ""
+  if { $aPass == 0 } {
+    set aSuffix "ffp"
+    vcaps -ffp 1
+  } else {
+    set aSuffix "glsl"
+    vcaps -ffp 0
+  }
 
-vcaps -ffp 1
-vtexture b_6 $aTexture -trsfTranslate 0.25 -0.25 -trsfScale 1.0 1.0
-vdump $::imagedir/${::casename}_translate_ffp.png
-vcaps -ffp 0
-vdump $::imagedir/${::casename}_translate_glsl.png
+  vinit View1 w=512 h=512
+  vtop
+  vdisplay -dispMode 1 b_6
+  vfit
 
-vcaps -ffp 1
-vtexture b_6 $aTexture -trsfTranslate 0.25 -0.25 -trsfScale 1.1 0.8
-vdump $::imagedir/${::casename}_ffp.png
-vcaps -ffp 0
-vdump $::imagedir/${::casename}_glsl.png
+  vtexture b_6 $aTexture -modulate off
+  vdump $::imagedir/${::casename}_identity_${aSuffix}.png
+
+  vtexture b_6 $aTexture -trsfTranslate 0.0 0.0 -trsfScale 0.8 2.0
+  vdump $::imagedir/${::casename}_scale_${aSuffix}.png
+
+  vtexture b_6 $aTexture -trsfTranslate 0.25 -0.25 -trsfScale 1.0 1.0
+  vdump $::imagedir/${::casename}_translate_${aSuffix}.png
+
+  vtexture b_6 $aTexture -trsfTranslate 0.25 -0.25 -trsfScale 1.1 0.8
+  vdump $::imagedir/${::casename}_${aSuffix}.png
+}

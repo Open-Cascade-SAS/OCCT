@@ -5,12 +5,11 @@ puts "========"
 box b 0 0 0 1 2 3
 
 # prepare view
-vinit View1
 vclear
+vinit View1
 vglinfo
-vsetdispmode 1
 vaxo
-vdisplay b
+vdisplay -dispMode 1 b
 vfit
 
 # customize object
@@ -19,7 +18,4 @@ vaspects b -subshapes b_3 -setcolor RED
 vaspects b -setmaterial PLASTIC
 
 # validate results
-set aFaceColor [vreadpixel 128 256 rgb name]
-if {"$aFaceColor"  != "RED4"} {
-  puts "Error: wrong Face color"
-}
+if { [vreadpixel 128 256 -rgb -name] != "RED4"} { puts "Error: wrong Face color" }

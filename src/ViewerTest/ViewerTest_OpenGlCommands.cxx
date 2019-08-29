@@ -1090,9 +1090,9 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     if (aMatFile.is_open())
     {
       aMatFile << "newmtl " << aMatName << "\n";
-      aMatFile << "Ka " << anAmbient << "\n";
-      aMatFile << "Kd " << aDiffuse  << "\n";
-      aMatFile << "Ks " << aSpecular << "\n";
+      aMatFile << "Ka " << Quantity_Color::Convert_LinearRGB_To_sRGB (anAmbient) << "\n";
+      aMatFile << "Kd " << Quantity_Color::Convert_LinearRGB_To_sRGB (aDiffuse)  << "\n";
+      aMatFile << "Ks " << Quantity_Color::Convert_LinearRGB_To_sRGB (aSpecular) << "\n";
       aMatFile << "Ns " << aShiness  << "\n";
       if (aMat.Transparency() >= 0.0001)
       {

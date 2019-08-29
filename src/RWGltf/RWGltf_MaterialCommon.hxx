@@ -36,10 +36,10 @@ public:
   Standard_ShortReal      Transparency;
 
   RWGltf_MaterialCommon()
-  : AmbientColor (0.1, 0.1, 0.1, Quantity_TOC_RGB),
-    DiffuseColor (0.8, 0.8, 0.8, Quantity_TOC_RGB),
-    SpecularColor(0.2, 0.2, 0.2, Quantity_TOC_RGB),
-    EmissiveColor(0.0, 0.0, 0.0, Quantity_TOC_RGB),
+  : AmbientColor (0.1, 0.1, 0.1, Quantity_TOC_sRGB),
+    DiffuseColor (0.8, 0.8, 0.8, Quantity_TOC_sRGB),
+    SpecularColor(0.2, 0.2, 0.2, Quantity_TOC_sRGB),
+    EmissiveColor(Quantity_NOC_BLACK),
     Shininess (1.0f),
     Transparency (0.0f) {}
 

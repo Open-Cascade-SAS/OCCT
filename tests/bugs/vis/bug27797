@@ -26,7 +26,7 @@ vselect 100 300
 vmoveto 0 0
 
 set aSelColor [vreadpixel 100 300 rgb name]
-if { $aSelColor != "GRAY72"} { puts "Error: wrong object has been selected" }
+if { $aSelColor != "GRAY76"} { puts "Error: wrong object has been selected" }
 
 vdisplay -dispMode 0 -osd -2d -trsfPersPos -1 1 v
 

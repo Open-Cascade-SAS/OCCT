@@ -76,6 +76,10 @@
   // OpenGL ES 3.0+ or GL_OES_element_index_uint extension
   #define GL_UNSIGNED_INT 0x1405
 
+  // GL_EXT_sRGB_write_control extension for OpenGL ES
+  // adds GL_FRAMEBUFFER_SRGB_EXT flag as on desktop OpenGL
+  #define GL_FRAMEBUFFER_SRGB 0x8DB9
+
   // OpenGL ES 3.1+
   #define GL_TEXTURE_2D_MULTISAMPLE 0x9100
   #define GL_MAX_SAMPLES  0x8D57
@@ -92,6 +96,10 @@
   #define GL_LUMINANCE8 0x8040
   // GL_EXT_texture_format_BGRA8888
   #define GL_BGRA_EXT 0x80E1 // same as GL_BGRA on desktop
+
+  #define GL_SRGB         0x8C40
+  #define GL_SRGB8        0x8C41
+  #define GL_SRGB8_ALPHA8 0x8C43
 
   #define GL_R16      0x822A
   #define GL_R16F     0x822D
@@ -161,6 +169,7 @@
 
   #define GL_READ_FRAMEBUFFER               0x8CA8
   #define GL_DRAW_FRAMEBUFFER               0x8CA9
+  #define GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING 0x8210
 
   #define GL_TEXTURE_3D                     0x806F
   #define GL_TEXTURE_WRAP_R                 0x8072

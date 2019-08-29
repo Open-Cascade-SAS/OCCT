@@ -1688,7 +1688,7 @@ static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, c
   XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->SetShape(lab1, s1);
   TDataStd_Name::Set(lab1, "Box1");
         
-  Quantity_Color yellow(1,1,0, Quantity_TOC_RGB);
+  Quantity_Color yellow(Quantity_NOC_YELLOW);
   XCAFDoc_DocumentTool::ColorTool (aDoc->Main())->SetColor(lab1, yellow, XCAFDoc_ColorGen);
   XCAFDoc_DocumentTool::ColorTool(aDoc->Main())->SetVisibility(lab1, 0);
 
@@ -1731,7 +1731,7 @@ static Standard_Integer OCC23950 (Draw_Interpretor& di, Standard_Integer argc, c
   TDF_Label component01 = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->AddComponent (labelA0, lab1, location0);
   XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->UpdateAssemblies();
 
-  Quantity_Color yellow(1,1,0, Quantity_TOC_RGB);
+  Quantity_Color yellow(Quantity_NOC_YELLOW);
   XCAFDoc_DocumentTool::ColorTool (labelA0)->SetColor (component01, yellow, XCAFDoc_ColorGen);
   XCAFDoc_DocumentTool::ColorTool (labelA0)->SetVisibility (component01, 0);
 

@@ -78,6 +78,7 @@ public:
   //! Default destructor.
   Standard_EXPORT virtual ~OpenGl_View();
 
+  //! Release OpenGL resources.
   Standard_EXPORT void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx);
 
   //! Deletes and erases the view.
@@ -424,6 +425,9 @@ private:
 
 private:
 
+  //! Release sRGB resources (frame-buffers, textures, etc.).
+  void releaseSrgbResources (const Handle(OpenGl_Context)& theCtx);
+
   //! Copy content of Back buffer to the Front buffer.
   bool copyBackToFront();
 
@@ -490,6 +494,7 @@ protected: //! @name Rendering properties
 
   //! Two framebuffers (left and right views) store cached main presentation
   //! of the view (without presentation of immediate layers).
+  Standard_Integer           mySRgbState;             //!< track sRGB state
   GLint                      myFboColorFormat;        //!< sized format for color attachments
   GLint                      myFboDepthFormat;        //!< sized format for depth-stencil attachments
   OpenGl_ColorFormats        myFboOitColorConfig;     //!< selected color format configuration for OIT color attachments

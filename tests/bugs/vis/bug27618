@@ -21,8 +21,8 @@ vdisplay -2d topLeft -topmost pp
 vselmode pp 0 0
 vmoveto 245 190
 
-if { [vreadpixel 235 140 rgb name] == "DARKTURQUOISE" } { puts "Error: top should NOT be highlighted" }
-if { [vreadpixel 235 190 rgb name] != "DARKTURQUOISE" } { puts "Error: bottom should be highlighted" }
+if { [vreadpixel 235 140 rgb name] == "CYAN2" } { puts "Error: top should NOT be highlighted" }
+if { [vreadpixel 235 190 rgb name] != "CYAN2" } { puts "Error: bottom should be highlighted" }
 vseldump $imagedir/${casename}_sel_depth.png  -type depth
 vseldump $imagedir/${casename}_sel_entity.png -type entity
 
@@ -30,8 +30,8 @@ vcamera -persp
 
 vmoveto 0 0
 vmoveto 245 190
-if { [vreadpixel 235 140 rgb name] == "DARKTURQUOISE" } { puts "Error: top should NOT be highlighted" }
-if { [vreadpixel 235 190 rgb name] != "DARKTURQUOISE" } { puts "Error: bottom should be highlighted" }
+if { [vreadpixel 235 140 rgb name] == "CYAN2" } { puts "Error: top should NOT be highlighted" }
+if { [vreadpixel 235 190 rgb name] != "CYAN2" } { puts "Error: bottom should be highlighted" }
 
 vseldump $imagedir/${casename}_perps_sel_depth.png  -type depth
 vseldump $imagedir/${casename}_persp_sel_entity.png -type entity

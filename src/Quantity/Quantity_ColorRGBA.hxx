@@ -125,7 +125,7 @@ public:
   static TCollection_AsciiString ColorToHex (const Quantity_ColorRGBA& theColor,
                                              const bool theToPrefixHash = true)
   {
-    NCollection_Vec4<Standard_ShortReal> anSRgb = (NCollection_Vec4<Standard_ShortReal> )theColor;
+    NCollection_Vec4<Standard_ShortReal> anSRgb = Convert_LinearRGB_To_sRGB ((NCollection_Vec4<Standard_ShortReal> )theColor);
     NCollection_Vec4<Standard_Integer> anSRgbInt (anSRgb * 255.0f + NCollection_Vec4<Standard_ShortReal> (0.5f));
     char aBuff[12];
     Sprintf (aBuff, theToPrefixHash ? "#%02X%02X%02X%02X" : "%02X%02X%02X%02X",

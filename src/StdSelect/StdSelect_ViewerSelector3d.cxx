@@ -695,7 +695,7 @@ namespace
       theColor = Quantity_Color (Standard_Real(myBullardGenerator.NextInt() % 256) / 255.0,
                                  Standard_Real(myBullardGenerator.NextInt() % 256) / 255.0,
                                  Standard_Real(myBullardGenerator.NextInt() % 256) / 255.0,
-                                 Quantity_TOC_RGB);
+                                 Quantity_TOC_sRGB);
     }
 
   protected:

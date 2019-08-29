@@ -138,6 +138,8 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
   {
     throw Aspect_WindowDefinitionError("Unable to create window");
   }
+  // for the moment, OpenGL renderer is expected to output sRGB colorspace
+  [myHWindow setColorSpace: [NSColorSpace sRGBColorSpace]];
   myHView = [[myHWindow contentView] retain];
 
   NSString* aTitleNs = [[NSString alloc] initWithUTF8String: theTitle];

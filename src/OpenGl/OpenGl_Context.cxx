@@ -116,11 +116,17 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   hasHighp   (Standard_False),
   hasUintIndex(Standard_False),
   hasTexRGBA8(Standard_False),
-  hasFlatShading (OpenGl_FeatureNotAvailable),
 #else
   hasHighp   (Standard_True),
   hasUintIndex(Standard_True),
   hasTexRGBA8(Standard_True),
+#endif
+  hasTexSRGB (Standard_False),
+  hasFboSRGB (Standard_False),
+  hasSRGBControl (Standard_False),
+#if defined(GL_ES_VERSION_2_0)
+  hasFlatShading (OpenGl_FeatureNotAvailable),
+#else
   hasFlatShading (OpenGl_FeatureInCore),
 #endif
   hasGlslBitwiseOps  (OpenGl_FeatureNotAvailable),
@@ -195,7 +201,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myDefaultVao (0),
   myColorMask (true),
   myAlphaToCoverage (false),
-  myIsGlDebugCtx (Standard_False),
+  myIsGlDebugCtx (false),
+  myIsSRgbWindow (false),
   myResolution (Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION),
   myResolutionRatio (1.0f),
   myLineWidthScale (1.0f),
@@ -462,6 +469,34 @@ void OpenGl_Context::SetDrawBuffers (const Standard_Integer theNb, const Standar
   }
 
   myFuncs->glDrawBuffers (theNb, (const GLenum*)theDrawBuffers);
+}
+
+// =======================================================================
+// function : SetFrameBufferSRGB
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetFrameBufferSRGB (bool theIsFbo)
+{
+  if (!hasFboSRGB)
+  {
+    myIsSRgbActive = false;
+    return;
+  }
+  myIsSRgbActive = ToRenderSRGB()
+               && (theIsFbo || myIsSRgbWindow);
+  if (!hasSRGBControl)
+  {
+    return;
+  }
+
+  if (myIsSRgbActive)
+  {
+    core11fwd->glEnable (GL_FRAMEBUFFER_SRGB);
+  }
+  else
+  {
+    core11fwd->glDisable (GL_FRAMEBUFFER_SRGB);
+  }
 }
 
 // =======================================================================
@@ -1349,6 +1384,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
 
   hasTexRGBA8 = IsGlGreaterEqual (3, 0)
              || CheckExtension ("GL_OES_rgb8_rgba8");
+  hasTexSRGB  = IsGlGreaterEqual (3, 0);
+  hasFboSRGB  = IsGlGreaterEqual (3, 0);
+  hasSRGBControl = CheckExtension ("GL_EXT_sRGB_write_control");
   // NPOT textures has limited support within OpenGL ES 2.0
   // which are relaxed by OpenGL ES 3.0 or some extensions
   //arbNPTW     = IsGlGreaterEqual (3, 0)
@@ -1506,6 +1544,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;
 
   hasTexRGBA8 = Standard_True;
+  hasTexSRGB       = IsGlGreaterEqual (2, 0);
+  hasFboSRGB       = IsGlGreaterEqual (2, 1);
+  hasSRGBControl   = hasFboSRGB;
   arbDrawBuffers   = CheckExtension ("GL_ARB_draw_buffers");
   arbNPTW          = CheckExtension ("GL_ARB_texture_non_power_of_two");
   arbTexFloat      = IsGlGreaterEqual (3, 0)
@@ -2821,6 +2862,47 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myHasRayTracingAdaptiveSamplingAtomic = myHasRayTracingAdaptiveSampling
                                        && CheckExtension ("GL_NV_shader_atomic_float");
 #endif
+
+  if (arbFBO != NULL
+   && hasFboSRGB)
+  {
+    // Detect if window buffer is considered by OpenGL as sRGB-ready
+    // (linear RGB color written by shader is automatically converted into sRGB)
+    // or not (offscreen FBO should be blit into window buffer with gamma correction).
+    const GLenum aDefWinBuffer =
+    #if !defined(GL_ES_VERSION_2_0)
+      GL_BACK_LEFT;
+    #else
+      GL_BACK;
+    #endif
+    GLint aWinColorEncoding = 0; // GL_LINEAR
+    arbFBO->glGetFramebufferAttachmentParameteriv (GL_FRAMEBUFFER, aDefWinBuffer, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &aWinColorEncoding);
+    ResetErrors (true);
+    myIsSRgbWindow = aWinColorEncoding == GL_SRGB;
+
+    // On desktop OpenGL, pixel formats are almost always sRGB-ready, even when not requested;
+    // it is safe behavior on desktop where GL_FRAMEBUFFER_SRGB is disabled by default
+    // (contrary to OpenGL ES, where it is enabled by default).
+    // NVIDIA drivers, however, always return GL_LINEAR even for sRGB-ready pixel formats on Windows platform,
+    // while AMD and Intel report GL_SRGB as expected.
+    // macOS drivers seems to be also report GL_LINEAR even for [NSColorSpace sRGBColorSpace].
+  #if !defined(GL_ES_VERSION_2_0)
+  #ifdef __APPLE__
+    myIsSRgbWindow = true;
+  #else
+    if (!myIsSRgbWindow
+      && myVendor.Search ("nvidia") != -1)
+    {
+      myIsSRgbWindow = true;
+    }
+  #endif
+  #endif
+    if (!myIsSRgbWindow)
+    {
+      Message::DefaultMessenger()->Send ("OpenGl_Context, warning: window buffer is not sRGB-ready.\n"
+                                         "Check OpenGL window creation parameters for optimal performance.", Message_Trace);
+    }
+  }
 }
 
 // =======================================================================
@@ -3400,10 +3482,10 @@ void OpenGl_Context::SetShadingMaterial (const OpenGl_Aspects* theAspect,
                                        ? anAspect->BackInteriorColor()
                                        : aFrontIntColor;
 
-  myMatFront.Init (aMatFrontSrc, aFrontIntColor);
+  myMatFront.Init (*this, aMatFrontSrc, aFrontIntColor);
   if (toDistinguish)
   {
-    myMatBack.Init (aMatBackSrc, aBackIntColor);
+    myMatBack.Init (*this, aMatBackSrc, aBackIntColor);
   }
   else
   {
@@ -3507,7 +3589,10 @@ void OpenGl_Context::SetColor4fv (const OpenGl_Vec4& theColor)
 {
   if (!myActiveProgram.IsNull())
   {
-    myActiveProgram->SetUniform (this, myActiveProgram->GetStateLocation (OpenGl_OCCT_COLOR), theColor);
+    if (const OpenGl_ShaderUniformLocation& aLoc = myActiveProgram->GetStateLocation (OpenGl_OCCT_COLOR))
+    {
+      myActiveProgram->SetUniform (this, aLoc, Vec4FromQuantityColor (theColor));
+    }
   }
 #if !defined(GL_ES_VERSION_2_0)
   else if (core11 != NULL)

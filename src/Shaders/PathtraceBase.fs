@@ -703,12 +703,15 @@ vec3 IntersectLight (in SRay theRay, in int theDepth, in float theHitDistance, o
   {
     if (theDepth + uSphereMapForBack == 0) // view ray and map is hidden
     {
-      aTotalRadiance = pow (BackgroundColor().rgb, vec3 (2.f));
+      aTotalRadiance = BackgroundColor().rgb;
     }
     else
     {
-      aTotalRadiance = pow (FetchEnvironment (Latlong (theRay.Direct)).rgb, vec3 (2.f));
+      aTotalRadiance = FetchEnvironment (Latlong (theRay.Direct)).rgb;
     }
+  #ifdef THE_SHIFT_sRGB
+    aTotalRadiance = pow (aTotalRadiance, vec3 (2.f));
+  #endif
   }
   
   return aTotalRadiance;

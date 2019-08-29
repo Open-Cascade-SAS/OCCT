@@ -52,6 +52,8 @@ OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_Texture.cxx
 OpenGl_Texture.hxx
+OpenGl_TextureFormat.cxx
+OpenGl_TextureFormat.hxx
 OpenGl_TextureSet.cxx
 OpenGl_TextureSet.hxx
 OpenGl_Resource.hxx

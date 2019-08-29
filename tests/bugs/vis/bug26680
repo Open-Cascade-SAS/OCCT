@@ -1,36 +1,24 @@
 puts "============"
-puts "CR26680"
+puts "0026680: Visualization - Changed behavior of mesh visualization and selection in OMF sample"
 puts "============"
 puts ""
 
-##########################################################################################
-puts "Visualization - Changed behavior of mesh visualization and selection in OMF sample"
-##########################################################################################
-
 pload VISUALIZATION XDE
 
-vinit
+vinit View1
 meshfromstl m [locate_data_file bug26680.stl]
 meshcolors m elem2 1
 
 vselmode 0 1
 
 vmoveto 200 200
-if {[vreadpixel 197 257 rgb name] != "CYAN"} {
-  puts "ERROR: presentation for dynamic highlight of the object is wrong!"
-}
+if {[vreadpixel 197 257 rgb name] != "CYAN"} { puts "ERROR: presentation for dynamic highlight of the object is wrong!" }
 vmoveto 0 0
-if {[vreadpixel 197 257 rgb name] != "BLUE2"} {
-  puts "ERROR: the object is not unhighlighted after dynamic highlight!"
-}
+if {[vreadpixel 197 257 rgb name] != "BLUE"} { puts "ERROR: the object is not unhighlighted after dynamic highlight!" }
 
 vselect 200 200
-if {[vreadpixel 197 257 rgb name] != "GRAY93"} {
-  puts "ERROR: presentation for selection highlight is wrong!"
-}
+if {[vreadpixel 197 257 rgb name] != "GRAY86"} { puts "ERROR: presentation for selection highlight is wrong!" }
 vselect 0 0
-if {[vreadpixel 197 257 rgb name] != "BLUE2"} {
-  puts "ERROR: the object is not unhighlighted after selection highlight!"
-}
+if {[vreadpixel 197 257 rgb name] != "BLUE"} { puts "ERROR: the object is not unhighlighted after selection highlight!" }
 
-checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+vdump ${imagedir}/${test_image}.png

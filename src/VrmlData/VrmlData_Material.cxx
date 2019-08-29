@@ -36,9 +36,9 @@ VrmlData_Material::VrmlData_Material ()
   : myAmbientIntensity        (0.2),
     myShininess               (0.2),
     myTransparency            (0.),
-    myDiffuseColor            (0.8, 0.8, 0.8, Quantity_TOC_RGB),
-    myEmissiveColor           (0., 0., 0., Quantity_TOC_RGB),
-    mySpecularColor           (0., 0., 0., Quantity_TOC_RGB)
+    myDiffuseColor            (0.8, 0.8, 0.8, Quantity_TOC_sRGB),
+    myEmissiveColor           (Quantity_NOC_BLACK),
+    mySpecularColor           (Quantity_NOC_BLACK)
 {}
 
 //=======================================================================
@@ -55,9 +55,9 @@ VrmlData_Material::VrmlData_Material (const VrmlData_Scene&  theScene,
     myAmbientIntensity        (theAmbientIntens < 0. ? 0.2 : theAmbientIntens),
     myShininess               (theShininess     < 0. ? 0.2 : theShininess),
     myTransparency            (theTransparency  < 0  ? 0.  : theTransparency),
-    myDiffuseColor            (0.8, 0.8, 0.8, Quantity_TOC_RGB),
-    myEmissiveColor           (0., 0., 0., Quantity_TOC_RGB),
-    mySpecularColor           (0., 0., 0., Quantity_TOC_RGB)
+    myDiffuseColor            (0.8, 0.8, 0.8, Quantity_TOC_sRGB),
+    myEmissiveColor           (Quantity_NOC_BLACK),
+    mySpecularColor           (Quantity_NOC_BLACK)
 {}
 
 
@@ -169,11 +169,11 @@ VrmlData_ErrorStatus VrmlData_Material::Read (VrmlData_InBuffer& theBuffer)
     myShininess         = anIntensity[1];
     myTransparency      = anIntensity[2];
     myDiffuseColor.SetValues  (aColor[0].X(), aColor[0].Y(), aColor[0].Z(),
-                               Quantity_TOC_RGB);
+                               Quantity_TOC_sRGB);
     myEmissiveColor.SetValues (aColor[1].X(), aColor[1].Y(), aColor[1].Z(),
-                               Quantity_TOC_RGB);
+                               Quantity_TOC_sRGB);
     mySpecularColor.SetValues (aColor[2].X(), aColor[2].Y(), aColor[2].Z(),
-                               Quantity_TOC_RGB);
+                               Quantity_TOC_sRGB);
   }
   return aStatus;
 }
@@ -193,7 +193,7 @@ VrmlData_ErrorStatus VrmlData_Material::Write (const char * thePrefix) const
   {
     char buf[128];
     Standard_Real val[3];
-    Quantity_TypeOfColor bidType (Quantity_TOC_RGB);
+    const Quantity_TypeOfColor bidType = Quantity_TOC_sRGB;
     const Standard_Real aConf (0.001 * Precision::Confusion());
 
     if (OK(aStatus) && fabs(myAmbientIntensity - 0.2) > aConf) {
@@ -252,7 +252,7 @@ Standard_Boolean VrmlData_Material::IsDefault () const
       myTransparency                 < aConf)
   {
     Standard_Real val[3][3];
-    Quantity_TypeOfColor bidType (Quantity_TOC_RGB);
+    const Quantity_TypeOfColor bidType = Quantity_TOC_sRGB;
     myDiffuseColor.Values  (val[0][0], val[0][1], val[0][2], bidType);
     myEmissiveColor.Values (val[1][0], val[1][1], val[1][2], bidType);
     mySpecularColor.Values (val[2][0], val[2][1], val[2][2], bidType);

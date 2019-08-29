@@ -101,4 +101,4 @@ vdump $imagedir/${casename}_bl.png
 vmoveto 110 385
 vselect 110 385
 set aColor [vreadpixel 110 385 rgb name]
-if { $aColor != "WHITE" } { puts "Error: wrong object is highlighted" }
+if { $aColor != "GRAY89" } { puts "Error: wrong object is highlighted" }

@@ -66,7 +66,7 @@ vclipplane pln -equation -1 0 0 2 -set
 
 set aColor1 [vreadpixel 320 160 rgb name]
 set aColor2 [vreadpixel 80  250 rgb name]
-if { "$aColor1" != "BLACK"      } { puts "Error: zoom-persistent object is not clipped" }
-if { "$aColor2" != "GOLDENROD3" } { puts "Error: zoom-persistent object is clipped" }
+if { "$aColor1" != "BLACK"         } { puts "Error: zoom-persistent object is not clipped" }
+if { "$aColor2" != "DARKGOLDENROD" } { puts "Error: zoom-persistent object is clipped" }
 
 vdump $imagedir/${casename}.png
