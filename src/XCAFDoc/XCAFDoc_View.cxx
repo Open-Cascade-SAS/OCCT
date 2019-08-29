@@ -250,13 +250,27 @@ Handle(XCAFView_Object) XCAFDoc_View::GetObject()  const
   // GDT Points
   if (!Label().FindChild(ChildLab_GDTPoints, Standard_False).IsNull()) {
     TDF_Label aPointsLabel = Label().FindChild(ChildLab_GDTPoints);
-    anObj->CreateGDTPoints(aPointsLabel.NbChildren());
-    for (Standard_Integer i = 1; i <= aPointsLabel.NbChildren(); i++) {
-      gp_Pnt aPoint;
-      Handle(TDataXtd_Point) aGDTPointAttr;
-      aPointsLabel.FindChild(i).FindAttribute(TDataXtd_Point::GetID(), aGDTPointAttr);
-      TDataXtd_Geometry::Point(aGDTPointAttr->Label(), aPoint);
-      anObj->SetGDTPoint(i, aPoint);
+
+    // Find out the number of stored GDT-points in Ocaf tree.
+    Standard_Integer aNbGDTPoints = 0;
+    Handle(TDataXtd_Point) aGDTPointAttr;
+    TDF_ChildIterator anItrPnts (aPointsLabel, Standard_False);
+    for (; anItrPnts.More(); anItrPnts.Next()) {
+      if (anItrPnts.Value().FindAttribute (TDataXtd_Point::GetID(), aGDTPointAttr))
+        aNbGDTPoints++;
+    }
+
+    // Allocate the GDT-points and fill them in from Ocaf tree.
+    if (aNbGDTPoints) {
+      anObj->CreateGDTPoints (aNbGDTPoints);
+      const Standard_Integer aNbChildren = aPointsLabel.NbChildren();
+      for (Standard_Integer aLabelIndex = 1, aPointIndex = 1; aLabelIndex <= aNbChildren; aLabelIndex++) {
+        gp_Pnt aPoint;
+        if (aPointsLabel.FindChild (aLabelIndex).FindAttribute (TDataXtd_Point::GetID(), aGDTPointAttr)) {
+          TDataXtd_Geometry::Point (aGDTPointAttr->Label(), aPoint);
+          anObj->SetGDTPoint (aPointIndex++, aPoint);
+        }
+      }
     }
   }
 
