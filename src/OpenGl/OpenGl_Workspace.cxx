@@ -57,52 +57,30 @@ namespace
 void OpenGl_Material::Init (const Graphic3d_MaterialAspect& theMat,
                             const Quantity_Color&           theInteriorColor)
 {
-  const bool isPhysic = theMat.MaterialType (Graphic3d_MATERIAL_PHYSIC);
   ChangeShine()        = 128.0f * theMat.Shininess();
   ChangeTransparency() = theMat.Alpha();
 
-  // ambient component
-  if (theMat.ReflectionMode (Graphic3d_TOR_AMBIENT))
+  const OpenGl_Vec3& aSrcAmb = theMat.AmbientColor();
+  const OpenGl_Vec3& aSrcDif = theMat.DiffuseColor();
+  const OpenGl_Vec3& aSrcSpe = theMat.SpecularColor();
+  const OpenGl_Vec3& aSrcEms = theMat.EmissiveColor();
+  Specular.SetValues (aSrcSpe, 1.0f); // interior color is ignored for Specular
+  switch (theMat.MaterialType())
   {
-    const OpenGl_Vec3& aSrcAmb = isPhysic ? theMat.AmbientColor() : theInteriorColor;
-    Ambient = OpenGl_Vec4 (aSrcAmb * theMat.Ambient(), 1.0f);
-  }
-  else
-  {
-    Ambient = THE_BLACK_COLOR;
-  }
-
-  // diffusion component
-  if (theMat.ReflectionMode (Graphic3d_TOR_DIFFUSE))
-  {
-    const OpenGl_Vec3& aSrcDif = isPhysic ? theMat.DiffuseColor() : theInteriorColor;
-    Diffuse = OpenGl_Vec4 (aSrcDif * theMat.Diffuse(), 1.0f);
-  }
-  else
-  {
-    Diffuse = THE_BLACK_COLOR;
-  }
-
-  // specular component
-  if (theMat.ReflectionMode (Graphic3d_TOR_SPECULAR))
-  {
-    const OpenGl_Vec3& aSrcSpe = isPhysic ? (const OpenGl_Vec3& )theMat.SpecularColor() : THE_WHITE_COLOR.rgb();
-    Specular = OpenGl_Vec4 (aSrcSpe * theMat.Specular(), 1.0f);
-  }
-  else
-  {
-    Specular = THE_BLACK_COLOR;
-  }
-
-  // emission component
-  if (theMat.ReflectionMode (Graphic3d_TOR_EMISSION))
-  {
-    const OpenGl_Vec3& aSrcEms = isPhysic ? theMat.EmissiveColor() : theInteriorColor;
-    Emission = OpenGl_Vec4 (aSrcEms * theMat.Emissive(), 1.0f);
-  }
-  else
-  {
-    Emission = THE_BLACK_COLOR;
+    case Graphic3d_MATERIAL_ASPECT:
+    {
+      Ambient .SetValues (aSrcAmb * theInteriorColor, 1.0f);
+      Diffuse .SetValues (aSrcDif * theInteriorColor, 1.0f);
+      Emission.SetValues (aSrcEms * theInteriorColor, 1.0f);
+      break;
+    }
+    case Graphic3d_MATERIAL_PHYSIC:
+    {
+      Ambient .SetValues (aSrcAmb, 1.0f);
+      Diffuse .SetValues (aSrcDif, 1.0f);
+      Emission.SetValues (aSrcEms, 1.0f);
+      break;
+    }
   }
 }
 

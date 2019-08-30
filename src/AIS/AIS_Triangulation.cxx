@@ -137,7 +137,7 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
       Standard_Integer i;
       Standard_Integer j;
 
-      Standard_Real ambient = aspect->FrontMaterial().Ambient();
+      const Standard_Real ambient = 0.2;
       if (hasVNormals)
       {
         const TShort_Array1OfShortReal& normals = myTriangulation->Normals();

@@ -404,9 +404,9 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
 
     // Set aspect for arrow triangles
     Graphic3d_MaterialAspect aShadeMat (Graphic3d_NOM_DEFAULT);
-    aShadeMat.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
-    aShadeMat.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
-    aShadeMat.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
+    aShadeMat.SetAmbientColor (Quantity_NOC_BLACK);
+    aShadeMat.SetDiffuseColor (Quantity_NOC_BLACK);
+    aShadeMat.SetSpecularColor(Quantity_NOC_BLACK);
 
     Handle(Prs3d_ShadingAspect) aShadingStyle = new Prs3d_ShadingAspect();
     aShadingStyle->SetColor (myDrawer->DimensionAspect()->ArrowAspect()->Aspect()->Color());
@@ -530,9 +530,9 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
       }
 
       Graphic3d_MaterialAspect aShadeMat (Graphic3d_NOM_DEFAULT);
-      aShadeMat.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
-      aShadeMat.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
-      aShadeMat.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
+      aShadeMat.SetAmbientColor (Quantity_NOC_BLACK);
+      aShadeMat.SetDiffuseColor (Quantity_NOC_BLACK);
+      aShadeMat.SetSpecularColor(Quantity_NOC_BLACK);
       myDrawer->ShadingAspect()->Aspect()->SetInteriorColor (aColor);
       myDrawer->ShadingAspect()->Aspect()->SetBackInteriorColor (aColor);
       myDrawer->ShadingAspect()->SetMaterial (aShadeMat);

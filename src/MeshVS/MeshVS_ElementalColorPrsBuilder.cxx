@@ -215,13 +215,14 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
             PolygonVerticesFor3D, PolygonBoundsFor3D );
   }
 
-  Graphic3d_MaterialAspect aMaterial[2];
+  Graphic3d_MaterialAspect aMaterial[2] = { Graphic3d_NOM_PLASTIC, Graphic3d_NOM_PLASTIC };
   for (Standard_Integer i = 0; i < 2; i++)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior
     // color from AspectFillArea3d to calculate all material colors
-    aMaterial[i] = Graphic3d_MaterialAspect ( Graphic3d_NOM_PLASTIC );
+    aMaterial[i].SetSpecularColor (Quantity_NOC_BLACK);
+    aMaterial[i].SetEmissiveColor (Quantity_NOC_BLACK);
 
     // OCC21720 For single-colored elements turning all material components off is a good idea,
     // as anyhow the normals are not computed and the lighting will be off,
@@ -229,10 +230,8 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
     // and there is no need to spend time on updating material properties 
     if ( !IsReflect )
     {
-      aMaterial[i].SetReflectionModeOff(Graphic3d_TOR_AMBIENT);
-      aMaterial[i].SetReflectionModeOff(Graphic3d_TOR_DIFFUSE);
-      aMaterial[i].SetReflectionModeOff(Graphic3d_TOR_SPECULAR);
-      aMaterial[i].SetReflectionModeOff(Graphic3d_TOR_EMISSION);
+      aMaterial[i].SetAmbientColor (Quantity_NOC_BLACK);
+      aMaterial[i].SetDiffuseColor (Quantity_NOC_BLACK);
     }
     else
     {
@@ -241,10 +240,8 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       // those in the color scale most exactly (the sum of all reflection 
       // coefficients is equal to 1). See also MeshVS_NodalColorPrsBuilder
       // class for more explanations.
-      aMaterial[i].SetAmbient( .5 );
-      aMaterial[i].SetDiffuse( .5 );
-      aMaterial[i].SetSpecular( 0. );
-      aMaterial[i].SetEmissive( 0. );
+      aMaterial[i].SetAmbientColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
+      aMaterial[i].SetDiffuseColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
     }
   }
 
@@ -481,13 +478,14 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       CustomBuild(Prs, aCustomElements, IDsToExclude, DisplayMode);
   }
 
-  Graphic3d_MaterialAspect aMaterial2[2];
+  Graphic3d_MaterialAspect aMaterial2[2] = { Graphic3d_NOM_PLASTIC, Graphic3d_NOM_PLASTIC };
   for (Standard_Integer i = 0; i < 2; i++)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
     // so TelUpdateMaterial() from OpenGl_attri.c uses the interior
     // color from AspectFillArea3d to calculate all material colors
-    aMaterial2[i] = Graphic3d_MaterialAspect ( Graphic3d_NOM_PLASTIC );
+    aMaterial2[i].SetSpecularColor (Quantity_NOC_BLACK);
+    aMaterial2[i].SetEmissiveColor (Quantity_NOC_BLACK);
 
     if ( !IsReflect )
     {
@@ -496,14 +494,8 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       // to have different materials for front and back sides!
       // Instead, trying to make material color "nondirectional" with 
       // only ambient component on.
-      aMaterial2[i].SetReflectionModeOn ( Graphic3d_TOR_AMBIENT );
-      aMaterial2[i].SetReflectionModeOff( Graphic3d_TOR_DIFFUSE );
-      aMaterial2[i].SetReflectionModeOff( Graphic3d_TOR_SPECULAR );
-      aMaterial2[i].SetReflectionModeOff( Graphic3d_TOR_EMISSION );
-      aMaterial2[i].SetAmbient ( 1. );
-      aMaterial2[i].SetDiffuse ( 0. );
-      aMaterial2[i].SetSpecular( 0. );
-      aMaterial2[i].SetEmissive( 0. );
+      aMaterial2[i].SetAmbientColor (Quantity_Color (Graphic3d_Vec3 (1.0f)));
+      aMaterial2[i].SetDiffuseColor (Quantity_NOC_BLACK);
     }
     else
     {
@@ -512,10 +504,8 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       // those in the color scale most exactly (the sum of all reflection 
       // coefficients is equal to 1). See also MeshVS_NodalColorPrsBuilder
       // class for more explanations.
-      aMaterial2[i].SetAmbient( .5 );
-      aMaterial2[i].SetDiffuse( .5 );
-      aMaterial2[i].SetSpecular( 0. );
-      aMaterial2[i].SetEmissive( 0. );
+      aMaterial2[i].SetAmbientColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
+      aMaterial2[i].SetDiffuseColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
     }
   }
 

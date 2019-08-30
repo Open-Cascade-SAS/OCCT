@@ -1964,12 +1964,6 @@ struct ViewerTest_AspectsChangeSet
       std::cout << "Error: alpha cutoff value should be within (0; 1) range (specified " << AlphaCutoff << ")\n";
       isOk = Standard_False;
     }
-    if (ToSetMaterial == 1
-     && Material == Graphic3d_NOM_DEFAULT)
-    {
-      std::cout << "Error: unknown material " << MatName << ".\n";
-      isOk = Standard_False;
-    }
     if (FreeBoundaryWidth <= 0.0
      || FreeBoundaryWidth >  10.0)
     {
@@ -2421,9 +2415,13 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       return 1;
     }
     aChangeSet->ToSetMaterial = 1;
-    aChangeSet->MatName  = aNames.Last();
-    aChangeSet->Material = Graphic3d_MaterialAspect::MaterialFromName (aChangeSet->MatName.ToCString());
+    aChangeSet->MatName = aNames.Last();
     aNames.Remove (aNames.Length());
+    if (!Graphic3d_MaterialAspect::MaterialFromName (aChangeSet->MatName.ToCString(), aChangeSet->Material))
+    {
+      std::cout << "Syntax error: unknown material '" << aChangeSet->MatName << "'.\n";
+      return 1;
+    }
   }
   else if (aCmdName == "vunsetmaterial")
   {
@@ -2861,8 +2859,12 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
         return 1;
       }
       aChangeSet->ToSetMaterial = 1;
-      aChangeSet->MatName  = theArgVec[anArgIter];
-      aChangeSet->Material = Graphic3d_MaterialAspect::MaterialFromName (aChangeSet->MatName.ToCString());
+      aChangeSet->MatName = theArgVec[anArgIter];
+      if (!Graphic3d_MaterialAspect::MaterialFromName (aChangeSet->MatName.ToCString(), aChangeSet->Material))
+      {
+        std::cout << "Syntax error: unknown material '" << aChangeSet->MatName << "'.\n";
+        return 1;
+      }
     }
     else if (anArg == "-unsetmat"
           || anArg == "-unsetmaterial")

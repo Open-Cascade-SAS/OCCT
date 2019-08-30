@@ -350,90 +350,67 @@ void buildTextureTransform (const Handle(Graphic3d_TextureParams)& theParams, BV
 OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theAspect,
                                                       const Handle(OpenGl_Context)& theGlContext)
 {
-  OpenGl_RaytraceMaterial theMaterial;
+  OpenGl_RaytraceMaterial aResMat;
 
   const Graphic3d_MaterialAspect& aSrcMat = theAspect->Aspect()->FrontMaterial();
   const OpenGl_Vec3& aMatCol  = theAspect->Aspect()->InteriorColor();
-  const bool         isPhysic = aSrcMat.MaterialType (Graphic3d_MATERIAL_PHYSIC);
   const float        aShine   = 128.0f * float(aSrcMat.Shininess());
 
-  // ambient component
-  if (aSrcMat.ReflectionMode (Graphic3d_TOR_AMBIENT))
+  const OpenGl_Vec3& aSrcAmb = aSrcMat.AmbientColor();
+  const OpenGl_Vec3& aSrcDif = aSrcMat.DiffuseColor();
+  const OpenGl_Vec3& aSrcSpe = aSrcMat.SpecularColor();
+  const OpenGl_Vec3& aSrcEms = aSrcMat.EmissiveColor();
+  switch (aSrcMat.MaterialType())
   {
-    const OpenGl_Vec3& aSrcAmb = isPhysic ? aSrcMat.AmbientColor() : aMatCol;
-    theMaterial.Ambient = BVH_Vec4f (aSrcAmb * (float )aSrcMat.Ambient(),  1.0f);
-  }
-  else
-  {
-    theMaterial.Ambient = THE_BLACK_COLOR;
+    case Graphic3d_MATERIAL_ASPECT:
+    {
+      aResMat.Ambient .SetValues (aSrcAmb * aMatCol,  1.0f);
+      aResMat.Diffuse .SetValues (aSrcDif * aMatCol, -1.0f); // -1 is no texture
+      aResMat.Emission.SetValues (aSrcEms * aMatCol,  1.0f);
+      break;
+    }
+    case Graphic3d_MATERIAL_PHYSIC:
+    {
+      aResMat.Ambient .SetValues (aSrcAmb,  1.0f);
+      aResMat.Diffuse .SetValues (aSrcDif, -1.0f); // -1 is no texture
+      aResMat.Emission.SetValues (aSrcEms,  1.0f);
+      break;
+    }
   }
 
-  // diffusion component
-  if (aSrcMat.ReflectionMode (Graphic3d_TOR_DIFFUSE))
   {
-    const OpenGl_Vec3& aSrcDif = isPhysic ? aSrcMat.DiffuseColor() : aMatCol;
-    theMaterial.Diffuse = BVH_Vec4f (aSrcDif * (float )aSrcMat.Diffuse(), -1.0f); // -1 is no texture
-  }
-  else
-  {
-    theMaterial.Diffuse = BVH_Vec4f (THE_BLACK_COLOR.rgb(), -1.0f);
-  }
-
-  // specular component
-  if (aSrcMat.ReflectionMode (Graphic3d_TOR_SPECULAR))
-  {
-    const OpenGl_Vec3& aSrcSpe  = aSrcMat.SpecularColor();
-    const OpenGl_Vec3& aSrcSpe2 = isPhysic ? aSrcSpe : THE_WHITE_COLOR.rgb();
-    theMaterial.Specular = BVH_Vec4f (aSrcSpe2 * (float )aSrcMat.Specular(), aShine);
-
-    const Standard_ShortReal aMaxRefl = Max (theMaterial.Diffuse.x() + theMaterial.Specular.x(),
-                                        Max (theMaterial.Diffuse.y() + theMaterial.Specular.y(),
-                                             theMaterial.Diffuse.z() + theMaterial.Specular.z()));
-
+    // interior color is always ignored for Specular
+    aResMat.Specular.SetValues (aSrcSpe, aShine);
+    const Standard_ShortReal aMaxRefl = Max (aResMat.Diffuse.x() + aResMat.Specular.x(),
+                                        Max (aResMat.Diffuse.y() + aResMat.Specular.y(),
+                                             aResMat.Diffuse.z() + aResMat.Specular.z()));
     const Standard_ShortReal aReflectionScale = 0.75f / aMaxRefl;
-
-    // ignore isPhysic here
-    theMaterial.Reflection = BVH_Vec4f (aSrcSpe * (float )aSrcMat.Specular() * aReflectionScale, 0.0f);
-  }
-  else
-  {
-    theMaterial.Specular = BVH_Vec4f (THE_BLACK_COLOR.rgb(), aShine);
-  }
-
-  // emission component
-  if (aSrcMat.ReflectionMode (Graphic3d_TOR_EMISSION))
-  {
-    const OpenGl_Vec3& aSrcEms = isPhysic ? aSrcMat.EmissiveColor() : aMatCol;
-    theMaterial.Emission = BVH_Vec4f (aSrcEms * (float )aSrcMat.Emissive(), 1.0f);
-  }
-  else
-  {
-    theMaterial.Emission = THE_BLACK_COLOR;
+    aResMat.Reflection.SetValues (aSrcSpe * aReflectionScale, 0.0f);
   }
 
   const float anIndex = (float )aSrcMat.RefractionIndex();
-  theMaterial.Transparency = BVH_Vec4f (aSrcMat.Alpha(), aSrcMat.Transparency(),
-                                        anIndex == 0 ? 1.0f : anIndex,
-                                        anIndex == 0 ? 1.0f : 1.0f / anIndex);
+  aResMat.Transparency = BVH_Vec4f (aSrcMat.Alpha(), aSrcMat.Transparency(),
+                                    anIndex == 0 ? 1.0f : anIndex,
+                                    anIndex == 0 ? 1.0f : 1.0f / anIndex);
 
   // Serialize physically-based material properties
   const Graphic3d_BSDF& aBSDF = aSrcMat.BSDF();
 
-  theMaterial.BSDF.Kc = aBSDF.Kc;
-  theMaterial.BSDF.Ks = aBSDF.Ks;
-  theMaterial.BSDF.Kd = BVH_Vec4f (aBSDF.Kd, -1.f); // no texture
-  theMaterial.BSDF.Kt = BVH_Vec4f (aBSDF.Kt,  0.f);
-  theMaterial.BSDF.Le = BVH_Vec4f (aBSDF.Le,  0.f);
+  aResMat.BSDF.Kc = aBSDF.Kc;
+  aResMat.BSDF.Ks = aBSDF.Ks;
+  aResMat.BSDF.Kd = BVH_Vec4f (aBSDF.Kd, -1.f); // no texture
+  aResMat.BSDF.Kt = BVH_Vec4f (aBSDF.Kt,  0.f);
+  aResMat.BSDF.Le = BVH_Vec4f (aBSDF.Le,  0.f);
 
-  theMaterial.BSDF.Absorption = aBSDF.Absorption;
+  aResMat.BSDF.Absorption = aBSDF.Absorption;
 
-  theMaterial.BSDF.FresnelCoat = aBSDF.FresnelCoat.Serialize ();
-  theMaterial.BSDF.FresnelBase = aBSDF.FresnelBase.Serialize ();
+  aResMat.BSDF.FresnelCoat = aBSDF.FresnelCoat.Serialize ();
+  aResMat.BSDF.FresnelBase = aBSDF.FresnelBase.Serialize ();
 
   // Handle material textures
   if (!theAspect->Aspect()->ToMapTexture())
   {
-    return theMaterial;
+    return aResMat;
   }
 
   const Handle(OpenGl_TextureSet)& aTextureSet = theAspect->TextureSet (theGlContext);
@@ -441,30 +418,26 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theA
    || aTextureSet->IsEmpty()
    || aTextureSet->First().IsNull())
   {
-    return theMaterial;
+    return aResMat;
   }
 
   if (theGlContext->HasRayTracingTextures())
   {
     const Handle(OpenGl_Texture)& aTexture = aTextureSet->First();
-    buildTextureTransform (aTexture->Sampler()->Parameters(), theMaterial.TextureTransform);
+    buildTextureTransform (aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
 
     // write texture ID to diffuse w-component
-    theMaterial.Diffuse.w() = theMaterial.BSDF.Kd.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
+    aResMat.Diffuse.w() = aResMat.BSDF.Kd.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
   }
   else if (!myIsRaytraceWarnTextures)
   {
-    const TCollection_ExtendedString aWarnMessage =
-      "Warning: texturing in Ray-Trace requires GL_ARB_bindless_texture extension which is missing. "
-      "Please try to update graphics card driver. At the moment textures will be ignored.";
-
-    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION,
-      GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH, aWarnMessage);
-
+    theGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                               "Warning: texturing in Ray-Trace requires GL_ARB_bindless_texture extension which is missing. "
+                               "Please try to update graphics card driver. At the moment textures will be ignored.");
     myIsRaytraceWarnTextures = Standard_True;
   }
 
-  return theMaterial;
+  return aResMat;
 }
 
 // =======================================================================

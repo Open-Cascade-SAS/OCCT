@@ -637,7 +637,7 @@ void AIS_Shape::setMaterial (const Handle(Prs3d_Drawer)&     theDrawer,
                              const Standard_Boolean          theToKeepColor,
                              const Standard_Boolean          theToKeepTransp) const
 {
-  const Quantity_Color aColor  = theDrawer->ShadingAspect()->Material     (myCurrentFacingModel).Color();
+  const Quantity_Color aColor  = theDrawer->ShadingAspect()->Color (myCurrentFacingModel);
   const Standard_Real  aTransp = theDrawer->ShadingAspect()->Transparency (myCurrentFacingModel);
   theDrawer->SetupOwnShadingAspect();
   theDrawer->ShadingAspect()->SetMaterial (theMaterial, myCurrentFacingModel);

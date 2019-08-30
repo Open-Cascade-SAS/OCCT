@@ -132,7 +132,7 @@ void AIS_Manipulator::init()
   myAxes[2] = Axis (gp::OZ(), Quantity_NOC_BLUE1);
 
   Graphic3d_MaterialAspect aShadingMaterial;
-  aShadingMaterial.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
+  aShadingMaterial.SetSpecularColor(Quantity_NOC_BLACK);
   aShadingMaterial.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
 
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
@@ -142,10 +142,10 @@ void AIS_Manipulator::init()
 
   Graphic3d_MaterialAspect aHilightMaterial;
   aHilightMaterial.SetColor (Quantity_NOC_AZURE);
-  aHilightMaterial.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
-  aHilightMaterial.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
-  aHilightMaterial.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
-  aHilightMaterial.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
+  aHilightMaterial.SetAmbientColor (Quantity_NOC_BLACK);
+  aHilightMaterial.SetDiffuseColor (Quantity_NOC_BLACK);
+  aHilightMaterial.SetSpecularColor(Quantity_NOC_BLACK);
+  aHilightMaterial.SetEmissiveColor(Quantity_NOC_BLACK);
   aHilightMaterial.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
 
   myHighlightAspect = new Prs3d_ShadingAspect();
@@ -153,11 +153,10 @@ void AIS_Manipulator::init()
   myHighlightAspect->SetMaterial (aHilightMaterial);
 
   Graphic3d_MaterialAspect aDraggerMaterial;
-  aDraggerMaterial.SetReflectionModeOff(Graphic3d_TOR_DIFFUSE);
-  aDraggerMaterial.SetReflectionModeOff(Graphic3d_TOR_SPECULAR);
-  aDraggerMaterial.SetReflectionModeOff(Graphic3d_TOR_EMISSION);
+  aDraggerMaterial.SetAmbientColor (Quantity_NOC_BLACK);
+  aDraggerMaterial.SetDiffuseColor (Quantity_NOC_BLACK);
+  aDraggerMaterial.SetSpecularColor(Quantity_NOC_BLACK);
   aDraggerMaterial.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
-  aDraggerMaterial.SetAmbient(1.0);
 
   myDraggerHighlight = new Prs3d_ShadingAspect();
   myDraggerHighlight->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);

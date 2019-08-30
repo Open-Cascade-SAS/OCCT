@@ -43,6 +43,14 @@ struct OpenGl_Material
     Diffuse.SetValues (theColor.rgb(), Diffuse.a());
   }
 
+  //! Empty constructor.
+  OpenGl_Material()
+  : Ambient (1.0f),
+    Diffuse (1.0f),
+    Specular(1.0f),
+    Emission(1.0f),
+    Params  (1.0f, 0.0f, 0.0f, 0.0f) {}
+
   //! Initialize material
   void Init (const Graphic3d_MaterialAspect& theProp,
              const Quantity_Color&           theInteriorColor);

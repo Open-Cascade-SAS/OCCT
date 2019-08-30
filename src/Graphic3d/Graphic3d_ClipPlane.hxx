@@ -166,6 +166,12 @@ public:
 
 public: // @name user-defined graphical attributes
 
+  //! Return color for rendering capping surface.
+  Quantity_Color CappingColor() const { return myAspect->FrontMaterial().MaterialType() == Graphic3d_MATERIAL_ASPECT ? myAspect->FrontMaterial().Color() : myAspect->InteriorColor(); }
+
+  //! Set color for rendering capping surface.
+  Standard_EXPORT void SetCappingColor (const Quantity_Color& theColor);
+
   //! Set material for rendering capping surface.
   //! @param theMat [in] the material.
   Standard_EXPORT void SetCappingMaterial (const Graphic3d_MaterialAspect& theMat);

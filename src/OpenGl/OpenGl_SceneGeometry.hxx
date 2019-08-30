@@ -43,88 +43,34 @@ namespace OpenGl_Raytrace
 }
 
 //! Stores properties of surface material.
-class OpenGl_RaytraceMaterial
+struct OpenGl_RaytraceMaterial
 {
-public:
-
-  //! Ambient reflection coefficient.
-  BVH_Vec4f Ambient;
-
-  //! Diffuse reflection coefficient.
-  BVH_Vec4f Diffuse;
-
-  //! Glossy reflection coefficient.
-  BVH_Vec4f Specular;
-
-  //! Material emission.
-  BVH_Vec4f Emission;
-
-  //! Specular reflection coefficient.
-  BVH_Vec4f Reflection;
-
-  //! Specular refraction coefficient.
-  BVH_Vec4f Refraction;
-
-  //! Material transparency.
-  BVH_Vec4f Transparency;
-
-  //! Texture transformation matrix.
-  BVH_Mat4f TextureTransform;
+  BVH_Vec4f Ambient;          //!< Ambient reflection coefficient
+  BVH_Vec4f Diffuse;          //!< Diffuse reflection coefficient
+  BVH_Vec4f Specular;         //!< Glossy  reflection coefficient
+  BVH_Vec4f Emission;         //!< Material emission
+  BVH_Vec4f Reflection;       //!< Specular reflection coefficient
+  BVH_Vec4f Refraction;       //!< Specular refraction coefficient
+  BVH_Vec4f Transparency;     //!< Material transparency
+  BVH_Mat4f TextureTransform; //!< Texture transformation matrix
 
   //! Physically-based material properties (used in path tracing engine).
   struct Physical
   {
-    //! Weight of coat specular/glossy BRDF.
-    BVH_Vec4f Kc;
-
-    //! Weight of base diffuse BRDF.
-    BVH_Vec4f Kd;
-
-    //! Weight of base specular/glossy BRDF.
-    BVH_Vec4f Ks;
-
-    //! Weight of base specular/glossy BTDF.
-    BVH_Vec4f Kt;
-
-    //! Radiance emitted by the surface.
-    BVH_Vec4f Le;
-
-    //! Fresnel coefficients of coat layer.
-    BVH_Vec4f FresnelCoat;
-
-    //! Fresnel coefficients of base layer.
-    BVH_Vec4f FresnelBase;
-
-    //! Absorption color/intensity.
-    BVH_Vec4f Absorption;
-
+    BVH_Vec4f Kc;          //!< Weight of coat specular/glossy BRDF
+    BVH_Vec4f Kd;          //!< Weight of base diffuse BRDF
+    BVH_Vec4f Ks;          //!< Weight of base specular/glossy BRDF
+    BVH_Vec4f Kt;          //!< Weight of base specular/glossy BTDF
+    BVH_Vec4f Le;          //!< Radiance emitted by the surface
+    BVH_Vec4f FresnelCoat; //!< Fresnel coefficients of coat layer
+    BVH_Vec4f FresnelBase; //!< Fresnel coefficients of base layer
+    BVH_Vec4f Absorption;  //!< Absorption color/intensity
   } BSDF;
 
 public:
 
-  //! Creates new default material.
+  //! Empty constructor.
   OpenGl_RaytraceMaterial();
-
-  //! Creates new material with specified properties.
-  OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
-                           const BVH_Vec4f& theDiffuse,
-                           const BVH_Vec4f& theSpecular);
-
-  //! Creates new material with specified properties.
-  OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
-                           const BVH_Vec4f& theDiffuse,
-                           const BVH_Vec4f& theSpecular,
-                           const BVH_Vec4f& theEmission,
-                           const BVH_Vec4f& theTranspar);
-
-  //! Creates new material with specified properties.
-  OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
-                           const BVH_Vec4f& theDiffuse,
-                           const BVH_Vec4f& theSpecular,
-                           const BVH_Vec4f& theEmission,
-                           const BVH_Vec4f& theTranspar,
-                           const BVH_Vec4f& theReflection,
-                           const BVH_Vec4f& theRefraction);
 
   //! Returns packed (serialized) representation of material.
   const Standard_ShortReal* Packed()
@@ -134,15 +80,11 @@ public:
 };
 
 //! Stores properties of OpenGL light source.
-class OpenGl_RaytraceLight
+struct OpenGl_RaytraceLight
 {
-public:
 
-  //! Diffuse intensity (in terms of OpenGL).
-  BVH_Vec4f Emission;
-
-  //! Position of light source (in terms of OpenGL).
-  BVH_Vec4f Position;
+  BVH_Vec4f Emission; //!< Diffuse intensity (in terms of OpenGL)
+  BVH_Vec4f Position; //!< Position of light source (in terms of OpenGL)
 
 public:
 

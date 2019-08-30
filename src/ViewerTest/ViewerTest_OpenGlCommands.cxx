@@ -1082,18 +1082,10 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
   {
     Graphic3d_MaterialAspect aMat (aMatIter.Value());
     const TCollection_AsciiString aMatName = aMat.StringName();
-    const Graphic3d_Vec3 anAmbient = aMat.ReflectionMode (Graphic3d_TOR_AMBIENT)
-                                   ? (Graphic3d_Vec3 )aMat.AmbientColor()  * aMat.Ambient()
-                                   : Graphic3d_Vec3 (0.0f);
-    const Graphic3d_Vec3 aDiffuse  = aMat.ReflectionMode (Graphic3d_TOR_DIFFUSE)
-                                   ? (Graphic3d_Vec3 )aMat.DiffuseColor()  * aMat.Diffuse()
-                                   : Graphic3d_Vec3 (0.0f);
-    const Graphic3d_Vec3 aSpecular = aMat.ReflectionMode (Graphic3d_TOR_SPECULAR)
-                                   ? (Graphic3d_Vec3 )aMat.SpecularColor() * aMat.Specular()
-                                   : Graphic3d_Vec3 (0.0f);
-    const Graphic3d_Vec3 anEmission = aMat.ReflectionMode (Graphic3d_TOR_EMISSION)
-                                   ? (Graphic3d_Vec3 )aMat.EmissiveColor() * aMat.Emissive()
-                                   : Graphic3d_Vec3 (0.0f);
+    const Graphic3d_Vec3 anAmbient  = (Graphic3d_Vec3 )aMat.AmbientColor();
+    const Graphic3d_Vec3 aDiffuse   = (Graphic3d_Vec3 )aMat.DiffuseColor();
+    const Graphic3d_Vec3 aSpecular  = (Graphic3d_Vec3 )aMat.SpecularColor();
+    const Graphic3d_Vec3 anEmission = (Graphic3d_Vec3 )aMat.EmissiveColor();
     const Standard_Real  aShiness  = aMat.Shininess() * 1000.0;
     if (aMatFile.is_open())
     {

@@ -27,13 +27,13 @@ namespace
 
   static Handle(Graphic3d_AspectFillArea3d) defaultAspect()
   {
-    const Graphic3d_MaterialAspect aMaterial (Graphic3d_NOM_DEFAULT);
+    Graphic3d_MaterialAspect aMaterial (Graphic3d_NOM_DEFAULT);
     Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
     anAspect->SetDistinguishOff();
     anAspect->SetFrontMaterial (aMaterial);
     anAspect->SetHatchStyle (Aspect_HS_HORIZONTAL);
     anAspect->SetInteriorStyle (Aspect_IS_SOLID);
-    anAspect->SetInteriorColor (aMaterial.Color());
+    anAspect->SetInteriorColor (Quantity_NOC_GRAY20);
     anAspect->SetSuppressBackFaces (false);
     return anAspect;
   }
@@ -178,13 +178,27 @@ Handle(Graphic3d_ClipPlane) Graphic3d_ClipPlane::Clone() const
 }
 
 // =======================================================================
+// function : SetCappingColor
+// purpose  :
+// =======================================================================
+void Graphic3d_ClipPlane::SetCappingColor (const Quantity_Color& theColor)
+{
+  myAspect->SetInteriorColor (theColor);
+  myAspect->ChangeFrontMaterial().SetColor (theColor);
+  ++myAspectMod;
+}
+
+// =======================================================================
 // function : SetCappingMaterial
 // purpose  :
 // =======================================================================
 void Graphic3d_ClipPlane::SetCappingMaterial (const Graphic3d_MaterialAspect& theMat)
 {
   myAspect->SetFrontMaterial (theMat);
-  myAspect->SetInteriorColor (theMat.Color());
+  if (myAspect->FrontMaterial().MaterialType() != Graphic3d_MATERIAL_ASPECT)
+  {
+    myAspect->SetInteriorColor (theMat.Color());
+  }
   ++myAspectMod;
 }
 

@@ -91,7 +91,7 @@ V3d_Trihedron::V3d_Trihedron()
 
   // Set material.
   Graphic3d_MaterialAspect aShadingMaterial;
-  aShadingMaterial.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
+  aShadingMaterial.SetSpecularColor(Quantity_NOC_BLACK);
   aShadingMaterial.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
 
   for (Standard_Integer anIt = 0; anIt < 3; ++anIt)

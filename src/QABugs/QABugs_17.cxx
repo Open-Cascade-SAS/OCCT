@@ -1113,7 +1113,7 @@ static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, 
   aFront.SetAmbientColor(aColF);
   aFront.SetDiffuseColor(aColF);
   aFront.SetSpecularColor(aColF);
-  aFront.SetEmissiveColor(aColF);
+  aFront.SetEmissiveColor(Quantity_NOC_BLACK);
   aFront.SetTransparency(0.0);
   aShadingAspect->SetMaterial(aFront,Aspect_TOFM_FRONT_SIDE);
 
@@ -1121,7 +1121,7 @@ static Standard_Integer OCC1174_1 (Draw_Interpretor& di, Standard_Integer argc, 
   aBack.SetAmbientColor(aColB);
   aBack.SetDiffuseColor(aColB);
   aBack.SetSpecularColor(aColB);
-  aBack.SetEmissiveColor(aColB);
+  aBack.SetEmissiveColor(Quantity_NOC_BLACK);
   aBack.SetTransparency(0.0);
   aShadingAspect->SetMaterial(aBack,Aspect_TOFM_BACK_SIDE);
 
@@ -1171,7 +1171,7 @@ static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, 
   front.SetAmbientColor(colf); 
   front.SetDiffuseColor(colf); 
   front.SetSpecularColor(colf); 
-  front.SetEmissiveColor(colf); 
+  front.SetEmissiveColor(Quantity_NOC_BLACK);
   front.SetTransparency (0.4f);
   sa->SetMaterial(front,Aspect_TOFM_FRONT_SIDE); 
 
@@ -1179,7 +1179,7 @@ static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, 
   back.SetAmbientColor(colb); 
   back.SetDiffuseColor(colb); 
   back.SetSpecularColor(colb); 
-  back.SetEmissiveColor(colb); 
+  back.SetEmissiveColor(Quantity_NOC_BLACK);
   back.SetTransparency (0.2f);
   sa->SetMaterial(back,Aspect_TOFM_BACK_SIDE); 
 

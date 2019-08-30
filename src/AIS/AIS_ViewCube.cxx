@@ -223,10 +223,10 @@ void AIS_ViewCube::setDefaultAttributes()
 void AIS_ViewCube::setDefaultHighlightAttributes()
 {
   Graphic3d_MaterialAspect aHighlightMaterial;
-  aHighlightMaterial.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
-  aHighlightMaterial.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
-  aHighlightMaterial.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
-  aHighlightMaterial.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
+  aHighlightMaterial.SetAmbientColor (Quantity_NOC_BLACK);
+  aHighlightMaterial.SetDiffuseColor (Quantity_NOC_BLACK);
+  aHighlightMaterial.SetSpecularColor(Quantity_NOC_BLACK);
+  aHighlightMaterial.SetEmissiveColor(Quantity_NOC_BLACK);
   aHighlightMaterial.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
   myDynHilightDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
   myDynHilightDrawer->ShadingAspect()->SetMaterial (aHighlightMaterial);

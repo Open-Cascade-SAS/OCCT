@@ -25,14 +25,10 @@ namespace
   {
     Graphic3d_MaterialAspect aMat;
     aMat.SetMaterialType (Graphic3d_MATERIAL_ASPECT);
-    aMat.SetAmbient  (0.2f);
-    aMat.SetDiffuse  (0.8f);
-    aMat.SetSpecular (0.1f);
-    aMat.SetEmissive (0.0f);
-    aMat.SetAmbientColor (Quantity_NOC_WHITE);
-    aMat.SetDiffuseColor (Quantity_NOC_WHITE);
-    aMat.SetEmissiveColor(Quantity_NOC_WHITE);
-    aMat.SetSpecularColor(Quantity_NOC_WHITE);
+    aMat.SetAmbientColor (Quantity_Color (Graphic3d_Vec3 (0.2f)));
+    aMat.SetDiffuseColor (Quantity_Color (Graphic3d_Vec3 (0.8f)));
+    aMat.SetEmissiveColor(Quantity_Color (Graphic3d_Vec3 (0.1f)));
+    aMat.SetSpecularColor(Quantity_NOC_BLACK);
     aMat.SetShininess (10.0f / 128.0f);
     aMat.SetRefractionIndex (1.0f);
     return aMat;

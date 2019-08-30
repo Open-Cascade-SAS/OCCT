@@ -42,8 +42,20 @@ public:
   //! Returns the type of the predefined material of specified rank within range [1, NumberOfMaterials()].
   Standard_EXPORT static Graphic3d_TypeOfMaterial MaterialType (const Standard_Integer theRank);
 
+  //! Finds the material for specified name.
+  //! @param theName [in]  name to find
+  //! @param theMat  [out] found material
+  //! @return FALSE if name was unrecognized
+  Standard_EXPORT static Standard_Boolean MaterialFromName (const Standard_CString theName,
+                                                            Graphic3d_NameOfMaterial& theMat);
+
   //! Returns the material for specified name or Graphic3d_NOM_DEFAULT if name is unknown.
-  Standard_EXPORT static Graphic3d_NameOfMaterial MaterialFromName (const Standard_CString theName);
+  static Graphic3d_NameOfMaterial MaterialFromName (const Standard_CString theName)
+  {
+    Graphic3d_NameOfMaterial aMat = Graphic3d_NOM_DEFAULT;
+    MaterialFromName (theName, aMat);
+    return aMat;
+  }
 
 public:
 
@@ -87,9 +99,11 @@ public:
   }
 
   //! Returns the diffuse color of the surface.
+  //! WARNING! This method does NOT return color for Graphic3d_MATERIAL_ASPECT material (color is defined by Graphic3d_Aspects::InteriorColor()).
   const Quantity_Color& Color() const { return myColors[Graphic3d_TOR_DIFFUSE]; }
 
   //! Modifies the ambient and diffuse color of the surface.
+  //! WARNING! Has no effect for Graphic3d_MATERIAL_ASPECT material (color should be set to Graphic3d_Aspects::SetInteriorColor()).
   Standard_EXPORT void SetColor (const Quantity_Color& theColor);
 
   //! Returns the transparency coefficient of the surface (1.0 - Alpha); 0.0 means opaque.
@@ -132,34 +146,6 @@ public:
   //! Modifies the emissive color of the surface.
   Standard_EXPORT void SetEmissiveColor (const Quantity_Color& theColor);
 
-  //! Returns the reflection properties of the surface.
-  Standard_ShortReal Ambient() const { return myColorCoef[Graphic3d_TOR_AMBIENT]; }
-
-  //! Modifies the reflection properties of the surface.
-  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
-  Standard_EXPORT void SetAmbient (const Standard_ShortReal theValue);
-
-  //! Returns the reflection properties of the surface.
-  Standard_ShortReal Diffuse() const { return myColorCoef[Graphic3d_TOR_DIFFUSE]; }
-
-  //! Modifies the reflection properties of the surface.
-  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
-  Standard_EXPORT void SetDiffuse (const Standard_ShortReal theValue);
-
-  //! Returns the reflection properties of the surface.
-  Standard_ShortReal Specular() const { return myColorCoef[Graphic3d_TOR_SPECULAR]; }
-
-  //! Modifies the reflection properties of the surface.
-  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
-  Standard_EXPORT void SetSpecular (const Standard_ShortReal theValue);
-
-  //! Returns the emissive coefficient of the surface.
-  Standard_ShortReal Emissive() const { return myColorCoef[Graphic3d_TOR_EMISSION]; }
-
-  //! Modifies the reflection properties of the surface.
-  //! Warning: Raises MaterialDefinitionError if given value is a negative value or greater than 1.0.
-  Standard_EXPORT void SetEmissive (const Standard_ShortReal theValue);
-
   //! Returns the luminosity of the surface.
   Standard_ShortReal Shininess() const { return myShininess; }
 
@@ -187,26 +173,8 @@ public:
   //! Returns TRUE if the reflection mode is active, FALSE otherwise.
   Standard_Boolean ReflectionMode (const Graphic3d_TypeOfReflection theType) const
   {
-    return myReflActivity[theType];
+    return !myColors[theType].IsEqual (Quantity_NOC_BLACK);
   }
-
-  //! Activates or deactivates the reflective properties of the surface with specified reflection type.
-  //!
-  //! Disabling diffuse and specular reflectance is useful for efficient visualization
-  //! of large amounts of data as definition of normals for graphic primitives is not needed
-  //! when only "all-directional" reflectance is active.
-  //!
-  //! NOTE: Disabling all four reflection modes also turns off the following effects:
-  //! 1. Lighting. Colors of primitives are not affected by the material properties when lighting is off.
-  //! 2. Transparency.
-  Standard_EXPORT void SetReflectionMode (const Graphic3d_TypeOfReflection theType,
-                                          const Standard_Boolean theValue);
-
-  //! Activates the reflective properties of the surface with specified reflection type.
-  void SetReflectionModeOn (const Graphic3d_TypeOfReflection theType) { SetReflectionMode (theType, Standard_True); }
-  
-  //! Deactivates the reflective properties of the surface with specified reflection type.
-  void SetReflectionModeOff (const Graphic3d_TypeOfReflection theType) { SetReflectionMode (theType, Standard_False); }
 
   //! Returns material type.
   Graphic3d_TypeOfMaterial MaterialType() const { return myMaterialType; }
@@ -226,26 +194,38 @@ public:
   //! Returns TRUE if this material is identical to specified one.
   Standard_Boolean IsEqual (const Graphic3d_MaterialAspect& theOther) const
   {
-    return myColorCoef[Graphic3d_TOR_AMBIENT]  == theOther.myColorCoef[Graphic3d_TOR_AMBIENT]
-        && myColorCoef[Graphic3d_TOR_DIFFUSE]  == theOther.myColorCoef[Graphic3d_TOR_DIFFUSE]
-        && myColorCoef[Graphic3d_TOR_SPECULAR] == theOther.myColorCoef[Graphic3d_TOR_SPECULAR]
-        && myColorCoef[Graphic3d_TOR_EMISSION] == theOther.myColorCoef[Graphic3d_TOR_EMISSION]
-        && myTransparencyCoef == theOther.myTransparencyCoef
+    return myTransparencyCoef == theOther.myTransparencyCoef
         && myRefractionIndex  == theOther.myRefractionIndex
         && myBSDF             == theOther.myBSDF
         && myShininess        == theOther.myShininess
-        && myColors[Graphic3d_TOR_AMBIENT]    == theOther.myColors[Graphic3d_TOR_AMBIENT]
-        && myColors[Graphic3d_TOR_DIFFUSE]    == theOther.myColors[Graphic3d_TOR_DIFFUSE]
-        && myColors[Graphic3d_TOR_SPECULAR]   == theOther.myColors[Graphic3d_TOR_SPECULAR]
-        && myColors[Graphic3d_TOR_EMISSION]   == theOther.myColors[Graphic3d_TOR_EMISSION]
-        && myReflActivity[Graphic3d_TOR_AMBIENT]  == theOther.myReflActivity[Graphic3d_TOR_AMBIENT]
-        && myReflActivity[Graphic3d_TOR_DIFFUSE]  == theOther.myReflActivity[Graphic3d_TOR_DIFFUSE]
-        && myReflActivity[Graphic3d_TOR_SPECULAR] == theOther.myReflActivity[Graphic3d_TOR_SPECULAR]
-        && myReflActivity[Graphic3d_TOR_EMISSION] == theOther.myReflActivity[Graphic3d_TOR_EMISSION];
+        && myColors[Graphic3d_TOR_AMBIENT]  == theOther.myColors[Graphic3d_TOR_AMBIENT]
+        && myColors[Graphic3d_TOR_DIFFUSE]  == theOther.myColors[Graphic3d_TOR_DIFFUSE]
+        && myColors[Graphic3d_TOR_SPECULAR] == theOther.myColors[Graphic3d_TOR_SPECULAR]
+        && myColors[Graphic3d_TOR_EMISSION] == theOther.myColors[Graphic3d_TOR_EMISSION];
   }
 
   //! Returns TRUE if this material is identical to specified one.
   Standard_Boolean operator== (const Graphic3d_MaterialAspect& theOther) const { return IsEqual (theOther); }
+
+public:
+
+  //! Deactivates the reflective properties of the surface with specified reflection type.
+  Standard_DEPRECATED("Deprecated method, specific material component should be zerroed instead")
+  void SetReflectionModeOff (const Graphic3d_TypeOfReflection theType)
+  {
+    if (!ReflectionMode (theType))
+    {
+      return;
+    }
+
+    switch (theType)
+    {
+      case Graphic3d_TOR_AMBIENT:  SetAmbientColor (Quantity_NOC_BLACK); break;
+      case Graphic3d_TOR_DIFFUSE:  SetDiffuseColor (Quantity_NOC_BLACK); break;
+      case Graphic3d_TOR_SPECULAR: SetSpecularColor(Quantity_NOC_BLACK); break;
+      case Graphic3d_TOR_EMISSION: SetEmissiveColor(Quantity_NOC_BLACK); break;
+    }
+  }
 
 private:
 
@@ -257,16 +237,18 @@ private:
   {
     // if a component of a "standard" material change, the
     // result is no more standard (a blue gold is not a gold)
-    myMaterialName = Graphic3d_NOM_UserDefined;
-    myStringName   = "UserDefined";
+    if (myMaterialName != Graphic3d_NOM_UserDefined)
+    {
+      myMaterialName = Graphic3d_NOM_UserDefined;
+      myStringName   = "UserDefined";
+    }
   }
 
 private:
 
   Graphic3d_BSDF           myBSDF;
   TCollection_AsciiString  myStringName;
-  Quantity_Color           myColors   [Graphic3d_TypeOfReflection_NB];
-  Standard_ShortReal       myColorCoef[Graphic3d_TypeOfReflection_NB];
+  Quantity_Color           myColors[Graphic3d_TypeOfReflection_NB];
   Standard_ShortReal       myTransparencyCoef;
   Standard_ShortReal       myRefractionIndex;
   Standard_ShortReal       myShininess;
@@ -274,8 +256,6 @@ private:
   Graphic3d_TypeOfMaterial myMaterialType;
   Graphic3d_NameOfMaterial myMaterialName;
   Graphic3d_NameOfMaterial myRequestedMaterialName;
-
-  Standard_Boolean         myReflActivity[Graphic3d_TypeOfReflection_NB];
 
 };
 

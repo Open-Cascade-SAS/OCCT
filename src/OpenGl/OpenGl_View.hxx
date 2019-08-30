@@ -58,7 +58,6 @@ struct OpenGl_Matrix;
 class Graphic3d_StructureManager;
 class OpenGl_GraphicDriver;
 class OpenGl_StateCounter;
-class OpenGl_RaytraceMaterial;
 class OpenGl_TriangleSet;
 class OpenGl_Workspace;
 class OpenGl_View;

@@ -189,20 +189,16 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   }
 
   // Draw faces with nodal color
-  // OCC20644 Use "plastic" material as it is "non-physic" and so it is easier
-  // to get the required colors (see TelUpdateMaterial() function in OpenGl_attri.c)
-  Graphic3d_MaterialAspect aMaterial[ 2 ];
-  aMaterial[ 0 ] = Graphic3d_MaterialAspect( Graphic3d_NOM_PLASTIC );
-  aMaterial[ 1 ] = Graphic3d_MaterialAspect( Graphic3d_NOM_PLASTIC );
-  Standard_Integer i;
-  for ( i = 0; i < 2; i++ )
+  // OCC20644 Use "plastic" material as it is "non-physic" and so it is easier to get the required colors
+  Graphic3d_MaterialAspect aMaterial[2] = { Graphic3d_NOM_PLASTIC, Graphic3d_NOM_PLASTIC };
+  for (Standard_Integer i = 0; i < 2; ++i)
   {
+    aMaterial[i].SetSpecularColor (Quantity_NOC_BLACK);
+    aMaterial[i].SetEmissiveColor (Quantity_NOC_BLACK);
     if ( !IsReflect )
     {
-      aMaterial[ i ].SetReflectionModeOff( Graphic3d_TOR_SPECULAR );
-      aMaterial[ i ].SetReflectionModeOff( Graphic3d_TOR_AMBIENT );
-      aMaterial[ i ].SetReflectionModeOff( Graphic3d_TOR_DIFFUSE );
-      aMaterial[ i ].SetReflectionModeOff( Graphic3d_TOR_EMISSION );
+      aMaterial[i].SetAmbientColor (Quantity_NOC_BLACK);
+      aMaterial[i].SetDiffuseColor (Quantity_NOC_BLACK);
     }
     else{
       // OCC20644 Using the material with reflection properties same as in
@@ -215,14 +211,10 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
       // is done by TelUpdateMaterial().
       // 0.5 is used to have the colors in 3D maximally similar to those in the color scale.
       // This is possible when the sum of all coefficient is equal to 1.
-      aMaterial[i].SetAmbient( .5 );
-      aMaterial[i].SetDiffuse( .5 );
-      aMaterial[i].SetSpecular( 0. );
-      aMaterial[i].SetEmissive( 0. );
+      aMaterial[i].SetAmbientColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
+      aMaterial[i].SetDiffuseColor (Quantity_Color (Graphic3d_Vec3 (0.5f)));
     }
-
- }
-
+  }
 
   // Create array of polygons for interior presentation of faces and volumes
   Handle(Graphic3d_ArrayOfPolygons) aCPolyArr = new Graphic3d_ArrayOfPolygons
@@ -283,7 +275,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   gp_Dir aDefNorm( 0., 0., 1. );
 
   // Prepare for scaling the incoming colors
-  Standard_Real anColorRatio = aMaterial[0].Ambient();
+  const Standard_Real anColorRatio = !IsReflect ? 0.44f : 0.5f;
 
   for (it.Reset(); it.More(); it.Next())
   {

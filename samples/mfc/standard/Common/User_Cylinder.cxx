@@ -79,10 +79,10 @@ case 6: //color
     Handle(Graphic3d_Group) mygroup = Prs3d_Root::CurrentGroup(aPresentation);
     myAspect = (new Prs3d_ShadingAspect())->Aspect();
     Graphic3d_MaterialAspect material = myAspect->FrontMaterial();
-    material.SetReflectionModeOff(Graphic3d_TOR_AMBIENT);
-    material.SetReflectionModeOff(Graphic3d_TOR_DIFFUSE);
-    material.SetReflectionModeOff(Graphic3d_TOR_SPECULAR);
-    material.SetReflectionModeOff(Graphic3d_TOR_EMISSION);
+    material.SetAmbientColor (Quantity_NOC_BLACK);
+    material.SetDiffuseColor (Quantity_NOC_BLACK);
+    material.SetSpecularColor(Quantity_NOC_BLACK);
+    material.SetEmissiveColor(Quantity_NOC_BLACK);
     myAspect->SetFrontMaterial(material);
 
     mygroup->SetPrimitivesAspect(myAspect);

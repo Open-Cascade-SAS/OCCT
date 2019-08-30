@@ -48,66 +48,6 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial()
 { }
 
 // =======================================================================
-// function : OpenGl_RaytraceMaterial
-// purpose  : Creates new material with specified properties
-// =======================================================================
-OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
-                                                  const BVH_Vec4f& theDiffuse,
-                                                  const BVH_Vec4f& theSpecular)
-: Ambient      (theAmbient),
-  Diffuse      (theDiffuse),
-  Specular     (theSpecular),
-  Emission     (ZERO_VEC_4F),
-  Reflection   (ZERO_VEC_4F),
-  Refraction   (ZERO_VEC_4F),
-  Transparency (ZERO_VEC_4F)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_RaytraceMaterial
-// purpose  : Creates new material with specified properties
-// =======================================================================
-OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
-                                                  const BVH_Vec4f& theDiffuse,
-                                                  const BVH_Vec4f& theSpecular,
-                                                  const BVH_Vec4f& theEmission,
-                                                  const BVH_Vec4f& theTranspar)
-: Ambient      (theAmbient),
-  Diffuse      (theDiffuse),
-  Specular     (theSpecular),
-  Emission     (theEmission),
-  Reflection   (ZERO_VEC_4F),
-  Refraction   (ZERO_VEC_4F),
-  Transparency (theTranspar)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_RaytraceMaterial
-// purpose  : Creates new material with specified properties
-// =======================================================================
-OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
-                                                  const BVH_Vec4f& theDiffuse,
-                                                  const BVH_Vec4f& theSpecular,
-                                                  const BVH_Vec4f& theEmission,
-                                                  const BVH_Vec4f& theTranspar,
-                                                  const BVH_Vec4f& theReflection,
-                                                  const BVH_Vec4f& theRefraction)
-: Ambient      (theAmbient),
-  Diffuse      (theDiffuse),
-  Specular     (theSpecular),
-  Emission     (theEmission),
-  Reflection   (theReflection),
-  Refraction   (theRefraction),
-  Transparency (theTranspar)
-{
-  //
-}
-
-// =======================================================================
 // function : OpenGl_RaytraceLight
 // purpose  : Creates new light source
 // =======================================================================

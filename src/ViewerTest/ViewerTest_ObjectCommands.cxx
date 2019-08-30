@@ -3048,8 +3048,8 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
 
   // Setting material properties, very important for desirable visual result!
   Graphic3d_MaterialAspect aMat (Graphic3d_NOM_PLASTIC);
-  aMat.SetAmbient  (0.2f);
-  aMat.SetSpecular (0.5f);
+  aMat.SetAmbientColor (Quantity_Color (Graphic3d_Vec3 (0.04f)));
+  aMat.SetSpecularColor(Quantity_Color (Graphic3d_Vec3 (0.50f)));
   Handle(Graphic3d_AspectFillArea3d) anAspect
     = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
                                       Quantity_NOC_RED,

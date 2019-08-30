@@ -42,10 +42,10 @@ void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager3d
   Handle(Graphic3d_Group)     aGroup     = aStructure->NewGroup();
   Handle(Prs3d_ShadingAspect) anAspect = myDrawer->ShadingAspect();
   Graphic3d_MaterialAspect aMat = anAspect->Aspect()->FrontMaterial();
-  aMat.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
-  aMat.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
-  aMat.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
-  aMat.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
+  aMat.SetAmbientColor (Quantity_NOC_BLACK);
+  aMat.SetDiffuseColor (Quantity_NOC_BLACK);
+  aMat.SetSpecularColor(Quantity_NOC_BLACK);
+  aMat.SetEmissiveColor(Quantity_NOC_BLACK);
   anAspect->SetMaterial (aMat);
   aGroup->SetPrimitivesAspect (anAspect->Aspect());
 

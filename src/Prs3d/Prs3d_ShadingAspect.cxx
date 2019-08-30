@@ -76,9 +76,13 @@ const Quantity_Color& Prs3d_ShadingAspect::Color (const Aspect_TypeOfFacingModel
     default:
     case Aspect_TOFM_BOTH_SIDE:
     case Aspect_TOFM_FRONT_SIDE:
-      return myAspect->FrontMaterial().Color();
+      return myAspect->FrontMaterial().MaterialType() == Graphic3d_MATERIAL_ASPECT
+           ? myAspect->InteriorColor()
+           : myAspect->FrontMaterial().Color();
     case Aspect_TOFM_BACK_SIDE:
-      return myAspect->BackMaterial().Color();
+      return myAspect->BackMaterial().MaterialType() == Graphic3d_MATERIAL_ASPECT
+           ? myAspect->BackInteriorColor()
+           : myAspect->BackMaterial().Color();
   }
 }
 

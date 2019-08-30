@@ -1716,6 +1716,40 @@ aGroup->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect()); //!< next array 
 aGroup->AddPrimitiveArray (aLines);
 ~~~~
 
+@subsection upgrade_740_materials Material definition
+
+Decomposition of Ambient, Diffuse, Specular and Emissive properties has been eliminated within *Graphic3d_MaterialAspect* definition.
+As result, the following methods of *Graphic3d_MaterialAspect* class have been removed: SetReflectionMode(), SetReflectionModeOn(), Ambient(), Diffuse(), Emissive(), Specular(), SetAmbient(), SetDiffuse(), SetSpecular(), SetEmissive().
+
+Previously, computation of final value required the following code:
+~~~~
+Graphic3d_MaterialAspect theMaterial; Quantity_Color theInteriorColor;
+Graphic3d_Vec3 anAmbient (0.0f);
+if (theMaterial.ReflectionMode (Graphic3d_TOR_AMBIENT))
+{
+  anAmbient = theMaterial.MaterialType (Graphic3d_MATERIAL_ASPECT)
+            ? (Graphic3d_Vec3 )theInteriorColor           * theMaterial.Ambient()
+            : (Graphic3d_Vec3 )theMaterial.AmbientColor() * theMaterial.Ambient();
+}
+~~~~
+
+New code looks like this:
+~~~~
+Graphic3d_MaterialAspect theMaterial; Quantity_Color theInteriorColor;
+Graphic3d_Vec3 anAmbient = theMaterial.AmbientColor();
+if (theMaterial.MaterialType (Graphic3d_MATERIAL_ASPECT)) { anAmbient *= (Graphic3d_Vec3 )theInteriorColor; }
+~~~~
+
+Existing code should be updated to:
+- Replace Graphic3d_MaterialAspect::SetReflectionModeOff() with setting black color; SetReflectionModeOn() calls can be simply removed.
+  R.g. theMaterial.SetAmbientColor(Quantity_NOC_BLACK).
+- Replace Graphic3d_MaterialAspect::Ambient(), SetAmbient(), Diffuse(), SetDiffuse(), Specular(), SetSpecular(), Emissive(), SetEmissive() with methods working with pre-multiplied color.
+  E.g. theMaterial.SetAmbientColor(Graphic3d_Vec3 (1.0f, 0.0f, 0.0f) * 0.2f).
+- Avoid using Graphic3d_MaterialAspect::Color() and SetColor() with non-physical materials (Graphic3d_MATERIAL_ASPECT).
+  These materials do not include color definition, because it is taken from Graphic3d_Aspects::InteriorColor() - this has not been changed.
+  However, previously it was possible storing the color with SetColor() call and then fetching it with Color() by application code (the rendering ignored this value);
+  now SetColor() explicitly ignores call for Graphic3d_MATERIAL_ASPECT materials and Color() returns DiffuseColor() multiplication coefficients.
+
 @subsection upgrade_740_text Changes in Graphic3d_Text and OpenGl_Text API
 
 Parameters of *Text* in *Graphic3d_Group* are moved into a new *Graphic3d_Text* class. *AddText* of *Graphic3d_Group* should be used instead of the previous *Text*.

@@ -7203,18 +7203,10 @@ public:
       const Handle(Graphic3d_AspectFillArea3d)& aFillAspect = myDrawer->ShadingAspect()->Aspect();
       Graphic3d_MaterialAspect aMat;
       aMat.SetMaterialType (Graphic3d_MATERIAL_PHYSIC);
-      aMat.SetAmbient  (1.0);
-      aMat.SetDiffuse  (1.0);
-      aMat.SetSpecular (1.0);
-      aMat.SetEmissive (1.0);
-      aMat.SetReflectionModeOn (Graphic3d_TOR_AMBIENT);
-      aMat.SetReflectionModeOn (Graphic3d_TOR_DIFFUSE);
-      aMat.SetReflectionModeOn (Graphic3d_TOR_SPECULAR);
-      aMat.SetReflectionModeOn (Graphic3d_TOR_EMISSION);
-      aMat.SetAmbientColor  (Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB));
-      aMat.SetDiffuseColor  (Quantity_Color (1.0, 1.0, 1.0, Quantity_TOC_RGB));
-      aMat.SetSpecularColor (Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB));
-      aMat.SetEmissiveColor (Quantity_Color (0.0, 0.0, 0.0, Quantity_TOC_RGB));
+      aMat.SetAmbientColor  (Quantity_NOC_BLACK);
+      aMat.SetDiffuseColor  (Quantity_NOC_WHITE);
+      aMat.SetSpecularColor (Quantity_NOC_BLACK);
+      aMat.SetEmissiveColor (Quantity_NOC_BLACK);
       aFillAspect->SetFrontMaterial (aMat);
       aFillAspect->SetTextureMap (new Graphic3d_Texture2Dmanual (theImage));
       aFillAspect->SetTextureMapOn();
@@ -9594,12 +9586,21 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         std::cout << "Syntax error: need more arguments.\n";
         return 1;
       }
-
-      Graphic3d_MaterialAspect aMat = aClipPlane->CappingMaterial();
-      aMat.SetAmbientColor (aColor);
-      aMat.SetDiffuseColor (aColor);
-      aClipPlane->SetCappingMaterial (aMat);
+      aClipPlane->SetCappingColor (aColor);
       anArgIter += aNbParsed;
+    }
+    else if (aNbChangeArgs >= 1
+          && (aChangeArg == "-material"
+           || aChangeArg == "material"))
+    {
+      ++anArgIter;
+      Graphic3d_NameOfMaterial aMatName;
+      if (!Graphic3d_MaterialAspect::MaterialFromName (aChangeArgs[1], aMatName))
+      {
+        std::cout << "Syntax error: unknown material '" << aChangeArgs[1] << "'.\n";
+        return 1;
+      }
+      aClipPlane->SetCappingMaterial (aMatName);
     }
     else if ((aChangeArg == "-transparency"
            || aChangeArg == "-transp")
