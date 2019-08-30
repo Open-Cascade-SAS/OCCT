@@ -1,0 +1,18 @@
+puts "======="
+puts "0025588: BRepMesh_ShapeTool::FindUV check for 2d points to be the same is inconsistent with ShapeAnalysis_Wire::CheckLacking"
+puts "======="
+puts ""
+
+restore [locate_data_file 1.stp_face799.brep] result
+tclean result
+
+incmesh result 0.1 -a 5
+
+checktrinfo result -tri
+
+vinit
+vsetdispmode 1
+vdefaults -autoTriang 0
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
