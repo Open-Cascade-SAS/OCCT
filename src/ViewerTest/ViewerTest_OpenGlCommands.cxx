@@ -22,6 +22,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
+#include <Image_AlienPixMap.hxx>
 #include <OpenGl_Aspects.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
@@ -45,6 +46,7 @@
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <OpenGl_Group.hxx>
+#include <OSD_OpenFile.hxx>
 
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
@@ -873,6 +875,474 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
   return 0;
 }
 
+//! Print triplet of values.
+template<class S, class T> static S& operator<< (S& theStream, const NCollection_Vec3<T>& theVec)
+{
+  theStream << theVec[0] << " " << theVec[1] << " " << theVec[2];
+  return theStream;
+}
+
+//! Print 4 values.
+template<class S, class T> static S& operator<< (S& theStream, const NCollection_Vec4<T>& theVec)
+{
+  theStream << theVec[0] << " " << theVec[1] << " " << theVec[2] << " " << theVec[3];
+  return theStream;
+}
+
+//! Print fresnel model.
+static const char* fresnelModelString (const Graphic3d_FresnelModel theModel)
+{
+  switch (theModel)
+  {
+    case Graphic3d_FM_SCHLICK:    return "SCHLICK";
+    case Graphic3d_FM_CONSTANT:   return "CONSTANT";
+    case Graphic3d_FM_CONDUCTOR:  return "CONDUCTOR";
+    case Graphic3d_FM_DIELECTRIC: return "DIELECTRIC";
+  }
+  return "N/A";
+}
+
+//! Create a colored rectangle SVG element.
+static TCollection_AsciiString formatSvgColoredRect (const Quantity_Color& theColor)
+{
+  return TCollection_AsciiString()
+       + "<svg width='20px' height='20px'><rect width='20px' height='20px' fill='" + Quantity_Color::ColorToHex (theColor) + "' /></svg>";
+}
+
+//==============================================================================
+//function : VListMaterials
+//purpose  :
+//==============================================================================
+static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
+                                        Standard_Integer  theArgNb,
+                                        const char**      theArgVec)
+{
+  TCollection_AsciiString aDumpFile;
+  NCollection_Sequence<Graphic3d_NameOfMaterial> aMatList;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    Graphic3d_NameOfMaterial aMat = Graphic3d_MaterialAspect::MaterialFromName (theArgVec[anArgIter]);
+    if (aMat != Graphic3d_NOM_DEFAULT)
+    {
+      aMatList.Append (aMat);
+    }
+    else if (anArg == "*")
+    {
+      for (Standard_Integer aMatIter = 0; aMatIter < (Standard_Integer )Graphic3d_NOM_DEFAULT; ++aMatIter)
+      {
+        aMatList.Append ((Graphic3d_NameOfMaterial )aMatIter);
+      }
+    }
+    else if (aDumpFile.IsEmpty()
+          && (anArg.EndsWith (".obj")
+           || anArg.EndsWith (".mtl")
+           || anArg.EndsWith (".htm")
+           || anArg.EndsWith (".html")))
+    {
+      aDumpFile = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if (aMatList.IsEmpty())
+  {
+    if (aDumpFile.IsEmpty())
+    {
+      for (Standard_Integer aMatIter = 1; aMatIter <= Graphic3d_MaterialAspect::NumberOfMaterials(); ++aMatIter)
+      {
+        theDI << Graphic3d_MaterialAspect::MaterialName (aMatIter) << " ";
+      }
+      return 0;
+    }
+
+    for (Standard_Integer aMatIter = 0; aMatIter < (Standard_Integer )Graphic3d_NOM_DEFAULT; ++aMatIter)
+    {
+      aMatList.Append ((Graphic3d_NameOfMaterial )aMatIter);
+    }
+  }
+
+  // geometry for dumping
+  const Graphic3d_Vec3 aBoxVerts[8] =
+  {
+    Graphic3d_Vec3( 1, -1, -1),
+    Graphic3d_Vec3( 1, -1,  1),
+    Graphic3d_Vec3(-1, -1,  1),
+    Graphic3d_Vec3(-1, -1, -1),
+    Graphic3d_Vec3( 1,  1, -1),
+    Graphic3d_Vec3( 1,  1,  1),
+    Graphic3d_Vec3(-1,  1,  1),
+    Graphic3d_Vec3(-1,  1, -1)
+  };
+
+  const Graphic3d_Vec4i aBoxQuads[6] =
+  {
+    Graphic3d_Vec4i (1, 2, 3, 4),
+    Graphic3d_Vec4i (5, 8, 7, 6),
+    Graphic3d_Vec4i (1, 5, 6, 2),
+    Graphic3d_Vec4i (2, 6, 7, 3),
+    Graphic3d_Vec4i (3, 7, 8, 4),
+    Graphic3d_Vec4i (5, 1, 4, 8)
+  };
+
+  std::ofstream aMatFile, anObjFile, anHtmlFile;
+  if (aDumpFile.EndsWith (".obj")
+   || aDumpFile.EndsWith (".mtl"))
+  {
+    const TCollection_AsciiString aMatFilePath  = aDumpFile.SubString (1, aDumpFile.Length() - 3) + "mtl";
+    const TCollection_AsciiString anObjFilePath = aDumpFile.SubString (1, aDumpFile.Length() - 3) + "obj";
+
+    OSD_OpenStream (aMatFile,  aMatFilePath.ToCString(),  std::ios::out | std::ios::binary);
+    if (!aMatFile.is_open())
+    {
+      std::cout << "Error: unable creating material file\n";
+      return 0;
+    }
+    if (!aDumpFile.EndsWith (".mtl"))
+    {
+      OSD_OpenStream (anObjFile, anObjFilePath.ToCString(), std::ios::out | std::ios::binary);
+      if (!anObjFile.is_open())
+      {
+        std::cout << "Error: unable creating OBJ file\n";
+        return 0;
+      }
+
+      TCollection_AsciiString anMtlName, aFolder;
+      OSD_Path::FolderAndFileFromPath (aMatFilePath, aFolder, anMtlName);
+      anObjFile << "mtllib " << anMtlName << "\n";
+    }
+  }
+  else if (aDumpFile.EndsWith (".htm")
+        || aDumpFile.EndsWith (".html"))
+  {
+    OSD_OpenStream (anHtmlFile, aDumpFile.ToCString(), std::ios::out | std::ios::binary);
+    if (!anHtmlFile.is_open())
+    {
+      std::cout << "Error: unable creating HTML file\n";
+      return 0;
+    }
+    anHtmlFile << "<html>\n"
+                  "<head><title>OCCT Material table</title></head>\n"
+                  "<body>\n"
+                  "<table border='1'><tbody>\n"
+                  "<tr>\n"
+                  "<th rowspan='2'><div title='Material name.\n"
+                                              "See also Graphic3d_NameOfMaterial enumeration'>"
+                                   "Name</div></th>\n"
+                  "<th rowspan='2'><div title='Material type: PHYSIC or ASPECT.\n"
+                                              "ASPECT material does not define final colors, it is taken from Internal Color instead.\n"
+                                              "See also Graphic3d_TypeOfMaterial enumeration'>"
+                                   "Type</div></th>\n"
+                  "<th colspan='5'><div title='Common material definition for Phong shading model'>"
+                                   "Common</div></th>\n"
+                  "<th rowspan='2'>Transparency</th>\n"
+                  "<th rowspan='2'>Refraction Index</th>\n"
+                  "<th colspan='9'><div title='BSDF (Bidirectional Scattering Distribution Function).\n"
+                                              "Used for physically-based rendering (in path tracing engine).\n"
+                                              "BSDF is represented as weighted mixture of basic BRDFs/BTDFs (Bidirectional Reflectance (Transmittance) Distribution Functions).\n"
+                                              "See also Graphic3d_BSDF structure.'>"
+                                   "BSDF</div></th>\n"
+                  "</tr>\n"
+                  "<tr>\n"
+                  "<th>Ambient</th>\n"
+                  "<th>Diffuse</th>\n"
+                  "<th>Specular</th>\n"
+                  "<th>Emissive</th>\n"
+                  "<th>Shiness</th>\n"
+                  "<th><div title='Weight of coat specular/glossy BRDF'>"
+                       "Kc</div></th>\n"
+                  "<th><div title='Weight of base diffuse BRDF'>"
+                       "Kd</div></th>\n"
+                  "<th><div title='Weight of base specular/glossy BRDF'>"
+                       "Ks</div></th>\n"
+                  "<th><div title='Weight of base specular/glossy BTDF'>"
+                       "Kt</div></th>\n"
+                  "<th><div title='Radiance emitted by the surface'>"
+                       "Le</div></th>\n"
+                  "<th><div title='Volume scattering color/density'>"
+                       "Absorption</div></th>\n"
+                  "<th><div title='Parameters of Fresnel reflectance of coat layer'>"
+                       "FresnelCoat</div></th>\n"
+                  "<th><div title='Parameters of Fresnel reflectance of base layer'>"
+                       "FresnelBase</div></th>\n"
+                  "</tr>\n";
+  }
+  else if (!aDumpFile.IsEmpty())
+  {
+    std::cout << "Syntax error: unknown output file format\n";
+    return 1;
+  }
+
+  Standard_Integer aMatIndex = 0, anX = 0, anY = 0;
+  for (NCollection_Sequence<Graphic3d_NameOfMaterial>::Iterator aMatIter (aMatList); aMatIter.More(); aMatIter.Next(), ++aMatIndex)
+  {
+    Graphic3d_MaterialAspect aMat (aMatIter.Value());
+    const TCollection_AsciiString aMatName = aMat.StringName();
+    const Graphic3d_Vec3 anAmbient = aMat.ReflectionMode (Graphic3d_TOR_AMBIENT)
+                                   ? (Graphic3d_Vec3 )aMat.AmbientColor()  * aMat.Ambient()
+                                   : Graphic3d_Vec3 (0.0f);
+    const Graphic3d_Vec3 aDiffuse  = aMat.ReflectionMode (Graphic3d_TOR_DIFFUSE)
+                                   ? (Graphic3d_Vec3 )aMat.DiffuseColor()  * aMat.Diffuse()
+                                   : Graphic3d_Vec3 (0.0f);
+    const Graphic3d_Vec3 aSpecular = aMat.ReflectionMode (Graphic3d_TOR_SPECULAR)
+                                   ? (Graphic3d_Vec3 )aMat.SpecularColor() * aMat.Specular()
+                                   : Graphic3d_Vec3 (0.0f);
+    const Graphic3d_Vec3 anEmission = aMat.ReflectionMode (Graphic3d_TOR_EMISSION)
+                                   ? (Graphic3d_Vec3 )aMat.EmissiveColor() * aMat.Emissive()
+                                   : Graphic3d_Vec3 (0.0f);
+    const Standard_Real  aShiness  = aMat.Shininess() * 1000.0;
+    if (aMatFile.is_open())
+    {
+      aMatFile << "newmtl " << aMatName << "\n";
+      aMatFile << "Ka " << anAmbient << "\n";
+      aMatFile << "Kd " << aDiffuse  << "\n";
+      aMatFile << "Ks " << aSpecular << "\n";
+      aMatFile << "Ns " << aShiness  << "\n";
+      if (aMat.Transparency() >= 0.0001)
+      {
+        aMatFile << "Tr " << aMat.Transparency() << "\n";
+      }
+      aMatFile << "\n";
+    }
+    else if (anHtmlFile.is_open())
+    {
+      anHtmlFile << "<tr>\n";
+      anHtmlFile << "<td>" << aMat.StringName() << "</td>\n";
+      anHtmlFile << "<td>" << (aMat.MaterialType() == Graphic3d_MATERIAL_PHYSIC ? "PHYSIC" : "ASPECT")  << "</td>\n";
+      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anAmbient))  << anAmbient  << "</td>\n";
+      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aDiffuse))   << aDiffuse   << "</td>\n";
+      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (aSpecular))  << aSpecular  << "</td>\n";
+      anHtmlFile << "<td>" << formatSvgColoredRect (Quantity_Color (anEmission)) << anEmission << "</td>\n";
+      anHtmlFile << "<td>" << aMat.Shininess() << "</td>\n";
+      anHtmlFile << "<td>" << aMat.Transparency() << "</td>\n";
+      anHtmlFile << "<td>" << aMat.RefractionIndex() << "</td>\n";
+      anHtmlFile << "<td>" << aMat.BSDF().Kc << "</td>\n";
+      anHtmlFile << "<td>" << aMat.BSDF().Kd << "</td>\n";
+      anHtmlFile << "<td>" << aMat.BSDF().Ks << "</td>\n";
+      anHtmlFile << "<td>" << aMat.BSDF().Kt << "</td>\n";
+      anHtmlFile << "<td>" << aMat.BSDF().Le << "</td>\n";
+      anHtmlFile << "<td>" << aMat.BSDF().Absorption << "</td>\n";
+      anHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelCoat.FresnelType()) << "</td>\n";
+      anHtmlFile << "<td>" << fresnelModelString (aMat.BSDF().FresnelBase.FresnelType()) << "</td>\n";
+      anHtmlFile << "</tr>\n";
+    }
+    else
+    {
+      theDI << aMat.StringName() << "\n";
+      theDI << "  Common.Ambient:         " << anAmbient << "\n";
+      theDI << "  Common.Diffuse:         " << aDiffuse  << "\n";
+      theDI << "  Common.Specular:        " << aSpecular << "\n";
+      theDI << "  Common.Emissive:        " << anEmission << "\n";
+      theDI << "  Common.Shiness:         " << aMat.Shininess() << "\n";
+      theDI << "  Common.Transparency:    " << aMat.Transparency() << "\n";
+      theDI << "  RefractionIndex:        " << aMat.RefractionIndex() << "\n";
+      theDI << "  BSDF.Kc:                " << aMat.BSDF().Kc << "\n";
+      theDI << "  BSDF.Kd:                " << aMat.BSDF().Kd << "\n";
+      theDI << "  BSDF.Ks:                " << aMat.BSDF().Ks << "\n";
+      theDI << "  BSDF.Kt:                " << aMat.BSDF().Kt << "\n";
+      theDI << "  BSDF.Le:                " << aMat.BSDF().Le << "\n";
+      theDI << "  BSDF.Absorption:        " << aMat.BSDF().Absorption << "\n";
+      theDI << "  BSDF.FresnelCoat:       " << fresnelModelString (aMat.BSDF().FresnelCoat.FresnelType()) << "\n";
+      theDI << "  BSDF.FresnelBase:       " << fresnelModelString (aMat.BSDF().FresnelBase.FresnelType()) << "\n";
+    }
+
+    if (anObjFile.is_open())
+    {
+      anObjFile << "g " << aMatName << "\n";
+      anObjFile << "usemtl " << aMatName << "\n";
+      for (Standard_Integer aVertIter = 0; aVertIter < 8; ++aVertIter)
+      {
+        anObjFile << "v " << (aBoxVerts[aVertIter] + Graphic3d_Vec3 (3.0f * anX, -3.0f * anY, 0.0f)) << "\n";
+      }
+      anObjFile << "s off\n";
+      for (Standard_Integer aFaceIter = 0; aFaceIter < 6; ++aFaceIter)
+      {
+        anObjFile << "f " << (aBoxQuads[aFaceIter] + Graphic3d_Vec4i (8 * aMatIndex)) << "\n";
+      }
+      anObjFile << "\n";
+      if (++anX > 5)
+      {
+        anX = 0;
+        ++anY;
+      }
+    }
+  }
+
+  if (anHtmlFile.is_open())
+  {
+    anHtmlFile << "</tbody></table>\n</body>\n</html>\n";
+  }
+  return 0;
+}
+
+//==============================================================================
+//function : VListColors
+//purpose  :
+//==============================================================================
+static Standard_Integer VListColors (Draw_Interpretor& theDI,
+                                     Standard_Integer  theArgNb,
+                                     const char**      theArgVec)
+{
+  TCollection_AsciiString aDumpFile;
+  NCollection_Sequence<Quantity_NameOfColor> aColList;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    Quantity_NameOfColor aName;
+    if (Quantity_Color::ColorFromName (theArgVec[anArgIter], aName))
+    {
+      aColList.Append (aName);
+    }
+    else if (anArg == "*")
+    {
+      for (Standard_Integer aColIter = 0; aColIter <= (Standard_Integer )Quantity_NOC_WHITE; ++aColIter)
+      {
+        aColList.Append ((Quantity_NameOfColor )aColIter);
+      }
+    }
+    else if (aDumpFile.IsEmpty()
+          && (anArg.EndsWith (".htm")
+           || anArg.EndsWith (".html")))
+    {
+      aDumpFile = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if (aColList.IsEmpty())
+  {
+    if (aDumpFile.IsEmpty())
+    {
+      for (Standard_Integer aColIter = 0; aColIter <= (Standard_Integer )Quantity_NOC_WHITE; ++aColIter)
+      {
+        theDI << Quantity_Color::StringName (Quantity_NameOfColor (aColIter)) << " ";
+      }
+      return 0;
+    }
+
+    for (Standard_Integer aColIter = 0; aColIter <= (Standard_Integer )Quantity_NOC_WHITE; ++aColIter)
+    {
+      aColList.Append ((Quantity_NameOfColor )aColIter);
+    }
+  }
+
+  std::ofstream anHtmlFile;
+  TCollection_AsciiString aFileNameBase, aFolder;
+  if (aDumpFile.EndsWith (".htm")
+   || aDumpFile.EndsWith (".html"))
+  {
+    OSD_Path::FolderAndFileFromPath (aDumpFile, aFolder, aFileNameBase);
+    aFileNameBase = aFileNameBase.SubString (1, aFileNameBase.Length() -  (aDumpFile.EndsWith (".htm") ? 4 : 5));
+  }
+  else if (!aDumpFile.IsEmpty())
+  {
+    std::cout << "Syntax error: unknown output file format\n";
+    return 1;
+  }
+
+  Standard_Integer aMaxNameLen = 1;
+  for (NCollection_Sequence<Quantity_NameOfColor>::Iterator aColIter (aColList); aColIter.More(); aColIter.Next())
+  {
+    aMaxNameLen = Max (aMaxNameLen, TCollection_AsciiString (Quantity_Color::StringName (aColIter.Value())).Length());
+  }
+
+  V3d_ImageDumpOptions anImgParams;
+  anImgParams.Width  = 60;
+  anImgParams.Height = 30;
+  anImgParams.BufferType = Graphic3d_BT_RGB;
+  anImgParams.StereoOptions  = V3d_SDO_MONO;
+  anImgParams.ToAdjustAspect = Standard_True;
+  Handle(V3d_View) aView;
+  if (!aDumpFile.IsEmpty())
+  {
+    ViewerTest::ViewerInit (0, 0, anImgParams.Width, anImgParams.Height, "TmpDriver/TmpViewer/TmpView");
+    aView = ViewerTest::CurrentView();
+    aView->SetImmediateUpdate (false);
+    aView->SetBgGradientStyle (Aspect_GFM_NONE, false);
+  }
+
+  if (!aDumpFile.IsEmpty())
+  {
+    OSD_OpenStream (anHtmlFile, aDumpFile.ToCString(), std::ios::out | std::ios::binary);
+    if (!anHtmlFile.is_open())
+    {
+      std::cout << "Error: unable creating HTML file\n";
+      return 0;
+    }
+    anHtmlFile << "<html>\n"
+               << "<head><title>OCCT Color table</title></head>\n"
+               << "<body>\n"
+               << "<table border='1'><tbody>\n"
+               << "<tr>\n"
+               << "<th>HTML</th>\n"
+               << "<th>OCCT</th>\n"
+               << "<th>Color name</th>\n"
+               << "<th>sRGB hex</th>\n"
+               << "<th>sRGB dec</th>\n"
+               << "<th>RGB linear</th>\n"
+               << "</tr>\n";
+  }
+
+  Image_AlienPixMap anImg;
+  Standard_Integer aColIndex = 0;
+  for (NCollection_Sequence<Quantity_NameOfColor>::Iterator aColIter (aColList); aColIter.More(); aColIter.Next(), ++aColIndex)
+  {
+    Quantity_Color aCol (aColIter.Value());
+    const TCollection_AsciiString aColName  = Quantity_Color::StringName (aColIter.Value());
+    const TCollection_AsciiString anSRgbHex = Quantity_Color::ColorToHex (aCol);
+    const Graphic3d_Vec3i anSRgbInt ((Graphic3d_Vec3 )aCol * 255.0f);
+    if (anHtmlFile.is_open())
+    {
+      const TCollection_AsciiString anImgPath = aFileNameBase + "_" + aColName + ".png";
+      if (!aView.IsNull())
+      {
+        aView->SetImmediateUpdate (false);
+        aView->SetBackgroundColor (aCol);
+        if (!aView->ToPixMap (anImg, anImgParams)
+         || !anImg.Save (aFolder + anImgPath))
+        {
+          theDI << "Error: image dump failed\n";
+          return 0;
+        }
+      }
+
+      anHtmlFile << "<tr>\n";
+      anHtmlFile << "<td style='background-color:" << anSRgbHex << "'><pre>       </pre></td>\n";
+      anHtmlFile << "<td><img src='" << (!aView.IsNull() ? anImgPath : "") << "'></img></td>\n";
+      anHtmlFile << "<td style='text-align:left'>" << aColName << "</td>\n";
+      anHtmlFile << "<td style='text-align:left'><pre>" << anSRgbHex << "</pre></td>\n";
+      anHtmlFile << "<td style='text-align:left'>(" << anSRgbInt.r() << " " << anSRgbInt.g() << " " << anSRgbInt.b() << ")</td>\n";
+      anHtmlFile << "<td style='text-align:left'>(" << aCol.Red() << " " << aCol.Green() << " " << aCol.Blue() << ")</td>\n";
+      anHtmlFile << "</tr>\n";
+    }
+    else
+    {
+      TCollection_AsciiString aColNameLong (aColName);
+      aColNameLong.RightJustify (aMaxNameLen, ' ');
+      theDI << aColNameLong << " [" << anSRgbHex << "]: " << aCol.Red() << " " << aCol.Green() << " " << aCol.Blue() << "\n";
+    }
+  }
+
+  if (!aView.IsNull())
+  {
+    ViewerTest::RemoveView (aView);
+  }
+
+  if (anHtmlFile.is_open())
+  {
+    anHtmlFile << "</tbody></table>\n</body>\n</html>\n";
+  }
+  return 0;
+}
+
 //=======================================================================
 //function : OpenGlCommands
 //purpose  :
@@ -910,4 +1380,18 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
                   "\n\t\t:  -reload restores dump of specified GLSL program",
     __FILE__, VShaderProg, aGroup);
   theCommands.Add("vshaderprog", "Alias for vshader", __FILE__, VShaderProg, aGroup);
+  theCommands.Add("vlistmaterials",
+                  "vlistmaterials [*] [MaterialName1 [MaterialName2 [...]]] [dump.obj|dump.html]"
+                  "\n\t\t: Without arguments, command prints the list of standard materials."
+                  "\n\t\t: Otherwise, properties of specified materials will be printed"
+                  "\n\t\t: or dumped into specified file."
+                  "\n\t\t: * can be used to refer to complete list of standard materials.",
+                  __FILE__, VListMaterials, aGroup);
+  theCommands.Add("vlistcolors",
+                  "vlistcolors [*] [ColorName1 [ColorName2 [...]]] [dump.html]"
+                  "\n\t\t: Without arguments, command prints the list of standard colors."
+                  "\n\t\t: Otherwise, properties of specified colors will be printed"
+                  "\n\t\t: or dumped into specified file."
+                  "\n\t\t: * can be used to refer to complete list of standard colors.",
+                  __FILE__, VListColors, aGroup);
 }

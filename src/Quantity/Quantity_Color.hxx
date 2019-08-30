@@ -19,14 +19,11 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
 #include <Standard_ShortReal.hxx>
+
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Integer.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <NCollection_Vec4.hxx>
 class Quantity_ColorDefinitionError;
 
@@ -51,11 +48,10 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Creates a colour with the default value of
-  //! Colour name : YELLOW
+  //! Creates Quantity_NOC_YELLOW color.
   Standard_EXPORT Quantity_Color();
   
-  //! Creates the colour <AName>.
+  //! Creates the color from enumeration value.
   Standard_EXPORT Quantity_Color(const Quantity_NameOfColor AName);
   
   //! Creates a color according to the definition system theType.
@@ -98,12 +94,12 @@ public:
   Standard_EXPORT void SetValues (const Quantity_NameOfColor AName);
   
   //! Updates a color according to the mode specified by theType.
-  //! TOC_RGB:
+  //! Quantity_TOC_RGB:
   //!  - theR1 the value of Red   within range [0.0; 1.0]
   //!  - theR2 the value of Green within range [0.0; 1.0]
   //!  - theR3 the value of Blue  within range [0.0; 1.0]
   //!
-  //! TOC_HLS:
+  //! Quantity_TOC_HLS:
   //!  - theR1 is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red.
   //!    -1.0 is a special value reserved for grayscale color (S should be 0.0).
   //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
@@ -246,6 +242,16 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   //! @param theColor a color that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
   Standard_EXPORT static bool ColorFromHex (const Standard_CString theHexColorString, Quantity_Color& theColor);
+
+  //! Returns hex sRGB string in format "#FFAAFF".
+  static TCollection_AsciiString ColorToHex (const Quantity_Color& theColor)
+  {
+    NCollection_Vec3<Standard_ShortReal> anSRgb = (NCollection_Vec3<Standard_ShortReal> )theColor;
+    NCollection_Vec3<Standard_Integer> anSRgbInt (anSRgb * 255.0f);
+    char aBuff[10];
+    Sprintf (aBuff, "#%02X%02X%02X", anSRgbInt.r(), anSRgbInt.g(), anSRgbInt.b());
+    return aBuff;
+  }
 
   //! Converts HLS components into RGB ones.
   Standard_EXPORT static void HlsRgb (const Standard_Real H, const Standard_Real L, const Standard_Real S, Standard_Real& R, Standard_Real& G, Standard_Real& B);

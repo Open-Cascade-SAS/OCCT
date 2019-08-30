@@ -1,0 +1,32 @@
+puts "========"
+puts "0030930: Draw Harness, ViewerTest - add commands vlistcolors and vlistmaterials listing standard Colors and Materials"
+puts "Generate a table of predefined Colors (Quantity_NameOfColor enumeration)"
+puts "========"
+
+pload MODELING VISUALIZATION
+box b 10 10 10
+explode b F
+
+vclear
+vclose ALL
+vinit View1
+vtop
+
+puts "<a href=${::casename}_table.html>Color Comparison Table</a>"
+
+set aColors [vlistcolors]
+set anY 0
+set anX 0
+foreach aColor $aColors {
+  puts "$aColor"
+  tcopy b_6 ${aColor}
+  vdisplay  -noUpdate -dispMode 1 ${aColor}
+  vaspects  -noUpdate ${aColor} -setShadingModel unlit -setColor ${aColor}
+  vlocation -noUpdate ${aColor} -setLocation [expr 12*$anX] [expr 12*$anY] 0
+  set anX [expr $anX+1]
+  if { $anX > 25 } { set anX 0; set anY [expr $anY+1] }
+}
+vfit
+
+vdump $::imagedir/${::casename}.png
+vlistcolors $::imagedir/${::casename}_table.html

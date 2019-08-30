@@ -14247,7 +14247,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-nbtiles      64..1024'    Specifies number of screen tiles per Redraw in ISS mode (256 by default)"
     "\n      '-rebuildGlsl  on|off'      Rebuild Ray-Tracing GLSL programs (for debugging)"
     "\n      '-shadingModel model'       Controls shading model from enumeration"
-    "\n                                  color, flat, gouraud, phong"
+    "\n                                  unlit, flat, gouraud, phong"
     "\n      '-resolution   value'       Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
     "\n      '-aperture     >= 0.0'      Aperture size  of perspective camera for depth-of-field effect (0 disables DOF)"
     "\n      '-focal        >= 0.0'      Focal distance of perspective camera for depth-of-field effect"

@@ -1,0 +1,21 @@
+puts "========"
+puts "0030930: Draw Harness, ViewerTest - add commands vlistcolors and vlistmaterials listing standard Colors and Materials"
+puts "Generate a table of predefined Materials (Graphic3d_NameOfMaterial enumeration)"
+puts "========"
+
+pload XDE OCAF MODELING VISUALIZATION
+
+catch { Close D }
+vclear
+vinit View1
+vaxo
+
+puts "<a href=${::casename}_table.html>Material Comparison Table</a>"
+vlistmaterials $::imagedir/${::casename}.obj
+ReadObj D $::imagedir/${::casename}.obj
+
+XDisplay -dispMode 1 D -explore
+vfit
+vdump ${imagedir}/${casename}.png
+
+vlistmaterials $::imagedir/${::casename}_table.html

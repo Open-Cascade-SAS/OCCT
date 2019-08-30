@@ -6608,7 +6608,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-isoontriangulation 0|1]"
       "\n\t\t:          [-setMaxParamValue {value}]"
       "\n\t\t:          [-setSensitivity {selection_mode} {value}]"
-      "\n\t\t:          [-setShadingModel {color|flat|gouraud|phong}]"
+      "\n\t\t:          [-setShadingModel {unlit|flat|gouraud|phong}]"
       "\n\t\t:          [-unsetShadingModel]"
       "\n\t\t:          [-setInterior {solid|hatch|hidenline|point}]"
       "\n\t\t:          [-unsetInterior] [-setHatch HatchStyle]"
@@ -6623,7 +6623,9 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t: When -defaults is specified than presentation properties will be"
       "\n\t\t: assigned to all objects that have not their own specified properties"
       "\n\t\t: and to all objects to be displayed in the future."
-      "\n\t\t: If -defaults is used there should not be any objects' names and -subshapes specifier.",
+      "\n\t\t: If -defaults is used there should not be any objects' names and -subshapes specifier."
+      "\n\t\t: See also vlistcolors and vlistmaterials to list named colors and materials"
+      "\n\t\t: accepted by arguments -setMaterial and -setColor",
 		  __FILE__,VAspects,group);
 
   theCommands.Add("vsetcolor",

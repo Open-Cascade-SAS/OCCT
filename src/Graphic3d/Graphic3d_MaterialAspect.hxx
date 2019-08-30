@@ -208,6 +208,9 @@ public:
   //! Deactivates the reflective properties of the surface with specified reflection type.
   void SetReflectionModeOff (const Graphic3d_TypeOfReflection theType) { SetReflectionMode (theType, Standard_False); }
 
+  //! Returns material type.
+  Graphic3d_TypeOfMaterial MaterialType() const { return myMaterialType; }
+
   //! Returns TRUE if type of this material is equal to specified type.
   Standard_Boolean MaterialType (const Graphic3d_TypeOfMaterial theType) const { return myMaterialType == theType; }
 
