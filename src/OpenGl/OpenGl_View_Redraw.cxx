@@ -817,7 +817,7 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
                                    OpenGl_FrameBuffer*                theOitAccumFbo,
                                    const Standard_Boolean             theIsPartialUpdate)
 {
-  Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
   GLboolean toCopyBackToFront = GL_FALSE;
   if (theDrawFbo == theReadFbo
    && theDrawFbo != NULL)
@@ -855,6 +855,7 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
     }
     else
     {
+      toCopyBackToFront    = GL_FALSE;
       myBackBufferRestored = Standard_False;
     }
   }

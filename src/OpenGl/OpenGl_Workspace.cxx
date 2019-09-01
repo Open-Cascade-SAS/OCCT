@@ -146,6 +146,12 @@ OpenGl_Workspace::OpenGl_Workspace (OpenGl_View* theView, const Handle(OpenGl_Wi
 
     glHint (GL_LINE_SMOOTH_HINT,    GL_FASTEST);
     glHint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+    if (myGlContext->Vendor() == "microsoft corporation"
+    && !myGlContext->IsGlGreaterEqual (1, 2))
+    {
+      // this software implementation causes too slow rendering into GL_FRONT on modern Windows
+      theView->SetImmediateModeDrawToFront (false);
+    }
   #endif
   }
 
