@@ -1,0 +1,10 @@
+puts "========"
+puts "0028242: \[Regression\] HLR Poly Algo has broken edges"
+puts "========"
+puts ""
+
+set viewname ""
+set length 167.756
+
+restore [locate_data_file bug28242.brep] a
+COMPUTE_HLR $viewname $algotype
