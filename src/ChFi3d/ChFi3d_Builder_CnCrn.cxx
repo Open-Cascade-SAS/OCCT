@@ -437,7 +437,7 @@ static void CurveHermite (const TopOpeBRepDS_DataStructure& DStr,
     GeomAdaptor_Curve L (Bezier);
     Extrema_ExtCC ext (C,L);
     if (ext.IsDone()){ 
-      if (ext.NbExt()!=0){ 
+      if (!ext.IsParallel() && ext.NbExt()!=0){ 
         Extrema_POnCurv POnC, POnL;
         ext.Points(1, POnC, POnL);
         if (POnC.Value().Distance(POnL.Value()) < Precision::Confusion())

@@ -1,0 +1,21 @@
+puts "========"
+puts "OCC29858"
+puts "========"
+puts ""
+#################################################
+# Regression in GeomAPI_ExtremaCurveCurve
+#################################################
+
+# Read input
+restore [locate_data_file bug29858_01_e1.brep] e1
+restore [locate_data_file bug29858_01_e2.brep] e2
+
+# Extract geometry from topology
+mkcurve c1 e1
+mkcurve c2 e2
+
+# Run extrema
+extrema c1 c2
+
+# Check result
+checklength ext_1 -l 9.4224516867962155e-10 -eps 0.01

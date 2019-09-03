@@ -195,8 +195,8 @@ void math_NewtonMinimum::Perform(math_MultipleVarFunctionWithHessian& F,
           // Nullify corresponding TheStep indexes.
           for(Standard_Integer anIdx = 1; anIdx <= myLeft.Upper(); anIdx++)
           {
-            if (Abs(precedent->Value(anIdx) - myRight(anIdx)) < Precision::PConfusion() ||
-                Abs(precedent->Value(anIdx) - myLeft(anIdx) ) < Precision::PConfusion())
+            if ((Abs(precedent->Value(anIdx) - myRight(anIdx)) < Precision::PConfusion() && TheStep(anIdx) < 0.0) ||
+                (Abs(precedent->Value(anIdx) - myLeft(anIdx) ) < Precision::PConfusion() && TheStep(anIdx) > 0.0) )
             {
               TheStep(anIdx) = 0.0;
             }

@@ -243,8 +243,8 @@ static Standard_Boolean MinimizeDirection(math_Vector&   P,
       // Make direction to go along the border
       for (Standard_Integer anIdx = 1; anIdx <= theLeft.Upper(); anIdx++)
       {
-        if (Abs(P(anIdx) - theRight(anIdx)) < Precision::PConfusion() ||
-          Abs(P(anIdx) - theLeft(anIdx)) < Precision::PConfusion())
+        if ((Abs(P(anIdx) - theRight(anIdx)) < Precision::PConfusion() && Dir(anIdx) > 0.0) ||
+            (Abs(P(anIdx) - theLeft(anIdx))  < Precision::PConfusion() && Dir(anIdx) < 0.0))
         {
           Dir(anIdx) = 0.0;
         }

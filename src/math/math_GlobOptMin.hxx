@@ -232,6 +232,13 @@ private:
   //! Check presence of thePnt in GlobOpt sequence.
   Standard_Boolean isStored(const math_Vector &thePnt);
 
+  //! Check and add candidate point into solutions.
+  //! @param thePnt   Candidate point.
+  //! @param theValue Function value in the candidate point.
+  void checkAddCandidate(const math_Vector&  thePnt,
+                         const Standard_Real theValue);
+
+
   // Input.
   math_MultipleVarFunction* myFunc;
   Standard_Integer myN;

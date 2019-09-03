@@ -69,7 +69,8 @@ math_GlobOptMin::math_GlobOptMin(math_MultipleVarFunction* theFunc,
   myMaxV(1, myN),
   myCellSize(0, myN - 1),
   myFilter(theFunc->NbVariables()),
-  myCont(2)
+  myCont(2),
+  myF(Precision::Infinite())
 {
   Standard_Integer i;
 
@@ -382,17 +383,6 @@ void math_GlobOptMin::computeInitialValues()
     myC = Max(aLipConst * aMinEps, aMinLC);
   else if (aLipConst > myC * aMaxEps)
     myC = Min(myC * aMaxEps, aMaxLC);
-
-  // Clear all solutions except one.
-  if (myY.Size() != myN)
-  {
-    for(i = 1; i <= myN; i++)
-      aBestPnt(i) = myY(i);
-    myY.Clear();
-    for(i = 1; i <= myN; i++)
-      myY.Append(aBestPnt(i));
-  }
-  mySolCount = 1;
 }
 
 //=======================================================================
@@ -453,37 +443,8 @@ void math_GlobOptMin::computeGlobalExtremum(Standard_Integer j)
       aStepBestValue = (isInside && (val < d))? val : d;
       aStepBestPoint = (isInside && (val < d))? myTmp : myX;
 
-      // Solutions are close to each other 
-      // and it is allowed to have more than one solution.
-      if (Abs(aStepBestValue - myF) < mySameTol * 0.01 &&
-          !myIsFindSingleSolution)
-      {
-        if (!isStored(aStepBestPoint))
-        {
-          if ((aStepBestValue - myF) * myZ > 0.0)
-            myF = aStepBestValue;
-          for(i = 1; i <= myN; i++)
-            myY.Append(aStepBestPoint(i));
-          mySolCount++;
-        }
-      }
-
-      // New best solution:
-      // new point is out of (mySameTol * 0.01) surrounding or
-      // new point is better than old + single point search.
-      Standard_Real aFunctionalDelta = (aStepBestValue - myF) * myZ;
-      if (aFunctionalDelta > mySameTol * 0.01 ||
-         (aFunctionalDelta > 0.0 && myIsFindSingleSolution))
-      {
-        mySolCount = 0;
-        myF = aStepBestValue;
-        myY.Clear();
-        for(i = 1; i <= myN; i++)
-          myY.Append(aStepBestPoint(i));
-        mySolCount++;
-
-        isFirstCellFilterInvoke = Standard_True;
-      }
+      // Check point and value on the current step to be optimal.
+      checkAddCandidate(aStepBestPoint, aStepBestValue);
 
       if (CheckFunctionalStopCriteria())
         return; // Best possible value is obtained.
@@ -639,34 +600,59 @@ Standard_Boolean math_GlobOptMin::CheckFunctionalStopCriteria()
 //=======================================================================
 void math_GlobOptMin::ComputeInitSol()
 {
-  Standard_Real aCurrVal, aBestVal;
-  math_Vector aCurrPnt(1, myN);
-  math_Vector aBestPnt(1, myN);
-  math_Vector aParamStep(1, myN);
-  // Check functional value in midpoint, lower and upper border points and
-  // in each point try to perform local optimization.
-  aBestPnt = (myGlobA + myGlobB) * 0.5;
-  myFunc->Value(aBestPnt, aBestVal);
+  Standard_Real aVal;
+  math_Vector aPnt(1, myN);
 
-  Standard_Integer i;
-  for(i = 1; i <= 3; i++)
+  // Check functional value in midpoint. It is necessary since local optimization
+  // algorithm may fail and return nothing. This is a protection from uninitialized
+  // variables.
+  aPnt = (myGlobA + myGlobB) * 0.5;
+  myFunc->Value(aPnt, aVal);
+  checkAddCandidate(aPnt, aVal);
+
+  // Run local optimization from lower corner, midpoint, and upper corner.
+  for(Standard_Integer i = 1; i <= 3; i++)
   {
-    aCurrPnt = myA + (myB - myA) * (i - 1) / 2.0;
+    aPnt = myA + (myB - myA) * (i - 1) / 2.0;
 
-    if(computeLocalExtremum(aCurrPnt, aCurrVal, aCurrPnt))
+    if(computeLocalExtremum(aPnt, aVal, aPnt))
+      checkAddCandidate(aPnt, aVal);
+  }
+}
+
+//=======================================================================
+//function : checkAddCandidate
+//purpose  :
+//=======================================================================
+void math_GlobOptMin::checkAddCandidate(const math_Vector&  thePnt,
+                                        const Standard_Real theValue)
+{
+  if (Abs(theValue - myF) < mySameTol * 0.01 && // Value in point is close to optimal value.
+      !myIsFindSingleSolution)                  // Several optimal solutions are allowed.
+  {
+    if (!isStored(thePnt))
     {
-      // Local search tries to find better solution than current point.
-      if (aCurrVal < aBestVal)
-      {
-        aBestVal = aCurrVal;
-        aBestPnt = aCurrPnt;
-      }
+      if ((theValue - myF) * myZ > 0.0)
+        myF = theValue;
+      for (Standard_Integer j = 1; j <= myN; j++)
+        myY.Append(thePnt(j));
+      mySolCount++;
     }
   }
 
-  myF = aBestVal;
-  myY.Clear();
-  for(i = 1; i <= myN; i++)
-    myY.Append(aBestPnt(i));
-  mySolCount = 1;
+  // New best solution:
+  // new point is out of (mySameTol * 0.01) surrounding or
+  // new point is better than old and single point search.
+  Standard_Real aDelta = (theValue - myF) * myZ;
+  if (aDelta > mySameTol * 0.01 ||
+     (aDelta > 0.0 && myIsFindSingleSolution))
+  {
+    myF = theValue;
+    myY.Clear();
+    for (Standard_Integer j = 1; j <= myN; j++)
+      myY.Append(thePnt(j));
+    mySolCount = 1;
+
+    isFirstCellFilterInvoke = Standard_True;
+  }
 }
