@@ -1,0 +1,12 @@
+puts "========"
+puts "0030196: REGRESSION: Modeling Algorithms - Crash in BRepBuilderAPI_GTransform"
+puts "========"
+puts ""
+cpulimit 300
+pload XDE
+testreadstep [locate_data_file bug30196.stp] s
+dchrono m start
+deform res s 1 1 1
+dchrono m stop counter deform
+
+checkview -display res -2d  -path ${imagedir}/${test_image}.png
