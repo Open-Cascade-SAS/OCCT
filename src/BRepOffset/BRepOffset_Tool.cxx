@@ -1345,7 +1345,11 @@ static TopoDS_Edge AssembleEdge(const BOPDS_PDS& pDS,
     {
       TopoDS_Vertex CV, V11, V12, V21, V22;
       TopExp::CommonVertex( CurEdge, anEdge, CV );
-      Standard_Boolean IsAutonomCV = IsAutonomVertex( CV, pDS, F1, F2 );
+      Standard_Boolean IsAutonomCV = Standard_False;
+      if (!CV.IsNull())
+      {
+        IsAutonomCV = IsAutonomVertex(CV, pDS, F1, F2);
+      }
       if (IsAutonomCV)
       {
         aGlueTol = BRep_Tool::Tolerance(CV);

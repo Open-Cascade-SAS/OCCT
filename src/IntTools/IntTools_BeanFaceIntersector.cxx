@@ -913,7 +913,17 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
     }
 
     GeomAdaptor_Curve aGACurve(aCurve, anarg1, anarg2);
-    Extrema_ExtCS theExtCS(aGACurve, aGASurface, Tol, Tol);
+    Extrema_ExtCS theExtCS;
+    theExtCS.Initialize(aGASurface, myUMinParameter, myUMaxParameter,
+                                    myVMinParameter, myVMaxParameter,  Tol, Tol);
+    Standard_Real first = aCurve->FirstParameter(), last = aCurve->LastParameter();
+    if (aCurve->IsPeriodic() || 
+       (anarg1 >= first - Precision::PConfusion() && anarg2 <= last + Precision::PConfusion()))
+    {
+      //Extrema_ExtCS theExtCS(aGACurve, aGASurface, Tol, Tol);
+      theExtCS.Perform(aGACurve, anarg1, anarg2);
+    }
+
     myExtrema = theExtCS; 
     
     if(myExtrema.IsDone() && (myExtrema.NbExt() || myExtrema.IsParallel())) {

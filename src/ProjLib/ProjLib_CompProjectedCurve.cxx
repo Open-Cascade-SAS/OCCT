@@ -636,8 +636,8 @@ void ProjLib_CompProjectedCurve::Init()
   Standard_Boolean FromLastU = Standard_False,
                    isSplitsComputed = Standard_False;
 
-  const Standard_Real aTol3D = Precision::Confusion();
-  Extrema_ExtCS CExt(myCurve->Curve(), mySurface->Surface(), aTol3D, aTol3D);
+  const Standard_Real aTolExt = Precision::PConfusion();
+  Extrema_ExtCS CExt(myCurve->Curve(), mySurface->Surface(), aTolExt, aTolExt);
   if (CExt.IsDone() && CExt.NbExt())
   {
     // Search for the minimum solution.

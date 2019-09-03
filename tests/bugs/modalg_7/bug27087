@@ -1,0 +1,16 @@
+puts "========"
+puts "OCC27087"
+puts "========"
+puts ""
+#######################################################
+# [Regression to OCCT 6.7.1] BRepExtrema_DistShapeShape gives wrong result
+#######################################################
+
+smallview
+restore [locate_data_file bug27087.brep] a
+explode a
+distmini r a_1 a_2
+if { [dval r_val] > 0.0001 } { puts "Error: too big deviation, should be 0!" }
+
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

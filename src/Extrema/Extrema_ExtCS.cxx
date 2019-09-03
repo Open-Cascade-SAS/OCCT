@@ -105,7 +105,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   mySqDist.Clear();
   Standard_Integer i, j;
   Standard_Integer NbT, NbU, NbV;
-  NbT = NbU = NbV = 10;
+  NbT = 12; NbU = NbV = 10;
   GeomAbs_CurveType myCtype  = C.GetType();
 
   myDone = Standard_False;
