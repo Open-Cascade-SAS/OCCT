@@ -1235,7 +1235,7 @@ protected: //! @name internal methods
   Standard_EXPORT Standard_Integer PurgeViewer (const Handle(V3d_Viewer)& Vwr);
 
   //! Helper function to unhighlight all entity owners currently highlighted with seleciton color.
-  Standard_EXPORT void unhighlightOwners (const Handle(AIS_InteractiveObject)& theObject);
+  Standard_EXPORT void unselectOwners (const Handle(AIS_InteractiveObject)& theObject);
 
   //! Helper function that highlights the owner given with <theStyle> without
   //! performing AutoHighlight checks, e.g. is used for dynamic highlight.
@@ -1246,12 +1246,16 @@ protected: //! @name internal methods
   //! for AutoHighlight, e.g. is used for selection.
   Standard_EXPORT void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner);
 
+  //! Helper function that highlights the owners with check
+  //! for AutoHighlight, e.g. is used for selection.
+  Standard_EXPORT void highlightOwners (const AIS_NListOfEntityOwner& theOwners);
+
   //! Helper function that highlights global owner of the object given with <theStyle> with check
   //! for AutoHighlight, e.g. is used for selection.
   //! If global owner is null, it simply highlights the whole object
   Standard_EXPORT void highlightGlobal (const Handle(AIS_InteractiveObject)& theObj,
                                         const Handle(Prs3d_Drawer)& theStyle,
-                                        const Standard_Integer theDispMode) const;
+                                        const Standard_Integer theDispMode);
 
   //! Helper function that unhighlights all owners that are stored in current AIS_Selection.
   //! The function updates global status and selection state of owner and interactive object.
@@ -1259,9 +1263,14 @@ protected: //! @name internal methods
   //! switched on in AIS_GlobalStatus will be highlighted with context's sub-intensity color.
   Standard_EXPORT void unhighlightSelected (const Standard_Boolean theIsToHilightSubIntensity = Standard_False);
 
+  //! Helper function that unhighlights the owners with check
+  //! for AutoHighlight, e.g. is used for selection.
+  Standard_EXPORT void unhighlightOwners (const AIS_NListOfEntityOwner& theOwners,
+                                          const Standard_Boolean theIsToHilightSubIntensity = Standard_False);
+
   //! Helper function that unhighlights global selection owner of given interactive.
   //! The function does not perform any updates of global or owner status
-  Standard_EXPORT void unhighlightGlobal (const Handle(AIS_InteractiveObject)& theObj) const;
+  Standard_EXPORT void unhighlightGlobal (const Handle(AIS_InteractiveObject)& theObj);
 
   //! Helper function that turns on sub-intensity in global status and highlights
   //! given objects with sub-intensity color
