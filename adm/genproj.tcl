@@ -256,7 +256,7 @@ proc genAllResources {} {
 
 # Wrapper-function to generate VS project files
 proc genproj {theFormat args} {
-  set aSupportedFormats { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "vc141" "cbp" "xcd" "pro"}
+  set aSupportedFormats { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "vc141" "vc142" "cbp" "xcd" "pro"}
   set aSupportedPlatforms { "wnt" "uwp" "lin" "mac" "ios" "qnx" }
   set isHelpRequire false
 
@@ -312,6 +312,7 @@ proc genproj {theFormat args} {
       vc12     -  Visual Studio 2013
       vc14     -  Visual Studio 2015
       vc141    -  Visual Studio 2017
+      vc142    -  Visual Studio 2019
       cbp      -  CodeBlocks
       xcd      -  XCode
       pro      -  Qt Creator
@@ -510,7 +511,8 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl } {
     "vc11"  -
     "vc12"  -
     "vc14"  -
-    "vc141"    { OS:MKVC  $anOutDir $aModules $anAllSolution $theFormat $isUWP}
+    "vc141" -
+    "vc142"    { OS:MKVC  $anOutDir $aModules $anAllSolution $theFormat $isUWP}
     "cbp"      { OS:MKCBP $anOutDir $aModules $anAllSolution $thePlatform $theCmpl }
     "xcd"      {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000"
@@ -965,7 +967,7 @@ proc osutils:vcsolution:header { vcversion } {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 12.00\n" \
       "# Visual Studio 2013\n"
-  } elseif { "$vcversion" == "vc14"  || "$vcversion" == "vc141"} {
+  } elseif { "$vcversion" == "vc14" || "$vcversion" == "vc141" || "$vcversion" == "vc142" } {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 12.00\n" \
       "# Visual Studio 14\n"
@@ -1203,6 +1205,9 @@ proc osutils:vcproj:readtemplate {theVcVer isUWP isExec} {
   if { $theVcVer == "vc141" } {
     set aVCRTVer "vc14"
     set aToolset "v141"
+  } elseif { $theVcVer == "vc142" } {
+    set aVCRTVer "vc14"
+    set aToolset "v142"
   }
 
   set what "$theVcVer"

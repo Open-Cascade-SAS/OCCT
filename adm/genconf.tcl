@@ -58,7 +58,7 @@ set SYS_VS_LIST {}
 set SYS_VC_LIST {}
 set SYS_VCVARS_LIST {}
 
-# detect installed Visual Studio 2017 instances by running vswhere.exe
+# detect installed Visual Studio 2017+ instances by running vswhere.exe
 if { ! [catch {exec vswhere.exe -version "\[15.0,15.99\]" -latest -requires Microsoft.VisualStudio.Workload.NativeDesktop -property installationPath} res] } {
   lappend ::SYS_VS_LIST "Visual Studio 2017 (15, toolset v141)"
   lappend ::SYS_VC_LIST "vc141"
@@ -67,6 +67,16 @@ if { ! [catch {exec vswhere.exe -version "\[15.0,15.99\]" -latest -requires Micr
 if { ! [catch {exec vswhere.exe -version "\[15.0,15.99\]" -latest -requires Microsoft.VisualStudio.Workload.Universal -property installationPath} res] } {
   lappend ::SYS_VS_LIST "Visual Studio 2017 (15, toolset v141) UWP"
   lappend ::SYS_VC_LIST "vc141-uwp"
+  lappend ::SYS_VCVARS_LIST "$res\\VC\\vcvarsall.bat"
+}
+if { ! [catch {exec vswhere.exe -version "\[16.0,16.99\]" -latest -requires Microsoft.VisualStudio.Workload.NativeDesktop -property installationPath} res] } {
+  lappend ::SYS_VS_LIST "Visual Studio 2019 (16, toolset v142)"
+  lappend ::SYS_VC_LIST "vc142"
+  lappend ::SYS_VCVARS_LIST "$res\\VC\\vcvarsall.bat"
+}
+if { ! [catch {exec vswhere.exe -version "\[16.0,16.99\]" -latest -requires Microsoft.VisualStudio.Workload.Universal -property installationPath} res] } {
+  lappend ::SYS_VS_LIST "Visual Studio 2019 (16, toolset v142) UWP"
+  lappend ::SYS_VC_LIST "vc142-uwp"
   lappend ::SYS_VCVARS_LIST "$res\\VC\\vcvarsall.bat"
 }
 
