@@ -1,0 +1,58 @@
+puts "=========="
+puts "0023979: Performance problem of STEP export for large files"
+puts "=========="
+puts ""
+
+cpulimit 100
+
+set n 100
+set m 100
+
+puts "Preparing compound of [expr $n * $m] prisms"
+
+autodisplay 0
+compound c
+chrono h restart
+for {set i 0} {$i < $n} {incr i} {
+  for {set j 0} {$j < $m} {incr j} {
+    set xbase [expr $i*10]
+    set ybase [expr $j*10]
+    set size 5
+    vertex v1 $xbase $ybase 0
+    vertex v2 [expr $xbase+$size] $ybase 0
+    vertex v3 [expr $xbase+0.5*$size] [expr $ybase+0.866*$size] 0
+    edge e1 v1 v2
+    edge e2 v2 v3
+    edge e3 v3 v1
+    wire w e1 e2 e3
+    mkplane f w
+    prism p f 0 0 10
+    add p c
+  }
+}
+chrono h stop counter "Constructing shape"
+
+meminfo
+
+puts "Converting data to STEP"
+newmodel
+chrono h restart
+stepwrite 0 c
+chrono h stop counter "Conversion to STEP"
+
+meminfo
+
+puts "Saving to file"
+chrono h restart
+set outfile ${imagedir}/bug23979.stp
+writeall $outfile
+chrono h stop counter "Saving file"
+
+puts "COUNTER File size (MiB): [expr [file size $outfile] / 1024 / 1024]"
+file delete -force $outfile
+
+meminfo
+
+puts "COUNTER Peak Page File Size (MiB): [expr [meminfo swappeak] / 1024 / 1024]"
+
+puts ""
