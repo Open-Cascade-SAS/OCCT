@@ -403,16 +403,17 @@ void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation
     anArrow->AddVertex (aRightPoint);
 
     // Set aspect for arrow triangles
-    Graphic3d_MaterialAspect aShadeMat (Graphic3d_NOM_DEFAULT);
-    aShadeMat.SetAmbientColor (Quantity_NOC_BLACK);
-    aShadeMat.SetDiffuseColor (Quantity_NOC_BLACK);
-    aShadeMat.SetSpecularColor(Quantity_NOC_BLACK);
-
-    Handle(Prs3d_ShadingAspect) aShadingStyle = new Prs3d_ShadingAspect();
+    Graphic3d_PolygonOffset aPolOffset;
+    aPolOffset.Mode = Aspect_POM_Off;
+    aPolOffset.Factor = 0.0f;
+    aPolOffset.Units  = 0.0f;
+    Handle(Graphic3d_AspectFillArea3d) aShadingStyle = new Graphic3d_AspectFillArea3d();
+    aShadingStyle->SetInteriorStyle (Aspect_IS_SOLID);
     aShadingStyle->SetColor (myDrawer->DimensionAspect()->ArrowAspect()->Aspect()->Color());
-    aShadingStyle->SetMaterial (aShadeMat);
+    aShadingStyle->SetShadingModel (Graphic3d_TOSM_UNLIT);
+    aShadingStyle->SetPolygonOffset (aPolOffset);
 
-    aGroup->SetPrimitivesAspect (aShadingStyle->Aspect());
+    aGroup->SetPrimitivesAspect (aShadingStyle);
     aGroup->AddPrimitiveArray (anArrow);
   }
 
