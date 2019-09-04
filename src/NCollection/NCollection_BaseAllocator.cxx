@@ -13,9 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Purpose:     Implementation of the BaseAllocator class
-
 #include <NCollection_BaseAllocator.hxx>
+
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
@@ -60,62 +59,50 @@ const Handle(NCollection_BaseAllocator)&
   return pAllocator;
 }
 
-// global variable to ensure that allocator will be created during loading the library
-static Handle(NCollection_BaseAllocator) theAllocInit = 
-  NCollection_BaseAllocator::CommonBaseAllocator();
-
-//=======================================================================
-/**
- * Structure for collecting statistics about blocks of one size
- */
-//=======================================================================
-struct StorageInfo
+namespace
 {
-  Standard_Size roundSize;
-  int nbAlloc;
-  int nbFree;
-  StorageInfo()
-    : roundSize(0), nbAlloc(0), nbFree(0) {}
-  StorageInfo(Standard_Size theSize)
-    : roundSize(theSize), nbAlloc(0), nbFree(0) {}
-};
+  // global variable to ensure that allocator will be created during loading the library
+  static Handle(NCollection_BaseAllocator) theAllocInit = NCollection_BaseAllocator::CommonBaseAllocator();
 
-//=======================================================================
-/**
- * Static data map (block_size -> StorageInfo)
- */
-//=======================================================================
-static NCollection_DataMap<Standard_Size, StorageInfo>& StorageMap()
-{
-  static NCollection_IncAllocator TheAlloc;
-  static NCollection_DataMap<Standard_Size, StorageInfo>
-    TheMap (1, & TheAlloc);
-  return TheMap;
-}
+  //! Structure for collecting statistics about blocks of one size
+  struct StorageInfo
+  {
+    Standard_Size roundSize;
+    int nbAlloc;
+    int nbFree;
+    StorageInfo() : roundSize(0), nbAlloc(0), nbFree(0) {}
+    StorageInfo(Standard_Size theSize) : roundSize(theSize), nbAlloc(0), nbFree(0) {}
+  };
 
-//=======================================================================
-/**
- * Static data map (address -> AllocationID)
- */
-//=======================================================================
-static NCollection_DataMap<Standard_Address, Standard_Size>& StorageIDMap()
-{
-  static NCollection_IncAllocator TheAlloc;
-  static NCollection_DataMap<Standard_Address, Standard_Size>
-    TheMap (1, & TheAlloc);
-  return TheMap;
-}
+  //! Static data map (block_size -> StorageInfo)
+  static NCollection_DataMap<Standard_Size, StorageInfo>& StorageMap()
+  {
+    static NCollection_IncAllocator TheAlloc;
+    static NCollection_DataMap<Standard_Size, StorageInfo> TheMap (1, & TheAlloc);
+    return TheMap;
+  }
 
-//=======================================================================
-/**
- * Static map (AllocationID)
- */
-//=======================================================================
-static NCollection_Map<Standard_Size>& StorageIDSet()
-{
-  static NCollection_IncAllocator TheAlloc;
-  static NCollection_Map<Standard_Size> TheMap (1, & TheAlloc);
-  return TheMap;
+  //! Static data map (address -> AllocationID)
+  static NCollection_DataMap<Standard_Address, Standard_Size>& StorageIDMap()
+  {
+    static NCollection_IncAllocator TheAlloc;
+    static NCollection_DataMap<Standard_Address, Standard_Size> TheMap (1, & TheAlloc);
+    return TheMap;
+  }
+
+  //! Static map (AllocationID)
+  static NCollection_Map<Standard_Size>& StorageIDSet()
+  {
+    static NCollection_IncAllocator TheAlloc;
+    static NCollection_Map<Standard_Size> TheMap (1, & TheAlloc);
+    return TheMap;
+  }
+
+  // dummy function for break point
+  inline void place_for_break_point () {}
+
+  //! Static value of the current allocation ID. It provides unique numbering of allocation events.
+  static Standard_Size CurrentID = 0;
 }
 
 //=======================================================================
@@ -149,14 +136,6 @@ Standard_EXPORT Standard_Size& StandardCallBack_CatchID()
 
 //=======================================================================
 /**
- * Static value of the current allocation ID. It provides unique
- * numbering of allocation events.
- */
-//=======================================================================
-static Standard_Size CurrentID = 0;
-
-//=======================================================================
-/**
  * Exported function to reset the callback system to the initial state
  */
 //=======================================================================
@@ -168,11 +147,6 @@ Standard_EXPORT void StandardCallBack_Reset()
   CurrentID = 0;
   StandardCallBack_CatchSize() = 0;
   StandardCallBack_CatchID() = 0;
-}
-
-namespace {
-  // dummy function for break point
-  inline void place_for_break_point () {}
 }
 
 //=======================================================================

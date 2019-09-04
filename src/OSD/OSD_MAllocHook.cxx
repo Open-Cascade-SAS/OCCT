@@ -246,29 +246,31 @@ void OSD_MAllocHook::LogFileHandler::Close()
 //function : LogFileHandler::MakeReport
 //purpose  :
 //=======================================================================
-
-struct StorageInfo
+namespace
 {
-  Standard_Size           size;
-  Standard_Integer        nbAlloc;
-  Standard_Integer        nbFree;
-  Standard_Integer        nbLeftPeak;
-  std::set<unsigned long> alive;
-
-  StorageInfo(Standard_Size theSize = 0)
-  : size      (theSize),
-    nbAlloc   (0),
-    nbFree    (0),
-    nbLeftPeak(0),
-    alive()
+  struct StorageInfo
   {
-  }
+    Standard_Size           size;
+    Standard_Integer        nbAlloc;
+    Standard_Integer        nbFree;
+    Standard_Integer        nbLeftPeak;
+    std::set<unsigned long> alive;
 
-  bool operator < (const StorageInfo& theOther) const
-  {
-    return size < theOther.size;
-  }
-};
+    StorageInfo(Standard_Size theSize = 0)
+    : size      (theSize),
+      nbAlloc   (0),
+      nbFree    (0),
+      nbLeftPeak(0),
+      alive()
+    {
+    }
+
+    bool operator < (const StorageInfo& theOther) const
+    {
+      return size < theOther.size;
+    }
+  };
+}
 
 Standard_Boolean OSD_MAllocHook::LogFileHandler::MakeReport
                    (const char* theLogFile,
