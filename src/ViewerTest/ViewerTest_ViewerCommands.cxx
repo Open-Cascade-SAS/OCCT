@@ -10467,7 +10467,7 @@ static int VDefaults (Draw_Interpretor& theDi,
   const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
   {
-    std::cerr << "No active viewer!\n";
+    std::cout << "Error: no active viewer\n";
     return 1;
   }
 
@@ -10536,27 +10536,20 @@ static int VDefaults (Draw_Interpretor& theDi,
           || anArg == "-AUTOTRIANG"
           || anArg == "-AUTOTRIANGULATION")
     {
-      if (++anArgIter >= theArgsNb)
+      ++anArgIter;
+      bool toTurnOn = true;
+      if (anArgIter >= theArgsNb
+      || !ViewerTest::ParseOnOff (theArgVec[anArgIter], toTurnOn))
       {
-        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        std::cout << "Syntax error at '" << anArg << "'\n";
         return 1;
       }
-      TCollection_AsciiString aValue (theArgVec[anArgIter]);
-      aValue.LowerCase();
-      if (aValue == "on"
-       || aValue == "1")
-      {
-        aDefParams->SetAutoTriangulation (Standard_True);
-      }
-      else if (aValue == "off"
-            || aValue == "0")
-      {
-        aDefParams->SetAutoTriangulation (Standard_False);
-      }
+      aDefParams->SetAutoTriangulation (toTurnOn);
     }
     else
     {
-      std::cerr << "Warning, unknown argument '" << anArg.ToCString() << "'\n";
+      std::cout << "Syntax error: unknown argument '" << anArg << "'\n";
+      return 1;
     }
   }
 

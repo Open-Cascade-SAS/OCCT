@@ -13,12 +13,12 @@ tclean  s
 incmesh s 0.001
 trinfo  s
 
-vinit View1
 vclear
+vinit View1
 vaxo
 vcaps -vbo 0
 vsetdispmode 1
-vdefaults absDefl=1.0
+vdefaults -absDefl 1.0
 vselprops -autoactivate 0
 set aMemInit [meminfo h]
 
