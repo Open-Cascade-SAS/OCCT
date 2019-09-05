@@ -91,31 +91,50 @@ static gp_Vec MakeFinVec( const TopoDS_Wire aWire, const TopoDS_Vertex aVertex )
 
 static TopoDS_Wire WireFromList(TopTools_ListOfShape& Edges)
 {
-  BRepLib_MakeWire MW;
+  BRep_Builder BB;
+  TopoDS_Wire aWire;
+  BB.MakeWire(aWire);
   TopoDS_Edge anEdge = TopoDS::Edge(Edges.First());
-  MW.Add(anEdge);
+  BB.Add(aWire, anEdge);
   Edges.RemoveFirst();
+
+  TopoDS_Vertex V1, V2;
+  TopExp::Vertices(anEdge, V1, V2, Standard_True); //with orientation
 
   while (!Edges.IsEmpty())
   {
-    TopoDS_Wire CurWire = MW.Wire();
-    TopoDS_Vertex V1, V2;
-    TopExp::Vertices(CurWire, V1, V2);
     TopTools_ListIteratorOfListOfShape itl(Edges);
     for (; itl.More(); itl.Next())
     {
       anEdge = TopoDS::Edge(itl.Value());
       TopoDS_Vertex V3, V4;
-      TopExp::Vertices(anEdge, V3, V4);
+      TopExp::Vertices(anEdge, V3, V4, Standard_True); //with orientation
       if (V1.IsSame(V3) || V1.IsSame(V4) ||
           V2.IsSame(V3) || V2.IsSame(V4))
+      {
+        if (V1.IsSame(V3))
+        {
+          anEdge.Reverse();
+          V1 = V4;
+        }
+        else if (V1.IsSame(V4))
+          V1 = V3;
+        else if (V2.IsSame(V3))
+          V2 = V4;
+        else
+        {
+          anEdge.Reverse();
+          V2 = V3;
+        }
         break;
+      }
     }
-    MW.Add(anEdge);
+    BB.Add(aWire, anEdge);
     Edges.Remove(itl);
   }
 
-  return (MW.Wire());
+  aWire.Closed(Standard_True);
+  return aWire;
 }
 
 //=======================================================================
@@ -707,8 +726,6 @@ void BRepFill_Filling::Build()
   }
   
   TopoDS_Wire FinalWire = WireFromList(FinalEdges);
-  if (!(FinalWire.Closed()))
-    throw Standard_Failure("Wire is not closed");
   
   myFace = BRepLib_MakeFace( Surface, FinalWire );
 }
