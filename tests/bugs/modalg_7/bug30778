@@ -1,0 +1,17 @@
+puts "========"
+puts "0030778: \[Regression to 7.3.0\] Extrema raises excep-tion StdFail_InfiniteSolutions"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30778.brep] a
+explode a
+pcurve c1 a_1 a_3
+pcurve c2 a_2 a_3
+trim c1 c1 0.0833292423088664 1
+trim c2 c2 0 0.91666977216245
+
+set out [2dextrema c1 c2]
+
+regexp {distance = ([0-9+-.eE]*)} $out full dist
+
+checkreal distance $dist 0 1e-9 0

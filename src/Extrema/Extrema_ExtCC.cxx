@@ -43,7 +43,6 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
@@ -327,11 +326,6 @@ void Extrema_ExtCC::Points(const Standard_Integer N,
 			    Extrema_POnCurv& P1,
 			    Extrema_POnCurv& P2) const
 {
-  if (IsParallel())
-  {
-    throw StdFail_InfiniteSolutions();
-  }
-
   if (N < 1 || N > NbExt())
   {
     throw Standard_OutOfRange();

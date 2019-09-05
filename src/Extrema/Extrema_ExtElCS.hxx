@@ -27,9 +27,7 @@
 #include <Extrema_HArray1OfPOnCurv.hxx>
 #include <Extrema_HArray1OfPOnSurf.hxx>
 #include <Standard_Real.hxx>
-class StdFail_InfiniteSolutions;
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class gp_Lin;
 class gp_Pln;
 class gp_Cylinder;

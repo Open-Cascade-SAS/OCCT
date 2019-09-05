@@ -37,7 +37,6 @@
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_ListOfInteger.hxx>
 
@@ -827,11 +826,6 @@ void Extrema_ExtElCS::Points(const Standard_Integer N,
 			     Extrema_POnCurv& P1,
 			     Extrema_POnSurf& P2) const
 {
-  if (IsParallel())
-  {
-    throw StdFail_InfiniteSolutions();
-  }
-
   if (N < 1 || N > NbExt())
   {
     throw Standard_OutOfRange();

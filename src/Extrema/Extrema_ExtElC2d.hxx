@@ -25,9 +25,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Extrema_POnCurv2d.hxx>
-class StdFail_InfiniteSolutions;
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class gp_Lin2d;
 class gp_Circ2d;
 class gp_Elips2d;

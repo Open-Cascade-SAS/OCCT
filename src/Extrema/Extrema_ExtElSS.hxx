@@ -26,9 +26,7 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <Extrema_HArray1OfPOnSurf.hxx>
 #include <Standard_Real.hxx>
-class StdFail_InfiniteSolutions;
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class gp_Pln;
 class gp_Sphere;
 class gp_Cylinder;

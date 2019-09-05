@@ -24,10 +24,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_TypeMismatch.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
 
 Extrema_ExtSS::Extrema_ExtSS() 
@@ -263,11 +260,6 @@ void Extrema_ExtSS::Points(const Standard_Integer N,
 			   Extrema_POnSurf&       P1,
 			   Extrema_POnSurf&       P2) const
 {
-  if (IsParallel())
-  {
-    throw StdFail_InfiniteSolutions();
-  }
-
   if (N < 1 || N > NbExt())
   {
     throw Standard_OutOfRange();

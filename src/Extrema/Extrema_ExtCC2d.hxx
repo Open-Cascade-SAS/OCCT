@@ -28,9 +28,7 @@
 #include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Pnt2d.hxx>
-class StdFail_InfiniteSolutions;
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class Adaptor2d_Curve2d;
 class Extrema_POnCurv2d;
 class gp_Pnt2d;

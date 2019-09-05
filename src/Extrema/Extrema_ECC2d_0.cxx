@@ -16,9 +16,6 @@
 
 #include <Extrema_ECC2d.hxx>
 
-#include <StdFail_InfiniteSolutions.hxx>
-#include <StdFail_NotDone.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 #include <Extrema_Curve2dTool.hxx>
 #include <Extrema_ExtPC2d.hxx>

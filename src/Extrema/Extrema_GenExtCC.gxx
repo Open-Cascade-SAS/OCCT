@@ -658,11 +658,6 @@ void Extrema_GenExtCC::Points(const Standard_Integer N,
                               POnC& P1,
                               POnC& P2) const
 {
-  if (IsParallel())
-  {
-    throw StdFail_InfiniteSolutions();
-  }
-
   if (N < 1 || N > NbExt())
   {
     throw Standard_OutOfRange();

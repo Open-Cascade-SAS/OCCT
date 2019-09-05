@@ -27,9 +27,7 @@
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
 #include <Precision.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=======================================================================
@@ -459,11 +457,6 @@ void Extrema_ExtElC2d::Points (const Standard_Integer N,
 			       Extrema_POnCurv2d& P1, 
 			       Extrema_POnCurv2d& P2) const
 {
-  if (IsParallel())
-  {
-    throw StdFail_InfiniteSolutions();
-  }
-
   if (N < 1 || N > NbExt()) { throw Standard_OutOfRange(); }
   P1 = myPoint[N-1][0];
   P2 = myPoint[N-1][1];

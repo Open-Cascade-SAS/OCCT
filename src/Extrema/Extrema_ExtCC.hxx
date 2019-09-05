@@ -29,9 +29,7 @@
 #include <Standard_Address.hxx>
 #include <Standard_Real.hxx>
 #include <gp_Pnt.hxx>
-class StdFail_InfiniteSolutions;
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class Adaptor3d_Curve;
 class Extrema_POnCurv;
 class gp_Pnt;

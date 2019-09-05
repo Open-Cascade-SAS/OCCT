@@ -36,9 +36,7 @@
 #include <math_DirectPolynomialRoots.hxx>
 #include <math_TrigonometricFunctionRoots.hxx>
 #include <Precision.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
 
 #include <stdio.h>
@@ -1100,11 +1098,6 @@ void Extrema_ExtElC::Points (const Standard_Integer N,
 			     Extrema_POnCurv& P1, 
 			     Extrema_POnCurv& P2) const
 {
-  if (IsParallel())
-  {
-    throw StdFail_InfiniteSolutions();
-  }
-
   if (N < 1 || N > NbExt())
   {
     throw Standard_OutOfRange();

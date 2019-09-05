@@ -28,15 +28,12 @@
 #include <Standard_Address.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 #include <Standard_Integer.hxx>
-class StdFail_InfiniteSolutions;
-class StdFail_NotDone;
-class Standard_OutOfRange;
+
 class Adaptor2d_Curve2d;
 class Extrema_Curve2dTool;
 class Extrema_POnCurv2d;
 class gp_Pnt2d;
 class gp_Vec2d;
-
 
 
 class Extrema_ECC2d 

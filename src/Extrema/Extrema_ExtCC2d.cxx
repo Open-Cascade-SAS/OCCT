@@ -34,10 +34,7 @@
 #include <GeomAbs_CurveType.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
-#include <Standard_Failure.hxx>
-#include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <StdFail_InfiniteSolutions.hxx>
 #include <StdFail_NotDone.hxx>
 
 Extrema_ExtCC2d::Extrema_ExtCC2d()
