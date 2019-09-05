@@ -1,0 +1,15 @@
+puts "============"
+puts "0030704: Oriented bounding box (Bnd_OBB) gives a wrong result if a box is added to a void box"
+puts "============"
+
+pload QAcommands
+
+set ret1 [OCC30704]
+if { ${ret1} != "150 150 150" } {
+    puts "Error: add bounding box to void bounding box"
+}
+
+set ret2 [OCC30704_1]
+if { ${ret2} != "100 200 300" } {
+    puts "Error: add point to void bounding box"
+}

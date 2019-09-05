@@ -973,11 +973,24 @@ Standard_Boolean Bnd_OBB::IsCompletelyInside(const Bnd_OBB& theOther) const
 // =======================================================================
 void Bnd_OBB::Add(const gp_Pnt& theP)
 {
-  gp_Pnt aList[9];
-  GetVertex(aList);
-  aList[8] = theP;
-
-  ReBuild(TColgp_Array1OfPnt(aList[0], 0, 8));
+  if (IsVoid())
+  {
+    myCenter = theP.XYZ();
+    myAxes[0] = gp::DX().XYZ();
+    myAxes[1] = gp::DY().XYZ();
+    myAxes[2] = gp::DZ().XYZ();
+    myHDims[0] = 0.0;
+    myHDims[1] = 0.0;
+    myHDims[2] = 0.0;
+    myIsAABox = Standard_True;
+  }
+  else
+  {
+    gp_Pnt aList[9];
+    GetVertex(aList);
+    aList[8] = theP;
+    ReBuild(TColgp_Array1OfPnt(aList[0], 0, 8));
+  }
 }
 
 // =======================================================================
@@ -986,9 +999,26 @@ void Bnd_OBB::Add(const gp_Pnt& theP)
 // =======================================================================
 void Bnd_OBB::Add(const Bnd_OBB& theOther)
 {
-  gp_Pnt aList[16];
-  GetVertex(&aList[0]);
-  theOther.GetVertex(&aList[8]);
-  ReBuild(TColgp_Array1OfPnt(aList[0], 0, 15));
+  if (!theOther.IsVoid())
+  {
+    if (IsVoid())
+    {
+      myCenter = theOther.myCenter;
+      myAxes[0] = theOther.myAxes[0];
+      myAxes[1] = theOther.myAxes[1];
+      myAxes[2] = theOther.myAxes[2];
+      myHDims[0] = theOther.myHDims[0];
+      myHDims[1] = theOther.myHDims[1];
+      myHDims[2] = theOther.myHDims[2];
+      myIsAABox = theOther.myIsAABox;
+    }
+    else
+    {
+      gp_Pnt aList[16];
+      GetVertex(&aList[0]);
+      theOther.GetVertex(&aList[8]);
+      ReBuild(TColgp_Array1OfPnt(aList[0], 0, 15));
+    }
+  }
 }
 

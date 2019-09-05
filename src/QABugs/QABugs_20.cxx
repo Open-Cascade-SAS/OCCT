@@ -3239,6 +3239,38 @@ static Standard_Integer OCC30869 (Draw_Interpretor& theDI, Standard_Integer theA
   return 0;
 }
 
+#include <BRepPrimAPI_MakeBox.hxx>
+static Standard_Integer OCC30704(Draw_Interpretor& di, Standard_Integer, const char**)
+{
+  // Make a shape somewhere far from (0, 0, 0).
+  BRepPrimAPI_MakeBox mkBox(gp_Pnt(100, 100, 100), 100, 100, 100);
+  const TopoDS_Shape& box = mkBox.Shape();
+
+  // Add a bounding box of a shape to a void bounding box.
+  Bnd_OBB aVoidBox, aBox;
+  BRepBndLib::AddOBB(box, aBox, Standard_False, Standard_False, Standard_False);
+  aVoidBox.Add(aBox);
+
+  // Print the center point of the bounding box.
+  const gp_XYZ& center = aVoidBox.Center();
+  di << center.X() << " " << center.Y() << " " << center.Z();
+  return 0;
+}
+static Standard_Integer OCC30704_1(Draw_Interpretor& di, Standard_Integer, const char**)
+{
+  // A point.
+  gp_Pnt aP(100, 200, 300);
+
+  // Add the point to a void bounding box.
+  Bnd_OBB aVoidBox;
+  aVoidBox.Add(aP);
+
+  // Print the center point of the bounding box.
+  const gp_XYZ& center = aVoidBox.Center();
+  di << center.X() << " " << center.Y() << " " << center.Z();
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3295,6 +3327,9 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC30869", "Prints bounding points of the given wire and tangent vectors at these points.\n"
                                "Usage: OCC30869 wire",
                    __FILE__, OCC30869, group);
+
+  theCommands.Add("OCC30704", "OCC30704", __FILE__, OCC30704, group);
+  theCommands.Add("OCC30704_1", "OCC30704_1", __FILE__, OCC30704_1, group);
 
   return;
 }
