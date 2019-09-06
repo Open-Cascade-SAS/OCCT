@@ -274,7 +274,7 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
     list (LENGTH OCCT_ALL_FILE_NAMES ALL_FILES_NB)
     math (EXPR ALL_FILES_NB "${ALL_FILES_NB} - 1" )
 
-    # emit warnings if there is unprocessed headers
+    # emit warnings if there are unprocessed headers
     file (GLOB OCCT_ALL_FILES_IN_DIR "${OCCT_COLLECT_SOURCE_DIR}/${OCCT_PACKAGE}/*.*")
     file (GLOB OCCT_ALL_FILES_IN_PATCH_DIR "${BUILD_PATCH}/src/${OCCT_PACKAGE}/*.*")
 
@@ -307,8 +307,8 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
             list (APPEND OCCT_HEADER_FILES_COMPLETE ${OCCT_FILE_IN_DIR})
 
             # collect header files with name that does not contain its package one
-            string (FIND "${OCCT_FILE_NAME}" "${OCCT_PACKAGE}_" FOUND_INDEX)
-            if (NOT ${FOUND_INDEX} EQUAL 0)
+            string (REGEX MATCH "^${OCCT_PACKAGE}[_.]" IS_HEADER_MATHCING_PACKAGE "${OCCT_FILE_NAME}")
+            if (NOT IS_HEADER_MATHCING_PACKAGE)
               list (APPEND OCCT_HEADER_FILE_WITH_PROPER_NAMES "${OCCT_FILE_NAME}")
             endif()
           endif()
@@ -355,12 +355,12 @@ macro (COLLECT_AND_INSTALL_OCCT_HEADER_FILES ROOT_TARGET_OCCT_DIR OCCT_BUILD_TOO
     list (FIND OCCT_USED_PACKAGES ${PACKAGE_NAME} IS_HEADER_FOUND)
     if (NOT ${IS_HEADER_FOUND} EQUAL -1)
       if (NOT EXISTS "${OCCT_COLLECT_SOURCE_DIR}/${PACKAGE_NAME}/${HEADER_FILE_NAME}")
-        message (STATUS "Warning. ${OCCT_HEADER_FILE_OLD} is not presented in the sources and will be removed from ${ROOT_TARGET_OCCT_DIR}/inc")
+        message (STATUS "Warning. ${OCCT_HEADER_FILE_OLD} is not present in the sources and will be removed from ${ROOT_TARGET_OCCT_DIR}/inc")
         file (REMOVE "${OCCT_HEADER_FILE_OLD}")
       else()
         list (FIND OCCT_HEADER_FILE_NAMES_NOT_IN_FILES ${PACKAGE_NAME} IS_HEADER_FOUND)
         if (NOT ${IS_HEADER_FOUND} EQUAL -1)
-          message (STATUS "Warning. ${OCCT_HEADER_FILE_OLD} is presented in the sources but not involved in FILES and will be removed from ${ROOT_TARGET_OCCT_DIR}/inc")
+          message (STATUS "Warning. ${OCCT_HEADER_FILE_OLD} is present in the sources but not involved in FILES and will be removed from ${ROOT_TARGET_OCCT_DIR}/inc")
           file (REMOVE "${OCCT_HEADER_FILE_OLD}")
         endif()
       endif()

@@ -19,8 +19,9 @@
 #include <windows.h>
 #include <DrawRessource.h>
 #include <init.h>
-#include <MainWindow.h>
 #include <Draw_Window.hxx>
+
+#include <MainWindow.h>
 #include <CommandWindow.h>
 
 Standard_Boolean Draw_Interprete(const char* command); // Implemented in Draw.cxx

@@ -17,11 +17,12 @@
 #ifdef _WIN32
 #include <windows.h>
 
-#include <COMMANDWINDOW.h>
 #include <Draw_Window.hxx>
-#include <MAINWINDOW.h>
 #include <Draw_Appli.hxx>
 #include <TCollection_AsciiString.hxx>
+
+#include <MainWindow.h>
+#include <CommandWindow.h>
 
 #define CLIENTWND 0
 
