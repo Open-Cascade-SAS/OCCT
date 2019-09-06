@@ -475,16 +475,16 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
   gp_Vec Tangent, Normal, BN, cross;
   TColStd_SequenceOfReal parameters;
   TColStd_SequenceOfReal EvolAT;
-  Standard_Real Param = First, L, norm;
+  Standard_Real Param = First, LengthMin, L, norm;
   Standard_Boolean isZero = Standard_True, isConst = Standard_True;
-  const Standard_Real minnorm = 1.e-16;
   Standard_Integer i;
   gp_Pnt PonC;
   gp_Vec D1;
 
-  frenet->SetInterval(First, Last); //To have the rigth evaluation at bounds
+  frenet->SetInterval(First, Last); //To have right evaluation at bounds
   GeomFill_SnglrFunc CS(myCurve);
   BndLib_Add3dCurve::Add(CS, First, Last, 1.e-2, Boite);
+  LengthMin = Boite.GetGap()*1.e-4;
     
   aT = gp_Vec(0, 0, 0);
   aN = gp_Vec(0, 0, 0);   
@@ -541,21 +541,13 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
 
       //Evaluate the Next step
       CS.D1(Param, PonC, D1);
-      
-      L = PonC.XYZ().Modulus()/2;
+      L = Max(PonC.XYZ().Modulus()/2, LengthMin);
       norm = D1.Magnitude(); 
-      if (norm <= gp::Resolution())
-      {
-        //norm = 2.*gp::Resolution();
-        norm = minnorm;
+      if (norm < Precision::Confusion()) {
+	norm = Precision::Confusion();
       }
       currStep = L / norm;
-      if (currStep <= gp::Resolution()) //L = 0 => curvature = 0, linear segment
-        currStep = Step;
-      if (currStep < Precision::Confusion()) //too small step
-        currStep = Precision::Confusion();
-      if  (currStep > Step) //too big step
-        currStep = Step;//default value
+      if  (currStep > Step) currStep = Step;//default value
     }
     else 
       currStep /= 2; // Step too long !

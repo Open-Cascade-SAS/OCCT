@@ -1,3 +1,5 @@
+puts "TODO OCC21413 ALL: bad accuracy of approximation"
+
 puts "========"
 puts "OCC21413"
 puts "========"
@@ -8,6 +10,12 @@ puts ""
 
 restore [locate_data_file bug21413_dc1_err.draw] a
 
-tuyau result a 1
+set log [tuyau result a 1]
+
+regexp {Accuracy of approximation = ([0-9+-.eE]*)} $log full accuracy
+
+if { ${accuracy} > 0.0001} {
+   puts "Error: bad accuracy of approximation"
+}
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

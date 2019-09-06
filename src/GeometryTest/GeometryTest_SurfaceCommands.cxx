@@ -153,6 +153,9 @@ static Standard_Integer sweep (Draw_Interpretor& di,
     return 1;
   }
 
+  Standard_Real Accuracy = Pipe.ErrorOnSurf();
+  di << "Accuracy of approximation = " << Accuracy << "\n";
+
   DrawTrSurf::Set(a[1], Pipe.Surface());
   return 0;
   
@@ -223,6 +226,10 @@ static Standard_Integer tuyau (Draw_Interpretor& di,
     di << "GeomFill_Pipe cannot make a surface\n";
     return 1;
   }
+
+  Standard_Real Accuracy = Pipe.ErrorOnSurf();
+  di << "Accuracy of approximation = " << Accuracy << "\n";
+  
   DrawTrSurf::Set(a[indice_path-1], Pipe.Surface());
 
   return 0;
