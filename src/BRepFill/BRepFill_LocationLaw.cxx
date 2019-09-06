@@ -451,7 +451,12 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
 
  Standard_Boolean BRepFill_LocationLaw::IsClosed() const
 {
-  return myPath.Closed();
+  if (myPath.Closed())
+    return Standard_True;
+
+  TopoDS_Vertex V1, V2;
+  TopExp::Vertices(myPath, V1, V2);
+  return (V1.IsSame(V2));
 }
 
 //=======================================================================

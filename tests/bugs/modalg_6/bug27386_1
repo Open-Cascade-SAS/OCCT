@@ -33,4 +33,4 @@ checkprops r4 -s 10944.1
 explode pr_1 v
 
 generated r3 sweep_hist pr_1_3
-checkprops r3 -l 130.036
+checkprops r3 -l 65.0179

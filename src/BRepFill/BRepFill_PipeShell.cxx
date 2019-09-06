@@ -1377,7 +1377,7 @@ void BRepFill_PipeShell::BuildHistory(const BRepFill_Sweep& theSweep)
           BB.Add(aWire, CurEdge);
         } //for (jj = 2; jj <= SeqEdges.Length(); jj++)
         //case of closed wire
-        if (mySection->IsVClosed() &&
+        if (myLocation->IsClosed() &&
             !CurVertex.IsSame(FirstVertex))
         {
           const TopTools_ListOfShape& Elist = VEmap.FindFromKey(CurVertex);

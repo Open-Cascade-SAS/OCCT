@@ -1,4 +1,4 @@
-puts "TODO OCC23942 ALL: is not equal"
+puts "TODO OCC21413 ALL: bad accuracy of approximation"
 
 puts "========"
 puts "OCC23942"
@@ -12,7 +12,13 @@ puts ""
 ### 1
 #
 interpol c [locate_data_file bug23942_points.txt]
-tuyau r_1 c 5
+set log [tuyau r_1 c 5]
+
+regexp {Accuracy of approximation = ([0-9+-.eE]*)} $log full accuracy
+
+if { ${accuracy} > 0.0001} {
+   puts "Error: bad accuracy of approximation"
+}
 
 decho off
 dlog reset
@@ -38,7 +44,13 @@ puts "VKnots_1 = ${VKnots_1}"
 #
 save c ${imagedir}/cc
 restore ${imagedir}/cc
-tuyau r_2 cc 5
+set log [tuyau r_2 cc 5]
+
+regexp {Accuracy of approximation = ([0-9+-.eE]*)} $log full accuracy
+
+if { ${accuracy} > 0.0001} {
+   puts "Error: bad accuracy of approximation"
+}
 
 decho off
 dlog reset

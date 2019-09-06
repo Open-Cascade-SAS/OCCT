@@ -247,6 +247,10 @@ static Standard_Integer geompipe(Draw_Interpretor&,
     std::cout << "GeomFill_Pipe cannot make a surface" << std::endl;
     return 1;
   }
+
+  Standard_Real Accuracy = aPipe.ErrorOnSurf();
+  std::cout << "Accuracy of approximation = " << Accuracy << std::endl;
+  
   Handle(Geom_Surface) Sur = aPipe.Surface();
   TopoDS_Face F;
   if (!Sur.IsNull())
