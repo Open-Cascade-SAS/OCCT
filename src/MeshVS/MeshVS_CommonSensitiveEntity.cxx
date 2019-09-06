@@ -34,6 +34,7 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity (const Handle(SelectM
   myDataSource (theParentMesh->GetDataSource()),
   mySelMethod (theSelMethod)
 {
+  myMaxFaceNodes = 0;
   theParentMesh->GetDrawer()->GetInteger (MeshVS_DA_MaxFaceNodes, myMaxFaceNodes);
   Standard_ASSERT_RAISE (myMaxFaceNodes > 0,
     "The maximal amount of nodes in a face must be greater than zero to create sensitive entity");

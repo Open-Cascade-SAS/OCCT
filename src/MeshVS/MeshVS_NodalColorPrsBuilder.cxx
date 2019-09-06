@@ -411,8 +411,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 //  Aspect_InteriorStyle  aStyle;
 //  Standard_Integer      aStyleInt;
   Aspect_TypeOfLine     anEdgeType = Aspect_TOL_SOLID;
-  Standard_Integer      anEdgeInt;
-  Standard_Real         anEdgeWidth;
+  Standard_Real         anEdgeWidth = 1.0;
   Quantity_Color        anInteriorColor;
   Quantity_Color        anEdgeColor, aLineColor;
   Standard_Boolean      aShowEdges = Standard_True;
@@ -423,6 +422,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   aDrawer->GetDouble ( MeshVS_DA_EdgeWidth, anEdgeWidth );
   aDrawer->GetBoolean( MeshVS_DA_ShowEdges, aShowEdges );
 
+  Standard_Integer anEdgeInt = Aspect_TOL_SOLID;
   if ( aDrawer->GetInteger ( MeshVS_DA_EdgeType, anEdgeInt ) )
     anEdgeType = (Aspect_TypeOfLine) anEdgeInt;
 

@@ -179,8 +179,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   //Now we are ready to draw faces with equal colors
   Aspect_TypeOfLine    anEdgeType = Aspect_TOL_SOLID;
   Aspect_TypeOfLine    aLineType = Aspect_TOL_SOLID;
-  Standard_Integer     anEdgeInt, aLineInt;
-  Standard_Real        anEdgeWidth, aLineWidth;
+  Standard_Real        anEdgeWidth = 1.0, aLineWidth = 1.0;
   Quantity_Color       anInteriorColor;
   Quantity_Color       anEdgeColor, aLineColor;
   Standard_Boolean     anEdgeOn = Standard_True, IsReflect = Standard_False,
@@ -197,9 +196,11 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   aDrawer->GetBoolean( MeshVS_DA_SmoothShading, IsMeshSmoothShading );
   aDrawer->GetBoolean (MeshVS_DA_SupressBackFaces, toSupressBackFaces);
 
+  Standard_Integer anEdgeInt = Aspect_TOL_SOLID;
   if ( aDrawer->GetInteger ( MeshVS_DA_EdgeType, anEdgeInt) )
     anEdgeType = (Aspect_TypeOfLine) anEdgeInt;
 
+  Standard_Integer aLineInt = Aspect_TOL_SOLID;
   if ( aDrawer->GetInteger ( MeshVS_DA_BeamType, aLineInt) )
     aLineType = (Aspect_TypeOfLine) aLineInt;
 

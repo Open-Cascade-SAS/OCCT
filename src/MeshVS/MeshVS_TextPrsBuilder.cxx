@@ -167,27 +167,29 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Standard_Real            AExpansionFactor = 1.0;
   Standard_Real            ASpace           = 0.0;
   Aspect_TypeOfStyleText   ATextStyle       = Aspect_TOST_ANNOTATION;
-  Standard_Integer         AStyleInt;
   Aspect_TypeOfDisplayText ADisplayType     = Aspect_TODT_NORMAL;
-  TCollection_AsciiString  AFontString;
-  Standard_Integer         ADispInt;
   // Bold font is used by default for better text readability
   Font_FontAspect           AFontAspectType  = Font_FA_Bold;
-  Standard_Integer         AAspect; 
-  
 
   aDrawer->GetColor  ( MeshVS_DA_TextColor, AColor );
   aDrawer->GetDouble ( MeshVS_DA_TextExpansionFactor, AExpansionFactor );
   aDrawer->GetDouble ( MeshVS_DA_TextSpace, ASpace );
 
+  TCollection_AsciiString AFontString = Font_NOF_ASCII_MONO;
   if ( aDrawer->GetAsciiString ( MeshVS_DA_TextFont, AFontString ) )
     AFont = AFontString.ToCString();
+
+  Standard_Integer AStyleInt = Aspect_TOST_ANNOTATION;
   if ( aDrawer->GetInteger ( MeshVS_DA_TextStyle, AStyleInt ) )
     ATextStyle = (Aspect_TypeOfStyleText) AStyleInt;
+
+  Standard_Integer ADispInt = Aspect_TODT_NORMAL;
   if ( aDrawer->GetInteger ( MeshVS_DA_TextDisplayType, ADispInt ) )
     ADisplayType = (Aspect_TypeOfDisplayText) ADispInt;
+
+  Standard_Integer AAspect = Font_FA_Bold;
   if ( aDrawer->GetInteger ( MeshVS_DA_TextFontAspect, AAspect ) )
-    AFontAspectType = (Font_FontAspect)AAspect;         
+    AFontAspectType = (Font_FontAspect)AAspect;
 
   Handle (Graphic3d_AspectText3d) aTextAspect = new Graphic3d_AspectText3d ( AColor, AFont, AExpansionFactor, ASpace,
     ATextStyle, ADisplayType );
