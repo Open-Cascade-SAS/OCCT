@@ -119,5 +119,6 @@ XCAFDoc_AssemblyItemId::ToString() const
     aStr += '/';
     aStr += anIt.Value();
   }
+  aStr.Remove(1, 1);
   return aStr;
 }
