@@ -589,6 +589,13 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
     return false;
   }
 
+  if (FreeImage_GetBPP (anImage) == 1)
+  {
+    FIBITMAP* aTmpImage = FreeImage_ConvertTo8Bits (anImage);
+    FreeImage_Unload (anImage);
+    anImage = aTmpImage;
+  }
+
   Image_Format aFormat = convertFromFreeFormat (FreeImage_GetImageType(anImage),
                                                 FreeImage_GetColorType(anImage),
                                                 FreeImage_GetBPP      (anImage));

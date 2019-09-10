@@ -1,0 +1,14 @@
+puts "============="
+puts "0030946: Visualization - Image_AlienPixMap ignores 1-bit pixelformat when using FreeImage"
+puts "============="
+
+pload VISUALIZATION
+vinit View
+
+vbackground -image [locate_data_file bug30946_img_1bit_256px.png]
+if { [vreadpixel 120 315 rgb name] != "WHITE" } { puts "Error: background image was loaded incorrectly" }
+
+vpoint p0 0 0 0
+vaspects p0 -setMarkerType [locate_data_file bug30946_img_1bit_32px.png]
+
+vdump $imagedir/${casename}.png
