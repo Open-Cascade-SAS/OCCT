@@ -40,7 +40,7 @@ void OSD_Parallel::forEachExternal (UniversalIterator& theBegin,
   {
     const Handle(OSD_ThreadPool)& aThreadPool = OSD_ThreadPool::DefaultPool();
     const Standard_Integer aNbThreads = theNbItems > 0 ?
-      Min (theNbItems, aThreadPool->NbDefaultThreadsToLaunch()) : -1;
+      aThreadPool->NbDefaultThreadsToLaunch() : -1;
 
     tbb::task_scheduler_init aScheduler (aNbThreads);
     tbb::parallel_for_each (theBegin, theEnd, theFunctor);
