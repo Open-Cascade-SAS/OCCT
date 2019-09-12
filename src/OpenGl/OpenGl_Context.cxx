@@ -162,6 +162,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myTexClamp   (GL_CLAMP_TO_EDGE),
   myMaxTexDim  (1024),
   myMaxTexCombined (1),
+  myMaxTexUnitsFFP (1),
   myMaxDumpSizeX (1024),
   myMaxDumpSizeY (1024),
   myMaxClipPlanes (6),
@@ -1557,18 +1558,19 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   }
 
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
+#if !defined(GL_ES_VERSION_2_0)
+  if (IsGlGreaterEqual (1, 3) && core11 != NULL)
+  {
+    // this is a maximum of texture units for FFP functionality,
+    // usually smaller than combined texture units available for GLSL
+    glGetIntegerv (GL_MAX_TEXTURE_UNITS, &myMaxTexUnitsFFP);
+    myMaxTexCombined = myMaxTexUnitsFFP;
+  }
+#endif
   if (IsGlGreaterEqual (2, 0))
   {
     glGetIntegerv (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &myMaxTexCombined);
   }
-#if !defined(GL_ES_VERSION_2_0)
-  else if (IsGlGreaterEqual (1, 3))
-  {
-    // this is a maximum of texture units for FFP functionality,
-    // dramatically smaller than combined texture units available for GLSL
-    glGetIntegerv (GL_MAX_TEXTURE_UNITS, &myMaxTexCombined);
-  }
-#endif
   mySpriteTexUnit = myMaxTexCombined >= 2
                   ? Graphic3d_TextureUnit_1
                   : Graphic3d_TextureUnit_0;
@@ -3233,13 +3235,13 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_Text
       {
         if (const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value())
         {
+          aTextureOld->Unbind(aThisCtx);
         #if !defined(GL_ES_VERSION_2_0)
           if (core11 != NULL)
           {
             OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
           }
         #endif
-          aTextureOld->Unbind (aThisCtx);
         }
       }
       break;
@@ -3260,13 +3262,13 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_Text
       {
         if (!aTextureOld.IsNull())
         {
+          aTextureOld->Unbind(aThisCtx);
         #if !defined(GL_ES_VERSION_2_0)
           if (core11 != NULL)
           {
             OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
           }
         #endif
-          aTextureOld->Unbind (aThisCtx);
         }
 
         aTextureIterNew.Next();

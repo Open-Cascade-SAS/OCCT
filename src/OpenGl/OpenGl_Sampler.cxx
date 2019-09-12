@@ -276,7 +276,8 @@ void OpenGl_Sampler::applyGlobalTextureParams (const Handle(OpenGl_Context)& the
   (void )theTexture;
   (void )theParams;
 #else
-  if (theCtx->core11 == NULL)
+  if (theCtx->core11 == NULL
+   || theParams->TextureUnit() >= theCtx->MaxTextureUnitsFFP())
   {
     return;
   }

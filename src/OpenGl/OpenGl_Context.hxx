@@ -497,6 +497,11 @@ public:
   //! @return value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
   Standard_Integer MaxCombinedTextureUnits() const { return myMaxTexCombined; }
 
+  //! This method returns the multi-texture limit for obsolete fixed-function pipeline.
+  //! Use MaxCombinedTextureUnits() instead for limits for using programmable pipeline.
+  //! @return value for GL_MAX_TEXTURE_UNITS
+  Standard_Integer MaxTextureUnitsFFP() const { return myMaxTexUnitsFFP; }
+
   //! @return texture unit to be used for sprites
   Graphic3d_TextureUnit SpriteTextureUnit() const { return mySpriteTexUnit; }
 
@@ -965,6 +970,7 @@ private: // context info
   Standard_Integer myTexClamp;             //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
   Standard_Integer myMaxTexDim;            //!< value for GL_MAX_TEXTURE_SIZE
   Standard_Integer myMaxTexCombined;       //!< value for GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+  Standard_Integer myMaxTexUnitsFFP;       //!< value for GL_MAX_TEXTURE_UNITS (fixed-function pipeline only)
   Standard_Integer myMaxDumpSizeX;         //!< maximum FBO width  for image dump
   Standard_Integer myMaxDumpSizeY;         //!< maximum FBO height for image dump
   Standard_Integer myMaxClipPlanes;        //!< value for GL_MAX_CLIP_PLANES
