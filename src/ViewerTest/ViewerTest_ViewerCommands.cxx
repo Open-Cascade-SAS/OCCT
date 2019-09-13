@@ -1346,27 +1346,6 @@ namespace
 
 } // namespace
 
-typedef NCollection_Map<AIS_Manipulator*> ViewerTest_MapOfAISManipulators;
-
-Standard_EXPORT ViewerTest_MapOfAISManipulators& GetMapOfAISManipulators()
-{
-  static ViewerTest_MapOfAISManipulators aMap;
-  return aMap;
-}
-
-Standard_EXPORT Handle(AIS_Manipulator) GetActiveAISManipulator()
-{
-  ViewerTest_MapOfAISManipulators::Iterator anIt (GetMapOfAISManipulators());
-  for (; anIt.More(); anIt.Next())
-  {
-    if (anIt.Value()->HasActiveMode())
-    {
-      return anIt.Value();
-    }
-  }
-  return NULL;
-}
-
 //==============================================================================
 
 #ifdef _WIN32
@@ -12478,32 +12457,6 @@ static Standard_Integer VXRotate (Draw_Interpretor& di,
 }
 
 //===============================================================================================
-//class   : ViewerTest_AISManipulator
-//purpose : Proxy class maintaining automated registry map to enlist existing AIS_Manipulator instances
-//===============================================================================================
-DEFINE_STANDARD_HANDLE (ViewerTest_AISManipulator, AIS_Manipulator)
-
-class ViewerTest_AISManipulator : public AIS_Manipulator
-{
-public:
-
-  ViewerTest_AISManipulator() : AIS_Manipulator()
-  {
-    GetMapOfAISManipulators().Add (this);
-  }
-
-  virtual ~ViewerTest_AISManipulator()
-  {
-    GetMapOfAISManipulators().Remove (this);
-  }
-
-  DEFINE_STANDARD_RTTIEXT(ViewerTest_AISManipulator, AIS_Manipulator)
-};
-
-IMPLEMENT_STANDARD_HANDLE (ViewerTest_AISManipulator, AIS_Manipulator)
-IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_AISManipulator, AIS_Manipulator)
-
-//===============================================================================================
 //function : VManipulator
 //purpose  :
 //===============================================================================================
@@ -12609,7 +12562,7 @@ static int VManipulator (Draw_Interpretor& theDi,
   {
     std::cout << theArgVec[0] << ": AIS object \"" << aName << "\" has been created.\n";
 
-    aManipulator = new ViewerTest_AISManipulator();
+    aManipulator = new AIS_Manipulator();
     aManipulator->SetModeActivationOnDetection (true);
     aMapAIS.Bind (aManipulator, aName);
   }
@@ -12715,10 +12668,13 @@ static int VManipulator (Draw_Interpretor& theDi,
       return 1;
     }
 
-    for (ViewerTest_MapOfAISManipulators::Iterator anIt (GetMapOfAISManipulators()); anIt.More(); anIt.Next())
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (aMapAIS);
+         anIter.More(); anIter.Next())
     {
-      if (anIt.Value()->IsAttached()
-       && anIt.Value()->Object() == anObject)
+      Handle(AIS_Manipulator) aManip = Handle(AIS_Manipulator)::DownCast (anIter.Key1());
+      if (!aManip.IsNull()
+       && aManip->IsAttached()
+       && aManip->Object() == anObject)
       {
         std::cerr << theArgVec[0] << " error: AIS object \"" << anObjName << "\" already has manipulator.\n";
         return 1;
