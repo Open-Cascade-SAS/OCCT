@@ -330,8 +330,9 @@ static Standard_Boolean SameParameter(TopoDS_Edge&    E,
   if (!HasPCurves(E))
     {
       Handle(Geom2dAdaptor_HCurve) HC2d = new Geom2dAdaptor_HCurve( Pcurv );
-      Approx_CurveOnSurface AppCurve(HC2d, S, HC2d->FirstParameter(), HC2d->LastParameter(),
-				     Precision::Confusion(), GeomAbs_C1, 10, 10, Standard_True);
+      Approx_CurveOnSurface AppCurve(HC2d, S, HC2d->FirstParameter(), HC2d->LastParameter(), 
+                                     Precision::Confusion());
+      AppCurve.Perform(10, 10, GeomAbs_C1, Standard_True);
       if (AppCurve.IsDone() && AppCurve.HasResult())
 	{
 	  C3d = AppCurve.Curve3d();

@@ -2169,9 +2169,8 @@ static Standard_Real SmartParameter(Draft_EdgeInfo& Einf,
   Standard_Real Udeb, Ufin;
   ProjCurve.Bounds(1, Udeb, Ufin);
   Standard_Integer MaxSeg = 20 + HProjector->NbIntervals(GeomAbs_C3);
-  Approx_CurveOnSurface appr( HProjector, hsur2, Udeb, Ufin, Tol,
-    GeomAbs_C1, 10, MaxSeg, 
-    Standard_False, Standard_False );
+  Approx_CurveOnSurface appr(HProjector, hsur2, Udeb, Ufin, Tol);
+  appr.Perform(MaxSeg, 10, GeomAbs_C1, Standard_False, Standard_False);
   Einf.ChangeSecondPC() = appr.Curve2d();
   Einf.ChangeGeometry() = appr.Curve3d();
   Einf.SetNewGeometry( Standard_True );

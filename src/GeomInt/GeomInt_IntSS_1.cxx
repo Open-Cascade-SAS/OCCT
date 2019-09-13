@@ -1031,9 +1031,8 @@ void GeomInt_IntSS::TreatRLine(const Handle(IntPatch_RLine)& theRL,
   //approximation of curve on surface.
   Standard_Integer aMaxDeg = 8;
   Standard_Integer aMaxSeg = 1000;
-  Approx_CurveOnSurface anApp(anAHC2d, aGAHS, tf, tl, Precision::Confusion(),
-                              GeomAbs_C1, aMaxDeg, aMaxSeg, 
-                              Standard_True, Standard_False);
+  Approx_CurveOnSurface anApp(anAHC2d, aGAHS, tf, tl, Precision::Confusion());
+  anApp.Perform(aMaxSeg, aMaxDeg, GeomAbs_C1, Standard_True, Standard_False);
   if(!anApp.HasResult())
     return;
 

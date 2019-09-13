@@ -685,9 +685,8 @@ void ProjLib_ProjectedCurve::Perform(const Handle(Adaptor3d_HCurve)& C)
           MaxSeg = myMaxSegments;
         }
 
-        Approx_CurveOnSurface appr(HProjector, mySurface, Udeb, Ufin, 
-                                   myTolerance, Continuity, MaxDegree, MaxSeg, 
-                                   Only3d, Only2d);
+        Approx_CurveOnSurface appr(HProjector, mySurface, Udeb, Ufin, myTolerance);
+        appr.Perform(MaxSeg, MaxDegree, Continuity, Only3d, Only2d);
 
         Handle(Geom2d_BSplineCurve) aRes = appr.Curve2d();
 

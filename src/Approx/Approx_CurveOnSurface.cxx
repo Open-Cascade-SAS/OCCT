@@ -27,8 +27,10 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
+#include <GeomConvert.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
@@ -300,6 +302,10 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
   }
 }
 
+//=============================================================================
+//function : Approx_CurveOnSurface
+//purpose  : Constructor
+//=============================================================================
  Approx_CurveOnSurface::Approx_CurveOnSurface(const Handle(Adaptor2d_HCurve2d)& C2D,
 					      const Handle(Adaptor3d_HSurface)& Surf,
 					      const Standard_Real First,
@@ -310,14 +316,75 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
 					      const Standard_Integer MaxSegments, 
 					      const Standard_Boolean only3d, 
 					      const Standard_Boolean only2d)
+: myC2D(C2D),
+  mySurf(Surf),
+  myFirst(First),
+  myLast(Last),
+  myTol(Tol),
+  myIsDone(Standard_False),
+  myHasResult(Standard_False),
+  myError3d(0.0),
+  myError2dU(0.0),
+  myError2dV(0.0)
+ {
+   Perform(MaxSegments, MaxDegree, S, only3d, only2d);
+ }
+
+//=============================================================================
+//function : Approx_CurveOnSurface
+//purpose  : Constructor
+//=============================================================================
+ Approx_CurveOnSurface::Approx_CurveOnSurface(const Handle(Adaptor2d_HCurve2d)& theC2D,
+                                              const Handle(Adaptor3d_HSurface)& theSurf,
+                                              const Standard_Real               theFirst,
+                                              const Standard_Real               theLast,
+                                              const Standard_Real               theTol)
+: myC2D(theC2D),
+  mySurf(theSurf),
+  myFirst(theFirst),
+  myLast(theLast),
+  myTol(theTol),
+  myIsDone(Standard_False),
+  myHasResult(Standard_False),
+  myError3d(0.0),
+  myError2dU(0.0),
+  myError2dV(0.0)
+{
+}
+
+//=============================================================================
+//function : Perform
+//purpose  :
+//=============================================================================
+void Approx_CurveOnSurface::Perform(const Standard_Integer theMaxSegments,
+                                    const Standard_Integer theMaxDegree,
+                                    const GeomAbs_Shape    theContinuity,
+                                    const Standard_Boolean theOnly3d,
+                                    const Standard_Boolean theOnly2d)
 {
   myIsDone = Standard_False;
-  if(only3d && only2d) throw Standard_ConstructionError();
-  GeomAbs_Shape Order  = S;
+  myHasResult = Standard_False;
+  myError2dU = 0.0;
+  myError2dV = 0.0;
+  myError3d = 0.0;
 
-  Handle( Adaptor2d_HCurve2d ) TrimmedC2D = C2D->Trim( First, Last, Precision::PConfusion() );
+  if(theOnly3d && theOnly2d) throw Standard_ConstructionError();
 
-  Adaptor3d_CurveOnSurface COnS( TrimmedC2D, Surf );
+  Handle( Adaptor2d_HCurve2d ) TrimmedC2D = myC2D->Trim( myFirst, myLast, Precision::PConfusion() );
+
+  Standard_Boolean isU, isForward;
+  Standard_Real aParam;
+  if (theOnly3d && isIsoLine(TrimmedC2D, isU, aParam, isForward))
+  {
+    if (buildC3dOnIsoLine(TrimmedC2D, isU, aParam, isForward))
+    {
+      myIsDone = Standard_True;
+      myHasResult = Standard_True;
+      return;
+    }
+  }
+
+  Adaptor3d_CurveOnSurface COnS( TrimmedC2D, mySurf );
   Handle(Adaptor3d_HCurveOnSurface) HCOnS = new Adaptor3d_HCurveOnSurface();
   HCOnS->Set(COnS);
 
@@ -327,37 +394,34 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
   Handle(TColStd_HArray1OfReal) ThreeDTol;
 
   // create evaluators and choose appropriate one
-  Approx_CurveOnSurface_Eval3d Eval3dCvOnSurf (HCOnS,             First, Last);
-  Approx_CurveOnSurface_Eval2d Eval2dCvOnSurf (       TrimmedC2D, First, Last);
-  Approx_CurveOnSurface_Eval   EvalCvOnSurf   (HCOnS, TrimmedC2D, First, Last);
+  Approx_CurveOnSurface_Eval3d Eval3dCvOnSurf (HCOnS,             myFirst, myLast);
+  Approx_CurveOnSurface_Eval2d Eval2dCvOnSurf (       TrimmedC2D, myFirst, myLast);
+  Approx_CurveOnSurface_Eval   EvalCvOnSurf   (HCOnS, TrimmedC2D, myFirst, myLast);
   AdvApprox_EvaluatorFunction* EvalPtr;
-  if ( only3d ) EvalPtr = &Eval3dCvOnSurf;
-  else if ( only2d ) EvalPtr = &Eval2dCvOnSurf;
+  if ( theOnly3d ) EvalPtr = &Eval3dCvOnSurf;
+  else if ( theOnly2d ) EvalPtr = &Eval2dCvOnSurf;
   else EvalPtr = &EvalCvOnSurf;
 
   // Initialization for 2d approximation
-  if(!only3d) {
+  if(!theOnly3d) {
     Num1DSS = 2;
     OneDTol = new TColStd_HArray1OfReal(1,Num1DSS);
 
     Standard_Real TolU, TolV;
 
-    TolU = Surf->UResolution(Tol)/2;
-    TolV = Surf->VResolution(Tol)/2;
+    TolU = mySurf->UResolution(myTol)/2;
+    TolV = mySurf->VResolution(myTol)/2;
 
     OneDTol->SetValue(1,TolU);
     OneDTol->SetValue(2,TolV);
   }
   
-  if(!only2d) {
+  if(!theOnly2d) {
     Num3DSS=1;
     ThreeDTol = new TColStd_HArray1OfReal(1,Num3DSS);
-    ThreeDTol->Init(Tol/2);
+    ThreeDTol->Init(myTol/2);
   }
 
-  myError2dU = 0;
-  myError2dV = 0;
-  myError3d = 0;
 
   Standard_Integer NbInterv_C2 = HCOnS->NbIntervals(GeomAbs_C2);
   TColStd_Array1OfReal CutPnts_C2(1, NbInterv_C2 + 1);
@@ -369,8 +433,8 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
   AdvApprox_PrefAndRec CutTool(CutPnts_C2,CutPnts_C3);
   AdvApprox_ApproxAFunction aApprox (Num1DSS, Num2DSS, Num3DSS, 
 	      			     OneDTol, TwoDTolNul, ThreeDTol,
-				     First, Last, Order,
-				     MaxDegree, MaxSegments,
+				     myFirst, myLast, theContinuity,
+				     theMaxDegree, theMaxSegments,
 				     *EvalPtr, CutTool);
 
   myIsDone = aApprox.IsDone();
@@ -381,14 +445,14 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
     Handle(TColStd_HArray1OfInteger) Mults = aApprox.Multiplicities();
     Standard_Integer Degree = aApprox.Degree();
 
-    if(!only2d) 
+    if(!theOnly2d) 
       {
 	TColgp_Array1OfPnt Poles(1,aApprox.NbPoles());
 	aApprox.Poles(1,Poles);
 	myCurve3d = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
 	myError3d = aApprox.MaxError(3, 1);
       }
-    if(!only3d) 
+    if(!theOnly3d) 
       {
 	TColgp_Array1OfPnt2d Poles2d(1,aApprox.NbPoles());
 	TColStd_Array1OfReal Poles1dU(1,aApprox.NbPoles());
@@ -404,8 +468,6 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
       }
   }
   
-//    }
-
 }
 
  Standard_Boolean Approx_CurveOnSurface::IsDone() const
@@ -443,3 +505,161 @@ void Approx_CurveOnSurface_Eval2d::Evaluate (Standard_Integer *Dimension,
   return myError2dV;
 }
 
+//=============================================================================
+//function : isIsoLine
+//purpose  :
+//=============================================================================
+Standard_Boolean Approx_CurveOnSurface::isIsoLine(const Handle(Adaptor2d_HCurve2d) theC2D,
+                                                  Standard_Boolean&                theIsU,
+                                                  Standard_Real&                   theParam,
+                                                  Standard_Boolean&                theIsForward) const
+{
+  // These variables are used to check line state (vertical or horizontal).
+  Standard_Boolean isAppropriateType = Standard_False;
+  gp_Pnt2d aLoc2d;
+  gp_Dir2d aDir2d;
+
+  // Test type.
+  const GeomAbs_CurveType aType = theC2D->GetType();
+  if (aType == GeomAbs_Line)
+  {
+    gp_Lin2d aLin2d = theC2D->Line();
+    aLoc2d = aLin2d.Location();
+    aDir2d = aLin2d.Direction();
+    isAppropriateType = Standard_True;
+  }
+  else if (aType == GeomAbs_BSplineCurve)
+  {
+    Handle(Geom2d_BSplineCurve) aBSpline2d = theC2D->BSpline();
+    if (aBSpline2d->Degree() != 1 || aBSpline2d->NbPoles() != 2)
+      return Standard_False; // Not a line or uneven parameterization.
+
+    aLoc2d = aBSpline2d->Pole(1);
+
+    // Vector should be non-degenerated.
+    gp_Vec2d aVec2d(aBSpline2d->Pole(1), aBSpline2d->Pole(2));
+    if (aVec2d.SquareMagnitude() < Precision::Confusion())
+      return Standard_False; // Degenerated spline.
+    aDir2d = aVec2d;
+
+    isAppropriateType = Standard_True;
+  }
+  else if (aType == GeomAbs_BezierCurve)
+  {
+    Handle(Geom2d_BezierCurve) aBezier2d = theC2D->Bezier();
+    if (aBezier2d->Degree() != 1 || aBezier2d->NbPoles() != 2)
+      return Standard_False; // Not a line or uneven parameterization.
+
+    aLoc2d = aBezier2d->Pole(1);
+
+    // Vector should be non-degenerated.
+    gp_Vec2d aVec2d(aBezier2d->Pole(1), aBezier2d->Pole(2));
+    if (aVec2d.SquareMagnitude() < Precision::Confusion())
+      return Standard_False; // Degenerated spline.
+    aDir2d = aVec2d;
+
+    isAppropriateType = Standard_True;
+  }
+
+  if (!isAppropriateType)
+    return Standard_False;
+
+  // Check line to be vertical or horizontal.
+  if (aDir2d.IsParallel(gp::DX2d(), Precision::Angular()))
+  {
+    // Horizontal line. V = const.
+    theIsU = Standard_False;
+    theParam = aLoc2d.Y();
+    theIsForward = aDir2d.Dot(gp::DX2d()) > 0.0;
+    return Standard_True;
+  }
+  else if (aDir2d.IsParallel(gp::DY2d(), Precision::Angular()))
+  {
+    // Vertical line. U = const.
+    theIsU = Standard_True;
+    theParam = aLoc2d.X();
+    theIsForward = aDir2d.Dot(gp::DY2d()) > 0.0;
+    return Standard_True;
+  }
+
+  return Standard_False;
+}
+
+#include <GeomLib.hxx>
+
+//=============================================================================
+//function : buildC3dOnIsoLine
+//purpose  :
+//=============================================================================
+Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d_HCurve2d) theC2D,
+                                                          const Standard_Boolean           theIsU,
+                                                          const Standard_Real              theParam,
+                                                          const Standard_Boolean           theIsForward)
+{
+  // Convert adapter to the appropriate type.
+  Handle(GeomAdaptor_HSurface) aGeomAdapter = Handle(GeomAdaptor_HSurface)::DownCast(mySurf);
+  if (aGeomAdapter.IsNull())
+    return Standard_False;
+
+  if (mySurf->GetType() == GeomAbs_Sphere)
+    return Standard_False;
+
+  // Extract isoline
+  Handle(Geom_Surface) aSurf = aGeomAdapter->ChangeSurface().Surface();
+  Handle(Geom_Curve) aC3d;
+
+  gp_Pnt2d aF2d = theC2D->Value(theC2D->FirstParameter());
+  gp_Pnt2d aL2d = theC2D->Value(theC2D->LastParameter());
+
+  if (theIsU)
+  {
+    aC3d = aSurf->UIso(theParam);
+    aC3d = new Geom_TrimmedCurve(aC3d, aF2d.Y(), aL2d.Y());
+  }
+  else
+  {
+    aC3d = aSurf->VIso(theParam);
+    aC3d = new Geom_TrimmedCurve(aC3d, aF2d.X(), aL2d.X());
+  }
+
+  // Convert arbitrary curve type to the b-spline.
+  myCurve3d = GeomConvert::CurveToBSplineCurve(aC3d, Convert_QuasiAngular);
+  if (!theIsForward)
+    myCurve3d->Reverse();
+
+  // Rebuild parameterization for the 3d curve to have the same parameterization with
+  // a two-dimensional curve. 
+  TColStd_Array1OfReal aKnots = myCurve3d->Knots();
+  BSplCLib::Reparametrize(theC2D->FirstParameter(), theC2D->LastParameter(), aKnots);
+  myCurve3d->SetKnots(aKnots);
+
+  // Evaluate error.
+  myError3d = 0.0;
+
+  const Standard_Real aParF = myFirst;
+  const Standard_Real aParL = myLast;
+  const Standard_Integer aNbPnt = 23;
+  for(Standard_Integer anIdx = 0; anIdx <= aNbPnt; ++anIdx)
+  {
+    const Standard_Real aPar = aParF + ((aParL - aParF) * anIdx) / aNbPnt;
+
+    const gp_Pnt2d aPnt2d = theC2D->Value(aPar);
+
+    const gp_Pnt aPntC3D = myCurve3d->Value(aPar);
+    const gp_Pnt aPntC2D = mySurf->Value(aPnt2d.X(), aPnt2d.Y());
+
+    const Standard_Real aSqDeviation = aPntC3D.SquareDistance(aPntC2D);
+    myError3d = Max(aSqDeviation, myError3d);
+  }
+
+  myError3d = Sqrt(myError3d);
+
+  // Target tolerance is not obtained. This situation happens for isolines on the sphere.
+  // OCCT is unable to convert it keeping original parameterization, while the geometric
+  // form of the result is entirely identical. In that case, it is better to utilize
+  // a general-purpose approach. 
+  if (myError3d > myTol)
+    return Standard_False;
+
+  return Standard_True;
+}

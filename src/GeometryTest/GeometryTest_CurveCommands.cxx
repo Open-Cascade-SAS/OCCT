@@ -367,9 +367,8 @@ static Standard_Integer gproject(Draw_Interpretor& di, Standard_Integer n, const
         return 0;
         }
       else {
-        Approx_CurveOnSurface appr(HPCur, hsur, Udeb, Ufin, myTol3d, 
-				   myContinuity, myMaxDegree, myMaxSeg, 
-				   Only3d, Only2d);
+        Approx_CurveOnSurface appr(HPCur, hsur, Udeb, Ufin, myTol3d);
+        appr.Perform(myMaxSeg, myMaxDegree, myContinuity, Only3d, Only2d);
         if(!Only3d) {
 	  PCur2d = appr.Curve2d();
 	  di << " Error in 2d is " << appr.MaxError2dU()

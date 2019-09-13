@@ -1552,9 +1552,8 @@ static Standard_Integer approxcurveonsurf(Draw_Interpretor& di, Standard_Integer
   Handle(Geom2dAdaptor_HCurve) A2d = new (Geom2dAdaptor_HCurve)(curve2d);
   Handle(GeomAdaptor_HSurface) AS = new (GeomAdaptor_HSurface)(Surf);
 
-  Approx_CurveOnSurface App(A2d, AS, A2d->FirstParameter(), A2d->LastParameter(),
-			    Tol,  Continuity,  MaxDeg, MaxSeg,
-			    Standard_True, Standard_False);
+  Approx_CurveOnSurface App(A2d, AS, A2d->FirstParameter(), A2d->LastParameter(), Tol);
+  App.Perform(MaxSeg, MaxDeg, Continuity, Standard_True, Standard_False);
 
   if(App.HasResult()) {
     Handle(Geom_BSplineCurve) BSCurve = App.Curve3d(); 

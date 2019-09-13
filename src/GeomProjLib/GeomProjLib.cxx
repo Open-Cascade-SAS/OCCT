@@ -340,8 +340,8 @@ Handle(Geom_Curve) GeomProjLib::Project( const Handle(Geom_Curve)& C,
     Standard_Real f,l;
     Proj.Bounds(1,f,l);
     Handle(Adaptor2d_HCurve2d) HC2d = Proj.Trim(f,l,TolU);
-    Approx_CurveOnSurface Approx(HC2d, HS, f, l, Tol,
-				 GeomAbs_C2,14,16,Standard_True);
+    Approx_CurveOnSurface Approx(HC2d, HS, f, l, Tol);
+    Approx.Perform(16, 14, GeomAbs_C2, Standard_True);
 
     // ici, on a toujours un type BSpline.
     if (Approx.IsDone() && Approx.HasResult())
