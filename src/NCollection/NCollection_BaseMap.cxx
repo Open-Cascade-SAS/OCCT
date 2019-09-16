@@ -17,6 +17,7 @@
 
 #include <NCollection_BaseMap.hxx>
 #include <TCollection.hxx>
+#include <Standard_Assert.hxx>
 
 //=======================================================================
 //function : BeginResize
@@ -29,20 +30,17 @@ Standard_Boolean  NCollection_BaseMap::BeginResize
    NCollection_ListNode**& data1,
    NCollection_ListNode**& data2) const 
 {
+  // get next size for the buckets array
   N = NextPrimeForMap(NbBuckets);
-  if (N <= myNbBuckets) {
-    if (!myData1)
-      N = myNbBuckets;
-    else
-      return Standard_False;
-  }
+  Standard_ASSERT (N > NbBuckets, "NextPrimeForMap failed to return valid number", return Standard_False);
+
   data1 = (NCollection_ListNode **)
     myAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
   memset(data1, 0, (N+1)*sizeof(NCollection_ListNode *));
   if (isDouble) 
   {
     data2 = (NCollection_ListNode **)
-    myAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
+      myAllocator->Allocate((N+1)*sizeof(NCollection_ListNode *));
     memset(data2, 0, (N+1)*sizeof(NCollection_ListNode *));
   }
   else

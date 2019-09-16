@@ -95,49 +95,51 @@ private:
     //! Empty constructor
     Iterator()
     : myMap (NULL),
-      myNode (NULL),
       myIndex (0) {}
+
     //! Constructor
     Iterator (const NCollection_IndexedDataMap& theMap)
-    : myMap  ((NCollection_IndexedDataMap* )&theMap),
-      myNode (!theMap.IsEmpty() ? (IndexedDataMapNode* )myMap->myData2[0] : NULL),
+    : myMap ((NCollection_IndexedDataMap*)&theMap),
       myIndex (1) {}
+
     //! Query if the end of collection is reached by iterator
     Standard_Boolean More(void) const
     { return (myMap != NULL) && (myIndex <= myMap->Extent()); }
+
     //! Make a step along the collection
     void Next(void)
-    {
-      myNode = (IndexedDataMapNode* )myMap->myData2[++myIndex - 1];
-    }
+    { ++myIndex; }
+
     //! Value access
     const TheItemType& Value(void) const
     {  
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedDataMap::Iterator::Value");
-      return myNode->Value();
+      return myMap->FindFromIndex(myIndex);
     }
+
     //! ChangeValue access
     TheItemType& ChangeValue(void) const
     {  
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedDataMap::Iterator::ChangeValue");
-      return myNode->ChangeValue();
+      return myMap->ChangeFromIndex(myIndex);
     }
+
     //! Key
     const TheKeyType& Key() const
     {
       Standard_NoSuchObject_Raise_if(!More(), "NCollection_IndexedDataMap::Iterator::Key");
-      return myNode->Key1();
+      return myMap->FindKey(myIndex);
     }
+
     //! Performs comparison of two iterators.
     Standard_Boolean IsEqual (const Iterator& theOther) const
     {
       return myMap == theOther.myMap &&
-             myNode == theOther.myNode &&
              myIndex == theOther.myIndex;
     }
+
   private:
-    NCollection_IndexedDataMap* myMap;   //!< Pointer to the map being iterated
-    IndexedDataMapNode*         myNode;  //!< Current node
+    NCollection_IndexedDataMap* myMap;   //!< Pointer to current node
     Standard_Integer            myIndex; //!< Current index
   };
   
