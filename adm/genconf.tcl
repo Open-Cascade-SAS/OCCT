@@ -202,6 +202,14 @@ proc wokdep:gui:UpdateList {} {
     }
     wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "liblzma" "lzma.h" "$aCheckLib" {"lzma" "xz"}
   }
+  if { "$::HAVE_E57" == "true" } {
+    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "e57" "e57/E57Foundation.h" "E57RefImpl" {"e57"}
+    set aCheckLib "xerces-c"
+    if { "$::tcl_platform(platform)" == "windows" } {
+      set aCheckLib "xerces-c_3"
+    }
+    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "xerces-c" "xercesc/sax2/XMLReaderFactory.hpp" "$aCheckLib" {"xerces"}
+  }
   if { "$::HAVE_RAPIDJSON" == "true" } {
     wokdep:SearchRapidJson anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -462,6 +470,9 @@ checkbutton   .myFrame.myChecks.myFFmpegCheck   -offvalue "false" -onvalue "true
 ttk::label    .myFrame.myChecks.myFFmpegLbl     -text "Use FFmpeg"
 #checkbutton   .myFrame.myChecks.myOpenClCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENCL    -command wokdep:gui:UpdateList
 #ttk::label    .myFrame.myChecks.myOpenClLbl     -text "Use OpenCL"
+checkbutton   .myFrame.myChecks.myRapidJsonCheck -offvalue "false" -onvalue "true" -variable HAVE_RAPIDJSON -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myRapidJsonLbl   -text "Use RapidJSON"
+
 checkbutton   .myFrame.myChecks.myMacGLXCheck   -offvalue "false" -onvalue "true" -variable MACOSX_USE_GLX
 ttk::label    .myFrame.myChecks.myMacGLXLbl     -text "Use X11 for windows drawing"
 ttk::label    .myFrame.myChecks.myVtkLbl        -text "Use VTK"
@@ -471,9 +482,8 @@ checkbutton   .myFrame.myChecks.myZLibCheck     -offvalue "false" -onvalue "true
 ttk::label    .myFrame.myChecks.myZLibLbl       -text "Use zlib"
 checkbutton   .myFrame.myChecks.myLzmaCheck     -offvalue "false" -onvalue "true" -variable HAVE_LIBLZMA   -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myLzmaLbl       -text "Use liblzma"
-
-checkbutton   .myFrame.myChecks.myRapidJsonCheck -offvalue "false" -onvalue "true" -variable HAVE_RAPIDJSON -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myChecks.myRapidJsonLbl   -text "Use RapidJSON"
+checkbutton   .myFrame.myChecks.myE57Check      -offvalue "false" -onvalue "true" -variable HAVE_E57       -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myE57Lbl        -text "Use E57"
 
 checkbutton   .myFrame.myChecks.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myQt4Lbl        -text "Search Qt4"
@@ -594,6 +604,9 @@ grid .myFrame.myChecks.myVtkLbl        -row $aCheckRowIter -column 3 -sticky w
 if { "$::tcl_platform(platform)" == "windows" } {
   grid .myFrame.myChecks.myD3dCheck    -row $aCheckRowIter -column 4 -sticky e
   grid .myFrame.myChecks.myD3dLbl      -row $aCheckRowIter -column 5 -sticky w
+} elseif { "$::tcl_platform(os)" == "Darwin" } {
+  grid .myFrame.myChecks.myMacGLXCheck -row $aCheckRowIter -column 4 -sticky e
+  grid .myFrame.myChecks.myMacGLXLbl   -row $aCheckRowIter -column 5 -sticky w
 }
 grid .myFrame.myChecks.myLzmaCheck     -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myLzmaLbl       -row $aCheckRowIter -column 7 -sticky w
@@ -601,14 +614,11 @@ grid .myFrame.myChecks.myJDKCheck      -row $aCheckRowIter -column 12 -sticky e
 grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 13 -sticky w
 
 incr aCheckRowIter
-if { "$::tcl_platform(os)" == "Darwin" } {
-  grid .myFrame.myChecks.myMacGLXCheck -row $aCheckRowIter -column 0 -sticky e
-  grid .myFrame.myChecks.myMacGLXLbl   -row $aCheckRowIter -column 1 -sticky w
-  incr aCheckRowIter
-}
+grid .myFrame.myChecks.myRapidJsonCheck -row $aCheckRowIter -column 0 -sticky e
+grid .myFrame.myChecks.myRapidJsonLbl   -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myE57Check      -row $aCheckRowIter -column 6 -sticky e
+grid .myFrame.myChecks.myE57Lbl        -row $aCheckRowIter -column 7 -sticky w
 
-grid .myFrame.myChecks.myRapidJsonCheck -row $aCheckRowIter -column 6 -sticky e
-grid .myFrame.myChecks.myRapidJsonLbl   -row $aCheckRowIter -column 7 -sticky w
 incr aCheckRowIter
 
 # Additional headers search paths

@@ -1370,6 +1370,11 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
   if { "$::HAVE_LIBLZMA" == "true" } {
     set aLibsMap(CSF_LIBLZMA) "liblzma"
   }
+  if { "$::HAVE_E57" == "true" && "$theOS" != "wnt" } {
+    # exclude wnt, as there are different pragma lib depending on debug/release
+    set aLibsMap(CSF_E57)    "E57RefImpl"
+    set aLibsMap(CSF_xerces) "xerces-c"
+  }
 
   if { "$theOS" == "wnt" } {
     #  WinAPI libraries

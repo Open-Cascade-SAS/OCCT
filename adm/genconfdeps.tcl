@@ -68,7 +68,7 @@ if { [info exists ::env(SHORTCUT_HEADERS)] } {
 }
 
 # fetch environment variables (e.g. set by custom.sh or custom.bat) and set them as tcl variables with the same name
-set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_RAPIDJSON HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo}
+set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_E57 HAVE_RAPIDJSON HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo}
 foreach anEnvIter $THE_ENV_VARIABLES {
   set ${anEnvIter} "false"
   if { [info exists ::env(${anEnvIter})] } {
@@ -146,9 +146,12 @@ proc wokdep:SearchHeader {theHeader} {
 # Search library file in $::CSF_OPT_LIB* and standard paths
 proc wokdep:SearchLib {theLib theBitness {theSearchPath ""}} {
   if { "$theSearchPath" != "" } {
-    set aPath "${theSearchPath}/${::SYS_LIB_PREFIX}${theLib}.${::SYS_LIB_SUFFIX}"
+    set aPath  "${theSearchPath}/${::SYS_LIB_PREFIX}${theLib}.${::SYS_LIB_SUFFIX}"
+    set aPath2 "${theSearchPath}/${::SYS_LIB_PREFIX}${theLib}.a"
     if { [file exists "$aPath"] } {
       return "$aPath"
+    } elseif { "$::tcl_platform(platform)" != "windows" && [file exists "$aPath2"] } {
+      return "$aPath2"
     } else {
       return ""
     }
@@ -156,31 +159,42 @@ proc wokdep:SearchLib {theLib theBitness {theSearchPath ""}} {
 
   # search in custom paths
   foreach aLibPath [set ::CSF_OPT_LIB$theBitness] {
-    set aPath "${aLibPath}/${::SYS_LIB_PREFIX}${theLib}.${::SYS_LIB_SUFFIX}"
+    set aPath  "${aLibPath}/${::SYS_LIB_PREFIX}${theLib}.${::SYS_LIB_SUFFIX}"
+    set aPath2 "${aLibPath}/${::SYS_LIB_PREFIX}${theLib}.a"
     if { [file exists "$aPath"] } {
       return "$aPath"
+    } elseif { "$::tcl_platform(platform)" != "windows" && [file exists "$aPath2"] } {
+      return "$aPath2"
     }
   }
 
   # search in system
   if { "$::ARCH" == "$theBitness"} {
-    set aPath "/usr/lib/${::SYS_LIB_PREFIX}${theLib}.${::SYS_LIB_SUFFIX}"
+    set aPath  "/usr/lib/${::SYS_LIB_PREFIX}${theLib}.${::SYS_LIB_SUFFIX}"
+    set aPath2 "/usr/lib/${::SYS_LIB_PREFIX}${theLib}.a"
     if { [file exists "$aPath"] } {
       return "$aPath"
+    } elseif { [file exists "$aPath2"] } {
+      return "$aPath2"
     }
   }
 
-
   if { "$::tcl_platform(os)" == "Linux" } {
     if { "$theBitness" == "64" } {
-      set aPath "/usr/lib/x86_64-linux-gnu/lib${theLib}.so"
+      set aPath  "/usr/lib/x86_64-linux-gnu/lib${theLib}.so"
+      set aPath2 "/usr/lib/x86_64-linux-gnu/lib${theLib}.a"
       if { [file exists "$aPath"] } {
         return "$aPath"
+      } elseif { [file exists "$aPath2"] } {
+        return "$aPath2"
       }
     } else {
-      set aPath "/usr/lib/i386-linux-gnu/lib${theLib}.so"
+      set aPath  "/usr/lib/i386-linux-gnu/lib${theLib}.so"
+      set aPath2 "/usr/lib/i386-linux-gnu/lib${theLib}.a"
       if { [file exists "$aPath"] } {
         return "$aPath"
+      } elseif { [file exists "$aPath2"] } {
+        return "$aPath2"
       }
     }
   }
