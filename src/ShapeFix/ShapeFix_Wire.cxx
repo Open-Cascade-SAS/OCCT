@@ -3225,12 +3225,21 @@ Standard_Boolean ShapeFix_Wire::FixNotchedEdges()
       Handle(Geom2d_Curve) c2d;
       Standard_Real a, b;
       sae.PCurve ( splitE, face, c2d, a, b, Standard_True );
-      Standard_Real ppar = (isRemoveFirst ? b : a);
       ShapeBuild_Edge sbe;
       TopAbs_Orientation orient = splitE.Orientation();
-      if ( Abs(param - ppar) > ::Precision::PConfusion() ) {
-	//pdn perform splitting of the edge and adding to wire
-	
+
+      // check whether the whole edges should be removed - this is the case
+      // when split point coincides with the end of the edge;
+      // for closed edges split point may fall at the other end (see issue #0029780)
+      if (Abs(param - (isRemoveFirst ? b : a)) <= ::Precision::PConfusion() ||
+          (sae.IsClosed3d(splitE) && Abs(param - (isRemoveFirst ? a : b)) <= ::Precision::PConfusion()))
+      {
+        FixDummySeam(n1);
+        // The seam edge is removed from the list. So, need to step back to avoid missing of edge processing
+        i--;
+      }
+      else // perform splitting of the edge and adding to wire
+      {
 	//pdn check if it is necessary
 	if( Abs((isRemoveFirst ? a : b)-param) < ::Precision::PConfusion() ) {
 	  continue;
@@ -3285,12 +3294,6 @@ Standard_Boolean ShapeFix_Wire::FixNotchedEdges()
 	
 	FixDummySeam(isRemoveLast ? NbEdges() : toRemove);
 	myLastFixStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
-      }
-      else 
-      {
-        FixDummySeam(n1);
-        // The seam edge is removed from the list. So, need to step back to avoid missing of edge processing
-        i--;
       }
   
       i--;

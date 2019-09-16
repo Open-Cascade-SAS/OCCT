@@ -490,7 +490,7 @@ static unsigned int __stdcall CpuFunc (void * /*param*/)
       aTimer.Stop();
       if (IsDebuggerPresent())
       {
-        std::cout << "ERROR: CPU limit (" << CPU_LIMIT << " sec) has been reached but ignored because of attached Debugger" << std::endl;
+        std::cout << "Info: CPU limit (" << CPU_LIMIT << " sec) has been reached but ignored because of attached Debugger" << std::endl;
         return 0;
       }
       else
@@ -504,7 +504,7 @@ static unsigned int __stdcall CpuFunc (void * /*param*/)
       aTimer.Stop();
       if (IsDebuggerPresent())
       {
-        std::cout << "ERROR: Elapsed limit (" << CPU_LIMIT << " sec) has been reached but ignored because of attached Debugger" << std::endl;
+        std::cout << "Info: Elapsed limit (" << CPU_LIMIT << " sec) has been reached but ignored because of attached Debugger" << std::endl;
         return 0;
       }
       else
