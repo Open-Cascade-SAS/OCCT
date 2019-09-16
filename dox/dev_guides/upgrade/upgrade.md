@@ -1584,10 +1584,6 @@ To use the custom printer in OCAF, it can be either added to default messenger o
 @subsection upgrade_740_BRepPrimAPI_MakeRevol Changes in BRepPrimAPI_MakeRevol algorithm
 Previously the algorithm could create a shape with the same degenerated edge shared between some faces. Now it is prevented. The algorithm creates the different copy of this edge for each face. The method *Generated(...)* has been changed in order to apply restriction to the input shape: input shape can be only of type VERTEX, EDGE, FACE or SOLID. For input shape of another type the method always returns empty list.
 
-@subsection upgrade_740_extremaalgo Changes in behavior of Extrema algorithms
-
-Since OCCT 7.4.0 exception is thrown on the attempt of taking points in case of infinite number of solution (IsParallel status). Request of distances is available as before. Method NbExt() always returns 1 in such cases. 
-
 @subsection upgrade_740_removed Removed features
 * The following methods of the class *BRepAlgoAPI_BooleanOperation* have been removed as obsolete or replaced:
   - *BuilderCanWork* can be replaced with *IsDone* or *HasErrors* method.
