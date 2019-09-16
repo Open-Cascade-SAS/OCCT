@@ -597,7 +597,10 @@ static Standard_Integer WriteVrml(Draw_Interpretor& di, Standard_Integer argc, c
   Standard_Real anOCCLengthUnit =
       UnitsMethods::GetLengthFactorValue(Interface_Static::IVal("xstep.cascade.unit"));
   Standard_Real aScale = 0.001*anOCCLengthUnit;
-  writer.WriteDoc(aDoc, argv[2], aScale);
+  if (!writer.WriteDoc(aDoc, argv[2], aScale))
+  {
+    di << "Error: File " << argv[2] << " was not written\n";
+  }
 
   return 0;
 }

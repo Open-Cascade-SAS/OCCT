@@ -532,7 +532,10 @@ static Standard_Integer writevrml
   case 2: writer.SetRepresentation(VrmlAPI_BothRepresentation); break;
   }
 
-  writer.Write(aShape, argv[2], aVersion);
+  if (!writer.Write(aShape, argv[2], aVersion))
+  {
+    di << "Error: File " << argv[2] << " was not written\n";
+  }
 
   return 0;
 }

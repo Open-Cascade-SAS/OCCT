@@ -222,20 +222,26 @@ Handle(Vrml_Material) VrmlAPI_Writer::GetUnfreeBoundsMaterial() const
   return myUnfreeBoundsMaterial;
 }
 
-void VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFile, const Standard_Integer aVersion) const
+Standard_Boolean VrmlAPI_Writer::Write(const TopoDS_Shape& aShape,const Standard_CString aFile, const Standard_Integer aVersion) const
 {
   if (aVersion == 1)
-    write_v1(aShape, aFile);
+    return write_v1 (aShape, aFile);
   else if (aVersion == 2)
-    write_v2(aShape, aFile);
+    return write_v2 (aShape, aFile);
+
+  return Standard_False;
 }
 
-void VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,const Standard_CString aFile) const
+Standard_Boolean VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,const Standard_CString aFile) const
 {
   OSD_Path thePath(aFile);
   TCollection_AsciiString theFile;thePath.SystemName(theFile);
   std::ofstream outfile;
   OSD_OpenStream(outfile, theFile.ToCString(), std::ios::out);
+  if (!outfile)
+  {
+    return Standard_False;
+  }
   Handle(VrmlConverter_IsoAspect) ia = new VrmlConverter_IsoAspect;  // UIso
   Handle(VrmlConverter_IsoAspect) ia1 = new VrmlConverter_IsoAspect; //VIso
   ia->SetMaterial(myUisoMaterial);
@@ -352,18 +358,21 @@ void VrmlAPI_Writer::write_v1(const TopoDS_Shape& aShape,const Standard_CString 
       VrmlConverter_WFDeflectionShape::Add(outfile,aShape,myDrawer);
       Group2.Print(outfile);
     }
-  S2.Print(outfile); 
-  S1.Print(outfile); 
+  S2.Print(outfile);
+  S1.Print(outfile);
+
+  outfile.close();
+  return outfile.good();
 }
 
-void VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,const Standard_CString aFile) const
+Standard_Boolean VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,const Standard_CString aFile) const
 {
   Standard_Boolean anExtFace = Standard_False;
   if(myRepresentation == VrmlAPI_ShadedRepresentation || myRepresentation == VrmlAPI_BothRepresentation) 
     anExtFace = Standard_True;
 
   Standard_Boolean anExtEdge = Standard_False;
-  if(myRepresentation == VrmlAPI_WireFrameRepresentation|| myRepresentation == VrmlAPI_BothRepresentation)
+  if(myRepresentation == VrmlAPI_WireFrameRepresentation || myRepresentation == VrmlAPI_BothRepresentation)
     anExtEdge = Standard_True;
 
   VrmlData_Scene aScene;
@@ -373,17 +382,21 @@ void VrmlAPI_Writer::write_v2(const TopoDS_Shape& aShape,const Standard_CString 
 
   std::ofstream anOutStream;
   OSD_OpenStream(anOutStream, aFile, std::ios::out);
-  if (!anOutStream.fail())
+  if (anOutStream)
   {
-      anOutStream << aScene;
+    anOutStream << aScene;
+    anOutStream.close();
+    return anOutStream.good();
   }
+
+  return Standard_False;
 }
 
 //=======================================================================
 //function : WriteDoc
 //purpose  : 
 //=======================================================================
-void VrmlAPI_Writer::WriteDoc(
+Standard_Boolean VrmlAPI_Writer::WriteDoc(
   const Handle(TDocStd_Document) &theDoc,
   const Standard_CString theFile,
   const Standard_Real theScale) const
@@ -394,9 +407,13 @@ void VrmlAPI_Writer::WriteDoc(
 
   std::ofstream anOutStream;
   OSD_OpenStream(anOutStream, theFile, std::ios::out);
-  if (!anOutStream.fail())
+  if (anOutStream)
   {
-      anOutStream << aScene;
+    anOutStream << aScene;
+    anOutStream.close();
+    return anOutStream.good();
   }
+
+  return Standard_False;
 }
 
