@@ -40,7 +40,8 @@
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Geom_Surface.hxx>
-
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <algorithm>
 
 namespace
@@ -173,7 +174,9 @@ void StdPrs_Isolines::AddOnTriangulation (const TopoDS_Face&          theFace,
   // Evaluate parameters for uv isolines.
   TColStd_SequenceOfReal aUIsoParams;
   TColStd_SequenceOfReal aVIsoParams;
-  UVIsoParameters (theFace, aNbIsoU, aNbIsoV, theDrawer->MaximalParameterValue(), aUIsoParams, aVIsoParams);
+  Standard_Real aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
+  UVIsoParameters (theFace, aNbIsoU, aNbIsoV, theDrawer->MaximalParameterValue(), aUIsoParams, aVIsoParams,
+                   aUmin, aUmax, aVmin, aVmax);
 
   // Access surface definition.
   TopLoc_Location aLocSurface;
@@ -196,6 +199,24 @@ void StdPrs_Isolines::AddOnTriangulation (const TopoDS_Face&          theFace,
   {
     aSurface = Handle (Geom_Surface)::DownCast (
       aSurface->Transformed ((aLocSurface / aLocTriangulation).Transformation()));
+  }
+
+  const Handle(Standard_Type)& TheType = aSurface->DynamicType();
+  if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
+  {
+    Standard_Real u1, u2, v1, v2;
+    aSurface->Bounds(u1, u2, v1, v2);
+    //Isolines of Offset surfaces are calculated by approximation and
+    //cannot be calculated for infinite limits.
+    if (Precision::IsInfinite(u1) || Precision::IsInfinite(u2) || 
+      Precision::IsInfinite(v1) || Precision::IsInfinite(v2))
+    {
+      u1 = Max(aUmin, u1);
+      u2 = Min(aUmax, u2);
+      v1 = Max(aVmin, v1);
+      v2 = Min(aVmax, v2);
+      aSurface = new Geom_RectangularTrimmedSurface(aSurface, u1, u2, v1, v2);
+    }
   }
 
   addOnTriangulation (aTriangulation, aSurface, aLocTriangulation, aUIsoParams, aVIsoParams, theUPolylines, theVPolylines);
@@ -328,7 +349,9 @@ void StdPrs_Isolines::AddOnSurface (const TopoDS_Face&          theFace,
 
   // Evaluate parameters for uv isolines.
   TColStd_SequenceOfReal aUIsoParams, aVIsoParams;
-  UVIsoParameters (theFace, aNbIsoU, aNbIsoV, theDrawer->MaximalParameterValue(), aUIsoParams, aVIsoParams);
+  Standard_Real aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
+  UVIsoParameters (theFace, aNbIsoU, aNbIsoV, theDrawer->MaximalParameterValue(), aUIsoParams, aVIsoParams,
+                   aUmin, aUmax, aVmin, aVmax);
 
   BRepAdaptor_Surface aSurface (theFace);
   addOnSurface (new BRepAdaptor_HSurface (aSurface),
@@ -575,14 +598,26 @@ void StdPrs_Isolines::UVIsoParameters (const TopoDS_Face&      theFace,
                                        const Standard_Integer  theNbIsoV,
                                        const Standard_Real     theUVLimit,
                                        TColStd_SequenceOfReal& theUIsoParams,
-                                       TColStd_SequenceOfReal& theVIsoParams)
+                                       TColStd_SequenceOfReal& theVIsoParams,
+                                       Standard_Real& theUmin,
+                                       Standard_Real& theUmax,
+                                       Standard_Real& theVmin,
+                                       Standard_Real& theVmax)
 {
-  Standard_Real aUmin = 0.0;
-  Standard_Real aUmax = 0.0;
-  Standard_Real aVmin = 0.0;
-  Standard_Real aVmax = 0.0;
 
-  BRepTools::UVBounds (theFace, aUmin, aUmax, aVmin, aVmax);
+  TopLoc_Location aLocation;
+  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface(theFace, aLocation);
+  if (aSurface.IsNull())
+  {
+    return;
+  }
+
+  BRepTools::UVBounds (theFace, theUmin, theUmax, theVmin, theVmax);
+
+  Standard_Real aUmin = theUmin;
+  Standard_Real aUmax = theUmax;
+  Standard_Real aVmin = theVmin;
+  Standard_Real aVmax = theVmax;
 
   if (Precision::IsInfinite (aUmin))
     aUmin = -theUVLimit;
@@ -593,12 +628,6 @@ void StdPrs_Isolines::UVIsoParameters (const TopoDS_Face&      theFace,
   if (Precision::IsInfinite (aVmax))
     aVmax = theUVLimit;
 
-  TopLoc_Location aLocation;
-  const Handle(Geom_Surface)& aSurface = BRep_Tool::Surface (theFace, aLocation);
-  if (aSurface.IsNull())
-  {
-    return;
-  }
 
   const Standard_Boolean isUClosed = aSurface->IsUClosed();
   const Standard_Boolean isVClosed = aSurface->IsVClosed();
@@ -718,7 +747,7 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation (const Handle(Geom_
     {
       // Do linear interpolation of point coordinates by triangulation nodes.
       // Get 3d point on surface.
-      Handle(Geom_Curve) anIso1, anIso2, anIso3;
+      Handle(Geom_Curve) anIso1, anIso2;
       Standard_Real aPntOnNode1Iso = 0.0;
       Standard_Real aPntOnNode2Iso = 0.0;
       Standard_Real aPntOnNode3Iso = 0.0;
@@ -730,7 +759,6 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation (const Handle(Geom_
         aPntOnNode3Iso = aCrossU;
         anIso1 = theSurface->VIso (aNodeUV1.Y());
         anIso2 = theSurface->VIso (aNodeUV2.Y());
-        anIso3 = theSurface->VIso (aCrossV);
       }
       else if (theIsoline.Direction().Y() == 0.0)
       {
@@ -739,12 +767,10 @@ Standard_Boolean StdPrs_Isolines::findSegmentOnTriangulation (const Handle(Geom_
         aPntOnNode3Iso = aCrossV;
         anIso1 = theSurface->UIso (aNodeUV1.X());
         anIso2 = theSurface->UIso (aNodeUV2.X());
-        anIso3 = theSurface->UIso (aCrossU);
       }
 
       GeomAdaptor_Curve aCurveAdaptor1 (anIso1);
       GeomAdaptor_Curve aCurveAdaptor2 (anIso2);
-      GeomAdaptor_Curve aCurveAdaptor3 (anIso3);
       Standard_Real aLength1 = GCPnts_AbscissaPoint::Length (aCurveAdaptor1, aPntOnNode1Iso, aPntOnNode3Iso, 1e-2);
       Standard_Real aLength2 = GCPnts_AbscissaPoint::Length (aCurveAdaptor2, aPntOnNode2Iso, aPntOnNode3Iso, 1e-2);
       if (Abs (aLength1) < Precision::Confusion() || Abs (aLength2) < Precision::Confusion())

@@ -170,12 +170,20 @@ public:
   //! @param theUVLimit [in] the u, v parameter value limit.
   //! @param theUIsoParams [out] the sequence of u isoline parameters.
   //! @param theVIsoParams [out] the sequence of v isoline parameters.
+  //! @param theUmin [out] the lower U boundary of  theFace.
+  //! @param theUmax [out] the upper U boundary of  theFace.
+  //! @param theVmin [out] the lower V boundary of  theFace.
+  //! @param theVmax [out] the upper V boundary of  theFace.
   Standard_EXPORT static void UVIsoParameters (const TopoDS_Face&      theFace,
                                                const Standard_Integer  theNbIsoU,
                                                const Standard_Integer  theNbIsoV,
                                                const Standard_Real     theUVLimit,
                                                TColStd_SequenceOfReal& theUIsoParams,
-                                               TColStd_SequenceOfReal& theVIsoParams);
+                                               TColStd_SequenceOfReal& theVIsoParams,
+                                               Standard_Real& theUmin,
+                                               Standard_Real& theUmax, 
+                                               Standard_Real& theVmin,
+                                               Standard_Real& theVmax);
 
 public:
 

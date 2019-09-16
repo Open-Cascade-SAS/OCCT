@@ -1,0 +1,13 @@
+puts "============="
+puts "0030907: Visualization Algorithms - impossible to compute iso-lines for an offset face made by a face of linear extrusion"
+puts "============="
+
+pload MODELING VISUALIZATION
+restore  [locate_data_file bug30907.brep] f
+offsetshape r f 20
+vdisplay r
+vfit
+
+puts [vaspects -isoontriangulation 1]
+
+vdump ${imagedir}/${casename}.png
