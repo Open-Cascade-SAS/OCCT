@@ -16,7 +16,7 @@ meshcolors m elem2 1
 vselmode 0 1
 
 vmoveto 200 200
-if {[vreadpixel 197 257 rgb name] != "CYAN1"} {
+if {[vreadpixel 197 257 rgb name] != "CYAN"} {
   puts "ERROR: presentation for dynamic highlight of the object is wrong!"
 }
 vmoveto 0 0

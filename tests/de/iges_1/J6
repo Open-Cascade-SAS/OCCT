@@ -14,7 +14,7 @@ TOLERANCE   : MaxTol   =    0.820956344  (    0.821038439 )  AvgTol   =  0.00802
 LABELS      : N0Labels = 289  ( 289 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 289  ( 289 )   NameLabels = 289  ( 289 )   ColorLabels = 101  ( 101 )   LayerLabels = 288  ( 288 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 8 )
-COLORS      : Colors   = RED WHITE  ( BURLYWOOD1 DARKORANGE DEEPSKYBLUE1 LEMONCHIFFON1 MAGENTA1 MEDIUMSPRINGGREEN RED WHITE )
+COLORS      : Colors   = RED WHITE  ( BURLYWOOD1 DARKORANGE DEEPSKYBLUE1 LEMONCHIFFON1 MAGENTA MEDIUMSPRINGGREEN RED WHITE )
 NLAYERS     : NLayers  = 9  ( 9 )
 LAYERS      : Layers   = 1 11 19 2 3 5 6 8 9  ( 1 11 19 2 3 5 6 8 9 )
 

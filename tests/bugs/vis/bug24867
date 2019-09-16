@@ -13,11 +13,11 @@ vfit
 vsetdispmode 1
 vaspects -setwidth 5
 vmoveto 200 200
-if { "[vreadpixel 264 288 rgb name]" != "CYAN1" } {
+if { "[vreadpixel 264 288 rgb name]" != "CYAN" } {
   puts "Error : Highlighting of dimension with flipping in local context failed."
 }
 
-if { "[vreadpixel 251 271 rgb name]" != "CYAN1" } {
+if { "[vreadpixel 251 271 rgb name]" != "CYAN" } {
   puts "Error : Highlighting of dimension with flipping in local context failed."
 }
 

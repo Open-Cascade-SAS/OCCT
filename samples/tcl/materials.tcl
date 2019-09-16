@@ -4,36 +4,22 @@
 #Title: Material properties in viewer
 
 set THE_MATERIALS {brass bronze copper gold jade neon_phc pewter obsidian plaster plastic satin silver steel stone chrome aluminium water glass diamond charcoal}
-set THE_COLORS    {default red green blue1}
+set THE_COLORS    {default red green blue}
 set THE_ROW_DIST  35
 
 proc drawLabels {} {
   set x 20
   set y 15
-  set r 0.098
-  set g 0.098
-  set b 0.098
   foreach aMatIter $::THE_MATERIALS {
-    vdrawtext "$aMatIter" "$aMatIter" -pos $x $y 0 -color $r $g $b -halign right -valign center -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
+    vdrawtext "$aMatIter" "$aMatIter" -pos $x $y 0 -color GRAY10 -halign right -valign center -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
     incr y 10
   }
   set x 40
   set y  5
   foreach aColIter $::THE_COLORS {
-    if { $aColIter == "red" } {
-      set r 1.0
-      set g 0.0
-      set b 0
-    } elseif { $aColIter == "green" } {
-      set r 0.0
-      set g 1.0
-      set b 0.0
-    } elseif { $aColIter == "blue1" } {
-      set r 0.0
-      set g 0.0
-      set b 1.0
-    }
-    vdrawtext "$aColIter" "$aColIter" -pos $x $y 0 -color $r $g $b -halign center -valign center -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
+    set aLabColor "$aColIter"
+    if { "$aColIter" == "default" } { set aLabColor BLACK }
+    vdrawtext "$aColIter" "$aColIter" -pos $x $y 0 -color "$aLabColor" -halign center -valign center -angle 000 -zoom 0 -height 14 -aspect regular -font Arial
     incr x $::THE_ROW_DIST
   }
 }
@@ -69,7 +55,7 @@ vclose ALL
 vinit View1 w=768 h=768
 vtop
 vglinfo
-vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
 
 vlight -change 0 -dir 0.577 -0.577 -0.577
 vrenderparams -msaa 8

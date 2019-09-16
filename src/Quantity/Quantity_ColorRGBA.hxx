@@ -91,10 +91,10 @@ public:
   //! Two colors are considered to be equal if their distance is no greater than Epsilon().
   bool operator== (const Quantity_ColorRGBA& theOther) const { return IsEqual (theOther); }
 
+public:
+
   //! Finds color from predefined names.
-  //! For example, the name of the color which
-  //! corresponds to "BLACK" is Quantity_NOC_BLACK.
-  //! Returns false if name is unknown.
+  //! For example, the name of the color which corresponds to "BLACK" is Quantity_NOC_BLACK.
   //! An alpha component is set to 1.0.
   //! @param theColorNameString the color name
   //! @param theColor a found color
@@ -110,7 +110,7 @@ public:
     return true;
   }
 
-  //! Parses the string as a hex color (like "#FF0" for short RGB color, "#FF0F" for short RGBA color,
+  //! Parses the string as a hex color (like "#FF0" for short sRGB color, "#FF0F" for short sRGBA color,
   //! "#FFFF00" for RGB color, or "#FFFF00FF" for RGBA color)
   //! @param theHexColorString the string to be parsed
   //! @param theColor a color that is a result of parsing
@@ -132,6 +132,28 @@ public:
              anSRgbInt.r(), anSRgbInt.g(), anSRgbInt.b(), anSRgbInt.a());
     return aBuff;
   }
+
+public:
+
+  //! Convert linear RGB components into sRGB using OpenGL specs formula.
+  static NCollection_Vec4<float> Convert_LinearRGB_To_sRGB (const NCollection_Vec4<float>& theRGB)
+  {
+    return NCollection_Vec4<float> (Quantity_Color::Convert_LinearRGB_To_sRGB (theRGB.r()),
+                                    Quantity_Color::Convert_LinearRGB_To_sRGB (theRGB.g()),
+                                    Quantity_Color::Convert_LinearRGB_To_sRGB (theRGB.b()),
+                                    theRGB.a());
+  }
+
+  //! Convert sRGB components into linear RGB using OpenGL specs formula.
+  static NCollection_Vec4<float> Convert_sRGB_To_LinearRGB (const NCollection_Vec4<float>& theRGB)
+  {
+    return NCollection_Vec4<float> (Quantity_Color::Convert_sRGB_To_LinearRGB (theRGB.r()),
+                                    Quantity_Color::Convert_sRGB_To_LinearRGB (theRGB.g()),
+                                    Quantity_Color::Convert_sRGB_To_LinearRGB (theRGB.b()),
+                                    theRGB.a());
+  }
+
+public:
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;

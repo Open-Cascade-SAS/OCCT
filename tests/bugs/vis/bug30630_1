@@ -30,7 +30,7 @@ vaspects a -setBackFaceColor RED
 vfit
 box aa -0.5 0.5 0.5 0.1 0.1 0.1
 vdisplay -dispMode 1 aa
-vsetcolor aa BLUE1
+vsetcolor aa BLUE
 vdump $imagedir/${casename}_mirror.png
 if { [vreadpixel 300 200 rgb name] != "RED2" } { puts "Error: shell of mirrored box should show back faces" }
 verase a

@@ -12,7 +12,7 @@ vcolorscale cs -demo
 vcolorscale cs -range 0 20 5
 
 # Set user-defined colors and labels for color scale
-vcolorscale cs -colors white red green blue1 gray
+vcolorscale cs -colors white red green BLUE gray
 vdump ${imagedir}/${casename}_pos.png
 
 if {[vcolorscale cs -findcolor  0] != "WHITE"} { puts "ERROR: wrong 1st segment сolor" }

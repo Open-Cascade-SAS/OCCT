@@ -8,7 +8,7 @@ set aShape2 [locate_data_file occ/Bottom.brep]
 
 vinit View1
 vsetdispmode 1
-vbackground -gradient 0.705882 0.705882 0.705882 WHITE -gradientMode VERTICAL
+vbackground -gradient B4B4B4 WHITE -gradientMode VERTICAL
 restore $aShape1 s1
 restore $aShape2 s2
 vdisplay s1

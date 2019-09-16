@@ -13,11 +13,11 @@ Quantity_Coefficient.hxx
 Quantity_CoefficientOfExpansion.hxx
 Quantity_Color.cxx
 Quantity_Color.hxx
+Quantity_ColorTable.pxx
 Quantity_ColorHasher.hxx
 Quantity_ColorRGBA.cxx
 Quantity_ColorRGBA.hxx
 Quantity_ColorRGBAHasher.hxx
-Quantity_ColorDefinitionError.hxx
 Quantity_Concentration.hxx
 Quantity_Conductivity.hxx
 Quantity_Constant.hxx

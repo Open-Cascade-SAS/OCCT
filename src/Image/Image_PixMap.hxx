@@ -102,26 +102,38 @@ public: // high-level API
 
   //! Returns the pixel color. This function is relatively slow.
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
-  //! @param theX column index from left
-  //! @param theY row    index from top
+  //! @param theX [in] column index from left
+  //! @param theY [in] row    index from top
+  //! @param theToLinearize [in] when TRUE, the color stored in non-linear color space (e.g. Image_Format_RGB) will be linearized
   //! @return the pixel color
   Standard_EXPORT Quantity_ColorRGBA PixelColor (const Standard_Integer theX,
-                                                 const Standard_Integer theY) const;
+                                                 const Standard_Integer theY,
+                                                 const Standard_Boolean theToLinearize = Standard_False) const;
 
   //! Sets the pixel color. This function is relatively slow.
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
+  //! @param theX [in] column index from left
+  //! @param theY [in] row    index from top
+  //! @param theColor [in] color to store
+  //! @param theToDeLinearize [in] when TRUE, the gamma correction will be applied for storing in non-linear color space (e.g. Image_Format_RGB)
   void SetPixelColor (const Standard_Integer theX,
                       const Standard_Integer theY,
-                      const Quantity_Color&  theColor)
+                      const Quantity_Color&  theColor,
+                      const Standard_Boolean theToDeLinearize = Standard_False)
   {
-    SetPixelColor (theX, theY, Quantity_ColorRGBA (theColor, 1.0f));
+    SetPixelColor (theX, theY, Quantity_ColorRGBA (theColor, 1.0f), theToDeLinearize);
   }
 
   //! Sets the pixel color. This function is relatively slow.
   //! Beware that this method takes coordinates in opposite order in contrast to ::Value() and ::ChangeValue().
+  //! @param theX [in] column index from left
+  //! @param theY [in] row    index from top
+  //! @param theColor [in] color to store
+  //! @param theToDeLinearize [in] when TRUE, the gamma correction will be applied for storing in non-linear color space (e.g. Image_Format_RGB)
   Standard_EXPORT void SetPixelColor (const Standard_Integer theX,
                                       const Standard_Integer theY,
-                                      const Quantity_ColorRGBA& theColor);
+                                      const Quantity_ColorRGBA& theColor,
+                                      const Standard_Boolean theToDeLinearize = Standard_False);
 
   //! Initialize image plane as wrapper over alien data.
   //! Data will not be copied! Notice that caller should ensure

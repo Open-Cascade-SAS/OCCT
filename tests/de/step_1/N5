@@ -11,7 +11,7 @@ TOLERANCE   : MaxTol   = 0.003734968074  (  0.00847629334 )  AvgTol   =  0.00037
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 116  ( 116 )  N2Labels = 0  ( 0 )   TotalLabels = 117  ( 117 )   NameLabels = 1  ( 1 )   ColorLabels = 117  ( 117 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )
-COLORS      : Colors   = MAGENTA1 RED  ( MAGENTA1 RED )
+COLORS      : Colors   = MAGENTA RED  ( MAGENTA RED )
 NLAYERS     : NLayers  = 0  ( 0 )
 LAYERS      : Layers   =   (  )
 

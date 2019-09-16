@@ -9,7 +9,7 @@ vclear
 vclose ALL
 vinit View1 -width 768 -height 409
 vzbufftrihedron
-vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
 box b1 -2 0  2 1 0.2 1
 box b2  2 0  2 1 0.2 1
 box b3  0 0  0 1 0.2 1
@@ -24,8 +24,8 @@ vdrawtext t1 " b1: phong hollow-edges " -pos -2 0 2 -halign RIGHT -disptype SUBT
 vaspects  b2 -setShadingModel GOURAUD -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeColor YELLOW
 vdrawtext t2 " b2: gouraud solid-edges " -pos 2 0 2 -halign RIGHT -disptype SUBTITLE -color BLACK -subColor YELLOW
 
-vaspects  b3 -setShadingModel PHONG -setInteriorStyle SOLID -setDrawEdges 1 -edgeWidth 2 -setEdgeColor BLUE1
-vdrawtext t3 " b3: phong solid-edges " -pos 0 0 0 -halign RIGHT -disptype SUBTITLE -color WHITE -subColor BLUE1
+vaspects  b3 -setShadingModel PHONG -setInteriorStyle SOLID -setDrawEdges 1 -edgeWidth 2 -setEdgeColor BLUE
+vdrawtext t3 " b3: phong solid-edges " -pos 0 0 0 -halign RIGHT -disptype SUBTITLE -color WHITE -subColor BLUE
 
 vaspects  b4 -setShadingModel GOURAUD -setInteriorStyle HIDDENLINE -setDrawEdges 1 -setEdgeColor RED
 vdrawtext t4 " b4: hiddenline-edges " -pos -2 0 -2 -halign RIGHT -disptype SUBTITLE -color BLACK -subColor RED

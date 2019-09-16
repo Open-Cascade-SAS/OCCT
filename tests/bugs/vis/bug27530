@@ -13,7 +13,7 @@ proc check_highlighting { theHiBoxIdx theCoords } {
   set nextColor [vreadpixel [lindex $theCoords [expr $aNext * 2] ] [lindex $theCoords [expr $aNext * 2 + 1] ] name]
   set nextNextColor [vreadpixel [lindex $theCoords [expr $aNextNext * 2] ] [lindex $theCoords [expr $aNextNext * 2 + 1] ] name]
 
-  if {$hiColor == "CYAN1 1" && $nextColor == "YELLOW 1" && $nextNextColor == "YELLOW 1"} {
+  if {$hiColor == "CYAN 1" && $nextColor == "YELLOW 1" && $nextNextColor == "YELLOW 1"} {
     return true
   } else {
     return false

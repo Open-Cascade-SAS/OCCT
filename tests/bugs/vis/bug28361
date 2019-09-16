@@ -9,6 +9,6 @@ pload MODELING VISUALIZATION
 box b 10 10 10
 vdisplay b -trsfPers zoomRotate -trsfPersPos 90 90 90
 vmoveto 266 164
-if { [vreadpixel 256 174 rgb name] != "CYAN1" } { puts "Error: the box is not highlighted" }
+if { [vreadpixel 256 174 rgb name] != "CYAN" } { puts "Error: the box is not highlighted" }
 
 vdump $imagedir/${casename}.png

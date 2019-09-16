@@ -4,7 +4,7 @@ puts "Check distance culling"
 puts "========"
 
 set THE_NB_BOXES 5
-set THE_COLORS { RED GREEN BLUE1 YELLOW PURPLE1 }
+set THE_COLORS { RED GREEN BLUE YELLOW PURPLE1 }
 set THE_PICK_PNTS1 { {  20  80 } {  60 110 } { 120 140 } { 200 180 } { 300 240 } }
 set THE_PICK_PNTS2 { { 110 140 } { 130 150 } { 160 170 } { 200 190 } { 240 210 } }
 

@@ -15,7 +15,7 @@ vfit
 vaspects b -setInteriorStyle SOLID
 vdump $imagedir/${casename}_3.png
 
-vaspects b -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeType DASH -setEdgeColor 0.392 1.0 0.392
+vaspects b -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeType DASH -setEdgeColor 64FF64
 vdump $imagedir/${casename}_1.png
 
 vaspects b -setInteriorStyle HOLLOW -setDrawEdges 1

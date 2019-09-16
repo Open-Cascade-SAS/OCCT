@@ -24,17 +24,17 @@ vaxo
 vdisplay b1_1 b1_2 b1_3
 vsetcolor b1_1 RED
 vsetcolor b1_2 GREEN
-vsetcolor b1_3 BLUE1
+vsetcolor b1_3 BLUE
 
 vdisplay b2_1 b2_2 b2_3
 vsetcolor b2_1 RED
 vsetcolor b2_2 GREEN
-vsetcolor b2_3 BLUE1
+vsetcolor b2_3 BLUE
 
 vdisplay b3_1 b3_2 b3_3
 vsetcolor b3_1 RED
 vsetcolor b3_2 GREEN
-vsetcolor b3_3 BLUE1
+vsetcolor b3_3 BLUE
 vfit
 vdump $imagedir/${casename}_ref.png
 
@@ -54,8 +54,8 @@ vaspects b123_123 -subshapes b2_123  -setColor RED
 vaspects b123_123 -subshapes b3_123  -setColor RED
 
 compound b2_3 b3_3 b23_3
-vaspects b123_123 -subshapes b1_3    -setColor BLUE1
-vaspects b123_123 -subshapes b23_3   -setColor BLUE1
+vaspects b123_123 -subshapes b1_3    -setColor BLUE
+vaspects b123_123 -subshapes b23_3   -setColor BLUE
 
 if { [vreadpixel  50 250 rgb name] != "RED3"  } { puts "Error: wrong color" }
 if { [vreadpixel 175 175 rgb name] != "RED3"  } { puts "Error: wrong color" }

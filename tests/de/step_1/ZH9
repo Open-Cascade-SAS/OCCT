@@ -18,7 +18,7 @@ TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =         
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 2  ( 3 )  N2Labels = 0  ( 0 )   TotalLabels = 3  ( 4 )   NameLabels = 1  ( 1 )   ColorLabels = 2  ( 2 )   LayerLabels = 0  ( 1 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 1 )
 NCOLORS     : NColors  = 2  ( 2 )
-COLORS      : Colors   = BLUE1 YELLOW  ( BLUE1 YELLOW )
+COLORS      : Colors   = BLUE YELLOW  ( BLUE YELLOW )
 NLAYERS     : NLayers  = 0  ( 1 )
 LAYERS      : Layers   =   ( 06___PRT_ALL_SURFS )
 

@@ -11,6 +11,6 @@ vinit
 puts "${BugNumber}"
 puts "Type=NONE, Color from RED to BLUE"
 
-vbackground -gradient RED BLUE1 -gradientMode NONE
+vbackground -gradient RED BLUE -gradientMode NONE
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

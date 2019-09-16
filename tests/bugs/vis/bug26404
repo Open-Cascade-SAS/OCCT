@@ -19,8 +19,8 @@ set bug_info_1 [vreadpixel 50 50 rgb name]
 if {$bug_info_1 != "GRAY4"} {
   puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #1)."
 }
-vbackground -gradient RED BLUE1 -gradientMode HORIZONTAL
-vbackground -gradient RED BLUE1 -gradientMode NONE
+vbackground -gradient RED BLUE -gradientMode HORIZONTAL
+vbackground -gradient RED BLUE -gradientMode NONE
 set bug_info_2 [vreadpixel 50 50 rgb name]
 if {$bug_info_2 != "GRAY4"} {
   puts "ERROR: OCC26404 is reproduced. Background color is invalid (case #2)."

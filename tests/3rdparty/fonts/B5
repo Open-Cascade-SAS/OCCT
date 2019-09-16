@@ -37,9 +37,9 @@ vpoint pBR  700  100 -700
 text2brep Text8 "  Bottom-Right\nFirst line  \nLion   The Second\n  3rd  " -pos 700  100 -700 -halign right -valign bottom -height 50 -aspect bold -font Arial -plane 0 -1 0 1 0 0
 
 vdisplay Text0 Text1 Text2 Text3 Text4 Text5 Text6 Text7 Text8 -noupdate
-vsetcolor Text0 Text1 Text2 0 1 1
-vsetcolor Text3 Text4 Text5 1 1 1
-vsetcolor Text6 Text7 Text8 1 1 0
+vsetcolor Text0 Text1 Text2 CYAN
+vsetcolor Text3 Text4 Text5 WHITE
+vsetcolor Text6 Text7 Text8 YELLOW
 
 vfit
 

@@ -66,20 +66,20 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     ### colors' RGB
     set color1  "1 0 0" ;# RED
     set color2  "0 1 0" ;# GREEN
-    set color3  "0 0 1" ;# BLUE1
+    set color3  "0 0 1" ;# BLUE
     set color4  "1 1 0" ;# YELLOW
-    set color1c "0 1 1" ;# CYAN1
-    set color2c "1 0 1" ;# MAGENTA1
+    set color1c "0 1 1" ;# CYAN
+    set color2c "1 0 1" ;# MAGENTA
     set color3c "1 1 1" ;# WHITE
     set color4c "0 0 0" ;# BLACK
     
     ### colors' name
     set color1name  RED
     set color2name  GREEN
-    set color3name  BLUE1
+    set color3name  BLUE
     set color4name  YELLOW
-    set color1cname CYAN1
-    set color2cname MAGENTA1
+    set color1cname CYAN
+    set color2cname MAGENTA
     set color3cname WHITE
     set color4cname BLACK
     
@@ -254,20 +254,20 @@ if { [regexp "ASSEMBLY_C_L" $AddToDocument] } {
     ### colors' RGB
     set color1  "1 0 0" ;# RED
     set color2  "0 1 0" ;# GREEN
-    set color3  "0 0 1" ;# BLUE1
+    set color3  "0 0 1" ;# BLUE
     set color4  "1 1 0" ;# YELLOW
-    set color1c "0 1 1" ;# CYAN1
-    set color2c "1 0 1" ;# MAGENTA1
+    set color1c "0 1 1" ;# CYAN
+    set color2c "1 0 1" ;# MAGENTA
     set color3c "1 1 1" ;# WHITE
     set color4c "0 0 0" ;# BLACK
     
     ### colors' name
     set color1name  RED
     set color2name  GREEN
-    set color3name  BLUE1
+    set color3name  BLUE
     set color4name  YELLOW
-    set color1cname CYAN1
-    set color2cname MAGENTA1
+    set color1cname CYAN
+    set color2cname MAGENTA
     set color3cname WHITE
     set color4cname BLACK
     ######################### COLORS VERIFYING ##############################

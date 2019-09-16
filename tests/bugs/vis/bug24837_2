@@ -20,10 +20,10 @@ vsetdispmode 0
 vdisplay o1 o2
 vdisplay b1 b2
 vfit
-vdrawtext tb1 "b1" -pos 0 -3 3 -color 1.0 0.098 0.098 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
-vdrawtext tb2 "b2" -pos 3 0 3 -color 0.098 1.0 0.098 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
-vdrawtext bc_1 "bc_1" -pos 0 -9 3 -color 1.0 0.8823 0.8823 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
-vdrawtext bc_2 "bc_2" -pos 3 -6 3 -color 1.0 0.8823 0.8823 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vdrawtext tb1  "b1"   -pos 0 -3 3 -color FF1919 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vdrawtext tb2  "b2"   -pos 3  0 3 -color 19FF19 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vdrawtext bc_1 "bc_1" -pos 0 -9 3 -color FFE1E1 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
+vdrawtext bc_2 "bc_2" -pos 3 -6 3 -color FFE1E1 -halign right -valign bottom -angle 000 -zoom 0 -height 14 -aspect regular -font SansFont
 vsetdispmode 1
 set anImage ${imagedir}/${casename}_2_1.png
 vdump ${anImage}

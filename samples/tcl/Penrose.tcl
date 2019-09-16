@@ -68,18 +68,18 @@ vlight add directional direction 0 -10 0 head 1 color white
 vdisplay b1 b2 b3 b4 b5 b6 b7 b8 b9 b10
 
 # set colors like in boxes of on OCC logo
-vsetcolor b1 0.8671875 0 0.16015625
-vsetcolor b2 0.96484375 0.8671875 0
-vsetcolor b3 0.609375 0.97734375 0.09375
-vsetcolor b4 0.90234375 0 0.48046875
-vsetcolor b5 0 0.48046875 0.73828125
-vsetcolor b6 0.578125 0 0.48046875
-vsetcolor b7 0.93359375 0.609375 0
-vsetcolor b8 0 0.70703125 0.9296875
-vsetcolor b9 0 0.64453125 0.48046875
-vsetcolor b10 0 0.48046875 0.73828125
+vsetcolor b1  DD0029
+vsetcolor b2  F6DD00
+vsetcolor b3  98F918
+vsetcolor b4  E9007A
+vsetcolor b5  007ABC
+vsetcolor b6  93007A
+vsetcolor b7  EE9800
+vsetcolor b8  00B489
+vsetcolor b9  00A47A
+vsetcolor b10 007ABC
 
 # set material to plastic for better look
 for {set i 1} {$i <= 10} {incr i} {vsetmaterial b$i plastic}
 
-vdrawtext label "Which\nbox\nis\ncloser\nto\nyou?" -pos 0 -6 -2 -color 0 0 0 -halign left -valign bottom -angle 0 -zoom 0 -height 40
+vdrawtext label "Which\nbox\nis\ncloser\nto\nyou?" -pos 0 -6 -2 -color BLACK -halign left -valign bottom -angle 0 -zoom 0 -height 40

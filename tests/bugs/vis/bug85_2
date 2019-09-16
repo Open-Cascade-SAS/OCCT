@@ -30,7 +30,7 @@ AISMaterial D 0:1:1 plastic
 AISMaterial D 0:1:2 plastic
 AISMaterial D 0:1:3 plastic
 AISTransparency D 0:1:1 0.6
-AISColor D 0:1:1 1
+AISColor   D 0:1:1 MATRABLUE
 AISDisplay D 0:1:1
 AISDisplay D 0:1:2
 AISDisplay D 0:1:3

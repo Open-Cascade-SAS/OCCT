@@ -12,13 +12,13 @@ set BugNumber OCC22879
 
 vinit
 
-vdrawtext t1 "Text Height=14" -2d -perspos -1 1 -pos 10 -10 0 -height 14 -color 1 1 1 -font SansFont
-vdrawtext t2 "Text Height=25" -2d -perspos -1 1 -pos 10 -40 0 -height 25 -color 1 1 1 -font SansFont
-vdrawtext t3 "Arial" -2d -perspos -1 1 -pos 10 -60 0 -height 18 -font SansFont -color 1 0 0
-vdrawtext t4 "Times New Roman" -2d -perspos -1 1 -pos 10 -80 0 -height 18 -font SansFont -color 0 0 1
-vdrawtext t5 "Subtitle" -2d -perspos -1 1 -pos 10 -110 0 -height 20 -font SansFont -color 0 1 0 -disptype subtitle -subcolor 0.3 0.3 0.3
-vdrawtext t6 "Decal" -2d -perspos -1 1 -pos 10 -140 0 -height 20 -font SansFont -color 0 0 1 -disptype decal -subcolor 1 0 0
-vdrawtext t7 "Blend" -2d -perspos -1 1 -pos 10 -170 0 -height 20 -font SansFont -color 1 0 0 -disptype blend
+vdrawtext t1 "Text Height=14" -2d -perspos -1 1 -pos 10 -10 0 -height 14 -color WHITE -font SansFont
+vdrawtext t2 "Text Height=25" -2d -perspos -1 1 -pos 10 -40 0 -height 25 -color WHITE -font SansFont
+vdrawtext t3 "Arial" -2d -perspos -1 1 -pos 10 -60 0 -height 18 -font SansFont -color RED
+vdrawtext t4 "Times New Roman" -2d -perspos -1 1 -pos 10 -80 0 -height 18 -font SansFont -color BLUE
+vdrawtext t5 "Subtitle" -2d -perspos -1 1 -pos 10 -110 0 -height 20 -font SansFont -color GREEN -disptype subtitle -subcolor 0.3 0.3 0.3
+vdrawtext t6 "Decal" -2d -perspos -1 1 -pos 10 -140 0 -height 20 -font SansFont -color BLUE -disptype decal -subcolor 1 0 0
+vdrawtext t7 "Blend" -2d -perspos -1 1 -pos 10 -170 0 -height 20 -font SansFont -color RED   -disptype blend
 box b 50 -700 450 50 50 50
 vdisplay b
 vsetdispmode 1

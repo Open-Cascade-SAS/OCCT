@@ -12,7 +12,7 @@ ReadStep D2 $imagedir/${casename}.stp
 # Blue
 set color1 [XGetShapeColor D1 0:1:1:1:1 s]
 set color2 [XGetShapeColor D2 0:1:1:1:1 s]
-if {$color1 != "BLUE1" || $color2 != "BLUE1"} {
+if {$color1 != "BLUE" || $color2 != "BLUE"} {
   puts "Error: wrong color."
 }
 

@@ -14,7 +14,7 @@ TOLERANCE   : MaxTol   =   0.9982953477  (   0.9982953477 )  AvgTol   =   0.0153
 LABELS      : N0Labels = 403  ( 403 )  N1Labels = 3841  ( 15575 )  N2Labels = 0  ( 0 )   TotalLabels = 4244  ( 15978 )   NameLabels = 4242  ( 6516 )   ColorLabels = 4090  ( 15977 )   LayerLabels = 4090  ( 15977 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 5 )
-COLORS      : Colors   = BLUE1 CHARTREUSE CYAN1 DARKKHAKI LIGHTPINK1  ( BLUE1 CHARTREUSE CYAN1 DARKKHAKI LIGHTPINK1 )
+COLORS      : Colors   = BLUE CHARTREUSE CYAN DARKKHAKI LIGHTPINK1  ( BLUE CHARTREUSE CYAN DARKKHAKI LIGHTPINK1 )
 NLAYERS     : NLayers  = 4  ( 4 )
 LAYERS      : Layers   = 110 111 116 35  ( 110 111 116 35 )
 

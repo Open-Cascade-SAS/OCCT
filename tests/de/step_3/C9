@@ -14,7 +14,7 @@ TOLERANCE   : MaxTol   =   0.2357145058  (   0.2065786276 )  AvgTol   =  0.00958
 LABELS      : N0Labels = 9  ( 9 )  N1Labels = 1311  ( 1311 )  N2Labels = 0  ( 0 )   TotalLabels = 1320  ( 1320 )   NameLabels = 17  ( 17 )   ColorLabels = 1303  ( 1303 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 10  ( 10 )
-COLORS      : Colors   = AZURE4 CYAN1 GRAY10 GRAY10 GRAY26 GRAY33 GRAY74 ORANGERED RED YELLOW  ( AZURE4 CYAN1 GRAY10 GRAY10 GRAY26 GRAY33 GRAY74 ORANGERED RED YELLOW )
+COLORS      : Colors   = AZURE4 CYAN GRAY10 GRAY10 GRAY26 GRAY33 GRAY74 ORANGERED RED YELLOW  ( AZURE4 CYAN GRAY10 GRAY10 GRAY26 GRAY33 GRAY74 ORANGERED RED YELLOW )
 NLAYERS     : NLayers  = 0  ( 0 )
 LAYERS      : Layers   =   (  )
 

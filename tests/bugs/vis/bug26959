@@ -20,7 +20,7 @@ vselmode aFace1 2 1
 vfit
 
 vmoveto 142 127
-if {[vreadpixel 142 127 name] == "CYAN1 1"} {
+if {[vreadpixel 142 127 name] == "CYAN 1"} {
   puts "OK"
 } elseif {[vreadpixel 142 127 name] == "GREEN 1"} {
   puts "ERROR: the upper edge cannot be highlighted!"

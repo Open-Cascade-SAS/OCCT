@@ -22,7 +22,7 @@ foreach aSize $THE_FONT_SIZES {
   set aText "\[$aSize\] $THE_TEXT"
 
   vpoint aPnt_$aSize 0.0 $aLine 0.0
-  vdrawtext "Line_$aLineId" $aText -pos 0.0 $aLine 0.0 -color 0.0 1.0 1.0 -halign left -valign top -angle 000 -zoom 1 -height $aSize -aspect bolditalic -font $THE_FONT_NAME
+  vdrawtext "Line_$aLineId" $aText -pos 0.0 $aLine 0.0 -color CYAN -halign left -valign top -angle 000 -zoom 1 -height $aSize -aspect bolditalic -font $THE_FONT_NAME
 
   text2brep aBText_$aSize $aText -font $THE_FONT_NAME -height $aSize -aspect bolditalic -composite off -pos 0.0 $aLine 0.0 -valign topfirstline
   vdisplay -dispMode 1 aBText_$aSize

@@ -16,7 +16,7 @@ vbackground -image $aTextureFile -imageMode NONE
 vbackground -image $aTextureFile -imageMode TILED
 vdump $imagedir/${casename}_2.png
 
-vbackground -gradient RED BLUE1 -gradientMode HORIZONTAL
+vbackground -gradient RED BLUE -gradientMode HORIZONTAL
 vbackground -image $aTextureFile -imageMode CENTERED
 vdump $imagedir/${casename}_3.png
 

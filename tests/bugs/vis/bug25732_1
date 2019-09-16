@@ -18,7 +18,7 @@ vdisplay b
 vfit
 vsetdispmode b 1
 
-vdrawtext text "Open\nCASCADE" -pos 0 0 0 -color 1.0 0.0 0.0 -halign center -valign center -angle -45 -zoom 1 -height 50 -aspect regular -font SansFont
+vdrawtext text "Open\nCASCADE" -pos 0 0 0 -color RED -halign center -valign center -angle -45 -zoom 1 -height 50 -aspect regular -font SansFont
 
 set x_coord 255
 set y_coord 277

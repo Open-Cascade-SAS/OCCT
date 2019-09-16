@@ -13,7 +13,7 @@ vinit View1
 vclear
 vaxo
 
-vbackground -gradient RED BLUE1 -gradientMode VERTICAL
+vbackground -gradient RED BLUE -gradientMode VERTICAL
 box b 1 2 3
 vdisplay b
 

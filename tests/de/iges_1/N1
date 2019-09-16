@@ -14,7 +14,7 @@ TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =         
 LABELS      : N0Labels = 148  ( 148 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 148  ( 148 )   NameLabels = 148  ( 148 )   ColorLabels = 135  ( 148 )   LayerLabels = 135  ( 148 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )
-COLORS      : Colors   = CYAN1 GREEN MAGENTA1 YELLOW  ( CYAN1 GREEN MAGENTA1 YELLOW )
+COLORS      : Colors   = CYAN GREEN MAGENTA YELLOW  ( CYAN GREEN MAGENTA YELLOW )
 NLAYERS     : NLayers  = 3  ( 3 )
 LAYERS      : Layers   = 1 2 3  ( 1 2 3 )
 

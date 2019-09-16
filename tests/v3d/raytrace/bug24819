@@ -10,7 +10,7 @@ vglinfo
 
 vvbo 0
 vsetdispmode 1
-vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
 # boxes
 box b1 1 1 1
 vdisplay b1
@@ -35,7 +35,7 @@ vdisplay p
 vmarkerstest mTest 7 -3 0 PointsOnSide=5 MarkerType=5
 
 # 3d text
-vdrawtext text0 3D_Text -pos 1 2 2 -color 1.0 0.0 0.0 -halign left -valign bottom -angle 0 -zoom 0 -height 20 -aspect regular -font SansFont
+vdrawtext text0 3D_Text -pos 1 2 2 -color RED -halign left -valign bottom -angle 0 -zoom 0 -height 20 -aspect regular -font SansFont
 
 vlight -change 0 -dir 0.577 -0.577 -0.577
 

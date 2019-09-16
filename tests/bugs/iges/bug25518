@@ -14,7 +14,7 @@ XSetColor D s 0 0 1
 param write.iges.brep.mode 1
 WriteIges D ${imagedir}/OCC25518.igs
 ReadIges T ${imagedir}/OCC25518.igs
-if {[string trim [XGetAllColors T]] != "BLUE1"} {
+if {[string trim [XGetAllColors T]] != "BLUE"} {
   puts "ERROR: OCC25518 is reproduced. Color is lost."
 }
 XShow T

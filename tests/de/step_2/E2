@@ -16,7 +16,7 @@ TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =         
 LABELS      : N0Labels = 20  ( 20 )  N1Labels = 29  ( 30 )  N2Labels = 0  ( 0 )   TotalLabels = 49  ( 50 )   NameLabels = 48  ( 48 )   ColorLabels = 13  ( 13 )   LayerLabels = 13  ( 13 )
 PROPS       : Centroid = 17  ( 17 )  Volume   = 17  ( 17 )  Area     = 17  ( 17 )
 NCOLORS     : NColors  = 7  ( 7 )
-COLORS      : Colors   = GRAY22 GRAY73 KHAKI4 MAGENTA1 MATRAGRAY PURPLE4 WHITE  ( GRAY22 GRAY73 KHAKI4 MAGENTA1 MATRAGRAY PURPLE4 WHITE )
+COLORS      : Colors   = GRAY22 GRAY73 KHAKI4 MAGENTA MATRAGRAY PURPLE4 WHITE  ( GRAY22 GRAY73 KHAKI4 MAGENTA MATRAGRAY PURPLE4 WHITE )
 NLAYERS     : NLayers  = 2  ( 2 )
 LAYERS      : Layers   = 0 1  ( 0 1 )
 

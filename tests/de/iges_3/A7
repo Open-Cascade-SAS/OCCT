@@ -14,7 +14,7 @@ TOLERANCE   : MaxTol   =   0.6305328468  (   0.6305328468 )  AvgTol   =  0.00037
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 31624  ( 37142 )  N2Labels = 0  ( 0 )   TotalLabels = 31625  ( 37143 )   NameLabels = 31621  ( 36777 )   ColorLabels = 31624  ( 37142 )   LayerLabels = 29174  ( 34054 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )
-COLORS      : Colors   = GOLD3 MAGENTA1 WHITE YELLOW  ( GOLD3 MAGENTA1 WHITE YELLOW )
+COLORS      : Colors   = GOLD3 MAGENTA WHITE YELLOW  ( GOLD3 MAGENTA WHITE YELLOW )
 NLAYERS     : NLayers  = 36  ( 36 )
 LAYERS      : Layers   = 1 101 102 103 104 105 106 107 108 110 111 112 113 116 117 118 123 190 192 2 200 22 229 241 253 3 34 50 51 52 54 55 56 57 58 59  ( 1 101 102 103 104 105 106 107 108 110 111 112 113 116 117 118 123 190 192 2 200 22 229 241 253 3 34 50 51 52 54 55 56 57 58 59 )
 

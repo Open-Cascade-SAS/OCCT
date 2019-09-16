@@ -15,7 +15,7 @@ TOLERANCE   : MaxTol   =   0.9292857408  (   0.9292857413 )  AvgTol   =   0.0547
 LABELS      : N0Labels = 800  ( 800 )  N1Labels = 2  ( 1047 )  N2Labels = 0  ( 0 )   TotalLabels = 802  ( 1847 )   NameLabels = 800  ( 800 )   ColorLabels = 801  ( 1847 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 9  ( 9 )
-COLORS      : Colors   = BLUE1 BURLYWOOD2 CYAN1 GREEN LIGHTSTEELBLUE ORCHID2 RED SEAGREEN2 YELLOW  ( BLUE1 BURLYWOOD2 CYAN1 GREEN LIGHTSTEELBLUE ORCHID2 RED SEAGREEN2 YELLOW )
+COLORS      : Colors   = BLUE BURLYWOOD2 CYAN GREEN LIGHTSTEELBLUE ORCHID2 RED SEAGREEN2 YELLOW  ( BLUE BURLYWOOD2 CYAN GREEN LIGHTSTEELBLUE ORCHID2 RED SEAGREEN2 YELLOW )
 NLAYERS     : NLayers  = 0  ( 0 )
 LAYERS      : Layers   =   (  )
 

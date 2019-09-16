@@ -30,8 +30,8 @@ AISSet D ${aLabel2} NS
 # Set shading mode
 vsetdispmode 1
 
-# Set a color of the second shape as NOC_GREEN
-AISColor D ${aLabel2} 229
+# Set a color of the second shape
+AISColor D ${aLabel2} GREEN
 
 # Display presentation of NamedShape in the viewer
 AISDisplay D ${aLabel1}

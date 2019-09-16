@@ -17,7 +17,7 @@ box b4 0  10 0 10 30 70
 box b5 0   0 0 30 10 70
 
 set aNbParts 6
-set aColors { RED YELLOW GREEN GRAY MAGENTA1 ORANGE }
+set aColors { RED YELLOW GREEN GRAY MAGENTA ORANGE }
 
 compound b0 b1 b2 b3 b4 b5 cc
 

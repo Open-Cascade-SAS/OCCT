@@ -44,7 +44,7 @@ puts [checkshape result]
 # show compartments (solids) in shading with different colors
 set compartments [explode result so]
 set icol 0
-set colors {red green blue1 magenta1 yellow cyan1 brown}
+set colors {red green blue magenta yellow cyan brown}
 foreach s [lrange $compartments 1 end] {
     vdisplay $s
     vsetcolor $s [lindex $colors [expr [incr icol] % [llength $colors]]]

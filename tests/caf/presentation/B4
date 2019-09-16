@@ -26,9 +26,8 @@ AISDisplay D ${aLabel}
 # Close/Open transaction
 NewCommand D
 
-# Set a color of the shape as NOC_GREEN
-set GreenColor 229
-AISColor D ${aLabel} ${GreenColor}
+# Set a color of the shape
+AISColor D ${aLabel} GREEN
 
 # Close/Open transaction
 NewCommand D
@@ -54,8 +53,8 @@ set aColor [lindex ${tmpLine} [expr ${tmpLength} - 1]]
 
 puts "It is not necessary to have the photo for this case."
 
-if { ${aColor} != ${GreenColor} } {
-	puts "GreenColor=${GreenColor}"
+if { ${aColor} != "GREEN" } {
+	puts "GreenColor=GREEN"
 	puts "aColor=${aColor}"
 	puts "The box's color is not NOC_GREEN; AISColor command: Error"
         return

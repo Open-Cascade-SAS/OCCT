@@ -6,7 +6,7 @@ vinit View1
 vclear
 vrenderparams -rasterization
 vsetdispmode 1
-vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
 
 box wall1 1 8 8
 box wall2 1 8 8

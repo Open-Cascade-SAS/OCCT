@@ -23,13 +23,13 @@ vfit
 set THE_LIGHTS {
   { -1 -1 -1 RED1 }
   {  1 -1 -1 YELLOW }
-  { -1  1 -1 BLUE1 }
-  { -1 -1  1 CYAN1 }
+  { -1  1 -1 BLUE }
+  { -1 -1  1 CYAN }
   {  1  1 -1 PURPLE }
   {  1  1  1 WHITE }
   { -1  1  1 HOTPINK }
   {  1 -1  1 GREEN }
-  { -4 -1  0 MAGENTA1 }
+  { -4 -1  0 MAGENTA }
   {  4 -1  0 MAGENTA3 }
 }
 vlight clear

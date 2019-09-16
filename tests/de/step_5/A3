@@ -11,7 +11,7 @@ TOLERANCE   : MaxTol   =  0.01991987466  (  0.05869680859 )  AvgTol   =   0.0032
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 347  ( 347 )  N2Labels = 0  ( 0 )   TotalLabels = 348  ( 348 )   NameLabels = 1  ( 1 )   ColorLabels = 348  ( 348 )   LayerLabels = 1  ( 1 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )
-COLORS      : Colors   = CYAN1 DARKORANGE1 FORESTGREEN GREEN  ( CYAN1 DARKORANGE1 FORESTGREEN GREEN )
+COLORS      : Colors   = CYAN DARKORANGE1 FORESTGREEN GREEN  ( CYAN DARKORANGE1 FORESTGREEN GREEN )
 NLAYERS     : NLayers  = 1  ( 1 )
 LAYERS      : Layers   = 60  ( 60 )
 

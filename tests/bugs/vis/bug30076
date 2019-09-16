@@ -14,5 +14,5 @@ vfit
 vdump $imagedir/${casename}_1.png
 vdrawparray a -patch triangles -deinterleaved -mutable v 10 0 0 {*}$c2 v 11 0 0 {*}$c2 v 11 1 0 {*}$c2 v 11 1 0 {*}$c1 v 10 1 0 {*}$c1 v 10 0 0 {*}$c1
 if { [vreadpixel 200 150 rgb name] != "RED"   } { puts "Error: array was not updated" }
-if { [vreadpixel 200 250 rgb name] != "BLUE1" } { puts "Error: array was not updated" }
+if { [vreadpixel 200 250 rgb name] != "BLUE" } { puts "Error: array was not updated" }
 vdump $imagedir/${casename}_2.png

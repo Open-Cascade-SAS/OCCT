@@ -17,7 +17,7 @@ TOLERANCE   : MaxTol   =   0.9970503224  (   0.9970502696 )  AvgTol   =   0.0172
 LABELS      : N0Labels = 9  ( 9 )  N1Labels = 896  ( 1691 )  N2Labels = 0  ( 0 )   TotalLabels = 905  ( 1700 )   NameLabels = 905  ( 1233 )   ColorLabels = 896  ( 1692 )   LayerLabels = 864  ( 1659 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 7 )
-COLORS      : Colors   = BLUE1 LEMONCHIFFON1 RED RED4 WHITE YELLOW  ( BLUE1 GREEN LEMONCHIFFON1 RED RED4 WHITE YELLOW )
+COLORS      : Colors   = BLUE LEMONCHIFFON1 RED RED4 WHITE YELLOW  ( BLUE GREEN LEMONCHIFFON1 RED RED4 WHITE YELLOW )
 NLAYERS     : NLayers  = 12  ( 16 )
 LAYERS      : Layers   = 11 12 13 20 249 252 50 52 54 55 60 71  ( 10 11 12 13 20 246 249 252 50 52 54 55 60 65 70 71 )
 

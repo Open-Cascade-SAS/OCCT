@@ -59,7 +59,7 @@ if { ${GetSelectMode} != ${SetSelectMode} } {
 }
 vmoveto ${Shape_X} ${Shape_Y}
 
-if { [vreadpixel  ${Shape_X} ${Shape_Y} rgb name] != "CYAN1" } {
+if { [vreadpixel  ${Shape_X} ${Shape_Y} rgb name] != "CYAN" } {
   puts "Error : shape color is not cyan"
 }
 

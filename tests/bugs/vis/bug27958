@@ -25,7 +25,7 @@ vtrihedron t1 -attribute TubeRadiusPercent 0.03
 vtrihedron t1 -attribute ConeRadiusPercent|OriginRadiusPercent 0.05
 vtrihedron t1 -color XAxis Quantity_NOC_RED
 vtrihedron t1 -color YAxis Quantity_NOC_GREEN
-vtrihedron t1 -color ZAxis|Origin Quantity_NOC_BLUE1
+vtrihedron t1 -color ZAxis|Origin Quantity_NOC_BLUE
 
 vtrihedron t1 -textColor  1.0 1.0 1.0
 vtrihedron t1 -arrowColor 0.0 0.0 1.0

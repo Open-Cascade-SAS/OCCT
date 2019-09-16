@@ -367,35 +367,57 @@ static Standard_Integer DPrsStd_AISColor (Draw_Interpretor& di,
 					  Standard_Integer nb, 
 					  const char** arg) 
 {
-  if (nb >= 3) {     
-    Handle(TDocStd_Document) D;
-    if (!DDocStd::GetDocument(arg[1],D)) return 1;  
-    TDF_Label L;
-    if (!DDF::FindLabel(D->GetData(),arg[2],L)) return 1;  
-
-    Handle(TPrsStd_AISViewer) viewer;
-    if( !TPrsStd_AISViewer::Find(L, viewer) ) return 1;  
-
-    Handle(TPrsStd_AISPresentation) prs;
-    if(L.FindAttribute( TPrsStd_AISPresentation::GetID(), prs) ) {   
-      if( nb == 4 ) {
-	prs->SetColor((Quantity_NameOfColor)Draw::Atoi(arg[3]));
-	TPrsStd_AISViewer::Update(L);
-      }
-      else
-       if (prs->HasOwnColor()){ 
-         di << "Color = " << prs->Color() << "\n";
-         di<<prs->Color();
-       }
-       else{
-         di << "DPrsStd_AISColor: Warning : Color wasn't set\n";
-         di<<(-1);
-       }
-      return 0; 
-    }
+  if (nb != 3 && nb != 4)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
   }
-  di << "DPrsStd_AISColor : Error"   << "\n";
-  return 1;
+
+  Handle(TDocStd_Document) D;
+  if (!DDocStd::GetDocument (arg[1], D))
+  {
+    std::cout << "Syntax error: '" << arg[1] << "' is not a document\n";
+    return 1;
+  }
+
+  TDF_Label L;
+  if (!DDF::FindLabel (D->GetData(), arg[2], L))
+  {
+    std::cout << "Syntax error: '" << arg[2] << "' label cannot be found in the document\n";
+    return 1;
+  }
+
+  Handle(TPrsStd_AISViewer) viewer;
+  Handle(TPrsStd_AISPresentation) prs;
+  if (!TPrsStd_AISViewer::Find (L, viewer)
+    ||!L.FindAttribute (TPrsStd_AISPresentation::GetID(), prs))
+  {
+    std::cout << "Syntax error: '" << arg[2] << "' label has no presentation\n";
+    return 1;
+  }
+
+  if (nb == 4)
+  {
+    Quantity_NameOfColor aColor = Quantity_NOC_BLACK;
+    if (!Quantity_Color::ColorFromName (arg[3], aColor))
+    {
+      std::cout << "Syntax error: unknown color '" << arg[3] << "'\n";
+      return 1;
+    }
+    prs->SetColor (aColor);
+    TPrsStd_AISViewer::Update (L);
+  }
+  else if (prs->HasOwnColor())
+  {
+    di << "Color = " << Quantity_Color::StringName (prs->Color()) << "\n";
+    di << Quantity_Color::StringName (prs->Color());
+  }
+  else
+  {
+    di << "DPrsStd_AISColor: Warning : Color wasn't set\n";
+    di << (-1);
+  }
+  return 0;
 }
 
 //=======================================================================

@@ -17,19 +17,15 @@
 #ifndef _Quantity_TypeOfColor_HeaderFile
 #define _Quantity_TypeOfColor_HeaderFile
 
-//! Identifies color definition systems
-//! -   Quantity_TOC_RGB: with this system a
-//! color is defined by its quantities of red, green and blue (R-G-B values).
-//! -   Quantity_TOC_HLS: with this system a
-//! color is defined by its hue angle and its
-//! lightness and saturation values (H-L-S values).
-//! A Quantity_Color object may define a color
-//! from three values R-G-B or H-L-S according
-//! to a given color definition system.
+//! Identifies color definition systems.
 enum Quantity_TypeOfColor
 {
-Quantity_TOC_RGB,
-Quantity_TOC_HLS
+  Quantity_TOC_RGB,  //!< normalized linear RGB (red, green, blue) values within range [0..1] for each component
+  Quantity_TOC_HLS,  //!< hue + light + saturation components, where:
+                     //!  - First component is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red;
+                     //!    value -1.0 is a special value reserved for grayscale color (S should be 0.0).
+                     //!  - Second component is the Lightness (L) within range [0.0; 1.0]
+                     //!  - Third component is the Saturation (S) within range [0.0; 1.0]
 };
 
 #endif // _Quantity_TypeOfColor_HeaderFile

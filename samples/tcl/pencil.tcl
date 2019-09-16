@@ -46,18 +46,17 @@ NewDocument D
 XAddShape D body_1
 XAddShape D core_1
 
-#XSetColor D body_1   0. 0. 1.
-for {set i 1} {$i <= 26} {incr i} {XSetColor D body_1_$i 0. 0. 1.}
-XSetColor D body_1_1 0.9 0.5 0.4
-XSetColor D body_1_9 0.9 0.5 0.4
-for {set i 10} {$i <= 22} {incr i} {XSetColor D body_1_$i 0.6 0.7 0.0}
-XSetColor D core_1 0.1 0.1 1.
-foreach ff [explode core_1 f] { XSetColor D $ff 0.1 0.1 1. ; puts "set color $ff" }
+for {set i 1} {$i <= 26} {incr i} {XSetColor D body_1_$i BLUE}
+XSetColor D body_1_1 E68066
+XSetColor D body_1_9 E68066
+for {set i 10} {$i <= 22} {incr i} {XSetColor D body_1_$i 99B300}
+XSetColor D core_1 1A1AFF
+foreach ff [explode core_1 f] { XSetColor D $ff 1A1AFF ; puts "set color $ff" }
 
-XShow D
-
+vclear
+vinit View1
+XDisplay -dispMode 1 D -explore
 vfit
-vsetdispmode 1
 vrenderparams -msaa 8
 vbackground -color WHITE
 

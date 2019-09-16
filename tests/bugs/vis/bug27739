@@ -47,15 +47,15 @@ set test_2 {350 150}; # box2d_pos
 set test_3 { 50 350}; # box2d_loc
 
 vmoveto {*}$test_1
-if {[vreadpixel {*}$test_1 name] != "CYAN1 1"} { puts "ERROR: zoom persistent box is not detected!" }
+if {[vreadpixel {*}$test_1 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
 vdump $imagedir/${casename}_1.png
 
 vmoveto {*}$test_2
-if {[vreadpixel {*}$test_2 name] != "CYAN1 1"} { puts "ERROR: zoom persistent box is not detected!" }
+if {[vreadpixel {*}$test_2 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
 vdump $imagedir/${casename}_2.png
 
 vmoveto {*}$test_3
-if {[vreadpixel {*}$test_3 name] != "CYAN1 1"} { puts "ERROR: zoom persistent box is not detected!" }
+if {[vreadpixel {*}$test_3 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
 vdump $imagedir/${casename}_3.png
 
 # =========================================
@@ -69,13 +69,13 @@ set test_2 {350 150}; # box2d_pos
 set test_3 { 50 350}; # box2d_loc
 
 vmoveto {*}$test_1
-if {[vreadpixel {*}$test_1 name] != "CYAN1 1"} { puts "ERROR: zoom persistent box is not detected!" }
+if {[vreadpixel {*}$test_1 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
 vdump $imagedir/${casename}_4.png
 
 vmoveto {*}$test_2
-if {[vreadpixel {*}$test_2 name] != "CYAN1 1"} { puts "ERROR: zoom persistent box is not detected!" }
+if {[vreadpixel {*}$test_2 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
 vdump $imagedir/${casename}_5.png
 
 vmoveto {*}$test_3
-if {[vreadpixel {*}$test_3 name] != "CYAN1 1"} { puts "ERROR: zoom persistent box is not detected!" }
+if {[vreadpixel {*}$test_3 name] != "CYAN 1"} { puts "ERROR: zoom persistent box is not detected!" }
 vdump $imagedir/${casename}_6.png

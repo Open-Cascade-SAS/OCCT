@@ -16,7 +16,7 @@ TOLERANCE   : MaxTol   =   0.0182458548  (   0.0182458548 )  AvgTol   =  0.00019
 LABELS      : N0Labels = 9  ( 9 )  N1Labels = 12  ( 12 )  N2Labels = 0  ( 0 )   TotalLabels = 21  ( 21 )   NameLabels = 19  ( 19 )   ColorLabels = 9  ( 9 )   LayerLabels = 9  ( 19 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 5 )
-COLORS      : Colors   = DODGERBLUE2 MAGENTA1 RED WHITE YELLOW  ( DODGERBLUE2 MAGENTA1 RED WHITE YELLOW )
+COLORS      : Colors   = DODGERBLUE2 MAGENTA RED WHITE YELLOW  ( DODGERBLUE2 MAGENTA RED WHITE YELLOW )
 NLAYERS     : NLayers  = 1  ( 2 )
 LAYERS      : Layers   = 0  ( {  0} 255 )
 

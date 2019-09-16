@@ -17,7 +17,7 @@ vaxo
 vdisplay -dispMode 1 c
 vfit
 
-vaspects c                -setColor BLUE1
+vaspects c                -setColor BLUE
 vaspects c -subshapes b1  -setColor RED
 vaspects c -subshapes c12 -setColor GREEN
 

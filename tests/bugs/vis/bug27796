@@ -76,8 +76,8 @@ vdisplay -dispMode 1 -highMode 1 -2d -trsfPersPos 0 0 {*}$aList
 vsetmaterial b1 b2 b3 b4 t PLASTIC
 vsetcolor b1 RED
 vsetcolor b2 GREEN
-vsetcolor b3 BLUE1
-vsetcolor b4 MAGENTA1
+vsetcolor b3 BLUE
+vsetcolor b4 MAGENTA
 vsetcolor t  GOLD
 vsetlocation s 0 0 -1
 

@@ -255,27 +255,27 @@ if [info exists i7_show_3dview] {
   vlight add directional direction 1 -1 -2 head 1
 
   vdisplay case
-  vsetcolor case 0.7 0.7 0.7
+  vsetcolor case GRAY70
 
   vdisplay title
-  vsetcolor title 0.1 0.1 0.1
+  vsetcolor title GRAY10
 
   # board is mostly yellow (edges, triangle markers)
-  foreach f [explode board f] { vdisplay $f; vsetcolor $f 0.7 0.5 0.3 }
+  foreach f [explode board f] { vdisplay $f; vsetcolor $f B3803D }
   # top and bottom faces are light-green (outside) and dark-green (inside)
-  vsetcolor board_4 0 0.6 0.55
-  vsetcolor board_5 0 0.6 0.55
-  vsetcolor board_12 0 0.3 0.33
-  vsetcolor board_14 0 0.3 0.33
+  vsetcolor board_4  00998C
+  vsetcolor board_5  00998C
+  vsetcolor board_12 004D54
+  vsetcolor board_14 004D54
 
   vdisplay rpads
-  vsetcolor rpads 0.7 0.6 0.4
+  vsetcolor rpads B39966
 
   vdisplay bpads
-  vsetcolor bpads 0.7 0.6 0.4
+  vsetcolor bpads B39966
 
   vdisplay brpk
-  vsetcolor brpk 0.5 0.4 0.3
+  vsetcolor brpk 80664D
 
   donly board case rpads brpk; fit
 }
@@ -287,17 +287,17 @@ pload OCAF XDE
 NewDocument D MDTV-XCAF
 
 SetName D [XAddShape D board 0] "Board"
-foreach f [explode board f] { XSetColor D $f 0.7 0.5 0.3 }
-XSetColor D board_4 0 0.6 0.55
-XSetColor D board_5 0 0.6 0.55
-XSetColor D board_12 0 0.3 0.33
-XSetColor D board_14 0 0.3 0.33
+foreach f [explode board f] { XSetColor D $f B3803D }
+XSetColor D board_4  00998C
+XSetColor D board_5  00998C
+XSetColor D board_12 004D54
+XSetColor D board_14 004D54
 
 SetName D [XAddShape D case 0] "Case"
-XSetColor D case 0.7 0.7 0.7
+XSetColor D case GRAY70
 
 SetName D [XAddShape D title 0] "Case title"
-XSetColor D title 0.1 0.1 0.1
+XSetColor D title GRAY10
 
 SetName D [XAddShape D rpads 1] "Top side contact pads"
 SetName D [XAddShape D bpads 1] "Bottom contact pads"
@@ -306,17 +306,17 @@ SetName D [XFindShape D rpad] "Round pad"
 SetName D [XFindShape D Rpad] "Big round pad"
 SetName D [XFindShape D spad_1] "Square pad 1"
 SetName D [XFindShape D spad_2] "Square pad 2"
-XSetColor D rpad 0.7 0.6 0.4
-XSetColor D Rpad 0.7 0.6 0.4
-XSetColor D bpad 0.7 0.6 0.4
-XSetColor D spad_1 0.7 0.6 0.4
-XSetColor D spad_2 0.7 0.6 0.4
+XSetColor D rpad   B39966
+XSetColor D Rpad   B39966
+XSetColor D bpad   B39966
+XSetColor D spad_1 B39966
+XSetColor D spad_2 B39966
 
 SetName D [XAddShape D brpk 1] "Bottom packages"
 SetName D [XFindShape D rpk] "Bottom package"
-XSetColor D rpk1 0.7 0.7 0.7
-XSetColor D rpk2 0.5 0.4 0.3
-XSetColor D rpk3 0.7 0.7 0.7
+XSetColor D rpk1 GRAY70
+XSetColor D rpk2 80664D
+XSetColor D rpk3 GRAY70
 
 XShow D
 vlight clear

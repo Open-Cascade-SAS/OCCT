@@ -15,12 +15,12 @@ if { [vreadpixel 220 220 rgb name] != "TURQUOISE3" } { puts "Error: box b2 shoul
 vselfilter -type FACE
 vmoveto 0 0
 vmoveto 220 220
-if { [vreadpixel 150 150 rgb name] != "CYAN1" } { puts "Error: face of box b1 should be highlighted" }
+if { [vreadpixel 150 150 rgb name] != "CYAN" } { puts "Error: face of box b1 should be highlighted" }
 
 vselprops -pickStrategy topmost
 vmoveto 0 0
 vmoveto 220 220
-if { [vreadpixel 150 150 rgb name] == "CYAN1" } { puts "Error: face of box b1 should NOT be highlighted" }
+if { [vreadpixel 150 150 rgb name] == "CYAN" } { puts "Error: face of box b1 should NOT be highlighted" }
 
 vmoveto 150 150
-if { [vreadpixel 150 150 rgb name] != "CYAN1" } { puts "Error: face of box b1 should be highlighted" }
+if { [vreadpixel 150 150 rgb name] != "CYAN" } { puts "Error: face of box b1 should be highlighted" }

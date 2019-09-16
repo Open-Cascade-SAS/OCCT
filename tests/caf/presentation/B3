@@ -26,8 +26,8 @@ AISDisplay D ${aLabel}
 # Close/Open transaction
 NewCommand D
 
-# Set a color of the shape as NOC_GREEN
-AISColor D ${aLabel} 229
+# Set a color of the shape
+AISColor D ${aLabel} GREEN
 
 # Close/Open transaction
 NewCommand D

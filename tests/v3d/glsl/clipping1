@@ -22,7 +22,7 @@ box b5 0   0 0 30 10 70
 box bb 10 -10 0 20 10 10
 
 set aNbParts 6
-set aColors { RED YELLOW GREEN GRAY MAGENTA1 ORANGE }
+set aColors { RED YELLOW GREEN GRAY MAGENTA ORANGE }
 
 compound b0 b1 b2 b3 b4 b5 cc
 
@@ -34,7 +34,7 @@ vviewparams -scale 4.66737 -proj 0.465292 -0.577133 0.671134 -up -0.46873 0.4825
 
 vpoint p0 0 0 0
 vdisplay -dispMode 1 bb
-vaspects -noupdate bb -setColor CYAN1
+vaspects -noupdate bb -setColor CYAN
 vzbufftrihedron
 
 puts "Display the geometry as dedicated objects"

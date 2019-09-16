@@ -17,7 +17,7 @@ TOLERANCE   : MaxTol   =  0.07760384877  (  0.07760384877 )  AvgTol   =  0.00199
 LABELS      : N0Labels = 19  ( 19 )  N1Labels = 347  ( 612 )  N2Labels = 0  ( 0 )   TotalLabels = 366  ( 631 )   NameLabels = 366  ( 433 )   ColorLabels = 357  ( 629 )   LayerLabels = 357  ( 629 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 6 )
-COLORS      : Colors   = BLUE1 GREEN MAGENTA2 WHITE YELLOW  ( BLUE1 GREEN MAGENTA2 RED WHITE YELLOW )
+COLORS      : Colors   = BLUE GREEN MAGENTA2 WHITE YELLOW  ( BLUE GREEN MAGENTA2 RED WHITE YELLOW )
 NLAYERS     : NLayers  = 1  ( 1 )
 LAYERS      : Layers   = 20  ( 20 )
 

@@ -7,7 +7,7 @@ box b 2 3 1
 vclear
 vclose ALL
 vinit View1 w=512 h=512
-vbackground -gradient 0.705882 0.784314 1  0.705882 0.705882 0.705882 -gradientMode VERTICAL
+vbackground -gradient B4C8FF B4B4B4 -gradientMode VERTICAL
 vsetdispmode 0
 vdisplay b
 vfit

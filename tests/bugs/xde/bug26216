@@ -30,7 +30,7 @@ if { [regexp "ASSEMBLY COMPOUND 0:1:1:1 \"COMPOUND\"" [Xdump D]] != 1 } {
     if { [regexp "GREEN" [XGetShapeColor D 0:1:1:3]] != 1 } {
       puts "ERROR: Structure of document is wrong."
     } else {
-      if { [regexp "BLUE1" [XGetShapeColor D 0:1:1:4]] != 1 } {
+      if { [regexp "BLUE" [XGetShapeColor D 0:1:1:4]] != 1 } {
         puts "ERROR: Structure of document is wrong."
       }
     }

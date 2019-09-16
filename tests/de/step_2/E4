@@ -15,7 +15,7 @@ TOLERANCE   : MaxTol   = 0.001020021556  ( 0.001020021556 )  AvgTol   =  6.94721
 LABELS      : N0Labels = 31  ( 31 )  N1Labels = 535  ( 491 )  N2Labels = 0  ( 0 )   TotalLabels = 566  ( 522 )   NameLabels = 62  ( 62 )   ColorLabels = 520  ( 481 )   LayerLabels = 16  ( 16 )
 PROPS       : Centroid = 26  ( 43 )  Volume   = 26  ( 26 )  Area     = 26  ( 26 )
 NCOLORS     : NColors  = 7  ( 7 )
-COLORS      : Colors   = DEEPSKYBLUE2 DODGERBLUE2 MAGENTA1 ORANGE ORANGERED RED WHITE  ( DEEPSKYBLUE2 DODGERBLUE2 MAGENTA1 ORANGE ORANGERED RED WHITE )
+COLORS      : Colors   = DEEPSKYBLUE2 DODGERBLUE2 MAGENTA ORANGE ORANGERED RED WHITE  ( DEEPSKYBLUE2 DODGERBLUE2 MAGENTA ORANGE ORANGERED RED WHITE )
 NLAYERS     : NLayers  = 1  ( 1 )
 LAYERS      : Layers   = 000  ( 000 )
 

@@ -77,14 +77,13 @@ SetName D $main "OCC Logo 2019"
 SetName D [XFindShape D sb] "Core"
 SetName D [XFindShape D tp] "Loop"
 SetName D [XFindShape D rs] "Connector"
-XSetColor D sb 1 0.21 0.32
-XSetColor D tp 0 0.667 0.855
-XSetColor D rs 0 0.45 0.69
+XSetColor D sb FF3652
+XSetColor D tp 00AADA
+XSetColor D rs 0073B0
 
 # display
-vinit
-vsetcolorbg 1 1 1
-vsetdispmode 1
-XDisplay D
+vinit View1
+vbackground -color WHITE
+XDisplay -dispMode 1 D
 vtop
 vfit

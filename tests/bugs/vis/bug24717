@@ -22,7 +22,7 @@ vclipplane change pln1 equation 0 1 0 0
 vfit
 vaspects -setwidth 5
 
-if { "[vreadpixel $check_x $check_y rgb name]" != "CYAN1" } {
+if { "[vreadpixel $check_x $check_y rgb name]" != "CYAN" } {
     puts "Error : Viewer clipping is broken."
 }
 

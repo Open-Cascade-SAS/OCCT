@@ -10,6 +10,6 @@ vinit
 puts "${BugNumber}"
 puts "Type=VERTICAL, Color from BLUE to RED, Direction from TOP to BOTTOM"
 
-vbackground -gradient BLUE1 RED -gradientMode VERTICAL
+vbackground -gradient BLUE RED -gradientMode VERTICAL
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

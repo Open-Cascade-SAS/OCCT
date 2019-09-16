@@ -6,7 +6,7 @@ puts ""
 
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 
-set aParams "-height 16 -font SansFont -2d -persPos -1 1 -subColor BLUE1"
+set aParams "-height 16 -font SansFont -2d -persPos -1 1 -subColor BLUE"
 
 vclear
 vviewparams -scale 254.5 -proj 0.89 -0.37 0.26 -up -0.21 0.16 0.96 -at 0.69 1.05 1.46

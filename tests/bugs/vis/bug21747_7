@@ -10,6 +10,6 @@ vinit
 puts "${BugNumber}"
 puts "Type=DIAGONAL1, Color from BLUE to RED, Direction from LEFT TOP CORNER to RIGHT BOTTOM CORNER"
 
-vbackground -gradient BLUE1 RED -gradientMode DIAGONAL1
+vbackground -gradient BLUE RED -gradientMode DIAGONAL1
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

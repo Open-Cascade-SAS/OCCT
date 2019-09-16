@@ -62,7 +62,7 @@ if {[expr abs(0.2 - $alpha)] > $prec} {
 }
 #0:1:2:4
 set res [XGetColor D_Second 0:1:2:4]
-if {$res != "CYAN1"} {
+if {$res != "CYAN"} {
   set isOK 0
 }
 #0:1:2:5

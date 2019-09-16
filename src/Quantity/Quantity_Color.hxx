@@ -25,46 +25,22 @@
 #include <Quantity_TypeOfColor.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Vec4.hxx>
-class Quantity_ColorDefinitionError;
 
-
-//! This class allows the definition of a colour.
-//! The names of the colours are from the X11 specification.
-//! color object may be used for numerous applicative purposes.
-//! A color is defined by:
-//! -   its respective quantities of red, green and blue (R-G-B values), or
-//! -   its hue angle and its values of lightness and  saturation (H-L-S values).
-//! These two color definition systems are equivalent.
-//! Use this class in conjunction with:
-//! -   the Quantity_TypeOfColor enumeration
-//! which identifies the color definition system you are using,
-//! -   the Quantity_NameOfColor enumeration
-//! which lists numerous predefined colors and
-//! identifies them by their name.
-class Quantity_Color 
+//! This class allows the definition of an RGB color as triplet of 3 normalized floating point values (red, green, blue).
+class Quantity_Color
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Creates Quantity_NOC_YELLOW color.
-  Standard_EXPORT Quantity_Color();
-  
+  //! Creates Quantity_NOC_YELLOW color (for historical reasons).
+  Quantity_Color() : myRgb (valuesOf (Quantity_NOC_YELLOW, Quantity_TOC_RGB)) {}
+
   //! Creates the color from enumeration value.
-  Standard_EXPORT Quantity_Color(const Quantity_NameOfColor AName);
-  
+  Quantity_Color (const Quantity_NameOfColor theName) : myRgb (valuesOf (theName, Quantity_TOC_RGB)) {}
+
   //! Creates a color according to the definition system theType.
-  //! Quantity_TOC_RGB:
-  //!  - theR1 the value of Red   within range [0.0; 1.0]
-  //!  - theR2 the value of Green within range [0.0; 1.0]
-  //!  - theR3 the value of Blue  within range [0.0; 1.0]
-  //!
-  //! Quantity_TOC_HLS:
-  //!  - theR1 is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red.
-  //!    Value -1.0 is a special value reserved for grayscale color (S should be 0.0).
-  //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
-  //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
+  //! Throws exception if values are out of range.
   Standard_EXPORT Quantity_Color (const Standard_Real theR1,
                                   const Standard_Real theR2,
                                   const Standard_Real theR3,
@@ -73,156 +49,108 @@ public:
   //! Define color from RGB values.
   Standard_EXPORT explicit Quantity_Color (const NCollection_Vec3<float>& theRgb);
 
-  //! Increases or decreases the contrast by <ADelta>.
-  //! <ADelta> is a percentage. Any value greater than zero
-  //! will increase the contrast.
-  //! The variation is expressed as a percentage of the
-  //! current value.
-  //! It is a variation of the saturation.
-  Standard_EXPORT void ChangeContrast (const Standard_Real ADelta);
-  
-  //! Increases or decreases the intensity by <ADelta>.
-  //! <ADelta> is a percentage. Any value greater than zero
-  //! will increase the intensity.
-  //! The variation is expressed as a percentage of the
-  //! current value.
-  //! It is a variation of the lightness.
-  Standard_EXPORT void ChangeIntensity (const Standard_Real ADelta);
-  
-  //! Updates the colour <me> from the definition of the
-  //! colour <AName>.
-  Standard_EXPORT void SetValues (const Quantity_NameOfColor AName);
-  
-  //! Updates a color according to the mode specified by theType.
-  //! Quantity_TOC_RGB:
-  //!  - theR1 the value of Red   within range [0.0; 1.0]
-  //!  - theR2 the value of Green within range [0.0; 1.0]
-  //!  - theR3 the value of Blue  within range [0.0; 1.0]
-  //!
-  //! Quantity_TOC_HLS:
-  //!  - theR1 is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red.
-  //!    -1.0 is a special value reserved for grayscale color (S should be 0.0).
-  //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
-  //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
-  Standard_EXPORT void SetValues (const Standard_Real theR1,
-                                  const Standard_Real theR2,
-                                  const Standard_Real theR3,
-                                  const Quantity_TypeOfColor theType);
-  
-  //! Returns the percentage change of contrast and intensity
-  //! between <me> and <AColor>.
-  //! <DC> and <DI> are percentages, either positive or negative.
-  //! The calculation is with respect to the current value of <me>
-  //! If <DC> is positive then <me> is more contrasty.
-  //! If <DI> is positive then <me> is more intense.
-  Standard_EXPORT void Delta (const Quantity_Color& AColor, Standard_Real& DC, Standard_Real& DI) const;
-  
-  //! Returns the distance between two colours. It's a
-  //! value between 0 and the square root of 3
-  //! (the black/white distance)
-  Standard_EXPORT Standard_Real Distance (const Quantity_Color& AColor) const;
-  
-  //! Returns the square of distance between two colours.
-  Standard_EXPORT Standard_Real SquareDistance (const Quantity_Color& AColor) const;
-  
-  //! Returns the Blue component (quantity of blue) of the color within range [0.0; 1.0].
-  Standard_EXPORT Standard_Real Blue() const;
-  
-  //! Returns the Green component (quantity of green) of the color within range [0.0; 1.0].
-  Standard_EXPORT Standard_Real Green() const;
-  
-  //! Returns the Hue component (hue angle) of the color
-  //! in degrees within range [0.0; 360.0], 0.0 being Red.
-  //! -1.0 is a special value reserved for grayscale color (S should be 0.0)
-  Standard_EXPORT Standard_Real Hue() const;
-  
-  //! Returns Standard_True if the distance between <me> and
-  //! <Other> is greater than Epsilon ().
-  Standard_EXPORT Standard_Boolean IsDifferent (const Quantity_Color& Other) const;
-Standard_Boolean operator != (const Quantity_Color& Other) const
-{
-  return IsDifferent(Other);
-}
-  
-  //! Returns true if the Other color is
-  //! -   different from, or
-  //! -   equal to this color.
-  //! Two colors are considered to be equal if their
-  //! distance is no greater than Epsilon().
-  //! These methods are aliases of operator != and operator ==.
-  Standard_EXPORT Standard_Boolean IsEqual (const Quantity_Color& Other) const;
-Standard_Boolean operator == (const Quantity_Color& Other) const
-{
-  return IsEqual(Other);
-}
-  
-  //! Returns the Light component (value of the lightness) of the color within range [0.0; 1.0].
-  Standard_EXPORT Standard_Real Light() const;
-  
-  //! Returns the name of the color defined by its
-  //! quantities of red R, green G and blue B; more
-  //! precisely this is the nearest color from the
-  //! Quantity_NameOfColor enumeration.
-  //! Exceptions
-  //! Standard_OutOfRange if R, G or B is less than 0. or greater than 1.
+  //! Returns the name of the nearest color from the Quantity_NameOfColor enumeration.
   Standard_EXPORT Quantity_NameOfColor Name() const;
-  
-  //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
-  Standard_EXPORT Standard_Real Red() const;
-  
-  //! Returns the Saturation component (value of the saturation) of the color within range [0.0; 1.0].
-  Standard_EXPORT Standard_Real Saturation() const;
+
+  //! Updates the color from specified named color.
+  void SetValues (const Quantity_NameOfColor theName) { myRgb = valuesOf (theName, Quantity_TOC_RGB); }
 
   //! Return the color as vector of 3 float elements.
-  operator const NCollection_Vec3<float>&() const { return *(const NCollection_Vec3<float>* )this; }
+  operator const NCollection_Vec3<float>&() const { return myRgb; }
 
   //! Returns in theR1, theR2 and theR3 the components of this color according to the color system definition theType.
-  //! If theType is Quantity_TOC_RGB:
-  //!  - theR1 the value of Red   between 0.0 and 1.0
-  //!  - theR2 the value of Green between 0.0 and 1.0
-  //!  - theR3 the value of Blue  between 0.0 and 1.0
-  //! If theType is Quantity_TOC_HLS:
-  //!  - theR1 is the Hue (H) angle in degrees within range [0.0; 360.0], 0.0 being Red.
-  //!    -1.0 is a special value reserved for grayscale color (S should be 0.0).
-  //!  - theR2 is the Lightness  (L) within range [0.0; 1.0]
-  //!  - theR3 is the Saturation (S) within range [0.0; 1.0]
   Standard_EXPORT void Values (Standard_Real& theR1,
                                Standard_Real& theR2,
                                Standard_Real& theR3,
                                const Quantity_TypeOfColor theType) const;
+
+  //! Updates a color according to the mode specified by theType.
+  //! Throws exception if values are out of range.
+  Standard_EXPORT void SetValues (const Standard_Real theR1,
+                                  const Standard_Real theR2,
+                                  const Standard_Real theR3,
+                                  const Quantity_TypeOfColor theType);
+
+  //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
+  Standard_Real Red() const { return myRgb.r(); }
+
+  //! Returns the Green component (quantity of green) of the color within range [0.0; 1.0].
+  Standard_Real Green() const { return myRgb.g(); }
+
+  //! Returns the Blue component (quantity of blue) of the color within range [0.0; 1.0].
+  Standard_Real Blue() const { return myRgb.b(); }
+
+  //! Returns the Hue component (hue angle) of the color
+  //! in degrees within range [0.0; 360.0], 0.0 being Red.
+  //! -1.0 is a special value reserved for grayscale color (S should be 0.0)
+  Standard_Real Hue() const { return Convert_sRGB_To_HLS (myRgb)[0]; }
+
+  //! Returns the Light component (value of the lightness) of the color within range [0.0; 1.0].
+  Standard_Real Light() const { return Convert_sRGB_To_HLS (myRgb)[1]; }
+
+  //! Increases or decreases the intensity (variation of the lightness).
+  //! The delta is a percentage. Any value greater than zero will increase the intensity.
+  //! The variation is expressed as a percentage of the current value.
+  Standard_EXPORT void ChangeIntensity (const Standard_Real theDelta);
+
+  //! Returns the Saturation component (value of the saturation) of the color within range [0.0; 1.0].
+  Standard_Real Saturation() const { return Convert_sRGB_To_HLS (myRgb)[2]; }
+
+  //! Increases or decreases the contrast (variation of the saturation).
+  //! The delta is a percentage. Any value greater than zero will increase the contrast.
+  //! The variation is expressed as a percentage of the current value.
+  Standard_EXPORT void ChangeContrast (const Standard_Real theDelta);
+
+  //! Returns TRUE if the distance between two colors is greater than Epsilon().
+  Standard_Boolean IsDifferent (const Quantity_Color& theOther) const { return (Distance (theOther) > Epsilon()); }
+
+  //! Alias to IsDifferent().
+  Standard_Boolean operator!=  (const Quantity_Color& theOther) const { return IsDifferent (theOther); }
+
+  //! Returns TRUE if the distance between two colors is no greater than Epsilon().
+  Standard_Boolean IsEqual    (const Quantity_Color& theOther) const { return (Distance (theOther) <= Epsilon()); }
+
+  //! Alias to IsEqual().
+  Standard_Boolean operator== (const Quantity_Color& theOther) const { return IsEqual (theOther); }
   
-  //! Sets the specified value used to compare <me> and
-  //! an other color in IsDifferent and in IsEqual methods.
-  //! Warning: The default value is 0.0001
-  Standard_EXPORT static void SetEpsilon (const Standard_Real AnEpsilon);
-  
-  //! Returns the specified value used to compare <me> and
-  //! an other color in IsDifferent and in IsEqual methods.
-  Standard_EXPORT static Standard_Real Epsilon();
-  
-  //! Returns the name of the colour for which the RGB components
-  //! are nearest to <R>, <G> and <B>.
-  Standard_EXPORT static Quantity_NameOfColor Name (const Standard_Real R, const Standard_Real G, const Standard_Real B);
-  
-  //! Returns the name of the color identified by
-  //! AName in the Quantity_NameOfColor enumeration.
-  //! For example, the name of the color which
-  //! corresponds to Quantity_NOC_BLACK is "BLACK".
-  //! Exceptions
-  //! Standard_OutOfRange if AName in not known
-  //! in the Quantity_NameOfColor enumeration.
-  Standard_EXPORT static Standard_CString StringName (const Quantity_NameOfColor AColor);
-  
+  //! Returns the distance between two colors. It's a value between 0 and the square root of 3 (the black/white distance).
+  Standard_Real Distance (const Quantity_Color& theColor) const
+  {
+    return (NCollection_Vec3<Standard_Real> (myRgb) - NCollection_Vec3<Standard_Real> (theColor.myRgb)).Modulus();
+  }
+
+  //! Returns the square of distance between two colors.
+  Standard_Real SquareDistance (const Quantity_Color& theColor) const
+  {
+    return (NCollection_Vec3<Standard_Real> (myRgb) - NCollection_Vec3<Standard_Real> (theColor.myRgb)).SquareModulus();
+  }
+
+  //! Returns the percentage change of contrast and intensity between this and another color.
+  //! <DC> and <DI> are percentages, either positive or negative.
+  //! The calculation is with respect to this color.
+  //! If <DC> is positive then <me> is more contrasty.
+  //! If <DI> is positive then <me> is more intense.
+  Standard_EXPORT void Delta (const Quantity_Color& theColor,
+                              Standard_Real& DC, Standard_Real& DI) const;
+
+public:
+
+  //! Returns the color from Quantity_NameOfColor enumeration nearest to specified RGB values.
+  static Quantity_NameOfColor Name (const Standard_Real theR, const Standard_Real theG, const Standard_Real theB)
+  {
+    const Quantity_Color aColor (theR, theG, theB, Quantity_TOC_RGB);
+    return aColor.Name();
+  }
+
+  //! Returns the name of the color identified by the given Quantity_NameOfColor enumeration value.
+  Standard_EXPORT static Standard_CString StringName (const Quantity_NameOfColor theColor);
+
   //! Finds color from predefined names.
-  //! For example, the name of the color which
-  //! corresponds to "BLACK" is Quantity_NOC_BLACK.
-  //! Returns false if name is unknown.
+  //! For example, the name of the color which corresponds to "BLACK" is Quantity_NOC_BLACK.
+  //! Returns FALSE if name is unknown.
   Standard_EXPORT static Standard_Boolean ColorFromName (const Standard_CString theName, Quantity_NameOfColor& theColor);
 
   //! Finds color from predefined names.
-  //! For example, the name of the color which
-  //! corresponds to "BLACK" is Quantity_NOC_BLACK.
-  //! Returns false if name is unknown.
   //! @param theColorNameString the color name
   //! @param theColor a found color
   //! @return false if the color name is unknown, or true if the search by color name was successful
@@ -237,7 +165,7 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
     return true;
   }
 
-  //! Parses the string as a hex color (like "#FF0" for short RGB color, or "#FFFF00" for RGB color)
+  //! Parses the string as a hex color (like "#FF0" for short sRGB color, or "#FFFF00" for sRGB color)
   //! @param theHexColorString the string to be parsed
   //! @param theColor a color that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
@@ -255,20 +183,153 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
     return aBuff;
   }
 
+  //! Converts sRGB components into HLS ones.
+  Standard_EXPORT static NCollection_Vec3<float> Convert_sRGB_To_HLS (const NCollection_Vec3<float>& theRgb);
+
   //! Converts HLS components into RGB ones.
-  Standard_EXPORT static void HlsRgb (const Standard_Real H, const Standard_Real L, const Standard_Real S, Standard_Real& R, Standard_Real& G, Standard_Real& B);
-  
-  //! Converts RGB components into HLS ones.
-  Standard_EXPORT static void RgbHls (const Standard_Real R, const Standard_Real G, const Standard_Real B, Standard_Real& H, Standard_Real& L, Standard_Real& S);
-  
-  //! Convert the Color value to ARGB integer value.
-  //! theARGB has Alpha equal to zero, so the output is
-  //! formatted as 0x00RRGGBB
-  Standard_EXPORT static void Color2argb (const Quantity_Color& theColor, Standard_Integer& theARGB);
-  
+  Standard_EXPORT static NCollection_Vec3<float> Convert_HLS_To_sRGB (const NCollection_Vec3<float>& theHls);
+
+  //! Converts Linear RGB components into HLS ones.
+  static NCollection_Vec3<float> Convert_LinearRGB_To_HLS (const NCollection_Vec3<float>& theRgb)
+  {
+    return Convert_sRGB_To_HLS (Convert_LinearRGB_To_sRGB (theRgb));
+  }
+
+  //! Converts HLS components into linear RGB ones.
+  static NCollection_Vec3<float> Convert_HLS_To_LinearRGB (const NCollection_Vec3<float>& theHls)
+  {
+    return Convert_sRGB_To_LinearRGB (Convert_HLS_To_sRGB (theHls));
+  }
+
+  //! Convert the color value to ARGB integer value, with alpha equals to 0.
+  //! So the output is formatted as 0x00RRGGBB.
+  //! @param theColor [in] color to convert
+  //! @param theARGB [out] result color encoded as integer
+  static void Color2argb (const Quantity_Color& theColor,
+                          Standard_Integer& theARGB)
+  {
+    const NCollection_Vec3<Standard_Integer> aColor (static_cast<Standard_Integer> (255.0f * theColor.myRgb.r() + 0.5f),
+                                                     static_cast<Standard_Integer> (255.0f * theColor.myRgb.g() + 0.5f),
+                                                     static_cast<Standard_Integer> (255.0f * theColor.myRgb.b() + 0.5f));
+    theARGB = (((aColor.r() & 0xff) << 16)
+             | ((aColor.g() & 0xff) << 8)
+             |  (aColor.b() & 0xff));
+  }
+
   //! Convert integer ARGB value to Color. Alpha bits are ignored
-  Standard_EXPORT static void Argb2color (const Standard_Integer theARGB, Quantity_Color& theColor);
-  
+  static void Argb2color (const Standard_Integer theARGB,
+                          Quantity_Color& theColor)
+  {
+    const NCollection_Vec3<Standard_Real> aColor (static_cast <Standard_Real> ((theARGB & 0xff0000) >> 16),
+                                                  static_cast <Standard_Real> ((theARGB & 0x00ff00) >> 8),
+                                                  static_cast <Standard_Real> ((theARGB & 0x0000ff)));
+    theColor.SetValues (aColor.r() / 255.0, aColor.g() / 255.0, aColor.b() / 255.0, Quantity_TOC_RGB);
+  }
+
+public:
+
+  //! Convert linear RGB component into sRGB using OpenGL specs formula (double precision), also known as gamma correction.
+  static Standard_Real Convert_LinearRGB_To_sRGB (Standard_Real theLinearValue)
+  {
+    return theLinearValue <= 0.0031308
+         ? theLinearValue * 12.92
+         : Pow (theLinearValue, 1.0/2.4) * 1.055 - 0.055;
+  }
+
+  //! Convert linear RGB component into sRGB using OpenGL specs formula (single precision), also known as gamma correction.
+  static float Convert_LinearRGB_To_sRGB (float theLinearValue)
+  {
+    return theLinearValue <= 0.0031308f
+         ? theLinearValue * 12.92f
+         : powf (theLinearValue, 1.0f/2.4f) * 1.055f - 0.055f;
+  }
+
+  //! Convert sRGB component into linear RGB using OpenGL specs formula (double precision), also known as gamma correction.
+  static Standard_Real Convert_sRGB_To_LinearRGB (Standard_Real thesRGBValue)
+  {
+    return thesRGBValue <= 0.04045
+         ? thesRGBValue / 12.92
+         : Pow ((thesRGBValue + 0.055) / 1.055, 2.4);
+  }
+
+  //! Convert sRGB component into linear RGB using OpenGL specs formula (single precision), also known as gamma correction.
+  static float Convert_sRGB_To_LinearRGB (float thesRGBValue)
+  {
+    return thesRGBValue <= 0.04045f
+         ? thesRGBValue / 12.92f
+         : powf ((thesRGBValue + 0.055f) / 1.055f, 2.4f);
+  }
+
+  //! Convert linear RGB components into sRGB using OpenGL specs formula.
+  template<typename T>
+  static NCollection_Vec3<T> Convert_LinearRGB_To_sRGB (const NCollection_Vec3<T>& theRGB)
+  {
+    return NCollection_Vec3<T> (Convert_LinearRGB_To_sRGB (theRGB.r()),
+                                Convert_LinearRGB_To_sRGB (theRGB.g()),
+                                Convert_LinearRGB_To_sRGB (theRGB.b()));
+  }
+
+  //! Convert sRGB components into linear RGB using OpenGL specs formula.
+  template<typename T>
+  static NCollection_Vec3<T> Convert_sRGB_To_LinearRGB (const NCollection_Vec3<T>& theRGB)
+  {
+    return NCollection_Vec3<T> (Convert_sRGB_To_LinearRGB (theRGB.r()),
+                                Convert_sRGB_To_LinearRGB (theRGB.g()),
+                                Convert_sRGB_To_LinearRGB (theRGB.b()));
+  }
+
+public:
+
+  //! Convert linear RGB component into sRGB using approximated uniform gamma coefficient 2.2.
+  static float Convert_LinearRGB_To_sRGB_approx22 (float theLinearValue) { return powf (theLinearValue, 2.2f); }
+
+  //! Convert sRGB component into linear RGB using approximated uniform gamma coefficient 2.2
+  static float Convert_sRGB_To_LinearRGB_approx22 (float thesRGBValue) { return powf (thesRGBValue, 1.0f/2.2f); }
+
+  //! Convert linear RGB components into sRGB using approximated uniform gamma coefficient 2.2
+  static NCollection_Vec3<float> Convert_LinearRGB_To_sRGB_approx22 (const NCollection_Vec3<float>& theRGB)
+  {
+    return NCollection_Vec3<float> (Convert_LinearRGB_To_sRGB_approx22 (theRGB.r()),
+                                    Convert_LinearRGB_To_sRGB_approx22 (theRGB.g()),
+                                    Convert_LinearRGB_To_sRGB_approx22 (theRGB.b()));
+  }
+
+  //! Convert sRGB components into linear RGB using approximated uniform gamma coefficient 2.2
+  static NCollection_Vec3<float> Convert_sRGB_To_LinearRGB_approx22 (const NCollection_Vec3<float>& theRGB)
+  {
+    return NCollection_Vec3<float> (Convert_sRGB_To_LinearRGB_approx22 (theRGB.r()),
+                                    Convert_sRGB_To_LinearRGB_approx22 (theRGB.g()),
+                                    Convert_sRGB_To_LinearRGB_approx22 (theRGB.b()));
+  }
+
+public:
+
+  //! Returns the value used to compare two colors for equality; 0.0001 by default.
+  Standard_EXPORT static Standard_Real Epsilon();
+
+  //! Set the value used to compare two colors for equality.
+  Standard_EXPORT static void SetEpsilon (const Standard_Real theEpsilon);
+
+  //! Converts HLS components into RGB ones.
+  static void HlsRgb (const Standard_Real theH, const Standard_Real theL, const Standard_Real theS,
+                      Standard_Real& theR, Standard_Real& theG, Standard_Real& theB)
+  {
+    const NCollection_Vec3<float> anRgb = Convert_HLS_To_sRGB (NCollection_Vec3<float> ((float )theH, (float )theL, (float )theS));
+    theR = anRgb[0];
+    theG = anRgb[1];
+    theB = anRgb[2];
+  }
+
+  //! Converts RGB components into HLS ones.
+  static void RgbHls (const Standard_Real theR, const Standard_Real theG, const Standard_Real theB,
+                      Standard_Real& theH, Standard_Real& theL, Standard_Real& theS)
+  {
+    const NCollection_Vec3<float> aHls = Convert_sRGB_To_HLS (NCollection_Vec3<float> ((float )theR, (float )theG, (float )theB));
+    theH = aHls[0];
+    theL = aHls[1];
+    theS = aHls[2];
+  }
+
   //! Internal test
   Standard_EXPORT static void Test();
 
@@ -277,27 +338,13 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
 
 private:
 
-  //! Converts HLS components into RGB ones.
-  Standard_EXPORT static void hlsrgb (const Standard_ShortReal H, const Standard_ShortReal L, const Standard_ShortReal S, Standard_ShortReal& R, Standard_ShortReal& G, Standard_ShortReal& B);
-  
-  //! Converts RGB components into HLS ones.
-  Standard_EXPORT static void rgbhls (const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B, Standard_ShortReal& H, Standard_ShortReal& L, Standard_ShortReal& S);
-  
-  //! Returns the values of a predefined colour according to
-  //! the mode specified by TypeOfColor
-  //! TOC_RGB : <R1> the value of red between 0. and 1.
-  //! <R2> the value of green between 0. and 1.
-  //! <R3> the value of blue between 0. and 1.
-  //!
-  //! TOC_HLS : <R1> is the hue angle in degrees, 0. being red
-  //! <R2> is the lightness between 0. and 1.
-  //! <R3> is the saturation between 0. and 1.
-  Standard_EXPORT static void ValuesOf (const Quantity_NameOfColor AName, const Quantity_TypeOfColor AType, Standard_ShortReal& R1, Standard_ShortReal& R2, Standard_ShortReal& R3);
+  //! Returns the values of a predefined color according to the mode.
+  Standard_EXPORT static NCollection_Vec3<float> valuesOf (const Quantity_NameOfColor theName,
+                                                           const Quantity_TypeOfColor theType);
 
+private:
 
-  Standard_ShortReal MyRed;
-  Standard_ShortReal MyGreen;
-  Standard_ShortReal MyBlue;
+  NCollection_Vec3<float> myRgb;
 
 };
 

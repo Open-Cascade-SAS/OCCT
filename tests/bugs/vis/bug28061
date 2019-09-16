@@ -14,6 +14,6 @@ vfit
 vhlr on
 
 vmoveto 250 250
-if { [vreadpixel 321 150 rgb name] != "CYAN1" } { puts "Error: the box is not highlighted" }
+if { [vreadpixel 321 150 rgb name] != "CYAN" } { puts "Error: the box is not highlighted" }
 
 vdump $imagedir/${casename}.png

@@ -11,7 +11,7 @@ TOLERANCE   : MaxTol   =   0.1201139499  (   0.1201139499 )  AvgTol   =  0.00174
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 1  ( 1 )
 PROPS       : Centroid = 1  ( 1 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )
-COLORS      : Colors   = CYAN1  ( CYAN1 )
+COLORS      : Colors   = CYAN  ( CYAN )
 NLAYERS     : NLayers  = 1  ( 1 )
 LAYERS      : Layers   = 4  ( 4 )
 

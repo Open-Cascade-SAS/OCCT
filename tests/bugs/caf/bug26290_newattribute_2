@@ -25,7 +25,7 @@ vfit
 NewCommand D
 Undo D 1
 Redo D 1
-AISColor D $Lab1 11
+AISColor D $Lab1 AQUAMARINE4
 NewCommand D
 SaveAs D $imagedir/bug26290_new_1.cbf
 Close D
@@ -66,7 +66,7 @@ Open $imagedir/bug26290_new_2.cbf D
 AISInitViewer D
 vsetdispmode 1
 vfit
-AISColor D $Lab2 44
+AISColor D $Lab2 CHARTREUSE2
 AISErase D $Lab2
 AISErase D $Lab1
 AISUnset D $Lab2

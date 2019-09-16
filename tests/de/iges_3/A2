@@ -21,7 +21,7 @@ TOLERANCE   : MaxTol   =    3.181671016  (    2716.882548 )  AvgTol   =  0.00854
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 325  ( 1841 )  N2Labels = 0  ( 0 )   TotalLabels = 328  ( 1844 )   NameLabels = 328  ( 425 )   ColorLabels = 325  ( 1841 )   LayerLabels = 193  ( 1576 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 7 )
-COLORS      : Colors   = GREEN MATRABLUE RED RED4 WHITE YELLOW  ( GREEN MAGENTA1 MATRABLUE RED RED4 WHITE YELLOW )
+COLORS      : Colors   = GREEN MATRABLUE RED RED4 WHITE YELLOW  ( GREEN MAGENTA MATRABLUE RED RED4 WHITE YELLOW )
 NLAYERS     : NLayers  = 2  ( 3 )
 LAYERS      : Layers   = 1 253  ( 1 2 253 )
 

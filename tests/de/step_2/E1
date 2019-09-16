@@ -17,7 +17,7 @@ TOLERANCE   : MaxTol   =  0.03657395095  (   0.9781270945 )  AvgTol   =  0.00114
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 196  ( 197 )  N2Labels = 0  ( 0 )   TotalLabels = 197  ( 198 )   NameLabels = 1  ( 1 )   ColorLabels = 19  ( 19 )   LayerLabels = 177  ( 178 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )
-COLORS      : Colors   = BLUE1 RED YELLOW  ( BLUE1 RED YELLOW )
+COLORS      : Colors   = BLUE RED YELLOW  ( BLUE RED YELLOW )
 NLAYERS     : NLayers  = 4  ( 4 )
 LAYERS      : Layers   = CRVS DATAMS SRFS WHEELS  ( CRVS DATAMS SRFS WHEELS )
 

@@ -26,7 +26,7 @@ vaspects a -setBackFaceColor RED
 vfit
 box aa -0.5 0.5 0.5 0.1 0.1 0.1
 vdisplay -dispMode 1 aa
-vsetcolor aa BLUE1
+vsetcolor aa BLUE
 vdump $imagedir/${casename}_mirror.png
 if { [vreadpixel 195 220 rgb name] != "BLUE2" } { puts "Error: mirrored box should look inside out" }
 verase a

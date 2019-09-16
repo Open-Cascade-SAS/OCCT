@@ -24,9 +24,8 @@ AISSet D ${aLabel} NS
 # Display presentation of NamedShape in the viewer
 AISDisplay D ${aLabel}
 
-# Set a color of the shape as NOC_GREEN
-set GreenColor 229
-AISColor D ${aLabel} ${GreenColor}
+# Set a color of the shape
+AISColor D ${aLabel} GREEN
 
 # Close/Open transaction
 NewCommand D

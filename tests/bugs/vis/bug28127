@@ -15,7 +15,7 @@ vaxo
 vdisplay -noupdate -dispMode 1 -top r g b
 vsetcolor -noupdate r RED
 vsetcolor -noupdate g GREEN
-vsetcolor -noupdate b BLUE1
+vsetcolor -noupdate b BLUE
 vfit
 
 vdisplay -topmost g

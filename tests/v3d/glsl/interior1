@@ -32,8 +32,8 @@ vdrawtext t1 " s1: phong hollow-edges " -pos 2 0 0 -disptype SUBTITLE -color BLA
 vaspects  s2 -setShadingModel GOURAUD -setInteriorStyle SOLID -setDrawEdges 1 -setEdgeColor YELLOW
 vdrawtext t2 " s2: gouraud solid-edges " -pos -1.3 -1.3 2.5 -halign CENTER -disptype SUBTITLE -color BLACK -subColor YELLOW
 
-vaspects  s3 -setShadingModel PHONG -setInteriorStyle SOLID -setDrawEdges 1 -edgeWidth 2 -setEdgeColor BLUE1
-vdrawtext t3 " s3: phong solid-edges " -pos 1.3 1.3 2.5 -halign CENTER -disptype SUBTITLE -color WHITE -subColor BLUE1
+vaspects  s3 -setShadingModel PHONG -setInteriorStyle SOLID -setDrawEdges 1 -edgeWidth 2 -setEdgeColor BLUE
+vdrawtext t3 " s3: phong solid-edges " -pos 1.3 1.3 2.5 -halign CENTER -disptype SUBTITLE -color WHITE -subColor BLUE
 
 vaspects  s4 -setShadingModel GOURAUD -setInteriorStyle HIDDENLINE -setDrawEdges 1 -setEdgeColor RED
 vdrawtext t4 " s4: hiddenline-edges " -pos 1.3 -1.3 -1.3 -halign CENTER -disptype SUBTITLE -color BLACK -subColor RED

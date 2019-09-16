@@ -38,9 +38,9 @@ vinit
 vdisplay b1 e1 c1
 vsetdispmode 1
 vfit
-vsetcolor b1 BLUE1
-vsetcolor e1 BLUE1
-vsetcolor c1 BLUE1
+vsetcolor b1 BLUE
+vsetcolor e1 BLUE
+vsetcolor c1 BLUE
 
 checkcolor ${x1} ${y1} ${KUB_R} ${KUB_G} ${KUB_B}
 checkcolor ${x2} ${y2} ${LINE_R} ${LINE_G} ${LINE_B}

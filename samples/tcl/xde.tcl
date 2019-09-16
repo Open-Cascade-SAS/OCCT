@@ -28,19 +28,20 @@ SetName D [XFindShape D link]:2 "Nut instance 1"
 SetName D [XFindShape D link]:3 "Nut instance 2"
 
 puts "- Pin will be white"
-XSetColor D [XFindShape D pin] 1 1 1
+XSetColor D [XFindShape D pin] WHITE
 puts "- Nut itself will be dark gray"
-XSetColor D [XFindShape D nut] 0.1 0.1 0.1
+XSetColor D [XFindShape D nut] GRAY10
 puts "- Nut instance #1 will be red"
-XSetColor D [XFindShape D link]:2 1 0 0
+XSetColor D [XFindShape D link]:2 RED
 puts "- Nut instance #2 will be green"
-XSetColor D [XFindShape D link]:3 0 1 0
+XSetColor D [XFindShape D link]:3 GREEN
 
 puts "Starting DF browser..."
 DFBrowse D
 puts "Expand the document tree to see its structure and assigned names"
 
 puts "Showing assembly in 3d view..."
-XShow D
+vclear
+vinit View1
+XDisplay -dispMode 1 D -explore
 vfit
-vsetdispmode 1
