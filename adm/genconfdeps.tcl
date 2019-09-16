@@ -85,10 +85,13 @@ if { "$tcl_platform(platform)" != "windows" } {
   set HAVE_D3D ""
   set HAVE_RelWithDebInfo ""
 }
-foreach anEnvIter {ARCH VCVER VCVARS PRJFMT PRODUCTS_PATH} {
+foreach anEnvIter {ARCH VCVER VCVARS PRJFMT } {
   if { [info exists ::env(${anEnvIter})] } {
     set ${anEnvIter} "$::env(${anEnvIter})"
   }
+}
+if { [info exists ::env(PRODUCTS_PATH)] } {
+  set PRODUCTS_PATH [file normalize "$::env(PRODUCTS_PATH)"]
 }
 
 if { [info exists ::env(CSF_OPT_INC)] } {

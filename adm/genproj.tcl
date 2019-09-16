@@ -284,8 +284,12 @@ proc genproj {theFormat args} {
 
   # Check optional arguments
   set aLibType "dynamic"
-  foreach arg $args {
-    if { $arg == "-h" || $arg == "-help" || $arg == "--help" } {
+  set aSolution "OCCT"
+  for {set anArgIter 0} {$anArgIter < [llength args]} {incr anArgIter} {
+    set arg [lindex $args $anArgIter]
+    if { $arg == "" } {
+      continue
+    } elseif { $arg == "-h" || $arg == "-help" || $arg == "--help" } {
       set isHelpRequire true
     } elseif { [lsearch -exact $aSupportedPlatforms $arg] >= 0 } {
       set aPlatform $arg
@@ -295,6 +299,9 @@ proc genproj {theFormat args} {
     } elseif { $arg == "-dynamic" } {
       set aLibType "dynamic"
       puts "Dynamic build has been selected"
+    } elseif { $arg == "-solution" } {
+      incr anArgIter
+      set aSolution [lindex $args $anArgIter]
     } else {
       puts "Error: genproj: unrecognized option \"$arg\""
       set isHelpRequire true
@@ -340,9 +347,9 @@ proc genproj {theFormat args} {
   # base path to where to generate projects, hardcoded from current dir
   set anAdmPath [file normalize "${::path}/adm"]
 
-  OS:MKPRC "$anAdmPath" "$theFormat" "$aLibType" "$aPlatform" "$aCmpl"
+  OS:MKPRC "$anAdmPath" "$theFormat" "$aLibType" "$aPlatform" "$aCmpl" "$aSolution"
 
-  genprojbat "$theFormat" "$aPlatform"
+  genprojbat "$theFormat" "$aPlatform" "$aSolution"
   genAllResources
 }
 
@@ -362,7 +369,8 @@ proc copy_with_warning {from to} {
   file copy -force -- "$from" "$to"
 }
 
-proc genprojbat {theFormat thePlatform} {
+# Generate auxiliary scripts for launching IDE.
+proc genprojbat {theFormat thePlatform theSolution} {
   set aTargetPlatformExt sh
   if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
     set aTargetPlatformExt bat
@@ -390,14 +398,13 @@ proc genprojbat {theFormat thePlatform} {
     copy_with_warning "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
   }
 
+  set aSolShList ""
   if { [regexp {^vc} $theFormat] } {
-    copy_with_warning "$::THE_CASROOT/adm/templates/msvc.bat" "$::path/msvc.bat"
+    set aSolShList "msvc.bat"
   } else {
     switch -exact -- "$theFormat" {
-      "cbp"   {
-        file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.sh"  "$::path/codeblocks.sh"
-        file copy -force -- "$::THE_CASROOT/adm/templates/codeblocks.bat" "$::path/codeblocks.bat"
-
+      "cbp" {
+        set aSolShList { "codeblocks.sh" "codeblocks.bat" }
         # Code::Blocks 16.01 does not create directory for import libs, help him
         set aPlatformAndCompiler "${thePlatform}/gcc"
         if { "$thePlatform" == "mac" || "$thePlatform" == "ios" } {
@@ -406,8 +413,20 @@ proc genprojbat {theFormat thePlatform} {
         file mkdir "$::path/${aPlatformAndCompiler}/lib"
         file mkdir "$::path/${aPlatformAndCompiler}/libd"
       }
-      "xcd"   { file copy -force -- "$::THE_CASROOT/adm/templates/xcode.sh"      "$::path/xcode.sh" }
+      "xcd" { set aSolShList "xcode.sh" }
     }
+  }
+
+  foreach aSolSh $aSolShList {
+    set anShFile [open "$::THE_CASROOT/adm/templates/${aSolSh}" "r"]
+    set anShTmpl [read $anShFile]
+    close $anShFile
+
+    regsub -all -- {__SOLUTION__} $anShTmpl "$theSolution" anShTmpl
+
+    set anShFile [open "$::path/${aSolSh}" "w"]
+    puts $anShFile $anShTmpl
+    close $anShFile
   }
 }
 
@@ -429,7 +448,8 @@ set THE_GUIDS_LIST($aTKNullKey) "{00000000-0000-0000-0000-000000000000}"
 # @param theLibType  Library type - dynamic or static
 # @param thePlatform Optional target platform for cross-compiling, e.g. ios for iOS
 # @param theCmpl     Compiler option (msvc or gcc)
-proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl } {
+# @param theSolution Solution name
+proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution } {
   global path
   set anOutRoot $theOutDir
   if { $anOutRoot == "" } {
@@ -493,9 +513,6 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl } {
     return
   }
 
-  # generate one solution for all projects if complete OS or VAS is processed
-  set anAllSolution "OCCT"
-
   wokUtils:FILES:mkdir $anOutDir
   if { ![file exists $anOutDir] } {
     puts stderr "Error: Could not create output directory \"$anOutDir\""
@@ -512,11 +529,11 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl } {
     "vc12"  -
     "vc14"  -
     "vc141" -
-    "vc142"    { OS:MKVC  $anOutDir $aModules $anAllSolution $theFormat $isUWP}
-    "cbp"      { OS:MKCBP $anOutDir $aModules $anAllSolution $thePlatform $theCmpl }
+    "vc142"    { OS:MKVC  $anOutDir $aModules $theSolution $theFormat $isUWP}
+    "cbp"      { OS:MKCBP $anOutDir $aModules $theSolution $thePlatform $theCmpl }
     "xcd"      {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000"
-      OS:MKXCD $anOutDir $aModules $anAllSolution $theLibType $thePlatform
+      OS:MKXCD $anOutDir $aModules $theSolution $theLibType $thePlatform
     }
   }
 

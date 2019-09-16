@@ -15,6 +15,7 @@ export HAVE_VTK="false";
 export HAVE_GLES2="false";
 export HAVE_ZLIB="false";
 export HAVE_LIBLZMA="false";
+export HAVE_RAPIDJSON="false";
 export MACOSX_USE_GLX="false";
 export CSF_OPT_INC=""
 export CSF_OPT_LIB32=""
@@ -103,6 +104,7 @@ if [ "$HAVE_GLES2"     == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -D
 if [ "$HAVE_VTK"       == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_VTK"; fi
 if [ "$HAVE_ZLIB"      == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_ZLIB"; fi
 if [ "$HAVE_LIBLZMA"   == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_LIBLZMA"; fi
+if [ "$HAVE_RAPIDJSON" == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DHAVE_RAPIDJSON"; fi
 # Option to compile OCCT with X11 libs on Mac OS X
 if [ "$MACOSX_USE_GLX" == "true" ]; then export CSF_OPT_CMPL="${CSF_OPT_CMPL} -DMACOSX_USE_GLX"; fi
 

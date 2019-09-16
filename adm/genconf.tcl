@@ -24,6 +24,9 @@
 # load tools
 source [file join [file dirname [info script]] genconfdeps.tcl]
 
+# proxy variable for implicit file path normalization
+set PRODUCTS_PATH_INPUT "$::PRODUCTS_PATH"
+
 package require Tk
 
 set aRowIter 0
@@ -225,9 +228,9 @@ proc wokdep:gui:BrowseVcVars {} {
 }
 
 proc wokdep:gui:BrowsePartiesRoot {} {
-  set aResult [tk_chooseDirectory -initialdir $::PRODUCTS_PATH -title "Choose a directory"]
+  set aResult [tk_chooseDirectory -initialdir $::PRODUCTS_PATH_INPUT -title "Choose a directory"]
   if { "$aResult" != "" } {
-    set ::PRODUCTS_PATH $aResult
+    set ::PRODUCTS_PATH_INPUT $aResult
     wokdep:gui:UpdateList
   }
 }
@@ -441,7 +444,7 @@ ttk::label    .myFrame.myHxxChecks.myScutsLbl     -text "Strategy for filling he
 
 #
 ttk::label    .myFrame.mySrchLbl       -text "3rd-parties search path:" -padding {5 5 80 5}
-entry         .myFrame.mySrchEntry     -textvariable PRODUCTS_PATH -width 80
+entry         .myFrame.mySrchEntry     -textvariable PRODUCTS_PATH_INPUT -width 80
 ttk::button   .myFrame.mySrchBrowseBtn -text "Browse" -command wokdep:gui:BrowsePartiesRoot
 checkbutton   .myFrame.myChecks.myFImageCheck   -offvalue "false" -onvalue "true" -variable HAVE_FREEIMAGE -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myFImageLbl     -text "Use FreeImage"
@@ -650,6 +653,7 @@ bind .myFrame.myVsFrame.myArchCombo <<ComboboxSelected>> {
 }
 
 .myFrame.mySrchEntry configure -validate all -validatecommand {
+  set ::PRODUCTS_PATH [file normalize "$::PRODUCTS_PATH_INPUT"]
   #return [file exists "$::PRODUCTS_PATH"]
   wokdep:gui:UpdateList
   return 1

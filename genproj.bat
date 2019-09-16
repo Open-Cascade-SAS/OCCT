@@ -54,5 +54,5 @@ if "%aPrjFmt%" == "" ( set "aPrjFmt=vcxproj" )
 if "%aPrjFmt%" == "vcxproj" ( set "aPrjFmt=%VCFMT%" )
 
 cd %~dp0
-%TCL_EXEC% %~dp0adm/start.tcl genproj %aPrjFmt% %aPlatform% %3 %4 %5
+%TCL_EXEC% %~dp0adm/start.tcl genproj %aPrjFmt% %aPlatform% -solution "OCCT" %3 %4 %5
 SET "PATH=%OLD_PATH%"

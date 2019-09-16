@@ -40,7 +40,7 @@ if [ "$aTarget" == "" ]; then
 fi
 
 cd $aScriptPath
-tclsh "./adm/start.tcl" genproj ${aTarget} $anOpt2 $anOpt3 $anOpt4 $anOpt5
+tclsh "./adm/start.tcl" genproj ${aTarget} -solution "OCCT" $anOpt2 $anOpt3 $anOpt4 $anOpt5
 
 export PATH="$anOldPath"
 export LD_LIBRARY_PATH="$anOldLd"
