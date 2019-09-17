@@ -26,6 +26,7 @@
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
+#include <Standard_ReadLineBuffer.hxx>
 
 #include <algorithm>
 #include <limits>
@@ -38,6 +39,12 @@ namespace
   static const size_t THE_STL_HEADER_SIZE   = 84;
   static const size_t THE_STL_SIZEOF_FACET  = 50;
   static const size_t THE_STL_MIN_FILE_SIZE = THE_STL_HEADER_SIZE + THE_STL_SIZEOF_FACET;
+
+  // The length of buffer to read (in bytes)
+  static const size_t THE_BUFFER_SIZE = 1024;
+
+  // Buffer to read
+  Standard_ReadLineBuffer THE_BUFFER (THE_BUFFER_SIZE);
 
   //! Auxiliary tool for merging nodes during STL reading.
   class MergeNodeTool
@@ -274,12 +281,12 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
   // use method seekpos() to get true 64-bit offset to enable
   // handling of large files (VS 2010 64-bit)
   const int64_t aStartPos = GETPOS(theStream.tellg());
-  // Note: 1 is added to theUntilPos to be sure to read the last symbol (relevant for files without EOL at the end)
-  const int64_t aEndPos = (theUntilPos > 0 ? 1 + GETPOS(theUntilPos) : std::numeric_limits<int64_t>::max());
+  size_t aLineLen = 0;
+  const char* aLine;
 
   // skip header "solid ..."
-  theStream.ignore ((std::streamsize)(aEndPos - aStartPos), '\n');
-  if (!theStream)
+  aLine = THE_BUFFER.ReadLine (theStream, aLineLen);
+  if (aLine == NULL)
   {
     Message::DefaultMessenger()->Send ("Error: premature end of file", Message_Fail);
     return false;
@@ -294,11 +301,9 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
   const int aStepB = 1024 * 1024;
   const Standard_Integer aNbSteps = 1 + Standard_Integer((GETPOS(theUntilPos) - aStartPos) / aStepB);
   Message_ProgressSentry aPSentry (theProgress, "Reading text STL file", 0, aNbSteps, 1);
-
   int64_t aProgressPos = aStartPos + aStepB;
-  const int64_t LINELEN = 1024;
   int aNbLine = 1;
-  char aLine1[LINELEN], aLine2[LINELEN], aLine3[LINELEN];
+
   while (aPSentry.More())
   {
     if (GETPOS(theStream.tellg()) > aProgressPos)
@@ -307,15 +312,18 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
       aProgressPos += aStepB;
     }
 
-    char facet[LINELEN], outer[LINELEN];
-    theStream.getline (facet, (std::streamsize)std::min (LINELEN, aEndPos - GETPOS(theStream.tellg()))); // "facet normal nx ny nz"
-    if (str_starts_with (facet, "endsolid", 8))
+    aLine = THE_BUFFER.ReadLine (theStream, aLineLen); // "facet normal nx ny nz"
+    if (aLine == NULL)
+    {
+      Message::DefaultMessenger()->Send ("Error: premature end of file", Message_Fail);
+      return false;
+    }
+    if (str_starts_with (aLine, "endsolid", 8))
     {
       // end of STL code
       break;
     }
-    theStream.getline (outer, (std::streamsize)std::min (LINELEN, aEndPos - GETPOS(theStream.tellg()))); // "outer loop"
-    if (!str_starts_with (facet, "facet", 5) || !str_starts_with (outer, "outer", 5))
+    if (!str_starts_with (aLine, "facet", 5))
     {
       TCollection_AsciiString aStr ("Error: unexpected format of facet at line ");
       aStr += aNbLine + 1;
@@ -323,46 +331,56 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
       return false;
     }
 
-    theStream.getline (aLine1, (std::streamsize)std::min (LINELEN, aEndPos - GETPOS(theStream.tellg())));
-    theStream.getline (aLine2, (std::streamsize)std::min (LINELEN, aEndPos - GETPOS(theStream.tellg())));
-    theStream.getline (aLine3, (std::streamsize)std::min (LINELEN, aEndPos - GETPOS(theStream.tellg())));
+    aLine = THE_BUFFER.ReadLine (theStream, aLineLen);  // "outer loop"
+    if (aLine == NULL || !str_starts_with (aLine, "outer", 5))
+    {
+      TCollection_AsciiString aStr ("Error: unexpected format of facet at line ");
+      aStr += aNbLine + 1;
+      Message::DefaultMessenger()->Send (aStr, Message_Fail);
+      return false;
+    }
+
+    gp_XYZ aVertex[3];
+    Standard_Boolean isEOF = false;
+    for (Standard_Integer i = 0; i < 3; i++)
+    {
+      aLine = THE_BUFFER.ReadLine (theStream, aLineLen);
+      if (aLine == NULL)
+      {
+        isEOF = true;
+        break;
+      }
+      gp_XYZ aReadVertex;
+      if (!ReadVertex (aLine, aReadVertex.ChangeCoord (1), aReadVertex.ChangeCoord (2), aReadVertex.ChangeCoord (3)))
+      {
+        TCollection_AsciiString aStr ("Error: cannot read vertex co-ordinates at line ");
+        aStr += aNbLine;
+        Message::DefaultMessenger()->Send (aStr, Message_Fail);
+        return false;
+      }
+      aVertex[i] = aReadVertex;
+    }
 
     // stop reading if end of file is reached;
     // note that well-formatted file never ends by the vertex line
-    if (theStream.eof() || GETPOS(theStream.tellg()) >= aEndPos)
+    if (isEOF)
     {
       break;
     }
 
-    if (!theStream)
-    {
-      Message::DefaultMessenger()->Send ("Error: premature end of file", Message_Fail);
-      return false;
-    }
     aNbLine += 5;
 
-    Standard_Real x1, y1, z1, x2, y2, z2, x3, y3, z3;
-    if (! ReadVertex (aLine1, x1, y1, z1) ||
-        ! ReadVertex (aLine2, x2, y2, z2) ||
-        ! ReadVertex (aLine3, x3, y3, z3))
-    {
-      TCollection_AsciiString aStr ("Error: cannot read vertex co-ordinates at line ");
-      aStr += aNbLine;
-      Message::DefaultMessenger()->Send(aStr, Message_Fail);
-      return false;
-    }
-
     // add triangle
-    int n1 = aMergeTool.AddNode (x1, y1, z1);
-    int n2 = aMergeTool.AddNode (x2, y2, z2);
-    int n3 = aMergeTool.AddNode (x3, y3, z3);
+    int n1 = aMergeTool.AddNode (aVertex[0].X(), aVertex[0].Y(), aVertex[0].Z());
+    int n2 = aMergeTool.AddNode (aVertex[1].X(), aVertex[1].Y(), aVertex[1].Z());
+    int n3 = aMergeTool.AddNode (aVertex[2].X(), aVertex[2].Y(), aVertex[2].Z());
     if (n1 != n2 && n2 != n3 && n3 != n1)
     {
       AddTriangle (n1, n2, n3);
     }
 
-    theStream.ignore ((std::streamsize)(aEndPos - GETPOS(theStream.tellg())), '\n'); // skip "endloop"
-    theStream.ignore ((std::streamsize)(aEndPos - GETPOS(theStream.tellg())), '\n'); // skip "endfacet"
+    THE_BUFFER.ReadLine (theStream, aLineLen); // skip "endloop"
+    THE_BUFFER.ReadLine (theStream, aLineLen); // skip "endfacet"
 
     aNbLine += 2;
   }

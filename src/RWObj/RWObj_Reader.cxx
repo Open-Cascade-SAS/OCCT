@@ -28,6 +28,7 @@
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
+#include <Standard_ReadLineBuffer.hxx>
 
 #include <algorithm>
 #include <limits>
@@ -44,25 +45,18 @@ IMPLEMENT_STANDARD_RTTIEXT(RWObj_Reader, Standard_Transient)
 
 namespace
 {
+  // The length of buffer to read (in bytes)
+  static const size_t THE_BUFFER_SIZE = 4 * 1024;
 
   //! Simple wrapper.
   struct RWObj_ReaderFile
   {
     FILE*   File;
-    NCollection_Array1<char> Line;
-    Standard_Integer LineBuffLen;
-    Standard_Integer MaxLineLen;
-    int64_t Position;
     int64_t FileLen;
 
     //! Constructor opening the file.
-    RWObj_ReaderFile (const TCollection_AsciiString& theFile,
-                      const Standard_Integer theMaxLineLen = 256)
+    RWObj_ReaderFile (const TCollection_AsciiString& theFile)
     : File (OSD_OpenFile (theFile.ToCString(), "rb")),
-      Line (0, theMaxLineLen - 1),
-      LineBuffLen (theMaxLineLen),
-      MaxLineLen (theMaxLineLen),
-      Position (0),
       FileLen (0)
     {
       if (this->File != NULL)
@@ -82,59 +76,6 @@ namespace
         ::fclose (File);
       }
     }
-
-    //! Read line, also considers multi-line syntax (when last line symbol is slash).
-    bool ReadLine()
-    {
-      int64_t aPosPrev = this->Position;
-      char* aLine = &Line.ChangeFirst();
-      for (; ::feof (this->File) == 0 && ::fgets (aLine, MaxLineLen - 1, this->File) != NULL; )
-      {
-        const int64_t aPosNew = ::ftell64 (this->File);
-        if (aLine[0] == '#')
-        {
-          Position = aPosNew;
-          return true;
-        }
-
-        const Standard_Integer aNbRead = Standard_Integer(aPosNew - aPosPrev);
-        bool toReadMore = false;
-        for (int aTailIter = aNbRead - 1; aTailIter >= 0; --aTailIter)
-        {
-          if (aLine[aTailIter] != '\n'
-           && aLine[aTailIter] != '\r'
-           && aLine[aTailIter] != '\0')
-          {
-            if (aLine[aTailIter] == '\\')
-            {
-              // multi-line syntax
-              aLine[aTailIter] = ' ';
-              const ptrdiff_t aFullLen = aLine + aTailIter + 1 - &this->Line.First();
-              if (LineBuffLen < aFullLen + MaxLineLen)
-              {
-                LineBuffLen += MaxLineLen;
-                this->Line.Resize (0, LineBuffLen - 1, true);
-              }
-              aLine = &this->Line.ChangeFirst() + aFullLen;
-              toReadMore = true;
-              break;
-            }
-            break;
-          }
-        }
-
-        if (toReadMore)
-        {
-          aPosPrev = aPosNew;
-          continue;
-        }
-
-        Position = aPosNew;
-        return true;
-      }
-      return false;
-    }
-
   };
 
   //! Return TRUE if given polygon has clockwise node order.
@@ -215,6 +156,9 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
     return Standard_False;
   }
 
+  Standard_ReadLineBuffer aBuffer (THE_BUFFER_SIZE);
+  aBuffer.SetMultilineMode (true);
+
   const Standard_Integer aNbMiBTotal  = Standard_Integer(aFileLen / (1024 * 1024));
   Standard_Integer       aNbMiBPassed = 0;
   Message_ProgressSentry aPSentry (theProgress, "Reading text OBJ file", 0, aNbMiBTotal, 1);
@@ -222,10 +166,19 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
   aTimer.Start();
 
   bool isStart = true;
-  for (; aFile.ReadLine(); )
+  int64_t aPosition = 0;
+  size_t aLineLen = 0;
+  int64_t aReadBytes = 0;
+  const char* aLine = NULL;
+  for (;;)
   {
+    aLine = aBuffer.ReadLine (aFile.File, aLineLen, aReadBytes);
+    if (aLine == NULL)
+    {
+      break;
+    }
     ++myNbLines;
-    const char* aLine = &aFile.Line.First();
+    aPosition += aReadBytes;
     if (aTimer.ElapsedTime() > 1.0)
     {
       if (!aPSentry.More())
@@ -233,7 +186,7 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
         return false;
       }
 
-      const Standard_Integer aNbMiBRead = Standard_Integer(aFile.Position / (1024 * 1024));
+      const Standard_Integer aNbMiBRead = Standard_Integer(aPosition / (1024 * 1024));
       for (; aNbMiBPassed < aNbMiBRead; ++aNbMiBPassed) { aPSentry.Next(); }
       aTimer.Reset();
       aTimer.Start();

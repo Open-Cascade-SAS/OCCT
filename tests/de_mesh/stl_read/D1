@@ -74,7 +74,7 @@ checknbshapes res_one_binary -face 1
 puts "\n#======================================================================"
 puts "# Binary file with no facets -- will be treated as Ascii and generate e r r o r"
 puts "#======================================================================"
-puts "REQUIRED ALL: Error: unexpected format of facet at line 2"
+puts "REQUIRED ALL: Error: premature end of file"
 set fd [open ${imagedir}/${casename}_zero_binary.stl w]
 fconfigure $fd -translation binary
 puts -nonewline $fd "stl [string repeat { } 76][binary format i 0]"
@@ -84,7 +84,7 @@ readstl res_zero_binary ${imagedir}/${casename}_zero_binary.stl -brep
 puts "\n#======================================================================"
 puts "# Empty file"
 puts "#======================================================================"
-puts "REQUIRED ALL: Error: unexpected format of facet at line 2"
+puts "REQUIRED ALL: Error: premature end of file"
 set fd [open ${imagedir}/${casename}_empty.stl w]
 close $fd
 readstl res_empty ${imagedir}/${casename}_empty.stl -brep
