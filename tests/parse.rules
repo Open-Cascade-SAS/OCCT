@@ -7,3 +7,4 @@ FAILED /\b[Ff][Aa][Ii][Ll][0-9]\b/ error
 FAILED /\b[Ff][Aa][Ii][Ll][Ee][Dd]\b/ error
 FAILED /\b[Ff][Aa][Ii][Ll][Uu][Rr][Ee]\b/ error
 FAILED /Process killed by CPU limit/ Killed by CPU limit
+FAILED /Process killed by elapsed limit/ Killed by elapsed time limit

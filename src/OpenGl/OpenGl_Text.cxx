@@ -38,12 +38,12 @@ namespace
   //! Auxiliary tool for setting polygon offset temporarily.
   struct BackPolygonOffsetSentry
   {
-    BackPolygonOffsetSentry (const Handle(OpenGl_Context)& theCtx)
-    : myCtx (theCtx),
-      myOffsetBack (!theCtx.IsNull() ? theCtx->PolygonOffset() : Graphic3d_PolygonOffset())
+    BackPolygonOffsetSentry (OpenGl_Context* theCtx)
+    : myCtx (theCtx)
     {
-      if (!theCtx.IsNull())
+      if (theCtx != NULL)
       {
+        myOffsetBack = theCtx->PolygonOffset();
         Graphic3d_PolygonOffset aPolyOffset = myOffsetBack;
         aPolyOffset.Mode = Aspect_POM_Fill;
         aPolyOffset.Units += 1.0f;
@@ -53,7 +53,7 @@ namespace
 
     ~BackPolygonOffsetSentry()
     {
-      if (!myCtx.IsNull())
+      if (myCtx != NULL)
       {
         myCtx->SetPolygonOffset (myOffsetBack);
       }
@@ -63,8 +63,8 @@ namespace
     BackPolygonOffsetSentry (const BackPolygonOffsetSentry& );
     BackPolygonOffsetSentry& operator= (const BackPolygonOffsetSentry& );
   private:
-    const Handle(OpenGl_Context)& myCtx;
-    const Graphic3d_PolygonOffset myOffsetBack;
+    OpenGl_Context* myCtx;
+    Graphic3d_PolygonOffset myOffsetBack;
   };
 
 } // anonymous namespace
@@ -744,13 +744,13 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
     }
     case Aspect_TODT_SUBTITLE:
     {
-      BackPolygonOffsetSentry aPolygonOffsetTmp (hasDepthTest ? theCtx : Handle(OpenGl_Context)());
+      BackPolygonOffsetSentry aPolygonOffsetTmp (hasDepthTest ? theCtx.get() : NULL);
       drawRect (theCtx, theTextAspect, theColorSubs);
       break;
     }
     case Aspect_TODT_DEKALE:
     {
-      BackPolygonOffsetSentry aPolygonOffsetTmp (hasDepthTest ? theCtx : Handle(OpenGl_Context)());
+      BackPolygonOffsetSentry aPolygonOffsetTmp (hasDepthTest ? theCtx.get() : NULL);
       theCtx->SetColor4fv (theColorSubs);
       setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, +1.0f, 0.0f));
       drawText    (theCtx, theTextAspect);
@@ -764,7 +764,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
     }
     case Aspect_TODT_SHADOW:
     {
-      BackPolygonOffsetSentry aPolygonOffsetTmp (hasDepthTest ? theCtx : Handle(OpenGl_Context)());
+      BackPolygonOffsetSentry aPolygonOffsetTmp (hasDepthTest ? theCtx.get() : NULL);
       theCtx->SetColor4fv (theColorSubs);
       setupMatrix (theCtx, theTextAspect, OpenGl_Vec3 (+1.0f, -1.0f, 0.0f));
       drawText    (theCtx, theTextAspect);
