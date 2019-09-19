@@ -87,10 +87,10 @@ static struct dirpage *curpage;
 /*    Utilitaire : Reservation de caracteres
       Remplace suite de mini-malloc par gestion de page   */
 
-char* iges_newchar (char* newtext, int lentext)
+static char* iges_newchar (int lentext)
 {
-  int i, lnt;
-  if ((lnt = onecarpage->used) > Maxcar-lentext-1) {  /* allouer nouvelle page */
+  int lnt = onecarpage->used;
+  if (lnt > Maxcar-lentext-1) {  /* allouer nouvelle page */
     struct carpage *newpage;
     unsigned int sizepage = sizeof(struct carpage);
     if (lentext >= Maxcar) sizepage += (lentext+1 - Maxcar);
@@ -102,9 +102,8 @@ char* iges_newchar (char* newtext, int lentext)
   restext  = onecarpage->cars + lnt;
   onecarpage->used = (lnt + lentext + 1);
 /*   strcpy   */
-  for (i = lentext-1; i >= 0; i --) restext[i] = newtext[i];
   restext[lentext] = '\0';
-  return (restext);
+  return restext;
 }
 
 
@@ -193,9 +192,14 @@ void iges_curpart (int dnum)
 void iges_newparam (int typarg, int longval, char *parval)
 {
   char *newval;
+  int i;
+
   if (curlist == NULL) return;      /*  non defini : abandon  */
-  newval = iges_newchar(parval,longval);
-/*  curparam = (struct oneparam*) malloc ( sizeof(struct oneparam) );  */
+
+  newval = iges_newchar(longval);
+  for (i = 0; i < longval; i++) newval[i] = parval[i];
+
+  /*  curparam = (struct oneparam*) malloc ( sizeof(struct oneparam) );  */
   if (oneparpage->used > Maxpar) {
     struct parpage* newparpage;
     newparpage = (struct parpage*) malloc ( sizeof(struct parpage) );
@@ -223,7 +227,7 @@ void iges_addparam (int longval, char* parval)
   oldval = curparam->parval;
   long0 = (int)strlen(oldval);
 /*  newval = (char*) malloc(long0+longval+1);  */
-  newval = iges_newchar("",long0+longval+1);
+  newval = iges_newchar (long0 + longval + 1);
   for (i = 0; i < long0;   i ++) newval[i] = oldval[i];
   for (i = 0; i < longval; i ++) newval[i+long0] = parval[i];
   newval[long0+longval] = '\0';
