@@ -1,0 +1,18 @@
+puts "============="
+puts "0030949: Foundation Classes - Dump improvement for OCCT classes"
+puts "============="
+
+set px 1
+set py 2
+set pz 3
+
+vertex vv $px $py $pz
+set log [bounding vv -obb -dumpJson]
+
+if {![regexp {"gp_XYZ": \[+([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)} $log full xc yc zc]} {
+  puts "Error in DumpJson."
+}
+
+checkreal "XC" $xc $px 1.0e-7 0.0
+checkreal "YC" $yc $py 1.0e-7 0.0
+checkreal "ZC" $zc $pz 1.0e-7 0.0

@@ -21,10 +21,12 @@
 
 #include <vector>
 
+#include <Bnd_Box.hxx>
 #include <NCollection_Mat4.hxx>
 #include <NCollection_Vec2.hxx>
 #include <NCollection_Vec3.hxx>
 #include <NCollection_Vector.hxx>
+#include <Standard_OStream.hxx>
 #include <Standard_Type.hxx>
 
 // GCC supports shrink function only in C++11 mode
@@ -56,6 +58,32 @@ namespace BVH
   {
     typedef NCollection_Vec3<T> Type;
   };
+
+  template<class T> Bnd_Box ToBndBox (const T& theMin, const T& theMax)
+  {
+    return Bnd_Box (gp_Pnt (theMin, 0., 0.), gp_Pnt (theMax, 0., 0.));
+  }
+
+  template<class T> Bnd_Box ToBndBox (const NCollection_Vec2<T>& theMin,
+                                      const NCollection_Vec2<T>& theMax)
+  {
+    return Bnd_Box (gp_Pnt (theMin.x(), theMin.y(), 0.),
+                    gp_Pnt (theMax.x(), theMax.y(), 0.));
+  }
+
+  template<class T> Bnd_Box ToBndBox (const NCollection_Vec3<T>& theMin,
+                                      const NCollection_Vec3<T>& theMax)
+  {
+    return Bnd_Box (gp_Pnt (theMin.x(), theMin.y(), theMin.z()),
+                    gp_Pnt (theMax.x(), theMax.y(), theMax.z()));
+  }
+
+  template<class T> Bnd_Box ToBndBox (const NCollection_Vec4<T>& theMin,
+                                      const NCollection_Vec4<T>& theMax)
+  {
+    return Bnd_Box (gp_Pnt (theMin.x(), theMin.y(), theMin.z()),
+                    gp_Pnt (theMax.x(), theMax.y(), theMax.z()));
+  }
 
   template<class T> struct VectorType<T, 4>
   {

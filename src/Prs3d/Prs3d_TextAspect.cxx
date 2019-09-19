@@ -17,6 +17,7 @@
 #include <Prs3d_TextAspect.hxx>
 
 #include <Font_NameOfFont.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_TextAspect, Prs3d_BasicAspect)
 
@@ -47,3 +48,20 @@ Prs3d_TextAspect::Prs3d_TextAspect (const Handle(Graphic3d_AspectText3d)& theAsp
 {
   //
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_TextAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Prs3d_TextAspect);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get());
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHeight);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHorizontalJustification);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVerticalJustification);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOrientation);
+}
+

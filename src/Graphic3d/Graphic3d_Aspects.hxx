@@ -477,6 +477,9 @@ public:
         && myIsTextZoomable == theOther.myIsTextZoomable;
   }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+
 protected:
 
   Handle(Graphic3d_ShaderProgram)  myProgram;

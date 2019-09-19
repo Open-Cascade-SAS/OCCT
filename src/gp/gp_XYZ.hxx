@@ -22,6 +22,9 @@
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
+
+#include <Standard_OStream.hxx>
+
 class Standard_ConstructionError;
 class Standard_OutOfRange;
 class gp_Mat;
@@ -324,6 +327,8 @@ public:
     void SetLinearForm (const gp_XYZ& XYZ1, const gp_XYZ& XYZ2);
 
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
 
 
 protected:

@@ -16,6 +16,7 @@
 
 #include <Aspect_TypeOfLine.hxx>
 #include <Graphic3d_AspectText3d.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_DimensionAspect, Prs3d_BasicAspect)
 
@@ -59,3 +60,28 @@ void Prs3d_DimensionAspect::SetCommonColor (const Quantity_Color& theColor)
   myTextAspect->SetColor (theColor);
   myArrowAspect->SetColor (theColor);
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_DimensionAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Prs3d_DimensionAspect);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myLineAspect.get());
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get());
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValueStringFormat);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myExtensionSize);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowTailSize);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowOrientation);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextHPosition);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextVPosition);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDisplayUnits);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsText3d);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextShaded);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsArrows3d);
+}
+

@@ -338,3 +338,16 @@ void OpenGl_Group::Release (const Handle(OpenGl_Context)& theGlCtx)
 
   OpenGl_Element::Destroy (theGlCtx.get(), myAspects);
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_Group::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, OpenGl_Group);
+
+  DUMP_FIELD_VALUES_BY_KIND (theOStream, theDepth, Graphic3d_Group);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspects);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsRaytracable);
+}

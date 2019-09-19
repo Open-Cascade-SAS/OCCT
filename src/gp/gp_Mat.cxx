@@ -26,6 +26,7 @@
 #include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Dump.hxx>
 
 #define M00 ((Standard_Real*)M)[0]
 #define M01 ((Standard_Real*)M)[1]
@@ -268,3 +269,11 @@ void gp_Mat::Power (const Standard_Integer N)
   }
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void gp_Mat::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+{
+  DUMP_VECTOR_CLASS (theOStream, gp_Mat, 9, Mat00, Mat01, Mat02, Mat10, Mat11, Mat12, Mat20, Mat21, Mat22);
+}

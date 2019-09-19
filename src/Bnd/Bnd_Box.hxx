@@ -21,6 +21,7 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
+#include <gp_Pnt.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Boolean.hxx>
@@ -68,6 +69,11 @@ public:
   //! Creates an empty Box.
   //! The constructed box is qualified Void. Its gap is null.
   Standard_EXPORT Bnd_Box();
+
+  //! Creates a bounding box, it contains:
+  //! -   minimum/maximum point of bouning box,
+  //! The constructed box is qualified Void. Its gap is null.
+  Standard_EXPORT Bnd_Box (const gp_Pnt theMin, const gp_Pnt theMax);
 
   //! Sets this bounding box so that it  covers the whole of 3D space.
   //! It is infinitely  long in all directions.
@@ -295,6 +301,9 @@ public:
     return !IsVoid()
          && Xmax >= Xmin;
   }
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
 
 protected:
 

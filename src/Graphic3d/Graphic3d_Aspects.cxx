@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_Aspects.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Aspects, Standard_Transient)
 
@@ -59,4 +60,26 @@ void Graphic3d_Aspects::SetTextureMap (const Handle(Graphic3d_TextureMap)& theTe
   }
 
   myTextureSet = new Graphic3d_TextureSet (theTexture);
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_Aspects::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Graphic3d_Aspects);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myInteriorColor);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBackInteriorColor);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEdgeColor);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPolygonOffset);
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSkipFirstEdge);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDistinguishMaterials);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawEdges);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawSilhouette);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSuppressBackFaces);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToMapTexture);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextZoomable);
 }

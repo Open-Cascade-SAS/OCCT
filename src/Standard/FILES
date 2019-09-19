@@ -24,6 +24,8 @@ Standard_DimensionError.hxx
 Standard_DimensionMismatch.hxx
 Standard_DivideByZero.hxx
 Standard_DomainError.hxx
+Standard_Dump.cxx
+Standard_Dump.hxx
 Standard_ErrorHandler.cxx
 Standard_ErrorHandler.hxx
 Standard_ExtCharacter.hxx

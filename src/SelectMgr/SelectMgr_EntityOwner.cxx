@@ -82,3 +82,17 @@ void SelectMgr_EntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationMa
     mySelectable->HilightOwnerWithColor (thePM, theStyle, this);
   }
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void SelectMgr_EntityOwner::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+{
+  DUMP_CLASS_BEGIN (theOStream, SelectMgr_EntityOwner);
+
+  DUMP_FIELD_VALUE_POINTER (theOStream, mySelectable);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, mypriority);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsSelected);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFromDecomposition);
+}

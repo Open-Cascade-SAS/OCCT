@@ -187,6 +187,9 @@ public:
   //! Sets flag indicating this owner points to a part of object (TRUE) or to entire object (FALSE).
   void SetComesFromDecomposition (const Standard_Boolean theIsFromDecomposition) { myFromDecomposition = theIsFromDecomposition; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+
 public:
 
   //! Sets the selectable object.

@@ -280,6 +280,9 @@ public:
 
   void TShape (const Handle(TopoDS_TShape)& theTShape) { myTShape = theTShape; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+
 private:
 
   Handle(TopoDS_TShape) myTShape;

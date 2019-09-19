@@ -479,6 +479,9 @@ public: //! @name simplified presentation properties API
   //! Clears settings provided by the drawing tool aDrawer.
   Standard_EXPORT virtual void UnsetAttributes();
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+
 public: //! @name deprecated methods
 
   //! gives the list of modes which are flagged "to be updated".

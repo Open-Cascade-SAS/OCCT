@@ -97,6 +97,9 @@ public:
 
   void SetAspect (const Handle(Graphic3d_AspectText3d)& theAspect) { myTextAspect = theAspect; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 protected:
 
   Handle(Graphic3d_AspectText3d) myTextAspect;

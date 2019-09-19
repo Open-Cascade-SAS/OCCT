@@ -27,6 +27,13 @@ class BVH_TreeBaseTransient : public Standard_Transient
   DEFINE_STANDARD_RTTIEXT(BVH_TreeBaseTransient, Standard_Transient)
 protected:
   BVH_TreeBaseTransient() {}
+
+  //! Dumps the content of me into the stream
+  virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const { (void)theOStream; (void)theDepth; }
+
+  //! Dumps the content of me into the stream
+  virtual void DumpNode (const int theNodeIndex, Standard_OStream& theOStream, const Standard_Integer theDepth) const
+  { (void)theNodeIndex; (void)theOStream; (void)theDepth; }
 };
 
 //! Stores parameters of bounding volume hierarchy (BVH).
@@ -176,6 +183,36 @@ public: //! @name methods for accessing serialized tree data
   const typename BVH::ArrayType<T, N>::Type& MaxPointBuffer() const
   {
     return myMaxPointBuffer;
+  }
+
+  //! Dumps the content of me into the stream
+  virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const Standard_OVERRIDE
+  {
+    DUMP_CLASS_BEGIN (theOStream, BVH_TreeBase);
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDepth);
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, Length());
+
+    for (Standard_Integer aNodeIdx = 0; aNodeIdx < Length(); ++aNodeIdx)
+    {
+      DumpNode (aNodeIdx, theOStream, theDepth);
+    }
+  }
+
+  //! Dumps the content of node into the stream
+  virtual void DumpNode (const int theNodeIndex, Standard_OStream& theOStream, const Standard_Integer theDepth) const Standard_OVERRIDE
+  {
+    DUMP_CLASS_BEGIN (theOStream, BVH_TreeNode);
+
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, theNodeIndex);
+
+    Bnd_Box aBndBox = BVH::ToBndBox (MinPoint (theNodeIndex), MaxPoint (theNodeIndex));
+    Bnd_Box* aPointer = &aBndBox;
+    DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aPointer);
+
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, BegPrimitive (theNodeIndex));
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, EndPrimitive (theNodeIndex));
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, Level (theNodeIndex));
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsOuter (theNodeIndex));
   }
 
 public: //! @name protected fields

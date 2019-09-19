@@ -16,6 +16,7 @@
 
 
 #include <TopLoc_Datum3D.hxx>
+#include <Standard_Dump.hxx>
 #include <TopLoc_ItemLocation.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopLoc_SListOfItemLocation.hxx>
@@ -31,4 +32,18 @@ TopLoc_ItemLocation::TopLoc_ItemLocation
   myPower(P),
   myTrsf (D->Transformation().Powered (P))
 {
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TopLoc_ItemLocation::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, TopLoc_ItemLocation);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myTrsf);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDatum.get());
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPower);
 }

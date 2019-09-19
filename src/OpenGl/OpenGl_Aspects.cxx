@@ -110,3 +110,15 @@ void OpenGl_Aspects::Release (OpenGl_Context* theContext)
   myResSprite.Release (theContext);
   myResProgram.Release (theContext);
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_Aspects::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, OpenGl_Aspects);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myShadingModel);
+}

@@ -118,6 +118,8 @@ public:
   Standard_DEPRECATED("Deprecated method, results might be undefined")
   Standard_EXPORT void SetAspect (const Handle(Prs3d_BasicAspect)& anAspect);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 protected:
 
   //! The TypeOfPresention3d means that the interactive object

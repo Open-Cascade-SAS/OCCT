@@ -136,6 +136,64 @@ const char* GeomTools_Dump (void* theHandlePtr)
 Dump geometric object to cout.
 - *theHandlePtr* -- a pointer to the geometric variable (<i>Handle</i> to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
 
+
+@section occt_debug_dump_json Dump OCCT objects into Json
+
+Many OCCT classes may dump the current state into the stream. This stream contains the information about the class field into the field value/s.
+It is possible to prepare recursive dump using corresponded macro for class fields. The depth of this recursion is defined by parameter of the dump.
+The object defines What parameters should be presented in the Dump. The usual way is to dump all object fields.
+
+@subsection occt_debug_dump_json_object Implementation in object
+
+Steps to prepare dump of the object into json:
+
+1. Create method <b>DumpJson</b>. The method should accept the output steam and the depth for the fields dump.
+Depth, equal to zero means that only fields of this class should be dumped. Default value -1 means that whole tree of dump will be built recursively calling dump of all fields.
+
+2. Put into the first row of the method <b>DUMP_CLASS_BEGIN</b>. This macro creates a local variable, that will open Json structure on start, and close on exit from this method.
+
+3. Add several macro to store field values.
+
+The following macro are defined to cover the object parameters into json format:
+
+| Name                        | Result in json |
+| :-------------------------- | :--------|
+| DUMP_FIELD_VALUE_NUMERICAL  | "field": value |
+| DUMP_FIELD_VALUE_STRING     | "field": "value" |
+| DUMP_FIELD_VALUE_POINTER    | "field": "pointer address" |
+| DUMP_FIELD_VALUES_DUMPED    | "field": { fesult of field->DumpJson(...) } |
+| DUMP_FIELD_VALUES_NUMERICAL | "field": [value_1, ..., value_n]
+| DUMP_FIELD_VALUES_STRING    | "field": ["value_1", ..., "value_n"]
+| DUMP_FIELD_VALUES_BY_KIND   | "kind": { result of kind::DumpJson(...) } |
+
+@subsection occt_debug_dump_json_draw Using in DRAW
+
+In DRAW, key '-dumpJson' is used to dump an object.
+It is implemented in 'vaspect' and 'boundingbox' commands.
+
+Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
+
+~~~~~
+"Bnd_OBB": {
+   "Center": {
+      "gp_XYZ": [1, 2, 3]
+   },
+   "Axes[0]": {
+       "gp_XYZ:" [1, 0, 0]
+   },
+   "Axes[1]": {
+       "gp_XYZ:" [0, 1, 0]
+   },
+   "Axes[2]": {
+       "gp_XYZ:" [0, 0, 1]
+   },
+   "HDims[0]": 0,
+   "HDims[1]": 0,
+   "HDims[2]": 0,
+   "IsAABox": 1,
+}
+~~~~~
+
 @section occt_debug_vstudio Using Visual Studio debugger 
 
 @subsection occt_debug_vstudio_command Command window 

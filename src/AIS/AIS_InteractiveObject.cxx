@@ -143,3 +143,16 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& theAspect
     aGroup->SetGroupPrimitivesAspect (aTextAspect->Aspect());
   }
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void AIS_InteractiveObject::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, AIS_InteractiveObject);
+
+  DUMP_FIELD_VALUES_BY_KIND (theOStream, theDepth, SelectMgr_SelectableObject);
+  DUMP_FIELD_VALUE_POINTER (theOStream, myCTXPtr);
+  DUMP_FIELD_VALUE_POINTER (theOStream, myOwner);
+}

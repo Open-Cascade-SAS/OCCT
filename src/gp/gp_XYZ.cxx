@@ -17,6 +17,7 @@
 #include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Dump.hxx>
 
 Standard_Boolean gp_XYZ::IsEqual (const gp_XYZ& Other,
 				  const Standard_Real Tolerance) const {
@@ -33,3 +34,11 @@ Standard_Boolean gp_XYZ::IsEqual (const gp_XYZ& Other,
   return Standard_True;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void gp_XYZ::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+{
+  DUMP_VECTOR_CLASS (theOStream, gp_XYZ, 3, x, y, z)
+}

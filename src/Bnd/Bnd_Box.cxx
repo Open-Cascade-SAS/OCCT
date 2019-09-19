@@ -21,6 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Dump.hxx>
 
 // set the flag to one
 #define ClearVoidFlag() ( Flags &= ~VoidMask )
@@ -42,6 +43,18 @@ Bnd_Box::Bnd_Box()
 {
   SetVoid();
 }
+
+//=======================================================================
+//function : Bnd_Box
+//purpose  : 
+//=======================================================================
+Bnd_Box::Bnd_Box (const gp_Pnt theMin, const gp_Pnt theMax)
+: Gap (0.0)
+{
+  SetVoid();
+  Update (theMin.X(), theMin.Y(), theMin.Z(), theMax.X(), theMax.Y(), theMax.Z());
+}
+
 
 //=======================================================================
 //function : Set
@@ -956,4 +969,19 @@ void Bnd_Box::Dump () const
   }
   std::cout << "\n Gap : " << Gap;
   std::cout << "\n";
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Bnd_Box::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Bnd_Box);
+
+  DUMP_FIELD_VALUES_NUMERICAL (theOStream, "CornerMin", 3, Xmin, Ymin, Zmin)
+  DUMP_FIELD_VALUES_NUMERICAL (theOStream, "CornerMax", 3, Xmax, Ymax, Zmax)
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, Gap);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, Flags);
 }

@@ -34,6 +34,7 @@
 #include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Dump.hxx>
 
 //=======================================================================
 //function : gp_Trsf
@@ -848,4 +849,19 @@ void gp_Trsf::Orthogonalize()
   aTM.SetRows(aV1, aV2, aV3);
 
   matrix = aTM;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void gp_Trsf::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, gp_Trsf);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &loc);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &matrix);
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, shape);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, scale);
 }

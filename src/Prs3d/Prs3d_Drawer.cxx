@@ -26,6 +26,7 @@
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_Drawer, Graphic3d_PresentationAttributes)
 
@@ -1408,4 +1409,14 @@ bool Prs3d_Drawer::SetShadingModel (Graphic3d_TypeOfShadingModel theModel,
   }
 
   return isUpdateNeeded;
+}
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Prs3d_Drawer);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShadingAspect.get());
 }

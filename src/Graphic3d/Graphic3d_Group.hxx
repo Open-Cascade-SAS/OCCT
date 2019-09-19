@@ -276,6 +276,9 @@ public:
                                      const Standard_Boolean                  theHasOwnAnchor = Standard_True);
 
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+
 protected:
 
   //! Creates a group in the structure <AStructure>.

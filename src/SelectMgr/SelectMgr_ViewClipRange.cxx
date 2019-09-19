@@ -102,3 +102,18 @@ void SelectMgr_ViewClipRange::AddClippingPlanes (const Graphic3d_SequenceOfHClip
     }
   }
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void SelectMgr_ViewClipRange::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, SelectMgr_ViewClipRange);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myUnclipRange);
+  for (size_t aRangeIter = 0; aRangeIter < myClipRanges.size(); ++aRangeIter)
+  {
+    DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myClipRanges[aRangeIter]);
+  }
+}

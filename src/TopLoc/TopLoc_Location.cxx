@@ -20,6 +20,7 @@
 #include <gp_Trsf.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <Standard_Dump.hxx>
 #include <TopLoc_Datum3D.hxx>
 #include <TopLoc_ItemLocation.hxx>
 #include <TopLoc_Location.hxx>
@@ -228,6 +229,18 @@ Standard_Boolean TopLoc_Location::IsDifferent
   (const TopLoc_Location& Other) const
 {
   return !IsEqual(Other);
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TopLoc_Location::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, TopLoc_Location);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Transformation());
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsIdentity());
 }
 
 //=======================================================================

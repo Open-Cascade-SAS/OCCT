@@ -110,6 +110,7 @@ Graphic3d_NameOfTexture2D.hxx
 Graphic3d_NameOfTextureEnv.hxx
 Graphic3d_NameOfTexturePlane.hxx
 Graphic3d_NMapOfTransient.hxx
+Graphic3d_PolygonOffset.cxx
 Graphic3d_PolygonOffset.hxx
 Graphic3d_PriorityDefinitionError.hxx
 Graphic3d_RenderingMode.hxx

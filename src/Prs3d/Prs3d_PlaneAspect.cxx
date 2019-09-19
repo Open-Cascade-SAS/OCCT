@@ -14,6 +14,8 @@
 
 #include <Prs3d_PlaneAspect.hxx>
 
+#include <Standard_Dump.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PlaneAspect, Prs3d_BasicAspect)
 
 // =======================================================================
@@ -37,3 +39,28 @@ Prs3d_PlaneAspect::Prs3d_PlaneAspect()
 {
   //
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_PlaneAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Prs3d_PlaneAspect);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myEdgesAspect.get());
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myIsoAspect.get());
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsLength);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsSize);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsAngle);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPlaneXLength);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPlaneYLength);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsoDistance);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawCenterArrow);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawEdgesArrows);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawEdges);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawIso);
+}
+

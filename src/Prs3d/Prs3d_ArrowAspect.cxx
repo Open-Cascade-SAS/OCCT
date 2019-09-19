@@ -15,6 +15,7 @@
 #include <Prs3d_ArrowAspect.hxx>
 
 #include <Prs3d_InvalidAngle.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ArrowAspect, Prs3d_BasicAspect)
 
@@ -64,4 +65,17 @@ void Prs3d_ArrowAspect::SetAngle (const Standard_Real theAngle)
   Prs3d_InvalidAngle_Raise_if (theAngle <= 0.0
                             || theAngle >= M_PI / 2.0, "Prs3d_ArrowAspect::SetAngle() - angle out of range");
   myAngle = theAngle;
+}
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_ArrowAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Prs3d_ArrowAspect);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAngle);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLength);
 }

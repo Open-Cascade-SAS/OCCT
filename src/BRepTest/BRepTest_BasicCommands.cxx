@@ -55,6 +55,9 @@
 #include <Draw_Marker3D.hxx>
 #include <Draw_MarkerShape.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+
+#include <Standard_Dump.hxx>
+
 #include <stdio.h>
 
 Standard_IMPORT Draw_Viewer dout;
@@ -498,6 +501,7 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
   Bnd_Box anAABB;
 
   Standard_Boolean doPrint = Standard_False;
+  Standard_Boolean doDumpJson = Standard_False;
   Standard_Boolean useOldSyntax = Standard_False;
   Standard_Boolean isOBB = Standard_False;
   Standard_Boolean isTriangulationReq = Standard_True;
@@ -531,6 +535,10 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
           || anArgCase == "-print")
     {
       doPrint = Standard_True;
+    }
+    else if (anArgCase == "-dumpjson")
+    {
+      doDumpJson = Standard_True;
     }
     else if (anArgCase == "-save"
           && anArgIter + 6 < theNArg
@@ -601,7 +609,7 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
   }
 
   // enable printing (old syntax) if neither saving to shape nor to DRAW variables is requested
-  if (! doPrint && anOutVars[0].IsEmpty() && aResShapeName.IsEmpty())
+  if (! doPrint && ! doDumpJson && anOutVars[0].IsEmpty() && aResShapeName.IsEmpty())
   {
     doPrint = Standard_True;
     useOldSyntax = Standard_True;
@@ -634,6 +642,15 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
       theDI << "Half X: " << anOBB.XHSize() << "\n"
             << "Half Y: " << anOBB.YHSize() << "\n"
             << "Half Z: " << anOBB.ZHSize() << "\n";
+    }
+
+    if (doDumpJson)
+    {
+      Standard_SStream aStream;
+      anOBB.DumpJson (aStream);
+
+      theDI << "Oriented bounding box\n";
+      theDI << Standard_Dump::FormatJson (aStream);
     }
 
     if (hasToDraw
@@ -701,6 +718,15 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
                   << "Z-range: " << aFinMin.Z() << " " << aFinMax.Z() << "\n";
           }
         }
+      }
+
+      if (doDumpJson)
+      {
+        Standard_SStream aStream;
+        anAABB.DumpJson (aStream);
+
+        theDI << "Bounding box\n";
+        theDI << Standard_Dump::FormatJson (aStream);
       }
 
       // save DRAW variables
@@ -1475,7 +1501,7 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("bounding",
                    "bounding {shape | xmin ymin zmin xmax ymax zmax}"
          "\n\t\t:            [-obb] [-noTriangulation] [-optimal] [-extToler]"
-         "\n\t\t:            [-dump] [-shape name] [-nodraw] [-finitePart]"
+         "\n\t\t:            [-dump] [-print] [-dumpJson] [-shape name] [-nodraw] [-finitePart]"
          "\n\t\t:            [-save xmin ymin zmin xmax ymax zmax]"
          "\n\t\t:"
          "\n\t\t: Computes a bounding box. Two types of the source data are supported:"
@@ -1493,8 +1519,10 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
          "\n\t\t:"
          "\n\t\t: Output options:"
          "\n\t\t:  -dump    Prints the information about computed Bounding Box."
+         "\n\t\t:  -print   Prints the information about computed Bounding Box."
          "\n\t\t:           It is enabled by default (with plain old syntax for AABB)"
          "\n\t\t:           if neither -shape nor -save is specified."
+         "\n\t\t:  -dumpJson Prints DumpJson information about Bounding Box."
          "\n\t\t:  -shape   Stores computed box as solid in DRAW variable with specified name."
          "\n\t\t:  -save    Stores min and max coordinates of AABB in specified variables."
          "\n\t\t:  -noDraw  Avoid drawing resulting Bounding Box in DRAW viewer."

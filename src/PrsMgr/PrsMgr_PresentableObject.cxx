@@ -837,3 +837,22 @@ void PrsMgr_PresentableObject::PolygonOffsets (Standard_Integer&   theMode,
     myDrawer->ShadingAspect()->Aspect()->PolygonOffsets (theMode, theFactor, theUnits);
   }
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void PrsMgr_PresentableObject::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+{
+  DUMP_CLASS_BEGIN (theOStream, PrsMgr_PresentableObject);
+
+  DUMP_FIELD_VALUE_POINTER (theOStream, myParent);
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOwnWidth);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasOwnColor);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasOwnMaterial);
+
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myInfiniteState);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsMutable);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnPresentations);
+}

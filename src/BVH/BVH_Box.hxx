@@ -19,6 +19,7 @@
 #include <BVH_Constants.hxx>
 #include <BVH_Types.hxx>
 #include <Standard_ShortReal.hxx>
+#include <Standard_Dump.hxx>
 
 #include <limits>
 
@@ -107,6 +108,14 @@ public:
 
   //! Returns center of bounding box along the given axis.
   T Center (const Standard_Integer theAxis) const;
+
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const
+  {
+    (void)theDepth;
+    DUMP_CLASS_BEGIN (theOStream, BVH_Box);
+    DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsValid());
+  }
 
 public:
 

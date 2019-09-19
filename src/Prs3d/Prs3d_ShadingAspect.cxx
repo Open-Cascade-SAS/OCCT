@@ -18,6 +18,7 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ShadingAspect, Prs3d_BasicAspect)
 
@@ -168,3 +169,14 @@ Standard_Real Prs3d_ShadingAspect::Transparency (const Aspect_TypeOfFacingModel 
   }
   return 0.0;
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_ShadingAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Prs3d_ShadingAspect);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
+}
+

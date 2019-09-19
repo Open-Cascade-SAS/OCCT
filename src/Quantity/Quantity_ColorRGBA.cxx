@@ -16,6 +16,7 @@
 #include <Quantity_ColorRGBA.hxx>
 
 #include <Graphic3d_Vec4.hxx>
+#include <Standard_Dump.hxx>
 
 #include <algorithm>
 
@@ -197,4 +198,16 @@ bool Quantity_ColorRGBA::ColorFromHex (const char* const   theHexColorString,
   const ColorInteger THE_HEX_COLOR_COMPONENT_SHORT_BASE = 1 << 4;
   const ColorInteger aColorComponentBase = isShort ? THE_HEX_COLOR_COMPONENT_SHORT_BASE : THE_HEX_COLOR_COMPONENT_BASE;
   return convertIntegerToColorRGBA (aHexColorInteger, aColorComponentBase, hasAlphaComponent, theColor);
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Quantity_ColorRGBA::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Quantity_ColorRGBA);
+
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myRgb);
+  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlpha);
 }

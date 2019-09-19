@@ -19,6 +19,7 @@
 #include <Quantity_ColorRGBA.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Dump.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <string.h>
@@ -3923,4 +3924,14 @@ void call_rgbhls (float r, float g, float b, float& h, float& l, float& s)
 	   h = (float ) 60.0 * ( plus + diff / delta );
 	   if (h < 0.0) h += 360.0;
 	}
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Quantity_Color::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Quantity_Color);
+  DUMP_FIELD_VALUES_NUMERICAL (theOStream, "RGB", 3, MyRed, MyGreen, MyBlue)
 }

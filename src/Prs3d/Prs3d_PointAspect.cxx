@@ -14,6 +14,8 @@
 
 #include <Prs3d_PointAspect.hxx>
 
+#include <Standard_Dump.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(Prs3d_PointAspect, Prs3d_BasicAspect)
 
 // =======================================================================
@@ -40,3 +42,14 @@ Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color& theColor,
 {
   //
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_PointAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+{
+  DUMP_CLASS_BEGIN (theOStream, Prs3d_PointAspect);
+  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
+}
+

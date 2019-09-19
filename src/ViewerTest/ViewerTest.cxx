@@ -2282,7 +2282,7 @@ struct ViewerTest_AspectsChangeSet
 //function : VAspects
 //purpose  :
 //==============================================================================
-static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
+static Standard_Integer VAspects (Draw_Interpretor& theDI,
                                   Standard_Integer  theArgNb,
                                   const char**      theArgVec)
 {
@@ -2333,6 +2333,9 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
 
   // parse syntax of legacy commands
   bool toParseAliasArgs = false;
+  Standard_Boolean toDump = 0;
+  Standard_Boolean toCompactDump = 0;
+  Standard_Integer aDumpDepth = -1;
   if (aCmdName == "vsetwidth")
   {
     if (aNames.IsEmpty()
@@ -3284,6 +3287,25 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       aChangeSet->ToSetTypeOfEdge = -1;
       aChangeSet->TypeOfEdge = Aspect_TOL_SOLID;
     }
+    else if (anArg == "-dumpjson")
+    {
+      toDump = Standard_True;
+    }
+    else if (anArg == "-dumpcompact")
+    {
+      toCompactDump = Standard_False;
+      if (++anArgIter >= theArgNb && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toCompactDump))
+        ++anArgIter;
+    }
+    else if (anArg == "-dumpdepth")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: wrong syntax at " << anArg << "\n";
+        return 1;
+      }
+      aDumpDepth = Draw::Atoi (theArgVec[anArgIter]);
+    }
     else
     {
       std::cout << "Error: wrong syntax at " << anArg << "\n";
@@ -3343,6 +3365,16 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       {
         aCtx->Redisplay (aPrs, Standard_False);
       }
+    }
+    if (toDump)
+    {
+      Standard_SStream aStream;
+      aDrawer->DumpJson (aStream, aDumpDepth);
+
+      if (toCompactDump)
+        theDI << Standard_Dump::Text (aStream);
+      else
+        theDI << Standard_Dump::FormatJson (aStream);
     }
     return 0;
   }
@@ -3496,6 +3528,16 @@ static Standard_Integer VAspects (Draw_Interpretor& /*theDI*/,
       else
       {
         aPrs->SynchronizeAspects();
+      }
+
+      if (toDump)
+      {
+        Standard_SStream aStream;
+        aDrawer->DumpJson (aStream);
+
+        theDI << aName << ": \n";
+        theDI << Standard_Dump::FormatJson (aStream);
+        theDI << "\n";
       }
     }
   }
@@ -6619,6 +6661,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-setDrawEdges {0|1}] [-setEdgeType LineType] [-setEdgeColor R G B] [-setQuadEdges {0|1}]"
       "\n\t\t:          [-setDrawSilhouette {0|1}]"
       "\n\t\t:          [-setAlphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
+      "\n\t\t:          [-dumpJson]"
+      "\n\t\t:          [-dumpCompact {0|1}]"
+      "\n\t\t:          [-dumpDepth depth]"
+      "\n\t\t:          [-freeBoundary {off/on | 0/1}]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
       "\n\t\t: When -subshapes is specified than following properties will be"
       "\n\t\t: assigned to specified sub-shapes."
