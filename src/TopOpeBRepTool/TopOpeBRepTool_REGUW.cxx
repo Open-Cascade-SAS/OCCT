@@ -447,8 +447,8 @@ Standard_Boolean TopOpeBRepTool_REGUW::InitBlock()
     const TopOpeBRepTool_connexity& cmu = mymapvEds.FindFromKey(vmu);
     Standard_Boolean mult = cmu.IsMultiple();
     if (!mult) {
-      myListVmultiple.Remove(itmu);
       mymapvmultiple.Remove(vmu);
+      myListVmultiple.Remove(itmu);
     }
     else itmu.Next();
   }
