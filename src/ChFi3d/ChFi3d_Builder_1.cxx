@@ -89,7 +89,8 @@ static void ReorderFaces(TopoDS_Face&         theF1,
                          TopoDS_Face&         theF2,
                          const TopoDS_Face&   theFirstFace,
                          const TopoDS_Edge&   thePrevEdge,
-                         const TopoDS_Vertex& theCommonVertex)
+                         const TopoDS_Vertex& theCommonVertex,
+                         const ChFiDS_Map&    theEFmap)
 {
   if (theF1.IsSame(theFirstFace))
     return;
@@ -99,25 +100,42 @@ static void ReorderFaces(TopoDS_Face&         theF1,
     return;
   }
 
-  TopTools_IndexedDataMapOfShapeListOfShape VEmapFirst, VEmap;
-  TopExp::MapShapesAndAncestors(theFirstFace, TopAbs_VERTEX, TopAbs_EDGE, VEmapFirst);
-  TopExp::MapShapesAndAncestors(theF1, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
-
-  const TopTools_ListOfShape& ElistFirst = VEmapFirst.FindFromKey(theCommonVertex);
-  const TopTools_ListOfShape& Elist      = VEmap.FindFromKey(theCommonVertex);
-  TopTools_ListIteratorOfListOfShape itlfirst(ElistFirst);
-  for (; itlfirst.More(); itlfirst.Next())
+  //Loop until find <theF1> or <theF2>
+  Standard_Boolean ToExchange = Standard_False;
+  TopoDS_Edge PrevEdge = thePrevEdge, CurEdge;
+  TopoDS_Face PrevFace = theFirstFace, CurFace;
+  for (;;)
   {
-    const TopoDS_Shape& anEdge = itlfirst.Value();
-    if (anEdge.IsSame(thePrevEdge))
-      continue;
-    TopTools_ListIteratorOfListOfShape itl(Elist);
-    for(; itl.More(); itl.Next())
-      if (anEdge.IsSame(itl.Value()))
-        return;
+    TopTools_IndexedDataMapOfShapeListOfShape VEmap;
+    TopExp::MapShapesAndAncestors(PrevFace, TopAbs_VERTEX, TopAbs_EDGE, VEmap);
+    const TopTools_ListOfShape& Elist = VEmap.FindFromKey(theCommonVertex);
+    if (PrevEdge.IsSame(Elist.First()))
+      CurEdge = TopoDS::Edge(Elist.Last());
+    else
+      CurEdge = TopoDS::Edge(Elist.First());
+
+    const TopTools_ListOfShape& Flist = theEFmap.FindFromKey(CurEdge);
+    if (PrevFace.IsSame(Flist.First()))
+      CurFace = TopoDS::Face(Flist.Last());
+    else
+      CurFace = TopoDS::Face(Flist.First());
+
+    if (CurFace.IsSame(theF1))
+      break;
+    else if (CurFace.IsSame(theF2))
+    {
+      ToExchange = Standard_True;
+      break;
+    }
+
+    PrevEdge = CurEdge;
+    PrevFace = CurFace;
   }
 
-  TopoDS_Face TmpFace = theF1; theF1 = theF2; theF2 = TmpFace;
+  if (ToExchange)
+  {
+    TopoDS_Face TmpFace = theF1; theF1 = theF2; theF2 = TmpFace;
+  }
 }
 
 static void ConcatCurves(TColGeom_SequenceOfCurve& theCurves,
@@ -944,7 +962,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 	    Spine->SetEdges(Ec);
             TopoDS_Face CurF1, CurF2;
             ChFi3d_conexfaces(Ec,CurF1,CurF2,myEFMap);
-            ReorderFaces(CurF1, CurF2, FirstFace, PrevEdge, CommonVertex);
+            ReorderFaces(CurF1, CurF2, FirstFace, PrevEdge, CommonVertex, myEFMap);
             myEdgeFirstFace.Bind(Ec, CurF1);
             if (Offset > 0)
             {
@@ -1030,7 +1048,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
 	      Spine->PutInFirst(Ec);
               TopoDS_Face CurF1, CurF2;
               ChFi3d_conexfaces(Ec,CurF1,CurF2,myEFMap);
-              ReorderFaces(CurF1, CurF2, FirstFace, PrevEdge, CommonVertex);
+              ReorderFaces(CurF1, CurF2, FirstFace, PrevEdge, CommonVertex, myEFMap);
               myEdgeFirstFace.Bind(Ec, CurF1);
               if (Offset > 0)
               {
