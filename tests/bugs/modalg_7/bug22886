@@ -1,36 +1,15 @@
-puts "TODO OCC22886 ALL: Error : Boolean operations common is WRONG"
-
 puts "============"
-puts "OCC22886"
+puts "OCC22886: Bug in boolean"
 puts "============"
 puts ""
-######################################################
-# Bug in boolean
-######################################################
 
 restore [locate_data_file bug22886_solid1.brep] solid1
 restore [locate_data_file bug22886_solid2.brep] solid2
 
-bcommon result1 solid1 solid2
+bcommon result solid1 solid2
 
-set square 947.358
+checkshape result
+checkprops result -s 1.40191e+09 -v 3.59571e+12
+checknbshapes result -vertex 78 -edge 135 -wire 56 -face 56 -shell 1 -solid 1 -t -m "Common operation"
 
-set nbshapes_expected "
-Number of shapes in shape
- VERTEX    : 78
- EDGE      : 134
- WIRE      : 56
- FACE      : 56
- SHELL     : 1
- SOLID     : 1
- COMPSOLID : 0
- COMPOUND  : 1
- SHAPE     : 327
-"
-checknbshapes result1 -ref ${nbshapes_expected} -t -m "Boolean operations common"
-
-common result2 solid1 solid2
-checknbshapes result2 -ref ${nbshapes_expected} -t -m "Boolean operations common"
-
-checkview -display result1 -2d -path ${imagedir}/${test_image}_1.png
-checkview -display result2 -2d -path ${imagedir}/${test_image}_2.png
+checkview -display result -2d -path ${imagedir}/${test_image}.png
