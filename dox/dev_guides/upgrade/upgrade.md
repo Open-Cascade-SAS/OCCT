@@ -1811,6 +1811,34 @@ Forward declarations of *Prs3d_Presentation* should be corrected, since it is no
 
 Proxy classes *SelectBasics_SensitiveEntity* and *SelectBasics_EntityOwner* have been removed - *Select3D_SensitiveEntity* and *SelectMgr_EntityOwner* should be now used directly instead.
 
+@subsection upgrade_740_offset Polygon offset defaults
+
+*Graphic3d_PolygonOffset* default constructor has been corrected to define Units=1 instead of Units=0.
+Default polygon offset settings Mode=Aspect_POM_Fill + Factor=1 + Units=1 are intended to push triangulation
+(Shaded presentation) a little bit behind of lines (Wireframe and Face Edges)
+for reducing z-fighting effect of Shaded+Wireframe combination.
+The change in defaults (Units changed from 0 to 1) is intended to cover scenario when camera direction is perpendicular to model plane (like 2D view).
+
+Application observing unexpected visual difference on this change should consider customizing this property within AIS_InteractiveContext default attributes
+or on per-presentation basis via *Graphic3d_Aspects::SetPolygonOffset()* methods.
+
+@subsection upgrade_740_zlayer Adding ZLayers in given position
+
+Interface of insertion ZLayer in the viewer has been improved with ability to insert new layer before or after existing one.
+Previously undocumented behavior of *V3d_Viewer::AddZlayer()* method has been corrected to insert new layer before *Graphic3d_ZLayerId_Top*.
+Applications might need revising their custom layers creation code and specify precisely their order with new methods *V3d_Viewer::InsertLayerBefore()* and *V3d_Viewer::InsertLayerAfter()*.
+
+@subsection upgrade_740_enum_changed Modified enumerations
+
+Applications using integer values of the following enumerations in persistence
+should be corrected as these enumerations have been modified:
+
+| Name |
+| :----- |
+| AIS_TypeOfAttribute |
+| Aspect_InteriorStyle |
+| Font_FontAspect |
+
 @subsection upgrade_740_geproj Custom defines within env.bat
 
 *env.bat* produced by Visual Studio project generator *genproj.bat* has been modified so that *%CSF_DEFINES%* variable is reset to initial state.
