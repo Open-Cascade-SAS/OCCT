@@ -1,0 +1,48 @@
+puts "========"
+puts "0029843: Modeling Algorithms - Boolean FUSE produces incorrect result"
+puts "========"
+puts ""
+
+restore [locate_data_file bug29843.brep] s
+
+explode s
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2
+bfillds
+
+bbop r_0 0
+bbop r_1 1
+bbop r_2 2
+bbop r_3 3
+bbop r_4 4
+bbuild r_5
+
+foreach i { 0 1 2 3 4 5} {
+  checkshape r_$i
+  if {![regexp "OK" [bopcheck r_$i]]} {
+    puts "Error: r_$i is self-intersecting shape"
+  }
+}
+
+checkprops r_0 -s 9.84429 -v 0.639311
+checknbshapes r_0 -wire 7 -face 5 -shell 1 -solid 1 -t
+
+checkprops r_1 -s 2121.39 -v 612.41
+checknbshapes r_1 -wire 38 -face 32 -shell 2 -solid 1 -t
+
+checkprops r_2 -s 2113.85 -v 611.569
+checknbshapes r_2 -wire 32 -face 26 -shell 2 -solid 1 -t
+
+checkprops r_3 -s 15.9893 -v 0.215264
+checknbshapes r_3 -wire 11 -face 9 -shell 2 -solid 2 -t
+
+checkprops r_4 -l 24.9725
+checksection r_4 -r 2
+
+checkprops r_5 -s 2139.68 -v 612.402
+checknbshapes r_5 -wire 44 -face 36 -shell 5 -solid 4 -t
+
+checkview -display r_0 -2d -path ${imagedir}/${test_image}.png
+

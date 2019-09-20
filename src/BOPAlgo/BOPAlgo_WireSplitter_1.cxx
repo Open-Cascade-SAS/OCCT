@@ -166,6 +166,8 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
   MyDataMapOfShapeBoolean aVertMap;
   //
   const TopTools_ListOfShape& myEdges=aCB.Shapes();
+
+  TopTools_MapOfShape aMS;
   //
   // 1.Filling mySmartMap
   aIt.Initialize(myEdges);
@@ -177,6 +179,10 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
     //
     bIsClosed = BRep_Tool::Degenerated(aE) || 
                 BRep_Tool::IsClosed(aE, myFace);
+
+    if (!aMS.Add (aE) && !bIsClosed)
+      aMS.Remove (aE);
+
     //
     aItS.Initialize(aE);
     for(i = 0; aItS.More(); aItS.Next(), ++i) {
@@ -218,7 +224,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
   for (i=1; i<=aNb; i++) {
     aCntIn=0;
     aCntOut=0;
-    const BOPAlgo_ListOfEdgeInfo& aLEInfo= mySmartMap(i);
+    const BOPAlgo_ListOfEdgeInfo& aLEInfo = mySmartMap(i);
     BOPAlgo_ListIteratorOfListOfEdgeInfo anIt(aLEInfo);
     for (; anIt.More(); anIt.Next()) {
       const BOPAlgo_EdgeInfo& aEI=anIt.Value();
@@ -304,6 +310,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
     for (; aItLEI.More(); aItLEI.Next()) {
       BOPAlgo_EdgeInfo& aEI=aItLEI.ChangeValue();
       const TopoDS_Edge& aE=aEI.Edge();
+      aEI.SetIsInside (!aMS.Contains (aE));
       //
       aVV = aV;
       bIsIN = aEI.IsIn();
@@ -366,7 +373,7 @@ void Path (const GeomAdaptor_Surface& aGAS,
   Standard_Integer i, j, aNb, aNbj;
   Standard_Real anAngleIn, anAngleOut, anAngle, aMinAngle;
   Standard_Real aTol2D, aTol2D2, aD2, aTwoPI;
-  Standard_Boolean anIsSameV2d, anIsSameV, anIsFound, anIsOut, anIsNotPassed;
+  Standard_Boolean anIsSameV2d, anIsSameV, anIsOut, anIsNotPassed;
   Standard_Boolean bIsClosed;
   TopoDS_Vertex aVa, aVb;
   TopoDS_Edge aEOuta;
@@ -501,8 +508,12 @@ void Path (const GeomAdaptor_Surface& aGAS,
     //
     anAngleIn = AngleIn(aEOuta, aLEInfo);
     aMinAngle = 100.;
-    anIsFound = Standard_False;
     Standard_Integer iCnt = NbWaysOut(aLEInfo);
+
+    Standard_Boolean isBoundary = !anEdgeInfo->IsInside();
+    Standard_Integer aNbWaysInside = 0;
+    BOPAlgo_EdgeInfo *pOnlyWayIn = NULL;
+
     Standard_Integer aCurIndexE = 0;
     anIt.Initialize(aLEInfo);
     for (; anIt.More(); anIt.Next()) {
@@ -525,7 +536,6 @@ void Path (const GeomAdaptor_Surface& aGAS,
         if (iCnt==1) {
           // the one and only way to go out .
           pEdgeInfo=&anEI;
-          anIsFound=Standard_True;
           break;
         }
         //
@@ -548,15 +558,25 @@ void Path (const GeomAdaptor_Surface& aGAS,
           anAngleOut=anEI.Angle();
           anAngle=ClockWiseAngle(anAngleIn, anAngleOut);
         }
+
+        if (isBoundary && anEI.IsInside())
+        {
+          ++aNbWaysInside;
+          pOnlyWayIn = &anEI;
+        }
+
         if (anAngle < aMinAngle - eps) {
           aMinAngle=anAngle;
           pEdgeInfo=&anEI;
-          anIsFound=Standard_True;
         }
       }
     } // for (; anIt.More(); anIt.Next()) 
+    if (aNbWaysInside == 1)
+    {
+      pEdgeInfo = pOnlyWayIn;
+    }
     //
-    if (!anIsFound) {
+    if (!pEdgeInfo) {
       // no way to go . (Error)
       return;
     }

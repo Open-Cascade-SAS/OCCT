@@ -215,11 +215,15 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
   //
   // use only connected faces
   TopTools_ListOfShape aLFConnected;
+  // Boundary faces
+  TopTools_MapOfShape aBoundaryFaces;
   aItF.Initialize (myShapes);
   for (; aItF.More(); aItF.Next()) {
     const TopoDS_Shape& aF = aItF.Value();
     if (aMFaces.Contains(aF)) {
       aLFConnected.Append(aF);
+      if (!aBoundaryFaces.Add (aF))
+        aBoundaryFaces.Remove (aF);
     }
   }
   //
@@ -254,6 +258,7 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
       aItS.Initialize(aShell);
       for (; aItS.More(); aItS.Next()) {
         const TopoDS_Face& aF = (*(TopoDS_Face*)(&aItS.Value()));
+        Standard_Boolean isBoundary = aBoundaryFaces.Contains (aF);
         //
         // loop on edges of aF; find a good neighbor face of aF by aE
         aExp.Init(aF, TopAbs_EDGE);
@@ -289,6 +294,8 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
           // take only not-processed faces as a candidates
           BOPTools_ListOfCoupleOfShape aLCSOff;
           //
+          Standard_Integer aNbWaysInside = 0;
+          TopoDS_Face aSelF;
           TopTools_ListIteratorOfListOfShape aItLF(aLF);
           for (; aItLF.More(); aItLF.Next()) {
             const TopoDS_Face& aFL = (*(TopoDS_Face*)(&aItLF.Value()));
@@ -301,6 +308,11 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
               continue;
             }
             //
+            if (isBoundary && !aBoundaryFaces.Contains (aFL))
+            {
+              ++aNbWaysInside;
+              aSelF = aFL;
+            }
             aCSOff.SetShape1(aEL);
             aCSOff.SetShape2(aFL);
             aLCSOff.Append(aCSOff);
@@ -313,12 +325,14 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
           //
           // among all the adjacent faces chose one with the minimal
           // angle to the current one
-          TopoDS_Face aSelF;
-          if (aNbOff == 1) {
-            aSelF = (*(TopoDS_Face*)(&aLCSOff.First().Shape2()));
-          }
-          else if (aNbOff > 1) {
-            BOPTools_AlgoTools::GetFaceOff(aE, aF, aLCSOff, aSelF, aContext);
+          if (!isBoundary || aNbWaysInside != 1)
+          {
+            if (aNbOff == 1) {
+              aSelF = (*(TopoDS_Face*)(&aLCSOff.First().Shape2()));
+            }
+            else if (aNbOff > 1) {
+              BOPTools_AlgoTools::GetFaceOff(aE, aF, aLCSOff, aSelF, aContext);
+            }
           }
           //
           if (!aSelF.IsNull() && AddedFacesMap.Add(aSelF)) {

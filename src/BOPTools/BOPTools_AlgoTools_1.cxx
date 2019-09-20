@@ -525,6 +525,7 @@ namespace {
   struct EdgeData {
     const TopoDS_Edge* Edge; // Edge
     Standard_Real VParameter; // Parameter of the vertex on the edge
+    Standard_Boolean IsClosed; // Closed flag of the edge
     Geom2dAdaptor_Curve GAdaptor; // 2D adaptor for PCurve of the edge on the face
     Standard_Real First; // First parameter in the range
     Standard_Real Last; // Last parameter in the rage
@@ -610,9 +611,9 @@ static
       continue;
     }
     //
-    if (Abs(aTint1 - aT1) > aHalfR1 ||
-        Abs(aTint2 - aT2) > aHalfR2) {
-      // intersection on the other end of the closed edge
+    if ((!theEData1.IsClosed && Abs (aTint1 - aT1) > aHalfR1) ||
+        (!theEData2.IsClosed && Abs (aTint2 - aT2) > aHalfR2)) {
+      // intersection is on the other end of the edge
       continue;
     }
     //
@@ -634,7 +635,7 @@ void CorrectWires(const TopoDS_Face& aFx,
                   const TopTools_IndexedMapOfShape& aMapToAvoid)
 {
   Standard_Integer i, aNbV;
-  Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2, aT;
+  Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2;
   gp_Pnt aP, aPV;
   gp_Pnt2d aP2D;
   TopoDS_Face aF;
@@ -644,11 +645,9 @@ void CorrectWires(const TopoDS_Face& aFx,
   aF=aFx;
   aF.Orientation(TopAbs_FORWARD);
   const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aFx);
-  //
-  TopExp::MapShapesAndAncestors(aF, 
-                                TopAbs_VERTEX, 
-                                TopAbs_EDGE, 
-                                aMVE);
+
+  TopExp::MapShapesAndUniqueAncestors (aF, TopAbs_VERTEX, TopAbs_EDGE, aMVE, Standard_True);
+
   NCollection_DataMap<TopoDS_Shape, Standard_Real> aMapEdgeLen;
   aNbV=aMVE.Extent();
   for (i=1; i<=aNbV; ++i) {
@@ -666,7 +665,13 @@ void CorrectWires(const TopoDS_Face& aFx,
       const TopoDS_Edge& aE=*(TopoDS_Edge*)(&aIt.Value());
       const Handle(Geom2d_Curve)& aC2D=
         BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
-      aT=BRep_Tool::Parameter(aV, aE);
+      Standard_Real aT = BRep_Tool::Parameter (aV, aE);
+      Standard_Boolean isClosed = Standard_False;
+      {
+        TopoDS_Vertex aV1, aV2;
+        TopExp::Vertices (aE, aV1, aV2);
+        isClosed = aV1.IsSame (aV2);
+      }
       //
       aC2D->D0(aT, aP2D);
       aS->D0(aP2D.X(), aP2D.Y(), aP);
@@ -674,7 +679,7 @@ void CorrectWires(const TopoDS_Face& aFx,
       if (aD2>aD2max) {
         aD2max=aD2;
       }
-      EdgeData anEData = {&aE, aT, Geom2dAdaptor_Curve(aC2D), aT1, aT2};
+      EdgeData anEData = {&aE, aT, isClosed, Geom2dAdaptor_Curve(aC2D), aT1, aT2};
       aLEPars.Append(anEData);
     }
     //

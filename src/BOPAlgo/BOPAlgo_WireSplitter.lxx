@@ -27,7 +27,9 @@ class BOPAlgo_EdgeInfo {
   BOPAlgo_EdgeInfo() : 
     myPassed(Standard_False),
     myInFlag(Standard_False),
-    myAngle (-1.) {
+    myIsInside (Standard_False),
+    myAngle (-1.)
+  {
   };
   //
   void SetEdge(const TopoDS_Edge& theE) {
@@ -62,10 +64,19 @@ class BOPAlgo_EdgeInfo {
     return myAngle;
   };
   //
+  Standard_Boolean IsInside() const {
+    return myIsInside;
+  };
+  //
+  void SetIsInside (const Standard_Boolean theIsInside) {
+    myIsInside = theIsInside;
+  };
+  //
  protected:
   TopoDS_Edge myEdge;
   Standard_Boolean myPassed;
   Standard_Boolean myInFlag;
+  Standard_Boolean myIsInside;
   Standard_Real myAngle;
 };
 

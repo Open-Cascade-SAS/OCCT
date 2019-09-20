@@ -120,7 +120,7 @@ protected:
   //! and surfaces is computed.
   Standard_EXPORT void ComputeTolReached3d();
 
-private:
+protected:
 
   Standard_Boolean myIsDone;
   IntPatch_Intersection myIntersector;
