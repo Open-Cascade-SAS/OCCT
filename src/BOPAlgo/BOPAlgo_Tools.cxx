@@ -1756,3 +1756,30 @@ void BOPAlgo_Tools::FillInternals(const TopTools_ListOfShape& theSolids,
     }
   }
 }
+
+//=======================================================================
+//function : TrsfToPoint
+//purpose  :
+//=======================================================================
+Standard_Boolean BOPAlgo_Tools::TrsfToPoint (const Bnd_Box& theBox1,
+                                             const Bnd_Box& theBox2,
+                                             gp_Trsf&       theTrsf,
+                                             const gp_Pnt&  thePoint,
+                                             const Standard_Real theCriteria)
+{
+  // Unify two boxes
+  Bnd_Box aBox = theBox1;
+  aBox.Add (theBox2);
+
+  gp_XYZ aBCenter = (aBox.CornerMin().XYZ() + aBox.CornerMax().XYZ()) / 2.;
+  Standard_Real aPBDist = (thePoint.XYZ() - aBCenter).Modulus();
+  if (aPBDist < theCriteria)
+    return Standard_False;
+  
+  Standard_Real aBSize = Sqrt (aBox.SquareExtent());
+  if ((aBSize / aPBDist) > (1. / theCriteria))
+    return Standard_False;
+
+  theTrsf.SetTranslation (gp_Vec (aBox.CornerMin(), thePoint));
+  return Standard_True;
+}

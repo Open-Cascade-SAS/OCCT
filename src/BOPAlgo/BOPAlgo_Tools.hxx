@@ -205,6 +205,20 @@ public:
                                             const TopTools_DataMapOfShapeListOfShape& theImages,
                                             const Handle(IntTools_Context)& theContext);
 
+  //! Computes the transformation needed to move the objects
+  //! to the given point to increase the quality of computations.
+  //! Returns true if the objects are located far from the given point
+  //! (relatively given criteria), false otherwise.
+  //! @param theBox1 the AABB of the first object
+  //! @param theBox2 the AABB of the second object
+  //! @param theTrsf the computed transformation
+  //! @param thePoint the Point to compute transformation to
+  //! @param theCriteria the Criteria to check whether thranformation is required
+  Standard_EXPORT static Standard_Boolean TrsfToPoint (const Bnd_Box& theBox1,
+                                                       const Bnd_Box& theBox2,
+                                                       gp_Trsf&       theTrsf,
+                                                       const gp_Pnt&  thePoint = gp_Pnt (0.0, 0.0, 0.0),
+                                                       const Standard_Real theCriteria = 1.e+5);
 };
 
 #endif // _BOPAlgo_Tools_HeaderFile

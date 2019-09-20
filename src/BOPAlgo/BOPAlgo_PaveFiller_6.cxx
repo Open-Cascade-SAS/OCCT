@@ -122,6 +122,12 @@ class BOPAlgo_FaceFace :
     myF2=aF2;
   }
   //
+  void SetBoxes(const Bnd_Box& theBox1,
+                const Bnd_Box& theBox2) {
+    myBox1 = theBox1;
+    myBox2 = theBox2;
+  }
+  //
   const TopoDS_Face& Face1()const {
     return myF1;
   }
@@ -142,13 +148,37 @@ class BOPAlgo_FaceFace :
     IntTools_FaceFace::SetFuzzyValue(theFuzz);
   }
   //
+  const gp_Trsf& Trsf() const { return myTrsf; }
+  //
   virtual void Perform() {
     BOPAlgo_Algo::UserBreak();
     try
     {
       OCC_CATCH_SIGNALS
 
-      IntTools_FaceFace::Perform(myF1, myF2);
+      gp_Trsf aTrsf;
+      TopoDS_Face aF1 = myF1, aF2 = myF2;
+      if (BOPAlgo_Tools::TrsfToPoint (myBox1, myBox2, aTrsf))
+      {
+        // Shapes are located far from origin, move the shapes to the origin,
+        // to increase the accuracy of intersection.
+        TopLoc_Location aLoc (aTrsf);
+        aF1.Move (aLoc);
+        aF2.Move (aLoc);
+
+        // The starting point is initialized only with the UV parameters
+        // on the faces - 3D point is not set (see GetEFPnts method),
+        // so no need to transform anything.
+        //for (IntSurf_ListOfPntOn2S::Iterator it (myListOfPnts); it.More(); it.Next())
+        //{
+        //  IntSurf_PntOn2S& aP2S = it.ChangeValue();
+        //  aP2S.SetValue (aP2S.Value().Transformed (aTrsf));
+        //}
+
+        myTrsf = aTrsf.Inverted();
+      }
+
+      IntTools_FaceFace::Perform (aF1, aF2);
     }
     catch (Standard_Failure const&)
     {
@@ -156,12 +186,39 @@ class BOPAlgo_FaceFace :
     }
   }
   //
+  void ApplyTrsf()
+  {
+    if (IsDone())
+    {
+      // Update curves
+      for (Standard_Integer i = 1; i <= mySeqOfCurve.Length(); ++i)
+      {
+        IntTools_Curve& aIC = mySeqOfCurve (i);
+        aIC.Curve()->Transform (myTrsf);
+      }
+      // Update points
+      for (Standard_Integer i = 1; i <= myPnts.Length(); ++i)
+      {
+        IntTools_PntOn2Faces& aP2F = myPnts (i);
+        IntTools_PntOnFace aPOnF1 = aP2F.P1(), aPOnF2 = aP2F.P2();
+        aPOnF1.SetPnt (aPOnF1.Pnt().Transformed (myTrsf));
+        aPOnF2.SetPnt (aPOnF2.Pnt().Transformed (myTrsf));
+        aP2F.SetP1 (aPOnF1);
+        aP2F.SetP2 (aPOnF2);
+      }
+    }
+  }
+
+  //
  protected:
   Standard_Integer myIF1;
   Standard_Integer myIF2;
   Standard_Real myTolFF;
   TopoDS_Face myF1;
   TopoDS_Face myF2;
+  Bnd_Box myBox1;
+  Bnd_Box myBox2;
+  gp_Trsf myTrsf;
 };
 //
 //=======================================================================
@@ -235,6 +292,7 @@ void BOPAlgo_PaveFiller::PerformFF()
       //
       aFaceFace.SetIndices(nF1, nF2);
       aFaceFace.SetFaces(aF1, aF2);
+      aFaceFace.SetBoxes (myDS->ShapeInfo (nF1).Box(), myDS->ShapeInfo (nF2).Box());
       // compute minimal tolerance for the curves
       Standard_Real aTolFF = ToleranceFF(aBAS1, aBAS2);
       aFaceFace.SetTolFF(aTolFF);
@@ -281,6 +339,8 @@ void BOPAlgo_PaveFiller::PerformFF()
     Standard_Real aTolFF = aFaceFace.TolFF();
     //
     aFaceFace.PrepareLines3D(bSplitCurve);
+    //
+    aFaceFace.ApplyTrsf();
     //
     const IntTools_SequenceOfCurves& aCvsX = aFaceFace.Lines();
     const IntTools_SequenceOfPntOn2Faces& aPntsX = aFaceFace.Points();
@@ -1711,12 +1771,16 @@ void BOPAlgo_PaveFiller::PutBoundPaveOnCurve(const TopoDS_Face& aF1,
   getBoundPaves(myDS, aNC, aBndNV);
   //
   Standard_Real aTolVnew = Precision::Confusion();
+  Standard_Boolean isClosed = aP[1].IsEqual (aP[0], aTolVnew);
+  if (isClosed && (aBndNV[0] > 0 || aBndNV[1] > 0))
+    return;
+
   for (Standard_Integer j = 0; j<2; ++j)
   {
     if (aBndNV[j] < 0)
     {
       // no vertex on this end
-      if (j && aP[1].IsEqual(aP[0], aTolVnew)) {
+      if (j && isClosed) {
         //if curve is closed, process only one bound
         continue;
       }

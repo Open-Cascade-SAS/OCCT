@@ -196,7 +196,7 @@ protected: //! @name Protected methods performing the intersection
   //! Checks if the edge is in the face really.
   Standard_EXPORT Standard_Boolean IsCoincident();
 
-private:
+protected:
 
   TopoDS_Edge myEdge;
   TopoDS_Face myFace;

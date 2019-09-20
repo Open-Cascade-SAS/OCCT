@@ -682,10 +682,14 @@ void IntTools_EdgeEdge::MergeSolutions(const IntTools_SequenceOfRanges& theRange
       aRj2.Range(aTj21, aTj22);
       //
       bCond = (fabs(aTi12 - aTj11) < dTR1) ||
+        (aTj11 > aTi11 && aTj11 < aTi12) ||
+        (aTi11 > aTj11 && aTi11 < aTj12) ||
         (bSplit2 && (fabs(aTj12 - aTi11) < dTR1));
       if (bCond && bSplit2) {
         bCond = (fabs((Max(aTi22, aTj22) - Min(aTi21, aTj21)) - 
-                      ((aTi22 - aTi21) + (aTj22 - aTj21))) < dTR2);
+                      ((aTi22 - aTi21) + (aTj22 - aTj21))) < dTR2) ||
+                        (aTj21 > aTi21 && aTj21 < aTi22) ||
+                          (aTi21 > aTj21 && aTi21 < aTj22);
       }
       //
       if (bCond) {
