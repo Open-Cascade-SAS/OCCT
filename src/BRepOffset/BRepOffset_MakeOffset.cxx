@@ -509,26 +509,26 @@ static void FillContours(const TopoDS_Shape& aShape,
   BRepTools_WireExplorer Wexp;
 
   for (; Explo.More(); Explo.Next())
+  {
+    TopoDS_Face aFace = TopoDS::Face(Explo.Current());
+    TopoDS_Iterator itf(aFace);
+    for (; itf.More(); itf.Next())
     {
-      TopoDS_Face aFace = TopoDS::Face(Explo.Current());
-      TopoDS_Iterator itf(aFace);
-      for (; itf.More(); itf.Next())
+      TopoDS_Wire aWire = TopoDS::Wire(itf.Value());
+      for (Wexp.Init(aWire, aFace); Wexp.More(); Wexp.Next())
+      {
+        TopoDS_Edge anEdge = Wexp.Current();
+        if (BRep_Tool::Degenerated(anEdge))
+          continue;
+        const BRepOffset_ListOfInterval& Lint = Analyser.Type(anEdge);
+        if (!Lint.IsEmpty() && Lint.First().Type() == ChFiDS_FreeBound)
         {
-          TopoDS_Wire aWire = TopoDS::Wire(itf.Value());
-          for (Wexp.Init(aWire, aFace); Wexp.More(); Wexp.Next())
-            {
-              TopoDS_Edge anEdge = Wexp.Current();
-              if (BRep_Tool::Degenerated(anEdge))
-                continue;
-              const BRepOffset_ListOfInterval& Lint = Analyser.Type(anEdge);
-              if (!Lint.IsEmpty() && Lint.First().Type() == BRepOffset_FreeBoundary)
-                {
-                  MapEF.Bind(anEdge, aFace);
-                  Edges.Append(anEdge);
-                }
-            }
+          MapEF.Bind(anEdge, aFace);
+          Edges.Append(anEdge);
         }
+      }
     }
+  }
 
   TopTools_ListIteratorOfListOfShape itl;
   while (!Edges.IsEmpty())
@@ -1050,7 +1050,7 @@ void BRepOffset_MakeOffset::MakeOffsetFaces(BRepOffset_DataMapOfShapeOffset& the
     aCurOffset = myFaceOffset.IsBound(aF) ? myFaceOffset(aF) : myOffset;
     BRepOffset_Offset OF(aF, aCurOffset, ShapeTgt, OffsetOutside, myJoin);
     TopTools_ListOfShape Let;
-    myAnalyse.Edges(aF,BRepOffset_Tangent,Let);
+    myAnalyse.Edges(aF,ChFiDS_Tangential,Let);
     TopTools_ListIteratorOfListOfShape itl(Let);    
     for (; itl.More(); itl.Next()) {
       const TopoDS_Edge& Cur = TopoDS::Edge(itl.Value());
@@ -1063,14 +1063,14 @@ void BRepOffset_MakeOffset::MakeOffsetFaces(BRepOffset_DataMapOfShapeOffset& the
         TopExp::Vertices (OTE,OV1,OV2);      
         TopTools_ListOfShape LE;
         if (!ShapeTgt.IsBound(V1)) {
-          myAnalyse.Edges(V1,BRepOffset_Tangent,LE);
+          myAnalyse.Edges(V1,ChFiDS_Tangential,LE);
           const TopTools_ListOfShape& LA =myAnalyse.Ancestors(V1);
           if (LE.Extent() == LA.Extent())
             ShapeTgt.Bind(V1,OV1);
         }
         if (!ShapeTgt.IsBound(V2)) {
           LE.Clear();
-          myAnalyse.Edges(V2,BRepOffset_Tangent,LE);
+          myAnalyse.Edges(V2,ChFiDS_Tangential,LE);
           const TopTools_ListOfShape& LA =myAnalyse.Ancestors(V2);
           if (LE.Extent() == LA.Extent())
             ShapeTgt.Bind(V2,OV2);
@@ -1463,8 +1463,8 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
   //--------------------------------------------------------
   // Construction of tubes on edge.
   //--------------------------------------------------------
-  BRepOffset_Type    OT = BRepOffset_Convex;
-  if (myOffset < 0.) OT = BRepOffset_Concave; 
+  ChFiDS_TypeOfConcavity OT = ChFiDS_Convex;
+  if (myOffset < 0.) OT = ChFiDS_Concave; 
    
   for (Exp.Init(myShape,TopAbs_EDGE); Exp.More(); Exp.Next()) {
     const TopoDS_Edge& E = TopoDS::Edge(Exp.Current());
@@ -1566,7 +1566,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
       // Particular processing if V is at least a free border.
       //-------------------------------------------------------------
       TopTools_ListOfShape LBF;
-      myAnalyse.Edges(V,BRepOffset_FreeBoundary,LBF);
+      myAnalyse.Edges(V,ChFiDS_FreeBound,LBF);
       if (!LBF.IsEmpty()) {        
         Standard_Boolean First = Standard_True;
         for (it.Initialize(LE) ; it.More(); it.Next()) {
@@ -1592,8 +1592,8 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
   //------------------------------------------------------
   // MAJ SD.
   //------------------------------------------------------
-  BRepOffset_Type    RT = BRepOffset_Concave;
-  if (myOffset < 0.) RT = BRepOffset_Convex;
+  ChFiDS_TypeOfConcavity RT = ChFiDS_Concave;
+  if (myOffset < 0.) RT = ChFiDS_Convex;
   BRepOffset_DataMapIteratorOfDataMapOfShapeOffset It(MapSF);
   for ( ; It.More(); It.Next()) {
     const TopoDS_Shape& SI = It.Key(); 
@@ -1737,8 +1737,8 @@ void BRepOffset_MakeOffset::ToContext (BRepOffset_DataMapOfShapeOffset& MapSF)
   // Reconstruction of faces.
   //---------------------------
   TopoDS_Face        F,NF;
-  BRepOffset_Type    RT = BRepOffset_Concave;
-  if (myOffset < 0.) RT = BRepOffset_Convex;
+  ChFiDS_TypeOfConcavity RT = ChFiDS_Concave;
+  if (myOffset < 0.) RT = ChFiDS_Convex;
   TopoDS_Shape       OE,NE;
   TopAbs_Orientation Or;
 
@@ -1825,8 +1825,8 @@ void BRepOffset_MakeOffset::UpdateFaceOffset()
   CopiedMap.Assign(myFaceOffset);
   TopTools_DataMapIteratorOfDataMapOfShapeReal it(CopiedMap);
 
-  BRepOffset_Type    RT = BRepOffset_Convex;
-  if (myOffset < 0.) RT = BRepOffset_Concave;
+  ChFiDS_TypeOfConcavity RT = ChFiDS_Convex;
+  if (myOffset < 0.) RT = ChFiDS_Concave;
 
   for ( ; it.More(); it.Next()) {
     const TopoDS_Face& F = TopoDS::Face(it.Key());
@@ -1838,9 +1838,9 @@ void BRepOffset_MakeOffset::UpdateFaceOffset()
     TopTools_MapOfShape Dummy;
     Build.Add(Co,F);
     if (myJoin == GeomAbs_Arc)
-      myAnalyse.AddFaces(F,Co,Dummy,BRepOffset_Tangent,RT);
+      myAnalyse.AddFaces(F,Co,Dummy,ChFiDS_Tangential,RT);
     else   
-      myAnalyse.AddFaces(F,Co,Dummy,BRepOffset_Tangent);
+      myAnalyse.AddFaces(F,Co,Dummy,ChFiDS_Tangential);
 
     TopExp_Explorer exp(Co,TopAbs_FACE);
     for (; exp.More(); exp.Next()) {
@@ -3133,7 +3133,7 @@ void BRepOffset_MakeOffset::SelectShells ()
     const TopoDS_Edge& E = TopoDS::Edge(exp.Current());
     const TopTools_ListOfShape& LA = myAnalyse.Ancestors(E);
     if (LA.Extent() < 2) {
-      if (myAnalyse.Type(E).First().Type() == BRepOffset_FreeBoundary) {
+      if (myAnalyse.Type(E).First().Type() == ChFiDS_FreeBound) {
               FreeEdges.Add(E);                       
       }
     }  
@@ -3334,7 +3334,7 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
         if ( myAnalyse.HasAncestor(Ed)) {
           const BRepOffset_ListOfInterval& LI = myAnalyse.Type(Ed);
           if (LI.Extent()       == 1   && 
-              LI.First().Type() == BRepOffset_Tangent) {
+              LI.First().Type() == ChFiDS_Tangential) {
             B.Continuity(OE,F1,F2,GeomAbs_G1);
           }
         }

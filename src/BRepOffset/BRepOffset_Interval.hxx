@@ -22,7 +22,7 @@
 #include <Standard_Handle.hxx>
 
 #include <Standard_Real.hxx>
-#include <BRepOffset_Type.hxx>
+#include <ChFiDS_TypeOfConcavity.hxx>
 
 
 
@@ -35,19 +35,21 @@ public:
   
   Standard_EXPORT BRepOffset_Interval();
   
-  Standard_EXPORT BRepOffset_Interval(const Standard_Real U1, const Standard_Real U2, const BRepOffset_Type Type);
+  Standard_EXPORT BRepOffset_Interval(const Standard_Real U1,
+                                      const Standard_Real U2,
+                                      const ChFiDS_TypeOfConcavity Type);
   
     void First (const Standard_Real U);
   
     void Last (const Standard_Real U);
   
-    void Type (const BRepOffset_Type T);
+    void Type (const ChFiDS_TypeOfConcavity T);
   
     Standard_Real First() const;
   
     Standard_Real Last() const;
   
-    BRepOffset_Type Type() const;
+    ChFiDS_TypeOfConcavity Type() const;
 
 
 
@@ -64,7 +66,7 @@ private:
 
   Standard_Real f;
   Standard_Real l;
-  BRepOffset_Type type;
+  ChFiDS_TypeOfConcavity type;
 
 
 };

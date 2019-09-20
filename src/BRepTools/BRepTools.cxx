@@ -1068,4 +1068,21 @@ Standard_Real BRepTools::EvalAndUpdateTol(const TopoDS_Edge& theE,
 
 }
 
+//=======================================================================
+//function : OriEdgeInFace
+//purpose  : 
+//=======================================================================
 
+TopAbs_Orientation BRepTools::OriEdgeInFace (const TopoDS_Edge& E,
+                                             const TopoDS_Face& F )
+
+{
+  TopExp_Explorer Exp(F.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
+
+  for (; Exp.More() ;Exp.Next()) {
+    if (Exp.Current().IsSame(E)) {
+      return Exp.Current().Orientation();
+    }
+  }
+  throw Standard_ConstructionError("BRepTools::OriEdgeInFace");
+}

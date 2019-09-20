@@ -33,7 +33,7 @@ BRepOffset_Interval::BRepOffset_Interval()
 
 BRepOffset_Interval::BRepOffset_Interval(const Standard_Real   U1, 
 					 const Standard_Real   U2, 
-					 const BRepOffset_Type Type):
+					 const ChFiDS_TypeOfConcavity Type):
 f(U1),
 l(U2),
 type(Type)

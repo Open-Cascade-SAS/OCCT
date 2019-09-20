@@ -34,4 +34,3 @@ BRepOffset_Offset.lxx
 BRepOffset_Status.hxx
 BRepOffset_Tool.cxx
 BRepOffset_Tool.hxx
-BRepOffset_Type.hxx

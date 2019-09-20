@@ -253,8 +253,8 @@ void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces
                                         const BRepOffset_Analyse&   Analyse, 
                                         const BRepAlgo_Image&       InitOffsetFace)
 {
-  BRepOffset_Type    OT   = BRepOffset_Concave;
-  if (mySide == TopAbs_OUT) OT   = BRepOffset_Convex;
+  ChFiDS_TypeOfConcavity    OT   = ChFiDS_Concave;
+  if (mySide == TopAbs_OUT) OT   = ChFiDS_Convex;
   TopExp_Explorer                Exp(ShapeInit,TopAbs_EDGE);
   TopTools_ListOfShape           LInt1,LInt2;
   TopoDS_Face                    F1,F2;
@@ -349,7 +349,7 @@ void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces
               // to the tube or if E2 is not a tangent edge.
               //-------------------------------------------------------
               const BRepOffset_ListOfInterval& L = Analyse.Type(E2);
-               if (!L.IsEmpty() && L.First().Type() == BRepOffset_Tangent) {
+               if (!L.IsEmpty() && L.First().Type() == ChFiDS_Tangential) {
                 continue;
               }
               const TopTools_ListOfShape& AncE2        = Analyse.Ancestors(E2);
@@ -511,13 +511,13 @@ void BRepOffset_Inter3d::ConnexIntByInt
         continue;
       }
       //
-      BRepOffset_Type    OT   = L.First().Type();
-      if (OT != BRepOffset_Convex && OT != BRepOffset_Concave) {
+      ChFiDS_TypeOfConcavity OT   = L.First().Type();
+      if (OT != ChFiDS_Convex && OT != ChFiDS_Concave) {
         continue;
       }
       //
-      if (OT == BRepOffset_Concave) CurSide = TopAbs_IN;
-      else                          CurSide = TopAbs_OUT;
+      if (OT == ChFiDS_Concave) CurSide = TopAbs_IN;
+      else                      CurSide = TopAbs_OUT;
       //-----------------------------------------------------------
       // edge is of the proper type, return adjacent faces.
       //-----------------------------------------------------------

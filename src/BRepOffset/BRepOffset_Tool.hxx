@@ -53,10 +53,6 @@ public:
   //! taking account the orientation of Edge.
   Standard_EXPORT static void EdgeVertices (const TopoDS_Edge& E, TopoDS_Vertex& V1, TopoDS_Vertex& V2);
   
-  //! returns the cumul  of the orientation  of <Edge>
-  //! and thc containing wire in <Face>
-  Standard_EXPORT static TopAbs_Orientation OriEdgeInFace (const TopoDS_Edge& E, const TopoDS_Face& F);
-  
   //! <E> is a section  between <F1> and <F2>.  Computes
   //! <O1> the orientation of <E> in <F1> influenced by <F2>.
   //! idem for <O2>.

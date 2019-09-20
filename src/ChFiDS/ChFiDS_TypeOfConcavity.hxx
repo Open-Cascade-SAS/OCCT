@@ -14,17 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _BRepOffset_Type_HeaderFile
-#define _BRepOffset_Type_HeaderFile
+#ifndef _ChFiDS_TypeOfConcavity_HeaderFile
+#define _ChFiDS_TypeOfConcavity_HeaderFile
 
 
-enum BRepOffset_Type
+enum ChFiDS_TypeOfConcavity
 {
-BRepOffset_Concave,
-BRepOffset_Convex,
-BRepOffset_Tangent,
-BRepOffset_FreeBoundary,
-BRepOffset_Other
+ChFiDS_Concave,
+ChFiDS_Convex,
+ChFiDS_Tangential,
+ChFiDS_FreeBound,
+ChFiDS_Other
 };
 
-#endif // _BRepOffset_Type_HeaderFile
+#endif // _ChFiDS_TypeOfConcavity_HeaderFile

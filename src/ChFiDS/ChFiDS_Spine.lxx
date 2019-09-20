@@ -17,6 +17,16 @@
 #include <TopoDS.hxx>
 
 //=======================================================================
+//function : SetTypeOfConcavity
+//purpose  : 
+//=======================================================================
+
+inline void  ChFiDS_Spine::SetTypeOfConcavity(const ChFiDS_TypeOfConcavity theType)
+{
+  myTypeOfConcavity = theType;
+}
+
+//=======================================================================
 //function : SetFirstStatus
 //purpose  : 
 //=======================================================================
@@ -36,6 +46,17 @@ inline void  ChFiDS_Spine::SetLastStatus(const ChFiDS_State S)
 {
   lastState = S;
 }
+
+//=======================================================================
+//function : GetTypeOfConcavity
+//purpose  : 
+//=======================================================================
+
+inline ChFiDS_TypeOfConcavity  ChFiDS_Spine::GetTypeOfConcavity()const 
+{
+  return myTypeOfConcavity;
+}
+
 //=======================================================================
 //function : FirstStatus
 //purpose  : 

@@ -46,3 +46,4 @@ ChFiDS_StripeMap.lxx
 ChFiDS_SurfData.cxx
 ChFiDS_SurfData.hxx
 ChFiDS_SurfData.lxx
+ChFiDS_TypeOfConcavity.hxx

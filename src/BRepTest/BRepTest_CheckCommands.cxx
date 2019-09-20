@@ -1082,11 +1082,16 @@ static Standard_Integer shapeG1continuity (Draw_Interpretor& di, Standard_Intege
   face1=TopoDS::Face(It.Value());
   It.Next();
   face2=TopoDS::Face(It.Value());
+
+  Standard_Boolean IsSeam = face1.IsEqual(face2);
     
 // calcul des deux pcurves 
   const Handle(Geom2d_Curve) c1 = BRep_Tool::CurveOnSurface
                                (TopoDS::Edge(edge),face1,f1,l1);
   if (c1.IsNull()) return 1;
+
+  if (IsSeam)
+    edge.Reverse();
   const  Handle(Geom2d_Curve) c2  = BRep_Tool::CurveOnSurface
                                (TopoDS::Edge(edge),face2,f2,l2);
   if (c2.IsNull()) return 1;
@@ -1212,10 +1217,15 @@ static Standard_Integer shapeG0continuity (Draw_Interpretor& di, Standard_Intege
   It.Next();
   face2=TopoDS::Face(It.Value());
     
+  Standard_Boolean IsSeam = face1.IsEqual(face2);
+    
 // calcul des deux pcurves 
   const Handle(Geom2d_Curve) c1 = BRep_Tool::CurveOnSurface
                                (TopoDS::Edge(edge),face1,f1,l1);
   if (c1.IsNull()) return 1;
+  
+  if (IsSeam)
+    edge.Reverse();
   const  Handle(Geom2d_Curve) c2  = BRep_Tool::CurveOnSurface
                                (TopoDS::Edge(edge),face2,f2,l2);
   if (c2.IsNull()) return 1;
@@ -1335,10 +1345,16 @@ static Standard_Integer shapeG2continuity (Draw_Interpretor& di, Standard_Intege
   face1=TopoDS::Face(It.Value());
   It.Next();
   face2=TopoDS::Face(It.Value());
+
+  Standard_Boolean IsSeam = face1.IsEqual(face2);
+  
 // calcul des deux pcurves 
   const Handle(Geom2d_Curve) c1 = BRep_Tool::CurveOnSurface
                                (TopoDS::Edge(edge),face1,f1,l1);
   if (c1.IsNull()) return 1;
+  
+  if (IsSeam)
+    edge.Reverse();
   const  Handle(Geom2d_Curve) c2  = BRep_Tool::CurveOnSurface
                                (TopoDS::Edge(edge),face2,f2,l2);
   if (c2.IsNull()) return 1;

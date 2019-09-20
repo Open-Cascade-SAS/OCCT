@@ -27,7 +27,7 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <Standard_Real.hxx>
 #include <BRepOffset_ListOfInterval.hxx>
-#include <BRepOffset_Type.hxx>
+#include <ChFiDS_TypeOfConcavity.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 class TopoDS_Shape;
@@ -60,15 +60,21 @@ public:
   
   //! Stores in <L> all the edges of Type <T>
   //! on the vertex <V>.
-  Standard_EXPORT void Edges (const TopoDS_Vertex& V, const BRepOffset_Type T, TopTools_ListOfShape& L) const;
+  Standard_EXPORT void Edges (const TopoDS_Vertex& V,
+                              const ChFiDS_TypeOfConcavity T,
+                              TopTools_ListOfShape& L) const;
   
   //! Stores in <L> all the edges of Type <T>
   //! on the face <F>.
-  Standard_EXPORT void Edges (const TopoDS_Face& F, const BRepOffset_Type T, TopTools_ListOfShape& L) const;
+  Standard_EXPORT void Edges (const TopoDS_Face& F,
+                              const ChFiDS_TypeOfConcavity T,
+                              TopTools_ListOfShape& L) const;
   
   //! set in <Edges> all  the Edges of <Shape> which are
   //! tangent to <Edge> at the vertex <Vertex>.
-  Standard_EXPORT void TangentEdges (const TopoDS_Edge& Edge, const TopoDS_Vertex& Vertex, TopTools_ListOfShape& Edges) const;
+  Standard_EXPORT void TangentEdges (const TopoDS_Edge& Edge,
+                                     const TopoDS_Vertex& Vertex,
+                                     TopTools_ListOfShape& Edges) const;
   
   Standard_EXPORT Standard_Boolean HasAncestor (const TopoDS_Shape& S) const;
   
@@ -76,19 +82,29 @@ public:
   
   //! Explode in compounds of faces where
   //! all the connex edges are of type <Side>
-  Standard_EXPORT void Explode (TopTools_ListOfShape& L, const BRepOffset_Type Type) const;
+  Standard_EXPORT void Explode (TopTools_ListOfShape& L,
+                                const ChFiDS_TypeOfConcavity Type) const;
   
   //! Explode in compounds of faces where
   //! all the connex edges are of type <Side1> or <Side2>
-  Standard_EXPORT void Explode (TopTools_ListOfShape& L, const BRepOffset_Type Type1, const BRepOffset_Type Type2) const;
+  Standard_EXPORT void Explode (TopTools_ListOfShape& L,
+                                const ChFiDS_TypeOfConcavity Type1,
+                                const ChFiDS_TypeOfConcavity Type2) const;
   
   //! Add in <CO> the faces of the shell containing <Face>
   //! where all the connex edges are of type <Side>.
-  Standard_EXPORT void AddFaces (const TopoDS_Face& Face, TopoDS_Compound& Co, TopTools_MapOfShape& Map, const BRepOffset_Type Type) const;
+  Standard_EXPORT void AddFaces (const TopoDS_Face& Face,
+                                 TopoDS_Compound& Co,
+                                 TopTools_MapOfShape& Map,
+                                 const ChFiDS_TypeOfConcavity Type) const;
   
   //! Add in <CO> the faces of the shell containing <Face>
   //! where all the connex edges are of type <Side1> or <Side2>.
-  Standard_EXPORT void AddFaces (const TopoDS_Face& Face, TopoDS_Compound& Co, TopTools_MapOfShape& Map, const BRepOffset_Type Type1, const BRepOffset_Type Type2) const;
+  Standard_EXPORT void AddFaces (const TopoDS_Face& Face,
+                                 TopoDS_Compound& Co,
+                                 TopTools_MapOfShape& Map,
+                                 const ChFiDS_TypeOfConcavity Type1,
+                                 const ChFiDS_TypeOfConcavity Type2) const;
 
 
 

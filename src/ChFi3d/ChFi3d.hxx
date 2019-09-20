@@ -24,8 +24,10 @@
 #include <Standard_Integer.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
+#include <ChFiDS_TypeOfConcavity.hxx>
 class BRepAdaptor_Surface;
 class TopoDS_Edge;
+class TopoDS_Face;
 class ChFi3d_Builder;
 class ChFi3d_ChBuilder;
 class ChFi3d_FilBuilder;
@@ -39,6 +41,12 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Defines the type of concavity in the edge of connection of two faces
+  Standard_EXPORT static ChFiDS_TypeOfConcavity DefineConnectType (const TopoDS_Edge&     E,
+                                                                   const TopoDS_Face&     F1,
+                                                                   const TopoDS_Face&     F2,
+                                                                   const Standard_Real    SinTol,
+                                                                   const Standard_Boolean CorrectPoint);
   
   //! Returns  Reversed  in  Or1  and(or)  Or2  if
   //! the  concave edge  defined by the  interior of faces F1 and F2,

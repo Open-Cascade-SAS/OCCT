@@ -4611,8 +4611,12 @@ Standard_Boolean ChFi3d_isTangentFaces(const TopoDS_Edge &theEdge,
 // Obtaining of pcurves of edge on two faces.
   const Handle(Geom2d_Curve) aC2d1 = BRep_Tool::CurveOnSurface
                                                 (theEdge, theFace1, aFirst, aLast);
+  //For the case of seam edge
+  TopoDS_Edge EE = theEdge;
+  if (theFace1.IsSame(theFace2))
+    EE.Reverse();
   const Handle(Geom2d_Curve) aC2d2 = BRep_Tool::CurveOnSurface
-                                                (theEdge, theFace2, aFirst, aLast);
+                                                (EE, theFace2, aFirst, aLast);
   if (aC2d1.IsNull() || aC2d2.IsNull())
     return Standard_False;
 

@@ -181,26 +181,6 @@ void BRepOffset_Tool::EdgeVertices (const TopoDS_Edge&   E,
 }
 
 //=======================================================================
-//function : OriEdgeInFace
-//purpose  : 
-//=======================================================================
-
-TopAbs_Orientation BRepOffset_Tool::OriEdgeInFace (const TopoDS_Edge& E,
-						   const TopoDS_Face& F )
-
-{
-  TopExp_Explorer Exp;
-  Exp.Init(F.Oriented(TopAbs_FORWARD),TopAbs_EDGE);
-
-  for (; Exp.More() ;Exp.Next()) {
-    if (Exp.Current().IsSame(E)) {
-      return Exp.Current().Orientation();
-    }
-  }
-  throw Standard_ConstructionError("BRepOffset_Tool::OriEdgeInFace");
-}
-
-//=======================================================================
 //function : FindPeriod
 //purpose  : 
 //=======================================================================
@@ -3008,8 +2988,8 @@ void BRepOffset_Tool::CheckBounds(const TopoDS_Face& F,
 	  const BRepOffset_ListOfInterval& L = Analyse.Type(anEdge);
 	  if (!L.IsEmpty() || BRep_Tool::Degenerated(anEdge))
 	    {
-	      BRepOffset_Type OT = L.First().Type();
-	      if (OT == BRepOffset_Tangent || BRep_Tool::Degenerated(anEdge))
+	      ChFiDS_TypeOfConcavity OT = L.First().Type();
+	      if (OT == ChFiDS_Tangential || BRep_Tool::Degenerated(anEdge))
 		{
 		  Standard_Real fpar, lpar;
 		  Handle(Geom2d_Curve) aCurve = BRep_Tool::CurveOnSurface(anEdge, F, fpar, lpar);

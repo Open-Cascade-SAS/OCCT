@@ -223,6 +223,10 @@ public:
                                                         const Standard_Real theF,
                                                         const Standard_Real theL);
 
+  //! returns the cumul  of the orientation  of <Edge>
+  //! and thc containing wire in <Face>
+  Standard_EXPORT static TopAbs_Orientation OriEdgeInFace(const TopoDS_Edge& theEdge, 
+                                                          const TopoDS_Face& theFace);
 
 
 protected:

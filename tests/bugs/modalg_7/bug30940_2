@@ -1,0 +1,25 @@
+puts "=================================================================="
+puts "OCC30940: BRepFilletAPI_MakeFillet algorithm fails on closed shell"
+puts "=================================================================="
+puts ""
+
+beziercurve q 4  0 0 0  10 0 0  0 10 0  0 0 0
+mkedge q q
+wire q q
+mkplane q q
+prism q q 0 0 10
+explode q e
+
+blend result q 0.5 q_3
+
+checkshape result
+
+checknbshapes result -face 4 -edge 5 -vertex 3
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 1.e-4} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 149.268 -deps 1.e-5

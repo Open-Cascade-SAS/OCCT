@@ -1573,7 +1573,7 @@ void BiTgte_Blend::ComputeCenters()
 	// ------------------------------------
 	TopTools_ListOfShape Let;
 	if ( AS.ShapeType() == TopAbs_FACE) { 
-	  myAnalyse.Edges(TopoDS::Face(AS),BRepOffset_Tangent,Let);
+	  myAnalyse.Edges(TopoDS::Face(AS),ChFiDS_Tangential,Let);
 	}
 	TopTools_ListIteratorOfListOfShape itlet(Let);
     
@@ -1589,14 +1589,14 @@ void BiTgte_Blend::ComputeCenters()
 	    TopExp::Vertices (OTE,OV1,OV2);      
 	    TopTools_ListOfShape LE;
 	    if (!EdgeTgt.IsBound(V1)) {
-	      myAnalyse.Edges(V1,BRepOffset_Tangent,LE);
+	      myAnalyse.Edges(V1,ChFiDS_Tangential,LE);
 	      const TopTools_ListOfShape& LA = myAnalyse.Ancestors(V1);
 	      if (LE.Extent() == LA.Extent())
 		EdgeTgt.Bind(V1,OV1);
 	    }
 	    if (!EdgeTgt.IsBound(V2)) {
 	      LE.Clear();
-	      myAnalyse.Edges(V2,BRepOffset_Tangent,LE);
+	      myAnalyse.Edges(V2,ChFiDS_Tangential,LE);
 	      const TopTools_ListOfShape& LA = myAnalyse.Ancestors(V2);
 	      if (LE.Extent() == LA.Extent())
 		EdgeTgt.Bind(V2,OV2);
@@ -1637,8 +1637,8 @@ void BiTgte_Blend::ComputeCenters()
     //--------------------------------------------------------
     // Construction of tubes on edge.
     //--------------------------------------------------------
-    BRepOffset_Type    OT = BRepOffset_Convex;
-    if (myRadius < 0.) OT = BRepOffset_Concave; 
+    ChFiDS_TypeOfConcavity OT = ChFiDS_Convex;
+    if (myRadius < 0.) OT = ChFiDS_Concave; 
     
     TopTools_IndexedDataMapOfShapeListOfShape Map;
     TopExp::MapShapesAndAncestors(Co,TopAbs_EDGE,TopAbs_FACE,Map);
@@ -1724,8 +1724,8 @@ void BiTgte_Blend::ComputeCenters()
 
   // Proceed with MakeLoops 
   TopTools_IndexedDataMapOfShapeListOfShape aDMVV;
-  BRepOffset_Type    OT = BRepOffset_Concave;
-  if (myRadius < 0.) OT = BRepOffset_Convex; 
+  ChFiDS_TypeOfConcavity OT = ChFiDS_Concave;
+  if (myRadius < 0.) OT = ChFiDS_Convex; 
    
   TopTools_ListOfShape LOF;
   //it.Initialize(myFaces);

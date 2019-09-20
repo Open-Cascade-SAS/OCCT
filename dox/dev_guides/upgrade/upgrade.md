@@ -1857,3 +1857,9 @@ The following API changes have been made:
 @subsection upgrade_740_stdnamespace Standard_Stream.hxx no more has "using std::" statements
 *Standard_Stream.hxx* header, commonly included by other OCCT header files, does no more add entities from *std namespace* related to streams (like *std::cout*, *std::istream* and others) into global namespace.
 The application code relying on this matter should be updated to either specify std namespace explicitly (like std::cout) or add "using std::" statements locally.
+
+@section upgrade_occt750 Upgrade to OCCT 7.5.0
+
+@subsection upgrade_750_rename Renaming of types
+
+Enumeration BRepOffset_Type is renamed to ChFiDS_TypeOfConcavity.

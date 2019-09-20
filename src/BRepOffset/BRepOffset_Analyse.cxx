@@ -44,16 +44,8 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <ChFi3d.hxx>
 
-//
-static void Correct2dPoint(const TopoDS_Face& theF, gp_Pnt2d& theP2d);
-//
-static BRepOffset_Type DefineConnectType(const TopoDS_Edge&         E,
-			                                   const TopoDS_Face&         F1,
-			                                   const TopoDS_Face&         F2,
-			                                   const Standard_Real        SinTol,
-                                         const Standard_Boolean     CorrectPoint);
-//
 static void CorrectOrientationOfTangent(gp_Vec& TangVec,
                                         const TopoDS_Vertex& aVertex,
                                         const TopoDS_Edge& anEdge)
@@ -105,16 +97,17 @@ static void EdgeAnalyse(const TopoDS_Edge&         E,
   // Tangent if the regularity is at least G1.
   if (BRep_Tool::HasContinuity(E,F1,F2)) {
     if (BRep_Tool::Continuity(E,F1,F2) > GeomAbs_C0) {
-      I.Type(BRepOffset_Tangent);
+      I.Type(ChFiDS_Tangential);
       LI.Append(I);
       return;
     }
   }
   //
-  BRepOffset_Type aType = DefineConnectType(E, F1, F2, SinTol, Standard_False);
-  if(aType != BRepOffset_Tangent)
+  ChFiDS_TypeOfConcavity aType = ChFi3d::DefineConnectType(E, F1, F2,
+                                                           SinTol, Standard_False);
+  if(aType != ChFiDS_Tangential)
   {
-    aType = DefineConnectType(E, F1, F2, SinTol, Standard_True);
+    aType = ChFi3d::DefineConnectType(E, F1, F2, SinTol, Standard_True);
   }
   I.Type(aType);
   LI.Append(I);
@@ -181,10 +174,10 @@ void BRepOffset_Analyse::Perform (const TopoDS_Shape& S,
 	Standard_Real U1,U2;
 	const TopoDS_Face& F = TopoDS::Face(L.First());
 	BRep_Tool::Range(E,F,U1,U2);
-	BRepOffset_Interval Inter(U1,U2,BRepOffset_Other);
+	BRepOffset_Interval Inter(U1,U2,ChFiDS_Other);
 	
 	if (! BRepTools::IsReallyClosed(E,F)) {
-	  Inter.Type(BRepOffset_FreeBoundary);
+	  Inter.Type(ChFiDS_FreeBound);
 	}
 	mapEdgeType(E).Append(Inter);
       }
@@ -233,7 +226,7 @@ const
 //=======================================================================
 
 void BRepOffset_Analyse::Edges(const TopoDS_Vertex&  V, 
-			       const BRepOffset_Type T,
+			       const ChFiDS_TypeOfConcavity T,
 			       TopTools_ListOfShape& LE) 
 const 
 {
@@ -263,7 +256,7 @@ const
 //=======================================================================
 
 void BRepOffset_Analyse::Edges(const TopoDS_Face&    F, 
-			       const BRepOffset_Type T,
+			       const ChFiDS_TypeOfConcavity T,
 			       TopTools_ListOfShape& LE) 
 const 
 {
@@ -350,8 +343,8 @@ const TopTools_ListOfShape& BRepOffset_Analyse::Ancestors
 //purpose  : 
 //=======================================================================
 
-void BRepOffset_Analyse::Explode(      TopTools_ListOfShape& List,
-				 const BRepOffset_Type       T   ) const 
+void BRepOffset_Analyse::Explode(      TopTools_ListOfShape&        List,
+				 const ChFiDS_TypeOfConcavity       T   ) const 
 {
   List.Clear();
   BRep_Builder B;
@@ -377,9 +370,9 @@ void BRepOffset_Analyse::Explode(      TopTools_ListOfShape& List,
 //purpose  : 
 //=======================================================================
 
-void BRepOffset_Analyse::Explode(      TopTools_ListOfShape& List,
-				 const BRepOffset_Type       T1,
-				 const BRepOffset_Type       T2) const 
+void BRepOffset_Analyse::Explode(      TopTools_ListOfShape&  List,
+				 const ChFiDS_TypeOfConcavity T1,
+				 const ChFiDS_TypeOfConcavity T2) const 
 {
   List.Clear();
   BRep_Builder B;
@@ -409,7 +402,7 @@ void BRepOffset_Analyse::Explode(      TopTools_ListOfShape& List,
 void BRepOffset_Analyse::AddFaces (const TopoDS_Face&    Face,
 				   TopoDS_Compound&      Co,
 				   TopTools_MapOfShape&  Map,
-				   const BRepOffset_Type T) const 
+				   const ChFiDS_TypeOfConcavity T) const 
 {
   BRep_Builder B;
   TopExp_Explorer exp(Face,TopAbs_EDGE);
@@ -439,8 +432,8 @@ void BRepOffset_Analyse::AddFaces (const TopoDS_Face&    Face,
 void BRepOffset_Analyse::AddFaces (const TopoDS_Face&    Face,
 				   TopoDS_Compound&      Co,
 				   TopTools_MapOfShape&  Map,
-				   const BRepOffset_Type T1,
-				   const BRepOffset_Type T2) const 
+				   const ChFiDS_TypeOfConcavity T1,
+				   const ChFiDS_TypeOfConcavity T2) const 
 {
   BRep_Builder B;
   TopExp_Explorer exp(Face,TopAbs_EDGE);
@@ -464,135 +457,3 @@ void BRepOffset_Analyse::AddFaces (const TopoDS_Face&    Face,
   }
 }
 
-//=======================================================================
-//function : Correct2dPoint
-//purpose  : 
-//=======================================================================
-void Correct2dPoint(const TopoDS_Face& theF, gp_Pnt2d& theP2d)
-{
-  BRepAdaptor_Surface aBAS(theF, Standard_False);
-  if (aBAS.GetType() < GeomAbs_BezierSurface) {
-    return;
-  }
-  //
-  const Standard_Real coeff = 0.01;
-  Standard_Real eps;
-  Standard_Real u1, u2, v1, v2;
-  //
-  aBAS.Initialize(theF, Standard_True);
-  u1 = aBAS.FirstUParameter();
-  u2 = aBAS.LastUParameter();
-  v1 = aBAS.FirstVParameter();
-  v2 = aBAS.LastVParameter();
-  if (!(Precision::IsInfinite(u1) || Precision::IsInfinite(u2)))
-  {
-    eps = Max(coeff*(u2 - u1), Precision::PConfusion());
-    if (Abs(theP2d.X() - u1) < eps)
-    {
-      theP2d.SetX(u1 + eps);
-    }
-    if (Abs(theP2d.X() - u2) < eps)
-    {
-      theP2d.SetX(u2 - eps);
-    }
-  }
-  if (!(Precision::IsInfinite(v1) || Precision::IsInfinite(v2)))
-  {
-    eps = Max(coeff*(v2 - v1), Precision::PConfusion());
-    if (Abs(theP2d.Y() - v1) < eps)
-    {
-      theP2d.SetY(v1 + eps);
-    }
-    if (Abs(theP2d.Y() - v2) < eps)
-    {
-      theP2d.SetY(v2 - eps);
-    }
-  }
-}
-
-//=======================================================================
-//function : DefineConnectType
-//purpose  : 
-//=======================================================================
-BRepOffset_Type DefineConnectType(const TopoDS_Edge&     E,
-                                  const TopoDS_Face&     F1,
-                                  const TopoDS_Face&     F2,
-                                  const Standard_Real    SinTol,
-                                  const Standard_Boolean CorrectPoint)
-{
-  TopLoc_Location L;
-  Standard_Real   f,l;
-  
-  const Handle(Geom_Surface)& S1 = BRep_Tool::Surface(F1);
-  const Handle(Geom_Surface)& S2 = BRep_Tool::Surface(F2);
-  //
-  Handle (Geom2d_Curve) C1 = BRep_Tool::CurveOnSurface(E,F1,f,l);
-  Handle (Geom2d_Curve) C2 = BRep_Tool::CurveOnSurface(E,F2,f,l);
-
-  BRepAdaptor_Curve C(E);
-  f = C.FirstParameter();
-  l = C.LastParameter();
-//
-  Standard_Real ParOnC = 0.5*(f+l);
-  gp_Vec T1 = C.DN(ParOnC,1).Transformed(L.Transformation());
-  if (T1.SquareMagnitude() > gp::Resolution()) {
-    T1.Normalize();
-  }
-  
-  if (BRepOffset_Tool::OriEdgeInFace(E,F1) == TopAbs_REVERSED) {
-    T1.Reverse();
-  }
-  if (F1.Orientation() == TopAbs_REVERSED) T1.Reverse();
-
-  gp_Pnt2d P  = C1->Value(ParOnC);
-  gp_Pnt   P3;
-  gp_Vec   D1U,D1V;
-  
-  if(CorrectPoint) 
-    Correct2dPoint(F1, P);
-  //
-  S1->D1(P.X(),P.Y(),P3,D1U,D1V);
-  gp_Vec DN1(D1U^D1V);
-  if (F1.Orientation() == TopAbs_REVERSED) DN1.Reverse();
-  
-  P = C2->Value(ParOnC);
-  if(CorrectPoint) 
-    Correct2dPoint(F2, P);
-  S2->D1(P.X(),P.Y(),P3,D1U,D1V);
-  gp_Vec DN2(D1U^D1V);
-  if (F2.Orientation() == TopAbs_REVERSED) DN2.Reverse();
-
-  DN1.Normalize();
-  DN2.Normalize();
-
-  gp_Vec        ProVec     = DN1^DN2;
-  Standard_Real NormProVec = ProVec.Magnitude(); 
-
-  if (Abs(NormProVec) < SinTol) {
-    // plane
-    if (DN1.Dot(DN2) > 0) {   
-      //Tangent
-      return BRepOffset_Tangent;
-    }
-    else  {                   
-      //Mixed not finished!
-#ifdef OCCT_DEBUG
-      std::cout <<" faces locally mixed"<<std::endl;
-#endif
-      return BRepOffset_Convex;
-    }
-  }
-  else {  
-    if (NormProVec > gp::Resolution())
-      ProVec.Normalize();
-    Standard_Real Prod  = T1.Dot(DN1^DN2);
-    if (Prod > 0.) {       
-      //
-      return BRepOffset_Convex;
-    }
-    else {                       
-      //reenters
-      return BRepOffset_Concave;
-    }
-  }
-}

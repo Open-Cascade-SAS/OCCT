@@ -41,7 +41,7 @@ inline void BRepOffset_Interval::Last(const Standard_Real U)
 //purpose  : 
 //=======================================================================
 
-inline void BRepOffset_Interval::Type(const BRepOffset_Type T)
+inline void BRepOffset_Interval::Type(const ChFiDS_TypeOfConcavity T)
 {
   type = T;
 }
@@ -74,7 +74,7 @@ inline Standard_Real BRepOffset_Interval::Last() const
 //purpose  : 
 //=======================================================================
 
-inline BRepOffset_Type BRepOffset_Interval::Type() const 
+inline ChFiDS_TypeOfConcavity BRepOffset_Interval::Type() const 
 {
   return type;
 }
