@@ -244,12 +244,14 @@ Standard_Boolean operator == (const Quantity_Color& Other) const
   Standard_EXPORT static bool ColorFromHex (const Standard_CString theHexColorString, Quantity_Color& theColor);
 
   //! Returns hex sRGB string in format "#FFAAFF".
-  static TCollection_AsciiString ColorToHex (const Quantity_Color& theColor)
+  static TCollection_AsciiString ColorToHex (const Quantity_Color& theColor,
+                                             const bool theToPrefixHash = true)
   {
     NCollection_Vec3<Standard_ShortReal> anSRgb = (NCollection_Vec3<Standard_ShortReal> )theColor;
-    NCollection_Vec3<Standard_Integer> anSRgbInt (anSRgb * 255.0f);
+    NCollection_Vec3<Standard_Integer> anSRgbInt (anSRgb * 255.0f + NCollection_Vec3<Standard_ShortReal> (0.5f));
     char aBuff[10];
-    Sprintf (aBuff, "#%02X%02X%02X", anSRgbInt.r(), anSRgbInt.g(), anSRgbInt.b());
+    Sprintf (aBuff, theToPrefixHash ? "#%02X%02X%02X" : "%02X%02X%02X",
+             anSRgbInt.r(), anSRgbInt.g(), anSRgbInt.b());
     return aBuff;
   }
 

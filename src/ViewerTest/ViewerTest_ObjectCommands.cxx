@@ -2388,42 +2388,17 @@ static int VDrawText (Draw_Interpretor& theDI,
     }
     else if (aParam == "-color")
     {
-      if (anArgIt + 1 >= theArgsNb)
+      Quantity_Color aColor;
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgsNb - anArgIt - 1,
+                                                           theArgVec + anArgIt + 1,
+                                                           aColor);
+      if (aNbParsed == 0)
       {
-        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        std::cout << "Syntax error at '" << aParam << "'\n";
         return 1;
       }
-
-      TCollection_AsciiString aColor (theArgVec[anArgIt + 1]);
-      Quantity_NameOfColor aNameOfColor = Quantity_NOC_BLACK;
-      if (Quantity_Color::ColorFromName (aColor.ToCString(), aNameOfColor))
-      {
-        anArgIt += 1;
-        aTextPrs->SetColor (aNameOfColor);
-        continue;
-      }
-      else if (anArgIt + 3 >= theArgsNb)
-      {
-        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
-        return 1;
-      }
-
-      TCollection_AsciiString aGreen (theArgVec[anArgIt + 2]);
-      TCollection_AsciiString aBlue  (theArgVec[anArgIt + 3]);
-      if (!aColor.IsRealValue()
-       || !aGreen.IsRealValue()
-       || !aBlue.IsRealValue())
-      {
-        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
-        return 1;
-      }
-
-      const Graphic3d_Vec3d anRGB (aColor.RealValue(),
-                                   aGreen.RealValue(),
-                                   aBlue.RealValue());
-
-      aTextPrs->SetColor (Quantity_Color (anRGB.r(), anRGB.g(), anRGB.b(), Quantity_TOC_RGB));
-      anArgIt += 3;
+      anArgIt += aNbParsed;
+      aTextPrs->SetColor (aColor);
     }
     else if (aParam == "-halign")
     {
@@ -2598,42 +2573,17 @@ static int VDrawText (Draw_Interpretor& theDI,
     else if (aParam == "-subcolor"
           || aParam == "-subtitlecolor")
     {
-      if (anArgIt + 1 >= theArgsNb)
+      Quantity_Color aColor;
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgsNb - anArgIt - 1,
+                                                           theArgVec + anArgIt + 1,
+                                                           aColor);
+      if (aNbParsed == 0)
       {
-        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
+        std::cout << "Syntax error at '" << aParam << "'\n";
         return 1;
       }
-
-      TCollection_AsciiString aColor (theArgVec[anArgIt + 1]);
-      Quantity_NameOfColor aNameOfColor = Quantity_NOC_BLACK;
-      if (Quantity_Color::ColorFromName (aColor.ToCString(), aNameOfColor))
-      {
-        anArgIt += 1;
-        aTextPrs->SetColorSubTitle (aNameOfColor);
-        continue;
-      }
-      else if (anArgIt + 3 >= theArgsNb)
-      {
-        std::cout << "Error: wrong number of values for parameter '" << aParam.ToCString() << "'.\n";
-        return 1;
-      }
-
-      TCollection_AsciiString aGreen (theArgVec[anArgIt + 2]);
-      TCollection_AsciiString aBlue  (theArgVec[anArgIt + 3]);
-      if (!aColor.IsRealValue()
-       || !aGreen.IsRealValue()
-       || !aBlue.IsRealValue())
-      {
-        std::cout << "Error: wrong syntax at '" << aParam.ToCString() << "'.\n";
-        return 1;
-      }
-
-      const Graphic3d_Vec3d anRGB (aColor.RealValue(),
-                                   aGreen.RealValue(),
-                                   aBlue.RealValue());
-
-      aTextPrs->SetColorSubTitle (Quantity_Color (anRGB.r(), anRGB.g(), anRGB.b(), Quantity_TOC_RGB));
-      anArgIt += 3;
+      anArgIt += aNbParsed;
+      aTextPrs->SetColorSubTitle (aColor);
     }
     else if (aParam == "-2d")
     {

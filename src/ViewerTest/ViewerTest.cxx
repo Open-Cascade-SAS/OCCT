@@ -202,22 +202,17 @@ namespace
   {
     const Standard_Integer THE_COLOR_COMPONENT_NOT_PARSED = -1;
     Graphic3d_Vec4i        anIntegerColor (THE_COLOR_COMPONENT_NOT_PARSED);
-    if (!parseNumericalColor (theNumberOfColorComponents, theColorComponentStrings, anIntegerColor))
+    if (!parseNumericalColor (theNumberOfColorComponents, theColorComponentStrings, anIntegerColor)
+      || anIntegerColor.maxComp() <= 1)
     {
       return false;
     }
-
-    const bool hasColorComponentGreaterThanOne = (anIntegerColor.maxComp() > 1);
     if (anIntegerColor.a() == THE_COLOR_COMPONENT_NOT_PARSED)
     {
       anIntegerColor.a() = THE_MAX_INTEGER_COLOR_COMPONENT;
     }
 
-    Graphic3d_Vec4 aRealColor (anIntegerColor);
-    if (hasColorComponentGreaterThanOne)
-    {
-      aRealColor /= static_cast<Standard_ShortReal> (THE_MAX_INTEGER_COLOR_COMPONENT);
-    }
+    const Graphic3d_Vec4 aRealColor = Graphic3d_Vec4 (anIntegerColor) / static_cast<Standard_ShortReal> (THE_MAX_INTEGER_COLOR_COMPONENT);
     theColor = Quantity_ColorRGBA (aRealColor);
     return true;
   }
@@ -284,11 +279,12 @@ Standard_Integer ViewerTest::parseColor (const Standard_Integer   theArgNb,
   if (theArgNb >= 3)
   {
     const Standard_Integer aNumberOfColorComponentsToParse = Min (theArgNb, theToParseAlpha ? 4 : 3);
-    Standard_Integer       aNumberOfColorComponentsParsed  = aNumberOfColorComponentsToParse;
+    Standard_Integer aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
     if (parseIntegerColor (aNumberOfColorComponentsParsed, theArgVec, theColor))
     {
       return aNumberOfColorComponentsParsed;
     }
+    aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
     if (parseRealColor (aNumberOfColorComponentsParsed, theArgVec, theColor))
     {
       return aNumberOfColorComponentsParsed;
@@ -2366,6 +2362,11 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
     if (Quantity_Color::ColorFromName (aNames.Last().ToCString(), aColor))
     {
       aChangeSet->Color = aColor;
+      aNames.Remove (aNames.Length());
+      isOk = Standard_True;
+    }
+    else if (Quantity_Color::ColorFromHex (aNames.Last().ToCString(), aChangeSet->Color))
+    {
       aNames.Remove (aNames.Length());
       isOk = Standard_True;
     }

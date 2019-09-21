@@ -86,3 +86,4 @@ drawObjects 0 ""
 drawObjects 1 red
 drawObjects 2 green
 drawObjects 3 blue1
+vrepaint

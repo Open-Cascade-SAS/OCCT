@@ -85,4 +85,4 @@ vrenderparams -ray -gi -rayDepth 8
 puts "Make several path tracing iterations to refine the picture, please wait..."
 vfps 100
 puts "Done. To improve the image further, or after view manipulations, give command:"
-puts "vfps \[nb_iteratons\]"
+puts "vfps \[nb_iteratons\] or vrepaint -continuous"

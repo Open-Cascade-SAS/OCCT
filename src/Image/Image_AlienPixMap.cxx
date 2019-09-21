@@ -31,6 +31,10 @@
   #include <Standard_WarningsRestore.hxx>
   #undef min
   #undef max
+
+  #ifdef _MSC_VER
+    #pragma comment(lib, "Ole32.lib")
+  #endif
 #endif
 
 #include <Image_AlienPixMap.hxx>

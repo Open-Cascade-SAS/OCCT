@@ -26,133 +26,241 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopoDS_Shape.hxx>
+#include <ViewerTest.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XDEDRAW_Colors.hxx>
 
+//! Parse XCAFDoc_ColorType enumeration argument.
+static bool parseXDocColorType (const TCollection_AsciiString& theArg,
+                                XCAFDoc_ColorType& theType)
+{
+  TCollection_AsciiString anArgCase (theArg);
+  anArgCase.LowerCase();
+  if (anArgCase == "surf"
+   || anArgCase == "surface"
+   || anArgCase == "s")
+  {
+    theType = XCAFDoc_ColorSurf;
+    return true;
+  }
+  else if (anArgCase == "curve"
+        || anArgCase == "c")
+  {
+    theType = XCAFDoc_ColorCurv;
+    return true;
+  }
+  else if (anArgCase == "gen"
+        || anArgCase == "generic")
+  {
+    theType = XCAFDoc_ColorGen;
+    return true;
+  }
+  return false;
+}
+
 //=======================================================================
 // Section: Work with colors
 //=======================================================================
-static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer setColor (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  if (argc < 6) {
-    di<<"Use: "<<argv[0]<<" Doc {Label|Shape} R G B [alpha] [curve|surf]\n";
+  if (argc < 4)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
-  
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+
   TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  Quantity_Color Col ( Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Quantity_TOC_RGB );
-
-  Quantity_ColorRGBA aColRGBA;
-  aColRGBA.SetRGB(Col);
-  if (argc > 6 && (argv[6][0] != 's' && argv[6][0] != 'c')) {
-    aColRGBA.SetAlpha((Standard_ShortReal)(Draw::Atof(argv[6])));
-  }
-  
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  XCAFDoc_ColorType ctype = XCAFDoc_ColorGen;
-  if (argc > 6) {
-    if (argv[argc - 1][0] == 's')
-      ctype = XCAFDoc_ColorSurf;
-    else if (argv[argc - 1][0] == 'c')
-      ctype = XCAFDoc_ColorCurv;
-  }
-
-  if ( !aLabel.IsNull() ) {
-    myColors->SetColor(aLabel, aColRGBA, ctype);
-  }
-  else {
-    TopoDS_Shape aShape= DBRep::Get(argv[2]);
-    if ( !aShape.IsNull() ) {
-      myColors->SetColor(aShape, aColRGBA, ctype);
+  TopoDS_Shape aShape;
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    aShape = DBRep::Get (argv[2]);
+    if (aShape.IsNull())
+    {
+      std::cout << "Syntax error: " << argv[2] << " is not a label nor shape\n";
+      return 1;
     }
+  }
+
+  Quantity_ColorRGBA aColor;
+  bool isColorDefined = false;
+  XCAFDoc_ColorType aColType = XCAFDoc_ColorGen;
+  for (Standard_Integer anArgIter = 3; anArgIter < argc; ++anArgIter)
+  {
+    if (parseXDocColorType (argv[anArgIter], aColType))
+    {
+      //
+    }
+    else if (!isColorDefined)
+    {
+      isColorDefined = true;
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - anArgIter,
+                                                           argv + anArgIter,
+                                                           aColor);
+      if (aNbParsed == 0)
+      {
+        std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed - 1;
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if (!isColorDefined)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  if (!aLabel.IsNull())
+  {
+    aColorTool->SetColor (aLabel, aColor, aColType);
+  }
+  else if (!aColorTool->SetColor (aShape, aColor, aColType))
+  {
+    std::cout << "Syntax error: " << argv[2] << " is not a label nor shape\n";
+    return 1;
   }
   return 0;
 }
 
 static Standard_Integer getColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" Doc Label\n";
+  if (argc != 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
 
   TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  Quantity_ColorRGBA col;
-  if ( !myColors->GetColor(aLabel, col) ) return 0;
-  
-  if ((1 - col.Alpha()) < Precision::Confusion())
-    di << col.GetRGB().StringName(col.GetRGB().Name());
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  Quantity_ColorRGBA aColor;
+  if (!myColors->GetColor (aLabel, aColor))
+  {
+    return 0;
+  }
+
+  if ((1.0 - aColor.Alpha()) < Precision::Confusion())
+  {
+    di << aColor.GetRGB().StringName (aColor.GetRGB().Name());
+  }
   else
-    di << col.GetRGB().StringName ( col.GetRGB().Name() ) << " (" << col.Alpha() << ")";
-   
+  {
+    di << aColor.GetRGB().StringName (aColor.GetRGB().Name()) << " (" << aColor.Alpha() << ")";
+  }
   return 0;
 }
 
 static Standard_Integer getShapeColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3) {
-    di<<"Use: "<<argv[0]<<" Doc Label [curve|surf]\n";
+  if (argc != 3 && argc != 4)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
 
   TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  if ( aLabel.IsNull() ) {
-    di << " no such label in document\n";
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    std::cout << "Syntax error: '" << argv[2] << "' label is not found in the document\n";
     return 1;
   }
 
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  const XCAFDoc_ColorType ctype = ( argc <= 3 ? XCAFDoc_ColorGen : ( argv[3][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv ) );
+  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  XCAFDoc_ColorType aColType = XCAFDoc_ColorGen;
+  if (argc > 3 && !parseXDocColorType (argv[3], aColType))
+  {
+    std::cout << "Syntax error: unknown color type '" << argv[3] << "'\n";
+    return 1;
+  }
 
-  Quantity_ColorRGBA col;
-  if ( !myColors->GetColor(aLabel, ctype, col) ) return 0;
+  Quantity_ColorRGBA aColor;
+  if (!myColors->GetColor (aLabel, aColType, aColor))
+  {
+    return 0;
+  }
 
-  if ((1 - col.Alpha()) < Precision::Confusion())
-    di << col.GetRGB().StringName(col.GetRGB().Name());
+  if ((1.0 - aColor.Alpha()) < Precision::Confusion())
+  {
+    di << aColor.GetRGB().StringName(aColor.GetRGB().Name());
+  }
   else
-    di << col.GetRGB().StringName(col.GetRGB().Name()) << " (" << col.Alpha() << ")";
+  {
+    di << aColor.GetRGB().StringName(aColor.GetRGB().Name()) << " (" << aColor.Alpha() << ")";
+  }
 
   return 0;
 }
 
 static Standard_Integer getAllColors (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc!=2) {
-    di<<"Use: "<<argv[0]<<" Doc \n";
+  if (argc != 2)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
-  TDF_Label aLabel;
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  Quantity_ColorRGBA col;
-  TDF_LabelSequence Labels;
-  myColors->GetColors(Labels);
-  if (Labels.Length() >= 1) {
-    for ( Standard_Integer i = 1; i<= Labels.Length(); i++) {
-      aLabel = Labels.Value(i);
-      if ( !myColors->GetColor(aLabel, col) ) continue;
-      if ((1 - col.Alpha()) < Precision::Confusion())
-        di << col.GetRGB().StringName(col.GetRGB().Name());
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  TDF_LabelSequence aLabels;
+  aColorTool->GetColors (aLabels);
+  if (aLabels.Length() >= 1)
+  {
+    for (TDF_LabelSequence::Iterator aLabIter (aLabels); aLabIter.More(); aLabIter.Next())
+    {
+      Quantity_ColorRGBA aColor;
+      if (!aColorTool->GetColor (aLabIter.Value(), aColor))
+      {
+        continue;
+      }
+      if ((1.0 - aColor.Alpha()) < Precision::Confusion())
+      {
+        di << aColor.GetRGB().StringName (aColor.GetRGB().Name());
+      }
       else
-        di << col.GetRGB().StringName(col.GetRGB().Name()) << " (" << col.Alpha() << ")";
+      {
+        di << aColor.GetRGB().StringName (aColor.GetRGB().Name()) << " (" << aColor.Alpha() << ")";
+      }
       di << " ";
     }
   }
@@ -162,235 +270,351 @@ static Standard_Integer getAllColors (Draw_Interpretor& di, Standard_Integer arg
 
 static Standard_Integer addColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 5) {
-    di<<"Use: "<<argv[0]<<" DocName R G B [alpha]\n";
+  if (argc < 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
-  TDF_Label aLabel;
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-
-  Quantity_Color Col ( Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Quantity_TOC_RGB );
-  if (argc == 6) {
-    Quantity_ColorRGBA aColRGBA(Col);
-    aColRGBA.SetAlpha((Standard_ShortReal)(Draw::Atof(argv[5])));
-    aLabel = myColors->AddColor(aColRGBA);
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
   }
-  else 
-    aLabel = myColors->AddColor(Col);
-  
-  TCollection_AsciiString Entry;
-  TDF_Tool::Entry(aLabel, Entry);
-  di << Entry.ToCString();
+
+  Quantity_ColorRGBA aColRGBA;
+  Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - 2, argv + 2, aColRGBA);
+  if (aNbParsed != argc - 2)
+  {
+    std::cout << "Syntax error at '" << argv[2] << "'\n";
+    return 1;
+  }
+
+  TCollection_AsciiString anEntry;
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  TDF_Label aLabel = aColorTool->AddColor (aColRGBA);
+  TDF_Tool::Entry (aLabel, anEntry);
+  di << anEntry;
   return 0;
 }
 
-static Standard_Integer removeColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer removeColor (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  if (argc!=3) {
-    di<<"Use: "<<argv[0]<<" DocName Label\n";
+  if (argc != 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
+  Handle(TDocStd_Document) aDoc;
   TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  myColors->RemoveColor(aLabel);
-  
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[2] << " label is not found in the document\n";
+    return 1;
+  }
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  aColorTool->RemoveColor (aLabel);
   return 0;
 }
 
 static Standard_Integer findColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 5) {
-    di<<"Use: "<<argv[0]<<" DocName R G B [alpha]\n";
+  if (argc < 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
 
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  TCollection_AsciiString Entry;
-  Quantity_Color Col(Draw::Atof(argv[2]), Draw::Atof(argv[3]), Draw::Atof(argv[4]), Quantity_TOC_RGB);
-  if (argc == 5) {
-    TDF_Tool::Entry(myColors->FindColor(Col), Entry);
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
   }
-  else {
-    Quantity_ColorRGBA aColRGBA(Col);
-    aColRGBA.SetAlpha((Standard_ShortReal)Draw::Atof(argv[5]));
-    TDF_Tool::Entry(myColors->FindColor(aColRGBA), Entry);
+
+  Quantity_ColorRGBA aColRGBA;
+  Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - 2, argv + 2, aColRGBA);
+  if (aNbParsed != argc - 2)
+  {
+    std::cout << "Syntax error at '" << argv[2] << "'\n";
+    return 1;
   }
-  di << Entry.ToCString();
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  TCollection_AsciiString anEntry;
+  TDF_Tool::Entry (aColorTool->FindColor (aColRGBA), anEntry);
+  di << anEntry;
   return 0;
 }
 
-static Standard_Integer unsetColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer unsetColor (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" DocName {Label|Shape} ColorType\n";
+  if (argc != 4)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  XCAFDoc_ColorType aColType = XCAFDoc_ColorGen;
+  if (!parseXDocColorType (argv[3], aColType))
+  {
+    std::cout << "Syntax error: unknown color type '" << argv[3] << "'\n";
+    return 1;
+  }
 
   TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  if ( !aLabel.IsNull() ) {
-    myColors->UnSetColor(aLabel, argv[3][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv);
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  if (!aLabel.IsNull())
+  {
+    myColors->UnSetColor (aLabel, aColType);
+    return 0;
   }
-  TopoDS_Shape aShape= DBRep::Get(argv[2]);
-  if ( !aShape.IsNull() ) {
-    myColors->UnSetColor(aShape, argv[3][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv);
+
+  TopoDS_Shape aShape = DBRep::Get (argv[2]);
+  if (aShape.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[2] << " is not a label nor shape\n";
+    return 1;
   }
+  myColors->UnSetColor (aShape, aColType);
   return 0;
 }
 
-static Standard_Integer setVisibility (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer setVisibility (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  if (argc<3) {
-    di<<"Use: "<<argv[0]<<"DocName {Lable|Shape} [isvisible(1/0)]\n";
+  if (argc != 3 && argc != 4)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
-  Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  Standard_Boolean isvisible = Standard_False;
-  if ( (argc==4) && (Draw::Atoi(argv[3])==1) ) isvisible = Standard_True;
-  
+
+  Handle(TDocStd_Document) aDoc;
   TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  if ( aLabel.IsNull() ) {
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  if (aLabel.IsNull())
+  {
     // get label by shape
-    TopoDS_Shape aShape= DBRep::Get(argv[2]);
-    if ( !aShape.IsNull() ) {
-      aLabel = localTool->ShapeTool()->FindShape( aShape, Standard_True );
+    TopoDS_Shape aShape = DBRep::Get (argv[2]);
+    if (!aShape.IsNull())
+    {
+      aLabel = aColorTool->ShapeTool()->FindShape (aShape, Standard_True);
     }
   }
-  if ( aLabel.IsNull() ) {
-    di << " cannot find indicated label in document\n";
+  if (aLabel.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[2] << " is not a label not shape\n";
     return 1;
   }
-  localTool->SetVisibility( aLabel, isvisible );
+
+  Standard_Boolean isVisible = Standard_False;
+  if (argc == 4)
+  {
+    TCollection_AsciiString aVisArg (argv[3]);
+    if (aVisArg == "1")
+    {
+      isVisible = Standard_True;
+    }
+    else if (aVisArg == "0")
+    {
+      isVisible = Standard_False;
+    }
+    else
+    {
+      std::cout << "Syntax error: unknown argument '" << argv[3] << "'\n";
+      return 1;
+    }
+  }
+  aColorTool->SetVisibility (aLabel, isVisible);
   return 0;
 }
 
 static Standard_Integer getVisibility (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc<3) {
-    di<<"Use: "<<argv[0]<<"DocName {Lable|Shape}\n";
+  if (argc != 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
-  Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
   TDF_Label aLabel;
-  TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
-  if ( aLabel.IsNull() ) {
+  TDF_Tool::Label (aDoc->GetData(), argv[2], aLabel);
+  if (aLabel.IsNull())
+  {
     // get label by shape
-    TopoDS_Shape aShape= DBRep::Get(argv[2]);
-    if ( !aShape.IsNull() ) {
-      aLabel = localTool->ShapeTool()->FindShape( aShape, Standard_True );
+    TopoDS_Shape aShape = DBRep::Get (argv[2]);
+    if (!aShape.IsNull())
+    {
+      aLabel = aColorTool->ShapeTool()->FindShape (aShape, Standard_True);
     }
   }
-  if ( aLabel.IsNull() ) {
-    di << " cannot find indicated label in document\n";
+  if (aLabel.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[2] << " is not a label not shape\n";
     return 1;
   }
-  if (localTool->IsVisible( aLabel) ) di << 1;
-  else di << 0;
+
+  di << (aColorTool->IsVisible (aLabel) ? 1 : 0);
   return 0;
 }
 
 static Standard_Integer getStyledVisibility (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc<3) {
-    di<<"Use: "<<argv[0]<<"DocName Shape\n";
+  if (argc != 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
-  Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  TopoDS_Shape aShape;
-  aShape = DBRep::Get(argv[2]);
-  if (localTool->IsInstanceVisible( aShape) ) di << 1;
-  else di << 0;
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  TopoDS_Shape aShape = DBRep::Get(argv[2]);
+  if (aDoc.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+  if (aShape.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[2] << " is not a shape\n";
+    return 1;
+  }
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  di << (aColorTool->IsInstanceVisible (aShape) ? 1 : 0);
   return 0;
 }
 
 static Standard_Integer getStyledcolor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc<3) {
-    di<<"Use: "<<argv[0]<<" Doc shape colortype(s/c)\n";
+  if (argc != 3 && argc != 4)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
-  TopoDS_Shape aShape;
-  aShape = DBRep::Get(argv[2]);
 
-  Quantity_ColorRGBA col;
-  XCAFDoc_ColorType type;
-  if ( argv[3] && argv[3][0] == 's' )
-    type = XCAFDoc_ColorSurf;
-  else if ( argv[3] && argv[3][0] == 'c' )
-    type = XCAFDoc_ColorCurv;
-  else
-    type = XCAFDoc_ColorGen;
-  Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  if (localTool->GetInstanceColor( aShape, type, col) ) 
+  Handle(TDocStd_Document) aDoc;
+  XCAFDoc_ColorType aColType = XCAFDoc_ColorGen;
+  DDocStd::GetDocument (argv[1], aDoc);
+  TopoDS_Shape aShape = DBRep::Get (argv[2]);
+  if (aDoc.IsNull())
   {
-    if ((1 - col.Alpha()) < Precision::Confusion())
-      di << col.GetRGB().StringName(col.GetRGB().Name());
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+  if (aShape.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[2] << " is not a shape\n";
+    return 1;
+  }
+  if (argc > 3 && !parseXDocColorType (argv[3], aColType))
+  {
+    std::cout << "Syntax error: unknown color type '" << argv[3] << "'\n";
+    return 1;
+  }
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  Quantity_ColorRGBA aColor;
+  if (aColorTool->GetInstanceColor (aShape, aColType, aColor))
+  {
+    if ((1.0 - aColor.Alpha()) < Precision::Confusion())
+    {
+      di << aColor.GetRGB().StringName (aColor.GetRGB().Name());
+    }
     else
-      di << col.GetRGB().StringName(col.GetRGB().Name()) << " (" << col.Alpha() << ")";
+    {
+      di << aColor.GetRGB().StringName (aColor.GetRGB().Name()) << " (" << aColor.Alpha() << ")";
+    }
   }
   return 0;
 }
 
-static Standard_Integer setStyledcolor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer setStyledcolor (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 {
-  if (argc<6) {
-    di<<"Use: "<<argv[0]<<" Doc shape R G B [alpha] type(s/c)\n";
+  if (argc < 3)
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) Doc;   
-  DDocStd::GetDocument(argv[1], Doc);
-  if ( Doc.IsNull() ) { di << argv[1] << " is not a document\n"; return 1; }
-  TopoDS_Shape aShape;
-  aShape = DBRep::Get(argv[2]);
 
-  Quantity_Color col ( Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Quantity_TOC_RGB );
-  Quantity_ColorRGBA aColRGBA;
-  aColRGBA.SetRGB(col);
-  if (argc > 6 && (argv[6][0] != 's' && argv[6][0] != 'c')) {
-    aColRGBA.SetAlpha((Standard_ShortReal)(Draw::Atof(argv[6])));
-  }
-
-  Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  XCAFDoc_ColorType ctype = XCAFDoc_ColorGen;
-  if (argc > 6) {
-    if (argv[argc - 1][0] == 's')
-      ctype = XCAFDoc_ColorSurf;
-    else if (argv[argc - 1][0] == 'c')
-      ctype = XCAFDoc_ColorCurv;
-  }
-  Handle(XCAFDoc_ColorTool) localTool = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  if (!localTool->SetInstanceColor(aShape, ctype, aColRGBA))
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument (argv[1], aDoc);
+  if (aDoc.IsNull())
   {
-    di << "cannot set color for the indicated component\n";
+    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get (argv[2]);
+  if (aShape.IsNull())
+  {
+    std::cout << "Syntax error: " << argv[2] << " is not a shape\n";
+    return 1;
+  }
+
+  XCAFDoc_ColorType aColorType = XCAFDoc_ColorGen;
+  Quantity_ColorRGBA aColRGBA;
+  for (Standard_Integer anArgIter = 3; anArgIter < argc; ++anArgIter)
+  {
+    if (parseXDocColorType (argv[anArgIter], aColorType))
+    {
+      //
+    }
+    else
+    {
+      Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - anArgIter,
+                                                           argv + anArgIter,
+                                                           aColRGBA);
+      if (aNbParsed == 0)
+      {
+        std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
+        return 1;
+      }
+      anArgIter += aNbParsed - 1;
+    }
+  }
+
+  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (aDoc->Main());
+  if (!aColorTool->SetInstanceColor (aShape, aColorType, aColRGBA))
+  {
+    std::cout << "Error: cannot set color for the indicated component\n";
     return 1;
   }
   return 0;
@@ -415,30 +639,38 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
   //=====================================  
   
   Standard_CString g = "XDE color's commands";
-  
-  di.Add ("XSetColor","Doc {Label|Shape} R G B [alpha] [c|s]\t: Set color [R G B] to shape given by Label, "
+
+  di.Add ("XSetColor","Doc {Label|Shape} R G B [alpha] [{generic|surface|curve}=gen]"
+                      "\t: Set color [R G B] to shape given by Label, "
                       "type of color 's' - for surface, 'c' - for curve (default generic)",
 		   __FILE__, setColor, g);
 
-  di.Add ("XGetColor","Doc label \t: Return color defined on label in colortable",
+  di.Add ("XGetColor","Doc label"
+                      "\t: Return color defined on label in colortable",
  		   __FILE__, getColor, g);
 
-  di.Add ("XGetShapeColor","Doc Label ColorType \t: Returns color defined by label",
+  di.Add ("XGetShapeColor","Doc Label {generic|surface|curve}"
+                           "\t: Returns color defined by label",
  		   __FILE__, getShapeColor, g);
-  
-  di.Add ("XGetAllColors","Doc \t: Print all colors that defined in document",
+
+  di.Add ("XGetAllColors","Doc"
+                          "\t: Print all colors that defined in document",
  		   __FILE__, getAllColors, g);
   
-  di.Add ("XAddColor","Doc R G B [alpha]\t: Add color in document to color table",
+  di.Add ("XAddColor","Doc R G B [alpha]"
+                      "\t: Add color in document to color table",
  		   __FILE__, addColor, g);
   
-  di.Add ("XRemoveColor","Doc Label \t: Remove color in document from color table",
+  di.Add ("XRemoveColor","Doc Label"
+                         "\t: Remove color in document from color table",
 		   __FILE__, removeColor, g);
 
-  di.Add ("XFindColor","Doc R G B [alpha]\t: Find label where indicated color is situated",
+  di.Add ("XFindColor","Doc R G B [alpha]"
+                       "\t: Find label where indicated color is situated",
  		   __FILE__, findColor, g);
 
-  di.Add ("XUnsetColor","Doc {Label|Shape} ColorType \t: Unset color ",
+  di.Add ("XUnsetColor","Doc {Label|Shape} {generic|surface|curve}"
+                        "\t: Unset color",
 		   __FILE__, unsetColor, g);
   
   di.Add ("XSetObjVisibility","Doc {Label|Shape} (0\1) \t: Set the visibility of shape  ",
@@ -450,10 +682,11 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
   di.Add ("XGetInstanceVisible","Doc Shape \t: Return the visibility of shape ",
 		   __FILE__, getStyledVisibility, g);
 
-  di.Add ("XGetInstanceColor","Doc Shape \t: Return the color of component shape ",
+  di.Add ("XGetInstanceColor","Doc Shape [{generic|surface|curve}=gen]"
+                              "\t: Return the color of component shape",
 		   __FILE__, getStyledcolor, g);
 
-  di.Add ("XSetInstanceColor","Doc Shape R G B [alpha] type \t: sets color for component of shape if SHUO structure exists already ",
+  di.Add ("XSetInstanceColor","Doc Shape R G B [alpha] [{generic|surface|curve}=gen]"
+                              "\t: sets color for component of shape if SHUO structure exists already",
 		   __FILE__, setStyledcolor, g);
-
 }

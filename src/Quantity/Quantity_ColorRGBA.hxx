@@ -121,6 +121,18 @@ public:
                                             Quantity_ColorRGBA& theColor,
                                             const bool          theAlphaComponentIsOff = false);
 
+  //! Returns hex sRGBA string in format "#RRGGBBAA".
+  static TCollection_AsciiString ColorToHex (const Quantity_ColorRGBA& theColor,
+                                             const bool theToPrefixHash = true)
+  {
+    NCollection_Vec4<Standard_ShortReal> anSRgb = (NCollection_Vec4<Standard_ShortReal> )theColor;
+    NCollection_Vec4<Standard_Integer> anSRgbInt (anSRgb * 255.0f + NCollection_Vec4<Standard_ShortReal> (0.5f));
+    char aBuff[12];
+    Sprintf (aBuff, theToPrefixHash ? "#%02X%02X%02X%02X" : "%02X%02X%02X%02X",
+             anSRgbInt.r(), anSRgbInt.g(), anSRgbInt.b(), anSRgbInt.a());
+    return aBuff;
+  }
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
 
