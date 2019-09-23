@@ -30,9 +30,12 @@ class TopoDS_Shape;
 class TopoDS_Compound;
 
 
-//! This class is intended to output free bounds of the shape
-//! (free bounds are the wires consisting of edges referenced by the
-//! only face).
+//! This class is intended to output free bounds of the shape.
+//!
+//! Free bounds are the wires consisting of edges referenced by the faces of the shape
+//! only once; these are the edges composing the outer boundary of the face or shell
+//! (as opposed to internal edges between the faces in the shell or seam edges on closed faces).
+//!
 //! This class works on two distinct types of shapes when analyzing
 //! their free bounds:
 //! 1. compound of faces.
