@@ -2305,14 +2305,16 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve
   bIsVertexOnLine = myContext->IsVertexOnLine(aV, aTolV, aIC, aTolR3D + myFuzzyValue, aT);
   if (!bIsVertexOnLine && iCheckExtend && !myVertsToAvoidExtension.Contains(nV))
   {
-    Standard_Real anExtraTol;
-    ExtendedTolerance(nV, aMI, anExtraTol, iCheckExtend);
-    bIsVertexOnLine = myContext->IsVertexOnLine(aV, anExtraTol, aIC, aTolR3D + myFuzzyValue, aT);
-    if (bIsVertexOnLine)
+    Standard_Real anExtraTol = aTolV;
+    if (ExtendedTolerance(nV, aMI, anExtraTol, iCheckExtend))
     {
-      gp_Pnt aPOnC;
-      aIC.D0(aT, aPOnC);
-      aTolV = aPOnC.Distance(BRep_Tool::Pnt(aV));
+      bIsVertexOnLine = myContext->IsVertexOnLine(aV, anExtraTol, aIC, aTolR3D + myFuzzyValue, aT);
+      if (bIsVertexOnLine)
+      {
+        gp_Pnt aPOnC;
+        aIC.D0(aT, aPOnC);
+        aTolV = aPOnC.Distance(BRep_Tool::Pnt(aV));
+      }
     }
   }
   //
