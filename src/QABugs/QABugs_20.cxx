@@ -3341,6 +3341,112 @@ static Standard_Integer OCC30704_1(Draw_Interpretor& di, Standard_Integer, const
   return 0;
 }
 
+//=======================================================================
+//function : OCC30990
+//purpose  : check consistency of implementation of cache in B-Spline surfaces
+//           with respect to update of the cache for points located exactly
+//           on boundary between bspline spans (i.e. at knots)
+//=======================================================================
+static Standard_Integer OCC30990 (Draw_Interpretor& theDI, Standard_Integer theNArg, const char** theArgV)
+{
+  if (theNArg != 2)
+  {
+    std::cerr << "Use: " << theArgV[0] << "surface\n";
+    return 1;
+  }
+
+  const Handle(Geom_BSplineSurface) aSurf = 
+    Handle(Geom_BSplineSurface)::DownCast (DrawTrSurf::GetSurface(theArgV[1]));
+  if (aSurf.IsNull())
+  {
+    theDI << "Error: " << theArgV[1] << " is not a B-Spline surface";
+    return 0;
+  }
+  GeomAdaptor_Surface aS (aSurf);
+
+  // Evaluate points for U and V located exactly at b-spline knots,
+  // after evaluation of points inside the spans before and after the knot,
+  // and ensure that result at the knot is exactly the same regardless
+  // of previous evaluation (i.e. the cache is updated as necessary).
+  // Note: the points (D0) computed on different spans are slighly different
+  // due to rounding, which allows us to detect this situation without
+  // analysis of higher derivatives (which would show non-negligible difference).
+  Standard_Integer aNbErr = 0;
+
+  theDI << "U knots: ";
+  for (int i = 1; i <= aSurf->NbUKnots(); i++)
+  {
+    theDI << aSurf->UKnot(i);
+    if (i < aSurf->NbUKnots()) theDI << ",";
+  }
+  theDI << "\n";
+  for (int i = 2; i < aSurf->NbUKnots(); i++)
+  {
+    Standard_Real aUknot = aSurf->UKnot(i);
+    Standard_Real aUprev = 0.5 * (aUknot + aSurf->UKnot(i-1));
+    Standard_Real aUnext = 0.5 * (aUknot + aSurf->UKnot(i+1));
+    for (int j = 1; j < aSurf->NbVKnots(); j++)
+    {
+      Standard_Real aV = 0.5 * (aSurf->VKnot(j) + aSurf->VKnot(j + 1));
+      aS.Value (aUprev, aV);
+      gp_Pnt aValue1 = aS.Value (aUknot, aV);
+      aS.Value (aUnext, aV);
+      gp_Pnt aValue2 = aS.Value (aUknot, aV);
+      for (int k = 1; k <= 3; k++)
+      {
+        if (aValue1.Coord(k) != aValue2.Coord(k))
+        {
+          Standard_SStream aStr;
+          aStr.precision(20);
+          aStr << "Error evaluating point at UV = (" << aUknot << ", " << aV << "):\n";
+          aStr << "probe 1: " << (char)('X' + k - 1) << " = " << aValue1.Coord(k) << "\n";
+          aStr << "probe 2: " << (char)('X' + k - 1) << " = " << aValue2.Coord(k) << "\n";
+          theDI << aStr.str().c_str();
+          aNbErr++;
+        }
+      }
+    }
+  }
+
+  theDI << "V knots: ";
+  for (int j = 1; j <= aSurf->NbVKnots(); j++)
+  {
+    theDI << aSurf->VKnot(j);
+    if (j < aSurf->NbVKnots()) theDI << ",";
+  }
+  theDI << "\n";
+  for (int j = 2; j < aSurf->NbVKnots(); j++)
+  {
+    Standard_Real aVknot = aSurf->VKnot(j);
+    Standard_Real aVprev = 0.5 * (aVknot + aSurf->VKnot(j-1));
+    Standard_Real aVnext = 0.5 * (aVknot + aSurf->VKnot(j+1));
+    for (int i = 1; i < aSurf->NbUKnots(); i++)
+    {
+      Standard_Real aU = 0.5 * (aSurf->UKnot(i) + aSurf->UKnot(i + 1));
+      aS.Value (aU, aVprev);
+      gp_Pnt aValue1 = aS.Value (aU, aVknot);
+      aS.Value (aU, aVnext);
+      gp_Pnt aValue2 = aS.Value (aU, aVknot);
+      for (int k = 1; k <= 3; k++)
+      {
+        if (aValue1.Coord(k) != aValue2.Coord(k))
+        {
+          Standard_SStream aStr;
+          aStr.precision(20);
+          aStr << "Error evaluating point at UV = (" << aU << ", " << aVknot << "):\n";
+          aStr << "probe 1: " << (char)('X' + k - 1) << " = " << aValue1.Coord(k) << "\n";
+          aStr << "probe 2: " << (char)('X' + k - 1) << " = " << aValue2.Coord(k) << "\n";
+          theDI << aStr.str().c_str();
+          aNbErr++;
+        }
+      }
+    }
+  }
+
+  theDI << "Total " << aNbErr << " deviations detected";
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3379,6 +3485,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29311", "OCC29311 shape counter nbiter: check performance of OBB calculation", __FILE__, OCC29311, group);
   theCommands.Add("OCC30391", "OCC30391 result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast", __FILE__, OCC30391, group);
   theCommands.Add("OCC30435", "OCC30435 result curve inverse nbit", __FILE__, OCC30435, group);
+  theCommands.Add("OCC30990", "OCC30990 surface", __FILE__, OCC30990, group);
 
   theCommands.Add("QAStartsWith",
                   "QAStartsWith string startstring",

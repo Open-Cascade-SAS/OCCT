@@ -1,0 +1,12 @@
+puts "# ======================================================================"
+puts "# 0030990: Foundation Classes - unexpected change in numerical results on bsplines after 0029769"
+puts "# ======================================================================"
+puts ""
+
+pload QAcommands
+
+restore [locate_data_file bug30990.brep] face
+mksurface surf face
+
+puts "Check consistency of evaluation of BSpline surface at knots"
+OCC30990 surf
