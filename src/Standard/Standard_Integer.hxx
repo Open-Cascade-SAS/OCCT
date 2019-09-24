@@ -130,18 +130,12 @@ inline Standard_Boolean IsEqual (const Standard_Integer theOne,
 }
 
 //! Computes a hash value for the given unsigned integer, in range [1, theUpperBound]
-//! @tparam TheUnsignedInteger the type of the given value (it is "unsigned int",
-//! and must not be the same as Standard_Size, because the overload of the HashCode function
-//! for Standard_Size type is already presented in Standard_Size.hxx)
 //! @param theValue the unsigned integer which hash code is to be computed
+//! @param theUpperBound the upper bound of the range a computing hash code must be within
 //! @return a hash value computed for the given unsigned integer, in range [1, theUpperBound]
-template <typename TheUnsignedInteger>
-typename opencascade::std::enable_if<!opencascade::std::is_same<Standard_Size, unsigned int>::value
-                                       && opencascade::std::is_same<TheUnsignedInteger, unsigned int>::value,
-                                     Standard_Integer>::type
-HashCode (const TheUnsignedInteger theValue, const Standard_Integer theUpperBound)
+inline Standard_Integer HashCode (const unsigned int theValue, const Standard_Integer theUpperBound)
 {
-  return HashCode (static_cast<Standard_Integer> (theValue), theUpperBound);
+  return ::HashCode (static_cast<Standard_Integer> (theValue), theUpperBound);
 }
 
 //! Computes a hash code for the given value of the "long long int" type, in range [1, theUpperBound]
@@ -155,14 +149,20 @@ inline Standard_Integer HashCode (const long long int theValue, const Standard_I
 
 #if (defined(_LP64) || defined(__LP64__) || defined(_WIN64)) || defined(__APPLE__)
 
-//! Computes a hash code for the given value of the Standard_Utf32Char type, in range [1, theUpperBound]
+//! Computes a hash code for the given value of the Standard_Utf32Char type, in the range [1, theUpperBound]
+//! @tparam TheUtf32Char the type of the given value (it is Standard_Utf32Char,
+//! and must not be the same as "unsigned int", because the overload of the HashCode function
+//! for "unsigned int" type is already presented in Standard_Integer.hxx)
 //! @param theValue the value of the Standard_Utf32Char type which hash code is to be computed
 //! @param theUpperBound the upper bound of the range a computing hash code must be within
-//! @return a computed hash code, in range [1, theUpperBound]
-inline Standard_Integer HashCode (const Standard_Utf32Char theValue,
-                                  const Standard_Integer   theUpperBound)
+//! @return a computed hash code, in the range [1, theUpperBound]
+template <typename TheUtf32Char>
+typename opencascade::std::enable_if<!opencascade::std::is_same<Standard_Utf32Char, unsigned int>::value
+                                       && opencascade::std::is_same<TheUtf32Char, Standard_Utf32Char>::value,
+                                     Standard_Integer>::type
+HashCode (const TheUtf32Char theValue, const Standard_Integer theUpperBound)
 {
-  return IntegerHashCode(theValue, IntegerLast(), theUpperBound);
+  return IntegerHashCode (theValue, IntegerLast(), theUpperBound);
 }
 
 // ------------------------------------------------------------------

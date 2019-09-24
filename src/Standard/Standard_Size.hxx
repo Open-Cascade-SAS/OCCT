@@ -21,10 +21,17 @@
 // msv 26.05.2009: add HashCode and IsEqual functions
 
 //! Computes a hash code for the given value of the Standard_Size type, in the range [1, theUpperBound]
+//! @tparam TheSize the type of the given value (it is Standard_Size,
+//! and must not be the same as "unsigned int", because the overload of the HashCode function
+//! for "unsigned int" type is already presented in Standard_Integer.hxx)
 //! @param theValue the value of the Standard_Size type which hash code is to be computed
 //! @param theUpperBound the upper bound of the range a computing hash code must be within
 //! @return a computed hash code, in the range [1, theUpperBound]
-inline Standard_Integer HashCode (const Standard_Size theValue, const Standard_Integer theUpperBound)
+template <typename TheSize>
+typename opencascade::std::enable_if<!opencascade::std::is_same<Standard_Size, unsigned int>::value
+                                       && opencascade::std::is_same<TheSize, Standard_Size>::value,
+                                     Standard_Integer>::type
+HashCode (const TheSize theValue, const Standard_Integer theUpperBound)
 {
   Standard_Size aKey = ~theValue + (theValue << 18);
   aKey ^= (aKey >> 31);

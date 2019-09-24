@@ -192,9 +192,10 @@ Standard_Integer TopLoc_Location::HashCode (const Standard_Integer theUpperBound
   while (items.More())
   {
     depth += 3;
-    unsigned int i = ::HashCode (items.Value().myDatum, theUpperBound);
-    unsigned int j = ((i + items.Value().myPower) << depth);
-    j              = j >> (32 - depth) | j << depth;
+    unsigned int           i             = ::HashCode (items.Value().myDatum, theUpperBound);
+    const Standard_Integer aClampedDepth = depth % 32;
+    unsigned int           j             = ((i + items.Value().myPower) << aClampedDepth);
+    j                                    = j >> (32 - aClampedDepth) | j << aClampedDepth;
     h ^= j;
     items.Next ();
   }
