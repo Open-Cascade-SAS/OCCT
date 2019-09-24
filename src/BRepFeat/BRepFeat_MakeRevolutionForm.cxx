@@ -1055,6 +1055,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
 	if(ex1.Current().IsSame(e1)) {
 	  myLFMap(iter.Key()).Clear();
 	  myLFMap(iter.Key()).Append(ex2.Current());
+	  break; // break the cycle (e1 became a dead reference)
 	}
 	ex2.Next();	  
       }
@@ -1062,16 +1063,14 @@ void BRepFeat_MakeRevolutionForm::Perform()
 
     TopTools_DataMapIteratorOfDataMapOfShapeListOfShape iter1(mySlface);
     for(; iter1.More(); iter1.Next()) {
-      const TopoDS_Shape& f1 = iter1.Key();
       const TopoDS_Shape& e1 = iter1.Value().First();
       TopExp_Explorer ex1(myPbase, TopAbs_EDGE); 
       TopExp_Explorer ex2(Pbase, TopAbs_EDGE);
       for(; ex1.More(); ex1.Next()) {
-	const TopoDS_Shape& E1 = ex1.Current();
-	const TopoDS_Shape& E2 = ex2.Current();
-	if(E1.IsSame(e1)) {
-	  mySlface(f1).Clear();
-	  mySlface(f1).Append(E2);
+	if(ex1.Current().IsSame(e1)) {
+	  mySlface(iter1.Key()).Clear();
+	  mySlface(iter1.Key()).Append(ex2.Current());
+	  break; // break the cycle (e1 became a dead reference)
 	}
 	ex2.Next();	  
       }
@@ -1158,9 +1157,9 @@ void BRepFeat_MakeRevolutionForm::Perform()
     const TopoDS_Shape& sh = it1.Value().First();
     exx.Init(VraiForm, TopAbs_FACE);
     for(; exx.More(); exx.Next()) {
-      const TopoDS_Face& fac = TopoDS::Face(exx.Current());
+      TopoDS_Face fac = TopoDS::Face(exx.Current());
       TopExp_Explorer exx1(fac, TopAbs_WIRE);
-      const TopoDS_Wire& thew = TopoDS::Wire(exx1.Current());
+      TopoDS_Wire thew = TopoDS::Wire(exx1.Current());
       if(thew.IsSame(myFShape)) {
 	const TopTools_ListOfShape& desfaces = trP.Modified(f2);
 	myMap(myFShape) = desfaces;
@@ -1172,13 +1171,13 @@ void BRepFeat_MakeRevolutionForm::Perform()
 	continue;
       }
       if(fac.IsSame(sh)) { 
-	if (trP.IsDeleted(fac)) {
-	}
-	else {
+	if (! trP.IsDeleted(fac))
+        {
 	  const TopTools_ListOfShape& desfaces = trP.Modified(fac);
 	  if(!desfaces.IsEmpty()) {
 	    myMap(orig).Clear();
 	    myMap(orig) = trP.Modified(fac);
+	    break; // break the cycle (sh became a dead reference)
 	  }
 	}
       }
