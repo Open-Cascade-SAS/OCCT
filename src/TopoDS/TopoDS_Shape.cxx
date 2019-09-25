@@ -41,10 +41,10 @@ Standard_Integer TopoDS_Shape::HashCode (const Standard_Integer theUpperBound) c
 //=======================================================================
 void TopoDS_Shape::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, TopoDS_Shape);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, TopoDS_Shape);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTShape.get());
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myLocation);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTShape.get());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myLocation);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOrient);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOrient);
 }

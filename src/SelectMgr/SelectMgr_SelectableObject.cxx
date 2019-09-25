@@ -555,9 +555,9 @@ const Handle(SelectMgr_EntityOwner)& SelectMgr_SelectableObject::GetAssemblyOwne
 // =======================================================================
 void SelectMgr_SelectableObject::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, SelectMgr_SelectableObject);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_SelectableObject);
 
-  DUMP_FIELD_VALUES_BY_KIND (theOStream, theDepth, PrsMgr_PresentableObject);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myGlobalSelMode);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAutoHilight);
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, PrsMgr_PresentableObject);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myGlobalSelMode);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAutoHilight);
 }

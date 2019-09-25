@@ -857,11 +857,11 @@ void gp_Trsf::Orthogonalize()
 //=======================================================================
 void gp_Trsf::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, gp_Trsf);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, gp_Trsf);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &loc);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &matrix);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &loc);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &matrix);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, shape);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, scale);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, shape);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, scale);
 }

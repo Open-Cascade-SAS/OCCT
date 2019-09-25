@@ -35,16 +35,16 @@ Standard_DumpSentry::~Standard_DumpSentry()
 }
 
 // =======================================================================
-// function : EndsWith
+// function : AddValuesSeparator
 // purpose :
 // =======================================================================
-Standard_Boolean Standard_Dump::EndsWith (const Standard_OStream& theOStream,
-                                          const TCollection_AsciiString& theEndString)
+void Standard_Dump::AddValuesSeparator (Standard_OStream& theOStream)
 {
   Standard_SStream aStream;
   aStream << theOStream.rdbuf();
   TCollection_AsciiString aStreamStr = Standard_Dump::Text (aStream);
-  return aStreamStr.EndsWith (theEndString);
+  if (!aStreamStr.EndsWith ("{"))
+    theOStream << ", ";
 }
 
 //=======================================================================
@@ -55,8 +55,7 @@ void Standard_Dump::DumpKeyToClass (Standard_OStream& theOStream,
                                     const char* theKey,
                                     const TCollection_AsciiString& theField)
 {
-  if (!Standard_Dump::EndsWith (theOStream, "{"))
-    theOStream << ", ";
+  AddValuesSeparator (theOStream);
   theOStream << "\"" << theKey << "\": {" << theField << "}";
 }
 
@@ -134,18 +133,19 @@ TCollection_AsciiString Standard_Dump::GetPointerInfo (const void* thePointer, c
 // =======================================================================
 // DumpFieldToName
 // =======================================================================
-void Standard_Dump::DumpFieldToName (const char* theField, const char*& theName)
+const char* Standard_Dump::DumpFieldToName (const char* theField)
 {
-  theName = theField;
+  const char* aName = theField;
 
-  if (theName[0] == '&')
+  if (aName[0] == '&')
   {
-    theName = theName + 1;
+    aName = aName + 1;
   }
-  if (::LowerCase (theName[0]) == 'm' && theName[1] == 'y')
+  if (::LowerCase (aName[0]) == 'm' && aName[1] == 'y')
   {
-    theName = theName + 2;
+    aName = aName + 2;
   }
+  return aName;
 }
 
 // =======================================================================

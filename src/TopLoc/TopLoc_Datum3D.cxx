@@ -48,8 +48,8 @@ TopLoc_Datum3D::TopLoc_Datum3D (const gp_Trsf& T) :
 //=======================================================================
 void TopLoc_Datum3D::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, TopLoc_Datum3D);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myTrsf);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, TopLoc_Datum3D);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myTrsf);
 }
 
 //=======================================================================

@@ -68,18 +68,18 @@ void Graphic3d_Aspects::SetTextureMap (const Handle(Graphic3d_TextureMap)& theTe
 //=======================================================================
 void Graphic3d_Aspects::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Graphic3d_Aspects);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_Aspects);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myInteriorColor);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBackInteriorColor);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEdgeColor);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPolygonOffset);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myInteriorColor);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBackInteriorColor);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEdgeColor);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPolygonOffset);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSkipFirstEdge);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDistinguishMaterials);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawEdges);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawSilhouette);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSuppressBackFaces);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToMapTexture);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextZoomable);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSkipFirstEdge);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDistinguishMaterials);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawEdges);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawSilhouette);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSuppressBackFaces);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToMapTexture);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextZoomable);
 }

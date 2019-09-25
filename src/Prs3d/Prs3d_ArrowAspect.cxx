@@ -73,9 +73,9 @@ void Prs3d_ArrowAspect::SetAngle (const Standard_Real theAngle)
 // =======================================================================
 void Prs3d_ArrowAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Prs3d_ArrowAspect);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_ArrowAspect);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAngle);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLength);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAngle);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLength);
 }

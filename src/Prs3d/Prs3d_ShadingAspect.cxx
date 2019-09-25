@@ -176,7 +176,7 @@ Standard_Real Prs3d_ShadingAspect::Transparency (const Aspect_TypeOfFacingModel 
 // =======================================================================
 void Prs3d_ShadingAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Prs3d_ShadingAspect);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_ShadingAspect);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
 }
 

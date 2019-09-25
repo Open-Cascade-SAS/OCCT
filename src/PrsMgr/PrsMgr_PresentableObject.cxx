@@ -844,15 +844,15 @@ void PrsMgr_PresentableObject::PolygonOffsets (Standard_Integer&   theMode,
 // =======================================================================
 void PrsMgr_PresentableObject::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
 {
-  DUMP_CLASS_BEGIN (theOStream, PrsMgr_PresentableObject);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, PrsMgr_PresentableObject);
 
-  DUMP_FIELD_VALUE_POINTER (theOStream, myParent);
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myParent);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOwnWidth);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasOwnColor);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasOwnMaterial);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOwnWidth);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasOwnColor);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasOwnMaterial);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myInfiniteState);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsMutable);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnPresentations);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myInfiniteState);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsMutable);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnPresentations);
 }

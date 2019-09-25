@@ -176,14 +176,14 @@ Prs3d_DatumParts Prs3d_DatumAspect::ArrowPartForAxis (Prs3d_DatumParts thePart) 
 // =======================================================================
 void Prs3d_DatumAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Prs3d_DatumAspect);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_DatumAspect);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get());
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPointAspect.get());
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPointAspect.get());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAxes);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawLabels);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawArrows);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAxes);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawLabels);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawArrows);
 }
 

@@ -21,9 +21,9 @@
 //=======================================================================
 void Graphic3d_PolygonOffset::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Graphic3d_PolygonOffset);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_PolygonOffset);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, Mode);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, Factor);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, Units);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Mode);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Factor);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Units);
 }

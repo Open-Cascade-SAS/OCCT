@@ -454,8 +454,8 @@ void Graphic3d_Group::AddText (const Handle(Graphic3d_Text)& theTextParams,
 // =======================================================================
 void Graphic3d_Group::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Graphic3d_Group);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_Group);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsClosed);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myContainsFacet);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsClosed);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myContainsFacet);
 }

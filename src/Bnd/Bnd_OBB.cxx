@@ -1029,15 +1029,15 @@ void Bnd_OBB::Add(const Bnd_OBB& theOther)
 //=======================================================================
 void Bnd_OBB::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Bnd_OBB);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Bnd_OBB);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCenter);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxes[0]);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxes[1]);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxes[2]);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCenter);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxes[0]);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxes[1]);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxes[2]);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHDims[0]);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHDims[1]);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHDims[2]);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsAABox);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHDims[0]);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHDims[1]);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHDims[2]);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsAABox);
 }

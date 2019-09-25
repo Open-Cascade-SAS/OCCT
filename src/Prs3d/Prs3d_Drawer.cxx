@@ -1417,6 +1417,6 @@ bool Prs3d_Drawer::SetShadingModel (Graphic3d_TypeOfShadingModel theModel,
 // =======================================================================
 void Prs3d_Drawer::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Prs3d_Drawer);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShadingAspect.get());
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_Drawer);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShadingAspect.get());
 }

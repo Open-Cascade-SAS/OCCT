@@ -183,8 +183,8 @@ void Bnd_Range::Split(const Standard_Real theVal,
 // =======================================================================
 void Bnd_Range::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Bnd_Range);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Bnd_Range);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFirst);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLast);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFirst);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLast);
 }

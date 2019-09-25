@@ -238,10 +238,10 @@ Standard_Boolean TopLoc_Location::IsDifferent
 //=======================================================================
 void TopLoc_Location::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, TopLoc_Location);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, TopLoc_Location);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Transformation());
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsIdentity());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Transformation());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsIdentity());
 }
 
 //=======================================================================

@@ -76,12 +76,12 @@ void XCAFPrs_Style::UnSetColorCurv()
 //=======================================================================
 void XCAFPrs_Style::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, XCAFPrs_Style);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, XCAFPrs_Style);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColorSurf);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColorCurv);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColorSurf);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColorCurv);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasColorSurf);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasColorCurv);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsVisible);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasColorSurf);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasColorCurv);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsVisible);
 }

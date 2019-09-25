@@ -206,8 +206,8 @@ bool Quantity_ColorRGBA::ColorFromHex (const char* const   theHexColorString,
 //=======================================================================
 void Quantity_ColorRGBA::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Quantity_ColorRGBA);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Quantity_ColorRGBA);
 
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myRgb);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlpha);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myRgb);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlpha);
 }

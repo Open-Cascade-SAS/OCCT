@@ -147,10 +147,10 @@ The object defines What parameters should be presented in the Dump. The usual wa
 
 Steps to prepare dump of the object into json:
 
-1. Create method <b>DumpJson</b>. The method should accept the output steam and the depth for the fields dump.
+1. Create method <b>DumpJson</b>. The method should accept the output stream and the depth for the fields dump.
 Depth, equal to zero means that only fields of this class should be dumped. Default value -1 means that whole tree of dump will be built recursively calling dump of all fields.
 
-2. Put into the first row of the method <b>DUMP_CLASS_BEGIN</b>. This macro creates a local variable, that will open Json structure on start, and close on exit from this method.
+2. Put into the first row of the method <b>OCCT_DUMP_CLASS_BEGIN</b>. This macro creates a local variable, that will open Json structure on start, and close on exit from this method.
 
 3. Add several macro to store field values.
 
@@ -158,13 +158,13 @@ The following macro are defined to cover the object parameters into json format:
 
 | Name                        | Result in json |
 | :-------------------------- | :--------|
-| DUMP_FIELD_VALUE_NUMERICAL  | "field": value |
-| DUMP_FIELD_VALUE_STRING     | "field": "value" |
-| DUMP_FIELD_VALUE_POINTER    | "field": "pointer address" |
-| DUMP_FIELD_VALUES_DUMPED    | "field": { fesult of field->DumpJson(...) } |
-| DUMP_FIELD_VALUES_NUMERICAL | "field": [value_1, ..., value_n]
-| DUMP_FIELD_VALUES_STRING    | "field": ["value_1", ..., "value_n"]
-| DUMP_FIELD_VALUES_BY_KIND   | "kind": { result of kind::DumpJson(...) } |
+| OCCT_DUMP_FIELD_VALUE_NUMERICAL  | "field": value |
+| OCCT_DUMP_FIELD_VALUE_STRING     | "field": "value" |
+| OCCT_DUMP_FIELD_VALUE_POINTER    | "field": "pointer address" |
+| OCCT_DUMP_FIELD_VALUES_DUMPED    | "field": { result of field->DumpJson(...) } |
+| OCCT_DUMP_FIELD_VALUES_NUMERICAL | "field": [value_1, ..., value_n]
+| OCCT_DUMP_FIELD_VALUES_STRING    | "field": ["value_1", ..., "value_n"]
+| OCCT_DUMP_BASE_CLASS   | "kind": { result of kind::DumpJson(...) } |
 
 @subsection occt_debug_dump_json_draw Using in DRAW
 

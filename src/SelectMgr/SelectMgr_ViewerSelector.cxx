@@ -1053,19 +1053,19 @@ void SelectMgr_ViewerSelector::AllowOverlapDetection (const Standard_Boolean the
 //=======================================================================
 void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const 
 {
-  DUMP_CLASS_BEGIN (theOStream, SelectMgr_ViewerSelector);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_ViewerSelector);
 
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, preferclosest);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToUpdateTolerance);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, mystored.Extent());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, preferclosest);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToUpdateTolerance);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mystored.Extent());
 
   Standard_Integer aNbOfSelected = 0;
   for (SelectMgr_SelectableObjectSet::Iterator aSelectableIt (mySelectableObjects); aSelectableIt.More(); aSelectableIt.Next())
   {
     aNbOfSelected++;
   }
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, aNbOfSelected);
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.Tolerance());
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.CustomTolerance());
-  DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZLayerOrderMap.Size());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aNbOfSelected);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.Tolerance());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.CustomTolerance());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZLayerOrderMap.Size());
 }

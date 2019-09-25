@@ -36,7 +36,7 @@ Prs3d_LineAspect::Prs3d_LineAspect (const Quantity_Color& theColor,
 // =======================================================================
 void Prs3d_LineAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
 {
-  DUMP_CLASS_BEGIN (theOStream, Prs3d_LineAspect);
-  DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_LineAspect);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
 }
 
