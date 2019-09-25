@@ -48,6 +48,6 @@ LATEX_CMD_NAME         = latex
 MAKEINDEX_CMD_NAME     = makeindex
 
 # Define alias for inserting images in uniform way (both HTML and PDF)
-ALIASES += figure{1}="\image latex \1"
-ALIASES += figure{2}="\image latex \1 \2"
-ALIASES += figure{3}="\image latex \1 \2 width=\3"
+ALIASES += figure{1}="\image latex \1 \n"
+ALIASES += figure{2}="\image latex \1 \2 \n"
+ALIASES += figure{3}="\image latex \1 \2 width=\3 \n"
