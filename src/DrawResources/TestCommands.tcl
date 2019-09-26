@@ -1117,34 +1117,35 @@ proc locate_data_file {filename} {
 
     # check if the file is located in the subdirectory data of the script dir
     set scriptfile [info script]
-    if { $scriptfile != "" } {
-        set path [file join [file dirname $scriptfile] data $filename]
-        if { [file exists $path] } {
-            return [file normalize $path]
+    if { "$scriptfile" != "" } {
+        set path [file join [file dirname "$scriptfile"] data "$filename"]
+        if { [file exists "$path"] } {
+            return [file normalize "$path"]
         }
     }
 
     # check sub-directories in paths indicated by CSF_TestDataPath
     if { [info exists env(CSF_TestDataPath)] } {
         foreach dir [_split_path $env(CSF_TestDataPath)] {
-            while {[llength $dir] != 0} { 
-                set name [lindex $dir 0]
-                set dir [lrange $dir 1 end]
+            set dir [list "$dir"]
+            while {[llength "$dir"] != 0} {
+                set name [lindex "$dir" 0]
+                set dir  [lrange "$dir" 1 end]
 
                 # skip directories starting with dot
-                set aTail [file tail $name]
-                if { [regexp {^[.]} $aTail] } { continue }
-                if { [file exists $name/$filename] } {
-                    return [file normalize $name/$filename]
+                set aTail [file tail "$name"]
+                if { [regexp {^[.]} "$aTail"] } { continue }
+                if { [file exists "$name/$filename"] } {
+                    return [file normalize "$name/$filename"]
                 }
-                eval lappend dir [glob -nocomplain -directory $name -type d *]
+                eval lappend dir [glob -nocomplain -directory "$name" -type d *]
             }
         }
     }
 
     # check current datadir
-    if { [file exists [uplevel datadir]/$filename] } {
-        return [file normalize [uplevel datadir]/$filename]
+    if { [file exists "[uplevel datadir]/$filename"] } {
+        return [file normalize "[uplevel datadir]/$filename"]
     }
 
     # raise error
