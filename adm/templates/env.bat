@@ -102,6 +102,10 @@ if not "%DevEnvDir%" == "" (
   for /f "usebackq delims=" %%i in (`vswhere.exe -version "[15.0,15.99]" -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
     set "DevEnvDir=%%i\Common7\IDE\"
   )
+) else if /I "%VCFMT%" == "vc142" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "DevEnvDir=%%i\Common7\IDE\"
+  )
 ) else if /I "%VCFMT%" == "gcc" (
   rem MinGW
 ) else (
@@ -113,6 +117,7 @@ if not "%DevEnvDir%" == "" (
   echo vc12  = VS 2013 ^(SP3^)
   echo vc14  = VS 2015
   echo vc141 = VS 2017
+  echo vc142 = VS 2019
   exit /B
 )
 
@@ -137,6 +142,11 @@ if /I "%VCFMT%" == "vc9" (
     set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
   )
   set "VCPlatformToolSet=v141"
+) else if /I "%VCFMT%" == "vc142" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
+  ) 
+  set "VCPlatformToolSet=v142"
 ) else if /I "%VCFMT%" == "gcc" (
   rem MinGW
 ) else (
