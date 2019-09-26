@@ -7,7 +7,7 @@ OCAF  {#occt_user_guides__ocaf}
 
 This manual explains how to use the Open CASCADE Application Framework (OCAF).
 It provides basic documentation on using OCAF. For advanced information on OCAF 
-and its applications, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+and its applications, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @subsection occt_ocaf_1_1 Purpose of OCAF
 

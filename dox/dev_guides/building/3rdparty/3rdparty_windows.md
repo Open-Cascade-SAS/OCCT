@@ -8,7 +8,7 @@ This document presents guidelines for building third-party products used by Open
 
 You need to use the same version of MS Visual Studio for building all third-party products and OCCT itself, in order to receive a consistent set of run-time binaries. 
 
-The links for downloading the third-party products are available on the web site of OPEN CASCADE SAS at http://www.opencascade.com/content/3rd-party-components.
+The links for downloading the third-party products are available on the web site of OPEN CASCADE SAS at https://www.opencascade.com/content/3rd-party-components.
 
 There are two types of third-party products used  by OCCT: 
 
@@ -32,7 +32,7 @@ Tcl/Tk is required for DRAW test harness.
 
 @subsubsection dev_guides__building_3rdparty_win_2_1_1 Installation from sources: Tcl
   
-Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+Download the necessary archive from https://www.tcl.tk/software/tcltk/download.html and unpack it.
   
 1. In the *win* sub-directory, edit file *buildall.vc.bat*:
 
@@ -85,7 +85,7 @@ Download the necessary archive from http://www.tcl.tk/software/tcltk/download.ht
 
 @subsubsection dev_guides__building_3rdparty_win_2_1_2 Installation from sources: Tk
   
-Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+Download the necessary archive from https://www.tcl.tk/software/tcltk/download.html and unpack it.
 
 Apply the same steps as described for building Tcl above, with the same INSTALLDIR.
 Note that Tk produces its own executable, called *wish*. 
@@ -94,7 +94,7 @@ You might need to edit default value of *TCLDIR* variable defined in *buildall.v
 
 @subsection dev_guides__building_3rdparty_win_2_2 FreeType
 
-FreeType is required for text display in a 3D viewer. You can download its sources from http://sourceforge.net/projects/freetype/files/   
+FreeType is required for text display in a 3D viewer. You can download its sources from https://sourceforge.net/projects/freetype/files/
 
 ### The building procedure
 
@@ -148,7 +148,7 @@ FreeType is required for text display in a 3D viewer. You can download its sourc
 @subsection dev_guides__building_3rdparty_win_3_1 TBB
 
 This third-party product is installed with binaries 
-from the archive that can be downloaded from http://threadingbuildingblocks.org/. 
+from the archive that can be downloaded from https://github.com/intel/tbb.
 Go to the **Download** page, find the  release version you need  (e.g. *tbb30_018oss*) and pick the archive for Windows  platform. 
 
 Unpack the downloaded  archive of TBB product into the *3rdparty* folder. 
@@ -159,7 +159,7 @@ Further in this document,  this folder is referred to as *tbb*.
 
 This third-party product should be built as a dynamically loadable library (.dll file). 
 You can download its sources from 
-http://sourceforge.net/projects/freeimage/files/Source%20Distribution/
+https://sourceforge.net/projects/freeimage/files/Source%20Distribution/
 
 ### The building procedure: 
 
@@ -232,7 +232,7 @@ VTK is an open-source, freely available software system for 3D computer graphics
 
 ### The building procedure:
 
-1. Download the necessary archive from http://www.vtk.org/VTK/resources/software.html and unpack it into *3rdparty* folder.
+1. Download the necessary archive from https://www.vtk.org/VTK/resources/software.html and unpack it into *3rdparty* folder.
 
    As a result, you will get a folder named, for example, <i>3rdparty\VTK-6.1.0.</i>
 

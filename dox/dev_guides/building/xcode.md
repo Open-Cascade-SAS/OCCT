@@ -82,7 +82,7 @@ To start *DRAWEXE*, which has been built with Xcode on Mac OS X, perform the fol
 
 3.Run the script
 ~~~~~
-   ./draw_cbp.sh xcd [d]
+   ./draw.sh xcd [d]
 ~~~~~
 
 Option *d* is used if OCCT has been built in **Debug** mode.

@@ -12,7 +12,7 @@ Guide to installing and using Git for OCCT development {#occt_dev_guides__git_gu
   and to facilitate the use of the official OCCT Git repository for code contribution to OCCT.
 
   It can be useful to learn more about Git concepts and tools from a book a or manual. 
-  Many good books on Git can be found at http://git-scm.com/documentation 
+  Many good books on Git can be found at https://git-scm.com/documentation
   
   For the experienced Git users it can be enough to read sections 1 and 3
    of this document to start working with the repository.
@@ -21,7 +21,7 @@ Guide to installing and using Git for OCCT development {#occt_dev_guides__git_gu
   that describes how Git is used for processing contributions to OCCT.
   
   This and related documents are available at the Resources page 
-  of the OCCT development portal at http://dev.opencascade.org/index.php?q=home/resources. 
+  of the OCCT development portal at https://dev.opencascade.org/index.php?q=home/resources.
 
 @subsection occt_gitguide_1_2 Git URL
 
@@ -113,7 +113,7 @@ The official repository contains:
 
 @subsubsection occt_gitguide_2_1_2 Installation and configuration of TortoiseGit
 
-  Download TortoiseGit distributive from http://code.google.com/p/tortoisegit/downloads/list. 
+  Download TortoiseGit distributive from https://tortoisegit.org/download/.
   Launch the installation.
 
  * Select your SSH client. Choose option 
@@ -238,7 +238,7 @@ The official repository contains:
 
 @subsection occt_gitguide_3_3 Adding public key in your account
 
-Log in on the portal http://dev.opencascade.org and click on **My account** link to the right. If you have a Contributor status, you will see **SSH keys** tab to the right. 
+Log in on the portal https://dev.opencascade.org and click on **My account** link to the right. If you have a Contributor status, you will see **SSH keys** tab to the right.
 
 Click on that tab, then click **Add a public key**, and paste the text of the public key (see above sections on how to generate the key) into the text box. 
 
@@ -496,7 +496,7 @@ To rebase your branch into a single commit, you need to do the following:
 
   The changes made in the branch can be reviewed without direct access to Git, using GitWeb interface:
 
-  * Open GitWeb in your web browser: http://git.dev.opencascade.org/gitweb/?p=occt.git 
+  * Open GitWeb in your web browser: https://git.dev.opencascade.org/gitweb/?p=occt.git
   * Locate the branch you want to review among **heads** (click ‘…’ at the bottom of the page to see the full list).
   * Click **log** (or **shortlog**) to see the history of the branch. 
     

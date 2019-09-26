@@ -10,9 +10,9 @@ The steps on Windows and Ubuntu are similar. There is the only one difference: m
 on Windows and native GNU make on Ubuntu.
 
 Required tools (download and install if it is required):
-  - CMake v3.7+ http://www.cmake.org/cmake/resources/software.html
+  - CMake v3.7+ https://www.cmake.org/cmake/resources/software.html
   - Android NDK rev.10+ https://developer.android.com/tools/sdk/ndk/index.html
-  - GNU Make: MinGW v4.82+ for Windows (http://sourceforge.net/projects/mingw/files/), GNU Make 4.0 for Ubuntu. 
+  - GNU Make: MinGW v4.82+ for Windows (https://sourceforge.net/projects/mingw/files/), GNU Make 4.0 for Ubuntu.
 
 ## Prerequisites
 

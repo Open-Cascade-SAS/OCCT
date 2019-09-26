@@ -58,7 +58,7 @@ This module also provides a variety of general-purpose services, such as:
 
 See the details in @ref occt_user_guides__foundation_classes "Foundation Classes User's Guide"
 
-See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+See also: our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @section OCCT_TOVW_SECTION_3 Modeling Data
 
@@ -90,7 +90,7 @@ See the details in @ref occt_user_guides__modeling_data "Modeling Data User's Gu
 3D geometric models can be stored in OCCT native BREP format.
 See @ref occt_user_guides__brep_wp "BREP Format Description White Paper" for details on the format.
 
-See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+See also: our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @section OCCT_TOVW_SECTION_4 Modeling Algorithms
 
@@ -149,7 +149,7 @@ See @ref occt_user_guides__boolean_operations "Boolean Operations" User's Guide 
  
 See the details in @ref occt_user_guides__modeling_algos "Modeling Algorithms User's Guide".
 
-See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+See also: our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @section OCCT_TOVW_SECTION_4a Mesh 
 
@@ -163,8 +163,8 @@ Open CASCADE Technology includes two mesh converters:
 - STL converter translates Open CASCADE shapes to STL files. STL (STtereoLithography) format is widely used for rapid prototyping (3D printing).
 
 Open CASCADE SAS also offers Advanced Mesh Products:
-- <a href="http://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
-- <a href="http://www.opencascade.com/content/express-mesh">Express Mesh</a>
+- <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
+- <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
 
 @figure{/technical_overview/images/0003.png}
 
@@ -208,7 +208,7 @@ For more details, see @ref occt_user_guides__visualization "Visualization User's
 
 The visualization of OCCT topological shapes by means of VTK library provided by VIS component is described in a separate @ref occt_user_guides__vis "VTK Integration Services" User's Guide.
 
-See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+See also: our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 
 @section OCCT_TOVW_SECTION_6 Data Exchange
@@ -222,12 +222,14 @@ See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-l
 * **Standardized Data Exchange** interfaces allow querying and examining the input file, converting its contents to a CAD model and running validity checks on a fully translated shape. The following formats are currently supported.
 	* @ref occt_user_guides__step "STEP" (AP203 : Mechanical Design, this covers General 3D CAD; AP214: Automotive Design) 
 	* @ref occt_user_guides__iges "IGES" (up to 5.3) 
-	* VRML and STL meshes. 
+	* glTF, OBJ, VRML and STL meshes.
 * @ref occt_user_guides__xde "Extended data exchange" (XDE) allows translating  additional attributes attached to geometric data (colors, layers, names, materials etc).
-* <a href="http://www.opencascade.com/content/advanced-data-exchange-components">Advanced Data Exchange Components</a> are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref OCCT_TOVW_SECTION_6a "Shape Healing") with CAD software using the following proprietary formats:
-	* <a href="http://www.opencascade.com/content/acis-sat-import-export">ACIS SAT</a>
-	* <a href="http://www.opencascade.com/content/parasolid-import">Parasolid</a>
-	* <a href="http://www.opencascade.com/content/dxf-import-export">DXF</a> 
+* <a href="https://www.opencascade.com/content/advanced-data-exchange-components">Advanced Data Exchange Components</a> are available in addition to standard Data Exchange interfaces to support interoperability and data adaptation (also using @ref OCCT_TOVW_SECTION_6a "Shape Healing") with CAD software using the following proprietary formats:
+	* <a href="https://www.opencascade.com/content/acis-sat-import-export">ACIS SAT</a>
+	* <a href="https://www.opencascade.com/content/parasolid-import">Parasolid</a>
+	* <a href="https://www.opencascade.com/content/dxf-import-export">DXF</a>
+	* <a href="https://www.opencascade.com/content/ifc-import">IFC</a>
+	* <a href="https://www.opencascade.com/content/jt-import-export">JT</a>
 
 These components are based on the same architecture as interfaces with STEP and IGES.
 
@@ -265,7 +267,7 @@ Each sub-domain of Shape Healing has its own scope of functionality:
 
 For more details, refer to @ref occt_user_guides__shape_healing "Shape Healing User's guide".
 
-See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+See also: our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 
 @section OCCT_TOVW_SECTION_7 Application Framework
@@ -287,7 +289,7 @@ OCAF organizes and embeds these attributes in a document. OCAF documents, in the
 
 For more details, see @ref occt_user_guides__ocaf "OCAF User's Guide". 
 
-See also: our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+See also: our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 
 @section OCCT_TOVW_SECTION_8 Draw Test Harness

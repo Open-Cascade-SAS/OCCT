@@ -10,7 +10,7 @@ The purpose of this document is to describe standard workflow for processing con
 
 Each contribution should have corresponding issue (bug, or feature, or integration request) 
 registered in the MantisBT issue tracker system accessible by URL 
-http://tracker.dev.opencascade.org. 
+https://tracker.dev.opencascade.org.
 The issue is processed according to the described workflow.
 
 @subsection occt_contribution_intro_access Access levels

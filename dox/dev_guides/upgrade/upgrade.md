@@ -439,7 +439,7 @@ class TColStd_Array1OfReal; -> #include <TColStd_Array1OfReal.hxx>
 ~~~~~
 Handle_Class -> Handle(Class)
 ~~~~~
-  This change is not applied if the source or header file is recognized as containing the definition of Qt class with signals or slots, to avoid possible compilation errors of MOC files caused by inability of MOC to recognize macros (see http://doc.qt.io/qt-4.8/signalsandslots.html).
+  This change is not applied if the source or header file is recognized as containing the definition of Qt class with signals or slots, to avoid possible compilation errors of MOC files caused by inability of MOC to recognize macros (see https://doc.qt.io/qt-4.8/signalsandslots.html).
   The file is considered as defining a Qt object if it contains strings *Q_OBJECT* and either *slots:* or *signals:*. 
 
 4. Removes forward declarations of classes with names <i>Handle(C)</i> or *Handle_C*, replacing them either by forward declaration of its argument class, or (for files defining Qt objects) <i>\#include</i> statement for a header with the name of the argument class and extension .hxx:
@@ -736,9 +736,9 @@ If you like to preserve the compatibility of your application code with OCCT ver
 If your application is essentially based on CDL, and you need to upgrade it to OCCT 7.0, you will very likely need to convert your application code to non-CDL form.
 This is a non-trivial effort; the required actions would depend strongly on the structure of the code and used CDL features.
 
-The upgrade script and sources of a specialized WOK version used for OCCT code upgrade can be found in WOK Git repository in branch [CR0_700_2](http://git.dev.opencascade.org/gitweb/?p=occt-wok.git;a=log;h=refs/heads/CR0_700_2).
+The upgrade script and sources of a specialized WOK version used for OCCT code upgrade can be found in WOK Git repository in branch [CR0_700_2](https://git.dev.opencascade.org/gitweb/?p=occt-wok.git;a=log;h=refs/heads/CR0_700_2).
 
-[Contact us](http://www.opencascade.com/contact/) if you need more help.
+[Contact us](https://www.opencascade.com/contact/) if you need more help.
 
 @subsection upgrade_occt700_bspline Separation of BSpline cache
 

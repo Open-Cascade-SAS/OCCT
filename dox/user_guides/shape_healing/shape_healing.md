@@ -7,7 +7,7 @@ Shape Healing  {#occt_user_guides__shape_healing}
 
 @subsection occt_shg_1_1 Introduction
 
-This manual explains how to use Shape Healing. It provides basic documentation on its operation. For advanced information on Shape Healing and its applications, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings. 
+This manual explains how to use Shape Healing. It provides basic documentation on its operation. For advanced information on Shape Healing and its applications, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings. 
 
 The **Shape Healing** toolkit provides a set of tools to work on the geometry and topology of Open CASCADE Technology (**OCCT**) shapes. Shape Healing adapts shapes so as to make them as appropriate for use by Open CASCADE Technology as possible. 
 

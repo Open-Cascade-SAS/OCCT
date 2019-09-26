@@ -6,7 +6,7 @@ The list of required libraries depends on what OCCT modules will be used, and yo
 The typical minimum is **Freetype** (necessary for Visualization) and **Tcl/Tk** (for DRAW Test Harness).
 See "Third-party libraries" section in \ref OCCT_OVW_SECTION_5 "Overview" for a full list.
 
-On Windows, the easiest way to install third-party libraries is to download archive with pre-built binaries from http://www.opencascade.com/content/3rd-party-components.
+On Windows, the easiest way to install third-party libraries is to download archive with pre-built binaries from https://www.opencascade.com/content/3rd-party-components.
 On Linux and OS X, it is recommended to use the version installed in the system natively.
 
 You can also build third-party libraries from their sources:

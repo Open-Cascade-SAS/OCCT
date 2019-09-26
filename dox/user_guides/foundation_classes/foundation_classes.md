@@ -5,7 +5,7 @@ Foundation Classes  {#occt_user_guides__foundation_classes}
 
 @section occt_fcug_1 Introduction
 
-This manual explains how to use Open CASCADE Technology (**OCCT**)  Foundation Classes. It provides basic documentation on foundation classes. For  advanced information on foundation classes and their applications, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+This manual explains how to use Open CASCADE Technology (**OCCT**)  Foundation Classes. It provides basic documentation on foundation classes. For  advanced information on foundation classes and their applications, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
    
 Foundation Classes provide a variety of general-purpose  services such as automated dynamic memory management (manipulation of objects  by handle), collections, exception handling, genericity by down-casting and  plug-in creation. 
 
@@ -183,12 +183,12 @@ The table below presents the equivalence existing between  C++ fundamental types
 | int	| Standard_Integer |
 | double 	| Standard_Real |
 | float	| Standard_ShortReal |
-| unsigned int	| Standard_Boolean |
+| bool	| Standard_Boolean |
 | char	| Standard_Character |
-| short	| Standard_ExtCharacter |
+| char16_t	| Standard_ExtCharacter |
 | char\*	| Standard_CString |
 | void\*	| Standard_Address |
-| short\*	| Standard_ExtString |
+| char16_t\*	| Standard_ExtString |
 
 \* The types with asterisk are pointers. 
 
@@ -197,12 +197,12 @@ The table below presents the equivalence existing between  C++ fundamental types
 * **Standard_Integer** : fundamental type representing 32-bit integers yielding  negative, positive or null values. *Integer* is implemented as a *typedef* of the C++ *int* fundamental type. As such, the algebraic operations  +, -, *, / as well as the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on it. 
 * **Standard_Real** : fundamental type representing real numbers with finite  precision and finite size. **Real** is implemented as a *typedef* of  the C++ *double* (double precision) fundamental type. As such, the  algebraic operations +, -, *, /, unary- and the ordering and equivalence  relations <, <=, ==, !=, >=, >  are defined on reals. 
 * **Standard_ShortReal** : fundamental type representing real numbers with finite  precision and finite size. *ShortReal* is implemented as a *typedef* of  the C++ *float* (simple precision) fundamental type. As such, the  algebraic operations +, -, *, /, unary- and the ordering and equivalence  relations <, <=, ==, !=, >=, >  are defined on reals. 
-* **Standard_Boolean** : fundamental type representing logical  expressions. It has two values: *false* and *true*. *Boolean* is implemented  as a *typedef* of the C++ *unsigned int* fundamental type. As such,  the algebraic operations *and, or, xor* and *not* as well as equivalence relations == and != are defined on Booleans. 
+* **Standard_Boolean** : fundamental type representing logical  expressions. It has two values: *false* and *true*. *Boolean* is implemented  as a *typedef* of the C++ *bool* fundamental type. As such,  the algebraic operations *and, or, xor* and *not* as well as equivalence relations == and != are defined on Booleans. 
 * **Standard_Character** : fundamental type representing the  normalized ASCII character set. It may be assigned the values of the 128 ASCII  characters. *Character* is implemented as a *typedef* of the C++ *char* fundamental type. As such, the ordering and equivalence relations <, <=, ==, !=, >=, >  are defined on characters using the order of the  ASCII chart (ex: A B). 
-* **Standard_ExtCharacter** : fundamental type representing the  Unicode character set. It is a 16-bit character type. *ExtCharacter* is  implemented as a *typedef* of the C++ *short* fundamental type. As  such, the ordering and equivalence relations <, <=, ==, !=, >=, >   are defined on extended characters using the order of the UNICODE chart (ex:  A B). 
-* **Standard_CString** : fundamental type representing string  literals. A string literal is a sequence of ASCII (8 bits) characters enclosed  in double quotes. *CString* is implemented as a *typedef* of the C++ *char* fundamental type. 
+* **Standard_ExtCharacter** : fundamental type representing the  Unicode character set. It is a 16-bit character type. *ExtCharacter* is  implemented as a *typedef* of the C++ *char16_t* fundamental type. As  such, the ordering and equivalence relations <, <=, ==, !=, >=, >   are defined on extended characters using the order of the UNICODE chart (ex:  A B). 
+* **Standard_CString** : fundamental type representing string  literals. A string literal is a sequence of UTF-8 (8 bits) code points enclosed in double quotes. *CString* is implemented as a *typedef* of the C++ *char* fundamental type. 
 * **Standard_Address** : fundamental type representing a generic  pointer. *Address* is implemented as a *typedef* of the C++ *void* fundamental  type. 
-* **Standard_ExtString** is a fundamental type representing string  literals as sequences of Unicode (16 bits) characters. *ExtString* is  implemented as a *typedef* of the C++ *short* fundamental type. 
+* **Standard_ExtString** is a fundamental type representing string  literals as sequences of Unicode (16 bits) characters. *ExtString* is  implemented as a *typedef* of the C++ *char16_t* fundamental type. 
 
 @subsubsection occt_fcug_2_1_2 Types manipulated by value
 There are three categories of types which are manipulated by  value: 
@@ -254,13 +254,13 @@ Objects of classes derived (directly or indirectly) from *Transient*, are normal
 Handle is defined as template class *opencascade::handle<>*.
 Open CASCADE Technology  provides preprocessor macro *Handle()* that is historically used throughout OCCT code to name a handle:
 ~~~~~{.cpp}
-Handle(Geom_Line) aLine; // "Handle(Geom_Line)" is expanded to "opencascade::handleL<Geom_Line>"
+Handle(Geom_Line) aLine; // "Handle(Geom_Line)" is expanded to "opencascade::handle<Geom_Line>"
 ~~~~~
 
 In addition, for standard OCCT classes additional *typedef* is defined for a handle, as the name of a class prefixed by *Handle_*.
 For instance, the above example can be also coded as:
 ~~~~~{.cpp}
-Handle_Geom_Line aLine; // "Handle_Geom_Line" is typedef to "opencascade::handleL<Geom_Line>"
+Handle_Geom_Line aLine; // "Handle_Geom_Line" is typedef to "opencascade::handle<Geom_Line>"
 ~~~~~
 
 #### Using a Handle
@@ -593,16 +593,16 @@ The following paragraphs describe recommended approaches for  using exceptions w
 
 To raise an exception of a definite type method Raise() of  the appropriate exception class shall be used. 
 ~~~~~
-DomainError::Raise(“Cannot cope with this condition”);
+Standard_DomainError::Raise(“Cannot cope with this condition”);
 ~~~~~
-raises an exception of *DomainError* type with the associated  message “Cannot cope with this condition”, the message being optional. This  exception may be caught by a handler of a *DomainError* type as follows: 
+raises an exception of *Standard_DomainError* type with the associated message “Cannot cope with this condition”, the message being optional. This exception may be caught by a handler of a *Standard_DomainError* type as follows: 
 ~~~~~
 try {
   OCC_CATCH_SIGNALS
   // try block
 }
-catch(DomainError) {
-// handle DomainError exceptions here
+catch(const Standard_DomainError& ) {
+// handle Standard_DomainError exceptions here
 }
 ~~~~~
 
@@ -652,8 +652,7 @@ Using this syntax, the *Value* function becomes:
 ~~~~~
 Item  TCollection_Array1::Value (const Standard_Integer&index) const
      { 
-  OutOfRange_Raise_if(index < r1 || index > r2,
-                      “index out of range in  Array1::Value”);
+  Standard_OutOfRange_Raise_if(index < r1 || index > r2, “index out of range in  Array1::Value”);
   return contents[index];
 }
 ~~~~~

@@ -7,7 +7,7 @@ Modeling Data {#occt_user_guides__modeling_data}
 
 Modeling Data supplies data structures to represent 2D and 3D geometric models. 
 
-This manual explains how to use Modeling Data. For advanced information on modeling data, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+This manual explains how to use Modeling Data. For advanced information on modeling data, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @section occt_modat_1 Geometry Utilities
 
@@ -1324,7 +1324,7 @@ BRepBndLib class contains methods for creation of bounding boxes (both AABB and 
 
 @subsubsection occt_modat_6_1_1 Creation of OBB from set of points
 
-The algorithm is described in <a href="http://www.idt.mdh.se/~tla/publ/FastOBBs.pdf">"Fast Computation of Tight Fitting Oriented Bounding Boxes" by Thomas Larsson and Linus Källberg</a>. It includes the following steps:
+The algorithm is described in "Fast Computation of Tight Fitting Oriented Bounding Boxes" by Thomas Larsson and Linus Källberg (FastOBBs.pdf). It includes the following steps:
 
 <span>1.</span> Choose \f$ N_{a} (N_{a} \geq 3) \f$ initial axes.<br>
 <span>2.</span> Project every given point to the every chosen (in item 1) axis. At that, "minimal" and "maximal" points of every axis (i.e. point having minimal and maximal parameter (correspondingly) of the projection to this axis) are chosen. I.e. \f$ 2*N_{a} \f$ points will be held and this set can contain equal points. Later (unless otherwise specified) in this algorithm we will work with these \f$ 2*N_{a} \f$ points only.<br>
@@ -1379,7 +1379,7 @@ The algorithm contains the following steps:
 
 @subsubsection occt_modat_6_1_4 Method IsOut for another OBB
 
-According to the <a href="http://www.jkh.me/files/tutorials/Separating%20Axis%20Theorem%20for%20Oriented%20Bounding%20Boxes.pdf">"Separating Axis Theorem for Oriented Bounding Boxes"</a>, it is necessary to check the 15 separating axes: 6 axes of the boxes and 9 are their cross products.<br>
+According to the <a href="https://www.jkh.me/files/tutorials/Separating%20Axis%20Theorem%20for%20Oriented%20Bounding%20Boxes.pdf">"Separating Axis Theorem for Oriented Bounding Boxes"</a>, it is necessary to check the 15 separating axes: 6 axes of the boxes and 9 are their cross products.<br>
 The algorithm of analyzing axis \f$ \mathbf{l} \f$ is following:
 1. Compute the "length" according to the formula: \f$ L_{j}=\sum_{i=0}^{2}{H_{i}\cdot \left | \overrightarrow{\mathbf{a_{i}}} \cdot \overrightarrow{\mathbf{l}} \right |} \f$. Here, \f$ \mathbf{a_{i}} \f$ is an i-th axis (X-axis, Y-axis, Z-axis) of j-th BndBox (j=1...2). \f$ H_{i} \f$ is a half-dimension along i-th axis.
 2. If \f$ \left |\overrightarrow{C_{1}C_{2}} \cdot \overrightarrow{\mathbf{l}}  \right | > L_{1}+L_{2} \f$ (where \f$ C_{j} \f$ is the center of j-th OBB) then the considered OBBs are not interfered in terms of the axis \f$ \mathbf{l} \f$.

@@ -35,7 +35,7 @@ To answer different needs of CASCADE users, this User's Guide offers the followi
   * If the 3D services proposed in AIS meet your requirements, you need only read chapter 3  @ref occt_visu_3 "AIS: Application Interactive Services".
   * If you need more detail, for example, a selection filter on another type of entity -- you should read chapter 2 @ref occt_visu_2 "Fundamental Concepts", chapter 3 @ref occt_visu_3 "AIS: Application Interactive Services", and 4 @ref occt_visu_4 "3D Presentations". You may want to begin with the chapter presenting AIS.
 
-For advanced information on visualization algorithms, see our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.  
+For advanced information on visualization algorithms, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @section occt_visu_2 Fundamental Concepts
 
@@ -88,7 +88,7 @@ Handle(AIS_InteractiveContext) aContext = new AIS_InteractiveContext (theViewer)
 BRepPrimAPI_MakeWedge aWedgeMaker (theWedgeDX, theWedgeDY, theWedgeDZ, theWedgeLtx);
 TopoDS_Solid aShape = aWedgeMaker.Solid();
 Handle(AIS_Shape) aShapePrs = new AIS_Shape (aShape); // creation of the presentable object
-aContext->Display (aShapePrs); // display the presentable object in the 3d viewer
+aContext->Display (aShapePrs, AIS_Shaded, 0, true);   // display the presentable object and redraw 3d viewer
 ~~~~~
 
 The shape is created using the *BRepPrimAPI_MakeWedge* command. An *AIS_Shape* is then created from the shape. When calling the *Display* command, the interactive context calls the Compute method of the presentable object to calculate the presentation data and transfer it to the viewer. See figure below.
@@ -137,14 +137,14 @@ Selectable object stores information about all created selection modes and sensi
 
 All successors of a selectable object must implement the method that splits its presentation into sensitive entities according to the given mode. The computed entities are arranged in one selection and added to the list of all selections of this object. No selection will be removed from the list until the object is deleted permanently.
 
-For all standard OCCT shapes, zero mode is supposed to select the whole object (but it may be redefined easily in the custom object). For example, the standard OCCT selection mechanism and *AIS_Shape* determine the following modes:
+For all standard OCCT shapes, zero mode is supposed to select the whole object (but it may be redefined easily in the custom object). For example, the standard OCCT selection mechanism and *AIS_Shape* determine the following modes (see AIS_Shape::SelectionMode()):
   - 0 -- selection of the entire object *(AIS_Shape)*;
-  - 1 -- selection of the vertices;
-  - 2 -- selection of the edges;
-  - 3 -- selection of the wires;
-  - 4 -- selection of the faces;
-  - 5 -- selection of the shells;
-  - 6 -- selection of the constituent solids.
+  - 1 -- selection of the vertices (TopAbs_VERTEX);
+  - 2 -- selection of the edges (TopAbs_EDGE);
+  - 3 -- selection of the wires (TopAbs_WIRE);
+  - 4 -- selection of the faces (TopAbs_FACE);
+  - 5 -- selection of the shells (TopAbs_SHELL);
+  - 6 -- selection of the constituent solids (TopAbs_SOLID).
 
 @figure{visualization_image006.png,"Hierarchy of references from sensitive entity to selectable object",400}
 
@@ -263,7 +263,7 @@ The package also contains two auxiliary classes, *Select3D_SensitivePoly* and *S
   - keeping selection BVH data up-to-date.
 
 A brief description of the main classes:
-  - *SelectMgr_FrustumBase*, *SelectMgr_Frustum*, *SelectMgr_RectangularFrustum*, *SelectMgr_TriangluarFrustum* and *SelectMgr_TriangularFrustumSet* -- interfaces and implementations of selecting frustums, these classes implement different SAT tests for overlap and inclusion detection. They also contain methods to measure characteristics of detected entities (depth, distance to center of geometry);
+  - *SelectMgr_BaseFrustum*, *SelectMgr_Frustum*, *SelectMgr_RectangularFrustum*, *SelectMgr_TriangularFrustum* and *SelectMgr_TriangularFrustumSet* -- interfaces and implementations of selecting frustums, these classes implement different SAT tests for overlap and inclusion detection. They also contain methods to measure characteristics of detected entities (depth, distance to center of geometry);
   - *SelectMgr_SensitiveEntity*, *SelectMgr_Selection* and *SelectMgr_SensitiveEntitySet* -- store and handle sensitive entities; *SelectMgr_SensitiveEntitySet* implements a primitive set for the second level BVH tree;
   - *SelectMgr_SelectableObject* and *SelectMgr_SelectableObjectSet* -- describe selectable objects. They also manage storage, calculation and removal of selections. *SelectMgr_SelectableObjectSet* implements a primitive set for the first level BVH tree;
   - *SelectMgr_ViewerSelector* -- encapsulates all logics of the selection algorithm and implements the third level BVH tree traverse;
@@ -274,7 +274,7 @@ A brief description of the main classes:
 *StdSelect* package contains the implementation of some *SelectMgr* classes and tools for creation of selection structures. For example,
   - *StdSelect_BRepOwner* -- defines an entity owner with a link to its topological shape and methods for highlighting;
   - *StdSelect_BRepSelectionTool* -- contains algorithms for splitting standard AIS shapes into sensitive primitives;
-  - *StdSelect_ViewerSelector3d* -- an example of *SelectMgr_ViewerSelecor* implementation, which is used in a default OCCT selection mechanism;
+  - *StdSelect_ViewerSelector3d* -- an example of *SelectMgr_ViewerSelector* implementation, which is used in a default OCCT selection mechanism;
   - *StdSelect_FaceFilter*, *StdSelect_EdgeFilter* -- implementation of selection filters.
 
 @subsubsection occt_visu_2_2_4 Examples of usage
@@ -315,7 +315,7 @@ void InteractiveBox::ComputeSelection (const Handle(SelectMgr_Selection)& theSel
 ~~~~
 
 The algorithms for creating selection structures store sensitive primitives in *SelectMgr_Selection* instance. Each *SelectMgr_Selection* sequence in the list of selections of the object must correspond to a particular selection mode.
-To describe the decomposition of the object into selectable primitives, a set of ready-made sensitive entities is supplied in *Select3D* package. Custom sensitive primitives can be defined through inheritance from *SelectBasics_SensitiveEntity*.
+To describe the decomposition of the object into selectable primitives, a set of ready-made sensitive entities is supplied in *Select3D* package. Custom sensitive primitives can be defined through inheritance from *Select3D_SensitiveEntity*.
 To make custom interactive objects selectable or customize selection modes of existing objects, the entity owners must be defined. They must inherit *SelectMgr_EntityOwner* interface.
 
 Selection structures for any interactive object are created in *SelectMgr_SelectableObject::ComputeSelection()* method.
@@ -340,7 +340,7 @@ The *StdSelect_BRepSelectionTool* class provides a high level API for computing 
 
 The traditional way of highlighting selected entity owners adopted by Open CASCADE Technology assumes that each entity owner highlights itself on its own. This approach has two drawbacks:
 
-  - each entity owner has to maintain its own *Prs3d_Presentation* object, that results in a considerable memory overhead;
+  - each entity owner has to maintain its own *Graphic3d_Structure* object, that results in a considerable memory overhead;
   - drawing selected owners one by one is not efficient from the visualization point of view.
 
 Therefore, to overcome these limitations, OCCT has an alternative way to implement the highlighting of a selected presentation. Using this approach, the interactive object itself will be responsible for the highlighting, not the entity owner.
@@ -348,7 +348,6 @@ Therefore, to overcome these limitations, OCCT has an alternative way to impleme
 On the basis of *SelectMgr_EntityOwner::IsAutoHilight()* return value, *AIS_InteractiveContext* object either uses the traditional way of highlighting (in case if *IsAutoHilight()* returns TRUE) or groups such owners according to their selectable objects and finally calls *SelectMgr_SelectableObject::HilightSelected()* or *SelectMgr_SelectableObject::ClearSelected()*, passing a group of owners as an argument.
 
 Hence, an application can derive its own interactive object and redefine virtual methods *HilightSelected()*, *ClearSelected()* and *HilightOwnerWithColor()* from *SelectMgr_SelectableObject*. *SelectMgr_SelectableObject::GetHilightPresentation* and *SelectMgr_SelectableObject::GetSelectPresentation* methods can be used to optimize filling of selection and highlight presentations according to the user's needs.
-The *AIS_InteractiveContext::HighlightSelected()* method can be used for efficient redrawing of the selection presentation for a given interactive object from an application code.
 
 After all the necessary sensitive entities are computed and packed in *SelectMgr_Selection* instance with the corresponding owners in a redefinition of *SelectMgr_SelectableObject::ComputeSelection()* method, it is necessary to register the prepared selection in *SelectMgr_SelectionManager* through the following steps:
   - if there was no *AIS_InteractiveContext* opened, create an interactive context and display the selectable object in it;
@@ -376,7 +375,7 @@ theContext->Activate (theBox, 1);
 
 // Run the detection mechanism for activated entities in the current mouse coordinates and in the current view.
 // Detected owners will be highlighted with context highlight color
-theContext->MoveTo (aXMousePos, aYMousePos, myView);
+theContext->MoveTo (aXMousePos, aYMousePos, myView, false);
 // Select the detected owners
 theContext->Select();
 // Iterate through the selected owners
@@ -449,6 +448,7 @@ void PackageName_ClassName::Compute (const Handle(PrsMgr_PresentationManager3d)&
 ~~~~~
 
 #### For hidden line removal (HLR) mode in 3D:
+
 ~~~~~
 void PackageName_ClassName::Compute (const Handle(Prs3d_Projector)& theProjector,
                                      const Handle(Prs3d_Presentation)& thePresentation);
@@ -460,7 +460,7 @@ The view can have two states: the normal mode or the computed mode (Hidden Line 
 
 By convention, the Interactive Object accepts or rejects the representation of HLR mode. It is possible to make this declaration in one of two ways:
 
-* Initially by using one of the values of the enumeration *PrsMgr_TypeOfPresentation*:
+* Initially by using one of the values of the enumeration *PrsMgr_TypeOfPresentation3d*:
   * *PrsMgr_TOP_AllView*,
   * *PrsMgr_TOP_ProjectorDependant*
 
@@ -475,7 +475,7 @@ The type of the HLR algorithm is stored in *Prs3d_Drawer* of the shape. It is a 
 The type of the HLR algorithm used for *AIS_Shape* can be changed by calling the *AIS_Shape::SetTypeOfHLR()* method.
 The current HLR algorithm type can be obtained using *AIS_Shape::TypeOfHLR()* method is to be used.
 
-These methods get the value from the drawer of *AIS_Shape*. If the HLR algorithm type in the *AIS_Drawer* is set to *Prs3d_TOH_NotSet*, the *AIS_Drawer* gets the value from the default drawer of *AIS_InteractiveContext*.
+These methods get the value from the drawer of *AIS_Shape*. If the HLR algorithm type in the *Prs3d_Drawer* is set to *Prs3d_TOH_NotSet*, the *Prs3d_Drawer* gets the value from the default drawer of *AIS_InteractiveContext*.
 So it is possible to change the default HLR algorithm used by all newly displayed interactive objects. The value of the HLR algorithm type stored in the context drawer can be *Prs3d_TOH_Algo* or *Prs3d_TOH_PolyAlgo*. The polygonal algorithm is the default one.
 
 @subsubsection occt_visu_3_2_3 Presentation modes
@@ -503,7 +503,7 @@ The functions *AIS_InteractiveContext::SetDisplayMode* and *AIS_InteractiveConte
 
 At dynamic detection, the presentation echoed by the Interactive Context, is by default the presentation already on the screen.
 
-The functions  *AIS_InteractiveObject::SetHilightMode* and *AIS_InteractiveObject::UnSetHilightMode* allow specifying the display mode used for highlighting (so called highlight mode), which is valid independently from the active representation of the object. It makes no difference whether this choice is temporary or definitive.
+The functions  *AIS_InteractiveObject::SetHilightMode* and *AIS_InteractiveObject::UnsetHilightMode* allow specifying the display mode used for highlighting (so called highlight mode), which is valid independently from the active representation of the object. It makes no difference whether this choice is temporary or definitive.
 
 Note that the same presentation (and consequently the same highlight mode) is used for highlighting *detected* objects and for highlighting *selected* objects, the latter being drawn with a special *selection color* (refer to the section related to *Interactive Context* services).
 
@@ -516,8 +516,13 @@ If you do not want an object to be affected by a *FitAll* view, you must declare
 Let us take for example the class called *IShape* representing an interactive object:
 
 ~~~~~
-myPk_IShape::myPK_IShape (const TopoDS_Shape& theShape, PrsMgr_TypeOfPresentation theType)
+myPk_IShape::myPk_IShape (const TopoDS_Shape& theShape, PrsMgr_TypeOfPresentation theType)
 : AIS_InteractiveObject (theType), myShape (theShape) { SetHilightMode (0); }
+
+Standard_Boolean myPk_IShape::AcceptDisplayMode (const Standard_Integer theMode) const
+{
+  return theMode == 0 || theMode == 1;
+}
 
 void myPk_IShape::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsMgr,
                            const Handle(Prs3d_Presentation)& thePrs,
@@ -598,14 +603,14 @@ The following functions allow "moving" the representation and selection of Inter
 
 #### Connect an interactive object to an applicative entity
 
-Each Interactive Object has functions that allow attributing it an *Owner* in form of a *Transient*.
+Each Interactive Object has functions that allow attributing it an *GetOwner* in form of a *Transient*.
   * *AIS_InteractiveObject::SetOwner*
   * *AIS_InteractiveObject::HasOwner*
-  * *AIS_InteractiveObject::Owner*
+  * *AIS_InteractiveObject::GetOwner*
 
 An interactive object can therefore be associated or not with an applicative entity, without affecting its behavior.
 
-**NOTE:** Don't be confused by owners of another kind - *SelectBasics_EntityOwner* used for identifying selectable parts of the object or object itself.
+**NOTE:** Don't be confused by owners of another kind - *SelectMgr_EntityOwner* used for identifying selectable parts of the object or object itself.
 
 #### Resolving coincident topology
 
@@ -758,6 +763,9 @@ theCtx->SetDisplayMode (2, true);
 
 *PresentationManager* and *Selector3D*, which manage the presentation and selection of present interactive objects, are associated to the main Viewer.
 
+*WARNING!* Do NOT use integer values (like in sample above) in real code - use appropriate enumerations instead!
+Each presentable object has independent list of supported display and selection modes; for instance, *AIS_DisplayMode* enumeration is applicable only to *AIS_Shape* presentations.
+
 @subsection occt_visu_3_4 Local Selection
 
 @subsubsection occt_visu_3_4_1 Selection Modes
@@ -767,7 +775,7 @@ See, for example, *MeshVS_SelectionModeFlags* for *MeshVS_Mesh* object.
 
 *AIS_Shape* is the most used interactive object. It provides API to manage selection operations on the constituent elements of shapes (selection of vertices, edges, faces, etc.). The Selection Mode for a specific shape type (*TopAbs_ShapeEnum*) is returned by method *AIS_Shape::SelectionMode()*.
 
-The method *AIS_InteractiveObject::Display()* without a Selection Mode argument activates the default Selection Mode of the object.
+The method *AIS_InteractiveContext::Display()* without a Selection Mode argument activates the default Selection Mode of the object.
 The methods *AIS_InteractiveContext::Activate()* and *AIS_InteractiveContext::Deactivate()* activate and deactivate a specific Selection Mode.
 
 More than one Selection Mode can be activated at the same time (but default 0 mode for selecting entire object is exclusive - it cannot be combined with others).
@@ -815,7 +823,7 @@ myContext->AddFilter (aFil1);
 myContext->AddFilter (aFil2);
 
 // only faces of revolution or planar faces will be selected
-myContext->MoveTo (thePixelX, thePixelY, myView);
+myContext->MoveTo (thePixelX, thePixelY, myView, true);
 ~~~~~
 
 @subsubsection occt_visu_3_4_6 Selection
@@ -848,6 +856,7 @@ The Interactive Object itself can be retrieved by method *SelectMgr_EntityOwner:
 In case of *AIS_Shape*, the (sub)shape is returned by method *StdSelect_BRepOwner::Shape*.
 
 #### Example
+
 ~~~~~
 for (myAISCtx->InitSelected(); myAISCtx->MoreSelected(); myAISCtx->NextSelected())
 {
@@ -879,12 +888,12 @@ If you want to give a particular type and signature to your interactive object, 
 The **Datum** groups together the construction elements such as lines, circles, points, trihedrons, plane trihedrons, planes and axes.
 
 *AIS_Point, AIS_Axis, AIS_Line, AIS_Circle, AIS_Plane* and *AIS_Trihedron* have four selection modes:
-  * mode 0 : selection of a trihedron;
-  * mode 1 : selection of the origin of the trihedron;
-  * mode 2 : selection of the axes;
-  * mode 3 : selection of the planes XOY, YOZ, XOZ.
+  * mode AIS_TrihedronSelectionMode_EntireObject : selection of a trihedron;
+  * mode AIS_TrihedronSelectionMode_Origin : selection of the origin of the trihedron;
+  * mode AIS_TrihedronSelectionMode_Axes : selection of the axes;
+  * mode AIS_TrihedronSelectionMode_MainPlanes : selection of the planes XOY, YOZ, XOZ.
 
-when you activate one of modes: 1 2 3 4, you pick AIS objects of type:
+when you activate one of modes, you pick AIS objects of type:
   * *AIS_Point*;
   * *AIS_Axis* (and information on the type of axis);
   * *AIS_Plane* (and information on the type of plane).
@@ -901,8 +910,8 @@ For the presentation of planes and trihedra, the default length unit is millimet
 The **Object** type includes topological shapes, and connections between shapes.
 
 *AIS_Shape* has two visualization modes:
-  * mode 0 : Line (default mode)
-  * mode 1 : Shading (depending on the type of shape)
+  * mode AIS_WireFrame : Line (default mode)
+  * mode AIS_Shaded : Shading (depending on the type of shape)
 
 *AIS_ConnectedInteractive* is an Interactive Object connecting to another interactive object reference, and located elsewhere in the viewer makes it possible not to calculate presentation and selection, but to deduce them from your object reference.
 *AIS_MultipleConnectedInteractive* is an object connected to a list of interactive objects (which can also be Connected objects. It does not require memory-hungry presentation calculations).
@@ -1196,7 +1205,7 @@ aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
 
 @subsubsection occt_visu_4_2_5 Text primitive
 
-*TKOpenGL* toolkit renders text labels using texture fonts. *Graphic3d* text primitives have the following features:
+*TKOpenGl* toolkit renders text labels using texture fonts. *Graphic3d* text primitives have the following features:
   * fixed size (non-zoomable) or zoomable,
   * can be rotated to any angle in the view plane,
   * support unicode charset.
@@ -1204,46 +1213,13 @@ aGroup->SetGroupPrimitivesAspect (myDrawer->ShadingAspect()->Aspect());
 The text attributes for the group could be defined with the *Graphic3d_AspectText3d* attributes group.
 To add any text to the graphic structure you can use the following methods:
 ~~~~~
-void Graphic3d_Group::Text (const Standard_CString theText,
-                            const Graphic3d_Vertex& thePoint,
-                            const Standard_Real theHeight,
-                            const Quantity_PlaneAngle theAngle,
-                            const Graphic3d_TextPath theTp,
-                            const Graphic3d_HorizontalTextAlignment theHta,
-                            const Graphic3d_VerticalTextAlignment theVta,
-                            const Standard_Boolean theToEvalMinMax);
+void Graphic3d_Group::AddText (const Handle(Graphic3d_Text)& theTextParams,
+                               const Standard_Boolean theToEvalMinMax);
 ~~~~~
-
-The meaning of these parameters is as follows: 
-* *theText* - the text string,
-* *thePoint* - the three-dimensional position of the text,
-* *theHeight* - the text height,
-* *theAngle* - the text orientation (at the moment, this parameter has no effect, but you can specify the text orientation through the *Graphic3d_AspectText3d* attributes).
-* *theTp* defines the text path,
-* *theHta* - the horizontal alignment of the text,
-* *theVta* - the vertical alignment of the text.
 
 You can pass FALSE as *theToEvalMinMax* if you do not want the graphic3d structure boundaries to be affected by the text position.
 
 **Note** that the text orientation angle can be defined by *Graphic3d_AspectText3d* attributes.
-~~~~~
-void Graphic3d_Group::Text (const Standard_CString theText,
-                            const Graphic3d_Vertex& thePoint,
-                            const Standard_Real theHeight,
-                            const Standard_Boolean theToEvalMinMax);
-void Graphic3d_Group::Text (const TCcollection_ExtendedString& theText,
-                            const Graphic3d_Vertex& thePoint,
-                            const Standard_Real theHeight,
-                            const Quantity_PlaneAngle theAngle,
-                            const Graphic3d_TextPath theTp,
-                            const Graphic3d_HorizontalTextAlignment theHta,
-                            const Graphic3d_VerticalTextAlignment theVta,
-                            const Standard_Boolean theToEvalMinMax);
-void Graphic3d_Group::Text (const TCcollection_ExtendedString& theText,
-                            const Graphic3d_Vertex& thePoint,
-                            const Standard_Real theHeight,
-                            const Standard_Boolean theToEvalMinMax);
-~~~~~
 
 See the example:
 ~~~~~
@@ -1257,8 +1233,10 @@ aTextAspect->SetTextAngle (45.0);
 aGroup->SetPrimitivesAspect (aTextAspect);
 
 // add a text primitive to the structure
-Graphic3d_Vertex aPoint (1, 1, 1);
-aGroup->Text (Standard_CString ("Text"), aPoint, 16.0);
+Handle(Graphic3d_Text) aText = new Graphic3d_Text (16.0f);
+aText->SetText ("Text");
+aText->SetPosition (gp_Pnt (1, 1, 1));
+aGroup->AddText (aText);
 ~~~~~
 
 @subsubsection occt_visu_4_2_6 Materials
@@ -1451,8 +1429,8 @@ aView->Update();
 **IOD** -- defines the intraocular distance (in world space units).
 
 There are two types of IOD:
-* _IODType_Absolute_ : Intraocular distance is defined as an absolute value.
-* _IODType_Relative_ : Intraocular distance is defined relative to the camera focal length (as its coefficient).
+* _Graphic3d_Camera::IODType_Absolute_ : Intraocular distance is defined as an absolute value.
+* _Graphic3d_Camera::IODType_Relative_ : Intraocular distance is defined relative to the camera focal length (as its coefficient).
 
 **Field of view (FOV)** -- defines the field of camera view by y axis in degrees (45° is default).
 
@@ -1468,7 +1446,7 @@ To enable stereo projection, your workstation should meet the following requirem
 
 In stereographic projection mode the camera prepares two projection matrices to display different stereo-pictures for the left and for the right eye. In a non-stereo camera this effect is not visible because only the same projection is used for both eyes.
 
-To enable quad buffering support you should provide the following settings to the graphic driver *opengl_caps*:
+To enable quad buffering support you should provide the following settings to the graphic driver *OpenGl_Caps*:
 
 ~~~~~
 Handle(OpenGl_GraphicDriver) aDriver = new OpenGl_GraphicDriver();
@@ -1493,7 +1471,7 @@ aView->Update();
 The algorithm of frustum culling on CPU-side is activated by default for 3D viewer. This algorithm allows skipping the presentation outside camera at the rendering stage, providing better performance. The following features support this method:
 * *Graphic3d_Structure::CalculateBoundBox()* is used to calculate axis-aligned bounding box of a presentation considering its transformation.
 * *V3d_View::SetFrustumCulling* enables or disables frustum culling for the specified view.
-* Classes *OpenGl_BVHClipPrimitiveSet* and *OpenGl_BVHTreeSelector* handle the detection of outer objects and usage of acceleration structure for frustum culling.
+* Classes *Graphic3d_BvhCStructureSet* and *Graphic3d_CullingTool* handle the detection of outer objects and usage of acceleration structure for frustum culling.
 * *BVH_BinnedBuilder* class splits several objects with null bounding box.
 
 @subsubsection occt_visu_4_4_9 View background styles
@@ -1537,7 +1515,7 @@ Standard_Boolean V3d_View::Dump (const Standard_CString theFile,
 ~~~~
 Dumps the scene into an image file with the view dimensions.
 The raster image data handling algorithm is based on the *Image_AlienPixMap* class. The supported extensions are ".png", ".bmp", ".jpg" and others supported by **FreeImage** library.
-The value passed as *theBufferType* argument defines the type of the buffer for an output image *(RGB, RGBA, floating-point, RGBF, RGBAF)*. Method returns TRUE if the scene has been successfully dumped.
+The value passed as *theBufferType* argument defines the type of the buffer for an output image (RGB, RGBA, floating-point, RGBF, RGBAF). Method returns TRUE if the scene has been successfully dumped.
 
 ~~~~
 Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
@@ -1728,7 +1706,7 @@ aView->Update();
 
 Back face culling reduces the rendered number of triangles (which improves the performance) and eliminates artifacts at shape boundaries. However, this option can be used only for solid objects, where the interior is actually invisible from any point of view. Automatic back-face culling mechanism is turned on by default, which is controlled by *V3d_View::SetBackFacingModel()*.
 
-The following features are applied in *StdPrs_ToolShadedShape::IsClosed()*, which is used for definition of back face culling in *ShadingAspect*:
+The following features are applied in *StdPrs_ToolTriangulatedShape::IsClosed()*, which is used for definition of back face culling in *ShadingAspect*:
 * disable culling for free closed Shells (not inside the Solid) since reversed orientation of a free Shell is a valid case;
 * enable culling for Solids packed into a compound;
 * ignore Solids with incomplete triangulation.
@@ -1856,7 +1834,7 @@ myAISContext->Display (anAISShape);
 Follow the procedure below to compute the presentable object:
 
 1. Build a presentable object inheriting from *AIS_InteractiveObject* (refer to the Chapter on @ref occt_visu_2_1 "Presentable Objects").
-2. Reuse the *Prs3d_Presentation* provided as an argument of the compute methods.
+2. Reuse the *Graphic3d_Structure* provided as an argument of the compute methods.
 
 **Note** that there are two compute methods: one for a standard representation, and the other for a degenerated representation, i.e. in hidden line removal and wireframe modes.
 
@@ -1864,14 +1842,14 @@ Let us look at the example of compute methods
 
 ~~~~~
 void MyPresentableObject::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsManager,
-                                   const Handle(Prs3d_Presentation)& thePrs,
+                                   const Handle(Graphic3d_Structure)& thePrs,
                                    const Standard_Integer theMode)
 (
   //...
 )
 
 void MyPresentableObject::Compute (const Handle(Prs3d_Projector)& theProjector,
-                                   const Handle(Prs3d_Presentation)& thePrs)
+                                   const Handle(Graphic3d_Structure)& thePrs)
 (
   //...
 )
@@ -1879,7 +1857,7 @@ void MyPresentableObject::Compute (const Handle(Prs3d_Projector)& theProjector,
 
 @subsubsection occt_visu_4_5_6 Create primitives in the interactive object
 
-Get the group used in *Prs3d_Presentation*.
+Get the group used in *Graphic3d_Structure*.
 
 ~~~~~
 Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();

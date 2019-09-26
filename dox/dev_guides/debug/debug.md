@@ -198,7 +198,7 @@ Json output for Bnd_OBB (using command 'bounding v -obb -dumpJson'):
 
 @subsection occt_debug_vstudio_command Command window 
 
-Visual Studio debugger provides the Command Window (can be activated from menu <b>View / Other Windows / Command Window</b>), which can be used to evaluate variables and expressions interactively in a debug session (see http://msdn.microsoft.com/en-us/library/c785s0kz.aspx). Note that the Immediate Window can also be used but it has some limitations, e.g. does not support aliases.
+Visual Studio debugger provides the Command Window (can be activated from menu <b>View / Other Windows / Command Window</b>), which can be used to evaluate variables and expressions interactively in a debug session (see https://msdn.microsoft.com/en-us/library/c785s0kz.aspx). Note that the Immediate Window can also be used but it has some limitations, e.g. does not support aliases.
 
 When the execution is interrupted by a breakpoint, you can use this window to call the above described functions in context of the currently debugged function. Note that in most cases you will need to specify explicitly context of the function by indicating the name of the DLL where it is defined.
 

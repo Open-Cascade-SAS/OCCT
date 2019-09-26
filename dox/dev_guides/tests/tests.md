@@ -347,7 +347,7 @@ The test group may contain *parse.rules* file. This file defines patterns used f
 
 Each line in the file should specify a status (single word), followed by a regular expression delimited by slashes (*/*) that will be matched against lines in the test output log to check if it corresponds to this status.
 
-The regular expressions should follow <a href="http://www.tcl.tk/man/tcl/TclCmd/re_syntax.htm">Tcl syntax</a>, with a special exception that "\b" is considered as word limit (Perl-style), in addition to "\y" used in Tcl.
+The regular expressions should follow <a href="https://www.tcl.tk/man/tcl/TclCmd/re_syntax.htm">Tcl syntax</a>, with a special exception that "\b" is considered as word limit (Perl-style), in addition to "\y" used in Tcl.
 
 The rest of the line can contain a comment message, which will be added to the test report when this status is detected.
 
@@ -622,7 +622,7 @@ The new test created for an unsolved problem should return BAD. The new test cre
 
 @subsection testmanual_3_6 Marking BAD cases
 
-If the test produces an invalid result at a certain moment then the corresponding bug should be created in the OCCT issue tracker located at http://tracker.dev.opencascade.org, and the problem should be marked as TODO in the test script.
+If the test produces an invalid result at a certain moment then the corresponding bug should be created in the OCCT issue tracker located at https://tracker.dev.opencascade.org, and the problem should be marked as TODO in the test script.
 
 The following statement should be added to such a test script:
 ~~~~~

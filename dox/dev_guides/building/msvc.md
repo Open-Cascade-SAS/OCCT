@@ -18,7 +18,7 @@ If you have official distribution with project files included, you can use them 
 
 Before building OCCT, make sure to have all the required third-party libraries installed.
 
-The easiest way to install third-party libraries is to download archive with pre-built binaries, corresponding to version of Visual Studio you are using, from http://www.opencascade.com/content/3rd-party-components.
+The easiest way to install third-party libraries is to download archive with pre-built binaries, corresponding to version of Visual Studio you are using, from https://www.opencascade.com/content/3rd-party-components.
 
 You can also build third-party libraries from their sources, see @ref occt_dev_guides__building_3rdparty_windows for instructions.
 
@@ -37,6 +37,8 @@ If you have Visual Studio projects already available (pre-installed or generated
 | vc14-uwp  | 2015 (14)             | UWP (Universal Windows Platform) | vc14-uwp |
 | vc141     | 2017 (15)             | Desktop (Windows API)            | vc14 |
 | vc141-uwp | 2017 (15)             | UWP (Universal Windows Platform) | vc14-uwp |
+| vc142     | 2019 (16)             | Desktop (Windows API)            | vc14 |
+| vc142-uwp | 2019 (16)             | UWP (Universal Windows Platform) | vc14-uwp |
 
 * *ARCH* -- architecture (32 or 64), affects only *PATH* variable for execution
 * <i>HAVE_*</i> -- flags to enable or disable use of optional third-party products

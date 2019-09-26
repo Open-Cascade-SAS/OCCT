@@ -8,7 +8,7 @@ This document presents additional guidelines for building third-party products
 used by Open CASCADE Technology and samples on Mac OS X platform (10.6.4  and later). 
 
 The links for downloading the third-party products are available 
-on the web site of OPEN CASCADE SAS at http://www.opencascade.com/content/3rd-party-components. 
+on the web site of OPEN CASCADE SAS at https://www.opencascade.com/content/3rd-party-components.
 
 There are two types of third-party products, which are  necessary to build OCCT: 
   
@@ -27,7 +27,7 @@ Tcl/Tk is required for DRAW test harness. Version 8.5 or  8.6 can be used with O
 
 @subsubsection dev_guides__building_3rdparty_osx_2_1_2 Installation from sources: Tcl 8.5
 
-Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+Download the necessary archive from https://www.tcl.tk/software/tcltk/download.html and unpack it.
 
 1. Enter the *macosx* sub-directory of the directory where the Tcl source files are located <i>(TCL_SRC_DIR)</i>. 
 
@@ -50,7 +50,7 @@ Download the necessary archive from http://www.tcl.tk/software/tcltk/download.ht
 
 @subsubsection dev_guides__building_3rdparty_osx_2_1_3 Installation from sources: Tk 8.5
 
-Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+Download the necessary archive from https://www.tcl.tk/software/tcltk/download.html and unpack it.
 
 1. Enter the *macosx* sub-directory of the directory where the  source files of Tk are located <i>(TK_SRC_DIR)</i>. 
 
@@ -74,7 +74,7 @@ Download the necessary archive from http://www.tcl.tk/software/tcltk/download.ht
   
 FreeType is required for text display in the 3D viewer. 
 
-Download the necessary archive from http://sourceforge.net/projects/freetype/files/ and unpack it. 
+Download the necessary archive from https://sourceforge.net/projects/freetype/files/ and unpack it.
 
 1. Enter the directory where the source files of FreeType  are located <i>(FREETYPE_SRC_DIR)</i>. 
 
@@ -100,7 +100,7 @@ Download the necessary archive from http://sourceforge.net/projects/freetype/fil
 @subsection dev_guides__building_3rdparty_osx_3_1 TBB 3.x or 4.x
 
 This third-party product is installed with binaries from the archive 
-that can be downloaded from http://threadingbuildingblocks.org/. 
+that can be downloaded from https://github.com/intel/tbb.
 Go to the **Download** page, find the release version you need (e.g. *tbb30_018oss*) 
 and  pick the archive for Mac OS X platform. 
 To install, unpack the downloaded archive of TBB 3.0 product (*tbb30_018oss_osx.tgz*).
@@ -108,12 +108,12 @@ To install, unpack the downloaded archive of TBB 3.0 product (*tbb30_018oss_osx.
 @subsection dev_guides__building_3rdparty_osx_3_3 FreeImage 3.14.1 or 3.15.x
 
 Download the necessary archive from 
-http://sourceforge.net/projects/freeimage/files/Source%20Distribution/   
+https://sourceforge.net/projects/freeimage/files/Source%20Distribution/
 and unpack it. The directory with unpacked sources is  further referred to as *FREEIMAGE_SRC_DIR*.  
 
 Note that for building FreeImage on Mac OS X 10.7 you should replace *Makefile.osx* 
 in *FREEIMAGE_SRC_DIR* by the corrected file, which you can find in attachment to issue #22811 in OCCT Mantis bug tracker 
-(http://tracker.dev.opencascade.org/file_download.php?file_id=6937&type=bug). 
+(https://tracker.dev.opencascade.org/file_download.php?file_id=6937&type=bug).
 
 1. If you build FreeImage 3.15.x you can skip this  step. 
    Modify <i>FREEIMAGE_SRC_DIR/Source/OpenEXR/Imath/ImathMatrix.h:</i> 

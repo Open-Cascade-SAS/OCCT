@@ -438,7 +438,7 @@ proc about {} {
   .about.links.text tag bind link1 <Leave> ".about.links.text configure -cursor arrow"
   .about.links.text tag configure link1 -underline true -justify center
   pack .about.links.text -fill both
-  label .about.copyright.text -text "Copyright (c) 1999-2014 OPEN CASCADE SAS"
+  label .about.copyright.text -text "Copyright (c) 1999-2019 OPEN CASCADE SAS"
   button .about.button -text "OK" -command "destroy .about"
   pack .about.button -padx 10 -pady 10
   pack .about.copyright.text

@@ -12,15 +12,15 @@ This document provides practical guidelines for generation and editing of OCCT u
 You need to have the following software installed to generate the documentation.
 
 **Tcl/Tk**
-Version 8.5 or 8.6: http://www.tcl.tk/software/tcltk/download.html
+Version 8.5 or 8.6: https://www.tcl.tk/software/tcltk/download.html
 
 **Doxygen**
-Version 1.8.4 or above: http://www.stack.nl/~dimitri/doxygen/download.html
+Version 1.8.4 or above: http://www.doxygen.nl/download.html
 
 **Dot**
-Part of Graphviz software, used by Doxygen for generation of class diagrams in Reference Manual: http://www.graphviz.org/Download..php
+Part of Graphviz software, used by Doxygen for generation of class diagrams in Reference Manual: https://www.graphviz.org/download/
 
-**MiKTeX** or other package providing **pdflatex** command (only needed for generation of PDF documents): http://miktex.org/download
+**MiKTeX** or other package providing **pdflatex** command (only needed for generation of PDF documents): https://miktex.org/download
 
 **Inkscape** (only needed for generation of PDF documents containing SVG images): http://www.inkscape.org/download
 

@@ -24,7 +24,7 @@ File translation is performed in the programming mode, via C++ calls.
 
 For testing the STEP component in DRAW Test Harness, a set of commands for reading and writing STEP files and analysis of relevant data are provided by the *TKXSDRAW* plugin. 
 
-See also our <a href="http://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+See also our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
 
 @subsection occt_step_1_1 STEP Exchanges in Open Cascade technology
 
@@ -123,7 +123,7 @@ For further information see 2.4 Mapping STEP entities to Open CASCADE Technology
 Before performing any other operation you have to load the file with: 
 ~~~~~
 STEPControl_Reader reader; 
-IFSelect_ReturnStatus stat = reader.ReadFile(;filename.stp;); 
+IFSelect_ReturnStatus stat = reader.ReadFile("filename.stp");
 ~~~~~
 Loading the file only memorizes the data, it does not translate it. 
 
@@ -602,21 +602,21 @@ Not all entities defining the assembly structure in the STEP file are translated
 | Placements | axis1_placement | Geom_Axis1Placement | |  
 | | axis2_placement_2d | Geom2d_AxisPlacement | |
 | | axis2_placement_3d | Geom_Axis2Placement | | 
-| Curves | circle | Geom_Circle, Geom2d_Circle, Geom2d_BsplineCurve | Circle is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
-| | ellipse | Geom_Ellipse, Geom2d_Ellipse, Geom2d_BsplineCurve | Ellipse is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
+| Curves | circle | Geom_Circle, Geom2d_Circle, Geom2d_BSplineCurve | Circle is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
+| | ellipse | Geom_Ellipse, Geom2d_Ellipse, Geom2d_BSplineCurve | Ellipse is translated into *Geom2d_BSplineCurve* when it references the surface of revolution (spherical surface, conical surface, etc.) |
 | | hyperbola | Geom_Hyperbola, Geom2d_Hyperbola | | 
 | | line | Geom_Line, Geom2d_Line | | 
 | | parabola | Geom_Parabola, Geom2d_Parabola | |  
 | | pcurve  | Geom2d_Curve | Pcurve in edge | 
 | | curve_replica | Geom_Curve or Geom2d_Curve | Depending on the type of the base curve |
 | | offset_curve_3d | Geom_OffsetCurve | | 
-| | trimmed_curve | Geom_TrimmedCurve or Geom2d_BsplineCurve | Only trimmed_curves trimmed by parameters are translated. All *trimmed_curves* are converted to *Geom2d_BSplineCurve*. |
-| | b_spline_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | |  
-| | b_spline_curve_with_knots | Geom_BsplineCurve or Geom2d_BsplineCurve | |
-| | bezier_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | | 
-| | rational_b_spline_curve | Geom_BsplineCurve or  Geom2d_BsplineCurve | | 
-| | uniform_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | | 
-| | quasi_ uniform_curve | Geom_BsplineCurve or Geom2d_BsplineCurve | |
+| | trimmed_curve | Geom_TrimmedCurve or Geom2d_BSplineCurve | Only trimmed_curves trimmed by parameters are translated. All *trimmed_curves* are converted to *Geom2d_BSplineCurve*. |
+| | b_spline_curve | Geom_BSplineCurve or Geom2d_BSplineCurve | |
+| | b_spline_curve_with_knots | Geom_BSplineCurve or Geom2d_BSplineCurve | |
+| | bezier_curve | Geom_BSplineCurve or Geom2d_BSplineCurve | |
+| | rational_b_spline_curve | Geom_BSplineCurve or  Geom2d_BSplineCurve | |
+| | uniform_curve | Geom_BSplineCurve or Geom2d_BSplineCurve | |
+| | quasi_ uniform_curve | Geom_BSplineCurve or Geom2d_BSplineCurve | |
 | | surface_curve | TopoDS_Edge | *surface_curve* defines geometrical support of an edge and its pcurves. |
 | | seam_curve | TopoDS_Edge | The same as *surface_curve*  |
 | | composite_curve_segment | TopoDS_Edge | as a segment of *composite_curve* |
@@ -746,7 +746,7 @@ The following diagram illustrates the structure of calls in reading STEP. The hi
 Standard_Integer main() 
 { 
   STEPControl_Reader reader; 
-  reader.ReadFile(;MyFile.stp;); 
+  reader.ReadFile("MyFile.stp");
 
   // Loads file MyFile.stp 
   Standard_Integer NbRoots = reader.NbRootsForTransfer(); 
@@ -1037,8 +1037,8 @@ The table below describes STEP entities, which are created when the assembly str
 | | Geom2d_Ellipse | Ellipse, rational_b_spline_curve | |
 | | Geom_Hyperbola, Geom2d_Hyperbola |  Hyperbola | |
 | | Geom_Parabola, Geom2d_Parabola | Parabola | | 
-| | Geom_BSplineCurve | b_spline_curve_with_knots or rational_b_spline_curve | *rational_b_spline_curve* is produced if *Geom_BsplineCurve* is a rational BSpline |
-| |  Geom2d_BSplineCurve | b_spline_curve_with_knots or rational_b_spline_curve | *rational_b_spline_curve* is produced if *Geom2d_BsplineCurve* is a rational BSpline |
+| | Geom_BSplineCurve | b_spline_curve_with_knots or rational_b_spline_curve | *rational_b_spline_curve* is produced if *Geom_BSplineCurve* is a rational BSpline |
+| |  Geom2d_BSplineCurve | b_spline_curve_with_knots or rational_b_spline_curve | *rational_b_spline_curve* is produced if *Geom2d_BSplineCurve* is a rational BSpline |
 | | Geom_BezierCurve | b_spline_curve_with_knots | |
 | | Geom_Line  or Geom2d_Line | Line | |
 | Surfaces | Geom_Plane | Plane | |
@@ -1439,7 +1439,7 @@ where *doc* is a variable which contains a handle to the output document and sho
 @subsection occt_step_7_2 Attributes read from STEP 
 
 ### Colors
-Colors are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_prac_styling_org_v15.pdf">Recommended practices for model styling and organization</a> sections 4 and 5.
+Colors are implemented in accordance with <a href="https://www.cax-if.org/documents/rec_prac_styling_org_v15.pdf">Recommended practices for model styling and organization</a> sections 4 and 5.
 
 The following attributes are imported from STEP file:
 * colors linked to assemblies, solids, shells, faces/surfaces, wireframes, edges/curves and vertices/points;
@@ -1452,15 +1452,15 @@ The following attributes are mentioned in the Recommended Practices, but not han
 * point markers.
 
 ### Layers
-Layers are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_prac_styling_org_v15.pdf">Recommended practices  for model styling and organization</a> section 6.
+Layers are implemented in accordance with <a href="https://www.cax-if.org/documents/rec_prac_styling_org_v15.pdf">Recommended practices  for model styling and organization</a> section 6.
 All layers are imported, but invisibility styles are skipped.
 
 ### Materials
-Materials are implemented in accordance with <a href="http://www.cax-if.org/documents/RecPrac_MaterialDensity_v21.pdf">Recommended practices for material identification and density</a> section 4.
+Materials are implemented in accordance with <a href="https://www.cax-if.org/documents/RecPrac_MaterialDensity_v21.pdf">Recommended practices for material identification and density</a> section 4.
 OCCT translator processes materials attached to solids in shape representations. The name, description and density (name and value) are imported for each material. 
 
 ### Validation properties
-Validation properties are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_prac_gvp_v44.pdf">Recommended practices for geometric and assembly validation properties</a> section 4 for AP214.
+Validation properties are implemented in accordance with <a href="https://www.cax-if.org/documents/rec_prac_gvp_v44.pdf">Recommended practices for geometric and assembly validation properties</a> section 4 for AP214.
 OCCT processes several types of geometric validation properties for solids, shells and geometric sets:
 * area;
 * volume;
@@ -1530,7 +1530,7 @@ OCCT STEP Reader also handles Annotations, linked directly to shapes (section 9.
 Simple types of GD&T (Dimensions, Tolerances and Datums without presentations or any types of modifiers) are also handled in AP214. However, according to the Recommended Practices for the Representation and Presentation of Product Manufacturing, this implementation is obsolete.
 
 ### Saved views
-Saved views are implemented in accordance with <a href="http://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">Recommended practices for the Representation and Presentation of Product Manufacturing</a> section 9.4.1-9.4.4.
+Saved views are implemented in accordance with <a href="https://www.cax-if.org/documents/rec_pracs_pmi_v40.pdf">Recommended practices for the Representation and Presentation of Product Manufacturing</a> section 9.4.1-9.4.4.
 For each Saved View OCCT STEP Reader will retrieve the following attributes:
 - set of displayed shape representations;
 - set of displayed PMI presentations;
