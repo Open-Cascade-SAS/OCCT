@@ -114,7 +114,7 @@ private:
   Standard_Integer NumWire;
   Standard_Integer NumEdge;
   Standard_Integer myCurEdge;
-
+  Standard_Real myCurEdgePar;
 
 };
 

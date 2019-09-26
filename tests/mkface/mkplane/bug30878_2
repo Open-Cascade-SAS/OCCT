@@ -1,0 +1,11 @@
+puts "REQUIRED ALL: Error. mkplane has been finished with \"Not Planar\" status."
+puts "REQUIRED ALL: Error : The mkface can not be built."
+
+puts "============="
+puts "0030878: Modeling Algorithms - BRepLib_MakeFace produces face with abnormal surface"
+puts "============="
+
+brestore [locate_data_file bug30878_wire2.brep] w
+
+mkplane result w 1
+

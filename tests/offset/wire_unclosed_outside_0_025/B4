@@ -1,4 +1,6 @@
-puts "TODO OCC25109 ALL: Faulty shapes in variables"
+puts "TODO OCC31005 ALL: Faulty shapes in variables"
+puts "TODO OCC31005 ALL: Error : The length of result shape is"
+puts "TODO OCC31005 ALL: Error : The resulting shape is WRONG"
 
 restore [locate_data_file case_3_wire2.brep] s
 
