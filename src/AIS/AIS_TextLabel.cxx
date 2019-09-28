@@ -44,8 +44,7 @@ AIS_TextLabel::AIS_TextLabel()
   myHasFlipping      (Standard_False)
 {
   myDrawer->SetTextAspect (new Prs3d_TextAspect());
-
-  SetDisplayMode (0);
+  myDrawer->SetDisplayMode (0);
 }
 
 //=======================================================================

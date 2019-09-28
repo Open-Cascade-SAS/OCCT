@@ -32,6 +32,9 @@ public:
   //! Default constructor
   Standard_EXPORT AIS_TextLabel();
 
+  //! Return TRUE for supported display mode.
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const Standard_OVERRIDE { return theMode == 0; }
+
   //! Setup color of entire text.
   Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
 

@@ -79,6 +79,12 @@ void AIS_ConnectedInteractive::connect (const Handle(AIS_InteractiveObject)& the
 
   if (!myReference.IsNull())
   {
+    if (myReference->HasInteractiveContext()
+     && myReference->GetContext()->DisplayStatus (myReference) != AIS_DS_None)
+    {
+      myReference.Nullify();
+      throw Standard_ProgramError("AIS_ConnectedInteractive::Connect() - connected object should NOT be displayed in context");
+    }
     myTypeOfPresentation3d = myReference->TypeOfPresentation3d();
   }
   setLocalTransformation (theLocation);
