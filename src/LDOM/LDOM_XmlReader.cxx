@@ -112,17 +112,20 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStr
       }
       else
       {
-      // If we are reading some data, save the beginning and preserve the state
+        // If we are reading some data, save the beginning and preserve the state
         if (aStartData /* && aState != STATE_WAITING */) {
           if (myPtr > aStartData)
             theData.rdbuf()->sputn(aStartData, myPtr - aStartData);
           aStartData = &myBuffer[0];
         }
-      // Copy the rest of file data to the beginning of buffer
+        // Copy the rest of file data to the beginning of buffer
         if (aBytesRest > 0)
-          memcpy (&myBuffer[0], myPtr, aBytesRest);
+        {
+          // do not use memcpy here because aBytesRest may be greater than myPtr-myBuffer, so, overlap
+          memmove (&myBuffer[0], myPtr, aBytesRest);
+        }
 
-      // Read the full buffer and reset start and end buffer pointers
+        // Read the full buffer and reset start and end buffer pointers
         myPtr    = &myBuffer[0];
         Standard_Size aNBytes;
 
