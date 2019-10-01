@@ -1224,9 +1224,9 @@ Standard_Boolean BRepMesh_Delaun::checkIntersection(
 //function : addTriangle
 //purpose  : Add a triangle based on the given oriented edges into mesh
 //=======================================================================
-inline void BRepMesh_Delaun::addTriangle( const Standard_Integer (&theEdgesId)[3],
-                                          const Standard_Boolean (&theEdgesOri)[3],
-                                          const Standard_Integer (&theNodesId)[3] )
+void BRepMesh_Delaun::addTriangle( const Standard_Integer (&theEdgesId)[3],
+                                   const Standard_Boolean (&theEdgesOri)[3],
+                                   const Standard_Integer (&theNodesId)[3] )
 {
   Standard_Integer aNewTriangleId = 
     myMeshData->AddElement(BRepMesh_Triangle(theEdgesId, 
@@ -1890,7 +1890,7 @@ void BRepMesh_Delaun::meshPolygon(IMeshData::SequenceOfInteger&   thePolygon,
 //function : meshElementaryPolygon
 //purpose  : Triangulation of closed polygon containing only three edges.
 //=======================================================================
-inline Standard_Boolean BRepMesh_Delaun::meshElementaryPolygon( 
+Standard_Boolean BRepMesh_Delaun::meshElementaryPolygon(
   const IMeshData::SequenceOfInteger& thePolygon)
 {
   Standard_Integer aPolyLen = thePolygon.Length();

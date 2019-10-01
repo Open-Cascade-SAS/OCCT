@@ -862,7 +862,7 @@ Standard_Boolean ShapeFix_Edge::FixSameParameter(const TopoDS_Edge& edge,
 //purpose  : 
 //=======================================================================
 
-inline Handle(ShapeBuild_ReShape) ShapeFix_Edge::Context() const
+Handle(ShapeBuild_ReShape) ShapeFix_Edge::Context() const
 {
   return myContext;
 }

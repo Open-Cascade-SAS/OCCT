@@ -80,7 +80,7 @@ Standard_Boolean MeshVS_DummySensitiveEntity::HasInitLocation() const
 //function : InvInitLocation
 //purpose  :
 //=======================================================================
-inline gp_GTrsf MeshVS_DummySensitiveEntity::InvInitLocation() const
+gp_GTrsf MeshVS_DummySensitiveEntity::InvInitLocation() const
 {
   return gp_GTrsf();
 }

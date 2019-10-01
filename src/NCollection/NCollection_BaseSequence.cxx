@@ -20,12 +20,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_DomainError.hxx>
 
-inline void NCollection_BaseSequence::Nullify ()
-{
-  myFirstItem = myLastItem = myCurrentItem = NULL;
-  myCurrentIndex = mySize = 0;
-}
-
 //=======================================================================
 //function : ClearSeq
 //purpose  : removes all items from the current sequence

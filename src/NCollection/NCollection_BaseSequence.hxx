@@ -163,7 +163,12 @@ public:
   // 
   Standard_EXPORT NCollection_BaseSequence
                            (const NCollection_BaseSequence& Other);
-  inline void Nullify ();
+  void Nullify()
+  {
+    myFirstItem = myLastItem = myCurrentItem = NULL;
+    myCurrentIndex = mySize = 0;
+  }
+
   friend class Iterator;
 };
 
