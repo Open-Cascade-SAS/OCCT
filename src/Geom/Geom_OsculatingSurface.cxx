@@ -446,7 +446,6 @@ Standard_Boolean  Geom_OsculatingSurface::BuildOsculatingSurface
   const Handle(Geom_BSplineSurface)& BS,
   Handle(Geom_BSplineSurface)& BSpl) const
 {
-  Standard_Integer i, j;
   Standard_Boolean OsculSurf=Standard_True;
 #ifdef OCCT_DEBUG
   std::cout<<"t = "<<Param<<std::endl;
@@ -492,7 +491,7 @@ Standard_Boolean  Geom_OsculatingSurface::BuildOsculatingSurface
     MaxUDegree = (Standard_Integer ) udeg;
     MaxVDegree = (Standard_Integer ) vdeg;
 
-    for (i=1;i<=2;i++) 
+    for (Standard_Integer i = 1; i <= 2; i++) 
     {
       PolynomialUIntervals->ChangeValue(i) = i-1;
       PolynomialVIntervals->ChangeValue(i) = i-1;
@@ -560,8 +559,6 @@ Standard_Boolean  Geom_OsculatingSurface::BuildOsculatingSurface
 
     VLocalIndex = 0;
     ULocalIndex = 0;
-    for(j = 1; j <= SVKnot; j++) VLocalIndex += BS->VMultiplicity(j);
-    for(i = 1; i <= SUKnot; i++) ULocalIndex += BS->UMultiplicity(i);
     ucacheparameter = BS->UKnot(SUKnot);
     vcacheparameter = BS->VKnot(SVKnot);
     vspanlength = BS->VKnot(SVKnot + 1) - BS->VKnot(SVKnot);

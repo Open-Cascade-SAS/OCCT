@@ -1,14 +1,7 @@
-puts "TODO OCC24621 Windows: An exception was caught"
-puts "TODO OCC24621 Windows: \\*\\* Exception \\*\\*.*"
-puts "TODO OCC24621 Windows: TEST INCOMPLETE"
-
 puts "========"
-puts "OCC24621"
+puts "OCC24621: F a i l e d to build Geom_OffsetSurface on B-Spline"
 puts "========"
 puts ""
-##################################################
-# Failed to build Geom_OffsetSurface on B-Spline
-##################################################
 
 restore [locate_data_file bug24621_bs.draw] bs
 
