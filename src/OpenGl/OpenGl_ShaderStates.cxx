@@ -46,27 +46,16 @@ void OpenGl_ProjectionState::Set (const OpenGl_Mat4& theProjectionMatrix)
 }
 
 // =======================================================================
-// function : ProjectionMatrix
-// purpose  : Returns current projection matrix
-// =======================================================================
-const OpenGl_Mat4& OpenGl_ProjectionState::ProjectionMatrix() const
-{
-  return myProjectionMatrix;
-}
-
-// =======================================================================
 // function : ProjectionMatrixInverse
 // purpose  : Returns inverse of current projection matrix
 // =======================================================================
 const OpenGl_Mat4& OpenGl_ProjectionState::ProjectionMatrixInverse() const
 {
-  if (!myInverseNeedUpdate)
+  if (myInverseNeedUpdate)
   {
-    return myProjectionMatrixInverse;
+    myInverseNeedUpdate = false;
+    myProjectionMatrix.Inverted (myProjectionMatrixInverse);
   }
-
-  myProjectionMatrix.Inverted (myProjectionMatrixInverse);
-
   return myProjectionMatrixInverse;
 }
 
@@ -91,27 +80,16 @@ void OpenGl_ModelWorldState::Set (const OpenGl_Mat4& theModelWorldMatrix)
 }
 
 // =======================================================================
-// function : ModelWorldMatrix
-// purpose  : Returns current model-world matrix
-// =======================================================================
-const OpenGl_Mat4& OpenGl_ModelWorldState::ModelWorldMatrix() const
-{
-  return myModelWorldMatrix;
-}
-
-// =======================================================================
 // function : ModelWorldMatrixInverse
 // purpose  : Returns inverse of current model-world matrix
 // =======================================================================
 const OpenGl_Mat4& OpenGl_ModelWorldState::ModelWorldMatrixInverse() const
 {
-  if (!myInverseNeedUpdate)
+  if (myInverseNeedUpdate)
   {
-    return myModelWorldMatrix;
+    myInverseNeedUpdate = false;
+    myModelWorldMatrix.Inverted (myModelWorldMatrixInverse);
   }
-
-  myModelWorldMatrix.Inverted (myModelWorldMatrixInverse);
-
   return myModelWorldMatrixInverse;
 }
 
@@ -136,27 +114,16 @@ void OpenGl_WorldViewState::Set (const OpenGl_Mat4& theWorldViewMatrix)
 }
 
 // =======================================================================
-// function : WorldViewMatrix
-// purpose  : Returns current world-view matrix
-// =======================================================================
-const OpenGl_Mat4& OpenGl_WorldViewState::WorldViewMatrix() const
-{
-  return myWorldViewMatrix;
-}
-
-// =======================================================================
 // function : WorldViewMatrixInverse
 // purpose  : Returns inverse of current world-view matrix
 // =======================================================================
 const OpenGl_Mat4& OpenGl_WorldViewState::WorldViewMatrixInverse() const
 {
-  if (!myInverseNeedUpdate)
+  if (myInverseNeedUpdate)
   {
-    return myWorldViewMatrix;
+    myInverseNeedUpdate = false;
+    myWorldViewMatrix.Inverted (myWorldViewMatrixInverse);
   }
-
-  myWorldViewMatrix.Inverted (myWorldViewMatrixInverse);
-
   return myWorldViewMatrixInverse;
 }
 

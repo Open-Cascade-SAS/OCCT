@@ -53,7 +53,7 @@ public:
   Standard_EXPORT void Set (const OpenGl_Mat4& theProjectionMatrix);
 
   //! Returns current projection matrix.
-  Standard_EXPORT const OpenGl_Mat4& ProjectionMatrix() const;
+  const OpenGl_Mat4& ProjectionMatrix() const { return myProjectionMatrix; }
 
   //! Returns inverse of current projection matrix.
   Standard_EXPORT const OpenGl_Mat4& ProjectionMatrixInverse() const;
@@ -62,7 +62,7 @@ private:
 
   OpenGl_Mat4         myProjectionMatrix;        //!< OCCT projection matrix
   mutable OpenGl_Mat4 myProjectionMatrixInverse; //!< Inverse of OCCT projection matrix
-  bool                myInverseNeedUpdate;       //!< Is inversed matrix outdated?
+  mutable bool        myInverseNeedUpdate;       //!< Is inversed matrix outdated?
 
 };
 
@@ -78,7 +78,7 @@ public:
   Standard_EXPORT void Set (const OpenGl_Mat4& theModelWorldMatrix);
 
   //! Returns current model-world matrix.
-  Standard_EXPORT const OpenGl_Mat4& ModelWorldMatrix() const;
+  const OpenGl_Mat4& ModelWorldMatrix() const { return myModelWorldMatrix; }
 
   //! Returns inverse of current model-world matrix.
   Standard_EXPORT const OpenGl_Mat4& ModelWorldMatrixInverse() const;
@@ -87,7 +87,7 @@ private:
 
   OpenGl_Mat4         myModelWorldMatrix;        //!< OCCT model-world matrix
   mutable OpenGl_Mat4 myModelWorldMatrixInverse; //!< Inverse of OCCT model-world matrix
-  bool                myInverseNeedUpdate;       //!< Is inversed matrix outdated?
+  mutable bool        myInverseNeedUpdate;       //!< Is inversed matrix outdated?
   
 };
 
@@ -103,7 +103,7 @@ public:
   Standard_EXPORT void Set (const OpenGl_Mat4& theWorldViewMatrix);
 
   //! Returns current world-view matrix.
-  Standard_EXPORT const OpenGl_Mat4& WorldViewMatrix() const;
+  const OpenGl_Mat4& WorldViewMatrix() const { return myWorldViewMatrix; }
 
   //! Returns inverse of current world-view matrix.
   Standard_EXPORT const OpenGl_Mat4& WorldViewMatrixInverse() const;
@@ -112,7 +112,7 @@ private:
 
   OpenGl_Mat4         myWorldViewMatrix;        //!< OCCT world-view matrix
   mutable OpenGl_Mat4 myWorldViewMatrixInverse; //!< Inverse of OCCT world-view matrix
-  bool                myInverseNeedUpdate;      //!< Is inversed matrix outdated?
+  mutable bool        myInverseNeedUpdate;      //!< Is inversed matrix outdated?
 
 };
 
