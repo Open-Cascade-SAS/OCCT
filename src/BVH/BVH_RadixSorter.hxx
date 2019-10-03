@@ -25,7 +25,7 @@
 #include <algorithm>
 
 //! Pair of Morton code and primitive ID.
-typedef std::pair<Standard_Integer, Standard_Integer> BVH_EncodedLink;
+typedef std::pair<unsigned int, Standard_Integer> BVH_EncodedLink;
 
 //! Performs radix sort of a BVH primitive set using
 //! 10-bit Morton codes (or 1024 x 1024 x 1024 grid).
@@ -65,31 +65,30 @@ namespace BVH
   // Radix sort STL predicate for 32-bit integer.
   struct BitPredicate
   {
-    Standard_Integer myBit;
+    unsigned int myBit;
 
     //! Creates new radix sort predicate.
-    BitPredicate (const Standard_Integer theBit) : myBit (theBit) {}
+    BitPredicate (const Standard_Integer theDigit) : myBit (1U << theDigit) {}
 
     //! Returns predicate value.
     bool operator() (const BVH_EncodedLink theLink) const
     {
-      const Standard_Integer aMask = 1 << myBit;
-      return !(theLink.first & aMask); // 0-bit to the left side
+      return !(theLink.first & myBit); // 0-bit to the left side
     }
   };
 
   //! STL compare tool used in binary search algorithm.
   struct BitComparator
   {
-    Standard_Integer myBit;
+    unsigned int myBit;
 
     //! Creates new STL comparator.
-    BitComparator (const Standard_Integer theBit) : myBit (theBit) {}
+    BitComparator (const Standard_Integer theDigit) : myBit (1U << theDigit) {}
 
     //! Checks left value for the given bit.
     bool operator() (BVH_EncodedLink theLink1, BVH_EncodedLink /*theLink2*/)
     {
-      return !(theLink1.first & (1 << myBit));
+      return !(theLink1.first & myBit);
     }
   };
 
@@ -158,12 +157,12 @@ namespace BVH
   protected:
 
     // Performs MSD (most significant digit) radix sort.
-    static void perform (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theBit = 29)
+    static void perform (LinkIterator theStart, LinkIterator theFinal, Standard_Integer theDigit = 29)
     {
-      while (theStart != theFinal && theBit >= 0)
+      while (theStart != theFinal && theDigit >= 0)
       {
-        LinkIterator anOffset = std::partition (theStart, theFinal, BitPredicate (theBit--));
-        perform (theStart, anOffset, theBit);
+        LinkIterator anOffset = std::partition (theStart, theFinal, BitPredicate (theDigit--));
+        perform (theStart, anOffset, theDigit);
         theStart = anOffset;
       }
     }
@@ -198,12 +197,12 @@ void BVH_RadixSorter<T, N>::Perform (BVH_Set<T, N>* theSet, const Standard_Integ
     const BVH_VecNt aCenter = theSet->Box (aPrimIdx).Center();
     const BVH_VecNt aVoxelF = (aCenter - aSceneMin) * aReverseSize;
 
-    Standard_Integer aMortonCode = 0;
+    unsigned int aMortonCode = 0;
     for (Standard_Integer aCompIter = 0; aCompIter < aNbEffComp; ++aCompIter)
     {
-      Standard_Integer aVoxel = BVH::IntFloor (BVH::VecComp<T, N>::Get (aVoxelF, aCompIter));
+      const Standard_Integer aVoxelI = BVH::IntFloor (BVH::VecComp<T, N>::Get (aVoxelF, aCompIter));
 
-      aVoxel = Max (0, Min (aVoxel, aDimension - 1));
+      unsigned int aVoxel = static_cast<unsigned int>(Max (0, Min (aVoxelI, aDimension - 1)));
 
       aVoxel = (aVoxel | (aVoxel << 16)) & 0x030000FF;
       aVoxel = (aVoxel | (aVoxel <<  8)) & 0x0300F00F;

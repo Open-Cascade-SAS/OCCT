@@ -106,10 +106,11 @@ Standard_Integer BVH_LinearBuilder<T, N>::lowerBound (const NCollection_Array1<B
                                                       Standard_Integer theDigit) const
 {
   Standard_Integer aNbPrims = theFinal - theStart;
+  unsigned int aBit = 1U << theDigit;
   while (aNbPrims > 0)
   {
     const Standard_Integer aStep = aNbPrims / 2;
-    if (theEncodedLinks.Value (theStart + aStep).first & (1 << theDigit))
+    if (theEncodedLinks.Value (theStart + aStep).first & aBit)
     {
       aNbPrims = aStep;
     }
@@ -130,26 +131,26 @@ Standard_Integer BVH_LinearBuilder<T, N>::lowerBound (const NCollection_Array1<B
 template<class T, int N>
 Standard_Integer BVH_LinearBuilder<T, N>::emitHierachy (BVH_Tree<T, N>*        theBVH,
                                                         const NCollection_Array1<BVH_EncodedLink>& theEncodedLinks,
-                                                        const Standard_Integer theBit,
+                                                        const Standard_Integer theDigit,
                                                         const Standard_Integer theShift,
                                                         const Standard_Integer theStart,
                                                         const Standard_Integer theFinal) const
 {
   if (theFinal - theStart > BVH_Builder<T, N>::myLeafNodeSize)
   {
-    const Standard_Integer aPosition = theBit < 0 ?
-      (theStart + theFinal) / 2 : lowerBound (theEncodedLinks, theStart, theFinal, theBit);
+    const Standard_Integer aPosition = theDigit < 0 ?
+      (theStart + theFinal) / 2 : lowerBound (theEncodedLinks, theStart, theFinal, theDigit);
     if (aPosition == theStart || aPosition == theFinal)
     {
-      return emitHierachy (theBVH, theEncodedLinks, theBit - 1, theShift, theStart, theFinal);
+      return emitHierachy (theBVH, theEncodedLinks, theDigit - 1, theShift, theStart, theFinal);
     }
 
     // Build inner node
     const Standard_Integer aNode = theBVH->AddInnerNode (0, 0);
     const Standard_Integer aRghNode = theShift + aPosition - theStart;
 
-    const Standard_Integer aLftChild = emitHierachy (theBVH, theEncodedLinks, theBit - 1, theShift, theStart, aPosition);
-    const Standard_Integer aRghChild = emitHierachy (theBVH, theEncodedLinks, theBit - 1, aRghNode, aPosition, theFinal);
+    const Standard_Integer aLftChild = emitHierachy (theBVH, theEncodedLinks, theDigit - 1, theShift, theStart, aPosition);
+    const Standard_Integer aRghChild = emitHierachy (theBVH, theEncodedLinks, theDigit - 1, aRghNode, aPosition, theFinal);
 
     theBVH->NodeInfoBuffer()[aNode].y() = aLftChild;
     theBVH->NodeInfoBuffer()[aNode].z() = aRghChild;
