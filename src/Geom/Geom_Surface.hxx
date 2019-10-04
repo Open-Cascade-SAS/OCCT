@@ -17,23 +17,12 @@
 #ifndef _Geom_Surface_HeaderFile
 #define _Geom_Surface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Geom_Curve.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
-class Standard_RangeError;
-class Standard_NoSuchObject;
-class Geom_UndefinedDerivative;
-class Geom_UndefinedValue;
+
 class gp_Trsf;
 class gp_GTrsf2d;
 class gp_Pnt;
 class gp_Vec;
-
 
 class Geom_Surface;
 DEFINE_STANDARD_HANDLE(Geom_Surface, Geom_Geometry)

@@ -17,22 +17,8 @@
 #ifndef _Geom_Conic_HeaderFile
 #define _Geom_Conic_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <gp_Ax2.hxx>
 #include <Geom_Curve.hxx>
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-class Standard_ConstructionError;
-class Standard_RangeError;
-class Standard_DomainError;
-class gp_Ax1;
-class gp_Pnt;
-class gp_Ax2;
-
 
 class Geom_Conic;
 DEFINE_STANDARD_HANDLE(Geom_Conic, Geom_Curve)
@@ -62,27 +48,36 @@ DEFINE_STANDARD_HANDLE(Geom_Conic, Geom_Curve)
 //! also defines the origin of the parameter of the conic.
 class Geom_Conic : public Geom_Curve
 {
-
 public:
-
   
   //! Changes the orientation of the conic's plane. The normal
   //! axis to the plane is A1. The XAxis and the YAxis are recomputed.
   //!
   //! raised if the A1 is parallel to the XAxis of the conic.
-  Standard_EXPORT void SetAxis (const gp_Ax1& A1);
+  void SetAxis (const gp_Ax1& theA1) { pos.SetAxis(theA1); }
   
   //! changes the location point of the conic.
-  Standard_EXPORT void SetLocation (const gp_Pnt& P);
+  void SetLocation (const gp_Pnt& theP) { pos.SetLocation(theP); }
   
   //! changes the local coordinate system of the conic.
-  Standard_EXPORT void SetPosition (const gp_Ax2& A2);
+  void SetPosition (const gp_Ax2& theA2) { pos = theA2; }
   
   //! Returns the "main Axis" of this conic. This axis is
   //! normal to the plane of the conic.
-  Standard_EXPORT gp_Ax1 Axis() const;
-  
+  const gp_Ax1& Axis() const { return pos.Axis(); }  
 
+  //! Returns the location point of the conic.
+  //! For the circle, the ellipse and the hyperbola it is the center of
+  //! the conic. For the parabola it is the Apex of the parabola.
+  const gp_Pnt& Location() const { return pos.Location(); }
+  
+  //! Returns the local coordinates system of the conic.
+  //! The main direction of the Axis2Placement is normal to the
+  //! plane of the conic. The X direction of the Axis2placement
+  //! is in the plane of the conic and corresponds to the origin
+  //! for the conic's parametric value u.
+  const gp_Ax2& Position() const { return pos; }
+  
   //! Returns the eccentricity value of the conic e.
   //! e = 0 for a circle
   //! 0 < e < 1 for an ellipse  (e = 0 if MajorRadius = MinorRadius)
@@ -91,22 +86,7 @@ public:
   //! Exceptions
   //! Standard_DomainError in the case of a hyperbola if
   //! its major radius is null.
-  Standard_EXPORT virtual Standard_Real Eccentricity() const = 0;
-  
-
-  //! Returns the location point of the conic.
-  //! For the circle, the ellipse and the hyperbola it is the center of
-  //! the conic. For the parabola it is the Apex of the parabola.
-  Standard_EXPORT gp_Pnt Location() const;
-  
-
-  //! Returns the local coordinates system of the conic.
-  //! The main direction of the Axis2Placement is normal to the
-  //! plane of the conic. The X direction of the Axis2placement
-  //! is in the plane of the conic and corresponds to the origin
-  //! for the conic's parametric value u.
-  Standard_EXPORT const gp_Ax2& Position() const;
-  
+  virtual Standard_Real Eccentricity() const = 0;
 
   //! Returns the XAxis of the conic.
   //! This axis defines the origin of parametrization of the conic.
@@ -136,28 +116,10 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(Geom_Conic,Geom_Curve)
 
 protected:
-
-
   gp_Ax2 pos;
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom_Conic_HeaderFile

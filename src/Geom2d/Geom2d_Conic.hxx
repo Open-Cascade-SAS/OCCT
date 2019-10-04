@@ -17,21 +17,8 @@
 #ifndef _Geom2d_Conic_HeaderFile
 #define _Geom2d_Conic_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <gp_Ax22d.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Standard_Real.hxx>
-#include <GeomAbs_Shape.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-class Standard_ConstructionError;
-class Standard_DomainError;
-class gp_Ax22d;
-class gp_Ax2d;
-class gp_Pnt2d;
-
 
 class Geom2d_Conic;
 DEFINE_STANDARD_HANDLE(Geom2d_Conic, Geom2d_Curve)
@@ -53,30 +40,31 @@ DEFINE_STANDARD_HANDLE(Geom2d_Conic, Geom2d_Curve)
 //! the parameter of the conic.
 class Geom2d_Conic : public Geom2d_Curve
 {
-
 public:
 
-  
   //! Modifies this conic, redefining its local coordinate system
-  //! partially, by assigning P as its origin
-  Standard_EXPORT void SetAxis (const gp_Ax22d& A);
+  //! partially, by assigning theA as its axis
+  void SetAxis (const gp_Ax22d& theA) { pos.SetAxis(theA); }
   
-  Standard_EXPORT void SetXAxis (const gp_Ax2d& A);
-  
-  //! Assigns the origin and unit vector of axis A to the
-  //! origin of the local coordinate system of this conic and either:
-  //! - its "X Direction", or
-  //! - its "Y Direction".
+  //! Assigns the origin and unit vector of axis theA to the
+  //! origin of the local coordinate system of this conic and X Direction.
   //! The other unit vector of the local coordinate system
-  //! of this conic is recomputed normal to A, without
+  //! of this conic is recomputed normal to theA, without
   //! changing the orientation of the local coordinate
   //! system (right-handed or left-handed).
-  Standard_EXPORT void SetYAxis (const gp_Ax2d& A);
+  void SetXAxis (const gp_Ax2d& theAX) { pos.SetXAxis(theAX); }
+  
+  //! Assigns the origin and unit vector of axis theA to the
+  //! origin of the local coordinate system of this conic and Y Direction.
+  //! The other unit vector of the local coordinate system
+  //! of this conic is recomputed normal to theA, without
+  //! changing the orientation of the local coordinate
+  //! system (right-handed or left-handed).
+  void SetYAxis (const gp_Ax2d& theAY) { pos.SetXAxis(theAY); }
   
   //! Modifies this conic, redefining its local coordinate
-  //! system fully, by assigning A as this coordinate system.
-  Standard_EXPORT void SetLocation (const gp_Pnt2d& P);
-  
+  //! system partially, by assigning theP as its origin.
+  void SetLocation (const gp_Pnt2d& theP) { pos.SetLocation(theP); }
 
   //! Returns the "XAxis" of the conic.
   //! This axis defines the origin of parametrization of the conic.
@@ -102,12 +90,10 @@ public:
   //! Returns the location point of the conic.
   //! For the circle, the ellipse and the hyperbola it is the center of
   //! the conic. For the parabola it is the vertex of the parabola.
-  Standard_EXPORT gp_Pnt2d Location() const;
+  const gp_Pnt2d& Location() const { return pos.Location(); }
   
-
   //! Returns the local coordinates system of the conic.
-  Standard_EXPORT const gp_Ax22d& Position() const;
-  
+  const gp_Ax22d& Position() const { return pos; }
 
   //! Reverses the direction of parameterization of <me>.
   //! The local coordinate system of the conic is modified.
@@ -120,32 +106,13 @@ public:
   //! Returns GeomAbs_CN which is the global continuity of any conic.
   Standard_EXPORT GeomAbs_Shape Continuity() const Standard_OVERRIDE;
   
-
   //! Returns True, the order of continuity of a conic is infinite.
   Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Conic,Geom2d_Curve)
 
 protected:
-
-
   gp_Ax22d pos;
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _Geom2d_Conic_HeaderFile
