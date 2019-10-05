@@ -13,6 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#ifdef _WIN32
+  #include <windows.h>
+#endif
+
 #include <Message_PrinterOStream.hxx>
 
 #include <OSD_OpenFile.hxx>
@@ -32,7 +36,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_PrinterOStream,Message_Printer)
 Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLevel)
 : myStream  (&std::cout),
   myIsFile  (Standard_False),
-  myUseUtf8 (Standard_False)
+  myUseUtf8 (Standard_False),
+  myToColorize (Standard_False)
 {
   myTraceLevel = theTraceLevel;
 }
@@ -46,7 +51,9 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
                                                 const Standard_Boolean theToAppend,
                                                 const Message_Gravity  theTraceLevel)
 : myStream (&std::cout),
-  myIsFile (Standard_False)
+  myIsFile (Standard_False),
+  myUseUtf8 (Standard_False),
+  myToColorize (Standard_False)
 {
   myTraceLevel = theTraceLevel;
   if (strcasecmp(theFileName, "cerr") == 0)
@@ -112,10 +119,55 @@ void Message_PrinterOStream::Send (const Standard_CString theString,
 				   const Message_Gravity theGravity,
 				   const Standard_Boolean putEndl) const
 {
-  if ( theGravity < myTraceLevel || ! myStream ) return;
-  Standard_OStream* ostr = (Standard_OStream*)myStream;
-  (*ostr) << theString;
-  if ( putEndl ) (*ostr) << std::endl;
+  if (theGravity < myTraceLevel
+   || myStream == NULL)
+  {
+    return;
+  }
+
+  Message_ConsoleColor aColor = Message_ConsoleColor_Default;
+  bool toIntense = false;
+  if (myToColorize && !myIsFile)
+  {
+    switch(theGravity)
+    {
+      case Message_Trace:
+        aColor = Message_ConsoleColor_Yellow;
+        break;
+      case Message_Info:
+        aColor = Message_ConsoleColor_Green;
+        toIntense = true;
+        break;
+      case Message_Warning:
+        aColor = Message_ConsoleColor_Yellow;
+        toIntense = true;
+        break;
+      case Message_Alarm:
+        aColor = Message_ConsoleColor_Red;
+        toIntense = true;
+        break;
+      case Message_Fail:
+        aColor = Message_ConsoleColor_Red;
+        toIntense = true;
+        break;
+    }
+  }
+
+  Standard_OStream* aStream = (Standard_OStream*)myStream;
+  if (toIntense || aColor != Message_ConsoleColor_Default)
+  {
+    SetConsoleTextColor (aStream, aColor, toIntense);
+    *aStream << theString;
+    SetConsoleTextColor (aStream, Message_ConsoleColor_Default, false);
+  }
+  else
+  {
+    *aStream << theString;
+  }
+  if (putEndl)
+  {
+    (*aStream) << std::endl;
+  }
 }
 
 //=======================================================================
@@ -141,4 +193,92 @@ void Message_PrinterOStream::Send (const TCollection_ExtendedString &theString,
 {
   TCollection_AsciiString aStr (theString, myUseUtf8 ? Standard_Character(0) : '?');
   Send (aStr.ToCString(), theGravity, putEndl);
+}
+
+//=======================================================================
+//function : SetConsoleTextColor
+//purpose  :
+//=======================================================================
+void Message_PrinterOStream::SetConsoleTextColor (Standard_OStream* theOStream,
+                                                  Message_ConsoleColor theTextColor,
+                                                  bool theIsIntenseText)
+{
+#ifdef _WIN32
+  // there is no difference between STD_OUTPUT_HANDLE/STD_ERROR_HANDLE for std::cout/std::cerr
+  (void )theOStream;
+  if (HANDLE anStdOut = GetStdHandle (STD_OUTPUT_HANDLE))
+  {
+    WORD aFlags = 0;
+    if (theIsIntenseText)
+    {
+      aFlags |= FOREGROUND_INTENSITY;
+    }
+    switch (theTextColor)
+    {
+      case Message_ConsoleColor_Default:
+      case Message_ConsoleColor_White:
+        aFlags |= FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        break;
+      case Message_ConsoleColor_Black:
+        break;
+      case Message_ConsoleColor_Red:
+        aFlags |= FOREGROUND_RED;
+        break;
+      case Message_ConsoleColor_Green:
+        aFlags |= FOREGROUND_GREEN;
+        break;
+      case Message_ConsoleColor_Blue:
+        aFlags |= FOREGROUND_BLUE;
+        break;
+      case Message_ConsoleColor_Yellow:
+        aFlags |= FOREGROUND_RED | FOREGROUND_GREEN;
+        break;
+      case Message_ConsoleColor_Cyan:
+        aFlags |= FOREGROUND_GREEN | FOREGROUND_BLUE;
+        break;
+      case Message_ConsoleColor_Magenta:
+        aFlags |= FOREGROUND_RED | FOREGROUND_BLUE;
+        break;
+    }
+    SetConsoleTextAttribute (anStdOut, aFlags);
+  }
+#else
+  if (theOStream == NULL)
+  {
+    return;
+  }
+
+  const char* aCode = "\e[0m";
+  switch (theTextColor)
+  {
+    case Message_ConsoleColor_Default:
+      aCode = theIsIntenseText ? "\e[0;1m" : "\e[0m";
+      break;
+    case Message_ConsoleColor_Black:
+      aCode = theIsIntenseText ? "\e[30;1m" : "\e[30m";
+      break;
+    case Message_ConsoleColor_Red:
+      aCode = theIsIntenseText ? "\e[31;1m" : "\e[31m";
+      break;
+    case Message_ConsoleColor_Green:
+      aCode = theIsIntenseText ? "\e[32;1m" : "\e[32m";
+      break;
+    case Message_ConsoleColor_Yellow:
+      aCode = theIsIntenseText ? "\e[33;1m" : "\e[33m";
+      break;
+    case Message_ConsoleColor_Blue:
+      aCode = theIsIntenseText ? "\e[34;1m" : "\e[34m";
+      break;
+    case Message_ConsoleColor_Magenta:
+      aCode = theIsIntenseText ? "\e[35;1m" : "\e[35m";
+      break;
+    case Message_ConsoleColor_Cyan:
+      aCode = theIsIntenseText ? "\e[36;1m" : "\e[36m";
+      break;
+    case Message_ConsoleColor_White:
+      aCode = theIsIntenseText ? "\e[37;1m" : "\e[37m";
+      break;
+  }
+  *theOStream << aCode;
+#endif
 }

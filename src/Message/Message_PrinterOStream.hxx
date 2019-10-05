@@ -16,6 +16,7 @@
 #ifndef _Message_PrinterOStream_HeaderFile
 #define _Message_PrinterOStream_HeaderFile
 
+#include <Message_ConsoleColor.hxx>
 #include <Message_Printer.hxx>
 #include <Standard_Address.hxx>
 #include <Standard_OStream.hxx>
@@ -29,6 +30,21 @@ DEFINE_STANDARD_HANDLE(Message_PrinterOStream, Message_Printer)
 class Message_PrinterOStream : public Message_Printer
 {
   DEFINE_STANDARD_RTTIEXT(Message_PrinterOStream, Message_Printer)
+public:
+
+  //! Setup console text color.
+  //!
+  //! On Windows, this would affect active terminal color output.
+  //! On other systems, this would put special terminal codes;
+  //! the terminal should support these codes or them will appear in text otherwise.
+  //! The same will happen when stream is redirected into text file.
+  //!
+  //! Beware that within multi-threaded environment inducing console colors
+  //! might lead to colored text mixture due to concurrency.
+  Standard_EXPORT static void SetConsoleTextColor (Standard_OStream* theOStream,
+                                                   Message_ConsoleColor theTextColor,
+                                                   bool theIsIntenseText = false);
+
 public:
   
   //! Empty constructor, defaulting to cout
@@ -57,7 +73,13 @@ public:
 
   //! Returns reference to the output stream
   Standard_OStream& GetStream() const { return *(Standard_OStream*)myStream; }
-  
+
+  //! Returns TRUE if text output into console should be colorized depending on message gravity.
+  Standard_Boolean ToColorize() const { return myToColorize; }
+
+  //! Set if text output into console should be colorized depending on message gravity.
+  void SetToColorize (Standard_Boolean theToColorize) { myToColorize = theToColorize; }
+
   //! Puts a message to the current stream
   //! if its gravity is equal or greater
   //! to the trace level set by SetTraceLevel()
@@ -80,6 +102,7 @@ private:
   Standard_Address myStream;
   Standard_Boolean myIsFile;
   Standard_Boolean myUseUtf8;
+  Standard_Boolean myToColorize;
 
 };
 

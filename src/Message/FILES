@@ -3,6 +3,7 @@ Message.hxx
 Message_Algorithm.cxx
 Message_Algorithm.hxx
 Message_Algorithm.lxx
+Message_ConsoleColor.hxx
 Message_ExecStatus.hxx
 Message_Gravity.hxx
 Message_HArrayOfMsg.hxx
