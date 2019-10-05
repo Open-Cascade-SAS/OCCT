@@ -1419,6 +1419,9 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
       set aFrmsMap(CSF_TclTkLibs)  "Tk"
       set aLibsMap(CSF_TclTkLibs)  ""
       set aLibsMap(CSF_QT)         "QtCore QtGui"
+    } elseif { "$theOS" == "android" } {
+      set aLibsMap(CSF_OpenGlLibs) "EGL GLESv2"
+      set aLibsMap(CSF_androidlog) "log"
     } else {
       set aLibsMap(CSF_fontconfig) "fontconfig"
       if { "$theOS" == "qnx" } {
