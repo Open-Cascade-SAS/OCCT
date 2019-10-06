@@ -368,3 +368,53 @@ Each counter has its name shown when the collected statistics are printed.
 In DRAW, use command *dperf* to print all performance statistics.
 
 Note that performance counters are not thread-safe.
+
+@section occt_debug_sanitizers Use of compiler sanitizers
+
+GCC and Clang compilers provide options for instrumenting the code with the tools intended for detection of run-time errors, called sanitizers.
+This section provides some hints for using sanitizers for detecting possible errors in OCCT code.
+
+@subsection occt_debug_sanitizers_linux Linux
+
+Example of configuration steps for Ubuntu:
+
+1. In CMake configuration:
+
+  - Use up-to-date version of the GCC or CLang compiler; make sure that if CMAKE_CXX_COMPILER is set to C++ compiler (e.g. "clang++-6.0") and CMAKE_C_COMPILER is set to C compiler (e.g. "clang-6.0")
+  - Ensure that CMAKE_LINKER is set to the C++ linker bundled with compiler (e.g. clang++-6.0); this is important to avoid linking problems
+  - For building with Address sanitizer, set CMAKE_CXX_FLAGS and CMAKE_C_FLAGS to "-fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+  - For building with Undefined Behavior sanitizer, set CMAKE_CXX_FLAGS and CMAKE_C_FLAGS to "-fsanitize=undefined -fno-omit-frame-pointer -fno-optimize-sibling-calls"
+  - Set CMAKE_BUILD_TYPE to RelWithDebInfo to get more informative stack traces on errors
+
+2. Build as usual (make)
+
+  Be prepared that it works much slower than normal build and consumes more disk space.
+
+3. Before running executable, make sure that "llvm-symbolizer" is in PATH; this is necessary to get human-readable stack traces. The tool must have exactly that name.
+
+  If it is installed in common folder (/usr/bin or similar) with different name, one option is to create a symlink, for instance:
+> sudo ln -s /usr/bin/llvm-symbolizer-6.0 /usr/bin/llvm-symbolizer
+
+  Alternatively, add directory where actual llvm-symbolizer is located (such as /usr/lib/llvm-6.0/bin) to the PATH variable. 
+
+4. Set environment variable to disable memory leaks detection (they seem to be reported for every global variable at exit, not much useful):
+> export ASAN_OPTIONS=detect_leaks=0
+
+5. Set environment variable CSF_CPULIMIT_FACTOR to reasonably large number to increase the time limits for program execution (used by OCCT tests) to compensate the performance penalty introduced by sanitizers:
+> export CSF_CPULIMIT_FACTOR=20
+
+6. When using UBSan, set environment variable UBSAN_OPTIONS to get stack traces:
+> export UBSAN_OPTIONS=print_stacktrace=1
+
+7. Run DRAW and perform tests as usual, keeping in mind that running with sanitizer is much heavier than normal build:
+> ./draw.sh relwithdeb  <br>
+> Draw[]> testgrid -parallel 0
+
+Note that when running tests under sanitizers, behavior may be different.
+Known problems (as of CLang 6.0) are:
+- Software signals (access violation etc.) are not handled
+- Heap memory usage always reports zero
+
+@subsection occt_debug_sanitizers_windows Windows
+
+Though CLang toolset is available in Visual Studio 2015 and newer, sanitizer do not seem to be available out of the box (last tested with VS 2019 16.2.3).

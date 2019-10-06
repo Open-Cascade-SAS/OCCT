@@ -537,13 +537,24 @@ static void *CpuFunc(void* /*threadarg*/)
 }
 #endif
 
-#ifdef _WIN32
-static Standard_Integer cpulimit(Draw_Interpretor&, Standard_Integer n, const char** a)
+// Returns time in seconds defined by the argument string,
+// multiplied by factor defined in environment variable
+// CSF_CPULIMIT_FACTOR (if it exists, 1 otherwise)
+static clock_t GetCpuLimit (const Standard_CString theParam)
 {
-#else
+  clock_t aValue = Draw::Atoi (theParam);
+
+  OSD_Environment aEnv("CSF_CPULIMIT_FACTOR");
+  TCollection_AsciiString aEnvStr = aEnv.Value();
+  if (!aEnvStr.IsEmpty())
+  {
+    aValue *= Draw::Atoi (aEnvStr.ToCString());
+  }
+  return aValue;
+}
+
 static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-#endif
   static int aFirst = 1;
 #ifdef _WIN32
   // Windows specific code
@@ -553,7 +564,7 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
   if (n <= 1){
     CPU_LIMIT = RLIM_INFINITY;
   } else {
-    CPU_LIMIT = Draw::Atoi (a[1]);
+    CPU_LIMIT = GetCpuLimit (a[1]);
     Standard_Real anUserSeconds, aSystemSeconds;
     OSD_Chronometer::GetProcessCPU (anUserSeconds, aSystemSeconds);
     CPU_CURRENT = clock_t(anUserSeconds + aSystemSeconds);
@@ -573,7 +584,7 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
   if (n <= 1)
     rlp.rlim_cur = RLIM_INFINITY;
   else
-    rlp.rlim_cur = Draw::Atoi(a[1]);
+    rlp.rlim_cur = GetCpuLimit (a[1]);
   CPU_LIMIT = rlp.rlim_cur;
 
   int status;
@@ -597,9 +608,9 @@ static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const
     pthread_create(&cpulimitThread, NULL, CpuFunc, NULL);
   }
 #endif
+  di << "CPU and elapsed time limit set to " << (double)CPU_LIMIT << " seconds";
   return 0;
 }
-
 
 //=======================================================================
 //function : mallochook
