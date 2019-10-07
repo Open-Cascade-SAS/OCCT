@@ -129,7 +129,7 @@ public:
   //! Performs the symmetrical transformation of a point
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT Standard_NODISCARD gp_Pnt Mirrored (const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -137,14 +137,14 @@ public:
   //! Performs the symmetrical transformation of a point
   //! with respect to a plane. The axis placement A2 locates
   //! the plane of the symmetry : (Location, XDirection, YDirection).
-  Standard_EXPORT Standard_NODISCARD gp_Pnt Mirrored (const gp_Ax1& A1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
 
   //! Rotates a point. A1 is the axis of the rotation.
   //! Ang is the angular value of the rotation in radians.
-  Standard_EXPORT Standard_NODISCARD gp_Pnt Mirrored (const gp_Ax2& A2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pnt Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   

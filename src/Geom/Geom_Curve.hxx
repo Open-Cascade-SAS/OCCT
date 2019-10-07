@@ -117,7 +117,7 @@ public:
   Standard_EXPORT virtual Standard_Real ParametricTransformation (const gp_Trsf& T) const;
   
   //! Returns a copy of <me> reversed.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Curve) Reversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Curve) Reversed() const;
   
   //! Returns the value of the first parameter.
   //! Warnings :

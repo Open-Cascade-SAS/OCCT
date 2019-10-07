@@ -223,7 +223,7 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to the direction V which is the center of
   //! the  symmetry.
-  Standard_EXPORT Standard_NODISCARD gp_Dir2d Mirrored (const gp_Dir2d& V) const;
+  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored (const gp_Dir2d& V) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
@@ -231,7 +231,7 @@ public:
   //! Performs the symmetrical transformation of a direction
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT Standard_NODISCARD gp_Dir2d Mirrored (const gp_Ax2d& A) const;
+  Standard_NODISCARD Standard_EXPORT gp_Dir2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const Standard_Real Ang);
   

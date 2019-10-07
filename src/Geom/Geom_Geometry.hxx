@@ -99,21 +99,21 @@ public:
   //! (see class Transformation of the package Geom).
   Standard_EXPORT virtual void Transform (const gp_Trsf& T) = 0;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Mirrored (const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Mirrored (const gp_Pnt& P) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Mirrored (const gp_Ax1& A1) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Mirrored (const gp_Ax1& A1) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Mirrored (const gp_Ax2& A2) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Mirrored (const gp_Ax2& A2) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Rotated (const gp_Ax1& A1, const Standard_Real Ang) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Scaled (const gp_Pnt& P, const Standard_Real S) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Scaled (const gp_Pnt& P, const Standard_Real S) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Transformed (const gp_Trsf& T) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Transformed (const gp_Trsf& T) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Translated (const gp_Vec& V) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Translated (const gp_Vec& V) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Geometry) Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Geometry) Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
   
   //! Creates a new object which is a copy of this geometric object.
   Standard_EXPORT virtual Handle(Geom_Geometry) Copy() const = 0;

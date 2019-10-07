@@ -167,14 +167,14 @@ public:
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to the point P which is the center of the symmetry
-  Standard_EXPORT Standard_NODISCARD gp_Circ2d Mirrored (const gp_Pnt2d& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored (const gp_Pnt2d& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2d& A);
   
 
   //! Performs the symmetrical transformation of a circle with respect
   //! to an axis placement which is the axis of the symmetry.
-  Standard_EXPORT Standard_NODISCARD gp_Circ2d Mirrored (const gp_Ax2d& A) const;
+  Standard_NODISCARD Standard_EXPORT gp_Circ2d Mirrored (const gp_Ax2d& A) const;
   
     void Rotate (const gp_Pnt2d& P, const Standard_Real Ang);
   

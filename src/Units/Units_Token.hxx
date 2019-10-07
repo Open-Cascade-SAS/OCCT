@@ -126,7 +126,7 @@ public:
   //! This   virtual method is   called  by  the Measurement
   //! methods,  to  compute    the   measurement   during  a
   //! conversion.
-  Standard_EXPORT Standard_NODISCARD virtual Standard_Real Multiplied (const Standard_Real avalue) const;
+  Standard_NODISCARD Standard_EXPORT virtual Standard_Real Multiplied (const Standard_Real avalue) const;
   
   //! Returns a token which is the division of <me> by another
   //! token <atoken>.
@@ -135,7 +135,7 @@ public:
   //! This  virtual  method  is  called by  the  Measurement
   //! methods,   to   compute   the measurement  during    a
   //! conversion.
-  Standard_EXPORT Standard_NODISCARD virtual Standard_Real Divided (const Standard_Real avalue) const;
+  Standard_NODISCARD Standard_EXPORT virtual Standard_Real Divided (const Standard_Real avalue) const;
   
   //! Returns a token which is <me> to the power  of another
   //! token <atoken>.  The computation  is possible  only if

@@ -218,7 +218,7 @@ public:
   //! The main direction of the axis placement is not changed.
   //! The "XDirection" and the "YDirection" are reversed.
   //! So the axis placement stay right handed.
-  Standard_EXPORT Standard_NODISCARD gp_Ax3 Mirrored (const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax3 Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -230,7 +230,7 @@ public:
   //! point, on the "XDirection" and "YDirection".
   //! The resulting main "Direction" is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  Standard_EXPORT Standard_NODISCARD gp_Ax3 Mirrored (const gp_Ax1& A1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax3 Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -243,7 +243,7 @@ public:
   //! point, on the "XDirection" and "YDirection".
   //! The resulting main "Direction" is the cross product between
   //! the "XDirection" and the "YDirection" after transformation.
-  Standard_EXPORT Standard_NODISCARD gp_Ax3 Mirrored (const gp_Ax2& A2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax3 Mirrored (const gp_Ax2& A2) const;
   
   void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   

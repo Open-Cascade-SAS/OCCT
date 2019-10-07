@@ -202,7 +202,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_EXPORT Standard_NODISCARD gp_Ax2 Mirrored (const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored (const gp_Pnt& P) const;
   
 
   //! Performs a symmetrical transformation of this coordinate
@@ -238,7 +238,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_EXPORT Standard_NODISCARD gp_Ax2 Mirrored (const gp_Ax1& A1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored (const gp_Ax1& A1) const;
   
 
   //! Performs a symmetrical transformation of this coordinate
@@ -276,7 +276,7 @@ public:
   //! product "X Direction" ^ "Y   Direction".
   //! This maintains the right-handed property of the
   //! coordinate system.
-  Standard_EXPORT Standard_NODISCARD gp_Ax2 Mirrored (const gp_Ax2& A2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Ax2 Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   

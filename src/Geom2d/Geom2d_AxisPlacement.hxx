@@ -64,7 +64,7 @@ public:
   //! Note:
   //! - Reverse assigns the result to this axis, while
   //! - Reversed creates a new one.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_AxisPlacement) Reversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_AxisPlacement) Reversed() const;
   
   //! Changes the complete definition of the axis placement.
   Standard_EXPORT void SetAxis (const gp_Ax2d& A);

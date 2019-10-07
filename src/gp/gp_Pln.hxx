@@ -178,7 +178,7 @@ public:
   //! Warnings :
   //! The normal direction to the plane is not changed.
   //! The "XAxis" and the "YAxis" are reversed.
-  Standard_EXPORT Standard_NODISCARD gp_Pln Mirrored (const gp_Pnt& P) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored (const gp_Pnt& P) const;
   
   Standard_EXPORT void Mirror (const gp_Ax1& A1);
   
@@ -190,7 +190,7 @@ public:
   //! the "XDirection" and the "YDirection" after transformation
   //! if  the  initial plane was right  handed,  else  it is the
   //! opposite.
-  Standard_EXPORT Standard_NODISCARD gp_Pln Mirrored (const gp_Ax1& A1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored (const gp_Ax1& A1) const;
   
   Standard_EXPORT void Mirror (const gp_Ax2& A2);
   
@@ -202,7 +202,7 @@ public:
   //! direction is the cross  product between   the "XDirection"
   //! and the "YDirection"  after  transformation if the initial
   //! plane was right handed, else it is the opposite.
-  Standard_EXPORT Standard_NODISCARD gp_Pln Mirrored (const gp_Ax2& A2) const;
+  Standard_NODISCARD Standard_EXPORT gp_Pln Mirrored (const gp_Ax2& A2) const;
   
     void Rotate (const gp_Ax1& A1, const Standard_Real Ang);
   

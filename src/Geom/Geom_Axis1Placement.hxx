@@ -65,7 +65,7 @@ public:
   Standard_EXPORT void Reverse();
   
   //! Returns a copy of <me> reversed.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_Axis1Placement) Reversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_Axis1Placement) Reversed() const;
   
   //! Assigns V to the unit vector of this axis.
   Standard_EXPORT void SetDirection (const gp_Dir& V) Standard_OVERRIDE;

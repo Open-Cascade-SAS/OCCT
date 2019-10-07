@@ -265,7 +265,7 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to the vector V which is the center of
   //! the  symmetry.
-  Standard_EXPORT Standard_NODISCARD gp_Vec2d Mirrored (const gp_Vec2d& V) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored (const gp_Vec2d& V) const;
   
 
   //! Performs the symmetrical transformation of a vector
@@ -277,7 +277,7 @@ public:
   //! Performs the symmetrical transformation of a vector
   //! with respect to an axis placement which is the axis
   //! of the symmetry.
-  Standard_EXPORT Standard_NODISCARD gp_Vec2d Mirrored (const gp_Ax2d& A1) const;
+  Standard_NODISCARD Standard_EXPORT gp_Vec2d Mirrored (const gp_Ax2d& A1) const;
   
     void Rotate (const Standard_Real Ang);
   

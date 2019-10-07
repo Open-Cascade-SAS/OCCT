@@ -84,7 +84,7 @@ public:
   
   //! Transform the bounding box with the given transformation.
   //! The resulting box will be larger if theTrsf contains rotation.
-  Standard_EXPORT Standard_NODISCARD Bnd_B2f Transformed (const gp_Trsf2d& theTrsf) const;
+  Standard_NODISCARD Standard_EXPORT Bnd_B2f Transformed (const gp_Trsf2d& theTrsf) const;
   
   //! Check the given point for the inclusion in the Box.
   //! Returns True if the point is outside.

@@ -80,7 +80,7 @@ public:
   
 
   //! Adds the vector Other to <me>.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_VectorWithMagnitude) Added (const Handle(Geom_Vector)& Other) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_VectorWithMagnitude) Added (const Handle(Geom_Vector)& Other) const;
   
 
   //! Computes the cross product  between <me> and Other
@@ -106,12 +106,12 @@ public:
   
 
   //! Divides <me> by a scalar. A new vector is returned.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_VectorWithMagnitude) Divided (const Standard_Real Scalar) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_VectorWithMagnitude) Divided (const Standard_Real Scalar) const;
   
 
   //! Computes the product of the vector <me> by a scalar.
   //! A new vector is returned.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_VectorWithMagnitude) Multiplied (const Standard_Real Scalar) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_VectorWithMagnitude) Multiplied (const Standard_Real Scalar) const;
   
 
   //! Computes the product of the vector <me> by a scalar.
@@ -127,14 +127,14 @@ public:
   //!
   //! Raised if the magnitude of the vector is lower or equal to
   //! Resolution from package gp.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom_VectorWithMagnitude) Normalized() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom_VectorWithMagnitude) Normalized() const;
   
   //! Subtracts the Vector Other to <me>.
   Standard_EXPORT void Subtract (const Handle(Geom_Vector)& Other);
   
 
   //! Subtracts the vector Other to <me>. A new vector is returned.
-  Standard_EXPORT Standard_NODISCARD
+  Standard_NODISCARD Standard_EXPORT
 	Handle(Geom_VectorWithMagnitude) Subtracted (const Handle(Geom_Vector)& Other) const;
   
   //! Applies the transformation T to this vector.

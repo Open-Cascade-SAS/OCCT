@@ -170,7 +170,7 @@ void operator*= (const Standard_Real Right)
   
   //! multiplies all the elements of a matrix by the
   //! value <Right>.
-  Standard_EXPORT Standard_NODISCARD math_Matrix Multiplied (const Standard_Real Right) const;
+  Standard_NODISCARD Standard_EXPORT math_Matrix Multiplied (const Standard_Real Right) const;
 Standard_NODISCARD math_Matrix operator* (const Standard_Real Right) const
 {
   return Multiplied(Right);
@@ -194,7 +194,7 @@ Standard_NODISCARD math_Matrix operator* (const Standard_Real Right) const
   //! rows of this matrix, or
   //! -   the number of columns of matrix Right is not equal to
   //! the number of columns of this matrix.
-  Standard_EXPORT Standard_NODISCARD math_Matrix TMultiplied (const Standard_Real Right) const;
+  Standard_NODISCARD Standard_EXPORT math_Matrix TMultiplied (const Standard_Real Right) const;
 friend math_Matrix  operator *(const Standard_Real Left,const math_Matrix& Right);
   
   //! divides all the elements of a matrix by the value <Right>.
@@ -207,7 +207,7 @@ void operator/= (const Standard_Real Right)
   
   //! divides all the elements of a matrix by the value <Right>.
   //! An exception is raised if <Right> = 0.
-  Standard_EXPORT Standard_NODISCARD math_Matrix Divided (const Standard_Real Right) const;
+  Standard_NODISCARD Standard_EXPORT math_Matrix Divided (const Standard_Real Right) const;
 Standard_NODISCARD math_Matrix operator/ (const Standard_Real Right) const
 {
   return Divided(Right);
@@ -227,7 +227,7 @@ void operator+= (const math_Matrix& Right)
   
   //! adds the matrix <Right> to a matrix.
   //! An exception is raised if the dimensions are different.
-  Standard_EXPORT Standard_NODISCARD math_Matrix Added (const math_Matrix& Right) const;
+  Standard_NODISCARD Standard_EXPORT math_Matrix Added (const math_Matrix& Right) const;
 Standard_NODISCARD math_Matrix operator+ (const math_Matrix& Right) const
 {
   return Added(Right);
@@ -251,7 +251,7 @@ void operator-= (const math_Matrix& Right)
   
   //! Returns the result of the subtraction of <Right> from <me>.
   //! An exception is raised if the dimensions are different.
-  Standard_EXPORT Standard_NODISCARD math_Matrix Subtracted (const math_Matrix& Right) const;
+  Standard_NODISCARD Standard_EXPORT math_Matrix Subtracted (const math_Matrix& Right) const;
 Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
 {
   return Subtracted(Right);
@@ -304,7 +304,7 @@ Standard_NODISCARD math_Matrix operator- (const math_Matrix& Right) const
   
   //! Teturns the transposed of a matrix.
   //! An exception is raised if the matrix is not a square matrix.
-  Standard_EXPORT Standard_NODISCARD math_Matrix Transposed() const;
+  Standard_NODISCARD Standard_EXPORT math_Matrix Transposed() const;
   
   //! Returns the inverse of a matrix.
   //! Exception NotSquare is raised if the matrix is not square.
@@ -363,7 +363,7 @@ void operator*= (const math_Matrix& Right)
   
   //! Returns the product of 2 matrices.
   //! An exception is raised if the dimensions are different.
-  Standard_EXPORT Standard_NODISCARD math_Matrix Multiplied (const math_Matrix& Right) const;
+  Standard_NODISCARD Standard_EXPORT math_Matrix Multiplied (const math_Matrix& Right) const;
 Standard_NODISCARD math_Matrix operator* (const math_Matrix& Right) const
 {
   return Multiplied(Right);
@@ -371,7 +371,7 @@ Standard_NODISCARD math_Matrix operator* (const math_Matrix& Right) const
   
   //! Returns the product of a matrix by a vector.
   //! An exception is raised if the dimensions are different.
-  Standard_EXPORT Standard_NODISCARD math_Vector Multiplied (const math_Vector& Right) const;
+  Standard_NODISCARD Standard_EXPORT math_Vector Multiplied (const math_Vector& Right) const;
 Standard_NODISCARD math_Vector operator* (const math_Vector& Right) const
 {
   return Multiplied(Right);

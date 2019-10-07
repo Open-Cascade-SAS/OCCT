@@ -128,7 +128,7 @@ public:
   //! Exceptions
   //! Standard_NullValue if this vector is null (i.e. if its norm is
   //! less than or equal to Standard_Real::RealEpsilon().
-  Standard_EXPORT Standard_NODISCARD math_Vector Normalized() const;
+  Standard_NODISCARD Standard_EXPORT math_Vector Normalized() const;
 
   //! Inverts this vector and assigns the result to this vector.
   Standard_EXPORT void Invert();
@@ -157,7 +157,7 @@ public:
   }
 
   //! returns the product of a vector and a real value.
-  Standard_EXPORT Standard_NODISCARD math_Vector Multiplied(const Standard_Real theRight) const;
+  Standard_NODISCARD Standard_EXPORT math_Vector Multiplied(const Standard_Real theRight) const;
 
   Standard_NODISCARD math_Vector operator*(const Standard_Real theRight) const
   {
@@ -165,7 +165,7 @@ public:
   }
 
   //! returns the product of a vector and a real value.
-  Standard_EXPORT Standard_NODISCARD math_Vector TMultiplied(const Standard_Real theRight) const;
+  Standard_NODISCARD Standard_EXPORT math_Vector TMultiplied(const Standard_Real theRight) const;
 
   friend inline math_Vector operator* (const Standard_Real theLeft, const math_Vector& theRight) 
   {
@@ -183,7 +183,7 @@ public:
 
   //! divides a vector by the value "theRight".
   //! An exception is raised if "theRight" = 0.
-  Standard_EXPORT Standard_NODISCARD math_Vector Divided(const Standard_Real theRight) const;
+  Standard_NODISCARD Standard_EXPORT math_Vector Divided(const Standard_Real theRight) const;
 
   Standard_NODISCARD math_Vector operator/(const Standard_Real theRight) const
   {
@@ -205,7 +205,7 @@ public:
   //! adds the vector theRight to a vector.
   //! An exception is raised if the vectors have not the same length.
   //! An exception is raised if the lengths are not equal.
-  Standard_EXPORT Standard_NODISCARD math_Vector Added(const math_Vector& theRight) const;
+  Standard_NODISCARD Standard_EXPORT math_Vector Added(const math_Vector& theRight) const;
 
   Standard_NODISCARD math_Vector operator+(const math_Vector& theRight) const
   {
@@ -275,14 +275,14 @@ public:
 
   //! returns the inner product of 2 vectors.
   //! An exception is raised if the lengths are not equal.
-  Standard_EXPORT Standard_NODISCARD Standard_Real Multiplied(const math_Vector& theRight) const;
+  Standard_NODISCARD Standard_EXPORT Standard_Real Multiplied(const math_Vector& theRight) const;
   Standard_NODISCARD Standard_Real operator*(const math_Vector& theRight) const
   {
     return Multiplied(theRight);
   }
 
   //! returns the product of a vector by a matrix.
-  Standard_EXPORT Standard_NODISCARD math_Vector Multiplied(const math_Matrix& theRight) const;
+  Standard_NODISCARD Standard_EXPORT math_Vector Multiplied(const math_Matrix& theRight) const;
 
   Standard_NODISCARD math_Vector operator*(const math_Matrix& theRight) const
   {
@@ -308,7 +308,7 @@ public:
 
   //! returns the subtraction of "theRight" from "me".
   //! An exception is raised if the vectors have not the same length.
-  Standard_EXPORT Standard_NODISCARD math_Vector Subtracted(const math_Vector& theRight) const;
+  Standard_NODISCARD Standard_EXPORT math_Vector Subtracted(const math_Vector& theRight) const;
 
   Standard_NODISCARD math_Vector operator-(const math_Vector& theRight) const
   {

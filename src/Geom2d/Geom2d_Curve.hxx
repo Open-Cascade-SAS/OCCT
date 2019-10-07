@@ -110,7 +110,7 @@ public:
   //! - the end point of the initial curve becomes the start
   //! point of the reversed curve.
   //! - Reversed creates a new curve.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Curve) Reversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Curve) Reversed() const;
   
   //! Returns the value of the first parameter.
   //! Warnings :

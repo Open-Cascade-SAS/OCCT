@@ -94,19 +94,19 @@ public:
   //! itself. A copy of the object is returned.
   Standard_EXPORT virtual void Transform (const gp_Trsf2d& T) = 0;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Geometry) Mirrored (const gp_Pnt2d& P) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Mirrored (const gp_Pnt2d& P) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Geometry) Mirrored (const gp_Ax2d& A) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Mirrored (const gp_Ax2d& A) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Geometry) Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Rotated (const gp_Pnt2d& P, const Standard_Real Ang) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Geometry) Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Scaled (const gp_Pnt2d& P, const Standard_Real S) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Geometry) Transformed (const gp_Trsf2d& T) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Transformed (const gp_Trsf2d& T) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Geometry) Translated (const gp_Vec2d& V) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Translated (const gp_Vec2d& V) const;
   
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Geometry) Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Geometry) Translated (const gp_Pnt2d& P1, const gp_Pnt2d& P2) const;
   
   Standard_EXPORT virtual Handle(Geom2d_Geometry) Copy() const = 0;
 

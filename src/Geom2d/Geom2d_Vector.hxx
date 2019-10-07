@@ -46,7 +46,7 @@ public:
   Standard_EXPORT void Reverse();
   
   //! Returns a copy of <me> reversed.
-  Standard_EXPORT Standard_NODISCARD Handle(Geom2d_Vector) Reversed() const;
+  Standard_NODISCARD Standard_EXPORT Handle(Geom2d_Vector) Reversed() const;
   
   //! Computes the angular value, in radians, between this
   //! vector and vector Other. The result is a value
