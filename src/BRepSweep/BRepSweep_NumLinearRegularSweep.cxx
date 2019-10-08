@@ -578,5 +578,12 @@ Standard_Boolean BRepSweep_NumLinearRegularSweep::GenIsUsed(const TopoDS_Shape& 
   Standard_Integer iGenS = myGenShapeTool.Index(aGenS);
   Standard_OutOfRange_Raise_if(iGenS == 0,
     "BRepSweep_NumLinearRegularSweep::GenIsUsed: shape index = 0")
-  return myBuiltShapes(iGenS, 1) && myUsedShapes(iGenS, 1);
+  if (iGenS == 1)
+  {
+    return myBuiltShapes(iGenS, 1);
+  }
+  else
+  {
+    return myBuiltShapes(iGenS, 1) && myUsedShapes(iGenS, 1);
+  }
 }

@@ -1831,6 +1831,12 @@ void  BRepLib::UpdateInnerTolerances(const TopoDS_Shape& aShape)
   for (Standard_Integer i = 1; i <= EFmap.Extent(); i++)
   {
     TopoDS_Edge anEdge = TopoDS::Edge(EFmap.FindKey(i));
+
+    if (!BRep_Tool::IsGeometric(anEdge))
+    {
+      continue;
+    }
+
     TopoDS_Vertex V1, V2;
     TopExp::Vertices(anEdge, V1, V2);
     Standard_Real fpar, lpar;
