@@ -215,7 +215,7 @@ void BRepTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
     Handle(BRep_TFace) TF = Handle(BRep_TFace)::DownCast(S.TShape());
     if (!TF->Surface().IsNull())  mySurfaces.Add(TF->Surface());
 
-    if (myWithTriangles) { // for XML Persistence
+    if (myWithTriangles || TF->Surface().IsNull()) { // for XML Persistence
       Handle(Poly_Triangulation) Tr = TF->Triangulation();
       if (!Tr.IsNull()) myTriangulations.Add(Tr);
     }
@@ -751,7 +751,7 @@ void  BRepTools_ShapeSet::WriteGeometry(const TopoDS_Shape& S,
 	OS << " " << 0;
 	OS << "\n";
       }
-    if (myWithTriangles) { // for XML Persistence
+    if (myWithTriangles || TF->Surface().IsNull()) { // for XML Persistence
       if (!(TF->Triangulation()).IsNull()) {
         OS << 2;
         OS << " ";
