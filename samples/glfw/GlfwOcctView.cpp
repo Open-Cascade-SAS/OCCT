@@ -35,13 +35,49 @@
 
 #include <GLFW/glfw3.h>
 
+namespace
+{
+  //! Convert GLFW mouse button into Aspect_VKeyMouse.
+  static Aspect_VKeyMouse mouseButtonFromGlfw (int theButton)
+  {
+    switch (theButton)
+    {
+      case GLFW_MOUSE_BUTTON_LEFT:   return Aspect_VKeyMouse_LeftButton;
+      case GLFW_MOUSE_BUTTON_RIGHT:  return Aspect_VKeyMouse_RightButton;
+      case GLFW_MOUSE_BUTTON_MIDDLE: return Aspect_VKeyMouse_MiddleButton;
+    }
+    return Aspect_VKeyMouse_NONE;
+  }
+
+  //! Convert GLFW key modifiers into Aspect_VKeyFlags.
+  static Aspect_VKeyFlags keyFlagsFromGlfw (int theFlags)
+  {
+    Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
+    if ((theFlags & GLFW_MOD_SHIFT) != 0)
+    {
+      aFlags |= Aspect_VKeyFlags_SHIFT;
+    }
+    if ((theFlags & GLFW_MOD_CONTROL) != 0)
+    {
+      aFlags |= Aspect_VKeyFlags_CTRL;
+    }
+    if ((theFlags & GLFW_MOD_ALT) != 0)
+    {
+      aFlags |= Aspect_VKeyFlags_ALT;
+    }
+    if ((theFlags & GLFW_MOD_SUPER) != 0)
+    {
+      aFlags |= Aspect_VKeyFlags_META;
+    }
+    return aFlags;
+  }
+}
+
 // ================================================================
 // Function : GlfwOcctView
 // Purpose  :
 // ================================================================
 GlfwOcctView::GlfwOcctView()
-: myCurAction3d (CurAction3d_Nothing),
-  myToRedraw (true)
 {
 }
 
@@ -193,15 +229,7 @@ void GlfwOcctView::mainloop()
     glfwWaitEvents();
     if (!myView.IsNull())
     {
-      if (myView->IsInvalidated())
-      {
-        myView->Redraw();
-      }
-      else if (myToRedraw)
-      {
-        myView->RedrawImmediate();
-      }
-      myToRedraw = false;
+      FlushViewEvents (myContext, myView, true);
     }
   }
 }
@@ -237,7 +265,6 @@ void GlfwOcctView::onResize (int theWidth, int theHeight)
     myView->MustBeResized();
     myView->Invalidate();
     myView->Redraw();
-    //myToRedraw = true;
   }
 }
 
@@ -247,13 +274,10 @@ void GlfwOcctView::onResize (int theWidth, int theHeight)
 // ================================================================
 void GlfwOcctView::onMouseScroll (double theOffsetX, double theOffsetY)
 {
-  if (myView.IsNull()) { return; }
-
-  const Graphic3d_Vec2i aPos = myOcctWindow->CursorPosition();
-  myView->StartZoomAtPoint (aPos.x(), aPos.y());
-  myView->ZoomAtPoint (0, 0, int(theOffsetY * 4.0), int(theOffsetY * 4.0));
-  myView->Invalidate();
-  myToRedraw = true;
+  if (!myView.IsNull())
+  {
+    UpdateZoom (Aspect_ScrollDelta (myOcctWindow->CursorPosition(), int(theOffsetY * 8.0)));
+  }
 }
 
 // ================================================================
@@ -265,27 +289,13 @@ void GlfwOcctView::onMouseButton (int theButton, int theAction, int theMods)
   if (myView.IsNull()) { return; }
 
   const Graphic3d_Vec2i aPos = myOcctWindow->CursorPosition();
-  if (theAction != GLFW_PRESS)
+  if (theAction == GLFW_PRESS)
   {
-    myCurAction3d = CurAction3d_Nothing;
-    return;
+    PressMouseButton (aPos, mouseButtonFromGlfw (theButton), keyFlagsFromGlfw (theMods), false);
   }
-
-  myMouseMin = aPos;
-  myMouseMax = aPos;
-  switch (theButton)
+  else
   {
-    case GLFW_MOUSE_BUTTON_RIGHT:
-    {
-      myCurAction3d = CurAction3d_DynamicRoation;
-      myView->StartRotation (aPos.x(), aPos.y());
-      break;
-    }
-    case GLFW_MOUSE_BUTTON_MIDDLE:
-    {
-      myCurAction3d = CurAction3d_DynamicPanning;
-      break;
-    }
+    ReleaseMouseButton (aPos, mouseButtonFromGlfw (theButton), keyFlagsFromGlfw (theMods), false);
   }
 }
 
@@ -295,30 +305,9 @@ void GlfwOcctView::onMouseButton (int theButton, int theAction, int theMods)
 // ================================================================
 void GlfwOcctView::onMouseMove (int thePosX, int thePosY)
 {
-  if (myView.IsNull()) { return; }
-
-  switch (myCurAction3d)
+  const Graphic3d_Vec2i aNewPos (thePosX, thePosY);
+  if (!myView.IsNull())
   {
-    case CurAction3d_DynamicRoation:
-    {
-      myView->Rotation (thePosX, thePosY);
-      myView->Invalidate();
-      myToRedraw = true;
-      break;
-    }
-    case CurAction3d_DynamicPanning:
-    {
-      myView->Pan (thePosX - myMouseMax.x(), -(thePosY - myMouseMax.y()));
-      myView->Invalidate();
-      myToRedraw = true;
-      myMouseMax.SetValues (thePosX, thePosY);
-      break;
-    }
-    default:
-    {
-      myContext->MoveTo (thePosX, thePosY, myView, false);
-      myToRedraw = true;
-      break;
-    }
+    UpdateMousePosition (aNewPos, PressedMouseButtons(), LastMouseFlags(), false);
   }
 }

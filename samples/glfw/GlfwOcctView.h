@@ -25,20 +25,12 @@
 #include "GlfwOcctWindow.h"
 
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_ViewController.hxx>
 #include <V3d_View.hxx>
 
 //! Sample class creating 3D Viewer within GLFW window.
-class GlfwOcctView
+class GlfwOcctView : protected AIS_ViewController
 {
-public:
-  enum CurAction3d
-  {
-    CurAction3d_Nothing,
-    CurAction3d_DynamicZooming,
-    CurAction3d_DynamicPanning,
-    CurAction3d_DynamicRoation
-  };
-
 public:
   //! Default constructor.
 	GlfwOcctView();
@@ -114,11 +106,6 @@ private:
   Handle(GlfwOcctWindow) myOcctWindow;
   Handle(V3d_View) myView;
   Handle(AIS_InteractiveContext) myContext;
-
-  CurAction3d myCurAction3d;
-  Graphic3d_Vec2i myMouseMin;
-  Graphic3d_Vec2i myMouseMax;
-  bool myToRedraw;
 
 };
 
