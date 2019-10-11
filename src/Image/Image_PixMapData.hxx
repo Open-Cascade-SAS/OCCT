@@ -74,27 +74,27 @@ public:
   //! @return data pointer to requested row (first column).
   inline const Standard_Byte* Row (const Standard_Size theRow) const
   {
-    return myTopRowPtr + SizeRowBytes * theRow * TopToDown;
+    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown);
   }
 
   //! @return data pointer to requested row (first column).
   inline Standard_Byte* ChangeRow (const Standard_Size theRow)
   {
-    return myTopRowPtr + SizeRowBytes * theRow * TopToDown;
+    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown);
   }
 
   //! @return data pointer to requested position.
   inline const Standard_Byte* Value (const Standard_Size theRow,
                                      const Standard_Size theCol) const
   {
-    return myTopRowPtr + SizeRowBytes * theRow * TopToDown + SizeBPP * theCol;
+    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
   }
 
   //! @return data pointer to requested position.
   inline Standard_Byte* ChangeValue (const Standard_Size theRow,
                                      const Standard_Size theCol)
   {
-    return myTopRowPtr + SizeRowBytes * theRow * TopToDown + SizeBPP * theCol;
+    return myTopRowPtr + ptrdiff_t(SizeRowBytes * theRow * TopToDown) + SizeBPP * theCol;
   }
 
   //! Compute the maximal row alignment for current row size.
