@@ -552,6 +552,10 @@ void rec_typarg(int argtype);
 // Note that Intel compiler also defines _MSC_VER but has different warning ids
 #if defined(__INTEL_COMPILER)
 #pragma warning(disable:177 1786 1736)
+#elif defined(__clang__)
+#pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Winconsistent-dllimport"
+#pragma GCC diagnostic ignored "-Wunneeded-internal-declaration"
 #else
 #pragma warning(disable:4131 4244 4273 4267 4127)
 #endif

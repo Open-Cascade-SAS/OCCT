@@ -223,7 +223,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
   // Write attributes
   TDF_AttributeIterator itAtt (theLabel);
   for ( ; itAtt.More() && theOS; itAtt.Next()) {
-    const Handle(TDF_Attribute)& tAtt = itAtt.Value();
+    const Handle(TDF_Attribute) tAtt = itAtt.Value();
     const Handle(Standard_Type)& aType = tAtt->DynamicType();
     // Get type ID and driver
     Handle(BinMDF_ADriver) aDriver;

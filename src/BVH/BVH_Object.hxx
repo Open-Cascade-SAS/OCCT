@@ -62,7 +62,7 @@ public:
   BVH_Object() {}
 
   //! Releases resources of geometric object.
-  virtual ~BVH_Object() = 0;
+  virtual ~BVH_Object() {}
 
 public:
 
@@ -70,15 +70,5 @@ public:
   virtual BVH_Box<T, N> Box() const = 0;
 
 };
-
-// =======================================================================
-// function : ~BVH_Object
-// purpose  :
-// =======================================================================
-template<class T, int N>
-BVH_Object<T, N>::~BVH_Object()
-{
-  //
-}
 
 #endif // _BVH_Object_Header

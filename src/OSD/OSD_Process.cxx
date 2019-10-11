@@ -187,7 +187,7 @@ Standard_Integer OSD_Process::Error()const{
 //-------------------  WNT Sources of OSD_Path ---------------------------
 //------------------------------------------------------------------------
 
-void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
+void _osd_wnt_set_error ( OSD_Error&, Standard_Integer, ... );
 
 // =======================================================================
 // function : OSD_Process

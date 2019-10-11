@@ -241,7 +241,11 @@ proc wokdep:Preferred {theList theCmpl theArch} {
 
   # keep only two first digits in "vc141"
   if { ! [regexp {^vc[0-9][0-9]} $theCmpl aCmpl] } {
-    set aCmpl $theCmpl
+    if { [regexp {^vclang} $theCmpl] } { 
+      set aCmpl vc14
+    } else {
+      set aCmpl $theCmpl
+    }
   }
 
   set aShortList {}
@@ -631,7 +635,11 @@ proc wokdep:SearchTBB {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
 
   # keep only two first digits in "vc141"
   if { ! [regexp {^vc[0-9][0-9]} ${::VCVER} aVcLib] } {
-    set aVcLib ${::VCVER}
+    if { [regexp {^vclang} ${::VCVER}] } {
+      set aVcLib vc14
+    } else {
+      set aVcLib ${::VCVER}
+    }
   }
 
   set isFound "true"

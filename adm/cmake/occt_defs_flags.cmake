@@ -130,7 +130,9 @@ elseif ("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xClang")
   if (APPLE)
     # CLang can be used with both libstdc++ and libc++, however on OS X libstdc++ is outdated.
     set (CMAKE_CXX_FLAGS "-std=c++0x -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
-  else()
+  elseif(NOT WIN32)
+    # CLang for Windows (at least CLang 8.0 distributed with VS 2019) 
+    # does not support option "-std=c++0x"
     set (CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
   endif()
 elseif (DEFINED CMAKE_COMPILER_IS_GNUCXX)

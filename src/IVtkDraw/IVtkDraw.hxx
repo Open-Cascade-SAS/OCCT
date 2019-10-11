@@ -21,6 +21,7 @@
 #include <Standard_Macro.hxx>
 
 class Draw_Interpretor;
+class WNT_WClass;
 
 class IVtkDraw
 {
@@ -37,7 +38,7 @@ public:
   Standard_EXPORT   static  void Commands (Draw_Interpretor& theCommands);
 
 private:
-  Standard_EXPORT   static const Handle(Standard_Transient)& WClass();
+  Standard_EXPORT   static const Handle(WNT_WClass)& WClass();
 };
 
 #endif

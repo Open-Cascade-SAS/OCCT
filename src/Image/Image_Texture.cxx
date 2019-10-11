@@ -181,7 +181,7 @@ Handle(Image_PixMap) Image_Texture::loadImageOffset (const TCollection_AsciiStri
 // ================================================================
 TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
 {
-  static const int THE_PROBE_SIZE = 20;
+  static const Standard_Size THE_PROBE_SIZE = 20;
   char aBuffer[THE_PROBE_SIZE];
   if (!myBuffer.IsNull())
   {

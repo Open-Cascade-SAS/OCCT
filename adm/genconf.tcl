@@ -82,6 +82,11 @@ if { ! [catch {exec vswhere.exe -version "\[16.0,16.99\]" -latest -requires Micr
   lappend ::SYS_VC_LIST "vc142-uwp"
   lappend ::SYS_VCVARS_LIST "$res\\VC\\vcvarsall.bat"
 }
+if { ! [catch {exec vswhere.exe -version "\[16.0,16.99\]" -latest -requires Microsoft.VisualStudio.Component.VC.ClangCL -property installationPath} res] } {
+  lappend ::SYS_VS_LIST "Visual Studio 2019 (16, toolset ClangCL)"
+  lappend ::SYS_VC_LIST "vclang"
+  lappend ::SYS_VCVARS_LIST "$res\\VC\\vcvarsall.bat"
+}
 
 # detect installed Visual Studio instances from global environment
 if { [info exists ::env(VS140COMNTOOLS)] } {

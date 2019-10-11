@@ -205,6 +205,9 @@ void Storage_BucketOfPersistent::Append(const Handle(Standard_Persistent)& sp)
 
 Storage_BucketIterator::Storage_BucketIterator
                          (Storage_BucketOfPersistent* aBucketManager)
+: myBucket(0), myCurrentBucket(0),
+  myCurrentBucketIndex(0), myCurrentIndex(0),
+  myBucketNumber(0), myMoreObject(Standard_False)
 {
   if (aBucketManager) {
     myBucket             = aBucketManager;
@@ -214,7 +217,6 @@ Storage_BucketIterator::Storage_BucketIterator
     myCurrentIndex       = 0;
     myMoreObject         = Standard_True;
   }
-  else myMoreObject         = Standard_False;
 }
 
 //=======================================================================

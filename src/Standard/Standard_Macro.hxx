@@ -147,14 +147,14 @@
 #if defined(__ICL) || defined (__INTEL_COMPILER)
   #define Standard_DISABLE_DEPRECATION_WARNINGS __pragma(warning(push)) __pragma(warning(disable:1478))
   #define Standard_ENABLE_DEPRECATION_WARNINGS  __pragma(warning(pop))
-#elif defined(_MSC_VER)
-  #define Standard_DISABLE_DEPRECATION_WARNINGS __pragma(warning(push)) __pragma(warning(disable:4996))
-  #define Standard_ENABLE_DEPRECATION_WARNINGS  __pragma(warning(pop))
 #elif (defined(__GNUC__) && __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
   // available since at least gcc 4.2 (maybe earlier), however only gcc 4.6+ supports this pragma inside the function body
   // CLang also supports this gcc syntax (in addition to "clang diagnostic ignored")
   #define Standard_DISABLE_DEPRECATION_WARNINGS _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
   #define Standard_ENABLE_DEPRECATION_WARNINGS  _Pragma("GCC diagnostic warning \"-Wdeprecated-declarations\"")
+#elif defined(_MSC_VER)
+  #define Standard_DISABLE_DEPRECATION_WARNINGS __pragma(warning(push)) __pragma(warning(disable:4996))
+  #define Standard_ENABLE_DEPRECATION_WARNINGS  __pragma(warning(pop))
 #else
   #define Standard_DISABLE_DEPRECATION_WARNINGS
   #define Standard_ENABLE_DEPRECATION_WARNINGS

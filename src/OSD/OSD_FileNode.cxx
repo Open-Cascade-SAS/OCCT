@@ -393,7 +393,7 @@ BOOL                 __fastcall _osd_wnt_sd_to_protection (
 #endif
 Standard_Integer     __fastcall _get_file_type ( Standard_CString, HANDLE );
 
-void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
+void _osd_wnt_set_error ( OSD_Error&, Standard_Integer, ... );
 
 static BOOL __fastcall _get_file_time (const wchar_t*, LPSYSTEMTIME, BOOL );
 static void __fastcall _test_raise ( TCollection_AsciiString, Standard_CString );
@@ -825,7 +825,7 @@ Standard_Integer OSD_FileNode::Error () const {
 
 }  // end OSD_FileNode :: Error
 
-void _osd_wnt_set_error ( OSD_Error& err, OSD_WhoAmI who, ... ) {
+void _osd_wnt_set_error ( OSD_Error& err, Standard_Integer who, ... ) {
 
  DWORD              errCode;
 

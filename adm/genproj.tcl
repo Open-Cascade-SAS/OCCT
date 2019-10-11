@@ -256,7 +256,7 @@ proc genAllResources {} {
 
 # Wrapper-function to generate VS project files
 proc genproj {theFormat args} {
-  set aSupportedFormats { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "vc141" "vc142" "cbp" "xcd" "pro"}
+  set aSupportedFormats { "vc7" "vc8" "vc9" "vc10" "vc11" "vc12" "vc14" "vc141" "vc142" "vclang" "cbp" "xcd" "pro"}
   set aSupportedPlatforms { "wnt" "uwp" "lin" "mac" "ios" "qnx" }
   set isHelpRequire false
 
@@ -320,6 +320,7 @@ proc genproj {theFormat args} {
       vc14     -  Visual Studio 2015
       vc141    -  Visual Studio 2017
       vc142    -  Visual Studio 2019
+      vclang   -  Visual Studio with ClangCL toolset
       cbp      -  CodeBlocks
       xcd      -  XCode
       pro      -  Qt Creator
@@ -529,7 +530,8 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution }
     "vc12"  -
     "vc14"  -
     "vc141" -
-    "vc142"    { OS:MKVC  $anOutDir $aModules $theSolution $theFormat $isUWP}
+    "vc142" -
+    "vclang"   { OS:MKVC  $anOutDir $aModules $theSolution $theFormat $isUWP}
     "cbp"      { OS:MKCBP $anOutDir $aModules $theSolution $thePlatform $theCmpl }
     "xcd"      {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000"
@@ -984,7 +986,8 @@ proc osutils:vcsolution:header { vcversion } {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 12.00\n" \
       "# Visual Studio 2013\n"
-  } elseif { "$vcversion" == "vc14" || "$vcversion" == "vc141" || "$vcversion" == "vc142" } {
+  } elseif { "$vcversion" == "vc14" || "$vcversion" == "vc141" || 
+             "$vcversion" == "vc142" || "$vcversion" == "vclang" } {
     append var \
       "Microsoft Visual Studio Solution File, Format Version 12.00\n" \
       "# Visual Studio 14\n"
@@ -1225,6 +1228,9 @@ proc osutils:vcproj:readtemplate {theVcVer isUWP isExec} {
   } elseif { $theVcVer == "vc142" } {
     set aVCRTVer "vc14"
     set aToolset "v142"
+  } elseif { $theVcVer == "vclang" } {
+    set aVCRTVer "vc14"
+    set aToolset "ClangCL"
   }
 
   set what "$theVcVer"

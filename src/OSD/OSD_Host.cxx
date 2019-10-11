@@ -189,7 +189,7 @@ Standard_Integer OSD_Host::Error()const{
   #pragma comment( lib, "WSOCK32.LIB" )
 #endif
 
-void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
+void _osd_wnt_set_error ( OSD_Error&, Standard_Integer, ... );
 
 static BOOL                    fInit = FALSE;
 static TCollection_AsciiString hostName;
@@ -218,11 +218,7 @@ OSD_Host :: OSD_Host () {
   ZeroMemory (szHostName, sizeof(char) * (MAX_COMPUTERNAME_LENGTH + 1));
 
   // suppress GetVersionEx() deprecation warning
-#if defined(__INTEL_COMPILER)
-  #pragma warning(disable : 1478)
-#elif defined(_MSC_VER)
-  #pragma warning(disable : 4996)
-#endif
+  Standard_DISABLE_DEPRECATION_WARNINGS
   if (!GetVersionExW (&osVerInfo))
   {
     _osd_wnt_set_error (myError, OSD_WHost);
@@ -236,9 +232,7 @@ OSD_Host :: OSD_Host () {
     ms.dwLength = sizeof(MEMORYSTATUS);
     GlobalMemoryStatus (&ms);
   }  // end else
-#ifdef _MSC_VER
-  #pragma warning(default : 4996)
-#endif
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   if (  !Failed ()  ) {
   

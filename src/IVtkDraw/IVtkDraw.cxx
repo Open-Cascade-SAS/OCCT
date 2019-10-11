@@ -252,13 +252,13 @@ Standard_Integer GenerateId()
 // Function : WClass
 // Purpose  :
 //=========================================================
-const Handle(Standard_Transient)& IVtkDraw::WClass()
+const Handle(WNT_WClass)& IVtkDraw::WClass()
 {
-  static Handle(Standard_Transient) aWindowClass;
+  static Handle(WNT_WClass) aWindowClass;
 #ifdef _WIN32
   if (aWindowClass.IsNull())
   {
-    aWindowClass = new WNT_WClass ("GWVTK_Class", DefWindowProc,
+    aWindowClass = new WNT_WClass ("GWVTK_Class", NULL,
                                    CS_VREDRAW | CS_HREDRAW, 0, 0,
                                    ::LoadCursorW (NULL, IDC_ARROW));
   }
@@ -305,8 +305,7 @@ void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
 #ifdef _WIN32
     if (GetWindow().IsNull())
     {
-      GetWindow() = new WNT_Window ("IVtkTest",
-                                    Handle(WNT_WClass)::DownCast (WClass()),
+      GetWindow() = new WNT_Window ("IVtkTest", WClass(),
                                     WS_OVERLAPPEDWINDOW,
                                     aPxLeft, aPxTop,
                                     aPxWidth, aPxHeight,

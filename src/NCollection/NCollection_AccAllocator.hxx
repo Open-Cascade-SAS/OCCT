@@ -75,7 +75,7 @@ protected:
   {
     Standard_Size myValue;
   public:
-    AlignedSize(){}
+    AlignedSize() : myValue(0) {}
     AlignedSize(const Standard_Size theValue)
       : myValue((theValue + Align - 1) & ~(Align - 1)) {}
     operator Standard_Size() const {return myValue;}
@@ -86,7 +86,7 @@ protected:
   {
     Standard_Byte* myValue;
   public:
-    AlignedPtr(){}
+    AlignedPtr() : myValue(0) {}
     AlignedPtr(const Standard_Address theValue)
       : myValue((Standard_Byte*)((Standard_Size)theValue & ~(Align - 1))) {}
     operator Standard_Address       () const {return myValue;}

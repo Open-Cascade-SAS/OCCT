@@ -42,7 +42,7 @@
   #define OPEN_OLD    1
   #define OPEN_APPEND 2
 
-  void                            _osd_wnt_set_error        ( OSD_Error&, OSD_WhoAmI, ... );
+  void _osd_wnt_set_error (OSD_Error&, Standard_Integer, ...);
 
 #ifndef OCCT_UWP
   PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection&, BOOL, const wchar_t* );

@@ -57,9 +57,11 @@
 #include <Standard_Atomic.hxx>
 
 #ifdef HAVE_TBB
+  Standard_DISABLE_DEPRECATION_WARNINGS
   #include <tbb/parallel_for.h>
   #include <tbb/parallel_for_each.h>
   #include <tbb/blocked_range.h>
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #endif
 
 #include <cstdio>

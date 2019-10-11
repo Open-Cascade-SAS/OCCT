@@ -882,8 +882,9 @@ void OSD_Path::SetExtension(const TCollection_AsciiString& aName){
 static void __fastcall _test_raise ( OSD_SysType, Standard_CString );
 static void __fastcall _remove_dup ( TCollection_AsciiString& );
 
-OSD_Path :: OSD_Path () {
-
+OSD_Path :: OSD_Path ()
+: myUNCFlag(Standard_False), mySysDep(OSD_WindowsNT)
+{
 }  // end constructor ( 1 )
 
 OSD_Path ::  OSD_Path (

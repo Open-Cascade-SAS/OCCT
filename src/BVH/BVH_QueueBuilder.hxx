@@ -44,7 +44,7 @@ public:
     myNumOfThreads (theNumOfThreads) {}
 
   //! Releases resources of BVH queue based builder.
-  virtual ~BVH_QueueBuilder() = 0;
+  virtual ~BVH_QueueBuilder() {}
 
 public:
 
@@ -286,16 +286,6 @@ void BVH_QueueBuilder<T, N>::Build (BVH_Set<T, N>*       theSet,
     // Execute thread function inside current thread
     aThread.execute();
   }
-}
-
-// =======================================================================
-// function : ~BVH_QueueBuilder
-// purpose  :
-// =======================================================================
-template<class T, int N>
-BVH_QueueBuilder<T, N>::~BVH_QueueBuilder()
-{
-  //
 }
 
 #endif // _BVH_QueueBuilder_Header

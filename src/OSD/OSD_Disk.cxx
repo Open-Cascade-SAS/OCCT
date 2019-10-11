@@ -25,7 +25,7 @@
 #ifdef _WIN32
   #include <windows.h>
 
-  void _osd_wnt_set_error (OSD_Error&, OSD_WhoAmI, ... );
+  void _osd_wnt_set_error (OSD_Error&, Standard_Integer, ... );
 
   static TCollection_AsciiString _osd_wnt_set_disk_name (const OSD_Path& thePath)
   {

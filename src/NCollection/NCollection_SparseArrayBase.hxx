@@ -190,8 +190,8 @@ public:
 
 private:
   // Copy constructor and assignment operator are private thus not accessible
-  NCollection_SparseArrayBase (const NCollection_SparseArrayBase&) {}
-  void operator = (const NCollection_SparseArrayBase&) {}
+  NCollection_SparseArrayBase(const NCollection_SparseArrayBase&);
+  void operator = (const NCollection_SparseArrayBase&);
 
 protected:
   // Object life

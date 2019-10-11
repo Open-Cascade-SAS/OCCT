@@ -187,6 +187,10 @@ void IVtkDraw_Interactor::Initialize()
   this->Size[1] = aSize[1];
 }
 
+#ifdef _WIN32
+LRESULT CALLBACK WndProc(HWND theHWnd, UINT theUMsg, WPARAM theWParam, LPARAM theLParam);
+#endif
+
 //===========================================================
 // Function : Enable
 // Purpose  :

@@ -52,10 +52,10 @@ static inline Standard_Real GetWallClockTime ()
   LARGE_INTEGER time;
   return isOk && QueryPerformanceCounter (&time) ? 
          (Standard_Real)time.QuadPart / (Standard_Real)freq.QuadPart :
-#ifndef OCCT_UWP
-         0.001 * GetTickCount();
-#else
+#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0600)
          0.001 * GetTickCount64();
+#else
+         0.001 * GetTickCount();
 #endif
 }
 

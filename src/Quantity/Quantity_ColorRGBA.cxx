@@ -44,7 +44,7 @@ namespace
                                                            const ColorInteger theColorComponentBase)
   {
     Standard_ASSERT_RETURN (theColorComponentBase >= 2,
-                            __FUNCTION__ ": 'theColorComponentBase' must be greater than 1.",
+                            "'theColorComponentBase' must be greater than 1.",
                             0.0f);
     const ColorInteger       aColorComponentMaxValue  = theColorComponentBase - 1;
     const ColorInteger       aColorComponentAsInteger = theColorInteger % theColorComponentBase;
@@ -67,7 +67,7 @@ namespace
                                          Quantity_ColorRGBA& theColor)
   {
     Standard_ASSERT_RETURN (theColorComponentBase >= 2,
-                            __FUNCTION__ ": 'theColorComponentBase' must be greater than 1.",
+                            "'theColorComponentBase' must be greater than 1.",
                             0.0f);
     NCollection_Vec4<float> aColor (1.0f);
     if (hasAlphaComponent)

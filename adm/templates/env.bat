@@ -77,6 +77,9 @@ if "%VCVER:~-4%" == "-uwp" (
   set VCLIB=%VCLIB%-uwp
   set VCPROP=Universal
 )
+if "%VCFMT%" == "vclang" (
+  set VCLIB=vc14
+)
 rem echo VCVER=%VCVER% VCFMT=%VCFMT% VCLIB=%VCLIB% VCPROP=%VCPROP%
 
 rem ----- Parsing of Visual Studio platform -----
@@ -106,6 +109,10 @@ if not "%DevEnvDir%" == "" (
   for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
     set "DevEnvDir=%%i\Common7\IDE\"
   )
+) else if /I "%VCFMT%" == "vclang" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "DevEnvDir=%%i\Common7\IDE\"
+  )
 ) else if /I "%VCFMT%" == "gcc" (
   rem MinGW
 ) else (
@@ -118,6 +125,7 @@ if not "%DevEnvDir%" == "" (
   echo vc14  = VS 2015
   echo vc141 = VS 2017
   echo vc142 = VS 2019
+  echo vclang = VS 2019 with ClangCL toolset
   exit /B
 )
 
@@ -147,6 +155,11 @@ if /I "%VCFMT%" == "vc9" (
     set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
   ) 
   set "VCPlatformToolSet=v142"
+) else if /I "%VCFMT%" == "vclang" (
+  for /f "usebackq delims=" %%i in (`vswhere.exe -version "[16.0,16.99]" -latest -requires Microsoft.VisualStudio.Workload.%VCPROP% -property installationPath`) do (
+    set "VCVARS=%%i\VC\Auxiliary\Build\vcvarsall.bat"
+  ) 
+  set "VCPlatformToolSet=ClangCL"
 ) else if /I "%VCFMT%" == "gcc" (
   rem MinGW
 ) else (

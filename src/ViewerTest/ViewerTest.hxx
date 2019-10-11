@@ -34,6 +34,7 @@ class V3d_View;
 class V3d_Viewer;
 class ViewerTest_EventManager;
 class TopoDS_Shape;
+class WNT_WClass;
 
 class ViewerTest
 {
@@ -257,7 +258,7 @@ private:
   //! Ctrl+MB2 for pan, etc) and keyboard shortcuts.
   //! This method is relevant for MS Windows only and respectively
   //! returns WNT_WClass handle.
-  static const Handle(Standard_Transient)& WClass();
+  static const Handle(WNT_WClass)& WClass();
 };
 
 #endif // _ViewerTest_HeaderFile
