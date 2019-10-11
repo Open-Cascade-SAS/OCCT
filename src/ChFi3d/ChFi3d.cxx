@@ -55,6 +55,8 @@ ChFiDS_TypeOfConcavity ChFi3d::DefineConnectType(const TopoDS_Edge&     E,
   if (F1.IsSame(F2))
     EE.Reverse();
   Handle (Geom2d_Curve) C2 = BRep_Tool::CurveOnSurface(EE,F2,f,l);
+  if (C1.IsNull() || C2.IsNull())
+    return ChFiDS_Other;
 
   BRepAdaptor_Curve C(E);
   f = C.FirstParameter();

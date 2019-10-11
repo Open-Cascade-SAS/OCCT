@@ -60,6 +60,14 @@ public:
   //! Remove <S> to set of images.
   Standard_EXPORT void Remove (const TopoDS_Shape& S);
   
+  //! Removes the root <theRoot> from the list of roots and up and down maps.
+  Standard_EXPORT void RemoveRoot (const TopoDS_Shape& Root);
+
+  //! Replaces the <OldRoot> with the <NewRoot>, so all images
+  //! of the <OldRoot> become the images of the <NewRoot>.
+  //! The <OldRoot> is removed.
+  Standard_EXPORT void ReplaceRoot (const TopoDS_Shape& OldRoot, const TopoDS_Shape& NewRoot);
+
   Standard_EXPORT const TopTools_ListOfShape& Roots() const;
   
   Standard_EXPORT Standard_Boolean IsImage (const TopoDS_Shape& S) const;

@@ -27,6 +27,7 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 class BRepAlgo_AsDes;
 class TopoDS_Face;
+class BRepOffset_Analyse;
 class BRepOffset_Offset;
 
 
@@ -63,6 +64,7 @@ public:
                                               const Handle(BRepAlgo_AsDes)& AsDes2d,
                                               const Standard_Real Offset,
                                               const Standard_Real Tol,
+                                              const BRepOffset_Analyse& Analyse,
                                               TopTools_IndexedMapOfShape& FacesWithVerts,
                                               TopTools_IndexedDataMapOfShapeListOfShape& theDMVV);
 
@@ -79,6 +81,7 @@ public:
                                                     const Handle(BRepAlgo_AsDes)& AsDes,
                                                     const Handle(BRepAlgo_AsDes)& AsDes2d,
                                                     const Standard_Real Tol,
+                                                    const BRepOffset_Analyse& Analyse,
                                                     TopTools_IndexedDataMapOfShapeListOfShape& theDMVV);
 
   //! Fuses the chains of vertices in the theDMVV

@@ -1,0 +1,49 @@
+puts "TODO OCC31200 All: Error: operation with offset value"
+puts "TODO OCC31200 All: Error: The area of result shape is"
+puts "TODO OCC31200 All: Error: The volume of result shape is"
+puts "TODO OCC31200 All: Error: number of "
+
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+# unset draw variables for all offset values
+foreach val {0 1} {
+  foreach x [directory r${val}*_unif] {
+    unset $x
+  }
+}
+
+restore [locate_data_file bug31148_plate_split.brep] s
+
+perform_offset_multi_with_ref r0_01 s 0 {6 10 14} {1 5 1} {464 244 26 26} 1; # BAD (null shape)
+perform_offset_multi_with_ref r0_02 s 0 {9 11} {5 5} {448 244 24 23} 1; # BAD (filled part)
+perform_offset_multi_with_ref r0_03 s 0 {6 9 11 14} {1 5 5 1} {464 268 36 35} 1; # BAD (mostly removed)
+perform_offset_multi_with_ref r0_04 s 0 {8 10 12} {5 5 5} {464 276 22 20} 1; # BAD (out of borders)
+perform_offset_multi_with_ref r0_05 s 0 {6 8 10 12 14 } {1 5 5 5 1} {464 292 30 28} 1
+perform_offset_multi_with_ref r0_06 s 0 {7 9 11 13} {1 3 3 1} {424 236 28 27} 1
+perform_offset_multi_with_ref r0_07 s 0 {7 8 10 12 13} {1 3 3 3 1} {424 244 26 24} 1
+perform_offset_multi_with_ref r0_08 s 0 {8 9 10 11 12} {1 2 3 4 5} {392 292 18 18} 1
+
+perform_offset_multi_with_ref r1_01 s 1 {6 10 14} {1.5 6 1.5} {692 766 26 26} 1
+perform_offset_multi_with_ref r1_02 s 1 {9 11} {6 6} {672 752 24 23} 1 
+perform_offset_multi_with_ref r1_03 s 1 {6 9 11 14} {1.5 6 6 1.5} {682 776 36 35} 1 
+perform_offset_multi_with_ref r1_04 s 1 {8 10 12} {6 6 6} {656 784 22 20} 1
+perform_offset_multi_with_ref r1_05 s 1 {6 9 11 14} {0 3 3 0} {660 656 28 27} 1
+perform_offset_multi_with_ref r1_06 s 1 {8 9 10 11 12} {2 3 4 5 6} {622 786 18 18} 1
+
+
+# display all created shapes
+foreach val {0 1} {
+  foreach x [directory r${val}*_unif] {
+    if {[isdraw $x]} {
+      checkview -display $x -2d -path ${imagedir}/${test_image}_$x.png
+    }
+  }
+}
+
+copy r0_02 result
+copy r0_02_unif result_unif

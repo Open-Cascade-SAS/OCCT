@@ -1,0 +1,34 @@
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+setfillhistory 1
+
+restore [locate_data_file bug31148_box_iso_face_top.brep] s
+explode s f
+offsetparameter 1.e-7 c i r
+offsetload s 0
+offsetonface s_6 1
+offsetonface s_7 2
+offsetperform result
+
+savehistory h
+
+generated gf6 h s_6
+checkprops gf6 -equal s_6
+
+generated gf7 h s_7
+checkprops gf7 -equal s_7
+
+foreach e [explode s_7 e] {
+  generated ge_$e h $e
+  checknbshapes ge_$e -face 1 -m "History information"
+}
+
+foreach v [explode s_7 v] {
+  generated gv_$v h $v
+  checknbshapes gv_$v -edge 1 -m "History information"
+}

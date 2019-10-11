@@ -16,5 +16,6 @@
 016 with_intersect_20
 017 with_intersect_80
 018 shape_type_i_c
-019 simple
-020 bugs
+019 shape_type_i_c_multi
+020 simple
+021 bugs

@@ -34,6 +34,7 @@
 #include <BRepAlgo_AsDes.hxx>
 #include <BRepLib.hxx>
 #include <BRepLib_MakeVertex.hxx>
+#include <BRepOffset_Analyse.hxx>
 #include <BRepOffset_Inter2d.hxx>
 #include <BRepOffset_Offset.hxx>
 #include <BRepOffset_Tool.hxx>
@@ -1451,6 +1452,7 @@ void BRepOffset_Inter2d::ConnexIntByInt
   const Handle(BRepAlgo_AsDes)& AsDes2d,
   const Standard_Real           Offset,
   const Standard_Real           Tol,
+  const BRepOffset_Analyse&     Analyse,
   TopTools_IndexedMapOfShape&   FacesWithVerts,
   TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
 {  
@@ -1523,6 +1525,9 @@ void BRepOffset_Inter2d::ConnexIntByInt
       TopoDS_Vertex Vref = CommonVertex(CurE, NextE); 
       gp_Pnt Pref = BRep_Tool::Pnt(Vref);
 
+      CurE = Analyse.EdgeReplacement (FI, CurE);
+      NextE = Analyse.EdgeReplacement (FI, NextE);
+
       TopoDS_Shape aLocalShape = OFI.Generated(CurE);
       TopoDS_Edge CEO = TopoDS::Edge(aLocalShape);
       aLocalShape = OFI.Generated(NextE);
@@ -1582,18 +1587,20 @@ void BRepOffset_Inter2d::ConnexIntByInt
         }
       }
       else {
-        if (MES.IsBound(CEO)) {
-          TopoDS_Vertex  V = CommonVertex(CEO,NEO);
-          UpdateVertex  (V,CEO,TopoDS::Edge(MES(CEO)),Tol);
-          AsDes2d->Add     (MES(CEO),V);
-        }
-        else if (MES.IsBound(NEO)) {
-          TopoDS_Vertex V = CommonVertex(CEO,NEO);
-          UpdateVertex (V,NEO,TopoDS::Edge(MES(NEO)),Tol);
-          AsDes2d->Add    (MES(NEO),V);
+        TopoDS_Vertex  V = CommonVertex(CEO,NEO);
+        if (!V.IsNull())
+        {
+          if (MES.IsBound(CEO)) {
+            UpdateVertex  (V,CEO,TopoDS::Edge(MES(CEO)),Tol);
+            AsDes2d->Add     (MES(CEO),V);
+          }
+          if (MES.IsBound(NEO)) {
+            UpdateVertex (V,NEO,TopoDS::Edge(MES(NEO)),Tol);
+            AsDes2d->Add    (MES(NEO),V);
+          }
         }
       }
-      CurE = NextE;
+      CurE = wexp.Current();
       ToReverse1 = ToReverse2;
     }
   }
@@ -1611,6 +1618,7 @@ void BRepOffset_Inter2d::ConnexIntByIntInVert
   const Handle(BRepAlgo_AsDes)& AsDes,
   const Handle(BRepAlgo_AsDes)& AsDes2d,
   const Standard_Real           Tol,
+  const BRepOffset_Analyse&     Analyse,
   TopTools_IndexedDataMapOfShapeListOfShape& theDMVV)
 {
   TopoDS_Face           FIO = TopoDS::Face(OFI.Face());
@@ -1657,7 +1665,10 @@ void BRepOffset_Inter2d::ConnexIntByIntInVert
         CurE = NextE;
         continue;
       }
-      //
+
+      CurE = Analyse.EdgeReplacement (FI, CurE);
+      NextE = Analyse.EdgeReplacement (FI, NextE);
+
       TopoDS_Shape aLocalShape = OFI.Generated(CurE);
       TopoDS_Edge CEO = TopoDS::Edge(aLocalShape);
       aLocalShape = OFI.Generated(NextE);
@@ -1678,7 +1689,7 @@ void BRepOffset_Inter2d::ConnexIntByIntInVert
         NE2 = MES(CEO);
       }
       else {
-        CurE = NextE;
+        CurE = wexp.Current();
         continue;
       }
       //
@@ -1731,7 +1742,7 @@ void BRepOffset_Inter2d::ConnexIntByIntInVert
           }
         }
       }
-      CurE = NextE;
+      CurE = wexp.Current();
     }
   }
 }

@@ -1132,6 +1132,14 @@ Standard_Integer offsetperform(Draw_Interpretor& theCommands,
       reportOffsetState(theCommands, aRetCode);
     }
 
+  // Store the history of Boolean operation into the session
+  if (BRepTest_Objects::IsHistoryNeeded())
+  {
+    TopTools_ListOfShape aLA;
+    aLA.Append (TheOffset.InitShape());
+    BRepTest_Objects::SetHistory<BRepOffset_MakeOffset>(aLA, TheOffset);
+  }
+
   return 0;
   }
 

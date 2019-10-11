@@ -2948,7 +2948,11 @@ static void CompactUVBounds (const TopoDS_Face& F,
     C.D0(U2,P);
     B.Add(P);
   }
-  B.Get(UMin,VMin,UMax,VMax);
+
+  if (!B.IsVoid())
+    B.Get(UMin,VMin,UMax,VMax);
+  else
+    BRep_Tool::Surface(F)->Bounds (UMin, UMax, VMin, VMax);
 }
 
 //=======================================================================

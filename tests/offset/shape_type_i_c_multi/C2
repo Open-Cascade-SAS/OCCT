@@ -1,0 +1,12 @@
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+restore [locate_data_file bug31148_plate_offset_parallel.brep] s
+
+perform_offset_multi_with_ref result s 0 {22 24} {3 3} {472 260 34 34} 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

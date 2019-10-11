@@ -1,0 +1,37 @@
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+# unset draw variables for all offset values
+foreach val {0 10} {
+  foreach x [directory r${val}*_unif] {
+    unset $x
+  }
+}
+
+restore [locate_data_file bug31148_case_02.brep] s
+
+perform_offset_multi_with_ref r0_01 s 0 {2 50} {40 40} {1.18693e+06 1.99372e+07 56 54} 1
+perform_offset_multi_with_ref r0_02 s 0 {18 20 26 32 24 29 36} {10 10 10 10 10 10 10} {1.2113e+06 2.08809e+07 60 60} 1
+perform_offset_multi_with_ref r0_03 s 0 {36 39 15 21 27 33 45 17 24 29 41 47} {20 20 20 20 20 20 20 20 20 20 20 20} {1.1742e+06 2.35232e+07 60 50} 1
+perform_offset_multi_with_ref r0_04 s 0 {18 23 30 35 42 48} {10 10 10 10 10 10} {1.19178e+06 2.06028e+07 58 58} 1
+
+perform_offset_multi_with_ref r10_01 s 10 {2 50} {40 40} {1.40737e+06 3.28873e+07 56 54} 1
+perform_offset_multi_with_ref r10_02 s 10 {18 20 26 32 24 29 36} {20 20 20 20 20 20 20} {1.4087e+06 3.3851e+07 60 56} 1
+perform_offset_multi_with_ref r10_03 s 10 {36 39 15 21 27 33 45 17 24 29 41 47} {20 20 20 20 20 20 20 20 20 20 20 20} {1.26845e+06 3.49235e+07 60 50} 1
+perform_offset_multi_with_ref r10_04 s 10 {18 23 30 35 42 48} {20 20 20 20 20 20} {1.41101e+06 3.34373e+07 58 58} 1
+
+# display all created shapes
+foreach val {0 10} {
+  foreach x [directory r${val}*_unif] {
+    if {[isdraw $x]} {
+      checkview -display $x -2d -path ${imagedir}/${test_image}_$x.png
+    }
+  }
+}
+
+copy r0_01 result
+copy r0_01_unif result_unif

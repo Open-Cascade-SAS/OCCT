@@ -309,3 +309,55 @@ void BRepAlgo_Image::Filter(const TopoDS_Shape&     S,
   
 }
 
+//=======================================================================
+//function : RemoveRoot
+//purpose  : 
+//=======================================================================
+void BRepAlgo_Image::RemoveRoot (const TopoDS_Shape& Root)
+{
+  Standard_Boolean isRemoved = Standard_False;
+  for (TopTools_ListOfShape::Iterator it (roots); it.More(); it.Next())
+  {
+    if (Root.IsSame (it.Value()))
+    {
+      roots.Remove (it);
+      isRemoved = Standard_True;
+      break;
+    }
+  }
+
+  if (!isRemoved)
+    return;
+
+  const TopTools_ListOfShape* pNewS = down.Seek (Root);
+  if (pNewS)
+  {
+    for (TopTools_ListOfShape::Iterator it (*pNewS); it.More(); it.Next())
+    {
+      const TopoDS_Shape *pOldS = up.Seek (it.Value());
+      if (pOldS && pOldS->IsSame (Root))
+        up.UnBind (it.Value());
+    }
+    down.UnBind (Root);
+  }
+}
+
+//=======================================================================
+//function : ReplaceRoot
+//purpose  : 
+//=======================================================================
+void BRepAlgo_Image::ReplaceRoot (const TopoDS_Shape& OldRoot,
+                                  const TopoDS_Shape& NewRoot)
+{
+  if (!HasImage (OldRoot))
+    return;
+
+  const TopTools_ListOfShape& aLImage = Image (OldRoot);
+  if (HasImage (NewRoot))
+    Add (NewRoot, aLImage);
+  else
+    Bind (NewRoot, aLImage);
+
+  SetRoot (NewRoot);
+  RemoveRoot (OldRoot);
+}

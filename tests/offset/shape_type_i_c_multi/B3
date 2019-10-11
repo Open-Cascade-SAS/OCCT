@@ -1,0 +1,55 @@
+puts "========"
+puts "0031148: Offset adjacent co-planar faces with different offset values"
+puts "========"
+puts ""
+
+pload MODELING
+
+# unset draw variables for all offset values
+foreach val {0 1} {
+  foreach x [directory r${val}*_unif] {
+    unset $x
+  }
+}
+
+restore [locate_data_file bug31148_box_top_split2.brep] s
+
+perform_offset_multi_with_ref r0_01 s 0 {6 7 8 9 10} {1 1 1 1 1} {440 600 6 6} 1
+perform_offset_multi_with_ref r0_02 s 0 {6} {1} {420 524 9 9} 1
+perform_offset_multi_with_ref r0_03 s 0 {6 9} {1 2} {460 572 12 12} 1
+perform_offset_multi_with_ref r0_04 s 0 {6 8} {1 1} {432 548 10 10} 1
+perform_offset_multi_with_ref r0_05 s 0 {6 8} {1 2} {452 572 12 12} 1
+perform_offset_multi_with_ref r0_06 s 0 {6 7 8} {1 2 2} {484 620 14 14} 1
+perform_offset_multi_with_ref r0_07 s 0 {6 8 9} {1 2 3} {496 644 15 15} 1
+perform_offset_multi_with_ref r0_08 s 0 {6 8 9 7} {1 2 3 4} {544 740 17 17} 1
+perform_offset_multi_with_ref r0_09 s 0 {6 8 9 7} {1 2 3 2} {512 692 16 16} 1
+perform_offset_multi_with_ref r0_10 s 0 {6 8 9 7 10 } {1 2 3 2 5} {520 712 16 16} 1
+perform_offset_multi_with_ref r0_11 s 0 {6 8 9 7 10 } {1 2 3 4 5} {544 760 15 15} 1
+perform_offset_multi_with_ref r0_12 s 0 {10} {2} {416 508 12 11} 1
+
+
+perform_offset_multi_with_ref r1_01 s 1 {6 7 8 9 10} {2 2 2 2 2} {672 1152 6 6} 1
+perform_offset_multi_with_ref r1_02 s 1 {6} {2} {648 1043 9 9} 1
+perform_offset_multi_with_ref r1_03 s 1 {6 9} {2 3} {696 1113 12 12} 1
+perform_offset_multi_with_ref r1_04 s 1 {6 8} {2 2} {662 1078 10 10} 1
+perform_offset_multi_with_ref r1_05 s 1 {6 8} {2 3} {686 1113 12 12} 1
+perform_offset_multi_with_ref r1_06 s 1 {6 7 8} {2 3 3} {724 1183 14 14} 1
+perform_offset_multi_with_ref r1_07 s 1 {6 8 9} {2 3 4} {738 1218 15 15} 1
+perform_offset_multi_with_ref r1_08 s 1 {6 8 9 7} {2 3 4 5} {794 1358 17 17} 1
+perform_offset_multi_with_ref r1_09 s 1 {6 8 9 7} {2 3 4 3} {756 1288 16 16} 1
+perform_offset_multi_with_ref r1_10 s 1 {6 8 9 7 10 } {2 3 4 3 5} {756 1304 16 16} 1
+perform_offset_multi_with_ref r1_11 s 1 {6 8 9 7 10 } {2 3 4 5 6} {794 1378 15 15} 1
+perform_offset_multi_with_ref r1_12 s 1 {6 8 9 7 10 } {2 3 4 5 2.5} {784 1364 16 16} 1
+perform_offset_multi_with_ref r1_13 s 1 {10} {2} {632 1012 12 11} 1
+
+# display all created shapes
+foreach val {0 1} {
+  foreach x [directory r${val}*_unif] {
+    if {[isdraw $x]} {
+      checkview -display $x -2d -path ${imagedir}/${test_image}_$x.png
+    }
+  }
+}
+
+copy r0_11 result
+copy r0_11_unif result_unif

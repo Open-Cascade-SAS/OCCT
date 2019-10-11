@@ -1,6 +1,4 @@
-puts "TODO OCC27912 ALL: An exception was caught"
-puts "TODO OCC27912 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO OCC27912 ALL: TEST INCOMPLETE"
+puts "TODO OCC27912 ALL: Error : The area of result shape is"
 
 puts "========"
 puts "OCC27912"
@@ -16,3 +14,5 @@ offsetparameter 1e-7 p i
 offsetload s 10
 
 offsetperform result
+
+checkprops result -s 0

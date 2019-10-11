@@ -92,6 +92,11 @@ public:
   
   Standard_EXPORT const TopoDS_Shape& Shape() const;
   
+  const TopoDS_Shape& InitShape() const
+  {
+    return myShape;
+  }
+
   //! returns information about offset state.
   Standard_EXPORT BRepOffset_Error Error() const;
   
@@ -120,6 +125,17 @@ public:
 
   //! Return bad shape, which obtained in CheckInputData.
   Standard_EXPORT const TopoDS_Shape& GetBadShape() const;
+
+public: //! @name History methods
+
+  //! Returns the  list of shapes generated from the shape <S>.
+  Standard_EXPORT const TopTools_ListOfShape& Generated (const TopoDS_Shape& theS);
+  
+  //! Returns the list of shapes modified from the shape <S>.
+  Standard_EXPORT const TopTools_ListOfShape& Modified (const TopoDS_Shape& theS);
+  
+  //! Returns true if the shape S has been deleted.
+  Standard_EXPORT Standard_Boolean IsDeleted (const TopoDS_Shape& S);
 
 
 protected:
@@ -152,6 +168,9 @@ private:
   
   Standard_EXPORT void EncodeRegularity();
   
+  //! Replace roots in history maps
+  Standard_EXPORT void ReplaceRoots();
+
   Standard_EXPORT void MakeSolid();
   
   Standard_EXPORT void ToContext (BRepOffset_DataMapOfShapeOffset& MapSF);
@@ -169,7 +188,7 @@ private:
   Standard_EXPORT void RemoveInternalEdges();
 
   //! Intersects edges
-  Standard_EXPORT void IntersectEdges (const TopoDS_Shape& theShape,
+  Standard_EXPORT void IntersectEdges (const TopTools_ListOfShape& theFaces,
                                        BRepOffset_DataMapOfShapeOffset& theMapSF,
                                        TopTools_DataMapOfShapeShape& theMES,
                                        TopTools_DataMapOfShapeShape& theBuild,
@@ -181,6 +200,7 @@ private:
   //! for BRepOffset_MakeLoops::Build method.
   //! Currently the Complete intersection mode is limited to work only on planar cases.
   Standard_EXPORT void BuildSplitsOfExtendedFaces(const TopTools_ListOfShape& theLF,
+                                                  const BRepOffset_Analyse& theAnalyse,
                                                   Handle(BRepAlgo_AsDes)& theAsDes,
                                                   TopTools_DataMapOfShapeListOfShape& theEdgesOrigins,
                                                   TopTools_DataMapOfShapeShape& theFacesOrigins,
@@ -217,7 +237,8 @@ private:
   Standard_Boolean myIsPerformSewing; // Handle bad walls in thicksolid mode.
   Standard_Boolean myIsPlanar;
   TopoDS_Shape myBadShape;
-
+  TopTools_ListOfShape myGenerated;
+  TopTools_MapOfShape myResMap;
 };
 
 #endif // _BRepOffset_MakeOffset_HeaderFile

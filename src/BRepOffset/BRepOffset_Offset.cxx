@@ -1613,50 +1613,52 @@ TopoDS_Shape BRepOffset_Offset::Generated(const TopoDS_Shape& Shape) const
 {
   TopoDS_Shape aShape;
 
-  switch ( myShape.ShapeType()) {
-
-  case TopAbs_FACE: 
+  switch ( myShape.ShapeType())
+  {
+    case TopAbs_FACE:
     {
-      TopExp_Explorer exp (myShape.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
-      TopExp_Explorer expo(myFace .Oriented(TopAbs_FORWARD), TopAbs_EDGE);
-      for ( ; exp.More() && expo.More(); exp.Next(), expo.Next()) {
-	if ( Shape.IsSame(exp.Current())) {
-	  if ( myShape.Orientation() == TopAbs_REVERSED) 
-	    aShape = expo.Current().Reversed();
-	  else
-	    aShape = expo.Current();
-	}
+      TopExp_Explorer exp  (myShape.Oriented(TopAbs_FORWARD), TopAbs_EDGE);
+      TopExp_Explorer expo (myFace .Oriented(TopAbs_FORWARD), TopAbs_EDGE);
+      for (; exp.More() && expo.More(); exp.Next(), expo.Next())
+      {
+        if (Shape.IsSame (exp.Current()))
+        {
+          if (myShape.Orientation() == TopAbs_REVERSED)
+            aShape = expo.Current().Reversed();
+          else
+            aShape = expo.Current();
+          break;
+        }
       }
     }
     break;
 
-  case TopAbs_EDGE:
+    case TopAbs_EDGE:
     // have generate a pipe.
     {
       TopoDS_Vertex V1, V2;
       TopExp::Vertices(TopoDS::Edge(myShape), V1, V2);
-      
-      TopExp_Explorer expf(myFace .Oriented(TopAbs_FORWARD), TopAbs_WIRE);
-      TopExp_Explorer expo(expf.Current().Oriented(TopAbs_FORWARD), 
-			   TopAbs_EDGE);
+
+      TopExp_Explorer expf(myFace.Oriented(TopAbs_FORWARD), TopAbs_WIRE);
+      TopExp_Explorer expo(expf.Current().Oriented(TopAbs_FORWARD), TopAbs_EDGE);
       expo.Next(); 
       expo.Next();
       
       if ( V2.IsSame(Shape)) {
-	if ( expf.Current().Orientation() == TopAbs_REVERSED) 
-	  aShape = expo.Current().Reversed();
-	else
-	  aShape = expo.Current();
+        if (expf.Current().Orientation() == TopAbs_REVERSED)
+          aShape = expo.Current().Reversed();
+        else
+          aShape = expo.Current();
       }
       else {
-	expo.Next();
-	if ( expf.Current().Orientation() == TopAbs_REVERSED) 
-	  aShape = expo.Current().Reversed();
-	else
-	  aShape = expo.Current();
+        expo.Next();
+        if (expf.Current().Orientation() == TopAbs_REVERSED)
+          aShape = expo.Current().Reversed();
+        else
+          aShape = expo.Current();
       }
-      if ( myFace.Orientation() == TopAbs_REVERSED)
-	aShape.Reverse();
+      if (myFace.Orientation() == TopAbs_REVERSED)
+        aShape.Reverse();
     }
     break;
   default:
