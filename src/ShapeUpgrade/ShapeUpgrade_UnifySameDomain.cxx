@@ -601,7 +601,7 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
                              const TopoDS_Face& theFace,
                              TopTools_MapOfShape& theMapEdgesWithTemporaryPCurves)
 {
-  BRepAdaptor_Surface BAsurf(theFace, Standard_False);
+  BRepAdaptor_Surface BAsurf(theFace, Standard_True); //with real bounds of face
 
   Standard_Real Uperiod = 0., Vperiod = 0.;
   Handle(Geom_Surface) RefSurf = BRep_Tool::Surface(theRefFace);
