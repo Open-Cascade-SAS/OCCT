@@ -1,0 +1,22 @@
+puts "======================================================="
+puts "OCC31066: Infinite loop in ShapeUpgrade_UnifySameDomain"
+puts "======================================================="
+puts ""
+
+pload MODELING DATAEXCHANGE
+
+stepread [locate_data_file bug31066.stp] a *
+
+unifysamedom result a_1
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 140 -wire 174 -edge 352 -vertex 208
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.001} {
+   puts "Error: bad tolerance of result"
+}
+
+checkprops result -v 139105
