@@ -18,6 +18,7 @@ set res [Open $file D]
 set real [GetReal D 0:1]
 set rlst [GetRealList D 0:1]
 set rarr [GetRealArray D 0:1]
+set rarr2 [GetRealArray D 0:2]
 
 # Check for read values
 checkreal "Real value" [lindex $rlst 0] 1.1 0 1e-15
@@ -25,6 +26,9 @@ checkreal "Real value" [lindex $rlst 2] 3.3 0 1e-15
 checkreal "Real value" [lindex $rarr 0] 0.111 0 1e-15
 checkreal "Real value" [lindex $rarr 3] 123. 0 1e-15
 checkreal "Real value" [lindex $rarr 4] 3.14e12 0 1e-15
+checkreal "Real value" [lindex $rarr2 0] 2 0 1e-15
+checkreal "Real value" [lindex $rarr2 1] 2.1219957909652723e-314 0 1e-15
+checkreal "Real value" [lindex $rarr2 2] 5 0 1e-15
 foreach inf [list $real [lindex $rlst 3]] {
   if { [string compare "$inf" "inf"] && 
        [string compare "$inf" "infinity"] && 

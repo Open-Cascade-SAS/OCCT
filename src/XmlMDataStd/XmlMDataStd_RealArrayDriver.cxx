@@ -128,8 +128,12 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
                                      " for RealArray attribute as \"")
             + aValueStr + "\"";
         myMessageDriver->Send (aMessageString, Message_Warning);
+        // skip the first space, if exists
+        while (*aValueStr != 0 && IsSpace (*aValueStr))
+          ++aValueStr;
         // skip to the next space separator
-        while (*aValueStr != 0 && ! IsSpace (*aValueStr)) ++aValueStr;
+        while (*aValueStr != 0 && ! IsSpace (*aValueStr))
+          ++aValueStr;
       }
       aRealArray->SetValue(ind, aValue);
     }
