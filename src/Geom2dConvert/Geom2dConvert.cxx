@@ -1480,7 +1480,7 @@ void Geom2dConvert::C0BSplineToC1BSplineCurve(Handle(Geom2d_BSplineCurve)& BS,
    BS->D1(BS->FirstParameter(),point1,V1);  //a verifier
    BS->D1(BS->LastParameter(),point2,V2);
 
-   if ((point1.SquareDistance(point2) < tolerance) &&
+   if ((point1.SquareDistance(point2) < tolerance * tolerance) &&
        (V1.IsParallel(V2, anAngularToler)))
    {
      closed_flag = Standard_True;

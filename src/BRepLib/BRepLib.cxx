@@ -1347,15 +1347,13 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
       }
 
       // Eval tol2d to compute SameRange
-      Standard_Real UResol = Max(GAS.UResolution(theTolerance), Precision::PConfusion());
-      Standard_Real VResol = Max(GAS.VResolution(theTolerance), Precision::PConfusion());
-      Standard_Real Tol2d  = Min(UResol, VResol);
+      Standard_Real TolSameRange = Max(GAC.Resolution(theTolerance), Precision::PConfusion());
       for(Standard_Integer i = 0; i < 2; i++){
         Handle(Geom2d_Curve) curPC = PC[i];
         Standard_Boolean updatepc = 0;
         if(curPC.IsNull()) break;
         if(!SameRange){
-          GeomLib::SameRange(Tol2d,
+          GeomLib::SameRange(TolSameRange,
             PC[i],GCurve->First(),GCurve->Last(),
             f3d,l3d,curPC);
 
@@ -1375,13 +1373,17 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
 
         if(GAC2d.GetType() == GeomAbs_BSplineCurve && 
           GAC2d.Continuity() == GeomAbs_C0) {
+            Standard_Real UResol = GAS.UResolution(theTolerance);
+            Standard_Real VResol = GAS.VResolution(theTolerance);
+            Standard_Real TolConf2d = Min(UResol, VResol);
+            TolConf2d = Max(TolConf2d, Precision::PConfusion());
             Handle(Geom2d_BSplineCurve) bs2d = GAC2d.BSpline();
             Handle(Geom2d_BSplineCurve) bs2dsov = bs2d;
             Standard_Real fC0 = bs2d->FirstParameter(), lC0 = bs2d->LastParameter();
             Standard_Boolean repar = Standard_True;
             gp_Pnt2d OriginPoint;
             bs2d->D0(fC0, OriginPoint);
-            Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d, Tol2d);
+            Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d, TolConf2d);
             isBSP = Standard_True; 
 
             if(bs2d->IsPeriodic()) { // -------- IFV, Jan 2000
@@ -1425,7 +1427,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
                 }
                 d = sqrt(d)*.1;
 
-                Tol2dbail = Max(Min(Tol2dbail,d),Tol2d);
+                Tol2dbail = Max(Min(Tol2dbail,d), TolConf2d);
 
                 Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d,Tol2dbail);
 
@@ -1531,8 +1533,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
                   GAC2d.Load(bs2d,f3d,l3d);
                   curPC = bs2d;
 
-                  if(Abs(bs2d->FirstParameter() - fC0) > Tol2d ||
-                    Abs(bs2d->LastParameter() - lC0) > Tol2d    ) {
+                  if(Abs(bs2d->FirstParameter() - fC0) > TolSameRange ||
+                    Abs(bs2d->LastParameter() - lC0) > TolSameRange) {
                       Standard_Integer NbKnots = bs2d->NbKnots();
                       TColStd_Array1OfReal Knots(1,NbKnots);
                       bs2d->Knots(Knots);
@@ -1585,7 +1587,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
             //Approx_SameParameter has failed.
             //Consequently, the situation might be,
             //when 3D and 2D-curve do not have same-range.
-            GeomLib::SameRange( Tol2d, PC[i], 
+            GeomLib::SameRange( TolSameRange, PC[i],
                                 GCurve->First(), GCurve->Last(),
                                 f3d,l3d,curPC);
 
