@@ -36,6 +36,12 @@
 
   #define NSCompositingOperationSourceOver NSCompositeSourceOver
 #endif
+#if !defined(MAC_OS_X_VERSION_10_14) || (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_14)
+  #define NSBitmapImageFileTypePNG  NSPNGFileType
+  #define NSBitmapImageFileTypeBMP  NSBMPFileType
+  #define NSBitmapImageFileTypeJPEG NSJPEGFileType
+  #define NSBitmapImageFileTypeGIF  NSGIFFileType
+#endif
 
 @interface Draw_CocoaView : NSView
 {
@@ -561,10 +567,10 @@ Standard_Boolean Draw_Window::Save (Standard_CString theFileName) const
   NSString* aFileExtension = [[aFileName pathExtension] lowercaseString];
 
   NSDictionary* aFileTypeDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  [NSNumber numberWithInt: NSPNGFileType],  @"png",
-                                  [NSNumber numberWithInt: NSBMPFileType],  @"bmp",
-                                  [NSNumber numberWithInt: NSJPEGFileType], @"jpg",
-                                  [NSNumber numberWithInt: NSGIFFileType],  @"gif",
+                                  [NSNumber numberWithInt: NSBitmapImageFileTypePNG],  @"png",
+                                  [NSNumber numberWithInt: NSBitmapImageFileTypeBMP],  @"bmp",
+                                  [NSNumber numberWithInt: NSBitmapImageFileTypeJPEG], @"jpg",
+                                  [NSNumber numberWithInt: NSBitmapImageFileTypeGIF],  @"gif",
                                   nil];
   if ([aFileTypeDict valueForKey: aFileExtension] == NULL)
   {
