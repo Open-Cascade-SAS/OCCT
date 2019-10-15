@@ -54,7 +54,7 @@
     #include <OpenGL/gl.h>
   #endif
   #define __X_GL_H // prevent chaotic gl.h inclusions to avoid compile errors
-#elif defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__)
+#elif defined(HAVE_GLES2) || defined(OCCT_UWP) || defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__)
   #if defined(_WIN32)
     // Angle OpenGL ES headers do not define function prototypes even for core functions,
     // however OCCT is expected to be linked against libGLESv2
@@ -160,6 +160,7 @@
   #define GL_DEPTH_STENCIL                  0x84F9
   #define GL_UNSIGNED_INT_24_8              0x84FA
   #define GL_DEPTH24_STENCIL8               0x88F0
+  #define GL_DEPTH_STENCIL_ATTACHMENT       0x821A
 
   // OpenGL ES 3.0+
   #define GL_DEPTH_COMPONENT24              0x81A6
@@ -225,7 +226,7 @@
   #define GL_PATCHES                    0x000E
 #endif
 
-#if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(HAVE_GLES2) || defined(OCCT_UWP))
+#if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(HAVE_GLES2) || defined(OCCT_UWP))
   #define HAVE_EGL
 #endif
 

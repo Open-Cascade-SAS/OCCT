@@ -63,6 +63,29 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
   #include <GL/glx.h> // glXGetProcAddress()
 #endif
 
+#ifdef __EMSCRIPTEN__
+  #include <emscripten/html5.h>
+
+  //! Check if WebGL extension is available and activate it
+  //! (usage of extension without activation will generate errors).
+  static bool checkEnableWebGlExtension (const OpenGl_Context& theCtx,
+                                         const char* theExtName)
+  {
+    if (!theCtx.CheckExtension (theExtName))
+    {
+      return false;
+    }
+    if (EMSCRIPTEN_WEBGL_CONTEXT_HANDLE aWebGlCtx = emscripten_webgl_get_current_context())
+    {
+      if (emscripten_webgl_enable_extension (aWebGlCtx, theExtName))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+#endif
+
 namespace
 {
   static const Handle(OpenGl_Resource) NULL_GL_RESOURCE;
@@ -1399,6 +1422,13 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
   extPDS  = IsGlGreaterEqual (3, 0)
          || CheckExtension ("GL_OES_packed_depth_stencil");
+#ifdef __EMSCRIPTEN__
+  if (!extPDS
+    && checkEnableWebGlExtension (*this, "GL_WEBGL_depth_texture"))
+  {
+    extPDS = true; // WebGL 1.0 extension (in WebGL 2.0 core)
+  }
+#endif
 
   core11fwd = (OpenGl_GlCore11Fwd* )(&(*myFuncs));
   if (IsGlGreaterEqual (2, 0))
@@ -3129,6 +3159,20 @@ void OpenGl_Context::DiagnosticInformation (TColStd_IndexedDataMapOfStringString
     ReadGlVersion (aDriverVer[0], aDriverVer[1]);
     addInfo (theDict, "GLvendor",    (const char*)::glGetString (GL_VENDOR));
     addInfo (theDict, "GLdevice",    (const char*)::glGetString (GL_RENDERER));
+  #ifdef __EMSCRIPTEN__
+    if (checkEnableWebGlExtension (*this, "GL_WEBGL_debug_renderer_info"))
+    {
+      if (const char* aVendor = (const char*)::glGetString (0x9245))
+      {
+        addInfo (theDict, "GLunmaskedVendor", aVendor);
+      }
+      if (const char* aDevice = (const char*)::glGetString (0x9246))
+      {
+        addInfo (theDict, "GLunmaskedDevice", aDevice);
+      }
+    }
+  #endif
+
     addInfo (theDict, "GLversion",   (const char*)::glGetString (GL_VERSION));
     if (myGlVerMajor != aDriverVer[0]
      || myGlVerMinor != aDriverVer[1])

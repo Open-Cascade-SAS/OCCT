@@ -39,6 +39,8 @@ static OSD_SysType whereAmI()
   return OSD_VMS;
 #elif defined(__linux__) || defined(__linux)
   return OSD_LinuxREDHAT;
+#elif defined(__EMSCRIPTEN__)
+  return OSD_LinuxREDHAT;
 #elif defined(_AIX) || defined(AIX)
   return OSD_Aix;
 #else

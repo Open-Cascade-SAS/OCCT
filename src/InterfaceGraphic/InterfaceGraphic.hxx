@@ -23,7 +23,7 @@
   #undef DrawText
 #endif
 
-#elif !defined(__ANDROID__) && !defined(__QNX__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#elif !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 
 #include <stdio.h>
 

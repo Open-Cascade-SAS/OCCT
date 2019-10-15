@@ -116,7 +116,15 @@ void OSD_MemInfo::Update()
       myCounters[MemHeapUsage] += hinfo._size;
   }
 
-#elif (defined(__linux__) || defined(__linux))
+#elif (defined(__linux__) || defined(__linux) || defined(__EMSCRIPTEN__))
+  const struct mallinfo aMI = mallinfo();
+  myCounters[MemHeapUsage] = aMI.uordblks;
+#if defined(__EMSCRIPTEN__)
+  // /proc/%d/status is not emulated - get more info from mallinfo()
+  myCounters[MemWorkingSet]     = aMI.uordblks;
+  myCounters[MemWorkingSetPeak] = aMI.usmblks;
+#endif
+
   // use procfs on Linux
   char aBuff[4096];
   snprintf (aBuff, sizeof(aBuff), "/proc/%d/status", getpid());
@@ -162,10 +170,6 @@ void OSD_MemInfo::Update()
     }
   }
   aFile.close();
-
-  struct mallinfo aMI = mallinfo();
-  myCounters[MemHeapUsage] = aMI.uordblks;
-
 #elif (defined(__APPLE__))
   struct task_basic_info aTaskInfo;
   mach_msg_type_number_t aTaskInfoCount = TASK_BASIC_INFO_COUNT;

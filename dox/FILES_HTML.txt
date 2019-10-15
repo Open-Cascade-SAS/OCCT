@@ -14,6 +14,7 @@ overview/overview.md
 ../samples/qt/AndroidQt/ReadMe.md
 ../samples/java/jniviewer/ReadMe.md
 ../samples/ios/UIKitSample/ReadMe.md
+../samples/webgl/ReadMe.md
 
 tutorial/tutorial.md
 

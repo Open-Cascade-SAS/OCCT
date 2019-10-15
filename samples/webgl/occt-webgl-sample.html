@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang=en-us>
+<head>
+<meta charset=utf-8><meta content="text/html; charset=utf-8" http-equiv=Content-Type>
+<link rel="shortcut icon" href="lamp.ico" type="image/x-icon" />
+<title>OCCT WebGL Viewer Sample</title>
+</head>
+<body>
+
+<h2>OCCT WebGL Viewer Sample</h2>
+<div>
+  <canvas id=canvas oncontextmenu=event.preventDefault() tabindex=-1 style="border:0 none;background-color:#000" width="409" height="409"></canvas>
+  <img id=occlogo src="OCC_logo.png" style="position: absolute; left: 20px; top: 0px; z-index: 2;" />
+</div>
+
+<div><label for="fileInput">Choose BREP file to upload: </label><input type="file" id="fileInput" accept=".brep"></div>
+<h4>Console output:</h4>
+<p id="output"></p>
+<script>
+//! Resize canvas to fit into window.
+function updateCanvasSize()
+{
+  // size of canvas in logical (density-independent) units
+  var aSizeX = Math.min (window.innerWidth,  window.screen.availWidth);
+  var aSizeY = Math.min (window.innerHeight, window.screen.availHeight);
+  aSizeX = Math.max (300, aSizeX - 30);
+  aSizeY = Math.max (300, aSizeY / 2);
+  canvas.style.width  = aSizeX + "px";
+  canvas.style.height = aSizeY + "px";
+
+  // drawing buffer size (aka backing store)
+  var aDevicePixelRatio = window.devicePixelRatio || 1;
+  canvas.width  = aSizeX * aDevicePixelRatio;
+  canvas.height = aSizeY * aDevicePixelRatio;
+
+  occlogo.style.top = (aSizeY - 30) + "px";
+}
+window.onresize = updateCanvasSize;
+updateCanvasSize();
+
+//! Check browser support.
+function isWasmSupported()
+{
+  try {
+    if (typeof WebAssembly === "object"
+     && typeof WebAssembly.instantiate === "function") {
+      const aDummyModule = new WebAssembly.Module (Uint8Array.of (0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+      if (aDummyModule instanceof WebAssembly.Module)
+      {
+        return new WebAssembly.Instance(aDummyModule) instanceof WebAssembly.Instance;
+      }
+    }
+  } catch (e) {}
+  return false;
+}
+if (!isWasmSupported())
+{
+  var anElement = document.getElementById('output');
+  anElement.innerHTML += "Browser is too old - WebAssembly support is missing!<br>Please check updates or install a modern browser.<br>";
+}
+
+//! Define OCCT WebGL Viewer module.
+var Module =
+{
+  print: (function() {
+    var anElement = document.getElementById('output');
+    return function(theText) { anElement.innerHTML += theText + "<br>"; };
+  })(),
+  printErr: function(theText) {
+    //var anElement = document.getElementById('output');
+    //anElement.innerHTML += theText + "<br>";
+  },
+  canvas: (function() {
+    var aCanvas = document.getElementById('canvas');
+    return aCanvas;
+  })()
+};
+
+//! Handle file uploading.
+fileInput.onchange = function()
+{
+  if (fileInput.files.length == 0) { return; }
+  // Warning! Entire file is pre-loaded into memory.
+  var aFile = fileInput.files[0];
+  var aReader = new FileReader();
+  aReader.onload = function()
+  {
+    var aDataArray = new Uint8Array (aReader.result);
+    var aNameArray = new Uint8Array (toUtf8Array (aFile.name));
+    const aDataBuffer = Module._malloc(aDataArray.length);
+    const aNameBuffer = Module._malloc(aNameArray.length);
+    Module.HEAPU8.set(aNameArray, aNameBuffer);
+    Module.HEAPU8.set(aDataArray, aDataBuffer);
+    Module.ccall('onFileDataRead', null, ['number', 'number', 'number'], [aNameBuffer, aDataBuffer, aDataArray.length]);
+    Module._free(aDataBuffer);
+    Module._free(aNameBuffer);
+    fileInput.value = '';
+  };
+  aReader.readAsArrayBuffer(aFile);
+};
+
+//! Convert string into UTF-8 array.
+function toUtf8Array (theText)
+{
+  var aRes = [];
+  for (var aCharIter = 0; aCharIter < theText.length; ++aCharIter)
+  {
+    var aCharCode = theText.charCodeAt (aCharIter);
+    if (aCharCode < 0x80)
+    {
+      aRes.push (aCharCode);
+    }
+    else if (aCharCode < 0x800)
+    {
+      aRes.push (0xc0 | (aCharCode >> 6), 0x80 | (aCharCode & 0x3f));
+    }
+    else if (aCharCode < 0xd800 || aCharCode >= 0xe000)
+    {
+      aRes.push (0xe0 | (aCharCode >> 12), 0x80 | ((aCharCode>>6) & 0x3f), 0x80 | (aCharCode & 0x3f));
+    }
+    else
+    {
+      ++aCharIter;
+      aCharCode = 0x10000 + (((aCharCode & 0x3ff)<<10) | (theText.charCodeAt (aCharIter) & 0x3ff));
+      aRes.push(0xf0 | (aCharCode >>18), 0x80 | ((aCharCode>>12) & 0x3f), 0x80 | ((aCharCode>>6) & 0x3f), 0x80 | (aCharCode & 0x3f));
+    }
+  }
+  return aRes;
+}
+</script>
+<script type="text/javascript" src="occt-webgl-sample.js" charset="utf-8"></script>
+</body>
+</html>

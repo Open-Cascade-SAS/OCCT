@@ -25,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Aspect_DisplayConnection,Standard_Transient)
 // =======================================================================
 Aspect_DisplayConnection::Aspect_DisplayConnection()
 {
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
   myDisplay = NULL;
   myIsOwnDisplay = false;
   OSD_Environment anEnv ("DISPLAY");
@@ -40,7 +40,7 @@ Aspect_DisplayConnection::Aspect_DisplayConnection()
 // =======================================================================
 Aspect_DisplayConnection::~Aspect_DisplayConnection()
 {
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
   if (myDisplay != NULL
    && myIsOwnDisplay)
   {
@@ -49,7 +49,7 @@ Aspect_DisplayConnection::~Aspect_DisplayConnection()
 #endif
 }
 
-#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__)
+#if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)) && !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
 // =======================================================================
 // function : Aspect_DisplayConnection
 // purpose  :

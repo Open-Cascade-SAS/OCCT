@@ -214,6 +214,7 @@ for which OCCT is certified to work.
 | Linux     | GNU gcc 4.3+ <br> LLVM CLang 3.6+ |
 | OS X / macOS | XCode 6 or newer |
 | Android   | NDK r10, GNU gcc 4.8 or newer |
+| Web       | Emscripten SDK 1.39 or newer (CLang) |
 
 1) VC++ 141 64-bit is used for regular testing and for building binary package of official release of OCCT on Windows.
 
@@ -572,3 +573,11 @@ There is a sample demonstrating usage of OCCT on iOS with Apple UIKit framework.
 @figure{/overview/images/sample_ios_uikit.png}
 
 See \subpage occt_samples_ios_uikit "iOS sample Readme" for details.
+
+@subsubsection OCCT_OVW_SECTION_7_3_6 Web
+
+WebGL Viewer sample demonstrating usage of OCCT 3D Viewer in Web browser with Emscripten SDK can be found in `samples/webgl`.
+
+@figure{/overview/images/sample_webgl.png}
+
+See \subpage occt_samples_webgl "WebGL sample Readme" for details.

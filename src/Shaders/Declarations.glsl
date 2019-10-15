@@ -102,7 +102,7 @@ uniform mat4 occWorldViewMatrixInverseTranspose;  //!< Transpose of the inverse 
 uniform mat4 occProjectionMatrixInverseTranspose; //!< Transpose of the inverse of the projection  matrix
 uniform mat4 occModelWorldMatrixInverseTranspose; //!< Transpose of the inverse of the model-world matrix
 
-// light type enumeration
+// light type enumeration (same as Graphic3d_TypeOfLightSource)
 const int OccLightType_Direct = 1; //!< directional     light source
 const int OccLightType_Point  = 2; //!< isotropic point light source
 const int OccLightType_Spot   = 3; //!< spot            light source
@@ -111,16 +111,36 @@ const int OccLightType_Spot   = 3; //!< spot            light source
 uniform               vec4 occLightAmbient;      //!< Cumulative ambient color
 #if defined(THE_MAX_LIGHTS) && (THE_MAX_LIGHTS > 0)
 uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sources
-int   occLight_Type              (in int theId); //!< Type of light source
-int   occLight_IsHeadlight       (in int theId); //!< Is light a headlight?
-vec4  occLight_Diffuse           (in int theId); //!< Diffuse intensity for specified light source
-vec4  occLight_Specular          (in int theId); //!< Specular intensity (currently - equals to diffuse intencity)
-vec4  occLight_Position          (in int theId); //!< Position of specified light source
-vec4  occLight_SpotDirection     (in int theId); //!< Direction of specified spot light source
-float occLight_ConstAttenuation  (in int theId); //!< Const attenuation factor of positional light source
-float occLight_LinearAttenuation (in int theId); //!< Linear attenuation factor of positional light source
-float occLight_SpotCutOff        (in int theId); //!< Maximum spread angle of the spot light (in radians)
-float occLight_SpotExponent      (in int theId); //!< Attenuation of the spot light intensity (from 0 to 1)
+
+//! Type of light source, int (see OccLightType enum).
+#define occLight_Type(theId)              occLightSourcesTypes[theId].x
+
+//! Is light a headlight, int?
+#define occLight_IsHeadlight(theId)       occLightSourcesTypes[theId].y
+
+//! Specular intensity (equals to diffuse), vec4.
+#define occLight_Specular(theId)          occLightSources[theId * 4 + 0]
+
+//! Position of specified light source, vec4.
+#define occLight_Position(theId)          occLightSources[theId * 4 + 1]
+
+//! Direction of specified spot light source, vec4.
+#define occLight_SpotDirection(theId)     occLightSources[theId * 4 + 2]
+
+//! Maximum spread angle of the spot light (in radians), float.
+#define occLight_SpotCutOff(theId)        occLightSources[theId * 4 + 3].z
+
+//! Attenuation of the spot light intensity (from 0 to 1), float.
+#define occLight_SpotExponent(theId)      occLightSources[theId * 4 + 3].w
+
+//! Diffuse intensity (equals to Specular), vec4.
+#define occLight_Diffuse(theId)           occLightSources[theId * 4 + 0]
+
+//! Const attenuation factor of positional light source, float.
+#define occLight_ConstAttenuation(theId)  occLightSources[theId * 4 + 3].x
+
+//! Linear attenuation factor of positional light source, float.
+#define occLight_LinearAttenuation(theId) occLightSources[theId * 4 + 3].y
 #endif
 
 // Front material properties accessors

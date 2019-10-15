@@ -703,7 +703,7 @@ typedef void (* SIG_PFV) (int);
 
 #include <signal.h>
 
-#if !defined(__ANDROID__) && !defined(__QNX__)
+#if !defined(__ANDROID__) && !defined(__QNX__) && !defined(__EMSCRIPTEN__)
   #include <sys/signal.h>
 #endif
 

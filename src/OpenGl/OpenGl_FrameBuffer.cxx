@@ -38,6 +38,26 @@ namespace
     }
     return true;
   }
+
+  //! Return TRUE if GL_DEPTH_STENCIL_ATTACHMENT can be used.
+  static bool hasDepthStencilAttach (const Handle(OpenGl_Context)& theCtx)
+  {
+  #ifdef __EMSCRIPTEN__
+    // supported since WebGL 2.0,
+    // while WebGL 1.0 + GL_WEBGL_depth_texture needs GL_DEPTH_STENCIL_ATTACHMENT
+    // and NOT separate GL_DEPTH_ATTACHMENT+GL_STENCIL_ATTACHMENT calls which is different to OpenGL ES 2.0 + extension
+    return theCtx->IsGlGreaterEqual (3, 0) || theCtx->extPDS;
+  #elif defined(GL_ES_VERSION_2_0)
+    // supported since OpenGL ES 3.0,
+    // while OpenGL ES 2.0 + GL_EXT_packed_depth_stencil needs separate GL_DEPTH_ATTACHMENT+GL_STENCIL_ATTACHMENT calls
+    return theCtx->IsGlGreaterEqual (3, 0);
+  #else
+    // available on desktop since OpenGL 3.0
+    // or OpenGL 2.0 + GL_ARB_framebuffer_object (GL_EXT_framebuffer_object is unsupported by OCCT)
+    (void )theCtx;
+    return true;
+  #endif
+  }
 }
 
 // =======================================================================
@@ -188,15 +208,18 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   }
   if (myDepthStencilTexture->IsValid())
   {
-  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-  #else
-    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-  #endif
+    if (hasDepthStencilAttach (theGlContext))
+    {
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                                    myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+    }
+    else
+    {
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                    myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                    myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+    }
   }
   if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
@@ -332,32 +355,39 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
                                                     aColorTexture->GetTarget(), aColorTexture->TextureId(), 0);
     }
   }
+
   if (myDepthStencilTexture->IsValid())
   {
-  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-  #else
-    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-    theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
-                                                  myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
-  #endif
+    if (hasDepthStencilAttach (theGlContext))
+    {
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                                                    myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+    }
+    else
+    {
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                    myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+      theGlContext->arbFBO->glFramebufferTexture2D (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                    myDepthStencilTexture->GetTarget(), myDepthStencilTexture->TextureId(), 0);
+    }
   }
   else if (myGlDepthRBufferId != NO_RENDERBUFFER)
   {
-  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, hasStencilRB ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
-                                                     GL_RENDERBUFFER, myGlDepthRBufferId);
-  #else
-    theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                                     GL_RENDERBUFFER, myGlDepthRBufferId);
-    if (hasStencilRB)
+    if (hasDepthStencilAttach (theGlContext) && hasStencilRB)
     {
-      theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+      theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
                                                        GL_RENDERBUFFER, myGlDepthRBufferId);
     }
-  #endif
+    else
+    {
+      theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                       GL_RENDERBUFFER, myGlDepthRBufferId);
+      if (hasStencilRB)
+      {
+        theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                         GL_RENDERBUFFER, myGlDepthRBufferId);
+      }
+    }
   }
   if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
@@ -486,18 +516,21 @@ Standard_Boolean OpenGl_FrameBuffer::InitWithRB (const Handle(OpenGl_Context)& t
                                                GL_RENDERBUFFER, myGlColorRBufferId);
   if (myGlDepthRBufferId != NO_RENDERBUFFER)
   {
-  #ifdef GL_DEPTH_STENCIL_ATTACHMENT
-    theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, hasStencilRB ? GL_DEPTH_STENCIL_ATTACHMENT : GL_DEPTH_ATTACHMENT,
-                                                 GL_RENDERBUFFER, myGlDepthRBufferId);
-  #else
-    theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                                 GL_RENDERBUFFER, myGlDepthRBufferId);
-    if (hasStencilRB)
+    if (hasDepthStencilAttach (theGlCtx) && hasStencilRB)
     {
-      theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+      theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
                                                    GL_RENDERBUFFER, myGlDepthRBufferId);
     }
-  #endif
+    else
+    {
+      theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                                   GL_RENDERBUFFER, myGlDepthRBufferId);
+      if (hasStencilRB)
+      {
+        theGlCtx->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT,
+                                                     GL_RENDERBUFFER, myGlDepthRBufferId);
+      }
+    }
   }
   if (theGlCtx->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {

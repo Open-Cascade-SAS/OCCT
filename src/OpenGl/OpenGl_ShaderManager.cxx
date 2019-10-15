@@ -1630,6 +1630,15 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
   }
   (void )toUseDerivates;
 #else
+
+#if defined(__EMSCRIPTEN__)
+  if (myContext->IsGlGreaterEqual (3, 0))
+  {
+    // consider this is browser responsibility to provide working WebGL 2.0 implementation
+    // and black-list broken drivers (there is no OpenGL ES greater than 3.0)
+    theProgram->SetHeader ("#version 300 es");
+  }
+#endif
   // prefer "100 es" on OpenGL ES 3.0- devices (save the features unavailable before "300 es")
   // and    "300 es" on OpenGL ES 3.1+ devices
   if (myContext->IsGlGreaterEqual (3, 1))

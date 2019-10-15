@@ -572,7 +572,7 @@ public:
   //! basing on ToRenderSRGB() flag.
   OpenGl_Vec4 Vec4FromQuantityColor (const OpenGl_Vec4& theColor) const
   {
-    return ToRenderSRGB()
+    return myIsSRgbActive
          ? Vec4LinearFromQuantityColor(theColor)
          : Vec4sRGBFromQuantityColor  (theColor);
   }
