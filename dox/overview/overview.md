@@ -153,6 +153,9 @@ on this tool.
 **RapidJSON** is an Open Source JSON parser and generator for C++.
 RapidJSON is optionally used by OCCT for reading glTF files (https://rapidjson.org/).
 
+**DejaVu** fonts are a font family based on the Vera Fonts under a permissive license (MIT-like, https://dejavu-fonts.github.io/License.html).
+DejaVu Sans (basic Latin sub-set) is used by OCCT as fallback font when no system font is available.
+
 Adobe Systems, Inc. provides **Adobe Reader**, which can be used to view files in Portable Document Format (PDF). 
 
 @section OCCT_OVW_SECTION_3 Documentation

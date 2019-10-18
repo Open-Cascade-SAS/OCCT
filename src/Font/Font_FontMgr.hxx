@@ -100,9 +100,11 @@ public:
   //! @param theStrictLevel [in]       search strict level for using aliases and fallback
   //! @param theFontAspect  [in] [out] font aspect to find (considered only if family name is not found);
   //!                                  can be modified if specified font alias refers to another style (compatibility with obsolete aliases)
+  //! @param theDoFailMsg   [in]       put error message on failure into default messenger
   Standard_EXPORT Handle(Font_SystemFont) FindFont (const TCollection_AsciiString& theFontName,
                                                     Font_StrictLevel theStrictLevel,
-                                                    Font_FontAspect& theFontAspect) const;
+                                                    Font_FontAspect& theFontAspect,
+                                                    Standard_Boolean theDoFailMsg = Standard_True) const;
 
   //! Tries to find font by given parameters.
   Handle(Font_SystemFont) FindFont (const TCollection_AsciiString& theFontName,
@@ -133,13 +135,16 @@ public:
   //! Can be disabled to avoid redundant messages with Message_Trace level.
   void SetTraceAliases (Standard_Boolean theToTrace) { myToTraceAliases = theToTrace; }
 
+  //! Collects available fonts paths.
+  Standard_EXPORT void InitFontDataBase();
+
+  //! Clear registry. Can be used for testing purposes.
+  Standard_EXPORT void ClearFontDataBase();
+
 private:
   
   //! Creates empty font manager object
   Standard_EXPORT Font_FontMgr();
-  
-  //! Collects available fonts paths.
-  Standard_EXPORT void InitFontDataBase();
 
 private:
 

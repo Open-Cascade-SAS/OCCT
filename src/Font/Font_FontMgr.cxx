@@ -303,6 +303,7 @@ Font_FontMgr::Font_FontMgr()
   aKorean->Append (Font_FontAlias ("nanummyeongjo")); // Linux
   aKorean->Append (Font_FontAlias ("noto serif cjk jp")); // Linux
   aKorean->Append (Font_FontAlias ("noto sans cjk jp")); // Linux
+  aKorean->Append (Font_FontAlias ("droid sans fallback")); // Linux
 
 #if defined(_WIN32)
   anArab->Append (Font_FontAlias ("times new roman"));
@@ -388,6 +389,15 @@ Standard_Boolean Font_FontMgr::RegisterFont (const Handle(Font_SystemFont)& theF
     }
   }
   return Standard_True;
+}
+
+// =======================================================================
+// function : ClearFontDataBase()
+// purpose  :
+// =======================================================================
+void Font_FontMgr::ClearFontDataBase()
+{
+  myFontMap.Clear();
 }
 
 // =======================================================================
@@ -742,14 +752,27 @@ Handle(Font_SystemFont) Font_FontMgr::FindFallbackFont (Font_UnicodeSubset theSu
                                                         Font_FontAspect theFontAspect) const
 {
   Font_FontAspect aFontAspect = theFontAspect;
+  Handle(Font_SystemFont) aFont;
   switch (theSubset)
   {
-    case Font_UnicodeSubset_Western: return FindFont (Font_NOF_SANS_SERIF, Font_StrictLevel_Aliases, aFontAspect);
-    case Font_UnicodeSubset_Korean:  return FindFont (Font_NOF_KOREAN,     Font_StrictLevel_Aliases, aFontAspect);
-    case Font_UnicodeSubset_CJK:     return FindFont (Font_NOF_CJK,        Font_StrictLevel_Aliases, aFontAspect);
-    case Font_UnicodeSubset_Arabic:  return FindFont (Font_NOF_ARABIC,     Font_StrictLevel_Aliases, aFontAspect);
+    case Font_UnicodeSubset_Western: aFont = FindFont (Font_NOF_SANS_SERIF, Font_StrictLevel_Aliases, aFontAspect, false); break;
+    case Font_UnicodeSubset_Korean:  aFont = FindFont (Font_NOF_KOREAN,     Font_StrictLevel_Aliases, aFontAspect, false); break;
+    case Font_UnicodeSubset_CJK:     aFont = FindFont (Font_NOF_CJK,        Font_StrictLevel_Aliases, aFontAspect, false); break;
+    case Font_UnicodeSubset_Arabic:  aFont = FindFont (Font_NOF_ARABIC,     Font_StrictLevel_Aliases, aFontAspect, false); break;
   }
-  return Handle(Font_SystemFont)();
+  if (aFont.IsNull())
+  {
+    const char* aRange = "";
+    switch (theSubset)
+    {
+      case Font_UnicodeSubset_Western: aRange = "Western"; break;
+      case Font_UnicodeSubset_Korean:  aRange = "Korean";  break;
+      case Font_UnicodeSubset_CJK:     aRange = "CJK";     break;
+      case Font_UnicodeSubset_Arabic:  aRange = "Arabic";  break;
+    }
+    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, error: unable to find ") + aRange + " fallback font!", Message_Fail);
+  }
+  return aFont;
 }
 
 // =======================================================================
@@ -758,7 +781,8 @@ Handle(Font_SystemFont) Font_FontMgr::FindFallbackFont (Font_UnicodeSubset theSu
 // =======================================================================
 Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& theFontName,
                                                 Font_StrictLevel theStrictLevel,
-                                                Font_FontAspect& theFontAspect) const
+                                                Font_FontAspect& theFontAspect,
+                                                Standard_Boolean theDoFailMsg) const
 {
   TCollection_AsciiString aFontName (theFontName);
   aFontName.LowerCase();
@@ -844,7 +868,10 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
   }
   if (aFont.IsNull())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, error: unable to find any font!", Message_Fail));
+    if (theDoFailMsg)
+    {
+      Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, error: unable to find any font!"), Message_Fail);
+    }
     return Handle(Font_SystemFont)();
   }
 

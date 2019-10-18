@@ -18,3 +18,4 @@ Font_SystemFont.hxx
 Font_TextFormatter.hxx
 Font_TextFormatter.cxx
 Font_UnicodeSubset.hxx
+Font_DejavuSans_Latin_woff.pxx

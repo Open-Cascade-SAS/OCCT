@@ -21,6 +21,8 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
+#include "Font_DejavuSans_Latin_woff.pxx"
+
 #include <algorithm>
 
 #include <ft2build.h>
@@ -156,9 +158,9 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate (const TCollection_AsciiString& t
 {
   Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
   Font_FontAspect aFontAspect = theFontAspect;
+  Font_FTFontParams aParams = theParams;
   if (Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (theFontName, theStrictLevel, aFontAspect))
   {
-    Font_FTFontParams aParams = theParams;
     if (aRequestedFont->IsSingleStrokeFont())
     {
       aParams.IsSingleStrokeFont = true;
@@ -167,6 +169,31 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate (const TCollection_AsciiString& t
     const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (aFontAspect, aParams.ToSynthesizeItalic);
     Handle(Font_FTFont) aFont = new Font_FTFont();
     if (aFont->Init (aPath, aParams))
+    {
+      aFont->myFontAspect = aFontAspect;
+      return aFont;
+    }
+  }
+  else if (theStrictLevel == Font_StrictLevel_Any)
+  {
+    switch (theFontAspect)
+    {
+      case Font_FontAspect_UNDEFINED:
+      case Font_FontAspect_Regular:
+      case Font_FontAspect_Bold:
+        aFontAspect = Font_FontAspect_Regular;
+        break;
+      case Font_FontAspect_Italic:
+      case Font_FontAspect_BoldItalic:
+        aFontAspect = Font_FontAspect_Italic;
+        aParams.ToSynthesizeItalic = true;
+        break;
+    }
+    Handle(NCollection_Buffer) aBuffer = new NCollection_Buffer (Handle(NCollection_BaseAllocator)(),
+                                                                 Font_DejavuSans_Latin_woff_size,
+                                                                 const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
+    Handle(Font_FTFont) aFont = new Font_FTFont();
+    if (aFont->Init (aBuffer, "Embed Fallback Font", aParams))
     {
       aFont->myFontAspect = aFontAspect;
       return aFont;
@@ -196,6 +223,18 @@ bool Font_FTFont::FindAndInit (const TCollection_AsciiString& theFontName,
 
     const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic);
     return Init (aPath, aParams);
+  }
+  else if (theStrictLevel == Font_StrictLevel_Any)
+  {
+    if (theFontAspect == Font_FontAspect_Italic
+     || theFontAspect == Font_FontAspect_BoldItalic)
+    {
+      aParams.ToSynthesizeItalic = true;
+    }
+    Handle(NCollection_Buffer) aBuffer = new NCollection_Buffer (Handle(NCollection_BaseAllocator)(),
+                                                                 Font_DejavuSans_Latin_woff_size,
+                                                                 const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
+    return Init (aBuffer, "Embed Fallback Font", aParams);
   }
   Release();
   return false;

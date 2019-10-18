@@ -5528,6 +5528,14 @@ static int VFont (Draw_Interpretor& theDI,
                                          theArgVec + anArgIter + 1,
                                          aStrictLevel);
     }
+    else if (anArgCase == "-clear")
+    {
+      aMgr->ClearFontDataBase();
+    }
+    else if (anArgCase == "-init")
+    {
+      aMgr->InitFontDataBase();
+    }
     else if (anArgIter + 1 < theArgNb
           && (anArgCase == "-find"
            || anArgCase == "find"))
@@ -6600,7 +6608,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vfont",
                             "vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]"
                    "\n\t\t:        [-strict {any|aliases|strict}] [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]"
-                   "\n\t\t:        [-unicodeFallback {on|off}]",
+                   "\n\t\t:        [-unicodeFallback {on|off}]"
+                   "\n\t\t:        [-clear] [-init]",
                    __FILE__, VFont, group);
 
   theCommands.Add ("vvertexmode",

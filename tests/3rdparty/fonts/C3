@@ -1,0 +1,27 @@
+puts "================"
+puts "0031079: Visualization - embed minimal fallback font"
+puts "================"
+puts ""
+
+puts "REQUIRED All: Font_FontMgr, error: unable to find any font!"
+puts "REQUIRED All: Font_FontMgr, error: unable to find Western fallback font!"
+
+dtracelevel trace
+pload VISUALIZATION
+
+vfont -verbose 1
+vfont -clear
+# print empty list
+vfont
+
+vclear
+vinit View1
+vpoint p0 0 0 0
+vviewcube vc
+vdrawtext t "My Text, он мой!" -font "UNKNOWN" -aspect italic -pos 0 0 0 -2d -persPos -1 1 30
+text2brep b "My Text, он мой!" -font "UNKNOWN" -aspect italic
+vtop
+vdisplay -dispMode 1 b
+vfit
+
+vdump $imagedir/${casename}.png
