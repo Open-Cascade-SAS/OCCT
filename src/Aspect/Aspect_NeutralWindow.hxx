@@ -59,7 +59,7 @@ public:
   virtual void Unmap() const Standard_OVERRIDE { myIsMapped = Standard_False; }
 
   //! Resize window - do nothing.
-  virtual Aspect_TypeOfResize DoResize() const Standard_OVERRIDE { return Aspect_TOR_UNKNOWN; }
+  virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE { return Aspect_TOR_UNKNOWN; }
 
   //! Map window - do nothing.
   virtual Standard_Boolean DoMapping() const Standard_OVERRIDE { return Standard_True; }

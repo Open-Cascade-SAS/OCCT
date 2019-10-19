@@ -205,7 +205,7 @@ void WNT_Window::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
-Aspect_TypeOfResize WNT_Window::DoResize() const
+Aspect_TypeOfResize WNT_Window::DoResize()
 {
   if (IsVirtual())
   {
@@ -259,10 +259,10 @@ Aspect_TypeOfResize WNT_Window::DoResize() const
         break;
     }  // end switch
 
-    *((Standard_Integer* )&aXLeft  ) = wp.rcNormalPosition.left;
-    *((Standard_Integer* )&aXRight ) = wp.rcNormalPosition.right;
-    *((Standard_Integer* )&aYTop   ) = wp.rcNormalPosition.top;
-    *((Standard_Integer* )&aYBottom) = wp.rcNormalPosition.bottom;
+    aXLeft   = wp.rcNormalPosition.left;
+    aXRight  = wp.rcNormalPosition.right;
+    aYTop    = wp.rcNormalPosition.top;
+    aYBottom = wp.rcNormalPosition.bottom;
   }
 
   return mode;

@@ -293,7 +293,7 @@ void Cocoa_Window::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
-Aspect_TypeOfResize Cocoa_Window::DoResize() const
+Aspect_TypeOfResize Cocoa_Window::DoResize()
 {
   if (myHView == NULL)
   {
@@ -326,10 +326,10 @@ Aspect_TypeOfResize Cocoa_Window::DoResize() const
     default: break;
   }
 
-  *((Standard_Integer* )&myXLeft   ) = (Standard_Integer )aBounds.origin.x;
-  *((Standard_Integer* )&myXRight  ) = (Standard_Integer )(aBounds.origin.x + aBounds.size.width);
-  *((Standard_Integer* )&myYTop    ) = (Standard_Integer )aBounds.origin.y;
-  *((Standard_Integer* )&myYBottom ) = (Standard_Integer )(aBounds.origin.y + aBounds.size.height);
+  myXLeft   = (Standard_Integer )aBounds.origin.x;
+  myXRight  = (Standard_Integer )(aBounds.origin.x + aBounds.size.width);
+  myYTop    = (Standard_Integer )aBounds.origin.y;
+  myYBottom = (Standard_Integer )(aBounds.origin.y + aBounds.size.height);
   return aMode;
 }
 

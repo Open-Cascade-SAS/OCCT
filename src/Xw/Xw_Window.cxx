@@ -389,7 +389,7 @@ void Xw_Window::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
-Aspect_TypeOfResize Xw_Window::DoResize() const
+Aspect_TypeOfResize Xw_Window::DoResize()
 {
   if (myXWindow == 0)
   {
@@ -425,10 +425,10 @@ Aspect_TypeOfResize Xw_Window::DoResize() const
     default: break;
   }
 
-  *((Standard_Integer* )&myXLeft   ) = aWinAttr.x;
-  *((Standard_Integer* )&myXRight  ) = aWinAttr.x + aWinAttr.width;
-  *((Standard_Integer* )&myYTop    ) = aWinAttr.y;
-  *((Standard_Integer* )&myYBottom ) = aWinAttr.y + aWinAttr.height;
+  myXLeft   = aWinAttr.x;
+  myXRight  = aWinAttr.x + aWinAttr.width;
+  myYTop    = aWinAttr.y;
+  myYBottom = aWinAttr.y + aWinAttr.height;
   return aMode;
 }
 

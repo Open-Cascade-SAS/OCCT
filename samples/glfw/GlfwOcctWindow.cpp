@@ -134,17 +134,17 @@ void GlfwOcctWindow::Unmap() const
 // Function : DoResize
 // Purpose  :
 // ================================================================
-Aspect_TypeOfResize GlfwOcctWindow::DoResize() const
+Aspect_TypeOfResize GlfwOcctWindow::DoResize()
 {
   if (glfwGetWindowAttrib (myGlfwWindow, GLFW_VISIBLE) == 1)
   {
     int anXPos = 0, anYPos = 0, aWidth = 0, aHeight = 0;
     glfwGetWindowPos (myGlfwWindow, &anXPos, &anYPos);
     glfwGetWindowSize(myGlfwWindow, &aWidth, &aHeight);
-    *const_cast<Standard_Integer*>(&myXLeft  ) = anXPos;
-    *const_cast<Standard_Integer*>(&myXRight ) = anXPos + aWidth;
-    *const_cast<Standard_Integer*>(&myYTop   ) = anYPos;
-    *const_cast<Standard_Integer*>(&myYBottom) = anYPos + aHeight;
+    myXLeft   = anXPos;
+    myXRight  = anXPos + aWidth;
+    myYTop    = anYPos;
+    myYBottom = anYPos + aHeight;
   }
   return Aspect_TOR_UNKNOWN;
 }

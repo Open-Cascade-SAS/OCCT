@@ -83,7 +83,7 @@ public:
   Standard_EXPORT virtual void Unmap() const Standard_OVERRIDE;
   
   //! Applies the resizing to the window <me>.
-  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Aspect_TypeOfResize DoResize() Standard_OVERRIDE;
   
   //! Apply the mapping change to the window <me>
   //! and returns TRUE if the window is mapped at screen.

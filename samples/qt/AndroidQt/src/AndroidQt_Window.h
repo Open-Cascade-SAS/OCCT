@@ -44,7 +44,7 @@ public:
   virtual void Unmap() const {}
 
   //! Applies the resizing to the window <me>
-  virtual Aspect_TypeOfResize DoResize() const { return Aspect_TOR_UNKNOWN; }
+  virtual Aspect_TypeOfResize DoResize() { return Aspect_TOR_UNKNOWN; }
 
   //! Apply the mapping change to the window <me>
   virtual Standard_Boolean DoMapping() const { return Standard_True; }

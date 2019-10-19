@@ -81,7 +81,7 @@ void OcctWindow::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
-Aspect_TypeOfResize OcctWindow::DoResize() const
+Aspect_TypeOfResize OcctWindow::DoResize()
 {
   int                 aMask = 0;
   Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;
@@ -126,10 +126,10 @@ Aspect_TypeOfResize OcctWindow::DoResize() const
         break;
     }  // end switch
 
-    *( ( Standard_Integer* )&myXLeft  ) = myWidget->rect().left();
-    *( ( Standard_Integer* )&myXRight ) = myWidget->rect().right();
-    *( ( Standard_Integer* )&myYTop   ) = myWidget->rect().top();
-    *( ( Standard_Integer* )&myYBottom) = myWidget->rect().bottom();
+    myXLeft   = myWidget->rect().left();
+    myXRight  = myWidget->rect().right();
+    myYTop    = myWidget->rect().top();
+    myYBottom = myWidget->rect().bottom();
   }
 
   return aMode;
