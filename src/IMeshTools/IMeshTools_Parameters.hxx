@@ -58,7 +58,8 @@ struct IMeshTools_Parameters {
   //! Linear deflection used to tessellate the face interior
   Standard_Real                                    DeflectionInterior;
   
-  //! Minimal allowed size of mesh element
+  //! Minimum size parameter limiting size of triangle's edges to prevent 
+  //! sinking into amplification in case of distorted curves and surfaces.
   Standard_Real                                    MinSize;
 
   //! Switches on/off multi-thread computation
