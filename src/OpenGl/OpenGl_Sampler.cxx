@@ -418,7 +418,8 @@ void OpenGl_Sampler::resetGlobalTextureParams (const Handle(OpenGl_Context)& the
       {
         theCtx->core11fwd->glDisable (GL_TEXTURE_GEN_S);
         theCtx->core11fwd->glDisable (GL_TEXTURE_GEN_T);
-        if (theParams->GenMode() == Graphic3d_TOTM_SPRITE)
+        if (theParams->GenMode() == Graphic3d_TOTM_SPRITE
+         && theCtx->core20fwd != NULL)
         {
           theCtx->core11fwd->glDisable (GL_POINT_SPRITE);
         }
