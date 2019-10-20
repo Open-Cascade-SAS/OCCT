@@ -97,6 +97,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   Handle(Graphic3d_CLight) aLight = new Graphic3d_CLight (Graphic3d_TOLS_AMBIENT);
   aLight->SetHeadlight (false);
   aLight->SetColor (Quantity_NOC_WHITE);
+  myLights = new Graphic3d_LightSet();
   myNoShadingLight = new Graphic3d_LightSet();
   myNoShadingLight->Add (aLight);
 
