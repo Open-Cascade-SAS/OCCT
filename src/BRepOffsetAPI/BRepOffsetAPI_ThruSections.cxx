@@ -397,29 +397,30 @@ void BRepOffsetAPI_ThruSections::Build()
       Standard_Integer IndFirstSec = 1;
       if (Georges.IsDegeneratedFirstSection())
         IndFirstSec = 2;
-      TopoDS_Shape aWorkingSection = WorkingSections(IndFirstSec);
+      TopoDS_Wire aWorkingSection = TopoDS::Wire(WorkingSections(IndFirstSec));
       myNbEdgesInSection += aWorkingSection.NbChildren();
       for (Standard_Integer ii = 1; ii <= myWires.Length(); ii++)
       {
-        TopExp_Explorer Explo(myWires(ii), TopAbs_EDGE);
-        for (; Explo.More(); Explo.Next())
+        TopoDS_Iterator itw(myWires(ii));
+        for (; itw.More(); itw.Next())
         {
-          const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
+          const TopoDS_Edge& anEdge = TopoDS::Edge(itw.Value());
           Standard_Integer aSign = 1;
           TopoDS_Vertex Vfirst, Vlast;
           TopExp::Vertices(anEdge, Vfirst, Vlast);
           TopTools_ListOfShape aNewEdges = Georges.GeneratedShapes(anEdge);
           TColStd_ListOfInteger IList;
-          aWorkingSection = WorkingSections(ii);
+          aWorkingSection = TopoDS::Wire(WorkingSections(ii));
           Standard_Integer NbNewEdges = aNewEdges.Extent();
           TopTools_ListIteratorOfListOfShape itl(aNewEdges);
           for (Standard_Integer kk = 1; itl.More(); itl.Next(),kk++)
           {
             const TopoDS_Edge& aNewEdge = TopoDS::Edge(itl.Value());
             Standard_Integer inde = 1;
-            for (TopoDS_Iterator itw (aWorkingSection); itw.More(); itw.Next(), inde++)
+            BRepTools_WireExplorer wexp(aWorkingSection);
+            for (; wexp.More(); wexp.Next(), inde++)
             {
-              const TopoDS_Shape& aWorkingEdge = itw.Value();
+              const TopoDS_Shape& aWorkingEdge = wexp.Current();
               if (aWorkingEdge.IsSame(aNewEdge))
               {
                 aSign = (aWorkingEdge.Orientation() == TopAbs_FORWARD)? 1 : -1;
@@ -1295,12 +1296,14 @@ BRepOffsetAPI_ThruSections::Generated(const TopoDS_Shape& S)
     Standard_Integer Eindex = myVertexIndex(S);
     Standard_Integer Vindex = (Eindex > 0)? 0 : 1;
     Eindex = Abs(Eindex);
-    const TopoDS_Shape& FirstSection = myWires(1);
+    const TopoDS_Wire& FirstSection = TopoDS::Wire(myWires(1));
     TopoDS_Edge FirstEdge;
-    TopoDS_Iterator itw(FirstSection);
-    for (Standard_Integer inde = 1; itw.More(); itw.Next(),inde++)
+    TopoDS_Vertex FirstVertexOfFirstEdge;
+    BRepTools_WireExplorer wexp(FirstSection);
+    for (Standard_Integer inde = 1; wexp.More(); wexp.Next(),inde++)
     {
-      FirstEdge = TopoDS::Edge(itw.Value());
+      FirstEdge = wexp.Current();
+      FirstVertexOfFirstEdge = wexp.CurrentVertex();
       if (inde == Eindex)
         break;
     }
@@ -1330,7 +1333,20 @@ BRepOffsetAPI_ThruSections::Generated(const TopoDS_Shape& S)
       FirstEdgeInFace = Explo.Current();
       TopoDS_Vertex VV [2];
       TopExp::Vertices(FirstEdge, VV[0], VV[1]);
-      FirstVertex = VV[Vindex];
+      if (Vindex == 0)
+      {
+        if (VV[0].IsSame(FirstVertexOfFirstEdge))
+          FirstVertex = VV[0];
+        else
+          FirstVertex = VV[1];
+      }
+      else //Vindex == 1
+      {
+        if (VV[0].IsSame(FirstVertexOfFirstEdge))
+          FirstVertex = VV[1];
+        else
+          FirstVertex = VV[0];
+      }
       const TopTools_ListOfShape& Elist = VEmap.FindFromKey(FirstVertex);
       TopTools_ListIteratorOfListOfShape itl(Elist);
       TopAbs_Orientation anEdgeOr = (Vindex == 0)? TopAbs_REVERSED : TopAbs_FORWARD;
