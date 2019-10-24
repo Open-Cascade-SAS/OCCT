@@ -69,6 +69,7 @@ AIS_ViewController::AIS_ViewController()
   myMousePressed        (Aspect_VKeyMouse_NONE),
   myMouseModifiers      (Aspect_VKeyFlags_NONE),
   myMouseSingleButton   (-1),
+  myMouseStopDragOnUnclick (false),
   //
   myTouchToleranceScale      (1.0f),
   myTouchRotationThresholdPx (6.0f),
@@ -611,6 +612,7 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
     {
       myMouseClickTimer.Stop();
       myMouseClickCounter = 0;
+      myMouseStopDragOnUnclick = false;
       myUI.Dragging.ToStop = true;
       toUpdateView = true;
     }
@@ -619,6 +621,12 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
   else if (theButtons == Aspect_VKeyMouse_NONE)
   {
     myMouseSingleButton = -1;
+    if (myMouseStopDragOnUnclick)
+    {
+      myMouseStopDragOnUnclick = false;
+      myUI.Dragging.ToStop = true;
+      toUpdateView = true;
+    }
   }
   else if (myMouseSingleButton == -1)
   {
@@ -769,6 +777,7 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
       myMouseClickTimer.Stop();
       myMouseClickCounter = 0;
       myMouseSingleButton = -1;
+      myMouseStopDragOnUnclick = true;
     }
   }
 
