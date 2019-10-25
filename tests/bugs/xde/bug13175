@@ -1,0 +1,15 @@
+puts "============"
+puts "0013175: XCAF document with one vertex is exported to an incorrect STEP file"
+puts "============"
+puts ""
+
+vertex v 10 10 10
+XNewDoc D1
+XAddShape D1 v
+XGetShape r1 D1 0:1:1:1
+checknbshapes r1 -vertex 1
+
+WriteStep D1 ${imagedir}/${casename}.step
+ReadStep D2 ${imagedir}/${casename}.step
+XGetShape r2 D2 0:1:1:1
+checknbshapes r2 -vertex 1
