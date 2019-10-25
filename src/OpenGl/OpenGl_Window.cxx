@@ -28,6 +28,8 @@
 
 #include <memory>
 
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,Standard_Transient)
 
 #if defined(HAVE_EGL)

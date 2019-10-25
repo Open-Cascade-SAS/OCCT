@@ -37,6 +37,9 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <tcl.h>
+
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 // on MSVC, use #pragma to define name of the Tcl library to link with,
 // depending on Tcl version number
 #ifdef _MSC_VER

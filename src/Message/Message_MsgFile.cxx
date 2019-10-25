@@ -257,7 +257,7 @@ Standard_Boolean Message_MsgFile::LoadFile (const Standard_CString theFileName)
     {
       // Reverse the bytes throughout the buffer
       const Standard_ExtCharacter* const anEnd =
-        reinterpret_cast<const Standard_ExtCharacter* const>(&anMsgBuffer[aFileSize]);
+        reinterpret_cast<const Standard_ExtCharacter*>(&anMsgBuffer[aFileSize]);
 
       for (Standard_ExtCharacter* aPtr = aUnicodeBuffer; aPtr < anEnd; aPtr++)
       {

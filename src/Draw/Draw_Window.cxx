@@ -2003,7 +2003,7 @@ void Segment::Init(Standard_Integer a1, Standard_Integer a2,
   y2=a4;
 }
 
-static DWORD WINAPI tkLoop(VOID);
+static DWORD WINAPI tkLoop (LPVOID theThreadParameter);
 #ifdef _TK
 static Tk_Window mainWindow;
 #endif
@@ -2027,12 +2027,12 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
   dwMainThreadId = GetCurrentThreadId();
 
   //necessary for normal Tk operation
-  hThread = CreateThread(NULL, // no security attributes
-                           0,                           // use default stack size
-                           (LPTHREAD_START_ROUTINE) tkLoop, // thread function
-                           NULL,                    // no thread function argument
-                           0,                       // use default creation flags
-                           &IDThread);
+  hThread = CreateThread (NULL,       // no security attributes
+                          0,          // use default stack size
+                          tkLoop,     // thread function
+                          NULL,       // no thread function argument
+                          0,          // use default creation flags
+                          &IDThread);
   if (!hThread) {
     std::cout << "Failed to create Tcl/Tk main loop thread. Switching to batch mode..." << std::endl;
     Draw_Batch = Standard_True;
@@ -2082,8 +2082,9 @@ Standard_Boolean Draw_Interprete (const char*);
 /*--------------------------------------------------------*\
 |  readStdinThreadFunc
 \*--------------------------------------------------------*/
-static DWORD WINAPI readStdinThreadFunc()
+static DWORD WINAPI readStdinThreadFunc (const LPVOID theThreadParameter)
 {
+  (void)theThreadParameter;
   if (!Draw_IsConsoleSubsystem)
   {
     return 1;
@@ -2246,8 +2247,9 @@ static void ResetStdChannel (int type)
 /*--------------------------------------------------------*\
 |  tkLoop: implements Tk_Main()-like behaviour in a separate thread
 \*--------------------------------------------------------*/
-static DWORD WINAPI tkLoop(VOID)
+static DWORD WINAPI tkLoop (const LPVOID theThreadParameter)
 {
+  (void)theThreadParameter;
   Tcl_CreateExitHandler(exitProc, 0);
   
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
@@ -2309,7 +2311,7 @@ static DWORD WINAPI tkLoop(VOID)
 #endif
       }
     }
-    catch (Standard_Failure)
+    catch (const Standard_Failure&)
     {
       std::cout << "tkLoop: exception in TK_Init\n";
     }
@@ -2389,12 +2391,12 @@ void Run_Appli(HWND hWnd)
   DWORD IDThread;
   HANDLE hThread;
   if (Draw_IsConsoleSubsystem) {
-    hThread = CreateThread(NULL, // no security attributes
-                           0,                           // use default stack size
-                           (LPTHREAD_START_ROUTINE) readStdinThreadFunc, // thread function
-                           NULL,                    // no thread function argument
-                           0,                       // use default creation flags
-                           &IDThread);              // returns thread identifier
+    hThread = CreateThread (NULL,                // no security attributes
+                            0,                   // use default stack size
+                            readStdinThreadFunc, // thread function
+                            NULL,                // no thread function argument
+                            0,                   // use default creation flags
+                            &IDThread);          // returns thread identifier
     if (!hThread) {
       std::cout << "pb in creation of the thread reading stdin" << std::endl;
       Draw_IsConsoleSubsystem = Standard_False;

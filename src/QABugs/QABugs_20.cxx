@@ -3154,7 +3154,7 @@ static Standard_Integer OCC30708_1 (Draw_Interpretor& di, Standard_Integer, cons
     it.Initialize (empty);
 
   }
-  catch (Standard_Failure)
+  catch (const Standard_Failure&)
   {
     di << "Cannot initialize TopoDS_Iterator with null shape\n";
     return 0;
@@ -3179,7 +3179,7 @@ static Standard_Integer OCC30708_2 (Draw_Interpretor& di, Standard_Integer, cons
     TopoDS_Wire empty;
     BRepLib_MakeWire aWBuilder (empty);
   }
-  catch (Standard_Failure)
+  catch (const Standard_Failure&)
   {
     di << "Cannot initialize BRepLib_MakeWire with null wire\n";
   }

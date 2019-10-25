@@ -33,6 +33,7 @@ Standard_ExtString.cxx
 Standard_ExtString.hxx
 Standard_Failure.cxx
 Standard_Failure.hxx
+Standard_WarningDisableFunctionCast.hxx
 Standard_GUID.cxx
 Standard_GUID.hxx
 Standard_Handle.hxx

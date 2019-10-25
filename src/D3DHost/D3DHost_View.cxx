@@ -20,6 +20,8 @@
 #include <D3DHost_GraphicDriver.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(D3DHost_View,OpenGl_View)
 
 // =======================================================================

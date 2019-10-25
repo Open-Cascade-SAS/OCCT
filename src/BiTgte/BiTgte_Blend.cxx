@@ -1192,35 +1192,42 @@ BiTgte_ContactType BiTgte_Blend::ContactType(const Standard_Integer Index)
   }
   BiTgte_ContactType Type = BiTgte_VertexVertex;
 
-  switch (Type1) {
-    
-  case TopAbs_VERTEX:
-    switch (Type2) {
-    case TopAbs_VERTEX: Type = BiTgte_VertexVertex; break;
-    case TopAbs_EDGE:   Type = BiTgte_EdgeVertex;   break;
-    case TopAbs_FACE:   Type = BiTgte_FaceVertex;   break;
+  switch (Type1)
+  {
+    case TopAbs_VERTEX:
+      switch (Type2)
+      {
+        case TopAbs_VERTEX: Type = BiTgte_VertexVertex; break;
+        case TopAbs_EDGE:   Type = BiTgte_EdgeVertex;   break;
+        case TopAbs_FACE:   Type = BiTgte_FaceVertex;   break;
+        default:
+          break;
+      }
+      break;
+
+    case TopAbs_EDGE:
+      switch (Type2)
+      {
+        case TopAbs_EDGE:   Type = BiTgte_EdgeEdge;     break;
+        case TopAbs_FACE:   Type = BiTgte_FaceEdge;     break;
+        default:
+          break;
+      }
+      break;
+
+    case TopAbs_FACE:
+      switch (Type2)
+      {
+        case TopAbs_FACE:   Type = BiTgte_FaceEdge;     break;
+        default:
+          break;
+      }
+      break;
+
     default:
       break;
-    }
-    
-  case TopAbs_EDGE:
-    switch (Type2) {
-    case TopAbs_EDGE:   Type = BiTgte_EdgeEdge; break;
-    case TopAbs_FACE:   Type = BiTgte_FaceEdge; break;
-    default:
-      break;
-   }
-    
-  case TopAbs_FACE:
-    switch (Type2) {
-    case TopAbs_FACE:   Type = BiTgte_FaceEdge; break;
-    default:
-      break;
-    }
-  default:
-    break;
   }
-  
+
   return Type;
 }
 

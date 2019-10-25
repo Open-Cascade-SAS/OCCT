@@ -18,6 +18,8 @@
 #include <Standard_Overflow.hxx>
 #include <Standard_Assert.hxx>
 
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 static OSD_SignalMode OSD_WasSetSignal = OSD_SignalMode_AsIs;
 
 //=======================================================================

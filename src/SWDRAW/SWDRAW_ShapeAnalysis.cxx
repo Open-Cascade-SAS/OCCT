@@ -830,66 +830,6 @@ static Standard_Integer closefreebounds (Draw_Interpretor& di,
 }
 
 
-//=======================================================================
-//function : MyVISEDG
-//purpose  : 
-//=======================================================================
-static Standard_Integer MyVISEDG (Draw_Interpretor& /*di*/,
-			       Standard_Integer n, const char** a)
-{
-  if (n >4) return 1;
-  TopoDS_Shape MaListe = DBRep::Get(a[1]);
-  if (MaListe.IsNull()) return 1;
-  TopoDS_Compound TheList = TopoDS::Compound(MaListe);
-  if (TheList.IsNull()) return 1;
-  Standard_Real toler = 0.001;
-  int create = 0;
-  if ( n >= 3) toler = Draw::Atof(a[2]);
-  if (n == 4 && !strcmp(a[3],"C")) create = 1;
-  ShapeAnalysis_FreeBounds F(TheList,toler);
-  //
-  //
-  //
-  char name[100];
-  char num[5];
-  if (!create)
-    {
-      TopoDS_Compound Wires = F.GetClosedWires();
-      TopoDS_Iterator S(Wires);
-      Standard_Integer iwire = 0;
-      while (S.More())
-	{
-	  Sprintf (num,"%d",iwire);
-	  name[0] = 'w';
-	  name[1] = '\0';
-	  strncat(name,num,strlen(num));
-	  name[strlen(name)] = '\0';
-	  DBRep::Set(name,S.Value());
-	  S.Next();
-	  iwire++;
-	}
-      iwire = 0;
-      TopoDS_Compound Edges = F.GetOpenWires();
-      S.Initialize(Edges);
-      iwire = 0;
-      while (S.More())
-	{
-	  Sprintf (num,"%d",iwire);
-	  name[0] = 'E';
-	  name[1] = '\0';
-	  strncat(name,num,strlen(num));
-	  name[strlen(name)] = '\0';
-	  DBRep::Set(name,S.Value());
-	  S.Next();
-	  iwire++;
-	}
-    }
-  else
-    {
-    }
-  return 0;
-}
-
 static Standard_Integer getareacontour (Draw_Interpretor& di,
 					 Standard_Integer n, const char** a)
 {
@@ -1076,9 +1016,6 @@ static Standard_Integer checkedge(Draw_Interpretor& di, Standard_Integer argc, c
   theCommands.Add("fbclose",
 		  "shp sewtoler closetoler [splitclosed [splitopen]] - closes free bounds; use sewtoler <= 0 for shells (no sewing call)",
 		  __FILE__, closefreebounds, groupold);
-  theCommands.Add("K_VISEDG",
-                  "K_VISEDG Visu of free edge of a compound of faces.",
-                  __FILE__, MyVISEDG, groupold);
     
   theCommands.Add("getareacontour","wire ",__FILE__, getareacontour, groupold);
   theCommands.Add ("checkselfintersection","wire [face]", __FILE__,checkselfintersection,g);

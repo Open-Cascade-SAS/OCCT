@@ -31,6 +31,8 @@
   #endif
 #endif
 
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 namespace {
 
 #if defined(_WIN32) && !defined(OCCT_UWP)

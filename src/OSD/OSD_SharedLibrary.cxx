@@ -189,6 +189,8 @@ void OSD_SharedLibrary::Destroy() {
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 static DWORD              lastDLLError;
 
 static wchar_t errMsg[1024];

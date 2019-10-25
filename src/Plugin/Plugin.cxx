@@ -24,6 +24,8 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <Standard_WarningDisableFunctionCast.hxx>
+
 static Standard_Character tc[1000];
 static Standard_PCharacter thePluginId = tc;
 
