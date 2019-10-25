@@ -18,7 +18,7 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScale.hxx>
-#include <Standard_Type.hxx>
+#include <Precision.hxx>
 
 #include <stdio.h>
 #include <time.h>
@@ -92,21 +92,34 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
   myLastPosition = aPosition;
   
   // Prepare textual progress info
-  char text[2048];
-  Standard_Integer n = 0;
-  n += Sprintf ( &text[n], "Progress: %.0f%%", 100. * GetPosition() );
+  std::stringstream aText;
+  aText.setf (std::ios::fixed, std:: ios::floatfield);
+  aText.precision(0);
+  aText << "Progress: " << 100. * GetPosition() << "%";
   for ( Standard_Integer i=GetNbScopes(); i >=1; i-- ) {
     const Message_ProgressScale &scale = GetScope ( i );
     if ( scale.GetName().IsNull() ) continue; // skip unnamed scopes
+    aText << " " << scale.GetName()->ToCString() << ": ";
+
     // if scope has subscopes, print end of subscope as its current position
     Standard_Real locPos = ( i >1 ? GetScope ( i-1 ).GetLast() : GetPosition() );
     // print progress info differently for finite and infinite scopes
     if ( scale.GetInfinite() )
-      n += Sprintf ( &text[n], " %s: %.0f", scale.GetName()->ToCString(), 
-                     scale.BaseToLocal ( locPos ) );
-    else 
-      n += Sprintf ( &text[n], " %s: %.0f / %.0f", scale.GetName()->ToCString(), 
-                     scale.BaseToLocal ( locPos ), scale.GetMax() );
+    {
+      Standard_Real aVal = scale.BaseToLocal(locPos);
+      if (Precision::IsInfinite(aVal))
+      {
+        aText << "finished";
+      }
+      else
+      {
+        aText << aVal;
+      }
+    }
+    else
+    {
+      aText << scale.BaseToLocal ( locPos ) << " / " << scale.GetMax();
+    }
   }
 
   // Show graphic progress bar
@@ -117,8 +130,8 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
       time_t aTimeT;
       time ( &aTimeT );
       Standard_Size aTime = (Standard_Size)aTimeT;
-      n += Sprintf ( &text[n], "\nElapsed/estimated time: %ld/%.0f sec", 
-                     (long)(aTime - myStartTime), ( aTime - myStartTime ) / GetPosition() );
+      aText << "\nElapsed/estimated time: " << (long)(aTime - myStartTime) <<
+               "/" << ( aTime - myStartTime ) / GetPosition() << " sec";
     }
   
     if ( ! myShown ) {
@@ -135,20 +148,19 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
       ((Draw_Interpretor*)myDraw)->Eval ( command );
       myShown = Standard_True;
     }
-    char command[1024];
-    Standard_Integer num = 0;
-    num += Sprintf ( &command[num], ".xprogress.bar coords progress 2 2 %.0f 21;", 
-                  1+400*GetPosition() );
-    num += Sprintf ( &command[num], ".xprogress.bar coords progress_next 2 2 %.0f 21;", 
-                  1+400*GetScope(1).GetLast() );
-    num += Sprintf ( &command[num], ".xprogress.text configure -text \"%s\";", text );
-    num += Sprintf ( &command[num], "update" );
-    ((Draw_Interpretor*)myDraw)->Eval ( command );
+    std::stringstream aCommand;
+    aCommand.setf(std::ios::fixed, std::ios::floatfield);
+    aCommand.precision(0);
+    aCommand << ".xprogress.bar coords progress 2 2 " << (1 + 400 * GetPosition()) << " 21;";
+    aCommand << ".xprogress.bar coords progress_next 2 2 " << (1 + 400 * GetScope(1).GetLast()) << " 21;";
+    aCommand << ".xprogress.text configure -text \"" << aText.str() << "\";";
+    aCommand << "update";
+    ((Draw_Interpretor*)myDraw)->Eval (aCommand.str().c_str());
   }
 
   // Print textual progress info
   if ( myTextMode )
-    Message::DefaultMessenger()->Send (text, Message_Info);
+    Message::DefaultMessenger()->Send (aText.str().c_str(), Message_Info);
   
   return Standard_True;
 }
