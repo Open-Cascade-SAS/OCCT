@@ -1007,7 +1007,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
 
 static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  Standard_Integer i, nbp;
+  Standard_Integer i, nbp, aMinPntsNb = 2;
   Standard_Real defl, angle = Precision::Angular();
 
   Handle(Adaptor3d_HCurve) aHCurve;
@@ -1030,10 +1030,13 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
   }
   defl = Draw::Atof(a[3]);
 
-  if(n > 3)
+  if(n > 4)
     angle = Draw::Atof(a[4]);
 
-  GCPnts_TangentialDeflection PntGen(aHCurve->Curve(), angle, defl, 2);
+  if(n > 5)
+    aMinPntsNb = Draw::Atoi (a[5]);
+
+  GCPnts_TangentialDeflection PntGen(aHCurve->Curve(), angle, defl, aMinPntsNb);
   
   nbp = PntGen.NbPoints();
   di << "Nb points : " << nbp << "\n";

@@ -196,10 +196,12 @@ void GCPnts_TangentialDeflection::PerformLinear (const TheCurve& C) {
   D0 (C, firstu, P);
   parameters.Append (firstu);
   points    .Append (P);
-  if (minNbPnts > 2) {
+  if (minNbPnts > 2)
+  {
     Standard_Real Du = (lastu - firstu) / minNbPnts;
     Standard_Real U = firstu + Du;
-    for (Standard_Integer i = 2; i <= minNbPnts; i++) {
+    for (Standard_Integer i = 2; i < minNbPnts; i++)
+    {
       D0 (C, U, P);
       parameters.Append (U);
       points    .Append (P);
@@ -571,14 +573,14 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
   //-- On rajoute des points aux milieux des segments si le nombre
   //-- mini de points n'est pas atteint
   //--
-  Standard_Integer Nbp =  points.Length();
-  Standard_Integer MinNb= (9*minNbPnts)/10;
-  //if(MinNb<4) MinNb=4;
+  Standard_Integer Nbp = points.Length();
 
-  //-- if(Nbp <  MinNb) { cout<<"\n*"; } else {  cout<<"\n."; } 
-  while(Nbp < MinNb) { 
-    //-- cout<<" \nGCPnts TangentialDeflection : Ajout de Points ("<<Nbp<<" "<<minNbPnts<<" )"<<endl;
-    for (i = 2; i <= Nbp; i += 2) {
+  //std::cout << "GCPnts_TangentialDeflection: Number of Points (" << Nbp << " " << minNbPnts << " )" << std::endl;
+
+  while(Nbp < minNbPnts)
+  { 
+    for (i = 2; i <= Nbp; i += 2)
+    {
       MiddleU = (parameters.Value(i-1)+parameters.Value(i))*0.5;
       D0 (C, MiddleU, MiddlePoint); 
       parameters.InsertBefore(i,MiddleU);
