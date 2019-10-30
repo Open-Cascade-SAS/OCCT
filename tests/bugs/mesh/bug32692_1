@@ -8,4 +8,4 @@ puts "REQUIRED ALL: Meshing statuses: SelfIntersectingWire Failure"
 restore [locate_data_file bug32692.brep] s
 incmesh s 0.01 -parallel
 
-checktrinfo s -nod 7427 -tri 7457 -empty 9 -face 309
+checktrinfo s -nod 7389 -tri 7419 -empty 9 -face 309

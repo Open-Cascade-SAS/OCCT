@@ -38,14 +38,16 @@ public:
   //! Creates instance of free edge tessellator.
   Standard_EXPORT static Handle(IMeshTools_CurveTessellator) CreateEdgeTessellator(
     const IMeshData::IEdgeHandle& theDEdge,
-    const IMeshTools_Parameters&  theParameters);
+    const IMeshTools_Parameters&  theParameters,
+    const Standard_Integer        theMinPointsNb = 2);
 
   //! Creates instance of edge tessellator.
   Standard_EXPORT static Handle(IMeshTools_CurveTessellator) CreateEdgeTessellator(
     const IMeshData::IEdgeHandle& theDEdge,
     const TopAbs_Orientation      theOrientation,
     const IMeshData::IFaceHandle& theDFace,
-    const IMeshTools_Parameters&  theParameters);
+    const IMeshTools_Parameters&  theParameters,
+    const Standard_Integer        theMinPointsNb = 2);
 
   //! Creates instance of tessellation extractor.
   Standard_EXPORT static Handle(IMeshTools_CurveTessellator) CreateEdgeTessellationExtractor(

@@ -3,6 +3,9 @@ puts "0025588: BRepMesh_ShapeTool::FindUV check for 2d points to be the same is 
 puts "======="
 puts ""
 
+puts "TODO OCC25588 All: Not connected mesh inside face 893"
+puts "TODO OCC25588 All: Not connected mesh inside face 1094"
+
 pload XDE
 
 stepread [locate_data_file Median_cx-fs01_bicycle.stp] a *

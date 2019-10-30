@@ -3,22 +3,20 @@ puts "CR28500: Artifact in shaded view of the shape"
 puts "======="
 puts ""
 
-puts "TODO CR28500 ALL: Artifact in shaded view of the shape"
-puts "TODO CR30056 ALL: Meshing statuses: SelfIntersectingWire Failure Reused"
+restore [locate_data_file bug28500_shape_mesh_artifact.brep] result
 
-restore [locate_data_file bug28500_shape_mesh_artifact.brep] a
-
-incmesh a 0.01
+tclean result
+incmesh result 0.01
 
 vinit
 vsetdispmode 1
-vdisplay a
+vdefaults -autoTriang 0 
+vdisplay result
 vfit
 
-set x 150
-set y 150
-if { [checkcolor $x $y 0 1 0] == 1 } {
-  puts "Error: Artifact in shaded view of the shape"
+set log [tricheck result]
+if { [llength $log] != 0 } {
+  puts "Error : Mesh contains faulties"
 }
 
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

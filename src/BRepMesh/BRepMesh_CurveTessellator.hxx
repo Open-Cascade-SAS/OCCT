@@ -34,14 +34,16 @@ public:
   //! Constructor.
   Standard_EXPORT BRepMesh_CurveTessellator(
     const IMeshData::IEdgeHandle& theEdge,
-    const IMeshTools_Parameters&  theParameters);
+    const IMeshTools_Parameters&  theParameters,
+    const Standard_Integer        theMinPointsNb = 2);
 
   //! Constructor.
   Standard_EXPORT BRepMesh_CurveTessellator (
     const IMeshData::IEdgeHandle& theEdge,
     const TopAbs_Orientation      theOrientation,
     const IMeshData::IFaceHandle& theFace,
-    const IMeshTools_Parameters&  theParameters);
+    const IMeshTools_Parameters&  theParameters,
+    const Standard_Integer        theMinPointsNb = 2);
 
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_CurveTessellator ();
@@ -96,6 +98,7 @@ private:
   const IMeshTools_Parameters&  myParameters;
   TopoDS_Edge                   myEdge;
   BRepAdaptor_Curve             myCurve;
+  Standard_Integer              myMinPointsNb;
   GCPnts_TangentialDeflection   myDiscretTool;
   TopoDS_Vertex                 myFirstVertex;
   TopoDS_Vertex                 myLastVertex;

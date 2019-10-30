@@ -1,6 +1,3 @@
-puts "TODO 25044 ALL: SelfIntersectingWire"
-puts "TODO 25044 ALL: Number of triangles is equal to 0"
-
 puts "======="
 puts "0025044: BRepMesh tweaks"
 puts "======="
