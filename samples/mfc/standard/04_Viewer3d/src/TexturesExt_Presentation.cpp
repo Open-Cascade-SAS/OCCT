@@ -68,8 +68,7 @@ void TexturesExt_Presentation::DoSample()
 void TexturesExt_Presentation::Init()
 {
   // initialize v3d_view so it displays TexturesExt well
-  getViewer()->InitActiveViews();
-  Handle(V3d_View) aView = getViewer()->ActiveView();
+  Handle(V3d_View) aView = getViewer()->ActiveViews().First();
   aView->SetSize(ZVIEW_SIZE);
 
 //  getDocument()->UpdateResultMessageDlg("Textured Shape", 

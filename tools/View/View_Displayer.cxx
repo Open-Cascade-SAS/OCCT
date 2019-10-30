@@ -284,9 +284,10 @@ Handle(V3d_View) View_Displayer::GetView() const
   const Handle(V3d_Viewer)& aViewer = GetContext()->CurrentViewer();
   if (!aViewer.IsNull())
   {
-    aViewer->InitActiveViews();
-    if (aViewer->MoreActiveViews())
-      aView = aViewer->ActiveView();
+    if (!aViewer->ActiveViews().IsEmpty())
+    {
+      aView = aViewer->ActiveViews().First();
+    }
   }
   return aView;
 }

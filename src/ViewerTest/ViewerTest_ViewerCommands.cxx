@@ -2564,8 +2564,8 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
   if (!aCurrentContext.IsNull())
   {
     // Check if there are more difined views in the viewer
-    aCurrentContext->CurrentViewer()->InitDefinedViews();
-    if ((isContextRemoved || ViewerTest_myContexts.Size() != 1) && !aCurrentContext->CurrentViewer()->MoreDefinedViews())
+    if ((isContextRemoved || ViewerTest_myContexts.Size() != 1)
+     && aCurrentContext->CurrentViewer()->DefinedViews().IsEmpty())
     {
       // Remove driver if there is no viewers that use it
       Standard_Boolean isRemoveDriver = Standard_True;

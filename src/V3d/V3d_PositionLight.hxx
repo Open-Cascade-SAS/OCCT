@@ -22,8 +22,6 @@
 #include <V3d_TypeOfPickLight.hxx>
 #include <V3d_TypeOfRepresentation.hxx>
 
-class V3d_Viewer;
-
 //! Base class for Positional, Spot and Directional Light classes.
 class V3d_PositionLight : public Graphic3d_CLight
 {
@@ -31,8 +29,7 @@ class V3d_PositionLight : public Graphic3d_CLight
 protected:
 
   //! Protected constructor.
-  Standard_EXPORT V3d_PositionLight (Graphic3d_TypeOfLightSource theType,
-                                     const Handle(V3d_Viewer)& theViewer);
+  Standard_EXPORT V3d_PositionLight (Graphic3d_TypeOfLightSource theType);
 
 //! @name hidden properties not applicable to positional light
 protected:

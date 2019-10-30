@@ -38,17 +38,6 @@ public:
   using Graphic3d_CLight::Position;
   using Graphic3d_CLight::SetPosition;
 
-public:
-
-  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
-  Standard_EXPORT V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
-                                       const Standard_Real theX,
-                                       const Standard_Real theY,
-                                       const Standard_Real theZ,
-                                       const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                       const Standard_Real theConstAttenuation = 1.0,
-                                       const Standard_Real theLinearAttenuation = 0.0);
-
 //! @name hidden properties not applicable to positional light
 private:
 

@@ -21,26 +21,8 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_PositionalLight,V3d_PositionLight)
 // =======================================================================
 V3d_PositionalLight::V3d_PositionalLight (const gp_Pnt& thePos,
                                           const Quantity_Color& theColor)
-: V3d_PositionLight (Graphic3d_TOLS_POSITIONAL, Handle(V3d_Viewer)())
+: V3d_PositionLight (Graphic3d_TOLS_POSITIONAL)
 {
   SetColor (theColor);
   SetPosition (thePos);
-}
-
-// =======================================================================
-// function : V3d_PositionalLight
-// purpose  :
-// =======================================================================
-V3d_PositionalLight::V3d_PositionalLight (const Handle(V3d_Viewer)& theViewer,
-                                          const Standard_Real theX,
-                                          const Standard_Real theY,
-                                          const Standard_Real theZ,
-                                          const Quantity_Color& theColor,
-                                          const Standard_Real theConstAttenuation,
-                                          const Standard_Real theLinearAttenuation)
-: V3d_PositionLight (Graphic3d_TOLS_POSITIONAL, theViewer)
-{
-  SetColor (theColor);
-  SetPosition (theX, theY, theZ);
-  SetAttenuation ((float )theConstAttenuation, (float )theLinearAttenuation);
 }

@@ -237,38 +237,22 @@ public:
 
 public:
 
+  //! Return a list of active views.
+  const V3d_ListOfView& ActiveViews() const { return myActiveViews; }
+
   //! Return an iterator for active views.
   V3d_ListOfViewIterator ActiveViewIterator() const { return V3d_ListOfViewIterator (myActiveViews); }
 
-  //! Initializes an internal iterator on the active views.
-  void InitActiveViews() { myActiveViewsIterator.Initialize (myActiveViews); }
-
-  //! Returns true if there are more active view(s) to return.
-  Standard_Boolean MoreActiveViews() const { return myActiveViewsIterator.More(); }
-
-  //! Go to the next active view (if there is not, ActiveView will raise an exception)
-  void NextActiveViews() { if (!myActiveViews.IsEmpty()) myActiveViewsIterator.Next(); }
-  
-  const Handle(V3d_View)& ActiveView() const { return myActiveViewsIterator.Value(); }
-  
   //! returns true if there is only one active view.
   Standard_Boolean LastActiveView() const { return myActiveViews.Extent() == 1; }
 
 public:
 
+  //! Return a list of defined views.
+  const V3d_ListOfView& DefinedViews() const { return myDefinedViews; }
+
   //! Return an iterator for defined views.
   V3d_ListOfViewIterator DefinedViewIterator() const { return V3d_ListOfViewIterator (myDefinedViews); }
-
-  //! Initializes an internal iterator on the Defined views.
-  void InitDefinedViews() { myDefinedViewsIterator.Initialize (myDefinedViews); }
-
-  //! returns true if there are more Defined view(s) to return.
-  Standard_Boolean MoreDefinedViews() const { return myDefinedViewsIterator.More(); }
-
-  //! Go to the next Defined view (if there is not, DefinedView will raise an exception)
-  void NextDefinedViews() { if (!myDefinedViews.IsEmpty()) myDefinedViewsIterator.Next(); }
-
-  const Handle(V3d_View)& DefinedView() const { return myDefinedViewsIterator.Value(); }
 
 public: //! @name lights management
 
@@ -302,35 +286,19 @@ public: //! @name lights management
 
   Standard_EXPORT Standard_Boolean IsGlobalLight (const Handle(V3d_Light)& TheLight) const;
 
+  //! Return a list of active lights.
+  const V3d_ListOfLight& ActiveLights() const { return myActiveLights; }
+
   //! Return an iterator for defined lights.
   V3d_ListOfLightIterator ActiveLightIterator() const { return V3d_ListOfLightIterator (myActiveLights); }
 
-  //! Initializes an internal iteratator on the active Lights.
-  void InitActiveLights() { myActiveLightsIterator.Initialize (myActiveLights); }
-
-  //! returns true if there are more active Light(s) to return.
-  Standard_Boolean MoreActiveLights() const { return myActiveLightsIterator.More(); }
-
-  //! Go to the next active Light (if there is not, ActiveLight() will raise an exception)
-  void NextActiveLights() { myActiveLightsIterator.Next(); }
-
-  const Handle(V3d_Light)& ActiveLight() const { return myActiveLightsIterator.Value(); }
-
 public:
+
+  //! Return a list of defined lights.
+  const V3d_ListOfLight& DefinedLights() const { return myDefinedLights; }
 
   //! Return an iterator for defined lights.
   V3d_ListOfLightIterator DefinedLightIterator() const { return V3d_ListOfLightIterator (myDefinedLights); }
-
-  //! Initializes an internal iterattor on the Defined Lights.
-  void InitDefinedLights() { myDefinedLightsIterator.Initialize (myDefinedLights); }
-  
-  //! Returns true if there are more Defined Light(s) to return.
-  Standard_Boolean MoreDefinedLights() const { return myDefinedLightsIterator.More(); }
-
-  //! Go to the next Defined Light (if there is not, DefinedLight() will raise an exception)
-  void NextDefinedLights() { if (!myDefinedLights.IsEmpty()) myDefinedLightsIterator.Next(); }
-
-  const Handle(V3d_Light)& DefinedLight() const { return myDefinedLightsIterator.Value(); }
 
 public: //! @name objects management
 
@@ -479,6 +447,66 @@ public: //! @name deprecated methods
     Quantity_Color aColor = DefaultBackgroundColor();
     aColor.Values (theV1, theV2, theV3, theType) ;
   }
+
+  //! Initializes an internal iterator on the active views.
+  Standard_DEPRECATED ("Deprecated method - ActiveViews() should be used instead")
+  void InitActiveViews() { myActiveViewsIterator.Initialize (myActiveViews); }
+
+  //! Returns true if there are more active view(s) to return.
+  Standard_DEPRECATED ("Deprecated method - ActiveViews() should be used instead")
+  Standard_Boolean MoreActiveViews() const { return myActiveViewsIterator.More(); }
+
+  //! Go to the next active view (if there is not, ActiveView will raise an exception)
+  Standard_DEPRECATED ("Deprecated method - ActiveViews() should be used instead")
+  void NextActiveViews() { if (!myActiveViews.IsEmpty()) myActiveViewsIterator.Next(); }
+
+  Standard_DEPRECATED ("Deprecated method - ActiveViews() should be used instead")
+  const Handle(V3d_View)& ActiveView() const { return myActiveViewsIterator.Value(); }
+
+  //! Initializes an internal iterator on the Defined views.
+  Standard_DEPRECATED ("Deprecated method - DefinedViews() should be used instead")
+  void InitDefinedViews() { myDefinedViewsIterator.Initialize (myDefinedViews); }
+
+  //! returns true if there are more Defined view(s) to return.
+  Standard_DEPRECATED ("Deprecated method - DefinedViews() should be used instead")
+  Standard_Boolean MoreDefinedViews() const { return myDefinedViewsIterator.More(); }
+
+  //! Go to the next Defined view (if there is not, DefinedView will raise an exception)
+  Standard_DEPRECATED ("Deprecated method - DefinedViews() should be used instead")
+  void NextDefinedViews() { if (!myDefinedViews.IsEmpty()) myDefinedViewsIterator.Next(); }
+
+  Standard_DEPRECATED ("Deprecated method - DefinedViews() should be used instead")
+  const Handle(V3d_View)& DefinedView() const { return myDefinedViewsIterator.Value(); }
+
+  //! Initializes an internal iteratator on the active Lights.
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  void InitActiveLights() { myActiveLightsIterator.Initialize (myActiveLights); }
+
+  //! returns true if there are more active Light(s) to return.
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  Standard_Boolean MoreActiveLights() const { return myActiveLightsIterator.More(); }
+
+  //! Go to the next active Light (if there is not, ActiveLight() will raise an exception)
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  void NextActiveLights() { myActiveLightsIterator.Next(); }
+
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  const Handle(V3d_Light)& ActiveLight() const { return myActiveLightsIterator.Value(); }
+
+  //! Initializes an internal iterattor on the Defined Lights.
+  Standard_DEPRECATED ("Deprecated method - DefinedLights() should be used instead")
+  void InitDefinedLights() { myDefinedLightsIterator.Initialize (myDefinedLights); }
+
+  //! Returns true if there are more Defined Light(s) to return.
+  Standard_DEPRECATED ("Deprecated method - DefinedLights() should be used instead")
+  Standard_Boolean MoreDefinedLights() const { return myDefinedLightsIterator.More(); }
+
+  //! Go to the next Defined Light (if there is not, DefinedLight() will raise an exception)
+  Standard_DEPRECATED ("Deprecated method - DefinedLights() should be used instead")
+  void NextDefinedLights() { if (!myDefinedLights.IsEmpty()) myDefinedLightsIterator.Next(); }
+
+  Standard_DEPRECATED ("Deprecated method - DefinedLights() should be used instead")
+  const Handle(V3d_Light)& DefinedLight() const { return myDefinedLightsIterator.Value(); }
 
 private:
 

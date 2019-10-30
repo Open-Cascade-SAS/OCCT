@@ -40,29 +40,6 @@ public:
   Standard_EXPORT void SetDirection (V3d_TypeOfOrientation theDirection);
   using Graphic3d_CLight::SetDirection;
 
-public:
-
-  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
-  Standard_EXPORT V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
-                                        const V3d_TypeOfOrientation theDirection = V3d_XposYposZpos,
-                                        const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                        const Standard_Boolean theIsHeadlight = Standard_False);
-
-  //! Creates a directional light source in the viewer.
-  //! theXt, theYt, theZt : Coordinate of light source Target.
-  //! theXp, theYp, theZp : Coordinate of light source Position.
-  //! The others parameters describe before.
-  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
-  Standard_EXPORT V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
-                                        const Standard_Real theXt,
-                                        const Standard_Real theYt,
-                                        const Standard_Real theZt,
-                                        const Standard_Real theXp,
-                                        const Standard_Real theYp,
-                                        const Standard_Real theZp,
-                                        const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                        const Standard_Boolean theIsHeadlight = Standard_False);
-
 //! @name hidden properties not applicable to directional light
 private:
 

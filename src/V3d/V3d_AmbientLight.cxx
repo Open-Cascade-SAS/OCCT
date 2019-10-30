@@ -28,18 +28,3 @@ V3d_AmbientLight::V3d_AmbientLight (const Quantity_Color& theColor)
 {
   SetColor (theColor);
 }
-
-// =======================================================================
-// function : V3d_AmbientLight
-// purpose  :
-// =======================================================================
-V3d_AmbientLight::V3d_AmbientLight (const Handle(V3d_Viewer)& theViewer,
-                                    const Quantity_Color& theColor)
-: Graphic3d_CLight (Graphic3d_TOLS_AMBIENT)
-{
-  SetColor (theColor);
-  if (!theViewer.IsNull())
-  {
-    theViewer->AddLight (this);
-  }
-}

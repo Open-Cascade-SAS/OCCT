@@ -1012,65 +1012,61 @@ aParams.NbMsaaSamples = aParams.NbMsaaSamples == 0 ? 8 : 0;\n\
 GetDocument()->UpdateResultMessageDlg("SetAntialiasingOn/SetAntialiasingOff",Message);
 }
 
-void CViewer3dView::OnClearLights() 
+void CViewer3dView::OnClearLights()
 {
-//	Setting Off all viewer active lights
-    TColStd_ListOfTransient lights;
-	for(myView->Viewer()->InitActiveLights(); myView->Viewer()->MoreActiveLights(); myView->Viewer()->NextActiveLights())
+// Setting Off all viewer active lights
+    V3d_ListOfLight lights;
+    for (V3d_ListOfLightIterator anIter = myView->Viewer()->ActiveLightIterator(); anIter.More(); anIter.Next())
     {
-        lights.Append(myView->Viewer()->ActiveLight());
+        lights.Append (anIter.Value());
     }
-    TColStd_ListIteratorOfListOfTransient itrLights(lights);
+    V3d_ListOfLightIterator itrLights(lights);
     for (; itrLights.More(); itrLights.Next())
     {
-        Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());
-        myView->Viewer()->SetLightOff(light);
+        myView->Viewer()->SetLightOff (itrLights.Value());
     }
 
-//	Setting Off all view active lights
+// Setting Off all view active lights
     lights.Clear();
-    for(myView->InitActiveLights(); myView->MoreActiveLights(); myView->NextActiveLights())
+    for (V3d_ListOfLightIterator anIter = myView->ActiveLightIterator(); anIter.More(); anIter.Next())
     {
-        lights.Append(myView->ActiveLight());
+        lights.Append (anIter.Value());
     }
-    itrLights.Initialize(lights);
+    itrLights.Initialize (lights);
     for (; itrLights.More(); itrLights.Next())
     {
-        Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());
-        myView->SetLightOff(light);
+        myView->SetLightOff (itrLights.Value());
     }
 
-	myView->Viewer()->SetDefaultLights();// Setting the default lights on
+    myView->Viewer()->SetDefaultLights(); // Setting the default lights on
 
-	NbActiveLights = 2;// There are 2 default active lights
+    NbActiveLights = 2; // There are 2 default active lights
 
-	myView->Update();
+    myView->Update();
 
 TCollection_AsciiString Message("\
-//	Setting Off all viewer active lights\n\
-TColStd_ListOfTransient lights;\n\
-for(myView->Viewer()->InitActiveLights(); myView->Viewer()->MoreActiveLights(); myView->Viewer()->NextActiveLights())\n\
+// Setting Off all viewer active lights\n\
+V3d_ListOfLight lights;\n\
+for (V3d_ListOfLightIterator anIter = myView->Viewer()->ActiveLightIterator(); anIter.More(); anIter.Next())\n\
 {\n\
-    lights.Append(myView->Viewer()->ActiveLight());\n\
+    lights.Append (anIter.Value());\n\
 }\n\
-TColStd_ListIteratorOfListOfTransient itrLights(lights);\n\
+V3d_ListOfLightIterator itrLights(lights);\n\
 for (; itrLights.More(); itrLights.Next())\n\
 {\n\
-    Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());\n\
-    myView->Viewer()->SetLightOff(light);\n\
+    myView->Viewer()->SetLightOff (itrLights.Value())\n\
 }\n\
 \n\
-//	Setting Off all view active lights\n\
+// Setting Off all view active lights\n\
 lights.Clear();\n\
-for(myView->InitActiveLights(); myView->MoreActiveLights(); myView->NextActiveLights())\n\
+for (V3d_ListOfLightIterator anIter = myView->ActiveLightIterator(); anIter.More(); anIter.Next())\n\
 {\n\
-    lights.Append(myView->ActiveLight());\n\
+    lights.Append (anIter.Value());\n\
 }\n\
 itrLights.Initialize(lights);\n\
 for (; itrLights.More(); itrLights.Next())\n\
 {\n\
-    Handle(V3d_Light) light = Handle(V3d_Light)::DownCast(itrLights.Value());\n\
-    myView->SetLightOff(light);\n\
+    myView->SetLightOff (itrLights.Value());\n\
 }\n\
 \n\
 myView->Viewer()->SetDefaultLights();// Setting the default lights on\n\

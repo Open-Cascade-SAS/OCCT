@@ -92,25 +92,6 @@ public:
   //! Return entities.
   NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>& ChangeEntities() { return myEntities; }
 
-  //! Begins an iteration scanning for sensitive primitives.
-  Standard_DEPRECATED("Deprecated method, Entities() should be used instead")
-  void Init() { myEntityIter = myEntities.Lower(); }
-
-  //! Continues the iteration scanning for sensitive
-  //! primitives with the mode defined in this framework.
-  Standard_DEPRECATED("Deprecated method, Entities() should be used instead")
-  Standard_Boolean More() const { return myEntityIter <= myEntities.Upper(); }
-
-  //! Returns the next sensitive primitive found in the
-  //! iteration. This is a scan for entities with the mode
-  //! defined in this framework.
-  Standard_DEPRECATED("Deprecated method, Entities() should be used instead")
-  void Next() { ++myEntityIter; }
-
-  //! Returns any sensitive primitive in this framework.
-  Standard_DEPRECATED("Deprecated method, Entities() should be used instead")
-  const Handle(SelectMgr_SensitiveEntity)& Sensitive() const { return myEntities.Value (myEntityIter); }
-
   //! Returns the flag UpdateFlag.
   //! This flage gives the update status of this framework
   //! in a ViewerSelector object:
@@ -142,7 +123,6 @@ public:
 private:
 
   NCollection_Vector<Handle(SelectMgr_SensitiveEntity)> myEntities;
-  Standard_Integer                                      myEntityIter;
   Standard_Integer                                      myMode;
   SelectMgr_TypeOfUpdate                                myUpdateStatus;
   mutable SelectMgr_StateOfSelection                    mySelectionState;

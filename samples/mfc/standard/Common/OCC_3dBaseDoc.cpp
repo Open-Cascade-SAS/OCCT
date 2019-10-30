@@ -489,8 +489,7 @@ void OCC_3dBaseDoc::OnUpdateV3dButtons (CCmdUI* pCmdUI)
 // Common function to change raytracing params and redraw view
 void OCC_3dBaseDoc::OnObjectRayTracingAction()
 {
-  myAISContext->CurrentViewer()->InitActiveViews();
-  Handle(V3d_View) aView = myAISContext->CurrentViewer()->ActiveView();
+  Handle(V3d_View) aView = myAISContext->CurrentViewer()->ActiveViews().First();
   Graphic3d_RenderingParams& aParams = aView->ChangeRenderingParams();
   if (myRayTracingIsOn)
     aParams.Method = Graphic3d_RM_RAYTRACING;

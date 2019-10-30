@@ -26,8 +26,7 @@ IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_Selection,Standard_Transient)
 // Purpose :
 //==================================================
 SelectMgr_Selection::SelectMgr_Selection (const Standard_Integer theModeIdx)
-: myEntityIter (0),
-  myMode (theModeIdx),
+: myMode (theModeIdx),
   mySelectionState (SelectMgr_SOS_Unknown),
   myBVHUpdateStatus (SelectMgr_TBU_None),
   mySensFactor (2),

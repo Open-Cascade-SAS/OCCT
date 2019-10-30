@@ -415,11 +415,6 @@ Standard_Boolean AIS_ColorScale::FindColor (const Standard_Real theValue,
 //=======================================================================
 Standard_Integer AIS_ColorScale::computeMaxLabelWidth (const TColStd_SequenceOfExtendedString& theLabels) const
 {
-  {
-    Handle(V3d_Viewer) aViewer = GetContext()->CurrentViewer();
-    aViewer->InitActiveViews(); // for AIS_ColorScale::TextSize()
-  }
-
   Standard_Integer aWidthMax = 0;
   for (TColStd_SequenceOfExtendedString::Iterator aLabIter (theLabels); aLabIter.More(); aLabIter.Next())
   {

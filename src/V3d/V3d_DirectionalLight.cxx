@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_DirectionalLight,V3d_PositionLight)
 V3d_DirectionalLight::V3d_DirectionalLight (const V3d_TypeOfOrientation theDirection,
                                             const Quantity_Color& theColor,
                                             const Standard_Boolean theIsHeadlight)
-: V3d_PositionLight (Graphic3d_TOLS_DIRECTIONAL, Handle(V3d_Viewer)())
+: V3d_PositionLight (Graphic3d_TOLS_DIRECTIONAL)
 {
   SetColor (theColor);
   SetHeadlight (theIsHeadlight);
@@ -38,46 +38,11 @@ V3d_DirectionalLight::V3d_DirectionalLight (const V3d_TypeOfOrientation theDirec
 V3d_DirectionalLight::V3d_DirectionalLight (const gp_Dir& theDirection,
                                             const Quantity_Color& theColor,
                                             const Standard_Boolean theIsHeadlight)
-: V3d_PositionLight (Graphic3d_TOLS_DIRECTIONAL, Handle(V3d_Viewer)())
+: V3d_PositionLight (Graphic3d_TOLS_DIRECTIONAL)
 {
   SetColor (theColor);
   SetHeadlight (theIsHeadlight);
   SetDirection (theDirection);
-}
-
-// =======================================================================
-// function : V3d_DirectionalLight
-// purpose  :
-// =======================================================================
-V3d_DirectionalLight::V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
-                                            const V3d_TypeOfOrientation theDirection,
-                                            const Quantity_Color& theColor,
-                                            const Standard_Boolean theIsHeadlight)
-: V3d_PositionLight (Graphic3d_TOLS_DIRECTIONAL, theViewer)
-{
-  SetColor (theColor);
-  SetHeadlight (theIsHeadlight);
-  SetDirection (V3d::GetProjAxis (theDirection));
-}
-
-// =======================================================================
-// function : V3d_DirectionalLight
-// purpose  :
-// =======================================================================
-V3d_DirectionalLight::V3d_DirectionalLight (const Handle(V3d_Viewer)& theViewer,
-                                            const Standard_Real theXt,
-                                            const Standard_Real theYt,
-                                            const Standard_Real theZt,
-                                            const Standard_Real theXp,
-                                            const Standard_Real theYp,
-                                            const Standard_Real theZp,
-                                            const Quantity_Color& theColor,
-                                            const Standard_Boolean theIsHeadlight)
-: V3d_PositionLight (Graphic3d_TOLS_DIRECTIONAL, theViewer)
-{
-  SetColor (theColor);
-  SetHeadlight (theIsHeadlight);
-  SetDirection (gp_Dir (gp_XYZ (theXt, theYt, theZt) - gp_XYZ(theXp, theYp, theZp)));
 }
 
 // =======================================================================

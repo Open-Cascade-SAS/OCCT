@@ -52,36 +52,6 @@ public:
   using Graphic3d_CLight::Position;
   using Graphic3d_CLight::SetPosition;
 
-public:
-
-  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
-  Standard_EXPORT V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
-                                 const Standard_Real theX,
-                                 const Standard_Real theY,
-                                 const Standard_Real theZ,
-                                 const V3d_TypeOfOrientation theDirection = V3d_XnegYnegZpos,
-                                 const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                 const Standard_Real theConstAttenuation = 1.0,
-                                 const Standard_Real theLinearAttenuation = 0.0,
-                                 const Standard_Real theConcentration = 1.0,
-                                 const Standard_Real theAngle = 0.523599);
-  
-  //! theXt, theYt, theZt : Coordinate of light source Target.
-  //! theXp, theYp, theZp : Coordinate of light source Position.
-  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
-  Standard_EXPORT V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
-                                 const Standard_Real theXt,
-                                 const Standard_Real theYt,
-                                 const Standard_Real theZt,
-                                 const Standard_Real theXp,
-                                 const Standard_Real theYp,
-                                 const Standard_Real theZp,
-                                 const Quantity_Color& theColor = Quantity_NOC_WHITE,
-                                 const Standard_Real theConstAttenuation = 1.0,
-                                 const Standard_Real theLinearAttenuation = 0.0,
-                                 const Standard_Real theConcentration = 1.0,
-                                 const Standard_Real theAngle = 0.523599);
-
 };
 
 DEFINE_STANDARD_HANDLE(V3d_SpotLight, V3d_PositionLight)

@@ -31,12 +31,6 @@ public:
   //! The default Color of this light source is WHITE.
   Standard_EXPORT V3d_AmbientLight (const Quantity_Color& theColor = Quantity_NOC_WHITE);
 
-  //! Constructs an ambient light source in the viewer.
-  //! The default Color of this light source is WHITE.
-  Standard_DEPRECATED("This constructor is deprecated - the light source should be added to V3d_Viewer explicitly by method V3d_Viewer::AddLight()")
-  Standard_EXPORT V3d_AmbientLight (const Handle(V3d_Viewer)& theViewer,
-                                    const Quantity_Color& theColor = Quantity_NOC_WHITE);
-
 //! @name hidden properties not applicable to ambient light
 private:
 

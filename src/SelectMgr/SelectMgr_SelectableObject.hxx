@@ -172,24 +172,6 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
-public:
-
-  //! Begins the iteration scanning for sensitive primitives.
-  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
-  void Init() { mycurrent = 1; }
-
-  //! Continues the iteration scanning for sensitive primitives.
-  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
-  Standard_Boolean More() const { return mycurrent <= myselections.Length(); }
-
-  //! Continues the iteration scanning for sensitive primitives.
-  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
-  void Next() { ++mycurrent; }
-
-  //! Returns the current selection in this framework.
-  Standard_DEPRECATED("Deprecated method, Selections() should be used instead")
-  const Handle(SelectMgr_Selection)& CurrentSelection() const { return myselections (mycurrent); }
-
 protected:
 
   //! Protected empty constructor.
@@ -214,7 +196,6 @@ protected:
   Handle(Prs3d_Presentation)    mySelectionPrs;  //!< optional presentation for highlighting selected object
   Handle(Prs3d_Presentation)    myHilightPrs;    //!< optional presentation for highlighting detected object
   Standard_Integer              myGlobalSelMode; //!< global selection mode
-  Standard_Integer              mycurrent;       //!< [deprecated] iterator value
   Standard_Boolean              myAutoHilight;   //!< auto-highlighting flag defining
 
 };

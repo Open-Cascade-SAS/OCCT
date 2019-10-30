@@ -413,8 +413,7 @@ void CTriangulationDoc::OnDumpView()
     pView->UpdateWindow();
   }
 
-  myViewer->InitActiveViews();
-  Handle(V3d_View) aView = myViewer->ActiveView();
+  Handle(V3d_View) aView = myViewer->ActiveViews().First();
   ExportView (aView);
 }
 

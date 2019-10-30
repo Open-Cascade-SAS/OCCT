@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(V3d_SpotLight,V3d_PositionLight)
 V3d_SpotLight::V3d_SpotLight (const gp_Pnt& thePos,
                               const V3d_TypeOfOrientation theDirection,
                               const Quantity_Color& theColor)
-: V3d_PositionLight (Graphic3d_TOLS_SPOT, Handle(V3d_Viewer)())
+: V3d_PositionLight (Graphic3d_TOLS_SPOT)
 {
   SetColor (theColor);
   SetPosition (thePos);
@@ -38,61 +38,11 @@ V3d_SpotLight::V3d_SpotLight (const gp_Pnt& thePos,
 V3d_SpotLight::V3d_SpotLight (const gp_Pnt& thePos,
                               const gp_Dir& theDirection,
                               const Quantity_Color& theColor)
-: V3d_PositionLight (Graphic3d_TOLS_SPOT, Handle(V3d_Viewer)())
+: V3d_PositionLight (Graphic3d_TOLS_SPOT)
 {
   SetColor (theColor);
   SetPosition (thePos);
   SetDirection (theDirection);
-}
-
-// =======================================================================
-// function : V3d_SpotLight
-// purpose  :
-// =======================================================================
-V3d_SpotLight::V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
-                              const Standard_Real theX,
-                              const Standard_Real theY,
-                              const Standard_Real theZ,
-                              const V3d_TypeOfOrientation theDirection,
-                              const Quantity_Color& theColor,
-                              const Standard_Real theConstAttenuation,
-                              const Standard_Real theLinearAttenuation,
-                              const Standard_Real theConcentration,
-                              const Standard_Real theAngle)
-: V3d_PositionLight (Graphic3d_TOLS_SPOT, theViewer)
-{
-  SetColor (theColor);
-  SetPosition (theX, theY, theZ);
-  SetDirection (V3d::GetProjAxis (theDirection));
-  SetAttenuation ((float )theConstAttenuation, (float )theLinearAttenuation);
-  SetConcentration ((float )theConcentration);
-  SetAngle ((float )theAngle);
-}
-
-// =======================================================================
-// function : V3d_SpotLight
-// purpose  :
-// =======================================================================
-V3d_SpotLight::V3d_SpotLight (const Handle(V3d_Viewer)& theViewer,
-                              const Standard_Real theXt,
-                              const Standard_Real theYt,
-                              const Standard_Real theZt,
-                              const Standard_Real theXp,
-                              const Standard_Real theYp,
-                              const Standard_Real theZp,
-                              const Quantity_Color& theColor,
-                              const Standard_Real theConstAttenuation,
-                              const Standard_Real theLinearAttenuation,
-                              const Standard_Real theConcentration,
-                              const Standard_Real theAngle)
-: V3d_PositionLight (Graphic3d_TOLS_SPOT, theViewer)
-{
-  SetColor (theColor);
-  SetPosition (theXp, theYp, theZp);
-  SetDirection (theXt - theXp, theYt - theYp, theZt - theZp);
-  SetAttenuation ((float )theConstAttenuation, (float )theLinearAttenuation);
-  SetConcentration ((float )theConcentration);
-  SetAngle ((float )theAngle);
 }
 
 // =======================================================================

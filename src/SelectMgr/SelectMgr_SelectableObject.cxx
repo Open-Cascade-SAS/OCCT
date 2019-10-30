@@ -49,7 +49,6 @@ namespace
 SelectMgr_SelectableObject::SelectMgr_SelectableObject (const PrsMgr_TypeOfPresentation3d aTypeOfPresentation3d)
 : PrsMgr_PresentableObject (aTypeOfPresentation3d),
   myGlobalSelMode          (0),
-  mycurrent                (0),
   myAutoHilight            (Standard_True)
 {
   //

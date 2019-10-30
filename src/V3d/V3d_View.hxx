@@ -707,23 +707,11 @@ public:
   //! Returns the current visualisation mode.
   Standard_EXPORT V3d_TypeOfVisualization Visualization() const;
 
-  //! Returns True if One light more can be
-  //! activated in this View.
-  Standard_EXPORT Standard_Boolean IfMoreLights() const;
+  //! Returns a list of active lights.
+  const V3d_ListOfLight& ActiveLights() const { return myActiveLights; }
 
   //! Return iterator for defined lights.
   V3d_ListOfLightIterator ActiveLightIterator() const { return V3d_ListOfLightIterator (myActiveLights); }
-
-  //! initializes an iteration on the active Lights.
-  void InitActiveLights() { myActiveLightsIterator.Initialize (myActiveLights); }
-
-  //! returns true if there are more active Light(s) to return.
-  Standard_Boolean MoreActiveLights() const { return myActiveLightsIterator.More(); }
-
-  //! Go to the next active Light (if there is not, ActiveLight will raise an exception)
-  void NextActiveLights() { myActiveLightsIterator.Next(); }
-
-  const Handle(V3d_Light)& ActiveLight() const { return myActiveLightsIterator.Value(); }
 
   //! Returns the MAX number of light associated to the view.
   Standard_EXPORT Standard_Integer LightLimit() const;
@@ -968,6 +956,28 @@ public:
   Standard_EXPORT gp_Pnt GravityPoint() const;
 
   DEFINE_STANDARD_RTTIEXT(V3d_View,Standard_Transient)
+
+public: //! @name deprecated methods
+
+  //! Returns True if One light more can be
+  //! activated in this View.
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  Standard_EXPORT Standard_Boolean IfMoreLights() const;
+
+  //! initializes an iteration on the active Lights.
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  void InitActiveLights() { myActiveLightsIterator.Initialize (myActiveLights); }
+
+  //! returns true if there are more active Light(s) to return.
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  Standard_Boolean MoreActiveLights() const { return myActiveLightsIterator.More(); }
+
+  //! Go to the next active Light (if there is not, ActiveLight will raise an exception)
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  void NextActiveLights() { myActiveLightsIterator.Next(); }
+
+  Standard_DEPRECATED ("Deprecated method - ActiveLights() should be used instead")
+  const Handle(V3d_Light)& ActiveLight() const { return myActiveLightsIterator.Value(); }
 
 protected:
 

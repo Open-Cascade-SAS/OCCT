@@ -216,8 +216,7 @@ void GeomSources::DisplaySurface(CGeometryDoc* aDoc,
 
 void GeomSources::ResetView(CGeometryDoc* aDoc)
 {
-  aDoc->GetAISContext()->CurrentViewer()->InitActiveViews();
-  Handle(V3d_View) aView = aDoc->GetAISContext()->CurrentViewer()->ActiveView();
+  Handle(V3d_View) aView = aDoc->GetAISContext()->CurrentViewer()->ActiveViews().First();
   aView->Reset();
 }
 
