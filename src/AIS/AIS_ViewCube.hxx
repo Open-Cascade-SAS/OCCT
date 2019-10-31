@@ -189,6 +189,45 @@ public: //! @name Geometry management API
   //! The value should be within [0, 0.5] range.
   Standard_EXPORT void SetRoundRadius (const Standard_Real theValue);
 
+  //! Returns radius of axes of the trihedron; 1.0 by default.
+  Standard_Real AxesRadius() const { return myAxesRadius; }
+
+  //! Sets radius of axes of the trihedron.
+  void SetAxesRadius (const Standard_Real theRadius)
+  {
+    if (Abs (myAxesRadius - theRadius) > Precision::Confusion())
+    {
+      myAxesRadius = theRadius;
+      SetToUpdate();
+    }
+  }
+
+  //! Returns radius of cone of axes of the trihedron; 3.0 by default.
+  Standard_Real AxesConeRadius() const { return myAxesConeRadius; }
+
+  //! Sets radius of cone of axes of the trihedron.
+  void SetAxesConeRadius (Standard_Real theRadius)
+  {
+    if (Abs (myAxesConeRadius - theRadius) > Precision::Confusion())
+    {
+      myAxesConeRadius = theRadius;
+      SetToUpdate();
+    }
+  }
+
+  //! Returns radius of sphere (central point) of the trihedron; 4.0 by default.
+  Standard_Real AxesSphereRadius() const { return myAxesSphereRadius; }
+
+  //! Sets radius of sphere (central point) of the trihedron.
+  void SetAxesSphereRadius (Standard_Real theRadius)
+  {
+    if (Abs (myAxesSphereRadius - theRadius) > Precision::Confusion())
+    {
+      myAxesSphereRadius = theRadius;
+      SetToUpdate();
+    }
+  }
+
   //! @return TRUE if trihedron is drawn; TRUE by default.
   Standard_Boolean ToDrawAxes() const { return myToDisplayAxes; }
 
@@ -621,6 +660,9 @@ protected:
   Standard_Real                 myBoxEdgeGap;        //!< gap between box side and box edge
   Standard_Real                 myBoxFacetExtension; //!< box facet extension
   Standard_Real                 myAxesPadding;       //!< Padding between box and axes
+  Standard_Real                 myAxesRadius;        //!< radius of axes of the trihedron; 1.0 by default
+  Standard_Real                 myAxesConeRadius;    //!< radius of cone of axes of the trihedron; 3.0 by default
+  Standard_Real                 myAxesSphereRadius;  //!< radius of sphere (central point) of the trihedron; 4.0 by default
   Standard_Real                 myCornerMinSize;     //!< minimal size of box corner
   Standard_Real                 myRoundRadius;       //!< relative round radius within [0; 0.5] range
   Standard_Boolean              myToDisplayAxes;     //!< trihedron visibility

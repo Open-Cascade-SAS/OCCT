@@ -13680,6 +13680,21 @@ static int VViewCube (Draw_Interpretor& ,
     {
       aViewCube->SetDuration (Draw::Atof (theArgVec[++anArgIter]));
     }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-axesradius")
+    {
+      aViewCube->SetAxesRadius (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-axesconeradius")
+    {
+      aViewCube->SetAxesConeRadius (Draw::Atof (theArgVec[++anArgIter]));
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-axessphereradius")
+    {
+      aViewCube->SetAxesSphereRadius (Draw::Atof (theArgVec[++anArgIter]));
+    }
     else
     {
       std::cout << "Syntax error: unknown argument '" << anArg << "'\n";
@@ -14543,6 +14558,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   -boxCornerMinSize Value  minimal box corner size"
                    "\n\t\t:   -axesPadding Value       padding between box and arrows"
                    "\n\t\t:   -roundRadius Value       relative radius of corners of sides within [0.0, 0.5] range"
+                   "\n\t\t:   -axesRadius Value        radius of axes of the trihedron"
+                   "\n\t\t:   -axesConeRadius Value    radius of the cone (arrow) of the trihedron"
+                   "\n\t\t:   -axesSphereRadius Value  radius of the sphere (central point) of trihedron"
                    "\n\t\t:   -fixedanimation {0|1}    uninterruptible animation loop"
                    "\n\t\t:   -duration Seconds        animation duration in seconds",
     __FILE__, VViewCube, group);

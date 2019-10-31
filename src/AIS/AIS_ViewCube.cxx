@@ -137,6 +137,9 @@ AIS_ViewCube::AIS_ViewCube()
   myBoxEdgeGap (0.0),
   myBoxFacetExtension (1.0),
   myAxesPadding (1.0),
+  myAxesRadius (1.0),
+  myAxesConeRadius (3.0),
+  myAxesSphereRadius (4.0),
   myCornerMinSize (2.0),
   myRoundRadius  (0.0),
   myToDisplayAxes (true),
@@ -599,7 +602,7 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       anAxisGroup->SetGroupPrimitivesAspect (aDatumAspect->ShadingAspect (aPart)->Aspect());
 
       const Standard_Real anArrowLength = 0.2 * anAxisSize;
-      Handle(Graphic3d_ArrayOfTriangles) aTriangleArray = Prs3d_Arrow::DrawShaded (anAx1, 1.0, anAxisSize, 3.0, anArrowLength, THE_NB_ARROW_FACETTES);
+      Handle(Graphic3d_ArrayOfTriangles) aTriangleArray = Prs3d_Arrow::DrawShaded (anAx1, myAxesRadius, anAxisSize, myAxesConeRadius, anArrowLength, THE_NB_ARROW_FACETTES);
       anAxisGroup->AddPrimitiveArray (aTriangleArray);
 
       TCollection_AsciiString anAxisLabel;
@@ -621,7 +624,7 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       Handle(Prs3d_ShadingAspect) anAspectCen = new Prs3d_ShadingAspect();
       anAspectCen->SetColor (Quantity_NOC_WHITE);
       aGroup->SetGroupPrimitivesAspect (anAspectCen->Aspect());
-      Prs3d_ToolSphere aTool (4.0, THE_NB_DISK_SLICES, THE_NB_DISK_SLICES);
+      Prs3d_ToolSphere aTool (myAxesSphereRadius, THE_NB_DISK_SLICES, THE_NB_DISK_SLICES);
       gp_Trsf aTrsf;
       aTrsf.SetTranslation (gp_Vec (gp::Origin(), aLocation));
       Handle(Graphic3d_ArrayOfTriangles) aCenterArray;
