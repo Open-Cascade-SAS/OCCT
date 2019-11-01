@@ -44,6 +44,8 @@ public:
   //! Empty construtor.
   Standard_EXPORT MAT2d_Mat2d(const Standard_Boolean IsOpenResult = Standard_False);
   
+  Standard_EXPORT ~MAT2d_Mat2d();
+  
   //! Algoritm of computation of the bisecting locus.
   Standard_EXPORT void CreateMat (MAT2d_Tool2d& aTool);
   
@@ -96,6 +98,7 @@ private:
   Standard_Integer thenumberofedges;
   Standard_Boolean semiInfinite;
   Handle(MAT_ListOfEdge) theedgelist;
+  Handle(MAT_ListOfEdge) RemovedEdgesList;
   TColStd_DataMapOfIntegerInteger typeofbisectortoremove;
   MAT_DataMapOfIntegerBisector bisectoronetoremove;
   MAT_DataMapOfIntegerBisector bisectortwotoremove;

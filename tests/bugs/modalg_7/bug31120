@@ -1,0 +1,22 @@
+puts "================================================="
+puts "OCC31120: Memory leak in BRepOffsetAPI_MakeOffset"
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug31120_wire.brep] w
+
+mkoffset r w 1 0.5
+set log [meminfo h]
+regexp {([0-9+-.eE]*)} $log full memval1
+
+for {set i 0} {$i < 20} {incr i} {
+  mkoffset r w 1 0.5
+  set log [meminfo h]
+  regexp {([0-9+-.eE]*)} $log full memval
+
+  set ratio (${memval}-{$memval1})/${memval1}
+
+  if { ${ratio} > 0.05} {
+      puts "Error: memory leak"
+  }
+}

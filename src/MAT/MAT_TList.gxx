@@ -197,22 +197,25 @@ void MAT_TList::Unlink()
   Standard_Boolean nextisnull = thecurrentnode->Next().IsNull();
 
   if(thecurrentindex)
+  {
+    if(!nextisnull)
     {
-      if(!nextisnull && !previousisnull)
-	{
-	  thecurrentnode->Next()->Previous(thecurrentnode->Previous());
-	  thecurrentnode->Previous()->Next(thecurrentnode->Next());
-	}
-
-      if(thecurrentindex == 1)
-	{
-	  thefirstnode = thecurrentnode->Next();
-	}
-      else if(thecurrentindex == thenumberofitems)
-	{
-	  thelastnode = thecurrentnode->Previous();
-	}
+      thecurrentnode->Next()->Previous(thecurrentnode->Previous());
     }
+    if (!previousisnull)
+    {
+      thecurrentnode->Previous()->Next(thecurrentnode->Next());
+    }
+
+    if(thecurrentindex == 1)
+    {
+      thefirstnode = thecurrentnode->Next();
+    }
+    else if(thecurrentindex == thenumberofitems)
+    {
+      thelastnode = thecurrentnode->Previous();
+    }
+  }
   thenumberofitems--;
   thecurrentindex--;
 }
@@ -381,4 +384,26 @@ void MAT_TList::Dump(const Standard_Integer ashift,
 		     const Standard_Integer alevel)
 {
   for(First(); More(); Next()) Current()->Dump(ashift,alevel);
+}
+
+//=======================================================================
+//function : ~MAT_TList
+//purpose  : 
+//=======================================================================
+
+MAT_TList::~MAT_TList()
+{
+  Handle(MAT_TListNode) aNode = thefirstnode;
+  while (!aNode.IsNull())
+  {
+    Handle(MAT_TListNode) aNext = aNode->Next();
+    aNode->Next (NULL);
+    aNode->Previous (NULL);
+    aNode = aNext;
+  }
+  thecurrentnode.Nullify();
+  thefirstnode.Nullify();
+  thelastnode.Nullify();
+  thecurrentindex  = 0;
+  thenumberofitems = 0;
 }
