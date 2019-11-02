@@ -36,7 +36,7 @@ public:
   //! Empty constructor.
   Standard_EXPORT SelectMgr_SensitiveEntitySet (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
-  virtual ~SelectMgr_SensitiveEntitySet() {};
+  virtual ~SelectMgr_SensitiveEntitySet() {}
 
   //! Adds new entity to the set and marks BVH tree for rebuild
   Standard_EXPORT void Append (const Handle(SelectMgr_SensitiveEntity)& theEntity);

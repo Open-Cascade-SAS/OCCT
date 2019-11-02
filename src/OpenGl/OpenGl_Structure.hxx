@@ -100,10 +100,10 @@ public:
   Standard_EXPORT void Clear (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Renders the structure.
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Releases structure resources.
-  virtual void Release (const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)& theGlCtx);
 
   //! This method releases GL resources without actual elements destruction.
   //! As result structure could be correctly destroyed layer without GL context

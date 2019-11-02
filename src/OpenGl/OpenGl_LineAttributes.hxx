@@ -48,13 +48,13 @@ public:
   //! By default the parameters are:
   //! - IsEnabled (true),
   //! - TypeOfHatch (0).
-  OpenGl_LineAttributes();
+  Standard_EXPORT OpenGl_LineAttributes();
 
   //! Default destructor.
-  virtual ~OpenGl_LineAttributes();
+  Standard_EXPORT virtual ~OpenGl_LineAttributes();
 
   //! Release GL resources.
-  virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release (OpenGl_Context* theGlCtx) Standard_OVERRIDE;
 
   //! Returns estimated GPU memory usage - not implemented.
   virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
@@ -63,14 +63,14 @@ public:
   int TypeOfHatch() const { return myTypeOfHatch; }
 
   //! Sets type of the hatch.
-  int SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
-                      const Handle(Graphic3d_HatchStyle)& theStyle);
+  Standard_EXPORT int SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
+                                      const Handle(Graphic3d_HatchStyle)& theStyle);
 
   //! Current enabled state of the hatching rasterization.
   bool IsEnabled() const { return myIsEnabled; }
 
   //! Turns on/off the hatching rasterization rasterization.
-  bool SetEnabled (const OpenGl_Context* theGlCtx, const bool theToEnable);
+  Standard_EXPORT bool SetEnabled (const OpenGl_Context* theGlCtx, const bool theToEnable);
 
 protected:
 

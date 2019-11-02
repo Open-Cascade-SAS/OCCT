@@ -58,7 +58,7 @@ public:
   void ClearUsers() { myUsers.Clear(); }
 
   //! Returns true if the interactive object is movable.
-    virtual Standard_Boolean IsMovable() const Standard_OVERRIDE;
+  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
   
   //! computes the presentation according to a point of view
   //! given by <aProjector>.
@@ -133,12 +133,5 @@ private:
   gp_Pnt myCenter;
 
 };
-
-
-#include <AIS_IdenticRelation.lxx>
-
-
-
-
 
 #endif // _AIS_IdenticRelation_HeaderFile

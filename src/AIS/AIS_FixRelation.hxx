@@ -65,7 +65,7 @@ public:
   
   //! Returns true if the Interactive Objects in the relation
   //! are movable.
-    virtual Standard_Boolean IsMovable() const Standard_OVERRIDE;
+  virtual Standard_Boolean IsMovable() const Standard_OVERRIDE { return Standard_True; }
   
   //! computes the presentation according to a point of view
   //! given by <aProjector>.
@@ -108,7 +108,5 @@ private:
 
 
 };
-
-#include <AIS_FixRelation.lxx>
 
 #endif // _AIS_FixRelation_HeaderFile

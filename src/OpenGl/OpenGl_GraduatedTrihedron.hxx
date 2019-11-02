@@ -41,25 +41,25 @@ public:
 public:
 
   //! Default constructor.
-  OpenGl_GraduatedTrihedron();
+  Standard_EXPORT OpenGl_GraduatedTrihedron();
 
   //! Destructor.
-  virtual ~OpenGl_GraduatedTrihedron();
+  Standard_EXPORT virtual ~OpenGl_GraduatedTrihedron();
 
   //! Draw the element.
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
   //! Release OpenGL resources.
-  virtual void Release (OpenGl_Context* theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
 
   //! Setup configuration.
-  void SetValues (const Graphic3d_GraduatedTrihedron& theData);
+  Standard_EXPORT void SetValues (const Graphic3d_GraduatedTrihedron& theData);
 
   //! Sets up-to-date values of scene bounding box.
   //! Can be used in callback mechanism to get up-to-date values.
   //! @sa Graphic3d_GraduatedTrihedron::CubicAxesCallback
-  void SetMinMax (const OpenGl_Vec3& theMin,
-                  const OpenGl_Vec3& theMax);
+  Standard_EXPORT void SetMinMax (const OpenGl_Vec3& theMin,
+                                  const OpenGl_Vec3& theMax);
 
 private:
 

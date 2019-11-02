@@ -33,13 +33,13 @@ class  OpenGl_PrimitiveArray;
 namespace OpenGl_Raytrace
 {
   //! Checks to see if the group contains ray-trace geometry.
-  Standard_Boolean IsRaytracedGroup (const OpenGl_Group* theGroup);
+  Standard_EXPORT Standard_Boolean IsRaytracedGroup (const OpenGl_Group* theGroup);
 
   //! Checks to see if the element contains ray-trace geometry.
-  Standard_Boolean IsRaytracedElement (const OpenGl_ElementNode* theNode);
+  Standard_EXPORT Standard_Boolean IsRaytracedElement (const OpenGl_ElementNode* theNode);
 
   //! Checks to see if the element contains ray-trace geometry.
-  Standard_Boolean IsRaytracedElement (const OpenGl_Element* theElement);
+  Standard_EXPORT Standard_Boolean IsRaytracedElement (const OpenGl_Element* theElement);
 }
 
 //! Stores properties of surface material.
@@ -70,7 +70,7 @@ struct OpenGl_RaytraceMaterial
 public:
 
   //! Empty constructor.
-  OpenGl_RaytraceMaterial();
+  Standard_EXPORT OpenGl_RaytraceMaterial();
 
   //! Returns packed (serialized) representation of material.
   const Standard_ShortReal* Packed()
@@ -92,8 +92,8 @@ public:
   OpenGl_RaytraceLight() { }
 
   //! Creates new light source.
-  OpenGl_RaytraceLight (const BVH_Vec4f& theEmission,
-                        const BVH_Vec4f& thePosition);
+  Standard_EXPORT OpenGl_RaytraceLight (const BVH_Vec4f& theEmission,
+                                        const BVH_Vec4f& thePosition);
 
   //! Returns packed (serialized) representation of light source.
   const Standard_ShortReal* Packed()
@@ -118,8 +118,8 @@ public:
 public:
 
   //! Creates new OpenGL element triangulation.
-  OpenGl_TriangleSet (const Standard_Size theArrayID,
-                      const opencascade::handle<BVH_Builder<Standard_ShortReal, 3> >& theBuilder);
+  Standard_EXPORT OpenGl_TriangleSet (const Standard_Size theArrayID,
+                                      const opencascade::handle<BVH_Builder<Standard_ShortReal, 3> >& theBuilder);
 
   //! Returns ID of associated primitive array.
   Standard_Size AssociatedPArrayID() const
@@ -154,10 +154,10 @@ public:
   using BVH_Triangulation<Standard_ShortReal, 3>::Box;
 
   //! Returns centroid position along the given axis.
-  virtual Standard_ShortReal Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_ShortReal Center (const Standard_Integer theIndex, const Standard_Integer theAxis) const Standard_OVERRIDE;
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
-  const QuadBvhHandle& QuadBVH();
+  Standard_EXPORT const QuadBvhHandle& QuadBVH();
 
 public:
 
@@ -228,35 +228,35 @@ public:
   }
 
   //! Clears ray-tracing geometry.
-  virtual void Clear() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
 public: //! @name methods related to acceleration structure
 
   //! Performs post-processing of high-level scene BVH.
-  Standard_Boolean ProcessAcceleration();
+  Standard_EXPORT Standard_Boolean ProcessAcceleration();
 
   //! Returns offset of bottom-level BVH for given leaf node.
   //! If the node index is not valid the function returns -1.
   //! @note Can be used after processing acceleration structure.
-  Standard_Integer AccelerationOffset (Standard_Integer theNodeIdx);
+  Standard_EXPORT Standard_Integer AccelerationOffset (Standard_Integer theNodeIdx);
 
   //! Returns offset of triangulation vertices for given leaf node.
   //! If the node index is not valid the function returns -1.
   //! @note Can be used after processing acceleration structure.
-  Standard_Integer VerticesOffset (Standard_Integer theNodeIdx);
+  Standard_EXPORT Standard_Integer VerticesOffset (Standard_Integer theNodeIdx);
 
   //! Returns offset of triangulation elements for given leaf node.
   //! If the node index is not valid the function returns -1.
   //! @note Can be used after processing acceleration structure.
-  Standard_Integer ElementsOffset (Standard_Integer theNodeIdx);
+  Standard_EXPORT Standard_Integer ElementsOffset (Standard_Integer theNodeIdx);
 
   //! Returns triangulation data for given leaf node.
   //! If the node index is not valid the function returns NULL.
   //! @note Can be used after processing acceleration structure.
-  OpenGl_TriangleSet* TriangleSet (Standard_Integer theNodeIdx);
+  Standard_EXPORT OpenGl_TriangleSet* TriangleSet (Standard_Integer theNodeIdx);
 
   //! Returns quad BVH (QBVH) tree produced from binary BVH.
-  const QuadBvhHandle& QuadBVH();
+  Standard_EXPORT const QuadBvhHandle& QuadBVH();
 
 public: //! @name methods related to texture management
 
@@ -267,16 +267,16 @@ public: //! @name methods related to texture management
   }
 
   //! Adds new OpenGL texture to the scene and returns its index.
-  Standard_Integer AddTexture (const Handle(OpenGl_Texture)& theTexture);
+  Standard_EXPORT Standard_Integer AddTexture (const Handle(OpenGl_Texture)& theTexture);
 
   //! Updates unique 64-bit texture handles to use in shaders.
-  Standard_Boolean UpdateTextureHandles (const Handle(OpenGl_Context)& theContext);
+  Standard_EXPORT Standard_Boolean UpdateTextureHandles (const Handle(OpenGl_Context)& theContext);
 
   //! Makes the OpenGL texture handles resident (must be called before using).
-  Standard_Boolean AcquireTextures (const Handle(OpenGl_Context)& theContext);
+  Standard_EXPORT Standard_Boolean AcquireTextures (const Handle(OpenGl_Context)& theContext);
 
   //! Makes the OpenGL texture handles non-resident (must be called after using).
-  Standard_Boolean ReleaseTextures (const Handle(OpenGl_Context)& theContext) const;
+  Standard_EXPORT Standard_Boolean ReleaseTextures (const Handle(OpenGl_Context)& theContext) const;
 
   //! Returns array of texture handles.
   const std::vector<GLuint64>& TextureHandles() const

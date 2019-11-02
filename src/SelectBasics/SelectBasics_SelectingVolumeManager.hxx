@@ -37,9 +37,9 @@ public:
 
 public:
 
-  SelectBasics_SelectingVolumeManager() {};
+  SelectBasics_SelectingVolumeManager() {}
 
-  virtual ~SelectBasics_SelectingVolumeManager() {};
+  virtual ~SelectBasics_SelectingVolumeManager() {}
 
   virtual Standard_Integer GetActiveSelectionType() const = 0;
 

@@ -31,10 +31,10 @@ public:
 public:
 
   //! Raise exception on API misuse.
-  virtual void Connect (Graphic3d_CStructure& ) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Connect (Graphic3d_CStructure& ) Standard_OVERRIDE;
 
   //! Raise exception on API misuse.
-  virtual void Disconnect (Graphic3d_CStructure& ) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& ) Standard_OVERRIDE;
 
 private:
 

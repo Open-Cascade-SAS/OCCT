@@ -36,7 +36,7 @@ public:
   //! Creates instances of all available selecting volume types
   Standard_EXPORT SelectMgr_SelectingVolumeManager (Standard_Boolean theToAllocateFrustums = Standard_True);
 
-  virtual ~SelectMgr_SelectingVolumeManager() {};
+  virtual ~SelectMgr_SelectingVolumeManager() {}
 
   //! IMPORTANT: Scaling makes sense only for frustum built on a single point!
   //!            Note that this method does not perform any checks on type of the frustum.

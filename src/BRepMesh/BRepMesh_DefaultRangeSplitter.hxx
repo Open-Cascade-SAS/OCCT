@@ -78,14 +78,10 @@ public:
 protected:
 
   //! Computes parametric tolerance taking length along U and V into account.
-  virtual void computeTolerance(
-    const Standard_Real theLenU,
-    const Standard_Real theLenV);
+  Standard_EXPORT virtual void computeTolerance (const Standard_Real theLenU, const Standard_Real theLenV);
 
   //! Computes parametric delta taking length along U and V and value of tolerance into account.
-  virtual void computeDelta(
-    const Standard_Real theLengthU,
-    const Standard_Real theLengthV);
+  Standard_EXPORT virtual void computeDelta (const Standard_Real theLengthU, const Standard_Real theLengthV);
 
 public:
   //! Returns face model.

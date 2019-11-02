@@ -43,22 +43,21 @@ protected:
 
   //! Create reader context.
   //! Can be overridden by sub-class to read triangulation into application-specific data structures instead of Poly_Triangulation.
-  virtual Handle(RWObj_TriangulationReader) createReaderContext();
+  Standard_EXPORT virtual Handle(RWObj_TriangulationReader) createReaderContext();
 
   //! @param theShape       shape to register
   //! @param theName        shape name
   //! @param theMaterial    shape material
   //! @param theIsRootShape indicates that this is a root object (free shape)
-  virtual void BindNamedShape (const TopoDS_Shape& theShape,
-                               const TCollection_AsciiString& theName,
-                               const RWObj_Material* theMaterial,
-                               const Standard_Boolean theIsRootShape) Standard_OVERRIDE;
+  Standard_EXPORT virtual void BindNamedShape (const TopoDS_Shape& theShape,
+                                               const TCollection_AsciiString& theName,
+                                               const RWObj_Material* theMaterial,
+                                               const Standard_Boolean theIsRootShape) Standard_OVERRIDE;
 
 protected:
 
   NCollection_DataMap<TCollection_AsciiString, Handle(XCAFDoc_VisMaterial)> myObjMaterialMap;
   Standard_Boolean myIsSinglePrecision; //!< flag for reading vertex data with single or double floating point precision
-
 };
 
 #endif // _RWObj_CafReader_HeaderFile

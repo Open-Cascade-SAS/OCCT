@@ -35,10 +35,10 @@ class OpenGl_LayerList
 public:
 
   //! Constructor
-  OpenGl_LayerList (const Standard_Integer theNbPriorities);
+  Standard_EXPORT OpenGl_LayerList (const Standard_Integer theNbPriorities);
 
   //! Destructor
-  virtual ~OpenGl_LayerList();
+  Standard_EXPORT virtual ~OpenGl_LayerList();
 
   //! Method returns the number of available priorities
   Standard_Integer NbPriorities() const { return myNbPriorities; }
@@ -50,40 +50,40 @@ public:
   Standard_Integer NbImmediateStructures() const { return myImmediateNbStructures; }
 
   //! Insert a new layer with id.
-  void InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
-                          const Graphic3d_ZLayerSettings& theSettings,
-                          const Graphic3d_ZLayerId theLayerAfter);
+  Standard_EXPORT void InsertLayerBefore (const Graphic3d_ZLayerId theNewLayerId,
+                                          const Graphic3d_ZLayerSettings& theSettings,
+                                          const Graphic3d_ZLayerId theLayerAfter);
 
   //! Insert a new layer with id.
-  void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
-                         const Graphic3d_ZLayerSettings& theSettings,
-                         const Graphic3d_ZLayerId theLayerBefore);
+  Standard_EXPORT void InsertLayerAfter (const Graphic3d_ZLayerId theNewLayerId,
+                                         const Graphic3d_ZLayerSettings& theSettings,
+                                         const Graphic3d_ZLayerId theLayerBefore);
 
   //! Remove layer by its id.
-  void RemoveLayer (const Graphic3d_ZLayerId theLayerId);
+  Standard_EXPORT void RemoveLayer (const Graphic3d_ZLayerId theLayerId);
 
   //! Add structure to list with given priority. The structure will be inserted
   //! to specified layer. If the layer isn't found, the structure will be put
   //! to default bottom-level layer.
-  void AddStructure (const OpenGl_Structure*  theStruct,
-                     const Graphic3d_ZLayerId theLayerId,
-                     const Standard_Integer   thePriority,
-                     Standard_Boolean        isForChangePriority = Standard_False);
+  Standard_EXPORT void AddStructure (const OpenGl_Structure*  theStruct,
+                                     const Graphic3d_ZLayerId theLayerId,
+                                     const Standard_Integer   thePriority,
+                                     Standard_Boolean        isForChangePriority = Standard_False);
 
   //! Remove structure from structure list and return its previous priority
-  void RemoveStructure (const OpenGl_Structure* theStructure);
+  Standard_EXPORT void RemoveStructure (const OpenGl_Structure* theStructure);
 
   //! Change structure z layer
   //! If the new layer is not presented, the structure will be displayed
   //! in default z layer
-  void ChangeLayer (const OpenGl_Structure*  theStructure,
-                    const Graphic3d_ZLayerId theOldLayerId,
-                    const Graphic3d_ZLayerId theNewLayerId);
+  Standard_EXPORT void ChangeLayer (const OpenGl_Structure*  theStructure,
+                                    const Graphic3d_ZLayerId theOldLayerId,
+                                    const Graphic3d_ZLayerId theNewLayerId);
 
   //! Changes structure priority within its ZLayer
-  void ChangePriority (const OpenGl_Structure*  theStructure,
-                       const Graphic3d_ZLayerId theLayerId,
-                       const Standard_Integer   theNewPriority);
+  Standard_EXPORT void ChangePriority (const OpenGl_Structure*  theStructure,
+                                       const Graphic3d_ZLayerId theLayerId,
+                                       const Standard_Integer   theNewPriority);
 
   //! Returns reference to the layer with given ID.
   OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId) { return *myLayerIds.Find (theLayerId); }
@@ -92,19 +92,19 @@ public:
   const OpenGl_Layer& Layer (const Graphic3d_ZLayerId theLayerId) const { return *myLayerIds.Find (theLayerId); }
 
   //! Assign new settings to the layer.
-  void SetLayerSettings (const Graphic3d_ZLayerId        theLayerId,
-                         const Graphic3d_ZLayerSettings& theSettings);
+  Standard_EXPORT void SetLayerSettings (const Graphic3d_ZLayerId        theLayerId,
+                                         const Graphic3d_ZLayerSettings& theSettings);
 
   //! Update culling state - should be called before rendering.
-  void UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspace,
-                      const Standard_Boolean theToDrawImmediate);
+  Standard_EXPORT void UpdateCulling (const Handle(OpenGl_Workspace)& theWorkspace,
+                                      const Standard_Boolean theToDrawImmediate);
 
   //! Render this element
-  void Render (const Handle(OpenGl_Workspace)& theWorkspace,
-               const Standard_Boolean          theToDrawImmediate,
-               const OpenGl_LayerFilter        theLayersToProcess,
-               OpenGl_FrameBuffer*             theReadDrawFbo,
-               OpenGl_FrameBuffer*             theOitAccumFbo) const;
+  Standard_EXPORT void Render (const Handle(OpenGl_Workspace)& theWorkspace,
+                               const Standard_Boolean          theToDrawImmediate,
+                               const OpenGl_LayerFilter        theLayersToProcess,
+                               OpenGl_FrameBuffer*             theReadDrawFbo,
+                               OpenGl_FrameBuffer*             theOitAccumFbo) const;
 
   //! Returns the set of OpenGL Z-layers.
   const NCollection_List<Handle(Graphic3d_Layer)>& Layers() const { return myLayers; }
@@ -114,7 +114,7 @@ public:
 
   //! Marks BVH tree for given priority list as dirty and
   //! marks primitive set for rebuild.
-  void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId);
+  Standard_EXPORT void InvalidateBVHData (const Graphic3d_ZLayerId theLayerId);
 
   //! Returns structure modification state (for ray-tracing).
   Standard_Size ModificationStateOfRaytracable() const { return myModifStateOfRaytraceable; }
@@ -123,7 +123,7 @@ public:
   const Handle(Select3D_BVHBuilder3d)& FrustumCullingBVHBuilder() const { return myBVHBuilder; }
 
   //! Assigns BVH tree builder for frustom culling.
-  void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
+  Standard_EXPORT void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
 
 protected:
 
@@ -184,16 +184,16 @@ protected:
   //! @param theGlobalSettings [in] the set of global settings used for rendering.
   //! @param theReadDrawFbo [in] the framebuffer for reading depth and writing final color.
   //! @param theOitAccumFbo [in] the framebuffer for accumulating color and coverage for OIT process.
-  void renderTransparent (const Handle(OpenGl_Workspace)&   theWorkspace,
-                          OpenGl_LayerStack::iterator&      theLayerIter,
-                          const OpenGl_GlobalLayerSettings& theGlobalSettings,
-                          OpenGl_FrameBuffer*               theReadDrawFbo,
-                          OpenGl_FrameBuffer*               theOitAccumFbo) const;
+  Standard_EXPORT void renderTransparent (const Handle(OpenGl_Workspace)&   theWorkspace,
+                                          OpenGl_LayerStack::iterator&      theLayerIter,
+                                          const OpenGl_GlobalLayerSettings& theGlobalSettings,
+                                          OpenGl_FrameBuffer*               theReadDrawFbo,
+                                          OpenGl_FrameBuffer*               theOitAccumFbo) const;
 
   // Render structures within specified layer.
-  void renderLayer (const Handle(OpenGl_Workspace)& theWorkspace,
-                    const OpenGl_GlobalLayerSettings& theDefaultSettings,
-                    const Graphic3d_Layer& theLayer) const;
+  Standard_EXPORT void renderLayer (const Handle(OpenGl_Workspace)& theWorkspace,
+                                    const OpenGl_GlobalLayerSettings& theDefaultSettings,
+                                    const Graphic3d_Layer& theLayer) const;
 
 protected:
 

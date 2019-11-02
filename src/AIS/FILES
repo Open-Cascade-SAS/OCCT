@@ -69,14 +69,12 @@ AIS_ExclusionFilter.hxx
 AIS_ExclusionFilter.lxx
 AIS_FixRelation.cxx
 AIS_FixRelation.hxx
-AIS_FixRelation.lxx
 AIS_GlobalStatus.cxx
 AIS_GlobalStatus.hxx
 AIS_GraphicTool.cxx
 AIS_GraphicTool.hxx
 AIS_IdenticRelation.cxx
 AIS_IdenticRelation.hxx
-AIS_IdenticRelation.lxx
 AIS_IndexedDataMapOfOwnerPrs.hxx
 AIS_InteractiveContext.cxx
 AIS_InteractiveContext.hxx
