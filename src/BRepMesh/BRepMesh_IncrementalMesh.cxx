@@ -108,15 +108,18 @@ void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theCont
 
   myStatus = IMeshData_NoError;
   const Handle(IMeshData_Model)& aModel = theContext->GetModel();
-  for (Standard_Integer aFaceIt = 0; aFaceIt < aModel->FacesNb(); ++aFaceIt)
+  if (!aModel.IsNull())
   {
-    const IMeshData::IFaceHandle& aDFace = aModel->GetFace(aFaceIt);
-    myStatus |= aDFace->GetStatusMask();
-
-    for (Standard_Integer aWireIt = 0; aWireIt < aDFace->WiresNb(); ++aWireIt)
+    for (Standard_Integer aFaceIt = 0; aFaceIt < aModel->FacesNb(); ++aFaceIt)
     {
-      const IMeshData::IWireHandle& aDWire = aDFace->GetWire(aWireIt);
-      myStatus |= aDWire->GetStatusMask();
+      const IMeshData::IFaceHandle& aDFace = aModel->GetFace(aFaceIt);
+      myStatus |= aDFace->GetStatusMask();
+
+      for (Standard_Integer aWireIt = 0; aWireIt < aDFace->WiresNb(); ++aWireIt)
+      {
+        const IMeshData::IWireHandle& aDWire = aDFace->GetWire(aWireIt);
+        myStatus |= aDWire->GetStatusMask();
+      }
     }
   }
 
