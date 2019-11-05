@@ -34,6 +34,7 @@ namespace
   //=======================================================================
   void visitEdges (const Handle (IMeshTools_ShapeVisitor)& theVisitor,
                    const TopoDS_Shape&                     theShape,
+                   const Standard_Boolean                  isResetLocation,
                    const TopAbs_ShapeEnum                  theToFind,
                    const TopAbs_ShapeEnum                  theToAvoid = TopAbs_SHAPE)
   {
@@ -46,7 +47,9 @@ namespace
         continue;
       }
 
-      theVisitor->Visit (aEdge);
+      theVisitor->Visit (isResetLocation ?
+        TopoDS::Edge (aEdge.Located (TopLoc_Location ())) :
+        aEdge);
     }
   }
 }
@@ -77,7 +80,7 @@ void IMeshTools_ShapeExplorer::Accept (
   const Handle (IMeshTools_ShapeVisitor)& theVisitor)
 {
   // Explore all free edges in shape.
-  visitEdges (theVisitor, GetShape (), TopAbs_EDGE, TopAbs_FACE);
+  visitEdges (theVisitor, GetShape (), Standard_True, TopAbs_EDGE, TopAbs_FACE);
 
   // Explore all related to some face edges in shape.
   // make array of faces suitable for processing (excluding faces without surface)
@@ -105,7 +108,7 @@ void IMeshTools_ShapeExplorer::Accept (
     }
 
     // Explore all edges in face.
-    visitEdges (theVisitor, aFace, TopAbs_EDGE);
+    visitEdges (theVisitor, aFace, Standard_False, TopAbs_EDGE);
 
     // Store only forward faces in order to prevent inverse issue.
     theVisitor->Visit (TopoDS::Face (aFace.Oriented (TopAbs_FORWARD)));
