@@ -27,6 +27,7 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2dAdaptor_HCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_HSurface.hxx>
@@ -611,15 +612,69 @@ Standard_Boolean Approx_CurveOnSurface::buildC3dOnIsoLine(const Handle(Adaptor2d
   gp_Pnt2d aF2d = theC2D->Value(theC2D->FirstParameter());
   gp_Pnt2d aL2d = theC2D->Value(theC2D->LastParameter());
 
+  Standard_Boolean isToTrim = Standard_True;
+  Standard_Real U1, U2, V1, V2;
+  aSurf->Bounds(U1, U2, V1, V2);
+
   if (theIsU)
   {
+    Standard_Real aV1Param = Min(aF2d.Y(), aL2d.Y());
+    Standard_Real aV2Param = Max(aF2d.Y(), aL2d.Y());
+    if (aV2Param < V1 - myTol || aV1Param > V2 + myTol)
+    {
+      return Standard_False;
+    }
+    else if (Precision::IsInfinite(V1) || Precision::IsInfinite(V2))
+    {
+      if (Abs(aV2Param - aV1Param) < Precision::PConfusion())
+      {
+        return Standard_False;
+      }
+      aSurf = new Geom_RectangularTrimmedSurface(aSurf, U1, U2, aV1Param, aV2Param);
+      isToTrim = Standard_False;
+    }
+    else
+    {
+      aV1Param = Max(aV1Param, V1);
+      aV2Param = Min(aV2Param, V2);
+      if (Abs(aV2Param - aV1Param) < Precision::PConfusion())
+      {
+        return Standard_False;
+      }
+    }
     aC3d = aSurf->UIso(theParam);
-    aC3d = new Geom_TrimmedCurve(aC3d, aF2d.Y(), aL2d.Y());
+    if (isToTrim)
+      aC3d = new Geom_TrimmedCurve(aC3d, aV1Param, aV2Param);
   }
   else
   {
+    Standard_Real aU1Param = Min(aF2d.X(), aL2d.X());
+    Standard_Real aU2Param = Max(aF2d.X(), aL2d.X());
+    if (aU2Param < U1 - myTol || aU1Param > U2 + myTol)
+    {
+      return Standard_False;
+    }
+    else if (Precision::IsInfinite(U1) || Precision::IsInfinite(U2))
+    {
+      if (Abs(aU2Param - aU1Param) < Precision::PConfusion())
+      {
+        return Standard_False;
+      }
+      aSurf = new Geom_RectangularTrimmedSurface(aSurf, aU1Param, aU2Param, V1, V2);
+      isToTrim = Standard_False;
+    }
+    else
+    {
+      aU1Param = Max(aU1Param, U1);
+      aU2Param = Min(aU2Param, U2);
+      if (Abs(aU2Param - aU1Param) < Precision::PConfusion())
+      {
+        return Standard_False;
+      }
+    }
     aC3d = aSurf->VIso(theParam);
-    aC3d = new Geom_TrimmedCurve(aC3d, aF2d.X(), aL2d.X());
+    if (isToTrim)
+      aC3d = new Geom_TrimmedCurve(aC3d, aU1Param, aU2Param);
   }
 
   // Convert arbitrary curve type to the b-spline.

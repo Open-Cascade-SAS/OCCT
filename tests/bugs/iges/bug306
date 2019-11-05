@@ -20,9 +20,9 @@ vsetdispmode result 1
 vdisplay result
 vfit
 
-checktrinfo result -tri 5810 -nod 5806
+checktrinfo result -tri 5812 -nod 5809
 
 checkmaxtol result -ref 0.92213088179312575
 checknbshapes result -shell 1
-checkfreebounds result 265
+checkfreebounds result 239
 checkview -display result -3d -path ${imagedir}/${test_image}.png

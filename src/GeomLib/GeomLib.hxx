@@ -34,6 +34,8 @@ class gp_Ax2;
 class Geom2d_Curve;
 class gp_GTrsf2d;
 class Adaptor3d_CurveOnSurface;
+class Adaptor2d_HCurve2d;
+class Adaptor3d_HSurface;
 class Geom_BoundedCurve;
 class gp_Pnt;
 class gp_Vec;
@@ -223,10 +225,35 @@ public:
                                                         const Standard_Real V2,
                                                         const Standard_Real Tol);
 
+  //! Checks whether the 2d curve is a isoline. It can be represented by b-spline, bezier,
+  //! or geometric line. This line should have natural parameterization.
+  //! @param theC2D       Trimmed curve to be checked.
+  //! @param theIsU       Flag indicating that line is u const.
+  //! @param theParam     Line parameter.
+  //! @param theIsForward Flag indicating forward parameterization on a isoline.
+  //! @return Standard_True when 2d curve is a line and Standard_False otherwise.
+  Standard_EXPORT static Standard_Boolean isIsoLine (const Handle(Adaptor2d_HCurve2d) theC2D,
+                                                     Standard_Boolean&                theIsU,
+                                                     Standard_Real&                   theParam,
+                                                     Standard_Boolean&                theIsForward);
+
+  //! Builds 3D curve for a isoline. This method takes corresponding isoline from
+  //! the input surface.
+  //! @param theC2D   Trimmed curve to be approximated.
+  //! @param theIsU   Flag indicating that line is u const.
+  //! @param theParam Line parameter.
+  //! @param theIsForward Flag indicating forward parameterization on a isoline.
+  //! @return Standard_True when 3d curve is built and Standard_False otherwise.
+  Standard_EXPORT static Handle(Geom_Curve) buildC3dOnIsoLine (const Handle(Adaptor2d_HCurve2d) theC2D,
+                                                               const Handle(Adaptor3d_HSurface) theSurf,
+                                                               const Standard_Real              theFirst,
+                                                               const Standard_Real              theLast,
+                                                               const Standard_Real              theTolerance,
+                                                               const Standard_Boolean           theIsU,
+                                                               const Standard_Real              theParam,
+                                                               const Standard_Boolean           theIsForward);
+
 protected:
-
-
-
 
 
 private:
