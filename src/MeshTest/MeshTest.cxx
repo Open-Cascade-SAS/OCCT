@@ -805,7 +805,7 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
         k1 = n1+totalnodes;
         k2 = n2+totalnodes;
         k3 = n3+totalnodes;
-        fprintf(outfile, "%s %d%s%d %d%s%d %d%s%d\n", "fo", k1,"//", k1, k2,"//", k2, k3,"//", k3);
+        fprintf(outfile, "f %d%s%d %d%s%d %d%s%d\n", k1,"//", k1, k2,"//", k2, k3,"//", k3);
       }
       nbpolygons += nbTriangles;
       totalnodes += nbNodes;

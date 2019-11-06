@@ -14,12 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Poly_PolygonOnTriangulation.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation,Standard_Transient)
+
+//=======================================================================
+//function : Poly_PolygonOnTriangulation
+//purpose  :
+//=======================================================================
+Poly_PolygonOnTriangulation::Poly_PolygonOnTriangulation (const Standard_Integer theNbNodes,
+                                                          const Standard_Boolean theHasParams)
+: myDeflection (0.0),
+  myNodes (1, theNbNodes)
+{
+  if (theHasParams)
+  {
+    myParameters = new TColStd_HArray1OfReal (1, theNbNodes);
+  }
+}
 
 //=======================================================================
 //function : Poly_PolygonOnTriangulation
@@ -66,53 +78,16 @@ Handle(Poly_PolygonOnTriangulation) Poly_PolygonOnTriangulation::Copy() const
 }
 
 //=======================================================================
-//function : Deflection
-//purpose  : 
+//function : SetParameters
+//purpose  :
 //=======================================================================
-
-Standard_Real Poly_PolygonOnTriangulation::Deflection() const 
+void Poly_PolygonOnTriangulation::SetParameters (const Handle(TColStd_HArray1OfReal)& theParameters)
 {
-  return myDeflection;
+  if (!theParameters.IsNull()
+   && (theParameters->Lower() != myNodes.Lower()
+    || theParameters->Upper() != myNodes.Upper()))
+  {
+    throw Standard_OutOfRange ("Poly_PolygonOnTriangulation::SetParameters() - invalid array size");
+  }
+  myParameters = theParameters;
 }
-
-//=======================================================================
-//function : Deflection
-//purpose  : 
-//=======================================================================
-
-void Poly_PolygonOnTriangulation::Deflection(const Standard_Real D)
-{
-  myDeflection  = D;
-}
-
-//=======================================================================
-//function : Nodes
-//purpose  : 
-//=======================================================================
-
-const TColStd_Array1OfInteger& Poly_PolygonOnTriangulation::Nodes() const 
-{
-  return myNodes;
-}
-
-
-//=======================================================================
-//function : HasParameters
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Poly_PolygonOnTriangulation::HasParameters() const 
-{
-  return (!myParameters.IsNull());
-}
-
-//=======================================================================
-//function : Parameters
-//purpose  : 
-//=======================================================================
-
-Handle(TColStd_HArray1OfReal) Poly_PolygonOnTriangulation::Parameters() const 
-{
-  return myParameters;
-}
-

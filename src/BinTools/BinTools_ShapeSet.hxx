@@ -171,18 +171,7 @@ public:
   //! be read back by Read.
   Standard_EXPORT void WritePolygonOnTriangulation (Standard_OStream& OS) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   TopTools_IndexedMapOfShape myShapes;
   BinTools_LocationSet myLocations;
@@ -191,19 +180,12 @@ private:
   BinTools_SurfaceSet mySurfaces;
   BinTools_CurveSet myCurves;
   BinTools_Curve2dSet myCurves2d;
-  TColStd_IndexedMapOfTransient myPolygons2D;
-  TColStd_IndexedMapOfTransient myPolygons3D;
-  TColStd_IndexedMapOfTransient myTriangulations;
-  TColStd_IndexedMapOfTransient myNodes;
+  NCollection_IndexedMap<Handle(Poly_Polygon2D), TColStd_MapTransientHasher> myPolygons2D;
+  NCollection_IndexedMap<Handle(Poly_Polygon3D), TColStd_MapTransientHasher> myPolygons3D;
+  NCollection_IndexedMap<Handle(Poly_Triangulation), TColStd_MapTransientHasher> myTriangulations;
+  NCollection_IndexedMap<Handle(Poly_PolygonOnTriangulation), TColStd_MapTransientHasher> myNodes;
   Standard_Boolean myWithTriangles;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BinTools_ShapeSet_HeaderFile

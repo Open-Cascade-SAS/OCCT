@@ -42,9 +42,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  Standard_EXPORT static Standard_OStream& PutReal (Standard_OStream& OS, const Standard_Real theValue);
-  
+  Standard_EXPORT static Standard_OStream& PutReal (Standard_OStream& OS, const Standard_Real& theValue);
+
+  Standard_EXPORT static Standard_OStream& PutShortReal (Standard_OStream& OS, const Standard_ShortReal& theValue);
+
   Standard_EXPORT static Standard_OStream& PutInteger (Standard_OStream& OS, const Standard_Integer theValue);
   
   Standard_EXPORT static Standard_OStream& PutBool (Standard_OStream& OS, const Standard_Boolean theValue);
@@ -52,7 +53,9 @@ public:
   Standard_EXPORT static Standard_OStream& PutExtChar (Standard_OStream& OS, const Standard_ExtCharacter theValue);
   
   Standard_EXPORT static Standard_IStream& GetReal (Standard_IStream& IS, Standard_Real& theValue);
-  
+
+  Standard_EXPORT static Standard_IStream& GetShortReal (Standard_IStream& IS, Standard_ShortReal& theValue);
+
   Standard_EXPORT static Standard_IStream& GetInteger (Standard_IStream& IS, Standard_Integer& theValue);
   
   Standard_EXPORT static Standard_IStream& GetBool (Standard_IStream& IS, Standard_Boolean& theValue);

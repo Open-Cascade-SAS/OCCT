@@ -14,13 +14,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <gp_Pnt.hxx>
 #include <Poly_Polygon3D.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Poly_Polygon3D,Standard_Transient)
+
+//=======================================================================
+//function : Poly_Polygon3D
+//purpose  :
+//=======================================================================
+Poly_Polygon3D::Poly_Polygon3D (const Standard_Integer theNbNodes,
+                                const Standard_Boolean theHasParams)
+: myDeflection (0.0),
+  myNodes (1, theNbNodes)
+{
+  if (theHasParams)
+  {
+    myParameters = new TColStd_HArray1OfReal (1, theNbNodes);
+  }
+}
 
 //=======================================================================
 //function : Poly_Polygon3D
@@ -70,67 +81,3 @@ Handle(Poly_Polygon3D) Poly_Polygon3D::Copy() const
   aCopy->Deflection(myDeflection);
   return aCopy;
 }
-
-
-//=======================================================================
-//function : Deflection
-//purpose  : 
-//=======================================================================
-
-Standard_Real Poly_Polygon3D::Deflection() const 
-{
-  return myDeflection;
-}
-
-//=======================================================================
-//function : Deflection
-//purpose  : 
-//=======================================================================
-
-void Poly_Polygon3D::Deflection(const Standard_Real D)
-{
-  myDeflection = D;
-}
-
-//=======================================================================
-//function : Nodes
-//purpose  : 
-//=======================================================================
-
-const TColgp_Array1OfPnt& Poly_Polygon3D::Nodes() const 
-{
-  return myNodes;
-}
-
-//=======================================================================
-//function : HasParameters
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Poly_Polygon3D::HasParameters() const 
-{
-  return !myParameters.IsNull();
-}
-
-
-//=======================================================================
-//function : Parameters
-//purpose  : 
-//=======================================================================
-
-const TColStd_Array1OfReal& Poly_Polygon3D::Parameters() const 
-{
-  return myParameters->Array1();
-}
-
-//=======================================================================
-//function : ChangeParameters
-//purpose  : 
-//=======================================================================
-
-TColStd_Array1OfReal& Poly_Polygon3D::ChangeParameters() const 
-{
-  return myParameters->ChangeArray1();
-}
-
-

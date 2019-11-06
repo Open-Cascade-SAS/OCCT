@@ -17,17 +17,10 @@
 #ifndef _Poly_Polygon2D_HeaderFile
 #define _Poly_Polygon2D_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_Type.hxx>
-
-#include <Standard_Real.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
-class Standard_NullObject;
 
-
-class Poly_Polygon2D;
 DEFINE_STANDARD_HANDLE(Poly_Polygon2D, Standard_Transient)
 
 //! Provides a polygon in 2D space (for example, in the
@@ -38,13 +31,14 @@ DEFINE_STANDARD_HANDLE(Poly_Polygon2D, Standard_Transient)
 //! repeated at the end of the table of nodes.
 class Poly_Polygon2D : public Standard_Transient
 {
-
 public:
 
-  
+  //! Constructs a 2D polygon with specified number of nodes.
+  Standard_EXPORT explicit Poly_Polygon2D (const Standard_Integer theNbNodes);
+
   //! Constructs a 2D polygon defined by the table of points, <Nodes>.
   Standard_EXPORT Poly_Polygon2D(const TColgp_Array1OfPnt2d& Nodes);
-  
+
   //! Returns the deflection of this polygon.
   //! Deflection is used in cases where the polygon is an
   //! approximate representation of a curve. Deflection
@@ -64,44 +58,30 @@ public:
   //! deflection to each polygon. In this case, the Deflection
   //! function is used to set a value on each polygon, and
   //! later to fetch the value.
-  Standard_EXPORT Standard_Real Deflection() const;
-  
-  //! Sets the deflection of this polygon to D
-  Standard_EXPORT void Deflection (const Standard_Real D);
-  
+  Standard_Real Deflection() const { return myDeflection; }
+
+  //! Sets the deflection of this polygon.
+  void Deflection (const Standard_Real theDefl) { myDeflection = theDefl; }
+
   //! Returns the number of nodes in this polygon.
   //! Note: If the polygon is closed, the point of closure is
   //! repeated at the end of its table of nodes. Thus, on a closed
   //! triangle, the function NbNodes returns 4.
-    Standard_Integer NbNodes() const;
-  
+  Standard_Integer NbNodes() const { return myNodes.Length(); }
+
   //! Returns the table of nodes for this polygon.
-  Standard_EXPORT const TColgp_Array1OfPnt2d& Nodes() const;
+  const TColgp_Array1OfPnt2d& Nodes() const { return myNodes; }
 
-
-
+  //! Returns the table of nodes for this polygon.
+  TColgp_Array1OfPnt2d& ChangeNodes() { return myNodes; }
 
   DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Real myDeflection;
   TColgp_Array1OfPnt2d myNodes;
 
-
 };
-
-
-#include <Poly_Polygon2D.lxx>
-
-
-
-
 
 #endif // _Poly_Polygon2D_HeaderFile

@@ -17,20 +17,13 @@
 #ifndef _Poly_PolygonOnTriangulation_HeaderFile
 #define _Poly_PolygonOnTriangulation_HeaderFile
 
-#include <Standard.hxx>
+
 #include <Standard_Type.hxx>
-
-#include <Standard_Real.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <Standard_Transient.hxx>
+#include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-class Standard_NullObject;
+#include <TColStd_HArray1OfReal.hxx>
 
-
-class Poly_PolygonOnTriangulation;
 DEFINE_STANDARD_HANDLE(Poly_PolygonOnTriangulation, Standard_Transient)
 
 //! This class provides a polygon in 3D space, based on the triangulation
@@ -47,14 +40,15 @@ DEFINE_STANDARD_HANDLE(Poly_PolygonOnTriangulation, Standard_Transient)
 //! curve.represents a 3d Polygon
 class Poly_PolygonOnTriangulation : public Standard_Transient
 {
-
 public:
 
-  
+  //! Constructs a 3D polygon on the triangulation of a shape with specified size of nodes.
+  Standard_EXPORT Poly_PolygonOnTriangulation (const Standard_Integer theNbNodes,
+                                               const Standard_Boolean theHasParams);
+
   //! Constructs a 3D polygon on the triangulation of a shape,
   //! defined by the table of nodes, <Nodes>.
   Standard_EXPORT Poly_PolygonOnTriangulation(const TColStd_Array1OfInteger& Nodes);
-  
 
   //! Constructs a 3D polygon on the triangulation of a shape, defined by:
   //! -   the table of nodes, Nodes, and the table of parameters, <Parameters>.
@@ -73,59 +67,51 @@ public:
   Standard_EXPORT virtual Handle(Poly_PolygonOnTriangulation) Copy() const;
 
   //! Returns the deflection of this polygon
-  Standard_EXPORT Standard_Real Deflection() const;
-  
-  //! Sets the deflection of this polygon to D.
+  Standard_Real Deflection() const { return myDeflection; }
+
+  //! Sets the deflection of this polygon.
   //! See more on deflection in Poly_Polygones2D.
-  Standard_EXPORT void Deflection (const Standard_Real D);
-  
+  void Deflection (const Standard_Real theDefl) { myDeflection = theDefl; }
 
   //! Returns the number of nodes for this polygon.
   //! Note: If the polygon is closed, the point of closure is
   //! repeated at the end of its table of nodes. Thus, on a closed
   //! triangle, the function NbNodes returns 4.
-    Standard_Integer NbNodes() const;
-  
+  Standard_Integer NbNodes() const { return myNodes.Length(); }
+
   //! Returns the table of nodes for this polygon. A node value
   //! is an index in the table of nodes specific to an existing
   //! triangulation of a shape.
-  Standard_EXPORT const TColStd_Array1OfInteger& Nodes() const;
-  
+  const TColStd_Array1OfInteger& Nodes() const { return myNodes; }
+
+  //! Returns the table of nodes for this polygon for modification.
+  TColStd_Array1OfInteger& ChangeNodes() { return myNodes; }
 
   //! Returns true if parameters are associated with the nodes in this polygon.
-  Standard_EXPORT Standard_Boolean HasParameters() const;
-  
+  Standard_Boolean HasParameters() const { return !myParameters.IsNull(); }
+
   //! Returns the table of the parameters associated with each node in this polygon.
   //! Warning
   //! Use the function HasParameters to check if parameters
   //! are associated with the nodes in this polygon.
-  Standard_EXPORT Handle(TColStd_HArray1OfReal) Parameters() const;
+  const Handle(TColStd_HArray1OfReal)& Parameters() const { return myParameters; }
 
+  //! Returns the table of the parameters associated with each node in this polygon.
+  //! Warning! HasParameters() should be called beforehand to check if parameters array is allocated.
+  TColStd_Array1OfReal& ChangeParameters() { return myParameters->ChangeArray1(); }
 
-
+  //! Sets the table of the parameters associated with each node in this polygon.
+  //! Raises exception if array size doesn't much number of polygon nodes.
+  Standard_EXPORT void SetParameters (const Handle(TColStd_HArray1OfReal)& theParameters);
 
   DEFINE_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
 
   Standard_Real myDeflection;
   TColStd_Array1OfInteger myNodes;
   Handle(TColStd_HArray1OfReal) myParameters;
 
-
 };
-
-
-#include <Poly_PolygonOnTriangulation.lxx>
-
-
-
-
 
 #endif // _Poly_PolygonOnTriangulation_HeaderFile

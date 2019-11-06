@@ -19,15 +19,10 @@ Poly_MakeLoops.cxx
 Poly_MakeLoops.hxx
 Poly_Polygon2D.cxx
 Poly_Polygon2D.hxx
-Poly_Polygon2D.lxx
 Poly_Polygon3D.cxx
 Poly_Polygon3D.hxx
-Poly_Polygon3D.lxx
 Poly_PolygonOnTriangulation.cxx
 Poly_PolygonOnTriangulation.hxx
-Poly_PolygonOnTriangulation.lxx
-Poly_Triangle.cxx
 Poly_Triangle.hxx
-Poly_Triangle.lxx
 Poly_Triangulation.cxx
 Poly_Triangulation.hxx
