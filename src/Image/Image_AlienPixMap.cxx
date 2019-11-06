@@ -593,20 +593,34 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
     return false;
   }
 
+  Image_Format aFormat = Image_Format_UNKNOWN;
   if (FreeImage_GetBPP (anImage) == 1)
   {
     FIBITMAP* aTmpImage = FreeImage_ConvertTo8Bits (anImage);
     FreeImage_Unload (anImage);
     anImage = aTmpImage;
   }
-
-  Image_Format aFormat = convertFromFreeFormat (FreeImage_GetImageType(anImage),
-                                                FreeImage_GetColorType(anImage),
-                                                FreeImage_GetBPP      (anImage));
+  if (anImage != NULL)
+  {
+    aFormat = convertFromFreeFormat (FreeImage_GetImageType(anImage),
+                                     FreeImage_GetColorType(anImage),
+                                     FreeImage_GetBPP      (anImage));
+    if (aFormat == Image_Format_UNKNOWN)
+    {
+      FIBITMAP* aTmpImage = FreeImage_ConvertTo24Bits (anImage);
+      FreeImage_Unload (anImage);
+      anImage = aTmpImage;
+      if (anImage != NULL)
+      {
+        aFormat = convertFromFreeFormat (FreeImage_GetImageType(anImage),
+                                         FreeImage_GetColorType(anImage),
+                                         FreeImage_GetBPP      (anImage));
+      }
+    }
+  }
   if (aFormat == Image_Format_UNKNOWN)
   {
-    //anImage = FreeImage_ConvertTo24Bits (anImage);
-    ::Message::DefaultMessenger()->Send (    TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported pixel format.",
+    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported pixel format.",
                                          Message_Fail);
     return false;
   }
