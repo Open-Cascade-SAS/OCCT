@@ -831,20 +831,13 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
     if (aBSDF.Kd.w >= 0.f)
     {
       vec4 aTexCoord = vec4 (SmoothUV (aHit.UV, aTriIndex), 0.f, 1.f);
-
-      vec4 aTrsfRow1 = texelFetch (
-        uRaytraceMaterialTexture, MATERIAL_TRS1 (aTriIndex.w));
-      vec4 aTrsfRow2 = texelFetch (
-        uRaytraceMaterialTexture, MATERIAL_TRS2 (aTriIndex.w));
-
+      vec4 aTrsfRow1 = texelFetch (uRaytraceMaterialTexture, MATERIAL_TRS1 (aTriIndex.w));
+      vec4 aTrsfRow2 = texelFetch (uRaytraceMaterialTexture, MATERIAL_TRS2 (aTriIndex.w));
       aTexCoord.st = vec2 (dot (aTrsfRow1, aTexCoord),
                            dot (aTrsfRow2, aTexCoord));
 
-      vec4 aTexColor = textureLod (
-        sampler2D (uTextureSamplers[int (aBSDF.Kd.w)]), aTexCoord.st, 0.f);
-
-      aBSDF.Kd.rgb *= (aTexColor.rgb * aTexColor.rgb) * aTexColor.w; // de-gamma correction (for gamma = 2)
-
+      vec4 aTexColor = textureLod (sampler2D (uTextureSamplers[int (aBSDF.Kd.w)]), aTexCoord.st, 0.f);
+      aBSDF.Kd.rgb *= aTexColor.rgb * aTexColor.w;
       if (aTexColor.w != 1.0f)
       {
         // mix transparency BTDF with texture alpha-channel

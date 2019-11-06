@@ -1,0 +1,13 @@
+puts "============"
+puts "0031135: Visualization, TKOpenGl - texture sRGB -> linear conversion is applied twice by Path Tracer"
+puts "============"
+puts ""
+
+source $env(CSF_OCCTSamplesPath)/tcl/pathtrace_ball.tcl
+
+vtexture ball 11 -scale 0.1 0.1
+vsetmaterial ball plaster
+vbsdf ball -coatFresnel Constant 0.0
+
+vfps 100
+vdump $imagedir/${casename}_zoom.png
