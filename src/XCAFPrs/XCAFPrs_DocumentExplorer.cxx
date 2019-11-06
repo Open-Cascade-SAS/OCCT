@@ -19,12 +19,14 @@
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XCAFDoc_VisMaterialTool.hxx>
 #include <XCAFPrs_DocumentIdIterator.hxx>
 
 namespace
 {
   //! Return merged style for the child node.
   static XCAFPrs_Style mergedStyle (const Handle(XCAFDoc_ColorTool)& theColorTool,
+                                    const Handle(XCAFDoc_VisMaterialTool)& theVisMatTool,
                                     const XCAFPrs_Style& theParenStyle,
                                     const TDF_Label& theLabel,
                                     const TDF_Label& theRefLabel)
@@ -35,6 +37,10 @@ namespace
     }
 
     XCAFPrs_Style aStyle = theParenStyle;
+    if (Handle(XCAFDoc_VisMaterial) aVisMat = theVisMatTool->GetShapeMaterial (theRefLabel))
+    {
+      aStyle.SetMaterial (aVisMat);
+    }
     Quantity_ColorRGBA aColor;
     if (theColorTool->GetColor (theRefLabel, XCAFDoc_ColorGen, aColor))
     {
@@ -53,6 +59,10 @@ namespace
     if (theLabel != theRefLabel)
     {
       // override Reference style with Instance style when defined (bad model?)
+      if (Handle(XCAFDoc_VisMaterial) aVisMat = theVisMatTool->GetShapeMaterial (theLabel))
+      {
+        aStyle.SetMaterial (aVisMat);
+      }
       if (theColorTool->GetColor (theLabel, XCAFDoc_ColorGen, aColor))
       {
         aStyle.SetColorCurv (aColor.GetRGB());
@@ -224,10 +234,12 @@ void XCAFPrs_DocumentExplorer::Init (const Handle(TDocStd_Document)& theDocument
   if ((theFlags & XCAFPrs_DocumentExplorerFlags_NoStyle) == 0)
   {
     myColorTool = XCAFDoc_DocumentTool::ColorTool (theDocument->Main());
+    myVisMatTool = XCAFDoc_DocumentTool::VisMaterialTool (theDocument->Main());
   }
   else
   {
     myColorTool.Nullify();
+    myVisMatTool.Nullify();
   }
 
   myDefStyle  = theDefStyle;
@@ -309,7 +321,7 @@ void XCAFPrs_DocumentExplorer::initCurrent (Standard_Boolean theIsAssmebly)
     XCAFDoc_ShapeTool::GetReferredShape (myCurrent.Label, myCurrent.RefLabel);
     myCurrent.LocalTrsf= XCAFDoc_ShapeTool::GetLocation (myCurrent.Label);
     myCurrent.Location = myCurrent.LocalTrsf;
-    myCurrent.Style    = mergedStyle (myColorTool, myDefStyle, myCurrent.Label, myCurrent.RefLabel);
+    myCurrent.Style    = mergedStyle (myColorTool, myVisMatTool, myDefStyle, myCurrent.Label, myCurrent.RefLabel);
     myCurrent.Id       = DefineChildId (myCurrent.Label, TCollection_AsciiString());
   }
   else
@@ -320,7 +332,7 @@ void XCAFPrs_DocumentExplorer::initCurrent (Standard_Boolean theIsAssmebly)
     XCAFDoc_ShapeTool::GetReferredShape (myCurrent.Label, myCurrent.RefLabel);
     myCurrent.LocalTrsf= XCAFDoc_ShapeTool::GetLocation (myCurrent.Label);
     myCurrent.Location = aTopNodeInStack.Location * myCurrent.LocalTrsf;
-    myCurrent.Style    = mergedStyle (myColorTool, aTopNodeInStack.Style, myCurrent.Label, myCurrent.RefLabel);
+    myCurrent.Style    = mergedStyle (myColorTool, myVisMatTool, aTopNodeInStack.Style, myCurrent.Label, myCurrent.RefLabel);
     myCurrent.Id       = DefineChildId (myCurrent.Label, aTopNodeInStack.Id);
   }
 }
@@ -359,7 +371,7 @@ void XCAFPrs_DocumentExplorer::Next()
     aNodeInStack.ChildIter  = TDF_ChildIterator (aNodeInStack.RefLabel);
     aNodeInStack.LocalTrsf  = XCAFDoc_ShapeTool::GetLocation (aNodeInStack.Label);
     aNodeInStack.Location   = aNodeInStack.LocalTrsf;
-    aNodeInStack.Style      = mergedStyle (myColorTool, myDefStyle, aNodeInStack.Label, aNodeInStack.RefLabel);
+    aNodeInStack.Style      = mergedStyle (myColorTool, myVisMatTool, myDefStyle, aNodeInStack.Label, aNodeInStack.RefLabel);
     aNodeInStack.Id         = DefineChildId (aNodeInStack.Label, TCollection_AsciiString());
     myNodeStack.SetValue (0, aNodeInStack);
     if ((myFlags & XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes) == 0)
@@ -408,7 +420,7 @@ void XCAFPrs_DocumentExplorer::Next()
         aNodeInStack.RefLabel   = aRefLabel;
         aNodeInStack.LocalTrsf  = XCAFDoc_ShapeTool::GetLocation (aNodeInStack.Label);
         aNodeInStack.Location   = aParent.Location * aNodeInStack.LocalTrsf;
-        aNodeInStack.Style      = mergedStyle (myColorTool, aParent.Style, aNodeInStack.Label, aNodeInStack.RefLabel);
+        aNodeInStack.Style      = mergedStyle (myColorTool, myVisMatTool, aParent.Style, aNodeInStack.Label, aNodeInStack.RefLabel);
         aNodeInStack.Id         = DefineChildId (aNodeInStack.Label, aParent.Id);
         aNodeInStack.ChildIter  = TDF_ChildIterator (aNodeInStack.RefLabel);
         myNodeStack.SetValue (myTop, aNodeInStack);

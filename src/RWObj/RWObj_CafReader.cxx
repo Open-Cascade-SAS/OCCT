@@ -70,6 +70,7 @@ void RWObj_CafReader::BindNamedShape (const TopoDS_Shape& theShape,
       aMat = new XCAFDoc_VisMaterial();
       aMat->SetCommonMaterial (aMatXde);
       aMat->SetRawName (new TCollection_HAsciiString (theMaterial->Name));
+      myObjMaterialMap.Bind (theMaterial->Name, aMat);
     }
     aShapeAttribs.Style.SetMaterial (aMat);
   }

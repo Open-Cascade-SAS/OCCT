@@ -159,6 +159,7 @@ XCAFDoc_VisMaterialCommon XCAFDoc_VisMaterial::ConvertToCommonMaterial()
   // convert metal-roughness into common
   XCAFDoc_VisMaterialCommon aComMat;
   aComMat.IsDefined = true;
+  aComMat.DiffuseTexture = myPbrMat.BaseColorTexture;
   aComMat.DiffuseColor  = myPbrMat.BaseColor.GetRGB();
   aComMat.SpecularColor = Quantity_Color (Graphic3d_Vec3 (myPbrMat.Metallic));
   aComMat.Transparency = 1.0f - myPbrMat.BaseColor.Alpha();
@@ -183,6 +184,7 @@ XCAFDoc_VisMaterialPBR XCAFDoc_VisMaterial::ConvertToPbrMaterial()
 
   XCAFDoc_VisMaterialPBR aPbrMat;
   aPbrMat.IsDefined = true;
+  aPbrMat.BaseColorTexture = myCommonMat.DiffuseTexture;
   aPbrMat.BaseColor.SetRGB (myCommonMat.DiffuseColor);
   aPbrMat.BaseColor.SetAlpha (1.0f - myCommonMat.Transparency);
   aPbrMat.Metallic  = Graphic3d_PBRMaterial::MetallicFromSpecular (myCommonMat.SpecularColor);

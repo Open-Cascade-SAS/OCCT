@@ -24,6 +24,7 @@
 class TDocStd_Document;
 class XCAFDoc_ShapeTool;
 class XCAFDoc_ColorTool;
+class XCAFDoc_VisMaterialTool;
 
 typedef Standard_Integer XCAFPrs_DocumentExplorerFlags;
 
@@ -148,6 +149,12 @@ public:
   //! Go to the next node.
   Standard_EXPORT void Next();
 
+  //! Return color tool.
+  const Handle(XCAFDoc_ColorTool)& ColorTool() const { return myColorTool; }
+
+  //! Return material tool.
+  const Handle(XCAFDoc_VisMaterialTool)& VisMaterialTool() const { return myVisMatTool; }
+
 protected:
 
   //! Initialize root label.
@@ -158,16 +165,17 @@ protected:
 
 protected:
 
-  Handle(XCAFDoc_ColorTool)      myColorTool; //!< color tool
-  TDF_LabelSequence              myRoots;     //!< sequence of root labels
-  TDF_LabelSequence::Iterator    myRootIter;  //!< current root label
+  Handle(XCAFDoc_ColorTool)       myColorTool;  //!< color tool
+  Handle(XCAFDoc_VisMaterialTool) myVisMatTool; //!< visual material tool
+  TDF_LabelSequence               myRoots;      //!< sequence of root labels
+  TDF_LabelSequence::Iterator     myRootIter;   //!< current root label
   NCollection_Vector<XCAFPrs_DocumentNode>
-                                 myNodeStack; //!< node stack
-  Standard_Integer               myTop;       //!< top position in the node stack
-  Standard_Boolean               myHasMore;   //!< global flag indicating that iterator points to the label
-  XCAFPrs_Style                  myDefStyle;  //!< default style
-  XCAFPrs_DocumentNode           myCurrent;   //!< current label info
-  XCAFPrs_DocumentExplorerFlags  myFlags;     //!< iteration flags
+                                  myNodeStack;  //!< node stack
+  Standard_Integer                myTop;        //!< top position in the node stack
+  Standard_Boolean                myHasMore;    //!< global flag indicating that iterator points to the label
+  XCAFPrs_Style                   myDefStyle;   //!< default style
+  XCAFPrs_DocumentNode            myCurrent;    //!< current label info
+  XCAFPrs_DocumentExplorerFlags   myFlags;      //!< iteration flags
 
 };
 
