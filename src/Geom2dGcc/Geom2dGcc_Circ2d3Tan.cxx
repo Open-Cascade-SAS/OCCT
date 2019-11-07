@@ -248,22 +248,22 @@ Geom2dGcc_Circ2d3Tan::
 			 const Standard_Real             Tolerance  ,
 			 const Standard_Real             Param1     ,
 			 const Standard_Real             Param2     ):
-  cirsol(1,16)   ,
-  qualifier1(1,16),
-  qualifier2(1,16),
-  qualifier3(1,16),
-  TheSame1(1,16) ,
-  TheSame2(1,16) ,
-  TheSame3(1,16) ,
-  pnttg1sol(1,16),
-  pnttg2sol(1,16),
-  pnttg3sol(1,16),
-  par1sol(1,16)  ,
-  par2sol(1,16)  ,
-  par3sol(1,16)  ,
-  pararg1(1,16)  ,
-  pararg2(1,16)  ,
-  pararg3(1,16)  
+  cirsol(1,20)   ,
+  qualifier1(1,20),
+  qualifier2(1,20),
+  qualifier3(1,20),
+  TheSame1(1,20) ,
+  TheSame2(1,20) ,
+  TheSame3(1,20) ,
+  pnttg1sol(1,20),
+  pnttg2sol(1,20),
+  pnttg3sol(1,20),
+  par1sol(1,20)  ,
+  par2sol(1,20)  ,
+  par3sol(1,20)  ,
+  pararg1(1,20)  ,
+  pararg2(1,20)  ,
+  pararg3(1,20)  
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve C2 = Qualified2.Qualified();

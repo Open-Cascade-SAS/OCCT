@@ -262,17 +262,17 @@ Geom2dGcc_Circ2d2TanRad::
 			    const Handle(Geom2d_Point)&     Point      ,
 			    const Standard_Real             Radius     ,
 			    const Standard_Real             Tolerance  ):
-  cirsol(1,8)   ,
-  qualifier1(1,8),
-  qualifier2(1,8),
-  TheSame1(1,8) ,
-  TheSame2(1,8) ,
-  pnttg1sol(1,8),
-  pnttg2sol(1,8),
-  par1sol(1,8)  ,
-  par2sol(1,8)  ,
-  pararg1(1,8)  ,
-  pararg2(1,8)  
+  cirsol(1,aNbSolMAX)   ,
+  qualifier1(1,aNbSolMAX),
+  qualifier2(1,aNbSolMAX),
+  TheSame1(1,aNbSolMAX) ,
+  TheSame2(1,aNbSolMAX) ,
+  pnttg1sol(1,aNbSolMAX),
+  pnttg2sol(1,aNbSolMAX),
+  par1sol(1,aNbSolMAX)  ,
+  par2sol(1,aNbSolMAX)  ,
+  pararg1(1,aNbSolMAX)  ,
+  pararg2(1,aNbSolMAX)  
 {
   if (Radius < 0.) { throw Standard_NegativeValue(); }
   else {

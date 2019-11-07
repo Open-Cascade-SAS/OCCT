@@ -1,0 +1,9 @@
+puts "======================="
+puts "0031140: Draw command cirtang raises ex-ception on the parallel curves"
+puts "======================="
+
+restore [locate_data_file bug31140_edge1.brep] e1
+restore [locate_data_file bug31140_edge2.brep] e2
+mk2dcurve c1 e1
+mk2dcurve c2 e2
+cirtang res -c c1 -c c2 -r .1

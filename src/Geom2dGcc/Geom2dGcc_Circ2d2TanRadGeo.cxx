@@ -181,7 +181,7 @@ pararg2(1,aNbSolMAX)
       gp_Pnt2d Point(L1.Location().XY()+cote1(jcote1)*Dir.XY());
       gp_Lin2d Line(Point,L1.Direction()); // ligne avec deport.
       IntRes2d_Domain D1;
-      for (Standard_Integer jcote2 = 1 ; jcote2 <= nbrcote2 ; jcote2++) {
+      for (Standard_Integer jcote2 = 1; jcote2 <= nbrcote2 && NbrSol < aNbSolMAX; jcote2++) {
         Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(Cu2);
         Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
         firstparam = Max(C2.FirstParameter(),thefirst);
@@ -191,7 +191,7 @@ pararg2(1,aNbSolMAX)
         Geom2dInt_TheIntConicCurveOfGInter Intp(Line,D1,C2,D2,Tol,Tol);
         if (Intp.IsDone()) {
           if (!Intp.IsEmpty()) {
-            for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+            for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
               NbrSol++;
               gp_Pnt2d Center(Intp.Point(i).Value());
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -360,7 +360,7 @@ pararg2(1,aNbSolMAX)
     }
     Standard_Real R1 = C1.Radius();
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
+    for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1 && NbrSol < aNbSolMAX; jcote1++) {
       gp_Circ2d Circ(C1.XAxis(),R1+cote1(jcote1));
       IntRes2d_Domain D1(ElCLib::Value(0.,Circ),   0.,Tol,
         ElCLib::Value(2.*M_PI,Circ),2.*M_PI,Tol);
@@ -375,7 +375,7 @@ pararg2(1,aNbSolMAX)
         Intp.Perform(Circ,D1,C2,D2,Tol,Tol);
         if (Intp.IsDone()) {
           if (!Intp.IsEmpty()) {
-            for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+            for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
               NbrSol++;
               gp_Pnt2d Center(Intp.Point(i).Value());
               cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -497,7 +497,7 @@ pararg2(1,aNbSolMAX)
       ElCLib::Value(M_PI+M_PI,Circ),M_PI+M_PI,Tol);
     D1.SetEquivalentParameters(0.,M_PI+M_PI);
     Geom2dInt_TheIntConicCurveOfGInter Intp;
-    for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
+    for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1 && NbrSol < aNbSolMAX; jcote1++) {
       Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
       Adaptor2d_OffsetCurve Cu2(HCu1,cote1(jcote1));
       firstparam = Max(Cu2.FirstParameter(),thefirst);
@@ -507,7 +507,7 @@ pararg2(1,aNbSolMAX)
       Intp.Perform(Circ,D1,Cu2,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
-          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+          for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -839,7 +839,7 @@ pararg2(1,aNbSolMAX)
       IntRes2d_Domain D2C1(C1.Value(firstparam),firstparam,Tol,
         C1.Value(lastparam),lastparam,Tol);
 #endif
-      for (Standard_Integer jcote2 = 1 ; jcote2 <= nbrcote2 ; jcote2++) {
+      for (Standard_Integer jcote2 = 1; jcote2 <= nbrcote2 && NbrSol < aNbSolMAX; jcote2++) {
         Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(Cu2);
         Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
 #ifdef OCCT_DEBUG
@@ -853,7 +853,7 @@ pararg2(1,aNbSolMAX)
           if (!Intp.IsEmpty()) {
             const Standard_Real aSQApproxTol = Precision::Approximation() *
                                                 Precision::Approximation();
-            for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++)
+            for (Standard_Integer i = 1; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++)
             {
               Standard_Real aU0 = Intp.Point(i).ParamOnFirst();
               Standard_Real aV0 = Intp.Point(i).ParamOnSecond();

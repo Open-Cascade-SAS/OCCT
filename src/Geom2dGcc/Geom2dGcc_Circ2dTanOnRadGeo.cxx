@@ -44,6 +44,8 @@
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
+static const Standard_Integer aNbSolMAX = 8;
+
 //=========================================================================
 //  Cercle tangent  :  a un cercle Qualified1 (C1).                       +
 //         centre   :  sur une droite OnLine.                             +
@@ -70,14 +72,14 @@ Geom2dGcc_Circ2dTanOnRadGeo (const Geom2dGcc_QCurve& Qualified1,
 // Initialisation des champs.                                             +
 //=========================================================================
 
-cirsol(1,8)     ,
-qualifier1(1,8) ,
-TheSame1(1,8)   ,
-pnttg1sol(1,8)  ,
-pntcen3(1,8)    ,
-par1sol(1,8)    ,
-pararg1(1,8)    ,
-parcen3(1,8)    
+cirsol(1,aNbSolMAX)     ,
+qualifier1(1,aNbSolMAX) ,
+TheSame1(1,aNbSolMAX)   ,
+pnttg1sol(1,aNbSolMAX)  ,
+pntcen3(1,aNbSolMAX)    ,
+par1sol(1,aNbSolMAX)    ,
+pararg1(1,aNbSolMAX)    ,
+parcen3(1,aNbSolMAX)    
 {
 
   //=========================================================================
@@ -131,7 +133,7 @@ parcen3(1,8)
       Intp.Perform(OnLine,D1,C2,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
-          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -179,14 +181,14 @@ Geom2dGcc_Circ2dTanOnRadGeo (const Geom2dGcc_QCurve& Qualified1,
 // Initialisation des champs.                                             +
 //=========================================================================
 
-cirsol(1,8)     ,
-qualifier1(1,8) ,
-TheSame1(1,8)   ,
-pnttg1sol(1,8)  ,
-pntcen3(1,8)    ,
-par1sol(1,8)    ,
-pararg1(1,8)    ,
-parcen3(1,8)    
+cirsol(1,aNbSolMAX)     ,
+qualifier1(1,aNbSolMAX) ,
+TheSame1(1,aNbSolMAX)   ,
+pnttg1sol(1,aNbSolMAX)  ,
+pntcen3(1,aNbSolMAX)    ,
+par1sol(1,aNbSolMAX)    ,
+pararg1(1,aNbSolMAX)    ,
+parcen3(1,aNbSolMAX)    
 {
 
   //=========================================================================
@@ -244,7 +246,7 @@ parcen3(1,8)
       Intp.Perform(OnCirc,D1,C2,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
-          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -292,14 +294,14 @@ Geom2dGcc_Circ2dTanOnRadGeo (const GccEnt_QualifiedCirc& Qualified1,
 // Initialisation des champs.                                             +
 //=========================================================================
 
-cirsol(1,8)     ,
-qualifier1(1,8) ,
-TheSame1(1,8)   ,
-pnttg1sol(1,8)  ,
-pntcen3(1,8)    ,
-par1sol(1,8)    ,
-pararg1(1,8)    ,
-parcen3(1,8)    
+cirsol(1,aNbSolMAX)     ,
+qualifier1(1,aNbSolMAX) ,
+TheSame1(1,aNbSolMAX)   ,
+pnttg1sol(1,aNbSolMAX)  ,
+pntcen3(1,aNbSolMAX)    ,
+par1sol(1,aNbSolMAX)    ,
+pararg1(1,aNbSolMAX)    ,
+parcen3(1,aNbSolMAX)    
 {
 
   //=========================================================================
@@ -358,7 +360,7 @@ parcen3(1,8)
       Intp.Perform(Circ,D1,OnCurv,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
-          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -416,14 +418,14 @@ Geom2dGcc_Circ2dTanOnRadGeo (const GccEnt_QualifiedLin& Qualified1,
 // Initialisation des champs.                                             +
 //=========================================================================
 
-cirsol(1,8)     ,
-qualifier1(1,8) ,
-TheSame1(1,8)   ,
-pnttg1sol(1,8)  ,
-pntcen3(1,8)    ,
-par1sol(1,8)    ,
-pararg1(1,8)    ,
-parcen3(1,8)    
+cirsol(1,aNbSolMAX)     ,
+qualifier1(1,aNbSolMAX) ,
+TheSame1(1,aNbSolMAX)   ,
+pnttg1sol(1,aNbSolMAX)  ,
+pntcen3(1,aNbSolMAX)    ,
+par1sol(1,aNbSolMAX)    ,
+pararg1(1,aNbSolMAX)    ,
+parcen3(1,aNbSolMAX)    
 {
 
   //=========================================================================
@@ -482,7 +484,7 @@ parcen3(1,8)
       Intp.Perform(Line,D1,OnCurv,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
-          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -537,14 +539,14 @@ Geom2dGcc_Circ2dTanOnRadGeo (const Geom2dGcc_QCurve& Qualified1,
 // Initialisation des champs.                                             +
 //=========================================================================
 
-cirsol(1,8)     ,
-qualifier1(1,8) ,
-TheSame1(1,8)   ,
-pnttg1sol(1,8)  ,
-pntcen3(1,8)    ,
-par1sol(1,8)    ,
-pararg1(1,8)    ,
-parcen3(1,8)    
+cirsol(1,aNbSolMAX)     ,
+qualifier1(1,aNbSolMAX) ,
+TheSame1(1,aNbSolMAX)   ,
+pnttg1sol(1,aNbSolMAX)  ,
+pntcen3(1,aNbSolMAX)    ,
+par1sol(1,aNbSolMAX)    ,
+pararg1(1,aNbSolMAX)    ,
+parcen3(1,aNbSolMAX)    
 {
 
   //=========================================================================
@@ -605,7 +607,7 @@ parcen3(1,8)
       Intp.Perform(C1,D1,C2,D2,Tol,Tol);
       if (Intp.IsDone()) {
         if (!Intp.IsEmpty()) {
-          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+          for (Standard_Integer i = 1 ; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
             NbrSol++;
             gp_Pnt2d Center(Intp.Point(i).Value());
             cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);
@@ -653,14 +655,14 @@ Geom2dGcc_Circ2dTanOnRadGeo (const gp_Pnt2d&     Point1    ,
 // Initialisation des champs.                                             +
 //=========================================================================
 
-cirsol(1,8)     ,
-qualifier1(1,8) ,
-TheSame1(1,8)   ,
-pnttg1sol(1,8)  ,
-pntcen3(1,8)    ,
-par1sol(1,8)    ,
-pararg1(1,8)    ,
-parcen3(1,8)    
+cirsol(1,aNbSolMAX)     ,
+qualifier1(1,aNbSolMAX) ,
+TheSame1(1,aNbSolMAX)   ,
+pnttg1sol(1,aNbSolMAX)  ,
+pntcen3(1,aNbSolMAX)    ,
+par1sol(1,aNbSolMAX)    ,
+pararg1(1,aNbSolMAX)    ,
+parcen3(1,aNbSolMAX)    
 {
 
   //=========================================================================
@@ -692,7 +694,7 @@ parcen3(1,8)
     Geom2dInt_TheIntConicCurveOfGInter Intp(Circ,D1,OnCurv,D2,Tol,Tol);
     if (Intp.IsDone()) {
       if (!Intp.IsEmpty()) {
-        for (Standard_Integer i = 1 ; i <= Intp.NbPoints() ; i++) {
+        for (Standard_Integer i = 1 ; i <= Intp.NbPoints() && NbrSol < aNbSolMAX; i++) {
           NbrSol++;
           gp_Pnt2d Center(Intp.Point(i).Value());
           cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Center,dirx),Radius);

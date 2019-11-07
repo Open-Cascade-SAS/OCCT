@@ -97,10 +97,10 @@ GccAna_Circ2dTanOnRad::
        else {
          if (Abs(Radius-R1) < Tol) {
 	   if (OnCirc.Distance(center1) < Tol) {
-	     cirsol(NbrSol) = C1;
+             NbrSol = 1;
+             cirsol(NbrSol) = C1;
 //           ==============
 	     qualifier1(NbrSol) = Qualified1.Qualifier();
-	     NbrSol = 1;
 	     TheSame1(NbrSol) = 1;
 	     pntcen3(NbrSol) = center1;
 	     parcen3(NbrSol)=ElCLib::Parameter(OnCirc,pntcen3(NbrSol));
@@ -126,10 +126,10 @@ GccAna_Circ2dTanOnRad::
        else {
          if (Abs(Radius-R1) < Tol) {
 	   if (OnCirc.Distance(center1) < Tol) {
-	     cirsol(NbrSol) = C1;
+             NbrSol = 1;
+             cirsol(NbrSol) = C1;
 //           ==============
 	     qualifier1(NbrSol) = Qualified1.Qualifier();
-	     NbrSol = 1;
 	     TheSame1(NbrSol) = 1;
 	     pntcen3(NbrSol) = center1;
 	     parcen3(NbrSol)=ElCLib::Parameter(OnCirc,pntcen3(NbrSol));
