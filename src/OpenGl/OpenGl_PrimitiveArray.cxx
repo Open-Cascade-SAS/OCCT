@@ -769,12 +769,10 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     return;
   }
 
-  const OpenGl_Aspects* anAspectFace = theWorkspace->ApplyAspects();
+  const OpenGl_Aspects* anAspectFace = theWorkspace->Aspects();
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
 
-  const bool toEnableEnvMap = !aCtx->ActiveTextures().IsNull()
-                            && aCtx->ActiveTextures() == theWorkspace->EnvironmentTexture();
-  bool toDrawArray = true;
+  bool toDrawArray = true, toSetLinePolygMode = false;
   int toDrawInteriorEdges = 0; // 0 - no edges, 1 - glsl edges, 2 - polygonMode
   if (myIsFillType)
   {
@@ -797,7 +795,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
           }
           else
           {
-            aCtx->SetPolygonMode (GL_LINE);
+            toSetLinePolygMode = true;
           }
         }
       }
@@ -843,6 +841,10 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   }
 
   Graphic3d_TypeOfShadingModel aShadingModel = Graphic3d_TOSM_UNLIT;
+  anAspectFace = theWorkspace->ApplyAspects (false); // do not bind textures before binding the program
+  const Handle(OpenGl_TextureSet)& aTextureSet = theWorkspace->TextureSet();
+  const bool toEnableEnvMap = !aTextureSet.IsNull()
+                            && aTextureSet == theWorkspace->EnvironmentTexture();
   if (toDrawArray)
   {
     const bool hasColorAttrib = !myVboAttribs.IsNull()
@@ -855,7 +857,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       case GL_POINTS:
       {
         aShadingModel = aCtx->ShaderManager()->ChooseMarkerShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
-        aCtx->ShaderManager()->BindMarkerProgram (aCtx->ActiveTextures(),
+        aCtx->ShaderManager()->BindMarkerProgram (aTextureSet,
                                                   aShadingModel, Graphic3d_AlphaMode_Opaque,
                                                   hasVertColor, anAspectFace->ShaderProgramRes (aCtx));
         break;
@@ -875,7 +877,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       default:
       {
         aShadingModel = aCtx->ShaderManager()->ChooseFaceShadingModel (anAspectFace->ShadingModel(), hasVertNorm);
-        aCtx->ShaderManager()->BindFaceProgram (aCtx->ActiveTextures(),
+        aCtx->ShaderManager()->BindFaceProgram (aTextureSet,
                                                 aShadingModel,
                                                 aCtx->ShaderManager()->MaterialState().HasAlphaCutoff() ? Graphic3d_AlphaMode_Mask : Graphic3d_AlphaMode_Opaque,
                                                 toDrawInteriorEdges == 1 ? anAspectFace->Aspect()->InteriorStyle() : Aspect_IS_SOLID,
@@ -887,6 +889,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
         {
           aCtx->ShaderManager()->PushInteriorState (aCtx->ActiveProgram(), anAspectFace->Aspect());
         }
+      #if !defined (GL_ES_VERSION_2_0)
+        else if (toSetLinePolygMode)
+        {
+          aCtx->SetPolygonMode (GL_LINE);
+        }
+      #else
+        (void )toSetLinePolygMode;
+      #endif
         break;
       }
     }
@@ -907,12 +917,16 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     }
   #endif
 
-    if (!aCtx->ActiveTextures().IsNull()
-     && !aCtx->ActiveTextures()->IsEmpty()
-     && !aCtx->ActiveTextures()->First().IsNull()
+    // bind textures after GLSL program to set mock textures to slots used by program
+    aCtx->BindTextures (aTextureSet, aCtx->ActiveProgram());
+    if (!aTextureSet.IsNull()
+     && !aTextureSet->IsEmpty()
      && myDrawMode != GL_POINTS) // transformation is not supported within point sprites
     {
-      aCtx->SetTextureMatrix (aCtx->ActiveTextures()->First()->Sampler()->Parameters());
+      if (const Handle(OpenGl_Texture)& aFirstTexture = aTextureSet->First())
+      {
+        aCtx->SetTextureMatrix (aFirstTexture->Sampler()->Parameters());
+      }
     }
     aCtx->SetSampleAlphaToCoverage (aCtx->ShaderManager()->MaterialState().HasAlphaCutoff());
 

@@ -278,12 +278,12 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  const OpenGl_Aspects* aTextAspect = theWorkspace->ApplyAspects();
+  const OpenGl_Aspects* aTextAspect = theWorkspace->ApplyAspects (false); // do not bind textures as they will be disabled anyway
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
 
   // Bind custom shader program or generate default version
   aCtx->ShaderManager()->BindFontProgram (aTextAspect->ShaderProgramRes (aCtx));
+  const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
 
   if (myText->HasPlane() && myText->HasOwnAnchorPoint())
   {
@@ -306,7 +306,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   // restore aspects
   if (!aPrevTexture.IsNull())
   {
-    aCtx->BindTextures (aPrevTexture);
+    aCtx->BindTextures (aPrevTexture, Handle(OpenGl_ShaderProgram)());
   }
 
   // restore Z buffer settings

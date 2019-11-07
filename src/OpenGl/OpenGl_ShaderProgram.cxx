@@ -171,6 +171,7 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   myNbLightsMax (0),
   myNbClipPlanesMax (0),
   myNbFragOutputs (1),
+  myTextureSetBits (Graphic3d_TextureSetBits_NONE),
   myHasAlphaTest (false),
   myHasWeightOitOutput (false),
   myHasTessShader (false)
@@ -199,6 +200,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   }
   myHasTessShader = (aShaderMask & (Graphic3d_TOS_TESS_CONTROL | Graphic3d_TOS_TESS_EVALUATION)) != 0;
   myNbFragOutputs = !myProxy.IsNull() ? myProxy->NbFragmentOutputs() : 1;
+  myTextureSetBits = Graphic3d_TextureSetBits_NONE;
   myHasAlphaTest  = !myProxy.IsNull() && myProxy->HasAlphaTest();
   myHasWeightOitOutput = !myProxy.IsNull() ? myProxy->HasWeightOitOutput() && myNbFragOutputs >= 2 : 1;
 
@@ -413,10 +415,32 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     {
       aHeaderConstants += "#define THE_HAS_DEFAULT_SAMPLER\n";
     }
-    if (!myProxy.IsNull()
-      && myProxy->IsPBR())
+    if (!myProxy.IsNull())
     {
-      aHeaderConstants += "#define THE_IS_PBR\n";
+      if (myProxy->IsPBR())
+      {
+        aHeaderConstants += "#define THE_IS_PBR\n";
+      }
+      if ((myProxy->TextureSetBits() & Graphic3d_TextureSetBits_BaseColor) != 0)
+      {
+        aHeaderConstants += "#define THE_HAS_TEXTURE_COLOR\n";
+      }
+      if ((myProxy->TextureSetBits() & Graphic3d_TextureSetBits_Emissive) != 0)
+      {
+        aHeaderConstants += "#define THE_HAS_TEXTURE_EMISSIVE\n";
+      }
+      if ((myProxy->TextureSetBits() & Graphic3d_TextureSetBits_Normal) != 0)
+      {
+        aHeaderConstants += "#define THE_HAS_TEXTURE_NORMAL\n";
+      }
+      if ((myProxy->TextureSetBits() & Graphic3d_TextureSetBits_Occlusion) != 0)
+      {
+        aHeaderConstants += "#define THE_HAS_TEXTURE_OCCLUSION\n";
+      }
+      if ((myProxy->TextureSetBits() & Graphic3d_TextureSetBits_MetallicRoughness) != 0)
+      {
+        aHeaderConstants += "#define THE_HAS_TEXTURE_METALROUGHNESS\n";
+      }
     }
 
     const TCollection_AsciiString aSource = aHeaderVer                     // #version   - header defining GLSL version, should be first
@@ -491,11 +515,34 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerBaseColor"))
   {
+    myTextureSetBits |= Graphic3d_TextureSetBits_BaseColor;
     SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_BaseColor));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerPointSprite"))
   {
+    // Graphic3d_TextureUnit_PointSprite
+    //myTextureSetBits |= Graphic3d_TextureSetBits_PointSprite;
     SetUniform (theCtx, aLocSampler, GLint(theCtx->SpriteTextureUnit()));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerMetallicRoughness"))
+  {
+    myTextureSetBits |= Graphic3d_TextureSetBits_MetallicRoughness;
+    SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_MetallicRoughness));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerEmissive"))
+  {
+    myTextureSetBits |= Graphic3d_TextureSetBits_Emissive;
+    SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_Emissive));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerOcclusion"))
+  {
+    myTextureSetBits |= Graphic3d_TextureSetBits_Occlusion;
+    SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_Occlusion));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occSamplerNormal"))
+  {
+    myTextureSetBits |= Graphic3d_TextureSetBits_Normal;
+    SetUniform (theCtx, aLocSampler, GLint(Graphic3d_TextureUnit_Normal));
   }
   if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occDiffIBLMapSHCoeffs"))
   {

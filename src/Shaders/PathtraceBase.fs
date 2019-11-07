@@ -34,14 +34,14 @@ struct SBSDF
   //! Weight of coat specular/glossy BRDF.
   vec4 Kc;
 
-  //! Weight of base diffuse BRDF.
+  //! Weight of base diffuse BRDF + base color texture index in W.
   vec4 Kd;
 
   //! Weight of base specular/glossy BRDF.
   vec4 Ks;
 
-  //! Weight of base specular/glossy BTDF.
-  vec3 Kt;
+  //! Weight of base specular/glossy BTDF + metallic-roughness texture index in W.
+  vec4 Kt;
 
   //! Fresnel coefficients of coat layer.
   vec3 FresnelCoat;
@@ -816,11 +816,16 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
     aBSDF.Kc = texelFetch (uRaytraceMaterialTexture, MATERIAL_KC (aTriIndex.w));
     aBSDF.Kd = texelFetch (uRaytraceMaterialTexture, MATERIAL_KD (aTriIndex.w));
     aBSDF.Ks = texelFetch (uRaytraceMaterialTexture, MATERIAL_KS (aTriIndex.w));
-    aBSDF.Kt = texelFetch (uRaytraceMaterialTexture, MATERIAL_KT (aTriIndex.w)).rgb;
+    aBSDF.Kt = texelFetch (uRaytraceMaterialTexture, MATERIAL_KT (aTriIndex.w));
+
+    // fetch Fresnel reflectance for both layers
+    aBSDF.FresnelCoat = texelFetch (uRaytraceMaterialTexture, MATERIAL_FRESNEL_COAT (aTriIndex.w)).xyz;
+    aBSDF.FresnelBase = texelFetch (uRaytraceMaterialTexture, MATERIAL_FRESNEL_BASE (aTriIndex.w)).xyz;
+
+    vec4 anLE = texelFetch (uRaytraceMaterialTexture, MATERIAL_LE (aTriIndex.w));
 
     // compute smooth normal (in parallel with fetch)
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
-
     aNormal = normalize (vec3 (dot (aInvTransf0, aNormal),
                                dot (aInvTransf1, aNormal),
                                dot (aInvTransf2, aNormal)));
@@ -828,7 +833,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
     SLocalSpace aSpace = buildLocalSpace (aNormal);
 
 #ifdef USE_TEXTURES
-    if (aBSDF.Kd.w >= 0.f)
+    if (aBSDF.Kd.w >= 0.0 || aBSDF.Kt.w >= 0.0 || anLE.w >= 0.0)
     {
       vec4 aTexCoord = vec4 (SmoothUV (aHit.UV, aTriIndex), 0.f, 1.f);
       vec4 aTrsfRow1 = texelFetch (uRaytraceMaterialTexture, MATERIAL_TRS1 (aTriIndex.w));
@@ -836,19 +841,35 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
       aTexCoord.st = vec2 (dot (aTrsfRow1, aTexCoord),
                            dot (aTrsfRow2, aTexCoord));
 
-      vec4 aTexColor = textureLod (sampler2D (uTextureSamplers[int (aBSDF.Kd.w)]), aTexCoord.st, 0.f);
-      aBSDF.Kd.rgb *= aTexColor.rgb * aTexColor.w;
-      if (aTexColor.w != 1.0f)
+      if (anLE.w >= 0.0)
       {
-        // mix transparency BTDF with texture alpha-channel
-        aBSDF.Kt = (UNIT - aTexColor.www) + aTexColor.w * aBSDF.Kt;
+        anLE.rgb *= textureLod (sampler2D (uTextureSamplers[int (anLE.w)]), aTexCoord.st, 0.0).rgb;
+      }
+      if (aBSDF.Kt.w >= 0.0)
+      {
+        vec2 aTexMetRough = textureLod (sampler2D (uTextureSamplers[int (aBSDF.Kt.w)]), aTexCoord.st, 0.0).bg;
+        float aPbrMetal = aTexMetRough.x;
+        float aPbrRough2 = aTexMetRough.y * aTexMetRough.y;
+        aBSDF.Ks.a *= aPbrRough2;
+        // when using metal-roughness texture, global metalness of material (encoded in FresnelBase) is expected to be 1.0 so that Kd will be 0.0
+        aBSDF.Kd.rgb = aBSDF.FresnelBase * (1.0 - aPbrMetal);
+        aBSDF.FresnelBase *= aPbrMetal;
+      }
+      if (aBSDF.Kd.w >= 0.0)
+      {
+        vec4 aTexColor = textureLod (sampler2D (uTextureSamplers[int (aBSDF.Kd.w)]), aTexCoord.st, 0.0);
+        vec3 aDiff = aTexColor.rgb * aTexColor.a;
+        aBSDF.Kd.rgb *= aDiff;
+        aBSDF.FresnelBase *= aDiff;
+        if (aTexColor.a != 1.0)
+        {
+          // mix transparency BTDF with texture alpha-channel
+          aBSDF.Ks.rgb *= aTexColor.a;
+          aBSDF.Kt.rgb = (UNIT - aTexColor.aaa) + aTexColor.a * aBSDF.Kt.rgb;
+        }
       }
     }
 #endif
-
-    // fetch Fresnel reflectance for both layers
-    aBSDF.FresnelCoat = texelFetch (uRaytraceMaterialTexture, MATERIAL_FRESNEL_COAT (aTriIndex.w)).xyz;
-    aBSDF.FresnelBase = texelFetch (uRaytraceMaterialTexture, MATERIAL_FRESNEL_BASE (aTriIndex.w)).xyz;
 
     if (uLightCount > 0 && IsNotZero (aBSDF, aThroughput))
     {
@@ -893,7 +914,7 @@ vec4 PathTrace (in SRay theRay, in vec3 theInverse, in int theNbSamples)
     }
 
     // account for self-emission
-    aRadiance += aThroughput * texelFetch (uRaytraceMaterialTexture, MATERIAL_LE (aTriIndex.w)).rgb;
+    aRadiance += aThroughput * anLE.rgb;
 
     if (aInMedium) // handle attenuation
     {

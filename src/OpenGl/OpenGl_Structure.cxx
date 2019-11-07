@@ -39,7 +39,7 @@ void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWor
   }
 
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
-  const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+  const Handle(OpenGl_TextureSet) aPrevTexture = aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
   const Graphic3d_ZLayerSettings& aLayer = myGraphicDriver->ZLayerSettings (myZLayer);
   const Graphic3d_Vec3d aMoveVec = myTrsfPers.IsNull()
                                && !aLayer.OriginTransformation().IsNull()
@@ -95,7 +95,7 @@ void OpenGl_Structure::renderBoundingBox (const Handle(OpenGl_Workspace)& theWor
     aCtx->core11->glDisableClientState (GL_VERTEX_ARRAY);
   }
 #endif
-  aCtx->BindTextures (aPrevTexture);
+  aCtx->BindTextures (aPrevTexture, Handle(OpenGl_ShaderProgram)());
 }
 
 // =======================================================================

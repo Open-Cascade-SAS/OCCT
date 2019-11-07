@@ -277,14 +277,13 @@ void OpenGl_View::initTextureEnv (const Handle(OpenGl_Context)& theContext)
     return;
   }
 
-  myTextureEnv = new OpenGl_TextureSet (1);
-  Handle(OpenGl_Texture)& aTextureEnv = myTextureEnv->ChangeFirst();
-  aTextureEnv = new OpenGl_Texture (myTextureEnvData->GetId(), myTextureEnvData->GetParams());
-  Handle(Image_PixMap) anImage = myTextureEnvData->GetImage();
-  if (!anImage.IsNull())
+  Handle(OpenGl_Texture) aTextureEnv = new OpenGl_Texture (myTextureEnvData->GetId(), myTextureEnvData->GetParams());
+  if (Handle(Image_PixMap) anImage = myTextureEnvData->GetImage())
   {
     aTextureEnv->Init (theContext, *anImage, myTextureEnvData->Type(), true);
   }
+  myTextureEnv = new OpenGl_TextureSet (aTextureEnv);
+  myTextureEnv->ChangeTextureSetBits() = Graphic3d_TextureSetBits_BaseColor;
 }
 
 // =======================================================================

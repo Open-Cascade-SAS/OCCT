@@ -131,6 +131,7 @@ void OpenGl_AspectsTextureSet::UpdateRediness (const Handle(Graphic3d_Aspects)& 
     {
       // just invalidate texture parameters
       aResource->Sampler()->SetParameters (aTexture->GetParams());
+      aResIter.ChangeUnit() = aResource->Sampler()->Parameters()->TextureUnit();
     }
   }
 }
@@ -192,6 +193,8 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
     }
   }
 
+  Standard_Integer& aTextureSetBits = myTextures[0]->ChangeTextureSetBits();
+  aTextureSetBits = Graphic3d_TextureSetBits_NONE;
   if (theAspect->ToMapTexture())
   {
     Graphic3d_TextureSet::Iterator aTextureIter (aNewTextureSet);
@@ -208,6 +211,7 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
         {
           if (aResource->Init(theCtx, aTexture))
           {
+            aResIter0.ChangeUnit() = aResource->Sampler()->Parameters()->TextureUnit();
             aResource->Sampler()->SetParameters(aTexture->GetParams());
             aResource->SetRevision (aTexture->Revision());
           }
@@ -254,6 +258,14 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
           }
           aResource->Sampler()->SetParameters (aTexture->GetParams());
         }
+
+        // update occupation of texture units
+        const Graphic3d_TextureUnit aTexUnit = aResource->Sampler()->Parameters()->TextureUnit();
+        aResIter0.ChangeUnit() = aTexUnit;
+        if (aTexUnit >= Graphic3d_TextureUnit_0 && aTexUnit <= Graphic3d_TextureUnit_5)
+        {
+          aTextureSetBits |= (1 << int(aTexUnit));
+        }
       }
     }
   }
@@ -261,6 +273,8 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
   if (hasSprite)
   {
     myTextures[0]->ChangeLast() = theSprite;
+    myTextures[0]->ChangeLastUnit() = theCtx->SpriteTextureUnit();
+    // Graphic3d_TextureUnit_PointSprite
     if (!theSprite.IsNull())
     {
       theSprite ->Sampler()->Parameters()->SetTextureUnit (theCtx->SpriteTextureUnit());
@@ -275,12 +289,15 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
     return;
   }
 
+  myTextures[1]->ChangeTextureSetBits() = aTextureSetBits;
   for (OpenGl_TextureSet::Iterator aResIter0 (myTextures[0]), aResIter1 (myTextures[1]); aResIter0.More(); aResIter0.Next(), aResIter1.Next())
   {
     aResIter1.ChangeValue() = aResIter0.Value();
+    aResIter1.ChangeUnit()  = aResIter0.Unit();
   }
   if (hasSprite)
   {
     myTextures[1]->ChangeLast() = theSpriteA;
+    myTextures[1]->ChangeLastUnit() = theCtx->SpriteTextureUnit();
   }
 }

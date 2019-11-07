@@ -403,9 +403,9 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theA
 
   aResMat.BSDF.Kc = aBSDF.Kc;
   aResMat.BSDF.Ks = aBSDF.Ks;
-  aResMat.BSDF.Kd = BVH_Vec4f (aBSDF.Kd, -1.f); // no texture
-  aResMat.BSDF.Kt = BVH_Vec4f (aBSDF.Kt,  0.f);
-  aResMat.BSDF.Le = BVH_Vec4f (aBSDF.Le,  0.f);
+  aResMat.BSDF.Kd = BVH_Vec4f (aBSDF.Kd, -1.0f); // no base color texture
+  aResMat.BSDF.Kt = BVH_Vec4f (aBSDF.Kt, -1.0f); // no metallic-roughness texture
+  aResMat.BSDF.Le = BVH_Vec4f (aBSDF.Le, -1.0f); // no emissive texture
 
   aResMat.BSDF.Absorption = aBSDF.Absorption;
 
@@ -428,11 +428,26 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theA
 
   if (theGlContext->HasRayTracingTextures())
   {
-    const Handle(OpenGl_Texture)& aTexture = aTextureSet->First();
-    buildTextureTransform (aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
-
-    // write texture ID to diffuse w-component
-    aResMat.Diffuse.w() = aResMat.BSDF.Kd.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
+    // write texture ID to diffuse w-components
+    for (OpenGl_TextureSet::Iterator aTexIter (aTextureSet); aTexIter.More(); aTexIter.Next())
+    {
+      const Handle(OpenGl_Texture)& aTexture = aTexIter.Value();
+      if (aTexIter.Unit() == Graphic3d_TextureUnit_BaseColor)
+      {
+        buildTextureTransform (aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
+        aResMat.Diffuse.w() = aResMat.BSDF.Kd.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
+      }
+      else if (aTexIter.Unit() == Graphic3d_TextureUnit_MetallicRoughness)
+      {
+        buildTextureTransform (aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
+        aResMat.BSDF.Kt.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
+      }
+      else if (aTexIter.Unit() == Graphic3d_TextureUnit_Emissive)
+      {
+        buildTextureTransform (aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
+        aResMat.BSDF.Le.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
+      }
+    }
   }
   else if (!myIsRaytraceWarnTextures)
   {

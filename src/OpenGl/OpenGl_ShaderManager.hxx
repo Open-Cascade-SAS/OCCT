@@ -618,6 +618,10 @@ protected:
            && theTextures->HasNonPointSprite())
     {
       aBits |= OpenGl_PO_TextureRGB;
+      if ((theTextures->TextureSetBits() & Graphic3d_TextureSetBits_Normal) != 0)
+      {
+        aBits |= OpenGl_PO_TextureNormal;
+      }
     }
     if (theHasVertColor
      && theInteriorStyle != Aspect_IS_HIDDENLINE)
@@ -637,7 +641,7 @@ protected:
                                                Standard_Integer theBits)
   {
     if (theShadingModel == Graphic3d_TOSM_UNLIT
-     || (theBits & OpenGl_PO_TextureEnv) != 0)
+     || (theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureEnv)
     {
       // If environment map is enabled lighting calculations are
       // not needed (in accordance with default OCCT behavior)
@@ -714,9 +718,11 @@ protected:
   //! @param theNbLights     [out] number of defined light sources
   //! @param theHasVertColor [in]  flag to use getVertColor() instead of Ambient and Diffuse components of active material
   //! @param theIsPBR        [in]  flag to activate PBR pipeline
+  //! @param theHasEmissive  [in]  flag to include emissive
   Standard_EXPORT TCollection_AsciiString stdComputeLighting (Standard_Integer& theNbLights,
                                                               Standard_Boolean  theHasVertColor,
-                                                              Standard_Boolean  theIsPBR);
+                                                              Standard_Boolean  theIsPBR,
+                                                              Standard_Boolean  theHasEmissive = true);
 
   //! Bind specified program to current context and apply state.
   Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram);

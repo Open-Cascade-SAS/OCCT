@@ -140,7 +140,7 @@ public:
 
   //! Initialize the texture with Graphic3d_TextureMap.
   //! It is an universal way to initialize.
-  //! Sitable initialization method will be chosen. 
+  //! Suitable initialization method will be chosen.
   Standard_EXPORT bool Init (const Handle(OpenGl_Context)&       theCtx,
                              const Handle(Graphic3d_TextureMap)& theTextureMap);
 

@@ -52,22 +52,12 @@ uniform vec4 occPbrFrontMaterial[3];
 uniform vec4 occPbrBackMaterial[3];
 
 #define MIN_ROUGHNESS 0.01
-// Converts roughness value from range [0, 1] to real value for calculations
 float occRoughness (in float theNormalizedRoughness) { return theNormalizedRoughness * (1.0 - MIN_ROUGHNESS) + MIN_ROUGHNESS; }
-
-vec4  occPBRFrontMaterial_Color(void)     { return occPbrFrontMaterial[0]; }
-vec3  occPBRFrontMaterial_Emission(void)  { return occPbrFrontMaterial[1].rgb; }
-float occPBRFrontMaterial_IOR(void)       { return occPbrFrontMaterial[1].w; }
-float occPBRFrontMaterial_Metallic(void)  { return occPbrFrontMaterial[2].b; }
-float occPBRFrontMaterial_Roughness(void) { return occRoughness (occPbrFrontMaterial[2].g); }
-float occPBRFrontMaterial_NormalizedRoughness(void) { return occPbrFrontMaterial[2].g; }
-
-vec4  occPBRBackMaterial_Color(void)     { return occPbrBackMaterial[0]; }
-vec3  occPBRBackMaterial_Emission(void)  { return occPbrBackMaterial[1].rgb; }
-float occPBRBackMaterial_IOR(void)       { return occPbrBackMaterial[1].w; }
-float occPBRBackMaterial_Metallic(void)  { return occPbrBackMaterial[2].b; }
-float occPBRBackMaterial_Roughness(void) { return occRoughness (occPbrBackMaterial[2].g); }
-float occPBRBackMaterial_NormalizedRoughness(void) { return occPbrBackMaterial[2].g; }
+vec4  occPBRMaterial_Color(in bool theIsFront)     { return theIsFront ? occPbrFrontMaterial[0]     : occPbrBackMaterial[0]; }
+vec3  occPBRMaterial_Emission(in bool theIsFront)  { return theIsFront ? occPbrFrontMaterial[1].rgb : occPbrBackMaterial[1].rgb; }
+float occPBRMaterial_IOR(in bool theIsFront)       { return theIsFront ? occPbrFrontMaterial[1].w   : occPbrBackMaterial[1].w; }
+float occPBRMaterial_Metallic(in bool theIsFront)  { return theIsFront ? occPbrFrontMaterial[2].b   : occPbrBackMaterial[2].b; }
+float occPBRMaterial_NormalizedRoughness(in bool theIsFront) { return theIsFront ? occPbrFrontMaterial[2].g : occPbrBackMaterial[2].g; }
 #else
 uniform vec4 occFrontMaterial[5];
 uniform vec4 occBackMaterial[5];

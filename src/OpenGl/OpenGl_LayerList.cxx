@@ -932,7 +932,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
       // Bind full screen quad buffer and framebuffer resources.
       aVerts->BindVertexAttrib (aCtx, Graphic3d_TOA_POS);
 
-      const Handle(OpenGl_TextureSet) aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+      const Handle(OpenGl_TextureSet) aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
 
       theOitAccumFbo->ColorTexture (0)->Bind (aCtx, Graphic3d_TextureUnit_0);
       theOitAccumFbo->ColorTexture (1)->Bind (aCtx, Graphic3d_TextureUnit_1);
@@ -949,7 +949,7 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
 
       if (!aTextureBack.IsNull())
       {
-        aCtx->BindTextures (aTextureBack);
+        aCtx->BindTextures (aTextureBack, Handle(OpenGl_ShaderProgram)());
       }
     }
     else

@@ -502,7 +502,7 @@ public:
   //! @return value for GL_MAX_TEXTURE_UNITS
   Standard_Integer MaxTextureUnitsFFP() const { return myMaxTexUnitsFFP; }
 
-  //! @return texture unit to be used for sprites
+  //! Return texture unit to be used for sprites (Graphic3d_TextureUnit_PointSprite by default).
   Graphic3d_TextureUnit SpriteTextureUnit() const { return mySpriteTexUnit; }
 
   //! @return value for GL_MAX_SAMPLES
@@ -803,9 +803,20 @@ public: //! @name methods to alter or retrieve current state
   //! @return active textures
   const Handle(OpenGl_TextureSet)& ActiveTextures() const { return myActiveTextures; }
 
-  //! Bind specified texture set to current context,
-  //! or unbind previous one when NULL specified.
-  Standard_EXPORT Handle(OpenGl_TextureSet) BindTextures (const Handle(OpenGl_TextureSet)& theTextures);
+  //! Bind specified texture set to current context taking into account active GLSL program.
+  Standard_DEPRECATED("BindTextures() with explicit GLSL program should be used instead")
+  Handle(OpenGl_TextureSet) BindTextures (const Handle(OpenGl_TextureSet)& theTextures)
+  {
+    return BindTextures (theTextures, myActiveProgram);
+  }
+
+  //! Bind specified texture set to current context, or unbind previous one when NULL specified.
+  //! @param theTextures [in] texture set to bind
+  //! @param theProgram  [in] program attributes; when not NULL,
+  //!                         mock textures will be bound to texture units expected by GLSL program, but undefined by texture set
+  //! @return previous texture set
+  Standard_EXPORT Handle(OpenGl_TextureSet) BindTextures (const Handle(OpenGl_TextureSet)& theTextures,
+                                                          const Handle(OpenGl_ShaderProgram)& theProgram);
 
   //! @return active GLSL program
   const Handle(OpenGl_ShaderProgram)& ActiveProgram() const
@@ -1076,7 +1087,7 @@ private: // context info
   Standard_Boolean myIsStereoBuffers;      //!< context supports stereo buffering
   Standard_Boolean myIsGlNormalizeEnabled; //!< GL_NORMALIZE flag
                                            //!< Used to tell OpenGl that normals should be normalized
-  Graphic3d_TextureUnit mySpriteTexUnit;   //!< texture unit for point sprite texture
+  Graphic3d_TextureUnit mySpriteTexUnit;   //!< sampler2D occSamplerPointSprite, texture unit for point sprite texture
 
   Standard_Boolean myHasRayTracing;                 //! indicates whether ray tracing mode is supported
   Standard_Boolean myHasRayTracingTextures;         //! indicates whether textures in ray tracing mode are supported
@@ -1084,10 +1095,10 @@ private: // context info
   Standard_Boolean myHasRayTracingAdaptiveSamplingAtomic; //! indicates whether atomic adaptive screen sampling in ray tracing mode is supported
 
   Standard_Boolean myHasPBR;                      //!< indicates whether PBR shading model is supported
-  Graphic3d_TextureUnit myPBREnvLUTTexUnit;       //!< texture unit where environment lookup table is expected to be binded (0 if PBR is not supported)
-  Graphic3d_TextureUnit myPBRDiffIBLMapSHTexUnit; //!< texture unit where diffuse (irradiance) IBL map's spherical harmonics coefficients is expected to  be binded
+  Graphic3d_TextureUnit myPBREnvLUTTexUnit;       //!< sampler2D occEnvLUT, texture unit where environment lookup table is expected to be binded (0 if PBR is not supported)
+  Graphic3d_TextureUnit myPBRDiffIBLMapSHTexUnit; //!< sampler2D occDiffIBLMapSHCoeffs, texture unit where diffuse (irradiance) IBL map's spherical harmonics coefficients is expected to  be binded
                                                   //!  (0 if PBR is not supported)
-  Graphic3d_TextureUnit myPBRSpecIBLMapTexUnit;   //!< texture unit where specular IBL map is expected to  be binded (0 if PBR is not supported)
+  Graphic3d_TextureUnit myPBRSpecIBLMapTexUnit;   //!< samplerCube occSpecIBLMap, texture unit where specular IBL map is expected to  be binded (0 if PBR is not supported)
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 
@@ -1097,8 +1108,11 @@ private: //! @name fields tracking current state
   Handle(OpenGl_ShaderProgram)  myActiveProgram;   //!< currently active GLSL program
   Handle(OpenGl_TextureSet)     myActiveTextures;  //!< currently bound textures
                                                    //!< currently active sampler objects
+  Standard_Integer              myActiveMockTextures; //!< currently active mock sampler objects
   Handle(OpenGl_FrameBuffer)    myDefaultFbo;      //!< default Frame Buffer Object
   Handle(OpenGl_LineAttributes) myHatchStyles;     //!< resource holding predefined hatch styles patterns
+  Handle(OpenGl_Texture)        myTextureRgbaBlack;//!< mock black texture returning (0, 0, 0, 0)
+  Handle(OpenGl_Texture)        myTextureRgbaWhite;//!< mock white texture returning (1, 1, 1, 1)
   Standard_Integer              myViewport[4];     //!< current viewport
   Standard_Integer              myViewportVirt[4]; //!< virtual viewport
   Standard_Integer              myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)

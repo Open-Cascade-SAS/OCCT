@@ -208,5 +208,6 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness (const Graphic3d_PBRMater
   aBsdf.Ks.SetValues (Graphic3d_Vec3 (thePbr.Alpha()), aRougness2);
   aBsdf.Kt = Graphic3d_Vec3 (1.0f - thePbr.Alpha());
   aBsdf.Kd = aDiff * (1.0f - thePbr.Metallic());
+  aBsdf.Le = thePbr.Emission();
   return aBsdf;
 }

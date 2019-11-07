@@ -22,6 +22,7 @@
 
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
+#include <Graphic3d_TextureSetBits.hxx>
 
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Matrix.hxx>
@@ -293,6 +294,9 @@ public:
 
   //! Return true if Fragment Shader color should output the weighted OIT coverage; FALSE by default.
   Standard_Boolean HasWeightOitOutput() const { return myHasWeightOitOutput; }
+
+  //! Return texture units declared within the program, @sa Graphic3d_TextureSetBits.
+  Standard_Integer TextureSetBits() const { return myTextureSetBits; }
 
 private:
 
@@ -656,6 +660,7 @@ protected:
   Standard_Integer                myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
   Standard_Integer                myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer                myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
+  Standard_Integer                myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits
   Standard_Boolean                myHasAlphaTest;  //!< flag indicating that Fragment Shader should perform alpha-test
   Standard_Boolean                myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
   Standard_Boolean                myHasTessShader; //!< flag indicating that program defines tessellation stage

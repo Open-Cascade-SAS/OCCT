@@ -238,7 +238,7 @@ const OpenGl_Aspects* OpenGl_Workspace::SetAspects (const OpenGl_Aspects* theAsp
 // function : ApplyAspects
 // purpose  :
 // =======================================================================
-const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects()
+const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects (bool theToBindTextures)
 {
   if (myView->BackfacingModel() == Graphic3d_TOBM_AUTOMATIC)
   {
@@ -305,15 +305,10 @@ const OpenGl_Aspects* OpenGl_Workspace::ApplyAspects()
     myGlContext->SetShadingMaterial (myAspectsSet, myHighlightStyle);
   }
 
-  const Handle(OpenGl_TextureSet)& aTextureSet = myAspectsSet->TextureSet (myGlContext, ToHighlight());
-  if (!aTextureSet.IsNull()
-   || myAspectsSet->Aspect()->ToMapTexture())
+  if (theToBindTextures)
   {
-    myGlContext->BindTextures (aTextureSet);
-  }
-  else
-  {
-    myGlContext->BindTextures (myEnvironmentTexture);
+    const Handle(OpenGl_TextureSet)& aTextureSet = TextureSet();
+    myGlContext->BindTextures (aTextureSet, Handle(OpenGl_ShaderProgram)());
   }
 
   if ((myView->myShadingModel == Graphic3d_TOSM_PBR
@@ -359,7 +354,7 @@ Handle(OpenGl_FrameBuffer) OpenGl_Workspace::FBOCreate (const Standard_Integer t
 
   // create the FBO
   const Handle(OpenGl_Context)& aCtx = GetGlContext();
-  aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+  aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
   Handle(OpenGl_FrameBuffer) aFrameBuffer = new OpenGl_FrameBuffer();
   if (!aFrameBuffer->Init (aCtx, theWidth, theHeight, GL_SRGB8_ALPHA8, GL_DEPTH24_STENCIL8, 0))
   {

@@ -1311,7 +1311,7 @@ void OpenGl_View::renderScene (Graphic3d_Camera::Projection theProjection,
   }
 
   renderStructs (theProjection, theReadDrawFbo, theOitAccumFbo, theToDrawImmediate);
-  aContext->BindTextures (Handle(OpenGl_TextureSet)());
+  aContext->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
 
   // Apply restored view matrix.
   aContext->ApplyWorldViewMatrix();
@@ -1530,7 +1530,7 @@ bool OpenGl_View::blitBuffers (OpenGl_FrameBuffer*    theReadFbo,
     }
   #endif
 
-    aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+    aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
 
     const Graphic3d_TypeOfTextureFilter aFilter = (aDrawSizeX == aReadSizeX && aDrawSizeY == aReadSizeY) ? Graphic3d_TOTF_NEAREST : Graphic3d_TOTF_BILINEAR;
     const GLint aFilterGl = aFilter == Graphic3d_TOTF_NEAREST ? GL_NEAREST : GL_LINEAR;
@@ -1674,7 +1674,7 @@ void OpenGl_View::drawStereoPair (OpenGl_FrameBuffer* theDrawFbo)
   aCtx->core20fwd->glDepthMask (GL_TRUE);
   aCtx->core20fwd->glEnable (GL_DEPTH_TEST);
 
-  aCtx->BindTextures (Handle(OpenGl_TextureSet)());
+  aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
   OpenGl_VertexBuffer* aVerts = initBlitQuad (myToFlipOutput);
 
   const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();

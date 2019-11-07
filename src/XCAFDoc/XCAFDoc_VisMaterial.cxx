@@ -236,10 +236,7 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
     aPbr.SetColor    (myPbrMat.BaseColor);
     aPbr.SetMetallic (myPbrMat.Metallic);
     aPbr.SetRoughness(myPbrMat.Roughness);
-    if (myPbrMat.EmissiveTexture.IsNull()) // TODO Temporal measure until emissive map will be implemented
-    {
-      aPbr.SetEmission(myPbrMat.EmissiveFactor);
-    }
+    aPbr.SetEmission (myPbrMat.EmissiveFactor);
     theAspect.SetPBRMaterial (aPbr);
     theAspect.SetBSDF (Graphic3d_BSDF::CreateMetallicRoughness (aPbr));
   }
@@ -262,43 +259,41 @@ void XCAFDoc_VisMaterial::FillAspect (const Handle(Graphic3d_Aspects)& theAspect
   theAspect->SetAlphaMode (myAlphaMode , myAlphaCutOff);
   theAspect->SetSuppressBackFaces (!myIsDoubleSided);
 
-  Handle(Image_Texture) aColorTexture, aNormTexture;
-  if (!myCommonMat.DiffuseTexture.IsNull())
+  const Handle(Image_Texture)& aColorTexture = !myPbrMat.BaseColorTexture.IsNull() ? myPbrMat.BaseColorTexture : myCommonMat.DiffuseTexture;
+  Standard_Integer aNbTexUnits = 0;
+  if (!aColorTexture.IsNull())             { ++aNbTexUnits; }
+  if (!myPbrMat.EmissiveTexture.IsNull())  { ++aNbTexUnits; }
+  if (!myPbrMat.NormalTexture.IsNull())    { ++aNbTexUnits; }
+  if (!myPbrMat.OcclusionTexture.IsNull()) { ++aNbTexUnits; }
+  if (!myPbrMat.MetallicRoughnessTexture.IsNull()) { ++aNbTexUnits; }
+  if (aNbTexUnits == 0)
   {
-    aColorTexture = myCommonMat.DiffuseTexture;
-  }
-  else if (!myPbrMat.BaseColorTexture.IsNull())
-  {
-    aColorTexture = myPbrMat.BaseColorTexture;
-  }
-
-  if (!myPbrMat.NormalTexture.IsNull())
-  {
-    aNormTexture = myPbrMat.NormalTexture;
+    return;
   }
 
-  Standard_Integer aNbTextures = 0;
+  Standard_Integer aTexIter = 0;
+  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (aNbTexUnits);
   if (!aColorTexture.IsNull())
   {
-    ++aNbTextures;
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*aColorTexture, Graphic3d_TextureUnit_BaseColor));
   }
-  if (!aNormTexture.IsNull())
+  if (!myPbrMat.EmissiveTexture.IsNull())
   {
-    //++aNbTextures;
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.EmissiveTexture, Graphic3d_TextureUnit_Emissive));
   }
-  if (aNbTextures != 0)
+  if (!myPbrMat.OcclusionTexture.IsNull())
   {
-    Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (aNbTextures);
-    Standard_Integer aTextureIndex = 0;
-    if (!aColorTexture.IsNull())
-    {
-      aTextureSet->SetValue (aTextureIndex++, new XCAFPrs_Texture (*aColorTexture, Graphic3d_TextureUnit_BaseColor));
-    }
-    if (!aNormTexture.IsNull())
-    {
-      //aTextureSet->SetValue (aTextureIndex++, new XCAFPrs_Texture (*aColorTexture, Graphic3d_TextureUnit_Normal));
-    }
-    theAspect->SetTextureSet (aTextureSet);
-    theAspect->SetTextureMapOn (true);
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.OcclusionTexture, Graphic3d_TextureUnit_Occlusion));
   }
+  if (!myPbrMat.NormalTexture.IsNull())
+  {
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.NormalTexture, Graphic3d_TextureUnit_Normal));
+  }
+  if (!myPbrMat.MetallicRoughnessTexture.IsNull())
+  {
+    aTextureSet->SetValue (aTexIter++, new XCAFPrs_Texture (*myPbrMat.MetallicRoughnessTexture, Graphic3d_TextureUnit_MetallicRoughness));
+  }
+
+  theAspect->SetTextureSet (aTextureSet);
+  theAspect->SetTextureMapOn (true);
 }

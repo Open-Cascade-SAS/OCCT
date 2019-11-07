@@ -175,49 +175,76 @@ uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sour
 #endif
 #endif
 
-// Converts roughness value from range [0, 1] to real value for calculations
+#if defined(THE_IS_PBR)
+//! Converts roughness value from range [0, 1] to real value for calculations
 float occRoughness (in float theNormalizedRoughness);
 
-// Front material properties accessors
-#if !defined(THE_IS_PBR)
-vec4  occFrontMaterial_Emission(void);            //!< Emission color
-vec4  occFrontMaterial_Ambient(void);             //!< Ambient  reflection
-vec4  occFrontMaterial_Diffuse(void);             //!< Diffuse  reflection
-vec4  occFrontMaterial_Specular(void);            //!< Specular reflection
-float occFrontMaterial_Shininess(void);           //!< Specular exponent
-float occFrontMaterial_Transparency(void);        //!< Transparency coefficient
+// Front/back material properties accessors
+vec4  occPBRMaterial_Color(in bool theIsFront);    //!< Base color of PBR material
+float occPBRMaterial_Metallic(in bool theIsFront); //!< Metallic coefficient
+float occPBRMaterial_NormalizedRoughness(in bool theIsFront); //!< Normalized roughness coefficient
+vec3  occPBRMaterial_Emission(in bool theIsFront); //!< Light intensity emitted by material
+float occPBRMaterial_IOR(in bool theIsFront);      //!< Index of refraction
 #else
-vec4  occPBRFrontMaterial_Color(void);               //!< Base color of PBR material
-float occPBRFrontMaterial_Metallic(void);            //!< Metallic coefficient
-float occPBRFrontMaterial_Roughness(void);           //!< Roughness coefficient
-float occPBRFrontMaterial_NormalizedRoughness(void); //!< Normalized roughness coefficient
-vec3  occPBRFrontMaterial_Emission(void);            //!< Light intensity emitted by material
-float occPBRFrontMaterial_IOR(void);                 //!< Index of refraction
-#endif
+// Front material properties accessors
+vec4  occFrontMaterial_Emission(void);           //!< Emission color
+vec4  occFrontMaterial_Ambient(void);            //!< Ambient  reflection
+vec4  occFrontMaterial_Diffuse(void);            //!< Diffuse  reflection
+vec4  occFrontMaterial_Specular(void);           //!< Specular reflection
+float occFrontMaterial_Shininess(void);          //!< Specular exponent
+float occFrontMaterial_Transparency(void);       //!< Transparency coefficient
 
 // Back material properties accessors
-#if !defined(THE_IS_PBR)
 vec4  occBackMaterial_Emission(void);            //!< Emission color
 vec4  occBackMaterial_Ambient(void);             //!< Ambient  reflection
 vec4  occBackMaterial_Diffuse(void);             //!< Diffuse  reflection
 vec4  occBackMaterial_Specular(void);            //!< Specular reflection
 float occBackMaterial_Shininess(void);           //!< Specular exponent
 float occBackMaterial_Transparency(void);        //!< Transparency coefficient
-#else
-vec4  occPBRBackMaterial_Color(void);               //!< Base color of PBR material
-float occPBRBackMaterial_Metallic(void);            //!< Metallic coefficient
-float occPBRBackMaterial_Roughness(void);           //!< Roughness coefficient
-float occPBRBackMaterial_NormalizedRoughness(void); //!< Normalized roughness coefficient
-vec3  occPBRBackMaterial_Emission(void);            //!< Light intensity emitted by material
-float occPBRBackMaterial_IOR(void);                 //!< Index of refraction
 #endif
 
 #ifdef THE_HAS_DEFAULT_SAMPLER
-#define occActiveSampler    occSampler0                //!< alias for backward compatibility
-#define occSamplerBaseColor occSampler0                //!< alias to a base color texture
-uniform               sampler2D occSampler0;           //!< current active sampler;
+#define occActiveSampler    occSampler0  //!< alias for backward compatibility
+#define occSamplerBaseColor occSampler0  //!< alias to a base color texture
+uniform sampler2D           occSampler0; //!< current active sampler;
+#endif                                   //!  occSampler1, occSampler2,... should be defined in GLSL program body for multitexturing
+
+#if defined(THE_HAS_TEXTURE_COLOR)
+#define occTextureColor(theMatColor, theTexCoord) (theMatColor * occTexture2D(occSamplerBaseColor, theTexCoord))
+#else
+#define occTextureColor(theMatColor, theTexCoord) theMatColor
 #endif
-                                                       //!  occSampler1, occSampler2,... should be defined in GLSL program body for multitexturing
+
+#if defined(THE_HAS_TEXTURE_OCCLUSION) && defined(FRAGMENT_SHADER)
+uniform sampler2D occSamplerOcclusion;   //!< R occlusion texture sampler
+#define occTextureOcclusion(theColor, theTexCoord) theColor *= occTexture2D(occSamplerOcclusion, theTexCoord).r;
+#else
+#define occTextureOcclusion(theColor, theTexCoord)
+#endif
+
+#if defined(THE_HAS_TEXTURE_EMISSIVE) && defined(FRAGMENT_SHADER)
+uniform sampler2D occSamplerEmissive;    //!< RGB emissive texture sampler
+#define occTextureEmissive(theMatEmis, theTexCoord) (theMatEmis * occTexture2D(occSamplerEmissive, theTexCoord).rgb)
+#else
+#define occTextureEmissive(theMatEmis, theTexCoord) theMatEmis
+#endif
+
+#if defined(THE_HAS_TEXTURE_NORMAL) && defined(FRAGMENT_SHADER)
+uniform sampler2D occSamplerNormal;      //!< XYZ normal texture sampler with W==0 indicating no texture
+#define occTextureNormal(theTexCoord) occTexture2D(occSamplerNormal, theTexCoord)
+#else
+#define occTextureNormal(theTexCoord) vec4(0.0) // no normal map
+#endif
+
+#if defined(THE_HAS_TEXTURE_METALROUGHNESS) && defined(FRAGMENT_SHADER)
+uniform sampler2D occSamplerMetallicRoughness; //!< BG metallic-roughness texture sampler
+#define occTextureRoughness(theRoug, theTexCoord) (theRoug * occTexture2D(occSamplerMetallicRoughness, theTexCoord).g)
+#define occTextureMetallic(theMet,   theTexCoord) (theMet  * occTexture2D(occSamplerMetallicRoughness, theTexCoord).b)
+#else
+#define occTextureRoughness(theRoug, theTexCoord) theRoug
+#define occTextureMetallic(theMet,   theTexCoord) theMet
+#endif
+
 uniform               vec4      occColor;              //!< color value (in case of disabled lighting)
 uniform THE_PREC_ENUM int       occDistinguishingMode; //!< Are front and back faces distinguished?
 uniform THE_PREC_ENUM int       occTextureEnable;      //!< Is texture enabled?

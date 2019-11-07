@@ -31,6 +31,8 @@ XCAFPrs_Texture::XCAFPrs_Texture (const Image_Texture& theImageSource,
     myTexId = myImageSource.TextureId();
   }
   myParams->SetTextureUnit (theUnit);
+  myIsColorMap = theUnit == Graphic3d_TextureUnit_BaseColor
+              || theUnit == Graphic3d_TextureUnit_Emissive;
 }
 
 //=======================================================================

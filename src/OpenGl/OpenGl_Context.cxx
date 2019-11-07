@@ -204,16 +204,17 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myIsInitialized (Standard_False),
   myIsStereoBuffers (Standard_False),
   myIsGlNormalizeEnabled (Standard_False),
-  mySpriteTexUnit (Graphic3d_TextureUnit_0),
+  mySpriteTexUnit (Graphic3d_TextureUnit_PointSprite),
   myHasRayTracing (Standard_False),
   myHasRayTracingTextures (Standard_False),
   myHasRayTracingAdaptiveSampling (Standard_False),
   myHasRayTracingAdaptiveSamplingAtomic (Standard_False),
   myHasPBR (Standard_False),
-  myPBREnvLUTTexUnit       (Graphic3d_TextureUnit_0),
-  myPBRDiffIBLMapSHTexUnit (Graphic3d_TextureUnit_0),
-  myPBRSpecIBLMapTexUnit   (Graphic3d_TextureUnit_0),
+  myPBREnvLUTTexUnit       (Graphic3d_TextureUnit_PbrEnvironmentLUT),
+  myPBRDiffIBLMapSHTexUnit (Graphic3d_TextureUnit_PbrIblDiffuseSH),
+  myPBRSpecIBLMapTexUnit   (Graphic3d_TextureUnit_PbrIblSpecular),
   myFrameStats (new OpenGl_FrameStats()),
+  myActiveMockTextures (0),
 #if !defined(GL_ES_VERSION_2_0)
   myPointSpriteOrig (GL_UPPER_LEFT),
   myRenderMode (GL_RENDER),
@@ -306,6 +307,18 @@ OpenGl_Context::~OpenGl_Context()
   }
   myDefaultVao = 0;
 #endif
+
+  // release mock textures
+  if (!myTextureRgbaBlack.IsNull())
+  {
+    myTextureRgbaBlack->Release (this);
+    myTextureRgbaBlack.Nullify();
+  }
+  if (!myTextureRgbaWhite.IsNull())
+  {
+    myTextureRgbaWhite->Release (this);
+    myTextureRgbaWhite.Nullify();
+  }
 
   // release default FBO
   if (!myDefaultFbo.IsNull())
@@ -1651,7 +1664,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     glGetIntegerv (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &myMaxTexCombined);
   }
   mySpriteTexUnit = myMaxTexCombined >= 2
-                  ? Graphic3d_TextureUnit_1
+                  ? Graphic3d_TextureUnit_PointSprite
                   : Graphic3d_TextureUnit_0;
 
   GLint aMaxVPortSize[2] = {0, 0};
@@ -2954,9 +2967,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
              );
   if (myHasPBR)
   {
-    myPBREnvLUTTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined - 3);
-    myPBRDiffIBLMapSHTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined - 2);
-    myPBRSpecIBLMapTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined - 1);
+    myPBREnvLUTTexUnit       = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrEnvironmentLUT);
+    myPBRDiffIBLMapSHTexUnit = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrIblDiffuseSH);
+    myPBRSpecIBLMapTexUnit   = static_cast<Graphic3d_TextureUnit>(myMaxTexCombined + Graphic3d_TextureUnit_PbrIblSpecular);
   }
 }
 
@@ -3369,104 +3382,149 @@ void OpenGl_Context::ReleaseDelayed()
 // function : BindTextures
 // purpose  :
 // =======================================================================
-Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_TextureSet)& theTextures)
+Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_TextureSet)& theTextures,
+                                                        const Handle(OpenGl_ShaderProgram)& theProgram)
 {
-  if (myActiveTextures == theTextures)
+  const Standard_Integer aTextureSetBits = !theTextures.IsNull() ? theTextures->TextureSetBits() : 0;
+  const Standard_Integer aProgramBits    = !theProgram.IsNull() ? theProgram->TextureSetBits() : 0;
+  Standard_Integer aMissingBits = aProgramBits & ~aTextureSetBits;
+  if (aMissingBits != 0
+   && myTextureRgbaBlack.IsNull())
   {
-    return myActiveTextures;
-  }
-
-  Handle(OpenGl_Context) aThisCtx (this);
-  OpenGl_TextureSet::Iterator aTextureIterOld (myActiveTextures), aTextureIterNew (theTextures);
-  for (;;)
-  {
-    if (!aTextureIterNew.More())
+    // allocate mock textures
+    myTextureRgbaBlack = new OpenGl_Texture();
+    myTextureRgbaWhite = new OpenGl_Texture();
+    Image_PixMap anImage;
+    anImage.InitZero (Image_Format_RGBA, 2, 2, 0, (Standard_Byte )0);
+    if (!myTextureRgbaBlack->Init (this, OpenGl_TextureFormat::Create<GLubyte, 4>(), Graphic3d_Vec2i (2, 2), Graphic3d_TOT_2D, &anImage))
     {
-      for (; aTextureIterOld.More(); aTextureIterOld.Next())
-      {
-        if (const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value())
-        {
-          aTextureOld->Unbind(aThisCtx);
-        #if !defined(GL_ES_VERSION_2_0)
-          if (core11 != NULL)
-          {
-            OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
-          }
-        #endif
-        }
-      }
-      break;
+      PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                    "Error: unable to create unit mock PBR texture map.");
     }
-
-    const Handle(OpenGl_Texture)& aTextureNew = aTextureIterNew.Value();
-    if (aTextureIterOld.More())
+    anImage.InitZero (Image_Format_RGBA, 2, 2, 0, (Standard_Byte )255);
+    if (!myTextureRgbaWhite->Init (this, OpenGl_TextureFormat::Create<GLubyte, 4>(), Graphic3d_Vec2i (2, 2), Graphic3d_TOT_2D, &anImage))
     {
-      const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value();
-      if (aTextureNew == aTextureOld)
-      {
-        aTextureIterNew.Next();
-        aTextureIterOld.Next();
-        continue;
-      }
-      else if (aTextureNew.IsNull()
-           || !aTextureNew->IsValid())
-      {
-        if (!aTextureOld.IsNull())
-        {
-          aTextureOld->Unbind(aThisCtx);
-        #if !defined(GL_ES_VERSION_2_0)
-          if (core11 != NULL)
-          {
-            OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
-          }
-        #endif
-        }
-
-        aTextureIterNew.Next();
-        aTextureIterOld.Next();
-        continue;
-      }
-
-      aTextureIterOld.Next();
+      PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_PORTABILITY, 0, GL_DEBUG_SEVERITY_HIGH,
+                    "Error: unable to create normal mock PBR texture map.");
     }
-    if (aTextureNew.IsNull())
-    {
-      aTextureIterNew.Next();
-      continue;
-    }
-
-    const Graphic3d_TextureUnit aTexUnit = aTextureNew->Sampler()->Parameters()->TextureUnit();
-    if (aTexUnit >= myMaxTexCombined)
-    {
-      PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                   TCollection_AsciiString("Texture unit ") + aTexUnit + " for " + aTextureNew->ResourceId() + " exceeds hardware limit " + myMaxTexCombined);
-      aTextureIterNew.Next();
-      continue;
-    }
-
-    aTextureNew->Bind (aThisCtx);
-    if (aTextureNew->Sampler()->ToUpdateParameters())
-    {
-      if (aTextureNew->Sampler()->IsImmutable())
-      {
-        aTextureNew->Sampler()->Init (aThisCtx, *aTextureNew);
-      }
-      else
-      {
-        OpenGl_Sampler::applySamplerParams (aThisCtx, aTextureNew->Sampler()->Parameters(), aTextureNew->Sampler().get(), aTextureNew->GetTarget(), aTextureNew->HasMipmaps());
-      }
-    }
-  #if !defined(GL_ES_VERSION_2_0)
-    if (core11 != NULL)
-    {
-      OpenGl_Sampler::applyGlobalTextureParams (aThisCtx, *aTextureNew, aTextureNew->Sampler()->Parameters());
-    }
-  #endif
-    aTextureIterNew.Next();
   }
 
   Handle(OpenGl_TextureSet) anOldTextures = myActiveTextures;
-  myActiveTextures = theTextures;
+  if (myActiveTextures != theTextures)
+  {
+    Handle(OpenGl_Context) aThisCtx (this);
+    OpenGl_TextureSet::Iterator aTextureIterOld (myActiveTextures), aTextureIterNew (theTextures);
+    for (;;)
+    {
+      if (!aTextureIterNew.More())
+      {
+        for (; aTextureIterOld.More(); aTextureIterOld.Next())
+        {
+          if (const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value())
+          {
+            aTextureOld->Unbind (aThisCtx, aTextureIterOld.Unit());
+          #if !defined(GL_ES_VERSION_2_0)
+            if (core11 != NULL)
+            {
+              OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
+            }
+          #endif
+          }
+        }
+        break;
+      }
+
+      const Handle(OpenGl_Texture)& aTextureNew = aTextureIterNew.Value();
+      if (aTextureIterOld.More())
+      {
+        const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value();
+        if (aTextureNew == aTextureOld
+         && aTextureIterNew.Unit() == aTextureIterOld.Unit())
+        {
+          aTextureIterNew.Next();
+          aTextureIterOld.Next();
+          continue;
+        }
+        else if (aTextureNew.IsNull()
+             || !aTextureNew->IsValid())
+        {
+          if (!aTextureOld.IsNull())
+          {
+            aTextureOld->Unbind (aThisCtx, aTextureIterOld.Unit());
+          #if !defined(GL_ES_VERSION_2_0)
+            if (core11 != NULL)
+            {
+              OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
+            }
+          #endif
+          }
+
+          aTextureIterNew.Next();
+          aTextureIterOld.Next();
+          continue;
+        }
+
+        aTextureIterOld.Next();
+      }
+      if (aTextureNew.IsNull())
+      {
+        aTextureIterNew.Next();
+        continue;
+      }
+
+      const Graphic3d_TextureUnit aTexUnit = aTextureIterNew.Unit();
+      if (aTexUnit >= myMaxTexCombined)
+      {
+        PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                     TCollection_AsciiString("Texture unit ") + aTexUnit + " for " + aTextureNew->ResourceId() + " exceeds hardware limit " + myMaxTexCombined);
+        aTextureIterNew.Next();
+        continue;
+      }
+
+      aTextureNew->Bind (aThisCtx, aTexUnit);
+      if (aTextureNew->Sampler()->ToUpdateParameters())
+      {
+        if (aTextureNew->Sampler()->IsImmutable())
+        {
+          aTextureNew->Sampler()->Init (aThisCtx, *aTextureNew);
+        }
+        else
+        {
+          OpenGl_Sampler::applySamplerParams (aThisCtx, aTextureNew->Sampler()->Parameters(), aTextureNew->Sampler().get(), aTextureNew->GetTarget(), aTextureNew->HasMipmaps());
+        }
+      }
+    #if !defined(GL_ES_VERSION_2_0)
+      if (core11 != NULL)
+      {
+        OpenGl_Sampler::applyGlobalTextureParams (aThisCtx, *aTextureNew, aTextureNew->Sampler()->Parameters());
+      }
+    #endif
+      aTextureIterNew.Next();
+    }
+    myActiveTextures = theTextures;
+  }
+
+  if (myActiveMockTextures != aMissingBits)
+  {
+    myActiveMockTextures = aMissingBits;
+    for (Standard_Integer aBitIter = 0; aMissingBits != 0; ++aBitIter)
+    {
+      Standard_Integer aUnitMask = 1 << aBitIter;
+      if ((aUnitMask & aMissingBits) != 0)
+      {
+        aMissingBits = aMissingBits & ~aUnitMask;
+        if (aBitIter == Graphic3d_TextureUnit_Normal)
+        {
+          myTextureRgbaBlack->Bind (this, static_cast<Graphic3d_TextureUnit>(aBitIter));
+        }
+        else
+        {
+          myTextureRgbaWhite->Bind (this, static_cast<Graphic3d_TextureUnit>(aBitIter));
+        }
+      }
+    }
+  }
+
   return anOldTextures;
 }
 

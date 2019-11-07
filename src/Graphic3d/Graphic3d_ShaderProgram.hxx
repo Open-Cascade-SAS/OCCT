@@ -20,6 +20,7 @@
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderVariable.hxx>
 #include <Graphic3d_TextureParams.hxx>
+#include <Graphic3d_TextureSetBits.hxx>
 #include <NCollection_Sequence.hxx>
 
 //! List of shader objects.
@@ -152,11 +153,17 @@ public:
   void SetWeightOitOutput (Standard_Boolean theOutput) { myHasWeightOitOutput = theOutput; }
 
   //! Return TRUE if standard program header should define functions and variables used in PBR pipeline.
-  //! FALSE by default
+  //! FALSE by default.
   Standard_Boolean IsPBR() const { return myIsPBR; }
 
   //! Sets whether standard program header should define functions and variables used in PBR pipeline.
   void SetPBR (Standard_Boolean theIsPBR) { myIsPBR = theIsPBR; }
+
+  //! Return texture units declared within the program, @sa Graphic3d_TextureSetBits.
+  Standard_Integer TextureSetBits() const { return myTextureSetBits; }
+
+  //! Set texture units declared within the program.
+  void SetTextureSetBits (Standard_Integer theBits) { myTextureSetBits = theBits; }
 
   //! Pushes custom uniform variable to the program.
   //! The list of pushed variables is automatically cleared after applying to GLSL program.
@@ -208,6 +215,7 @@ private:
   Standard_Integer              myNbLightsMax;   //!< length of array of light sources (THE_MAX_LIGHTS)
   Standard_Integer              myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer              myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
+  Standard_Integer              myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits
   Standard_Boolean              myHasDefSampler; //!< flag indicating that program defines default texture sampler occSampler0
   Standard_Boolean              myHasAlphaTest;       //!< flag indicating that Fragment Shader performs alpha test
   Standard_Boolean              myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
