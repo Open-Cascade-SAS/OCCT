@@ -5490,32 +5490,7 @@ static int VFont (Draw_Interpretor& theDI,
                   const char**      theArgVec)
 {
   Handle(Font_FontMgr) aMgr = Font_FontMgr::GetInstance();
-  if (theArgNb < 2)
-  {
-    // just print the list of available fonts
-    Standard_Boolean isFirst = Standard_True;
-    const Font_NListOfSystemFont aFonts = aMgr->GetAvailableFonts();
-    std::vector<Handle(Font_SystemFont)> aFontsSorted;
-    aFontsSorted.reserve (aFonts.Size());
-    for (Font_NListOfSystemFont::Iterator aFontIter (aFonts); aFontIter.More(); aFontIter.Next())
-    {
-      aFontsSorted.push_back (aFontIter.Value());
-    }
-    std::stable_sort (aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
-    for (std::vector<Handle(Font_SystemFont)>::iterator aFontIter = aFontsSorted.begin(); aFontIter != aFontsSorted.end(); ++aFontIter)
-    {
-      const Handle(Font_SystemFont)& aFont = *aFontIter;
-      if (!isFirst)
-      {
-        theDI << "\n";
-      }
-
-      theDI << aFont->ToString();
-      isFirst = Standard_False;
-    }
-    return 0;
-  }
-
+  bool toPrintList = theArgNb < 2, toPrintNames = false;
   Font_StrictLevel aStrictLevel = Font_StrictLevel_Any;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -5536,12 +5511,23 @@ static int VFont (Draw_Interpretor& theDI,
     {
       aMgr->InitFontDataBase();
     }
+    else if (anArgCase == "-list")
+    {
+      toPrintList = true;
+    }
+    else if (anArgCase == "-names")
+    {
+      toPrintList = true;
+      toPrintNames = true;
+    }
     else if (anArgIter + 1 < theArgNb
           && (anArgCase == "-find"
+           || anArgCase == "-findinfo"
+           || anArgCase == "-findall"
            || anArgCase == "find"))
     {
-      Standard_CString aFontName   = theArgVec[++anArgIter];
-      Font_FontAspect  aFontAspect = Font_FA_Undefined;
+      const TCollection_AsciiString aFontName (theArgVec[++anArgIter]);
+      Font_FontAspect aFontAspect = Font_FA_Undefined;
       if (++anArgIter < theArgNb)
       {
         anArgCase = theArgVec[anArgIter];
@@ -5552,9 +5538,52 @@ static int VFont (Draw_Interpretor& theDI,
         }
       }
 
-      if (Handle(Font_SystemFont) aFont = aMgr->FindFont (aFontName, aStrictLevel, aFontAspect))
+      const bool toFindAll   = (anArgCase == "-findall");
+      const bool toPrintInfo = (anArgCase == "-findinfo");
+      TCollection_AsciiString aResult;
+      if (toFindAll
+       || aFontName.Search ("*") != -1)
       {
-        theDI << aFont->ToString();
+        const Font_NListOfSystemFont aFonts = aMgr->GetAvailableFonts();
+        std::vector<Handle(Font_SystemFont)> aFontsSorted;
+        aFontsSorted.reserve (aFonts.Size());
+        for (Font_NListOfSystemFont::Iterator aFontIter (aFonts); aFontIter.More(); aFontIter.Next())
+        {
+          aFontsSorted.push_back (aFontIter.Value());
+        }
+        std::stable_sort (aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
+        for (std::vector<Handle(Font_SystemFont)>::iterator aFontIter = aFontsSorted.begin(); aFontIter != aFontsSorted.end(); ++aFontIter)
+        {
+          const Handle(Font_SystemFont)& aFont = *aFontIter;
+          const TCollection_AsciiString aCheck = TCollection_AsciiString ("string match -nocase \"") + aFontName + "\" \"" + aFont->FontName() + "\"";
+          if (theDI.Eval (aCheck.ToCString()) == 0
+          && *theDI.Result() != '1')
+          {
+            theDI.Reset();
+            continue;
+          }
+
+          theDI.Reset();
+          if (!aResult.IsEmpty())
+          {
+            aResult += "\n";
+          }
+
+          aResult += toPrintInfo ? aFont->ToString() : aFont->FontName();
+          if (!toFindAll)
+          {
+            break;
+          }
+        }
+      }
+      else if (Handle(Font_SystemFont) aFont = aMgr->FindFont (aFontName, aStrictLevel, aFontAspect))
+      {
+        aResult = toPrintInfo ? aFont->ToString() : aFont->FontName();
+      }
+
+      if (!aResult.IsEmpty())
+      {
+        theDI << aResult;
       }
       else
       {
@@ -5662,6 +5691,43 @@ static int VFont (Draw_Interpretor& theDI,
     {
       std::cerr << "Warning! Unknown argument '" << anArg << "'\n";
     }
+  }
+
+  if (toPrintList)
+  {
+    // just print the list of available fonts
+    Standard_Boolean isFirst = Standard_True;
+    const Font_NListOfSystemFont aFonts = aMgr->GetAvailableFonts();
+    std::vector<Handle(Font_SystemFont)> aFontsSorted;
+    aFontsSorted.reserve (aFonts.Size());
+    for (Font_NListOfSystemFont::Iterator aFontIter (aFonts); aFontIter.More(); aFontIter.Next())
+    {
+      aFontsSorted.push_back (aFontIter.Value());
+    }
+    std::stable_sort (aFontsSorted.begin(), aFontsSorted.end(), FontComparator());
+    for (std::vector<Handle(Font_SystemFont)>::iterator aFontIter = aFontsSorted.begin(); aFontIter != aFontsSorted.end(); ++aFontIter)
+    {
+      const Handle(Font_SystemFont)& aFont = *aFontIter;
+
+      if (toPrintNames)
+      {
+        if (!isFirst)
+        {
+          theDI << "\n";
+        }
+        theDI << "\"" << aFont->FontName() << "\"";
+      }
+      else
+      {
+        if (!isFirst)
+        {
+          theDI << "\n";
+        }
+        theDI << aFont->ToString();
+      }
+      isFirst = Standard_False;
+    }
+    return 0;
   }
 
   return 0;
@@ -6608,8 +6674,12 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vfont",
                             "vfont [-add pathToFont [fontName] [regular,bold,italic,boldItalic=undefined] [singleStroke]]"
                    "\n\t\t:        [-strict {any|aliases|strict}] [-find fontName [regular,bold,italic,boldItalic=undefined]] [-verbose {on|off}]"
+                   "\n\t\t:        [-findAll fontNameMask] [-findInfo fontName]"
                    "\n\t\t:        [-unicodeFallback {on|off}]"
-                   "\n\t\t:        [-clear] [-init]",
+                   "\n\t\t:        [-clear] [-init] [-list] [-names]"
+                   "\n\t\t: Work with font registry - register font, list available fonts, find font."
+                   "\n\t\t: -findAll  is same as -find, but can print more than one font when mask is passed."
+                   "\n\t\t: -findInfo is same as -find, but prints complete font information instead of family name.",
                    __FILE__, VFont, group);
 
   theCommands.Add ("vvertexmode",

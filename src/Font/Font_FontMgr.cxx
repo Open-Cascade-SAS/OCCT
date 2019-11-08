@@ -150,35 +150,114 @@ static Handle(Font_SystemFont) checkFont (const Handle(Font_FTLibrary)& theFTLib
   FT_Error aFaceError = FT_New_Face (theFTLib->Instance(), theFontPath, 0, &aFontFace);
   if (aFaceError != FT_Err_Ok)
   {
-    return NULL;
+    return Handle(Font_SystemFont)();
+  }
+  if (aFontFace->family_name == NULL // skip broken fonts (error in FreeType?)
+   || FT_Select_Charmap (aFontFace, ft_encoding_unicode) != 0) // Font_FTFont supports only UNICODE fonts
+  {
+    FT_Done_Face (aFontFace);
+    return Handle(Font_SystemFont)();
   }
 
+  // FreeType decomposes font definition into Family Name and Style Name,
+  // so that fonts within the same Family and different Styles can be identified.
+  // OCCT Font Manager natively handles 4 basic styles: Regular, Bold, Italic and Bold+Italic.
+  // To include other non-standard Styles, their names can be appended to Family Name; for this, names of normal Styles should be removed.
+  TCollection_AsciiString aFamily (aFontFace->family_name);
+  TCollection_AsciiString aStyle (aFontFace->style_name != NULL ? aFontFace->style_name : "");
   Font_FontAspect anAspect = Font_FA_Regular;
   if (aFontFace->style_flags == (FT_STYLE_FLAG_ITALIC | FT_STYLE_FLAG_BOLD))
   {
     anAspect = Font_FA_BoldItalic;
+    const Standard_Integer aRemoveItalic = aStyle.Search ("Italic");
+    if (aRemoveItalic != -1)
+    {
+      aStyle.Remove (aRemoveItalic, 6);
+    }
+    else
+    {
+      // synonym
+      const Standard_Integer aRemoveOblique = aStyle.Search ("Oblique");
+      if (aRemoveOblique != -1)
+      {
+        aStyle.Remove (aRemoveOblique, 7);
+      }
+    }
+
+    const Standard_Integer aRemoveBold = aStyle.Search ("Bold");
+    if (aRemoveBold != -1)
+    {
+      aStyle.Remove (aRemoveBold, 4);
+    }
   }
   else if (aFontFace->style_flags == FT_STYLE_FLAG_ITALIC)
   {
     anAspect = Font_FA_Italic;
+    const Standard_Integer aRemoveItalic = aStyle.Search ("Italic");
+    if (aRemoveItalic != -1)
+    {
+      aStyle.Remove (aRemoveItalic, 6);
+    }
+    else
+    {
+      // synonym
+      const Standard_Integer aRemoveOblique = aStyle.Search ("Oblique");
+      if (aRemoveOblique != -1)
+      {
+        aStyle.Remove (aRemoveOblique, 7);
+      }
+    }
   }
   else if (aFontFace->style_flags == FT_STYLE_FLAG_BOLD)
   {
     anAspect = Font_FA_Bold;
+    const Standard_Integer aRemoveBold = aStyle.Search ("Bold");
+    if (aRemoveBold != -1)
+    {
+      aStyle.Remove (aRemoveBold, 4);
+    }
   }
 
-  Handle(Font_SystemFont) aResult;
-  if (aFontFace->family_name != NULL                           // skip broken fonts (error in FreeType?)
-   && FT_Select_Charmap (aFontFace, ft_encoding_unicode) == 0) // Font_FTFont supports only UNICODE fonts
+  const Standard_Integer aRemoveReg = aStyle.Search ("Regular");
+  if (aRemoveReg != -1)
   {
-    aResult = new Font_SystemFont (aFontFace->family_name);
-    aResult->SetFontPath (anAspect, theFontPath);
-    // automatically identify some known single-line fonts
-    aResult->SetSingleStrokeFont (aResult->FontKey().StartsWith ("olf "));
+    aStyle.Remove (aRemoveReg, 7);
   }
+  else
+  {
+    // synonym
+    const Standard_Integer aRemoveBook = aStyle.Search ("Book");
+    if (aRemoveBook != -1)
+    {
+      aStyle.Remove (aRemoveBook, 4);
+    }
+  }
+
+  aStyle.LeftAdjust();
+  aStyle.RightAdjust();
+  for (;;)
+  {
+    // remove double spaces after removal of several keywords in-between, like "Condensed Bold Italic Oblique"
+    const Standard_Integer aRemoveSpace = aStyle.Search ("  ");
+    if (aRemoveSpace == -1)
+    {
+      break;
+    }
+
+    aStyle.Remove (aRemoveSpace, 1);
+  }
+
+  if (!aStyle.IsEmpty())
+  {
+    aFamily = aFamily + " " + aStyle;
+  }
+
+  Handle(Font_SystemFont) aResult = new Font_SystemFont (aFamily);
+  aResult->SetFontPath (anAspect, theFontPath);
+  // automatically identify some known single-line fonts
+  aResult->SetSingleStrokeFont (aResult->FontKey().StartsWith ("olf "));
 
   FT_Done_Face (aFontFace);
-
   return aResult;
 }
 

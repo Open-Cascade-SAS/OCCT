@@ -1,0 +1,26 @@
+puts "================"
+puts "0031118: Visualization - Font_FontMgr skips fonts with unknown styles like Narrow or Black"
+puts "================"
+puts ""
+
+dtracelevel trace
+pload VISUALIZATION
+
+# Do the trick - find any pair of fonts with and without "Narrow" style suffix.
+# On Windows it might be "Arial" and "Arial Narrow", on Linux "Liberation Sans" and "Liberation Sans Narrow".
+vfont -verbose 1
+set aFontN [vfont -strict -find "* Narrow"]
+set aFontR [string map {" Narrow" ""} $aFontN]
+vfont -strict -findInfo "$aFontN"
+vfont -strict -findInfo "$aFontR"
+
+vclear
+vinit View1
+vpoint p0 0 0  0
+vpoint p1 0 10 0
+vdrawtext t1 "My Text \[$aFontR\]" -font "$aFontR" -pos 0 5 0
+vdrawtext t2 "My Text \[$aFontN\]" -font "$aFontN" -pos 0 6 0 
+vtop
+vfit
+
+vdump $imagedir/${casename}.png
