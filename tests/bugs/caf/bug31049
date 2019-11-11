@@ -1,0 +1,20 @@
+puts "=================================================================================="
+puts "0031049: OCAF document can't be opened, Type not found or Unrecognized File Format"
+puts "=================================================================================="
+puts ""
+
+Open [locate_data_file bug31049_Npr.std] D
+GetPoint D 0:1:2:1:18:1:1:1:1:1:1:1:1:1:1:1:2:5 p1
+set info [dump p1]
+##*********** Dump of p1 *************
+##Point : 2.136843869657140e+03, -3.636437663372889e+02, 9.822340087890625e+02
+
+GetPoint D 0:1:2:1:18:1:1:1:1:1:1:1:1:1:1:3:2:5 p3
+set info3 [dump p3]
+##*********** Dump of p3 *************
+##Point : 2.136843869657140e+03, -3.606482046100116e+02, 9.822340087890625e+02
+
+if {[regexp "Point" $info] != 1 } {puts "Error : There is no Point attribute at the specified label 0:1:2:1:18:1:1:1:1:1:1:1:1:1:1:1:2:5"
+} elseif { [regexp "Point" $info3] != 1 } {puts "Error : There is no Point attribute at the specified label 0:1:2:1:18:1:1:1:1:1:1:1:1:1:1:3:2:5"
+} else {puts "Bug31049 : OK"; Close D}
+

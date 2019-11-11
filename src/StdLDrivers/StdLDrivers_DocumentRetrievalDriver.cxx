@@ -34,6 +34,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Handle.hxx>
 #include <TDocStd_Document.hxx>
+#include <Storage_Schema.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT (StdLDrivers_DocumentRetrievalDriver, PCDM_RetrievalDriver)
 
@@ -142,6 +143,14 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
       aCurTypeName = aTypeData.Type (i);
       aCurTypeNum  = aTypeData.Type (aCurTypeName);
 
+	  TCollection_AsciiString  newName;
+	  if (Storage_Schema::CheckTypeMigration(aCurTypeName, newName)) {
+#ifdef OCCT_DEBUG
+		  std::cout << "CheckTypeMigration:OldType = " << aCurTypeName << " Len = " << aCurTypeNum << std::endl;
+		  std::cout << "CheckTypeMigration:NewType = " << newName << " Len = " << newName.Length() << std::endl;
+#endif
+		  aCurTypeName = newName;
+	  }
       StdObjMgt_Persistent::Instantiator anInstantiator;
       if (aMapOfInst.Find(aCurTypeName, anInstantiator))
         anInstantiators (aCurTypeNum) = anInstantiator;

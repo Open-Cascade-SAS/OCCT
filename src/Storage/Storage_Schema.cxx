@@ -773,17 +773,26 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
       }
       else
       {
-        // hard-code migration table for known types
-        aDMap.Bind("TDataStd_Shape",          "TDataXtd_Shape");
-        aDMap.Bind("TDataStd_Constraint",     "TDataXtd_Constraint");
+        // hard-code migration table for known types	
+	aDMap.Bind("TDataStd_Shape",          "TDataXtd_Shape");
+	aDMap.Bind("TDataStd_Constraint",     "TDataXtd_Constraint");
         aDMap.Bind("TDataStd_Geometry",       "TDataXtd_Geometry");
-        aDMap.Bind("TDataStd_Axis",           "TDataXtd_Axis");
-        aDMap.Bind("TDataStd_Point",          "TDataXtd_Point");
-        aDMap.Bind("TDataStd_Plane",          "TDataXtd_Plane");
-        aDMap.Bind("TDataStd_Position",       "TDataXtd_Position");
-        aDMap.Bind("TDataStd_Placement",      "TDataXtd_Placement");
-        aDMap.Bind("TDataStd_PatternStd",     "TDataXtd_PatternStd");
-        aDMap.Bind("TPrsStd_AISPresentation", "TDataXtd_Presentation");
+	aDMap.Bind("TDataStd_Axis",           "TDataXtd_Axis");
+	aDMap.Bind("TDataStd_Point",          "TDataXtd_Point");
+	aDMap.Bind("TDataStd_Plane",          "TDataXtd_Plane");
+	aDMap.Bind("TDataStd_Position",       "TDataXtd_Position");
+	aDMap.Bind("TDataStd_Placement",      "TDataXtd_Placement");
+	aDMap.Bind("TDataStd_PatternStd",     "TDataXtd_PatternStd");
+	aDMap.Bind("TPrsStd_AISPresentation", "TDataXtd_Presentation");
+        aDMap.Bind("PDataStd_Shape",          "PDataXtd_Shape");
+        aDMap.Bind("PDataStd_Constraint",     "PDataXtd_Constraint");
+        aDMap.Bind("PDataStd_Geometry",       "PDataXtd_Geometry");
+        aDMap.Bind("PDataStd_Axis",           "PDataXtd_Axis");
+        aDMap.Bind("PDataStd_Point",          "PDataXtd_Point");
+        aDMap.Bind("PDataStd_Plane",          "PDataXtd_Plane");
+        aDMap.Bind("PDataStd_Position",       "PDataXtd_Position");
+        aDMap.Bind("PDataStd_Placement",      "PDataXtd_Placement");
+        aDMap.Bind("PDataStd_PatternStd",     "PDataXtd_PatternStd");
       }
 #ifdef OCCT_DEBUG
       std::cout << "Storage_Sheme:: aDataMap.Size = " << aDMap.Extent() << std::endl;
