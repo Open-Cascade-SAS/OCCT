@@ -1,0 +1,17 @@
+puts "======="
+puts "0031144: Shape Healing - ShapeAnalysis::OuterWire() infinite loop on solid obtained from IFC"
+puts "======="
+puts ""
+puts "REQUIRED ALL: Meshing statuses: Failure"
+
+cpulimit 10
+
+restore [locate_data_file bug31144.brep] a
+
+checkshape a
+tolerance a
+
+puts "Note: incmesh is called because this is the only known way to call problematic method"
+incmesh a 1.
+
+trinfo a

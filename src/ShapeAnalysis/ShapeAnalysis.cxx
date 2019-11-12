@@ -241,9 +241,10 @@ Standard_Boolean ShapeAnalysis::IsOuterBound(const TopoDS_Face& face)
 
 //=======================================================================
 //function : OuterBound
-//purpose  : replacement of bad BRepTools::OuterBound()
+//purpose  : replacement of bad BRepTools::OuterBound(), to be merged
+// - skips internal vertices in face, if any, without exception
+// - returns positively oriented wire rather than greater one
 //=======================================================================
-//:n3
 
 TopoDS_Wire ShapeAnalysis::OuterWire(const TopoDS_Face& face) 
 {
@@ -251,21 +252,26 @@ TopoDS_Wire ShapeAnalysis::OuterWire(const TopoDS_Face& face)
   F.Orientation(TopAbs_FORWARD);
 
   BRep_Builder B;
-  TopoDS_Wire W;
-  TopoDS_Iterator exp (F, Standard_False);
-  while ( exp.More() ) {
-    if(exp.Value().ShapeType() != TopAbs_WIRE)
+  TopoDS_Iterator anIt (F, Standard_False);
+  while (anIt.More())
+  {
+    TopoDS_Shape aWire = anIt.Value();
+    anIt.Next();
+
+    // skip possible internal vertices in face
+    if (aWire.ShapeType() != TopAbs_WIRE)
       continue;
-    W = TopoDS::Wire ( exp.Value() );
-    exp.Next();
-    if ( ! exp.More() ) return W;
-    //szv#4:S4163:12Mar99 SGI warns
-    TopoDS_Shape sh = F.EmptyCopied();
-    TopoDS_Face fc = TopoDS::Face( sh );
-    B.Add ( fc, W );
-    if ( ShapeAnalysis::IsOuterBound ( fc ) ) return W;
+
+    // if current wire is the last one, return it without analysis
+    if (! anIt.More())
+      return TopoDS::Wire (aWire);
+
+    TopoDS_Shape aTestFace = F.EmptyCopied();
+    B.Add (aTestFace, aWire);
+    if (ShapeAnalysis::IsOuterBound (TopoDS::Face (aTestFace)))
+      return TopoDS::Wire (aWire);
   }
-  return W;
+  return TopoDS_Wire();
 }
 
 //=======================================================================
