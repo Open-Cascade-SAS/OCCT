@@ -43,9 +43,16 @@ public:
     return myFilePaths[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular];
   }
 
+  //! Returns font file path.
+  Standard_Integer FontFaceId (Font_FontAspect theAspect) const
+  {
+    return myFaceIds[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular];
+  }
+
   //! Sets font file path for specific aspect.
   Standard_EXPORT void SetFontPath (Font_FontAspect theAspect,
-                                    const TCollection_AsciiString& thePath);
+                                    const TCollection_AsciiString& thePath,
+                                    const Standard_Integer theFaceId = 0);
 
   //! Returns TRUE if dedicated file for specified font aspect has been defined.
   bool HasFontAspect (Font_FontAspect theAspect) const
@@ -55,9 +62,12 @@ public:
 
   //! Returns any defined font file path.
   const TCollection_AsciiString& FontPathAny (Font_FontAspect theAspect,
-                                              bool& theToSynthesizeItalic) const
+                                              bool& theToSynthesizeItalic,
+                                              Standard_Integer& theFaceId) const
   {
-    const TCollection_AsciiString& aPath = myFilePaths[theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular];
+    const Font_FontAspect anAspect = theAspect != Font_FontAspect_UNDEFINED ? theAspect : Font_FontAspect_Regular;
+    const TCollection_AsciiString& aPath = myFilePaths[anAspect];
+    theFaceId = myFaceIds[anAspect];
     if (!aPath.IsEmpty())
     {
       return aPath;
@@ -70,17 +80,20 @@ public:
       && !myFilePaths[Font_FontAspect_Bold].IsEmpty())
       {
         theToSynthesizeItalic = true;
+        theFaceId = myFaceIds[Font_FontAspect_Bold];
         return myFilePaths[Font_FontAspect_Bold];
       }
       else if (!myFilePaths[Font_FontAspect_Regular].IsEmpty())
       {
         theToSynthesizeItalic = true;
+        theFaceId = myFaceIds[Font_FontAspect_Regular];
         return myFilePaths[Font_FontAspect_Regular];
       }
     }
 
     if (!myFilePaths[Font_FontAspect_Regular].IsEmpty())
     {
+      theFaceId = myFaceIds[Font_FontAspect_Regular];
       return myFilePaths[Font_FontAspect_Regular];
     }
 
@@ -88,9 +101,11 @@ public:
     {
       if (!myFilePaths[anAspectIter].IsEmpty())
       {
+        theFaceId = myFaceIds[anAspectIter];
         return myFilePaths[anAspectIter];
       }
     }
+    theFaceId = myFaceIds[Font_FontAspect_Regular];
     return myFilePaths[Font_FontAspect_Regular];
   }
 
@@ -128,6 +143,7 @@ public:
 private:
 
   TCollection_AsciiString myFilePaths[Font_FontAspect_NB]; //!< paths to the font file
+  Standard_Integer        myFaceIds  [Font_FontAspect_NB]; //!< face ids per font file
   TCollection_AsciiString myFontKey;      //!< font family name, lower cased
   TCollection_AsciiString myFontName;     //!< font family name
   Standard_Boolean        myIsSingleLine; //!< single stroke font flag, FALSE by default

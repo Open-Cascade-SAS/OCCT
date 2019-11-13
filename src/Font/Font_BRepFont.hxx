@@ -52,8 +52,10 @@ public:
   //! Constructor with initialization.
   //! @param theFontPath FULL path to the font
   //! @param theSize     the face size in model units
+  //! @param theFaceId   face id within the file (0 by default)
   Standard_EXPORT Font_BRepFont (const NCollection_String& theFontPath,
-                                 const Standard_Real       theSize);
+                                 const Standard_Real       theSize,
+                                 const Standard_Integer    theFaceId = 0);
 
   //! Constructor with initialization.
   //! @param theFontName    the font name
@@ -71,9 +73,11 @@ public:
   //! Initialize the font.
   //! @param theFontPath FULL path to the font
   //! @param theSize     the face size in model units
+  //! @param theFaceId   face id within the file (0 by default)
   //! @return true on success
   Standard_EXPORT bool Init (const NCollection_String& theFontPath,
-                             const Standard_Real       theSize);
+                             const Standard_Real       theSize,
+                             const Standard_Integer    theFaceId);
 
   //! Find (using Font_FontMgr) and initialize the font from the given name.
   //! Please take into account that size is specified NOT in typography points (pt.).

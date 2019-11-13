@@ -29,6 +29,7 @@ Font_SystemFont::Font_SystemFont (const TCollection_AsciiString& theFontName)
   myFontName (theFontName),
   myIsSingleLine (Standard_False)
 {
+  memset (myFaceIds, 0, sizeof(myFaceIds));
   if (theFontName.IsEmpty()) { throw Standard_ProgramError ("Font_SystemFont constructor called with empty font name"); }
   myFontKey.LowerCase();
 }
@@ -38,10 +39,12 @@ Font_SystemFont::Font_SystemFont (const TCollection_AsciiString& theFontName)
 // purpose  :
 // =======================================================================
 void Font_SystemFont::SetFontPath (Font_FontAspect theAspect,
-                                   const TCollection_AsciiString& thePath)
+                                   const TCollection_AsciiString& thePath,
+                                   const Standard_Integer theFaceId)
 {
   if (theAspect == Font_FontAspect_UNDEFINED) { throw Standard_ProgramError ("Font_SystemFont::SetFontPath() called with UNDEFINED aspect"); }
   myFilePaths[theAspect] = thePath;
+  myFaceIds  [theAspect] = theFaceId;
 }
 
 // =======================================================================
@@ -102,6 +105,10 @@ TCollection_AsciiString Font_SystemFont::ToString() const
       isFirstAspect = false;
     }
     aDesc += FontPath ((Font_FontAspect )anAspectIter);
+    if (FontFaceId ((Font_FontAspect )anAspectIter) != 0)
+    {
+      aDesc = aDesc + "," + FontFaceId ((Font_FontAspect )anAspectIter);
+    }
   }
   aDesc += "]";
   return aDesc;

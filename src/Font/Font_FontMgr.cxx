@@ -139,24 +139,29 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
 
 #endif
 
-// =======================================================================
-// function : checkFont
-// purpose  :
-// =======================================================================
-static Handle(Font_SystemFont) checkFont (const Handle(Font_FTLibrary)& theFTLib,
-                                          const Standard_CString        theFontPath)
+//! Retrieve font information.
+//! @param theFonts   [out] list of validated fonts
+//! @param theFTLib    [in] font library
+//! @param theFontPath [in] path to the file
+//! @param theFaceId   [in] face id, or -1 to load all faces within the file
+//! @return TRUE if at least one font face has been detected
+static bool checkFont (NCollection_Sequence<Handle(Font_SystemFont)>& theFonts,
+                       const Handle(Font_FTLibrary)& theFTLib,
+                       const TCollection_AsciiString& theFontPath,
+                       FT_Long theFaceId = -1)
 {
+  const FT_Long aFaceId = theFaceId != -1 ? theFaceId : 0;
   FT_Face aFontFace;
-  FT_Error aFaceError = FT_New_Face (theFTLib->Instance(), theFontPath, 0, &aFontFace);
+  FT_Error aFaceError = FT_New_Face (theFTLib->Instance(), theFontPath.ToCString(), aFaceId, &aFontFace);
   if (aFaceError != FT_Err_Ok)
   {
-    return Handle(Font_SystemFont)();
+    return false;
   }
   if (aFontFace->family_name == NULL // skip broken fonts (error in FreeType?)
    || FT_Select_Charmap (aFontFace, ft_encoding_unicode) != 0) // Font_FTFont supports only UNICODE fonts
   {
     FT_Done_Face (aFontFace);
-    return Handle(Font_SystemFont)();
+    return false;
   }
 
   // FreeType decomposes font definition into Family Name and Style Name,
@@ -253,12 +258,30 @@ static Handle(Font_SystemFont) checkFont (const Handle(Font_FTLibrary)& theFTLib
   }
 
   Handle(Font_SystemFont) aResult = new Font_SystemFont (aFamily);
-  aResult->SetFontPath (anAspect, theFontPath);
+  aResult->SetFontPath (anAspect, theFontPath, (Standard_Integer )aFaceId);
   // automatically identify some known single-line fonts
   aResult->SetSingleStrokeFont (aResult->FontKey().StartsWith ("olf "));
+  theFonts.Append (aResult);
+
+  if (theFaceId < aFontFace->num_faces)
+  {
+    const FT_Long aNbInstances = aFontFace->style_flags >> 16;
+    for (FT_Long anInstIter = 1; anInstIter < aNbInstances; ++anInstIter)
+    {
+      const FT_Long aSubFaceId = aFaceId + (anInstIter << 16);
+      checkFont (theFonts, theFTLib, theFontPath, aSubFaceId);
+    }
+  }
+  if (theFaceId == -1)
+  {
+    for (FT_Long aFaceIter = 1; aFaceIter < aFontFace->num_faces; ++aFaceIter)
+    {
+      checkFont (theFonts, theFTLib, theFontPath, aFaceIter);
+    }
+  }
 
   FT_Done_Face (aFontFace);
-  return aResult;
+  return true;
 }
 
 // =======================================================================
@@ -425,10 +448,24 @@ Font_FontMgr::Font_FontMgr()
 // function : CheckFont
 // purpose  :
 // =======================================================================
+Standard_Boolean Font_FontMgr::CheckFont (NCollection_Sequence<Handle(Font_SystemFont)>& theFonts,
+                                          const TCollection_AsciiString& theFontPath) const
+{
+  Handle(Font_FTLibrary) aFtLibrary = new Font_FTLibrary();
+  return checkFont (theFonts, aFtLibrary, theFontPath, 0);
+}
+
+// =======================================================================
+// function : CheckFont
+// purpose  :
+// =======================================================================
 Handle(Font_SystemFont) Font_FontMgr::CheckFont (Standard_CString theFontPath) const
 {
   Handle(Font_FTLibrary) aFtLibrary = new Font_FTLibrary();
-  return checkFont (aFtLibrary, theFontPath);
+  NCollection_Sequence<Handle(Font_SystemFont)> aFonts;
+  return checkFont (aFonts, aFtLibrary, theFontPath, 0)
+       ? aFonts.First()
+       : Handle(Font_SystemFont)();
 }
 
 // =======================================================================
@@ -453,14 +490,17 @@ Standard_Boolean Font_FontMgr::RegisterFont (const Handle(Font_SystemFont)& theF
   Handle(Font_SystemFont) anOldFont = myFontMap.FindKey (anOldIndex);
   for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
   {
-    if (anOldFont->FontPath ((Font_FontAspect )anAspectIter).IsEqual (theFont->FontPath ((Font_FontAspect )anAspectIter)))
+    if (anOldFont->FontPath ((Font_FontAspect )anAspectIter).IsEqual (theFont->FontPath ((Font_FontAspect )anAspectIter))
+     && anOldFont->FontFaceId ((Font_FontAspect )anAspectIter) == theFont->FontFaceId ((Font_FontAspect )anAspectIter))
     {
       continue;
     }
     else if (theToOverride
          || !anOldFont->HasFontAspect ((Font_FontAspect )anAspectIter))
     {
-      anOldFont->SetFontPath ((Font_FontAspect )anAspectIter, theFont->FontPath ((Font_FontAspect )anAspectIter));
+      anOldFont->SetFontPath ((Font_FontAspect )anAspectIter,
+                              theFont->FontPath ((Font_FontAspect )anAspectIter),
+                              theFont->FontFaceId ((Font_FontAspect )anAspectIter));
     }
     else if (theFont->HasFontAspect ((Font_FontAspect )anAspectIter))
     {
@@ -487,6 +527,7 @@ void Font_FontMgr::InitFontDataBase()
 {
   myFontMap.Clear();
   Handle(Font_FTLibrary) aFtLibrary = new Font_FTLibrary();
+  NCollection_Sequence<Handle(Font_SystemFont)> aFonts;
 
 #if defined(OCCT_UWP)
   // system font files are not accessible
@@ -548,10 +589,9 @@ void Font_FontMgr::InitFontDataBase()
       aFontExtension.LowerCase();
       if (aSupportedExtensions.Contains (aFontExtension))
       {
-        if (Handle(Font_SystemFont) aNewFont = checkFont (aFtLibrary, aFontPath.ToCString()))
-        {
-          RegisterFont (aNewFont, false);
-        }
+        aFonts.Clear();
+        checkFont (aFonts, aFtLibrary, aFontPath.ToCString());
+        RegisterFonts (aFonts, false);
       }
     }
   }
@@ -680,10 +720,9 @@ void Font_FontMgr::InitFontDataBase()
         aFontFilePath.SystemName (aFontFileName);
         aFontFileName = anIter.Value() + "/" + aFontFileName;
 
-        if (Handle(Font_SystemFont) aNewFont = checkFont (aFtLibrary, aFontFileName.ToCString()))
-        {
-          RegisterFont (aNewFont, false);
-        }
+        aFonts.Clear();
+        checkFont (aFonts, aFtLibrary, aFontFileName);
+        RegisterFonts (aFonts, false);
       }
 
   #if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
@@ -738,9 +777,12 @@ void Font_FontMgr::InitFontDataBase()
         }
         TCollection_AsciiString aFontFileName (aLine.SubString (1, anEndOfFileName));
         aFontPath.AssignCat (aFontFileName);
-        if (Handle(Font_SystemFont) aNewFont = checkFont (aFtLibrary, aFontPath.ToCString()))
+
+        aFonts.Clear();
+        if (checkFont (aFonts, aFtLibrary, aFontPath))
         {
-          RegisterFont (aNewFont, false);
+          RegisterFonts (aFonts, false);
+          const Handle(Font_SystemFont)& aNewFont = aFonts.First();
           if (!aXLFD.IsEmpty()
             && aXLFD.Search ("-0-0-0-0-") != -1) // ignore non-resizable fonts
           {
@@ -763,7 +805,7 @@ void Font_FontMgr::InitFontDataBase()
             }
 
             Handle(Font_SystemFont) aNewFontFromXLFD = new Font_SystemFont (anXName);
-            aNewFontFromXLFD->SetFontPath (anXAspect, aFontPath);
+            aNewFontFromXLFD->SetFontPath (anXAspect, aFontPath, 0);
             if (!aNewFont->IsEqual (aNewFontFromXLFD))
             {
               RegisterFont (aNewFontFromXLFD, false);

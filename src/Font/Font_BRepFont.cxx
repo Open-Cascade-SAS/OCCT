@@ -147,7 +147,8 @@ void Font_BRepFont::init()
 // purpose  :
 // =======================================================================
 Font_BRepFont::Font_BRepFont (const NCollection_String& theFontPath,
-                              const Standard_Real       theSize)
+                              const Standard_Real       theSize,
+                              const Standard_Integer    theFaceId)
 : myPrecision  (Precision::Confusion()),
   myScaleUnits (1.0),
   myIsCompositeCurve (Standard_False),
@@ -161,7 +162,7 @@ Font_BRepFont::Font_BRepFont (const NCollection_String& theFontPath,
   }
 
   myScaleUnits = getScale (theSize);
-  Font_FTFont::Init (theFontPath.ToCString(), THE_FONT_PARAMS);
+  Font_FTFont::Init (theFontPath.ToCString(), THE_FONT_PARAMS, theFaceId);
 }
 
 // =======================================================================
@@ -216,7 +217,8 @@ void Font_BRepFont::SetCompositeCurveMode (const Standard_Boolean theToConcatena
 // purpose  :
 // =======================================================================
 bool Font_BRepFont::Init (const NCollection_String& theFontPath,
-                          const Standard_Real       theSize)
+                          const Standard_Real       theSize,
+                          const Standard_Integer    theFaceId)
 {
   if (theSize <= myPrecision * 100.0)
   {
@@ -224,7 +226,7 @@ bool Font_BRepFont::Init (const NCollection_String& theFontPath,
   }
 
   myScaleUnits = getScale (theSize);
-  return Font_FTFont::Init (theFontPath.ToCString(), THE_FONT_PARAMS);
+  return Font_FTFont::Init (theFontPath.ToCString(), THE_FONT_PARAMS, theFaceId);
 }
 
 // =======================================================================

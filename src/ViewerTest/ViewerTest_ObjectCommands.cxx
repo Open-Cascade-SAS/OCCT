@@ -5645,13 +5645,15 @@ static int VFont (Draw_Interpretor& theDI,
         Handle(Font_SystemFont) aFont2 = new Font_SystemFont (aName);
         if (aFontAspect != Font_FontAspect_UNDEFINED)
         {
-          aFont2->SetFontPath (aFontAspect, aFontPath);
+          aFont2->SetFontPath (aFontAspect, aFontPath, 0);
         }
         else
         {
           for (int anAspectIter = 0; anAspectIter < Font_FontAspect_NB; ++anAspectIter)
           {
-            aFont2->SetFontPath ((Font_FontAspect )anAspectIter, aFont->FontPath ((Font_FontAspect )anAspectIter));
+            aFont2->SetFontPath ((Font_FontAspect )anAspectIter,
+                                 aFont->FontPath ((Font_FontAspect )anAspectIter),
+                                 aFont->FontFaceId ((Font_FontAspect )anAspectIter));
           }
         }
         aFont = aFont2;

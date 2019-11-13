@@ -83,7 +83,8 @@ void Font_FTFont::Release()
 // =======================================================================
 bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
                         const TCollection_AsciiString& theFileName,
-                        const Font_FTFontParams& theParams)
+                        const Font_FTFontParams& theParams,
+                        const Standard_Integer theFaceId)
 {
   Release();
   myBuffer = theData;
@@ -98,7 +99,7 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
 
   if (!theData.IsNull())
   {
-    if (FT_New_Memory_Face (myFTLib->Instance(), theData->Data(), (FT_Long )theData->Size(), 0, &myFTFace) != 0)
+    if (FT_New_Memory_Face (myFTLib->Instance(), theData->Data(), (FT_Long )theData->Size(), (FT_Long )theFaceId, &myFTFace) != 0)
     {
       Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from memory", Message_Trace);
       Release();
@@ -107,7 +108,7 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
   }
   else
   {
-    if (FT_New_Face (myFTLib->Instance(), myFontPath.ToCString(), 0, &myFTFace) != 0)
+    if (FT_New_Face (myFTLib->Instance(), myFontPath.ToCString(), (FT_Long )theFaceId, &myFTFace) != 0)
     {
       //Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from file", Message_Trace);
       Release();
@@ -166,9 +167,10 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate (const TCollection_AsciiString& t
       aParams.IsSingleStrokeFont = true;
     }
 
-    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (aFontAspect, aParams.ToSynthesizeItalic);
+    Standard_Integer aFaceId = 0;
+    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (aFontAspect, aParams.ToSynthesizeItalic, aFaceId);
     Handle(Font_FTFont) aFont = new Font_FTFont();
-    if (aFont->Init (aPath, aParams))
+    if (aFont->Init (aPath, aParams, aFaceId))
     {
       aFont->myFontAspect = aFontAspect;
       return aFont;
@@ -193,7 +195,7 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate (const TCollection_AsciiString& t
                                                                  Font_DejavuSans_Latin_woff_size,
                                                                  const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
     Handle(Font_FTFont) aFont = new Font_FTFont();
-    if (aFont->Init (aBuffer, "Embed Fallback Font", aParams))
+    if (aFont->Init (aBuffer, "Embed Fallback Font", aParams, 0))
     {
       aFont->myFontAspect = aFontAspect;
       return aFont;
@@ -221,8 +223,9 @@ bool Font_FTFont::FindAndInit (const TCollection_AsciiString& theFontName,
       aParams.IsSingleStrokeFont = true;
     }
 
-    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic);
-    return Init (aPath, aParams);
+    Standard_Integer aFaceId = 0;
+    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic, aFaceId);
+    return Init (aPath, aParams, aFaceId);
   }
   else if (theStrictLevel == Font_StrictLevel_Any)
   {
@@ -234,7 +237,7 @@ bool Font_FTFont::FindAndInit (const TCollection_AsciiString& theFontName,
     Handle(NCollection_Buffer) aBuffer = new NCollection_Buffer (Handle(NCollection_BaseAllocator)(),
                                                                  Font_DejavuSans_Latin_woff_size,
                                                                  const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
-    return Init (aBuffer, "Embed Fallback Font", aParams);
+    return Init (aBuffer, "Embed Fallback Font", aParams, 0);
   }
   Release();
   return false;
@@ -260,8 +263,9 @@ bool Font_FTFont::findAndInitFallback (Font_UnicodeSubset theSubset)
     Font_FTFontParams aParams = myFontParams;
     aParams.IsSingleStrokeFont = aRequestedFont->IsSingleStrokeFont();
 
-    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic);
-    if (myFallbackFaces[theSubset]->Init (aPath, aParams))
+    Standard_Integer aFaceId = 0;
+    const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic, aFaceId);
+    if (myFallbackFaces[theSubset]->Init (aPath, aParams, aFaceId))
     {
       Message::DefaultMessenger()->Send (TCollection_AsciiString ("Font_FTFont, using fallback font '") + aRequestedFont->FontName() + "'"
                                       + " for symbols unsupported by '" + myFTFace->family_name + "'", Message_Trace);
