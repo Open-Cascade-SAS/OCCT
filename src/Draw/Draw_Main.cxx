@@ -70,6 +70,11 @@ Standard_Integer Draw_Main (int /*argc*/, char* argv[], const FDraw_InitAppli fD
   Draw_IsConsoleSubsystem = Standard_True;
   theDraw_InitAppli = fDraw_InitAppli;
 
+  // Set console code page to UTF-8 so that input from cin and output to cout 
+  // pass Unicode symbols as expected
+  SetConsoleCP(CP_UTF8);
+  SetConsoleOutputCP(CP_UTF8);
+
   // MKV 01.02.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4)))
   Tcl_FindExecutable(argv[0]);

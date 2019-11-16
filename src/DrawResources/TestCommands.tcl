@@ -610,6 +610,18 @@ proc testgrid {args} {
         # prepare command file for running test case in separate instance of DRAW
         set file_cmd "$logdir/$group/$grid/${casename}.tcl"
         set fd_cmd [open $file_cmd w]
+
+        # UTF-8 encoding is used by default on Linux everywhere, and "unicode" is set 
+        # by default as encoding of stdin and stdout on Windows in interactive mode; 
+        # however in batch mode on Windows default encoding is set to system one (e.g. 1252),
+        # so we need to set UTF-8 encoding explicitly to have Unicode symbols transmitted 
+        # correctly between calling and caller processes
+        if { "$tcl_platform(platform)" == "windows" } {
+            puts $fd_cmd "fconfigure stdout -encoding utf-8"
+            puts $fd_cmd "fconfigure stdin -encoding utf-8"
+        }
+
+        # commands to set up and run test
         puts $fd_cmd "$imgdir_cmd"
         puts $fd_cmd "set test_image $casename"
         puts $fd_cmd "_run_test $dir $group $grid $casefile t"
@@ -629,7 +641,7 @@ proc testgrid {args} {
         puts $fd_cmd "exit"
         close $fd_cmd
 
-        # commant to run DRAW with a command file;
+        # command to run DRAW with a command file;
         # note that empty string is passed as standard input to avoid possible 
         # hang-ups due to waiting for stdin of the launching process
         set command "exec <<{} DRAWEXE -f $file_cmd"

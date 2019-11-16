@@ -9,12 +9,15 @@ puts ""
 pload XDE
 
 # words "it works" translated to Traditional Chinese by Google Translate
-set s [encoding convertfrom utf-8 "\xE6\x9C\x89\xE7\x94\xA8"]
+set filename "${test_image}_[encoding convertfrom utf-8 \xE6\x9C\x89\xE7\x94\xA8].igs"
 
-igesbrep [locate_data_file bug22125_Part1_badname.igs] a *
-brepiges a ${imagedir}/Part1_badname_$s.igs
-igesbrep ${imagedir}/Part1_badname_$s.igs result *
+puts "Test saving file with non-ascii file name: $filename"
+file delete -force ${imagedir}/$filename
 
-file delete -force [glob -nocomplain ${imagedir}/Part1_badname_*.igs]
+box b 10 10 10
+brepiges b ${imagedir}/$filename
+igesbrep ${imagedir}/$filename result *
 
-checkview -display result -2d -path ${imagedir}/${test_image}.png
+if { ! [file exists ${imagedir}/$filename] } {
+  puts "Error: file is not found with expected name \"${imagedir}/$filename\""
+}

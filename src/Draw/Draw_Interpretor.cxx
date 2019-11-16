@@ -371,15 +371,7 @@ void Draw_Interpretor::Reset()
 
 Draw_Interpretor& Draw_Interpretor::Append(const Standard_CString s)
 {
-#ifdef TCL_USES_UTF8
-  // Convert string to UTF-8 format for Tcl
-  Tcl_DString TclString;
-  Tcl_ExternalToUtfDString ( NULL, s, -1, &TclString );
-  Tcl_AppendResult ( myInterp, Tcl_DStringValue ( &TclString ), (Standard_CString)0 );
-  Tcl_DStringFree ( &TclString );
-#else
   Tcl_AppendResult(myInterp,s,(Standard_CString)0);
-#endif
   return *this;
 }
 
@@ -457,21 +449,7 @@ Draw_Interpretor& Draw_Interpretor::Append(const Standard_SStream& s)
 
 void Draw_Interpretor::AppendElement(const Standard_CString s)
 {
-#ifdef TCL_USES_UTF8
-  // Convert string to UTF-8 format for Tcl
-  Tcl_DString TclString;
-  Tcl_ExternalToUtfDString ( NULL, s, -1, &TclString );
-  Tcl_AppendElement ( myInterp, Tcl_DStringValue ( &TclString ) );
-  Tcl_DStringFree ( &TclString );
-#else
-#ifdef IRIX
-  //AppendElement is declared as (Tcl_Interp *interp, char *string)
-  //on SGI 32
-  Tcl_AppendElement(myInterp,(char*) s);
-#else
   Tcl_AppendElement(myInterp, s);
-#endif
-#endif
 }
 
 //=======================================================================

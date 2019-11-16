@@ -621,12 +621,7 @@ Standard_Boolean Draw_Interprete(const char* com)
 
   if (*theCommands.Result())
   {
-  #ifdef _WIN32
-    const TCollection_ExtendedString aResWide (theCommands.Result());
-    std::wcout << aResWide.ToWideString() << std::endl;
-  #else
     std::cout << theCommands.Result() << std::endl;
-  #endif
   }
 
   if (Draw_Chrono && hadchrono) {
