@@ -779,11 +779,11 @@ Standard_Boolean OpenGl_FrameBuffer::BufferDump (const Handle(OpenGl_Context)& t
   {
   #if !defined(GL_ES_VERSION_2_0)
     case Image_Format_Gray:
-      aFormat = GL_DEPTH_COMPONENT;
+      aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
       aType   = GL_UNSIGNED_BYTE;
       break;
     case Image_Format_GrayF:
-      aFormat = GL_DEPTH_COMPONENT;
+      aFormat = theBufferType == Graphic3d_BT_Depth ? GL_DEPTH_COMPONENT : GL_RED;
       aType   = GL_FLOAT;
       break;
     case Image_Format_RGF:
