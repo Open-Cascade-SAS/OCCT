@@ -215,6 +215,18 @@ public:
                                                      TCollection_AsciiString&       theFolder,
                                                      TCollection_AsciiString&       theFileName);
 
+  //! Return file extension from the name in lower case.
+  //! Extension is expected to be within 20-symbols length, and determined as file name tail after last dot.
+  //! Example: IN  theFilePath ='Image.sbs.JPG'
+  //!          OUT theName     ='Image.sbs'
+  //!          OUT theFileName ='jpg'
+  //! @param theFilePath  [in]  file path
+  //! @param theName      [out] file name without extension
+  //! @param theExtension [out] file extension in lower case and without dot
+  Standard_EXPORT static void FileNameAndExtension (const TCollection_AsciiString& theFilePath,
+                                                    TCollection_AsciiString&       theName,
+                                                    TCollection_AsciiString&       theExtension);
+
   //! Detect absolute DOS-path also used in Windows.
   //! The total path length is limited to 256 characters.
   //! Sample path:

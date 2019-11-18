@@ -3,4 +3,8 @@ RWMesh_CoordinateSystemConverter.cxx
 RWMesh_CoordinateSystemConverter.hxx
 RWMesh_CafReader.cxx
 RWMesh_CafReader.hxx
+RWMesh_FaceIterator.cxx
+RWMesh_FaceIterator.hxx
+RWMesh_MaterialMap.cxx
+RWMesh_MaterialMap.hxx
 RWMesh_NodeAttributes.hxx

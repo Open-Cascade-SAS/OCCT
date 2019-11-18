@@ -15,9 +15,16 @@ RWGltf_MaterialCommon.hxx
 RWGltf_MaterialMetallicRoughness.hxx
 RWGltf_CafReader.cxx
 RWGltf_CafReader.hxx
+RWGltf_CafWriter.cxx
+RWGltf_CafWriter.hxx
+RWGltf_GltfMaterialMap.cxx
+RWGltf_GltfMaterialMap.hxx
 RWGltf_GltfJsonParser.cxx
 RWGltf_GltfJsonParser.pxx
+RWGltf_GltfOStreamWriter.hxx
+RWGltf_GltfSceneNodeMap.hxx
 RWGltf_PrimitiveArrayReader.cxx
 RWGltf_PrimitiveArrayReader.hxx
 RWGltf_TriangulationReader.cxx
 RWGltf_TriangulationReader.hxx
+RWGltf_WriterTrsfFormat.hxx

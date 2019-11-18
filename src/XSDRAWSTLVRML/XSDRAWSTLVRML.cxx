@@ -43,6 +43,7 @@
 #include <Quantity_HArray1OfColor.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <RWGltf_CafReader.hxx>
+#include <RWGltf_CafWriter.hxx>
 #include <RWStl.hxx>
 #include <RWObj.hxx>
 #include <RWObj_CafReader.hxx>
@@ -69,6 +70,8 @@
 #include <VrmlData_DataMapOfShapeAppearance.hxx>
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_ShapeConvert.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
@@ -202,6 +205,117 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
       Draw::Set (aDestName.ToCString(), aDrawDoc);
     }
   }
+  return 0;
+}
+
+//=============================================================================
+//function : WriteGltf
+//purpose  : Writes glTF file
+//=============================================================================
+static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
+                                   Standard_Integer theNbArgs,
+                                   const char** theArgVec)
+{
+  TCollection_AsciiString aGltfFilePath;
+  Handle(TDocStd_Document) aDoc;
+  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  TColStd_IndexedDataMapOfStringString aFileInfo;
+  RWGltf_WriterTrsfFormat aTrsfFormat = RWGltf_WriterTrsfFormat_Compact;
+  bool toForceUVExport = false;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-comments"
+     && anArgIter + 1 < theNbArgs)
+    {
+      aFileInfo.Add ("Comments", theArgVec[++anArgIter]);
+    }
+    else if (anArgCase == "-author"
+          && anArgIter + 1 < theNbArgs)
+    {
+      aFileInfo.Add ("Author", theArgVec[++anArgIter]);
+    }
+    else if (anArgCase == "-forceuvexport"
+          || anArgCase == "-forceuv")
+    {
+      toForceUVExport = true;
+      if (anArgIter + 1 < theNbArgs
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toForceUVExport))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (anArgCase == "-trsfformat"
+          && anArgIter + 1 < theNbArgs)
+    {
+      TCollection_AsciiString aTrsfStr (theArgVec[++anArgIter]);
+      aTrsfStr.LowerCase();
+      if (aTrsfStr == "compact")
+      {
+        aTrsfFormat = RWGltf_WriterTrsfFormat_Compact;
+      }
+      else if (aTrsfStr == "mat4")
+      {
+        aTrsfFormat = RWGltf_WriterTrsfFormat_Mat4;
+      }
+      else if (aTrsfStr == "trs")
+      {
+        aTrsfFormat = RWGltf_WriterTrsfFormat_TRS;
+      }
+      else
+      {
+        std::cout << "Syntax error at '" << anArgCase << "'\n";
+        return 1;
+      }
+    }
+    else if (aDoc.IsNull())
+    {
+      Standard_CString aNameVar = theArgVec[anArgIter];
+      DDocStd::GetDocument (aNameVar, aDoc, false);
+      if (aDoc.IsNull())
+      {
+        TopoDS_Shape aShape = DBRep::Get (aNameVar);
+        if (aShape.IsNull())
+        {
+          std::cout << "Syntax error: '" << aNameVar << "' is not a shape nor document\n";
+          return 1;
+        }
+
+        anApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), aDoc);
+        Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main());
+        aShapeTool->AddShape (aShape);
+      }
+    }
+    else if (aGltfFilePath.IsEmpty())
+    {
+      aGltfFilePath = theArgVec[anArgIter];
+    }
+    else
+    {
+      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if (aGltfFilePath.IsEmpty())
+  {
+    std::cout << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+
+  TCollection_AsciiString anExt = aGltfFilePath;
+  anExt.LowerCase();
+
+  const Standard_Real aSystemUnitFactor = UnitsMethods::GetCasCadeLengthUnit() * 0.001;
+
+  RWGltf_CafWriter aWriter (aGltfFilePath, anExt.EndsWith (".glb"));
+  aWriter.SetTransformationFormat (aTrsfFormat);
+  aWriter.SetForcedUVExport (toForceUVExport);
+  aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aSystemUnitFactor);
+  aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (RWMesh_CoordinateSystem_Zup);
+  aWriter.Perform (aDoc, aFileInfo, aProgress);
   return 0;
 }
 
@@ -1604,6 +1718,15 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "readgltf shape file"
                    "\n\t\t: Same as ReadGltf but reads glTF file into a shape instead of a document.",
                    __FILE__, ReadGltf, g);
+  theCommands.Add ("WriteGltf",
+                   "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}=compact] [-comments Text] [-author Name] [-forceUVExport]"
+                   "\n\t\t: Write XDE document into glTF file."
+                   "\n\t\t:   -trsfFormat preferred transformation format"
+                   "\n\t\t:   -forceUVExport always export UV coordinates",
+                   __FILE__, WriteGltf, g);
+  theCommands.Add ("writegltf",
+                   "writegltf shape file",
+                   __FILE__, WriteGltf, g);
   theCommands.Add ("writevrml", "shape file [version VRML#1.0/VRML#2.0 (1/2): 2 by default] [representation shaded/wireframe/both (0/1/2): 1 by default]",__FILE__,writevrml,g);
   theCommands.Add ("writestl",  "shape file [ascii/binary (0/1) : 1 by default] [InParallel (0/1) : 0 by default]",__FILE__,writestl,g);
   theCommands.Add ("readstl",

@@ -1780,7 +1780,7 @@ bool RWGltf_GltfJsonParser::Parse (const Handle(Message_ProgressIndicator)& theP
   }
   return true;
 #else
-  Message::DefaultMessenger()->Send ("Error: glTF reader is unavailable - OCCT has been built without RapidJSON support.", Message_Fail);
+  Message::DefaultMessenger()->Send ("Error: glTF reader is unavailable - OCCT has been built without RapidJSON support [HAVE_RAPIDJSON undefined].", Message_Fail);
   return false;
 #endif
 }

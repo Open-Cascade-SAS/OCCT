@@ -1,0 +1,13 @@
+puts "========"
+puts "0030953: Data Exchange - implement export of mesh data into glTF 2.0 format"
+puts "Test case exporting BRep model into glb (binary glTF) file."
+puts "========"
+
+restore [locate_data_file Ball.brep] b
+incmesh b 0.1
+set aTmpGltf "${imagedir}/${casename}_tmp.glb"
+writegltf b "$aTmpGltf"
+
+ReadGltf D "$aTmpGltf"
+XGetOneShape s D
+checknbshapes s -face 17 -compound 3

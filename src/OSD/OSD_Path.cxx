@@ -1675,3 +1675,34 @@ void OSD_Path::FolderAndFileFromPath (const TCollection_AsciiString& theFilePath
     theFileName.Clear();
   }
 }
+
+// =======================================================================
+// function : FileNameAndExtension
+// purpose  :
+// =======================================================================
+void OSD_Path::FileNameAndExtension (const TCollection_AsciiString& theFilePath,
+                                     TCollection_AsciiString&       theName,
+                                     TCollection_AsciiString&       theExtension)
+{
+  const Standard_Integer THE_EXT_MAX_LEN = 20; // this method is supposed to be used with normal extension
+  const Standard_Integer aLen = theFilePath.Length();
+  for (Standard_Integer anExtLen = 1; anExtLen < aLen && anExtLen < THE_EXT_MAX_LEN; ++anExtLen)
+  {
+    if (theFilePath.Value (aLen - anExtLen) == '.')
+    {
+      const Standard_Integer aNameUpper = aLen - anExtLen - 1;
+      if (aNameUpper < 1)
+      {
+        break;
+      }
+
+      theName      = theFilePath.SubString (1, aNameUpper);
+      theExtension = theFilePath.SubString (aLen - anExtLen + 1, aLen);
+      theExtension.LowerCase();
+      return;
+    }
+  }
+
+  theName = theFilePath;
+  theExtension.Clear();
+}

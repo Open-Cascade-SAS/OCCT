@@ -34,6 +34,23 @@ struct XCAFPrs_DocumentNode
   Standard_Boolean        IsAssembly; //!< flag indicating that this label is assembly
 
   XCAFPrs_DocumentNode() : IsAssembly (Standard_False) {}
+
+public: // Methods for hash map
+
+  //! Return hash code based on node string identifier.
+  static Standard_Integer HashCode (const XCAFPrs_DocumentNode& theNode,
+                                    const Standard_Integer theN)
+  {
+    return ::HashCode (theNode.Id, theN);
+  }
+
+  //! Return TRUE if two document nodes has the same string identifier.
+  static Standard_Boolean IsEqual (const XCAFPrs_DocumentNode& theNode1,
+                                   const XCAFPrs_DocumentNode& theNode2)
+  {
+    return theNode1.Id == theNode2.Id;
+  }
+
 };
 
 #endif // _XCAFPrs_DocumentNode_HeaderFile
