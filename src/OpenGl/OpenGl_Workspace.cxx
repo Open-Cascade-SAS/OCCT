@@ -198,7 +198,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
   myGlContext->SetPolygonOffset (Graphic3d_PolygonOffset());
 
   ApplyAspects();
-  myGlContext->SetTypeOfLine (myDefaultAspects.Aspect()->LineType());
+  myGlContext->SetLineStipple(myDefaultAspects.Aspect()->LinePattern());
   myGlContext->SetLineWidth  (myDefaultAspects.Aspect()->LineWidth());
   if (myGlContext->core15fwd != NULL)
   {

@@ -30,6 +30,7 @@ Graphic3d_Aspects::Graphic3d_Aspects()
   myAlphaCutoff         (0.5f),
   myLineType            (Aspect_TOL_SOLID),
   myLineWidth           (1.0f),
+  myLinePattern         (0xFFFF),
   myMarkerType          (Aspect_TOM_POINT),
   myMarkerScale         (1.0f),
   myTextStyle           (Aspect_TOST_NORMAL),

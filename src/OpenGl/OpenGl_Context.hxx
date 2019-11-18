@@ -843,6 +843,13 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void SetTypeOfLine (const Aspect_TypeOfLine  theType,
                                       const Standard_ShortReal theFactor = 1.0f);
 
+  //! Setup stipple line pattern with 1.0f factor; wrapper for glLineStipple().
+  void SetLineStipple (const uint16_t thePattern) { SetLineStipple (1.0f, thePattern); }
+
+  //! Setup type of line; wrapper for glLineStipple().
+  Standard_EXPORT void SetLineStipple (const Standard_ShortReal theFactor,
+                                       const uint16_t thePattern);
+
   //! Setup width of line.
   Standard_EXPORT void SetLineWidth (const Standard_ShortReal theWidth);
 

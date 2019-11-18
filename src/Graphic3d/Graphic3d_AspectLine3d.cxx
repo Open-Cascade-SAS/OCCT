@@ -39,6 +39,6 @@ Graphic3d_AspectLine3d::Graphic3d_AspectLine3d (const Quantity_Color& theColor,
 {
   myShadingModel = Graphic3d_TOSM_UNLIT;
   myInteriorColor.SetRGB (theColor);
-  myLineType = theType;
+  SetLineType (theType);
   SetLineWidth ((float)theWidth);
 }

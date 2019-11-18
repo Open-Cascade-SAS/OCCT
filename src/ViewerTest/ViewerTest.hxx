@@ -197,8 +197,18 @@ public:
 
   //! Parses line type argument.
   //! Handles either enumeration (integer) value or string constant.
-  Standard_EXPORT static Standard_Boolean ParseLineType (Standard_CString   theArg,
-                                                         Aspect_TypeOfLine& theType);
+  Standard_EXPORT static Standard_Boolean ParseLineType (Standard_CString theArg,
+                                                         Aspect_TypeOfLine& theType,
+                                                         uint16_t& thePattern);
+
+  //! Parses line type argument.
+  //! Handles either enumeration (integer) value or string constant.
+  static Standard_Boolean ParseLineType (Standard_CString theArg,
+                                         Aspect_TypeOfLine& theType)
+  {
+    uint16_t aPattern = 0xFFFF;
+    return ParseLineType (theArg, theType, aPattern);
+  }
 
   //! Parses marker type argument.
   //! Handles either enumeration (integer) value or string constant.

@@ -46,7 +46,7 @@ public:
   Aspect_TypeOfLine Type() const { return myLineType; }
 
   //! Modifies the type of line.
-  void SetType (const Aspect_TypeOfLine theType) { myLineType = theType; }
+  void SetType (const Aspect_TypeOfLine theType) { SetLineType (theType); }
 
   //! Return line width.
   Standard_ShortReal Width() const { return myLineWidth; }

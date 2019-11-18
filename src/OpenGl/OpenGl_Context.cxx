@@ -3681,51 +3681,30 @@ void OpenGl_Context::SetColor4fv (const OpenGl_Vec4& theColor)
 void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
                                     const Standard_ShortReal theFactor)
 {
-  Standard_Integer aPattern = 0xFFFF;
-  switch (theType)
-  {
-    case Aspect_TOL_DASH:
-    {
-      aPattern = 0xFFC0;
-      break;
-    }
-    case Aspect_TOL_DOT:
-    {
-      aPattern = 0xCCCC;
-      break;
-    }
-    case Aspect_TOL_DOTDASH:
-    {
-      aPattern = 0xFF18;
-      break;
-    }
-    case Aspect_TOL_EMPTY:
-    case Aspect_TOL_SOLID:
-    {
-      aPattern = 0xFFFF;
-      break;
-    }
-    case Aspect_TOL_USERDEFINED:
-    {
-      aPattern = 0xFF24;
-      break;
-    }
-  }
+  SetLineStipple (theFactor, Graphic3d_Aspects::DefaultLinePatternForType (theType));
+}
 
+// =======================================================================
+// function : SetLineStipple
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetLineStipple (const Standard_ShortReal theFactor,
+                                     const uint16_t thePattern)
+{
   if (!myActiveProgram.IsNull())
   {
     if (const OpenGl_ShaderUniformLocation aPatternLoc = myActiveProgram->GetStateLocation (OpenGl_OCCT_LINE_STIPPLE_PATTERN))
     {
       if (hasGlslBitwiseOps != OpenGl_FeatureNotAvailable)
       {
-        myActiveProgram->SetUniform (this, aPatternLoc, aPattern);
+        myActiveProgram->SetUniform (this, aPatternLoc, (Standard_Integer )thePattern);
       }
       else
       {
         Standard_Integer aPatArr[16] = {};
         for (unsigned int aBit = 0; aBit < 16; ++aBit)
         {
-          aPatArr[aBit] = ((unsigned int)(aPattern) & (1U << aBit)) != 0 ? 1 : 0;
+          aPatArr[aBit] = ((unsigned int)(thePattern) & (1U << aBit)) != 0 ? 1 : 0;
         }
         myActiveProgram->SetUniform (this, aPatternLoc, 16, aPatArr);
       }
@@ -3735,14 +3714,14 @@ void OpenGl_Context::SetTypeOfLine (const Aspect_TypeOfLine  theType,
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (aPattern != 0xFFFF)
+  if (thePattern != 0xFFFF)
   {
     if (core11 != NULL)
     {
       core11fwd->glEnable (GL_LINE_STIPPLE);
 
       core11->glLineStipple (static_cast<GLint>    (theFactor),
-                             static_cast<GLushort> (aPattern));
+                             static_cast<GLushort> (thePattern));
     }
   }
   else
