@@ -65,13 +65,15 @@ namespace
   typedef NCollection_DataMap<Handle(SelectMgr_SelectableObject), Handle(SelectMgr_IndexedMapOfOwner)>::Iterator AIS_MapIteratorOfMapOfObjectOwners;
 
   //! Initialize default highlighting attributes.
-  static void initDefaultHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer)
+  static void initDefaultHilightAttributes (const Handle(Prs3d_Drawer)& theDrawer,
+                                            const Quantity_Color& theColor)
   {
     theDrawer->SetMethod (Aspect_TOHM_COLOR);
     theDrawer->SetDisplayMode (0);
+    theDrawer->SetColor (theColor);
 
-    theDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_BLACK, 1.0));
-    *theDrawer->PointAspect()->Aspect() = *theDrawer->Link()->PointAspect()->Aspect();
+    theDrawer->SetupOwnShadingAspect();
+    theDrawer->SetupOwnPointAspect();
     theDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     *theDrawer->LineAspect()->Aspect() = *theDrawer->Link()->LineAspect()->Aspect();
     theDrawer->SetWireAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
@@ -82,6 +84,24 @@ namespace
     *theDrawer->FreeBoundaryAspect()->Aspect() = *theDrawer->Link()->FreeBoundaryAspect()->Aspect();
     theDrawer->SetUnFreeBoundaryAspect (new Prs3d_LineAspect (Quantity_NOC_BLACK, Aspect_TOL_SOLID, 1.0));
     *theDrawer->UnFreeBoundaryAspect()->Aspect() = *theDrawer->Link()->UnFreeBoundaryAspect()->Aspect();
+    theDrawer->SetDatumAspect (new Prs3d_DatumAspect());
+
+    theDrawer->ShadingAspect()->SetColor (theColor);
+    theDrawer->WireAspect()->SetColor (theColor);
+    theDrawer->LineAspect()->SetColor (theColor);
+    theDrawer->PlaneAspect()->ArrowAspect()->SetColor (theColor);
+    theDrawer->PlaneAspect()->IsoAspect()->SetColor (theColor);
+    theDrawer->PlaneAspect()->EdgesAspect()->SetColor (theColor);
+    theDrawer->FreeBoundaryAspect()->SetColor (theColor);
+    theDrawer->UnFreeBoundaryAspect()->SetColor (theColor);
+    theDrawer->PointAspect()->SetColor (theColor);
+    for (Standard_Integer aPartIter = 0; aPartIter < Prs3d_DP_None; ++aPartIter)
+    {
+      if (Handle(Prs3d_LineAspect) aLineAsp = theDrawer->DatumAspect()->LineAspect ((Prs3d_DatumParts )aPartIter))
+      {
+        aLineAsp->SetColor (theColor);
+      }
+    }
 
     theDrawer->WireAspect()->SetWidth (2.0);
     theDrawer->LineAspect()->SetWidth (2.0);
@@ -130,30 +150,26 @@ myIsAutoActivateSelMode(Standard_True)
   {
     const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_Dynamic];
     aStyle->Link (myDefaultDrawer);
-    initDefaultHilightAttributes (aStyle);
+    initDefaultHilightAttributes (aStyle, Quantity_NOC_CYAN1);
     aStyle->SetZLayer(Graphic3d_ZLayerId_Top);
-    aStyle->SetColor (Quantity_NOC_CYAN1);
   }
   {
     const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_LocalDynamic];
     aStyle->Link (myDefaultDrawer);
-    initDefaultHilightAttributes (aStyle);
+    initDefaultHilightAttributes (aStyle, Quantity_NOC_CYAN1);
     aStyle->SetZLayer(Graphic3d_ZLayerId_Topmost);
-    aStyle->SetColor (Quantity_NOC_CYAN1);
   }
   {
     const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_Selected];
     aStyle->Link (myDefaultDrawer);
-    initDefaultHilightAttributes (aStyle);
+    initDefaultHilightAttributes (aStyle, Quantity_NOC_GRAY80);
     aStyle->SetZLayer(Graphic3d_ZLayerId_UNKNOWN);
-    aStyle->SetColor (Quantity_NOC_GRAY80);
   }
   {
     const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_LocalSelected];
     aStyle->Link (myDefaultDrawer);
-    initDefaultHilightAttributes (aStyle);
+    initDefaultHilightAttributes (aStyle, Quantity_NOC_GRAY80);
     aStyle->SetZLayer(Graphic3d_ZLayerId_UNKNOWN);
-    aStyle->SetColor (Quantity_NOC_GRAY80);
   }
   {
     const Handle(Prs3d_Drawer)& aStyle = myStyles[Prs3d_TypeOfHighlight_SubIntensity];

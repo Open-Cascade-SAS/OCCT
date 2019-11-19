@@ -186,9 +186,6 @@ public:
 
 public:
 
-  //! Disables auto highlighting to use HilightSelected() and HilightOwnerWithColor() overridden methods.
-  virtual Standard_Boolean IsAutoHilight() const Standard_OVERRIDE { return false; }
-
   //! Method which clear all selected owners belonging
   //! to this selectable object ( for fast presentation draw ).
   Standard_EXPORT virtual void ClearSelected() Standard_OVERRIDE;
@@ -248,13 +245,6 @@ protected:
                                          const gp_Dir& theYDir,
                                          const gp_Dir& theZDir);
 
-  //! Returns highlight line aspect , create if it is the first call
-  Handle(Prs3d_ShadingAspect) getHighlightAspect();
-  //! Returns highlight line aspect , create if it is the first call
-  Handle(Prs3d_LineAspect) getHighlightLineAspect();
-  //! Returns highlight line aspect , create if it is the first call
-  Handle(Prs3d_PointAspect) getHighlightPointAspect();
-
 protected:
   Standard_Boolean myHasOwnSize;
   Standard_Boolean myHasOwnTextColor;
@@ -269,10 +259,7 @@ protected:
 
   NCollection_DataMap<Prs3d_DatumParts, Handle(Graphic3d_Group)> myPartToGroup;
   NCollection_List<Prs3d_DatumParts> mySelectedParts;
-
-  Handle(Prs3d_ShadingAspect) myHighlightAspect;
-  Handle(Prs3d_LineAspect)    myHighlightLineAspect;
-  Handle(Prs3d_PointAspect)   myHighlightPointAspect;
+  Handle(Graphic3d_AspectLine3d) myHiddenLineAspect;
 
   NCollection_DataMap<Prs3d_DatumParts, Handle(Graphic3d_ArrayOfPrimitives)> myPrimitives;
 };
