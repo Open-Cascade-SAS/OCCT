@@ -1371,7 +1371,7 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     }
   }
   if { "$::HAVE_ZLIB" == "true" } {
-    set aLibsMap(CSF_ZLIB) "zlib"
+    set aLibsMap(CSF_ZLIB) "z"
   }
   if { "$::HAVE_LIBLZMA" == "true" } {
     set aLibsMap(CSF_LIBLZMA) "liblzma"
@@ -1408,6 +1408,10 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
 
     # tbb headers define different pragma lib depending on debug/release
     set aLibsMap(CSF_TBB) ""
+
+    if { "$::HAVE_ZLIB" == "true" } {
+      set aLibsMap(CSF_ZLIB) "zlib"
+    }
   } else {
     set aLibsMap(CSF_dl)           "dl"
     if { "$theOS" == "mac" || "$theOS" == "ios" } {

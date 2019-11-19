@@ -198,7 +198,11 @@ proc wokdep:gui:UpdateList {} {
   }
 
   if { "$::HAVE_ZLIB" == "true" } {
-    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "zlib" "zlib.h" "zlib" {"zlib"}
+    set aCheckLib "z"
+    if { "$::tcl_platform(platform)" == "windows" } {
+      set aCheckLib "zlib"
+    }
+    wokdep:SearchStandardLibrary  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs "zlib" "zlib.h" "$aCheckLib" {"zlib"}
   }
   if { "$::HAVE_LIBLZMA" == "true" } {
     set aCheckLib "lzma"
