@@ -37,7 +37,7 @@ Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLe
 : myStream  (&std::cout),
   myIsFile  (Standard_False),
   myUseUtf8 (Standard_False),
-  myToColorize (Standard_False)
+  myToColorize (Standard_True)
 {
   myTraceLevel = theTraceLevel;
 }
@@ -53,7 +53,7 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
 : myStream (&std::cout),
   myIsFile (Standard_False),
   myUseUtf8 (Standard_False),
-  myToColorize (Standard_False)
+  myToColorize (Standard_True)
 {
   myTraceLevel = theTraceLevel;
   if (strcasecmp(theFileName, "cerr") == 0)
@@ -78,6 +78,7 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
   {
     myStream = (Standard_OStream* )aFile;
     myIsFile = Standard_True;
+    myToColorize = Standard_False;
   }
   else
   {

@@ -74,7 +74,7 @@ public:
   //! Returns reference to the output stream
   Standard_OStream& GetStream() const { return *(Standard_OStream*)myStream; }
 
-  //! Returns TRUE if text output into console should be colorized depending on message gravity.
+  //! Returns TRUE if text output into console should be colorized depending on message gravity; TRUE by default.
   Standard_Boolean ToColorize() const { return myToColorize; }
 
   //! Set if text output into console should be colorized depending on message gravity.
