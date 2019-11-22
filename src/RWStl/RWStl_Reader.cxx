@@ -149,7 +149,7 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
   // (80 bytes header + 4 bytes facet count + 50 bytes for one facet);
   // thus assume files shorter than 134 as Ascii without probing
   // (probing may bring stream to fail state if EOF is reached)
-  bool isAscii = ((size_t)theEnd < THE_STL_MIN_FILE_SIZE || IsAscii (aStream));
+  bool isAscii = ((size_t)theEnd < THE_STL_MIN_FILE_SIZE || IsAscii (aStream, true));
 
   Standard_ReadLineBuffer aBuffer (THE_BUFFER_SIZE);
 
@@ -185,7 +185,8 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
 //purpose  :
 //==============================================================================
 
-Standard_Boolean RWStl_Reader::IsAscii (Standard_IStream& theStream)
+Standard_Boolean RWStl_Reader::IsAscii (Standard_IStream& theStream,
+                                        const bool        isSeekgAvailable)
 {
   // read first 134 bytes to detect file format
   char aBuffer[THE_STL_MIN_FILE_SIZE];
@@ -196,10 +197,18 @@ Standard_Boolean RWStl_Reader::IsAscii (Standard_IStream& theStream)
     return true;
   }
 
-  // put back the read symbols
-  for (std::streamsize aByteIter = aNbRead; aByteIter > 0; --aByteIter)
+  if (isSeekgAvailable)
   {
-    theStream.unget();
+    // get back to the beginning
+    theStream.seekg(0, theStream.beg);
+  }
+  else
+  {
+    // put back the read symbols
+    for (std::streamsize aByteIter = aNbRead; aByteIter > 0; --aByteIter)
+    {
+      theStream.unget();
+    }
   }
 
   // if file is shorter than size of binary file with 1 facet, it must be ascii

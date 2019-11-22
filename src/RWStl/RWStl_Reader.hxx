@@ -45,9 +45,12 @@ public:
                                          const Message_ProgressRange& theProgress);
 
   //! Guess whether the stream is an Ascii STL file, by analysis of the first bytes (~200).
-  //! The function attempts to put back the read symbols to the stream which thus must support ungetc().
+  //! If the stream does not support seekg() then the parameter isSeekgAvailable should
+  //! be passed as 'false', in this case the function attempts to put back the read symbols
+  //! to the stream which thus must support ungetc().
   //! Returns true if the stream seems to contain Ascii STL.
-  Standard_EXPORT Standard_Boolean IsAscii (Standard_IStream& theStream);
+  Standard_EXPORT Standard_Boolean IsAscii (Standard_IStream& theStream,
+                                            const bool isSeekgAvailable);
 
   //! Reads STL data from binary stream.
   //! The stream must be opened in binary mode.
