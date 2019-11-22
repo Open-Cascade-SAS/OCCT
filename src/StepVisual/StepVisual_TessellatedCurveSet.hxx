@@ -30,7 +30,7 @@ class Standard_Transient;
 
 typedef NCollection_Vector<Handle(TColStd_HSequenceOfInteger)> StepVisual_VectorOfHSequenceOfInteger;
 
-DEFINE_STANDARD_HANDLE(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem);
+DEFINE_STANDARD_HANDLE(StepVisual_TessellatedCurveSet, StepVisual_TessellatedItem)
 
 
 class StepVisual_TessellatedCurveSet  : public StepVisual_TessellatedItem
@@ -55,6 +55,6 @@ private:
   NCollection_Handle<StepVisual_VectorOfHSequenceOfInteger> myCurves;
 
 public :
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedCurveSet,StepVisual_TessellatedItem);
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedCurveSet,StepVisual_TessellatedItem)
 };
 #endif // StepVisual_TessellatedCurveSet

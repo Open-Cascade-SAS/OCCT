@@ -333,7 +333,7 @@ IGESData_IGESReaderTool::IGESData_IGESReaderTool
    const Handle(IGESData_IGESReaderData)& IR,
    IGESData_ParamReader& PR) const 
 {
-  Handle(Interface_Check) ach = new Interface_Check;;
+  Handle(Interface_Check) ach = new Interface_Check();
   Handle(Interface_ReaderModule) imodule;
   Standard_Integer CN;
   

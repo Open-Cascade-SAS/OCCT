@@ -434,7 +434,7 @@ TopoDS_Face BRepFill_Pipe::Face(const TopoDS_Edge& ESpine,
 TopoDS_Edge BRepFill_Pipe::Edge(const TopoDS_Edge&   ESpine,
 				const TopoDS_Vertex& VProfile)
 {
-  Standard_Integer ii, ispin = 0, iprof = 0, count = 0;;
+  Standard_Integer ii, ispin = 0, iprof = 0, count = 0;
 
   // *************************************************
   // Search if VProfile is a Vertex of myProfile

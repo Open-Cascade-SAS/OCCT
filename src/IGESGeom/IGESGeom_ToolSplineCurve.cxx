@@ -50,7 +50,7 @@ void IGESGeom_ToolSplineCurve::ReadOwnParams
 
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
   Standard_Integer nbSegments;
-  Standard_Integer aType, aDegree, nbDimensions;;
+  Standard_Integer aType, aDegree, nbDimensions;
   Handle(TColStd_HArray1OfReal) allBreakPoints;
   Handle(TColStd_HArray2OfReal) allXPolynomials;
   Handle(TColStd_HArray2OfReal) allYPolynomials;

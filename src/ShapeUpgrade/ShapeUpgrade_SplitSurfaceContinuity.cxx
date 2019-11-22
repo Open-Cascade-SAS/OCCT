@@ -176,7 +176,7 @@ ShapeUpgrade_SplitSurfaceContinuity::ShapeUpgrade_SplitSurfaceContinuity()
       default         :
       case GeomAbs_C1 : BasCriterion = GeomAbs_C2; break;
       case GeomAbs_C2 : BasCriterion = GeomAbs_C3; break;
-      case GeomAbs_C3 : //if (ShapeUpgrade::Debug()) std::cout<<". this criterion is not suitable for a Offset Surface"<<std::endl;; 
+      case GeomAbs_C3 : //if (ShapeUpgrade::Debug()) std::cout<<". this criterion is not suitable for a Offset Surface"<<std::endl;
 #ifdef OCCT_DEBUG
 	                std::cout << "Warning: ShapeUpgrade_SplitSurfaceContinuity: criterion C3 for Offset surface" << std::endl; 
 #endif

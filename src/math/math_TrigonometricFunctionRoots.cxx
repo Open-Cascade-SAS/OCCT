@@ -459,7 +459,7 @@ void math_TrigonometricFunctionRoots::Perform(const Standard_Real A,
   if(NbSol<4) { 
     Standard_Integer startIndex = NbSol + 1;
     for( Standard_Integer solIt = startIndex; solIt <= 4; solIt++) {
-      Teta = M_PI + IntegerPart(Mod)*2.0*M_PI;;
+      Teta = M_PI + IntegerPart(Mod)*2.0*M_PI;
       X = Teta - MyBorneInf;
       if ((X >= (-Epsilon(Delta))) && (X <= Delta + Epsilon(Delta))) {
 	if (Abs(A-C+E) <= Eps) {

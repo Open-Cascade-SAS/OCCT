@@ -42,7 +42,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
 
   namespace
   {
-
     // list of supported extensions
     static Standard_CString Font_FontMgr_Extensions[] =
     {
@@ -51,8 +50,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Font_FontMgr,Standard_Transient)
       "ttc",
       NULL
     };
-
-  };
+  }
 
 #else
 

@@ -448,7 +448,7 @@ Standard_Boolean OSD_FileNode::Exists ()
 {
   myError.Reset();
 
- Standard_Boolean        retVal = Standard_False;;
+ Standard_Boolean        retVal = Standard_False;
  TCollection_AsciiString fName;
 
  myPath.SystemName ( fName );

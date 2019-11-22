@@ -501,7 +501,7 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve
   if (start.IsNull()) {
     return res;
   }
-  Handle(IGESGeom_CircularArc) Circle = new IGESGeom_CircularArc;;
+  Handle(IGESGeom_CircularArc) Circle = new IGESGeom_CircularArc();
   IGESConvGeom_GeomBuilder Build;
   
   Standard_Real U1 = Udeb;

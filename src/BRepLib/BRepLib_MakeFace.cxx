@@ -468,7 +468,7 @@ Standard_Boolean BRepLib_MakeFace::IsDegenerated(
   else if (Type == GeomAbs_BezierCurve) {
     Handle(Geom_BezierCurve) BZ = AC.Bezier();
     Standard_Integer NbPoles = BZ->NbPoles();
-    Standard_Real aMaxPoleDist2 = 0.0, aMaxTol2 = theMaxTol*theMaxTol;;
+    Standard_Real aMaxPoleDist2 = 0.0, aMaxTol2 = theMaxTol*theMaxTol;
     gp_Pnt P1,P2;
     P1 = BZ->Pole(1);
     for (Standard_Integer i = 2; i <= NbPoles; i++) {

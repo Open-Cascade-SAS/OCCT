@@ -303,7 +303,7 @@ void IntPolyh_Triangle::MiddleRefinement(const Standard_Integer NumTri,
     T1=FinTT;
     NewTriangle(numP2,numP3,FinTP,TTriangles,MySurface,TPoints);
     FinTT++;
-    T2=FinTT;;
+    T2=FinTT;
     NewTriangle(numP3,numP1,FinTP,TTriangles,MySurface,TPoints);
     FinTT++;
 

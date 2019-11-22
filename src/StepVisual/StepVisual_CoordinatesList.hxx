@@ -36,7 +36,7 @@ public:
 
   Standard_EXPORT Handle(TColgp_HArray1OfXYZ) Points() const;
   
-  DEFINE_STANDARD_RTTIEXT(StepVisual_CoordinatesList,StepVisual_TessellatedItem);
+  DEFINE_STANDARD_RTTIEXT(StepVisual_CoordinatesList,StepVisual_TessellatedItem)
 
 private:
 

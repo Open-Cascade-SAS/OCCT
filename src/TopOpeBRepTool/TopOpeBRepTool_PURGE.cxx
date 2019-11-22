@@ -705,7 +705,7 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
 #ifdef OCCT_DEBUG
   if (trc) {
     std::cout<<"CorrectONUVISO ";
-    std::cout<<"iso faulty "<<tocorrectisoe<<" deg faulty "<<tocorrectdege<<std::endl;;
+    std::cout<<"iso faulty "<<tocorrectisoe<<" deg faulty "<<tocorrectdege<<std::endl;
   }
   debcorrUV();
 #endif

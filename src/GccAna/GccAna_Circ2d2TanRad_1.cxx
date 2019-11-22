@@ -446,7 +446,7 @@ GccAna_Circ2d2TanRad::
       WellDone = Standard_True;
       NbrSol = 1;
       TheSame1(1) = 0;
-      qualifier1(1) = Qualified1.Qualifier();;
+      qualifier1(1) = Qualified1.Qualifier();
       qualifier2(1) = Qualified2.Qualifier();
       pnttg1sol(1)=gp_Pnt2d(Cen.XY()+cote*Radius*gp_XY(ydir,-xdir));
       pnttg2sol(1)=gp_Pnt2d(Cen.XY()+Radius*gp_XY(ydir,-xdir));

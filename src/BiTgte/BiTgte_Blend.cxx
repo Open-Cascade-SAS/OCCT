@@ -2216,7 +2216,7 @@ void BiTgte_Blend::ComputeSurfaces()
 	if (OF2isEdge) { // Update CutEdges.
 	  exp.Next();
 	  const TopoDS_Edge& EOnF2 = TopoDS::Edge(exp.Current());
-	  TopExp::Vertices(EOnF2,V1,V2);;
+	  TopExp::Vertices(EOnF2,V1,V2);
 
 	  gp_Pnt P1 = BRep_Tool::Pnt(V1);
 	  Projector.Init(P1,GC2);

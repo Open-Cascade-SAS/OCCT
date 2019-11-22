@@ -374,7 +374,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
       Standard_Real Uf = F.Parameter(Lin->Point(1));
       Standard_Real Ul = F.Parameter(Lin->Point(NbPoint))-Uf;
       for (i=2; i<NbPoint; i++) {
-	theParams(i) = (F.Parameter(Lin->Point(i))-Uf)/Ul;;
+	theParams(i) = (F.Parameter(Lin->Point(i))-Uf)/Ul;
       }
       AppDef_Compute theAppDef(theParams,dmin,dmax,tol3d,tol2d,nbit,
 				 Standard_True, Standard_True);
@@ -426,7 +426,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
 	Standard_Real Uf = F.Parameter(Lin->Point(1));
 	Standard_Real Ul = F.Parameter(Lin->Point(NbPoint))-Uf;
 	for (i=2; i<NbPoint; i++) {
-	  theParams(i) = (F.Parameter(Lin->Point(i))-Uf)/Ul;;
+	  theParams(i) = (F.Parameter(Lin->Point(i))-Uf)/Ul;
 	}
 
 	theapprox.Init(dmin,dmax,tol3d,tol2d,nbit,Standard_True,

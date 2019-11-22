@@ -730,7 +730,7 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
 		      previousP.Parameter(),tolesp);
 	Ext2.SetValue(previousP.PointOnS2(),
 		      sol(3),sol(4),
-		      previousP.Parameter(),tolesp);;
+		      previousP.Parameter(),tolesp);
 	if (!previousP.IsTangencyPoint()) {
 	  Ext1.SetTangent(previousP.TangentOnS1());
 	  Ext2.SetTangent(previousP.TangentOnS2());

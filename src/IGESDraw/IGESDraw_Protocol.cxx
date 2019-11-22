@@ -68,7 +68,7 @@ IGESDraw_Protocol::IGESDraw_Protocol()
     Handle(Interface_Protocol) IGESDraw_Protocol::Resource
   (const Standard_Integer /*num*/) const
 {
-  Handle(Interface_Protocol) res = IGESDimen::Protocol();;
+  Handle(Interface_Protocol) res = IGESDimen::Protocol();
   return res;
 }
 

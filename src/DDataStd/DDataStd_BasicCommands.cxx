@@ -1421,7 +1421,7 @@ static Standard_Integer DDataStd_KeepUTF (Draw_Interpretor& di,
 #endif
     if (!anIS) {
       // Can not open file
-      std::cout << "Error: can't open file " << aFileName <<std::endl;;
+      std::cout << "Error: can't open file " << aFileName <<std::endl;
       return 1;
     }
     char buf[1024];
@@ -3403,7 +3403,7 @@ static Standard_Integer DDataStd_GetNDIntegers (Draw_Interpretor& di,
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
       Standard_Integer aValue = itr.Value();
-       std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<std::endl;;
+       std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<std::endl;
       }
 
     return 0; 
@@ -3469,7 +3469,7 @@ static Standard_Integer DDataStd_SetNDataReals (Draw_Interpretor& di,
     if(!aLabel.FindAttribute(TDataStd_NamedData::GetID(), anAtt))
       anAtt = TDataStd_NamedData::Set(aLabel);
     if(anAtt.IsNull()) {
-      std::cout << "NamedData attribute is not found or not set"  << std::endl;;
+      std::cout << "NamedData attribute is not found or not set"  << std::endl;
       return 1;}
   
     j = 4;

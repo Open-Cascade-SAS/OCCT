@@ -300,7 +300,7 @@ void AIS_FixRelation::ComputeVertex(const TopoDS_Vertex& /*FixVertex*/,
       gp_Pln pln(myPlane->Pln());
       gp_Dir dir(pln.XAxis().Direction());
       gp_Vec transvec = gp_Vec(dir)*myArrowSize;
-      curpos = myPntAttach.Translated(transvec);;
+      curpos = myPntAttach.Translated(transvec);
       myPosition = curpos;
       myAutomaticPosition = Standard_True;
   }

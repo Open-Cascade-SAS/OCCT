@@ -696,7 +696,10 @@ void Draw_Viewer::PostColor(const Standard_Integer icol,
 Standard_Boolean Draw_Viewer::SaveView(const Standard_Integer id,
                                        const char* filename)
 {
-  if (Draw_Batch) return Standard_False;;
+  if (Draw_Batch)
+  {
+    return Standard_False;
+  }
   Flush();
   if (myViews[id]) {
     return myViews[id]->Save(filename);

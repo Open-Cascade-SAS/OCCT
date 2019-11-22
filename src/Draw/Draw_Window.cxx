@@ -2496,6 +2496,6 @@ void DrawWindow::SelectNoWait(HANDLE& hWnd, int& x, int& y, int& button)
 Standard_Boolean DrawWindow::DefineColor (const Standard_Integer, const char*)
 {
   return Standard_True;
-};
+}
 
 #endif

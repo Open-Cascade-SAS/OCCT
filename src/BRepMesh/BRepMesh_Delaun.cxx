@@ -610,7 +610,7 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
 //=======================================================================
 void BRepMesh_Delaun::insertInternalEdges()
 {
-  Handle(IMeshData::MapOfInteger) anInternalEdges = InternalEdges();;
+  Handle(IMeshData::MapOfInteger) anInternalEdges = InternalEdges();
 
   // Destruction of triancles intersecting internal edges 
   // and their replacement by makeshift triangles

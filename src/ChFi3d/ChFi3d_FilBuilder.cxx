@@ -1461,7 +1461,7 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 				     const Standard_Boolean              RecRst,
 				     const math_Vector&                  Soldep)
 {
-  Handle(ChFiDS_SurfData) Data = SeqData(1);;
+  Handle(ChFiDS_SurfData) Data = SeqData(1);
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;
@@ -1577,7 +1577,7 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
 				     const Standard_Boolean              RecRst2,
 				     const math_Vector&                  Soldep)
 {
-  Handle(ChFiDS_SurfData) Data = SeqData(1);;
+  Handle(ChFiDS_SurfData) Data = SeqData(1);
   Handle(ChFiDS_FilSpine) fsp = Handle(ChFiDS_FilSpine)::DownCast(Spine);
   if(fsp.IsNull()) throw Standard_ConstructionError("PerformSurf : this is not the spine of a fillet");
   Handle(BRepBlend_Line) lin;

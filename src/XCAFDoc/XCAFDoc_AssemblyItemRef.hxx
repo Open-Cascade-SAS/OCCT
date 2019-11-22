@@ -35,7 +35,7 @@ class XCAFDoc_AssemblyItemRef : public TDF_Attribute
 
 public:
 
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_AssemblyItemRef, TDF_Attribute);
+  DEFINE_STANDARD_RTTIEXT(XCAFDoc_AssemblyItemRef, TDF_Attribute)
 
   Standard_EXPORT static const Standard_GUID& GetID();
 

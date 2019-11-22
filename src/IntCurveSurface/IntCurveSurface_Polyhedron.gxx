@@ -506,12 +506,12 @@ Standard_Integer IntCurveSurface_Polyhedron::TriConnex
       if (colT==(colP+colP)) {
         colT++;
 	linO=(ligP>ligE)? ligP : ligE; 	//--linO=Max(ligP, ligE);
-	colO=colP+1;;
+	colO=colP+1;
       }
       else {
         colT--;
 	linO=(ligP<ligE)? ligP : ligE; 	//--linO=Min(ligP, ligE);
-	colO=colP-1;;
+	colO=colP-1;
       }
       break;
     case 3:  // Oblique

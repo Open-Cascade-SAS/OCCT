@@ -1272,7 +1272,7 @@ const AppParCurves_MultiBSpCurve& AppParCurves_LeastSquare::BSplineValue()
 {
   if (!done) {throw StdFail_NotDone();}
 
-  Standard_Integer i, j, j2, npoints = nbP+nbP2d;;
+  Standard_Integer i, j, j2, npoints = nbP+nbP2d;
   gp_Pnt Pt;
   gp_Pnt2d Pt2d;
   Standard_Integer ideb = resinit, ifin = resfin;

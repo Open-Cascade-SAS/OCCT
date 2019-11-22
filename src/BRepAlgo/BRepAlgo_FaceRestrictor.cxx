@@ -361,7 +361,7 @@ static void BuildFaceIn(  TopoDS_Face& F,
       else {
         TopoDS_Shape aLocalShape  = Faces.First().EmptyCopied();
         TopoDS_Face NF = TopoDS::Face(aLocalShape);
-        // TopoDS_Face NF = TopoDS::Face(Faces.First().EmptyCopied());;
+        // TopoDS_Face NF = TopoDS::Face(Faces.First().EmptyCopied());
         B.Add        (NF,WI);
         Faces.Append (NF);
         BuildFaceIn (NF, WI, KeyContains, KeyIsIn, TopAbs_FORWARD,Faces);

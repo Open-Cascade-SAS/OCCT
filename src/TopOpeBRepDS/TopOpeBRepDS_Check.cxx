@@ -214,7 +214,7 @@ Standard_Boolean TopOpeBRepDS_Check::CheckDS(const Standard_Integer I,
   }
   if(!myMapShapeStatus.IsBound(I))
     myMapShapeStatus.Bind(I,TopOpeBRepDS_OK);
-  return Standard_True;;
+  return Standard_True;
 }
 
 //=======================================================================

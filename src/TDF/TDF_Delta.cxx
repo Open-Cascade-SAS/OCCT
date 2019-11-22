@@ -116,7 +116,7 @@ void TDF_Delta::BeforeOrAfterApply(const Standard_Boolean before) const
     std::cout<<"Undo(): dead lock between these attributes:"<<std::endl;
     for (itr.Initialize(ADlist); itr.More(); itr.Next()) {
       std::cout<<"AttributeDelta type = "<<itr.Value()->DynamicType()->Name();
-      std::cout<<"  Attribute type = "<<itr.Value()->Attribute()->DynamicType()->Name()<<std::endl;;
+      std::cout<<"  Attribute type = "<<itr.Value()->Attribute()->DynamicType()->Name()<<std::endl;
     if (before)
       std::cout<<"BeforeUndo(): dead lock."<<std::endl;
     else

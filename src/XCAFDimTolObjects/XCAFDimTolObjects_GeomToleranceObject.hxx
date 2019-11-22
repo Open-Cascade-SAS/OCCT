@@ -231,7 +231,7 @@ private:
   Standard_Boolean myHasAxis;
   gp_Ax2 myPlane;
   gp_Pnt myPnt;
-  gp_Pnt myPntText;;
+  gp_Pnt myPntText;
   Standard_Boolean myHasPlane;
   Standard_Boolean myHasPnt;
   Standard_Boolean myHasPntText;

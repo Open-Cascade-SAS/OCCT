@@ -629,7 +629,7 @@ static Standard_Integer fixsmalledges(Draw_Interpretor& di, Standard_Integer n, 
   aSfwr->CheckSmallEdges(theSmallEdges,theEdgeToFaces,theFaceWithSmall, theMultyEdges);
   aSfwr->MergeSmallEdges (theSmallEdges,theEdgeToFaces,theFaceWithSmall, theMultyEdges, aModeDrop,tolang);
    //aSfwr->FixSmallEdges(); 
-  TopoDS_Shape resShape =  aSfwr->Shape();;
+  TopoDS_Shape resShape = aSfwr->Shape();
   DBRep::Set ( a[1], resShape );
   return 0;
 }

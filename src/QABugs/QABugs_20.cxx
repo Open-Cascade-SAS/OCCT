@@ -2716,7 +2716,7 @@ template<typename T> void AllocDummyArr (Draw_Interpretor& theDI, int theN1, int
   
   if (aMem1 > aMem0)
     theDI << "Error: memory increased by " << (int)(aMem1 - aMem0) << " bytes\n";
-};
+}
 
 static Standard_Integer OCC29064 (Draw_Interpretor& theDI, Standard_Integer theArgc, const char** theArgv)
 {

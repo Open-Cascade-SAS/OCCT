@@ -65,7 +65,7 @@ void AppParCurves::Bernstein(const Standard_Integer NbPoles,
 			     math_Matrix& DA) {
   
   Standard_Integer i, j, id, Ndeg = NbPoles-1;
-  Standard_Real u0, u1, y0, y1, xs, bj, bj1;;
+  Standard_Real u0, u1, y0, y1, xs, bj, bj1;
   Standard_Integer first = U.Lower(), last = U.Upper();
   math_Vector B(1, NbPoles-1);
 

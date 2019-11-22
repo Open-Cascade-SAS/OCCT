@@ -1013,7 +1013,7 @@ Disc3dContour (const Standard_Integer /*nbp*/,
   for(i=1; i<=NTCurve; i++) 
     if (myLinCont->Value(i)->Order()!=-1) 
       
-      { Standard_Integer NbPt=myParCont->Value(i).Length();;
+      { Standard_Integer NbPt=myParCont->Value(i).Length();
 	// first constraint point (j=0)
 	// Standard_Integer NbPt=myParCont->Length();
 	if (iordre==0) {

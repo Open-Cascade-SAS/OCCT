@@ -30,7 +30,8 @@
 #include <V3d_View.hxx>
 #include <Standard_Version.hxx>
 #include <Standard_DefineHandle.hxx>
-NCOLLECTION_HSEQUENCE(AIS_ManipulatorObjectSequence, Handle(AIS_InteractiveObject));
+
+NCOLLECTION_HSEQUENCE(AIS_ManipulatorObjectSequence, Handle(AIS_InteractiveObject))
 
 DEFINE_STANDARD_HANDLE (AIS_Manipulator, AIS_InteractiveObject)
 

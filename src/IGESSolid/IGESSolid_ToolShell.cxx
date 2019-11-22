@@ -62,7 +62,7 @@ void IGESSolid_ToolShell::ReadOwnParams(const Handle(IGESSolid_Shell)& ent,
   // MGE 03/08/98
 
   //Standard_Boolean abool; //szv#4:S4163:12Mar99 moved down
-  Standard_Integer nbfaces=0;; //szv#4:S4163:12Mar99 `i` moved in for
+  Standard_Integer nbfaces=0; //szv#4:S4163:12Mar99 `i` moved in for
   //Handle(IGESSolid_Face) aface; //szv#4:S4163:12Mar99 moved down
   Handle(IGESSolid_HArray1OfFace) tempFaces;
   Handle(TColStd_HArray1OfInteger) tempOrientation;

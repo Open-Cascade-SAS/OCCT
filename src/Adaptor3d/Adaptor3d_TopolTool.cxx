@@ -540,7 +540,7 @@ Standard_Boolean  Adaptor3d_TopolTool::IsThePointOn(const gp_Pnt2d& P,
     if (surumin || survmin || surumax || survmax) {
       return(Standard_True);
     }
-    return(Standard_False);;
+    return Standard_False;
   }
 }
 

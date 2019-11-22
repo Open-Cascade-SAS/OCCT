@@ -2311,7 +2311,7 @@ void  ChFi3d_FilDS(const Standard_Integer       SolidIndex,
           Standard_Integer IArcspine = DStr.AddShape(Arcspine);
           Standard_Integer IVtx = CorDat->IndexFirstPointOnS1();
 
-          TopAbs_Orientation OVtx = TopAbs_FORWARD;;
+          TopAbs_Orientation OVtx = TopAbs_FORWARD;
 
           for(ex.Init(Arcspine.Oriented(TopAbs_FORWARD),TopAbs_VERTEX); 
             ex.More(); ex.Next()) {

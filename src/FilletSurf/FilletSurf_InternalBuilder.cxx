@@ -602,7 +602,7 @@ FilletSurf_StatusType  FilletSurf_InternalBuilder::StartSectionStatus() const
    Standard_Boolean isonedge1 = myListStripe.First()->SetOfSurfData()->Value(1)->
                                 VertexFirstOnS1().IsOnArc();
    Standard_Boolean isonedge2=  myListStripe.First()->SetOfSurfData()->Value(1)->
-                                VertexFirstOnS2().IsOnArc();;
+                                VertexFirstOnS2().IsOnArc();
 
   if (isonedge1 && isonedge2) 
   {return FilletSurf_TwoExtremityOnEdge;}

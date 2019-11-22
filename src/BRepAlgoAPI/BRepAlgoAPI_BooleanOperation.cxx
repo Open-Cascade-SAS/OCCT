@@ -280,7 +280,7 @@ void BRepAlgoAPI_DumpOper::Dump(const TopoDS_Shape& theShape1,
     fprintf(afile,"%s\n","# Result is Null ");
   
   fprintf(afile, "%s %s %s\n","restore",  aName1.ToCString(), "arg1");
-  fprintf(afile, "%s %s %s\n","restore",  aName2.ToCString(), "arg2");;
+  fprintf(afile, "%s %s %s\n","restore",  aName2.ToCString(), "arg2");
   TCollection_AsciiString aBopString;
   switch (theOperation)
   {

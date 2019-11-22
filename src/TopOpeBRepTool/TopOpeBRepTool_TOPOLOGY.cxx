@@ -660,7 +660,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_Eshared(const TopoDS_Shape& v,const To
 Standard_EXPORT Standard_Boolean FUN_tool_parVonE(const TopoDS_Vertex& v,const TopoDS_Edge& E,Standard_Real& par) 
 {
   Standard_Real tol = Precision::Confusion();
-  Standard_Boolean isVofE = Standard_False;;
+  Standard_Boolean isVofE = Standard_False;
   TopExp_Explorer ex;
   for (ex.Init(E,TopAbs_VERTEX); ex.More(); ex.Next()) {
 //  for (TopExp_Explorer ex(E,TopAbs_VERTEX); ex.More(); ex.Next()) {

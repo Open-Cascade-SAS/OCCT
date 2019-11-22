@@ -310,7 +310,7 @@ Standard_OStream& operator << (Standard_OStream& anOStream);
   //! A  referenced  document  may  indicate   through  this
   //! virtual  method that it does  not allow the closing of
   //! aDocument  which  it references through  the reference
-  //! aReferenceIdentifier. By default returns Standard_True;;
+  //! aReferenceIdentifier. By default returns Standard_True.
   Standard_EXPORT virtual Standard_Boolean CanCloseReference (const Handle(CDM_Document)& aDocument, const Standard_Integer aReferenceIdentifier) const;
   
   //! A referenced document may update its internal

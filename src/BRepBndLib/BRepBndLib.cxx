@@ -653,7 +653,7 @@ Standard_Boolean IsModifySize(const BRepAdaptor_Surface& theBS,
   {
     if(anExtr.NbExt() > 0)
     {
-      Standard_Integer i, imin = 0;;
+      Standard_Integer i, imin = 0;
       Standard_Real dmin = RealLast();
       Standard_Real uextr = 0., vextr = 0.;
       Extrema_POnSurf P1, P2;

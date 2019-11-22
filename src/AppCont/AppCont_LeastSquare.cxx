@@ -452,7 +452,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       myDone = Standard_True;
       for (i = bdeb; i <= bfin; i++) {
         for (j = bdeb; j <= bfin; j++) {
-          IBPij = IBP(i, j);;
+          IBPij = IBP(i, j);
           for (k = 1; k<= nbcol; k++) {
             myPoles(i, k)   += IBPij * B2(j, k);
           }

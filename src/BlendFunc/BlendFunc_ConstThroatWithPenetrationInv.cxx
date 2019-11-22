@@ -52,7 +52,7 @@ Standard_Boolean BlendFunc_ConstThroatWithPenetrationInv::IsSolution(const math_
       Abs(valsol(4)) <= Tol)
     return Standard_True;
 
-  return Standard_False;;
+  return Standard_False;
 }
 
 //=======================================================================

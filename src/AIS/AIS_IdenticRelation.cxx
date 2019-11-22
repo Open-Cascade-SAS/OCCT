@@ -560,7 +560,7 @@ void AIS_IdenticRelation::ComputeTwoLinesPresentation(const Handle(Prs3d_Present
       gp_Pln pln(myPlane->Pln());
       gp_Dir dir(pln.XAxis().Direction());
       gp_Vec transvec = gp_Vec(dir)*myArrowSize;
-      curpos = myFAttach.Translated(transvec);;
+      curpos = myFAttach.Translated(transvec);
       myPosition = curpos;
       myAutomaticPosition = Standard_True;
     }

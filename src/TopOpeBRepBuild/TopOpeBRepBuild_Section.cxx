@@ -437,7 +437,7 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
     if (tSPS) debsplitsemess(iE);
 #endif
 
-    Standard_Boolean isspliton = IsSplit(E,TopAbs_ON);;
+    Standard_Boolean isspliton = IsSplit(E,TopAbs_ON);
     if (!isspliton) continue;
 
     const TopTools_ListOfShape& LESD = BDS.ShapeSameDomain(E);

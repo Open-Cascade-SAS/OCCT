@@ -1769,7 +1769,7 @@ static TopoDS_Edge  NewEdge(const TopoDS_Edge& edg,
     else {
       Vf.Orientation(TopAbs_REVERSED);
       Vl.Orientation(TopAbs_FORWARD);
-      rev = Standard_True;;
+      rev = Standard_True;
     }
 
     B.MakeEdge(NewEdg,Cimg,Precision::Confusion());

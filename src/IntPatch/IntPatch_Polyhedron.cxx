@@ -402,12 +402,12 @@ Standard_Integer IntPatch_Polyhedron::TriConnex (const Standard_Integer Triang,
       if (colT==(colP+colP)) {
         colT++;
 	linO=(ligP>ligE)? ligP : ligE; 	//--linO=Max(ligP, ligE);
-	colO=colP+1;;
+	colO=colP+1;
       }
       else {
         colT--;
 	linO=(ligP<ligE)? ligP : ligE; 	//--linO=Min(ligP, ligE);
-	colO=colP-1;;
+	colO=colP-1;
       }
       break;
     case 3:  // Oblique

@@ -634,7 +634,7 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode (const Handle(ShapeExtend_Wi
   Standard_Integer i; // svv #1
   for ( i=begInd; ; i++ ) {
     if ( i > nb ) i = 1;
-    TopoDS_Edge edge = wire->Edge ( i );;
+    TopoDS_Edge edge = wire->Edge ( i );
 
     Handle(Geom2d_Curve) c2d;
     Standard_Real f, l;

@@ -586,7 +586,7 @@ static Standard_Integer OCC394 (Draw_Interpretor& di, Standard_Integer argc, con
   aSfwr->CheckSmallEdges(theSmallEdges,theEdgeToFaces,theFaceWithSmall, theMultyEdges);
   aSfwr->MergeSmallEdges (theSmallEdges,theEdgeToFaces,theFaceWithSmall, theMultyEdges, aModeDrop,tolang);
    //aSfwr->FixSmallEdges(); 
-  TopoDS_Shape resShape =  aSfwr->Shape();;
+  TopoDS_Shape resShape = aSfwr->Shape();
   DBRep::Set ( argv[1], resShape );
   return 0;
 }

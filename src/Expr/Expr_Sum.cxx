@@ -232,7 +232,7 @@ TCollection_AsciiString Expr_Sum::String() const
   if (op->NbSubExpressions() > 1) {
     str = "(";
     str += op->String();
-    str += ")";;
+    str += ")";
   }
   else {
     str = op->String();
@@ -243,7 +243,7 @@ TCollection_AsciiString Expr_Sum::String() const
     if (op->NbSubExpressions() > 1) {
       str += "(";
       str += op->String();
-      str += ")";;
+      str += ")";
     }
     else {
       str += op->String();

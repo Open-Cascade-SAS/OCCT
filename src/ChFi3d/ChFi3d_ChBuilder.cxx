@@ -344,8 +344,10 @@ void  ChFi3d_ChBuilder::Add(const Standard_Real Dis1,
     Spine->SetMode(myMode);
     Standard_Real Offset = -1;
     if (myMode == ChFiDS_ConstThroatWithPenetrationChamfer)
-      Offset = Min(Dis1,Dis2);;
-    
+    {
+      Offset = Min(Dis1,Dis2);
+    }
+
     Spine->SetEdges(E_wnt);
     if(PerformElement(Spine, Offset, F)){
       Spine->Load();

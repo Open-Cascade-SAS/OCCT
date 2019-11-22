@@ -462,7 +462,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
     myC3d->D0(pc3d[ii],Pc3d);
     dist2 = Pcons.SquareDistance(Pc3d);
     use_parameter = (dist2 <= Tol2  && (pc3d[ii] > pc3d[count-1] + deltamin)) ;
-    Standard_Real aDistMin = RealLast();;
+    Standard_Real aDistMin = RealLast();
     if(use_parameter) {
 
       if(dist2 > dmax2) dmax2 = dist2;

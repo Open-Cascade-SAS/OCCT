@@ -131,7 +131,7 @@ void DumpMapOfShapeWithState (const Standard_Integer iP,
   aFName+=postfix;
 
   for (i=1; i<=n; i++) {
-    TCollection_AsciiString aI(i), aName;;
+    TCollection_AsciiString aI(i), aName;
     aName+=aFName; aName+=aI;
 
     const TopoDS_Shape& aShape=aMapOfShapeWithState.FindKey(i);

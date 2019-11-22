@@ -878,7 +878,7 @@ Standard_Boolean BRepBlend_SurfRstConstRad::Section
   
   gp_Vec d1u1,d1v1,d2u1,d2v1,d2uv1,d1;
   gp_Vec ns,ns2,dnplan,dnw,dn2w; //,np2,dnp2;
-  gp_Vec ncrossns;;
+  gp_Vec ncrossns;
   gp_Vec resulu,resulv,temp,tgct,resul;
   gp_Vec d1urst,d1vrst;
   gp_Pnt Center,bid;

@@ -812,7 +812,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
       if ((SectionType == GeomAbs_Circle) && IsTrsf) {
 	gp_Circ C = AC.Circle();
         Standard_Real Radius;
-	Standard_Boolean IsGoodSide = Standard_True;;
+	Standard_Boolean IsGoodSide = Standard_True;
 	C.Transform(Tf2);
 	gp_Vec DC;
         // On calcul le centre eventuel

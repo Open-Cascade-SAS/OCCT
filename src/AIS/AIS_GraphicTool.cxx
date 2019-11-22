@@ -92,7 +92,7 @@ Aspect_TypeOfLine AIS_GraphicTool::GetLineType (const Handle(Prs3d_Drawer)& Dr,
 				 const AIS_TypeOfAttribute Att)
 {
   Handle(Prs3d_LineAspect) LA = GetLineAspect(Dr,Att);
-  return LA->Aspect()->Type();;
+  return LA->Aspect()->Type();
 }
 
 

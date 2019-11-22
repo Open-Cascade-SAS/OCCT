@@ -125,6 +125,6 @@ TCollection_AsciiString Expr_UnaryFunction::String() const
   TCollection_AsciiString res = myFunction->GetStringName();
   res += "(";
   res += Operand()->String();
-  res += ")";;
+  res += ")";
   return res;
 }

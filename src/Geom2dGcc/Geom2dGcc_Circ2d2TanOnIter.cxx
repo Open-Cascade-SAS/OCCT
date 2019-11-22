@@ -1006,7 +1006,7 @@ Geom2dGcc_Circ2d2TanOnIter (const GccEnt_QualifiedCirc& Qualified1 ,
                               tol(1) = 2.e-15*M_PI;
                               tol(2) = Geom2dGcc_CurveTool::EpsX(Cu2,Abs(Tolerance));
                               tol(3) = Geom2dGcc_CurveTool::EpsX(OnCurv,Abs(Tolerance));
-                              tol(4) = Tol/10.;;
+                              tol(4) = Tol/10.;
                               gp_Pnt2d point1 = ElCLib::Value(Param1,C1);
                               gp_Pnt2d point2 = Geom2dGcc_CurveTool::Value(Cu2,Param2);
                               gp_Pnt2d point3 = Geom2dGcc_CurveTool::Value(OnCurv,ParamOn);

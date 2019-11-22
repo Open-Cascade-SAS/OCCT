@@ -1688,7 +1688,7 @@ static Standard_Integer OCC23951 (Draw_Interpretor& di, Standard_Integer argc, c
     di << "Usage: " << argv[0] << " invalid number of arguments\n";
     return 1;
   }
-  Handle(TDocStd_Document) aDoc = new TDocStd_Document("dummy");;
+  Handle(TDocStd_Document) aDoc = new TDocStd_Document("dummy");
   TopoDS_Shape s1 = BRepPrimAPI_MakeBox(1,1,1).Shape();
   TDF_Label lab1 = XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->NewShape();
   XCAFDoc_DocumentTool::ShapeTool (aDoc->Main ())->SetShape(lab1, s1);

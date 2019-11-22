@@ -707,7 +707,7 @@ Standard_Boolean STEPConstruct_ValidationProps::GetPropPnt (const Handle(StepRep
 #ifdef OCCT_DEBUG
     std::cout << "Warning: Point " << Model()->StringLabel ( P )->String() << " is not valid for centroid" << std::endl;
 #endif
-    return Standard_False;;
+    return Standard_False;
   }
 
   gp_Pnt pos ( P->CoordinatesValue(1), P->CoordinatesValue(2), P->CoordinatesValue(3) );

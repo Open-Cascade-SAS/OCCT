@@ -32,6 +32,6 @@ public:
   //! Returns a DraughtingCalloutElement select type
   Standard_EXPORT StepVisual_TessellatedItem();
   
-  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedItem,StepGeom_GeometricRepresentationItem);
+  DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedItem,StepGeom_GeometricRepresentationItem)
 };
 #endif // StepVisual_TessellatedItem

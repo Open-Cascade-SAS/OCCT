@@ -641,7 +641,7 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertSurface(const Handle(Geo
       /*if(aSurf->IsVPeriodic()) {
 
       Standard_Real aDelta = (VL > VF ? VL - VF : VF - VL );
-      v1 = (aDelta > 2.*M_PI ? 0. : VF + ShapeAnalysis::AdjustByPeriod(VF,0.5*(UL+UF),2*M_PI)); ; 
+      v1 = (aDelta > 2.*M_PI ? 0. : VF + ShapeAnalysis::AdjustByPeriod(VF,0.5*(UL+UF),2*M_PI));
       v2 = (aDelta > 2.*M_PI ? 2.* M_PI : v1 + aDelta); 
       }*/
       if(!aSurf->IsVPeriodic()) {//else 

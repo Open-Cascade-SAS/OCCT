@@ -202,7 +202,7 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
         if ( crv.IsNull() )
           continue;
   	
-        Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface ( edge, face, f, l );;
+        Handle(Geom2d_Curve) c2d = BRep_Tool::CurveOnSurface ( edge, face, f, l );
         if ( c2d.IsNull() ) continue;
         Handle(Geom2dAdaptor_HCurve) GHPC = new Geom2dAdaptor_HCurve ( c2d, f, l );
         Adaptor3d_CurveOnSurface ACS(GHPC,AS);

@@ -530,7 +530,7 @@ gp_Circ2d Adaptor2d_OffsetCurve::Circle() const
 gp_Elips2d Adaptor2d_OffsetCurve::Ellipse() const
 {
   if (myCurve->GetType() == GeomAbs_Ellipse && myOffset == 0.) {
-    return myCurve->Ellipse();;
+    return myCurve->Ellipse();
   }
   else {
     throw Standard_NoSuchObject("Adaptor2d_OffsetCurve:Ellipse");

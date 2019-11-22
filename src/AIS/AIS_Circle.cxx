@@ -197,7 +197,7 @@ void AIS_Circle::UnsetColor()
   }
   else
   {
-    Quantity_Color CC = Quantity_NOC_YELLOW;;
+    Quantity_Color CC = Quantity_NOC_YELLOW;
     if( HasColor() ) CC = myDrawer->Color();
     else if (myDrawer->HasLink()) AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
     myDrawer->LineAspect()->SetColor(CC);

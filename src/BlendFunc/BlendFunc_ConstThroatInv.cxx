@@ -99,7 +99,7 @@ Standard_Boolean BlendFunc_ConstThroatInv::IsSolution(const math_Vector& Sol, co
       Abs(valsol(4)) <= Tol*Tol)
     return Standard_True;
 
-  return Standard_False;;
+  return Standard_False;
 }
 
 //=======================================================================

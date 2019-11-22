@@ -813,7 +813,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
   {
     if (myCref.IsNull()) 
       return;
-    Standard_Boolean ok=Standard_True;;
+    Standard_Boolean ok = Standard_True;
 
     Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&myShape.TShape());
     Standard_Real Tol = BRep_Tool::Tolerance(TopoDS::Edge(myShape));

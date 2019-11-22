@@ -1115,7 +1115,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
 //ota : to allow concentric constraint display between vertex and edge
   if (shape1.ShapeType() != TopAbs_EDGE && shape2.ShapeType() != TopAbs_EDGE) {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric: concentric between two vertexes : NOT DISPLAYED" << std::endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric: concentric between two vertexes : NOT DISPLAYED" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1124,7 +1124,7 @@ void TPrsStd_ConstraintTools::ComputeConcentric(const Handle(TDataXtd_Constraint
   Handle(Geom_Plane) aplane = Handle(Geom_Plane)::DownCast(ageom3);
   if (aplane.IsNull()) {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric: nul plane" << std::endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeConcentric: nul plane" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1394,7 +1394,7 @@ void TPrsStd_ConstraintTools::ComputeEqualDistance(const Handle(TDataXtd_Constra
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 4) {
 #ifdef OCCT_DEBUG
-      std::cout << "TPrsStd_ConstraintTools::ComputeEqual: at least four geometries are needed" << std::endl;;
+      std::cout << "TPrsStd_ConstraintTools::ComputeEqual: at least four geometries are needed" << std::endl;
 #endif
       NullifyAIS(anAIS);
       return;
@@ -1547,7 +1547,7 @@ void TPrsStd_ConstraintTools::ComputeEqualRadius(const Handle(TDataXtd_Constrain
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 2) {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeEqualRadius: at least two geometries are needed" << std::endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeEqualRadius: at least two geometries are needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1639,7 +1639,7 @@ void TPrsStd_ConstraintTools::ComputeDiameter(const Handle(TDataXtd_Constraint)&
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeDiameter: at least one constrainte is needed" << std::endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeDiameter: at least one constrainte is needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
@@ -1700,14 +1700,14 @@ void TPrsStd_ConstraintTools::ComputeFix(const Handle(TDataXtd_Constraint)& aCon
   Standard_Integer nbgeom = aConst->NbGeometries();
   if (nbgeom < 1) {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeFix: at least one constrainte is needed" << std::endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeFix: at least one constrainte is needed" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;
   }
   if (!aConst->IsPlanar()) {
 #ifdef OCCT_DEBUG
-    std::cout << "TPrsStd_ConstraintTools::ComputeFix: must be a planar constraint" << std::endl;;
+    std::cout << "TPrsStd_ConstraintTools::ComputeFix: must be a planar constraint" << std::endl;
 #endif
     NullifyAIS(anAIS);
     return;

@@ -168,7 +168,7 @@ void AIS_OffsetDimension::ComputeSelection(const Handle(SelectMgr_Selection)& aS
   gp_Pnt myTSAttach = mySAttach.Transformed (myRelativePos);
   gp_Dir myTDirAttach = myDirAttach.Transformed (myRelativePos);
   gp_Dir myTDirAttach2 = myDirAttach2.Transformed (myRelativePos);
-  gp_Pnt Tcurpos = myPosition.Transformed (myRelativePos);;
+  gp_Pnt Tcurpos = myPosition.Transformed (myRelativePos);
 
   gp_Lin L1 (myTFAttach,myTDirAttach);
   gp_Lin L2 (myTSAttach,myTDirAttach2);

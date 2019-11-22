@@ -296,7 +296,7 @@ void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces
       //---------------------------
       // E1 generated a tube.
       //---------------------------
-      F1 = TopoDS::Face(InitOffsetFace.Image(E1).First());;
+      F1 = TopoDS::Face(InitOffsetFace.Image(E1).First());
       TopExp::Vertices(E1,V[0],V[1]);
       const TopTools_ListOfShape& AncE1 = Analyse.Ancestors(E1);
       

@@ -390,7 +390,7 @@ void  TopOpeBRep_FacesIntersector::PrepareLines()
     const Handle(IntPatch_Line)& L = myIntersector.Line(i);
     LI.SetLine(L,S1,S2);
     LI.Index(i);
-    myLineNb++;;
+    myLineNb++;
   }*/}
 
   if (newV) {

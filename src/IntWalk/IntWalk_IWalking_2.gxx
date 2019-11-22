@@ -141,7 +141,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage
     }
     BornSup(1) = BornInf(1);                     // limit the parameter
     UVap(1) = BornInf(1);
-    UVap(2) += Step*Duvy*StepSign;;
+    UVap(2) += Step*Duvy*StepSign;
     return Standard_True;
   }
   else if (supu) { // jag 940616

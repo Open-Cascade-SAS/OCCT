@@ -677,12 +677,12 @@ static Standard_Boolean  IsMaxRC (const Handle(Geom2d_Curve)& C,
   Standard_Real Norm2;
 
   C->D2(US,P,D1,D2);
-  Norm2 = D1.SquareMagnitude();;
+  Norm2 = D1.SquareMagnitude();
   if (Norm2 < gp::Resolution()) { KF = 0.0;}
   else                          { KF = Abs(D1^D2)/(Norm2*sqrt(Norm2));}
 
   C->D2(UL,P,D1,D2);
-  Norm2 = D1.SquareMagnitude();;
+  Norm2 = D1.SquareMagnitude();
   if (Norm2 < gp::Resolution()) { KL = 0.0;}
   else                          { KL = Abs(D1^D2)/(Norm2*sqrt(Norm2));}
 

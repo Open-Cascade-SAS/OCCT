@@ -50,7 +50,7 @@ inline void Units_UnitsDictionary::Dump(const Standard_Integer alevel) const
     std::cout<<" UNITS DICTIONARY : "<<std::endl;
     for(;explorer.MoreQuantity();explorer.NextQuantity())
       {
-	std::cout<<explorer.Quantity()<<std::endl;;
+	std::cout<<explorer.Quantity()<<std::endl;
 	for(; explorer.MoreUnit(); explorer.NextUnit())
 	  std::cout<<"  "<<explorer.Unit()<<std::endl;
       }

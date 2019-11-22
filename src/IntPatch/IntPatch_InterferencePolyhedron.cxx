@@ -466,7 +466,7 @@ void IntPatch_InterferencePolyhedron::Intersect
 		  Standard_Real div = dpOeT[iObj][iToo]-dpOeT[inext][iToo];
 		  if(div>floatGap || div<-floatGap) { 
 		    parO[iObj]=dpOeT[iObj][iToo]/
-		      (dpOeT[iObj][iToo]-dpOeT[inext][iToo]);;
+		      (dpOeT[iObj][iToo]-dpOeT[inext][iToo]);
 		    piO=(IntPatch_PolyhedronTool::Point(FirstPol,OI[iObj]).XYZ()) +
 		      (voo[iObj]*parO[iObj]);
 		  }

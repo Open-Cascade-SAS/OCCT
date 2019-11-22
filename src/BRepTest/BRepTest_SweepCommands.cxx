@@ -609,7 +609,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
       return 1;
     }
     gp_Dir D(Draw::Atof(a[2]), Draw::Atof(a[3]), Draw::Atof(a[4]));
-    Sweep->SetMode(D);;
+    Sweep->SetMode(D);
   }
   else if (!strcmp(a[1], "-FX")) {
     if ((n != 5) && (n != 8)) {

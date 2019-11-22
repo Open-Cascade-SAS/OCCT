@@ -1421,7 +1421,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
   
   ShapeBuild_Edge sbe;
   Standard_Integer nb = sbwd->NbEdges();
-  Standard_Boolean end = (nb == 0), degstop = Standard_False;;
+  Standard_Boolean end = (nb == 0), degstop = Standard_False;
   Standard_Integer stop = nb;
   Standard_Integer degn2 = 0;
   gp_Pnt pdeg;
@@ -2239,7 +2239,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge (const Standard_Integer 
 
   if (myRemoveLoopMode<1) {
     for ( Standard_Integer iter=0; iter < 30; iter++ ) { 
-      Standard_Boolean loopRemoved = Standard_False;;
+      Standard_Boolean loopRemoved = Standard_False;
       Standard_Real prevFirst = 0 , prevLast = 0; 
       for ( Standard_Integer i=1; i<=points2d.Length(); i++ ) {
         gp_Pnt pint = points3d.Value(i);

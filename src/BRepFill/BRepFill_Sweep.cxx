@@ -1619,7 +1619,7 @@ static void UpdateEdge(TopoDS_Edge& E,
 
   // Control direction & Range
   Standard_Real R, First, Last, Tol=1.e-4;
-  Standard_Boolean reverse = Standard_False;;
+  Standard_Boolean reverse = Standard_False;
   
 
 // Class BRep_Tool without fields and without Constructor :

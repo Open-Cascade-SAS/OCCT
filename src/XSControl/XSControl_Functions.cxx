@@ -416,7 +416,7 @@ static IFSelect_ReturnStatus XSControl_twmode(const Handle(IFSelect_SessionPilot
   if (control->ModeWriteBounds (modemin,modemax)) {
     sout<<"Write Mode : allowed values  "<<modemin<<" to "<<modemax<<Message_EndLine;
     for (Standard_Integer modd = modemin; modd <= modemax; modd ++) {
-      sout<<modd<<"	: "<<control->ModeWriteHelp (modd)<<Message_EndLine;;
+      sout<<modd<<"	: "<<control->ModeWriteHelp (modd)<<Message_EndLine;
     }
   }
   sout<<"Write Mode : actual = "<<TW->TransferMode()<<Message_EndLine;

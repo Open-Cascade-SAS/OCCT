@@ -88,7 +88,7 @@ IGESSolid_Protocol::IGESSolid_Protocol()
     Handle(Interface_Protocol) IGESSolid_Protocol::Resource
   (const Standard_Integer /*num*/) const
 {
-  Handle(Interface_Protocol) res = IGESGeom::Protocol();;
+  Handle(Interface_Protocol) res = IGESGeom::Protocol();
   return res;
 }
 

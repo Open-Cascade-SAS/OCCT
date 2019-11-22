@@ -452,7 +452,7 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
 	RationalArray[Index] = PolesArray[OtherIndex]; Index++; OtherIndex++;
       }
       Index -= Dimension;
-      OtherIndex ++;;
+      ++OtherIndex;
       
       for (jj = ii - 1 ; jj >= 0 ; jj--) {
 	Factor = binomial_array[jj] * PolesArray[(ii-jj) * Dimension1 + Dimension]; 

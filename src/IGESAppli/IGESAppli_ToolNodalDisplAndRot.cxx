@@ -251,7 +251,7 @@ void  IGESAppli_ToolNodalDisplAndRot::OwnDump
       for (Standard_Integer j = 1; j <= nbnodes; j ++)
 	{
 	  S << "[" << j << "]:  -  NodeIdentifier : "
-	    << ent->NodeIdentifier(j) << "  -  Node :"<<Message_EndLine; ;
+	    << ent->NodeIdentifier(j) << "  -  Node :"<<Message_EndLine;
 	  S << "Node : ";
 	  dumper.Dump (ent->Node(j),S, 1);
 	  S << "  -  Parameters : " << Message_EndLine;

@@ -114,7 +114,7 @@ Standard_Boolean verifD2(const TColgp_Array1OfVec& DP1,
                          const Standard_Real wTol,
                          const Standard_Real pas)
 {
-  Standard_Boolean ok = Standard_True;;
+  Standard_Boolean ok = Standard_True;
   Standard_Integer ii, L =  DP1.Length();
   Standard_Real d2w;
   gp_Vec d2P;

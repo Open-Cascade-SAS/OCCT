@@ -452,7 +452,7 @@ void  math_BFGS::Perform(math_MultipleVarFunctionWithGradient& F,
          o << " Status = Done \n";
 	 o <<" Location Vector = " << Location() << "\n";
 	 o <<" Minimum value = "<< Minimum()<<"\n";
-	 o <<" Number of iterations = "<<NbIterations() <<"\n";;
+	 o <<" Number of iterations = "<<NbIterations() <<"\n";
        }
        else {
          o<< " Status = not Done because " << (Standard_Integer)TheStatus << "\n";

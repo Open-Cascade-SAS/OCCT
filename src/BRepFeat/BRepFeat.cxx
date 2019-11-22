@@ -676,7 +676,7 @@ Standard_OStream& BRepFeat::Print(const BRepFeat_StatusError se,
     break;
   case BRepFeat_EmptyCutResult :
     s << "Failure in Cut : Empty resulting shape";
-    break;;
+    break;
   case BRepFeat_FalseSide :
     s << "Verify plane and wire orientation";
     break;
