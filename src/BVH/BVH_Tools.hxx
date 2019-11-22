@@ -17,6 +17,7 @@
 #define _BVH_Tools_Header
 
 #include <BVH_Box.hxx>
+#include <BVH_Ray.hxx>
 #include <BVH_Types.hxx>
 
 //! Defines a set of static methods operating with points and bounding boxes.
@@ -35,6 +36,10 @@ public: //! @name Box-Box Square distance
   static T BoxBoxSquareDistance (const BVH_Box<T, N>& theBox1,
                                  const BVH_Box<T, N>& theBox2)
   {
+    if (!theBox1.IsValid() || !theBox2.IsValid())
+    {
+      return static_cast<T>(0);
+    }
     return BoxBoxSquareDistance (theBox1.CornerMin(), theBox1.CornerMax(),
                                  theBox2.CornerMin(), theBox2.CornerMax());
   }
@@ -60,6 +65,10 @@ public: //! @name Point-Box Square distance
   static T PointBoxSquareDistance (const BVH_VecNt& thePoint,
                                    const BVH_Box<T, N>& theBox)
   {
+    if (!theBox.IsValid())
+    {
+      return static_cast<T>(0);
+    }
     return PointBoxSquareDistance (thePoint,
                                    theBox.CornerMin(),
                                    theBox.CornerMax());
@@ -77,6 +86,29 @@ public: //! @name Point-Box Square distance
       else if (thePoint[i] > theCMax[i]) { T d = thePoint[i] - theCMax[i]; d *= d; aDist += d; }
     }
     return aDist;
+  }
+
+public: //! @name Point-Box projection
+
+  //! Computes projection of point on bounding box
+  static BVH_VecNt PointBoxProjection (const BVH_VecNt& thePoint,
+                                       const BVH_Box<T, N>& theBox)
+  {
+    if (!theBox.IsValid())
+    {
+      return thePoint;
+    }
+    return PointBoxProjection (thePoint,
+                               theBox.CornerMin(),
+                               theBox.CornerMax());
+  }
+
+  //! Computes projection of point on bounding box
+  static BVH_VecNt PointBoxProjection (const BVH_VecNt& thePoint,
+                                       const BVH_VecNt& theCMin,
+                                       const BVH_VecNt& theCMax)
+  {
+    return thePoint.cwiseMax (theCMin).cwiseMin (theCMax);
   }
 
 public: //! @name Point-Triangle Square distance
@@ -160,6 +192,92 @@ public: //! @name Point-Triangle Square distance
     return (aDirect.Dot(aDirect));
   }
 
+public: //! @name Ray-Box Intersection
+
+  //! Computes hit time of ray-box intersection
+  static Standard_Boolean RayBoxIntersection (const BVH_Ray<T, N>& theRay,
+                                              const BVH_Box<T, N>& theBox,
+                                              T& theTimeEnter,
+                                              T& theTimeLeave)
+  {
+    if (!theBox.IsValid())
+    {
+      return Standard_False;
+    }
+    return RayBoxIntersection (theRay, theBox.CornerMin(), theBox.CornerMax(), theTimeEnter, theTimeLeave);
+  }
+
+  //! Computes hit time of ray-box intersection
+  static Standard_Boolean RayBoxIntersection (const BVH_Ray<T, N>& theRay,
+                                              const BVH_VecNt& theBoxCMin,
+                                              const BVH_VecNt& theBoxCMax,
+                                              T& theTimeEnter,
+                                              T& theTimeLeave)
+  {
+    return RayBoxIntersection (theRay.Origin, theRay.Direct,
+                               theBoxCMin, theBoxCMax, theTimeEnter, theTimeLeave);
+  }
+
+  //! Computes hit time of ray-box intersection
+  static Standard_Boolean RayBoxIntersection (const BVH_VecNt& theRayOrigin,
+                                              const BVH_VecNt& theRayDirection,
+                                              const BVH_Box<T, N>& theBox,
+                                              T& theTimeEnter,
+                                              T& theTimeLeave)
+  {
+    if (!theBox.IsValid())
+    {
+      return Standard_False;
+    }
+    return RayBoxIntersection (theRayOrigin, theRayDirection,
+                               theBox.CornerMin(), theBox.CornerMax(),
+                               theTimeEnter, theTimeLeave);
+  }
+
+  //! Computes hit time of ray-box intersection
+  static Standard_Boolean RayBoxIntersection (const BVH_VecNt& theRayOrigin,
+                                              const BVH_VecNt& theRayDirection,
+                                              const BVH_VecNt& theBoxCMin,
+                                              const BVH_VecNt& theBoxCMax,
+                                              T& theTimeEnter,
+                                              T& theTimeLeave)
+  {
+    BVH_VecNt aNodeMin, aNodeMax;
+    for (int i = 0; i < N; ++i)
+    {
+      if (theRayDirection[i] == 0)
+      {
+        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) < 0 ?
+                       (std::numeric_limits<T>::min)() : (std::numeric_limits<T>::max)();
+        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) < 0 ?
+                       (std::numeric_limits<T>::min)() : (std::numeric_limits<T>::max)();
+      }
+      else
+      {
+        aNodeMin[i] = (theBoxCMin[i] - theRayOrigin[i]) / theRayDirection[i];
+        aNodeMax[i] = (theBoxCMax[i] - theRayOrigin[i]) / theRayDirection[i];
+      }
+    }
+
+    BVH_VecNt aTimeMin, aTimeMax;
+    for (int i = 0; i < N; ++i)
+    {
+      aTimeMin[i] = Min (aNodeMin[i], aNodeMax[i]);
+      aTimeMax[i] = Max (aNodeMin[i], aNodeMax[i]);
+    }
+
+    T aTimeEnter = Max (aTimeMin[0], Max (aTimeMin[1], aTimeMin[2]));
+    T aTimeLeave = Min (aTimeMax[0], Min (aTimeMax[1], aTimeMax[2]));
+
+    Standard_Boolean hasIntersection = aTimeEnter < aTimeLeave && aTimeLeave > 0;
+    if (hasIntersection)
+    {
+      theTimeEnter = aTimeEnter;
+      theTimeLeave = aTimeLeave;
+    }
+
+    return hasIntersection;
+  }
 };
 
 #endif

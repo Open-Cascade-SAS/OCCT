@@ -22,6 +22,7 @@ BVH_PrimitiveSet3d.hxx
 BVH_Properties.cxx
 BVH_Properties.hxx
 BVH_QueueBuilder.hxx
+BVH_Ray.hxx
 BVH_Set.hxx
 BVH_Sorter.hxx
 BVH_QuickSorter.hxx

@@ -23,11 +23,84 @@
 
 #include <limits>
 
+//! Base class for BVH_Box (CRTP idiom is used).
+//! @tparam T             Numeric data type
+//! @tparam N             Vector dimension
+//! @tparam TheDerivedBox Template of derived class that defined axis aligned bounding box.
+template <class T, int N, template <class /*T*/, int /*N*/> class TheDerivedBox>
+class BVH_BaseBox {};
+
+// forward declaration
+template <class T, int N> class BVH_Box;
+
+//! Partial template specialization for BVH_Box when N = 3.
+template <class T>
+class BVH_BaseBox<T, 3, BVH_Box>
+{
+public:
+
+  //! Transforms this box with given transformation.
+  void Transform (const NCollection_Mat4<T>& theTransform)
+  {
+    if (theTransform.IsIdentity())
+    {
+      return;
+    }
+
+    BVH_Box<T, 3> *aThis = static_cast<BVH_Box<T, 3>*>(this);
+    if (!aThis->IsValid())
+    {
+      return;
+    }
+
+    BVH_Box<T, 3> aBox = Transformed (theTransform);
+
+    aThis->CornerMin() = aBox.CornerMin();
+    aThis->CornerMax() = aBox.CornerMax();
+  }
+
+  //! Returns a box which is the result of applying the
+  //! given transformation to this box.
+  BVH_Box<T, 3> Transformed (const NCollection_Mat4<T>& theTransform) const
+  {
+    BVH_Box<T, 3> aResultBox;
+
+    if (theTransform.IsIdentity())
+    {
+      return aResultBox;
+    }
+
+    const BVH_Box<T, 3> *aThis = static_cast<const BVH_Box<T, 3>*>(this);
+    if (!aThis->IsValid())
+    {
+      return aResultBox;
+    }
+
+    for (size_t aX = 0; aX <= 1; ++aX)
+    {
+      for (size_t aY = 0; aY <= 1; ++aY)
+      {
+        for (size_t aZ = 0; aZ <= 1; ++aZ)
+        {
+          typename BVH::VectorType<T, 4>::Type aPnt =
+            theTransform * typename BVH::VectorType<T, 4>::Type (aX ? aThis->CornerMax().x() : aThis->CornerMin().x(),
+                                                                 aY ? aThis->CornerMax().y() : aThis->CornerMin().y(),
+                                                                 aZ ? aThis->CornerMax().z() : aThis->CornerMin().z(),
+                                                                 static_cast<T> (1.0));
+
+          aResultBox.Add (aPnt.xyz());
+        }
+      }
+    }
+    return aResultBox;
+  }
+};
+
 //! Defines axis aligned bounding box (AABB) based on BVH vectors.
 //! \tparam T Numeric data type
 //! \tparam N Vector dimension
 template<class T, int N>
-class BVH_Box
+class BVH_Box : public BVH_BaseBox<T, N, BVH_Box>
 {
 public:
 
