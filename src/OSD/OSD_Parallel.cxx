@@ -140,7 +140,7 @@ namespace {
         return aCpuMask;
       }
 
-      // if we're not at the end of the item, expect a dash and and integer; extract end value.
+      // if we're not at the end of the item, expect a dash and integer; extract end value.
       int anIndexUpper = anIndexLower;
       if (aCharIter < aChunkEnd && *aCharIter == '-')
       {

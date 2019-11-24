@@ -5,6 +5,7 @@ puts ""
 #######################################################################
 #  Exception when trying to draw dimension between face and point
 #######################################################################
+puts "REQUIRED All: Error: dimension geometry is invalid, -length dimension can't be built on input shapes"
 
 vfont add [locate_data_file DejaVuSans.ttf] SansFont
 

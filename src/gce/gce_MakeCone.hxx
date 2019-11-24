@@ -85,7 +85,7 @@ public:
   //! "NullAngle".
   Standard_EXPORT gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3, const gp_Pnt& P4);
   
-  //! Makes a Cone by its axis <Axis> and and two points.
+  //! Makes a Cone by its axis <Axis> and two points.
   //! The distance between <P1> and the axis is the radius
   //! of the section passing through <P1>.
   //! The distance between <P2> and the axis is the radius
@@ -98,7 +98,7 @@ public:
   //! "ConfusedPoints"
   Standard_EXPORT gce_MakeCone(const gp_Ax1& Axis, const gp_Pnt& P1, const gp_Pnt& P2);
   
-  //! Makes a Cone by its axis <Axis> and and two points.
+  //! Makes a Cone by its axis <Axis> and two points.
   //! The distance between <P1> and the axis is the radius
   //! of the section passing through <P1>
   //! The distance between <P2> and the axis is the radius

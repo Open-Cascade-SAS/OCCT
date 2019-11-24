@@ -186,27 +186,27 @@ void VUserDrawObj::Render(const Handle(OpenGl_Workspace)& theWorkspace) const
 
 } // end of anonymous namespace
 
-static Standard_Integer VUserDraw (Draw_Interpretor& di,
+static Standard_Integer VUserDraw (Draw_Interpretor& ,
                                     Standard_Integer argc,
                                     const char ** argv)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
   {
-    di << argv[0] << "Call 'vinit' before!\n";
+    Message::SendFail ("Error: no active viewer");
     return 1;
   }
 
   Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContext->CurrentViewer()->Driver());
   if (aDriver.IsNull())
   {
-    std::cerr << "Graphic driver not available.\n";
+    Message::SendFail ("Error: Graphic driver not available.");
     return 1;
   }
 
   if (argc > 2)
   {
-    di << argv[0] << "Wrong number of arguments, only the object name expected\n";
+    Message::SendFail ("Syntax error: wrong number of arguments");
     return 1;
   }
 
@@ -233,7 +233,7 @@ static int VFeedback (Draw_Interpretor& theDI,
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    std::cerr << "No active view. Please call vinit.\n";
+    Message::SendFail ("Error: no active viewer");
     return 1;
   }
 
@@ -244,9 +244,9 @@ static int VFeedback (Draw_Interpretor& theDI,
     if (aBytes / sizeof(GLfloat) != (size_t )aBufferSize)
     {
       // finito la commedia
-      std::cerr << "Can not allocate buffer - requested size ("
-                << (double(aBufferSize / (1024 * 1024)) * double(sizeof(GLfloat)))
-                << " MiB) is out of address space\n";
+      Message::SendFail() << "Can not allocate buffer - requested size ("
+                          << (double(aBufferSize / (1024 * 1024)) * double(sizeof(GLfloat)))
+                          << " MiB) is out of address space";
       return 1;
     }
 
@@ -254,9 +254,9 @@ static int VFeedback (Draw_Interpretor& theDI,
     if (aBuffer == NULL)
     {
       // finito la commedia
-      std::cerr << "Can not allocate buffer with size ("
-                << (double(aBufferSize / (1024 * 1024)) * double(sizeof(GLfloat)))
-                << " MiB)\n";
+      Message::SendFail() << "Can not allocate buffer with size ("
+                          << (double(aBufferSize / (1024 * 1024)) * double(sizeof(GLfloat)))
+                          << " MiB)";
       return 1;
     }
 
@@ -390,21 +390,20 @@ static int VImmediateFront (Draw_Interpretor& /*theDI*/,
   Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
   if (aContextAIS.IsNull())
   {
-    std::cerr << "No active view. Please call vinit.\n";
+    Message::SendFail ("Error: no active viewer");
     return 1;
   }
 
   Handle(Graphic3d_GraphicDriver) aDriver = aContextAIS->CurrentViewer()->Driver();
-
   if (aDriver.IsNull())
   {
-    std::cerr << "Graphic driver not available.\n";
+    Message::SendFail ("Error: graphic driver not available.");
     return 1;
   }
 
   if (theArgNb < 2)
   {
-    std::cerr << "Wrong number of arguments.\n";
+    Message::SendFail ("Syntax error: wrong number of arguments.");
     return 1;
   }
 
@@ -440,7 +439,7 @@ static int VGlInfo (Draw_Interpretor& theDI,
   Handle(V3d_View) aView = ViewerTest::CurrentView();
   if (aView.IsNull())
   {
-    std::cerr << "No active view. Please call vinit.\n";
+    Message::SendFail ("No active viewer");
     return 1;
   }
 
@@ -517,7 +516,7 @@ static int VGlInfo (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cerr << "Unknown key '" << aName.ToCString() << "'\n";
+      Message::SendFail() << "Syntax error: unknown key '" << aName.ToCString() << "'";
       return 1;
     }
 
@@ -590,12 +589,12 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
   Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
   if (aCtx.IsNull())
   {
-    std::cout << "Error: no active view.\n";
+    Message::SendFail ("Error: no active viewer");
     return 1;
   }
   else if (theArgNb < 2)
   {
-    std::cout << "Syntax error: lack of arguments\n";
+    Message::SendFail ("Syntax error: lack of arguments");
     return 1;
   }
 
@@ -631,7 +630,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
       }
       if (aGlCtx.IsNull())
       {
-        std::cout << "Error: no OpenGl_Context\n";
+        Message::SendFail ("Error: no OpenGl_Context");
         return 1;
       }
 
@@ -651,7 +650,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
         Handle(OpenGl_ShaderProgram) aResProg;
         if (!aGlCtx->GetResource (aShaderName, aResProg))
         {
-          std::cout << "Syntax error: shader resource '" << aShaderName << "' is not found\n";
+          Message::SendFail() << "Syntax error: shader resource '" << aShaderName << "' is not found";
           return 1;
         }
         if (aResProg->UpdateDebugDump (aGlCtx, "", false, anArg == "-dump"))
@@ -661,7 +660,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
       }
       if (anArgIter + 1 < theArgNb)
       {
-        std::cout << "Syntax error: wrong number of arguments\n";
+        Message::SendFail ("Syntax error: wrong number of arguments");
         return 1;
       }
       return 0;
@@ -681,8 +680,8 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
       const TCollection_AsciiString& aShadersRoot = Graphic3d_ShaderProgram::ShadersFolder();
       if (aShadersRoot.IsEmpty())
       {
-        std::cout << "Error: both environment variables CSF_ShadersDirectory and CASROOT are undefined!\n"
-                     "At least one should be defined to load Phong program.\n";
+        Message::SendFail("Error: both environment variables CSF_ShadersDirectory and CASROOT are undefined!\n"
+                          "At least one should be defined to load Phong program.");
         return 1;
       }
 
@@ -691,13 +690,13 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
       if (!aSrcVert.IsEmpty()
        && !OSD_File (aSrcVert).Exists())
       {
-        std::cout << "Error: PhongShading.vs is not found\n";
+        Message::SendFail ("Error: PhongShading.vs is not found");
         return 1;
       }
       if (!aSrcFrag.IsEmpty()
        && !OSD_File (aSrcFrag).Exists())
       {
-        std::cout << "Error: PhongShading.fs is not found\n";
+        Message::SendFail ("Error: PhongShading.fs is not found");
         return 1;
       }
 
@@ -745,7 +744,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
       }
       else
       {
-        std::cerr << "Syntax error at '" << aPrimTypeStr << "'\n";
+        Message::SendFail() << "Syntax error at '" << aPrimTypeStr << "'";
         return 1;
       }
     }
@@ -770,7 +769,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
       Handle(AIS_InteractiveObject) anIO = GetMapOfAIS().Find2 (theArgVec[anArgIter]);
       if (anIO.IsNull())
       {
-        std::cerr << "Syntax error: " << theArgVec[anArgIter] << " is not an AIS object\n";
+        Message::SendFail() << "Syntax error: " << theArgVec[anArgIter] << " is not an AIS object";
         return 1;
       }
       aPrsList.Append (anIO);
@@ -813,7 +812,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
       }
       if (aShaderType == Graphic3d_TypeOfShaderObject(-1))
       {
-        std::cerr << "Error: non-existing or invalid shader source\n";
+        Message::SendFail() << "Error: non-existing or invalid shader source";
         return 1;
       }
 
@@ -821,7 +820,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cerr << "Syntax error at '" << anArg << "'\n";
+      Message::SendFail() << "Syntax error at '" << anArg << "'";
       return 1;
     }
   }
@@ -946,7 +945,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'\n";
+      Message::SendFail() << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'";
       return 1;
     }
   }
@@ -1000,7 +999,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     OSD_OpenStream (aMatFile,  aMatFilePath.ToCString(),  std::ios::out | std::ios::binary);
     if (!aMatFile.is_open())
     {
-      std::cout << "Error: unable creating material file\n";
+      Message::SendFail ("Error: unable creating material file");
       return 0;
     }
     if (!aDumpFile.EndsWith (".mtl"))
@@ -1008,7 +1007,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
       OSD_OpenStream (anObjFile, anObjFilePath.ToCString(), std::ios::out | std::ios::binary);
       if (!anObjFile.is_open())
       {
-        std::cout << "Error: unable creating OBJ file\n";
+        Message::SendFail ("Error: unable creating OBJ file");
         return 0;
       }
 
@@ -1023,7 +1022,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     OSD_OpenStream (anHtmlFile, aDumpFile.ToCString(), std::ios::out | std::ios::binary);
     if (!anHtmlFile.is_open())
     {
-      std::cout << "Error: unable creating HTML file\n";
+      Message::SendFail ("Error: unable creating HTML file");
       return 0;
     }
     anHtmlFile << "<html>\n"
@@ -1082,7 +1081,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
   }
   else if (!aDumpFile.IsEmpty())
   {
-    std::cout << "Syntax error: unknown output file format\n";
+    Message::SendFail ("Syntax error: unknown output file format");
     return 1;
   }
 
@@ -1224,7 +1223,7 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'\n";
+      Message::SendFail() << "Syntax error: unknown argument '" << theArgVec[anArgIter] << "'";
       return 1;
     }
   }
@@ -1255,7 +1254,7 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
   }
   else if (!aDumpFile.IsEmpty())
   {
-    std::cout << "Syntax error: unknown output file format\n";
+    Message::SendFail ("Syntax error: unknown output file format");
     return 1;
   }
 
@@ -1285,7 +1284,7 @@ static Standard_Integer VListColors (Draw_Interpretor& theDI,
     OSD_OpenStream (anHtmlFile, aDumpFile.ToCString(), std::ios::out | std::ios::binary);
     if (!anHtmlFile.is_open())
     {
-      std::cout << "Error: unable creating HTML file\n";
+      Message::SendFail ("Error: unable creating HTML file");
       return 0;
     }
     anHtmlFile << "<html>\n"
@@ -1392,7 +1391,7 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
     {
       if (anArgIter + 1 >= theArgNb)
       {
-        std::cerr << "Syntax error: size of PBR environment look up table is undefined" << "\n";
+        Message::SendFail ("Syntax error: size of PBR environment look up table is undefined");
         return 1;
       }
 
@@ -1400,7 +1399,7 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
 
       if (aTableSize < 16)
       {
-        std::cerr << "Error: size of PBR environment look up table must be greater or equal 16\n";
+        Message::SendFail ("Error: size of PBR environment look up table must be greater or equal 16");
         return 1;
       }
     }
@@ -1409,7 +1408,7 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
     {
       if (anArgIter + 1 >= theArgNb)
       {
-        std::cerr << "Syntax error: number of samples to generate PBR environment look up table is undefined" << "\n";
+        Message::SendFail ("Syntax error: number of samples to generate PBR environment look up table is undefined");
         return 1;
       }
 
@@ -1417,13 +1416,13 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
 
       if (aNbSamples < 1)
       {
-        std::cerr << "Syntax error: number of samples to generate PBR environment look up table must be greater than 1\n" << "\n";
+        Message::SendFail ("Syntax error: number of samples to generate PBR environment look up table must be greater than 1");
         return 1;
       }
     }
     else
     {
-      std::cerr << "Syntax error: unknown argument " << anArg << ";\n";
+      Message::SendFail() << "Syntax error: unknown argument " << anArg;
       return 1;
     }
   }
@@ -1444,7 +1443,7 @@ static Standard_Integer VGenEnvLUT (Draw_Interpretor&,
 
   if (!aFile.good())
   {
-    std::cerr << "Error: unable to write to " << aFilePath << "\n";
+    Message::SendFail() << "Error: unable to write to " << aFilePath;
     return 1;
   }
 

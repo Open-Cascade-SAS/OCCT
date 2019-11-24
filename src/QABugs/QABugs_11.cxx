@@ -91,6 +91,8 @@
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <Message.hxx>
+#include <Draw_Printer.hxx>
 
 #if ! defined(_WIN32)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
@@ -4770,6 +4772,43 @@ Standard_Integer OCC28478 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
+Standard_Integer OCC31189 (Draw_Interpretor& theDI, Standard_Integer /*argc*/, const char ** /*argv*/)
+{
+  // redirect output of default messenger to DRAW (temporarily)
+  const Handle(Message_Messenger)& aMsgMgr = Message::DefaultMessenger();
+  Message_SequenceOfPrinters aPrinters;
+  aPrinters.Append (aMsgMgr->ChangePrinters());
+  aMsgMgr->AddPrinter (new Draw_Printer (theDI));
+
+  // scope block to test output of message on destruction of a stream buffer
+  {
+    Message_Messenger::StreamBuffer aSender = Message::SendInfo();
+	
+    // check that messages output to sender and directly to messenger do not intermix
+    aSender << "Sender message 1: start ...";
+    aMsgMgr->Send ("Direct message 1");
+    aSender << "... end" << std::endl; // endl should send the message
+
+	// check that empty stream buffer does not produce output on destruction
+	Message::SendInfo();
+
+    // additional message to check that they go in expected order
+    aMsgMgr->Send ("Direct message 2");
+
+	// check that empty stream buffer does produce empty line if std::endl is passed
+	Message::SendInfo() << std::endl;
+
+    // last message should be sent on destruction of a sender
+	aSender << "Sender message 2";
+  }
+
+  // restore initial output queue
+  aMsgMgr->RemovePrinters (STANDARD_TYPE(Draw_Printer));
+  aMsgMgr->ChangePrinters().Append (aPrinters);
+
+  return 0;
+}
+
 void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -4780,14 +4819,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
 
   theCommands.Add("OCC136", "OCC136", __FILE__, OCC136, group);
   theCommands.Add("BUC60610","BUC60610 iges_input [name]",__FILE__,BUC60610,group);
-
-//====================================================
-//
-// Following commands are inserted from 
-// /dn03/KAS/dev/QAopt/src/QADraw/QADraw_TOPOLOGY.cxx
-// ( 75455 Apr 16 18:59)
-//
-//====================================================
 
   theCommands.Add("OCC105","OCC105 shape",__FILE__,OCC105,group); 
   theCommands.Add("OCC9"," result path cur1 cur2 radius [tolerance]:\t test GeomFill_Pipe", __FILE__, pipe_OCC9,group);
@@ -4873,5 +4904,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("CR23403", "CR23403 string", __FILE__, CR23403, group);
   theCommands.Add("OCC23429", "OCC23429 res shape tool [appr]", __FILE__, OCC23429, group);
   theCommands.Add("OCC28478", "OCC28478 [nb_outer=3 [nb_inner=2] [-inf]: test progress indicator on nested cycles", __FILE__, OCC28478, group);
+  theCommands.Add("OCC31189", "OCC31189: check stream buffer interface of Message_Messenger", __FILE__, OCC31189, group);
   return;
 }

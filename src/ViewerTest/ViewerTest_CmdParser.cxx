@@ -16,6 +16,7 @@
 #include <ViewerTest_CmdParser.hxx>
 
 #include <Draw.hxx>
+#include <Message.hxx>
 #include <ViewerTest.hxx>
 
 #include <algorithm>
@@ -157,7 +158,7 @@ void ViewerTest_CmdParser::Parse (const Standard_Integer theArgsNb, const char* 
       }
       else
       {
-        std::cerr << "Error: unknown argument '" << anOptionName << "'\n";
+        Message::SendFail() << "Error: unknown argument '" << anOptionName << "'";
         return;
       }
     }
@@ -261,9 +262,9 @@ bool ViewerTest_CmdParser::HasOption (const ViewerTest_CommandOptionKey theOptio
   const bool             aResult           = (anOptionArguments.size() >= theMandatoryArgsNb);
   if (isFatal && !aResult)
   {
-    std::cerr << "Error: wrong syntax at option '" << myOptionStorage[theOptionKey].Name << "'\n"
-              << "At least " << theMandatoryArgsNb << "expected, but only " << anOptionArguments.size()
-              << "provided.\n";
+    Message::SendFail() << "Error: wrong syntax at option '" << myOptionStorage[theOptionKey].Name << "'\n"
+                        << "At least " << theMandatoryArgsNb << "expected, but only " << anOptionArguments.size()
+                        << "provided.";
   }
   return aResult;
 }

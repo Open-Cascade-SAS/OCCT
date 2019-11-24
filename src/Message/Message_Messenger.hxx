@@ -18,11 +18,7 @@
 
 #include <Message_Gravity.hxx>
 #include <Message_SequenceOfPrinters.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_CString.hxx>
+
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 
@@ -44,13 +40,95 @@ DEFINE_STANDARD_HANDLE(Message_Messenger, Standard_Transient)
 //! customized by the application, and dispatches every received
 //! message to all the printers.
 //!
-//! For convenience, a number of operators << are defined with left
-//! argument being Handle(Message_Messenger); thus it can be used
-//! with syntax similar to C++ streams.
-//! Note that all these operators use trace level Warning.
+//! For convenience, a set of methods Send...() returning a string
+//! stream buffer is defined for use of stream-like syntax with operator << 
+//!
+//! Example:
+//! ~~~~~
+//! Messenger->SendFail() << " Unknown fail at line " << aLineNo << " in file " << aFile;
+//! ~~~~~
+//!
+//! The message is sent to messenger on destruction of the stream buffer,
+//! call to Flush(), or passing manipulator std::ends, std::endl, or std::flush.
+//! Empty messages are not sent except if manipulator is used.
 class Message_Messenger : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Message_Messenger, Standard_Transient)
+public:
+  //! Auxiliary class wrapping std::stringstream thus allowing constructing
+  //! message via stream interface, and putting result into its creator
+  //! Message_Messenger within destructor.
+  //!
+  //! It is intended to be used either as temporary object or as local
+  //! variable, note that content will be lost if it is copied.
+  class StreamBuffer
+  {
+  public:
+
+    //! Destructor flushing constructed message.
+    ~StreamBuffer() { Flush(); }
+
+    //! Flush collected string to messenger
+    void Flush(Standard_Boolean doForce = Standard_False)
+    {
+      myStream.flush();
+      if (doForce || myStream.rdbuf()->in_avail() > 0)
+      {
+        myMessenger->Send (myStream.str().c_str(), myGravity);
+        myStream.str(std::string()); // empty the buffer for possible reuse
+      }
+    }
+
+    //! Formal copy constructor.
+    //!
+    //! Since buffer is intended for use as temporary object or local
+    //! variable, copy (or move) is needed only formally to be able to
+    //! return the new instance from relevant creation method.
+    //! In practice it should never be called because modern compilers
+    //! create such instances in place.
+    //! However note that if this constructor is called, the buffer
+    //! content (string) will not be copied  (move is not supported for
+    //! std::stringstream class on old compilers such as gcc 4.4, msvc 9).
+    StreamBuffer (const StreamBuffer& theOther)
+    : myMessenger(theOther.myMessenger), myGravity(theOther.myGravity)
+    {
+    }
+
+    //! Wrapper for operator << of the stream
+    template <typename T>
+    StreamBuffer& operator << (const T& theArg)
+    {
+      myStream << theArg;
+      return *this;
+    }
+
+    //! Operator << for manipulators of ostream (ends, endl, flush),
+    //! flushes the buffer (sends the message)
+    StreamBuffer& operator << (std::ostream& (*)(std::ostream&))
+    {
+      Flush(Standard_True);
+      return *this;
+    }
+
+    //! Access to the stream object
+    Standard_SStream& Stream () { return myStream; }
+
+  private:
+    friend class Message_Messenger;
+
+    //! Main constructor creating temporary buffer.
+    //! Accessible only to Messenger class.
+    StreamBuffer (Message_Messenger* theMessenger, Message_Gravity theGravity)
+    : myMessenger (theMessenger),
+      myGravity (theGravity)
+    {}
+
+  private:
+    Message_Messenger* myMessenger; // don't make a Handle since this object should be created on stack
+    Message_Gravity    myGravity;
+    Standard_SStream   myStream;
+  };
+
 public:
 
   //! Empty constructor; initializes by single printer directed to std::cout.
@@ -90,13 +168,52 @@ public:
   //! The parameter putEndl specifies whether the new line should
   //! be started after this message (default) or not (may have
   //! sense in some conditions).
-  Standard_EXPORT void Send (const Standard_CString theString, const Message_Gravity theGravity = Message_Warning, const Standard_Boolean putEndl = Standard_True) const;
+  Standard_EXPORT void Send (const Standard_CString theString,
+                             const Message_Gravity theGravity = Message_Warning,
+                             const Standard_Boolean putEndl = Standard_True) const;
   
   //! See above
-  Standard_EXPORT void Send (const TCollection_AsciiString& theString, const Message_Gravity theGravity = Message_Warning, const Standard_Boolean putEndl = Standard_True) const;
+  Standard_EXPORT void Send (const TCollection_AsciiString& theString,
+                             const Message_Gravity theGravity = Message_Warning,
+                             const Standard_Boolean putEndl = Standard_True) const;
   
   //! See above
-  Standard_EXPORT void Send (const TCollection_ExtendedString& theString, const Message_Gravity theGravity = Message_Warning, const Standard_Boolean putEndl = Standard_True) const;
+  Standard_EXPORT void Send (const TCollection_ExtendedString& theString,
+                             const Message_Gravity theGravity = Message_Warning,
+                             const Standard_Boolean putEndl = Standard_True) const;
+
+  //! Create string buffer for message of specified type
+  StreamBuffer Send (Message_Gravity theGravity) { return StreamBuffer (this, theGravity); }
+
+  //! Create string buffer for sending Fail message
+  StreamBuffer SendFail () { return Send (Message_Fail); }
+
+  //! Create string buffer for sending Alarm message
+  StreamBuffer SendAlarm () { return Send (Message_Alarm); }
+
+  //! Create string buffer for sending Warning message
+  StreamBuffer SendWarning () { return Send (Message_Warning); }
+
+  //! Create string buffer for sending Info message
+  StreamBuffer SendInfo () { return Send (Message_Info); }
+
+  //! Create string buffer for sending Trace message
+  StreamBuffer SendTrace () { return Send (Message_Trace); }
+
+  //! Short-cut to Send (theMessage, Message_Fail)
+  void SendFail (const TCollection_AsciiString& theMessage) { Send (theMessage, Message_Fail); }
+
+  //! Short-cut to Send (theMessage, Message_Alarm)
+  void SendAlarm (const TCollection_AsciiString& theMessage) { Send (theMessage, Message_Alarm); }
+
+  //! Short-cut to Send (theMessage, Message_Warning)
+  void SendWarning (const TCollection_AsciiString& theMessage) { Send (theMessage, Message_Warning); }
+
+  //! Short-cut to Send (theMessage, Message_Info)
+  void SendInfo (const TCollection_AsciiString& theMessage) { Send (theMessage, Message_Info); }
+
+  //! Short-cut to Send (theMessage, Message_Trace)
+  void SendTrace (const TCollection_AsciiString& theMessage) { Send (theMessage, Message_Trace); }
 
 private:
 

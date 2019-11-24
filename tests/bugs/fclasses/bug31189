@@ -1,0 +1,22 @@
+puts "# ============"
+puts "# 0031189: Draw Harness, ViewerTest - send messages to Message::DefaultMessenger()"
+puts "# ============"
+puts ""
+puts "# Test consistency of messages output using stream buffer interface"
+
+pload QAcommands
+set out [OCC31189]
+
+set expected {
+  {Direct message 1}
+  {Sender message 1: start ...... end}
+  {Direct message 2}
+  {}
+  {Sender message 2}
+}
+
+if { [string compare [string trim $out] [join $expected "\n"]] } {
+  puts "Error: output (see above) does not match expected one:"
+  puts "[join $expected "\n"]"
+  puts ""
+}
