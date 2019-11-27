@@ -433,10 +433,15 @@ void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspac
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   Standard_Integer aViewSizeX = aCtx->Viewport()[2];
   Standard_Integer aViewSizeY = aCtx->Viewport()[3];
+  Graphic3d_Vec2i aTileOffset, aTileSize;
+
   if (theWorkspace->View()->Camera()->Tile().IsValid())
   {
     aViewSizeX = theWorkspace->View()->Camera()->Tile().TotalSize.x();
     aViewSizeY = theWorkspace->View()->Camera()->Tile().TotalSize.y();
+
+    aTileOffset = theWorkspace->View()->Camera()->Tile().OffsetLowerLeft();
+    aTileSize   = theWorkspace->View()->Camera()->Tile().TileSize;
   }
   if (myToUpdate
    || myViewWidth  != aViewSizeX
@@ -454,8 +459,30 @@ void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspac
 
   if (myType != Graphic3d_TOB_CUBEMAP)
   {
-    myTrsfPers.Apply(theWorkspace->View()->Camera(), aProjection, aWorldView,
-      aCtx->Viewport()[2], aCtx->Viewport()[3]);
+    aProjection.InitIdentity();
+    aWorldView.InitIdentity();
+    if (theWorkspace->View()->Camera()->Tile().IsValid())
+    {
+      aWorldView.SetDiagonal (OpenGl_Vec4 (2.0f / aTileSize.x(), 2.0f / aTileSize.y(), 1.0f, 1.0f));
+      if (myType == Graphic3d_TOB_GRADIENT)
+      {
+        aWorldView.SetColumn (3, OpenGl_Vec4 (-1.0f - 2.0f * aTileOffset.x() / aTileSize.x(),
+                                              -1.0f - 2.0f * aTileOffset.y() / aTileSize.y(), 0.0f, 1.0f));
+      }
+      else
+      {
+        aWorldView.SetColumn (3, OpenGl_Vec4 (-1.0f + (float) aViewSizeX / aTileSize.x() - 2.0f * aTileOffset.x() / aTileSize.x(),
+                                              -1.0f + (float) aViewSizeY / aTileSize.y() - 2.0f * aTileOffset.y() / aTileSize.y(), 0.0f, 1.0f));
+      }
+    }
+    else
+    {
+      aWorldView.SetDiagonal (OpenGl_Vec4 (2.0f / myViewWidth, 2.0f / myViewHeight, 1.0f, 1.0f));
+      if (myType == Graphic3d_TOB_GRADIENT)
+      {
+        aWorldView.SetColumn (3, OpenGl_Vec4 (-1.0f, -1.0f, 0.0f, 1.0f));
+      }
+    }
   }
 
   aCtx->ProjectionState.Push();

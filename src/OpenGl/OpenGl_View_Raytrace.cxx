@@ -2584,6 +2584,16 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   {
     aBackColorTop = myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (0);
     aBackColorBot = myBackgrounds[Graphic3d_TOB_GRADIENT]->GradientColor (1);
+
+    if (myCamera->Tile().IsValid())
+    {
+      Standard_Integer aTileOffset = myCamera->Tile().OffsetLowerLeft().y();
+      Standard_Integer aTileSize = myCamera->Tile().TileSize.y();
+      Standard_Integer aViewSize = myCamera->Tile().TotalSize.y();
+      OpenGl_Vec4 aColorRange = aBackColorTop - aBackColorBot;
+      aBackColorBot = aBackColorBot + aColorRange * ((float) aTileOffset / aViewSize);
+      aBackColorTop = aBackColorBot + aColorRange * ((float) aTileSize / aViewSize);
+    }
   }
   aBackColorTop = theGlContext->Vec4FromQuantityColor (aBackColorTop);
   aBackColorBot = theGlContext->Vec4FromQuantityColor (aBackColorBot);
