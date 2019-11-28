@@ -109,7 +109,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     case 21: { // Plane/Cylinder
       Standard_Real VMin, VMax, H;
       //
-      const Handle(Adaptor3d_HSurface)& aSCyl = bReverse ? S2 : S1;
+      const Handle(Adaptor3d_HSurface)& aSCyl = bReverse ? S1 : S2;
       VMin = aSCyl->FirstVParameter();
       VMax = aSCyl->LastVParameter();
       H = (Precision::IsNegativeInfinite(VMin) || 
