@@ -985,8 +985,11 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
         currPnt = myGrid->Value ( currPnt2d );
         if ( currPnt.Distance ( lastVPnt ) <= lastVTol && 
             lastPnt.Distance ( currPnt ) <= tol && 
+            // Tolerance is increased to prevent degenerated cuts in cases where all vertex
+            // tolerance is covered by distance of the edge curve from vertex point.
+            // Doubled to prevent edge being fully covered by its vertices tolerance (invalid edge).
             CheckByCurve3d ( lastVPnt, c3d, f3d+(currPar-firstPar)*(l3d-f3d)/span2d, 
-                            T, lastVTol ) &&
+                            T, lastVTol + 2 * Precision::Confusion() ) && 
             lastPnt.Distance ( myGrid->Value ( C2d->Value(0.5*(currPar+lastPar)) ) ) <= tol ) {
           V = lastV;
           Standard_Real uRes = myUResolution;
@@ -1005,8 +1008,11 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
         }
         else if ( currPnt.Distance ( prevVPnt ) <= prevVTol && 
                  prevPnt.Distance ( currPnt ) <= tol && 
+                 // Tolerance is increased to prevent degenerated cuts in cases where all vertex
+                 // tolerance is covered by distance of the edge curve from vertex point.
+                 // Doubled to prevent edge being fully covered by its vertices tolerance (invalid edge).
                  CheckByCurve3d ( prevVPnt, c3d, f3d+(currPar-firstPar)*(l3d-f3d)/span2d, 
-                                 T, prevVTol ) &&
+                                 T, prevVTol + 2 * Precision::Confusion()) &&
                  prevPnt.Distance ( myGrid->Value ( C2d->Value(0.5*(currPar+prevPar)) ) ) <= tol ) {
           V = prevV;
           Standard_Real uRes = myUResolution;

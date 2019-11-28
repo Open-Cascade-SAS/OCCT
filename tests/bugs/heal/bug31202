@@ -1,0 +1,4 @@
+restore [locate_data_file bug31202.brep] shape
+fixshape result shape 0.000001137 0.0001137
+checkshape result
+checknbshapes result -edge 4
