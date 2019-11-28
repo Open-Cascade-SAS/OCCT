@@ -746,9 +746,15 @@ static Standard_Integer checkfclass2d(Draw_Interpretor& di, Standard_Integer n, 
     di<<"Invalid arguments\n";
     return 1;
   }
+  Standard_Real tol = Precision::Confusion();
+  if (n > 4)
+  {
+    tol = Atof(a[4]);
+  }
+
   TopoDS_Face aFace = TopoDS::Face(Sh1);
   gp_Pnt2d p2d(ucoord,vcoord);
-  BRepTopAdaptor_FClass2d f2d(aFace,Precision::Confusion());
+  BRepTopAdaptor_FClass2d f2d(aFace, tol);
   TopAbs_State stat = f2d.Perform(p2d);
   if(stat == TopAbs_OUT)
     di<<"Point is OUT\n";
@@ -864,7 +870,7 @@ static Standard_Integer connectedges(Draw_Interpretor& di, Standard_Integer n, c
 		   __FILE__,fixsmallfaces,g);
   theCommands.Add ("checkoverlapedges","edge1 edge2 [toler domaindist]",
 		   __FILE__,checkoverlapedges,g);
-  theCommands.Add ("checkfclass2d","face ucoord vcoord",
+  theCommands.Add ("checkfclass2d","face ucoord vcoord [tol]",
 		   __FILE__,checkfclass2d,g);
   theCommands.Add ("connectedges","res shape [toler shared]",
 		   __FILE__,connectedges,g);
