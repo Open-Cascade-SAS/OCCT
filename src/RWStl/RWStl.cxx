@@ -26,6 +26,7 @@ namespace
 
   static const Standard_Integer THE_STL_SIZEOF_FACET = 50;
   static const Standard_Integer IND_THRESHOLD = 1000; // increment the indicator every 1k triangles
+  static const size_t THE_BUFFER_SIZE = 1024; // The length of buffer to read (in bytes)
 
   //! Writing a Little Endian 32 bits integer
   inline static void convertInteger (const Standard_Integer theValue,
@@ -199,7 +200,8 @@ Handle(Poly_Triangulation) RWStl::ReadAscii (const OSD_Path& theFile,
   aStream.seekg (0, aStream.beg);
 
   Reader aReader;
-  if (!aReader.ReadAscii (aStream, theEnd, theProgress))
+  Standard_ReadLineBuffer aBuffer (THE_BUFFER_SIZE);
+  if (!aReader.ReadAscii (aStream, aBuffer, theEnd, theProgress))
   {
     return Handle(Poly_Triangulation)();
   }

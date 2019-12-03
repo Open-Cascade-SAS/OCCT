@@ -16,8 +16,9 @@
 #ifndef _RWStl_Reader_HeaderFile
 #define _RWStl_Reader_HeaderFile
 
-#include <Message_ProgressIndicator.hxx>
 #include <gp_XYZ.hxx>
+#include <Message_ProgressIndicator.hxx>
+#include <Standard_ReadLineBuffer.hxx>
 
 //! An abstract class implementing procedure to read STL file.
 //!
@@ -61,6 +62,7 @@ public:
   //! If theUntilPos is non-zero, reads not more than until that position.
   //! Returns true if success, false on error or user break.
   Standard_EXPORT Standard_Boolean ReadAscii (Standard_IStream& theStream,
+                                              Standard_ReadLineBuffer& theBuffer,
                                               const std::streampos theUntilPos,
                                               const Handle(Message_ProgressIndicator)& theProgress);
 

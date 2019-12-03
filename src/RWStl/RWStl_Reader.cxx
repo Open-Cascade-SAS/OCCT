@@ -26,7 +26,6 @@
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
 #include <Standard_CLocaleSentry.hxx>
-#include <Standard_ReadLineBuffer.hxx>
 
 #include <algorithm>
 #include <limits>
@@ -42,9 +41,6 @@ namespace
 
   // The length of buffer to read (in bytes)
   static const size_t THE_BUFFER_SIZE = 1024;
-
-  // Buffer to read
-  Standard_ReadLineBuffer THE_BUFFER (THE_BUFFER_SIZE);
 
   //! Auxiliary tool for merging nodes during STL reading.
   class MergeNodeTool
@@ -155,11 +151,13 @@ Standard_Boolean RWStl_Reader::Read (const char* theFile,
   // (probing may bring stream to fail state if EOF is reached)
   bool isAscii = ((size_t)theEnd < THE_STL_MIN_FILE_SIZE || IsAscii (aStream));
 
+  Standard_ReadLineBuffer aBuffer (THE_BUFFER_SIZE);
+
   while (aStream.good())
   {
     if (isAscii)
     {
-      if (!ReadAscii (aStream, theEnd, theProgress))
+      if (!ReadAscii (aStream, aBuffer, theEnd, theProgress))
       {
         break;
       }
@@ -275,6 +273,7 @@ static bool ReadVertex (const char* theStr, double& theX, double& theY, double& 
 //purpose  :
 //==============================================================================
 Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
+                                          Standard_ReadLineBuffer& theBuffer,
                                           const std::streampos theUntilPos,
                                           const Handle(Message_ProgressIndicator)& theProgress)
 {
@@ -285,7 +284,7 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
   const char* aLine;
 
   // skip header "solid ..."
-  aLine = THE_BUFFER.ReadLine (theStream, aLineLen);
+  aLine = theBuffer.ReadLine (theStream, aLineLen);
   if (aLine == NULL)
   {
     Message::DefaultMessenger()->Send ("Error: premature end of file", Message_Fail);
@@ -312,7 +311,7 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
       aProgressPos += aStepB;
     }
 
-    aLine = THE_BUFFER.ReadLine (theStream, aLineLen); // "facet normal nx ny nz"
+    aLine = theBuffer.ReadLine (theStream, aLineLen); // "facet normal nx ny nz"
     if (aLine == NULL)
     {
       Message::DefaultMessenger()->Send ("Error: premature end of file", Message_Fail);
@@ -331,7 +330,7 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
       return false;
     }
 
-    aLine = THE_BUFFER.ReadLine (theStream, aLineLen);  // "outer loop"
+    aLine = theBuffer.ReadLine (theStream, aLineLen);  // "outer loop"
     if (aLine == NULL || !str_starts_with (aLine, "outer", 5))
     {
       TCollection_AsciiString aStr ("Error: unexpected format of facet at line ");
@@ -344,7 +343,7 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
     Standard_Boolean isEOF = false;
     for (Standard_Integer i = 0; i < 3; i++)
     {
-      aLine = THE_BUFFER.ReadLine (theStream, aLineLen);
+      aLine = theBuffer.ReadLine (theStream, aLineLen);
       if (aLine == NULL)
       {
         isEOF = true;
@@ -379,8 +378,8 @@ Standard_Boolean RWStl_Reader::ReadAscii (Standard_IStream& theStream,
       AddTriangle (n1, n2, n3);
     }
 
-    THE_BUFFER.ReadLine (theStream, aLineLen); // skip "endloop"
-    THE_BUFFER.ReadLine (theStream, aLineLen); // skip "endfacet"
+    theBuffer.ReadLine (theStream, aLineLen); // skip "endloop"
+    theBuffer.ReadLine (theStream, aLineLen); // skip "endfacet"
 
     aNbLine += 2;
   }
