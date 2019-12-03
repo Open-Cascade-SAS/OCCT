@@ -24,6 +24,7 @@
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
 
+#include <Select3D_SensitiveFace.hxx>
 #include <Select3D_SensitivePoint.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -272,55 +273,34 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
       Handle(Prs3d_TextAspect) anAsp = myDrawer->TextAspect();
       gp_Pnt aPosition = Position();
 
+      const Standard_Boolean isTextZoomable = anAsp->Aspect()->GetTextZoomable();
       if (myHasOrientation3D)
       {
-        Standard_Boolean isInit = Standard_False;
+        anAsp->Aspect()->SetTextZoomable (myHasFlipping ? Standard_True : Standard_False);
+        SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_ZoomPers, aPosition));
+        aPosition = gp::Origin();
+      }
+      else if (isTextZoomable
+            || TransformPersistence().IsNull()
+            || TransformPersistence()->Mode() != Graphic3d_TMF_2d)
+      {
+        Handle(Graphic3d_TransformPers) aTrsfPers =
+          new Graphic3d_TransformPers (isTextZoomable ? Graphic3d_TMF_RotatePers : Graphic3d_TMF_ZoomRotatePers, aPosition);
+        SetTransformPersistence (aTrsfPers);
+        aPosition = gp::Origin();
+      }
+
+      gp_Pnt aCenterOfLabel;
+      Standard_Real aWidth, aHeight;
+
+      Standard_Boolean isInit = calculateLabelParams (aPosition, aCenterOfLabel, aWidth, aHeight);
+      if (myHasOrientation3D)
+      {
         if (myHasFlipping)
         {
-          // Get width and height of text
-          Font_FTFontParams aFontParams;
-          aFontParams.PointSize  = (unsigned int )anAsp->Height();
-          aFontParams.Resolution = GetContext()->CurrentViewer()->DefaultRenderingParams().Resolution;
-          if (Handle(Font_FTFont) aFont = Font_FTFont::FindAndCreate (anAsp->Aspect()->Font(), anAsp->Aspect()->GetTextFontAspect(), aFontParams))
-          {
-            isInit = Standard_True;
-            const NCollection_String aText (myText.ToExtString());
-            Font_Rect aBndBox = aFont->BoundingBox (aText, anAsp->HorizontalJustification(), anAsp->VerticalJustification());
-            Standard_Real aWidth = Abs (aBndBox.Width());
-            Standard_Real aHeight = Abs (aBndBox.Height());
-            gp_Pnt aCenterOfLabel = aPosition;
-
-            if (anAsp->VerticalJustification() == Graphic3d_VTA_BOTTOM)
-            {
-              aCenterOfLabel.ChangeCoord() += myOrientation3D.YDirection().XYZ() * aHeight * 0.5;
-            }
-            else if (anAsp->VerticalJustification() == Graphic3d_VTA_TOP)
-            {
-              aCenterOfLabel.ChangeCoord() -= myOrientation3D.YDirection().XYZ() * aHeight * 0.5;
-            }
-            if (anAsp->HorizontalJustification() == Graphic3d_HTA_LEFT)
-            {
-              aCenterOfLabel.ChangeCoord() += myOrientation3D.XDirection().XYZ() * aWidth * 0.5;
-            }
-            else if (anAsp->HorizontalJustification() == Graphic3d_HTA_RIGHT)
-            {
-              aCenterOfLabel.ChangeCoord() -= myOrientation3D.XDirection().XYZ() * aWidth * 0.5;
-            }
-
-            if (!anAsp->Aspect()->GetTextZoomable()
-             && (TransformPersistence().IsNull()
-              || TransformPersistence()->Mode() == Graphic3d_TMF_ZoomPers))
-            {
-              anAsp->Aspect()->SetTextZoomable (Standard_True);
-              SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_ZoomPers, aPosition));
-              aPosition = gp::Origin();
-            }
-
-            gp_Ax2 aFlippingAxes (aCenterOfLabel, myOrientation3D.Direction(), myOrientation3D.XDirection());
-            Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_True, aFlippingAxes);
-          }
+          gp_Ax2 aFlippingAxes (aCenterOfLabel, myOrientation3D.Direction(), myOrientation3D.XDirection());
+          Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_True, aFlippingAxes);
         }
-
         gp_Ax2 anOrientation = myOrientation3D;
         anOrientation.SetLocation (aPosition);
         Standard_Boolean aHasOwnAnchor = HasOwnAnchorPoint();
@@ -328,7 +308,7 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
         {
           aHasOwnAnchor = Standard_False; // always not using own anchor if flipping
         }
-        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, myOrientation3D, aHasOwnAnchor);
+        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, anOrientation, aHasOwnAnchor);
         if (myHasFlipping && isInit)
         {
           Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_False, gp_Ax2());
@@ -336,7 +316,21 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
       }
       else
       {
-        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, Position());
+        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, aPosition);
+      }
+
+      if (isInit)
+      {
+        const Standard_Real aDx = aWidth * 0.5;
+        const Standard_Real aDy = aHeight * 0.5;
+        gp_Trsf aLabelPlane = calculateLabelTrsf (aPosition, aCenterOfLabel);
+
+        gp_Pnt aMinPnt = gp_Pnt (-aDx, -aDy, 0.0).Transformed (aLabelPlane);
+        gp_Pnt aMaxPnt = gp_Pnt ( aDx,  aDy, 0.0).Transformed (aLabelPlane);
+
+        Graphic3d_BndBox4f& aBox = Prs3d_Root::CurrentGroup (thePrs)->ChangeBoundingBox();
+        aBox.Add (Graphic3d_Vec4 ((float) aMinPnt.X(), (float) aMinPnt.Y(), (float) aMinPnt.Z(), 1.0));
+        aBox.Add (Graphic3d_Vec4 ((float) aMaxPnt.X(), (float) aMaxPnt.Y(), (float) aMaxPnt.Z(), 1.0));
       }
 
       break;
@@ -355,10 +349,110 @@ void AIS_TextLabel::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
   {
     case 0:
     {
-      Handle(SelectMgr_EntityOwner)   anEntityOwner   = new SelectMgr_EntityOwner (this, 10);
-      Handle(Select3D_SensitivePoint) aSensitivePoint = new Select3D_SensitivePoint (anEntityOwner, Position());
-      theSelection->Add (aSensitivePoint);
+      Handle(SelectMgr_EntityOwner) anEntityOwner   = new SelectMgr_EntityOwner (this, 10);
+
+      gp_Pnt aPosition = Position();
+      if (!TransformPersistence().IsNull() && TransformPersistence()->Mode() != Graphic3d_TMF_2d)
+      {
+        aPosition = gp::Origin();
+      }
+
+      gp_Pnt aCenterOfLabel;
+      Standard_Real aWidth, aHeight;
+
+      if (!calculateLabelParams (aPosition, aCenterOfLabel, aWidth, aHeight))
+      {
+        Handle(Select3D_SensitivePoint) aTextSensitive = new Select3D_SensitivePoint (anEntityOwner, aPosition);
+        theSelection->Add (aTextSensitive);
+        break;
+      }
+
+      const Standard_Real aDx = aWidth * 0.5;
+      const Standard_Real aDy = aHeight * 0.5;
+      gp_Trsf aLabelPlane = calculateLabelTrsf (aPosition, aCenterOfLabel);
+
+      // sensitive planar rectangle for text
+      TColgp_Array1OfPnt aRectanglePoints (1, 5);
+      aRectanglePoints.ChangeValue (1) = gp_Pnt (-aDx, -aDy, 0.0).Transformed (aLabelPlane);
+      aRectanglePoints.ChangeValue (2) = gp_Pnt (-aDx,  aDy, 0.0).Transformed (aLabelPlane);
+      aRectanglePoints.ChangeValue (3) = gp_Pnt ( aDx,  aDy, 0.0).Transformed (aLabelPlane);
+      aRectanglePoints.ChangeValue (4) = gp_Pnt ( aDx, -aDy, 0.0).Transformed (aLabelPlane);
+      aRectanglePoints.ChangeValue (5) = aRectanglePoints.Value (1);
+
+      Handle(Select3D_SensitiveFace) aTextSensitive =
+        new Select3D_SensitiveFace (anEntityOwner, aRectanglePoints, Select3D_TOS_INTERIOR);
+      theSelection->Add (aTextSensitive);
+
       break;
     }
   }
+}
+
+//=======================================================================
+//function : calculateLabelParams
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_TextLabel::calculateLabelParams (const gp_Pnt& thePosition,
+                                                      gp_Pnt& theCenterOfLabel,
+                                                      Standard_Real& theWidth,
+                                                      Standard_Real& theHeight) const
+{
+  // Get width and height of text
+  Handle(Prs3d_TextAspect) anAsp = myDrawer->TextAspect();
+  Font_FTFontParams aFontParams;
+  aFontParams.PointSize = (unsigned int) anAsp->Height();
+  aFontParams.Resolution = GetContext()->CurrentViewer()->DefaultRenderingParams().Resolution;
+
+  Handle(Font_FTFont) aFont = Font_FTFont::FindAndCreate (anAsp->Aspect()->Font(),
+                                                          anAsp->Aspect()->GetTextFontAspect(),
+                                                          aFontParams);
+  if (aFont.IsNull())
+  { 
+    return Standard_False;
+  }
+
+  const NCollection_String aText (myText.ToExtString());
+  Font_Rect aBndBox = aFont->BoundingBox (aText, anAsp->HorizontalJustification(), anAsp->VerticalJustification());
+  theWidth = Abs (aBndBox.Width());
+  theHeight = Abs (aBndBox.Height());
+
+  theCenterOfLabel = thePosition;
+  if (anAsp->VerticalJustification() == Graphic3d_VTA_BOTTOM)
+  {
+    theCenterOfLabel.ChangeCoord() += myOrientation3D.YDirection().XYZ() * theHeight * 0.5;
+  }
+  else if (anAsp->VerticalJustification() == Graphic3d_VTA_TOP)
+  {
+    theCenterOfLabel.ChangeCoord() -= myOrientation3D.YDirection().XYZ() * theHeight * 0.5;
+  }
+  if (anAsp->HorizontalJustification() == Graphic3d_HTA_LEFT)
+  {
+    theCenterOfLabel.ChangeCoord() += myOrientation3D.XDirection().XYZ() * theWidth * 0.5;
+  }
+  else if (anAsp->HorizontalJustification() == Graphic3d_HTA_RIGHT)
+  {
+    theCenterOfLabel.ChangeCoord() -= myOrientation3D.XDirection().XYZ() * theWidth * 0.5;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : calculateLabelTrsf
+//purpose  :
+//=======================================================================
+gp_Trsf AIS_TextLabel::calculateLabelTrsf (const gp_Pnt& thePosition, gp_Pnt& theCenterOfLabel) const
+{
+  const Standard_Real anAngle = myDrawer->TextAspect()->Aspect()->TextAngle() * M_PI / 180.0;
+  const gp_Ax1 aRotAxis (thePosition, gp_Dir (0.0, 0.0, 1.0));
+
+  gp_Ax2 anOrientation = myOrientation3D;
+  anOrientation.Rotate (aRotAxis, anAngle);
+  theCenterOfLabel.Rotate (aRotAxis, anAngle);
+
+  gp_Trsf aLabelPlane;
+  aLabelPlane.SetTransformation (anOrientation, gp::XOY());
+  aLabelPlane.SetTranslationPart (theCenterOfLabel.XYZ());
+
+  return aLabelPlane;
 }

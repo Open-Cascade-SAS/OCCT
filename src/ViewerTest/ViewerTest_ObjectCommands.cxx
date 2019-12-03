@@ -4254,6 +4254,10 @@ static Handle(AIS_InteractiveObject) findConnectedObject (const TCollection_Asci
     aConnected->SetDisplayMode (aPrs->DisplayMode());
   }
   aConnected->Connect (aPrs, aPrs->LocalTransformationGeom());
+  if (!aPrs->TransformPersistence().IsNull())
+  {
+    aConnected->SetTransformPersistence (aPrs->TransformPersistence());
+  }
   ViewerTest::Display (theName, aConnected, false);
   return aConnected;
 }

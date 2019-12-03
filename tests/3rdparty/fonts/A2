@@ -67,3 +67,6 @@ vdrawtext OC21 OpenCascade -pos -200 -200 300 -color FF0005   -halign left -vali
 
 vglinfo
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
+vsensdis
+checkview -screenshot -3d -path ${imagedir}/${test_image}_sensitive.png

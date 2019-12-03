@@ -130,7 +130,7 @@ void SelectMgr_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
     {
       if (aSelIter.Value()->GetSelectionState() == SelectMgr_SOS_Activated)
       {
-        SelectMgr::ComputeSensitivePrs (aStruct, aSelIter.Value(), anObj->Transformation(), Handle(Graphic3d_TransformPers)());
+        SelectMgr::ComputeSensitivePrs (aStruct, aSelIter.Value(), anObj->Transformation(), anObj->TransformPersistence());
       }
     }
 

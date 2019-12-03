@@ -29,7 +29,7 @@ box b 1 2 3
 vdisplay -dispMode 1 b
 vselprops localSelHighlight -dispMode 1 -material SILVER -color WHITE
 vselmode b FACE 1
-vselect 250 250
+vselect 190 250
 
 vglinfo
 vdump ${imagedir}/${casename}.png

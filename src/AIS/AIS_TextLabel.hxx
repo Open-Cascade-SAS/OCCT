@@ -121,7 +121,7 @@ public:
   //! and the colour of backgroubd for the TODT_DEKALE TextDisplayType.
   Standard_EXPORT void SetColorSubTitle (const Quantity_Color& theColor);
 
-private:
+protected:
 
   //! Compute
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
@@ -131,6 +131,16 @@ private:
   //! Compute selection
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer             theMode) Standard_OVERRIDE;
+
+  //! Calculate label center, width and height
+  Standard_EXPORT Standard_Boolean calculateLabelParams (const gp_Pnt& thePosition,
+                                                         gp_Pnt& theCenterOfLabel,
+                                                         Standard_Real& theWidth,
+                                                         Standard_Real& theHeight) const;
+
+  //! Calculate label transformation
+  Standard_EXPORT gp_Trsf calculateLabelTrsf (const gp_Pnt& thePosition,
+                                              gp_Pnt& theCenterOfLabel) const;
 
 protected:
 

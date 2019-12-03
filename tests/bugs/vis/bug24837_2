@@ -38,3 +38,6 @@ vsetlocation b1 0 -3 0
 vconnect bc 0 -6 0 b1 b2 tb1 tb2
 set anImage ${imagedir}/${casename}_2_3.png
 vdump ${anImage}
+
+vsensdis
+vdump $imagedir/${casename}_sensitive.png
