@@ -18,6 +18,7 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAbs_IsoType.hxx>
+#include <BRep_Tool.hxx>
 
 //=======================================================================
 // Function: Reset
@@ -125,9 +126,14 @@ void BRepMesh_DefaultRangeSplitter::computeTolerance(
   const Standard_Real aDiffU = myRangeU.second - myRangeU.first;
   const Standard_Real aDiffV = myRangeV.second - myRangeV.first;
 
+  const Standard_Real      aTolerance = BRep_Tool::Tolerance (myDFace->GetFace());
+  const Adaptor3d_Surface& aSurface   = GetSurface()->Surface();
+  const Standard_Real      aResU      = aSurface.UResolution (aTolerance);
+  const Standard_Real      aResV      = aSurface.VResolution (aTolerance);
+
   const Standard_Real aDeflectionUV = 1.e-05;
-  myTolerance.first  = Max(Min(aDeflectionUV, 0.1 * aDiffU), 1e-7 * aDiffU);
-  myTolerance.second = Max(Min(aDeflectionUV, 0.1 * aDiffV), 1e-7 * aDiffV);
+  myTolerance.first  = Max(Min(aDeflectionUV, aResU), 1e-7 * aDiffU);
+  myTolerance.second = Max(Min(aDeflectionUV, aResV), 1e-7 * aDiffV);
 }
 
 //=======================================================================

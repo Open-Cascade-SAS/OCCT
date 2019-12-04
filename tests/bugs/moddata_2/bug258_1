@@ -15,5 +15,5 @@ vsetdispmode result 1
 vfit
 triangles result
 
-checktrinfo result -tri 78 -nod 80
+checktrinfo result -tri 78 -nod 82
 checkview -screenshot -3d -path ${imagedir}/${test_image}.png

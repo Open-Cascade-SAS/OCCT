@@ -1,4 +1,4 @@
-puts "TODO CR25827 ALL: Faulty shapes in variables faulty_"
+#puts "TODO CR25827 ALL: Faulty shapes in variables faulty_"
 
 puts "========="
 puts "CR25827"

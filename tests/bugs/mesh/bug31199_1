@@ -1,0 +1,19 @@
+puts "======="
+puts "0031199: BRepMesh fails on thin faces"
+puts "======="
+puts ""
+
+restore [locate_data_file bug31199_ok.brep] result
+
+incmesh result 0.1
+
+checktrinfo result -tri 90 -nod 90
+
+donly result
+triangles result
+isos result 0
+
+top
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -14,5 +14,5 @@ tclean result
 set Deflection 1.
 catch {incmesh result ${Deflection} }
 
-checktrinfo result -tri 52685 -nod 46258 -defl 1.0 -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
+checktrinfo result -tri 52956 -nod 46525 -defl 1.0 -tol_rel_defl 0.001 -tol_rel_tri 0.001 -tol_rel_nod 0.001
 checkview -display result -2d -path ${imagedir}/${test_image}.png
