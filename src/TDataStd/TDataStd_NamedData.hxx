@@ -16,35 +16,23 @@
 #ifndef _TDataStd_NamedData_HeaderFile
 #define _TDataStd_NamedData_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <TColStd_DataMapOfStringInteger.hxx>
-#include <Standard_Real.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 #include <TDataStd_DataMapOfStringReal.hxx>
 #include <TDataStd_DataMapOfStringString.hxx>
-#include <Standard_Byte.hxx>
 #include <TDataStd_DataMapOfStringByte.hxx>
-#include <TColStd_HArray1OfInteger.hxx>
 #include <TDataStd_DataMapOfStringHArray1OfInteger.hxx>
-#include <TColStd_HArray1OfReal.hxx>
 #include <TDataStd_DataMapOfStringHArray1OfReal.hxx>
-#include <Standard_OStream.hxx>
+
 class TDataStd_HDataMapOfStringInteger;
 class TDataStd_HDataMapOfStringReal;
 class TDataStd_HDataMapOfStringString;
 class TDataStd_HDataMapOfStringByte;
 class TDataStd_HDataMapOfStringHArray1OfInteger;
 class TDataStd_HDataMapOfStringHArray1OfReal;
-class Standard_GUID;
-class TDF_Label;
 class TCollection_ExtendedString;
-class TDF_Attribute;
-class TDF_RelocationTable;
-
 
 class TDataStd_NamedData;
 DEFINE_STANDARD_HANDLE(TDataStd_NamedData, TDF_Attribute)
@@ -52,24 +40,22 @@ DEFINE_STANDARD_HANDLE(TDataStd_NamedData, TDF_Attribute)
 //! Contains a named data.
 class TDataStd_NamedData : public TDF_Attribute
 {
-
 public:
 
-  
-  //! Static methods
-  //! ==============
   //! Returns the ID of the named data attribute.
   Standard_EXPORT static const Standard_GUID& GetID();
   
   //! Finds or creates a named data attribute.
   Standard_EXPORT static Handle(TDataStd_NamedData) Set (const TDF_Label& label);
-  
+
+public:
+
+  //! Empty constructor.
   Standard_EXPORT TDataStd_NamedData();
   
-  //! Returns true if at least one named integer value is
-  //! kept in the attribute.
-    Standard_Boolean HasIntegers() const;
-  
+  //! Returns true if at least one named integer value is kept in the attribute.
+  Standard_Boolean HasIntegers() const { return !myIntegers.IsNull(); }
+
   //! Returns true if the attribute contains specified by Name
   //! integer value.
   Standard_EXPORT Standard_Boolean HasInteger (const TCollection_ExtendedString& theName) const;
@@ -88,11 +74,10 @@ public:
   
   //! Replace the container content by new content of the <theIntegers>.
   Standard_EXPORT void ChangeIntegers (const TColStd_DataMapOfStringInteger& theIntegers);
-  
-  //! Returns true if at least one named real value is
-  //! kept in the attribute.
-    Standard_Boolean HasReals() const;
-  
+
+  //! Returns true if at least one named real value is kept in the attribute.
+  Standard_Boolean HasReals() const { return !myReals.IsNull(); }
+
   //! Returns true if the attribute contains a real specified by Name.
   Standard_EXPORT Standard_Boolean HasReal (const TCollection_ExtendedString& theName) const;
   
@@ -112,8 +97,8 @@ public:
   Standard_EXPORT void ChangeReals (const TDataStd_DataMapOfStringReal& theReals);
   
   //! Returns true if there are some named strings in the attribute.
-    Standard_Boolean HasStrings() const;
-  
+  Standard_Boolean HasStrings() const { return !myStrings.IsNull(); }
+
   //! Returns true if the attribute contains this named string.
   Standard_EXPORT Standard_Boolean HasString (const TCollection_ExtendedString& theName) const;
   
@@ -133,8 +118,8 @@ public:
   Standard_EXPORT void ChangeStrings (const TDataStd_DataMapOfStringString& theStrings);
   
   //! Returns true if there are some named bytes in the attribute.
-    Standard_Boolean HasBytes() const;
-  
+  Standard_Boolean HasBytes() const { return !myBytes.IsNull(); }
+
   //! Returns true if the attribute contains this named byte.
   Standard_EXPORT Standard_Boolean HasByte (const TCollection_ExtendedString& theName) const;
   
@@ -154,8 +139,8 @@ public:
   Standard_EXPORT void ChangeBytes (const TDataStd_DataMapOfStringByte& theBytes);
   
   //! Returns true if there are some named arrays of integer values in the attribute.
-    Standard_Boolean HasArraysOfIntegers() const;
-  
+  Standard_Boolean HasArraysOfIntegers() const { return !myArraysOfIntegers.IsNull(); }
+
   //! Returns true if the attribute contains this named array of integer values.
   Standard_EXPORT Standard_Boolean HasArrayOfIntegers (const TCollection_ExtendedString& theName) const;
   
@@ -163,11 +148,17 @@ public:
   //! It returns a NULL Handle if there is no such a named array of integers
   //! (use HasArrayOfIntegers()).
   Standard_EXPORT const Handle(TColStd_HArray1OfInteger)& GetArrayOfIntegers (const TCollection_ExtendedString& theName);
-  
+
   //! Defines a named array of integer values.
-  //! If the array already exists, it changes its value to <theArrayOfIntegers>.
-  Standard_EXPORT void SetArrayOfIntegers (const TCollection_ExtendedString& theName, const Handle(TColStd_HArray1OfInteger)& theArrayOfIntegers);
-  
+  //! @param theName [in] key
+  //! @param theArrayOfIntegers [in] new value, overrides existing (passed array will be copied by value!)
+  void SetArrayOfIntegers (const TCollection_ExtendedString& theName,
+                           const Handle(TColStd_HArray1OfInteger)& theArrayOfIntegers)
+  {
+    Backup();
+    setArrayOfIntegers (theName, theArrayOfIntegers);
+  }
+
   //! Returns the internal container of named arrays of integer values.
   Standard_EXPORT const TDataStd_DataMapOfStringHArray1OfInteger& GetArraysOfIntegersContainer();
   
@@ -175,8 +166,8 @@ public:
   Standard_EXPORT void ChangeArraysOfIntegers (const TDataStd_DataMapOfStringHArray1OfInteger& theArraysOfIntegers);
   
   //! Returns true if there are some named arrays of real values in the attribute.
-    Standard_Boolean HasArraysOfReals() const;
-  
+  Standard_Boolean HasArraysOfReals() const { return !myArraysOfReals.IsNull(); }
+
   //! Returns true if the attribute contains this named array of real values.
   Standard_EXPORT Standard_Boolean HasArrayOfReals (const TCollection_ExtendedString& theName) const;
   
@@ -184,39 +175,118 @@ public:
   //! It returns a NULL Handle if there is no such a named array of reals
   //! (use HasArrayOfReals()).
   Standard_EXPORT const Handle(TColStd_HArray1OfReal)& GetArrayOfReals (const TCollection_ExtendedString& theName);
-  
+
   //! Defines a named array of real values.
-  //! If the array already exists, it changes its value to <theArrayOfReals>.
-  Standard_EXPORT void SetArrayOfReals (const TCollection_ExtendedString& theName, const Handle(TColStd_HArray1OfReal)& theArrayOfReals);
-  
+  //! @param theName [in] key
+  //! @param theArrayOfIntegers [in] new value, overrides existing (passed array will be copied by value!)
+  void SetArrayOfReals (const TCollection_ExtendedString& theName,
+                        const Handle(TColStd_HArray1OfReal)& theArrayOfReals)
+  {
+    Backup();
+    setArrayOfReals (theName, theArrayOfReals);
+  }
+
   //! Returns the internal container of named arrays of real values.
   Standard_EXPORT const TDataStd_DataMapOfStringHArray1OfReal& GetArraysOfRealsContainer();
   
   //! Replace the container content by new content of the <theArraysOfReals>.
   Standard_EXPORT void ChangeArraysOfReals (const TDataStd_DataMapOfStringHArray1OfReal& theArraysOfReals);
-  
-  Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
+
+  //! Clear data.
+  void Clear()
+  {
+    Backup();
+    clear();
+  }
+
+public: //! @name late-load deferred data interface
+
+  //! Returns TRUE if some data is not loaded from deferred storage and can be loaded using LoadDeferredData().
+  //!
+  //! Late-load interface allows to avoid loading auxiliary data into memory until it is needed by application
+  //! and also speed up reader by skipping data chunks in file.
+  //! This feature requires file format having special structure, and usually implies read-only access,
+  //! therefore default implementation will return FALSE here.
+  //!
+  //! Late-load elements require special attention to ensure data consistency,
+  //! as such elements are created in undefined state (no data) and Undo/Redo mechanism will not work until deferred data being loaded.
+  //!
+  //! Usage scenarios:
+  //! - Application displays model in read-only way.
+  //!   Late-load elements are loaded temporarily on demand and immediatly unloaded.
+  //!     theNamedData->LoadDeferredData (true);
+  //!     TCollection_AsciiString aValue = theNamedData->GetString (theKey);
+  //!     theNamedData->UnloadDeferredData();
+  //! - Application saves the model into another format.
+  //!   All late-load elements should be loaded (at least temporary during operation).
+  //! - Application modifies the model.
+  //!   Late-load element should be loaded with removed link to deferred storage,
+  //!   so that Undo()/Redo() will work as expected since loading.
+  //!     theNamedData->LoadDeferredData (false);
+  //!     theNamedData->SetString (theKey, theNewValue);
+  virtual Standard_Boolean HasDeferredData() const { return false; }
+
+  //! Load data from deferred storage, without calling Backup().
+  //! As result, the content of the object will be overidden by data from deferred storage (which is normally read-only).
+  //! @param theToKeepDeferred [in] when TRUE, the link to deferred storage will be preserved
+  //!                               so that it will be possible calling UnloadDeferredData() afterwards for releasing memory
+  //! @return FALSE if deferred storage is unavailable or deferred data has been already loaded
+  virtual Standard_Boolean LoadDeferredData (Standard_Boolean theToKeepDeferred = false)
+  {
+    (void )theToKeepDeferred;
+    return false;
+  }
+
+  //! Releases data if object has connected deferred storage, without calling Backup().
+  //! WARNING! This operation does not unload modifications to deferred storage (normally it is read-only),
+  //! so that modifications will be discarded (if any).
+  //! @return FALSE if object has no deferred data
+  virtual Standard_Boolean UnloadDeferredData() { return false; }
+
+public:
+
+  //! Clear data without calling Backup().
+  Standard_EXPORT void clear();
+
+  //! Defines a named integer (without calling Backup).
+  Standard_EXPORT void setInteger (const TCollection_ExtendedString& theName,
+                                   const Standard_Integer theInteger);
+
+  //! Defines a named real (without calling Backup).
+  Standard_EXPORT void setReal (const TCollection_ExtendedString& theName,
+                                const Standard_Real theReal);
+
+  //! Defines a named string (without calling Backup).
+  Standard_EXPORT void setString (const TCollection_ExtendedString& theName,
+                                  const TCollection_ExtendedString& theString);
+
+  //! Defines a named byte (without calling Backup).
+  Standard_EXPORT void setByte (const TCollection_ExtendedString& theName,
+                                const Standard_Byte theByte);
+
+  //! Defines a named array of integer values (without calling Backup).
+  Standard_EXPORT void setArrayOfIntegers (const TCollection_ExtendedString& theName,
+                                           const Handle(TColStd_HArray1OfInteger)& theArrayOfIntegers);
+
+  //! Defines a named array of real values (without calling Backup).
+  Standard_EXPORT void setArrayOfReals (const TCollection_ExtendedString& theName,
+                                        const Handle(TColStd_HArray1OfReal)& theArrayOfReals);
+
+public: //! @name TDF_Attribute interface
+
+  Standard_EXPORT virtual const Standard_GUID& ID() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
+
+  Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
+
+  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
+
   Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_NamedData,TDF_Attribute)
 
 protected:
-
-
-
-
-private:
-
 
   Handle(TDataStd_HDataMapOfStringInteger) myIntegers;
   Handle(TDataStd_HDataMapOfStringReal) myReals;
@@ -225,14 +295,6 @@ private:
   Handle(TDataStd_HDataMapOfStringHArray1OfInteger) myArraysOfIntegers;
   Handle(TDataStd_HDataMapOfStringHArray1OfReal) myArraysOfReals;
 
-
 };
-
-
-#include <TDataStd_NamedData.lxx>
-
-
-
-
 
 #endif // _TDataStd_NamedData_HeaderFile

@@ -163,19 +163,114 @@ void RWMesh_CafReader::fillDocument()
   const Standard_Boolean wasAutoNaming = XCAFDoc_ShapeTool::AutoNaming();
   XCAFDoc_ShapeTool::SetAutoNaming (Standard_False);
   const TCollection_AsciiString aRootName; // = generateRootName (theFile);
+  CafDocumentTools aTools;
+  aTools.ShapeTool = XCAFDoc_DocumentTool::ShapeTool (myXdeDoc->Main());
+  aTools.ColorTool = XCAFDoc_DocumentTool::ColorTool (myXdeDoc->Main());
+  aTools.VisMaterialTool = XCAFDoc_DocumentTool::VisMaterialTool (myXdeDoc->Main());
   for (TopTools_SequenceOfShape::Iterator aRootIter (myRootShapes); aRootIter.More(); aRootIter.Next())
   {
-    addShapeIntoDoc (aRootIter.Value(), TDF_Label(), aRootName);
+    addShapeIntoDoc (aTools, aRootIter.Value(), TDF_Label(), aRootName);
   }
   XCAFDoc_DocumentTool::ShapeTool (myXdeDoc->Main())->UpdateAssemblies();
   XCAFDoc_ShapeTool::SetAutoNaming (wasAutoNaming);
 }
 
 // =======================================================================
+// function : setShapeName
+// purpose  :
+// =======================================================================
+void RWMesh_CafReader::setShapeName (const TDF_Label& theLabel,
+                                     const TopAbs_ShapeEnum theShapeType,
+                                     const TCollection_AsciiString& theName,
+                                     const TDF_Label& theParentLabel,
+                                     const TCollection_AsciiString& theParentName)
+{
+  if (!theName.IsEmpty())
+  {
+    TDataStd_Name::Set (theLabel, theName);
+  }
+  else if (!theParentLabel.IsNull())
+  {
+    TDataStd_Name::Set (theLabel, shapeTypeToString (theShapeType));
+  }
+  else if (theParentLabel.IsNull()
+       && !theParentName.IsEmpty())
+  {
+    TDataStd_Name::Set (theLabel, theParentName);
+  }
+}
+
+// =======================================================================
+// function : setShapeStyle
+// purpose  :
+// =======================================================================
+void RWMesh_CafReader::setShapeStyle (const CafDocumentTools& theTools,
+                                      const TDF_Label& theLabel,
+                                      const XCAFPrs_Style& theStyle)
+{
+  if (theStyle.IsSetColorSurf())
+  {
+    theTools.ColorTool->SetColor (theLabel, theStyle.GetColorSurfRGBA(), XCAFDoc_ColorSurf);
+  }
+  if (theStyle.IsSetColorCurv())
+  {
+    theTools.ColorTool->SetColor (theLabel, theStyle.GetColorCurv(), XCAFDoc_ColorCurv);
+  }
+  if (!theStyle.Material().IsNull())
+  {
+    TDF_Label aMaterialLabel = theStyle.Material()->Label();
+    if (aMaterialLabel.IsNull())
+    {
+      const TCollection_AsciiString aMatName = !theStyle.Material()->RawName().IsNull()
+                                             ?  theStyle.Material()->RawName()->String()
+                                             :  "";
+      aMaterialLabel = theTools.VisMaterialTool->AddMaterial (theStyle.Material(), aMatName);
+    }
+    theTools.VisMaterialTool->SetShapeMaterial (theLabel, aMaterialLabel);
+  }
+}
+
+// =======================================================================
+// function : setShapeNamedData
+// purpose  :
+// =======================================================================
+void RWMesh_CafReader::setShapeNamedData (const CafDocumentTools& ,
+                                          const TDF_Label& theLabel,
+                                          const Handle(TDataStd_NamedData)& theNameData)
+{
+  if (theNameData.IsNull())
+  {
+    return;
+  }
+
+  const TDF_Label aNameDataLabel = theNameData->Label();
+  Handle(TDataStd_NamedData) anOtherNamedData;
+  if (theLabel.FindAttribute (theNameData->ID(), anOtherNamedData))
+  {
+    if (anOtherNamedData->Label() != aNameDataLabel)
+    {
+      Message::DefaultMessenger()->Send ("Error! Different NamedData is already set to shape", Message_Alarm);
+    }
+  }
+  else
+  {
+    if (aNameDataLabel.IsNull())
+    {
+      theLabel.AddAttribute (theNameData);
+    }
+    else
+    {
+      Message::DefaultMessenger()->Send ("Error! Skipped NamedData instance shared across shapes", Message_Alarm);
+    }
+  }
+}
+
+// =======================================================================
 // function : addShapeIntoDoc
 // purpose  :
 // =======================================================================
-Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (const TopoDS_Shape& theShape,
+Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (CafDocumentTools& theTools,
+                                                    const TopoDS_Shape& theShape,
                                                     const TDF_Label& theLabel,
                                                     const TCollection_AsciiString& theParentName)
 {
@@ -185,10 +280,9 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (const TopoDS_Shape& theShape
     return Standard_False;
   }
 
-  Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (myXdeDoc->Main());
-
   const TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
   TopoDS_Shape aShapeToAdd = theShape;
+  const TopoDS_Shape aShapeNoLoc = theShape.Located (TopLoc_Location());
   Standard_Boolean toMakeAssembly = Standard_False;
   if (theShape.ShapeType() == TopAbs_COMPOUND)
   {
@@ -206,9 +300,9 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (const TopoDS_Shape& theShape
                     || (myAttribMap.Find (aFace, aSubFaceAttribs) && !aSubFaceAttribs.Name.IsEmpty());
     }
 
-    // create empty compound to add as assembly
     if (toMakeAssembly)
     {
+      // create an empty Compound to add as assembly, so that we can add children one-by-one via AddComponent()
       TopoDS_Compound aCompound;
       BRep_Builder aBuilder;
       aBuilder.MakeCompound (aCompound);
@@ -217,21 +311,35 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (const TopoDS_Shape& theShape
     }
   }
 
-  TDF_Label aNewLabel;
+  TDF_Label aNewLabel, anOldLabel;
   if (theLabel.IsNull())
   {
     // add new shape
-    aNewLabel = aShapeTool->AddShape (aShapeToAdd, toMakeAssembly);
+    aNewLabel = theTools.ShapeTool->AddShape (aShapeToAdd, toMakeAssembly);
   }
-  else if (aShapeTool->IsAssembly (theLabel))
+  else if (theTools.ShapeTool->IsAssembly (theLabel))
   {
     // add shape as component
-    aNewLabel = aShapeTool->AddComponent (theLabel, aShapeToAdd, toMakeAssembly);
+    if (theTools.ComponentMap.Find (aShapeNoLoc, anOldLabel))
+    {
+      aNewLabel = theTools.ShapeTool->AddComponent (theLabel, anOldLabel, theShape.Location());
+    }
+    else
+    {
+      aNewLabel = theTools.ShapeTool->AddComponent (theLabel, aShapeToAdd, toMakeAssembly);
+
+      TDF_Label aRefLabel = aNewLabel;
+      theTools.ShapeTool->GetReferredShape (aNewLabel, aRefLabel);
+      if (!aRefLabel.IsNull())
+      {
+        theTools.ComponentMap.Bind (aShapeNoLoc, aRefLabel);
+      }
+    }
   }
   else
   {
     // add shape as sub-shape
-    aNewLabel = aShapeTool->AddSubShape (theLabel, theShape);
+    aNewLabel = theTools.ShapeTool->AddSubShape (theLabel, theShape);
     if (!aNewLabel.IsNull())
     {
       Handle(XCAFDoc_ShapeMapTool) aShapeMapTool = XCAFDoc_ShapeMapTool::Set (aNewLabel);
@@ -245,57 +353,127 @@ Standard_Boolean RWMesh_CafReader::addShapeIntoDoc (const TopoDS_Shape& theShape
 
   // if new label is a reference get referred shape
   TDF_Label aNewRefLabel = aNewLabel;
-  aShapeTool->GetReferredShape (aNewLabel, aNewRefLabel);
+  theTools.ShapeTool->GetReferredShape (aNewLabel, aNewRefLabel);
 
-  // store name
-  RWMesh_NodeAttributes aShapeAttribs;
-  myAttribMap.Find (theShape, aShapeAttribs);
-  if (aShapeAttribs.Name.IsEmpty())
-  {
-    if (theLabel.IsNull())
-    {
-      aShapeAttribs.Name = theParentName;
-    }
-    if (aShapeAttribs.Name.IsEmpty()
-    && !theLabel.IsNull())
-    {
-      aShapeAttribs.Name = shapeTypeToString (aShapeType);
-    }
-  }
-  if (!aShapeAttribs.Name.IsEmpty())
-  {
-    TDataStd_Name::Set (aNewRefLabel, aShapeAttribs.Name);
-  }
+  RWMesh_NodeAttributes aRefShapeAttribs;
+  myAttribMap.Find (aShapeNoLoc, aRefShapeAttribs);
 
-  // store color
-  Handle(XCAFDoc_ColorTool) aColorTool = XCAFDoc_DocumentTool::ColorTool (myXdeDoc->Main());
-  if (aShapeAttribs.Style.IsSetColorSurf())
+  bool hasProductName = false;
+  if (aNewLabel != aNewRefLabel)
   {
-    aColorTool->SetColor (aNewRefLabel, aShapeAttribs.Style.GetColorSurfRGBA(), XCAFDoc_ColorSurf);
-  }
-  if (aShapeAttribs.Style.IsSetColorCurv())
-  {
-    aColorTool->SetColor (aNewRefLabel, aShapeAttribs.Style.GetColorCurv(), XCAFDoc_ColorCurv);
-  }
-  if (!aShapeAttribs.Style.Material().IsNull())
-  {
-    Handle(XCAFDoc_VisMaterialTool) aMatTool = XCAFDoc_DocumentTool::VisMaterialTool (myXdeDoc->Main());
-    TDF_Label aMaterialLabel = aShapeAttribs.Style.Material()->Label();
-    if (aMaterialLabel.IsNull())
+    // put attributes to the Instance (overrides Product attributes)
+    RWMesh_NodeAttributes aShapeAttribs;
+    if (!theShape.Location().IsIdentity()
+      && myAttribMap.Find (theShape, aShapeAttribs))
     {
-      const TCollection_AsciiString aMatName = !aShapeAttribs.Style.Material()->RawName().IsNull()
-                                             ?  aShapeAttribs.Style.Material()->RawName()->String()
-                                             :  "";
-      aMaterialLabel = aMatTool->AddMaterial (aShapeAttribs.Style.Material(), aMatName);
+      if (!aShapeAttribs.Style.IsEqual (aRefShapeAttribs.Style))
+      {
+        setShapeStyle (theTools, aNewLabel, aShapeAttribs.Style);
+      }
+      if (aShapeAttribs.NamedData != aRefShapeAttribs.NamedData)
+      {
+        setShapeNamedData (theTools, aNewLabel, aShapeAttribs.NamedData);
+      }
+      setShapeName (aNewLabel, aShapeType, aShapeAttribs.Name, theLabel, theParentName);
+      if (aRefShapeAttribs.Name.IsEmpty()
+      && !aShapeAttribs.Name.IsEmpty())
+      {
+        // it is not nice having unnamed Product, so copy name from first Instance (probably the only one)
+        hasProductName = true;
+        setShapeName (aNewRefLabel, aShapeType, aShapeAttribs.Name, theLabel, theParentName);
+      }
     }
-    aMatTool->SetShapeMaterial (aNewRefLabel, aMaterialLabel);
+    else
+    {
+      // copy name from Product
+      setShapeName (aNewLabel, aShapeType, aRefShapeAttribs.Name, theLabel, theParentName);
+    }
   }
 
-  // store sub-shapes (iterator is set to ignore Location)
-  TCollection_AsciiString aDummyName;
+  if (!anOldLabel.IsNull())
+  {
+    // already defined in the document
+    return Standard_True;
+  }
+
+  // put attributes to the Product (shared across Instances)
+  if (!hasProductName)
+  {
+    setShapeName (aNewRefLabel, aShapeType, aRefShapeAttribs.Name, theLabel, theParentName);
+  }
+  setShapeStyle (theTools, aNewRefLabel, aRefShapeAttribs.Style);
+  setShapeNamedData (theTools, aNewRefLabel, aRefShapeAttribs.NamedData);
+
+  if (theTools.ShapeTool->IsAssembly (aNewRefLabel))
+  {
+    // store sub-shapes (iterator is set to not inherit Location of parent object)
+    TCollection_AsciiString aDummyName;
+    for (TopoDS_Iterator aSubShapeIter (theShape, Standard_True, Standard_False); aSubShapeIter.More(); aSubShapeIter.Next())
+    {
+      addShapeIntoDoc (theTools, aSubShapeIter.Value(), aNewRefLabel, aDummyName);
+    }
+  }
+  else
+  {
+    // store a plain list of sub-shapes in case if they have custom attributes (usually per-face color)
+    RWMesh_NodeAttributes aSubShapeAttribs;
+    for (TopoDS_Iterator aSubShapeIter (theShape, Standard_True, Standard_False); aSubShapeIter.More(); aSubShapeIter.Next())
+    {
+      const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
+      if (myAttribMap.Find (aSubShape.Located (TopLoc_Location()), aSubShapeAttribs))
+      {
+        addSubShapeIntoDoc (theTools, aSubShape, aNewRefLabel, aSubShapeAttribs);
+      }
+    }
+  }
+  return Standard_True;
+}
+
+// =======================================================================
+// function : addSubShapeIntoDoc
+// purpose  :
+// =======================================================================
+Standard_Boolean RWMesh_CafReader::addSubShapeIntoDoc (CafDocumentTools& theTools,
+                                                       const TopoDS_Shape& theShape,
+                                                       const TDF_Label& theParentLabel,
+                                                       const RWMesh_NodeAttributes& theAttribs)
+{
+  if (theShape.IsNull()
+   || myXdeDoc.IsNull())
+  {
+    return Standard_False;
+  }
+
+  const TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
+  TDF_Label aNewLabel = theTools.ShapeTool->AddSubShape (theParentLabel, theShape);
+  if (aNewLabel.IsNull())
+  {
+    return Standard_False;
+  }
+
+  {
+    Handle(XCAFDoc_ShapeMapTool) aShapeMapTool = XCAFDoc_ShapeMapTool::Set (aNewLabel);
+    aShapeMapTool->SetShape (theShape);
+  }
+
+  // if new label is a reference get referred shape
+  TDF_Label aNewRefLabel = aNewLabel;
+  theTools.ShapeTool->GetReferredShape (aNewLabel, aNewRefLabel);
+
+  // put attributes to the Product (shared across Instances)
+  static const TCollection_AsciiString anEmptyString;
+  setShapeName (aNewRefLabel, aShapeType, theAttribs.Name, TDF_Label(), anEmptyString);
+  setShapeStyle (theTools, aNewRefLabel, theAttribs.Style);
+  setShapeNamedData (theTools, aNewRefLabel, theAttribs.NamedData);
+
+  RWMesh_NodeAttributes aSubShapeAttribs;
   for (TopoDS_Iterator aSubShapeIter (theShape, Standard_True, Standard_False); aSubShapeIter.More(); aSubShapeIter.Next())
   {
-    addShapeIntoDoc (aSubShapeIter.Value(), aNewRefLabel, aDummyName);
+    const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
+    if (myAttribMap.Find (aSubShape.Located (TopLoc_Location()), aSubShapeAttribs))
+    {
+      addSubShapeIntoDoc (theTools, aSubShape, theParentLabel, aSubShapeAttribs);
+    }
   }
   return Standard_True;
 }

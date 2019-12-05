@@ -204,6 +204,7 @@ void BinMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   if(S.IsNull()) return;
 //  Standard_Integer i=0;
 
+  S->LoadDeferredData();
   if(S->HasIntegers() && !S->GetIntegersContainer().IsEmpty()) {
     theTarget.PutInteger(1) << S->GetIntegersContainer().Extent(); //dim
     TColStd_DataMapIteratorOfDataMapOfStringInteger itr(S->GetIntegersContainer());

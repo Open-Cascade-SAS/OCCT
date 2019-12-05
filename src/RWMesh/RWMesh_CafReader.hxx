@@ -24,6 +24,9 @@
 
 class Message_ProgressIndicator;
 class TDocStd_Document;
+class XCAFDoc_ShapeTool;
+class XCAFDoc_ColorTool;
+class XCAFDoc_VisMaterialTool;
 
 //! Extended status bits.
 enum RWMesh_CafReaderStatusEx
@@ -45,6 +48,17 @@ enum RWMesh_CafReaderStatusEx
 class RWMesh_CafReader : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(RWMesh_CafReader, Standard_Transient)
+public:
+
+  //! Structure holding tools for filling the document.
+  struct CafDocumentTools
+  {
+    Handle(XCAFDoc_ShapeTool)       ShapeTool;
+    Handle(XCAFDoc_ColorTool)       ColorTool;
+    Handle(XCAFDoc_VisMaterialTool) VisMaterialTool;
+    NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> ComponentMap;
+  };
+
 public:
 
   //! Empty constructor.
@@ -189,9 +203,33 @@ protected:
   Standard_EXPORT void fillDocument();
 
   //! Append new shape into the document (recursively).
-  Standard_EXPORT Standard_Boolean addShapeIntoDoc (const TopoDS_Shape& theShape,
+  Standard_EXPORT Standard_Boolean addShapeIntoDoc (CafDocumentTools& theTools,
+                                                    const TopoDS_Shape& theShape,
                                                     const TDF_Label& theLabel,
                                                     const TCollection_AsciiString& theParentName);
+
+  //! Append new sub-shape into the document (recursively).
+  Standard_EXPORT Standard_Boolean addSubShapeIntoDoc (CafDocumentTools& theTools,
+                                                       const TopoDS_Shape& theShape,
+                                                       const TDF_Label& theParentLabel,
+                                                       const RWMesh_NodeAttributes& theAttribs);
+
+  //! Put name attribute onto the label.
+  Standard_EXPORT void setShapeName (const TDF_Label& theLabel,
+                                     const TopAbs_ShapeEnum theShapeType,
+                                     const TCollection_AsciiString& theName,
+                                     const TDF_Label& theParentLabel,
+                                     const TCollection_AsciiString& theParentName);
+
+  //! Put color and material attributes onto the label.
+  Standard_EXPORT void setShapeStyle (const CafDocumentTools& theTools,
+                                      const TDF_Label& theLabel,
+                                      const XCAFPrs_Style& theStyle);
+
+  //! Put name data (metadata) attribute onto the label.
+  Standard_EXPORT void setShapeNamedData (const CafDocumentTools& theTools,
+                                          const TDF_Label& theLabel,
+                                          const Handle(TDataStd_NamedData)& theNameData);
 
   //! Generate names for root labels starting from specified index.
   Standard_EXPORT void generateNames (const TCollection_AsciiString& theFile,

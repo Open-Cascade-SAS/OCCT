@@ -649,6 +649,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
   Standard_Integer i=0, up;
   XmlObjMgt_Element& anElement = theTarget;
   XmlObjMgt_Document aDoc (anElement.getOwnerDocument());
+  S->LoadDeferredData();
   if(S->HasIntegers() && !S->GetIntegersContainer().IsEmpty()) {
     // store a set of elements with string in each of them
     up = S->GetIntegersContainer().Extent();

@@ -72,7 +72,6 @@ TDataStd_Name.cxx
 TDataStd_Name.hxx
 TDataStd_NamedData.cxx
 TDataStd_NamedData.hxx
-TDataStd_NamedData.lxx
 TDataStd_NoteBook.cxx
 TDataStd_NoteBook.hxx
 TDataStd_PtrTreeNode.hxx

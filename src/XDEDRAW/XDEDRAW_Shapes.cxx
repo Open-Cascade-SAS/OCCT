@@ -958,6 +958,7 @@ static Standard_Integer XGetProperties(Draw_Interpretor& di, Standard_Integer ar
     return 0;
   }
 
+  aNamedData->LoadDeferredData();
   if (aNamedData->HasIntegers())
   {
     TColStd_DataMapOfStringInteger anIntProperties = aNamedData->GetIntegersContainer();
