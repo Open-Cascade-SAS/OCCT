@@ -2096,6 +2096,15 @@ proc _diff_show_ratio {value1 value2} {
     }
 }
 
+# auxiliary procedure to produce string comparing two values, where first value is a portion of second
+proc _diff_show_positive_ratio {value1 value2} {
+    if {[expr double ($value2)] == 0.} {
+        return "$value1 / $value2"
+    } else {
+        return "$value1 / $value2 \[[format "%5.2f%%" [expr 100 * double($value1) / double($value2)]]\]"
+    }
+}
+
 # procedure to check cpu user time
 proc _check_time {regexp_msg} {
     upvar log log
@@ -2158,6 +2167,8 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
         set stat(cpu2) 0
         set stat(mem1) 0
         set stat(mem2) 0
+        set stat(img1) 0
+        set stat(img2) 0
         set log {}
         set log_image {}
         set log_cpu {}
@@ -2295,13 +2306,16 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                         }
                     }
                 }
+
                 foreach imgfile $imgcommon {
+                    set stat(img2) [expr $stat(img2) + 1]
                     # if { $verbose > 1 } { _log_and_puts log "Checking [split basename /] $casename: $imgfile" }
                     set diffile [_diff_img_name $dir1 $dir2 $basename $imgfile]
                     if { [catch {diffimage [file join $dir1 $basename $imgfile] \
                                            [file join $dir2 $basename $imgfile] \
                                            -toleranceOfColor 0.0 -blackWhite off -borderFilter off $diffile} diff] } {
                         if {$image != false} {
+                            set stat(img1) [expr $stat(img1) + 1]
                             _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
                         } else {
                             _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
@@ -2315,6 +2329,7 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                                                    [file join $dir2 $basename $imgfile] \
                                                    -toleranceOfColor $aCaseDiffColorTol -blackWhite off -borderFilter off $diffile} diff2] } {
                                 if {$image != false} {
+                                    set stat(img1) [expr $stat(img1) + 1]
                                     _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
                                 } else {
                                     _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
@@ -2325,6 +2340,7 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                                 set toLogImageCase false
                                 file delete -force $diffile
                                 if {$image != false} {
+                                    set stat(img1) [expr $stat(img1) + 1]
                                     _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile is similar \[$diff different pixels\]"
                                 } else {
                                     _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile is similar \[$diff different pixels\]"
@@ -2334,6 +2350,7 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                         }
 
                         if {$image != false} {
+                            set stat(img1) [expr $stat(img1) + 1]
                             _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile differs \[$diff different pixels\]"
                         } else {
                             _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile differs \[$diff different pixels\]"
@@ -2379,6 +2396,13 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                 _log_and_puts log_cpu "Total CPU difference: [_diff_show_ratio $stat(cpu1) $stat(cpu2)]"
             } else {
                 _log_and_puts log "Total CPU difference: [_diff_show_ratio $stat(cpu1) $stat(cpu2)]"
+            }
+        }
+        if {$image != false || ($image == false && $cpu == false && $memory == false)} {
+            if {$image != false} {
+                _log_and_puts log_image "Total Image difference: [_diff_show_positive_ratio $stat(img1) $stat(img2)]"
+            } else {
+                _log_and_puts log "Total Image difference: [_diff_show_positive_ratio $stat(img1) $stat(img2)]"
             }
         }
     }
