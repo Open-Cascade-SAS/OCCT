@@ -31,8 +31,8 @@ IMPLEMENT_TOBJOCAF_PERSISTENCE(TObj_Partition)
 //purpose  :
 //=======================================================================
 
-TObj_Partition::TObj_Partition (const TDF_Label& theLabel)
-     : TObj_Object( theLabel )
+TObj_Partition::TObj_Partition (const TDF_Label& theLabel, const Standard_Boolean theSetName)
+     : TObj_Object( theLabel, theSetName )
 {
 }
 
@@ -42,10 +42,10 @@ TObj_Partition::TObj_Partition (const TDF_Label& theLabel)
 //=======================================================================
 
 Handle(TObj_Partition) TObj_Partition::Create
-                           (const TDF_Label& theLabel)
+                           (const TDF_Label& theLabel, const Standard_Boolean theSetName)
 {
   Handle(TObj_Partition) aPartition =
-    new TObj_Partition(theLabel);
+    new TObj_Partition(theLabel, theSetName);
   aPartition->SetLastIndex(0);
   return aPartition;
 }

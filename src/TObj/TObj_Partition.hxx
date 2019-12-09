@@ -44,7 +44,7 @@ class TObj_Partition : public TObj_Object
 
   //! Constructor is protected; 
   //! static methods are used for creation of this type of objects
-  Standard_EXPORT TObj_Partition (const TDF_Label& theLabel);
+  Standard_EXPORT TObj_Partition (const TDF_Label& theLabel, const Standard_Boolean theSetName = Standard_True);
   
  public:
   /**
@@ -53,7 +53,7 @@ class TObj_Partition : public TObj_Object
   
   //! Creates a new partition on given label.
   static Standard_EXPORT Handle(TObj_Partition) Create
-                        (const TDF_Label& theLabel);
+                        (const TDF_Label& theLabel, const Standard_Boolean theSetName = Standard_True);
   
  public:
   /**
