@@ -86,7 +86,7 @@ sage " Fusion of this prism with the original part "
 sage "    fuse result rr result"
 sage " "
 fuse result rr result
-donl result
+donly result
 nexplode result f
 erase result
 fit
@@ -108,13 +108,13 @@ ttranslate cyl cyl 0 7.5 0
 sage " Display the Shape on Hidden Line Mode "
 sage "   hlr hid r"
 sage ""
-donl r
+donly r
 hlr hid r
 sage " Display the Shape on HLR Mode "
 sage "   hlr nohid r"
 sage "   hlr hlr r"
 sage ""
-donl r
+donly r
 hlr nohid r
 hlr hlr r
 sage "Demo completed"
