@@ -91,13 +91,19 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_GraphicDriver)& theDriver,
                                         kEAGLColorFormatRGBA8,            kEAGLDrawablePropertyColorFormat,
                                         NULL];
 
-    aGLContext = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES2];
+    aGLContext = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES3];
     if (aGLContext == NULL
     || ![EAGLContext setCurrentContext: aGLContext])
     {
-      TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: EAGLContext creation failed");
-      throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
-      return;
+      aGLContext = [[EAGLContext alloc] initWithAPI: kEAGLRenderingAPIOpenGLES2];
+
+      if (aGLContext == NULL
+      || ![EAGLContext setCurrentContext: aGLContext])
+      {
+        TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: EAGLContext creation failed");
+        throw Aspect_GraphicDeviceDefinitionError(aMsg.ToCString());
+        return;
+      }
     }
 
     myGlContext->Init (aGLContext, Standard_False);

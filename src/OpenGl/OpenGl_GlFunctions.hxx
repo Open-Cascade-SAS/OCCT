@@ -49,7 +49,7 @@
   // macOS 10.4 deprecated OpenGL framework - suppress useless warnings
   #define GL_SILENCE_DEPRECATION
   #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-    #include <OpenGLES/ES2/gl.h>
+    #include <OpenGLES/ES3/gl.h>
   #else
     #include <OpenGL/gl.h>
   #endif
@@ -60,8 +60,7 @@
     // however OCCT is expected to be linked against libGLESv2
     #define GL_GLEXT_PROTOTYPES
   #endif
-  #include <GLES2/gl2.h>
-  //#include <GLES3/gl3.h>
+  #include <GLES3/gl3.h>
 #else
   #include <GL/gl.h>
 #endif
@@ -70,113 +69,44 @@
   // define items to unify code paths with desktop OpenGL
   typedef double GLdouble;
   typedef double GLclampd;
-  typedef uint64_t GLuint64;
-  #define GL_NONE 0
-
-  // OpenGL ES 3.0+ or GL_OES_element_index_uint extension
-  #define GL_UNSIGNED_INT 0x1405
 
   // GL_EXT_sRGB_write_control extension for OpenGL ES
   // adds GL_FRAMEBUFFER_SRGB_EXT flag as on desktop OpenGL
   #define GL_FRAMEBUFFER_SRGB 0x8DB9
 
-  #define GL_TEXTURE_BASE_LEVEL 0x813C
-  #define GL_TEXTURE_MAX_LEVEL  0x813D
-
   // OpenGL ES 3.1+
   #define GL_TEXTURE_2D_MULTISAMPLE 0x9100
-  #define GL_MAX_SAMPLES  0x8D57
 
   // OpenGL ES 3.2+ or GL_EXT_texture_buffer for OpenGL ES 3.1+
   #define GL_TEXTURE_BUFFER 0x8C2A
 
-  // in core since OpenGL ES 3.0, extension GL_EXT_texture_rg
-  #define GL_RED   0x1903
-  #define GL_R8    0x8229
   // in core since OpenGL ES 3.0, extension GL_OES_rgb8_rgba8
-  #define GL_RGB8  0x8051
-  #define GL_RGBA8 0x8058
-  #define GL_LUMINANCE8 0x8040
+  #define GL_LUMINANCE8   0x8040
   // GL_EXT_texture_format_BGRA8888
-  #define GL_BGRA_EXT 0x80E1 // same as GL_BGRA on desktop
+  #define GL_BGRA_EXT     0x80E1 // same as GL_BGRA on desktop
 
-  #define GL_SRGB         0x8C40
-  #define GL_SRGB8        0x8C41
-  #define GL_SRGB8_ALPHA8 0x8C43
+  #define GL_R16          0x822A
+  #define GL_RGB4         0x804F
+  #define GL_RGB5         0x8050
+  #define GL_RGB10        0x8052
+  #define GL_RGB12        0x8053
+  #define GL_RGB16        0x8054
+  #define GL_RGB10_A2     0x8059
+  #define GL_RGBA12       0x805A
+  #define GL_RGBA16       0x805B
+  #define GL_ALPHA8       0x803C
+  #define GL_ALPHA16      0x803E
+  #define GL_RG16         0x822C
 
-  #define GL_R16      0x822A
-  #define GL_R16F     0x822D
-  #define GL_R32F     0x822E
-  #define GL_RGB16F   0x881B
-  #define GL_RGBA32F  0x8814
-  #define GL_RGB32F   0x8815
-  #define GL_RGBA16F  0x881A
-  #define GL_RGB16F   0x881B
-  #define GL_RGB4     0x804F
-  #define GL_RGB5     0x8050
-  #define GL_RGB8     0x8051
-  #define GL_RGB10    0x8052
-  #define GL_RGB12    0x8053
-  #define GL_RGB16    0x8054
-  #define GL_RGBA8    0x8058
-  #define GL_RGB10_A2 0x8059
-  #define GL_RGBA12   0x805A
-  #define GL_RGBA16   0x805B
-  #define GL_ALPHA8   0x803C
-  #define GL_ALPHA16  0x803E
+  #define GL_R16_SNORM    0x8F98
+  #define GL_RG16_SNORM   0x8F99
+  #define GL_RGB16_SNORM  0x8F9A
+  #define GL_RGBA16_SNORM 0x8F9B
 
-  #define GL_RG          0x8227
-  #define GL_RG8         0x822B
-  #define GL_RG16        0x822C
-  #define GL_RG16F       0x822F
-  #define GL_RG32F       0x8230
-  #define GL_RG_INTEGER  0x8228
-  #define GL_RED_INTEGER 0x8D94
-
-  #define GL_R8I      0x8231
-  #define GL_R8UI     0x8232
-  #define GL_R16I     0x8233
-  #define GL_R16UI    0x8234
-  #define GL_R32I     0x8235
-  #define GL_R32UI    0x8236
-  #define GL_RG8I     0x8237
-  #define GL_RG8UI    0x8238
-  #define GL_RG16I    0x8239
-  #define GL_RG16UI   0x823A
-  #define GL_RG32I    0x823B
-  #define GL_RG32UI   0x823C
-  #define GL_RG8_SNORM 0x8F95
-  #define GL_RGBA32UI 0x8D70
-  #define GL_RGB32UI  0x8D71
-  #define GL_RGBA16UI 0x8D76
-  #define GL_RGB16UI  0x8D77
-  #define GL_RGBA8UI  0x8D7C
-  #define GL_RGB8UI   0x8D7D
-  #define GL_RGBA32I  0x8D82
-  #define GL_RGB32I   0x8D83
-  #define GL_RGBA16I  0x8D88
-  #define GL_RGB16I   0x8D89
-  #define GL_RGBA8I   0x8D8E
-  #define GL_RGB8I    0x8D8F
-
-  // GL_OES_packed_depth_stencil
-  #define GL_DEPTH_STENCIL                  0x84F9
-  #define GL_UNSIGNED_INT_24_8              0x84FA
-  #define GL_DEPTH24_STENCIL8               0x88F0
-  #define GL_DEPTH_STENCIL_ATTACHMENT       0x821A
-
-  // OpenGL ES 3.0+
-  #define GL_DEPTH_COMPONENT24              0x81A6
-  #define GL_DEPTH_COMPONENT32F             0x8CAC
-  #define GL_DEPTH32F_STENCIL8              0x8CAD
-  #define GL_FLOAT_32_UNSIGNED_INT_24_8_REV 0x8DAD
-
-  #define GL_READ_FRAMEBUFFER               0x8CA8
-  #define GL_DRAW_FRAMEBUFFER               0x8CA9
-  #define GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING 0x8210
-
-  #define GL_TEXTURE_3D                     0x806F
-  #define GL_TEXTURE_WRAP_R                 0x8072
+  #define GL_RED_SNORM    0x8F90
+  #define GL_RG_SNORM     0x8F91
+  #define GL_RGB_SNORM    0x8F92
+  #define GL_RGBA_SNORM   0x8F93
 
   // GL_EXT_texture_filter_anisotropic
   #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
@@ -207,12 +137,7 @@
   #define GL_DEBUG_SEVERITY_MEDIUM      0x9147
   #define GL_DEBUG_SEVERITY_LOW         0x9148
 
-  // GL_ARB_draw_buffers (GL_EXT_draw_buffers) extension
-  #define GL_MAX_COLOR_ATTACHMENTS      0x8CDF
-  #define GL_MAX_DRAW_BUFFERS           0x8824
-
   // OpenGL ES 3.0+ or OES_texture_half_float
-  #define GL_HALF_FLOAT                 0x140B
   #define GL_HALF_FLOAT_OES             0x8D61
 
   // OpenGL ES 3.1+

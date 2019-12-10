@@ -64,7 +64,7 @@ Then makefiles will appear in the build folder (e.g. <i> D:/occt/build-android <
 
 Alternatively one may specify the values without a toolchain file:
 
-> cmake -G "MinGW Makefiles" -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=D:/DevTools/android-ndk-r13b -DCMAKE_ANDROID_STL_TYPE=gnustl_shared -DCMAKE_SYSTEM_VERSION=15 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_MAKE_PROGRAM=D:/DevTools/MinGW/bin/mingw32-make.exe -D3RDPARTY_DIR=D:/occt-3rdparty D:/occt
+> cmake -G "MinGW Makefiles" -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_NDK=D:/DevTools/android-ndk-r13b -DCMAKE_ANDROID_STL_TYPE=gnustl_shared -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a -DCMAKE_MAKE_PROGRAM=D:/DevTools/MinGW/bin/mingw32-make.exe -D3RDPARTY_DIR=D:/occt-3rdparty D:/occt
 
 @figure{/dev_guides/building/android/images/android_image006.png}
 

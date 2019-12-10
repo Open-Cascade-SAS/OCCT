@@ -182,8 +182,6 @@ template<> struct OpenGl_TextureFormatSelector<GLuint>
   }
 };
 
-//! Only unsigned formats are available in OpenGL ES 2.0
-#if !defined(GL_ES_VERSION_2_0)
 //! Specialization for signed byte.
 template<> struct OpenGl_TextureFormatSelector<GLbyte>
 {
@@ -234,7 +232,6 @@ template<> struct OpenGl_TextureFormatSelector<GLint>
     }
   }
 };
-#endif
 
 // =======================================================================
 // function : Create
