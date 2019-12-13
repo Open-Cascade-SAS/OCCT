@@ -12,11 +12,8 @@ vinit name=View1 w=512 h=512
 vglinfo
 
 # setup light sources
-vlight del 0
-vlight del 1
-vlight add positional head 0 pos 0.5 0.5 0.85
-vlight change 0 sm 0.06
-vlight change 0 int 30.0
+vlight -clear
+vlight -add positional -head 0 -pos 0.5 0.5 0.85 -sm 0.06 -int 30.0
 
 vvbo 0
 vsetdispmode 1

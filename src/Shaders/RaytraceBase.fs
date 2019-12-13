@@ -70,8 +70,18 @@ uniform isamplerBuffer uGeometryTriangTexture;
 uniform samplerBuffer uRaytraceMaterialTexture;
 //! Texture buffer of light source properties.
 uniform samplerBuffer uRaytraceLightSrcTexture;
-//! Environment map texture.
-uniform sampler2D uEnvironmentMapTexture;
+
+#ifdef BACKGROUND_CUBEMAP
+  //! Environment cubemap texture.
+  uniform samplerCube uEnvMapTexture;
+  //! Coefficient of Y controlling horizontal flip of cubemap
+  uniform int uYCoeff;
+  //! Coefficient of Z controlling vertical flip of cubemap
+  uniform int uZCoeff;
+#else
+  //! Environment map texture.
+  uniform sampler2D uEnvMapTexture;
+#endif
 
 //! Total number of light sources.
 uniform int uLightCount;
@@ -82,10 +92,10 @@ uniform vec4 uGlobalAmbient;
 uniform int uShadowsEnabled;
 //! Enables/disables specular reflections.
 uniform int uReflectEnabled;
-//! Enables/disables spherical environment map.
-uniform int uSphereMapEnabled;
+//! Enables/disables environment map lighting.
+uniform int uEnvMapEnabled;
 //! Enables/disables environment map background.
-uniform int uSphereMapForBack;
+uniform int uEnvMapForBack;
 
 //! Radius of bounding sphere of the scene.
 uniform float uSceneRadius;
@@ -848,6 +858,17 @@ vec2 Latlong (in vec3 thePoint, in float theRadius)
                aPsi * 0.3183098f);
 }
 
+#ifdef BACKGROUND_CUBEMAP
+//! Transform texture coordinates for cubemap lookup.
+vec3 cubemapVectorTransform (in vec3 theVec, in float theRadius)
+{
+  vec3 aVec = theVec.yzx;
+  aVec.y *= float(uYCoeff);
+  aVec.z *= float(uZCoeff);
+  return aVec;
+}
+#endif
+
 // =======================================================================
 // function : SmoothNormal
 // purpose  : Interpolates normal across the triangle
@@ -909,10 +930,25 @@ vec2 SmoothUV (in vec2 theUV, in ivec4 theTriangle)
 // function : FetchEnvironment
 // purpose  :
 // =======================================================================
-vec4 FetchEnvironment (in vec2 theTexCoord)
+vec4 FetchEnvironment (in vec3 theTexCoord, in float theRadius, in bool theIsBackground)
 {
-  return uSphereMapEnabled == 0 ?
-    vec4 (0.f, 0.f, 0.f, 1.f) : textureLod (uEnvironmentMapTexture, theTexCoord, 0.f);
+  if (uEnvMapEnabled == 0)
+  {
+#ifdef PATH_TRACING
+    return theIsBackground ? vec4 (0.0, 0.0, 0.0, 1.0) : uGlobalAmbient;
+#else
+    return vec4 (0.0, 0.0, 0.0, 1.0);
+#endif
+  }
+
+  vec4 anAmbScale = theIsBackground ? vec4(1.0) : uGlobalAmbient;
+  vec4 anEnvColor =
+#ifdef BACKGROUND_CUBEMAP
+    textureLod (uEnvMapTexture, cubemapVectorTransform (theTexCoord, theRadius), 0.0);
+#else
+    textureLod (uEnvMapTexture, Latlong (theTexCoord, theRadius), 0.0);
+#endif
+  return anEnvColor * anAmbScale;
 }
 
 // =======================================================================
@@ -979,12 +1015,11 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     {
       vec4 aColor = vec4 (0.0);
 
-      if (bool(uSphereMapForBack) || aWeight.w == 0.0f /* reflection */)
+      if (bool(uEnvMapForBack) || aWeight.w == 0.0f /* reflection */)
       {
         float aTime = IntersectSphere (theRay, uSceneRadius);
 
-        aColor = FetchEnvironment (Latlong (
-          theRay.Direct * aTime + theRay.Origin, uSceneRadius));
+        aColor = FetchEnvironment (theRay.Direct * aTime + theRay.Origin, uSceneRadius, aWeight.w != 0.0);
       }
       else
       {

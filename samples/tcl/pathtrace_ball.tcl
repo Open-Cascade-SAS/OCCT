@@ -57,11 +57,10 @@ for {set i 0} {$i < 12} {incr i} {
 }
 
 # Configure light sources
-vlight del 1
-vlight change 0 head 0
-vlight change 0 direction -0.25 -1 -1
-vlight change 0 sm 0.3
-vlight change 0 int 10
+vlight -change 0 -head 0
+vlight -change 0 -direction -0.25 -1 -1
+vlight -change 0 -sm   0.3
+vlight -change 0 -int 10.0
 
 # Load environment map
 vtextureenv on 1

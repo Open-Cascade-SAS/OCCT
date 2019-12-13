@@ -45,7 +45,7 @@ namespace
 namespace
 {
   //! Defines OpenGL texture samplers.
-  static const Graphic3d_TextureUnit OpenGl_RT_EnvironmentMapTexture = Graphic3d_TextureUnit_0;
+  static const Graphic3d_TextureUnit OpenGl_RT_EnvMapTexture = Graphic3d_TextureUnit_0;
 
   static const Graphic3d_TextureUnit OpenGl_RT_SceneNodeInfoTexture  = Graphic3d_TextureUnit_1;
   static const Graphic3d_TextureUnit OpenGl_RT_SceneMinPointTexture  = Graphic3d_TextureUnit_2;
@@ -1160,6 +1160,11 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
     }
   }
 
+  if (myRaytraceParameters.CubemapForBack)
+  {
+    aPrefixString += TCollection_AsciiString("\n#define BACKGROUND_CUBEMAP");
+  }
+
   if (myRaytraceParameters.DepthOfField)
   {
     aPrefixString += TCollection_AsciiString("\n#define DEPTH_OF_FIELD");
@@ -1367,6 +1372,13 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       aToRebuildShaders = Standard_True;
     }
     myTileSampler.SetSize (myRenderParams, myRaytraceParameters.AdaptiveScreenSampling ? Graphic3d_Vec2i (theSizeX, theSizeY) : Graphic3d_Vec2i (0, 0));
+
+    const bool isCubemapForBack = !myBackgroundCubeMap.IsNull();
+    if (myRaytraceParameters.CubemapForBack != isCubemapForBack)
+    {
+      myRaytraceParameters.CubemapForBack = isCubemapForBack;
+      aToRebuildShaders = Standard_True;
+    }
 
     const bool toEnableDof = !myCamera->IsOrthographic() && myRaytraceParameters.GlobalIllumination;
     if (myRaytraceParameters.DepthOfField != toEnableDof)
@@ -1606,7 +1618,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       aShaderProgram->SetSampler (theGlContext, 
         "uSceneTransformTexture", OpenGl_RT_SceneTransformTexture);
       aShaderProgram->SetSampler (theGlContext,
-        "uEnvironmentMapTexture", OpenGl_RT_EnvironmentMapTexture);
+        "uEnvMapTexture", OpenGl_RT_EnvMapTexture);
       aShaderProgram->SetSampler (theGlContext,
         "uRaytraceMaterialTexture", OpenGl_RT_RaytraceMaterialTexture);
       aShaderProgram->SetSampler (theGlContext,
@@ -1670,10 +1682,10 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
         aShaderProgram->GetUniformLocation (theGlContext, "uShadowsEnabled");
       myUniformLocations[anIndex][OpenGl_RT_uReflectEnabled] =
         aShaderProgram->GetUniformLocation (theGlContext, "uReflectEnabled");
-      myUniformLocations[anIndex][OpenGl_RT_uSphereMapEnabled] =
-        aShaderProgram->GetUniformLocation (theGlContext, "uSphereMapEnabled");
-      myUniformLocations[anIndex][OpenGl_RT_uSphereMapForBack] =
-        aShaderProgram->GetUniformLocation (theGlContext, "uSphereMapForBack");
+      myUniformLocations[anIndex][OpenGl_RT_uEnvMapEnabled] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uEnvMapEnabled");
+      myUniformLocations[anIndex][OpenGl_RT_uEnvMapForBack] =
+        aShaderProgram->GetUniformLocation (theGlContext, "uEnvMapForBack");
       myUniformLocations[anIndex][OpenGl_RT_uBlockedRngEnabled] =
         aShaderProgram->GetUniformLocation (theGlContext, "uBlockedRngEnabled");
 
@@ -2377,12 +2389,11 @@ Standard_Boolean OpenGl_View::uploadRaytraceData (const Handle(OpenGl_Context)& 
 Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& theInvModelView, const Handle(OpenGl_Context)& theGlContext)
 {
   std::vector<Handle(Graphic3d_CLight)> aLightSources;
-  myRaytraceGeometry.Ambient = BVH_Vec4f (0.f, 0.f, 0.f, 0.f);
+  Graphic3d_Vec4 aNewAmbient (0.0f);
   if (myShadingModel != Graphic3d_TOSM_UNLIT
   && !myLights.IsNull())
   {
-    const Graphic3d_Vec4& anAmbient = myLights->AmbientColor();
-    myRaytraceGeometry.Ambient = BVH_Vec4f (anAmbient.r(), anAmbient.g(), anAmbient.b(), 0.0f);
+    aNewAmbient.SetValues (myLights->AmbientColor().rgb(), 0.0f);
 
     // move positional light sources at the front of the list
     aLightSources.reserve (myLights->Extent());
@@ -2404,6 +2415,12 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
         aLightSources.push_back (aLightIter.Value());
       }
     }
+  }
+
+  if (!myRaytraceGeometry.Ambient.IsEqual (aNewAmbient))
+  {
+    myAccumFrames = 0;
+    myRaytraceGeometry.Ambient = aNewAmbient;
   }
 
   // get number of 'real' (not ambient) light sources
@@ -2541,7 +2558,7 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
 
   theProgram->SetUniform(theGlContext, "uApertureRadius", myRenderParams.CameraApertureRadius);
   theProgram->SetUniform(theGlContext, "uFocalPlaneDist", myRenderParams.CameraFocalPlaneDist);
-  
+
   // Set camera state
   theProgram->SetUniform (theGlContext,
     myUniformLocations[theProgramId][OpenGl_RT_uOriginLB], aOrigins[0]);
@@ -2616,16 +2633,30 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uBackColorBot], aBackColorBot);
 
   // Set environment map parameters
-  const Standard_Boolean toDisableEnvironmentMap = myTextureEnv.IsNull()
-                                               ||  myTextureEnv->IsEmpty()
-                                               || !myTextureEnv->First()->IsValid();
+  const Handle(OpenGl_TextureSet)& anEnvTextureSet = myRaytraceParameters.CubemapForBack
+                                                   ? myCubeMapParams->TextureSet (theGlContext)
+                                                   : myTextureEnv;
+  const bool toDisableEnvironmentMap = anEnvTextureSet.IsNull()
+                                   ||  anEnvTextureSet->IsEmpty()
+                                   || !anEnvTextureSet->First()->IsValid();
+  theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uEnvMapEnabled],
+                          toDisableEnvironmentMap ? 0 : 1);
+  if (myRaytraceParameters.CubemapForBack)
+  {
+    theProgram->SetUniform (theGlContext, "uZCoeff", myBackgroundCubeMap->ZIsInverted() ? -1 :  1);
+    theProgram->SetUniform (theGlContext, "uYCoeff", myBackgroundCubeMap->IsTopDown()   ?  1 : -1);
+    theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uEnvMapForBack],
+                            myBackgroundType == Graphic3d_TOB_CUBEMAP ? 1 : 0);
+  }
+  else
+  {
+    theProgram->SetUniform (theGlContext, myUniformLocations[theProgramId][OpenGl_RT_uEnvMapForBack],
+                            myRenderParams.UseEnvironmentMapBackground ? 1 : 0);
+  }
 
+  // Set ambient light source
   theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uSphereMapEnabled], toDisableEnvironmentMap ? 0 : 1);
-
-  theProgram->SetUniform (theGlContext,
-    myUniformLocations[theProgramId][OpenGl_RT_uSphereMapForBack], myRenderParams.UseEnvironmentMapBackground ?  1 : 0);
-
+                          myUniformLocations[theProgramId][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
   if (myRenderParams.IsGlobalIlluminationEnabled) // GI parameters
   {
     theProgram->SetUniform (theGlContext,
@@ -2646,10 +2677,6 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
   }
   else // RT parameters
   {
-    // Set ambient light source
-    theProgram->SetUniform (theGlContext,
-      myUniformLocations[theProgramId][OpenGl_RT_uLightAmbnt], myRaytraceGeometry.Ambient);
-
     // Enable/disable run-time ray-tracing effects
     theProgram->SetUniform (theGlContext,
       myUniformLocations[theProgramId][OpenGl_RT_uShadowsEnabled], myRenderParams.IsShadowEnabled ?  1 : 0);
@@ -2690,11 +2717,14 @@ void OpenGl_View::bindRaytraceTextures (const Handle(OpenGl_Context)& theGlConte
   #endif
   }
 
-  if (!myTextureEnv.IsNull()
-   && !myTextureEnv->IsEmpty()
-   &&  myTextureEnv->First()->IsValid())
+  const Handle(OpenGl_TextureSet)& anEnvTextureSet = myRaytraceParameters.CubemapForBack
+                                                   ? myCubeMapParams->TextureSet (theGlContext)
+                                                   : myTextureEnv;
+  if (!anEnvTextureSet.IsNull()
+   && !anEnvTextureSet->IsEmpty()
+   &&  anEnvTextureSet->First()->IsValid())
   {
-    myTextureEnv->First()->Bind (theGlContext, OpenGl_RT_EnvironmentMapTexture);
+    anEnvTextureSet->First()->Bind (theGlContext, OpenGl_RT_EnvMapTexture);
   }
 
   mySceneMinPointTexture   ->BindTexture (theGlContext, OpenGl_RT_SceneMinPointTexture);

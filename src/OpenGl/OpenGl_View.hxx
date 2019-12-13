@@ -629,8 +629,8 @@ protected: //! @name data types related to ray-tracing
     // ray-tracing params
     OpenGl_RT_uShadowsEnabled,
     OpenGl_RT_uReflectEnabled,
-    OpenGl_RT_uSphereMapEnabled,
-    OpenGl_RT_uSphereMapForBack,
+    OpenGl_RT_uEnvMapEnabled,
+    OpenGl_RT_uEnvMapForBack,
     OpenGl_RT_uTexSamplersArray,
     OpenGl_RT_uBlockedRngEnabled,
 
@@ -762,6 +762,9 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables depth-of-field effect (path tracing, perspective camera).
     Standard_Boolean DepthOfField;
 
+    //! Enables/disables cubemap backgraund.
+    Standard_Boolean CubemapForBack;
+
     //! Tone mapping method for path tracing.
     Graphic3d_ToneMappingMethod ToneMappingMethod;
 
@@ -778,6 +781,7 @@ protected: //! @name data types related to ray-tracing
       UseEnvMapForBackground (Standard_False),
       RadianceClampingValue  (30.0),
       DepthOfField           (Standard_False),
+      CubemapForBack         (Standard_False),
       ToneMappingMethod      (Graphic3d_ToneMappingMethod_Disabled) { }
   };
 

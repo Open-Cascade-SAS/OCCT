@@ -208,8 +208,9 @@ vviewparams -eye 139.412 -1.62643 178.037
 vviewparams -size 170.508
 
 # Restore light source parameters
-vlight clear
-vlight add directional direction -0.303949 -0.434084 -0.848048 smoothness 0.3 intensity 12
+vlight -clear
+vlight -add ambient
+vlight -add directional -direction -0.303949 -0.434084 -0.848048 -smoothness 0.3 -intensity 12
 
 # Load environment map
 vtextureenv on 1

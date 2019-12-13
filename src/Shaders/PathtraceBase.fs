@@ -580,20 +580,6 @@ float SampleBsdfLayered (in SBSDF theBSDF, in vec3 theWo, out vec3 theWi, inout 
 // Handlers and samplers for light sources
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-// =======================================================================
-// function : Latlong
-// purpose  : Converts world direction to environment texture coordinates
-// =======================================================================
-vec2 Latlong (in vec3 thePoint)
-{
-  float aPsi = acos (-thePoint.z);
-
-  float aPhi = atan (thePoint.y, thePoint.x) + M_PI;
-
-  return vec2 (aPhi * 0.1591549f,
-               aPsi * 0.3183098f);
-}
-
 //=======================================================================
 // function : SampleLight
 // purpose  : General sampling function for directional and point lights
@@ -701,13 +687,30 @@ vec3 IntersectLight (in SRay theRay, in int theDepth, in float theHitDistance, o
 
   if (thePDF == 0.f && theHitDistance == MAXFLOAT) // light source not found
   {
-    if (theDepth + uSphereMapForBack == 0) // view ray and map is hidden
+    if (theDepth + uEnvMapForBack == 0) // view ray and map is hidden
     {
       aTotalRadiance = BackgroundColor().rgb;
     }
     else
     {
-      aTotalRadiance = FetchEnvironment (Latlong (theRay.Direct)).rgb;
+    #ifdef BACKGROUND_CUBEMAP
+      if (theDepth == 0)
+      {
+        vec2 aPixel = uEyeSize * (vPixel - vec2 (0.5)) * 2.0;
+        vec2 anAperturePnt = sampleUniformDisk() * uApertureRadius;
+        vec3 aLocalDir = normalize (vec3 (aPixel * uFocalPlaneDist - anAperturePnt, uFocalPlaneDist));
+        vec3 aDirect = uEyeView * aLocalDir.z +
+                       uEyeSide * aLocalDir.x +
+                       uEyeVert * aLocalDir.y;
+        aTotalRadiance = FetchEnvironment (aDirect, 1.0, true).rgb;
+      }
+      else
+      {
+        aTotalRadiance = FetchEnvironment (theRay.Direct, 1.0, false).rgb;
+      }
+    #else
+      aTotalRadiance = FetchEnvironment (theRay.Direct, 1.0, theDepth == 0).rgb;
+    #endif
     }
   #ifdef THE_SHIFT_sRGB
     aTotalRadiance = pow (aTotalRadiance, vec3 (2.f));
