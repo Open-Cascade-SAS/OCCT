@@ -100,6 +100,10 @@
 #include <TDataStd_ReferenceList.hxx>
 #include <TDF_ListIteratorOfLabelList.hxx>
 #include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
+
+#include <algorithm>
+#include <vector>
+
 #define  MAXLENGTH 10
 //#define DEB_DDataStd
 
@@ -3407,7 +3411,7 @@ static Standard_Integer DDataStd_GetNDIntegers (Draw_Interpretor& di,
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
       Standard_Integer aValue = itr.Value();
-       std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<std::endl;
+      di << "Key = " << aStr.ToCString() << " Value = " << aValue << "\n";
       }
 
     return 0; 
@@ -3519,7 +3523,7 @@ static Standard_Integer DDataStd_GetNDReals (Draw_Interpretor& di,
       TCollection_ExtendedString aKey(itr.Key());
       TCollection_AsciiString aStr(aKey,'?');
       Standard_Real aValue = itr.Value();
-       std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aValue<<std::endl;
+      di << "Key = " << aStr.ToCString() << " Value = " << aValue << "\n";
       }
     return 0; 
   }
@@ -3605,6 +3609,19 @@ static Standard_Integer DDataStd_SetNDataStrings (Draw_Interpretor& di,
 //=======================================================================
 //function :  GetNDStrings(DF, entry )
 //=======================================================================
+namespace
+{
+  typedef std::pair<TCollection_ExtendedString, TCollection_ExtendedString>
+    DDataStd_GetNDStrings_Property;
+
+  bool isLess(
+    const DDataStd_GetNDStrings_Property& theProperty1,
+    const DDataStd_GetNDStrings_Property& theProperty2)
+  {
+    return theProperty1.first.IsLess(theProperty2.first);
+  }
+}
+
 static Standard_Integer DDataStd_GetNDStrings (Draw_Interpretor& di,
 						Standard_Integer nb, 
 						const char** arg) 
@@ -3625,15 +3642,20 @@ static Standard_Integer DDataStd_GetNDStrings (Draw_Interpretor& di,
     std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     anAtt->LoadDeferredData();
     const TDataStd_DataMapOfStringString& aMap = anAtt->GetStringsContainer();
-    TDataStd_DataMapIteratorOfDataMapOfStringString itr(aMap);
-    for (; itr.More(); itr.Next()){
-      TCollection_ExtendedString aKey(itr.Key());
-      TCollection_AsciiString aStr(aKey,'?');
-      TCollection_ExtendedString aVal(itr.Value());
-      TCollection_AsciiString aStrValue(aVal,'?');
-      std::cout << "Key = "  << aStr.ToCString() << " Value = " <<aStrValue.ToCString()<< std::endl;
-      }
-    return 0; 
+
+    std::vector<DDataStd_GetNDStrings_Property> aProperties;
+    for (TDataStd_DataMapIteratorOfDataMapOfStringString aIt (aMap); aIt.More(); aIt.Next())
+    {
+      aProperties.push_back(DDataStd_GetNDStrings_Property (aIt.Key(), aIt.Value()));
+    }
+    std::sort (aProperties.begin(), aProperties.end(), isLess);
+
+    for (std::vector<DDataStd_GetNDStrings_Property>::size_type aI = 0; aI < aProperties.size(); ++aI)
+    {
+      di << "Key = " << aProperties[aI].first << " Value = " << aProperties[aI].second << "\n";
+    }
+
+    return 0;
   }
   di << "DDataStd_GetNDStrings : Error\n";
   return 1;
