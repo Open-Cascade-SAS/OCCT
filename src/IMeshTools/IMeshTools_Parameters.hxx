@@ -34,7 +34,8 @@ struct IMeshTools_Parameters {
     InternalVerticesMode (Standard_True),
     ControlSurfaceDeflection (Standard_True),
     CleanModel (Standard_True),
-    AdjustMinSize (Standard_False)
+    AdjustMinSize (Standard_False),
+    ForceFaceDeflection (Standard_False)
   {
   }
 
@@ -83,6 +84,10 @@ struct IMeshTools_Parameters {
   //! Enables/disables local adjustment of min size depending on edge size.
   //! Disabled by default.
   Standard_Boolean                                 AdjustMinSize;
+
+  //! Enables/disables usage of shape tolerances for computing face deflection.
+  //! Disabled by default.
+  Standard_Boolean                                 ForceFaceDeflection;
 };
 
 #endif

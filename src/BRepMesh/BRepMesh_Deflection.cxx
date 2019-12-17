@@ -145,18 +145,22 @@ void BRepMesh_Deflection::ComputeDeflection (
   }
 
   Standard_Real aFaceDeflection = 0.0;
-  if (theDFace->WiresNb () > 0)
+  if (!theParameters.ForceFaceDeflection)
   {
-    for (Standard_Integer aWireIt = 0; aWireIt < theDFace->WiresNb(); ++aWireIt)
+    if (theDFace->WiresNb () > 0)
     {
-      aFaceDeflection += theDFace->GetWire(aWireIt)->GetDeflection();
+      for (Standard_Integer aWireIt = 0; aWireIt < theDFace->WiresNb (); ++aWireIt)
+      {
+        aFaceDeflection += theDFace->GetWire (aWireIt)->GetDeflection ();
+      }
+
+      aFaceDeflection /= theDFace->WiresNb ();
     }
 
-    aFaceDeflection /= theDFace->WiresNb ();
+    aFaceDeflection = Max (2. * BRepMesh_ShapeTool::MaxFaceTolerance (
+      theDFace->GetFace ()), aFaceDeflection);
   }
+  aFaceDeflection = Max (aDeflection, aFaceDeflection);
 
-  aFaceDeflection = Max(aDeflection, aFaceDeflection);
-
-  theDFace->SetDeflection (Max(2.* BRepMesh_ShapeTool::MaxFaceTolerance(
-    theDFace->GetFace()), aFaceDeflection));
+  theDFace->SetDeflection (aFaceDeflection);
 }
