@@ -105,20 +105,15 @@ static Handle(Geom_BSplineCurve) EdgeToBSpline (const TopoDS_Edge& theEdge)
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve (theEdge, aLoc, aFirst, aLast);
 
     // convert its part used by edge to bspline; note that if edge curve is bspline,
-    // conversion made via trimmed curve is still needed -- it will copy it, segment 
-    // as appropriate, and remove periodicity if it is periodic (deadly for approximator)
+    // approximation or conversion made via trimmed curve is still needed -- it will copy it,
+    // segment as appropriate, and remove periodicity if it is periodic (deadly for approximator)
     Handle(Geom_TrimmedCurve) aTrimCurve = new Geom_TrimmedCurve (aCurve, aFirst, aLast);
 
-    // special treatment of conic curve
-    if (aTrimCurve->BasisCurve()->IsKind(STANDARD_TYPE(Geom_Conic)))
-    {
-      const Handle(Geom_Curve)& aCurveTemp = aTrimCurve; // to avoid ambiguity
-      GeomConvert_ApproxCurve anAppr (aCurveTemp, Precision::Confusion(), GeomAbs_C1, 16, 14);
-      if (anAppr.HasResult())
-        aBSCurve = anAppr.Curve();
-    }
+    const Handle(Geom_Curve)& aCurveTemp = aTrimCurve; // to avoid ambiguity
+    GeomConvert_ApproxCurve anAppr (aCurveTemp, Precision::Confusion(), GeomAbs_C1, 16, 14);
+    if (anAppr.HasResult())
+      aBSCurve = anAppr.Curve();
 
-    // general case
     if (aBSCurve.IsNull())
       aBSCurve = GeomConvert::CurveToBSplineCurve (aTrimCurve);
 
