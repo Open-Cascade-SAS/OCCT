@@ -482,6 +482,8 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       }
       return Standard_True;
     }
+
+    //
     GeomAdaptor_Surface GAS(S,Uinf-u,Usup+u,Vinf-v,Vsup+v);
 
     Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(GAS);
@@ -490,6 +492,19 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
 
     if(ProjOnCurve.IsDone()) {
       Curve2d = ProjOnCurve.BSpline();
+      if (S->IsUPeriodic() || S->IsVPeriodic())
+      {
+        //Surface is periodic, checking curve2d domain 
+        //Old domain
+        gp_Pnt2d aPf = C2d->Value(f2d);
+        //New domain
+        gp_Pnt2d aNewPf = Curve2d->Value(f2d);
+        gp_Vec2d aT(aNewPf, aPf);
+        if (aT.SquareMagnitude() > Precision::SquarePConfusion())
+        {
+          Curve2d = Handle(Geom2d_Curve)::DownCast(Curve2d->Translated(aT));
+        }
+      }
       Standard_Real newTol = BRepTools::EvalAndUpdateTol(newE, C3d, Curve2d, S, f3d, l3d);
       if(newTol > Tol)
       {
