@@ -19,8 +19,8 @@ void occSetFragColor (in vec4 theColor)
 
 #if defined(THE_MAX_LIGHTS) && (THE_MAX_LIGHTS > 0)
 // arrays of light sources
-uniform               vec4  occLightSources[THE_MAX_LIGHTS * 4];  //!< packed light sources parameters
-uniform THE_PREC_ENUM ivec2 occLightSourcesTypes[THE_MAX_LIGHTS]; //!< packed light sources types
+uniform               vec4 occLightSources[THE_MAX_LIGHTS * 4]; //!< packed light sources parameters
+uniform THE_PREC_ENUM int occLightSourcesTypes[THE_MAX_LIGHTS]; //!< packed light sources types
 #endif
 
 #if defined(THE_IS_PBR)

@@ -760,25 +760,14 @@ protected:
   //! Packed properties of light source
   struct OpenGl_ShaderLightParameters
   {
-    OpenGl_Vec4 Color;
-    OpenGl_Vec4 Position;
-    OpenGl_Vec4 Direction;
-    OpenGl_Vec4 Parameters;
+    OpenGl_Vec4 Color;      //!< RGB color + Intensity (in .w)
+    OpenGl_Vec4 Position;   //!< XYZ Direction or Position + IsHeadlight (in .w)
+    OpenGl_Vec4 Direction;  //!< spot light XYZ direction
+    OpenGl_Vec4 Parameters; //!< same as Graphic3d_CLight::PackedParams()
 
     //! Returns packed (serialized) representation of light source properties
     const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
     static Standard_Integer NbOfVec4() { return 4; }
-  };
-
-  //! Packed light source type information
-  struct OpenGl_ShaderLightType
-  {
-    Standard_Integer Type;
-    Standard_Integer IsHeadlight;
-
-    //! Returns packed (serialized) representation of light source type
-    const OpenGl_Vec2i* Packed() const { return reinterpret_cast<const OpenGl_Vec2i*> (this); }
-    static Standard_Integer NbOfVec2i() { return 1; }
   };
 
   //! Fake OpenGL program for tracking FFP state in the way consistent to programmable pipeline.
@@ -852,7 +841,7 @@ protected:
   gp_XYZ                             myLocalOrigin;        //!< local camera transformation
   Standard_Boolean                   myHasLocalOrigin;     //!< flag indicating that local camera transformation has been set
 
-  mutable NCollection_Array1<OpenGl_ShaderLightType>       myLightTypeArray;
+  mutable NCollection_Array1<Standard_Integer>             myLightTypeArray;
   mutable NCollection_Array1<OpenGl_ShaderLightParameters> myLightParamsArray;
   mutable NCollection_Array1<OpenGl_Vec4>                  myClipPlaneArray;
   mutable NCollection_Array1<OpenGl_Vec4d>                 myClipPlaneArrayFfp;
