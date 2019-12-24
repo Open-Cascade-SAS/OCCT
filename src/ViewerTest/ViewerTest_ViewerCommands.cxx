@@ -10712,6 +10712,7 @@ static int VLight (Draw_Interpretor& theDi,
           theDi << "  Position:   " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
           aLight->Attenuation (anAtten[0], anAtten[1]);
           theDi << "  Atten.:     " << anAtten[0] << " " << anAtten[1] << "\n";
+          theDi << "  Range:      " << aLight->Range() << "\n";
           break;
         }
         case V3d_SPOT:
@@ -10727,6 +10728,7 @@ static int VLight (Draw_Interpretor& theDi,
           theDi << "  Atten.:     " << anAtten[0] << " " << anAtten[1] << "\n";
           theDi << "  Angle:      " << (aLight->Angle() * 180.0 / M_PI) << "\n";
           theDi << "  Exponent:   " << aLight->Concentration() << "\n";
+          theDi << "  Range:      " << aLight->Range() << "\n";
           break;
         }
         default:
@@ -11183,6 +11185,20 @@ static int VLight (Draw_Interpretor& theDi,
       }
 
       aLightCurr->SetConcentration ((Standard_ShortReal )Atof (theArgVec[anArgIt]));
+    }
+    else if (anArgCase.IsEqual("RANGE")
+          || anArgCase.IsEqual("-RANGE"))
+    {
+      if (++anArgIt >= theArgsNb
+       || aLightCurr.IsNull()
+       || aLightCurr->Type() == Graphic3d_TOLS_AMBIENT
+       || aLightCurr->Type() == Graphic3d_TOLS_DIRECTIONAL)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      aLightCurr->SetRange ((Standard_ShortReal)Atof (theArgVec[anArgIt]));
     }
     else if (anArgCase.IsEqual ("HEAD")
           || anArgCase.IsEqual ("HEADLIGHT")
@@ -14382,6 +14398,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n        -{linearAtten}uation value"
     "\n        -angle angleDeg"
     "\n        -{spotexp}onent value"
+    "\n        -range value"
     "\n        -local|-global"
     "\n\n        example: vlight -add positional -head 1 -pos 0 1 1 -color red"
     "\n        example: vlight -change 0 -direction 0 -1 0 -linearAttenuation 0.2",

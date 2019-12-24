@@ -233,3 +233,16 @@ void Graphic3d_CLight::SetSmoothAngle (Standard_ShortReal theValue)
   updateRevisionIf (Abs (mySmoothness - theValue) > ShortRealEpsilon());
   mySmoothness = theValue;
 }
+
+// =======================================================================
+// function : SetRange
+// purpose  :
+// =======================================================================
+void Graphic3d_CLight::SetRange (Standard_ShortReal theValue)
+{
+  Standard_ProgramError_Raise_if (myType != Graphic3d_TOLS_POSITIONAL && myType != Graphic3d_TOLS_SPOT,
+                                  "Graphic3d_CLight::SetRange(), incorrect light type");
+  Standard_OutOfRange_Raise_if (theValue < 0.0, "Graphic3d_CLight::SetRange(), Bad value for falloff range");
+  updateRevisionIf (Abs (Range() - theValue) > ShortRealEpsilon());
+  myDirection.w() = theValue;
+};

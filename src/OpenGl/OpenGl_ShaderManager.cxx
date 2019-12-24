@@ -34,6 +34,7 @@
 #include "../Shaders/Shaders_PBRIllumination_glsl.pxx"
 #include "../Shaders/Shaders_PBREnvBaking_fs.pxx"
 #include "../Shaders/Shaders_PBREnvBaking_vs.pxx"
+#include "../Shaders/Shaders_PointLightAttenuation_glsl.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager,Standard_Transient)
 
@@ -117,9 +118,10 @@ const char THE_FUNC_pointLight[] =
   EOL"  aLight -= thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
-  EOL"  aLight = aLight * (1.0 / aDist);"
-  EOL
-  EOL"  float anAtten = 1.0 / (occLight_ConstAttenuation (theId) + occLight_LinearAttenuation (theId) * aDist);"
+  EOL"  float aRange = occLight_Range (theId);"
+  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange, occLight_LinearAttenuation (theId), occLight_ConstAttenuation (theId));"
+  EOL"  if (anAtten <= 0.0) return;"
+  EOL"  aLight /= aDist;"
   EOL
   EOL"  vec3 aHalf = normalize (aLight + theView);"
   EOL
@@ -153,9 +155,10 @@ const char THE_FUNC_PBR_pointLight[] =
   EOL"  aLight -= thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
+  EOL"  float aRange = occLight_Range (theId);"
+  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange);"
+  EOL"  if (anAtten <= 0.0) return;"
   EOL"  aLight /= aDist;"
-  EOL
-  EOL"  float anAtten = 1.0 / max (aDist * aDist, 0.01);"
   EOL
   EOL"  theNormal = theIsFront ? theNormal : -theNormal;"
   EOL"  DirectLighting += occPBRIllumination (theView, aLight, theNormal,"
@@ -182,7 +185,10 @@ const char THE_FUNC_spotLight[] =
   EOL"  aLight -= thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
-  EOL"  aLight = aLight * (1.0 / aDist);"
+  EOL"  float aRange = occLight_Range (theId);"
+  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange, occLight_LinearAttenuation (theId), occLight_ConstAttenuation (theId));"
+  EOL"  if (anAtten <= 0.0) return;"
+  EOL"  aLight /= aDist;"
   EOL
   EOL"  aSpotDir = normalize (aSpotDir);"
   // light cone
@@ -193,8 +199,6 @@ const char THE_FUNC_spotLight[] =
   EOL"  }"
   EOL
   EOL"  float anExponent = occLight_SpotExponent (theId);"
-  EOL"  float anAtten    = 1.0 / (occLight_ConstAttenuation  (theId)"
-  EOL"                          + occLight_LinearAttenuation (theId) * aDist);"
   EOL"  if (anExponent > 0.0)"
   EOL"  {"
   EOL"    anAtten *= pow (aCosA, anExponent * 128.0);"
@@ -234,25 +238,30 @@ const char THE_FUNC_spotLight[] =
   EOL"  aLight -= thePoint;"
   EOL
   EOL"  float aDist = length (aLight);"
+  EOL"  float aRange = occLight_Range (theId);"
+  EOL"  float anAtten = occPointLightAttenuation (aDist, aRange);"
+  EOL"  if (anAtten <= 0.0) return;"
   EOL"  aLight /= aDist;"
   EOL
   EOL"  aSpotDir = normalize (aSpotDir);"
   // light cone
   EOL"  float aCosA = dot (aSpotDir, -aLight);"
-  EOL"  if (aCosA >= 1.0 || aCosA < cos (occLight_SpotCutOff (theId)))"
+  EOL"  float aRelativeAngle = 2.0 * acos(aCosA) / occLight_SpotCutOff(theId);"
+  EOL"  if (aCosA >= 1.0 || aRelativeAngle > 1.0)"
   EOL"  {"
   EOL"    return;"
   EOL"  }"
-  EOL
   EOL"  float anExponent = occLight_SpotExponent (theId);"
-  EOL"  float anAtten    = 1.0 / max (aDist * aDist, 0.01);"
-  EOL"  if (anExponent > 0.0)"
+  EOL"  if ((1.0 - aRelativeAngle) <= anExponent)"
   EOL"  {"
-  EOL"    anAtten *= pow (aCosA, anExponent * 128.0);"
+  EOL"    float anAngularAttenuationOffset = cos(0.5 * occLight_SpotCutOff(theId));"
+  EOL"    float anAngularAttenuationScale = 1.0 / max(0.001, cos(0.5 * occLight_SpotCutOff(theId) * (1.0 - anExponent)) - anAngularAttenuationOffset);"
+  EOL"    anAngularAttenuationOffset *= -anAngularAttenuationScale;"
+  EOL"    float anAngularAttenuantion = clamp(aCosA * anAngularAttenuationScale + anAngularAttenuationOffset, 0.0, 1.0);"
+  EOL"    anAtten *= anAngularAttenuantion * anAngularAttenuantion;"
   EOL"  }"
-  EOL
   EOL"  theNormal = theIsFront ? theNormal : -theNormal;"
-  EOL"  DirectLighting += occPBRIllumination (theView aLight, theNormal,"
+  EOL"  DirectLighting += occPBRIllumination (theView, aLight, theNormal,"
   EOL"                                        BaseColor, Metallic, Roughness, IOR,"
   EOL"                                        occLight_Specular(theId),"
   EOL"                                        occLight_Intensity(theId) * anAtten);"
@@ -459,7 +468,7 @@ EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatr
       case Graphic3d_TOLS_DIRECTIONAL:
       {
         // if the last parameter of GL_POSITION, is zero, the corresponding light source is a Directional one
-        const OpenGl_Vec4 anInfDir = -theLight.PackedDirection();
+        const OpenGl_Vec4 anInfDir = -theLight.PackedDirectionRange();
 
         // to create a realistic effect,  set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE.
         theCtx->core11->glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
@@ -494,7 +503,7 @@ EOL"  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatr
         theCtx->core11->glLightfv (theLightGlId, GL_DIFFUSE,               aLightColor.GetData());
         theCtx->core11->glLightfv (theLightGlId, GL_SPECULAR,              aLightColor.GetData());
         theCtx->core11->glLightfv (theLightGlId, GL_POSITION,              aPosition.GetData());
-        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.PackedDirection().GetData());
+        theCtx->core11->glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.PackedDirectionRange().GetData());
         theCtx->core11->glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
         theCtx->core11->glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
         theCtx->core11->glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
@@ -903,7 +912,7 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
     aLightParams.Color.a() = aLight.Intensity(); // used by PBR and ignored by old shading model
     if (aLight.Type() == Graphic3d_TOLS_DIRECTIONAL)
     {
-      aLightParams.Position = -aLight.PackedDirection();
+      aLightParams.Position = -aLight.PackedDirectionRange();
     }
     else if (!aLight.IsHeadlight())
     {
@@ -921,7 +930,11 @@ void OpenGl_ShaderManager::pushLightSourceState (const Handle(OpenGl_ShaderProgr
 
     if (aLight.Type() == Graphic3d_TOLS_SPOT)
     {
-      aLightParams.Direction = aLight.PackedDirection();
+      aLightParams.Direction = aLight.PackedDirectionRange();
+    }
+    if (aLight.Type() == Graphic3d_TOLS_POSITIONAL)
+    {
+      aLightParams.Direction.w() = aLight.Range();
     }
     aLightParams.Parameters = aLight.PackedParams();
     ++aLightsNb;
@@ -2325,6 +2338,7 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
   {
     return TCollection_AsciiString()
     + THE_FUNC_lightDef
+    + Shaders_PointLightAttenuation_glsl
     + aLightsFunc
     + EOL
       EOL"vec4 computeLighting (in vec3 theNormal,"
@@ -2352,6 +2366,7 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
   {
     return TCollection_AsciiString()
     + THE_FUNC_PBR_lightDef
+    + Shaders_PointLightAttenuation_glsl
     + aLightsFunc
     + EOL
       EOL"vec4 computeLighting (in vec3 theNormal,"

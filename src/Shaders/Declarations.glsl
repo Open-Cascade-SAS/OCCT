@@ -156,6 +156,9 @@ uniform THE_PREC_ENUM int  occLightSourcesCount; //!< Total number of light sour
 //! Direction of specified spot light source, vec3.
 #define occLight_SpotDirection(theId)     occLightSources[theId * 4 + 2].xyz
 
+//! Range on which point light source (positional or spot) can affect (>= 0), float.
+#define occLight_Range(theId)             occLightSources[theId * 4 + 2].w
+
 //! Maximum spread angle of the spot light (in radians), float.
 #define occLight_SpotCutOff(theId)        occLightSources[theId * 4 + 3].z
 

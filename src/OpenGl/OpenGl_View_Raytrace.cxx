@@ -2440,9 +2440,9 @@ Standard_Boolean OpenGl_View::updateRaytraceLightSources (const OpenGl_Mat4& the
                           aLightColor.b() * aLight.Intensity(),
                           1.0f);
 
-    BVH_Vec4f aPosition (-aLight.PackedDirection().x(),
-                         -aLight.PackedDirection().y(),
-                         -aLight.PackedDirection().z(),
+    BVH_Vec4f aPosition (-aLight.PackedDirectionRange().x(),
+                         -aLight.PackedDirectionRange().y(),
+                         -aLight.PackedDirectionRange().z(),
                          0.0f);
 
     if (aLight.Type() != Graphic3d_TOLS_DIRECTIONAL)

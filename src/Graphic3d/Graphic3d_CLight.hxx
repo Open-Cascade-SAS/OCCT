@@ -177,6 +177,16 @@ public:
   //! Modifies the smoothing angle (in radians) of directional light source; should be within range [0.0, M_PI/2].
   Standard_EXPORT void SetSmoothAngle (Standard_ShortReal theValue);
 
+  //! Returns maximum distance on which point light source affects to objects and is considered during illumination calculations.
+  //! 0.0 means disabling range considering at all without any distance limits.
+  //! Has sense only for point light sources (positional and spot).  
+  Standard_ShortReal Range() const { return myDirection.w(); }
+
+  //! Modifies maximum distance on which point light source affects to objects and is considered during illumination calculations.
+  //! Positional and spot lights are only point light sources.
+  //! 0.0 means disabling range considering at all without any distance limits.
+  Standard_EXPORT void SetRange (Standard_ShortReal theValue);
+
 //! @name low-level access methods
 public:
 
@@ -189,8 +199,8 @@ public:
   //! Returns the color of the light source with dummy Alpha component, which should be ignored.
   const Graphic3d_Vec4& PackedColor() const { return myColor; }
 
-  //! Returns direction of directional/spot light.
-  const Graphic3d_Vec4& PackedDirection() const { return myDirection; }
+  //! Returns direction of directional/spot light and range for positional/spot light in alpha channel.
+  const Graphic3d_Vec4& PackedDirectionRange() const { return myDirection; }
 
   //! @return modification counter
   Standard_Size Revision() const { return myRevision; }
@@ -204,10 +214,10 @@ private:
   Standard_ShortReal& changeLinearAttenuation() { return myParams.y(); }
 
   //! Access spotlight angle parameter from packed vector.
-  Standard_ShortReal& changeAngle()             { return myParams.z();  }
+  Standard_ShortReal& changeAngle()             { return myParams.z(); }
 
   //! Access spotlight concentration parameter from packed vector.
-  Standard_ShortReal& changeConcentration()     { return myParams.w();  }
+  Standard_ShortReal& changeConcentration()     { return myParams.w(); }
 
 private:
 

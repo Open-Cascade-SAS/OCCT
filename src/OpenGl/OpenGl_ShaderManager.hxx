@@ -762,7 +762,7 @@ protected:
   {
     OpenGl_Vec4 Color;      //!< RGB color + Intensity (in .w)
     OpenGl_Vec4 Position;   //!< XYZ Direction or Position + IsHeadlight (in .w)
-    OpenGl_Vec4 Direction;  //!< spot light XYZ direction
+    OpenGl_Vec4 Direction;  //!< spot light XYZ direction + Range (in .w)
     OpenGl_Vec4 Parameters; //!< same as Graphic3d_CLight::PackedParams()
 
     //! Returns packed (serialized) representation of light source properties

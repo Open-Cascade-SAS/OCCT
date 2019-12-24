@@ -9,6 +9,7 @@ srcinc:::PBRGeometry.glsl
 srcinc:::PBRIllumination.glsl
 srcinc:::PhongShading.fs
 srcinc:::PhongShading.vs
+srcinc:::PointLightAttenuation.glsl
 srcinc:::Display.fs
 srcinc:::RaytraceBase.fs
 srcinc:::RaytraceRender.fs
@@ -25,6 +26,7 @@ Shaders_PBREnvBaking_vs.pxx
 Shaders_PBRFresnel_glsl.pxx
 Shaders_PBRGeometry_glsl.pxx
 Shaders_PBRIllumination_glsl.pxx
+Shaders_PointLightAttenuation_glsl.pxx
 Shaders_RaytraceBase_fs.pxx
 Shaders_RaytraceRender_fs.pxx
 Shaders_PathtraceBase_fs.pxx
