@@ -220,9 +220,9 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
 
     if (theToProbe)
     {
-      if (::memcmp (aLine, "mtllib", 6) == 0)
+      if (::strncmp (aLine, "mtllib", 6) == 0)
       {
-        readMaterialLib (aLine + 7);
+        readMaterialLib (IsSpace (aLine[6]) ? aLine + 7 : "");
       }
       else if (aLine[0] == 'v' && RWObj_Tools::isSpaceChar (aLine[1]))
       {
@@ -269,13 +269,13 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
     {
       pushObject (aLine + 2);
     }
-    else if (::memcmp (aLine, "mtllib", 6) == 0)
+    else if (::strncmp (aLine, "mtllib", 6) == 0)
     {
-      readMaterialLib (aLine + 7);
+      readMaterialLib (IsSpace (aLine[6]) ? aLine + 7 : "");
     }
-    else if (::memcmp (aLine, "usemtl", 6) == 0)
+    else if (::strncmp (aLine, "usemtl", 6) == 0)
     {
-      pushMaterial (aLine + 7);
+      pushMaterial (IsSpace (aLine[6]) ? aLine + 7 : "");
     }
 
     if (!checkMemory())
