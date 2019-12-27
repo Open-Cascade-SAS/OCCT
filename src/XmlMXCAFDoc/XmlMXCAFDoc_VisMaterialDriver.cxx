@@ -25,6 +25,7 @@ IMPLEMENT_DOMSTRING(AlphaMode,         "alpha_mode")
 IMPLEMENT_DOMSTRING(AlphaCutOff,       "alpha_cutoff")
 //
 IMPLEMENT_DOMSTRING(BaseColor,         "base_color")
+IMPLEMENT_DOMSTRING(RefractionIndex,   "ior")
 IMPLEMENT_DOMSTRING(EmissiveFactor,    "emissive_factor")
 IMPLEMENT_DOMSTRING(Metallic,          "metallic")
 IMPLEMENT_DOMSTRING(Roughness,         "roughness")
@@ -253,6 +254,7 @@ Standard_Boolean XmlMXCAFDoc_VisMaterialDriver::Paste (const XmlObjMgt_Persisten
     readVec3    (theSource, ::EmissiveFactor(),   aPbrMat.EmissiveFactor);
     readReal    (theSource, ::Metallic(),         aPbrMat.Metallic);
     readReal    (theSource, ::Roughness(),        aPbrMat.Roughness);
+    readReal    (theSource, ::RefractionIndex(),  aPbrMat.RefractionIndex);
     readTexture (theSource, ::BaseColorTexture(), aPbrMat.BaseColorTexture);
     readTexture (theSource, ::MetallicRoughnessTexture(), aPbrMat.MetallicRoughnessTexture);
     readTexture (theSource, ::EmissiveTexture(),  aPbrMat.EmissiveTexture);
@@ -298,6 +300,7 @@ void XmlMXCAFDoc_VisMaterialDriver::Paste (const Handle(TDF_Attribute)& theSourc
     writeVec3    (theTarget, ::EmissiveFactor(),   aPbrMat.EmissiveFactor);
     writeReal    (theTarget, ::Metallic(),         aPbrMat.Metallic);
     writeReal    (theTarget, ::Roughness(),        aPbrMat.Roughness);
+    writeReal    (theTarget, ::RefractionIndex(),  aPbrMat.RefractionIndex);
     writeTexture (theTarget, ::BaseColorTexture(), aPbrMat.BaseColorTexture);
     writeTexture (theTarget, ::MetallicRoughnessTexture(), aPbrMat.MetallicRoughnessTexture);
     writeTexture (theTarget, ::EmissiveTexture(),  aPbrMat.EmissiveTexture);

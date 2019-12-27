@@ -542,6 +542,7 @@ bool RWGltf_GltfJsonParser::gltfParsePbrMaterial (Handle(RWGltf_MaterialMetallic
   const RWGltf_JsonValue* aDoubleSidedVal   = findObjectMember (theMatNode, "doubleSided");
   const RWGltf_JsonValue* anAlphaModeVal    = findObjectMember (theMatNode, "alphaMode");
   const RWGltf_JsonValue* anAlphaCutoffVal  = findObjectMember (theMatNode, "alphaCutoff");
+  // TODO ADOBE_materials_thin_transparency extension can be used to read IOR (Index of Refraction for transparent materials)
   if (aMetalRoughVal == NULL)
   {
     return false;

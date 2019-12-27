@@ -878,6 +878,7 @@ static Standard_Integer XGetVisMaterial (Draw_Interpretor& theDI, Standard_Integ
     const XCAFDoc_VisMaterialPBR& aMatPbr = aMat->PbrMaterial();
     theDI << "PBR.BaseColor:          " << (Graphic3d_Vec3 )aMatPbr.BaseColor.GetRGB() << "\n";
     theDI << "PBR.Transparency:       " << (1.0 - aMatPbr.BaseColor.Alpha()) << "\n";
+    theDI << "PBR.RefractionIndex:    " << aMatPbr.RefractionIndex << "\n";
     if (!aMatPbr.BaseColorTexture.IsNull())
     {
       theDI << "PBR.BaseColorTexture:   " << aMatPbr.BaseColorTexture->TextureId() << "\n";
@@ -951,6 +952,19 @@ static Standard_Integer XAddVisMaterial (Draw_Interpretor& , Standard_Integer th
         aMatCom.Transparency = 1.0f - aMatCom.Transparency;
       }
       aMatPbr.BaseColor.SetAlpha (1.0f - aMatCom.Transparency);
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-refractionindex" || anArg == "-ior"))
+    {
+      aMatPbr.RefractionIndex = (Standard_ShortReal )Draw::Atof (theArgVec[anArgIter + 1]);
+      if (aMatPbr.RefractionIndex < 1.0f || aMatPbr.RefractionIndex > 3.0f)
+      {
+        std::cout << "Syntax error at '" << anArg << "'\n";
+        return 1;
+      }
+
+      ++anArgIter;
+      aMatPbr.IsDefined = true;
     }
     else if (anArg == "-alphaMode"
           && anArgIter + 2 < theNbArgs
@@ -1301,7 +1315,7 @@ void XDEDRAW_Colors::InitCommands(Draw_Interpretor& di)
           __FILE__, XGetVisMaterial, g);
   di.Add ("XAddVisMaterial",
           "Doc Material"
-          "\n\t\t: [-transparency 0..1] [-alphaMode {Opaque|Mask|Blend|BlendAuto} CutOffValue]"
+          "\n\t\t: [-transparency 0..1] [-alphaMode {Opaque|Mask|Blend|BlendAuto} CutOffValue] [-refractionIndex 1..3]"
           "\n\t\t: [-diffuse   RGB] [-diffuseTexture ImagePath]"
           "\n\t\t: [-specular  RGB] [-ambient RGB] [-emissive  RGB] [-shininess 0..1]"
           "\n\t\t: [-baseColor RGB] [-baseColorTexture ImagePath]"

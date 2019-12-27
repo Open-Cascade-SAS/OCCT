@@ -27,7 +27,15 @@ class BinMXCAFDoc_VisMaterialDriver : public BinMDF_ADriver
   DEFINE_STANDARD_RTTIEXT(BinMXCAFDoc_VisMaterialDriver, BinMDF_ADriver)
 
   //! Persistence version (major for breaking changes, minor for adding new fields at end).
-  enum { MaterialVersionMajor = 1, MaterialVersionMinor = 0 };
+  enum
+  {
+    MaterialVersionMajor_1 = 1,
+    MaterialVersionMinor_0 = 0,
+    MaterialVersionMinor_1 = 1, //!< added IOR
+
+    MaterialVersionMajor = MaterialVersionMajor_1,
+    MaterialVersionMinor = MaterialVersionMinor_1
+  };
 public:
 
   //! Main constructor.

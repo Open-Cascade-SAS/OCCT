@@ -163,12 +163,10 @@ Standard_Boolean BinMXCAFDoc_VisMaterialDriver::Paste (const BinObjMgt_Persisten
   aMat->SetDoubleSided (isDoubleSided == '1');
   aMat->SetAlphaMode (alphaModeFromChar (anAlphaMode), anAlphaCutOff);
 
-  bool hasPbrMat = false;
-  theSource.GetBoolean (hasPbrMat);
-  if (hasPbrMat)
+  XCAFDoc_VisMaterialPBR aPbrMat;
+  theSource.GetBoolean (aPbrMat.IsDefined);
+  if (aPbrMat.IsDefined)
   {
-    XCAFDoc_VisMaterialPBR aPbrMat;
-    aPbrMat.IsDefined = true;
     readColor (theSource, aPbrMat.BaseColor);
     readVec3  (theSource, aPbrMat.EmissiveFactor);
     theSource.GetShortReal (aPbrMat.Metallic);
@@ -196,6 +194,22 @@ Standard_Boolean BinMXCAFDoc_VisMaterialDriver::Paste (const BinObjMgt_Persisten
     readTexture (theSource, aComMat.DiffuseTexture);
     aMat->SetCommonMaterial (aComMat);
   }
+
+  if (aVerMaj > MaterialVersionMajor_1
+    || (aVerMaj == MaterialVersionMajor_1
+     && aVerMin >= MaterialVersionMinor_1))
+  {
+    if (aPbrMat.IsDefined)
+    {
+      theSource.GetShortReal (aPbrMat.RefractionIndex);
+    }
+  }
+
+  if (aPbrMat.IsDefined)
+  {
+    aMat->SetPbrMaterial (aPbrMat);
+  }
+
   return Standard_True;
 }
 
@@ -241,5 +255,10 @@ void BinMXCAFDoc_VisMaterialDriver::Paste (const Handle(TDF_Attribute)& theSourc
     theTarget.PutShortReal (aComMat.Shininess);
     theTarget.PutShortReal (aComMat.Transparency);
     writeTexture (theTarget, aComMat.DiffuseTexture);
+  }
+
+  if (aMat->HasPbrMaterial())
+  {
+    theTarget.PutShortReal (aMat->PbrMaterial().RefractionIndex);
   }
 }

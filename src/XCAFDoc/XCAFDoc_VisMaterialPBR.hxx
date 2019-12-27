@@ -31,6 +31,7 @@ struct XCAFDoc_VisMaterialPBR
   Graphic3d_Vec3          EmissiveFactor;           //!< emissive color; [0.0, 0.0, 0.0] by default
   Standard_ShortReal      Metallic;                 //!< metalness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
   Standard_ShortReal      Roughness;                //!< roughness  (or scale factor to the texture) within range [0.0, 1.0]; 1.0 by default
+  Standard_ShortReal      RefractionIndex;          //!< IOR (index of refraction) within range [1.0, 3.0]; 1.5 by default
   Standard_Boolean        IsDefined;                //!< defined flag; FALSE by default
 
   //! Empty constructor.
@@ -39,6 +40,7 @@ struct XCAFDoc_VisMaterialPBR
     EmissiveFactor (0.0f, 0.0f, 0.0f),
     Metallic  (1.0f),
     Roughness (1.0f),
+    RefractionIndex (1.5f),
     IsDefined (Standard_False) {}
 
   //! Compare two materials.
@@ -65,7 +67,8 @@ struct XCAFDoc_VisMaterialPBR
         && theOther.BaseColor == BaseColor
         && theOther.EmissiveFactor == EmissiveFactor
         && theOther.Metallic == Metallic
-        && theOther.Roughness == Roughness;
+        && theOther.Roughness == Roughness
+        && theOther.RefractionIndex == RefractionIndex;
   }
 };
 

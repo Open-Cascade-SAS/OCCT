@@ -204,10 +204,25 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness (const Graphic3d_PBRMater
   const Standard_ShortReal aRougness2 = thePbr.NormalizedRoughness() * thePbr.NormalizedRoughness();
 
   Graphic3d_BSDF aBsdf;
-  aBsdf.FresnelBase = Graphic3d_Fresnel::CreateSchlick (aDiff * thePbr.Metallic());
-  aBsdf.Ks.SetValues (Graphic3d_Vec3 (thePbr.Alpha()), aRougness2);
-  aBsdf.Kt = Graphic3d_Vec3 (1.0f - thePbr.Alpha());
-  aBsdf.Kd = aDiff * (1.0f - thePbr.Metallic());
   aBsdf.Le = thePbr.Emission();
+  if (thePbr.IOR() > 1.0f
+   && thePbr.Alpha() < 1.0f
+   && thePbr.Metallic() <= ShortRealEpsilon())
+  {
+    aBsdf.FresnelCoat = Graphic3d_Fresnel::CreateDielectric (thePbr.IOR());
+    aBsdf.Kt = Graphic3d_Vec3(1.0f);
+    aBsdf.Kc.r() = aBsdf.Kt.r();
+    aBsdf.Kc.g() = aBsdf.Kt.g();
+    aBsdf.Kc.b() = aBsdf.Kt.b();
+    aBsdf.Absorption.SetValues (thePbr.Color().GetRGB(), thePbr.Alpha() * 0.25f);
+  }
+  else
+  {
+    aBsdf.FresnelBase = Graphic3d_Fresnel::CreateSchlick (aDiff * thePbr.Metallic());
+    aBsdf.Ks.SetValues (Graphic3d_Vec3 (thePbr.Alpha()), aRougness2);
+    aBsdf.Kt = Graphic3d_Vec3 (1.0f - thePbr.Alpha());
+    aBsdf.Kd = aDiff * (1.0f - thePbr.Metallic());
+  }
+
   return aBsdf;
 }

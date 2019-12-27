@@ -237,6 +237,8 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
     aPbr.SetMetallic (myPbrMat.Metallic);
     aPbr.SetRoughness(myPbrMat.Roughness);
     aPbr.SetEmission (myPbrMat.EmissiveFactor);
+    aPbr.SetIOR      (myPbrMat.RefractionIndex);
+    theAspect.SetRefractionIndex (myPbrMat.RefractionIndex);
     theAspect.SetPBRMaterial (aPbr);
     theAspect.SetBSDF (Graphic3d_BSDF::CreateMetallicRoughness (aPbr));
   }
