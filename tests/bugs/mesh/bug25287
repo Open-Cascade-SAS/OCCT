@@ -1,0 +1,21 @@
+puts "======="
+puts "0025287: BRepMesh_IncrementalMesh produces (way) out of tolerance mesh"
+puts "======="
+puts ""
+
+pload XDE
+
+param xstep.cascade.unit M
+stepread [locate_data_file bug25287_bad_tess_face_plus.step] a *
+renamevar a_1 result
+
+incmesh result 0.0001 -a 30 -force_face_def -parallel
+
+checktrinfo result -tri 13854 -nod 9190 -defl 0.00012495021746395917
+
+vinit
+vsetdispmode 1
+vdisplay result
+vfit
+checkview -screenshot -3d -path ${imagedir}/${test_image}.png
+
