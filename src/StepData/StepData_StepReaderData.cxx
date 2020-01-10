@@ -1038,7 +1038,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer num,
         if (entent.IsNull() || !entent->IsKind(atype))
         {
           errmess = new String("Parameter n0.%d (%s) : Entity has illegal type");
-          if (entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
+          if (!entent.IsNull() && entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
             ent = entent;
         }
 	else ent = entent;
@@ -1087,7 +1087,7 @@ Standard_Boolean StepData_StepReaderData::ReadEntity(const Standard_Integer num,
         {
           errmess = new String("Parameter n0.%d (%s) : Entity has illegal type");
           //fot not suppported STEP entity
-          if (entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
+          if (!entent.IsNull() && entent->IsKind(STANDARD_TYPE(StepData_UndefinedEntity)))
             sel.SetValue(entent);
         }
 	else
@@ -1583,8 +1583,10 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
           if (num0 > 0) FP.SetEntityNumber(num0);  // ET VOILA, on a resolu
           else FP.SetEntityNumber(-id);   // CONFLIT -> faudra resoudre ...
 	} else {                          // NON RESOLU, si pas pbmap, le dire
-          FP.SetEntityNumber(-id);
-          if (pbmap) continue;            // pbmap : on se retrouvera
+          if (pbmap) {
+            FP.SetEntityNumber(-id);
+            continue;            // pbmap : on se retrouvera
+          }
           char failmess[100];
           //  ...  Construire le Check  ...
           sprintf(failmess,
