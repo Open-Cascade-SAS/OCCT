@@ -2545,6 +2545,20 @@ Standard_Boolean OpenGl_View::setUniformState (const Standard_Integer        the
                   aDirects,
                   aViewPrjMat,
                   anUnviewMat);
+
+    if (myRenderParams.UseEnvironmentMapBackground
+     || myRaytraceParameters.CubemapForBack)
+    {
+      OpenGl_Mat4 aTempMat;
+      OpenGl_Mat4 aTempInvMat;
+      updatePerspCameraPT (myCamera->OrientationMatrixF(),
+                           aCntxProjectionState.Current(),
+                           theProjection,
+                           aTempMat,
+                           aTempInvMat,
+                           theWinSizeX,
+                           theWinSizeY);
+    }
   }
   else
   {

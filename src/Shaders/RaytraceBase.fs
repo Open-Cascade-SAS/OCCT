@@ -1023,6 +1023,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
   int aTrsfId;
 
   float aRaytraceDepth = MAXFLOAT;
+  float aRefractionIdx = 0.0;
 
   for (int aDepth = 0; aDepth < NB_BOUNCES; ++aDepth)
   {
@@ -1034,11 +1035,30 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     {
       vec4 aColor = vec4 (0.0);
 
-      if (bool(uEnvMapForBack) || aWeight.w == 0.0f /* reflection */)
+      if (bool(uEnvMapForBack) || aWeight.w == 0.0 /* reflection */)
       {
-        float aTime = IntersectSphere (theRay, uSceneRadius);
+        float aRadius = uSceneRadius;
+        vec3 aTexCoord = vec3 (0.0);
 
-        aColor = FetchEnvironment (theRay.Direct * aTime + theRay.Origin, uSceneRadius, aWeight.w != 0.0);
+        if (aDepth == 0 || (aRefractionIdx == 1.0 && aWeight.w != 0.0))
+        {
+          vec2 aPixel = uEyeSize * (vPixel - vec2 (0.5)) * 2.0;
+          vec2 anAperturePnt = sampleUniformDisk() * uApertureRadius;
+          vec3 aLocalDir = normalize (vec3 (aPixel * uFocalPlaneDist - anAperturePnt, uFocalPlaneDist));
+          vec3 aDirect = uEyeView * aLocalDir.z +
+                         uEyeSide * aLocalDir.x +
+                         uEyeVert * aLocalDir.y;
+          
+          aTexCoord = aDirect * uSceneRadius;
+          aRadius = length (aTexCoord);
+        }
+        else
+        {
+          float aTime = IntersectSphere (theRay, uSceneRadius);
+          aTexCoord = theRay.Direct * aTime + theRay.Origin;
+        }
+
+        aColor = FetchEnvironment (aTexCoord, aRadius, aWeight.w != 0.0);
       }
       else
       {
@@ -1167,6 +1187,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
     if (aOpacity.x != 1.0f)
     {
       aWeight *= aOpacity.y;
+      aRefractionIdx = aOpacity.z;
 
       if (aOpacity.z != 1.0f)
       {
