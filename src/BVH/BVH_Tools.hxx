@@ -269,7 +269,7 @@ public: //! @name Ray-Box Intersection
     T aTimeEnter = Max (aTimeMin[0], Max (aTimeMin[1], aTimeMin[2]));
     T aTimeLeave = Min (aTimeMax[0], Min (aTimeMax[1], aTimeMax[2]));
 
-    Standard_Boolean hasIntersection = aTimeEnter < aTimeLeave && aTimeLeave > 0;
+    Standard_Boolean hasIntersection = aTimeEnter <= aTimeLeave && aTimeLeave >= 0;
     if (hasIntersection)
     {
       theTimeEnter = aTimeEnter;
