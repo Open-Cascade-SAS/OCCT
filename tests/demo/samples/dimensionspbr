@@ -1,0 +1,9 @@
+source $env(CSF_OCCTSamplesPath)/tcl/dimensions.tcl
+vcaps -ffp 0
+vrenderparams -shadingModel pbr
+vlight -clear
+vlight -add ambient -intensity 1
+vlight -add directional -dir 0 0 -1 -head 1 -intensity 1
+vdump $imagedir/${test_image}.png
+
+puts "TEST COMPLETED"

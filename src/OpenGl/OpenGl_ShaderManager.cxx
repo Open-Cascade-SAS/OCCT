@@ -2375,10 +2375,10 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
       EOL"                      in bool theIsFront)"
       EOL"{"
       EOL"  DirectLighting = vec3(0.0);"
-      EOL"  BaseColor = " + (theHasVertColor ? "getVertColor();" : "occTextureColor(occPBRMaterial_Color (theIsFront), TexCoord.st);")
-    + EOL"  Emission            = occTextureEmissive(occPBRMaterial_Emission (theIsFront), TexCoord.st);"
-      EOL"  Metallic            = occTextureMetallic(occPBRMaterial_Metallic (theIsFront), TexCoord.st);"
-      EOL"  NormalizedRoughness = occTextureRoughness(occPBRMaterial_NormalizedRoughness (theIsFront), TexCoord.st);"
+      EOL"  BaseColor = " + (theHasVertColor ? "getVertColor();" : "occTextureColor(occPBRMaterial_Color (theIsFront), TexCoord.st / TexCoord.w);")
+    + EOL"  Emission            = occTextureEmissive(occPBRMaterial_Emission (theIsFront), TexCoord.st / TexCoord.w);"
+      EOL"  Metallic            = occTextureMetallic(occPBRMaterial_Metallic (theIsFront), TexCoord.st / TexCoord.w);"
+      EOL"  NormalizedRoughness = occTextureRoughness(occPBRMaterial_NormalizedRoughness (theIsFront), TexCoord.st / TexCoord.w);"
       EOL"  Roughness = occRoughness (NormalizedRoughness);"
       EOL"  IOR       = occPBRMaterial_IOR (theIsFront);"
       EOL"  vec3 aPoint = thePoint.xyz / thePoint.w;"
@@ -2395,7 +2395,7 @@ TCollection_AsciiString OpenGl_ShaderManager::stdComputeLighting (Standard_Integ
       EOL"  anIndirectLightingDiff *= occDiffIBLMap (theNormal).rgb;"
       EOL"  aColor += occLightAmbient.rgb * (anIndirectLightingDiff + anIndirectLightingSpec);"
       EOL"  aColor += Emission;"
-      EOL"  occTextureOcclusion(aColor, TexCoord.st);"
+      EOL"  occTextureOcclusion(aColor, TexCoord.st / TexCoord.w);"
       EOL"  return vec4 (aColor, mix(1.0, BaseColor.a, aRefractionCoeff.x));"
       EOL"}";
   }
@@ -2722,11 +2722,12 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
       // apply normal map texture
       aSrcFragExtraMain +=
         EOL"#if defined(THE_HAS_TEXTURE_NORMAL)"
-        EOL"  vec4 aMapNormalValue = occTextureNormal(TexCoord.st / TexCoord.w);"
+        EOL"  vec2 aTexCoord = TexCoord.st / TexCoord.w;"
+        EOL"  vec4 aMapNormalValue = occTextureNormal(aTexCoord);"
         EOL"  if (aMapNormalValue.w > 0.5)"
         EOL"  {"
         EOL"    aMapNormalValue.xyz = normalize (aMapNormalValue.xyz * 2.0 - vec3(1.0));"
-        EOL"    mat2 aDeltaUVMatrix = mat2 (dFdx(TexCoord.st / TexCoord.w), dFdy(TexCoord.st / TexCoord.w));"
+        EOL"    mat2 aDeltaUVMatrix = mat2 (dFdx(aTexCoord), dFdy(aTexCoord));"
         EOL"    aDeltaUVMatrix = mat2 (aDeltaUVMatrix[1][1], -aDeltaUVMatrix[0][1], -aDeltaUVMatrix[1][0], aDeltaUVMatrix[0][0]);"
         EOL"    mat2x3 aDeltaVectorMatrix = mat2x3 (dFdx (PositionWorld.xyz), dFdy (PositionWorld.xyz));"
         EOL"    aDeltaVectorMatrix = aDeltaVectorMatrix * aDeltaUVMatrix;"
