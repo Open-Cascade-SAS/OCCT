@@ -3447,6 +3447,30 @@ static Standard_Integer OCC30990 (Draw_Interpretor& theDI, Standard_Integer theN
   return 0;
 }
 
+//=======================================================================
+//function : OCC31294
+//purpose  : check list of shapes generated from shape, which is not any subshape
+//           of input shape for prism algorithm  
+//=======================================================================
+#include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+static Standard_Integer OCC31294(Draw_Interpretor& di, Standard_Integer, const char**)
+{
+  BRepBuilderAPI_MakeVertex mkVert(gp_Pnt(0., 0., 0.));
+  BRepBuilderAPI_MakeVertex mkDummy(gp_Pnt(0., 0., 0.));
+  BRepPrimAPI_MakePrism mkPrism(mkVert.Shape(), gp_Vec(0., 0., 1.));
+
+  Standard_Integer nbgen = mkPrism.Generated(mkVert.Shape()).Extent();
+  Standard_Integer nbdummy = mkPrism.Generated(mkDummy.Shape()).Extent();
+
+  if (nbgen != 1 || nbdummy != 0)
+  {
+    di << "Error: wrong generated list \n";
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3511,6 +3535,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
 
   theCommands.Add("OCC30704", "OCC30704", __FILE__, OCC30704, group);
   theCommands.Add("OCC30704_1", "OCC30704_1", __FILE__, OCC30704_1, group);
+  theCommands.Add("OCC31294", "OCC31294", __FILE__, OCC31294, group);
 
   return;
 }

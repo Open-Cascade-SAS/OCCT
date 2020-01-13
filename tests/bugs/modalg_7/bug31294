@@ -1,0 +1,8 @@
+puts "======================================================="
+puts "0031294: Modeling Algorithms - Regression relatively 7.3.0."
+puts  "Crash in method BRepPrimAPI_MakePrism::Generated(...) if input sub-shape does not belong to the base shape"
+puts "======================================================="
+puts ""
+
+pload QAcommands
+OCC31294
