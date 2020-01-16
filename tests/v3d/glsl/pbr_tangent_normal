@@ -1,0 +1,28 @@
+puts "========"
+puts "0031302: Visualization, TKOpenGl - wrong tangent space calculation for normal maps"
+puts "Test for tangent space orientation."
+puts "========"
+
+pload XDE OCAF MODELING VISUALIZATION
+
+vclear
+vclose ALL
+
+vinit v -w 1024 -h 1024
+vcamera -persp
+vbackground -cubemap [locate_data_file Circus_CubeMap_V.png]
+vrenderparams -shadingModel PBR
+
+vlight -clear
+vlight -add ambient
+
+catch { Close D }
+ReadGltf D [locate_data_file bug31302_NormalTangentTest.gltf]
+XDisplay -dispmode 1 D
+
+vfront
+vfit
+vdump $imagedir/${casename}_front.png
+
+vback
+vdump $imagedir/${casename}_back.png

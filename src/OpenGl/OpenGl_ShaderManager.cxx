@@ -2731,9 +2731,10 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
         EOL"    aDeltaUVMatrix = mat2 (aDeltaUVMatrix[1][1], -aDeltaUVMatrix[0][1], -aDeltaUVMatrix[1][0], aDeltaUVMatrix[0][0]);"
         EOL"    mat2x3 aDeltaVectorMatrix = mat2x3 (dFdx (PositionWorld.xyz), dFdy (PositionWorld.xyz));"
         EOL"    aDeltaVectorMatrix = aDeltaVectorMatrix * aDeltaUVMatrix;"
-        EOL"    aDeltaVectorMatrix[0] = aDeltaVectorMatrix[0] - dot(Normal, aDeltaVectorMatrix[0]) * Normal;"
-        EOL"    aDeltaVectorMatrix[1] = aDeltaVectorMatrix[1] - dot(Normal, aDeltaVectorMatrix[1]) * Normal;"
-        EOL"    Normal = mat3 (-normalize(aDeltaVectorMatrix[0]), -normalize(aDeltaVectorMatrix[1]), Normal) * aMapNormalValue.xyz;"
+        EOL"    aDeltaVectorMatrix[0] = normalize(aDeltaVectorMatrix[0] - dot(Normal, aDeltaVectorMatrix[0]) * Normal);"
+        EOL"    aDeltaVectorMatrix[1] = normalize(aDeltaVectorMatrix[1] - dot(Normal, aDeltaVectorMatrix[1]) * Normal);"
+        EOL"    float aDirection = gl_FrontFacing ? 1.0 : -1.0;"
+        EOL"    Normal = mat3 (aDirection * aDeltaVectorMatrix[0], aDirection * aDeltaVectorMatrix[1], Normal) * aMapNormalValue.xyz;"
         EOL"  }"
         EOL"#endif";
     }
