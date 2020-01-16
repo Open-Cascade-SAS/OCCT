@@ -1,0 +1,27 @@
+puts "========"
+puts "0031260: Geom2dGcc_Circ2d2TanRad fails in this case (720)"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31260.brep] t
+
+mkcurve c t
+plane p 0.0 0.0 12.649999618530273 0.0 0.0 1.0
+to2d c2d c p
+point pnt 11.9850 12.0585
+
+cirtang r -c c2d -p pnt -r 0.5
+
+smallview  -2D-
+
+2dfit
+
+xwd ${imagedir}/${test_image}.png
+
+set NbCurv [llength [directory r_*]]
+
+if { $NbCurv == 2 } {
+  puts "OK: Number of circles is good"
+} else {
+  puts "Error: Not all solutions"
+}
