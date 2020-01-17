@@ -42,7 +42,7 @@
 //              the geometry of the curve.
 //              Only the length of the derivatives are changed.
 //=======================================================================
-void SetSameWeights(TColStd_Array1OfReal& W1, 
+static void SetSameWeights(TColStd_Array1OfReal& W1, 
 		    TColStd_Array1OfReal& W2, 
 		    TColStd_Array1OfReal& W3, 
 		    TColStd_Array1OfReal& W4 ) 
@@ -98,7 +98,7 @@ void SetSameWeights(TColStd_Array1OfReal& W1,
 //                   CC1 = C1
 //=======================================================================
 
-Standard_Boolean Arrange(const Handle(Geom_BezierCurve)& C1,
+static Standard_Boolean Arrange(const Handle(Geom_BezierCurve)& C1,
 			 const Handle(Geom_BezierCurve)& C2,
 			 const Handle(Geom_BezierCurve)& C3,
 			 const Handle(Geom_BezierCurve)& C4,

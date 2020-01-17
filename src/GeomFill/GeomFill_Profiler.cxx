@@ -30,7 +30,7 @@
 //function : UnifyByInsertingAllKnots
 //purpose  : 
 //=======================================================================
-void UnifyByInsertingAllKnots(TColGeom_SequenceOfCurve& theCurves,
+static void UnifyByInsertingAllKnots(TColGeom_SequenceOfCurve& theCurves,
                               const Standard_Real PTol)
 {
   // inserting in the first curve the knot-vector of all the others.
@@ -82,7 +82,7 @@ void UnifyByInsertingAllKnots(TColGeom_SequenceOfCurve& theCurves,
 //function : UnifyBySettingMiddleKnots
 //purpose  : 
 //=======================================================================
-void UnifyBySettingMiddleKnots(TColGeom_SequenceOfCurve& theCurves)
+static void UnifyBySettingMiddleKnots(TColGeom_SequenceOfCurve& theCurves)
 {
   Standard_Integer i, j;
   

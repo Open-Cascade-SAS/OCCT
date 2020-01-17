@@ -76,8 +76,7 @@ typedef gp_Pnt Pnt;
 //purpose  : 
 //=======================================================================
 
-Handle(Geom_BSplineSurface) BSplineSurfaceBuilder 
-  (const Convert_ElementarySurfaceToBSplineSurface& Convert) 
+static Handle(Geom_BSplineSurface) BSplineSurfaceBuilder (const Convert_ElementarySurfaceToBSplineSurface& Convert) 
 {
   Handle(Geom_BSplineSurface) TheSurface;
   Standard_Integer UDegree  = Convert.UDegree ();

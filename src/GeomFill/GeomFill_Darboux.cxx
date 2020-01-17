@@ -130,7 +130,7 @@ static void NormalD0(const Standard_Real U, const Standard_Real V, const Handle(
 //function : NormalD1
 //purpose  : computes Normal to Surface and its first derivative
 //=======================================================================
-void NormalD1 (const Standard_Real U, const Standard_Real V, 
+static void NormalD1 (const Standard_Real U, const Standard_Real V, 
                const Handle(Adaptor3d_HSurface)& Surf, gp_Dir& Normal, 
                gp_Vec& D1UNormal, gp_Vec& D1VNormal)
 {                                    
@@ -192,7 +192,7 @@ void NormalD1 (const Standard_Real U, const Standard_Real V,
 //function : NormalD2
 //purpose  : computes Normal to Surface and its first and second derivatives
 //=======================================================================
-void NormalD2 (const Standard_Real U, const Standard_Real V, 
+static void NormalD2 (const Standard_Real U, const Standard_Real V, 
                const Handle(Adaptor3d_HSurface)& Surf, gp_Dir& Normal, 
                gp_Vec& D1UNormal, gp_Vec& D1VNormal,
                gp_Vec& D2UNormal, gp_Vec& D2VNormal, gp_Vec& D2UVNormal)

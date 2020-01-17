@@ -48,7 +48,7 @@
 //                  ----->-----
 //                   CC1 = C1
 //=======================================================================
-Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
+static Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
 			 const Handle(Geom_BSplineCurve)& C2,
 			 const Handle(Geom_BSplineCurve)& C3,
 			 const Handle(Geom_BSplineCurve)& C4,
@@ -103,7 +103,7 @@ Standard_Boolean Arrange(const Handle(Geom_BSplineCurve)& C1,
 //purpose  : Internal Use Only
 //=======================================================================
 
-Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
+static Standard_Integer SetSameDistribution(Handle(Geom_BSplineCurve)& C1,
 				     Handle(Geom_BSplineCurve)& C2 )
 {
   Standard_Integer nbp1 = C1->NbPoles();

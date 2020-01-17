@@ -35,9 +35,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomFill_CircularBlendFunc,Approx_SweepFunction)
 static Standard_Integer NbSections = 0;
 #endif
 
-const Standard_Real TolAng = 1.e-6;
+static const Standard_Real TolAng = 1.e-6;
 
-GeomAbs_Shape GeomFillNextShape(const GeomAbs_Shape S)
+static GeomAbs_Shape GeomFillNextShape(const GeomAbs_Shape S)
 {
   switch (S) {
   case GeomAbs_C0 :
@@ -53,7 +53,7 @@ GeomAbs_Shape GeomFillNextShape(const GeomAbs_Shape S)
   }
 }
 
-void GeomFillFusInt(const TColStd_Array1OfReal& I1,
+static void GeomFillFusInt(const TColStd_Array1OfReal& I1,
 		    const TColStd_Array1OfReal& I2,
 		    TColStd_SequenceOfReal& Seq)
 {

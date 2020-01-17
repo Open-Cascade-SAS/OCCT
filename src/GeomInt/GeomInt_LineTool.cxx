@@ -31,6 +31,8 @@
 #include <NCollection_StdAllocator.hxx>
 #include <TColStd_Array1OfListOfInteger.hxx>
 
+namespace
+{
 class ProjectPointOnSurf
 {
  public:
@@ -120,6 +122,7 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
 {
   StdFail_NotDone_Raise_if(!myIsDone, "GeomInt_IntSS::ProjectPointOnSurf::LowerDistance");
   return sqrt(myExtPS.SquareDistance(myIndex));
+}
 }
 
 //=======================================================================

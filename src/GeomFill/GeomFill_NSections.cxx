@@ -62,7 +62,7 @@ static Standard_Integer NbSurf = 0;
 
 #ifdef OCCT_DEBUG
 // verification des fonctions de derivation D1 et D2 par differences finies
-Standard_Boolean verifD1(const TColgp_Array1OfPnt& P1,
+static Standard_Boolean verifD1(const TColgp_Array1OfPnt& P1,
 			 const TColStd_Array1OfReal& W1,
 			 const TColgp_Array1OfPnt& P2,
 			 const TColStd_Array1OfReal& W2,
@@ -104,7 +104,7 @@ Standard_Boolean verifD1(const TColgp_Array1OfPnt& P1,
   return ok;
 }
 
-Standard_Boolean verifD2(const TColgp_Array1OfVec& DP1,
+static Standard_Boolean verifD2(const TColgp_Array1OfVec& DP1,
                          const TColStd_Array1OfReal& DW1,
                          const TColgp_Array1OfVec& DP2,
                          const TColStd_Array1OfReal& DW2,

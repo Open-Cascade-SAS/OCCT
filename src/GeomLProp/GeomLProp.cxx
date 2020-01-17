@@ -25,7 +25,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 
-Standard_Integer GeomAbsToInteger(const GeomAbs_Shape  gcont) 
+static Standard_Integer GeomAbsToInteger(const GeomAbs_Shape  gcont) 
 {
   Standard_Integer cont=0 ;
   switch (gcont) {
