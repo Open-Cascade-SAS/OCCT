@@ -1,0 +1,18 @@
+puts "========"
+puts "0031307: Modeling Algorithms - Offset algorithm produces incorrect result in mode Complete join type Intersection"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31307_input_trim.brep] s
+offsetparameter 1e-7 c i r
+offsetload s 0
+explode s f
+offsetonface s_13 2
+offsetperform result
+
+checkprops result -s 220139 -v 1.8442e+06
+
+unifysamedom result_unif result
+checknbshapes result_unif -vertex 24 -edge 36 -wire 14 -face 14 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

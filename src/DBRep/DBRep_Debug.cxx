@@ -18,6 +18,11 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TopTools_ListOfShape.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+#include <TopTools_Array1OfShape.hxx>
+#include <NCollection_Vector.hxx>
 #include <TopoDS_Compound.hxx>
 #include <BRep_Builder.hxx>
 
@@ -42,8 +47,31 @@ Standard_EXPORT const char* DBRep_Set (const char* theNameStr, void* theShapePtr
 }
 
 //=======================================================================
+//function : fromContainer
+//purpose  : static function to copy shapes from container into compound
+//=======================================================================
+template <class T>
+static Standard_Boolean fromContainer (void* theContainer,
+                                       TopoDS_Compound& theShape)
+{
+  try
+  {
+    T *pContainer = (T*) theContainer;
+    for (typename T::Iterator it (*pContainer); it.More(); it.Next())
+    {
+      BRep_Builder().Add (theShape, it.Value());
+    }
+    return true;
+  }
+  catch (Standard_Failure const&)
+  {
+    return false;
+  }
+}
+
+//=======================================================================
 //function : DBRep_SetComp
-//purpose  : make compound from the given list of shapes
+//purpose  : make compound from the given container of shapes
 //=======================================================================
 Standard_EXPORT const char* DBRep_SetComp(const char* theNameStr, void* theListPtr)
 {
@@ -51,26 +79,23 @@ Standard_EXPORT const char* DBRep_SetComp(const char* theNameStr, void* theListP
   {
     return "Error: name or list of shapes is null";
   }
-  try {
-    TopTools_ListOfShape *pLS;
-    pLS = (TopTools_ListOfShape *)theListPtr;
 
-    TopoDS_Compound aC;
-    BRep_Builder aBB;
-    TopTools_ListIteratorOfListOfShape aIt;
+  TopoDS_Compound aC;
+  BRep_Builder().MakeCompound(aC);
 
-    aBB.MakeCompound(aC);
-    aIt.Initialize(*pLS);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aE = aIt.Value();
-      aBB.Add(aC, aE);
-    }
-    DBRep::Set(theNameStr, aC);
+  if (fromContainer<TopTools_ListOfShape>       (theListPtr, aC)
+   || fromContainer<TopTools_MapOfShape>        (theListPtr, aC)
+   || fromContainer<TopTools_IndexedMapOfShape> (theListPtr, aC)
+   || fromContainer<TopTools_SequenceOfShape>   (theListPtr, aC)
+   || fromContainer<TopTools_Array1OfShape>     (theListPtr, aC)
+   || fromContainer<NCollection_Vector<TopoDS_Shape> > (theListPtr, aC))
+  {
+    DBRep::Set (theNameStr, aC);
     return theNameStr;
   }
-  catch (Standard_Failure const& anException)
+  else
   {
-    return anException.GetMessageString();
+    return "Error: Invalid type";
   }
 }
 

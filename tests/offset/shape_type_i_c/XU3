@@ -1,0 +1,23 @@
+puts "TODO OCC27414 ALL: Error : The area of result shape is"
+puts "TODO OCC27414 ALL: Error : The volume of result shape is"
+puts "TODO OCC27414 ALL: Error :  is WRONG because number of"
+
+puts "========"
+puts "0031307: Modeling Algorithms - Offset algorithm produces incorrect result in mode Complete join type Intersection"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31307_input_trim.brep] s
+offsetparameter 1e-7 c i r
+offsetload s 0
+explode s f
+offsetonface s_9 7
+offsetperform result
+
+checkprops result -s 222993 -v 1.87721e+06
+
+unifysamedom result_unif result
+
+checknbshapes result_unif -vertex 26 -edge 39 -wire 15 -face 15 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

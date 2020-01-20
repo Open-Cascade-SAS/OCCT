@@ -586,6 +586,17 @@ static void RefEdgeInter(const TopoDS_Face&              F,
   Handle(Geom2d_Curve) pcurve2 = BRep_Tool::CurveOnSurface(E2, F, f[2], l[2]);
   Geom2dAdaptor_Curve GAC1(pcurve1, f[1], l[1]);
   Geom2dAdaptor_Curve GAC2(pcurve2, f[2], l[2]);
+  if ((GAC1.GetType() == GeomAbs_Line) &&
+      (GAC2.GetType() == GeomAbs_Line))
+  {
+    // Just quickly check if lines coincide
+    if (GAC1.Line().Direction().IsParallel (GAC2.Line().Direction(), 1.e-8))
+    {
+      theCoincide = Standard_True;
+      return;
+    }
+  }
+
   Geom2dInt_GInter Inter2d( GAC1, GAC2, TolDub, TolDub );
   //
   if (!Inter2d.IsDone() || !Inter2d.NbPoints()) {

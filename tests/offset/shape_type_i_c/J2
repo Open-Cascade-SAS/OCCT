@@ -1,7 +1,7 @@
 restore [locate_data_file bug25926_input_slanted.brep] s
 
 set distance 5
-offsetparameter 1.e-7 $calcul $type
+offsetparameter 1.e-7 $calcul $type r
 offsetload s $distance
 explode s f
 # s_1 s_6 s_8 s_10 s_12 s_14
