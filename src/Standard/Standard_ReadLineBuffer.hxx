@@ -27,6 +27,7 @@ public:
   Standard_ReadLineBuffer (size_t theMaxBufferSizeBytes)
   : myUseReadBufferLastStr(false),
     myIsMultilineMode     (false),
+    myToPutGapInMultiline (true),
     myBufferPos           (0),
     myBytesLastRead       (0)
   {
@@ -43,6 +44,7 @@ public:
     myReadBufferLastStr.clear();
     myUseReadBufferLastStr = false;
     myIsMultilineMode = false;
+    myToPutGapInMultiline = true;
     myBufferPos = 0;
     myBytesLastRead = 0;
   }
@@ -113,34 +115,44 @@ public:
       // read next line from myReadBuffer
       while (myBufferPos < myBytesLastRead)
       {
-        if (myReadBuffer[myBufferPos] == '\\' && myIsMultilineMode)
+        if (myIsMultilineMode
+         && myReadBuffer[myBufferPos] == '\\')
         {
           // multi-line syntax
           if (myBufferPos + 1 == myBytesLastRead
-           ||(myBufferPos + 2 == myBytesLastRead && myReadBuffer[myBufferPos + 1] == '\r'))
+           || (myBufferPos + 2 == myBytesLastRead
+            && myReadBuffer[myBufferPos + 1] == '\r'))
           {
             isMultiline = true;
+            if (myToPutGapInMultiline)
+            {
+              myReadBuffer[myBufferPos] = ' ';
+              if (myBufferPos + 1 != myBytesLastRead)
+              {
+                myReadBuffer[myBufferPos + 1] = ' ';
+              }
+            }
           }
           else if (myReadBuffer[myBufferPos + 1] == '\n'
-                ||(myReadBuffer[myBufferPos + 1] == '\r' && myReadBuffer[myBufferPos + 2] == '\n'))
+                 ||(myReadBuffer[myBufferPos + 1] == '\r'
+                 && myReadBuffer[myBufferPos + 2] == '\n'))
           {
-            if (myUseReadBufferLastStr)
+            size_t aBufferPos = myBufferPos;
+            myBufferPos = aBufferPos + (myReadBuffer[aBufferPos + 1] == '\r' ? 2 : 1);
+            if (myToPutGapInMultiline)
             {
-              myReadBufferLastStr.insert (myReadBufferLastStr.end(), myReadBuffer.begin() + aStartLinePos, myReadBuffer.begin() + myBufferPos);
-            }
-            else
-            {
-              myReadBufferLastStr = std::vector<char>(myReadBuffer.begin() + aStartLinePos, myReadBuffer.begin() + myBufferPos);
-              myUseReadBufferLastStr = true;
+              myReadBuffer[aBufferPos] = ' ';
+              ++aBufferPos;
             }
 
-            if (myReadBuffer[myBufferPos + 1] == '\r')
+            if (myUseReadBufferLastStr)
             {
-              myBufferPos += 2;
+              myReadBufferLastStr.insert (myReadBufferLastStr.end(), myReadBuffer.begin() + aStartLinePos, myReadBuffer.begin() + aBufferPos);
             }
             else
             {
-              myBufferPos += 1;
+              myReadBufferLastStr = std::vector<char>(myReadBuffer.begin() + aStartLinePos, myReadBuffer.begin() + aBufferPos);
+              myUseReadBufferLastStr = true;
             }
 
             aStartLinePos = myBufferPos + 1;
@@ -229,11 +241,32 @@ public:
     return aResultLine;
   }
 
-  //! Returns TRUE when the Multiline Mode is on.
+  //! Returns TRUE when the Multiline Mode is on; FALSE by default.
+  //! Multiline modes joins several lines in file having \ at the end of line:
+  //! @code
+  //!   Line starts here, \ // line continuation character without this comment
+  //!   continues \         // line continuation character without this comment
+  //!   and ends.
+  //! @endcode
   bool IsMultilineMode() const { return myIsMultilineMode; }
 
+  //! Put gap space while merging lines within multiline syntax, so that the following sample:
+  //! @code
+  //! 1/2/3\      // line continuation character without this comment
+  //! 4/5/6
+  //! @endcode
+  //! Will become "1/2/3 4/5/6" when flag is TRUE, and "1/2/35/5/6" otherwise.
+  bool ToPutGapInMultiline() const { return myToPutGapInMultiline; }
+
   //! Sets or unsets the multi-line mode.
-  void SetMultilineMode (bool theMultilineMode) { myIsMultilineMode = theMultilineMode; }
+  //! @param theMultilineMode [in] multiline mode flag
+  //! @param theToPutGap      [in] put gap space while connecting lines (no gap otherwise)
+  void SetMultilineMode (bool theMultilineMode,
+                         bool theToPutGap = true)
+  {
+    myIsMultilineMode     = theMultilineMode;
+    myToPutGapInMultiline = theToPutGap;
+  }
 
 protected:
 
@@ -263,6 +296,7 @@ protected:
   std::vector<char> myReadBufferLastStr;    //!< Part of last string of myReadBuffer
   bool              myUseReadBufferLastStr; //!< Flag to use myReadBufferLastStr during next line reading
   bool              myIsMultilineMode;      //!< Flag to process of the special multi-line case at the end of the line
+  bool              myToPutGapInMultiline;  //!< Flag to put gap space while joining lines in multi-line syntax
   size_t            myBufferPos;            //!< Current position in myReadBuffer
   size_t            myBytesLastRead;        //!< The number of characters that were read last time from myReadBuffer.
 };
