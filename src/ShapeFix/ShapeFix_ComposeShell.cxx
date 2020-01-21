@@ -25,12 +25,14 @@
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <Extrema_ExtPC2d.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_ElementarySurface.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
@@ -280,6 +282,13 @@ Standard_Boolean ShapeFix_ComposeShell::Status (const ShapeExtend_Status status)
 #define ITP_BEGSEG        16            // start of tangential segment
 #define ITP_ENDSEG        32            // stop of tangential segment
 #define ITP_TANG          64            // tangential point
+
+enum ShapeFix_MakeCut
+{
+  ShapeFix_NoCut,
+  ShapeFix_CutHead,
+  ShapeFix_CutTail
+};
 
 //=======================================================================
 //function : PointLineDeviation
@@ -809,6 +818,7 @@ static Standard_Real GetGridResolution(const Handle(TColStd_HArray1OfReal) Split
 ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wire,
                                                        TColStd_SequenceOfInteger& indexes,
                                                        const TColStd_SequenceOfReal& values,
+                                                       const TopTools_MapOfShape& theVerts,
                                                        TopTools_SequenceOfShape& vertices,
                                                        const TColStd_SequenceOfInteger &SegmentCodes,
                                                        const Standard_Boolean isCutByU,
@@ -822,6 +832,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
   ShapeAnalysis_Edge sae;
   Standard_Integer start = 1;
   TopAbs_Orientation anWireOrient = wire.Orientation();
+  Standard_Integer aLastSplitted = 0;
   gp_Trsf T;
   if ( ! myLoc.IsIdentity() ) T = myLoc.Inverted().Transformation();
 
@@ -837,6 +848,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
         std::cout << "Error: ShapeFix_ComposeShell::SplitWire: edge dismissed" << std::endl;
 #endif
         i--;
+        aLastSplitted = 0;
         continue;
       }
     }
@@ -855,6 +867,7 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
       result.AddEdge ( 0, edge, iumin, iumax, ivmin, ivmax );
       if(code!=0 || wire.Orientation()!=TopAbs_EXTERNAL) // pdn 0 code handling for extertnal wires
         DefinePatch ( result, code, isCutByU, cutIndex );
+      aLastSplitted = 0;
       continue;
     }
     //find non-manifold vertices on edge
@@ -948,11 +961,14 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
     Standard_Integer NbEdgesStart = result.NbEdges();
     Standard_Boolean splitted = Standard_False;
     Standard_Real currPar=lastPar; //SK
+    Standard_Integer aCurSplitted = 0;
     for ( Standard_Integer j = start; j <= stop; prevPar = currPar, j++ ) {
       if ( ! splitted && j >= stop ) {// no splitting at all
         // code = SegmentCodes ( j >1 ? j-1 : SegmentCodes.Length() ); // classification code
         break;
       }
+      ShapeFix_MakeCut aCutPart = ShapeFix_NoCut;
+      Standard_Boolean isCutChecked = Standard_False;
       currPar = ( j < stop ? values.Value(j) : lastPar );
       //fix for case when pcurve is periodic and first parameter of edge is more than 2P
       //method ShapeBuild_Edge::CopyRanges shift pcurve to range 0-2P and parameters of cutting
@@ -990,51 +1006,77 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
             // Doubled to prevent edge being fully covered by its vertices tolerance (invalid edge).
             CheckByCurve3d ( lastVPnt, c3d, f3d+(currPar-firstPar)*(l3d-f3d)/span2d, 
                             T, lastVTol + 2 * Precision::Confusion() ) && 
-            lastPnt.Distance ( myGrid->Value ( C2d->Value(0.5*(currPar+lastPar)) ) ) <= tol ) {
-          V = lastV;
-          Standard_Real uRes = myUResolution;
-          Standard_Real vRes = myVResolution;
-          if(isCutByU) {
-            Standard_Real gridRes = GetGridResolution(myGrid->UJointValues(),cutIndex)/tol;
-            uRes = Min(myUResolution,gridRes);
+            lastPnt.Distance ( myGrid->Value ( C2d->Value(0.5*(currPar+lastPar)) ) ) <= tol )
+        {
+          if (theVerts.Contains(lastV))
+          {
+            GeomAdaptor_Curve AC(c3d, currPar, (edge.Orientation() == TopAbs_REVERSED) ? firstPar : lastPar);
+            Standard_Real L = GCPnts_AbscissaPoint::Length(AC, Precision::Confusion());
+            if (L < BRep_Tool::Tolerance(lastV))
+              aCutPart = ShapeFix_CutTail;
+            isCutChecked = Standard_True;
           }
-          else {
-            Standard_Real gridRes = GetGridResolution(myGrid->VJointValues(),cutIndex)/tol;
-            vRes = Min(myVResolution,gridRes);
+          if (aCutPart == ShapeFix_NoCut)
+          {
+            V = lastV;
+            Standard_Real uRes = myUResolution;
+            Standard_Real vRes = myVResolution;
+            if (isCutByU) {
+              Standard_Real gridRes = GetGridResolution(myGrid->UJointValues(), cutIndex) / tol;
+              uRes = Min(myUResolution, gridRes);
+            }
+            else {
+              Standard_Real gridRes = GetGridResolution(myGrid->VJointValues(), cutIndex) / tol;
+              vRes = Min(myVResolution, gridRes);
+            }
+            if (IsCoincided(lastPnt2d, currPnt2d, uRes, vRes, tol) &&
+              IsCoincided(lastPnt2d, C2d->Value(0.5*(currPar + lastPar)), uRes, vRes, tol))
+            {
+              doCut = Standard_False;
+            }
           }
-          if ( IsCoincided ( lastPnt2d, currPnt2d, uRes, vRes, tol ) &&
-               IsCoincided ( lastPnt2d, C2d->Value(0.5*(currPar+lastPar)), uRes, vRes, tol ) )
-            doCut = Standard_False;
         }
         else if ( currPnt.Distance ( prevVPnt ) <= prevVTol && 
                  prevPnt.Distance ( currPnt ) <= tol && 
                  // Tolerance is increased to prevent degenerated cuts in cases where all vertex
                  // tolerance is covered by distance of the edge curve from vertex point.
                  // Doubled to prevent edge being fully covered by its vertices tolerance (invalid edge).
-                 CheckByCurve3d ( prevVPnt, c3d, f3d+(currPar-firstPar)*(l3d-f3d)/span2d, 
+                 CheckByCurve3d ( prevVPnt, c3d, f3d + (currPar - firstPar)*(l3d - f3d) / span2d, 
                                  T, prevVTol + 2 * Precision::Confusion()) &&
-                 prevPnt.Distance ( myGrid->Value ( C2d->Value(0.5*(currPar+prevPar)) ) ) <= tol ) {
-          V = prevV;
-          Standard_Real uRes = myUResolution;
-          Standard_Real vRes = myVResolution;
-          if(isCutByU) {
-            Standard_Real gridRes = GetGridResolution(myGrid->UJointValues(),cutIndex)/tol;
-            uRes = Min(myUResolution,gridRes);
+                 prevPnt.Distance ( myGrid->Value ( C2d->Value(0.5*(currPar + prevPar)) ) ) <= tol )
+        {
+          if (theVerts.Contains(prevV))
+          {
+            GeomAdaptor_Curve AC(c3d, (edge.Orientation() == TopAbs_REVERSED) ? lastPar : firstPar, currPar);
+            Standard_Real L = GCPnts_AbscissaPoint::Length(AC, Precision::Confusion());
+            if (L < BRep_Tool::Tolerance(prevV))
+              aCutPart = ShapeFix_CutHead;
+            isCutChecked = Standard_True;
           }
-          else {
-            Standard_Real gridRes = GetGridResolution(myGrid->VJointValues(),cutIndex)/tol;
-            vRes = Min(myVResolution,gridRes);
-          }
-          if ( IsCoincided ( prevPnt2d, currPnt2d, uRes, vRes, tol ) &&
-               IsCoincided ( prevPnt2d, C2d->Value(0.5*(currPar+prevPar)), uRes, vRes, tol ) ) {
-            vertices.Append ( prevV );
-            code = SegmentCodes ( j ); // classification code - update for next segment
-            continue; // no splitting at this point, go to next one
+          if (aCutPart == ShapeFix_NoCut)
+          {
+            V = prevV;
+            Standard_Real uRes = myUResolution;
+            Standard_Real vRes = myVResolution;
+            if (isCutByU) {
+              Standard_Real gridRes = GetGridResolution(myGrid->UJointValues(), cutIndex) / tol;
+              uRes = Min(myUResolution, gridRes);
+            }
+            else {
+              Standard_Real gridRes = GetGridResolution(myGrid->VJointValues(), cutIndex) / tol;
+              vRes = Min(myVResolution, gridRes);
+            }
+            if (IsCoincided(prevPnt2d, currPnt2d, uRes, vRes, tol) &&
+              IsCoincided(prevPnt2d, C2d->Value(0.5*(currPar + prevPar)), uRes, vRes, tol)) {
+              vertices.Append(prevV);
+              code = SegmentCodes(j); // classification code - update for next segment
+              continue; // no splitting at this point, go to next one
+            }
           }
         }
         //:abv 28.05.02: OCC320 Sample_2: if maxtol = 1e-7, the vertex tolerance
         // is actually ignored - protect against new vertex on degenerated edge
-        else if ( BRep_Tool::Degenerated(edge) && prevV.IsSame(lastV) ) {
+        else if (BRep_Tool::Degenerated(edge) && prevV.IsSame(lastV)) {
           V = prevV;
         }
       }
@@ -1045,10 +1087,40 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
       if ( V.IsNull() ) {
         B.MakeVertex ( V, currPnt.Transformed(myLoc.Transformation()), tolEdge );
         vertices.Append ( V );
+        if (!isCutChecked)
+        {
+          Standard_Real aVTol;
+          if (theVerts.Contains(prevV))
+          {
+            aVTol = BRep_Tool::Tolerance(prevV);
+            if (currPnt.SquareDistance(prevVPnt) < aVTol * aVTol)
+            {
+              GeomAdaptor_Curve AC(c3d, (edge.Orientation() == TopAbs_REVERSED) ? lastPar : firstPar, currPar);
+              Standard_Real L = GCPnts_AbscissaPoint::Length(AC, Precision::Confusion());
+              if (L < aVTol)
+                aCutPart = ShapeFix_CutHead;
+            }
+          }
+          else if (theVerts.Contains(lastV))
+          {
+            aVTol = BRep_Tool::Tolerance(lastV);
+            if (currPnt.SquareDistance(lastVPnt) < aVTol * aVTol)
+            {
+              GeomAdaptor_Curve AC(c3d, currPar, (edge.Orientation() == TopAbs_REVERSED) ? firstPar : lastPar);
+              Standard_Real L = GCPnts_AbscissaPoint::Length(AC, Precision::Confusion());
+              if (L < aVTol)
+                aCutPart = ShapeFix_CutTail;
+            }
+          }
+        }
       }
       // else adjusted to end, fill all resting vertices
       else if ( ! doCut ) {
-        for ( ; j < stop; j++ ) vertices.Append ( lastV );
+        for (; j < stop; j++)
+        {
+          vertices.Append(lastV);
+          aCurSplitted++;
+        }
         if ( ! splitted ) break; // no splitting at all 
         currPar = lastPar;
       }
@@ -1138,8 +1210,21 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
         code  = ( ( isCutByU == (j == 1) ) ? 1 : 2 );
       }
 
-      result.AddEdge ( 0, newEdge, iumin, iumax, ivmin, ivmax );
-      DefinePatch ( result, code, isCutByU, cutIndex );
+      if (aCutPart == ShapeFix_CutHead)
+      {
+        V.Orientation(TopAbs_FORWARD);
+        Context()->Replace(prevV, V);
+        // also replce this vertice in the sequence
+        for (Standard_Integer iV = 1; aLastSplitted > 0; aLastSplitted--, iV++)
+        {
+          vertices.ChangeValue(vertices.Length() - iV) = V;
+        }
+      }
+      else
+      {
+        result.AddEdge(0, newEdge, iumin, iumax, ivmin, ivmax);
+        DefinePatch(result, code, isCutByU, cutIndex);
+      }
 
       // Changing prev parameters
       prevV = V;
@@ -1147,8 +1232,16 @@ ShapeFix_WireSegment ShapeFix_ComposeShell::SplitWire (ShapeFix_WireSegment &wir
       prevVPnt = BRep_Tool::Pnt ( V );
       prevPnt = currPnt;
       prevPnt2d = currPnt2d;
+
+      if (aCutPart == ShapeFix_CutTail)
+      {
+        Context()->Replace(lastV, V);
+        for (; j + 1 < stop; j++) vertices.Append(lastV);
+        break;
+      }
     }
     start = stop;
+    aLastSplitted = aCurSplitted;
 
     if ( splitted ) {
       // record replacement in context
@@ -1208,6 +1301,8 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
   TColStd_SequenceOfInteger IntEdgeInd;   // index of intersecting edge
   TColStd_SequenceOfReal IntEdgePar;      // parameter of intersection point on edge
   TColStd_SequenceOfReal IntLinePar;      // parameter of intersection point on line
+
+  TopTools_MapOfShape exactVertices;      // vertices that line passes through
 
   Standard_Boolean isnonmanifold = (wire.Orientation() == TopAbs_INTERNAL);
   //gka correction for non-manifold vertices SAMTECH
@@ -1325,6 +1420,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
         IntLinePar.Append ( ParamPointsOnLine ( pos, prevPos, line ) ); // !! - maybe compute exactly ?
         IntEdgePar.Append ( isreversed ? l : f );
         IntEdgeInd.Append ( iedge );
+        exactVertices.Add (sae.FirstVertex(E));
       }
     }
 
@@ -1403,6 +1499,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
         IntLinePar.Append ( ParamPointsOnLine ( pos, firstPos, line ) );
         IntEdgePar.Append ( isreversed ? f : l );
         IntEdgeInd.Append ( iedge );
+        exactVertices.Add (sae.LastVertex(E));
       }
     }
   }
@@ -1540,7 +1637,7 @@ Standard_Boolean ShapeFix_ComposeShell::SplitByLine (ShapeFix_WireSegment &wire,
   //=======================================
   // Split edges in the wire by intersection points and fill vertices array
   TopTools_SequenceOfShape IntVertices;
-  wire = SplitWire ( wire, IntEdgeInd, IntEdgePar, IntVertices,
+  wire = SplitWire ( wire, IntEdgeInd, IntEdgePar, exactVertices, IntVertices,
                      aNewSegCodes, isCutByU, cutIndex );
 
   // add all data to input arrays
@@ -1586,7 +1683,8 @@ void ShapeFix_ComposeShell::SplitByLine (ShapeFix_SequenceOfWireSegment &wires,
 
   // merge null-length tangential segments into one-point tangencies or intersections
   for ( i = 1; i < SplitLinePar.Length(); i++ ) {
-    if ( Abs ( SplitLinePar(i+1) - SplitLinePar(i) ) > ::Precision::PConfusion() && !SplitLineVertex(i).IsSame(SplitLineVertex(i+1)) ) continue;
+    Standard_Boolean isSameVertex = SplitLineVertex(i).IsSame(SplitLineVertex(i + 1));
+    if ( Abs ( SplitLinePar(i+1) - SplitLinePar(i) ) > ::Precision::PConfusion() && !isSameVertex) continue;
     if ( ( SplitLineCode(i) & ITP_ENDSEG &&
            SplitLineCode(i+1) & ITP_BEGSEG ) ||
          ( SplitLineCode(i) & ITP_BEGSEG &&
@@ -1596,6 +1694,17 @@ void ShapeFix_ComposeShell::SplitByLine (ShapeFix_SequenceOfWireSegment &wires,
       SplitLinePar.Remove(i+1);
       SplitLineCode.Remove(i+1);
       SplitLineVertex.Remove(i+1);
+    }
+    else if (isSameVertex &&
+             ((SplitLineCode (i) & ITP_TANG &&
+               SplitLineCode (i + 1) & ITP_INTER) ||
+              (SplitLineCode (i) & ITP_INTER &&
+               SplitLineCode (i + 1) & ITP_TANG)))
+    {
+      SplitLineCode.SetValue(i, IOR_BOTH | ITP_INTER );
+      SplitLinePar.Remove(i + 1);
+      SplitLineCode.Remove(i + 1);
+      SplitLineVertex.Remove(i + 1);
     }
   }
 
