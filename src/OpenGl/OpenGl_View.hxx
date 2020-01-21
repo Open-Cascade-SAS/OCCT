@@ -756,6 +756,9 @@ protected: //! @name data types related to ray-tracing
     //! Enables/disables environment map for background.
     Standard_Boolean UseEnvMapForBackground;
 
+    //! Enables/disables normal map ignoring during path tracing.
+    Standard_Boolean ToIgnoreNormalMap;
+
     //! Maximum radiance value used for clamping radiance estimation.
     Standard_ShortReal RadianceClampingValue;
     
@@ -779,6 +782,7 @@ protected: //! @name data types related to ray-tracing
       AdaptiveScreenSampling (Standard_False),
       AdaptiveScreenSamplingAtomic (Standard_False),
       UseEnvMapForBackground (Standard_False),
+      ToIgnoreNormalMap      (Standard_False),
       RadianceClampingValue  (30.0),
       DepthOfField           (Standard_False),
       CubemapForBack         (Standard_False),

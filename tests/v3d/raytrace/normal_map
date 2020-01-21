@@ -1,0 +1,34 @@
+puts "========"
+puts "0031275: Visualization, TKOpenGl - handle normal-map texture with Path-Tracing"
+puts "========"
+
+pload XDE OCAF MODELING VISUALIZATION
+catch { Close D }
+ReadGltf D [locate_data_file bug31275_SphereWithNormalMap.glb]
+
+vclear
+vinit v -w 1024 -h 1024
+vbackground -cubemap [locate_data_file Circus_CubeMap_V.png]
+vcamera -persp
+vlight -clear
+vlight -add ambient
+XDisplay -dispmode 1 D
+vback
+vfit
+
+vrenderparams -ignoreNormalMap on
+vrenderparams -ray -gi -rayDepth 10
+vfps 200
+vdump ${imagedir}/${casename}_without_normal_map.png
+
+vrenderparams -ignoreNormalMap off
+vfps 200
+vdump ${imagedir}/${casename}_with_normal_map_back.png
+
+vfront
+vfps 200
+vdump ${imagedir}/${casename}_with_normal_map_front.png
+
+vlight -add positional -pos 0 0 0 -head 1 -intensity 10
+vfps 200
+vdump ${imagedir}/${casename}_point_light.png

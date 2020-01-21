@@ -28,6 +28,7 @@
 #include "../Shaders/Shaders_RaytraceRender_fs.pxx"
 #include "../Shaders/Shaders_RaytraceSmooth_fs.pxx"
 #include "../Shaders/Shaders_Display_fs.pxx"
+#include "../Shaders/Shaders_TangentSpaceNormal_glsl.pxx"
 
 //! Use this macro to output ray-tracing debug info
 // #define RAY_TRACE_PRINT_INFO
@@ -411,6 +412,7 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theA
 
   aResMat.BSDF.FresnelCoat = aBSDF.FresnelCoat.Serialize ();
   aResMat.BSDF.FresnelBase = aBSDF.FresnelBase.Serialize ();
+  aResMat.BSDF.FresnelBase.w() = -1.0; // no normal map texture
 
   // Handle material textures
   if (!theAspect->Aspect()->ToMapTexture())
@@ -446,6 +448,11 @@ OpenGl_RaytraceMaterial OpenGl_View::convertMaterial (const OpenGl_Aspects* theA
       {
         buildTextureTransform (aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
         aResMat.BSDF.Le.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
+      }
+      else if (aTexIter.Unit() == Graphic3d_TextureUnit_Normal)
+      {
+        buildTextureTransform (aTexture->Sampler()->Parameters(), aResMat.TextureTransform);
+        aResMat.BSDF.FresnelBase.w() = static_cast<Standard_ShortReal> (myRaytraceGeometry.AddTexture (aTexture));
       }
     }
   }
@@ -1160,6 +1167,11 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix (const Handle(OpenGl_C
     }
   }
 
+  if (myRaytraceParameters.ToIgnoreNormalMap)
+  {
+    aPrefixString += TCollection_AsciiString("\n#define IGNORE_NORMAL_MAP");
+  }
+
   if (myRaytraceParameters.CubemapForBack)
   {
     aPrefixString += TCollection_AsciiString("\n#define BACKGROUND_CUBEMAP");
@@ -1335,13 +1347,15 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
      || myRenderParams.IsTransparentShadowEnabled  != myRaytraceParameters.TransparentShadows
      || myRenderParams.IsGlobalIlluminationEnabled != myRaytraceParameters.GlobalIllumination
      || myRenderParams.TwoSidedBsdfModels          != myRaytraceParameters.TwoSidedBsdfModels
-     || myRaytraceGeometry.HasTextures()           != myRaytraceParameters.UseBindlessTextures)
+     || myRaytraceGeometry.HasTextures()           != myRaytraceParameters.UseBindlessTextures
+     || myRenderParams.ToIgnoreNormalMapInRayTracing != myRaytraceParameters.ToIgnoreNormalMap)
     {
       myRaytraceParameters.NbBounces           = myRenderParams.RaytracingDepth;
       myRaytraceParameters.TransparentShadows  = myRenderParams.IsTransparentShadowEnabled;
       myRaytraceParameters.GlobalIllumination  = myRenderParams.IsGlobalIlluminationEnabled;
       myRaytraceParameters.TwoSidedBsdfModels  = myRenderParams.TwoSidedBsdfModels;
       myRaytraceParameters.UseBindlessTextures = myRaytraceGeometry.HasTextures();
+      myRaytraceParameters.ToIgnoreNormalMap     = myRenderParams.ToIgnoreNormalMapInRayTracing;
       aToRebuildShaders = Standard_True;
     }
 
@@ -1484,6 +1498,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       if (!aShaderFolder.IsEmpty())
       {
         const TCollection_AsciiString aFiles[] = { aShaderFolder + "/RaytraceBase.fs",
+                                                   aShaderFolder + "/TangentSpaceNormal.glsl",
                                                    aShaderFolder + "/PathtraceBase.fs",
                                                    aShaderFolder + "/RaytraceRender.fs",
                                                    "" };
@@ -1495,6 +1510,7 @@ Standard_Boolean OpenGl_View::initRaytraceResources (const Standard_Integer theS
       else
       {
         const TCollection_AsciiString aSrcShaders[] = { Shaders_RaytraceBase_fs,
+                                                        Shaders_TangentSpaceNormal_glsl,
                                                         Shaders_PathtraceBase_fs,
                                                         Shaders_RaytraceRender_fs,
                                                         "" };

@@ -170,6 +170,14 @@ struct SIntersect
   vec3 Normal;
 };
 
+//! Stores triangle's vertex indexes and vertexes itself
+struct STriangle
+{
+  ivec4 TriIndex;
+
+  vec3 Points[3];
+};
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // Some useful constants
 
@@ -462,7 +470,7 @@ struct SSubTree
 #define TRG_OFFSET(treelet) treelet.SubData.w
 
 //! Identifies the absence of intersection.
-#define INALID_HIT ivec4 (-1)
+#define INVALID_HIT ivec4 (-1)
 
 //! Global stack shared between traversal functions.
 int Stack[STACK_SIZE];
@@ -498,9 +506,9 @@ int pop (inout int theHead)
 // function : SceneNearestHit
 // purpose  : Finds intersection with nearest scene triangle
 // =======================================================================
-ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theHit, out int theTrsfId)
+STriangle SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theHit, out int theTrsfId)
 {
-  ivec4 aTriIndex = INALID_HIT;
+  STriangle aTriangle = STriangle (INVALID_HIT, vec3[](vec3(0.0), vec3(0.0), vec3(0.0)));
 
   int aNode =  0; // node to traverse
   int aHead = -1; // pointer of stack
@@ -607,17 +615,22 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
 
       for (int anIdx = aData.y; anIdx <= aData.z; ++anIdx)
       {
-        ivec4 aTriangle = texelFetch (uGeometryTriangTexture, anIdx + TRG_OFFSET (aSubTree));
+        ivec4 aTriIndex = texelFetch (uGeometryTriangTexture, anIdx + TRG_OFFSET (aSubTree));
+        vec3 aPoints[3];
 
-        vec3 aPoint0 = texelFetch (uGeometryVertexTexture, aTriangle.x += VRT_OFFSET (aSubTree)).xyz;
-        vec3 aPoint1 = texelFetch (uGeometryVertexTexture, aTriangle.y += VRT_OFFSET (aSubTree)).xyz;
-        vec3 aPoint2 = texelFetch (uGeometryVertexTexture, aTriangle.z += VRT_OFFSET (aSubTree)).xyz;
+        aPoints[0] = texelFetch (uGeometryVertexTexture, aTriIndex.x += VRT_OFFSET (aSubTree)).xyz;
+        aPoints[1] = texelFetch (uGeometryVertexTexture, aTriIndex.y += VRT_OFFSET (aSubTree)).xyz;
+        aPoints[2] = texelFetch (uGeometryVertexTexture, aTriIndex.z += VRT_OFFSET (aSubTree)).xyz;
 
-        IntersectTriangle (aSubTree.TrsfRay, aPoint0, aPoint1, aPoint2, aTimeUV, aNormal);
+        IntersectTriangle (aSubTree.TrsfRay, aPoints[0], aPoints[1], aPoints[2], aTimeUV, aNormal);
 
         if (aTimeUV.x < theHit.Time)
         {
-          aTriIndex = aTriangle;
+          aTriangle.TriIndex = aTriIndex;
+          for (int i = 0; i < 3; ++i)
+          {
+            aTriangle.Points[i] = aPoints[i];
+          }
 
           theTrsfId = TRS_OFFSET (aSubTree);
 
@@ -664,7 +677,7 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
     }
   }
 
-  return aTriIndex;
+  return aTriangle;
 }
 
 // =======================================================================
@@ -914,15 +927,21 @@ float PolygonOffset (in vec3 theNormal, in vec3 thePoint)
 // purpose  : Interpolates UV coordinates across the triangle
 // =======================================================================
 #ifdef USE_TEXTURES
+vec2 SmoothUV (in vec2 theUV, in ivec4 theTriangle, out vec2[3] theUVs)
+{
+  theUVs[0] = texelFetch (uGeometryTexCrdTexture, theTriangle.x).st;
+  theUVs[1] = texelFetch (uGeometryTexCrdTexture, theTriangle.y).st;
+  theUVs[2] = texelFetch (uGeometryTexCrdTexture, theTriangle.z).st;
+
+  return theUVs[1] * theUV.x +
+         theUVs[2] * theUV.y +
+         theUVs[0] * (1.0f - theUV.x - theUV.y);
+}
+
 vec2 SmoothUV (in vec2 theUV, in ivec4 theTriangle)
 {
-  vec2 aTexCrd0 = texelFetch (uGeometryTexCrdTexture, theTriangle.x).st;
-  vec2 aTexCrd1 = texelFetch (uGeometryTexCrdTexture, theTriangle.y).st;
-  vec2 aTexCrd2 = texelFetch (uGeometryTexCrdTexture, theTriangle.z).st;
-
-  return aTexCrd1 * theUV.x +
-         aTexCrd2 * theUV.y +
-         aTexCrd0 * (1.0f - theUV.x - theUV.y);
+  vec2 aUVs[3];
+  return SmoothUV (theUV, theTriangle, aUVs);
 }
 #endif
 
@@ -1009,7 +1028,7 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
   {
     SIntersect aHit = SIntersect (MAXFLOAT, vec2 (ZERO), ZERO);
 
-    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit, aTrsfId);
+    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit, aTrsfId).TriIndex;
 
     if (aTriIndex.x == -1)
     {

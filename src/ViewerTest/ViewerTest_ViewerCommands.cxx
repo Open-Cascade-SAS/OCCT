@@ -12022,6 +12022,22 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.UseEnvironmentMapBackground = toEnable;
     }
+    else if (aFlag == "-ignorenormalmap")
+    {
+      if (toPrint)
+      {
+        theDI << (aParams.ToIgnoreNormalMapInRayTracing ? "on" : "off") << " ";
+        continue;
+      }
+
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams.ToIgnoreNormalMapInRayTracing = toEnable;
+    }
     else if (aFlag == "-twoside")
     {
       if (toPrint)
@@ -14433,6 +14449,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-gi           on|off'      Enables/disables global illumination effects"
     "\n      '-brng         on|off'      Enables/disables blocked RNG (fast coherent PT)"
     "\n      '-env          on|off'      Enables/disables environment map background"
+    "\n      '-ignoreNormalMap on|off'   Enables/disables normal map ignoring during path tracing"
     "\n      '-twoside      on|off'      Enables/disables two-sided BSDF models (PT mode)"
     "\n      '-iss          on|off'      Enables/disables adaptive screen sampling (PT mode)"
     "\n      '-issd         on|off'      Shows screen sampling distribution in ISS mode"

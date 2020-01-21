@@ -16,6 +16,7 @@ srcinc:::RaytraceRender.fs
 srcinc:::PathtraceBase.fs
 srcinc:::RaytraceBase.vs
 srcinc:::RaytraceSmooth.fs
+srcinc:::TangentSpaceNormal.glsl
 Shaders_Declarations_glsl.pxx
 Shaders_DeclarationsImpl_glsl.pxx
 Shaders_Display_fs.pxx
@@ -32,3 +33,4 @@ Shaders_RaytraceRender_fs.pxx
 Shaders_PathtraceBase_fs.pxx
 Shaders_RaytraceBase_vs.pxx
 Shaders_RaytraceSmooth_fs.pxx
+Shaders_TangentSpaceNormal_glsl.pxx

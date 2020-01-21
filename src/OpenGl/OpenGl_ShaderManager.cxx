@@ -35,6 +35,7 @@
 #include "../Shaders/Shaders_PBREnvBaking_fs.pxx"
 #include "../Shaders/Shaders_PBREnvBaking_vs.pxx"
 #include "../Shaders/Shaders_PointLightAttenuation_glsl.pxx"
+#include "../Shaders/Shaders_TangentSpaceNormal_glsl.pxx"
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager,Standard_Transient)
 
@@ -2719,6 +2720,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
      && (theBits & OpenGl_PO_HasTextures) == OpenGl_PO_TextureNormal
      && myContext->hasFlatShading != OpenGl_FeatureNotAvailable)
     {
+      aSrcFrag += Shaders_TangentSpaceNormal_glsl;
       // apply normal map texture
       aSrcFragExtraMain +=
         EOL"#if defined(THE_HAS_TEXTURE_NORMAL)"
@@ -2726,15 +2728,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
         EOL"  vec4 aMapNormalValue = occTextureNormal(aTexCoord);"
         EOL"  if (aMapNormalValue.w > 0.5)"
         EOL"  {"
-        EOL"    aMapNormalValue.xyz = normalize (aMapNormalValue.xyz * 2.0 - vec3(1.0));"
         EOL"    mat2 aDeltaUVMatrix = mat2 (dFdx(aTexCoord), dFdy(aTexCoord));"
-        EOL"    aDeltaUVMatrix = mat2 (aDeltaUVMatrix[1][1], -aDeltaUVMatrix[0][1], -aDeltaUVMatrix[1][0], aDeltaUVMatrix[0][0]);"
         EOL"    mat2x3 aDeltaVectorMatrix = mat2x3 (dFdx (PositionWorld.xyz), dFdy (PositionWorld.xyz));"
-        EOL"    aDeltaVectorMatrix = aDeltaVectorMatrix * aDeltaUVMatrix;"
-        EOL"    aDeltaVectorMatrix[0] = normalize(aDeltaVectorMatrix[0] - dot(Normal, aDeltaVectorMatrix[0]) * Normal);"
-        EOL"    aDeltaVectorMatrix[1] = normalize(aDeltaVectorMatrix[1] - dot(Normal, aDeltaVectorMatrix[1]) * Normal);"
-        EOL"    float aDirection = gl_FrontFacing ? 1.0 : -1.0;"
-        EOL"    Normal = mat3 (aDirection * aDeltaVectorMatrix[0], aDirection * aDeltaVectorMatrix[1], Normal) * aMapNormalValue.xyz;"
+        EOL"    Normal = TangentSpaceNormal (aDeltaUVMatrix, aDeltaVectorMatrix, aMapNormalValue.xyz, Normal, !gl_FrontFacing);"
         EOL"  }"
         EOL"#endif";
     }
@@ -2777,7 +2773,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
   const TCollection_AsciiString aLights = stdComputeLighting (aNbLights, !aSrcFragGetVertColor.IsEmpty(), theIsPBR,
                                                               (theBits & OpenGl_PO_TextureRGB) == 0
                                                            || (theBits & OpenGl_PO_IsPoint) != 0);
-  aSrcFrag = TCollection_AsciiString()
+  aSrcFrag += TCollection_AsciiString()
     + EOL
     + aSrcFragGetVertColor
     + EOL"vec3  Normal;"
