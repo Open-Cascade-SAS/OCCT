@@ -117,15 +117,45 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
     if (aValueStr == NULL)
     {
       myMessageDriver->Send ("Cannot retrieve reference string from element", Message_Fail);
-      return Standard_False;
     }
+    else
+    {
+      TCollection_AsciiString anEntry;
+      if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == Standard_False)
+      {
+        TCollection_ExtendedString aMessage =
+            TCollection_ExtendedString("Cannot retrieve reference from \"")
+            + aValueStr + '\"';
+        myMessageDriver->Send(aMessage, Message_Fail);
+        return Standard_False;
+      }
+      // Find label by entry
+      TDF_Label tLab; // Null label.
+      if (anEntry.Length() > 0)
+      {
+        TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, Standard_True);
+      }
+      aReferenceArray->SetValue(i++, tLab);
+      aCurNode = aCurElement->getNextSibling();
+      aCurElement = (LDOM_Element*)&aCurNode;
+    }
+  }
+
+  // Last reference
+  aValueStr = XmlObjMgt::GetStringValue( *aCurElement );
+  if (aValueStr == NULL)
+  {
+    myMessageDriver->Send ("Cannot retrieve reference string from element", Message_Fail);
+  }
+  else
+  {
     TCollection_AsciiString anEntry;
-    if (XmlObjMgt::GetTagEntryString (aValueStr, anEntry) == Standard_False)
+    if (XmlObjMgt::GetTagEntryString(aValueStr, anEntry) == Standard_False)
     {
       TCollection_ExtendedString aMessage =
-        TCollection_ExtendedString ("Cannot retrieve reference from \"")
-        + aValueStr + '\"';
-      myMessageDriver->Send (aMessage, Message_Fail);
+          TCollection_ExtendedString("Cannot retrieve reference from \"")
+          + aValueStr + '\"';
+      myMessageDriver->Send(aMessage, Message_Fail);
       return Standard_False;
     }
     // Find label by entry
@@ -134,34 +164,8 @@ Standard_Boolean XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persist
     {
       TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, Standard_True);
     }
-    aReferenceArray->SetValue(i++, tLab);
-    aCurNode = aCurElement->getNextSibling();
-    aCurElement = (LDOM_Element*)&aCurNode;
+    aReferenceArray->SetValue(i, tLab);
   }
-
-  // Last reference
-  aValueStr = XmlObjMgt::GetStringValue( *aCurElement );
-  if (aValueStr == NULL)
-  {
-    myMessageDriver->Send ("Cannot retrieve reference string from element", Message_Fail);
-    return Standard_False;
-  }
-  TCollection_AsciiString anEntry;
-  if (XmlObjMgt::GetTagEntryString (aValueStr, anEntry) == Standard_False)
-  {
-    TCollection_ExtendedString aMessage =
-      TCollection_ExtendedString ("Cannot retrieve reference from \"")
-      + aValueStr + '\"';
-    myMessageDriver->Send (aMessage, Message_Fail);
-    return Standard_False;
-  }
-  // Find label by entry
-  TDF_Label tLab; // Null label.
-  if (anEntry.Length() > 0)
-  {
-    TDF_Tool::Label(aReferenceArray->Label().Data(), anEntry, tLab, Standard_True);
-  }
-  aReferenceArray->SetValue(i, tLab);
 
   return Standard_True;
 }
@@ -192,11 +196,12 @@ void XmlMDataStd_ReferenceArrayDriver::Paste(const Handle(TDF_Attribute)& theSou
   
   for (Standard_Integer i = aL; i <= anU; i++)
   {
-    if (L.IsDescendant(aReferenceArray->Value(i).Root()))
+    const TDF_Label& label = aReferenceArray->Value(i);
+    if (!label.IsNull() && L.IsDescendant(label.Root()))
     {
       // Internal reference
       TCollection_AsciiString anEntry;
-      TDF_Tool::Entry(aReferenceArray->Value(i), anEntry);
+      TDF_Tool::Entry(label, anEntry);
 
       XmlObjMgt_DOMString aDOMString;
       XmlObjMgt::SetTagEntryString (aDOMString, anEntry);
