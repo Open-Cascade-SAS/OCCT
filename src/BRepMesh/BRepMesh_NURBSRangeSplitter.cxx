@@ -269,11 +269,17 @@ namespace
     for (; aIntervalU <= theIntervals[0].Upper (); ++aIntervalU)
     {
       const Standard_Real aParamU = theIntervals[0].Value(aIntervalU);
+      if (Precision::IsInfinite (aParamU))
+        continue;
+
       Standard_Integer aIntervalV = theIntervals[1].Lower ();
       for (; aIntervalV <= theIntervals[1].Upper (); ++aIntervalV)
       {
         gp_Dir aNorm;
         const Standard_Real aParamV = theIntervals[1].Value(aIntervalV);
+        if (Precision::IsInfinite (aParamV))
+          continue;
+
         if (GeomLib::NormEstim (theSurf, gp_Pnt2d (aParamU, aParamV), Precision::Confusion (), aNorm) != 0)
         {
           return Standard_True;
