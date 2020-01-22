@@ -150,6 +150,18 @@ protected:
   Standard_EXPORT bool gltfParseTexture (Handle(Image_Texture)& theTexture,
                                          const RWGltf_JsonValue* theTextureId);
 
+  //! Parse texture definition in binary buffer of GLB file.
+  Standard_EXPORT bool gltfParseTexturInGlbBuffer (Handle(Image_Texture)& theTexture,
+                                                   const RWGltf_JsonValue& theBinVal,
+                                                   const TCollection_AsciiString& theBufferViewId,
+                                                   const RWGltf_JsonValue& theBufferViewName);
+
+  //! Parse texture definition in binary buffer of glTF file.
+  Standard_EXPORT bool gltfParseTextureInBufferView (Handle(Image_Texture)& theTexture,
+                                                     const TCollection_AsciiString& theSourceId,
+                                                     const TCollection_AsciiString& theBufferViewhId,
+                                                     const RWGltf_JsonValue& theBufferView);
+
   //! Bind material definition to the map.
   Standard_EXPORT void gltfBindMaterial (const Handle(RWGltf_MaterialMetallicRoughness)& theMatPbr,
                                          const Handle(RWGltf_MaterialCommon)& theMatCommon);
