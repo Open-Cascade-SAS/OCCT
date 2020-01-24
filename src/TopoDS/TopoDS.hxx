@@ -54,7 +54,7 @@ class TopoDS_Iterator;
 
 
 //! Provides methods to cast objects of class
-//! TopoDS_Shape to be onjects of more specialized
+//! TopoDS_Shape to be objects of more specialized
 //! sub-classes. Types are verified, thus in the example
 //! below, the first two blocks are correct but the third is
 //! rejected by the compiler.
