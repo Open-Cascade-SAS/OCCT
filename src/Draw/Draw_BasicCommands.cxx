@@ -778,49 +778,63 @@ static int dmeminfo (Draw_Interpretor& theDI,
                      Standard_Integer  theArgNb,
                      const char**      theArgVec)
 {
-  OSD_MemInfo aMemInfo;
   if (theArgNb <= 1)
   {
+    OSD_MemInfo aMemInfo;
     theDI << aMemInfo.ToString();
     return 0;
   }
 
+  NCollection_Map<OSD_MemInfo::Counter> aCounters;
   for (Standard_Integer anIter = 1; anIter < theArgNb; ++anIter)
   {
     TCollection_AsciiString anArg (theArgVec[anIter]);
     anArg.LowerCase();
     if (anArg == "virt" || anArg == "v")
     {
-      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemVirtual)) << " ";
+      aCounters.Add (OSD_MemInfo::MemVirtual);
     }
     else if (anArg == "heap" || anArg == "h")
     {
-      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemHeapUsage)) << " ";
+      aCounters.Add (OSD_MemInfo::MemHeapUsage);
     }
     else if (anArg == "wset" || anArg == "w")
     {
-      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemWorkingSet)) << " ";
+      aCounters.Add (OSD_MemInfo::MemWorkingSet);
     }
     else if (anArg == "wsetpeak")
     {
-      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemWorkingSetPeak)) << " ";
+      aCounters.Add (OSD_MemInfo::MemWorkingSetPeak);
     }
     else if (anArg == "swap")
     {
-      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemSwapUsage)) << " ";
+      aCounters.Add (OSD_MemInfo::MemSwapUsage);
     }
     else if (anArg == "swappeak")
     {
-      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemSwapUsagePeak)) << " ";
+      aCounters.Add (OSD_MemInfo::MemSwapUsagePeak);
     }
     else if (anArg == "private")
     {
-      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemPrivate)) << " ";
+      aCounters.Add (OSD_MemInfo::MemPrivate);
     }
     else
     {
       std::cerr << "Unknown argument '" << theArgVec[anIter] << "'!\n";
     }
+  }
+
+  OSD_MemInfo aMemInfo (Standard_False);
+  aMemInfo.SetActive (Standard_False);
+  for (NCollection_Map<OSD_MemInfo::Counter>::Iterator aCountersIt (aCounters); aCountersIt.More(); aCountersIt.Next())
+  {
+    aMemInfo.SetActive (aCountersIt.Value(), Standard_True);
+  }
+  aMemInfo.Update();
+
+  for (NCollection_Map<OSD_MemInfo::Counter>::Iterator aCountersIt (aCounters); aCountersIt.More(); aCountersIt.Next())
+  {
+    theDI << Standard_Real (aMemInfo.Value (aCountersIt.Value())) << " ";
   }
   theDI << "\n";
   return 0;

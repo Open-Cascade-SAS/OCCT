@@ -16,6 +16,7 @@
 #ifndef _OSD_MemInfo_H__
 #define _OSD_MemInfo_H__
 
+#include <NCollection_Map.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //! This class provide information about memory utilized by current process.
@@ -65,8 +66,20 @@ public:
 
 public:
 
-  //! Create and initialize
+  //! Create and initialize. By default all countes are active
   Standard_EXPORT OSD_MemInfo (const Standard_Boolean theImmediateUpdate = Standard_True);
+
+  //! Return true if the counter is active
+  Standard_Boolean IsActive (const OSD_MemInfo::Counter theCounter) const { return myActiveCounters[theCounter]; }
+
+  //! Set all counters active. The information is collected for active counters.
+  //! @param theActive state for counters
+  Standard_EXPORT void SetActive (const Standard_Boolean theActive);
+
+  //! Set the counter active. The information is collected for active counters.
+  //! @param theCounter type of counter
+  //! @param theActive state for the counter
+  void SetActive (const OSD_MemInfo::Counter theCounter, const Standard_Boolean theActive) { myActiveCounters[theCounter] = theActive; }
 
   //! Clear counters
   Standard_EXPORT void Clear();
@@ -97,9 +110,16 @@ public:
   //! Return the string representation for all available counter.
   Standard_EXPORT static TCollection_AsciiString PrintInfo();
 
+protected:
+
+  //! Return true if the counter is active and the value is valid
+  Standard_Boolean hasValue (const OSD_MemInfo::Counter theCounter) const
+  { return IsActive (theCounter) && myCounters[theCounter] != Standard_Size(-1); }
+
 private:
 
   Standard_Size myCounters[MemCounter_NB]; //!< Counters' values, in bytes
+  Standard_Boolean myActiveCounters[MemCounter_NB]; //!< container of active state for a counter
 
 };
 
