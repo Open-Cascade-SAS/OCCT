@@ -13,15 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_Color.hxx>
 
 #include <Quantity_Color.hxx>
 #include <Quantity_ColorRGBA.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <XCAFDoc_Color.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Color,TDF_Attribute)
 
@@ -257,3 +258,15 @@ const Standard_GUID& XCAFDoc_Color::ID() const
   Handle(XCAFDoc_Color)::DownCast(Into)->Set(myColor);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_Color::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColor)
+}

@@ -13,6 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_ViewTool.hxx>
+
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
@@ -26,8 +28,6 @@
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_View.hxx>
-#include <XCAFDoc_ViewTool.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ViewTool, TDF_Attribute)
 
@@ -791,3 +791,13 @@ void XCAFDoc_ViewTool::Paste(const Handle(TDF_Attribute)& /*into*/,
 {
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_ViewTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+}

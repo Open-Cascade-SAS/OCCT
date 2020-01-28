@@ -16,6 +16,7 @@
 #define _NCollection_Vec4_H__
 
 #include <NCollection_Vec3.hxx>
+#include <Standard_Dump.hxx>
 
 //! Generic 4-components vector.
 //! To be used as RGBA color vector or XYZW 3D-point with special W-component
@@ -373,6 +374,13 @@ public:
   {
     NCollection_Vec4 aResult = NCollection_Vec4 (theLeft);
     return aResult /= theRight;
+  }
+
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  {
+    (void)theDepth;
+    OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "Vec4", 4, v[0], v[1], v[2], v[3])
   }
 
 private:

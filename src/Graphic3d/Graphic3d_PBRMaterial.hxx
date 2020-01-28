@@ -152,6 +152,9 @@ public:
   Standard_EXPORT static Standard_ShortReal SpecIBLMapSamplesFactor (Standard_ShortReal theProbability,
                                                                      Standard_ShortReal theRoughness);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 private:
 
   //! Calculates geometry factor of Cook-Torrance BRDF using Smith formula.

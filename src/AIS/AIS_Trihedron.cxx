@@ -926,3 +926,20 @@ void AIS_Trihedron::updatePrimitives(const Handle(Prs3d_DatumAspect)& theAspect,
     myPrimitives.Bind(aPart, aPrims);
   }
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void AIS_Trihedron::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, AIS_InteractiveObject)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnTextColor)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnArrowColor)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDatumAspect)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTrihDispMode)
+}

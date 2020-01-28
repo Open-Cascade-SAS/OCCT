@@ -18,6 +18,8 @@
 //Version	Date		Purpose
 //		0.0	Sep 15 1997	Creation
 
+#include <TDocStd_XLink.hxx>
+
 #include <Standard_GUID.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
@@ -32,7 +34,6 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd.hxx>
 #include <TDocStd_Document.hxx>
-#include <TDocStd_XLink.hxx>
 #include <TDocStd_XLinkIterator.hxx>
 #include <TDocStd_XLinkRoot.hxx>
 

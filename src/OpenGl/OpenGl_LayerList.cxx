@@ -970,3 +970,23 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
   aCtx->core11fwd->glDepthMask (theGlobalSettings.DepthMask);
   aCtx->core11fwd->glDepthFunc (theGlobalSettings.DepthFunc);
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_LayerList::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_LayerList)
+
+  for (NCollection_List<Handle(Graphic3d_Layer)>::Iterator aLayersIt (myLayers); aLayersIt.More(); aLayersIt.Next())
+  {
+    const Handle(Graphic3d_Layer)& aLayerId = aLayersIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aLayerId.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbPriorities)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbStructures)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myImmediateNbStructures)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myModifStateOfRaytraceable)
+}

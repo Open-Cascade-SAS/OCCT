@@ -381,3 +381,14 @@ gp_GTrsf2d Geom_Plane::ParametricTransformation(const gp_Trsf& T) const
   T2.SetScale(gp::Origin2d(), Abs(T.ScaleFactor()));
   return gp_GTrsf2d(T2);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_Plane::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_ElementarySurface)
+}

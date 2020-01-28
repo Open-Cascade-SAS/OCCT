@@ -91,6 +91,9 @@ public:
   //! Otherwise, returns identity matrix.
   virtual gp_GTrsf InvInitLocation() const { return gp_GTrsf(); }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 protected:
 
   Standard_EXPORT Select3D_SensitiveEntity (const Handle(SelectMgr_EntityOwner)& theOwnerId);

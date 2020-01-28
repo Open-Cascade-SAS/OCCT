@@ -265,6 +265,9 @@ public:
   //! compute the current point.
   Standard_EXPORT gp_Pnt Value (const Standard_Real U, const Standard_Real V) const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 
 
 

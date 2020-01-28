@@ -135,3 +135,14 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   aContext->WorldViewState.SetCurrent (aMatrixMV);
   aContext->ApplyWorldViewMatrix();
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_Flipper::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_Flipper)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_Element)
+}

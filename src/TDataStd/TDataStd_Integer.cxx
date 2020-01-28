@@ -14,10 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_Integer.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd_Integer.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Reference.hxx>
@@ -203,3 +204,16 @@ Standard_OStream& TDataStd_Integer::Dump (Standard_OStream& anOS) const
   return anOS;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_Integer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValue)
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
+}

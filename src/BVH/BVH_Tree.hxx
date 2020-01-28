@@ -29,10 +29,10 @@ protected:
   BVH_TreeBaseTransient() {}
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const { (void)theOStream; (void)theDepth; }
+  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const { (void)theOStream; (void)theDepth; }
 
   //! Dumps the content of me into the stream
-  virtual void DumpNode (const int theNodeIndex, Standard_OStream& theOStream, const Standard_Integer theDepth) const
+  virtual void DumpNode (const int theNodeIndex, Standard_OStream& theOStream, Standard_Integer theDepth) const
   { (void)theNodeIndex; (void)theOStream; (void)theDepth; }
 };
 
@@ -186,11 +186,11 @@ public: //! @name methods for accessing serialized tree data
   }
 
   //! Dumps the content of me into the stream
-  virtual void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const Standard_OVERRIDE
+  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE
   {
-    OCCT_DUMP_CLASS_BEGIN (theOStream, BVH_TreeBase);
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDepth);
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Length());
+    OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDepth)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Length())
 
     for (Standard_Integer aNodeIdx = 0; aNodeIdx < Length(); ++aNodeIdx)
     {
@@ -199,20 +199,20 @@ public: //! @name methods for accessing serialized tree data
   }
 
   //! Dumps the content of node into the stream
-  virtual void DumpNode (const int theNodeIndex, Standard_OStream& theOStream, const Standard_Integer theDepth) const Standard_OVERRIDE
+  virtual void DumpNode (const int theNodeIndex, Standard_OStream& theOStream, Standard_Integer theDepth) const Standard_OVERRIDE
   {
-    OCCT_DUMP_CLASS_BEGIN (theOStream, BVH_TreeNode);
+    OCCT_DUMP_CLASS_BEGIN (theOStream, BVH_TreeNode)
 
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, theNodeIndex);
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, theNodeIndex)
 
     Bnd_Box aBndBox = BVH::ToBndBox (MinPoint (theNodeIndex), MaxPoint (theNodeIndex));
     Bnd_Box* aPointer = &aBndBox;
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aPointer);
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aPointer)
 
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, BegPrimitive (theNodeIndex));
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, EndPrimitive (theNodeIndex));
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Level (theNodeIndex));
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsOuter (theNodeIndex));
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, BegPrimitive (theNodeIndex))
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, EndPrimitive (theNodeIndex))
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Level (theNodeIndex))
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsOuter (theNodeIndex))
   }
 
 public: //! @name protected fields

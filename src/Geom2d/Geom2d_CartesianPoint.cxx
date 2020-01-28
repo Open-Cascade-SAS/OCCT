@@ -72,3 +72,11 @@ void Geom2d_CartesianPoint::Transform (const Trsf2d& T) {
 
   gpPnt2d.Transform (T);
 }
+
+void Geom2d_CartesianPoint::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_Point)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &gpPnt2d)
+}

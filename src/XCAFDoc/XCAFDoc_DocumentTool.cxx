@@ -404,3 +404,14 @@ Standard_Boolean XCAFDoc_DocumentTool::IsXCAFDocument(const  Handle(TDocStd_Docu
   Handle(TDataStd_TreeNode) aRootNode;
   return RootL.FindAttribute (aRefGuid, aRootNode);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_DocumentTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+}

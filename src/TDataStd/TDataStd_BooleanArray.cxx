@@ -13,10 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_BooleanArray.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd_BooleanArray.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
@@ -319,4 +320,24 @@ Standard_OStream& TDataStd_BooleanArray::Dump (Standard_OStream& anOS) const
   anOS << sguid;
   anOS <<std::endl;
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_BooleanArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (TColStd_Array1OfByte::Iterator aValueIt (myValues->Array1()); aValueIt.More(); aValueIt.Next())
+  {
+    const Standard_Byte& aValue = aValueIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+  }
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLower)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUpper)
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

@@ -44,3 +44,18 @@ Handle(Geom_Curve) Geom_SweptSurface::BasisCurve () const
 { 
   return basisCurve;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_SweptSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Surface)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, basisCurve.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &direction)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, smooth)
+}

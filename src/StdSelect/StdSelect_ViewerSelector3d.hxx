@@ -93,6 +93,9 @@ public:
                                          const Handle(V3d_View)& theView,
                                          const Standard_Boolean theToClearOthers = Standard_True);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
   DEFINE_STANDARD_RTTIEXT(StdSelect_ViewerSelector3d,SelectMgr_ViewerSelector)
 
 protected:

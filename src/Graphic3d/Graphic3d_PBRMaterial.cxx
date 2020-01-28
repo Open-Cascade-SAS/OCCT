@@ -349,3 +349,19 @@ Graphic3d_Vec3 Graphic3d_PBRMaterial::lutGenReflect (const Graphic3d_Vec3 &theVe
 {
   return theAxis * theAxis.Dot(theVector) * 2.f - theVector;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_PBRMaterial::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_PBRMaterial)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColor)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMetallic)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRoughness)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEmission)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIOR)
+}

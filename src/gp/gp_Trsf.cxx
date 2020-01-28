@@ -855,13 +855,12 @@ void gp_Trsf::Orthogonalize()
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void gp_Trsf::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void gp_Trsf::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, gp_Trsf);
-
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &loc);
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &matrix);
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, shape);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, scale);
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "Location", 3, loc.X(), loc.Y(), loc.Z())
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "Matrix", 9, matrix.Value(1, 1), matrix.Value(1, 2), matrix.Value(1, 3),
+                                                   matrix.Value(2, 1), matrix.Value(2, 2), matrix.Value(2, 3),
+                                                   matrix.Value(3, 1), matrix.Value(3, 2), matrix.Value(3, 3))
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, shape)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, scale)
 }

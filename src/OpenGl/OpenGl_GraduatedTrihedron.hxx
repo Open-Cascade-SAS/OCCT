@@ -47,10 +47,10 @@ public:
   Standard_EXPORT virtual ~OpenGl_GraduatedTrihedron();
 
   //! Draw the element.
-  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
 
   //! Release OpenGL resources.
-  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx);
+  Standard_EXPORT virtual void Release (OpenGl_Context* theCtx) Standard_OVERRIDE;
 
   //! Setup configuration.
   Standard_EXPORT void SetValues (const Graphic3d_GraduatedTrihedron& theData);
@@ -60,6 +60,9 @@ public:
   //! @sa Graphic3d_GraduatedTrihedron::CubicAxesCallback
   Standard_EXPORT void SetMinMax (const OpenGl_Vec3& theMin,
                                   const OpenGl_Vec3& theMax);
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
 private:
 

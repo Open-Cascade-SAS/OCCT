@@ -70,6 +70,9 @@ public:
   //! changes the end point of the segment
   void EndPoint (const gp_Pnt& thePnt) { myEnd = thePnt; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 private:
 
   gp_Pnt myStart;      //!< Start point

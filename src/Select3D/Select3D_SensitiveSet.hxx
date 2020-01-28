@@ -96,6 +96,9 @@ public:
   //! Returns a number of nodes in 1 BVH leaf
   Standard_Integer GetLeafNodeSize() const { return myContent.Builder()->LeafNodeSize(); }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 protected:
 
   //! Checks whether one or more entities of the set overlap current selecting volume.
@@ -172,6 +175,10 @@ protected:
 
     //! Returns the tree built for set of sensitives
     const opencascade::handle<BVH_Tree<Standard_Real, 3> >& GetBVH() { return BVH(); }
+
+    //! Dumps the content of me into the stream
+    void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+    { (void)theOStream; (void)theDepth; }
 
   protected:
     Select3D_SensitiveSet* mySensitiveSet; //!< Set of sensitive entities

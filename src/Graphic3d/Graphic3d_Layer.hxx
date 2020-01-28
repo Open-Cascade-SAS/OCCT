@@ -144,6 +144,9 @@ public:
   //! Returns indexed map of always rendered structures.
   const NCollection_IndexedMap<const Graphic3d_CStructure*>& NonCullableStructures() const { return myAlwaysRenderedMap; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 protected:
 
   //! Updates BVH trees if their state has been invalidated.

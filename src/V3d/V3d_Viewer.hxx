@@ -508,6 +508,9 @@ public: //! @name deprecated methods
   Standard_DEPRECATED ("Deprecated method - DefinedLights() should be used instead")
   const Handle(V3d_Light)& DefinedLight() const { return myDefinedLightsIterator.Value(); }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 private:
 
   //! Returns the default background colour.

@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDocStd_XLinkTool.hxx>
 
 #include <Standard_DomainError.hxx>
 #include <Standard_GUID.hxx>
@@ -36,7 +37,6 @@
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_XLink.hxx>
-#include <TDocStd_XLinkTool.hxx>
 
 // standard copy
 //=======================================================================

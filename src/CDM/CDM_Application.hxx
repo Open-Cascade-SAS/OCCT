@@ -66,6 +66,9 @@ public:
 
   //! Returns the application version.
   Standard_EXPORT virtual TCollection_AsciiString Version() const;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 friend class CDM_Reference;
 friend class CDM_MetaData;

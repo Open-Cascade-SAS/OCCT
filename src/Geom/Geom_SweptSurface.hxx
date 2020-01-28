@@ -65,6 +65,9 @@ public:
   //! for a surface of linear extrusion it is the extruded curve.
   Standard_EXPORT Handle(Geom_Curve) BasisCurve() const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 
 
 

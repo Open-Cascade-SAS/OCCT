@@ -44,23 +44,22 @@ Prs3d_PlaneAspect::Prs3d_PlaneAspect()
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Prs3d_PlaneAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void Prs3d_PlaneAspect::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_PlaneAspect);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myEdgesAspect.get());
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myIsoAspect.get());
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myEdgesAspect.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myIsoAspect.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsLength);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsSize);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsAngle);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPlaneXLength);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPlaneYLength);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsoDistance);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawCenterArrow);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawEdgesArrows);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawEdges);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawIso);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsLength)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowsAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPlaneXLength)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPlaneYLength)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsoDistance)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawCenterArrow)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawEdgesArrows)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawEdges)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawIso)
 }
-

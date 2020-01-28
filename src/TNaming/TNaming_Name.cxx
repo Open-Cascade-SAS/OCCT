@@ -28,6 +28,7 @@
 #include <TDF_LabelList.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <TNaming.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_Iterator.hxx>
@@ -2144,3 +2145,28 @@ void TNaming_Name::Orientation(const TopAbs_Orientation theOrientation)
   myOrientation = theOrientation;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TNaming_Name::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, TNaming_Name)
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myType)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myShapeType)
+
+  for (TNaming_ListOfNamedShape::Iterator anArgsIt (myArgs); anArgsIt.More(); anArgsIt.Next())
+  {
+    const Handle(TNaming_NamedShape)& anArg = anArgsIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anArg.get())
+  }
+  
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIndex)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myShape)
+
+  TCollection_AsciiString aLabel;
+  TDF_Tool::Entry (myContextLabel, aLabel);
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myOrientation)
+}

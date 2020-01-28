@@ -14,12 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_Comment.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDataStd_Comment.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDF_Attribute.hxx>
@@ -169,4 +170,17 @@ Standard_Boolean TDataStd_Comment::
 AfterRetrieval(const Standard_Boolean)
 {
   return Standard_True;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_Comment::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myString)
 }

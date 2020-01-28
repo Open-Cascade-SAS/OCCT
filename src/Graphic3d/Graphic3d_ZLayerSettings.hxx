@@ -19,6 +19,7 @@
 #include <Graphic3d_LightSet.hxx>
 #include <Graphic3d_PolygonOffset.hxx>
 #include <Precision.hxx>
+#include <Standard_Dump.hxx>
 #include <TCollection_AsciiString.hxx>
 
 enum Graphic3d_ZLayerSetting
@@ -206,6 +207,29 @@ struct Graphic3d_ZLayerSettings
     myPolygonOffset.Mode   = Aspect_POM_Fill;
     myPolygonOffset.Factor = 1.0f;
     myPolygonOffset.Units  =-1.0f;
+  }
+
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  {
+    OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_ZLayerSettings)
+
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myOriginTrsf.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myOrigin)
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCullingDistance)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCullingSize)
+
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPolygonOffset)
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsImmediate)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToRaytrace)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUseEnvironmentTexture)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToEnableDepthTest)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToEnableDepthWrite)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToClearDepth)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToRenderInDepthPrepass)
   }
 
 protected:

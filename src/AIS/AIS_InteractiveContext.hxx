@@ -1216,6 +1216,9 @@ public: //! @name sub-intensity management (deprecated)
   //! @param theSelection an instance of the selection
   void SetSelection (const Handle(AIS_Selection)& theSelection) { mySelection = theSelection; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 protected: //! @name internal methods
 
   Standard_EXPORT void GetDefModes (const Handle(AIS_InteractiveObject)& anIobj, Standard_Integer& Dmode, Standard_Integer& HiMod, Standard_Integer& SelMode) const;

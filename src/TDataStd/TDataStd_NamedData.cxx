@@ -15,6 +15,7 @@
 
 #include <TDataStd_NamedData.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_DataMapIteratorOfDataMapOfStringInteger.hxx>
@@ -892,4 +893,28 @@ Standard_OStream& TDataStd_NamedData::Dump (Standard_OStream& anOS) const
   anOS << "\tArraysOfIntegers = " << (HasArraysOfIntegers() ? myArraysOfIntegers->Map().Extent() : 0);
   anOS << "\tArraysOfReals = " << (HasArraysOfReals() ? myArraysOfReals->Map().Extent() : 0);
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_NamedData::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  if (!myIntegers.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIntegers->Map().Size())
+  if (!myReals.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myReals->Map().Size())
+  if (!myStrings.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myStrings->Map().Size())
+  if (!myBytes.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myBytes->Map().Size())
+  if (!myArraysOfIntegers.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArraysOfIntegers->Map().Size())
+  if (!myArraysOfReals.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArraysOfReals->Map().Size())
 }

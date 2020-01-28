@@ -47,3 +47,21 @@ Handle(TopoDS_TShape) BRep_TVertex::EmptyCopy() const
   return TV;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_TVertex::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TopoDS_TVertex)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPnt)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerance)
+  for (BRep_ListIteratorOfListOfPointRepresentation itr(myPoints); itr.More(); itr.Next())
+  {
+    const Handle(BRep_PointRepresentation)& aPointRepresentation = itr.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aPointRepresentation.get())
+  }
+}

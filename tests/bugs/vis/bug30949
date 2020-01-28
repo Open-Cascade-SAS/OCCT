@@ -11,7 +11,7 @@ set pblue  0.00209
 
 set dump_aligned_off [vaspects -defaults -dumpJson -dumpCompact on]
 
-if {![regexp {"RGB": \[+([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\]} $dump_aligned_off full cred cgreen cblue]} {
+if {![regexp {"RGBA": \[+([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\]} $dump_aligned_off full cred cgreen cblue]} {
   puts "Error in Dump. Wrong format of output."
 }
 
@@ -22,7 +22,7 @@ checkreal "Cblue" $cblue $pblue 1.0e-7 0.0
 
 set dump_aligned_off_deep [vaspects -defaults -dumpJson -dumpCompact on -dumpDepth 2]
 
-if {[regexp {\[+([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\]} dump_aligned_off_deep full cred cgreen cblue]} {
+if {[regexp {\[+([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\, +([-0-9.+eE]+)\]} dump_aligned_off_deep full cred cgreen cblue]} {
   puts "Error in Dump. Wrong deep of output"
 }
 

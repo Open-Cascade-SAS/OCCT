@@ -389,3 +389,29 @@ void SelectMgr_SelectableObjectSet::MarkDirty()
   myIsDirty[BVHSubset_3dPersistent] = Standard_True;
   myIsDirty[BVHSubset_2dPersistent] = Standard_True;
 }
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void SelectMgr_SelectableObjectSet::DumpJson (Standard_OStream& theOStream, Standard_Integer) const 
+{
+  for (Standard_Integer aSubsetIdx = 0; aSubsetIdx < BVHSubsetNb; ++aSubsetIdx)
+  {
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aSubsetIdx)
+
+    Standard_Boolean IsDirty = myIsDirty[aSubsetIdx];
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsDirty)
+
+    for (NCollection_IndexedMap<Handle(SelectMgr_SelectableObject)>::Iterator anObjectIt (myObjects[aSubsetIdx]);
+         anObjectIt.More(); anObjectIt.Next())
+    {
+      const Handle(SelectMgr_SelectableObject)& SelectableObject = anObjectIt.Value();
+      OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, SelectableObject.get())
+    }
+
+    TCollection_AsciiString separator;
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, separator)
+  }
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLastWidth)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLastHeight)
+}

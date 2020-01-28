@@ -338,3 +338,32 @@ void Graphic3d_ClipPlane::SetChainNextPlane (const Handle(Graphic3d_ClipPlane)& 
   }
   updateChainLen();
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Graphic3d_ClipPlane::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myNextInChain.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myPrevInChain)
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myId)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPlane)
+
+  OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "Equation", 4, myEquation.x(), myEquation.y(), myEquation.z(), myEquation.w())
+  OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "EquationRev", 4, myEquationRev.x(), myEquationRev.y(), myEquationRev.z(), myEquationRev.w())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myChainLenFwd)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myEquationMod)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAspectMod)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOn)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsCapping)
+}

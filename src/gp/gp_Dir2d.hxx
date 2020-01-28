@@ -249,6 +249,9 @@ public:
   //! direction <me> is reversed.
   Standard_NODISCARD gp_Dir2d Transformed (const gp_Trsf2d& T) const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 
 
 

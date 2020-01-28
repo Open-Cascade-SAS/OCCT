@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_ShapeMapTool.hxx>
 
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
@@ -19,7 +20,6 @@
 #include <TDF_RelocationTable.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
-#include <XCAFDoc_ShapeMapTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ShapeMapTool,TDF_Attribute)
 
@@ -148,4 +148,21 @@ void XCAFDoc_ShapeMapTool::SetShape(const TopoDS_Shape& S)
 const TopTools_IndexedMapOfShape& XCAFDoc_ShapeMapTool::GetMap() const
 {
   return myMap;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_ShapeMapTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (TopTools_IndexedMapOfShape::Iterator aMapIt (myMap); aMapIt.More(); aMapIt.Next())
+  {
+    const TopoDS_Shape& aShape = aMapIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aShape)
+  }
 }

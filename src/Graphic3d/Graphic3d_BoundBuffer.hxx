@@ -61,6 +61,19 @@ public:
     return true;
   }
 
+  //! Dumps the content of me into the stream
+  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE
+  {
+    OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+    OCCT_DUMP_BASE_CLASS (theOStream, theDepth, NCollection_Buffer)
+
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, Colors)
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, Bounds)
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbBounds)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbMaxBounds)
+  }
+
 public:
 
   Graphic3d_Vec4*   Colors;      //!< pointer to facet color values

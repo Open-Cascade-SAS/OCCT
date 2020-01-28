@@ -2230,6 +2230,13 @@ public:
     return new XmlDrivers_DocumentStorageDriver ("Test");
   }
   virtual Standard_CString ResourcesName() Standard_OVERRIDE { return ""; }
+
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+  {
+    OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+    OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDocStd_Application)
+  }
 };
 
 //=======================================================================

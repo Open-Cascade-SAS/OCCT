@@ -148,11 +148,11 @@ void AIS_InteractiveObject::SetAspect(const Handle(Prs3d_BasicAspect)& theAspect
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void AIS_InteractiveObject::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void AIS_InteractiveObject::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, AIS_InteractiveObject);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_SelectableObject);
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCTXPtr);
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myOwner);
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_SelectableObject)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCTXPtr)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myOwner)
 }

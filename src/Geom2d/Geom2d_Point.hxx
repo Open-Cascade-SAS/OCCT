@@ -56,6 +56,9 @@ public:
   //! computes the square distance between <me> and <Other>.
   Standard_EXPORT Standard_Real SquareDistance (const Handle(Geom2d_Point)& Other) const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 
 
 

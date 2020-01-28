@@ -30,6 +30,8 @@
 
 #include "Graphic3d_Structure.pxx"
 
+#include <Standard_Dump.hxx>
+
 #include <stdio.h>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_Structure,Standard_Transient)
@@ -1026,4 +1028,18 @@ void Graphic3d_Structure::SetZLayer (const Graphic3d_ZLayerId theLayerId)
 
   myStructureManager->ChangeZLayer (this, theLayerId);
   myCStructure->SetZLayer (theLayerId);
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_Structure::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myCStructure.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVisual)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myComputeVisual)
 }

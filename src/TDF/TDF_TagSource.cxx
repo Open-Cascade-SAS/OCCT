@@ -14,13 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDF_TagSource.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <TDF_TagSource.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_TagSource,TDF_Attribute)
 
@@ -165,4 +166,17 @@ void TDF_TagSource::Paste (const Handle(TDF_Attribute)& Into,
                            const Handle(TDF_RelocationTable)&) const
 {
   Handle(TDF_TagSource)::DownCast(Into)->Set (myTag);
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDF_TagSource::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTag)
 }

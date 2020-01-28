@@ -65,6 +65,9 @@ public:
   //! along V at the point U,V.
   Standard_EXPORT Standard_Boolean VOscSurf (const Standard_Real U, const Standard_Real V, Standard_Boolean& t, Handle(Geom_BSplineSurface)& L) const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 
   DEFINE_STANDARD_RTTIEXT(Geom_OsculatingSurface,Standard_Transient)
 

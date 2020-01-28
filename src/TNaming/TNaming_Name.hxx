@@ -84,6 +84,9 @@ public:
   Standard_EXPORT Standard_Boolean Solve (const TDF_Label& aLab, const TDF_LabelMap& Valid) const;
   
   Standard_EXPORT void Paste (TNaming_Name& into, const Handle(TDF_RelocationTable)& RT) const;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
   TNaming_NameType myType;

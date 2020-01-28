@@ -443,3 +443,19 @@ gp_GTrsf Select3D_SensitiveTriangulation::InvInitLocation() const
 {
   return myInvInitLocation;
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Select3D_SensitiveTriangulation::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveSet)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTriangul.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myInitLocation)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySensType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPrimitivesNb)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBndBox)
+}

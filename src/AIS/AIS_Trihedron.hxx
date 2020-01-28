@@ -219,6 +219,9 @@ protected:
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 protected:
 
   //! Creates a sensitive entity for the datum part that will be used in selection owner creation.

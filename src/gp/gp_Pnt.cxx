@@ -25,6 +25,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
 void gp_Pnt::Transform (const gp_Trsf& T)
@@ -85,3 +86,7 @@ gp_Pnt gp_Pnt::Mirrored (const gp_Ax2& A2) const
   return P;
 }
 
+void gp_Pnt::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_Pnt", 3, coord.X(), coord.Y(), coord.Z())
+}

@@ -424,6 +424,9 @@ public:
   //! @param theToCreate [in] create and assign attribute if it doesn't exist
   //! @return Handle to the NamedData attribute or Null if there is none
   Standard_EXPORT Handle(TDataStd_NamedData) GetNamedProperties(const TopoDS_Shape& theShape, const Standard_Boolean theToCreate = Standard_False) const;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_ShapeTool,TDF_Attribute)
 

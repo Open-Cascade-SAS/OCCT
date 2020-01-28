@@ -134,6 +134,9 @@ Standard_OStream& operator<< (Standard_OStream& anOS) const
   //! memory pages.
     const TDF_HAllocator& LabelNodeAllocator() const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 friend class TDF_Transaction;
 friend class TDF_LabelNode;
 

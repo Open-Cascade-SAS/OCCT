@@ -17,6 +17,7 @@
 #define _NCollection_Buffer_HeaderFile
 
 #include <NCollection_BaseAllocator.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_Transient.hxx>
 
 //! Low-level buffer object.
@@ -120,6 +121,15 @@ public:
     }
     myData = NULL;
     mySize = 0;
+  }
+
+  //! Dumps the content of me into the stream
+  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  {
+    (void)theDepth;
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myData)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySize)
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myAllocator.get())
   }
 
 protected:

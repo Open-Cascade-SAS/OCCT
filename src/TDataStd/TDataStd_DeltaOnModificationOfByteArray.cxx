@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_DeltaOnModificationOfByteArray.hxx>
 
 #include <Standard_Type.hxx>
 #include <TColStd_HArray1OfByte.hxx>
@@ -20,7 +21,6 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TDataStd_ByteArray.hxx>
-#include <TDataStd_DeltaOnModificationOfByteArray.hxx>
 #include <TDF_AttributeIterator.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>

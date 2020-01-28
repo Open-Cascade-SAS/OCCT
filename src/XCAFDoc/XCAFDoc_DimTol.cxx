@@ -11,14 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_DimTol.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <XCAFDoc_DimTol.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_DimTol,TDF_Attribute)
 
@@ -175,3 +176,24 @@ void XCAFDoc_DimTol::Paste(const Handle(TDF_Attribute)& Into,
   Handle(XCAFDoc_DimTol)::DownCast(Into)->Set(myKind,myVal,myName,myDescription);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_DimTol::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myKind)
+
+  for (TColStd_Array1OfReal::Iterator aValIt (myVal->Array1()); aValIt.More(); aValIt.Next())
+  {
+    const Standard_Real& aValue = aValIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+  }
+  
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName.get())
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDescription.get())
+}

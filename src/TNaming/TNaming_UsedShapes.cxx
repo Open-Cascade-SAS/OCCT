@@ -23,6 +23,7 @@
 #include <TDF_DeltaOnAddition.hxx>
 #include <TDF_DeltaOnRemoval.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_DataMapIteratorOfDataMapOfShapePtrRefShape.hxx>
 #include <TNaming_PtrNode.hxx>
@@ -184,4 +185,29 @@ Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
 
 void TNaming_UsedShapes::References(const Handle(TDF_DataSet)& ) const
 {
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TNaming_UsedShapes::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (TNaming_DataMapOfShapePtrRefShape::Iterator aMapIt (myMap); aMapIt.More(); aMapIt.Next())
+  {
+    const TopoDS_Shape& aShape = aMapIt.Key();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aShape)
+
+    TCollection_AsciiString aLabel;
+    TDF_Tool::Entry (aMapIt.Value()->Label(), aLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+
+    const TopoDS_Shape& aRefShape = aMapIt.Value()->Shape();
+
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aRefShape)
+  }
 }

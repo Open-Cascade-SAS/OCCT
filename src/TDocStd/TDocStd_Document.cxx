@@ -11,9 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDocStd_Document.hxx>
 
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -33,7 +35,6 @@
 #include <TDocStd_Application.hxx>
 #include <TDocStd_CompoundDelta.hxx>
 #include <TDocStd_Context.hxx>
-#include <TDocStd_Document.hxx>
 #include <TDocStd_LabelIDMapDataMap.hxx>
 #include <TDocStd_Modified.hxx>
 #include <TDocStd_Owner.hxx>
@@ -897,4 +898,46 @@ void TDocStd_Document::BeforeClose()
   if(myIsNestedTransactionMode)
 	 myUndoFILO.Clear();
   ClearUndos();
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDocStd_Document::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, CDM_Document)
+  
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myStorageFormat)
+
+  for (TDF_DeltaList::Iterator anUndoIt (myUndos); anUndoIt.More(); anUndoIt.Next())
+  {
+    const Handle(TDF_Delta)& anUndo = anUndoIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anUndo.get())
+  }
+
+  for (TDF_DeltaList::Iterator aRedoIt (myRedos); aRedoIt.More(); aRedoIt.Next())
+  {
+    const Handle(TDF_Delta)& aRedo = aRedoIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aRedo.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myData.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUndoLimit)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myUndoTransaction)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myFromUndo.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myFromRedo.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySaveTime)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsNestedTransactionMode)
+
+  for (TDF_DeltaList::Iterator anUndoFILOIt (myUndoFILO); anUndoFILOIt.More(); anUndoFILOIt.Next())
+  {
+    const Handle(TDF_Delta)& anUndoFILO = anUndoFILOIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anUndoFILO.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOnlyTransactionModification)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySaveEmptyLabels)
 }

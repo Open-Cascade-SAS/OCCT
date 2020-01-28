@@ -1129,3 +1129,26 @@ void OpenGl_PrimitiveArray::InitBuffers (const Handle(OpenGl_Context)&        th
 
   setDrawMode (theType);
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_PrimitiveArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_PrimitiveArray)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_Element)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myVboIndices.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myVboAttribs.get())
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myIndices.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAttribs.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myBounds.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsFillType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsVboInit)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUID)
+}

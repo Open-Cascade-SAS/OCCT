@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_ClippingPlaneTool.hxx>
 
 #include <TCollection_HAsciiString.hxx>
 #include <TDataStd_Integer.hxx>
@@ -23,7 +24,6 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_ChildIDIterator.hxx>
 #include <XCAFDoc.hxx>
-#include <XCAFDoc_ClippingPlaneTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ClippingPlaneTool, TDF_Attribute)
 
@@ -343,5 +343,16 @@ void XCAFDoc_ClippingPlaneTool::Paste(const Handle(TDF_Attribute)& /*into*/,
 
 XCAFDoc_ClippingPlaneTool::XCAFDoc_ClippingPlaneTool()
 {
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_ClippingPlaneTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }
 

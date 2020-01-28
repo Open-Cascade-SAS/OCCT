@@ -68,6 +68,9 @@ public:
   Standard_EXPORT virtual void Swap (const Standard_Integer theIdx1,
                                      const Standard_Integer theIdx2) Standard_OVERRIDE;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(Select3D_SensitiveWire,Select3D_SensitiveSet)
 
 protected:

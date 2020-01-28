@@ -20,9 +20,10 @@
 //=======================================================================
 // Declarations:	
 
+#include <TDocStd.hxx>
+
 #include <CDF.hxx>
 #include <OSD_Environment.hxx>
-#include <TDocStd.hxx>
 #include <TDocStd_XLink.hxx>
 
 //#include <LCTLOFF.h>

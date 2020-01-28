@@ -1546,3 +1546,18 @@ void Graphic3d_Camera::FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePo
   aTmpPnt = anInvWorldView * aLeftBottomFar;
   thePoints.SetValue (FrustumVert_LeftBottomFar,   aTmpPnt.xyz() / aTmpPnt.w());
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_Camera::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myUp)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myDirection)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEye)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDistance)
+}

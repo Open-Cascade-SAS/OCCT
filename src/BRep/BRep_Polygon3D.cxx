@@ -76,3 +76,15 @@ Handle(BRep_CurveRepresentation) BRep_Polygon3D::Copy() const
   return P;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_Polygon3D::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_CurveRepresentation)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPolygon3D.get())
+}

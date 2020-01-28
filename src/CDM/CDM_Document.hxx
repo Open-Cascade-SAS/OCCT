@@ -349,6 +349,9 @@ Standard_OStream& operator << (Standard_OStream& anOStream);
   //! Sets <theVersion> of the format to be used to store the document
   Standard_EXPORT void ChangeStorageFormatVersion(const Standard_Integer theVersion);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 friend class CDM_Reference;
 friend class CDM_ReferenceIterator;
 friend class CDM_Application;

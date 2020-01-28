@@ -11,10 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_NoteBinData.hxx>
+
 #include <OSD_File.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Label.hxx>
-#include <XCAFDoc_NoteBinData.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NoteBinData, XCAFDoc_Note)
 

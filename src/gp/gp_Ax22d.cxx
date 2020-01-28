@@ -24,6 +24,7 @@
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Dump.hxx>
 
 void gp_Ax22d::Mirror (const gp_Pnt2d& P)
 {
@@ -57,3 +58,10 @@ gp_Ax22d gp_Ax22d::Mirrored(const gp_Ax2d& A1) const
   return Temp;
 }
 
+void gp_Ax22d::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "Location", 2, point.X(), point.Y())
+
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "XAxis", 2, vxdir.X(), vxdir.Y())
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "YAxis", 2, vydir.X(), vydir.Y())
+}

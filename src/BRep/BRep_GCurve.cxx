@@ -46,3 +46,16 @@ void BRep_GCurve::Update()
   
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_GCurve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_CurveRepresentation)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFirst)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLast)
+}

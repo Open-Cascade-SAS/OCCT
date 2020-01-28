@@ -56,4 +56,17 @@ void  BRep_PointsOnSurface::Surface(const Handle(Geom_Surface)& S)
   mySurface = S;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_PointsOnSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_PointRepresentation)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySurface.get())
+}
+
 

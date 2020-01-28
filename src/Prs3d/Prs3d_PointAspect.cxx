@@ -47,9 +47,8 @@ Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color& theColor,
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Prs3d_PointAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void Prs3d_PointAspect::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_PointAspect);
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get())
 }
-

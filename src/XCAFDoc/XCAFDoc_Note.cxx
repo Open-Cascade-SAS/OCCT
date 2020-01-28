@@ -229,3 +229,17 @@ XCAFDoc_Note::Dump(Standard_OStream& theOS) const
     ;
   return theOS;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_Note::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myUserName)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myTimeStamp)
+}

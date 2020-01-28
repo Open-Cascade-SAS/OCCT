@@ -94,6 +94,9 @@ public:
   //! Return the first item in sequence.
   const Handle(Graphic3d_ClipPlane)& First() const { return myItems.First(); }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 protected:
 
   NCollection_Sequence<Handle(Graphic3d_ClipPlane)> myItems;

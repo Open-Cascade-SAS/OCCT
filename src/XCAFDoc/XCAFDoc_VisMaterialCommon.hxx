@@ -18,6 +18,7 @@
 #include <Graphic3d_Vec.hxx>
 #include <Image_Texture.hxx>
 #include <Quantity_ColorRGBA.hxx>
+#include <Standard_Dump.hxx>
 
 class Graphic3d_Aspects;
 class Graphic3d_MaterialAspect;
@@ -68,6 +69,23 @@ struct XCAFDoc_VisMaterialCommon
         && theOther.Shininess       == Shininess
         && theOther.Transparency    == Transparency;
   }
-};
+
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  {
+    OCCT_DUMP_CLASS_BEGIN (theOStream, XCAFDoc_VisMaterialCommon)
+
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, DiffuseTexture.get())
+
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &AmbientColor)
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &DiffuseColor)
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &SpecularColor)
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &EmissiveColor)
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Shininess)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Transparency)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsDefined)
+  }
+}; 
 
 #endif // _XCAFDoc_VisMaterialCommon_HeaderFile

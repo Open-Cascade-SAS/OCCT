@@ -299,3 +299,23 @@ void XCAFDoc_VisMaterial::FillAspect (const Handle(Graphic3d_Aspects)& theAspect
   theAspect->SetTextureSet (aTextureSet);
   theAspect->SetTextureMapOn (true);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_VisMaterial::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRawName.get())
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPbrMat)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCommonMat)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaCutOff)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDoubleSided)
+}

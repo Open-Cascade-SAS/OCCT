@@ -1218,3 +1218,35 @@ Standard_Boolean Select3D_SensitivePrimitiveArray::elementIsInside (SelectBasics
     }
   }
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Select3D_SensitivePrimitiveArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveSet)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPosStride)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPrimType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIndexLower)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIndexUpper)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPatchSizeMax)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPatchDistance)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIs3d)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myInitLocation)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBndBox)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinDepthElem)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinDepthNode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinDepthEdge)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDetectedElem)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDetectedNode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDetectedEdgeNode1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDetectedEdgeNode2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDetectElem)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDetectNode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDetectEdge)
+}

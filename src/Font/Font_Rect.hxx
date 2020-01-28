@@ -16,6 +16,7 @@
 #define _Font_Rect_H__
 
 #include <NCollection_Vec2.hxx>
+#include <Standard_Dump.hxx>
 
 //! Auxiliary POD structure - 2D rectangle definition.
 struct Font_Rect
@@ -76,6 +77,16 @@ struct Font_Rect
     return Top - Bottom;
   }
 
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+  {
+    OCCT_DUMP_CLASS_BEGIN (theOStream, Font_Rect)
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Left)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Right)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Top)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Bottom)
+  }
 };
 
 #endif // _Font_Rect_H__

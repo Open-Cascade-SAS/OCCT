@@ -50,3 +50,21 @@ Handle(TopoDS_TShape) BRep_TFace::EmptyCopy() const
   TF->Tolerance(myTolerance);
   return TF;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_TFace::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TopoDS_TFace)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySurface.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTriangulation.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myLocation)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerance)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNaturalRestriction)
+}

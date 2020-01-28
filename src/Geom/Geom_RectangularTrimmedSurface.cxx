@@ -653,3 +653,22 @@ gp_GTrsf2d Geom_RectangularTrimmedSurface::ParametricTransformation
   return basisSurf->ParametricTransformation(T);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_RectangularTrimmedSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_BoundedSurface)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, basisSurf.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, utrim1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vtrim1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, utrim2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vtrim2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, isutrimmed)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, isvtrimmed)
+}

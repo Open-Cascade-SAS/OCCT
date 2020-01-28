@@ -154,6 +154,9 @@ public: //! @name interface implementation
   //! @param theRelTable [in] relocation table
   Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& theInto,
                                       const Handle(TDF_RelocationTable)& theRelTable) const Standard_OVERRIDE;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
 private:
 

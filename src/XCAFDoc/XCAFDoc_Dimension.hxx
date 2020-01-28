@@ -62,6 +62,9 @@ public:
   
   //! Returns dimension object data taken from the paren's label and its sub-labels.
   Standard_EXPORT Handle(XCAFDimTolObjects_DimensionObject) GetObject() const;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XCAFDoc_Dimension,TDF_Attribute)
 

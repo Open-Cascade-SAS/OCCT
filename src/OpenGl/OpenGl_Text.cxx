@@ -833,3 +833,23 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   theCtx->WorldViewState.Pop();
   theCtx->ApplyModelViewMatrix();
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_Text::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_Text)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_Element)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextures.Size())
+
+  for (NCollection_Vector<Handle(OpenGl_VertexBuffer)>::Iterator aCrdsIt (myTCrdsVbo); aCrdsIt.More(); aCrdsIt.Next())
+  {
+    const Handle(OpenGl_VertexBuffer)& aVertexBuffer = aCrdsIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aVertexBuffer.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBndBox)
+}

@@ -20,6 +20,7 @@
 #include <CDM_MetaData.hxx>
 #include <CDM_Reference.hxx>
 #include <Resource_Manager.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <Message.hxx>
@@ -125,4 +126,13 @@ TCollection_AsciiString CDM_Application::Version() const
 {
   // Default: empty
   return TCollection_AsciiString();
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void CDM_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 }

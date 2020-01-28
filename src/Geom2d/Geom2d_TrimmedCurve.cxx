@@ -345,3 +345,17 @@ Standard_Real Geom2d_TrimmedCurve::ParametricTransformation(const gp_Trsf2d& T) 
   return basisCurve->ParametricTransformation(T);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom2d_TrimmedCurve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_BoundedCurve)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, basisCurve.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, uTrim1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, uTrim2)
+}

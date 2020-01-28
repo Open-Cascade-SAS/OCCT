@@ -150,7 +150,8 @@ Steps to prepare dump of the object into json:
 1. Create method <b>DumpJson</b>. The method should accept the output stream and the depth for the fields dump.
 Depth, equal to zero means that only fields of this class should be dumped. Default value -1 means that whole tree of dump will be built recursively calling dump of all fields.
 
-2. Put into the first row of the method <b>OCCT_DUMP_CLASS_BEGIN</b>. This macro creates a local variable, that will open Json structure on start, and close on exit from this method.
+2. Put into the first row of the method <b>OCCT_DUMP_CLASS_BEGIN</b> or <b>OCCT_DUMP_TRANSIENT_CLASS_BEGIN</b> (for Standard_Transient objects).
+This macro appends class name into output stream.
 
 3. Add several macro to store field values.
 

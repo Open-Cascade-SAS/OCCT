@@ -182,3 +182,17 @@ void StdSelect_BRepOwner::UpdateHighlightTrsf (const Handle(V3d_Viewer)& theView
 
   theManager->UpdateHighlightTrsf (theViewer, Selectable(), theDispMode, myPrsSh);
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void StdSelect_BRepOwner::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myShape)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPrsSh.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurMode)
+}

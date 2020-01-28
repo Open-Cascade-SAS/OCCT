@@ -626,3 +626,38 @@ void Graphic3d_Layer::SetLayerSettings (const Graphic3d_ZLayerSettings& theSetti
     }
   }
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Graphic3d_Layer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLayerId)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbStructures)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbStructuresNotCulled)
+
+  const Standard_Integer aNbPriorities = myArray.Length();
+  for (Standard_Integer aPriorityIter = 0; aPriorityIter < aNbPriorities; ++aPriorityIter)
+  {
+    const Graphic3d_IndexedMapOfStructure& aStructures = myArray (aPriorityIter);
+    for (Graphic3d_IndexedMapOfStructure::Iterator aStructIter (aStructures); aStructIter.More(); aStructIter.Next())
+    {
+      const Graphic3d_CStructure* aStructure = aStructIter.Value();
+      OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, aStructure)
+    }
+  }
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myLayerSettings)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myBVHIsLeftChildQueuedFirst)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsBVHPrimitivesNeedsReset)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsBoundingBoxNeedsReset[0])
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsBoundingBoxNeedsReset[1])
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBoundingBox[0])
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBoundingBox[1])
+}

@@ -74,6 +74,9 @@ public:
 
   //! Returns the table of nodes for this polygon.
   TColgp_Array1OfPnt2d& ChangeNodes() { return myNodes; }
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
   DEFINE_STANDARD_RTTIEXT(Poly_Polygon2D,Standard_Transient)
 

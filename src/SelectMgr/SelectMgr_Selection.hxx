@@ -120,6 +120,9 @@ public:
   //! proper updates use SelectMgr_SelectionManager::SetSelectionSensitivity method.
   Standard_EXPORT void SetSensitivity (const Standard_Integer theNewSens);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 private:
 
   NCollection_Vector<Handle(SelectMgr_SensitiveEntity)> myEntities;

@@ -13,11 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDocStd_ApplicationDelta.hxx>
 
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDocStd_ApplicationDelta.hxx>
 #include <TDocStd_Document.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDocStd_ApplicationDelta,Standard_Transient)

@@ -25,6 +25,7 @@
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_XY.hxx>
+#include <Standard_Dump.hxx>
 
 Standard_Boolean gp_Ax2d::IsCoaxial (const gp_Ax2d& Other, 
 				     const Standard_Real AngularTolerance,
@@ -75,3 +76,10 @@ gp_Ax2d gp_Ax2d::Mirrored (const gp_Ax2d& A) const
   return AA;
 }
 
+void gp_Ax2d::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, gp_Ax2d)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &loc)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &vdir)
+}

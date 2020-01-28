@@ -13,10 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_ByteArray.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd_ByteArray.hxx>
 #include <TDataStd_DeltaOnModificationOfByteArray.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
@@ -309,3 +310,21 @@ Handle(TDF_DeltaOnModification) TDataStd_ByteArray::DeltaOnModification
   else return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_ByteArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  
+  for (TColStd_Array1OfByte::Iterator aValueIt (myValue->Array1()); aValueIt.More(); aValueIt.Next())
+  {
+    const Standard_Byte& aValue = aValueIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+  }
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDelta)
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
+}

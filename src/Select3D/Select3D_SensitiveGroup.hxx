@@ -143,6 +143,9 @@ public:
   //! Returns the length of vector of sensitive entities
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 protected:
 
   //! Checks whether the entity with index theIdx overlaps the current selecting volume

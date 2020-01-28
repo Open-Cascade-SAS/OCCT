@@ -241,6 +241,9 @@ public:
     Standard_NODISCARD gp_Pln Translated (const gp_Pnt& P1, const gp_Pnt& P2) const;
 
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 
 
 protected:

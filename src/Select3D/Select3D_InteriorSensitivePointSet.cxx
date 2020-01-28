@@ -323,3 +323,15 @@ Standard_Integer Select3D_InteriorSensitivePointSet::NbSubElements() const
 {
   return myPlanarPolygons.Length();
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Select3D_InteriorSensitivePointSet::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveSet)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBndBox)
+}

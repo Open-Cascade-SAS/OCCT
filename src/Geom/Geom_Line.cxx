@@ -251,4 +251,15 @@ Standard_Real Geom_Line::ParametricTransformation(const gp_Trsf& T) const
   return Abs(T.ScaleFactor());
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_Line::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Curve)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &pos)
+}
 

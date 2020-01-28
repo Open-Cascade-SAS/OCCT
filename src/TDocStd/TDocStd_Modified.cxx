@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDocStd_Modified.hxx>
 
 #include <Standard_DomainError.hxx>
 #include <Standard_GUID.hxx>
@@ -22,7 +23,6 @@
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <TDocStd_Modified.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Modified,TDF_Attribute)
 

@@ -15,12 +15,15 @@
 // commercial license or contractual agreement.
 
 #include <TDataStd_TreeNode.hxx>
+
 #include <TDF_Label.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_DeltaOnAddition.hxx>
 #include <TDF_DeltaOnRemoval.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataStd_TreeNode,TDF_Attribute)
 
@@ -686,4 +689,47 @@ Standard_OStream& TDataStd_TreeNode::Dump (Standard_OStream& anOS) const
   }
   anOS<<std::endl;
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_TreeNode::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  if (myFather)
+  {
+    TCollection_AsciiString aFather;
+    TDF_Tool::Entry (myFather->Label(), aFather);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aFather)
+  }
+  if (myPrevious)
+  {
+    TCollection_AsciiString aPrevious;
+    TDF_Tool::Entry (myPrevious->Label(), aPrevious);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aPrevious)
+  }
+  if (myNext)
+  {
+    TCollection_AsciiString aNext;
+    TDF_Tool::Entry (myNext->Label(), aNext);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aNext)
+  }
+  if (myFirst)
+  {
+    TCollection_AsciiString aFirst;
+    TDF_Tool::Entry (myFirst->Label(), aFirst);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aFirst)
+  }
+  if (myLast)
+  {
+    TCollection_AsciiString aLast;
+    TDF_Tool::Entry (myLast->Label(), aLast);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLast)
+  }
+
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myTreeID)
 }

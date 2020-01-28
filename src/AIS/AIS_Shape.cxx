@@ -990,3 +990,19 @@ Standard_Boolean AIS_Shape::OwnHLRDeviationAngle ( Standard_Real &  anAngle,
   aPreviousAngle = myDrawer->PreviousHLRDeviationAngle (); 
   return myDrawer->HasOwnHLRDeviationAngle();
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void AIS_Shape::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, AIS_InteractiveObject)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myshape)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBB)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myInitAng)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCompBB)
+}

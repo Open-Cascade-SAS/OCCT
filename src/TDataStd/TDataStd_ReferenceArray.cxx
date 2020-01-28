@@ -13,14 +13,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_ReferenceArray.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd_ReferenceArray.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataStd_ReferenceArray,TDF_Attribute)
 
@@ -329,4 +331,25 @@ Standard_OStream& TDataStd_ReferenceArray::Dump (Standard_OStream& anOS) const
   myID.ToCString(sguid);
   anOS << sguid << std::endl;
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_ReferenceArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  TCollection_AsciiString aLabel;
+  for (TDataStd_LabelArray1::Iterator anArrayIt (myArray->Array1()); anArrayIt.More(); anArrayIt.Next())
+  {
+    aLabel.Clear();
+    TDF_Tool::Entry (anArrayIt.Value(), aLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+  }
+  
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

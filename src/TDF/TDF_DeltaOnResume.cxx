@@ -18,9 +18,11 @@
 //Version	Date		Purpose
 //		0.0	Jul  6 1998	Creation
 
+#include <TDF_DeltaOnResume.hxx>
+
+#include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_DeltaOnResume.hxx>
 #include <TDF_Label.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_DeltaOnResume,TDF_AttributeDelta)
@@ -47,4 +49,15 @@ void TDF_DeltaOnResume::Apply()
 #ifdef OCCT_DEBUG
   std::cout<<"Forget attribute"<<std::endl;
 #endif
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDF_DeltaOnResume::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_AttributeDelta)
 }

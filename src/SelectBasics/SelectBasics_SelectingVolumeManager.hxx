@@ -20,6 +20,7 @@
 #include <gp_Pnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <SelectBasics_PickResult.hxx>
+#include <Standard_Dump.hxx>
 
 class Bnd_Box;
 class gp_Pnt;
@@ -115,6 +116,10 @@ public:
   //! Stores plane equation coefficients (in the following form:
   //! Ax + By + Cz + D = 0) to the given vector
   virtual void GetPlanes (NCollection_Vector<NCollection_Vec4<Standard_Real> >& thePlaneEquations) const = 0;
+
+  //! Dumps the content of me into the stream
+  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  { (void)theDepth; OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myActiveSelectionType) }
 
 protected:
   SelectionType myActiveSelectionType;      //!< Active selection type: point, box or polyline

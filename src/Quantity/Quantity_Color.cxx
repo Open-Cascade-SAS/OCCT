@@ -605,8 +605,7 @@ void Quantity_Color::Test()
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void Quantity_Color::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+void Quantity_Color::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, Quantity_Color);
   OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "RGB", 3, myRgb.r(), myRgb.g(), myRgb.b())
 }

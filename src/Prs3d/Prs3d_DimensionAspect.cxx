@@ -65,23 +65,22 @@ void Prs3d_DimensionAspect::SetCommonColor (const Quantity_Color& theColor)
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Prs3d_DimensionAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void Prs3d_DimensionAspect::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_DimensionAspect);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myLineAspect.get());
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get());
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myLineAspect.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myArrowAspect.get())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValueStringFormat);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myExtensionSize);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowTailSize);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowOrientation);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextHPosition);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextVPosition);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDisplayUnits);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsText3d);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextShaded);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsArrows3d);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValueStringFormat)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myExtensionSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowTailSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myArrowOrientation)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextHPosition)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextVPosition)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDisplayUnits)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsText3d)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextShaded)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsArrows3d)
 }
-

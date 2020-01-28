@@ -273,7 +273,7 @@ void gp_Mat::Power (const Standard_Integer N)
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void gp_Mat::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+void gp_Mat::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_VECTOR_CLASS (theOStream, gp_Mat, 9, Mat00, Mat01, Mat02, Mat10, Mat11, Mat12, Mat20, Mat21, Mat22);
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_Mat", 9, Mat00, Mat01, Mat02, Mat10, Mat11, Mat12, Mat20, Mat21, Mat22)
 }

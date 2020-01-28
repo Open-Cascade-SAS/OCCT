@@ -38,3 +38,17 @@ void Prs3d_PresentationShadow::CalculateBoundBox()
 {
   //
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Prs3d_PresentationShadow::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Graphic3d_Structure)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myParentAffinity.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myParentStructId)
+}

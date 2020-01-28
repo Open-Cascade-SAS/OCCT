@@ -47,6 +47,9 @@ public:
   //! Marks entity as active for selection
   void SetActiveForSelection() const { myIsActiveForSelection = Standard_True; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
   DEFINE_STANDARD_RTTIEXT(SelectMgr_SensitiveEntity,Standard_Transient) // Type definition
 
 private:

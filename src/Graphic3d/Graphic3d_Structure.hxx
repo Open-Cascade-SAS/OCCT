@@ -432,6 +432,9 @@ public:
   //! Returns the low-level structure
   const Handle(Graphic3d_CStructure)& CStructure() const { return myCStructure; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 protected:
 
   //! Transforms boundaries with <theTrsf> transformation.

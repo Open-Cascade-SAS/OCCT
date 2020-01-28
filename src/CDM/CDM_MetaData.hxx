@@ -84,6 +84,9 @@ Standard_OStream& operator << (Standard_OStream& anOStream);
   Standard_EXPORT void SetIsReadOnly();
   
   Standard_EXPORT void UnsetIsReadOnly();
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 
 friend class CDM_Reference;

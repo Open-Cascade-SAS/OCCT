@@ -19,6 +19,7 @@
 
 #include <Standard_SStream.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Standard_Dump.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <Message_Msg.hxx>
@@ -234,3 +235,13 @@ void TObj_Application::ErrorMessage (const TCollection_ExtendedString &theMsg,
   myMessenger->Send ( theMsg, theLevel );
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TObj_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDocStd_Application)
+}

@@ -20,6 +20,7 @@
 #include <CDM_MetaData.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
 #include <CDM_Reference.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -143,4 +144,25 @@ void CDM_MetaData::SetIsReadOnly() {
     
 void CDM_MetaData::UnsetIsReadOnly() {
   myIsReadOnly=Standard_False;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void CDM_MetaData::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsRetrieved)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDocument)
+  
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myFolder)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myVersion)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasVersion)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myFileName)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myPath)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDocumentVersion)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsReadOnly)
 }

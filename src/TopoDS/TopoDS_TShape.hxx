@@ -127,7 +127,7 @@ public:
   Standard_Integer NbChildren() const { return myShapes.Size(); }
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 friend class TopoDS_Iterator;
 friend class TopoDS_Builder;

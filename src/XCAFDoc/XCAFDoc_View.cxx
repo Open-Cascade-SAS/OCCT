@@ -313,3 +313,14 @@ void XCAFDoc_View::Paste(const Handle(TDF_Attribute)& /*Into*/,
                          const Handle(TDF_RelocationTable)& /*RT*/) const
 {
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_View::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+}

@@ -70,6 +70,9 @@ public:
   //! Returns the amount of points in set
   Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet,Select3D_SensitiveSet)
 
 protected:

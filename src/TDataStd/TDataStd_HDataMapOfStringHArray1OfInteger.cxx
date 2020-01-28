@@ -13,9 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
 
 #include <Standard_Type.hxx>
-#include <TDataStd_HDataMapOfStringHArray1OfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataStd_HDataMapOfStringHArray1OfInteger,Standard_Transient)
 

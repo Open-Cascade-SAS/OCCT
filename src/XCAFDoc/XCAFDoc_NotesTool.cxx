@@ -11,6 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_NotesTool.hxx>
+
 #include <Standard_GUID.hxx>
 #include <NCollection_Map.hxx>
 #include <TColStd_HArray1OfByte.hxx>
@@ -21,7 +23,6 @@
 #include <TDF_Tool.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_GraphNode.hxx>
-#include <XCAFDoc_NotesTool.hxx>
 #include <XCAFDoc_NoteBalloon.hxx>
 #include <XCAFDoc_NoteComment.hxx>
 #include <XCAFDoc_NoteBinData.hxx>
@@ -1059,4 +1060,15 @@ XCAFDoc_NotesTool::Dump(Standard_OStream& theOS) const
     << "Annotated items : " << NbAnnotatedItems() << "\n"
     ;
   return theOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_NotesTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }

@@ -712,3 +712,29 @@ Graphic3d_TypeOfMaterial Graphic3d_MaterialAspect::MaterialType (const Standard_
   const RawMaterial& aMat = THE_MATERIALS[theRank - 1];
   return aMat.MaterialType;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_MaterialAspect::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_MaterialAspect)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBSDF)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPBRMaterial)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myStringName)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColors[Graphic3d_TOR_AMBIENT])
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColors[Graphic3d_TOR_DIFFUSE])
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColors[Graphic3d_TOR_SPECULAR])
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColors[Graphic3d_TOR_EMISSION])
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTransparencyCoef)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRefractionIndex)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myShininess)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMaterialType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMaterialName)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRequestedMaterialName)
+}

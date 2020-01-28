@@ -13,13 +13,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_IntPackedMap.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_DeltaOnModificationOfIntPackedMap.hxx>
-#include <TDataStd_IntPackedMap.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_DeltaOnModification.hxx>
@@ -234,4 +235,21 @@ Handle(TDF_DeltaOnModification) TDataStd_IntPackedMap::DeltaOnModification
   else return new TDF_DefaultDeltaOnModification(OldAttribute);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_IntPackedMap::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (TColStd_PackedMapOfInteger::Iterator aMapIt (myMap->Map()); aMapIt.More(); aMapIt.Next())
+  {
+    Standard_Integer aKey = aMapIt.Key();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aKey)
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDelta)
+}

@@ -54,7 +54,7 @@ public:
   
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
   //! Writes the contents of this Datum3D to the stream S.
   Standard_EXPORT void ShallowDump (Standard_OStream& S) const;

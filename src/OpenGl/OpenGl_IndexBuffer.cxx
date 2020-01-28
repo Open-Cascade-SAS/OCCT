@@ -35,3 +35,13 @@ GLenum OpenGl_IndexBuffer::GetTarget() const
 {
   return GL_ELEMENT_ARRAY_BUFFER;
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_IndexBuffer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_VertexBuffer)
+}

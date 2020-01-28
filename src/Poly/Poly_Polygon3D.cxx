@@ -81,3 +81,17 @@ Handle(Poly_Polygon3D) Poly_Polygon3D::Copy() const
   aCopy->Deflection(myDeflection);
   return aCopy;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Poly_Polygon3D::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeflection)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNodes.Size())
+  if (!myParameters.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myParameters->Size())
+}

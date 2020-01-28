@@ -374,3 +374,16 @@ const
   T2.SetAffinity(Axis, Abs(T.ScaleFactor()));
   return T2;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_CylindricalSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_ElementarySurface)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, radius)
+}

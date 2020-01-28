@@ -254,12 +254,12 @@ gp_Pnt SelectMgr_BaseFrustum::DetectedPoint (const Standard_Real /*theDepth*/) c
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void SelectMgr_BaseFrustum::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+void SelectMgr_BaseFrustum::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_BaseFrustum);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPixelTolerance);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOrthographic);
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myBuilder);
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCamera);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPixelTolerance)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOrthographic)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myBuilder)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCamera)
 }

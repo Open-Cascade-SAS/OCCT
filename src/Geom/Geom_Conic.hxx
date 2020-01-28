@@ -116,6 +116,9 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT Standard_Boolean IsCN (const Standard_Integer N) const Standard_OVERRIDE;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(Geom_Conic,Geom_Curve)
 
 protected:

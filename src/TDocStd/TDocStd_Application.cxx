@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDocStd_Application.hxx>
 
 #include <CDF_Directory.hxx>
 #include <CDF_DirectoryIterator.hxx>
@@ -25,11 +26,11 @@
 #include <Plugin_Failure.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
 #include <TDocStd_PathParser.hxx>
@@ -596,4 +597,15 @@ void TDocStd_Application::OnAbortTransaction (const Handle(TDocStd_Document)&)
 void TDocStd_Application::OnCommitTransaction (const Handle(TDocStd_Document)&)
 {
   // nothing to do on this level
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDocStd_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDriverLoaded)
 }

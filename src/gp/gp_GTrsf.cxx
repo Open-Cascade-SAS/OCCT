@@ -22,6 +22,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
 void gp_GTrsf::SetTranslationPart (const gp_XYZ& Coord)
@@ -156,4 +157,19 @@ void gp_GTrsf::SetForm()
         shape = gp_Other;
         return;
       }
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void gp_GTrsf::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, gp_GTrsf)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &matrix)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &loc)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, shape)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, scale)
 }

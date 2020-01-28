@@ -13,14 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_GraphNode.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_DataSet.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <XCAFDoc_GraphNode.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_GraphNode,TDF_Attribute)
 
@@ -479,4 +480,29 @@ void XCAFDoc_GraphNode::BeforeForget()
   {
     UnSetChild (1);
   }
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_GraphNode::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (XCAFDoc_GraphNodeSequence::Iterator anIteratorFather (myFathers); anIteratorFather.More(); anIteratorFather.Next())
+  {
+    const Handle(XCAFDoc_GraphNode)& aFather = anIteratorFather.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aFather.get())
+  }
+  
+  for (XCAFDoc_GraphNodeSequence::Iterator anIteratorChild (myChildren); anIteratorChild.More(); anIteratorChild.Next())
+  {
+    const Handle(XCAFDoc_GraphNode)& aChild = anIteratorChild.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aChild.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myGraphID)
 }

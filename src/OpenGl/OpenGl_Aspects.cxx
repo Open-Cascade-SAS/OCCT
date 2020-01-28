@@ -115,10 +115,11 @@ void OpenGl_Aspects::Release (OpenGl_Context* theContext)
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void OpenGl_Aspects::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void OpenGl_Aspects::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_Aspects);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_Aspects)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_Element)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get());
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myShadingModel);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspect.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myShadingModel)
 }

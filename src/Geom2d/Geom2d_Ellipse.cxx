@@ -383,3 +383,17 @@ void Geom2d_Ellipse::Transform (const Trsf2d& T)
   minorRadius = minorRadius * Abs(T.ScaleFactor());
   pos.Transform(T);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom2d_Ellipse::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_Conic)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, majorRadius)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, minorRadius)
+}

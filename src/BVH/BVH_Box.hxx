@@ -18,8 +18,9 @@
 
 #include <BVH_Constants.hxx>
 #include <BVH_Types.hxx>
-#include <Standard_ShortReal.hxx>
+#include <Standard_Macro.hxx>
 #include <Standard_Dump.hxx>
+#include <Standard_ShortReal.hxx>
 
 #include <limits>
 
@@ -183,11 +184,27 @@ public:
   T Center (const Standard_Integer theAxis) const;
 
   //! Dumps the content of me into the stream
-  void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
   {
     (void)theDepth;
-    OCCT_DUMP_CLASS_BEGIN (theOStream, BVH_Box);
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsValid());
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsInited)
+
+    int n = Min (N, 3);
+    if (n == 1)
+    {
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinPoint[0])
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinPoint[0])
+    }
+    if (n == 2)
+    {
+      OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MinPoint", n, myMinPoint[0], myMinPoint[1])
+      OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MaxPoint", n, myMaxPoint[0], myMaxPoint[1])
+    }
+    if (n == 3)
+    {
+      OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MinPoint", n, myMinPoint[0], myMinPoint[1], myMinPoint[2])
+      OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MaxPoint", n, myMaxPoint[0], myMaxPoint[1], myMaxPoint[2])
+    }
   }
 
 public:

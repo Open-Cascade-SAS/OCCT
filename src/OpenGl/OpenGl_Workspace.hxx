@@ -205,6 +205,9 @@ public:
   //! Returns environment texture.
   const Handle(OpenGl_TextureSet)& EnvironmentTexture() const { return myEnvironmentTexture; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+  
 protected: //! @name protected fields
 
   OpenGl_View*           myView;

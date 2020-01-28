@@ -87,12 +87,14 @@ void SelectMgr_EntityOwner::HilightWithColor (const Handle(PrsMgr_PresentationMa
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void SelectMgr_EntityOwner::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+void SelectMgr_EntityOwner::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_EntityOwner);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, mySelectable);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mypriority);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsSelected);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFromDecomposition);
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, mySelectable)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mypriority)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsSelected)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFromDecomposition)
 }

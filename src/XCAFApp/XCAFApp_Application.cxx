@@ -15,6 +15,7 @@
 
 
 #include <Resource_Manager.hxx>
+#include <Standard_Dump.hxx>
 #include <TDF_Label.hxx>
 #include <TDocStd_Document.hxx>
 #include <TPrsStd_DriverTable.hxx>
@@ -66,4 +67,15 @@ Standard_CString XCAFApp_Application::ResourcesName()
 void XCAFApp_Application::InitDocument(const Handle(TDocStd_Document)& aDoc) const
 {
   XCAFDoc_DocumentTool::Set(aDoc->Main());
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFApp_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDocStd_Application)
 }

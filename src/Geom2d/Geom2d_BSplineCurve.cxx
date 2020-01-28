@@ -1238,3 +1238,33 @@ void Geom2d_BSplineCurve::PeriodicNormalization(Standard_Real&  Parameter) const
   }
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom2d_BSplineCurve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_BoundedCurve)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, rational)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, periodic)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, knotSet)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, smooth)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, deg)
+  if (!poles.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, poles->Size())
+
+  if (!weights.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, weights->Size())
+  if (!flatknots.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, flatknots->Size())
+  if (!knots.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, knots->Size())
+  if (!mults.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mults->Size())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, maxderivinv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, maxderivinvok)
+}

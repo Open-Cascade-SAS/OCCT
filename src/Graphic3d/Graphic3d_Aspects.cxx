@@ -67,20 +67,33 @@ void Graphic3d_Aspects::SetTextureMap (const Handle(Graphic3d_TextureMap)& theTe
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void Graphic3d_Aspects::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void Graphic3d_Aspects::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_Aspects);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myInteriorColor);
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBackInteriorColor);
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEdgeColor);
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPolygonOffset);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myInteriorColor)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBackInteriorColor)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEdgeColor)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPolygonOffset)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSkipFirstEdge);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDistinguishMaterials);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawEdges);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawSilhouette);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSuppressBackFaces);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToMapTexture);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextZoomable);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSkipFirstEdge)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDistinguishMaterials)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawEdges)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToDrawSilhouette)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToSuppressBackFaces)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToMapTexture)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsTextZoomable)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlphaCutoff)
+
+  if (!myTextFont.IsNull())
+  {
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myTextFont->String())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextStyle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextDisplayType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextFontAspect)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTextAngle)
 }

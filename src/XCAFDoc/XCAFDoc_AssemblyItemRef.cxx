@@ -13,6 +13,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_AssemblyItemRef.hxx>
+
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
@@ -24,7 +27,6 @@
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <XCAFDoc_AssemblyItemRef.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_AssemblyItemRef, TDF_Attribute)
 
@@ -292,4 +294,19 @@ XCAFDoc_AssemblyItemRef::Dump(Standard_OStream& theOS) const
   else if (IsSubshapeIndex())
     theOS << "/Subshape: " << myExtraId;
   return theOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_AssemblyItemRef::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myItemId)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myExtraRef)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myExtraId)
 }

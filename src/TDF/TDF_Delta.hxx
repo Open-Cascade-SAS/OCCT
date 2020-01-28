@@ -77,6 +77,9 @@ public:
 
   Standard_EXPORT void Dump (Standard_OStream& OS) const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 
 friend class TDF_Data;
 

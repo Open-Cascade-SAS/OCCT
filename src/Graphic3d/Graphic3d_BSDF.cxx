@@ -60,6 +60,18 @@ Graphic3d_Fresnel Graphic3d_Fresnel::CreateConductor (const Graphic3d_Vec3& theR
   return Graphic3d_Fresnel (Graphic3d_FM_SCHLICK, aFresnel);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_Fresnel::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_Fresnel)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFresnelType)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myFresnelData)
+}
+
 // =======================================================================
 // function : Graphic3d_BSDF
 // purpose  :
@@ -225,4 +237,23 @@ Graphic3d_BSDF Graphic3d_BSDF::CreateMetallicRoughness (const Graphic3d_PBRMater
   }
 
   return aBsdf;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_BSDF::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Graphic3d_BSDF)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Kc)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Kd)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Ks)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Kt)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Le)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Absorption)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &FresnelCoat)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &FresnelBase)
 }

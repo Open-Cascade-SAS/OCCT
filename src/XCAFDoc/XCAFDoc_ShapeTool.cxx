@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_ShapeTool.hxx>
 
 #include <BRep_Builder.hxx>
 #include <gp_Pnt.hxx>
@@ -51,7 +52,6 @@
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_Location.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ShapeTool,TDF_Attribute)
 
@@ -2142,4 +2142,44 @@ Handle(TDataStd_NamedData) XCAFDoc_ShapeTool::GetNamedProperties (const TopoDS_S
   aNamedProperty = GetNamedProperties (aLabel, theToCreate);
 
   return aNamedProperty;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_ShapeTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (XCAFDoc_DataMapOfShapeLabel::Iterator aShapeLabelIt (myShapeLabels); aShapeLabelIt.More(); aShapeLabelIt.Next())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aShapeLabelIt.Key())
+
+    TCollection_AsciiString aShapeLabel;
+    TDF_Tool::Entry (aShapeLabelIt.Value(), aShapeLabel);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aShapeLabel)
+  }
+  
+  for (XCAFDoc_DataMapOfShapeLabel::Iterator aSubShapeIt (mySubShapes); aSubShapeIt.More(); aSubShapeIt.Next())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aSubShapeIt.Key())
+
+    TCollection_AsciiString aSubShape;
+    TDF_Tool::Entry (aSubShapeIt.Value(), aSubShape);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSubShape)
+  }
+  
+  for (XCAFDoc_DataMapOfShapeLabel::Iterator aSimpleShapeIt (mySimpleShapes); aSimpleShapeIt.More(); aSimpleShapeIt.Next())
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aSimpleShapeIt.Key())
+
+    TCollection_AsciiString aSimpleShape;
+    TDF_Tool::Entry (aSimpleShapeIt.Value(), aSimpleShape);
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aSimpleShape)
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, hasSimpleShapes)
 }

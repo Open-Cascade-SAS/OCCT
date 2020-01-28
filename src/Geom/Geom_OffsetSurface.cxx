@@ -966,3 +966,21 @@ Standard_Boolean Geom_OffsetSurface::VOsculatingSurface(const Standard_Real U, c
 {
   return !myOscSurf.IsNull() && myOscSurf->VOscSurf(U, V, t, L);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_OffsetSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Surface)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, basisSurf.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, equivSurf.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, offsetValue)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myOscSurf.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myBasisSurfContinuity)
+}

@@ -267,6 +267,9 @@ public:
   //! Notification that is fired at each AbortTransaction event.
   Standard_EXPORT virtual void OnAbortTransaction (const Handle(TDocStd_Document)& theDoc);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
   DEFINE_STANDARD_RTTIEXT(TDocStd_Application,CDF_Application)
 
 protected:

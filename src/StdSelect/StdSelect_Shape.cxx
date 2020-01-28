@@ -71,3 +71,12 @@ void StdSelect_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
 {
   PrsMgr_PresentableObject::Compute(aProjector,aPresentation);
 }
+
+void StdSelect_Shape::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, PrsMgr_PresentableObject)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &mysh)
+}

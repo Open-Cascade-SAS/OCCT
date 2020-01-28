@@ -28,6 +28,7 @@
 #include <CDM_ReferenceIterator.hxx>
 #include <Resource_Manager.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_NoSuchObject.hxx>
@@ -1283,4 +1284,55 @@ Standard_Integer CDM_Document::StorageFormatVersion() const
 void CDM_Document::ChangeStorageFormatVersion(const Standard_Integer theVersion)
 {
   myStorageFormatVersion = theVersion;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void CDM_Document::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  for (TColStd_SequenceOfExtendedString::Iterator aCommentIt (myComments); aCommentIt.More(); aCommentIt.Next())
+  {
+    const TCollection_ExtendedString& aComment = aCommentIt.Value();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aComment)
+  }
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myPresentation)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myValidPresentation)
+
+  for (CDM_ListOfReferences::Iterator aFromReferenceIt (myFromReferences); aFromReferenceIt.More(); aFromReferenceIt.Next())
+  {
+    const Handle(CDM_Reference)& aFromReference = aFromReferenceIt.Value().get();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aFromReference.get())
+  }
+
+  for (CDM_ListOfReferences::Iterator aToReferenceIt (myToReferences); aToReferenceIt.More(); aToReferenceIt.Next())
+  {
+    const Handle(CDM_Reference)& aToReference = aToReferenceIt.Value().get();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aToReference.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVersion)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myActualReferenceIdentifier)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myStorageVersion)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myMetaData.get())
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedComment)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedFolder)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRequestedFolderIsDefined)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedName)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRequestedNameIsDefined)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRequestedPreviousVersionIsDefined)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myRequestedPreviousVersion)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myFileExtension)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDescription)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFileExtensionWasFound)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDescriptionWasFound)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myApplication.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myStorageFormatVersion)
 }

@@ -18,11 +18,12 @@
 //Version	Date		Purpose
 //		0.0	Sep 15 1997	Creation
 
+#include <TDocStd_XLinkIterator.hxx>
+
 #include <Standard_NoMoreObject.hxx>
 #include <TDF_Data.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_XLink.hxx>
-#include <TDocStd_XLinkIterator.hxx>
 #include <TDocStd_XLinkRoot.hxx>
 
 //=======================================================================

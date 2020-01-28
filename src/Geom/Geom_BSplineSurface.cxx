@@ -1272,3 +1272,46 @@ void Geom_BSplineSurface::SetWeightRow
   Rational(Weights, urational, vrational);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_BSplineSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_BoundedSurface)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, urational)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vrational)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, uperiodic)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vperiodic)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, uknotSet)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vknotSet)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Usmooth)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Vsmooth)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, udeg)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vdeg)
+
+  if (!poles.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, poles->Size())
+  if (!weights.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, weights->Size())
+  if (!ufknots.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, ufknots->Size())
+  if (!vfknots.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vfknots->Size())
+
+  if (!uknots.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, uknots->Size())
+  if (!vknots.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vknots->Size())
+  if (!umults.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, umults->Size())
+  if (!vmults.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vmults->Size())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, umaxderivinv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vmaxderivinv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, maxderivinvok)
+}

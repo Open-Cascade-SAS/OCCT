@@ -372,6 +372,9 @@ Standard_OStream& operator<< (Standard_OStream& anOS) const
   //! Should be private.
   Standard_EXPORT void Forget (const Standard_Integer aTransaction);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 
 friend class TDF_Data;
 friend class TDF_Label;

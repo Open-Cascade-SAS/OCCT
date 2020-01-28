@@ -232,3 +232,20 @@ void Select3D_SensitiveSet::Clear()
 {
   //
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void Select3D_SensitiveSet::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Select3D_SensitiveEntity)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myContent)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDetectedIdx)
+
+  Select3D_BndBox3d aBoundingBox = ((Select3D_SensitiveSet*)this)->BoundingBox();
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aBoundingBox)
+}

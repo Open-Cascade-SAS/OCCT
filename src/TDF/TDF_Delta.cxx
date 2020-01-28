@@ -19,6 +19,7 @@
 //		0.0	Sep  8 1997	Creation
 
 #include <Standard_OutOfRange.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_AttributeDelta.hxx>
@@ -221,4 +222,24 @@ void TDF_Delta::Dump(Standard_OStream& OS) const
     const Handle(TDF_AttributeDelta)& attDelta = itr.Value();
     OS<<"| "; attDelta->Dump(OS); OS<<std::endl;
   }
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDF_Delta::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myBeginTime)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myEndTime)
+
+  for (TDF_AttributeDeltaList::Iterator anAttDeltaListIt (myAttDeltaList); anAttDeltaListIt.More(); anAttDeltaListIt.Next())
+  {
+    const Handle(TDF_AttributeDelta)& anAttDeltaList = anAttDeltaListIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anAttDeltaList.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)
 }

@@ -197,4 +197,15 @@ void  BRep_PointRepresentation::Surface(const Handle(Geom_Surface)& )
   throw Standard_DomainError("BRep_PointRepresentation");
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_PointRepresentation::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myLocation)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myParameter)
+}
 

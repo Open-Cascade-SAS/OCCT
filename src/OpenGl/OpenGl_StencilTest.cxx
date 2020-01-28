@@ -15,6 +15,7 @@
 
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_StencilTest.hxx>
+#include <Standard_Dump.hxx>
 
 OpenGl_StencilTest::OpenGl_StencilTest()
 {
@@ -63,4 +64,16 @@ void OpenGl_StencilTest::SetOptions (const Standard_Boolean theIsEnabled)
 OpenGl_StencilTest::~OpenGl_StencilTest()
 {
   //
+}
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_StencilTest::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_StencilTest)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_Element)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsEnabled)
 }

@@ -23,6 +23,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_Dump.hxx>
 
 //=======================================================================
 //function : gp_Ax3
@@ -105,3 +106,12 @@ gp_Ax3  gp_Ax3::Mirrored(const gp_Ax2& A2)const
   return Temp;
 }
 
+
+void gp_Ax3::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "Location", 3, Location().X(), Location().Y(), Location().Z())
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "Direction", 3, Direction().X(), Direction().Y(), Direction().Z())
+
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "XDirection", 3, XDirection().X(), XDirection().Y(), XDirection().Z())
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "YDirection", 3, YDirection().X(), YDirection().Y(), YDirection().Z())
+}

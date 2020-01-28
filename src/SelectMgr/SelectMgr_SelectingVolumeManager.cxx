@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <SelectMgr_SelectingVolumeManager.hxx>
+#include <Standard_Dump.hxx>
 
 //=======================================================================
 // function : SelectMgr_SelectingVolumeManager
@@ -481,4 +482,25 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping (const SelectMgr_Selectin
   myViewClipPlanes   = theOther.myViewClipPlanes;
   myObjectClipPlanes = theOther.myObjectClipPlanes;
   myViewClipRange    = theOther.myViewClipRange;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void SelectMgr_SelectingVolumeManager::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const 
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_SelectingVolumeManager)
+
+  for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
+  {
+    const Handle(SelectMgr_BaseFrustum)& aSelectingVolume = mySelectingVolumes[anIdx];
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, aSelectingVolume.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myViewClipPlanes.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myObjectClipPlanes.get())
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myViewClipRange)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToAllowOverlap)
 }

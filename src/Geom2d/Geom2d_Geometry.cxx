@@ -133,3 +133,8 @@ Handle(Geom2d_Geometry) Geom2d_Geometry::Translated (const gp_Pnt2d& P1, const g
   G->Translate (P1, P2);
   return G;
 }
+
+void Geom2d_Geometry::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+}

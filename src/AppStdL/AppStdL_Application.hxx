@@ -34,6 +34,9 @@ public:
   //! resources
   Standard_EXPORT Standard_CString ResourcesName() Standard_OVERRIDE;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
   DEFINE_STANDARD_RTTIEXT(AppStdL_Application,TDocStd_Application)
 };
 

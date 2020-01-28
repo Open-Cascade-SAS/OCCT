@@ -236,12 +236,12 @@ Standard_Boolean TopLoc_Location::IsDifferent
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void TopLoc_Location::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void TopLoc_Location::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, TopLoc_Location);
+  OCCT_DUMP_CLASS_BEGIN (theOStream, TopLoc_Location)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Transformation());
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsIdentity());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Transformation())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsIdentity())
 }
 
 //=======================================================================

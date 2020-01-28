@@ -14,11 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_RealArray.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_DeltaOnModificationOfRealArray.hxx>
-#include <TDataStd_RealArray.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_DefaultDeltaOnModification.hxx>
 #include <TDF_DeltaOnModification.hxx>
@@ -331,4 +332,24 @@ Handle(TDF_DeltaOnModification) TDataStd_RealArray::DeltaOnModification
   if(myIsDelta)
     return new TDataStd_DeltaOnModificationOfRealArray(Handle(TDataStd_RealArray)::DownCast (OldAtt));
   else return new TDF_DefaultDeltaOnModification(OldAtt);
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_RealArray::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (TColStd_Array1OfReal::Iterator aValueIt (myValue->Array1()); aValueIt.More(); aValueIt.Next())
+  {
+    const Standard_Real& aValue = aValueIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsDelta)
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

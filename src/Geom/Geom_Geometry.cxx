@@ -165,3 +165,7 @@ Handle(Geom_Geometry) Geom_Geometry::Translated (const gp_Pnt& P1, const gp_Pnt&
 }
 
 
+void Geom_Geometry::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+}

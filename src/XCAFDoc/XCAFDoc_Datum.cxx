@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_Datum.hxx>
 
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
@@ -19,7 +20,6 @@
 #include <TDF_Label.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <XCAFDoc_Datum.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_RealArray.hxx>
@@ -547,3 +547,17 @@ void XCAFDoc_Datum::Paste(const Handle(TDF_Attribute)& theInto,
   Handle(XCAFDoc_Datum)::DownCast(theInto)->Set(myName,myDescription,myIdentification);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_Datum::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName.get())
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDescription.get())
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myIdentification.get())
+}

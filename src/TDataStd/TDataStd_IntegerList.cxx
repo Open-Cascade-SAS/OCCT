@@ -13,11 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_IntegerList.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
-#include <TDataStd_IntegerList.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
@@ -361,4 +362,22 @@ Standard_OStream& TDataStd_IntegerList::Dump (Standard_OStream& anOS) const
   anOS << sguid;
   anOS << std::endl;
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_IntegerList::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (TColStd_ListOfInteger::Iterator aListIt (myList); aListIt.More(); aListIt.Next())
+  {
+    const Standard_Integer& aValue = aListIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+  }
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

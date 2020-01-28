@@ -89,6 +89,9 @@ public:
     return myFresnelType;
   }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 protected:
 
   //! Creates new Fresnel reflectance factor.
@@ -184,6 +187,9 @@ public:
 
   //! Performs comparison of two BSDFs.
   Standard_EXPORT bool operator== (const Graphic3d_BSDF& theOther) const;
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 };
 

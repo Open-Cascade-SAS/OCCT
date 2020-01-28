@@ -1937,3 +1937,23 @@ void Geom_BezierSurface::Init
     weights.Nullify();
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_BezierSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_BoundedSurface)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, urational)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vrational)
+  if (!poles.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, poles->Size())
+  if (!weights.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, weights->Size())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, umaxderivinv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, vmaxderivinv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, maxderivinvok)
+}

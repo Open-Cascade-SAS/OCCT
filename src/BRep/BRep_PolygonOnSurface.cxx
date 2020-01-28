@@ -102,3 +102,16 @@ Handle(BRep_CurveRepresentation) BRep_PolygonOnSurface::Copy() const
   return P;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_PolygonOnSurface::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, BRep_CurveRepresentation)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPolygon2D.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySurface.get())
+}

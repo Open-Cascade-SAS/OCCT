@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_Current.hxx>
 
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd_Current.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Current,TDF_Attribute)
 
@@ -165,4 +167,18 @@ Standard_OStream& TDataStd_Current::Dump (Standard_OStream& anOS) const
   return anOS;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_Current::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  TCollection_AsciiString aLabel;
+  TDF_Tool::Entry (myLabel, aLabel);
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+}
 

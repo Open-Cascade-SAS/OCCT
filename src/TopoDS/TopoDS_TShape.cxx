@@ -25,8 +25,26 @@ IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TShape,Standard_Transient)
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void TopoDS_TShape::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+void TopoDS_TShape::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, TopoDS_TShape);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, ShapeType())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbChildren())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Free())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Free())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Locked())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Modified())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Checked())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Orientable())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Closed())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Infinite())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Convex())
 }

@@ -88,4 +88,14 @@ Standard_Real Geom_Curve::ParametricTransformation(const gp_Trsf& ) const
   return 1.;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_Curve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Geometry)
+}
 

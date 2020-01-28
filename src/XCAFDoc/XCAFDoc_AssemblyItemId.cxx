@@ -15,6 +15,8 @@
 
 #include <XCAFDoc_AssemblyItemId.hxx>
 
+#include <Standard_Dump.hxx>
+
 XCAFDoc_AssemblyItemId::XCAFDoc_AssemblyItemId()
 {
 
@@ -121,4 +123,19 @@ XCAFDoc_AssemblyItemId::ToString() const
   }
   aStr.Remove(1, 1);
   return aStr;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_AssemblyItemId::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, XCAFDoc_AssemblyItemId)
+
+  for (TColStd_ListOfAsciiString::Iterator aPathIt (myPath); aPathIt.More(); aPathIt.Next())
+  {
+    TCollection_AsciiString aPath = aPathIt.Value();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aPath)
+  }
 }

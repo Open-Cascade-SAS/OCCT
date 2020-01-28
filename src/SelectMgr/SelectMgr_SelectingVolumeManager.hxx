@@ -236,6 +236,9 @@ public:
     return mySelectingVolumes[myActiveSelectionType / 2]->GetPlanes (thePlaneEquations);
   }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 private:
   enum { Frustum, FrustumSet, VolumeTypesNb };       //!< Defines the amount of available selecting volumes
 

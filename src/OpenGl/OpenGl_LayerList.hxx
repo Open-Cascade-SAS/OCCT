@@ -25,6 +25,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 
+class OpenGl_FrameBuffer;
 class OpenGl_Structure;
 class OpenGl_Workspace;
 struct OpenGl_GlobalLayerSettings;
@@ -124,6 +125,9 @@ public:
 
   //! Assigns BVH tree builder for frustom culling.
   Standard_EXPORT void SetFrustumCullingBVHBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder);
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 protected:
 

@@ -48,6 +48,9 @@ public:
   //! any actions with documents in order to init application
   Standard_EXPORT static Handle(XCAFApp_Application) GetApplication();
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
   DEFINE_STANDARD_RTTIEXT(XCAFApp_Application,TDocStd_Application)
 
 protected:

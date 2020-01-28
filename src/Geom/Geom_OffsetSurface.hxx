@@ -357,6 +357,9 @@ public:
   inline GeomAbs_Shape GetBasisSurfContinuity() const
   { return myBasisSurfContinuity; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface,Geom_Surface)
 
 private:

@@ -446,3 +446,30 @@ bool OpenGl_Workspace::ShouldRender (const OpenGl_Element* theElement)
   }
   return true;
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUseZBuffer)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUseDepthWrite)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myNoneCulling)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myFrontCulling)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbSkippedTranspElems)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRenderFilter)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myDefaultAspects)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspectsSet)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspectsApplied.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToAllowFaceCulling)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAspectFaceHl)
+}

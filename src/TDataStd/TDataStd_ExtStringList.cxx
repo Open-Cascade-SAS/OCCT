@@ -13,11 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_ExtStringList.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDataStd_ExtStringList.hxx>
 #include <TDataStd_ListIteratorOfListOfExtendedString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
@@ -365,4 +366,21 @@ Standard_OStream& TDataStd_ExtStringList::Dump (Standard_OStream& anOS) const
   anOS << sguid;
   anOS << std::endl;
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_ExtStringList::DumpJson (Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  for (TDataStd_ListOfExtendedString::Iterator aListIt (myList); aListIt.More(); aListIt.Next())
+  {
+    const TCollection_ExtendedString& aValue = aListIt.Value();
+    OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aValue);
+  }
+
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

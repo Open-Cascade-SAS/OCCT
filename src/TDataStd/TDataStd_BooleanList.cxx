@@ -13,10 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_BooleanList.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
-#include <TDataStd_BooleanList.hxx>
 #include <TDataStd_ListIteratorOfListOfByte.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
@@ -305,4 +306,22 @@ Standard_OStream& TDataStd_BooleanList::Dump (Standard_OStream& anOS) const
   anOS << sguid;
   anOS << std::endl;
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_BooleanList::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  for (TDataStd_ListOfByte::Iterator aListIt (myList); aListIt.More(); aListIt.Next())
+  {
+    const Standard_Byte& aValue = aListIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aValue)
+  }
+  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }

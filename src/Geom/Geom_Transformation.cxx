@@ -16,6 +16,8 @@
 
 #include <Geom_Transformation.hxx>
 
+#include <Standard_Dump.hxx>
+
 IMPLEMENT_STANDARD_RTTIEXT(Geom_Transformation, Standard_Transient)
 
 Geom_Transformation::Geom_Transformation () { }
@@ -55,4 +57,9 @@ Handle(Geom_Transformation) Geom_Transformation::Powered (const Standard_Integer
 void Geom_Transformation::PreMultiply (const Handle(Geom_Transformation)& Other){
 
    gpTrsf.PreMultiply (Other->Trsf());
+}
+
+void Geom_Transformation::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &gpTrsf)
 }

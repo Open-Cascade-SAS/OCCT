@@ -65,8 +65,8 @@ public:
   Standard_EXPORT void SetFontSize (const Handle(OpenGl_Context)& theContext,
                                     const Standard_Integer        theFontSize);
 
-  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  Standard_EXPORT virtual void Release (OpenGl_Context* theContext);
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
 public: //! @name methods for compatibility with layers
 
@@ -99,6 +99,9 @@ public: //! @name methods for compatibility with layers
   Standard_EXPORT void Render (const Handle(OpenGl_Context)& theCtx,
                                const OpenGl_Aspects& theTextAspect,
                                unsigned int theResolution = Graphic3d_RenderingParams::THE_DEFAULT_RESOLUTION) const;
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
 //! @name obsolete methods
 public:

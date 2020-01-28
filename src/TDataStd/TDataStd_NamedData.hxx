@@ -283,6 +283,9 @@ public: //! @name TDF_Attribute interface
   Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(TDataStd_NamedData,TDF_Attribute)
 

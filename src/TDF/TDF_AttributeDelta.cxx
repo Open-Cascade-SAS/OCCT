@@ -18,11 +18,13 @@
 //Version	Date		Purpose
 //		0.0	Sep  8 1997	Creation
 
+#include <TDF_AttributeDelta.hxx>
+
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
-#include <TDF_AttributeDelta.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 
@@ -78,4 +80,19 @@ Standard_OStream& TDF_AttributeDelta::Dump(Standard_OStream& OS) const
   OS<<this->DynamicType()->Name()<<" at "<<entry;
   OS<<" on "<<Attribute()->DynamicType()->Name();
   return OS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDF_AttributeDelta::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAttribute.get())
+
+  TCollection_AsciiString aStrForTDF_Label;
+  TDF_Tool::Entry (myLabel, aStrForTDF_Label);
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aStrForTDF_Label)
 }

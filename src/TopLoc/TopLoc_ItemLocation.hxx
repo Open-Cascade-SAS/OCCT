@@ -51,7 +51,7 @@ public:
   Standard_EXPORT TopLoc_ItemLocation(const Handle(TopLoc_Datum3D)& D, const Standard_Integer P);
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth = -1) const;
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 
 friend class TopLoc_Location;

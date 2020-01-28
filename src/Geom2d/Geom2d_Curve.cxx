@@ -88,3 +88,14 @@ gp_Pnt2d  Geom2d_Curve::Value(const Standard_Real U)const
   D0(U,P);
   return P;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom2d_Curve::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_Geometry)
+}

@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <Poly_PolygonOnTriangulation.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Poly_PolygonOnTriangulation,Standard_Transient)
 
@@ -90,4 +91,18 @@ void Poly_PolygonOnTriangulation::SetParameters (const Handle(TColStd_HArray1OfR
     throw Standard_OutOfRange ("Poly_PolygonOnTriangulation::SetParameters() - invalid array size");
   }
   myParameters = theParameters;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Poly_PolygonOnTriangulation::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeflection)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNodes.Size())
+  if (!myParameters.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myParameters->Size())
 }

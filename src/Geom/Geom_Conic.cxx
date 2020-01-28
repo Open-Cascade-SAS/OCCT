@@ -69,3 +69,14 @@ Standard_Boolean Geom_Conic::IsCN (const Standard_Integer ) const
 {
   return Standard_True;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_Conic::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Curve)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &pos)
+}

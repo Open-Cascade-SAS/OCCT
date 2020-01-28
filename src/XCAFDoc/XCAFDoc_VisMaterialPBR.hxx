@@ -18,6 +18,7 @@
 #include <Graphic3d_Vec.hxx>
 #include <Image_Texture.hxx>
 #include <Quantity_ColorRGBA.hxx>
+#include <Standard_Dump.hxx>
 
 //! Metallic-roughness PBR material definition.
 struct XCAFDoc_VisMaterialPBR
@@ -69,6 +70,26 @@ struct XCAFDoc_VisMaterialPBR
         && theOther.Metallic == Metallic
         && theOther.Roughness == Roughness
         && theOther.RefractionIndex == RefractionIndex;
+  }
+  
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  {
+    OCCT_DUMP_CLASS_BEGIN (theOStream, XCAFDoc_VisMaterialPBR)
+
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, BaseColorTexture.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, MetallicRoughnessTexture.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, EmissiveTexture.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, OcclusionTexture.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, NormalTexture.get())
+
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &BaseColor)
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &EmissiveFactor)
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Metallic)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Roughness)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, RefractionIndex)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsDefined)
   }
 };
 

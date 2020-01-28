@@ -141,3 +141,22 @@ Handle(TopoDS_TShape) BRep_TEdge::EmptyCopy() const
   return TE;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void BRep_TEdge::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TopoDS_TEdge)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerance)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags)
+
+  for (BRep_ListIteratorOfListOfCurveRepresentation itr(myCurves); itr.More(); itr.Next())
+  {
+    const Handle(BRep_CurveRepresentation)& aCurveRepresentation = itr.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aCurveRepresentation.get())
+  }
+}

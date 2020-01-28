@@ -343,11 +343,17 @@ void OpenGl_Group::Release (const Handle(OpenGl_Context)& theGlCtx)
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void OpenGl_Group::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void OpenGl_Group::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_Group);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Graphic3d_Group);
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspects);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsRaytracable);
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Graphic3d_Group)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAspects)
+  for (OpenGl_ElementNode* aNode = myFirst; aNode != NULL; aNode = aNode->next)
+  {
+    OpenGl_Element* anElement = aNode->elem;
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anElement)
+  }
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsRaytracable)
 }

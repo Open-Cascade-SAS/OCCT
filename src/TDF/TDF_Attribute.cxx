@@ -19,6 +19,7 @@
 //		0.0	Feb  7 1997	Creation
 
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_ImmutableObject.hxx>
 #include <Standard_Type.hxx>
@@ -405,3 +406,22 @@ void TDF_Attribute::ExtendedDump
  TDF_AttributeIndexedMap& /*aMap*/) const
 { Dump(anOS); }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDF_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  TCollection_AsciiString aLabel;
+  TDF_Tool::Entry (Label(), aLabel);
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTransaction)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySavedTransaction)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFlags)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myNext.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myBackup.get())
+}

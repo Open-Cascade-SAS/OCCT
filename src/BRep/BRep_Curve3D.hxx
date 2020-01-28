@@ -54,6 +54,9 @@ public:
   //! Return a copy of this representation.
   Standard_EXPORT Handle(BRep_CurveRepresentation) Copy() const Standard_OVERRIDE;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 
 
 

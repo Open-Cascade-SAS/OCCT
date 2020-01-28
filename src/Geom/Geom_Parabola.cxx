@@ -306,4 +306,15 @@ Standard_Real Geom_Parabola::ParametricTransformation(const gp_Trsf& T) const
   return Abs(T.ScaleFactor());
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom_Parabola::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom_Conic)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, focalLength)
+}

@@ -1051,21 +1051,38 @@ void SelectMgr_ViewerSelector::AllowOverlapDetection (const Standard_Boolean the
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const 
+void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const 
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_ViewerSelector);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, preferclosest);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToUpdateTolerance);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mystored.Extent());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, preferclosest)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToUpdateTolerance)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mystored.Extent())
 
-  Standard_Integer aNbOfSelected = 0;
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &mySelectingVolumeMgr)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &mySelectableObjects)
+
+  Standard_Integer aNbOfSelectableObjects = 0;
   for (SelectMgr_SelectableObjectSet::Iterator aSelectableIt (mySelectableObjects); aSelectableIt.More(); aSelectableIt.Next())
   {
-    aNbOfSelected++;
+    aNbOfSelectableObjects++;
   }
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aNbOfSelected);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.Tolerance());
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.CustomTolerance());
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZLayerOrderMap.Size());
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aNbOfSelectableObjects)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.Tolerance())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTolerances.CustomTolerance())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZLayerOrderMap.Extent())
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myEntitySetBuilder.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCameraEye)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCameraDir)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCameraScale)
+
+  if (!myIndexes.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIndexes->Size())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurRank)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsLeftChildQueuedFirst)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myEntityIdx)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMapOfObjectSensitives.Extent())
 }

@@ -41,3 +41,15 @@ Poly_Polygon2D::Poly_Polygon2D(const TColgp_Array1OfPnt2d& Nodes):
   for (i = Nodes.Lower(); i <= Nodes.Upper(); i++)
     myNodes(j++) = Nodes(i);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Poly_Polygon2D::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeflection)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNodes.Size())
+}

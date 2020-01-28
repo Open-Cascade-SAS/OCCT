@@ -86,3 +86,42 @@ void AIS_InteractiveContext::PolygonOffsets(
     anObj->PolygonOffsets( aMode, aFactor, aUnits );
 }
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void AIS_InteractiveContext::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myObjects.Size())
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, mgrSelector.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainPM.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainVwr.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myMainSel.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myLastActiveView)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myLastPicked.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToHilightSelected)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, mySelection.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myFilters.get())
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myDefaultDrawer.get())
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_Selected])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_Dynamic])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_LocalSelected])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_LocalDynamic])
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStyles[Prs3d_TypeOfHighlight_SubIntensity])
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDetectedSeq.Size())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurDetected)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurHighlighted)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPickingStrategy)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAutoHilight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsAutoActivateSelMode)
+}

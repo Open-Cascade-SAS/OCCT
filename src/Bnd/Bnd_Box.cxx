@@ -975,13 +975,11 @@ void Bnd_Box::Dump () const
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void Bnd_Box::DumpJson (Standard_OStream& theOStream, const Standard_Integer) const
+void Bnd_Box::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, Bnd_Box);
-
   OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "CornerMin", 3, Xmin, Ymin, Zmin)
   OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "CornerMax", 3, Xmax, Ymax, Zmax)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Gap);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Flags);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Gap)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Flags)
 }

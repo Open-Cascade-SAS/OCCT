@@ -90,6 +90,9 @@ public:
   //! Sets basic presentation fill area aspect.
   virtual void SetBasicFillAreaAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspect) { myBasicFillAreaAspect = theAspect; }
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
 protected:
 
   Handle(Graphic3d_AspectFillArea3d) myBasicFillAreaAspect; //!< presentation fill area aspect

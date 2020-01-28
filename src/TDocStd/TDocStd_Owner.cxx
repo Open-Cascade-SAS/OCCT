@@ -14,14 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDocStd_Owner.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Data.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDocStd_Document.hxx>
-#include <TDocStd_Owner.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Owner,TDF_Attribute)
 
@@ -145,5 +146,16 @@ Standard_OStream& TDocStd_Owner::Dump (Standard_OStream& anOS) const
 {  
   anOS << "Owner";
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDocStd_Owner::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDocument.get())
 }
 

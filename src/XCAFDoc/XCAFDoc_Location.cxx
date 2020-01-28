@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_Location.hxx>
 
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
@@ -20,7 +21,6 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TopLoc_Location.hxx>
-#include <XCAFDoc_Location.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Location,TDF_Attribute)
 
@@ -121,3 +121,15 @@ const Standard_GUID& XCAFDoc_Location::ID() const
 
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_Location::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myLocation)
+}

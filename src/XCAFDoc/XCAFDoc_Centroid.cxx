@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_Centroid.hxx>
 
 #include <gp_Pnt.hxx>
 #include <Standard_GUID.hxx>
@@ -20,7 +21,6 @@
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <XCAFDoc_Centroid.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Centroid,TDF_Attribute)
 
@@ -148,4 +148,17 @@ Standard_OStream& XCAFDoc_Centroid::Dump (Standard_OStream& anOS) const
   anOS << myCentroid.Y() << ",";
   anOS << myCentroid.Z() << ")";
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_Centroid::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCentroid)
 }

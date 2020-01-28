@@ -34,6 +34,7 @@
 #include <TDF_DeltaOnRemoval.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
+#include <TDF_Tool.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_CopyShape.hxx>
 #include <TNaming_DeltaOnModification.hxx>
@@ -89,6 +90,9 @@ public:
   //      et Trans n est pas posterieure a son BackUp
   Standard_Boolean IsValidInTrans(Standard_Integer Trans);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
   // Memory management
   DEFINE_STANDARD_ALLOC
   
@@ -133,6 +137,23 @@ Standard_Boolean TNaming_Node::IsValidInTrans(Standard_Integer Trans)
     return 1;
   }
   return 0;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TNaming_Node::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, TNaming_Node)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myOld)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myNew)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myAtt)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, nextSameAttribute)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, nextSameOld)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, nextSameNew)
 }
 
 //**********************************************************************
@@ -1472,6 +1493,17 @@ Handle(TNaming_NamedShape) TNaming_RefShape::NamedShape() const
   return myFirstUse->myAtt;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TNaming_RefShape::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, TNaming_NamedShape);
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myShape);
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myFirstUse);
+}
 
 //**********************************************************************
 //Methods of the TNaming_Tool class
@@ -1625,4 +1657,21 @@ Standard_Integer TNaming_Tool::ValidUntil (const TopoDS_Shape&               S,
     Node = Node->NextSameShape(RS);
   }
   return Until;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TNaming_NamedShape::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+  
+  TCollection_AsciiString aLabel;
+  TDF_Tool::Entry (myNode->Label(), aLabel);
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aLabel)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myEvolution)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVersion)
 }

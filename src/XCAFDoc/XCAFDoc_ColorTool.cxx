@@ -11,8 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_ColorTool.hxx>
 
 #include <Quantity_Color.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
@@ -26,7 +28,6 @@
 #include <TopoDS_Shape.hxx>
 #include <XCAFDoc.hxx>
 #include <XCAFDoc_Color.hxx>
-#include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -797,4 +798,17 @@ Standard_Boolean XCAFDoc_ColorTool::ReverseChainsOfTreeNodes()
     }
   }
   return Standard_True;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_ColorTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+   
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myShapeTool.get())
 }

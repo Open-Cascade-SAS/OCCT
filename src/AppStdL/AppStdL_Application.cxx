@@ -16,6 +16,7 @@
 //AGV 15/10/01 : Add XmlOcaf support; add MessageDriver support
 
 #include <AppStdL_Application.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AppStdL_Application,TDocStd_Application)
 
@@ -30,3 +31,13 @@ Standard_CString AppStdL_Application::ResourcesName()
   return aRes;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void AppStdL_Application::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDocStd_Application)
+}

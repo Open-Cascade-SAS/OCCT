@@ -19,6 +19,7 @@
 #include <gp_Pnt.hxx>
 #include <Poly_Triangle.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 
@@ -308,4 +309,22 @@ gp_Dir Poly_Triangulation::Normal (const Standard_Integer theIndex) const
            myNormals->Value(theIndex * 3));
 
   return N;
+}
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Poly_Triangulation::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeflection)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNodes.Size())
+  if (!myUVNodes.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUVNodes->Size())
+  if (!myNormals.IsNull())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNormals->Size())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTriangles.Size())
 }

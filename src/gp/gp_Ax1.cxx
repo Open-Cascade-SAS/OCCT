@@ -27,6 +27,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
+#include <Standard_Dump.hxx>
 
 Standard_Boolean gp_Ax1::IsCoaxial
 (const gp_Ax1& Other, 
@@ -84,3 +85,8 @@ gp_Ax1 gp_Ax1::Mirrored (const gp_Ax2& A2) const
   return A1;
 }
 
+void gp_Ax1::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "Location", 3, loc.X(), loc.Y(), loc.Z())
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "Direction", 3, vdir.X(), vdir.Y(), vdir.Z())
+}

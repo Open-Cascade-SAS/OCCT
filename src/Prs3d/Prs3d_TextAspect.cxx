@@ -53,15 +53,14 @@ Prs3d_TextAspect::Prs3d_TextAspect (const Handle(Graphic3d_AspectText3d)& theAsp
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Prs3d_TextAspect::DumpJson (Standard_OStream& theOStream, const Standard_Integer theDepth) const
+void Prs3d_TextAspect::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_CLASS_BEGIN (theOStream, Prs3d_TextAspect);
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get());
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHeight);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHorizontalJustification);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVerticalJustification);
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOrientation);
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHeight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHorizontalJustification)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVerticalJustification)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOrientation)
 }
-

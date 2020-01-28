@@ -21,6 +21,7 @@
 #include <gp_XY.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
 Standard_Real gp_Dir2d::Angle (const gp_Dir2d& Other) const
@@ -101,3 +102,7 @@ gp_Dir2d gp_Dir2d::Mirrored (const gp_Ax2d& A) const
   return V;
 }
 
+void gp_Dir2d::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_Dir2d", 2, coord.X(), coord.Y())
+}

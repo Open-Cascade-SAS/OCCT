@@ -14,12 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd_Expression.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TDataStd_Expression.hxx>
 #include <TDataStd_Variable.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
@@ -173,3 +174,21 @@ Standard_OStream& TDataStd_Expression::Dump(Standard_OStream& anOS) const
   return anOS;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDataStd_Expression::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myExpression)
+
+  for (TDF_AttributeList::Iterator aVariableIt (myVariables); aVariableIt.More(); aVariableIt.Next())
+  {
+    const Handle(TDF_Attribute)& anAttribute = aVariableIt.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anAttribute.get())
+  }
+}

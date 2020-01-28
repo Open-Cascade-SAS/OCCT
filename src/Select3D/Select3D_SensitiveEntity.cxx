@@ -30,3 +30,26 @@ Select3D_SensitiveEntity::Select3D_SensitiveEntity (const Handle(SelectMgr_Entit
 {
   //
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void Select3D_SensitiveEntity::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myOwnerId.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySFactor)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, NbSubElements());
+
+  gp_Pnt aCenterOfGeometry = CenterOfGeometry();
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aCenterOfGeometry)
+
+  Standard_Boolean aHasInitLocation = HasInitLocation();
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aHasInitLocation)
+
+  gp_GTrsf anInvInitLocation = InvInitLocation();
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &anInvInitLocation)
+}

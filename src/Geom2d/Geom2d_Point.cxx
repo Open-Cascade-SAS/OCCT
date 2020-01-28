@@ -37,3 +37,14 @@ Standard_Real Geom2d_Point::SquareDistance (const Handle(Geom2d_Point)& Other) c
   gp_Pnt2d P2 = Other->Pnt2d ();
   return P1.SquareDistance (P2);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Geom2d_Point::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Geom2d_Geometry)
+}

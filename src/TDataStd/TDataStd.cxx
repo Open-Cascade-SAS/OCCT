@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <TDataStd.hxx>
 
 #include <Standard_GUID.hxx>
-#include <TDataStd.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_IntegerArray.hxx>

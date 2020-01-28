@@ -838,3 +838,14 @@ void OpenGl_GraduatedTrihedron::Axis::Release (OpenGl_Context* theCtx)
   Line    .Release (theCtx);
   Arrow   .Release (theCtx);
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void OpenGl_GraduatedTrihedron::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, OpenGl_GraduatedTrihedron)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, OpenGl_Element)
+}

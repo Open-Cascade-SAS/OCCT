@@ -11,14 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <XCAFDoc_Material.hxx>
 
+#include <Standard_Dump.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
-#include <XCAFDoc_Material.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Material,TDF_Attribute)
 
@@ -188,3 +189,19 @@ void XCAFDoc_Material::Paste(const Handle(TDF_Attribute)& Into,
                                                 myDensName,myDensValType);
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void XCAFDoc_Material::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName.get())
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDescription.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDensity)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDensName.get())
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myDensValType.get())
+}

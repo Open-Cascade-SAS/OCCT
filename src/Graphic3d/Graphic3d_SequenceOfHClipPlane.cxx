@@ -58,3 +58,18 @@ bool Graphic3d_SequenceOfHClipPlane::Remove (const Handle(Graphic3d_ClipPlane)& 
   }
   return false;
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Graphic3d_SequenceOfHClipPlane::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToOverrideGlobal)
+
+  for (NCollection_Sequence<Handle(Graphic3d_ClipPlane)>::Iterator anIterator (myItems); anIterator.More(); anIterator.Next())
+  {
+    const Handle(Graphic3d_ClipPlane)& aClipPlane = anIterator.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aClipPlane.get())
+  }
+}

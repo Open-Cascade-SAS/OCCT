@@ -48,6 +48,10 @@ public:
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   virtual Standard_Size EstimatedDataSize() const = 0;
 
+  //! Dumps the content of me into the stream
+  virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const 
+  { (void)theOStream; (void)theDepth; };
+
 private:
 
   //! Copy should be performed only within Handles!

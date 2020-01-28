@@ -15,6 +15,7 @@
 
 
 #include <NCollection_IncAllocator.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
@@ -443,4 +444,28 @@ Standard_OStream& TDF_Data::Dump(Standard_OStream& anOS) const
   anOS<<"Current transaction: "<<myTransaction;
   anOS<<"; Current tick: "<<myTime<<";"<<std::endl;
   return anOS;
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void TDF_Data::DumpJson (Standard_OStream& theOStream, Standard_Integer /*theDepth*/) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  TCollection_AsciiString aStrForTDF_Label;
+  TDF_Tool::Entry (myRoot, aStrForTDF_Label);
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, aStrForTDF_Label)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTransaction)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNbTouchedAtt)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myNotUndoMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myTime)
+  for (TColStd_ListOfInteger::Iterator aTimeIt (myTimes); aTimeIt.More(); aTimeIt.Next())
+  {
+    const Standard_Integer aTime = aTimeIt.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aTime)
+  }
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAllowModification)
 }
