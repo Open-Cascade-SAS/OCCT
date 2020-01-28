@@ -51,6 +51,9 @@ public:
   //! Empty constructor.
   Standard_EXPORT AIS_ViewController();
 
+  //! Destructor.
+  Standard_EXPORT virtual ~AIS_ViewController();
+
   //! Return input buffer.
   const AIS_ViewInputBuffer& InputBuffer (AIS_ViewInputBufferType theType) const { return theType == AIS_ViewInputBufferType_UI ? myUI : myGL; }
 
