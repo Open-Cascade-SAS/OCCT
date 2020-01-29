@@ -25,6 +25,95 @@
 IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Presentation,TDF_Attribute)
 
 //=======================================================================
+//function : getColorNameFromOldEnum
+//purpose  :
+//=======================================================================
+Quantity_NameOfColor TDataXtd_Presentation::getColorNameFromOldEnum (Standard_Integer theOld)
+{
+  Standard_Integer aNew = theOld;
+  if (theOld >= 43)  { --aNew; }  // Quantity_NOC_CHARTREUSE1 merged to Quantity_NOC_CHARTREUSE1
+  if (theOld >= 124) { --aNew; }  // Quantity_NOC_GOLD1 merged to Quantity_NOC_GOLD
+  if (theOld >= 136 && theOld < 223)
+  {
+    if (theOld == 146) { return Quantity_NOC_GRAY2; }
+    if (theOld == 157) { return Quantity_NOC_GRAY3; }
+    if (theOld == 168) { return Quantity_NOC_GRAY4; }
+    if (theOld == 179) { return Quantity_NOC_GRAY5; }
+    if (theOld == 190) { return Quantity_NOC_GRAY6; }
+    if (theOld == 201) { return Quantity_NOC_GRAY7; }
+    if (theOld == 212) { return Quantity_NOC_GRAY8; }
+    if (theOld == 222) { return Quantity_NOC_GRAY9; }
+
+    if      (theOld >  212) { aNew += 1; } // old Quantity_NOC_GRAY8
+    else if (theOld >  201) { aNew += 2; } // old Quantity_NOC_GRAY7
+    else if (theOld >  190) { aNew += 3; } // old Quantity_NOC_GRAY6
+    else if (theOld >  179) { aNew += 4; } // old Quantity_NOC_GRAY5
+    else if (theOld >  168) { aNew += 5; } // old Quantity_NOC_GRAY4
+    else if (theOld >  157) { aNew += 6; } // old Quantity_NOC_GRAY3
+    else if (theOld >  146) { aNew += 7; } // old Quantity_NOC_GRAY2
+    else                    { aNew += 8; }
+  }
+
+  if (theOld >  228) { aNew+=3; } // moved Quantity_NOC_GRAY96, 97, 98
+  if (theOld >= 230) { --aNew; }  // Quantity_NOC_GREEN1 merged to Quantity_NOC_GREEN
+  if (theOld == 235) { return Quantity_NOC_GRAY97; }
+  if (theOld == 236) { return Quantity_NOC_GRAY98; }
+  if (theOld == 237) { return Quantity_NOC_GRAY99; }
+  if (theOld >= 238) { aNew-=3; } // moved Quantity_NOC_GRAY96, 97, 98
+  if (theOld >= 360) { --aNew; }  // Quantity_NOC_ORANGE1 merged to Quantity_NOC_ORANGE
+  if (theOld >= 365) { --aNew; }  // Quantity_NOC_ORANGERED1 merged to Quantity_NOC_ORANGERED
+  if (theOld >= 413) { --aNew; }  // Quantity_NOC_RED1 merged to Quantity_NOC_RED
+  if (theOld >= 489) { --aNew; }  // Quantity_NOC_TOMATO1 merged to Quantity_NOC_TOMATO
+  if (theOld >= 511) { --aNew; }  // Quantity_NOC_YELLOW1 merged to Quantity_NOC_YELLOW
+  if (aNew > Quantity_NOC_WHITE) { return Quantity_NOC_WHITE; }
+  return (Quantity_NameOfColor )aNew;
+}
+
+//=======================================================================
+//function : getOldColorNameFromNewEnum
+//purpose  :
+//=======================================================================
+Standard_Integer TDataXtd_Presentation::getOldColorNameFromNewEnum (Quantity_NameOfColor theNew)
+{
+  Standard_Integer anOld = theNew;
+  if (theNew >= Quantity_NOC_CHARTREUSE2)  { ++anOld; }  // Quantity_NOC_CHARTREUSE1 merged to Quantity_NOC_CHARTREUSE1
+  if (theNew >= Quantity_NOC_GOLD2)        { ++anOld; }  // Quantity_NOC_GOLD1 merged to Quantity_NOC_GOLD
+  if (theNew >= Quantity_NOC_GRAY2 && theNew <= Quantity_NOC_GRAY89)
+  {
+    if (theNew == Quantity_NOC_GRAY2) { return 146; }
+    if (theNew == Quantity_NOC_GRAY3) { return 157; }
+    if (theNew == Quantity_NOC_GRAY4) { return 168; }
+    if (theNew == Quantity_NOC_GRAY5) { return 179; }
+    if (theNew == Quantity_NOC_GRAY6) { return 190; }
+    if (theNew == Quantity_NOC_GRAY7) { return 201; }
+    if (theNew == Quantity_NOC_GRAY8) { return 212; }
+    if (theNew == Quantity_NOC_GRAY9) { return 222; }
+
+    if      (theNew >= Quantity_NOC_GRAY80) { anOld -= 1; }
+    else if (theNew >= Quantity_NOC_GRAY70) { anOld -= 2; }
+    else if (theNew >= Quantity_NOC_GRAY60) { anOld -= 3; }
+    else if (theNew >= Quantity_NOC_GRAY50) { anOld -= 4; }
+    else if (theNew >= Quantity_NOC_GRAY40) { anOld -= 5; }
+    else if (theNew >= Quantity_NOC_GRAY30) { anOld -= 6; }
+    else if (theNew >= Quantity_NOC_GRAY20) { anOld -= 7; }
+    else                                    { anOld -= 8; }
+  }
+  if (theNew == Quantity_NOC_GRAY97) { return 235; }
+  if (theNew == Quantity_NOC_GRAY98) { return 236; }
+  if (theNew == Quantity_NOC_GRAY99) { return 237; }
+
+  if (theNew >= Quantity_NOC_GREEN)      { anOld -= 3; } // moved Quantity_NOC_GRAY96, 97, 98
+  if (theNew >= Quantity_NOC_GREEN2)     { ++anOld; }    // Quantity_NOC_GREEN1 merged to Quantity_NOC_GREEN
+  if (theNew >= Quantity_NOC_HONEYDEW)   { anOld += 3; } // moved Quantity_NOC_GRAY96, 97, 98
+  if (theNew >= Quantity_NOC_ORANGE2)    { ++anOld; }    // Quantity_NOC_ORANGE1 merged to Quantity_NOC_ORANGE
+  if (theNew >= Quantity_NOC_ORANGERED2) { ++anOld; }    // Quantity_NOC_ORANGERED1 merged to Quantity_NOC_ORANGERED
+  if (theNew >= Quantity_NOC_RED2)       { ++anOld; }    // Quantity_NOC_RED1 merged to Quantity_NOC_RED
+  if (theNew >= Quantity_NOC_TOMATO2)    { ++anOld; }    // Quantity_NOC_TOMATO1 merged to Quantity_NOC_TOMATO
+  if (theNew >= Quantity_NOC_YELLOW2)    { ++anOld; }    // Quantity_NOC_YELLOW1 merged to Quantity_NOC_YELLOW
+  return anOld;
+}
+
+//=======================================================================
 //function : TDataXtd_Presentation
 //purpose  : Default constructor.
 //=======================================================================

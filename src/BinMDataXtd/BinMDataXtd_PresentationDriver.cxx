@@ -18,6 +18,7 @@
 #include <TDataXtd_Presentation.hxx>
 #include <BinObjMgt_Persistent.hxx>
 #include <Message_Messenger.hxx>
+#include <Quantity_Color.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataXtd_PresentationDriver,BinMDF_ADriver)
 
@@ -70,9 +71,17 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste
   ok = theSource >> aValue;
   if (!ok) return ok;
   if ( aValue != -1 )
-    anAttribute->SetColor((Quantity_NameOfColor)aValue);
+  {
+    Quantity_NameOfColor aNameOfColor = TDataXtd_Presentation::getColorNameFromOldEnum (aValue);
+    if (aNameOfColor <= Quantity_NOC_WHITE)
+    {
+      anAttribute->SetColor (aNameOfColor);
+    }
+  }
   else
+  {
     anAttribute->UnsetColor();
+  }
 
   // Material
   ok = theSource >> aValue;
@@ -107,7 +116,7 @@ Standard_Boolean BinMDataXtd_PresentationDriver::Paste
   else
     anAttribute->UnsetMode();
 
-  return ok;
+  return true;
 }
 
 //=======================================================================
@@ -129,9 +138,14 @@ void BinMDataXtd_PresentationDriver::Paste(const Handle(TDF_Attribute)& theSourc
 
   // Color
   if (anAttribute->HasOwnColor())
-    theTarget.PutInteger(anAttribute->Color());
+  {
+    const Standard_Integer anOldEnum = TDataXtd_Presentation::getOldColorNameFromNewEnum (anAttribute->Color());
+    theTarget.PutInteger (anOldEnum);
+  }
   else
+  {
     theTarget.PutInteger(-1);
+  }
 
   // Material
   if (anAttribute->HasOwnMaterial())

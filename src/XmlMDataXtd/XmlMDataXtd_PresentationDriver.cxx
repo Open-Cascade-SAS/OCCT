@@ -20,8 +20,8 @@
 #include <TDF_Attribute.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
-
 #include <TDataXtd_Presentation.hxx>
+#include <Quantity_Color.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataXtd_PresentationDriver,XmlMDF_ADriver)
 
@@ -96,7 +96,9 @@ Standard_Boolean XmlMDataXtd_PresentationDriver::Paste
       myMessageDriver->Send (aMessageString, Message_Fail);
       return Standard_False;
     }
-    aTPrs->SetColor((Quantity_NameOfColor)anIValue);
+
+    const Quantity_NameOfColor aNameOfColor = TDataXtd_Presentation::getColorNameFromOldEnum (anIValue);
+    aTPrs->SetColor(aNameOfColor);
   }
   else
   {
@@ -209,7 +211,7 @@ void XmlMDataXtd_PresentationDriver::Paste
   // color
   if (aTPrs->HasOwnColor())
   {
-    aNb = aTPrs->Color();
+    aNb = TDataXtd_Presentation::getOldColorNameFromNewEnum (aTPrs->Color());
     theTarget.Element().setAttribute(::ColorString(), aNb);
   }
 

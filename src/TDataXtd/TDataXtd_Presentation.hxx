@@ -151,6 +151,14 @@ public:
 
   Standard_EXPORT void UnsetSelectionMode();
 
+public:
+  //! Convert values of old Quantity_NameOfColor to new enumeration for reading old documents
+  //! after #0030969 (Coding Rules - refactor Quantity_Color.cxx color table definition).
+  Standard_EXPORT static Quantity_NameOfColor getColorNameFromOldEnum (Standard_Integer theOld);
+
+  //! Convert Quantity_NameOfColor to old enumeration value for writing documents in compatible format.
+  Standard_EXPORT static Standard_Integer getOldColorNameFromNewEnum (Quantity_NameOfColor theNew);
+
 private:
   Standard_GUID  myDriverGUID;
   Quantity_NameOfColor myColor;
