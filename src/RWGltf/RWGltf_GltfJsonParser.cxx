@@ -1522,7 +1522,7 @@ bool RWGltf_GltfJsonParser::gltfParseAccessor (const Handle(RWGltf_GltfLatePrimi
   const RWGltf_JsonValue* aTypeStr        = findObjectMember (theAccessor, "type");
   const RWGltf_JsonValue* aBufferViewName = findObjectMember (theAccessor, "bufferView");
   const RWGltf_JsonValue* aByteOffset     = findObjectMember (theAccessor, "byteOffset");
-  const RWGltf_JsonValue* aByteStride     = findObjectMember (theAccessor, "byteStride");
+  const RWGltf_JsonValue* aByteStride     = findObjectMember (theAccessor, "byteStride"); // byteStride was part of bufferView in glTF 1.0
   const RWGltf_JsonValue* aCompType       = findObjectMember (theAccessor, "componentType");
   const RWGltf_JsonValue* aCount          = findObjectMember (theAccessor, "count");
   if (aTypeStr == NULL
@@ -1664,6 +1664,7 @@ bool RWGltf_GltfJsonParser::gltfParseBufferView (const Handle(RWGltf_GltfLatePri
   const RWGltf_JsonValue* aBufferName = findObjectMember (theBufferView, "buffer");
   const RWGltf_JsonValue* aByteLength = findObjectMember (theBufferView, "byteLength");
   const RWGltf_JsonValue* aByteOffset = findObjectMember (theBufferView, "byteOffset");
+  const RWGltf_JsonValue* aByteStride = findObjectMember (theBufferView, "byteStride"); // byteStride is part of bufferView since glTF 2.0
   const RWGltf_JsonValue* aTarget     = findObjectMember (theBufferView, "target");
   if (aBufferName == NULL)
   {
@@ -1676,6 +1677,9 @@ bool RWGltf_GltfJsonParser::gltfParseBufferView (const Handle(RWGltf_GltfLatePri
                        : 0;
   aBuffView.ByteLength = aByteLength != NULL && aByteLength->IsNumber()
                        ? (int64_t )aByteLength->GetDouble()
+                       : 0;
+  aBuffView.ByteStride = aByteStride != NULL && aByteStride->IsInt()
+                       ? aByteStride->GetInt()
                        : 0;
   if (aTarget != NULL && aTarget->IsInt())
   {
@@ -1696,6 +1700,12 @@ bool RWGltf_GltfJsonParser::gltfParseBufferView (const Handle(RWGltf_GltfLatePri
   else if (aBuffView.ByteOffset < 0)
   {
     reportGltfError ("BufferView '" + theName + "' defines invalid byteOffset.");
+    return false;
+  }
+  else if (aBuffView.ByteStride < 0
+        || aBuffView.ByteStride > 255)
+  {
+    reportGltfError ("BufferView '" + theName + "' defines invalid byteStride.");
     return false;
   }
 
@@ -1726,6 +1736,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer (const Handle(RWGltf_GltfLatePrimiti
   const RWGltf_JsonValue* anUriVal      = findObjectMember (theBuffer, "uri");
 
   int64_t anOffset = theView.ByteOffset + theAccessor.ByteOffset;
+  const int32_t aByteStride = theAccessor.ByteStride != 0 ? theView.ByteStride : theView.ByteStride;
   bool isBinary = false;
   if (myIsBinary)
   {
@@ -1738,6 +1749,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer (const Handle(RWGltf_GltfLatePrimiti
 
     RWGltf_GltfPrimArrayData& aData = theMeshData->AddPrimArrayData (theType);
     aData.Accessor = theAccessor;
+    aData.Accessor.ByteStride = aByteStride;
     aData.StreamOffset = anOffset;
     aData.StreamUri = myFilePath;
     return true;
@@ -1755,6 +1767,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer (const Handle(RWGltf_GltfLatePrimiti
   {
     RWGltf_GltfPrimArrayData& aData = theMeshData->AddPrimArrayData (theType);
     aData.Accessor = theAccessor;
+    aData.Accessor.ByteStride = aByteStride;
     aData.StreamOffset = anOffset;
     if (!myDecodedBuffers.Find (theName, aData.StreamData))
     {
@@ -1788,6 +1801,7 @@ bool RWGltf_GltfJsonParser::gltfParseBuffer (const Handle(RWGltf_GltfLatePrimiti
 
     RWGltf_GltfPrimArrayData& aData = theMeshData->AddPrimArrayData (theType);
     aData.Accessor = theAccessor;
+    aData.Accessor.ByteStride = aByteStride;
     aData.StreamOffset = anOffset;
     aData.StreamUri = myFolder + anUri;
     if (myExternalFiles != NULL)
