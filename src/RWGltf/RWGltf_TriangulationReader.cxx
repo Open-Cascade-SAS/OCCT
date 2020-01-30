@@ -283,7 +283,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
         return false;
       }
 
-      Standard_ReadBuffer aBuffer (theAccessor.Count * aStride, aStride);
+      Standard_ReadBuffer aBuffer (theAccessor.Count * aStride - (aStride - sizeof(Graphic3d_Vec3)), aStride, true);
       if (!myCoordSysConverter.IsEmpty())
       {
         for (Standard_Integer aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
@@ -336,7 +336,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
       {
         return false;
       }
-      Standard_ReadBuffer aBuffer (theAccessor.Count * aStride, aStride);
+      Standard_ReadBuffer aBuffer (theAccessor.Count * aStride - (aStride - sizeof(Graphic3d_Vec3)), aStride, true);
       if (!myCoordSysConverter.IsEmpty())
       {
         for (Standard_Integer aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
@@ -402,7 +402,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
         return false;
       }
 
-      Standard_ReadBuffer aBuffer (theAccessor.Count * aStride, aStride);
+      Standard_ReadBuffer aBuffer (theAccessor.Count * aStride - (aStride - sizeof(Graphic3d_Vec2)), aStride, true);
       for (int aVertIter = 0; aVertIter < aNbNodes; ++aVertIter)
       {
         Graphic3d_Vec2* aVec2 = aBuffer.ReadChunk<Graphic3d_Vec2> (theStream);
