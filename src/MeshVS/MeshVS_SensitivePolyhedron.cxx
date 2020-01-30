@@ -104,7 +104,7 @@ Standard_Boolean MeshVS_SensitivePolyhedron::Matches (SelectBasics_SelectingVolu
 // function : NbSubElements
 // purpose  : Returns the amount of nodes of polyhedron
 //=======================================================================
-Standard_Integer MeshVS_SensitivePolyhedron::NbSubElements()
+Standard_Integer MeshVS_SensitivePolyhedron::NbSubElements() const
 {
   return myNodes->Length();
 }

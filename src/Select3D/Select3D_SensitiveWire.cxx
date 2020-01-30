@@ -54,7 +54,7 @@ void Select3D_SensitiveWire::Add (const Handle(Select3D_SensitiveEntity)& theSen
 // function : NbSubElements
 // purpose  : Returns the amount of sub-entities
 //=======================================================================
-Standard_Integer Select3D_SensitiveWire::NbSubElements()
+Standard_Integer Select3D_SensitiveWire::NbSubElements() const
 {
   return myEntities.Length();
 }

@@ -81,7 +81,7 @@ Select3D_BndBox3d Select3D_SensitivePoint::BoundingBox()
 // function : NbSubElements
 // purpose  : Returns the amount of sub-entities in sensitive
 //=======================================================================
-Standard_Integer Select3D_SensitivePoint::NbSubElements()
+Standard_Integer Select3D_SensitivePoint::NbSubElements() const
 {
   return 1;
 }

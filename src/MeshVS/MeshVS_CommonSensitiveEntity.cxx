@@ -118,7 +118,7 @@ MeshVS_CommonSensitiveEntity::~MeshVS_CommonSensitiveEntity()
 //function : NbSubElements
 //purpose  :
 //=======================================================================
-Standard_Integer MeshVS_CommonSensitiveEntity::NbSubElements()
+Standard_Integer MeshVS_CommonSensitiveEntity::NbSubElements() const
 {
   return myItemIndexes.Size();
 }

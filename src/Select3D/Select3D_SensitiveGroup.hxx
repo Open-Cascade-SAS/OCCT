@@ -113,7 +113,7 @@ public:
                                                     SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
   //! Returns the amount of sub-entities
-  Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 

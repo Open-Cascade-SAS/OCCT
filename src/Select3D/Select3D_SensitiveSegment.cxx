@@ -98,7 +98,7 @@ Select3D_BndBox3d Select3D_SensitiveSegment::BoundingBox()
 // function : NbSubElements
 // purpose  : Returns the amount of points
 //=======================================================================
-Standard_Integer Select3D_SensitiveSegment::NbSubElements()
+Standard_Integer Select3D_SensitiveSegment::NbSubElements() const
 {
   return 2;
 }

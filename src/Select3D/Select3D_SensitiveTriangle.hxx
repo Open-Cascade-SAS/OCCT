@@ -63,7 +63,7 @@ public:
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
   //! Returns the amount of points
-  virtual Standard_Integer NbSubElements() Standard_OVERRIDE { return 3; }
+  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE { return 3; }
 
   virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE { return myCentroid; }
 

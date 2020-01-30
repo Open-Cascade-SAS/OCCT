@@ -56,7 +56,7 @@ public:
                                           const Standard_Integer theNbPnts = 6);
 
   //! Returns the amount of segments in poly
-  Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
   //! Returns the 3D points of the array used at construction time.
   void Points3D (Handle(TColgp_HArray1OfPnt)& theHArrayOfPnt)

@@ -68,7 +68,7 @@ public:
   Standard_EXPORT virtual gp_Pnt CenterOfGeometry() const Standard_OVERRIDE;
 
   //! Returns the amount of points in set
-  Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(Select3D_InteriorSensitivePointSet,Select3D_SensitiveSet)
 

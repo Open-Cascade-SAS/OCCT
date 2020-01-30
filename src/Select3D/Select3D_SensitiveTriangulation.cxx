@@ -421,7 +421,7 @@ gp_Pnt Select3D_SensitiveTriangulation::CenterOfGeometry() const
 // function : NbSubElements
 // purpose  : Returns the amount of nodes in triangulation
 //=======================================================================
-Standard_Integer Select3D_SensitiveTriangulation::NbSubElements()
+Standard_Integer Select3D_SensitiveTriangulation::NbSubElements() const
 {
   return myTriangul->Nodes().Length();
 }

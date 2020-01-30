@@ -284,7 +284,7 @@ Standard_Real Select3D_SensitivePoly::distanceToCOG (SelectBasics_SelectingVolum
 // Function: NbSubElements
 // Purpose : Returns the amount of segments in poly
 //==================================================
-Standard_Integer Select3D_SensitivePoly::NbSubElements()
+Standard_Integer Select3D_SensitivePoly::NbSubElements() const
 {
   return myPolyg.Size();
 }

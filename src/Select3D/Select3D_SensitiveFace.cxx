@@ -139,7 +139,7 @@ gp_Pnt Select3D_SensitiveFace::CenterOfGeometry() const
 // purpose  : Returns the amount of sub-entities (points or planar convex
 //            polygons)
 //=======================================================================
-Standard_Integer Select3D_SensitiveFace::NbSubElements()
+Standard_Integer Select3D_SensitiveFace::NbSubElements() const
 {
   return myFacePoints->NbSubElements();
 }

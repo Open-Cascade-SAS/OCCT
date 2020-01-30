@@ -33,7 +33,7 @@ public:
   Standard_EXPORT void Add (const Handle(Select3D_SensitiveEntity)& theSensitive);
 
   //! Returns the amount of sub-entities
-  Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 

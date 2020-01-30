@@ -70,7 +70,7 @@ public:
   //! Returns the number of sub-entities or elements in sensitive entity.
   //! Is used to determine if entity is complex and needs to pre-build BVH at the creation of sensitive entity step
   //! or is light-weighted so the tree can be build on demand with unnoticeable delay.
-  virtual Standard_Integer NbSubElements() = 0;
+  virtual Standard_Integer NbSubElements() const = 0;
 
   //! Returns bounding box of a sensitive with transformation applied
   virtual Select3D_BndBox3d BoundingBox() = 0;

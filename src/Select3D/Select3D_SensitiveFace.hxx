@@ -71,7 +71,7 @@ public:
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
   //! Returns the amount of sub-entities (points or planar convex polygons)
-  Standard_EXPORT virtual Standard_Integer NbSubElements() Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Integer NbSubElements() const Standard_OVERRIDE;
 
 private:
 

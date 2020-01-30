@@ -209,7 +209,7 @@ public:
   Standard_EXPORT virtual Standard_Integer Size() const Standard_OVERRIDE;
 
   //! Returns the amount of nodes in triangulation
-  virtual Standard_Integer NbSubElements() Standard_OVERRIDE
+  virtual Standard_Integer NbSubElements() const Standard_OVERRIDE
   {
     return !myGroups.IsNull() ? myGroups->Size() : myBvhIndices.NbElements;
   }

@@ -77,7 +77,7 @@ Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected()
 // function : NbSubElements
 // purpose  : Returns the amount of mesh nodes
 //=======================================================================
-Standard_Integer MeshVS_SensitiveMesh::NbSubElements()
+Standard_Integer MeshVS_SensitiveMesh::NbSubElements() const
 {
   Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast (OwnerId());
   if (anOwner.IsNull())

@@ -59,7 +59,7 @@ Select3D_SensitiveBox::Select3D_SensitiveBox (const Handle(SelectMgr_EntityOwner
 // function : NbSubElements
 // purpose  : Returns the amount of sub-entities in sensitive
 //=======================================================================
-Standard_Integer Select3D_SensitiveBox::NbSubElements()
+Standard_Integer Select3D_SensitiveBox::NbSubElements() const
 {
   return 1;
 }

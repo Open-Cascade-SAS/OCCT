@@ -319,7 +319,7 @@ gp_Pnt Select3D_InteriorSensitivePointSet::CenterOfGeometry() const
 // function : NbSubElements
 // purpose  : Returns the amount of points in set
 //=======================================================================
-Standard_Integer Select3D_InteriorSensitivePointSet::NbSubElements()
+Standard_Integer Select3D_InteriorSensitivePointSet::NbSubElements() const
 {
   return myPlanarPolygons.Length();
 }

@@ -29,7 +29,7 @@ MeshVS_DummySensitiveEntity::MeshVS_DummySensitiveEntity (const Handle(SelectMgr
 // Function : NbSubElements
 // Purpose  :
 //================================================================
-Standard_Integer MeshVS_DummySensitiveEntity::NbSubElements()
+Standard_Integer MeshVS_DummySensitiveEntity::NbSubElements() const
 {
   return -1;
 }

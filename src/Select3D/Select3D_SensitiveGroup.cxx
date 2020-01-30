@@ -164,7 +164,7 @@ void Select3D_SensitiveGroup::Clear()
 // function : NbSubElements
 // purpose  : Returns the amount of sub-entities
 //=======================================================================
-Standard_Integer Select3D_SensitiveGroup::NbSubElements()
+Standard_Integer Select3D_SensitiveGroup::NbSubElements() const
 {
   return myEntities.Size();
 }

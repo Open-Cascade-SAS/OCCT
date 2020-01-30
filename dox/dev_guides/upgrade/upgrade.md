@@ -1888,3 +1888,7 @@ Unexpected const-ness of Aspect_Window::DoResize() method has been removed, so t
 @subsection upgrade_750_rename Renaming of types
 
 Enumeration BRepOffset_Type is renamed to ChFiDS_TypeOfConcavity.
+
+@subsection upgrade_750_sensitiveEntity Select3D_SensitiveEntity interface change
+
+The method Select3D_SensitiveEntity::NbSubElements() has been changed to be constant. Select3D_SensitiveEntity subclasses at application level should be updated accordingly.
