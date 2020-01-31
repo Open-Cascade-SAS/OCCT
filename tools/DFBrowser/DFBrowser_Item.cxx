@@ -31,6 +31,8 @@
 #include <QObject>
 #include <Standard_WarningsRestore.hxx>
 
+//#define USE_DUMPJSON
+
 // =======================================================================
 // function : hasAttribute
 // purpose :
@@ -145,6 +147,24 @@ QVariant DFBrowser_Item::initValue (const int theItemRole) const
   }
 
   return DFBrowser_Module::GetAttributeInfo (GetAttribute(), GetModule(), theItemRole, Column());
+}
+
+// =======================================================================
+// function : initStream
+// purpose :
+// =======================================================================
+void DFBrowser_Item::initStream (Standard_OStream& theOStream) const
+{
+  if (!HasAttribute())
+    return;
+
+#ifdef USE_DUMPJSON
+  Handle(TDF_Attribute) anAttribute = GetAttribute();
+  if (!anAttribute.IsNull())
+    anAttribute->DumpJson (theOStream);
+#else
+  (void)theOStream;
+#endif
 }
 
 // =======================================================================

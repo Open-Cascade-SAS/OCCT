@@ -113,7 +113,7 @@ QVariant DFBrowser_ItemBase::initValue (const int theItemRole) const
       if (DFBrowser_Tools::IsEmptyLabel(GetLabel()))
         aValue = QColor (Qt::lightGray);
       else
-      { //! TEMPORARY HERE : should be moved in the pane of TDataStd_Name kind of attribute
+      { // TEMPORARY HERE : should be moved in the pane of TDataStd_Name kind of attribute
         Handle(TDataStd_Name) aName;
         if (useAdditionalInfo() && myLabel.FindAttribute (TDataStd_Name::GetID(), aName))
           aValue = QColor (Qt::darkGreen);

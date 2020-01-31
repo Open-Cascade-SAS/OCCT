@@ -17,13 +17,10 @@
 
 #include <inspector/DFBrowserPane_AttributePaneModel.hxx>
 
-#include <Standard_Version.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <XCAFDoc_Datum.hxx>
-#if OCC_VERSION_HEX > 0x060901
 #include <XCAFDimTolObjects_DatumObject.hxx>
-#endif
 
 // =======================================================================
 // function : Constructor
@@ -50,13 +47,11 @@ void DFBrowserPaneXDE_XCAFDocDatum::GetValues (const Handle(TDF_Attribute)& theA
             << "Description" << (!aDescription.IsNull() ? aDescription->ToCString() : QString (""))
             << "Indentification" << (!anIndentification.IsNull() ? anIndentification->ToCString() : QString (""));
 
-#if OCC_VERSION_HEX > 0x060901
   Handle(XCAFDimTolObjects_DatumObject) anObject = anAttr->GetObject();
   Handle(TCollection_HAsciiString) anObjectName;
   if (!anObject.IsNull())
     anObjectName = anObject->GetName();
   theValues << "Object" << (!anObjectName.IsNull() ? anObjectName->ToCString() : "Empty Name");
-#endif
 }
 
 // =======================================================================

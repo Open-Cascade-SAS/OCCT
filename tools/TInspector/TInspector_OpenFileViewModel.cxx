@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <inspector/TInspectorEXE_OpenFileViewModel.hxx>
+#include <inspector/TInspector_OpenFileViewModel.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QApplication>
@@ -53,7 +53,7 @@ void TInspectorEXE_OpenFileItemDelegate::paint (QPainter* thePainter, const QSty
 // function : Init
 // purpose :
 // =======================================================================
-void TInspectorEXE_OpenFileViewModel::Init (const QStringList& theValues)
+void TInspector_OpenFileViewModel::Init (const QStringList& theValues)
 {
   myValues = theValues;
 }
@@ -62,7 +62,7 @@ void TInspectorEXE_OpenFileViewModel::Init (const QStringList& theValues)
 // function : data
 // purpose :
 // =======================================================================
-QVariant TInspectorEXE_OpenFileViewModel::data (const QModelIndex& theIndex, int theRole) const
+QVariant TInspector_OpenFileViewModel::data (const QModelIndex& theIndex, int theRole) const
 {
   switch (theRole)
   {

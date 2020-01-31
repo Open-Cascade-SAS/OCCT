@@ -124,7 +124,7 @@ void DFBrowserPane_TNamingNaming::GetValues (const Handle(TDF_Attribute)& theAtt
   theValues.append (QString::number (aNamingName.Index()));
   TopoDS_Shape aShape = aNamingName.Shape();
   theValues.append ("Shape(TShape)");
-  theValues.append (!aShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo (aShape.TShape()->This()).ToCString() : "");
+  theValues.append (!aShape.IsNull() ? Standard_Dump::GetPointerInfo (aShape.TShape()->This()).ToCString() : "");
   TDF_Label aContextLabel = aNamingName.ContextLabel();
   theValues.append ("ContextLabel");
   theValues.append (!aContextLabel.IsNull() ? DFBrowserPane_Tools::GetEntry (aContextLabel).ToCString() : "");

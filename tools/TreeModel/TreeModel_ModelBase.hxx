@@ -20,6 +20,8 @@
 #include <inspector/TreeModel_ItemBase.hxx>
 #include <inspector/TreeModel_HeaderSection.hxx>
 
+#include <NCollection_List.hxx>
+
 #include <Standard_WarningsDisable.hxx>
 #include <QAbstractItemModel>
 #include <QExplicitlySharedDataPointer>
@@ -48,6 +50,10 @@ public:
   //! Destructor
   virtual ~TreeModel_ModelBase() {}
 
+  //! Creates model columns and root items.
+  //! Default columns are: [0] - Name, [1] - Visibility, [2] - Row
+  Standard_EXPORT virtual void InitColumns();
+
   //! Returns the item shared pointer by the model index
   //! if it is in the index internal pointer
   //! @param theIndex a model index
@@ -59,7 +65,7 @@ public:
 
   //! Returns the model root item.
   //! It is realized for OCAFBrowser
-  virtual TreeModel_ItemBasePtr RootItem (const int theColumn) const { (void)theColumn; return m_pRootItem; }
+  TreeModel_ItemBasePtr RootItem (const int theColumn) const { return myRootItems[theColumn]; }
 
   //! Emits the layoutChanged signal from outside of this class
   Standard_EXPORT void EmitLayoutChanged();
@@ -76,13 +82,20 @@ public:
   //! \param theState state
   bool IsUseVisibilityColumn() const { return m_pUseVisibilityColumn; }
 
-  //!< Fills visibility state checker
-  //!< \param theController the checker interface
+  //! Fills visibility state checker
+  //! \param theController the checker interface
   void SetVisibilityState (TreeModel_VisibilityState* theController) { myVisibilityState = theController; }
 
-  //!< Returns visibility state checker
-  //!< \return the checker interface
+  //! Returns visibility state checker
+  //! \return the checker interface
   TreeModel_VisibilityState* GetVisibilityState () const { return myVisibilityState; }
+
+  //! Returns true if the tree view model contains highlighted items. This highlight is set manually.
+  bool HasHighlighted() { return !myHighlightedIndices.isEmpty(); }
+
+  //! Sets items of the indices highlighted in the model.
+  //! \param theIndices a list of tree model indices
+  void SetHighlighted (const QModelIndexList& theIndices = QModelIndexList()) { myHighlightedIndices = theIndices; }
 
   //! Returns the index of the item in the model specified by the given row, column and parent index.
   //! Saves an internal pointer at the createIndex. This pointer is a shared pointer to the class,
@@ -130,11 +143,10 @@ public:
   //! \return header section values container
   TreeModel_HeaderSection GetHeaderItem (const int theColumnId) const { return myHeaderValues[theColumnId]; }
 
-  //! Set header properties item.
+  //! Sets header properties item.
   //! \param theColumnId a column index
   //! \param theSection a section value
-  void SetHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection)
-  { myHeaderValues[theColumnId] = theSection; createRootItem (theColumnId); }
+  Standard_EXPORT void SetHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection);
 
   //! Returns count of columns in the model
   //! \param theParent an index of the parent item
@@ -146,6 +158,14 @@ public:
   //! \return integer value
   static int ColumnVisibilityWidth() { return 20; }
 
+  //! Returns selected items in the cell of given orientation.
+  //! \param theIndices a container of selected indices
+  //! \param theCellId column index if orientation is horizontal, row index otherwise
+  //! \param theOrientation an orientation to apply the cell index
+  //! \return model indices from the list
+  Standard_EXPORT static QModelIndexList Selected (const QModelIndexList& theIndices, const int theCellId,
+                                                   const Qt::Orientation theOrientation = Qt::Horizontal);
+
   //! Returns single selected item in the cell of given orientation. If the orientation is Horizontal,
   //! in the cell id colum, one row should be selected.
   //! \param theIndices a container of selected indices
@@ -155,24 +175,38 @@ public:
   Standard_EXPORT static QModelIndex SingleSelected (const QModelIndexList& theIndices, const int theCellId,
                                                      const Qt::Orientation theOrientation = Qt::Horizontal);
 
+  //! Returns selected tree model items for indices.
+  //! \param theIndices a container of selected indices
+  //! \return model items from the list
+  Standard_EXPORT static QList<TreeModel_ItemBasePtr> SelectedItems (const QModelIndexList& theIndices);
+
 protected:
   //! Creates root item
   //! \param theColumnId index of a column
-  virtual void createRootItem (const int theColumnId) = 0;
+  virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) = 0;
 
   //! Converts the item shared pointer to void* type
   //! \param theItem
   //!  \return an item pointer
   Standard_EXPORT static void* getIndexValue (const TreeModel_ItemBasePtr& theItem);
 
+private:
+  //! Creates root item
+  //! \param theColumnId index of a column
+  Standard_EXPORT void createRoot (const int theColumnId);
+
 protected:
 
-  TreeModel_ItemBasePtr m_pRootItem; //!< the model root item. It should be created in the
+  QMap<int, TreeModel_ItemBasePtr> myRootItems; //!< container of root items, for each column own root item
   QMap<int, TreeModel_HeaderSection> myHeaderValues; //!< header values
   //!< model subclass. The model is fulfilled by this item content
 
   bool m_pUseVisibilityColumn; //!< the state whether column=0 is reserved for Visibility state
   TreeModel_VisibilityState* myVisibilityState; //!< the interface of item visibility
+  QIcon myVisibleIcon; //!< icon of visible state
+  QIcon myInvisibleIcon; //!< icon of invisible state
+
+  QModelIndexList myHighlightedIndices; //!< tree model indices that should be visualized as highlighted
 };
 
 #endif

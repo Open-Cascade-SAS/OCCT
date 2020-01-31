@@ -26,8 +26,6 @@
 class AIS_InteractiveObject;
 class SelectMgr_EntityOwner;
 
-DEFINE_STANDARD_HANDLE(VInspector_CallBack, VInspectorAPI_CallBack)
-
 //! \class VInspector_CallBack
 //! Updates inspector state on actions in context
 class VInspector_CallBack : public VInspectorAPI_CallBack
@@ -38,27 +36,27 @@ public:
   VInspector_CallBack() : VInspectorAPI_CallBack() {}
 
   //! Destructor
-  virtual ~VInspector_CallBack() Standard_OVERRIDE {}
+  virtual ~VInspector_CallBack() {}
 
   //! Appends displayed presentation into history model
   //! \param thePrs the presentation
   virtual void Display (Handle(AIS_InteractiveObject) thePrs) Standard_OVERRIDE
-  { myHistoryModel->AddElement (VInspector_CallBackMode_Display, VInspector_Tools::GetInfo (thePrs)); }
+  { if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_Display, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends redisplayed presentation into history model
   //! \param thePrs the presentation
   virtual void Redisplay (Handle(AIS_InteractiveObject) thePrs) Standard_OVERRIDE
-  { myHistoryModel->AddElement (VInspector_CallBackMode_Redisplay, VInspector_Tools::GetInfo (thePrs)); }
+  { if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_Redisplay, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends removed presentation into history model
   //! \param thePrs the presentation
   virtual void Remove (Handle(AIS_InteractiveObject) thePrs) Standard_OVERRIDE
-  { myHistoryModel->AddElement (VInspector_CallBackMode_Remove, VInspector_Tools::GetInfo (thePrs)); }
+  { if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_Remove, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends loaded presentation into history model
   //! \param thePrs the presentation
   virtual void Load (Handle(AIS_InteractiveObject) thePrs) Standard_OVERRIDE
-  { myHistoryModel->AddElement (VInspector_CallBackMode_Load, VInspector_Tools::GetInfo (thePrs)); }
+  { if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_Load, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends information about modes activation
   //! \param thePrs the presentation
@@ -75,13 +73,14 @@ public:
   //! Appends information about modes deactivation
   //! \param thePrs the presentation
   virtual void Deactivate (Handle(AIS_InteractiveObject) thePrs) Standard_OVERRIDE
-  { myHistoryModel->AddElement (VInspector_CallBackMode_Deactivate, VInspector_Tools::GetInfo (thePrs)); }
+  { if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_Deactivate, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends information about modes deactivation
   //! \param thePrs the presentation
   //! \param theMode the selection mode
   virtual void Deactivate (Handle(AIS_InteractiveObject) thePrs, const Standard_Integer theMode) Standard_OVERRIDE
-  { (void)theMode; myHistoryModel->AddElement (VInspector_CallBackMode_Deactivate, VInspector_Tools::GetInfo (thePrs)); }
+  { (void)theMode;
+    if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_Deactivate, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends information about selection change
   //! \param theShape the selected shape
@@ -101,7 +100,7 @@ public:
   //! Appends information about selection clear
   //! \param thePrs the selected presentation
   virtual void ClearSelected (Handle(AIS_InteractiveObject) thePrs) Standard_OVERRIDE
-  { myHistoryModel->AddElement (VInspector_CallBackMode_ClearSelected, VInspector_Tools::GetInfo (thePrs)); }
+  { if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_ClearSelected, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends information about moving to point
   //! \param theXPix a pixels on horizontal
@@ -111,7 +110,7 @@ public:
   //! Appends information about setting selection
   //! \param thePrs the selected presentation
   virtual void SetSelected (Handle(AIS_InteractiveObject) thePrs) Standard_OVERRIDE
-  { myHistoryModel->AddElement (VInspector_CallBackMode_SetSelected, VInspector_Tools::GetInfo (thePrs)); }
+  { if (myHistoryModel != 0) myHistoryModel->AddElement (VInspector_CallBackMode_SetSelected, VInspector_Tools::GetInfo (thePrs)); }
 
   //! Appends information about select
   Standard_EXPORT virtual void Select() Standard_OVERRIDE;
@@ -126,11 +125,7 @@ public:
   //! Sets context, where actions happen
   //! \param theContext a context instance
   void SetContext (const Handle(AIS_InteractiveContext)& theContext) { myContext = theContext; }
-#if OCC_VERSION_HEX <= 0x060901
-  DEFINE_STANDARD_RTTI(VInspector_CallBack)
-#else
   DEFINE_STANDARD_RTTIEXT(VInspector_CallBack, VInspectorAPI_CallBack)
-#endif
 
   //! Returns string information of call back mode
   //! \param theMode type of AIS action

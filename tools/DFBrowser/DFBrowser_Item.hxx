@@ -38,14 +38,14 @@ class DFBrowser_Item : public DFBrowser_ItemBase
 public:
 
   //! Creates an item wrapped by a shared pointer
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   //! \return the pointer to the created item
   static DFBrowser_ItemPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
   { return DFBrowser_ItemPtr (new DFBrowser_Item (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~DFBrowser_Item() Standard_OVERRIDE {};
+  virtual ~DFBrowser_Item() {}
 
   //! \return true if the attribute is set in the item, otherwise it is initialized by a label
   Standard_EXPORT bool HasAttribute() const;
@@ -59,7 +59,7 @@ public:
   //! Resets the cached item values, set null attribute and calls reset of the parent class
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
-  //! Init item and calls cachedValue() for the role
+  //! Inits item and calls cachedValue() for the role
   //! \param theItemRole a value role
   //! \return the value
   Standard_EXPORT QVariant GetAttributeInfo(int theRole) const;
@@ -69,21 +69,25 @@ protected:
   //! \return number of children.
   virtual int initRowCount() const Standard_OVERRIDE;
 
-  //! Return data value for the role:
+  //! Returns data value for the role:
   //! - if content is label, calls DFBrowser_ItemBase;
   //! - if content is attribute, if the fole is extended display, asks additional info text or ask module about info
   //! \param theItemRole a value role
   //! \return the value
   virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
 
+  //! Returns stream value of the item to fulfill property panel.
+  //! \return stream value or dummy
+  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
+
   //! Constructor
-  //! param theParent a parent item
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theParent a parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   DFBrowser_Item (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
     : DFBrowser_ItemBase (theParent, theRow, theColumn) {}
 
-  //! Initialize the current item. It creates a backup of the specific item information
+  //! Initializes the current item. It creates a backup of the specific item information
   void initItem() const;
 
   //! Sets the item attribute

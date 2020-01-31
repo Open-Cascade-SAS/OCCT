@@ -43,14 +43,14 @@ public:
   //! \param theAttributeName a type of attribute
   //! \return an attribute pane if it can be created for this type
   Standard_EXPORT virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane
-    (const Standard_CString& theAttributeName) Standard_OVERRIDE;
+    (Standard_CString theAttributeName) Standard_OVERRIDE;
 
 protected:
 
   //! Cretates pane for XCAFDoc attribute name
   //! \param theAttributeName a type of attribute
   //! \return an attribute pane if it can be created for this type
-  DFBrowserPane_AttributePaneAPI* createXDEPane (const Standard_CString& theAttributeName);
+  DFBrowserPane_AttributePaneAPI* createXDEPane (Standard_CString theAttributeName);
 
 private:
 

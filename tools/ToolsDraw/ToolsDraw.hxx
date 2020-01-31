@@ -20,6 +20,8 @@
 #include <Draw_Interpretor.hxx>
 #include <Standard.hxx>
 
+class TInspector_Communicator;
+
 //! \class ToolsDraw
 //! \brief Registers DRAW commands to connect to TInspector tools
 class ToolsDraw
@@ -32,9 +34,12 @@ public:
   //! \param theDI Draw interpretor
   Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
 
-  //! Add all tools command in the Draw_Interpretor
+  //! Adds all tools command in the Draw_Interpretor
   //! \param theCommands
   Standard_EXPORT static void Commands (Draw_Interpretor& theCommands);
+
+  //! Returns default communicator used in DRAW commands
+  Standard_EXPORT static TInspector_Communicator* Communicator();
 
 private:
 };

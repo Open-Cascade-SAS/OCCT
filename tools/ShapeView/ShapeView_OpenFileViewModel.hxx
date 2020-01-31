@@ -28,7 +28,7 @@
 class QObject;
 class QPainter;
 
-//! \class TInspectorEXE_OpenFileItemDelegate
+//! \class ShapeView_OpenFileItemDelegate
 //! Draws large(40x40) icons in cell. The icon background in colored in highlight when mouse is over button
 class ShapeView_OpenFileItemDelegate : public QItemDelegate
 {
@@ -41,7 +41,7 @@ public:
   //! Destructor
   virtual ~ShapeView_OpenFileItemDelegate() {}
 
-  //! Draw an icon in the cell
+  //! Draws an icon in the cell
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index
@@ -53,7 +53,7 @@ private:
   QColor myColor; //!< highlight color
 };
 
-//! \class TInspectorEXE_OpenFileViewModel
+//! \class ShapeView_OpenFileViewModel
 //! Table model that visualizes container of string values (file names)
 //! Table orientation is horizontal, it has 1 row, number of columns equals to number of values
 class ShapeView_OpenFileViewModel : public QAbstractTableModel
@@ -66,7 +66,7 @@ public:
   //! Destructor
   virtual ~ShapeView_OpenFileViewModel() {}
 
-  //! Store values
+  //! Stores values
   //! \param theValues a container of values to fill model
   void Init (const QStringList& theValues);
 

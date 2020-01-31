@@ -38,7 +38,7 @@ public:
   //! Destructor
   virtual ~DFBrowser_TreeLevelLineDelegate() {}
 
-  //! Draw an icon in the cell and highlight cell if mouse is over the cell
+  //! Draws an icon in the cell and highlight cell if mouse is over the cell
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index

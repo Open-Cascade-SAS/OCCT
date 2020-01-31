@@ -57,17 +57,17 @@ public:
   void SetPreferences (const TCollection_AsciiString& thePluginName, const TInspectorAPI_PreferencesDataMap& theItem)
   { myLoadedPreferences.Bind(thePluginName, theItem); }
 
-  //! Store plugin preferences into a preferences file
+  //! Stores plugin preferences into a preferences file
   Standard_EXPORT void StorePreferences();
 
-  //! Remove plugin preferences file
+  //! Removes plugin preferences file
   Standard_EXPORT void RemovePreferences();
 
 private:
   //! Loads the directory preference file with filling internal container
   void loadPreferences();
 
-  //! clears all internal containers with information of already loaded file
+  //! Clears all internal containers with information of already loaded file
   void reset() { myLoadedPreferences.Clear(); myIsLoadedPreferences = Standard_False; }
 
   //! Reads plugin preferences and fill container

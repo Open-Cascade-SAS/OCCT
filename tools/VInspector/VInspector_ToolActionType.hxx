@@ -20,9 +20,7 @@
 enum VInspector_ToolActionType
 {
   VInspector_ToolActionType_NoneId, //!< No action activated
-  VInspector_ToolActionType_UpdateId, //!< Update content of tree view (content of AIS_InteractiveContext)
-  VInspector_ToolActionType_SelectPresentationsId, //!< Selects presentation in context by selection in tree view
-  VInspector_ToolActionType_SelectOwnersId //!< Selects owners in context by selection in tree view
+  VInspector_ToolActionType_UpdateId //!< Update content of tree view (content of AIS_InteractiveContext)
 };
 
 #endif

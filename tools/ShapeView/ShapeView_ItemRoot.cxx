@@ -18,10 +18,10 @@
 #include <inspector/ShapeView_ItemShape.hxx>
 
 // =======================================================================
-// function : GetShape
+// function : Shape
 // purpose :
 // =======================================================================
-const TopoDS_Shape& ShapeView_ItemRoot::GetShape (const int theRowId)
+const TopoDS_Shape& ShapeView_ItemRoot::Shape (const int theRowId)
 {
   NCollection_List<TopoDS_Shape>::Iterator aShapesIt (myShapes);
   for (int aRowId = 0; aShapesIt.More(); aShapesIt.Next(), aRowId++)

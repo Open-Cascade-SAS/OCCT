@@ -42,12 +42,12 @@ public:
   Standard_EXPORT DFBrowser_TreeLevelView (QWidget* theParent);
 
   //! Destructor
-  virtual ~DFBrowser_TreeLevelView() Standard_OVERRIDE {}
+  virtual ~DFBrowser_TreeLevelView() {}
 
   //! Returns parent control
   QWidget* GetControl() const { return myMainWindow; }
 
-  //! Clear selection of the table view selection model
+  //! Clears selection of the table view selection model
   Standard_EXPORT void ClearSelection();
 
   //! Returns true if this control may be filled by the index
@@ -56,7 +56,7 @@ public:
   //! \return boolean result
   Standard_EXPORT static bool ProcessItem (const QModelIndex& theIndex);
 
-  //! Init view by the first selected item in OCAF tree view
+  //! Inits view by the first selected item in OCAF tree view
   //! \param theSelected selected items
   //! \param theDeselected deselected items
   Standard_EXPORT void UpdateByTreeSelectionChanged (const QItemSelection& theSelected,

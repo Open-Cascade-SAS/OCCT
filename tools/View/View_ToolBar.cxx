@@ -32,7 +32,7 @@ const int DEFAULT_SPACING = 3;
 // purpose :
 // =======================================================================
 View_ToolBar::View_ToolBar (QWidget* theParent, const bool isUseKeepView)
-: QObject (theParent)
+: QObject (theParent), myDefaultContextType (-1)
 {
   myMainWindow = new QWidget (theParent);
 
@@ -63,6 +63,12 @@ View_ToolBar::View_ToolBar (QWidget* theParent, const bool isUseKeepView)
   myViewContexts[View_ContextType_Own] = Handle(AIS_InteractiveContext)();
   myViewContexts[View_ContextType_External] = Handle(AIS_InteractiveContext)();
 
+  myActionsMap[View_ToolActionType_Trihedron] = new QToolButton (theParent);
+  myActionsMap[View_ToolActionType_Trihedron]->setIcon (QIcon (":/icons/trihedron.png"));
+  myActionsMap[View_ToolActionType_Trihedron]->setToolTip (tr ("Trihedron display"));
+  myActionsMap[View_ToolActionType_Trihedron]->setCheckable (true);
+  myActionsMap[View_ToolActionType_Trihedron]->setChecked (false);
+
   if (isUseKeepView)
   {
     myActionsMap[View_ToolActionType_KeepViewId] = new QToolButton (theParent);
@@ -80,12 +86,12 @@ View_ToolBar::View_ToolBar (QWidget* theParent, const bool isUseKeepView)
     myActionsMap[View_ToolActionType_KeepViewOffId]->setToolTip (tr ("Keep View Off: clear previously shown presentation"));
     myActionsMap[View_ToolActionType_KeepViewOffId]->setCheckable (true);
     myActionsMap[View_ToolActionType_KeepViewOffId]->setChecked (true);
-  }
 
-  myActionsMap[View_ToolActionType_ClearViewId] = new QToolButton (theParent);
-  myActionsMap[View_ToolActionType_ClearViewId]->setIcon (QIcon (":/icons/view_clear.png"));
-  myActionsMap[View_ToolActionType_ClearViewId]->setText (tr ( "Clear View"));
-  myActionsMap[View_ToolActionType_ClearViewId]->setToolTip (tr ("Remove all visualized presentations from view context"));
+    myActionsMap[View_ToolActionType_ClearViewId] = new QToolButton (theParent);
+    myActionsMap[View_ToolActionType_ClearViewId]->setIcon (QIcon (":/icons/view_clear.png"));
+    myActionsMap[View_ToolActionType_ClearViewId]->setText (tr ( "Clear View"));
+    myActionsMap[View_ToolActionType_ClearViewId]->setToolTip (tr ("Remove all visualized presentations from view context"));
+  }
 
   for (QMap<View_ToolActionType, QToolButton*>::ConstIterator anActionsIt = myActionsMap.begin(),
        anActionsLast = myActionsMap.end(); anActionsIt != anActionsLast; anActionsIt++)
@@ -95,26 +101,6 @@ View_ToolBar::View_ToolBar (QWidget* theParent, const bool isUseKeepView)
     aLay->addWidget (aBtn);
   }
   aLay->addStretch (1);
-}
-
-TCollection_AsciiString getPointerInfo (const Handle(Standard_Transient)& thePointer, const bool isShortInfo)
-{
-  std::ostringstream aPtrStr;
-  aPtrStr << thePointer.operator->();
-  if (!isShortInfo)
-    return aPtrStr.str().c_str();
-
-  TCollection_AsciiString anInfoPtr (aPtrStr.str().c_str());
-  for (int aSymbolId = 1; aSymbolId < anInfoPtr.Length(); aSymbolId++)
-  {
-    if (anInfoPtr.Value(aSymbolId) != '0')
-    {
-      anInfoPtr = anInfoPtr.SubString(aSymbolId, anInfoPtr.Length());
-      anInfoPtr.Prepend("0x");
-      return anInfoPtr;
-    }
-  }
-  return aPtrStr.str().c_str();
 }
 
 // =======================================================================
@@ -128,28 +114,45 @@ void View_ToolBar::SetContext (View_ContextType theType, const Handle(AIS_Intera
   QString aViewContextName = myViewContextNames[theType];
   if (!theContext.IsNull())
     aViewContextName = QString ("%1 : [%2]").arg (myViewContextNames[theType])
-                                            .arg (getPointerInfo (theContext, true).ToCString());
+                                            .arg (Standard_Dump::GetPointerInfo (theContext, true).ToCString());
   // there are only "Own" and "None" items
   if (!theContext.IsNull() && theType == View_ContextType_External && myViewSelector->count() == 2)
     myViewSelector->insertItem (View_ContextType_External, aViewContextName);
   else
     myViewSelector->setItemText (theType, aViewContextName);
+
+  if (myDefaultContextType >= 0 && myViewSelector->count() > myDefaultContextType)
+  {
+    // using default type during the first setting the external context
+    myViewSelector->setCurrentIndex (myDefaultContextType);
+    myDefaultContextType = -1;
+  }
 }
 
 // =======================================================================
-// function : getCurrentContextType
+// function : CurrentContextType
 // purpose :
 // =======================================================================
-View_ContextType View_ToolBar::GetCurrentContextType() const
+View_ContextType View_ToolBar::CurrentContextType() const
 {
   return (View_ContextType)myViewSelector->currentIndex();
 }
 
 // =======================================================================
-// function : GetCurrentContext
+// function : SetCurrentContext
 // purpose :
 // =======================================================================
-Handle(AIS_InteractiveContext) View_ToolBar::GetCurrentContext() const
+void View_ToolBar::SetCurrentContextType (View_ContextType theType)
+{
+  myViewSelector->setCurrentIndex ((int)theType);
+  emit contextChanged();
+}
+
+// =======================================================================
+// function : CurrentContext
+// purpose :
+// =======================================================================
+Handle(AIS_InteractiveContext) View_ToolBar::CurrentContext() const
 {
   View_ContextType aCurrentType = (View_ContextType)myViewSelector->currentIndex();
   return myViewContexts[aCurrentType];
@@ -163,6 +166,35 @@ bool View_ToolBar::IsActionChecked (const int theActionId) const
 {
   View_ToolActionType anActionId = (View_ToolActionType)theActionId;
   return myActionsMap.contains (anActionId) ? myActionsMap[anActionId]->isChecked() : false;
+}
+
+// =======================================================================
+// function : SaveState
+// purpose :
+// =======================================================================
+void View_ToolBar::SaveState (View_ToolBar* theToolBar,
+                              QMap<QString, QString>& theItems,
+                              const QString& thePrefix)
+{
+  theItems[thePrefix + "context_type"] = QString::number (theToolBar->CurrentContextType());
+}
+
+// =======================================================================
+// function : RestoreState
+// purpose :
+// =======================================================================
+bool View_ToolBar::RestoreState (View_ToolBar* theToolBar,
+                                 const QString& theKey, const QString& theValue,
+                                 const QString& thePrefix)
+{
+  if (theKey == thePrefix + "context_type")
+  {
+    theToolBar->SetDefaultContextType ((View_ContextType)theValue.toInt());
+  }
+  else
+    return false;
+
+  return true;
 }
 
 // =======================================================================

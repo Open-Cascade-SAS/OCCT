@@ -41,6 +41,11 @@ public:
   //! Destructor
   ~TreeModel_HeaderSection() {}
 
+  //! Returns whether the header section is not initialized with values.
+  //! The check is empty value of the name text
+  //! \return boolean value
+  bool IsEmpty() const { return myName.isEmpty(); }
+
   //! Sets text value
   //! \theName text value
   void SetName (const QString& theName) { myName = theName; }
@@ -69,10 +74,10 @@ public:
   bool IsItalic() const { return myIsItalic; }
 
 private:
-  QString myName;  //! text value
-  int myWidth; //! section width
-  bool myIsHidden; //! visibility
-  bool myIsItalic; //! italic
+  QString myName;  //!< text value
+  int myWidth; //!< section width
+  bool myIsHidden; //!< visibility
+  bool myIsItalic; //!< italic
 };
 
 #endif

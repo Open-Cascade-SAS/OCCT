@@ -35,14 +35,6 @@ VInspector_ToolBar::VInspector_ToolBar (QWidget* theParent)
 
   myActionsMap[VInspector_ToolActionType_UpdateId]->setText ("Update");
 
-  myActionsMap[VInspector_ToolActionType_SelectPresentationsId] = new QPushButton (theParent);
-  myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setText ("Select Presentations");
-  myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setCheckable (true);
-
-  myActionsMap[VInspector_ToolActionType_SelectOwnersId] = new QPushButton (theParent);
-  myActionsMap[VInspector_ToolActionType_SelectOwnersId]->setText ("Select Owners");
-  myActionsMap[VInspector_ToolActionType_SelectOwnersId]->setCheckable (true);
-
   myMainWindow = new QWidget (theParent);
 
   QHBoxLayout* aLay = new QHBoxLayout (myMainWindow);
@@ -83,11 +75,6 @@ void VInspector_ToolBar::onActionClicked()
     anId = anActionsIt.key();
     break;
   }
-
-  if (anId == VInspector_ToolActionType_SelectPresentationsId && myActionsMap[VInspector_ToolActionType_SelectOwnersId]->isChecked())
-    myActionsMap[VInspector_ToolActionType_SelectOwnersId]->setChecked(false);
-  else if (anId == VInspector_ToolActionType_SelectOwnersId && myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->isChecked())
-    myActionsMap[VInspector_ToolActionType_SelectPresentationsId]->setChecked(false);
 
   if (anId != -1)
     emit actionClicked (anId);

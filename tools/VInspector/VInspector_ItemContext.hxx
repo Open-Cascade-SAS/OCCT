@@ -36,7 +36,11 @@ public:
   { return VInspector_ItemContextPtr (new VInspector_ItemContext (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~VInspector_ItemContext() Standard_OVERRIDE {};
+  virtual ~VInspector_ItemContext() {}
+
+  //! Returns data object of the item.
+  //! \return object
+  virtual const Handle(Standard_Transient)& Object() const { initItem(); return myContext; }
 
   //! Returns number of displayed presentations
   //! \return rows count
@@ -47,11 +51,21 @@ public:
   //! \return the value
   Standard_EXPORT virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
 
+  //! Inits the item, fills internal containers
+  Standard_EXPORT virtual void Init() Standard_OVERRIDE;
+
+  //! Resets cached values
+  Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
+
 protected:
 
-  //! Initialize the current item. It creates a backup of the specific item information
-  //! Do nothing as context has been already set into item
-  virtual void initItem() const Standard_OVERRIDE {}
+  //! Initializes the current item. It creates a backup of the specific item information
+  //! Does nothing as context has been already set into item
+  virtual void initItem() const Standard_OVERRIDE;
+
+  //! Returns stream value of the item to fulfill property panel.
+  //! \return stream value or dummy
+  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
 
 protected:
 
@@ -64,9 +78,9 @@ protected:
 private:
 
   //! Constructor
-  //! param theParent a parent item
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theParent a parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   VInspector_ItemContext(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
     : VInspector_ItemBase(theParent, theRow, theColumn) {}
 };

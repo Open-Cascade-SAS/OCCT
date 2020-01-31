@@ -135,9 +135,9 @@ private:
 
   QString myDataDir; //!< samples directory
   QString myFileName; //!< result file name
-  QTableView* mySamplesView; //! <view of sample file names
+  QTableView* mySamplesView; //!< view of sample file names
   QLineEdit* mySelectedName; //!< alternative control to open file
-  QToolButton* myFolderApplyOpen; //! button to open file
+  QToolButton* myFolderApplyOpen; //!< button to open file
 };
 
 #endif

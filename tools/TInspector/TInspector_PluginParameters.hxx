@@ -35,7 +35,7 @@ public:
   Standard_EXPORT TInspector_PluginParameters (TInspector_Window* theWindow);
 
   //! Destructor
-  virtual ~TInspector_PluginParameters() Standard_OVERRIDE {}
+  virtual ~TInspector_PluginParameters() {}
 
   //! Stores the parameters for plugin
   //! \param thePluginName a plugin name
@@ -62,10 +62,10 @@ public:
                                const TInspectorAPI_PreferencesDataMap& theItem) Standard_OVERRIDE
    { myPreferences->SetPreferences (thePluginName, theItem); }
 
-  //! Store plugin preferences into a preferences file
+  //! Stores plugin preferences into a preferences file
   virtual void StorePreferences() Standard_OVERRIDE { myPreferences->StorePreferences(); }
 
-  //! Remove plugin preferences file
+  //! Removes plugin preferences file
   void RemovePreferences() { myPreferences->RemovePreferences(); }
 
 private:

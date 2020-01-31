@@ -14,7 +14,8 @@
 // commercial license or contractual agreement. 
 
 
-#include <inspector/TInspectorEXE_OpenFileDialog.hxx>
+#include <inspector/TInspector_OpenFileDialog.hxx>
+#include <inspector/TInspector_OpenButton.hxx>
 
 #include <inspector/TInspector_Communicator.hxx>
 
@@ -50,10 +51,10 @@ TCollection_AsciiString fileNameInDataDir (const TCollection_AsciiString& theEnv
 // purpose :
 // =======================================================================
 void setPluginSampleDirectory (const TCollection_AsciiString& theName, TInspector_Communicator* theCommunicator,
-                               TInspectorEXE_OpenButton* theButtonControl)
+                               TInspector_OpenButton* theButtonControl)
 {
   QStringList aRecentlyOpenedFiles;
-  TInspectorEXE_OpenFileDialog::GetPluginRecentlyOpenedFiles (theName, theCommunicator, aRecentlyOpenedFiles);
+  TInspector_OpenFileDialog::GetPluginRecentlyOpenedFiles (theName, theCommunicator, aRecentlyOpenedFiles);
   TCollection_AsciiString aFileName, anAdditionalFileName;
   if (!aRecentlyOpenedFiles.isEmpty())
     aFileName = TCollection_AsciiString (aRecentlyOpenedFiles.last().toUtf8().data());
@@ -107,14 +108,14 @@ int main (int argc, char** argv)
   NCollection_List<Handle(Standard_Transient)> aParameters;
 
   // Create tool communicator
-  TInspector_Communicator* aCommunicator = TInspectorEXE_OpenFileDialog::Communicator();
+  TInspector_Communicator* aCommunicator = TInspector_OpenFileDialog::Communicator();
   if (!aCommunicator)
   {
     std::cout << "Communicator can not be created" << std::endl;
     return 0;
   }
 
-  TInspectorEXE_OpenButton* aButtonControl = new TInspectorEXE_OpenButton (0);
+  TInspector_OpenButton* aButtonControl = new TInspector_OpenButton (0);
   TCollection_AsciiString anActivatedPluginName;
   if (aPlugins.empty())
   {

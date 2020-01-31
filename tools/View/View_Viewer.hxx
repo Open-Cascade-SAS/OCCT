@@ -39,7 +39,7 @@ public:
   static Quantity_Color DefaultColor() { return Quantity_Color(Quantity_NOC_BLACK); }
 
   //! Returns the view default colors
-  static Quantity_Color DisabledColor() { return Quantity_Color(195 / 255., 195 / 255., 195 / 255., Quantity_TOC_RGB); }
+  static Quantity_Color DisabledColor() { return Quantity_Color(195 / 255., 195 / 255., 195 / 255., Quantity_TOC_sRGB); }
 
   //! Creates V3d view
   Standard_EXPORT void CreateView();
@@ -50,7 +50,11 @@ public:
 
   //! Creates OCC components on the window
   //! \param theWindowHandle an id of the application window
-  Standard_EXPORT void InitStandardViewer();
+  Standard_EXPORT void InitViewer (const Handle(AIS_InteractiveContext)& theContext);
+
+  //! Creates OCC components on the window
+  //! \param theWindowHandle an id of the application window
+  Standard_EXPORT static Handle(AIS_InteractiveContext) CreateStandardViewer();
 
   //! Returns an OCC viewer
   const Handle(V3d_Viewer)& GetViewer() { return myViewer; }

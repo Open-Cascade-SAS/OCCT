@@ -39,12 +39,14 @@ class DFBrowser_Thread;
 class DFBrowser_TreeLevelLine;
 
 class ViewControl_MessageDialog;
+class ViewControl_PropertyView;
 
 class View_ToolBar;
 class View_Window;
 
 class QAbstractItemModel;
 class QAction;
+class QDockWidget;
 class QTreeView;
 class QWidget;
 
@@ -62,7 +64,7 @@ public:
   Standard_EXPORT DFBrowser_Window();
 
   //! Destructor
-  Standard_EXPORT virtual ~DFBrowser_Window() Standard_OVERRIDE;
+  Standard_EXPORT virtual ~DFBrowser_Window();
 
   //! Appends main window into layout of the parent if the parent is child of QWidget
   //! \param theParent a parent class
@@ -72,7 +74,7 @@ public:
   //! \param theParameters a parameters container
   void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters) { myParameters = theParameters; }
 
-  //! Provide container for actions available in inspector on general level
+  //! Provides container for actions available in inspector on general level
   //! \param theMenu if Qt implementation, it is QMenu object
   Standard_EXPORT virtual void FillActionsMenu (void* theMenu);
 
@@ -125,13 +127,13 @@ private slots:
   //! \param thePosition a clicked point
   void onTreeViewContextMenuRequested (const QPoint& thePosition);
 
-  //! Expand two next levels for all selected item
+  //! Expands two next levels for all selected item
   void onExpand();
 
-  //! Expand all levels for all selected items
+  //! Expands all levels for all selected items
   void onExpandAll();
 
-  //! Collapse all levels for all selected items
+  //! Collapses all levels for all selected items
   void onCollapseAll();
 
   //! Udpates all controls by changed selection in OCAF tree view
@@ -206,13 +208,6 @@ protected:
   //! \return container of presentations or NULL
   void findPresentations (const QModelIndexList& theIndices, AIS_ListOfInteractive& thePresentations);
 
-  //! Recursive items expanding in tree view staring from the index
-  //! \param theTreeView an OCAF tree view
-  //! \param theParentIndex an index which children should be expanded
-  //! \param isExpanded a boolean state if the item should be expanded or collapsed
-  //! \param theLevels a number of levels to be expanded, or -1 for all levels
-  static void setExpanded (QTreeView* theTreeView, const QModelIndex& theParentIndex, const bool isExpanded, int& theLevels);
-
 private:
 
   DFBrowser_Module* myModule; //!< current module
@@ -220,7 +215,9 @@ private:
   QMainWindow* myMainWindow; //!< main control for all components
   DFBrowser_TreeLevelLine* myTreeLevelLine; //!< navigate line of tree levels to the selected item
   QTreeView* myTreeView; //!< OCAF tree view
+  QDockWidget* myPropertyPanelWidget; //!< property pane dockable widget
   DFBrowser_PropertyPanel* myPropertyPanel; //!< property panel shows full information about attribute or search view
+  ViewControl_PropertyView* myPropertyView; //!< property control to display model item values if exist
   View_Window* myViewWindow; //!< V3d view to visualize presentations/references if it can be build for a selected item
   DFBrowser_DumpView* myDumpView; //!< Text editor where "Dump" method output is shown
   DFBrowser_Thread* myThread; //!< Threads manipulator, starting thread items, listens finalizing

@@ -28,8 +28,9 @@ class TreeModel_ModelBase;
 
 //! \class ShapeView_VisibilityState
 //! \brief Class provides connection between model and visualization control
-class ShapeView_VisibilityState : public TreeModel_VisibilityState
+class ShapeView_VisibilityState : public QObject, public TreeModel_VisibilityState
 {
+  Q_OBJECT
 public:
   //! Constructor
   ShapeView_VisibilityState (TreeModel_ModelBase* theModel) : TreeModel_VisibilityState (theModel),
@@ -49,7 +50,7 @@ public:
   //! Returns true if visibility of the item can be changed
   //! \param theIndex tree model index
   //! \return boolean value
-  virtual bool CanBeVisible (const QModelIndex& theIndex) const Standard_OVERRIDE { return !GetShape (theIndex).IsNull(); }
+  virtual bool CanBeVisible (const QModelIndex& theIndex) const Standard_OVERRIDE { return !Shape (theIndex).IsNull(); }
 
   //! Sets visibility state
   //! \theIndex tree model index
@@ -60,17 +61,28 @@ public:
 
   //! Returns visibility state value
   virtual bool IsVisible (const QModelIndex& theIndex) const Standard_OVERRIDE
-  { return myDisplayer->IsVisible (GetShape (theIndex), myPresentationType); }
+  { return myDisplayer->IsVisible (Shape (theIndex), myPresentationType); }
+
+public slots:
+  //! Processes the mouse clicked on the index.
+  //! It changes the item visibility if model allows to change it.
+  //! \theIndex tree model index
+  void OnClicked (const QModelIndex& theIndex);
+
+signals:
+  //! Signal after OnClicked is performed
+  //! \theIndex tree model index
+  void itemClicked (const QModelIndex& theIndex);
 
 protected:
   //! Gets shape of the view model by the parameter index if it has a shape
   //! \param theIndex tree model index
   //! \return shape instance
-  TopoDS_Shape GetShape (const QModelIndex& theIndex) const;
+  TopoDS_Shape Shape (const QModelIndex& theIndex) const;
 
 private:
-  View_Displayer* myDisplayer; //! view displayer
-  View_PresentationType myPresentationType; //! presentation type
+  View_Displayer* myDisplayer; //!< view displayer
+  View_PresentationType myPresentationType; //!< presentation type
 };
 
 #endif

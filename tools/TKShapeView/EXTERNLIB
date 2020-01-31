@@ -1,9 +1,11 @@
 TKTInspectorAPI
+TKernel
 TKMath
 TKBRep
 TKGeomBase
 TKG3d
 TKService
 TKTreeModel
+TKV3d
 TKView
 CSF_QT

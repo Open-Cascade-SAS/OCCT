@@ -19,10 +19,8 @@
 
 #include <inspector/View_Widget.hxx>
 
-#include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
-#include <Standard_Version.hxx>
 
 #include <inspector/View_ToolButton.hxx>
 #include <inspector/View_ViewActionType.hxx>
@@ -63,16 +61,21 @@
 // function :  Constructor
 // purpose :
 // =======================================================================
-View_Widget::View_Widget (QWidget* theParent, const bool isFitAllActive)
+View_Widget::View_Widget (QWidget* theParent,
+                          const Handle(AIS_InteractiveContext)& theContext,
+                          const bool isFitAllActive)
 : QWidget (theParent), myCurrentMode (View_CurrentAction3d_Nothing), myFirst (true), myDefaultWidth (-1),
   myDefaultHeight (-1), myViewIsEnabled (true), myXmin (0), myYmin (0), myXmax (0), myYmax (0), myDragButtonDownX (0),
   myDragButtonDownY (0), myDragMultiButtonDownX (0), myDragMultiButtonDownY (0), myIsRectVisible (false), myRectBand (0),
   myHasInitProj (Standard_False), myInitVx (0), myInitVy (0), myInitVz (0)
 {
   myViewer = new View_Viewer (View_Viewer::DefaultColor());
-  myViewer->InitStandardViewer();
-
-  myViewer->GetContext()->Display(new AIS_Trihedron (new Geom_Axis2Placement (gp::XOY())), Standard_True);
+  if (!theContext.IsNull())
+    myViewer->InitViewer (theContext);
+  else
+  {
+    myViewer->InitViewer (myViewer->CreateStandardViewer());
+  }
 
   setAttribute (Qt::WA_PaintOnScreen);
   setAttribute (Qt::WA_NoSystemBackground);
@@ -108,10 +111,6 @@ void View_Widget::Init()
 #ifdef _WIN32
   Aspect_Handle aWindowHandle = (Aspect_Handle)winId();
   Handle(Aspect_Window) aWnd = new WNT_Window (aWindowHandle);
-#if OCC_VERSION_HEX <= 0x060901
-  myViewer->GetView()->SetZClippingDepth (0.5);
-  myViewer->GetView()->SetZClippingWidth (0.5);
-#endif
 #elif defined (__APPLE__) && !defined (MACOSX_USE_GLX)
   NSView* aViewHandle = (NSView*)winId();
   Handle(Aspect_Window) aWnd = new Cocoa_Window (aViewHandle);
@@ -130,12 +129,21 @@ void View_Widget::Init()
 }
 
 // =======================================================================
-// function : GetDisplayMode
+// function : DisplayMode
 // purpose :
 // =======================================================================
-int View_Widget::GetDisplayMode() const
+int View_Widget::DisplayMode() const
 {
   return myViewActions[View_ViewActionType_DisplayModeId]->isChecked() ? AIS_Shaded : AIS_WireFrame;
+}
+
+// =======================================================================
+// function : SetDisplayMode
+// purpose :
+// =======================================================================
+void View_Widget::SetDisplayMode (const int theMode)
+{
+  myViewActions[View_ViewActionType_DisplayModeId]->setChecked ( theMode ? AIS_Shaded : AIS_WireFrame);
 }
 
 // =======================================================================
@@ -197,7 +205,41 @@ void View_Widget::SetEnabledView (const bool theIsEnabled)
     myViewer->GetView()->SetBackgroundColor (theIsEnabled ? View_Viewer::DefaultColor()
                                                           : View_Viewer::DisabledColor());
   for (int anActionId = View_ViewActionType_FitAreaId; anActionId <= View_ViewActionType_DisplayModeId; anActionId++)
-    GetViewAction ((View_ViewActionType)anActionId)->setEnabled (theIsEnabled);
+    ViewAction ((View_ViewActionType)anActionId)->setEnabled (theIsEnabled);
+}
+
+// =======================================================================
+// function : SaveState
+// purpose :
+// =======================================================================
+void View_Widget::SaveState (View_Widget* theWidget,
+                             QMap<QString, QString>& theItems,
+                             const QString& thePrefix)
+{
+  theItems[thePrefix + "fitall"] = theWidget->ViewAction (View_ViewActionType_FitAllId)->isChecked();
+  theItems[thePrefix + "dispmode"] = QString::number (theWidget->DisplayMode());
+}
+
+// =======================================================================
+// function : RestoreState
+// purpose :
+// =======================================================================
+bool View_Widget::RestoreState (View_Widget* theWidget,
+                                const QString& theKey, const QString& theValue,
+                                const QString& thePrefix)
+{
+  if (theKey == thePrefix + "fitall")
+  {
+    theWidget->SetActionChecked (View_ViewActionType_FitAllId, theValue.toInt() > 0);
+  }
+  else if (theKey == thePrefix + "dispmode")
+  {
+    theWidget->SetDisplayMode (theValue.toInt());
+  }
+  else
+    return false;
+
+  return true;
 }
 
 // =======================================================================
@@ -268,10 +310,10 @@ void View_Widget::initViewActions()
   if (!myViewActions.empty())
     return;
 
-  myFitAllAction = new View_ToolButton (this); //!< action for automatic fit all
+  myFitAllAction = new View_ToolButton (this); // action for automatic fit all
   connect (myFitAllAction, SIGNAL (checkedStateChanged(bool)), this, SLOT (onCheckedStateChanged(bool)));
   createAction (View_ViewActionType_FitAllId, ":/icons/view_fitall.png", tr ("Fit All"), SLOT (OnFitAll()));
-  myFitAllAction->setDefaultAction (GetViewAction (View_ViewActionType_FitAllId));
+  myFitAllAction->setDefaultAction (ViewAction (View_ViewActionType_FitAllId));
 
   createAction (View_ViewActionType_FitAreaId, ":/icons/view_fitarea.png", tr ("Fit Area"), SLOT (OnFitArea()), true);
   createAction (View_ViewActionType_ZoomId, ":/icons/view_zoom.png", tr ("Zoom"), SLOT (OnZoom()), true);
@@ -420,6 +462,7 @@ void View_Widget::processLeftButtonDown (const int theFlags, const QPoint thePoi
     }
   }
   activateCursor (myCurrentMode);
+  emit leftButtonDown(thePoint.x(), thePoint.y());
 }
 
 // =======================================================================
@@ -513,8 +556,8 @@ void View_Widget::processLeftButtonUp (const int theFlags, const QPoint thePoint
   myDragMultiButtonDownX = 0;
   myDragMultiButtonDownY = 0;
 
-  activateCursor (myCurrentMode);
   emit selectionChanged();
+  emit leftButtonUp(thePoint.x(), thePoint.y());
 }
 
 // =======================================================================
@@ -608,6 +651,7 @@ void View_Widget::processMouseMove (const int theFlags, const QPoint thePoint)
      else
       processMoveEvent (thePoint.x(), thePoint.y());
   }
+  emit moveTo (thePoint.x(), thePoint.y());
 }
 
 // =======================================================================

@@ -41,7 +41,10 @@ public:
   Standard_EXPORT VInspector_ViewModelHistory (QObject* theParent, const int theHistoryTypesMaxAmount = 50);
 
   //! Destructor
-  virtual ~VInspector_ViewModelHistory() Standard_OVERRIDE {};
+  virtual ~VInspector_ViewModelHistory() {}
+
+  //! Creates model columns and root items.
+  Standard_EXPORT virtual void InitColumns() Standard_OVERRIDE;
 
   //! Append new element under the root item
   Standard_EXPORT void AddElement (const VInspector_CallBackMode& theMode, const QList<QVariant>& theInfo);
@@ -51,20 +54,14 @@ public:
   //! \param container of strings
   Standard_EXPORT QStringList GetSelectedPointers (const QModelIndex& theIndex);
 
-  //! Returns root item by column
-  //! \param theColumn an index of the column
-  //! \return root item instance
-  virtual TreeModel_ItemBasePtr RootItem(const int theColumn) const Standard_OVERRIDE { return myRootItems[theColumn]; }
-
 protected:
 
   //! Creates root item
   //! \param theColumnId index of a column
-  virtual void createRootItem (const int theColumnId) Standard_OVERRIDE;
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) Standard_OVERRIDE;
 
 private:
-
-  QMap<int, TreeModel_ItemBasePtr> myRootItems; //!< container of root items, for each column own root item
+  int myHistoryTypesMaxAmount; //!< maximum types in history
 };
 
 #endif

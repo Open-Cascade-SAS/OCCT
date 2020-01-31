@@ -1,7 +1,6 @@
 ShapeView.qrc
 ShapeView_Communicator.cxx
 ShapeView_Communicator.hxx
-ShapeView_ItemBase.hxx
 ShapeView_ItemRoot.cxx
 ShapeView_ItemRoot.hxx
 ShapeView_ItemShape.cxx

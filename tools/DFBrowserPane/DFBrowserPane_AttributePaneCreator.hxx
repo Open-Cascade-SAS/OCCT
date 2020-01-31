@@ -38,7 +38,7 @@ public:
   //! Creates attribute pane for TDF, TDataStd, TDocStd, TPrsStd, TNaming and TFunction attribute types
   //! \param theAttributeName a standard type of attribute
   //! \return an attribute pane if it can be created for this type
-  Standard_EXPORT virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane(const Standard_CString& theAttributeName) Standard_OVERRIDE;
+  Standard_EXPORT virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane(Standard_CString theAttributeName) Standard_OVERRIDE;
 };
 
 #endif

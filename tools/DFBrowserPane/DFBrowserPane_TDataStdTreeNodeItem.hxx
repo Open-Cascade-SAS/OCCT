@@ -39,15 +39,15 @@ class DFBrowserPane_TDataStdTreeNodeItem : public TreeModel_ItemBase
 public:
 
   //! Creates an item wrapped by a shared pointer
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   //! \return the pointer to the created item
   static DFBrowserPane_TDataStdTreeNodeItemPtr CreateItem (TreeModel_ItemBasePtr theParent,
                                                            const int theRow, const int theColumn)
   { return DFBrowserPane_TDataStdTreeNodeItemPtr (new DFBrowserPane_TDataStdTreeNodeItem (theParent, theRow, theColumn)); }
 
   //!Destructor
-  virtual ~DFBrowserPane_TDataStdTreeNodeItem() Standard_OVERRIDE {};
+  virtual ~DFBrowserPane_TDataStdTreeNodeItem() Standard_OVERRIDE {}
 
   //! Store a current attribute
   //! \param theAttribute an attribute
@@ -90,13 +90,13 @@ protected:
 protected:
 
   //! Constructor
-  //! param theParent a parent item
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theParent a parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   DFBrowserPane_TDataStdTreeNodeItem(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
     : TreeModel_ItemBase (theParent, theRow, theColumn), myIsCurrentItem (false) {}
 
-  //! Initialize the current item. It creates a backup of the specific item information
+  //! Initializes the current item. It creates a backup of the specific item information
   void initItem() const;
 
   //! Returns number of children attributes, initializes item is necessary

@@ -48,10 +48,10 @@ public:
   //! internal containers for search functionality
   Standard_EXPORT virtual void Run() Standard_OVERRIDE;
 
-  //! Set filled containers into search line
+  //! Sets filled containers into search line
   Standard_EXPORT virtual void ApplyValues() Standard_OVERRIDE;
 
-  //! Clear search line values
+  //! Clears search line values
   Standard_EXPORT static void ClearValues (DFBrowser_SearchLine* theSearchLine);
 
 private:
@@ -73,7 +73,7 @@ private:
   void addLabel (const TDF_Label& theLabel, const QStringList& theCurrentPath,
                  QMap<QString, DFBrowser_SearchItemInfo>& theValues, QStringList& theInfoValues);
 
-  //! Add attribute information, it is either attribute kind or attribure value for TDataStd_Name or TDataStd_Comment
+  //! Adds attribute information, it is either attribute kind or attribure value for TDataStd_Name or TDataStd_Comment
   //! \parm theAttribute a current attribute
   //! \param theCurrentPath it contains the current path to the label (stores in container)
   //! \param theValues container of document item values

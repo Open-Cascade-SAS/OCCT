@@ -19,18 +19,36 @@
 #include <inspector/TreeModel_Tools.hxx>
 #include <inspector/TreeModel_VisibilityState.hxx>
 
+#include <Standard_Transient.hxx>
+
 #include <Standard_WarningsDisable.hxx>
 #include <QIcon>
 #include <Standard_WarningsRestore.hxx>
+
+const int COLUMN_NAME_WIDTH = 260;
+const int COLUMN_SIZE_WIDTH = 30;
 
 // =======================================================================
 // function : Constructor
 // purpose :
 // =======================================================================
 TreeModel_ModelBase::TreeModel_ModelBase (QObject* theParent)
-: QAbstractItemModel (theParent), m_pRootItem (0), m_pUseVisibilityColumn (false),
+: QAbstractItemModel (theParent), m_pUseVisibilityColumn (false),
   myVisibilityState (0)
 {
+  myVisibleIcon = QIcon (":/icons/item_visible.png");
+  myInvisibleIcon = QIcon (":/icons/item_invisible.png");
+}
+
+// =======================================================================
+// function :  InitColumns
+// purpose :
+// =======================================================================
+void TreeModel_ModelBase::InitColumns()
+{
+  SetHeaderItem (0, TreeModel_HeaderSection ("Name", COLUMN_NAME_WIDTH));
+  SetHeaderItem (1, TreeModel_HeaderSection ("Visibility", TreeModel_ModelBase::ColumnVisibilityWidth()));
+  SetHeaderItem (2, TreeModel_HeaderSection ("Row", COLUMN_SIZE_WIDTH));
 }
 
 // =======================================================================
@@ -104,14 +122,18 @@ QVariant TreeModel_ModelBase::data (const QModelIndex& theIndex, int theRole) co
     if (!myVisibilityState || !myVisibilityState->CanBeVisible (theIndex))
       return QVariant();
 
-    QVariant aValue = QIcon (myVisibilityState->IsVisible (theIndex) ? ":/icons/item_visible.png"
-                                                                     : ":/icons/item_invisible.png");
+    QVariant aValue = myVisibilityState->IsVisible (theIndex) ? myVisibleIcon : myInvisibleIcon;
     anItem->SetCustomData (aValue, theRole);
     return aValue;
   }
 
   TreeModel_ItemBasePtr anItem = GetItemByIndex (theIndex);
-  return anItem->data (theIndex, theRole);
+  QVariant anItemData = anItem->data (theIndex, theRole);
+
+  if (anItemData.isNull() && theRole == Qt::BackgroundRole && myHighlightedIndices.contains (theIndex))
+    anItemData = TreeModel_Tools::LightHighlightColor();
+
+  return anItemData;
 }
 
 // =======================================================================
@@ -174,6 +196,9 @@ int TreeModel_ModelBase::rowCount (const QModelIndex& theParent) const
   else
     aParentItem = GetItemByIndex (theParent);
 
+  if (!aParentItem)
+    return 0;
+
   return aParentItem ? aParentItem->rowCount() : 0;
 }
 
@@ -207,21 +232,76 @@ void TreeModel_ModelBase::EmitDataChanged (const QModelIndex& theTopLeft, const 
 }
 
 // =======================================================================
+// function : SetHeaderItem
+// purpose :
+// =======================================================================
+void TreeModel_ModelBase::SetHeaderItem (const int theColumnId, const TreeModel_HeaderSection& theSection)
+{
+  if (theSection.IsEmpty())
+  {
+    // remove section
+    myHeaderValues.remove (theColumnId);
+    myRootItems.remove (theColumnId);
+  }
+
+  myHeaderValues[theColumnId] = theSection;
+  createRoot (theColumnId);
+}
+
+// =======================================================================
+// function : Selected
+// purpose :
+// =======================================================================
+QModelIndexList TreeModel_ModelBase::Selected (const QModelIndexList& theIndices, const int theCellId,
+                                               const Qt::Orientation theOrientation)
+{
+  QModelIndexList aSelected;
+  for (QModelIndexList::const_iterator anIndicesIt = theIndices.begin(); anIndicesIt != theIndices.end(); anIndicesIt++)
+  {
+    QModelIndex anIndex = *anIndicesIt;
+    if ((theOrientation == Qt::Horizontal && anIndex.column() == theCellId) ||
+        (theOrientation == Qt::Vertical && anIndex.row() == theCellId))
+      aSelected.append (anIndex);
+  }
+  return aSelected;
+}
+
+// =======================================================================
 // function : SingleSelected
 // purpose :
 // =======================================================================
 QModelIndex TreeModel_ModelBase::SingleSelected (const QModelIndexList& theIndices, const int theCellId,
                                                  const Qt::Orientation theOrientation)
 {
-  QModelIndexList aFirstColumnSelectedIndices;
+  QModelIndexList aSelected = Selected (theIndices, theCellId, theOrientation);
+  return aSelected.size() == 1 ? aSelected.first() : QModelIndex();
+}
+
+// =======================================================================
+// function :  SelectedItems
+// purpose :
+// =======================================================================
+QList<TreeModel_ItemBasePtr> TreeModel_ModelBase::SelectedItems (const QModelIndexList& theIndices)
+{
+  QList<TreeModel_ItemBasePtr> anItems;
+
   for (QModelIndexList::const_iterator anIndicesIt = theIndices.begin(); anIndicesIt != theIndices.end(); anIndicesIt++)
   {
-    QModelIndex anIndex = *anIndicesIt;
-    if ((theOrientation == Qt::Horizontal && anIndex.column() == theCellId) ||
-        (theOrientation == Qt::Vertical && anIndex.row() == theCellId))
-      aFirstColumnSelectedIndices.append (anIndex);
+    TreeModel_ItemBasePtr anItem = TreeModel_ModelBase::GetItemByIndex (*anIndicesIt);
+    if (!anItem || anItems.contains (anItem))
+      continue;
+    anItems.append (anItem);
   }
-  return aFirstColumnSelectedIndices.size() == 1 ? aFirstColumnSelectedIndices.first() : QModelIndex();
+  return anItems;
+}
+
+// =======================================================================
+// function : createRoot
+// purpose :
+// =======================================================================
+void TreeModel_ModelBase::createRoot (const int theColumnId)
+{
+  myRootItems.insert (theColumnId, createRootItem (theColumnId));
 }
 
 // =======================================================================

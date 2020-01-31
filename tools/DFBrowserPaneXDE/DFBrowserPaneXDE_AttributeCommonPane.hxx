@@ -46,7 +46,7 @@ public:
   //! have difference in presentation (TDataStd_TreeNode, TDF_Reference, TNaming_NamedShape and TDataStd_UAttribute).
   //! Also it contains XCAFDoc attributes (should be implemented in this package or pane will be empty)
   //! \param theAttributeType an attribute type
-  Standard_EXPORT static bool ProcessAttribute (const Standard_CString& theAttributeType);
+  Standard_EXPORT static bool ProcessAttribute (Standard_CString theAttributeType);
 
   //! Creates table view and call create widget of array table helper
   //! \param theParent a parent widget

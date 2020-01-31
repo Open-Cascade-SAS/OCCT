@@ -38,12 +38,27 @@ const int COLUMN_NAME_WIDTH = 300;
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowser_TreeModel::DFBrowser_TreeModel (QObject* theParent, DFBrowser_Module* theModule)
+DFBrowser_TreeModel::DFBrowser_TreeModel (QObject* theParent)
 : TreeModel_ModelBase (theParent)
 {
-  SetHeaderItem (0, TreeModel_HeaderSection ("Name", COLUMN_NAME_WIDTH));
+}
 
-  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (m_pRootItem);
+// =======================================================================
+// function : InitColumns
+// purpose :
+// =======================================================================
+void DFBrowser_TreeModel::InitColumns()
+{
+  SetHeaderItem (0, TreeModel_HeaderSection ("Name"));
+}
+
+// =======================================================================
+// function : SetModule
+// purpose :
+// =======================================================================
+void DFBrowser_TreeModel::SetModule (DFBrowser_Module* theModule)
+{
+  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (RootItem (0));
   aRootItem->SetModule (theModule);
 }
 
@@ -51,9 +66,9 @@ DFBrowser_TreeModel::DFBrowser_TreeModel (QObject* theParent, DFBrowser_Module* 
 // function : createRootItem
 // purpose :
 // =======================================================================
-void DFBrowser_TreeModel::createRootItem (const int)
+TreeModel_ItemBasePtr DFBrowser_TreeModel::createRootItem (const int)
 {
-  m_pRootItem = DFBrowser_ItemApplication::CreateItem (TreeModel_ItemBasePtr());
+  return DFBrowser_ItemApplication::CreateItem (TreeModel_ItemBasePtr());
 }
 
 // =======================================================================
@@ -62,7 +77,7 @@ void DFBrowser_TreeModel::createRootItem (const int)
 // =======================================================================
 void DFBrowser_TreeModel::Init (const Handle(TDocStd_Application)& theApplication)
 {
-  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (m_pRootItem);
+  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (RootItem (0));
   Reset();
   aRootItem->SetApplication (theApplication);
   EmitLayoutChanged();
@@ -74,7 +89,7 @@ void DFBrowser_TreeModel::Init (const Handle(TDocStd_Application)& theApplicatio
 // =======================================================================
 Handle(TDocStd_Application) DFBrowser_TreeModel::GetTDocStdApplication() const
 {
-  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (m_pRootItem);
+  DFBrowser_ItemApplicationPtr aRootItem = itemDynamicCast<DFBrowser_ItemApplication> (RootItem (0));
   return aRootItem->GetApplication();
 }
 
@@ -179,7 +194,7 @@ QModelIndex DFBrowser_TreeModel::FindIndexByPath (const QStringList& theLabelEnt
         if (aPathId == aPathCount && anItem->HasAttribute())
         {
           // processing attribute in theValue
-          DFBrowser_ItemApplicationPtr aRootAppItem = itemDynamicCast<DFBrowser_ItemApplication>(m_pRootItem);
+          DFBrowser_ItemApplicationPtr aRootAppItem = itemDynamicCast<DFBrowser_ItemApplication>(RootItem (0));
           QString anAttributeInfo = DFBrowser_Module::GetAttributeInfo (anItem->GetAttribute(), aRootAppItem->GetModule(),
                                                                         Qt::DisplayRole, 0).toString();
           if (anAttributeInfo == anEntry)

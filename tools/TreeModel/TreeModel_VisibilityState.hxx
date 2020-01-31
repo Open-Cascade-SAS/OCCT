@@ -16,25 +16,18 @@
 #ifndef TreeModel_VisibilityState_H
 #define TreeModel_VisibilityState_H
 
-#include <inspector/TreeModel.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 #include <inspector/TreeModel_ColumnType.hxx>
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 
-#include <Standard_WarningsDisable.hxx>
-#include <QObject>
-#include <QString>
-#include <Standard_WarningsRestore.hxx>
-
 //! \class TreeModel_VisibilityState
 //! \brief Interface that provides connection between model and visualization control to:
 //! - know whether the model item is visible
 //! - change visibility of the model item
-class TREEMODEL_EXPORT TreeModel_VisibilityState : public QObject
+class TreeModel_VisibilityState
 {
-  Q_OBJECT
 public:
   //! Constructor
   TreeModel_VisibilityState (TreeModel_ModelBase* theModel) : myModel (theModel) {}
@@ -59,23 +52,19 @@ public:
   //! \return boolean value
   virtual bool IsVisible (const QModelIndex& theIndex) const = 0;
 
-public slots:
+protected:
   //! Processes the mouse clicked on the index.
   //! It changes the item visibility if model allows to change it.
   //! \theIndex tree model index
-  void OnClicked (const QModelIndex& theIndex);
-
-signals:
-  //! Signal after OnClicked is performed
-  //! \theIndex tree model index
-  void itemClicked (const QModelIndex& theIndex);
+  //! \return true if click is processed
+  Standard_EXPORT bool processClicked (const QModelIndex& theIndex);
 
 protected:
   //! tree view model
   TreeModel_ModelBase* getModel() const { return myModel; }
 
 private:
-  TreeModel_ModelBase* myModel; //! tree view model
+  TreeModel_ModelBase* myModel; //!< tree view model
 };
 
 #endif

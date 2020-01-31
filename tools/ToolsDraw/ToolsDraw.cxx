@@ -41,6 +41,15 @@ Standard_EXPORT ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 static TInspector_Communicator* MyCommunicator;
 
 // =======================================================================
+// function : Communicator
+// purpose  : defines plugin library name by the command argument
+// =======================================================================
+TInspector_Communicator* ToolsDraw::Communicator()
+{
+  return MyCommunicator;
+}
+
+// =======================================================================
 // function : convertToPluginName
 // purpose  : defines plugin library name by the command argument
 // =======================================================================
@@ -386,7 +395,7 @@ void ToolsDraw::Commands(Draw_Interpretor& theCommands)
     "\n\t\t:           Plugins order will be the same as defined in arguments."
     "\n\t\t:           'all' adds all available plugins in the order:"
     "\n\t\t:                 DFBrowser, VInspector and ShapeView."
-    "\n\t\t:           If at the first call this option is not used, 'all' option is applyed;"
+    "\n\t\t:           If at the first call this option is not used, 'all' option is applied;"
     "\n\t\t:  -activate activates the plugin in the tool view."
     "\n\t\t:           If at the first call this option is not used, the first plugin is activated;"
     "\n\t\t:  -shape initializes plugin/s by the shape object. If 'name' is empty, initializes all plugins;"

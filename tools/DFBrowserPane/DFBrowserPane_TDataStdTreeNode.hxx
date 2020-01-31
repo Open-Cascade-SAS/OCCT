@@ -20,7 +20,7 @@
 
 #include <Standard.hxx>
 
-class QAbstractItemModel;
+class DFBrowserPane_TDataStdTreeNodeModel;
 class QTreeView;
 
 //! \class DFBrowserPane_TDataStdTreeNode
@@ -66,7 +66,7 @@ public:
 
 private:
 
-  QAbstractItemModel* myModel;
+  DFBrowserPane_TDataStdTreeNodeModel* myModel;
   QTreeView* myTreeNodeView;
 };
 

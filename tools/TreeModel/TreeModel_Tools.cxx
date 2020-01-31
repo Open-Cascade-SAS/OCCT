@@ -172,13 +172,7 @@ void TreeModel_Tools::UseVisibilityColumn (QTreeView* theTreeView, const bool th
   TreeModel_ModelBase* aModel = dynamic_cast<TreeModel_ModelBase*> (theTreeView->model());
   aModel->SetHeaderItem (TreeModel_ColumnType_Visibility,
     TreeModel_HeaderSection ("Visibility", TreeModel_ModelBase::ColumnVisibilityWidth()));
-
-  TreeModel_VisibilityState* aVisibilityState = aModel->GetVisibilityState ();
-
-  aModel->SetUseVisibilityColumn (true);
-  if (theActive && aVisibilityState)
-    QObject::connect (theTreeView, SIGNAL (clicked (const QModelIndex&)), 
-                      aVisibilityState, SLOT (OnClicked(const QModelIndex&)));
+  aModel->SetUseVisibilityColumn (theActive);
 }
 
 // =======================================================================
@@ -210,4 +204,54 @@ QString TreeModel_Tools::CutString (const QString& theText, const int theWidth, 
     aLength = anIndex;
 
   return aLength < theText.length() ? theText.mid (0, aLength) + theTail : theText;
+}
+
+// =======================================================================
+// function : LightHighlightColor
+// purpose :
+// =======================================================================
+QColor TreeModel_Tools::LightHighlightColor()
+{
+  QWidget aWidget;
+  QPalette aPalette = aWidget.palette();
+  return aPalette.highlight().color().lighter();
+}
+
+// =======================================================================
+// function : SetExpandedTo
+// purpose :
+// =======================================================================
+void TreeModel_Tools::SetExpandedTo (QTreeView* theTreeView, const QModelIndex& theIndex)
+{
+  QAbstractItemModel* aModel = theTreeView->model();
+
+  QModelIndex aParent = aModel->parent (theIndex);
+  while (aParent.isValid())
+  {
+    theTreeView->setExpanded (aParent, true);
+    aParent = aModel->parent (aParent);
+  }
+}
+
+// =======================================================================
+// function : setExpanded
+// purpose :
+// =======================================================================
+void TreeModel_Tools::SetExpanded (QTreeView* theTreeView, const QModelIndex& theIndex, const bool isExpanded,
+                                   int& theLevels)
+{
+  bool isToExpand = theLevels == -1 || theLevels > 0;
+  if (!isToExpand)
+    return;
+
+  theTreeView->setExpanded (theIndex, isExpanded);
+  if (theLevels != -1)
+    theLevels--;
+
+  QAbstractItemModel* aModel = theTreeView->model();
+  for (int aRowId = 0, aRows = aModel->rowCount (theIndex); aRowId < aRows; aRowId++)
+  {
+    int aLevels = theLevels;
+    SetExpanded (theTreeView, aModel->index (aRowId, 0, theIndex), isExpanded, aLevels);
+  }
 }

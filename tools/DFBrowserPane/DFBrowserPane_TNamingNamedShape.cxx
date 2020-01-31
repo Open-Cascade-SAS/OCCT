@@ -154,7 +154,7 @@ void DFBrowserPane_TNamingNamedShape::Init (const Handle(TDF_Attribute)& theAttr
   aFreeRows << 0 << 1;
 
   TopoDS_Shape aShape = aShapeAttr->Get();
-  TCollection_AsciiString aShapeInfo = !aShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo (aShape.TShape()) : "";
+  TCollection_AsciiString aShapeInfo = !aShape.IsNull() ? Standard_Dump::GetPointerInfo (aShape.TShape()) : "";
   aValues << "Shape" << aShapeInfo.ToCString() << DFBrowserPane_Tools::ShapeTypeInfo (aShape) << "" << "";
   aShapes.Append (aShape);
   if (aShape.IsNull())
@@ -162,7 +162,7 @@ void DFBrowserPane_TNamingNamedShape::Init (const Handle(TDF_Attribute)& theAttr
 
   TopoDS_Shape aCurrentShape = TNaming_Tool::CurrentShape (aShapeAttr);
   TCollection_AsciiString aCurrentShapeInfo = !aCurrentShape.IsNull() ?
-                                  DFBrowserPane_Tools::GetPointerInfo (aCurrentShape.TShape()) : "";
+    Standard_Dump::GetPointerInfo (aCurrentShape.TShape()) : "";
   aValues << "CurrentShape" << aCurrentShapeInfo.ToCString()
           << DFBrowserPane_Tools::ShapeTypeInfo (aCurrentShape) << "" << "";
   aShapes.Append (aCurrentShape);
@@ -171,7 +171,7 @@ void DFBrowserPane_TNamingNamedShape::Init (const Handle(TDF_Attribute)& theAttr
 
   TopoDS_Shape anOriginalShape = TNaming_Tool::OriginalShape (aShapeAttr);
   TCollection_AsciiString anOriginalShapeInfo = !anOriginalShape.IsNull() ?
-            DFBrowserPane_Tools::GetPointerInfo (anOriginalShape.TShape()) : "";
+    Standard_Dump::GetPointerInfo (anOriginalShape.TShape()) : "";
   aValues << "OriginalShape" << anOriginalShapeInfo.ToCString()
           << DFBrowserPane_Tools::ShapeTypeInfo (anOriginalShape) << "" << "";
   aShapes.Append (anOriginalShape);
@@ -227,14 +227,14 @@ void DFBrowserPane_TNamingNamedShape::Init (const Handle(TDF_Attribute)& theAttr
         aLabelInfo = QString (DFBrowserPane_Tools::GetEntry (anOldLabel).ToCString());
     }
     if (!aNewShape.IsNull())
-      aValues << DFBrowserPane_Tools::GetPointerInfo (aNewShape.TShape()->This()).ToCString()
+      aValues << Standard_Dump::GetPointerInfo (aNewShape.TShape()->This()).ToCString()
               << DFBrowserPane_Tools::ShapeTypeInfo (aNewShape)
               << "";
     else
       aValues << "-" << "-" << "";
     aValues << "Old:";
     if (!anOldShape.IsNull())
-      aValues << DFBrowserPane_Tools::GetPointerInfo (anOldShape.TShape()->This()).ToCString()
+      aValues << Standard_Dump::GetPointerInfo (anOldShape.TShape()->This()).ToCString()
               << DFBrowserPane_Tools::ShapeTypeInfo (anOldShape)
               << aLabelInfo
               << "";
@@ -382,7 +382,7 @@ void DFBrowserPane_TNamingNamedShape::GetSelectionParameters (QItemSelectionMode
   if (aSelectedIndex.column() != 4)
     return;
 
-  const TopoDS_Shape& aShape = myHelperExport.GetShape (aSelectedIndex);
+  const TopoDS_Shape& aShape = myHelperExport.Shape (aSelectedIndex);
   if (aShape.IsNull())
     return;
   theParameters.Append (aShape.TShape());
@@ -467,7 +467,7 @@ TopoDS_Shape DFBrowserPane_TNamingNamedShape::getSelectedShapes()
     QModelIndex anIndex = *anIt;
     if (!myHelperExport.HasShape (anIndex))
       continue;
-    aBuilder.Add (aComp, myHelperExport.GetShape (anIndex));
+    aBuilder.Add (aComp, myHelperExport.Shape (anIndex));
     aHasShapes = true;
   }
 
@@ -480,7 +480,7 @@ TopoDS_Shape DFBrowserPane_TNamingNamedShape::getSelectedShapes()
     QModelIndex anIndex = *anIt;
     if (!myHelperExport.HasShape (anIndex))
       continue;
-    aBuilder.Add (aComp, myHelperExport.GetShape (anIndex));
+    aBuilder.Add (aComp, myHelperExport.Shape (anIndex));
     aHasShapes = true;
   }
   if (aHasShapes)

@@ -14,20 +14,34 @@
 // commercial license or contractual agreement. 
 
 #include <inspector/ShapeView_Tools.hxx>
+#include <inspector/ShapeView_ItemShape.hxx>
 
-#include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Iterator.hxx>
 
-#include <AIS_Shape.hxx>
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+
 // =======================================================================
-// function : ReadShape
+// function : IsPossibleToExplode
 // purpose :
 // =======================================================================
-TopoDS_Shape ShapeView_Tools::ReadShape (const TCollection_AsciiString& theFileName)
+Standard_Boolean ShapeView_Tools::IsPossibleToExplode (const TopoDS_Shape& theShape,
+  NCollection_List<TopAbs_ShapeEnum>& theExplodeTypes)
 {
-  TopoDS_Shape aShape;
+  TopAbs_ShapeEnum aShapeType = theShape.ShapeType();
 
-  BRep_Builder aBuilder;
-  BRepTools::Read (aShape, theFileName.ToCString(), aBuilder);
-  return aShape;
+  if (!theExplodeTypes.Contains (aShapeType))
+    theExplodeTypes.Append(aShapeType);
+
+  if (theExplodeTypes.Extent() == TopAbs_SHAPE + 1) // all types are collected, stop
+    return Standard_True;
+
+  TopoDS_Iterator aSubShapeIt (theShape);
+  for (int aCurrentIndex = 0; aSubShapeIt.More(); aSubShapeIt.Next(), aCurrentIndex++)
+  {
+    if (IsPossibleToExplode (aSubShapeIt.Value(), theExplodeTypes))
+      return Standard_True;
+  }
+  return Standard_False;
 }

@@ -19,14 +19,14 @@
 // function : OnClicked
 // purpose :
 // =======================================================================
-void TreeModel_VisibilityState::OnClicked (const QModelIndex& theIndex)
+bool TreeModel_VisibilityState::processClicked (const QModelIndex& theIndex)
 {
   if (theIndex.column() != TreeModel_ColumnType_Visibility)
-    return;
+    return false;
 
   if (!CanBeVisible (theIndex))
-    return;
+    return false;
 
   SetVisible (theIndex, !IsVisible (theIndex), true);
-  emit itemClicked (theIndex);
+  return true;
 }

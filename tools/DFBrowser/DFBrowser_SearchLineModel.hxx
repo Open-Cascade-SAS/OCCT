@@ -49,7 +49,7 @@ public:
   Standard_EXPORT DFBrowser_SearchLineModel (QObject* theParent, DFBrowser_Module* theModule);
 
   //! Destructor
-  virtual ~DFBrowser_SearchLineModel() Standard_OVERRIDE {}
+  virtual ~DFBrowser_SearchLineModel() {}
 
   //! Separator as attribute name is divided from the label entry in information text
   static QString SplitSeparator() { return ": "; }
@@ -87,7 +87,6 @@ public:
   //! Returns the data stored under the given role for the item referred to by the index.
   //! \param theIndex a model index
   //! \param theRole an enumeration value of role for data obtaining
-
   Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex,
                                          int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
   //! Returns the number of rows under the given parent.
@@ -96,10 +95,10 @@ public:
 
   virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return myRowCount; }
+
   //! Returns the number of columns for the children of the given parent.
   //! \param theParent a parent model index
   //! \return the number of columns
-
   virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return 3; }
 

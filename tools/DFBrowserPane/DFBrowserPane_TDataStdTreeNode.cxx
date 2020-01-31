@@ -41,6 +41,7 @@ DFBrowserPane_TDataStdTreeNode::DFBrowserPane_TDataStdTreeNode()
 : DFBrowserPane_AttributePane(), myTreeNodeView (0)
 {
   myModel = new DFBrowserPane_TDataStdTreeNodeModel (0);
+  myModel->InitColumns();
   mySelectionModels.clear(); // do not use selection model of parent pane
   mySelectionModels.push_back (new QItemSelectionModel (myModel));
 }
@@ -99,15 +100,14 @@ void DFBrowserPane_TDataStdTreeNode::Init (const Handle(TDF_Attribute)& theAttri
   }
 
 
-  DFBrowserPane_TDataStdTreeNodeModel* aModel = dynamic_cast<DFBrowserPane_TDataStdTreeNodeModel*> (myModel);
-  aModel->Reset();
+  myModel->Reset();
 
   if (!aTreeNode.IsNull())
   {
     Handle(TDataStd_TreeNode) aRootItem = aTreeNode->Root();
-    aModel->SetAttribute (aRootItem);
+    myModel->SetAttribute (aRootItem);
 
-    QModelIndex anIndex = aModel->FindIndex (theAttribute, QModelIndex());
+    QModelIndex anIndex = myModel->FindIndex (theAttribute, QModelIndex());
     if (myTreeNodeView && anIndex.isValid())
     {
       myTreeNodeView->setExpanded (anIndex.parent(), true);
@@ -119,7 +119,7 @@ void DFBrowserPane_TDataStdTreeNode::Init (const Handle(TDF_Attribute)& theAttri
       anAttributeNodeItem->setCurrentAttribute (true);
     }
   }
-  aModel->EmitLayoutChanged();
+  myModel->EmitLayoutChanged();
 }
 
 // =======================================================================

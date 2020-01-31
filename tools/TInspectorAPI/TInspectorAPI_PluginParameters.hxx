@@ -18,15 +18,11 @@
 
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
-#include <Standard_Version.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <inspector/TInspectorAPI_PreferencesDataMap.hxx>
-
-class TInspectorAPI_PluginParameters;
-DEFINE_STANDARD_HANDLE (TInspectorAPI_PluginParameters, Standard_Transient)
 
 //! The container of parameters for all possible plugins. It stores list of parameters for each plugin, even
 //! it was not be loaded yet. There is a map of plugin name into plugin parameters.
@@ -41,7 +37,7 @@ public:
   Standard_EXPORT TInspectorAPI_PluginParameters() {}
 
   //! Destructor
-  Standard_EXPORT virtual ~TInspectorAPI_PluginParameters() Standard_OVERRIDE {}
+  Standard_EXPORT virtual ~TInspectorAPI_PluginParameters() {}
 
   //! Stores the parameters for plugin
   //! \param thePluginName a plugin name
@@ -131,7 +127,7 @@ public:
   Standard_EXPORT virtual void SetPreferences (const TCollection_AsciiString& thePluginName,
                                                const TInspectorAPI_PreferencesDataMap& theItem) = 0;
 
-  //! Store plugin preferences into a preferences file
+  //! Stores plugin preferences into a preferences file
   Standard_EXPORT virtual void StorePreferences() = 0;
 
   //! Converts a Shape parameters excepting TShape into a string value
@@ -145,11 +141,7 @@ public:
   Standard_EXPORT static void ParametersToShape (const TCollection_AsciiString& theValue, TopoDS_Shape& theShape);
 
 
-#if OCC_VERSION_HEX <= 0x060901
-  DEFINE_STANDARD_RTTI (TInspectorAPI_PluginParameters)
-#else
   DEFINE_STANDARD_RTTIEXT (TInspectorAPI_PluginParameters, Standard_Transient)
-#endif
 private:
   //! container of parameters
   NCollection_DataMap<TCollection_AsciiString, NCollection_List<Handle(Standard_Transient)> > myParameters;

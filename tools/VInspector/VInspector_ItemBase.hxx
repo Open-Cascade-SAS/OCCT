@@ -18,6 +18,9 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <Standard.hxx>
+#include <TopoDS_Shape.hxx>
+
+#include <inspector/TreeModel_ColumnType.hxx>
 #include <inspector/TreeModel_ItemBase.hxx>
 
 class VInspector_ItemBase;
@@ -29,7 +32,7 @@ class VInspector_ItemBase : public TreeModel_ItemBase
 {
 public:
   //! Resets cached values
-  virtual void Reset() Standard_OVERRIDE { TreeModel_ItemBase::Reset(); }
+  Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
   //! Sets the context 
   //! \param theLabel an object where the child items structure is found
@@ -43,23 +46,47 @@ public:
   //! \return a context
   Standard_EXPORT Handle(AIS_InteractiveContext) GetContext() const;
 
+  //! Returns item information for the given role. Fills internal container if it was not filled yet
+  //! \param theItemRole a value role
+  //! \return the value
+  Standard_EXPORT virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
+
+  //! Returns presentation of the attribute to be visualized in the view
+  //! \thePresentations [out] container of presentation handles to be visualized
+  virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations)
+  { (void)thePresentations; }
+
+  //! Returns transform persistent of the item or NULL
+  Handle(Graphic3d_TransformPers) TransformPersistence() const { return myTransformPersistence; }
+
+  //! Returns shape of the item parameters
+  //! \return generated shape of the item parameters
+  Standard_EXPORT virtual TopoDS_Shape GetPresentationShape() const;
+
+  //! Rebuild presentation shape if the item use it
+  //! \return generated shape of the item parameters
+  void UpdatePresentationShape() { myPresentationShape = buildPresentationShape(); }
+
 protected:
 
-  //! Initialize the current item. It creates a backup of the specific item information
-  virtual void initItem() const {}
+  //! Build presentation shape
+  //! \return generated shape of the item parameters
+  virtual TopoDS_Shape buildPresentationShape() { return TopoDS_Shape(); }
 
 protected:
 
   //! Constructor
-  //! param theParent a parent item
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theParent a parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   VInspector_ItemBase (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
     : TreeModel_ItemBase (theParent, theRow, theColumn), myContext (0) {}
 
 protected:
 
   Handle(AIS_InteractiveContext) myContext; //!< the current context
+  TopoDS_Shape myPresentationShape; //!< item presentation shape
+  Handle(Graphic3d_TransformPers) myTransformPersistence; //!< item cached persistent
 };
 
 #endif

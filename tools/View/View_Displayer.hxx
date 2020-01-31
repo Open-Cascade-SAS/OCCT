@@ -23,9 +23,13 @@
 #include <NCollection_Shared.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Quantity_Color.hxx>
-#include <inspector/View_PresentationType.hxx>
 
+#include <inspector/View_PresentationType.hxx>
+#include <inspector/View_DisplayActionType.hxx>
+
+class AIS_Trihedron;
 class V3d_View;
+class View_DisplayPreview;
 
 //! \class View_Displayer
 //! \brief It is responsible for communication with AIS Interactive Context to:
@@ -44,6 +48,9 @@ public:
   //! Destructor
   virtual ~View_Displayer() {}
 
+  //! Returns preview display instance
+  View_DisplayPreview* DisplayPreview() const { return myDisplayPreview; }
+
   //! Stores the current context where the presentations will be displayed/erased.
   //! Erases previuously displayd presentations if there were some displayed
   //! \param theContext a context instance
@@ -54,9 +61,15 @@ public:
   //! \param theToKeepPresentation boolean state
   void KeepPresentations (const bool theToKeepPresentations) { myIsKeepPresentations = theToKeepPresentations; }
 
+  //! Returns true if fit Fit All should be peformed automatically by each Display
+  bool IsFitAllActive() const { return myFitAllActive; }
+
   //! Stores flag whether the FitAll shoud be done automatically for each display
   //! \param theFitAllActive boolean value
   void SetFitAllActive (const bool theFitAllActive) { myFitAllActive = theFitAllActive; }
+
+  //! Returns current display mode: 0 - AIS_WireFrame, 1 - AIS_Shaded
+  int DisplayMode() const { return myDisplayMode; }
 
   //! Stores display mode and changes display mode of displayed presentations
   //! \param theDisplayMode a mode: 0 - AIS_WireFrame, 1 - AIS_Shaded
@@ -95,13 +108,18 @@ public:
   Standard_EXPORT void ErasePresentations (const View_PresentationType theType = View_PresentationType_Main,
                                            const bool theToUpdateViewer = true);
 
-  //! Erase presentation from viewer
+  //! Erases presentation from viewer
   //! \param thePresentation a presentation, it will be casted to AIS_InteractiveObject
   //! \param theType presentation type
   //! \param isToUpdateView boolean state if viewer should be updated
   Standard_EXPORT void ErasePresentation (const Handle(Standard_Transient)& thePresentation,
                                           const View_PresentationType theType = View_PresentationType_Main,
                                           const bool theToUpdateViewer = true);
+
+  //! Displays presentation of default trihedron, create it by the first call
+  //! \param toDisplay flag to display presentation if true, or erase it
+  //! \param isToUpdateView boolean state if viewer should be updated
+  Standard_EXPORT void DisplayDefaultTrihedron (const Standard_Boolean toDisplay, const bool theToUpdateViewer);
 
   //! Sets shape visible/invisible
   //! \theShape shape instance
@@ -113,6 +131,10 @@ public:
   //! \theShape shape instance
   Standard_EXPORT bool IsVisible (const TopoDS_Shape& theShape,
                                   const View_PresentationType theType = View_PresentationType_Main) const;
+
+  //! Updates visibility of the presentations for the display type
+  Standard_EXPORT void UpdatePreview (const View_DisplayActionType theType,
+                                      const NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
   //! Calls UpdateCurrentViewer of context
   Standard_EXPORT void UpdateViewer();
@@ -152,12 +174,20 @@ private:
   //! Returns 3d view
   Handle(V3d_View) GetView() const;
 
-  //! Fit all view
+  //! Fits all view
   void fitAllView();
+
+  //! Returns default trihedron, create it if flag allows
+  //! \param toCreate boolean state if trihedron should be created if it is NULL
+  const Handle(AIS_Trihedron)& defaultTrihedron (const bool toCreate);
 
 private:
 
+  View_DisplayPreview* myDisplayPreview; //!< class for preview display
+
   Handle(AIS_InteractiveContext) myContext; //!< context, where the displayer works
+  Handle(AIS_Trihedron) myDefaultTrihedron; //!< NULL presentation until the first display
+
   NCollection_DataMap<View_PresentationType, NCollection_Shared<AIS_ListOfInteractive>> myDisplayed; //!< visualized presentations
   NCollection_DataMap<View_PresentationType, Quantity_Color> myColorAttributes; //!< color properties of presentations
 

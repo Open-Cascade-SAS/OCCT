@@ -45,7 +45,7 @@ public:
   virtual QSize sizeHint() const Standard_OVERRIDE { return myDefaultSize.isValid() ? myDefaultSize : QTreeView::sizeHint(); }
 
 private:
-  QSize myDefaultSize; //! default size, empty isze if it should not be used
+  QSize myDefaultSize; //!< default size, empty size if it should not be used
 };
 
 #endif

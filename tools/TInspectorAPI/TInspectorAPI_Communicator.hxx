@@ -18,17 +18,14 @@
 
 #include <NCollection_List.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Version.hxx>
-#if OCC_VERSION_HEX > 0x060901
-  #include <Standard_Handle.hxx>
-#endif
+#include <Standard_Handle.hxx>
 #include <inspector/TInspectorAPI_PluginParameters.hxx>
 
 //! The Communicator is an interface that should be implemented for a separate plugin
 //! It will be placed in layout of the given parent. After the plugin is created, it is possible to
 //! set container of parameters into plugin to provide the plugin's initialization by some external
 //! objects(e.g. Interactive Context or OCAF Application). If the parameters are changed, it may be
-//! applyed in UpdateContent function. The communicator can change parameters in the following cases:
+//! applied in UpdateContent function. The communicator can change parameters in the following cases:
 //! - the plugin removes own processed parameters (e.g. file names, that was opened by the plugin)
 //! - the plugin sends some parameters to another plugin(by name) (e.g. shape to be analized)
 //!   (at the same time we should be careful here to do not change essential parameters of other plugins)
@@ -50,9 +47,9 @@ public:
   //! \param theParent a parent class
   Standard_EXPORT virtual void SetParent (void* theParent) = 0;
 
-  //! Provide container for actions available in inspector on general level
+  //! Provides container for actions available in inspector on general level
   //! \param theMenu if Qt implementation, it is QMenu object
-  Standard_EXPORT virtual void FillActionsMenu (void* theMenu) { (void)theMenu; }
+  virtual void FillActionsMenu (void* theMenu) { (void)theMenu; }
 
   //! Returns plugin preferences, empty implementation by default
   virtual void GetPreferences (TInspectorAPI_PreferencesDataMap&) {}

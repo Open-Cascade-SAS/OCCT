@@ -36,7 +36,7 @@ public:
   //! Creates attribute pane for attribute types
   //! \param theAttributeName a standard type of attribute
   //! \return an attribute pane if it can be created for this type
-  virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane (const Standard_CString& theAttributeName) = 0;
+  virtual DFBrowserPane_AttributePaneAPI* CreateAttributePane (Standard_CString theAttributeName) = 0;
 };
 
 #endif 

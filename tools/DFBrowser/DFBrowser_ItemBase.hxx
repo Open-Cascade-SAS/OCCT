@@ -48,7 +48,7 @@ public:
   //! \return the current module
   DFBrowser_Module* GetModule() const { return myModule; }
 
-  //! Change using of additional information in item. It it does not use additional info,
+  //! Changes using of additional information in item. If it does not use additional info,
   //! it will not return extended text in initValue().
   //! \param theValue a new value
   //! \return the previous value
@@ -84,15 +84,15 @@ protected:
   //! \return the created item
   virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
 
-  //! Initialize the current item. It creates a backup of the specific item information
-  virtual void initItem() const {};
+  //! Initializes the current item. It creates a backup of the specific item information
+  virtual void initItem() const {}
 
 protected:
 
   //! Constructor
-  //! param theParent a parent item
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theParent a parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   DFBrowser_ItemBase (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn);
 
 private:

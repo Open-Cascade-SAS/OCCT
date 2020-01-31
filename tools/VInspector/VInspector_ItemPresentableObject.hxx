@@ -39,11 +39,15 @@ public:
   static VInspector_ItemPresentableObjectPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
   { return VInspector_ItemPresentableObjectPtr (new VInspector_ItemPresentableObject (theParent, theRow, theColumn)); }
   //! Destructor
-  virtual ~VInspector_ItemPresentableObject() Standard_OVERRIDE {};
+  virtual ~VInspector_ItemPresentableObject() {}
+
+  //! Returns data object of the item.
+  //! \return object
+  virtual const Handle(Standard_Transient)& Object() const { initItem(); return myIO; }
 
   //! Returns the current interactive object, init item if it was not initialized yet
   //! \return interactive object
-  Standard_EXPORT Handle(AIS_InteractiveObject) GetInteractiveObject() const;
+  Handle(AIS_InteractiveObject) GetInteractiveObject() const { return Handle(AIS_InteractiveObject)::DownCast (Object()); }
 
   //! Returns pointer information for the current interactive object, init item if it was not initialized yet
   //! \return string value
@@ -55,11 +59,9 @@ public:
   //! Resets cached values
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
-  //! Returns presentations, which items are selected in tree view
-  //! \param theSelectionModel a selection model
-  //! \return container of presentations
-  Standard_EXPORT static NCollection_List<Handle(AIS_InteractiveObject)> GetSelectedPresentations
-    (QItemSelectionModel* theSelectionModel);
+  //! Returns presentation of the attribute to be visualized in the view
+  //! \thePresentations [out] container of presentation handles to be visualized
+  Standard_EXPORT virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations);
 
 protected:
 
@@ -75,13 +77,14 @@ protected:
   //! \return the value
   virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
 
-  //! Creates a child item in the given position.
-  //! \param theRow the child row position
-  //! \param theColumn the child column position
-  //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) Standard_OVERRIDE;
+  //! Returns stream value of the item to fulfill property panel.
+  //! \return stream value or dummy
+  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
 
-private:
+protected:
+  //! Build presentation shape
+  //! \return generated shape of the item parameters
+  virtual TopoDS_Shape buildPresentationShape() Standard_OVERRIDE;
 
   //! Set interactive object into the current field
   //! \param theIO a presentation
@@ -90,7 +93,7 @@ private:
 private:
 
   //! Constructor
-  //! param theParent a parent item
+  //! \param theParent a parent item
   VInspector_ItemPresentableObject(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
   : VInspector_ItemBase(theParent, theRow, theColumn) {}
 

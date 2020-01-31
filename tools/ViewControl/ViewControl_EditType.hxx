@@ -1,6 +1,6 @@
-// Created on: 2017-06-16
+// Created on: 2020-01-25
 // Created by: Natalia ERMOLAEVA
-// Copyright (c) 2017 OPEN CASCADE SAS
+// Copyright (c) 2020 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,16 +13,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#ifndef VInspector_SelectionType_H
-#define VInspector_SelectionType_H
+#ifndef ViewControl_EditType_H
+#define ViewControl_EditType_H
 
-//! Type of SelectMgr enumeration types
-enum VInspector_SelectionType
+//! Type of context used in a tool library
+enum ViewControl_EditType
 {
-  VInspector_SelectionType_TypeOfUpdate, //!< Values of SelectMgr_TypeOfUpdate
-  VInspector_SelectionType_StateOfSelection, //!< Values of SelectMgr_StateOfSelection
-  VInspector_SelectionType_TypeOfBVHUpdate //!< Values of SelectMgr_TypeOfBVHUpdate
+  ViewControl_EditType_None, //!< View widget is null
+  ViewControl_EditType_Bool, //!< check box widget
+  ViewControl_EditType_Double, //!< line edit widget used double validator
+  ViewControl_EditType_Line, //!< line edit widget
+  ViewControl_EditType_Spin, //!< spin box widget
+  ViewControl_EditType_DoAction //!< control to perform the row action
 };
 
 #endif
-                                                           

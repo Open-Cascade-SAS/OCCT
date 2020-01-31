@@ -92,6 +92,9 @@ QVariant DFBrowser_TreeLevelViewModel::data (const QModelIndex& theIndex, int th
   if (theIndex.column() == 0)
   {
     DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase> (anItemBase);
+    if (!aDBrowserItem)
+      return QVariant();
+
     bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo (false);
     aValue = anItemBase->data (anIndex, theRole);
     aDBrowserItem->SetUseAdditionalInfo (aPrevValue);

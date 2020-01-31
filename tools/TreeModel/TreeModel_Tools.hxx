@@ -22,7 +22,9 @@
 #include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QByteArray>
+#include <QColor>
 #include <QMap>
+#include <QModelIndex>
 #include <QString>
 #include <QStyle>
 #include <Standard_WarningsRestore.hxx>
@@ -49,22 +51,23 @@ public:
 
   //! Returns header margin, defined in style settings of application
   //! \return integer value
-  Standard_EXPORT static int HeaderSectionMargin() { return qApp->style()->pixelMetric (QStyle::PM_HeaderMargin); }
+  static int HeaderSectionMargin() { return qApp->style()->pixelMetric (QStyle::PM_HeaderMargin); }
 
-  //! Save state of three view in a container in form: key, value. It saves:
-  //! - visibiblity of columns,
+  //! Saves state of tree view in a container in form: key, value. It saves:
+  //! - visibility of columns,
   //! - columns width
   //! \param theTreeView a view instance
   //! \param theItems [out] properties
   //! \param thePrefix peference item prefix
   Standard_EXPORT static void SaveState (QTreeView* theTreeView, QMap<QString, QString>& theItems,
                                          const QString& thePrefix = QString());
-  //! Restore state of three view by a container
+
+  //! Restores state of tree view by a container
   //! \param theTreeView a view instance
   //! \param theKey property key
   //! \param theValue property value
   //! \param thePrefix peference item prefix
-  //! \return boolean value whether the property is applyed to the tree view
+  //! \return boolean value whether the property is applied to the tree view
   Standard_EXPORT static bool RestoreState (QTreeView* theTreeView, const QString& theKey, const QString& theValue,
                                             const QString& thePrefix = QString());
 
@@ -90,6 +93,24 @@ public:
   //! \param theWidth width value, if -1, default value is used
   //! \param theTail symbols added to the end of the cut string
   Standard_EXPORT static QString CutString (const QString& theText, const int theWidth = -1, const QString& theTail = "...");
+
+  //! Returns light highlight color
+  //! \returns Qt color
+  Standard_EXPORT static QColor LightHighlightColor();
+
+  //! Makes the view expanded from the root till the index
+  Standard_EXPORT static void SetExpandedTo (QTreeView* theTreeView, const QModelIndex& theIndex);
+
+  //! Expands items in tree view staring from the index recursive in given number of levels
+  //! \param theTreeView an OCAF tree view
+  //! \param theParentIndex an index which children should be expanded
+  //! \param isExpanded a boolean state if the item should be expanded or collapsed
+  //! \param theLevels a number of levels to be expanded, or -1 for all levels
+  Standard_EXPORT static void SetExpanded (QTreeView* theTreeView,
+                                           const QModelIndex& theIndex,
+                                           const bool isExpanded,
+                                           int& theLevels);
+
 };
 
 #endif

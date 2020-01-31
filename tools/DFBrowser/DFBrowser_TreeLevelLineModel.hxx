@@ -40,7 +40,7 @@ public:
   //! Destructor
   virtual ~DFBrowser_TreeLevelLineModel() {}
 
-  //!
+  //! Resets the cached values
   void Reset() { myLevelItems.clear(); }
 
   //! Inits the model by the index
@@ -50,7 +50,7 @@ public:
   //! Returns true if the tree model index is filled
   bool IsInitialized() const { return myTreeIndex.isValid(); }
 
-  //! Return OCAF tree view model index on level defined by column of the parameter index
+  //! Returns OCAF tree view model index on level defined by column of the parameter index
   //! \param theIndex a tree level view model index
   //! \return model index
   const QModelIndex& GetTreeViewIndex (const QModelIndex& theIndex) const
@@ -82,7 +82,7 @@ public:
 private:
 
   QModelIndex myTreeIndex; //!< the current OCAF tree view model index
-  QList<QModelIndex> myLevelItems; //! cached parent indices of myTreeIndex for quick access to item information
+  QList<QModelIndex> myLevelItems; //!< cached parent indices of myTreeIndex for quick access to item information
 };
 
 #endif

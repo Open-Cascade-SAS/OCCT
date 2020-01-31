@@ -18,9 +18,20 @@
 
 #include <Standard.hxx>
 
+#include <inspector/TreeModel_ItemBase.hxx>
+
+#include <NCollection_List.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Standard_Transient.hxx>
 #include <TopoDS_Shape.hxx>
+
+#include <inspector/ViewControl_TableModelValues.hxx>
+
+#include <GeomAbs_Shape.hxx>
+#include <Standard_WarningsDisable.hxx>
+#include <QList>
+#include <QVariant>
+#include <Standard_WarningsRestore.hxx>
 
 //! \class ShapeView_Tools
 //! It gives auxiliary methods for TopoDS_Shape manipulation
@@ -28,10 +39,13 @@ class ShapeView_Tools
 {
 public:
 
-  //! Read Shape using BREP reader
-  //! \param theFileName a file name
-  //! \return shape or NULL
-  Standard_EXPORT static TopoDS_Shape ReadShape (const TCollection_AsciiString& theFileName);
+  //! Checks whether it is possible to explode the shape. The search is recursive until all types are collected.
+  //! \param theShape [in] source shape object
+  //! \param theExplodeTypes [out] container of possible shape types to be exploded
+  //! \return true if explode is finished, all types are collected.
+  Standard_EXPORT static Standard_Boolean IsPossibleToExplode(const TopoDS_Shape& theShape,
+    NCollection_List<TopAbs_ShapeEnum>& theExplodeTypes);
+
 };
 
 #endif

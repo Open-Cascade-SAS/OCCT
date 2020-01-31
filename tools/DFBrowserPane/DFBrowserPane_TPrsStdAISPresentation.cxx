@@ -63,7 +63,7 @@ void DFBrowserPane_TPrsStdAISPresentation::GetValues (const Handle(TDF_Attribute
             << "GetAIS" << (anIO.IsNull() ? "Null" : anAttribute->DynamicType()->Name())
             << "IsDisplayed" << DFBrowserPane_Tools::BoolToStr (anAttribute->IsDisplayed())
             << "GetContext()" << ((!anIO.IsNull() && !anIO->GetContext().IsNull()) ?
-                                 DFBrowserPane_Tools::GetPointerInfo (anIO->GetContext()).ToCString() : "")
+                                 Standard_Dump::GetPointerInfo (anIO->GetContext()).ToCString() : "")
             << "HasOwnMaterial" << DFBrowserPane_Tools::BoolToStr (anAttribute->HasOwnMaterial())
             << "Material" << (anAttribute->HasOwnMaterial() ?
                              DFBrowserPane_Tools::ToName (DB_MATERIAL_TYPE, anAttribute->Material()) : "").ToCString()

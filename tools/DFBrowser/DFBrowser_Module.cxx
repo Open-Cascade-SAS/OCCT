@@ -53,7 +53,9 @@ DFBrowser_Module::DFBrowser_Module()
 // =======================================================================
 void DFBrowser_Module::CreateViewModel (void* theParent)
 {
-  myOCAFViewModel = new DFBrowser_TreeModel ((QWidget*)theParent, this);
+  myOCAFViewModel = new DFBrowser_TreeModel ((QWidget*)theParent);
+  myOCAFViewModel->InitColumns();
+  myOCAFViewModel->SetModule (this);
 }
 
 // =======================================================================
@@ -152,7 +154,7 @@ DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane (Handle(TDF_A
 // function : GetAttributePane
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane (const Standard_CString& theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowser_Module::GetAttributePane (Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
 
@@ -197,7 +199,7 @@ QVariant DFBrowser_Module::GetAttributeInfo (Handle(TDF_Attribute) theAttribute,
 // function : GetAttributeInfo
 // purpose :
 // =======================================================================
-QVariant DFBrowser_Module::GetAttributeInfo (const Standard_CString& theAttributeName, DFBrowser_Module* theModule,
+QVariant DFBrowser_Module::GetAttributeInfo (Standard_CString theAttributeName, DFBrowser_Module* theModule,
                                              int theRole, int theColumnId)
 {
   DFBrowserPane_AttributePane* anAttributePane = 0;
@@ -222,7 +224,7 @@ QVariant DFBrowser_Module::GetAttributeInfo (const Standard_CString& theAttribut
 // function : CreateAttributePane
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowser_Module::CreateAttributePane (const Standard_CString& theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowser_Module::CreateAttributePane (Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
   // iteration should be performed from the tail of the list, as latest added creator has

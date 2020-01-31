@@ -18,7 +18,7 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <NCollection_List.hxx>
-#include <SelectMgr_EntityOwner.hxx>
+#include <SelectBasics_EntityOwner.hxx>
 #include <Standard.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
 #include <inspector/VInspector_ItemBase.hxx>
@@ -47,7 +47,10 @@ public:
   Standard_EXPORT VInspector_ViewModel (QObject* theParent);
 
   //! Destructor
-  virtual ~VInspector_ViewModel() Standard_OVERRIDE {};
+  virtual ~VInspector_ViewModel() {}
+
+  //! Creates model columns and root items.
+  Standard_EXPORT virtual void InitColumns() Standard_OVERRIDE;
 
   //! Initialize the model by the given context
   //! \param theContext viewer context
@@ -59,38 +62,25 @@ public:
 
   //! Returns tree view indices for the given pointers of presentable object
   //! \param thePointers a list of presentation pointers
-  //! \return container of indices
-  Standard_EXPORT QModelIndexList FindPointers (const QStringList& thePointers);
+  //! \param theParent an index of the parent item
+  //! \param [out] container of indices
+  Standard_EXPORT void FindPointers (const QStringList& thePointers,
+                                     const QModelIndex& theParent,
+                                     QModelIndexList& theFoundIndices);
 
   //! Returns tree model index of the presentation item in the tree view.
   //! \param thePresentation a presentation
   //! \return model index if the value is found or Null model index
   Standard_EXPORT QModelIndex FindIndex (const Handle(AIS_InteractiveObject)& thePresentation) const;
 
-  //! Returns root item by column
-  //! \param theColumn an index of the column
-  //! \return root item instance
-  virtual TreeModel_ItemBasePtr RootItem (const int theColumn) const Standard_OVERRIDE
-  { return myRootItems[theColumn]; }
-
-  //! Returns select owners for tree view selected items
-  //! \param theSelectionModel a selection model
-  //! \param theOwners an output list of owners
-  Standard_EXPORT static void GetSelectedOwners (QItemSelectionModel* theSelectionModel,
-                                                 NCollection_List<Handle(SelectMgr_EntityOwner)>& theOwners);
-
   //! Updates tree model
   Standard_EXPORT void UpdateTreeModel();
 
 protected:
-
   //! Creates root item
   //! \param theColumnId index of a column
-  virtual void createRootItem (const int theColumnId) Standard_OVERRIDE;
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) Standard_OVERRIDE;
 
-private:
-
-  QMap<int, TreeModel_ItemBasePtr> myRootItems; //!< container of root items, for each column own root item
 };
 
 #endif

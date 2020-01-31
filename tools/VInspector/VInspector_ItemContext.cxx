@@ -15,17 +15,15 @@
 
 #include <inspector/VInspector_ItemContext.hxx>
 
+#include <AIS.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <inspector/VInspector_ItemFolderObject.hxx>
 #include <inspector/VInspector_ItemPresentableObject.hxx>
 #include <inspector/VInspector_Tools.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QStringList>
 #include <Standard_WarningsRestore.hxx>
-
-//#define DEBUG_FREE_OWNERS
 
 // =======================================================================
 // function : initRowCount
@@ -36,47 +34,22 @@ int VInspector_ItemContext::initRowCount() const
   if (Column() != 0)
     return 0;
 
-  int aNbProperties = 1; // item to visualize Filters/Drawer information of context
-
-  int aNbPresentations = 0;
-  Handle(AIS_InteractiveContext) aContext = GetContext();
+  Handle(AIS_InteractiveContext) aContext = Handle(AIS_InteractiveContext)::DownCast (Object());
   if (aContext.IsNull())
     return 0;
 
   AIS_ListOfInteractive aListOfIO;
   aContext->DisplayedObjects (aListOfIO);
   aContext->ErasedObjects(aListOfIO);
-  aNbPresentations = aListOfIO.Extent();
-
-  // owners without Presentation
-#ifdef DEBUG_FREE_OWNERS
-  int aRows = 0;
-  // only local context is processed: TODO for global context
-  NCollection_List<Handle(SelectMgr_EntityOwner)> anActiveOwners;
-  aContext->MainSelector()->ActiveOwners(anActiveOwners);
-
-  Handle(SelectMgr_EntityOwner) anOwner;
-  for (NCollection_List<Handle(SelectMgr_EntityOwner)>::Iterator anOwnersIt(anActiveOwners); anOwnersIt.More(); anOwnersIt.Next())
+  int aNbPresentations = 0;
+  for (AIS_ListIteratorOfListOfInteractive aListOfIOIt (aListOfIO); aListOfIOIt.More(); aListOfIOIt.Next())
   {
-    anOwner = anOwnersIt.Value();
-    if (anOwner.IsNull())
-      continue;
-    Handle(AIS_InteractiveObject) anAISObj = Handle(AIS_InteractiveObject)::DownCast(anOwner->Selectable());
-    if (anAISObj.IsNull())
-      aRows++;
+    if (aListOfIOIt.Value()->Parent())
+      continue; // child presentation
+    aNbPresentations++;
   }
-  // owners in Global Context
-  NCollection_List<Handle(SelectMgr_EntityOwner)> anActiveOwners;
-  aContext->MainSelector()->ActiveOwners(anActiveOwners);
-  if (aRows > 0)
-    aNbPresentations += aRows;
-  NCollection_List<Handle(SelectMgr_EntityOwner)> anEmptySelectableOwners;
-  NCollection_List<Handle(SelectMgr_EntityOwner)> anOwners =
-    VInspector_Tools::ActiveOwners (aContext, anEmptySelectableOwners);
-  if (anEmptySelectableOwners.Size() > 0)
-    aNbPresentations += 1;
-#endif
-  return aNbProperties + aNbPresentations;
+
+  return aNbPresentations;
 }
 
 // =======================================================================
@@ -85,27 +58,64 @@ int VInspector_ItemContext::initRowCount() const
 // =======================================================================
 QVariant VInspector_ItemContext::initValue (const int theItemRole) const
 {
+  QVariant aParentValue = VInspector_ItemBase::initValue (theItemRole);
+  if (aParentValue.isValid())
+    return aParentValue;
+
   if (theItemRole != Qt::DisplayRole && theItemRole != Qt::EditRole && theItemRole != Qt::ToolTipRole)
     return QVariant();
 
-  if (GetContext().IsNull())
+  Handle(AIS_InteractiveContext) aContext = Handle(AIS_InteractiveContext)::DownCast (Object());
+  if (aContext.IsNull())
     return Column() == 0 ? "Empty context" : "";
 
   switch (Column())
   {
-    case 0: return GetContext()->DynamicType()->Name();
-    case 1: return rowCount();
+    case 0: return aContext->DynamicType()->Name();
     case 4:
     {
       Handle(AIS_InteractiveObject) anEmptyIO;
-      int aSelectedCount = VInspector_Tools::SelectedOwners (GetContext(), anEmptyIO, false);
+      int aSelectedCount = VInspector_Tools::SelectedOwners (aContext, anEmptyIO, false);
       return aSelectedCount > 0 ? QString::number (aSelectedCount) : "";
     }
-    case 6: return GetContext()->DeviationCoefficient();
+    case 6: return aContext->DeviationCoefficient();
     default:
       break;
   }
   return QVariant();
+}
+
+// =======================================================================
+// function : Init
+// purpose :
+// =======================================================================
+void VInspector_ItemContext::Init()
+{
+  Handle(AIS_InteractiveContext) aContext = GetContext();
+  if (aContext.IsNull())
+    return;
+
+  TreeModel_ItemBase::Init();
+}
+
+// =======================================================================
+// function : Reset
+// purpose :
+// =======================================================================
+void VInspector_ItemContext::Reset()
+{
+  VInspector_ItemBase::Reset();
+}
+
+// =======================================================================
+// function : initItem
+// purpose :
+// =======================================================================
+void VInspector_ItemContext::initItem() const
+{
+  if (IsInitialized())
+    return;
+  const_cast<VInspector_ItemContext*>(this)->Init();
 }
 
 // =======================================================================
@@ -114,8 +124,19 @@ QVariant VInspector_ItemContext::initValue (const int theItemRole) const
 // =======================================================================
 TreeModel_ItemBasePtr VInspector_ItemContext::createChild (int theRow, int theColumn)
 {
-  if (theRow == 0)
-    return VInspector_ItemFolderObject::CreateItem (currentItem(), theRow, theColumn);
-  else
-    return VInspector_ItemPresentableObject::CreateItem (currentItem(), theRow, theColumn);
+  return VInspector_ItemPresentableObject::CreateItem (currentItem(), theRow, theColumn);
 }
+
+// =======================================================================
+// function : initStream
+// purpose :
+// =======================================================================
+void VInspector_ItemContext::initStream (Standard_OStream& theOStream) const
+{
+  Handle(AIS_InteractiveContext) aContext = GetContext();
+  if (aContext.IsNull())
+    return;
+
+  aContext->DumpJson (theOStream);
+}
+

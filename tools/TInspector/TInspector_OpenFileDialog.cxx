@@ -13,8 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#include <inspector/TInspectorEXE_OpenFileDialog.hxx>
-#include <inspector/TInspectorEXE_OpenFileViewModel.hxx>
+#include <inspector/TInspector_OpenFileDialog.hxx>
+
+#include <inspector/TInspector_OpenButton.hxx>
+#include <inspector/TInspector_OpenFileViewModel.hxx>
 
 #include <inspector/TInspector_Communicator.hxx>
 
@@ -52,66 +54,6 @@ const int RECENT_FILES_CACHE_SIZE = 10;
 TInspector_Communicator* MyCommunicator;
 
 // =======================================================================
-// function : StartButton
-// purpose :
-// =======================================================================
-QPushButton* TInspectorEXE_OpenButton::StartButton()
-{
-  if (!myStartButton)
-  {
-    myStartButton = new QPushButton();
-    myStartButton->setIcon (QIcon (":folder_open.png"));
-    connect (myStartButton, SIGNAL (clicked()), this, SLOT (onStartButtonClicked()));
-  }
-  return myStartButton;
-}
-
-// =======================================================================
-// function : onStartButtonClicked
-// purpose :
-// =======================================================================
-void TInspectorEXE_OpenButton::onStartButtonClicked()
-{
-  QPushButton* aButton = (QPushButton*)sender();
-  TCollection_AsciiString aPluginName (aButton->objectName().toStdString().c_str());
-  if (aPluginName.IsEmpty())
-    return;
-  
-  QStringList aPluginRecentlyOpenedFiles;
-  if (myRecentlyOpenedFiles.contains(aPluginName))
-  {
-    QStringList aFileNames = myRecentlyOpenedFiles[aPluginName];
-    for (int i = 0; i < aFileNames.size(); i++)
-    {
-      QFileInfo aFileInfo (aFileNames[i]);
-      if (aFileInfo.exists() && aFileInfo.isFile())
-        aPluginRecentlyOpenedFiles.append(aFileInfo.absoluteFilePath());
-    }
-  }
-
-  QString aFileName = TInspectorEXE_OpenFileDialog::OpenFile (0, aPluginRecentlyOpenedFiles);
-  aFileName = QDir().toNativeSeparators (aFileName);
-  if (!aFileName.isEmpty()) {
-    QApplication::setOverrideCursor (Qt::WaitCursor);
-    TInspectorEXE_OpenFileDialog::Communicator()->OpenFile (aPluginName, TCollection_AsciiString (aFileName.toUtf8().data()));
-
-    QFileInfo aFileInfo (aFileName);
-    if (!aPluginRecentlyOpenedFiles.contains (aFileInfo.absoluteFilePath()))
-    {
-      myRecentlyOpenedFiles[aPluginName].append (aFileInfo.absoluteFilePath());
-      for (int i = 0; i < myRecentlyOpenedFiles[aPluginName].size() - RECENT_FILES_CACHE_SIZE; i++)
-        myRecentlyOpenedFiles[aPluginName].removeFirst();
-      TInspectorEXE_OpenFileDialog::SetPluginRecentlyOpenedFiles (aPluginName,
-        TInspectorEXE_OpenFileDialog::Communicator(), myRecentlyOpenedFiles[aPluginName]);
-
-      TInspectorEXE_OpenFileDialog::Communicator()->GetPluginParameters()->StorePreferences();
-    }
-
-    QApplication::restoreOverrideCursor();
-  }
-}
-
-// =======================================================================
 // function : changeMargins
 // purpose :
 // =======================================================================
@@ -125,7 +67,7 @@ void changeMargins (QBoxLayout* theLayout)
 // function : Constructor
 // purpose :
 // =======================================================================
-TInspectorEXE_OpenFileDialog::TInspectorEXE_OpenFileDialog (QWidget* theParent, const QStringList& theRecentlyOpenedFiles)
+TInspector_OpenFileDialog::TInspector_OpenFileDialog (QWidget* theParent, const QStringList& theRecentlyOpenedFiles)
 : QDialog (theParent), myRecentlyOpenedFiles (theRecentlyOpenedFiles)
 {
   setWindowTitle (tr ("Open File"));
@@ -171,10 +113,10 @@ TInspectorEXE_OpenFileDialog::TInspectorEXE_OpenFileDialog (QWidget* theParent, 
 // function : OpenFile
 // purpose :
 // =======================================================================
-QString TInspectorEXE_OpenFileDialog::OpenFile (QWidget* theParent, const QStringList& theRecentlyOpenedFiles)
+QString TInspector_OpenFileDialog::OpenFile (QWidget* theParent, const QStringList& theRecentlyOpenedFiles)
 {
   QString aFileName;
-  TInspectorEXE_OpenFileDialog* aDialog = new TInspectorEXE_OpenFileDialog (theParent, theRecentlyOpenedFiles);
+  TInspector_OpenFileDialog* aDialog = new TInspector_OpenFileDialog (theParent, theRecentlyOpenedFiles);
   if (aDialog->exec() == QDialog::Accepted)
     aFileName = aDialog->GetFileName();
 
@@ -185,7 +127,7 @@ QString TInspectorEXE_OpenFileDialog::OpenFile (QWidget* theParent, const QStrin
 // function : Communicator
 // purpose :
 // =======================================================================
-TInspector_Communicator* TInspectorEXE_OpenFileDialog::Communicator()
+TInspector_Communicator* TInspector_OpenFileDialog::Communicator()
 {
   if (!MyCommunicator)
     MyCommunicator = new TInspector_Communicator();
@@ -196,7 +138,7 @@ TInspector_Communicator* TInspectorEXE_OpenFileDialog::Communicator()
 // function : GetPluginRecentlyOpenedFiles
 // purpose :
 // =======================================================================
-void TInspectorEXE_OpenFileDialog::GetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
+void TInspector_OpenFileDialog::GetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
                                                                  TInspector_Communicator* theCommunicator,
                                                                  QStringList& theFileNames)
 {
@@ -220,7 +162,7 @@ void TInspectorEXE_OpenFileDialog::GetPluginRecentlyOpenedFiles (const TCollecti
 // function : SetPluginRecentlyOpenedFiles
 // purpose :
 // =======================================================================
-void TInspectorEXE_OpenFileDialog::SetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
+void TInspector_OpenFileDialog::SetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
                                                                  TInspector_Communicator* theCommunicator,
                                                                  QStringList& theFileNames)
 {
@@ -237,7 +179,7 @@ void TInspectorEXE_OpenFileDialog::SetPluginRecentlyOpenedFiles (const TCollecti
 // function : onSampleSelectionChanged
 // purpose :
 // =======================================================================
-void TInspectorEXE_OpenFileDialog::onSampleSelectionChanged (const QItemSelection& theSelected,
+void TInspector_OpenFileDialog::onSampleSelectionChanged (const QItemSelection& theSelected,
                                                              const QItemSelection&)
 {
   QItemSelectionModel* aSelectionModel = (QItemSelectionModel*)sender();
@@ -258,7 +200,7 @@ void TInspectorEXE_OpenFileDialog::onSampleSelectionChanged (const QItemSelectio
 // function : onSelectClicked
 // purpose :
 // =======================================================================
-void TInspectorEXE_OpenFileDialog::onSelectClicked()
+void TInspector_OpenFileDialog::onSelectClicked()
 {
   QString anEnteredPath;
   QString aDirName = mySelectedName->text();
@@ -283,7 +225,7 @@ void TInspectorEXE_OpenFileDialog::onSelectClicked()
 // function : onApplySelectClicked
 // purpose :
 // =======================================================================
-void TInspectorEXE_OpenFileDialog::onApplySelectClicked()
+void TInspector_OpenFileDialog::onApplySelectClicked()
 {
   QString aFileName = mySelectedName->text();
 
@@ -299,7 +241,7 @@ void TInspectorEXE_OpenFileDialog::onApplySelectClicked()
 // function : createTableView
 // purpose :
 // =======================================================================
-QTableView* TInspectorEXE_OpenFileDialog::createTableView (const QStringList& theFileNames)
+QTableView* TInspector_OpenFileDialog::createTableView (const QStringList& theFileNames)
 {
   QTableView* aTableView = new QTableView (this);
   aTableView->setFrameStyle (QFrame::NoFrame);
@@ -331,9 +273,9 @@ QTableView* TInspectorEXE_OpenFileDialog::createTableView (const QStringList& th
 // function : createModel
 // purpose :
 // =======================================================================
-QAbstractItemModel* TInspectorEXE_OpenFileDialog::createModel (const QStringList& theFileNames)
+QAbstractItemModel* TInspector_OpenFileDialog::createModel (const QStringList& theFileNames)
 {
-  TInspectorEXE_OpenFileViewModel* aModel = new TInspectorEXE_OpenFileViewModel (this);
+  TInspector_OpenFileViewModel* aModel = new TInspector_OpenFileViewModel (this);
   aModel->Init (theFileNames);
   return aModel;
 }

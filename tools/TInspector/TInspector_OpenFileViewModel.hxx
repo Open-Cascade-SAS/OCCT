@@ -41,7 +41,7 @@ public:
   //! Destructor
   virtual ~TInspectorEXE_OpenFileItemDelegate() {}
 
-  //! Draw an icon in the cell
+  //! Draws an icon in the cell
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index
@@ -53,19 +53,19 @@ private:
   QColor myColor; //!< highlight color
 };
 
-//! \class TInspectorEXE_OpenFileViewModel
+//! \class TInspector_OpenFileViewModel
 //! Table model that visualizes container of string values (file names)
 //! Table orientation is horizontal, it has 1 row, number of columns equals to number of values
-class TInspectorEXE_OpenFileViewModel : public QAbstractTableModel
+class TInspector_OpenFileViewModel : public QAbstractTableModel
 {
 
 public:
 
   //! Constructor
-  TInspectorEXE_OpenFileViewModel (QObject* theParent = 0) : QAbstractTableModel (theParent) {}
+  TInspector_OpenFileViewModel (QObject* theParent = 0) : QAbstractTableModel (theParent) {}
 
   //! Destructor
-  virtual ~TInspectorEXE_OpenFileViewModel() {}
+  virtual ~TInspector_OpenFileViewModel() {}
 
   //! Store values
   //! \param theValues a container of values to fill model

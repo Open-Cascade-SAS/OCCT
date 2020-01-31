@@ -48,13 +48,6 @@ public:
   //! \return the string value
   Standard_EXPORT static TCollection_AsciiString GetEntry (const TDF_Label& theLabel);
 
-  //! Convert pointer to string value
-  //! \param thePointer a pointer
-  //! \param isShortInfo if true, all '0' symbols in the beginning of the pointer are skipped
-  //! \return the string value
-  Standard_EXPORT static TCollection_AsciiString GetPointerInfo (const Handle(Standard_Transient)& thePointer,
-                                                                 const bool isShortInfo = true);
-
   //! Returns string value corresponded to the shape type if it is not null.
   //! \param theShape a checked shape
   //! \return string value or empty string value

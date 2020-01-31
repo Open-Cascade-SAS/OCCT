@@ -80,7 +80,7 @@ void DFBrowser_AttributePaneStack::SetPaneMode (const DFBrowser_AttributePaneTyp
   myPaneMode = theMode;
   if (myPaneMode == DFBrowser_AttributePaneType_SearchView)
   {
-    //! clear highlight in tree model
+    // clear highlight in tree model
     DFBrowser_TreeModel* aModel = dynamic_cast<DFBrowser_TreeModel*> (myModule->GetOCAFViewModel());
     if (aModel && aModel->HasHighlighted())
       aModel->SetHighlighted (QModelIndexList());
@@ -103,7 +103,7 @@ void DFBrowser_AttributePaneStack::SetCurrentItem (const QModelIndex& theIndex)
   if (myPaneMode != DFBrowser_AttributePaneType_ItemView)
     return;
 
-  //! clear highlight in tree model
+  // clear highlight in tree model
   DFBrowser_TreeModel* aModel = dynamic_cast<DFBrowser_TreeModel*> (myModule->GetOCAFViewModel());
   if (aModel && aModel->HasHighlighted())
     aModel->SetHighlighted (QModelIndexList());

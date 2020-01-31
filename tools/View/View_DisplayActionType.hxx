@@ -1,6 +1,6 @@
-// Created on: 2017-06-16
+// Created on: 2020-01-25
 // Created by: Natalia ERMOLAEVA
-// Copyright (c) 2017 OPEN CASCADE SAS
+// Copyright (c) 2020 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,21 +13,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement. 
 
-#ifndef TREEMODEL_H
-#define TREEMODEL_H
+#ifndef View_DisplayActionType_H
+#define View_DisplayActionType_H
 
-#ifdef __TreeModel_DLL
-  #ifdef _WIN32
-    #define TREEMODEL_EXPORT __declspec(dllexport)
-  #else
-    #define TREEMODEL_EXPORT
-  #endif
-#else
-  #ifdef _WIN32
-    #define TREEMODEL_EXPORT __declspec(dllimport)
-  #else
-    #define TREEMODEL_EXPORT
-  #endif
-#endif
+//! \enum View_DisplayActionType
+enum View_DisplayActionType
+{
+  View_DisplayActionType_NoneId, //!< No action activated
+  View_DisplayActionType_DisplayId, //!< Display action
+  View_DisplayActionType_RedisplayId, //!< Redisplay action
+  View_DisplayActionType_EraseId, //!< Erase action
+  View_DisplayActionType_RemoveId //!< Remove action
+};
 
 #endif

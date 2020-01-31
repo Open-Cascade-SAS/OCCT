@@ -34,17 +34,13 @@
 #include <inspector/DFBrowserPaneXDE_XCAFDocShapeMapTool.hxx>
 #include <inspector/DFBrowserPaneXDE_XCAFDocShapeTool.hxx>
 
-#include <Standard_Version.hxx>
-
 #include <XCAFDoc_Area.hxx>
 #include <XCAFDoc_Centroid.hxx>
 #include <XCAFDoc_Color.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_Datum.hxx>
-#if OCC_VERSION_HEX > 0x060901
 #include <XCAFDoc_Dimension.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
-#endif
 #include <XCAFDoc_DimTol.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
@@ -71,7 +67,7 @@ DFBrowserPaneXDE_AttributePaneCreator::DFBrowserPaneXDE_AttributePaneCreator(
 // function : CreateAttributePane
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowserPaneXDE_AttributePaneCreator::CreateAttributePane (const Standard_CString& theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowserPaneXDE_AttributePaneCreator::CreateAttributePane (Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
   if (DFBrowserPaneXDE_AttributeCommonPane::ProcessAttribute (theAttributeName))
@@ -91,7 +87,7 @@ DFBrowserPane_AttributePaneAPI* DFBrowserPaneXDE_AttributePaneCreator::CreateAtt
 // function : createXDEPane
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowserPaneXDE_AttributePaneCreator::createXDEPane (const Standard_CString& theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowserPaneXDE_AttributePaneCreator::createXDEPane (Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
   if (theAttributeName == STANDARD_TYPE (XCAFDoc_ShapeMapTool)->Name())
@@ -106,20 +102,16 @@ DFBrowserPane_AttributePaneAPI* DFBrowserPaneXDE_AttributePaneCreator::createXDE
     aPane = new DFBrowserPaneXDE_XCAFDocColorTool();
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_Datum)->Name())
     aPane = new DFBrowserPaneXDE_XCAFDocDatum();
-#if OCC_VERSION_HEX > 0x060901
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_Dimension)->Name())
     aPane = new DFBrowserPaneXDE_XCAFDocDimension();
-#endif
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_DimTol)->Name())
     aPane = new DFBrowserPaneXDE_XCAFDocDimTol();
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_DimTolTool)->Name())
     aPane = new DFBrowserPaneXDE_XCAFDocDimTolTool();
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_DocumentTool)->Name())
     aPane = new DFBrowserPaneXDE_XCAFDocDocumentTool();
-#if OCC_VERSION_HEX > 0x060901
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_GeomTolerance)->Name())
     aPane = new DFBrowserPaneXDE_XCAFDocGeomTolerance();
-#endif
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_GraphNode)->Name())
     aPane = new DFBrowserPaneXDE_XCAFDocGraphNode();
   else if (theAttributeName == STANDARD_TYPE (XCAFDoc_LayerTool)->Name())

@@ -42,7 +42,7 @@ public:
   virtual ~DFBrowserPane_AttributePaneModel() {}
 
   //! Sets direction of the values applying, whether it should be placed by rows or by columns
-  //! \param theOrientation if horizontal, the values are applyed by rows, otherwise by columns
+  //! \param theOrientation if horizontal, the values are applied by rows, otherwise by columns
   void SetOrientation (const Qt::Orientation& theOrientation) { myOrientation = theOrientation; }
 
   //! Returns table orientation for setting data values

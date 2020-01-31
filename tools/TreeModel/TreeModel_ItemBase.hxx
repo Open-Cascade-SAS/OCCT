@@ -18,6 +18,10 @@
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
+#include <Standard_Handle.hxx>
+#include <Standard_OStream.hxx>
+#include <Standard_SStream.hxx>
+
 #include <inspector/TreeModel_ItemRole.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -32,6 +36,7 @@
 #include <Standard_WarningsRestore.hxx>
 
 class TreeModel_ItemBase;
+class TreeModel_ItemProperties;
 
 typedef QExplicitlySharedDataPointer<TreeModel_ItemBase> TreeModel_ItemBasePtr;
 
@@ -81,7 +86,11 @@ public:
 
   //! Sets the item internal initialized state to the true. If the item has internal values,
   //! there should be initialized here.
-  virtual void Init() { m_bInitialized = true; }
+  Standard_EXPORT virtual void Init();
+
+  //! Returns data object of the item.
+  //! \return object
+  Standard_EXPORT virtual const Handle(Standard_Transient)& Object() const;
 
   //! Resets the item and the child items content. Sets the initialized state to false.
   //! If the item has internal values, there should be reseted here.
@@ -90,6 +99,16 @@ public:
   //! Resets the item cached value for the parameter role.
   //! \param theRole an item role
   Standard_EXPORT virtual void Reset(int theRole);
+
+  //! Returns stream value of the item to fulfill property panel.
+  //! \return stream value or dummy
+  const Standard_SStream& Stream() const { return myStream; }
+
+  //! Returns stream value of the item to fulfill property panel.
+  //! \return stream value or dummy
+  virtual bool SetStream (const Standard_SStream& theSStream, Standard_Integer& theStartPos,
+                          Standard_Integer& theLastPos) const
+  { (void)theSStream; (void)theStartPos; (void)theLastPos; return false; }
 
   //! Gets the parent of the item, or TreeModel_ItemBasePtr() if it has no parent.
   //! \return pointer to the item
@@ -115,7 +134,7 @@ public:
   //! Sets a custom value for the role in an internal cache
   //! \param theValue a value
   //! \param theRole a value role
-  void SetCustomData(const QVariant theValue, int theRole) { myCachedValues.insert (theRole, theValue); }
+  void SetCustomData(const QVariant& theValue, int theRole) { myCachedValues.insert (theRole, theValue); }
 
   //! Returns the data stored under the given role for the current item
   //! \param theIndex the item model index
@@ -127,18 +146,25 @@ public:
   //! \return the row count
   int rowCount() const { return cachedValue(TreeModel_ItemRole_RowCountRole).toInt(); }
 
+  //! Returns the item properties
+  const Handle(TreeModel_ItemProperties)& Properties() const { return myProperties; }
+
 protected:
 
   //! \param theParent the parent item
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   Standard_EXPORT TreeModel_ItemBase (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn);
+
+  //! Initializes the current item. It creates a backup of the specific item information
+  virtual void initItem() const {}
 
   //! Creates a child item in the given position.
   //! \param theRow the child row position
   //! \param theColumn the child column position
   //! \return the created item
-  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn) = 0;
+  virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn)
+  { (void)theRow; (void)theColumn; return TreeModel_ItemBasePtr(); }
 
   //! Wraps the currrent item by shared pointer
   //! \return the shared pointer to the current item
@@ -153,17 +179,29 @@ protected:
   //! \return number of children. It should be reimplemented in child
   virtual int initRowCount() const = 0;
 
-  //! Return data value for the role. It should be reimplemented in child
+  //! \return number of children. It should be reimplemented in child
+  Standard_EXPORT int initStreamRowCount();
+
+  //! Returns data value for the role. It should be reimplemented in child
   //! \param theItemRole a value role
   //! \return the value
-  virtual QVariant initValue (const int theItemRole) const = 0;
+  Standard_EXPORT virtual QVariant initValue (const int theItemRole) const;
+
+  //! Returns stream value of the item to fulfill property panel.
+  //! \return stream value or dummy
+  virtual void initStream (Standard_OStream& theOStream) const { (void)theOStream; }
+
+protected:
+  Handle(TreeModel_ItemProperties) myProperties; //!< the properties
+  int m_iStreamChildren; //!< the count of stream items
+  Standard_SStream myStream; //!< stream value
 
 private:
 
   typedef QHash< QPair<int, int>, TreeModel_ItemBasePtr > PositionToItemHash;
   PositionToItemHash m_ChildItems; //!< the hash of item children
 
-  QMap<int, QVariant> myCachedValues; //!< cached values, should be cleared by reset
+  mutable QMap<int, QVariant> myCachedValues; //!< cached values, should be cleared by reset
   TreeModel_ItemBasePtr m_pParent; //!< the parent item
   int m_iRow;          //!< the item row position in the parent item
   int m_iColumn;       //!< the item column position in the parent item

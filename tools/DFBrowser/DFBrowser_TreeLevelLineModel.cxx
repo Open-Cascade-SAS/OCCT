@@ -59,14 +59,17 @@ QVariant DFBrowser_TreeLevelLineModel::data (const QModelIndex& theIndex, int th
     if (theRole == Qt::DecorationRole) //! do not show icons presented in tree view
       return aValue;
     TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (aTreeIndex);
-    if (anItemBase)
-    {
-      DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase> (anItemBase);
-      bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo (false);
-      aValue = aDBrowserItem->data (aTreeIndex, theRole);
-      aDBrowserItem->SetUseAdditionalInfo (aPrevValue);
+    if (!anItemBase)
+      return aValue;
 
-    }
+    DFBrowser_ItemBasePtr aDBrowserItem = itemDynamicCast<DFBrowser_ItemBase> (anItemBase);
+    if (!aDBrowserItem)
+      return aValue;
+
+    bool aPrevValue = aDBrowserItem->SetUseAdditionalInfo (false);
+    aValue = aDBrowserItem->data (aTreeIndex, theRole);
+    aDBrowserItem->SetUseAdditionalInfo (aPrevValue);
+
     if (theRole == Qt::DisplayRole)
       aValue = aValue.toString() + "  "; //! TEMPORARY to leave place for the action icon
   }

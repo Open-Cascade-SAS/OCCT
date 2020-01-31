@@ -34,7 +34,7 @@ public:
   DFBrowser_QThread (QObject* theParent) : QThread (theParent), myItem (0) {}
 
   //! Destructor
-  virtual ~DFBrowser_QThread() Standard_OVERRIDE {}
+  virtual ~DFBrowser_QThread() {}
 
   //! Sets thread item to be processed
   //! \param theItem a thread item

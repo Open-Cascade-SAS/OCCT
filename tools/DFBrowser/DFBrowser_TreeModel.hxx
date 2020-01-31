@@ -45,13 +45,19 @@ class DFBrowser_TreeModel : public TreeModel_ModelBase
 public:
 
   //! Constructor
-  Standard_EXPORT DFBrowser_TreeModel (QObject* theParent, DFBrowser_Module* theModule);
+  Standard_EXPORT DFBrowser_TreeModel (QObject* theParent);
 
   //! Destructor
-  virtual ~DFBrowser_TreeModel() Standard_OVERRIDE {};
+  virtual ~DFBrowser_TreeModel() {}
+
+  //! Creates model columns and root items.
+  Standard_EXPORT virtual void InitColumns() Standard_OVERRIDE;
 
   //! Fills the root item by the application
   Standard_EXPORT void Init (const Handle(TDocStd_Application)& theApplication);
+
+  //! Fills root item by the module
+  Standard_EXPORT void SetModule (DFBrowser_Module* theModule);
 
   //! Returns an OCAF application or NULL
   //! \return an application instance
@@ -98,7 +104,7 @@ public:
 protected:
   //! Creates root item
   //! \param theColumnId index of a column
-  virtual void createRootItem (const int theColumnId);
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) Standard_OVERRIDE;
 
 private:
 

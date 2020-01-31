@@ -17,7 +17,7 @@
 #define ShapeView_ItemRoot_H
 
 #include <NCollection_List.hxx>
-#include <inspector/ShapeView_ItemBase.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
 #include <Standard.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -28,7 +28,7 @@ typedef QExplicitlySharedDataPointer<ShapeView_ItemRoot> ShapeView_ItemRootPtr;
 //! Collects shapes that should be visualized in tree view. Shapes are cached and if shapes are not needed,
 //! cache should be cleared using RemoveAllShapes.
 //! Parent is NULL, children are ShapeView_ItemShape items.
-class ShapeView_ItemRoot : public ShapeView_ItemBase
+class ShapeView_ItemRoot : public TreeModel_ItemBase
 {
 public:
 
@@ -37,7 +37,7 @@ public:
     { return ShapeView_ItemRootPtr (new ShapeView_ItemRoot (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~ShapeView_ItemRoot() Standard_OVERRIDE {};
+  virtual ~ShapeView_ItemRoot() {}
 
   //! Appends new shape
   //! \param theShape a shape instance
@@ -48,11 +48,11 @@ public:
 
   //! Returns shape by the number
   //! \param theRowId an index of the shape in the internal container.
-  Standard_EXPORT const TopoDS_Shape& GetShape (const int theRowId);
+  Standard_EXPORT const TopoDS_Shape& Shape (const int theRowId);
 
 protected:
 
-  //! Return data value for the role.
+  //! Returns data value for the role.
   //! \param theItemRole a value role
   //! \return the value
   virtual QVariant initValue(const int theItemRole) const;
@@ -69,9 +69,9 @@ protected:
 private:
 
   //! Constructor
-  //! param theParent a parent item
+  //! \param theParent a parent item
   ShapeView_ItemRoot(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  : ShapeView_ItemBase (theParent, theRow, theColumn) {}
+  : TreeModel_ItemBase (theParent, theRow, theColumn) {}
 
 private:
 

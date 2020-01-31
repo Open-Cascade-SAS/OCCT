@@ -33,7 +33,10 @@
 
 class View_Window;
 
+class ViewControl_PropertyView;
+
 class QAction;
+class QDockWidget;
 class QMainWindow;
 class QWidget;
 
@@ -59,7 +62,7 @@ public:
   //! \param theParameters a parameters container
   void SetParameters (const Handle(TInspectorAPI_PluginParameters)& theParameters) { myParameters = theParameters; }
 
-  //! Provide container for actions available in inspector on general level
+  //! Provides container for actions available in inspector on general level
   //! \param theMenu if Qt implementation, it is QMenu object
   Standard_EXPORT virtual void FillActionsMenu (void* theMenu);
 
@@ -80,9 +83,6 @@ public:
   //! Returns current tree view
   QTreeView* GetTreeView() const { return myTreeView; }
 
-  //! Returns path to temporary directory
-  TCollection_AsciiString GetTemporaryDirectory() const { return myParameters->GetTemporaryDirectory(); }
-
   //! Removes all shapes in tree view model, remove all stored BREP files
   Standard_EXPORT void RemoveAllShapes();
 
@@ -98,7 +98,7 @@ private:
   //! \param theParameters a parameters container
   void Init (NCollection_List<Handle(Standard_Transient)>& theParameters);
 
-  //! Read Shape from the file name, add Shape into tree view
+  //! Reads Shape from the file name, add Shape into tree view
   //! \param theFileName BREP file name
   void OpenFile (const TCollection_AsciiString& theFileName);
 
@@ -108,64 +108,47 @@ protected slots:
   //! \param thePosition a clicked point
   void onTreeViewContextMenuRequested (const QPoint& thePosition);
 
+  //! Processes selection in tree view: make presentation or owner selected in the context if corresponding
+  //! check box is checked
+  //! \param theSelected a selected items
+  //! \param theDeselected a deselected items
+  void onTreeViewSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
+
   //! Updates visibility states by erase all in context
   void onEraseAllPerformed();
 
-  //! Exports shape to BREP file and view result file
-  void onBREPDirectory();
+  //! Sets the shape item exploded
+  void onExplode();
 
   //! Removes all shapes in tree view
   void onClearView() { RemoveAllShapes(); }
 
-  //! Load BREP file and updates tree model to have shape of the file
+  //! Loads BREP file and updates tree model to have shape of the file
   void onLoadFile();
 
-  //! View BREP files of selected items if exist
-  void onBREPView();
-
-  //! Remove BREP views, close views
-  void onCloseAllBREPViews();
-
-  //! Remove all BREP Viewse excepting active
-  void onEditorDestroyed (QObject* theObject);
+  //! Views BREP files of selected items if exist
+  void onExportToBREP();
 
   //! Convers file name to Ascii String and perform opeging file
   //! \param theFileName a file name to be opened
   void onOpenFile(const QString& theFileName) { OpenFile (TCollection_AsciiString (theFileName.toUtf8().data())); }
 
 protected:
-
-  //! Views file name content in a text editor. It creates new Qt free control with content.
-  //! \param theFileName a file name
-  void viewFile (const QString& theFileName);
-
-  //! Removes all BREP files in tmp directory
-  void removeBREPFiles();
-
   //! Creates new action and connect it to the given slot
   //! \param theText an action text
   //! \param theSlot a listener method
   QAction* createAction (const QString& theText, const char* theSlot);
 
-  //! Key that uses to generate BREP file name
-  //! \return string value
-  static TCollection_AsciiString viewBREPPrefix() { return "ShapeView_Window"; }
-
-  //! Returns newxt temporary name using BREPPrefix and pointer information
-  //! \param thePointerInfo a pointer value
-  //! \return string value
-  TCollection_AsciiString getNextTmpName (const TCollection_AsciiString& thePointerInfo);
-
 private:
 
   QMainWindow* myMainWindow; //!< main control, parent for all ShapeView controls
 
+  QDockWidget* myPropertyPanelWidget; //!< property pane dockable widget
+  ViewControl_PropertyView* myPropertyView; //!< property control to display model item values if exist
+
   View_Window* myViewWindow; //!< OCC 3d view to visualize presentations
   QTreeView* myTreeView; //!< tree view visualized shapes
 
-  int myNextPosition; //!< delta of moving control of view BREP file
-
-  QList<QWidget*> myBREPViews; //!< list of view BREP file controls
   Handle(TInspectorAPI_PluginParameters) myParameters; //!< plugins parameters container
 };
 

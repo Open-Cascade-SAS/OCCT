@@ -83,7 +83,7 @@ TInspector_Window::TInspector_Window()
 
   myActionsWidget = new QToolButton(aCentralWidget);
   myActionsWidget->setPopupMode(QToolButton::InstantPopup);
-  myActionsWidget->setIcon (QIcon (":/icons/plugin_actions.png"));
+  myActionsWidget->setIcon (QIcon (":plugin_actions.png"));
   myActionsWidget->setIconSize (QSize (20, 20));
   QMenu* anActionsMenu = new QMenu(myActionsWidget);
   myActionsWidget->setMenu(anActionsMenu);

@@ -1,7 +1,2 @@
 TInspectorEXE.cxx
-TInspectorEXE_OpenFileDialog.cxx
-TInspectorEXE_OpenFileDialog.hxx
-TInspectorEXE_OpenFileViewModel.cxx
-TInspectorEXE_OpenFileViewModel.hxx
-TInspectorEXE.qrc
 EXTERNLIB

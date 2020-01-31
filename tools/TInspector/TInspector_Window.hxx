@@ -68,7 +68,7 @@ public:
   Standard_EXPORT TInspector_Window();
 
   //! Destructor
-  virtual ~TInspector_Window() Standard_OVERRIDE {}
+  virtual ~TInspector_Window() {}
 
   //! Appends the plugin names into internal conainer
   //! \param thePluginName a name of the plugin
@@ -102,7 +102,7 @@ public:
   //! \param thePluginName a name of the plugin
   Standard_EXPORT void ActivateTool (const TCollection_AsciiString& thePluginName);
 
-  //! Set item selected in the active plugin
+  //! Sets item selected in the active plugin
   //! \param theItemNames a container of name of items in plugin that should become selected
   Standard_EXPORT void SetSelected (const NCollection_List<TCollection_AsciiString>& theItemNames);
 
@@ -149,7 +149,7 @@ public slots:
   //! Stores preferences (current state) of all plugins into a preferences file
   Standard_EXPORT void OnStorePreferences();
 
-  //! Remove preferences file
+  //! Removes preferences file
   Standard_EXPORT void OnRemovePreferences();
 
 protected slots:
@@ -180,7 +180,7 @@ protected:
   //! Applies desktop preferences to window
   void applyPreferences();
 
-  //! Generate default temp directory by 'TEMP' or 'TMP' environment variables
+  //! Generates default temp directory by 'TEMP' or 'TMP' environment variables
   //! \return generated path
   TCollection_AsciiString defaultTemporaryDirectory() const;
 

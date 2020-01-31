@@ -66,15 +66,17 @@ protected:
   //! Enumeration defines drag mode
   enum View_DragMode
   {
-    View_DragMode_ButtonDown, // theState == -1  button down
-    View_DragMode_ButtonMove, // theState ==  0  move
-    View_DragMode_ButtonUp // theState ==  1  button up
+    View_DragMode_ButtonDown, //!< theState == -1  button down
+    View_DragMode_ButtonMove, //!< theState ==  0  move
+    View_DragMode_ButtonUp //< theState ==  1  button up
   };
 
 public:
 
   //! Constructor
-  Standard_EXPORT View_Widget (QWidget* theParent, const bool isFitAllActive);
+  Standard_EXPORT View_Widget (QWidget* theParent,
+                               const Handle(AIS_InteractiveContext)& theContext,
+                               const bool isFitAllActive);
 
   //! Destructor
   virtual ~View_Widget() {}
@@ -90,40 +92,82 @@ public:
 
   //! Returns an action for the given action type
   //! \param theActionId an action index
-  QAction* GetViewAction (const View_ViewActionType theActionId) const { return myViewActions[theActionId]; };
+  QAction* ViewAction (const View_ViewActionType theActionId) const { return myViewActions[theActionId]; };
 
   //! Retuns an action widget if exist. Implemented for fit all widget.
   //! \param theActionId an action index
   QWidget* GetWidget (const View_ViewActionType theActionId) const { return theActionId == View_ViewActionType_FitAllId ? myFitAllAction : 0; };
 
   //! \returns 0 - AIS_WireFrame, 1 - AIS_Shaded
-  Standard_EXPORT int GetDisplayMode() const;
+  Standard_EXPORT int DisplayMode() const;
 
-  //! Enable/disable view and tool bar actions depending on the parameter
+  //! Sets display mode: 0 - AIS_WireFrame, 1 - AIS_Shaded
+  Standard_EXPORT void SetDisplayMode (const int theMode);
+
+  //! Sets enable/disable view and tool bar actions depending on the parameter
   //! \param theIsEnabled boolean value
   Standard_EXPORT void SetEnabledView (const bool theIsEnabled);
 
-  //!< widget for fit all, processed double click to perform action automatically
+  //! Returns true if action is checked. It processes fit all action only.
   //! \param theIsEnabled boolean value
-  bool IsActionChecked (const View_ViewActionType theActionId) { if (theActionId == View_ViewActionType_FitAllId) return myFitAllAction->isChecked(); }
+  bool IsActionChecked (const View_ViewActionType theActionId)
+    { return theActionId == View_ViewActionType_FitAllId && myFitAllAction->isChecked(); }
 
-  //!< Setx initial camera position
+  //! Sets checked fit all action. Double click on fit all action set the action checked automatically
+  //! \param theIsEnabled boolean value
+  void SetActionChecked (const View_ViewActionType theActionId, const bool isChecked)
+  { if (theActionId == View_ViewActionType_FitAllId) myFitAllAction->setChecked(isChecked); }
+
+  //! Sets initial camera position
   //! \param theVx direction on Ox
   //! \param theVy direction on Oy
   //! \param theVz direction on Oz
   void SetInitProj (const Standard_Real theVx, const Standard_Real theVy, const Standard_Real theVz)
   { myHasInitProj = Standard_True; myInitVx = theVx; myInitVy = theVy; myInitVz = theVz; }
 
-  //! Get paint engine for the OpenGL viewer. Avoid default execution of Qt Widget.
+  //! Returns paint engine for the OpenGL viewer. Avoid default execution of Qt Widget.
   virtual QPaintEngine* paintEngine() const Standard_OVERRIDE { return 0; }
 
-  //! Recommended size for view. If default size exists, it returns the default size
+  //! Return the recommended size for view. If default size exists, it returns the default size
   Standard_EXPORT virtual QSize sizeHint() const Standard_OVERRIDE;
+
+  //! Saves state of widget actions
+  //! \param theParameters a view instance
+  //! \param theItems [out] properties
+  //! \param thePrefix peference item prefix
+  Standard_EXPORT static void SaveState (View_Widget* theWidget,
+                                         QMap<QString, QString>& theItems,
+                                         const QString& thePrefix = QString());
+
+  //! Restores state of widget actions
+  //! \param theParameters a view instance
+  //! \param theKey property key
+  //! \param theValue property value
+  //! \param thePrefix peference item prefix
+  //! \return boolean value whether the property is applied to the tree view
+  Standard_EXPORT static bool RestoreState (View_Widget* theWidget,
+                                            const QString& theKey, const QString& theValue,
+                                            const QString& thePrefix = QString());
 
 signals:
 
   //! Sends a signal about selection change if the left mouse button is pressed and current action does not process it
   void selectionChanged();
+
+  //! Sends a signal about moving to the point in the view
+  //! \param theX X mouse position in pixels
+  //! \param theY Y mouse position in pixels
+  void  moveTo (const int theX, const int theY);
+
+  //! Sends a signal about up the left mouse button down
+  //! \param theX X mouse position in pixels
+  //! \param theY Y mouse position in pixels
+  void leftButtonDown (const int theX, const int theY);
+
+  //! Sends a signal about up the left mouse button up
+  //! \param theX X mouse position in pixels
+  //! \param theY Y mouse position in pixels
+  void leftButtonUp (const int theX, const int theY);
 
   //! Sends a signal about display mode change
   void displayModeClicked();
@@ -163,11 +207,11 @@ public slots:
 
 protected:
 
-  //! Avoid Qt standard execution of this method, redraw V3d view
+  //! Avoids Qt standard execution of this method, redraw V3d view
   //! \param an event
   virtual void paintEvent (QPaintEvent* theEvent) Standard_OVERRIDE;
 
-  //! Avoid Qt standard execution of this method, do mustBeResized for V3d view, Init view if it is the first call
+  //! Avoids Qt standard execution of this method, do mustBeResized for V3d view, Init view if it is the first call
   //! \param an event
   virtual void resizeEvent (QResizeEvent* theEvent) Standard_OVERRIDE;
 

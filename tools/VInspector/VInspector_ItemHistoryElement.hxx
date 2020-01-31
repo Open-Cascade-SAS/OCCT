@@ -35,7 +35,7 @@ public:
   { return VInspector_ItemHistoryElementPtr (new VInspector_ItemHistoryElement (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~VInspector_ItemHistoryElement() Standard_OVERRIDE {};
+  virtual ~VInspector_ItemHistoryElement() {}
 
   //! Inits the item, fills internal containers
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
@@ -78,7 +78,7 @@ protected:
 private:
 
   //! Constructor
-  //! param theParent a parent item
+  //! \param theParent a parent item
   VInspector_ItemHistoryElement(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
   : VInspector_ItemBase(theParent, theRow, theColumn) {}
 

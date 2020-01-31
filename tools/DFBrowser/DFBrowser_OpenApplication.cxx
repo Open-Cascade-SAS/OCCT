@@ -19,7 +19,6 @@
 #include <BinLDrivers.hxx>
 #include <BinXCAFDrivers.hxx>
 #include <PCDM_ReadWriter.hxx>
-#include <Standard_Version.hxx>
 #include <StdDrivers.hxx>
 #include <StdLDrivers.hxx>
 #include <STEPCAFControl_Reader.hxx>
@@ -48,7 +47,6 @@ namespace DFBrowser_OpenApplication
       return anApplication;
     }
 
-#if OCC_VERSION_HEX > 0x060901
     // Load static variables for STEPCAF (ssv; 16.08.2012)
     STEPCAFControl_Controller::Init();
 
@@ -74,7 +72,6 @@ namespace DFBrowser_OpenApplication
     PCDM_ReaderStatus aStatus = anApplication->Open (theFileName, aDocument);
     if (aStatus != PCDM_RS_OK)
       return Handle(TDocStd_Application)();
-#endif
     return anApplication;
   }
 

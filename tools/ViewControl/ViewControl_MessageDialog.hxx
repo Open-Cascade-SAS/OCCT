@@ -66,20 +66,20 @@ private slots:
   void onCancelClicked();
 
 private:
-  //! Change state of the dialog to message tool tip. Only information control will be shown in the dialog
+  //! Changes state of the dialog to message tool tip. Only information control will be shown in the dialog
   void setToolTipInfoMode();
 
 private:
-  bool myDoNotShowItAgain; //! state if the dialog should not be shown again, the latest result is used as answer
-  bool myPreviousAnswer; //! the previous cached result of the dialog
+  bool myDoNotShowItAgain; //!< state if the dialog should not be shown again, the latest result is used as answer
+  bool myPreviousAnswer; //!< the previous cached result of the dialog
 
-  QString myInformation; //! the information text
-  QString myQuestion; //! the question text
+  QString myInformation; //!< the information text
+  QString myQuestion; //!< the question text
 
-  QLabel* myInformationLabel; //! message control
-  QCheckBox* myDoNotShowCheckBox; //! choice whether the dialog will be shown again
-  QPushButton* myOkButton; //! accept button
-  QPushButton* myCancelButton; //! reject button
+  QLabel* myInformationLabel; //!< message control
+  QCheckBox* myDoNotShowCheckBox; //!< choice whether the dialog will be shown again
+  QPushButton* myOkButton; //!< accept button
+  QPushButton* myCancelButton; //!< reject button
 };
 
 

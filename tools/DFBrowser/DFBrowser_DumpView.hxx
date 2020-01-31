@@ -38,14 +38,14 @@ public:
   DFBrowser_DumpView (QWidget* theParent) : QObject(theParent), myTextEdit( new QPlainTextEdit(theParent) ) {}
 
   //! Destructor
-  virtual ~DFBrowser_DumpView() Standard_OVERRIDE {}
+  virtual ~DFBrowser_DumpView() {}
 
   //! \return the text edit control
   QWidget* GetControl() const { return myTextEdit; }
 
 public slots:
 
-  //! Slots listen selection change and update the current control content by selection
+  //! Listens selection change and update the current control content by selection
   //! \param theSelected container of selected items
   //! \param theDeselected container of items that become deselected
   Standard_EXPORT void OnTreeViewSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);

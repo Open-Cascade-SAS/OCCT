@@ -47,7 +47,7 @@ protected slots:
   void onColumnVisibilityChanged();
 
 private:
-  QTreeView* myTreeView;
+  QTreeView* myTreeView; //!< current tree view
 };
 
 #endif

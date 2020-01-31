@@ -16,7 +16,6 @@
 #ifndef DFBrowserPane_HelperExport_H
 #define DFBrowserPane_HelperExport_H
 
-#include <inspector/DFBrowserPane.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -29,7 +28,7 @@
 //! It contains a conainer of shapes for model indices. If button is pressed for index where the 
 //! shape exists, this shape is exported to BREP file.
 //! It contains a container of shapes, it is important to clear this helper after using.
-class DFBROWSERPANE_EXPORT DFBrowserPane_HelperExport : public QObject
+class DFBrowserPane_HelperExport : public QObject
 {
   Q_OBJECT
 public:
@@ -55,7 +54,7 @@ public:
   //! Returns shape for the index
   //! \param theIndex a model view index
   //! \return a cached shape
-  const TopoDS_Shape& GetShape (const QModelIndex& theIndex) { return myShapes[theIndex]; }
+  const TopoDS_Shape& Shape (const QModelIndex& theIndex) { return myShapes[theIndex]; }
 
 public slots:
 

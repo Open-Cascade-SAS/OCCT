@@ -15,12 +15,7 @@
 
 #include <inspector/VInspectorAPI_CallBack.hxx>
 
-#if OCC_VERSION_HEX <= 0x060901
-IMPLEMENT_STANDARD_HANDLE(VInspectorAPI_CallBack, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(VInspectorAPI_CallBack, Standard_Transient)
-#else
-IMPLEMENT_STANDARD_RTTIEXT(VInspectorAPI_CallBack, Standard_Transient)
-#endif
 
 // =======================================================================
 // function : Constructor

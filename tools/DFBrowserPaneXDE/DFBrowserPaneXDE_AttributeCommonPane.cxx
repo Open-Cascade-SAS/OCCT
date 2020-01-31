@@ -52,7 +52,7 @@ DFBrowserPaneXDE_AttributeCommonPane::DFBrowserPaneXDE_AttributeCommonPane (DFBr
 // function : ProcessAttribute
 // purpose :
 // =======================================================================
-bool DFBrowserPaneXDE_AttributeCommonPane::ProcessAttribute (const Standard_CString& theAttributeType)
+bool DFBrowserPaneXDE_AttributeCommonPane::ProcessAttribute (Standard_CString theAttributeType)
 {
   if (AttributeTypes.empty())
   {

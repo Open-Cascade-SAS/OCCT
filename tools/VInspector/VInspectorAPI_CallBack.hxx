@@ -18,19 +18,12 @@
 
 #include <Standard.hxx>
 #include <Standard_Integer.hxx>
-#include <Standard_Version.hxx>
 #include <Standard_Transient.hxx>
 #include <TColStd_ListOfInteger.hxx>
 #include <TopoDS_Shape.hxx>
 
-#if OCC_VERSION_HEX > 0x060901
 class AIS_InteractiveObject;
-#else
-#include <AIS_InteractiveObject.hxx>
-#endif
 class SelectMgr_EntityOwner;
-
-DEFINE_STANDARD_HANDLE(VInspectorAPI_CallBack, Standard_Transient)
 
 //! \class VInspectorAPI_CallBack
 //! API of AIS_InteractiveContext methods to provide information about the actions
@@ -96,11 +89,7 @@ public:
   //! Processing method of context
   virtual void ShiftSelect() = 0;
 
-#if OCC_VERSION_HEX <= 0x060901
-  DEFINE_STANDARD_RTTI(VInspectorAPI_CallBack)
-#else
   DEFINE_STANDARD_RTTIEXT(VInspectorAPI_CallBack, Standard_Transient)
-#endif
 };
 
 #endif

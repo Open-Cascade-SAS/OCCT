@@ -126,8 +126,7 @@
 // function : Constructor
 // purpose :
 // =======================================================================
-DFBrowserPane_AttributePaneAPI* DFBrowserPane_AttributePaneCreator::CreateAttributePane (
-                                                                        const Standard_CString& theAttributeName)
+DFBrowserPane_AttributePaneAPI* DFBrowserPane_AttributePaneCreator::CreateAttributePane (Standard_CString theAttributeName)
 {
   DFBrowserPane_AttributePaneAPI* aPane = 0;
   if (theAttributeName == STANDARD_TYPE (TDF_Reference)->Name())

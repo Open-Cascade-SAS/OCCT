@@ -41,7 +41,7 @@ public:
   Standard_EXPORT DFBrowser_SearchView (QWidget* theParent);
 
   //! Destructor
-  virtual ~DFBrowser_SearchView() Standard_OVERRIDE {}
+  virtual ~DFBrowser_SearchView() {}
 
   //! Returns search parent control
   QWidget* GetControl() const { return myMainWindow; }

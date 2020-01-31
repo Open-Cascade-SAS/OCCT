@@ -40,7 +40,7 @@ public:
   Standard_EXPORT VInspector_ToolBar (QWidget* theParent);
 
   //! Destructor
-  virtual ~VInspector_ToolBar() Standard_OVERRIDE {}
+  virtual ~VInspector_ToolBar() {}
 
   //! Returns main control
   QWidget* GetControl() const { return myMainWindow; }

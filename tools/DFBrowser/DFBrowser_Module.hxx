@@ -55,7 +55,7 @@ public:
   Standard_EXPORT DFBrowser_Module();
 
   //! Destructor
-  virtual ~DFBrowser_Module() Standard_OVERRIDE {};
+  virtual ~DFBrowser_Module() {}
 
   //! Creates tree model for OCAF application
   Standard_EXPORT void CreateViewModel (void* theParent);
@@ -85,7 +85,7 @@ public:
   //! \return an application instance
   Standard_EXPORT Handle(TDocStd_Application) GetTDocStdApplication() const;
 
-  //! Rebuild an OCAF tree view model
+  //! Rebuilds an OCAF tree view model
   Standard_EXPORT void UpdateTreeModel();
 
   //! Sets initial selection in OCAF tree view, it is an application(root) item
@@ -96,7 +96,7 @@ public:
   //! \return an attribute
   Standard_EXPORT Handle(TDF_Attribute) FindAttribute (const QModelIndex& theIndex);
 
-  //! Append creator of a pane by attribute type
+  //! Appends creator of a pane by attribute type
   //! \param thePaneCreator
   void RegisterPaneCreator (DFBrowserPane_AttributePaneCreatorAPI* thePaneCreator)
   { myPaneCreators.append (thePaneCreator); }
@@ -111,7 +111,7 @@ public:
   //! internal map and the module processes this kind of attribute
   //! \param theAttributeGUID an attribute key
   //! \return attribute pane
-  Standard_EXPORT DFBrowserPane_AttributePaneAPI* GetAttributePane (const Standard_CString& theAttributeName);
+  Standard_EXPORT DFBrowserPane_AttributePaneAPI* GetAttributePane (Standard_CString theAttributeName);
 
   //! Finds the attribute pane according to the give attribute and returns its information
   //! \param theAttribute a source attribute
@@ -127,7 +127,7 @@ public:
   //! \param theRole a role of information, used by tree model (e.g. DisplayRole, icon, background and so on)
   //! \param theColumnId a tree model column
   //! \return value, interpreted by tree model depending on the role
-  Standard_EXPORT static QVariant GetAttributeInfo (const Standard_CString& theAttributeName, DFBrowser_Module* theModule,
+  Standard_EXPORT static QVariant GetAttributeInfo (Standard_CString theAttributeName, DFBrowser_Module* theModule,
                                                     int theRole, int theColumnId);
 signals:
 
@@ -139,7 +139,7 @@ protected:
   //! Tries to create attribute pane for the attribute name using registered attribute pane creators
   //! \param theAttributeName a source attribute
   //! \return attribute pane or NULL
-  DFBrowserPane_AttributePaneAPI* CreateAttributePane (const Standard_CString& theAttributeName);
+  DFBrowserPane_AttributePaneAPI* CreateAttributePane (Standard_CString theAttributeName);
 
 private:
 

@@ -33,9 +33,9 @@ public:
   DFBrowser_HighlightDelegate (QObject* theParent = 0) : QItemDelegate (theParent) {}
 
   //! Destructor
-  virtual ~DFBrowser_HighlightDelegate() Standard_OVERRIDE {}
+  virtual ~DFBrowser_HighlightDelegate() {}
 
-  //! Redefine of the parent virtual method to color the cell rectangle in highlight style
+  //! Redefines of the parent virtual method to color the cell rectangle in highlight style
   //! \param thePainter a painter
   //! \param theOption a paint options
   //! \param theIndex a view index

@@ -35,7 +35,7 @@ public:
   { return VInspector_ItemHistoryTypePtr (new VInspector_ItemHistoryType (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~VInspector_ItemHistoryType() Standard_OVERRIDE {};
+  virtual ~VInspector_ItemHistoryType() {}
 
   //! Returns the pointer info of the first child item, initialize item if it has not been initialized yet.
   Standard_EXPORT QString PointerInfo() const;
@@ -67,7 +67,7 @@ protected:
 private:
 
   //! Constructor
-  //! param theParent a parent item
+  //! \param theParent a parent item
   VInspector_ItemHistoryType(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
     : VInspector_ItemBase(theParent, theRow, theColumn) {}
 

@@ -23,7 +23,6 @@
 #include <TDocStd_Owner.hxx>
 #include <TDF_Delta.hxx>
 #include <TDF_ListIteratorOfDeltaList.hxx>
-#include <Standard_Version.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QGridLayout>
@@ -56,7 +55,7 @@ void DFBrowserPane_TDocStdOwner::GetValues (const Handle(TDF_Attribute)& theAttr
   if (aDocument.IsNull())
     return;
 
-  TCollection_AsciiString aDocumentInfo = DFBrowserPane_Tools::GetPointerInfo (aDocument).ToCString();
+  TCollection_AsciiString aDocumentInfo = Standard_Dump::GetPointerInfo (aDocument).ToCString();
   TColStd_SequenceOfExtendedString anExtensions;
   aDocument->Extensions(anExtensions);
   TCollection_AsciiString aSeparationStr = "---------------------------";
@@ -100,7 +99,7 @@ void DFBrowserPane_TDocStdOwner::GetValues (const Handle(TDF_Attribute)& theAttr
 
   // TDocStd_Document methods
   TCollection_AsciiString aDocumentDataInfo = !aDocument->GetData().IsNull()
-    ? DFBrowserPane_Tools::GetPointerInfo (aDocument->GetData()).ToCString() : "";
+    ? Standard_Dump::GetPointerInfo (aDocument->GetData()).ToCString() : "";
   theValues << aSeparationStr.ToCString() << aSeparationStr.ToCString()
             << STANDARD_TYPE (TDocStd_Document)->Name() << ""
             << aSeparationStr.ToCString() << aSeparationStr.ToCString()
@@ -119,9 +118,7 @@ void DFBrowserPane_TDocStdOwner::GetValues (const Handle(TDF_Attribute)& theAttr
             << "GetUndos" << convertToString (aDocument->GetUndos())
             << "GetAvailableRedos" << QString::number (aDocument->GetAvailableRedos())
             << "GetRedos" << convertToString (aDocument->GetRedos())
-#if OCC_VERSION_HEX > 0x070100
             << "EmptyLabelsSavingMode" << DFBrowserPane_Tools::BoolToStr (aDocument->EmptyLabelsSavingMode())
-#endif
             << "IsNestedTransactionMode" << DFBrowserPane_Tools::BoolToStr (aDocument->IsNestedTransactionMode())
             << "ModificationMode" << DFBrowserPane_Tools::BoolToStr (aDocument->ModificationMode());
 }

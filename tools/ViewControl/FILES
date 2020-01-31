@@ -1,5 +1,14 @@
+ViewControl_EditType.hxx
 ViewControl_MessageDialog.cxx
 ViewControl_MessageDialog.hxx
+ViewControl_PropertyView.cxx
+ViewControl_PropertyView.hxx
+ViewControl_Table.cxx
+ViewControl_Table.hxx
+ViewControl_TableModel.cxx
+ViewControl_TableModel.hxx
+ViewControl_TableModelValues.cxx
+ViewControl_TableModelValues.hxx
 ViewControl_Tools.cxx
 ViewControl_Tools.hxx
 ViewControl_TreeView.hxx

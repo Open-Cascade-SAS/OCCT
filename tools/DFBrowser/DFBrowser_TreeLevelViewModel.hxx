@@ -37,9 +37,9 @@ public:
   DFBrowser_TreeLevelViewModel (QObject* theParent) : QAbstractTableModel (theParent), myRowCount (0) {}
 
   //! Destructor
-  virtual ~DFBrowser_TreeLevelViewModel() Standard_OVERRIDE {}
+  virtual ~DFBrowser_TreeLevelViewModel() {}
 
-  //! Reset OCAF tree model index
+  //! Resets OCAF tree model index
   void Reset() { myIndex = QModelIndex(); }
 
   //! Fills OCAF tree model index
@@ -49,7 +49,7 @@ public:
   //! Returns true if the index is filled
   bool IsInitialized() const { return myIndex.isValid(); }
 
-  //! Return OCAF tree view model index on level defined by column of the parameter index
+  //! Returns OCAF tree view model index on level defined by column of the parameter index
   //! \param theIndex a tree level view model index
   //! \return model index
   Standard_EXPORT QModelIndex GetTreeViewIndex (const QModelIndex& theIndex) const;
@@ -57,7 +57,7 @@ public:
   //! Emits the layoutChanged signal from outside of this class
   void EmitLayoutChanged() { emit layoutChanged(); }
 
-  //! It returns value only for DisplayRole for column = 1
+  //! Returns value only for DisplayRole for column = 1
   //! \param theSection an index of value in the container 
   //! \param theIndex a model index
   //! \param theRole a view role

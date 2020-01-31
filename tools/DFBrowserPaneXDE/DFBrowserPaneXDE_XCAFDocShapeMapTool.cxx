@@ -116,7 +116,7 @@ void DFBrowserPaneXDE_XCAFDocShapeMapTool::GetValues (const Handle(TDF_Attribute
     const TopoDS_Shape& aShape = aShapeMap(aShapeValueId);
 
     if (!aShape.IsNull())
-      theValues << DFBrowserPane_Tools::GetPointerInfo (aShape.TShape()->This()).ToCString()
+      theValues << Standard_Dump::GetPointerInfo (aShape.TShape()->This()).ToCString()
                 << DFBrowserPane_Tools::ShapeTypeInfo (aShape)
                 << "";
     else

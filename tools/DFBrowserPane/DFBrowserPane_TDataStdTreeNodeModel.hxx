@@ -38,7 +38,10 @@ public:
   Standard_EXPORT DFBrowserPane_TDataStdTreeNodeModel (QObject* theParent);
 
   //! Destructor
-  virtual ~DFBrowserPane_TDataStdTreeNodeModel() Standard_OVERRIDE {};
+  virtual ~DFBrowserPane_TDataStdTreeNodeModel() Standard_OVERRIDE {}
+
+  //! Creates model columns and root items.
+  Standard_EXPORT virtual void InitColumns() Standard_OVERRIDE;
 
   //! Initializes the tree model by the attribute
   //! \param theAttribute a current attribute
@@ -59,7 +62,7 @@ public:
 protected:
   //! Creates root item
   //! \param theColumnId index of a column
-  virtual void createRootItem (const int theColumnId) Standard_OVERRIDE;
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) Standard_OVERRIDE;
 
 private:
 

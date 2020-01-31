@@ -19,7 +19,6 @@
 #include <CDM_CanCloseStatus.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
-#include <Standard_Version.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDataStd.hxx>
 #include <TDataStd_RealEnum.hxx>
@@ -68,30 +67,6 @@ TCollection_AsciiString DFBrowserPane_Tools::GetEntry (const TDF_Label& theLabel
   TCollection_AsciiString anAsciiEntry;
   TDF_Tool::Entry(theLabel, anAsciiEntry);
   return anAsciiEntry;
-}
-
-// =======================================================================
-// function : GetPointerInfo
-// purpose :
-// =======================================================================
-TCollection_AsciiString DFBrowserPane_Tools::GetPointerInfo (const Handle(Standard_Transient)& thePointer, const bool isShortInfo)
-{
-  std::ostringstream aPtrStr;
-  aPtrStr << thePointer.operator->();
-  if (!isShortInfo)
-    return aPtrStr.str().c_str();
-
-  TCollection_AsciiString anInfoPtr (aPtrStr.str().c_str());
-  for (int aSymbolId = 1; aSymbolId < anInfoPtr.Length(); aSymbolId++)
-  {
-    if (anInfoPtr.Value(aSymbolId) != '0')
-    {
-      anInfoPtr = anInfoPtr.SubString(aSymbolId, anInfoPtr.Length());
-      anInfoPtr.Prepend("0x");
-      return anInfoPtr;
-    }
-  }
-  return aPtrStr.str().c_str();
 }
 
 // =======================================================================

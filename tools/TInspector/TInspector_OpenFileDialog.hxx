@@ -28,8 +28,6 @@
 #include <QStringList>
 #include <Standard_WarningsRestore.hxx>
 
-#include <map>
-
 class TInspector_Communicator;
 
 class QAbstractItemModel;
@@ -39,58 +37,22 @@ class QTableView;
 class QToolButton;
 class QWidget;
 
-//! \class TInspectorEXE_OpenButton
-//! Class that contains push button and the button processing. It obtains a file name from the default or current
-//! directory and gives the name into TInspector communicator
-//! Object name of the button is the name of the plugin to get the default directory, or the current directory is used.
-class TInspectorEXE_OpenButton : public QObject
-{
-  Q_OBJECT
-
-public:
-
-  //! Constructor
-  TInspectorEXE_OpenButton (QObject* theParent) : QObject (theParent), myStartButton (0) {}
-
-  //! Destructor
-  virtual ~TInspectorEXE_OpenButton() {}
-
-  //! Returns the start button, if this is the first call, it creates the button and connect it to the slot
-  QPushButton* StartButton();
-
-  //! Sets the default directory of plugin.
-  void SetPluginRecentlyOpenedFiles (const TCollection_AsciiString& thePluginName,
-                                     const QStringList& theRecentlyOpenedFiles)
-  { myRecentlyOpenedFiles[thePluginName] = theRecentlyOpenedFiles; }
-
-private slots:
-
-  //! Processes the button click, open default/current directory to select open file, calls OpenFile of communicator
-  void onStartButtonClicked();
-
-private:
-
-  QPushButton* myStartButton; //!< processed button
-  //!< plugins recently opened files
-  QMap<TCollection_AsciiString, QStringList> myRecentlyOpenedFiles;
-};
-
-//! \class TInspectorEXE_OpenFileDialog
+//! \class TInspector_OpenFileDialog
 //! Control that contains table view of samples and line to select a file name from other directory.
 //! Click on element of samples table view calls this sample opening else after entering(or opening) file name
 //! the import becomes active. Click on the button will open selected file if it is possible
-class TInspectorEXE_OpenFileDialog : public QDialog
+class TInspector_OpenFileDialog : public QDialog
 {
   Q_OBJECT
 private:
 
   //! Constructor
-  Standard_EXPORT TInspectorEXE_OpenFileDialog (QWidget* theParent, const QStringList& theRecentlyOpenedFiles);
+  Standard_EXPORT TInspector_OpenFileDialog (QWidget* theParent, const QStringList& theRecentlyOpenedFiles);
 
 public:
 
   //! Destructor
-  virtual ~TInspectorEXE_OpenFileDialog() Standard_OVERRIDE {}
+  virtual ~TInspector_OpenFileDialog() Standard_OVERRIDE {}
 
   //! Opens this file dialog using for samples view the given directory and try to open new file
   //! \param theParent a parent for the new dialog
@@ -125,7 +87,7 @@ private slots:
   //! Stores name of selected sample file
   void onSampleSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
 
-  //! Open file dialog to select a file name. Fills file name line, enable import button
+  //! Opens file dialog to select a file name. Fills file name line, enable import button
   void onSelectClicked();
 
   //! Accepts open file dialog
@@ -147,7 +109,7 @@ private:
 
   QStringList myRecentlyOpenedFiles; //!< recently opened files
   QString myFileName; //!< result file name
-  QTableView* mySamplesView; //! <view of sample file names
+  QTableView* mySamplesView; //!< view of sample file names
   QLineEdit* mySelectedName; //!< alternative control to open file
 };
 

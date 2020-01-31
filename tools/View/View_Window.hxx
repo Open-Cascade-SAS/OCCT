@@ -40,27 +40,47 @@ class View_Window : public QWidget
 public:
 
   //! Constructor
-  Standard_EXPORT View_Window (QWidget* theParent, const bool isUseKeepView = true, const bool isFitAllActive = true);
+  Standard_EXPORT View_Window (QWidget* theParent,
+                               const Handle(AIS_InteractiveContext)& theContext = Handle(AIS_InteractiveContext)(),
+                               const bool isUseKeepView = true, const bool isFitAllActive = true);
 
   //! Destructor
   virtual ~View_Window() {}
 
   //! Returns view displayer
-  View_Displayer* GetDisplayer() const { return myDisplayer; }
+  View_Displayer* Displayer() const { return myDisplayer; }
 
   //! Returns view widget
-  View_Widget* GetView() const { return myView; }
+  View_Widget* ViewWidget() const { return myView; }
 
   //! Returns actions tool bar
-  QToolBar* GetActionsToolBar() const { return myActionsToolBar; }
+  QToolBar* ActionsToolBar() const { return myActionsToolBar; }
 
   //! Returns window tool bar
-  View_ToolBar* GetViewToolBar() const { return myViewToolBar; }
+  View_ToolBar* ViewToolBar() const { return myViewToolBar; }
 
   //! Sets a new context for context type
   //! \param theType a type of context, will be selected in the tool bar combo box
   //! \param theContext an AIS context
   Standard_EXPORT void SetContext (View_ContextType theType, const Handle(AIS_InteractiveContext)& theContext);
+
+  //! Saves state of view window in a container in form: key, value. It saves:
+  //! - visibility of columns,
+  //! - columns width
+  //! \param theTreeView a view instance
+  //! \param theItems [out] properties
+  //! \param thePrefix peference item prefix
+  Standard_EXPORT static void SaveState (View_Window* theView, QMap<QString, QString>& theItems,
+                                         const QString& thePrefix = QString());
+
+  //! Restores state of view window by a container
+  //! \param theTreeView a view instance
+  //! \param theKey property key
+  //! \param theValue property value
+  //! \param thePrefix peference item prefix
+  //! \return boolean value whether the property is applied to the tree view
+  Standard_EXPORT static bool RestoreState (View_Window* theView, const QString& theKey, const QString& theValue,
+                                            const QString& thePrefix = QString());
 
 signals:
   //! Signals about calling erasing all presentations in context

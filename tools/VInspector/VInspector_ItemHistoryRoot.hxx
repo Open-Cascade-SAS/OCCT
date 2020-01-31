@@ -37,7 +37,7 @@ public:
   { return VInspector_ItemHistoryRootPtr (new VInspector_ItemHistoryRoot (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~VInspector_ItemHistoryRoot() Standard_OVERRIDE {};
+  virtual ~VInspector_ItemHistoryRoot() {}
 
   //! Sets maximum count of history elements in internal container.
   //! \param theSize a size value
@@ -72,7 +72,7 @@ protected:
 private:
 
   //! Constructor
-  //! param theParent a parent item
+  //! \param theParent a parent item
   VInspector_ItemHistoryRoot(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn);
 
 private:

@@ -140,7 +140,7 @@ void DFBrowserPane_AttributePane::GetShortAttributeInfo (const Handle(TDF_Attrib
 // function : GetAttributeInfoByType
 // purpose :
 // =======================================================================
-QVariant DFBrowserPane_AttributePane::GetAttributeInfoByType (const Standard_CString& theAttributeName,
+QVariant DFBrowserPane_AttributePane::GetAttributeInfoByType (Standard_CString theAttributeName,
                                                               int theRole, int theColumnId)
 {
   if (theColumnId != 0)

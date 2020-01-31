@@ -16,9 +16,13 @@
 #ifndef ShapeView_ItemShape_H
 #define ShapeView_ItemShape_H
 
-#include <inspector/ShapeView_ItemBase.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
+
+#include <TopTools_IndexedMapOfShape.hxx>
+
 #include <Standard.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -32,19 +36,26 @@ typedef QExplicitlySharedDataPointer<ShapeView_ItemShape> ShapeView_ItemShapePtr
 //! \class ShapeView_ItemShape
 //! This item is connected to TopoDS_Shape.
 //! Parent is either ShapeView_ItemRoot or ShapeView_ItemShape, children are ShapeView_ItemShape or no children
-class ShapeView_ItemShape : public ShapeView_ItemBase
+class ShapeView_ItemShape : public TreeModel_ItemBase
 {
 public:
 
   //! Creates an item wrapped by a shared pointer
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   //! \return the pointer to the created item
   static ShapeView_ItemShapePtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
   { return ShapeView_ItemShapePtr (new ShapeView_ItemShape (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~ShapeView_ItemShape() Standard_OVERRIDE {};
+  virtual ~ShapeView_ItemShape() {}
+
+  //! Returns explode type of the item
+  TopAbs_ShapeEnum ExplodeType() const { return myExplodeType; }
+
+  //! Sets explore type
+  //! \param theType type of item explode. If TopAbs_SHAPE, no explode, only iteration by shape
+  void SetExplodeType (const TopAbs_ShapeEnum theType) { myExplodeType  = theType; }
 
   //! Returns the current shape
   const TopoDS_Shape& GetItemShape() const { initItem(); return myShape; }
@@ -52,7 +63,7 @@ public:
   //! Returns child(extracted) shape for the current shape by the index
   //! \param theRowId an index of child shape
   //! \returns shape instance or NULL
-  Standard_EXPORT TopoDS_Shape GetShape (const int theRowId) const;
+  Standard_EXPORT TopoDS_Shape Shape (const int theRowId) const;
 
   //! Returns name of BREP file for the shape if exists
   //! \return string valuie
@@ -62,17 +73,13 @@ public:
   //! \return string valuie
   void SetFileName (const QString& theFileName) { myFileName = theFileName; }
 
-  //! Returns TShape pointer info of the current TopoDS Shape
-  //! \return string value
-  TCollection_AsciiString TShapePointer() const { return getPointerInfo (myShape.TShape()); }
-
   //! Inits the item, fills internal containers
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
 
   //! Resets cached values
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
-  //! Return data value for the role.
+  //! Returns data value for the role.
   //! \param theRole a value role
   //! \return the value
   Standard_EXPORT virtual QVariant initValue(const int theRole) const;
@@ -80,9 +87,13 @@ public:
   //! \return number of children.
   Standard_EXPORT virtual int initRowCount() const Standard_OVERRIDE;
 
+  //! Returns stream value of the item to fulfill property panel.
+  //! \return stream value or dummy
+  Standard_EXPORT virtual void initStream (Standard_OStream& theOStream) const Standard_OVERRIDE;
+
 protected:
 
-  //! Initialize the current item. It is empty because Reset() is also empty.
+  //! Initializes the current item. It is empty because Reset() is also empty.
   virtual void initItem() const Standard_OVERRIDE;
 
   //! Creates a child item in the given position.
@@ -99,22 +110,19 @@ protected:
   //! \return shape value
   TopoDS_Shape getShape() const;
 
-  //! Convert pointer to string value
-  //! \param thePointer a pointer
-  //! \param isShortInfo if true, all '0' symbols in the beginning of the pointer are skipped
-  //! \return the string value
-  static TCollection_AsciiString getPointerInfo (const Handle(Standard_Transient)& thePointer, const bool isShortInfo = true);
-
 private:
 
   //! Constructor
-  ShapeView_ItemShape(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
-  : ShapeView_ItemBase(theParent, theRow, theColumn) {}
+  ShapeView_ItemShape (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
+    : TreeModel_ItemBase (theParent, theRow, theColumn), myExplodeType (TopAbs_SHAPE) {}
 
 private:
+  TopAbs_ShapeEnum myExplodeType; //!< type of explore own shape and get children
 
   TopoDS_Shape myShape; //!< current shape
   QString myFileName; //!< BREP file name
+
+  TopTools_IndexedMapOfShape myChildShapes; //!< cached container of child shapes
 };
 
 #endif

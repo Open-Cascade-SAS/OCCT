@@ -18,12 +18,22 @@
 #include <inspector/ShapeView_ItemShape.hxx>
 
 // =======================================================================
+// function : OnClicked
+// purpose :
+// =======================================================================
+void ShapeView_VisibilityState::OnClicked (const QModelIndex& theIndex)
+{
+  processClicked (theIndex);
+  emit itemClicked (theIndex);
+}
+
+// =======================================================================
 // function : SetVisible
 // purpose :
 // =======================================================================
 bool ShapeView_VisibilityState::SetVisible (const QModelIndex& theIndex, const bool theState, const bool toEmitDataChanged)
 {
-  TopoDS_Shape aShape = GetShape (theIndex);
+  TopoDS_Shape aShape = Shape (theIndex);
   if (aShape.IsNull())
     return false;
 
@@ -35,10 +45,10 @@ bool ShapeView_VisibilityState::SetVisible (const QModelIndex& theIndex, const b
 }
 
 // =======================================================================
-// function : GetShape
+// function : Shape
 // purpose :
 // =======================================================================
-TopoDS_Shape ShapeView_VisibilityState::GetShape (const QModelIndex& theIndex) const
+TopoDS_Shape ShapeView_VisibilityState::Shape (const QModelIndex& theIndex) const
 {
   TreeModel_ItemBasePtr anItemBase = TreeModel_ModelBase::GetItemByIndex (theIndex);
   if (!anItemBase)

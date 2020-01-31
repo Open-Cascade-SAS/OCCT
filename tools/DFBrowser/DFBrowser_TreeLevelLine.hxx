@@ -54,7 +54,7 @@ public:
   Standard_EXPORT DFBrowser_TreeLevelLine (QWidget* theParent);
 
   //! Destructor
-  virtual ~DFBrowser_TreeLevelLine() Standard_OVERRIDE {}
+  virtual ~DFBrowser_TreeLevelLine() {}
 
   //! Clears history of selected items
   Standard_EXPORT void ClearHistory();

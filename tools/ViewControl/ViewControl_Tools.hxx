@@ -18,13 +18,18 @@
 
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QString>
 #include <Standard_WarningsRestore.hxx>
 
+class ViewControl_TableModelValues;
+
 class QAction;
+class QItemSelectionModel;
 class QObject;
+class QTableView;
 class QWidget;
 
 //! \class ViewControl_Tools
@@ -32,6 +37,9 @@ class QWidget;
 class ViewControl_Tools
 {
 public:
+  //! Returns text of separation row in table
+  //! \return string value
+  static QString TableSeparator() { return "---------------------------"; }
 
   //! Creates an action with the given text connected to the slot
   //! \param theText an action text value
@@ -45,6 +53,15 @@ public:
   //! Change palette of the widget to have white foreground
   //! \param theControl a widget to be modified
   Standard_EXPORT static void SetWhiteBackground (QWidget* theControl);
+
+  //! Fills tree view by default sections parameters obtained in view's table model
+  //! \param theTableView table view instance
+  //! \param theOrientation header orientation
+  Standard_EXPORT static void SetDefaultHeaderSections (QTableView* theTableView, const Qt::Orientation theOrientation);
+
+  //! Create table of values on the current selection
+  //! It is created if the selection contains only one item and it has a property item
+  Standard_EXPORT static ViewControl_TableModelValues* CreateTableModelValues (QItemSelectionModel* theSelectionModel);
 
 };
 

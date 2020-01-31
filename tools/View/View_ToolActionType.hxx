@@ -21,7 +21,8 @@ enum View_ToolActionType
 {
   View_ToolActionType_KeepViewId,    //!< Do not clear previously shown presentations
   View_ToolActionType_KeepViewOffId, //!< Do show only for new displayed presentation
-  View_ToolActionType_ClearViewId    //!< Erase all displayed presentations
+  View_ToolActionType_ClearViewId,   //!< Erase all displayed presentations
+  View_ToolActionType_Trihedron      //!< Display/Erase trihedron presentation
 };
 
 #endif

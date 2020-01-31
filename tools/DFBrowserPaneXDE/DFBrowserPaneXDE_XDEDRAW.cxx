@@ -42,11 +42,8 @@
 #include <XCAFDoc_Color.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DimTol.hxx>
-#include <Standard_Version.hxx>
-#if OCC_VERSION_HEX > 0x060901
 #include <XCAFDoc_Dimension.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
-#endif
 #include <XCAFDoc_Datum.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GraphNode.hxx>
@@ -247,7 +244,6 @@ TCollection_AsciiString DFBrowserPaneXDE_XDEDRAW::GetAttributeInfo (Handle(TDF_A
     else if ( att->ID() == XCAFDoc::DatumTolRefGUID() ) {
       type = "DatumToler Link";
     }
-#if OCC_VERSION_HEX > 0x060901
     else if ( att->ID() == XCAFDoc::DimensionRefFirstGUID() ) {
       type = "Dimension Link First";
     }
@@ -257,7 +253,6 @@ TCollection_AsciiString DFBrowserPaneXDE_XDEDRAW::GetAttributeInfo (Handle(TDF_A
     else if ( att->ID() == XCAFDoc::GeomToleranceRefGUID() ){
       type = "GeomTolerance Link";
     }
-#endif
     else
       return TCollection_AsciiString();
 

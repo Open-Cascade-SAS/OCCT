@@ -80,7 +80,7 @@ void DFBrowserPane_TNamingUsedShapes::GetValues (const Handle(TDF_Attribute)& th
     if (!aShape.IsNull())
     {
       theValues.append(DFBrowserPane_Tools::ToName(DB_SHAPE_TYPE, aShape.ShapeType()).ToCString());
-      theValues.append(DFBrowserPane_Tools::GetPointerInfo(aShape.TShape()->This()).ToCString());
+      theValues.append(Standard_Dump::GetPointerInfo(aShape.TShape()->This()).ToCString());
     }
     else
       theValues << "EMPTY SHAPE" << "";
@@ -89,7 +89,7 @@ void DFBrowserPane_TNamingUsedShapes::GetValues (const Handle(TDF_Attribute)& th
     {
       theValues.append(DFBrowserPane_Tools::GetEntry(aPtrRefShape->Label()).ToCString());
       const TopoDS_Shape& aValueShape = aPtrRefShape->Shape();
-      theValues.append(!aValueShape.IsNull() ? DFBrowserPane_Tools::GetPointerInfo(aValueShape.TShape()->This()).ToCString() : "");
+      theValues.append(!aValueShape.IsNull() ? Standard_Dump::GetPointerInfo(aValueShape.TShape()->This()).ToCString() : "");
     }
     else
       theValues << "" << "";

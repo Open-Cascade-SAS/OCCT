@@ -41,7 +41,7 @@ public:
   Standard_EXPORT DFBrowser_PropertyPanel (QWidget* theParent);
 
   //! Destructor
-  virtual ~DFBrowser_PropertyPanel() Standard_OVERRIDE {}
+  virtual ~DFBrowser_PropertyPanel() {}
 
   //! Returns main control
   QWidget* GetControl() const { return myMainWindow; }
@@ -57,7 +57,7 @@ public:
                                                  const QItemSelection& theDeselected);
 private:
 
-  QWidget* myMainWindow; //! < parent of attribute stack control
-  DFBrowser_AttributePaneStack* myAttributesStack; //! < panes stack
+  QWidget* myMainWindow; //!< parent of attribute stack control
+  DFBrowser_AttributePaneStack* myAttributesStack; //!< panes stack
 };
 #endif

@@ -32,14 +32,14 @@ class DFBrowser_ItemDocument : public DFBrowser_ItemBase
 public:
 
   //! Creates an item wrapped by a shared pointer
-  //! \param theRow the item row positition in the parent item
-  //! \param theColumn the item column positition in the parent item
+  //! \param theRow the item row position in the parent item
+  //! \param theColumn the item column position in the parent item
   //! \return the pointer to the created item
   static DFBrowser_ItemDocumentPtr CreateItem (TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
   { return DFBrowser_ItemDocumentPtr (new DFBrowser_ItemDocument (theParent, theRow, theColumn)); }
 
   //! Destructor
-  virtual ~DFBrowser_ItemDocument() Standard_OVERRIDE {};
+  virtual ~DFBrowser_ItemDocument() {}
 
   //! Returns the current label
   //! \return a label
@@ -65,10 +65,10 @@ public:
 
 protected:
 
-  //! Initialize the current item. It is empty because Reset() is also empty.
+  //! Initializes the current item. It is empty because Reset() is also empty.
   virtual void initItem() const Standard_OVERRIDE;
 
-  //!
+  //! Initializes the current item. It creates a backup of the specific item information
   virtual QVariant initValue (const int theItemRole) const Standard_OVERRIDE;
 
 protected:
@@ -82,7 +82,7 @@ protected:
 private:
 
   //! Constructor
-  //! param theParent a parent item
+  //! \param theParent a parent item
   DFBrowser_ItemDocument(TreeModel_ItemBasePtr theParent, const int theRow, const int theColumn)
     : DFBrowser_ItemBase (theParent, theRow, theColumn) {}
 

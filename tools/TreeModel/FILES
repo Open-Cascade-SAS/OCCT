@@ -1,4 +1,3 @@
-TreeModel.hxx
 TreeModel.qrc
 TreeModel_ColumnType.hxx
 TreeModel_ContextMenu.cxx
@@ -6,7 +5,11 @@ TreeModel_ContextMenu.hxx
 TreeModel_HeaderSection.hxx
 TreeModel_ItemBase.cxx
 TreeModel_ItemBase.hxx
+TreeModel_ItemProperties.cxx
+TreeModel_ItemProperties.hxx
 TreeModel_ItemRole.hxx
+TreeModel_ItemStream.cxx
+TreeModel_ItemStream.hxx
 TreeModel_ModelBase.cxx
 TreeModel_ModelBase.hxx
 TreeModel_Tools.cxx

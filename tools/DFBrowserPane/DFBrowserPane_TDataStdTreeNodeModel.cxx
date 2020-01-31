@@ -29,16 +29,24 @@
 DFBrowserPane_TDataStdTreeNodeModel::DFBrowserPane_TDataStdTreeNodeModel (QObject* theParent)
 : TreeModel_ModelBase (theParent)
 {
-  createRootItem(0);
+}
+
+// =======================================================================
+// function : InitColumns
+// purpose :
+// =======================================================================
+void DFBrowserPane_TDataStdTreeNodeModel::InitColumns()
+{
+  SetHeaderItem (0, TreeModel_HeaderSection ("Name"));
 }
 
 // =======================================================================
 // function : createRootItem
 // purpose :
 // =======================================================================
-void DFBrowserPane_TDataStdTreeNodeModel::createRootItem (const int theColumnId)
+TreeModel_ItemBasePtr DFBrowserPane_TDataStdTreeNodeModel::createRootItem (const int theColumnId)
 {
-  m_pRootItem = DFBrowserPane_TDataStdTreeNodeItem::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId);
+  return DFBrowserPane_TDataStdTreeNodeItem::CreateItem (TreeModel_ItemBasePtr(), 0, theColumnId);
 }
 
 // =======================================================================
@@ -47,7 +55,7 @@ void DFBrowserPane_TDataStdTreeNodeModel::createRootItem (const int theColumnId)
 // =======================================================================
 void DFBrowserPane_TDataStdTreeNodeModel::SetAttribute (const Handle(TDF_Attribute)& theAttribute)
 {
-  DFBrowserPane_TDataStdTreeNodeItemPtr aRootItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(m_pRootItem);
+  DFBrowserPane_TDataStdTreeNodeItemPtr aRootItem = itemDynamicCast<DFBrowserPane_TDataStdTreeNodeItem>(RootItem (0));
   Reset();
   aRootItem->SetAttribute (theAttribute);
   EmitLayoutChanged();

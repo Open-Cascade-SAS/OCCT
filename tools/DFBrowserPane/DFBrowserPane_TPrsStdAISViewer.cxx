@@ -35,7 +35,7 @@ void DFBrowserPane_TPrsStdAISViewer::GetValues (const Handle(TDF_Attribute)& the
 
   Handle(AIS_InteractiveContext) aContext = aViewerAttribute->GetInteractiveContext();
   TCollection_AsciiString aPointerInfo = !aContext.IsNull()
-    ? DFBrowserPane_Tools::GetPointerInfo (aContext).ToCString() : "";
+    ? Standard_Dump::GetPointerInfo (aContext).ToCString() : "";
 
   theValues << "GetInteractiveContext" << aPointerInfo.ToCString();
 

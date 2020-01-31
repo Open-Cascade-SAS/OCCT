@@ -1,4 +1,6 @@
 VInspector.qrc
+VInspectorAPI_CallBack.cxx
+VInspectorAPI_CallBack.hxx
 VInspector_CallBack.cxx
 VInspector_CallBack.hxx
 VInspector_CallBackMode.hxx
@@ -8,10 +10,6 @@ VInspector_ItemBase.cxx
 VInspector_ItemBase.hxx
 VInspector_ItemContext.cxx
 VInspector_ItemContext.hxx
-VInspector_ItemFolderObject.cxx
-VInspector_ItemFolderObject.hxx
-VInspector_ItemEntityOwner.cxx
-VInspector_ItemEntityOwner.hxx
 VInspector_ItemHistoryElement.cxx
 VInspector_ItemHistoryElement.hxx
 VInspector_ItemHistoryRoot.cxx
@@ -21,13 +19,6 @@ VInspector_ItemHistoryType.hxx
 VInspector_ItemHistoryTypeInfo.hxx
 VInspector_ItemPresentableObject.cxx
 VInspector_ItemPresentableObject.hxx
-VInspector_ItemSelection.cxx
-VInspector_ItemSelection.hxx
-VInspector_ItemSelectMgrFilter.cxx
-VInspector_ItemSelectMgrFilter.hxx
-VInspector_ItemSensitiveEntity.cxx
-VInspector_ItemSensitiveEntity.hxx
-VInspector_SelectionType.hxx
 VInspector_ToolActionType.hxx
 VInspector_ToolBar.cxx
 VInspector_ToolBar.hxx
@@ -39,5 +30,3 @@ VInspector_ViewModelHistory.cxx
 VInspector_ViewModelHistory.hxx
 VInspector_Window.cxx
 VInspector_Window.hxx
-VInspectorAPI_CallBack.cxx
-VInspectorAPI_CallBack.hxx

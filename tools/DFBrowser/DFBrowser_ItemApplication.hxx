@@ -35,7 +35,7 @@ public:
   { return DFBrowser_ItemApplicationPtr (new DFBrowser_ItemApplication (theParent)); }
 
   //! Destructor
-  virtual ~DFBrowser_ItemApplication() Standard_OVERRIDE {};
+  virtual ~DFBrowser_ItemApplication() {}
 
   //! Sets the item label
   //! \param theLabel an object where the child items structure is found
@@ -67,7 +67,7 @@ protected:
 private:
 
   //! Constructor
-  //! param theParent a parent item
+  //! \param theParent a parent item
   DFBrowser_ItemApplication(TreeModel_ItemBasePtr theParent) : DFBrowser_ItemBase(theParent, 0, 0) {}
 
 private:

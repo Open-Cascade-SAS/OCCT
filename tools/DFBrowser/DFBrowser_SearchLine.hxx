@@ -47,7 +47,7 @@ public:
   Standard_EXPORT DFBrowser_SearchLine (QWidget* theParent);
 
   //! Destructor
-  virtual ~DFBrowser_SearchLine() Standard_OVERRIDE {}
+  virtual ~DFBrowser_SearchLine() {}
 
   //! Creates search line model filled by the module. It is necessary for auto completion of line edit
   //! \param theModule a current module
@@ -66,10 +66,10 @@ public:
   Standard_EXPORT void ClearValues();
 
   //! Returns completer model
-  Standard_EXPORT QAbstractItemModel* GetModel() { return myLineControl->completer()->model(); }
+  QAbstractItemModel* GetModel() { return myLineControl->completer()->model(); }
 
   //! Returns completion completer model
-  Standard_EXPORT QAbstractItemModel* GetCompletionModel() { return myLineControl->completer()->completionModel(); }
+  QAbstractItemModel* GetCompletionModel() { return myLineControl->completer()->completionModel(); }
 
   //! Returns the current line edit text
   QString Text() const { return myLineControl->text(); }
@@ -87,15 +87,17 @@ private slots:
 
   //! Updates icon of search button depending on text is empty and emits searchActivated signal
   void onTextChanged (const QString& theText);
-  //! Set completion prefix in completer model
+
+  //! Sets completion prefix in completer model
   void onReturnPressed() { myLineControl->completer()->setCompletionPrefix (myLineControl->text()); }
-  //! Set empty text if the current text is not empty: new search is started
+
+  //! Sets empty text if the current text is not empty: new search is started
   void onSearchButtonClicked();
 
 private:
 
   QLineEdit* myLineControl; //!< line editor control
-  QToolButton* mySearchButton; //! < search button
+  QToolButton* mySearchButton; //!< search button
 };
 
 #endif

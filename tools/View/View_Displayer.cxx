@@ -20,9 +20,12 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Trihedron.hxx>
+#include <Geom_Axis2Placement.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
+
+#include <inspector/View_DisplayPreview.hxx>
 #include <inspector/View_Viewer.hxx>
 #include <inspector/View_Widget.hxx>
 
@@ -33,6 +36,7 @@
 View_Displayer::View_Displayer()
 : myIsKeepPresentations (false), myFitAllActive (false), myDisplayMode (-1)
 {
+  myDisplayPreview = new View_DisplayPreview();
 }
 
 // =======================================================================
@@ -53,6 +57,7 @@ void View_Displayer::SetContext (const Handle(AIS_InteractiveContext)& theContex
          aPresentationsIt.More(); aPresentationsIt.Next())
       DisplayPresentation (aPresentationsIt.Value(), aType, false);
   }
+  myDisplayPreview->SetContext (theContext);
   UpdateViewer();
 }
 
@@ -73,6 +78,8 @@ void View_Displayer::SetDisplayMode (const int theDisplayMode,
 
   for (AIS_ListIteratorOfListOfInteractive aDisplayedIt (aDisplayed); aDisplayedIt.More(); aDisplayedIt.Next())
     GetContext()->SetDisplayMode (aDisplayedIt.Value(), theDisplayMode, Standard_False);
+
+  myDisplayPreview->SetDisplayMode (theDisplayMode, Standard_False);
 
   if (theToUpdateViewer)
     UpdateViewer();
@@ -210,6 +217,22 @@ void View_Displayer::ErasePresentation (const Handle(Standard_Transient)& thePre
 }
 
 // =======================================================================
+// function : DisplayDefaultTrihedron
+// purpose :
+// =======================================================================
+void View_Displayer::DisplayDefaultTrihedron (const Standard_Boolean toDisplay, const bool theToUpdateViewer)
+{
+  const Handle(AIS_Trihedron)& aTrihedron = defaultTrihedron (toDisplay);
+  if (aTrihedron.IsNull())
+    return;
+
+  if (toDisplay)
+    GetContext()->Display (aTrihedron, theToUpdateViewer);
+  else
+    GetContext()->Erase (aTrihedron, theToUpdateViewer);
+}
+
+// =======================================================================
 // function : SetVisible
 // purpose :
 // =======================================================================
@@ -238,6 +261,18 @@ bool View_Displayer::IsVisible (const TopoDS_Shape& theShape, const View_Present
 {
   Handle(AIS_InteractiveObject) aPresentation = FindPresentation (theShape, theType);
   return !aPresentation.IsNull();
+}
+
+// =======================================================================
+// function : UpdatePreview
+// purpose :
+// =======================================================================
+void View_Displayer::UpdatePreview (const View_DisplayActionType theType,
+                                    const NCollection_List<Handle(Standard_Transient)>& thePresentations)
+{
+  myDisplayPreview->UpdatePreview (theType, thePresentations, myDisplayMode);
+  if (!myIsKeepPresentations || myFitAllActive)
+    fitAllView();
 }
 
 // =======================================================================
@@ -321,11 +356,7 @@ Handle(AIS_InteractiveObject) View_Displayer::FindPresentation (const TopoDS_Sha
 // =======================================================================
 Handle(Standard_Transient) View_Displayer::CreatePresentation (const TopoDS_Shape& theShape)
 {
-  Handle(AIS_Shape) aShape = new AIS_Shape (theShape);
-
-  aShape->Attributes()->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_POINT, Quantity_NOC_WHITE, 1.0));
-
-  return aShape;
+  return new AIS_Shape (theShape);
 }
 
 // =======================================================================
@@ -340,4 +371,18 @@ void  View_Displayer::fitAllView()
     aView->FitAll();
     aView->Redraw();
   }
+}
+
+// =======================================================================
+// function : defaultTrihedron
+// purpose :
+// =======================================================================
+const Handle(AIS_Trihedron)& View_Displayer::defaultTrihedron (const bool toCreate)
+{
+  if (myDefaultTrihedron.IsNull() && toCreate)
+  {
+    myDefaultTrihedron = new AIS_Trihedron (new Geom_Axis2Placement (gp::XOY()));
+    myDefaultTrihedron->SetSize (1);
+  }
+  return myDefaultTrihedron;
 }

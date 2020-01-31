@@ -24,7 +24,7 @@
 namespace DFBrowser_OpenApplication
 {
 
-  //! Open the application by the name.
+  //! Opens the application by the name.
   //! \param theFileName a name of the file initialized the application
   //! \param isSTEPFile an output parameter, true if the file name is a STEP file
   //! \return an opened application

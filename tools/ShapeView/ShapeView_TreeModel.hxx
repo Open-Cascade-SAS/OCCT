@@ -16,7 +16,7 @@
 #ifndef ShapeView_TreeModel_H
 #define ShapeView_TreeModel_H
 
-#include <inspector/ShapeView_ItemBase.hxx>
+#include <inspector/TreeModel_ItemBase.hxx>
 #include <Standard.hxx>
 #include <TopoDS_Shape.hxx>
 #include <inspector/TreeModel_ModelBase.hxx>
@@ -38,20 +38,14 @@ public:
   Standard_EXPORT ShapeView_TreeModel (QObject* theParent);
 
   //! Destructor
-  virtual ~ShapeView_TreeModel() Standard_OVERRIDE {};
+  virtual ~ShapeView_TreeModel() {}
 
-  //! Add shape, append it to the model root item
+  //! Adds shape, append it to the model root item
   //! \param theShape a shape instance
   Standard_EXPORT void AddShape (const TopoDS_Shape& theShape);
 
-  //! Remove all shapes in the model root item
+  //! Removes all shapes in the model root item
   Standard_EXPORT void RemoveAllShapes();
-
-  //! Returns root item by column
-  //! \param theColumn an index of the column
-  //! \return root item instance
-  virtual TreeModel_ItemBasePtr RootItem(const int theColumn) const Standard_OVERRIDE
-  { return myRootItems[theColumn]; }
 
   //! Returns model index of the shape.
   //! \param theShape a shape object
@@ -61,10 +55,8 @@ public:
 protected:
   //! Creates root item
   //! \param theColumnId index of a column
-  virtual void createRootItem (const int theColumnId) Standard_OVERRIDE;
+  Standard_EXPORT virtual TreeModel_ItemBasePtr createRootItem (const int theColumnId) Standard_OVERRIDE;
 
-private:
-  QMap<int, TreeModel_ItemBasePtr> myRootItems; //!< container of root items, for each column own root item
 };
 
 #endif

@@ -32,7 +32,7 @@ public:
   Standard_EXPORT VInspector_Communicator();
 
   //! Destructor
-  virtual ~VInspector_Communicator() Standard_OVERRIDE {}
+  virtual ~VInspector_Communicator() {}
 
   //! Provides the container with a parent where this container should be inserted.
   //! If Qt implementation, it should be QWidget with QLayout set inside
@@ -46,7 +46,7 @@ public:
 
   //! Provide container for actions available in inspector on general level
   //! \param theMenu if Qt implementation, it is QMenu object
-  Standard_EXPORT virtual void FillActionsMenu(void* theMenu) Standard_OVERRIDE { myWindow->FillActionsMenu (theMenu); }
+  virtual void FillActionsMenu(void* theMenu) Standard_OVERRIDE { myWindow->FillActionsMenu (theMenu); }
 
   //! Returns plugin preferences, empty implementation by default
   //! \param theItem container of preference elements

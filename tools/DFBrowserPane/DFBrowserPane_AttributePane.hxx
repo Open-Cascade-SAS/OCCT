@@ -74,7 +74,7 @@ public:
   //! \param theRole a role of information, used by tree model (e.g. DisplayRole, icon, background and so on)
   //! \param theColumnId a tree model column
   //! \return value, interpreted by tree model depending on the role
-  Standard_EXPORT static QVariant GetAttributeInfoByType(const Standard_CString& theAttributeName, int theRole, int theColumnId);
+  Standard_EXPORT static QVariant GetAttributeInfoByType(Standard_CString theAttributeName, int theRole, int theColumnId);
 
   //! Returns information for the given attribute
   //! \param theAttribute a current attribute
