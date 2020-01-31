@@ -12479,7 +12479,9 @@ static Standard_Integer VStatProfiler (Draw_Interpretor& theDI,
       else if (aFlag == "alllayers"
             || aFlag == "layers")     aParam = Graphic3d_RenderingParams::PerfCounters_Layers;
       else if (aFlag == "allstructs"
-            || aFlag == "structs")    aParam = Graphic3d_RenderingParams::PerfCounters_Structures;
+            || aFlag == "allstructures"
+            || aFlag == "structs"
+            || aFlag == "structures") aParam = Graphic3d_RenderingParams::PerfCounters_Structures;
       else if (aFlag == "groups")     aParam = Graphic3d_RenderingParams::PerfCounters_Groups;
       else if (aFlag == "allarrays"
             || aFlag == "fillarrays"
@@ -12548,13 +12550,20 @@ static Standard_Integer VStatProfiler (Draw_Interpretor& theDI,
       {
         theDI << searchInfo (aDict, "Rendered layers") << " ";
       }
-      else if (aFlag == "allstructs")
+      else if (aFlag == "allstructs"
+            || aFlag == "allstructures")
       {
         theDI << searchInfo (aDict, "Structs") << " ";
       }
-      else if (aFlag == "structs")
+      else if (aFlag == "structs"
+            || aFlag == "structures")
       {
-        theDI << searchInfo (aDict, "Rendered structs") << " ";
+        TCollection_AsciiString aRend = searchInfo (aDict, "Rendered structs");
+        if (aRend.IsEmpty()) // all structures rendered
+        {
+          aRend = searchInfo (aDict, "Structs");
+        }
+        theDI << aRend << " ";
       }
       else if (aFlag == "groups")
       {
@@ -14470,7 +14479,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n      '-exposure     value'       Exposure value for tone mapping (0.0 value disables the effect)"
     "\n      '-whitepoint   value'       White point value for filmic tone mapping"
     "\n      '-tonemapping  mode'        Tone mapping mode (disabled, filmic)"
-    "\n      '-perfCounters none|fps|cpu|layers|structures|groups|arrays|triagles|points"
+    "\n      '-perfCounters none|fps|cpu|layers|structures|groups|arrays|triangles|points"
     "\n      '              |gpuMem|frameTime|basic|extended|full|nofps|skipImmediate'"
     "\n                                  Show/hide performance counters (flags can be combined)"
     "\n      '-perfUpdateInterval nbSeconds' Performance counters update interval"
@@ -14485,7 +14494,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vstatprofiler",
     "\n vstatprofiler [fps|cpu|allLayers|layers|allstructures|structures|groups"
     "\n                |allArrays|fillArrays|lineArrays|pointArrays|textArrays"
-    "\n                |triagles|points|geomMem|textureMem|frameMem"
+    "\n                |triangles|points|geomMem|textureMem|frameMem"
     "\n                |elapsedFrame|cpuFrameAverage|cpuPickingAverage|cpuCullingAverage|cpuDynAverage"
     "\n                |cpuFrameMax|cpuPickingMax|cpuCullingMax|cpuDynMax]"
     "\n                [-noredraw]"

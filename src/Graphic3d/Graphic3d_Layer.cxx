@@ -557,14 +557,18 @@ void Graphic3d_Layer::UpdateCulling (Standard_Integer theViewId,
       }
       else
       {
-        Standard_Integer aIdx = aBVHTree->BegPrimitive (aNode);
-        const Graphic3d_CStructure* aStruct = isTrsfPers
-                                            ? myBVHPrimitivesTrsfPers.GetStructureById (aIdx)
-                                            : myBVHPrimitives.GetStructureById (aIdx);
-        if (aStruct->IsVisible (theViewId))
+        const Standard_Integer aStartIdx = aBVHTree->BegPrimitive (aNode);
+        const Standard_Integer anEndIdx  = aBVHTree->EndPrimitive (aNode);
+        for (Standard_Integer anIdx = aStartIdx; anIdx <= anEndIdx; ++anIdx)
         {
-          aStruct->MarkAsNotCulled();
-          ++myNbStructuresNotCulled;
+          const Graphic3d_CStructure* aStruct = isTrsfPers
+                                              ? myBVHPrimitivesTrsfPers.GetStructureById (anIdx)
+                                              : myBVHPrimitives.GetStructureById (anIdx);
+          if (aStruct->IsVisible (theViewId))
+          {
+            aStruct->MarkAsNotCulled();
+            ++myNbStructuresNotCulled;
+          }
         }
         if (aHead < 0)
         {
