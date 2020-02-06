@@ -465,10 +465,8 @@ void StdPrs_WFShape::AddEdgesOnTriangulation (TColgp_SequenceOfPnt& theSegments,
 
     // Allocate the arrays.
     TColStd_Array1OfInteger aFree (1, 2 * aNbFree);
-    Standard_Integer aNbInternal = (3 * aNbTriangles - aNbFree) / 2;
-    TColStd_Array1OfInteger anInternal (0, 2 * aNbInternal);
 
-    Standard_Integer aFreeIndex = 1, anIntIndex = 1;
+    Standard_Integer aFreeIndex = 1;
     const Poly_Array1OfTriangle& aTriangles = T->Triangles();
     for (Standard_Integer anI = 1; anI <= aNbTriangles; ++anI)
     {
@@ -482,13 +480,6 @@ void StdPrs_WFShape::AddEdgesOnTriangulation (TColgp_SequenceOfPnt& theSegments,
           aFree (aFreeIndex)     = aN[aJ];
           aFree (aFreeIndex + 1) = aN[k];
           aFreeIndex += 2;
-        }
-        // internal edge if this triangle has a lower index than the adjacent.
-        else if (anI < aT[aJ])
-        {
-          anInternal (anIntIndex)     = aN[aJ];
-          anInternal (anIntIndex + 1) = aN[k];
-          anIntIndex += 2;
         }
       }
     }
