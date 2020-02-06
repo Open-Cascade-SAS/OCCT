@@ -55,3 +55,13 @@ Graphic3d_AspectText3d::Graphic3d_AspectText3d (const Quantity_Color& theColor,
     myTextFont = new TCollection_HAsciiString (theFont);
   }
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Graphic3d_AspectText3d::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Graphic3d_Aspects)
+}

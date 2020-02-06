@@ -452,11 +452,15 @@ void Graphic3d_Group::AddText (const Handle(Graphic3d_Text)& theTextParams,
 // function : DumpJson
 // purpose  :
 // =======================================================================
-void Graphic3d_Group::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void Graphic3d_Group::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
 
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myStructure)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBounds)
+
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsClosed)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myContainsFacet)
 }

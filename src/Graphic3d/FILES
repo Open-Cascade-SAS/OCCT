@@ -39,6 +39,7 @@ Graphic3d_BvhCStructureSetTrsfPers.cxx
 Graphic3d_BvhCStructureSetTrsfPers.hxx
 Graphic3d_Camera.cxx
 Graphic3d_Camera.hxx
+Graphic3d_CameraTile.cxx
 Graphic3d_CameraTile.hxx
 Graphic3d_CappingFlags.hxx
 Graphic3d_CLight.cxx
@@ -116,6 +117,7 @@ Graphic3d_PolygonOffset.cxx
 Graphic3d_PolygonOffset.hxx
 Graphic3d_PriorityDefinitionError.hxx
 Graphic3d_RenderingMode.hxx
+Graphic3d_RenderingParams.cxx
 Graphic3d_RenderingParams.hxx
 Graphic3d_RenderTransparentMethod.hxx
 Graphic3d_SequenceOfGroup.hxx

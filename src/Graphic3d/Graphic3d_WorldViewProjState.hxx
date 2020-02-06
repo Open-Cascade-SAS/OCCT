@@ -141,6 +141,15 @@ public:
         && myWorldViewState  == theOther.myWorldViewState;
   }
 
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+  {
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsValid)
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCamera)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myProjectionState)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myWorldViewState)
+  }
+
 private:
 
   Standard_Boolean    myIsValid;

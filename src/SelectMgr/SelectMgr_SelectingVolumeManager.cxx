@@ -495,7 +495,7 @@ void SelectMgr_SelectingVolumeManager::DumpJson (Standard_OStream& theOStream, S
   for (Standard_Integer anIdx = 0; anIdx < VolumeTypesNb; ++anIdx)
   {
     const Handle(SelectMgr_BaseFrustum)& aSelectingVolume = mySelectingVolumes[anIdx];
-    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, aSelectingVolume.get())
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aSelectingVolume.get())
   }
 
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myViewClipPlanes.get())

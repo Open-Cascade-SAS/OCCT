@@ -155,3 +155,25 @@ Standard_Boolean Aspect_RectangularGrid::CheckAngle(const Standard_Real alpha,
                                             const Standard_Real beta) const {
   return (Abs( Sin(alpha) * Cos(beta + M_PI / 2.) - Cos(alpha) * Sin(beta + M_PI / 2.)) != 0) ;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Aspect_RectangularGrid::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_Grid)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myXStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myYStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFirstAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySecondAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, a1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, b1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, c1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, a2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, b2)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, c2)
+}

@@ -35,7 +35,7 @@ public:
 
   //! Return the Selector.
   const Handle(SelectMgr_ViewerSelector)& Selector() const { return mySelector; }
-  
+
   //! Returns true if the manager contains the selectable object theObject.
   Standard_EXPORT Standard_Boolean Contains (const Handle(SelectMgr_SelectableObject)& theObject) const;
   

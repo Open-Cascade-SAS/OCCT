@@ -88,6 +88,9 @@ public:
   //! mark both included and overlapped entities as matched
   Standard_EXPORT virtual void SetAllowOverlapDetection (const Standard_Boolean theIsToAllow);
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
+
 private:
 
   //! Checks whether the segment intersects with the boundary of the current volume selection

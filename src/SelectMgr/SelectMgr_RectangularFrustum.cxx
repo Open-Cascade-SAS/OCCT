@@ -763,3 +763,20 @@ void SelectMgr_RectangularFrustum::GetPlanes (NCollection_Vector<SelectMgr_Vec4>
     thePlaneEquations.Append (anEquation);
   }
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void SelectMgr_RectangularFrustum::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_RectangularFrustum)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_Frustum)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myNearPickedPnt)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myFarPickedPnt)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myViewRayDir)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myMousePos)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myScale)
+}

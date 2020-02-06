@@ -155,6 +155,9 @@ public:
 
   //! Frees the identifier of a structure.
   Standard_EXPORT void RemoveIdentification(const Standard_Integer theId);
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 protected:
   

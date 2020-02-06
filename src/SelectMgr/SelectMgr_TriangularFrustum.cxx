@@ -302,3 +302,13 @@ void SelectMgr_TriangularFrustum::GetPlanes (NCollection_Vector<SelectMgr_Vec4>&
     thePlaneEquations.Append (aPlaneEquation);
   }
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void SelectMgr_TriangularFrustum::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_TriangularFrustum)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_Frustum)
+}

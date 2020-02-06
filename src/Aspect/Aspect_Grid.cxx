@@ -104,3 +104,22 @@ void Aspect_Grid::SetDrawMode (const Aspect_GridDrawMode theDrawMode)
   myDrawMode = theDrawMode;
   UpdateDisplay();
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Aspect_Grid::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRotationAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myXOrigin)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myYOrigin)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColor)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myTenthColor)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsActive)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDrawMode)
+}

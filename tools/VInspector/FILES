@@ -10,6 +10,8 @@ VInspector_ItemBase.cxx
 VInspector_ItemBase.hxx
 VInspector_ItemContext.cxx
 VInspector_ItemContext.hxx
+VInspector_ItemContextProperties.cxx
+VInspector_ItemContextProperties.hxx
 VInspector_ItemHistoryElement.cxx
 VInspector_ItemHistoryElement.hxx
 VInspector_ItemHistoryRoot.cxx
@@ -19,6 +21,10 @@ VInspector_ItemHistoryType.hxx
 VInspector_ItemHistoryTypeInfo.hxx
 VInspector_ItemPresentableObject.cxx
 VInspector_ItemPresentableObject.hxx
+VInspector_ItemSelectMgrViewerSelector.cxx
+VInspector_ItemSelectMgrViewerSelector.hxx
+VInspector_ItemV3dViewer.cxx
+VInspector_ItemV3dViewer.hxx
 VInspector_ToolActionType.hxx
 VInspector_ToolBar.cxx
 VInspector_ToolBar.hxx

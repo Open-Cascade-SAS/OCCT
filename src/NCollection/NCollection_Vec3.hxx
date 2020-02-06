@@ -18,7 +18,6 @@
 #include <cstring>
 #include <cmath>
 #include <NCollection_Vec2.hxx>
-#include <Standard_Dump.hxx>
 
 //! Auxiliary macros to define couple of similar access components as vector methods
 #define NCOLLECTION_VEC_COMPONENTS_3D(theX, theY, theZ) \

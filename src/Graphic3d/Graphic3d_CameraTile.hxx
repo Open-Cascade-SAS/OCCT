@@ -16,6 +16,7 @@
 
 #include <Graphic3d_Vec2.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_OStream.hxx>
 #include <Standard_TypeDef.hxx>
 
 //! Class defines the area (Tile) inside a view.
@@ -82,6 +83,9 @@ public:
         && anOffset1.x() == anOffset2.x()
         && anOffset1.y() == anOffset2.y();
   }
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 };
 

@@ -23,6 +23,7 @@
 
 #include <Aspect_Background.hxx>
 #include <Quantity_Color.hxx>
+#include <Standard_Dump.hxx>
 
 //-Aliases
 //-Global data definitions
@@ -55,4 +56,15 @@ Quantity_Color Aspect_Background::Color () const {
 
 	return (MyColor);
 
+}
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Aspect_Background::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, Aspect_Background)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &MyColor)
 }

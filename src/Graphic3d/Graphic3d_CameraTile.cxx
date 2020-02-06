@@ -1,6 +1,6 @@
-// Created by: CAL
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2020-02-06
+// Created by: Svetlana SHUTINA
+// Copyright (c) 2020 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -11,34 +11,20 @@
 // distribution for complete text of the license and disclaimer of any warranty.
 //
 // Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
+// commercial license or contractual agreement. 
 
-//              11/97 ; CAL : retrait des DataStructure
-//-Version	
-//-Design	
-//-Warning	
-//-References	
-//-Language	C++ 2.0
-//-Declarations
-// for the class
+#include <Graphic3d_CameraTile.hxx>
 
-#include <Graphic3d_DataStructureManager.hxx>
 #include <Standard_Dump.hxx>
-#include <Standard_Type.hxx>
-
-IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,Standard_Transient)
-
-//-Aliases
-//-Global data definitions
-//-Constructors
-Graphic3d_DataStructureManager::Graphic3d_DataStructureManager () {
-}
 
 //=======================================================================
 //function : DumpJson
 //purpose  : 
 //=======================================================================
-void Graphic3d_DataStructureManager::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void Graphic3d_CameraTile::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &TotalSize)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &TileSize)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Offset)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, IsTopDown)
 }

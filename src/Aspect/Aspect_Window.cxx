@@ -92,3 +92,18 @@ void Aspect_Window::SetBackground (const Quantity_Color& theFirstColor,
 {
   MyGradientBackground.SetColors (theFirstColor, theSecondColor, theFillMethod);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Aspect_Window::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &MyBackground)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &MyGradientBackground)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, MyBackgroundFillMethod)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, MyIsVirtual)
+}

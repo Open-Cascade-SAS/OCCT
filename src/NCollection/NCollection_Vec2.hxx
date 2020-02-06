@@ -17,6 +17,8 @@
 
 #include <cmath> // std::sqrt()
 
+#include <Standard_Dump.hxx>
+
 //! Auxiliary macros to define couple of similar access components as vector methods.
 //! @return 2 components by their names in specified order
 #define NCOLLECTION_VEC_COMPONENTS_2D(theX, theY) \
@@ -287,6 +289,13 @@ public:
   static NCollection_Vec2 DY()
   {
     return NCollection_Vec2 (Element_t(0), Element_t(1));
+  }
+
+  //! Dumps the content of me into the stream
+  void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+  {
+    (void)theDepth;
+    OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "Vec2", 2, v[0], v[1])
   }
 
 private:

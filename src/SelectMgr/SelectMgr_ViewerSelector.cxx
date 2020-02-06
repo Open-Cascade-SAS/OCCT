@@ -1095,7 +1095,7 @@ void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, Standard_
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToUpdateTolerance)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mystored.Extent())
 
-  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &mySelectingVolumeMgr)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &mySelectingVolumeMgr)
   OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, &mySelectableObjects)
 
   Standard_Integer aNbOfSelectableObjects = 0;

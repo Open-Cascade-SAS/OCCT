@@ -1742,4 +1742,23 @@ void Graphic3d_Camera::DumpJson (Standard_OStream& theOStream, Standard_Integer 
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myEye)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDistance)
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myAxialScale)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myProjType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFOVy)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZNear)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZFar)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAspect)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myScale)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZFocus)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZFocusType)
+  
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIOD)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIODType)
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myTile)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myMatricesD)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myMatricesF)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myWorldViewProjState)
 }

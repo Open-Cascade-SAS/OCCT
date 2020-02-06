@@ -18,6 +18,8 @@
 #include <Aspect_GenId.hxx>
 #include <Aspect_IdentDefinitionError.hxx>
 
+#include <Standard_Dump.hxx>
+
 // =======================================================================
 // function : Aspect_GenId
 // purpose  :
@@ -113,4 +115,22 @@ Standard_Boolean Aspect_GenId::Next (Standard_Integer& theId)
   --myFreeCount;
   theId = myLowerBound + myLength - myFreeCount - 1;
   return Standard_True;
+}
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Aspect_GenId::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myFreeCount)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLength)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myLowerBound)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myUpperBound)
+
+  for (TColStd_ListOfInteger::Iterator anIter (myFreeIds); anIter.More(); anIter.Next())
+  {
+    Standard_Integer aFreeId = anIter.Value();
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aFreeId)
+  }
 }

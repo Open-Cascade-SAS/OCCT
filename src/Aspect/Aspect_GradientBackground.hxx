@@ -51,6 +51,9 @@ public:
   
   //! Returns the current gradient background fill mode.
   Standard_EXPORT Aspect_GradientFillMethod BgGradientFillMethod() const;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 
 

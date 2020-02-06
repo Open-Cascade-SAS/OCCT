@@ -446,3 +446,37 @@ void Graphic3d_StructureManager::ChangeZLayer (const Handle(Graphic3d_Structure)
     aViewIt.Value()->ChangeZLayer (theStructure, theLayerId);
   }
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void Graphic3d_StructureManager::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  for (Graphic3d_MapOfStructure::Iterator anIter (myDisplayedStructure); anIter.More(); anIter.Next())
+  {
+    const Handle(Graphic3d_Structure)& aDisplayedStructure = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aDisplayedStructure.get())
+  }
+  for (Graphic3d_MapOfStructure::Iterator anIter (myHighlightedStructure); anIter.More(); anIter.Next())
+  {
+    const Handle(Graphic3d_Structure)& aHighlightedStructure = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aHighlightedStructure.get())
+  }
+  for (Graphic3d_MapOfObject::Iterator anIter (myRegisteredObjects); anIter.More(); anIter.Next())
+  {
+    const Handle(Graphic3d_ViewAffinity)& aRegisteredObject = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aRegisteredObject.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myGraphicDriver.get())
+  for (Graphic3d_IndexedMapOfView::Iterator anIter (myDefinedViews); anIter.More(); anIter.Next())
+  {
+    Graphic3d_CView* aDefinedView = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aDefinedView)
+  }
+  
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeviceLostFlag)
+}

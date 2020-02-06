@@ -3157,3 +3157,55 @@ Graphic3d_RenderingParams& V3d_View::ChangeRenderingParams()
 {
   return myView->ChangeRenderingParams();
 }
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void V3d_View::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOldMouseX)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOldMouseY)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCamStartOpUp)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCamStartOpDir)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCamStartOpEye)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCamStartOpCenter)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDefaultCamera.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myView.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myImmediateUpdate)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsInvalidatedImmediate)
+  
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, MyViewer)
+  for (V3d_ListOfLight::Iterator anIterator (myActiveLights); anIterator.More(); anIterator.Next())
+  {
+    class Handle(Graphic3d_CLight)& anActiveLight = anIterator.Value();
+    OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, anActiveLight)
+  }
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myDefaultViewAxis)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myDefaultViewPoint)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, MyWindow.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, sx)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, sy)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, rx)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, ry)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myRotateGravity)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myComputedMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, SwitchSetFront)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myZRotation)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, MyZoomAtPointX)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, MyZoomAtPointY)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTrihedron.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, MyGrid.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &MyPlane)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, MyGridEchoStructure.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, MyGridEchoGroup.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myXscreenAxis)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myYscreenAxis)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myZscreenAxis)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myViewAxis)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myGravityReferencePoint)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAutoZFitIsOn)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAutoZFitScaleFactor)
+}

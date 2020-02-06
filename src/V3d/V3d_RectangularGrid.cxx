@@ -366,3 +366,30 @@ void V3d_RectangularGrid::SetGraphicValues (const Standard_Real theXSize, const 
   }
   if( !myCurAreDefined ) UpdateDisplay();
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void V3d_RectangularGrid::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_RectangularGrid)
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myStructure.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myGroup.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myCurViewPlane)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myViewer)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurAreDefined)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myToComputePrs)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurDrawMode)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurXo)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurYo)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurAngle)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurXStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myCurYStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myXSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myYSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOffSet)
+}

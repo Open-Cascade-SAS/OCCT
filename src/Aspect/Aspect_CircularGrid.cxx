@@ -140,3 +140,20 @@ void Aspect_CircularGrid::Init () {
   myAlpha = M_PI / Standard_Real(myDivisionNumber);
   myA1 = Cos(myAlpha); myB1=Sin(myAlpha);
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Aspect_CircularGrid::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Aspect_Grid)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRadiusStep)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDivisionNumber)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myAlpha)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myA1)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myB1)
+}

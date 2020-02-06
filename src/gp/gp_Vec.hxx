@@ -354,6 +354,9 @@ public:
   
   //! Transforms a vector with the transformation T.
   Standard_NODISCARD gp_Vec Transformed (const gp_Trsf& T) const;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 
 

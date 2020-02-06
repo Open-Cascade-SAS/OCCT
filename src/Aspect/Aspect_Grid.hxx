@@ -96,6 +96,9 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsDisplayed() const = 0;
   
   Standard_EXPORT virtual void Init() = 0;
+  
+  //! Dumps the content of me into the stream
+  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 protected:
 

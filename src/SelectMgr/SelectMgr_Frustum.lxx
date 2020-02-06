@@ -461,3 +461,49 @@ Standard_Boolean SelectMgr_Frustum<N>::hasOverlap (const gp_Pnt& thePnt1,
 
   return Standard_True;
 }
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+template <int N>
+void SelectMgr_Frustum<N>::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  const Standard_Integer anIncFactor = (myIsOrthographic && N == 4) ? 2 : 1;
+  for (Standard_Integer aPlaneIdx = 0; aPlaneIdx < N + 1; aPlaneIdx += anIncFactor)
+  {
+    const gp_Vec& aPlane = myPlanes[aPlaneIdx];
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aPlane)
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMaxVertsProjections[aPlaneIdx])
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinVertsProjections[aPlaneIdx])
+  }
+
+  for (Standard_Integer aVertIdx = 0; aVertIdx < N * 2; ++aVertIdx)
+  {
+    const gp_Pnt& aVertex = myVertices[aVertIdx];
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aVertex)
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPixelTolerance)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOrthographic)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myBuilder)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myCamera)
+
+  for (Standard_Integer anIndex = 0; anIndex < 3; anIndex++)
+  {
+    Standard_Real aMaxOrthoVertsProjections = myMaxOrthoVertsProjections[anIndex];
+    Standard_Real aMinOrthoVertsProjections = myMinOrthoVertsProjections[anIndex];
+
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aMaxOrthoVertsProjections)
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, aMinOrthoVertsProjections)
+  }
+
+  for (Standard_Integer anIndex = 0; anIndex < 6; anIndex++)
+  {
+    const gp_Vec& anEdgeDir = myEdgeDirs[anIndex];
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &anEdgeDir)
+  }
+}

@@ -18,6 +18,7 @@
 #include <AIS.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <SelectMgr_EntityOwner.hxx>
+#include <inspector/VInspector_ItemContextProperties.hxx>
 #include <inspector/VInspector_ItemPresentableObject.hxx>
 #include <inspector/VInspector_Tools.hxx>
 
@@ -34,6 +35,8 @@ int VInspector_ItemContext::initRowCount() const
   if (Column() != 0)
     return 0;
 
+  int aNbProperties = 1; // item to visualize Viewer information of context
+
   Handle(AIS_InteractiveContext) aContext = Handle(AIS_InteractiveContext)::DownCast (Object());
   if (aContext.IsNull())
     return 0;
@@ -49,7 +52,7 @@ int VInspector_ItemContext::initRowCount() const
     aNbPresentations++;
   }
 
-  return aNbPresentations;
+  return aNbProperties + aNbPresentations;
 }
 
 // =======================================================================
@@ -124,7 +127,10 @@ void VInspector_ItemContext::initItem() const
 // =======================================================================
 TreeModel_ItemBasePtr VInspector_ItemContext::createChild (int theRow, int theColumn)
 {
-  return VInspector_ItemPresentableObject::CreateItem (currentItem(), theRow, theColumn);
+  if (theRow == 0)
+    return VInspector_ItemContextProperties::CreateItem (currentItem(), theRow, theColumn);
+  else
+    return VInspector_ItemPresentableObject::CreateItem (currentItem(), theRow, theColumn);
 }
 
 // =======================================================================

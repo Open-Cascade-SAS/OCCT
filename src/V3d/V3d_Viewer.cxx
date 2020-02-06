@@ -581,6 +581,60 @@ void V3d_Viewer::DisplayPrivilegedPlane (const Standard_Boolean theOnOff, const 
 void V3d_Viewer::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myDriver.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myStructureManager.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myZLayerGenId)
+  
+  for (V3d_ListOfView::Iterator anIter (myDefinedViews); anIter.More(); anIter.Next())
+  {
+    const Handle(V3d_View)& aDefinedView = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aDefinedView.get())
+  }
+
+  for (V3d_ListOfView::Iterator anIter (myActiveViews); anIter.More(); anIter.Next())
+  {
+    const Handle(V3d_View)& anActiveView = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anActiveView.get())
+  }
+    
+  for (V3d_ListOfLight::Iterator anIter (myDefinedLights); anIter.More(); anIter.Next())
+  {
+    const Handle(Graphic3d_CLight)& aDefinedLight = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aDefinedLight.get())
+  }
+
+  for (V3d_ListOfLight::Iterator anIter (myActiveLights); anIter.More(); anIter.Next())
+  {
+    const Handle(Graphic3d_CLight)& anActiveLight = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anActiveLight.get())
+  }
+
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myBackground)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myGradientBackground)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myViewSize)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myViewProj)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myVisualization)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myShadingModel)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDefaultTypeOfView)
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myDefaultRenderingParams)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myComputedMode)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDefaultComputedMode)
 
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPrivilegedPlane)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myPlaneStructure.get())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDisplayPlane)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDisplayPlaneLength)
+  
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myRGrid.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myCGrid.get())
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myGridType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myGridEcho)
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myGridEchoStructure.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myGridEchoGroup.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myGridEchoAspect.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myGridEchoLastVert)
 }

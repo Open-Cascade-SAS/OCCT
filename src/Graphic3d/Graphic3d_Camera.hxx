@@ -78,6 +78,23 @@ private:
 
     //! Return true if Projection was not invalidated.
     Standard_Boolean IsProjectionValid()  const { return myIsProjectionValid;  }
+    
+    //! Dumps the content of me into the stream
+    void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const
+    {
+      if (IsOrientationValid())
+      {
+        OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &Orientation)
+      }
+      if (IsProjectionValid())
+      {
+        OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &MProjection)
+        OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &LProjection)
+        OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &RProjection)
+      }
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsOrientationValid)
+      OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsProjectionValid)
+    }
 
   public:
 

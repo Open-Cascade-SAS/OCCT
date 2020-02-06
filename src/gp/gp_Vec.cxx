@@ -30,6 +30,7 @@
 #include <gp_XYZ.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DomainError.hxx>
+#include <Standard_Dump.hxx>
 #include <Standard_OutOfRange.hxx>
 
 Standard_Boolean gp_Vec::IsEqual
@@ -125,4 +126,13 @@ gp_Vec gp_Vec::Mirrored (const gp_Ax2& A2) const
   gp_Vec Vres = *this;
   Vres.Mirror (A2);
   return Vres;                     
+}
+
+// =======================================================================
+// function : DumpJson
+// purpose  :
+// =======================================================================
+void gp_Vec::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_Vec", 3, coord.X(), coord.Y(), coord.Z())
 }

@@ -246,3 +246,49 @@ void Graphic3d_CLight::SetRange (Standard_ShortReal theValue)
   updateRevisionIf (Abs (Range() - theValue) > ShortRealEpsilon());
   myDirection.w() = theValue;
 };
+
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void Graphic3d_CLight::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, this)
+  
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myId)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)
+  
+  if (myType == Graphic3d_TOLS_SPOT || myType == Graphic3d_TOLS_POSITIONAL)
+  {
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myPosition)
+  }
+  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &myColor)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIntensity)
+
+  if (myType == Graphic3d_TOLS_SPOT || myType == Graphic3d_TOLS_DIRECTIONAL)
+  {
+    gp_Dir aDirection = Direction();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, &aDirection)
+  }
+  if (myType == Graphic3d_TOLS_POSITIONAL || myType == Graphic3d_TOLS_SPOT)
+  {
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, ConstAttenuation())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, LinearAttenuation())
+  }
+  if (myType == Graphic3d_TOLS_SPOT)
+  {
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Angle())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Concentration())
+  }
+  if (myType == Graphic3d_TOLS_POSITIONAL || myType == Graphic3d_TOLS_SPOT)
+  {
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, Range())
+  }
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySmoothness)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myType)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myRevision)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsHeadlight)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsEnabled)
+}

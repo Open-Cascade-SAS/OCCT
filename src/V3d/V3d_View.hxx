@@ -955,6 +955,9 @@ public:
   //! Returns the Objects number and the gravity center of ALL viewable points in the view
   Standard_EXPORT gp_Pnt GravityPoint() const;
 
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
+
   DEFINE_STANDARD_RTTIEXT(V3d_View,Standard_Transient)
 
 public: //! @name deprecated methods
@@ -1026,7 +1029,6 @@ protected:
   gp_Dir myCamStartOpUp;
   gp_Dir myCamStartOpDir;
   gp_Pnt myCamStartOpEye;
-  Standard_Real myCamStartOpBnd[6];
   gp_Pnt myCamStartOpCenter;
   Handle(Graphic3d_Camera) myDefaultCamera;
   Handle(Graphic3d_CView) myView;

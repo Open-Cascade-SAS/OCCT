@@ -421,4 +421,20 @@ Standard_Boolean SelectMgr_TriangularFrustumSet::segmentTriangleIntersection (co
   return Standard_True;
 }
 
+//=======================================================================
+//function : DumpJson
+//purpose  : 
+//=======================================================================
+void SelectMgr_TriangularFrustumSet::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
+{
+  OCCT_DUMP_CLASS_BEGIN (theOStream, SelectMgr_TriangularFrustumSet)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, SelectMgr_BaseFrustum)
+
+  for (SelectMgr_TriangFrustumsIter anIter (myFrustums); anIter.More(); anIter.Next())
+  {
+    const Handle(SelectMgr_TriangularFrustum)& aFrustum = anIter.Value();
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aFrustum.get())
+  }
+}
+
 #undef MEMORY_BLOCK_SIZE
