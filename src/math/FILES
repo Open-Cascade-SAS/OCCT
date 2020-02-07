@@ -64,7 +64,6 @@ math_GaussLeastSquare.lxx
 math_GaussMultipleIntegration.cxx
 math_GaussMultipleIntegration.hxx
 math_GaussMultipleIntegration.lxx
-math_GaussPoints.hxx
 math_GaussSetIntegration.cxx
 math_GaussSetIntegration.hxx
 math_GaussSetIntegration.lxx
