@@ -68,7 +68,7 @@ if { [info exists ::env(SHORTCUT_HEADERS)] } {
 }
 
 # fetch environment variables (e.g. set by custom.sh or custom.bat) and set them as tcl variables with the same name
-set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_E57 HAVE_RAPIDJSON HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo}
+set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_E57 HAVE_RAPIDJSON HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo BUILD_Inspector}
 foreach anEnvIter $THE_ENV_VARIABLES {
   set ${anEnvIter} "false"
   if { [info exists ::env(${anEnvIter})] } {
@@ -1022,8 +1022,8 @@ proc wokdep:SearchVTK {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   return "$isFound"
 }
 
-# Search Qt4 libraries placement
-proc wokdep:SearchQt4 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
+# Search Qt libraries placement
+proc wokdep:SearchQt {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
   upvar $theErrInc   anErrInc
   upvar $theErrLib32 anErrLib32
   upvar $theErrLib64 anErrLib64
@@ -1031,53 +1031,46 @@ proc wokdep:SearchQt4 {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64
   upvar $theErrBin64 anErrBin64
 
   set isFound "true"
-  set aQMsgBoxHPath [wokdep:SearchHeader "QtGui/qmessagebox.h"]
+  set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{qt}*] "$::VCVER" "$::ARCH" ] 
+  set aQMsgBoxHPath [wokdep:SearchHeader "QtGui/qguiapplication.h"]
   if { "$aQMsgBoxHPath" == "" } {
-    set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{qt4}*] "$::VCVER" "$::ARCH" ]
-    if { "$aPath" != "" && [file exists "$aPath/include/QtGui/qmessagebox.h"] } {
+    if { "$aPath" != "" && [file exists "$aPath/include/QtGui/qguiapplication.h"] } {
       lappend ::CSF_OPT_INC "$aPath/include"
       lappend ::CSF_OPT_INC "$aPath/include/Qt"
       lappend ::CSF_OPT_INC "$aPath/include/QtGui"
       lappend ::CSF_OPT_INC "$aPath/include/QtCore"
+      lappend ::CSF_OPT_INC "$aPath/include/QtWidgets"
+      lappend ::CSF_OPT_INC "$aPath/include/QtXml"
     } else {
-      if { [file exists "/usr/include/qt4/QtGui/qmessagebox.h"] } {
-        lappend ::CSF_OPT_INC "/usr/include/qt4"
-        lappend ::CSF_OPT_INC "/usr/include/qt4/Qt"
-        lappend ::CSF_OPT_INC "/usr/include/qt4/QtGui"
-        lappend ::CSF_OPT_INC "/usr/include/qt4/QtCore"
-      } else {
-        lappend anErrInc "Error: 'QtGui/qmessagebox.h' not found (Qt4)"
+      lappend anErrInc "Error: 'QtGui/qguiapplication.h' not found"
         set isFound "false"
-      }
     }
   }
 
   set aQtGuiLibName "QtGui"
   if { "$::tcl_platform(platform)" == "windows" } {
-    set aQtGuiLibName "QtGui4"
+    set aQtGuiLibName "Qt5Gui"
   }
 
   foreach anArchIter {64 32} {
     set aQMsgBoxLibPath [wokdep:SearchLib "${aQtGuiLibName}" "$anArchIter"]
     if { "$aQMsgBoxLibPath" == "" } {
-      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{qt4}*] "$::VCVER" "$anArchIter" ]
       set aQMsgBoxLibPath [wokdep:SearchLib "${aQtGuiLibName}" "$anArchIter" "$aPath/lib"]
       if { "$aQMsgBoxLibPath" != "" } {
         lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
       } else {
-        lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}${aQtGuiLibName}.${::SYS_LIB_SUFFIX}' not found (Qt4)"
+        lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}${aQtGuiLibName}.${::SYS_LIB_SUFFIX}' not found (Qt)"
         if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
       }
     }
     if { "$::tcl_platform(platform)" == "windows" } {
-      set aQMsgBoxDllPath [wokdep:SearchBin "QtGui4.dll" "$anArchIter"]
+      set aQMsgBoxDllPath [wokdep:SearchBin "${aQtGuiLibName}.dll" "$anArchIter"]
       if { "$aQMsgBoxDllPath" == "" } {
-        set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{qt4}*] "$::VCVER" "$anArchIter" ]
-        set aQMsgBoxDllPath [wokdep:SearchBin "QtGui4.dll" "$anArchIter" "$aPath/bin"]
+        set aQMsgBoxDllPath [wokdep:SearchBin "${aQtGuiLibName}.dll" "$anArchIter" "$aPath/bin"]
         if { "$aQMsgBoxDllPath" != "" } {
           lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
         } else {
-          lappend anErrBin$anArchIter "Error: 'QtGui4.dll' not found (Qt4)"
+          lappend anErrBin$anArchIter "Error: '${aQtGuiLibName}.dll' not found (Qt)"
           if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
         }
       }

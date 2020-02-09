@@ -223,9 +223,14 @@ proc wokdep:gui:UpdateList {} {
     wokdep:SearchRapidJson anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
 
-  if { "$::CHECK_QT4" == "true" } {
-    wokdep:SearchQt4     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  if {"$::BUILD_Inspector" == "true" } {
+    set ::CHECK_QT "true"
   }
+
+  if { "$::CHECK_QT" == "true" } {
+    wokdep:SearchQt     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  }
+
   if { "$::CHECK_JDK" == "true" } {
     wokdep:SearchJDK     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -494,10 +499,15 @@ ttk::label    .myFrame.myChecks.myLzmaLbl       -text "Use liblzma"
 checkbutton   .myFrame.myChecks.myE57Check      -offvalue "false" -onvalue "true" -variable HAVE_E57       -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myE57Lbl        -text "Use E57"
 
-checkbutton   .myFrame.myChecks.myQt4Check      -offvalue "false" -onvalue "true" -variable CHECK_QT4      -command wokdep:gui:UpdateList
-ttk::label    .myFrame.myChecks.myQt4Lbl        -text "Search Qt4"
+checkbutton   .myFrame.myChecks.myQtCheck       -offvalue "false" -onvalue "true" -variable CHECK_QT       -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myQtLbl         -text "Search Qt"
 checkbutton   .myFrame.myChecks.myJDKCheck      -offvalue "false" -onvalue "true" -variable CHECK_JDK      -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myJDKLbl        -text "Search JDK"
+
+if { "$::tcl_platform(platform)" == "windows" } {
+  checkbutton   .myFrame.myChecks.myInspectorBuild -offvalue "false" -onvalue "true" -variable BUILD_Inspector      -command wokdep:gui:UpdateList
+  ttk::label    .myFrame.myChecks.myInspectorLbl   -text "Build Inspector"
+}
 
 # Additional headers search paths
 ttk::label    .myFrame.myIncLbl    -text "Additional headers search paths:" -padding {5 5 80 5}
@@ -602,8 +612,8 @@ if { "$::tcl_platform(os)" != "Darwin" } {
 grid .myFrame.myChecks.myZLibCheck     -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myZLibLbl       -row $aCheckRowIter -column 7 -sticky w
 
-grid .myFrame.myChecks.myQt4Check      -row $aCheckRowIter -column 12 -sticky e
-grid .myFrame.myChecks.myQt4Lbl        -row $aCheckRowIter -column 13 -sticky w
+grid .myFrame.myChecks.myQtCheck      -row $aCheckRowIter -column 12 -sticky e
+grid .myFrame.myChecks.myQtLbl        -row $aCheckRowIter -column 13 -sticky w
 
 incr aCheckRowIter
 grid .myFrame.myChecks.myFFmpegCheck   -row $aCheckRowIter -column 0 -sticky e
@@ -627,6 +637,11 @@ grid .myFrame.myChecks.myRapidJsonCheck -row $aCheckRowIter -column 0 -sticky e
 grid .myFrame.myChecks.myRapidJsonLbl   -row $aCheckRowIter -column 1 -sticky w
 grid .myFrame.myChecks.myE57Check      -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myE57Lbl        -row $aCheckRowIter -column 7 -sticky w
+
+if { "$::tcl_platform(platform)" == "windows" } {
+  grid .myFrame.myChecks.myInspectorBuild      -row $aCheckRowIter -column 12 -sticky e
+  grid .myFrame.myChecks.myInspectorLbl        -row $aCheckRowIter -column 13 -sticky w
+}
 
 incr aCheckRowIter
 

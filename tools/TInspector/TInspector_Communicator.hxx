@@ -40,6 +40,9 @@ public:
   //! Destructor
   virtual ~TInspector_Communicator() {}
 
+  //! Returns directory of Qt plugins. Firstly it founds it in QTDIR, else if not defined in PATH
+  Standard_EXPORT static Standard_Boolean PluginsDir (TCollection_AsciiString& thePlugindsDirName);
+
   //! Registers plugin into TInspector window
   //! \param thePluginName a name of the plugin
   void RegisterPlugin (const TCollection_AsciiString& thePluginName) { myWindow->RegisterPlugin (thePluginName); }

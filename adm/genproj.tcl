@@ -68,12 +68,12 @@ proc _get_type { name } {
   return ""
 }
 
-proc _get_used_files { pk {inc true} {src true} } {
+proc _get_used_files { pk theSrcDir {inc true} {src true} } {
   global path
   set type [_get_type $pk]
   set lret {}
-  set pk_path  "$path/src/$pk"
-  set FILES_path "$path/src/$pk/FILES"
+  set pk_path  "$path/$theSrcDir/$pk"
+  set FILES_path "$path/$theSrcDir/$pk/FILES"
   set FILES {}
   if {[file exists $FILES_path]} {
     set fd [open $FILES_path rb]
@@ -100,12 +100,12 @@ proc _get_used_files { pk {inc true} {src true} } {
   return $lret
 }
 
-# return location of the path within src directory
-proc osutils:findSrcSubPath {theSubPath} {
-  if {[file exists "$::path/src/$theSubPath"]} {
-    return "$::path/src/$theSubPath"
+# return location of the path within source directory
+proc osutils:findSrcSubPath {theSrcDir theSubPath} {
+  if {[file exists "$::path/$theSrcDir/$theSubPath"]} {
+    return "$::path/$theSrcDir/$theSubPath"
   }
-  return "$::THE_CASROOT/src/$theSubPath"
+  return "$::THE_CASROOT/$theSrcDir/$theSubPath"
 }
 
 # Auxiliary tool comparing content of two files line-by-line.
@@ -156,11 +156,11 @@ proc osutils:writeTextFile { theFile theContent {theEol lf} } {
 }
 
 # Function re-generating header files for specified text resource
-proc genResources { theResource } {
+proc genResources { theSrcDir theResource } {
   global path
 
   set aResFileList {}
-  set aResourceAbsPath [file normalize "${path}/src/${theResource}"]
+  set aResourceAbsPath [file normalize "${path}/$theSrcDir/${theResource}"]
   set aResourceDirectory ""
   set isResDirectory false
 
@@ -193,13 +193,13 @@ proc genResources { theResource } {
 
     # generate
     set aContent {}
-    lappend aContent "// This file has been automatically generated from resource file src/${aResourceDirectory}/${aResFileIter}"
+    lappend aContent "// This file has been automatically generated from resource file $theSrcDir/${aResourceDirectory}/${aResFileIter}"
 	lappend aContent ""
 
     # generate necessary structures
     set aLineList {}
-    if {[file exists "${path}/src/${aResourceDirectory}/${aResFileIter}"]} {
-      set anInputFile [open "${path}/src/${aResourceDirectory}/${aResFileIter}" rb]
+    if {[file exists "${path}/$theSrcDir/${aResourceDirectory}/${aResFileIter}"]} {
+      set anInputFile [open "${path}/$theSrcDir/${aResourceDirectory}/${aResFileIter}" rb]
       fconfigure $anInputFile -translation crlf
       set aLineList [split [read $anInputFile] "\n"]
       close $anInputFile
@@ -226,9 +226,9 @@ proc genResources { theResource } {
     }
 
     # Save generated content to header file
-    set aHeaderFilePath "${path}/src/${aResourceDirectory}/${aHeaderFileName}"
+    set aHeaderFilePath "${path}/$theSrcDir/${aResourceDirectory}/${aHeaderFileName}"
     if { [osutils:writeTextFile $aHeaderFilePath $aContent] == true } {
-      puts "Generating header file from resource file: ${path}/src/${aResourceDirectory}/${aResFileIter}"
+      puts "Generating header file from resource file: ${path}/$theSrcDir/${aResourceDirectory}/${aResFileIter}"
     } else {
 	  #puts "Header file from resource ${path}/src/${aResourceDirectory}/${aResFileIter} is up-to-date"
     }
@@ -236,7 +236,7 @@ proc genResources { theResource } {
 }
 
 # Function re-generating header files for all text resources
-proc genAllResources {} {
+proc genAllResources { theSrcDir } {
   global path
   set aCasRoot [file normalize $path]
   if {![file exists "$aCasRoot/adm/RESOURCES"]} {
@@ -250,7 +250,7 @@ proc genAllResources {} {
   set anAdmResources [lsearch -inline -all -not -exact $anAdmResources ""]
 
   foreach line $anAdmResources {
-    genResources "${line}"
+    genResources $theSrcDir "${line}"
   }
 }
 
@@ -351,7 +351,7 @@ proc genproj {theFormat args} {
   OS:MKPRC "$anAdmPath" "$theFormat" "$aLibType" "$aPlatform" "$aCmpl" "$aSolution"
 
   genprojbat "$theFormat" "$aPlatform" "$aSolution"
-  genAllResources
+  genAllResources "src"
 }
 
 # copy file providing warning if the target file exists and has 
@@ -397,6 +397,10 @@ proc genprojbat {theFormat thePlatform theSolution} {
     }
 
     copy_with_warning "$::THE_CASROOT/adm/templates/draw.${aTargetPlatformExt}" "$::path/draw.${aTargetPlatformExt}"
+
+    if { "$::BUILD_Inspector" == "true" } {
+      copy_with_warning "$::THE_CASROOT/adm/templates/inspector.${aTargetPlatformExt}" "$::path/inspector.${aTargetPlatformExt}"
+    }
   }
 
   set aSolShList ""
@@ -486,7 +490,7 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution }
   }
 
   # make list of modules and platforms
-  set aModules [OS:init]
+  set aModules [OS:init Modules]
   if { "$thePlatform" == "ios" } {
     set goaway [list Draw]
     set aModules [osutils:juststation $goaway $aModules]
@@ -508,7 +512,23 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution }
 
   # collect all required header files
   puts "Collecting required header files into $path/inc ..."
-  osutils:collectinc $aModules $path/inc
+  osutils:collectinc $aModules "src" $path/inc
+
+  # make list of Inspector tools
+  set aTools {}
+  if { "$::BUILD_Inspector" == "true" } {
+    set aTools [OS:init Tools]
+
+    # create the out dir if it does not exist
+    if (![file isdirectory $path/inc/inspector]) {
+     puts "$path/inc/inspector folder does not exists and will be created"
+     wokUtils:FILES:mkdir $path/inc/inspector
+    }
+
+    # collect all required header files
+    puts "Collecting required tools header files into $path/inc/inspector ..."
+    osutils:collectinc $aTools "tools" $path/inc/inspector
+  }
 
   if { "$theFormat" == "pro" } {
     return
@@ -531,7 +551,7 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution }
     "vc14"  -
     "vc141" -
     "vc142" -
-    "vclang"   { OS:MKVC  $anOutDir $aModules $theSolution $theFormat $isUWP}
+    "vclang"   { OS:MKVC  $anOutDir $aModules $aTools $theSolution $theFormat $isUWP}
     "cbp"      { OS:MKCBP $anOutDir $aModules $theSolution $thePlatform $theCmpl }
     "xcd"      {
       set ::THE_GUIDS_LIST($::aTKNullKey) "000000000000000000000000"
@@ -550,54 +570,46 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution }
 }
 
 # Function to generate Visual Studio solution and project files
-proc OS:MKVC { theOutDir theModules theAllSolution theVcVer isUWP } {
+proc OS:MKVC { theOutDir theModules theTools theAllSolution theVcVer isUWP } {
 
   puts stderr "Generating VS project files for $theVcVer"
 
   # generate projects for toolkits and separate solution for each module
   foreach aModule $theModules {
-    OS:vcsolution $theVcVer $aModule $aModule $theOutDir ::THE_GUIDS_LIST
-    OS:vcproj     $theVcVer $isUWP   $aModule $theOutDir ::THE_GUIDS_LIST
+    OS:vcsolution $theVcVer $aModule $aModule $theOutDir ::THE_GUIDS_LIST "src" "" ""
+    OS:vcproj     $theVcVer $isUWP   $aModule $theOutDir ::THE_GUIDS_LIST "src"    ""
+  }
+
+  # generate projects for toolkits and separate solution for each tool
+  foreach aTool $theTools {
+    OS:vcsolution $theVcVer $aTool $aTool $theOutDir ::THE_GUIDS_LIST "tools" "" "src"
+    OS:vcproj     $theVcVer $isUWP $aTool $theOutDir ::THE_GUIDS_LIST "tools"    "src"
   }
 
   # generate single solution "OCCT" containing projects from all modules
   if { "$theAllSolution" != "" } {
-    OS:vcsolution $theVcVer $theAllSolution $theModules $theOutDir ::THE_GUIDS_LIST
+    OS:vcsolution $theVcVer $theAllSolution $theModules $theOutDir ::THE_GUIDS_LIST "src" $theTools "tools"
   }
 
   puts "The Visual Studio solution and project files are stored in the $theOutDir directory"
 }
 
-proc OS:init {{os {}}} {
+proc OS:init {theNameOfDefFile {os {}}} {
   set askplat $os
   set aModules {}
   if { "$os" == "" } {
     set os $::tcl_platform(os)
   }
 
-  if [file exists "$::path/src/VAS/Products.tcl"] {
-    source "$::path/src/VAS/Products.tcl"
-    foreach aModuleIter [VAS:Products] {
-      set aFileTcl "$::path/src/VAS/${aModuleIter}.tcl"
-      if [file exists $aFileTcl] {
-        source $aFileTcl
-        lappend aModules $aModuleIter
-      } else {
-        puts stderr "Definition file for module $aModuleIter is not found in unit VAS"
-      }
-    }
-    return $aModules
-  }
-
   # Load list of OCCT modules and their definitions
-  source "$::path/src/OS/Modules.tcl"
+  source "$::path/src/OS/${theNameOfDefFile}.tcl"
   foreach aModuleIter [OS:Modules] {
     set aFileTcl "$::path/src/OS/${aModuleIter}.tcl"
     if [file exists $aFileTcl] {
       source $aFileTcl
       lappend aModules $aModuleIter
     } else {
-      puts stderr "Definition file for module $aModuleIter is not found in unit OS"
+      puts stderr "Definition file for $aModuleIter is not found in unit OS"
     }
   }
 
@@ -716,10 +728,10 @@ proc OS:executable { module } {
 }
 
 # Topological sort of toolkits in tklm
-proc osutils:tk:sort { tklm } {
+proc osutils:tk:sort { tklm theSrcDir theSourceDirOther } {
   set tkby2 {}
   foreach tkloc $tklm {
-    set lprg [wokUtils:LIST:Purge [osutils:tk:close $tkloc]]
+    set lprg [wokUtils:LIST:Purge [osutils:tk:close $tkloc $theSrcDir $theSourceDirOther]]
     foreach tkx  $lprg {
       if { [lsearch $tklm $tkx] != -1 } {
         lappend tkby2 [list $tkx $tkloc]
@@ -740,26 +752,26 @@ proc osutils:tk:sort { tklm } {
 #  close dependencies of ltk. (full wok pathes of toolkits)
 # The CURRENT WOK LOCATION MUST contains ALL TOOLKITS required.
 # (locate not performed.)
-proc osutils:tk:close { ltk } {
+proc osutils:tk:close { ltk theSrcDir theSourceDirOther } {
   set result {}
   set recurse {}
   foreach dir $ltk {
-    set ids [LibToLink $dir]
+    set ids [LibToLink $dir $theSrcDir $theSourceDirOther]
 #    puts "osutils:tk:close($ltk) ids='$ids'"
     set eated [osutils:tk:eatpk $ids]
     set result [concat $result $eated]
-    set ids [LibToLink $dir]
+    set ids [LibToLink $dir $theSrcDir $theSourceDirOther]
     set result [concat $result $ids]
 
     foreach file $eated {
-      set kds [osutils:findSrcSubPath "$file/EXTERNLIB"]
+      set kds [osutils:findSrcSubPath $theSrcDir "$file/EXTERNLIB"]
       if { [osutils:tk:eatpk $kds] !=  {} } {
         lappend recurse $file
       }
     }
   }
   if { $recurse != {} } {
-    set result [concat $result [osutils:tk:close $recurse]]
+    set result [concat $result [osutils:tk:close $recurse $theSrcDir $theSourceDirOther]]
   }
   return $result
 }
@@ -776,16 +788,19 @@ proc osutils:tk:eatpk { EXTERNLIB  } {
 }
 # Define libraries to link using only EXTERNLIB file
 
-proc LibToLink {theTKit} {
+proc LibToLink {theTKit theSrcDir theSourceDirOther} {
   regexp {^.*:([^:]+)$} $theTKit dummy theTKit
   set type [_get_type $theTKit]
   if {$type != "t" && $type != "x"} {
     return
   }
   set aToolkits {}
-  set anExtLibList [osutils:tk:eatpk [osutils:findSrcSubPath "$theTKit/EXTERNLIB"]]
+  set anExtLibList [osutils:tk:eatpk [osutils:findSrcSubPath $theSrcDir "$theTKit/EXTERNLIB"]]
   foreach anExtLib $anExtLibList {
-    set aFullPath [LocateRecur $anExtLib]
+    set aFullPath [LocateRecur $anExtLib $theSrcDir]
+    if { "$aFullPath" == "" && "$theSourceDirOther" != "" } {
+      set aFullPath [LocateRecur $anExtLib $theSourceDirOther]
+    }
     if { "$aFullPath" != "" && [_get_type $anExtLib] == "t" } {
       lappend aToolkits $anExtLib
     }
@@ -794,8 +809,8 @@ proc LibToLink {theTKit} {
 }
 # Search unit recursively
 
-proc LocateRecur {theName} {
-  set theNamePath [osutils:findSrcSubPath "$theName"]
+proc LocateRecur {theName theSrcDir} {
+  set theNamePath [osutils:findSrcSubPath $theSrcDir "$theName"]
   if {[file isdirectory $theNamePath]} {
     return $theNamePath
   }
@@ -822,7 +837,7 @@ proc OS:genGUID { {theFormat "vc"} } {
 }
 
 # collect all include file that required for theModules in theOutDir
-proc osutils:collectinc {theModules theIncPath} {
+proc osutils:collectinc {theModules theSrcDir theIncPath} {
   global path
   set aCasRoot [file normalize $path]
   set anIncPath [file normalize $theIncPath]
@@ -837,14 +852,14 @@ proc osutils:collectinc {theModules theIncPath} {
     foreach aToolKit [${aModule}:toolkits] {
       lappend anUsedToolKits $aToolKit
 
-      foreach aDependency [LibToLink $aToolKit] {
+      foreach aDependency [LibToLink $aToolKit $theSrcDir ""] {
         lappend anUsedToolKits $aDependency
       }
     }
     foreach anExecutable [OS:executable ${aModule}] {
       lappend anUsedToolKits $anExecutable
 
-      foreach aDependency [LibToLink $anExecutable] {
+      foreach aDependency [LibToLink $anExecutable $theSrcDir ""] {
         lappend anUsedToolKits $aDependency
       }
     }
@@ -853,7 +868,7 @@ proc osutils:collectinc {theModules theIncPath} {
 
   set anUnits {}
   foreach anUsedToolKit $anUsedToolKits {
-    set anUnits [concat $anUnits [osutils:tk:units $anUsedToolKit]]
+    set anUnits [concat $anUnits [osutils:tk:units $anUsedToolKit $theSrcDir] ]
   }
   set anUnits [lsort -unique $anUnits]
 
@@ -878,14 +893,14 @@ proc osutils:collectinc {theModules theIncPath} {
     }
     set aHeaderTmpl [wokUtils:FILES:FileToString $::THE_CASROOT/adm/templates/header.in]
 
-    # relative anIncPath in connection with aCasRoot/src
-    set aFromBuildIncToSrcPath [relativePath "$anIncPath" "$aCasRoot/src"]
+    # relative anIncPath in connection with aCasRoot/$theSrcDir
+    set aFromBuildIncToSrcPath [relativePath "$anIncPath" "$aCasRoot/$theSrcDir"]
 
     # create and copy short-cut header files
     foreach anUnit $anUnits {
-      osutils:checksrcfiles ${anUnit}
+      osutils:checksrcfiles ${anUnit} $theSrcDir
 
-      set aHFiles [_get_used_files ${anUnit} true false]
+      set aHFiles [_get_used_files ${anUnit} $theSrcDir true false]
       foreach aHeaderFile ${aHFiles} {
         set aHeaderFileName [lindex ${aHeaderFile} 1]
         lappend allHeaderFiles "${aHeaderFileName}"
@@ -920,15 +935,15 @@ proc osutils:collectinc {theModules theIncPath} {
   } else {
     set nbcopied 0
     foreach anUnit $anUnits {
-      osutils:checksrcfiles ${anUnit}
+      osutils:checksrcfiles ${anUnit} $theSrcDir
 
-      set aHFiles [_get_used_files ${anUnit} true false]
+      set aHFiles [_get_used_files ${anUnit} $theSrcDir true false]
       foreach aHeaderFile ${aHFiles} {
         set aHeaderFileName [lindex ${aHeaderFile} 1]
         lappend allHeaderFiles "${aHeaderFileName}"
 
         # copy file only if target does not exist or is older than original
-        set torig [file mtime $aCasRoot/src/$anUnit/$aHeaderFileName]
+        set torig [file mtime $aCasRoot/$theSrcDir/$anUnit/$aHeaderFileName]
         set tcopy 0
         if { [file isfile $anIncPath/$aHeaderFileName] } {
           set tcopy [file mtime $anIncPath/$aHeaderFileName]
@@ -939,12 +954,12 @@ proc osutils:collectinc {theModules theIncPath} {
             if { $tcopy != 0 } {
               file delete -force "$theIncPath/$aHeaderFileName"
             }
-            file link -hard  $anIncPath/$aHeaderFileName $aCasRoot/src/$anUnit/$aHeaderFileName
+            file link -hard  $anIncPath/$aHeaderFileName $aCasRoot/$theSrcDir/$anUnit/$aHeaderFileName
           } else {
-            file copy -force $aCasRoot/src/$anUnit/$aHeaderFileName $anIncPath/$aHeaderFileName
+            file copy -force $aCasRoot/$theSrcDir/$anUnit/$aHeaderFileName $anIncPath/$aHeaderFileName
           }
         } elseif { $tcopy != $torig } {
-          puts "Warning: file $anIncPath/$aHeaderFileName is newer than $aCasRoot/src/$anUnit/$aHeaderFileName, not changed!"
+          puts "Warning: file $anIncPath/$aHeaderFileName is newer than $aCasRoot/$theSrcDir/$anUnit/$aHeaderFileName, not changed!"
         }
       }
     }
@@ -1073,44 +1088,16 @@ proc osutils:vcsolution:config:end { vcversion } {
 # generate Visual Studio solution file
 # if module is empty, generates one solution for all known modules
 
-proc OS:vcsolution { theVcVer theSolName theModules theOutDir theGuidsMap } {
+proc OS:vcsolution { theVcVer theSolName theModules theOutDir theGuidsMap theSrcDir theModulesOther theSourceDirOther } {
   global path
   upvar $theGuidsMap aGuidsMap
 
   # collect list of projects to be created
   set aProjects {}
   set aDependencies {}
-  foreach aModule $theModules {
-    # toolkits
-    foreach aToolKit [osutils:tk:sort [${aModule}:toolkits]] {
-      lappend aProjects $aToolKit
-      lappend aProjectsInModule($aModule) $aToolKit
-      lappend aDependencies [LibToLink $aToolKit]
-    }
-    # executables, assume one project per cxx file...
-    foreach aUnit [OS:executable ${aModule}] {
-      set aUnitLoc $aUnit
-      set src_files [_get_used_files $aUnit false]
-      set aSrcFiles {}
-      foreach s $src_files {
-        regexp {source ([^\s]+)} $s dummy name
-        lappend aSrcFiles $name
-      }
-      foreach aSrcFile $aSrcFiles {
-        set aFileExtension [file extension $aSrcFile]
-        if { $aFileExtension == ".cxx" } {
-          set aPrjName [file rootname $aSrcFile]
-          lappend aProjects $aPrjName
-          lappend aProjectsInModule($aModule) $aPrjName
-          if {[file isdirectory $path/src/$aUnitLoc]} {
-            lappend aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile]]
-          } else {
-            lappend aDependencies {}
-          }
-        }
-      }
-    }
-  }
+
+  osutils:convertModules $theModules $theSrcDir $theSourceDirOther aProjects aProjectsInModule aDependencies
+  osutils:convertModules $theModulesOther $theSourceDirOther $theSrcDir aProjects aProjectsInModule aDependencies
 
 # generate GUIDs for projects (unless already known)
   foreach aProject $aProjects {
@@ -1135,6 +1122,15 @@ proc OS:vcsolution { theVcVer theSolName theModules theOutDir theGuidsMap } {
       set aGuid $aGuidsMap(_$aModule)
       append aFileBuff "Project(\"${VC_GROUP_GUID}\") = \"$aModule\", \"$aModule\", \"$aGuid\"\nEndProject\n"
     }
+  }
+
+  if { "$theVcVer" != "vc7" && [llength "$theModulesOther"] > 1 } {
+    set aModule "Tools"
+    if { ! [info exists aGuidsMap(_$aModule)] } {
+      set aGuidsMap(_$aModule) [OS:genGUID]
+    }
+    set aGuid $aGuidsMap(_$aModule)
+    append aFileBuff "Project(\"${VC_GROUP_GUID}\") = \"$aModule\", \"$aModule\", \"$aGuid\"\nEndProject\n"
   }
 
   # extension of project files
@@ -1181,6 +1177,13 @@ proc OS:vcsolution { theVcVer theSolName theModules theOutDir theGuidsMap } {
         append aFileBuff "		$aGuidsMap($aProject) = $aGuidsMap(_$aModule)\n"
       }
     }
+    set aToolsName "Tools"
+    foreach aModule $theModulesOther {
+      if { ! [info exists aProjectsInModule($aModule)] } { continue }
+      foreach aProject $aProjectsInModule($aModule) {
+        append aFileBuff "		$aGuidsMap($aProject) = $aGuidsMap(_$aToolsName)\n"
+      }
+    }
     append aFileBuff "	EndGlobalSection\n"
   }
 
@@ -1194,19 +1197,65 @@ proc OS:vcsolution { theVcVer theSolName theModules theOutDir theGuidsMap } {
   close $aFile
   return [file join $theOutDir ${theSolName}.sln]
 }
+
+# Generate auxiliary containers with information about modules.
+# @param theModules List of modules       
+# @param theSrcDir Directory of module toolkits
+# @param theSourceDirOther Directory with other additional sources to find out toolkits in dependencies
+# @param theProjects list of all found projects/toolkits
+# @param theProjectsInModule map of module into toolkits/projects
+# @param theDependencies list of the project dependencies. To find the project dependencies, get it by the index in project container
+proc osutils:convertModules { theModules theSrcDir theSourceDirOther theProjects theProjectsInModule theDependencies } {
+  global path
+  upvar $theProjectsInModule aProjectsInModule
+  upvar $theProjects aProjects
+  upvar $theDependencies aDependencies
+
+  foreach aModule $theModules {
+    # toolkits
+    foreach aToolKit [osutils:tk:sort [${aModule}:toolkits] $theSrcDir $theSourceDirOther] {
+      lappend aProjects $aToolKit
+      lappend aProjectsInModule($aModule) $aToolKit
+      lappend aDependencies [LibToLink $aToolKit $theSrcDir $theSourceDirOther]
+    }
+    # executables, assume one project per cxx file...
+    foreach aUnit [OS:executable ${aModule}] {
+      set aUnitLoc $aUnit
+      set src_files [_get_used_files $aUnit $theSrcDir false]
+      set aSrcFiles {}
+      foreach s $src_files {
+        regexp {source ([^\s]+)} $s dummy name
+        lappend aSrcFiles $name
+      }
+      foreach aSrcFile $aSrcFiles {
+        set aFileExtension [file extension $aSrcFile]
+        if { $aFileExtension == ".cxx" } {
+          set aPrjName [file rootname $aSrcFile]
+          lappend aProjects $aPrjName
+          lappend aProjectsInModule($aModule) $aPrjName
+          if {[file isdirectory $path/$theSrcDir/$aUnitLoc]} {
+            lappend aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile] $theSrcDir $theSourceDirOther]
+          } else {
+            lappend aDependencies {}
+          }
+        }
+      }
+    }
+  }
+}
 # Generate Visual Studio projects for specified version
 
-proc OS:vcproj { theVcVer isUWP theModules theOutDir theGuidsMap } {
+proc OS:vcproj { theVcVer isUWP theModules theOutDir theGuidsMap theSrcDir theSourceDirOther } {
   upvar $theGuidsMap aGuidsMap
 
   set aProjectFiles {}
 
   foreach aModule $theModules {
     foreach aToolKit [${aModule}:toolkits] {
-      lappend aProjectFiles [osutils:vcproj  $theVcVer $isUWP $theOutDir $aToolKit     aGuidsMap]
+      lappend aProjectFiles [osutils:vcproj  $theVcVer $isUWP $theOutDir $aToolKit     aGuidsMap $theSrcDir $theSourceDirOther]
     }
     foreach anExecutable [OS:executable ${aModule}] {
-      lappend aProjectFiles [osutils:vcprojx $theVcVer $isUWP $theOutDir $anExecutable aGuidsMap]
+      lappend aProjectFiles [osutils:vcprojx $theVcVer $isUWP $theOutDir $anExecutable aGuidsMap $theSrcDir $theSourceDirOther]
     }
   }
   return $aProjectFiles
@@ -1311,9 +1360,14 @@ proc osutils:fileExtensionsHeaders {thePlatform} {
   return [list .h .hxx .hpp .lxx .pxx .gxx .mm ]
 }
 
-proc osutils:commonUsedTK { theToolKit } {
+# List extensions of Qt resource file in OCCT
+proc osutils:fileExtensionsResources {thePlatform} {
+  return [list .qrc ]
+}
+
+proc osutils:commonUsedTK { theToolKit theSrcDir theSourceDirOther} {
   set anUsedToolKits [list]
-  set aDepToolkits [LibToLink $theToolKit]
+  set aDepToolkits [LibToLink $theToolKit $theSrcDir $theSourceDirOther]
   foreach tkx $aDepToolkits {
     if {[_get_type $tkx] == "t"} {
       lappend anUsedToolKits "${tkx}"
@@ -1338,7 +1392,7 @@ proc osutils:tk:csfInExternlib { EXTERNLIB } {
 # @param theOS         - target OS
 # @param theCsfLibsMap - libraries  map
 # @param theCsfFrmsMap - frameworks map, OS X specific
-proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
+proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap theRelease} {
   upvar $theCsfLibsMap aLibsMap
   upvar $theCsfFrmsMap aFrmsMap
 
@@ -1403,8 +1457,11 @@ proc osutils:csfList { theOS theCsfLibsMap theCsfFrmsMap } {
     # the naming is different on Windows
     set aLibsMap(CSF_TclLibs)      "tcl86"
     set aLibsMap(CSF_TclTkLibs)    "tk86"
-
-    set aLibsMap(CSF_QT)           "QtCore4 QtGui4"
+    if { "$theRelease" == "true" } {
+      set aLibsMap(CSF_QT)         "Qt5Gui Qt5Widgets Qt5Xml Qt5Core"
+    } else {
+      set aLibsMap(CSF_QT)         "Qt5Guid Qt5Widgetsd Qt5Xmld Qt5Cored"
+    }
 
     # tbb headers define different pragma lib depending on debug/release
     set aLibsMap(CSF_TBB) ""
@@ -1483,16 +1540,16 @@ proc osutils:vtkCsf {{theOS ""}} {
 
 # @param theLibsList   - dependencies (libraries  list)
 # @param theFrameworks - dependencies (frameworks list, OS X specific)
-proc osutils:usedOsLibs { theToolKit theOS theLibsList theFrameworks } {
+proc osutils:usedOsLibs { theToolKit theOS theLibsList theFrameworks theSrcDir { theRelease true } } {
   global path
   upvar $theLibsList   aLibsList
   upvar $theFrameworks aFrameworks
   set aLibsList   [list]
   set aFrameworks [list]
 
-  osutils:csfList $theOS aLibsMap aFrmsMap
+  osutils:csfList $theOS aLibsMap aFrmsMap $theRelease
 
-  foreach aCsfElem [osutils:tk:csfInExternlib "$path/src/${theToolKit}/EXTERNLIB"] {
+  foreach aCsfElem [osutils:tk:csfInExternlib "$path/$theSrcDir/${theToolKit}/EXTERNLIB"] {
     if [info exists aLibsMap($aCsfElem)] {
       foreach aLib [split "$aLibsMap($aCsfElem)"] {
         if { [lsearch $aLibsList $aLib] == "-1" } {
@@ -1511,12 +1568,12 @@ proc osutils:usedOsLibs { theToolKit theOS theLibsList theFrameworks } {
 }
 
 # Returns liste of UD in a toolkit. tkloc is a full path wok.
-proc osutils:tk:units { tkloc } {
+proc osutils:tk:units { tkloc theSrcDir } {
   global path
   set l {}
-  set PACKAGES "$path/src/$tkloc/PACKAGES"
+  set PACKAGES "$path/$theSrcDir/$tkloc/PACKAGES"
   foreach u [wokUtils:FILES:FileToList $PACKAGES] {
-    if {[file isdirectory "$path/src/$u"]} {
+    if {[file isdirectory "$path/$theSrcDir/$u"]} {
       lappend l $u
     }
   }
@@ -1617,9 +1674,9 @@ proc wokUtils:FILES:wtail { f n } {
 }
 
 # Generate entry for one source file in Visual Studio 10 project file
-proc osutils:vcxproj:cxxfile { theFile theParams } {
+proc osutils:vcxproj:cxxfile { theFile theParams theSrcFileLevel } {
   if { $theParams == "" } {
-    return "    <ClCompile Include=\"..\\..\\..\\[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $theFile 3]]\" />\n"
+    return "    <ClCompile Include=\"..\\..\\..\\[wokUtils:EASY:bs1 [wokUtils:FILES:wtail $theFile $theSrcFileLevel]]\" />\n"
   }
 
   set aParams [string trim ${theParams}]
@@ -1716,7 +1773,15 @@ proc osutils:readtemplate:rc {theOutDir theToolKit} {
 }
 
 # Generate Visual Studio project file for ToolKit
-proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
+proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir theSourceDirOther } {
+  global path
+
+  set aHasQtDep "false"
+  foreach aCsfElem [osutils:tk:csfInExternlib "$path/$theSrcDir/${theToolKit}/EXTERNLIB"] {
+    if { "$aCsfElem" == "CSF_QT" } {
+      set aHasQtDep "true"
+    }
+  }
   set theProjTmpl [osutils:vcproj:readtemplate $theVcVer $isUWP 0]
 
   set l_compilable [osutils:compilable wnt]
@@ -1736,33 +1801,26 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
     lappend aUsedLibs "WindowsApp.lib"
   }
 
-  foreach tkx [osutils:commonUsedTK  $theToolKit] {
+  foreach tkx [osutils:commonUsedTK  $theToolKit $theSrcDir $theSourceDirOther] {
     lappend aUsedLibs "${tkx}.lib"
   }
 
-  osutils:usedOsLibs $theToolKit "wnt" aLibs aFrameworks
-  foreach aLibIter $aLibs {
-    lappend aUsedLibs "${aLibIter}.lib"
-  }
+  set anOsReleaseLibs {}
+  set anOsDebugLibs {}
+  osutils:usedOsLibs $theToolKit "wnt" anOsReleaseLibs aFrameworks $theSrcDir true
+  osutils:usedOsLibs $theToolKit "wnt" anOsDebugLibs aFrameworks $theSrcDir false
 
   # correct names of referred third-party libraries that are named with suffix
   # depending on VC version
-  set aVCRTVer [string range $theVcVer 0 3]
-  regsub -all -- {vc[0-9]+} $aUsedLibs $aVCRTVer aUsedLibs
-
-  # and put this list to project file
-  #puts "$theToolKit requires  $aUsedLibs"
-  if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
-    set aUsedLibs [join $aUsedLibs {;}]
-  }
-  regsub -all -- {__TKDEP__} $theProjTmpl $aUsedLibs theProjTmpl
+  regsub -all -- {__TKDEP__} $theProjTmpl [osutils:depLibraries $aUsedLibs $anOsReleaseLibs $theVcVer] theProjTmpl
+  regsub -all -- {__TKDEP_DEBUG__} $theProjTmpl [osutils:depLibraries $aUsedLibs $anOsDebugLibs $theVcVer] theProjTmpl
 
   set anIncPaths "..\\..\\..\\inc"
 #  set aTKDefines ""
   set aFilesSection ""
   set aVcFilesCxx(units) ""
   set aVcFilesHxx(units) ""
-  set listloc [osutils:tk:units $theToolKit]
+  set listloc [osutils:tk:units $theToolKit $theSrcDir]
   if [array exists written] { unset written }
   #puts "\t1 [wokparam -v %CMPLRS_CXX_Options [w_info -f]] father"
   #puts "\t2 [wokparam -v %CMPLRS_CXX_Options] branch"
@@ -1773,9 +1831,23 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
   set fxloparam ""
   foreach fxlo $listloc {
     set xlo $fxlo
-    set aSrcFiles [osutils:tk:cxxfiles $xlo wnt]
-	set aHxxFiles [osutils:tk:hxxfiles $xlo wnt]
-	set fxlo_cmplrs_options_cxx [_get_options wnt cmplrs_cxx $fxlo]
+    set aSrcFiles [osutils:tk:cxxfiles $xlo wnt $theSrcDir]
+    set aHxxFiles [osutils:tk:hxxfiles $xlo wnt $theSrcDir]
+
+    # prepare Qt moc files, appears only in Inspector - directory tools
+    set aGeneratedFiles {}
+    if { "$aHasQtDep" == "true" } {
+      set aMocResFiles [osutils:tk:mocfiles $aHxxFiles $theOutDir]
+      set aGeneratedFiles [osutils:tk:execfiles $aMocResFiles $theOutDir moc${::SYS_EXE_SUFFIX} moc cpp]
+
+      set aQrcResFiles [osutils:tk:qrcfiles $xlo wnt $theSrcDir]
+      set aQrcFiles [osutils:tk:execfiles $aQrcResFiles $theOutDir rcc${::SYS_EXE_SUFFIX} rcc cpp]
+      foreach resFile $aQrcFiles {
+        lappend aGeneratedFiles $resFile
+      }
+    }
+
+    set fxlo_cmplrs_options_cxx [_get_options wnt cmplrs_cxx $fxlo]
     if {$fxlo_cmplrs_options_cxx == ""} {
       set fxlo_cmplrs_options_cxx [_get_options wnt cmplrs_cxx b]
     }
@@ -1803,7 +1875,7 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
       foreach aSrcFile [lsort $aSrcFiles] {
         if { ![info exists written([file tail $aSrcFile])] } {
           set written([file tail $aSrcFile]) 1
-          append aFilesSection [osutils:vcxproj:cxxfile $aSrcFile $needparam]
+          append aFilesSection [osutils:vcxproj:cxxfile $aSrcFile $needparam 3]
         } else {
           puts "Warning : in vcproj more than one occurences for [file tail $aSrcFile]"
         }
@@ -1819,6 +1891,16 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
         }
         if { ! [info exists aVcFilesHxx($xlo)] } { lappend aVcFilesHxx(units) $xlo }
         lappend aVcFilesHxx($xlo) $aHxxFile
+      }
+      foreach aGenFile [lsort $aGeneratedFiles] {
+        if { ![info exists written([file tail $aGenFile])] } {
+          set written([file tail $aGenFile]) 1
+          append aFilesSection [osutils:vcxproj:cxxfile $aGenFile $needparam 5]
+        } else {
+          puts "Warning : in vcproj more than one occurences for [file tail $aGenFile]"
+        }
+        if { ! [info exists aVcFilesCxx($xlo)] } { lappend aVcFilesCxx(units) $xlo }
+        lappend aVcFilesCxx($xlo) $aGenFile
       }
     } else {
       append aFilesSection "\t\t\t<Filter\n"
@@ -1856,14 +1938,40 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
   return $aVcFiles
 }
 
+# Appends OS libraries into the list of used libraries.
+# Corrects list of referred third-party libraries that are named with suffix
+# depending on VC version
+# Unites list of used libraries into a variable with separator for VStudio older than vc9
+# @param theUsedLibs List of libraries, to be changed
+# @param theOsLibs List of Os library names, before using an extension should be added
+# @param theVcVer version of VStudio
+
+proc osutils:depLibraries { theUsedLibs theOsLibs theVcVer } {
+  foreach aLibIter $theOsLibs {
+    lappend theUsedLibs "${aLibIter}.${::SYS_LIB_SUFFIX}"
+  }
+
+  # correct names of referred third-party libraries that are named with suffix
+  # depending on VC version
+  set aVCRTVer [string range $theVcVer 0 3]
+  regsub -all -- {vc[0-9]+} $theUsedLibs $aVCRTVer theUsedLibs
+
+  # and put this list to project file
+  if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
+    set theUsedLibs [join $theUsedLibs {;}]
+  }
+
+  return $theUsedLibs
+}
+
 # for a unit returns a map containing all its file in the current
 # workbench
 # local = 1 only local files
-proc osutils:tk:loadunit { loc map } {
+proc osutils:tk:loadunit { loc map theSrcDir} {
   #puts $loc
   upvar $map TLOC
   catch { unset TLOC }
-  set lfiles [_get_used_files $loc]
+  set lfiles [_get_used_files $loc $theSrcDir]
   foreach f $lfiles {
     #puts "\t$f"
     set t [lindex $f 0]
@@ -1880,11 +1988,11 @@ proc osutils:tk:loadunit { loc map } {
 }
 
 # Returns the list of all files name in a toolkit within specified list of file extensions.
-proc osutils:tk:files { tkloc theExtensions } {
+proc osutils:tk:files { tkloc theExtensions theSrcDir } {
   set Tfiles(source,nocdlpack)     {source pubinclude}
   set Tfiles(source,toolkit)       {}
   set Tfiles(source,executable)    {source pubinclude}
-  set listloc [concat [osutils:tk:units $tkloc] $tkloc]
+  set listloc [concat [osutils:tk:units $tkloc $theSrcDir] $tkloc ]
   #puts " listloc = $listloc"
 
   set resultloc $listloc
@@ -1899,7 +2007,7 @@ proc osutils:tk:files { tkloc theExtensions } {
          default { error "Error: Cannot determine type of unit $loc, check adm/UDLIST!" }
     }
     if [array exists map] { unset map }
-    osutils:tk:loadunit $loc map
+    osutils:tk:loadunit $loc map $theSrcDir
     #puts " loc = $loc === > [array names map]"
     set LType $Tfiles(source,${utyp})
     foreach typ [array names map] {
@@ -1921,15 +2029,52 @@ proc osutils:tk:files { tkloc theExtensions } {
 }
 
 # Returns the list of all compilable files name in a toolkit.
-proc osutils:tk:cxxfiles { tkloc thePlatform } { return [osutils:tk:files $tkloc [osutils:compilable $thePlatform]] }
+proc osutils:tk:cxxfiles { tkloc thePlatform theSrcDir } { return [osutils:tk:files $tkloc [osutils:compilable $thePlatform] $theSrcDir] }
 
 # Returns the list of all header files name in a toolkit.
-proc osutils:tk:hxxfiles { tkloc thePlatform } { return [osutils:tk:files $tkloc [osutils:fileExtensionsHeaders $thePlatform]] }
+proc osutils:tk:hxxfiles { tkloc thePlatform theSrcDir } { return [osutils:tk:files $tkloc [osutils:fileExtensionsHeaders $thePlatform] $theSrcDir] }
+
+# Returns the list of all resource (qrc) files name in a toolkit.
+proc osutils:tk:qrcfiles { tkloc thePlatform theSourceDir } { return [osutils:tk:files $tkloc [osutils:fileExtensionsResources $thePlatform] $theSourceDir] }
+
+# Returns the list of all header files name in a toolkit.
+proc osutils:tk:mocfiles { HxxFiles theOutDir } {
+  set lret {}
+  foreach file $HxxFiles {
+    # processing only files where Q_OBJECT exists
+    set fd [open "$file" rb]
+    set FILES [split [read $fd] "\n"]
+    close $fd
+
+    set isQObject [expr [regexp "Q_OBJECT" $FILES]]
+    if { ! $isQObject } {
+      continue;
+    }
+    lappend lret $file
+  }
+  return $lret
+}
+
+# Returns the list of all header files name in a toolkit.
+proc osutils:tk:execfiles { theFiles theOutDir theCommand thePrefix theExtension} {
+  set lret {}
+  set anOutDir $theOutDir/$thePrefix
+  file mkdir $anOutDir
+
+  foreach file $theFiles {
+    set aResourceName [file tail $file]
+    set anOutFile $anOutDir/${thePrefix}_[file rootname $aResourceName].$theExtension
+
+    exec $theCommand $file -o $anOutFile
+    lappend lret $anOutFile
+  }
+  return $lret
+}
 
 # Generate Visual Studio project file for executable
-proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
+proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir theSourceDirOther } {
   set aVcFiles {}
-  foreach f [osutils:tk:cxxfiles $theToolKit wnt] {
+  foreach f [osutils:tk:cxxfiles $theToolKit wnt $theSrcDir] {
     set aProjTmpl [osutils:vcproj:readtemplate $theVcVer $isUWP 1]
 
     set aProjName [file rootname [file tail $f]]
@@ -1943,25 +2088,18 @@ proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
     regsub -all -- {__PROJECT_GUID__} $aProjTmpl $aGuidsMap($aProjName) aProjTmpl
 
     set aUsedLibs [list]
-    foreach tkx [osutils:commonUsedTK  $theToolKit] {
+    foreach tkx [osutils:commonUsedTK  $theToolKit $theSrcDir $theSourceDirOther] {
       lappend aUsedLibs "${tkx}.lib"
     }
 
-    osutils:usedOsLibs $theToolKit "wnt" aLibs aFrameworks
-    foreach aLibIter $aLibs {
-      lappend aUsedLibs "${aLibIter}.lib"
-    }
+    set anOsReleaseLibs {}
+    set anOsDebugLibs {}
+    osutils:usedOsLibs $theToolKit "wnt" anOsReleaseLibs aFrameworks $theSrcDir true
+    osutils:usedOsLibs $theToolKit "wnt" anOsDebugLibs aFrameworks $theSrcDir false
 
-    # correct names of referred third-party libraries that are named with suffix
-    # depending on VC version
     set aVCRTVer [string range $theVcVer 0 3]
-    regsub -all -- {vc[0-9]+} $aUsedLibs $aVCRTVer aUsedLibs
-
-#    puts "$aProjName requires  $aUsedLibs"
-    if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
-      set aUsedLibs [join $aUsedLibs {;}]
-    }
-    regsub -all -- {__TKDEP__} $aProjTmpl $aUsedLibs aProjTmpl
+    regsub -all -- {__TKDEP__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsReleaseLibs $theVcVer] aProjTmpl
+    regsub -all -- {__TKDEP_DEBUG__} $aProjTmpl [osutils:depLibraries $aUsedLibs $anOsDebugLibs $theVcVer] aProjTmpl
 
     set aFilesSection ""
     set aVcFilesCxx(units) ""
@@ -1971,7 +2109,7 @@ proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
       set written([file tail $f]) 1
 
       if { "$theVcVer" != "vc7" && "$theVcVer" != "vc8" && "$theVcVer" != "vc9" } {
-        append aFilesSection [osutils:vcxproj:cxxfile $f ""]
+        append aFilesSection [osutils:vcxproj:cxxfile $f "" 3]
         if { ! [info exists aVcFilesCxx($theToolKit)] } { lappend aVcFilesCxx(units) $theToolKit }
         lappend aVcFilesCxx($theToolKit) $f
       } else {
@@ -1982,7 +2120,7 @@ proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap } {
         append aFilesSection "\t\t\t</Filter>"
       }
     } else {
-      puts "Warning : in vcproj there are than one occurences for [file tail $f]"
+      puts "Warning : in vcproj there are more than one occurences for [file tail $f]"
     }
     #puts "$aProjTmpl $aFilesSection"
     set anIncPaths "..\\..\\..\\inc"
@@ -2169,14 +2307,14 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit thePlatform} {
   set aTKSrcFiles   [list]
 
   # collect list of referred libraries to link with
-  osutils:usedOsLibs $theToolKit $thePlatform aUsedLibs aFrameworks
-  set aDepToolkits [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]]
+  osutils:usedOsLibs $theToolKit $thePlatform aUsedLibs aFrameworks "src"
+  set aDepToolkits [wokUtils:LIST:Purge [osutils:tk:close $theToolKit "src" ""]]
   foreach tkx $aDepToolkits {
     lappend aUsedLibs "${tkx}"
   }
 
   lappend anIncPaths "../../../inc"
-  set listloc [osutils:tk:units $theToolKit]
+  set listloc [osutils:tk:units $theToolKit "src"]
 
   if { [llength $listloc] == 0 } {
     set listloc $theToolKit
@@ -2190,7 +2328,7 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit thePlatform} {
   if [array exists written] { unset written }
   foreach fxlo $resultloc {
     set xlo       $fxlo
-    set aSrcFiles [osutils:tk:cxxfiles $xlo $thePlatform]
+    set aSrcFiles [osutils:tk:cxxfiles $xlo $thePlatform "src"]
     foreach aSrcFile [lsort $aSrcFiles] {
       if { ![info exists written([file tail $aSrcFile])] } {
         set written([file tail $aSrcFile]) 1
@@ -2222,8 +2360,8 @@ proc OS:cworkspace { theSolName theModules theOutDir } {
   # collect list of projects to be created
   foreach aModule $theModules {
     # toolkits
-    foreach aToolKit [osutils:tk:sort [${aModule}:toolkits]] {
-      set aDependencies [LibToLink $aToolKit]
+    foreach aToolKit [osutils:tk:sort [${aModule}:toolkits] "src" ""] {
+      set aDependencies [LibToLink $aToolKit "src" ""]
       if { [llength $aDependencies] == 0 } {
         puts $aFile "\t\t<Project filename=\"${aToolKit}.cbp\" />"
       } else {
@@ -2238,7 +2376,7 @@ proc OS:cworkspace { theSolName theModules theOutDir } {
     # executables, assume one project per cxx file...
     foreach aUnit [OS:executable ${aModule}] {
       set aUnitLoc $aUnit
-      set src_files [_get_used_files $aUnit false]
+      set src_files [_get_used_files $aUnit "src" false]
       set aSrcFiles {}
       foreach s $src_files { 
         regexp {source ([^\s]+)} $s dummy name
@@ -2250,7 +2388,7 @@ proc OS:cworkspace { theSolName theModules theOutDir } {
           set aPrjName [file rootname $aSrcFile]
           set aDependencies [list]
           if {[file isdirectory $path/src/$aUnitLoc]} {
-            set aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile]]
+            set aDependencies [LibToLinkX $aUnitLoc [file rootname $aSrcFile] "src" ""]
           }
           set anActiveState ""
           if { $isActiveSet == 0 } {
@@ -2284,7 +2422,7 @@ proc osutils:cbpx { theCmpl theOutDir theToolKit thePlatform } {
   set aWokArch    "$::env(ARCH)"
 
   set aCbpFiles {}
-  foreach aSrcFile [osutils:tk:cxxfiles $theToolKit $thePlatform] {
+  foreach aSrcFile [osutils:tk:cxxfiles $theToolKit $thePlatform "src"] {
     # collect list of referred libraries to link with
     set aUsedLibs     [list]
     set aFrameworks   [list]
@@ -2293,9 +2431,9 @@ proc osutils:cbpx { theCmpl theOutDir theToolKit thePlatform } {
     set aTKSrcFiles   [list]
     set aProjName [file rootname [file tail $aSrcFile]]
 
-    osutils:usedOsLibs $theToolKit $thePlatform aUsedLibs aFrameworks
+    osutils:usedOsLibs $theToolKit $thePlatform aUsedLibs aFrameworks "src"
 
-    set aDepToolkits [LibToLinkX $theToolKit $aProjName]
+    set aDepToolkits [LibToLinkX $theToolKit $aProjName "src" ""]
     foreach tkx $aDepToolkits {
       if {[_get_type $tkx] == "t"} {
         lappend aUsedLibs "${tkx}"
@@ -2593,8 +2731,8 @@ proc osutils:cbp { theCmpl theOutDir theProjName thePlatform theSrcFiles theLibs
 }
 
 # Define libraries to link using only EXTERNLIB file
-proc LibToLinkX {thePackage theDummyName} {
-  set aToolKits [LibToLink $thePackage]
+proc LibToLinkX {thePackage theDummyName theSrcDir theSourceDirOther} {
+  set aToolKits [LibToLink $thePackage $theSrcDir $theSourceDirOther]
   return $aToolKits
 }
 
@@ -2620,7 +2758,7 @@ proc OS:xcworkspace:toolkits { theModule } {
   set aBuff ""
 
   # Adding toolkits for module in workspace.
-  foreach aToolKit [osutils:tk:sort [${theModule}:toolkits]] {
+  foreach aToolKit [osutils:tk:sort [${theModule}:toolkits] "src" ""] {
     append aBuff "         <FileRef\n"
     append aBuff "            location = \"group:${aToolKit}.xcodeproj\">\n"
     append aBuff "         </FileRef>\n"
@@ -2629,7 +2767,7 @@ proc OS:xcworkspace:toolkits { theModule } {
   # Adding executables for module, assume one project per cxx file...
   foreach aUnit [OS:executable ${theModule}] {
     set aUnitLoc $aUnit
-    set src_files [_get_used_files $aUnit false]
+    set src_files [_get_used_files $aUnit "src" false]
     set aSrcFiles {}
     foreach s $src_files {
       regexp {source ([^\s]+)} $s dummy name
@@ -2723,13 +2861,13 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
   upvar $theDepsRefGuids     aDepsRefGuids
 
   set aBuildFileSection ""
-  set aUsedLibs         [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]]
-  set aDepToolkits      [lappend [wokUtils:LIST:Purge [osutils:tk:close $theToolKit]] $theToolKit]
+  set aUsedLibs         [wokUtils:LIST:Purge [osutils:tk:close $theToolKit "src" ""]]
+  set aDepToolkits      [lappend [wokUtils:LIST:Purge [osutils:tk:close $theToolKit "src" ""]] $theToolKit]
 
   if { "$theTargetType" == "executable" } {
-    set aFile [osutils:tk:cxxfiles $theToolKit mac]
+    set aFile [osutils:tk:cxxfiles $theToolKit mac "src"]
     set aProjName [file rootname [file tail $aFile]]
-    set aDepToolkits [LibToLinkX $theToolKit $aProjName]
+    set aDepToolkits [LibToLinkX $theToolKit $aProjName "src" ""]
   }
 
   set aLibExt "dylib"
@@ -2740,7 +2878,7 @@ proc osutils:xcdtk:deps {theToolKit theTargetType theGuidsMap theFileRefSection 
     }
   }
 
-  osutils:usedOsLibs $theToolKit $thePlatform aLibs aFrameworks
+  osutils:usedOsLibs $theToolKit $thePlatform aLibs aFrameworks "src"
   set aUsedLibs [concat $aUsedLibs $aLibs]
   set aUsedLibs [concat $aUsedLibs $aFrameworks]
   foreach tkx $aUsedLibs {
@@ -2776,7 +2914,7 @@ proc osutils:xcdtk:sources {theToolKit theTargetType theSrcFileRefSection theGro
   upvar $theGuidsMap          aGuidsMap
   upvar $theIncPaths          anIncPaths
 
-  set listloc [osutils:tk:units $theToolKit]
+  set listloc [osutils:tk:units $theToolKit "src"]
   set resultloc [osutils:justunix $listloc]
   set aBuildFileSection ""
   set aPackages [lsort -nocase $resultloc]
@@ -2793,7 +2931,7 @@ proc osutils:xcdtk:sources {theToolKit theTargetType theSrcFileRefSection theGro
       set aGuidsMap($aPackage) [OS:genGUID "xcd"]
     }
 
-    set aSrcFiles [osutils:tk:cxxfiles $xlo mac]
+    set aSrcFiles [osutils:tk:cxxfiles $xlo mac "src"]
     foreach aSrcFile [lsort $aSrcFiles] {
       set aFileExt "sourcecode.cpp.cpp"
 
@@ -3432,7 +3570,7 @@ proc osutils:uwp:proj { isUWP theProjTmpl } {
 }
 
 # Report all files found in package directory but not listed in FILES
-proc osutils:checksrcfiles { theUnit } {
+proc osutils:checksrcfiles { theUnit theSrcDir} {
   global path
   set aCasRoot [file normalize ${path}]
 
@@ -3441,7 +3579,7 @@ proc osutils:checksrcfiles { theUnit } {
     return
   }
 
-  set anUnitAbsPath [file normalize "${aCasRoot}/src/${theUnit}"]
+  set anUnitAbsPath [file normalize "${aCasRoot}/$theSrcDir/${theUnit}"]
 
   if {[file exists "${anUnitAbsPath}/FILES"]} {
     set aFilesFile [open "${anUnitAbsPath}/FILES" rb]
@@ -3454,6 +3592,9 @@ proc osutils:checksrcfiles { theUnit } {
     set anAllFiles [glob -tails -nocomplain -dir ${anUnitAbsPath} "*"]
     foreach aFile ${anAllFiles} {
       if { "${aFile}" == "FILES" } {
+        continue
+      }
+      if { "${aFile}" == "icons" } {
         continue
       }
       if { [lsearch -exact ${aFilesFileList} ${aFile}] == -1 } {

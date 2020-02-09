@@ -15,8 +15,10 @@
 
 #include <inspector/TInspector_Communicator.hxx>
 
+#include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
+
 #include <inspector/TInspector_Window.hxx>
 
 #include <Standard_WarningsDisable.hxx>
@@ -37,14 +39,57 @@ TInspector_Communicator::TInspector_Communicator()
     static int argc = 1;
     static char* argv[] = { (char*)"", 0 };
 #if QT_VERSION > 0x050000
-  OSD_Environment anEnvironment ("QTDIR");
-  TCollection_AsciiString aPlugindsDirName = anEnvironment.Value();
-  aPlugindsDirName += "/plugins";
-  QApplication::addLibraryPath (aPlugindsDirName.ToCString());
+    TCollection_AsciiString aPlugindsDirName;
+    if (TInspector_Communicator::PluginsDir (aPlugindsDirName))
+      QApplication::addLibraryPath (aPlugindsDirName.ToCString());
 #endif
     new QApplication (argc, argv);
   }
   myWindow = new TInspector_Window();
+}
+
+// =======================================================================
+// function : PluginsDir
+// purpose :
+// =======================================================================
+Standard_Boolean TInspector_Communicator::PluginsDir (TCollection_AsciiString& thePlugindsDirName)
+{
+  OSD_Environment anEnvironment ("QTDIR");
+  TCollection_AsciiString aQtDirValue = anEnvironment.Value();
+  if (!aQtDirValue.IsEmpty())
+  {
+    thePlugindsDirName = aQtDirValue + "/plugins";
+    return Standard_True;
+  }
+  anEnvironment = OSD_Environment ("PATH");
+  TCollection_AsciiString aPathValue = anEnvironment.Value();
+  TCollection_AsciiString aPathSep =
+#ifdef _WIN32
+    ';';
+#else
+    ':';
+#endif
+  for (int i = 1; !aPathValue.IsEmpty(); i++)
+  {
+    Standard_Integer aSepIndex = aPathValue.FirstLocationInSet (aPathSep, 1, aPathValue.Length());
+    if (aSepIndex <= 1)
+      break;
+
+    TCollection_AsciiString aCurPath = aPathValue.SubString (1, aSepIndex - 1);
+    aPathValue = aSepIndex < aPathValue.Length() ? aPathValue.SubString (aSepIndex + 1, aPathValue.Length()) : "";
+    if (aCurPath.IsEmpty())
+      continue;
+
+    aCurPath += "/../plugins";
+    OSD_Path aPath (aCurPath);
+    OSD_Directory aCurDir (aPath);
+    if (aCurDir.Exists())
+    {
+      thePlugindsDirName = aCurPath;
+      return Standard_True;
+    }
+  }
+  return Standard_False;
 }
 
 // =======================================================================

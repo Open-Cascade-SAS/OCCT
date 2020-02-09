@@ -42,10 +42,6 @@ proc ModelingData:depends { } {
 
 ;#
 ;# Returns a list of exported features.
-;# source : Source files
-;# runtime: Shareables
-;# wokadm : WOK admin files
-;# api    : Public include files
 ;#
 proc ModelingData:Export { } {
     return [list source runtime wokadm api]

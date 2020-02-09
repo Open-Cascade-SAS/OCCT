@@ -87,9 +87,9 @@ void setPluginSampleDirectory (const TCollection_AsciiString& theName, TInspecto
 int main (int argc, char** argv)
 {
 #if QT_VERSION > 0x050000
-  TCollection_AsciiString aPlugindsDirName = OSD_Environment ("QTDIR").Value();
-  if (!aPlugindsDirName.IsEmpty())
-    QApplication::addLibraryPath (QString (aPlugindsDirName.ToCString()) + "/plugins");
+  TCollection_AsciiString aPlugindsDirName;
+  if (TInspector_Communicator::PluginsDir (aPlugindsDirName))
+    QApplication::addLibraryPath (aPlugindsDirName.ToCString());
 #endif
   QApplication anApp (argc, argv);
 
