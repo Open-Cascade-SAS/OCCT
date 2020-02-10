@@ -1,0 +1,21 @@
+puts "=================================="
+puts "0031336: Modeling data - extend BRepPrimAPI_MakeBox with planar shape creation"
+puts "Check a creation preview if it is a vertex"
+puts "=================================="
+
+pload TOPTEST
+           
+smallview +X+Y
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+             
+box vertex1 0.0 0.0 0.0 0.0 0.0 0.0 -preview
+donly vertex1
+fit                                          
+checkview -screenshot -2d -path $anImage1
+
+box vertex2 -min 30.0 0.0 0.0 -max 30.0 0.0 0.0 -preview
+donly vertex2
+fit                                              
+checkview -screenshot -2d -path $anImage2

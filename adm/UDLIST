@@ -108,6 +108,7 @@ n BRepMesh
 n BRepMeshData
 n BRepOffset
 n BRepOffsetAPI
+n BRepPreviewAPI
 n BRepPrim
 n BRepPrimAPI
 n BRepProj

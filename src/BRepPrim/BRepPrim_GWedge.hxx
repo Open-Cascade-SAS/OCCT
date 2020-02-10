@@ -70,6 +70,8 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Default constructor
+  Standard_EXPORT BRepPrim_GWedge();
   
   //! Creates a  GWedge  algorithm.   <Axes> is  the axis
   //! system for the primitive.
@@ -191,7 +193,9 @@ public:
   //! <d1><d2><d3> direction.
   Standard_EXPORT gp_Pnt Point (const BRepPrim_Direction d1, const BRepPrim_Direction d2, const BRepPrim_Direction d3);
 
-
+  //! Checkes a shape on degeneracy
+  //! @return TRUE if a shape is degenerated
+  Standard_EXPORT Standard_Boolean IsDegeneratedShape();
 
 
 protected:

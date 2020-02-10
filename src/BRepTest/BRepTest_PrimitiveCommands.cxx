@@ -22,6 +22,7 @@
 #include <TopoDS_Solid.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI.hxx>
+#include <BRepPreviewAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -39,27 +40,152 @@
 
 static Standard_Integer box(Draw_Interpretor& , Standard_Integer n, const char** a)
 {
-  if (n < 5) return 1;
-  Standard_Real dx = Draw::Atof(a[n-3]);
-  Standard_Real dy = Draw::Atof(a[n-2]);
-  Standard_Real dz = Draw::Atof(a[n-1]);
+  gp_Pnt anOrigin;
+  gp_XYZ aParams;
+  gp_Dir aDir;
+  gp_Dir aXDir;
+  Standard_Boolean isMinMax = Standard_False;
+  Standard_Boolean isPreview = Standard_False;
+  Standard_Boolean isAxis = Standard_False;
 
-  TopoDS_Solid S;
+  for (Standard_Integer anArgIter = 2; anArgIter < n; ++anArgIter)
+  {
+    TCollection_AsciiString anArgCase (a[anArgIter]);
+    anArgCase.LowerCase();
+    if (anArgCase == "-min" && anArgIter + 3 <= n)
+    {
+      anOrigin.SetX (Draw::Atof(a[anArgIter + 1]));
+      anOrigin.SetY (Draw::Atof(a[anArgIter + 2]));
+      anOrigin.SetZ (Draw::Atof(a[anArgIter + 3]));
+      anArgIter += 3;
+    }
+    else if (anArgCase == "-max" && anArgIter + 3 <= n)
+    {
+      aParams.SetX (Draw::Atof(a[anArgIter + 1]));
+      aParams.SetY (Draw::Atof(a[anArgIter + 2]));
+      aParams.SetZ (Draw::Atof(a[anArgIter + 3]));
+      isMinMax = Standard_True;
+      anArgIter += 3;
+    }
+    else if (anArgCase == "-size" && anArgIter + 3 <= n)
+    {
+      aParams.SetX (Draw::Atof(a[anArgIter + 1]));
+      aParams.SetY (Draw::Atof(a[anArgIter + 2]));
+      aParams.SetZ (Draw::Atof(a[anArgIter + 3]));
+      isMinMax = Standard_False;
+      anArgIter += 3;
+    }
+    else if (anArgCase == "-dir" && anArgIter + 3 <= n)
+    {
+      Standard_Real aX = Draw::Atof(a[anArgIter + 1]);
+      Standard_Real anY = Draw::Atof(a[anArgIter + 2]);
+      Standard_Real aZ = Draw::Atof(a[anArgIter + 3]);
+      aDir.SetCoord (aX, anY, aZ);
+      isAxis = Standard_True;
+      anArgIter += 3;
+    }
+    else if (anArgCase == "-xdir" && anArgIter + 3 <= n)
+    {
+      Standard_Real aX = Draw::Atof(a[anArgIter + 1]);
+      Standard_Real anY = Draw::Atof(a[anArgIter + 2]);
+      Standard_Real aZ = Draw::Atof(a[anArgIter + 3]);
+      aXDir.SetCoord (aX, anY, aZ);
+      isAxis = Standard_True;
+      anArgIter += 3;
+    }
+    else if (anArgCase == "-preview")
+    {
+      isPreview = Standard_True;
+    }
+    else if (anArgIter + 5 < n || anArgIter + 2 < n)
+    {
+      Standard_Real aValue = 0.0;
+      Standard_Integer aCountReal = 0;
+      Standard_Integer anIter = anArgIter;
+      while (anIter < n && Draw::ParseReal(a[anIter], aValue))
+      {
+        anIter++;
+        aCountReal++;
+      }
 
-  if (n > 5) {
-    if (n < 8) return 1;
-    Standard_Real x = Draw::Atof(a[2]);
-    Standard_Real y = Draw::Atof(a[3]);
-    Standard_Real z = Draw::Atof(a[4]);
-    S = BRepPrimAPI_MakeBox(gp_Pnt(x,y,z),dx,dy,dz);
+      if (aCountReal == 6)
+      {
+        anOrigin.SetX (Draw::Atof(a[anArgIter]));
+        anOrigin.SetY (Draw::Atof(a[anArgIter + 1]));
+        anOrigin.SetZ (Draw::Atof(a[anArgIter + 2]));
+
+        aParams.SetX (Draw::Atof(a[anArgIter + 3]));
+        aParams.SetY (Draw::Atof(a[anArgIter + 4]));
+        aParams.SetZ (Draw::Atof(a[anArgIter + 5]));
+        anArgIter += 5;
+      }
+
+      else if (aCountReal == 3)
+      {
+        aParams.SetX (Draw::Atof(a[anArgIter]));
+        aParams.SetY (Draw::Atof(a[anArgIter + 1]));
+        aParams.SetZ (Draw::Atof(a[anArgIter + 2]));
+        anArgIter += 2;
+      }
+      else
+      {
+        std::cout<<"Syntax error\n";
+        return 1;
+      }
+    }
   }
-  else {
-    S = BRepPrimAPI_MakeBox(dx,dy,dz);
-  }
 
-  DBRep::Set(a[1],S);
+  if (isPreview)
+  {
+    TopoDS_Shape S;
+    BRepPreviewAPI_MakeBox aPreview;
+
+    if (isMinMax == Standard_True)
+    {
+      aPreview.Init (anOrigin, aParams);
+    }
+    else if (isMinMax == Standard_False && isAxis == Standard_False)
+    {
+      aPreview.Init (anOrigin, aParams.X(), aParams.Y(), aParams.Z());
+    }
+    else if (isAxis)
+    {
+      gp_Ax2 anAxis (anOrigin, aDir, aXDir);
+      aPreview.Init (anAxis, aParams.X(), aParams.Y(), aParams.Z());
+    }
+    else
+    {
+      aPreview.Init (aParams.X(), aParams.Y(), aParams.Z());
+    }
+
+    S = aPreview;
+    DBRep::Set(a[1],S);
+  }
+  else
+  {
+    TopoDS_Solid S;
+    if (isMinMax == Standard_True)
+    {
+      S = BRepPrimAPI_MakeBox(anOrigin, aParams);
+    }
+    else if (isMinMax == Standard_False && isAxis == Standard_False)
+    {
+      S = BRepPrimAPI_MakeBox(anOrigin, aParams.X(), aParams.Y(), aParams.Z());
+    }
+    else if (isAxis)
+    {
+      gp_Ax2 anAxis (anOrigin, aDir, aXDir);
+      S = BRepPrimAPI_MakeBox(anAxis, aParams.X(), aParams.Y(), aParams.Z());
+    }
+    else
+    {
+      S = BRepPrimAPI_MakeBox(aParams.X(), aParams.Y(), aParams.Z());
+    }
+    DBRep::Set(a[1],S);
+  }
   return 0;
 }
+
 
 //=======================================================================
 // wedge
@@ -274,7 +400,20 @@ void  BRepTest::PrimitiveCommands(Draw_Interpretor& theCommands)
 
   const char* g = "Primitive building commands";
     
-  theCommands.Add("box","box name [x1 y1 z1] dx dy dz",__FILE__,box,g);
+  theCommands.Add ("box",
+                   "box name [dx dy dz] [x y z dx dy dz]"
+         "\n\t\t:            [-min x y z] [-size dx dy dz] [-max x y z]"
+         "\n\t\t:            [-dir x y z -xdir x y z] [-preview]"
+         "\n\t\t: Construct axes-aligned box and put result into 'name' variable"
+         "\n\t\t:  -min   box lower corner, origin; (0,0,0) by default"
+         "\n\t\t:  -size  box dimensions   (alternative to -max)"
+         "\n\t\t:  -max   box upper corner (alternative to -size)"
+         "\n\t\t:  -dir   main direction of coordinate system (DZ by default)"
+         "\n\t\t:  -xdir  x direction of coordinate system (DX by default)"
+         "\n\t\t:  -preview non-solid shape will be created (vertex, edge, rectangle or box);"
+         "\n\t\t:           otherwise, return NULL shape in case of zero box dimension.",
+                  __FILE__,box,g);
+
   theCommands.Add("wedge","wedge name [Ox Oy Oz Zx Zy Zz Xx Xy Xz] dx dy dz ltx / xmin zmin xmax zmax",__FILE__,wedge,g);
   
   theCommands.Add("pcylinder","pcylinder name [plane(ax2)] R H [angle]",__FILE__,cylinder,g);
