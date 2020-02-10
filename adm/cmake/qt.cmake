@@ -7,7 +7,8 @@ if (NOT DEFINED ${3RDPARTY_QT_DIR} AND ${3RDPARTY_QT_DIR} STREQUAL "")
   FIND_PRODUCT_DIR ("${3RDPARTY_DIR}" Qt 3RDPARTY_QT_DIR_NAME)
 
   if (NOT DEFINED ${3RDPARTY_QT_DIR_NAME} AND ${3RDPARTY_QT_DIR_NAME} STREQUAL "")
-    message (FATAL_ERROR "... Qt root directory was not found")
+    set (3RDPARTY_QT_DIR "" CACHE PATH "The directory containing qt")
+    message (FATAL_ERROR "Could not find used third-party product: 3RDPARTY_QT_DIR")
   endif()
 
   # Combine directory name with absolute path and show in GUI
@@ -31,4 +32,10 @@ if (NOT ${Qt5_FOUND})
   #message (STATUS "Qt4 cmake configuration")
 else()
   #message (STATUS "Qt5 cmake configuration")
+endif()
+
+if (3RDPARTY_QT_DIR OR EXISTS "${3RDPARTY_QT_DIR}")
+  list (APPEND 3RDPARTY_DLL_DIRS "${3RDPARTY_QT_DIR}/bin")
+else()
+  list (APPEND 3RDPARTY_NO_DLLS 3RDPARTY_QT_DLL_DIR)
 endif()
