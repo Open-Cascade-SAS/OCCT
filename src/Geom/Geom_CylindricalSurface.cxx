@@ -21,7 +21,6 @@
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
-#include <GeomAbs_UVSense.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Ax3.hxx>

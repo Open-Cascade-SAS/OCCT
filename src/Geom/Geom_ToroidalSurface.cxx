@@ -20,7 +20,6 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_ToroidalSurface.hxx>
-#include <GeomAbs_UVSense.hxx>
 #include <gp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>

@@ -20,7 +20,6 @@
 #include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
-#include <GeomAbs_UVSense.hxx>
 #include <gp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
