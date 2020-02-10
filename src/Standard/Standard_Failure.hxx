@@ -54,14 +54,10 @@ public:
   //! Destructor
   Standard_EXPORT ~Standard_Failure();
 
-  //! Prints on the stream <s> the exception name followed by
-  //! the error message.
-  //! Level: Advanced
-  //! Warning:
-  //! The operator "OStream& operator<< (Standard_OStream&,
-  //! Handle(Standard_Failure)&)"
-  //! is implemented. (This operator uses the method Print)
-  Standard_EXPORT void Print (Standard_OStream& s) const;
+  //! Prints on the stream @p theStream the exception name followed by the error message.
+  //!
+  //! Note: there is a short-cut @c operator<< (Standard_OStream&, Handle(Standard_Failure)&)
+  Standard_EXPORT void Print (Standard_OStream& theStream) const;
   
   //! Returns error message
   Standard_EXPORT virtual Standard_CString GetMessageString() const;

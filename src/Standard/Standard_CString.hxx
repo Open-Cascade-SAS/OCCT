@@ -12,7 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//!@file Functions working with plain C strings
+//!@file
+//! Functions working with plain C strings
 
 #ifndef _Standard_CString_HeaderFile
 # define _Standard_CString_HeaderFile

@@ -19,7 +19,9 @@
 #include <Standard_SStream.hxx>
 #include <TCollection_AsciiString.hxx>
 
+//!@file
 //! The file contains interface to prepare dump output for OCCT objects. Format of the dump is JSON.
+//!
 //! To prepare this output, implement method DumpJson in the object and use macro functions from this file.
 //! Macros have one parameter for both, key and the value. It is a field of the current class. Macro has internal analyzer that
 //! uses the variable name to generate key. If the parameter has prefix symbols "&", "*" and "my", it is cut.
@@ -240,7 +242,7 @@ public:
   //! Returns length value for enum type
   Standard_EXPORT static Standard_Integer JsonKeyLength (const Standard_JsonKey theKey);
 
-  //! @param theStream source value
+  //! @param theOStream source value
   static Standard_EXPORT void AddValuesSeparator (Standard_OStream& theOStream);
 
   //! Returns default prefix added for each pointer info string if short presentation of pointer used
@@ -281,7 +283,6 @@ public:
   //! Convert field name into dump text value, removes "&" and "my" prefixes
   //! An example, for field myValue, theName is Value, for &myCLass, the name is Class
   //! @param theField a source value 
-  //! @param theName [out] an updated name 
   Standard_EXPORT static TCollection_AsciiString DumpFieldToName (const TCollection_AsciiString& theField);
 
 private:

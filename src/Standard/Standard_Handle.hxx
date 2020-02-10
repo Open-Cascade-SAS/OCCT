@@ -407,8 +407,7 @@ namespace opencascade {
 #define Handle(Class) opencascade::handle<Class>
 
 //! Computes a hash code for the standard handle, in the range [1, theUpperBound]
-//! @param TheTransientType the type of the object the handle is referred to
-//! @param theHandle the standard handle which hash code is to be computed
+//! @param theHandle the handle which hash code is to be computed
 //! @param theUpperBound the upper bound of the range a computing hash code must be within
 //! @return a computed hash code, in the range [1, theUpperBound]
 template <class TheTransientType>

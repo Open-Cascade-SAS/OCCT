@@ -11,7 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//!@file Restores compiler warnings suppressed by inclusion of Standard_WarningsDisable.hxx.
+//!@file
+//! Restores compiler warnings suppressed by inclusion of Standard_WarningsDisable.hxx.
 //!
 //! Standard_WarningsDisable.hxx disables all compiler warnings.
 //! Standard_WarningsRestore.hxx restore the previous state of warnings.
@@ -20,9 +21,11 @@
 //! header files to avoid compiler warnings to be generated for these files.
 //! They should always be used in pair:
 //!
+//! @code
 //! #include <Standard_WarningsDisable.hxx>
 //! #include <dirty_header.h> // some header that can generate warnings
 //! #include <Standard_WarningsRestore.hxx>
+//! @endcode
 
 #if defined(__clang__)
   #pragma clang diagnostic pop

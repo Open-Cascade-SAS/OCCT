@@ -53,6 +53,7 @@ public:
   //! @return pointer to the line or NULL on error / end of reading buffer
   //!         (in case of NULL result theStream should be checked externally to identify the presence of errors).
   //!          Empty lines will be returned also with zero length.
+  //! @param theStream [inout] - the stream to read from.
   //! @param theLineLength [out] - output parameter defined length of returned line.
   template<typename Stream_T>
   const char* ReadLine (Stream_T& theStream,
@@ -66,6 +67,7 @@ public:
   //! @return pointer to the line or NULL on error / end of reading buffer
   //!         (in case of NULL result theStream should be checked externally to identify the presence of errors).
   //!          Empty lines will be returned also with zero length.
+  //! @param theStream [inout] - the stream to read from.
   //! @param theLineLength [out] - output parameter defined length of returned line.
   //! @param theReadData   [out] - output parameter defined the number of elements successfully read from the stream during this call,
   //!                              it can be zero if no data was read and the line is taken from the buffer.
