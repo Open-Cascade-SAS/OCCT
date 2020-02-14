@@ -54,6 +54,35 @@
     }
     return ANDROID_LOG_DEBUG;
   }
+#elif defined(__EMSCRIPTEN__)
+  #include <emscripten/emscripten.h>
+
+  // actual version of Emscripten does not define these yet
+  #ifndef EM_LOG_INFO
+    #define EM_LOG_INFO 0
+  #endif
+  #ifndef EM_LOG_DEBUG
+    #define EM_LOG_DEBUG 0
+  #endif
+
+  //! Convert message gravity into emscripten_log() flags.
+  static int getEmscriptenPriority (const Message_Gravity theGravity)
+  {
+    switch (theGravity)
+    {
+      case Message_Trace:   return EM_LOG_CONSOLE | EM_LOG_DEBUG;
+      case Message_Info:    return EM_LOG_CONSOLE | EM_LOG_INFO;
+      case Message_Warning: return EM_LOG_CONSOLE | EM_LOG_WARN;
+      case Message_Alarm:   return EM_LOG_CONSOLE | EM_LOG_ERROR;
+      case Message_Fail:    return EM_LOG_CONSOLE | EM_LOG_ERROR;
+    }
+    return EM_LOG_CONSOLE;
+  }
+
+  //! Print message to console.debug().
+  EM_JS(void, debugMsgToConsole, (const char* theStr), {
+    console.debug(UTF8ToString(theStr));
+  });
 #else
   #include <syslog.h>
 
@@ -90,6 +119,8 @@ Message_PrinterSystemLog::Message_PrinterSystemLog (const TCollection_AsciiStrin
   myEventSource = (Standard_Address )RegisterEventSourceW (NULL, aWideSrcName.ToWideString());
 #elif defined(__ANDROID__)
   //
+#elif defined(__EMSCRIPTEN__)
+  //
 #else
   openlog (myEventSourceName.ToCString(), LOG_PID | LOG_NDELAY, LOG_USER);
 #endif
@@ -109,6 +140,8 @@ Message_PrinterSystemLog::~Message_PrinterSystemLog()
   #endif
   }
 #elif defined(__ANDROID__)
+  //
+#elif defined(__EMSCRIPTEN__)
   //
 #else
   closelog();
@@ -132,6 +165,15 @@ void Message_PrinterSystemLog::Send (const Standard_CString theString,
   Send (TCollection_ExtendedString (theString), theGravity, true);
 #elif defined(__ANDROID__)
   __android_log_write (getAndroidLogPriority (theGravity), myEventSourceName.ToCString(), theString);
+#elif defined(__EMSCRIPTEN__)
+  if (theGravity == Message_Trace)
+  {
+    debugMsgToConsole (theString);
+  }
+  else
+  {
+    emscripten_log (getEmscriptenPriority (theGravity), "%s", theString);
+  }
 #else
   syslog (getSysLogPriority (theGravity), "%s", theString);
 #endif
@@ -154,6 +196,15 @@ void Message_PrinterSystemLog::Send (const TCollection_AsciiString& theString,
   Send (TCollection_ExtendedString (theString), theGravity, true);
 #elif defined(__ANDROID__)
   __android_log_write (getAndroidLogPriority (theGravity), myEventSourceName.ToCString(), theString.ToCString());
+#elif defined(__EMSCRIPTEN__)
+  if (theGravity == Message_Trace)
+  {
+    debugMsgToConsole (theString.ToCString());
+  }
+  else
+  {
+    emscripten_log (getEmscriptenPriority (theGravity), "%s", theString.ToCString());
+  }
 #else
   syslog (getSysLogPriority (theGravity), "%s", theString.ToCString());
 #endif

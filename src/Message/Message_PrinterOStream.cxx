@@ -243,6 +243,12 @@ void Message_PrinterOStream::SetConsoleTextColor (Standard_OStream* theOStream,
     }
     SetConsoleTextAttribute (anStdOut, aFlags);
   }
+#elif defined(__EMSCRIPTEN__)
+  // Terminal capabilities are undefined on this platform.
+  // std::cout could be redirected to HTML page, into terminal or somewhere else.
+  (void )theOStream;
+  (void )theTextColor;
+  (void )theIsIntenseText;
 #else
   if (theOStream == NULL)
   {
