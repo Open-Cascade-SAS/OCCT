@@ -495,6 +495,16 @@ public:
   //! Either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1).
   Standard_Integer TextureWrapClamp() const { return myTexClamp; }
 
+  //! @return true if texture parameters GL_TEXTURE_BASE_LEVEL/GL_TEXTURE_MAX_LEVEL are supported.
+  Standard_Boolean HasTextureBaseLevel() const
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    return IsGlGreaterEqual (1, 2);
+  #else
+    return IsGlGreaterEqual (3, 0);
+  #endif
+  }
+
   //! @return maximum degree of anisotropy texture filter
   Standard_Integer MaxDegreeOfAnisotropy() const { return myAnisoMax; }
 

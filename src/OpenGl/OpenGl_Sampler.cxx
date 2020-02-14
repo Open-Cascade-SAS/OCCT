@@ -263,8 +263,8 @@ void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
     setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, aDegree);
   }
 
-  if (theCtx->IsGlGreaterEqual(1, 2) &&
-      (theSampler == NULL || !theSampler->isValidSampler()))
+  if (theCtx->HasTextureBaseLevel()
+   && (theSampler == NULL || !theSampler->isValidSampler()))
   {
     setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_BASE_LEVEL, theParams->BaseLevel());
     setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_MAX_LEVEL,  theParams->MaxLevel());
