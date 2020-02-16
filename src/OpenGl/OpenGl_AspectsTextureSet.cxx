@@ -195,6 +195,7 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
 
   Standard_Integer& aTextureSetBits = myTextures[0]->ChangeTextureSetBits();
   aTextureSetBits = Graphic3d_TextureSetBits_NONE;
+  Standard_Integer aPrevTextureUnit = -1;
   if (theAspect->ToMapTexture())
   {
     Graphic3d_TextureSet::Iterator aTextureIter (aNewTextureSet);
@@ -212,6 +213,11 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
           if (aResource->Init(theCtx, aTexture))
           {
             aResIter0.ChangeUnit() = aResource->Sampler()->Parameters()->TextureUnit();
+            if (aResIter0.Unit() < aPrevTextureUnit)
+            {
+              throw Standard_ProgramError("Graphic3d_TextureMap defines texture units in non-ascending order");
+            }
+            aPrevTextureUnit = aResIter0.Unit();
             aResource->Sampler()->SetParameters(aTexture->GetParams());
             aResource->SetRevision (aTexture->Revision());
           }
@@ -262,6 +268,11 @@ void OpenGl_AspectsTextureSet::build (const Handle(OpenGl_Context)& theCtx,
         // update occupation of texture units
         const Graphic3d_TextureUnit aTexUnit = aResource->Sampler()->Parameters()->TextureUnit();
         aResIter0.ChangeUnit() = aTexUnit;
+        if (aResIter0.Unit() < aPrevTextureUnit)
+        {
+          throw Standard_ProgramError("Graphic3d_TextureMap defines texture units in non-ascending order");
+        }
+        aPrevTextureUnit = aResIter0.Unit();
         if (aTexUnit >= Graphic3d_TextureUnit_0 && aTexUnit <= Graphic3d_TextureUnit_5)
         {
           aTextureSetBits |= (1 << int(aTexUnit));

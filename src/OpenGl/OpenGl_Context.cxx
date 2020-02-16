@@ -31,6 +31,7 @@
 #include <OpenGl_FrameStats.hxx>
 #include <OpenGl_Sampler.hxx>
 #include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_TextureSetPairIterator.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Aspects.hxx>
 #include <Graphic3d_TransformUtils.hxx>
@@ -3428,93 +3429,56 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_Text
   if (myActiveTextures != theTextures)
   {
     Handle(OpenGl_Context) aThisCtx (this);
-    OpenGl_TextureSet::Iterator aTextureIterOld (myActiveTextures), aTextureIterNew (theTextures);
-    for (;;)
+    for (OpenGl_TextureSetPairIterator aSlotIter (myActiveTextures, theTextures); aSlotIter.More(); aSlotIter.Next())
     {
-      if (!aTextureIterNew.More())
+      const Graphic3d_TextureUnit aTexUnit = aSlotIter.Unit();
+      const OpenGl_Texture* aTextureOld = aSlotIter.Texture1();
+      const OpenGl_Texture* aTextureNew = aSlotIter.Texture2();
+      if (aTextureNew == aTextureOld)
       {
-        for (; aTextureIterOld.More(); aTextureIterOld.Next())
-        {
-          if (const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value())
-          {
-            aTextureOld->Unbind (aThisCtx, aTextureIterOld.Unit());
-          #if !defined(GL_ES_VERSION_2_0)
-            if (core11 != NULL)
-            {
-              OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
-            }
-          #endif
-          }
-        }
-        break;
-      }
-
-      const Handle(OpenGl_Texture)& aTextureNew = aTextureIterNew.Value();
-      if (aTextureIterOld.More())
-      {
-        const Handle(OpenGl_Texture)& aTextureOld = aTextureIterOld.Value();
-        if (aTextureNew == aTextureOld
-         && aTextureIterNew.Unit() == aTextureIterOld.Unit())
-        {
-          aTextureIterNew.Next();
-          aTextureIterOld.Next();
-          continue;
-        }
-        else if (aTextureNew.IsNull()
-             || !aTextureNew->IsValid())
-        {
-          if (!aTextureOld.IsNull())
-          {
-            aTextureOld->Unbind (aThisCtx, aTextureIterOld.Unit());
-          #if !defined(GL_ES_VERSION_2_0)
-            if (core11 != NULL)
-            {
-              OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
-            }
-          #endif
-          }
-
-          aTextureIterNew.Next();
-          aTextureIterOld.Next();
-          continue;
-        }
-
-        aTextureIterOld.Next();
-      }
-      if (aTextureNew.IsNull())
-      {
-        aTextureIterNew.Next();
         continue;
       }
 
-      const Graphic3d_TextureUnit aTexUnit = aTextureIterNew.Unit();
-      if (aTexUnit >= myMaxTexCombined)
+      if (aTextureNew != NULL
+       && aTextureNew->IsValid())
       {
-        PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                     TCollection_AsciiString("Texture unit ") + aTexUnit + " for " + aTextureNew->ResourceId() + " exceeds hardware limit " + myMaxTexCombined);
-        aTextureIterNew.Next();
-        continue;
-      }
+        if (aTexUnit >= myMaxTexCombined)
+        {
+          PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                       TCollection_AsciiString("Texture unit ") + aTexUnit + " for " + aTextureNew->ResourceId() + " exceeds hardware limit " + myMaxTexCombined);
+          continue;
+        }
 
-      aTextureNew->Bind (aThisCtx, aTexUnit);
-      if (aTextureNew->Sampler()->ToUpdateParameters())
-      {
-        if (aTextureNew->Sampler()->IsImmutable())
+        aTextureNew->Bind (aThisCtx, aTexUnit);
+        if (aTextureNew->Sampler()->ToUpdateParameters())
         {
-          aTextureNew->Sampler()->Init (aThisCtx, *aTextureNew);
+          if (aTextureNew->Sampler()->IsImmutable())
+          {
+            aTextureNew->Sampler()->Init (aThisCtx, *aTextureNew);
+          }
+          else
+          {
+            OpenGl_Sampler::applySamplerParams (aThisCtx, aTextureNew->Sampler()->Parameters(), aTextureNew->Sampler().get(), aTextureNew->GetTarget(), aTextureNew->HasMipmaps());
+          }
         }
-        else
+      #if !defined(GL_ES_VERSION_2_0)
+        if (core11 != NULL)
         {
-          OpenGl_Sampler::applySamplerParams (aThisCtx, aTextureNew->Sampler()->Parameters(), aTextureNew->Sampler().get(), aTextureNew->GetTarget(), aTextureNew->HasMipmaps());
+          OpenGl_Sampler::applyGlobalTextureParams (aThisCtx, *aTextureNew, aTextureNew->Sampler()->Parameters());
         }
+      #endif
       }
-    #if !defined(GL_ES_VERSION_2_0)
-      if (core11 != NULL)
+      else if (aTextureOld != NULL
+            && aTextureOld->IsValid())
       {
-        OpenGl_Sampler::applyGlobalTextureParams (aThisCtx, *aTextureNew, aTextureNew->Sampler()->Parameters());
+        aTextureOld->Unbind (aThisCtx, aTexUnit);
+      #if !defined(GL_ES_VERSION_2_0)
+        if (core11 != NULL)
+        {
+          OpenGl_Sampler::resetGlobalTextureParams (aThisCtx, *aTextureOld, aTextureOld->Sampler()->Parameters());
+        }
+      #endif
       }
-    #endif
-      aTextureIterNew.Next();
     }
     myActiveTextures = theTextures;
   }

@@ -20,6 +20,7 @@
 class OpenGl_Texture;
 
 //! Class holding array of textures to be mapped as a set.
+//! Textures should be defined in ascending order of texture units within the set.
 class OpenGl_TextureSet : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(OpenGl_TextureSet, Standard_Transient)
@@ -99,11 +100,17 @@ public:
   //! Return the first texture.
   Handle(OpenGl_Texture)& ChangeFirst() { return myTextures.ChangeFirst().Texture; }
 
+  //! Return the first texture unit.
+  Graphic3d_TextureUnit FirstUnit() const { return myTextures.First().Unit; }
+
   //! Return the last texture.
   const Handle(OpenGl_Texture)& Last() const { return myTextures.Last().Texture; }
 
   //! Return the last texture.
   Handle(OpenGl_Texture)& ChangeLast() { return myTextures.ChangeLast().Texture; }
+
+  //! Return the last texture unit.
+  Graphic3d_TextureUnit LastUnit() const { return myTextures.Last().Unit; }
 
   //! Return the last texture unit.
   Graphic3d_TextureUnit& ChangeLastUnit() { return myTextures.ChangeLast().Unit; }

@@ -56,6 +56,7 @@ OpenGl_TextureFormat.cxx
 OpenGl_TextureFormat.hxx
 OpenGl_TextureSet.cxx
 OpenGl_TextureSet.hxx
+OpenGl_TextureSetPairIterator.hxx
 OpenGl_Resource.hxx
 OpenGl_Resource.cxx
 OpenGl_NamedResource.hxx
