@@ -1044,31 +1044,46 @@ void OpenGl_Context::ReadGlVersion (Standard_Integer& theGlVerMajor,
   theGlVerMajor = 0;
   theGlVerMinor = 0;
 
-#ifdef GL_MAJOR_VERSION
-  // available since OpenGL 3.0 and OpenGL 3.0 ES
-  GLint aMajor = 0, aMinor = 0;
-  glGetIntegerv (GL_MAJOR_VERSION, &aMajor);
-  glGetIntegerv (GL_MINOR_VERSION, &aMinor);
-  // glGetError() sometimes does not report an error here even if
-  // GL does not know GL_MAJOR_VERSION and GL_MINOR_VERSION constants.
-  // This happens on some renderers like e.g. Cygwin MESA.
-  // Thus checking additionally if GL has put anything to
-  // the output variables.
-  if (::glGetError() == GL_NO_ERROR && aMajor != 0 && aMinor != 0)
+  bool toCheckVer3 = true;
+#if defined(__EMSCRIPTEN__)
+  // WebGL 1.0 prints annoying invalid enumeration warnings to console.
+  toCheckVer3 = false;
+  if (EMSCRIPTEN_WEBGL_CONTEXT_HANDLE aWebGlCtx = emscripten_webgl_get_current_context())
   {
-    theGlVerMajor = aMajor;
-    theGlVerMinor = aMinor;
-    return;
-  }
-  for (GLenum anErr = ::glGetError(), aPrevErr = GL_NO_ERROR;; aPrevErr = anErr, anErr = ::glGetError())
-  {
-    if (anErr == GL_NO_ERROR
-     || anErr == aPrevErr)
+    EmscriptenWebGLContextAttributes anAttribs = {};
+    if (emscripten_webgl_get_context_attributes (aWebGlCtx, &anAttribs) == EMSCRIPTEN_RESULT_SUCCESS)
     {
-      break;
+      toCheckVer3 = anAttribs.majorVersion >= 2;
     }
   }
 #endif
+
+  // Available since OpenGL 3.0 and OpenGL ES 3.0.
+  if (toCheckVer3)
+  {
+    GLint aMajor = 0, aMinor = 0;
+    glGetIntegerv (GL_MAJOR_VERSION, &aMajor);
+    glGetIntegerv (GL_MINOR_VERSION, &aMinor);
+    // glGetError() sometimes does not report an error here even if
+    // GL does not know GL_MAJOR_VERSION and GL_MINOR_VERSION constants.
+    // This happens on some renderers like e.g. Cygwin MESA.
+    // Thus checking additionally if GL has put anything to
+    // the output variables.
+    if (::glGetError() == GL_NO_ERROR && aMajor != 0 && aMinor != 0)
+    {
+      theGlVerMajor = aMajor;
+      theGlVerMinor = aMinor;
+      return;
+    }
+    for (GLenum anErr = ::glGetError(), aPrevErr = GL_NO_ERROR;; aPrevErr = anErr, anErr = ::glGetError())
+    {
+      if (anErr == GL_NO_ERROR
+       || anErr == aPrevErr)
+      {
+        break;
+      }
+    }
+  }
 
   // Read version string.
   // Notice that only first two numbers split by point '2.1 XXXXX' are significant.
