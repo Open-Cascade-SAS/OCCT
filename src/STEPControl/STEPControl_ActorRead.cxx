@@ -112,6 +112,9 @@
 #include <UnitsMethods.hxx>
 #include <XSAlgo.hxx>
 #include <XSAlgo_AlgoContainer.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
+#include <StepRepr_ConstructiveGeometryRepresentation.hxx>
+#include <Geom_Plane.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_ActorRead,Transfer_ActorOfTransientProcess)
 
@@ -505,6 +508,7 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
   // should be taken into account 
   Standard_Integer readSRR = Interface_Static::IVal("read.step.shape.relationship");
   
+  Standard_Integer readConstructiveGeomRR = Interface_Static::IVal("read.step.constructivegeom.relationship");
   // Flag indicating whether SDRs associated with the product`s main SDR
   // by SAs (which correspond to hybrid model representation in AP203 before 1998) 
   // should be taken into account 
@@ -625,19 +629,35 @@ static void getSDR(const Handle(StepRepr_ProductDefinitionShape)& PDS,
       Handle(Standard_Type) tSRR = STANDARD_TYPE(StepRepr_ShapeRepresentationRelationship);
       for (subs1.Start(); subs1.More(); subs1.Next()) {
         Handle(Standard_Transient) anitem = subs1.Value();
-        if ( anitem->DynamicType() != tSRR ) continue;
-        Handle(StepRepr_ShapeRepresentationRelationship) SRR =
-          Handle(StepRepr_ShapeRepresentationRelationship)::DownCast(anitem);
-        Standard_Integer nbrep = ( rep == SRR->Rep1() ? 2 : 1 );
-        // SKL for bug 29068: parameter useTrsf is used because if root entity has connection with other
-        // by ShapeRepresentationRelationship then result after such transferring need to transform also.
-        // This case is from test "bugs modalg_7 bug30196"
-        binder = TransferEntity(SRR, TP, nbrep, useTrsf);
-        if ( ! binder.IsNull() ) {
-          theResult = TransferBRep::ShapeResult (binder);
-          Result1 = theResult;
-          B.Add(Cund, theResult);
-          nbShapes++;
+        if( !anitem->IsKind(STANDARD_TYPE(StepRepr_RepresentationRelationship)))
+          continue;
+        if (anitem->DynamicType() == tSRR)
+        {
+          Handle(StepRepr_ShapeRepresentationRelationship) SRR =
+            Handle(StepRepr_ShapeRepresentationRelationship)::DownCast(anitem);
+          Standard_Integer nbrep = (rep == SRR->Rep1() ? 2 : 1);
+          // SKL for bug 29068: parameter useTrsf is used because if root entity has connection with other
+          // by ShapeRepresentationRelationship then result after such transferring need to transform also.
+          // This case is from test "bugs modalg_7 bug30196"
+          binder = TransferEntity(SRR, TP, nbrep, useTrsf);
+          if (! binder.IsNull()) {
+            theResult = TransferBRep::ShapeResult (binder);
+            Result1 = theResult;
+            B.Add(Cund, theResult);
+            nbShapes++;
+          }
+        }
+        else if(readConstructiveGeomRR && anitem->IsKind(STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentationRelationship)))
+        {
+          Handle(StepRepr_ConstructiveGeometryRepresentationRelationship) aCSRR =
+            Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)::DownCast(anitem);
+           binder = TransferEntity(aCSRR, TP);
+           if (! binder.IsNull())
+           {
+             Result1 = TransferBRep::ShapeResult (binder);
+             B.Add(Cund, Result1);
+             nbShapes++;
+           }
         }
       }
     }
@@ -1096,6 +1116,70 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
   else if (nsh == 1) shbinder = new TransferBRep_ShapeBinder (OneResult);
   else               shbinder = new TransferBRep_ShapeBinder (Cund);
   TP->Bind(und, shbinder);
+  return shbinder;
+  
+}
+
+//=======================================================================
+//function : TransferEntity
+//purpose  : 
+//=======================================================================
+
+
+Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
+    const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& theCGRR,
+    const Handle(Transfer_TransientProcess)& theTP)
+{
+ 
+  Handle(TransferBRep_ShapeBinder) shbinder;
+  if (theCGRR.IsNull()) 
+    return shbinder;
+  Standard_Boolean resetUnits = Standard_False;
+  Handle(StepRepr_Representation) oldSRContext = mySRContext;
+  TopoDS_Compound aComp;
+  BRep_Builder aB;
+  aB.MakeCompound(aComp);
+  for (Standard_Integer i = 1; i <= 2; i ++) 
+  {
+    Handle(StepRepr_ConstructiveGeometryRepresentation) aCRepr = 
+      Handle(StepRepr_ConstructiveGeometryRepresentation)::DownCast(i == 1 ? theCGRR->Rep1() : theCGRR->Rep2() );
+    if(aCRepr.IsNull())
+      continue;
+    if(mySRContext.IsNull() || aCRepr->ContextOfItems() != mySRContext->ContextOfItems())
+    {
+      PrepareUnits(aCRepr,theTP);
+      resetUnits = Standard_True;
+    }
+    Standard_Integer j =1;
+    Handle(StepGeom_Axis2Placement3d) anAxis1;
+    Handle(StepGeom_Axis2Placement3d) anAxis2;
+    for( ; j <= 2; j++ )
+    {
+      Handle(StepRepr_RepresentationItem) anItem = aCRepr->ItemsValue(j);
+      Handle(StepGeom_Axis2Placement3d) aStepAxis =
+        Handle(StepGeom_Axis2Placement3d)::DownCast(anItem);
+      if( !aStepAxis.IsNull())
+      {
+        Handle(Geom_Axis2Placement) anAxis = StepToGeom::MakeAxis2Placement (aStepAxis);
+        if(anAxis.IsNull())
+          continue;
+        Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Ax3(anAxis->Ax2()));
+        TopoDS_Face aPlaneFace;
+        aB.MakeFace(aPlaneFace, aPlane, Precision::Confusion());
+        Handle(TransferBRep_ShapeBinder) axisbinder = new TransferBRep_ShapeBinder (aPlaneFace);
+        theTP->Bind(aStepAxis, axisbinder);
+        aB.Add(aComp, aPlaneFace);
+      }
+    }
+
+  }
+  shbinder = new TransferBRep_ShapeBinder (aComp);
+  mySRContext = oldSRContext;
+  if(oldSRContext.IsNull() || resetUnits)
+    PrepareUnits(oldSRContext,theTP);
+
+  theTP->Bind(theCGRR, shbinder);
+  
   return shbinder;
   
 }

@@ -406,6 +406,47 @@ if(!Interface_Static::SetIVal(;read.step.shape.aspect;,1))
 ~~~~~
 Default value is 1 (ON). 
 
+<h4>read.step.constructivegeom.relationship:</h4>
+
+Boolean flag regulating translation of "CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP" entities that define
+position of constructive geometry entities contained in "CONSTRUCTIVE_GEOMETRY_REPRESENTATION" with respect to the
+main representation of the shape (product).
+
+By default, the flag is set to 0 (OFF) so these entities are not translated. 
+Set this flag to 1 (ON) if you need to translate constructive geometry entities associated with the parts:
+
+~~~~~
+if (!Interface_Static::SetIVal("read.step.constructivegeom.relationship", 1)) { .. error .. }
+~~~~~
+
+The "CONSTRUCTIVE_GEOMETRY_REPRESENTATION" entity is translated into compound of two unlimited planar faces, 
+whose location is result of translation of corresponding "AXIS_PLACEMENT" entity.
+Note that appropriate interpretation of the translated data should be done after translation.
+
+The result of translation can be obtained either for the "CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP" entity,
+of for each of the two "AXIS2_PLACEMENT_3D" entities referenced by it. as follows:
+
+~~~~~
+  STEPControl_Reader aReader;
+  ... // translate file and parse STEP model to find relevant axis entity
+  Handle(StepGeom_Axis2Placement3d) aSTEPAxis = ...;
+  Handle(Transfer_Binder) aBinder = aReader->WS()->TransferReader()->TransientProcess()->Find(aSTEPAxis);
+  Handle(TransferBRep_ShapeBinder) aShBinder = Handle(TransferBRep_ShapeBinder)::DownCast(aBinder);
+  if (! aShBinder.IsNull())
+  {
+    TopoDS_Face aFace = TopoDS::Face (aShBinder->Result());
+    if (! aFace.IsNull())
+    {
+      Handle(Geom_Plane) aSurf = Handle(Geom_Plane)::DownCast (BRep_Tool::Surface (aFace));
+      if (! aSurf.IsNull())
+      {
+        gp_Ax3 anAxis = aSurf->Placement();
+        ... // use the axis placement data
+      }
+    }
+  }
+~~~~~
+
 @subsubsection occt_step_2_3_4 Performing the STEP file translation
 
 Perform the translation according to what you want to translate. You can choose either root entities (all or selected by the number of root), or select any entity by its number in the STEP file. There is a limited set of types of entities that can be used as starting entities for translation. Only the following entities are recognized as transferable: 

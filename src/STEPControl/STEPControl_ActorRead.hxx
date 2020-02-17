@@ -45,6 +45,7 @@ class StepRepr_MappedItem;
 class StepShape_FaceSurface;
 class TopoDS_Shell;
 class TopoDS_Compound;
+class StepRepr_ConstructiveGeometryRepresentationRelationship;
 
 
 class STEPControl_ActorRead;
@@ -136,6 +137,9 @@ protected:
   
   //! Transfers  FaceSurface entity
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepShape_FaceSurface)& fs, const Handle(Transfer_TransientProcess)& TP);
+
+  Handle(TransferBRep_ShapeBinder) TransferEntity( const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& theCGRR,
+    const Handle(Transfer_TransientProcess)& theTP);
   
   //! Tranlates file by old way when CDSR are roots . Acts only if "read.step.product_mode" is equal Off.
   Standard_EXPORT Handle(TransferBRep_ShapeBinder) OldWay (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP);
