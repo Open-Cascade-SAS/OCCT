@@ -214,18 +214,17 @@ public:
   //! @return text presentation
   Standard_EXPORT static TCollection_AsciiString FormatJson (const Standard_SStream& theStream, const Standard_Integer theIndent = 3);
 
-  //! Converts stream into map of values. Values are not empty if the stream contains at least two values.
+  //! Converts stream into map of values.
   //!
-  //! The one level stream example: <class_name>key_1\value_1\key_2\value_2</class_name>
-  //! In output: theStreamKey equals class_name, theValues contains key_1, value_1, key_2, and value_2.
+  //! The one level stream example: 'key_1: value_1, key_2: value_2'
+  //! In output: values contain 'key_1: value_1' and 'key_2: value_2'.
   //!
-  //! Two level stream example: <class_name>key_1\value_1\key_2\value_2\key_3<subclass_name>subclass_key_1\subclass_value1</subclass_name></class_name>
-  //! In output: theStreamKey equals class_name, theValues contains key_1, value_1, key_2, and value_2, key_3 and
-  //! <subclass_name>subclass_key_1\subclass_value1</subclass_name>.
-  //! The last value might be processed later using the same method.
+  //! The two level stream example: 'key_1: value_1, key_2: value_2, key_3: {sublevel_key_1: sublevel_value_1}, key_4: value_4'
+  //! In output values contain 'key_1: value_1', 'key_2: value_2', 'key_3: {sublevel_key_1: sublevel_value_1}' and 'key_4: value_4'.
+  //! The sublevel value might be processed later using the same method.
   //!
-  //! @param theStream stream value
-  //! @param theKeyToValues [out] container of split values
+  //! @param theStreamStr stream value
+  //! @param theKeyToValues [out] container of split values. It contains key to value and position of the value in the stream text
   Standard_EXPORT static Standard_Boolean SplitJson (const TCollection_AsciiString& theStreamStr,
                                                      NCollection_IndexedDataMap<TCollection_AsciiString, Standard_DumpValue>& theKeyToValues);
 
