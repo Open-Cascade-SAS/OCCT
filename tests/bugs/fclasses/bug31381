@@ -1,0 +1,15 @@
+puts "# ============"
+puts "# 0031381: Foundation Classes - wrong evaluations for rational BSpline curves using Adaptor curves "
+puts "# ============"
+puts ""
+puts "Eliminate output of approxcurve command"
+puts "REQUIRED ALL: Error   4.32754e-05" 
+
+circle c 0 0 1
+puts "Get rational BSpline curve of degree 2"
+convert c c
+puts "Get offset curve to force calculation of D3 for base curve when algorithm needs D2 for offset"
+offset oc c -.5
+puts "Approximate offset curve with continuity C2"
+approxcurve ac oc 1.e-4 2 5 25
+checklength ac -l 3.1415850499856011

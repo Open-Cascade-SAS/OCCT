@@ -111,7 +111,7 @@ void BSplCLib_Cache::CalculateDerivative(const Standard_Real&    theParameter,
   // When the degree of curve is lesser than the requested derivative,
   // nullify array cells corresponding to greater derivatives
   Standard_Integer aDerivative = theDerivative;
-  if (myParams.Degree < theDerivative)
+  if (!myIsRational && myParams.Degree < theDerivative)
   {
     aDerivative = myParams.Degree;
     for (Standard_Integer ind = myParams.Degree * aDimension; ind < (theDerivative + 1) * aDimension; ind++)
