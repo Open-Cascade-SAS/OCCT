@@ -1104,29 +1104,6 @@ void BOPAlgo_Tools::IntersectVertices(const TopTools_IndexedDataMapOfShapeReal& 
 }
 
 //=======================================================================
-//function : TreatCompound
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Tools::TreatCompound(const TopoDS_Shape& theS,
-                                  TopTools_MapOfShape& aMFence,
-                                  TopTools_ListOfShape& theLS)
-{
-  TopAbs_ShapeEnum aType = theS.ShapeType();
-  if (aType != TopAbs_COMPOUND)
-  {
-    if (aMFence.Add(theS))
-      theLS.Append(theS);
-    return;
-  }
-  TopoDS_Iterator aIt(theS);
-  for (; aIt.More(); aIt.Next())
-  {
-    const TopoDS_Shape& aS = aIt.Value();
-    TreatCompound(aS, aMFence, theLS);
-  }
-}
-
-//=======================================================================
 // Classification of the faces relatively solids
 //=======================================================================
 

@@ -34,10 +34,6 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 
-static
-  void TreatCompound(const TopoDS_Shape& theC1, 
-                     TopTools_ListOfShape& theLSX);
-
 //=======================================================================
 // function: UpdateVertex
 // purpose: 
@@ -437,103 +433,101 @@ void BOPTools_AlgoTools::CorrectRange(const TopoDS_Edge& aE,
     }
   }
 }
+
+namespace
+{
+
+//=======================================================================
+//function : dimension
+//purpose  : returns dimension of elementary shape
+//=======================================================================
+static Standard_Integer dimension (const TopoDS_Shape& theS)
+{
+  switch (theS.ShapeType())
+  {
+    case TopAbs_VERTEX:
+      return 0;
+    case TopAbs_EDGE:
+    case TopAbs_WIRE:
+      return 1;
+    case TopAbs_FACE:
+    case TopAbs_SHELL:
+      return 2;
+    case TopAbs_SOLID:
+    case TopAbs_COMPSOLID:
+      return 3;
+    default:
+      return -1;
+  }
+}
+
+}
+
+//=======================================================================
+//function : Dimensions
+//purpose  : 
+//=======================================================================
+void BOPTools_AlgoTools::Dimensions (const TopoDS_Shape& theS,
+                                     Standard_Integer& theDMin,
+                                     Standard_Integer& theDMax)
+{
+  theDMin = theDMax = dimension (theS);
+  if (theDMax >= 0)
+    return;
+
+  TopTools_ListOfShape aLS;
+  TopTools_MapOfShape aMFence;
+  TreatCompound (theS, aLS, &aMFence);
+  if (aLS.IsEmpty())
+  {
+    // empty shape
+    theDMin = theDMax = -1;
+    return;
+  }
+
+  theDMin = 3;
+  theDMax = 0;
+  for (TopTools_ListOfShape::Iterator it (aLS); it.More(); it.Next())
+  {
+    Standard_Integer aDim = dimension (it.Value());
+    if (aDim < theDMin)
+      theDMin = aDim;
+    if (aDim > theDMax)
+      theDMax = aDim;
+  }
+}
+
 //=======================================================================
 //function : Dimension
 //purpose  : 
 //=======================================================================
 Standard_Integer BOPTools_AlgoTools::Dimension(const TopoDS_Shape& theS)
 {
-  Standard_Integer i, iRet, iRx0 = 0, iRx = 0;
-  TopAbs_ShapeEnum aTS;
-  TopTools_ListOfShape aLS;
-  TopTools_ListIteratorOfListOfShape aIt;
-  //
-  aTS=theS.ShapeType();
-  if (aTS!=TopAbs_COMPOUND) {
-    switch (aTS) {
-      case TopAbs_EDGE:
-      case TopAbs_WIRE:
-        iRet=1;
-        break;
-      case TopAbs_FACE:
-      case TopAbs_SHELL:
-        iRet=2;
-        break;
-      case TopAbs_SOLID:
-      case TopAbs_COMPSOLID:
-        iRet=3;
-        break;
-      default:
-        iRet=0;
-    }
-    return iRet;
-  }
-  //
-  iRet=-1;
-  TreatCompound(theS, aLS);
-  if(aLS.IsEmpty()) {
-    iRet = -2; //empty compound
-    return iRet;
-  }
-  aIt.Initialize(aLS);
-  for (i=0; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aSx=aIt.Value(); 
-    iRx=Dimension(aSx);
-    if (!i) {
-      iRx0=iRx;
-      i=1;
-      continue;
-    }
-    if (iRx!=iRx0) {
-      return iRet;// -1
-    }
-  }
-  return iRx;
+  Standard_Integer aDMin, aDMax;
+  Dimensions (theS, aDMin, aDMax);
+  return (aDMin == aDMax) ? aDMin : -1;
 }
 
 //=======================================================================
 //function : TreatCompound
 //purpose  : 
 //=======================================================================
-void TreatCompound(const TopoDS_Shape& theC1, 
-                   TopTools_ListOfShape& theLSX)
+void BOPTools_AlgoTools::TreatCompound (const TopoDS_Shape& theS,
+                                        TopTools_ListOfShape& theLS,
+                                        TopTools_MapOfShape* theMFence)
 {
-  Standard_Integer aNbC1;
-  TopAbs_ShapeEnum aType;
-  TopTools_ListOfShape aLC, aLC1;
-  TopTools_ListIteratorOfListOfShape aIt, aIt1;
-  TopoDS_Iterator aItC;
-  //
-  aLC.Append (theC1);
-  for(;;) {
-    aLC1.Clear();
-    aIt.Initialize(aLC);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aC=aIt.Value(); //C is compound
-      //
-      aItC.Initialize(aC);
-      for (; aItC.More(); aItC.Next()) {
-        const TopoDS_Shape& aS=aItC.Value();
-        aType=aS.ShapeType();
-        if (aType==TopAbs_COMPOUND) {
-          aLC1.Append(aS);
-        }
-        else {
-          theLSX.Append(aS);
-        }
-      }
+  TopAbs_ShapeEnum aType = theS.ShapeType();
+  if (aType != TopAbs_COMPOUND)
+  {
+    if (!theMFence || theMFence->Add (theS))
+    {
+      theLS.Append (theS);
     }
-    //
-    aNbC1=aLC1.Extent();
-    if (!aNbC1) {
-      break;
-    }
-    //
-    aLC.Clear();
-    aIt.Initialize(aLC1);
-    for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Shape& aSC=aIt.Value();
-      aLC.Append(aSC);
-    }
-  }// while(1)
+    return;
+  }
+
+  for (TopoDS_Iterator it (theS); it.More(); it.Next())
+  {
+    TreatCompound (it.Value(), theLS, theMFence);
+  }
 }

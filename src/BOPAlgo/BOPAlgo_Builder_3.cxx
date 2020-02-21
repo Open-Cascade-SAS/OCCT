@@ -550,7 +550,7 @@ void BOPAlgo_Builder::FillInternalShapes()
   aIt.Initialize(aArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
-    BOPAlgo_Tools::TreatCompound(aS, aMFence, aLSC);
+    BOPTools_AlgoTools::TreatCompound(aS, aLSC, &aMFence);
   }
   aIt.Initialize(aLSC);
   for (; aIt.More(); aIt.Next()) {

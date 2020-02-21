@@ -1,0 +1,50 @@
+puts "======================================================="
+puts "0030386: Modeling Algorithms - Unable to perform Cut operation"
+puts "======================================================="
+puts ""
+
+# prepare the first argument - compound of mutlti-dimensional shapes
+vertex v 0 0 2
+line l 5 5 0 0 0 1
+mkedge e l -10 10
+plane p 0 0 1 0 0 1
+mkface f p -15 15 -15 15
+box b 8 8 8 5 5 5
+bclearobjects
+bcleartools
+baddobjects v e f b
+bfillds
+bbuild s1
+
+# second argument - solid
+box s2 10 10 10
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+# it is allowed to perform only CUT and COMMON operations
+bbop r0 0
+bbop r2 2
+
+
+foreach r {r0 r2} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the $r is a self-interfering shape"
+  }
+}
+
+checknbshapes r0 -vertex 16 -edge 18 -wire 7 -face 7 -shell 1 -solid 1 -t
+checkprops r0 -s 124
+explode r0 so
+checkprops r0_1 -v 8
+
+checknbshapes r2 -vertex 24 -edge 30 -wire 11 -face 10 -shell 1 -solid 1 -t 
+checkprops r2 -s 950
+explode r2 so
+checkprops r2_1 -v 117
+
+checkview -display r2 -2d -path ${imagedir}/${test_image}.png

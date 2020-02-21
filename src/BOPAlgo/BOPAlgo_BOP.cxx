@@ -122,7 +122,7 @@ BOPAlgo_Operation BOPAlgo_BOP::Operation()const
 //=======================================================================
 void BOPAlgo_BOP::CheckData()
 {
-  Standard_Integer i, j, iDim, aNbArgs, aNbTools;
+  Standard_Integer i, j, aNbArgs, aNbTools;
   Standard_Boolean bFuse;
   TopTools_ListIteratorOfListOfShape aItLS;
   //
@@ -164,7 +164,8 @@ void BOPAlgo_BOP::CheckData()
   //            or equal to the MAXIMAL dimension of the TOOLS;
   // 4. COMMON: The arguments and tools could have any dimensions.
   //
-  Standard_Integer iDimMin[2] = { 0, 0 }, iDimMax[2] = { 0, 0 };
+  Standard_Integer iDimMin[2] = { 3, 3 },
+                   iDimMax[2] = { 0, 0 };
   Standard_Boolean bHasValid[2] = {Standard_False, Standard_False};
   //
   for (i=0; i<2; ++i) {
@@ -173,38 +174,27 @@ void BOPAlgo_BOP::CheckData()
     for (j=0; aItLS.More(); aItLS.Next(), ++j) {
       const TopoDS_Shape& aS=aItLS.Value();
       Standard_Boolean bIsEmpty = BOPTools_AlgoTools3D::IsEmptyShape(aS);
-      if (bIsEmpty) {
+      if (bIsEmpty)
+      {
         AddWarning(new BOPAlgo_AlertEmptyShape (aS));
         continue;
       }
-      //
-      iDim = BOPTools_AlgoTools::Dimension(aS);
-      if (iDim < 0) {
+
+      Standard_Integer iDMin, iDMax;
+      BOPTools_AlgoTools::Dimensions(aS, iDMin, iDMax);
+
+      if (iDMin < iDimMin[i])
+        iDimMin[i] = iDMin;
+      if (iDMax > iDimMax[i])
+        iDimMax[i] = iDMax;
+
+      if (bFuse && (iDimMin[i] != iDimMax[i]))
+      {
         // non-homogeneous argument
         AddError (new BOPAlgo_AlertBOPNotAllowed);
         return;
       }
-      //
       bHasValid[i] = Standard_True;
-      //
-      if (!j) {
-        iDimMin[i] = iDim;
-        iDimMax[i] = iDim;
-        continue;
-      }
-      //
-      if (iDim < iDimMin[i]) {
-        iDimMin[i] = iDim;
-      }
-      else if (iDim > iDimMax[i]) {
-        iDimMax[i] = iDim;
-      }
-      //
-      if (bFuse && (iDimMin[i] != iDimMax[i])) {
-        // non-homogeneous argument
-        AddError (new BOPAlgo_AlertBOPNotAllowed);
-        return;
-      }
     }
   }
   //
@@ -222,7 +212,7 @@ void BOPAlgo_BOP::CheckData()
   if (bHasValid[0] || bHasValid[1])
   {
     // In case of all empty shapes in one of the groups
-    // this group aquires the dimension of other group
+    // this group acquires the dimension of other group
     myDims[0] = bHasValid[0] ? iDimMin[0] : iDimMin[1];
     myDims[1] = bHasValid[1] ? iDimMin[1] : iDimMin[0];
   }
@@ -583,12 +573,17 @@ void BOPAlgo_BOP::BuildRC()
     aItLS.Initialize(aLS);
     for (; aItLS.More(); aItLS.Next()) {
       const TopoDS_Shape& aS = aItLS.Value();
-      iDim = BOPTools_AlgoTools::Dimension(aS);
-      if (iDim < 0) {
-        continue;
+      TopTools_ListOfShape aList;
+      BOPTools_AlgoTools::TreatCompound (aS, aList);
+      for (TopTools_ListOfShape::Iterator itList (aList); itList.More(); itList.Next())
+      {
+        const TopoDS_Shape& aSS = itList.Value();
+        iDim = BOPTools_AlgoTools::Dimension (aSS);
+        if (iDim < 0)
+          continue;
+        aType = TypeToExplore (iDim);
+        TopExp::MapShapes (aSS, aType, aMS);
       }
-      aType = TypeToExplore(iDim);
-      TopExp::MapShapes(aS, aType, aMS);
     }
   }
   //
@@ -930,7 +925,7 @@ void BOPAlgo_BOP::BuildShape()
     for (; aItLS.More(); aItLS.Next())
     {
       const TopoDS_Shape& aS = aItLS.Value();
-      BOPAlgo_Tools::TreatCompound(aS, aMInpFence, aLSNonCont);
+      BOPTools_AlgoTools::TreatCompound(aS, aLSNonCont, &aMInpFence);
     }
   }
 

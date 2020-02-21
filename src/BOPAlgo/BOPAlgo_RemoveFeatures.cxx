@@ -181,7 +181,7 @@ void BOPAlgo_RemoveFeatures::CheckData()
     TopTools_ListOfShape aShapes;
     TopTools_MapOfShape aMFence;
     // Extract all shapes from the compound
-    BOPAlgo_Tools::TreatCompound(myInputShape, aMFence, aShapes);
+    BOPTools_AlgoTools::TreatCompound(myInputShape, aShapes, &aMFence);
     if (aShapes.IsEmpty())
     {
       // Add error of empty input shape

@@ -1,0 +1,46 @@
+puts "REQUIRED All: Error: Boolean operation of the given type is not allowed on the given inputs"
+
+puts "======================================================="
+puts "0030386: Modeling Algorithms - Unable to perform Cut operation"
+puts "======================================================="
+puts ""
+
+# prepare the first argument - compound of mutlti-dimensional shapes
+vertex v 0 0 2
+line l 5 5 0 0 0 1
+mkedge e l -10 10
+plane p 0 0 1 0 0 1
+mkface f p -15 15 -15 15
+box b 8 8 8 5 5 5
+bclearobjects
+bcleartools
+baddobjects v e f b
+bfillds
+bbuild s1
+
+# second argument - compound of solid and face
+box b2 10 10 10
+bclearobjects
+bcleartools
+baddobjects f
+baddtools b2
+bfillds
+bbuild s2
+
+# only common operation should be allowed
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+if {[regexp "Error: Boolean operation of the given type is not allowed on the given inputs" [bbop r 0]]} {
+  puts "Error: COMMON Operation must be allowed on any types of arguments"
+}
+
+foreach i {1 2 3} {
+  if {![regexp "Error: Boolean operation of the given type is not allowed on the given inputs" [bbop r $i]]} {
+    puts "Error: Operation must not be allowed"
+  }
+}
