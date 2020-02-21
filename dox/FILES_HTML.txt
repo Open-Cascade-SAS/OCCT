@@ -45,6 +45,7 @@ dev_guides/git_guide/git_guide.md
 dev_guides/tests/tests.md
 dev_guides/debug/debug.md
 dev_guides/upgrade/upgrade.md
+dev_guides/visualization/pbr_math.md
 
 dev_guides/building/building.md
 dev_guides/building/3rdparty/3rdparty_windows.md
