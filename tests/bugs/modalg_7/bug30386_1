@@ -1,0 +1,30 @@
+puts "======================================================="
+puts "0030386: Modeling Algorithms - Unable to perform Cut operation"
+puts "======================================================="
+puts ""
+
+restore [locate_data_file bug30386_shapes.brep] s
+explode s
+bclearobjects
+bcleartools
+baddobjects s_1
+baddtools s_2
+bfillds
+
+bbop r0 0
+bbop r2 2
+
+foreach r {r0 r2} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the $r is a self-interfering shape"
+  }
+}
+
+checknbshapes r0 -wire 6 -face 6 -shell 0 -solid 0 -t
+checkprops r0 -s 1.0852
+
+checknbshapes r2 -wire 546 -face 533 -shell 12 -solid 12 -t 
+checkprops r2 -s 223.275 -v 123.21
+
+checkview -display r2 -2d -path ${imagedir}/${test_image}.png

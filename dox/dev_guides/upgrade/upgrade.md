@@ -1857,3 +1857,50 @@ The following API changes have been made:
 @subsection upgrade_740_stdnamespace Standard_Stream.hxx no more has "using std::" statements
 *Standard_Stream.hxx* header, commonly included by other OCCT header files, does no more add entities from *std namespace* related to streams (like *std::cout*, *std::istream* and others) into global namespace.
 The application code relying on this matter should be updated to either specify std namespace explicitly (like std::cout) or add "using std::" statements locally.
+<<<<<<< HEAD
+=======
+
+@section upgrade_occt750 Upgrade to OCCT 7.5.0
+
+@subsection upgrade_750_srgb_color RGB color definition
+
+OCCT 3D Viewer has been improved to properly perform lighting using in linear RGB color space and then convert result into non-linear gamma-shifted sRGB color space before displaying on display.
+This change affects texture mapping, material definition and color definition.
+
+Previously *Quantity_Color* definition was provided with unspecified RGB color space.
+In practice, mixed color spaces have been actually used, with non-linear sRGB prevailing in general.
+Since OCCT 7.5.0, *Quantity_Color* now specifies that components are defined in linear RGB color space.
+
+This change affects following parts:
+* Standard colors defined by *Quantity_NameOfColor* enumeration have been converted into linear RGB values within Quantity_Color construction.
+* Application may use new enumeration value *Quantity_TOC_sRGB* for passing/fetching colors in sRGB color space,
+  which can be useful for interoperation with color picking widgets (returning 8-bit integer values within [0..255] range)
+  or for porting colors constants within old application code without manual conversion.
+* *Graphic3d_MaterialAspect* color components are now expected in linear RGB color space,
+  and standard OCCT materials within *Graphic3d_NameOfMaterial* enumeration have been updated accordingly.
+* Texture mapping now handles new *Graphic3d_TextureRoot::IsColorMap()* for interpreting content in linear RGB or sRGB color space.
+  It is responsibility of user specifying this flag correctly. The flag value is TRUE by default.
+* Method *Image_PixMap::PixelColor()* has been extended with a new Boolean flag for performing linearization of non-linear sRGB.
+  This flag is FALSE by default; application should consider passing TRUE instead for further handling *Quantity_Color* properly as linear RGB values.
+
+@subsection upgrade_750_aspectwindow Aspect_Window interface change
+
+Unexpected const-ness of Aspect_Window::DoResize() method has been removed, so that application classes implementing this interface should be updated accordingly.
+
+@subsection upgrade_750_rename Renaming of types
+
+Enumeration BRepOffset_Type is renamed to ChFiDS_TypeOfConcavity.
+
+@subsection upgrade_750_sensitiveEntity Select3D_SensitiveEntity interface change
+
+The method Select3D_SensitiveEntity::NbSubElements() has been changed to be constant. Select3D_SensitiveEntity subclasses at application level should be updated accordingly.
+
+
+@subsection upgrade_750_Booleans Changes in Boolean operations algorithm
+
+* TreatCompound method has been moved from *BOPAlgo_Tools* to *BOPTools_AlgoTools*. Additionally, the map parameter became optional:
+~~~~
+void BOPTools_AlgoTools::TreatCompound (const TopoDS_Shape& theS,
+                                        TopTools_ListOfShape& theLS,
+                                        TopTools_MapOfShape* theMap = NULL);
+~~~~

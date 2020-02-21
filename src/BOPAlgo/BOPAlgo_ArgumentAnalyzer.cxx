@@ -305,29 +305,26 @@ void BOPAlgo_ArgumentAnalyzer::TestTypes()
       return;
     }
     //
-    Standard_Integer aDim1, aDim2;
-    Standard_Boolean bBadTypes = Standard_False;
-    //
-    aDim1 = BOPTools_AlgoTools::Dimension(myShape1);
-    aDim2 = BOPTools_AlgoTools::Dimension(myShape2);
-    if (aDim1 < aDim2) {
-      if (myOperation == BOPAlgo_FUSE ||
-          myOperation == BOPAlgo_CUT21) {
-        bBadTypes = Standard_True;
+    if (myOperation != BOPAlgo_UNKNOWN &&
+        myOperation != BOPAlgo_COMMON)
+    {
+      Standard_Integer iDimMin[2], iDimMax[2];
+      BOPTools_AlgoTools::Dimensions(myShape1, iDimMin[0], iDimMax[0]);
+      BOPTools_AlgoTools::Dimensions(myShape2, iDimMin[1], iDimMax[1]);
+
+      Standard_Boolean bBadTypes =
+        ((myOperation == BOPAlgo_FUSE) &&
+           (iDimMin[0] != iDimMax[0] || iDimMin[1] != iDimMax[1] || iDimMin[0] != iDimMin[1])) ||
+        ((myOperation == BOPAlgo_CUT)   && (iDimMax[0] > iDimMin[1])) ||
+        ((myOperation == BOPAlgo_CUT21) && (iDimMin[0] < iDimMax[1]));
+
+      if (bBadTypes) {
+        BOPAlgo_CheckResult aResult;
+        aResult.SetShape1(myShape1);
+        aResult.SetShape2(myShape2);
+        aResult.SetCheckStatus(BOPAlgo_BadType);
+        myResult.Append(aResult);
       }
-    }
-    else if (aDim1 > aDim2) {
-      if (myOperation == BOPAlgo_FUSE ||
-          myOperation == BOPAlgo_CUT) {
-        bBadTypes = Standard_True;
-      }
-    }
-    if (bBadTypes) {
-      BOPAlgo_CheckResult aResult;
-      aResult.SetShape1(myShape1);
-      aResult.SetShape2(myShape2);
-      aResult.SetCheckStatus(BOPAlgo_BadType);
-      myResult.Append(aResult);
     }
   }
 }

@@ -165,13 +165,6 @@ public:
                                                 const Standard_Real theFuzzyValue,
                                                 TopTools_ListOfListOfShape& theChains);
 
-  //! Collect in the output list recursively all non-compound subshapes of the first level
-  //! of the given shape theS. If a shape presents in the map theMFence it is skipped.
-  //! All shapes put in the output are also added into theMFence.
-  Standard_EXPORT static void TreatCompound(const TopoDS_Shape& theS,
-                                            TopTools_MapOfShape& theMFence,
-                                            TopTools_ListOfShape& theLS);
-
   //! Classifies the faces <theFaces> relatively solids <theSolids>.
   //! The IN faces for solids are stored into output data map <theInParts>.
   //!

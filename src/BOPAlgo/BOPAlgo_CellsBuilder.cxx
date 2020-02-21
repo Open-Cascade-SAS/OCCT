@@ -141,44 +141,50 @@ void BOPAlgo_CellsBuilder::IndexParts()
   TopTools_ListIteratorOfListOfShape aIt(myArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS = aIt.Value();
-    //
-    Standard_Integer iDim = BOPTools_AlgoTools::Dimension(aS);
-    aMDims.Add(iDim);
-    TopAbs_ShapeEnum aType = TypeToExplore(iDim);
-    //
-    TopExp_Explorer aExp(aS, aType);
-    for (; aExp.More(); aExp.Next()) {
-      const TopoDS_Shape& aST = aExp.Current();
-      const TopTools_ListOfShape* pLSIm = myImages.Seek(aST);
-      if (!pLSIm) {
-        TopTools_ListOfShape* pLS = myIndex.ChangeSeek(aST);
-        if (!pLS) {
-          pLS = &myIndex(myIndex.Add(aST, TopTools_ListOfShape()));
+
+    TopTools_ListOfShape aLSubS;
+    BOPTools_AlgoTools::TreatCompound (aS, aLSubS);
+    for (TopTools_ListOfShape::Iterator itSub (aLSubS); itSub.More(); itSub.Next())
+    {
+      const TopoDS_Shape& aSS = itSub.Value();
+      Standard_Integer iDim = BOPTools_AlgoTools::Dimension (aSS);
+      aMDims.Add(iDim);
+      TopAbs_ShapeEnum aType = TypeToExplore (iDim);
+      TopExp_Explorer aExp (aSS, aType);
+      for (; aExp.More(); aExp.Next())
+      {
+        const TopoDS_Shape& aST = aExp.Current();
+        const TopTools_ListOfShape* pLSIm = myImages.Seek(aST);
+        if (!pLSIm) {
+          TopTools_ListOfShape* pLS = myIndex.ChangeSeek(aST);
+          if (!pLS) {
+            pLS = &myIndex(myIndex.Add(aST, TopTools_ListOfShape()));
+          }
+          pLS->Append(aS);
+          //
+          if (aMFence.Add(aST)) {
+            aBB.Add(anAllParts, aST);
+          }
+          //
+          continue;
         }
-        pLS->Append(aS);
         //
-        if (aMFence.Add(aST)) {
-          aBB.Add(anAllParts, aST);
-        }
-        //
-        continue;
-      }
-      //
-      TopTools_ListIteratorOfListOfShape aItIm(*pLSIm);
-      for (; aItIm.More(); aItIm.Next()) {
-        const TopoDS_Shape& aSTIm = aItIm.Value();
-        //
-        TopTools_ListOfShape* pLS = myIndex.ChangeSeek(aSTIm);
-        if (!pLS) {
-          pLS = &myIndex(myIndex.Add(aSTIm, TopTools_ListOfShape()));
-        }
-        pLS->Append(aS);
-        //
-        if (aMFence.Add(aSTIm)) {
-          aBB.Add(anAllParts, aSTIm);
-        }
-      } // for (; aItIm.More(); aItIm.Next()) {
-    } // for (; aExp.More(); aExp.Next()) {
+        TopTools_ListIteratorOfListOfShape aItIm(*pLSIm);
+        for (; aItIm.More(); aItIm.Next()) {
+          const TopoDS_Shape& aSTIm = aItIm.Value();
+          //
+          TopTools_ListOfShape* pLS = myIndex.ChangeSeek(aSTIm);
+          if (!pLS) {
+            pLS = &myIndex(myIndex.Add(aSTIm, TopTools_ListOfShape()));
+          }
+          pLS->Append(aS);
+          //
+          if (aMFence.Add(aSTIm)) {
+            aBB.Add(anAllParts, aSTIm);
+          }
+        } // for (; aItIm.More(); aItIm.Next()) {
+      } // for (; aExp.More(); aExp.Next()) {
+    } // for (; itSub.More(); itSub.Next())
   } // for (; aIt.More(); aIt.Next()) {
   //
   myAllParts = anAllParts;
