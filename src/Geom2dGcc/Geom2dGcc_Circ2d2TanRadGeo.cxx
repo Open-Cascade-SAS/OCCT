@@ -183,7 +183,8 @@ pararg2(1,aNbSolMAX)
       IntRes2d_Domain D1;
       for (Standard_Integer jcote2 = 1; jcote2 <= nbrcote2 && NbrSol < aNbSolMAX; jcote2++) {
         Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(Cu2);
-        Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
+        //Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
+        Adaptor2d_OffsetCurve C2(HCu2, -cote2(jcote2));
         firstparam = Max(C2.FirstParameter(),thefirst);
         lastparam  = Min(C2.LastParameter(),thelast);
         IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
@@ -367,7 +368,8 @@ pararg2(1,aNbSolMAX)
       D1.SetEquivalentParameters(0.,2.*M_PI);
       for (Standard_Integer jcote2 = 1 ; jcote2 <= nbrcote2 ; jcote2++) {
         Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(Cu2);
-        Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
+        //Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
+        Adaptor2d_OffsetCurve C2(HCu2, -cote2(jcote2));
         firstparam = Max(C2.FirstParameter(),thefirst);
         lastparam  = Min(C2.LastParameter(),thelast);
         IntRes2d_Domain D2(C2.Value(firstparam), firstparam, Tol,
@@ -499,7 +501,8 @@ pararg2(1,aNbSolMAX)
     Geom2dInt_TheIntConicCurveOfGInter Intp;
     for (Standard_Integer jcote1 = 1; jcote1 <= nbrcote1 && NbrSol < aNbSolMAX; jcote1++) {
       Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1);
-      Adaptor2d_OffsetCurve Cu2(HCu1,cote1(jcote1));
+      //Adaptor2d_OffsetCurve Cu2(HCu1,cote1(jcote1));
+      Adaptor2d_OffsetCurve Cu2(HCu1,-cote1(jcote1));
       firstparam = Max(Cu2.FirstParameter(),thefirst);
       lastparam  = Min(Cu2.LastParameter(),thelast);
       IntRes2d_Domain D2(Cu2.Value(firstparam), firstparam, Tol,
@@ -832,7 +835,8 @@ pararg2(1,aNbSolMAX)
     Geom2dInt_GInter Intp;
     for (Standard_Integer jcote1 = 1 ; jcote1 <= nbrcote1 ; jcote1++) {
       Handle(Geom2dAdaptor_HCurve) HCu1 = new Geom2dAdaptor_HCurve(Cu1); 
-      Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
+      //Adaptor2d_OffsetCurve C1(HCu1,cote1(jcote1));
+      Adaptor2d_OffsetCurve C1(HCu1, -cote1(jcote1));
 #ifdef OCCT_DEBUG
       Standard_Real firstparam = Max(C1.FirstParameter(), thefirst);
       Standard_Real lastparam = Min(C1.LastParameter(), thelast);
@@ -841,7 +845,8 @@ pararg2(1,aNbSolMAX)
 #endif
       for (Standard_Integer jcote2 = 1; jcote2 <= nbrcote2 && NbrSol < aNbSolMAX; jcote2++) {
         Handle(Geom2dAdaptor_HCurve) HCu2 = new Geom2dAdaptor_HCurve(Cu2);
-        Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
+        //Adaptor2d_OffsetCurve C2(HCu2,cote2(jcote2));
+        Adaptor2d_OffsetCurve C2(HCu2, -cote2(jcote2));
 #ifdef OCCT_DEBUG
         firstparam = Max(C2.FirstParameter(), thefirst);
         lastparam  = Min(C2.LastParameter(),thelast);

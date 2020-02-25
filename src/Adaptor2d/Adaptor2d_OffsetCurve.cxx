@@ -17,6 +17,7 @@
 #include <Adaptor2d_OffsetCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom2dEvaluator.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp.hxx>
 #include <gp_Ax22d.hxx>
@@ -33,7 +34,6 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_OutOfRange.hxx>
 #include <Standard_TypeMismatch.hxx>
 
 //=======================================================================
@@ -112,7 +112,6 @@ void Adaptor2d_OffsetCurve::Load( const Standard_Real Offset)
   myOffset = Offset;
   myFirst = myCurve->FirstParameter();
   myLast = myCurve->LastParameter();
-  
 }
 
 //=======================================================================
@@ -299,18 +298,11 @@ Standard_Real Adaptor2d_OffsetCurve::Period() const
 gp_Pnt2d Adaptor2d_OffsetCurve::Value(const Standard_Real U) const
 {
   if ( myOffset != 0.) {
-    gp_Pnt2d P;
-    gp_Vec2d V;
-    Standard_Real Norme;
-    myCurve->D1(U, P, V);
-    Norme = V.Magnitude();
-    V.SetCoord(-V.Y(),V.X());
-    if (Norme >= gp::Resolution()) {
-      return gp_Pnt2d(P.XY()+myOffset*V.XY()/Norme);
-    }
-    else {
-      throw gp_VectorWithNullMagnitude("Adaptor2d_OffsetCurve::Value");
-    }
+    gp_Pnt2d aP;
+    gp_Vec2d aV;
+    myCurve->D1(U, aP, aV);
+    Geom2dEvaluator::CalculateD0(aP, aV, myOffset);
+    return aP;
   }
   else {
     return myCurve->Value(U);
@@ -333,28 +325,15 @@ void Adaptor2d_OffsetCurve::D0(const Standard_Real U, gp_Pnt2d& P) const
 //=======================================================================
 
 void Adaptor2d_OffsetCurve::D1
-  (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const
+(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V) const
 {
-  gp_Vec2d V1,V2,V3;
-  gp_Pnt2d PP;
-  Standard_Real Norme;
-  if ( myOffset != 0. ) {
-    myCurve->D2(U,PP,V1,V2);
-    Norme = V1.Magnitude();
-    V3.SetCoord( -V1.Y(),V1.X());
-    V2.SetCoord( -V2.Y(),V2.X());
-    if ( Norme >= gp::Resolution()) {
-      P = gp_Pnt2d( PP.XY()+myOffset*V3.XY()/Norme);
-      V = gp_Vec2d( V1.XY()+
-		   (myOffset/Norme)*(V2.XY()-V3.XY()*
-				    (V2.XY()*V3.XY())/(Norme*Norme)));
-    }
-    else {
-      throw gp_VectorWithNullMagnitude("Adaptor2d_OffsetCurve::D1");
-    }
+  if (myOffset != 0.) {
+    gp_Vec2d aV2;
+    myCurve->D2(U, P, V, aV2);
+    Geom2dEvaluator::CalculateD1( P, V, aV2, myOffset);
   }
   else {
-    myCurve->D1(U,P,V);
+    myCurve->D1(U, P, V);
   }
 }
 
@@ -364,38 +343,15 @@ void Adaptor2d_OffsetCurve::D1
 //=======================================================================
 
 void Adaptor2d_OffsetCurve::D2
-  (const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+(const Standard_Real U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
 {
-  if ( myOffset != 0.) {
-    gp_Vec2d T1,T2,T3;
-    gp_Pnt2d PP;
-    Standard_Real Norme;
-    myCurve->D3(U,PP,T1,T2,T3);
-
-    Norme = T1.Magnitude();
-    if ( Norme >= gp::Resolution()) {
-      gp_Vec2d N1,N2,N3;             // Ni = Z ^ Ti
-      N1.SetCoord( -T1.Y(), T1.X());
-      N2.SetCoord( -T2.Y(), T2.X());
-      N3.SetCoord( -T3.Y(), T3.X());
-      Standard_Real d12,d13,d22,Nor3,Nor11;
-      d12   = T1*T2;
-      d22   = T2*T2;
-      d13   = T1*T3;
-      Nor3  = Norme*Norme*Norme;
-      Nor11 = Nor3*Nor3*Nor3*Norme*Norme;
-      V2    = gp_Vec2d( -1 * ( (d22+d13)/Nor3 + 3*d12*d12/Nor11) * N1.XY());
-      V2    = gp_Vec2d( V2.XY() - (2*d12/Nor3)*N2.XY() + N3.XY()/Norme);
-      V2    = gp_Vec2d( myOffset*V2.XY() + T2.XY());
-
-      D1( U,P,V1);
-    }
-    else {
-      throw gp_VectorWithNullMagnitude("Adaptor2d_OffsetCurve::D2");
-    }
+  if (myOffset != 0.) {
+    gp_Vec2d aV3;
+    myCurve->D3(U, P, V1, V2, aV3);
+    Geom2dEvaluator::CalculateD2(P, V1, V2, aV3, Standard_False, myOffset);
   }
   else {
-    myCurve->D2(U,P,V1,V2);
+    myCurve->D2(U, P, V1, V2);
   }
 }
 
@@ -404,14 +360,18 @@ void Adaptor2d_OffsetCurve::D2
 //purpose  : 
 //=======================================================================
 
-//void Adaptor2d_OffsetCurve::D3
-//  (const Standard_Real T, 
-//   gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const
 void Adaptor2d_OffsetCurve::D3
-  (const Standard_Real , 
-   gp_Pnt2d& , gp_Vec2d& , gp_Vec2d& , gp_Vec2d& ) const
+  (const Standard_Real U, 
+   gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2, gp_Vec2d& V3) const
 {
-  throw Standard_NotImplemented("Adaptor2d_OffsetCurve::D3");
+  if (myOffset != 0.) {
+    gp_Vec2d aV4 = myCurve->DN(U, 4);
+    myCurve->D3(U, P, V1, V2, V3);
+    Geom2dEvaluator::CalculateD3(P, V1, V2, V3, aV4, Standard_False, myOffset);
+  }
+  else {
+    myCurve->D3(U, P, V1, V2, V3);
+  }
 }
 
 //=======================================================================
@@ -420,7 +380,6 @@ void Adaptor2d_OffsetCurve::D3
 //=======================================================================
 
 gp_Vec2d Adaptor2d_OffsetCurve::DN
-//  (const Standard_Real T, const Standard_Integer N) const
   (const Standard_Real , const Standard_Integer ) const
 {
   throw Standard_NotImplemented("Adaptor2d_OffsetCurve::DN");

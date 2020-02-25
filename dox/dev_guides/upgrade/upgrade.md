@@ -1902,3 +1902,9 @@ void BOPTools_AlgoTools::TreatCompound (const TopoDS_Shape& theS,
                                         TopTools_ListOfShape& theLS,
                                         TopTools_MapOfShape* theMap = NULL);
 ~~~~
+
+@subsection upgrade_750_Adaptor2d_OffsetCurve  Offset direction change
+
+Offset direction, which used in class Adaptor2d_OffsetCurve for evaluating values and derivatives of offset curve is unified for offset direction used in class Geom2d_OffsetCurve: now offset direction points to outer ("right") side of base curve instead of the previously used inner ("left") side. Old usage of class in any application should be changed something like that:
+
+Adaptor2d_OffsetCurve aOC(BaseCurve, Offset) --> Adaptor2d_OffsetCurve aOC(BaseCurve, -Offset)

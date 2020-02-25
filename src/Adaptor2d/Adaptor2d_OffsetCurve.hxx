@@ -193,7 +193,6 @@ private:
   Standard_Real myFirst;
   Standard_Real myLast;
 
-
 };
 
 

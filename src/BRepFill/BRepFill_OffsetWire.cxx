@@ -275,9 +275,9 @@ static Standard_Boolean KPartCircle
     Handle(Geom2d_Curve) OC;
     if (AHC->GetType() == GeomAbs_Line)
     {
-      if (E.Orientation() == TopAbs_REVERSED)
+      if (E.Orientation() == TopAbs_FORWARD)
         anOffset *= -1;
-      Adaptor2d_OffsetCurve Off(AHC,anOffset);
+      Adaptor2d_OffsetCurve Off(AHC, anOffset);
       OC = new Geom2d_Line(Off.Line());
     }
     else if (AHC->GetType() == GeomAbs_Circle)
@@ -298,7 +298,7 @@ static Standard_Boolean KPartCircle
       if (E.Orientation() == TopAbs_FORWARD)
         anOffset *= -1;
       Handle(Geom2d_TrimmedCurve) G2dT = new Geom2d_TrimmedCurve(aPCurve, f, l);
-      OC = new Geom2d_OffsetCurve( G2dT, anOffset);
+      OC = new Geom2d_OffsetCurve(G2dT, anOffset);
     }
     Handle(Geom_Surface) aSurf = BRep_Tool::Surface(mySpine);
     Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(aSurf);
@@ -2032,7 +2032,7 @@ void MakeOffset (const TopoDS_Edge&        E,
   Standard_Real f,l;
   Standard_Real anOffset = Offset;
 
-  if (E.Orientation() == TopAbs_REVERSED) anOffset *= -1;
+  if (E.Orientation() == TopAbs_FORWARD) anOffset *= -1;
 
   Handle(Geom2d_Curve) G2d = BRep_Tool::CurveOnSurface(E,F,f,l);
   Handle(Geom2d_Curve) G2dOC;
@@ -2060,14 +2060,14 @@ void MakeOffset (const TopoDS_Edge&        E,
     gp_Dir2d Xd = axes.XDirection();
     gp_Dir2d Yd = axes.YDirection();
     Standard_Real Crossed = Xd.X()*Yd.Y()-Xd.Y()*Yd.X();
-    Standard_Real Signe = ( Crossed > 0.) ? 1. : -1.;
+    Standard_Real Signe = ( Crossed > 0.) ? -1. : 1.;
 
     if (anOffset*Signe < AC.Circle().Radius() - Precision::Confusion()) {
 
       Handle(Geom2dAdaptor_HCurve) AHC = 
         new Geom2dAdaptor_HCurve(G2d);
-      Adaptor2d_OffsetCurve   Off(AHC,-anOffset);
-      Handle(Geom2d_Circle) CC = new Geom2d_Circle(Off.Circle());      
+      Adaptor2d_OffsetCurve   Off(AHC, anOffset);
+      Handle(Geom2d_Circle) CC = new Geom2d_Circle(Off.Circle());
 
       Standard_Real Delta = 2*M_PI - l + f;
       if (theJoinType == GeomAbs_Arc)
@@ -2101,7 +2101,7 @@ void MakeOffset (const TopoDS_Edge&        E,
   else if (AC.GetType() == GeomAbs_Line) {
     Handle(Geom2dAdaptor_HCurve) AHC = 
       new Geom2dAdaptor_HCurve(G2d);
-    Adaptor2d_OffsetCurve Off(AHC,anOffset);
+    Adaptor2d_OffsetCurve Off(AHC, anOffset);
     Handle(Geom2d_Line)       CC = new Geom2d_Line(Off.Line());
     Standard_Real Delta = (l - f);
     if (ToExtendFirstPar)
@@ -2122,7 +2122,6 @@ void MakeOffset (const TopoDS_Edge&        E,
   }
   else {
 
-    anOffset = -anOffset;
     Handle(Geom2d_TrimmedCurve) G2dT = new Geom2d_TrimmedCurve(G2d,f,l);
     G2dOC = new Geom2d_OffsetCurve( G2dT, anOffset);
 

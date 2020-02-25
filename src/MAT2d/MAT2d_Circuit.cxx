@@ -268,12 +268,12 @@ Standard_Boolean MAT2d_Circuit::IsSharpCorner(const Handle(Geom2d_Geometry)& Geo
     D = Min(P1.Distance(P),P2.Distance(P));
     D /= 10;
     
-    if (Direction > 0.) D = -D;
-    
+    if (Direction < 0.) D = -D;
+
     Handle(Geom2dAdaptor_HCurve) HC1 = new Geom2dAdaptor_HCurve(C1);
     Handle(Geom2dAdaptor_HCurve) HC2 = new Geom2dAdaptor_HCurve(C2);
-    Adaptor2d_OffsetCurve OC1(HC1,D,MilC1,C1->LastParameter());
-    Adaptor2d_OffsetCurve OC2(HC2,D,C2->FirstParameter(),MilC2);
+    Adaptor2d_OffsetCurve OC1(HC1, D, MilC1, C1->LastParameter());
+    Adaptor2d_OffsetCurve OC2(HC2, D, C2->FirstParameter(), MilC2);
     Geom2dInt_GInter Intersect; 
     Intersect.Perform(OC1,OC2,Tol,Tol);
     
