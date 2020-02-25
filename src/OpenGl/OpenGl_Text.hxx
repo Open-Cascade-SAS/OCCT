@@ -68,6 +68,9 @@ public:
   Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const Standard_OVERRIDE;
   Standard_EXPORT virtual void Release (OpenGl_Context* theContext) Standard_OVERRIDE;
 
+  //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
+  Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
+
 public: //! @name methods for compatibility with layers
 
   //! Empty constructor

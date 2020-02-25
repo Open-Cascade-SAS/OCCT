@@ -207,11 +207,7 @@ void OpenGl_FrameStats::updateStructures (Standard_Integer theViewId,
             const OpenGl_Group* aGroup = aGroupIter.Value();
             for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL; aNodeIter = aNodeIter->next)
             {
-              if (const OpenGl_PrimitiveArray* aPrim = dynamic_cast<const OpenGl_PrimitiveArray*> (aNodeIter->elem))
-              {
-                myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += estimatedDataSize (aPrim->AttributesVbo());
-                myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += estimatedDataSize (aPrim->IndexVbo());
-              }
+              myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += aNodeIter->elem->EstimatedDataSize();
             }
           }
         }
@@ -229,15 +225,13 @@ void OpenGl_FrameStats::updateStructures (Standard_Integer theViewId,
         const OpenGl_Group* aGroup = aGroupIter.Value();
         for (const OpenGl_ElementNode* aNodeIter = aGroup->FirstNode(); aNodeIter != NULL; aNodeIter = aNodeIter->next)
         {
+          if (theToCountMem)
+          {
+            myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += aNodeIter->elem->EstimatedDataSize();
+          }
           if (const OpenGl_PrimitiveArray* aPrim = dynamic_cast<const OpenGl_PrimitiveArray*> (aNodeIter->elem))
           {
             ++myCountersTmp[Graphic3d_FrameStatsCounter_NbElemsNotCulled];
-            if (theToCountMem)
-            {
-              myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += estimatedDataSize (aPrim->AttributesVbo());
-              myCountersTmp[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += estimatedDataSize (aPrim->IndexVbo());
-            }
-
             if (aPrim->IsFillDrawMode())
             {
               ++myCountersTmp[Graphic3d_FrameStatsCounter_NbElemsFillNotCulled];

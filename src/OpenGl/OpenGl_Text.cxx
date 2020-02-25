@@ -207,6 +207,31 @@ void OpenGl_Text::Release (OpenGl_Context* theCtx)
 }
 
 // =======================================================================
+// function : EstimatedDataSize
+// purpose  :
+// =======================================================================
+Standard_Size OpenGl_Text::EstimatedDataSize() const
+{
+  Standard_Size aSize = 0;
+  for (Standard_Integer anIter = myVertsVbo.Lower(); anIter <= myVertsVbo.Upper(); ++anIter)
+  {
+    if (const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value (anIter))
+    {
+      aSize += aVerts->EstimatedDataSize();
+    }
+    if (const Handle(OpenGl_VertexBuffer)& aTCrds = myTCrdsVbo.Value (anIter))
+    {
+      aSize += aTCrds->EstimatedDataSize();
+    }
+  }
+  if (!myBndVertsVbo.IsNull())
+  {
+    aSize += myBndVertsVbo->EstimatedDataSize();
+  }
+  return aSize;
+}
+
+// =======================================================================
 // function : StringSize
 // purpose  :
 // =======================================================================

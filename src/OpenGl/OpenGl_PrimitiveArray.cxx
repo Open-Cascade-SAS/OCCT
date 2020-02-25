@@ -759,6 +759,24 @@ void OpenGl_PrimitiveArray::Release (OpenGl_Context* theContext)
 }
 
 // =======================================================================
+// function : EstimatedDataSize
+// purpose  :
+// =======================================================================
+Standard_Size OpenGl_PrimitiveArray::EstimatedDataSize() const
+{
+  Standard_Size aSize = 0;
+  if (!myVboAttribs.IsNull())
+  {
+    aSize += myVboAttribs->EstimatedDataSize();
+  }
+  if (!myVboIndices.IsNull())
+  {
+    aSize += myVboIndices->EstimatedDataSize();
+  }
+  return aSize;
+}
+
+// =======================================================================
 // function : Render
 // purpose  :
 // =======================================================================
