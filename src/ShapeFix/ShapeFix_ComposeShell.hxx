@@ -33,7 +33,6 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 #include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_MapOfShape.hxx>
 class ShapeExtend_CompositeSurface;
 class ShapeAnalysis_TransferParameters;
 class ShapeExtend_WireData;
@@ -99,10 +98,7 @@ public:
   //! Here face defines both set of wires and way of getting
   //! pcurves. Precision is used (together with tolerance of edges)
   //! for handling subtle cases, such as tangential intersections.
-  Standard_EXPORT void Init (const Handle(ShapeExtend_CompositeSurface)& Grid,
-                             const TopLoc_Location& L,
-                             const TopoDS_Face& Face,
-                             const Standard_Real Prec);
+  Standard_EXPORT void Init (const Handle(ShapeExtend_CompositeSurface)& Grid, const TopLoc_Location& L, const TopoDS_Face& Face, const Standard_Real Prec);
   
   //! Returns (modifiable) flag for special 'closed'
   //! mode which forces ComposeShell to consider
@@ -143,8 +139,7 @@ public:
   //! and all pcurves on the initial (pseudo)face are reassigned to
   //! that surface. If several wires are one inside another, single
   //! face is created.
-  Standard_EXPORT void DispatchWires (TopTools_SequenceOfShape& faces,
-                                      ShapeFix_SequenceOfWireSegment& wires) const;
+  Standard_EXPORT void DispatchWires (TopTools_SequenceOfShape& faces, ShapeFix_SequenceOfWireSegment& wires) const;
   
   //! Sets tool for transfer parameters from 3d to 2d and vice versa.
   Standard_EXPORT void SetTransferParamTool (const Handle(ShapeAnalysis_TransferParameters)& TransferParam);
@@ -170,13 +165,7 @@ protected:
   //! between two intersections: tells if segment is on left or right side
   //! of cutting line, or tangent to it (by several points recomputed to 3d,
   //! distance is compared with tolerance of corresponding edge).
-  Standard_EXPORT Standard_Integer ComputeCode (const Handle(ShapeExtend_WireData)& wire,
-                                                const gp_Lin2d& line,
-                                                const Standard_Integer begInd,
-                                                const Standard_Integer endInd,
-                                                const Standard_Real begPar,
-                                                const Standard_Real endPar,
-                                                const Standard_Boolean IsInternal = Standard_False);
+  Standard_EXPORT Standard_Integer ComputeCode (const Handle(ShapeExtend_WireData)& wire, const gp_Lin2d& line, const Standard_Integer begInd, const Standard_Integer endInd, const Standard_Real begPar, const Standard_Real endPar, const Standard_Boolean IsInternal = Standard_False);
   
   //! Splits edges in the wire by given indices of edges and
   //! parameters on them. Returns resulting wire and vertices
@@ -189,14 +178,7 @@ protected:
   //! NOTE: If edge is splitted, it is replaced by wire, and
   //! order of edges in the wire corresponds to FORWARD orientation
   //! of the edge.
-  Standard_EXPORT ShapeFix_WireSegment SplitWire (ShapeFix_WireSegment& wire,
-                                                  TColStd_SequenceOfInteger& indexes,
-                                                  const TColStd_SequenceOfReal& values,
-                                                  const TopTools_MapOfShape& theVerts,
-                                                  TopTools_SequenceOfShape& vertices,
-                                                  const TColStd_SequenceOfInteger& segcodes,
-                                                  const Standard_Boolean cutbyu,
-                                                  const Standard_Integer cutindex);
+  Standard_EXPORT ShapeFix_WireSegment SplitWire (ShapeFix_WireSegment& wire, TColStd_SequenceOfInteger& indexes, const TColStd_SequenceOfReal& values, TopTools_SequenceOfShape& vertices, const TColStd_SequenceOfInteger& segcodes, const Standard_Boolean cutbyu, const Standard_Integer cutindex);
   
   //! Split edges in the wire by cutting line.
   //! Wires with FORWARD or REVERSED orientation are considered
@@ -209,13 +191,7 @@ protected:
   //! Method fills sequences of parameters of intersection points
   //! of cutting line with all edges, their types, and corresponding
   //! vertices (including ones created during splitting edges).
-  Standard_EXPORT Standard_Boolean SplitByLine (ShapeFix_WireSegment& wire,
-                                                const gp_Lin2d& line,
-                                                const Standard_Boolean cutbyu,
-                                                const Standard_Integer cutindex,
-                                                TColStd_SequenceOfReal& SplitLinePar,
-                                                TColStd_SequenceOfInteger& SplitLineCode,
-                                                TopTools_SequenceOfShape& SplitLineVertex);
+  Standard_EXPORT Standard_Boolean SplitByLine (ShapeFix_WireSegment& wire, const gp_Lin2d& line, const Standard_Boolean cutbyu, const Standard_Integer cutindex, TColStd_SequenceOfReal& SplitLinePar, TColStd_SequenceOfInteger& SplitLineCode, TopTools_SequenceOfShape& SplitLineVertex);
   
   //! Split edges in the sequence of wires by cutting line.
   //! Wires with FORWARD or REVERSED orientation are considered
@@ -230,10 +206,7 @@ protected:
   //! All modifications (splitting) are recorded in context,
   //! except splitting of wires marked as EXTERNAL
   //! (they are supposed to be former cutting lines).
-  Standard_EXPORT void SplitByLine (ShapeFix_SequenceOfWireSegment& seqw,
-                                    const gp_Lin2d& line,
-                                    const Standard_Boolean cutbyu,
-                                    const Standard_Integer cutindex);
+  Standard_EXPORT void SplitByLine (ShapeFix_SequenceOfWireSegment& seqw, const gp_Lin2d& line, const Standard_Boolean cutbyu, const Standard_Integer cutindex);
   
   //! Split initial set of (closed) wires by grid of lines corresponding
   //! to joints between patches on the composite surface.
@@ -258,15 +231,12 @@ protected:
   //! taking EXTERNAL as necessary in fork points. Forks are detected
   //! by common vertices. In fork point, most left way is seleccted
   //! among all possible ways.
-  Standard_EXPORT void CollectWires (ShapeFix_SequenceOfWireSegment& wires,
-                                     ShapeFix_SequenceOfWireSegment& seqw);
+  Standard_EXPORT void CollectWires (ShapeFix_SequenceOfWireSegment& wires, ShapeFix_SequenceOfWireSegment& seqw);
   
   //! Creates new faces on one path of grid. It dispatches given loops
   //! (wires) into one or several faces depending on their mutual
   //! position.
-  Standard_EXPORT void MakeFacesOnPatch (TopTools_SequenceOfShape& faces,
-                                         const Handle(Geom_Surface)& surf,
-                                         TopTools_SequenceOfShape& loops) const;
+  Standard_EXPORT void MakeFacesOnPatch (TopTools_SequenceOfShape& faces, const Handle(Geom_Surface)& surf, TopTools_SequenceOfShape& loops) const;
 
   TopAbs_Orientation myOrient;
   TopoDS_Shape myResult;

@@ -9,11 +9,11 @@ set filename Z8M6SAT.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 922  ( 3168 )  Summary  = 922  ( 3168 )
-CHECKSHAPE  : Wires    = 45  ( 42 )  Faces    = 46  ( 40 )  Shells   = 0  ( 2 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 768  ( 30 )  Face     = 3240  ( 3239 ) 
-STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 768  ( 30 )  Face     = 3240  ( 3239 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =    15.00151489  (    20.46526799 )  AvgTol   =   0.02219114253  (   0.03611458186 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 911  ( 3168 )  Summary  = 911  ( 3168 )
+CHECKSHAPE  : Wires    = 43  ( 40 )  Faces    = 44  ( 39 )  Shells   = 0  ( 4 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 769  ( 32 )  Face     = 3241  ( 3241 ) 
+STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 769  ( 32 )  Face     = 3241  ( 3241 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    15.00151489  (    20.46526799 )  AvgTol   =   0.01760149468  (   0.03612886317 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

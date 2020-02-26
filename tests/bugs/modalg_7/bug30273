@@ -6,4 +6,4 @@ puts ""
 pload XDE
 
 stepread [locate_data_file bug30273.stp] res *
-checknbshapes res_1 -solid 176 -face 9968 -shape 69497
+checknbshapes res_1 -solid 176 -face 9968 -shape 69495

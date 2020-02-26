@@ -394,9 +394,9 @@ Standard_Boolean ShapeFix_Wire::Perform()
     
   if (myFixTailMode != 0)
   {
-    Fixed |= FixTails();
-    if (Fixed)
+    if (FixTails())
     {
+      Fixed =Standard_True;
       FixShifted();
     }
   }

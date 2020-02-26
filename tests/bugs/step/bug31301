@@ -1,0 +1,5 @@
+testreadstep [locate_data_file bug31301.stp] s
+testwritestep bug31301_1.stp s
+testreadstep bug31301_1.stp s1
+checkshape s1 f
+checkmaxtol s1 -ref 0.0078
