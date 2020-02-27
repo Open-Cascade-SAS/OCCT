@@ -42,6 +42,7 @@
 #include <StepGeom_Conic.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 
 //=============================================================================
 // Creation d' une Curve de prostep a partir d' une Curve de Geom
@@ -161,6 +162,10 @@ GeomToStep_MakeCurve::GeomToStep_MakeCurve ( const Handle(Geom2d_Curve)& C)
     Handle(Geom2d_BoundedCurve) L = Handle(Geom2d_BoundedCurve)::DownCast(C);
     GeomToStep_MakeBoundedCurve MkBoundedC(L);
     theCurve = MkBoundedC.Value();
+  }
+  else if (C->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
+    GeomToStep_MakeCurve aMaker = (Handle(Geom2d_TrimmedCurve)::DownCast(C)->BasisCurve());
+    theCurve = aMaker.Value();
   }
   else
     done = Standard_False;

@@ -7,11 +7,11 @@ set filename Z8INV5.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 120  ( 620 )  Summary  = 120  ( 620 )
-CHECKSHAPE  : Wires    = 15  ( 16 )  Faces    = 17  ( 18 )  Shells   = 1  ( 1 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 22  ( 22 )  Shell    = 25  ( 24 )  Face     = 1520  ( 1519 ) 
-STATSHAPE   : Solid    = 22  ( 22 )  Shell    = 25  ( 24 )  Face     = 1520  ( 1519 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =    7.499684301  (    7.499684301 )  AvgTol   =   0.03452373473  (   0.03544461059 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 121  ( 620 )  Summary  = 121  ( 620 )
+CHECKSHAPE  : Wires    = 15  ( 16 )  Faces    = 18  ( 18 )  Shells   = 1  ( 1 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 22  ( 22 )  Shell    = 25  ( 24 )  Face     = 1521  ( 1519 ) 
+STATSHAPE   : Solid    = 22  ( 22 )  Shell    = 25  ( 24 )  Face     = 1521  ( 1519 )   FreeWire = 0  ( 0 ) 
+TOLERANCE   : MaxTol   =    7.499684301  (    7.499684301 )  AvgTol   =   0.03357316863  (   0.03544461059 )
 LABELS      : N0Labels = 25  ( 25 )  N1Labels = 23  ( 23 )  N2Labels = 0  ( 0 )   TotalLabels = 48  ( 48 )   NameLabels = 48  ( 48 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

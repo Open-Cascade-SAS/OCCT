@@ -53,6 +53,8 @@
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
+#include <BRepTools.hxx>
+#include <ShapeAnalysis_Curve.hxx>
 
 // Processing of non-manifold topology (ssv; 11.11.2010)
 // ----------------------------------------------------------------------------
@@ -185,6 +187,64 @@ void TopoDSToStep_MakeStepEdge::Init(const TopoDS_Edge& aEdge,
   Handle(Geom_Curve) C = CA.Curve().Curve();
   if (!C.IsNull()) {
     C = Handle(Geom_Curve)::DownCast(C->Copy());
+
+    // Special treatment is needed for very short edges based on periodic curves.
+    // Since edge in STEP does not store its parametric range, parameters are computed
+    // on import by projecting vertices on a curve, and for periodic curve this may 
+    // lead to use of wrong part of the curve if end vertices are too close to each other
+    // (often whole curve is taken instead of its very small fragment).
+    if (C->IsPeriodic())
+    {
+      Standard_Real dpar = CA.LastParameter() - CA.FirstParameter();
+      if (dpar <= 0)
+      {
+        dpar += (ceil(fabs(dpar) / C->Period()) * C->Period());
+      }
+
+      // if range obtained from projection of vertices contradicts with range
+      // of the edge tnen vertices are swapped to keep results correct after import
+      // (see test de step_5 A1)
+      gp_Pnt aP1 = BRep_Tool::Pnt(Vfirst);
+      gp_Pnt aP2 = BRep_Tool::Pnt(Vlast);
+      gp_Pnt  pproj;
+      ShapeAnalysis_Curve sac;
+      sac.Project (C, aP1, Tolerance(), pproj, U1, Standard_False);
+      sac.Project (C, aP2, Tolerance(), pproj, U2, Standard_False);
+      Standard_Real dU = U2 - U1;
+      if (dU <= 0)
+      {
+        dU += (ceil(fabs(dU) / C->Period()) * C->Period());
+      }
+      if ((dU  > Precision::PConfusion() &&  dU <= 0.1 * C->Period() && dpar > 0.5 * C->Period()) ||
+          (dpar  > Precision::PConfusion() && dpar <= 0.1 * C->Period() && dU > 0.5 * C->Period()))
+      {
+        std::swap (V1, V2);
+      }
+
+      // If vertices overlap, we cut only needed part of the BSpline curve.
+      // Note that this method cannot be used for canonic curves 
+      // (STEP does not support trimmed curves in AIC 514).
+      if (C->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
+      {
+        Standard_Real aTolV1 = BRep_Tool::Tolerance(Vfirst);
+        Standard_Real aTolV2 = BRep_Tool::Tolerance(Vlast);
+        gp_Pnt aP11 = CA.Value(CA.FirstParameter());
+        gp_Pnt aP12 = CA.Value(CA.LastParameter());
+        gp_Pnt aPm = CA.Value((CA.FirstParameter() + CA.LastParameter()) * 0.5);
+        Standard_Real aDist11 = aP11.Distance(aP12);
+        Standard_Real aDist1m = aP11.Distance(aPm);
+        Standard_Real aDist2m = aP12.Distance(aPm);
+        Standard_Real aDistMax = Max(Max(aDist1m, aDist2m), aDist11);
+        Standard_Boolean isSmallCurve = (aDistMax <= aTolV1 || aDistMax <= aTolV2);
+        if (BRepTools::Compare(Vfirst, Vlast) && isSmallCurve  && dpar > Precision::PConfusion() && dpar <= 0.1 * C->Period())
+        {
+          Handle(Geom_BSplineCurve) aBspl1 = Handle(Geom_BSplineCurve)::DownCast(C->Copy());
+          aBspl1->Segment(CA.FirstParameter(), CA.LastParameter());
+          C = aBspl1;
+        }
+      }
+    }
+
     gp_Trsf Tr1 = CA.Trsf();
     C->Transform(Tr1);
     GeomToStep_MakeCurve MkCurve(C);
