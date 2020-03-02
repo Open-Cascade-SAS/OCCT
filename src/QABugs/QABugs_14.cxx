@@ -239,7 +239,8 @@ static Standard_Integer BUC60854 (Draw_Interpretor& /*di*/, Standard_Integer arg
     else
       return 1;
   }
-  for (i++; i<argc; i+=2) {
+  i++;
+  while (argv[i][0] != '#') {
     TopoDS_Shape Ew,Es;
     TopoDS_Shape aLocalShape(DBRep::Get(argv[i],TopAbs_EDGE));
     Es = TopoDS::Edge(aLocalShape);
@@ -252,13 +253,24 @@ static Standard_Integer BUC60854 (Draw_Interpretor& /*di*/, Standard_Integer arg
       return 1;
     }
     Spls.Add(TopoDS::Edge(Ew),TopoDS::Edge(Es));
+    i += 2;
   }
   Spls.Build();
   const TopTools_ListOfShape& aLeftPart = Spls.Left();
+  const TopTools_ListOfShape& aRightPart = Spls.Right();
   BRep_Builder BB;
   TopoDS_Shape aShell;
   BB.MakeShell(TopoDS::Shell(aShell));
-  TopTools_ListIteratorOfListOfShape anIter(aLeftPart);
+  TopTools_ListIteratorOfListOfShape anIter;
+  if (argv[argc - 1][0] == 'L') {
+    anIter.Initialize(aLeftPart);
+  } 
+  else if (argv[argc - 1][0] == 'R') {
+    anIter.Initialize(aRightPart);
+  }
+  else {
+    return 1;
+  }
   for(; anIter.More(); anIter.Next()) BB.Add(aShell, anIter.Value());
   aShell.Closed (BRep_Tool::IsClosed (aShell));
   DBRep::Set(argv[1],aShell);
@@ -1044,7 +1056,7 @@ void QABugs::Commands_14(Draw_Interpretor& theCommands) {
   theCommands.Add ("BUC60897", "BUC60897", __FILE__, BUC60897, group);
   theCommands.Add ("BUC60889", "BUC60889 point_1 point_2 name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2", __FILE__, BUC60889, group);
   theCommands.Add ("BUC60852", "BUC60852 name_of_edge bndbox_X1 bndbox_Y1 bndbox_Z1 bndbox_X2 bndbox_Y2 bndbox_Z2", __FILE__, BUC60852, group);
-  theCommands.Add ("BUC60854", "BUC60854 result_shape name_of_shape name_of_face name_of_wire/name_of_edge [ name_of_wire/name_of_edge ... ] [ name_of_face name_of_wire/name_of_edge [ name_of_wire/name_of_edge ... ] ... ] [ @ edge_on_shape edge_on_wire [ edge_on_shape edge_on_wire ... ] ] ", __FILE__, BUC60854, group);
+  theCommands.Add ("BUC60854", "BUC60854 result_shape name_of_shape name_of_face name_of_wire/name_of_edge [ name_of_wire/name_of_edge ... ] [ name_of_face name_of_wire/name_of_edge [ name_of_wire/name_of_edge ... ] ... ] [ @ edge_on_shape edge_on_wire [ edge_on_shape edge_on_wire ... ] ] [ # L/R ]", __FILE__, BUC60854, group);
   theCommands.Add ("BUC60870", "BUC60870 result name_of_shape_1 name_of_shape_2 dev", __FILE__, BUC60870, group);
   theCommands.Add ("BUC60902", "BUC60902", __FILE__, BUC60902, group);
   theCommands.Add ("BUC60944", "BUC60944 path", __FILE__, BUC60944, group);

@@ -105,6 +105,9 @@ public:
   //! Raises NotDone if IsDone returns <Standard_False>.
   Standard_EXPORT const TopTools_ListOfShape& Left() const;
   
+  //! Returns the faces of the "right" part on the shape.
+  Standard_EXPORT const TopTools_ListOfShape& Right() const;
+  
   //! Builds the cut and the resulting faces and edges as well.
   Standard_EXPORT void Build() Standard_OVERRIDE;
   
@@ -129,6 +132,8 @@ private:
 
   LocOpe_Spliter mySShape;
   Handle(LocOpe_WiresOnShape) myWOnShape;
+
+  mutable TopTools_ListOfShape myRight;
 
 
 };

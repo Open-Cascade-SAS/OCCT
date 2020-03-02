@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: BUC60854: Error"
-
 puts "========"
 puts "BUC60854"
 puts "========"
@@ -21,17 +19,15 @@ renamevar test_shape_1 test_face
 
 vertex test_vertex_3 0.2 0.5 0
 vertex test_vertex_4 0.8 0.5 0
-edge test_edge_1 test_vertex_3 test_vertex_4
+edge test_edge_1 test_vertex_4 test_vertex_3
 
 vertex test_vertex_5 0 1 0
-edge test_edge_2 test_vertex_5 test_vertex_3
+edge test_edge_2 test_vertex_3 test_vertex_5
 
 vertex test_vertex_6 1 1 0
-edge test_edge_3 test_vertex_4 test_vertex_6
+edge test_edge_3 test_vertex_6 test_vertex_4
 
-BUC60854 result test_shape test_face test_edge_2 test_edge_3 @ test_edge test_edge_1
-
-erase test_plane
+BUC60854 result test_shape test_face test_edge_2 test_edge_3 @ test_edge test_edge_1 # L
 
 regexp {FACE +: +([-0-9.+eE]+)} [numshapes result] full FACE_num
 
@@ -39,5 +35,15 @@ if {${FACE_num} != 3} {
   puts "BUC60854: Error"
 }
 
-checkview -display result -2d -path ${imagedir}/${test_image}.png
+BUC60854 result_2 test_shape test_face test_edge_2 test_edge_3 @ test_edge test_edge_1 # R
+
+regexp {FACE +: +([-0-9.+eE]+)} [numshapes result_2] full FACE_num
+
+if {${FACE_num} != 1} {
+  puts "BUC60854: Error"
+}
+
+erase test_plane
+
+checkview -display result -2d -with ${result_2} -path ${imagedir}/${test_image}.png
 
