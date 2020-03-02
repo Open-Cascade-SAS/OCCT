@@ -33,6 +33,7 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_ProgramError.hxx>
 #include <UTL.hxx>
+#include <Message_ProgressSentry.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_Application,CDM_Application)
 
@@ -84,21 +85,24 @@ void CDF_Application::Close(const Handle(CDM_Document)& aDocument) {
 //function : Retrieve
 //purpose  : 
 //=======================================================================
-Handle(CDM_Document) CDF_Application::Retrieve(const TCollection_ExtendedString& aFolder, 
-				     const TCollection_ExtendedString& aName, 
-				     const Standard_Boolean UseStorageConfiguration) {
+Handle(CDM_Document) CDF_Application::Retrieve (const TCollection_ExtendedString& aFolder, 
+                                                const TCollection_ExtendedString& aName,
+                                                const Standard_Boolean UseStorageConfiguration,
+                                                const Handle(Message_ProgressIndicator)& theProgress)
+{
   TCollection_ExtendedString nullVersion;
-  return Retrieve(aFolder,aName,nullVersion,UseStorageConfiguration);
+  return Retrieve(aFolder, aName, nullVersion, UseStorageConfiguration, theProgress);
 }
 
 //=======================================================================
 //function : Retrieve
 //purpose  : 
 //=======================================================================
-Handle(CDM_Document)  CDF_Application::Retrieve(const TCollection_ExtendedString& aFolder, 
-				     const TCollection_ExtendedString& aName,
-				     const TCollection_ExtendedString& aVersion,
-				     const Standard_Boolean UseStorageConfiguration)
+Handle(CDM_Document)  CDF_Application::Retrieve (const TCollection_ExtendedString& aFolder, 
+                                                const TCollection_ExtendedString& aName,
+                                                const TCollection_ExtendedString& aVersion,
+                                                const Standard_Boolean UseStorageConfiguration,
+                                                const Handle(Message_ProgressIndicator)& theProgress)
 {
   Handle(CDM_MetaData) theMetaData; 
   
@@ -108,7 +112,8 @@ Handle(CDM_Document)  CDF_Application::Retrieve(const TCollection_ExtendedString
     theMetaData=theMetaDataDriver->MetaData(aFolder,aName,aVersion);
 
   CDF_TypeOfActivation theTypeOfActivation=TypeOfActivation(theMetaData);
-  Handle(CDM_Document) theDocument=Retrieve(theMetaData,UseStorageConfiguration,Standard_False);
+  Handle(CDM_Document) theDocument = Retrieve(theMetaData, UseStorageConfiguration,
+                                              Standard_False, theProgress);
 
   CDF_Session::CurrentSession()->Directory()->Add(theDocument);
   Activate(theDocument,theTypeOfActivation);
@@ -204,15 +209,20 @@ Standard_Boolean CDF_Application::SetDefaultFolder(const Standard_ExtString aFol
 //function : Retrieve
 //purpose  : 
 //=======================================================================
-Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMetaData,const Standard_Boolean UseStorageConfiguration) {
-  return Retrieve(aMetaData,UseStorageConfiguration,Standard_True);
+Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMetaData,
+                                               const Standard_Boolean UseStorageConfiguration, 
+                                               const Handle(Message_ProgressIndicator)& theProgress) {
+  return Retrieve(aMetaData, UseStorageConfiguration, Standard_True, theProgress);
 } 
 
 //=======================================================================
 //function : Retrieve
 //purpose  : 
 //=======================================================================
-Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMetaData,const Standard_Boolean UseStorageConfiguration, const Standard_Boolean IsComponent) {
+Handle(CDM_Document) CDF_Application::Retrieve (const Handle(CDM_MetaData)& aMetaData, 
+                                                const Standard_Boolean UseStorageConfiguration, 
+                                                const Standard_Boolean IsComponent, 
+                                                const Handle(Message_ProgressIndicator)& theProgress) {
   
   Handle(CDM_Document) theDocumentToReturn;
   myRetrievableStatus = PCDM_RS_DriverFailure;
@@ -265,7 +275,7 @@ Handle(CDM_Document) CDF_Application::Retrieve(const Handle(CDM_MetaData)& aMeta
 
     try {    
       OCC_CATCH_SIGNALS
-      theReader->Read(aMetaData->FileName(),theDocument,this);
+      theReader->Read (aMetaData->FileName(), theDocument, this, theProgress);
     } 
     catch (Standard_Failure const& anException) {
       myRetrievableStatus = theReader->GetStatus();
@@ -320,7 +330,8 @@ CDF_TypeOfActivation CDF_Application::TypeOfActivation(const Handle(CDM_MetaData
 //function : Read
 //purpose  : 
 //=======================================================================
-Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream)
+Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream,
+                                            const Handle(Message_ProgressIndicator)& theProgress)
 {
   Handle(CDM_Document) aDoc;
   Handle(Storage_Data) dData;
@@ -358,8 +369,7 @@ Handle(CDM_Document) CDF_Application::Read (Standard_IStream& theIStream)
   try
   {
     OCC_CATCH_SIGNALS
-  
-    aReader->Read (theIStream, dData, aDoc, this);
+    aReader->Read (theIStream, dData, aDoc, this, theProgress);
   }
   catch (Standard_Failure const& anException)
   {

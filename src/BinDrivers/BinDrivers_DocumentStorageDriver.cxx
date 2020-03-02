@@ -99,7 +99,8 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(Message_Me
 //=======================================================================
 void BinDrivers_DocumentStorageDriver::WriteShapeSection
                                (BinLDrivers_DocumentSection&   theSection,
-                                Standard_OStream&              theOS)
+                                Standard_OStream&              theOS,
+                                const Handle(Message_ProgressIndicator)& theProgress)
 {
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
   
@@ -110,7 +111,7 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
       OCC_CATCH_SIGNALS
       Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
         Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
-      aNamedShapeDriver->WriteShapeSection (theOS);
+      aNamedShapeDriver->WriteShapeSection (theOS, theProgress);
     }
     catch(Standard_Failure const& anException) {
       TCollection_ExtendedString anErrorStr ("BinDrivers_DocumentStorageDriver, Shape Section :");

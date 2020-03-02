@@ -58,7 +58,8 @@ Handle(BinMDF_ADriverTable) BinDrivers_DocumentRetrievalDriver::AttributeDrivers
 void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
                               (BinLDrivers_DocumentSection& /*theSection*/,
                                Standard_IStream&            theIS,
-                               const Standard_Boolean       /*isMess*/)
+                               const Standard_Boolean       /*isMess*/,
+                               const Handle(Message_ProgressIndicator)& theProgress)
 
 {
   // Read Shapes
@@ -69,7 +70,7 @@ void BinDrivers_DocumentRetrievalDriver::ReadShapeSection
       OCC_CATCH_SIGNALS
       Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
         Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
-      aNamedShapeDriver->ReadShapeSection (theIS);
+      aNamedShapeDriver->ReadShapeSection (theIS, theProgress);
     }
     catch(Standard_Failure const& anException) {
       const TCollection_ExtendedString aMethStr

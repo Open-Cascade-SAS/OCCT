@@ -70,10 +70,14 @@ public:
   //!
   //! by  default  Write will  use Make   method to build a persistent
   //! document and the Schema method to write the persistent document.
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aFileName) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& aDocument, 
+                                      const TCollection_ExtendedString& aFileName, 
+             const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
 
   //! Write <theDocument> to theOStream
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, Standard_OStream& theOStream) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
+                                      Standard_OStream& theOStream,
+             const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
   
   Standard_EXPORT void SetFormat (const TCollection_ExtendedString& aformat);
   

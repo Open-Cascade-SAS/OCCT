@@ -1584,10 +1584,8 @@ static void ssave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
     N = Handle(DBRep_DrawableShape)::DownCast(d);
   BRep_Builder B;
   BRepTools_ShapeSet S(B);
-  if(!Draw::GetProgressBar().IsNull())
-    S.SetProgress(Draw::GetProgressBar());
-  S.Add(N->Shape());
-  S.Write(OS);
+  S.Add (N->Shape());
+  S.Write (OS, Draw::GetProgressBar());
   if(!Draw::GetProgressBar().IsNull() && Draw::GetProgressBar()->UserBreak())
     return;
   S.Write(N->Shape(),OS);
@@ -1597,9 +1595,7 @@ static Handle(Draw_Drawable3D) srestore (std::istream& IS)
 {
   BRep_Builder B;
   BRepTools_ShapeSet S(B);
-  if(!Draw::GetProgressBar().IsNull())
-    S.SetProgress(Draw::GetProgressBar());
-  S.Read(IS);
+  S.Read (IS, Draw::GetProgressBar());
   Handle(DBRep_DrawableShape) N;
   if(!Draw::GetProgressBar().IsNull() && Draw::GetProgressBar()->UserBreak())
     return N;

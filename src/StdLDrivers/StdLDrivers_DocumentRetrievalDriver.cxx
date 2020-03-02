@@ -52,7 +52,8 @@ Handle(CDM_Document) StdLDrivers_DocumentRetrievalDriver::CreateDocument()
 //=======================================================================
 void StdLDrivers_DocumentRetrievalDriver::Read (const TCollection_ExtendedString& theFileName,
                                                 const Handle(CDM_Document)&       theNewDocument,
-                                                const Handle(CDM_Application)&)
+                                                const Handle(CDM_Application)&                  ,
+                                                const Handle(Message_ProgressIndicator)& /*theProgress*/)
 {
   // Read header data and persistent document
   Storage_HeaderData aHeaderData;
@@ -227,7 +228,8 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
 void StdLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               /*theIStream*/,
                                                 const Handle(Storage_Data)&     /*theStorageData*/,
                                                 const Handle(CDM_Document)&     /*theDoc*/,
-                                                const Handle(CDM_Application)&  /*theApplication*/)
+                                                const Handle(CDM_Application)&  /*theApplication*/,
+                                                const Handle(Message_ProgressIndicator)& /*theProgress*/)
 {
   throw Standard_NotImplemented("Reading from stream is not supported by StdLDrivers_DocumentRetrievalDriver");
 }

@@ -38,6 +38,7 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <Message_ProgressSentry.hxx>
 
 #define LINE      1
 #define CIRCLE    2
@@ -345,11 +346,13 @@ void BinTools_Curve2dSet::WriteCurve2d(const Handle(Geom2d_Curve)& C,
 //purpose  : 
 //=======================================================================
 
-void  BinTools_Curve2dSet::Write(Standard_OStream& OS)const 
+void  BinTools_Curve2dSet::Write (Standard_OStream& OS,
+                                  const Handle(Message_ProgressIndicator)& theProgress)const
 {
   Standard_Integer i, aNbCurves = myMap.Extent();
+  Message_ProgressSentry aPS(theProgress, "Writing 2D curves", 0, aNbCurves, 1);
   OS << "Curve2ds "<< aNbCurves << "\n";
-  for (i = 1; i <= aNbCurves; i++) {
+  for (i = 1; i <= aNbCurves && aPS.More(); i++, aPS.Next()) {
     WriteCurve2d(Handle(Geom2d_Curve)::DownCast(myMap(i)),OS);
   }
 }
@@ -692,7 +695,8 @@ Standard_IStream& BinTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS,
 //purpose  : 
 //=======================================================================
 
-void  BinTools_Curve2dSet::Read(Standard_IStream& IS)
+void  BinTools_Curve2dSet::Read (Standard_IStream& IS,
+                                 const Handle(Message_ProgressIndicator)& theProgress)
 {
   char buffer[255];
 
@@ -710,12 +714,10 @@ void  BinTools_Curve2dSet::Read(Standard_IStream& IS)
   Handle(Geom2d_Curve) C;
   Standard_Integer i, aNbCurves;
   IS >> aNbCurves;
-  IS.get();//remove <lf>
-  for (i = 1; i <= aNbCurves; i++) {
+  Message_ProgressSentry aPS(theProgress, "Reading curves 2d", 0, aNbCurves, 1);
+  IS.get();//remove <lf>		
+  for (i = 1; i <= aNbCurves && aPS.More(); i++, aPS.Next()) {
     BinTools_Curve2dSet::ReadCurve2d(IS,C);
     myMap.Add(C);
   }
 }
-
-
-

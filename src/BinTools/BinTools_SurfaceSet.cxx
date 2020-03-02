@@ -42,6 +42,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
+#include <Message_ProgressSentry.hxx>
 
 #define PLANE           1
 #define CYLINDER        2
@@ -436,12 +437,14 @@ void BinTools_SurfaceSet::WriteSurface(const Handle(Geom_Surface)& S,
 //purpose  : 
 //=======================================================================
 
-void  BinTools_SurfaceSet::Write(Standard_OStream& OS)const 
+void  BinTools_SurfaceSet::Write (Standard_OStream& OS,
+                                  const Handle(Message_ProgressIndicator)& theProgress)const
 {
 
   Standard_Integer i, nbsurf = myMap.Extent();
+  Message_ProgressSentry aPS(theProgress, "Writing surfases", 0, nbsurf, 1);
   OS << "Surfaces "<< nbsurf << "\n";
-  for (i = 1; i <= nbsurf; i++) {
+  for (i = 1; i <= nbsurf && aPS.More(); i++, aPS.Next()) {
     WriteSurface(Handle(Geom_Surface)::DownCast(myMap(i)),OS);
   }
 
@@ -873,7 +876,8 @@ Standard_IStream& BinTools_SurfaceSet::ReadSurface(Standard_IStream& IS,
 //purpose  : 
 //=======================================================================
 
-void  BinTools_SurfaceSet::Read(Standard_IStream& IS)
+void  BinTools_SurfaceSet::Read (Standard_IStream& IS,
+                                 const Handle(Message_ProgressIndicator)& theProgress)
 {
   char buffer[255];
   IS >> buffer;
@@ -890,10 +894,10 @@ void  BinTools_SurfaceSet::Read(Standard_IStream& IS)
   Handle(Geom_Surface) S;
   Standard_Integer i, nbsurf;
   IS >> nbsurf;
+  Message_ProgressSentry aPS(theProgress, "Reading surfaces", 0, nbsurf, 1);
   IS.get ();//remove <lf>
-  for (i = 1; i <= nbsurf; i++) {
+  for (i = 1; i <= nbsurf && aPS.More(); i++, aPS.Next()) {
     BinTools_SurfaceSet::ReadSurface(IS,S);
     myMap.Add(S);
   }
 }
-

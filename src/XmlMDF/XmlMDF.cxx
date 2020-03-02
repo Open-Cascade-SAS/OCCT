@@ -15,6 +15,7 @@
 
 
 #include <Message_Messenger.hxx>
+#include <Message_ProgressSentry.hxx>
 #include <Storage_Schema.hxx>
 #include <TColStd_MapOfTransient.hxx>
 #include <TDF_Attribute.hxx>
@@ -60,11 +61,12 @@ static TColStd_MapOfTransient& UnsuppTypesMap ()
 void XmlMDF::FromTo (const Handle(TDF_Data)&             theData,
                      XmlObjMgt_Element&                  theElement,
                      XmlObjMgt_SRelocationTable&         theRelocTable,
-                     const Handle(XmlMDF_ADriverTable)&  theDrivers)
+                     const Handle(XmlMDF_ADriverTable)&  theDrivers,
+                     const Handle(Message_ProgressIndicator)& theProgress)
 {
   UnsuppTypesMap().Clear();
 //  Standard_Integer count =
-  WriteSubTree(theData->Root(), theElement, theRelocTable, theDrivers);
+  WriteSubTree(theData->Root(), theElement, theRelocTable, theDrivers, theProgress);
   UnsuppTypesMap().Clear();
 }
 
@@ -76,7 +78,8 @@ Standard_Integer XmlMDF::WriteSubTree
                       (const TDF_Label&                    theLabel,
                        XmlObjMgt_Element&                  theElement,
                        XmlObjMgt_SRelocationTable&         theRelocTable,
-                       const Handle(XmlMDF_ADriverTable)&  theDrivers)
+                       const Handle(XmlMDF_ADriverTable)&  theDrivers,
+                       const Handle(Message_ProgressIndicator)& theProgress)
 {
   XmlObjMgt_Document aDoc = theElement.getOwnerDocument();
 
@@ -128,10 +131,16 @@ Standard_Integer XmlMDF::WriteSubTree
 
   // write sub-labels
   TDF_ChildIterator itr2 (theLabel);
-  for ( ; itr2.More(); itr2.Next())
+  Standard_Real child_count = 0;
+  for (; itr2.More(); ++child_count, itr2.Next())
+  {
+  }
+  itr2.Initialize(theLabel);
+  Message_ProgressSentry aPS(theProgress, "Writing sub-tree", 0, child_count, 1);
+  for ( ; itr2.More() && aPS.More(); itr2.Next(), aPS.Next())
   {
     const TDF_Label& aChildLab = itr2.Value();
-    count += WriteSubTree(aChildLab, aLabElem, theRelocTable, theDrivers);
+    count += WriteSubTree(aChildLab, aLabElem, theRelocTable, theDrivers, theProgress);
   }
 
   if (count > 0 || TDocStd_Owner::GetDocument(theLabel.Data())->EmptyLabelsSavingMode())
@@ -141,7 +150,6 @@ Standard_Integer XmlMDF::WriteSubTree
     // set attribute "tag"
     aLabElem.setAttribute (::TagString(), theLabel.Tag());
   }
-
   return count;
 }
 
@@ -152,7 +160,8 @@ Standard_Integer XmlMDF::WriteSubTree
 Standard_Boolean XmlMDF::FromTo (const XmlObjMgt_Element&         theElement,
                                  Handle(TDF_Data)&                theData,
                                  XmlObjMgt_RRelocationTable&      theRelocTable,
-                                 const Handle(XmlMDF_ADriverTable)& theDrivers)
+                                 const Handle(XmlMDF_ADriverTable)& theDrivers, 
+                                 const Handle(Message_ProgressIndicator)& theProgress)
 {
   TDF_Label aRootLab = theData->Root();
   XmlMDF_MapOfDriver aDriverMap;
@@ -167,7 +176,7 @@ Standard_Boolean XmlMDF::FromTo (const XmlObjMgt_Element&         theElement,
     if ( anElem.getNodeName().equals (::LabelString()) )
     {
       Standard_Integer subcount =
-        ReadSubTree(anElem, aRootLab, theRelocTable, aDriverMap);
+        ReadSubTree(anElem, aRootLab, theRelocTable, aDriverMap, theProgress);
       // check for error
       if (subcount < 0)
         return Standard_False;
@@ -188,7 +197,8 @@ Standard_Boolean XmlMDF::FromTo (const XmlObjMgt_Element&         theElement,
 Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
                                       const TDF_Label&            theLabel,
                                       XmlObjMgt_RRelocationTable& theRelocTable,
-                                      const XmlMDF_MapOfDriver&   theDriverMap)
+                                      const XmlMDF_MapOfDriver&   theDriverMap, 
+                                      const Handle(Message_ProgressIndicator)& theProgress)
 {
   // Extraction of the driver subset.
   Standard_Integer count = 0;
@@ -196,6 +206,7 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
   //XmlObjMgt_Element anElem = (const XmlObjMgt_Element &) theElement.getFirstChild();
   LDOM_Node theNode = theElement.getFirstChild();
   XmlObjMgt_Element anElem = (const XmlObjMgt_Element &) theNode;
+  Message_ProgressSentry aPS(theProgress, "Reading sub-tree", 0, 2, 1, true);
   while ( !anElem.isNull() )
   {
     if ( anElem.getNodeType() == LDOM_Node::ELEMENT_NODE )
@@ -217,7 +228,7 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
 
         // read sub-tree
         Standard_Integer subcount =
-          ReadSubTree(anElem, aLab, theRelocTable, theDriverMap);
+          ReadSubTree(anElem, aLab, theRelocTable, theDriverMap, theProgress);
         // check for error
         if (subcount == -1)
           return -1;
@@ -305,6 +316,10 @@ Standard_Integer XmlMDF::ReadSubTree (const XmlObjMgt_Element&    theElement,
     //anElem = (const XmlObjMgt_Element &) anElem.getNextSibling();
     LDOM_Node theNode1 = anElem.getNextSibling();
     anElem = (const XmlObjMgt_Element &) theNode1;
+
+    if (!aPS.More())
+      return -1;
+    aPS.Next();
   }
 
   // AfterRetrieval

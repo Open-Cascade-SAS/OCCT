@@ -24,6 +24,9 @@
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
+
+#include <Message_ProgressIndicator.hxx>
+
 class Standard_OutOfRange;
 class Geom2d_Curve;
 
@@ -57,42 +60,26 @@ public:
   
   //! Writes the content of  me  on the stream <OS> in a
   //! format that can be read back by Read.
-  Standard_EXPORT void Write (Standard_OStream& OS) const;
+  Standard_EXPORT void Write (Standard_OStream& OS,
+                              const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
   
   //! Reads the content of me from the  stream  <IS>. me
   //! is first cleared.
-  Standard_EXPORT void Read (Standard_IStream& IS);
+  Standard_EXPORT void Read (Standard_IStream& IS,
+                             const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Dumps the curve on the binary stream, that can be read back.
-  Standard_EXPORT static void WriteCurve2d (const Handle(Geom2d_Curve)& C, Standard_OStream& OS);
+  Standard_EXPORT static void WriteCurve2d(const Handle(Geom2d_Curve)& C, Standard_OStream& OS);
   
   //! Reads the curve  from  the stream.  The  curve  is
   //! assumed   to have  been  written  with  the Write
   //! method.
   Standard_EXPORT static Standard_IStream& ReadCurve2d (Standard_IStream& IS, Handle(Geom2d_Curve)& C);
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   TColStd_IndexedMapOfTransient myMap;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BinTools_Curve2dSet_HeaderFile

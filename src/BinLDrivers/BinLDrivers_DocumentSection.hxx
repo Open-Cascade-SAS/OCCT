@@ -24,6 +24,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
+#include <Message_ProgressIndicator.hxx>
+
 class TCollection_AsciiString;
 
 

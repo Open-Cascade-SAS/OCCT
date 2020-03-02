@@ -17,6 +17,7 @@
 #include <CDM_Application.hxx>
 #include <CDM_Document.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_ProgressSentry.hxx>
 #include <CDM_MetaData.hxx>
 #include <LDOM_DocumentType.hxx>
 #include <LDOM_LDOMImplementation.hxx>
@@ -174,9 +175,10 @@ Handle(CDM_Document) XmlLDrivers_DocumentRetrievalDriver::CreateDocument()
 //purpose  : 
 //=======================================================================
 void XmlLDrivers_DocumentRetrievalDriver::Read
-  (const TCollection_ExtendedString& theFileName,
-   const Handle(CDM_Document)&       theNewDocument,
-   const Handle(CDM_Application)&    theApplication)
+                                          (const TCollection_ExtendedString& theFileName,
+                                           const Handle(CDM_Document)&       theNewDocument,
+                                           const Handle(CDM_Application)&    theApplication,
+                                           const Handle(Message_ProgressIndicator)& theProgress)
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myFileName = theFileName;
@@ -186,7 +188,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
 
   if (aFileStream.is_open() && aFileStream.good())
   {
-    Read (aFileStream, NULL, theNewDocument, theApplication);
+    Read (aFileStream, NULL, theNewDocument, theApplication, theProgress);
   }
   else
   {
@@ -207,7 +209,8 @@ void XmlLDrivers_DocumentRetrievalDriver::Read
 void XmlLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&              theIStream,
                                                 const Handle(Storage_Data)&    /*theStorageData*/,
                                                 const Handle(CDM_Document)&    theNewDocument,
-                                                const Handle(CDM_Application)& theApplication)
+                                                const Handle(CDM_Application)& theApplication,
+                                                const Handle(Message_ProgressIndicator)& theProgress)
 {
   Handle(Message_Messenger) aMessageDriver = theApplication -> MessageDriver();
   ::take_time (~0, " +++++ Start RETRIEVE procedures ++++++", aMessageDriver);
@@ -229,7 +232,7 @@ void XmlLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&              t
   const XmlObjMgt_Element anElement= aParser.getDocument().getDocumentElement();
   ::take_time (0, " +++++ Fin parsing XML :       ", aMessageDriver);
 
-  ReadFromDomDocument (anElement, theNewDocument, theApplication);
+  ReadFromDomDocument (anElement, theNewDocument, theApplication, theProgress);
 }
 
 //=======================================================================
@@ -242,7 +245,8 @@ void XmlLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&              t
 void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
                                 (const XmlObjMgt_Element&       theElement,
                                  const Handle(CDM_Document)&    theNewDocument,
-                                 const Handle(CDM_Application)& theApplication)
+                                 const Handle(CDM_Application)& theApplication,
+                                 const Handle(Message_ProgressIndicator)& theProgress)
 {
   const Handle(Message_Messenger) aMsgDriver =
     theApplication -> MessageDriver();
@@ -427,12 +431,19 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
       }
     }
   }
-
+  Message_ProgressSentry aPS(theProgress, "Reading document", 0, 2, 1);
   // 2. Read Shapes section
   if (myDrivers.IsNull()) myDrivers = AttributeDrivers (aMsgDriver);  
-  const Handle(XmlMDF_ADriver) aNSDriver = ReadShapeSection(theElement, aMsgDriver);
+  const Handle(XmlMDF_ADriver) aNSDriver = ReadShapeSection(theElement, aMsgDriver, theProgress);
   if(!aNSDriver.IsNull())
     ::take_time (0, " +++++ Fin reading Shapes :    ", aMsgDriver);
+
+  if (!aPS.More())
+  {
+    myReaderStatus = PCDM_RS_UserBreak;
+    return;
+  }
+  aPS.Next();
 
   // 2.1. Keep document format version in RT
   Handle(Storage_HeaderData) aHeaderData = new Storage_HeaderData();
@@ -448,7 +459,7 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     TCollection_ExtendedString aMessage ("PasteDocument");
     aMsgDriver ->Send (aMessage.ToExtString(), Message_Trace);
 #endif
-    if (!MakeDocument(theElement, theNewDocument))
+    if (!MakeDocument(theElement, theNewDocument, theProgress))
       myReaderStatus = PCDM_RS_MakeFailure;
     else
       myReaderStatus = PCDM_RS_OK;
@@ -458,6 +469,12 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     TCollection_ExtendedString anErrorString (anException.GetMessageString());
     aMsgDriver ->Send (anErrorString.ToExtString(), Message_Fail);
   }
+  if (!aPS.More())
+  {
+    myReaderStatus = PCDM_RS_UserBreak;
+    return;
+  }
+  aPS.Next();
 
   //    Wipe off the shapes written to the <shapes> section
   ShapeSetCleaning(aNSDriver);
@@ -475,14 +492,15 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
 //=======================================================================
 Standard_Boolean XmlLDrivers_DocumentRetrievalDriver::MakeDocument
                                     (const XmlObjMgt_Element&    theElement,
-                                     const Handle(CDM_Document)& theTDoc)
+                                     const Handle(CDM_Document)& theTDoc,
+                                     const Handle(Message_ProgressIndicator)& theProgress)
 {
   Standard_Boolean aResult = Standard_False;
   Handle(TDocStd_Document) TDOC = Handle(TDocStd_Document)::DownCast(theTDoc);
   if (!TDOC.IsNull()) 
   {
     Handle(TDF_Data) aTDF = new TDF_Data();
-    aResult = XmlMDF::FromTo (theElement, aTDF, myRelocTable, myDrivers);
+    aResult = XmlMDF::FromTo (theElement, aTDF, myRelocTable, myDrivers, theProgress);
     if (aResult) {
       TDOC->SetData (aTDF);
       TDocStd_Owner::SetDocument (aTDF, TDOC);
@@ -540,7 +558,8 @@ static void take_time (const Standard_Integer isReset, const char * aHeader,
 //=======================================================================
 Handle(XmlMDF_ADriver) XmlLDrivers_DocumentRetrievalDriver::ReadShapeSection(
                                const XmlObjMgt_Element&       /*theElement*/,
-             const Handle(Message_Messenger)& /*aMsgDriver*/)
+                               const Handle(Message_Messenger)& /*aMsgDriver*/,
+                               const Handle(Message_ProgressIndicator)& /*theProgress*/)
 {
   Handle(XmlMDF_ADriver) aDriver;
   //empty; to be redefined

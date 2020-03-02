@@ -31,6 +31,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+
 class BRep_Builder;
 class TopoDS_Shape;
 
@@ -48,11 +49,12 @@ public:
   
   //! Builds an empty ShapeSet.
   //! Parameter <isWithTriangles> is added for XML Persistence
-  Standard_EXPORT BRepTools_ShapeSet(const Standard_Boolean isWithTriangles = Standard_True);
+  Standard_EXPORT BRepTools_ShapeSet (const Standard_Boolean isWithTriangles = Standard_True);
   
   //! Builds an empty ShapeSet.
   //! Parameter <isWithTriangles> is added for XML Persistence
-  Standard_EXPORT BRepTools_ShapeSet(const BRep_Builder& B, const Standard_Boolean isWithTriangles = Standard_True);
+  Standard_EXPORT BRepTools_ShapeSet (const BRep_Builder& B,
+                                      const Standard_Boolean isWithTriangles = Standard_True);
   
   //! Clears the content of the set.
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
@@ -65,21 +67,28 @@ public:
   
   //! Writes the geometry of  me  on the stream <OS> in a
   //! format that can be read back by Read.
-  Standard_EXPORT virtual void WriteGeometry (Standard_OStream& OS) Standard_OVERRIDE;
+  Standard_EXPORT virtual void WriteGeometry
+    (Standard_OStream& OS,
+     const Handle(Message_ProgressIndicator) &theProgress = NULL) Standard_OVERRIDE;
   
   //! Reads the geometry of me from the  stream  <IS>.
-  Standard_EXPORT virtual void ReadGeometry (Standard_IStream& IS) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ReadGeometry
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator) &theProgress = NULL) Standard_OVERRIDE;
   
   //! Dumps the geometry of <S> on the stream <OS>.
-  Standard_EXPORT virtual void DumpGeometry (const TopoDS_Shape& S, Standard_OStream& OS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpGeometry
+    (const TopoDS_Shape& S, Standard_OStream& OS) const Standard_OVERRIDE;
   
   //! Writes the geometry of <S>  on the stream <OS> in a
   //! format that can be read back by Read.
-  Standard_EXPORT virtual void WriteGeometry (const TopoDS_Shape& S, Standard_OStream& OS) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void WriteGeometry
+    (const TopoDS_Shape& S, Standard_OStream& OS) const Standard_OVERRIDE;
   
   //! Reads the geometry of a shape of type <T> from the
   //! stream <IS> and returns it in <S>.
-  Standard_EXPORT virtual void ReadGeometry (const TopAbs_ShapeEnum T, Standard_IStream& IS, TopoDS_Shape& S) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ReadGeometry
+    (const TopAbs_ShapeEnum T, Standard_IStream& IS, TopoDS_Shape& S) Standard_OVERRIDE;
   
   //! Inserts  the shape <S2> in  the  shape <S1>.  This
   //! method must be   redefined  to  use   the  correct
@@ -90,12 +99,17 @@ public:
   
   //! Reads the 3d polygons  of me
   //! from the  stream  <IS>.
-  Standard_EXPORT void ReadPolygon3D (Standard_IStream& IS);
+  Standard_EXPORT void ReadPolygon3D
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator) &theProgress = NULL);
   
   //! Writes the 3d polygons
   //! on the stream <OS> in a format that can
   //! be read back by Read.
-  Standard_EXPORT void WritePolygon3D (Standard_OStream& OS, const Standard_Boolean Compact = Standard_True) const;
+  Standard_EXPORT void WritePolygon3D
+    (Standard_OStream& OS, 
+     const Standard_Boolean Compact = Standard_True,
+     const Handle(Message_ProgressIndicator) &theProgress = NULL) const;
   
   //! Dumps the 3d polygons
   //! on the stream <OS>.
@@ -103,12 +117,17 @@ public:
   
   //! Reads the triangulation of me
   //! from the  stream  <IS>.
-  Standard_EXPORT void ReadTriangulation (Standard_IStream& IS);
+  Standard_EXPORT void ReadTriangulation
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator) &theProgress = NULL);
   
   //! Writes the triangulation
   //! on the stream <OS> in a format that can
   //! be read back by Read.
-  Standard_EXPORT void WriteTriangulation (Standard_OStream& OS, const Standard_Boolean Compact = Standard_True) const;
+  Standard_EXPORT void WriteTriangulation
+    (Standard_OStream& OS, 
+     const Standard_Boolean Compact = Standard_True, 
+     const Handle(Message_ProgressIndicator) &theProgress = NULL) const;
   
   //! Dumps the triangulation
   //! on the stream <OS>.
@@ -116,29 +135,23 @@ public:
   
   //! Reads the polygons on triangulation of me
   //! from the  stream  <IS>.
-  Standard_EXPORT void ReadPolygonOnTriangulation (Standard_IStream& IS);
+  Standard_EXPORT void ReadPolygonOnTriangulation
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator) &theProgress = NULL);
   
   //! Writes the polygons on triangulation
   //! on the stream <OS> in a format that can
   //! be read back by Read.
-  Standard_EXPORT void WritePolygonOnTriangulation (Standard_OStream& OS, const Standard_Boolean Compact = Standard_True) const;
+  Standard_EXPORT void WritePolygonOnTriangulation
+    (Standard_OStream& OS, 
+     const Standard_Boolean Compact = Standard_True,
+     const Handle(Message_ProgressIndicator) &theProgress = NULL) const;
   
   //! Dumps the polygons on triangulation
   //! on the stream <OS>.
   Standard_EXPORT void DumpPolygonOnTriangulation (Standard_OStream& OS) const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   BRep_Builder myBuilder;
   GeomTools_SurfaceSet mySurfaces;
@@ -150,13 +163,6 @@ private:
   TColStd_IndexedMapOfTransient myNodes;
   Standard_Boolean myWithTriangles;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BRepTools_ShapeSet_HeaderFile

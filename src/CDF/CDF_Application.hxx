@@ -87,7 +87,11 @@ public:
   //!
   //! Since  the version is not specified in  this syntax, the  latest wil be used.
   //! A link is kept with the database through an instance of CDM_MetaData
-  Standard_EXPORT Handle(CDM_Document) Retrieve (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const Standard_Boolean UseStorageConfiguration = Standard_True);
+  Standard_EXPORT Handle(CDM_Document) Retrieve
+    (const TCollection_ExtendedString& aFolder,
+     const TCollection_ExtendedString& aName,
+     const Standard_Boolean UseStorageConfiguration = Standard_True,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! This method retrieves  a  document from the database.
   //! If the  Document references other documents which have
@@ -103,18 +107,28 @@ public:
   //! Handle(CDM_Document) theDocument=myApplication->Retrieve("|user|cascade","box","2");
   //! A link is kept with the database through an instance
   //! of CDM_MetaData
-  Standard_EXPORT Handle(CDM_Document) Retrieve (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion, const Standard_Boolean UseStorageConfiguration = Standard_True);
+  Standard_EXPORT Handle(CDM_Document) Retrieve
+    (const TCollection_ExtendedString& aFolder, 
+     const TCollection_ExtendedString& aName, 
+     const TCollection_ExtendedString& aVersion, 
+     const Standard_Boolean UseStorageConfiguration = Standard_True,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
-  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName);
+  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder,
+                                                 const TCollection_ExtendedString& aName);
   
-  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion);
+  Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder,
+                                                 const TCollection_ExtendedString& aName,
+                                                 const TCollection_ExtendedString& aVersion);
   
   //! Checks  status  after  Retrieve
   PCDM_ReaderStatus GetRetrieveStatus() const { return myRetrievableStatus; }
   
   //! Reads aDoc from standard SEEKABLE stream theIStream,
   //! the stream should support SEEK fuctionality
-  Standard_EXPORT Handle(CDM_Document) Read (Standard_IStream& theIStream);
+  Standard_EXPORT Handle(CDM_Document) Read
+    (Standard_IStream& theIStream,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
  
   //! Returns instance of read driver for specified format.
   //!
@@ -147,7 +161,8 @@ public:
   //! try to  retrieve a Format  directly in the  file or in
   //! application   resource  by using   extension. returns
   //! True if found;
-  Standard_EXPORT Standard_Boolean Format (const TCollection_ExtendedString& aFileName, TCollection_ExtendedString& theFormat);
+  Standard_EXPORT Standard_Boolean Format (const TCollection_ExtendedString& aFileName,
+                                           TCollection_ExtendedString& theFormat);
   
   Standard_EXPORT Standard_ExtString DefaultFolder();
   
@@ -157,15 +172,6 @@ friend class CDF_Session;
 
 
   DEFINE_STANDARD_RTTIEXT(CDF_Application,CDM_Application)
-
-protected:
-
-  
-  Standard_EXPORT CDF_Application();
-
-  PCDM_ReaderStatus myRetrievableStatus;
-  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_RetrievalDriver)> myReaders;
-  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_StorageDriver)> myWriters;
 
 private:
 
@@ -183,17 +189,33 @@ private:
   //! retrieved and modified since the previous retrieval.
   //! You do not need to call <Activate>, but you should  redefine
   //! this method to implement application specific behavior.
-  Standard_EXPORT virtual void Activate (const Handle(CDM_Document)& aDocument, const CDF_TypeOfActivation aTypeOfActivation);
+  Standard_EXPORT virtual void Activate (const Handle(CDM_Document)& aDocument,
+                                         const CDF_TypeOfActivation aTypeOfActivation);
   
-  Standard_EXPORT Handle(CDM_Document) Retrieve (const Handle(CDM_MetaData)& aMetaData, const Standard_Boolean UseStorageConfiguration) Standard_OVERRIDE;
+  Standard_EXPORT Handle(CDM_Document) Retrieve
+    (const Handle(CDM_MetaData)& aMetaData, 
+     const Standard_Boolean UseStorageConfiguration, 
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(CDM_Document) Retrieve (const Handle(CDM_MetaData)& aMetaData, const Standard_Boolean UseStorageConfiguration, const Standard_Boolean IsComponent);
+  Standard_EXPORT Handle(CDM_Document) Retrieve
+    (const Handle(CDM_MetaData)& aMetaData,
+     const Standard_Boolean UseStorageConfiguration, 
+     const Standard_Boolean IsComponent, 
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   Standard_EXPORT Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& theMetaData) Standard_OVERRIDE;
   
   Standard_EXPORT CDF_TypeOfActivation TypeOfActivation (const Handle(CDM_MetaData)& aMetaData);
   
   Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const Handle(CDM_MetaData)& aMetaData);
+
+protected:
+
+  Standard_EXPORT CDF_Application();
+
+  PCDM_ReaderStatus myRetrievableStatus;
+  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_RetrievalDriver)> myReaders;
+  NCollection_IndexedDataMap<TCollection_ExtendedString, Handle(PCDM_StorageDriver)> myWriters;
 
 private:
   TCollection_ExtendedString myDefaultFolder;

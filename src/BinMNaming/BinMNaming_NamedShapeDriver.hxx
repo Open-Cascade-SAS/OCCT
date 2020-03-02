@@ -52,10 +52,12 @@ public:
   Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Source, BinObjMgt_Persistent& Target, BinObjMgt_SRelocationTable& RelocTable) const Standard_OVERRIDE;
   
   //! Input the shapes from Bin Document file
-  Standard_EXPORT void ReadShapeSection (Standard_IStream& theIS);
+  Standard_EXPORT void ReadShapeSection (Standard_IStream& theIS,
+                                         const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Output the shapes into Bin Document file
-  Standard_EXPORT void WriteShapeSection (Standard_OStream& theOS);
+  Standard_EXPORT void WriteShapeSection (Standard_OStream& theOS,
+                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Clear myShapeSet
   Standard_EXPORT void Clear();

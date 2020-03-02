@@ -145,11 +145,12 @@ CDF_StoreSetNameStatus CDF_Store::SetName(const Standard_ExtString aName)
   return SetName(theName);
 }
 
-void CDF_Store::Realize() {
+void CDF_Store::Realize (const Handle(Message_ProgressIndicator)& theProgress)
+{
   Standard_ProgramError_Raise_if(!myList->IsConsistent(),"information are missing");
   Handle(CDM_MetaData) m;
   myText = "";
-  myStatus = myList->Store(m,myText);
+  myStatus = myList->Store(m, myText, theProgress);
   if(myStatus==PCDM_SS_OK) myPath = m->Path();
 }
 Standard_ExtString CDF_Store::Path() const {

@@ -39,10 +39,14 @@ public:
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentStorageDriver();
   
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers
+    (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
   //! implements the procedure of writing a shape section to file
-  Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection, Standard_OStream& theOS) Standard_OVERRIDE;
+  Standard_EXPORT virtual void WriteShapeSection
+    (BinLDrivers_DocumentSection& theDocSection, 
+     Standard_OStream& theOS, 
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
 
   //! Return true if shape should be stored with triangles.
   Standard_EXPORT Standard_Boolean IsWithTriangles() const;
@@ -53,22 +57,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)
 
-protected:
-
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BinDrivers_DocumentStorageDriver_HeaderFile

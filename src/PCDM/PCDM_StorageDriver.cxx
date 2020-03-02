@@ -42,7 +42,9 @@ IMPLEMENT_STANDARD_RTTIEXT(PCDM_StorageDriver,PCDM_Writer)
 
 
 
-void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString&  aFileName) 
+void PCDM_StorageDriver::Write (const Handle(CDM_Document)& aDocument,
+                                const TCollection_ExtendedString&  aFileName, 
+                                const Handle(Message_ProgressIndicator) &/*theProgress*/) 
 {
   Handle(Storage_Schema) theSchema = new Storage_Schema;
 
@@ -105,7 +107,9 @@ void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCol
 //function : Write
 //purpose  : 
 //=======================================================================
-void PCDM_StorageDriver::Write (const Handle(CDM_Document)& /*aDocument*/, Standard_OStream& /*theOStream*/) 
+void PCDM_StorageDriver::Write (const Handle(CDM_Document)&              /*aDocument*/, 
+                                Standard_OStream&                        /*theOStream*/, 
+                                const Handle(Message_ProgressIndicator)& /*theProgress*/)
 {
   
 }

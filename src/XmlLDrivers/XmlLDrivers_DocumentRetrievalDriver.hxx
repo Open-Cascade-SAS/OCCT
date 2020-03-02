@@ -49,12 +49,16 @@ public:
   
   Standard_EXPORT virtual Handle(CDM_Document) CreateDocument() Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName, const Handle(CDM_Document)& theNewDocument, const Handle(CDM_Application)& theApplication) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName, 
+                                     const Handle(CDM_Document)& theNewDocument,
+                                     const Handle(CDM_Application)& theApplication, 
+                  const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Read (Standard_IStream&               theIStream,
                                      const Handle(Storage_Data)&     theStorageData,
                                      const Handle(CDM_Document)&     theDoc,
-                                     const Handle(CDM_Application)&  theApplication) Standard_OVERRIDE;
+                                     const Handle(CDM_Application)&  theApplication,
+                  const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
 
@@ -66,11 +70,19 @@ public:
 protected:
 
   
-  Standard_EXPORT virtual void ReadFromDomDocument (const XmlObjMgt_Element& theDomElement, const Handle(CDM_Document)& theNewDocument, const Handle(CDM_Application)& theApplication);
+  Standard_EXPORT virtual void ReadFromDomDocument (const XmlObjMgt_Element& theDomElement, 
+                                                    const Handle(CDM_Document)& theNewDocument, 
+                                                    const Handle(CDM_Application)& theApplication, 
+                                        const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
-  Standard_EXPORT virtual Standard_Boolean MakeDocument (const XmlObjMgt_Element& thePDoc, const Handle(CDM_Document)& theTDoc);
+  Standard_EXPORT virtual Standard_Boolean MakeDocument (const XmlObjMgt_Element& thePDoc, 
+                                                         const Handle(CDM_Document)& theTDoc, 
+                                        const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(Message_Messenger)& theMsgDriver);
+  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection
+                                   (const XmlObjMgt_Element& thePDoc,
+                                    const Handle(Message_Messenger)& theMsgDriver,
+                                    const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   Standard_EXPORT virtual void ShapeSetCleaning (const Handle(XmlMDF_ADriver)& theDriver);
 

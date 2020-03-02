@@ -42,11 +42,17 @@ public:
   //! Constructor
   Standard_EXPORT BinDrivers_DocumentRetrievalDriver();
   
-  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers
+    (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void ReadShapeSection (BinLDrivers_DocumentSection& theSection, Standard_IStream& theIS, const Standard_Boolean isMess = Standard_False) Standard_OVERRIDE;
+  Standard_EXPORT virtual void ReadShapeSection
+    (BinLDrivers_DocumentSection& theSection, 
+     Standard_IStream& theIS,
+     const Standard_Boolean isMess = Standard_False, 
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void CheckShapeSection (const Storage_Position& thePos, Standard_IStream& theIS) Standard_OVERRIDE;
+  Standard_EXPORT virtual void CheckShapeSection
+    (const Storage_Position& thePos, Standard_IStream& theIS) Standard_OVERRIDE;
 
   //! Clears the NamedShape driver
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
@@ -54,22 +60,6 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentRetrievalDriver,BinLDrivers_DocumentRetrievalDriver)
 
-protected:
-
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _BinDrivers_DocumentRetrievalDriver_HeaderFile

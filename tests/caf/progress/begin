@@ -1,0 +1,41 @@
+# begin
+
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+  pload TOPTEST
+}
+
+proc CreateBinDoc {} {
+  global imagedir casename
+  # Create binary document
+  NewDocument DocBin BinOcaf
+
+  # Fill document by box
+  box b 1 1 1 
+  SetShape DocBin 0:1 b
+
+  # Save document
+  set bDoc "${imagedir}/$casename.cbf"
+  SaveAs DocBin $bDoc
+
+  # Close document
+  Close DocBin
+  return $bDoc
+}
+
+proc CreateXmlDoc {} {
+  global imagedir casename
+  # Create xml document
+  NewDocument DocXml XmlOcaf
+
+  # Fill document by box
+  box b 1 1 1 
+  SetShape DocXml 0:1 b
+
+  # Save document
+  set xDoc "${imagedir}/$casename.xml"
+  SaveAs DocXml $xDoc
+
+  # Close document
+  Close DocXml
+  return $xDoc
+}

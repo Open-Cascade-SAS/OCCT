@@ -225,38 +225,54 @@ public:
   //! In order not to override a version of aDoc which
   //! is already in memory, this method can be made
   //! to depend on the value returned by IsInSession.
-  Standard_EXPORT PCDM_ReaderStatus Open (const TCollection_ExtendedString& path, Handle(TDocStd_Document)& aDoc);
+  Standard_EXPORT PCDM_ReaderStatus Open (const TCollection_ExtendedString& path, 
+                                          Handle(TDocStd_Document)& aDoc,
+                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   //! Retrieves aDoc from standard SEEKABLE stream theIStream.
   //! the stream should support SEEK fuctionality
-  Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream, Handle(TDocStd_Document)& theDoc);
+  Standard_EXPORT PCDM_ReaderStatus Open (Standard_IStream& theIStream, Handle(TDocStd_Document)& theDoc, 
+                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   
   //! Save the  active document  in the file  <name> in the
   //! path <path> ; o verwrites  the file  if  it already exists.
-  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc, const TCollection_ExtendedString& path);
+  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc,
+                                           const TCollection_ExtendedString& path,
+                                           const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   //! Save theDoc to standard SEEKABLE stream theOStream.
   //! the stream should support SEEK fuctionality
-  Standard_EXPORT PCDM_StoreStatus SaveAs(const Handle(TDocStd_Document)& theDoc, Standard_OStream& theOStream);
+  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& theDoc,
+                                           Standard_OStream& theOStream,
+                                           const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Save aDoc active document.
   //! Exceptions:
   //! Standard_NotImplemented if the document
   //! was not retrieved in the applicative session by using Open.
-  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc);
+  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc,
+                                         const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Save the  active document  in the file  <name> in the
   //! path <path>  .  overwrite  the file  if  it
   //! already exist.
-  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc, const TCollection_ExtendedString& path, TCollection_ExtendedString& theStatusMessage);
+  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& aDoc,
+                                           const TCollection_ExtendedString& path,
+                                           TCollection_ExtendedString& theStatusMessage,
+                                           const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   //! Save theDoc TO standard SEEKABLE stream theOStream.
   //! the stream should support SEEK fuctionality
-  Standard_EXPORT PCDM_StoreStatus SaveAs(const Handle(TDocStd_Document)& theDoc, Standard_OStream& theOStream, TCollection_ExtendedString& theStatusMessage);
+  Standard_EXPORT PCDM_StoreStatus SaveAs (const Handle(TDocStd_Document)& theDoc,
+                                           Standard_OStream& theOStream,
+                                           TCollection_ExtendedString& theStatusMessage,
+                                           const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Save the document overwriting the previous file
-  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc, TCollection_ExtendedString& theStatusMessage);
+  Standard_EXPORT PCDM_StoreStatus Save (const Handle(TDocStd_Document)& aDoc,
+                                         TCollection_ExtendedString& theStatusMessage,
+                                         const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   //! Notification that is fired at each OpenTransaction event.
   Standard_EXPORT virtual void OnOpenTransaction (const Handle(TDocStd_Document)& theDoc);

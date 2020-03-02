@@ -42,6 +42,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
 #include <TDocStd_Document.hxx>
+#include <Message_ProgressSentry.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinLDrivers_DocumentStorageDriver,PCDM_StorageDriver)
 
@@ -63,7 +64,8 @@ BinLDrivers_DocumentStorageDriver::BinLDrivers_DocumentStorageDriver ()
 
 void BinLDrivers_DocumentStorageDriver::Write
                           (const Handle(CDM_Document)&       theDocument,
-                           const TCollection_ExtendedString& theFileName)
+                           const TCollection_ExtendedString& theFileName,
+                           const Handle(Message_ProgressIndicator)& theProgress)
 {
   SetIsError(Standard_False);
   SetStoreStatus(PCDM_SS_OK);
@@ -75,7 +77,7 @@ void BinLDrivers_DocumentStorageDriver::Write
 
   if (aFileStream.is_open() && aFileStream.good())
   {
-    Write (theDocument, aFileStream);
+    Write(theDocument, aFileStream, theProgress);
   }
   else
   {
@@ -89,7 +91,9 @@ void BinLDrivers_DocumentStorageDriver::Write
 //purpose  :
 //=======================================================================
 
-void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDoc, Standard_OStream& theOStream)
+void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDoc, 
+                                               Standard_OStream& theOStream,
+                                               const Handle(Message_ProgressIndicator)& theProgress)
 {
   myMsgDriver = theDoc->Application()->MessageDriver();
   myMapUnsupported.Clear();
@@ -136,12 +140,26 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDo
     myRelocTable.Clear();
     myPAtt.Init();
 
+    Message_ProgressSentry aPS(theProgress, "Writing document", 0, 3, 1);
+
 //  Write Doc structure
-    WriteSubTree (aData->Root(), theOStream); // Doc is written
-
+    WriteSubTree (aData->Root(), theOStream, theProgress); // Doc is written
+    if (!aPS.More())
+    {
+      SetIsError(Standard_True);
+      SetStoreStatus(PCDM_SS_UserBreak);
+      return;
+    }
+    aPS.Next();
 //  4. Write Shapes section
-    WriteShapeSection (aShapesSection, theOStream);
-
+    WriteShapeSection (aShapesSection, theOStream, theProgress);
+    if (!aPS.More())
+    {
+       SetIsError(Standard_True);
+       SetStoreStatus(PCDM_SS_UserBreak);
+       return;
+    }
+    aPS.Next();
     // Write application-defined sections
     for (anIterS.Init (mySections); anIterS.More(); anIterS.Next()) {
       BinLDrivers_DocumentSection& aSection = anIterS.ChangeValue();
@@ -164,7 +182,13 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDo
       SetStoreStatus(PCDM_SS_No_Obj);
     }
     myRelocTable.Clear();
-
+    if (!aPS.More())
+    {
+      SetIsError(Standard_True);
+      SetStoreStatus(PCDM_SS_UserBreak);
+      return;
+    }
+    aPS.Next();
     if (!theOStream) {
       // A problem with the stream
 #ifdef OCCT_DEBUG
@@ -205,14 +229,15 @@ void BinLDrivers_DocumentStorageDriver::UnsupportedAttrMsg
 
 void BinLDrivers_DocumentStorageDriver::WriteSubTree
                         (const TDF_Label&          theLabel,
-                         Standard_OStream&         theOS)
+                         Standard_OStream&         theOS,
+                         const Handle(Message_ProgressIndicator)& theProgress)
 {
   // Skip empty labels
   if (!myEmptyLabels.IsEmpty() && myEmptyLabels.First() == theLabel) {
     myEmptyLabels.RemoveFirst();
     return;
   }
-
+  Message_ProgressSentry aPS(theProgress, "Writing sub tree", 0, 2, 1, 1);
   // Write label header: tag
   Standard_Integer aTag = theLabel.Tag();
 #if DO_INVERSE
@@ -222,7 +247,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
 
   // Write attributes
   TDF_AttributeIterator itAtt (theLabel);
-  for ( ; itAtt.More() && theOS; itAtt.Next()) {
+  for ( ; itAtt.More() && theOS && aPS.More(); itAtt.Next()) {
     const Handle(TDF_Attribute) tAtt = itAtt.Value();
     const Handle(Standard_Type)& aType = tAtt->DynamicType();
     // Get type ID and driver
@@ -249,7 +274,12 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
     // Problem with the stream
     return;
   }
-
+  if (!aPS.More())
+  {
+    SetIsError(Standard_True);
+    SetStoreStatus(PCDM_SS_UserBreak);
+    return;
+  }
   // Write the end attributes list marker
   BinLDrivers_Marker anEndAttr = BinLDrivers_ENDATTRLIST;
 #if DO_INVERSE
@@ -262,7 +292,14 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree
   for ( ; itChld.More(); itChld.Next())
   {
     const TDF_Label& aChildLab = itChld.Value();
-    WriteSubTree (aChildLab, theOS);
+    if (!aPS.More())
+    {
+      SetIsError(Standard_True);
+      SetStoreStatus(PCDM_SS_UserBreak);
+      return;
+    }
+    aPS.Next();
+    WriteSubTree (aChildLab, theOS, theProgress);
   }
 
   // Write the end label marker
@@ -509,7 +546,8 @@ void BinLDrivers_DocumentStorageDriver::WriteSection
 //=======================================================================
 void BinLDrivers_DocumentStorageDriver::WriteShapeSection
                                 (BinLDrivers_DocumentSection&   theSection,
-                                 Standard_OStream&              theOS)
+                                 Standard_OStream&              theOS,
+                                 const Handle(Message_ProgressIndicator)& /*theProgress*/)
 {
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
   theSection.Write (theOS, aShapesSectionOffset);

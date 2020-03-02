@@ -42,6 +42,8 @@
 #include <TDF_Label.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_Owner.hxx>
+#include <Message_ProgressSentry.hxx>
+
 
 IMPLEMENT_STANDARD_RTTIEXT(BinLDrivers_DocumentRetrievalDriver,PCDM_RetrievalDriver)
 
@@ -77,7 +79,8 @@ Handle(CDM_Document) BinLDrivers_DocumentRetrievalDriver::CreateDocument()
 void BinLDrivers_DocumentRetrievalDriver::Read
                          (const TCollection_ExtendedString& theFileName,
                           const Handle(CDM_Document)&       theNewDocument,
-                          const Handle(CDM_Application)&    theApplication)
+                          const Handle(CDM_Application)&    theApplication,
+                          const Handle(Message_ProgressIndicator)& theProgress)
 {
   std::ifstream aFileStream;
   OSD_OpenStream (aFileStream, theFileName, std::ios::in | std::ios::binary);
@@ -87,7 +90,12 @@ void BinLDrivers_DocumentRetrievalDriver::Read
     Handle(Storage_Data) dData;
     TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat (aFileStream, dData);
 
-    Read (aFileStream, dData, theNewDocument, theApplication);
+    Read(aFileStream, dData, theNewDocument, theApplication, theProgress);
+    if (theProgress->UserBreak())
+    {
+      myReaderStatus = PCDM_RS_UserBreak;
+      return;
+    }
   }
   else
   {
@@ -108,7 +116,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read
 void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               theIStream,
                                                 const Handle(Storage_Data)&     theStorageData,
                                                 const Handle(CDM_Document)&     theDoc,
-                                                const Handle(CDM_Application)&  theApplication)
+                                                const Handle(CDM_Application)&  theApplication,
+                                                const Handle(Message_ProgressIndicator)& theProgress)
 {
   myReaderStatus = PCDM_RS_DriverFailure;
   myMsgDriver = theApplication -> MessageDriver();
@@ -224,6 +233,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   Handle(TDF_Data) aData = new TDF_Data();
   std::streampos aDocumentPos = -1;
 
+  Message_ProgressSentry aPS(theProgress, "Reading data", 0, 3, 1);
+
   // 2b. Read the TOC of Sections
   if (aFileVer >= 3) {
     BinLDrivers_DocumentSection aSection;
@@ -246,10 +257,18 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
       BinLDrivers_DocumentSection& aCurSection = anIterS.ChangeValue();
       if (aCurSection.IsPostRead() == Standard_False) {
         theIStream.seekg ((std::streampos) aCurSection.Offset());
-        if (aCurSection.Name().IsEqual ((Standard_CString)SHAPESECTION_POS)) 
-          ReadShapeSection (aCurSection, theIStream);
+        if (aCurSection.Name().IsEqual ((Standard_CString)SHAPESECTION_POS))
+        {
+          ReadShapeSection (aCurSection, theIStream, false, theProgress);
+          if (!aPS.More())
+          {
+            myReaderStatus = PCDM_RS_UserBreak;
+            return;
+          }
+          aPS.Next();
+        }
         else
-          ReadSection (aCurSection, theDoc, theIStream); 
+          ReadSection (aCurSection, theDoc, theIStream);
       }
     }
   } else { //aFileVer < 3
@@ -287,7 +306,13 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
         CheckShapeSection(aShapeSectionPos, theIStream);
         // Read Shapes
         BinLDrivers_DocumentSection aCurSection;
-        ReadShapeSection (aCurSection, theIStream, Standard_False);
+        ReadShapeSection (aCurSection, theIStream, Standard_False, theProgress);
+        if (!aPS.More())
+        {
+          myReaderStatus = PCDM_RS_UserBreak;
+          return;
+        }
+        aPS.Next();
       }
     }
   } // end of reading Sections or shape section
@@ -300,8 +325,20 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   theIStream.read ((char*)&aTag, sizeof(Standard_Integer));
 
   // read sub-tree of the root label
-  Standard_Integer nbRead = ReadSubTree (theIStream, aData->Root());
+  Standard_Integer nbRead = ReadSubTree (theIStream, aData->Root(), theProgress);
+  if (!aPS.More()) 
+  {
+    myReaderStatus = PCDM_RS_UserBreak;
+    return;
+  }
+  aPS.Next();
   Clear();
+  if (!aPS.More())
+  {
+    myReaderStatus = PCDM_RS_UserBreak;
+    return;
+  }
+  aPS.Next();
     
   if (nbRead > 0) {
     // attach data to the document
@@ -331,17 +368,27 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
 
 Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
                          (Standard_IStream& theIS,
-                          const TDF_Label&  theLabel)
+                          const TDF_Label&  theLabel,
+                          const Handle(Message_ProgressIndicator)& theProgress)
 {
   Standard_Integer nbRead = 0;
   TCollection_ExtendedString aMethStr
     ("BinLDrivers_DocumentRetrievalDriver: ");
 
+  Message_ProgressSentry aPS(theProgress, "Reading sub tree", 0, 2, 1, true);
+
   // Read attributes:
   theIS >> myPAtt;
   while (theIS && myPAtt.TypeId() > 0 &&             // not an end marker ?
          myPAtt.Id() > 0 &&                          // not a garbage ?
-         !theIS.eof()) {
+         !theIS.eof())
+  {
+    if (!aPS.More())
+    {
+      myReaderStatus = PCDM_RS_UserBreak;
+      return -1;
+    }
+        
     // get a driver according to TypeId
     Handle(BinMDF_ADriver) aDriver = myDrivers->GetDriver (myPAtt.TypeId());
     if (!aDriver.IsNull()) {
@@ -407,12 +454,19 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
 #if DO_INVERSE
   aTag = InverseInt (aTag);
 #endif
+  
   while (theIS && aTag >= 0 && !theIS.eof()) { // not an end marker ?
     // create sub-label
     TDF_Label aLab = theLabel.FindChild (aTag, Standard_True);
+    if (!aPS.More())
+    {
+      myReaderStatus = PCDM_RS_UserBreak;
+      return -1;
+    }
 
+    aPS.Next();
     // read sub-tree
-    Standard_Integer nbSubRead = ReadSubTree(theIS, aLab);
+    Standard_Integer nbSubRead = ReadSubTree (theIS, aLab, theProgress);
     // check for error
     if (nbSubRead == -1)
       return -1;
@@ -424,6 +478,7 @@ Standard_Integer BinLDrivers_DocumentRetrievalDriver::ReadSubTree
     aTag = InverseInt (aTag);
 #endif
   }
+
   if (aTag != BinLDrivers_ENDLABEL) {
     // invalid end label marker
     myMsgDriver->Send (aMethStr + "error: invalid end label marker", Message_Fail);
@@ -465,8 +520,9 @@ void BinLDrivers_DocumentRetrievalDriver::ReadSection
 
 void BinLDrivers_DocumentRetrievalDriver::ReadShapeSection
                               (BinLDrivers_DocumentSection& theSection,
-                              Standard_IStream&            /*theIS*/,
-                              const Standard_Boolean isMess)
+                               Standard_IStream&            /*theIS*/,
+                               const Standard_Boolean isMess,
+                               const Handle(Message_ProgressIndicator) &/*theProgress*/)
 
 {
   if(isMess && theSection.Length()) {

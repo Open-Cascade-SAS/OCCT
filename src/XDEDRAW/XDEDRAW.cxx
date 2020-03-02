@@ -185,6 +185,9 @@ static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, co
     case PCDM_SS_Info_Section_Error:
       di << "Storage error: section error\n";
       break;
+    case PCDM_SS_UserBreak:
+      di << "Storage error: user break\n";
+      break;
   }
 
   return 0;

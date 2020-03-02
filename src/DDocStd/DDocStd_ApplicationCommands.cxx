@@ -17,6 +17,7 @@
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Draw_Viewer.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <DDocStd_DrawDocument.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
@@ -126,8 +127,8 @@ static Standard_Integer DDocStd_NewDocument (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
-				      Standard_Integer nb,
-				      const char** a)
+                                      Standard_Integer nb,
+                                      const char** a)
 {   
   if (nb >= 3) {
     TCollection_ExtendedString path (a[1]); 
@@ -151,53 +152,61 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
       }
     }
 
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
     if (anUseStream)
     {
       std::ifstream aFileStream;
       OSD_OpenStream (aFileStream, path, std::ios::in | std::ios::binary);
 
-      theStatus = A->Open (aFileStream, D);
+      theStatus = A->Open (aFileStream, D, aProgress);
     }
     else
     {
-      theStatus = A->Open(path,D);
+      theStatus = A->Open (path, D, aProgress);
     }
-    if (theStatus == PCDM_RS_OK && !D.IsNull()) {
+    if (theStatus == PCDM_RS_OK && !D.IsNull())
+    {
       Handle(DDocStd_DrawDocument) DD = new DDocStd_DrawDocument(D);
       TDataStd_Name::Set(D->GetData()->Root(),a[2]);
       Draw::Set(a[2],DD);
       return 0; 
-    } else {
+    } 
+    else
+    {
       switch ( theStatus ) {
+      case PCDM_RS_UserBreak: {
+        di << " could not retrieve , user break \n";
+        break;
+      }
       case PCDM_RS_AlreadyRetrieved: 
       case PCDM_RS_AlreadyRetrievedAndModified: {
-	di << " already retrieved \n" ;  
-	break;
+        di << " already retrieved \n" ;  
+        break;
       }
       case PCDM_RS_NoDriver: {
-	di << " could not retrieve , no Driver to make it \n" ;
-	break ;
+        di << " could not retrieve , no Driver to make it \n" ;
+        break ;
       }
       case PCDM_RS_UnknownDocument:
       case PCDM_RS_NoModel: {
-	di << " could not retrieve , Unknown Document or No Model \n";
-	break ; 
+        di << " could not retrieve , Unknown Document or No Model \n";
+        break ; 
       }
       case PCDM_RS_TypeNotFoundInSchema:
       case PCDM_RS_UnrecognizedFileFormat: {
-	di << " could not retrieve , Type not found or Unrecognized File Format\n";
-	break ;
+        di << " could not retrieve , Type not found or Unrecognized File Format\n";
+        break ;
       }
       case PCDM_RS_PermissionDenied: {
-	di << " could not retrieve , permission denied \n" ;  
-	break;
+        di << " could not retrieve , permission denied \n" ;  
+        break;
       }
       default:
-	di << " could not retrieve \n" ;  
-	break;
+        di << " could not retrieve \n" ;  
+        break;
       }
       di << "DDocStd_Open : Error\n";
-    }	
+    }
   }
   return 1;
 }
@@ -208,8 +217,8 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
 //=======================================================================
 
 static Standard_Integer DDocStd_Save (Draw_Interpretor& di,
-				      Standard_Integer nb,
-				      const char** a)
+                                      Standard_Integer nb,
+                                      const char** a)
 {  
   if (nb == 2) {
     Handle(TDocStd_Document) D;    
@@ -219,7 +228,9 @@ static Standard_Integer DDocStd_Save (Draw_Interpretor& di,
       di << "this document has never been saved\n";
       return 0;
     }
-    A->Save(D);
+
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+    A->Save (D, aProgress);
     return 0; 
   }
   di << "DDocStd_Save : Error\n";
@@ -255,15 +266,17 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
         D->SetEmptyLabelsSavingMode(isSaveEmptyLabels);
       }
     }
+
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
     if (anUseStream)
     {
       std::ofstream aFileStream;
       OSD_OpenStream (aFileStream, path, std::ios::out | std::ios::binary);
-      theStatus = A->SaveAs (D, aFileStream);
+      theStatus = A->SaveAs (D, aFileStream, aProgress);
     }
     else
     {
-      theStatus = A->SaveAs(D,path);
+      theStatus = A->SaveAs(D,path, aProgress);
     }
 
     if (theStatus != PCDM_SS_OK ) {
@@ -292,6 +305,10 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
         di << "Error saving document: Write info section failure\n" ;
         break;
                                        }
+      case PCDM_SS_UserBreak: {
+        di << "Error saving document: User break \n" ;
+        break;
+      }
       default:
         break;
       }

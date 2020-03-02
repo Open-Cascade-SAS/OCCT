@@ -18,7 +18,6 @@
 #include <GeomTools.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Vec.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <Message_ProgressSentry.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -172,7 +171,8 @@ void  TopTools_LocationSet::Dump(Standard_OStream& OS) const
 //purpose  : 
 //=======================================================================
 
-void  TopTools_LocationSet::Write(Standard_OStream& OS) const 
+void  TopTools_LocationSet::Write (Standard_OStream& OS,
+                                   const Handle(Message_ProgressIndicator) &theProgress) const
 {
   
   std::streamsize prec = OS.precision(15);
@@ -181,7 +181,7 @@ void  TopTools_LocationSet::Write(Standard_OStream& OS) const
   OS << "Locations " << nbLoc << "\n";
   
   //OCC19559
-  Message_ProgressSentry PS(GetProgress(), "Locations", 0, nbLoc, 1);
+  Message_ProgressSentry PS(theProgress, "Locations", 0, nbLoc, 1);
   for (i = 1; i <= nbLoc && PS.More(); i++, PS.Next()) {
     TopLoc_Location L = myMap(i);
 
@@ -246,7 +246,7 @@ static void ReadTrsf(gp_Trsf& T,
 //purpose  : 
 //=======================================================================
 
-void  TopTools_LocationSet::Read(Standard_IStream& IS)
+void  TopTools_LocationSet::Read (Standard_IStream& IS, const Handle(Message_ProgressIndicator) &theProgress)
 {
   myMap.Clear();
 
@@ -266,7 +266,7 @@ void  TopTools_LocationSet::Read(Standard_IStream& IS)
   gp_Trsf T;
     
   //OCC19559
-  Message_ProgressSentry PS(GetProgress(), "Locations", 0, nbLoc, 1);
+  Message_ProgressSentry PS(theProgress, "Locations", 0, nbLoc, 1);
   for (i = 1; i <= nbLoc&& PS.More(); i++, PS.Next()) {
     Standard_Integer typLoc;
     IS >> typLoc;
@@ -290,25 +290,3 @@ void  TopTools_LocationSet::Read(Standard_IStream& IS)
     if (!L.IsIdentity()) myMap.Add(L);
   }
 }
-
-//=======================================================================
-//function : GetProgress
-//purpose  : 
-//=======================================================================
-
-Handle(Message_ProgressIndicator) TopTools_LocationSet::GetProgress() const
-{
-  return myProgress;
-}
-
-//=======================================================================
-//function : SetProgress
-//purpose  : 
-//=======================================================================
-
-void TopTools_LocationSet::SetProgress(const Handle(Message_ProgressIndicator)& PR)
-{
-  myProgress = PR;
-}
-
-

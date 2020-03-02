@@ -52,10 +52,14 @@ public:
   Standard_EXPORT BinLDrivers_DocumentStorageDriver();
     
   //! Write <theDocument> to the binary file <theFileName>
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, const TCollection_ExtendedString& theFileName) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
+                                      const TCollection_ExtendedString& theFileName, 
+                                      const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
 
   //! Write <theDocument> to theOStream
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, Standard_OStream& theOStream) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
+                                      Standard_OStream& theOStream, 
+                                      const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
   
@@ -71,13 +75,19 @@ protected:
 
   
   //! Write the tree under <theLabel> to the stream <theOS>
-  Standard_EXPORT void WriteSubTree (const TDF_Label& theData, Standard_OStream& theOS);
+  Standard_EXPORT void WriteSubTree (const TDF_Label& theData,
+                                     Standard_OStream& theOS, 
+                                     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! define the procedure of writing a section to file.
-  Standard_EXPORT virtual void WriteSection (const TCollection_AsciiString& theName, const Handle(CDM_Document)& theDoc, Standard_OStream& theOS);
+  Standard_EXPORT virtual void WriteSection (const TCollection_AsciiString& theName,
+                                             const Handle(CDM_Document)& theDoc, 
+                                             Standard_OStream& theOS);
   
   //! defines the procedure of writing a shape  section to file
-  Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection, Standard_OStream& theOS);
+  Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection,
+                                                  Standard_OStream& theOS,
+                                                  const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   Handle(BinMDF_ADriverTable) myDrivers;
   BinObjMgt_SRelocationTable myRelocTable;
@@ -85,7 +95,6 @@ protected:
 
 private:
 
-  
   Standard_EXPORT void FirstPass (const TDF_Label& theRoot);
   
   //! Returns true if <L> and its sub-labels do not contain
@@ -104,13 +113,6 @@ private:
   BinLDrivers_VectorOfDocumentSection mySections;
   TCollection_ExtendedString myFileName;
 
-
 };
-
-
-
-
-
-
 
 #endif // _BinLDrivers_DocumentStorageDriver_HeaderFile

@@ -36,7 +36,6 @@
 #include <Geom_Surface.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <OSD_OpenFile.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
@@ -668,12 +667,11 @@ void  BRepTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
 //=======================================================================
 
 void  BRepTools::Write(const TopoDS_Shape& Sh, Standard_OStream& S,
-                       const Handle(Message_ProgressIndicator)& PR)
+                       const Handle(Message_ProgressIndicator)& theProgress)
 {
   BRepTools_ShapeSet SS;
-  SS.SetProgress(PR);
   SS.Add(Sh);
-  SS.Write(S);
+  SS.Write(S, theProgress);
   SS.Write(Sh,S);
 }
 
@@ -686,11 +684,10 @@ void  BRepTools::Write(const TopoDS_Shape& Sh, Standard_OStream& S,
 void  BRepTools::Read(TopoDS_Shape& Sh, 
                       std::istream& S, 
                       const BRep_Builder& B,
-                      const Handle(Message_ProgressIndicator)& PR)
+                      const Handle(Message_ProgressIndicator)& theProgress)
 {
   BRepTools_ShapeSet SS(B);
-  SS.SetProgress(PR);
-  SS.Read(S);
+  SS.Read(S, theProgress);
   SS.Read(Sh,S);
 }
 
@@ -701,7 +698,7 @@ void  BRepTools::Read(TopoDS_Shape& Sh,
 
 Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh, 
                                    const Standard_CString File,
-                                   const Handle(Message_ProgressIndicator)& PR)
+                                   const Handle(Message_ProgressIndicator)& theProgress)
 {
   std::ofstream os;
   OSD_OpenStream(os, File, std::ios::out);
@@ -713,11 +710,10 @@ Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh,
     return isGood;
   
   BRepTools_ShapeSet SS;
-  SS.SetProgress(PR);
   SS.Add(Sh);
   
   os << "DBRep_DrawableShape\n";  // for easy Draw read
-  SS.Write(os);
+  SS.Write(os, theProgress);
   isGood = os.good();
   if(isGood )
     SS.Write(Sh,os);
@@ -739,7 +735,7 @@ Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh,
 Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh, 
                                  const Standard_CString File,
                                  const BRep_Builder& B,
-                                 const Handle(Message_ProgressIndicator)& PR)
+                                 const Handle(Message_ProgressIndicator)& theProgress)
 {
   std::filebuf fic;
   std::istream in(&fic);
@@ -747,8 +743,7 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
   if(!fic.is_open()) return Standard_False;
   
   BRepTools_ShapeSet SS(B);
-  SS.SetProgress(PR);
-  SS.Read(in);
+  SS.Read(in, theProgress);
   if(!SS.NbShapes()) return Standard_False;
   SS.Read(Sh,in);
   return Standard_True;

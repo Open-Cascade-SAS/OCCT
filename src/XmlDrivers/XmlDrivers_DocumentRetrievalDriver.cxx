@@ -50,7 +50,8 @@ Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers
 //=======================================================================
 Handle(XmlMDF_ADriver) XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
                                const XmlObjMgt_Element&       theElement,
-                               const Handle(Message_Messenger)& theMsgDriver)
+                               const Handle(Message_Messenger)& theMsgDriver,
+                               const Handle(Message_ProgressIndicator)& theProgress)
 {
   if (myDrivers.IsNull()) myDrivers = AttributeDrivers (theMsgDriver);
   Handle(XmlMDF_ADriver) aDriver;
@@ -58,7 +59,7 @@ Handle(XmlMDF_ADriver) XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
   {
     Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
       Handle(XmlMNaming_NamedShapeDriver)::DownCast (aDriver);
-    aNamedShapeDriver -> ReadShapeSection (theElement);
+    aNamedShapeDriver->ReadShapeSection (theElement, theProgress);
   }
   return aDriver;
 }

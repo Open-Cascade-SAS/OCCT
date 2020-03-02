@@ -26,6 +26,8 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <PCDM_StoreStatus.hxx>
+#include <Message_ProgressIndicator.hxx>
+
 class CDM_Document;
 class Standard_NoSuchObject;
 class CDM_MetaData;
@@ -48,7 +50,9 @@ public:
   
   //! stores each object of the storelist in the reverse
   //! order of which they had been added.
-  Standard_EXPORT PCDM_StoreStatus Store (Handle(CDM_MetaData)& aMetaData, TCollection_ExtendedString& aStatusAssociatedText);
+  Standard_EXPORT PCDM_StoreStatus Store (Handle(CDM_MetaData)& aMetaData, 
+                                          TCollection_ExtendedString& aStatusAssociatedText,
+                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   Standard_EXPORT void Init();
   

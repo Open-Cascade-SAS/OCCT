@@ -513,15 +513,15 @@ void  GeomTools_CurveSet::Dump(Standard_OStream& OS)const
 //purpose  : 
 //=======================================================================
 
-void  GeomTools_CurveSet::Write(Standard_OStream& OS)const 
+void  GeomTools_CurveSet::Write (Standard_OStream& OS,
+                                 const Handle(Message_ProgressIndicator)& theProgress)const
 {
   std::streamsize  prec = OS.precision(17);
 
   Standard_Integer i, nbcurve = myMap.Extent();
   OS << "Curves "<< nbcurve << "\n";
     //OCC19559
-  Handle(Message_ProgressIndicator) progress = GetProgress();
-  Message_ProgressSentry PS(progress, "3D Curves", 0, nbcurve, 1);
+  Message_ProgressSentry PS(theProgress, "3D Curves", 0, nbcurve, 1);
   for (i = 1; i <= nbcurve && PS.More(); i++, PS.Next()) {
     PrintCurve(Handle(Geom_Curve)::DownCast(myMap(i)),OS,Standard_True);
   }
@@ -861,7 +861,8 @@ Handle(Geom_Curve) GeomTools_CurveSet::ReadCurve (Standard_IStream& IS)
 //purpose  : 
 //=======================================================================
 
-void  GeomTools_CurveSet::Read(Standard_IStream& IS)
+void  GeomTools_CurveSet::Read (Standard_IStream& IS,
+                                const Handle(Message_ProgressIndicator)& theProgress)
 {
   char buffer[255];
   IS >> buffer;
@@ -873,32 +874,9 @@ void  GeomTools_CurveSet::Read(Standard_IStream& IS)
   Standard_Integer i, nbcurve;
   IS >> nbcurve;
   //OCC19559
-  Handle(Message_ProgressIndicator) progress = GetProgress();
-  Message_ProgressSentry PS(progress, "3D Curves", 0, nbcurve, 1);
+  Message_ProgressSentry PS(theProgress, "3D Curves", 0, nbcurve, 1);
   for (i = 1; i <= nbcurve && PS.More(); i++, PS.Next()) {
     Handle(Geom_Curve) C = GeomTools_CurveSet::ReadCurve (IS);
     myMap.Add(C);
   }
 }
-
-//=======================================================================
-//function : GetProgress
-//purpose  : 
-//=======================================================================
-
-Handle(Message_ProgressIndicator) GeomTools_CurveSet::GetProgress() const
-{
-  return myProgress;
-}
-
-//=======================================================================
-//function : SetProgress
-//purpose  : 
-//=======================================================================
-
-void GeomTools_CurveSet::SetProgress(const Handle(Message_ProgressIndicator)& PR)
-{
-  myProgress = PR;
-}
-
-

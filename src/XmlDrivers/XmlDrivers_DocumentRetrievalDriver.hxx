@@ -33,38 +33,23 @@ DEFINE_STANDARD_HANDLE(XmlDrivers_DocumentRetrievalDriver, XmlLDrivers_DocumentR
 
 class XmlDrivers_DocumentRetrievalDriver : public XmlLDrivers_DocumentRetrievalDriver
 {
-
 public:
 
-  
   Standard_EXPORT XmlDrivers_DocumentRetrievalDriver();
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers
+                         (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection (const XmlObjMgt_Element& thePDoc, const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection
+                         (const XmlObjMgt_Element& thePDoc, 
+                          const Handle(Message_Messenger)& theMsgDriver,
+                          const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void ShapeSetCleaning (const Handle(XmlMDF_ADriver)& theDriver) Standard_OVERRIDE;  
-
-
+  Standard_EXPORT virtual void ShapeSetCleaning
+                         (const Handle(XmlMDF_ADriver)& theDriver) Standard_OVERRIDE;  
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentRetrievalDriver,XmlLDrivers_DocumentRetrievalDriver)
 
-protected:
-
-
-
-
-private:
-
-
-
-
 };
-
-
-
-
-
-
 
 #endif // _XmlDrivers_DocumentRetrievalDriver_HeaderFile

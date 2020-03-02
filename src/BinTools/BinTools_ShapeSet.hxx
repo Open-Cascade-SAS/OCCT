@@ -32,6 +32,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+
 class TopoDS_Shape;
 class BinTools_LocationSet;
 
@@ -98,7 +99,9 @@ public:
   //! Write the type.
   //! calls WriteGeometry(S).
   //! Write the flags, the subshapes.
-  Standard_EXPORT virtual void Write (Standard_OStream& OS) const;
+  Standard_EXPORT virtual void Write
+    (Standard_OStream& OS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
   
   //! Reads the content of me from the binary stream  <IS>. me
   //! is first cleared.
@@ -112,7 +115,9 @@ public:
   //! Reads the type.
   //! calls ReadGeometry(T,S).
   //! Reads the flag, the subshapes.
-  Standard_EXPORT virtual void Read (Standard_IStream& IS);
+  Standard_EXPORT virtual void Read
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Writes   on  <OS>   the shape   <S>.    Writes the
   //! orientation, the index of the TShape and the index
@@ -121,14 +126,20 @@ public:
   
   //! Writes the geometry of  me  on the stream <OS> in a
   //! binary format that can be read back by Read.
-  Standard_EXPORT virtual void WriteGeometry (Standard_OStream& OS) const;
+  Standard_EXPORT virtual void WriteGeometry
+    (Standard_OStream& OS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
   
   //! Reads the geometry of me from the  stream  <IS>.
-  Standard_EXPORT virtual void ReadGeometry (Standard_IStream& IS);
+  Standard_EXPORT virtual void ReadGeometry
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Reads  from <IS>  a shape  and  returns  it in  S.
   //! <NbShapes> is the number of tshapes in the set.
-  Standard_EXPORT virtual void Read (TopoDS_Shape& S, Standard_IStream& IS, const Standard_Integer NbShapes) const;
+  Standard_EXPORT virtual void Read
+    (TopoDS_Shape& S,
+     Standard_IStream& IS, const Standard_Integer NbShapes) const;
   
   //! Writes the geometry of <S>  on the stream <OS> in a
   //! binary format that can be read back by Read.
@@ -146,30 +157,42 @@ public:
   
   //! Reads the 3d polygons  of me
   //! from the  stream  <IS>.
-  Standard_EXPORT void ReadPolygon3D (Standard_IStream& IS);
+  Standard_EXPORT void ReadPolygon3D
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Writes the 3d polygons
   //! on the stream <OS> in a format that can
   //! be read back by Read.
-  Standard_EXPORT void WritePolygon3D (Standard_OStream& OS) const;
+  Standard_EXPORT void WritePolygon3D
+    (Standard_OStream& OS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
   
   //! Reads the triangulation of me
   //! from the  stream  <IS>.
-  Standard_EXPORT void ReadTriangulation (Standard_IStream& IS);
+  Standard_EXPORT void ReadTriangulation
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Writes the triangulation
   //! on the stream <OS> in a format that can
   //! be read back by Read.
-  Standard_EXPORT void WriteTriangulation (Standard_OStream& OS) const;
+  Standard_EXPORT void WriteTriangulation
+    (Standard_OStream& OS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
   
   //! Reads the polygons on triangulation of me
   //! from the  stream  <IS>.
-  Standard_EXPORT void ReadPolygonOnTriangulation (Standard_IStream& IS);
+  Standard_EXPORT void ReadPolygonOnTriangulation
+    (Standard_IStream& IS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Writes the polygons on triangulation
   //! on the stream <OS> in a format that can
   //! be read back by Read.
-  Standard_EXPORT void WritePolygonOnTriangulation (Standard_OStream& OS) const;
+  Standard_EXPORT void WritePolygonOnTriangulation
+    (Standard_OStream& OS,
+     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
 
 private:
 

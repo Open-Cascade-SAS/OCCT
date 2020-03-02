@@ -26,6 +26,7 @@
 #include <Standard_ExtString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <Message_ProgressIndicator.hxx>
 
 class CDM_Reference;
 class CDM_MetaData;
@@ -88,7 +89,10 @@ protected:
 private:
 
   
-  Standard_EXPORT virtual Handle(CDM_Document) Retrieve (const Handle(CDM_MetaData)& aMetaData, const Standard_Boolean UseStorageConfiguration) = 0;
+  Standard_EXPORT virtual Handle(CDM_Document) Retrieve
+        (const Handle(CDM_MetaData)& aMetaData, 
+         const Standard_Boolean UseStorageConfiguration,
+         const Handle(Message_ProgressIndicator)& theProgress = NULL) = 0;
   
   //! returns -1 if the metadata has no modification counter.
   Standard_EXPORT virtual Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& aMetaData) = 0;

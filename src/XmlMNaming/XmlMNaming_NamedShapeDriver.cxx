@@ -17,6 +17,7 @@
 
 #include <BRepTools.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_ProgressSentry.hxx>
 #include <LDOM_OSStream.hxx>
 #include <LDOM_Text.hxx>
 #include <Standard_SStream.hxx>
@@ -333,8 +334,8 @@ static int doTranslate  (const XmlMNaming_Shape1&       thePShape,
 //purpose  : 
 //=======================================================================
 
-void XmlMNaming_NamedShapeDriver::ReadShapeSection
-                                        (const XmlObjMgt_Element& theElement)
+void XmlMNaming_NamedShapeDriver::ReadShapeSection (const XmlObjMgt_Element& theElement, 
+                                                    const Handle(Message_ProgressIndicator)& theProgress)
 {
   XmlObjMgt_Element anElement =
     XmlObjMgt::FindChildByName (theElement, ::ShapesString());
@@ -347,7 +348,7 @@ void XmlMNaming_NamedShapeDriver::ReadShapeSection
         LDOMString aData = aNode.getNodeValue();
         std::stringstream aStream (std::string(aData.GetString()));
         myShapeSet.Clear();
-        myShapeSet.Read (aStream);
+        myShapeSet.Read (aStream, theProgress);
         break;
       }
     }
@@ -359,8 +360,8 @@ void XmlMNaming_NamedShapeDriver::ReadShapeSection
 //purpose  : 
 //=======================================================================
 
-void XmlMNaming_NamedShapeDriver::WriteShapeSection
-                                        (XmlObjMgt_Element& theElement)
+void XmlMNaming_NamedShapeDriver::WriteShapeSection (XmlObjMgt_Element& theElement,
+                                                     const Handle(Message_ProgressIndicator)& theProgress)
 {
   //  Create "shapes" element and append it as child
   XmlObjMgt_Document aDoc     = theElement.getOwnerDocument();
@@ -373,7 +374,11 @@ void XmlMNaming_NamedShapeDriver::WriteShapeSection
     LDOM_OSStream aStream (16 * 1024);
 //    ostrstream aStream;
 //    aStream.rdbuf() -> setbuf (0, 16380);
-    myShapeSet.Write (aStream);
+    Message_ProgressSentry aPS(theProgress, "Writing shape section", 0, 2, 1);
+    myShapeSet.Write (aStream, theProgress);
+    if (!aPS.More())
+      return;
+    aPS.Next();
     aStream << std::ends;
     char * aStr = (char *)aStream.str();
     LDOM_Text aText = aDoc.createTextNode (aStr);
@@ -384,6 +389,9 @@ void XmlMNaming_NamedShapeDriver::WriteShapeSection
   // Clear the shape set to avoid appending to it on the next write
     BRepTools_ShapeSet& aShapeSet = (BRepTools_ShapeSet&) myShapeSet;
     aShapeSet.Clear();
+    if (!aPS.More())
+      return;
+    aPS.Next();
   }
 }
 

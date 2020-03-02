@@ -45,9 +45,13 @@ public:
   
   Standard_EXPORT XmlLDrivers_DocumentStorageDriver(const TCollection_ExtendedString& theCopyright);
   
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, const TCollection_ExtendedString& theFileName) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
+                                      const TCollection_ExtendedString& theFileName,
+                  const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
 
-  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, Standard_OStream& theOStream) Standard_OVERRIDE;
+  Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
+                                      Standard_OStream& theOStream,
+                  const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
 
@@ -59,13 +63,22 @@ public:
 protected:
 
   
-  Standard_EXPORT virtual Standard_Boolean WriteToDomDocument (const Handle(CDM_Document)& theDocument, XmlObjMgt_Element& thePDoc);
+  Standard_EXPORT virtual Standard_Boolean WriteToDomDocument
+                                (const Handle(CDM_Document)& theDocument, 
+                                 XmlObjMgt_Element& thePDoc,
+                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
-  Standard_EXPORT virtual Standard_Integer MakeDocument (const Handle(CDM_Document)& theDocument, XmlObjMgt_Element& thePDoc);
+  Standard_EXPORT virtual Standard_Integer MakeDocument
+                                (const Handle(CDM_Document)& theDocument,
+                                 XmlObjMgt_Element& thePDoc, 
+                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
-  Standard_EXPORT void AddNamespace (const TCollection_AsciiString& thePrefix, const TCollection_AsciiString& theURI);
+  Standard_EXPORT void AddNamespace (const TCollection_AsciiString& thePrefix,
+                                     const TCollection_AsciiString& theURI);
   
-  Standard_EXPORT virtual Standard_Boolean WriteShapeSection (XmlObjMgt_Element& thePDoc);
+  Standard_EXPORT virtual Standard_Boolean WriteShapeSection
+                                (XmlObjMgt_Element& thePDoc, 
+                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   Handle(XmlMDF_ADriverTable) myDrivers;
   XmlObjMgt_SRelocationTable myRelocTable;

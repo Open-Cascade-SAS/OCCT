@@ -37,23 +37,29 @@ DEFINE_STANDARD_HANDLE(XmlMNaming_NamedShapeDriver, XmlMDF_ADriver)
 
 class XmlMNaming_NamedShapeDriver : public XmlMDF_ADriver
 {
-
 public:
 
-  
   Standard_EXPORT XmlMNaming_NamedShapeDriver(const Handle(Message_Messenger)& aMessageDriver);
   
   Standard_EXPORT virtual Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Standard_Boolean Paste (const XmlObjMgt_Persistent& theSource, const Handle(TDF_Attribute)& theTarget, XmlObjMgt_RRelocationTable& theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Paste
+                              (const XmlObjMgt_Persistent& theSource,
+                               const Handle(TDF_Attribute)& theTarget,
+                               XmlObjMgt_RRelocationTable& theRelocTable) const Standard_OVERRIDE;
   
-  Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& theSource, XmlObjMgt_Persistent& theTarget, XmlObjMgt_SRelocationTable& theRelocTable) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void Paste
+                              (const Handle(TDF_Attribute)& theSource,
+                               XmlObjMgt_Persistent& theTarget,
+                               XmlObjMgt_SRelocationTable& theRelocTable) const Standard_OVERRIDE;
   
   //! Input the shapes from DOM element
-  Standard_EXPORT void ReadShapeSection (const XmlObjMgt_Element& anElement);
+  Standard_EXPORT void ReadShapeSection (const XmlObjMgt_Element& anElement,
+                                         const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Output the shapes into DOM element
-  Standard_EXPORT void WriteShapeSection (XmlObjMgt_Element& anElement);
+  Standard_EXPORT void WriteShapeSection (XmlObjMgt_Element& anElement,
+                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Clear myShapeSet
   Standard_EXPORT void Clear();
@@ -61,29 +67,15 @@ public:
   //! get the format of topology
     TopTools_LocationSet& GetShapesLocations();
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(XmlMNaming_NamedShapeDriver,XmlMDF_ADriver)
-
-protected:
-
-
-
 
 private:
 
-
   BRepTools_ShapeSet myShapeSet;
-
 
 };
 
 
 #include <XmlMNaming_NamedShapeDriver.lxx>
-
-
-
-
 
 #endif // _XmlMNaming_NamedShapeDriver_HeaderFile

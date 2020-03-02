@@ -26,6 +26,9 @@
 #include <Standard_Boolean.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlMDF_MapOfDriver.hxx>
+
+#include <Message_ProgressIndicator.hxx>
+
 class TDF_Data;
 class XmlMDF_ADriverTable;
 class TDF_Label;
@@ -58,38 +61,45 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Translates a transient <aSource> into a persistent
   //! <aTarget>.
-  Standard_EXPORT static void FromTo (const Handle(TDF_Data)& aSource, XmlObjMgt_Element& aTarget, XmlObjMgt_SRelocationTable& aReloc, const Handle(XmlMDF_ADriverTable)& aDrivers);
+  Standard_EXPORT static void FromTo (const Handle(TDF_Data)& aSource,
+                                      XmlObjMgt_Element& aTarget,
+                                      XmlObjMgt_SRelocationTable& aReloc,
+                                      const Handle(XmlMDF_ADriverTable)& aDrivers, 
+                                      const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Translates a persistent <aSource> into a transient
   //! <aTarget>.
   //! Returns True if completed successfully (False on error)
-  Standard_EXPORT static Standard_Boolean FromTo (const XmlObjMgt_Element& aSource, Handle(TDF_Data)& aTarget, XmlObjMgt_RRelocationTable& aReloc, const Handle(XmlMDF_ADriverTable)& aDrivers);
+  Standard_EXPORT static Standard_Boolean FromTo
+                                (const XmlObjMgt_Element& aSource, 
+                                 Handle(TDF_Data)& aTarget, XmlObjMgt_RRelocationTable& aReloc, 
+                                 const Handle(XmlMDF_ADriverTable)& aDrivers, 
+                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
   //! Adds the attribute storage drivers to <aDriverSeq>.
-  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, const Handle(Message_Messenger)& theMessageDriver);
-
-
-
-
-protected:
-
-
-
-
+  Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, 
+                                          const Handle(Message_Messenger)& theMessageDriver);
 
 private:
 
+  Standard_EXPORT static Standard_Integer WriteSubTree
+                                 (const TDF_Label& theLabel, 
+                                  XmlObjMgt_Element& theElement, 
+                                  XmlObjMgt_SRelocationTable& aReloc, 
+                                  const Handle(XmlMDF_ADriverTable)& aDrivers, 
+                                  const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
-  Standard_EXPORT static Standard_Integer WriteSubTree (const TDF_Label& theLabel, XmlObjMgt_Element& theElement, XmlObjMgt_SRelocationTable& aReloc, const Handle(XmlMDF_ADriverTable)& aDrivers);
+  Standard_EXPORT static Standard_Integer ReadSubTree
+                                 (const XmlObjMgt_Element& theElement, 
+                                  const TDF_Label& theLabel, 
+                                  XmlObjMgt_RRelocationTable& aReloc, 
+                                  const XmlMDF_MapOfDriver& aDrivers, 
+                                  const Handle(Message_ProgressIndicator)& theProgress = NULL);
   
-  Standard_EXPORT static Standard_Integer ReadSubTree (const XmlObjMgt_Element& theElement, const TDF_Label& theLabel, XmlObjMgt_RRelocationTable& aReloc, const XmlMDF_MapOfDriver& aDrivers);
-  
-  Standard_EXPORT static void CreateDrvMap (const Handle(XmlMDF_ADriverTable)& aDriverTable, XmlMDF_MapOfDriver& anAsciiDriverMap);
-
-
+  Standard_EXPORT static void CreateDrvMap (const Handle(XmlMDF_ADriverTable)& aDriverTable,
+                                            XmlMDF_MapOfDriver& anAsciiDriverMap);
 
 friend class XmlMDF_ADriver;
 friend class XmlMDF_TagSourceDriver;
@@ -97,11 +107,5 @@ friend class XmlMDF_ReferenceDriver;
 friend class XmlMDF_ADriverTable;
 
 };
-
-
-
-
-
-
 
 #endif // _XmlMDF_HeaderFile
