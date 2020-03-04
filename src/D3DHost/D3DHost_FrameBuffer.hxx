@@ -103,6 +103,13 @@ public:
   //! Returns TRUE if FBO has been initialized without WGL/D3D interop.
   Standard_Boolean   D3dFallback() const { return myD3dFallback; }
 
+  //! Returns TRUE if color buffer is sRGB ready; FALSE by default.
+  //! Requires D3DSAMP_SRGBTEXTURE sampler parameter being set on D3D level for rendering D3D surface.
+  Standard_Boolean IsSRGBReady() const { return myIsSRGBReady; }
+
+  //! Set if color buffer is sRGB ready.
+  void SetSRGBReady (Standard_Boolean theIsReady) { myIsSRGBReady = theIsReady; }
+
 protected:
 
   using OpenGl_FrameBuffer::Init;
@@ -115,6 +122,7 @@ protected:
   void*              myGlD3dSurf;    //!< WGL/D3D surface handle
   Standard_Integer   myLockCount;    //!< locking counter
   Standard_Boolean   myD3dFallback;  //!< indicates that FBO has been initialized without WGL/D3D interop
+  Standard_Boolean   myIsSRGBReady;  //!< indicates that color buffer is sRGB ready
 
 public:
 

@@ -34,7 +34,8 @@ D3DHost_FrameBuffer::D3DHost_FrameBuffer()
   myGlD3dDevice  (NULL),
   myGlD3dSurf    (NULL),
   myLockCount    (0),
-  myD3dFallback  (Standard_False)
+  myD3dFallback  (Standard_False),
+  myIsSRGBReady  (Standard_False)
 {
   //
 }
@@ -277,6 +278,7 @@ void D3DHost_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theCtx)
   }
 
   OpenGl_FrameBuffer::BindBuffer (theCtx);
+  theCtx->SetFrameBufferSRGB (true, myIsSRGBReady);
   if (myD3dFallback)
   {
     return;

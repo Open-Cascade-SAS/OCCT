@@ -584,6 +584,9 @@ public:
   //! (GL_FRAMEBUFFER_SRGB can be considered as always tuned ON).
   bool IsWindowSRGB() const { return myIsSRgbWindow; }
 
+  //! Overrides if window/surface buffer is sRGB-ready or not (initialized with the context).
+  void SetWindowSRGB (bool theIsSRgb) { myIsSRgbWindow = theIsSRgb; }
+
   //! Convert Quantity_ColorRGBA into vec4
   //! with conversion or no conversion into non-linear sRGB
   //! basing on ToRenderSRGB() flag.
@@ -794,7 +797,8 @@ public: //! @name methods to alter or retrieve current state
   //! - FALSE if sRGB rendering is not supported or sRGB-not-ready window buffer is used for drawing.
   //! @param theIsFbo [in] flag indicating writing into offscreen FBO (always expected sRGB-ready when sRGB FBO is supported)
   //!                      or into window buffer (FALSE, sRGB-readiness might vary).
-  Standard_EXPORT void SetFrameBufferSRGB (bool theIsFbo);
+  //! @param theIsSRgb [in] flag indicating off-screen FBO is sRGB-ready
+  Standard_EXPORT void SetFrameBufferSRGB (bool theIsFbo, bool theIsFboSRgb = true);
 
   //! Return cached flag indicating writing into color buffer is enabled or disabled (glColorMask).
   bool ColorMask() const { return myColorMask; }

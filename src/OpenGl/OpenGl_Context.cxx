@@ -517,7 +517,7 @@ void OpenGl_Context::SetDrawBuffers (const Standard_Integer theNb, const Standar
 // function : SetFrameBufferSRGB
 // purpose  :
 // =======================================================================
-void OpenGl_Context::SetFrameBufferSRGB (bool theIsFbo)
+void OpenGl_Context::SetFrameBufferSRGB (bool theIsFbo, bool theIsFboSRgb)
 {
   if (!hasFboSRGB)
   {
@@ -525,7 +525,8 @@ void OpenGl_Context::SetFrameBufferSRGB (bool theIsFbo)
     return;
   }
   myIsSRgbActive = ToRenderSRGB()
-               && (theIsFbo || myIsSRgbWindow);
+               && (theIsFbo || myIsSRgbWindow)
+               && theIsFboSRgb;
   if (!hasSRGBControl)
   {
     return;
