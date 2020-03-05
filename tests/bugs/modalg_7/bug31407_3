@@ -1,0 +1,20 @@
+puts "========"
+puts "0031407: Extrema does not process parallel circles correctly"
+puts "========"
+puts ""
+
+circle c1  0 0 0  0 0 1  5
+circle c2  0 0 0  0 0 1  10
+
+trim cc1 c1 0 2
+trim cc2 c2 2 4
+
+set res_extrema [extrema cc1 cc2]
+
+if { [regexp "Infinite number of extremas" $res_extrema] == 0} {
+  if {[llength $res_extrema] != 1} {
+    puts "Error : expected 1 extrema, but found [llength $res_extrema]"
+  }
+} else {
+  puts "Error : Infinite number of extremas is found"
+}
