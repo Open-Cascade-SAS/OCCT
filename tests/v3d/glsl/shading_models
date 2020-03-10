@@ -24,6 +24,11 @@ vdrawparray p7 triangles v 40 55 0 v 40 75 0 v 60 55 0 v 40 55 0 v 40 75 0 v 40 
 vtop
 vrotate -0.9 0.1 0
 vfit
+
+vcaps -ffp 1
+vdump $::imagedir/${::casename}_defaults_ffp.png
+
+vcaps -ffp 0
 vdump $::imagedir/${::casename}_defaults.png
 
 # customize shading models
@@ -42,4 +47,9 @@ vdrawtext t6   Graphic3d_TOSM_DEFAULT  -pos 10 65 10 -color RED -aspect BOLD
 vaspects  p7 -setShadingModel FACET
 vdrawtext t7   Graphic3d_TOSM_FACET    -pos 50 65 10 -color RED -aspect BOLD
 vdisplay -topmost t1 t2 t3 t4 t5 t6 t7
+
+vcaps -ffp 1
+vdump $::imagedir/${::casename}_ffp.png
+
+vcaps -ffp 0
 vdump $::imagedir/${::casename}.png

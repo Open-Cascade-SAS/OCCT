@@ -983,6 +983,9 @@ public: //! @name methods to alter or retrieve current state
   //! Dumps the content of openGL state into the stream
   Standard_EXPORT static void DumpJsonOpenGlState (Standard_OStream& theOStream, Standard_Integer theDepth = -1);
 
+  //! Set GL_SHADE_MODEL value.
+  Standard_EXPORT void SetShadeModel (Graphic3d_TypeOfShadingModel theModel);
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -1153,6 +1156,7 @@ private: //! @name fields tracking current state
   Standard_Integer              myViewportVirt[4]; //!< virtual viewport
   Standard_Integer              myPointSpriteOrig; //!< GL_POINT_SPRITE_COORD_ORIGIN state (GL_UPPER_LEFT by default)
   Standard_Integer              myRenderMode;      //!< value for active rendering mode
+  Standard_Integer              myShadeModel;      //!< currently used shade model (glShadeModel)
   Standard_Integer              myPolygonMode;     //!< currently used polygon rasterization mode (glPolygonMode)
   Graphic3d_PolygonOffset       myPolygonOffset;   //!< currently applied polygon offset
   bool                          myToCullBackFaces; //!< back face culling mode enabled state (glIsEnabled (GL_CULL_FACE))

@@ -919,22 +919,6 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       }
     }
 
-  #if !defined(GL_ES_VERSION_2_0)
-    // manage FFP lighting
-    if (aCtx->ActiveProgram().IsNull()
-     && aCtx->core11 != NULL)
-    {
-      if (aShadingModel == Graphic3d_TOSM_UNLIT)
-      {
-        glDisable (GL_LIGHTING);
-      }
-      else
-      {
-        glEnable (GL_LIGHTING);
-      }
-    }
-  #endif
-
     // bind textures after GLSL program to set mock textures to slots used by program
     aCtx->BindTextures (aTextureSet, aCtx->ActiveProgram());
     if (!aTextureSet.IsNull()

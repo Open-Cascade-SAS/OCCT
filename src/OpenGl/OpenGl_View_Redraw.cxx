@@ -112,26 +112,7 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
         || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_CENTERED
         || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_NONE))
     {
-      #if !defined(GL_ES_VERSION_2_0)
-      GLint aShadingModelOld = GL_SMOOTH;
-      if (aCtx->core11 != NULL
-        && aCtx->caps->ffpEnable)
-      {
-        aCtx->core11fwd->glDisable (GL_LIGHTING);
-        aCtx->core11fwd->glGetIntegerv (GL_SHADE_MODEL, &aShadingModelOld);
-        aCtx->core11->glShadeModel (GL_SMOOTH);
-      }
-      #endif
-
       myBackgrounds[Graphic3d_TOB_GRADIENT]->Render(theWorkspace);
-
-      #if !defined(GL_ES_VERSION_2_0)
-      if (aCtx->core11 != NULL
-        && aCtx->caps->ffpEnable)
-      {
-        aCtx->core11->glShadeModel (aShadingModelOld);
-      }
-      #endif
     }
 
     // Drawing background image if it is defined
@@ -1071,13 +1052,6 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   else
   {
     aContext->SetGlNormalizeEnabled (Standard_False);
-  }
-
-  // Apply InteriorShadingMethod
-  if (aContext->core11 != NULL)
-  {
-    aContext->core11->glShadeModel (myShadingModel == Graphic3d_TOSM_FACET
-                                 || myShadingModel == Graphic3d_TOSM_UNLIT ? GL_FLAT : GL_SMOOTH);
   }
 #endif
 

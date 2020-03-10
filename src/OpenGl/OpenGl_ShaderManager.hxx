@@ -117,19 +117,19 @@ public:
                                     Standard_Boolean theEnableMeshEdges,
                                     const Handle(OpenGl_ShaderProgram)& theCustomProgram)
   {
-    if (!theCustomProgram.IsNull()
-     || myContext->caps->ffpEnable)
-    {
-      return bindProgramWithState (theCustomProgram);
-    }
-
     const Graphic3d_TypeOfShadingModel aShadeModelOnFace = theShadingModel != Graphic3d_TOSM_UNLIT
                                                         && (theTextures.IsNull() || theTextures->IsModulate())
                                                         ? theShadingModel
                                                         : Graphic3d_TOSM_UNLIT;
+    if (!theCustomProgram.IsNull()
+     || myContext->caps->ffpEnable)
+    {
+      return bindProgramWithState (theCustomProgram, aShadeModelOnFace);
+    }
+
     const Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, theInteriorStyle, theHasVertColor, theEnableEnvMap, theEnableMeshEdges);
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (aShadeModelOnFace, aBits);
-    return bindProgramWithState (aProgram);
+    return bindProgramWithState (aProgram, aShadeModelOnFace);
   }
 
   //! Bind program for line rendering
@@ -143,7 +143,7 @@ public:
     if (!theCustomProgram.IsNull()
      || myContext->caps->ffpEnable)
     {
-      return bindProgramWithState (theCustomProgram);
+      return bindProgramWithState (theCustomProgram, theShadingModel);
     }
 
     Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
@@ -153,7 +153,7 @@ public:
     }
 
     Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
-    return bindProgramWithState (aProgram);
+    return bindProgramWithState (aProgram, theShadingModel);
   }
 
   //! Bind program for point rendering
@@ -169,7 +169,7 @@ public:
     if (!theCustomProgram.IsNull()
      || myContext->caps->ffpEnable)
     {
-      return bindProgramWithState (theCustomProgram);
+      return bindProgramWithState (theCustomProgram, Graphic3d_TOSM_UNLIT);
     }
 
     if (myFontProgram.IsNull())
@@ -177,7 +177,7 @@ public:
       prepareStdProgramFont();
     }
 
-    return bindProgramWithState (myFontProgram);
+    return bindProgramWithState (myFontProgram, Graphic3d_TOSM_UNLIT);
   }
 
   //! Bind program for outline rendering
@@ -198,7 +198,7 @@ public:
     {
       prepareStdProgramUnlit (aProgram, aBits, true);
     }
-    return bindProgramWithState (aProgram);
+    return bindProgramWithState (aProgram, Graphic3d_TOSM_UNLIT);
   }
 
   //! Bind program for FBO blit operation.
@@ -244,7 +244,7 @@ public:
     {
       prepareStdProgramBoundBox();
     }
-    return bindProgramWithState (myBoundBoxProgram);
+    return bindProgramWithState (myBoundBoxProgram, Graphic3d_TOSM_UNLIT);
   }
 
   //! Returns bounding box vertex buffer.
@@ -454,7 +454,8 @@ public:
 public:
 
   //! Pushes current state of OCCT graphics parameters to specified program.
-  Standard_EXPORT void PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+  Standard_EXPORT void PushState (const Handle(OpenGl_ShaderProgram)& theProgram,
+                                  Graphic3d_TypeOfShadingModel theShadingModel = Graphic3d_TOSM_UNLIT) const;
 
 public:
 
@@ -725,7 +726,8 @@ protected:
                                                               Standard_Boolean  theHasEmissive = true);
 
   //! Bind specified program to current context and apply state.
-  Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram);
+  Standard_EXPORT Standard_Boolean bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
+                                                         Graphic3d_TypeOfShadingModel theShadingModel);
 
   //! Set pointer myLightPrograms to active lighting programs set from myMapOfLightPrograms
   Standard_EXPORT void switchLightPrograms();

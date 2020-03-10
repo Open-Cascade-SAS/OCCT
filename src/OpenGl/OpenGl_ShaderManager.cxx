@@ -1422,7 +1422,8 @@ void OpenGl_ShaderManager::PushInteriorState (const Handle(OpenGl_ShaderProgram)
 // function : PushState
 // purpose  : Pushes state of OCCT graphics parameters to the program
 // =======================================================================
-void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const
+void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& theProgram,
+                                      Graphic3d_TypeOfShadingModel theShadingModel) const
 {
   const Handle(OpenGl_ShaderProgram)& aProgram = !theProgram.IsNull() ? theProgram : myFfpProgram;
   PushClippingState    (aProgram);
@@ -1441,6 +1442,23 @@ void OpenGl_ShaderManager::PushState (const Handle(OpenGl_ShaderProgram)& thePro
                                                                     (float )myContext->Viewport()[2], (float )myContext->Viewport()[3]));
     }
   }
+#if !defined(GL_ES_VERSION_2_0)
+  else if (myContext->core11 != NULL)
+  {
+    // manage FFP lighting
+    myContext->SetShadeModel (theShadingModel);
+    if (theShadingModel == Graphic3d_TOSM_UNLIT)
+    {
+      glDisable (GL_LIGHTING);
+    }
+    else
+    {
+      glEnable (GL_LIGHTING);
+    }
+  }
+#else
+  (void )theShadingModel;
+#endif
 }
 
 // =======================================================================
@@ -3173,7 +3191,8 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram
 // function : bindProgramWithState
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_ShaderManager::bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram)
+Standard_Boolean OpenGl_ShaderManager::bindProgramWithState (const Handle(OpenGl_ShaderProgram)& theProgram,
+                                                             Graphic3d_TypeOfShadingModel theShadingModel)
 {
   const Standard_Boolean isBound = myContext->BindProgram (theProgram);
   if (isBound
@@ -3181,7 +3200,7 @@ Standard_Boolean OpenGl_ShaderManager::bindProgramWithState (const Handle(OpenGl
   {
     theProgram->ApplyVariables (myContext);
   }
-  PushState (theProgram);
+  PushState (theProgram, theShadingModel);
   return isBound;
 }
 
@@ -3198,7 +3217,7 @@ Standard_Boolean OpenGl_ShaderManager::BindMarkerProgram (const Handle(OpenGl_Te
   if (!theCustomProgram.IsNull()
     || myContext->caps->ffpEnable)
   {
-    return bindProgramWithState (theCustomProgram);
+    return bindProgramWithState (theCustomProgram, theShadingModel);
   }
 
   Standard_Integer aBits = getProgramBits (theTextures, theAlphaMode, Aspect_IS_SOLID, theHasVertColor, false, false);
@@ -3212,5 +3231,5 @@ Standard_Boolean OpenGl_ShaderManager::BindMarkerProgram (const Handle(OpenGl_Te
     aBits |= OpenGl_PO_PointSimple;
   }
   Handle(OpenGl_ShaderProgram)& aProgram = getStdProgram (theShadingModel, aBits);
-  return bindProgramWithState (aProgram);
+  return bindProgramWithState (aProgram, theShadingModel);
 }
