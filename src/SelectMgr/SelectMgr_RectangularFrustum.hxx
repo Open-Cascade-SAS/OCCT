@@ -120,7 +120,7 @@ public:
   inline const gp_Pnt& GetFarPnt() const { return myFarPickedPnt; }
 
   //! Return view ray direction.
-  const gp_Vec& GetViewRayDirection() const { return myViewRayDir; }
+  const gp_Dir& GetViewRayDirection() const { return myViewRayDir; }
 
   //! Return mouse coordinates.
   const gp_Pnt2d& GetMousePosition() const { return myMousePos; }
@@ -153,7 +153,7 @@ private:
 
   gp_Pnt                  myNearPickedPnt;             //!< 3d projection of user-picked selection point onto near view plane
   gp_Pnt                  myFarPickedPnt;              //!< 3d projection of user-picked selection point onto far view plane
-  gp_Vec                  myViewRayDir;
+  gp_Dir                  myViewRayDir;
   gp_Pnt2d                myMousePos;                  //!< Mouse coordinates
   Standard_Real           myScale;                     //!< Scale factor of applied transformation, if there was any
 

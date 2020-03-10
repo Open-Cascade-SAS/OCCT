@@ -1062,8 +1062,7 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 
 //==============================================================================
 //function : VPointBuilder
-//purpose  : Build an AIS_Point from coordinates or with a selected vertex or edge
-//Draw arg : vpoint PoinName [Xa] [Ya] [Za]
+//purpose  :
 //==============================================================================
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -1071,70 +1070,105 @@ static int VAxisBuilder(Draw_Interpretor& di, Standard_Integer argc, const char*
 #include <AIS_Point.hxx>
 #include <Geom_CartesianPoint.hxx>
 
-static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VPointBuilder(Draw_Interpretor& ,
+                         Standard_Integer theArgNb,
+                         const char** theArgVec)
 {
-  // Declarations
-  Standard_Boolean HasArg;
-  TCollection_AsciiString name;
-
-  // Verification
-  if (argc<2 || argc>5 ) {di<<" Syntaxe error\n";return 1;}
-  if (argc==5) HasArg=Standard_True;
-  else HasArg=Standard_False;
-
-  name=argv[1];
-
-  // Il y a des arguments: teste l'unique constructeur AIS_Pnt::AIS_Pnt(Point from Geom)
-  if (HasArg) {
-    Standard_Real thecoord[3];
-    for(Standard_Integer i=0;i<=2;i++)
-      thecoord[i]=Draw::Atof(argv[2+i]);
-    Handle(Geom_CartesianPoint )  myGeomPoint= new Geom_CartesianPoint (thecoord[0],thecoord[1],thecoord[2]);
-    Handle(AIS_Point)  myAISPoint=new AIS_Point(myGeomPoint );
-    GetMapOfAIS().Bind (myAISPoint,name);
-    TheAISContext()->Display (myAISPoint, Standard_True);
-  }
-
-  // Il n'a pas d'arguments
-  else
+  TCollection_AsciiString aName;
+  gp_Pnt aPnt (RealLast(), 0.0, 0.0);
+  bool is2d = false, isNoSel = false;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
-    TopTools_ListOfShape aShapes;
-    ViewerTest::GetSelectedShapes (aShapes);
-
-    if (aShapes.Extent() != 1)
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-2d")
     {
-      Message::SendFail() << "Error: Wrong number of selected shapes.\n"
-                          << "\tYou should select one edge or vertex.";
-      return 1;
+      is2d = true;
     }
-
-    const TopoDS_Shape& aShapeA = aShapes.First();
-
-    if (aShapeA.ShapeType()==TopAbs_VERTEX )
+    else if (anArg == "-nosel"
+          || anArg == "-noselection")
     {
-      gp_Pnt A=BRep_Tool::Pnt(TopoDS::Vertex(aShapeA ) );
-      Handle(Geom_CartesianPoint) myGeomPoint= new Geom_CartesianPoint (A );
-      Handle(AIS_Point)  myAISPoint = new AIS_Point  (myGeomPoint );
-      GetMapOfAIS().Bind(myAISPoint,name);
-      TheAISContext()->Display (myAISPoint, Standard_True);
+      isNoSel = true;
+    }
+    else if (aName.IsEmpty())
+    {
+      aName = theArgVec[anArgIter];
+    }
+    else if (aPnt.X() == RealLast()
+          && anArgIter + 1 < theArgNb
+          && Draw::ParseReal (theArgVec[anArgIter + 0], aPnt.ChangeCoord().ChangeCoord (1))
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aPnt.ChangeCoord().ChangeCoord (2)))
+    {
+      if (anArgIter + 2 < theArgNb
+       && TCollection_AsciiString (theArgVec[anArgIter + 2]) != "-2d"
+       && Draw::ParseReal (theArgVec[anArgIter + 2], aPnt.ChangeCoord().ChangeCoord (3)))
+      {
+        anArgIter += 2;
+      }
+      else
+      {
+        anArgIter += 1;
+      }
     }
     else
     {
-      TopoDS_Edge myEdge=TopoDS::Edge(aShapeA);
-      TopoDS_Vertex myVertexA,myVertexB;
-      TopExp::Vertices (myEdge ,myVertexA ,myVertexB );
-      gp_Pnt A=BRep_Tool::Pnt(myVertexA );
-      gp_Pnt B=BRep_Tool::Pnt(myVertexB );
-      // M est le milieu de [AB]
-      Handle(Geom_CartesianPoint) myGeomPointM= new Geom_CartesianPoint ( (A.X()+B.X())/2  , (A.Y()+B.Y())/2  , (A.Z()+B.Z())/2  );
-      Handle(AIS_Point)  myAISPointM = new AIS_Point  (myGeomPointM );
-      GetMapOfAIS().Bind(myAISPointM,name);
-      TheAISContext()->Display (myAISPointM, Standard_True);
+      Message::SendFail() << "Syntax error at argument '" << anArg << "'\n";
+      return 1;
     }
+  }
 
+  if (aPnt.X() == RealLast())
+  {
+    TopTools_ListOfShape aShapes;
+    ViewerTest::GetSelectedShapes (aShapes);
+    TopoDS_Shape aShapeA;
+    if (aShapes.Extent() == 1)
+    {
+      aShapeA = aShapes.First();
+    }
+    switch (!aShapeA.IsNull() ? aShapeA.ShapeType() : TopAbs_SHAPE)
+    {
+      case TopAbs_VERTEX:
+      {
+        aPnt = BRep_Tool::Pnt (TopoDS::Vertex (aShapeA));
+        break;
+      }
+      case TopAbs_EDGE: // edge middle point
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge (aShapeA);
+        TopoDS_Vertex aVertPair[2];
+        TopExp::Vertices (anEdge, aVertPair[0], aVertPair[1]);
+        const gp_Pnt A = BRep_Tool::Pnt (aVertPair[0]);
+        const gp_Pnt B = BRep_Tool::Pnt (aVertPair[1]);
+        aPnt = (A.XYZ() + B.XYZ()) / 2;
+        break;
+      }
+      default:
+      {
+        Message::SendFail() << "Error: Wrong number of selected shapes.\n"
+                            << "\tYou should select one edge or vertex.";
+        return 1;
+      }
+    }
+  }
+
+  if (is2d)
+  {
+    aPnt.SetY (-aPnt.Y());
+  }
+  Handle(Geom_CartesianPoint ) aGeomPoint = new Geom_CartesianPoint (aPnt);
+  Handle(AIS_Point) aPointPrs = new AIS_Point (aGeomPoint);
+  if (is2d)
+  {
+    aPointPrs->SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_UPPER));
+    aPointPrs->SetZLayer (Graphic3d_ZLayerId_TopOSD);
+  }
+  ViewerTest::Display (aName, aPointPrs);
+  if (isNoSel)
+  {
+    ViewerTest::GetAISContext()->Deactivate (aPointPrs);
   }
   return 0;
-
 }
 
 //==============================================================================
@@ -6448,9 +6482,11 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VAxisBuilder,group);
 
   theCommands.Add("vpoint",
-    "vpoint  PointName [Xa] [Ya] [Za] "
-    "\n\t\t: Creates a point from coordinates. If the values are not defined,"
-    "\n\t\t: a point is created by interactive selection of a vertice or an edge (in the center of the edge).",
+    "vpoint name [X Y [Z]] [-2d] [-nosel]"
+    "\n\t\t: Creates a point from coordinates."
+    "\n\t\t: If the values are not defined, a point is created from selected vertex or edge (center)."
+    "\n\t\t:  -2d    defines on-screen 2D point from top-left window corner"
+    "\n\t\t:  -nosel creates non-selectable presentation",
     __FILE__,VPointBuilder,group);
 
   theCommands.Add("vplane",
