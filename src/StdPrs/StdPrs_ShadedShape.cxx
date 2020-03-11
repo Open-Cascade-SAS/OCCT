@@ -542,15 +542,15 @@ void StdPrs_ShadedShape::Add (const Handle (Prs3d_Presentation)& thePrs,
     return;
   }
 
-  // add wireframe presentation for isolated edges and vertices
-  wireframeFromShape (thePrs, theShape, theDrawer);
-
   // Use automatic re-triangulation with deflection-check logic only if this feature is enable
   if (theDrawer->IsAutoTriangulation())
   {
     // Triangulation completeness is important for "open-closed" analysis - perform tessellation beforehand
     StdPrs_ToolTriangulatedShape::Tessellate (theShape, theDrawer);
   }
+
+  // add wireframe presentation for isolated edges and vertices
+  wireframeFromShape (thePrs, theShape, theDrawer);
 
   // add special wireframe presentation for faces without triangulation
   wireframeNoTriangFacesFromShape (thePrs, theShape, theDrawer);

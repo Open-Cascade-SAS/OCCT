@@ -121,21 +121,21 @@ eval compound [explode mass w] mass
 compound sample occ name material sheets scale mass text
 
 compound snowflake lines text drawing
+bounding snowflake -save x1 y1 z1 x2 y2 z2
 
 # display in 3d view
 vinit Driver1/Viewer1/View1 w=1024 h=768
 vdisplay snowflake lines text
 vrenderparams -msaa 8
-vsetcolor snowflake 0 0 0 
-vsetcolor lines 0 0 0 
-vsetcolor text 0 0 0 
+vsetcolor snowflake BLACK
+vsetcolor lines BLACK
+vsetcolor text  BLACK
 vbackground -color WHITE
 vtop
 vfit
 
 # add dimension:
 # detect vertices extremal in X direction
-bounding snowflake -save x1 y1 z1 x2 y2 z2
 plane f1 x1 0 0 1 0 0
 plane f2 x2 0 0 1 0 0
 mkface f1 f1
@@ -159,7 +159,3 @@ for {set i 1} {$i <= 2} {incr i} {
   }
 }
 vdimension length -length -shapes $v1 $v2 -plane xoy -value 0.001 -dispunits mm -showunits -flyout 70 -label above -color black -text 5 3d sh
-
-if { [regexp HAVE_GL2PS [dversion]] } {
-    puts "You can use command vexport to generate PDF: vexport your_file_path.pdf"
-}

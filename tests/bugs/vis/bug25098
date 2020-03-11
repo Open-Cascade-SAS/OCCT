@@ -1,10 +1,7 @@
 puts "============"
-puts "OCC25098"
+puts "0025098: Visualization - Calculation of depth on selection of a wire is not accurate"
 puts "============"
 puts ""
-####################################################################################
-# Visualization - Calculation of depth on selection of a wire is not accurate
-####################################################################################
 
 proc ParseEntityInfo {theInfoString} {
   set aStringArr [split $theInfoString " "]
@@ -34,7 +31,7 @@ proc ParseEntityInfo {theInfoString} {
 }
 
 pload VISUALIZATION MODELING
-vinit
+vinit View1
 
 box b 10 10 10
 vdisplay b
@@ -130,9 +127,9 @@ if {[string equal $aWireType "Detected Shape: TopoDS_TWire"] == 0} {
 }
 
 set aWireChildSensitiveType [string trim [lindex $aOut [expr $aWireTypeStringNb + 1]]]
-if {[string equal $aWireChildSensitiveType "Detected Child: Select3D_SensitiveCurve"] == 0} {
+if {[string equal $aWireChildSensitiveType "Detected Child: Select3D_SensitiveSegment"] == 0} {
   puts "Wrong type of wire's inner sensitive! Value is: "
   puts $aWireChildSensitiveType
-  puts "Must be: Detected Child: Select3D_SensitiveCurve"
+  puts "Must be: Detected Child: Select3D_SensitiveSegment"
   puts "ERROR"
 }

@@ -100,6 +100,11 @@ void StdPrs_WFShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
     return;
   }
 
+  if (theDrawer->IsAutoTriangulation())
+  {
+    StdPrs_ToolTriangulatedShape::Tessellate (theShape, theDrawer);
+  }
+
   // draw triangulation-only edges
   if (Handle(Graphic3d_ArrayOfPrimitives) aTriFreeEdges = AddEdgesOnTriangulation (theShape, Standard_True))
   {

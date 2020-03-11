@@ -903,25 +903,61 @@ void BRepTools::RemoveUnusedPCurves(const TopoDS_Shape& S)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  BRepTools::Triangulation(const TopoDS_Shape&    S,
-                                           const Standard_Real    deflec)
+Standard_Boolean  BRepTools::Triangulation(const TopoDS_Shape& theShape,
+                                           const Standard_Real theLinDefl,
+                                           const Standard_Boolean theToCheckFreeEdges)
 {
-  TopExp_Explorer exf, exe;
-  TopLoc_Location l;
-  Handle(Poly_Triangulation) T;
-  Handle(Poly_PolygonOnTriangulation) Poly;
-
-  for (exf.Init(S, TopAbs_FACE); exf.More(); exf.Next()) {
-    const TopoDS_Face& F = TopoDS::Face(exf.Current());
-    T = BRep_Tool::Triangulation(F, l);
-    if (T.IsNull() || (T->Deflection() > deflec))
+  TopExp_Explorer anEdgeIter;
+  TopLoc_Location aDummyLoc;
+  for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+  {
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
+    const Handle(Poly_Triangulation)& aTri = BRep_Tool::Triangulation (aFace, aDummyLoc);
+    if (aTri.IsNull()
+     || aTri->Deflection() > theLinDefl)
+    {
       return Standard_False;
-    for (exe.Init(F, TopAbs_EDGE); exe.More(); exe.Next()) {
-      const TopoDS_Edge& E = TopoDS::Edge(exe.Current());
-      Poly = BRep_Tool::PolygonOnTriangulation(E, T, l);
-      if (Poly.IsNull()) return Standard_False;
+    }
+
+    for (anEdgeIter.Init (aFace, TopAbs_EDGE); anEdgeIter.More(); anEdgeIter.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge (anEdgeIter.Current());
+      const Handle(Poly_PolygonOnTriangulation)& aPoly = BRep_Tool::PolygonOnTriangulation (anEdge, aTri, aDummyLoc);
+      if (aPoly.IsNull())
+      {
+        return Standard_False;
+      }
     }
   }
+  if (!theToCheckFreeEdges)
+  {
+    return Standard_True;
+  }
+
+  Handle(Poly_Triangulation) anEdgeTri;
+  for (anEdgeIter.Init (theShape, TopAbs_EDGE, TopAbs_FACE); anEdgeIter.More(); anEdgeIter.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge (anEdgeIter.Current());
+    const Handle(Poly_Polygon3D)& aPolygon = BRep_Tool::Polygon3D (anEdge, aDummyLoc);
+    if (!aPolygon.IsNull())
+    {
+      if (aPolygon->Deflection() > theLinDefl)
+      {
+        return Standard_False;
+      }
+    }
+    else
+    {
+      const Handle(Poly_PolygonOnTriangulation)& aPoly = BRep_Tool::PolygonOnTriangulation (anEdge, anEdgeTri, aDummyLoc);
+      if (aPoly.IsNull()
+       || anEdgeTri.IsNull()
+       || anEdgeTri->Deflection() > theLinDefl)
+      {
+        return Standard_False;
+      }
+    }
+  }
+
   return Standard_True;
 }
 
