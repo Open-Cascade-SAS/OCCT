@@ -3,8 +3,16 @@ puts "OCC23625"
 puts "============"
 puts ""
 
+puts "REQUIRED All: Meshing statuses: SelfIntersectingWire Failure"
+
 set viewname "vfront"
-set length 28096.2
+set length 28388
 
 restore [locate_data_file bug23625_a1.brep] a
+
+# workaround bug 0031426 until fix
+vinit View1
+vdefaults -autoTriang 0
+incmesh a 7.6 12
+
 COMPUTE_HLR $viewname $algotype

@@ -31,6 +31,7 @@ Select3D_SensitiveSegment::Select3D_SensitiveSegment (const Handle(SelectMgr_Ent
                                                       const gp_Pnt& theLastPnt)
 : Select3D_SensitiveEntity (theOwnerId)
 {
+  mySFactor = 3;
   myStart = theFirstPnt;
   myEnd = theLastPnt;
 }

@@ -11,7 +11,7 @@ set depsilon 1.e-7
 proc COMPUTE_HLR {viewname algotype} {
      uplevel #0 top
      uplevel #0 clear
-     uplevel #0 vinit
+     uplevel #0 vinit View1
      uplevel #0 vdisplay a
      uplevel #0 $viewname
      uplevel #0 vcomputehlr a result -algoType $algotype

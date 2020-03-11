@@ -162,10 +162,18 @@ public:
   //! refer to surfaces not belonging to any face of <S>
   Standard_EXPORT static void RemoveUnusedPCurves (const TopoDS_Shape& S);
   
-  //! verifies that each face from the shape <S> has got
-  //! a triangulation  with a  deflection <= deflec  and
-  //! the edges a discretisation on  this triangulation.
-  Standard_EXPORT static Standard_Boolean Triangulation (const TopoDS_Shape& S, const Standard_Real deflec);
+  //! Verifies that each Face from the shape has got a triangulation with a deflection smaller or equal to specified one
+  //! and the Edges a discretization on this triangulation.
+  //! @param theShape   [in] shape to verify
+  //! @param theLinDefl [in] maximum allowed linear deflection
+  //! @param theToCheckFreeEdges [in] if TRUE, then free Edges are required to have 3D polygon
+  //! @return FALSE if input Shape contains Faces without triangulation,
+  //!               or that triangulation has worse (greater) deflection than specified one,
+  //!               or Edges in Shape lack polygons on triangulation
+  //!               or free Edges in Shape lack 3D polygons
+  Standard_EXPORT static Standard_Boolean Triangulation (const TopoDS_Shape& theShape,
+                                                         const Standard_Real theLinDefl,
+                                                         const Standard_Boolean theToCheckFreeEdges = Standard_False);
   
   //! Returns  True if  the    distance between the  two
   //! vertices is lower than their tolerance.

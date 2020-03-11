@@ -240,7 +240,7 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
 Standard_Boolean StdPrs_ToolTriangulatedShape::IsTessellated (const TopoDS_Shape&         theShape,
                                                               const Handle(Prs3d_Drawer)& theDrawer)
 {
-  return BRepTools::Triangulation (theShape, Prs3d::GetDeflection (theShape, theDrawer));
+  return BRepTools::Triangulation (theShape, Prs3d::GetDeflection (theShape, theDrawer), true);
 }
 
 // =======================================================================
