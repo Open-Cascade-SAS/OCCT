@@ -292,12 +292,8 @@ private:
   //! Goes through the neighbour triangles around the given node started
   //! from the given link, returns TRUE if some triangle has a bounding
   //! frontier edge or FALSE elsewhere.
-  //! Stop link is used to prevent cycles.
-  //! Previous element Id is used to identify next neighbor element.
   Standard_Boolean isBoundToFrontier (const Standard_Integer theRefNodeId,
-                                      const Standard_Integer theRefLinkId,
-                                      const Standard_Integer theStopLinkId,
-                                      const Standard_Integer thePrevElementId);
+                                      const Standard_Integer theRefLinkId);
 
   //! Remove internal triangles from the given polygon.
   void cleanupPolygon (const IMeshData::SequenceOfInteger& thePolygon,

@@ -34,6 +34,7 @@
 #include <NCollection_Vector.hxx>
 
 #include <algorithm>
+#include <stack>
 
 const Standard_Real AngDeviation1Deg  = M_PI/180.;
 const Standard_Real AngDeviation90Deg = 90 * AngDeviation1Deg;
@@ -652,53 +653,56 @@ void BRepMesh_Delaun::insertInternalEdges()
 
 //=======================================================================
 //function : isBoundToFrontier
-//purpose  : Goes through the neighbour triangles around the given node 
-//           started from the given link, returns TRUE if some triangle 
-//           has a bounding frontier edge or FALSE elsewhere.
-//           Stop link is used to prevent cycles.
-//           Previous element Id is used to identify next neighbor element.
+//purpose  : 
 //=======================================================================
 Standard_Boolean BRepMesh_Delaun::isBoundToFrontier(
   const Standard_Integer theRefNodeId,
-  const Standard_Integer theRefLinkId,
-  const Standard_Integer theStopLinkId,
-  const Standard_Integer thePrevElementId)
+  const Standard_Integer theRefLinkId)
 {
-  const BRepMesh_PairOfIndex& aPair = 
-    myMeshData->ElementsConnectedTo( theRefLinkId );
-  if ( aPair.IsEmpty() )
-    return Standard_False;
+  std::stack<Standard_Integer> aLinkStack;
+  TColStd_PackedMapOfInteger   aVisitedLinks;
 
-  Standard_Integer aNbElements = aPair.Extent();
-  for ( Standard_Integer anElemIt = 1; anElemIt <= aNbElements; ++anElemIt )
+  aLinkStack.push (theRefLinkId);
+  while (!aLinkStack.empty ())
   {
-    const Standard_Integer aTriId = aPair.Index(anElemIt);
-    if ( aTriId < 0 || aTriId == thePrevElementId )
-      continue;
+    const Standard_Integer aCurrentLinkId = aLinkStack.top ();
+    aLinkStack.pop ();
 
-    const BRepMesh_Triangle& aElement = GetTriangle(aTriId);
-    const Standard_Integer(&anEdges)[3] = aElement.myEdges;
+    const BRepMesh_PairOfIndex& aPair = myMeshData->ElementsConnectedTo (aCurrentLinkId);
+    if (aPair.IsEmpty ())
+      return Standard_False;
 
-    for ( Standard_Integer anEdgeIt = 0; anEdgeIt < 3; ++anEdgeIt )
+    const Standard_Integer aNbElements = aPair.Extent ();
+    for (Standard_Integer anElemIt = 1; anElemIt <= aNbElements; ++anElemIt)
     {
-      const Standard_Integer anEdgeId = anEdges[anEdgeIt];
-      if ( anEdgeId == theRefLinkId )
+      const Standard_Integer aTriId = aPair.Index (anElemIt);
+      if (aTriId < 0)
         continue;
 
-      if ( anEdgeId == theStopLinkId )
-        return Standard_False;
+      const BRepMesh_Triangle& aElement = GetTriangle (aTriId);
+      const Standard_Integer (&anEdges)[3] = aElement.myEdges;
 
-      const BRepMesh_Edge& anEdge = GetEdge( anEdgeId );
-      if ( anEdge.FirstNode() != theRefNodeId &&
-           anEdge.LastNode()  != theRefNodeId )
+      for (Standard_Integer anEdgeIt = 0; anEdgeIt < 3; ++anEdgeIt)
       {
-        continue;
+        const Standard_Integer anEdgeId = anEdges[anEdgeIt];
+        if (anEdgeId == aCurrentLinkId)
+          continue;
+
+        const BRepMesh_Edge& anEdge = GetEdge (anEdgeId);
+        if (anEdge.FirstNode () != theRefNodeId &&
+            anEdge.LastNode  () != theRefNodeId)
+        {
+          continue;
+        }
+
+        if (anEdge.Movability () != BRepMesh_Free)
+          return Standard_True;
+
+        if (aVisitedLinks.Add (anEdgeId))
+        {
+          aLinkStack.push (anEdgeId);
+        }
       }
-
-      if ( anEdge.Movability() != BRepMesh_Free )
-        return Standard_True;
-
-      return isBoundToFrontier( theRefNodeId, anEdgeId, theStopLinkId, aTriId );
     }
   }
 
@@ -792,8 +796,7 @@ void BRepMesh_Delaun::cleanupMesh()
       for ( Standard_Integer aLinkNodeIt = 0; aLinkNodeIt < 2; ++aLinkNodeIt )
       {
         isConnected[aLinkNodeIt] = isBoundToFrontier( ( aLinkNodeIt == 0 ) ? 
-          anEdge.FirstNode() : anEdge.LastNode(), 
-          aFreeEdgeId, aFreeEdgeId, -1);
+          anEdge.FirstNode() : anEdge.LastNode(), aFreeEdgeId);
       }
 
       if ( !isConnected[0] || !isConnected[1] )
