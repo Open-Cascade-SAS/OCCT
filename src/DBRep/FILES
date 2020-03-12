@@ -11,7 +11,6 @@ DBRep_Face.hxx
 DBRep_Face.lxx
 DBRep_HideData.cxx
 DBRep_HideData.hxx
-DBRep_HideData.lxx
 DBRep_IsoBuilder.cxx
 DBRep_IsoBuilder.hxx
 DBRep_ListIteratorOfListOfEdge.hxx

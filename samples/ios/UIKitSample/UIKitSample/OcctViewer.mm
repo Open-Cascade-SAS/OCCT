@@ -262,7 +262,7 @@ bool OcctViewer::ImportSTEP(std::string theFilename)
   {
     BRepMesh_IncrementalMesh anAlgo;
     anAlgo.ChangeParameters().Deflection = aDeflection;
-    anAlgo.ChangeParameters().Angle = aDrawer->HLRAngle();
+    anAlgo.ChangeParameters().Angle = aDrawer->DeviationAngle();
     anAlgo.ChangeParameters().InParallel = Standard_True;
     anAlgo.SetShape     (aCompound);
     anAlgo.Perform();

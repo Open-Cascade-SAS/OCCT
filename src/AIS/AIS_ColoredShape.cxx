@@ -491,7 +491,7 @@ void AIS_ColoredShape::ComputeSelection (const Handle(SelectMgr_Selection)& theS
 
   const TopAbs_ShapeEnum aTypOfSel   = AIS_Shape::SelectionType (theMode);
   const Standard_Real    aDeflection = Prs3d::GetDeflection (myshape, myDrawer);
-  const Standard_Real    aDeviationAngle = myDrawer->HLRAngle();
+  const Standard_Real    aDeviationAngle = myDrawer->DeviationAngle();
   const Standard_Integer aPriority   = StdSelect_BRepSelectionTool::GetStandardPriority (myshape, aTypOfSel);
   if (myDrawer->IsAutoTriangulation()
   && !BRepTools::Triangulation (myshape, Precision::Infinite()))

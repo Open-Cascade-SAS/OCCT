@@ -17,41 +17,30 @@
 #ifndef _HLRBRep_PolyAlgo_HeaderFile
 #define _HLRBRep_PolyAlgo_HeaderFile
 
-#include <HLRAlgo_PolyInternalNode.hxx>
-
-#include <HLRAlgo_Array1OfTData.hxx>
-#include <HLRAlgo_Array1OfPISeg.hxx>
-#include <HLRAlgo_Array1OfPINod.hxx>
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <HLRAlgo_Projector.hxx>
-#include <Standard_Real.hxx>
-#include <TopTools_SequenceOfShape.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-#include <Standard_Boolean.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Curve2d.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
-#include <TColStd_Array1OfTransient.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TopTools_MapOfShape.hxx>
-#include <HLRAlgo_ListOfBPoint.hxx>
-#include <TopTools_ListOfShape.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <HLRAlgo_Array1OfTData.hxx>
+#include <HLRAlgo_Array1OfPISeg.hxx>
+#include <HLRAlgo_Array1OfPINod.hxx>
+#include <HLRAlgo_ListOfBPoint.hxx>
+#include <HLRAlgo_PolyAlgo.hxx>
+#include <HLRAlgo_PolyInternalNode.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfTransient.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 
-class HLRAlgo_PolyAlgo;
 class Geom_Surface;
-class Standard_OutOfRange;
-class TopoDS_Shape;
 class HLRAlgo_Projector;
 class TopoDS_Edge;
 class HLRAlgo_PolyInternalData;
 class HLRAlgo_EdgeStatus;
 struct HLRAlgo_TriangleData;
-
 
 class HLRBRep_PolyAlgo;
 DEFINE_STANDARD_HANDLE(HLRBRep_PolyAlgo, Standard_Transient)
@@ -122,8 +111,8 @@ public:
   
   Standard_EXPORT HLRBRep_PolyAlgo(const TopoDS_Shape& S);
   
-    Standard_Integer NbShapes() const;
-  
+  Standard_Integer NbShapes() const { return myShapes.Length(); }
+
   Standard_EXPORT TopoDS_Shape& Shape (const Standard_Integer I);
   
   //! remove the Shape of Index <I>.
@@ -135,40 +124,40 @@ public:
   
   //! Loads the shape S into this framework.
   //! Warning S must have already been triangulated.
-    void Load (const TopoDS_Shape& S);
-  
+  void Load (const TopoDS_Shape& theShape) { myShapes.Append (theShape); }
+
   Standard_EXPORT Handle(HLRAlgo_PolyAlgo) Algo() const;
   
   //! Sets the parameters of the view for this framework.
   //! These parameters are defined by an HLRAlgo_Projector object,
   //! which is returned by the Projector function on a Prs3d_Projector object.
-    const HLRAlgo_Projector& Projector() const;
+  const HLRAlgo_Projector& Projector() const { return myProj; }
+
+  void Projector (const HLRAlgo_Projector& theProj) { myProj = theProj; }
   
-    void Projector (const HLRAlgo_Projector& P);
+  Standard_Real TolAngular() const { return myTolAngular; }
+
+  void TolAngular (const Standard_Real theTol) { myTolAngular = theTol; }
+
+  Standard_Real TolCoef() const { return myTolSta; }
   
-    Standard_Real Angle() const;
-  
-    void Angle (const Standard_Real Ang);
-  
-    Standard_Real TolAngular() const;
-  
-    void TolAngular (const Standard_Real Tol);
-  
-    Standard_Real TolCoef() const;
-  
-    void TolCoef (const Standard_Real Tol);
-  
+  void TolCoef (const Standard_Real theTol)
+  {
+    myTolSta = theTol;
+    myTolEnd = 1.0 - theTol;
+  }
+
   //! Launches calculation of outlines of the shape
   //! visualized by this framework. Used after setting the point of view and
   //! defining the shape or shapes to be visualized.
   Standard_EXPORT void Update();
-  
-    void InitHide();
-  
-    Standard_Boolean MoreHide() const;
-  
-    void NextHide();
-  
+
+  void InitHide() { myAlgo->InitHide(); }
+
+  Standard_Boolean MoreHide() const { return myAlgo->MoreHide(); }
+
+  void NextHide() { myAlgo->NextHide(); }
+
   Standard_EXPORT HLRAlgo_BiPoint::PointsT& Hide (
     HLRAlgo_EdgeStatus& status,
     TopoDS_Shape& S,
@@ -176,35 +165,26 @@ public:
     Standard_Boolean& regn,
     Standard_Boolean& outl,
     Standard_Boolean& intl);
-  
-    void InitShow();
-  
-    Standard_Boolean MoreShow() const;
-  
-    void NextShow();
-  
+
+  void InitShow() { myAlgo->InitShow(); }
+
+  Standard_Boolean MoreShow() const { return myAlgo->MoreShow(); }
+
+  void NextShow() { myAlgo->NextShow(); }
+
   Standard_EXPORT HLRAlgo_BiPoint::PointsT& Show (TopoDS_Shape& S, Standard_Boolean& reg1, Standard_Boolean& regn, Standard_Boolean& outl, Standard_Boolean& intl);
   
   //! Make a shape  with  the internal outlines in  each
   //! face.
   Standard_EXPORT TopoDS_Shape OutLinedShape (const TopoDS_Shape& S) const;
-  
-    Standard_Boolean Debug() const;
-  
-    void Debug (const Standard_Boolean B);
 
+  Standard_Boolean Debug() const { return myDebug; }
 
-
+  void Debug (const Standard_Boolean theDebug) { myDebug = theDebug; }
 
   DEFINE_STANDARD_RTTIEXT(HLRBRep_PolyAlgo,Standard_Transient)
 
-protected:
-
-
-
-
 private:
-
   
   Standard_EXPORT TopoDS_Shape MakeShape() const;
   
@@ -284,6 +264,8 @@ private:
     TIMultiply(thePoint.ChangeCoord(1), thePoint.ChangeCoord(2), thePoint.ChangeCoord(3), VecPartOnly);
   }
 
+private:
+
   HLRAlgo_Projector myProj;
   Standard_Real TMat[3][3];
   Standard_Real TLoc[3];
@@ -296,7 +278,6 @@ private:
   TopTools_IndexedMapOfShape myFMap;
   Handle(HLRAlgo_PolyAlgo) myAlgo;
   Standard_Boolean myDebug;
-  Standard_Real myAngle;
   Standard_Real myTolSta;
   Standard_Real myTolEnd;
   Standard_Real myTolAngular;
@@ -305,14 +286,6 @@ private:
   BRepAdaptor_Curve myBCurv;
   BRepAdaptor_Curve2d myPC;
 
-
 };
-
-
-#include <HLRBRep_PolyAlgo.lxx>
-
-
-
-
 
 #endif // _HLRBRep_PolyAlgo_HeaderFile

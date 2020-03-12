@@ -1174,57 +1174,6 @@ Standard_Real AIS_InteractiveContext::DeviationCoefficient() const
 }
 
 //=======================================================================
-//function : SetHLRDeviationCoefficient
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetHLRDeviationCoefficient (const Standard_Real theCoefficient)
-{
-  myDefaultDrawer->SetHLRDeviationCoefficient (theCoefficient);
-}
-
-//=======================================================================
-//function : HLRDeviationCoefficient
-//purpose  :
-//=======================================================================
-Standard_Real AIS_InteractiveContext::HLRDeviationCoefficient() const
-{
-  return myDefaultDrawer->HLRDeviationCoefficient();
-}
-
-//=======================================================================
-//function : SetHLRAngle
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetHLRAngle (const Standard_Real theAngle)
-{
-  myDefaultDrawer->SetHLRAngle (theAngle);
-}
-
-//=======================================================================
-//function : SetHLRAngleAndDeviation
-//purpose  : compute with anangle a HLRAngle and a HLRDeviationCoefficient 
-//           and set them in myHLRAngle and in myHLRDeviationCoefficient
-//           of myDefaultDrawer 
-//=======================================================================
-void AIS_InteractiveContext::SetHLRAngleAndDeviation (const Standard_Real theAngle)
-{
-  Standard_Real anOutAngl, anOutDefl;
-  HLRBRep::PolyHLRAngleAndDeflection (theAngle, anOutAngl, anOutDefl);
-
-  myDefaultDrawer->SetHLRAngle                (anOutAngl);
-  myDefaultDrawer->SetHLRDeviationCoefficient (anOutDefl);
-}
-
-//=======================================================================
-//function : HLRAngle
-//purpose  :
-//=======================================================================
-Standard_Real AIS_InteractiveContext::HLRAngle() const 
-{
-  return myDefaultDrawer->HLRAngle();
-}
-
-//=======================================================================
 //function : SetDisplayMode
 //purpose  :
 //=======================================================================
@@ -1473,40 +1422,6 @@ void AIS_InteractiveContext::SetDeviationCoefficient (const Handle(AIS_Interacti
 }
 
 //=======================================================================
-//function : SetHLRDeviationCoefficient
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetHLRDeviationCoefficient (const Handle(AIS_InteractiveObject)& theIObj,
-                                                         const Standard_Real                  theCoefficient,
-                                                         const Standard_Boolean               theToUpdateViewer)
-{
-  if (theIObj.IsNull())
-  {
-    return;
-  }
-
-  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
-  setContextToObject (theIObj);
-  if (theIObj->Type() != AIS_KOI_Object
-   && theIObj->Type() != AIS_KOI_Shape)
-  {
-    return;
-  }
-  else if (theIObj->Signature() != 0)
-  {
-    return;
-  }
-
-  Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
-  aShape->SetOwnHLRDeviationCoefficient (theCoefficient);
-  aShape->UpdatePresentations();
-  if (theToUpdateViewer)
-  {
-    UpdateCurrentViewer();
-  }
-}
-
-//=======================================================================
 //function : SetDeviationAngle
 //purpose  :
 //=======================================================================
@@ -1565,70 +1480,6 @@ void AIS_InteractiveContext::SetAngleAndDeviation (const Handle(AIS_InteractiveO
 
   Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
   aShape->SetAngleAndDeviation (theAngle);
-  aShape->UpdatePresentations();
-  if (theToUpdateViewer)
-  {
-    UpdateCurrentViewer();
-  }
-}
-
-//=======================================================================
-//function : SetHLRAngleAndDeviation
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetHLRAngleAndDeviation (const Handle(AIS_InteractiveObject)& theIObj,
-                                                      const Standard_Real                  theAngle,
-                                                      const Standard_Boolean               theToUpdateViewer)
-{
-  if (theIObj.IsNull())
-  {
-    return;
-  }
-
-  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
-  setContextToObject (theIObj);
-  if (theIObj->Type() != AIS_KOI_Shape)
-  {
-    return;
-  }
-  if (theIObj->Signature() != 0)
-  {
-    return;
-  }
-  Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
-  aShape->SetHLRAngleAndDeviation (theAngle);
-  aShape->UpdatePresentations();
-  if (theToUpdateViewer)
-  {
-    UpdateCurrentViewer();
-  }
-}
-
-//=======================================================================
-//function : SetHLRDeviationAngle
-//purpose  :
-//=======================================================================
-void AIS_InteractiveContext::SetHLRDeviationAngle (const Handle(AIS_InteractiveObject)& theIObj,
-                                                   const Standard_Real                  theAngle,
-                                                   const Standard_Boolean               theToUpdateViewer)
-{
-  if (theIObj.IsNull())
-  {
-    return;
-  }
-
-  // To be modified after the related methods of AIS_Shape are passed to InteractiveObject
-  setContextToObject (theIObj);
-  if (theIObj->Type() != AIS_KOI_Shape)
-  {
-    return;
-  }
-  if (theIObj->Signature() != 0)
-  {
-    return;
-  }
-  Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (theIObj);
-  aShape->SetOwnHLRDeviationAngle (theAngle);
   aShape->UpdatePresentations();
   if (theToUpdateViewer)
   {

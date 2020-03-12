@@ -59,12 +59,8 @@ Prs3d_Drawer::Prs3d_Drawer()
   myTypeOfHLR                     (Prs3d_TOH_NotSet),
   myDeviationCoefficient          (0.001),
   myHasOwnDeviationCoefficient    (Standard_False),
-  myHLRDeviationCoefficient       (0.02),
-  myHasOwnHLRDeviationCoefficient (Standard_False),
-  myDeviationAngle                (12.0 * M_PI / 180.0),
+  myDeviationAngle                (20.0 * M_PI / 180.0),
   myHasOwnDeviationAngle          (Standard_False),
-  myHLRAngle                      (20.0 * M_PI / 180.0),
-  myHasOwnHLRDeviationAngle       (Standard_False),
   myIsoOnPlane                    (Standard_False),
   myHasOwnIsoOnPlane              (Standard_False),
   myIsoOnTriangulation            (Standard_False),
@@ -224,18 +220,6 @@ void Prs3d_Drawer::SetDeviationCoefficient (const Standard_Real theCoefficient)
 }
 
 //=======================================================================
-//function : SetHLRDeviationCoefficient
-//purpose  : 
-//=======================================================================
-
-void Prs3d_Drawer::SetHLRDeviationCoefficient (const Standard_Real theCoefficient)
-{
-  myPreviousHLRDeviationCoefficient = HLRDeviationCoefficient();
-  myHLRDeviationCoefficient         = theCoefficient;
-  myHasOwnHLRDeviationCoefficient   = Standard_True;
-}
-
-//=======================================================================
 //function : SetDeviationAngle
 //purpose  : 
 //=======================================================================
@@ -245,18 +229,6 @@ void Prs3d_Drawer::SetDeviationAngle (const Standard_Real theAngle)
   myPreviousDeviationAngle = DeviationAngle();
   myDeviationAngle         = theAngle;
   myHasOwnDeviationAngle   = Standard_True;
-}
-
-//=======================================================================
-//function : SetHLRAngle
-//purpose  : 
-//=======================================================================
-
-void Prs3d_Drawer::SetHLRAngle (const Standard_Real theAngle)
-{
-  myPreviousHLRDeviationAngle = HLRAngle();
-  myHLRAngle                  = theAngle;
-  myHasOwnHLRDeviationAngle   = Standard_True;
 }
 
 // =======================================================================
@@ -1101,9 +1073,7 @@ void Prs3d_Drawer::ClearLocalAttributes()
   myHasOwnTypeOfDeflection        = Standard_False;
   myHasOwnChordialDeviation       = Standard_False;
   myHasOwnDeviationCoefficient    = Standard_False;
-  myHasOwnHLRDeviationCoefficient = Standard_False;
   myHasOwnDeviationAngle          = Standard_False;
-  myHasOwnHLRDeviationAngle       = Standard_False;
   myHasOwnIsoOnPlane              = Standard_False;
   myHasOwnIsoOnTriangulation      = Standard_False;
   myHasOwnIsAutoTriangulated      = Standard_False;
@@ -1432,15 +1402,9 @@ void Prs3d_Drawer::DumpJson (Standard_OStream& theOStream, Standard_Integer theD
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeviationCoefficient)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousDeviationCoefficient)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDeviationCoefficient)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHLRDeviationCoefficient)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnHLRDeviationCoefficient)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousHLRDeviationCoefficient)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myDeviationAngle)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnDeviationAngle)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousDeviationAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHLRAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnHLRDeviationAngle)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPreviousHLRDeviationAngle)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsoOnPlane)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myHasOwnIsoOnPlane)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsoOnTriangulation)

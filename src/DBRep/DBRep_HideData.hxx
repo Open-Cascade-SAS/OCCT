@@ -59,11 +59,11 @@ public:
   //! Focal <= 0 means parallel projection
   //! Alg : the hidden lines
   Standard_EXPORT void Set (const Standard_Integer ViewId, const gp_Trsf& TProj, const Standard_Real Focal, const TopoDS_Shape& S, const Standard_Real ang);
-  
-    Standard_Integer ViewId() const;
-  
-    Standard_Real Angle() const;
-  
+
+  Standard_Integer ViewId() const { return myView; }
+
+  Standard_Real Angle() const { return myAngle; }
+
   //! Returns True if the projection is the same
   Standard_EXPORT Standard_Boolean IsSame (const gp_Trsf& TProj, const Standard_Real Focla) const;
   
@@ -72,18 +72,7 @@ public:
   //! Returns the subshape touched by the last pick.
   Standard_EXPORT const TopoDS_Shape& LastPick() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
-
-
 
   Standard_Integer myView;
   gp_Trsf myTrsf;
@@ -93,14 +82,6 @@ private:
   TopoDS_Shape myPickShap;
   Standard_Real myAngle;
 
-
 };
-
-
-#include <DBRep_HideData.lxx>
-
-
-
-
 
 #endif // _DBRep_HideData_HeaderFile

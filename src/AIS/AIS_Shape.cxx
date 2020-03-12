@@ -336,7 +336,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
                                       shape,
                                       TypOfSel,
                                       aDeflection,
-                                      myDrawer->HLRAngle(),
+                                      myDrawer->DeviationAngle(),
                                       myDrawer->IsAutoTriangulation());
   }
   catch (Standard_Failure const& anException)
@@ -820,20 +820,6 @@ Standard_Boolean AIS_Shape::SetOwnDeviationCoefficient ()
 }
 
 //=======================================================================
-//function : SetHLROwnDeviationCoefficient
-//purpose  : resets myhasOwnHLRDeviationCoefficient to Standard_False and
-//           returns Standard_True if it change
-//=======================================================================
-
-Standard_Boolean AIS_Shape::SetOwnHLRDeviationCoefficient ()
-{
-  Standard_Boolean itSet = myDrawer->HasOwnHLRDeviationCoefficient();
-  if(itSet)  myDrawer->SetHLRDeviationCoefficient();
-  return itSet;
-
-}
-
-//=======================================================================
 //function : SetOwnDeviationAngle
 //purpose  : resets myhasOwnDeviationAngle to Standard_False and
 //           returns Standard_True if it change
@@ -848,20 +834,6 @@ Standard_Boolean AIS_Shape::SetOwnDeviationAngle ()
 }
 
 //=======================================================================
-//function : SetOwnHLRDeviationAngle
-//purpose  : resets myhasOwnHLRDeviationAngle to Standard_False and
-//           returns Standard_True if it change
-//=======================================================================
-
-Standard_Boolean AIS_Shape::SetOwnHLRDeviationAngle ()
-{
-  Standard_Boolean itSet = myDrawer->HasOwnHLRDeviationAngle();
-  if(itSet)  myDrawer->SetHLRAngle();
-  return itSet;
-
-}
-//***** SetOwn
-//=======================================================================
 //function : SetOwnDeviationCoefficient
 //purpose  : 
 //=======================================================================
@@ -870,17 +842,6 @@ void AIS_Shape::SetOwnDeviationCoefficient ( const Standard_Real  aCoefficient )
 {
   myDrawer->SetDeviationCoefficient( aCoefficient );
   SetToUpdate();
-}
-
-//=======================================================================
-//function : SetOwnHLRDeviationCoefficient
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::SetOwnHLRDeviationCoefficient ( const Standard_Real  aCoefficient )
-{
-  myDrawer->SetHLRDeviationCoefficient( aCoefficient );
-  
 }
 
 //=======================================================================
@@ -918,31 +879,6 @@ Standard_Real AIS_Shape::UserAngle() const
   return myInitAng ==0. ? GetContext()->DeviationAngle(): myInitAng;
 }
 
-
-//=======================================================================
-//function : SetHLRAngleAndDeviation
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::SetHLRAngleAndDeviation ( const Standard_Real  anAngle )
-{
-  Standard_Real OutAngl,OutDefl;
-  HLRBRep::PolyHLRAngleAndDeflection(anAngle,OutAngl,OutDefl);
-  SetOwnHLRDeviationAngle( OutAngl );
-  SetOwnHLRDeviationCoefficient(OutDefl);
-
-}
-//=======================================================================
-//function : SetOwnHLRDeviationAngle
-//purpose  : 
-//=======================================================================
-
-void AIS_Shape::SetOwnHLRDeviationAngle ( const Standard_Real  anAngle )
-{
-  myDrawer->SetHLRAngle( anAngle );
-}
-
-//***** GetOwn
 //=======================================================================
 //function : OwnDeviationCoefficient
 //purpose  : 
@@ -957,20 +893,6 @@ Standard_Boolean AIS_Shape::OwnDeviationCoefficient ( Standard_Real &  aCoeffici
 }
 
 //=======================================================================
-//function : OwnHLRDeviationCoefficient
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean AIS_Shape::OwnHLRDeviationCoefficient ( Standard_Real & aCoefficient,
-                                                         Standard_Real & aPreviousCoefficient ) const
-{
-  aCoefficient = myDrawer->HLRDeviationCoefficient();
-  aPreviousCoefficient = myDrawer->PreviousHLRDeviationCoefficient ();
-  return myDrawer->HasOwnHLRDeviationCoefficient();
-
-}
-
-//=======================================================================
 //function : OwnDeviationAngle
 //purpose  : 
 //=======================================================================
@@ -981,19 +903,6 @@ Standard_Boolean AIS_Shape::OwnDeviationAngle ( Standard_Real &  anAngle,
   anAngle = myDrawer->DeviationAngle();
   aPreviousAngle = myDrawer->PreviousDeviationAngle (); 
   return myDrawer->HasOwnDeviationAngle();
-}
-
-//=======================================================================
-//function : OwnHLRDeviationAngle
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean AIS_Shape::OwnHLRDeviationAngle ( Standard_Real &  anAngle,
-                                                   Standard_Real & aPreviousAngle ) const
-{
-  anAngle = myDrawer->HLRAngle();
-  aPreviousAngle = myDrawer->PreviousHLRDeviationAngle (); 
-  return myDrawer->HasOwnHLRDeviationAngle();
 }
 
 //=======================================================================

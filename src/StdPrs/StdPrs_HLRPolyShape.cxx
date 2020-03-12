@@ -74,18 +74,11 @@ void StdPrs_HLRPolyShape::ComputeHLR (const Handle(Prs3d_Presentation)& aPresent
 
   if (aDrawer->IsAutoTriangulation())
   {
-    const Standard_Boolean aRel = aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE;
-    Standard_Real aDef = aRel ? aDrawer->HLRDeviationCoefficient() : aDrawer->MaximalChordialDeviation();
-    IMeshTools_Parameters aMeshParams;
-    aMeshParams.Relative   = aRel;
-    aMeshParams.Angle      = aDrawer->HLRAngle();
-    aMeshParams.Deflection = aDef;
-    BRepMesh_IncrementalMesh mesh(aShape, aMeshParams);
+    StdPrs_ToolTriangulatedShape::Tessellate (aShape, aDrawer);
   }
   
   Handle(HLRBRep_PolyAlgo) hider = new HLRBRep_PolyAlgo(aShape);
   hider->Projector (aProj);
-  hider->Angle(aDrawer->HLRAngle());
   hider->Update();
   Standard_Real sta,end,dx,dy,dz;
   Standard_ShortReal tolsta, tolend;

@@ -92,23 +92,13 @@ public:
 
   //! Sets a local value for deviation coefficient for this specific shape.
   Standard_EXPORT Standard_Boolean SetOwnDeviationCoefficient();
-  
-  //! Sets a local value for HLR deviation coefficient for this specific shape.
-  Standard_EXPORT Standard_Boolean SetOwnHLRDeviationCoefficient();
-  
+
   //! Sets a local value for deviation angle for this specific shape.
   Standard_EXPORT Standard_Boolean SetOwnDeviationAngle();
   
-  //! Sets a local value for HLR deviation angle for this specific shape.
-  Standard_EXPORT Standard_Boolean SetOwnHLRDeviationAngle();
-  
   //! Sets a local value for deviation coefficient for this specific shape.
   Standard_EXPORT void SetOwnDeviationCoefficient (const Standard_Real aCoefficient);
-  
-  //! sets myOwnHLRDeviationCoefficient field in Prs3d_Drawer &
-  //! recomputes presentation
-  Standard_EXPORT void SetOwnHLRDeviationCoefficient (const Standard_Real aCoefficient);
-  
+
   //! this compute a new angle and Deviation from the value anAngle
   //! and set the values stored in myDrawer with these that become local to the shape
   Standard_EXPORT void SetAngleAndDeviation (const Standard_Real anAngle);
@@ -119,35 +109,16 @@ public:
   //! sets myOwnDeviationAngle field in Prs3d_Drawer & recomputes presentation
   Standard_EXPORT void SetOwnDeviationAngle (const Standard_Real anAngle);
   
-  //! this compute a new Angle and Deviation from the value anAngle for HLR
-  //! and set the values stored in myDrawer for with these that become local to the shape
-  Standard_EXPORT void SetHLRAngleAndDeviation (const Standard_Real anAngle);
-  
-  //! sets myOwnHLRDeviationAngle field in Prs3d_Drawer & recomputes presentation
-  Standard_EXPORT void SetOwnHLRDeviationAngle (const Standard_Real anAngle);
-  
   //! Returns true and the values of the deviation
   //! coefficient aCoefficient and the previous deviation
   //! coefficient aPreviousCoefficient. If these values are
   //! not already set, false is returned.
   Standard_EXPORT Standard_Boolean OwnDeviationCoefficient (Standard_Real& aCoefficient, Standard_Real& aPreviousCoefficient) const;
   
-  //! Returns   true and the values of the HLR deviation
-  //! coefficient aCoefficient and the previous HLR
-  //! deviation coefficient aPreviousCoefficient. If these
-  //! values are not already set, false is returned.
-  Standard_EXPORT Standard_Boolean OwnHLRDeviationCoefficient (Standard_Real& aCoefficient, Standard_Real& aPreviousCoefficient) const;
-  
   //! Returns true and the values of the deviation angle
   //! anAngle and the previous deviation angle aPreviousAngle.
   //! If these values are not already set, false is returned.
   Standard_EXPORT Standard_Boolean OwnDeviationAngle (Standard_Real& anAngle, Standard_Real& aPreviousAngle) const;
-  
-  //! Returns true and the values   of the HLR deviation
-  //! angle anAngle and of the previous HLR deviation
-  //! angle aPreviousAngle. If these values are not
-  //! already set, false is returned.
-  Standard_EXPORT Standard_Boolean OwnHLRDeviationAngle (Standard_Real& anAngle, Standard_Real& aPreviousAngle) const;
   
   //! Sets the type of HLR algorithm used by the shape
   void SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR) {  myDrawer->SetTypeOfHLR (theTypeOfHLR); }

@@ -213,61 +213,11 @@ public:
     }
   }
 
-  //! Sets the deviation coefficient aCoefficient for removal
-  //! of hidden lines created by different viewpoints in
-  //! different presentations. The Default value is 0.02.
-  //! Also sets the hasOwnHLRDeviationCoefficient flag to Standard_True and myPreviousHLRDeviationCoefficient
-  Standard_EXPORT void SetHLRDeviationCoefficient (const Standard_Real theCoefficient);
-
-  //! Returns the real number value of the hidden line
-  //! removal deviation coefficient in this framework, if the flag
-  //! hasOwnHLRDeviationCoefficient is true or there is no Link.
-  //! Else the shape's HLR deviation coefficient is used.
-  //! A Deviation coefficient is used in the shading display
-  //! mode. The shape is seen decomposed into triangles.
-  //! These are used to calculate reflection of light from the
-  //! surface of the object.
-  //! The triangles are formed from chords of the curves in
-  //! the shape. The deviation coefficient give the highest
-  //! value of the angle with which a chord can deviate
-  //! from a tangent to a curve. If this limit is reached, a new triangle is begun.
-  //! To find the hidden lines, hidden line display mode
-  //! entails recalculation of the view at each different projector perspective.
-  //! Since hidden lines entail calculations of more than
-  //! usual complexity to decompose them into these
-  //! triangles, a deviation coefficient allowing greater
-  //! tolerance is used. This increases efficiency in calculation.
-  //! The Default value is 0.02.
-  Standard_Real HLRDeviationCoefficient() const
-  {
-    return HasOwnHLRDeviationCoefficient() || myLink.IsNull()
-         ? myHLRDeviationCoefficient
-         : myLink->HLRDeviationCoefficient();
-  }
-
-  //! Sets the hasOwnHLRDeviationCoefficient flag to Standard_False 
-  void SetHLRDeviationCoefficient()
-  {
-    myHasOwnHLRDeviationCoefficient = Standard_False;
-  }
-
-  //! Returns true if the there is a setting for HLR deviation
-  //! coefficient in this framework for a specific interactive object.
-  Standard_Boolean HasOwnHLRDeviationCoefficient() const { return myHasOwnHLRDeviationCoefficient; }
-
-  //! Returns the previous value of the hidden line removal deviation coefficient.
-  Standard_Real PreviousHLRDeviationCoefficient() const
-  {
-    return myHasOwnHLRDeviationCoefficient
-         ? myPreviousHLRDeviationCoefficient
-         : 0.0;
-  }
-
   //! Sets the deviation angle theAngle.
   //! Also sets the hasOwnDeviationAngle flag to Standard_True, and myPreviousDeviationAngle.
   Standard_EXPORT void SetDeviationAngle (const Standard_Real theAngle);
 
-  //! Returns the value for deviation angle.
+  //! Returns the value for deviation angle in radians, 20 * M_PI / 180 by default.
   Standard_Real DeviationAngle() const
   {
     return HasOwnDeviationAngle() || myLink.IsNull()
@@ -300,39 +250,6 @@ public:
     {
       myPreviousDeviationAngle = DeviationAngle();
     }
-  }
-
-  //! Sets anAngle, the angle of maximum chordal deviation for removal of hidden lines created by
-  //! different viewpoints in different presentations.
-  //! The default value is 20 * M_PI / 180.
-  //! Also sets the hasOwnHLRDeviationAngle flag to Standard_True and myPreviousHLRDeviationAngle.
-  Standard_EXPORT void SetHLRAngle (const Standard_Real theAngle);
-
-  //! Returns the real number value of the deviation angle
-  //! in hidden line removal views. The default value is 20 * M_PI / 180.
-  Standard_Real HLRAngle() const
-  {
-    return HasOwnHLRDeviationAngle() || myLink.IsNull()
-         ? myHLRAngle
-         : myLink->HLRAngle();
-  }
-
-  //! Sets the hasOwnHLRDeviationAngle flag to Standard_False
-  void SetHLRAngle()
-  {
-    myHasOwnHLRDeviationAngle = Standard_False;
-  }
-
-  //! Returns true if the there is a setting for HLR deviation
-  //! angle in this framework for a specific interactive object.
-  Standard_Boolean HasOwnHLRDeviationAngle() const { return myHasOwnHLRDeviationAngle; }
-
-  //! Returns the previous value of the HLR deviation angle.
-  Standard_Real PreviousHLRDeviationAngle() const
-  {
-    return myHasOwnHLRDeviationAngle
-         ? myPreviousHLRDeviationAngle
-         : 0.0;
   }
 
   //! Sets IsAutoTriangulated on or off by setting the parameter theIsEnabled to true or false.
@@ -894,6 +811,23 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
+public: //! @name deprecated methods
+
+  Standard_DEPRECATED("SetDeviationAngle() should be used instead")
+  void SetHLRAngle (const Standard_Real theAngle) { SetDeviationAngle (theAngle); }
+
+  Standard_DEPRECATED("DeviationAngle() should be used instead")
+  Standard_Real HLRAngle() const { return DeviationAngle(); }
+
+  Standard_DEPRECATED("SetDeviationAngle() should be used instead")
+  void SetHLRAngle() { SetDeviationAngle(); }
+
+  Standard_DEPRECATED("HasOwnDeviationAngle() should be used instead")
+  Standard_Boolean HasOwnHLRDeviationAngle() const { return HasOwnDeviationAngle(); }
+
+  Standard_DEPRECATED("PreviousDeviationAngle() should be used instead")
+  Standard_Real PreviousHLRDeviationAngle() const { return PreviousDeviationAngle(); }
+
 protected:
 
   Handle(Prs3d_Drawer)          myLink;
@@ -910,15 +844,9 @@ protected:
   Standard_Real                 myDeviationCoefficient;
   Standard_Real                 myPreviousDeviationCoefficient;
   Standard_Boolean              myHasOwnDeviationCoefficient;
-  Standard_Real                 myHLRDeviationCoefficient;
-  Standard_Boolean              myHasOwnHLRDeviationCoefficient;
-  Standard_Real                 myPreviousHLRDeviationCoefficient;
   Standard_Real                 myDeviationAngle;
   Standard_Boolean              myHasOwnDeviationAngle;
   Standard_Real                 myPreviousDeviationAngle;
-  Standard_Real                 myHLRAngle;
-  Standard_Boolean              myHasOwnHLRDeviationAngle;
-  Standard_Real                 myPreviousHLRDeviationAngle;
   Standard_Boolean              myIsoOnPlane;
   Standard_Boolean              myHasOwnIsoOnPlane;
   Standard_Boolean              myIsoOnTriangulation;

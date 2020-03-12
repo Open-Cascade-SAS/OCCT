@@ -1889,6 +1889,12 @@ Unexpected const-ness of Aspect_Window::DoResize() method has been removed, so t
 
 Enumeration BRepOffset_Type is renamed to ChFiDS_TypeOfConcavity.
 
+@subsection upgrade_750_hlrangle Prs3d_Drawer deviation angle
+
+Properties Prs3d_Drawer::HLRAngle() and Prs3d_Drawer::HLRDeviationCoefficient() have been removed from classes *Prs3d_Drawer*, *AIS_Shape* and *AIS_InteractiveContext*.
+Prs3d_Drawer::DeviationAngle() should be now used instead of Prs3d_Drawer::HLRAngle() and Prs3d_Drawer::DeviationCoefficient() instead of Prs3d_Drawer::HLRDeviationCoefficient().
+The default value of Prs3d_Drawer::DeviationAngle() property has been changed from 12 to 20 degrees to match removed Prs3d_Drawer::HLRAngle(), previously used as input for triangulation algorithm.
+
 @subsection upgrade_750_hlrprs Changes in HLR presentation API
 
 Methods computing HLR presentation within *PrsMgr_PresentableObject::Compute()* have been renamed to *PrsMgr_PresentableObject::computeHLR()*

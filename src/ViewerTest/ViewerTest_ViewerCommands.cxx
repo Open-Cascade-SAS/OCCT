@@ -10531,7 +10531,7 @@ static int VDefaults (Draw_Interpretor& theDi,
       theDi << "DeflType:           absolute\n"
             << "AbsoluteDeflection: " << aDefParams->MaximalChordialDeviation() << "\n";
     }
-    theDi << "AngularDeflection:  " << (180.0 * aDefParams->HLRAngle() / M_PI) << "\n";
+    theDi << "AngularDeflection:  " << (180.0 * aDefParams->DeviationAngle() / M_PI) << "\n";
     theDi << "AutoTriangulation:  " << (aDefParams->IsAutoTriangulation() ? "on" : "off") << "\n";
     return 0;
   }
@@ -10576,8 +10576,7 @@ static int VDefaults (Draw_Interpretor& theDi,
         std::cout << "Error: wrong syntax at " << anArg << "\n";
         return 1;
       }
-      // currently HLRDeviationAngle is used instead of DeviationAngle in most places
-      aDefParams->SetHLRAngle (M_PI * Draw::Atof (theArgVec[anArgIter]) / 180.0);
+      aDefParams->SetDeviationAngle (M_PI * Draw::Atof (theArgVec[anArgIter]) / 180.0);
     }
     else if (anArg == "-AUTOTR"
           || anArg == "-AUTOTRIANG"

@@ -78,7 +78,6 @@ static Standard_Integer DoError = Standard_False;
 
 HLRBRep_PolyAlgo::HLRBRep_PolyAlgo () :
 myDebug     (Standard_False),
-myAngle     (5 * M_PI / 180.),
 myTolSta    (0.1),
 myTolEnd    (0.9),
 myTolAngular(0.001)
@@ -94,7 +93,6 @@ myTolAngular(0.001)
 HLRBRep_PolyAlgo::HLRBRep_PolyAlgo (const Handle(HLRBRep_PolyAlgo)& A)
 {
   myDebug      = A->Debug();
-  myAngle      = A->Angle();
   myTolAngular = A->TolAngular();
   myTolSta     = A->TolCoef();
   myTolEnd     = 1 - myTolSta;
@@ -114,7 +112,6 @@ HLRBRep_PolyAlgo::HLRBRep_PolyAlgo (const Handle(HLRBRep_PolyAlgo)& A)
 
 HLRBRep_PolyAlgo::HLRBRep_PolyAlgo (const TopoDS_Shape& S) :
 myDebug     (Standard_False),
-myAngle     (5 * M_PI / 180.),
 myTolSta    (0.1),
 myTolEnd    (0.9),
 myTolAngular(0.001)

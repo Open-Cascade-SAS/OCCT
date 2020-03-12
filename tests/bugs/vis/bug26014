@@ -16,7 +16,7 @@ vdisplay c
 vfit
 
 explode c F
-vaspects c -subshapes c_2 -setcolor RED
+vaspects c -subshapes c_2 -setcolor RED -setLineWidth 4
 
 set aColorWireframe [vreadpixel 200 31 rgb name]
 set aColorShaded [vreadpixel 180 60 rgb name]
