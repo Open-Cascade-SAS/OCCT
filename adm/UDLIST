@@ -328,6 +328,7 @@ n RWStepDimTol
 n RWStepElement
 n RWStepFEA
 n RWStepGeom
+n RWStepKinematics
 n RWStepRepr
 n RWStepShape
 n RWStepVisual
@@ -347,6 +348,7 @@ n StepDimTol
 n StepElement
 n StepFEA
 n StepGeom
+n StepKinematics
 n StepRepr
 n StepSelect
 n StepShape

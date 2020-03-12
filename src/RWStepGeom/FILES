@@ -132,6 +132,8 @@ RWStepGeom_RWSeamCurve.cxx
 RWStepGeom_RWSeamCurve.hxx
 RWStepGeom_RWSphericalSurface.cxx
 RWStepGeom_RWSphericalSurface.hxx
+RWStepGeom_RWSuParameters.cxx
+RWStepGeom_RWSuParameters.hxx
 RWStepGeom_RWSurface.cxx
 RWStepGeom_RWSurface.hxx
 RWStepGeom_RWSurfaceCurve.cxx

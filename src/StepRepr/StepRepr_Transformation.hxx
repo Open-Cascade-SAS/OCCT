@@ -52,8 +52,6 @@ public:
   Standard_EXPORT Handle(StepRepr_FunctionallyDefinedTransformation) FunctionallyDefinedTransformation() const;
 
 
-
-
 protected:
 
 

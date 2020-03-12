@@ -162,6 +162,8 @@ StepGeom_SeamCurve.cxx
 StepGeom_SeamCurve.hxx
 StepGeom_SphericalSurface.cxx
 StepGeom_SphericalSurface.hxx
+StepGeom_SuParameters.cxx
+StepGeom_SuParameters.hxx
 StepGeom_Surface.cxx
 StepGeom_Surface.hxx
 StepGeom_SurfaceBoundary.cxx

@@ -100,6 +100,10 @@ class StepGeom_CartesianTransformationOperator2d;
 class StepGeom_CartesianTransformationOperator3d;
 class StepGeom_TrimmedCurve;
 class StepGeom_Vector;
+class StepGeom_SuParameters;
+class StepKinematics_SpatialRotation;
+class StepRepr_GlobalUnitAssignedContext;
+class TColStd_HArray1OfReal;
 
 //! This class provides static methods to convert STEP geometric entities to OCCT.
 //! The methods returning handles will return null handle in case of error.
@@ -111,6 +115,7 @@ public:
 
   Standard_EXPORT static Handle(Geom_Axis1Placement) MakeAxis1Placement (const Handle(StepGeom_Axis1Placement)& SA);
   Standard_EXPORT static Handle(Geom_Axis2Placement) MakeAxis2Placement (const Handle(StepGeom_Axis2Placement3d)& SA);
+  Standard_EXPORT static Handle(Geom_Axis2Placement) MakeAxis2Placement (const Handle(StepGeom_SuParameters)& SP);
   Standard_EXPORT static Handle(Geom2d_AxisPlacement) MakeAxisPlacement (const Handle(StepGeom_Axis2Placement2d)& SA);
   Standard_EXPORT static Handle(Geom_BoundedCurve) MakeBoundedCurve (const Handle(StepGeom_BoundedCurve)& SC);
   Standard_EXPORT static Handle(Geom2d_BoundedCurve) MakeBoundedCurve2d (const Handle(StepGeom_BoundedCurve)& SC);
@@ -155,6 +160,7 @@ public:
   Standard_EXPORT static Handle(Geom2d_BSplineCurve) MakeTrimmedCurve2d (const Handle(StepGeom_TrimmedCurve)& SC);
   Standard_EXPORT static Handle(Geom_VectorWithMagnitude) MakeVectorWithMagnitude (const Handle(StepGeom_Vector)& SV);
   Standard_EXPORT static Handle(Geom2d_VectorWithMagnitude) MakeVectorWithMagnitude2d (const Handle(StepGeom_Vector)& SV);
+  Standard_EXPORT static Handle(TColStd_HArray1OfReal) MakeYprRotation(const StepKinematics_SpatialRotation& SR, const Handle(StepRepr_GlobalUnitAssignedContext)& theCntxt);
 };
 
 #endif // _StepToGeom_HeaderFile

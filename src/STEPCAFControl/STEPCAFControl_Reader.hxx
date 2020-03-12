@@ -172,8 +172,7 @@ public:
   //! Get View mode
   Standard_EXPORT Standard_Boolean GetViewMode() const;
 
-
-
+  const XCAFDoc_DataMapOfShapeLabel& GetShapeLabelMap() const { return myMap; }
 
 protected:
 
@@ -195,7 +194,7 @@ protected:
   //! Depending on a case, this shape can be added as one, or
   //! as assembly, or (in case if it is associated with external
   //! reference) taken as that referred shape
-  Standard_EXPORT TDF_Label AddShape (const TopoDS_Shape& S, const Handle(XCAFDoc_ShapeTool)& STool, const TopTools_MapOfShape& NewShapesMap, const STEPCAFControl_DataMapOfShapePD& ShapePDMap, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap, XCAFDoc_DataMapOfShapeLabel& ShapeLabelMap) const;
+  Standard_EXPORT TDF_Label AddShape (const TopoDS_Shape& S, const Handle(XCAFDoc_ShapeTool)& STool, const TopTools_MapOfShape& NewShapesMap, const STEPCAFControl_DataMapOfShapePD& ShapePDMap, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap);
   
   //! Reads (or if returns already read) extern file with
   //! given name
@@ -208,17 +207,16 @@ protected:
   //! corresponding color assignments in the DECAF document
   Standard_EXPORT Standard_Boolean ReadColors
                 (const Handle(XSControl_WorkSession)& WS,
-                 Handle(TDocStd_Document)& doc,
-                 const XCAFDoc_DataMapOfShapeLabel& ShapeLabelMap) const;
+                 Handle(TDocStd_Document)& doc) const;
   
   //! Reads names of parts defined in the STEP model and
   //! assigns them to corresponding labels in the DECAF document
-  Standard_EXPORT Standard_Boolean ReadNames (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap, const XCAFDoc_DataMapOfShapeLabel& ShapeLabelMap) const;
+  Standard_EXPORT Standard_Boolean ReadNames (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
   
   //! Reads validation properties assigned to shapes in the STEP
   //! model and assigns them to corresponding labels in the DECAF
   //! document
-  Standard_EXPORT Standard_Boolean ReadValProps (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap, const XCAFDoc_DataMapOfShapeLabel& ShapeLabelMap) const;
+  Standard_EXPORT Standard_Boolean ReadValProps (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
   
   //! Reads layers of parts defined in the STEP model and
   //! set reference between shape and layers in the DECAF document
@@ -226,7 +224,7 @@ protected:
   
   //! Reads SHUO for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
-  Standard_EXPORT Standard_Boolean ReadSHUOs (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap, const XCAFDoc_DataMapOfShapeLabel& ShapeLabelMap) const;
+  Standard_EXPORT Standard_Boolean ReadSHUOs (const Handle(XSControl_WorkSession)& WS, Handle(TDocStd_Document)& doc, const STEPCAFControl_DataMapOfPDExternFile& PDFileMap) const;
   
   //! Reads D&GT for instances defined in the STEP model and
   //! set reference between shape instances from different assemblyes
@@ -248,7 +246,7 @@ protected:
   //! expands their correspondent Labels in XDE Document so that
   //! to have a dedicated sub-Label for each sub-shape coming
   //! with associated name in its STEP Representation Item.
-  Standard_EXPORT void ExpandSubShapes (const Handle(XCAFDoc_ShapeTool)& theShapeTool, const XCAFDoc_DataMapOfShapeLabel& theShapeLabelMap, const STEPCAFControl_DataMapOfShapePD& theShapePDMap) const;
+  Standard_EXPORT void ExpandSubShapes (const Handle(XCAFDoc_ShapeTool)& theShapeTool, const STEPCAFControl_DataMapOfShapePD& theShapePDMap) const;
   
   //! Expands the topological structure of Manifold Solid BRep
   //! STEP entity to OCAF sub-tree. Entities having no names
@@ -299,6 +297,7 @@ private:
 
   STEPControl_Reader myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
+  XCAFDoc_DataMapOfShapeLabel myMap;
   Standard_Boolean myColorMode;
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;

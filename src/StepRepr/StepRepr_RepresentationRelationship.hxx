@@ -43,6 +43,8 @@ public:
   Standard_EXPORT void SetName (const Handle(TCollection_HAsciiString)& aName);
   
   Standard_EXPORT Handle(TCollection_HAsciiString) Name() const;
+
+  Standard_Boolean HasDescription() { return !description.IsNull(); }
   
   Standard_EXPORT void SetDescription (const Handle(TCollection_HAsciiString)& aDescription);
   

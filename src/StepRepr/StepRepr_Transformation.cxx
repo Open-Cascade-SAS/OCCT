@@ -14,6 +14,7 @@
 
 #include <Interface_Macros.hxx>
 #include <Standard_Transient.hxx>
+#include <StepGeom_GeometricRepresentationItem.hxx>
 #include <StepRepr_FunctionallyDefinedTransformation.hxx>
 #include <StepRepr_ItemDefinedTransformation.hxx>
 #include <StepRepr_Transformation.hxx>
@@ -25,6 +26,7 @@ Standard_Integer StepRepr_Transformation::CaseNum(const Handle(Standard_Transien
 	if (ent.IsNull()) return 0;
 	if (ent->IsKind(STANDARD_TYPE(StepRepr_ItemDefinedTransformation))) return 1;
 	if (ent->IsKind(STANDARD_TYPE(StepRepr_FunctionallyDefinedTransformation))) return 2;
+	if (ent->IsKind(STANDARD_TYPE(StepGeom_GeometricRepresentationItem))) return 1;
 	return 0;
 }
 

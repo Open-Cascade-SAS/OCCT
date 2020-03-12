@@ -750,13 +750,92 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
 #include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
 
+// Added for kinematics implementation
+#include <StepRepr_RepresentationContextReference.hxx>
+#include <StepRepr_RepresentationReference.hxx>
+#include <StepGeom_SuParameters.hxx>
+#include <StepKinematics_RotationAboutDirection.hxx>
+#include <StepKinematics_KinematicJoint.hxx>
+#include <StepKinematics_ActuatedKinematicPair.hxx>
+#include <StepKinematics_ContextDependentKinematicLinkRepresentation.hxx>
+#include <StepKinematics_CylindricalPair.hxx>
+#include <StepKinematics_CylindricalPairValue.hxx>
+#include <StepKinematics_CylindricalPairWithRange.hxx>
+#include <StepKinematics_FullyConstrainedPair.hxx>
+#include <StepKinematics_GearPair.hxx>
+#include <StepKinematics_GearPairValue.hxx>
+#include <StepKinematics_GearPairWithRange.hxx>
+#include <StepKinematics_HomokineticPair.hxx>
+#include <StepKinematics_KinematicLink.hxx>
+#include <StepKinematics_KinematicLinkRepresentationAssociation.hxx>
+#include <StepKinematics_KinematicPropertyMechanismRepresentation.hxx>
+#include <StepKinematics_KinematicTopologyDirectedStructure.hxx>
+#include <StepKinematics_KinematicTopologyNetworkStructure.hxx>
+#include <StepKinematics_KinematicTopologyStructure.hxx>
+#include <StepKinematics_LinearFlexibleAndPinionPair.hxx>
+#include <StepKinematics_LinearFlexibleAndPlanarCurvePair.hxx>
+#include <StepKinematics_LinearFlexibleLinkRepresentation.hxx>
+#include <StepKinematics_LowOrderKinematicPair.hxx>
+#include <StepKinematics_LowOrderKinematicPairValue.hxx>
+#include <StepKinematics_LowOrderKinematicPairWithRange.hxx>
+#include <StepKinematics_MechanismRepresentation.hxx>
+#include <StepKinematics_OrientedJoint.hxx>
+#include <StepKinematics_PairRepresentationRelationship.hxx>
+#include <StepKinematics_PlanarCurvePair.hxx>
+#include <StepKinematics_PlanarCurvePairRange.hxx>
+#include <StepKinematics_PlanarPair.hxx>
+#include <StepKinematics_PlanarPairValue.hxx>
+#include <StepKinematics_PlanarPairWithRange.hxx>
+#include <StepKinematics_PointOnPlanarCurvePair.hxx>
+#include <StepKinematics_PointOnPlanarCurvePairValue.hxx>
+#include <StepKinematics_PointOnPlanarCurvePairWithRange.hxx>
+#include <StepKinematics_PointOnSurfacePair.hxx>
+#include <StepKinematics_PointOnSurfacePairValue.hxx>
+#include <StepKinematics_PointOnSurfacePairWithRange.hxx>
+#include <StepKinematics_PrismaticPair.hxx>
+#include <StepKinematics_PrismaticPairValue.hxx>
+#include <StepKinematics_PrismaticPairWithRange.hxx>
+#include <StepKinematics_ProductDefinitionKinematics.hxx>
+#include <StepKinematics_ProductDefinitionRelationshipKinematics.hxx>
+#include <StepKinematics_RackAndPinionPair.hxx>
+#include <StepKinematics_RackAndPinionPairValue.hxx>
+#include <StepKinematics_RackAndPinionPairWithRange.hxx>
+#include <StepKinematics_RevolutePair.hxx>
+#include <StepKinematics_RevolutePairValue.hxx>
+#include <StepKinematics_RevolutePairWithRange.hxx>
+#include <StepKinematics_RigidLinkRepresentation.hxx>
+#include <StepKinematics_RollingCurvePair.hxx>
+#include <StepKinematics_RollingCurvePairValue.hxx>
+#include <StepKinematics_RollingSurfacePair.hxx>
+#include <StepKinematics_RollingSurfacePairValue.hxx>
+#include <StepKinematics_ScrewPair.hxx>
+#include <StepKinematics_ScrewPairValue.hxx>
+#include <StepKinematics_ScrewPairWithRange.hxx>
+#include <StepKinematics_SlidingCurvePair.hxx>
+#include <StepKinematics_SlidingCurvePairValue.hxx>
+#include <StepKinematics_SlidingSurfacePair.hxx>
+#include <StepKinematics_SlidingSurfacePairValue.hxx>
+#include <StepKinematics_SphericalPair.hxx>
+#include <StepKinematics_SphericalPairValue.hxx>
+#include <StepKinematics_SphericalPairWithPin.hxx>
+#include <StepKinematics_SphericalPairWithPinAndRange.hxx>
+#include <StepKinematics_SphericalPairWithRange.hxx>
+#include <StepKinematics_SurfacePairWithRange.hxx>
+#include <StepKinematics_UnconstrainedPair.hxx>
+#include <StepKinematics_UnconstrainedPairValue.hxx>
+#include <StepKinematics_UniversalPair.hxx>
+#include <StepKinematics_UniversalPairValue.hxx>
+#include <StepKinematics_UniversalPairWithRange.hxx>
+#include <StepKinematics_ActuatedKinPairAndOrderKinPair.hxx>
+#include <StepKinematics_MechanismStateRepresentation.hxx>
+
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
 #include <StepVisual_SurfaceStyleRendering.hxx>
 #include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
 static int THE_StepAP214_Protocol_init = 0;
-static Interface_DataMapOfTransientInteger types(800);
+static Interface_DataMapOfTransientInteger types(803);
 
 //=======================================================================
 //function : StepAP214_Protocol
@@ -1468,6 +1547,85 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbient), 721);
   types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleRendering), 722);
   types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleRenderingWithProperties), 723);
+
+  // Added for kinematics implementation
+  types.Bind(STANDARD_TYPE(StepRepr_RepresentationContextReference), 724);
+  types.Bind(STANDARD_TYPE(StepRepr_RepresentationReference), 725);
+  types.Bind(STANDARD_TYPE(StepGeom_SuParameters), 726);
+  types.Bind(STANDARD_TYPE(StepKinematics_RotationAboutDirection), 727);
+  types.Bind(STANDARD_TYPE(StepKinematics_KinematicJoint), 728);
+  types.Bind(STANDARD_TYPE(StepKinematics_ActuatedKinematicPair), 729);
+  types.Bind(STANDARD_TYPE(StepKinematics_ContextDependentKinematicLinkRepresentation), 730);
+  types.Bind(STANDARD_TYPE(StepKinematics_CylindricalPair), 731);
+  types.Bind(STANDARD_TYPE(StepKinematics_CylindricalPairValue), 732);
+  types.Bind(STANDARD_TYPE(StepKinematics_CylindricalPairWithRange), 733);
+  types.Bind(STANDARD_TYPE(StepKinematics_FullyConstrainedPair), 734);
+  types.Bind(STANDARD_TYPE(StepKinematics_GearPair), 735);
+  types.Bind(STANDARD_TYPE(StepKinematics_GearPairValue), 736);
+  types.Bind(STANDARD_TYPE(StepKinematics_GearPairWithRange), 737);
+  types.Bind(STANDARD_TYPE(StepKinematics_HomokineticPair), 738);
+  types.Bind(STANDARD_TYPE(StepKinematics_KinematicLink), 739);
+  types.Bind(STANDARD_TYPE(StepKinematics_KinematicLinkRepresentationAssociation), 740);
+  types.Bind(STANDARD_TYPE(StepKinematics_KinematicPropertyMechanismRepresentation), 741);
+  types.Bind(STANDARD_TYPE(StepKinematics_KinematicTopologyStructure), 742);
+  types.Bind(STANDARD_TYPE(StepKinematics_LowOrderKinematicPair), 743);
+  types.Bind(STANDARD_TYPE(StepKinematics_LowOrderKinematicPairValue), 744);
+  types.Bind(STANDARD_TYPE(StepKinematics_LowOrderKinematicPairWithRange), 745);
+  types.Bind(STANDARD_TYPE(StepKinematics_MechanismRepresentation), 746);
+  types.Bind(STANDARD_TYPE(StepKinematics_OrientedJoint), 747);
+  types.Bind(STANDARD_TYPE(StepKinematics_PlanarCurvePair), 748);
+  types.Bind(STANDARD_TYPE(StepKinematics_PlanarCurvePairRange), 749);
+  types.Bind(STANDARD_TYPE(StepKinematics_PlanarPair), 750);
+  types.Bind(STANDARD_TYPE(StepKinematics_PlanarPairValue), 751);
+  types.Bind(STANDARD_TYPE(StepKinematics_PlanarPairWithRange), 752);
+  types.Bind(STANDARD_TYPE(StepKinematics_PointOnPlanarCurvePair), 753);
+  types.Bind(STANDARD_TYPE(StepKinematics_PointOnPlanarCurvePairValue), 754);
+  types.Bind(STANDARD_TYPE(StepKinematics_PointOnPlanarCurvePairWithRange), 755);
+  types.Bind(STANDARD_TYPE(StepKinematics_PointOnSurfacePair), 756);
+  types.Bind(STANDARD_TYPE(StepKinematics_PointOnSurfacePairValue), 757);
+  types.Bind(STANDARD_TYPE(StepKinematics_PointOnSurfacePairWithRange), 758);
+  types.Bind(STANDARD_TYPE(StepKinematics_PrismaticPair), 759);
+  types.Bind(STANDARD_TYPE(StepKinematics_PrismaticPairValue), 760);
+  types.Bind(STANDARD_TYPE(StepKinematics_PrismaticPairWithRange), 761);
+  types.Bind(STANDARD_TYPE(StepKinematics_ProductDefinitionKinematics), 762);
+  types.Bind(STANDARD_TYPE(StepKinematics_ProductDefinitionRelationshipKinematics), 763);
+  types.Bind(STANDARD_TYPE(StepKinematics_RackAndPinionPair), 764);
+  types.Bind(STANDARD_TYPE(StepKinematics_RackAndPinionPairValue), 765);
+  types.Bind(STANDARD_TYPE(StepKinematics_RackAndPinionPairWithRange), 766);
+  types.Bind(STANDARD_TYPE(StepKinematics_RevolutePair), 767);
+  types.Bind(STANDARD_TYPE(StepKinematics_RevolutePairValue), 768);
+  types.Bind(STANDARD_TYPE(StepKinematics_RevolutePairWithRange), 769);
+  types.Bind(STANDARD_TYPE(StepKinematics_RollingCurvePair), 770);
+  types.Bind(STANDARD_TYPE(StepKinematics_RollingCurvePairValue), 771);
+  types.Bind(STANDARD_TYPE(StepKinematics_RollingSurfacePair), 772);
+  types.Bind(STANDARD_TYPE(StepKinematics_RollingSurfacePairValue), 773);
+  types.Bind(STANDARD_TYPE(StepKinematics_ScrewPair), 774);
+  types.Bind(STANDARD_TYPE(StepKinematics_ScrewPairValue), 775);
+  types.Bind(STANDARD_TYPE(StepKinematics_ScrewPairWithRange), 776);
+  types.Bind(STANDARD_TYPE(StepKinematics_SlidingCurvePair), 777);
+  types.Bind(STANDARD_TYPE(StepKinematics_SlidingCurvePairValue), 778);
+  types.Bind(STANDARD_TYPE(StepKinematics_SlidingSurfacePair), 779);
+  types.Bind(STANDARD_TYPE(StepKinematics_SlidingSurfacePairValue), 780);
+  types.Bind(STANDARD_TYPE(StepKinematics_SphericalPair), 781);
+  types.Bind(STANDARD_TYPE(StepKinematics_SphericalPairValue), 782);
+  types.Bind(STANDARD_TYPE(StepKinematics_SphericalPairWithPin), 783);
+  types.Bind(STANDARD_TYPE(StepKinematics_SphericalPairWithPinAndRange), 784);
+  types.Bind(STANDARD_TYPE(StepKinematics_SphericalPairWithRange), 785);
+  types.Bind(STANDARD_TYPE(StepKinematics_SurfacePairWithRange), 786);
+  types.Bind(STANDARD_TYPE(StepKinematics_UnconstrainedPair), 787);
+  types.Bind(STANDARD_TYPE(StepKinematics_UnconstrainedPairValue), 788);
+  types.Bind(STANDARD_TYPE(StepKinematics_UniversalPair), 789);
+  types.Bind(STANDARD_TYPE(StepKinematics_UniversalPairValue), 790);
+  types.Bind(STANDARD_TYPE(StepKinematics_UniversalPairWithRange), 791);
+  types.Bind(STANDARD_TYPE(StepKinematics_PairRepresentationRelationship), 792);
+  types.Bind(STANDARD_TYPE(StepKinematics_RigidLinkRepresentation), 793);
+  types.Bind(STANDARD_TYPE(StepKinematics_KinematicTopologyDirectedStructure), 794);
+  types.Bind(STANDARD_TYPE(StepKinematics_KinematicTopologyNetworkStructure), 795);
+  types.Bind(STANDARD_TYPE(StepKinematics_LinearFlexibleAndPinionPair), 796);
+  types.Bind(STANDARD_TYPE(StepKinematics_LinearFlexibleAndPlanarCurvePair), 797);
+  types.Bind(STANDARD_TYPE(StepKinematics_LinearFlexibleLinkRepresentation), 798);
+  types.Bind(STANDARD_TYPE(StepKinematics_ActuatedKinPairAndOrderKinPair), 800);
+  types.Bind(STANDARD_TYPE(StepKinematics_MechanismStateRepresentation), 801);
 }
 
 
