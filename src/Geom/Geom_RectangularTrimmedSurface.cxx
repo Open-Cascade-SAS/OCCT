@@ -118,7 +118,7 @@ const Standard_Boolean          VSense)
   {
     Handle(Geom_RectangularTrimmedSurface) S2 = 
            new Geom_RectangularTrimmedSurface( O->BasisSurface(),U1,U2, V1, V2, USense, VSense);
-    basisSurf = new Geom_OffsetSurface(S2, O->Offset());
+    basisSurf = new Geom_OffsetSurface(S2, O->Offset(), Standard_True);
   }  
 
   SetTrim( U1, U2, V1, V2, USense, VSense);
@@ -153,7 +153,7 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface (
   {
     Handle(Geom_RectangularTrimmedSurface) S2 = 
            new Geom_RectangularTrimmedSurface( O->BasisSurface(),Param1,Param2, UTrim, Sense);
-    basisSurf = new Geom_OffsetSurface(S2, O->Offset());
+    basisSurf = new Geom_OffsetSurface(S2, O->Offset(), Standard_True);
   }  
 
   SetTrim(Param1, Param2, UTrim, Sense);
