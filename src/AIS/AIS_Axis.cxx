@@ -31,7 +31,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -183,12 +182,6 @@ void AIS_Axis::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 
 }
 
-void AIS_Axis::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_Axis::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
-  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
-}
-
 //=======================================================================
 //function : ComputeSelection
 //purpose  : 
@@ -237,16 +230,6 @@ void AIS_Axis::SetWidth(const Standard_Real aValue)
   DA->LineAspect(Prs3d_DP_YAxis)->SetWidth(aValue);
   DA->LineAspect(Prs3d_DP_ZAxis)->SetWidth(aValue);
   SynchronizeAspects();
-}
-
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_Axis::Compute(const Handle(Prs3d_Projector)&, 
-		       const Handle(Prs3d_Presentation)&)
-{
 }
 
 //=======================================================================

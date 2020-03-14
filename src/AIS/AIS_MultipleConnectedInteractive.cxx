@@ -19,7 +19,6 @@
 #include <AIS_ConnectedInteractive.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard_NotImplemented.hxx>
@@ -157,29 +156,6 @@ void AIS_MultipleConnectedInteractive::Compute (const Handle(PrsMgr_Presentation
       aChild->SetContext (aCtx);
     }
   }
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_MultipleConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector,
-                                               const Handle(Prs3d_Presentation)& aPresentation)
-{
-  PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_MultipleConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector,
-                                               const Handle(Geom_Transformation)& aTransformation,
-                                               const Handle(Prs3d_Presentation)& aPresentation)
-{
-  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
 //=======================================================================

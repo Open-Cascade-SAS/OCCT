@@ -1889,6 +1889,11 @@ Unexpected const-ness of Aspect_Window::DoResize() method has been removed, so t
 
 Enumeration BRepOffset_Type is renamed to ChFiDS_TypeOfConcavity.
 
+@subsection upgrade_750_hlrprs Changes in HLR presentation API
+
+Methods computing HLR presentation within *PrsMgr_PresentableObject::Compute()* have been renamed to *PrsMgr_PresentableObject::computeHLR()*
+and now accept *Graphic3d_Camera* object instead of removed *Prs3d_Projector*.
+
 @subsection upgrade_750_sensitiveEntity Select3D_SensitiveEntity interface change
 
 The method Select3D_SensitiveEntity::NbSubElements() has been changed to be constant. Select3D_SensitiveEntity subclasses at application level should be updated accordingly.

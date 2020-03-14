@@ -207,14 +207,6 @@ protected:
                                 const Handle(Prs3d_Presentation)& thePrs,
                                 const Standard_Integer theMode) Standard_OVERRIDE;
 
-  //! This compute is unavailable for trihedron presentation.
-  void Compute (const Handle(Prs3d_Projector)& , const Handle(Prs3d_Presentation)& ) Standard_OVERRIDE {}
-
-  //! This compute is unavailable for trihedron presentation.
-  Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& theProjector,
-                                        const Handle(Geom_Transformation)& theTrsf,
-                                        const Handle(Prs3d_Presentation)& thePrs) Standard_OVERRIDE;
-
   //! Compute selection.
   Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Standard_Integer theMode) Standard_OVERRIDE;

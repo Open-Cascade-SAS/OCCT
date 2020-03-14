@@ -35,8 +35,6 @@ Prs3d_PointAspect.hxx
 Prs3d_Presentation.hxx
 Prs3d_PresentationShadow.cxx
 Prs3d_PresentationShadow.hxx
-Prs3d_Projector.cxx
-Prs3d_Projector.hxx
 Prs3d_Root.hxx
 Prs3d_ShadingAspect.cxx
 Prs3d_ShadingAspect.hxx

@@ -21,7 +21,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>
@@ -99,22 +98,12 @@ void PrsMgr_PresentableObject::Fill (const Handle(PrsMgr_PresentationManager)& t
 }
 
 //=======================================================================
-//function : Compute
-//purpose  : 
+//function : computeHLR
+//purpose  :
 //=======================================================================
-void PrsMgr_PresentableObject::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
-                                       const Handle(Prs3d_Presentation)& /*aPresentation*/)
-{
-  throw Standard_NotImplemented("cannot compute under a specific projector");
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-void PrsMgr_PresentableObject::Compute(const Handle(Prs3d_Projector)& /* aProjector*/,
-                                       const Handle(Geom_Transformation)& /*aTrsf*/,
-				                               const Handle(Prs3d_Presentation)& /*aPresentation*/)
+void PrsMgr_PresentableObject::computeHLR (const Handle(Graphic3d_Camera)& ,
+                                           const Handle(Geom_Transformation)& ,
+                                           const Handle(Prs3d_Presentation)& )
 {
   throw Standard_NotImplemented("cannot compute under a specific projector");
 }

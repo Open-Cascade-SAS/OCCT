@@ -282,20 +282,21 @@ protected:
                                         const Standard_Integer theMode) Standard_OVERRIDE;
 
   //! Compute projected presentation.
-  virtual void Compute (const Handle(Prs3d_Projector)& theProjector,
-                        const Handle(Prs3d_Presentation)& thePrs) Standard_OVERRIDE
+  virtual void computeHLR (const Handle(Graphic3d_Camera)& theProjector,
+                           const Handle(Geom_Transformation)& theTrsf,
+                           const Handle(Prs3d_Presentation)& thePrs) Standard_OVERRIDE
   {
-    computeHlrPresentation (theProjector, thePrs, myshape, myDrawer);
-  }
-
-  //! Compute projected presentation with transformation.
-  virtual void Compute (const Handle(Prs3d_Projector)& theProjector,
-                        const Handle(Geom_Transformation)& theTrsf,
-                        const Handle(Prs3d_Presentation)& thePrs) Standard_OVERRIDE
-  {
-    const TopLoc_Location& aLoc = myshape.Location();
-    const TopoDS_Shape aShape = myshape.Located (TopLoc_Location (theTrsf->Trsf()) * aLoc);
-    computeHlrPresentation (theProjector, thePrs, aShape, myDrawer);
+    if (!theTrsf.IsNull()
+      && theTrsf->Form() != gp_Identity)
+    {
+      const TopLoc_Location& aLoc = myshape.Location();
+      const TopoDS_Shape aShape = myshape.Located (TopLoc_Location (theTrsf->Trsf()) * aLoc);
+      computeHlrPresentation (theProjector, thePrs, aShape, myDrawer);
+    }
+    else
+    {
+      computeHlrPresentation (theProjector, thePrs, myshape, myDrawer);
+    }
   }
 
   //! Compute selection.
@@ -320,7 +321,7 @@ protected:
 public:
 
   //! Compute HLR presentation for specified shape.
-  Standard_EXPORT static void computeHlrPresentation (const Handle(Prs3d_Projector)& theProjector,
+  Standard_EXPORT static void computeHlrPresentation (const Handle(Graphic3d_Camera)& theProjector,
                                                       const Handle(Prs3d_Presentation)& thePrs,
                                                       const TopoDS_Shape& theShape,
                                                       const Handle(Prs3d_Drawer)& theDrawer);

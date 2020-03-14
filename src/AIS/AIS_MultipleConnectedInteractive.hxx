@@ -57,17 +57,6 @@ public:
   //! Clears all the connections to objects.
   Standard_EXPORT void DisconnectAll();
   
-  //! computes the presentation according to a point of view
-  //! given by <aProjector>.
-  //! To be Used when the associated degenerated Presentations
-  //! have been transformed by <aTrsf> which is not a Pure
-  //! Translation. The HLR Prs can't be deducted automatically
-  //! WARNING :<aTrsf> must be applied
-  //! to the object to display before computation  !!!
-  Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
-  
-  Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
-  
   //! Informs the graphic context that the interactive Object
   //! may be decomposed into sub-shapes for dynamic selection.
   Standard_EXPORT virtual Standard_Boolean AcceptShapeDecomposition() const Standard_OVERRIDE;

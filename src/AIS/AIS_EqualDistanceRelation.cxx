@@ -37,7 +37,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveSegment.hxx>
@@ -204,33 +203,6 @@ void AIS_EqualDistanceRelation::Compute( const Handle( PrsMgr_PresentationManage
   
   DsgPrs_EqualDistancePresentation::Add( aPresentation, myDrawer, 
 					myPoint1, myPoint2, myPoint3, myPoint4, myPlane );
-}
-
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning at compilation (SUN)
-//=======================================================================
-
-void AIS_EqualDistanceRelation::Compute( const Handle( Prs3d_Projector )& /*aProjector*/,
-					 const Handle( Prs3d_Presentation )& /*aPresentation*/) 
-{
-// throw Standard_NotImplemented("AIS_EqualDistanceRelation::Compute( const Handle( Prs3d_Projector )&,
- // const Handle( Prs3d_Presentation )& )");
-// PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ; 
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning at compilation (SUN)
-//=======================================================================
-void AIS_EqualDistanceRelation::Compute(const Handle(Prs3d_Projector)& aProjector, 
-				  const Handle(Geom_Transformation)& aTransformation,
-				  const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_EqualDistanceRelation::Compute(const Handle(Prs3d_Projector)&,
-//  const Handle(Geom_Transformation)&,const Handle(Prs3d_Presentation)&)");
- PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ; 
 }
 
 //=======================================================================

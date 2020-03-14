@@ -90,7 +90,7 @@ public:
   Standard_Boolean IsRemoved() const { return myIsRemoved; }
 
   //! Returns camera object of the view.
-  virtual const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
+  virtual const Handle(Graphic3d_Camera)& Camera() const Standard_OVERRIDE { return myCamera; }
 
   //! Sets camera used by the view.
   virtual void SetCamera (const Handle(Graphic3d_Camera)& theCamera) { myCamera = theCamera; }

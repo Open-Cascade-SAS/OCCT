@@ -43,7 +43,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <StdPrs_BndBox.hxx>
@@ -224,7 +223,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
 //function : computeHlrPresentation
 //purpose  :
 //=======================================================================
-void AIS_Shape::computeHlrPresentation (const Handle(Prs3d_Projector)& theProjector,
+void AIS_Shape::computeHlrPresentation (const Handle(Graphic3d_Camera)& theProjector,
                                         const Handle(Prs3d_Presentation)& thePrs,
                                         const TopoDS_Shape& theShape,
                                         const Handle(Prs3d_Drawer)& theDrawer)
@@ -282,12 +281,18 @@ void AIS_Shape::computeHlrPresentation (const Handle(Prs3d_Projector)& theProjec
       switch (theDrawer->TypeOfHLR())
       {
         case Prs3d_TOH_Algo:
-          StdPrs_HLRShape::Add (thePrs, theShape, theDrawer, theProjector);
+        {
+          StdPrs_HLRShape aBuilder;
+          aBuilder.ComputeHLR (thePrs, theShape, theDrawer, theProjector);
           break;
+        }
         case Prs3d_TOH_PolyAlgo:
-        default:
-          StdPrs_HLRPolyShape::Add (thePrs, theShape, theDrawer, theProjector);
+        case Prs3d_TOH_NotSet:
+        {
+          StdPrs_HLRPolyShape aBuilder;
+          aBuilder.ComputeHLR (thePrs, theShape, theDrawer, theProjector);
           break;
+        }
       }
     }
     catch (Standard_Failure const& anException)

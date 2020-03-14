@@ -81,7 +81,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Prs3d_Text.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>

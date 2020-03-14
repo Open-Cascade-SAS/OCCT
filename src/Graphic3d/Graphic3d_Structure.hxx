@@ -173,38 +173,12 @@ public:
   {
     //
   }
-  
-  //! Returns the new Structure defined for the new visualization
-  virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector)
-  {
-    (void )theProjector;
-    return this;
-  }
-  
-  //! Returns the new Structure defined for the new visualization
-  virtual Handle(Graphic3d_Structure) Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                                               const Handle(Geom_Transformation)& theTrsf)
-  {
-    (void )theProjector;
-    (void )theTrsf;
-    return this;
-  }
 
   //! Returns the new Structure defined for the new visualization
-  virtual void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                        Handle(Graphic3d_Structure)& theStructure)
+  virtual void computeHLR (const Handle(Graphic3d_Camera)& theProjector,
+                           Handle(Graphic3d_Structure)& theStructure)
   {
     (void )theProjector;
-    (void )theStructure;
-  }
-  
-  //! Returns the new Structure defined for the new visualization
-  virtual void Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                        const Handle(Geom_Transformation)& theTrsf,
-                        Handle(Graphic3d_Structure)& theStructure)
-  {
-    (void )theProjector;
-    (void )theTrsf;
     (void )theStructure;
   }
 

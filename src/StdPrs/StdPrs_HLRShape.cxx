@@ -11,29 +11,38 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdPrs_HLRShape.hxx>
+
 #include <BRepAdaptor_Curve.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
-#include <StdPrs_HLRShape.hxx>
 #include <StdPrs_HLRToolShape.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
+#include <HLRAlgo_Projector.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(StdPrs_HLRShape, StdPrs_HLRShapeI)
 
 //=======================================================================
-//function : Add
-//purpose  : 
+//function : ComputeHLR
+//purpose  :
 //=======================================================================
-
-void StdPrs_HLRShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
-                           const TopoDS_Shape&               theShape,
-                           const Handle(Prs3d_Drawer)&       theDrawer,
-                           const Handle(Prs3d_Projector)&    theProjector)
+void StdPrs_HLRShape::ComputeHLR (const Handle(Prs3d_Presentation)& thePresentation,
+                                  const TopoDS_Shape& theShape,
+                                  const Handle(Prs3d_Drawer)& theDrawer,
+                                  const Handle(Graphic3d_Camera)& theProjector) const
 {
-  StdPrs_HLRToolShape aTool(theShape, theProjector->Projector());
+  gp_Dir aBackDir = -theProjector->Direction();
+  gp_Dir aXpers   = theProjector->Up().Crossed (aBackDir);
+  gp_Ax3 anAx3 (theProjector->Center(), aBackDir, aXpers);
+  gp_Trsf aTrsf;
+  aTrsf.SetTransformation (anAx3);
+  const HLRAlgo_Projector aProj (aTrsf, !theProjector->IsOrthographic(), theProjector->Scale());
+
+  StdPrs_HLRToolShape aTool(theShape, aProj);
   Standard_Integer aNbEdges = aTool.NbEdges();
   Standard_Integer anI;
   Standard_Real anU1, anU2;

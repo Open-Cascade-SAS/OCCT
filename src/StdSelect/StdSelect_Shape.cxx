@@ -19,7 +19,6 @@
 #include <Geom_Transformation.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Standard_Type.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <StdPrs_ShadedShape.hxx>
@@ -56,20 +55,6 @@ void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*PM*/
   }
   else if (aMode==0)
     StdPrs_WFShape::Add (P, mysh, myDrawer);
-}
-
-void StdSelect_Shape::Compute(const Handle(Prs3d_Projector)& aProjector ,
-			      const Handle(Geom_Transformation)& aGeomTrans, 
-			      const Handle(Prs3d_Presentation)& aPresentation )
-{
-  PrsMgr_PresentableObject::Compute(aProjector,aGeomTrans,aPresentation);
-}
-
-
-void StdSelect_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
-			      const Handle(Prs3d_Presentation)& aPresentation)
-{
-  PrsMgr_PresentableObject::Compute(aProjector,aPresentation);
 }
 
 void StdSelect_Shape::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const

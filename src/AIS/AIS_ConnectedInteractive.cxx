@@ -22,7 +22,7 @@
 #include <NCollection_DataMap.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Projector.hxx>
+#include <Prs3d_Presentation.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -137,42 +137,30 @@ void AIS_ConnectedInteractive::Compute (const Handle(PrsMgr_PresentationManager3
 }
 
 //=======================================================================
-//function : Compute
+//function : computeHLR
 //purpose  :
 //=======================================================================
-void AIS_ConnectedInteractive::Compute (const Handle(Prs3d_Projector)& theProjector,
-                                        const Handle(Geom_Transformation)& theTransformation,
-                                        const Handle(Prs3d_Presentation)& thePresentation)
+void AIS_ConnectedInteractive::computeHLR (const Handle(Graphic3d_Camera)& theProjector,
+                                           const Handle(Geom_Transformation)& theTransformation,
+                                           const Handle(Prs3d_Presentation)& thePresentation)
 {
-  updateShape (Standard_False);
+  const bool hasTrsf = !theTransformation.IsNull()
+                     && theTransformation->Form() != gp_Identity;
+  updateShape (!hasTrsf);
   if (myShape.IsNull())
   {
     return;
   }
-  const TopLoc_Location& aLocation = myShape.Location();
-  TopoDS_Shape aShape = myShape.Located (TopLoc_Location (theTransformation->Trsf()) * aLocation);
-  Compute (theProjector, thePresentation, aShape);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  :
-//=======================================================================
-void AIS_ConnectedInteractive::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation)
-{
-  updateShape (Standard_True);
-  Compute (aProjector, aPresentation, myShape);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  :
-//=======================================================================
-void AIS_ConnectedInteractive::Compute (const Handle(Prs3d_Projector)& theProjector,
-                                        const Handle(Prs3d_Presentation)& thePrs,
-                                        const TopoDS_Shape& theShape)
-{
-  AIS_Shape::computeHlrPresentation (theProjector, thePrs, theShape, myDrawer);
+  if (hasTrsf)
+  {
+    const TopLoc_Location& aLocation = myShape.Location();
+    TopoDS_Shape aShape = myShape.Located (TopLoc_Location (theTransformation->Trsf()) * aLocation);
+    AIS_Shape::computeHlrPresentation (theProjector, thePresentation, aShape, myDrawer);
+  }
+  else
+  {
+    AIS_Shape::computeHlrPresentation (theProjector, thePresentation, myShape, myDrawer);
+  }
 }
 
 //=======================================================================

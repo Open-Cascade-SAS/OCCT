@@ -48,15 +48,6 @@ public:
   
   //! Returns true if the display mode selected is valid for point datums.
   Standard_EXPORT Standard_Boolean AcceptDisplayMode (const Standard_Integer aMode) const Standard_OVERRIDE;
-  
-  //! computes the presentation according to a point of view
-  //! given by <aProjector>.
-  //! To be Used when the associated degenerated Presentations
-  //! have been transformed by <aTrsf> which is not a Pure
-  //! Translation. The HLR Prs can't be deducted automatically
-  //! WARNING :<aTrsf> must be applied
-  //! to the object to display before computation  !!!
-  Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTrsf, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
   //! Allows you to provide settings for the Color.
   Standard_EXPORT virtual void SetColor (const Quantity_Color& theColor) Standard_OVERRIDE;
@@ -84,8 +75,6 @@ protected:
   Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager, const Handle(Prs3d_Presentation)& aPresentation, const Standard_Integer aMode = 0) Standard_OVERRIDE;
 
 private:
-  
-  Standard_EXPORT void Compute (const Handle(Prs3d_Projector)& aProjector, const Handle(Prs3d_Presentation)& aPresentation) Standard_OVERRIDE;
 
   Standard_EXPORT void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection, const Standard_Integer aMode) Standard_OVERRIDE;
 

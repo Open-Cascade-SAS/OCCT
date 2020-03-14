@@ -18,7 +18,6 @@
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Projector.hxx>
 #include <PrsMgr_PresentableObject.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <Quantity_Color.hxx>
@@ -190,69 +189,18 @@ void PrsMgr_Presentation::Compute()
 
 //=======================================================================
 //function : Compute
-//purpose  : Methods for hidden parts...
-//=======================================================================
-Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector)
-{
-  Handle(Graphic3d_Structure) aPrs = new Graphic3d_Structure (myPresentationManager->StructureManager());
-  myPresentableObject->Compute (Projector (theProjector), aPrs);
-  return aPrs;
-}
-
-//=======================================================================
-//function : Compute
 //purpose  :
 //=======================================================================
-void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                                   Handle(Graphic3d_Structure)& theStructToFill)
+void PrsMgr_Presentation::computeHLR (const Handle(Graphic3d_Camera)& theProjector,
+                                      Handle(Graphic3d_Structure)& theStructToFill)
 {
-  theStructToFill->Clear();
-  Handle(Prs3d_Presentation) aPrs = theStructToFill;
-  myPresentableObject->Compute (Projector (theProjector), aPrs);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  :
-//=======================================================================
-Handle(Graphic3d_Structure) PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                                                          const Handle(Geom_Transformation)&            theTrsf)
-{
-  Handle(Prs3d_Presentation) aPrs3d = new Prs3d_Presentation (myPresentationManager->StructureManager());
-  myPresentableObject->Compute (Projector (theProjector), theTrsf, aPrs3d);
-  return aPrs3d;
-}
-
-//=======================================================================
-//function : Compute
-//purpose  :
-//=======================================================================
-void PrsMgr_Presentation::Compute (const Handle(Graphic3d_DataStructureManager)& theProjector,
-                                   const Handle(Geom_Transformation)& theTrsf,
-                                   Handle(Graphic3d_Structure)& theStructToFill)
-{
-  // recompute HLR after transformation in all the case
+  if (theStructToFill.IsNull())
+  {
+    theStructToFill = new Prs3d_Presentation (myPresentationManager->StructureManager());
+  }
   Handle(Graphic3d_Structure) aPrs = theStructToFill;
   theStructToFill->Clear();
-  myPresentableObject->Compute (Projector (theProjector), theTrsf, aPrs);
-}
-
-//=======================================================================
-//function : Projector
-//purpose  :
-//=======================================================================
-Handle(Prs3d_Projector) PrsMgr_Presentation::Projector (const Handle(Graphic3d_DataStructureManager)& theProjector)
-{
-  Handle(Graphic3d_Camera) aCamera = Handle(Graphic3d_CView)::DownCast (theProjector)->Camera();
-  const gp_Dir aDir = aCamera->Direction().Reversed();
-  const gp_Pnt anAt = aCamera->Center();
-  const gp_Dir anUp = aCamera->Up();
-  Handle(Prs3d_Projector) aProj = new Prs3d_Projector (!aCamera->IsOrthographic(),
-                                                       aCamera->Scale(),
-                                                       aDir.X(), aDir.Y(), aDir.Z(),
-                                                       anAt.X(), anAt.Y(), anAt.Z(),
-                                                       anUp.X(), anUp.Y(), anUp.Z());
-  return aProj;
+  myPresentableObject->computeHLR (theProjector, Transformation(), aPrs);
 }
 
 //=======================================================================

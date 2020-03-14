@@ -27,7 +27,6 @@
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>

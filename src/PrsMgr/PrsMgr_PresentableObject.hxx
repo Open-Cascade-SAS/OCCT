@@ -341,21 +341,16 @@ protected: //! @name interface methods
                                         const Handle(Prs3d_Presentation)& thePrs,
                                         const Standard_Integer theMode) = 0;
 
-  //! Calculates the 3D view presentation.
+  //! Calculates hidden line removal presentation for specific camera position.
   //! Each of the views in the viewer and every modification such as rotation, for example, entails recalculation.
-  //! It must be redefined to implement hidden line removal for the object. The user never calls this method himself.
-  //! This is done via the InteractiveContext object and is dependent on the point of view from which the object is displayed.
-  Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& theProjector,
-                                        const Handle(Prs3d_Presentation)& thePrs);
-
-  //! Calculates the 3D view presentation.
-  //! A point of view is provided by the projector, and the geometric transformation which has transformed associated presentable objects is specified by transformation.
-  //! This function is to be used in case where a hidden line removal display cannot be calculated automatically.
-  //! This occurs when associated presentable objects have been transformed geometrically, but not translated.
+  //! Default implementation throws Standard_NotImplemented exception
   //! Warning! The transformation must be applied to the object before computation.
-  Standard_EXPORT virtual void Compute (const Handle(Prs3d_Projector)& theProjector,
-                                        const Handle(Geom_Transformation)& theTrsf,
-                                        const Handle(Prs3d_Presentation)& thePrs);
+  //! @param theProjector [in] view orientation
+  //! @param theTrsf [in] additional transformation, or NULL if undefined
+  //! @param thePrs  [in] presentation to fill
+  Standard_EXPORT virtual void computeHLR (const Handle(Graphic3d_Camera)& theProjector,
+                                           const Handle(Geom_Transformation)& theTrsf,
+                                           const Handle(Prs3d_Presentation)& thePrs);
 
   //! Recomputes invalidated presentations of the object.
   //! @param theToIncludeHidden if TRUE, then even hidden invalidated presentations will be updated

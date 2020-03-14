@@ -291,15 +291,17 @@ case 6: //color
   }
 }
 
-void User_Cylinder::Compute(const Handle(Prs3d_Projector)& aProjector,
-                            const Handle(Prs3d_Presentation)& aPresentation)
+void User_Cylinder::computeHLR (const Handle(Graphic3d_Camera)& aProjector,
+                                const Handle(Geom_Transformation)& ,
+                                const Handle(Prs3d_Presentation)& aPresentation)
 {
   Handle (Prs3d_Drawer) aDefDrawer = GetContext()->DefaultDrawer();
   if (aDefDrawer->DrawHiddenLine())
     myDrawer->EnableDrawHiddenLine();
   else
     myDrawer->DisableDrawHiddenLine();
-  StdPrs_HLRPolyShape::Add(aPresentation,myShape,myDrawer,aProjector);
+  StdPrs_HLRPolyShape aTool;
+  aTool.ComputeHLR (aPresentation,myShape,myDrawer,aProjector);
 }
 
 void User_Cylinder::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,

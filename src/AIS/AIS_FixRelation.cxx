@@ -37,7 +37,6 @@
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -194,31 +193,6 @@ void AIS_FixRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
 			      curpos,
 			      nor,
 			      myArrowSize);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-
-void AIS_FixRelation::Compute(const Handle(Prs3d_Projector)& aProjector,
-			      const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_FixRelation::Compute(const Handle(Prs3d_Projector)&,const Handle(Prs3d_Presentation)&)");
- PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ; 
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_FixRelation::Compute(const Handle(Prs3d_Projector)& aProjector,
-                              const Handle(Geom_Transformation)& aTransformation,
-                              const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_FixRelation::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
- PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
 //=======================================================================

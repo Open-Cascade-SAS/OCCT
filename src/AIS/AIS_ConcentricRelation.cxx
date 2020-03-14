@@ -30,7 +30,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -84,12 +83,6 @@ void AIS_ConcentricRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&
   break;
   default: {return;}
   }  
-}
-
-void AIS_ConcentricRelation::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_ConcentricRelation::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
-  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
 //=======================================================================
@@ -221,16 +214,6 @@ void AIS_ConcentricRelation::ComputeTwoEdgesConcentric(const Handle(Prs3d_Presen
       ComputeProjEdgePresentation(aPresentation,TopoDS::Edge(mySShape),gcirc2,pf,pl);
     }
   }
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-
-void AIS_ConcentricRelation::Compute(const Handle(Prs3d_Projector)&, 
-				     const Handle(Prs3d_Presentation)&)
-{
 }
 
 //=======================================================================

@@ -8,6 +8,8 @@ StdPrs_HLRPolyShape.cxx
 StdPrs_HLRPolyShape.hxx
 StdPrs_HLRShape.cxx
 StdPrs_HLRShape.hxx
+StdPrs_HLRShapeI.cxx
+StdPrs_HLRShapeI.hxx
 StdPrs_HLRToolShape.cxx
 StdPrs_HLRToolShape.hxx
 StdPrs_Isolines.cxx

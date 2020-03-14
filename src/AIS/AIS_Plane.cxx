@@ -39,7 +39,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveTriangulation.hxx>
@@ -286,11 +285,6 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
   }
 }
 
-void AIS_Plane::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
-{
-  PrsMgr_PresentableObject::Compute(aProjector, aTransformation, aPresentation);
-}
-
 //=======================================================================
 //function : ComputeSelection
 //purpose  : 
@@ -527,15 +521,6 @@ void AIS_Plane::ComputeFrame()
     SetSize(U,V);
     myDrawer->PlaneAspect()->SetPlaneLength(U,V);
   }
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_Plane::Compute(const Handle(Prs3d_Projector)&, 
-			   const Handle(Prs3d_Presentation)&)
-{
 }
 
 //=======================================================================

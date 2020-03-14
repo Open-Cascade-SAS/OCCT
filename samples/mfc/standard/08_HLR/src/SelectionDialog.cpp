@@ -8,7 +8,6 @@
 #include "HLRApp.h"
 #include "OCC_2dView.h"
 #include <ISession2D/ISession2D_Shape.h>
-#include "Prs3d_Projector.hxx"
 
 #ifdef _DEBUG
 //#define new DEBUG_NEW
@@ -261,15 +260,15 @@ void CSelectionDialog::Apply()
 
 void CSelectionDialog::UpdateProjector()
 {
-  Standard_Real DX,DY,DZ,XAt,YAt,ZAt, Vx,Vy,Vz ;
-  myActiveView->Proj(DX,DY,DZ);
-  myActiveView->At(XAt,YAt,ZAt);
-  myActiveView->Up( Vx,Vy,Vz );
+  const Handle(Graphic3d_Camera)& aCam = myActiveView->Camera();
+  gp_Dir aBackDir = -aCam->Direction();
+  gp_Dir aXpers   = aCam->Up().Crossed (aBackDir);
+  gp_Ax3 anAx3 (aCam->Center(), aBackDir, aXpers);
+  gp_Trsf aTrsf;
+  aTrsf.SetTransformation (anAx3);
+  HLRAlgo_Projector aProjector (aTrsf, !aCam->IsOrthographic(), aCam->Scale());
+
   OnDisplay(false);
-  Standard_Boolean IsPerspective = (myActiveView->Type() == V3d_PERSPECTIVE);
-  Standard_Real aFocus = 1;
-  Prs3d_Projector aPrs3dProjector(IsPerspective,aFocus,DX,DY,DZ,XAt,YAt,ZAt,Vx,Vy,Vz);
-  HLRAlgo_Projector aProjector = aPrs3dProjector.Projector();
 
   if (myDisplayableShape.IsNull()) return;
   myDisplayableShape->SetProjector(aProjector);

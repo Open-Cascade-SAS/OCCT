@@ -218,7 +218,8 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
     }
     else
     {
-      Handle(Graphic3d_Structure) aCompStruct = aStruct->IsTransformed() ? aStruct->Compute (this, aStruct->Transformation()) : aStruct->Compute (this);
+      Handle(Graphic3d_Structure) aCompStruct;
+      aStruct->computeHLR (myCamera, aCompStruct);
       aCompStruct->SetHLRValidation (Standard_True);
 
       const Standard_Boolean toComputeWireframe = myVisualization == Graphic3d_TOV_WIREFRAME
@@ -298,8 +299,7 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
   Handle(Graphic3d_Structure) aCompStructOld = myStructsComputed.ChangeValue (anIndex);
   Handle(Graphic3d_Structure) aCompStruct    = aCompStructOld;
   aCompStruct->SetTransformation (Handle(Geom_Transformation)());
-  theStruct->IsTransformed() ? theStruct->Compute (this, theStruct->Transformation(), aCompStruct)
-                             : theStruct->Compute (this,                              aCompStruct);
+  theStruct->computeHLR (myCamera, aCompStruct);
   aCompStruct->SetHLRValidation (Standard_True);
   aCompStruct->CalculateBoundBox();
 
@@ -769,21 +769,8 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure)
   {
     aStruct = myStructsComputed.Value (anIndex);
     aStruct->SetTransformation (Handle(Geom_Transformation)());
-    if (theStructure->IsTransformed())
-    {
-      theStructure->Compute (this, theStructure->Transformation(), aStruct);
-    }
-    else
-    {
-      theStructure->Compute (this, aStruct);
-    }
   }
-  else
-  {
-    aStruct = theStructure->IsTransformed()
-            ? theStructure->Compute (this, theStructure->Transformation())
-            : theStructure->Compute (this);
-  }
+  theStructure->computeHLR (myCamera, aStruct);
 
   aStruct->SetHLRValidation (Standard_True);
 

@@ -22,7 +22,6 @@
 #include <gp_Dir.hxx>
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Projector.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 

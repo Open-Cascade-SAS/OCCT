@@ -39,7 +39,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -119,25 +118,6 @@ void AIS_SymmetricRelation::Compute(const Handle(PrsMgr_PresentationManager3d)&,
       }
     }
   }
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning at compilation (SUN)
-//=======================================================================
-void AIS_SymmetricRelation::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
-				    const Handle(Prs3d_Presentation)& /*aPresentation*/)
-{
-// throw Standard_NotImplemented("AIS_SymmetricRelation::Compute(const Handle(Prs3d_Projector)&,const Handle(Prs3d_Presentation)&)");
-// PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
-}
-
-void AIS_SymmetricRelation::Compute(const Handle(Prs3d_Projector)&,
-                                    const Handle(Geom_Transformation)&,
-                                    const Handle(Prs3d_Presentation)&)
-{
- throw Standard_NotImplemented("AIS_SymmetricRelation::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
-// PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
 //=======================================================================

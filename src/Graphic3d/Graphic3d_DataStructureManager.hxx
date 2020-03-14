@@ -21,6 +21,7 @@
 
 #include <Standard_Transient.hxx>
 
+class Graphic3d_Camera;
 
 class Graphic3d_DataStructureManager;
 DEFINE_STANDARD_HANDLE(Graphic3d_DataStructureManager, Standard_Transient)
@@ -31,30 +32,15 @@ DEFINE_STANDARD_HANDLE(Graphic3d_DataStructureManager, Standard_Transient)
 //! It defines the global attributes.
 class Graphic3d_DataStructureManager : public Standard_Transient
 {
-
-public:
-
   DEFINE_STANDARD_RTTIEXT(Graphic3d_DataStructureManager,Standard_Transient)
-
 protected:
 
-  
   //! Initializes the manager <me>.
   Standard_EXPORT Graphic3d_DataStructureManager();
 
-
-
-private:
-
-
-
+  //! Returns camera object of the view.
+  virtual const Handle(Graphic3d_Camera)& Camera() const = 0;
 
 };
-
-
-
-
-
-
 
 #endif // _Graphic3d_DataStructureManager_HeaderFile

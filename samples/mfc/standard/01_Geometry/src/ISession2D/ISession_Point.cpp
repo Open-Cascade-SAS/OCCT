@@ -50,12 +50,6 @@ void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPres
     StdPrs_Point::Add(aPresentation,aGeomPoint,myDrawer);
  }
 
-
-void ISession_Point::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
-                             const Handle(Prs3d_Presentation)& /*aPresentation*/) 
- {
- }
-
 void ISession_Point::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/, 
 				      const Standard_Integer /*unMode*/)
 {

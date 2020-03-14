@@ -104,12 +104,6 @@ void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   }
 }
 
-
-void ISession_Direction::Compute (const Handle(Prs3d_Projector)& /*aProjector*/,
-                                  const Handle(Prs3d_Presentation)& /*aPresentation*/) 
-{
-}
-
 void ISession_Direction::ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
                                            const Standard_Integer /*aMode*/) 
 {

@@ -38,7 +38,6 @@
 #include <IntAna2d_IntPoint.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -105,23 +104,6 @@ void AIS_PerpendicularRelation::Compute(const Handle(PrsMgr_PresentationManager3
     }
   }
   // Cas pas traite - Edge/Face
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_PerpendicularRelation::Compute(const Handle(Prs3d_Projector)& aProjector,
-					const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_PerpendicularRelation::Compute(const Handle(Prs3d_Projector)&,const Handle(Prs3d_Presentation)&)");
- PrsMgr_PresentableObject::Compute( aProjector , aPresentation ) ;
-}
-
-void AIS_PerpendicularRelation::Compute(const Handle(Prs3d_Projector)& aProjector, const Handle(Geom_Transformation)& aTransformation, const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_PerpendicularRelation::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
- PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
 //=======================================================================

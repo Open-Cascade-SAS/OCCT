@@ -27,7 +27,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveCircle.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -83,19 +82,6 @@ void AIS_Circle::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresenta
   if (myCircleIsArc) ComputeArc(aPresentation);
   else ComputeCircle(aPresentation);
 
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : 
-//=======================================================================
-
-void AIS_Circle::Compute(const Handle(Prs3d_Projector)& aProjector,
-                         const Handle(Geom_Transformation)& aTransformation,
-                         const Handle(Prs3d_Presentation)& aPresentation)
-{
-// throw Standard_NotImplemented("AIS_Circle::Compute(const Handle(Prs3d_Projector)&, const Handle(Geom_Transformation)&, const Handle(Prs3d_Presentation)&)");
-  PrsMgr_PresentableObject::Compute( aProjector , aTransformation , aPresentation ) ;
 }
 
 //=======================================================================
@@ -281,13 +267,4 @@ void AIS_Circle::ComputeArcSelection(const Handle(SelectMgr_Selection)& aSelecti
                                                                        myUStart, myUEnd,
                                                                        myIsFilledCircleSens);
   aSelection->Add(seg);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  : to avoid warning
-//=======================================================================
-void AIS_Circle::Compute(const Handle(Prs3d_Projector)&, 
-                         const Handle(Prs3d_Presentation)&)
-{
 }

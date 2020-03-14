@@ -34,7 +34,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Projector.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -198,17 +197,6 @@ void AIS_Trihedron::Compute (const Handle(PrsMgr_PresentationManager3d)& thePrsM
   updatePrimitives (myDrawer->DatumAspect(), myTrihDispMode, anAxis.Location(),
                     anAxis.XDirection(), anAxis.YDirection(), anAxis.Direction());
   computePresentation (thePrsMgr, thePrs);
-}
-
-//=======================================================================
-//function : Compute
-//purpose  :
-//=======================================================================
-void AIS_Trihedron::Compute (const Handle(Prs3d_Projector)& theProjector,
-                             const Handle(Geom_Transformation)& theTrsf,
-                             const Handle(Prs3d_Presentation)& thePrs)
-{
-  PrsMgr_PresentableObject::Compute (theProjector, theTrsf, thePrs);
 }
 
 //=======================================================================
