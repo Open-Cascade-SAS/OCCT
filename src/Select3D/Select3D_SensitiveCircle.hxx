@@ -17,14 +17,11 @@
 #ifndef _Select3D_SensitiveCircle_HeaderFile
 #define _Select3D_SensitiveCircle_HeaderFile
 
+#include <gp_Circ.hxx>
 #include <Select3D_SensitivePoly.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
-#include <SelectMgr_SelectingVolumeManager.hxx>
 #include <Select3D_TypeOfSensitivity.hxx>
-
-class Geom_Circle;
-class Standard_ConstructionError;
-class Standard_OutOfRange;
+#include <SelectMgr_SelectingVolumeManager.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 
 //! A framework to define sensitive 3D arcs and circles.
 //! In some cases this class can raise Standard_ConstructionError and
@@ -38,7 +35,7 @@ public:
   //! owner theOwnerId, the circle theCircle, the boolean
   //! theIsFilled and the number of points theNbPnts.
   Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                            const Handle(Geom_Circle)& theCircle,
+                                            const gp_Circ& theCircle,
                                             const Standard_Boolean theIsFilled = Standard_False,
                                             const Standard_Integer theNbPnts = 12);
 
@@ -47,7 +44,7 @@ public:
   //! and theU2, the boolean theIsFilled and the number of points theNbPnts.
   //! theU1 and theU2 define the first and last points of the arc on theCircle.
   Standard_EXPORT Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                            const Handle(Geom_Circle)& theCircle,
+                                            const gp_Circ& theCircle,
                                             const Standard_Real theU1,
                                             const Standard_Real theU2,
                                             const Standard_Boolean theIsFilled = Standard_False,
@@ -75,11 +72,6 @@ public:
   Standard_EXPORT  virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
                                                      SelectBasics_PickResult& thePickResult) Standard_OVERRIDE;
 
-
-  Standard_EXPORT void ArrayBounds (Standard_Integer & theLow, Standard_Integer & theUp) const;
-
-  Standard_EXPORT gp_Pnt GetPoint3d (const Standard_Integer thePntIdx) const;
-
   Standard_EXPORT virtual Handle(Select3D_SensitiveEntity) GetConnected() Standard_OVERRIDE;
 
   //! Returns center of the circle. If location
@@ -104,7 +96,7 @@ private:
 
   Select3D_TypeOfSensitivity mySensType; //!< True if type of selection is interior, false otherwise
   gp_Pnt                     myCenter3D; //!< Center of a circle
-  Handle(Geom_Circle)        myCircle;   //!< Points of the circle
+  gp_Circ                    myCircle;   //!< Points of the circle
   Standard_Real              myStart;    //!< Sensitive arc parameter
   Standard_Real              myEnd;      //!< Sensitive arc parameter
 };

@@ -21,7 +21,6 @@
 #include <Geom_Axis1Placement.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Line.hxx>
-#include <Geom_Transformation.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>

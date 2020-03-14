@@ -18,7 +18,7 @@
 #include <BRepAdaptor_HSurface.hxx>
 #include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
-#include <Prs3d_ShapeTool.hxx>
+#include <StdPrs_ShapeTool.hxx>
 #include <TColgp_HArray1OfVec.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Vrml_Coordinate3.hxx>
@@ -42,7 +42,7 @@ void VrmlConverter_WFShape::Add(Standard_OStream&                    anOStream,
 				const Handle(VrmlConverter_Drawer)&  aDrawer)
 {
 
-    Prs3d_ShapeTool Tool(aShape);
+    StdPrs_ShapeTool Tool(aShape);
 
     if (aDrawer->UIsoAspect()->Number() != 0 ||
 	aDrawer->VIsoAspect()->Number() != 0 ) {

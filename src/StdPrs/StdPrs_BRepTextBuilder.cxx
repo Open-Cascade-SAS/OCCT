@@ -13,15 +13,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Font_BRepTextBuilder.hxx>
+#include <StdPrs_BRepTextBuilder.hxx>
 
 // =======================================================================
 // Function : Perfrom
 // Purpose  :
 // =======================================================================
-TopoDS_Shape Font_BRepTextBuilder::Perform (Font_BRepFont&            theFont,
-                                            const Font_TextFormatter& theFormatter,
-                                            const gp_Ax3&             thePenLoc)
+TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&          theFont,
+                                              const Font_TextFormatter& theFormatter,
+                                              const gp_Ax3&             thePenLoc)
 {
   gp_Trsf          aTrsf;
   gp_XYZ           aPen;
@@ -71,11 +71,11 @@ TopoDS_Shape Font_BRepTextBuilder::Perform (Font_BRepFont&            theFont,
 // Function : Perform
 // Purpose  :
 // =======================================================================
-TopoDS_Shape Font_BRepTextBuilder::Perform (Font_BRepFont&                          theFont,
-                                            const NCollection_String&               theString,
-                                            const gp_Ax3&                           thePenLoc,
-                                            const Graphic3d_HorizontalTextAlignment theHAlign,
-                                            const Graphic3d_VerticalTextAlignment   theVAlign)
+TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&                        theFont,
+                                              const NCollection_String&               theString,
+                                              const gp_Ax3&                           thePenLoc,
+                                              const Graphic3d_HorizontalTextAlignment theHAlign,
+                                              const Graphic3d_VerticalTextAlignment   theVAlign)
 {
   Font_TextFormatter aFormatter;
 

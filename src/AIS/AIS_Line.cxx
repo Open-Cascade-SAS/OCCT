@@ -21,7 +21,6 @@
 #include <GC_MakeSegment.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Point.hxx>
-#include <Geom_Transformation.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Structure.hxx>

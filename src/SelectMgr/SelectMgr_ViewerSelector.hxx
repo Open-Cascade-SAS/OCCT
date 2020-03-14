@@ -88,6 +88,12 @@ public:
   //! returns the Sensitivity of picking
   Standard_Real Sensitivity() const { return myTolerances.Tolerance(); }
 
+  //! Returns the pixel tolerance.
+  Standard_Integer PixelTolerance() const { return myTolerances.Tolerance(); }
+
+  //! Sets the pixel tolerance <theTolerance>.
+  Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTolerance);
+
   //! Sorts the detected entites by priority and distance.
   //!          to be redefined if other criterion are used...
   Standard_EXPORT void SortResult();
@@ -200,6 +206,9 @@ public:
 
   //! Returns instance of selecting volume manager of the viewer selector
   SelectMgr_SelectingVolumeManager& GetManager() { return mySelectingVolumeMgr; }
+
+  //! Return map of selectable objects.
+  const SelectMgr_SelectableObjectSet& SelectableObjects() const { return mySelectableObjects; }
 
   //! Marks all added sensitive entities of all objects as non-selectable
   Standard_EXPORT void ResetSelectionActivationStatus();

@@ -14,7 +14,6 @@
 
 #include <PrsMgr_Presentation.hxx>
 
-#include <Geom_Transformation.hxx>
 #include <Graphic3d_DataStructureManager.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>

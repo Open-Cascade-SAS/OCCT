@@ -36,7 +36,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshEntityOwner,SelectMgr_EntityOwner)
 // Purpose  :
 //================================================================
 MeshVS_MeshEntityOwner::MeshVS_MeshEntityOwner
-                                   ( const SelectMgr_SOPtr& SelObj,
+                                   ( const SelectMgr_SelectableObject* SelObj,
                                      const Standard_Integer ID,
                                      const Standard_Address MeshEntity,
                                      const MeshVS_EntityType& Type,

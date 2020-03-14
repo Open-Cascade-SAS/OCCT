@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StdPrs_BndBox.hxx>
+#include <Prs3d_BndBox.hxx>
 
 #include <Prs3d_LineAspect.hxx>
 
@@ -21,9 +21,9 @@
 //function : Add
 //purpose  :
 //=======================================================================
-void StdPrs_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
-                         const Bnd_Box&                    theBndBox,
-                         const Handle(Prs3d_Drawer)&       theDrawer)
+void Prs3d_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
+                        const Bnd_Box&                    theBndBox,
+                        const Handle(Prs3d_Drawer)&       theDrawer)
 {
   if (!theBndBox.IsVoid())
   {
@@ -39,9 +39,9 @@ void StdPrs_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
 //function : Add
 //purpose  :
 //=======================================================================
-void StdPrs_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
-                         const Bnd_OBB&                    theBndBox,
-                         const Handle(Prs3d_Drawer)&       theDrawer)
+void Prs3d_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
+                        const Bnd_OBB&                    theBndBox,
+                        const Handle(Prs3d_Drawer)&       theDrawer)
 {
   if (!theBndBox.IsVoid())
   {

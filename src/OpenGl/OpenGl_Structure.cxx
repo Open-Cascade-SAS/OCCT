@@ -135,16 +135,17 @@ void OpenGl_Structure::SetZLayer (const Graphic3d_ZLayerId theLayerIndex)
 // function : SetTransformation
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetTransformation (const Handle(Geom_Transformation)& theTrsf)
+void OpenGl_Structure::SetTransformation (const Handle(TopLoc_Datum3D)& theTrsf)
 {
   myTrsf = theTrsf;
   myIsMirrored = Standard_False;
   if (!myTrsf.IsNull())
   {
     // Determinant of transform matrix less then 0 means that mirror transform applied.
-    const Standard_Real aDet = myTrsf->Value(1, 1) * (myTrsf->Value (2, 2) * myTrsf->Value (3, 3) - myTrsf->Value (3, 2) * myTrsf->Value (2, 3))
-                             - myTrsf->Value(1, 2) * (myTrsf->Value (2, 1) * myTrsf->Value (3, 3) - myTrsf->Value (3, 1) * myTrsf->Value (2, 3))
-                             + myTrsf->Value(1, 3) * (myTrsf->Value (2, 1) * myTrsf->Value (3, 2) - myTrsf->Value (3, 1) * myTrsf->Value (2, 2));
+    const gp_Trsf& aTrsf = myTrsf->Transformation();
+    const Standard_Real aDet = aTrsf.Value(1, 1) * (aTrsf.Value (2, 2) * aTrsf.Value (3, 3) - aTrsf.Value (3, 2) * aTrsf.Value (2, 3))
+                             - aTrsf.Value(1, 2) * (aTrsf.Value (2, 1) * aTrsf.Value (3, 3) - aTrsf.Value (3, 1) * aTrsf.Value (2, 3))
+                             + aTrsf.Value(1, 3) * (aTrsf.Value (2, 1) * aTrsf.Value (3, 2) - aTrsf.Value (3, 1) * aTrsf.Value (2, 2));
     myIsMirrored = aDet < 0.0;
   }
 
@@ -426,7 +427,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   if (aCtx->core11 != NULL
   && !myTrsf.IsNull())
   {
-    const Standard_Real aScale = myTrsf->ScaleFactor();
+    const Standard_Real aScale = myTrsf->Trsf().ScaleFactor();
     if (Abs (aScale - 1.0) > Precision::Confusion())
     {
       aCtx->SetGlNormalizeEnabled (Standard_True);

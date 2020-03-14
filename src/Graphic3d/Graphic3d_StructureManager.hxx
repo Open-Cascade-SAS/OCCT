@@ -109,7 +109,7 @@ public:
   Standard_EXPORT virtual void Highlight (const Handle(Graphic3d_Structure)& theStructure);
 
   //! Transforms the structure.
-  Standard_EXPORT virtual void SetTransform (const Handle(Graphic3d_Structure)& theStructure, const Handle(Geom_Transformation)& theTrsf);
+  Standard_EXPORT virtual void SetTransform (const Handle(Graphic3d_Structure)& theStructure, const Handle(TopLoc_Datum3D)& theTrsf);
 
   //! Changes the display priority of the structure <AStructure>.
   Standard_EXPORT virtual void ChangeDisplayPriority (const Handle(Graphic3d_Structure)& theStructure, const Standard_Integer theOldPriority, const Standard_Integer theNewPriority);

@@ -35,7 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshOwner,SelectMgr_EntityOwner)
 // Function : Constructor MeshVS_MeshOwner
 // Purpose  :
 //================================================================
-MeshVS_MeshOwner::MeshVS_MeshOwner (const SelectMgr_SOPtr&           theSelObj,
+MeshVS_MeshOwner::MeshVS_MeshOwner (const SelectMgr_SelectableObject* theSelObj,
 				    const Handle(MeshVS_DataSource)& theDS,
 				    const Standard_Integer           thePriority)
 : SelectMgr_EntityOwner ( theSelObj, thePriority )

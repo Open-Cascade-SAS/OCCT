@@ -20,7 +20,6 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <Geom_Point.hxx>
-#include <Geom_Transformation.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>

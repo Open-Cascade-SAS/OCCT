@@ -23,7 +23,6 @@
 #include <BRepBndLib.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_ShapeSet.hxx>
-#include <Geom_Transformation.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
@@ -45,7 +44,7 @@
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <StdPrs_BndBox.hxx>
+#include <Prs3d_BndBox.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Quantity_Color.hxx>
 #include <Select3D_SensitiveBox.hxx>
@@ -60,7 +59,6 @@
 #include <StdSelect.hxx>
 #include <StdSelect_BRepOwner.hxx>
 #include <StdSelect_BRepSelectionTool.hxx>
-#include <StdSelect_DisplayMode.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TopExp.hxx>
 
@@ -210,7 +208,7 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       }
       else
       {
-        StdPrs_BndBox::Add (aPrs, BoundingBox(), myDrawer);
+        Prs3d_BndBox::Add (aPrs, BoundingBox(), myDrawer);
       }
     }
   }
@@ -327,7 +325,7 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 
 // POP protection against crash in low layers
 
-  Standard_Real aDeflection = Prs3d::GetDeflection(shape, myDrawer);
+  Standard_Real aDeflection = StdPrs_ToolTriangulatedShape::GetDeflection(shape, myDrawer);
   try
   {
     OCC_CATCH_SIGNALS

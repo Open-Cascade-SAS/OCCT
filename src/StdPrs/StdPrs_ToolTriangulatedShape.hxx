@@ -68,6 +68,20 @@ public:
                                       Poly_Connect& thePolyConnect,
                                       TColgp_Array1OfDir& theNormals);
 
+  //! Computes the absolute deflection value depending on the type of deflection in theDrawer:
+  //! <ul>
+  //! <li><b>Aspect_TOD_RELATIVE</b>: the absolute deflection is computed using the relative
+  //! deviation coefficient from theDrawer and the shape's bounding box;</li>
+  //! <li><b>Aspect_TOD_ABSOLUTE</b>: the maximal chordial deviation from theDrawer is returned.</li>
+  //! </ul>
+  //! In case of the type of deflection in theDrawer computed relative deflection for shape is stored as absolute deflection.
+  //! It is necessary to use it later on for sub-shapes.
+  //! This function should always be used to compute the deflection value for building
+  //! discrete representations of the shape (triangualtion, wireframe) to avoid incosistencies
+  //! between different representations of the shape and undesirable visual artifacts.
+  Standard_EXPORT static Standard_Real GetDeflection (const TopoDS_Shape& theShape,
+                                                      const Handle(Prs3d_Drawer)& theDrawer);
+
   //! Checks whether the shape is properly triangulated for a given display settings.
   //! @param theShape [in] the shape.
   //! @param theDrawer [in] the display settings.

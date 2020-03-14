@@ -669,7 +669,7 @@ void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection theTyp
 //function : SetTransform
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::SetTransformation (const Handle(Geom_Transformation)& theTrsf)
+void Graphic3d_Structure::SetTransformation (const Handle(TopLoc_Datum3D)& theTrsf)
 {
   if (IsDeleted()) return;
 
@@ -678,7 +678,7 @@ void Graphic3d_Structure::SetTransformation (const Handle(Geom_Transformation)& 
   if (!theTrsf.IsNull()
     && theTrsf->Trsf().Form() == gp_Identity)
   {
-    myCStructure->SetTransformation (Handle(Geom_Transformation)());
+    myCStructure->SetTransformation (Handle(TopLoc_Datum3D)());
   }
   else
   {

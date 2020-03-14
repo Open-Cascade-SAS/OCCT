@@ -16,7 +16,6 @@
 #ifndef _Prs3d_ToolCylinder_HeaderFile
 #define _Prs3d_ToolCylinder_HeaderFile
 
-#include <Standard.hxx>
 #include <Prs3d_ToolQuadric.hxx>
 
 //! Standard presentation algorithm that outputs graphical primitives for cylindrical surface.

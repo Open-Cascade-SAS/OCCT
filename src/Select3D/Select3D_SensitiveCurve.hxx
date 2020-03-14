@@ -36,9 +36,14 @@ public:
   //! Constructs a sensitive curve object defined by the
   //! owner theOwnerId, the curve theCurve, and the
   //! maximum number of points on the curve: theNbPnts.
-  Standard_EXPORT Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                           const Handle(Geom_Curve)& theCurve,
-                                           const Standard_Integer theNbPnts = 17);
+  Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
+                           const Handle(Geom_Curve)& theCurve,
+                           const Standard_Integer theNbPnts = 17)
+  : Select3D_SensitivePoly (theOwnerId, Standard_True, theNbPnts)
+  {
+    loadPoints (theCurve, theNbPnts);
+    mySFactor = 3;
+  }
 
   //! Constructs a sensitive curve object defined by the
   //! owner theOwnerId and the set of points ThePoints.
@@ -55,12 +60,18 @@ public:
 
 private:
 
-  void loadPoints (const Handle(Geom_Curve)& aCurve,
-                   const Standard_Integer NbPoints);
+  void loadPoints (const Handle(Geom_Curve)& theCurve,
+                   const Standard_Integer theNbPnts)
+  {
+    const Standard_Real aStep = (theCurve->LastParameter() - theCurve->FirstParameter()) / (theNbPnts - 1);
+    Standard_Real aParam = theCurve->FirstParameter();
+    for (Standard_Integer aPntIdx = 0; aPntIdx < myPolyg.Size(); ++aPntIdx)
+    {
+      myPolyg.SetPnt (aPntIdx, theCurve->Value (aParam));
+      aParam += aStep;
+    }
+  }
 
-private:
-
-  Handle(Geom_Curve) myCurve;     //!< Curve points
 };
 
 DEFINE_STANDARD_HANDLE(Select3D_SensitiveCurve, Select3D_SensitivePoly)

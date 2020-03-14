@@ -77,7 +77,7 @@ PrsMgr_PresentableObject::~PrsMgr_PresentableObject()
 
   for (PrsMgr_ListOfPresentableObjectsIter anIter (myChildren); anIter.More(); anIter.Next())
   {
-    anIter.Value()->SetCombinedParentTransform (Handle(Geom_Transformation)());
+    anIter.Value()->SetCombinedParentTransform (Handle(TopLoc_Datum3D)());
     anIter.Value()->myParent = NULL;
   }
 }
@@ -102,7 +102,7 @@ void PrsMgr_PresentableObject::Fill (const Handle(PrsMgr_PresentationManager)& t
 //purpose  :
 //=======================================================================
 void PrsMgr_PresentableObject::computeHLR (const Handle(Graphic3d_Camera)& ,
-                                           const Handle(Geom_Transformation)& ,
+                                           const Handle(TopLoc_Datum3D)& ,
                                            const Handle(Prs3d_Presentation)& )
 {
   throw Standard_NotImplemented("cannot compute under a specific projector");
@@ -246,7 +246,7 @@ void PrsMgr_PresentableObject::SetTypeOfPresentation (const PrsMgr_TypeOfPresent
 //function : setLocalTransformation
 //purpose  :
 //=======================================================================
-void PrsMgr_PresentableObject::setLocalTransformation (const Handle(Geom_Transformation)& theTransformation)
+void PrsMgr_PresentableObject::setLocalTransformation (const Handle(TopLoc_Datum3D)& theTransformation)
 {
   myLocalTransformation = theTransformation;
   UpdateTransformation();
@@ -258,14 +258,14 @@ void PrsMgr_PresentableObject::setLocalTransformation (const Handle(Geom_Transfo
 //=======================================================================
 void PrsMgr_PresentableObject::ResetTransformation() 
 {
-  setLocalTransformation (Handle(Geom_Transformation)());
+  setLocalTransformation (Handle(TopLoc_Datum3D)());
 }
 
 //=======================================================================
 //function : SetCombinedParentTransform
 //purpose  : 
 //=======================================================================
-void PrsMgr_PresentableObject::SetCombinedParentTransform (const Handle(Geom_Transformation)& theTrsf)
+void PrsMgr_PresentableObject::SetCombinedParentTransform (const Handle(TopLoc_Datum3D)& theTrsf)
 {
   myCombinedParentTransform = theTrsf;
   UpdateTransformation();
@@ -284,7 +284,7 @@ void PrsMgr_PresentableObject::UpdateTransformation()
     if (!myLocalTransformation.IsNull() && myLocalTransformation->Form() != gp_Identity)
     {
       const gp_Trsf aTrsf = myCombinedParentTransform->Trsf() * myLocalTransformation->Trsf();
-      myTransformation    = new Geom_Transformation (aTrsf);
+      myTransformation    = new TopLoc_Datum3D (aTrsf);
       myInvTransformation = aTrsf.Inverted();
     }
     else
@@ -420,7 +420,7 @@ void PrsMgr_PresentableObject::RemoveChild (const Handle(PrsMgr_PresentableObjec
     if (anIter.Value() == theObject)
     {
       theObject->myParent = NULL;
-      theObject->SetCombinedParentTransform (Handle(Geom_Transformation)());
+      theObject->SetCombinedParentTransform (Handle(TopLoc_Datum3D)());
       myChildren.Remove (anIter);
       break;
     }

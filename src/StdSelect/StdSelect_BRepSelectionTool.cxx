@@ -25,7 +25,6 @@
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
-#include <Geom_Circle.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Circ.hxx>
@@ -482,10 +481,10 @@ void StdSelect_BRepSelectionTool::GetEdgeSensitive (const TopoDS_Shape& theShape
     }
     case GeomAbs_Circle:
     {
-      Handle (Geom_Circle) aCircle = new Geom_Circle (cu3d.Circle());
-      if (aCircle->Radius() <= Precision::Confusion())
+      const gp_Circ aCircle = cu3d.Circle();
+      if (aCircle.Radius() <= Precision::Confusion())
       {
-        theSelection->Add (new Select3D_SensitivePoint (theOwner, aCircle->Location()));
+        theSelection->Add (new Select3D_SensitivePoint (theOwner, aCircle.Location()));
       }
       else
       {
@@ -704,7 +703,7 @@ Standard_Boolean StdSelect_BRepSelectionTool::GetSensitiveForFace (const TopoDS_
             }
             else
             {
-              theSensitiveList.Append (new Select3D_SensitiveCircle (theOwner, new Geom_Circle (cu3d.Circle()), theInteriorFlag, 16));
+              theSensitiveList.Append (new Select3D_SensitiveCircle (theOwner, cu3d.Circle(), theInteriorFlag, 16));
             }
           }
         }

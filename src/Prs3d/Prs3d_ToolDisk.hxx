@@ -16,7 +16,6 @@
 #ifndef _Prs3d_ToolDisk_HeaderFile
 #define _Prs3d_ToolDisk_HeaderFile
 
-#include <Standard.hxx>
 #include <Prs3d_ToolQuadric.hxx>
 
 //! Standard presentation algorithm that outputs graphical primitives for disk surface.

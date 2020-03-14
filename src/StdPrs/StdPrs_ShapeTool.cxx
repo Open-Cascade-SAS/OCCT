@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <StdPrs_ShapeTool.hxx>
 
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
@@ -27,24 +28,18 @@
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Prs3d_ShapeTool.hxx>
 #include <TopExp.hxx>
 #include <TopLoc_Location.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 
 //=======================================================================
-//function : Prs3d_ShapeTool
-//purpose  : 
+//function : StdPrs_ShapeTool
+//purpose  :
 //=======================================================================
-Prs3d_ShapeTool::Prs3d_ShapeTool (const TopoDS_Shape& theShape,
-                                  const Standard_Boolean theAllVertices)
+StdPrs_ShapeTool::StdPrs_ShapeTool (const TopoDS_Shape& theShape,
+                                    const Standard_Boolean theAllVertices)
 : myShape (theShape)
 {
   myEdgeMap.Clear();
@@ -84,52 +79,10 @@ Prs3d_ShapeTool::Prs3d_ShapeTool (const TopoDS_Shape& theShape,
 }
 
 //=======================================================================
-//function : InitFace
-//purpose  : 
-//=======================================================================
-
-void Prs3d_ShapeTool::InitFace() 
-{
-  myFaceExplorer.Init(myShape,TopAbs_FACE);
-}
-
-//=======================================================================
-//function : MoreFace
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Prs3d_ShapeTool::MoreFace() const 
-{
-  return myFaceExplorer.More();
-}
-
-//=======================================================================
-//function : NextFace
-//purpose  : 
-//=======================================================================
-
-void Prs3d_ShapeTool::NextFace() 
-{
-  myFaceExplorer.Next();
-}
-
-//=======================================================================
-//function : GetFace
-//purpose  : 
-//=======================================================================
-
-const TopoDS_Face& Prs3d_ShapeTool::GetFace () const 
-{
-  return TopoDS::Face(myFaceExplorer.Current());
-}
-
-
-//=======================================================================
 //function : FaceBound
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Bnd_Box Prs3d_ShapeTool::FaceBound() const 
+Bnd_Box StdPrs_ShapeTool::FaceBound() const 
 {
   const TopoDS_Face& F = TopoDS::Face(myFaceExplorer.Current());
   Bnd_Box B;
@@ -139,10 +92,9 @@ Bnd_Box Prs3d_ShapeTool::FaceBound() const
 
 //=======================================================================
 //function : IsPlanarFace
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean Prs3d_ShapeTool::IsPlanarFace (const TopoDS_Face& theFace)
+Standard_Boolean StdPrs_ShapeTool::IsPlanarFace (const TopoDS_Face& theFace)
 {
   TopLoc_Location l;
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(theFace, l);
@@ -161,54 +113,11 @@ Standard_Boolean Prs3d_ShapeTool::IsPlanarFace (const TopoDS_Face& theFace)
   return (TheType == STANDARD_TYPE(Geom_Plane));
 }
 
-
-
-//=======================================================================
-//function : InitCurve
-//purpose  : 
-//=======================================================================
-
-void Prs3d_ShapeTool::InitCurve() 
-{
-  myEdge = 1;
-}
-
-//=======================================================================
-//function : MoreCurve
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Prs3d_ShapeTool::MoreCurve() const 
-{
-  return myEdge <= myEdgeMap.Extent();
-}
-
-//=======================================================================
-//function : NextCurve
-//purpose  : 
-//=======================================================================
-
-void Prs3d_ShapeTool::NextCurve() 
-{
-  myEdge++;
-}
-
-//=======================================================================
-//function : GetCurve
-//purpose  : 
-//=======================================================================
-
-const TopoDS_Edge& Prs3d_ShapeTool::GetCurve () const 
-{
-  return  TopoDS::Edge(myEdgeMap.FindKey(myEdge));
-}
-
 //=======================================================================
 //function : CurveBound
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Bnd_Box Prs3d_ShapeTool::CurveBound () const 
+Bnd_Box StdPrs_ShapeTool::CurveBound() const 
 {
   const TopoDS_Edge& E = TopoDS::Edge(myEdgeMap.FindKey(myEdge));
   Bnd_Box B;
@@ -218,10 +127,9 @@ Bnd_Box Prs3d_ShapeTool::CurveBound () const
 
 //=======================================================================
 //function : Neighbours
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Integer Prs3d_ShapeTool::Neighbours () const 
+Standard_Integer StdPrs_ShapeTool::Neighbours() const 
 {
   const TopTools_ListOfShape& L = myEdgeMap.FindFromIndex(myEdge);
   return L.Extent();
@@ -229,121 +137,64 @@ Standard_Integer Prs3d_ShapeTool::Neighbours () const
 
 //=======================================================================
 //function : FacesOfEdge
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(TopTools_HSequenceOfShape) Prs3d_ShapeTool::FacesOfEdge () const 
+Handle(TopTools_HSequenceOfShape) StdPrs_ShapeTool::FacesOfEdge() const 
 {
-  Handle(TopTools_HSequenceOfShape) H = new TopTools_HSequenceOfShape;
-
+  Handle(TopTools_HSequenceOfShape) H = new TopTools_HSequenceOfShape();
   const TopTools_ListOfShape& L = myEdgeMap.FindFromIndex(myEdge);
-  TopTools_ListIteratorOfListOfShape LI;
-
-  for (LI.Initialize(L); LI.More(); LI.Next()) H->Append(LI.Value());
+  for (TopTools_ListIteratorOfListOfShape LI (L); LI.More(); LI.Next())
+  {
+    H->Append(LI.Value());
+  }
   return H;
 }
 
-
-//=======================================================================
-//function : InitVertex
-//purpose  : 
-//=======================================================================
-
-void Prs3d_ShapeTool::InitVertex() 
-{
-  myVertex = 1;
-}
-
-//=======================================================================
-//function : MoreVertex
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Prs3d_ShapeTool::MoreVertex() const 
-{
-  return myVertex <= myVertexMap.Extent();
-}
-
-//=======================================================================
-//function : NextVertex
-//purpose  : 
-//=======================================================================
-
-void Prs3d_ShapeTool::NextVertex() 
-{
-  myVertex++;
-}
-
-//=======================================================================
-//function : GetVertex
-//purpose  : 
-//=======================================================================
-
-const TopoDS_Vertex& Prs3d_ShapeTool::GetVertex () const 
-{
-  return  TopoDS::Vertex(myVertexMap.FindKey(myVertex));
-}
-
-
 //=======================================================================
 //function : HasSurface
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean Prs3d_ShapeTool::HasSurface() const
+Standard_Boolean StdPrs_ShapeTool::HasSurface() const
 {
   TopLoc_Location l;
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(GetFace(), l);
-  return (!S.IsNull());
+  return !S.IsNull();
 }
-
-
 
 //=======================================================================
 //function : CurrentTriangulation
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(Poly_Triangulation) Prs3d_ShapeTool::CurrentTriangulation(TopLoc_Location& l) const
+Handle(Poly_Triangulation) StdPrs_ShapeTool::CurrentTriangulation(TopLoc_Location& l) const
 {
   return BRep_Tool::Triangulation(GetFace(), l);
 }
 
-
 //=======================================================================
 //function : HasCurve
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean Prs3d_ShapeTool::HasCurve() const
+Standard_Boolean StdPrs_ShapeTool::HasCurve() const
 {
-  return (BRep_Tool::IsGeometric(GetCurve()));
+  return BRep_Tool::IsGeometric(GetCurve());
 }
-
-
-
 
 //=======================================================================
 //function : PolygonOnTriangulation
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void Prs3d_ShapeTool::PolygonOnTriangulation
-(Handle(Poly_PolygonOnTriangulation)& Indices,
- Handle(Poly_Triangulation)&          T,
- TopLoc_Location&                     l) const
+void StdPrs_ShapeTool::PolygonOnTriangulation (Handle(Poly_PolygonOnTriangulation)& Indices,
+                                               Handle(Poly_Triangulation)& T,
+                                               TopLoc_Location& l) const
 {
   BRep_Tool::PolygonOnTriangulation(GetCurve(), Indices, T, l);
 }
 
-
-
 //=======================================================================
 //function : Polygon3D
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(Poly_Polygon3D) Prs3d_ShapeTool::Polygon3D(TopLoc_Location& l) const
+Handle(Poly_Polygon3D) StdPrs_ShapeTool::Polygon3D(TopLoc_Location& l) const
 {
   return BRep_Tool::Polygon3D(GetCurve(), l);
 }

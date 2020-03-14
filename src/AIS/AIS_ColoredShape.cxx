@@ -372,7 +372,7 @@ void AIS_ColoredShape::Compute (const Handle(PrsMgr_PresentationManager3d)& theP
 
       // After this call if type of deflection is relative
       // computed deflection coefficient is stored as absolute.
-      Prs3d::GetDeflection (myshape, myDrawer);
+      StdPrs_ToolTriangulatedShape::GetDeflection (myshape, myDrawer);
       break;
     }
     case AIS_Shaded:
@@ -490,7 +490,7 @@ void AIS_ColoredShape::ComputeSelection (const Handle(SelectMgr_Selection)& theS
   }
 
   const TopAbs_ShapeEnum aTypOfSel   = AIS_Shape::SelectionType (theMode);
-  const Standard_Real    aDeflection = Prs3d::GetDeflection (myshape, myDrawer);
+  const Standard_Real    aDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (myshape, myDrawer);
   const Standard_Real    aDeviationAngle = myDrawer->DeviationAngle();
   const Standard_Integer aPriority   = StdSelect_BRepSelectionTool::GetStandardPriority (myshape, aTypOfSel);
   if (myDrawer->IsAutoTriangulation()

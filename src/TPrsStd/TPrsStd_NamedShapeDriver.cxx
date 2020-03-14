@@ -16,7 +16,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Shape.hxx>
-#include <Geom_Transformation.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <PrsMgr_PresentationManager.hxx>

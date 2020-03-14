@@ -16,15 +16,10 @@
 #ifndef _MeshVS_MeshOwner_HeaderFile
 #define _MeshVS_MeshOwner_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_SOPtr.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Standard_Boolean.hxx>
+
 class MeshVS_DataSource;
 class TColStd_HPackedMapOfInteger;
 class PrsMgr_PresentationManager;
@@ -42,7 +37,7 @@ class MeshVS_MeshOwner : public SelectMgr_EntityOwner
 public:
 
   
-  Standard_EXPORT MeshVS_MeshOwner(const SelectMgr_SOPtr& theSelObj, const Handle(MeshVS_DataSource)& theDS, const Standard_Integer thePriority = 0);
+  Standard_EXPORT MeshVS_MeshOwner(const SelectMgr_SelectableObject* theSelObj, const Handle(MeshVS_DataSource)& theDS, const Standard_Integer thePriority = 0);
   
   Standard_EXPORT const Handle(MeshVS_DataSource)& GetDataSource() const;
   

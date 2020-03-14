@@ -16,14 +16,8 @@
 #ifndef _Prs3d_ToolQuadric_HeaderFile
 #define _Prs3d_ToolQuadric_HeaderFile
 
-#include <gp_Ax1.hxx>
-#include <Graphic3d_ArrayOfPrimitives.hxx>
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Standard.hxx>
 
 //! Base class to build 3D surfaces presentation of quadric surfaces.
 class Prs3d_ToolQuadric

@@ -33,7 +33,7 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <StdPrs_BndBox.hxx>
+#include <Prs3d_BndBox.hxx>
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_WFShape.hxx>
@@ -433,7 +433,7 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       }
       else
       {
-        StdPrs_BndBox::Add (thePrs, BoundingBox(), myDrawer);
+        Prs3d_BndBox::Add (thePrs, BoundingBox(), myDrawer);
       }
       break;
     }

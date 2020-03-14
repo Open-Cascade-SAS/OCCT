@@ -20,7 +20,6 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <GC_MakeArcOfCircle.hxx>
 #include <Geom_Circle.hxx>
-#include <Geom_Transformation.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_Structure.hxx>
@@ -248,7 +247,7 @@ void AIS_Circle::ComputeCircleSelection(const Handle(SelectMgr_Selection)& aSele
 {
   Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this);
   Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle (eown,
-                                                                       myComponent,
+                                                                       myComponent->Circ(),
                                                                        myIsFilledCircleSens);
   aSelection->Add(seg);
 }
@@ -263,7 +262,7 @@ void AIS_Circle::ComputeArcSelection(const Handle(SelectMgr_Selection)& aSelecti
 
   Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this);
   Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle (eown,
-                                                                       myComponent,
+                                                                       myComponent->Circ(),
                                                                        myUStart, myUEnd,
                                                                        myIsFilledCircleSens);
   aSelection->Add(seg);

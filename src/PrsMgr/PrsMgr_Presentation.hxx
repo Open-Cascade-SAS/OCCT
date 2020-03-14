@@ -24,7 +24,6 @@ class PrsMgr_PresentationManager;
 class PrsMgr_PresentableObject;
 class Quantity_Color;
 class Graphic3d_Camera;
-class Geom_Transformation;
 class Prs3d_Drawer;
 class Graphic3d_Structure;
 class Graphic3d_DataStructureManager;

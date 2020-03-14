@@ -16,15 +16,8 @@
 #ifndef _MeshVS_MeshEntityOwner_HeaderFile
 #define _MeshVS_MeshEntityOwner_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Address.hxx>
 #include <MeshVS_EntityType.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_SOPtr.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Quantity_NameOfColor.hxx>
 class PrsMgr_PresentationManager;
@@ -43,7 +36,7 @@ class MeshVS_MeshEntityOwner : public SelectMgr_EntityOwner
 public:
 
   
-  Standard_EXPORT MeshVS_MeshEntityOwner(const SelectMgr_SOPtr& SelObj, const Standard_Integer ID, const Standard_Address MeshEntity, const MeshVS_EntityType& Type, const Standard_Integer Priority = 0, const Standard_Boolean IsGroup = Standard_False);
+  Standard_EXPORT MeshVS_MeshEntityOwner(const SelectMgr_SelectableObject* SelObj, const Standard_Integer ID, const Standard_Address MeshEntity, const MeshVS_EntityType& Type, const Standard_Integer Priority = 0, const Standard_Boolean IsGroup = Standard_False);
   
   //! Returns an address of element or node data structure
   Standard_EXPORT Standard_Address Owner() const;

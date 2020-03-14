@@ -69,6 +69,22 @@ public:
     }
   }
 
+  //! Return array bounds.
+  void ArrayBounds (Standard_Integer& theLow,
+                    Standard_Integer& theUp) const
+  {
+    theLow = 0;
+    theUp = myPolyg.Size() - 1;
+  }
+
+  //! Return point.
+  gp_Pnt GetPoint3d (const Standard_Integer thePntIdx) const
+  {
+    return (thePntIdx >= 0 && thePntIdx < myPolyg.Size())
+         ? myPolyg.Pnt (thePntIdx)
+         : gp_Pnt();
+  }
+
   //! Returns bounding box of a polygon. If location
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;

@@ -130,6 +130,28 @@ myEntityIdx (0)
   myEntitySetBuilder = new BVH_BinnedBuilder<Standard_Real, 3, 4> (BVH_Constants_LeafNodeSizeSingle, BVH_Constants_MaxTreeDepth, Standard_True);
 }
 
+//=======================================================================
+// Function: SetPixelTolerance
+// Purpose :
+//=======================================================================
+void SelectMgr_ViewerSelector::SetPixelTolerance (const Standard_Integer theTolerance)
+{
+  if (myTolerances.Tolerance() == theTolerance)
+  {
+    return;
+  }
+
+  myToUpdateTolerance = Standard_True;
+  if (theTolerance < 0)
+  {
+    myTolerances.ResetDefaults();
+  }
+  else
+  {
+    myTolerances.SetCustomTolerance (theTolerance);
+  }
+}
+
 //==================================================
 // Function: Activate
 // Purpose :

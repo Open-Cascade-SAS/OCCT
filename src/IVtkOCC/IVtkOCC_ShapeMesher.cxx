@@ -40,6 +40,7 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdPrs_Isolines.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TopExp.hxx>
@@ -94,7 +95,7 @@ Standard_Real IVtkOCC_ShapeMesher::GetDeflection() const
     Handle(Prs3d_Drawer) aDefDrawer = new Prs3d_Drawer();
     aDefDrawer->SetTypeOfDeflection (Aspect_TOD_RELATIVE);
     aDefDrawer->SetDeviationCoefficient (GetDeviationCoeff());
-    myDeflection = Prs3d::GetDeflection (GetShapeObj()->GetShape(), aDefDrawer);
+    myDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (GetShapeObj()->GetShape(), aDefDrawer);
   }
 
   return myDeflection;

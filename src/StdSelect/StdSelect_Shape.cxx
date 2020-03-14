@@ -16,7 +16,6 @@
 
 #include <StdSelect_Shape.hxx>
 
-#include <Geom_Transformation.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Standard_Type.hxx>

@@ -60,7 +60,7 @@ Standard_Integer AIS_MultipleConnectedInteractive::Signature() const
 //purpose  :
 //=======================================================================
 Handle(AIS_InteractiveObject) AIS_MultipleConnectedInteractive::connect (const Handle(AIS_InteractiveObject)& theAnotherObj,
-                                                                         const Handle(Geom_Transformation)& theTrsf,
+                                                                         const Handle(TopLoc_Datum3D)& theTrsf,
                                                                          const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
   if (myAssemblyOwner.IsNull())

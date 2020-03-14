@@ -65,7 +65,7 @@ public:
   Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& theStructure) Standard_OVERRIDE;
 
   //! Synchronize structure transformation
-  Standard_EXPORT virtual void SetTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual void SetTransformation (const Handle(TopLoc_Datum3D)& theTrsf) Standard_OVERRIDE;
 
   //! Set transformation persistence.
   Standard_EXPORT virtual void SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers) Standard_OVERRIDE;

@@ -1,6 +1,4 @@
-Font_BRepFont.cxx
 Font_BRepFont.hxx
-Font_BRepTextBuilder.cxx
 Font_BRepTextBuilder.hxx
 Font_FontAspect.hxx
 Font_FontMgr.cxx

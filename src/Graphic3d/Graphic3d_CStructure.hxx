@@ -25,7 +25,7 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
-#include <Geom_Transformation.hxx>
+#include <TopLoc_Datum3D.hxx>
 #include <NCollection_IndexedMap.hxx>
 
 class Graphic3d_GraphicDriver;
@@ -79,10 +79,10 @@ public:
   }
 
   //! Return transformation.
-  const Handle(Geom_Transformation)& Transformation() const { return myTrsf; }
+  const Handle(TopLoc_Datum3D)& Transformation() const { return myTrsf; }
 
   //! Assign transformation.
-  virtual void SetTransformation (const Handle(Geom_Transformation)& theTrsf) { myTrsf = theTrsf; }
+  virtual void SetTransformation (const Handle(TopLoc_Datum3D)& theTrsf) { myTrsf = theTrsf; }
 
   //! Return transformation persistence.
   const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myTrsfPers; }
@@ -227,7 +227,7 @@ protected:
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
   Graphic3d_SequenceOfGroup       myGroups;
   Graphic3d_BndBox3d              myBndBox;
-  Handle(Geom_Transformation)     myTrsf;
+  Handle(TopLoc_Datum3D)          myTrsf;
   Handle(Graphic3d_TransformPers) myTrsfPers;
   Handle(Graphic3d_SequenceOfHClipPlane) myClipPlanes;
   Handle(Graphic3d_PresentationAttributes) myHighlightStyle; //! Current highlight style; is set only if highlight flag is true

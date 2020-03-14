@@ -68,7 +68,6 @@
 
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_CompSolid.hxx>
-#include <StdSelect_ShapeTypeFilter.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Font_NameOfFont.hxx>

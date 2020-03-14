@@ -16,15 +16,83 @@
 
 #include <Prs3d.hxx>
 
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
 #include <gp_Pnt.hxx>
-#include <Graphic3d_Group.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Root.hxx>
-#include <TopoDS_Shape.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Poly_Connect.hxx>
+#include <Poly_Triangulation.hxx>
+#include <Prs3d_LineAspect.hxx>
+
+// =========================================================================
+// function : AddFreeEdges
+// purpose  :
+// =========================================================================
+void Prs3d::AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
+                          const Handle(Poly_Triangulation)& thePolyTri,
+                          const gp_Trsf& theLocation)
+{
+  if (thePolyTri.IsNull())
+  {
+    return;
+  }
+
+  const TColgp_Array1OfPnt& aNodes = thePolyTri->Nodes();
+
+  // Build the connect tool.
+  Poly_Connect aPolyConnect (thePolyTri);
+
+  Standard_Integer aNbTriangles = thePolyTri->NbTriangles();
+  Standard_Integer aT[3];
+  Standard_Integer aN[3];
+
+  // Count the free edges.
+  Standard_Integer aNbFree = 0;
+  for (Standard_Integer anI = 1; anI <= aNbTriangles; ++anI)
+  {
+    aPolyConnect.Triangles (anI, aT[0], aT[1], aT[2]);
+    for (Standard_Integer aJ = 0; aJ < 3; ++aJ)
+    {
+      if (aT[aJ] == 0)
+      {
+        ++aNbFree;
+      }
+    }
+  }
+  if (aNbFree == 0)
+  {
+    return;
+  }
+
+  TColStd_Array1OfInteger aFree (1, 2 * aNbFree);
+
+  Standard_Integer aFreeIndex = 1;
+  const Poly_Array1OfTriangle& aTriangles = thePolyTri->Triangles();
+  for (Standard_Integer anI = 1; anI <= aNbTriangles; ++anI)
+  {
+    aPolyConnect.Triangles (anI, aT[0], aT[1], aT[2]);
+    aTriangles (anI).Get (aN[0], aN[1], aN[2]);
+    for (Standard_Integer aJ = 0; aJ < 3; aJ++)
+    {
+      Standard_Integer k = (aJ + 1) % 3;
+      if (aT[aJ] == 0)
+      {
+        aFree (aFreeIndex)     = aN[aJ];
+        aFree (aFreeIndex + 1) = aN[k];
+        aFreeIndex += 2;
+      }
+    }
+  }
+
+  // free edges
+  Standard_Integer aFreeHalfNb = aFree.Length() / 2;
+  for (Standard_Integer anI = 1; anI <= aFreeHalfNb; ++anI)
+  {
+    const gp_Pnt aPoint1 = aNodes (aFree (2 * anI - 1)).Transformed (theLocation);
+    const gp_Pnt aPoint2 = aNodes (aFree (2 * anI    )).Transformed (theLocation);
+    theSegments.Append (aPoint1);
+    theSegments.Append (aPoint2);
+  }
+}
 
 //=======================================================================
 //function : MatchSegment
@@ -53,44 +121,6 @@ Standard_Boolean Prs3d::MatchSegment
           Abs(Y-Y1-Lambda*DY) +
           Abs(Z-Z1-Lambda*DZ);
   return (dist < aDistance);
-}
-
-//=======================================================================
-//function : GetDeflection
-//purpose  :
-//=======================================================================
-Standard_Real Prs3d::GetDeflection (const TopoDS_Shape&         theShape,
-                                    const Handle(Prs3d_Drawer)& theDrawer)
-{
-  if (theDrawer->TypeOfDeflection() != Aspect_TOD_RELATIVE)
-  {
-    return theDrawer->MaximalChordialDeviation();
-  }
-
-  Bnd_Box aBndBox;
-  BRepBndLib::Add (theShape, aBndBox, Standard_False);
-  if (aBndBox.IsVoid())
-  {
-    return theDrawer->MaximalChordialDeviation();
-  }
-  else if (aBndBox.IsOpen())
-  {
-    if (!aBndBox.HasFinitePart())
-    {
-      return theDrawer->MaximalChordialDeviation();
-    }
-    aBndBox = aBndBox.FinitePart();
-  }
-
-  Graphic3d_Vec3d aVecMin, aVecMax;
-  aBndBox.Get (aVecMin.x(), aVecMin.y(), aVecMin.z(), aVecMax.x(), aVecMax.y(), aVecMax.z());
-  const Graphic3d_Vec3d aDiag = aVecMax - aVecMin;
-  const Standard_Real aDeflection = aDiag.maxComp() * theDrawer->DeviationCoefficient() * 4.0;
-
-  // we store computed relative deflection of shape as absolute deviation coefficient
-  // in case relative type to use it later on for sub-shapes.
-  theDrawer->SetMaximalChordialDeviation (aDeflection);
-  return aDeflection;
 }
 
 //==================================================================
@@ -140,7 +170,7 @@ void Prs3d::AddPrimitivesGroup (const Handle(Prs3d_Presentation)& thePrs,
   thePolylines.Clear();
   if (!aPrims.IsNull())
   {
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePrs);
+    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
     aGroup->SetPrimitivesAspect (theAspect->Aspect());
     aGroup->AddPrimitiveArray (aPrims);
   }

@@ -357,7 +357,7 @@ protected:
   //! without need for recomputing presentation.
   //! @warning Invokes debug assertion in debug to catch incompatible usage of the
   //! method, silently does nothing in release mode.
-  Standard_EXPORT virtual void setLocalTransformation (const Handle(Geom_Transformation)& theTrsf) Standard_OVERRIDE;
+  Standard_EXPORT virtual void setLocalTransformation (const Handle(TopLoc_Datum3D)& theTrsf) Standard_OVERRIDE;
   using AIS_InteractiveObject::SetLocalTransformation; // hide visibility
 
 protected: //! @name Auxiliary classes to fill presentation with proper primitives
@@ -520,7 +520,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
       }
     }
 
-    void Transform (const Handle(Geom_Transformation)& theTransformation)
+    void Transform (const Handle(TopLoc_Datum3D)& theTransformation)
     {
       if (!myHighlightTranslator.IsNull())
       {

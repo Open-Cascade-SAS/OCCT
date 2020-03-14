@@ -21,13 +21,12 @@
 #include <BRepAdaptor_HSurface.hxx>
 #include <OSD_Parallel.hxx>
 #include <StdPrs_DeflectionCurve.hxx>
-#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <StdPrs_Isolines.hxx>
+#include <StdPrs_ShapeTool.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Standard_ErrorHandler.hxx>
-#include <Prs3d_ShapeTool.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d.hxx>
-#include <Poly_Connect.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Triangulation.hxx>
@@ -115,7 +114,7 @@ void StdPrs_WFShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
 
   Prs3d_NListOfSequenceOfPnt aCommonPolylines;
   const Handle(Prs3d_LineAspect)& aWireAspect = theDrawer->WireAspect();
-  const Standard_Real aShapeDeflection = Prs3d::GetDeflection (theShape, theDrawer);
+  const Standard_Real aShapeDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (theShape, theDrawer);
 
   // Draw isolines
   {
@@ -154,7 +153,7 @@ void StdPrs_WFShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
         for (TopExp_Explorer aFaceExplorer (theShape, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
         {
           const TopoDS_Face& aFace = TopoDS::Face (aFaceExplorer.Current());
-          if (theDrawer->IsoOnPlane() || !Prs3d_ShapeTool::IsPlanarFace (aFace))
+          if (theDrawer->IsoOnPlane() || !StdPrs_ShapeTool::IsPlanarFace (aFace))
           {
             aFaces[aNbFaces++] = aFace;
           }
@@ -170,7 +169,7 @@ void StdPrs_WFShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
       for (TopExp_Explorer aFaceExplorer (theShape, TopAbs_FACE); aFaceExplorer.More(); aFaceExplorer.Next())
       {
         const TopoDS_Face& aFace = TopoDS::Face (aFaceExplorer.Current());
-        if (theDrawer->IsoOnPlane() || !Prs3d_ShapeTool::IsPlanarFace (aFace))
+        if (theDrawer->IsoOnPlane() || !StdPrs_ShapeTool::IsPlanarFace (aFace))
         {
           StdPrs_Isolines::Add (aFace, theDrawer, aShapeDeflection, *aUPolylinesPtr, *aVPolylinesPtr);
         }
@@ -230,7 +229,7 @@ void StdPrs_WFShape::Add (const Handle(Prs3d_Presentation)& thePresentation,
 Handle(Graphic3d_ArrayOfPrimitives) StdPrs_WFShape::AddAllEdges (const TopoDS_Shape& theShape,
                                                                  const Handle(Prs3d_Drawer)& theDrawer)
 {
-  const Standard_Real aShapeDeflection = Prs3d::GetDeflection (theShape, theDrawer);
+  const Standard_Real aShapeDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (theShape, theDrawer);
   Prs3d_NListOfSequenceOfPnt aPolylines;
   addEdges (theShape, theDrawer, aShapeDeflection,
             &aPolylines, &aPolylines, &aPolylines);
@@ -434,69 +433,9 @@ void StdPrs_WFShape::AddEdgesOnTriangulation (TColgp_SequenceOfPnt& theSegments,
         continue;
       }
     }
-    const Handle(Poly_Triangulation)& T = BRep_Tool::Triangulation (aFace, aLocation);
-    if (T.IsNull())
+    if (const Handle(Poly_Triangulation)& aPolyTri = BRep_Tool::Triangulation (aFace, aLocation))
     {
-      continue;
-    }
-
-    const TColgp_Array1OfPnt& aNodes = T->Nodes();
-
-    // Build the connect tool.
-    Poly_Connect aPolyConnect (T);
-
-    Standard_Integer aNbTriangles = T->NbTriangles();
-    Standard_Integer aT[3];
-    Standard_Integer aN[3];
-
-    // Count the free edges.
-    Standard_Integer aNbFree = 0;
-    for (Standard_Integer anI = 1; anI <= aNbTriangles; ++anI)
-    {
-      aPolyConnect.Triangles (anI, aT[0], aT[1], aT[2]);
-      for (Standard_Integer aJ = 0; aJ < 3; ++aJ)
-      {
-        if (aT[aJ] == 0)
-        {
-          ++aNbFree;
-        }
-      }
-    }
-
-    if (aNbFree == 0)
-    {
-      continue;
-    }
-
-    // Allocate the arrays.
-    TColStd_Array1OfInteger aFree (1, 2 * aNbFree);
-
-    Standard_Integer aFreeIndex = 1;
-    const Poly_Array1OfTriangle& aTriangles = T->Triangles();
-    for (Standard_Integer anI = 1; anI <= aNbTriangles; ++anI)
-    {
-      aPolyConnect.Triangles (anI, aT[0], aT[1], aT[2]);
-      aTriangles (anI).Get (aN[0], aN[1], aN[2]);
-      for (Standard_Integer aJ = 0; aJ < 3; aJ++)
-      {
-        Standard_Integer k = (aJ + 1) % 3;
-        if (aT[aJ] == 0)
-        {
-          aFree (aFreeIndex)     = aN[aJ];
-          aFree (aFreeIndex + 1) = aN[k];
-          aFreeIndex += 2;
-        }
-      }
-    }
-
-    // free edges
-    Standard_Integer aFreeHalfNb = aFree.Length() / 2;
-    for (Standard_Integer anI = 1; anI <= aFreeHalfNb; ++anI)
-    {
-      gp_Pnt aPoint1 = aNodes (aFree (2 * anI - 1)).Transformed (aLocation);
-      gp_Pnt aPoint2 = aNodes (aFree (2 * anI    )).Transformed (aLocation);
-      theSegments.Append (aPoint1);
-      theSegments.Append (aPoint2);
+      Prs3d::AddFreeEdges (theSegments, aPolyTri, aLocation);
     }
   }
 }

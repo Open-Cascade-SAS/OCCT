@@ -24,7 +24,7 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <OpenGl_GraphicDriver.hxx>
-#include <Prs3d.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <STEPControl_Reader.hxx>
 #include <STEPCAFControl_Reader.hxx>
@@ -257,7 +257,7 @@ bool OcctViewer::ImportSTEP(std::string theFilename)
   }
   
   Handle(Prs3d_Drawer) aDrawer = myContext->DefaultDrawer();
-  Standard_Real aDeflection = Prs3d::GetDeflection (aCompound, aDrawer);
+  Standard_Real aDeflection = StdPrs_ToolTriangulatedShape::GetDeflection (aCompound, aDrawer);
   if (!BRepTools::Triangulation (aCompound, aDeflection))
   {
     BRepMesh_IncrementalMesh anAlgo;

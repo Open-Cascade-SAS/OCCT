@@ -12,7 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Font_BRepFont.hxx>
+#include <StdPrs_BRepFont.hxx>
 
 #include <BRep_Tool.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
@@ -51,7 +51,7 @@
 #include FT_FREETYPE_H
 #include FT_OUTLINE_H
 
-IMPLEMENT_STANDARD_RTTIEXT(Font_BRepFont,Font_FTFont)
+IMPLEMENT_STANDARD_RTTIEXT(StdPrs_BRepFont, Font_FTFont)
 
 namespace
 {
@@ -120,7 +120,7 @@ namespace
 // function : Constructor
 // purpose  :
 // =======================================================================
-Font_BRepFont::Font_BRepFont ()
+StdPrs_BRepFont::StdPrs_BRepFont ()
 : myPrecision  (Precision::Confusion()),
   myScaleUnits (1.0),
   myIsCompositeCurve (Standard_False),
@@ -134,7 +134,7 @@ Font_BRepFont::Font_BRepFont ()
 // function : init
 // purpose  :
 // =======================================================================
-void Font_BRepFont::init()
+void StdPrs_BRepFont::init()
 {
   mySurface        = new Geom_Plane (gp_Pln (gp::XOY()));
   myCurve2dAdaptor = new Geom2dAdaptor_HCurve();
@@ -146,9 +146,9 @@ void Font_BRepFont::init()
 // function : Constructor
 // purpose  :
 // =======================================================================
-Font_BRepFont::Font_BRepFont (const NCollection_String& theFontPath,
-                              const Standard_Real       theSize,
-                              const Standard_Integer    theFaceId)
+StdPrs_BRepFont::StdPrs_BRepFont (const NCollection_String& theFontPath,
+                                  const Standard_Real       theSize,
+                                  const Standard_Integer    theFaceId)
 : myPrecision  (Precision::Confusion()),
   myScaleUnits (1.0),
   myIsCompositeCurve (Standard_False),
@@ -169,10 +169,10 @@ Font_BRepFont::Font_BRepFont (const NCollection_String& theFontPath,
 // function : Constructor
 // purpose  :
 // =======================================================================
-Font_BRepFont::Font_BRepFont (const NCollection_String& theFontName,
-                              const Font_FontAspect     theFontAspect,
-                              const Standard_Real       theSize,
-                              const Font_StrictLevel    theStrictLevel)
+StdPrs_BRepFont::StdPrs_BRepFont (const NCollection_String& theFontName,
+                                  const Font_FontAspect     theFontAspect,
+                                  const Standard_Real       theSize,
+                                  const Font_StrictLevel    theStrictLevel)
 : myPrecision  (Precision::Confusion()),
   myScaleUnits (1.0),
   myIsCompositeCurve (Standard_False),
@@ -193,7 +193,7 @@ Font_BRepFont::Font_BRepFont (const NCollection_String& theFontName,
 // function : Release
 // purpose  :
 // =======================================================================
-void Font_BRepFont::Release()
+void StdPrs_BRepFont::Release()
 {
   myCache.Clear();
   Font_FTFont::Release();
@@ -203,7 +203,7 @@ void Font_BRepFont::Release()
 // function : SetCompositeCurveMode
 // purpose  :
 // =======================================================================
-void Font_BRepFont::SetCompositeCurveMode (const Standard_Boolean theToConcatenate)
+void StdPrs_BRepFont::SetCompositeCurveMode (const Standard_Boolean theToConcatenate)
 {
   if (myIsCompositeCurve != theToConcatenate)
   {
@@ -216,9 +216,9 @@ void Font_BRepFont::SetCompositeCurveMode (const Standard_Boolean theToConcatena
 // function : Init
 // purpose  :
 // =======================================================================
-bool Font_BRepFont::Init (const NCollection_String& theFontPath,
-                          const Standard_Real       theSize,
-                          const Standard_Integer    theFaceId)
+bool StdPrs_BRepFont::Init (const NCollection_String& theFontPath,
+                            const Standard_Real       theSize,
+                            const Standard_Integer    theFaceId)
 {
   if (theSize <= myPrecision * 100.0)
   {
@@ -233,10 +233,10 @@ bool Font_BRepFont::Init (const NCollection_String& theFontPath,
 // function : FindAndInit
 // purpose  :
 // =======================================================================
-bool Font_BRepFont::FindAndInit (const TCollection_AsciiString& theFontName,
-                                 const Font_FontAspect  theFontAspect,
-                                 const Standard_Real    theSize,
-                                 const Font_StrictLevel theStrictLevel)
+bool StdPrs_BRepFont::FindAndInit (const TCollection_AsciiString& theFontName,
+                                   const Font_FontAspect  theFontAspect,
+                                   const Standard_Real    theSize,
+                                   const Font_StrictLevel theStrictLevel)
 {
   if (theSize <= myPrecision * 100.0)
   {
@@ -251,7 +251,7 @@ bool Font_BRepFont::FindAndInit (const TCollection_AsciiString& theFontName,
 // function : RenderGlyph
 // purpose  :
 // =======================================================================
-TopoDS_Shape Font_BRepFont::RenderGlyph (const Standard_Utf32Char& theChar)
+TopoDS_Shape StdPrs_BRepFont::RenderGlyph (const Standard_Utf32Char& theChar)
 {
   TopoDS_Shape aShape;
   Standard_Mutex::Sentry aSentry (myMutex);
@@ -263,9 +263,9 @@ TopoDS_Shape Font_BRepFont::RenderGlyph (const Standard_Utf32Char& theChar)
 // function : to3d
 // purpose  :
 // =======================================================================
-bool Font_BRepFont::to3d (const Handle(Geom2d_Curve)& theCurve2d,
-                          const GeomAbs_Shape        theContinuity,
-                          Handle(Geom_Curve)&        theCurve3d)
+bool StdPrs_BRepFont::to3d (const Handle(Geom2d_Curve)& theCurve2d,
+                            const GeomAbs_Shape        theContinuity,
+                            Handle(Geom_Curve)&        theCurve3d)
 {
   Standard_Real aMaxDeviation   = 0.0;
   Standard_Real anAverDeviation = 0.0;
@@ -283,8 +283,8 @@ bool Font_BRepFont::to3d (const Handle(Geom2d_Curve)& theCurve2d,
 // function : buildFaces
 // purpose  :
 // =======================================================================
-Standard_Boolean Font_BRepFont::buildFaces (const NCollection_Sequence<TopoDS_Wire>& theWires,
-                                            TopoDS_Shape& theRes)
+Standard_Boolean StdPrs_BRepFont::buildFaces (const NCollection_Sequence<TopoDS_Wire>& theWires,
+                                              TopoDS_Shape& theRes)
 {
   // classify wires
   NCollection_DataMap<TopoDS_Shape, NCollection_Sequence<TopoDS_Wire>, TopTools_ShapeMapHasher> aMapOutInts;
@@ -399,13 +399,12 @@ Standard_Boolean Font_BRepFont::buildFaces (const NCollection_Sequence<TopoDS_Wi
   return Standard_True;
 }
 
-
 // =======================================================================
 // function : renderGlyph
 // purpose  :
 // =======================================================================
-Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
-                                             TopoDS_Shape&            theShape)
+Standard_Boolean StdPrs_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
+                                               TopoDS_Shape&            theShape)
 {
   theShape.Nullify();
   if (!loadGlyph (theChar)

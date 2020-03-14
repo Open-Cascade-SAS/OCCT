@@ -29,7 +29,6 @@
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_Transformation.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>

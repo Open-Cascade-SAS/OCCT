@@ -32,7 +32,7 @@
 class Graphic3d_Structure;
 typedef Graphic3d_Structure Prs3d_Presentation;
 
-class Geom_Transformation;
+class TopLoc_Datum3D;
 class Prs3d_Drawer;
 class PrsMgr_Presentation;
 class PrsMgr_PresentableObject;
@@ -136,7 +136,9 @@ public:
 
   //! Sets the transformation theTransformation for the presentable object thePrsObject.
   //! thePrsObject has the display mode theMode; this has the default value of 0, that is, the wireframe display mode.
-  Standard_EXPORT void Transform (const Handle(PrsMgr_PresentableObject)& thePrsObject, const Handle(Geom_Transformation)& theTransformation, const Standard_Integer theMode = 0);
+  Standard_EXPORT void Transform (const Handle(PrsMgr_PresentableObject)& thePrsObject,
+                                  const Handle(TopLoc_Datum3D)& theTransformation,
+                                  const Standard_Integer theMode = 0);
   
   //! Returns the structure manager.
   const Handle(Graphic3d_StructureManager)& StructureManager() const { return myStructureManager; }

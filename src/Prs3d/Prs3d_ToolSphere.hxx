@@ -16,14 +16,6 @@
 #ifndef _Prs3d_ToolSphere_HeaderFile
 #define _Prs3d_ToolSphere_HeaderFile
 
-#include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Graphic3d_ArrayOfTriangles.hxx>
-#include <Poly_Triangulation.hxx>
-#include <Prs3d_Root.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <Standard.hxx>
-#include <Standard_Handle.hxx>
 #include <Prs3d_ToolQuadric.hxx>
 
 //! Standard presentation algorithm that outputs graphical primitives for spherical surface.

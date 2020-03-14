@@ -30,7 +30,7 @@ private:
 				 const Standard_Integer aMode = 0) ;
 	void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 						  const Standard_Integer aMode) ;
-	void computeHLR (const Handle(Graphic3d_Camera)& aProjector, const Handle(Geom_Transformation)& theTrsf, const Handle(Prs3d_Presentation)& aPresentation);
+	void computeHLR (const Handle(Graphic3d_Camera)& aProjector, const Handle(TopLoc_Datum3D)& theTrsf, const Handle(Prs3d_Presentation)& aPresentation);
 	Standard_Boolean TriangleIsValid(const gp_Pnt& P1,const gp_Pnt& P2,const gp_Pnt& P3) const;
 	Quantity_Color Color(gp_Pnt& thePoint,Standard_Real AltMin,Standard_Real AltMax, const Standard_Integer ColorizationMode) ;
 						

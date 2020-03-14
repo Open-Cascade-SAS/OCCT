@@ -17,20 +17,8 @@
 #ifndef _StdSelect_HeaderFile
 #define _StdSelect_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <SelectMgr_Selection.hxx>
 #include <Prs3d_Drawer.hxx>
-class StdSelect_BRepSelectionTool;
-class StdSelect_BRepOwner;
-class StdSelect_EdgeFilter;
-class StdSelect_FaceFilter;
-class StdSelect_ShapeTypeFilter;
-class StdSelect_Prs;
-class StdSelect_Shape;
-
 
 //! The StdSelect package provides the following services
 //! -   the definition of selection modes for topological shapes
@@ -58,39 +46,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! puts The same drawer in every BRepOwner Of SensitivePrimitive
   //! Used Only for hilight Of BRepOwner...
   Standard_EXPORT static void SetDrawerForBRepOwner (const Handle(SelectMgr_Selection)& aSelection, const Handle(Prs3d_Drawer)& aDrawer);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class StdSelect_BRepSelectionTool;
-friend class StdSelect_BRepOwner;
-friend class StdSelect_EdgeFilter;
-friend class StdSelect_FaceFilter;
-friend class StdSelect_ShapeTypeFilter;
-friend class StdSelect_Prs;
-friend class StdSelect_Shape;
-
 };
-
-
-
-
-
-
 
 #endif // _StdSelect_HeaderFile

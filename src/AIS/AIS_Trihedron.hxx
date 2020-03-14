@@ -33,11 +33,6 @@
 #include <Quantity_Color.hxx>
 
 class Geom_Axis2Placement;
-class AIS_Axis;
-class AIS_Point;
-class AIS_Plane;
-class Geom_Transformation;
-class gp_Trsf;
 
 //! Create a selectable trihedron
 //! The trihedron includes 1 origin, 3 axes and 3 labels.

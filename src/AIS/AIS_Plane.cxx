@@ -23,7 +23,6 @@
 #include <ElSLib.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_Transformation.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <Graphic3d_ArrayOfQuadrangles.hxx>

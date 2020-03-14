@@ -223,15 +223,12 @@ void PrsDim_ConcentricRelation::ComputeSelection(const Handle(SelectMgr_Selectio
   //Creation of 2 sensitive circles
      // the greater
   gp_Ax2 ax(myCenter, myDir);
-  Handle(Geom_Circle) Circ = new Geom_Circle(ax, myRad) ;
-  Handle(Select3D_SensitiveCircle) 
-    sensit = new Select3D_SensitiveCircle (own,
-					   Circ);
+  gp_Circ aCirc (ax, myRad);
+  Handle(Select3D_SensitiveCircle) sensit = new Select3D_SensitiveCircle (own, aCirc);
   aSelection->Add(sensit);
      // the smaller
-  Circ->SetRadius(myRad/2);
-  sensit = new Select3D_SensitiveCircle (own,
-					 Circ);
+  aCirc.SetRadius(myRad/2);
+  sensit = new Select3D_SensitiveCircle (own, aCirc);
   aSelection->Add(sensit);
 
   //Creation of 2 segments sensitive for the cross

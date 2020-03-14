@@ -6,6 +6,8 @@ Prs3d_ArrowAspect.cxx
 Prs3d_ArrowAspect.hxx
 Prs3d_BasicAspect.cxx
 Prs3d_BasicAspect.hxx
+Prs3d_BndBox.cxx
+Prs3d_BndBox.hxx
 Prs3d_DatumAspect.cxx
 Prs3d_DatumAspect.hxx
 Prs3d_DatumAttribute.hxx
@@ -38,7 +40,6 @@ Prs3d_PresentationShadow.hxx
 Prs3d_Root.hxx
 Prs3d_ShadingAspect.cxx
 Prs3d_ShadingAspect.hxx
-Prs3d_ShapeTool.cxx
 Prs3d_ShapeTool.hxx
 Prs3d_Text.cxx
 Prs3d_Text.hxx

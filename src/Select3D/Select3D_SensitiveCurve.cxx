@@ -15,25 +15,11 @@
 // commercial license or contractual agreement.
 
 #include <Select3D_SensitiveCurve.hxx>
+
 #include <Precision.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 
-
 IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCurve,Select3D_SensitivePoly)
-
-//==================================================
-// Function: Creation
-// Purpose :
-//==================================================
-Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                  const Handle(Geom_Curve)& theCurve,
-                                                  const Standard_Integer theNbPnts)
-: Select3D_SensitivePoly (theOwnerId, Standard_True, theNbPnts),
-  myCurve (theCurve)
-{
-  loadPoints (theCurve, theNbPnts);
-  SetSensitivityFactor (3);
-}
 
 //==================================================
 // Function: Creation
@@ -58,46 +44,17 @@ Select3D_SensitiveCurve::Select3D_SensitiveCurve (const Handle(SelectMgr_EntityO
   SetSensitivityFactor (3);
 }
 
-//==================================================
-// Function: loadPoints
-// Purpose :
-//==================================================
-void Select3D_SensitiveCurve::loadPoints (const Handle(Geom_Curve)& theCurve, const Standard_Integer theNbPnts)
-{
-  Standard_Real aStep = (theCurve->LastParameter() - theCurve->FirstParameter()) / (theNbPnts - 1);
-  Standard_Real aParam = theCurve->FirstParameter();
-  for (Standard_Integer aPntIdx = 0; aPntIdx < myPolyg.Size(); ++aPntIdx)
-  {
-    myPolyg.SetPnt (aPntIdx, theCurve->Value (aParam));
-    aParam += aStep;
-  }
-}
-
 //=======================================================================
 //function : GetConnected
 //purpose  :
 //=======================================================================
 Handle(Select3D_SensitiveEntity) Select3D_SensitiveCurve::GetConnected()
 {
-  // Create a copy of this
-  Handle(Select3D_SensitiveEntity) aNewEntity;
-  // this was constructed using Handle(Geom_Curve)
-  if (!myCurve.IsNull())
+  Handle(TColgp_HArray1OfPnt) aPoints = new TColgp_HArray1OfPnt (1, myPolyg.Size());
+  for (Standard_Integer anIndex = 1; anIndex <= myPolyg.Size(); ++anIndex)
   {
-    aNewEntity = new Select3D_SensitiveCurve (myOwnerId, myCurve);
+    aPoints->SetValue (anIndex, myPolyg.Pnt (anIndex-1));
   }
-  // this was constructed using TColgp_HArray1OfPnt
-  else
-  {
-    Standard_Integer aSize = myPolyg.Size();
-    Handle(TColgp_HArray1OfPnt) aPoints = new TColgp_HArray1OfPnt (1, aSize);
-    // Fill the array with points from mypolyg3d
-    for (Standard_Integer anIndex = 1; anIndex <= aSize; ++anIndex)
-    {
-      aPoints->SetValue (anIndex, myPolyg.Pnt (anIndex-1));
-    }
-     aNewEntity = new Select3D_SensitiveCurve (myOwnerId, aPoints);
-  }
-
+  Handle(Select3D_SensitiveEntity) aNewEntity = new Select3D_SensitiveCurve (myOwnerId, aPoints);
   return aNewEntity;
 }

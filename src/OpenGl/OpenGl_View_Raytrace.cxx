@@ -504,7 +504,7 @@ Standard_Boolean OpenGl_View::addRaytraceStructure (const OpenGl_Structure*     
 // =======================================================================
 Standard_Boolean OpenGl_View::addRaytraceGroups (const OpenGl_Structure*        theStructure,
                                                  const OpenGl_RaytraceMaterial& theStructMat,
-                                                 const Handle(Geom_Transformation)& theTrsf,
+                                                 const Handle(TopLoc_Datum3D)&  theTrsf,
                                                  const Handle(OpenGl_Context)&  theGlContext)
 {
   OpenGl_Mat4 aMat4;

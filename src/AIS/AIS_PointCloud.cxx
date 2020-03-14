@@ -29,7 +29,7 @@
 #include <Select3D_SensitivePrimitiveArray.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <StdPrs_BndBox.hxx>
+#include <Prs3d_BndBox.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloudOwner, SelectMgr_EntityOwner)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_PointCloud, AIS_InteractiveObject)
@@ -400,7 +400,7 @@ void AIS_PointCloud::Compute (const Handle(PrsMgr_PresentationManager3d)& /*theP
         return;
       }
 
-      StdPrs_BndBox::Add (thePrs, aBndBox, myDrawer);
+      Prs3d_BndBox::Add (thePrs, aBndBox, myDrawer);
       break;
     }
   }

@@ -23,9 +23,6 @@
 #include <gp_Trsf.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_OStream.hxx>
-class Standard_ConstructionError;
-class gp_Trsf;
-
 
 class TopLoc_Datum3D;
 DEFINE_STANDARD_HANDLE(TopLoc_Datum3D, Standard_Transient)
@@ -40,7 +37,6 @@ class TopLoc_Datum3D : public Standard_Transient
 
 public:
 
-  
   //! Constructs a default Datum3D.
   Standard_EXPORT TopLoc_Datum3D();
   
@@ -48,10 +44,14 @@ public:
   //! raised if the Trsf is not a rigid transformation.
   Standard_EXPORT TopLoc_Datum3D(const gp_Trsf& T);
   
-  //! Returns a gp_Trsf which, when applied to this datum,
-  //! produces the default datum.
-    const gp_Trsf& Transformation() const;
-  
+  //! Returns a gp_Trsf which, when applied to this datum, produces the default datum.
+  const gp_Trsf& Transformation() const { return myTrsf; }
+
+  //! Returns a gp_Trsf which, when applied to this datum, produces the default datum.
+  const gp_Trsf& Trsf() const { return myTrsf; }
+
+  //! Return transformation form.
+  gp_TrsfForm Form() const { return myTrsf.Form(); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
@@ -59,33 +59,16 @@ public:
   //! Writes the contents of this Datum3D to the stream S.
   Standard_EXPORT void ShallowDump (Standard_OStream& S) const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(TopLoc_Datum3D,Standard_Transient)
-
-protected:
-
-
-
 
 private:
 
-
   gp_Trsf myTrsf;
 
-
 };
-
-
-#include <TopLoc_Datum3D.lxx>
-
-
 
 inline void ShallowDump(const Handle(TopLoc_Datum3D)& me,Standard_OStream& S) {
  me->ShallowDump(S);
 }
-
-
 
 #endif // _TopLoc_Datum3D_HeaderFile

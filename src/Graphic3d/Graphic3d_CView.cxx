@@ -298,7 +298,7 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
   // compute + validation
   Handle(Graphic3d_Structure) aCompStructOld = myStructsComputed.ChangeValue (anIndex);
   Handle(Graphic3d_Structure) aCompStruct    = aCompStructOld;
-  aCompStruct->SetTransformation (Handle(Geom_Transformation)());
+  aCompStruct->SetTransformation (Handle(TopLoc_Datum3D)());
   theStruct->computeHLR (myCamera, aCompStruct);
   aCompStruct->SetHLRValidation (Standard_True);
   aCompStruct->CalculateBoundBox();
@@ -768,7 +768,7 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure)
   if (anIndex != 0)
   {
     aStruct = myStructsComputed.Value (anIndex);
-    aStruct->SetTransformation (Handle(Geom_Transformation)());
+    aStruct->SetTransformation (Handle(TopLoc_Datum3D)());
   }
   theStructure->computeHLR (myCamera, aStruct);
 
@@ -871,7 +871,7 @@ void Graphic3d_CView::Highlight (const Handle(Graphic3d_Structure)& theStructure
 // purpose  :
 // =======================================================================
 void Graphic3d_CView::SetTransform (const Handle(Graphic3d_Structure)& theStructure,
-                                    const Handle(Geom_Transformation)& theTrsf)
+                                    const Handle(TopLoc_Datum3D)& theTrsf)
 {
   const Standard_Integer anIndex = IsComputed (theStructure);
   if (anIndex != 0)

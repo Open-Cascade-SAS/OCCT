@@ -1889,6 +1889,16 @@ Unexpected const-ness of Aspect_Window::DoResize() method has been removed, so t
 
 Enumeration BRepOffset_Type is renamed to ChFiDS_TypeOfConcavity.
 
+@subsection upgrade_750_tkv3d TKV3d/TKService toolkits changes
+
+The following changes could be highlighted while porting:
+* *Prs3d::GetDeflection()* has been moved to *StdPrs_ToolTriangulatedShape::GetDeflection()*.
+* *Prs3d_ShapeTool* has been moved to *StdPrs_ShapeTool*.
+* *StdSelect_ViewerSelector3d* has been moved to *SelectMgr_ViewerSelector3d*.
+* *Font_BRepFont* has been moved to *StdPrs_BRepFont*.
+* Visualization classes now use *TopLoc_Datum3D* (from *TKMath*) instead of *Geom_Transformation* (from *TKG3d*) as smart pointer to *gp_Trsf*.
+  This is rather an internal change, but some applications might need to be updated.
+
 @subsection upgrade_750_hlrangle Prs3d_Drawer deviation angle
 
 Properties Prs3d_Drawer::HLRAngle() and Prs3d_Drawer::HLRDeviationCoefficient() have been removed from classes *Prs3d_Drawer*, *AIS_Shape* and *AIS_InteractiveContext*.

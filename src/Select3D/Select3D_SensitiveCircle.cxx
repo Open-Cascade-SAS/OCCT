@@ -16,7 +16,7 @@
 
 #include <Select3D_SensitiveCircle.hxx>
 
-#include <Geom_Circle.hxx>
+#include <ElCLib.hxx>
 #include <Precision.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
 
@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Select3D_SensitiveCircle,Select3D_SensitivePoly)
 
 namespace
 {
-  static Standard_Integer GetCircleNbPoints (const Handle(Geom_Circle)& theCircle,
+  static Standard_Integer GetCircleNbPoints (const gp_Circ& theCircle,
                                              const Standard_Integer theNbPnts)
   {
     // Check if number of points is invalid.
@@ -33,24 +33,37 @@ namespace
     if (theNbPnts <= 0)
       return 0;
 
-    if (theCircle->Radius() > Precision::Confusion())
+    if (theCircle.Radius() > Precision::Confusion())
       return 2 * theNbPnts + 1;
 
     // The radius is too small and circle degenerates into point
     return 1;
   }
 
-  static Standard_Integer GetArcNbPoints (const Handle(Geom_Circle)& theCircle,
-                                          const Standard_Integer theNbPnts)
+  //! Definition of circle polyline
+  static void initCircle (Select3D_PointData& thePolygon,
+                          const gp_Circ& theCircle,
+                          const Standard_Real theU1,
+                          const Standard_Real theU2,
+                          const Standard_Integer theNbPnts)
   {
-    // There is no need to check number of points here.
-    // In case of invalid number of points this method returns
-    // -1 or smaller value.
-    if (theCircle->Radius() > Precision::Confusion())
-      return 2 * theNbPnts - 1;
+    const Standard_Real aStep = (theU2 - theU1) / theNbPnts;
+    const Standard_Real aRadius = theCircle.Radius();
+    Standard_Integer aPntIdx = 0;
+    Standard_Real aCurU = theU1;
+    gp_Pnt aP1;
+    gp_Vec aV1;
+    for (Standard_Integer anIndex = 1; anIndex <= theNbPnts; ++anIndex, aCurU += aStep)
+    {
+      ElCLib::CircleD1 (aCurU, theCircle.Position(), theCircle.Radius(), aP1, aV1);
+      thePolygon.SetPnt (aPntIdx++, aP1);
 
-    // The radius is too small and circle degenerates into point
-    return 1;
+      aV1.Normalize();
+      const gp_Pnt aP2 = aP1.XYZ() + aV1.XYZ() * Tan (aStep * 0.5) * aRadius;
+      thePolygon.SetPnt (aPntIdx++, aP2);
+    }
+    aP1 = ElCLib::CircleValue (theU2, theCircle.Position(), theCircle.Radius());
+    thePolygon.SetPnt (theNbPnts * 2, aP1);
   }
 }
 
@@ -59,51 +72,24 @@ namespace
 //purpose  : Definition of a sensitive circle
 //=======================================================================
 Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                   const Handle(Geom_Circle)& theCircle,
+                                                   const gp_Circ& theCircle,
                                                    const Standard_Boolean theIsFilled,
                                                    const Standard_Integer theNbPnts)
 : Select3D_SensitivePoly (theOwnerId, !theIsFilled, GetCircleNbPoints (theCircle, theNbPnts)),
   myCircle (theCircle),
-  myStart (0),
-  myEnd (0)
+  myStart (0.0),
+  myEnd (2.0 * M_PI)
 {
   mySensType = theIsFilled ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
+  myCenter3D = theCircle.Position().Location();
   if (myPolyg.Size() != 1)
   {
-    gp_Pnt aP1, aP2;
-    gp_Vec aV1;
-    Standard_Real anUStart = theCircle->FirstParameter();
-    Standard_Real anUEnd = theCircle->LastParameter();
-    Standard_Real aStep = (anUEnd - anUStart) / theNbPnts;
-    Standard_Real aRadius = theCircle->Radius();
-    Standard_Integer aPntIdx = 1;
-    Standard_Real aCurU = anUStart;
-    for (Standard_Integer anIndex = 1; anIndex <= theNbPnts; anIndex++)
-    {
-      theCircle->D1 (aCurU, aP1, aV1);
-
-      aV1.Normalize();
-      myPolyg.SetPnt (aPntIdx - 1, aP1);
-      aPntIdx++;
-      aP2 = gp_Pnt (aP1.X() + aV1.X() * tan (aStep / 2.0) * aRadius,
-                    aP1.Y() + aV1.Y() * tan (aStep / 2.0) * aRadius,
-                    aP1.Z() + aV1.Z() * tan (aStep / 2.0) * aRadius);
-      myPolyg.SetPnt (aPntIdx - 1, aP2);
-      aPntIdx++;
-      aCurU += aStep;
-    }
-
-    // Copy the first point to the last point of myPolyg
-    myPolyg.SetPnt (theNbPnts * 2, myPolyg.Pnt (0));
-    // Get myCenter3D
-    myCenter3D = theCircle->Location();
+    initCircle (myPolyg, theCircle, myStart, myEnd, theNbPnts);
   }
   // Radius = 0.0
   else
   {
-    myPolyg.SetPnt (0, theCircle->Location());
-    // Get myCenter3D
-    myCenter3D = myPolyg.Pnt (0);
+    myPolyg.SetPnt (0, theCircle.Position().Location());
   }
 
   if (mySensType == Select3D_TOS_BOUNDARY)
@@ -117,51 +103,25 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectMgr_Entity
 //purpose  : Definition of a sensitive arc
 //=======================================================================
 Select3D_SensitiveCircle::Select3D_SensitiveCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                                                    const Handle(Geom_Circle)& theCircle,
+                                                    const gp_Circ& theCircle,
                                                     const Standard_Real theU1,
                                                     const Standard_Real theU2,
                                                     const Standard_Boolean theIsFilled,
                                                     const Standard_Integer theNbPnts)
-: Select3D_SensitivePoly (theOwnerId, !theIsFilled, GetArcNbPoints (theCircle, theNbPnts)),
+: Select3D_SensitivePoly (theOwnerId, !theIsFilled, GetCircleNbPoints (theCircle, theNbPnts)),
   myCircle (theCircle),
   myStart (Min (theU1, theU2)),
   myEnd (Max (theU1, theU2))
 {
   mySensType = theIsFilled ? Select3D_TOS_INTERIOR : Select3D_TOS_BOUNDARY;
-
+  myCenter3D = theCircle.Position().Location();
   if (myPolyg.Size() != 1)
   {
-    gp_Pnt aP1, aP2;
-    gp_Vec aV1;
-
-    Standard_Real aStep = (myEnd - myStart) / (theNbPnts - 1);
-    Standard_Real aRadius = theCircle->Radius();
-    Standard_Integer aPntIdx = 1;
-    Standard_Real aCurU = myStart;
-
-    for (Standard_Integer anIndex = 1; anIndex <= theNbPnts - 1; anIndex++)
-    {
-      theCircle->D1 (aCurU, aP1, aV1);
-      aV1.Normalize();
-      myPolyg.SetPnt (aPntIdx - 1, aP1);
-      aPntIdx++;
-      aP2 = gp_Pnt (aP1.X() + aV1.X() * tan (aStep /2.0) * aRadius,
-                    aP1.Y() + aV1.Y() * tan (aStep /2.0) * aRadius,
-                    aP1.Z() + aV1.Z() * tan (aStep /2.0) * aRadius);
-      myPolyg.SetPnt (aPntIdx - 1, aP2);
-      aPntIdx++;
-      aCurU += aStep;
-    }
-    theCircle->D0 (myEnd, aP1);
-    myPolyg.SetPnt (theNbPnts * 2 - 2, aP1);
-    // Get myCenter3D
-    myCenter3D = theCircle->Location();
+    initCircle (myPolyg, theCircle, myStart, myEnd, theNbPnts);
   }
   else
   {
-    myPolyg.SetPnt (0, theCircle->Location());
-    // Get myCenter3D
-    myCenter3D = myPolyg.Pnt (0);
+    myPolyg.SetPnt (0, theCircle.Position().Location());
   }
 
   if (mySensType == Select3D_TOS_BOUNDARY)
@@ -271,25 +231,6 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
   return Standard_True;
 }
 
-void Select3D_SensitiveCircle::ArrayBounds (Standard_Integer & theLow,
-                                            Standard_Integer & theUp) const
-{
-    theLow = 0;
-    theUp = myPolyg.Size() - 1;
-}
-
-//=======================================================================
-//function : GetPoint3d
-//purpose  :
-//=======================================================================
-gp_Pnt Select3D_SensitiveCircle::GetPoint3d (const Standard_Integer thePntIdx) const
-{
-  if (thePntIdx >= 0 && thePntIdx < myPolyg.Size())
-    return myPolyg.Pnt (thePntIdx);
-
-  return gp_Pnt();
-}
-
 //=======================================================================
 //function : GetConnected
 //purpose  :
@@ -301,7 +242,7 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveCircle::GetConnected()
   // Create a copy of this
   Handle(Select3D_SensitiveEntity) aNewEntity;
   // this was constructed using Handle(Geom_Circle)
-  if(!myCircle.IsNull())
+  if (!Precision::IsInfinite (myCircle.Radius()))
   {
     if ((myEnd - myStart) > Precision::Confusion())
     {

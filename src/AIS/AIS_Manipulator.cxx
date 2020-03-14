@@ -19,8 +19,6 @@
 #include <AIS_ManipulatorOwner.hxx>
 #include <Extrema_ExtElC.hxx>
 #include <gce_MakeDir.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Transformation.hxx>
 #include <IntAna_IntConicQuad.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_Root.hxx>
@@ -86,10 +84,10 @@ namespace
   public:
     //! Main constructor.
     ManipSensCircle (const Handle(SelectMgr_EntityOwner)& theOwnerId,
-                     const Handle(Geom_Circle)& theCircle,
+                     const gp_Circ& theCircle,
                      const Standard_Integer theNbPnts)
     : Select3D_SensitiveCircle (theOwnerId, theCircle, Standard_False, theNbPnts),
-      ManipSensRotation (theCircle->Position().Direction()) {}
+      ManipSensRotation (theCircle.Position().Direction()) {}
 
     //! Checks whether the circle overlaps current selecting volume
     virtual Standard_Boolean Matches (SelectBasics_SelectingVolumeManager& theMgr,
@@ -703,7 +701,7 @@ void AIS_Manipulator::Transform (const gp_Trsf& theTrsf)
     {
       const Handle(AIS_InteractiveObject)& anObj = anObjIter.ChangeValue();
       const gp_Trsf& anOldTrsf = aTrsfIter.Value();
-      const Handle(Geom_Transformation)& aParentTrsf = anObj->CombinedParentTransformation();
+      const Handle(TopLoc_Datum3D)& aParentTrsf = anObj->CombinedParentTransformation();
       if (!aParentTrsf.IsNull()
         && aParentTrsf->Form() != gp_Identity)
       {
@@ -782,7 +780,7 @@ void AIS_Manipulator::updateTransformation()
     aTrsf.SetTransformation (gp_Ax2 (gp::Origin(), aVDir, aXDir), gp::XOY());
   }
 
-  Handle(Geom_Transformation) aGeomTrsf = new Geom_Transformation (aTrsf);
+  Handle(TopLoc_Datum3D) aGeomTrsf = new TopLoc_Datum3D (aTrsf);
   // we explicitly call here setLocalTransformation() of the base class
   // since AIS_Manipulator::setLocalTransformation() implementation throws exception
   // as protection from external calls
@@ -920,7 +918,7 @@ void AIS_Manipulator::setTransformPersistence (const Handle(Graphic3d_TransformP
 //function : setLocalTransformation
 //purpose  :
 //=======================================================================
-void AIS_Manipulator::setLocalTransformation (const Handle(Geom_Transformation)& /*theTrsf*/)
+void AIS_Manipulator::setLocalTransformation (const Handle(TopLoc_Datum3D)& /*theTrsf*/)
 {
   Standard_ASSERT_INVOKE ("AIS_Manipulator::setLocalTransformation: "
                           "Custom transformation is not supported by this class");
@@ -1131,7 +1129,7 @@ void AIS_Manipulator::ComputeSelection (const Handle(SelectMgr_Selection)& theSe
         anOwner = new AIS_ManipulatorOwner (this, anIt, AIS_MM_Rotation, 9);
       }
       // define sensitivity by circle
-      Handle(Geom_Circle) aGeomCircle = new Geom_Circle (gp_Ax2 (gp::Origin(), anAxis.ReferenceAxis().Direction()), anAxis.RotatorDiskRadius());
+      const gp_Circ aGeomCircle (gp_Ax2 (gp::Origin(), anAxis.ReferenceAxis().Direction()), anAxis.RotatorDiskRadius());
       Handle(Select3D_SensitiveCircle) aCircle = new ManipSensCircle (anOwner, aGeomCircle, anAxis.FacettesNumber());
       aCircle->SetSensitivityFactor (15);
       theSelection->Add (aCircle);

@@ -131,8 +131,6 @@
 
 #include <Select3D_SensitiveSegment.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
-#include <Select3D_SensitiveTriangle.hxx>
-#include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitivePoint.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <StdPrs_Curve.hxx>
@@ -1999,8 +1997,7 @@ void FilledCircle::ComputeSelection(const Handle(SelectMgr_Selection) &theSelect
                                     const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveCircle) aSensitiveCircle = new Select3D_SensitiveCircle(anEntityOwner, 
-      myCircle, myFilledStatus);
+  Handle(Select3D_SensitiveCircle) aSensitiveCircle = new Select3D_SensitiveCircle (anEntityOwner, myCircle->Circ(), myFilledStatus);
   theSelection->Add(aSensitiveCircle);
 }
 
@@ -2686,7 +2683,6 @@ static int VDrawText (Draw_Interpretor& theDI,
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopAbs.hxx>
-#include <StdSelect_ShapeTypeFilter.hxx>
 #include <AIS_InteractiveObject.hxx>
 
 

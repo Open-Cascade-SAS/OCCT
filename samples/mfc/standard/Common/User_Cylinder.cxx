@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(User_Cylinder,AIS_InteractiveObject)
 #include <GProp_PGProps.hxx>
 #include <Quantity_Color.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
-#include <Prs3d.hxx>
+#include <StdPrs_ToolTriangulatedShape.hxx>
 
 #include <AIS_GraphicTool.hxx>
 
@@ -88,7 +88,7 @@ case 6: //color
     mygroup->SetPrimitivesAspect(myAspect);
     myAspect->SetEdgeOn();
 
-    myDeflection = Prs3d::GetDeflection(myShape,myDrawer);
+    myDeflection = StdPrs_ToolTriangulatedShape::GetDeflection(myShape,myDrawer);
     BRepMesh_IncrementalMesh(myShape,myDeflection);
 
     myX1OnOff = Standard_False;
@@ -292,7 +292,7 @@ case 6: //color
 }
 
 void User_Cylinder::computeHLR (const Handle(Graphic3d_Camera)& aProjector,
-                                const Handle(Geom_Transformation)& ,
+                                const Handle(TopLoc_Datum3D)& ,
                                 const Handle(Prs3d_Presentation)& aPresentation)
 {
   Handle (Prs3d_Drawer) aDefDrawer = GetContext()->DefaultDrawer();

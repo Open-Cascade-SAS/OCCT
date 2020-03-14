@@ -20,7 +20,7 @@
 #include <gp_Pnt.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
 #include <Precision.hxx>
-#include <Prs3d_ShapeTool.hxx>
+#include <StdPrs_ShapeTool.hxx>
 #include <TColgp_HArray1OfVec.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Vrml_Coordinate3.hxx>
@@ -44,7 +44,7 @@ void VrmlConverter_WFDeflectionShape::Add( Standard_OStream&                   a
 					  const Handle (VrmlConverter_Drawer)& aDrawer)
 {
 
-    Prs3d_ShapeTool Tool(aShape);
+    StdPrs_ShapeTool Tool(aShape);
 
     Standard_Real theRequestedDeflection;
     if(aDrawer->TypeOfDeflection() == Aspect_TOD_RELATIVE)   // TOD_RELATIVE, TOD_ABSOLUTE

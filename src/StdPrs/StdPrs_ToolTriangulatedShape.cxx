@@ -16,6 +16,7 @@
 
 #include <StdPrs_ToolTriangulatedShape.hxx>
 
+#include <BRepBndLib.hxx>
 #include <BRepMesh_DiscretFactory.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
 #include <BRepTools.hxx>
@@ -234,13 +235,46 @@ void StdPrs_ToolTriangulatedShape::Normal (const TopoDS_Face&  theFace,
 }
 
 //=======================================================================
+//function : GetDeflection
+//purpose  :
+//=======================================================================
+Standard_Real StdPrs_ToolTriangulatedShape::GetDeflection (const TopoDS_Shape& theShape,
+                                                           const Handle(Prs3d_Drawer)& theDrawer)
+{
+  if (theDrawer->TypeOfDeflection() != Aspect_TOD_RELATIVE)
+  {
+    return theDrawer->MaximalChordialDeviation();
+  }
+
+  Bnd_Box aBndBox;
+  BRepBndLib::Add (theShape, aBndBox, Standard_False);
+  if (aBndBox.IsVoid())
+  {
+    return theDrawer->MaximalChordialDeviation();
+  }
+  else if (aBndBox.IsOpen())
+  {
+    if (!aBndBox.HasFinitePart())
+    {
+      return theDrawer->MaximalChordialDeviation();
+    }
+    aBndBox = aBndBox.FinitePart();
+  }
+
+  // store computed relative deflection of shape as absolute deviation coefficient in case relative type to use it later on for sub-shapes
+  const Standard_Real aDeflection = Prs3d::GetDeflection (aBndBox, theDrawer->DeviationCoefficient(), theDrawer->MaximalChordialDeviation());
+  theDrawer->SetMaximalChordialDeviation (aDeflection);
+  return aDeflection;
+}
+
+//=======================================================================
 //function : IsTessellated
 //purpose  :
 //=======================================================================
 Standard_Boolean StdPrs_ToolTriangulatedShape::IsTessellated (const TopoDS_Shape&         theShape,
                                                               const Handle(Prs3d_Drawer)& theDrawer)
 {
-  return BRepTools::Triangulation (theShape, Prs3d::GetDeflection (theShape, theDrawer), true);
+  return BRepTools::Triangulation (theShape, GetDeflection (theShape, theDrawer), true);
 }
 
 // =======================================================================
@@ -257,7 +291,7 @@ Standard_Boolean StdPrs_ToolTriangulatedShape::Tessellate (const TopoDS_Shape&  
     return wasRecomputed;
   }
 
-  Standard_Real aDeflection = Prs3d::GetDeflection (theShape, theDrawer);
+  const Standard_Real aDeflection = GetDeflection (theShape, theDrawer);
 
   // retrieve meshing tool from Factory
   Handle(BRepMesh_DiscretRoot) aMeshAlgo = BRepMesh_DiscretFactory::Get().Discret (theShape,

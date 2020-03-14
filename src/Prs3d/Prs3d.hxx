@@ -17,15 +17,14 @@
 #ifndef _Prs3d_HeaderFile
 #define _Prs3d_HeaderFile
 
+#include <Bnd_Box.hxx>
 #include <Graphic3d_ArrayOfPrimitives.hxx>
-#include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 #include <Prs3d_Presentation.hxx>
 
-class TopoDS_Shape;
+class Poly_Triangulation;
 
 //! The Prs3d package provides the following services
 //! -   a presentation object (the context for all
@@ -49,20 +48,48 @@ public:
   //! draws an arrow at a given location, with respect
   //! to a given direction.
   Standard_EXPORT static Standard_Boolean MatchSegment (const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const Standard_Real aDistance, const gp_Pnt& p1, const gp_Pnt& p2, Standard_Real& dist);
-  
-  //! Computes the absolute deflection value depending on
-  //! the type of deflection in theDrawer:
-  //! <ul>
-  //! <li><b>Aspect_TOD_RELATIVE</b>: the absolute deflection is computed using the relative
-  //! deviation coefficient from theDrawer and the shape's bounding box;</li>
-  //! <li><b>Aspect_TOD_ABSOLUTE</b>: the maximal chordial deviation from theDrawer is returned.</li>
-  //! </ul>
-  //! In case of the type of deflection in theDrawer computed relative deflection for shape
-  //! is stored as absolute deflection. It is necessary to use it later on for sub-shapes.
-  //! This function should always be used to compute the deflection value for building
-  //! discrete representations of the shape (triangualtion, wireframe) to avoid incosistencies
-  //! between different representations of the shape and undesirable visual artifacts.
-  Standard_EXPORT static Standard_Real GetDeflection (const TopoDS_Shape& theShape, const Handle(Prs3d_Drawer)& theDrawer);
+
+  //! Computes the absolute deflection value based on relative deflection Prs3d_Drawer::DeviationCoefficient().
+  //! @param theBndMin [in] bounding box min corner
+  //! @param theBndMax [in] bounding box max corner
+  //! @param theDeviationCoefficient [in] relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
+  //! @return absolute deflection coefficient based on bounding box dimensions
+  static Standard_Real GetDeflection (const Graphic3d_Vec3d& theBndMin,
+                                      const Graphic3d_Vec3d& theBndMax,
+                                      const Standard_Real theDeviationCoefficient)
+  {
+    const Graphic3d_Vec3d aDiag = theBndMax - theBndMin;
+    return aDiag.maxComp() * theDeviationCoefficient * 4.0;
+  }
+
+  //! Computes the absolute deflection value based on relative deflection Prs3d_Drawer::DeviationCoefficient().
+  //! @param theBndBox [in] bounding box
+  //! @param theDeviationCoefficient [in] relative deflection coefficient from Prs3d_Drawer::DeviationCoefficient()
+  //! @param theMaximalChordialDeviation [in] absolute deflection coefficient from Prs3d_Drawer::MaximalChordialDeviation()
+  //! @return absolute deflection coefficient based on bounding box dimensions or theMaximalChordialDeviation if bounding box is Void or Infinite
+  static Standard_Real GetDeflection (const Bnd_Box& theBndBox,
+                                      const Standard_Real theDeviationCoefficient,
+                                      const Standard_Real theMaximalChordialDeviation)
+  {
+    if (theBndBox.IsVoid())
+    {
+      return theMaximalChordialDeviation;
+    }
+
+    Bnd_Box aBndBox = theBndBox;
+    if (theBndBox.IsOpen())
+    {
+      if (!theBndBox.HasFinitePart())
+      {
+        return theMaximalChordialDeviation;
+      }
+      aBndBox = theBndBox.FinitePart();
+    }
+
+    Graphic3d_Vec3d aVecMin, aVecMax;
+    aBndBox.Get (aVecMin.x(), aVecMin.y(), aVecMin.z(), aVecMax.x(), aVecMax.y(), aVecMax.z());
+    return GetDeflection (aVecMin, aVecMax, theDeviationCoefficient);
+  }
 
   //! Assembles array of primitives for sequence of polylines.
   //! @param thePoints [in] the polylines sequence
@@ -73,6 +100,14 @@ public:
   Standard_EXPORT static void AddPrimitivesGroup (const Handle(Prs3d_Presentation)& thePrs,
                                                   const Handle(Prs3d_LineAspect)&   theAspect,
                                                   Prs3d_NListOfSequenceOfPnt&       thePolylines);
+
+  //! Add triangulation free edges into sequence of line segments.
+  //! @param theSegments [out] sequence of line segments to fill
+  //! @param thePolyTri   [in] triangulation to process
+  //! @param theLocation  [in] transformation to apply
+  Standard_EXPORT static void AddFreeEdges (TColgp_SequenceOfPnt& theSegments,
+                                            const Handle(Poly_Triangulation)& thePolyTri,
+                                            const gp_Trsf& theLocation);
 
 };
 

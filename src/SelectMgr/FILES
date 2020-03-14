@@ -1,3 +1,5 @@
+SelectMgr.cxx
+SelectMgr.hxx
 SelectMgr_AndFilter.cxx
 SelectMgr_AndFilter.hxx
 SelectMgr_BaseFrustum.cxx
@@ -30,6 +32,8 @@ SelectMgr_SelectingVolumeManager.cxx
 SelectMgr_SelectingVolumeManager.hxx
 SelectMgr_Selection.cxx
 SelectMgr_Selection.hxx
+SelectMgr_SelectionImageFiller.cxx
+SelectMgr_SelectionImageFiller.hxx
 SelectMgr_SelectionManager.cxx
 SelectMgr_SelectionManager.hxx
 SelectMgr_SensitiveEntity.cxx
@@ -39,7 +43,6 @@ SelectMgr_SensitiveEntitySet.hxx
 SelectMgr_SequenceOfFilter.hxx
 SelectMgr_SequenceOfOwner.hxx
 SelectMgr_SequenceOfSelection.hxx
-SelectMgr_SOPtr.hxx
 SelectMgr_SortCriterion.hxx
 SelectMgr_StateOfSelection.hxx
 SelectMgr_ToleranceMap.hxx
@@ -55,3 +58,5 @@ SelectMgr_ViewClipRange.cxx
 SelectMgr_ViewClipRange.hxx
 SelectMgr_ViewerSelector.cxx
 SelectMgr_ViewerSelector.hxx
+SelectMgr_ViewerSelector3d.cxx
+SelectMgr_ViewerSelector3d.hxx
