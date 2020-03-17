@@ -102,7 +102,7 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
   Standard_Real mylastU = ULast;
   Standard_Integer aMaxSegments = 0;
   Standard_Integer aMaxSegments1 = myMaxSegments - 1;
-  Standard_Integer aNbCut = 0, aNbImp = 0, aNbComp = 5;
+  Standard_Integer aNbCut = 0, aNbImp = 0, aNbComp = 10;
 
   if (!mycut)
   {
@@ -178,10 +178,12 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
       Standard_Boolean aStopCutting = Standard_False;
       if (aNbCut >= aNbComp)
       {
-        if (aNbCut > aNbImp)
+        if (aNbCut > aNbImp + 1)
         {
           aStopCutting = Standard_True;
         }
+        aNbCut = 0;
+        aNbImp = 0;
       }
       // is new decision better?
       if (!Ok && (Abs(myfirstU - mylastU) <= TolU || aMaxSegments >= aMaxSegments1 || aStopCutting ))
