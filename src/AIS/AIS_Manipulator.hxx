@@ -260,6 +260,8 @@ public: //! @name Setters for parameters
 
   AIS_ManipulatorMode ActiveMode() const { return myCurrentMode; }
 
+  Standard_Integer ActiveAxisIndex() const { return myCurrentIndex; }
+
   //! @return poition of manipulator interactive object.
   const gp_Ax2& Position() const { return myPosition; }
 
