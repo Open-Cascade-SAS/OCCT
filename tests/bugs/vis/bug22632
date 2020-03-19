@@ -1,5 +1,5 @@
 puts "============"
-puts "OCC25632"
+puts "OCC22632"
 puts "Display logarithmic colorscale."
 puts "============"
 puts ""

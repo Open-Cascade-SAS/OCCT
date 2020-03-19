@@ -40,6 +40,16 @@ static Standard_Real TheEpsilon = 0.0001;
     || theL < 0.0 || theL > 1.0 \
     || theS < 0.0 || theS > 1.0) { throw Standard_OutOfRange("Color out"); }
 
+// Throw exception if CIELab color values are out of range.
+#define Quantity_ColorValidateLabRange(theL, thea, theb) \
+  if (theL < 0. || theL > 100. || thea < -100. || thea > 100. || theb < -110. || theb > 100.) \
+     { throw Standard_OutOfRange("Color out"); }
+
+// Throw exception if CIELch color values are out of range.
+#define Quantity_ColorValidateLchRange(theL, thec, theh) \
+  if (theL < 0. || theL > 100. || thec < 0. || thec > 135. || \
+      theh < 0.0 || theh > 360.) { throw Standard_OutOfRange("Color out"); }
+
 namespace
 {
   //! Raw color for defining list of standard color
@@ -107,6 +117,8 @@ NCollection_Vec3<float> Quantity_Color::valuesOf (const Quantity_NameOfColor the
     case Quantity_TOC_RGB:  return anRgb;
     case Quantity_TOC_sRGB: return Convert_LinearRGB_To_sRGB (anRgb);
     case Quantity_TOC_HLS:  return Convert_LinearRGB_To_HLS (anRgb);
+    case Quantity_TOC_CIELab: return Convert_LinearRGB_To_Lab (anRgb);
+    case Quantity_TOC_CIELch: return Convert_Lab_To_Lch (Convert_LinearRGB_To_Lab (anRgb));
   }
   throw Standard_ProgramError("Internal error");
 }
@@ -189,32 +201,10 @@ bool Quantity_Color::ColorFromHex (const Standard_CString theHexColorString,
 // function : Quantity_Color
 // purpose  :
 // =======================================================================
-Quantity_Color::Quantity_Color (const Standard_Real theR1, const Standard_Real theR2, const Standard_Real theR3,
+Quantity_Color::Quantity_Color (const Standard_Real theC1, const Standard_Real theC2, const Standard_Real theC3,
                                 const Quantity_TypeOfColor theType)
 {
-  switch (theType)
-  {
-    case Quantity_TOC_RGB:
-    {
-      Quantity_ColorValidateRgbRange(theR1, theR2, theR3);
-      myRgb.SetValues (float(theR1), float(theR2), float(theR3));
-      break;
-    }
-    case Quantity_TOC_sRGB:
-    {
-      Quantity_ColorValidateRgbRange(theR1, theR2, theR3);
-      myRgb.SetValues ((float )Convert_sRGB_To_LinearRGB (theR1),
-                       (float )Convert_sRGB_To_LinearRGB (theR2),
-                       (float )Convert_sRGB_To_LinearRGB (theR3));
-      break;
-    }
-    case Quantity_TOC_HLS:
-    {
-      Quantity_ColorValidateHlsRange(theR1, theR2, theR3);
-      myRgb = Convert_HLS_To_LinearRGB (NCollection_Vec3<float> (float(theR1), float(theR2), float(theR3)));
-      break;
-    }
-  }
+  SetValues (theC1, theC2, theC3, theType);
 }
 
 // =======================================================================
@@ -259,29 +249,41 @@ void Quantity_Color::ChangeIntensity (const Standard_Real theDelta)
 // function : SetValues
 // purpose  :
 // =======================================================================
-void Quantity_Color::SetValues (const Standard_Real theR1, const Standard_Real theR2, const Standard_Real theR3,
+void Quantity_Color::SetValues (const Standard_Real theC1, const Standard_Real theC2, const Standard_Real theC3,
                                 const Quantity_TypeOfColor theType)
 {
   switch (theType)
   {
     case Quantity_TOC_RGB:
     {
-      Quantity_ColorValidateRgbRange(theR1, theR2, theR3);
-      myRgb.SetValues (float(theR1), float(theR2), float(theR3));
+      Quantity_ColorValidateRgbRange(theC1, theC2, theC3);
+      myRgb.SetValues (float(theC1), float(theC2), float(theC3));
       break;
     }
     case Quantity_TOC_sRGB:
     {
-      Quantity_ColorValidateRgbRange(theR1, theR2, theR3);
-      myRgb.SetValues ((float )Convert_sRGB_To_LinearRGB (theR1),
-                       (float )Convert_sRGB_To_LinearRGB (theR2),
-                       (float )Convert_sRGB_To_LinearRGB (theR3));
+      Quantity_ColorValidateRgbRange(theC1, theC2, theC3);
+      myRgb.SetValues ((float )Convert_sRGB_To_LinearRGB (theC1),
+                       (float )Convert_sRGB_To_LinearRGB (theC2),
+                       (float )Convert_sRGB_To_LinearRGB (theC3));
       break;
     }
     case Quantity_TOC_HLS:
     {
-      Quantity_ColorValidateHlsRange(theR1, theR2, theR3);
-      myRgb = Convert_HLS_To_LinearRGB (NCollection_Vec3<float> (float(theR1), float(theR2), float(theR3)));
+      Quantity_ColorValidateHlsRange(theC1, theC2, theC3);
+      myRgb = Convert_HLS_To_LinearRGB (NCollection_Vec3<float> (float(theC1), float(theC2), float(theC3)));
+      break;
+    }
+    case Quantity_TOC_CIELab:
+    {
+      Quantity_ColorValidateLabRange(theC1, theC2, theC3);
+      myRgb = Convert_Lab_To_LinearRGB (NCollection_Vec3<float> (float(theC1), float(theC2), float(theC3)));
+      break;
+    }
+    case Quantity_TOC_CIELch:
+    {
+      Quantity_ColorValidateLchRange(theC1, theC2, theC3);
+      myRgb = Convert_Lab_To_LinearRGB (Convert_Lch_To_Lab (NCollection_Vec3<float> (float(theC1), float(theC2), float(theC3))));
       break;
     }
   }
@@ -299,6 +301,76 @@ void Quantity_Color::Delta (const Quantity_Color& theColor,
   const NCollection_Vec3<float> aHls2 = Convert_LinearRGB_To_HLS (theColor.myRgb);
   theDC = Standard_Real (aHls1[2] - aHls2[2]); // saturation
   theDI = Standard_Real (aHls1[1] - aHls2[1]); // light
+}
+
+// =======================================================================
+// function : DeltaE2000
+// purpose  : color difference according to CIE Delta E 2000 formula
+// see http://brucelindbloom.com/index.html?Eqn_DeltaE_CIE2000.html
+// =======================================================================
+Standard_Real Quantity_Color::DeltaE2000 (const Quantity_Color& theOther) const
+{
+  // get color components in CIE Lch space
+  Standard_Real aL1, aL2, aa1, aa2, ab1, ab2;
+  this   ->Values (aL1, aa1, ab1, Quantity_TOC_CIELab);
+  theOther.Values (aL2, aa2, ab2, Quantity_TOC_CIELab);
+
+  // mean L
+  Standard_Real aLx_mean = 0.5 * (aL1 + aL2);
+
+  // mean C
+  Standard_Real aC1 = Sqrt (aa1 * aa1 + ab1 * ab1);
+  Standard_Real aC2 = Sqrt (aa2 * aa2 + ab2 * ab2);
+  Standard_Real aC_mean = 0.5 * (aC1 + aC2);
+  Standard_Real aC_mean_pow7 = Pow (aC_mean, 7);
+  static const double a25_pow7 = Pow (25., 7);
+  Standard_Real aG = 0.5 * (1. - Sqrt (aC_mean_pow7 / (aC_mean_pow7 + a25_pow7)));
+  Standard_Real aa1x = aa1 * (1. + aG);
+  Standard_Real aa2x = aa2 * (1. + aG);
+  Standard_Real aC1x = Sqrt (aa1x * aa1x + ab1 * ab1);
+  Standard_Real aC2x = Sqrt (aa2x * aa2x + ab2 * ab2);
+  Standard_Real aCx_mean = 0.5 * (aC1x + aC2x);
+
+  // mean H
+  Standard_Real ah1x = (aC1x > TheEpsilon ? ATan2 (ab1, aa1x) * 180. / M_PI : 270.);
+  Standard_Real ah2x = (aC2x > TheEpsilon ? ATan2 (ab2, aa2x) * 180. / M_PI : 270.);
+  if (ah1x < 0.) ah1x += 360.;
+  if (ah2x < 0.) ah2x += 360.;
+  Standard_Real aHx_mean = 0.5 * (ah1x + ah2x);
+  Standard_Real aDeltahx = ah2x - ah1x;
+  if (Abs (aDeltahx) > 180.) 
+  {
+    aHx_mean += (aHx_mean < 180. ? 180. : -180.);
+    aDeltahx += (ah1x >= ah2x ? 360. : -360.);
+  }
+
+  // deltas
+  Standard_Real aDeltaLx = aL2 - aL1;
+  Standard_Real aDeltaCx = aC2x - aC1x;
+  Standard_Real aDeltaHx = 2. * Sqrt (aC1x * aC2x) * Sin (0.5 * aDeltahx * M_PI / 180.);
+
+  // factors
+  Standard_Real aT = 1. - 0.17 * Cos ((     aHx_mean - 30.) * M_PI / 180.) +
+                          0.24 * Cos ((2. * aHx_mean      ) * M_PI / 180.) +
+                          0.32 * Cos ((3. * aHx_mean +  6.) * M_PI / 180.) -
+                          0.20 * Cos ((4. * aHx_mean - 63.) * M_PI / 180.);
+
+  Standard_Real aLx_mean50_2 = (aLx_mean - 50.) * (aLx_mean - 50.);
+  Standard_Real aS_L = 1. + 0.015 * aLx_mean50_2 / Sqrt (20. + aLx_mean50_2);
+  Standard_Real aS_C = 1. + 0.045 * aCx_mean;
+  Standard_Real aS_H = 1. + 0.015 * aCx_mean * aT;
+
+  Standard_Real aDelta_theta = 30. * Exp (-(aHx_mean - 275.) * (aHx_mean - 275.) / 625.);
+  Standard_Real aCx_mean_pow7 = Pow(aCx_mean, 7);
+  Standard_Real aR_C = 2. * Sqrt (aCx_mean_pow7 / (aCx_mean_pow7 + a25_pow7));
+  Standard_Real aR_T = -aR_C * Sin (2. * aDelta_theta * M_PI / 180.);
+
+  // finally, the difference
+  Standard_Real aDL = aDeltaLx / aS_L;
+  Standard_Real aDC = aDeltaCx / aS_C;
+  Standard_Real aDH = aDeltaHx / aS_H;
+  Standard_Real aDeltaE2000 = Sqrt (aDL * aDL + aDC * aDC + aDH * aDH + aR_T * aDC * aDH);
+  return aDeltaE2000;
 }
 
 // =======================================================================
@@ -357,6 +429,22 @@ void Quantity_Color::Values (Standard_Real& theR1, Standard_Real& theR2, Standar
       theR1 = aHls[0];
       theR2 = aHls[1];
       theR3 = aHls[2];
+      break;
+    }
+    case Quantity_TOC_CIELab:
+    {
+      const NCollection_Vec3<float> aLab = Convert_LinearRGB_To_Lab (myRgb);
+      theR1 = aLab[0];
+      theR2 = aLab[1];
+      theR3 = aLab[2];
+      break;
+    }
+    case Quantity_TOC_CIELch:
+    {
+      const NCollection_Vec3<float> aLch = Convert_Lab_To_Lch (Convert_LinearRGB_To_Lab (myRgb));
+      theR1 = aLch[0];
+      theR2 = aLch[1];
+      theR3 = aLch[2];
       break;
     }
   }
@@ -449,156 +537,135 @@ NCollection_Vec3<float> Quantity_Color::Convert_sRGB_To_HLS (const NCollection_V
   return NCollection_Vec3<float> (aHue, aMax, aSaturation);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////// TESTS ////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-static void TestOfColor()
+// =======================================================================
+// function : CIELab_f
+// purpose  : non-linear function transforming XYZ coordinates to CIE Lab
+// see http://www.brucelindbloom.com/index.html?Equations.html
+// =======================================================================
+static inline double CIELab_f (double theValue)
 {
-  Standard_Real H, L, S;
-  Standard_Real R, G, B;
-  Standard_Real DC, DI;
-  Standard_Integer i;
+  return theValue > 0.008856451679035631 ? Pow (theValue, 1./3.) : (7.787037037037037 * theValue) + 16. / 116.;
+}
 
-  std::cout << "definition color tests\n----------------------\n";
+// =======================================================================
+// function : CIELab_invertf
+// purpose  : inverse of non-linear function transforming XYZ coordinates to CIE Lab
+// see http://www.brucelindbloom.com/index.html?Equations.html
+// =======================================================================
+static inline double CIELab_invertf (double theValue)
+{
+  double aV3 = theValue * theValue * theValue;
+  return aV3 > 0.008856451679035631 ? aV3 : (theValue - 16. / 116.) / 7.787037037037037;
+}
 
-  Quantity_Color C1;
-  Quantity_Color C2 (Quantity_NOC_ROYALBLUE2);
-  Quantity_Color C3 (Quantity_NOC_SANDYBROWN);
+// =======================================================================
+// function : Convert_LinearRGB_To_Lab
+// purpose  : convert RGB color to CIE Lab color
+// see https://www.easyrgb.com/en/math.php
+// =======================================================================
+NCollection_Vec3<float> Quantity_Color::Convert_LinearRGB_To_Lab (const NCollection_Vec3<float>& theRgb)
+{
+  double aR = theRgb[0];
+  double aG = theRgb[1];
+  double aB = theRgb[2];
 
-  // An Introduction to Standard_Object-Oriented Programming and C++ p43
-  // a comment for the "const char *const" declaration
-  const char *const cyan = "YELLOW";
-  const char *const blue = "ROYALBLUE2";
-  const char *const brown = "SANDYBROWN";
+  // convert to XYZ normalized to D65 / 2 deg (CIE 1931) standard illuminant intensities
+  // see http://www.brucelindbloom.com/index.html?Equations.html
+  double aX = (aR * 0.4124564 + aG * 0.3575761 + aB * 0.1804375) * 100. /  95.047;
+  double aY = (aR * 0.2126729 + aG * 0.7151522 + aB * 0.0721750) * 100. / 100.000;
+  double aZ = (aR * 0.0193339 + aG * 0.1191920 + aB * 0.9503041) * 100. / 108.883;
 
-  Standard_Real RR, GG, BB;
+  // convert to Lab
+  double afX = CIELab_f (aX);
+  double afY = CIELab_f (aY);
+  double afZ = CIELab_f (aZ);
 
-  const Standard_Real DELTA = 1.0e-4;
+  double aL = 116. * afY - 16.;
+  double aa = 500. * (afX - afY);
+  double ab = 200. * (afY - afZ);
 
-  std::cout << "Get values and names of color tests\n-----------------------------------\n";
+  return NCollection_Vec3<float> ((float)aL, (float)aa, (float)ab);
+}
 
-  C1.Values (R, G, B, Quantity_TOC_RGB);
-  if ((R!=1.0) || (G!=1.0) || (B!=0.0))
+// =======================================================================
+// function : Convert_Lab_To_LinearRGB
+// purpose  : convert CIE Lab color to RGB
+// see https://www.easyrgb.com/en/math.php
+// =======================================================================
+NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_LinearRGB (const NCollection_Vec3<float>& theLab)
+{
+  double aL = theLab[0];
+  double aa = theLab[1];
+  double ab = theLab[2];
+
+  // conversion from Lab to RGB can yield point outside of RGB cube,
+  // in such case we will reduce a and b components gradually 
+  // (by 0.1% at each step) until we fit into the range;
+  // NB: the procedure could be improved to get more precise
+  // result but this does not seem really crucial
+  const int NBSTEPS = 1000;
+  for (Standard_Integer aRate = NBSTEPS; ; aRate--)
   {
-    std::cout << "TEST_ERROR : Values () bad default color\n";
-    std::cout << "R, G, B values: " << R << " " << G << " " << B << "\n";
-  }
-  if ( (C1.Red ()!=1.0) || (C1.Green ()!=1.0) || (C1.Blue ()!=0.0) )
-  {
-    std::cout << "TEST_ERROR : Values () bad default color\n";
-    std::cout << "R, G, B values: " << C1.Red () << " " << C1.Green () << " " << C1.Blue () << "\n";
-  }
-  if (strcmp (Quantity_Color::StringName (C1.Name()), cyan) != 0)
-  {
-    std::cout << "TEST_ERROR : StringName () " << Quantity_Color::StringName (C1.Name()) <<  " != YELLOW\n";
-  }
+    double aC = aRate / (double)NBSTEPS;
 
-  RR=0.262745; GG=0.431373; BB=0.933333;
-  C1.SetValues (RR, GG, BB, Quantity_TOC_RGB);
-  C2.Values (R, G, B, Quantity_TOC_RGB);
-  if ((Abs (RR-R) > DELTA)
-   || (Abs (GG-G) > DELTA)
-   || (Abs (BB-B) > DELTA))
-  {
-    std::cout << "TEST_ERROR : Values () bad default color\n";
-    std::cout << "R, G, B values: " << R << " " << G << " " << B << "\n";
-  }
+    // convert to XYZ for D65 / 2 deg (CIE 1931) standard illuminant
+    double afY = (aL + 16.) / 116.;
+    double afX = aC * aa / 500. + afY;
+    double afZ = afY - aC * ab / 200.;
 
-  if (C2 != C1)
-  {
-    std::cout << "TEST_ERROR : IsDifferent ()\n";
-  }
-  if (C3 == C1)
-  {
-    std::cout << "TEST_ERROR : IsEqual ()\n";
-  }
+    double aX = CIELab_invertf(afX) *  95.047;
+    double aY = CIELab_invertf(afY) * 100.000;
+    double aZ = CIELab_invertf(afZ) * 108.883;
 
-  std::cout << "Distance C1,C2 " << C1.Distance (C2) << "\n";
-  std::cout << "Distance C1,C3 " << C1.Distance (C3) << "\n";
-  std::cout << "Distance C2,C3 " << C2.Distance (C3) << "\n";
-  std::cout << "SquareDistance C1,C2 " << C1.SquareDistance (C2) << "\n";
-  std::cout << "SquareDistance C1,C3 " << C1.SquareDistance (C3) << "\n";
-  std::cout << "SquareDistance C2,C3 " << C2.SquareDistance (C3) << "\n";
+    // convert to RGB
+    // see http://www.brucelindbloom.com/index.html?Equations.html
+    double aR = (aX *  3.2404542 + aY * -1.5371385 + aZ * -0.4985314) / 100.;
+    double aG = (aX * -0.9692660 + aY *  1.8760108 + aZ *  0.0415560) / 100.;
+    double aB = (aX *  0.0556434 + aY * -0.2040259 + aZ *  1.0572252) / 100.;
 
-  if (strcmp (Quantity_Color::StringName (C2.Name()), blue) != 0)
-  {
-    std::cout << "TEST_ERROR : StringName () " << Quantity_Color::StringName (C2.Name()) <<  " != ROYALBLUE2\n";
-  }
-
-  std::cout << "conversion rgbhls tests\n-----------------------\n";
-  Quantity_Color::RgbHls (R, G, B, H, L, S);
-  Quantity_Color::HlsRgb (H, L, S, R, G, B);
-  RR=0.262745; GG=0.431373; BB=0.933333;
-  if ((Abs (RR-R) > DELTA)
-   || (Abs (GG-G) > DELTA)
-   || (Abs (BB-B) > DELTA))
-  {
-    std::cout << "TEST_ERROR : RgbHls or HlsRgb bad conversion\n";
-    std::cout << "RGB init : " << RR << " " << GG << " " << BB << "\n";
-    std::cout << "RGB values : " << R << " " << G << " " << B << "\n";
-    std::cout << "Difference RGB : " << RR-R << " " << GG-G << " " << BB-B << "\n";
-  }
-
-  std::cout << "distance tests\n--------------\n";
-  R = (float ) 0.9568631; G = (float ) 0.6431371; B = (float ) 0.3764711;
-  C2.SetValues (R, G, B, Quantity_TOC_RGB);
-  if (C2.Distance (C3) > DELTA)
-  {
-    std::cout << "TEST_ERROR : Distance () bad result\n";
-    std::cout << "Distance C2 and C3 : " << C2.Distance (C3) << "\n";
-  }
-
-  C2.Delta (C3, DC, DI);
-  if (Abs (DC) > DELTA)
-  {
-    std::cout << "TEST_ERROR : Delta () bad result for DC\n";
-  }
-  if (Abs (DI) > DELTA)
-  {
-    std::cout << "TEST_ERROR : Delta () bad result for DI\n";
-  }
-
-  std::cout << "name tests\n----------\n";
-  R = (float ) 0.9568631; G = (float ) 0.6431371; B = (float ) 0.3764711;
-  C2.SetValues (R, G, B, Quantity_TOC_RGB);
-  if (strcmp (Quantity_Color::StringName (C2.Name()), brown) != 0)
-  {
-    std::cout << "TEST_ERROR : StringName () " << Quantity_Color::StringName (C2.Name()) <<  " != SANDYBROWN\n";
-  }
-
-  std::cout << "contrast change tests\n---------------------\n";
-  for (i=1; i<=10; i++)
-  {
-    C2.ChangeContrast (10.);
-    C2.ChangeContrast (-9.09090909);
-  }
-  C2.Values (R, G, B, Quantity_TOC_RGB);
-  RR=0.956863; GG=0.6431371; BB=0.3764711;
-  if ((Abs (RR-R) > DELTA)
-   || (Abs (GG-G) > DELTA)
-   || (Abs (BB-B) > DELTA))
-  {
-    std::cout << "TEST_ERROR : ChangeContrast () bad values\n";
-    std::cout << "RGB init : " << RR << " " << GG << " " << BB << "\n";
-    std::cout << "RGB values : " << R << " " << G << " " << B << "\n";
+    // exit if we are in range or at zero C
+    if (aRate == 0 ||
+        (aR >= 0. && aR <= 1. && aG >= 0. && aG <= 1. && aB >= 0. && aB <= 1.))
+    {
+      return NCollection_Vec3<float>((float)aR, (float)aG, (float)aB);
+    }
   }
 }
 
 // =======================================================================
-// function : Test
-// purpose  :
+// function : Convert_Lab_To_Lch
+// purpose  : convert CIE Lab color to CIE Lch color
+// see https://www.easyrgb.com/en/math.php
 // =======================================================================
-void Quantity_Color::Test()
+NCollection_Vec3<float> Quantity_Color::Convert_Lab_To_Lch (const NCollection_Vec3<float>& theLab)
 {
-  try
-  {
-    OCC_CATCH_SIGNALS
-    TestOfColor();
-  }
-  catch (Standard_Failure const& anException)
-  {
-    std::cout << anException << std::endl;
-  }
+  double aa = theLab[1];
+  double ab = theLab[2];
+
+  double aC = Sqrt (aa * aa + ab * ab);
+  double aH = (aC > TheEpsilon ? ATan2 (ab, aa) * 180. / M_PI : 0.);
+
+  if (aH < 0.) aH += 360.;
+
+  return NCollection_Vec3<float> (theLab[0], (float)aC, (float)aH);
+}
+
+// =======================================================================
+// function : Convert_Lch_To_Lab
+// purpose  : convert CIE Lch color to CIE Lab color
+// see https://www.easyrgb.com/en/math.php
+// =======================================================================
+NCollection_Vec3<float> Quantity_Color::Convert_Lch_To_Lab (const NCollection_Vec3<float>& theLch)
+{
+  double aC = theLch[1];
+  double aH = theLch[2];
+
+  aH *= M_PI / 180.;
+
+  double aa = aC * Cos (aH);
+  double ab = aC * Sin (aH);
+
+  return NCollection_Vec3<float> (theLch[0], (float)aa, (float)ab);
 }
 
 //=======================================================================

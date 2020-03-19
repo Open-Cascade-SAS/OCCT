@@ -46,12 +46,12 @@ public:
 
   //! Creates a color according to the definition system theType.
   //! Throws exception if values are out of range.
-  Standard_EXPORT Quantity_Color (const Standard_Real theR1,
-                                  const Standard_Real theR2,
-                                  const Standard_Real theR3,
+  Standard_EXPORT Quantity_Color (const Standard_Real theC1,
+                                  const Standard_Real theC2,
+                                  const Standard_Real theC3,
                                   const Quantity_TypeOfColor theType);
 
-  //! Define color from RGB values.
+  //! Define color from linear RGB values.
   Standard_EXPORT explicit Quantity_Color (const NCollection_Vec3<float>& theRgb);
 
   //! Returns the name of the nearest color from the Quantity_NameOfColor enumeration.
@@ -61,19 +61,23 @@ public:
   void SetValues (const Quantity_NameOfColor theName) { myRgb = valuesOf (theName, Quantity_TOC_RGB); }
 
   //! Return the color as vector of 3 float elements.
+  const NCollection_Vec3<float>& Rgb () const { return myRgb; }
+
+  //! Return the color as vector of 3 float elements.
   operator const NCollection_Vec3<float>&() const { return myRgb; }
 
-  //! Returns in theR1, theR2 and theR3 the components of this color according to the color system definition theType.
-  Standard_EXPORT void Values (Standard_Real& theR1,
-                               Standard_Real& theR2,
-                               Standard_Real& theR3,
+  //! Returns in theC1, theC2 and theC3 the components of this color
+  //! according to the color system definition theType.
+  Standard_EXPORT void Values (Standard_Real& theC1,
+                               Standard_Real& theC2,
+                               Standard_Real& theC3,
                                const Quantity_TypeOfColor theType) const;
 
   //! Updates a color according to the mode specified by theType.
   //! Throws exception if values are out of range.
-  Standard_EXPORT void SetValues (const Standard_Real theR1,
-                                  const Standard_Real theR2,
-                                  const Standard_Real theR3,
+  Standard_EXPORT void SetValues (const Standard_Real theC1,
+                                  const Standard_Real theC2,
+                                  const Standard_Real theC3,
                                   const Quantity_TypeOfColor theType);
 
   //! Returns the Red component (quantity of red) of the color within range [0.0; 1.0].
@@ -138,6 +142,13 @@ public:
   Standard_EXPORT void Delta (const Quantity_Color& theColor,
                               Standard_Real& DC, Standard_Real& DI) const;
 
+  //! Returns the value of the perceptual difference between this color
+  //! and @p theOther, computed using the CIEDE2000 formula.
+  //! The difference is in range [0, 100.], with 1 approximately corresponding
+  //! to the minimal percievable difference (usually difference 5 or greater is
+  //! needed for the difference to be recognizable in practice).
+  Standard_EXPORT Standard_Real DeltaE2000 (const Quantity_Color& theOther) const;
+
 public:
 
   //! Returns the color from Quantity_NameOfColor enumeration nearest to specified RGB values.
@@ -169,6 +180,9 @@ public:
     theColor = aColorName;
     return true;
   }
+
+public:
+  //!@name Routines converting colors between different encodings and color spaces
 
   //! Parses the string as a hex color (like "#FF0" for short sRGB color, or "#FFFF00" for sRGB color)
   //! @param theHexColorString the string to be parsed
@@ -206,6 +220,19 @@ public:
     return Convert_sRGB_To_LinearRGB (Convert_HLS_To_sRGB (theHls));
   }
 
+  //! Converts linear RGB components into CIE Lab ones.
+  Standard_EXPORT static NCollection_Vec3<float> Convert_LinearRGB_To_Lab (const NCollection_Vec3<float>& theRgb);
+
+  //! Converts CIE Lab components into CIE Lch ones.
+  Standard_EXPORT static NCollection_Vec3<float> Convert_Lab_To_Lch (const NCollection_Vec3<float>& theLab);
+
+  //! Converts CIE Lab components into linear RGB ones.
+  //! Note that the resulting values may be out of the valid range for RGB.
+  Standard_EXPORT static NCollection_Vec3<float> Convert_Lab_To_LinearRGB (const NCollection_Vec3<float>& theLab);
+
+  //! Converts CIE Lch components into CIE Lab ones.
+  Standard_EXPORT static NCollection_Vec3<float> Convert_Lch_To_Lab (const NCollection_Vec3<float>& theLch);
+
   //! Convert the color value to ARGB integer value, with alpha equals to 0.
   //! So the output is formatted as 0x00RRGGBB.
   //! Note that this unpacking does NOT involve non-linear sRGB -> linear RGB conversion,
@@ -234,8 +261,6 @@ public:
                                                   static_cast <Standard_Real> ((theARGB & 0x0000ff)));
     theColor.SetValues (aColor.r() / 255.0, aColor.g() / 255.0, aColor.b() / 255.0, Quantity_TOC_sRGB);
   }
-
-public:
 
   //! Convert linear RGB component into sRGB using OpenGL specs formula (double precision), also known as gamma correction.
   static Standard_Real Convert_LinearRGB_To_sRGB (Standard_Real theLinearValue)
@@ -287,8 +312,6 @@ public:
                                 Convert_sRGB_To_LinearRGB (theRGB.b()));
   }
 
-public:
-
   //! Convert linear RGB component into sRGB using approximated uniform gamma coefficient 2.2.
   static float Convert_LinearRGB_To_sRGB_approx22 (float theLinearValue) { return powf (theLinearValue, 2.2f); }
 
@@ -311,14 +334,6 @@ public:
                                     Convert_sRGB_To_LinearRGB_approx22 (theRGB.b()));
   }
 
-public:
-
-  //! Returns the value used to compare two colors for equality; 0.0001 by default.
-  Standard_EXPORT static Standard_Real Epsilon();
-
-  //! Set the value used to compare two colors for equality.
-  Standard_EXPORT static void SetEpsilon (const Standard_Real theEpsilon);
-
   //! Converts HLS components into sRGB ones.
   static void HlsRgb (const Standard_Real theH, const Standard_Real theL, const Standard_Real theS,
                       Standard_Real& theR, Standard_Real& theG, Standard_Real& theB)
@@ -339,8 +354,13 @@ public:
     theS = aHls[2];
   }
 
-  //! Internal test
-  Standard_EXPORT static void Test();
+public:
+
+  //! Returns the value used to compare two colors for equality; 0.0001 by default.
+  Standard_EXPORT static Standard_Real Epsilon();
+
+  //! Set the value used to compare two colors for equality.
+  Standard_EXPORT static void SetEpsilon (const Standard_Real theEpsilon);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;

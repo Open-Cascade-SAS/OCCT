@@ -1,0 +1,16 @@
+# Check stability of conversion of RGB colors to CIE Lab and Lch
+# color spaces and back on random colors
+
+# check color diff on random colors
+for {set i 1} {$i < 1000} {incr i} {
+  set rgb "[expr rand()] [expr rand()] [expr rand()]"
+
+  set lab [vcolorconvert to lab {*}$rgb]
+  set lch [vcolorconvert to lch {*}$rgb]
+
+  set rgb_lab [vcolorconvert from lab {*}$lab]
+  set rgb_lch [vcolorconvert from lch {*}$lch]
+
+  check3reals "RGB ($rgb) to Lab and back" {*}$rgb_lab {*}$rgb 1e-4
+  check3reals "RGB ($rgb) to Lch and back" {*}$rgb_lch {*}$rgb 1e-4
+}

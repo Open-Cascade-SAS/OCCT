@@ -290,6 +290,100 @@ void AIS_ColorScale::SetColors (const Aspect_SequenceOfColor& theSeq)
 }
 
 //=======================================================================
+//function : MakeUniformColors
+//purpose  :
+//=======================================================================
+Aspect_SequenceOfColor AIS_ColorScale::MakeUniformColors (Standard_Integer theNbColors, 
+                                                          Standard_Real theLightness,
+                                                          Standard_Real theHueFrom,
+                                                          Standard_Real theHueTo)
+{
+  Aspect_SequenceOfColor aResult;
+
+  // adjust range to be within (0, 360], with sign according to theHueFrom and theHueTo 
+  Standard_Real aHueRange = std::fmod (theHueTo - theHueFrom, 360.);
+  const Standard_Real aHueEps = Precision::Angular() * 180. / M_PI;
+  if (Abs (aHueRange) <= aHueEps)
+  {
+    aHueRange = (aHueRange < 0 ? -360. : 360.);
+  }
+
+  // treat limit cases
+  if (theNbColors < 1)
+  {
+    return aResult;
+  }
+  if (theNbColors == 1)
+  {
+    Standard_Real aHue = std::fmod (theHueFrom, 360.);
+    if (aHue < 0.)
+    {
+      aHue += 360.;
+    }
+    Quantity_Color aColor (theLightness, 130., aHue, Quantity_TOC_CIELch);
+    aResult.Append (aColor);
+    return aResult;
+  }
+
+  // discretize the range with 1 degree step
+  const int NBCOLORS = 2 + (int)Abs (aHueRange / 1.);
+  Standard_Real aHueStep = aHueRange / (NBCOLORS - 1);
+  NCollection_Array1<Quantity_Color> aGrid (0, NBCOLORS - 1);
+  for (Standard_Integer i = 0; i < NBCOLORS; i++)
+  {
+    Standard_Real aHue = std::fmod (theHueFrom + i * aHueStep, 360.);
+    if (aHue < 0.)
+    {
+      aHue += 360.;
+    }
+    aGrid(i).SetValues (theLightness, 130., aHue, Quantity_TOC_CIELch);
+  }
+
+  // and compute distances between each two colors in a grid
+  TColStd_Array1OfReal aMetric (0, NBCOLORS - 1);
+  Standard_Real aLength = 0.;
+  for (Standard_Integer i = 0, j = NBCOLORS - 1; i < NBCOLORS; j = i++)
+  {
+    aLength += (aMetric(i) = aGrid(i).DeltaE2000 (aGrid(j)));
+  }
+
+  // determine desired step by distance;
+  // normally we aim to distribute colors from start to end
+  // of the range, but if distance between first and last points of the range
+  // is less than that step (e.g. range is full 360 deg),
+  // then distribute by the whole 360 deg scope to ensure that first
+  // and last colors are sufficiently distanced
+  Standard_Real aDStep = (aLength - aMetric.First()) / (theNbColors - 1);
+  if (aMetric.First() < aDStep)
+  {
+    aDStep = aLength / theNbColors;
+  }
+
+  // generate sequence
+  aResult.Append(aGrid(0));
+  Standard_Real aParam = 0., aPrev = 0., aTarget = aDStep;
+  for (int i = 1; i < NBCOLORS; i++)
+  {
+    aParam = aPrev + aMetric(i);
+    while (aTarget <= aParam)
+    {
+      float aCoefPrev = float((aParam - aTarget) / (aParam - aPrev));
+      float aCoefCurr = float((aTarget - aPrev) / (aParam - aPrev));
+      Quantity_Color aColor (aGrid(i).Rgb() * aCoefCurr + aGrid(i-1).Rgb() * aCoefPrev);
+      aResult.Append (aColor);
+      aTarget += aDStep;
+    }
+    aPrev = aParam;
+  }
+  if (aResult.Length() < theNbColors)
+  {
+    aResult.Append (aGrid.Last());
+  }
+  Standard_ASSERT_VOID (aResult.Length() == theNbColors, "Failed to generate requested nb of colors");
+  return aResult;
+}
+
+//=======================================================================
 //function : SizeHint
 //purpose  :
 //=======================================================================

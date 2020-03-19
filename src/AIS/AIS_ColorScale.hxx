@@ -228,6 +228,36 @@ public:
   //! The length of the sequence should be equal to GetNumberOfIntervals().
   Standard_EXPORT void SetColors (const Aspect_SequenceOfColor& theSeq);
 
+  //! Populates colors scale by colors of the same lightness value in CIE Lch
+  //! color space, distributed by hue, with perceptually uniform differences
+  //! between consequent colors.
+  //! See MakeUniformColors() for description of parameters.
+  void SetUniformColors (Standard_Real theLightness, 
+                         Standard_Real theHueFrom, Standard_Real theHueTo)
+  {
+    SetColors (MakeUniformColors (myNbIntervals, theLightness, theHueFrom, theHueTo));
+    SetColorType (Aspect_TOCSD_USER);
+  }
+
+  //! Generates sequence of colors of the same lightness value in CIE Lch
+  //! color space (see #Quantity_TOC_CIELch), with hue values in the specified range.
+  //! The colors are distributed across the range such as to have perceptually
+  //! same difference between neighbour colors.
+  //! For each color, maximal chroma value fitting in sRGB gamut is used.
+  //!
+  //! @param theNbColors - number of colors to generate
+  //! @param theLightness - lightness to be used (0 is black, 100 is white, 32 is
+  //!        lightness of pure blue)
+  //! @param theHueFrom - hue value at the start of the scale
+  //! @param theHueTo - hue value defining the end of the scale
+  //! 
+  //! Hue value can be out of the range [0, 360], interpreted as modulo 360.
+  //! The colors of the scale will be in the order of increasing hue if
+  //! theHueTo > theHueFrom, and decreasing otherwise.
+  Standard_EXPORT static Aspect_SequenceOfColor
+    MakeUniformColors (Standard_Integer theNbColors, Standard_Real theLightness,
+                       Standard_Real theHueFrom, Standard_Real theHueTo);
+
   //! Returns the position of labels concerning color filled rectangles, Aspect_TOCSP_RIGHT by default.
   Aspect_TypeOfColorScalePosition GetLabelPosition() const { return myLabelPos; }
 

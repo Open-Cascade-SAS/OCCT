@@ -1,0 +1,38 @@
+# Check conversion of RGB colors to CIE Lch color space
+
+# Samples are obtained (with Ref. White D65, Gamma = 1 for linear RGB) using
+# http://brucelindbloom.com/index.html?ColorCalculator.html
+# Note that for c = 0 we have h = 0 (not 270 as in the above link)
+set rgb_to_lch_samples {
+  { # black, white, 50% gray }
+  { {0 0 0} {0 0 0} }
+  { {1 1 1} {100 0 0} }
+  { {0.5 0.5 0.5} {76.0693 0 0} }
+
+  { # pure colors }
+  { {1 0 0} {53.2408 104.5518 39.9990} }
+  { {0 1 0} {87.7347 119.7759 136.0160} }
+  { {0 0 1} {32.2970 133.8076 306.2849} }
+  { {0 1 1} {91.1132 50.1209 196.3762} }
+  { {1 1 0} {97.1393 96.9054 102.8512} }
+  { {1 0 1} {60.3242 115.5407 328.2350} }
+
+  { # shades of pure red }
+  { {0.1 0 0} {16.1387 44.8334 33.9838} }
+  { {0.3 0 0} {30.3521 69.3816 39.3960} }
+  { {0.5 0 0} {38.9565 82.9828 39.9990} }
+  { {0.7 0 0} {45.4792 92.8320 39.9990} }
+  { {0.9 0 0} {50.8512 100.9436 39.9990} }
+
+  { # random colors }
+  { {0.3 0.5 0.9} {75.2228 31.8514 271.3601} }
+}
+
+foreach sample $rgb_to_lch_samples {
+  set rgb [lindex $sample 0]
+  if { $rgb == "#" } continue
+
+  set ref [lindex $sample 1]
+  set lch [vcolorconvert to lch {*}$rgb]
+  check3reals "RGB ($rgb) to Lch" {*}$lch {*}$ref 1e-4
+}

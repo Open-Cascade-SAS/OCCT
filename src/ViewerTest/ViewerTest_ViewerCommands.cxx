@@ -4831,6 +4831,14 @@ static int VColorScale (Draw_Interpretor& theDI,
       aColorScale->SetColors    (aSeq);
       aColorScale->SetColorType (Aspect_TOCSD_USER);
     }
+    else if (aFlag == "-uniform")
+    {
+      const Standard_Real aLightness = Draw::Atof (theArgVec[++anArgIter]);
+      const Standard_Real aHueStart = Draw::Atof (theArgVec[++anArgIter]);
+      const Standard_Real aHueEnd = Draw::Atof (theArgVec[++anArgIter]);
+      aColorScale->SetUniformColors (aLightness, aHueStart, aHueEnd);
+      aColorScale->SetColorType (Aspect_TOCSD_USER);
+    }
     else if (aFlag == "-labels"
           || aFlag == "-freelabels")
     {
@@ -13750,6 +13758,91 @@ static int VViewCube (Draw_Interpretor& ,
   return 0;
 }
 
+//===============================================================================================
+//function : VColorConvert
+//purpose  :
+//===============================================================================================
+static int VColorConvert (Draw_Interpretor& theDI, Standard_Integer  theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs != 6)
+  {
+    std::cerr << "Error: command syntax is incorrect, see help" << std::endl;
+    return 1;
+  }
+
+  Standard_Boolean convertFrom = (! strcasecmp (theArgVec[1], "from"));
+  if (! convertFrom && strcasecmp (theArgVec[1], "to"))
+  {
+    std::cerr << "Error: first argument must be either \"to\" or \"from\"" << std::endl;
+    return 1;
+  }
+
+  const char* aTypeStr = theArgVec[2];
+  Quantity_TypeOfColor aType = Quantity_TOC_RGB;
+  if (! strcasecmp (aTypeStr, "srgb"))
+  {
+    aType = Quantity_TOC_sRGB;
+  }
+  else if (! strcasecmp (aTypeStr, "hls"))
+  {
+    aType = Quantity_TOC_HLS;
+  }
+  else if (! strcasecmp (aTypeStr, "lab"))
+  {
+    aType = Quantity_TOC_CIELab;
+  }
+  else if (! strcasecmp (aTypeStr, "lch"))
+  {
+    aType = Quantity_TOC_CIELch;
+  }
+  else
+  {
+    std::cerr << "Error: unknown colorspace type: " << aTypeStr << std::endl;
+    return 1;
+  }
+
+  double aC1 = Draw::Atof (theArgVec[3]);
+  double aC2 = Draw::Atof (theArgVec[4]);
+  double aC3 = Draw::Atof (theArgVec[5]);
+
+  Quantity_Color aColor (aC1, aC2, aC3, convertFrom ? aType : Quantity_TOC_RGB);
+  aColor.Values (aC1, aC2, aC3, convertFrom ? Quantity_TOC_RGB : aType);
+
+  // print values with 6 decimal digits
+  char buffer[1024];
+  Sprintf (buffer, "%.6f %.6f %.6f", aC1, aC2, aC3);
+  theDI << buffer;
+
+  return 0;
+}
+ 
+//===============================================================================================
+//function : VColorDiff
+//purpose  :
+//===============================================================================================
+static int VColorDiff (Draw_Interpretor& theDI, Standard_Integer  theNbArgs, const char** theArgVec)
+{
+  if (theNbArgs != 7)
+  {
+    std::cerr << "Error: command syntax is incorrect, see help" << std::endl;
+    return 1;
+  }
+
+  double aR1 = Draw::Atof (theArgVec[1]);
+  double aG1 = Draw::Atof (theArgVec[2]);
+  double aB1 = Draw::Atof (theArgVec[3]);
+  double aR2 = Draw::Atof (theArgVec[4]);
+  double aG2 = Draw::Atof (theArgVec[5]);
+  double aB2 = Draw::Atof (theArgVec[6]);
+
+  Quantity_Color aColor1 (aR1, aG1, aB1, Quantity_TOC_RGB);
+  Quantity_Color aColor2 (aR2, aG2, aB2, Quantity_TOC_RGB);
+
+  theDI << aColor1.DeltaE2000 (aColor2);
+
+  return 0;
+}
+ 
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -13992,9 +14085,11 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:       [-labels Label1 Label2 ...] [-label Index Label]"
     "\n\t\t:       [-freeLabels NbOfLabels Label1 Label2 ...]"
     "\n\t\t:       [-xy Left=0 Bottom=0]"
+    "\n\t\t:       [-uniform lightness hue_from hue_to]"
     "\n\t\t:  -demo     - displays a color scale with demonstratio values"
     "\n\t\t:  -colors   - set colors for all intervals"
     "\n\t\t:  -color    - set color for specific interval"
+    "\n\t\t:  -uniform  - generate colors with the same lightness"
     "\n\t\t:  -textpos  - horizontal label position relative to color scale bar"
     "\n\t\t:  -labelAtBorder - vertical label position relative to color interval;"
     "\n\t\t:              at border means the value inbetween neighbor intervals,"
@@ -14006,7 +14101,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  -title    - set title"
     "\n\t\t:  -reversed - setup smooth color transition between intervals"
     "\n\t\t:  -smoothTransition - swap colorscale direction"
-    "\n\t\t:  -hueRange - set hue angles corresponding to minimum and maximum values"
+    "\n\t\t:  -hueRange - set hue angles corresponding to minimum and maximum values",
     __FILE__, VColorScale, group);
   theCommands.Add("vgraduatedtrihedron",
     "vgraduatedtrihedron : -on/-off [-xname Name] [-yname Name] [-zname Name] [-arrowlength Value]\n"
@@ -14606,4 +14701,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   -duration Seconds        animation duration in seconds",
     __FILE__, VViewCube, group);
 
+  theCommands.Add("vcolorconvert" ,
+                  "vcolorconvert {from|to} type C1 C2 C2"
+                  "\n\t\t: vcolorconvert from type C1 C2 C2: Converts color from specified color space to linear RGB"
+                  "\n\t\t: vcolorconvert to type R G B: Converts linear RGB color to specified color space"
+                  "\n\t\t: type can be sRGB, HLS, Lab, or Lch",
+                  __FILE__,VColorConvert,group);
+  theCommands.Add("vcolordiff" ,
+                  "vcolordiff R1 G1 B1 R2 G2 B2: returns CIEDE2000 color difference between two RGB colors",
+                  __FILE__,VColorDiff,group);
 }
