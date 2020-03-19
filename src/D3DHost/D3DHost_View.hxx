@@ -58,6 +58,11 @@ public:
   //! Redraw only immediate layer.
   Standard_EXPORT virtual void RedrawImmediate() Standard_OVERRIDE;
 
+  //! Fill in the dictionary with diagnostic info.
+  //! Should be called within rendering thread.
+  Standard_EXPORT virtual void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                                      Graphic3d_DiagnosticInfo theFlags) const Standard_OVERRIDE;
+
 public:
 
   //! @return true if IDirect3DDevice9Ex device has been created

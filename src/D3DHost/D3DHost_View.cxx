@@ -24,6 +24,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(D3DHost_View,OpenGl_View)
 
+namespace
+{
+  enum D3DHost_VendorId
+  {
+    D3DHost_VendorId_AMD    = 0x1002,
+    D3DHost_VendorId_NVIDIA = 0x10DE,
+    D3DHost_VendorId_Intel  = 0x8086,
+  };
+}
+
 // =======================================================================
 // function : d3dFormatError
 // purpose  :
@@ -128,6 +138,51 @@ void D3DHost_View::SetWindow (const Handle(Aspect_Window)& theWindow,
     d3dInit();
     d3dCreateRenderTarget();
   }
+}
+
+// =======================================================================
+// function : DiagnosticInformation
+// purpose  :
+// =======================================================================
+void D3DHost_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                          Graphic3d_DiagnosticInfo theFlags) const
+{
+  base_type::DiagnosticInformation (theDict, theFlags);
+  if (myD3dDevice == NULL)
+  {
+    return;
+  }
+
+  D3DCAPS9 aDevCaps;
+  memset (&aDevCaps, 0, sizeof(aDevCaps));
+  if (myD3dDevice->GetDeviceCaps (&aDevCaps) < 0)
+  {
+    return;
+  }
+
+  const UINT anAdapter = aDevCaps.AdapterOrdinal;
+  D3DADAPTER_IDENTIFIER9 aDevId;
+  memset (&aDevId, 0, sizeof(aDevId));
+  if (myD3dLib->GetAdapterIdentifier (anAdapter, 0, &aDevId) < 0)
+  {
+    return;
+  }
+
+  TCollection_AsciiString aVendorId ((int )aDevId.VendorId);
+  switch (aDevId.VendorId)
+  {
+    case D3DHost_VendorId_AMD:    aVendorId = "AMD";    break;
+    case D3DHost_VendorId_NVIDIA: aVendorId = "NVIDIA"; break;
+    case D3DHost_VendorId_Intel:  aVendorId = "Intel";  break;
+  }
+  theDict.Add ("D3Dvendor",      aVendorId);
+  theDict.Add ("D3Ddescription", aDevId.Description);
+  theDict.Add ("D3DdeviceName",  aDevId.DeviceName);
+  theDict.Add ("D3Ddriver",      aDevId.Driver);
+  theDict.Add ("D3DdeviceId",    TCollection_AsciiString((int )aDevId.DeviceId));
+  theDict.Add ("D3Dinterop",     myD3dWglFbo.IsNull() || myD3dWglFbo->D3dFallback()
+                               ? "Software Fallback"
+                               : "WGL_NV_DX_interop");
 }
 
 // =======================================================================
