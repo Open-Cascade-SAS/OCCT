@@ -56,9 +56,7 @@ BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1,
 :
   BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_CUT)
 {
-  BRepAlgoAPI_BooleanOperation* pBO=
-    (BRepAlgoAPI_BooleanOperation*) (void*) this;
-  pBO->Build();
+  Build();
 }
 //=======================================================================
 //function : BRepAlgoAPI_Cut
@@ -72,7 +70,5 @@ BRepAlgoAPI_Cut::BRepAlgoAPI_Cut(const TopoDS_Shape& S1,
   BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, 
                                (bFWD) ? BOPAlgo_CUT : BOPAlgo_CUT21)
 {
-  BRepAlgoAPI_BooleanOperation* pBO=
-    (BRepAlgoAPI_BooleanOperation*) (void*) this;
-  pBO->Build();
+  Build();
 }

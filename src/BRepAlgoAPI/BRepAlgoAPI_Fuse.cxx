@@ -56,9 +56,7 @@ BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1,
 : 
   BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_FUSE)
 {
-  BRepAlgoAPI_BooleanOperation* pBO=
-    (BRepAlgoAPI_BooleanOperation*) (void*) this;
-  pBO->Build();
+  Build();
 }
 //=======================================================================
 //function : BRepAlgoAPI_Fuse
@@ -70,7 +68,5 @@ BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1,
 : 
   BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_FUSE)
 {
-  BRepAlgoAPI_BooleanOperation* pBO=
-    (BRepAlgoAPI_BooleanOperation*) (void*) this;
-  pBO->Build();
+  Build();
 }

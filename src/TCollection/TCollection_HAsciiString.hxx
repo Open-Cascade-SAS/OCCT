@@ -72,17 +72,16 @@ public:
   //! Initializes a HAsciiString with a real value
   Standard_EXPORT TCollection_HAsciiString(const Standard_Real value);
   
-  //! Initializes a HAsciiString with a HAsciiString.
+  //! Initializes a HAsciiString with a AsciiString.
   Standard_EXPORT TCollection_HAsciiString(const TCollection_AsciiString& aString);
   
   //! Initializes a HAsciiString with a HAsciiString.
   Standard_EXPORT TCollection_HAsciiString(const Handle(TCollection_HAsciiString)& aString);
   
-  //! Initializes a HAsciiString with a HAsciiString.
+  //! Initializes a HAsciiString with a HExtendedString.
   //! If replaceNonAscii is non-null charecter, it will be used
   //! in place of any non-ascii character found in the source string.
-  //! Otherwise, raises OutOfRange exception if at least one character
-  //! in the source string is not in the "Ascii range".
+  //! Otherwise, creates UTF-8 unicode string.
   Standard_EXPORT TCollection_HAsciiString(const Handle(TCollection_HExtendedString)& aString, const Standard_Character replaceNonAscii);
   
   //! Appends <other>  to me.
