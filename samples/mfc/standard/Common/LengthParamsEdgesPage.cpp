@@ -5,8 +5,8 @@
 #include "LengthParamsEdgesPage.h"
 #include "DimensionDlg.h"
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LengthDimension.hxx>
-#include <AIS_AngleDimension.hxx>
+#include <PrsDim_LengthDimension.hxx>
+#include <PrsDim_AngleDimension.hxx>
 #include <GC_MakePlane.hxx>
 // CLengthParamsEdgesPage dialog
 
@@ -119,7 +119,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
   if (myIsAngleDimension)
   {
     // Build an angle dimension between two non-parallel edges
-    Handle(AIS_AngleDimension) anAngleDim = new AIS_AngleDimension (myFirstEdge, mySecondEdge);
+    Handle(PrsDim_AngleDimension) anAngleDim = new PrsDim_AngleDimension (myFirstEdge, mySecondEdge);
     anAngleDim->SetDimensionAspect (anAspect);
     anAngleDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
     if (aDimDlg->IsUnitsDisplayed())
@@ -131,7 +131,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
       }
       else
       {
-        anAngleDim->SetDisplaySpecialSymbol (AIS_DSS_No);
+        anAngleDim->SetDisplaySpecialSymbol (PrsDim_DisplaySpecialSymbol_No);
       }
     }
 
@@ -140,7 +140,7 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
   }
   else
   {
-    Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (myFirstEdge, mySecondEdge, aPlane->Pln());
+    Handle(PrsDim_LengthDimension) aLenDim = new PrsDim_LengthDimension (myFirstEdge, mySecondEdge, aPlane->Pln());
     aLenDim->SetDimensionAspect (anAspect);
     aLenDim->SetFlyout (aDimDlg->GetFlyout());
     if (aDimDlg->IsUnitsDisplayed())

@@ -33,12 +33,12 @@
 #include <TopExp_Explorer.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <StdSelect_ShapeTypeFilter.hxx>
-#include <AIS.hxx>
 #include <AIS_ColoredShape.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_Trihedron.hxx>
 #include <AIS_Axis.hxx>
-#include <AIS_Relation.hxx>
+#include <PrsDim.hxx>
+#include <PrsDim_Relation.hxx>
 #include <AIS_TypeFilter.hxx>
 #include <AIS_SignatureFilter.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -5441,17 +5441,17 @@ static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDe
   }
   else if (theObj->Type() == AIS_KOI_Relation)
   {
-    // AIS_Dimention and AIS_Relation
-    Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (theObj);
+    // PrsDim_Dimention and AIS_Relation
+    Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (theObj);
     switch (aRelation->KindOfDimension())
     {
-      case AIS_KOD_PLANEANGLE:     theDI << " AIS_AngleDimension"; break;
-      case AIS_KOD_LENGTH:         theDI << " AIS_Chamf2/3dDimension/AIS_LengthDimension"; break;
-      case AIS_KOD_DIAMETER:       theDI << " AIS_DiameterDimension"; break;
-      case AIS_KOD_ELLIPSERADIUS:  theDI << " AIS_EllipseRadiusDimension"; break;
-      //case AIS_KOD_FILLETRADIUS:   theDI << " AIS_FilletRadiusDimension "; break;
-      case AIS_KOD_OFFSET:         theDI << " AIS_OffsetDimension"; break;
-      case AIS_KOD_RADIUS:         theDI << " AIS_RadiusDimension"; break;
+      case PrsDim_KOD_PLANEANGLE:     theDI << " PrsDim_AngleDimension"; break;
+      case PrsDim_KOD_LENGTH:         theDI << " PrsDim_Chamf2/3dDimension/PrsDim_LengthDimension"; break;
+      case PrsDim_KOD_DIAMETER:       theDI << " PrsDim_DiameterDimension"; break;
+      case PrsDim_KOD_ELLIPSERADIUS:  theDI << " PrsDim_EllipseRadiusDimension"; break;
+      //case PrsDim_KOD_FILLETRADIUS:   theDI << " PrsDim_FilletRadiusDimension "; break;
+      case PrsDim_KOD_OFFSET:         theDI << " PrsDim_OffsetDimension"; break;
+      case PrsDim_KOD_RADIUS:         theDI << " PrsDim_RadiusDimension"; break;
       default:                     theDI << " UNKNOWN dimension"; break;
     }
   }
@@ -6133,9 +6133,9 @@ static int VEraseType( Draw_Interpretor& , Standard_Integer argc, const char** a
     if(dimension_status == -1)
       TheAISContext()->Erase(curio,Standard_False);
     else {
-      AIS_KindOfDimension KOD = Handle(AIS_Relation)::DownCast (curio)->KindOfDimension();
-      if ((dimension_status==0 && KOD == AIS_KOD_NONE)||
-	  (dimension_status==1 && KOD != AIS_KOD_NONE))
+      PrsDim_KindOfDimension KOD = Handle(PrsDim_Relation)::DownCast (curio)->KindOfDimension();
+      if ((dimension_status==0 && KOD == PrsDim_KOD_NONE)||
+	  (dimension_status==1 && KOD != PrsDim_KOD_NONE))
 	TheAISContext()->Erase(curio,Standard_False);
     }
   }
@@ -6166,9 +6166,9 @@ static int VDisplayType(Draw_Interpretor& , Standard_Integer argc, const char** 
     if(dimension_status == -1)
       TheAISContext()->Display(curio,Standard_False);
     else {
-      AIS_KindOfDimension KOD = Handle(AIS_Relation)::DownCast (curio)->KindOfDimension();
-      if ((dimension_status==0 && KOD == AIS_KOD_NONE)||
-	  (dimension_status==1 && KOD != AIS_KOD_NONE))
+      PrsDim_KindOfDimension KOD = Handle(PrsDim_Relation)::DownCast (curio)->KindOfDimension();
+      if ((dimension_status==0 && KOD == PrsDim_KOD_NONE)||
+	  (dimension_status==1 && KOD != PrsDim_KOD_NONE))
 	TheAISContext()->Display(curio,Standard_False);
     }
 
@@ -6928,17 +6928,11 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 #include <DBRep.hxx>
 #include <TopoDS_Face.hxx>
 #include <gp_Pln.hxx>
-#include <AIS_KindOfSurface.hxx>
 #include <BRepOffsetAPI_DraftAngle.hxx>
 #include <Precision.hxx>
 #include <BRepAlgo.hxx>
 #include <OSD_Environment.hxx>
 #include <DrawTrSurf.hxx>
-//#include <DbgTools.hxx>
-//#include <FeatAlgo_MakeLinearForm.hxx>
-
-
-
 
 //=======================================================================
 //function : IsValid
@@ -7000,7 +6994,7 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
   anAngle = 2*M_PI * anAngle / 360.0;
   gp_Pln aPln;
   Handle( Geom_Surface )aSurf;
-  AIS_KindOfSurface aSurfType;
+  PrsDim_KindOfSurface aSurfType;
   Standard_Real Offset;
   gp_Dir aDir;
   if(argc > 4) { // == 5
@@ -7009,7 +7003,7 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
   }
 
   TopoDS_Face face2 = TopoDS::Face(Plane);
-  if(!AIS::GetPlaneFromFace(face2, aPln, aSurf, aSurfType, Offset))
+  if(!PrsDim::GetPlaneFromFace(face2, aPln, aSurf, aSurfType, Offset))
     {
       di << "TEST : Can't find plane\n";
       return 1;

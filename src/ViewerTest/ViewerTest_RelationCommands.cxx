@@ -16,30 +16,30 @@
 
 #include <ViewerTest.hxx>
 
-#include <AIS_AngleDimension.hxx>
 #include <AIS_Circle.hxx>
-#include <AIS_ConcentricRelation.hxx>
-#include <AIS_DiameterDimension.hxx>
 #include <AIS_DisplayMode.hxx>
-#include <AIS_EqualDistanceRelation.hxx>
-#include <AIS_EqualRadiusRelation.hxx>
-#include <AIS_FixRelation.hxx>
-#include <AIS_IdenticRelation.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_KindOfRelation.hxx>
-#include <AIS_LengthDimension.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_MapOfInteractive.hxx>
-#include <AIS_OffsetDimension.hxx>
-#include <AIS_ParallelRelation.hxx>
-#include <AIS_PerpendicularRelation.hxx>
 #include <AIS_Point.hxx>
-#include <AIS_RadiusDimension.hxx>
-#include <AIS_Relation.hxx>
 #include <AIS_Shape.hxx>
-#include <AIS_SymmetricRelation.hxx>
-#include <AIS_TangentRelation.hxx>
+#include <PrsDim_AngleDimension.hxx>
+#include <PrsDim_ConcentricRelation.hxx>
+#include <PrsDim_DiameterDimension.hxx>
+#include <PrsDim_EqualDistanceRelation.hxx>
+#include <PrsDim_EqualRadiusRelation.hxx>
+#include <PrsDim_FixRelation.hxx>
+#include <PrsDim_IdenticRelation.hxx>
+#include <PrsDim_KindOfRelation.hxx>
+#include <PrsDim_LengthDimension.hxx>
+#include <PrsDim_OffsetDimension.hxx>
+#include <PrsDim_ParallelRelation.hxx>
+#include <PrsDim_PerpendicularRelation.hxx>
+#include <PrsDim_RadiusDimension.hxx>
+#include <PrsDim_Relation.hxx>
+#include <PrsDim_SymmetricRelation.hxx>
+#include <PrsDim_TangentRelation.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -89,8 +89,6 @@
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_EventManager.hxx>
-#include <AIS_InteractiveObject.hxx>
-#include <AIS_Dimension.hxx>
 
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
@@ -491,7 +489,7 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
 //function : SetDimensionParams
 //purpose  : Sets parameters for dimension
 //=======================================================================
-static void SetDimensionParams (const Handle(AIS_Dimension)& theDim,
+static void SetDimensionParams (const Handle(PrsDim_Dimension)& theDim,
                                 const NCollection_DataMap<TCollection_AsciiString, Standard_Real>& theRealParams,
                                 const NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theStringParams)
 {
@@ -585,11 +583,11 @@ static int ParseAngleDimensionParams (Standard_Integer  theArgNum,
 //function : SetAngleDimensionParams
 //purpose  : Sets parameters for angle dimension
 //=======================================================================
-static void SetAngleDimensionParams (const Handle(AIS_Dimension)& theDim,
+static void SetAngleDimensionParams (const Handle(PrsDim_Dimension)& theDim,
                                      const NCollection_DataMap<TCollection_AsciiString,
                                      TCollection_AsciiString>& theStringParams)
 {
-  Handle(AIS_AngleDimension) anAngleDim = Handle(AIS_AngleDimension)::DownCast (theDim);
+  Handle(PrsDim_AngleDimension) anAngleDim = Handle(PrsDim_AngleDimension)::DownCast (theDim);
   if (anAngleDim.IsNull())
   {
     return;
@@ -597,15 +595,15 @@ static void SetAngleDimensionParams (const Handle(AIS_Dimension)& theDim,
 
   if (theStringParams.IsBound ("type"))
   {
-    AIS_TypeOfAngle anAngleType = AIS_TOA_Interior;
+    PrsDim_TypeOfAngle anAngleType = PrsDim_TypeOfAngle_Interior;
     TCollection_AsciiString anAngleTypeStr = theStringParams.Find ("type");
     if (anAngleTypeStr.IsEqual("interior"))
     {
-      anAngleType = AIS_TOA_Interior;
+      anAngleType = PrsDim_TypeOfAngle_Interior;
     }
     else if (anAngleTypeStr.IsEqual("exterior"))
     {
-      anAngleType = AIS_TOA_Exterior;
+      anAngleType = PrsDim_TypeOfAngle_Exterior;
     }
     else
     {
@@ -616,23 +614,23 @@ static void SetAngleDimensionParams (const Handle(AIS_Dimension)& theDim,
 
   if (theStringParams.IsBound ("showarrow"))
   {
-    AIS_TypeOfAngleArrowVisibility anArrowType = AIS_TOAV_Both;
+    PrsDim_TypeOfAngleArrowVisibility anArrowType = PrsDim_TypeOfAngleArrowVisibility_Both;
     TCollection_AsciiString anArrowTypeStr = theStringParams.Find ("showarrow");
     if (anArrowTypeStr.IsEqual("both"))
     {
-      anArrowType = AIS_TOAV_Both;
+      anArrowType = PrsDim_TypeOfAngleArrowVisibility_Both;
     }
     else if (anArrowTypeStr.IsEqual("first"))
     {
-      anArrowType = AIS_TOAV_First;
+      anArrowType = PrsDim_TypeOfAngleArrowVisibility_First;
     }
     else if (anArrowTypeStr.IsEqual("second"))
     {
-      anArrowType = AIS_TOAV_Second;
+      anArrowType = PrsDim_TypeOfAngleArrowVisibility_Second;
     }
     else if (anArrowTypeStr.IsEqual("none"))
     {
-      anArrowType = AIS_TOAV_None;
+      anArrowType = PrsDim_TypeOfAngleArrowVisibility_None;
     }
     else
     {
@@ -670,22 +668,22 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
 
   TCollection_AsciiString aDimType(theArgs[2]);
   aDimType.LowerCase();
-  AIS_KindOfDimension aKindOfDimension;
+  PrsDim_KindOfDimension aKindOfDimension;
   if (aDimType == "-length")
   {
-    aKindOfDimension = AIS_KOD_LENGTH;
+    aKindOfDimension = PrsDim_KOD_LENGTH;
   }
   else if (aDimType == "-angle")
   {
-    aKindOfDimension = AIS_KOD_PLANEANGLE;
+    aKindOfDimension = PrsDim_KOD_PLANEANGLE;
   }
   else if (aDimType == "-radius")
   {
-    aKindOfDimension = AIS_KOD_RADIUS;
+    aKindOfDimension = PrsDim_KOD_RADIUS;
   }
   else if (aDimType == "-diameter" || aDimType == "-diam")
   {
-    aKindOfDimension = AIS_KOD_DIAMETER;
+    aKindOfDimension = PrsDim_KOD_DIAMETER;
   }
   else
   {
@@ -702,10 +700,10 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
   }
 
   // Build dimension
-  Handle(AIS_Dimension) aDim;
+  Handle(PrsDim_Dimension) aDim;
   switch (aKindOfDimension)
   {
-    case AIS_KOD_LENGTH:
+    case PrsDim_KOD_LENGTH:
     {
       if (aShapes.Extent() == 1)
       {
@@ -725,10 +723,10 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         TopoDS_Edge anEdge = TopoDS::Edge ((Handle(AIS_Shape)::DownCast(aShapes.First()))->Shape());
         TopoDS_Vertex aFirst, aSecond;
         TopExp::Vertices (anEdge, aFirst, aSecond);
-        aDim = new AIS_LengthDimension (anEdge, aWorkingPlane);
+        aDim = new PrsDim_LengthDimension (anEdge, aWorkingPlane);
 
         // Move standard plane (XOY, YOZ or ZOX) to the first point to make it working for dimension
-        aWorkingPlane.SetLocation (Handle(AIS_LengthDimension)::DownCast (aDim)->FirstPoint());
+        aWorkingPlane.SetLocation (Handle(PrsDim_LengthDimension)::DownCast (aDim)->FirstPoint());
       }
       else if (aShapes.Extent() == 2)
       {
@@ -762,15 +760,15 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         // Face-Face case
         if (aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_FACE)
         {
-          aDim = new AIS_LengthDimension (TopoDS::Face (aShape1), TopoDS::Face (aShape2));
+          aDim = new PrsDim_LengthDimension (TopoDS::Face (aShape1), TopoDS::Face (aShape2));
         }
         else if (aShape1.ShapeType() == TopAbs_FACE && aShape2.ShapeType() == TopAbs_EDGE)
         {
-          aDim = new AIS_LengthDimension (TopoDS::Face (aShape1), TopoDS::Edge (aShape2));
+          aDim = new PrsDim_LengthDimension (TopoDS::Face (aShape1), TopoDS::Edge (aShape2));
         }
         else if (aShape1.ShapeType() == TopAbs_EDGE && aShape2.ShapeType() == TopAbs_FACE)
         {
-          aDim = new AIS_LengthDimension (TopoDS::Face (aShape2), TopoDS::Edge (aShape1));
+          aDim = new PrsDim_LengthDimension (TopoDS::Face (aShape2), TopoDS::Edge (aShape1));
         }
         else
         {
@@ -789,7 +787,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
             aWorkingPlane.SetLocation (BRep_Tool::Pnt (TopoDS::Vertex (aShape2)));
           }
 
-          aDim = new AIS_LengthDimension (aShape1, aShape2, aWorkingPlane);
+          aDim = new PrsDim_LengthDimension (aShape1, aShape2, aWorkingPlane);
         }
       }
       else
@@ -800,13 +798,13 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
 
       break;
     }
-    case AIS_KOD_PLANEANGLE:
+    case PrsDim_KOD_PLANEANGLE:
     {
       if (aShapes.Extent() == 1 && aShapes.First()->Type()==AIS_KOI_Shape)
       {
         Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First());
         if (aShape->Shape().ShapeType() == TopAbs_FACE)
-          aDim = new AIS_AngleDimension (TopoDS::Face(aShape->Shape()));
+          aDim = new PrsDim_AngleDimension (TopoDS::Face(aShape->Shape()));
       }
       if (aShapes.Extent() == 2)
       {
@@ -815,7 +813,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         if (!aShape1.IsNull() && !aShape2.IsNull()
           && aShape1->Shape().ShapeType() == TopAbs_EDGE
           && aShape2->Shape().ShapeType() == TopAbs_EDGE)
-          aDim = new AIS_AngleDimension (TopoDS::Edge(aShape1->Shape()),TopoDS::Edge(aShape2->Shape()));
+          aDim = new PrsDim_AngleDimension (TopoDS::Edge(aShape1->Shape()),TopoDS::Edge(aShape2->Shape()));
         else
         {
           std::cerr << theArgs[0] << ": wrong shapes for angle dimension.\n";
@@ -839,7 +837,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         if (aPoint.IsNull())
           return 1;
         aP3 = aPoint->Component()->Pnt();
-        aDim = new AIS_AngleDimension (aP1, aP2, aP3);
+        aDim = new PrsDim_AngleDimension (aP1, aP2, aP3);
       }
       else
       {
@@ -849,7 +847,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
 
       break;
     }
-    case AIS_KOD_RADIUS: // radius of the circle
+    case PrsDim_KOD_RADIUS: // radius of the circle
     {
       gp_Pnt anAnchor;
       bool hasAnchor = false;
@@ -874,16 +872,16 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         gp_Circ aCircle = aShapeCirc->Circle()->Circ();
         if (hasAnchor)
         {
-          aDim = new AIS_RadiusDimension (aCircle, anAnchor);
+          aDim = new PrsDim_RadiusDimension (aCircle, anAnchor);
         }
         else
         {
-          aDim = new AIS_RadiusDimension (aCircle);
+          aDim = new PrsDim_RadiusDimension (aCircle);
         }
       }
       else if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aShapes.First()))
       {
-        Handle(AIS_RadiusDimension) aRadDim = new AIS_RadiusDimension (aShape->Shape());
+        Handle(PrsDim_RadiusDimension) aRadDim = new PrsDim_RadiusDimension (aShape->Shape());
         if (hasAnchor)
         {
           aRadDim->SetMeasuredGeometry (aShape->Shape(), anAnchor);
@@ -897,7 +895,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
       }
       break;
     }
-    case AIS_KOD_DIAMETER:
+    case PrsDim_KOD_DIAMETER:
     {
       if (aShapes.Extent() == 1)
       {
@@ -905,7 +903,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
         {
           Handle(AIS_Circle) aShape = Handle(AIS_Circle)::DownCast (aShapes.First());
           gp_Circ aCircle = aShape->Circle()->Circ();
-          aDim = new AIS_DiameterDimension (aCircle);
+          aDim = new PrsDim_DiameterDimension (aCircle);
         }
         else
         {
@@ -915,7 +913,7 @@ static int VDimBuilder (Draw_Interpretor& /*theDi*/,
             std::cerr << "Error: shape for radius is of wrong type.\n";
             return 1;
           }
-          aDim = new AIS_DiameterDimension (aShape->Shape());
+          aDim = new PrsDim_DiameterDimension (aShape->Shape());
         }
       }
       else
@@ -984,56 +982,56 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
   TCollection_AsciiString aName (theArgs[1]);
   TCollection_AsciiString aType (theArgs[2]);
 
-  AIS_KindOfRelation aKindOfRelation = AIS_KOR_NONE;
+  PrsDim_KindOfRelation aKindOfRelation = PrsDim_KOR_NONE;
   if (aType == "-concentric")
   {
-    aKindOfRelation = AIS_KOR_CONCENTRIC;
+    aKindOfRelation = PrsDim_KOR_CONCENTRIC;
   }
   else if (aType == "-equaldistance")
   {
-    aKindOfRelation = AIS_KOR_EQUALDISTANCE;
+    aKindOfRelation = PrsDim_KOR_EQUALDISTANCE;
   }
   else if (aType == "-equalradius")
   {
-    aKindOfRelation = AIS_KOR_EQUALRADIUS;
+    aKindOfRelation = PrsDim_KOR_EQUALRADIUS;
   }
   else if (aType == "-fix")
   {
-    aKindOfRelation = AIS_KOR_FIX;
+    aKindOfRelation = PrsDim_KOR_FIX;
   }
   else if (aType == "-identic")
   {
-    aKindOfRelation = AIS_KOR_IDENTIC;
+    aKindOfRelation = PrsDim_KOR_IDENTIC;
   }
   else if (aType == "-offset")
   {
-    aKindOfRelation = AIS_KOR_OFFSET;
+    aKindOfRelation = PrsDim_KOR_OFFSET;
   }
   else if (aType == "-parallel")
   {
-    aKindOfRelation = AIS_KOR_PARALLEL;
+    aKindOfRelation = PrsDim_KOR_PARALLEL;
   }
   else if (aType == "-perpendicular")
   {
-    aKindOfRelation = AIS_KOR_PERPENDICULAR;
+    aKindOfRelation = PrsDim_KOR_PERPENDICULAR;
   }
   else if (aType == "-tangent")
   {
-    aKindOfRelation = AIS_KOR_TANGENT;
+    aKindOfRelation = PrsDim_KOR_TANGENT;
   }
   else if (aType == "-symmetric")
   {
-    aKindOfRelation = AIS_KOR_SYMMETRIC;
+    aKindOfRelation = PrsDim_KOR_SYMMETRIC;
   }
 
   TopTools_ListOfShape aShapes;
   ViewerTest::GetSelectedShapes (aShapes);
 
   // Build relation.
-  Handle(AIS_Relation) aRelation;
+  Handle(PrsDim_Relation) aRelation;
   switch (aKindOfRelation)
   {
-    case AIS_KOR_CONCENTRIC:
+    case PrsDim_KOR_CONCENTRIC:
     {
       if (aShapes.Extent() != 2)
       {
@@ -1058,12 +1056,11 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
       gp_Pnt            C = aCurve1.Value (0.75);
       GC_MakePlane      aMkPlane (aCenter1, B, C);
 
-      aRelation = new AIS_ConcentricRelation (aShape1, aShape2, aMkPlane.Value());
+      aRelation = new PrsDim_ConcentricRelation (aShape1, aShape2, aMkPlane.Value());
 
       break;
     }
-
-    case AIS_KOR_EQUALDISTANCE:
+    case PrsDim_KOR_EQUALDISTANCE:
     {
       if (aShapes.Extent() != 4)
       {
@@ -1129,16 +1126,11 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
       }
 
       GC_MakePlane aMkPlane (A, B, C);
-      aRelation = new AIS_EqualDistanceRelation (aSelectedShapes[0],
-                                                 aSelectedShapes[1],
-                                                 aSelectedShapes[2],
-                                                 aSelectedShapes[3],
-                                                 aMkPlane.Value());
+      aRelation = new PrsDim_EqualDistanceRelation (aSelectedShapes[0], aSelectedShapes[1], aSelectedShapes[2], aSelectedShapes[3], aMkPlane.Value());
 
       break;
     }
-
-    case AIS_KOR_EQUALRADIUS:
+    case PrsDim_KOR_EQUALRADIUS:
     {
       if (aShapes.Extent() != 2 && aShapes.Extent() != 1)
       {
@@ -1163,11 +1155,10 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
       gp_Pnt            C = aCurve1.Value (0.9);
       GC_MakePlane      aMkPlane (A, B, C);
 
-      aRelation = new AIS_EqualRadiusRelation (anEdge1, anEdge2, aMkPlane.Value());
+      aRelation = new PrsDim_EqualRadiusRelation (anEdge1, anEdge2, aMkPlane.Value());
       break;
     }
-
-    case AIS_KOR_FIX:
+    case PrsDim_KOR_FIX:
     {
       if (aShapes.Extent() != 1)
       {
@@ -1190,11 +1181,10 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
       gp_Pnt C (B.X() + 5.0, B.Y() + 5.0, B.Z() + 5.0);
       GC_MakePlane aMkPlane (A, D, C);
 
-      aRelation = new AIS_FixRelation (anEdge, aMkPlane.Value());
+      aRelation = new PrsDim_FixRelation (anEdge, aMkPlane.Value());
       break;
     }
-
-    case AIS_KOR_IDENTIC:
+    case PrsDim_KOR_IDENTIC:
     {
       if (aShapes.Extent() != 2)
       {
@@ -1261,11 +1251,10 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
       }
 
       GC_MakePlane aMkPlane (A ,B ,C);
-      aRelation = new AIS_IdenticRelation (aShapeA, aShapeB, aMkPlane.Value());
+      aRelation = new PrsDim_IdenticRelation (aShapeA, aShapeB, aMkPlane.Value());
       break;
     }
-
-    case AIS_KOR_OFFSET:
+    case PrsDim_KOR_OFFSET:
     {
       if (aShapes.Extent() != 2)
       {
@@ -1294,13 +1283,10 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
       Standard_Real aDist = Round (sqrt (aDelta.SquareDistance (1)) * 10.0) / 10.0;
       TCollection_ExtendedString aMessage (TCollection_ExtendedString ("offset=") + TCollection_ExtendedString (aDist));
-
-      aRelation = new AIS_OffsetDimension (aFace1, aFace2, aDist, aMessage);
-
+      aRelation = new PrsDim_OffsetDimension (aFace1, aFace2, aDist, aMessage);
       break;
     }
-
-    case AIS_KOR_PARALLEL:
+    case PrsDim_KOR_PARALLEL:
     {
       if (aShapes.Extent() != 2)
       {
@@ -1331,7 +1317,7 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
         GC_MakePlane aMkPlane (A, B, C);
 
-        aRelation = new AIS_ParallelRelation (anEdgeA, anEdgeB, aMkPlane.Value());
+        aRelation = new PrsDim_ParallelRelation (anEdgeA, anEdgeB, aMkPlane.Value());
       }
       else
       {
@@ -1359,12 +1345,11 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
         GC_MakePlane aMkPlane (A, B, C);
 
-        aRelation = new AIS_ParallelRelation (aFaceA, aFaceB, aMkPlane.Value());
+        aRelation = new PrsDim_ParallelRelation (aFaceA, aFaceB, aMkPlane.Value());
       }
       break;
     }
-
-    case AIS_KOR_PERPENDICULAR:
+    case PrsDim_KOR_PERPENDICULAR:
     {
       if (aShapes.Extent() != 2)
       {
@@ -1389,7 +1374,7 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
         GC_MakePlane aMkPlane (A, B, C);
 
-        aRelation = new AIS_PerpendicularRelation (anEdgeA, anEdgeB, aMkPlane.Value());
+        aRelation = new PrsDim_PerpendicularRelation (anEdgeA, anEdgeB, aMkPlane.Value());
       }
       else
       {
@@ -1411,13 +1396,12 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
         GC_MakePlane aMkPlane (A, B, C);
 
-        aRelation = new AIS_PerpendicularRelation (aFaceA, aFaceB);
+        aRelation = new PrsDim_PerpendicularRelation (aFaceA, aFaceB);
       }
 
       break;
     }
-
-    case AIS_KOR_TANGENT:
+    case PrsDim_KOR_TANGENT:
     {
       if (aShapes.Extent() != 2)
       {
@@ -1442,7 +1426,7 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
         GC_MakePlane aMkPlane (A,B,C);
 
-        aRelation = new AIS_TangentRelation (anEdgeA, anEdgeB, aMkPlane.Value());
+        aRelation = new PrsDim_TangentRelation (anEdgeA, anEdgeB, aMkPlane.Value());
       }
       else
       {
@@ -1464,12 +1448,11 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
         GC_MakePlane aMkPlane (A,B,C);
 
-        aRelation = new AIS_TangentRelation (aFaceA, aFaceB, aMkPlane.Value());
+        aRelation = new PrsDim_TangentRelation (aFaceA, aFaceB, aMkPlane.Value());
       }
       break;
     }
-
-    case AIS_KOR_SYMMETRIC:
+    case PrsDim_KOR_SYMMETRIC:
     {
       if (aShapes.Extent() != 3)
       {
@@ -1515,7 +1498,7 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
 
         GC_MakePlane aMkPlane (A, B, C);
 
-        aRelation = new AIS_SymmetricRelation (anEdgeA, anEdgeB, anEdgeC, aMkPlane.Value());
+        aRelation = new PrsDim_SymmetricRelation (anEdgeA, anEdgeB, anEdgeC, aMkPlane.Value());
       }
       else
       {
@@ -1531,13 +1514,12 @@ static int VRelationBuilder (Draw_Interpretor& /*theDi*/,
         gp_Pnt A = BRep_Tool::Pnt (Va);
 
         GC_MakePlane aMkPlane(A, B, C);
-        aRelation = new AIS_SymmetricRelation (anEdgeA, aVertexB, aVertexC, aMkPlane.Value());
+        aRelation = new PrsDim_SymmetricRelation (anEdgeA, aVertexB, aVertexC, aMkPlane.Value());
       }
 
       break;
     }
-
-    case AIS_KOR_NONE:
+    case PrsDim_KOR_NONE:
     {
       std::cerr << "Error: Unknown type of relation!\n";
       return 1;
@@ -1575,7 +1557,7 @@ static int VDimParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const
     theDi << theArgVec[0] << "error: no object with this name.\n";
     return 1;
   }
-  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
+  Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast (anObject);
   if (aDim.IsNull())
   {
     theDi << theArgVec[0] << "error: no dimension with this name.\n";
@@ -1633,7 +1615,7 @@ static int VLengthParam (Draw_Interpretor&, Standard_Integer theArgNum, const ch
     return 1;
   }
 
-  Handle(AIS_LengthDimension) aLengthDim = Handle(AIS_LengthDimension)::DownCast (anObject);
+  Handle(PrsDim_LengthDimension) aLengthDim = Handle(PrsDim_LengthDimension)::DownCast (anObject);
   if (aLengthDim.IsNull())
   {
     std::cout << theArgVec[0] << "error: no length dimension with this name.\n";
@@ -1735,7 +1717,7 @@ static int VAngleParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, con
     return 1;
   }
 
-  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
+  Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast (anObject);
   if (aDim.IsNull())
   {
     theDi << theArgVec[0] << "error: no dimension with this name.\n";
@@ -1853,36 +1835,36 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
     // Set text position, update relation or dimension.
     if (aPickedObj->Type() == AIS_KOI_Relation)
     {
-      Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (aPickedObj);
+      Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (aPickedObj);
       aPoint = Get3DPointAtMousePosition();
       aRelation->SetPosition (aPoint);
       TheAISContext()->Redisplay (aRelation, Standard_True);
     }
     else
     {
-      Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (aPickedObj);
+      Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast (aPickedObj);
       gp_Pnt aFirstPoint, aSecondPoint;
-      if (aDim->KindOfDimension() == AIS_KOD_PLANEANGLE)
+      if (aDim->KindOfDimension() == PrsDim_KOD_PLANEANGLE)
       {
-        Handle(AIS_AngleDimension) anAngleDim = Handle(AIS_AngleDimension)::DownCast (aDim);
+        Handle(PrsDim_AngleDimension) anAngleDim = Handle(PrsDim_AngleDimension)::DownCast (aDim);
         aFirstPoint = anAngleDim->FirstPoint();
         aSecondPoint = anAngleDim->SecondPoint();
       }
-      else if (aDim->KindOfDimension() == AIS_KOD_LENGTH)
+      else if (aDim->KindOfDimension() == PrsDim_KOD_LENGTH)
       {
-        Handle(AIS_LengthDimension) aLengthDim = Handle(AIS_LengthDimension)::DownCast (aDim);
+        Handle(PrsDim_LengthDimension) aLengthDim = Handle(PrsDim_LengthDimension)::DownCast (aDim);
         aFirstPoint = aLengthDim->FirstPoint();
         aSecondPoint = aLengthDim->SecondPoint();
       }
-      else if (aDim->KindOfDimension() == AIS_KOD_RADIUS)
+      else if (aDim->KindOfDimension() == PrsDim_KOD_RADIUS)
       {
-        Handle(AIS_RadiusDimension) aRadiusDim = Handle(AIS_RadiusDimension)::DownCast (aDim);
+        Handle(PrsDim_RadiusDimension) aRadiusDim = Handle(PrsDim_RadiusDimension)::DownCast (aDim);
         aFirstPoint = aRadiusDim->AnchorPoint();
         aSecondPoint = aRadiusDim->Circle().Location();
       }
-      else if (aDim->KindOfDimension() == AIS_KOD_DIAMETER)
+      else if (aDim->KindOfDimension() == PrsDim_KOD_DIAMETER)
       {
-        Handle(AIS_DiameterDimension) aDiameterDim = Handle(AIS_DiameterDimension)::DownCast (aDim);
+        Handle(PrsDim_DiameterDimension) aDiameterDim = Handle(PrsDim_DiameterDimension)::DownCast (aDim);
         aFirstPoint = aDiameterDim->AnchorPoint();
         aSecondPoint = aDiameterDim->Circle().Location();
       }
@@ -1901,13 +1883,13 @@ static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const 
   // Set text position, update relation or dimension.
   if (aPickedObj->Type() == AIS_KOI_Relation)
   {
-    Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (aPickedObj);
+    Handle(PrsDim_Relation) aRelation = Handle(PrsDim_Relation)::DownCast (aPickedObj);
     aRelation->SetPosition (aPoint);
     TheAISContext()->Redisplay (aRelation, Standard_True);
   }
   else
   {
-    Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (aPickedObj);
+    Handle(PrsDim_Dimension) aDim = Handle(PrsDim_Dimension)::DownCast (aPickedObj);
     aDim->SetTextPosition (aPoint);
     TheAISContext()->Redisplay (aDim, Standard_True);
   }

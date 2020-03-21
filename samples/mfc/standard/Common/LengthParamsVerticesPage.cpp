@@ -6,7 +6,7 @@
 #include "DimensionDlg.h"
 #include <Standard_Macro.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LengthDimension.hxx>
+#include <PrsDim_LengthDimension.hxx>
 #include <GC_MakePlane.hxx>
 
 
@@ -103,7 +103,7 @@ void CLengthParamsVerticesPage::OnBnClickedVertex2Btn()
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(this->GetParentOwner());
 
-  Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (aP1, aP2, aPlane->Pln());
+  Handle(PrsDim_LengthDimension) aLenDim = new PrsDim_LengthDimension (aP1, aP2, aPlane->Pln());
 
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d (Standard_False);

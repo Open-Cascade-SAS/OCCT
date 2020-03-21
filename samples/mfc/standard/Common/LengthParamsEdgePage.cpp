@@ -7,7 +7,7 @@
 
 #include <Standard_Macro.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LengthDimension.hxx>
+#include <PrsDim_LengthDimension.hxx>
 #include <GC_MakePlane.hxx>
 #include <TopExp.hxx>
 
@@ -91,7 +91,7 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
 
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(GetParentOwner());
 
-  Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (TopoDS::Edge (anEdge), aPlane->Pln());
+  Handle(PrsDim_LengthDimension) aLenDim = new PrsDim_LengthDimension (TopoDS::Edge (anEdge), aPlane->Pln());
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d (Standard_False);
   anAspect->MakeText3d (aDimDlg->GetTextType());

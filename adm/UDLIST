@@ -202,6 +202,7 @@ n InterfaceGraphic
 n AIS
 n Aspect
 n DsgPrs
+n PrsDim
 n Graphic3d
 n Image
 n Media

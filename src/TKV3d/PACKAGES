@@ -7,5 +7,6 @@ SelectBasics
 SelectMgr
 PrsMgr
 AIS
-DsgPrs
 StdSelect
+DsgPrs
+PrsDim

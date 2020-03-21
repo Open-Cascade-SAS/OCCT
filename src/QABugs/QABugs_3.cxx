@@ -69,7 +69,7 @@ static int BUC60623(Draw_Interpretor& di, Standard_Integer argc, const char ** a
 #include<BRepBuilderAPI_MakeVertex.hxx>
 #include<TCollection_ExtendedString.hxx>
 #include<AIS_InteractiveContext.hxx>
-#include<AIS_LengthDimension.hxx>
+#include<PrsDim_LengthDimension.hxx>
 
 static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, const char ** a)
 {
@@ -92,7 +92,7 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
   
   Handle(Geom_Plane) Plane1 = new Geom_Plane(gp_Pnt(0,0,0),gp_Dir(0,0,1)); 
   TCollection_ExtendedString Ext1("Dim1"); 
-  Handle(AIS_LengthDimension) Dim1 = new AIS_LengthDimension(V1,V2,Plane1->Pln()); 
+  Handle(PrsDim_LengthDimension) Dim1 = new PrsDim_LengthDimension(V1,V2,Plane1->Pln());
   Dim1->SetCustomValue (Draw::Atof(a[2]));
 
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();

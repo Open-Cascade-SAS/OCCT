@@ -4,8 +4,8 @@
 #include "DimensionDlg.h"
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_RadiusDimension.hxx>
-#include <AIS_DiameterDimension.hxx>
+#include <PrsDim_RadiusDimension.hxx>
+#include <PrsDim_DiameterDimension.hxx>
 #include <ElCLib.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -96,16 +96,16 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
   myAISContext->ClearSelected (Standard_False);
   CDimensionDlg *aDimDlg = (CDimensionDlg*)(this->GetParentOwner());
   // Try to create dimension if it is possible
-  Handle(AIS_Dimension) aDim;
+  Handle(PrsDim_Dimension) aDim;
   if (myIsDiameterDimension)
   {
-    aDim = new AIS_DiameterDimension (aCircle);
-    Handle(AIS_DiameterDimension)::DownCast(aDim)->SetFlyout (aDimDlg->GetFlyout());
+    aDim = new PrsDim_DiameterDimension (aCircle);
+    Handle(PrsDim_DiameterDimension)::DownCast(aDim)->SetFlyout (aDimDlg->GetFlyout());
   }
   else
   {
-    aDim = new AIS_RadiusDimension (aCircle);
-    Handle(AIS_RadiusDimension)::DownCast(aDim)->SetFlyout (aDimDlg->GetFlyout());
+    aDim = new PrsDim_RadiusDimension (aCircle);
+    Handle(PrsDim_RadiusDimension)::DownCast(aDim)->SetFlyout (aDimDlg->GetFlyout());
   }
 
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();

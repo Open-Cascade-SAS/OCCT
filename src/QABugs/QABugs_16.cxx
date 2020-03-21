@@ -36,7 +36,7 @@
 #include <TopoDS.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
-#include <AIS_AngleDimension.hxx>
+#include <PrsDim_AngleDimension.hxx>
 
 #include <Aspect_Window.hxx>
 #include <V3d_View.hxx>
@@ -241,7 +241,7 @@ static Standard_Integer BUC60972 (Draw_Interpretor& di, Standard_Integer argc, c
   //di << ExtString_aText << " " << Draw::Atof(argv[4]) << "\n";
   di << argv[5] << " " << Draw::Atof(argv[4]) << "\n";
   
-  Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond);
+  Handle(PrsDim_AngleDimension) aDim = new PrsDim_AngleDimension(aFirst, aSecond);
   aContext->Display (aDim, Standard_True);
   
   return 0;
@@ -620,7 +620,7 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Dir plndir(0, 0, 1);
   Handle(Geom_Plane) pln = new Geom_Plane(plnpt,plndir);
 
-  Handle(AIS_AngleDimension) anAngleDimension = new AIS_AngleDimension (p1.Mirrored (p2), p2, p3);
+  Handle(PrsDim_AngleDimension) anAngleDimension = new PrsDim_AngleDimension (p1.Mirrored (p2), p2, p3);
 
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect;
   anAspect->MakeArrows3d (Standard_True);

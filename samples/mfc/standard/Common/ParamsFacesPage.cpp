@@ -5,8 +5,8 @@
 #include "ParamsFacesPage.h"
 #include "DimensionDlg.h"
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LengthDimension.hxx>
-#include <AIS_AngleDimension.hxx>
+#include <PrsDim_LengthDimension.hxx>
+#include <PrsDim_AngleDimension.hxx>
 
 // CParamsFacesPage dialog
 
@@ -87,7 +87,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
   if (myIsAngleDimension)
   {
     // Build an angle dimension between two non-parallel edges
-    Handle(AIS_AngleDimension) anAngleDim = new AIS_AngleDimension (myFirstFace, mySecondFace);
+    Handle(PrsDim_AngleDimension) anAngleDim = new PrsDim_AngleDimension (myFirstFace, mySecondFace);
     anAngleDim->SetDimensionAspect (anAspect);
 
     if (aDimDlg->IsUnitsDisplayed())
@@ -99,7 +99,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
       }
       else
       {
-        anAngleDim->SetDisplaySpecialSymbol (AIS_DSS_No);
+        anAngleDim->SetDisplaySpecialSymbol (PrsDim_DisplaySpecialSymbol_No);
       }
     }
 
@@ -108,7 +108,7 @@ void CParamsFacesPage::OnBnClickedFacesbtn2()
   }
   else
   {
-    Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (myFirstFace, mySecondFace);
+    Handle(PrsDim_LengthDimension) aLenDim = new PrsDim_LengthDimension (myFirstFace, mySecondFace);
     aLenDim->SetDimensionAspect (anAspect);
 
     if (aLenDim->DimensionAspect()->IsUnitsDisplayed())

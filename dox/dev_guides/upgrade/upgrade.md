@@ -1900,6 +1900,11 @@ The default value of Prs3d_Drawer::DeviationAngle() property has been changed fr
 Methods computing HLR presentation within *PrsMgr_PresentableObject::Compute()* have been renamed to *PrsMgr_PresentableObject::computeHLR()*
 and now accept *Graphic3d_Camera* object instead of removed *Prs3d_Projector*.
 
+@subsection upgrade_750_dimensions Dimension and Relation presentations moved from AIS to PrsDim
+
+Presentation classes displaying Dimensions and Relations have been moved from *AIS* package to *PrsDim*.
+Corresponding classes should be renamed in application code (like *AIS_LengthDimension* -> *PrsDim_LengthDimension*).
+
 @subsection upgrade_750_sensitiveEntity Select3D_SensitiveEntity interface change
 
 The method Select3D_SensitiveEntity::NbSubElements() has been changed to be constant. Select3D_SensitiveEntity subclasses at application level should be updated accordingly.

@@ -6,8 +6,7 @@
 #include "DimensionDlg.h"
 
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_LengthDimension.hxx>
-#include <AIS_AngleDimension.hxx>
+#include <PrsDim_AngleDimension.hxx>
 #include <BRep_Tool.hxx>
 #include <GC_MakePlane.hxx>
 #include <Prs3d_DimensionAspect.hxx>
@@ -128,7 +127,7 @@ void CAngleParamsVerticesPage::OnBnClickedVertex3Btn()
   GC_MakePlane aPlaneBuilder (aP1,aP2,aP3);
 
   Handle(Geom_Plane) aPlane = aPlaneBuilder.Value();
-  Handle(AIS_AngleDimension) anAngleDim = new AIS_AngleDimension (aP1,aP2,aP3);
+  Handle(PrsDim_AngleDimension) anAngleDim = new PrsDim_AngleDimension (aP1,aP2,aP3);
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
   anAspect->MakeArrows3d (Standard_False);
   anAspect->MakeText3d (aDimDlg->GetTextType());
@@ -146,7 +145,7 @@ void CAngleParamsVerticesPage::OnBnClickedVertex3Btn()
     }
     else // radians - no special symbol
     {
-      anAngleDim->SetDisplaySpecialSymbol (AIS_DSS_No);
+      anAngleDim->SetDisplaySpecialSymbol (PrsDim_DisplaySpecialSymbol_No);
     }
   }
   anAngleDim->SetDimensionAspect (anAspect);

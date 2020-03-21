@@ -14,7 +14,7 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
-#include <AIS_Relation.hxx>
+#include <PrsDim_Relation.hxx>
 #include <Standard_GUID.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Standard_Type.hxx>
@@ -181,7 +181,7 @@ Standard_Boolean TPrsStd_ConstraintDriver::Update (const TDF_Label& aLabel,
   
   Handle(TDataXtd_Position) Position;
   if (aLabel.FindAttribute(TDataXtd_Position::GetID(),Position)) {
-    Handle(AIS_Relation)::DownCast(anAISObject)->SetPosition(Position->GetPosition());
+    Handle(PrsDim_Relation)::DownCast(anAISObject)->SetPosition(Position->GetPosition());
   }
 
   if (anAISObject->HasInteractiveContext()) {

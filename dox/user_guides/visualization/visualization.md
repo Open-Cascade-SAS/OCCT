@@ -962,26 +962,26 @@ This command can also draw a sphere surface or a volume with a large amount of p
 
 The **Relation** is made up of constraints on one or more interactive shapes and the corresponding reference geometry. For example, you might want to constrain two edges in a parallel relation. This constraint is considered as an object in its own right, and is shown as a sensitive primitive. This takes the graphic form of a perpendicular arrow marked with the || symbol and lying between the two edges.
 
-The following relations are provided by *AIS*:
-  * *AIS_ConcentricRelation* 
-  * *AIS_FixRelation*
-  * *AIS_IdenticRelation* 
-  * *AIS_ParallelRelation*
-  * *AIS_PerpendicularRelation*
-  * *AIS_Relation*
-  * *AIS_SymmetricRelation*
-  * *AIS_TangentRelation*
+The following relations are provided by *PrsDim*:
+  * *PrsDim_ConcentricRelation*
+  * *PrsDim_FixRelation*
+  * *PrsDim_IdenticRelation*
+  * *PrsDim_ParallelRelation*
+  * *PrsDim_PerpendicularRelation*
+  * *PrsDim_Relation*
+  * *PrsDim_SymmetricRelation*
+  * *PrsDim_TangentRelation*
 
 The list of relations is not exhaustive.
 
 @subsubsection occt_visu_3_5_4 Dimensions
-  * *AIS_AngleDimension*
-  * *AIS_Chamf3dDimension*
-  * *AIS_DiameterDimension*
-  * *AIS_DimensionOwner*
-  * *AIS_LengthDimension*
-  * *AIS_OffsetDimension*
-  * *AIS_RadiusDimension*
+  * *PrsDim_AngleDimension*
+  * *PrsDim_Chamf3dDimension*
+  * *PrsDim_DiameterDimension*
+  * *PrsDim_DimensionOwner*
+  * *PrsDim_LengthDimension*
+  * *PrsDim_OffsetDimension*
+  * *PrsDim_RadiusDimension*
 
 @subsubsection occt_visu_3_5_5 MeshVS_Mesh
 
