@@ -86,6 +86,7 @@
 #include <Extrema_ExtPS.hxx>
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
+#include <ElCLib.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,Standard_Transient)
 
@@ -675,129 +676,79 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
                              const TopoDS_Face& theFace,
                              TopTools_MapOfShape& theMapEdgesWithTemporaryPCurves)
 {
-  BRepAdaptor_Surface BAsurf(theFace, Standard_True); //with real bounds of face
-
-  Standard_Real Uperiod = 0., Vperiod = 0.;
   Handle(Geom_Surface) RefSurf = BRep_Tool::Surface(theRefFace);
   if (RefSurf->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
     RefSurf = (Handle(Geom_RectangularTrimmedSurface)::DownCast(RefSurf))->BasisSurface();
-  if (RefSurf->IsUPeriodic())
-    Uperiod = RefSurf->UPeriod();
-  if (RefSurf->IsVPeriodic())
-    Vperiod = RefSurf->VPeriod();
 
-  GeomAdaptor_Surface RefGAsurf(RefSurf);
+  Handle(Geom_Surface) SurfFace = BRep_Tool::Surface(theFace);
+  if (SurfFace->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface)))
+    SurfFace = (Handle(Geom_RectangularTrimmedSurface)::DownCast(SurfFace))->BasisSurface();
 
-  Standard_Real Ufirst = BAsurf.FirstUParameter(),
-    Ulast = BAsurf.LastUParameter(),
-    Vfirst = BAsurf.FirstVParameter(),
-    Vlast = BAsurf.LastVParameter();
-
-  Standard_Real u_mid = (Ufirst + Ulast)/2, v_mid = (Vfirst + Vlast)/2;
-  gp_Pnt MidPoint = BAsurf.Value(u_mid, v_mid);
-  Extrema_ExtPS ProjPS(MidPoint, RefGAsurf,
-                       Precision::PConfusion(), Precision::PConfusion());
-  Standard_Integer indmin = 1;
-  for (Standard_Integer iext = 2; iext <= ProjPS.NbExt(); iext++)
-    if (ProjPS.SquareDistance(iext) < ProjPS.SquareDistance(indmin))
-      indmin = iext;
+  Standard_Boolean ToModify = Standard_False,
+    ToTranslate = Standard_False, Y_Reverse = Standard_False;
   
-  Standard_Real uu, vv;
-  ProjPS.Point(indmin).Parameter(uu,vv);
-  //Check uu and vv
-  if (Abs(u_mid + Uperiod - uu) <= Precision::PConfusion())
-    uu = u_mid;
-  if (Abs(u_mid - uu) <= Precision::PConfusion())
-    uu = u_mid;
-  if (Abs(v_mid + Vperiod - vv) <= Precision::PConfusion())
-    vv = v_mid;
-  if (Abs(v_mid - vv) <= Precision::PConfusion())
-    vv = v_mid;
-  gp_Vec2d Translation(uu - u_mid, vv - v_mid);
+  gp_Vec2d Translation(0.,0.);
 
-  Standard_Boolean X_Reverse = Standard_False, Y_Reverse = Standard_False;
-  Standard_Real u_dx, v_dx, u_dy, v_dy;
+  //Get axes of surface of face and of surface of RefFace
+  Handle(Geom_ElementarySurface) ElemSurfFace = Handle(Geom_ElementarySurface)::DownCast(SurfFace);
+  Handle(Geom_ElementarySurface) ElemRefSurf = Handle(Geom_ElementarySurface)::DownCast(RefSurf);
 
-  Standard_Real Delta = (Precision::IsInfinite(Ufirst) || Precision::IsInfinite(Ulast))?
-    1. : (Ulast - Ufirst)/4;
-  Standard_Real Offset = (Uperiod == 0.)? Delta : Min(Uperiod/8, Delta);
-  Standard_Real u1 = u_mid + Offset, v1 = v_mid;
-  gp_Pnt DX = BAsurf.Value(u1, v1);
-  ProjPS.Perform(DX);
-  indmin = 1;
-  for (Standard_Integer iext = 2; iext <= ProjPS.NbExt(); iext++)
-    if (ProjPS.SquareDistance(iext) < ProjPS.SquareDistance(indmin))
-      indmin = iext;
-
-  ProjPS.Point(indmin).Parameter(u_dx, v_dx);
-  if (Uperiod != 0. &&
-      Abs(uu - u_dx) > Uperiod/2)
+  if (!ElemSurfFace.IsNull() && !ElemRefSurf.IsNull())
   {
-    if (uu   < Uperiod/2 &&
-        u_dx > Uperiod/2)
-      X_Reverse = Standard_True;
-  }
-  else if (u_dx < uu)
-    X_Reverse = Standard_True;
-
-  Delta = (Precision::IsInfinite(Vfirst) || Precision::IsInfinite(Vlast))?
-    1. : (Vlast - Vfirst)/4;
-  Offset = (Vperiod == 0.)? Delta : Min(Vperiod/8, Delta);
-  Standard_Real u2 = u_mid, v2 = v_mid + Offset;
-  gp_Pnt DY = BAsurf.Value(u2, v2);
-  ProjPS.Perform(DY);
-  indmin = 1;
-  for (Standard_Integer iext = 2; iext <= ProjPS.NbExt(); iext++)
-    if (ProjPS.SquareDistance(iext) < ProjPS.SquareDistance(indmin))
-      indmin = iext;
+    gp_Ax3 AxisOfSurfFace = ElemSurfFace->Position();
+    gp_Ax3 AxisOfRefSurf = ElemRefSurf->Position();
   
-  ProjPS.Point(indmin).Parameter(u_dy, v_dy);
-  if (Vperiod != 0. &&
-      Abs(vv - v_dy) > Vperiod/2)
-  {
-    if (vv   < Vperiod/2 &&
-        v_dy > Vperiod/2)
+    gp_Pnt OriginRefSurf  = AxisOfRefSurf.Location();
+
+    Standard_Real aParam = ElCLib::LineParameter(AxisOfSurfFace.Axis(), OriginRefSurf);
+
+    if (Abs(aParam) > Precision::PConfusion())
+      Translation.SetY(-aParam);
+
+    gp_Dir VdirSurfFace = AxisOfSurfFace.Direction();
+    gp_Dir VdirRefSurf  = AxisOfRefSurf.Direction();
+    gp_Dir XdirSurfFace = AxisOfSurfFace.XDirection();
+    gp_Dir XdirRefSurf  = AxisOfRefSurf.XDirection();
+  
+    Standard_Real anAngle = XdirRefSurf.AngleWithRef(XdirSurfFace, VdirRefSurf);
+    if (!AxisOfRefSurf.Direct())
+      anAngle *= -1;
+
+    if (Abs(anAngle) > Precision::PConfusion())
+      Translation.SetX(anAngle);
+
+    Standard_Real ScalProd = VdirSurfFace * VdirRefSurf;
+    if (ScalProd < 0.)
       Y_Reverse = Standard_True;
-  }
-  else if (v_dy < vv)
-    Y_Reverse = Standard_True;
-    
-  gp_Trsf2d aTrsf;
-  if (X_Reverse && Y_Reverse)
-    aTrsf.SetMirror(gp::Origin2d());
-  else if (X_Reverse)
-    aTrsf.SetMirror(gp::OY2d());
-  else if (Y_Reverse)
-    aTrsf.SetMirror(gp::OX2d());
 
-  aTrsf.SetTranslationPart(Translation);
+    ToTranslate = !(Translation.XY().IsEqual(gp_XY(0.,0.), Precision::PConfusion()));
+
+    ToModify = ToTranslate || Y_Reverse;
+  }
 
   BRep_Builder BB;
   TopExp_Explorer Explo(theFace, TopAbs_EDGE);
   for (; Explo.More(); Explo.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(Explo.Current());
-    if (BRep_Tool::Degenerated(anEdge) &&
-        aTrsf.Form() != gp_Identity)
+    if (BRep_Tool::Degenerated(anEdge) && ToModify)
       continue;
     if (BRepTools::IsReallyClosed(anEdge, theFace))
       continue;
 
     Standard_Real fpar, lpar;
     Handle(Geom2d_Curve) PCurveOnRef = BRep_Tool::CurveOnSurface(anEdge, theRefFace, fpar, lpar);
-    if (!PCurveOnRef.IsNull())
+    if (!PCurveOnRef.IsNull() && !ToModify)
       continue;
 
     Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
     Handle(Geom2d_Curve) aNewPCurve = Handle(Geom2d_Curve)::DownCast(aPCurve->Copy());
-    if (aTrsf.Form() != gp_Identity)
-      aNewPCurve->Transform(aTrsf);
+    if (ToTranslate)
+      aNewPCurve->Translate(Translation);
+    if (Y_Reverse)
+      aNewPCurve->Mirror(gp::OX2d());
 
-    Standard_Real tmp_first, tmp_last;
-    Handle(Geom2d_Curve) aPCurveOnRefFace = BRep_Tool::CurveOnSurface(anEdge, theRefFace,
-                                                                      tmp_first, tmp_last);
-    if (aPCurveOnRefFace.IsNull())
-      theMapEdgesWithTemporaryPCurves.Add(anEdge);
+    theMapEdgesWithTemporaryPCurves.Add(anEdge);
     
     BB.UpdateEdge(anEdge, aNewPCurve, theRefFace, 0.);
     BB.Range(anEdge, fpar, lpar);
@@ -820,7 +771,8 @@ static void AddPCurves(const TopTools_SequenceOfShape& theFaces,
 
   for (Standard_Integer i = 1; i <= theFaces.Length(); i++)
   {
-    const TopoDS_Face& aFace = TopoDS::Face(theFaces(i));
+    TopoDS_Face aFace = TopoDS::Face(theFaces(i));
+    aFace.Orientation(TopAbs_FORWARD);
     if (aFace.IsSame(theRefFace))
       continue;
 
@@ -2189,7 +2141,9 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
 
     if (faces.Length() > 1) {
       //Add correct pcurves for the reference surface to the edges of other faces
-      AddPCurves(faces, RefFace, MapEdgesWithTemporaryPCurves);
+      TopoDS_Face F_RefFace = RefFace;
+      F_RefFace.Orientation(TopAbs_FORWARD);
+      AddPCurves(faces, F_RefFace, MapEdgesWithTemporaryPCurves);
       
       // fill in the connectivity map for selected faces
       TopTools_IndexedDataMapOfShapeListOfShape aMapEF;
