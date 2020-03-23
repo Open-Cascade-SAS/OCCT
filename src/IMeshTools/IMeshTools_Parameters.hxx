@@ -35,7 +35,8 @@ struct IMeshTools_Parameters {
     ControlSurfaceDeflection (Standard_True),
     CleanModel (Standard_True),
     AdjustMinSize (Standard_False),
-    ForceFaceDeflection (Standard_False)
+    ForceFaceDeflection (Standard_False),
+    AllowQualityDecrease (Standard_False)
   {
   }
 
@@ -89,6 +90,10 @@ struct IMeshTools_Parameters {
   //! Enables/disables usage of shape tolerances for computing face deflection.
   //! Disabled by default.
   Standard_Boolean                                 ForceFaceDeflection;
+
+  //! Allows/forbids the decrease of the quality of the generated mesh
+  //! over the existing one.
+  Standard_Boolean                                 AllowQualityDecrease;
 };
 
 #endif

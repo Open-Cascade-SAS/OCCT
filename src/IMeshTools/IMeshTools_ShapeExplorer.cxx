@@ -88,7 +88,6 @@ void IMeshTools_ShapeExplorer::Accept (
   BRepLib::ReverseSortFaces (GetShape (), aFaceList);
   TopTools_MapOfShape aFaceMap;
 
-  TopLoc_Location aDummyLoc;
   const TopLoc_Location aEmptyLoc;
   TopTools_ListIteratorOfListOfShape aFaceIter (aFaceList);
   for (; aFaceIter.More (); aFaceIter.Next ())
@@ -101,8 +100,7 @@ void IMeshTools_ShapeExplorer::Accept (
     }
 
     const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Value ());
-    const Handle (Geom_Surface)& aSurf = BRep_Tool::Surface (aFace, aDummyLoc);
-    if (aSurf.IsNull())
+    if (!BRep_Tool::IsGeometric (aFace))
     {
       continue;
     }

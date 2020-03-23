@@ -760,19 +760,36 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
 //purpose  : 
 //=======================================================================
 
-void BRepTools::Clean(const TopoDS_Shape& theShape)
+void BRepTools::Clean (const TopoDS_Shape& theShape)
 {
+  if (theShape.IsNull())
+    return;
+
   BRep_Builder aBuilder;
   Handle(Poly_Triangulation) aNullTriangulation;
   Handle(Poly_PolygonOnTriangulation) aNullPoly;
 
-  if (theShape.IsNull())
-    return;
+  TopTools_MapOfShape aShapeMap;
+  const TopLoc_Location anEmptyLoc;
 
   TopExp_Explorer aFaceIt(theShape, TopAbs_FACE);
   for (; aFaceIt.More(); aFaceIt.Next())
   {
-    const TopoDS_Face& aFace = TopoDS::Face(aFaceIt.Current());
+    TopoDS_Shape aFaceNoLoc = aFaceIt.Value();
+    aFaceNoLoc.Location (anEmptyLoc);
+    if (!aShapeMap.Add (aFaceNoLoc))
+    {
+      // the face has already been processed
+      continue;
+    }
+
+    const TopoDS_Face& aFace = TopoDS::Face (aFaceIt.Current());
+    if (!BRep_Tool::IsGeometric (aFace))
+    {
+      // Do not remove triangulation as there is no surface to recompute it.
+      continue;
+    }
+
 
     TopLoc_Location aLoc;
     const Handle(Poly_Triangulation)& aTriangulation =
@@ -782,6 +799,10 @@ void BRepTools::Clean(const TopoDS_Shape& theShape)
       continue;
 
     // Nullify edges
+    // Theoretically, the edges on the face (with surface) may have no geometry
+    // (no curve 3d or 2d or both). Such faces should be considered as invalid and
+    // are not supported by current implementation. So, both triangulation of the face
+    // and polygon on triangulation of the edges are removed unconditionally.
     TopExp_Explorer aEdgeIt(aFace, TopAbs_EDGE);
     for (; aEdgeIt.More(); aEdgeIt.Next())
     {
@@ -797,14 +818,27 @@ void BRepTools::Clean(const TopoDS_Shape& theShape)
   TopExp_Explorer aEdgeIt (theShape, TopAbs_EDGE);
   for (; aEdgeIt.More (); aEdgeIt.Next ())
   {
-    const TopoDS_Edge& aEdge = TopoDS::Edge (aEdgeIt.Current ());
+    TopoDS_Edge anEdgeNoLoc = TopoDS::Edge (aEdgeIt.Value());
+    anEdgeNoLoc.Location (anEmptyLoc);
+
+    if (!aShapeMap.Add (anEdgeNoLoc))
+    {
+      // the edge has already been processed
+      continue;
+    }
+
+    if (!BRep_Tool::IsGeometric (TopoDS::Edge (anEdgeNoLoc)))
+    {
+      // Do not remove polygon 3d as there is no curve to recompute it.
+      continue;
+    }
 
     TopLoc_Location aLoc;
-    Handle (Poly_Polygon3D) aPoly3d = BRep_Tool::Polygon3D (aEdge, aLoc);
-    if (aPoly3d.IsNull ())
+    Handle (Poly_Polygon3D) aPoly3d = BRep_Tool::Polygon3D (anEdgeNoLoc, aLoc);
+    if (aPoly3d.IsNull())
       continue;
 
-    aBuilder.UpdateEdge (aEdge, aNullPoly3d);  
+    aBuilder.UpdateEdge (anEdgeNoLoc, aNullPoly3d);
   }
 }
 //=======================================================================

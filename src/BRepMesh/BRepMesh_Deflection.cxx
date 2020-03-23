@@ -164,3 +164,20 @@ void BRepMesh_Deflection::ComputeDeflection (
 
   theDFace->SetDeflection (aFaceDeflection);
 }
+
+//=======================================================================
+// Function: IsConsistent
+// Purpose : 
+//=======================================================================
+Standard_Boolean BRepMesh_Deflection::IsConsistent (
+  const Standard_Real theCurrent,
+  const Standard_Real theRequired,
+  const Standard_Boolean theAllowDecrease,
+  const Standard_Real theRatio)
+{
+  // Check if the deflection of existing polygonal representation
+  // fits the required deflection.
+  Standard_Boolean isConsistent = theCurrent < (1. + theRatio) * theRequired
+         && (!theAllowDecrease || theCurrent > (1. - theRatio) * theRequired);
+  return isConsistent;
+}

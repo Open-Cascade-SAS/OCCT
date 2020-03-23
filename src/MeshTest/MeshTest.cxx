@@ -89,7 +89,9 @@ options:\n\
                         surface (enabled by default)\n\
         -parallel       enables parallel execution (switched off by default)\n\
         -adjust_min     enables local adjustment of min size depending on edge size (switched off by default)\n\
-        -force_face_def disables usage of shape tolerances for computing face deflection (switched off by default). \n";
+        -force_face_def disables usage of shape tolerances for computing face deflection (switched off by default)\n\
+        -decrease       enforces the meshing of the shape even if current mesh satisfies the new criteria\
+                        (switched off by default).\n";
     return 0;
   }
 
@@ -126,6 +128,8 @@ options:\n\
         aMeshParams.AdjustMinSize = Standard_True;
       else if (aOpt == "-force_face_def")
         aMeshParams.ForceFaceDeflection = Standard_True;
+      else if (aOpt == "-decrease")
+        aMeshParams.AllowQualityDecrease = Standard_True;
       else if (i < nbarg)
       {
         Standard_Real aVal = Draw::Atof(argv[i++]);

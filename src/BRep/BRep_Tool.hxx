@@ -74,6 +74,9 @@ public:
   //! Returns the  NaturalRestriction  flag of the  face.
   Standard_EXPORT static Standard_Boolean NaturalRestriction (const TopoDS_Face& F);
   
+  //! Returns True if <F> has a surface, false otherwise.
+  Standard_EXPORT static Standard_Boolean IsGeometric (const TopoDS_Face& F);
+
   //! Returns True if <E> is a 3d curve or a curve on
   //! surface.
   Standard_EXPORT static Standard_Boolean IsGeometric (const TopoDS_Edge& E);

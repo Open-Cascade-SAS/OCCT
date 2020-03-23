@@ -208,6 +208,17 @@ Handle(Geom_Curve)  BRep_Tool::Curve(const TopoDS_Edge& E,
 
 //=======================================================================
 //function : IsGeometric
+//purpose  : Returns True if <F> has a surface.
+//=======================================================================
+Standard_Boolean BRep_Tool::IsGeometric (const TopoDS_Face& F)
+{
+  const BRep_TFace* TF = static_cast<const BRep_TFace*>(F.TShape().get());
+  const Handle(Geom_Surface)& S = TF->Surface();
+  return !S.IsNull();
+}
+
+//=======================================================================
+//function : IsGeometric
 //purpose  : Returns True if <E> is a 3d curve or a curve on
 //           surface.
 //=======================================================================

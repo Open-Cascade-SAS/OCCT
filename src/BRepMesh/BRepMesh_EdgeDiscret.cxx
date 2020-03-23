@@ -155,8 +155,10 @@ void BRepMesh_EdgeDiscret::process (const Standard_Integer theEdgeIndex) const
       const Handle (Poly_Polygon3D)& aPoly3D = BRep_Tool::Polygon3D (aDEdge->GetEdge (), aLoc);
       if (!aPoly3D.IsNull ())
       {
-        if (aPoly3D->HasParameters () &&
-            aPoly3D->Deflection () < 1.1 * aDEdge->GetDeflection ())
+        if (aPoly3D->HasParameters() &&
+            BRepMesh_Deflection::IsConsistent (aPoly3D->Deflection(),
+                                               aDEdge->GetDeflection(),
+                                               myParameters.AllowQualityDecrease))
         {
           // Edge already has suitable 3d polygon.
           aDEdge->SetStatus(IMeshData_Reused);
@@ -209,8 +211,10 @@ Standard_Real BRepMesh_EdgeDiscret::checkExistingPolygonAndUpdateStatus(
 
   if (!aPolygon.IsNull ())
   {
-    Standard_Boolean isConsistent = aPolygon->HasParameters () &&
-      aPolygon->Deflection () < 1.1 * theDEdge->GetDeflection ();
+    Standard_Boolean isConsistent = aPolygon->HasParameters() &&
+      BRepMesh_Deflection::IsConsistent (aPolygon->Deflection(),
+                                         theDEdge->GetDeflection(),
+                                         myParameters.AllowQualityDecrease);
 
     if (!isConsistent)
     {

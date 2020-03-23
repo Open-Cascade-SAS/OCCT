@@ -150,9 +150,11 @@ public:
   //! edge on the face.
   Standard_EXPORT static void UpdateFaceUVPoints (const TopoDS_Face& theF);
   
-  //! Removes all the triangulations of the faces of <S>
-  //! and removes all polygons on triangulations of the
-  //! edges.
+  //! Removes all cashed polygonal representation of the shape,
+  //! i.e. the triangulations of the faces of <S> and polygons on
+  //! triangulations and polygons 3d of the edges.
+  //! In case polygonal representation is the only available representation
+  //! for the shape (shape does not have geometry) it is not removed.
   Standard_EXPORT static void Clean (const TopoDS_Shape& S);
   
   //! Removes geometry (curves and surfaces) from all edges and faces of the shape
