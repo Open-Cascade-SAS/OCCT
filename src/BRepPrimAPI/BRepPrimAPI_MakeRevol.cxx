@@ -252,7 +252,21 @@ void  BRepPrimAPI_MakeRevol::Build()
 static Standard_Boolean IsIntersect(const Handle(Adaptor3d_HCurve)& theC, 
                                     const gp_Ax1& theAxe)
 {
-  const Handle(Geom_Line) aL = new Geom_Line(theAxe);
+  const gp_Lin anAxis(theAxe);
+  //Quick test for circle
+  if (theC->GetType() == GeomAbs_Circle)
+  {
+    gp_Circ aCirc = theC->Circle();
+    const gp_Pnt& aCentr = aCirc.Location();
+    Standard_Real anR2 = aCirc.Radius();
+    anR2 -= Precision::Confusion();
+    anR2 *= anR2;
+    if (anAxis.SquareDistance(aCentr) > anR2)
+    {
+      return Standard_False;
+    }
+  }
+  const Handle(Geom_Line) aL = new Geom_Line(anAxis);
   const GeomAdaptor_Curve aLin(aL);
   const Standard_Real aParTol = theC->Resolution(Precision::Confusion());
   const Standard_Real aParF = theC->FirstParameter() + aParTol,

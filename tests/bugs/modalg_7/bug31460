@@ -1,0 +1,34 @@
+puts "========"
+puts "0031460: Modeling Algorithms - Regression: Revolution not done."
+puts "========"
+puts ""
+
+circle cir 3 2.9999999999989 0 0 0 -1 -1 0 0 3
+trim cir cir 4.71238898038469 6.28318530717959
+mkedge e cir
+
+## sector
+revol r10 e 0 0 0 1 0 0 10 1
+
+if { [isdraw r10] == 1 } {
+  if { [regexp "valid" [checkshape r10]] && [regexp "OK" [bopcheck r10 4]]} {
+    puts "OK: valid shape is created"
+  } else {
+    puts "Error: algorithm created wrong shape"
+  }
+} else {
+  puts "Error: algorithm did not create shape"
+}
+
+## full revol
+revol r360 e 0 0 0 1 0 0 360 1
+
+if { [isdraw r360] == 1 } {
+  if { [regexp "valid" [checkshape r360]] && [regexp "OK" [bopcheck r360 4]]} {
+    puts "OK: valid shape is created"
+  } else {
+    puts "Error: algorithm created wrong shape"
+  }
+} else {
+  puts "Error: algorithm did not create shape"
+}
