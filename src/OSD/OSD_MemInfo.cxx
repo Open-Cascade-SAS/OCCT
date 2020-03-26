@@ -37,6 +37,15 @@
 
 #include <OSD_MemInfo.hxx>
 
+#if defined(__EMSCRIPTEN__)
+  #include <emscripten.h>
+
+  //! Return WebAssembly heap size in bytes.
+  EM_JS(size_t, OSD_MemInfo_getModuleHeapLength, (), {
+    return Module.HEAP8.length;
+  });
+#endif
+
 // =======================================================================
 // function : OSD_MemInfo
 // purpose  :
@@ -146,23 +155,44 @@ void OSD_MemInfo::Update()
     }
   }
 
-#elif (defined(__linux__) || defined(__linux) || defined(__EMSCRIPTEN__))
-  const struct mallinfo aMI = mallinfo();
+#elif defined(__EMSCRIPTEN__)
+  if (IsActive (MemHeapUsage)
+   || IsActive (MemWorkingSet)
+   || IsActive (MemWorkingSetPeak))
+  {
+    // /proc/%d/status is not emulated - get more info from mallinfo()
+    const struct mallinfo aMI = mallinfo();
+    if (IsActive (MemHeapUsage))
+    {
+      myCounters[MemHeapUsage] = aMI.uordblks;
+    }
+    if (IsActive (MemWorkingSet))
+    {
+      myCounters[MemWorkingSet] = aMI.uordblks;
+    }
+    if (IsActive (MemWorkingSetPeak))
+    {
+      myCounters[MemWorkingSetPeak] = aMI.usmblks;
+    }
+  }
+  if (IsActive (MemVirtual))
+  {
+    myCounters[MemVirtual] = OSD_MemInfo_getModuleHeapLength();
+  }
+#elif (defined(__linux__) || defined(__linux))
   if (IsActive (MemHeapUsage))
   {
+    const struct mallinfo aMI = mallinfo();
     myCounters[MemHeapUsage] = aMI.uordblks;
   }
-#if defined(__EMSCRIPTEN__)
-  // /proc/%d/status is not emulated - get more info from mallinfo()
-  if (IsActive (MemWorkingSet))
+
+  if (!IsActive (MemVirtual)
+   && !IsActive (MemWorkingSet)
+   && !IsActive (MemWorkingSetPeak)
+   && !IsActive (MemPrivate))
   {
-    myCounters[MemWorkingSet]     = aMI.uordblks;
+    return;
   }
-  if (IsActive (MemWorkingSetPeak))
-  {
-    myCounters[MemWorkingSetPeak] = aMI.usmblks;
-  }
-#endif
 
   // use procfs on Linux
   char aBuff[4096];
