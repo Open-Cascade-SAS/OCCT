@@ -704,6 +704,14 @@ void RWObj_Reader::pushSmoothGroup (const char* theSmoothGroupIndex)
   {
     aNewSmoothGroup.Clear();
   }
+  if (myActiveSubMesh.SmoothGroup.IsEqual (aNewSmoothGroup))
+  {
+    // Ignore duplicated statements to workaround some weird OBJ files.
+    // Note that smooth groups are handled in different manner than groups and objects,
+    // which always flushed even with equal names.
+    return;
+  }
+
   if (addMesh (myActiveSubMesh, RWObj_SubMeshReason_NewSmoothGroup))
   {
     myPackedIndices.Clear(); // vertices might be duplicated after this point...
