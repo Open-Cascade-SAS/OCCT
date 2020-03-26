@@ -83,6 +83,15 @@ public:
   //! Returns position.
   Standard_EXPORT const gp_Pnt& Position() const;
 
+  //! Returns the label text.
+  const TCollection_ExtendedString& Text() const { return myText; }
+
+  //! Returns the font of the label text.
+  Standard_EXPORT const TCollection_AsciiString& FontName() const;
+
+  //! Returns the font aspect of the label text.
+  Standard_EXPORT Font_FontAspect FontAspect() const;
+
   //! Returns label orientation in the model 3D space.
   Standard_EXPORT const gp_Ax2& Orientation3D() const;
 
@@ -120,8 +129,6 @@ private:
 protected:
 
   TCollection_ExtendedString myText;
-  TCollection_AsciiString    myFont;
-  Font_FontAspect            myFontAspect;
   gp_Ax2                     myOrientation3D;
   Standard_Boolean           myHasOrientation3D;
   Standard_Boolean           myHasFlipping;

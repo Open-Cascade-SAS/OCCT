@@ -38,8 +38,6 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_TextLabel,AIS_InteractiveObject)
 //=======================================================================
 AIS_TextLabel::AIS_TextLabel()
 : myText             ("?"),
-  myFont             ("Courier"),
-  myFontAspect       (Font_FA_Regular),
   myHasOrientation3D (Standard_False),
   myHasFlipping      (Standard_False)
 {
@@ -155,8 +153,7 @@ void AIS_TextLabel::SetFontAspect (const Font_FontAspect theFontAspect)
 //=======================================================================
 void AIS_TextLabel::SetFont (Standard_CString theFont)
 {
-  myFont = theFont;
-  myDrawer->TextAspect()->SetFont (myFont.ToCString());
+  myDrawer->TextAspect()->SetFont (theFont);
 }
 
 //=======================================================================
@@ -185,6 +182,24 @@ void AIS_TextLabel::UnsetOrientation3D ()
 const gp_Pnt& AIS_TextLabel::Position() const
 {
   return myOrientation3D.Location();
+}
+
+//=======================================================================
+//function : FontName
+//purpose  :
+//=======================================================================
+const TCollection_AsciiString& AIS_TextLabel::FontName() const
+{
+  return myDrawer->TextAspect()->Aspect()->Font();
+}
+
+//=======================================================================
+//function : FontAspect
+//purpose  :
+//=======================================================================
+Font_FontAspect AIS_TextLabel::FontAspect() const
+{
+  return myDrawer->TextAspect()->Aspect()->GetTextFontAspect();
 }
 
 //=======================================================================
