@@ -20,12 +20,15 @@
 #include <Font_SystemFont.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <NCollection_Buffer.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
 #include <OSD_Environment.hxx>
 #include <Standard_Stream.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
+
+#include "Font_DejavuSans_Latin_woff.pxx"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -1034,4 +1037,15 @@ Handle(Font_SystemFont) Font_FontMgr::Font_FontMap::Find (const TCollection_Asci
     }
   }
   return Handle(Font_SystemFont)();
+}
+
+// =======================================================================
+// function : EmbedFallbackFont
+// purpose  :
+// =======================================================================
+Handle(NCollection_Buffer) Font_FontMgr::EmbedFallbackFont()
+{
+  return new NCollection_Buffer (Handle(NCollection_BaseAllocator)(),
+                                 Font_DejavuSans_Latin_woff_size,
+                                 const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
 }

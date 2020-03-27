@@ -21,8 +21,6 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
-#include "Font_DejavuSans_Latin_woff.pxx"
-
 #include <algorithm>
 
 #include <ft2build.h>
@@ -191,11 +189,8 @@ Handle(Font_FTFont) Font_FTFont::FindAndCreate (const TCollection_AsciiString& t
         aParams.ToSynthesizeItalic = true;
         break;
     }
-    Handle(NCollection_Buffer) aBuffer = new NCollection_Buffer (Handle(NCollection_BaseAllocator)(),
-                                                                 Font_DejavuSans_Latin_woff_size,
-                                                                 const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
     Handle(Font_FTFont) aFont = new Font_FTFont();
-    if (aFont->Init (aBuffer, "Embed Fallback Font", aParams, 0))
+    if (aFont->Init (Font_FontMgr::EmbedFallbackFont(), "Embed Fallback Font", aParams, 0))
     {
       aFont->myFontAspect = aFontAspect;
       return aFont;
@@ -234,10 +229,7 @@ bool Font_FTFont::FindAndInit (const TCollection_AsciiString& theFontName,
     {
       aParams.ToSynthesizeItalic = true;
     }
-    Handle(NCollection_Buffer) aBuffer = new NCollection_Buffer (Handle(NCollection_BaseAllocator)(),
-                                                                 Font_DejavuSans_Latin_woff_size,
-                                                                 const_cast<Standard_Byte*>(Font_DejavuSans_Latin_woff));
-    return Init (aBuffer, "Embed Fallback Font", aParams, 0);
+    return Init (Font_FontMgr::EmbedFallbackFont(), "Embed Fallback Font", aParams, 0);
   }
   Release();
   return false;

@@ -30,6 +30,7 @@
 
 class Font_SystemFont;
 class TCollection_HAsciiString;
+class NCollection_Buffer;
 
 DEFINE_STANDARD_HANDLE(Font_FontMgr, Standard_Transient)
 
@@ -157,6 +158,12 @@ public:
 
   //! Clear registry. Can be used for testing purposes.
   Standard_EXPORT void ClearFontDataBase();
+
+  //! Return DejaVu font as embed a single fallback font.
+  //! It can be used in cases when there is no own font file.
+  //! Note: result buffer is readonly and should not be changed,
+  //!       any data modification can lead to unpredictable consequences.
+  Standard_EXPORT static Handle(NCollection_Buffer) EmbedFallbackFont();
 
 private:
   
