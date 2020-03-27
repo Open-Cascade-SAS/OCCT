@@ -1015,7 +1015,11 @@ static void Descendants(const TopoDS_Shape&,
 
 Standard_Boolean BRepFeat_Form::IsDeleted(const TopoDS_Shape& F)
 {
-  return (myMap(F).IsEmpty());
+  if (myMap.IsBound(F))
+  {
+    return (myMap(F).IsEmpty());
+  }
+  return Standard_False;
 }
 
 //=======================================================================
@@ -1026,16 +1030,23 @@ Standard_Boolean BRepFeat_Form::IsDeleted(const TopoDS_Shape& F)
 const TopTools_ListOfShape& BRepFeat_Form::Modified
    (const TopoDS_Shape& F)
 {
+  myGenerated.Clear();
+  if (!IsDone())
+    return myGenerated;
+
+  if (mySbase.IsEqual(F))
+  {
+    myGenerated.Append(myShape);
+    return myGenerated;
+  }
+
   if (myMap.IsBound(F)) {
-    static TopTools_ListOfShape list;
-    list.Clear(); // For the second passage DPF
     TopTools_ListIteratorOfListOfShape ite(myMap(F));
     for(; ite.More(); ite.Next()) {
       const TopoDS_Shape& sh = ite.Value();
-      if(!sh.IsSame(F)) 
-        list.Append(sh);
+      if(!sh.IsSame(F) && sh.ShapeType() == F.ShapeType()) 
+        myGenerated.Append(sh);
     }
-    return list;
   }
   return myGenerated; // empty list
 }
@@ -1048,19 +1059,20 @@ const TopTools_ListOfShape& BRepFeat_Form::Modified
 const TopTools_ListOfShape& BRepFeat_Form::Generated
    (const TopoDS_Shape& S)
 {
-  if (myMap.IsBound(S) && 
-      S.ShapeType() != TopAbs_FACE) { // check if filter on face or not
-    static TopTools_ListOfShape list;
-    list.Clear(); // For the second passage DPF
+  myGenerated.Clear();
+  if (!IsDone())
+    return myGenerated;
+  if (myMap.IsBound(S) &&
+    S.ShapeType() != TopAbs_FACE) { // check if filter on face or not
     TopTools_ListIteratorOfListOfShape ite(myMap(S));
     for(; ite.More(); ite.Next()) {
       const TopoDS_Shape& sh = ite.Value();
       if(!sh.IsSame(S)) 
-        list.Append(sh);
+        myGenerated.Append(sh);
     }
-    return list;
+    return myGenerated;
   }
-  else return myGenerated;
+  return myGenerated;
 }
 
 
