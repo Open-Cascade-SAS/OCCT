@@ -784,7 +784,7 @@ void UpdateVertices(const TopoDS_Edge& aE,
     aD2=aP3D.SquareDistance(aP3Dx);
     if (aD2>aTolV2) {
       aD=sqrt(aD2);
-      aBB.UpdateVertex(aV[j], aD);
+      aBB.UpdateVertex(aV[j], aD + BOPTools_AlgoTools::DTolerance());
     }
   }
 }

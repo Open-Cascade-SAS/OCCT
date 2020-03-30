@@ -4,13 +4,6 @@ puts "=========="
 
 cpulimit 100
 
-puts "TODO OCC30438 ALL: Error : The area of result shape is"
-puts "TODO OCC30438 ALL: Error : The volume of result shape is"
-puts "TODO OCC30438 ALL: Error :  is WRONG because number of SHELL"
-puts "TODO OCC30438 ALL: Error :  is WRONG because number of SOLID"
-puts "TODO OCC30438 ALL: Error: bopargcheck has found some faulties in result"
-
-
 restore [locate_data_file bug29523_cut_extrudewire07.brep] sw 
 restore [locate_data_file bug29523_cut_toolwire07.brep] tw
 
@@ -219,7 +212,7 @@ if {[regexp "Faulties" [bopargcheck result]]} {
 # the dimensions of the shape "result" are about 1.0e+5.
 # So, this tolerance seems to be OK.
 
-checkmaxtol result -ref 18.634531507134731
+checkmaxtol result -ref 1.7319951447770465
 
 smallview
 don result sw tw

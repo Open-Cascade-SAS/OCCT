@@ -42,7 +42,7 @@ void BOPTools_AlgoTools::UpdateVertex
   (const TopoDS_Vertex& aVF,
    const TopoDS_Vertex& aNewVertex)
 {
-  Standard_Real aTolVF, aTolNewVertex, aDist, aDTol=1.e-12, aNewTol;
+  Standard_Real aTolVF, aTolNewVertex, aDist, aNewTol;
   //
   gp_Pnt aPVF=BRep_Tool::Pnt(aVF);
   gp_Pnt aPNewVertex=BRep_Tool::Pnt(aNewVertex);
@@ -54,7 +54,7 @@ void BOPTools_AlgoTools::UpdateVertex
 
   if (aNewTol>aTolVF) {
     BRep_Builder BB;
-    BB.UpdateVertex (aVF, aNewTol+aDTol);
+    BB.UpdateVertex (aVF, aNewTol + BOPTools_AlgoTools::DTolerance());
   }
 }
 
@@ -66,7 +66,7 @@ void BOPTools_AlgoTools::UpdateVertex (const TopoDS_Edge& aE,
                                        const Standard_Real  aT,
                                        const TopoDS_Vertex& aV)
 {
-  Standard_Real aTolV, aDist, aDTol=1.e-12, aFirst, aLast;
+  Standard_Real aTolV, aDist, aFirst, aLast;
   gp_Pnt  aPc; 
 
   gp_Pnt aPv=BRep_Tool::Pnt(aV);
@@ -77,7 +77,7 @@ void BOPTools_AlgoTools::UpdateVertex (const TopoDS_Edge& aE,
   aDist=aPv.Distance(aPc);
   if (aDist>aTolV) {
     BRep_Builder BB;
-    BB.UpdateVertex (aV, aDist+aDTol);
+    BB.UpdateVertex (aV, aDist + BOPTools_AlgoTools::DTolerance());
   }
 }
 //
@@ -89,7 +89,7 @@ void BOPTools_AlgoTools::UpdateVertex (const IntTools_Curve& aC,
                                        const Standard_Real  aT,
                                        const TopoDS_Vertex& aV)
 {
-  Standard_Real aTolV, aDist, aDTol=1.e-12;
+  Standard_Real aTolV, aDist;
   gp_Pnt  aPc; 
 
   gp_Pnt aPv=BRep_Tool::Pnt(aV);
@@ -100,7 +100,7 @@ void BOPTools_AlgoTools::UpdateVertex (const IntTools_Curve& aC,
   aDist=aPv.Distance(aPc);
   if (aDist>aTolV) {
     BRep_Builder BB;
-    BB.UpdateVertex (aV, aDist+aDTol);
+    BB.UpdateVertex (aV, aDist + BOPTools_AlgoTools::DTolerance());
   }
 }
 //=======================================================================
@@ -265,7 +265,7 @@ void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
                                        const TopoDS_Face& aF1,
                                        TopoDS_Vertex& aNewVertex)
 {
-  Standard_Real aTol1, aTol2, aMaxTol, delta=1.e-12; 
+  Standard_Real aTol1, aTol2, aMaxTol;
   gp_Pnt aPnt;
 
   PointOnEdge (aE1, aParm1, aPnt);
@@ -273,8 +273,7 @@ void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
   aTol1=BRep_Tool::Tolerance(aE1);
   aTol2=BRep_Tool::Tolerance(aF1);
   //
-  //aMaxTol=(aTol1>aTol2)? aTol1 : aTol2;
-  aMaxTol=aTol1+aTol2+delta;
+  aMaxTol = aTol1 + aTol2 + BOPTools_AlgoTools::DTolerance();
   //
   BRep_Builder aBB;
   aBB.MakeVertex (aNewVertex, aPnt, aMaxTol);

@@ -823,7 +823,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
     Standard_Boolean SameRange = TE->SameRange();
     Standard_Real First = myHCurve->FirstParameter();
     Standard_Real Last  = myHCurve->LastParameter();
-    Standard_Real Delta =1.e-12;
+    Standard_Real Delta = BOPTools_AlgoTools::DTolerance();
 
     Handle(BRep_TFace)& TF = *((Handle(BRep_TFace)*) &S.TShape());
     const TopLoc_Location& Floc = S.Location();
