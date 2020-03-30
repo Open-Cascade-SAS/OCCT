@@ -70,6 +70,12 @@ public:
   //! By default inverse order is used.
   Standard_EXPORT void SetInvOrder(const Standard_Boolean theInvOrder);
 
+  //! Set value of hang checking flag
+  //! if this flag = true, possible hang of algorithm is checked
+  //! and algorithm is forced to stop.
+  //! By default hang checking is used.
+  Standard_EXPORT void SetHangChecking(const Standard_Boolean theHangChecking);
+  
   //! returns False if at a moment of the approximation,
   //! the status NoApproximation has been sent by the user
   //! when more points were needed.
@@ -125,6 +131,7 @@ private:
   AppParCurves_Constraint mylastC;
   Standard_Integer myMaxSegments;
   Standard_Boolean myInvOrder;
+  Standard_Boolean myHangChecking;
 
 };
 
