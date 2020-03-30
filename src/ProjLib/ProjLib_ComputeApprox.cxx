@@ -1156,6 +1156,10 @@ void ProjLib_ComputeApprox::Perform
 
     Approx_FitAndDivide2d Fit(Deg1, Deg2, myTolerance, aTol2d, Standard_True, aFistC, aLastC);
     Fit.SetMaxSegments(aMaxSegments);
+    if (simplecase)
+    {
+      Fit.SetHangChecking(Standard_False);
+    }
     Fit.Perform(F);
 
     Standard_Real aNewTol2d = 0;
