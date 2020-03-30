@@ -1636,7 +1636,7 @@ void BOPTools_AlgoTools::MakeEdge(const IntTools_Curve& theIC,
                                   TopoDS_Edge& theE)
 {
   BRep_Builder aBB;
-  Standard_Real aNeedTol = theTolR3D + 1e-12;
+  Standard_Real aNeedTol = theTolR3D + BOPTools_AlgoTools::DTolerance();
   //
   aBB.UpdateVertex(theV1, aNeedTol);
   aBB.UpdateVertex(theV2, aNeedTol);

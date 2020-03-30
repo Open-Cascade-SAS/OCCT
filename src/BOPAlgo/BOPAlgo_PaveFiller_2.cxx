@@ -225,6 +225,14 @@ void BOPAlgo_PaveFiller::IntersectVE
     const Handle(BOPDS_PaveBlock)& aPB = theVEPairs.FindKey(i);
     Standard_Integer nE = aPB->OriginalEdge();
     //
+    TColStd_MapOfInteger aMVPB;
+    const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks (nE);
+    for (BOPDS_ListOfPaveBlock::Iterator itPB (aLPB); itPB.More(); itPB.Next())
+    {
+      aMVPB.Add (itPB.Value()->Pave1().Index());
+      aMVPB.Add (itPB.Value()->Pave2().Index());
+    }
+
     const TColStd_ListOfInteger& aLV = theVEPairs(i);
     TColStd_ListIteratorOfListOfInteger aItLV(aLV);
     for (; aItLV.More(); aItLV.Next()) {
@@ -233,6 +241,9 @@ void BOPAlgo_PaveFiller::IntersectVE
       Standard_Integer nVSD = nV;
       myDS->HasShapeSD(nV, nVSD);
       //
+      if (aMVPB.Contains (nVSD))
+        continue;
+
       BOPDS_Pair aPair(nVSD, nE);
       TColStd_ListOfInteger* pLI = aDMVSD.ChangeSeek(aPair);
       if (pLI) {
@@ -287,7 +298,21 @@ void BOPAlgo_PaveFiller::IntersectVE
     Standard_Integer nVx = UpdateVertex(nV, aTolVNew);
     // 2. Create new pave and add it as extra pave to pave block
     //    for further splitting of the edge
-    const Handle(BOPDS_PaveBlock)& aPB = aVESolver.PaveBlock();
+    const BOPDS_ListOfPaveBlock& aLPB = myDS->PaveBlocks (nE);
+    // Find the appropriate one
+    Handle(BOPDS_PaveBlock) aPB;
+    BOPDS_ListOfPaveBlock::Iterator itPB (aLPB);
+    for (; itPB.More(); itPB.Next())
+    {
+      aPB = itPB.Value();
+      Standard_Real aT1, aT2;
+      aPB->Range (aT1, aT2);
+      if (aT > aT1 && aT < aT2)
+        break;
+    }
+    if (!itPB.More())
+      continue;
+
     BOPDS_Pave aPave;
     aPave.SetIndex(nVx);
     aPave.SetParameter(aT);

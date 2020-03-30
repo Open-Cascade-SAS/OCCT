@@ -61,6 +61,15 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+public: //! @name Constants
+
+  //! Additional tolerance (delta tolerance) is used in Boolean Operations
+  //! to ensure that the tolerance of new/old entities obtained
+  //! by intersection of two shapes is slightly bigger than the actual
+  //! distances to these shapes. It helps to avoid numerical instability
+  //! which may occur when comparing distances and tolerances.
+  static Standard_Real DTolerance() { return 1.e-12; }
+
 public: //! @name Intersection of the vertices
 
   //! Intersects the vertex <theV1> with the point <theP> with tolerance <theTolP>.

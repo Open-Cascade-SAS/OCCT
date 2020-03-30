@@ -2414,7 +2414,7 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve
     Standard_Integer nVUsed;
     Standard_Real aPTol, aDTol;
     //
-    aDTol = 1.e-12;
+    aDTol = BOPTools_AlgoTools::DTolerance();
     //
     GeomAdaptor_Curve aGAC(aIC.Curve());
     aPTol = aGAC.Resolution(Max(aTolR3D, aTolV));
@@ -2459,7 +2459,8 @@ void BOPAlgo_PaveFiller::PutPaveOnCurve
       aTolV = BRep_Tool::Tolerance(aV);
       gp_Pnt aP2 = BRep_Tool::Pnt(aV);
       Standard_Real aDist = aP1.Distance(aP2);
-      if (aDist > aTolV) {
+      if (aTolV < aDist + aDTol)
+      {
         BRep_Builder().UpdateVertex(aV, aDist + aDTol);
         //
         if (!aMVTol.IsBound(nV)) {
@@ -2831,7 +2832,7 @@ void BOPAlgo_PaveFiller::PutClosingPaveOnCurve(BOPDS_Curve& aNC)
 
   if (aDistVP > aTolV)
   {
-    Standard_Integer nVn = UpdateVertex(nV, aDistVP);
+    Standard_Integer nVn = UpdateVertex(nV, aDistVP + BOPTools_AlgoTools::DTolerance());
     if (nVn != nV)
     {
       aPave.SetIndex(nVn);
