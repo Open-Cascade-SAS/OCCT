@@ -1153,7 +1153,7 @@ Handle(TransferBRep_ShapeBinder) STEPControl_ActorRead::TransferEntity(
     Standard_Integer j =1;
     Handle(StepGeom_Axis2Placement3d) anAxis1;
     Handle(StepGeom_Axis2Placement3d) anAxis2;
-    for( ; j <= 2; j++ )
+    for( ; j <= aCRepr->NbItems(); j++ )
     {
       Handle(StepRepr_RepresentationItem) anItem = aCRepr->ItemsValue(j);
       Handle(StepGeom_Axis2Placement3d) aStepAxis =
