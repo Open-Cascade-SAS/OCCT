@@ -490,7 +490,10 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution }
   }
 
   # make list of modules and platforms
-  set aModules [OS:init Modules]
+  set aModules [OS:init OS Modules]
+  if { [llength $aModules] == 0 } {
+    set aModules [OS:init VAS Products]
+  }
   if { "$thePlatform" == "ios" } {
     set goaway [list Draw]
     set aModules [osutils:juststation $goaway $aModules]
@@ -517,7 +520,10 @@ proc OS:MKPRC { theOutDir theFormat theLibType thePlatform theCmpl theSolution }
   # make list of Inspector tools
   set aTools {}
   if { "$::BUILD_Inspector" == "true" } {
-    set aTools [OS:init Tools]
+    set aTools [OS:init OS Tools]
+    if { [llength $aTools] == 0 } {
+      set aTools [OS:init VAS Tools]
+    }
 
     # create the out dir if it does not exist
     if (![file isdirectory $path/inc/inspector]) {
@@ -594,22 +600,26 @@ proc OS:MKVC { theOutDir theModules theTools theAllSolution theVcVer isUWP } {
   puts "The Visual Studio solution and project files are stored in the $theOutDir directory"
 }
 
-proc OS:init {theNameOfDefFile {os {}}} {
+proc OS:init {theVas theNameOfDefFile {os {}}} {
   set askplat $os
   set aModules {}
   if { "$os" == "" } {
     set os $::tcl_platform(os)
   }
 
+  if { ![file exists "$::path/src/${theVas}/${theNameOfDefFile}.tcl"]} {
+    return $aModules
+  }
+
   # Load list of OCCT modules and their definitions
-  source "$::path/src/OS/${theNameOfDefFile}.tcl"
-  foreach aModuleIter [OS:Modules] {
-    set aFileTcl "$::path/src/OS/${aModuleIter}.tcl"
+  source "$::path/src/${theVas}/${theNameOfDefFile}.tcl"
+  foreach aModuleIter [${theVas}:${theNameOfDefFile}] {
+    set aFileTcl "$::path/src/${theVas}/${aModuleIter}.tcl"
     if [file exists $aFileTcl] {
       source $aFileTcl
       lappend aModules $aModuleIter
     } else {
-      puts stderr "Definition file for $aModuleIter is not found in unit OS"
+      puts stderr "Definition file for $aModuleIter is not found in unit ${theVas}"
     }
   }
 

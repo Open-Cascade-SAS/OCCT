@@ -14,7 +14,7 @@
 ;#
 ;# Returns an ordered list of module names
 ;# 
-proc OS:Modules { {plat ""} } {
+proc OS:Tools { {plat ""} } {
     set ret [list TModelingData \
 	   TVisualization \
 	   TApplicationFramework \
