@@ -97,6 +97,7 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomConvert_ApproxSurface.hxx>
 
+#include <BRepTest_Objects.hxx>
 
 #include <stdio.h>
 #include <gp_Pnt.hxx>
@@ -452,13 +453,18 @@ static Standard_Integer approxplate (Draw_Interpretor & di,Standard_Integer n,co
 static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, const char** a )
 {
 #ifdef OCCT_DEBUG
-  // Chronmetrage
+  // Chronometrage
   OSD_Chronometer Chrono;
   Chrono.Reset();
   Chrono.Start();
 #endif
 
-  if (n < 7) return 1;
+  if (n < 7)
+  {
+    di.PrintHelp(a[0]);
+    return 1;
+  }
+  
   Standard_Integer NbBounds = Draw::Atoi( a[2] );
   Standard_Integer NbConstraints = Draw::Atoi( a[3] );
   Standard_Integer NbPoints = Draw::Atoi( a[4] );
@@ -473,8 +479,6 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
 				   TolCurv,
 				   MaxDeg,
 				   MaxSegments );
-  //TopoDS_Shape aLocalFace(DBRep::Get( a[5], TopAbs_FACE ) );
-  //TopoDS_Face InitFace = TopoDS::Face( aLocalFace);
   TopoDS_Face InitFace = TopoDS::Face( DBRep::Get(a[5], TopAbs_FACE) );
   if (! InitFace.IsNull())
     MakeFilling.LoadInitSurface( InitFace );
@@ -484,104 +488,94 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   TopoDS_Face F;
   gp_Pnt Point;
   Standard_Integer Order;
+  TopTools_ListOfShape ListForHistory;
   for (k = 1; k <= NbBounds; k++)
-    { 
-      E.Nullify();
-      F.Nullify();
-      //TopoDS_Shape aLocalEdge(DBRep::Get( a[i], TopAbs_EDGE ));
-      //E = TopoDS::Edge(aLocalEdge);
-      E = TopoDS::Edge( DBRep::Get(a[i], TopAbs_EDGE) );
-      if (! E.IsNull())
-	i++;
-      //aLocalFace =  DBRep::Get( a[i], TopAbs_FACE ) ;
-      //F = TopoDS::Face(aLocalFace);
-      F = TopoDS::Face( DBRep::Get(a[i], TopAbs_FACE) );
-      if (! F.IsNull())
-	i++;
-
-      Order = Draw::Atoi( a[i++] );
-      
-      if (! E.IsNull() && ! F.IsNull())
-	MakeFilling.Add( E, F, (GeomAbs_Shape)Order );
-      else if (E.IsNull())
-	{
-	  if (F.IsNull())
-	    {
-	      //std::cout<<std::endl<<"Wrong parameters"<<std::endl<<std::endl;
-	      di<<"\nWrong parameters\n\n";
-	      return 1;
-	    }
-	  else
-	    MakeFilling.Add( F, (GeomAbs_Shape)Order );
-	}
-      else
-	MakeFilling.Add( E, (GeomAbs_Shape)Order );
-    }
-  for (k = 1; k <= NbConstraints; k++)
-    { 
-      E.Nullify();
-      F.Nullify();
-      //TopoDS_Shape aLocalEdge(DBRep::Get( a[i++], TopAbs_EDGE ));
-      //E = TopoDS::Edge( aLocalEdge);
-      E = TopoDS::Edge( DBRep::Get(a[i++], TopAbs_EDGE) );
-      if (E.IsNull())
-	{
-	  //std::cout<<"Wrong parameters"<<std::endl;
-	  di<<"Wrong parameters\n";
-	  return 1;
-	}
-      //TopoDS_Shape alocalFace(DBRep::Get( a[i], TopAbs_FACE ) );
-      //F = TopoDS::Face( alocalFace);
-      F = TopoDS::Face( DBRep::Get(a[i], TopAbs_FACE) );
-      if (! F.IsNull())
-	i++;
-      
-      Order = Draw::Atoi( a[i++] );
-      
-      if (F.IsNull())
-	MakeFilling.Add( E, (GeomAbs_Shape)Order, Standard_False );
-      else
-	MakeFilling.Add( E, F, (GeomAbs_Shape)Order, Standard_False );
-    }
-  for (k = 1; k <= NbPoints; k++)
+  { 
+    E.Nullify();
+    F.Nullify();
+    E = TopoDS::Edge( DBRep::Get(a[i], TopAbs_EDGE) );
+    if (! E.IsNull())
+      i++;
+    F = TopoDS::Face( DBRep::Get(a[i], TopAbs_FACE) );
+    if (! F.IsNull())
+      i++;
+    
+    Order = Draw::Atoi( a[i++] );
+    
+    if (! E.IsNull() && ! F.IsNull())
+      MakeFilling.Add( E, F, (GeomAbs_Shape)Order );
+    else if (E.IsNull())
     {
-      if (DrawTrSurf::GetPoint( a[i], Point )) 
-	{
-	  MakeFilling.Add( Point );
-	  i++;
-	}
+      if (F.IsNull())
+      {
+        di<<"\nWrong parameters\n\n";
+        return 1;
+      }
       else
-	{
-	  Standard_Real U = Draw::Atof( a[i++] ), V = Draw::Atof( a[i++] );
-	  //aLocalFace = DBRep::Get( a[i++], TopAbs_FACE );
-	  //F = TopoDS::Face( aLocalFace);
-	  F = TopoDS::Face( DBRep::Get(a[i++], TopAbs_FACE));
-	  if (F.IsNull()) 
-	    {
-	      //std::cout<<"Wrong parameters"<<std::endl;
-	      di<<"Wrong parameters\n";
-	      return 1;
-	    }
-	  Order = Draw::Atoi( a[i++] );
-
-	  MakeFilling.Add( U, V, F, (GeomAbs_Shape)Order );
-	}
+        MakeFilling.Add( F, (GeomAbs_Shape)Order );
     }
+    else
+      MakeFilling.Add( E, (GeomAbs_Shape)Order );
 
+    //History 
+    if (!E.IsNull())
+      ListForHistory.Append(E);
+  }
+  for (k = 1; k <= NbConstraints; k++)
+  { 
+    E.Nullify();
+    F.Nullify();
+    E = TopoDS::Edge( DBRep::Get(a[i++], TopAbs_EDGE) );
+    if (E.IsNull())
+    {
+      di<<"Wrong parameters\n";
+      return 1;
+    }
+    F = TopoDS::Face( DBRep::Get(a[i], TopAbs_FACE) );
+    if (! F.IsNull())
+      i++;
+    
+    Order = Draw::Atoi( a[i++] );
+    
+    if (F.IsNull())
+      MakeFilling.Add( E, (GeomAbs_Shape)Order, Standard_False );
+    else
+      MakeFilling.Add( E, F, (GeomAbs_Shape)Order, Standard_False );
+  }
+  for (k = 1; k <= NbPoints; k++)
+  {
+    if (DrawTrSurf::GetPoint( a[i], Point )) 
+    {
+      MakeFilling.Add( Point );
+      i++;
+    }
+    else
+    {
+      Standard_Real U = Draw::Atof( a[i++] ), V = Draw::Atof( a[i++] );
+      F = TopoDS::Face( DBRep::Get(a[i++], TopAbs_FACE));
+      if (F.IsNull()) 
+      {
+        di<<"Wrong parameters\n";
+        return 1;
+      }
+      Order = Draw::Atoi( a[i++] );
+      
+      MakeFilling.Add( U, V, F, (GeomAbs_Shape)Order );
+    }
+  }
+  
   MakeFilling.Build();
   if (! MakeFilling.IsDone())
-    {
-      //std::cout<<"filling failed"<<std::endl;
-      di<<"filling failed\n";
-      return 0;
-    }
-
+  {
+    di<<"filling failed\n";
+    return 0;
+  }
+  
   Standard_Real dmax = MakeFilling.G0Error(),
-                angmax = MakeFilling.G1Error(),
-                curvmax = MakeFilling.G2Error();
-  //std::cout<<" dist. max = "<<dmax<<" ; angle max = "<<angmax<<" ; diffcurv max = "<<curvmax<<std::endl;
+    angmax = MakeFilling.G1Error(),
+    curvmax = MakeFilling.G2Error();
   di<<" dist. max = "<<dmax<<" ; angle max = "<<angmax<<" ; diffcurv max = "<<curvmax<<"\n";
-
+  
   TopoDS_Face ResFace= TopoDS::Face( MakeFilling.Shape() );
   DBRep::Set( a[1], ResFace );
 
@@ -589,11 +583,13 @@ static Standard_Integer filling( Draw_Interpretor & di, Standard_Integer n, cons
   Chrono.Stop();
   Standard_Real Tps;
   Chrono.Show(Tps);
-  //std::cout<<"*** FIN DE FILLING ***"<<std::endl;
-  //std::cout<<"Temps de calcul  : "<<Tps<<std::endl;
   di<<"*** FIN DE FILLING ***\n";
   di<<"Temps de calcul  : "<<Tps<<"\n";
 #endif
+
+  //History 
+  if (BRepTest_Objects::IsHistoryNeeded())
+    BRepTest_Objects::SetHistory(ListForHistory, MakeFilling);
 
   return 0;
 }
