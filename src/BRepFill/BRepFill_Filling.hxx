@@ -25,7 +25,7 @@
 #include <BRepFill_SequenceOfEdgeFaceAndOrder.hxx>
 #include <BRepFill_SequenceOfFaceAndOrder.hxx>
 #include <GeomPlate_SequenceOfPointConstraint.hxx>
-#include <TopTools_DataMapOfShapeListOfShape.hxx>
+#include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Face.hxx>
 #include <Standard_Real.hxx>
@@ -207,7 +207,7 @@ private:
   BRepFill_SequenceOfEdgeFaceAndOrder myConstraints;
   BRepFill_SequenceOfFaceAndOrder myFreeConstraints;
   GeomPlate_SequenceOfPointConstraint myPoints;
-  TopTools_DataMapOfShapeListOfShape myOldNewMap;
+  TopTools_DataMapOfShapeShape myOldNewMap;
   TopTools_ListOfShape myGenerated;
   TopoDS_Face myFace;
   TopoDS_Face myInitFace;
