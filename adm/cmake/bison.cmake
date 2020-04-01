@@ -22,6 +22,4 @@ if (3RDPARTY_DIR)
   endforeach()
 endif()
  
-# bison 3.2 is required because it provides options to avoid generation of redundant header
-# files and embedding of local paths in the generated code
-find_package (BISON 3.2)
+find_package (BISON 3.7.4)

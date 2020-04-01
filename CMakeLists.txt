@@ -800,6 +800,12 @@ else()
   OCCT_CHECK_AND_UNSET ("3RDPARTY_DOT_EXECUTABLE")
 endif()
 
+# ExpToCasExe
+if (EMSCRIPTEN)
+  list (REMOVE_ITEM BUILD_TOOLKITS TKExpress)
+  list (REMOVE_ITEM BUILD_TOOLKITS ExpToCasExe)
+endif()
+
 # bison
 if (BUILD_YACCLEX)
   OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/bison")

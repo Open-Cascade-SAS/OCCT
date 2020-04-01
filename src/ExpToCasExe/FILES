@@ -1,0 +1,7 @@
+exptocas.lex
+expltocas.yacc
+lex.exptocas.cxx
+exptocas.tab.hxx
+exptocas.tab.cxx
+ExpToCasExe.cxx
+

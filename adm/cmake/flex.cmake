@@ -26,9 +26,7 @@ if (3RDPARTY_DIR)
   endforeach()
 endif()
  
-# flex 2.5.37 is required because closest known lower version, 2.5.3 from WOK 6.8.0,
-# generates code which is unusable on Windows (includes unistd.h without any way to avoid this)
-find_package (FLEX 2.5.37)
+find_package (FLEX 2.6.4)
 
 if (NOT FLEX_FOUND OR NOT FLEX_INCLUDE_DIR OR NOT EXISTS "${FLEX_INCLUDE_DIR}/FlexLexer.h")
   list (APPEND 3RDPARTY_NOT_INCLUDED FLEX_INCLUDE_DIR)
