@@ -1,0 +1,46 @@
+rem Environment configuration template for cmake_gen.bat (to be renamed as cmake_gen_custom.bat)
+
+set "OCCT3RDPARTY=%SrcRoot%\..\3rdparty"
+
+set VS=14
+set VSDATA=2015
+
+rem Leave VSPLATFORM empty to build for x86 platform
+set VSPLATFORM=Win64
+
+rem ------------------------------------
+rem Uncomment to customize building steps
+rem ------------------------------------
+
+rem set "BUILD_DIR=build-vs%VS%-%VSPLATFORM%"
+rem set "INSTALL_DIR=%SrcRoot%\install"
+
+rem set BUILD_DOC_Overview=OFF
+rem set BUILD_Inspector=OFF
+rem set BUILD_LIBRARY_TYPE=Shared
+rem set BUILD_RELEASE_DISABLE_EXCEPTIONS=ON
+rem set BUILD_WITH_DEBUG=OFF
+rem set BUILD_ENABLE_FPE_SIGNAL_HANDLER=ON
+rem set BUILD_USE_PCH=OFF
+
+rem Use semicolon-separated list of toolkits if you want to disable all modules
+rem  and build only some toolkits.
+rem set BUILD_ADDITIONAL_TOOLKITS=
+
+rem Set a directory recognized as a patch for OCCT.
+rem set BUILD_PATCH=
+
+rem set BUILD_MODULE_ApplicationFramework=ON
+rem set BUILD_MODULE_DataExchange=ON
+rem set BUILD_MODULE_Draw=ON
+rem set BUILD_MODULE_ModelingAlgorithms=ON
+rem set BUILD_MODULE_ModelingData=ON
+rem set BUILD_MODULE_Visualization=ON
+
+rem set USE_D3D=OFF
+rem set USE_FFMPEG=OFF
+rem set USE_FREEIMAGE=OFF
+rem set USE_GLES2=OFF
+rem set USE_RAPIDJSON=OFF
+rem set USE_TBB=OFF
+rem set USE_VTK=OFF

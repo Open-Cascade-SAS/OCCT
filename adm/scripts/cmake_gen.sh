@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Auxiliary script for semi-automated building of OCCT using cmake.
+# cmake_custom.sh should be configured with path to 3rd-parties.
+# OCCT3RDPARTY and FREETYPE_DIR must be specified as mandatory dependencies.
+
+ScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SrcRoot="${ScriptDir}/../.."
+
+INSTALL_DIR="$SrcRoot/install"
+
+BUILD_DIR=build
+DEB=
+CMAKE_BUILD_TYPE=Release
+if [ "$1" = "-d" ]; then
+  DEB=d
+  BUILD_DIR=${BUILD_DIR}-deb
+  CMAKE_BUILD_TYPE=Debug
+fi
+INSTALL_DIR_BIN=lin64/gcc/bin$DEB
+INSTALL_DIR_LIB=lin64/gcc/lib$DEB
+
+BUILD_ADDITIONAL_TOOLKITS=
+BUILD_DOC_Overview=OFF
+BUILD_Inspector=OFF
+BUILD_LIBRARY_TYPE=Shared
+BUILD_PATCH=
+BUILD_RELEASE_DISABLE_EXCEPTIONS=ON
+BUILD_WITH_DEBUG=OFF
+BUILD_ENABLE_FPE_SIGNAL_HANDLER=ON
+
+BUILD_MODULE_ApplicationFramework=ON
+BUILD_MODULE_DataExchange=ON
+BUILD_MODULE_Draw=ON
+BUILD_MODULE_ModelingAlgorithms=ON
+BUILD_MODULE_ModelingData=ON
+BUILD_MODULE_Visualization=ON
+
+USE_FFMPEG=OFF
+USE_FREEIMAGE=OFF
+USE_GLES2=OFF
+USE_RAPIDJSON=OFF
+USE_TBB=OFF
+USE_VTK=OFF
+AUX_ARGS=
+
+if [ -f "${ScriptDir}/cmake_custom.sh" ]; then
+  . "${ScriptDir}/cmake_custom.sh"
+fi
+
+BUILD_DIR="$SrcRoot/$BUILD_DIR"
+if [ ! -d "$BUILD_DIR" ]; then mkdir -p "$BUILD_DIR"; fi
+pushd "$BUILD_DIR"
+ 
+cmake -G "Unix Makefiles" \
+  -D CMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE \
+  -D 3RDPARTY_DIR:PATH="$OCCT3RDPARTY" \
+  -D 3RDPARTY_FREETYPE_DIR:PATH="$FREETYPE_DIR" \
+  -D BUILD_ADDITIONAL_TOOLKITS:STRING="$BUILD_ADDITIONAL_TOOLKITS" \
+  -D BUILD_DOC_Overview:BOOL=$BUILD_DOC_Overview \
+  -D BUILD_Inspector:BOOL=$BUILD_Inspector \
+  -D BUILD_LIBRARY_TYPE:STRING=$BUILD_LIBRARY_TYPE \
+  -D BUILD_MODULE_ApplicationFramework:BOOL=$BUILD_MODULE_ApplicationFramework \
+  -D BUILD_MODULE_DataExchange:BOOL=$BUILD_MODULE_DataExchange \
+  -D BUILD_MODULE_Draw:BOOL=$BUILD_MODULE_Draw \
+  -D BUILD_MODULE_FoundationClasses:BOOL=ON \
+  -D BUILD_MODULE_ModelingAlgorithms:BOOL=$BUILD_MODULE_ModelingAlgorithms \
+  -D BUILD_MODULE_ModelingData:BOOL=$BUILD_MODULE_ModelingData \
+  -D BUILD_MODULE_Visualization:BOOL=$BUILD_MODULE_Visualization \
+  -D BUILD_PATCH:PATH="$BUILD_PATCH" \
+  -D BUILD_RELEASE_DISABLE_EXCEPTIONS:BOOL=$BUILD_RELEASE_DISABLE_EXCEPTIONS \
+  -D BUILD_WITH_DEBUG:BOOL=$BUILD_WITH_DEBUG \
+  -D BUILD_ENABLE_FPE_SIGNAL_HANDLER:BOOL=$BUILD_ENABLE_FPE_SIGNAL_HANDLER \
+  -D INSTALL_DIR:PATH="$INSTALL_DIR" \
+  -D INSTALL_DIR_LAYOUT:STRING=Windows \
+  -D INSTALL_DIR_BIN:STRING=$INSTALL_DIR_BIN \
+  -D INSTALL_DIR_LIB:STRING=$INSTALL_DIR_LIB \
+  -D USE_FFMPEG:BOOL=$USE_FFMPEG \
+  -D USE_FREEIMAGE:BOOL=$USE_FREEIMAGE \
+  -D USE_GLES2:BOOL=$USE_GLES2 \
+  -D USE_RAPIDJSON:BOOL=$USE_RAPIDJSON \
+  -D USE_TBB:BOOL=$USE_TBB \
+  -D USE_VTK:BOOL=$USE_VTK \
+  $AUX_ARGS "$SrcRoot"
+
+popd

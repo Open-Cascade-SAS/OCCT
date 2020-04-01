@@ -930,6 +930,9 @@ if (WIN32)
   OCCT_CONFIGURE ("adm/templates/env.${SCRIPT_EXT}.in" "env.${SCRIPT_EXT}")
   # install env script
   install (FILES "${CMAKE_BINARY_DIR}/env.${SCRIPT_EXT}" DESTINATION "${INSTALL_DIR_SCRIPT}")
+  # copy build.bat and install.bat scripts to CMake binary folder
+  OCCT_COPY_FILE_OR_DIR ("adm/templates/build.bat" "${CMAKE_BINARY_DIR}")
+  OCCT_COPY_FILE_OR_DIR ("adm/templates/install.bat" "${CMAKE_BINARY_DIR}")
 else()
   set (SUB_ENV_NAME "env.${SCRIPT_EXT}")
   set (SUB_ENV_BUILD_NAME "env.install.${SCRIPT_EXT}")

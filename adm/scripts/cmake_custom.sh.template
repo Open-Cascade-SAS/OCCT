@@ -1,0 +1,42 @@
+# Environment configuration template for cmake_gen.sh (to be renamed as cmake_gen_custom.sh)
+
+OCCT3RDPARTY="$SrcRoot/../3rdparty"
+FREETYPE_DIR="$OCCT3RDPARTY/freetype-2.7.1"
+
+# ------------------------------------
+# Uncomment to customize building steps
+# ------------------------------------
+
+#BUILD_DIR=build
+#INSTALL_DIR="$SrcRoot/install"
+
+#BUILD_DOC_Overview=OFF
+#BUILD_Inspector=OFF
+#BUILD_LIBRARY_TYPE=Shared
+#BUILD_RELEASE_DISABLE_EXCEPTIONS=ON
+#BUILD_WITH_DEBUG=OFF
+#BUILD_ENABLE_FPE_SIGNAL_HANDLER=ON
+
+# Use semicolon-separated list of toolkits if you want to disable all modules
+#  and build only some toolkits.
+#BUILD_ADDITIONAL_TOOLKITS=
+
+# Set a directory recognized as a patch for OCCT.
+#BUILD_PATCH=
+
+#BUILD_MODULE_ApplicationFramework=ON
+#BUILD_MODULE_DataExchange=ON
+#BUILD_MODULE_Draw=ON
+#BUILD_MODULE_ModelingAlgorithms=ON
+#BUILD_MODULE_ModelingData=ON
+#BUILD_MODULE_Visualization=ON
+
+#USE_FFMPEG=OFF
+#USE_FREEIMAGE=OFF
+#USE_GLES2=OFF
+#USE_RAPIDJSON=OFF
+#USE_TBB=OFF
+#USE_VTK=OFF
+
+# This is to add any additional arguments to cmake
+#AUX_ARGS=
