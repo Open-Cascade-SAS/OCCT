@@ -16,6 +16,7 @@
 
 #include <Poly_Connect.hxx>
 
+#include <NCollection_IncAllocator.hxx>
 #include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
 
@@ -23,9 +24,9 @@
 struct polyedge
 {
   polyedge* next;         // the next edge in the list
-  Standard_Integer nd;    // the second node of the edge
   Standard_Integer nt[2]; // the two adjacent triangles
   Standard_Integer nn[2]; // the two adjacent nodes
+  Standard_Integer nd;    // the second node of the edge
   DEFINE_STANDARD_ALLOC
 };
 
@@ -97,6 +98,8 @@ void Poly_Connect::Load (const Handle(Poly_Triangulation)& theTriangulation)
   // create an array to store the edges starting from the vertices
   NCollection_Array1<polyedge*> anEdges (1, aNbNodes);
   anEdges.Init (NULL);
+  // use incremental allocator for small allocations
+  Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
 
   // loop on the triangles
   NCollection_Vec3<Standard_Integer> aTriNodes;
@@ -144,7 +147,7 @@ void Poly_Connect::Load (const Handle(Poly_Triangulation)& theTriangulation)
       if (ced == NULL)
       {
         // create the edge if not found
-        ced = new polyedge();
+        ced = (polyedge* )anIncAlloc->Allocate (sizeof(polyedge));
         ced->next = anEdges[anEdgeNodes[0]];
         anEdges[anEdgeNodes[0]] = ced;
         ced->nd = anEdgeNodes[1];
@@ -196,16 +199,16 @@ void Poly_Connect::Load (const Handle(Poly_Triangulation)& theTriangulation)
     anAdjIndex += 3;
   }
 
-  // destroy the edges array
-  for (Standard_Integer aNodeIter = anEdges.Lower(); aNodeIter <= anEdges.Upper(); ++aNodeIter)
+  // destroy the edges array - can be skipped when using NCollection_IncAllocator
+  /*for (Standard_Integer aNodeIter = anEdges.Lower(); aNodeIter <= anEdges.Upper(); ++aNodeIter)
   {
     for (polyedge* anEdgeIter = anEdges[aNodeIter]; anEdgeIter != NULL;)
     {
       polyedge* aTmp = anEdgeIter->next;
-      delete anEdgeIter;
+      anIncAlloc->Free (anEdgeIter);
       anEdgeIter = aTmp;
     }
-  }
+  }*/
 }
 
 //=======================================================================

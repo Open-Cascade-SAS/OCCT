@@ -28,7 +28,9 @@
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
+#include <NCollection_IncAllocator.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_Shared.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>
@@ -312,14 +314,20 @@ namespace
     Standard_Integer aNbPolylines = 0;
 
     TopLoc_Location aTrsf;
-    TColgp_SequenceOfPnt aSeqPntsExtra;
+
+    Handle(NCollection_Shared<TColgp_SequenceOfPnt>) aSeqPntsExtra;
     for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
     {
       const TopoDS_Face& aFace = TopoDS::Face (aFaceIter.Current());
       if (aFace.NbChildren() == 0)
       {
         // handle specifically faces without boundary definition (triangulation-only)
-        StdPrs_WFShape::AddEdgesOnTriangulation (aSeqPntsExtra, aFace, Standard_False);
+        if (aSeqPntsExtra.IsNull())
+        {
+          Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
+          aSeqPntsExtra = new NCollection_Shared<TColgp_SequenceOfPnt> (anIncAlloc);
+        }
+        StdPrs_WFShape::AddEdgesOnTriangulation (*aSeqPntsExtra, aFace, Standard_False);
       }
     }
 
@@ -358,26 +366,25 @@ namespace
         ++aNbPolylines;
       }
     }
+    const Standard_Integer aNbExtra = !aSeqPntsExtra.IsNull() ? aSeqPntsExtra->Size() : 0;
     if (aNodeNumber == 0)
     {
-      if (aSeqPntsExtra.Size() < 2)
+      if (aNbExtra < 2)
       {
         return Handle(Graphic3d_ArrayOfSegments)();
       }
 
-      Standard_Integer aNbVertices = aSeqPntsExtra.Size();
-      Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (aNbVertices);
-      for (Standard_Integer aPntIter = 1; aPntIter <= aNbVertices; aPntIter += 2)
+      Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (aNbExtra);
+      for (TColgp_SequenceOfPnt::Iterator aPntIter (*aSeqPntsExtra); aPntIter.More(); aPntIter.Next())
       {
-        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter));
-        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter + 1));
+        aSegments->AddVertex (aPntIter.Value());
       }
       return aSegments;
     }
 
     // create indexed segments array to pack polylines from different edges into single array
     const Standard_Integer aSegmentEdgeNb = (aNodeNumber - aNbPolylines) * 2;
-    Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (aNodeNumber + aSeqPntsExtra.Size(), aSegmentEdgeNb + aSeqPntsExtra.Size());
+    Handle(Graphic3d_ArrayOfSegments) aSegments = new Graphic3d_ArrayOfSegments (aNodeNumber + aNbExtra, aSegmentEdgeNb + aNbExtra);
     for (TopTools_IndexedDataMapOfShapeListOfShape::Iterator anEdgeIter (anEdgesMap); anEdgeIter.More(); anEdgeIter.Next())
     {
       if (anEdgeIter.Value().Extent() == 0)
@@ -433,14 +440,12 @@ namespace
       }
     }
 
+    if (!aSeqPntsExtra.IsNull())
     {
       Standard_Integer aSegmentEdge = aSegments->VertexNumber();
-      const Standard_Integer aNbVertices = aSeqPntsExtra.Size();
-      for (Standard_Integer aPntIter = 1; aPntIter <= aNbVertices; aPntIter += 2)
+      for (TColgp_SequenceOfPnt::Iterator aPntIter (*aSeqPntsExtra); aPntIter.More(); aPntIter.Next())
       {
-        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter));
-        aSegments->AddEdge (++aSegmentEdge);
-        aSegments->AddVertex (aSeqPntsExtra.Value (aPntIter + 1));
+        aSegments->AddVertex (aPntIter.Value());
         aSegments->AddEdge (++aSegmentEdge);
       }
     }
