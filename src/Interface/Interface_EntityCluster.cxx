@@ -19,6 +19,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
+#include <NCollection_Sequence.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Interface_EntityCluster,Standard_Transient)
 
@@ -56,7 +57,12 @@ Interface_EntityCluster::Interface_EntityCluster ()    {  }
   else if (theents[3].IsNull()) theents[3] = ent;
   else {                                // Si celui-ci est plein ...
     if (thenext.IsNull()) thenext = new Interface_EntityCluster(ent);
-    else thenext->Append(ent);
+    else {
+      Handle(Interface_EntityCluster) aCurEntClust = thenext;
+      while (aCurEntClust->HasNext() && aCurEntClust->IsLocalFull())
+        aCurEntClust = aCurEntClust->thenext;
+      aCurEntClust->Append(ent);
+    }
   }
 }
 
@@ -110,24 +116,39 @@ Interface_EntityCluster::Interface_EntityCluster ()    {  }
     const Handle(Standard_Transient)&  Interface_EntityCluster::Value
   (const Standard_Integer num) const
 {
-  Standard_Integer nb = NbLocal();
+  Standard_Integer nb = NbLocal(), aLocalNum=num;
   if (num <= 0) throw Standard_OutOfRange("Interface EntityCluster : Value");
-  if (num > nb) {
-    if (thenext.IsNull()) throw Standard_OutOfRange("Interface EntityCluster : Value");
-    return thenext->Value(num-nb);
+  if (num > nb) { 
+    Handle(Interface_EntityCluster) aCurEntClust = thenext;
+    aLocalNum -= nb;
+    while (aLocalNum>aCurEntClust->NbLocal())
+    {
+      if (!aCurEntClust->HasNext()) throw Standard_OutOfRange("Interface EntityCluster : Value");
+      aCurEntClust = aCurEntClust->thenext;
+       aLocalNum-= nb;
+    }
+    return aCurEntClust->theents[aLocalNum - 1];
   }
   return theents[num-1];  // numerotation a partir de 0
 }
 
     void  Interface_EntityCluster::SetValue
   (const Standard_Integer num, const Handle(Standard_Transient)& ent)
-{
+{    
   if (ent.IsNull()) throw Standard_NullObject("Interface_EntityCluster SetValue");
-  Standard_Integer nb = NbLocal();
+  Standard_Integer nb = NbLocal(), aLocalNum = num;
   if (num <= 0) throw Standard_OutOfRange("Interface EntityCluster : SetValue");
-  if (num > nb) {
-    if (thenext.IsNull()) throw Standard_OutOfRange("Interface EntityCluster : SetValue");
-    thenext->SetValue(num-nb,ent);
+  if (num > nb)
+  {
+    Handle(Interface_EntityCluster) aCurEntClust = thenext;
+    aLocalNum -= nb;
+    while (aLocalNum > aCurEntClust->NbLocal())
+    {
+      if (thenext.IsNull()) throw Standard_OutOfRange("Interface EntityCluster : SetValue");
+      aCurEntClust = aCurEntClust->thenext;
+      aLocalNum -= nb;
+    }
+    aCurEntClust->theents[aLocalNum - 1] = ent;
   }
   else theents[num-1] = ent;  // numerotation a partir de 0
 }
@@ -168,3 +189,38 @@ Standard_Boolean  Interface_EntityCluster::IsLocalFull () const
 
     Handle(Interface_EntityCluster)  Interface_EntityCluster::Next () const 
       {  return thenext;  }
+
+Interface_EntityCluster::~Interface_EntityCluster()
+{
+  if (!thenext.IsNull())
+  {
+    //Loading entities into the collection 
+    //for deletion in reverse order(avoiding the recursion)
+    NCollection_Sequence<Handle(Interface_EntityCluster)> aNColOfEntClust;
+    Handle(Interface_EntityCluster) aCurEntClust = thenext;
+    while (aCurEntClust->HasNext())
+    {
+      aNColOfEntClust.Append(aCurEntClust);
+      aCurEntClust = aCurEntClust->Next();
+    }
+    aNColOfEntClust.Append(aCurEntClust);
+    aNColOfEntClust.Reverse();
+    for (NCollection_Sequence<Handle(Interface_EntityCluster)>::Iterator anEntClustIter(aNColOfEntClust);
+      anEntClustIter.More(); anEntClustIter.Next())
+    {
+      //Nullifying and destruction all fields of each entity in the collection
+      for (Standard_Integer anInd = 0; anInd < anEntClustIter.ChangeValue()->NbLocal(); ++anInd)
+      {
+        anEntClustIter.ChangeValue()->theents[anInd].Nullify();
+      }
+      anEntClustIter.ChangeValue()->thenext.Nullify();
+    }
+  }
+  for (Standard_Integer anInd = 0; anInd < NbLocal(); ++anInd)
+  {
+    theents[anInd].Nullify();
+  }
+  thenext.Nullify();
+}
+
+

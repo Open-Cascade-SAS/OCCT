@@ -1,0 +1,10 @@
+puts "# ====================================================================="
+puts "# 0031435: Data Exchange - Problem importing STEP files"
+puts "# ====================================================================="
+puts ""
+
+pload OCAF
+ReadStep D_2 [locate_data_file sp7_04-dx-242.stp]
+XGetOneShape res_2 D_2
+checkshape res_2 r
+checknbshapes res_2 -vertex 927 -edge 1158  -shape 3196 -face 406 -solid 1 -shell 2

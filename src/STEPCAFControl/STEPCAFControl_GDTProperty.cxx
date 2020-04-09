@@ -404,13 +404,12 @@ void STEPCAFControl_GDTProperty::GetDimClassOfTolerance(const Handle(StepShape_L
       theHolle = Standard_True;
   }
   Handle(TCollection_HAsciiString) aStr = new TCollection_HAsciiString("01");
-  if(aGrade->IsSameString(aStr))
+  theG = XCAFDimTolObjects_DimensionGrade_IT01;
+  if (!aGrade.IsNull()
+    && !aGrade->String().IsEqual("01")
+    && aGrade->IsIntegerValue())
   {
-    theG = XCAFDimTolObjects_DimensionGrade_IT01;
-  }
-  else
-  {
-    theG = (XCAFDimTolObjects_DimensionGrade)(aGrade->IntegerValue()+1);
+    theG = (XCAFDimTolObjects_DimensionGrade)(aGrade->IntegerValue() + 1);
   }
 }
 

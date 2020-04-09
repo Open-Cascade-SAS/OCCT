@@ -92,6 +92,9 @@ public:
   //! Fills an Iterator with designated Entities (includes Next)
   Standard_EXPORT void FillIterator (Interface_EntityIterator& iter) const;
 
+  //! Destructor 
+  //! If Next exists, destroy from the last entity in reverse order.
+  Standard_EXPORT virtual ~Interface_EntityCluster();
 
 friend class Interface_EntityList;
 
