@@ -35,6 +35,13 @@
 #include <TopExp.hxx>
 #include <TopoDS_Vertex.hxx>
 
+static
+void GetTangentAsChord(const Handle(Geom2d_Curve)& thePCurve,
+                       gp_Dir2d&                   theTangent,
+                       const Standard_Real         theParam,
+                       const Standard_Real         theFirst,
+                       const Standard_Real         theLast);
+
 static 
 void RefineTolerance(const TopoDS_Face& aF,
                      const Geom2dAdaptor_Curve& aC,
@@ -169,12 +176,21 @@ void  BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
                                            gp_Dir2d& Norm, 
                                            Standard_Real& C) const 
 {
-  Standard_Real f,l;
-  Geom2dLProp_CLProps2d Prop(BRep_Tool::CurveOnSurface(E.Edge(),E.Face(),f,l),
-    U,2,Precision::PConfusion());
-  Prop.Tangent(Tang);
-  C = Prop.Curvature();
-  if (C > Precision::PConfusion())
+  Standard_Real fpar, lpar;
+  Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(E.Edge(), E.Face(), fpar, lpar);
+  Geom2dLProp_CLProps2d Prop(aPCurve, U, 2, Precision::PConfusion());
+
+  C = 0.;
+  if (Prop.IsTangentDefined())
+  {
+    Prop.Tangent(Tang);
+    C = Prop.Curvature();
+  }
+  else
+    GetTangentAsChord(aPCurve, Tang, U, fpar, lpar);
+  
+  if (C > Precision::PConfusion() &&
+      !Precision::IsInfinite(C))
     Prop.Normal(Norm);
   else
     Norm.SetCoord(Tang.Y(),-Tang.X());
@@ -220,4 +236,31 @@ void RefineTolerance(const TopoDS_Face& aF,
   }
 }
 
+//=======================================================================
+//function : GetTangentAsChord
+//purpose  : 
+//=======================================================================
+void GetTangentAsChord(const Handle(Geom2d_Curve)& thePCurve,
+                       gp_Dir2d&                   theTangent,
+                       const Standard_Real         theParam,
+                       const Standard_Real         theFirst,
+                       const Standard_Real         theLast)
+{
+  Standard_Real Offset = 0.1*(theLast - theFirst);
 
+  if (theLast - theParam < Precision::PConfusion()) //theParam == theLast
+    Offset *= -1;
+  else if (theParam + Offset > theLast) //<theParam> is close to <theLast>
+    Offset = 0.5*(theLast - theParam);
+
+  gp_Pnt2d aPnt2d = thePCurve->Value(theParam);
+  gp_Pnt2d OffsetPnt2d = thePCurve->Value(theParam + Offset);
+
+  gp_Vec2d aChord(aPnt2d, OffsetPnt2d);
+  if (Offset < 0.)
+    aChord.Reverse();
+
+  Standard_Real SqLength = aChord.SquareMagnitude();
+  if (SqLength > Precision::SquarePConfusion())
+    theTangent = aChord;
+}
