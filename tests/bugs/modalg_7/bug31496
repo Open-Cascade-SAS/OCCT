@@ -1,0 +1,17 @@
+puts "==================================================="
+puts "0031496: Modeling Algorithms - BRepAlgo::ConcatenateWireC0() crashes"
+puts "==================================================="
+vertex v1 0 0 0
+vertex v2 1 0 0
+vertex v3 2 0 0
+vertex v4 3 0 0
+edge e1 v1 v2
+edge e2 v2 v3
+edge e3 v3 v4
+wire w e1 e2 e3
+invert w
+concatC0wire e w
+checknbshapes e -vertex 2 -edge 1
+nurbsconvert w w
+concatC0wire e w
+checknbshapes e -vertex 2 -edge 1

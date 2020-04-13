@@ -421,9 +421,18 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     isReverse = !IsFwdSeq(1);
   }
 
-  TopoDS_Vertex FirstVtx_final = FirstVertex;
+  TopoDS_Vertex FirstVtx_final, LastVtx_final;
+  if (isReverse)
+  {
+    FirstVtx_final = LastVertex;
+    LastVtx_final = FirstVertex;
+  }
+  else
+  {
+    FirstVtx_final = FirstVertex;
+    LastVtx_final = LastVertex;
+  }
   FirstVtx_final.Orientation(TopAbs_FORWARD);
-  TopoDS_Vertex LastVtx_final = LastVertex;
   LastVtx_final.Orientation(TopAbs_REVERSED);
 
   if (CurveSeq.IsEmpty())
@@ -497,6 +506,9 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
       concatcurve->SetValue(concatcurve->Lower(), Concat.BSplineCurve());
     }
 
+    if (isReverse) {
+      concatcurve->ChangeValue(concatcurve->Lower())->Reverse();
+    }
     ResEdge = BRepLib_MakeEdge(concatcurve->Value(concatcurve->Lower()),
       FirstVtx_final, LastVtx_final,
       concatcurve->Value(concatcurve->Lower())->FirstParameter(),
