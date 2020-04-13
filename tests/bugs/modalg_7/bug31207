@@ -1,0 +1,41 @@
+puts "========"
+puts "0031207: Regression in Boolean Operations: fuse gives wrong result"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31207_cylinder.brep] s1
+restore [locate_data_file bug31207_pipe.brep] s2
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+
+checkshape r0
+checknbshapes r0 -wire 10 -face 10 -shell 1 -solid 1 -t
+checkprops r0 -s 0.00309819 -v 1.751e-07
+
+checkshape r1
+checknbshapes r1 -wire 15 -face 15 -shell 1 -solid 1 -t
+checkprops r1 -s 0.0266469 -v 9.78558e-05
+
+checkshape r2
+checknbshapes r2 -wire 9 -face 9 -shell 1 -solid 1 -t
+checkprops r2 -s 0.0241535 -v 9.41001e-05
+
+checkshape r3
+checknbshapes r3 -wire 12 -face 12 -shell 1 -solid 1 -t
+checkprops r3 -s 0.00559005 -v 3.58054e-06
+
+checkshape r4
+checksection r4 -r 4
+checkprops r4 -l 0.970304
+
+checkview -display r1 -2d -path ${imagedir}/${test_image}.png

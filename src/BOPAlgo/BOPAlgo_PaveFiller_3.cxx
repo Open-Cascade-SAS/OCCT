@@ -1002,6 +1002,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
       aBAC1.D1((aT11 + aT12) * 0.5, aPm, aVTgt1);
       if (aVTgt1.SquareMagnitude() < gp::Resolution())
         continue;
+      aVTgt1.Normalize();
 
       BOPDS_ListIteratorOfListOfPaveBlock aItLPB2 = aItLPB1;
       for (aItLPB2.Next(); aItLPB2.More(); aItLPB2.Next())
@@ -1034,25 +1035,30 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
         aPB2->Range(aT21, aT22);
 
         // Check the angle between edges in the middle point.
-        // If the angle is more than 10 degrees, do not use the additional
+        // If the angle is more than 25 degrees, do not use the additional
         // tolerance, as it may lead to undesired unification of edges
         Standard_Boolean bUseAddTol = Standard_True;
         {
-          GeomAPI_ProjectPointOnCurve& aProjPC = myContext->ProjPC(aE2);
-          aProjPC.Perform(aPm);
-          if (!aProjPC.NbPoints())
-            continue;
-
           BRepAdaptor_Curve aBAC2(aE2);
-          gp_Pnt aPm2;
-          gp_Vec aVTgt2;
-          aBAC2.D1(aProjPC.LowerDistanceParameter(), aPm2, aVTgt2);
-          if (aVTgt2.SquareMagnitude() < gp::Resolution())
-            continue;
-          // The angle should be close to zero
-          Standard_Real aCos = aVTgt1.Dot(aVTgt2);
-          if (Abs(aCos) < 0.984)
-            bUseAddTol = Standard_False;
+          if (aBAC1.GetType() != GeomAbs_Line ||
+              aBAC2.GetType() != GeomAbs_Line)
+          {
+            GeomAPI_ProjectPointOnCurve& aProjPC = myContext->ProjPC(aE2);
+            aProjPC.Perform(aPm);
+            if (!aProjPC.NbPoints())
+              continue;
+
+            gp_Pnt aPm2;
+            gp_Vec aVTgt2;
+            aBAC2.D1(aProjPC.LowerDistanceParameter(), aPm2, aVTgt2);
+            if (aVTgt2.SquareMagnitude() < gp::Resolution())
+              continue;
+
+            // The angle should be close to zero
+            Standard_Real aCos = aVTgt1.Dot (aVTgt2.Normalized());
+            if (Abs(aCos) < 0.9063)
+              bUseAddTol = Standard_False;
+          }
         }
 
         // Add pair for intersection
