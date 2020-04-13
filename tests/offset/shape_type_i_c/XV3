@@ -1,0 +1,20 @@
+puts "========"
+puts "0031542: Modeling Algorithms - Offset algorithm produces incomplete result in mode Complete join type Intersection"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31542_trim.brep] s
+offsetparameter 1e-7 c i r
+offsetload s 0
+explode s f
+offsetonface s_3 8
+offsetonface s_2 5
+offsetonface s_10 2
+offsetperform result
+
+checkprops result -s 81322.5 -v 962242
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 13 -face 13 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

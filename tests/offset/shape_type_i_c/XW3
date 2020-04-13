@@ -1,0 +1,45 @@
+puts "========"
+puts "0031542: Modeling Algorithms - Offset algorithm produces incomplete result in mode Complete join type Intersection"
+puts "========"
+puts ""
+
+set X1 5;  # positive x-axis
+set X2 5;  # nagative x-axis
+set Y1 10; # positive y-axis
+set Y2 10; # negative y-axis
+set TOP 5; # positive z-axis
+
+set eps 1.e-5
+
+restore [locate_data_file bug31542_dom-18777.input.brep] s
+
+offsetparameter 1e-7 c i r
+offsetload s 0
+foreach f [explode s f] {
+  mksurface surf $f;
+  regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z
+  if {[regexp "REVERSED" [whatis $f]]} {
+    set x [dval -1*$x];
+    set y [dval -1*$y];
+    set z [dval -1*$z];
+  }
+  if {$y < -1*$eps} {
+    offsetonface $f $Y2
+  } elseif {$y > $eps} {
+    offsetonface $f $Y1
+  } elseif {$x < -1*$eps} {
+    offsetonface $f $X2
+  } elseif {$x > $eps} {
+    offsetonface $f $X1
+  } elseif {$z > $eps} {
+    offsetonface $f $TOP
+  }
+}
+offsetperform result
+
+checkprops result -s 705089 -v 2.27281e+07
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 32 -face 32 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

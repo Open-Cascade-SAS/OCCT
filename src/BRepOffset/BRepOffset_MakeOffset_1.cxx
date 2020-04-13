@@ -304,6 +304,13 @@ static
                           const TopTools_IndexedMapOfShape& theMERemoved,
                           TopTools_IndexedMapOfShape& theInvEdges);
 
+static
+  void CheckEdgesCreatedByVertex (const TopTools_IndexedDataMapOfShapeListOfShape& theInvFaces,
+                                  const TopTools_DataMapOfShapeShape& theArtInvFaces,
+                                  const TopTools_DataMapOfShapeListOfShape& theEdgesOrigins,
+                                  const TopTools_IndexedMapOfShape& theValidEdges,
+                                  TopTools_IndexedMapOfShape& theInvEdges);
+
 static 
   void FindFacesToRebuild(const TopTools_IndexedDataMapOfShapeListOfShape&  theLFImages,
                           const TopTools_IndexedMapOfShape& theInvEdges,
@@ -1185,6 +1192,10 @@ void BuildSplitsOfFaces(const TopTools_ListOfShape& theLF,
   // filter invalid edges
   FilterInvalidEdges(theInvFaces, theArtInvFaces, aDMFMIE, aMERemoved, theInvEdges);
   //
+  // Check additionally validity of edges originated from vertices.
+  CheckEdgesCreatedByVertex (theInvFaces, theArtInvFaces, theEdgesOrigins,
+                             theValidEdges, theEdgesToAvoid);
+
 #ifdef OFFSET_DEBUG
   // show invalid edges
   TopoDS_Compound aCEInv;
@@ -3968,6 +3979,56 @@ void FilterInvalidFaces(TopTools_IndexedDataMapOfShapeListOfShape& theFImages,
   }
   //
   theInvFaces = aReallyInvFaces;
+}
+
+//=======================================================================
+//function : CheckEdgesCreatedByVertex
+//purpose  : Checks additionally the unchecked edges originated from vertices
+//=======================================================================
+void CheckEdgesCreatedByVertex (const TopTools_IndexedDataMapOfShapeListOfShape& theInvFaces,
+                                const TopTools_DataMapOfShapeShape& theArtInvFaces,
+                                const TopTools_DataMapOfShapeListOfShape& theEdgesOrigins,
+                                const TopTools_IndexedMapOfShape& theValidEdges,
+                                TopTools_IndexedMapOfShape& theInvEdges)
+{
+  // Mark the unchecked edges contained in invalid faces as invalid
+  const Standard_Integer aNbF = theInvFaces.Extent();
+  for (Standard_Integer i = 1; i <= aNbF; ++i)
+  {
+    const TopoDS_Shape& aF = theInvFaces.FindKey (i);
+    if (theArtInvFaces.IsBound (aF))
+      continue;
+
+    const TopTools_ListOfShape& aLFIm = theInvFaces (i);
+    for (TopTools_ListOfShape::Iterator it (aLFIm); it.More(); it.Next())
+    {
+      const TopoDS_Shape& aFIm = it.Value();
+      for (TopExp_Explorer expE (aFIm, TopAbs_EDGE); expE.More(); expE.Next())
+      {
+        const TopoDS_Shape& aE = expE.Current();
+        if (theInvEdges.Contains (aE)
+         || theValidEdges.Contains (aE))
+        {
+          continue;
+        }
+
+        // check if this edges is created by vertex
+        const TopTools_ListOfShape* pLEOr = theEdgesOrigins.Seek (aE);
+        if (!pLEOr)
+          continue;
+        TopTools_ListOfShape::Iterator itLEO (*pLEOr);
+        for (; itLEO.More(); itLEO.Next())
+        {
+          if (itLEO.Value().ShapeType() != TopAbs_VERTEX)
+            break;
+        }
+        if (!itLEO.More())
+        {
+          theInvEdges.Add (aE);
+        }
+      }
+    }
+  }
 }
 
 //=======================================================================
