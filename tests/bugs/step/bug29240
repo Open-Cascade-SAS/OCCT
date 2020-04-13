@@ -1,0 +1,15 @@
+puts "=========="
+puts "	0029240: Data Exchange - Crash during reading STEP file"
+puts "=========="
+puts ""
+
+pload DCAF
+
+ReadStep D_First [locate_data_file nist_ctc_05_asme1_ap242-1.stp]
+XGetOneShape result D_First 
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 156 -wire 201
+
+Close D_First
