@@ -254,6 +254,11 @@ Standard_Boolean Select3D_SensitivePoly::elementIsInside (SelectBasics_Selecting
   }
 
   const Standard_Integer aSegmentIdx = mySegmentIndexes->Value (theElemIdx);
+  if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+  {
+    SelectBasics_PickResult aDummy;
+    return theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 0), myPolyg.Pnt3d (aSegmentIdx + 1), aDummy);
+  }
   return theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 0))
       && theMgr.Overlaps (myPolyg.Pnt3d (aSegmentIdx + 1));
 }

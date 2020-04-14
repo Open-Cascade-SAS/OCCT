@@ -158,7 +158,6 @@ public:
   //! Throws exception if active selection type is not Point.
   Standard_EXPORT virtual gp_Pnt DetectedPoint (const Standard_Real theDepth) const Standard_OVERRIDE;
 
-  //! Is used for rectangular selection only
   //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the algorithm will
   //! mark both included and overlapped entities as matched
   Standard_EXPORT virtual void AllowOverlapDetection (const Standard_Boolean theIsToAllow);

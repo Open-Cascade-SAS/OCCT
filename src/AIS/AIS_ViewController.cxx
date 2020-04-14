@@ -2192,7 +2192,6 @@ void AIS_ViewController::handleSelectionPoly (const Handle(AIS_InteractiveContex
             aPolyIter.ChangeValue() = gp_Pnt2d (aNewPnt.x(), -aNewPnt.y());
           }
 
-          theCtx->MainSelector()->AllowOverlapDetection (false);
           if (myGL.Selection.IsXOR)
           {
             theCtx->ShiftSelect (aPolyline, theView, false);
@@ -2201,6 +2200,7 @@ void AIS_ViewController::handleSelectionPoly (const Handle(AIS_InteractiveContex
           {
             theCtx->Select (aPolyline, theView, false);
           }
+          theCtx->MainSelector()->AllowOverlapDetection (false);
         }
       }
 

@@ -67,6 +67,12 @@ Standard_Boolean MeshVS_SensitiveQuad::Matches (SelectBasics_SelectingVolumeMana
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
+    if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+    {
+      SelectBasics_PickResult aDummy;
+      return theMgr.Overlaps (myVertices[0], myVertices[1], myVertices[2], Select3D_TOS_INTERIOR, aDummy)
+          && theMgr.Overlaps (myVertices[0], myVertices[2], myVertices[3], Select3D_TOS_INTERIOR, aDummy);
+    }
     for (Standard_Integer aPntIdx = 0; aPntIdx < 4; ++aPntIdx)
     {
       if (!theMgr.Overlaps (myVertices[aPntIdx]))
