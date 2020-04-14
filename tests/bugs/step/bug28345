@@ -1,0 +1,15 @@
+puts "# ====================================================================="
+puts "# 0028345: Data Exchange - Reading STEP model using STEPCAF crashes"
+puts "# ====================================================================="
+puts ""
+
+pload DCAF
+ReadStep D_1 [locate_data_file bug28345_30338.stp]
+
+# Check imported names
+set info [XGetAllLayers D_1]
+if { [regexp "COMPONENTS" $info] != 1 } {
+   puts "Error : wrong layer name"
+}
+
+Close D_1
