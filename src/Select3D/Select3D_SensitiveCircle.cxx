@@ -211,6 +211,11 @@ Standard_Boolean Select3D_SensitiveCircle::Matches (SelectBasics_SelectingVolume
     Points3D (anArrayOfPnt);
     if (!theMgr.IsOverlapAllowed())
     {
+      if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+      {
+        SelectBasics_PickResult aDummy;
+        return theMgr.Overlaps (anArrayOfPnt, mySensType, aDummy);
+      }
       for (Standard_Integer aPntIdx = anArrayOfPnt->Lower(); aPntIdx <= anArrayOfPnt->Upper(); ++aPntIdx)
       {
         if (!theMgr.Overlaps (anArrayOfPnt->Value(aPntIdx)))

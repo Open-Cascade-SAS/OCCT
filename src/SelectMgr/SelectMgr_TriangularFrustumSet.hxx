@@ -37,7 +37,7 @@ class SelectMgr_TriangularFrustumSet : public SelectMgr_BaseFrustum
 {
 public:
 
-  SelectMgr_TriangularFrustumSet() {};
+  SelectMgr_TriangularFrustumSet();
 
   ~SelectMgr_TriangularFrustumSet() {};
 
@@ -84,9 +84,24 @@ public:
   //! Ax + By + Cz + D = 0) to the given vector
   Standard_EXPORT virtual void GetPlanes (NCollection_Vector<SelectMgr_Vec4>& thePlaneEquations) const Standard_OVERRIDE;
 
+  //! If theIsToAllow is false, only fully included sensitives will be detected, otherwise the algorithm will
+  //! mark both included and overlapped entities as matched
+  Standard_EXPORT virtual void SetAllowOverlapDetection (const Standard_Boolean theIsToAllow);
+
 private:
 
-    SelectMgr_TriangFrustums myFrustums;
+  //! Checks whether the segment intersects with the boundary of the current volume selection
+  Standard_EXPORT Standard_Boolean isIntersectBoundary (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2) const;
+
+  //! Checks whether the triangle intersects with a segment
+  Standard_EXPORT Standard_Boolean segmentTriangleIntersection (const gp_Pnt &theOrig, const gp_Vec& theDir,
+                                                                const gp_Pnt& theV1, const gp_Pnt& theV2, const gp_Pnt& theV3) const;
+
+private:
+
+  SelectMgr_TriangFrustums myFrustums;
+  TColgp_Array1OfPnt       myBoundaryPoints;
+  Standard_Boolean         myToAllowOverlap;
 };
 
 #endif // _SelectMgr_TriangularFrustumSet_HeaderFile

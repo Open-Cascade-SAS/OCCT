@@ -7635,12 +7635,7 @@ static Standard_Integer VSelect (Draw_Interpretor& ,
       return 1;
     }
   }
-  if (toAllowOverlap
-   && aPnts.Length() != 2)
-  {
-    std::cout << "Syntax error: -allowoverlap key is applied only for rectangle selection\n";
-    return 1;
-  }
+
   if (toAllowOverlap)
   {
     aCtx->MainSelector()->AllowOverlapDetection (toAllowOverlap);
@@ -14279,10 +14274,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "- 1) single click selection\n"
     "- 2) selection with rectangle having corners at pixel positions (x1,y1) and (x2,y2)\n"
     "- 3) selection with polygon having corners in pixel positions (x1,y1), (x2,y2),...,(xn,yn)\n"
-    "- 4) -allowoverlap manages overlap and inclusion detection in rectangular selection.\n"
-    "     If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined rectangle will be detected,\n"
-    "     otherwise algorithm will chose only fully included sensitives. Default behavior is to detect only full inclusion. "
-    " (partial inclusion - overlap - is not allowed by default)\n"
+    "- 4) -allowoverlap manages overlap and inclusion detection in rectangular and polygonal selection.\n"
+    "     If the flag is set to 1, both sensitives that were included completely and overlapped partially by defined \n"
+    "     rectangle or polygon will be detected, otherwise algorithm will chose only fully included sensitives.\n"
+    "     Default behavior is to detect only full inclusion. (partial inclusion - overlap - is not allowed by default)\n"
     "- 5) any of these selections with shift button pressed",
     __FILE__, VSelect, group);
   theCommands.Add ("vmoveto",

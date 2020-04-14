@@ -45,6 +45,10 @@ Standard_Boolean Select3D_SensitiveSegment::Matches (SelectBasics_SelectingVolum
 {
   if (!theMgr.IsOverlapAllowed()) // check for inclusion
   {
+    if (theMgr.GetActiveSelectionType() == SelectBasics_SelectingVolumeManager::Polyline)
+    {
+      return theMgr.Overlaps (myStart, myEnd, thePickResult);
+    }
     return theMgr.Overlaps (myStart, thePickResult) && theMgr.Overlaps (myEnd, thePickResult);
   }
 

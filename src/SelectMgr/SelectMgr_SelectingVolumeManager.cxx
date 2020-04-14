@@ -230,6 +230,7 @@ void SelectMgr_SelectingVolumeManager::BuildSelectingVolume (const TColgp_Array1
     return;
 
   mySelectingVolumes[FrustumSet]->Build (thePoints);
+  Handle(SelectMgr_TriangularFrustumSet)::DownCast (mySelectingVolumes[FrustumSet])->SetAllowOverlapDetection (IsOverlapAllowed());
 }
 
 //=======================================================================
@@ -402,7 +403,7 @@ void SelectMgr_SelectingVolumeManager::AllowOverlapDetection (const Standard_Boo
 //=======================================================================
 Standard_Boolean SelectMgr_SelectingVolumeManager::IsOverlapAllowed() const
 {
-  return myActiveSelectionType != Box || myToAllowOverlap;
+  return myToAllowOverlap || myActiveSelectionType == Point;
 }
 
 //=======================================================================
