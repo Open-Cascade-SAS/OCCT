@@ -3507,8 +3507,8 @@ static IntPatch_ImpImpIntersection::IntStatus
       const IntSurf_PntOn2S& aPntLWL1 = aWLine1->Point(aWLine1->NbPnts());
 
       const IntSurf_PntOn2S aPntCur = theSPnt.Value(aNbPnt).PntOn2S();
-      if (aPntCur.IsSame(aPntFWL1, Precision::Confusion()) ||
-        aPntCur.IsSame(aPntLWL1, Precision::Confusion()))
+      if (aPntCur.IsSame(aPntFWL1, aTol3D) ||
+        aPntCur.IsSame(aPntLWL1, aTol3D))
       {
         theSPnt.Remove(aNbPnt);
         aNbPnt--;
