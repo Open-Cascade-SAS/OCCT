@@ -442,52 +442,52 @@ void TransferBRep::PrintResultInfo(const Handle(Message_Printer)& Printer,
   NRWF = ResultInfo->NoResultWarningFail();
   
   Message_Msg aLocalHeader = Header;
-  Printer->Send (aLocalHeader, Message_Info, Standard_True);
+  Printer->Send (aLocalHeader, Message_Info);
   
   Message_Msg EPMSG30 ("Result.Print.MSG30"); //    Result: %d
   EPMSG30.Arg (R);
-  Printer->Send (EPMSG30, Message_Info, Standard_True);
+  Printer->Send (EPMSG30, Message_Info);
   if(printEmpty || (RW > 0 )) {
     Message_Msg EPMSG32 ("Result.Print.MSG32"); //    Result + Warning(s): %d
     EPMSG32.Arg (RW);
-    Printer->Send (EPMSG32, Message_Info, Standard_True);
+    Printer->Send (EPMSG32, Message_Info);
   }
   if(printEmpty || (RF > 0 )) {
     Message_Msg EPMSG34 ("Result.Print.MSG34"); //    Result + Fail(s): %d
     EPMSG34.Arg (RF);
-    Printer->Send (EPMSG34, Message_Info, Standard_True);
+    Printer->Send (EPMSG34, Message_Info);
   }
   if(printEmpty || (RWF > 0)) {
     Message_Msg EPMSG36 ("Result.Print.MSG36"); //    Result + Warning(s) + Fail(s): %d
     EPMSG36.Arg (RWF);
-    Printer->Send (EPMSG36, Message_Info, Standard_True);
+    Printer->Send (EPMSG36, Message_Info);
   }
   Message_Msg EPMSG38 ("Result.Print.MSG38"); //    TOTAL Result: %d
   EPMSG38.Arg (R + RW + RF + RWF);
-  Printer->Send (EPMSG38, Message_Info, Standard_True);
+  Printer->Send (EPMSG38, Message_Info);
   if(printEmpty || (NR > 0)) {
     Message_Msg EPMSG40 ("Result.Print.MSG40"); //    No Result: %d
     EPMSG40.Arg (NR);
-    Printer->Send (EPMSG40, Message_Info, Standard_True);
+    Printer->Send (EPMSG40, Message_Info);
   }
   if(printEmpty || (NRW > 0)) {
     Message_Msg EPMSG42 ("Result.Print.MSG42"); //    No Result + Warning(s): %d
     EPMSG42.Arg (NRW);
-    Printer->Send (EPMSG42, Message_Info, Standard_True);
+    Printer->Send (EPMSG42, Message_Info);
   }
   if(printEmpty || (NRF > 0)) {
     Message_Msg EPMSG44 ("Result.Print.MSG44"); //    No Result + Fail(s): %d
     EPMSG44.Arg (NRF);
-    Printer->Send (EPMSG44, Message_Info, Standard_True);
+    Printer->Send (EPMSG44, Message_Info);
   }
   if(printEmpty || (NRWF > 0)) {
     Message_Msg EPMSG46 ("Result.Print.MSG46"); //    No Result + Warning(s) + Fail(s): %d
     EPMSG46.Arg (NRWF);
-    Printer->Send (EPMSG46, Message_Info, Standard_True);
+    Printer->Send (EPMSG46, Message_Info);
   }
   
   Message_Msg EPMSG48 ("Result.Print.MSG48"); //    TOTAL No Result: %d
   EPMSG48.Arg (NR + NRW + NRF + NRWF);
-  Printer->Send (EPMSG48, Message_Info, Standard_True);
+  Printer->Send (EPMSG48, Message_Info);
 
 }

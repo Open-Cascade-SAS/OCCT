@@ -33,14 +33,12 @@ Message_Printer::Message_Printer()
 //function : Send
 //purpose  :
 //=======================================================================
-
 void Message_Printer::Send (const Standard_CString theString,
-                            const Message_Gravity  theGravity,
-                            const Standard_Boolean theToOutEol) const
+                            const Message_Gravity  theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {
-    Send (TCollection_ExtendedString (theString, Standard_True), theGravity, theToOutEol);
+    send (TCollection_AsciiString (theString), theGravity);
   }
 }
 
@@ -48,13 +46,24 @@ void Message_Printer::Send (const Standard_CString theString,
 //function : Send
 //purpose  :
 //=======================================================================
-
-void Message_Printer::Send (const TCollection_AsciiString& theString,
-                            const Message_Gravity          theGravity,
-                            const Standard_Boolean         theToOutEol) const
+void Message_Printer::Send (const TCollection_ExtendedString& theString,
+                            const Message_Gravity theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {
-    Send (TCollection_ExtendedString (theString), theGravity, theToOutEol);
+    send (TCollection_AsciiString (theString), theGravity);
+  }
+}
+
+//=======================================================================
+//function : Send
+//purpose  :
+//=======================================================================
+void Message_Printer::Send (const TCollection_AsciiString& theString,
+                            const Message_Gravity theGravity) const
+{
+  if (theGravity >= myTraceLevel)
+  {
+    send (theString, theGravity);
   }
 }

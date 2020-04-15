@@ -16,18 +16,8 @@
 #ifndef _Draw_Printer_HeaderFile
 #define _Draw_Printer_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Address.hxx>
 #include <Message_Printer.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Message_Gravity.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
-class TCollection_ExtendedString;
-class TCollection_AsciiString;
-
 
 class Draw_Printer;
 DEFINE_STANDARD_HANDLE(Draw_Printer, Message_Printer)
@@ -36,53 +26,22 @@ DEFINE_STANDARD_HANDLE(Draw_Printer, Message_Printer)
 //! (Message_Messenge) directed to Draw_Interpretor
 class Draw_Printer : public Message_Printer
 {
-
+  DEFINE_STANDARD_RTTIEXT(Draw_Printer, Message_Printer)
 public:
 
-  
   //! Creates a printer connected to the interpretor.
-  Standard_EXPORT Draw_Printer(const Draw_Interpretor& theTcl);
-  
-  //! Send a string message with specified trace level.
-  //! The parameter putEndl specified whether end-of-line
-  //! should be added to the end of the message.
-  //! This method must be redefined in descentant.
-  Standard_EXPORT virtual void Send (const TCollection_ExtendedString& theString, const Message_Gravity theGravity, const Standard_Boolean putEndl) const Standard_OVERRIDE;
-  
-  //! Send a string message with specified trace level.
-  //! The parameter putEndl specified whether end-of-line
-  //! should be added to the end of the message.
-  //! Default implementation calls first method Send().
-  Standard_EXPORT virtual void Send (const Standard_CString theString, const Message_Gravity theGravity, const Standard_Boolean putEndl) const Standard_OVERRIDE;
-  
-  //! Send a string message with specified trace level.
-  //! The parameter putEndl specified whether end-of-line
-  //! should be added to the end of the message.
-  //! Default implementation calls first method Send().
-  Standard_EXPORT virtual void Send (const TCollection_AsciiString& theString, const Message_Gravity theGravity, const Standard_Boolean putEndl) const Standard_OVERRIDE;
-
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Draw_Printer,Message_Printer)
+  Standard_EXPORT Draw_Printer (Draw_Interpretor& theTcl);
 
 protected:
 
-
-
+  //! Send a string message with specified trace level.
+  Standard_EXPORT virtual void send (const TCollection_AsciiString& theString,
+                                     const Message_Gravity theGravity) const Standard_OVERRIDE;
 
 private:
 
-
-  Standard_Address myTcl;
-
+  Draw_Interpretor* myTcl;
 
 };
-
-
-
-
-
-
 
 #endif // _Draw_Printer_HeaderFile

@@ -149,12 +149,11 @@ Message_PrinterSystemLog::~Message_PrinterSystemLog()
 }
 
 //=======================================================================
-//function : Send
+//function : send
 //purpose  :
 //=======================================================================
-void Message_PrinterSystemLog::Send (const Standard_CString theString,
-                                     const Message_Gravity theGravity,
-                                     const Standard_Boolean ) const
+void Message_PrinterSystemLog::send (const TCollection_AsciiString& theString,
+                                     const Message_Gravity theGravity) const
 {
   if (theGravity < myTraceLevel)
   {
@@ -162,38 +161,18 @@ void Message_PrinterSystemLog::Send (const Standard_CString theString,
   }
 
 #if defined(_WIN32)
-  Send (TCollection_ExtendedString (theString), theGravity, true);
-#elif defined(__ANDROID__)
-  __android_log_write (getAndroidLogPriority (theGravity), myEventSourceName.ToCString(), theString);
-#elif defined(__EMSCRIPTEN__)
-  if (theGravity == Message_Trace)
+  if (myEventSource != NULL)
   {
-    debugMsgToConsole (theString);
+  #if !defined(OCCT_UWP)
+    const TCollection_ExtendedString aWideString (theString);
+    const WORD aLogType = getEventLogPriority (theGravity);
+    const wchar_t* aMessage[1] = { aWideString.ToWideString() };
+    ReportEventW ((HANDLE )myEventSource, aLogType, 0, 0, NULL,
+                  1, 0, aMessage, NULL);
+  #else
+    (void )theString;
+  #endif
   }
-  else
-  {
-    emscripten_log (getEmscriptenPriority (theGravity), "%s", theString);
-  }
-#else
-  syslog (getSysLogPriority (theGravity), "%s", theString);
-#endif
-}
-
-//=======================================================================
-//function : Send
-//purpose  :
-//=======================================================================
-void Message_PrinterSystemLog::Send (const TCollection_AsciiString& theString,
-                                     const Message_Gravity theGravity,
-                                     const Standard_Boolean ) const
-{
-  if (theGravity < myTraceLevel)
-  {
-    return;
-  }
-
-#if defined(_WIN32)
-  Send (TCollection_ExtendedString (theString), theGravity, true);
 #elif defined(__ANDROID__)
   __android_log_write (getAndroidLogPriority (theGravity), myEventSourceName.ToCString(), theString.ToCString());
 #elif defined(__EMSCRIPTEN__)
@@ -207,35 +186,5 @@ void Message_PrinterSystemLog::Send (const TCollection_AsciiString& theString,
   }
 #else
   syslog (getSysLogPriority (theGravity), "%s", theString.ToCString());
-#endif
-}
-
-//=======================================================================
-//function : Send
-//purpose  :
-//=======================================================================
-void Message_PrinterSystemLog::Send (const TCollection_ExtendedString& theString,
-                                     const Message_Gravity theGravity,
-                                     const Standard_Boolean ) const
-{
-  if (theGravity < myTraceLevel)
-  {
-    return;
-  }
-
-#if defined(_WIN32)
-  if (myEventSource != NULL)
-  {
-  #if !defined(OCCT_UWP)
-    const WORD aLogType = getEventLogPriority (theGravity);
-    const wchar_t* aMessage[1] = { theString.ToWideString() };
-    ReportEventW ((HANDLE )myEventSource, aLogType, 0, 0, NULL,
-                  1, 0, aMessage, NULL);
-  #else
-    (void )theString;
-  #endif
-  }
-#else
-  Send (TCollection_AsciiString (theString), theGravity, true);
 #endif
 }

@@ -48,27 +48,11 @@ OcctJni_MsgPrinter::~OcctJni_MsgPrinter()
 }
 
 // =======================================================================
-// function : Send
+// function : send
 // purpose  :
 // =======================================================================
-void OcctJni_MsgPrinter::Send (const TCollection_ExtendedString& theString,
-                               const Message_Gravity             theGravity,
-                               const Standard_Boolean            theToPutEndl) const
-{
-  if (theGravity >= myTraceLevel)
-  {
-    const TCollection_AsciiString aStr (theString);
-    OcctJni_MsgPrinter::Send (aStr, theGravity, theToPutEndl);
-  }
-}
-
-// =======================================================================
-// function : Send
-// purpose  :
-// =======================================================================
-void OcctJni_MsgPrinter::Send (const TCollection_AsciiString& theString,
-                               const Message_Gravity          theGravity,
-                               const Standard_Boolean         theToPutEndl) const
+void OcctJni_MsgPrinter::send (const TCollection_AsciiString& theString,
+                               const Message_Gravity theGravity) const
 {
   if (theGravity < myTraceLevel)
   {
@@ -84,18 +68,4 @@ void OcctJni_MsgPrinter::Send (const TCollection_AsciiString& theString,
   jstring aJStr = myJEnv->NewStringUTF ((theString + "\n").ToCString());
   myJEnv->CallObjectMethod (myJObj, myJMet, aJStr);
   myJEnv->DeleteLocalRef (aJStr);
-}
-
-// =======================================================================
-// function : Send
-// purpose  :
-// =======================================================================
-void OcctJni_MsgPrinter::Send (const Standard_CString& theString,
-                               const Message_Gravity   theGravity,
-                               const Standard_Boolean  theToPutEndl) const
-{
-  if (theGravity >= myTraceLevel)
-  {
-    OcctJni_MsgPrinter::Send (TCollection_AsciiString (theString), theGravity, theToPutEndl);
-  }
 }

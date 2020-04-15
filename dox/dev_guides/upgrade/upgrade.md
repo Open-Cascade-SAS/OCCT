@@ -1934,3 +1934,47 @@ void BOPTools_AlgoTools::TreatCompound (const TopoDS_Shape& theS,
 Offset direction, which used in class Adaptor2d_OffsetCurve for evaluating values and derivatives of offset curve is unified for offset direction used in class Geom2d_OffsetCurve: now offset direction points to outer ("right") side of base curve instead of the previously used inner ("left") side. Old usage of class in any application should be changed something like that:
 
 Adaptor2d_OffsetCurve aOC(BaseCurve, Offset) --> Adaptor2d_OffsetCurve aOC(BaseCurve, -Offset)
+
+@subsection upgrade_750_message_messenger Message_Messenger interface change
+
+Operators << with left argument *Handle(Message_Messenger)*, used to output messages with
+a stream-like interface,  have been removed.
+This functionality is provided now by separate class *Message_Messenger::StreamBuffer*.
+That class contains a stringstream buffer which can be filled using standard stream
+operators. The string is sent to a messenger on destruction of the buffer object,
+call of its method Flush(), or using operator << with one of ostream manipulators (*std::endl, std::flush, std::ends*). Manipulator *Message_EndLine* has been removed,
+*std::endl* should be used instead.
+
+New methods *SendFail(), SendAlarm(), SendWarning(), SendInfo()*, and *SendTrace()* are
+provided in both *Message_Messenger* class and as static functions in *Message* package
+(short-cuts to default messenger), returning buffer object for the output of
+corresponding type of the message.
+
+The code that used operator << for messenger, should be ported as follows.
+
+Before the change:
+~~~~~
+  Handle(Message_Messenger) theMessenger = ...;
+  theMessenger << "Sample string " << anInteger << ", " << Message_EndLine;
+~~~~~
+
+After the change, single-line variant:
+~~~~~
+  Handle(Message_Messenger) theMessenger = ...;
+  theMessenger->SendInfo() << "Value = " << anInteger << ", ";
+~~~~~
+
+After the change, extended variant:
+~~~~~
+  Handle(Message_Messenger) theMessenger = ...;
+  Message_Messenger::StreamBuffer aSender = theMessenger->SendInfo();
+  aSender << "Array: [";
+  for (int i = 0; i < aNb; ++i) { aSender << anArray[i]; }
+  aSender << "]" << std::endl; // aSender can be used further for other messages
+~~~~~
+
+@subsection upgrade_750_message_printer Message_Printer interface change
+
+Previously, sub-classes of *Message_Printer* have to provide a triplet of *Message_Printer::Send()* methods accepting different string representations: TCollection_AsciiString, TCollection_ExtendedString and Standard_CString.
+*Message_Printer* interface has been changed, so that sub-classes now have to implement only single method *Message_Printer::send()* accepting TCollection_AsciiString argument and having no Endl flag, which has been removed.
+Old three Message_Printer::Send() methods remain defined virtual with unused last argument and redirecting to new send() method by default.

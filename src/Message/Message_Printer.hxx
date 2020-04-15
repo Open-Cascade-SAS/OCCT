@@ -48,24 +48,32 @@ public:
   void SetTraceLevel (const Message_Gravity theTraceLevel) { myTraceLevel = theTraceLevel; }
 
   //! Send a string message with specified trace level.
-  //! The parameter theToPutEol specified whether end-of-line should be added to the end of the message.
-  //! This method must be redefined in descentant.
-  Standard_EXPORT virtual void Send (const TCollection_ExtendedString& theString, const Message_Gravity theGravity, const Standard_Boolean theToPutEol) const = 0;
+  //! The last Boolean argument is deprecated and unused.
+  //! Default implementation redirects to send().
+  Standard_EXPORT virtual void Send (const TCollection_ExtendedString& theString,
+                                     const Message_Gravity theGravity) const;
   
   //! Send a string message with specified trace level.
-  //! The parameter theToPutEol specified whether end-of-line should be added to the end of the message.
-  //! Default implementation calls first method Send().
-  Standard_EXPORT virtual void Send (const Standard_CString theString, const Message_Gravity theGravity, const Standard_Boolean theToPutEol) const;
+  //! The last Boolean argument is deprecated and unused.
+  //! Default implementation redirects to send().
+  Standard_EXPORT virtual void Send (const Standard_CString theString,
+                                     const Message_Gravity theGravity) const;
   
   //! Send a string message with specified trace level.
-  //! The parameter theToPutEol specified whether end-of-line should be added to the end of the message.
-  //! Default implementation calls first method Send().
-  Standard_EXPORT virtual void Send (const TCollection_AsciiString& theString, const Message_Gravity theGravity, const Standard_Boolean theToPutEol) const;
+  //! The last Boolean argument is deprecated and unused.
+  //! Default implementation redirects to send().
+  Standard_EXPORT virtual void Send (const TCollection_AsciiString& theString,
+                                     const Message_Gravity theGravity) const;
 
 protected:
 
   //! Empty constructor with Message_Info trace level
   Standard_EXPORT Message_Printer();
+
+  //! Send a string message with specified trace level.
+  //! This method must be redefined in descentant.
+  Standard_EXPORT virtual void send (const TCollection_AsciiString& theString,
+                                     const Message_Gravity theGravity) const = 0;
 
 protected:
 

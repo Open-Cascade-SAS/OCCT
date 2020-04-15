@@ -174,22 +174,16 @@ public:
   //! Dispatch a message to all the printers in the list.
   //! Three versions of string representations are accepted for
   //! convenience, by default all are converted to ExtendedString.
-  //! The parameter putEndl specifies whether the new line should
-  //! be started after this message (default) or not (may have
-  //! sense in some conditions).
   Standard_EXPORT void Send (const Standard_CString theString,
-                             const Message_Gravity theGravity = Message_Warning,
-                             const Standard_Boolean putEndl = Standard_True) const;
+                             const Message_Gravity theGravity = Message_Warning) const;
   
   //! See above
   Standard_EXPORT void Send (const TCollection_AsciiString& theString,
-                             const Message_Gravity theGravity = Message_Warning,
-                             const Standard_Boolean putEndl = Standard_True) const;
+                             const Message_Gravity theGravity = Message_Warning) const;
   
   //! See above
   Standard_EXPORT void Send (const TCollection_ExtendedString& theString,
-                             const Message_Gravity theGravity = Message_Warning,
-                             const Standard_Boolean putEndl = Standard_True) const;
+                             const Message_Gravity theGravity = Message_Warning) const;
 
   //! Create string buffer for message of specified type
   StreamBuffer Send (Message_Gravity theGravity) { return StreamBuffer (this, theGravity); }

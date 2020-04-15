@@ -36,7 +36,6 @@ IMPLEMENT_STANDARD_RTTIEXT(Message_PrinterOStream,Message_Printer)
 Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLevel)
 : myStream  (&std::cout),
   myIsFile  (Standard_False),
-  myUseUtf8 (Standard_False),
   myToColorize (Standard_True)
 {
   myTraceLevel = theTraceLevel;
@@ -52,7 +51,6 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
                                                 const Message_Gravity  theTraceLevel)
 : myStream (&std::cout),
   myIsFile (Standard_False),
-  myUseUtf8 (Standard_False),
   myToColorize (Standard_True)
 {
   myTraceLevel = theTraceLevel;
@@ -112,13 +110,11 @@ void Message_PrinterOStream::Close ()
 }
 
 //=======================================================================
-//function : Send
-//purpose  : 
+//function : send
+//purpose  :
 //=======================================================================
-
-void Message_PrinterOStream::Send (const Standard_CString theString,
-				   const Message_Gravity theGravity,
-				   const Standard_Boolean putEndl) const
+void Message_PrinterOStream::send (const TCollection_AsciiString& theString,
+                                   const Message_Gravity theGravity) const
 {
   if (theGravity < myTraceLevel
    || myStream == NULL)
@@ -165,35 +161,7 @@ void Message_PrinterOStream::Send (const Standard_CString theString,
   {
     *aStream << theString;
   }
-  if (putEndl)
-  {
-    (*aStream) << std::endl;
-  }
-}
-
-//=======================================================================
-//function : Send
-//purpose  : 
-//=======================================================================
-
-void Message_PrinterOStream::Send (const TCollection_AsciiString &theString,
-				   const Message_Gravity theGravity,
-				   const Standard_Boolean putEndl) const
-{
-  Send ( theString.ToCString(), theGravity, putEndl );
-}
-
-//=======================================================================
-//function : Send
-//purpose  : 
-//=======================================================================
-
-void Message_PrinterOStream::Send (const TCollection_ExtendedString &theString,
-				   const Message_Gravity theGravity,
-				   const Standard_Boolean putEndl) const
-{
-  TCollection_AsciiString aStr (theString, myUseUtf8 ? Standard_Character(0) : '?');
-  Send (aStr.ToCString(), theGravity, putEndl);
+  (*aStream) << std::endl;
 }
 
 //=======================================================================

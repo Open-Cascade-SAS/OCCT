@@ -36,20 +36,11 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~Message_PrinterSystemLog();
 
+protected:
+
   //! Puts a message to the system log.
-  Standard_EXPORT virtual void Send (const Standard_CString theString,
-                                     const Message_Gravity theGravity,
-                                     const Standard_Boolean theToPutEndl) const Standard_OVERRIDE;
-  
-  //! Puts a message to the system log.
-  Standard_EXPORT virtual void Send (const TCollection_AsciiString& theString,
-                                     const Message_Gravity theGravity,
-                                     const Standard_Boolean theToPutEndl) const Standard_OVERRIDE;
-  
-  //! Puts a message to the system log.
-  Standard_EXPORT virtual void Send (const TCollection_ExtendedString& theString,
-                                     const Message_Gravity theGravity,
-                                     const Standard_Boolean theToPutEndl) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void send (const TCollection_AsciiString& theString,
+                                     const Message_Gravity theGravity) const Standard_OVERRIDE;
 
 private:
 

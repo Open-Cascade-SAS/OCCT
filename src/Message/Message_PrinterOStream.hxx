@@ -65,12 +65,6 @@ public:
   Close();
 }
 
-  //! Returns option to convert non-Ascii symbols to UTF8 encoding
-  Standard_Boolean GetUseUtf8() const { return myUseUtf8; }
-  
-  //! Sets option to convert non-Ascii symbols to UTF8 encoding
-  void SetUseUtf8 (const Standard_Boolean useUtf8) { myUseUtf8 = useUtf8; }
-
   //! Returns reference to the output stream
   Standard_OStream& GetStream() const { return *(Standard_OStream*)myStream; }
 
@@ -80,28 +74,17 @@ public:
   //! Set if text output into console should be colorized depending on message gravity.
   void SetToColorize (Standard_Boolean theToColorize) { myToColorize = theToColorize; }
 
+protected:
+
   //! Puts a message to the current stream
   //! if its gravity is equal or greater
   //! to the trace level set by SetTraceLevel()
-  Standard_EXPORT virtual void Send (const Standard_CString theString, const Message_Gravity theGravity, const Standard_Boolean putEndl = Standard_True) const Standard_OVERRIDE;
-  
-  //! Puts a message to the current stream
-  //! if its gravity is equal or greater
-  //! to the trace level set by SetTraceLevel()
-  Standard_EXPORT virtual void Send (const TCollection_AsciiString& theString, const Message_Gravity theGravity, const Standard_Boolean putEndl = Standard_True) const Standard_OVERRIDE;
-  
-  //! Puts a message to the current stream
-  //! if its gravity is equal or greater
-  //! to the trace level set by SetTraceLevel()
-  //! Non-Ascii symbols are converted to UTF-8 if UseUtf8
-  //! option is set, else replaced by symbols '?'
-  Standard_EXPORT virtual void Send (const TCollection_ExtendedString& theString, const Message_Gravity theGravity, const Standard_Boolean putEndl = Standard_True) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void send (const TCollection_AsciiString& theString, const Message_Gravity theGravity) const Standard_OVERRIDE;
 
 private:
 
   Standard_Address myStream;
   Standard_Boolean myIsFile;
-  Standard_Boolean myUseUtf8;
   Standard_Boolean myToColorize;
 
 };

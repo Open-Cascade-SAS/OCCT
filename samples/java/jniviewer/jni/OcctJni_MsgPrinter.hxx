@@ -30,20 +30,11 @@ public:
   //! Destructor.
   ~OcctJni_MsgPrinter();
 
-  //! Redirection to TCollection_AsciiString method
-  virtual void Send (const TCollection_ExtendedString& theString,
-                     const Message_Gravity             theGravity,
-                     const Standard_Boolean            theToPutEndl) const;
-
-  //! Redirection to TCollection_AsciiString method
-  virtual void Send (const Standard_CString&           theString,
-                     const Message_Gravity             theGravity,
-                     const Standard_Boolean            theToPutEndl) const;
+protected:
 
   //! Main printing method
-  virtual void Send (const TCollection_AsciiString&    theString,
-                     const Message_Gravity             theGravity,
-                     const Standard_Boolean            theToPutEndl) const;
+  virtual void send (const TCollection_AsciiString& theString,
+                     const Message_Gravity theGravity) const;
 
 private:
 

@@ -13,9 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Draw_Printer.hxx>
-#include <Standard_Type.hxx>
+
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -23,75 +22,25 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Printer,Message_Printer)
 
 //=======================================================================
 //function : Draw_Printer
-//purpose  : 
+//purpose  :
 //=======================================================================
-Draw_Printer::Draw_Printer (const Draw_Interpretor& theTcl)
-: myTcl((Standard_Address)&theTcl)
+Draw_Printer::Draw_Printer (Draw_Interpretor& theTcl)
+: myTcl (&theTcl)
 {
 }
 
 //=======================================================================
-//function : Send
+//function : send
 //purpose  :
 //=======================================================================
-
-void Draw_Printer::Send (const TCollection_ExtendedString& theString,
-                         const Message_Gravity             theGravity,
-                         const Standard_Boolean            theToPutEol) const
+void Draw_Printer::send (const TCollection_AsciiString& theString,
+                         const Message_Gravity theGravity) const
 {
-  if (!myTcl
+  if (myTcl == NULL
    || theGravity < myTraceLevel)
   {
     return;
   }
 
-  (*(Draw_Interpretor*)myTcl) << theString;
-  if (theToPutEol)
-  {
-    (*(Draw_Interpretor*)myTcl) << "\n";
-  }
-}
-
-//=======================================================================
-//function : Send
-//purpose  :
-//=======================================================================
-
-void Draw_Printer::Send (const Standard_CString theString,
-                         const Message_Gravity  theGravity,
-                         const Standard_Boolean theToPutEol) const
-{
-  if (!myTcl
-   || theGravity < myTraceLevel)
-  {
-    return;
-  }
-
-  (*(Draw_Interpretor*)myTcl) << theString;
-  if (theToPutEol)
-  {
-    (*(Draw_Interpretor*)myTcl) << "\n";
-  }
-}
-
-//=======================================================================
-//function : Send
-//purpose  :
-//=======================================================================
-
-void Draw_Printer::Send (const TCollection_AsciiString& theString,
-                         const Message_Gravity          theGravity,
-                         const Standard_Boolean         theToPutEol) const
-{
-  if (!myTcl
-   || theGravity < myTraceLevel)
-  {
-    return;
-  }
-
-  (*(Draw_Interpretor*)myTcl) << theString;
-  if (theToPutEol)
-  {
-    (*(Draw_Interpretor*)myTcl) << "\n";
-  }
+  *myTcl << theString << "\n";
 }
