@@ -18,8 +18,12 @@
 #include <AIS_Manipulator.hxx>
 #include <AIS_Point.hxx>
 #include <AIS_RubberBand.hxx>
+#include <AIS_XRTrackedDevice.hxx>
+#include <Aspect_XRSession.hxx>
 #include <Aspect_Grid.hxx>
 #include <Geom_CartesianPoint.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <gp_Quaternion.hxx>
@@ -59,6 +63,17 @@ AIS_ViewController::AIS_ViewController()
   myViewAnimation (new AIS_AnimationCamera ("AIS_ViewController_ViewAnimation", Handle(V3d_View)())),
   myPrevMoveTo (-1, -1),
   myHasHlrOnBeforeRotation (false),
+  //
+  myXRPrsDevices (0, 0),
+  myXRLaserTeleColor (Quantity_NOC_GREEN),
+  myXRLaserPickColor (Quantity_NOC_BLUE),
+  myXRLastTeleportHand(Aspect_XRTrackedDeviceRole_Other),
+  myXRLastPickingHand (Aspect_XRTrackedDeviceRole_Other),
+  myXRLastPickDepthLeft (Precision::Infinite()),
+  myXRLastPickDepthRight(Precision::Infinite()),
+  myXRTurnAngle (M_PI_4),
+  myToDisplayXRAuxDevices (false),
+  myToDisplayXRHands (true),
   //
   myMouseClickThreshold (3.0),
   myMouseDoubleClickInt (0.4),
@@ -111,6 +126,18 @@ AIS_ViewController::AIS_ViewController()
 
   myMouseGestureMap.Bind (Aspect_VKeyMouse_MiddleButton,                         AIS_MouseGesture_Pan);
   myMouseGestureMap.Bind (Aspect_VKeyMouse_MiddleButton | Aspect_VKeyFlags_CTRL, AIS_MouseGesture_Pan);
+
+  myXRTeleportHaptic.Duration  = 3600.0f;
+  myXRTeleportHaptic.Frequency = 0.1f;
+  myXRTeleportHaptic.Amplitude = 0.2f;
+
+  myXRPickingHaptic.Duration  = 0.1f;
+  myXRPickingHaptic.Frequency = 4.0f;
+  myXRPickingHaptic.Amplitude = 0.1f;
+
+  myXRSelectHaptic.Duration  = 0.2f;
+  myXRSelectHaptic.Frequency = 4.0f;
+  myXRSelectHaptic.Amplitude = 0.5f;
 }
 
 // =======================================================================
@@ -1287,6 +1314,7 @@ void AIS_ViewController::handlePanning (const Handle(V3d_View)& theView)
   {
     theView->Pan (myGL.Panning.Delta.x(), myGL.Panning.Delta.y());
     theView->Invalidate();
+    theView->View()->SynchronizeXRPosedToBaseCamera();
     return;
   }
 
@@ -1307,6 +1335,7 @@ void AIS_ViewController::handlePanning (const Handle(V3d_View)& theView)
   aPanTrsf.SetTranslation (aCameraPan);
   aCam->Transform (aPanTrsf);
   theView->Invalidate();
+  theView->View()->SynchronizeXRPosedToBaseCamera();
 }
 
 // =======================================================================
@@ -1331,6 +1360,7 @@ void AIS_ViewController::handleZRotate (const Handle(V3d_View)& theView)
   aRotPnt.y() += myGL.ZRotate.Angle * aViewPort.y();
   theView->Rotation (int(aRotPnt.x()), int(aRotPnt.y()));
   theView->Invalidate();
+  theView->View()->SynchronizeXRPosedToBaseCamera();
 }
 
 // =======================================================================
@@ -1361,6 +1391,7 @@ void AIS_ViewController::handleZoom (const Handle(V3d_View)& theView,
     aCoeff = theParams.Delta > 0.0 ? aCoeff : 1.0 / aCoeff;
     theView->SetZoom (aCoeff, true);
     theView->Invalidate();
+    theView->View()->SynchronizeXRPosedToBaseCamera();
     return;
   }
 
@@ -1432,6 +1463,7 @@ void AIS_ViewController::handleZoom (const Handle(V3d_View)& theView,
   aPanTrsf.SetTranslation (aCameraPan);
   aCam->Transform (aPanTrsf);
   theView->Invalidate();
+  theView->View()->SynchronizeXRPosedToBaseCamera();
 }
 
 // =======================================================================
@@ -1452,7 +1484,7 @@ void AIS_ViewController::handleZFocusScroll (const Handle(V3d_View)& theView,
    && aFocus < 2.0)
   {
     theView->Camera()->SetZFocus (theView->Camera()->ZFocusType(), aFocus);
-    theView->Redraw();
+    theView->Invalidate();
   }
 }
 
@@ -1469,7 +1501,9 @@ void AIS_ViewController::handleOrbitRotation (const Handle(V3d_View)& theView,
     return;
   }
 
-  const Handle(Graphic3d_Camera)& aCam = theView->Camera();
+  const Handle(Graphic3d_Camera)& aCam = theView->View()->IsActiveXR()
+                                       ? theView->View()->BaseXRCamera()
+                                       : theView->Camera();
   if (myGL.OrbitRotation.ToStart)
   {
     // default alternatives
@@ -1508,9 +1542,13 @@ void AIS_ViewController::handleOrbitRotation (const Handle(V3d_View)& theView,
     theView->Window()->Size (aWinXY.x(), aWinXY.y());
     double aYawAngleDelta   =  ((myGL.OrbitRotation.PointStart.x() - myGL.OrbitRotation.PointTo.x()) / double (aWinXY.x())) * (M_PI * 0.5);
     double aPitchAngleDelta = -((myGL.OrbitRotation.PointStart.y() - myGL.OrbitRotation.PointTo.y()) / double (aWinXY.y())) * (M_PI * 0.5);
-    const double aPitchAngleNew = Max (Min (myRotateStartYawPitchRoll[1] + aPitchAngleDelta, M_PI * 0.5 - M_PI / 180.0), -M_PI * 0.5 + M_PI / 180.0);
-    const double aYawAngleNew   = myRotateStartYawPitchRoll[0] + aYawAngleDelta;
-    const double aRoll = 0.0;
+    double aPitchAngleNew = 0.0, aRoll = 0.0;
+    const double aYawAngleNew = myRotateStartYawPitchRoll[0] + aYawAngleDelta;
+    if (!theView->View()->IsActiveXR())
+    {
+      aPitchAngleNew = Max (Min (myRotateStartYawPitchRoll[1] + aPitchAngleDelta, M_PI * 0.5 - M_PI / 180.0), -M_PI * 0.5 + M_PI / 180.0);
+      aRoll = 0.0;
+    }
 
     gp_Quaternion aRot;
     aRot.SetEulerAngles (gp_YawPitchRoll, aYawAngleNew, aPitchAngleNew, aRoll);
@@ -1564,6 +1602,7 @@ void AIS_ViewController::handleOrbitRotation (const Handle(V3d_View)& theView,
   }
 
   theView->Invalidate();
+  theView->View()->SynchronizeXRBaseToPosedCamera();
 }
 
 // =======================================================================
@@ -1934,6 +1973,251 @@ void AIS_ViewController::handleCameraActions (const Handle(AIS_InteractiveContex
 }
 
 // =======================================================================
+// function : handleXRInput
+// purpose  :
+// =======================================================================
+void AIS_ViewController::handleXRInput (const Handle(AIS_InteractiveContext)& theCtx,
+                                        const Handle(V3d_View)& theView,
+                                        const AIS_WalkDelta& )
+{
+  theView->View()->ProcessXRInput();
+  if (!theView->View()->IsActiveXR())
+  {
+    return;
+  }
+  if (myXRCameraTmp.IsNull())
+  {
+    myXRCameraTmp = new Graphic3d_Camera();
+  }
+  handleXRTurnPad (theCtx, theView);
+  handleXRTeleport(theCtx, theView);
+  handleXRPicking (theCtx, theView);
+}
+
+// =======================================================================
+// function : handleXRTurnPad
+// purpose  :
+// =======================================================================
+void AIS_ViewController::handleXRTurnPad (const Handle(AIS_InteractiveContext)& ,
+                                          const Handle(V3d_View)& theView)
+{
+  if (myXRTurnAngle <= 0.0
+  || !theView->View()->IsActiveXR())
+  {
+    return;
+  }
+
+  // turn left/right at 45 degrees on left/right trackpad clicks
+  for (int aHand = 0; aHand < 2; ++aHand)
+  {
+    const Aspect_XRTrackedDeviceRole aRole = aHand == 0 ? Aspect_XRTrackedDeviceRole_RightHand : Aspect_XRTrackedDeviceRole_LeftHand;
+    const Handle(Aspect_XRAction)& aPadClickAct = theView->View()->XRSession()->GenericAction (aRole, Aspect_XRGenericAction_InputTrackPadClick);
+    const Handle(Aspect_XRAction)& aPadPosAct   = theView->View()->XRSession()->GenericAction (aRole, Aspect_XRGenericAction_InputTrackPadPosition);
+    if (aPadClickAct.IsNull()
+    ||  aPadPosAct.IsNull())
+    {
+      continue;
+    }
+
+    const Aspect_XRDigitalActionData aPadClick = theView->View()->XRSession()->GetDigitalActionData (aPadClickAct);
+    const Aspect_XRAnalogActionData  aPadPos   = theView->View()->XRSession()->GetAnalogActionData (aPadPosAct);
+    if (aPadClick.IsActive
+     && aPadClick.IsPressed
+     && aPadClick.IsChanged
+     && aPadPos.IsActive
+     && Abs (aPadPos.VecXYZ.y()) < 0.5f
+     && Abs (aPadPos.VecXYZ.x()) > 0.7f)
+    {
+      gp_Trsf aTrsfTurn;
+      aTrsfTurn.SetRotation (gp_Ax1 (gp::Origin(), theView->View()->BaseXRCamera()->Up()), aPadPos.VecXYZ.x() < 0.0f ? myXRTurnAngle : -myXRTurnAngle);
+      theView->View()->TurnViewXRCamera (aTrsfTurn);
+      break;
+    }
+  }
+}
+
+// =======================================================================
+// function : handleXRTeleport
+// purpose  :
+// =======================================================================
+void AIS_ViewController::handleXRTeleport (const Handle(AIS_InteractiveContext)& theCtx,
+                                           const Handle(V3d_View)& theView)
+{
+  if (!theView->View()->IsActiveXR())
+  {
+    return;
+  }
+
+  // teleport on forward trackpad unclicks
+  const Aspect_XRTrackedDeviceRole aTeleOld = myXRLastTeleportHand;
+  myXRLastTeleportHand = Aspect_XRTrackedDeviceRole_Other;
+  for (int aHand = 0; aHand < 2; ++aHand)
+  {
+    const Aspect_XRTrackedDeviceRole aRole = aHand == 0 ? Aspect_XRTrackedDeviceRole_RightHand : Aspect_XRTrackedDeviceRole_LeftHand;
+    const Standard_Integer aDeviceId = theView->View()->XRSession()->NamedTrackedDevice (aRole);
+    if (aDeviceId == -1)
+    {
+      continue;
+    }
+
+    const Handle(Aspect_XRAction)& aPadClickAct = theView->View()->XRSession()->GenericAction (aRole, Aspect_XRGenericAction_InputTrackPadClick);
+    const Handle(Aspect_XRAction)& aPadPosAct   = theView->View()->XRSession()->GenericAction (aRole, Aspect_XRGenericAction_InputTrackPadPosition);
+    if (aPadClickAct.IsNull()
+    ||  aPadPosAct.IsNull())
+    {
+      continue;
+    }
+
+    const Aspect_XRDigitalActionData aPadClick = theView->View()->XRSession()->GetDigitalActionData (aPadClickAct);
+    const Aspect_XRAnalogActionData  aPadPos   = theView->View()->XRSession()->GetAnalogActionData (aPadPosAct);
+    const bool isPressed =  aPadClick.IsPressed;
+    const bool isClicked = !aPadClick.IsPressed
+                        &&  aPadClick.IsChanged;
+    if (aPadClick.IsActive
+     && (isPressed || isClicked)
+     && aPadPos.IsActive
+     && aPadPos.VecXYZ.y() > 0.6f
+     && Abs (aPadPos.VecXYZ.x()) < 0.5f)
+    {
+      const Aspect_TrackedDevicePose& aPose = theView->View()->XRSession()->TrackedPoses()[aDeviceId];
+      if (!aPose.IsValidPose)
+      {
+        continue;
+      }
+
+      myXRLastTeleportHand = aRole;
+      Standard_Real& aPickDepth = aRole == Aspect_XRTrackedDeviceRole_LeftHand ? myXRLastPickDepthLeft : myXRLastPickDepthRight;
+      aPickDepth = Precision::Infinite();
+      Graphic3d_Vec3 aPickNorm;
+      const gp_Trsf aHandBase = theView->View()->PoseXRToWorld (aPose.Orientation);
+      const Standard_Real aHeadHeight = theView->View()->XRSession()->HeadPose().TranslationPart().Y();
+      {
+        const Standard_Integer aPickedId = handleXRMoveTo (theCtx, theView, aPose.Orientation, false);
+        if (aPickedId >= 1)
+        {
+          const SelectMgr_SortCriterion& aPickedData = theCtx->MainSelector()->PickedData (aPickedId);
+          aPickNorm = aPickedData.Normal;
+          if (aPickNorm.SquareModulus() > ShortRealEpsilon())
+          {
+            aPickDepth = aPickedData.Point.Distance (aHandBase.TranslationPart());
+          }
+        }
+      }
+      if (isClicked)
+      {
+        myXRLastTeleportHand = Aspect_XRTrackedDeviceRole_Other;
+        if (!Precision::IsInfinite (aPickDepth))
+        {
+          const gp_Dir aTeleDir = -gp::DZ().Transformed (aHandBase);
+          const gp_Dir anUpDir  = theView->View()->BaseXRCamera()->Up();
+
+          bool isHorizontal = false;
+          gp_Dir aPickNormDir (aPickNorm.x(), aPickNorm.y(), aPickNorm.z());
+          if (anUpDir.IsEqual ( aPickNormDir, M_PI_4)
+           || anUpDir.IsEqual (-aPickNormDir, M_PI_4))
+          {
+            isHorizontal = true;
+          }
+
+          gp_Pnt aNewEye = aHandBase.TranslationPart();
+          if (isHorizontal)
+          {
+            aNewEye  = aHandBase.TranslationPart()
+                     + aTeleDir.XYZ() * aPickDepth
+                     + anUpDir.XYZ() * aHeadHeight;
+          }
+          else
+          {
+            if (aPickNormDir.Dot (aTeleDir) < 0.0)
+            {
+              aPickNormDir.Reverse();
+            }
+            aNewEye  = aHandBase.TranslationPart()
+                     + aTeleDir.XYZ() * aPickDepth
+                     - aPickNormDir.XYZ() * aHeadHeight / 4;
+          }
+
+          theView->View()->PosedXRCamera()->MoveEyeTo (aNewEye);
+          theView->View()->ComputeXRBaseCameraFromPosed (theView->View()->PosedXRCamera(), theView->View()->XRSession()->HeadPose());
+        }
+      }
+      break;
+    }
+  }
+
+  if (myXRLastTeleportHand != aTeleOld)
+  {
+    if (aTeleOld != Aspect_XRTrackedDeviceRole_Other)
+    {
+      if (const Handle(Aspect_XRAction)& aHaptic = theView->View()->XRSession()->GenericAction (aTeleOld, Aspect_XRGenericAction_OutputHaptic))
+      {
+        theView->View()->XRSession()->AbortHapticVibrationAction (aHaptic);
+      }
+    }
+    if (myXRLastTeleportHand != Aspect_XRTrackedDeviceRole_Other)
+    {
+      if (const Handle(Aspect_XRAction)& aHaptic = theView->View()->XRSession()->GenericAction (myXRLastTeleportHand, Aspect_XRGenericAction_OutputHaptic))
+      {
+        theView->View()->XRSession()->TriggerHapticVibrationAction (aHaptic, myXRTeleportHaptic);
+      }
+    }
+  }
+}
+
+// =======================================================================
+// function : handleXRPicking
+// purpose  :
+// =======================================================================
+void AIS_ViewController::handleXRPicking (const Handle(AIS_InteractiveContext)& theCtx,
+                                          const Handle(V3d_View)& theView)
+{
+  if (!theView->View()->IsActiveXR())
+  {
+    return;
+  }
+
+  // handle selection on trigger clicks
+  Aspect_XRTrackedDeviceRole aPickDevOld = myXRLastPickingHand;
+  myXRLastPickingHand = Aspect_XRTrackedDeviceRole_Other;
+  for (int aHand = 0; aHand < 2; ++aHand)
+  {
+    const Aspect_XRTrackedDeviceRole aRole = aHand == 0 ? Aspect_XRTrackedDeviceRole_RightHand : Aspect_XRTrackedDeviceRole_LeftHand;
+    const Handle(Aspect_XRAction)& aTrigClickAct = theView->View()->XRSession()->GenericAction (aRole, Aspect_XRGenericAction_InputTriggerClick);
+    const Handle(Aspect_XRAction)& aTrigPullAct  = theView->View()->XRSession()->GenericAction (aRole, Aspect_XRGenericAction_InputTriggerPull);
+    if (aTrigClickAct.IsNull()
+    ||  aTrigPullAct.IsNull())
+    {
+      continue;
+    }
+
+    const Aspect_XRDigitalActionData aTrigClick = theView->View()->XRSession()->GetDigitalActionData (aTrigClickAct);
+    const Aspect_XRAnalogActionData  aTrigPos   = theView->View()->XRSession()->GetAnalogActionData (aTrigPullAct);
+    if (aTrigPos.IsActive
+     && Abs (aTrigPos.VecXYZ.x()) > 0.1f)
+    {
+      myXRLastPickingHand = aRole;
+      handleXRHighlight (theCtx, theView);
+      if (aTrigClick.IsActive
+       && aTrigClick.IsPressed
+       && aTrigClick.IsChanged)
+      {
+        theCtx->Select (false);
+        OnSelectionChanged (theCtx, theView);
+        if (const Handle(Aspect_XRAction)& aHaptic = theView->View()->XRSession()->GenericAction (myXRLastPickingHand, Aspect_XRGenericAction_OutputHaptic))
+        {
+          theView->View()->XRSession()->TriggerHapticVibrationAction (aHaptic, myXRSelectHaptic);
+        }
+      }
+      break;
+    }
+  }
+  if (myXRLastPickingHand != aPickDevOld)
+  {
+    theCtx->ClearDetected();
+  }
+}
+
+// =======================================================================
 // function : OnSelectionChanged
 // purpose  :
 // =======================================================================
@@ -2041,6 +2325,7 @@ void AIS_ViewController::contextLazyMoveTo (const Handle(AIS_InteractiveContext)
   myPrevMoveTo = thePnt;
 
   Handle(SelectMgr_EntityOwner) aLastPicked = theCtx->DetectedOwner();
+  theView->AutoZFit();
   theCtx->MoveTo (thePnt.x(), thePnt.y(), theView, false);
   Handle(SelectMgr_EntityOwner) aNewPicked = theCtx->DetectedOwner();
 
@@ -2272,9 +2557,10 @@ void AIS_ViewController::handleDynamicHighlight (const Handle(AIS_InteractiveCon
     else if (myToAllowHighlight)
     {
       if (myPrevMoveTo != aMoveToPnt
-       || myGL.OrbitRotation.ToRotate
-       || myGL.ViewRotation.ToRotate
-       || theView->IsInvalidated())
+       || (!theView->View()->IsActiveXR()
+        && (myGL.OrbitRotation.ToRotate
+         || myGL.ViewRotation.ToRotate
+         || theView->IsInvalidated())))
       {
         ResetPreviousMoveTo();
         contextLazyMoveTo (theCtx, theView, aMoveToPnt);
@@ -2340,6 +2626,12 @@ void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)&
     setAskNextFrame();
   }
 
+  if (theView->View()->IsActiveXR())
+  {
+    // VR requires continuous rendering
+    myToAskNextFrame = true;
+  }
+
   for (V3d_ListOfViewIterator aViewIter (theView->Viewer()->ActiveViewIterator()); aViewIter.More(); aViewIter.Next())
   {
     const Handle(V3d_View)& aView = aViewIter.Value();
@@ -2369,17 +2661,289 @@ void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)&
 }
 
 // =======================================================================
+// function : handleXRMoveTo
+// purpose  :
+// =======================================================================
+Standard_Integer AIS_ViewController::handleXRMoveTo (const Handle(AIS_InteractiveContext)& theCtx,
+                                                     const Handle(V3d_View)& theView,
+                                                     const gp_Trsf& thePose,
+                                                     const Standard_Boolean theToHighlight)
+{
+  //ResetPreviousMoveTo();
+  Standard_Integer aPickResult = 0;
+
+  Handle(Graphic3d_Camera) aCamBack = theView->Camera();
+  myXRCameraTmp->Copy (aCamBack);
+  theView->View()->ComputeXRPosedCameraFromBase (*myXRCameraTmp, thePose);
+  theView->SetCamera (myXRCameraTmp);
+  Graphic3d_Vec2i aPickPixel;
+  theView->Window()->Size (aPickPixel.x(), aPickPixel.y());
+  aPickPixel /= 2;
+  const Standard_Integer aSelTolerBack = theCtx->MainSelector()->CustomPixelTolerance();
+  theCtx->MainSelector()->SetPixelTolerance (1);
+  theView->AutoZFit();
+  if (theToHighlight)
+  {
+    theCtx->MoveTo (aPickPixel.x(), aPickPixel.y(), theView, false);
+    if (!theCtx->DetectedOwner().IsNull())
+    {
+      // ignore 2D objects
+      for (aPickResult = 1; !theCtx->DetectedOwner()->Selectable()->TransformPersistence().IsNull(); ++aPickResult)
+      {
+        if (theCtx->HilightNextDetected (theView, false) <= 1)
+        {
+          theCtx->ClearDetected();
+          aPickResult = 0;
+          break;
+        }
+      }
+    }
+  }
+  else
+  {
+    theCtx->MainSelector()->Pick (aPickPixel.x(), aPickPixel.y(), theView);
+    for (Standard_Integer aPickIter = 1; aPickIter <= theCtx->MainSelector()->NbPicked(); ++aPickIter)
+    {
+      const SelectMgr_SortCriterion& aPickedData = theCtx->MainSelector()->PickedData (aPickIter);
+      if (!aPickedData.Entity->OwnerId()->Selectable()->TransformPersistence().IsNull())
+      {
+        // skip 2d objects
+        continue;
+      }
+
+      aPickResult = aPickIter;
+      break;
+    }
+  }
+  theCtx->MainSelector()->SetPixelTolerance (aSelTolerBack);
+  theView->SetCamera (aCamBack);
+  return aPickResult;
+}
+
+// =======================================================================
+// function : handleXRHighlight
+// purpose  :
+// =======================================================================
+void AIS_ViewController::handleXRHighlight (const Handle(AIS_InteractiveContext)& theCtx,
+                                            const Handle(V3d_View)& theView)
+{
+  if (myXRLastPickingHand != Aspect_XRTrackedDeviceRole_LeftHand
+   && myXRLastPickingHand != Aspect_XRTrackedDeviceRole_RightHand)
+  {
+    return;
+  }
+
+  const Standard_Integer aDeviceId = theView->View()->XRSession()->NamedTrackedDevice (myXRLastPickingHand);
+  if (aDeviceId == -1)
+  {
+    return;
+  }
+
+  const Aspect_TrackedDevicePose& aPose = theView->View()->XRSession()->TrackedPoses()[aDeviceId];
+  if (!aPose.IsValidPose)
+  {
+    return;
+  }
+
+  Handle(SelectMgr_EntityOwner) aDetOld = theCtx->DetectedOwner();
+  handleXRMoveTo (theCtx, theView, aPose.Orientation, true);
+  if (!theCtx->DetectedOwner().IsNull()
+    && theCtx->DetectedOwner() != aDetOld)
+  {
+    if (const Handle(Aspect_XRAction)& aHaptic = theView->View()->XRSession()->GenericAction (myXRLastPickingHand, Aspect_XRGenericAction_OutputHaptic))
+    {
+      theView->View()->XRSession()->TriggerHapticVibrationAction (aHaptic, myXRPickingHaptic);
+    }
+  }
+
+  Standard_Real& aPickDepth = myXRLastPickingHand == Aspect_XRTrackedDeviceRole_LeftHand ? myXRLastPickDepthLeft : myXRLastPickDepthRight;
+  aPickDepth = Precision::Infinite();
+  if (theCtx->MainSelector()->NbPicked() > 0)
+  {
+    const gp_Trsf aHandBase = theView->View()->PoseXRToWorld (aPose.Orientation);
+    const SelectMgr_SortCriterion& aPicked = theCtx->MainSelector()->PickedData (1);
+    aPickDepth = aPicked.Point.Distance (aHandBase.TranslationPart());
+  }
+}
+
+// =======================================================================
+// function : handleXRPresentations
+// purpose  :
+// =======================================================================
+void AIS_ViewController::handleXRPresentations (const Handle(AIS_InteractiveContext)& theCtx,
+                                                const Handle(V3d_View)& theView)
+{
+  if (!theView->View()->IsActiveXR()
+   || (!myToDisplayXRAuxDevices
+    && !myToDisplayXRHands))
+  {
+    for (NCollection_Array1<Handle(AIS_XRTrackedDevice)>::Iterator aPrsIter (myXRPrsDevices); aPrsIter.More(); aPrsIter.Next())
+    {
+      if (!aPrsIter.Value().IsNull()
+        && aPrsIter.Value()->HasInteractiveContext())
+      {
+        theCtx->Remove (aPrsIter.Value(), false);
+      }
+      aPrsIter.ChangeValue().Nullify();
+    }
+    return;
+  }
+
+  if (myXRPrsDevices.Length() != theView->View()->XRSession()->TrackedPoses().Length())
+  {
+    for (NCollection_Array1<Handle(AIS_XRTrackedDevice)>::Iterator aPrsIter (myXRPrsDevices); aPrsIter.More(); aPrsIter.Next())
+    {
+      if (!aPrsIter.Value().IsNull())
+      {
+        theCtx->Remove (aPrsIter.Value(), false);
+      }
+    }
+    myXRPrsDevices.Resize (theView->View()->XRSession()->TrackedPoses().Lower(), theView->View()->XRSession()->TrackedPoses().Upper(), false);
+  }
+
+  const Standard_Integer aHeadDevice  = theView->View()->XRSession()->NamedTrackedDevice (Aspect_XRTrackedDeviceRole_Head);
+  const Standard_Integer aLeftDevice  = theView->View()->XRSession()->NamedTrackedDevice (Aspect_XRTrackedDeviceRole_LeftHand);
+  const Standard_Integer aRightDevice = theView->View()->XRSession()->NamedTrackedDevice (Aspect_XRTrackedDeviceRole_RightHand);
+  for (Standard_Integer aDeviceIter = theView->View()->XRSession()->TrackedPoses().Lower(); aDeviceIter <= theView->View()->XRSession()->TrackedPoses().Upper(); ++aDeviceIter)
+  {
+    const Aspect_TrackedDevicePose& aPose = theView->View()->XRSession()->TrackedPoses()[aDeviceIter];
+    Handle(AIS_XRTrackedDevice)& aPosePrs = myXRPrsDevices[aDeviceIter];
+    if (!aPose.IsValidPose)
+    {
+      continue;
+    }
+
+    const bool isHand = aDeviceIter == aLeftDevice
+                     || aDeviceIter == aRightDevice;
+    if ((!myToDisplayXRHands && isHand)
+     || (!myToDisplayXRAuxDevices && !isHand))
+    {
+      if (!aPosePrs.IsNull()
+        && aPosePrs->HasInteractiveContext())
+      {
+        theCtx->Remove (aPosePrs, false);
+      }
+      continue;
+    }
+
+    Aspect_XRTrackedDeviceRole aRole = Aspect_XRTrackedDeviceRole_Other;
+    if (aDeviceIter == aLeftDevice)
+    {
+      aRole = Aspect_XRTrackedDeviceRole_LeftHand;
+    }
+    else if (aDeviceIter == aRightDevice)
+    {
+      aRole = Aspect_XRTrackedDeviceRole_RightHand;
+    }
+
+    if (!aPosePrs.IsNull()
+      && aPosePrs->UnitFactor() != (float )theView->View()->UnitFactor())
+    {
+      theCtx->Remove (aPosePrs, false);
+      aPosePrs.Nullify();
+    }
+
+    if (aPosePrs.IsNull())
+    {
+      Handle(Image_Texture) aTexture;
+      Handle(Graphic3d_ArrayOfTriangles) aTris;
+      if (aDeviceIter != aHeadDevice)
+      {
+        aTris = theView->View()->XRSession()->LoadRenderModel (aDeviceIter, aTexture);
+      }
+      if (!aTris.IsNull())
+      {
+        aPosePrs = new AIS_XRTrackedDevice (aTris, aTexture);
+      }
+      else
+      {
+        aPosePrs = new AIS_XRTrackedDevice();
+      }
+      aPosePrs->SetUnitFactor ((float )theView->View()->UnitFactor());
+      aPosePrs->SetMutable (true);
+      aPosePrs->SetInfiniteState (true);
+    }
+    aPosePrs->SetRole (aRole);
+
+    if (!aPosePrs->HasInteractiveContext())
+    {
+      theCtx->Display (aPosePrs, 0, -1, false);
+    }
+
+    gp_Trsf aPoseLocal = aPose.Orientation;
+    if (aDeviceIter == aHeadDevice)
+    {
+      // show headset position on floor level
+      aPoseLocal.SetTranslationPart (gp_Vec (aPoseLocal.TranslationPart().X(), 0.0, aPoseLocal.TranslationPart().Z()));
+    }
+    const gp_Trsf aPoseWorld = theView->View()->PoseXRToWorld (aPoseLocal);
+    theCtx->SetLocation (aPosePrs, aPoseWorld);
+
+    Standard_Real aLaserLen = 0.0;
+    if (isHand
+      && aPosePrs->Role() == myXRLastPickingHand)
+    {
+      aLaserLen = myXRLastPickingHand == Aspect_XRTrackedDeviceRole_LeftHand ? myXRLastPickDepthLeft : myXRLastPickDepthRight;
+      if (Precision::IsInfinite (aLaserLen))
+      {
+        const Bnd_Box aViewBox = theView->View()->MinMaxValues (true);
+        if (!aViewBox.IsVoid())
+        {
+          aLaserLen = Sqrt (aViewBox.SquareExtent());
+        }
+        else
+        {
+          aLaserLen = 100.0;
+        }
+      }
+      aPosePrs->SetLaserColor (myXRLaserPickColor);
+    }
+    else if (isHand
+          && aPosePrs->Role() == myXRLastTeleportHand)
+    {
+      aLaserLen = myXRLastTeleportHand == Aspect_XRTrackedDeviceRole_LeftHand ? myXRLastPickDepthLeft : myXRLastPickDepthRight;
+      if (Precision::IsInfinite (aLaserLen))
+      {
+        const Bnd_Box aViewBox = theView->View()->MinMaxValues (true);
+        if (!aViewBox.IsVoid())
+        {
+          aLaserLen = Sqrt (aViewBox.SquareExtent());
+        }
+        else
+        {
+          aLaserLen = 100.0;
+        }
+      }
+      aPosePrs->SetLaserColor (myXRLaserTeleColor);
+    }
+    aPosePrs->SetLaserLength ((float )aLaserLen);
+  }
+}
+
+// =======================================================================
 // function : HandleViewEvents
 // purpose  :
 // =======================================================================
 void AIS_ViewController::HandleViewEvents (const Handle(AIS_InteractiveContext)& theCtx,
                                            const Handle(V3d_View)& theView)
 {
-  handleMoveTo (theCtx, theView);
+  const bool wasImmediateUpdate = theView->SetImmediateUpdate (false);
 
   const AIS_WalkDelta aWalk = FetchNavigationKeys (1.0, 1.0);
+  handleXRInput (theCtx, theView, aWalk);
+  if (theView->View()->IsActiveXR())
+  {
+    theView->View()->SetupXRPosedCamera();
+  }
   handleCameraActions (theCtx, theView, aWalk);
+  theView->View()->SynchronizeXRPosedToBaseCamera(); // handleCameraActions() may modify posed camera position - copy this modifications also to the base camera
+  handleXRPresentations (theCtx, theView);
+
+  handleMoveTo (theCtx, theView);
   handleViewRedraw (theCtx, theView);
+  theView->View()->UnsetXRPosedCamera();
+
+  theView->SetImmediateUpdate (wasImmediateUpdate);
 
   // make sure to not process the same events twice
   myGL.Reset();

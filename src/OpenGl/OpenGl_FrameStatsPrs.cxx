@@ -389,7 +389,7 @@ void OpenGl_FrameStatsPrs::Render (const Handle(OpenGl_Workspace)& theWorkspace)
     aCtx->WorldViewState.Push();
     if (!myCountersTrsfPers.IsNull())
     {
-      myCountersTrsfPers->Apply (theWorkspace->View()->Camera(),
+      myCountersTrsfPers->Apply (aCtx->Camera(),
                                  aCtx->ProjectionState.Current(), aCtx->WorldViewState.ChangeCurrent(),
                                  aCtx->VirtualViewport()[2], aCtx->VirtualViewport()[3]);
     }

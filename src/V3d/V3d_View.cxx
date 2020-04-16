@@ -233,6 +233,7 @@ void V3d_View::Update() const
   myIsInvalidatedImmediate = Standard_False;
   myView->Update();
   myView->Compute();
+  AutoZFit();
   myView->Redraw();
 }
 
@@ -618,8 +619,6 @@ void V3d_View::SetFront()
 
   aCamera->SetUp (gp_Dir (xu, yu, zu));
 
-  AutoZFit();
-
   SwitchSetFront = !SwitchSetFront;
 
   ImmediateUpdate();
@@ -674,8 +673,6 @@ void V3d_View::Rotate (const Standard_Real ax,
   aTrsf.Multiply (aRot[2]);
 
   aCamera->Transform (aTrsf);
-
-  AutoZFit();
 
   ImmediateUpdate();
 }
@@ -732,8 +729,6 @@ void V3d_View::Rotate(const Standard_Real ax, const Standard_Real ay, const Stan
   aTrsf.Multiply (aRot[2]);
 
   aCamera->Transform (aTrsf);
-
-  AutoZFit();
 
   ImmediateUpdate();
 }
@@ -803,8 +798,6 @@ void V3d_View::Rotate (const V3d_TypeOfAxe theAxe, const Standard_Real theAngle,
 
   aCamera->Transform (aRotation);
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -839,8 +832,6 @@ void V3d_View::Rotate(const Standard_Real angle, const Standard_Boolean Start)
   aRotation.SetRotation (gp_Ax1 (aRCenter, aRAxis), Angle);
 
   aCamera->Transform (aRotation);
-
-  AutoZFit();
 
   ImmediateUpdate();
 }
@@ -891,8 +882,6 @@ void V3d_View::Turn(const Standard_Real ax, const Standard_Real ay, const Standa
   aTrsf.Multiply (aRot[2]);
 
   aCamera->Transform (aTrsf);
-
-  AutoZFit();
 
   ImmediateUpdate();
 }
@@ -948,8 +937,6 @@ void V3d_View::Turn(const Standard_Real angle, const Standard_Boolean Start)
 
   aCamera->Transform (aRotation);
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -983,8 +970,6 @@ void V3d_View::SetTwist(const Standard_Real angle)
   aCamera->SetUp (gp_Dir (myYscreenAxis));
   aCamera->Transform (aTrsf);
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1003,8 +988,6 @@ void V3d_View::SetEye(const Standard_Real X,const Standard_Real Y,const Standard
   aCamera->SetEye (gp_Pnt (X, Y, Z));
 
   SetTwist (aTwistBefore);
-
-  AutoZFit();
 
   SetImmediateUpdate (wasUpdateEnabled);
 
@@ -1036,8 +1019,6 @@ void V3d_View::SetDepth(const Standard_Real Depth)
     aCamera->SetCenter (aCameraCenter);
   }
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1057,8 +1038,6 @@ void V3d_View::SetProj( const Standard_Real Vx,const Standard_Real Vy, const Sta
   Camera()->SetDirection (gp_Dir (Vx, Vy, Vz).Reversed());
 
   SetTwist(aTwistBefore);
-
-  AutoZFit();
 
   SetImmediateUpdate (wasUpdateEnabled);
 
@@ -1108,8 +1087,6 @@ void V3d_View::SetProj (const V3d_TypeOfOrientation theOrientation,
 
   Panning (anOriginVCS.X(), anOriginVCS.Y());
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1126,8 +1103,6 @@ void V3d_View::SetAt(const Standard_Real X,const Standard_Real Y,const Standard_
   Camera()->SetCenter (gp_Pnt (X, Y, Z));
 
   SetTwist (aTwistBefore);
-
-  AutoZFit();
 
   SetImmediateUpdate (wasUpdateEnabled);
 
@@ -1154,8 +1129,6 @@ void V3d_View::SetUp (const Standard_Real theVx, const Standard_Real theVy, cons
 
   aCamera->SetUp (gp_Dir (myYscreenAxis));
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1178,8 +1151,6 @@ void V3d_View::SetUp (const V3d_TypeOfOrientation theOrientation)
   }
 
   aCamera->SetUp (gp_Dir (myYscreenAxis));
-
-  AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1209,9 +1180,6 @@ void V3d_View::SetViewMappingDefault()
 void V3d_View::ResetViewOrientation()
 {
   Camera()->CopyOrientationData (myDefaultCamera);
-
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1222,9 +1190,6 @@ void V3d_View::ResetViewOrientation()
 void V3d_View::ResetViewMapping()
 {
   Camera()->CopyMappingData (myDefaultCamera);
-
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1235,8 +1200,6 @@ void V3d_View::ResetViewMapping()
 void V3d_View::Reset (const Standard_Boolean theToUpdate)
 {
   Camera()->Copy (myDefaultCamera);
-
-  AutoZFit();
 
   SwitchSetFront = Standard_False;
 
@@ -1271,8 +1234,6 @@ void V3d_View::SetSize (const Standard_Real theSize)
   Handle(Graphic3d_Camera) aCamera = Camera();
 
   aCamera->SetScale (aCamera->Aspect() >= 1.0 ? theSize / aCamera->Aspect() : theSize);
-
-  AutoZFit();
 
   ImmediateUpdate();
 }
@@ -1375,8 +1336,6 @@ void V3d_View::SetZoom (const Standard_Real theCoef,const Standard_Boolean theTo
   aCamera->SetCenter (myCamStartOpCenter);
   aCamera->SetScale (aCamera->Scale() / aCoef);
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1394,8 +1353,6 @@ void V3d_View::SetScale( const Standard_Real Coef )
   aCamera->SetAspect (myDefaultCamera->Aspect());
   aCamera->SetScale (aDefaultScale / Coef);
 
-  AutoZFit();
-
   ImmediateUpdate();
 }
 
@@ -1408,8 +1365,6 @@ void V3d_View::SetAxialScale( const Standard_Real Sx, const Standard_Real Sy, co
   V3d_BadValue_Raise_if( Sx <= 0. || Sy <= 0. || Sz <= 0.,"V3d_View::SetAxialScale, bad coefficient");
 
   Camera()->SetAxialScale (gp_XYZ (Sx, Sy, Sz));
-
-  AutoZFit();
 }
 
 //=============================================================================
@@ -1462,8 +1417,6 @@ void V3d_View::FitAll (const Bnd_Box& theBox, const Standard_Real theMargin, con
   {
     return;
   }
-
-  AutoZFit();
 
   if (myImmediateUpdate || theToUpdate)
   {
@@ -1588,7 +1541,6 @@ void V3d_View::WindowFit (const Standard_Integer theMinXp,
 
     Translate (aCamera, aPanVec.X(), -aPanVec.Y());
     Scale (aCamera, aUSize, aVSize);
-    AutoZFit();
   }
   else
   {
@@ -2491,8 +2443,6 @@ void V3d_View::ZoomAtPoint (const Standard_Integer theMouseStartX,
   aCamera->SetScale (aCamera->Scale() / aCoef);
   Translate (aCamera, aZoomAtPointXv - aDxv, aZoomAtPointYv - aDyv);
 
-  AutoZFit();
-
   SetImmediateUpdate (wasUpdateEnabled);
 
   ImmediateUpdate();
@@ -2544,8 +2494,6 @@ void V3d_View::FitAll(const Standard_Real theXmin,
 
   Translate (aCamera, (theXmin + theXmax) * 0.5, (theYmin + theYmax) * 0.5);
   Scale (aCamera, aFitSizeU, aFitSizeV);
-
-  AutoZFit();
 
   ImmediateUpdate();
 }
@@ -2828,7 +2776,6 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
   {
     aCamera->SetAspect (Standard_Real(aTargetSize.x()) / Standard_Real(aTargetSize.y()));
   }
-  AutoZFit();
 
   // render immediate structures into back buffer rather than front
   const Standard_Boolean aPrevImmediateMode = myView->SetImmediateModeDrawToFront (Standard_False);

@@ -1,0 +1,87 @@
+{
+  "bindings": {
+    "/actions/generic_left": {
+      "haptics": [
+        {
+          "output": "/actions/generic_left/out/haptic",
+          "path": "/user/hand/left/output/haptic"
+        }
+      ],
+      "sources": [
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_left/in/appmenu_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/left/input/application_menu"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_left/in/trigger_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/left/input/trigger"
+        },
+        {
+          "inputs": {
+            "click":    { "output": "/actions/generic_left/in/trackpad_click" },
+            "touch":    { "output": "/actions/generic_left/in/trackpad_touch" },
+            "position": { "output": "/actions/generic_left/in/trackpad_position" }
+          },
+          "mode": "trackpad",
+          "path": "/user/hand/left/input/trackpad"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_left/in/grip_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/left/input/grip"
+        }
+      ]
+    },
+    "/actions/generic_right": {
+      "haptics": [
+        {
+          "output": "/actions/generic_right/out/haptic",
+          "path": "/user/hand/right/output/haptic"
+        }
+      ],
+      "sources": [
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_right/in/appmenu_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/right/input/application_menu"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_right/in/trigger_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/right/input/trigger"
+        },
+        {
+          "inputs": {
+            "click":    { "output": "/actions/generic_right/in/trackpad_click" },
+            "touch":    { "output": "/actions/generic_right/in/trackpad_touch" },
+            "position": { "output": "/actions/generic_right/in/trackpad_position" }
+          },
+          "mode": "trackpad",
+          "path": "/user/hand/right/input/trackpad"
+        },
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_right/in/grip_click" }
+          },
+          "mode": "button",
+          "path": "/user/hand/right/input/grip"
+        }
+      ]
+    }
+  },
+  "controller_type": "generic",
+  "description": "Standard Open CASCADE Technology VR bindings for a generic controller",
+  "name": "OCCT VR bindings for a generic controller"
+}

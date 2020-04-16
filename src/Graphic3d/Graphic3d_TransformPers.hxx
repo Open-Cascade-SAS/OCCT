@@ -364,7 +364,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     {
       const Standard_Real anOffsetX = (Standard_Real(myParams.Params2d.OffsetX) + aJitterComp) * aScale;
       const gp_Dir aSide   = aForward.Crossed (theCamera->Up());
-      const gp_XYZ aDeltaX = aSide.XYZ() * (Abs(aViewDim.X()) * 0.5 - anOffsetX);
+      const gp_XYZ aDeltaX = aSide.XYZ() * (Abs(aViewDim.X()) * theCamera->NDC2dOffsetX() - anOffsetX);
       if ((myParams.Params2d.Corner & Aspect_TOTP_RIGHT) != 0)
       {
         aCenter += aDeltaX;
@@ -377,7 +377,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     if ((myParams.Params2d.Corner & (Aspect_TOTP_TOP | Aspect_TOTP_BOTTOM)) != 0)
     {
       const Standard_Real anOffsetY = (Standard_Real(myParams.Params2d.OffsetY) + aJitterComp) * aScale;
-      const gp_XYZ aDeltaY = theCamera->Up().XYZ() * (Abs(aViewDim.Y()) * 0.5 - anOffsetY);
+      const gp_XYZ aDeltaY = theCamera->Up().XYZ() * (Abs(aViewDim.Y()) * theCamera->NDC2dOffsetY() - anOffsetY);
       if ((myParams.Params2d.Corner & Aspect_TOTP_TOP) != 0)
       {
         aCenter += aDeltaY;
@@ -408,7 +408,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     gp_XYZ aCenter (0.0, 0.0, -aFocus);
     if ((myParams.Params2d.Corner & (Aspect_TOTP_LEFT | Aspect_TOTP_RIGHT)) != 0)
     {
-      aCenter.SetX (-aViewDim.X() * 0.5 + (Standard_Real(myParams.Params2d.OffsetX) + aJitterComp) * aScale);
+      aCenter.SetX (-aViewDim.X() * theCamera->NDC2dOffsetX() + (Standard_Real(myParams.Params2d.OffsetX) + aJitterComp) * aScale);
       if ((myParams.Params2d.Corner & Aspect_TOTP_RIGHT) != 0)
       {
         aCenter.SetX (-aCenter.X());
@@ -416,7 +416,7 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     }
     if ((myParams.Params2d.Corner & (Aspect_TOTP_TOP | Aspect_TOTP_BOTTOM)) != 0)
     {
-      aCenter.SetY (-aViewDim.Y() * 0.5 + (Standard_Real(myParams.Params2d.OffsetY) + aJitterComp) * aScale);
+      aCenter.SetY (-aViewDim.Y() * theCamera->NDC2dOffsetY() + (Standard_Real(myParams.Params2d.OffsetY) + aJitterComp) * aScale);
       if ((myParams.Params2d.Corner & Aspect_TOTP_TOP) != 0)
       {
         aCenter.SetY (-aCenter.Y());

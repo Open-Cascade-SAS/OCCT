@@ -3,6 +3,7 @@ StdResource
 SHMessage
 Textures
 Shaders
+XRResources
 XSMessage
 XSTEPResource
 XmlOcafResource

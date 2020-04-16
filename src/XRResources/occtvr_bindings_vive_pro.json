@@ -1,0 +1,18 @@
+{
+  "bindings": {
+    "/actions/generic_head": {
+      "sources": [
+        {
+          "inputs": {
+            "click": { "output": "/actions/generic_head/in/headset_on_head" }
+          },
+          "mode": "button",
+          "path": "/user/head/proximity"
+        }
+      ]
+    }
+  },
+  "controller_type": "vive_pro",
+  "description": "",
+  "name": "vive_pro defaults"
+}

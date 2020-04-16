@@ -45,6 +45,7 @@
 #include <Standard_Transient.hxx>
 #include <TColStd_IndexedDataMapOfStringString.hxx>
 
+class Aspect_XRSession;
 class Graphic3d_CView;
 class Graphic3d_GraphicDriver;
 class Graphic3d_Layer;
@@ -427,14 +428,92 @@ public:
   //! The format of returned information (e.g. key-value layout)
   //! is NOT part of this API and can be changed at any time.
   //! Thus application should not parse returned information to weed out specific parameters.
-  virtual void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
-                                      Graphic3d_DiagnosticInfo theFlags) const = 0;
+  Standard_EXPORT virtual void DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
+                                                      Graphic3d_DiagnosticInfo theFlags) const = 0;
 
   //! Returns string with statistic performance info.
   virtual TCollection_AsciiString StatisticInformation() const = 0;
 
   //! Fills in the dictionary with statistic performance info.
   virtual void StatisticInformation (TColStd_IndexedDataMapOfStringString& theDict) const = 0;
+
+public:
+
+  //! Return unit scale factor defined as scale factor for m (meters); 1.0 by default.
+  //! Normally, view definition is unitless, however some operations like VR input requires proper units mapping.
+  Standard_Real UnitFactor() const { return myUnitFactor; }
+
+  //! Set unit scale factor.
+  Standard_EXPORT void SetUnitFactor (Standard_Real theFactor);
+
+  //! Return XR session.
+  const Handle(Aspect_XRSession)& XRSession() const { return myXRSession; }
+
+  //! Set XR session.
+  void SetXRSession (const Handle(Aspect_XRSession)& theSession) { myXRSession = theSession; }
+
+  //! Return TRUE if there is active XR session.
+  Standard_EXPORT bool IsActiveXR() const;
+
+  //! Initialize XR session.
+  Standard_EXPORT virtual bool InitXR();
+
+  //! Release XR session.
+  Standard_EXPORT virtual void ReleaseXR();
+
+  //! Process input.
+  Standard_EXPORT virtual void ProcessXRInput();
+
+  //! Compute PosedXRCamera() based on current XR head pose and make it active.
+  Standard_EXPORT void SetupXRPosedCamera();
+
+  //! Set current camera back to BaseXRCamera() and copy temporary modifications of PosedXRCamera().
+  //! Calls SynchronizeXRPosedToBaseCamera() beforehand.
+  Standard_EXPORT void UnsetXRPosedCamera();
+
+  //! Returns transient XR camera position with tracked head orientation applied.
+  const Handle(Graphic3d_Camera)& PosedXRCamera() const { return myPosedXRCamera; }
+
+  //! Sets transient XR camera position with tracked head orientation applied.
+  void SetPosedXRCamera (const Handle(Graphic3d_Camera)& theCamera) { myPosedXRCamera = theCamera; }
+
+  //! Returns anchor camera definition (without tracked head orientation).
+  const Handle(Graphic3d_Camera)& BaseXRCamera() const { return myBaseXRCamera; }
+
+  //! Sets anchor camera definition.
+  void SetBaseXRCamera (const Handle(Graphic3d_Camera)& theCamera) { myBaseXRCamera = theCamera; }
+
+  //! Convert XR pose to world space.
+  //! @param theTrsfXR [in] transformation defined in VR local coordinate system,
+  //!                       oriented as Y-up, X-right and -Z-forward
+  //! @return transformation defining orientation of XR pose in world space
+  gp_Trsf PoseXRToWorld (const gp_Trsf& thePoseXR) const
+  {
+    const Handle(Graphic3d_Camera)& anOrigin = myBaseXRCamera;
+    const gp_Ax3 anAxVr    (gp::Origin(),  gp::DZ(), gp::DX());
+    const gp_Ax3 aCameraCS (anOrigin->Eye().XYZ(), -anOrigin->Direction(), -anOrigin->SideRight());
+    gp_Trsf aTrsfCS;
+    aTrsfCS.SetTransformation (aCameraCS, anAxVr);
+    return aTrsfCS * thePoseXR;
+  }
+
+  //! Recomputes PosedXRCamera() based on BaseXRCamera() and head orientation.
+  Standard_EXPORT void SynchronizeXRBaseToPosedCamera();
+
+  //! Checks if PosedXRCamera() has been modified since SetupXRPosedCamera()
+  //! and copies these modifications to BaseXRCamera().
+  Standard_EXPORT void SynchronizeXRPosedToBaseCamera();
+
+  //! Compute camera position based on XR pose.
+  Standard_EXPORT void ComputeXRPosedCameraFromBase (Graphic3d_Camera& theCam,
+                                                     const gp_Trsf& theXRTrsf) const;
+
+  //! Update based camera from posed camera by applying reversed transformation.
+  Standard_EXPORT void ComputeXRBaseCameraFromPosed (const Graphic3d_Camera& theCamPosed,
+                                                     const gp_Trsf& thePoseTrsf);
+
+  //! Turn XR camera direction using current (head) eye position as anchor.
+  Standard_EXPORT void TurnViewXRCamera (const gp_Trsf& theTrsfTurn);
 
 public: //! @name obsolete Graduated Trihedron functionality
 
@@ -489,6 +568,13 @@ protected:
   Standard_Boolean myIsRemoved;
   Graphic3d_TypeOfShadingModel  myShadingModel;
   Graphic3d_TypeOfVisualization myVisualization;
+
+  Handle(Aspect_XRSession) myXRSession;
+  Handle(Graphic3d_Camera) myBackXRCamera;       //!< camera projection parameters to restore after closing XR session (FOV, aspect and similar)
+  Handle(Graphic3d_Camera) myBaseXRCamera;       //!< neutral camera orientation defining coordinate system in which head tracking is defined
+  Handle(Graphic3d_Camera) myPosedXRCamera;      //!< transient XR camera orientation with tracked head orientation applied (based on myBaseXRCamera)
+  Handle(Graphic3d_Camera) myPosedXRCameraCopy;  //!< neutral camera orientation copy at the beginning of processing input
+  Standard_Real            myUnitFactor;         //!< unit scale factor defined as scale factor for m (meters)
 
 protected:
 

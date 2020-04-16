@@ -16,6 +16,8 @@
 
 #include <Aspect_VKeySet.hxx>
 #include <Aspect_TouchMap.hxx>
+#include <Aspect_XRHapticActionData.hxx>
+#include <Aspect_XRTrackedDeviceRole.hxx>
 #include <AIS_DragAction.hxx>
 #include <AIS_MouseGesture.hxx>
 #include <AIS_NavigationMode.hxx>
@@ -28,6 +30,7 @@
 #include <NCollection_Array1.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
+#include <Quantity_ColorRGBA.hxx>
 #include <Standard_Mutex.hxx>
 
 class AIS_AnimationCamera;
@@ -35,6 +38,8 @@ class AIS_InteractiveObject;
 class AIS_InteractiveContext;
 class AIS_Point;
 class AIS_RubberBand;
+class AIS_XRTrackedDevice;
+class Graphic3d_Camera;
 class V3d_View;
 
 //! Auxiliary structure for handling viewer events between GUI and Rendering threads.
@@ -199,6 +204,18 @@ public: //! @name global parameters
 
   //! Reset previous position of MoveTo.
   void ResetPreviousMoveTo() { myPrevMoveTo = Graphic3d_Vec2i (-1); }
+
+  //! Return TRUE to display auxiliary tracked XR devices (like tracking stations).
+  bool ToDisplayXRAuxDevices() const { return myToDisplayXRAuxDevices; }
+
+  //! Set if auxiliary tracked XR devices should be displayed.
+  void SetDisplayXRAuxDevices (bool theToDisplay) { myToDisplayXRAuxDevices = theToDisplay; }
+
+  //! Return TRUE to display XR hand controllers.
+  bool ToDisplayXRHands() const { return myToDisplayXRHands; }
+
+  //! Set if tracked XR hand controllers should be displayed.
+  void SetDisplayXRHands (bool theToDisplay) { myToDisplayXRHands = theToDisplay; }
 
 public: //! @name keyboard input
 
@@ -548,6 +565,40 @@ public:
   Standard_EXPORT virtual void handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
                                                  const Handle(V3d_View)& theView);
 
+public:
+
+  //! Perform XR input.
+  //! This method is expected to be called from rendering thread.
+  Standard_EXPORT virtual void handleXRInput (const Handle(AIS_InteractiveContext)& theCtx,
+                                              const Handle(V3d_View)& theView,
+                                              const AIS_WalkDelta& theWalk);
+
+  //! Handle trackpad view turn action.
+  Standard_EXPORT virtual void handleXRTurnPad (const Handle(AIS_InteractiveContext)& theCtx,
+                                                const Handle(V3d_View)& theView);
+
+  //! Handle trackpad teleportation action.
+  Standard_EXPORT virtual void handleXRTeleport (const Handle(AIS_InteractiveContext)& theCtx,
+                                                 const Handle(V3d_View)& theView);
+
+  //! Handle picking on trigger click.
+  Standard_EXPORT virtual void handleXRPicking (const Handle(AIS_InteractiveContext)& theCtx,
+                                                const Handle(V3d_View)& theView);
+
+  //! Perform dynamic highlighting for active hand.
+  Standard_EXPORT virtual void handleXRHighlight (const Handle(AIS_InteractiveContext)& theCtx,
+                                                  const Handle(V3d_View)& theView);
+
+  //! Display auxiliary XR presentations.
+  Standard_EXPORT virtual void handleXRPresentations (const Handle(AIS_InteractiveContext)& theCtx,
+                                                      const Handle(V3d_View)& theView);
+
+  //! Perform picking with/without dynamic highlighting for XR pose.
+  Standard_EXPORT virtual Standard_Integer handleXRMoveTo (const Handle(AIS_InteractiveContext)& theCtx,
+                                                           const Handle(V3d_View)& theView,
+                                                           const gp_Trsf& thePose,
+                                                           const Standard_Boolean theToHighlight);
+
 protected:
 
   //! Flush buffers.
@@ -628,6 +679,23 @@ protected:
   Handle(AIS_InteractiveObject) myDragObject;     //!< currently dragged object
   Graphic3d_Vec2i     myPrevMoveTo;               //!< previous position of MoveTo event in 3D viewer
   Standard_Boolean    myHasHlrOnBeforeRotation;   //!< flag for restoring Computed mode after rotation
+
+protected: //! @name XR input variables
+
+  NCollection_Array1<Handle(AIS_XRTrackedDevice)> myXRPrsDevices; //!< array of XR tracked devices presentations
+  Handle(Graphic3d_Camera)   myXRCameraTmp;       //!< temporary camera
+  Quantity_Color             myXRLaserTeleColor;  //!< color of teleport laser
+  Quantity_Color             myXRLaserPickColor;  //!< color of picking  laser
+  Aspect_XRTrackedDeviceRole myXRLastTeleportHand;//!< active hand for teleport
+  Aspect_XRTrackedDeviceRole myXRLastPickingHand; //!< active hand for picking objects
+  Aspect_XRHapticActionData  myXRTeleportHaptic;  //!< vibration on picking teleport destination
+  Aspect_XRHapticActionData  myXRPickingHaptic;   //!< vibration on dynamic highlighting
+  Aspect_XRHapticActionData  myXRSelectHaptic;    //!< vibration on selection
+  Standard_Real       myXRLastPickDepthLeft;      //!< last picking depth for left  hand
+  Standard_Real       myXRLastPickDepthRight;     //!< last picking depth for right hand
+  Standard_Real       myXRTurnAngle;              //!< discrete turn angle for XR trackpad
+  Standard_Boolean    myToDisplayXRAuxDevices;    //!< flag to display auxiliary tracked XR devices
+  Standard_Boolean    myToDisplayXRHands;         //!< flag to display XR hands
 
 protected: //! @name keyboard input variables
 

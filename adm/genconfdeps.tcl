@@ -68,7 +68,7 @@ if { [info exists ::env(SHORTCUT_HEADERS)] } {
 }
 
 # fetch environment variables (e.g. set by custom.sh or custom.bat) and set them as tcl variables with the same name
-set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_E57 HAVE_RAPIDJSON HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo BUILD_Inspector}
+set THE_ENV_VARIABLES {HAVE_FREEIMAGE HAVE_FFMPEG HAVE_TBB HAVE_GLES2 HAVE_D3D HAVE_VTK HAVE_ZLIB HAVE_LIBLZMA HAVE_E57 HAVE_RAPIDJSON HAVE_OPENVR HAVE_OPENCL CHECK_QT4 CHECK_JDK MACOSX_USE_GLX HAVE_RelWithDebInfo BUILD_Inspector}
 foreach anEnvIter $THE_ENV_VARIABLES {
   set ${anEnvIter} "false"
   if { [info exists ::env(${anEnvIter})] } {
@@ -617,6 +617,59 @@ proc wokdep:SearchFFmpeg {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBi
         lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
       } else {
         lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}avutil.${::SYS_LIB_SUFFIX}' not found (FFmpeg)"
+        if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
+      }
+    }
+  }
+
+  return "$isFound"
+}
+
+# Search OpenVR SDK placement
+proc wokdep:SearchOpenVR {theErrInc theErrLib32 theErrLib64 theErrBin32 theErrBin64} {
+  upvar $theErrInc   anErrInc
+  upvar $theErrLib32 anErrLib32
+  upvar $theErrLib64 anErrLib64
+  upvar $theErrBin32 anErrBin32
+  upvar $theErrBin64 anErrBin64
+
+  set isFound "true"
+  set anOpenVrHPath [wokdep:SearchHeader "openvr.h"]
+  if { "$anOpenVrHPath"  == "" } {
+    set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{openvr}*] "$::VCVER" "$::ARCH" ]
+    if { "$aPath" != "" && [file exists "$aPath/include/openvr.h"] } {
+      lappend ::CSF_OPT_INC "$aPath/include"
+    } elseif { "$aPath" != "" && [file exists "$aPath/headers/openvr.h"] } {
+      lappend ::CSF_OPT_INC "$aPath/headers"
+    } else {
+      lappend anErrInc "Error: 'openvr.h' not found (OpenVR)"
+      set isFound "false"
+    }
+  }
+
+  set aPlatform "unknown"
+  if { "$::tcl_platform(platform)" == "windows" } {
+    set aPlatform "win"
+  } elseif { "$::tcl_platform(os)" == "Darwin" } {
+    set aPlatform "osx"
+  } elseif { "$::tcl_platform(os)" == "Linux" } {
+    set aPlatform "linux"
+  }
+
+  foreach anArchIter {64 32} {
+    set anOpenVrLibPath [wokdep:SearchLib "openvr_api" "$anArchIter"]
+    if { "$anOpenVrLibPath" == "" } {
+      set aPath [wokdep:Preferred [glob -nocomplain -directory "$::PRODUCTS_PATH" -type d *{openvr}*] "$::VCVER" "$anArchIter" ]
+      set anOpenVrLibPath  [wokdep:SearchLib "openvr_api" "$anArchIter" "$aPath/lib/${aPlatform}${anArchIter}"]
+      set anOpenVrLibPath2 [wokdep:SearchLib "openvr_api" "$anArchIter" "$aPath/lib"]
+      if { "$anOpenVrLibPath" != "" } {
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib/${aPlatform}${anArchIter}"
+        lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin/${aPlatform}${anArchIter}"
+      } elseif { "$anOpenVrLibPath2" != "" } {
+        lappend ::CSF_OPT_LIB$anArchIter "$aPath/lib"
+        lappend ::CSF_OPT_BIN$anArchIter "$aPath/bin"
+      } else {
+        lappend anErrLib$anArchIter "Error: '${::SYS_LIB_PREFIX}openvr_api.${::SYS_LIB_SUFFIX}' not found (OpenVR)"
         if { "$::ARCH" == "$anArchIter"} { set isFound "false" }
       }
     }

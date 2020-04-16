@@ -85,14 +85,17 @@ public:
   //! Empties all the tables, removes all selections...
   Standard_EXPORT void Clear();
 
-  //! returns the Sensitivity of picking
-  Standard_Real Sensitivity() const { return myTolerances.Tolerance(); }
-
-  //! Returns the pixel tolerance.
-  Standard_Integer PixelTolerance() const { return myTolerances.Tolerance(); }
+  //! Returns custom pixel tolerance value.
+  Standard_Integer CustomPixelTolerance() const { return myTolerances.CustomTolerance(); }
 
   //! Sets the pixel tolerance <theTolerance>.
   Standard_EXPORT void SetPixelTolerance (const Standard_Integer theTolerance);
+
+  //! Returns the largest sensitivity of picking
+  Standard_Real Sensitivity() const { return myTolerances.Tolerance(); }
+
+  //! Returns the largest pixel tolerance.
+  Standard_Integer PixelTolerance() const { return myTolerances.Tolerance(); }
 
   //! Sorts the detected entites by priority and distance.
   //!          to be redefined if other criterion are used...

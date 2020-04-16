@@ -9982,9 +9982,7 @@ static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
   }
 
   aCurrentView->SetAutoZFitMode (isOn, aScale);
-  aCurrentView->AutoZFit();
   aCurrentView->Redraw();
-
   return 0;
 }
 
@@ -10022,6 +10020,8 @@ static int VCamera (Draw_Interpretor& theDI,
   {
     theDI << "ProjType:   " << projTypeName (aCamera->ProjectionType()) << "\n";
     theDI << "FOVy:       " << aCamera->FOVy() << "\n";
+    theDI << "FOVx:       " << aCamera->FOVx() << "\n";
+    theDI << "FOV2d:      " << aCamera->FOV2d() << "\n";
     theDI << "Distance:   " << aCamera->Distance() << "\n";
     theDI << "IOD:        " << aCamera->IOD() << "\n";
     theDI << "IODType:    " << (aCamera->GetIODType() == Graphic3d_Camera::IODType_Absolute   ? "absolute" : "relative") << "\n";
@@ -10177,18 +10177,83 @@ static int VCamera (Draw_Interpretor& theDI,
         case Graphic3d_Camera::FocusType_Relative: theDI << "relative "; break;
       }
     }
+    else if (anArgCase == "-lockzup"
+          || anArgCase == "-turntable")
+    {
+      bool toLockUp = true;
+      if (++anArgIter < theArgsNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toLockUp))
+      {
+        --anArgIter;
+      }
+      ViewerTest::CurrentEventManager()->SetLockOrbitZUp (toLockUp);
+    }
     else if (anArgCase == "-fov"
-          || anArgCase == "-fovy")
+          || anArgCase == "-fovy"
+          || anArgCase == "-fovx"
+          || anArgCase == "-fov2d")
     {
       Standard_CString anArgValue = (anArgIter + 1 < theArgsNb) ? theArgVec[anArgIter + 1] : NULL;
       if (anArgValue != NULL
       && *anArgValue != '-')
       {
         ++anArgIter;
-        aCamera->SetFOVy (Draw::Atof (anArgValue));
+        if (anArgCase == "-fov2d")
+        {
+          aCamera->SetFOV2d (Draw::Atof (anArgValue));
+        }
+        else if (anArgCase == "-fovx")
+        {
+          aCamera->SetFOVy (Draw::Atof (anArgValue) / aCamera->Aspect());///
+        }
+        else
+        {
+          aCamera->SetFOVy (Draw::Atof (anArgValue));
+        }
         continue;
       }
-      theDI << aCamera->FOVy() << " ";
+      if (anArgCase == "-fov2d")
+      {
+        theDI << aCamera->FOV2d() << " ";
+      }
+      else if (anArgCase == "-fovx")
+      {
+        theDI << aCamera->FOVx() << " ";
+      }
+      else
+      {
+        theDI << aCamera->FOVy() << " ";
+      }
+    }
+    else if (anArgIter + 1 < theArgsNb
+          && anArgCase == "-xrpose")
+    {
+      TCollection_AsciiString anXRArg (theArgVec[++anArgIter]);
+      anXRArg.LowerCase();
+      if (anXRArg == "base")
+      {
+        aCamera = aView->View()->BaseXRCamera();
+      }
+      else if (anXRArg == "head")
+      {
+        aCamera = aView->View()->PosedXRCamera();
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error: unknown XR pose '" << anXRArg << "'";
+        return 1;
+      }
+      if (aCamera.IsNull())
+      {
+        Message::SendFail() << "Error: undefined XR pose";
+        return 0;
+      }
+      if (aView->AutoZFitMode())
+      {
+        const Bnd_Box aMinMaxBox  = aView->View()->MinMaxValues (false);
+        const Bnd_Box aGraphicBox = aView->View()->MinMaxValues (true);
+        aCamera->ZFitAll (aView->AutoZFitScaleFactor(), aMinMaxBox, aGraphicBox);
+      }
     }
     else if (aPrsName.IsEmpty()
          && !anArgCase.StartsWith ("-"))
@@ -10205,7 +10270,6 @@ static int VCamera (Draw_Interpretor& theDI,
   if (aPrsName.IsEmpty()
    || theArgsNb > 2)
   {
-    aView->AutoZFit();
     aView->Redraw();
   }
 
@@ -10233,7 +10297,7 @@ static int VCamera (Draw_Interpretor& theDI,
       ViewerTest::GetAISContext()->Erase (aCameraFrustum, false);
       aView->ZFitAll();
     }
-    aCameraFrustum->SetCameraFrustum (aView->Camera());
+    aCameraFrustum->SetCameraFrustum (aCamera);
 
     ViewerTest::Display (aPrsName, aCameraFrustum);
   }
@@ -10285,6 +10349,11 @@ inline Standard_Boolean parseStereoMode (Standard_CString      theArg,
         || aFlag == "softpageflip")
   {
     theMode = Graphic3d_StereoMode_SoftPageFlip;
+  }
+  else if (aFlag == "openvr"
+        || aFlag == "vr")
+  {
+    theMode = Graphic3d_StereoMode_OpenVR;
   }
   else
   {
@@ -10361,6 +10430,7 @@ static int VStereo (Draw_Interpretor& theDI,
         case Graphic3d_StereoMode_SideBySide       : aMode = "sideBySide";       break;
         case Graphic3d_StereoMode_OverUnder        : aMode = "overUnder";        break;
         case Graphic3d_StereoMode_SoftPageFlip     : aMode = "softpageflip";     break;
+        case Graphic3d_StereoMode_OpenVR           : aMode = "openVR";           break;
         case Graphic3d_StereoMode_Anaglyph  :
           aMode = "anaglyph";
           switch (aView->RenderingParams().AnaglyphFilter)
@@ -10430,7 +10500,10 @@ static int VStereo (Draw_Interpretor& theDI,
         aCamera->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
       }
       ViewerTest_myDefaultCaps.contextStereo = Standard_True;
-      return 0;
+      if (aParams->StereoMode != Graphic3d_StereoMode_OpenVR)
+      {
+        return 0;
+      }
     }
     else if (aFlag == "-reverse"
           || aFlag == "-reversed"
@@ -10491,6 +10564,34 @@ static int VStereo (Draw_Interpretor& theDI,
         ViewerTest_myDefaultCaps.contextStereo = Standard_True;
       }
     }
+    else if (anArgIter + 1 < theArgNb
+          && aFlag == "-hmdfov2d")
+    {
+      aParams->HmdFov2d = (float )Draw::Atof (theArgVec[++anArgIter]);
+      if (aParams->HmdFov2d < 10.0f
+       || aParams->HmdFov2d > 180.0f)
+      {
+        Message::SendFail() << "Error: FOV is out of range";
+        return 1;
+      }
+    }
+    else if (aFlag == "-mirror"
+          || aFlag == "-mirrorcomposer")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aParams->ToMirrorComposer = toEnable;
+    }
+    else if (anArgIter + 1 < theArgNb
+          && (aFlag == "-unitfactor"
+           || aFlag == "-unitscale"))
+    {
+      aView->View()->SetUnitFactor (Draw::Atof (theArgVec[++anArgIter]));
+    }
     else
     {
       Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -10502,6 +10603,11 @@ static int VStereo (Draw_Interpretor& theDI,
   {
     aParams->StereoMode = aMode;
     aCamera->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
+    if (aParams->StereoMode == Graphic3d_StereoMode_OpenVR)
+    {
+      // initiate implicit continuous rendering
+      ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), aView, true);
+    }
   }
   return 0;
 }
@@ -13372,6 +13478,7 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
   }
 
   const Handle(AIS_InteractiveContext)& aContext = ViewerTest::GetAISContext();
+  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
   if (aContext.IsNull())
   {
     Message::SendFail ("Error: no active viewer");
@@ -13380,6 +13487,7 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
 
   TCollection_AsciiString aFile;
   StdSelect_TypeOfSelectionImage aType = StdSelect_TypeOfSelectionImage_NormalizedDepth;
+  Handle(Graphic3d_Camera) aCustomCam;
   Image_Format anImgFormat = Image_Format_BGR;
   Standard_Integer aPickedIndex = 1;
   for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
@@ -13453,6 +13561,30 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
 
       aPickedIndex = Draw::Atoi (theArgVec[anArgIter]);
     }
+    else if (anArgIter + 1 < theArgsNb
+          && aParam == "-xrpose")
+    {
+      TCollection_AsciiString anXRArg (theArgVec[++anArgIter]);
+      anXRArg.LowerCase();
+      if (anXRArg == "base")
+      {
+        aCustomCam = aView->View()->BaseXRCamera();
+      }
+      else if (anXRArg == "head")
+      {
+        aCustomCam = aView->View()->PosedXRCamera();
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error: unknown XR pose '" << anXRArg << "'";
+        return 1;
+      }
+      if (aCustomCam.IsNull())
+      {
+        Message::SendFail() << "Error: undefined XR pose";
+        return 0;
+      }
+    }
     else if (aFile.IsEmpty())
     {
       aFile = theArgVec[anArgIter];
@@ -13469,7 +13601,6 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
     return 1;
   }
 
-  const Handle(V3d_View)& aView = ViewerTest::CurrentView();
   Standard_Integer aWidth = 0, aHeight = 0;
   aView->Window()->Size (aWidth, aHeight);
 
@@ -13479,11 +13610,24 @@ static int VDumpSelectionImage (Draw_Interpretor& /*theDi*/,
     Message::SendFail ("Error: can't allocate image");
     return 1;
   }
+
+  const bool wasImmUpdate = aView->SetImmediateUpdate (false);
+  Handle(Graphic3d_Camera) aCamBack = aView->Camera();
+  if (!aCustomCam.IsNull())
+  {
+    aView->SetCamera (aCustomCam);
+  }
   if (!aContext->MainSelector()->ToPixMap (aPixMap, aView, aType, aPickedIndex))
   {
     Message::SendFail ("Error: can't generate selection image");
     return 1;
   }
+  if (!aCustomCam.IsNull())
+  {
+    aView->SetCamera (aCamBack);
+  }
+  aView->SetImmediateUpdate (wasImmUpdate);
+
   if (!aPixMap.Save (aFile))
   {
     Message::SendFail ("Error: can't save selection image");
@@ -14208,8 +14352,12 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VVbo, group);
   theCommands.Add ("vstereo",
             "vstereo [0|1] [-mode Mode] [-reverse {0|1}]"
+    "\n\t\t:         [-mirrorComposer] [-hmdfov2d AngleDegrees] [-unitFactor MetersFactor]"
     "\n\t\t:         [-anaglyph Filter]"
-    "\n\t\t: Control stereo output mode. Available modes for -mode:"
+    "\n\t\t: Control stereo output mode."
+    "\n\t\t: When -mirrorComposer is specified, VR rendered frame will be mirrored in window (debug)."
+    "\n\t\t: Parameter -unitFactor specifies meters scale factor for mapping VR input."
+    "\n\t\t: Available modes for -mode:"
     "\n\t\t:  quadBuffer        - OpenGL QuadBuffer stereo,"
     "\n\t\t:                     requires driver support."
     "\n\t\t:                     Should be called BEFORE vinit!"
@@ -14219,6 +14367,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:  chessBoard       - chess-board output"
     "\n\t\t:  sideBySide       - horizontal pair"
     "\n\t\t:  overUnder        - vertical   pair"
+    "\n\t\t:  openVR           - OpenVR (HMD)"
     "\n\t\t: Available Anaglyph filters for -anaglyph:"
     "\n\t\t:  redCyan, redCyanSimple, yellowBlue, yellowBlueSimple,"
     "\n\t\t:  greenMagentaSimple",
@@ -14387,6 +14536,8 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t:         [-stereo] [-leftEye] [-rightEye]"
       "\n\t\t:         [-iod [Distance]] [-iodType    [absolute|relative]]"
       "\n\t\t:         [-zfocus [Value]] [-zfocusType [absolute|relative]]"
+      "\n\t\t:         [-fov2d  [Angle]] [-lockZup {0|1}]"
+      "\n\t\t:         [-xrPose base|head=base]"
       "\n\t\t: Manages camera parameters."
       "\n\t\t: Displays frustum when presntation name PrsName is specified."
       "\n\t\t: Prints current value when option called without argument."
@@ -14395,7 +14546,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
       "\n\t\t: Perspective camera:"
       "\n\t\t:   -persp      activate perspective  projection (mono)"
       "\n\t\t:   -fovy       field of view in y axis, in degrees"
+      "\n\t\t:   -fov2d      field of view limit for 2d on-screen elements"
       "\n\t\t:   -distance   distance of eye from camera center"
+      "\n\t\t:   -lockZup    lock Z up (tunrtable mode)"
       "\n\t\t: Stereoscopic camera:"
       "\n\t\t:   -stereo     perspective  projection (stereo)"
       "\n\t\t:   -leftEye    perspective  projection (left  eye)"
@@ -14658,6 +14811,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add ("vseldump",
                    "vseldump file -type {depth|unnormDepth|object|owner|selMode|entity}=depth -pickedIndex Index=1"
+                   "\n\t\t:       [-xrPose base|head=base]"
                    "\n\t\t: Generate an image based on detection results:"
                    "\n\t\t:   depth       normalized depth values"
                    "\n\t\t:   unnormDepth unnormalized depth values"

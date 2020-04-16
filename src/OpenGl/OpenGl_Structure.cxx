@@ -439,7 +439,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   {
     aCtx->WorldViewState.Push();
     OpenGl_Mat4& aWorldView = aCtx->WorldViewState.ChangeCurrent();
-    myTrsfPers->Apply (theWorkspace->View()->Camera(),
+    myTrsfPers->Apply (aCtx->Camera(),
                        aCtx->ProjectionState.Current(), aWorldView,
                        aCtx->VirtualViewport()[2], aCtx->VirtualViewport()[3]);
 

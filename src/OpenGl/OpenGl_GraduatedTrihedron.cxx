@@ -422,7 +422,7 @@ void OpenGl_GraduatedTrihedron::renderAxis (const Handle(OpenGl_Workspace)& theW
   const Standard_Integer aHeight = theWorkspace->Height();
 
   // Take into account Transform Persistence
-  aContext->ModelWorldState.SetCurrent (aTransMode.Compute (theWorkspace->View()->Camera(), aProjection, aWorldView, aWidth, aHeight));
+  aContext->ModelWorldState.SetCurrent (aTransMode.Compute (aContext->Camera(), aProjection, aWorldView, aWidth, aHeight));
   aContext->ApplyModelViewMatrix();
 
   anAxis.Arrow.Render (theWorkspace);

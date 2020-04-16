@@ -4068,6 +4068,22 @@ void OpenGl_Context::SetPolygonOffset (const Graphic3d_PolygonOffset& theOffset)
 }
 
 // =======================================================================
+// function : SetCamera
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
+{
+  myCamera = theCamera;
+  if (!theCamera.IsNull())
+  {
+    ProjectionState.SetCurrent (theCamera->ProjectionMatrixF());
+    WorldViewState .SetCurrent (theCamera->OrientationMatrixF());
+    ApplyProjectionMatrix();
+    ApplyWorldViewMatrix();
+  }
+}
+
+// =======================================================================
 // function : ApplyModelWorldMatrix
 // purpose  :
 // =======================================================================

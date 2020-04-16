@@ -2979,6 +2979,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramStereo (Handle(OpenGl_Sh
     }
     case Graphic3d_StereoMode_QuadBuffer:
     case Graphic3d_StereoMode_SoftPageFlip:
+    case Graphic3d_StereoMode_OpenVR:
     default:
     {
       /*const Handle(OpenGl_ShaderProgram)& aProgram = myStereoPrograms[Graphic3d_StereoMode_QuadBuffer];

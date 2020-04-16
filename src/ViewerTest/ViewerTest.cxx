@@ -65,6 +65,7 @@
 #include <StdSelect_ViewerSelector3d.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
+#include <Aspect_XRSession.hxx>
 
 #include <stdio.h>
 
@@ -1155,9 +1156,15 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
                                Standard_Integer  theArgNb,
                                Standard_CString* theArgVec)
 {
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
   if (theArgNb < 2)
   {
     Message::SendFail ("Error: wrong number of arguments! Image file name should be specified at least.");
+    return 1;
+  }
+  if (aView.IsNull())
+  {
+    Message::SendFail() << "Error: cannot find an active view!";
     return 1;
   }
 
@@ -1165,6 +1172,7 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
   Standard_CString      aFilePath   = theArgVec[anArgIter++];
   ViewerTest_StereoPair aStereoPair = ViewerTest_SP_Single;
   V3d_ImageDumpOptions  aParams;
+  Handle(Graphic3d_Camera) aCustomCam;
   aParams.BufferType    = Graphic3d_BT_RGB;
   aParams.StereoOptions = V3d_SDO_MONO;
   for (; anArgIter < theArgNb; ++anArgIter)
@@ -1201,6 +1209,41 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       {
         Message::SendFail() << "Error: unknown buffer '" << aBufArg << "'";
         return 1;
+      }
+    }
+    else if (anArgIter + 1 < theArgNb
+          && anArg == "-xrpose")
+    {
+      TCollection_AsciiString anXRArg (theArgVec[++anArgIter]);
+      anXRArg.LowerCase();
+      if (anXRArg == "base")
+      {
+        aCustomCam = aView->View()->BaseXRCamera();
+      }
+      else if (anXRArg == "head")
+      {
+        aCustomCam = aView->View()->PosedXRCamera();
+      }
+      else if (anXRArg == "handleft"
+            || anXRArg == "handright")
+      {
+        if (aView->View()->IsActiveXR())
+        {
+          aCustomCam = new Graphic3d_Camera();
+          aView->View()->ComputeXRPosedCameraFromBase (*aCustomCam, anXRArg == "handleft"
+                                                     ? aView->View()->XRSession()->LeftHandPose()
+                                                     : aView->View()->XRSession()->RightHandPose());
+        }
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error: unknown XR pose '" << anXRArg << "'";
+        return 1;
+      }
+      if (aCustomCam.IsNull())
+      {
+        Message::SendFail() << "Error: undefined XR pose";
+        return 0;
       }
     }
     else if (anArg == "-stereo")
@@ -1324,13 +1367,6 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  if (aView.IsNull())
-  {
-    Message::SendFail() << "Error: cannot find an active view!";
-    return 1;
-  }
-
   if (aParams.Width <= 0 || aParams.Height <= 0)
   {
     aView->Window()->Size (aParams.Width, aParams.Height);
@@ -1347,6 +1383,12 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
     case Graphic3d_BT_Red:                 aFormat = Image_Format_Gray;  break;
   }
 
+  const bool wasImmUpdate = aView->SetImmediateUpdate (false);
+  Handle(Graphic3d_Camera) aCamBack = aView->Camera();
+  if (!aCustomCam.IsNull())
+  {
+    aView->SetCamera (aCustomCam);
+  }
   switch (aStereoPair)
   {
     case ViewerTest_SP_Single:
@@ -1415,6 +1457,11 @@ static Standard_Integer VDump (Draw_Interpretor& theDI,
       break;
     }
   }
+  if (!aCustomCam.IsNull())
+  {
+    aView->SetCamera (aCamBack);
+  }
+  aView->SetImmediateUpdate (wasImmUpdate);
 
   if (!aPixMap.Save (aFilePath))
   {
@@ -6691,6 +6738,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
               "vdump <filename>." DUMP_FORMATS " [-width Width -height Height]"
       "\n\t\t:       [-buffer rgb|rgba|depth=rgb]"
       "\n\t\t:       [-stereo mono|left|right|blend|sideBySide|overUnder=mono]"
+      "\n\t\t:       [-xrPose base|head|handLeft|handRight=base]"
       "\n\t\t:       [-tileSize Size=0]"
       "\n\t\t: Dumps content of the active view into image file",
 		  __FILE__,VDump,group);

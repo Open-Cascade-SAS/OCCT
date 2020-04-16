@@ -141,3 +141,5 @@ AIS_RadiusDimension.hxx
 AIS_Relation.hxx
 AIS_SymmetricRelation.hxx
 AIS_TangentRelation.hxx
+AIS_XRTrackedDevice.cxx
+AIS_XRTrackedDevice.hxx

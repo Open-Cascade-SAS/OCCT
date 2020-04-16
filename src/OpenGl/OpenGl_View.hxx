@@ -523,6 +523,7 @@ protected: //! @name Rendering properties
   Handle(OpenGl_FrameBuffer) myMainSceneFbosOit[2];      //!< Additional buffers for transparent draw of main layer.
   Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2];    //!< Additional buffers for immediate layer in stereo mode.
   Handle(OpenGl_FrameBuffer) myImmediateSceneFbosOit[2]; //!< Additional buffers for transparency draw of immediate layer.
+  Handle(OpenGl_FrameBuffer) myXrSceneFbo;            //!< additional FBO (without MSAA) for submitting to XR
   OpenGl_VertexBuffer        myFullScreenQuad;        //!< Vertices for full-screen quad rendering.
   OpenGl_VertexBuffer        myFullScreenQuadFlip;
   Standard_Boolean           myToFlipOutput;          //!< Flag to draw result image upside-down

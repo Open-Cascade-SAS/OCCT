@@ -40,10 +40,11 @@ proc Visualization:toolkits { } {
 ;# Autres UDs a prendre.
 ;#
 proc Visualization:ressources { } {
-    return [list \
-	   [list both r Textures {}] \
-	   [list both r Shaders {}] \
-	    ]
+  return [list \
+         [list both r Textures {}] \
+         [list both r Shaders {}] \
+         [list both r XRResources {}] \
+  ]
 }
 ;#
 ;# Nom du module 

@@ -134,8 +134,10 @@ public:
     WhitePoint                  (1.f),
     // stereoscopic parameters
     StereoMode (Graphic3d_StereoMode_QuadBuffer),
+    HmdFov2d (30.0f),
     AnaglyphFilter (Anaglyph_RedCyan_Optimized),
     ToReverseStereo (Standard_False),
+    ToMirrorComposer (Standard_True),
     //
     StatsPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_UPPER,  Graphic3d_Vec2i (20, 20))),
     ChartPosition (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_RIGHT_UPPER, Graphic3d_Vec2i (20, 20))),
@@ -225,10 +227,12 @@ public:
   Standard_ShortReal                WhitePoint;                  //!< white point value used in filmic tone mapping (path tracing), 1.0 by default
 
   Graphic3d_StereoMode              StereoMode;                  //!< stereoscopic output mode, Graphic3d_StereoMode_QuadBuffer by default
+  Standard_ShortReal                HmdFov2d;                    //!< sharp field of view range in degrees for displaying on-screen 2D elements, 30.0 by default;
   Anaglyph                          AnaglyphFilter;              //!< filter for anaglyph output, Anaglyph_RedCyan_Optimized by default
   Graphic3d_Mat4                    AnaglyphLeft;                //!< left  anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
   Graphic3d_Mat4                    AnaglyphRight;               //!< right anaglyph filter (in normalized colorspace), Color = AnaglyphRight * theColorRight + AnaglyphLeft * theColorLeft;
   Standard_Boolean                  ToReverseStereo;             //!< flag to reverse stereo pair, FALSE by default
+  Standard_Boolean                  ToMirrorComposer;            //!< if output device is an external composer - mirror rendering results in window in addition to sending frame to composer, TRUE by default
 
   Handle(Graphic3d_TransformPers)   StatsPosition;               //!< location of stats, upper-left position by default
   Handle(Graphic3d_TransformPers)   ChartPosition;               //!< location of stats chart, upper-right position by default

@@ -73,7 +73,7 @@ public:
   Standard_EXPORT virtual Standard_Boolean Activate();
 
   //! Sets swap interval for this window according to the context's settings.
-  Standard_EXPORT void SetSwapInterval();
+  Standard_EXPORT void SetSwapInterval (Standard_Boolean theToForceNoSync);
 
 protected:
 

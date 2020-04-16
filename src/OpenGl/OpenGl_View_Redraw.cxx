@@ -18,6 +18,7 @@
 
 #include <OpenGl_GlCore11.hxx>
 
+#include <Aspect_XRSession.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TextureParams.hxx>
@@ -158,7 +159,8 @@ void OpenGl_View::Redraw()
     return;
   }
 
-  myWindow->SetSwapInterval();
+  // implicitly disable VSync when using HMD composer (can be mirrored in window for debugging)
+  myWindow->SetSwapInterval (IsActiveXR());
 
   ++myFrameCounter;
   const Graphic3d_StereoMode   aStereoMode  = myRenderParams.StereoMode;
@@ -186,10 +188,22 @@ void OpenGl_View::Redraw()
   OpenGl_FrameBuffer* aFrameBuffer = myFBO.get();
   bool toSwap = aCtx->IsRender()
             && !aCtx->caps->buffersNoSwap
-            &&  aFrameBuffer == NULL;
+            &&  aFrameBuffer == NULL
+            &&  (!IsActiveXR() || myRenderParams.ToMirrorComposer);
 
-  const Standard_Integer aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWindow->Width();
-  const Standard_Integer aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myWindow->Height();
+  Standard_Integer aSizeX = myWindow->Width();
+  Standard_Integer aSizeY = myWindow->Height();
+  if (aFrameBuffer != NULL)
+  {
+    aSizeX = aFrameBuffer->GetVPSizeX();
+    aSizeY = aFrameBuffer->GetVPSizeY();
+  }
+  else if (IsActiveXR())
+  {
+    aSizeX = myXRSession->RecommendedViewport().x();
+    aSizeY = myXRSession->RecommendedViewport().y();
+  }
+
   const Standard_Integer aRendSizeX = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeX + 0.5f);
   const Standard_Integer aRendSizeY = Standard_Integer(myRenderParams.RenderResolutionScale * aSizeY + 0.5f);
   if (aSizeX < 1
@@ -275,14 +289,33 @@ void OpenGl_View::Redraw()
     myMainSceneFbos     [1]->Release (aCtx.operator->());
     myImmediateSceneFbos[0]->Release (aCtx.operator->());
     myImmediateSceneFbos[1]->Release (aCtx.operator->());
+    myXrSceneFbo           ->Release (aCtx.operator->());
     myMainSceneFbos     [0]->ChangeViewport (0, 0);
     myMainSceneFbos     [1]->ChangeViewport (0, 0);
     myImmediateSceneFbos[0]->ChangeViewport (0, 0);
     myImmediateSceneFbos[1]->ChangeViewport (0, 0);
+    myXrSceneFbo           ->ChangeViewport (0, 0);
   }
 
+  bool hasXRBlitFbo = false;
   if (aProjectType == Graphic3d_Camera::Projection_Stereo
+   && IsActiveXR()
    && myMainSceneFbos[0]->IsValid())
+  {
+    if (aNbSamples != 0
+     || aSizeX != aRendSizeX)
+    {
+      hasXRBlitFbo = myXrSceneFbo->InitLazy (aCtx, aSizeX, aSizeY, myFboColorFormat, myFboDepthFormat, 0);
+      if (!hasXRBlitFbo)
+      {
+        TCollection_ExtendedString aMsg = TCollection_ExtendedString() + "Error! VR FBO "
+                                        + printFboFormat (myXrSceneFbo) + " initialization has failed";
+        aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH, aMsg);
+      }
+    }
+  }
+  else if (aProjectType == Graphic3d_Camera::Projection_Stereo
+        && myMainSceneFbos[0]->IsValid())
   {
     const bool wasFailedMain1 = checkWasFailedFbo (myMainSceneFbos[1], myMainSceneFbos[0]);
     if (!myMainSceneFbos[1]->InitLazy (aCtx, *myMainSceneFbos[0])
@@ -325,6 +358,11 @@ void OpenGl_View::Redraw()
         aProjectType = Graphic3d_Camera::Projection_Perspective;
       }
     }
+  }
+  if (!hasXRBlitFbo)
+  {
+    myXrSceneFbo->Release (aCtx.get());
+    myXrSceneFbo->ChangeViewport (0, 0);
   }
 
   // process PBR environment
@@ -500,7 +538,18 @@ void OpenGl_View::Redraw()
         myImmediateSceneFbosOit[0]->IsValid() ? myImmediateSceneFbosOit[0].operator->() : NULL
     };
 
-    if (!myTransientDrawToFront)
+    if (IsActiveXR())
+    {
+      // use single frame for both views - caching main scene content makes no sense
+      // when head position is expected to be updated each frame redraw with high accuracy
+      aMainFbos[1]    = aMainFbos[0];
+      aMainFbosOit[1] = aMainFbosOit[0];
+      anImmFbos[0]    = aMainFbos[0];
+      anImmFbos[1]    = aMainFbos[1];
+      anImmFbosOit[0] = aMainFbosOit[0];
+      anImmFbosOit[1] = aMainFbosOit[1];
+    }
+    else if (!myTransientDrawToFront)
     {
       anImmFbos   [0] = aMainFbos   [0];
       anImmFbos   [1] = aMainFbos   [1];
@@ -539,6 +588,23 @@ void OpenGl_View::Redraw()
       aCtx->SwapBuffers();
     }
 
+    if (IsActiveXR())
+    {
+      // push Left frame to HMD display composer
+      OpenGl_FrameBuffer* anXRFbo = hasXRBlitFbo ? myXrSceneFbo.get() : aMainFbos[0];
+      if (anXRFbo != aMainFbos[0])
+      {
+        blitBuffers (aMainFbos[0], anXRFbo); // resize or resolve MSAA samples
+      }
+    #if !defined(GL_ES_VERSION_2_0)
+      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGL;
+    #else
+      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGLES;
+    #endif
+      myXRSession->SubmitEye ((void* )(size_t )anXRFbo->ColorTexture()->TextureId(),
+                              aGraphicsLib, Aspect_ColorSpace_sRGB, Aspect_Eye_Left);
+    }
+
   #if !defined(GL_ES_VERSION_2_0)
     aCtx->SetReadDrawBuffer (aStereoMode == Graphic3d_StereoMode_QuadBuffer ? GL_BACK_RIGHT : GL_BACK);
   #endif
@@ -555,7 +621,29 @@ void OpenGl_View::Redraw()
       toSwap = false;
     }
 
-    if (anImmFbos[0] != NULL)
+    if (IsActiveXR())
+    {
+      // push Right frame to HMD display composer
+      OpenGl_FrameBuffer* anXRFbo = hasXRBlitFbo ? myXrSceneFbo.get() : aMainFbos[1];
+      if (anXRFbo != aMainFbos[1])
+      {
+        blitBuffers (aMainFbos[1], anXRFbo); // resize or resolve MSAA samples
+      }
+    #if !defined(GL_ES_VERSION_2_0)
+      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGL;
+    #else
+      const Aspect_GraphicsLibrary aGraphicsLib = Aspect_GraphicsLibrary_OpenGLES;
+    #endif
+      myXRSession->SubmitEye ((void* )(size_t )anXRFbo->ColorTexture()->TextureId(),
+                              aGraphicsLib, Aspect_ColorSpace_sRGB, Aspect_Eye_Right);
+      ::glFinish();
+
+      if (myRenderParams.ToMirrorComposer)
+      {
+        blitBuffers (anXRFbo, aFrameBuffer, myToFlipOutput);
+      }
+    }
+    else if (anImmFbos[0] != NULL)
     {
       aCtx->SetResolution (myRenderParams.Resolution, myRenderParams.ResolutionRatio(), 1.0f);
       drawStereoPair (aFrameBuffer);
@@ -657,6 +745,7 @@ void OpenGl_View::RedrawImmediate()
   if (!myWorkspace->Activate())
     return;
 
+  // no special handling of HMD display, since it will force full Redraw() due to no frame caching (myBackBufferRestored)
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   if (!myTransientDrawToFront
    || !myBackBufferRestored
@@ -872,9 +961,11 @@ bool OpenGl_View::redrawImmediate (const Graphic3d_Camera::Projection theProject
   const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
   GLboolean toCopyBackToFront = GL_FALSE;
   if (theDrawFbo == theReadFbo
-   && theDrawFbo != NULL)
+   && theDrawFbo != NULL
+   && theDrawFbo->IsValid())
   {
     myBackBufferRestored = Standard_False;
+    theDrawFbo->BindBuffer (aCtx);
   }
   else if (theReadFbo != NULL
         && theReadFbo->IsValid()
@@ -993,10 +1084,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   }
 
   myLocalOrigin.SetCoord (0.0, 0.0, 0.0);
-  aContext->ProjectionState.SetCurrent (myCamera->ProjectionMatrixF());
-  aContext->WorldViewState .SetCurrent (myCamera->OrientationMatrixF());
-  aContext->ApplyProjectionMatrix();
-  aContext->ApplyWorldViewMatrix();
+  aContext->SetCamera (myCamera);
   if (aManager->ModelWorldState().Index() == 0)
   {
     aContext->ShaderManager()->UpdateModelWorldStateTo (OpenGl_Mat4());
@@ -1042,7 +1130,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
 #if !defined(GL_ES_VERSION_2_0)
   // if the view is scaled normal vectors are scaled to unit
   // length for correct displaying of shaded objects
-  const gp_Pnt anAxialScale = myCamera->AxialScale();
+  const gp_Pnt anAxialScale = aContext->Camera()->AxialScale();
   if (anAxialScale.X() != 1.F ||
       anAxialScale.Y() != 1.F ||
       anAxialScale.Z() != 1.F)
@@ -1060,12 +1148,12 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // Redraw 3d scene
   if (theProjection == Graphic3d_Camera::Projection_MonoLeftEye)
   {
-    aContext->ProjectionState.SetCurrent (myCamera->ProjectionStereoLeftF());
+    aContext->ProjectionState.SetCurrent (aContext->Camera()->ProjectionStereoLeftF());
     aContext->ApplyProjectionMatrix();
   }
   else if (theProjection == Graphic3d_Camera::Projection_MonoRightEye)
   {
-    aContext->ProjectionState.SetCurrent (myCamera->ProjectionStereoRightF());
+    aContext->ProjectionState.SetCurrent (aContext->Camera()->ProjectionStereoRightF());
     aContext->ApplyProjectionMatrix();
   }
 

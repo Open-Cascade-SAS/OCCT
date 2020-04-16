@@ -187,6 +187,9 @@ proc wokdep:gui:UpdateList {} {
   if { "$::HAVE_FFMPEG" == "true" } {
     wokdep:SearchFFmpeg  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
+  if { "$::HAVE_OPENVR" == "true" } {
+    wokdep:SearchOpenVR  anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
+  }
   if { "$::HAVE_TBB" == "true" } {
     wokdep:SearchTBB     anIncErrs anLib32Errs anLib64Errs anBin32Errs anBin64Errs
   }
@@ -472,6 +475,8 @@ checkbutton   .myFrame.myChecks.myFImageCheck   -offvalue "false" -onvalue "true
 ttk::label    .myFrame.myChecks.myFImageLbl     -text "Use FreeImage"
 checkbutton   .myFrame.myChecks.myTbbCheck      -offvalue "false" -onvalue "true" -variable HAVE_TBB       -command wokdep:gui:UpdateList
 ttk::label    .myFrame.myChecks.myTbbLbl        -text "Use Intel TBB"
+checkbutton   .myFrame.myChecks.myOpenVrCheck   -offvalue "false" -onvalue "true" -variable HAVE_OPENVR    -command wokdep:gui:UpdateList
+ttk::label    .myFrame.myChecks.myOpenVrLbl     -text "Use OpenVR"
 if { "$::tcl_platform(os)" != "Darwin" } {
   checkbutton .myFrame.myChecks.myGlesCheck     -offvalue "false" -onvalue "true" -variable HAVE_GLES2     -command wokdep:gui:UpdateList
   ttk::label  .myFrame.myChecks.myGlesLbl       -text "Use OpenGL ES"
@@ -635,6 +640,8 @@ grid .myFrame.myChecks.myJDKLbl        -row $aCheckRowIter -column 13 -sticky w
 incr aCheckRowIter
 grid .myFrame.myChecks.myRapidJsonCheck -row $aCheckRowIter -column 0 -sticky e
 grid .myFrame.myChecks.myRapidJsonLbl   -row $aCheckRowIter -column 1 -sticky w
+grid .myFrame.myChecks.myOpenVrCheck   -row $aCheckRowIter -column 4 -sticky e
+grid .myFrame.myChecks.myOpenVrLbl     -row $aCheckRowIter -column 5 -sticky w
 grid .myFrame.myChecks.myE57Check      -row $aCheckRowIter -column 6 -sticky e
 grid .myFrame.myChecks.myE57Lbl        -row $aCheckRowIter -column 7 -sticky w
 

@@ -61,6 +61,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myFboColorFormat       (GL_SRGB8_ALPHA8), // note that GL_SRGB8 is not required to be renderable, unlike GL_RGB8, GL_RGBA8, GL_SRGB8_ALPHA8
   myFboDepthFormat       (GL_DEPTH24_STENCIL8),
   myToFlipOutput         (Standard_False),
+  //
   myFrameCounter         (0),
   myHasFboBlit           (Standard_True),
   myToDisableOIT         (Standard_False),
@@ -111,6 +112,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myImmediateSceneFbos[1]    = new OpenGl_FrameBuffer();
   myImmediateSceneFbosOit[0] = new OpenGl_FrameBuffer();
   myImmediateSceneFbosOit[1] = new OpenGl_FrameBuffer();
+  myXrSceneFbo               = new OpenGl_FrameBuffer();
   myOpenGlFBO                = new OpenGl_FrameBuffer();
   myOpenGlFBO2               = new OpenGl_FrameBuffer();
   myRaytraceFBO1[0]          = new OpenGl_FrameBuffer();
@@ -182,6 +184,7 @@ void OpenGl_View::releaseSrgbResources (const Handle(OpenGl_Context)& theCtx)
   myImmediateSceneFbos[1]   ->Release (theCtx.get());
   myImmediateSceneFbosOit[0]->Release (theCtx.get());
   myImmediateSceneFbosOit[1]->Release (theCtx.get());
+  myXrSceneFbo              ->Release (theCtx.get());
   myOpenGlFBO               ->Release (theCtx.get());
   myOpenGlFBO2              ->Release (theCtx.get());
   myFullScreenQuad           .Release (theCtx.get());
@@ -209,6 +212,7 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
   {
     myPBREnvironment->Release (theCtx.get());
   }
+  ReleaseXR();
 }
 
 // =======================================================================
@@ -826,6 +830,7 @@ void OpenGl_View::changePriority (const Handle(Graphic3d_CStructure)& theStructu
 void OpenGl_View::DiagnosticInformation (TColStd_IndexedDataMapOfStringString& theDict,
                                          Graphic3d_DiagnosticInfo theFlags) const
 {
+  base_type::DiagnosticInformation (theDict, theFlags);
   Handle(OpenGl_Context) aCtx = myWorkspace->GetGlContext();
   if (!myWorkspace->Activate()
    || aCtx.IsNull())

@@ -809,11 +809,12 @@ void OpenGl_Window::Init()
 // function : SetSwapInterval
 // purpose  :
 // =======================================================================
-void OpenGl_Window::SetSwapInterval()
+void OpenGl_Window::SetSwapInterval (Standard_Boolean theToForceNoSync)
 {
-  if (mySwapInterval != myGlContext->caps->swapInterval)
+  const Standard_Integer aSwapInterval = theToForceNoSync ? 0 : myGlContext->caps->swapInterval;
+  if (mySwapInterval != aSwapInterval)
   {
-    mySwapInterval = myGlContext->caps->swapInterval;
+    mySwapInterval = aSwapInterval;
     myGlContext->SetSwapInterval (mySwapInterval);
   }
 }

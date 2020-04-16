@@ -222,6 +222,7 @@ n Xw
 n Cocoa
 r Textures
 r Shaders
+r XRResources
 t TKMeshVS
 t TKOpenGl
 t TKD3DHost

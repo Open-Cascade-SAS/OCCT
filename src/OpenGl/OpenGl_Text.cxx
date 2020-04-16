@@ -333,7 +333,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 
   if (myText->HasPlane() && myText->HasOwnAnchorPoint())
   {
-    myOrientationMatrix = theWorkspace->View()->Camera()->OrientationMatrix();
+    myOrientationMatrix = aCtx->Camera()->OrientationMatrix();
     // reset translation part
     myOrientationMatrix.ChangeValue (0, 3) = 0.0;
     myOrientationMatrix.ChangeValue (1, 3) = 0.0;

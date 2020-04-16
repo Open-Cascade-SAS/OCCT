@@ -136,6 +136,7 @@ template<typename theBaseClass_t> struct OpenGl_TmplCore45;
 typedef OpenGl_TmplCore45<OpenGl_GlCore44Back> OpenGl_GlCore45Back;
 typedef OpenGl_TmplCore45<OpenGl_GlCore44>     OpenGl_GlCore45;
 
+class Graphic3d_Camera;
 class Graphic3d_PresentationAttributes;
 class OpenGl_Aspects;
 class OpenGl_FrameBuffer;
@@ -678,6 +679,12 @@ public:
   //! Returns currently applied polygon offset parameters.
   const Graphic3d_PolygonOffset& PolygonOffset() const { return myPolygonOffset; }
 
+  //! Returns camera object.
+  const Handle(Graphic3d_Camera)& Camera() const { return myCamera; }
+
+  //! Sets camera object to the context and update matrices.
+  Standard_EXPORT void SetCamera (const Handle(Graphic3d_Camera)& theCamera);
+
   //! Applies matrix into shader manager stored in ModelWorldState to OpenGl.
   //! In "model -> world -> view -> projection" it performs:
   //!     model -> world
@@ -1143,6 +1150,7 @@ private: // context info
 
 private: //! @name fields tracking current state
 
+  Handle(Graphic3d_Camera)      myCamera;          //!< active camera object
   Handle(OpenGl_FrameStats)     myFrameStats;      //!< structure accumulating frame statistics
   Handle(OpenGl_ShaderProgram)  myActiveProgram;   //!< currently active GLSL program
   Handle(OpenGl_TextureSet)     myActiveTextures;  //!< currently bound textures
