@@ -847,6 +847,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
 
     // Projection tool
     GeomAPI_ProjectPointOnSurf& aProjPS = myContext->ProjPS(aF);
+    BRepAdaptor_Surface& aSurfAdaptor = myContext->SurfaceAdaptor (aF);
 
     // Iterate on pave blocks and combine pairs containing
     // the same vertices
@@ -886,7 +887,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
       // Check directions coincidence at middle point on the edge
       // and projection of that point on the face.
       // If the angle between tangent vector to the curve and normal
-      // of the face is not in the range of 80 - 100 degrees, do not use the additional
+      // of the face is not in the range of 65 - 115 degrees, do not use the additional
       // tolerance, as it may lead to undesired unification of edge with the face.
       Standard_Boolean bUseAddTol = Standard_True;
 
@@ -926,15 +927,19 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
       if (!myContext->IsPointInFace(aF, gp_Pnt2d(U, V)))
         continue;
 
-      gp_Pnt aPOnS = aProjPS.NearestPoint();
-      gp_Vec aVFNorm(aPOnS, aPOnE);
-      if (aVFNorm.SquareMagnitude() > gp::Resolution())
+      if (aSurfAdaptor.GetType() != GeomAbs_Plane ||
+          aBAC.GetType() != GeomAbs_Line)
       {
-        // Angle between vectors should be close to 90 degrees.
-        // We allow deviation of 10 degrees.
-        Standard_Real aCos = aVFNorm.Dot(aVETgt);
-        if (Abs(aCos) > 0.174)
-          bUseAddTol = Standard_False;
+        gp_Pnt aPOnS = aProjPS.NearestPoint();
+        gp_Vec aVFNorm(aPOnS, aPOnE);
+        if (aVFNorm.SquareMagnitude() > gp::Resolution())
+        {
+          // Angle between vectors should be close to 90 degrees.
+          // We allow deviation of 25 degrees.
+          Standard_Real aCos = aVFNorm.Normalized().Dot (aVETgt.Normalized());
+          if (Abs(aCos) > 0.4226)
+            bUseAddTol = Standard_False;
+        }
       }
 
       // Compute an addition to Fuzzy value
