@@ -1174,13 +1174,9 @@ void  BRep_Builder::Transfert(const TopoDS_Edge& Ein,
                               const TopoDS_Edge& Eout) const
 {
   const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &Ein.TShape());
-  if(TE->Locked())
-  {
-    throw TopoDS_LockedShape("BRep_Builder::Transfert");
-  }
   const Standard_Real tol = TE->Tolerance();
 
-  BRep_ListOfCurveRepresentation& lcr = TE->ChangeCurves();
+  const BRep_ListOfCurveRepresentation& lcr = TE->Curves();
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   
   while (itcr.More()) {
