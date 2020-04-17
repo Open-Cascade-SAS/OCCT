@@ -11325,6 +11325,7 @@ static Standard_Boolean parsePerfStatsFlag (const TCollection_AsciiString& theVa
         || aVal == "triangles")  aFlag = Graphic3d_RenderingParams::PerfCounters_Triangles;
   else if (aVal == "pnts"
         || aVal == "points")     aFlag = Graphic3d_RenderingParams::PerfCounters_Points;
+  else if (aVal == "lines")      aFlag = Graphic3d_RenderingParams::PerfCounters_Lines;
   else if (aVal == "mem"
         || aVal == "gpumem"
         || aVal == "estimmem")   aFlag = Graphic3d_RenderingParams::PerfCounters_EstimMem;
@@ -11518,6 +11519,10 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0)
       {
         theDI << " tris";
+      }
+      if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_Lines) != 0)
+      {
+        theDI << " lines";
       }
       if ((aParams.CollectedStats & Graphic3d_RenderingParams::PerfCounters_Points) != 0)
       {
@@ -12496,6 +12501,7 @@ static Standard_Integer VStatProfiler (Draw_Interpretor& theDI,
             || aFlag == "pointarrays"
             || aFlag == "textarrays") aParam = Graphic3d_RenderingParams::PerfCounters_GroupArrays;
       else if (aFlag == "triangles")  aParam = Graphic3d_RenderingParams::PerfCounters_Triangles;
+      else if (aFlag == "lines")      aParam = Graphic3d_RenderingParams::PerfCounters_Lines;
       else if (aFlag == "points")     aParam = Graphic3d_RenderingParams::PerfCounters_Points;
       else if (aFlag == "geommem"
             || aFlag == "texturemem"

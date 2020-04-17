@@ -15,6 +15,7 @@
 
 #include <OpenGl_Element.hxx>
 
+#include <Graphic3d_FrameStatsData.hxx>
 #include <Standard_Dump.hxx>
 
 // =======================================================================
@@ -31,6 +32,25 @@ OpenGl_Element::OpenGl_Element()
 // purpose  :
 // =======================================================================
 OpenGl_Element::~OpenGl_Element()
+{
+  //
+}
+
+// =======================================================================
+// function : UpdateMemStats
+// purpose  :
+// =======================================================================
+void OpenGl_Element::UpdateMemStats (Graphic3d_FrameStatsDataTmp& theStats) const
+{
+  theStats[Graphic3d_FrameStatsCounter_EstimatedBytesGeom] += EstimatedDataSize();
+}
+
+// =======================================================================
+// function : UpdateDrawStats
+// purpose  :
+// =======================================================================
+void OpenGl_Element::UpdateDrawStats (Graphic3d_FrameStatsDataTmp& ,
+                                      bool ) const
 {
   //
 }

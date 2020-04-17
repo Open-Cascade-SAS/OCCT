@@ -61,6 +61,10 @@ public:
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 
+  //! Increment draw calls statistics.
+  Standard_EXPORT virtual void UpdateDrawStats (Graphic3d_FrameStatsDataTmp& theStats,
+                                                bool theIsDetailed) const Standard_OVERRIDE;
+
   //! Return true if VBOs initialization has been performed.
   //! VBO initialization is performed during first Render() call.
   //! Notice that this flag does not indicate VBOs validity.

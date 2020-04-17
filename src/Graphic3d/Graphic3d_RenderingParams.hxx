@@ -60,19 +60,20 @@ public:
     //
     PerfCounters_Triangles   = 0x040, //!< count Triangles
     PerfCounters_Points      = 0x080, //!< count Points
+    PerfCounters_Lines       = 0x100, //!< count Line segments
     //
-    PerfCounters_EstimMem    = 0x100, //!< estimated GPU memory usage
+    PerfCounters_EstimMem    = 0x200, //!< estimated GPU memory usage
     //
-    PerfCounters_FrameTime   = 0x200, //!< frame CPU utilization time (rendering thread); @sa Graphic3d_FrameStatsTimer
-    PerfCounters_FrameTimeMax= 0x400, //!< maximum frame times
+    PerfCounters_FrameTime   = 0x400, //!< frame CPU utilization time (rendering thread); @sa Graphic3d_FrameStatsTimer
+    PerfCounters_FrameTimeMax= 0x800, //!< maximum frame times
     //
-    PerfCounters_SkipImmediate = 0x800, //!< do not include immediate viewer updates (e.g. lazy updates without redrawing entire view content)
+    PerfCounters_SkipImmediate = 0x1000, //!< do not include immediate viewer updates (e.g. lazy updates without redrawing entire view content)
     //! show basic statistics
     PerfCounters_Basic = PerfCounters_FrameRate | PerfCounters_CPU | PerfCounters_Layers | PerfCounters_Structures,
     //! extended (verbose) statistics
     PerfCounters_Extended = PerfCounters_Basic
                           | PerfCounters_Groups | PerfCounters_GroupArrays
-                          | PerfCounters_Triangles | PerfCounters_Points
+                          | PerfCounters_Triangles | PerfCounters_Points | PerfCounters_Lines
                           | PerfCounters_EstimMem,
     //! all counters
     PerfCounters_All = PerfCounters_Extended

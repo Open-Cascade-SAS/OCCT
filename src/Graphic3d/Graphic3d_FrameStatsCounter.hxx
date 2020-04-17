@@ -28,7 +28,9 @@ enum Graphic3d_FrameStatsCounter
   Graphic3d_FrameStatsCounter_NbElemsPointNotCulled,  //!< number of not culled OpenGl_PrimitiveArray drawing points
   Graphic3d_FrameStatsCounter_NbElemsTextNotCulled,   //!< number of not culled OpenGl_Text
   Graphic3d_FrameStatsCounter_NbTrianglesNotCulled,   //!< number of not culled (as structure) triangles
+  Graphic3d_FrameStatsCounter_NbLinesNotCulled,       //!< number of not culled (as structure) line segments
   Graphic3d_FrameStatsCounter_NbPointsNotCulled,      //!< number of not culled (as structure) points
+  //Graphic3d_FrameStatsCounter_NbGlyphsNotCulled,    //!< number glyphs, to be considered in future
   Graphic3d_FrameStatsCounter_EstimatedBytesGeom,     //!< estimated GPU memory used for geometry
   Graphic3d_FrameStatsCounter_EstimatedBytesFbos,     //!< estimated GPU memory used for FBOs
   Graphic3d_FrameStatsCounter_EstimatedBytesTextures, //!< estimated GPU memory used for textures

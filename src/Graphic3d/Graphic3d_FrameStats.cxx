@@ -305,6 +305,7 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats (Graphic3d_RenderingPa
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Groups) != 0
    || (theFlags & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0
    || (theFlags & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0
+   || (theFlags & Graphic3d_RenderingParams::PerfCounters_Lines) != 0
    || (theFlags & Graphic3d_RenderingParams::PerfCounters_Points) != 0
    || (!myIsLongLineFormat
     && ((theFlags & Graphic3d_RenderingParams::PerfCounters_Structures) != 0
@@ -337,6 +338,10 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats (Graphic3d_RenderingPa
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0)
   {
     formatCounter (aBuf, aValWidth, " Triangles: ", aStats[Graphic3d_FrameStatsCounter_NbTrianglesNotCulled], "\n");
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Lines) != 0)
+  {
+    formatCounter (aBuf, aValWidth, "     Lines: ", aStats[Graphic3d_FrameStatsCounter_NbLinesNotCulled], "\n");
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Points) != 0)
   {
@@ -436,6 +441,10 @@ void Graphic3d_FrameStats::FormatStats (TColStd_IndexedDataMapOfStringString&   
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0)
   {
     addInfo (theDict, "Rendered triangles", aStats[Graphic3d_FrameStatsCounter_NbTrianglesNotCulled]);
+  }
+  if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Lines) != 0)
+  {
+    addInfo (theDict, "Rendered lines", aStats[Graphic3d_FrameStatsCounter_NbLinesNotCulled]);
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Points) != 0)
   {

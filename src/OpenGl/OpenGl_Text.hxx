@@ -71,6 +71,10 @@ public:
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 
+  //! Increment draw calls statistics.
+  Standard_EXPORT virtual void UpdateDrawStats (Graphic3d_FrameStatsDataTmp& theStats,
+                                                bool theIsDetailed) const Standard_OVERRIDE;
+
 public: //! @name methods for compatibility with layers
 
   //! Empty constructor

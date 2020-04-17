@@ -232,6 +232,27 @@ Standard_Size OpenGl_Text::EstimatedDataSize() const
 }
 
 // =======================================================================
+// function : UpdateDrawStats
+// purpose  :
+// =======================================================================
+void OpenGl_Text::UpdateDrawStats (Graphic3d_FrameStatsDataTmp& theStats,
+                                   bool theIsDetailed) const
+{
+  ++theStats[Graphic3d_FrameStatsCounter_NbElemsNotCulled];
+  ++theStats[Graphic3d_FrameStatsCounter_NbElemsTextNotCulled];
+  if (theIsDetailed)
+  {
+    for (Standard_Integer anIter = myVertsVbo.Lower(); anIter <= myVertsVbo.Upper(); ++anIter)
+    {
+      if (const Handle(OpenGl_VertexBuffer)& aVerts = myVertsVbo.Value (anIter))
+      {
+        theStats[Graphic3d_FrameStatsCounter_NbTrianglesNotCulled] += aVerts->GetElemsNb() / 3; // 2 non-indexed triangles per glyph
+      }
+    }
+  }
+}
+
+// =======================================================================
 // function : StringSize
 // purpose  :
 // =======================================================================

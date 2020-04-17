@@ -19,6 +19,7 @@
 #include <OpenGl_RenderFilter.hxx>
 #include <Standard_Type.hxx>
 
+class Graphic3d_FrameStatsDataTmp;
 class OpenGl_Workspace;
 class OpenGl_Context;
 
@@ -62,6 +63,16 @@ public:
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   virtual Standard_Size EstimatedDataSize() const { return 0; }
+
+  //! Increment memory usage statistics.
+  //! Default implementation puts EstimatedDataSize() into Graphic3d_FrameStatsCounter_EstimatedBytesGeom.
+  Standard_EXPORT virtual void UpdateMemStats (Graphic3d_FrameStatsDataTmp& theStats) const;
+
+  //! Increment draw calls statistics.
+  //! @param theStats [in] [out] frame counters to increment
+  //! @param theIsDetailed  [in] indicate detailed dump (more counters - number of triangles, points, etc.)
+  Standard_EXPORT virtual void UpdateDrawStats (Graphic3d_FrameStatsDataTmp& theStats,
+                                                 bool theIsDetailed) const;
 
   //! Update parameters of the drawable elements.
   virtual void SynchronizeAspects() {}
