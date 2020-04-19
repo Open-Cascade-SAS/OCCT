@@ -670,7 +670,8 @@ public:
   //! Fill array of current view frustum corners.
   //! The size of this array is equal to FrustumVerticesNB.
   //! The order of vertices is as defined in FrustumVert_* enumeration.
-  Standard_EXPORT void FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePoints) const;
+  Standard_EXPORT void FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePoints,
+                                      const Graphic3d_Mat4d& theModelWorld = Graphic3d_Mat4d()) const;
 
 private:
 

@@ -34,12 +34,17 @@ Graphic3d_CullingTool::Graphic3d_CullingTool()
 
 // =======================================================================
 // function : SetViewVolume
-// purpose  : Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
+// purpose  :
 // =======================================================================
-void Graphic3d_CullingTool::SetViewVolume (const Handle(Graphic3d_Camera)& theCamera)
+void Graphic3d_CullingTool::SetViewVolume (const Handle(Graphic3d_Camera)& theCamera,
+                                           const Graphic3d_Mat4d& theModelWorld)
 {
-  if (!myWorldViewProjState.IsChanged (theCamera->WorldViewProjState()))
+  const bool hasModelTrsf = !theModelWorld.IsIdentity();
+  if (!myWorldViewProjState.IsChanged (theCamera->WorldViewProjState())
+   && !hasModelTrsf)
+  {
     return;
+  }
 
   myIsProjectionParallel = theCamera->IsOrthographic();
   const gp_Dir aCamDir = theCamera->Direction();
@@ -50,12 +55,19 @@ void Graphic3d_CullingTool::SetViewVolume (const Handle(Graphic3d_Camera)& theCa
   myWorldViewProjState = theCamera->WorldViewProjState();
   myCamEye.SetValues (theCamera->Eye().X(), theCamera->Eye().Y(), theCamera->Eye().Z());
   myCamDir.SetValues (aCamDir.X(), aCamDir.Y(), aCamDir.Z());
+  if (hasModelTrsf)
+  {
+    Graphic3d_Mat4d aModelInv;
+    theModelWorld.Inverted (aModelInv);
+    myCamEye = (aModelInv * Graphic3d_Vec4d (myCamEye, 1.0)).xyz();
+    myCamDir = (aModelInv * Graphic3d_Vec4d (myCamDir, 0.0)).xyz();
+  }
   myCamScale = theCamera->IsOrthographic()
              ? theCamera->Scale()
              : 2.0 * Tan (theCamera->FOVy() * M_PI / 360.0); // same as theCamera->Scale()/theCamera->Distance()
 
   // Compute frustum points
-  theCamera->FrustumPoints (myClipVerts);
+  theCamera->FrustumPoints (myClipVerts, theModelWorld);
 
   // Compute frustum planes
   // Vertices go in order:
@@ -84,7 +96,7 @@ void Graphic3d_CullingTool::SetViewVolume (const Handle(Graphic3d_Camera)& theCa
       myClipPlanes[aFaceIdx * 2 + i].Normal =
         Graphic3d_Vec3d::Cross (aPlanePnts[1] - aPlanePnts[0],
                                 aPlanePnts[2] - aPlanePnts[0]).Normalized() * (i == 0 ? -1.f : 1.f);
-      }
+    }
   }
 }
 

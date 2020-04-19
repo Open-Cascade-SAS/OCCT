@@ -1475,7 +1475,8 @@ Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (co
 //function : FrustumPoints
 //purpose  :
 //=======================================================================
-void Graphic3d_Camera::FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePoints) const
+void Graphic3d_Camera::FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePoints,
+                                      const Graphic3d_Mat4d& theModelWorld) const
 {
   if (thePoints.Length() != FrustumVerticesNB)
   {
@@ -1483,7 +1484,7 @@ void Graphic3d_Camera::FrustumPoints (NCollection_Array1<Graphic3d_Vec3d>& thePo
   }
 
   const Graphic3d_Mat4d& aProjectionMat = ProjectionMatrix();
-  const Graphic3d_Mat4d& aWorldViewMat  = OrientationMatrix();
+  const Graphic3d_Mat4d aWorldViewMat = OrientationMatrix() * theModelWorld;
 
   Standard_Real nLeft = 0.0, nRight = 0.0, nTop = 0.0, nBottom = 0.0;
   Standard_Real fLeft = 0.0, fRight = 0.0, fTop = 0.0, fBottom = 0.0;

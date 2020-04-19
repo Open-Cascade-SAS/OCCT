@@ -59,7 +59,10 @@ public:
   Standard_EXPORT Graphic3d_CullingTool();
 
   //! Retrieves view volume's planes equations and its vertices from projection and world-view matrices.
-  Standard_EXPORT void SetViewVolume (const Handle(Graphic3d_Camera)& theCamera);
+  //! @param theCamera [in] camera definition
+  //! @param theModelWorld [in] optional object transformation for computing frustum in object local coordinate system
+  Standard_EXPORT void SetViewVolume (const Handle(Graphic3d_Camera)& theCamera,
+                                      const Graphic3d_Mat4d& theModelWorld = Graphic3d_Mat4d());
 
   Standard_EXPORT void SetViewportSize (Standard_Integer theViewportWidth,
                                         Standard_Integer theViewportHeight,
@@ -78,17 +81,20 @@ public:
   Standard_EXPORT void CacheClipPtsProjections();
 
   //! Checks whether given AABB should be entirely culled or not.
-  //! @param theCtx   [in] culling properties
-  //! @param theMinPt [in] maximum point of AABB
-  //! @param theMaxPt [in] minimum point of AABB
-  //! @return Standard_True, if AABB is in viewing area, Standard_False otherwise
+  //! @param theCtx    [in] culling properties
+  //! @param theMinPnt [in] maximum point of AABB
+  //! @param theMaxPnt [in] minimum point of AABB
+  //! @param theIsInside [out] flag indicating if AABB is fully inside; initial value should be set to TRUE
+  //! @return TRUE if AABB is completely outside of view frustum or culled by size/distance;
+  //!         FALSE in case of partial or complete overlap (use theIsInside to distinguish)
   bool IsCulled (const CullingContext& theCtx,
-                 const Graphic3d_Vec3d& theMinPt,
-                 const Graphic3d_Vec3d& theMaxPt) const
+                 const Graphic3d_Vec3d& theMinPnt,
+                 const Graphic3d_Vec3d& theMaxPnt,
+                 Standard_Boolean*      theIsInside = NULL) const
   {
-    return isFullOut   (theMinPt, theMaxPt)
-        || isTooDistant(theCtx, theMinPt, theMaxPt)
-        || isTooSmall  (theCtx, theMinPt, theMaxPt);
+    return IsOutFrustum(theMinPnt, theMaxPnt, theIsInside)
+        || IsTooDistant(theCtx, theMinPnt, theMaxPnt, theIsInside)
+        || IsTooSmall  (theCtx, theMinPnt, theMaxPnt);
   }
 
   //! Return the camera definition.
@@ -122,7 +128,13 @@ public:
     return myWorldViewProjState;
   }
 
-protected:
+  //! Returns camera eye position.
+  const Graphic3d_Vec3d& CameraEye() const { return myCamEye; }
+
+  //! Returns camera direction.
+  const Graphic3d_Vec3d& CameraDirection() const { return myCamDir; }
+
+public:
 
   //! Calculates signed distance from plane to point.
   //! @param theNormal [in] the plane's normal.
@@ -131,76 +143,89 @@ protected:
                                                           const Graphic3d_Vec4d& thePnt);
 
   //! Detects if AABB overlaps view volume using separating axis theorem (SAT).
-  //! @param theMinPt [in] maximum point of AABB.
-  //! @param theMaxPt [in] minimum point of AABB.
-  //! @return FALSE, if AABB is in viewing area, TRUE otherwise.
-  bool isFullOut (const Graphic3d_Vec3d& theMinPt,
-                  const Graphic3d_Vec3d& theMaxPt) const
+  //! @param theMinPnt   [in] maximum point of AABB
+  //! @param theMaxPnt   [in] minimum point of AABB
+  //! @param theIsInside [out] flag indicating if AABB is fully inside; initial value should be set to TRUE
+  //! @return TRUE if AABB is completely outside of view frustum;
+  //!         FALSE in case of partial or complete overlap (use theIsInside to distinguish)
+  //! @sa SelectMgr_Frustum::hasOverlap()
+  bool IsOutFrustum (const Graphic3d_Vec3d& theMinPnt,
+                     const Graphic3d_Vec3d& theMaxPnt,
+                     Standard_Boolean*      theIsInside = NULL) const
   {
     //     E1
     //    |_ E0
     //   /
     //    E2
-
-    // E0 test (x axis)
-    if (theMinPt.x() > myMaxOrthoProjectionPts[0]
-     || theMaxPt.x() < myMinOrthoProjectionPts[0])
+    if (theMinPnt[0] > myMaxOrthoProjectionPts[0] // E0 test (x axis)
+     || theMaxPnt[0] < myMinOrthoProjectionPts[0]
+     || theMinPnt[1] > myMaxOrthoProjectionPts[1] // E1 test (y axis)
+     || theMaxPnt[1] < myMinOrthoProjectionPts[1]
+     || theMinPnt[2] > myMaxOrthoProjectionPts[2] // E2 test (z axis)
+     || theMaxPnt[2] < myMinOrthoProjectionPts[2])
     {
       return true;
     }
-
-    // E1 test (y axis)
-    if (theMinPt.y() > myMaxOrthoProjectionPts[1]
-     || theMaxPt.y() < myMinOrthoProjectionPts[1])
+    if (theIsInside != NULL
+    && *theIsInside)
     {
-      return true;
-    }
-
-    // E2 test (z axis)
-    if (theMinPt.z() > myMaxOrthoProjectionPts[2]
-     || theMaxPt.z() < myMinOrthoProjectionPts[2])
-    {
-      return true;
+      *theIsInside = theMinPnt[0] >= myMinOrthoProjectionPts[0] // E0 test (x axis)
+                  && theMaxPnt[0] <= myMaxOrthoProjectionPts[0]
+                  && theMinPnt[1] >= myMinOrthoProjectionPts[1] // E1 test (y axis)
+                  && theMaxPnt[1] <= myMaxOrthoProjectionPts[1]
+                  && theMinPnt[1] >= myMinOrthoProjectionPts[2] // E2 test (z axis)
+                  && theMaxPnt[1] <= myMaxOrthoProjectionPts[2];
     }
 
     const Standard_Integer anIncFactor = myIsProjectionParallel ? 2 : 1;
     for (Standard_Integer aPlaneIter = 0; aPlaneIter < PlanesNB - 1; aPlaneIter += anIncFactor)
     {
       // frustum normals
-      const Graphic3d_Vec3d anAxis = myClipPlanes[aPlaneIter].Normal;
-
-      const Graphic3d_Vec3d aPVertex (anAxis.x() > 0.0 ? theMaxPt.x() : theMinPt.x(),
-                                      anAxis.y() > 0.0 ? theMaxPt.y() : theMinPt.y(),
-                                      anAxis.z() > 0.0 ? theMaxPt.z() : theMinPt.z());
-      Standard_Real aPnt0 = aPVertex.Dot (anAxis);
-
-      if (aPnt0 >= myMinClipProjectionPts[aPlaneIter]
+      const Graphic3d_Vec3d& anAxis = myClipPlanes[aPlaneIter].Normal;
+      const Graphic3d_Vec3d aPVertex (anAxis.x() > 0.0 ? theMaxPnt.x() : theMinPnt.x(),
+                                      anAxis.y() > 0.0 ? theMaxPnt.y() : theMinPnt.y(),
+                                      anAxis.z() > 0.0 ? theMaxPnt.z() : theMinPnt.z());
+      const Standard_Real aPnt0 = aPVertex.Dot (anAxis);
+      if (theIsInside == NULL
+       && aPnt0 >= myMinClipProjectionPts[aPlaneIter]
        && aPnt0 <= myMaxClipProjectionPts[aPlaneIter])
       {
         continue;
       }
       
-      const Graphic3d_Vec3d aNVertex (anAxis.x() > 0.0 ? theMinPt.x() : theMaxPt.x(),
-                                      anAxis.y() > 0.0 ? theMinPt.y() : theMaxPt.y(),
-                                      anAxis.z() > 0.0 ? theMinPt.z() : theMaxPt.z());
-      Standard_Real aPnt1 = aNVertex.Dot (anAxis);
+      const Graphic3d_Vec3d aNVertex (anAxis.x() > 0.0 ? theMinPnt.x() : theMaxPnt.x(),
+                                      anAxis.y() > 0.0 ? theMinPnt.y() : theMaxPnt.y(),
+                                      anAxis.z() > 0.0 ? theMinPnt.z() : theMaxPnt.z());
+      const Standard_Real aPnt1 = aNVertex.Dot (anAxis);
 
-      const Standard_Real aMin = aPnt0 < aPnt1 ? aPnt0 : aPnt1;
-      const Standard_Real aMax = aPnt0 > aPnt1 ? aPnt0 : aPnt1;
-      
-      if (aMin > myMaxClipProjectionPts[aPlaneIter]
-       || aMax < myMinClipProjectionPts[aPlaneIter])
+      const Standard_Real aBoxProjMin = aPnt0 < aPnt1 ? aPnt0 : aPnt1;
+      const Standard_Real aBoxProjMax = aPnt0 > aPnt1 ? aPnt0 : aPnt1;
+      if (aBoxProjMin > myMaxClipProjectionPts[aPlaneIter]
+       || aBoxProjMax < myMinClipProjectionPts[aPlaneIter])
       {
         return true;
+      }
+
+      if (theIsInside != NULL
+      && *theIsInside)
+      {
+        *theIsInside = aBoxProjMin >= myMinClipProjectionPts[aPlaneIter]
+                    && aBoxProjMax <= myMaxClipProjectionPts[aPlaneIter];
       }
     }
     return false;
   }
 
   //! Returns TRUE if given AABB should be discarded by distance culling criterion.
-  bool isTooDistant (const CullingContext& theCtx,
-                     const Graphic3d_Vec3d& theMinPt,
-                     const Graphic3d_Vec3d& theMaxPt) const
+  //! @param theMinPnt   [in] maximum point of AABB
+  //! @param theMaxPnt   [in] minimum point of AABB
+  //! @param theIsInside [out] flag indicating if AABB is fully inside; initial value should be set to TRUE
+  //! @return TRUE if AABB is completely behind culling distance;
+  //!         FALSE in case of partial or complete overlap (use theIsInside to distinguish)
+  bool IsTooDistant (const CullingContext&  theCtx,
+                     const Graphic3d_Vec3d& theMinPnt,
+                     const Graphic3d_Vec3d& theMaxPnt,
+                     Standard_Boolean*      theIsInside = NULL) const
   {
     if (theCtx.DistCull <= 0.0)
     {
@@ -208,22 +233,34 @@ protected:
     }
 
     // check distance to the bounding sphere as fast approximation
-    const Graphic3d_Vec3d aSphereCenter = (theMinPt + theMaxPt) * 0.5;
-    const Standard_Real   aSphereRadius = (theMaxPt - theMinPt).maxComp() * 0.5;
-    return (aSphereCenter - myCamEye).Modulus() - aSphereRadius > theCtx.DistCull;
+    const Graphic3d_Vec3d aSphereCenter = (theMinPnt + theMaxPnt) * 0.5;
+    const Standard_Real   aSphereRadius = (theMaxPnt - theMinPnt).maxComp() * 0.5;
+    const Standard_Real   aDistToCenter = (aSphereCenter - myCamEye).Modulus();
+    if ((aDistToCenter - aSphereRadius) > theCtx.DistCull)
+    {
+      // clip if closest point is behind culling distance
+      return true;
+    }
+    if (theIsInside != NULL
+    && *theIsInside)
+    {
+      // check if farthest point is before culling distance
+      *theIsInside = (aDistToCenter + aSphereRadius) <= theCtx.DistCull;
+    }
+    return false;
   }
 
   //! Returns TRUE if given AABB should be discarded by size culling criterion.
-  bool isTooSmall (const CullingContext& theCtx,
-                   const Graphic3d_Vec3d& theMinPt,
-                   const Graphic3d_Vec3d& theMaxPt) const
+  bool IsTooSmall (const CullingContext&  theCtx,
+                   const Graphic3d_Vec3d& theMinPnt,
+                   const Graphic3d_Vec3d& theMaxPnt) const
   {
     if (theCtx.SizeCull2 <= 0.0)
     {
       return false;
     }
 
-    const Standard_Real aBoxDiag2 = (theMaxPt - theMinPt).SquareModulus();
+    const Standard_Real aBoxDiag2 = (theMaxPnt - theMinPnt).SquareModulus();
     if (myIsProjectionParallel)
     {
       return aBoxDiag2 < theCtx.SizeCull2;
@@ -231,7 +268,7 @@ protected:
 
     // note that distances behind the Eye (aBndDist < 0) are not scaled correctly here,
     // but majority of such objects should be culled by frustum
-    const Graphic3d_Vec3d aBndCenter = (theMinPt + theMaxPt) * 0.5;
+    const Graphic3d_Vec3d aBndCenter = (theMinPnt + theMaxPnt) * 0.5;
     const Standard_Real   aBndDist   = (aBndCenter - myCamEye).Dot (myCamDir);
     return aBoxDiag2 < theCtx.SizeCull2 * aBndDist * aBndDist;
   }
