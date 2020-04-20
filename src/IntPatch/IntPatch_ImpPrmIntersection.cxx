@@ -3138,6 +3138,8 @@ Standard_Boolean IsCoincide(IntPatch_TheSurfFunction& theFunc,
                             const Standard_Real theToler2D,
                             const Standard_Real thePeriod) // Period of parametric surface in direction which is perpendicular to theArc direction.
 {
+  const Standard_Real aCoeffs[] = { 0.02447174185,  0.09549150281, 0.20610737385, 0.34549150281, /*Sin(x)*Sin(x)*/
+                                    0.5, 0.65450849719, 0.79389262615 };
   if(theLine->ArcType() == IntPatch_Restriction)
   {//Restriction-restriction processing
     const Handle(IntPatch_RLine)& aRL2 = Handle(IntPatch_RLine)::DownCast(theLine);
@@ -3226,13 +3228,13 @@ Standard_Boolean IsCoincide(IntPatch_TheSurfFunction& theFunc,
 
     const Standard_Real aUl = aPmin.X(), aVl = aPmin.Y();
 
-    const Standard_Integer aNbPoints = 4;
-    const Standard_Real aStepU = (aUl - aUf)/aNbPoints,
-                        aStepV = (aVl - aVf)/aNbPoints;
-
-    Standard_Real aU = aUf+aStepU, aV = aVf+aStepV;
-    for(Standard_Integer i = 1; i < aNbPoints; i++)
+    Standard_Real aU, aV;
+    Standard_Real dU = aUl - aUf, dV = aVl - aVf;
+    for(Standard_Integer i = 0; i < 7; i++)
     {
+      aU = aUf + aCoeffs[i] * dU;
+      aV = aVf + aCoeffs[i] * dV;
+
       aX.Value(1) = aU;
       aX.Value(2) = aV;
 
@@ -3241,13 +3243,10 @@ Standard_Boolean IsCoincide(IntPatch_TheSurfFunction& theFunc,
         return Standard_False;
       }
 
-      if(Abs(aVal(1)) > theToler3D)
+      if(Abs(theFunc.Root()) > theToler3D)
       {
         return Standard_False;
-      }
-      
-      aU += aStepU;
-      aV += aStepV;
+      }     
     }
   }
 

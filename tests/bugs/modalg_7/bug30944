@@ -1,0 +1,30 @@
+puts "================"
+puts "0030944: Modeling Algorithms - Intersection curves between pair of faces are not found"
+puts "================"
+puts ""
+
+set MaxTol 2.e-7
+set GoodNbCurv 12
+
+restore [locate_data_file bug27469_shapes.brep] b
+explode b
+explode b_1 f
+explode b_2 f
+set log [bopcurves b_1_2 b_2_3 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+
+
+smallview
+donly b_1_2 b_2_3 
+eval display [directory c_*]
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

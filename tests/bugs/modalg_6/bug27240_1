@@ -13,6 +13,10 @@ explode b
 explode b_1 v
 settolerance b_1_1 0.005
 
+# workaround - increate the tolerance value of the edge to fill the gap between section curves
+explode b_2 e
+settolerance b_2_5 0.0005
+
 bclearobjects
 bcleartools
 
