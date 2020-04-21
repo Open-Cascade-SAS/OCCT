@@ -16,7 +16,6 @@ NCollection_BaseVector.cxx
 NCollection_BaseVector.hxx
 NCollection_Buffer.hxx
 NCollection_CellFilter.hxx
-NCollection_Comparator.hxx
 NCollection_DataMap.hxx
 NCollection_DefaultHasher.hxx
 NCollection_DefineAlloc.hxx

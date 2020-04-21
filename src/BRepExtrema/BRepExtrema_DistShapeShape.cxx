@@ -35,7 +35,6 @@
 #include <BRepExtrema_UnCompatibleShape.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
-#include <NCollection_Comparator.hxx>
 #include <NCollection_Vector.hxx>
 #include <StdFail_NotDone.hxx>
 
