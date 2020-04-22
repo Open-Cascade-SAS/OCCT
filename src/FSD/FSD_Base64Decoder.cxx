@@ -17,6 +17,23 @@
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 
+//! Buffer with decoded data.
+class FSD_Base64DecoderBuffer : public NCollection_Buffer
+{
+public:
+  //! Empty constructor.
+  FSD_Base64DecoderBuffer() : NCollection_Buffer (NCollection_BaseAllocator::CommonBaseAllocator()) {}
+
+  //! Shrink data size.
+  void ShrinkSize (Standard_Size theSize)
+  {
+    if (theSize < mySize)
+    {
+      mySize = theSize;
+    }
+  }
+};
+
 // =======================================================================
 // function : Decode
 // purpose  :
@@ -37,7 +54,7 @@ Handle(NCollection_Buffer) FSD_Base64Decoder::Decode (const Standard_Byte* theSt
     41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51, 255, 255, 255, 255, 255
   };
 
-  Handle(NCollection_Buffer) aData = new NCollection_Buffer (NCollection_BaseAllocator::CommonBaseAllocator());
+  Handle(FSD_Base64DecoderBuffer) aData = new FSD_Base64DecoderBuffer();
   if (!aData->Allocate (3 * theLen / 4))
   {
     Message::SendFail ("Fail to allocate memory.");
@@ -82,6 +99,8 @@ Handle(NCollection_Buffer) FSD_Base64Decoder::Decode (const Standard_Byte* theSt
       ++aDataPtr;
     }
   }
-
+  // shrink buffer size to actual length
+  const Standard_Size aFinalLen = aDataPtr - aData->ChangeData();
+  aData->ShrinkSize (aFinalLen);
   return aData;
 }
