@@ -97,12 +97,12 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
   Standard_Real thetol3d = Precision::Confusion(), thetol2d = Precision::Confusion();
   UFirst = Line.FirstParameter();
   ULast = Line.LastParameter();
-  Standard_Real TolU = Max((ULast-UFirst)*1.e-05, Precision::PApproximation());
+  Standard_Real TolU = Max((ULast - UFirst)*1.e-03, Precision::Confusion());
   Standard_Real myfirstU = UFirst;
   Standard_Real mylastU = ULast;
   Standard_Integer aMaxSegments = 0;
   Standard_Integer aMaxSegments1 = myMaxSegments - 1;
-  Standard_Integer aNbCut = 0, aNbImp = 0, aNbComp = 20;
+  Standard_Integer aNbCut = 0, aNbImp = 0, aNbComp = 10;
 
   if (!mycut)
   {
