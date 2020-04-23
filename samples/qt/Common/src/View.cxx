@@ -29,14 +29,46 @@
 #include <OcctWindow.h>
 #include <Aspect_DisplayConnection.hxx>
 
-// the key for multi selection :
-#define MULTISELECTIONKEY Qt::ShiftModifier
+namespace
+{
+  //! Map Qt buttons bitmask to virtual keys.
+  Aspect_VKeyMouse qtMouseButtons2VKeys (Qt::MouseButtons theButtons)
+  {
+    Aspect_VKeyMouse aButtons = Aspect_VKeyMouse_NONE;
+    if ((theButtons & Qt::LeftButton) != 0)
+    {
+      aButtons |= Aspect_VKeyMouse_LeftButton;
+    }
+    if ((theButtons & Qt::MiddleButton) != 0)
+    {
+      aButtons |= Aspect_VKeyMouse_MiddleButton;
+    }
+    if ((theButtons & Qt::RightButton) != 0)
+    {
+      aButtons |= Aspect_VKeyMouse_RightButton;
+    }
+    return aButtons;
+  }
 
-// the key for shortcut ( use to activate dynamic rotation, panning )
-#define CASCADESHORTCUTKEY Qt::ControlModifier
-
-// for elastic bean selection
-#define ValZWMin 1
+  //! Map Qt mouse modifiers bitmask to virtual keys.
+  Aspect_VKeyFlags qtMouseModifiers2VKeys (Qt::KeyboardModifiers theModifiers)
+  {
+    Aspect_VKeyFlags aFlags = Aspect_VKeyFlags_NONE;
+    if ((theModifiers & Qt::ShiftModifier) != 0)
+    {
+      aFlags |= Aspect_VKeyFlags_SHIFT;
+    }
+    if ((theModifiers & Qt::ControlModifier) != 0)
+    {
+      aFlags |= Aspect_VKeyFlags_CTRL;
+    }
+    if ((theModifiers & Qt::AltModifier) != 0)
+    {
+      aFlags |= Aspect_VKeyFlags_ALT;
+    }
+    return aFlags;
+  }
+}
 
 static QCursor* defCursor     = NULL;
 static QCursor* handCursor    = NULL;
@@ -60,18 +92,12 @@ View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
 #endif
   myContext = theContext;
 
-  myXmin = 0;
-  myYmin = 0;
-  myXmax = 0;
-  myYmax = 0;
   myCurZoom = 0;
-  myRectBand = 0;
-
   setAttribute(Qt::WA_PaintOnScreen);
   setAttribute(Qt::WA_NoSystemBackground);
 
+  myDefaultGestures = myMouseGestureMap;
   myCurrentMode = CurAction3d_Nothing;
-  myHlrModeIsOn = Standard_False;
   setMouseTracking( true );
 
   initViewActions();
@@ -111,7 +137,8 @@ void View::init()
 void View::paintEvent( QPaintEvent *  )
 {
 //  QApplication::syncX();
-  myView->Redraw();
+  myView->InvalidateImmediate();
+  FlushViewEvents (myContext, myView, true);
 }
 
 void View::resizeEvent( QResizeEvent * )
@@ -123,6 +150,12 @@ void View::resizeEvent( QResizeEvent * )
   }
 }
 
+void View::OnSelectionChanged (const Handle(AIS_InteractiveContext)& ,
+                               const Handle(V3d_View)& )
+{
+  ApplicationCommonWindow::getApplication()->onSelectionChanged();
+}
+
 void View::fitAll()
 {
   myView->FitAll();
@@ -132,22 +165,22 @@ void View::fitAll()
 
 void View::fitArea()
 {
-  myCurrentMode = CurAction3d_WindowZooming;
+  setCurrentAction (CurAction3d_WindowZooming);
 }
 
 void View::zoom()
 {
-  myCurrentMode = CurAction3d_DynamicZooming;
+  setCurrentAction (CurAction3d_DynamicZooming);
 }
 
 void View::pan()
 {
-  myCurrentMode = CurAction3d_DynamicPanning;
+  setCurrentAction (CurAction3d_DynamicPanning);
 }
 
 void View::rotation()
 {
-  myCurrentMode = CurAction3d_DynamicRotation;
+  setCurrentAction (CurAction3d_DynamicRotation);
 }
 
 void View::globalPan()
@@ -157,7 +190,7 @@ void View::globalPan()
   // Do a Global Zoom
   myView->FitAll();
   // Set the mode
-  myCurrentMode = CurAction3d_GlobalPanning;
+  setCurrentAction (CurAction3d_GlobalPanning);
 }
 
 void View::front()
@@ -203,8 +236,7 @@ void View::reset()
 void View::hlrOff()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  myHlrModeIsOn = Standard_False;
-  myView->SetComputedMode (myHlrModeIsOn);
+  myView->SetComputedMode (false);
   myView->Redraw();
   QApplication::restoreOverrideCursor();
 }
@@ -212,8 +244,7 @@ void View::hlrOff()
 void View::hlrOn()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  myHlrModeIsOn = Standard_True;
-  myView->SetComputedMode (myHlrModeIsOn);
+  myView->SetComputedMode (true);
   myView->Redraw();
   QApplication::restoreOverrideCursor();
 }
@@ -548,31 +579,6 @@ void View::initRaytraceActions()
   myRaytraceActions->insert( ToolAntialiasingId, a );
 }
 
-void View::mousePressEvent( QMouseEvent* e )
-{
-  if ( e->button() == Qt::LeftButton )
-    onLButtonDown( ( e->buttons() | e->modifiers() ), e->pos() );
-  else if ( e->button() == Qt::MidButton )
-    onMButtonDown( e->buttons() | e->modifiers(), e->pos() );
-  else if ( e->button() == Qt::RightButton )
-    onRButtonDown( e->buttons() | e->modifiers(), e->pos() );
-}
-
-void View::mouseReleaseEvent(QMouseEvent* e)
-{
-  if ( e->button() == Qt::LeftButton )
-    onLButtonUp( e->buttons(), e->pos() );
-  else if ( e->button() == Qt::MidButton )
-    onMButtonUp( e->buttons(), e->pos() );
-  else if( e->button() == Qt::RightButton )
-    onRButtonUp( e->buttons(), e->pos() );
-}
-
-void View::mouseMoveEvent(QMouseEvent* e)
-{
-  onMouseMove( e->buttons(), e->pos() );
-}
-
 void View::activateCursor( const CurrentAction3d mode )
 {
   switch( mode )
@@ -599,276 +605,124 @@ void View::activateCursor( const CurrentAction3d mode )
   }
 }
 
-void View::onLButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint point )
+void View::mousePressEvent (QMouseEvent* theEvent)
 {
-  //  save the current mouse coordinate in min
-  myXmin = point.x();
-  myYmin = point.y();
-  myXmax = point.x();
-  myYmax = point.y();
-
-  if ( nFlags & CASCADESHORTCUTKEY )
+  const Graphic3d_Vec2i aPnt (theEvent->pos().x(), theEvent->pos().y());
+  const Aspect_VKeyFlags aFlags = qtMouseModifiers2VKeys (theEvent->modifiers());
+  if (!myView.IsNull()
+    && UpdateMouseButtons (aPnt,
+                           qtMouseButtons2VKeys (theEvent->buttons()),
+                           aFlags,
+                           false))
   {
-    myCurrentMode = CurAction3d_DynamicZooming;
+    updateView();
   }
-  else
+  myClickPos = aPnt;
+}
+
+void View::mouseReleaseEvent (QMouseEvent* theEvent)
+{
+  const Graphic3d_Vec2i aPnt (theEvent->pos().x(), theEvent->pos().y());
+  const Aspect_VKeyFlags aFlags = qtMouseModifiers2VKeys (theEvent->modifiers());
+  if (!myView.IsNull()
+    && UpdateMouseButtons (aPnt,
+                           qtMouseButtons2VKeys (theEvent->buttons()),
+                           aFlags,
+                           false))
   {
-    switch ( myCurrentMode )
-    {
-      case CurAction3d_Nothing:
-           if ( nFlags & MULTISELECTIONKEY )
-             MultiDragEvent( myXmax, myYmax, -1 );
-           else
-             DragEvent( myXmax, myYmax, -1 );
-           break;
-      case CurAction3d_DynamicZooming:
-           break;
-      case CurAction3d_WindowZooming:
-           break;
-      case CurAction3d_DynamicPanning:
-           break;
-      case CurAction3d_GlobalPanning:
-           break;
-      case CurAction3d_DynamicRotation:
-           if (myHlrModeIsOn)
-           {
-             myView->SetComputedMode (Standard_False);
-           }
-           myView->StartRotation( point.x(), point.y() );
-           break;
-      default:
-           throw Standard_Failure( "incompatible Current Mode" );
-           break;
-    }
+    updateView();
   }
-  activateCursor( myCurrentMode );
-}
 
-void View::onMButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint /*point*/ )
-{
-  if ( nFlags & CASCADESHORTCUTKEY )
-    myCurrentMode = CurAction3d_DynamicPanning;
-  activateCursor( myCurrentMode );
-}
-
-void View::onRButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint point )
-{
-  if ( nFlags & CASCADESHORTCUTKEY )
+  if (myCurrentMode == CurAction3d_GlobalPanning)
   {
-    if (myHlrModeIsOn)
-    {
-      myView->SetComputedMode (Standard_False);
-    }
-    myCurrentMode = CurAction3d_DynamicRotation;
-    myView->StartRotation( point.x(), point.y() );
+    myView->Place (aPnt.x(), aPnt.y(), myCurZoom);
   }
-  else
+  if (myCurrentMode != CurAction3d_Nothing)
   {
-    Popup( point.x(), point.y() );
+    setCurrentAction (CurAction3d_Nothing);
   }
-  activateCursor( myCurrentMode );
+  if (theEvent->button() == Qt::RightButton
+   && (aFlags & Aspect_VKeyFlags_CTRL) == 0
+   && (myClickPos - aPnt).cwiseAbs().maxComp() <= 4)
+  {
+    Popup (aPnt.x(), aPnt.y());
+  }
 }
 
-void View::onLButtonUp( Qt::MouseButtons nFlags, const QPoint point )
+void View::mouseMoveEvent (QMouseEvent* theEvent)
 {
-    switch( myCurrentMode )
+  const Graphic3d_Vec2i aNewPos (theEvent->pos().x(), theEvent->pos().y());
+  if (!myView.IsNull()
+    && UpdateMousePosition (aNewPos,
+                            qtMouseButtons2VKeys (theEvent->buttons()),
+                            qtMouseModifiers2VKeys (theEvent->modifiers()),
+                            false))
+  {
+    updateView();
+  }
+}
+
+//==============================================================================
+//function : wheelEvent
+//purpose  :
+//==============================================================================
+void View::wheelEvent (QWheelEvent* theEvent)
+{
+  const Graphic3d_Vec2i aPos (theEvent->pos().x(), theEvent->pos().y());
+  if (!myView.IsNull()
+    && UpdateZoom (Aspect_ScrollDelta (aPos, theEvent->delta() / 8)))
+  {
+    updateView();
+  }
+}
+
+// =======================================================================
+// function : updateView
+// purpose  :
+// =======================================================================
+void View::updateView()
+{
+  update();
+}
+
+void View::defineMouseGestures()
+{
+  myMouseGestureMap.Clear();
+  AIS_MouseGesture aRot = AIS_MouseGesture_RotateOrbit;
+  activateCursor (myCurrentMode);
+  switch (myCurrentMode)
+  {
+    case CurAction3d_Nothing:
     {
-        case CurAction3d_Nothing:
-            if ( point.x() == myXmin && point.y() == myYmin )
-            {
-              // no offset between down and up --> selectEvent
-              myXmax = point.x();
-              myYmax = point.y();
-              if ( nFlags & MULTISELECTIONKEY )
-                  MultiInputEvent( point.x(), point.y() );
-              else
-                  InputEvent( point.x(), point.y() );
-            }
-            else
-            {
-              DrawRectangle( myXmin, myYmin, myXmax, myYmax, Standard_False );
-              myXmax = point.x();
-              myYmax = point.y();
-              if ( nFlags & MULTISELECTIONKEY )
-                  MultiDragEvent( point.x(), point.y(), 1 );
-              else
-                  DragEvent( point.x(), point.y(), 1 );
-            }
-            break;
-        case CurAction3d_DynamicZooming:
-            myCurrentMode = CurAction3d_Nothing;
-            noActiveActions();
-            break;
-        case CurAction3d_WindowZooming:
-            DrawRectangle( myXmin, myYmin, myXmax, myYmax, Standard_False );//,LongDash);
-            myXmax = point.x();
-            myYmax = point.y();
-            if ( (abs( myXmin - myXmax ) > ValZWMin ) ||
-                 (abs( myYmin - myYmax ) > ValZWMin ) )
-              myView->WindowFitAll( myXmin, myYmin, myXmax, myYmax );
-            myCurrentMode = CurAction3d_Nothing;
-            noActiveActions();
-            break;
-        case CurAction3d_DynamicPanning:
-            myCurrentMode = CurAction3d_Nothing;
-            noActiveActions();
-            break;
-        case CurAction3d_GlobalPanning :
-            myView->Place( point.x(), point.y(), myCurZoom );
-            myCurrentMode = CurAction3d_Nothing;
-            noActiveActions();
-            break;
-        case CurAction3d_DynamicRotation:
-            myCurrentMode = CurAction3d_Nothing;
-            noActiveActions();
-            break;
-        default:
-            throw Standard_Failure(" incompatible Current Mode ");
-            break;
+      noActiveActions();
+      myMouseGestureMap = myDefaultGestures;
+      break;
     }
-    activateCursor( myCurrentMode );
-    ApplicationCommonWindow::getApplication()->onSelectionChanged();
-}
-
-void View::onMButtonUp( Qt::MouseButtons /*nFlags*/, const QPoint /*point*/ )
-{
-    myCurrentMode = CurAction3d_Nothing;
-    activateCursor( myCurrentMode );
-}
-
-void View::onRButtonUp( Qt::MouseButtons /*nFlags*/, const QPoint point )
-{
-    if ( myCurrentMode == CurAction3d_Nothing )
-        Popup( point.x(), point.y() );
-    else
+    case CurAction3d_DynamicZooming:
     {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
-        // reset tyhe good Degenerated mode according to the strored one
-        //   --> dynamic rotation may have change it
-        if (myHlrModeIsOn)
-        {
-          myView->SetComputedMode (myHlrModeIsOn);
-          myView->Redraw();
-        }
-        QApplication::restoreOverrideCursor();
-        myCurrentMode = CurAction3d_Nothing;
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Zoom);
+      break;
     }
-    activateCursor( myCurrentMode );
-}
-
-void View::onMouseMove( Qt::MouseButtons nFlags, const QPoint point )
-{
-    if ( nFlags & Qt::LeftButton || nFlags & Qt::RightButton || nFlags & Qt::MidButton )
+    case CurAction3d_GlobalPanning:
     {
-    switch ( myCurrentMode )
+      break;
+    }
+    case CurAction3d_WindowZooming:
     {
-        case CurAction3d_Nothing:
-          myXmax = point.x();
-          myYmax = point.y();
-          DrawRectangle( myXmin, myYmin, myXmax, myYmax, Standard_False );
-          if ( nFlags & MULTISELECTIONKEY )
-              MultiDragEvent( myXmax, myYmax, 0 );
-          else
-            DragEvent( myXmax, myYmax, 0 );
-            DrawRectangle( myXmin, myYmin, myXmax, myYmax, Standard_True );
-            break;
-        case CurAction3d_DynamicZooming:
-          myView->Zoom( myXmax, myYmax, point.x(), point.y() );
-          myXmax = point.x();
-          myYmax = point.y();
-          break;
-        case CurAction3d_WindowZooming:
-          myXmax = point.x();
-          myYmax = point.y();
-          DrawRectangle( myXmin, myYmin, myXmax, myYmax, Standard_False );
-          DrawRectangle( myXmin, myYmin, myXmax, myYmax, Standard_True );
-          break;
-        case CurAction3d_DynamicPanning:
-          myView->Pan( point.x() - myXmax, myYmax - point.y() );
-          myXmax = point.x();
-          myYmax = point.y();
-          break;
-        case CurAction3d_GlobalPanning:
-          break;
-        case CurAction3d_DynamicRotation:
-          myView->Rotation( point.x(), point.y() );
-          myView->Redraw();
-          break;
-        default:
-          throw Standard_Failure( "incompatible Current Mode" );
-          break;
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_ZoomWindow);
+      break;
     }
-    }
-    else
+    case CurAction3d_DynamicPanning:
     {
-        myXmax = point.x();
-        myYmax = point.y();
-      if ( nFlags & MULTISELECTIONKEY )
-          MultiMoveEvent( point.x(), point.y() );
-      else
-          MoveEvent( point.x(), point.y() );
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Pan);
+      break;
     }
-}
-
-void View::DragEvent( const int x, const int y, const int TheState )
-{
-    // TheState == -1  button down
-    // TheState ==  0  move
-    // TheState ==  1  button up
-
-    static Standard_Integer theButtonDownX = 0;
-    static Standard_Integer theButtonDownY = 0;
-
-    if ( TheState == -1 )
+    case CurAction3d_DynamicRotation:
     {
-        theButtonDownX = x;
-        theButtonDownY = y;
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, aRot);
+      break;
     }
-
-    if ( TheState == 1 )
-    {
-        myContext->Select( theButtonDownX, theButtonDownY, x, y, myView, Standard_True );
-        emit selectionChanged();
-    }
-}
-
-void View::InputEvent( const int /*x*/, const int /*y*/ )
-{
-  myContext->Select (Standard_True);
-  emit selectionChanged();
-}
-
-void View::MoveEvent( const int x, const int y )
-{
-  myContext->MoveTo( x, y, myView, Standard_True );
-}
-
-void View::MultiMoveEvent( const int x, const int y )
-{
-  myContext->MoveTo( x, y, myView, Standard_True );
-}
-
-void View::MultiDragEvent( const int x, const int y, const int TheState )
-{
-    static Standard_Integer theButtonDownX = 0;
-    static Standard_Integer theButtonDownY = 0;
-
-    if ( TheState == -1 )
-    {
-        theButtonDownX = x;
-        theButtonDownY = y;
-    }
-    if ( TheState == 0 )
-    {
-        myContext->ShiftSelect( theButtonDownX, theButtonDownY, x, y, myView, Standard_True );
-        emit selectionChanged();
-    }
-}
-
-void View::MultiInputEvent( const int /*x*/, const int /*y*/ )
-{
-  myContext->ShiftSelect (Standard_True);
-  emit selectionChanged();
+  }
 }
 
 void View::Popup( const int /*x*/, const int /*y*/ )
@@ -928,49 +782,6 @@ void View::Popup( const int /*x*/, const int /*y*/ )
 
 void View::addItemInPopup( QMenu* /*theMenu*/)
 {
-}
-
-void View::DrawRectangle(const int MinX, const int MinY,
-       const int MaxX, const int MaxY, const bool Draw)
-{ 
-  static Standard_Integer StoredMinX, StoredMaxX, StoredMinY, StoredMaxY;
-  static Standard_Boolean m_IsVisible;
-
-  StoredMinX = (MinX < MaxX) ? MinX: MaxX ;
-  StoredMinY = (MinY < MaxY) ? MinY: MaxY ;
-  StoredMaxX = (MinX > MaxX) ? MinX: MaxX ;
-  StoredMaxY = (MinY > MaxY) ? MinY: MaxY ;
-
-  QRect aRect;
-  aRect.setRect( StoredMinX, StoredMinY, abs(StoredMaxX-StoredMinX), abs(StoredMaxY-StoredMinY));
-
-  if ( !myRectBand ) 
-  {
-    myRectBand = new QRubberBand( QRubberBand::Rectangle, this );
-    myRectBand->setStyle( QStyleFactory::create("windows") );
-    myRectBand->setGeometry( aRect );
-    myRectBand->show();
-
-    /*QPalette palette;
-    palette.setColor(myRectBand->foregroundRole(), Qt::white);
-    myRectBand->setPalette(palette);*/
-  }
-
-  if ( m_IsVisible && !Draw ) // move or up  : erase at the old position
-  {
-    myRectBand->hide();
-    delete myRectBand;
-    myRectBand = 0;
-    m_IsVisible = false;
-  }
-
-  if (Draw) // move : draw
-  {
-    //aRect.setRect( StoredMinX, StoredMinY, abs(StoredMaxX-StoredMinX), abs(StoredMaxY-StoredMinY));
-    m_IsVisible = true;
-    myRectBand->setGeometry( aRect );
-    //myRectBand->show();
-  }
 }
 
 void View::noActiveActions()
@@ -1052,6 +863,3 @@ View::CurrentAction3d View::getCurrentMode()
 {
   return myCurrentMode;
 }
-
-
-
