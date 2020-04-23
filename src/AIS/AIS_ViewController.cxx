@@ -721,6 +721,7 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
           break;
         }
         case AIS_MouseGesture_Zoom:
+        case AIS_MouseGesture_ZoomWindow:
         {
           if (!myToAllowZooming)
           {
@@ -756,7 +757,8 @@ bool AIS_ViewController::UpdateMouseButtons (const Graphic3d_Vec2i& thePoint,
   if (aPrevGesture != myMouseActiveGesture)
   {
     if (aPrevGesture == AIS_MouseGesture_SelectRectangle
-     || aPrevGesture == AIS_MouseGesture_SelectLasso)
+     || aPrevGesture == AIS_MouseGesture_SelectLasso
+     || aPrevGesture == AIS_MouseGesture_ZoomWindow)
     {
       myUI.Selection.ToApplyTool = true;
     }
@@ -828,8 +830,13 @@ bool AIS_ViewController::UpdateMousePosition (const Graphic3d_Vec2i& thePoint,
   switch (myMouseActiveGesture)
   {
     case AIS_MouseGesture_SelectRectangle:
+    case AIS_MouseGesture_ZoomWindow:
     {
       UpdateRubberBand (myMousePressPoint, thePoint);
+      if (myMouseActiveGesture == AIS_MouseGesture_ZoomWindow)
+      {
+        myUI.Selection.Tool = AIS_ViewSelectionTool_ZoomWindow;
+      }
       toUpdateView = true;
       break;
     }
@@ -2113,14 +2120,16 @@ void AIS_ViewController::handleSelectionPoly (const Handle(AIS_InteractiveContex
 {
   // rubber-band & window polygon selection
   if (myGL.Selection.Tool == AIS_ViewSelectionTool_RubberBand
-   || myGL.Selection.Tool == AIS_ViewSelectionTool_Polygon)
+   || myGL.Selection.Tool == AIS_ViewSelectionTool_Polygon
+   || myGL.Selection.Tool == AIS_ViewSelectionTool_ZoomWindow)
   {
     if (!myGL.Selection.Points.IsEmpty())
     {
       myRubberBand->ClearPoints();
       myRubberBand->SetToUpdate();
 
-      const bool anIsRubber = myGL.Selection.Tool == AIS_ViewSelectionTool_RubberBand;
+      const bool anIsRubber = myGL.Selection.Tool == AIS_ViewSelectionTool_RubberBand
+                           || myGL.Selection.Tool == AIS_ViewSelectionTool_ZoomWindow;
       if (anIsRubber)
       {
         myRubberBand->SetRectangle (myGL.Selection.Points.First().x(), -myGL.Selection.Points.First().y(),
@@ -2184,20 +2193,28 @@ void AIS_ViewController::handleSelectionPoly (const Handle(AIS_InteractiveContex
         {
           const Graphic3d_Vec2i aPnt1 (aPoints.Value (1).x(), -aPoints.Value (1).y());
           const Graphic3d_Vec2i aPnt2 (aPoints.Value (3).x(), -aPoints.Value (3).y());
-          theCtx->MainSelector()->AllowOverlapDetection (aPnt1.y() != Min (aPnt1.y(), aPnt2.y()));
-          if (myGL.Selection.IsXOR)
+          if (myGL.Selection.Tool == AIS_ViewSelectionTool_ZoomWindow)
           {
-            theCtx->ShiftSelect (Min (aPnt1.x(), aPnt2.x()), Min (aPnt1.y(), aPnt2.y()),
-                                 Max (aPnt1.x(), aPnt2.x()), Max (aPnt1.y(), aPnt2.y()),
-                                 theView, false);
+            theView->WindowFitAll (aPnt1.x(), aPnt1.y(), aPnt2.x(), aPnt2.y());
+            theView->Invalidate();
           }
           else
           {
-            theCtx->Select (Min (aPnt1.x(), aPnt2.x()), Min (aPnt1.y(), aPnt2.y()),
-                            Max (aPnt1.x(), aPnt2.x()), Max (aPnt1.y(), aPnt2.y()),
-                            theView, false);
+            theCtx->MainSelector()->AllowOverlapDetection (aPnt1.y() != Min (aPnt1.y(), aPnt2.y()));
+            if (myGL.Selection.IsXOR)
+            {
+              theCtx->ShiftSelect (Min (aPnt1.x(), aPnt2.x()), Min (aPnt1.y(), aPnt2.y()),
+                                   Max (aPnt1.x(), aPnt2.x()), Max (aPnt1.y(), aPnt2.y()),
+                                   theView, false);
+            }
+            else
+            {
+              theCtx->Select (Min (aPnt1.x(), aPnt2.x()), Min (aPnt1.y(), aPnt2.y()),
+                              Max (aPnt1.x(), aPnt2.x()), Max (aPnt1.y(), aPnt2.y()),
+                              theView, false);
+            }
+            theCtx->MainSelector()->AllowOverlapDetection (false);
           }
-          theCtx->MainSelector()->AllowOverlapDetection (false);
         }
         else if (aPoints.Length() >= 3)
         {
@@ -2222,11 +2239,13 @@ void AIS_ViewController::handleSelectionPoly (const Handle(AIS_InteractiveContex
         }
       }
 
-      // selection affects all Views
-      theView->Viewer()->Invalidate();
-
       myRubberBand->ClearPoints();
-      OnSelectionChanged (theCtx, theView);
+      if (myGL.Selection.Tool != AIS_ViewSelectionTool_ZoomWindow)
+      {
+        // selection affects all Views
+        theView->Viewer()->Invalidate();
+        OnSelectionChanged (theCtx, theView);
+      }
     }
   }
 }
