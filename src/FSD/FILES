@@ -1,6 +1,6 @@
 FILES
-FSD_Base64Decoder.cxx
-FSD_Base64Decoder.hxx
+FSD_Base64.cxx
+FSD_Base64.hxx
 FSD_BinaryFile.cxx
 FSD_BinaryFile.hxx
 FSD_BStream.hxx
