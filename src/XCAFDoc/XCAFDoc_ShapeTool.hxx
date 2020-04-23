@@ -23,6 +23,7 @@
 #include <Standard_Boolean.hxx>
 #include <TDataStd_NamedData.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDF_LabelMap.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_OStream.hxx>
@@ -441,7 +442,8 @@ private:
   //! associated compound is updated. Returns true if the assembly item is
   //! modified, false -- otherwise.
   Standard_EXPORT Standard_Boolean updateComponent(const TDF_Label& theAssmLabel,
-                                                   TopoDS_Shape&    theUpdatedShape) const;
+                                                   TopoDS_Shape&    theUpdatedShape,
+                                                   TDF_LabelMap&    theUpdated) const;
 
   //! Adds a new top-level (creates and returns a new label)
   //! For internal use. Used by public method AddShape.

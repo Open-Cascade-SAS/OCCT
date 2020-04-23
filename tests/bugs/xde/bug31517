@@ -1,0 +1,36 @@
+puts "======================================================================"
+puts "0031517: Data Exchange - wrong result of ShapeTool::UpdateAssemblies()"
+puts "======================================================================"
+puts ""
+
+pload DCAF
+
+# make structure with two assemblies linked to one original assembly (2 * 3 boxes)
+box b1 1 1 1
+box b2 2 0 0 1 1 1
+box b3 -2 0 0 1 1 1
+compound b1 b2 b3 bs
+copy bs bs1
+ttranslate bs1 0 2 0
+copy bs bs2
+ttranslate bs2 0 -2 0
+compound bs1 r1
+compound bs2 r2
+compound r1 r2 root
+XNewDoc D
+XAddShape D root
+
+# delete one of boxes in common assembly (should be 2 * 2 boxes)
+XRemoveComponent D 0:1:1:3:1
+XRemoveShape D 0:1:1:4
+XUpdateAssemblies D
+XGetOneShape upd D
+
+# check number of boxes
+set boxes [explode upd so]
+if {$boxes != "upd_1 upd_2 upd_3 upd_4"} {
+puts "Error: wrong result of UpdateAssemblies."
+}
+
+Close D
+

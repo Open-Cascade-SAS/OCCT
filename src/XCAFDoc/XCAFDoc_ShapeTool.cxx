@@ -1012,6 +1012,7 @@ void XCAFDoc_ShapeTool::UpdateAssemblies()
   GetFreeShapes(aRootLabels);
 
   // Iterate over the free shapes
+  TDF_LabelMap anUpdated;
   for ( TDF_LabelSequence::Iterator anIt(aRootLabels); anIt.More(); anIt.Next() )
   {
     TDF_Label aRefLabel = anIt.Value();
@@ -1021,7 +1022,7 @@ void XCAFDoc_ShapeTool::UpdateAssemblies()
     }
     const TDF_Label& aRootLab = aRefLabel;
     TopoDS_Shape anAssemblyShape;
-    updateComponent(aRootLab, anAssemblyShape);
+    updateComponent(aRootLab, anAssemblyShape, anUpdated);
   }
 }
 
@@ -2003,7 +2004,8 @@ void XCAFDoc_ShapeTool::makeSubShape (const TDF_Label& theMainShapeL,
 //=======================================================================
 
 Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabel,
-                                                    TopoDS_Shape&    theUpdatedShape) const
+                                                    TopoDS_Shape&    theUpdatedShape,
+                                                    TDF_LabelMap&    theUpdated) const
 {
   if ( !IsAssembly(theItemLabel) )
     return Standard_False; // Do nothing for non-assemblies
@@ -2011,6 +2013,13 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
   // Get the currently stored compound for the assembly
   TopoDS_Shape aCurrentRootShape;
   GetShape(theItemLabel, aCurrentRootShape);
+
+  // Check if the given assembly is already updated
+  if (theUpdated.Contains(theItemLabel)) {
+    theUpdatedShape = aCurrentRootShape;
+    return Standard_True;
+  }
+  
   TopTools_MapOfOrientedShape aCurrentRootShapeMap (aCurrentRootShape.NbChildren());
 
   // Get components of the assembly
@@ -2051,11 +2060,9 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
     if ( IsAssembly(aComponentRefLab) )
     {
       // Recursive call
-      if ( updateComponent(aComponentRefLab, aComponentShape) )
+      if ( updateComponent(aComponentRefLab, aComponentShape, theUpdated) )
       {
-        if ( !isModified )
-          isModified = Standard_True;
-
+        isModified = Standard_True;
         aComponentShape.Location(aComponentLoc); // Apply placement
       }
     }
@@ -2105,6 +2112,9 @@ Standard_Boolean XCAFDoc_ShapeTool::updateComponent(const TDF_Label& theItemLabe
     TNaming_Builder NB(theItemLabel);
     NB.Generated(theUpdatedShape);
   }
+
+  if (isModified)
+    theUpdated.Add(theItemLabel);
 
   return isModified;
 }
