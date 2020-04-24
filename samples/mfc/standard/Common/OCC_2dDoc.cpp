@@ -18,8 +18,7 @@ IMPLEMENT_DYNCREATE(OCC_2dDoc, CDocument)
 OCC_2dDoc::OCC_2dDoc() : OCC_BaseDoc()
 {
   // Get the Graphic Driver from the application 
-  Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
-    ((OCC_App*)AfxGetApp())->GetGraphicDriver();
+  Handle(Graphic3d_GraphicDriver) aGraphicDriver = ((OCC_App*)AfxGetApp())->GetGraphicDriver();
 
   // create the Viewer
   myViewer = new V3d_Viewer (aGraphicDriver);
@@ -52,20 +51,23 @@ void OCC_2dDoc::FitAll2DViews(Standard_Boolean theUpdateViewer)
   {
     OCC_2dView* aCurrentView = (OCC_2dView*)GetNextView (aPosition);
     ASSERT_VALID (aCurrentView);
-    aCurrentView->GetV2dView()->FitAll();
+    aCurrentView->GetView()->FitAll();
   }
 }
 
-void OCC_2dDoc::MoveEvent(const Standard_Integer theMouseX,
-                          const Standard_Integer theMouseY,
-                          const Handle(V3d_View)& theView)
+void OCC_2dDoc::Popup (const Standard_Integer theMouseX,
+                       const Standard_Integer theMouseY,
+                       const Handle(V3d_View)& theView)
 {
-  myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_True);
-}
+  // load the 'normal' popup
+  CMenu aMenu;
+  VERIFY(aMenu.LoadMenu(IDR_Popup2D));
+  // activate the sub menu '0'
+  CMenu* aPopup = aMenu.GetSubMenu(0);
+  ASSERT(aPopup != NULL);
 
-void OCC_2dDoc::ShiftMoveEvent(const Standard_Integer theMouseX,
-                               const Standard_Integer theMouseY,
-                               const Handle(V3d_View)& theView)
-{
-  myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_True);
+  // display the popup
+  POINT aWinCoord = { theMouseX, theMouseY };
+  ClientToScreen ((HWND )theView->Window()->NativeHandle(), &aWinCoord);
+  aPopup->TrackPopupMenu (TPM_LEFTALIGN | TPM_RIGHTBUTTON, aWinCoord.x, aWinCoord.y, AfxGetMainWnd());
 }

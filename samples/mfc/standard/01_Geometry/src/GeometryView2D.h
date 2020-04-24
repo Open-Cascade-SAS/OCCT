@@ -28,7 +28,6 @@ public:
   // Overrides
   // ClassWizard generated virtual function overrides
 public:
-  virtual void OnDraw(CDC* pDC);  // overridden to draw this view
   virtual void OnInitialUpdate(); // called first time after construct
 
   // Implementation
@@ -39,17 +38,12 @@ public:
   virtual void Dump(CDumpContext& dc) const;
 #endif
 
+  //! Return interactive context for 2d presentations.
+  virtual const Handle(AIS_InteractiveContext)& GetAISContext() const Standard_OVERRIDE;
+
   // Generated message map functions
 protected:
   //{{AFX_MSG(CGeometryView2D)
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-  afx_msg void OnSize(UINT nType, int cx, int cy);
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()
 };

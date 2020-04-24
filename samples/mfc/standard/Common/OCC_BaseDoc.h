@@ -28,9 +28,10 @@ public:
 
   virtual ~OCC_BaseDoc();
 
-  Handle(AIS_InteractiveContext)& GetAISContext() { return myAISContext; }
+  const Handle(AIS_InteractiveContext)& GetAISContext() const { return myAISContext; }
+  const Handle(AIS_InteractiveContext)& GetInteractiveContext() const { return myAISContext; };
 
-  Handle(V3d_Viewer) GetViewer() { return myViewer; }
+  const Handle(V3d_Viewer)& GetViewer() const { return myViewer; }
 
   // Returns string with supported export pixel and vector images formats.
   const CString SupportedImageFormats() const;
@@ -68,6 +69,10 @@ public:
   virtual void Popup (const Standard_Integer /*theMouseX*/,
                       const Standard_Integer /*theMouseY*/,
                       const Handle(V3d_View)& /*theView*/) {}
+
+  //! Callback called by handleMoveTo() on Selection in 3D Viewer.
+  virtual void OnSelectionChanged (const Handle(AIS_InteractiveContext)& ,
+                                   const Handle(V3d_View)& ) {}
 
   void ResetDocumentViews (CDocTemplate* theTemplate);
 

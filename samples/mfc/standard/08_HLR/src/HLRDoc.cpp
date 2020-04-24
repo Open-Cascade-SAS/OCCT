@@ -128,7 +128,7 @@ void CHLRDoc::FitAll2DViews(Standard_Boolean UpdateViewer)
     if(pCurrentView->IsKindOf(RUNTIME_CLASS(OCC_2dView)) )
     {
       ASSERT_VALID(pCurrentView);
-      ((OCC_2dView*)pCurrentView)->GetV2dView()->FitAll();
+      ((OCC_2dView*)pCurrentView)->FitAll();
     }
   }
 }

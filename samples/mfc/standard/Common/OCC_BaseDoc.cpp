@@ -78,7 +78,4 @@ void OCC_BaseDoc::ResetDocumentViews (CDocTemplate* theTemplate)
 
   // init frame
   theTemplate->InitialUpdateFrame(aNewFrame, this);
-
-
-
 }

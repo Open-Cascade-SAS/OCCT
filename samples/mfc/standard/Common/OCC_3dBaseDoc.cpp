@@ -221,9 +221,7 @@ void  OCC_3dBaseDoc::Popup (const Standard_Integer theMouseX,
    }
 
   POINT winCoord = { theMouseX , theMouseY };
-  Handle(WNT_Window) aWNTWindow=
-  Handle(WNT_Window)::DownCast(theView->Window());
-  ClientToScreen ( (HWND)(aWNTWindow->HWindow()),&winCoord);
+  ClientToScreen ((HWND )theView->Window()->NativeHandle(), &winCoord);
   pPopup->TrackPopupMenu (TPM_LEFTALIGN | TPM_RIGHTBUTTON,
                           winCoord.x,
                           winCoord.y,

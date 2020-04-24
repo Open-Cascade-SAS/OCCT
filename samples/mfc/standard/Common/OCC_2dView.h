@@ -14,15 +14,6 @@
 #include "Resource2d/RectangularGrid.h"
 #include "Resource2d/CircularGrid.h"
 
-enum CurrentAction2d
-{
-  CurAction2d_Nothing,
-  CurAction2d_DynamicZooming,
-  CurAction2d_WindowZooming,
-  CurAction2d_DynamicPanning,
-  CurAction2d_GlobalPanning,
-};
-
 class Standard_EXPORT OCC_2dView : public OCC_BaseView  
 {
   DECLARE_DYNCREATE(OCC_2dView)
@@ -35,17 +26,10 @@ public:
 
   OCC_2dDoc* GetDocument();
 
-  Handle(V3d_View)& GetV2dView() { return myV2dView; }
-
-  void FitAll();
-
 // Overrides
   // ClassWizard generated virtual function overrides
   //{{AFX_VIRTUAL(OCC_2dView)
-  public:
-  virtual void OnDraw(CDC* pDC);  // overridden to draw this view
-  virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-  protected:
+protected:
   virtual void OnInitialUpdate(); // called first time after construct
     //}}AFX_VIRTUAL
 
@@ -70,13 +54,6 @@ protected:
   afx_msg void OnUpdateBUTTONGridValues(CCmdUI* pCmdUI);
   afx_msg void OnBUTTONGridCancel();
   afx_msg void OnUpdateBUTTONGridCancel(CCmdUI* pCmdUI);
-  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-  afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
   afx_msg void OnSize(UINT nType, int cx, int cy);
   afx_msg void OnBUTTONFitAll();
   afx_msg void OnBUTTONGlobPanning();
@@ -92,34 +69,6 @@ protected:
   DECLARE_MESSAGE_MAP()
 
 protected:
-
-    virtual void DragEvent2D (const Standard_Integer x,
-                              const Standard_Integer y,
-                              const Standard_Integer TheState);
-
-    virtual void InputEvent2D (const Standard_Integer x,
-                               const Standard_Integer  y);
-
-    virtual void MoveEvent2D (const Standard_Integer x,
-                              const Standard_Integer y);
-
-    virtual void MultiMoveEvent2D (const Standard_Integer x,
-                                   const Standard_Integer y);
-
-    virtual void MultiDragEvent2D (const Standard_Integer x,
-                                   const Standard_Integer y,
-                                   const Standard_Integer TheState);
-
-    virtual void MultiInputEvent2D (const Standard_Integer x,
-                                    const Standard_Integer y);
-
-    virtual void Popup2D (const Standard_Integer x,
-                          const Standard_Integer y);
-
-protected:
-
-  Handle(V3d_View) myV2dView;
-  CurrentAction2d  myCurrentMode;
   CRectangularGrid TheRectangularGridDialog;
   CCircularGrid    TheCircularGridDialog;
 };
