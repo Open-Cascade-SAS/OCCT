@@ -87,6 +87,12 @@
 #include <BRepTools.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <ElCLib.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <ElSLib.hxx>
+#include <GeomProjLib.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_UnifySameDomain,Standard_Transient)
 
@@ -667,7 +673,142 @@ static void ReconstructMissedSeam(const TopTools_SequenceOfShape& theEdges,
     BAcurve2d.LastParameter() : BAcurve2d.FirstParameter();
   theNextPoint = BAcurve2d.Value(ParamOfNextPoint);
 }
+//=======================================================================
+//function : SameSurf
+//purpose  : auxilary
+//=======================================================================
+static Standard_Boolean SameSurf(const Handle(Geom_Surface)& theS1, const Handle(Geom_Surface)& theS2)
+{
+  static Standard_Real aCoefs[2] = { 0.3399811, 0.7745966 };
 
+  Standard_Real uf1, ul1, vf1, vl1, uf2, ul2, vf2, vl2;
+  theS1->Bounds(uf1, ul1, vf1, vl1);
+  theS2->Bounds(uf2, ul2, vf2, vl2);
+  Standard_Real aPTol = Precision::PConfusion();
+  if (Precision::IsNegativeInfinite(uf1))
+  {
+    if (!Precision::IsNegativeInfinite(uf2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      uf1 = Min(-1., (ul1 - 1.));
+    }
+  }
+  else
+  {
+    if (Precision::IsNegativeInfinite(uf2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      if (Abs(uf1 - uf2) > aPTol)
+      {
+        return Standard_False;
+      }
+    }
+  }
+  //
+  if (Precision::IsNegativeInfinite(vf1))
+  {
+    if (!Precision::IsNegativeInfinite(vf2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      vf1 = Min(-1., (vl1 - 1.));
+    }
+  }
+  else
+  {
+    if (Precision::IsNegativeInfinite(vf2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      if (Abs(vf1 - vf2) > aPTol)
+      {
+        return Standard_False;
+      }
+    }
+  }
+  //
+  if (Precision::IsPositiveInfinite(ul1))
+  {
+    if (!Precision::IsPositiveInfinite(ul2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      ul1 = Max(1., (uf1 + 1.));
+    }
+  }
+  else
+  {
+    if (Precision::IsPositiveInfinite(ul2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      if (Abs(ul1 - ul2) > aPTol)
+      {
+        return Standard_False;
+      }
+    }
+  }
+  //
+  if (Precision::IsPositiveInfinite(vl1))
+  {
+    if (!Precision::IsPositiveInfinite(vl2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      vl1 = Max(1., (vf1 + 1.));
+    }
+  }
+  else
+  {
+    if (Precision::IsPositiveInfinite(vl2))
+    {
+      return Standard_False;
+    }
+    else
+    {
+      if (Abs(vl1 - vl2) > aPTol)
+      {
+        return Standard_False;
+      }
+    }
+  }
+  //
+
+  Standard_Real u, v, du = (ul1 - uf1), dv = (vl1 - vf1);
+  Standard_Integer i, j;
+  for (i = 0; i < 2; ++i)
+  {
+    u = uf1 + aCoefs[i] * du;
+    for (j = 0; j < 2; ++j)
+    {
+      v = vf1 + aCoefs[j] * dv;
+      gp_Pnt aP1 = theS1->Value(u, v);
+      gp_Pnt aP2 = theS2->Value(u, v);
+      if (!aP1.IsEqual(aP2, aPTol))
+      {
+        return Standard_False;
+      }
+    }
+  }
+
+  return Standard_True;
+}
 //=======================================================================
 //function : TransformPCurves
 //purpose  : auxilary
@@ -685,7 +826,7 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
     SurfFace = (Handle(Geom_RectangularTrimmedSurface)::DownCast(SurfFace))->BasisSurface();
 
   Standard_Boolean ToModify = Standard_False,
-    ToTranslate = Standard_False, Y_Reverse = Standard_False;
+    ToTranslate = Standard_False, Y_Reverse = Standard_False, ToProject = Standard_False;
   
   gp_Vec2d Translation(0.,0.);
 
@@ -725,6 +866,13 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
 
     ToModify = ToTranslate || Y_Reverse;
   }
+  else
+  {
+    if (!SameSurf(RefSurf, SurfFace))
+    {
+      ToProject = Standard_True;
+    }
+  }
 
   BRep_Builder BB;
   TopExp_Explorer Explo(theFace, TopAbs_EDGE);
@@ -738,11 +886,24 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
 
     Standard_Real fpar, lpar;
     Handle(Geom2d_Curve) PCurveOnRef = BRep_Tool::CurveOnSurface(anEdge, theRefFace, fpar, lpar);
-    if (!PCurveOnRef.IsNull() && !ToModify)
+    if (!PCurveOnRef.IsNull() && !(ToModify || ToProject))
       continue;
 
     Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface(anEdge, theFace, fpar, lpar);
-    Handle(Geom2d_Curve) aNewPCurve = Handle(Geom2d_Curve)::DownCast(aPCurve->Copy());
+    Handle(Geom2d_Curve) aNewPCurve;
+    if (ToProject)
+    {
+      Handle(Geom_Curve) aC3d = BRep_Tool::Curve(anEdge, fpar, lpar);
+      aC3d = new Geom_TrimmedCurve(aC3d, fpar, lpar);
+      Standard_Real tol = BRep_Tool::Tolerance(anEdge);
+      tol = Min(tol, Precision::Approximation());
+      aNewPCurve =
+        GeomProjLib::Curve2d(aC3d, RefSurf);
+    }
+    else
+    {
+      aNewPCurve = Handle(Geom2d_Curve)::DownCast(aPCurve->Copy());
+    }
     if (ToTranslate)
       aNewPCurve->Translate(Translation);
     if (Y_Reverse)
@@ -949,6 +1110,90 @@ static Standard_Boolean GetNormalToSurface(const TopoDS_Face& theFace,
 }
 
 //=======================================================================
+//function : IsInSide
+//purpose  : 
+//=======================================================================
+static Standard_Boolean IsInSide(const gp_Pln& theRefPln, 
+  const Handle(Geom_Surface)& theRefSurf,
+  const Handle(Geom_Surface)& theCheckedSurf, const Standard_Real theLinTol)
+{
+  //
+  Standard_Real uf, ul, vf, vl;
+  theRefSurf->Bounds(uf, ul, vf, vl);
+
+  if (Precision::IsInfinite(uf) && Precision::IsInfinite(ul) &&
+      Precision::IsInfinite(vf) && Precision::IsInfinite(vl))
+  {
+    return Standard_True;
+  }
+  else if (Precision::IsInfinite(uf) || Precision::IsInfinite(ul) ||
+           Precision::IsInfinite(vf) || Precision::IsInfinite(vl))
+  {
+    //To avoid calculation of "infinite" isoline 
+    return Standard_False;
+  }
+  //
+  Handle(Geom_Curve) anIsolines[4];
+  anIsolines[0] = theRefSurf->VIso(vf);
+  anIsolines[1] = theRefSurf->UIso(ul);
+  anIsolines[2] = theRefSurf->VIso(vl)->Reversed();
+  anIsolines[3] = theRefSurf->UIso(uf)->Reversed();
+
+  BRepBuilderAPI_MakeWire aMkWire;
+  TopoDS_Edge E;
+  Standard_Integer i;
+  for (i = 0; i < 4; ++i)
+  {
+    GeomAdaptor_Curve aGAC(anIsolines[i]);
+    Standard_Real length = GCPnts_AbscissaPoint::Length(aGAC);
+    if (length > Precision::Confusion())
+    {
+      E = BRepBuilderAPI_MakeEdge(anIsolines[i]);
+      aMkWire.Add(E);
+    }
+  }
+  TopoDS_Face aRefFace;
+  TopoDS_Wire aW;
+  if (aMkWire.IsDone())
+  {
+    aW = aMkWire.Wire();
+  }
+  else
+  {
+    return Standard_False;
+  }
+  //
+  BRepBuilderAPI_MakeFace aMkFace(theRefPln, aW);
+  if (aMkFace.IsDone())
+  {
+    aRefFace = aMkFace.Face();
+  }
+  else
+  {
+    return Standard_False;
+  }
+  //
+  Standard_Real up, vp;
+  BRepTopAdaptor_FClass2d aFClass(aRefFace, theLinTol);
+  theCheckedSurf->Bounds(uf, ul, vf, vl);
+  const gp_Ax3& aPos = theRefPln.Position();
+  //
+  gp_Pnt2d aP2d[4] = { gp_Pnt2d(uf, vf), gp_Pnt2d(ul, vf), gp_Pnt2d(ul, vl), gp_Pnt2d(uf, vl) };
+  for (i = 0; i < 4; ++i)
+  {
+    gp_Pnt aP = theCheckedSurf->Value(aP2d[i].X(), aP2d[i].Y());
+    ElSLib::PlaneParameters(aPos, aP, up, vp);
+    gp_Pnt2d aP2(up, vp);
+    TopAbs_State aSt = aFClass.Perform(aP2);
+    if (aSt == TopAbs_OUT || aSt == TopAbs_UNKNOWN)
+    {
+      return Standard_False;
+    }
+  }
+  //
+  return Standard_True;
+}
+//=======================================================================
 //function : IsSameDomain
 //purpose  : 
 //=======================================================================
@@ -990,7 +1235,10 @@ static Standard_Boolean IsSameDomain(const TopoDS_Face& aFace,
 
       if (aPln1.Position().Direction().IsParallel(aPln2.Position().Direction(), theAngTol) &&
         aPln1.Distance(aPln2) < theLinTol) {
-        return Standard_True;
+        Standard_Real uf, ul, vf, vl;
+        BRepTools::UVBounds(aCheckedFace, uf, ul, vf, vl);
+        S2 = new Geom_RectangularTrimmedSurface(S2, uf, ul, vf, vl);
+        return IsInSide(aPln1, S1, S2, theLinTol);
       }
     }
   }
