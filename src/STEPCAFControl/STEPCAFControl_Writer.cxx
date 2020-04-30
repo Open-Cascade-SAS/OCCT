@@ -1620,7 +1620,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
       Standard_Integer nb = 
 	FindEntities ( FP, oneShape, Loc, seqRI );
       if ( nb <=0 ) 
-	FP->Messenger() << "Warning: Cannot find RI for " << oneShape.TShape()->DynamicType()->Name() << Message_EndLine;
+	FP->Messenger()->SendInfo() << "Warning: Cannot find RI for " << oneShape.TShape()->DynamicType()->Name() << std::endl;
     }
     if ( seqRI.Length() <= 0 ) continue;
 
@@ -1632,7 +1632,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteLayers (const Handle(XSControl_Work
     if (L.FindAttribute(XCAFDoc::InvisibleGUID(), aUAttr)) {
       descr = new TCollection_HAsciiString ("invisible");
 #ifdef OCCT_DEBUG
-      FP->Messenger() << "\tLayer \"" << hName->String().ToCString() << "\" is invisible"<<Message_EndLine;
+      std::cout << "\tLayer \"" << hName->String().ToCString() << "\" is invisible"<<std::endl;
 #endif
       isLinv = Standard_True;
     }
@@ -1916,7 +1916,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   FindEntities ( FP, Sh, L, seqRI );
 #ifdef OCCT_DEBUG
   if ( seqRI.Length() <=0 ) 
-    FP->Messenger() << "Warning: Cannot find RI for " << Sh.TShape()->DynamicType()->Name() << Message_EndLine;
+    std::cout << "Warning: Cannot find RI for " << Sh.TShape()->DynamicType()->Name() << std::endl;
 #endif
   item = Handle(StepRepr_RepresentationItem)::DownCast(seqRI(1));
   //get overridden styled item
@@ -2345,7 +2345,7 @@ Handle(StepRepr_ShapeAspect) STEPCAFControl_Writer::WriteShapeAspect (const Hand
   TColStd_SequenceOfTransient aSeqRI;
   FindEntities( FP, theShape, aLoc, aSeqRI );
   if ( aSeqRI.Length() <= 0 ) {
-    FP->Messenger() << "Warning: Cannot find RI for "<<theShape.TShape()->DynamicType()->Name()<<Message_EndLine;
+    FP->Messenger()->SendInfo() << "Warning: Cannot find RI for "<<theShape.TShape()->DynamicType()->Name()<<std::endl;
     return NULL;
   }
 
@@ -2517,7 +2517,7 @@ Handle(StepDimTol_Datum) STEPCAFControl_Writer::WriteDatumAP242(const Handle(XSC
     aShape = XCAFDoc_ShapeTool::GetShape(theShapeL.Value(i));
     FindEntities(FP, aShape, aLoc, aSeqRI);
     if (aSeqRI.Length() <= 0) {
-      FP->Messenger() << "Warning: Cannot find RI for " << aShape.TShape()->DynamicType()->Name() << Message_EndLine;
+      FP->Messenger()->SendInfo() << "Warning: Cannot find RI for " << aShape.TShape()->DynamicType()->Name() << std::endl;
       continue;
     }
     anEnt = aSeqRI.Value(1);
@@ -3429,7 +3429,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     TColStd_SequenceOfTransient seqRI;
     FindEntities( FP, aShape, Loc, seqRI );
     if ( seqRI.Length() <= 0 ) {
-      FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<Message_EndLine;
+      FP->Messenger()->SendInfo() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<std::endl;
       continue;
     }
     Handle(StepRepr_ProductDefinitionShape) PDS;
@@ -3511,7 +3511,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     TColStd_SequenceOfTransient seqRI;
     FindEntities( FP, aShape, Loc, seqRI );
     if ( seqRI.Length() <= 0 ) {
-      FP->Messenger() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<Message_EndLine;
+      FP->Messenger()->SendInfo() << "Warning: Cannot find RI for "<<aShape.TShape()->DynamicType()->Name()<<std::endl;
       continue;
     }
     Handle(StepRepr_ProductDefinitionShape) PDS;

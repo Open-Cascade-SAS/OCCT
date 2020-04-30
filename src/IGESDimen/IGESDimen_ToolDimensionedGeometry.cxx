@@ -32,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDimen_ToolDimensionedGeometry::IGESDimen_ToolDimensionedGeometry ()    {  }
@@ -147,18 +146,18 @@ void  IGESDimen_ToolDimensionedGeometry::OwnCheck
 
 void  IGESDimen_ToolDimensionedGeometry::OwnDump
   (const Handle(IGESDimen_DimensionedGeometry)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)&  S, const Standard_Integer level) const 
+   Standard_OStream&  S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_DimensionedGeometry" << Message_EndLine;
+  S << "IGESDimen_DimensionedGeometry\n";
 
   //Standard_Integer lower = 1; //szv#4:S4163:12Mar99 unused
 //  Standard_Integer upper = ent->NbGeometryEntities();
 
-  S << "Number of Dimensions : " << ent->NbDimensions() << Message_EndLine;
-  S << "Dimension Entity : ";
+  S << "Number of Dimensions : " << ent->NbDimensions() << "\n"
+    << "Dimension Entity : ";
   dumper.Dump(ent->DimensionEntity(),S,(level <= 4) ? 0 : 1);
-  S << Message_EndLine;
-  S << "Geometry Entities : ";
+  S << "\n"
+    << "Geometry Entities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbGeometryEntities(),ent->GeometryEntity);
-  S << Message_EndLine;
+  S << std::endl;
 }

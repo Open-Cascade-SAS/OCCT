@@ -33,7 +33,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESGeom_ToolDirection::IGESGeom_ToolDirection ()    {  }
@@ -115,11 +114,10 @@ void IGESGeom_ToolDirection::OwnCheck
 
 void IGESGeom_ToolDirection::OwnDump
   (const Handle(IGESGeom_Direction)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESGeom_Direction" << Message_EndLine << Message_EndLine;
-
-  S << "Value : ";
+  S << "IGESGeom_Direction\n\n"
+    << "Value : ";
   IGESData_DumpXYZL(S,level, ent->Value(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

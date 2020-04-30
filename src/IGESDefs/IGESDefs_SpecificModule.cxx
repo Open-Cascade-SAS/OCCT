@@ -30,7 +30,6 @@
 #include <IGESDefs_ToolUnitsData.hxx>
 #include <IGESDefs_UnitsData.hxx>
 #include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDefs_SpecificModule,IGESData_SpecificModule)
@@ -43,7 +42,7 @@ IGESDefs_SpecificModule::IGESDefs_SpecificModule()    {  }
 
     void  IGESDefs_SpecificModule::OwnDump
   (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S,
+   const IGESData_IGESDumper& dumper, Standard_OStream& S,
    const Standard_Integer own) const 
 {
   switch (CN) {

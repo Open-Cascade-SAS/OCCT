@@ -130,15 +130,14 @@ void  IGESBasic_ToolHierarchy::OwnCheck
 
 void  IGESBasic_ToolHierarchy::OwnDump
   (const Handle(IGESBasic_Hierarchy)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
+   Standard_OStream& S, const Standard_Integer /*level*/) const
 {
-  S << "IGESBasic_Hierarchy" << Message_EndLine;
-
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Line Font    : " << ent->NewLineFont() << Message_EndLine;
-  S << "View Number  : " << ent->NewView() << Message_EndLine;
-  S << "Entity level : " << ent->NewEntityLevel() << Message_EndLine;
-  S << "Blank status : " << ent->NewBlankStatus() << Message_EndLine;
-  S << "Line weight  : " << ent->NewLineWeight() << Message_EndLine;
-  S << "Color number : " << ent->NewColorNum() << Message_EndLine;
+  S << "IGESBasic_Hierarchy\n"
+    << "Number of property values : " << ent->NbPropertyValues() << "\n"
+    << "Line Font    : " << ent->NewLineFont() << "\n"
+    << "View Number  : " << ent->NewView() << "\n"
+    << "Entity level : " << ent->NewEntityLevel() << "\n"
+    << "Blank status : " << ent->NewBlankStatus() << "\n"
+    << "Line weight  : " << ent->NewLineWeight() << "\n"
+    << "Color number : " << ent->NewColorNum() << std::endl;
 }

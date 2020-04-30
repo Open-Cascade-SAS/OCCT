@@ -160,11 +160,11 @@ void  IGESBasic_ToolGroupWithoutBackP::OwnCheck
 
 void  IGESBasic_ToolGroupWithoutBackP::OwnDump
 (const Handle(IGESBasic_GroupWithoutBackP)& ent, const IGESData_IGESDumper& dumper,
- const Handle(Message_Messenger)& S, const Standard_Integer level) const
+ Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_GroupWithoutBackP" << Message_EndLine;
-  S << "Entries in the Group : ";
+  S << "IGESBasic_GroupWithoutBackP\n"
+    << "Entries in the Group : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

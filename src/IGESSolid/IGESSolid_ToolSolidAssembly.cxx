@@ -156,16 +156,14 @@ void  IGESSolid_ToolSolidAssembly::OwnCheck
 
 void  IGESSolid_ToolSolidAssembly::OwnDump
   (const Handle(IGESSolid_SolidAssembly)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
 //  Standard_Integer upper = ent->NbItems();
-
-  S << "IGESSolid_SolidAssembly" << Message_EndLine;
-
-  S << "Items : ";
+  S << "IGESSolid_SolidAssembly\n"
+    << "Items : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbItems(),ent->Item);
-  S << Message_EndLine;
-  S << "Matrices : ";
+  S << "\n"
+    << "Matrices : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbItems(),ent->TransfMatrix);
-  S << Message_EndLine;
+  S << std::endl;
 }

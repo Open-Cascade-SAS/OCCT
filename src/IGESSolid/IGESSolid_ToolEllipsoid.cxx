@@ -188,17 +188,16 @@ void  IGESSolid_ToolEllipsoid::OwnCheck
 
 void  IGESSolid_ToolEllipsoid::OwnDump
   (const Handle(IGESSolid_Ellipsoid)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_Ellipsoid" << Message_EndLine;
-
-  S << "Size   : ";
+  S << "IGESSolid_Ellipsoid\n"
+    << "Size   : ";
   IGESData_DumpXYZ(S, ent->Size());
-  S << Message_EndLine << "Center : ";
+  S << "\nCenter : ";
   IGESData_DumpXYZL(S,level, ent->Center(), ent->Location());
-  S << Message_EndLine << "XAxis  : ";
+  S << "\nXAxis  : ";
   IGESData_DumpXYZL(S,level, ent->XAxis(), ent->VectorLocation());
-  S << Message_EndLine << "ZAxis  : ";
+  S << "\nZAxis  : ";
   IGESData_DumpXYZL(S,level, ent->ZAxis(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

@@ -129,17 +129,17 @@ void  IGESDimen_ToolGeneralLabel::OwnCheck
 
 void  IGESDimen_ToolGeneralLabel::OwnDump
   (const Handle(IGESDimen_GeneralLabel)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_GeneralLabel" << Message_EndLine;
-  S << "General Note Entity : ";
+  S << "IGESDimen_GeneralLabel\n"
+    << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
-  S << "Number of Leaders : " << ent->NbLeaders() << Message_EndLine;
-  S << "Leaders : "; 
+  S << "\n"
+    << "Number of Leaders : " << ent->NbLeaders() << "\n"
+    << "Leaders : "; 
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbLeaders(),ent->Leader);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

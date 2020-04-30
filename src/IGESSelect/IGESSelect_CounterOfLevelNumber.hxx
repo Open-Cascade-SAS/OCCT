@@ -17,19 +17,12 @@
 #ifndef _IGESSelect_CounterOfLevelNumber_HeaderFile
 #define _IGESSelect_CounterOfLevelNumber_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <IFSelect_SignCounter.hxx>
-#include <Standard_Boolean.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
-class Standard_Transient;
+
 class Interface_InterfaceModel;
 class TCollection_HAsciiString;
-class Message_Messenger;
-
 
 class IGESSelect_CounterOfLevelNumber;
 DEFINE_STANDARD_HANDLE(IGESSelect_CounterOfLevelNumber, IFSelect_SignCounter)
@@ -85,7 +78,7 @@ public:
   
   //! Prints the counts of items (not the list) then the Highest
   //! Level Number recorded
-  Standard_EXPORT virtual void PrintCount (const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void PrintCount (Standard_OStream& S) const Standard_OVERRIDE;
 
 
 

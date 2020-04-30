@@ -54,26 +54,26 @@ static const Standard_ExtString   voidext = { 0 };
 
     void  XSControl_Utils::TraceLine (const Standard_CString line) const
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout<<line<<Message_EndLine;
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  sout<<line<<std::endl;
 }
 
     void  XSControl_Utils::TraceLines (const Handle(Standard_Transient)& lines) const
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   Standard_Integer i,nb;
   DeclareAndCast(TColStd_HSequenceOfHAsciiString,linha,lines);
   if (!linha.IsNull()) {
     nb = linha->Length();
     for (i = 1; i <= nb; i ++)
-      if (!linha->Value(i).IsNull()) sout<<linha->Value(i)->ToCString()<<Message_EndLine;
+      if (!linha->Value(i).IsNull()) sout<<linha->Value(i)->ToCString()<<std::endl;
     return;
   }
   DeclareAndCast(TColStd_HSequenceOfAsciiString,lina,lines);
   if (!lina.IsNull()) {
     nb = lina->Length();
     for (i = 1; i <= nb; i ++)
-      sout<<lina->Value(i).ToCString()<<Message_EndLine;
+      sout<<lina->Value(i).ToCString()<<std::endl;
     return;
   }
   DeclareAndCast(TColStd_HSequenceOfHExtendedString,linhe,lines);
@@ -81,20 +81,20 @@ static const Standard_ExtString   voidext = { 0 };
     nb = linhe->Length();
     for (i = 1; i <= nb; i ++)
       if (!linhe->Value(i).IsNull())
-	sout << linhe->Value(i) << Message_EndLine;
+	sout << linhe->Value(i)->String() << std::endl;
     return;
   }
   DeclareAndCast(TColStd_HSequenceOfExtendedString,linee,lines);
   if (!linee.IsNull()) {
     nb = linee->Length();
     for (i = 1; i <= nb; i ++)
-      sout << linee->Value(i) << Message_EndLine;
+      sout << linee->Value(i) << std::endl;
     return;
   }
   DeclareAndCast(TCollection_HAsciiString,lin1a,lines);
-  if (!lin1a.IsNull()) sout<<lin1a;
+  if (!lin1a.IsNull()) sout<<lin1a->String();
   DeclareAndCast(TCollection_HExtendedString,lin1e,lines);
-  if (!lin1e.IsNull()) sout<<lin1e;
+  if (!lin1e.IsNull()) sout<<lin1e->String();
 }
 
 

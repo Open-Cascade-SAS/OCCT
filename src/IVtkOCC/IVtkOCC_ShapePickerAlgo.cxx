@@ -310,14 +310,14 @@ bool IVtkOCC_ShapePickerAlgo::processPicked()
 
       if (aSelectable.IsNull())
       {
-        anOutput << "Error: EntityOwner having null SelectableObject picked!";
+        anOutput->SendAlarm() << "Error: EntityOwner having null SelectableObject picked!";
         continue;
       }
 
       Handle(IVtkOCC_Shape) aSelShape = aSelectable->GetShape();
       if (aSelShape.IsNull())
       {
-        anOutput << "Error: SelectableObject with null OccShape pointer picked!";
+        anOutput->SendAlarm() << "Error: SelectableObject with null OccShape pointer picked!";
         continue;
       }
 
@@ -334,12 +334,12 @@ bool IVtkOCC_ShapePickerAlgo::processPicked()
       TopoDS_Shape aSubShape      = anEntityOwner->Shape();
       if (aTopLevelShape.IsNull())
       {
-        anOutput << "Error: OccShape with null top-level TopoDS_Shape picked!";
+        anOutput->SendAlarm() << "Error: OccShape with null top-level TopoDS_Shape picked!";
         continue;
       }
       if (aSubShape.IsNull())
       {
-        anOutput << "Error: EntityOwner with null TopoDS_Shape picked!";
+        anOutput->SendAlarm() << "Error: EntityOwner with null TopoDS_Shape picked!";
         continue;
       }
 

@@ -30,7 +30,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray2OfReal.hxx>
@@ -212,28 +211,25 @@ void IGESGeom_ToolTransformationMatrix::OwnCheck
 
 void IGESGeom_ToolTransformationMatrix::OwnDump
   (const Handle(IGESGeom_TransformationMatrix)& ent, const IGESData_IGESDumper& /*dumper*/,
-  const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
+   Standard_OStream& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGeom_TransformationMatrix" << Message_EndLine;
-
-  S << "| R11, R12, R13, T1 |       "
+  S << "IGESGeom_TransformationMatrix\n"
+    << "| R11, R12, R13, T1 |       "
     << ent->Data(1, 1) << ", " << ent->Data(1, 2) << ", "
-    << ent->Data(1, 3) << ", " << ent->Data(1, 4) << Message_EndLine;
-
-  S << "| R21, R22, R23, T2 |       "
+    << ent->Data(1, 3) << ", " << ent->Data(1, 4) << "\n"
+    << "| R21, R22, R23, T2 |       "
     << ent->Data(2, 1) << ", " << ent->Data(2, 2) << ", "
-    << ent->Data(2, 3) << ", " << ent->Data(2, 4) << Message_EndLine;
-
-  S << "| R31, R32, R33, T3 |       "
+    << ent->Data(2, 3) << ", " << ent->Data(2, 4) << "\n"
+    << "| R31, R32, R33, T3 |       "
     << ent->Data(3, 1) << ", " << ent->Data(3, 2) << ", "
-    << ent->Data(3, 3) << ", " << ent->Data(3, 4) << Message_EndLine;
+    << ent->Data(3, 3) << ", " << ent->Data(3, 4) << "\n";
 
   switch (ent->FormNumber()) {
-    case  0 : S << "-- Direct Orthogonal Matrix"      << Message_EndLine;  break;
-    case  1 : S << "-- Reverse Orthogonal Matrix"     << Message_EndLine;  break;
-    case 10 : S << "-- Cartesien Coordinate System"   << Message_EndLine;  break;
-    case 11 : S << "-- Cylindrical Coordinate System" << Message_EndLine;  break;
-    case 12 : S << "-- Spherical Coordinate System"   << Message_EndLine;  break;
-    default : S << "--  (Incorrect Form Number)"      << Message_EndLine;  break;
+    case  0 : S << "-- Direct Orthogonal Matrix"      << std::endl;  break;
+    case  1 : S << "-- Reverse Orthogonal Matrix"     << std::endl;  break;
+    case 10 : S << "-- Cartesien Coordinate System"   << std::endl;  break;
+    case 11 : S << "-- Cylindrical Coordinate System" << std::endl;  break;
+    case 12 : S << "-- Spherical Coordinate System"   << std::endl;  break;
+    default : S << "--  (Incorrect Form Number)"      << std::endl;  break;
   }
 }

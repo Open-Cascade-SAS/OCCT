@@ -32,9 +32,7 @@
 class Interface_InterfaceModel;
 class Interface_HGraph;
 class Interface_Graph;
-class Message_Messenger;
 class Interface_EntityIterator;
-
 
 class Transfer_TransientProcess;
 DEFINE_STANDARD_HANDLE(Transfer_TransientProcess, Transfer_ProcessForTransient)
@@ -85,7 +83,7 @@ public:
   
   //! Specific printing to trace an entity : prints label and type
   //! (if model is set)
-  Standard_EXPORT virtual void PrintTrace (const Handle(Standard_Transient)& start, const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void PrintTrace (const Handle(Standard_Transient)& start, Standard_OStream& S) const Standard_OVERRIDE;
   
   //! Specific number of a starting object for check-list : Number
   //! in model
@@ -110,7 +108,7 @@ public:
   Standard_EXPORT Standard_Boolean IsDataFail (const Handle(Standard_Transient)& ent) const;
   
   //! Prints statistics on a given output, according mode
-  Standard_EXPORT void PrintStats (const Standard_Integer mode, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintStats (const Standard_Integer mode, Standard_OStream& S) const;
   
   Standard_EXPORT Handle(TColStd_HSequenceOfTransient) RootsForTransfer();
 

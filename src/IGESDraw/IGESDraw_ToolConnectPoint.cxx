@@ -203,32 +203,31 @@ void IGESDraw_ToolConnectPoint::OwnCheck
 
 void IGESDraw_ToolConnectPoint::OwnDump
   (const Handle(IGESDraw_ConnectPoint)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_ConnectPoint" << Message_EndLine;
-
-  S << "Connection Point Coordinate : ";
+  S << "IGESDraw_ConnectPoint\n"
+    << "Connection Point Coordinate : ";
   IGESData_DumpXYZL(S, level, ent->Point(), ent->Location());
   S << "Display Symbol Geometry Entity : ";
   dumper.Dump(ent->DisplaySymbol(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Type Flag : "     << ent->TypeFlag() << "  "
-    << "Function Flag : " << ent->FunctionFlag() << Message_EndLine;
-  S << "Function Identifier : ";
+  S << "\n"
+    << "Type Flag : "     << ent->TypeFlag() << "  "
+    << "Function Flag : " << ent->FunctionFlag() << "\n"
+    << "Function Identifier : ";
   IGESData_DumpString(S,ent->FunctionIdentifier());
-  S << Message_EndLine << "Text Display Template Entity for CID : ";
+  S << "\nText Display Template Entity for CID : ";
   dumper.Dump(ent->IdentifierTemplate(),S, tempSubLevel);
-  S << Message_EndLine << "Function Name : ";
+  S << "\nFunction Name : ";
   IGESData_DumpString(S,ent->FunctionName());
-  S << Message_EndLine << "Text Display Template Entity for CFN : ";
+  S << "\nText Display Template Entity for CFN : ";
   dumper.Dump(ent->FunctionTemplate(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Point Identifier : " << ent->PointIdentifier() << Message_EndLine
+  S << "\n"
+    << "Point Identifier : " << ent->PointIdentifier() << "\n"
     << "Function Code : "    << ent->FunctionCode()
-    << "Swap Flag : "        << ( ent->SwapFlag() ? "True" : "False" ) << Message_EndLine;
-  S << "Owner Subfigure Entity : ";
+    << "Swap Flag : "        << ( ent->SwapFlag() ? "True" : "False" ) << "\n"
+    << "Owner Subfigure Entity : ";
   dumper.Dump(ent->OwnerSubfigure(),S, tempSubLevel);
-  S << Message_EndLine;
+  S << std::endl;
 }

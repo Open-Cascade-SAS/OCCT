@@ -255,25 +255,25 @@ void  IGESDefs_ToolGenericData::OwnCheck
 
 void  IGESDefs_ToolGenericData::OwnDump
   (const Handle(IGESDefs_GenericData)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESDefs_GenericData" << Message_EndLine;
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Property Name : ";
+  S << "IGESDefs_GenericData\n"
+    << "Number of property values : " << ent->NbPropertyValues() << "\n"
+    << "Property Name : ";
   IGESData_DumpString(S,ent->Name());
-  S << Message_EndLine;
+  S << std::endl;
   switch (level)
     {
     case 4:
-      S << "Types  : " << Message_EndLine;
-      S << "Values : Count = " << ent->NbTypeValuePairs() << Message_EndLine;
-      S << "      [ as level > 4 for content ]" << Message_EndLine;
+      S << "Types  :\n";
+      S << "Values : Count = " << ent->NbTypeValuePairs() << "\n";
+      S << "      [ as level > 4 for content ]\n";
       break;
     case 5:
     case 6:
       {
 	Standard_Integer i, num;
-	S << "Types & Values : " << Message_EndLine;
+	S << "Types & Values : " << "\n";
 	for ( num = ent->NbTypeValuePairs(), i = 1; i <= num; i++ )
           {
 	    S << "[" << i << "]: ";
@@ -293,9 +293,9 @@ void  IGESDefs_ToolGenericData::OwnDump
 		<< (ent->ValueAsLogical(i) ? "True" : "False");  break;
 	      default : break;
 	      }
-	    S << Message_EndLine;
+	    S << "\n";
           }
       }
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

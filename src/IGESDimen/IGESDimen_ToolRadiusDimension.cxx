@@ -126,24 +126,24 @@ void IGESDimen_ToolRadiusDimension::OwnCheck
 
 void IGESDimen_ToolRadiusDimension::OwnDump
   (const Handle(IGESDimen_RadiusDimension)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S,const Standard_Integer level) const
+   Standard_OStream& S,const Standard_Integer level) const
 {
-  S << "IGESDimen_RadiusDimension" << Message_EndLine;
+  S << "IGESDimen_RadiusDimension\n";
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "General note : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
-  S << "Leader arrow : ";
+  S << "\n"
+    << "Leader arrow : ";
   dumper.Dump(ent->Leader(),S, sublevel);
-  S << Message_EndLine;
-  S << "Arc center : ";
+  S << "\n"
+    << "Arc center : ";
   IGESData_DumpXYLZ(S,level,ent->Center(),ent->Location(),ent->Leader()->ZDepth());
   if (ent->HasLeader2())
     {
-      S << Message_EndLine << "Leader arrow 2 : ";
+      S << "\nLeader arrow 2 : ";
       dumper.Dump(ent->Leader2(),S, sublevel);
-      S << Message_EndLine;
+      S << "\n";
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

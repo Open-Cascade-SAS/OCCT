@@ -74,7 +74,10 @@ public:
       myStream.flush();
       if (doForce || myStream.rdbuf()->in_avail() > 0)
       {
-        myMessenger->Send (myStream.str().c_str(), myGravity);
+        if (myMessenger)
+        {
+          myMessenger->Send(myStream.str().c_str(), myGravity);
+        }
         myStream.str(std::string()); // empty the buffer for possible reuse
       }
     }
@@ -112,6 +115,12 @@ public:
 
     //! Access to the stream object
     Standard_SStream& Stream () { return myStream; }
+
+    //! Cast to OStream&
+    operator Standard_OStream& () { return myStream; }
+
+    //! Access to the messenger
+    Message_Messenger* Messenger () { return myMessenger; }
 
   private:
     friend class Message_Messenger;
@@ -220,86 +229,5 @@ private:
   Message_SequenceOfPrinters myPrinters;
 
 };
-
-// CString
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const Standard_CString theStr)
-{
-  theMessenger->Send (theStr, Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// AsciiString
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const TCollection_AsciiString& theStr)
-{
-  theMessenger->Send (theStr, Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// HAsciiString
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const Handle(TCollection_HAsciiString)& theStr)
-{
-  theMessenger->Send (theStr->String(), Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// ExtendedString
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const TCollection_ExtendedString& theStr)
-{
-  theMessenger->Send (theStr, Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// HExtendedString
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const Handle(TCollection_HExtendedString)& theStr)
-{
-  theMessenger->Send (theStr->String(), Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// Integer
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const Standard_Integer theVal)
-{
-  TCollection_AsciiString aStr (theVal);
-  theMessenger->Send (aStr, Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// Real
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const Standard_Real theVal)
-{
-  TCollection_AsciiString aStr (theVal);
-  theMessenger->Send (aStr, Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// Stream
-inline const Handle(Message_Messenger)& operator<< (const Handle(Message_Messenger)& theMessenger,
-                                                    const Standard_SStream& theStream)
-{
-  theMessenger->Send (theStream.str().c_str(), Message_Info, Standard_False);
-  return theMessenger;
-}
-
-// manipulators
-inline const Handle(Message_Messenger)&
-       operator << (const Handle(Message_Messenger)& theMessenger,
-                    const Handle(Message_Messenger)& (*pman) (const Handle(Message_Messenger)&))
-{
-  return pman (theMessenger);
-}
-
-// Message_EndLine
-inline const Handle(Message_Messenger)& Message_EndLine (const Handle(Message_Messenger)& theMessenger)
-{
-  theMessenger->Send ("", Message_Info, Standard_True);
-  return theMessenger;
-}
 
 #endif // _Message_Messenger_HeaderFile

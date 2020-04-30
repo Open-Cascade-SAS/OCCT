@@ -157,14 +157,14 @@ void  IGESDimen_ToolSection::OwnCheck
 
 void  IGESDimen_ToolSection::OwnDump
   (const Handle(IGESDimen_Section)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_Section" << Message_EndLine;
-  S << "Data Type   : "           << ent->Datatype() << "  ";
-  S << "Number of Data Points : " << ent->NbPoints()  << "  ";
-  S << "Common Z displacement : " << ent->ZDisplacement() << Message_EndLine;
-  S << "Data Points : "; 
-  IGESData_DumpListXYLZ(S ,level,1, ent->NbPoints(),ent->Point,
+  S << "IGESDimen_Section\n"
+    << "Data Type   : "           << ent->Datatype() << "  "
+    << "Number of Data Points : " << ent->NbPoints()  << "  "
+    << "Common Z displacement : " << ent->ZDisplacement() << "\n"
+    << "Data Points : "; 
+  IGESData_DumpListXYLZ(S,level,1, ent->NbPoints(),ent->Point,
 			ent->Location(), ent->ZDisplacement());
-  S << Message_EndLine;
+  S << std::endl;
 }

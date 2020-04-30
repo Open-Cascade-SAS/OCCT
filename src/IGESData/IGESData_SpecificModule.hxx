@@ -25,7 +25,6 @@
 #include <Standard_Boolean.hxx>
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
-class Message_Messenger;
 
 
 class IGESData_SpecificModule;
@@ -44,7 +43,7 @@ public:
   //! taken into account by the IGESDumper
   //! See class IGESDumper for the rules to follow for <own> and
   //! <attached> level
-  Standard_EXPORT virtual void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S, const Standard_Integer own) const = 0;
+  Standard_EXPORT virtual void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const = 0;
   
   //! Specific Automatic Correction on own Parameters of an Entity.
   //! It works by setting in accordance redundant data, if there are

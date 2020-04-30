@@ -34,7 +34,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 #include <stdio.h>
@@ -227,17 +226,15 @@ void  IGESDraw_ToolViewsVisible::OwnWhenDelete
 
 void IGESDraw_ToolViewsVisible::OwnDump
   (const Handle(IGESDraw_ViewsVisible)& ent, const IGESData_IGESDumper& dumper,
-  const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESDraw_ViewsVisible" << Message_EndLine;
-
-  S << "Views Visible : ";
+  S << "IGESDraw_ViewsVisible\n"
+    << "Views Visible : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbViews(),ent->ViewItem);
-  S << Message_EndLine;
-  S << "Entities Displayed : ";
-  IGESData_DumpEntities
-    (S,dumper ,level,1, ent->NbDisplayedEntities(),ent->DisplayedEntity);
-  S << Message_EndLine;
+  S << "\n"
+    << "Entities Displayed : ";
+  IGESData_DumpEntities(S,dumper ,level,1, ent->NbDisplayedEntities(),ent->DisplayedEntity);
+  S << std::endl;
 }
 
 Standard_Boolean  IGESDraw_ToolViewsVisible::OwnCorrect

@@ -33,7 +33,6 @@
 #include <Interface_Macros.hxx>
 #include <Interface_MSG.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
@@ -141,20 +140,20 @@ void IGESGeom_ToolCircularArc::OwnCheck
 
 void IGESGeom_ToolCircularArc::OwnDump
   (const Handle(IGESGeom_CircularArc)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "CircularArc from IGESGeom" << Message_EndLine;
-  S << "Z-Plane Displacement : " << ent->ZPlane() << Message_EndLine;
-  S << "Center      : ";
+  S << "CircularArc from IGESGeom]\n"
+    << "Z-Plane Displacement : " << ent->ZPlane() << "\n"
+    << "Center      : ";
   IGESData_DumpXYLZ(S,level, ent->Center(), ent->Location(), ent->ZPlane());
-  S << Message_EndLine;
-  S << "Start Point : ";
+  S << "\n"
+    << "Start Point : ";
   IGESData_DumpXYLZ(S,level, ent->StartPoint(), ent->Location(),ent->ZPlane());
-  S << Message_EndLine;
-  S << "End Point   : ";
+  S << "\n"
+    << "End Point   : ";
   IGESData_DumpXYLZ(S,level, ent->EndPoint(), ent->Location(), ent->ZPlane());
-  S << Message_EndLine;
+  S << "\n";
   if (level <= 5) return;
-  S<< "  Normal Axis : ";  IGESData_DumpXYZL(S,level,ent->Axis(),ent->VectorLocation());
-  S << Message_EndLine;
+  S << "  Normal Axis : ";  IGESData_DumpXYZL(S,level,ent->Axis(),ent->VectorLocation());
+  S << std::endl;
 }

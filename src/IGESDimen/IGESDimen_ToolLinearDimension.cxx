@@ -32,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDimen_ToolLinearDimension::IGESDimen_ToolLinearDimension ()    {  }
@@ -130,28 +129,28 @@ void  IGESDimen_ToolLinearDimension::OwnCheck
 
 void  IGESDimen_ToolLinearDimension::OwnDump
   (const Handle(IGESDimen_LinearDimension)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_LinearDimension" << Message_EndLine;
-  if      (ent->FormNumber() == 0) S << "     (Undetermined Form)" << Message_EndLine;
-  else if (ent->FormNumber() == 1) S << "     (Diameter Form)" << Message_EndLine;
-  else if (ent->FormNumber() == 2) S << "     (Radius Form)" << Message_EndLine;
+  S << "IGESDimen_LinearDimension\n";
+  if      (ent->FormNumber() == 0) S << "     (Undetermined Form)\n";
+  else if (ent->FormNumber() == 1) S << "     (Diameter Form)\n";
+  else if (ent->FormNumber() == 2) S << "     (Radius Form)\n";
   S << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
-  S << "First  Leader  Entity : ";
+  S << "\n"
+    << "First  Leader  Entity : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Leader  Entity : ";
+  S << "\n"
+    << "Second Leader  Entity : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << Message_EndLine;
-  S << "First  Witness Entity : ";
+  S << "\n"
+    << "First  Witness Entity : ";
   dumper.Dump(ent->FirstWitness(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Witness Entity : ";
+  S << "\n"
+    << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitness(),S, sublevel);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

@@ -62,7 +62,6 @@
 #include <IGESGeom_TransformationMatrix.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESGeom_SpecificModule,IGESData_SpecificModule)
@@ -75,7 +74,7 @@ IGESGeom_SpecificModule::IGESGeom_SpecificModule()    {  }
 
     void  IGESGeom_SpecificModule::OwnDump
   (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S,
+   const IGESData_IGESDumper& dumper, Standard_OStream& S,
    const Standard_Integer own) const 
 {
   switch (CN) {

@@ -11,10 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Interface_Static.hxx>
 
 #include <Interface_InterfaceError.hxx>
-#include <Interface_Static.hxx>
-#include <Message_Messenger.hxx>
 #include <OSD_Path.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -84,15 +83,15 @@ static char defmess[31];
 
 //  ##   Print   ##
 
-void  Interface_Static::PrintStatic (const Handle(Message_Messenger)& S) const
+void  Interface_Static::PrintStatic (Standard_OStream& S) const
 {
-  S<<"--- Static Value : "<<Name()<<"  Family:"<<Family();
+  S <<"--- Static Value : "<<Name()<<"  Family:"<<Family();
   Print (S);
   if (!thewild.IsNull())
-    S<<" -- Attached to wild-card : "<<thewild->Name()<<Message_EndLine;
-  S<<"--- Actual status : "<<(theupdate ? "" : "original")<<"  Value : ";
+    S <<" -- Attached to wild-card : "<<thewild->Name()<<std::endl;
+  S <<"--- Actual status : "<<(theupdate ? "" : "original")<<"  Value : ";
 
-  if (thesatisf) S<<" -- Specific Function for Satisfies : "<<thesatisn.ToCString()<<Message_EndLine;
+  if (thesatisf) S <<" -- Specific Function for Satisfies : "<<thesatisn.ToCString()<<std::endl;
 }
 
 

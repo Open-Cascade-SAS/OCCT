@@ -37,8 +37,6 @@ class TCollection_HAsciiString;
 class Standard_Transient;
 class Standard_ConstructionError;
 class TCollection_AsciiString;
-class Message_Messenger;
-
 
 class MoniTool_TypedValue;
 DEFINE_STANDARD_HANDLE(MoniTool_TypedValue, Standard_Transient)
@@ -93,10 +91,10 @@ public:
   Standard_EXPORT void SetDefinition (const Standard_CString deftext);
   
   //! Prints definition, specification, and actual status and value
-  Standard_EXPORT virtual void Print (const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT virtual void Print (Standard_OStream& S) const;
   
   //! Prints only the Value
-  Standard_EXPORT void PrintValue (const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintValue (Standard_OStream& S) const;
   
   //! Completes the definition of a TypedValue by command <initext>,
   //! once created with its type

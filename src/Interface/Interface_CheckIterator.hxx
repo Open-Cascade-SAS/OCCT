@@ -34,7 +34,6 @@ class Interface_IntVal;
 class Standard_NoSuchObject;
 class Interface_Check;
 class Standard_Transient;
-class Message_Messenger;
 
 // resolve name collisions with X11 headers
 #ifdef Status
@@ -181,12 +180,12 @@ public:
   //! If <final> > 0, prints only final messages
   //! It uses the recorded Model if it is defined
   //! Remark : Works apart from the iteration methods (no interference)
-  Standard_EXPORT void Print (const Handle(Message_Messenger)& S, const Standard_Boolean failsonly, const Standard_Integer final = 0) const;
+  Standard_EXPORT void Print (Standard_OStream& S, const Standard_Boolean failsonly, const Standard_Integer final = 0) const;
   
   //! Works as Print without a model, but for entities which have
   //! no attached number (Number not positive), tries to compute
   //! this Number from <model> and displays "original" or "computed"
-  Standard_EXPORT void Print (const Handle(Message_Messenger)& S, const Handle(Interface_InterfaceModel)& model, const Standard_Boolean failsonly, const Standard_Integer final = 0) const;
+  Standard_EXPORT void Print (Standard_OStream& S, const Handle(Interface_InterfaceModel)& model, const Standard_Boolean failsonly, const Standard_Integer final = 0) const;
   
   //! Clears data of iteration
   Standard_EXPORT void Destroy();

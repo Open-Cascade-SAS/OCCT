@@ -17,23 +17,16 @@
 #ifndef _StepData_StepModel_HeaderFile
 #define _StepData_StepModel_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <Interface_EntityList.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Type.hxx>
+
 class Standard_NoSuchObject;
 class Standard_Transient;
 class Interface_InterfaceModel;
 class Interface_EntityIterator;
 class Interface_Check;
-class Message_Messenger;
 class TCollection_HAsciiString;
-
 
 class StepData_StepModel;
 DEFINE_STANDARD_HANDLE(StepData_StepModel, Interface_InterfaceModel)
@@ -83,7 +76,7 @@ public:
   //! prints its Type. Else sends the Header under the form of
   //! HEADER Section of an Ascii Step File
   //! <level> is not used because Header is not so big
-  Standard_EXPORT void DumpHeader (const Handle(Message_Messenger)& S, const Standard_Integer level = 0) const Standard_OVERRIDE;
+  Standard_EXPORT void DumpHeader (Standard_OStream& S, const Standard_Integer level = 0) const Standard_OVERRIDE;
   
   //! erases specific labels, i.e. clears the map (entity-ident)
   Standard_EXPORT void ClearLabels() Standard_OVERRIDE;
@@ -98,7 +91,7 @@ public:
   //! Prints label specific to STEP norm for a given entity, i.e.
   //! if a LabelIdent has been recorded, its value with '#', else
   //! the number in the model with '#' and between ()
-  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
+  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, Standard_OStream& S) const Standard_OVERRIDE;
   
   //! Returns a string with the label attached to a given entity,
   //! same form as for PrintLabel

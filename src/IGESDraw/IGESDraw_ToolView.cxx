@@ -31,7 +31,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDraw_ToolView::IGESDraw_ToolView ()    {  }
@@ -153,24 +152,23 @@ void IGESDraw_ToolView::OwnCheck
 
 void IGESDraw_ToolView::OwnDump
   (const Handle(IGESDraw_View)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_View" << Message_EndLine;
-
-  S << "View Number  : " << ent->ViewNumber()  << Message_EndLine;
-  S << "Scale Factor : " << ent->ScaleFactor() << Message_EndLine;
-  S << "Left Plane Of View Volume   : ";
-  dumper.Dump(ent->LeftPlane(),S, tempSubLevel);    S << Message_EndLine;
+  S << "IGESDraw_View\n"
+    << "View Number  : " << ent->ViewNumber()  << "\n"
+    << "Scale Factor : " << ent->ScaleFactor() << "\n"
+    << "Left Plane Of View Volume   : ";
+  dumper.Dump(ent->LeftPlane(),S, tempSubLevel);    S << "\n";
   S << "Top Plane Of View Volume    : ";
-  dumper.Dump(ent->TopPlane(),S, tempSubLevel);     S << Message_EndLine;
+  dumper.Dump(ent->TopPlane(),S, tempSubLevel);     S << "\n";
   S << "Right Plane Of View Volume  : ";
-  dumper.Dump(ent->RightPlane(),S, tempSubLevel);   S << Message_EndLine;
+  dumper.Dump(ent->RightPlane(),S, tempSubLevel);   S << "\n";
   S << "Bottom Plane Of View Volume : ";
-  dumper.Dump(ent->BottomPlane(),S, tempSubLevel);  S << Message_EndLine;
+  dumper.Dump(ent->BottomPlane(),S, tempSubLevel);  S << "\n";
   S << "Back Plane Of View Volume   : ";
-  dumper.Dump(ent->BackPlane(),S, tempSubLevel);    S << Message_EndLine;
+  dumper.Dump(ent->BackPlane(),S, tempSubLevel);    S << "\n";
   S << "Front Plane Of View Volume  : ";
-  dumper.Dump(ent->FrontPlane(),S, tempSubLevel);   S << Message_EndLine;
+  dumper.Dump(ent->FrontPlane(),S, tempSubLevel);   S << std::endl;
 }

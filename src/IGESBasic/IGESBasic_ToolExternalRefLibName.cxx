@@ -97,13 +97,13 @@ void  IGESBasic_ToolExternalRefLibName::OwnCheck
 
 void  IGESBasic_ToolExternalRefLibName::OwnDump
   (const Handle(IGESBasic_ExternalRefLibName)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S,const Standard_Integer /* level */) const
+   Standard_OStream& S,const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_ExternalRefLibName" << Message_EndLine;
-  S << "Name of Library : ";
+  S << "IGESBasic_ExternalRefLibName\n"
+    << "Name of Library : ";
   IGESData_DumpString(S,ent->LibraryName());
-  S << Message_EndLine;
-  S << "External Reference Symbolic Name : ";
+  S << "\n"
+    << "External Reference Symbolic Name : ";
   IGESData_DumpString(S,ent->ReferenceName());
-  S << Message_EndLine;
+  S << std::endl;
 }

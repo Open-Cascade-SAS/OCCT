@@ -173,15 +173,15 @@ void  IGESDimen_ToolGeneralSymbol::OwnCheck
 
 void  IGESDimen_ToolGeneralSymbol::OwnDump
   (const Handle(IGESDimen_GeneralSymbol)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
-  S << "IGESDimen_GeneralSymbol" << Message_EndLine;
-  S << "General Note : ";
+  S << "IGESDimen_GeneralSymbol\n"
+    << "General Note : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine << "Geometric Entities : ";
+  S << "\nGeometric Entities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbGeomEntities(),ent->GeomEntity);
-  S << Message_EndLine << "Leader Arrows : ";
+  S << "\nLeader Arrows : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbLeaders(),ent->LeaderArrow);
-  S << Message_EndLine;
+  S << std::endl;
 }

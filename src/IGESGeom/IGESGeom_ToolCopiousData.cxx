@@ -262,7 +262,7 @@ void IGESGeom_ToolCopiousData::OwnCheck(const Handle(IGESGeom_CopiousData)& ent,
 
 void IGESGeom_ToolCopiousData::OwnDump(const Handle(IGESGeom_CopiousData)& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       const Handle(Message_Messenger)& S,
+                                       Standard_OStream& S,
                                        const Standard_Integer level)  const
 {
   Standard_Integer nbPnts = ent->NbPoints();
@@ -272,21 +272,21 @@ void IGESGeom_ToolCopiousData::OwnDump(const Handle(IGESGeom_CopiousData)& ent,
   gp_GTrsf locv = ent->VectorLocation();
   Standard_Boolean yatr = (level > 5 && ent->HasTransf());
 
-  S << "IGESGeom_CopiousData" << Message_EndLine;
+  S << "IGESGeom_CopiousData\n";
 
   if (ent->IsPointSet())          S << "Point Set  ";
   else if (ent->IsPolyline())     S << "Polyline  ";
   else if (ent->IsClosedPath2D()) S << "Closed Path 2D  ";
-  S << "DataType " << ent->DataType() << "  ";
-  S << "Number of T-uples = " << nbPnts << "  ";
+  S << "DataType " << ent->DataType() << "  "
+    << "Number of T-uples = " << nbPnts << "  ";
   if (dtype == 1) {
-    S << "(Points 2D)  ";
-    S << "ZPlane = " << ent->ZPlane() << Message_EndLine;
+    S << "(Points 2D)  "
+      << "ZPlane = " << ent->ZPlane() << "\n";
   }
   else if (dtype == 2)
-    S << "(Points 3D)" << Message_EndLine;
+    S << "(Points 3D)\n";
   else if (dtype == 3)
-    S << "(Points 3D + Vectors 3D)" << Message_EndLine;
+    S << "(Points 3D + Vectors 3D)\n";
 
   if (level > 4) {
     for (i = 1; i <= nbPnts; i ++) {
@@ -309,9 +309,9 @@ void IGESGeom_ToolCopiousData::OwnDump(const Handle(IGESGeom_CopiousData)& ent,
 	  S << " Transformed ("<< T.X() << "," << T.Y() << "," << T.Z() << ")";
 	}
       }
-      S << Message_EndLine;
+      S << std::endl;
     }
   }
   else S << " [ for content, ask level > 4 ]";
-  S << Message_EndLine;
+  S << std::endl;
 }

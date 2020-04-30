@@ -105,14 +105,14 @@ void  IGESSolid_ToolSelectedComponent::OwnCheck
 
 void  IGESSolid_ToolSelectedComponent::OwnDump
   (const Handle(IGESSolid_SelectedComponent)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_SelectedComponent" << Message_EndLine;
+  S << "IGESSolid_SelectedComponent\n";
 
   // the heading for boolean tree is in BooleanTree OwnDump
-  S << "Boolean Tree Entity : " << Message_EndLine;
+  S << "Boolean Tree Entity :\n";
   dumper.Dump(ent->Component(),S, (level <= 4) ? 0 : 1);
   S << "Seleted Point       : ";
   IGESData_DumpXYZL(S,level, ent->SelectPoint(), ent->Location());
-  S << Message_EndLine;
+  S << std::endl;
 }

@@ -177,39 +177,39 @@ void  IGESDefs_ToolAssociativityDef::OwnCheck
 
 void  IGESDefs_ToolAssociativityDef::OwnDump
   (const Handle(IGESDefs_AssociativityDef)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
-  S << "IGESDefs_AssociativityDef" << Message_EndLine;
-  S << "Number of Class Definitions : " << ent->NbClassDefs() << Message_EndLine;
-  S << "Back Pointer Requirement  : " << Message_EndLine; 
-  S << "Ordered / Unordered Class : " << Message_EndLine;
-  S << "Number Of Items per Entry : " << Message_EndLine;
-  S << "Items : " << Message_EndLine; 
+  S << "IGESDefs_AssociativityDef\n"
+    << "Number of Class Definitions : " << ent->NbClassDefs() << "\n"
+    << "Back Pointer Requirement  :\n"
+    << "Ordered / Unordered Class :\n"
+    << "Number Of Items per Entry :\n"
+    << "Items :\n";
   IGESData_DumpVals(S,-level,1, ent->NbClassDefs(),ent->BackPointerReq);
-  S << Message_EndLine;
+  S << std::endl;
   if (level > 4)
     {
 // Warning : Item is a JAGGED Array
       Standard_Integer upper = ent->NbClassDefs();
       for (Standard_Integer i = 1; i <= upper; i ++) {
-	S << "[" << i << "]: " << Message_EndLine;
+	S << "[" << i << "]:\n";
 	S << "Back Pointer Requirement : "  << ent->BackPointerReq(i) << "  ";
 	if (ent->IsBackPointerReq(i)) S << "(Yes)  ";
 	else                          S << "(No)   ";
 	S << " Ordered/Unordered Class : "  << ent->ClassOrder(i) << " ";
-	if (ent->IsOrdered(i)) S << "(Yes)" <<Message_EndLine;
-	else                   S << "(No)"  <<Message_EndLine;
+	if (ent->IsOrdered(i)) S << "(Yes)\n";
+	else                   S << "(No)\n";
 	S << "Number Of Items per Entry : " << ent->NbItemsPerClass(i);
 	if (level < 6) {
-	  S << " [ask level > 5 for more]" << Message_EndLine;
+	  S << " [ask level > 5 for more]\n";
 	  continue;
 	}
-	S << Message_EndLine << " [";
+	S << "\n [";
 	for (Standard_Integer j = 1; j <= ent->NbItemsPerClass(i); j ++)
 	  S << "  " << ent->Item(i,j);
-	S << "]" << Message_EndLine;
+	S << "]\n";
       }
     }
-  S << Message_EndLine;
+  S << std::endl;
 }
 

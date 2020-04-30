@@ -33,7 +33,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -207,39 +206,39 @@ void  IGESSolid_ToolManifoldSolid::OwnCheck
 
 void  IGESSolid_ToolManifoldSolid::OwnDump
   (const Handle(IGESSolid_ManifoldSolid)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_ManifoldSolid" << Message_EndLine;
+  S << "IGESSolid_ManifoldSolid\n";
 
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   S << "Shell : ";
   dumper.Dump(ent->Shell(),S, sublevel);
-  S << Message_EndLine;
+  S << "\n";
   if (ent->OrientationFlag())
-    S << "Orientation agrees with the underlying surface" << Message_EndLine;
+    S << "Orientation agrees with the underlying surface\n";
   else
-    S << "Orientation does not agrees with the underlying surface" << Message_EndLine;
-  S << "Void shells :" << Message_EndLine << "Orientation flags : ";
+    S << "Orientation does not agrees with the underlying surface\n";
+  S << "Void shells :\nOrientation flags : ";
   IGESData_DumpEntities(S,dumper,-level,1, ent->NbVoidShells(),ent->VoidShell);
-  S << Message_EndLine;
+  S << std::endl;
   if (level > 4)
     {
-      S << "[ " << Message_EndLine;
+      S << "[\n";
       if (ent->NbVoidShells() > 0)
 	{
           Standard_Integer upper = ent->NbVoidShells();
           for (Standard_Integer i = 1; i <= upper; i ++)
 	    {
-              S << "[" << i << "]:  ";
-              S << "Void shell : ";
+              S << "[" << i << "]:  "
+                << "Void shell : ";
               dumper.Dump (ent->VoidShell(i),S, sublevel);
               S << "  - Orientation flag : ";
-              if (ent->VoidOrientationFlag(i)) S << "True"  << Message_EndLine;
-              else		               S << "False" << Message_EndLine;
+              if (ent->VoidOrientationFlag(i)) S << "True\n";
+              else		               S << "False\n";
 	    }
 	}
-      S << " ]" << Message_EndLine;
+      S << " ]\n";
     }
-  S << Message_EndLine;
+  S << std::endl;
 }
 

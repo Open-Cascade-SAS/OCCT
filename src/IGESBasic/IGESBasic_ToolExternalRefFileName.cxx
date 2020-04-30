@@ -100,13 +100,13 @@ void  IGESBasic_ToolExternalRefFileName::OwnCheck
 
 void  IGESBasic_ToolExternalRefFileName::OwnDump
   (const Handle(IGESBasic_ExternalRefFileName)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_ExternalRefFileName" << Message_EndLine;
-  S << "External Reference File Identifier : ";
+  S << "IGESBasic_ExternalRefFileName\n"
+    << "External Reference File Identifier : ";
   IGESData_DumpString(S,ent->FileId());
-  S << Message_EndLine;
-  S << "External Reference Symbolic Name : ";
+  S << "\n"
+    << "External Reference Symbolic Name : ";
   IGESData_DumpString(S,ent->ReferenceName());
-  S << Message_EndLine;
+  S << std::endl;
 }

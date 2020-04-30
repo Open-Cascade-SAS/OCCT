@@ -250,16 +250,16 @@ void IGESGeom_ToolBoundedSurface::OwnCheck(const Handle(IGESGeom_BoundedSurface)
 
 void IGESGeom_ToolBoundedSurface::OwnDump(const Handle(IGESGeom_BoundedSurface)& ent,
                                           const IGESData_IGESDumper& dumper,
-                                          const Handle(Message_Messenger)& S,
+                                          Standard_OStream& S,
                                           const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
-  S << "IGESGeom_BoundedSurface" << Message_EndLine;
-  S << "Representation Type   : " << ent->RepresentationType() << Message_EndLine;
-  S << "Surface to be Bounded : ";
+  S << "IGESGeom_BoundedSurface\n"
+    << "Representation Type   : " << ent->RepresentationType() << "\n"
+    << "Surface to be Bounded : ";
   dumper.Dump(ent->Surface(),S, sublevel);
-  S << Message_EndLine;
-  S << "Boundary Entities     : ";
+  S << "\n"
+    << "Boundary Entities     : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbBoundaries(),ent->Boundary);
-  S << Message_EndLine;
+  S << std::endl;
 }

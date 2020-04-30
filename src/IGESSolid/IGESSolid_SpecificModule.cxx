@@ -64,7 +64,6 @@
 #include <IGESSolid_Torus.hxx>
 #include <IGESSolid_VertexList.hxx>
 #include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSolid_SpecificModule,IGESData_SpecificModule)
@@ -77,7 +76,7 @@ IGESSolid_SpecificModule::IGESSolid_SpecificModule()    {  }
 
     void  IGESSolid_SpecificModule::OwnDump
   (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S,
+   const IGESData_IGESDumper& dumper, Standard_OStream& S,
    const Standard_Integer own) const 
 {
   switch (CN) {

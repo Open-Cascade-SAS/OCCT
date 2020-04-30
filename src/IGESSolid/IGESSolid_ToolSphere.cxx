@@ -120,12 +120,11 @@ void  IGESSolid_ToolSphere::OwnCheck
 
 void  IGESSolid_ToolSphere::OwnDump
   (const Handle(IGESSolid_Sphere)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_Sphere" << Message_EndLine;
-
-  S << "Radius : " << ent->Radius() << Message_EndLine;
-  S << "Center : ";
+  S << "IGESSolid_Sphere\n"
+    << "Radius : " << ent->Radius() << "\n"
+    << "Center : ";
   IGESData_DumpXYZL(S,level, ent->Center(), ent->Location());
-  S << Message_EndLine;
+  S << std::endl;
 }

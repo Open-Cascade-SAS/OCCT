@@ -246,19 +246,19 @@ void IGESSolid_ToolFace::OwnCheck(const Handle(IGESSolid_Face)& ent,
 
 void IGESSolid_ToolFace::OwnDump(const Handle(IGESSolid_Face)& ent,
                                  const IGESData_IGESDumper& dumper,
-                                 const Handle(Message_Messenger)& S,
+                                 Standard_OStream& S,
                                  const Standard_Integer level) const
 {
-  S << "IGESSolid_Face" << Message_EndLine;
+  S << "IGESSolid_Face\n";
 
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   S << "Surface : ";
   dumper.Dump(ent->Surface(),S, sublevel);
-  S << Message_EndLine;
-  if (ent->HasOuterLoop())  S << "Outer loop is present (First one)" << Message_EndLine;
-  else                      S << "Outer loop is not present" << Message_EndLine;
+  S << "\n";
+  if (ent->HasOuterLoop())  S << "Outer loop is present (First one)\n";
+  else                      S << "Outer loop is not present\n";
   S << "Loops : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbLoops(),ent->Loop);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

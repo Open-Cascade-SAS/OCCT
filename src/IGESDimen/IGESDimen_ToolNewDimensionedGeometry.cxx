@@ -212,31 +212,31 @@ void  IGESDimen_ToolNewDimensionedGeometry::OwnCheck
 
 void  IGESDimen_ToolNewDimensionedGeometry::OwnDump
   (const Handle(IGESDimen_NewDimensionedGeometry)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer i, num, sublevel = (level > 4) ? 1 : 0;
-  S << "IGESDimen_NewDimensionedGeometry" << Message_EndLine;
-  S << "Number of Dimensions : " << ent->NbDimensions() << Message_EndLine;
-  S << "Dimension Entity : ";
+  S << "IGESDimen_NewDimensionedGeometry\n"
+    << "Number of Dimensions : " << ent->NbDimensions() << "\n"
+    << "Dimension Entity : ";
   dumper.Dump(ent->DimensionEntity(),S, sublevel);
-  S << Message_EndLine;
-  S << "Dimension Orientation Flag : " << ent->DimensionOrientationFlag() << Message_EndLine;
-  S << "Angle Value Flag : " << ent->AngleValue() << Message_EndLine;
-  S << "Geometry Entities : " << Message_EndLine;
-  S << "Dimension Location Flags : " << Message_EndLine;
-  S << "Points : ";
+  S << "\n"
+    << "Dimension Orientation Flag : " << ent->DimensionOrientationFlag() << "\n"
+    << "Angle Value Flag : " << ent->AngleValue() << "\n"
+    << "Geometry Entities :\n"
+    << "Dimension Location Flags :\n"
+    << "Points : ";
   IGESData_DumpEntities(S,dumper,-level,1, ent->NbGeometries(),ent->GeometryEntity);
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4)
     for ( num = ent->NbGeometries(), i = 1; i <= num; i++ )
       {
-	S << "[" << i << "]: " << Message_EndLine;
-	S << "Geometry Entity : ";
+	S << "[" << i << "]:\n"
+	  << "Geometry Entity : ";
 	dumper.Dump (ent->GeometryEntity(i),S, 1);
-	S << Message_EndLine;
-	S << "Dimension Location Flag : " << ent->DimensionLocationFlag(i) << Message_EndLine;
-	S << "Point : ";
+	S << "\n"
+	  << "Dimension Location Flag : " << ent->DimensionLocationFlag(i) << "\n"
+	  << "Point : ";
 	IGESData_DumpXYZL(S,level, ent->Point(i), ent->Location());
       }
-  S << Message_EndLine;
+  S << std::endl;
 }

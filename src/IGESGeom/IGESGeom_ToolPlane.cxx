@@ -266,21 +266,21 @@ void IGESGeom_ToolPlane::OwnCheck(const Handle(IGESGeom_Plane)& ent,
 
 void IGESGeom_ToolPlane::OwnDump(const Handle(IGESGeom_Plane)& ent,
                                  const IGESData_IGESDumper& dumper,
-                                 const Handle(Message_Messenger)& S,
+                                 Standard_OStream& S,
                                  const Standard_Integer level)  const
 {
-  S << "IGESGeom_Plane" << Message_EndLine;
+  S << "IGESGeom_Plane\n";
   Standard_Real A,B,C,D;
   ent->Equation(A,B,C,D);
 
-  S << "Plane Coefficient A : " << A << Message_EndLine;
-  S << "Plane Coefficient B : " << B << Message_EndLine;
-  S << "Plane Coefficient C : " << C << Message_EndLine;
-  S << "Plane Coefficient D : " << D << Message_EndLine;
-  S << "The Bounding Curve  : " ;
+  S << "Plane Coefficient A : " << A << "\n"
+    << "Plane Coefficient B : " << B << "\n"
+    << "Plane Coefficient C : " << C << "\n"
+    << "Plane Coefficient D : " << D << "\n"
+    << "The Bounding Curve  : " ;
   dumper.Dump(ent->BoundingCurve(),S, (level <= 4) ? 0 : 1);
-  S << Message_EndLine;
-  S << "Display Symbol Location : ";
+  S << "\n"
+    << "Display Symbol Location : ";
   IGESData_DumpXYZL(S,level, ent->SymbolAttach(), ent->Location());
-  S << "  Size  : " << ent->SymbolSize() << Message_EndLine;
+  S << "  Size  : " << ent->SymbolSize() << std::endl;
 }

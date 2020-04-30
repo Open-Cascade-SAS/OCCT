@@ -105,12 +105,11 @@ void  IGESBasic_ToolName::OwnCheck
 
 void  IGESBasic_ToolName::OwnDump
   (const Handle(IGESBasic_Name)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_Name" << Message_EndLine;
-
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Name : ";
+  S << "IGESBasic_Name\n"
+    << "Number of property values : " << ent->NbPropertyValues() << "\n"
+    << "Name : ";
   IGESData_DumpString(S,ent->Value());
-  S << Message_EndLine;
+  S << std::endl;
 }

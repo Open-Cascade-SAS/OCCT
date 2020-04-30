@@ -35,8 +35,6 @@
 class TCollection_HAsciiString;
 class Standard_Transient;
 class Interface_InterfaceError;
-class Message_Messenger;
-
 
 class Interface_Static;
 DEFINE_STANDARD_HANDLE(Interface_Static, Interface_TypedValue)
@@ -95,7 +93,7 @@ public:
   //! - Current status (empty  string if it was updated or
   //! if it is the original one)
   //! - Value
-  Standard_EXPORT void PrintStatic (const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintStatic (Standard_OStream& S) const;
   
   //! Returns the family. It can be : a resource name for applis,
   //! an internal name between : $e (environment variables),

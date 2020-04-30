@@ -159,15 +159,14 @@ void  IGESSolid_ToolTorus::OwnCheck
 
 void  IGESSolid_ToolTorus::OwnDump
   (const Handle(IGESSolid_Torus)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_Torus" << Message_EndLine;
-
-  S << "Radius of revolution : " << ent->MajorRadius() << "  ";
-  S << "Radius of the disc   : " << ent->DiscRadius()  << Message_EndLine;
-  S << "Center Point   : ";
+  S << "IGESSolid_Torus\n"
+    << "Radius of revolution : " << ent->MajorRadius() << "  "
+    << "Radius of the disc   : " << ent->DiscRadius()  << "\n"
+    << "Center Point   : ";
   IGESData_DumpXYZL(S,level, ent->AxisPoint(), ent->Location());
-  S << Message_EndLine << "Axis direction : ";
+  S << "\nAxis direction : ";
   IGESData_DumpXYZL(S,level, ent->Axis(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

@@ -82,8 +82,13 @@ TransferBRep_Reader::TransferBRep_Reader ()
 {
   Interface_CheckTool cht (theModel,theProto);
   Interface_CheckIterator chl = cht.CompleteCheckList();
-  if ( withprint && ! theProc.IsNull() ) 
-    chl.Print (theProc->Messenger(), theModel, Standard_False);
+  if (withprint
+  && !theProc.IsNull()
+  && !theProc->Messenger().IsNull())
+  {
+    Message_Messenger::StreamBuffer aBuffer = theProc->Messenger()->SendInfo();
+    chl.Print (aBuffer, theModel, Standard_False);
+  }
   return chl.IsEmpty(Standard_True);
 }
 
@@ -145,10 +150,10 @@ TransferBRep_Reader::TransferBRep_Reader ()
   Transfer_TransferOutput TP (theProc,theModel);
 
   if (theProc->TraceLevel() > 1) {
-    Handle(Message_Messenger) sout = theProc->Messenger();
+    Message_Messenger::StreamBuffer sout = theProc->Messenger()->SendInfo();
     sout<<"--  Transfer(Read) : ";  
-    theModel->Print (ent,sout);  
-    sout<<Message_EndLine;
+    theModel->Print (ent, sout);
+    sout<<std::endl;
   }
   TP.Transfer(ent);
   theProc->SetRoot(ent);
@@ -163,19 +168,19 @@ TransferBRep_Reader::TransferBRep_Reader ()
   if (list.IsNull()) return;
   Transfer_TransferOutput TP (theProc,theModel);
   Standard_Integer i, nb = list->Length();
-  Handle(Message_Messenger) sout = theProc->Messenger();
+  Message_Messenger::StreamBuffer sout = theProc->Messenger()->SendInfo();
 
   if (theProc->TraceLevel() > 1) 
-    sout<<"--  Transfer(Read-List) : "<<nb<<" Items"<<Message_EndLine;
+    sout<<"--  Transfer(Read-List) : "<<nb<<" Items"<<std::endl;
   for (i = 1; i <= nb; i ++) {
     Handle(Standard_Transient) ent = list->Value(i);
     if (theModel->Number(ent) == 0) continue;
 
     if (theProc->TraceLevel() > 1) 
     {
-      sout<<"--  Transfer(Read-List), Item "<<i<<" : ";  
-      theModel->Print (ent,sout);  
-      sout<<Message_EndLine;
+      sout<<"--  Transfer(Read-List), Item "<<i<<" : ";
+      theModel->Print (ent, sout);
+      sout<<std::endl;
     }
     TP.Transfer(ent);
     theProc->SetRoot(ent);
@@ -237,8 +242,13 @@ TransferBRep_Reader::TransferBRep_Reader ()
 {
   Interface_CheckIterator chl;
   if (!theProc.IsNull()) chl = theProc->CheckList(Standard_False);
-  if (withprint && ! theProc.IsNull()) 
-    chl.Print (theProc->Messenger(), theModel, Standard_False);
+  if (withprint
+  && !theProc.IsNull()
+  && !theProc->Messenger().IsNull())
+  {
+    Message_Messenger::StreamBuffer aBuffer = theProc->Messenger()->SendInfo();
+    chl.Print (aBuffer, theModel, Standard_False);
+  }
   return chl.IsEmpty(Standard_True);
 }
 

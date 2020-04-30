@@ -147,17 +147,16 @@ void IGESGeom_ToolOffsetSurface::OwnCheck
 
 void IGESGeom_ToolOffsetSurface::OwnDump
   (const Handle(IGESGeom_OffsetSurface)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_OffsetSurface" << Message_EndLine;
-
-  S << "Offset Indicator     : ";
+  S << "IGESGeom_OffsetSurface\n"
+    << "Offset Indicator     : ";
   IGESData_DumpXYZL(S,level, ent->OffsetIndicator(), ent->VectorLocation());
-  S << Message_EndLine;
-  S << "Offset Distance      : " << ent->Distance() << "  ";
-  S << "Surface to be offset : ";
+  S << "\n"
+    << "Offset Distance      : " << ent->Distance() << "  "
+    << "Surface to be offset : ";
   dumper.Dump(ent->Surface(),S, sublevel);
-  S << Message_EndLine;
+  S << std::endl;
 }

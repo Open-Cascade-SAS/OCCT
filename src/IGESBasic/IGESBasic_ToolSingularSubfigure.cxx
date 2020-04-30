@@ -159,15 +159,14 @@ void  IGESBasic_ToolSingularSubfigure::OwnCheck
 
 void  IGESBasic_ToolSingularSubfigure::OwnDump
   (const Handle(IGESBasic_SingularSubfigure)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_SingularSubfigure" << Message_EndLine;
-
-  S << "Subfigure Definition Entity : " ;
+  S << "IGESBasic_SingularSubfigure\n"
+    << "Subfigure Definition Entity : " ;
   dumper.Dump(ent->Subfigure(),S,(level <= 4) ? 0 : 1);
-  S << Message_EndLine;
-  S << " Translation Data : ";
+  S << "\n"
+    << " Translation Data : ";
   IGESData_DumpXYZL(S,level, ent->Translation(), ent->Location());
-  S << "  Scale Factors : " << ent->ScaleFactor() << Message_EndLine;
-  S << Message_EndLine;
+  S << "  Scale Factors : " << ent->ScaleFactor() << "\n"
+    << std::endl;
 }

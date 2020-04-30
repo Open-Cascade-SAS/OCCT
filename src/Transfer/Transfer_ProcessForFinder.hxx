@@ -350,7 +350,7 @@ public:
   
   //! Prints a short information on a starting object. By default
   //! prints its Dynamic Type. Can be redefined
-  Standard_EXPORT virtual void PrintTrace (const Handle(Transfer_Finder)& start, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT virtual void PrintTrace (const Handle(Transfer_Finder)& start, Standard_OStream& S) const;
   
   //! Returns True if we are surely in a DeadLoop. Evaluation is not
   //! exact, it is a "majorant" which must be computed fast.

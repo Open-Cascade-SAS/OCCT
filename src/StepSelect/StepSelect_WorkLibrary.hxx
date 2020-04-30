@@ -29,9 +29,6 @@ class Interface_Protocol;
 class IFSelect_ContextWrite;
 class Interface_EntityIterator;
 class Interface_CopyTool;
-class Standard_Transient;
-class Message_Messenger;
-
 
 class StepSelect_WorkLibrary;
 DEFINE_STANDARD_HANDLE(StepSelect_WorkLibrary, IFSelect_WorkLibrary)
@@ -75,7 +72,7 @@ public:
   //! Level 0 just displays type; level 1 displays the entity itself
   //! and level 2 displays the entity plus its shared ones (one
   //! sub-level : immediately shared entities)
-  Standard_EXPORT void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, const Handle(Message_Messenger)& S, const Standard_Integer level) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, Standard_OStream& S, const Standard_Integer level) const Standard_OVERRIDE;
 
 
 

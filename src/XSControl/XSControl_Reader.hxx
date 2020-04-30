@@ -203,6 +203,9 @@ public:
   //! mode = 1 : per message, just gives count of entities per check
   //! mode = 2 : also gives entity numbers
   Standard_EXPORT void PrintCheckLoad (const Standard_Boolean failsonly, const IFSelect_PrintCount mode) const;
+
+  //! Prints the check list attached to loaded data.
+  Standard_EXPORT void PrintCheckLoad (Standard_OStream& theStream, const Standard_Boolean failsonly, const IFSelect_PrintCount mode) const;
   
   //! Displays check results for the
   //! last translation of IGES or STEP entities to Open CASCADE
@@ -211,6 +214,9 @@ public:
   //! false. mode determines the contents and the order of the
   //! messages according to the terms of the IFSelect_PrintCount enumeration.
   Standard_EXPORT void PrintCheckTransfer (const Standard_Boolean failsonly, const IFSelect_PrintCount mode) const;
+
+  //! Displays check results for the last translation of IGES or STEP entities to Open CASCADE entities.
+  Standard_EXPORT void PrintCheckTransfer (Standard_OStream& theStream, const Standard_Boolean failsonly, const IFSelect_PrintCount mode) const;
   
   //! Displays the statistics for
   //! the last translation. what defines the kind of
@@ -240,6 +246,9 @@ public:
   //! - if mode is 2 the list of entities per warning is returned.
   //! If mode is not set, only the list of all entities per warning is given.
   Standard_EXPORT void PrintStatsTransfer (const Standard_Integer what, const Standard_Integer mode = 0) const;
+
+  //! Displays the statistics for the last translation.
+  Standard_EXPORT void PrintStatsTransfer (Standard_OStream& theStream, const Standard_Integer what, const Standard_Integer mode = 0) const;
   
   //! Gives statistics about Transfer
   Standard_EXPORT void GetStatsTransfer (const Handle(TColStd_HSequenceOfTransient)& list, Standard_Integer& nbMapped, Standard_Integer& nbWithResult, Standard_Integer& nbWithFail) const;

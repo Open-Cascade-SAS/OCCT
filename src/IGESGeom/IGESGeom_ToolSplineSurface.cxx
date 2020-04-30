@@ -310,9 +310,9 @@ void IGESGeom_ToolSplineSurface::OwnCheck
 
 void IGESGeom_ToolSplineSurface::OwnDump
   (const Handle(IGESGeom_SplineSurface)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESGeom_SplineSurface" << Message_EndLine;
+  S << "IGESGeom_SplineSurface\n";
 
   Standard_Integer I, J;
   Standard_Integer nbUSegs = ent->NbUSegments();
@@ -330,39 +330,38 @@ void IGESGeom_ToolSplineSurface::OwnDump
       case 6 : S << "  (B-Spline)"; break;
       default : S << "  (Invalid value)"; break;
     }
-  S << Message_EndLine;
-  S << "The  Patch Type : " << ent->PatchType();
+  S << "\n"
+    << "The  Patch Type : " << ent->PatchType();
   if (ent->PatchType() == 1)    S << "  (Cartesian Product)";
   else                          S << "  (Unspecified)";
-  S << Message_EndLine;
-  S << "Number Of Segments. In U : "
-    << nbUSegs << "    In V : " << nbVSegs << Message_EndLine;
-  S << "The U Break Points : ";
-  IGESData_DumpVals(S ,level,1, nbUSegs+1,ent->UBreakPoint);
-  S <<Message_EndLine<< "The V Break Points : ";
-  IGESData_DumpVals(S ,level,1, nbVSegs+1,ent->VBreakPoint);
+  S << "\n"
+    << "Number Of Segments. In U : "
+    << nbUSegs << "    In V : " << nbVSegs << "\n"
+    << "The U Break Points : ";
+  IGESData_DumpVals(S,level,1, nbUSegs+1,ent->UBreakPoint);
+  S << "\nThe V Break Points : ";
+  IGESData_DumpVals(S,level,1, nbVSegs+1,ent->VBreakPoint);
 
-  S <<Message_EndLine<< " X-Y-Z Polynomials Of Segments : ";
-  S << Message_EndLine;
+  S << "\n X-Y-Z Polynomials Of Segments :\n";
   if (level > 4)
     {
       for (I = 1; I <= nbUSegs; I++)
 	for (J = 1; J <= nbVSegs; J++) 
           {
-	    S << "[" << I <<"," << J << "]: " << Message_EndLine;
-	    S << "X Polynomial : ";
+	    S << "[" << I <<"," << J << "]:\n"
+	      << "X Polynomial : ";
 	    temp = ent->XPolynomial(I,J);
 	    IGESData_DumpVals(S,level,1, temp->Length(),temp->Value);
-	    S << Message_EndLine;
-	    S << "Y Polynomial : ";
+	    S << "\n"
+	      << "Y Polynomial : ";
 	    temp = ent->YPolynomial(I,J);
 	    IGESData_DumpVals(S,level,1, temp->Length(),temp->Value);
-	    S << Message_EndLine;
-	    S << "Z Polynomial : ";
+	    S << "\n"
+	      << "Z Polynomial : ";
 	    temp = ent->ZPolynomial(I,J);
 	    IGESData_DumpVals(S,level,1, temp->Length(),temp->Value);
-	    S << Message_EndLine;
+	    S << "\n";
           }
     }
-  else  S << Message_EndLine;
+  else  S << std::endl;
 }

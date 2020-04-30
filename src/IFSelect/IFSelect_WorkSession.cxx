@@ -222,10 +222,10 @@ IFSelect_ReturnStatus  IFSelect_WorkSession::ReadFile
     else status = IFSelect_RetFail;
   }
   catch(Standard_Failure const& anException) {
-    Handle(Message_Messenger) sout = Message::DefaultMessenger();
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout<<"    ****    Interruption ReadFile par Exception :   ****\n";
     sout << anException.GetMessageString();
-    sout<<"\n    Abandon"<<Message_EndLine;
+    sout<<"\n    Abandon"<<std::endl;
     status = IFSelect_RetFail;
   }
   if (status != IFSelect_RetDone) return status;
@@ -1245,10 +1245,10 @@ Interface_EntityIterator IFSelect_WorkSession::EvalSelection
       iter = EvalSelection(sel);    // appel normal (donc, code pas duplique)
     }
     catch (Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout<<"    ****    Interruption EvalSelection par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
     }
     errhand = theerrhand;
     return iter;
@@ -1288,10 +1288,10 @@ Handle(TColStd_HSequenceOfTransient) IFSelect_WorkSession::SelectionResult
       res = SelectionResult(sel);    // appel normal (->code unique)
     }
     catch (Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout<<"    ****    Interruption SelectionResult par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
     }
     errhand = theerrhand;
     return res;
@@ -1708,8 +1708,8 @@ Standard_Integer IFSelect_WorkSession::RunTransformer
     (thegraph->Graph(),theprotocol,checks,newmod);
 
   if (!checks.IsEmpty(Standard_False)) {
-    Handle(Message_Messenger) sout = Message::DefaultMessenger();
-    sout<<"  **    RunTransformer has produced Check Messages :    **"<<Message_EndLine;
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout<<"  **    RunTransformer has produced Check Messages :    **"<<std::endl;
     checks.Print (sout,myModel,Standard_False);
   }
   thecheckdone = Standard_False;
@@ -2021,10 +2021,10 @@ void IFSelect_WorkSession::EvaluateFile ()
       EvaluateFile();    // appel normal (donc, code pas duplique)
     }
     catch (Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout<<"    ****    Interruption EvaluateFile par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
     }
     errhand = theerrhand;
@@ -2035,8 +2035,8 @@ void IFSelect_WorkSession::EvaluateFile ()
   IFSelect_ShareOutResult R(theshareout,thegraph->Graph());
   checks = thecopier->Copy (R,thelibrary,theprotocol);
   if (!checks.IsEmpty(Standard_False)) {
-    Handle(Message_Messenger) sout = Message::DefaultMessenger();
-    sout<<"  **    EvaluateFile has produced Check Messages :    **"<<Message_EndLine;
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout<<"  **    EvaluateFile has produced Check Messages :    **"<<std::endl;
     checks.Print (sout,myModel,Standard_False);
   } 
   thecopier->SetRemaining (thegraph->CGraph());
@@ -2125,10 +2125,10 @@ Standard_Boolean IFSelect_WorkSession::SendSplit ()
       return SendSplit();   // appel normal (donc, code pas duplique)
     }
     catch (Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout<<"    ****    Interruption SendSplit par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
     }
     errhand = theerrhand;
@@ -2142,8 +2142,8 @@ Standard_Boolean IFSelect_WorkSession::SendSplit ()
     return Standard_False;
   }
   if (!IsLoaded()) {
-    Handle(Message_Messenger) sout = Message::DefaultMessenger();
-    sout<< " ***  Data for SendSplit not available  ***"<<Message_EndLine;
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
+    sout<< " ***  Data for SendSplit not available  ***"<<std::endl;
     checks.CCheck(0)->AddFail("Data not available");
     thecheckrun = checks;
     return Standard_False;
@@ -2160,7 +2160,7 @@ Standard_Boolean IFSelect_WorkSession::SendSplit ()
     if (theshareout.IsNull()) return Standard_False;
     Standard_Integer i, nbd = theshareout->NbDispatches();
     Standard_Integer nf = 0;
-    Handle(Message_Messenger) sout = Message::DefaultMessenger();
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout<<" SendSplit .. ";
     for (i = 1; i <= nbd; i ++) {
       Handle(IFSelect_Dispatch) disp = theshareout->Dispatch(i);
@@ -2187,7 +2187,7 @@ Standard_Boolean IFSelect_WorkSession::SendSplit ()
 	if (stat != IFSelect_RetDone) std::cout<<"File "<<filnam<<" failed"<<std::endl;
       }
     }
-    sout<<" .. Files Written : "<<nf<<Message_EndLine;
+    sout<<" .. Files Written : "<<nf<<std::endl;
   }
   thecheckrun = checks;
   return Standard_True;
@@ -2258,7 +2258,7 @@ Standard_Integer IFSelect_WorkSession::MaxSendingCount () const
 Standard_Boolean IFSelect_WorkSession::SetRemaining
   (const IFSelect_RemainMode mode)
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (!IsLoaded()) return Standard_False;
   if (mode == IFSelect_RemainForget) {
     Standard_Integer nb = thegraph->Graph().Size();
@@ -2271,9 +2271,9 @@ Standard_Boolean IFSelect_WorkSession::SetRemaining
     Interface_CopyTool TC(myModel,theprotocol);
     thecopier->CopiedRemaining (thegraph->Graph(),thelibrary,TC,newmod);
     if (newmod.IsNull()) {
-      sout<<" No Remaining Data recorded"<<Message_EndLine;  return Standard_False;
+      sout<<" No Remaining Data recorded"<<std::endl;  return Standard_False;
     } else if (newmod == myModel) {
-      sout<<" Remaining causes all original data to be kept"<<Message_EndLine;
+      sout<<" Remaining causes all original data to be kept"<<std::endl;
       thecopier->SetRemaining (thegraph->CGraph());
       return Standard_False;
     } else {
@@ -2295,17 +2295,17 @@ Standard_Boolean IFSelect_WorkSession::SetRemaining
     for (Standard_Integer i = 1; i <= nb; i ++)
       {  if (thegraph->Graph().Status(i) >= 0) ne ++;  }
     if (ne == 0) {
-      sout<<" - All entities are remaining, none yet sent"<<Message_EndLine;  return Standard_True;
+      sout<<" - All entities are remaining, none yet sent"<<std::endl;  return Standard_True;
     }
     Interface_EntityIterator iter = SentList(0);
     nb = iter.NbEntities();
     if (nb == 0) {
-      sout<<" - No recorded remaining entities"<<Message_EndLine;  return Standard_True;
+      sout<<" - No recorded remaining entities"<<std::endl;  return Standard_True;
     }
-    sout <<" --  Recorded Remaining (not yet sent) Entities  --"<<Message_EndLine;
-    ListEntities(iter,2);
+    sout <<" --  Recorded Remaining (not yet sent) Entities  --"<<std::endl;
+    ListEntities (iter, 2, sout);
     sout << " -- Maximum Sending Count (i.e. duplication in files) "<<
-      MaxSendingCount() << Message_EndLine;
+      MaxSendingCount() << std::endl;
 
 /*
     sout<< " - Now, dispatches are deactivated"<<std::endl;
@@ -2348,10 +2348,10 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll
       checks = thecopier->SendAll(filename,thegraph->Graph(),thelibrary,theprotocol);
     }
     catch (Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout<<"    ****    Interruption SendAll par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
       errhand = theerrhand;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
       thecheckrun = checks;
@@ -2398,10 +2398,10 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected
       return SendSelected (filename,sel);    // appel normal
     }
     catch (Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout<<"    ****    Interruption SendSelected par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
       checks.CCheck(0)->AddFail ("Exception Raised -> Abandon");
       errhand = theerrhand;
       thecheckrun = checks;
@@ -2844,32 +2844,32 @@ void IFSelect_WorkSession::SetParams
 void IFSelect_WorkSession::TraceStatics
   (const Standard_Integer use, const Standard_Integer mode) const
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (use > 0) {
-    if (mode == 0)   sout<<"******************************************"<<Message_EndLine;
+    if (mode == 0)   sout<<"******************************************"<<std::endl;
     if        (use == 1) {
-      if (mode == 0) sout<<"*****      General  Parameters       *****"<<Message_EndLine;
+      if (mode == 0) sout<<"*****      General  Parameters       *****"<<std::endl;
     } else if (use == 2) {
-      if (mode == 0) sout<<"*****            Load  File          *****"<<Message_EndLine;
+      if (mode == 0) sout<<"*****            Load  File          *****"<<std::endl;
     } else if (use == 3) {
-      if (mode == 0) sout<<"*****            Write File          *****"<<Message_EndLine;
+      if (mode == 0) sout<<"*****            Write File          *****"<<std::endl;
     } else if (use == 4) {
-      if (mode == 0) sout<<"*****            Split File          *****"<<Message_EndLine;
+      if (mode == 0) sout<<"*****            Split File          *****"<<std::endl;
     } else if (use == 5) {
-      if (mode == 0) sout<<"*****        Transfer (Read)         *****"<<Message_EndLine;
+      if (mode == 0) sout<<"*****        Transfer (Read)         *****"<<std::endl;
     } else if (use == 6) {
-      if (mode == 0) sout<<"*****        Transfer (Write)        *****"<<Message_EndLine;
+      if (mode == 0) sout<<"*****        Transfer (Write)        *****"<<std::endl;
     }
-    if (mode == 0)   sout<<"******************************************"<<Message_EndLine<<Message_EndLine;
+    if (mode == 0)   sout<<"******************************************"<<std::endl<<std::endl;
   }
 
 //    Echainements particuliers (use > 0)
   if (use == 5) {
     TraceStatics (-2,mode);
-    if (mode == 0) sout<<Message_EndLine;
+    if (mode == 0) sout<<std::endl;
   } else if (use == 4 || use == 6) {
     TraceStatics (-3,mode);
-    if (mode == 0) sout<<Message_EndLine;
+    if (mode == 0) sout<<std::endl;
   }
 
 //    Valeurs particulieres
@@ -2880,14 +2880,14 @@ void IFSelect_WorkSession::TraceStatics
   } else if (use == 4 || use == -4) {  // Split : Prefix & cie
     if (mode == 0) {
       Handle(TCollection_HAsciiString) str = theshareout->Prefix();
-      if (!str.IsNull()) sout << "Prefix        : "<<str->ToCString()<<Message_EndLine;
-      else sout << "Prefix       not Defined" << Message_EndLine;
+      if (!str.IsNull()) sout << "Prefix        : "<<str->ToCString()<<std::endl;
+      else sout << "Prefix       not Defined" << std::endl;
       str = theshareout->DefaultRootName();
-      if (!str.IsNull()) sout << "Default Root  : "<<str->ToCString()<<Message_EndLine;
-      else sout << "Default Root not Defined" << Message_EndLine;
+      if (!str.IsNull()) sout << "Default Root  : "<<str->ToCString()<<std::endl;
+      else sout << "Default Root not Defined" << std::endl;
       str = theshareout->Extension();
-      if (!str.IsNull()) sout << "Extension     : "<<str->ToCString()<<Message_EndLine;
-      else sout << "Extension    not defined" << Message_EndLine;
+      if (!str.IsNull()) sout << "Extension     : "<<str->ToCString()<<std::endl;
+      else sout << "Extension    not defined" << std::endl;
     }
   }
 
@@ -2896,7 +2896,7 @@ void IFSelect_WorkSession::TraceStatics
 
 //    Fin
   if (use > 0) {
-    if (mode == 0)   sout<<"******************************************"<<Message_EndLine<<Message_EndLine;
+    if (mode == 0)   sout<<"******************************************"<<std::endl<<std::endl;
   }
 }
 
@@ -2908,43 +2908,43 @@ void IFSelect_WorkSession::TraceStatics
 
 void IFSelect_WorkSession::DumpShare () const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout<<"        **********  Definition ShareOut (Complete)  **********"<<Message_EndLine;
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  sout<<"        **********  Definition ShareOut (Complete)  **********"<<std::endl;
 
   Handle(TCollection_HAsciiString) str = theshareout->Prefix();
-  if (!str.IsNull()) sout << "Prefix       : " << str->ToCString() << Message_EndLine;
-  else sout << "Prefix       not Defined" << Message_EndLine;
+  if (!str.IsNull()) sout << "Prefix       : " << str->ToCString() << std::endl;
+  else sout << "Prefix       not Defined" << std::endl;
   str = theshareout->DefaultRootName();
-  if (!str.IsNull()) sout << "Default Root : " << str->ToCString() << Message_EndLine;
-  else sout << "Default Root not Defined" << Message_EndLine;
+  if (!str.IsNull()) sout << "Default Root : " << str->ToCString() << std::endl;
+  else sout << "Default Root not Defined" << std::endl;
   str = theshareout->Extension();
-  if (!str.IsNull()) sout << "Extension    : " << str->ToCString() << Message_EndLine;
-  else sout << "Extension    not defined" << Message_EndLine;
+  if (!str.IsNull()) sout << "Extension    : " << str->ToCString() << std::endl;
+  else sout << "Extension    not defined" << std::endl;
 
   Standard_Integer lr = theshareout->LastRun();
   Standard_Integer nb = theshareout->NbDispatches();
-  sout << "Nb Dispatches : " << nb <<" (Last Run : " << lr << ") : "<<Message_EndLine;
+  sout << "Nb Dispatches : " << nb <<" (Last Run : " << lr << ") : "<<std::endl;
   for (Standard_Integer i = 1; i <= nb; i ++) {
     Handle(IFSelect_Dispatch) disp = theshareout->Dispatch(i);
     sout << "Dispatch n0 " << i;
     if (HasName(disp)) sout << "   Name:"<< Name(disp)->ToCString();
-    sout << "   Label:" << disp->Label() << Message_EndLine;
+    sout << "   Label:" << disp->Label() << std::endl;
     Handle(IFSelect_Selection) sel = disp->FinalSelection();
-    if (sel.IsNull()) sout << "   No Final Selection Defined" << Message_EndLine;
+    if (sel.IsNull()) sout << "   No Final Selection Defined" << std::endl;
     else if (HasName(sel)) sout << "   Final Selection : Name:"
-      << Name(sel)->ToCString() << "  Label:" << sel->Label() << Message_EndLine;
-    else sout << "   Final Selection : " << sel->Label() << Message_EndLine;
+      << Name(sel)->ToCString() << "  Label:" << sel->Label() << std::endl;
+    else sout << "   Final Selection : " << sel->Label() << std::endl;
     if (disp->HasRootName())
-      sout<<"   File Root Name : "<<disp->RootName()->ToCString()<<Message_EndLine;
-    else sout<<"   No specific file root name (see Default Root)"<<Message_EndLine;
+      sout<<"   File Root Name : "<<disp->RootName()->ToCString()<<std::endl;
+    else sout<<"   No specific file root name (see Default Root)"<<std::endl;
   }
   Standard_Integer nbm = theshareout->NbModifiers(Standard_True);
   if (nbm > 0) sout<<
-    "  ***   "<<nbm<<" active Model Modifiers : see ListModifiers   ***"<<Message_EndLine;
+    "  ***   "<<nbm<<" active Model Modifiers : see ListModifiers   ***"<<std::endl;
   Standard_Integer nbf = theshareout->NbModifiers(Standard_False);
   if (nbf > 0) sout<<
-    "  ***   "<<nbf<<" active File  Modifiers : see ListModifiers   ***"<<Message_EndLine;
-  if (nbm+nbf == 0) sout<<"  ***   No active Modifiers   ***"<<Message_EndLine;
+    "  ***   "<<nbf<<" active File  Modifiers : see ListModifiers   ***"<<std::endl;
+  if (nbm+nbf == 0) sout<<"  ***   No active Modifiers   ***"<<std::endl;
 }
 
 //  ####    ####    ####    ####    ####    ####    ####    ####    ####
@@ -2957,8 +2957,8 @@ void IFSelect_WorkSession::DumpShare () const
 
 void IFSelect_WorkSession::ListItems (const Standard_CString lab) const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout<< "        **********  Items in Session  **********"<<Message_EndLine;
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  sout<< "        **********  Items in Session  **********"<<std::endl;
   Standard_Integer nb = MaxIdent();
   Handle(TCollection_HAsciiString) str;
   if (lab[0] != '\0') str = new TCollection_HAsciiString (lab);
@@ -2970,7 +2970,7 @@ void IFSelect_WorkSession::ListItems (const Standard_CString lab) const
     sout<<"#"<<i;
     if (HasName(var)) sout<<"	- Named : "<<Name(var)->ToCString()<<"	- ";
     else sout<<" - (no name) - ";
-    sout<<var->DynamicType()->Name()<<Message_EndLine<<"    "<<label->ToCString()<<Message_EndLine;
+    sout<<var->DynamicType()->Name()<<std::endl<<"    "<<label->ToCString()<<std::endl;
   }
 }
 
@@ -2985,17 +2985,17 @@ void IFSelect_WorkSession::ListItems (const Standard_CString lab) const
 void IFSelect_WorkSession::ListFinalModifiers
   (const Standard_Boolean formodel) const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   Standard_Integer nb = theshareout->NbModifiers(formodel);
   sout<< "        **********  Modifiers in Session ";
   sout<<(formodel ? "(For Model)" : "(For File)");
-  sout<<": "<<nb<<"  **********"<<Message_EndLine;
+  sout<<": "<<nb<<"  **********"<<std::endl;
   for (Standard_Integer i = 1; i <= nb; i ++) {
     Handle(IFSelect_GeneralModifier) modif =
       theshareout->GeneralModifier(formodel,i);
     if (!modif.IsNull()) sout<<"Modifier n0."<<i<<"	: "<<modif->Label();
     if (HasName(modif)) sout << "	 Named as : " << Name(modif)->ToCString();
-    sout<<Message_EndLine;
+    sout<<std::endl;
   }
 }
 
@@ -3010,23 +3010,23 @@ void IFSelect_WorkSession::ListFinalModifiers
 void IFSelect_WorkSession::DumpSelection
   (const Handle(IFSelect_Selection)& sel) const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (ItemIdent(sel) == 0) {
-    sout << "Selection :  Unknown"<<Message_EndLine;  //sout<<Handle
+    sout << "Selection :  Unknown"<<std::endl;  //sout<<Handle
     return;
   }
   sout << "        **********  Selection";
   if (HasName(sel)) sout << " , Name : " << Name(sel)->ToCString();
-  sout <<"  **********"<<Message_EndLine;
-  sout<< "Label : " << sel->Label() << " . Input(s) : "<< Message_EndLine;
+  sout <<"  **********"<<std::endl;
+  sout<< "Label : " << sel->Label() << " . Input(s) : "<< std::endl;
   Standard_Integer nb = 0;
   IFSelect_SelectionIterator iter; sel->FillIterator(iter);
   for (; iter.More(); iter.Next()) {
     nb ++; 
     Handle(IFSelect_Selection) newsel = iter.Value();
-    sout<<" -- "<<newsel->Label()<<Message_EndLine;
+    sout<<" -- "<<newsel->Label()<<std::endl;
   }
-  sout << " Nb Inputs:"<<nb<<Message_EndLine;
+  sout << " Nb Inputs:"<<nb<<std::endl;
 }
 
 
@@ -3276,18 +3276,18 @@ Handle(TColStd_HSequenceOfTransient) IFSelect_WorkSession::GiveListCombined
 //=======================================================================
 
 void IFSelect_WorkSession::DumpModel
-  (const Standard_Integer level, const Handle(Message_Messenger)& S)
+  (const Standard_Integer level, Standard_OStream& S)
 {
   if (!IsLoaded())
-    {  S<< " ***  Data for List not available  ***"<<Message_EndLine;  return;  }
+    {  S << " ***  Data for List not available  ***"<<std::endl;  return;  }
   S << "\n        *****************************************************************\n";
   if (theloaded.Length() > 0)
-    S << "        ********  Loaded File : "<<theloaded.ToCString()<<Interface_MSG::Blanks(32-theloaded.Length())<<" ********"<<Message_EndLine;
-  else S << "        ********  No name for Loaded File"<<Message_EndLine;
+    S << "        ********  Loaded File : "<<theloaded.ToCString()<<Interface_MSG::Blanks(32-theloaded.Length())<<" ********"<<std::endl;
+  else S << "        ********  No name for Loaded File"<<std::endl;
   if (level == 0) {
-    S<<"        ********  Short Dump of Header                           ********\n";
+    S <<"        ********  Short Dump of Header                           ********\n";
   S << "        *****************************************************************\n\n";
-    myModel->DumpHeader(S);  S<<Message_EndLine;
+    myModel->DumpHeader (S); S <<std::endl;
   }
 
   Standard_Integer nbent = myModel->NbEntities();
@@ -3297,26 +3297,26 @@ void IFSelect_WorkSession::DumpModel
   for (Standard_Integer i = 1; i <= nbent; i ++) {
     if (!shar.IsShared(myModel->Value(i))) nbr ++;
   }
-  S << "        *****************************************************************\n";
-  S << "        ********  Model : "<<nbent<<" Entities, of which "<<nbr<<" Root(s)\n";
-  S << "        *****************************************************************\n"<<Message_EndLine;
+  S << "        *****************************************************************\n"
+    << "        ********  Model : "<<nbent<<" Entities, of which "<<nbr<<" Root(s)\n"
+    << "        *****************************************************************\n"<<std::endl;
 
   if (level <= 0) return;
   else if (level == 1) {
-    S<<"        ********  Root Entities  ********      ";
-    ListEntities (shar.RootEntities(),1);
+    S <<"        ********  Root Entities  ********      ";
+    ListEntities (shar.RootEntities(), 1, S);
   } else if (level == 2) {
-    S<<"        ********  Complete List  ********      ";
-    ListEntities (myModel->Entities(),1);
+    S <<"        ********  Complete List  ********      ";
+    ListEntities (myModel->Entities(), 1, S);
   } else if (level > 2) {
     IFSelect_PrintCount mode = IFSelect_ItemsByEntity;
     if (level == 5 || level ==  8) mode = IFSelect_CountByItem;
     if (level == 6 || level ==  9) mode = IFSelect_ListByItem;
     if (level == 7 || level == 10) mode = IFSelect_EntitiesByItem;
-    PrintCheckList (ModelCheckList(),Standard_False, mode);
+    PrintCheckList (S, ModelCheckList(),Standard_False, mode);
   } else {
-    if (level == 3) S << "        ********  Check Model (Fails)  ********"<<Message_EndLine;
-    else            S << "        ********  Check Model (Complete)  ********"<<Message_EndLine;
+    if (level == 3) S << "        ********  Check Model (Fails)  ********"<<std::endl;
+    else            S << "        ********  Check Model (Complete)  ********"<<std::endl;
     Interface_CheckTool CT (Graph());
     Interface_CheckIterator C;
     if (theerrhand) {
@@ -3326,10 +3326,10 @@ void IFSelect_WorkSession::DumpModel
 	else    C = CT.CompleteCheckList();
       }
       catch (Standard_Failure const&) {
-	Handle(Message_Messenger) sout = Message::DefaultMessenger();
+	Message_Messenger::StreamBuffer sout = Message::SendInfo();
 	sout<<"    ****    Interruption DumpModel (Check) par Exception    ****\n";
-	S<<"  ** **  Exception Raised during Check !  ** **\n";
-	S<<"  -->  what could be determined is listed"<<Message_EndLine;
+	S <<"  ** **  Exception Raised during Check !  ** **\n";
+	S <<"  -->  what could be determined is listed"<<std::endl;
       }
     }
     else if (level == 3) C = CT.CheckList();
@@ -3341,14 +3341,14 @@ void IFSelect_WorkSession::DumpModel
       C.Print(S,myModel, (level == 3));
     }
     catch (Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout<<"    ****    Interruption DumpModel par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
     }
 
   }
-  S<<Message_EndLine<<"There are "<<nbent<<" Entities, of which "<<nbr<<" Root(s)"<<Message_EndLine;
+  S <<std::endl<<"There are "<<nbent<<" Entities, of which "<<nbr<<" Root(s)"<<std::endl;
 }
 
 //  ....        TraceDumpModel        ....  (Model + CheckList)
@@ -3361,8 +3361,8 @@ void IFSelect_WorkSession::DumpModel
 void IFSelect_WorkSession::TraceDumpModel
   (const Standard_Integer mode)
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  DumpModel (mode,sout);
+  Message_Messenger::StreamBuffer sout = Message::SendInfo(); // should it be changed to SendTrace()?
+  DumpModel (mode, sout);
 //  if      (mode <= 4)  {  DumpModel (mode,sout);  return;  }
 
 //  else if (mode <= 7) PrintCheckList (ModelCheckList(),Standard_False, mode-5);
@@ -3378,15 +3378,15 @@ void IFSelect_WorkSession::TraceDumpModel
 
 void IFSelect_WorkSession::DumpEntity
   (const Handle(Standard_Transient)& ent, const Standard_Integer level,
-   const Handle(Message_Messenger)& S) const
+   Standard_OStream& S) const
 {
   if (!IsLoaded())
-    {  S<< " ***  Data for List not available  ***"<<Message_EndLine;  return;  }
+    {  S << " ***  Data for List not available  ***"<<std::endl;  return;  }
   Standard_Integer num = myModel->Number(ent);
-  if (num == 0) { S<<" ***  Entity to Dump not in the Model  ***"<<Message_EndLine; return; }
-  if (thelibrary.IsNull()) { S<<" ***  WorkLibrary not defined  ***"<<Message_EndLine; return; }
+  if (num == 0) { S <<" ***  Entity to Dump not in the Model  ***"<<std::endl; return; }
+  if (thelibrary.IsNull()) { S <<" ***  WorkLibrary not defined  ***"<<std::endl; return; }
   S << "        ********  Dumping Entity n0 "<<num
-    <<" level:"<<level<<"  ********"<<Message_EndLine;
+    <<" level:"<<level<<"  ********"<<std::endl;
   thelibrary->DumpEntity (myModel,theprotocol,ent,S,level);
 }
 
@@ -3400,8 +3400,8 @@ void IFSelect_WorkSession::DumpEntity
 void IFSelect_WorkSession::TraceDumpEntity
   (const Handle(Standard_Transient)& ent, const Standard_Integer level) const
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  DumpEntity (ent,level,sout);
+  Message_Messenger::StreamBuffer sout = Message::SendInfo(); // should it be changed to SendTrace()?
+  DumpEntity (ent, level, sout);
 }
 
 //  ....        PrintEntityStatus        ....
@@ -3412,42 +3412,42 @@ void IFSelect_WorkSession::TraceDumpEntity
 //=======================================================================
 
 void IFSelect_WorkSession::PrintEntityStatus
-  (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S)
+  (const Handle(Standard_Transient)& ent, Standard_OStream& S)
 {
   Standard_Integer i,nb;
   Standard_Integer num = StartingNumber(ent);
   if (num == 0)  {  std::cout<<" --  PrintEntityStatus : unknown"<<std::endl;  return;  }
 
   S <<"  Ent. n0/id:   ";
-  myModel->Print(ent,S);
+  myModel->Print (ent, S);
   Handle(TCollection_HAsciiString) hname = EntityName(ent);
-  if (!hname.IsNull() && hname->Length() > 0) S<<"	Name:"<<hname->ToCString();
-  S<<Message_EndLine;
+  if (!hname.IsNull() && hname->Length() > 0) S <<"	Name:"<<hname->ToCString();
+  S <<std::endl;
   Handle(IFSelect_Signature) signtype = SignType();
-  if (signtype.IsNull()) S<<"  Type(CDL):"<<ent->DynamicType()->Name()<<Message_EndLine;
-  else S <<"  Type:"<<signtype->Value (ent,myModel)<<Message_EndLine;
+  if (signtype.IsNull()) S <<"  Type(CDL):"<<ent->DynamicType()->Name()<<std::endl;
+  else S <<"  Type:"<<signtype->Value (ent,myModel)<<std::endl;
   S <<"    Category : " <<CategoryName (ent)
-    <<"    Validity : " <<ValidityName (ent) << Message_EndLine;
+    <<"    Validity : " <<ValidityName (ent) << std::endl;
   Interface_CheckIterator chl = CheckOne (ent);
   chl.Print (S,myModel,Standard_False,Standard_False);
 
   Handle(TColStd_HSequenceOfTransient) list = Sharings(ent);
-  if (list.IsNull()) S<<"  Root"<<Message_EndLine;
+  if (list.IsNull()) S <<"  Root"<<std::endl;
   else {
     nb = list->Length();
-    if (nb == 0) S<<"  Root";
-    else S<<"  Super-entities:"<<nb<<" : (n0/id):";
-    for (i = 1; i <= nb; i ++)  {  S<<" "; myModel->Print(list->Value(i),S);  }
-    S<<Message_EndLine;
+    if (nb == 0) S <<"  Root";
+    else S <<"  Super-entities:"<<nb<<" : (n0/id):";
+    for (i = 1; i <= nb; i ++)  {  S <<" "; myModel->Print(list->Value(i), S);  }
+    S <<std::endl;
   }
   list = Shareds (ent);
-  if (list.IsNull()) S<<"  No sub-entity"<<Message_EndLine;
+  if (list.IsNull()) S <<"  No sub-entity"<<std::endl;
   else {
     nb = list->Length();
-    if (nb == 0) S<<"  No sub-entity";
-    else S<<"  Sub-entities:"<<nb<<" , i.e. (n0/id):";
-    for (i = 1; i <= nb; i ++)  {  S<<" "; myModel->Print(list->Value(i),S);  }
-    S<<Message_EndLine;
+    if (nb == 0) S <<"  No sub-entity";
+    else S <<"  Sub-entities:"<<nb<<" , i.e. (n0/id):";
+    for (i = 1; i <= nb; i ++)  {  S <<" "; myModel->Print(list->Value(i), S);  }
+    S <<std::endl;
   }
 }
 
@@ -3458,19 +3458,19 @@ void IFSelect_WorkSession::PrintEntityStatus
 //purpose  : 
 //=======================================================================
 
-void IFSelect_WorkSession::PrintCheckList
-  (const Interface_CheckIterator& checklist,
-   const Standard_Boolean failsonly, const IFSelect_PrintCount mode) const
+void IFSelect_WorkSession::PrintCheckList (Standard_OStream& S,
+                                           const Interface_CheckIterator& checklist,
+                                           const Standard_Boolean failsonly,
+                                           const IFSelect_PrintCount mode) const
 {
 //  mode : 0  comptage   1 n0s entites   2 n0s+id ents
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (mode == IFSelect_ItemsByEntity) checklist.Print (sout,myModel,failsonly);
+  if (mode == IFSelect_ItemsByEntity) checklist.Print (S,myModel,failsonly);
   else {
     Interface_CheckIterator chks = checklist;
     Handle(IFSelect_CheckCounter) counter =
       new IFSelect_CheckCounter (mode>1 && mode != IFSelect_CountSummary);
     counter->Analyse (chks,myModel,Standard_True,failsonly);
-    counter->PrintList  (sout,myModel,mode);
+    counter->PrintList  (S, myModel, mode);
   }
 }
 
@@ -3481,13 +3481,12 @@ void IFSelect_WorkSession::PrintCheckList
 //purpose  : 
 //=======================================================================
 
-void IFSelect_WorkSession::PrintSignatureList
-  (const Handle(IFSelect_SignatureList)& signlist,
-   const IFSelect_PrintCount mode) const
+void IFSelect_WorkSession::PrintSignatureList (Standard_OStream& S,
+                                               const Handle(IFSelect_SignatureList)& signlist,
+                                               const IFSelect_PrintCount mode) const
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
   if (signlist.IsNull()) return;
-  signlist->PrintList (sout,myModel,mode);
+  signlist->PrintList (S, myModel, mode);
 }
 
 //  ####    ####    ####    ####    ####    ####    ####    ####    ####
@@ -3501,7 +3500,7 @@ void IFSelect_WorkSession::PrintSignatureList
 void IFSelect_WorkSession::EvaluateSelection
   (const Handle(IFSelect_Selection)& sel) const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (errhand) {
     errhand = Standard_False;
     try {
@@ -3511,20 +3510,20 @@ void IFSelect_WorkSession::EvaluateSelection
     catch (Standard_Failure const& anException) {
       sout<<"    ****    Interruption EvaluateSelection par Exception    ****  Intitule\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
     }
     errhand = theerrhand;
     return;
   }
 
   if (!IsLoaded())
-    {  sout<< " ***  Data for Evaluation not available  ***"<<Message_EndLine;  return;  }
+    {  sout<< " ***  Data for Evaluation not available  ***"<<std::endl;  return;  }
   if (ItemIdent(sel) == 0)
-    {  sout << " Selection :  Unknown"<<Message_EndLine;  return;  }  //sout<<Handle
+    {  sout << " Selection :  Unknown"<<std::endl;  return;  }  //sout<<Handle
   Interface_EntityIterator iter = EvalSelection (sel);
-  ListEntities (iter,1);
+  ListEntities (iter, 1, sout);
   sout << "****  (Unique) RootResult, Selection 	: "
-    <<sel->Label()<<Message_EndLine;
+    <<sel->Label()<<std::endl;
 }
 
 
@@ -3539,7 +3538,7 @@ void IFSelect_WorkSession::EvaluateSelection
 void IFSelect_WorkSession::EvaluateDispatch
   (const Handle(IFSelect_Dispatch)& disp, const Standard_Integer mode) const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (errhand) {
     errhand = Standard_False;
     try {
@@ -3549,7 +3548,7 @@ void IFSelect_WorkSession::EvaluateDispatch
     catch (Standard_Failure const& anException) {
       sout<<"    ****    Interruption EvaluateDispatch par Exception    ****  Intitule\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
     }
     errhand = theerrhand;
     return;
@@ -3557,12 +3556,12 @@ void IFSelect_WorkSession::EvaluateDispatch
 
   Standard_Integer numdisp = DispatchRank(disp);
   if (!IsLoaded())
-    {  sout<< " ***  Data for List not available  ***"<<Message_EndLine;  return;  }
+    {  sout<< " ***  Data for List not available  ***"<<std::endl;  return;  }
   if (theshareout->NbDispatches() < numdisp || numdisp <= 0)
-    { sout<<"Dispatch :  Unknown"<<Message_EndLine; return; } //sout<<Handle
+    { sout<<"Dispatch :  Unknown"<<std::endl; return; } //sout<<Handle
   if (disp->FinalSelection().IsNull())
-    { sout<<"Dispatch  : No Final Selection"<<Message_EndLine; return; }//sout<<Handle
-  sout<<" --- Dispatch Label : "<<disp->Label()<<Message_EndLine; 
+    { sout<<"Dispatch  : No Final Selection"<<std::endl; return; }//sout<<Handle
+  sout<<" --- Dispatch Label : "<<disp->Label()<<std::endl; 
 
   IFSelect_ShareOutResult eval(disp,thegraph->Graph());
   eval.Evaluate();
@@ -3571,35 +3570,35 @@ void IFSelect_WorkSession::EvaluateDispatch
     eval.Packets (mode ? Standard_True : Standard_False);
   Standard_Integer nbpack = evres->NbPackets();
 
-  sout<<"Nb Packets produced : "<<nbpack<<" :"<<Message_EndLine;
+  sout<<"Nb Packets produced : "<<nbpack<<" :"<<std::endl;
   for (numpack = 1; numpack <= nbpack; numpack ++) {
-    sout<<"\n    ****    Packet n0 : "<<numpack<<" ****"<<Message_EndLine;
+    sout<<"\n    ****    Packet n0 : "<<numpack<<" ****"<<std::endl;
     if (!mode) std::cout<<"Root Entities :"<<std::endl;
-    ListEntities (evres->Entities(numpack), (mode ? 2 : -1));
+    ListEntities (evres->Entities(numpack), (mode ? 2 : -1), sout);
   }
 
 ////  Interface_EntityIterator iterem = disp->Remainder(thegraph->Graph());
   if (mode == 0) return;
   if (mode == 1 || mode == 3) {
-    sout<<Message_EndLine;
+    sout<<std::endl;
     if (evres->NbDuplicated(0,Standard_False) == 0)
-      sout<<"    ****    All the Model is taken into account    ****"<<Message_EndLine;
+      sout<<"    ****    All the Model is taken into account    ****"<<std::endl;
     else {
-      sout<<"    ****    Starting Entities not taken by this Dispatch    ****"<<Message_EndLine;
-      ListEntities (evres->Duplicated(0,Standard_False),2);
+      sout<<"    ****    Starting Entities not taken by this Dispatch    ****"<<std::endl;
+      ListEntities (evres->Duplicated(0,Standard_False), 2, sout);
     }
   }
   if (mode >= 2) {
     sout<<"    ****    Entites in more than one packet    ****";
     Standard_Integer max = evres->HighestDuplicationCount();
-    if (max < 2) sout<<" :   There are none"<<Message_EndLine;
+    if (max < 2) sout<<" :   There are none"<<std::endl;
     else {
       Standard_Integer newcount;
-      sout<<Message_EndLine;
+      sout<<std::endl;
       for (newcount = 2; newcount <= max; newcount ++) {
 	if (evres->NbDuplicated(newcount,Standard_False) == 0) continue;
-	sout<<"    ****   Entities put in "<<newcount<<" packets    ****"<<Message_EndLine;
-	ListEntities (evres->Duplicated(newcount,Standard_False),2);
+	sout<<"    ****   Entities put in "<<newcount<<" packets    ****"<<std::endl;
+	ListEntities (evres->Duplicated(newcount,Standard_False), 2, sout);
       }
     }
   }
@@ -3617,7 +3616,7 @@ void IFSelect_WorkSession::EvaluateDispatch
 void IFSelect_WorkSession::EvaluateComplete
   (const Standard_Integer mode) const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (errhand) {
     errhand = Standard_False;
     try {
@@ -3627,53 +3626,53 @@ void IFSelect_WorkSession::EvaluateComplete
     catch (Standard_Failure const& anException) {
       sout<<"    ****    Interruption EvaluateComplete par Exception :   ****\n";
       sout<<anException.GetMessageString();
-      sout<<"\n    Abandon"<<Message_EndLine;
+      sout<<"\n    Abandon"<<std::endl;
     }
     errhand = theerrhand;
     return;
   }
 
   if (!IsLoaded())
-    {  sout<< " ***  Data for List not available  ***"<<Message_EndLine;  return;  }
+    {  sout<< " ***  Data for List not available  ***"<<std::endl;  return;  }
   IFSelect_ShareOutResult eval(theshareout,thegraph->Graph());
   eval.Evaluate();
   sout<<"\n********    Evaluation ShareOutResult (Complete)    ********\n";
-  sout<<"    ****    List of Packets    ****  Count : "<<eval.NbPackets()<<Message_EndLine;
-  if (mode == 0) sout << " ** (for each one : Root Entities)  **"<<Message_EndLine;
-  else sout << " ** (for each one : Evaluated Content)  **"<<Message_EndLine;
+  sout<<"    ****    List of Packets    ****  Count : "<<eval.NbPackets()<<std::endl;
+  if (mode == 0) sout << " ** (for each one : Root Entities)  **"<<std::endl;
+  else sout << " ** (for each one : Evaluated Content)  **"<<std::endl;
 
   Standard_Integer numpack = 0;
   Handle(IFSelect_PacketList) evres =
     eval.Packets (mode ? Standard_True : Standard_False);
   Standard_Integer nbpack = evres->NbPackets();
 
-  sout<<"Nb Packets produced : "<<nbpack<<" :"<<Message_EndLine;
+  sout<<"Nb Packets produced : "<<nbpack<<" :"<<std::endl;
   for (numpack = 1; numpack <= nbpack; numpack ++) {
-    sout<<"\n    ****    Packet n0 : "<<numpack<<" ****"<<Message_EndLine;
+    sout<<"\n    ****    Packet n0 : "<<numpack<<" ****"<<std::endl;
     if (!mode) std::cout<<"Root Entities :"<<std::endl;
-    ListEntities (evres->Entities(numpack), (mode ? 2: -1));
+    ListEntities (evres->Entities(numpack), (mode ? 2: -1), sout);
   }
   if (mode == 0) return;
   if (mode == 1 || mode == 3) {
-    sout<<Message_EndLine;
+    sout<<std::endl;
     if (evres->NbDuplicated(0,Standard_False) == 0)
-      sout<<"    ****    All the Model is taken into account    ****"<<Message_EndLine;
+      sout<<"    ****    All the Model is taken into account    ****"<<std::endl;
     else {
-      sout<<"    ****    Starting Entities Forgotten    ****"<<Message_EndLine;
-      ListEntities (evres->Duplicated(0,Standard_False),2);
+      sout<<"    ****    Starting Entities Forgotten    ****"<<std::endl;
+      ListEntities (evres->Duplicated(0,Standard_False), 2, sout);
     }
   }
   if (mode >= 2) {
-    sout<<"    ****    Entites in more than one packet    ****"<<Message_EndLine;
+    sout<<"    ****    Entites in more than one packet    ****"<<std::endl;
     Standard_Integer max = evres->HighestDuplicationCount();
-    if (max < 2) sout<<" :   There are none"<<Message_EndLine;
+    if (max < 2) sout<<" :   There are none"<<std::endl;
     else {
       Standard_Integer newcount;
-      sout<<Message_EndLine;
+      sout<<std::endl;
       for (newcount = 2; newcount <= max; newcount ++) {
 	if (evres->NbDuplicated(newcount,Standard_False) == 0) continue;
-	sout<<"    ****   Entities put in "<<newcount<<" packets    ****"<<Message_EndLine;
-	ListEntities (evres->Duplicated(newcount,Standard_False),2);
+	sout<<"    ****   Entities put in "<<newcount<<" packets    ****"<<std::endl;
+	ListEntities (evres->Duplicated(newcount,Standard_False), 2, sout);
       }
     }
   }
@@ -3689,14 +3688,13 @@ void IFSelect_WorkSession::EvaluateComplete
 //=======================================================================
 
 void IFSelect_WorkSession::ListEntities
-  (const Interface_EntityIterator& iter, const Standard_Integer mmode) const 
+  (const Interface_EntityIterator& iter, const Standard_Integer mmode, Standard_OStream& sout) const 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
   int titre = 0;
   Standard_Integer mode = (mmode < 0 ? -mmode : mmode);
-  if (mmode >= 0) sout << " List of " << iter.NbEntities() << " Entities :"<<Message_EndLine;
+  if (mmode >= 0) sout << " List of " << iter.NbEntities() << " Entities :"<<std::endl;
   if (!IsLoaded())
-    {  sout<< " ***  Data for List not available  ***"<<Message_EndLine;  return;  }
+    {  sout<< " ***  Data for List not available  ***"<<std::endl;  return;  }
   Interface_ShareFlags tool(thegraph->Graph());
 
   try {
@@ -3704,9 +3702,9 @@ void IFSelect_WorkSession::ListEntities
     int newcount = -1; int mods = 0; int cnt = 0;
     for (iter.Start(); iter.More(); iter.Next()) {
       if (!titre && mode == 1) sout
-	<< "Number/Id.           Category Validity    Type\n-----------          ----...."<<Message_EndLine;
+	<< "Number/Id.           Category Validity    Type\n-----------          ----...."<<std::endl;
 //          123456789 123456789 123456  123456789 123456789 123456
-      if (!titre && mode == 0) sout<<"  Keys : R Root   ? Unknown   * Unloaded"<<Message_EndLine;
+      if (!titre && mode == 0) sout<<"  Keys : R Root   ? Unknown   * Unloaded"<<std::endl;
       if (!titre && mode == 2) sout<<"(";
       titre = 1;
       Handle(Standard_Transient) ent = iter.Value();
@@ -3714,35 +3712,35 @@ void IFSelect_WorkSession::ListEntities
       if (mode == 1) {
     // n0 id (root?) category validity tracetype
 	sout<<Interface_MSG::Blanks (num,6);
-	myModel->Print(ent,sout,0);
+	myModel->Print (ent, sout, 0);
 	if (!tool.IsShared(ent)) sout << " #ROOT#";
 	else                     sout << "       ";
 	Standard_Integer catnum = myModel->CategoryNumber(num);
 	if (catnum > 0) sout<<"  "<<Interface_Category::Name (catnum);
 	sout << "  (" << ValidityName (ent) << ")  ";
 
-	sout<<" Type:"<<myModel->TypeName (ent, Standard_False)<<Message_EndLine;
+	sout<<" Type:"<<myModel->TypeName (ent, Standard_False)<<std::endl;
       } else if (mode == 2) {
 	newcount ++;
 	if (newcount > 0) sout<<",";
 	sout<<num;
       } else {
 	newcount ++;  mods = 0; cnt ++;
-	if      (newcount >= 10) { sout << Message_EndLine<<"["<<cnt<<"]:"; newcount = 1; }
+	if      (newcount >= 10) { sout << std::endl<<"["<<cnt<<"]:"; newcount = 1; }
 	if (newcount > 0)  sout << "	";
-	myModel->Print(ent,sout,0);
+	myModel->Print (ent, sout, 0);
 	if (!tool.IsShared(ent)) { if(mods == 0) sout<<"("; sout<<"R"; mods++; }
 	if (myModel->IsUnknownEntity(num)) { sout<<(mods==0 ? '(' : ' ')<<"?"; mods ++; }
 	if (myModel->IsRedefinedContent(num)) { sout<<(mods==0 ? '(' : ' ')<<"*"; mods ++; }
 	if (mods) { sout<<")"; newcount ++; }
       }
     }
-    if (mode == 0) sout<<Message_EndLine;
-    if (mode == 2) sout<<")"<<Message_EndLine;
+    if (mode == 0) sout<<std::endl;
+    if (mode == 2) sout<<")"<<std::endl;
   }
   catch (Standard_Failure const& anException) {
     sout<<"    ****    Interruption ListEntities par Exception :   ****\n";
     sout<<anException.GetMessageString();
-    sout<<"\n    Abandon"<<Message_EndLine;
+    sout<<"\n    Abandon"<<std::endl;
   }
 }

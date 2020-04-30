@@ -34,7 +34,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
@@ -299,21 +298,20 @@ void IGESGeom_ToolTrimmedSurface::OwnCheck(const Handle(IGESGeom_TrimmedSurface)
 
 void IGESGeom_ToolTrimmedSurface::OwnDump(const Handle(IGESGeom_TrimmedSurface)& ent,
                                           const IGESData_IGESDumper& dumper,
-                                          const Handle(Message_Messenger)& S,
+                                          Standard_OStream& S,
                                           const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_TrimmedSurface" << Message_EndLine;
-
-  S << "Surface to be trimmed : ";
+  S << "IGESGeom_TrimmedSurface\n"
+    << "Surface to be trimmed : ";
   dumper.Dump(ent->Surface(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Boundary type    : " << ent->OuterBoundaryType() << Message_EndLine;
-  S << "Outer Boundary   : ";
+  S << "\n"
+    << "Boundary type    : " << ent->OuterBoundaryType() << "\n"
+    << "Outer Boundary   : ";
   dumper.Dump(ent->OuterContour(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Inner Boundaries : ";
+  S << "\n"
+    << "Inner Boundaries : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbInnerContours(),ent->InnerContour);
-  S << Message_EndLine;
+  S << std::endl;
 }

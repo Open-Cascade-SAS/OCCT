@@ -530,10 +530,10 @@ Handle(StepBasic_ProductDefinition) STEPConstruct_ValidationProps::GetPropPD (co
     Handle(StepRepr_ShapeAspect) SA = CD.ShapeAspect();
     if ( SA.IsNull() ) {
 #ifdef OCCT_DEBUG
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << "Error: Cannot find target entity (SA) for geometric_validation_property "; 
-      Model()->PrintLabel ( PD, sout ); 
-      sout << Message_EndLine;
+      Model()->PrintLabel (PD, sout);
+      sout << std::endl;
 #endif
       return ProdDef;
     }
@@ -555,10 +555,10 @@ Handle(StepBasic_ProductDefinition) STEPConstruct_ValidationProps::GetPropPD (co
   }
 #ifdef OCCT_DEBUG
   if ( ProdDef.IsNull() ) {
-    Handle(Message_Messenger) sout = Message::DefaultMessenger();
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "Error: Cannot find target entity (SDR) for geometric_validation_property "; 
-    Model()->PrintLabel ( PD, sout ); 
-    sout << Message_EndLine;
+    Model()->PrintLabel (PD, sout);
+    sout << std::endl;
   }
 #endif
   return ProdDef;
@@ -608,10 +608,10 @@ TopoDS_Shape STEPConstruct_ValidationProps::GetPropShape (const Handle(StepBasic
   //}
 #ifdef OCCT_DEBUG
   if ( S.IsNull() ) {
-    Handle(Message_Messenger) sout = Message::DefaultMessenger();
+    Message_Messenger::StreamBuffer sout = Message::SendInfo();
     sout << "Warning: Entity "; 
-    Model()->PrintLabel ( ProdDef, sout ); 
-    sout << " is not mapped to shape" << Message_EndLine;
+    Model()->PrintLabel (ProdDef, sout);
+    sout << " is not mapped to shape" << std::endl;
   }
 #endif
   return S;

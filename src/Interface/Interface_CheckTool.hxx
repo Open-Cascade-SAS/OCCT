@@ -33,7 +33,6 @@ class Interface_HGraph;
 class Standard_Transient;
 class Interface_ShareTool;
 class Interface_Check;
-class Message_Messenger;
 class Interface_CheckIterator;
 class Interface_EntityIterator;
 
@@ -71,12 +70,12 @@ public:
   Standard_EXPORT void FillCheck (const Handle(Standard_Transient)& ent, const Interface_ShareTool& sh, Handle(Interface_Check)& ach);
   
   //! Utility method which Prints the content of a Check
-  Standard_EXPORT void Print (const Handle(Interface_Check)& ach, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void Print (const Handle(Interface_Check)& ach, Standard_OStream& S) const;
   
   //! Simply Lists all the Checks and the Content (messages) and the
   //! Entity, if there is, of each Check
   //! (if all Checks are OK, nothing is Printed)
-  Standard_EXPORT void Print (const Interface_CheckIterator& list, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void Print (const Interface_CheckIterator& list, Standard_OStream& S) const;
   
   //! Returns the Check associated to an Entity identified by
   //! its Number in a Model.

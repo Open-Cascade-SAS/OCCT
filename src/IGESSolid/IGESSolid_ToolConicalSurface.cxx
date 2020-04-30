@@ -141,24 +141,24 @@ void  IGESSolid_ToolConicalSurface::OwnCheck
 
 void  IGESSolid_ToolConicalSurface::OwnDump
   (const Handle(IGESSolid_ConicalSurface)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_ConicalSurface" << Message_EndLine;
+  S << "IGESSolid_ConicalSurface\n";
 
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   S << "Point on axis  : ";
   dumper.Dump(ent->LocationPoint(),S, sublevel);
-  S << Message_EndLine;
-  S << "Axis direction : ";
+  S << "\n"
+    << "Axis direction : ";
   dumper.Dump(ent->Axis(),S, sublevel);
-  S << Message_EndLine;
-  S << "Radius         : " << ent->Radius() << "  ";
-  S << "Semi-angle     : " << ent->SemiAngle() << Message_EndLine;
+  S << "\n"
+    << "Radius         : " << ent->Radius() << "  "
+    << "Semi-angle     : " << ent->SemiAngle() << "\n";
   if (ent->IsParametrised())
     {
-      S << "Surface is Parametrised  -  Reference direction : " << Message_EndLine;
+      S << "Surface is Parametrised  -  Reference direction :\n";
       dumper.Dump(ent->ReferenceDir(),S, sublevel);
-      S << Message_EndLine;
+      S << std::endl;
     }
-  else S << "Surface is UnParametrised" << Message_EndLine;
+  else S << "Surface is UnParametrised" << std::endl;
 }

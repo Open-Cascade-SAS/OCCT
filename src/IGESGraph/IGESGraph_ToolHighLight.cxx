@@ -107,11 +107,10 @@ void IGESGraph_ToolHighLight::OwnCheck
 
 void IGESGraph_ToolHighLight::OwnDump
   (const Handle(IGESGraph_HighLight)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
+   Standard_OStream& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_HighLight" << Message_EndLine;
-
-  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Highlight Status : " << ent->HighLightStatus() << Message_EndLine;
-  S << Message_EndLine;
+  S << "IGESGraph_HighLight\n"
+    << "No. of property values : " << ent->NbPropertyValues() << "\n"
+    << "Highlight Status : " << ent->HighLightStatus() << "\n"
+    << std::endl;
 }

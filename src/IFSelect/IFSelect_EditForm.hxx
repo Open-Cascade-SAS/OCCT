@@ -34,8 +34,6 @@ class Standard_Transient;
 class Interface_InterfaceModel;
 class IFSelect_ListEditor;
 class TCollection_HAsciiString;
-class Message_Messenger;
-
 
 class IFSelect_EditForm;
 DEFINE_STANDARD_HANDLE(IFSelect_EditForm, Standard_Transient)
@@ -252,7 +250,7 @@ public:
   Standard_EXPORT void ClearEdit (const Standard_Integer num = 0);
   
   //! Prints Definitions, relative to the Editor
-  Standard_EXPORT void PrintDefs (const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintDefs (Standard_OStream& S) const;
   
   //! Prints Values, according to what and alsolist
   //! <names> True : prints Long Names; False : prints Short Names
@@ -261,7 +259,7 @@ public:
   //! <what> = 0 : prints Modified Values (Original + Edited)
   //! <alsolist> False (D) : lists are printed only as their count
   //! <alsolist> True : lists are printed for all their items
-  Standard_EXPORT void PrintValues (const Handle(Message_Messenger)& S, const Standard_Integer what, const Standard_Boolean names, const Standard_Boolean alsolist = Standard_False) const;
+  Standard_EXPORT void PrintValues (Standard_OStream& S, const Standard_Integer what, const Standard_Boolean names, const Standard_Boolean alsolist = Standard_False) const;
   
   //! Applies modifications to own data
   //! Calls ApplyData then Clears Status according EditKeepStatus

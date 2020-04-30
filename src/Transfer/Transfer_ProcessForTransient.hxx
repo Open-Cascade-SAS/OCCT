@@ -23,7 +23,6 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 
 class Message_Messenger;
-class Standard_Transient;
 class Transfer_Binder;
 class Transfer_ActorOfProcessForTransient;
 class Message_ProgressIndicator;
@@ -338,7 +337,7 @@ public:
   
   //! Prints a short information on a starting object. By default
   //! prints its Dynamic Type. Can be redefined
-  Standard_EXPORT virtual void PrintTrace (const Handle(Standard_Transient)& start, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT virtual void PrintTrace (const Handle(Standard_Transient)& start, Standard_OStream& S) const;
   
   //! Returns True if we are surely in a DeadLoop. Evaluation is not
   //! exact, it is a "majorant" which must be computed fast.

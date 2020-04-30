@@ -30,7 +30,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -320,9 +319,9 @@ void IGESGeom_ToolSplineCurve::OwnCheck
 
 void IGESGeom_ToolSplineCurve::OwnDump
   (const Handle(IGESGeom_SplineCurve)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESGeom_SplineCurve" << Message_EndLine;
+  S << "IGESGeom_SplineCurve\n";
 
   Standard_Integer nbSegments = ent->NbSegments();
   S << "Spline Type          : " << ent->SplineType()    << "  ";
@@ -336,17 +335,17 @@ void IGESGeom_ToolSplineCurve::OwnDump
     case 6 : S << "(B-Spline)"; break;
       default : S << "(Invalid value)"; break;
     }
-  S << Message_EndLine;
-  S << "Degree Of Continuity : " << ent->Degree()       << Message_EndLine;
-  S << "Number Of Dimensions : " << ent->NbDimensions() << Message_EndLine;
-  S << "Number Of Segments   : " << ent->NbSegments()   << Message_EndLine;
-  S << "Segment Break Points : ";
-  IGESData_DumpVals(S ,level,1, nbSegments+1,ent->BreakPoint);
+  S << "\n"
+    << "Degree Of Continuity : " << ent->Degree()       << "\n"
+    << "Number Of Dimensions : " << ent->NbDimensions() << "\n"
+    << "Number Of Segments   : " << ent->NbSegments()   << "\n"
+    << "Segment Break Points : ";
+  IGESData_DumpVals(S,level,1, nbSegments+1,ent->BreakPoint);
   if (level <= 4) {
-    S << " [ also ask level > 4 for X-Y-Z Polynomials ]" << Message_EndLine;
+    S << " [ also ask level > 4 for X-Y-Z Polynomials ]" << std::endl;
     return;
   }
-  S << "  --  Polynomial  Values  --" << Message_EndLine;
+  S << "  --  Polynomial  Values  --\n";
   Standard_Real AX,BX,CX,DX, AY,BY,CY,DY, AZ,BZ,CZ,DZ;
   for (Standard_Integer I = 1; I <= nbSegments; I++) {
 //no need to declare (hides the same name in an outer scope)
@@ -354,18 +353,18 @@ void IGESGeom_ToolSplineCurve::OwnDump
     ent->XCoordPolynomial(I,AX,BX,CX,DX);
     ent->YCoordPolynomial(I,AY,BY,CY,DY);
     ent->ZCoordPolynomial(I,AZ,BZ,CZ,DZ);
-    S << "Segment "<<I<<" :	    X		   Y		Z"<<Message_EndLine;
-    S << " A ...	"<<AX<<"	"<<AY<<"	"<<AZ<<Message_EndLine;
-    S << " B ...	"<<BX<<"	"<<BY<<"	"<<BZ<<Message_EndLine;
-    S << " C ...	"<<CX<<"	"<<CY<<"	"<<CZ<<Message_EndLine;
-    S << " D ...	"<<DX<<"	"<<DY<<"	"<<DZ<<Message_EndLine;
+    S << "Segment "<<I<<" :	    X		   Y		Z"<<"\n"
+      << " A ...	"<<AX<<"	"<<AY<<"	"<<AZ<<"\n"
+      << " B ...	"<<BX<<"	"<<BY<<"	"<<BZ<<"\n"
+      << " C ...	"<<CX<<"	"<<CY<<"	"<<CZ<<"\n"
+      << " D ...	"<<DX<<"	"<<DY<<"	"<<DZ<<"\n";
   }
   ent->XValues(AX,BX,CX,DX);
   ent->YValues(AY,BY,CY,DY);
   ent->ZValues(AZ,BZ,CZ,DZ);
-  S << "Terminate Point :	    X		   Y		Z"<<Message_EndLine;
-  S << " Value        	"<<AX<<"	"<<AY<<"	"<<AZ<<Message_EndLine;
-  S << " 1st Derivative	"<<BX<<"	"<<BY<<"	"<<BZ<<Message_EndLine;
-  S << " 2nd Der./2!   	"<<CX<<"	"<<CY<<"	"<<CZ<<Message_EndLine;
-  S << " 3rd Der./3!   	"<<DX<<"	"<<DY<<"	"<<DZ<<Message_EndLine;
+  S << "Terminate Point :	    X		   Y		Z"<<"\n"
+    << " Value        	"<<AX<<"	"<<AY<<"	"<<AZ<<"\n"
+    << " 1st Derivative	"<<BX<<"	"<<BY<<"	"<<BZ<<"\n"
+    << " 2nd Der./2!   	"<<CX<<"	"<<CY<<"	"<<CZ<<"\n"
+    << " 3rd Der./3!   	"<<DX<<"	"<<DY<<"	"<<DZ<<std::endl;
 }

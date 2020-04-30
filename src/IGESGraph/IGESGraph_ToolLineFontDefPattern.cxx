@@ -30,7 +30,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -130,21 +129,20 @@ void IGESGraph_ToolLineFontDefPattern::OwnCheck
 
 void IGESGraph_ToolLineFontDefPattern::OwnDump
   (const Handle(IGESGraph_LineFontDefPattern)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESGraph_LineFontDefPattern" << Message_EndLine;
-
-  S << "Visible-Blank Segments : ";
+  S << "IGESGraph_LineFontDefPattern\n"
+    << "Visible-Blank Segments : ";
   Standard_Integer nb = ent->NbSegments();
-  IGESData_DumpVals(S ,level,1, nb,ent->Length);
-  S <<Message_EndLine << "Display Pattern : ";
+  IGESData_DumpVals(S,level,1, nb,ent->Length);
+  S << "\nDisplay Pattern : ";
   IGESData_DumpString(S,ent->DisplayPattern());
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4) {
-    S << " -> Which Segments are Visible (the others are Blank) : " << Message_EndLine;
+    S << " -> Which Segments are Visible (the others are Blank) :\n";
     for (Standard_Integer I = 1; I <= nb; I ++) {
       if (ent->IsVisible(I)) S << "  " << I;
     }
-    S << Message_EndLine;
+    S << std::endl;
   }
 }

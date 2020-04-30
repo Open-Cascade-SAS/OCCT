@@ -31,7 +31,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESSolid_ToolToroidalSurface::IGESSolid_ToolToroidalSurface ()    {  }
@@ -138,24 +137,24 @@ void  IGESSolid_ToolToroidalSurface::OwnCheck
 
 void  IGESSolid_ToolToroidalSurface::OwnDump
   (const Handle(IGESSolid_ToroidalSurface)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_ToroidalSurface" << Message_EndLine;
+  S << "IGESSolid_ToroidalSurface\n";
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "Center : ";
   dumper.Dump(ent->Center(),S, sublevel);
-  S << Message_EndLine;
-  S << "Axis direction : ";
+  S << "\n"
+    << "Axis direction : ";
   dumper.Dump(ent->Axis(),S, sublevel);
-  S << Message_EndLine;
-  S << "Major Radius : " << ent->MajorRadius() << "  ";
-  S << "Minor Radius : " << ent->MinorRadius() << Message_EndLine;
+  S << "\n"
+    << "Major Radius : " << ent->MajorRadius() << "  "
+    << "Minor Radius : " << ent->MinorRadius() << "\n";
   if (ent->IsParametrised())
     {
       S << "Surface is Parametrised  -  Reference direction : ";
       dumper.Dump(ent->ReferenceDir(),S, sublevel);
-      S << Message_EndLine;
+      S << std::endl;
     }
-  else S << "Surface is UnParametrised" << Message_EndLine;
+  else S << "Surface is UnParametrised" << std::endl;
 }

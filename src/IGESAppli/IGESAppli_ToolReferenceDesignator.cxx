@@ -121,11 +121,11 @@ void  IGESAppli_ToolReferenceDesignator::OwnCheck
 
 void  IGESAppli_ToolReferenceDesignator::OwnDump
   (const Handle(IGESAppli_ReferenceDesignator)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
-  S << "IGESAppli_ReferenceDesignator" << Message_EndLine;
-  S << "Number of Property Values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "IGESAppli_ReferenceDesignator\n";
+  S << "Number of Property Values : " << ent->NbPropertyValues() << "\n";
   S << "ReferenceDesignator : ";
   IGESData_DumpString(S,ent->RefDesignatorText());
-  S << Message_EndLine;
+  S << std::endl;
 }

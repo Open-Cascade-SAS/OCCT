@@ -16,7 +16,6 @@
 #include <Interface_CheckIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_IntVal.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -501,7 +500,7 @@ Standard_Integer Interface_CheckIterator::Number () const
 //purpose  : 
 //=======================================================================
 
-void Interface_CheckIterator::Print(const Handle(Message_Messenger)& S,
+void Interface_CheckIterator::Print(Standard_OStream& S,
                                     const Standard_Boolean failsonly,
                                     const Standard_Integer final) const
 {
@@ -514,7 +513,7 @@ void Interface_CheckIterator::Print(const Handle(Message_Messenger)& S,
 //purpose  : 
 //=======================================================================
 
-void Interface_CheckIterator::Print(const Handle(Message_Messenger)& S,
+void Interface_CheckIterator::Print(Standard_OStream& S,
                                     const Handle(Interface_InterfaceModel)& model,
                                     const Standard_Boolean failsonly,
                                     const Standard_Integer /*final*/) const
@@ -540,22 +539,22 @@ void Interface_CheckIterator::Print(const Handle(Message_Messenger)& S,
 //  mesnum = mesnum0;
 //    if (yamod) mesnum = (nm0 > 0 ? mesnum1 : mesnum2);
 
-    if (!titre)        S<<" **  " << Name() << "  **"<<Message_EndLine;
+    if (!titre)        S <<" **  " << Name() << "  **"<<std::endl;
     titre = Standard_True;
-    S<<"Check:"; if(nb > 9 && i < 10) S<<" "; if (nb > 99 && i < 100) S<<" ";
-    S<<i;
-    if      (num <  0) S<<" -- Global Check"<<Message_EndLine;
-    else if (num == 0) S<<" -- Entity n0 ??:";
+    S <<"Check:"; if(nb > 9 && i < 10) S <<" "; if (nb > 99 && i < 100) S <<" ";
+    S <<i;
+    if      (num <  0) S <<" -- Global Check"<<std::endl;
+    else if (num == 0) S <<" -- Entity n0 ??:";
     else {
-      if (yamod) { S<<" -- Entity (n0:id) "; model->Print (ent,S); }
-      else       S<<" -- Entity n0 "<<num;
+      if (yamod) { S <<" -- Entity (n0:id) "; model->Print (ent, S); }
+      else       S <<" -- Entity n0 "<<num;
 //      S<<" -- Entity n0 "<<num<<mesnum;
 //      if (yamod) model->PrintLabel(ent,S);
     }
-    if      (num >= 0 &&  entnul) S<<" (unknown Type)"<<Message_EndLine;
+    if      (num >= 0 &&  entnul) S <<" (unknown Type)"<<std::endl;
     else if (num >= 0 && !entnul) {
-      if (yamod) S<<"   Type:"<<model->TypeName(ent)<<Message_EndLine;
-      else       S<<"   Type:"<<ent->DynamicType()->Name()<<Message_EndLine;
+      if (yamod) S <<"   Type:"<<model->TypeName(ent)<<std::endl;
+      else       S <<"   Type:"<<ent->DynamicType()->Name()<<std::endl;
     }
 
     nbch ++;

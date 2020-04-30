@@ -441,23 +441,23 @@ void IGESDefs_ToolAttributeDef::OwnCheck
 
 void IGESDefs_ToolAttributeDef::OwnDump
   (const Handle(IGESDefs_AttributeDef)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDefs_AttributeDef" << Message_EndLine;
-  S << "Attribute Table Name: ";
+  S << "IGESDefs_AttributeDef\n"
+    << "Attribute Table Name: ";
   IGESData_DumpString(S,ent->TableName());
-  S << Message_EndLine;
-  S << "Attribute List Type  : " << ent->ListType() << Message_EndLine;
-  S << "Number of Attributes : " << ent->NbAttributes() << Message_EndLine;
-  S << "Attribute Types : " << Message_EndLine;
-  S << "Attribute Value Data Types : " << Message_EndLine;
-  S << "Attribute Value Counts : " << Message_EndLine;
-  if (ent->HasValues())       S << "Attribute Values : " << Message_EndLine;
-  if (ent->HasTextDisplay())  S << "Attribute Value Entities : " << Message_EndLine;
+  S << "\n"
+    << "Attribute List Type  : " << ent->ListType() << "\n"
+    << "Number of Attributes : " << ent->NbAttributes() << "\n"
+    << "Attribute Types :\n"
+    << "Attribute Value Data Types :\n"
+    << "Attribute Value Counts :\n";
+  if (ent->HasValues())       S << "Attribute Values :\n";
+  if (ent->HasTextDisplay())  S << "Attribute Value Entities :\n";
   IGESData_DumpVals(S,-level,1, ent->NbAttributes(),ent->AttributeType);
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4)
     {
       Standard_Integer upper = ent->NbAttributes();
@@ -465,9 +465,9 @@ void IGESDefs_ToolAttributeDef::OwnDump
 	{
 	  Standard_Integer avc = ent->AttributeValueCount(i);
 	  Standard_Integer typ = ent->AttributeValueDataType(i);
-          S << "[" << i << "]:  ";
-          S << "Attribute Type : " << ent->AttributeType(i) << "  ";
-          S << "Value Data Type : " << typ;
+          S << "[" << i << "]:  "
+            << "Attribute Type : " << ent->AttributeType(i) << "  "
+            << "Value Data Type : " << typ;
 	  switch (typ) {
 	    case 0 : S << "  (Void)";     break;
 	    case 1 : S << " : Integer ";  break;
@@ -478,11 +478,11 @@ void IGESDefs_ToolAttributeDef::OwnDump
 	    case 6 : S << " : Logical ";  break;
 	    default :   break;
 	  }
-          S << "   Count : " << avc << Message_EndLine;
+          S << "   Count : " << avc << "\n";
           if (ent->HasValues())
 	    {
 	      if (level <= 5) {
-		S << " [ content (Values) : ask level > 5 ]" << Message_EndLine;
+		S << " [ content (Values) : ask level > 5 ]\n";
 		continue;
 	      }
               for (Standard_Integer j = 1; j <= avc; j ++)
@@ -512,10 +512,10 @@ void IGESDefs_ToolAttributeDef::OwnDump
                       S << "  Attribute Value Pointer : ";
                       dumper.Dump (ent->AttributeTextDisplay(i,j),S, sublevel);
 		    }
-		  S << Message_EndLine;
+		  S << std::endl;
 		}
 	    }
 	}
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

@@ -44,7 +44,6 @@
 #include <IGESDraw_ViewsVisible.hxx>
 #include <IGESDraw_ViewsVisibleWithAttr.hxx>
 #include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESDraw_SpecificModule,IGESData_SpecificModule)
@@ -57,7 +56,7 @@ IGESDraw_SpecificModule::IGESDraw_SpecificModule()    {  }
 
     void  IGESDraw_SpecificModule::OwnDump
   (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S,
+   const IGESData_IGESDumper& dumper, Standard_OStream& S,
    const Standard_Integer own) const 
 {
   switch (CN) {

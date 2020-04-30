@@ -458,82 +458,82 @@ void  IGESDimen_ToolNewGeneralNote::OwnCheck
 
 void  IGESDimen_ToolNewGeneralNote::OwnDump
   (const Handle(IGESDimen_NewGeneralNote)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
   Standard_Integer nbval = ent->NbStrings();
 
-  S << "IGESDimen_NewGeneralNote" << Message_EndLine;
-  S << "Text Area  : Width : " << ent->TextWidth() << "  ";
-  S << "Height : " << ent->TextHeight() << "  ";
-  S << "Justification Code  : " << ent->JustifyCode() << Message_EndLine;
-  S << "Text Area Location Point : ";
+  S << "IGESDimen_NewGeneralNote\n"
+    << "Text Area  : Width : " << ent->TextWidth() << "  "
+    << "Height : " << ent->TextHeight() << "  "
+    << "Justification Code  : " << ent->JustifyCode() << "\n"
+    << "Text Area Location Point : ";
   IGESData_DumpXYZL(S,level, ent->AreaLocation(), ent->Location());
-  S << "Rotation Angle of Text : " << ent->AreaRotationAngle() << Message_EndLine;
-  S << "Base Line Position : ";
+  S << "Rotation Angle of Text : " << ent->AreaRotationAngle() << "\n"
+    << "Base Line Position : ";
   IGESData_DumpXYZL(S,level, ent->BaseLinePosition(), ent->Location());
-  S << "Normal Interline Spacing : " << ent->NormalInterlineSpace() << Message_EndLine;
-  S << "Number of Text Strings : " << nbval << Message_EndLine;
+  S << "Normal Interline Spacing : " << ent->NormalInterlineSpace() << "\n"
+    << "Number of Text Strings : " << nbval << "\n";
 
-  S << "Character Display : " << Message_EndLine; 
-  S << "Character Width : " << Message_EndLine; 
-  S << "Character Height : " << Message_EndLine; 
-  S << "Inter Character Spacing : " << Message_EndLine; 
-  S << "Interline Spacing : " << Message_EndLine; 
-  S << "Font Styles : " << Message_EndLine; 
-  S << "Character Angle : " << Message_EndLine; 
-  S << "Control Code String : " << Message_EndLine; 
-  S << "Number of Characters : " << Message_EndLine; 
-  S << "Box Widths : " << Message_EndLine; 
-  S << "Box Heights : " << Message_EndLine; 
-  S << "Character Set Codes : " << Message_EndLine; 
-  S << "Character Set Entities : " << Message_EndLine; 
-  S << "Slant Angles : " << Message_EndLine; 
-  S << "Rotation Angles : " << Message_EndLine; 
-  S << "Mirror Flags : " << Message_EndLine; 
-  S << "Rotate Flags : " << Message_EndLine; 
-  S << "Start Points : " << Message_EndLine; 
-  S << "Texts : "; 
+  S << "Character Display :\n"
+    << "Character Width :\n"
+    << "Character Height :\n"
+    << "Inter Character Spacing :\n"
+    << "Interline Spacing :\n"
+    << "Font Styles :\n"
+    << "Character Angle :\n"
+    << "Control Code String :\n"
+    << "Number of Characters :\n"
+    << "Box Widths :\n"
+    << "Box Heights :\n"
+    << "Character Set Codes :\n"
+    << "Character Set Entities :\n"
+    << "Slant Angles :\n"
+    << "Rotation Angles :\n"
+    << "Mirror Flags :\n"
+    << "Rotate Flags :\n"
+    << "Start Points :\n"
+    << "Texts : "; 
   IGESData_DumpVals(S,-level,1, nbval, ent->NbCharacters);
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4)
     {
-      S << "Details of each String" << Message_EndLine;
+      S << "Details of each String\n";
       for ( Standard_Integer i = 1; i <= nbval; i++)
 	{
-          S << "[" << i << "]: " << Message_EndLine;
-          S << "Character Display : " << ent->CharacterDisplay(i) << "  ";
-          S << "Character Width   : " << ent->CharacterWidth(i)   << "  ";
-          S << "Character Height  : " << ent->CharacterHeight(i)  << Message_EndLine;
-          S << "Inter Character Spacing : "<<ent->InterCharacterSpace(i)<<"  ";
-          S << "Interline Spacing : " << ent->InterlineSpace(i) << Message_EndLine;
-          S << "Font Styles       : " << ent->FontStyle(i) << Message_EndLine;
-          S << "Character Angle   : " << ent->CharacterAngle(i) << Message_EndLine;
-          S << "Control Code String : " ;
+          S << "[" << i << "]:\n"
+            << "Character Display : " << ent->CharacterDisplay(i) << "  "
+            << "Character Width   : " << ent->CharacterWidth(i)   << "  "
+            << "Character Height  : " << ent->CharacterHeight(i)  << "\n"
+            << "Inter Character Spacing : "<<ent->InterCharacterSpace(i)<<"  "
+            << "Interline Spacing : " << ent->InterlineSpace(i) << "\n"
+            << "Font Styles       : " << ent->FontStyle(i) << "\n"
+            << "Character Angle   : " << ent->CharacterAngle(i) << "\n"
+            << "Control Code String : " ;
           IGESData_DumpString(S,ent->ControlCodeString(i));
-          S << Message_EndLine;
-          S << "Number of Characters : " << ent->NbCharacters(i) << "  ";
-          S << "Box Width  : " << ent->BoxWidth(i)  << "  ";
-          S << "Box Height : " << ent->BoxHeight(i) << Message_EndLine;
+          S << "\n"
+            << "Number of Characters : " << ent->NbCharacters(i) << "  "
+            << "Box Width  : " << ent->BoxWidth(i)  << "  "
+            << "Box Height : " << ent->BoxHeight(i) << "\n";
           if (ent->IsCharSetEntity(i))
 	    {
               S << "Character Set Entity : ";
               dumper.Dump (ent->CharSetEntity(i),S, sublevel);
-              S << Message_EndLine;
+              S << "\n";
 	    }
           else
-	    S << "Character Set Code : " << ent->CharSetCode(i) << Message_EndLine;
+	    S << "Character Set Code : " << ent->CharSetCode(i) << "\n"
 
-          S << "Slant Angle : "    << ent->SlantAngle(i) << "  ";
-          S << "Rotation Angle : " << ent->RotationAngle(i) << "  ";
-          S << "Mirror Flag : "    << ent->MirrorFlag(i) << "  ";
-          S << "Rotate Flag : "    << ent->RotateFlag(i) << Message_EndLine;
-          S << "Start Point : ";
+          << "Slant Angle : "    << ent->SlantAngle(i) << "  "
+          << "Rotation Angle : " << ent->RotationAngle(i) << "  "
+          << "Mirror Flag : "    << ent->MirrorFlag(i) << "  "
+          << "Rotate Flag : "    << ent->RotateFlag(i) << "\n"
+          << "Start Point : ";
           IGESData_DumpXYZL(S,level, ent->StartPoint(i), ent->Location());
           S << "Text : ";
           IGESData_DumpString(S,ent->Text(i));
-          S << Message_EndLine;
+          S << "\n";
 	}
     }
-  else S << Message_EndLine;
+  else S << std::endl;
 }

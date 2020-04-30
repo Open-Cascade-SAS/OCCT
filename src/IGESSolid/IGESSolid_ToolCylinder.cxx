@@ -158,20 +158,19 @@ void  IGESSolid_ToolCylinder::OwnCheck
 
 void  IGESSolid_ToolCylinder::OwnDump
   (const Handle(IGESSolid_Cylinder)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
 
 //  Standard_Boolean locprint = (ent->HasTransf() && level >=6);
 //  gp_Pnt TCenter = ent->TransformedFaceCenter();
 //  gp_Dir TAxis   = ent->TransformedAxis();
 
-  S << "IGESSolid_Cylinder" << Message_EndLine;
-
-  S << "Height : " << ent->Height() << "  ";
-  S << "Radius : " << ent->Radius() << Message_EndLine;
-  S << "Center : ";
+  S << "IGESSolid_Cylinder\n"
+    << "Height : " << ent->Height() << "  "
+    << "Radius : " << ent->Radius() << "\n"
+    << "Center : ";
   IGESData_DumpXYZL(S,level, ent->FaceCenter(), ent->Location());
-  S << Message_EndLine << "Axis : ";
+  S << "\nAxis : ";
   IGESData_DumpXYZL(S,level, ent->Axis(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

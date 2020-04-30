@@ -185,17 +185,16 @@ void  IGESSolid_ToolBlock::OwnCheck
 
 void IGESSolid_ToolBlock::OwnDump
   (const Handle(IGESSolid_Block)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_Block" << Message_EndLine;
-
-  S <<         "Size   : ";
+  S << "IGESSolid_Block\n"
+    <<         "Size   : ";
   IGESData_DumpXYZ(S, ent->Size());
-  S << Message_EndLine << "Corner : ";
+  S << "\nCorner : ";
   IGESData_DumpXYZL(S,level, ent->Corner(), ent->Location());
-  S << Message_EndLine << "XAxis  : ";
+  S << "\nXAxis  : ";
   IGESData_DumpXYZL(S,level, ent->XAxis(), ent->VectorLocation());
-  S << Message_EndLine << "ZAxis  : ";
+  S << "\nZAxis  : ";
   IGESData_DumpXYZL(S,level, ent->ZAxis(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

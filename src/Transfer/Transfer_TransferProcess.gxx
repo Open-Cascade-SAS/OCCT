@@ -456,10 +456,11 @@ void  Transfer_TransferProcess::SendMsg(const TheStart& start,
   // Alimente la trace : Regle causant (user messages)
   if (thetrace > 0) {
     StartTrace (binder,start,thelevel,6);
-    themessenger << amsg.Value();
+    Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
+    aSender << amsg.Value();
     if (amsg.IsEdited()&&thetrace>2)
-      themessenger << " [from: " << amsg.Original() << "]";
-    themessenger << Message_EndLine;
+      aSender << " [from: " << amsg.Original() << "]";
+    aSender << std::endl;
   }
 }
 
@@ -481,9 +482,10 @@ void Transfer_TransferProcess::AddFail(const TheStart& start,
   binder->AddFail (mess,orig);
   if (thetrace > 0) {
     StartTrace (binder,start,thelevel,1);
-    themessenger << "    --> Fail : " << mess;
-    if (orig[0] != '\0'&&thetrace>2) themessenger << " [from: " << orig << "]";
-    themessenger << Message_EndLine;
+    Message_Messenger::StreamBuffer aSender = themessenger->SendFail();
+    aSender << "    --> Fail : " << mess;
+    if (orig[0] != '\0'&&thetrace>2) aSender << " [from: " << orig << "]";
+    aSender << std::endl;
   }
 }
 
@@ -532,9 +534,10 @@ void Transfer_TransferProcess::AddWarning(const TheStart& start,
   binder->AddWarning(mess,orig);
   if (thetrace > 1) {
     StartTrace (binder,start,thelevel,2);
-    themessenger << "    --> Warning : " << mess;
-    if (orig[0] != '\0'&&thetrace>2) themessenger << " [from: " << orig << "]";
-    themessenger << Message_EndLine;
+    Message_Messenger::StreamBuffer aSender = themessenger->SendWarning();
+    aSender << "    --> Warning : " << mess;
+    if (orig[0] != '\0'&&thetrace>2) aSender << " [from: " << orig << "]";
+    aSender << std::endl;
   }
 }
 
@@ -1007,6 +1010,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 
     //  ....    Etat Initial : peut-etre deja fait ... ou infaisable !
 
+    Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
   //if (!former.IsNull()) {
     Transfer_StatusExec statex = former->StatusExec();
     switch (statex) {
@@ -1014,7 +1018,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	break;
       case Transfer_StatusDone :                  // Transfert deja fait
 //#ifdef TRANSLOG
-	themessenger << " .. and Transfer done" << Message_EndLine;
+	aSender << " .. and Transfer done" << std::endl;
 //#endif
 //	if (former->HasResult()) former->SetAlreadyUsed();
 	return former;
@@ -1023,7 +1027,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	return former;
       case Transfer_StatusError :                 // pas propre, ca ...
 	if (thetrace) {
-	  themessenger << "                  *** Transfer in Error Status  :" << Message_EndLine;
+	  aSender << "                  *** Transfer in Error Status  :" << std::endl;
 	  StartTrace (former, start, thelevel,0);
 //	  (*themessenger->Out()) << flush;
 	}
@@ -1031,7 +1035,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 	throw Transfer_TransferFailure("TransferProcess : Transfer in Error Status");
       case Transfer_StatusLoop :                  // la boucle est bouclee ...
 	if (thetrace) {
-	  themessenger << "                  *** Transfer  Head of Dead Loop  :" << Message_EndLine;
+	  aSender << "                  *** Transfer  Head of Dead Loop  :" << std::endl;
 	  StartTrace (former, start, thelevel,0);
 //	  (*themessenger->Out()) << flush;
 	}
@@ -1054,6 +1058,8 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
   Handle(Transfer_Binder) binder;
   Standard_Boolean newbind = Standard_False;
   if (theerrh) {
+    Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
+
     //   Transfert sous protection pour les exceptions (pour notification en fait)
     Standard_Integer oldlev = thelevel;
     try {
@@ -1064,13 +1070,13 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     //    ...  Exceptions a Rattraper : elles ne se ressemblent pas toutes ... !
     catch (Transfer_TransferDeadLoop const&) {
       if (binder.IsNull()) {
-	themessenger << "                  *** Dead Loop with no Result" << Message_EndLine;
+	aSender << "                  *** Dead Loop with no Result" << std::endl;
 	if (thetrace) StartTrace (binder, start, thelevel-1,0);
 	binder = new Transfer_VoidBinder;
 	Bind (start,binder);  newbind = Standard_True;
       } else if (binder->StatusExec() == Transfer_StatusLoop) {
 	if (thetrace) {
-	  themessenger << "                  *** Dead Loop : Finding head of Loop :" << Message_EndLine;
+	  aSender << "                  *** Dead Loop : Finding head of Loop :" << std::endl;
 	  StartTrace (binder, start, thelevel-1,0);
 	}
 	else StartTrace (binder, start,thelevel-1,4);
@@ -1078,7 +1084,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 // Autrement dit, on change d exception (on est sorti de la boucle)
       } else {
 	if (thetrace) {
-	  themessenger << "                  *** Dead Loop : Actor in Loop :" << Message_EndLine;
+	  aSender << "                  *** Dead Loop : Actor in Loop :" << std::endl;
 	  StartTrace (binder, start, thelevel-1,0);
 	}
       }
@@ -1087,13 +1093,13 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     }
     catch (Standard_Failure const& anException) {
       if (binder.IsNull()) {
-	themessenger << "                  *** Exception Raised with no Result" << Message_EndLine;
+	aSender << "                  *** Exception Raised with no Result" << std::endl;
 	binder = new Transfer_VoidBinder;
 	Bind (start,binder);  newbind = Standard_True;
       }
       binder->AddFail("Transfer stopped by exception raising");
       if (thetrace) {
-	themessenger << "    *** Raised : " << anException.GetMessageString() << Message_EndLine;
+	aSender << "    *** Raised : " << anException.GetMessageString() << std::endl;
 	StartTrace (binder, start, thelevel-1,4);
       }
       thelevel = oldlev;
@@ -1158,7 +1164,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
   }
   if (binder.IsNull()) {
 //    if (thetrace) {
-//      themessenger << "Transfer has produced no Result" <<endl;
+//      aSender << "Transfer has produced no Result" <<endl;
 //      StartTrace (binder, start, thelevel-1,0); sout << flush;
 //    }
     if (thelevel > 0) thelevel --;
@@ -1222,21 +1228,22 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
 					  const Standard_Integer level,
 					  const Standard_Integer mode) const 
 {
+  Message_Messenger::StreamBuffer aSender = themessenger->SendInfo();
   // ###  Fail (Roots:50)  --  Start start->DynamicType()
   // ###  Fail (Roots:50)  --  Start id:#label.. Type:start->DynamicType()
   if (thetrace > 3) {  // Internal to be switch when searching bug (trace >= 4)
-    if (mode == 1) themessenger << "  ###  Fail";
-    if (mode == 2) themessenger << "  ###  Warning";
-    if (mode == 3) themessenger << "  ###  New Root n0 " << theroots.Extent();
-    if (mode == 4) themessenger << "  ###  Exception";
-    if (mode == 5) themessenger << "  ###  Substitution";
-    if (mode == 6) themessenger << "  ###  Information";
+    if (mode == 1) aSender << "  ###  Fail";
+    if (mode == 2) aSender << "  ###  Warning";
+    if (mode == 3) aSender << "  ###  New Root n0 " << theroots.Extent();
+    if (mode == 4) aSender << "  ###  Exception";
+    if (mode == 5) aSender << "  ###  Substitution";
+    if (mode == 6) aSender << "  ###  Information";
     if (level > 1)
-      themessenger << " (nested)";  // " at nesting Level:"<<level;
+      aSender << " (nested)";  // " at nesting Level:"<<level;
     if (mode >= 0 && mode != 3)
-      themessenger << " at " << theroots.Extent() << " Roots";
+      aSender << " at " << theroots.Extent() << " Roots";
   }
-  if (!start.IsNull()) PrintTrace (start,themessenger);
+  if (!start.IsNull()) PrintTrace (start,aSender);
 ////  sout << endl;
 
   if (!binder.IsNull()) {   // old: if IsNull sout <<endl<< "  ---  Not Bound";
@@ -1246,10 +1253,10 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
       if (bnd->Status() != Transfer_StatusVoid) {
 // ---  Result Type: binder->ResultType()  ---  Binder : binder->DynamicType();
 	if (!hasres)
-	  themessenger << "\n  ---  Result Type : ";
+	  aSender << "\n  ---  Result Type : ";
 	else 
-	  themessenger << " , ";
-	themessenger << bnd->ResultTypeName();
+	  aSender << " , ";
+	aSender << bnd->ResultTypeName();
 //  CKY 9-JAN-1999:  waiting for XSTEP Kernel message (not IGES_2075)
 /*        Message_Msg Msg2075("IGES_2075");
           Msg2075.AddString(bnd->ResultTypeName());
@@ -1259,7 +1266,7 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
       bnd = bnd->NextResult();
     }
     if (!hasres && mode > 2) {
-      themessenger << "\n  ---  No Result recorded";
+      aSender << "\n  ---  No Result recorded";
 //  CKY 9-JAN-1999 : waiting for XSTEP Kernel message
 //     (not IGES_2075, no reference to specifically TopoDS_Shape)
 /*       Message_Msg Msg2075("IGES_2075");
@@ -1268,7 +1275,7 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
     }
 //old    if (isused) sout << "  --    (Already Used in another Transfer)";
   }
-  themessenger << Message_EndLine;
+  aSender << std::endl;
 }
 
 
@@ -1277,8 +1284,7 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
 //purpose  : 
 //=======================================================================
 
-void  Transfer_TransferProcess::PrintTrace(const TheStart& start,
-					   const Handle(Message_Messenger)& S) const
+void  Transfer_TransferProcess::PrintTrace(const TheStart& start, Standard_OStream& S) const
 {
   if (!start.IsNull())   S <<" Type:" << start->DynamicType()->Name();
 }

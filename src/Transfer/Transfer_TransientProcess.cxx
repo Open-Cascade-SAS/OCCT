@@ -153,16 +153,16 @@ NCollection_DataMap<TCollection_AsciiString, Handle(Standard_Transient)>& Transf
 //=======================================================================
 
 void Transfer_TransientProcess::PrintTrace
-  (const Handle(Standard_Transient)& start, const Handle(Message_Messenger)& S) const
+  (const Handle(Standard_Transient)& start, Standard_OStream& S) const
 {
   if (!start.IsNull()) {
-    S << "Entity ";
     if (!themodel.IsNull()) {
-      themodel->Print (start,S,1);
+      S << "Entity ";
+      themodel->Print (start, S, 1);
 //      S<<"id ";  themodel->Print (start,S);
 //      S<<" Type:"<<themodel->TypeName (start);
     }
-    else S<<" Type:"<< Interface_InterfaceModel::ClassName(start->DynamicType()->Name());
+    else S<<"Entity Type:"<< Interface_InterfaceModel::ClassName(start->DynamicType()->Name());
  //  << start (handle)  ??
   }
 }
@@ -234,20 +234,20 @@ Standard_Boolean Transfer_TransientProcess::IsDataFail
 //=======================================================================
 
 void Transfer_TransientProcess::PrintStats(const Standard_Integer /*mode*/,
-                                           const Handle(Message_Messenger)& S) const
+                                           Standard_OStream& S) const
 {
   S<<"\n*******************************************************************\n";
 //  if (mode == 1) {    //  Statistiques de base
-    S << "********                 Basic Statistics                  ********"<<Message_EndLine;
+    S<< "********                 Basic Statistics                  ********"<<std::endl;
 
     Handle(Interface_InterfaceModel) model = Model();
-    if (model.IsNull())      S<<"****        Model unknown"<<Message_EndLine;
+    if (model.IsNull())      S<<"****        Model unknown"<<std::endl;
     else
-      S<<"****        Nb Entities         : "<<model->NbEntities()<<Message_EndLine;
+      S<<"****        Nb Entities         : "<<model->NbEntities()<<std::endl;
 
     Standard_Integer nbr = 0, nbe = 0, nbw = 0;
     Standard_Integer i, max = NbMapped(), nbroots = NbRoots();
-    S << "****        Nb Final Results    : "<<nbroots<<Message_EndLine;
+    S<< "****        Nb Final Results    : "<<nbroots<<std::endl;
 
     for (i = 1; i <= max; i ++) {
       const Handle(Transfer_Binder)& binder = MapItem(i);
@@ -269,7 +269,7 @@ void Transfer_TransientProcess::PrintStats(const Standard_Integer /*mode*/,
       S<<"****                Warnings on : "<<Interface_MSG::Blanks(nbw,4)<<nbw<<" Entities\n";
     S<<"*******************************************************************";
 //  }
-  S<<Message_EndLine;
+  S<<std::endl;
 }
 
 

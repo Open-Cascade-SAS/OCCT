@@ -173,14 +173,14 @@ void IGESGeom_ToolFlash::OwnCheck
 
 void IGESGeom_ToolFlash::OwnDump
   (const Handle(IGESGeom_Flash)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   Standard_Integer fn = ent->FormNumber();
 
-  S << "IGESGeom_Flash" << Message_EndLine;
+  S << "IGESGeom_Flash\n";
   switch (fn) {
-    case 0 : S << " --    Form defined by reference entity   --" << Message_EndLine; break;
+    case 0 : S << " --    Form defined by reference entity   --\n"; break;
     case 1 : S << " --    Circular    --  ";  break;
     case 2 : S << " --    Rectangle   --  ";  break;
     case 3 : S << " --    Donut    --  ";  break;
@@ -190,10 +190,10 @@ void IGESGeom_ToolFlash::OwnDump
 
   S << "Flash reference point    : ";
   IGESData_DumpXYL(S,level, ent->ReferencePoint(), ent->Location());
-  S << " First sizing parameter  : " << ent->Dimension1() << "  ";
-  S << " Second sizing parameter : " << ent->Dimension2() << Message_EndLine;
-  S << " Rotation about reference entity : " << ent->Rotation() << Message_EndLine;
-  S << "Reference Entity         : ";
+  S << " First sizing parameter  : " << ent->Dimension1() << "  "
+    << " Second sizing parameter : " << ent->Dimension2() << "\n"
+    << " Rotation about reference entity : " << ent->Rotation() << "\n"
+    << "Reference Entity         : ";
   dumper.Dump(ent->ReferenceEntity(),S, sublevel);
-  S << Message_EndLine;
+  S << std::endl;
 }

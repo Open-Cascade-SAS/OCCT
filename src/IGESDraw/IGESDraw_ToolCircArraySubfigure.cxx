@@ -32,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
@@ -161,25 +160,24 @@ void IGESDraw_ToolCircArraySubfigure::OwnCheck
 
 void IGESDraw_ToolCircArraySubfigure::OwnDump
   (const Handle(IGESDraw_CircArraySubfigure)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_CircArraySubfigure" << Message_EndLine;
-
-  S << "Base Entity : ";
+  S << "IGESDraw_CircArraySubfigure\n"
+    << "Base Entity : ";
   dumper.Dump(ent->BaseEntity(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Total Number Of Possible Instance Locations : " << ent->NbLocations()
-    << Message_EndLine;
-  S << "Imaginary Circle. Radius : " << ent->CircleRadius() << "  Center : ";
-  IGESData_DumpXYZL(S, level, ent->CenterPoint(), ent->Location());  S << Message_EndLine;
-  S << "Start Angle (in radians) : " << ent->StartAngle() << "  ";
-  S << "Delta Angle (in radians) : " << ent->DeltaAngle() << Message_EndLine;
-  S << "Do-Dont Flag : ";
-  if (ent->DoDontFlag())     S << "Dont" << Message_EndLine;
-  else                       S << "Do" << Message_EndLine;
+  S << "\n"
+    << "Total Number Of Possible Instance Locations : " << ent->NbLocations()
+    << "\n"
+    << "Imaginary Circle. Radius : " << ent->CircleRadius() << "  Center : ";
+  IGESData_DumpXYZL(S, level, ent->CenterPoint(), ent->Location());  S << "\n";
+  S << "Start Angle (in radians) : " << ent->StartAngle() << "  "
+    << "Delta Angle (in radians) : " << ent->DeltaAngle() << "\n"
+    << "Do-Dont Flag : ";
+  if (ent->DoDontFlag())     S << "Dont\n";
+  else                       S << "Do\n";
   S << "The Do-Dont List : ";
-  IGESData_DumpVals(S ,level,1, ent->ListCount(),ent->ListPosition);
-  S << Message_EndLine;
+  IGESData_DumpVals(S,level,1, ent->ListCount(),ent->ListPosition);
+  S << std::endl;
 }

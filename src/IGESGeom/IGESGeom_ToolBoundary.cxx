@@ -34,7 +34,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -430,36 +429,38 @@ void IGESGeom_ToolBoundary::OwnCheck(const Handle(IGESGeom_Boundary)& ent,
 
 void IGESGeom_ToolBoundary::OwnDump(const Handle(IGESGeom_Boundary)& ent,
                                     const IGESData_IGESDumper& dumper,
-                                    const Handle(Message_Messenger)& S,
+                                    Standard_OStream& S,
                                     const Standard_Integer level)  const
 {
   Standard_Integer i, num, sublevel = (level > 4) ? 1 : 0;
-  S << "IGESGeom_Boundary" << Message_EndLine;
-  S << "Bounded Surface Representation Type : " << ent->BoundaryType() << Message_EndLine;
-  S << "Trimming Curves Representation : " << ent->PreferenceType() << Message_EndLine;
-  S << "Bounded Surface    : ";
+  S << "IGESGeom_Boundary\n"
+    << "Bounded Surface Representation Type : " << ent->BoundaryType() << "\n"
+    << "Trimming Curves Representation : " << ent->PreferenceType() << "\n"
+    << "Bounded Surface    : ";
   dumper.Dump(ent->Surface(),S, sublevel);
-  S << Message_EndLine;
-  S << "Model Space Curves : " << Message_EndLine;
-  S << "Orientation Flags  : " << Message_EndLine;
-  S << "Parameter Curves Set : ";
-  IGESData_DumpEntities
-    (S,dumper,-level,1,ent->NbModelSpaceCurves(),ent->ModelSpaceCurve);
-  S << Message_EndLine;
+  S << "\n"
+    << "Model Space Curves :\n"
+    << "Orientation Flags  :\n"
+    << "Parameter Curves Set : ";
+  IGESData_DumpEntities(S,dumper,-level,1,ent->NbModelSpaceCurves(),ent->ModelSpaceCurve);
+  S << "\n";
   if (level > 4)
     for ( num = ent->NbModelSpaceCurves(), i = 1; i <= num; i++ )
       {
-	S << "[" << i << "]: ";
-	S << "Model Space Curve : ";
+	S << "[" << i << "]: "
+	  << "Model Space Curve : ";
 	dumper.Dump (ent->ModelSpaceCurve(i),S, 1);
-	S << "  Orientation Flags : " << ent->Sense(i) << Message_EndLine;
-	S << "  Parameter Curves : ";
+	S << "  Orientation Flags : " << ent->Sense(i) << "\n"
+	  << "  Parameter Curves : ";
 	Handle(IGESData_HArray1OfIGESEntity) curves = ent->ParameterCurves(i);
 	if (!curves.IsNull()) {
 	  IGESData_DumpEntities(S,dumper, level,1,curves->Length(),curves->Value);
 	}
-	else S << " List Empty";
-	S << Message_EndLine;
+	else
+  {
+    S << " List Empty";
+  }
+	S << "\n";
       }
-  S << Message_EndLine;
+  S << std::endl;
 }

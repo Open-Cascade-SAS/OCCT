@@ -15,9 +15,6 @@
 #include <Interface_Check.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_MSG.hxx>
-#include <Message_Messenger.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_Finder.hxx>
 #include <Transfer_FinderProcess.hxx>
@@ -58,20 +55,20 @@ Transfer_FinderProcess::Transfer_FinderProcess (const Standard_Integer nb)
 }
 
 
-    void  Transfer_FinderProcess::PrintTrace
-  (const Handle(Transfer_Finder)& start, const Handle(Message_Messenger)& S) const
-      {  if (!start.IsNull()) S<<" Type:"<<start->ValueTypeName();  }
+void  Transfer_FinderProcess::PrintTrace (const Handle(Transfer_Finder)& start, Standard_OStream& S) const
+{
+  if (!start.IsNull()) S << " Type:" << start->ValueTypeName();
+}
 
-    void  Transfer_FinderProcess::PrintStats
-  (const Standard_Integer mode, const Handle(Message_Messenger)& S) const
+void  Transfer_FinderProcess::PrintStats (const Standard_Integer mode, Standard_OStream& S) const
 {
   S<<"\n*******************************************************************\n";
   if (mode == 1) {    //  Statistiques de base
-    S << "********                 Basic Statistics                  ********"<<Message_EndLine;
+    S<< "********                 Basic Statistics                  ********"<<std::endl;
 
     Standard_Integer nbr = 0, nbe = 0, nbw = 0;
     Standard_Integer i, max = NbMapped(), nbroots = NbRoots();
-    S << "****        Nb Final Results    : "<<nbroots<<Message_EndLine;
+    S<< "****        Nb Final Results    : "<< nbroots <<std::endl;
 
     for (i = 1; i <= max; i ++) {
       const Handle(Transfer_Binder)& binder = MapItem(i);
@@ -86,12 +83,12 @@ Transfer_FinderProcess::Transfer_FinderProcess (const Standard_Integer nb)
       }
     }
     if (nbr > nbroots)
-      S<<"****      ( Itermediate Results : "<<nbr-nbroots<<" )\n";
+      S<<"****      ( Itermediate Results : "<<nbr-nbroots <<" )\n";
     if (nbe > 0)
       S<<"****                  Errors on :"<<Interface_MSG::Blanks(nbe,4)<<nbe<<" Entities\n";
     if (nbw > 0)
       S<<"****                Warnings on : "<<Interface_MSG::Blanks(nbw,4)<<nbw<<" Entities\n";
     S<<"*******************************************************************";
   }
-  S<<Message_EndLine;
+  S<<std::endl;
 }

@@ -108,20 +108,20 @@ void IGESGeom_ToolLine::OwnCheck
 
 void IGESGeom_ToolLine::OwnDump
   (const Handle(IGESGeom_Line)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer infin = ent->Infinite();
   switch (infin) {
-    case 1 : S << "Semi-Infinite Line"<<Message_EndLine;  break;
-    case 2 : S << "Infinite Line"<<Message_EndLine;  break;
-    default : S << "Bounded Line"<<Message_EndLine; break;
+    case 1 : S << "Semi-Infinite Line\n"; break;
+    case 2 : S << "Infinite Line\n"; break;
+    default : S << "Bounded Line\n"; break;
   }
 
-  S << "Line from IGESGeom" << Message_EndLine;
-  S << "Starting Point : ";
+  S << "Line from IGESGeom\n"
+    << "Starting Point : ";
   IGESData_DumpXYZL(S,level, ent->StartPoint(), ent->Location());
-  S << Message_EndLine;
-  S << "End Point : ";
+  S << "\n"
+       "End Point : ";
   IGESData_DumpXYZL(S,level, ent->EndPoint(), ent->Location());
-  S << Message_EndLine;
+  S << std::endl;
 }

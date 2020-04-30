@@ -223,23 +223,22 @@ void IGESDraw_ToolNetworkSubfigureDef::OwnCheck
 
 void IGESDraw_ToolNetworkSubfigureDef::OwnDump
   (const Handle(IGESDraw_NetworkSubfigureDef)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_NetworkSubfigureDef" << Message_EndLine;
-
-  S << "Depth Of Subfigure(Nesting)  : " << ent->Depth() << Message_EndLine;
-  S << "Name Of Subfigure            : ";
+  S << "IGESDraw_NetworkSubfigureDef\n"
+    << "Depth Of Subfigure(Nesting)  : " << ent->Depth() << "\n"
+    << "Name Of Subfigure            : ";
   IGESData_DumpString(S,ent->Name());
-  S << Message_EndLine << "Associated Entities          : ";
+  S << "\nAssociated Entities          : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << Message_EndLine << "Type Flag : " << ent->TypeFlag() << Message_EndLine;
-  S << "Primary Reference Designator : ";
+  S << "\nType Flag : " << ent->TypeFlag() << "\n"
+    << "Primary Reference Designator : ";
   IGESData_DumpString(S,ent->Designator());
-  S << Message_EndLine << "Text Display Template Entity : ";
+  S << "\nText Display Template Entity : ";
   dumper.Dump(ent->DesignatorTemplate(),S, tempSubLevel);
-  S << Message_EndLine << "Connect Point Entities       : ";
+  S << "\nConnect Point Entities       : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbPointEntities(),ent->PointEntity);
-  S << Message_EndLine;
+  S << std::endl;
 }

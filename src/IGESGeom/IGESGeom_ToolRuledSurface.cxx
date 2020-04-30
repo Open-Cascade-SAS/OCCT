@@ -153,21 +153,20 @@ void IGESGeom_ToolRuledSurface::OwnCheck
 
 void IGESGeom_ToolRuledSurface::OwnDump
   (const Handle(IGESGeom_RuledSurface)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_RuledSurface" << Message_EndLine;
-
-  S << "First  Curve   : ";
+  S << "IGESGeom_RuledSurface\n"
+    << "First  Curve   : ";
   dumper.Dump(ent->FirstCurve(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Second Curve   : ";
+  S << "\n"
+    << "Second Curve   : ";
   dumper.Dump(ent->SecondCurve(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Direction Flag : " << ent->DirectionFlag() << "  i.e.";
-  if (ent->DirectionFlag() == 0) S<< "Join First to First, Last to Last"<<Message_EndLine;
-  else                           S<< "Join First to Last, Last to First"<<Message_EndLine;
-  if (ent->IsDevelopable()) S << " .. Is Developable" << Message_EndLine;
-  else                      S << " .. Is possibly not developable .." << Message_EndLine;
+  S << "\n"
+    << "Direction Flag : " << ent->DirectionFlag() << "  i.e.";
+  if (ent->DirectionFlag() == 0) S << "Join First to First, Last to Last\n";
+  else                           S << "Join First to Last, Last to First\n";
+  if (ent->IsDevelopable()) S << " .. Is Developable\n";
+  else                      S << " .. Is possibly not developable ..\n";
 }

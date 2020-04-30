@@ -119,22 +119,22 @@ void  IGESDimen_ToolDiameterDimension::OwnCheck
 
 void  IGESDimen_ToolDiameterDimension::OwnDump
   (const Handle(IGESDimen_DiameterDimension)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_DiameterDimension" << Message_EndLine;
-  S << "General Note Entity : ";
+  S << "IGESDimen_DiameterDimension\n"
+    << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
-  S << "First  Leader Entity : ";
+  S << "\n"
+    << "First  Leader Entity : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Leader Entity : ";
+  S << "\n"
+    << "Second Leader Entity : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << Message_EndLine;
-  S << "Center Point : ";
+  S << "\n"
+    << "Center Point : ";
   IGESData_DumpXYL(S,level, ent->Center(), ent->Location());
-  S << Message_EndLine;
+  S << std::endl;
 }
 

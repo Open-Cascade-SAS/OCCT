@@ -466,50 +466,50 @@ void IGESGeom_ToolBSplineSurface::OwnCheck(const Handle(IGESGeom_BSplineSurface)
 
 void IGESGeom_ToolBSplineSurface::OwnDump(const Handle(IGESGeom_BSplineSurface)& ent,
                                           const IGESData_IGESDumper& /* dumper */,
-                                          const Handle(Message_Messenger)& S,
+                                          Standard_OStream& S,
                                           const Standard_Integer level)  const
 {
-  S << "BSplineSurface from IGESGeom" << Message_EndLine << Message_EndLine;
+  S << "BSplineSurface from IGESGeom\n\n";
 
   Standard_Integer indU = ent->UpperIndexU();
   Standard_Integer indV = ent->UpperIndexV();
   Standard_Integer degU = ent->DegreeU();
   Standard_Integer degV = ent->DegreeV();
 
-  S << "In U : Upper Knot Index : " << indU;
-  S << "   Degree : " << degU << "  ";
-  S << (ent->IsClosedU() ? "Closed" : "Open") << "  ";
-  S << (ent->IsPeriodicU() ? "Periodic" : "Non Periodic");
-  S << Message_EndLine;
-  S << "In V : Upper Knot Index : " << indV;
-  S << "   Degree : " << degV << "  ";
-  S << (ent->IsClosedV() ? "Closed" : "Open") << "  ";
-  S << (ent->IsPeriodicV() ? "Periodic" : "Non Periodic") << "  ";
-  S << (ent->IsPolynomial(Standard_True) ? "Polynomial" : "Rational") << Message_EndLine;
+  S << "In U : Upper Knot Index : " << indU
+    << "   Degree : " << degU << "  "
+    << (ent->IsClosedU() ? "Closed" : "Open") << "  "
+    << (ent->IsPeriodicU() ? "Periodic" : "Non Periodic")
+    << "\n"
+    << "In V : Upper Knot Index : " << indV
+    << "   Degree : " << degV << "  "
+    << (ent->IsClosedV() ? "Closed" : "Open") << "  "
+    << (ent->IsPeriodicV() ? "Periodic" : "Non Periodic") << "  "
+    << (ent->IsPolynomial(Standard_True) ? "Polynomial" : "Rational") << "\n";
 
-  S << "Starting Parameter for U direction : " << ent->UMin() << Message_EndLine;
-  S << "Ending   Parameter for U direction : " << ent->UMax() << Message_EndLine;
-  S << "Starting Parameter for V direction : " << ent->VMin() << Message_EndLine;
-  S << "Ending   Parameter for V direction : " << ent->VMax() << Message_EndLine;
+  S << "Starting Parameter for U direction : " << ent->UMin() << "\n"
+    << "Ending   Parameter for U direction : " << ent->UMax() << "\n"
+    << "Starting Parameter for V direction : " << ent->VMin() << "\n"
+    << "Ending   Parameter for V direction : " << ent->VMax() << "\n";
 
   S << " Knots in  U : ";
-  IGESData_DumpVals(S ,level,-degU, indU+1,ent->KnotU);
-  S << Message_EndLine;
-  S << " Knots in  V : ";
-  IGESData_DumpVals(S ,level,-degV, indV+1,ent->KnotV);
-  S << Message_EndLine;
-  S << "Weights : (Row -> IndexU, Col -> IndexV)";
-  IGESData_DumpRectVals(S ,level,0, indU,0,indV,ent->Weight);
-  S << Message_EndLine;
-  S << "Control Points (Poles) : ";
+  IGESData_DumpVals(S,level,-degU, indU+1,ent->KnotU);
+  S << "\n"
+    << " Knots in  V : ";
+  IGESData_DumpVals(S,level,-degV, indV+1,ent->KnotV);
+  S << "\n"
+    << "Weights : (Row -> IndexU, Col -> IndexV)";
+  IGESData_DumpRectVals(S,level,0, indU,0,indV,ent->Weight);
+  S << "\n"
+    << "Control Points (Poles) : ";
 //IGESData_DumpRectXYZL(S,level,1, ent->NbPoles(),ent->Pole, ent->Location());
-  if (level < 5) {  S << " [ content : ask level > 4 ]" << Message_EndLine; return;  }
+  if (level < 5) {  S << " [ content : ask level > 4 ]" << std::endl; return;  }
   gp_GTrsf loca = ent->Location();
   for (Standard_Integer JP = 0; JP <= indV; JP ++)
     for (Standard_Integer IP = 0; IP <= indU; IP ++) {
-      if (IP == 0) S << Message_EndLine;
+      if (IP == 0) S << "\n";
       S <<"  -  ["<<IP<<","<<JP<<"]: ";
       IGESData_DumpXYZL(S,level,ent->Pole(IP,JP),loca);
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

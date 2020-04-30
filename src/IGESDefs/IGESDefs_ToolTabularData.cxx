@@ -223,34 +223,34 @@ void IGESDefs_ToolTabularData::OwnCheck
 
 void IGESDefs_ToolTabularData::OwnDump
   (const Handle(IGESDefs_TabularData)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer nbIndeps = ent->NbIndependents(); //szv#4:S4163:12Mar99 i unused
   Standard_Integer nbDeps = ent->NbDependents();
 
-  S << "IGESDefs_TabularData" << Message_EndLine;
-  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Property type : " << ent->PropertyType() << Message_EndLine;
-  S << "No. of Dependent variables    : " << nbDeps << Message_EndLine;
-  S << "No. of Independent variables  : " << nbIndeps << Message_EndLine;
-  S << "Type of independent variables : ";
-  IGESData_DumpVals(S ,level,1, nbIndeps,ent->TypeOfIndependents);
-  S << Message_EndLine << "Number of values of independent variables : ";
-  IGESData_DumpVals(S ,level,1, nbIndeps,ent->NbValues);
+  S << "IGESDefs_TabularData\n"
+    << "No. of property values : " << ent->NbPropertyValues() << "\n"
+    << "Property type : " << ent->PropertyType() << "\n"
+    << "No. of Dependent variables    : " << nbDeps << "\n"
+    << "No. of Independent variables  : " << nbIndeps << "\n"
+    << "Type of independent variables : ";
+  IGESData_DumpVals(S,level,1, nbIndeps,ent->TypeOfIndependents);
+  S << "\nNumber of values of independent variables : ";
+  IGESData_DumpVals(S,level,1, nbIndeps,ent->NbValues);
 // ?? JAGGED ??
-  S << Message_EndLine << "Values of the independent variable : ";
+  S << std::endl << "Values of the independent variable : ";
   if (level < 5) S << " [ask level > 4]";
   else {
     for (Standard_Integer ind = 1; ind <= nbIndeps; ind ++) {
-      S << Message_EndLine << "[" << ind << "]:";
+      S << std::endl << "[" << ind << "]:";
       Standard_Integer nbi = ent->NbValues(ind);
       for (Standard_Integer iv = 1; iv <= nbi; iv ++)
 	S << " " << ent->IndependentValue(ind,iv);
     }
   }
-//  IGESData_DumpVals(S ,level,1, nbIndeps,ent->IndependentValue);
-  S << Message_EndLine << "Values of the dependent variable : ";
-//  IGESData_DumpVals(S ,level,1, nbDeps,ent->DependentValue);
-  S << "  TO BE DONE";
-  S << Message_EndLine;
+//  IGESData_DumpVals(aSender,level,1, nbIndeps,ent->IndependentValue);
+  S << std::endl << "Values of the dependent variable : ";
+//  IGESData_DumpVals(aSender,level,1, nbDeps,ent->DependentValue);
+  S << "  TO BE DONE"
+    << std::endl;
 }

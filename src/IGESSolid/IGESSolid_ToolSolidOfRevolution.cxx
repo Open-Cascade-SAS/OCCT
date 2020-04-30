@@ -167,17 +167,16 @@ void  IGESSolid_ToolSolidOfRevolution::OwnCheck
 
 void  IGESSolid_ToolSolidOfRevolution::OwnDump
   (const Handle(IGESSolid_SolidOfRevolution)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_SolidOfRevolution" << Message_EndLine;
-
-  S << "Curve entity   :";
+  S << "IGESSolid_SolidOfRevolution\n"
+    << "Curve entity   :";
   dumper.Dump(ent->Curve(),S, (level <= 4) ? 0 : 1);
-  S << Message_EndLine;
-  S << "Fraction of rotation : " << ent->Fraction() << Message_EndLine;
-  S << "Axis Point     : ";
+  S << "\n"
+    << "Fraction of rotation : " << ent->Fraction() << "\n"
+    << "Axis Point     : ";
   IGESData_DumpXYZL(S,level, ent->AxisPoint(), ent->Location());
-  S << Message_EndLine << "Axis direction : ";
+  S << "\nAxis direction : ";
   IGESData_DumpXYZL(S,level, ent->Axis(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

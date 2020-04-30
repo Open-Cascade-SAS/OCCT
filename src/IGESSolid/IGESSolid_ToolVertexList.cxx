@@ -201,12 +201,11 @@ void IGESSolid_ToolVertexList::OwnCheck(const Handle(IGESSolid_VertexList)& ent,
 
 void IGESSolid_ToolVertexList::OwnDump(const Handle(IGESSolid_VertexList)& ent,
                                        const IGESData_IGESDumper& /* dumper */,
-                                       const Handle(Message_Messenger)& S,
+                                       Standard_OStream& S,
                                        const Standard_Integer level) const
 {
-  S << "IGESSolid_VertexList" << Message_EndLine;
-
-  S << "Vertices : ";
-  IGESData_DumpListXYZL(S ,level,1, ent->NbVertices(),ent->Vertex,ent->Location());
-  S << Message_EndLine;
+  S << "IGESSolid_VertexList\n"
+    << "Vertices : ";
+  IGESData_DumpListXYZL(S,level,1, ent->NbVertices(),ent->Vertex,ent->Location());
+  S << std::endl;
 }

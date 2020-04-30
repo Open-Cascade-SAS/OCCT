@@ -158,14 +158,14 @@ void  IGESDimen_ToolWitnessLine::OwnCheck
 
 void  IGESDimen_ToolWitnessLine::OwnDump
   (const Handle(IGESDimen_WitnessLine)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_WitnessLine" << Message_EndLine;
-  S << "Data Type   : "           << ent->Datatype() << "  ";
-  S << "Number of Data Points : " << ent->NbPoints() << "  ";
-  S << "Common Z displacement : " << ent->ZDisplacement() << Message_EndLine;
-  S << "Data Points : "; 
-  IGESData_DumpListXYLZ(S ,level,1, ent->NbPoints(),ent->Point,
+  S << "IGESDimen_WitnessLine\n"
+    << "Data Type   : "           << ent->Datatype() << "  "
+    << "Number of Data Points : " << ent->NbPoints() << "  "
+    << "Common Z displacement : " << ent->ZDisplacement() << "\n"
+    << "Data Points : "; 
+  IGESData_DumpListXYLZ(S,level,1, ent->NbPoints(),ent->Point,
 		    ent->Location(), ent->ZDisplacement());
-  S << Message_EndLine;
+  S << std::endl;
 }

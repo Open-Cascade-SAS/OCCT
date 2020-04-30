@@ -575,7 +575,10 @@ Handle(Standard_Transient) Interface_FileReaderTool::LoadedEntity
     thereports->SetValue(irep,rep);
 
     if ( thetrace >= 2 && !Messenger().IsNull())
-      ach->Print (Messenger(),2);
+    {
+      Message_Messenger::StreamBuffer sout = Messenger()->SendInfo();
+      ach->Print (sout,2);
+    }
   }
   
 //    Rechargement ? si oui, dans une UnknownEntity fournie par le protocole

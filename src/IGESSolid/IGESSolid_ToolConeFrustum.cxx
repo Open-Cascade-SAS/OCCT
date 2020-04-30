@@ -169,16 +169,15 @@ void  IGESSolid_ToolConeFrustum::OwnCheck
 
 void  IGESSolid_ToolConeFrustum::OwnDump
   (const Handle(IGESSolid_ConeFrustum)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_ConeFrustum" << Message_EndLine;
-
-  S << "Height : " << ent->Height() << "  ";
-  S << "Larger face Radius : "  << ent->LargerRadius() << "  ";
-  S << "Smaller face Radius : " << ent->SmallerRadius() << Message_EndLine;
-  S << "Face Center : ";
+  S << "IGESSolid_ConeFrustum\n"
+    << "Height : " << ent->Height() << "  "
+    << "Larger face Radius : "  << ent->LargerRadius() << "  "
+    << "Smaller face Radius : " << ent->SmallerRadius() << "\n"
+    << "Face Center : ";
   IGESData_DumpXYZL(S,level, ent->FaceCenter(), ent->Location());
-  S << Message_EndLine << "Axis : ";
+  S << "\nAxis : ";
   IGESData_DumpXYZL(S,level, ent->Axis(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

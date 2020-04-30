@@ -344,7 +344,8 @@ IFSelect_SessionPilot::IFSelect_SessionPilot (const Standard_CString prompt)
     }
     counter->AddWithGraph (list,thesession->Graph());
   }
-  counter->PrintList(Message::DefaultMessenger(),thesession->Model(),mode);
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  counter->PrintList (sout, thesession->Model(), mode);
   return IFSelect_RetVoid;
 }
 

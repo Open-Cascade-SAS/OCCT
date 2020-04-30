@@ -34,7 +34,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDimen_ToolFlagNote::IGESDimen_ToolFlagNote ()    {  }
@@ -148,18 +147,18 @@ void  IGESDimen_ToolFlagNote::OwnCheck
 
 void  IGESDimen_ToolFlagNote::OwnDump
   (const Handle(IGESDimen_FlagNote)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_FlagNote" << Message_EndLine;
-  S << "LowerLeftCorner : ";
+  S << "IGESDimen_FlagNote\n"
+    << "LowerLeftCorner : ";
   IGESData_DumpXYZL(S,level, ent->LowerLeftCorner(), ent->Location());
-  S << Message_EndLine << "Rotation Angle: " << ent->Angle() << Message_EndLine;
-  S << "General Note Entity : ";
+  S << "\nRotation Angle: " << ent->Angle() << "\n"
+    << "General Note Entity : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
-  S << "Number of Leaders : " << ent->NbLeaders() << "   Leaders : ";
+  S << "\n"
+    << "Number of Leaders : " << ent->NbLeaders() << "   Leaders : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbLeaders(),ent->Leader);
-  S << Message_EndLine;
+  S << std::endl;
 }

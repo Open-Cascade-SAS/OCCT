@@ -11,10 +11,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Message_Messenger.hxx>
-#include <MoniTool_Element.hxx>
 #include <MoniTool_TypedValue.hxx>
+
+#include <MoniTool_Element.hxx>
 #include <OSD_Path.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Transient.hxx>
@@ -228,37 +227,37 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
 
 //  ##   Print   ##
 
-    void  MoniTool_TypedValue::Print (const Handle(Message_Messenger)& S) const
+    void  MoniTool_TypedValue::Print (Standard_OStream& S) const
 {
-  S<<"--- Typed Value : "<<Name();
-  if (thelabel.Length() > 0) S<<"  Label : "<<Label();
-  S<<Message_EndLine<<"--- Type : "<<Definition()<<Message_EndLine<<"--- Value : ";
+  S <<"--- Typed Value : "<<Name();
+  if (thelabel.Length() > 0) S <<"  Label : "<<Label();
+  S <<std::endl<<"--- Type : "<<Definition()<<std::endl<<"--- Value : ";
 
   PrintValue (S);
-  S<<Message_EndLine;
+  S <<std::endl;
 
-  if (thesatisf) S<<" -- Specific Function for Satisfies : "<<thesatisn.ToCString()<<Message_EndLine;
+  if (thesatisf) S <<" -- Specific Function for Satisfies : "<<thesatisn.ToCString()<<std::endl;
 }
 
 
-    void  MoniTool_TypedValue::PrintValue (const Handle(Message_Messenger)& S) const
+    void  MoniTool_TypedValue::PrintValue (Standard_OStream& S) const
 {
   if (IsSetValue()) {
     if (thetype == MoniTool_ValueIdent)
-      S<<" (type) "<<theoval->DynamicType()->Name();
+      S <<" (type) "<<theoval->DynamicType()->Name();
     if (!thehval.IsNull())
-      S<<(thetype == MoniTool_ValueIdent ? " : " : "")<<thehval->ToCString();
+      S <<(thetype == MoniTool_ValueIdent ? " : " : "")<<thehval->ToCString();
 
     if (HasInterpret()) {
-      S<<"  (";
+      S <<"  (";
       Handle(TCollection_HAsciiString) str = Interpret (thehval,Standard_True);
-      if (!str.IsNull() && str != thehval) S<<"Native:"<<str->ToCString();
+      if (!str.IsNull() && str != thehval) S <<"Native:"<<str->ToCString();
       str = Interpret (thehval,Standard_False);
-      if (!str.IsNull() && str != thehval) S<<"  Coded:"<<str->ToCString();
-      S<<")";
+      if (!str.IsNull() && str != thehval) S <<"  Coded:"<<str->ToCString();
+      S <<")";
     }
   }
-  else S<<"(not set)";
+  else S <<"(not set)";
 }
 
 

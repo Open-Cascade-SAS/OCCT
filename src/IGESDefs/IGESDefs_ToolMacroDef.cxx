@@ -143,16 +143,16 @@ void  IGESDefs_ToolMacroDef::OwnCheck
 
 void  IGESDefs_ToolMacroDef::OwnDump
   (const Handle(IGESDefs_MacroDef)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
-  S << "IGESDefs_MacroDef" << Message_EndLine;
-  S << "MACRO : ";
+  S << "IGESDefs_MacroDef\n"
+    << "MACRO : ";
   IGESData_DumpString(S,ent->MACRO());
-  S << Message_EndLine;
-  S << "Entity Type ID : " << ent->EntityTypeID() << Message_EndLine;
-  S << "Language Statement : ";
-  IGESData_DumpStrings(S ,level,1, ent->NbStatements(),ent->LanguageStatement);
+  S << "\n"
+    << "Entity Type ID : " << ent->EntityTypeID() << "\n"
+    << "Language Statement : ";
+  IGESData_DumpStrings(S,level,1, ent->NbStatements(),ent->LanguageStatement);
   S << "END MACRO : ";
   IGESData_DumpString(S,ent->ENDMACRO());
-  S << Message_EndLine;
+  S << std::endl;
 }

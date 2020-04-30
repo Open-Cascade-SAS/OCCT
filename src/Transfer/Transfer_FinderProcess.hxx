@@ -23,7 +23,6 @@
 class Interface_InterfaceModel;
 class Transfer_TransientMapper;
 class Transfer_Finder;
-class Message_Messenger;
 
 class Transfer_FinderProcess;
 DEFINE_STANDARD_HANDLE(Transfer_FinderProcess, Transfer_ProcessForFinder)
@@ -69,10 +68,10 @@ public:
   Standard_EXPORT Handle(Transfer_TransientMapper) TransientMapper (const Handle(Standard_Transient)& obj) const;
   
   //! Specific printing to trace a Finder (by its method ValueType)
-  Standard_EXPORT virtual void PrintTrace (const Handle(Transfer_Finder)& start, const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void PrintTrace (const Handle(Transfer_Finder)& start, Standard_OStream& S) const Standard_OVERRIDE;
   
   //! Prints statistics on a given output, according mode
-  Standard_EXPORT void PrintStats (const Standard_Integer mode, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintStats (const Standard_Integer mode, Standard_OStream& S) const;
 
   DEFINE_STANDARD_RTTIEXT(Transfer_FinderProcess,Transfer_ProcessForFinder)
 

@@ -26,7 +26,6 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_ReportEntity.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Transient.hxx>
@@ -155,18 +154,18 @@ void Interface_CheckTool::FillCheck(const Handle(Standard_Transient)& ent,
 //=======================================================================
 
 void Interface_CheckTool::Print(const Handle(Interface_Check)& ach,
-                                const Handle(Message_Messenger)& S) const 
+                                Standard_OStream& S) const 
 {
   Standard_Integer i, nb;
   nb = ach->NbFails();
   if (nb > 0) S << " Fail Messages : " << nb << " :\n";
   for (i = 1; i <= nb; i ++) {
-    S << ach->Fail(i) << "\n";
+    S << ach->Fail(i)->String() << "\n";
   }
   nb = ach->NbWarnings();
   if (nb > 0) S << " Warning Messages : " << nb << " :\n";
   for (i = 1; i <= nb; i ++) {
-    S << ach->Warning(i) << "\n";
+    S << ach->Warning(i)->String() << "\n";
   }
 }
 
@@ -177,7 +176,7 @@ void Interface_CheckTool::Print(const Handle(Interface_Check)& ach,
 //=======================================================================
 
 void Interface_CheckTool::Print(const Interface_CheckIterator& list,
-                                const Handle(Message_Messenger)& S) const 
+                                Standard_OStream& S) const 
 {
   Handle(Interface_InterfaceModel) model = theshare.Model();
   list.Print(S,model,Standard_False);

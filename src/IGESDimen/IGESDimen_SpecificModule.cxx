@@ -75,7 +75,7 @@ IGESDimen_SpecificModule::IGESDimen_SpecificModule()  {  }
 
     void  IGESDimen_SpecificModule::OwnDump
   (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent,
-   const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S,
+   const IGESData_IGESDumper& dumper, Standard_OStream& S,
    const Standard_Integer own) const 
 {
   switch (CN) {

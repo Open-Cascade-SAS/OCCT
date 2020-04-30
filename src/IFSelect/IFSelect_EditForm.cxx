@@ -405,46 +405,46 @@ IFSelect_EditForm::IFSelect_EditForm
 }
 
 
-    void  IFSelect_EditForm::PrintDefs (const Handle(Message_Messenger)& S) const
+    void  IFSelect_EditForm::PrintDefs (Standard_OStream& S) const
 {
   Standard_Integer iv, nbv = NbValues(Standard_True);
-  S<<"***** EditForm,  Label : "<<Label()<<Message_EndLine;
-  if (IsComplete()) S<<"Complete, "<<nbv<<" Values"<<Message_EndLine;
+  S<<"***** EditForm,  Label : "<<Label()<<std::endl;
+  if (IsComplete()) S<<"Complete, "<<nbv<<" Values"<<std::endl;
   else {
-    S<<"Extraction on "<<nbv<<" Values : (extracted<-editor)"<<Message_EndLine;
+    S<<"Extraction on "<<nbv<<" Values : (extracted<-editor)"<<std::endl;
     for (iv = 1; iv <= nbv; iv ++) S<<"  "<<iv<<"<-"<<NumberFromRank(iv);
-    S<<Message_EndLine;
+    S<<std::endl;
   }
-  S<<"*****"<<Message_EndLine;
+  S<<"*****"<<std::endl;
 }
 
 
 static void PrintList
   (const Handle(TColStd_HSequenceOfHAsciiString)& list,
-   const Handle(Message_Messenger)& S, const Standard_Boolean alsolist)
+   Standard_OStream& S, const Standard_Boolean alsolist)
 {
-  if (list.IsNull())  {  S<<"(NULL LIST)"<<Message_EndLine;  return;  }
+  if (list.IsNull())  {  S<<"(NULL LIST)"<<std::endl;  return;  }
 
   Standard_Integer i,nb = list->Length();
-  S<<"(List : "<<nb<<" Items)"<<Message_EndLine;
+  S<<"(List : "<<nb<<" Items)"<<std::endl;
   if (!alsolist) return;
 
   for (i = 1; i <= nb; i ++) {
     Handle(TCollection_HAsciiString) str = list->Value(i);
-    S<<"  ["<<i<<"]	"<< (str.IsNull() ? "(NULL)" : str->ToCString())<<Message_EndLine;
+    S<<"  ["<<i<<"]	"<< (str.IsNull() ? "(NULL)" : str->ToCString())<<std::endl;
   }
 }
 
     void  IFSelect_EditForm::PrintValues
-  (const Handle(Message_Messenger)& S, const Standard_Integer what,
+  (Standard_OStream& S, const Standard_Integer what,
    const Standard_Boolean names, const Standard_Boolean alsolist) const
 {
   Standard_Integer iv, nbv = NbValues(Standard_True);
-  S<<  "****************************************************"<<Message_EndLine;
-  S<<"*****  "<<Label()<<Interface_MSG::Blanks(Label(),40)<<"*****"<<Message_EndLine;
-  S<<"*****                                          *****"<<Message_EndLine;
+  S<<  "****************************************************"<<std::endl;
+  S<<"*****  "<<Label()<<Interface_MSG::Blanks(Label(),40)<<"*****"<<std::endl;
+  S<<"*****                                          *****"<<std::endl;
   if (!theloaded)
-    S<<"*****         Values are NOT loaded            *****"<<Message_EndLine;
+    S<<"*****         Values are NOT loaded            *****"<<std::endl;
 
   else {
 //  Donnees sur lesquelles on a travaille
@@ -453,18 +453,18 @@ static void PrintList
       else S<<"*****  No loaded Model. Loaded object : type "<<theent->DynamicType()->Name();
     } else {
       if (theent.IsNull()) S<<"*****  No loaded entity";
-      else { S<<"*****  Loaded entity : "; themodel->PrintLabel (theent,S); }
+      else { S<<"*****  Loaded entity : "; themodel->PrintLabel (theent, S); }
     }
   }
-  S<<Message_EndLine<<"****************************************************"<<Message_EndLine<<Message_EndLine;
+  S<<std::endl<<"****************************************************"<<std::endl<<std::endl;
 
 //  Affichage des valeurs
   Standard_Boolean nams = names;
   Standard_Integer maxnam = theeditor->MaxNameLength (names ? 0 : -1);
   if (maxnam == 0) { maxnam = theeditor->MaxNameLength (0); nams = Standard_True; }
   Standard_Integer nbmod = 0;
-  if (what != 0) S<<"Mod N0 Name               Value"<<Message_EndLine;
-  else S<<" N0 Name               Value"<<Message_EndLine;
+  if (what != 0) S<<"Mod N0 Name               Value"<<std::endl;
+  else S<<" N0 Name               Value"<<std::endl;
 
   for (iv = 1; iv <= nbv; iv ++) {
     Standard_Integer jv = NumberFromRank(iv);
@@ -475,7 +475,7 @@ static void PrintList
       Handle(TCollection_HAsciiString) str;
       if (IsModified(jv)) S<<"* ";
       else S<<"  ";
-      S <<Interface_MSG::Blanks(iv,3)<<iv<<" "
+      S<<Interface_MSG::Blanks(iv,3)<<iv<<" "
 	<<name<<Interface_MSG::Blanks(name,maxnam)<<"  ";
 
       if (theeditor->IsList(jv)) {
@@ -489,7 +489,7 @@ static void PrintList
       if (what < 0) str = OriginalValue (jv);
       if (what > 0) str = EditedValue (jv);
 
-      S << (str.IsNull() ? "(NULL)" : str->ToCString()) <<Message_EndLine;
+      S<< (str.IsNull() ? "(NULL)" : str->ToCString()) <<std::endl;
 
 //    Modified only
     } else {
@@ -497,7 +497,7 @@ static void PrintList
       nbmod ++;
       if (theeditor->IsList(jv)) {
 	Handle(TColStd_HSequenceOfHAsciiString) list= OriginalList (jv);
-	S <<Interface_MSG::Blanks(iv,3)<<iv<<" "
+	S<<Interface_MSG::Blanks(iv,3)<<iv<<" "
 	  <<name<<Interface_MSG::Blanks(name,maxnam)<<" ORIG:";
 	PrintList (list,S,alsolist);
 
@@ -509,14 +509,14 @@ static void PrintList
       }
 
       Handle(TCollection_HAsciiString) str = OriginalValue (jv);
-      S <<Interface_MSG::Blanks(iv,3)<<iv<<" "
+      S<<Interface_MSG::Blanks(iv,3)<<iv<<" "
 	<<name<<Interface_MSG::Blanks(name,maxnam)<<" ORIG:"
-	<< (str.IsNull() ? "(NULL)" : str->ToCString()) <<Message_EndLine;
+	<< (str.IsNull() ? "(NULL)" : str->ToCString()) <<std::endl;
       str = EditedValue (jv);
-      S<<Interface_MSG::Blanks("",maxnam+4)<<" MOD :"<< (str.IsNull() ? "(NULL)" : str->ToCString()) <<Message_EndLine;
+      S<<Interface_MSG::Blanks("",maxnam+4)<<" MOD :"<< (str.IsNull() ? "(NULL)" : str->ToCString()) <<std::endl;
     }
   }
-  if (what == 0) S<<"On "<<nbv<<" Values, "<<nbmod<<" Modified"<<Message_EndLine;
+  if (what == 0) S<<"On "<<nbv<<" Values, "<<nbmod<<" Modified"<<std::endl;
 }
 
 

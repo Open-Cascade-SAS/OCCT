@@ -247,7 +247,8 @@ void  IGESControl_Reader::PrintTransferInfo
       NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfInteger)>::Iterator aMapListIter(aMapList);
       for(; aMapCountIter.More() && aMapListIter.More();
             aMapCountIter.Next(), aMapListIter.Next()) {
-        TF << aMapCountIter.Value() << aMapCountIter.Key() << Message_EndLine;
+        Message_Messenger::StreamBuffer aSender = TF->SendInfo();
+        aSender << aMapCountIter.Value() << aMapCountIter.Key() << std::endl;
         if (mode == IFSelect_ListByItem) {
           Handle(TColStd_HSequenceOfInteger) entityList = aMapListIter.Value();
           Standard_Integer length = entityList->Length();
@@ -255,19 +256,19 @@ void  IGESControl_Reader::PrintTransferInfo
           TF->Send(msg3035, Message_Info);
           char line[80];
           sprintf(line, "\t\t\t");
-          TF << line;
+          aSender << line;
           Standard_Integer nbInLine = 0;
           for (Standard_Integer i = 1; i <= length; i++) {
             // IDT_Out << (entityList->Value(i)) << " ";
             sprintf(line, "\t %d", entityList->Value(i));
-            TF << line;
+            aSender << line;
             if (++nbInLine == 6) {
               nbInLine = 0;
               sprintf(line, "\n\t\t\t");
-              TF << line;
+              aSender << line;
             }
           }
-          TF << Message_EndLine;
+          aSender << std::endl;
         }
       }
       break;
@@ -281,7 +282,7 @@ void  IGESControl_Reader::PrintTransferInfo
       NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator aMapIter(aMapCountResult);
       for (; aMapIter.More(); aMapIter.Next())
       {
-        TF << aMapIter.Key() << aMapIter.Value() << Message_EndLine;
+        TF->SendInfo() << aMapIter.Key() << aMapIter.Value() << std::endl;
       }
       break;
     }
@@ -311,7 +312,7 @@ void  IGESControl_Reader::PrintTransferInfo
       for(; aMapCountIter.More(); aMapCountIter.Next()) {
         char mess[80];
         sprintf(mess, aMapCountIter.Key().ToCString(), aMapCountIter.Value());
-        TF << mess << Message_EndLine; //dicoCountIter.Value() << dicoCountIter.Name() << std::endl;
+        TF->SendInfo() << mess << std::endl; //dicoCountIter.Value() << dicoCountIter.Name() << std::endl;
       }
       break;
     }

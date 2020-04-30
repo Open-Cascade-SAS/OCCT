@@ -32,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
@@ -163,11 +162,11 @@ void IGESBasic_ToolGroup::OwnCheck(const Handle(IGESBasic_Group)& ent,
 
 void IGESBasic_ToolGroup::OwnDump
   (const Handle(IGESBasic_Group)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_Group" << Message_EndLine;
-  S << "Entries in the Group : ";
+  S << "IGESBasic_Group\n"
+    << "Entries in the Group : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

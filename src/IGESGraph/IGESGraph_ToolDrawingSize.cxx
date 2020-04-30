@@ -111,12 +111,11 @@ void IGESGraph_ToolDrawingSize::OwnCheck
 
 void IGESGraph_ToolDrawingSize::OwnDump
   (const Handle(IGESGraph_DrawingSize)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
+   Standard_OStream& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_DrawingSize" << Message_EndLine;
-
-  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Drawing extent along positive X-axis : " << ent->XSize() << Message_EndLine;
-  S << "Drawing extent along positive Y-axis : " << ent->YSize() << Message_EndLine;
-  S << Message_EndLine;
+  S << "IGESGraph_DrawingSize\n"
+    << "No. of property values : " << ent->NbPropertyValues() << "\n"
+    << "Drawing extent along positive X-axis : " << ent->XSize() << "\n"
+    << "Drawing extent along positive Y-axis : " << ent->YSize() << "\n"
+    << std::endl;
 }

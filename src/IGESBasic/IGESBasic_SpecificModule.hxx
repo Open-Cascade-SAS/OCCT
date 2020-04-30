@@ -25,8 +25,6 @@
 #include <Standard_Boolean.hxx>
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
-class Message_Messenger;
-
 
 class IGESBasic_SpecificModule;
 DEFINE_STANDARD_HANDLE(IGESBasic_SpecificModule, IGESData_SpecificModule)
@@ -43,7 +41,7 @@ public:
   Standard_EXPORT IGESBasic_SpecificModule();
   
   //! Specific Dump (own parameters) for IGESBasic
-  Standard_EXPORT void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S, const Standard_Integer own) const Standard_OVERRIDE;
+  Standard_EXPORT void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const Standard_OVERRIDE;
   
   //! Performs non-ambiguous Corrections on Entities which support
   //! them (AssocGroupType,Hierarchy,Name,SingleParent)

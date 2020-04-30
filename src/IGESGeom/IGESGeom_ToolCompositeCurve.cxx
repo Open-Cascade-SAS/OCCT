@@ -121,10 +121,10 @@ void  IGESGeom_ToolCompositeCurve::OwnCheck
 
 void  IGESGeom_ToolCompositeCurve::OwnDump
   (const Handle(IGESGeom_CompositeCurve)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESGeom_CompositeCurve" << Message_EndLine;
-  S << "Curve Entities : " << Message_EndLine;
+  S << "IGESGeom_CompositeCurve\n"
+    << "Curve Entities :\n";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbCurves(),ent->Curve);
-  S << Message_EndLine;
+  S << std::endl;
 }

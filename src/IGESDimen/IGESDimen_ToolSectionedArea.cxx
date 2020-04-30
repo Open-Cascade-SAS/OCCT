@@ -34,7 +34,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESDimen_ToolSectionedArea::IGESDimen_ToolSectionedArea ()    {  }
@@ -156,22 +155,21 @@ void IGESDimen_ToolSectionedArea::OwnCheck
 
 void IGESDimen_ToolSectionedArea::OwnDump
   (const Handle(IGESDimen_SectionedArea)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDimen_SectionedArea" << Message_EndLine;
-  S << (ent->IsInverted() ? "Inverted Cross Hatches" : "Standard Cross Hatches");
-
-  S << " - Exterior curve : ";
+  S << "IGESDimen_SectionedArea\n"
+    << (ent->IsInverted() ? "Inverted Cross Hatches" : "Standard Cross Hatches")
+    << " - Exterior curve : ";
   dumper.Dump(ent->ExteriorCurve(),S, sublevel);
-  S << Message_EndLine;
-  S << "Fill pattern code : " << ent->Pattern() << Message_EndLine;
-  S << "Passing point : ";
-  IGESData_DumpXYZL(S,level, ent->PassingPoint(), ent->Location());  S << Message_EndLine;
-  S << "Distance between lines : " << ent->Distance() << Message_EndLine;
-  S << "Angle between lines and X axis : " << ent->Angle() << Message_EndLine;
-  S << "Island Curve : ";
+  S << "\n"
+    << "Fill pattern code : " << ent->Pattern() << "\n"
+    << "Passing point : ";
+  IGESData_DumpXYZL(S,level, ent->PassingPoint(), ent->Location());  S << "\n";
+  S << "Distance between lines : " << ent->Distance() << "\n"
+    << "Angle between lines and X axis : " << ent->Angle() << "\n"
+    << "Island Curve : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbIslands(),ent->IslandCurve);
-  S << Message_EndLine;
+  S << "\n";
 }

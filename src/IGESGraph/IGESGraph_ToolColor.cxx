@@ -118,16 +118,16 @@ void IGESGraph_ToolColor::OwnCheck
 
 void IGESGraph_ToolColor::OwnDump
   (const Handle(IGESGraph_Color)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
+   Standard_OStream& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_Color" << Message_EndLine;
+  S << "IGESGraph_Color\n";
 
   Standard_Real Red,Green,Blue;
   ent->RGBIntensity(Red,Green,Blue);
-  S << "Red   (in % Of Full Intensity) : " << Red   << Message_EndLine;
-  S << "Green (in % Of Full Intensity) : " << Green << Message_EndLine;
-  S << "Blue  (in % Of Full Intensity) : " << Blue  << Message_EndLine;
-  S << "Color Name : ";
+  S << "Red   (in % Of Full Intensity) : " << Red   << "\n"
+    << "Green (in % Of Full Intensity) : " << Green << "\n"
+    << "Blue  (in % Of Full Intensity) : " << Blue  << "\n"
+    << "Color Name : ";
   IGESData_DumpString(S,ent->ColorName());
-  S << Message_EndLine;
+  S << std::endl;
 }

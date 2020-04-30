@@ -27,7 +27,6 @@
 #include <Interface_Protocol.hxx>
 #include <Interface_ReportEntity.hxx>
 #include <Interface_SignType.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
@@ -916,18 +915,18 @@ void Interface_InterfaceModel::VerifyCheck (Handle(Interface_Check)& /*ach*/) co
 //=======================================================================
 
 void Interface_InterfaceModel::Print(const Handle(Standard_Transient)& ent,
-                                     const Handle(Message_Messenger)& S,
+                                     Standard_OStream& S,
                                      const Standard_Integer mode) const
 { 
-  if (ent.IsNull())  {  S<<"NULL";  return;  }
+  if (ent.IsNull())  {  S << "NULL" ;  return;  }
   Standard_Integer num = Number(ent);
-  if (mode <= 0) S<<num;
-  if (mode == 0) S<<":";
+  if (mode <= 0) S <<num;
+  if (mode == 0) S <<":";
   if (mode >= 0) {
     if (num > 0) 
       PrintToLog(ent,S);
 //      PrintLabel (ent,S);
-    else S<<"??";
+    else S <<"??";
   }
 }
 
@@ -938,7 +937,7 @@ void Interface_InterfaceModel::Print(const Handle(Standard_Transient)& ent,
 //=======================================================================
 
 void Interface_InterfaceModel::PrintToLog(const Handle(Standard_Transient)& ent,
-                                          const Handle(Message_Messenger)& S) const
+                                          Standard_OStream& S) const
 {
   PrintLabel (ent,S);
 }

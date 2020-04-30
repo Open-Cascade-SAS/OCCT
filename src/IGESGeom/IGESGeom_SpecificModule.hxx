@@ -25,8 +25,6 @@
 #include <Standard_Boolean.hxx>
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
-class Message_Messenger;
-
 
 class IGESGeom_SpecificModule;
 DEFINE_STANDARD_HANDLE(IGESGeom_SpecificModule, IGESData_SpecificModule)
@@ -43,7 +41,7 @@ public:
   Standard_EXPORT IGESGeom_SpecificModule();
   
   //! Specific Dump (own parameters) for IGESGeom
-  Standard_EXPORT void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S, const Standard_Integer own) const Standard_OVERRIDE;
+  Standard_EXPORT void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const Standard_OVERRIDE;
   
   //! Performs non-ambiguous Correction on Entities which support
   //! them (Boundary,ConicArc,Flash,OffsetCurve,TransformationMatrix)

@@ -30,7 +30,6 @@ class Standard_Transient;
 class Standard_OutOfRange;
 class Message_Msg;
 class TCollection_HAsciiString;
-class Message_Messenger;
 
 // resolve name collisions with X11 headers
 #ifdef Status
@@ -238,7 +237,7 @@ public:
   //! <final> : if positive (D) prints final values of messages
   //! if negative, prints originals
   //! if null, prints both forms
-  Standard_EXPORT void Print (const Handle(Message_Messenger)& S, const Standard_Integer level, const Standard_Integer final = 1) const;
+  Standard_EXPORT void Print (Standard_OStream& S, const Standard_Integer level, const Standard_Integer final = 1) const;
   
   //! Prints the messages of the check to the default trace file
   //! By default, according to the default standard level

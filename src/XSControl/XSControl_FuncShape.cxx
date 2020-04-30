@@ -75,14 +75,14 @@ static IFSelect_ReturnStatus XSControl_tpdraw
   const Standard_CString arg2 = pilot->Arg(2);
   const Standard_CString arg3 = pilot->Arg(3);
   const Handle(Transfer_TransientProcess) &TP = XSControl::Session(pilot)->TransferReader()->TransientProcess();
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (TP.IsNull()) { sout<<"No Transfer Read"<<Message_EndLine; return IFSelect_RetError;}
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (TP.IsNull()) { sout<<"No Transfer Read"<<std::endl; return IFSelect_RetError;}
   //        ****    tpdraw        ****
   if (argc < 2) {
-    sout<<"Donner [mode facultatif : item ou root] , NUMERO , nom DRAW facultatif"<<Message_EndLine;
-    sout<<"  mode si present : item ou root, sinon n0 d entite modele"<<Message_EndLine;
+    sout<<"Donner [mode facultatif : item ou root] , NUMERO , nom DRAW facultatif"<<std::endl;
+    sout<<"  mode si present : item ou root, sinon n0 d entite modele"<<std::endl;
     sout<<"  NUMERO entier : d entite, d item transfert ou de root transfert\n"
-      <<  "    ou * pour dire tous"<<Message_EndLine;
+      <<  "    ou * pour dire tous"<<std::endl;
     return IFSelect_RetError;
   }
   Standard_Integer mode = 0, num=0;
@@ -90,7 +90,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw
   else if (arg1[0] == 'r') mode = 2;
   Standard_Boolean tout = Standard_False;
   if (mode == 0) {
-    if (argc < 2) { sout<<"Donner au moins un NUMERO ou *"<<Message_EndLine; return IFSelect_RetError; }
+    if (argc < 2) { sout<<"Donner au moins un NUMERO ou *"<<std::endl; return IFSelect_RetError; }
     if (arg1[0] == '*') tout = Standard_True;
     else num = IFSelect_Functions::GiveEntityNumber(XSControl::Session(pilot),arg1);
   } else {
@@ -108,7 +108,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw
   Handle(Interface_InterfaceModel) model = TP->Model();
   if (model.IsNull()) {
     if (mode == 0) {
-      sout<<"Pas de modele, preciser n0 d item de transfert"<<Message_EndLine;
+      sout<<"Pas de modele, preciser n0 d item de transfert"<<std::endl;
       return IFSelect_RetError;
     }
   }
@@ -117,14 +117,14 @@ static IFSelect_ReturnStatus XSControl_tpdraw
   if (mode == 2) { sout<<"Racine de transfert"; max = TP->NbRoots(); }
   if (tout) {
     n1 = 1;  n2 = max;
-    sout<<", listage de 1 a "<<max<<Message_EndLine;
+    sout<<", listage de 1 a "<<max<<std::endl;
   }
   else if (num <= 0 || num > max) {
-    sout<<" - Num="<<num<<" hors limite (de 1 a "<<max<<")"<<Message_EndLine;
+    sout<<" - Num="<<num<<" hors limite (de 1 a "<<max<<")"<<std::endl;
     return IFSelect_RetError;
   } else {
     n1 = n2 = num;  nbvar = -1;  // nbvar : 1ere shape simple = pas de n0
-    sout<<", n0 "<<num<<Message_EndLine;
+    sout<<", n0 "<<num<<std::endl;
   }
 
   for (i = n1; i <= n2; i ++) {
@@ -147,11 +147,11 @@ static IFSelect_ReturnStatus XSControl_tpdraw
     if (index > 0) binder = TP->MapItem (index);
     if (binder.IsNull()) index = 0;
     if (index == 0) {
-      if (!tout) sout<<"Entite n0 "<<num<<" : non repertoriee"<<Message_EndLine;
+      if (!tout) sout<<"Entite n0 "<<num<<" : non repertoriee"<<std::endl;
       continue;
     }
     if (!binder->HasResult()) {
-      if (!tout) sout<<"Entite n0 "<<num<<" : pas de resultat"<<Message_EndLine;
+      if (!tout) sout<<"Entite n0 "<<num<<" : pas de resultat"<<std::endl;
       continue;
     }
     sh = TransferBRep::ShapeResult (binder);
@@ -159,7 +159,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw
     if (!sh.IsNull()) {
       //sh = shb->Result();
       nbvar ++;
-      if (sh.IsNull()) { sout<<" (no Shape recorded)"<<Message_EndLine; continue; }
+      if (sh.IsNull()) { sout<<" (no Shape recorded)"<<std::endl; continue; }
       if (tout) sout<<"[ "<<i<<" ]:";
       if (num == 0) sout<<" pas dans le modele";
       else sout<<" ent.n0 "<<num;
@@ -173,7 +173,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw
 	else if (argc > 2 && mode == 0) sprintf (nomvar,"%s_%d",arg2,nbvar);
 	else                            sprintf (nomvar,"tp_%d",i);
       }
-      sout<<" -> 1 DRAW Shape: "<<nomvar<<Message_EndLine;
+      sout<<" -> 1 DRAW Shape: "<<nomvar<<std::endl;
       XSControl::Vars(pilot)->SetShape(nomvar,sh);
       continue;
     }
@@ -187,26 +187,26 @@ static IFSelect_ReturnStatus XSControl_tpdraw
       sout<<" -> "<<nbs<<" DRAW Shapes :";
       for (Standard_Integer j = 1; j <= nbs; j ++)  {
 	sh = slb->Shape(j);  if (nbvar < 0) nbvar = 0;  nbvar ++;
-	if (sh.IsNull()) { sout<<" (no Shape recorded)"<<Message_EndLine; continue; }
+	if (sh.IsNull()) { sout<<" (no Shape recorded)"<<std::endl; continue; }
 	if      (argc > 3 && mode  > 0) sprintf (nomvar,"%s_%d",arg3,nbvar);
 	else if (argc > 2 && mode == 0) sprintf (nomvar,"%s_%d",arg2,nbvar);
 	else                        sprintf (nomvar,"tp_%d_%d",i,nbvar);
 	sout<<" "<<nomvar;
 	XSControl::Vars(pilot)->SetShape(nomvar,sh);
       }
-      sout<<Message_EndLine;
+      sout<<std::endl;
       continue;
     }
     DeclareAndCast(Transfer_SimpleBinderOfTransient,trb,binder);
     if (!trb.IsNull()) {
       Handle(Standard_Transient) resu = trb->Result();
       if (resu.IsNull()) {
-	sout<<"Entite n0 "<<num<<" : pas de resultat"<<Message_EndLine;
+	sout<<"Entite n0 "<<num<<" : pas de resultat"<<std::endl;
 	continue;
       }
       DeclareAndCast(Geom_Geometry,geom,resu);
       sout<<"Entite n0 "<<num<<" : resultat "<<resu->DynamicType()->Name();
-      if (geom.IsNull()) { sout<<Message_EndLine; continue; }
+      if (geom.IsNull()) { sout<<std::endl; continue; }
       nbvar ++;
       if (nbvar == 0) {
 	if      (argc > 3 && mode  > 0) sprintf (nomvar,"%s",arg3);
@@ -219,15 +219,15 @@ static IFSelect_ReturnStatus XSControl_tpdraw
       }
       char* nomv = nomvar;
       XSControl::Vars(pilot)->Set (nomv,geom);
-      sout<<" -> DRAW Geom : "<<nomvar<<Message_EndLine;
+      sout<<" -> DRAW Geom : "<<nomvar<<std::endl;
       continue;
     }
 
     if (sh.IsNull() && trb.IsNull())
-      if (!tout) sout<<"Entite n0 "<<num<<" : resultat pas une Shape mais "<<binder->ResultTypeName()<<Message_EndLine;
+      if (!tout) sout<<"Entite n0 "<<num<<" : resultat pas une Shape mais "<<binder->ResultTypeName()<<std::endl;
   }
 
-  if (sh.IsNull()) sout<<" (No Shape)"<<Message_EndLine;
+  if (sh.IsNull()) sout<<" (No Shape)"<<std::endl;
   return IFSelect_RetDone;
 }
 
@@ -241,21 +241,21 @@ static IFSelect_ReturnStatus XSControl_tpcompound
   Standard_Integer argc = pilot->NbWords();
   const Standard_CString arg1 = pilot->Arg(1);
   const Handle(Transfer_TransientProcess) &TP = XSControl::Session(pilot)->TransferReader()->TransientProcess();
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (TP.IsNull()) { sout<<"No Transfer Read"<<Message_EndLine; return IFSelect_RetError;}
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (TP.IsNull()) { sout<<"No Transfer Read"<<std::endl; return IFSelect_RetError;}
   //        ****    tpcompound        ****
-  if (argc < 2) { sout<<"Give a NAME for the Compound  + optional givelist, else roots are taken"<<Message_EndLine; return IFSelect_RetError; }
+  if (argc < 2) { sout<<"Give a NAME for the Compound  + optional givelist, else roots are taken"<<std::endl; return IFSelect_RetError; }
   Handle(TopTools_HSequenceOfShape) list;
   if (argc == 2) list = TransferBRep::Shapes(TP);
   else {
     Handle(TColStd_HSequenceOfTransient) lise = IFSelect_Functions::GiveList(pilot->Session(),pilot->CommandPart(2));
-    if (lise.IsNull()) { sout<<"Not a valid entity list : "<<pilot->CommandPart(2)<<Message_EndLine; return IFSelect_RetError; }
+    if (lise.IsNull()) { sout<<"Not a valid entity list : "<<pilot->CommandPart(2)<<std::endl; return IFSelect_RetError; }
     list = TransferBRep::Shapes (TP,lise);
     sout<<lise->Length()<<" Entities, ";
   }
-  if (list.IsNull()) { sout<<"No Shape listed"<<Message_EndLine; return IFSelect_RetError; }
+  if (list.IsNull()) { sout<<"No Shape listed"<<std::endl; return IFSelect_RetError; }
   Standard_Integer nb = list->Length();
-  sout<<nb<<" Shape(s) listed"<<Message_EndLine;
+  sout<<nb<<" Shape(s) listed"<<std::endl;
   TopoDS_Compound C;
   BRep_Builder B;
   B.MakeCompound(C);
@@ -284,15 +284,15 @@ static IFSelect_ReturnStatus XSControl_traccess
   Standard_Boolean cassave = (pilot->Word(0).Location(1,'s',1,5) > 0);
   TCollection_AsciiString nomsh, noms;
   const Handle(XSControl_TransferReader) &TR = XSControl::Session(pilot)->TransferReader();
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (TR.IsNull()) { sout<<" manque init"<<Message_EndLine; return IFSelect_RetError; }
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (TR.IsNull()) { sout<<" manque init"<<std::endl; return IFSelect_RetError; }
   const Handle(Interface_InterfaceModel) &mdl = TR->Model();
-  if (mdl.IsNull()) { sout<<" modele absent"<<Message_EndLine; return IFSelect_RetError; }
+  if (mdl.IsNull()) { sout<<" modele absent"<<std::endl; return IFSelect_RetError; }
   Standard_Integer num = (argc > 1 ? IFSelect_Functions::GiveEntityNumber(XSControl::Session(pilot),arg1) : 0);
 
   if (argc > 1) nomsh = arg1;
   else nomsh = cascomp ? "TREAD_COMP" : "TREAD_LIST";
-  if (cassave) sout<<" save shapes -> current directory"<<Message_EndLine;
+  if (cassave) sout<<" save shapes -> current directory"<<std::endl;
 
   if (num == 0 || cascomp) {
     TopoDS_Compound C;        // pour cas compound
@@ -300,11 +300,11 @@ static IFSelect_ReturnStatus XSControl_traccess
     B.MakeCompound(C);
 
     const Handle(TopTools_HSequenceOfShape) &list = TR->ShapeResultList(Standard_True);
-    sout<<" TOUS RESULTATS par ShapeResultList, soit "<<list->Length()<<Message_EndLine;
+    sout<<" TOUS RESULTATS par ShapeResultList, soit "<<list->Length()<<std::endl;
     for (Standard_Integer i = 1, nb = list->Length(); i <= nb; ++i)
     {
       noms = nomsh + "_" + i;
-      if      ( (i%1000) == 0) sout<<"("<<i<<")"<<Message_EndLine;
+      if      ( (i%1000) == 0) sout<<"("<<i<<")"<<std::endl;
       else if ( (i%100)  == 0) sout<<"*";
       else if ( (i%10)   == 0) sout<<"0";
       else                     sout<<".";
@@ -313,18 +313,18 @@ static IFSelect_ReturnStatus XSControl_traccess
       else if (!cascomp &&  cassave) BRepTools::Write (list->Value(i), noms.ToCString());
       else if (cascomp) B.Add (C,list->Value(i));
     }
-    sout<<Message_EndLine;
+    sout<<std::endl;
     if      (cascomp && !cassave) XSControl::Vars(pilot)->SetShape (nomsh.ToCString(), C);
     else if (cascomp &&  cassave) BRepTools::Write (C, nomsh.ToCString());
   } else {
-    if (num < 1 || num > mdl->NbEntities()) { sout<<" incorrect:"<<arg1<<Message_EndLine; return IFSelect_RetError; }
+    if (num < 1 || num > mdl->NbEntities()) { sout<<" incorrect:"<<arg1<<std::endl; return IFSelect_RetError; }
     TopoDS_Shape sh = TR->ShapeResult(mdl->Value(num));
-    if (sh.IsNull()) { sout<<" Pas de resultat pour "<<arg1<<Message_EndLine; return IFSelect_RetError; }
+    if (sh.IsNull()) { sout<<" Pas de resultat pour "<<arg1<<std::endl; return IFSelect_RetError; }
     if (argc > 2) nomsh = arg2;
     else nomsh = TCollection_AsciiString ("TREAD_") + num;
     if      (!cascomp && !cassave) XSControl::Vars(pilot)->SetShape (nomsh.ToCString(), sh);
     else if (!cascomp &&  cassave) BRepTools::Write (sh, nomsh.ToCString());
-    else sout<<"Option non comprise"<<Message_EndLine;
+    else sout<<"Option non comprise"<<std::endl;
   }
   return IFSelect_RetDone;
 }
@@ -360,15 +360,15 @@ static IFSelect_ReturnStatus XSControl_fromshape
   Standard_Integer argc = pilot->NbWords();
   const Standard_CString arg1 = pilot->Arg(1);
   //        ****    fromshape (tread)         ****
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2) {
-    sout<<"Give name of a DRAW Shape"<<Message_EndLine;
+    sout<<"Give name of a DRAW Shape"<<std::endl;
     return IFSelect_RetError;
   }
   const char* a1 = (char *)arg1;
   TopoDS_Shape Shape = XSControl::Vars(pilot)->GetShape(a1);
   if (Shape.IsNull()) {
-    sout<<"Not a DRAW Shape:"<<arg1<<Message_EndLine;
+    sout<<"Not a DRAW Shape:"<<arg1<<std::endl;
     return IFSelect_RetError;
   }
   Standard_Boolean yena = Standard_False;
@@ -399,7 +399,7 @@ static IFSelect_ReturnStatus XSControl_fromshape
       if (TP.IsNull()) {
         if ( silent )
           sout << "Shape "<<arg1<<" : ";
-        sout<<"no map"<<Message_EndLine;
+        sout<<"no map"<<std::endl;
       }
       else {
 	TopoDS_Shape S0 = Shape;
@@ -434,7 +434,7 @@ static IFSelect_ReturnStatus XSControl_fromshape
       // skl 11.05.2004
       // if Shape is a compound try to make "fromshape" for its subshapes
       if(Shape.ShapeType()==TopAbs_COMPOUND) {
-        sout<<Message_EndLine<<"Subshapes imported from entities:";
+        sout<<std::endl<<"Subshapes imported from entities:";
         TopoDS_Iterator Iter(Shape);
         for (; Iter.More(); Iter.Next()) {
           TopoDS_Shape subsh = Iter.Value();
@@ -451,11 +451,11 @@ static IFSelect_ReturnStatus XSControl_fromshape
       }
     }
     else { 
-      sout<<"imported from entity "; 
-      XSControl::Session(pilot)->Model()->Print(ent,sout); 
-      if ( silent ) sout << " in file " << XSControl::Session(pilot)->LoadedFile() << Message_EndLine;
+      sout<<"imported from entity ";
+      XSControl::Session(pilot)->Model()->Print (ent, sout);
+      if ( silent ) sout << " in file " << XSControl::Session(pilot)->LoadedFile() << std::endl;
     }
-    if ( ! silent ) sout<<Message_EndLine;
+    if ( ! silent ) sout<<std::endl;
   }
 
   //   ET EN EXPORT ?
@@ -468,9 +468,9 @@ static IFSelect_ReturnStatus XSControl_fromshape
     if (!fnd.IsNull()) ent = FP->FindTransient (fnd);
     if (!ent.IsNull()) {
       sout<<"Shape "<<arg1<<": exported to entity ";
-      XSControl::Session(pilot)->Model()->Print(ent,sout);
+      XSControl::Session(pilot)->Model()->Print (ent, sout);
       if ( silent ) sout << " in file " << XSControl::Session(pilot)->LoadedFile();
-      sout<<Message_EndLine;
+      sout<<std::endl;
     }
     // abv 31.08.00: treat case of splitted shape (several results)
     // it is supposed that results are of the same type and lie in one-level comp
@@ -484,12 +484,12 @@ static IFSelect_ReturnStatus XSControl_fromshape
 	  Standard_Integer i = 1, nb = TransientListBinder->NbTransients();
 	  if (nb > 0) sout<<"Shape "<<arg1<<": exported to entities ";
 	  for (; i<=nb; i++) {
-	    XSControl::Session(pilot)->Model()->Print( TransientListBinder->Transient(i), sout );
+	    XSControl::Session(pilot)->Model()->Print( TransientListBinder->Transient(i), sout);
 	    if (i < nb) sout<<", ";
 	  }
 	  if (nb > 0) {
 	    if ( silent ) sout << " in file " << XSControl::Session(pilot)->LoadedFile();
-	    sout<<Message_EndLine;
+	    sout<<std::endl;
 	  }
 	}
 /*	else {
@@ -513,7 +513,7 @@ static IFSelect_ReturnStatus XSControl_fromshape
       }
     }
   }
-  if (!yena) sout<<"No transfer (either import or export) recorded"<<Message_EndLine;
+  if (!yena) sout<<"No transfer (either import or export) recorded"<<std::endl;
 
   return IFSelect_RetVoid;
 }
@@ -531,28 +531,28 @@ static IFSelect_ReturnStatus XSControl_trconnexentities
   const Handle(XSControl_TransferReader) &TR  = XSControl::Session(pilot)->TransferReader();
   Handle(Transfer_TransientProcess) TP;
   if (!TR.IsNull()) TP = TR->TransientProcess();
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  if (TP.IsNull()) { sout<<"no transfer map"<<Message_EndLine; return IFSelect_RetVoid; }
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  if (TP.IsNull()) { sout<<"no transfer map"<<std::endl; return IFSelect_RetVoid; }
   if (argc < 2) { 
-    sout<<"Give name of a DRAW Shape + optional shape type v-e-w-f(D)-s"<<Message_EndLine; 
+    sout<<"Give name of a DRAW Shape + optional shape type v-e-w-f(D)-s"<<std::endl; 
     return IFSelect_RetError; 
   }
   const char* a1 = (const char *)arg1;
   TopoDS_Shape Shape = XSControl::Vars(pilot)->GetShape(a1);
-  if (Shape.IsNull()) { sout<<"Not a DRAW Shape:"<<arg1<<Message_EndLine; return IFSelect_RetError; }
+  if (Shape.IsNull()) { sout<<"Not a DRAW Shape:"<<arg1<<std::endl; return IFSelect_RetError; }
   sout<<"Shape "<<arg1<<" : ";
 
   Handle(TColStd_HSequenceOfTransient) list =
     XSControl_ConnectedShapes::AdjacentEntities (Shape,TP,TopAbs_FACE);
   Standard_Integer i, nb = list->Length();
-  sout<<nb<<" Entities produced Connected Shapes :"<<Message_EndLine;
+  sout<<nb<<" Entities produced Connected Shapes :"<<std::endl;
   const Handle(Interface_InterfaceModel) &model = XSControl::Session(pilot)->Model();
   sout<<"(";
   for (i = 1; i <= nb; i ++) {
     if (i > 1) sout<<",";
     sout<<model->Number(list->Value(i));
   }
-  sout<<")"<<Message_EndLine;
+  sout<<")"<<std::endl;
   return IFSelect_RetDone;
 }
   
@@ -568,9 +568,9 @@ static IFSelect_ReturnStatus XSControl_trimport
   Handle(XSControl_WorkSession) WS = XSControl::Session(pilot);
 
   Standard_Integer argc = pilot->NbWords();
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 4) {
-    sout<<"Give : filename or . for current model;  varname or . to take fileroot\n  GiveList, * for all transferrable roots"<<Message_EndLine;
+    sout<<"Give : filename or . for current model;  varname or . to take fileroot\n  GiveList, * for all transferrable roots"<<std::endl;
     return IFSelect_RetError;
   }
   const Standard_CString arg1 = pilot->Arg(1);
@@ -582,9 +582,9 @@ static IFSelect_ReturnStatus XSControl_trimport
   TCollection_AsciiString fnom,rnom;
   Standard_Boolean modfic = XSControl_FuncShape::FileAndVar
     (WS,arg1,arg2,"IMPORT",fnom,rnom);
-  if (modfic) sout<<" File to read : "<<fnom<<Message_EndLine;
-  else        sout<<" Model taken from the session : "<<fnom<<Message_EndLine;
-  sout<<" -- Names of variables BREP-DRAW prefixed by : "<<rnom<<Message_EndLine;
+  if (modfic) sout<<" File to read : "<<fnom<<std::endl;
+  else        sout<<" Model taken from the session : "<<fnom<<std::endl;
+  sout<<" -- Names of variables BREP-DRAW prefixed by : "<<rnom<<std::endl;
 
   //  keep the current command, because sub-commands will be called
   TCollection_AsciiString compart = pilot->CommandPart (3);
@@ -596,9 +596,9 @@ static IFSelect_ReturnStatus XSControl_trimport
     comload.AssignCat(arg1);
     IFSelect_ReturnStatus status = pilot->Execute(comload);
     if (status != IFSelect_RetDone)
-      { sout<<"Abandon import"<<Message_EndLine; return status; }
+      { sout<<"Abandon import"<<std::endl; return status; }
   } else {
-    sout<<"Currently Loaded Model"<<Message_EndLine;
+    sout<<"Currently Loaded Model"<<std::endl;
   }
 
   //  Selecting Entities
@@ -611,21 +611,21 @@ static IFSelect_ReturnStatus XSControl_trimport
     sout<<"List given by "<<compart.ToCString()<<" : ";
     list = WS->GiveList (compart.ToCString());
   }
-  if (list.IsNull()) { sout<<"No list defined. Abandon"<<Message_EndLine; return IFSelect_RetError; }
+  if (list.IsNull()) { sout<<"No list defined. Abandon"<<std::endl; return IFSelect_RetError; }
   Standard_Integer nbl = list->Length();
-  sout<<"Nb entities selected : "<<nbl<<Message_EndLine;
+  sout<<"Nb entities selected : "<<nbl<<std::endl;
 
   //  Starting Transfer
 
   WS->InitTransferReader (0);
   const Handle(XSControl_TransferReader) &TR = WS->TransferReader();
-  if (TR.IsNull()) { sout<<" init not done or failed"<<Message_EndLine; return IFSelect_RetError; }
+  if (TR.IsNull()) { sout<<" init not done or failed"<<std::endl; return IFSelect_RetError; }
 
   TR->BeginTransfer();
 
   //  Transferring
   Standard_Integer nbt = TR->TransferList(list);
-  sout<<"Nb Entities Selected : "<<nbl<<" have given "<<nbt<<" results"<<Message_EndLine;
+  sout<<"Nb Entities Selected : "<<nbl<<" have given "<<nbt<<" results"<<std::endl;
 
   //  Filling VARS. one compound (trimpcomp) or one shape per ent (trimport)
   Standard_Boolean iscomp = (pilot->Arg(0)[5] == 'c');
@@ -635,7 +635,7 @@ static IFSelect_ReturnStatus XSControl_trimport
   BRep_Builder B;
   B.MakeCompound (C);
   Handle(Interface_InterfaceModel)  mdl = TR->Model();
-  if (mdl.IsNull()) { sout<<" modele absent"<<Message_EndLine; return IFSelect_RetError; }
+  if (mdl.IsNull()) { sout<<" modele absent"<<std::endl; return IFSelect_RetError; }
   for (Standard_Integer il= 1; il <= nbl; il ++) {
     Handle(Standard_Transient) ent = list->Value(il);
     sh = TR->ShapeResult(ent);
@@ -648,15 +648,15 @@ static IFSelect_ReturnStatus XSControl_trimport
       XSControl::Vars(pilot)->SetShape(nomsh,sh);
     }
   }
-  if (nbs == 0) sout<<"No Shape produced"<<Message_EndLine;
+  if (nbs == 0) sout<<"No Shape produced"<<std::endl;
   else if (nbs == 1) {
-    sout<<"One Shape produced, named "<<rnom.ToCString()<<Message_EndLine;
+    sout<<"One Shape produced, named "<<rnom.ToCString()<<std::endl;
     XSControl::Vars(pilot)->SetShape(rnom.ToCString(),sh);
   } else if (iscomp) {
-    sout<<"One compound made of "<<nbs<<" Shapes, named "<<rnom.ToCString()<<Message_EndLine;
+    sout<<"One compound made of "<<nbs<<" Shapes, named "<<rnom.ToCString()<<std::endl;
     XSControl::Vars(pilot)->SetShape(rnom.ToCString(),C);
   } else {  // several individual shapes
-    sout<<nbs<<" Shapes, named "<<rnom.ToCString()<<"_1 to "<<rnom.ToCString()<<"_"<<nbs<<Message_EndLine;
+    sout<<nbs<<" Shapes, named "<<rnom.ToCString()<<"_1 to "<<rnom.ToCString()<<"_"<<nbs<<std::endl;
   }
 
   return IFSelect_RetDone;
@@ -672,19 +672,19 @@ static IFSelect_ReturnStatus XSControl_twrite
   Standard_Integer argc = pilot->NbWords();
   const Standard_CString arg1 = pilot->Arg(1);
   //        ****    twrite         ****
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   Handle(XSControl_TransferWriter) TW = XSControl::Session(pilot)->TransferWriter();
-  if (argc < 2) { sout<<" donner nom de shape draw"<<Message_EndLine; return IFSelect_RetError; }
-  sout<<"Attention, on alimente le modele courant ..."<<Message_EndLine;
+  if (argc < 2) { sout<<" donner nom de shape draw"<<std::endl; return IFSelect_RetError; }
+  sout<<"Attention, on alimente le modele courant ..."<<std::endl;
 
   // Shape
   for (Standard_Integer i = 1; i < argc; i ++) {
     const char* ai = (const char *)pilot->Arg(i);
     TopoDS_Shape Shape = XSControl::Vars(pilot)->GetShape(ai);
-    if (Shape.IsNull()) { sout<<"pas un nom de shape draw:"<<arg1<<Message_EndLine; continue; }
+    if (Shape.IsNull()) { sout<<"pas un nom de shape draw:"<<arg1<<std::endl; continue; }
     sout<<"Pour Shape : "<<ai;
     Standard_Integer stat = TW->TransferWriteShape (XSControl::Session(pilot)->Model(),Shape);
-    sout<<" Transfer Write Status = "<<stat<<Message_EndLine;
+    sout<<" Transfer Write Status = "<<stat<<std::endl;
   }
   pilot->Session()->ComputeGraph();
   // Transient ? (Geom) : ignore
@@ -762,11 +762,11 @@ Standard_Integer  XSControl_FuncShape::MoreShapes
   //  name = "**"   -> tous les transferts du TP : VRAIMENT TOUS
   //  name = "."    -> reperage graphique (not yet impl)
   //  name = nom(n1-n2) avec n1,n2 entiers :  les variables de nom  nomn1 a nomn2
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (list.IsNull()) list = new TopTools_HSequenceOfShape();
   if (name[0] == '*' && (name[1] == '\0' || (name[1] == '*' && name[2] == '\0'))) {
     const Handle(Transfer_TransientProcess) &TP = session->TransferReader()->TransientProcess();
-    if (TP.IsNull()) { sout<<"last transfer : unknown"<<Message_EndLine;return 0; }
+    if (TP.IsNull()) { sout<<"last transfer : unknown"<<std::endl;return 0; }
     Handle(TopTools_HSequenceOfShape) li = TransferBRep::Shapes(TP,(name[1] == '\0'));
     if (li.IsNull()) return 0;
     list->Append (li);
@@ -799,12 +799,12 @@ Standard_Integer  XSControl_FuncShape::MoreShapes
       list->Append(Shape);
       nbsh ++;
     }
-    sout<<"  -> taken "<<nbsh<<" Shapes"<<Message_EndLine;
+    sout<<"  -> taken "<<nbsh<<" Shapes"<<std::endl;
     return nbsh;
   }
   const char* a1 = (const char *)name;
   TopoDS_Shape Shape = session->Vars()->GetShape(a1);
-  if (Shape.IsNull()) { sout<<"not a shape draw:"<<a1<<Message_EndLine; return 0; }
+  if (Shape.IsNull()) { sout<<"not a shape draw:"<<a1<<std::endl; return 0; }
   list->Append(Shape);
   return 1;
 }

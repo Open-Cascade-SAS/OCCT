@@ -17,9 +17,6 @@
 #include <IGESSelect_CounterOfLevelNumber.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
-#include <Message_Messenger.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <stdio.h>
@@ -133,10 +130,10 @@ IGESSelect_CounterOfLevelNumber::IGESSelect_CounterOfLevelNumber
 
 
     void  IGESSelect_CounterOfLevelNumber::PrintCount
-  (const Handle(Message_Messenger)& S) const
+  (Standard_OStream& S) const
 {
-  IFSelect_SignatureList::PrintCount(S);
-  S<<" Highest value : " << thehigh << Message_EndLine;
-  if (thenblists > 0) S<<"REMARK for LEVEL LIST : Entities are counted in"
-    <<" <LEVEL LIST>\n, and in each Level value of their list"<<Message_EndLine;
+  IFSelect_SignatureList::PrintCount (S);
+  S <<" Highest value : " << thehigh << std::endl;
+  if (thenblists > 0) S <<"REMARK for LEVEL LIST : Entities are counted in"
+    <<" <LEVEL LIST>\n, and in each Level value of their list"<<std::endl;
 }

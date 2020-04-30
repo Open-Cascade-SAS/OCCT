@@ -286,7 +286,7 @@ class XSControl_TransferReader : public Standard_Transient
   
   //! Prints statistics on current Trace File, according <what> and
   //! <mode>.  See PrintStatsProcess for details
-  Standard_EXPORT void PrintStats (const Standard_Integer theWhat, const Standard_Integer theMode = 0) const;
+  Standard_EXPORT void PrintStats (Standard_OStream& theStream, const Standard_Integer theWhat, const Standard_Integer theMode = 0) const;
   
   //! Returns the CheckList resulting from last TransferRead
   //! i.e. from TransientProcess itself, recorded from last Clear

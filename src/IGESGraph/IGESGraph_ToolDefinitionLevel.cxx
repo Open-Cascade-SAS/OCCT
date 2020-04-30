@@ -112,12 +112,11 @@ void IGESGraph_ToolDefinitionLevel::OwnCheck
 
 void IGESGraph_ToolDefinitionLevel::OwnDump
   (const Handle(IGESGraph_DefinitionLevel)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESGraph_DefinitionLevel" << Message_EndLine;
-
-  S << "Level Numbers : ";
-  IGESData_DumpVals(S ,level,1, ent->NbPropertyValues(),ent->LevelNumber);
-  S << Message_EndLine;
+  S << "IGESGraph_DefinitionLevel\n"
+    << "Level Numbers : ";
+  IGESData_DumpVals(S,level,1, ent->NbPropertyValues(),ent->LevelNumber);
+  S << std::endl;
 }
 

@@ -601,10 +601,12 @@ static Standard_Integer XSDRAWIGES_tplosttrim (Draw_Interpretor& di, Standard_In
       }
 
       TColStd_MapIteratorOfMapOfTransient itmap;
+      Standard_SStream aTmpStream;
       for(itmap.Initialize(aMap); itmap.More(); itmap.Next()) {
-        XSDRAW::Model()->Print (itmap.Key(), Message::DefaultMessenger());
-        di << "  ";
+        XSDRAW::Model()->Print (itmap.Key(), aTmpStream);
+        aTmpStream << "  ";
       }
+      di << aTmpStream.str().c_str();
       di << "\n";
       di << "\nNumber:"<< nbFaces << "\n";
       totFaces += nbFaces;

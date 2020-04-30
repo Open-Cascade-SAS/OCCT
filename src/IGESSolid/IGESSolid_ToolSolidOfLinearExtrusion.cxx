@@ -135,15 +135,14 @@ void  IGESSolid_ToolSolidOfLinearExtrusion::OwnCheck
 
 void  IGESSolid_ToolSolidOfLinearExtrusion::OwnDump
   (const Handle(IGESSolid_SolidOfLinearExtrusion)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_SolidOfLinearExtrusion" << Message_EndLine;
-
-  S << "Curve entity        : ";
+  S << "IGESSolid_SolidOfLinearExtrusion\n"
+    << "Curve entity        : ";
   dumper.Dump(ent->Curve(),S, (level <= 4) ? 0 : 1);
-  S << Message_EndLine;
-  S << "Extrusion length    : " << ent->ExtrusionLength() << Message_EndLine;
-  S << "Extrusion direction : ";
+  S << "\n"
+    << "Extrusion length    : " << ent->ExtrusionLength() << "\n"
+    << "Extrusion direction : ";
   IGESData_DumpXYZL(S,level, ent->ExtrusionDirection(), ent->VectorLocation());
-  S << Message_EndLine;
+  S << std::endl;
 }

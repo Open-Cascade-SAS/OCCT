@@ -116,11 +116,11 @@ void  IGESAppli_ToolPinNumber::OwnCheck
 
 void  IGESAppli_ToolPinNumber::OwnDump
   (const Handle(IGESAppli_PinNumber)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
-  S << "IGESAppli_PinNumber" << Message_EndLine;
-  S << "Number of Property Values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "IGESAppli_PinNumber\n";
+  S << "Number of Property Values : " << ent->NbPropertyValues() << "\n";
   S << "PinNumber : ";
   IGESData_DumpString(S,ent->PinNumberVal());
-  S << Message_EndLine;
+  S << std::endl;
 }

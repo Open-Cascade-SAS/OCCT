@@ -120,13 +120,13 @@ void  IGESAppli_ToolLevelFunction::OwnCheck
 
 void  IGESAppli_ToolLevelFunction::OwnDump
   (const Handle(IGESAppli_LevelFunction)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
-  S << "IGESAppli_LevelFunction" << Message_EndLine;
+  S << "IGESAppli_LevelFunction\n";
 
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Function Description code : " << ent->FuncDescriptionCode() << Message_EndLine;
+  S << "Number of property values : " << ent->NbPropertyValues() << "\n";
+  S << "Function Description code : " << ent->FuncDescriptionCode() << "\n";
   S << "Function Description : ";
   IGESData_DumpString(S,ent->FuncDescription());
-  S << Message_EndLine;
+  S << "\n";
 }

@@ -98,7 +98,7 @@ void StepData_StepReaderTool::Prepare (const Standard_Boolean optim)
       SetEntities();
     }
     catch(Standard_Failure const& anException) {
-      Handle(Message_Messenger) sout = Message::DefaultMessenger();
+      Message_Messenger::StreamBuffer sout = Message::SendInfo();
       sout << " Exception Raised during Preparation :\n";
       sout << anException.GetMessageString();
       sout << "\n Now, trying to continue, but with presomption of failure\n";
@@ -159,7 +159,7 @@ void StepData_StepReaderTool::PrepareHeader
 void StepData_StepReaderTool::BeginRead
   (const Handle(Interface_InterfaceModel)& amodel)
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   DeclareAndCast(StepData_StepModel,model,amodel);
   DeclareAndCast(StepData_StepReaderData,stepdat,Data());
 
@@ -184,7 +184,7 @@ void StepData_StepReaderTool::BeginRead
       Handle(Interface_Check) mch = model->GlobalCheck();
       Standard_Integer nbmess = ach->NbWarnings();
       sout<<nbmess<<" Warnings on Reading Header Entity N0."<<i<<":";
-      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << Message_EndLine;
+      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << std::endl;
       for (Standard_Integer nf = 1; nf <= nbmess; nf ++)
 	sout << ach->CWarning(nf) << "\n";
     }
@@ -192,7 +192,7 @@ void StepData_StepReaderTool::BeginRead
       Handle(Interface_Check) mch = model->GlobalCheck();
       Standard_Integer nbmess = ach->NbFails();
       sout << " Errors on Reading Header Entity N0."<<i<<":";
-      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << Message_EndLine;
+      if (!ent.IsNull()) sout << ent->DynamicType()->Name() << std::endl;
       for (Standard_Integer nf = 1; nf <= nbmess; nf ++)
 	sout << ach->CFail(nf) << "\n";
     }

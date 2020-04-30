@@ -153,17 +153,17 @@ void  IGESDimen_ToolDimensionTolerance::OwnCheck
 
 void  IGESDimen_ToolDimensionTolerance::OwnDump
   (const Handle(IGESDimen_DimensionTolerance)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
+   Standard_OStream& S, const Standard_Integer /*level*/) const
 {
-  S << "IGESDimen_DimensionTolerance" << Message_EndLine;
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Secondary Tolerance Flag : " << ent->SecondaryToleranceFlag() << Message_EndLine;
-  S << "Tolerance Type           : " << ent->ToleranceType() << Message_EndLine;
-  S << "Tolerance Placement Flag : " << ent->TolerancePlacementFlag() << Message_EndLine;
-  S << "Upper Tolerance          : " << ent->UpperTolerance() << Message_EndLine;
-  S << "Lower Tolerance          : " << ent->LowerTolerance() << Message_EndLine;
-  S << "Sign Suppression Flag    : " << ( ent->SignSuppressionFlag() ? "True" : "False" ) << Message_EndLine;
-  S << "Fraction Flag            : " << ent->FractionFlag() << Message_EndLine;
-  S << "Precision                : " << ent->Precision() << Message_EndLine;
+  S << "IGESDimen_DimensionTolerance\n"
+    << "Number of property values : " << ent->NbPropertyValues() << "\n"
+    << "Secondary Tolerance Flag : " << ent->SecondaryToleranceFlag() << "\n"
+    << "Tolerance Type           : " << ent->ToleranceType() << "\n"
+    << "Tolerance Placement Flag : " << ent->TolerancePlacementFlag() << "\n"
+    << "Upper Tolerance          : " << ent->UpperTolerance() << "\n"
+    << "Lower Tolerance          : " << ent->LowerTolerance() << "\n"
+    << "Sign Suppression Flag    : " << ( ent->SignSuppressionFlag() ? "True" : "False" ) << "\n"
+    << "Fraction Flag            : " << ent->FractionFlag() << "\n"
+    << "Precision                : " << ent->Precision() << std::endl;
 }
 

@@ -25,7 +25,6 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
@@ -75,14 +74,14 @@ void IGESData_IGESModel::ClearHeader ()
 //=======================================================================
 
 void IGESData_IGESModel::DumpHeader
-  (const Handle(Message_Messenger)& S, const Standard_Integer ) const
+  (Standard_OStream& S, const Standard_Integer ) const
 {
   Standard_Integer ns = thestart->Length();
-  S<<"****    Dump of IGES Model , Start and Global Sections   ****"<<Message_EndLine;
+  S <<"****    Dump of IGES Model , Start and Global Sections   ****"<<std::endl;
   if (ns > 0) {
     S << "****    Start Section : "<<ns<<" Line(s)   ****\n";
     for (Standard_Integer i = 1; i <= ns; i ++)
-      S<<"["<<(i<10 ? " ": "")<<i<<"]:"<<thestart->Value(i)->ToCString()<<Message_EndLine;
+      S <<"["<<(i<10 ? " ": "")<<i<<"]:"<<thestart->Value(i)->ToCString()<<std::endl;
   }
   S << "\n****    Global Section    ****\n";
   char sep = theheader.Separator();
@@ -91,73 +90,73 @@ void IGESData_IGESModel::DumpHeader
   char emk = theheader.EndMark();
   if (emk == ';')  S << "        [ 2]      Default End Mark  : " << emk;
   else             S << "        [ 2]  Non Default End Mark  : " << emk;
-  S<<"\n";
+  S <<"\n";
   Handle(TCollection_HAsciiString) str;
   str = theheader.SendName();
-  if (!str.IsNull()) S<<"[ 3]  Sender                : "<<str->ToCString()<<Message_EndLine;
+  if (!str.IsNull()) S <<"[ 3]  Sender                : "<<str->ToCString()<<std::endl;
   str = theheader.FileName();
-  if (!str.IsNull()) S<<"[ 4]  (recorded) File Name  : "<<str->ToCString()<<Message_EndLine;
+  if (!str.IsNull()) S <<"[ 4]  (recorded) File Name  : "<<str->ToCString()<<std::endl;
   str = theheader.SystemId();
-  if (!str.IsNull()) S<<"[ 5]  System Identification : "<<str->ToCString()<<Message_EndLine;
+  if (!str.IsNull()) S <<"[ 5]  System Identification : "<<str->ToCString()<<std::endl;
   str = theheader.InterfaceVersion();
-  if (!str.IsNull()) S<<"[ 6]  Interface Version     : "<<str->ToCString()<<Message_EndLine;
-  S<<Message_EndLine;
+  if (!str.IsNull()) S <<"[ 6]  Interface Version     : "<<str->ToCString()<<std::endl;
+  S <<std::endl;
   S << "[ 7]  Integer Bits          : " << theheader.IntegerBits()
-    << "          Features for Reals : " << Message_EndLine;
+    << "          Features for Reals : " << std::endl;
   S << "[ 8]  Single Max.Power(10)  : " << theheader.MaxPower10Single();
   S << "         [ 9]  Digits   : " << theheader.MaxDigitsSingle()<<"\n";
   S << "[10]  Double Max.Power(10)  : " << theheader.MaxPower10Double();
   S << "         [11]  Digits   : " << theheader.MaxDigitsDouble() << "\n\n";
   str = theheader.ReceiveName();
-  if (!str.IsNull()) S<<"[12]  Receiver              : "<<str->ToCString()<<"\n";
+  if (!str.IsNull()) S <<"[12]  Receiver              : "<<str->ToCString()<<"\n";
   S << "[13]  Scale                 : " << theheader.Scale()<<"\n";
   S << "[14]  Unit  Flag            : " << theheader.UnitFlag();
 //  if (Interface_Static::IVal("read.scale.unit") == 1)
     //#73 rln 10.03.99 S4135: "read.scale.unit" does not affect GlobalSection
-//    S    << "    -> Value (in Meter) = " << theheader.UnitValue() / 1000 <<"\n";
+//    S << "    -> Value (in Meter) = " << theheader.UnitValue() / 1000 <<"\n";
 //  else S << "    -> Value (in Millimeter) = " << theheader.UnitValue()<<"\n";
   //abv 02 Mar 00: no unit parameter in OCC
   S << "    -> Value (in CASCADE units) = " << theheader.UnitValue() <<"\n";
   
   str = theheader.UnitName();
-  if (!str.IsNull()) S<<"[15]  Unit  Name            : " << str->ToCString()<<"\n\n";
+  if (!str.IsNull()) S <<"[15]  Unit  Name            : " << str->ToCString()<<"\n\n";
   S << "[16]  Line Weight  Gradient : " << theheader.LineWeightGrad()<<"\n";
   S << "[17]  Line Weight  Max Value: " << theheader.MaxLineWeight()<<"\n";
 
   str = theheader.Date();
-  if (!str.IsNull()) S<<"[18]  (Creation) Date       : "<<str->ToCString()
+  if (!str.IsNull()) S <<"[18]  (Creation) Date       : "<<str->ToCString()
     <<"  i.e. "<<IGESData_GlobalSection::NewDateString(str,1)->ToCString()<<"\n";
   S << "[19]  Resolution            : " << theheader.Resolution()<<"\n";
   if (theheader.HasMaxCoord())
-    S<<"[20]  Maximum Coord         : " << theheader.MaxCoord() << "\n\n";
-  else S<<"[20]  Maximum Coord           not defined\n\n";
+    S <<"[20]  Maximum Coord         : " << theheader.MaxCoord() << "\n\n";
+  else S <<"[20]  Maximum Coord           not defined\n\n";
 
   str = theheader.AuthorName();
-  if (!str.IsNull()) S<<"[21]  Author                : "<<str->ToCString()<<"\n";
+  if (!str.IsNull()) S <<"[21]  Author                : "<<str->ToCString()<<"\n";
   str = theheader.CompanyName();
-  if (!str.IsNull()) S<<"[22]  Company               : "<<str->ToCString()<<"\n";
+  if (!str.IsNull()) S <<"[22]  Company               : "<<str->ToCString()<<"\n";
   Standard_Integer num = theheader.IGESVersion();
   S << "[23]  IGES Version Number   : " << num << "   -> Name : " 
     << IGESData_BasicEditor::IGESVersionName(num);
 
   num = theheader.DraftingStandard();
   S << "\n[24]  Drafting Standard     : " << num;
-  if (num > 0) S<< "   -> Name : " << IGESData_BasicEditor::DraftingName(num);
-  S<<Message_EndLine;
+  if (num > 0) S << "   -> Name : " << IGESData_BasicEditor::DraftingName(num);
+  S <<std::endl;
 
   if (theheader.HasLastChangeDate()) {
     str = theheader.LastChangeDate();
     S <<  "[25]  Last Change Date      : " << str->ToCString() 
-      <<"  i.e. "<<IGESData_GlobalSection::NewDateString(str,1)->ToCString()<<Message_EndLine;
+      <<"  i.e. "<<IGESData_GlobalSection::NewDateString(str,1)->ToCString()<<std::endl;
   }
-  else S<<"[25]  Last Change Date        not defined (version IGES < 5.1)" << Message_EndLine;
+  else S <<"[25]  Last Change Date        not defined (version IGES < 5.1)" << std::endl;
 
   if (theheader.HasApplicationProtocol()) {
     str = theheader.ApplicationProtocol();
-    S <<  "[26]  Application Protocol  : " << str->ToCString() <<Message_EndLine;
+    S <<  "[26]  Application Protocol  : " << str->ToCString() <<std::endl;
   }
 
-  S << " ****     End of Dump      ****"<<Message_EndLine;
+  S << " ****     End of Dump      ****"<<std::endl;
 }
 
 
@@ -565,14 +564,14 @@ void  IGESData_IGESModel::ClearLabels ()
 //=======================================================================
 
 void  IGESData_IGESModel::PrintLabel
-  (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const
+  (const Handle(Standard_Transient)& ent, Standard_OStream& S) const
 { 
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
-  if (igesent.IsNull()) S<<"Null";
+  if (igesent.IsNull()) S <<"Null";
    else {
      Standard_Integer num = Number(ent);
-     if (num == 0) S<<"??";
-     else          S<<"D"<<(2*num-1);
+     if (num == 0) S <<"??";
+     else          S <<"D"<<(2*num-1);
    }
 }
 
@@ -583,14 +582,14 @@ void  IGESData_IGESModel::PrintLabel
 //=======================================================================
 
 void  IGESData_IGESModel::PrintToLog
-  (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const
+  (const Handle(Standard_Transient)& ent, Standard_OStream& S) const
 {
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
   if (!igesent.IsNull()) {
     Standard_Integer num = Number(ent);
-    if (num == 0) S<<"??";
+    if (num == 0) S <<"??";
     else {
-      S<<" DE : "<<(2*num-1) << " type : " << igesent->TypeNumber();
+      S <<" DE : "<<(2*num-1) << " type : " << igesent->TypeNumber();
 //      Standard_Integer num2 = igesent->TypeNumber();
     }
   }
@@ -603,15 +602,15 @@ void  IGESData_IGESModel::PrintToLog
 //=======================================================================
 
 void  IGESData_IGESModel::PrintInfo
-  (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const
+  (const Handle(Standard_Transient)& ent, Standard_OStream& S) const
 {
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
-  if (igesent.IsNull()) S<<"(NOT IGES)";
+  if (igesent.IsNull()) S <<"(NOT IGES)";
   else {
     Standard_Integer num = Number(ent);
-    if (num == 0) S<<"??";
+    if (num == 0) S <<"??";
     else  {
-      S<<(2*num-1) << "type " << Type(ent)->Name();
+      S <<(2*num-1) << "type " << Type(ent)->Name();
     }
   }
 }

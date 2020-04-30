@@ -32,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -126,13 +125,13 @@ void  IGESAppli_ToolFiniteElement::OwnCheck
 
 void  IGESAppli_ToolFiniteElement::OwnDump
   (const Handle(IGESAppli_FiniteElement)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_FiniteElement" << Message_EndLine;
+  S << "IGESAppli_FiniteElement\n";
 
-  S << "Topology type : " << ent->Topology() << Message_EndLine;
+  S << "Topology type : " << ent->Topology() << "\n";
   S << "Nodes : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbNodes(),ent->Node);
-  S << Message_EndLine << "Element Name : " << ent->Name();
-  S << Message_EndLine;
+  S << "\nElement Name : " << ent->Name()->String();
+  S << std::endl;
 }

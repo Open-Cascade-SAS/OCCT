@@ -117,18 +117,17 @@ void IGESGraph_ToolLineFontDefTemplate::OwnCheck
 
 void IGESGraph_ToolLineFontDefTemplate::OwnDump
   (const Handle(IGESGraph_LineFontDefTemplate)& ent, const IGESData_IGESDumper& dumper,
-  const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGraph_LineFontDefTemplate" << Message_EndLine;
-
-  S << "Orientation : " << ent->Orientation() << Message_EndLine;
-  S << "Subfigure Display Entity For Template Display : ";
+  S << "IGESGraph_LineFontDefTemplate\n"
+    << "Orientation : " << ent->Orientation() << "\n"
+    << "Subfigure Display Entity For Template Display : ";
   dumper.Dump(ent->TemplateEntity(),S, tempSubLevel);
-  S << Message_EndLine;
-  S << "Length Between Successive Template Figure : " << ent->Distance()<<Message_EndLine;
-  S << "Scale Factor for Subfigure : " << ent->Scale() << Message_EndLine;
-  S << Message_EndLine;
+  S << "\n"
+    << "Length Between Successive Template Figure : " << ent->Distance()<< "\n"
+    << "Scale Factor for Subfigure : " << ent->Scale() << "\n"
+    << std::endl;
 }
 

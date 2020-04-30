@@ -151,24 +151,24 @@ void IGESDimen_ToolOrdinateDimension::OwnCheck
 
 void IGESDimen_ToolOrdinateDimension::OwnDump
   (const Handle(IGESDimen_OrdinateDimension)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESDimen_OrdinateDimension" << Message_EndLine;
+  S << "IGESDimen_OrdinateDimension\n";
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "General Note : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
+  S << "\n";
   Handle(IGESDimen_WitnessLine) witLine = ent->WitnessLine();
   Handle(IGESDimen_LeaderArrow) leadArr = ent->Leader();
   if (!witLine.IsNull()) {
     S << "Witness line : ";
     dumper.Dump(witLine,S, sublevel);
-    S << Message_EndLine;
+    S << "\n";
   }
   if (!leadArr.IsNull()) {
     S << "Leader arrow :";
     dumper.Dump(leadArr,S, sublevel);
-    S << Message_EndLine;
+    S << "\n";
   }
 }

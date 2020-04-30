@@ -106,11 +106,11 @@ void  IGESAppli_ToolFlowLineSpec::OwnCheck
 
 void  IGESAppli_ToolFlowLineSpec::OwnDump
   (const Handle(IGESAppli_FlowLineSpec)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_FlowLineSpec" << Message_EndLine;
+  S << "IGESAppli_FlowLineSpec\n";
   S << "Name and Modifiers : ";
   IGESData_DumpStrings(S ,level,1, ent->NbPropertyValues(),ent->Modifier);
-  S << Message_EndLine;
+  S << "\n";
 }
 

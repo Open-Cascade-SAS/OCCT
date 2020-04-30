@@ -279,7 +279,7 @@ Standard_Integer XSDRAW_WHAT (const Handle(Standard_Transient)& ent)
   Handle(Interface_InterfaceModel) model = XSDRAW::Model();
   if (model.IsNull()) { std::cout<<"(No model)  Type:"<<ent->DynamicType()->Name()<<std::endl; return 0; }
   std::cout<<" Num/Id :";  
-  model->Print (ent, Message::DefaultMessenger(), 0);
+  model->Print (ent, std::cout, 0);
   std::cout<<"  --  Recorded Type:"<<model->TypeName (ent)<<std::endl;
   return model->Number(ent);
 }

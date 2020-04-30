@@ -332,53 +332,53 @@ void  IGESDimen_ToolGeneralNote::OwnCheck
 
 void  IGESDimen_ToolGeneralNote::OwnDump
   (const Handle(IGESDimen_GeneralNote)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
   Standard_Integer upper = ent->NbStrings();
 
-  S << "IGESDimen_GeneralNote" << Message_EndLine;
-  S << "Number of Text Strings : " << upper << Message_EndLine;
-  S << "Number of Characters : " << Message_EndLine;
-  S << "Box Widths : " << Message_EndLine;
-  S << "Box Heights : " << Message_EndLine;
-  S << "Font Codes : " << Message_EndLine;
-  S << "Font Entities : " << Message_EndLine;
-  S << "Slant Angles : " << Message_EndLine;
-  S << "Rotation Angles : " << Message_EndLine;
-  S << "Mirror Flags : " << Message_EndLine;
-  S << "Rotate Flags : " << Message_EndLine;
-  S << "Start Points : " << Message_EndLine;
-  S << "Texts : ";
+  S << "IGESDimen_GeneralNote\n"
+    << "Number of Text Strings : " << upper << "\n"
+    << "Number of Characters :\n"
+    << "Box Widths :\n"
+    << "Box Heights :\n"
+    << "Font Codes :\n"
+    << "Font Entities :\n"
+    << "Slant Angles :\n"
+    << "Rotation Angles :\n"
+    << "Mirror Flags :\n"
+    << "Rotate Flags :\n"
+    << "Start Points :\n"
+    << "Texts : ";
   IGESData_DumpVals(S,-level,1, ent->NbStrings(),ent->NbCharacters);
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4)
     {
-      S << "Details of each String" << Message_EndLine;
+      S << "Details of each String\n";
       for ( Standard_Integer i = 1; i <= upper; i++)
 	{
-          S << "[" << i << "]: " << Message_EndLine;
-          S << "Number of Characters : " << ent->NbCharacters(i) << "  ";
-          S << "Box Width  : " << ent->BoxWidth(i)  << "  ";
-          S << "Box Height : " << ent->BoxHeight(i) << Message_EndLine;
+          S << "[" << i << "]:\n"
+            << "Number of Characters : " << ent->NbCharacters(i) << "  "
+            << "Box Width  : " << ent->BoxWidth(i)  << "  "
+            << "Box Height : " << ent->BoxHeight(i) << "\n";
           if (ent->IsFontEntity(i))
 	    {
               S << "Font Entity : ";
               dumper.Dump (ent->FontEntity(i),S, sublevel);
-              S << Message_EndLine;
+              S << "\n";
 	    }
           else
-	    S << "Font Code : " << ent->FontCode(i) << Message_EndLine;
-          S << "Slant Angle : " << ent->SlantAngle(i) << "  ";
-          S << "Rotation Angle : " << ent->RotationAngle(i) << "  ";
-          S << "Mirror Flag : " << ent->MirrorFlag(i) << "  ";
-          S << "Rotate Flag : " << ent->RotateFlag(i) << Message_EndLine;
-          S << "Start Point : ";
+	    S << "Font Code : " << ent->FontCode(i) << "\n"
+          << "Slant Angle : " << ent->SlantAngle(i) << "  "
+          << "Rotation Angle : " << ent->RotationAngle(i) << "  "
+          << "Mirror Flag : " << ent->MirrorFlag(i) << "  "
+          << "Rotate Flag : " << ent->RotateFlag(i) << "\n"
+          << "Start Point : ";
           IGESData_DumpXYZL(S,level, ent->StartPoint(i), ent->Location());
           S << "\nText : ";
           IGESData_DumpString(S,ent->Text(i));
-          S << Message_EndLine;
+          S << "\n";
 	}
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

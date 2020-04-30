@@ -15,8 +15,6 @@
 #include <IGESData_IGESDumper.hxx>
 #include <IGESData_IGESEntity.hxx>
 #include <IGESData_SpecificModule.hxx>
-#include <Message_Messenger.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESData_SpecificModule,Standard_Transient)
 

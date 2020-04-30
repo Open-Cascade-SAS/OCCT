@@ -685,7 +685,7 @@ void Interface_Check::GetAsWarning(const Handle(Interface_Check)& other,
 //purpose  : 
 //=======================================================================
 
-void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_Integer level,
+void Interface_Check::Print(Standard_OStream& S, const Standard_Integer level,
                             const Standard_Integer final) const
 {
   Standard_Integer j, nb = NbFails();
@@ -695,9 +695,9 @@ void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_I
 //    if (nb > 0) S<<" -->   Fails    : "<<nb<<std::endl;
     for (j = 1; j <= nb; j ++) {
       if (final >= 0) 
-	S<<CFail(j,Standard_True)<<"\n";
+	S <<CFail(j,Standard_True)<<"\n";
       else
-	S<<CFail(j,Standard_False)<<"\n";
+	S <<CFail(j,Standard_False)<<"\n";
 //      if (final == 0)
 //	if (Fail(j,Standard_True) != Fail(j,Standard_False))
 //	  S<<"[original:"<<CFail(j,Standard_False)<<"]\n";
@@ -709,9 +709,9 @@ void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_I
 //    if (nb > 0) S<<" -->   Warnings : "<<nb<<std::endl;
     for (j = 1; j <= nb; j ++) {
       if (final >= 0)
-	S<<CWarning(j,Standard_True)<<"\n";
+	S <<CWarning(j,Standard_True)<<"\n";
       else
-	S<<CWarning(j,Standard_False)<<"\n";
+	S <<CWarning(j,Standard_False)<<"\n";
 //      if (final == 0)
 //	if (Warning(j,Standard_True) != Warning(j,Standard_False))
 //	  S<<"[original:"<<CWarning(j,Standard_False)<<"]\n";
@@ -724,9 +724,9 @@ void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_I
 //    if (nb > 0) S<<" -->   Infos    : "<<nb<<std::endl;
     for (j = 1; j <= nb; j ++) {
       if (final >= 0) 
-	S<<CInfoMsg(j,Standard_True)<<"\n";
+	S <<CInfoMsg(j,Standard_True)<<"\n";
       else
-	S<<CInfoMsg(j,Standard_False)<<"\n";
+	S <<CInfoMsg(j,Standard_False)<<"\n";
 //      if (final == 0)
 //	if (InfoMsg(j,Standard_True) != InfoMsg(j,Standard_False))
 //	  S<<"[original:"<<CInfoMsg(j,Standard_False)<<"]\n";
@@ -744,5 +744,6 @@ void Interface_Check::Print(const Handle(Message_Messenger)& S, const Standard_I
 void Interface_Check::Trace(const Standard_Integer level,
                             const Standard_Integer final) const
 {
-  Print (Message::DefaultMessenger(), level, final);
+  Message_Messenger::StreamBuffer sout = Message::SendInfo(); // shouldn't it be changed to SendTrace()?
+  Print (sout, level, final);
 }

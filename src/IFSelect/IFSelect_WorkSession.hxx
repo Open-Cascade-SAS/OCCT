@@ -63,7 +63,6 @@ class IFSelect_GeneralModifier;
 class IFSelect_Modifier;
 class IFSelect_Transformer;
 class IFSelect_PacketList;
-class Message_Messenger;
 class IFSelect_SignatureList;
 
 
@@ -1018,7 +1017,7 @@ public:
   //! 4 -> as 3 but all CheckList (Fails + Warnings)
   //! 5,6,7  : as 3 but resp. Count,List,Labels by Fail
   //! 8,9,10 : as 4 but resp. Count,List,Labels by message
-  Standard_EXPORT void DumpModel (const Standard_Integer level, const Handle(Message_Messenger)& S);
+  Standard_EXPORT void DumpModel (const Standard_Integer level, Standard_OStream& S);
   
   //! Dumps the current Model (as inherited DumpModel), on currently
   //! defined Default Trace File (default is standard output)
@@ -1029,12 +1028,12 @@ public:
   //! <level> is to be interpreted for each norm : see specific
   //! classes of WorkLibrary for it. Generally, 0 if for very basic
   //! (only type ...), greater values give more and more details.
-  Standard_EXPORT void DumpEntity (const Handle(Standard_Transient)& ent, const Standard_Integer level, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void DumpEntity (const Handle(Standard_Transient)& ent, const Standard_Integer level, Standard_OStream& S) const;
   
   //! Prints main informations about an entity : its number, type,
   //! validity (and checks if any), category, shareds and sharings..
   //! mutable because it can recompute checks as necessary
-  Standard_EXPORT void PrintEntityStatus (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S);
+  Standard_EXPORT void PrintEntityStatus (const Handle(Standard_Transient)& ent, Standard_OStream& S);
   
   //! Dumps an entity from the current Model as inherited DumpEntity
   //! on currently defined Default Trace File
@@ -1049,12 +1048,17 @@ public:
   //! 1 : according messages, count of entities
   //! 2 : id but with list of entities, designated by their numbers
   //! 3 : as 2 but with labels of entities
-  Standard_EXPORT void PrintCheckList (const Interface_CheckIterator& checklist, const Standard_Boolean failsonly, const IFSelect_PrintCount mode) const;
+  Standard_EXPORT void PrintCheckList (Standard_OStream& S,
+                                       const Interface_CheckIterator& checklist,
+                                       const Standard_Boolean failsonly,
+                                       const IFSelect_PrintCount mode) const;
   
   //! Prints a SignatureList to the current Trace File, controlled
   //! with the current Model
   //! <mode> defines the mode of printing (see SignatureList)
-  Standard_EXPORT void PrintSignatureList (const Handle(IFSelect_SignatureList)& signlist, const IFSelect_PrintCount mode) const;
+  Standard_EXPORT void PrintSignatureList (Standard_OStream& S,
+                                           const Handle(IFSelect_SignatureList)& signlist,
+                                           const IFSelect_PrintCount mode) const;
   
   //! Displays the list of Entities selected by a Selection (i.e.
   //! the result of EvalSelection).
@@ -1086,7 +1090,7 @@ public:
   //! 1 gives a more complete trace (1 line per Entity)
   //! (can be used each time a trace has to be output from a list)
   //! 2 gives a form suitable for givelist : (n1,n2,n3...)
-  Standard_EXPORT void ListEntities (const Interface_EntityIterator& iter, const Standard_Integer mode) const;
+  Standard_EXPORT void ListEntities (const Interface_EntityIterator& iter, const Standard_Integer mode, Standard_OStream& S) const;
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_WorkSession,Standard_Transient)
 

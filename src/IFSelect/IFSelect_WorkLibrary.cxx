@@ -18,8 +18,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Protocol.hxx>
-#include <Message.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -48,7 +46,7 @@ IFSelect_WorkLibrary::IFSelect_WorkLibrary ()  {  thelevdef = 0;  }
   (const Handle(Interface_InterfaceModel)& model,
    const Handle(Interface_Protocol)& protocol,
    const Handle(Standard_Transient)& entity,
-   const Handle(Message_Messenger)& S) const
+   Standard_OStream& S) const
 {
   if (thelevhlp.IsNull()) DumpEntity (model,protocol,entity,S,0);
   else                    DumpEntity (model,protocol,entity,S,thelevdef);

@@ -38,7 +38,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -368,31 +367,30 @@ void IGESSolid_ToolLoop::OwnCheck(const Handle(IGESSolid_Loop)& ent,
 
 void IGESSolid_ToolLoop::OwnDump(const Handle(IGESSolid_Loop)& ent,
                                  const IGESData_IGESDumper& dumper,
-                                 const Handle(Message_Messenger)& S,
+                                 Standard_OStream& S,
                                  const Standard_Integer level) const
 {
   Standard_Integer i, j;
   Standard_Integer nbedges  = ent->NbEdges();
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESSolid_Loop" << Message_EndLine;
-
-  S << "Edge types : " << Message_EndLine;
-  S << "Edges      : " << Message_EndLine;
-  S << "List index : " << Message_EndLine;
-  S << "Orientation flags : " << Message_EndLine;
-  S << "Parametric flags  : ";
+  S << "IGESSolid_Loop\n"
+    << "Edge types :\n"
+    << "Edges      :\n"
+    << "List index :\n"
+    << "Orientation flags :\n"
+    << "Parametric flags  : ";
   IGESData_DumpEntities(S,dumper,-level,1, nbedges,ent->Edge);
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4)
     {
       S << "[ ";
       for (i = 1; i <= nbedges; i ++)
 	{
 	  Standard_Integer nbc = ent->NbParameterCurves(i);
-          S << "[" << i << "]:  ";
-          S << "Edge type : " << ent->EdgeType(i) << "  ";
-          S << "Edge : ";
+          S << "[" << i << "]:  "
+            << "Edge type : " << ent->EdgeType(i) << "  "
+            << "Edge : ";
           dumper.Dump (ent->Edge(i),S, sublevel);
           S << "  - Index : " << ent->ListIndex(i)
             << ", Orientation flag : " << ( ent->Orientation(i) ? "Positive" : "Negative" )
@@ -404,19 +402,19 @@ void IGESSolid_ToolLoop::OwnDump(const Handle(IGESSolid_Loop)& ent,
 		S << ":\n [ ";
 		for (j = 1; j <= nbc; j ++)
 		  {
-		    S << "[" << j << "]:  ";
-		    S << "Isoparametric flag : "
-		      << ( ent->IsIsoparametric(i,j) ? "True" : "False" ) << "  ";
-		    S << "Parametric curve : ";
+		    S << "[" << j << "]:  "
+		      << "Isoparametric flag : "
+		      << ( ent->IsIsoparametric(i,j) ? "True" : "False" ) << "  "
+		      << "Parametric curve : ";
 		    dumper.Dump (ent->ParametricCurve(i,j),S, sublevel);
-		    S << Message_EndLine;
+		    S << "\n";
 		  }
 		S << " ]";
 	      }
 	    }
-	  S << Message_EndLine;
+	  S << "\n";
 	}
       S << " ]";
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

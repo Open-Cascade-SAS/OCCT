@@ -401,27 +401,26 @@ void IGESGeom_ToolBSplineCurve::OwnCheck(const Handle(IGESGeom_BSplineCurve)& en
 
 void IGESGeom_ToolBSplineCurve::OwnDump(const Handle(IGESGeom_BSplineCurve)& ent,
                                         const IGESData_IGESDumper& /* dumper */,
-                                        const Handle(Message_Messenger)& S,
+                                        Standard_OStream& S,
                                         const Standard_Integer level)  const
 {
   Standard_Integer upind = ent->UpperIndex();
-  S << "BSplineCurve from IGESGeom" << Message_EndLine;
-  S << "Sum UpperIndex : " << upind;
-  S << "   Degree : " << ent->Degree() << "  ";
-  S << (ent->IsPlanar() ? "Planar" : "NonPlanar") << Message_EndLine;
-  S << (ent->IsClosed() ? "Closed" : "Open") << "  ";
-  S << (ent->IsPeriodic() ? "Periodic" : "NonPeriodic") << "  ";//#54 rln 24.12.98 CCI60005
-  S << (ent->IsPolynomial(Standard_True) ? "Polynomial" : "Rational");
-
-  S << Message_EndLine << "Knots : ";
-  IGESData_DumpVals(S ,level,-ent->Degree(), upind+1,ent->Knot);
-  S << Message_EndLine << "Weights : ";
-  IGESData_DumpVals(S ,level,0, upind,ent->Weight);
-  S << Message_EndLine << "Control Points (Poles) : ";
-  IGESData_DumpListXYZL(S ,level,0, upind, ent->Pole, ent->Location());
-  S << Message_EndLine << "Starting Parameter Value : " << ent->UMin();
-  S << "  Ending Parameter Value : " << ent->UMax() << Message_EndLine;
-  S << "Unit Normal : ";
+  S << "BSplineCurve from IGESGeom\n"
+    << "Sum UpperIndex : " << upind
+    << "   Degree : " << ent->Degree() << "  "
+    << (ent->IsPlanar() ? "Planar" : "NonPlanar") << "\n"
+    << (ent->IsClosed() ? "Closed" : "Open") << "  "
+    << (ent->IsPeriodic() ? "Periodic" : "NonPeriodic") << "  " //#54 rln 24.12.98 CCI60005
+    << (ent->IsPolynomial(Standard_True) ? "Polynomial" : "Rational")
+    << "\nKnots : ";
+  IGESData_DumpVals(S,level,-ent->Degree(), upind+1,ent->Knot);
+  S << "\nWeights : ";
+  IGESData_DumpVals(S,level,0, upind,ent->Weight);
+  S << "\nControl Points (Poles) : ";
+  IGESData_DumpListXYZL(S,level,0, upind, ent->Pole, ent->Location());
+  S << "\nStarting Parameter Value : " << ent->UMin()
+    << "  Ending Parameter Value : " << ent->UMax() << "\n"
+    << "Unit Normal : ";
   IGESData_DumpXYZL(S,level, ent->Normal(), ent->Location());
-  S << Message_EndLine;
+  S << std::endl;
 }

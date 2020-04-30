@@ -117,7 +117,7 @@ Standard_Integer StepFile_Read
   const Handle(StepData_FileRecognizer)& recodata)
 
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   char *ficnom = nomfic ;  // because const (non reconnu par C)
 
   checkread->Clear();
@@ -129,7 +129,7 @@ Standard_Integer StepFile_Read
   OSD_Timer c ; 
   c.Reset () ; 
   c.Start();
-  sout << "      ...    Step File Reading : " << ficnom << "" << Message_EndLine;  
+  sout << "      ...    Step File Reading : " << ficnom << "" << std::endl;  
 #endif
 
   try {
@@ -138,9 +138,9 @@ Standard_Integer StepFile_Read
   }
   catch (Standard_Failure const& anException) {
 #ifdef OCCT_DEBUG
-    sout << " ...  Exception Raised while reading Step File : " << ficnom << ":\n" << Message_EndLine;
+    sout << " ...  Exception Raised while reading Step File : " << ficnom << ":\n" << std::endl;
     sout << anException.GetMessageString();  
-    sout << "    ..." << Message_EndLine;
+    sout << "    ..." << std::endl;
 #endif
     (void)anException;
     lir_file_fin(3);  
@@ -150,7 +150,7 @@ Standard_Integer StepFile_Read
   // Continue reading of file despite of possible fails
   //if (checkread->HasFailed()) {  lir_file_fin(3);  stepread_endinput (newin,ficnom);  return 1;  }
 #ifdef CHRONOMESURE
-  sout << "      ...    STEP File   Read    ... " << Message_EndLine;  
+  sout << "      ...    STEP File   Read    ... " << std::endl;  
   c.Show(); 
 #endif
 
@@ -193,10 +193,10 @@ Standard_Integer StepFile_Read
 //  on a undirec pret pour la suite
 
 #ifdef CHRONOMESURE
-  sout << "      ... Step File loaded  ... " << Message_EndLine; 
+  sout << "      ... Step File loaded  ... " << std::endl; 
   c.Show();
   sout << "   "<< undirec->NbRecords () <<
-      " records (entities,sub-lists,scopes), "<< nbpar << " parameters\n" << Message_EndLine;
+      " records (entities,sub-lists,scopes), "<< nbpar << " parameters\n" << std::endl;
 #endif
 
 //   Analyse : par StepReaderTool
@@ -219,10 +219,10 @@ Standard_Integer StepFile_Read
   readtool.Clear();
   undirec.Nullify();
 #ifdef CHRONOMESURE
-  sout << "      ...   Objets analysed  ... " << Message_EndLine; 
+  sout << "      ...   Objets analysed  ... " << std::endl; 
   c.Show();
   n = stepmodel->NbEntities() ;
-  sout << "  STEP Loading done : " << n << " Entities" << Message_EndLine;
+  sout << "  STEP Loading done : " << n << " Entities" << std::endl;
 #endif
   
   stepread_endinput (newin,ficnom);  return 0 ;
@@ -231,8 +231,8 @@ Standard_Integer StepFile_Read
 void StepFile_Interrupt (char* mess)
 {
 #ifdef OCCT_DEBUG
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
-  sout << "    ****    StepFile Error : " << mess << "    ****" << Message_EndLine;
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
+  sout << "    ****    StepFile Error : " << mess << "    ****" << std::endl;
 #endif
   checkread->AddFail(mess);
 }

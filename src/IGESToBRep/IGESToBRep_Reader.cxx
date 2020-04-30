@@ -268,8 +268,13 @@ Standard_Integer IGESToBRep_Reader::LoadFile (const Standard_CString filename)
 {
   Interface_CheckTool cht (theModel,protocol);
   Interface_CheckIterator chl = cht.CompleteCheckList();
-  if (withprint && !theProc.IsNull()) 
-    cht.Print(chl, theProc->Messenger());
+  if (withprint
+  && !theProc.IsNull()
+  && !theProc->Messenger().IsNull())
+  {
+    Message_Messenger::StreamBuffer aBuffer = theProc->Messenger()->SendInfo();
+    cht.Print(chl, aBuffer);
+  }
   return chl.IsEmpty(Standard_True);
 }
 

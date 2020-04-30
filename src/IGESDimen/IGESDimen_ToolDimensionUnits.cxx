@@ -149,18 +149,18 @@ void  IGESDimen_ToolDimensionUnits::OwnCheck
 
 void  IGESDimen_ToolDimensionUnits::OwnDump
   (const Handle(IGESDimen_DimensionUnits)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
-  S << "IGESDimen_DimensionUnits" << Message_EndLine;
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Secondary Dimension Position : " << ent->SecondaryDimenPosition() << Message_EndLine;
-  S << "Units Indicator : " << ent->UnitsIndicator() << Message_EndLine;
-  S << "Character Set   : " << ent->CharacterSet() << Message_EndLine;
-  S << "Format String   : ";
+  S << "IGESDimen_DimensionUnits\n"
+    << "Number of property values : " << ent->NbPropertyValues() << "\n"
+    << "Secondary Dimension Position : " << ent->SecondaryDimenPosition() << "\n"
+    << "Units Indicator : " << ent->UnitsIndicator() << "\n"
+    << "Character Set   : " << ent->CharacterSet() << "\n"
+    << "Format String   : ";
   IGESData_DumpString(S,ent->FormatString());
-  S << Message_EndLine;
-  S << "Fraction Flag   : " << ent->FractionFlag();
+  S << "\n"
+    << "Fraction Flag   : " << ent->FractionFlag();
   if (ent->FractionFlag() == 0) S << " Decimal  , Precision   : ";
   else                          S << " Fraction , Denominator : ";
-  S << ent->PrecisionOrDenominator() << Message_EndLine;
+  S << ent->PrecisionOrDenominator() << std::endl;
 }

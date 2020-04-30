@@ -179,7 +179,7 @@ void StepToTopoDS_Builder::Init
 (const Handle(StepShape_ManifoldSolidBrep)& aManifoldSolid,
  const Handle(Transfer_TransientProcess)& TP)
 {
-  Handle(Message_Messenger) sout = TP->Messenger();
+  Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
   // Initialisation of the Tool
 
   StepToTopoDS_Tool         myTool;
@@ -215,16 +215,16 @@ void StepToTopoDS_Builder::Init
 
     if ( TP->TraceLevel() > 2 )
     {
-      sout << "Geometric Statitics : " << Message_EndLine;
-      sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << Message_EndLine;
-      sout << "                        - C1 : " << myTool.C1Surf() << Message_EndLine;
-      sout << "                        - C2 : " << myTool.C2Surf() << Message_EndLine;
-      sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << Message_EndLine;
-      sout << "                        - C1 : " << myTool.C1Cur3() << Message_EndLine;
-      sout << "                        - C2 : " << myTool.C2Cur3() << Message_EndLine;
-      sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << Message_EndLine;
-      sout << "                        - C1 : " << myTool.C1Cur2() << Message_EndLine;
-      sout << "                        - C2 : " << myTool.C2Cur2() << Message_EndLine;
+      sout << "Geometric Statitics : " << std::endl;
+      sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << std::endl;
+      sout << "                        - C1 : " << myTool.C1Surf() << std::endl;
+      sout << "                        - C2 : " << myTool.C2Surf() << std::endl;
+      sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << std::endl;
+      sout << "                        - C1 : " << myTool.C1Cur3() << std::endl;
+      sout << "                        - C2 : " << myTool.C2Cur3() << std::endl;
+      sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << std::endl;
+      sout << "                        - C1 : " << myTool.C1Cur2() << std::endl;
+      sout << "                        - C2 : " << myTool.C2Cur2() << std::endl;
     }
 
 //:S4136    ShapeFix::SameParameter (S,Standard_False);
@@ -246,7 +246,7 @@ void StepToTopoDS_Builder::Init
 (const Handle(StepShape_BrepWithVoids)& aBRepWithVoids,
  const Handle(Transfer_TransientProcess)& TP)
 {
-  Handle(Message_Messenger) sout = TP->Messenger();
+  Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
  // Initialisation of the Tool
   StepToTopoDS_Tool         myTool;
   StepToTopoDS_DataMapOfTRI aMap;
@@ -323,16 +323,16 @@ void StepToTopoDS_Builder::Init
   
   if ( TP->TraceLevel() > 2 )
   {
-    sout << "Geometric Statitics : " << Message_EndLine;
-    sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << Message_EndLine;
-    sout << "                        - C1 : " << myTool.C1Surf() << Message_EndLine;
-    sout << "                        - C2 : " << myTool.C2Surf() << Message_EndLine;
-    sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << Message_EndLine;
-    sout << "                        - C1 : " << myTool.C1Cur3() << Message_EndLine;
-    sout << "                        - C2 : " << myTool.C2Cur3() << Message_EndLine;
-    sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << Message_EndLine;
-    sout << "                        - C1 : " << myTool.C1Cur2() << Message_EndLine;
-    sout << "                        - C2 : " << myTool.C2Cur2() << Message_EndLine;
+    sout << "Geometric Statitics : " << std::endl;
+    sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << std::endl;
+    sout << "                        - C1 : " << myTool.C1Surf() << std::endl;
+    sout << "                        - C2 : " << myTool.C2Surf() << std::endl;
+    sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << std::endl;
+    sout << "                        - C1 : " << myTool.C1Cur3() << std::endl;
+    sout << "                        - C2 : " << myTool.C2Cur3() << std::endl;
+    sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << std::endl;
+    sout << "                        - C1 : " << myTool.C1Cur2() << std::endl;
+    sout << "                        - C2 : " << myTool.C2Cur2() << std::endl;
   }
 
 //:S4136  ShapeFix::SameParameter (S,Standard_False);
@@ -464,7 +464,7 @@ void StepToTopoDS_Builder::Init
  const Handle(Transfer_TransientProcess)& TP,
  StepToTopoDS_NMTool& NMTool)
 {
-  Handle(Message_Messenger) sout = TP->Messenger();
+  Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
   // Initialisation of the Tool
 
   StepToTopoDS_Tool         myTool;
@@ -530,16 +530,16 @@ void StepToTopoDS_Builder::Init
   
   if ( TP->TraceLevel() > 2 )
   {
-    sout << "Geometric Statitics : " << Message_EndLine;
-    sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << Message_EndLine;
-    sout << "                        - C1 : " << myTool.C1Surf() << Message_EndLine;
-    sout << "                        - C2 : " << myTool.C2Surf() << Message_EndLine;
-    sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << Message_EndLine;
-    sout << "                        - C1 : " << myTool.C1Cur3() << Message_EndLine;
-    sout << "                        - C2 : " << myTool.C2Cur3() << Message_EndLine;
-    sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << Message_EndLine;
-    sout << "                        - C1 : " << myTool.C1Cur2() << Message_EndLine;
-    sout << "                        - C2 : " << myTool.C2Cur2() << Message_EndLine;
+    sout << "Geometric Statitics : " << std::endl;
+    sout << "   Surface Continuity : - C0 : " << myTool.C0Surf() << std::endl;
+    sout << "                        - C1 : " << myTool.C1Surf() << std::endl;
+    sout << "                        - C2 : " << myTool.C2Surf() << std::endl;
+    sout << "   Curve Continuity :   - C0 : " << myTool.C0Cur3() << std::endl;
+    sout << "                        - C1 : " << myTool.C1Cur3() << std::endl;
+    sout << "                        - C2 : " << myTool.C2Cur3() << std::endl;
+    sout << "   PCurve Continuity :  - C0 : " << myTool.C0Cur2() << std::endl;
+    sout << "                        - C1 : " << myTool.C1Cur2() << std::endl;
+    sout << "                        - C2 : " << myTool.C2Cur2() << std::endl;
   }
 
 //:S4136  ShapeFix::SameParameter (S,Standard_False);
@@ -770,9 +770,9 @@ void StepToTopoDS_Builder::Init
             aGeomCrv = StepToGeom::MakeCurve(aCrv);
         }
         catch (Standard_Failure const& anException) {
-          Handle(Message_Messenger) sout = TP->Messenger();
+          Message_Messenger::StreamBuffer sout = TP->Messenger()->SendInfo();
           sout << "StepToTopoDS, GeometricSet, elem " << i << " of " << nbElem << ": exception ";
-          sout << anException.GetMessageString() << Message_EndLine;
+          sout << anException.GetMessageString() << std::endl;
         }
         if (!aGeomCrv.IsNull()) {
           BRepBuilderAPI_MakeEdge anEdge(aGeomCrv, aGeomCrv->FirstParameter(), aGeomCrv->LastParameter());

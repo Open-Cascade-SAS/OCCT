@@ -20,6 +20,8 @@
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_ShareFlags.hxx>
 #include <Interface_Static.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
 #include <Message_ProgressSentry.hxx>
 #include <ShapeExtend_Explorer.hxx>
 #include <Standard_Transient.hxx>
@@ -368,42 +370,71 @@ TopoDS_Shape  XSControl_Reader::OneShape () const
   return C;
 }
 
+//=======================================================================
+//function : PrintCheckLoad
+//purpose  :
+//=======================================================================
+void  XSControl_Reader::PrintCheckLoad (Standard_OStream& theStream,
+                                        const Standard_Boolean failsonly,
+                                        const IFSelect_PrintCount mode) const
+{
+  thesession->PrintCheckList (theStream, thesession->ModelCheckList(),failsonly, mode);
+}
 
 //=======================================================================
 //function : PrintCheckLoad
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void  XSControl_Reader::PrintCheckLoad (const Standard_Boolean failsonly,
                                         const IFSelect_PrintCount mode) const
 {
-  thesession->PrintCheckList (thesession->ModelCheckList(),failsonly, mode);
+  Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
+  PrintCheckLoad (aBuffer, failsonly, mode);
 }
-
 
 //=======================================================================
 //function : PrintCheckTransfer
-//purpose  : 
+//purpose  :
 //=======================================================================
+void XSControl_Reader::PrintCheckTransfer(Standard_OStream& theStream,
+                                          const Standard_Boolean failsonly,
+                                          const IFSelect_PrintCount mode) const
+{
+  thesession->PrintCheckList (theStream, thesession->TransferReader()->LastCheckList(), failsonly, mode);
+}
 
+//=======================================================================
+//function : PrintCheckTransfer
+//purpose  :
+//=======================================================================
 void XSControl_Reader::PrintCheckTransfer(const Standard_Boolean failsonly,
                                           const IFSelect_PrintCount mode) const
 {
-  thesession->PrintCheckList (thesession->TransferReader()->LastCheckList(),failsonly, mode);
+  Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
+  PrintCheckTransfer(aBuffer, failsonly, mode);
 }
-
 
 //=======================================================================
 //function : PrintStatsTransfer
-//purpose  : 
+//purpose  :
 //=======================================================================
+void XSControl_Reader::PrintStatsTransfer (Standard_OStream& theStream,
+                                           const Standard_Integer what, 
+                                           const Standard_Integer mode) const
+{
+  thesession->TransferReader()->PrintStats (theStream, what,mode);
+}
 
+//=======================================================================
+//function : PrintStatsTransfer
+//purpose  :
+//=======================================================================
 void XSControl_Reader::PrintStatsTransfer (const Standard_Integer what, 
                                            const Standard_Integer mode) const
 {
-  thesession->TransferReader()->PrintStats (what,mode);
+  Message_Messenger::StreamBuffer aBuffer = Message::SendInfo();
+  PrintStatsTransfer (aBuffer, what, mode);
 }
-
 
 //=======================================================================
 //function : GetStatsTransfer

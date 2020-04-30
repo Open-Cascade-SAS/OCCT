@@ -17,13 +17,8 @@
 #ifndef _Interface_ShareTool_HeaderFile
 #define _Interface_ShareTool_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 #include <Standard_Type.hxx>
+
 class Interface_HGraph;
 class Standard_DomainError;
 class Interface_InterfaceError;
@@ -33,9 +28,6 @@ class Interface_GTool;
 class Interface_Protocol;
 class Interface_Graph;
 class Interface_EntityIterator;
-class Standard_Transient;
-class Message_Messenger;
-
 
 //! Builds the Graph of Dependancies, from the General Service
 //! "Shared" -> builds for each Entity of a Model, the Shared and
@@ -113,7 +105,7 @@ public:
   
   //! Utility method which Prints the content of an iterator
   //! (by their Numbers)
-  Standard_EXPORT void Print (const Interface_EntityIterator& iter, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void Print (const Interface_EntityIterator& iter,Standard_OStream& S) const;
 
 
 

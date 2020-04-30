@@ -168,20 +168,19 @@ void IGESDraw_ToolPlanar::OwnCheck
 
 void IGESDraw_ToolPlanar::OwnDump
   (const Handle(IGESDraw_Planar)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_Planar" << Message_EndLine;
-
-  S << "No. of Transformation Matrices : " << ent->NbMatrices() << "  ";
-  S << "i.e. : ";
+  S << "IGESDraw_Planar\n"
+    << "No. of Transformation Matrices : " << ent->NbMatrices() << "  "
+    << "i.e. : ";
   if ( ent->TransformMatrix().IsNull() )
     S << "Null Handle";
   else
     dumper.OwnDump (ent->TransformMatrix(),S, sublevel);
-  S << Message_EndLine;
-  S << "Array of Entities on the specified plane : ";
+  S << "\n"
+    << "Array of Entities on the specified plane : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << Message_EndLine;
+  S << std::endl;
 }

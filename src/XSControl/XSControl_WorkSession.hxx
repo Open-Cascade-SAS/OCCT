@@ -98,7 +98,7 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   //! the Mapped n0 <num>, from MapWriter if <wri> is True, or
   //! from MapReader if <wri> is False
   //! Returns True when done, False else (i.e. num out of range)
-  Standard_EXPORT Standard_Boolean PrintTransferStatus (const Standard_Integer theNum, const Standard_Boolean theWri, const Handle(Message_Messenger)& theS) const;
+  Standard_EXPORT Standard_Boolean PrintTransferStatus (const Standard_Integer theNum, const Standard_Boolean theWri, Standard_OStream& theS) const;
   
   //! Sets a Transfer Reader, by internal ways, according mode :
   //! 0 recreates it clear,  1 clears it (does not recreate)

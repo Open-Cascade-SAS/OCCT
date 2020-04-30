@@ -40,7 +40,6 @@ class Interface_ReportEntity;
 class Interface_CheckIterator;
 class Interface_GeneralLib;
 class Interface_EntityIterator;
-class Message_Messenger;
 
 
 class Interface_InterfaceModel;
@@ -345,7 +344,7 @@ public:
   //! Dumps Header in a short, easy to read, form, onto a Stream
   //! <level> allows to print more or less parts of the header,
   //! if necessary. 0 for basic print
-  Standard_EXPORT virtual void DumpHeader (const Handle(Message_Messenger)& S, const Standard_Integer level = 0) const = 0;
+  Standard_EXPORT virtual void DumpHeader (Standard_OStream& S, const Standard_Integer level = 0) const = 0;
   
   //! Prints identification of a given entity in <me>, in order to
   //! be printed in a list or phrase
@@ -354,17 +353,17 @@ public:
   //! <mode> = 0 (D) : prints its number plus '/' plus PrintLabel
   //! If <ent> == <me>, simply prints "Global"
   //! If <ent> is unknown, prints "??/its type"
-  Standard_EXPORT void Print (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& s, const Standard_Integer mode = 0) const;
+  Standard_EXPORT void Print (const Handle(Standard_Transient)& ent, Standard_OStream& s, const Standard_Integer mode = 0) const;
   
   //! Prints label specific to each norm, for a given entity.
   //! Must only print label itself, in order to be included in a
   //! phrase. Can call the result of StringLabel, but not obliged.
-  Standard_EXPORT virtual void PrintLabel (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const = 0;
+  Standard_EXPORT virtual void PrintLabel (const Handle(Standard_Transient)& ent, Standard_OStream& S) const = 0;
   
   //! Prints label specific to each norm in log format, for
   //! a given entity.
   //! By default, just calls PrintLabel, can be redefined
-  Standard_EXPORT virtual void PrintToLog (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT virtual void PrintToLog (const Handle(Standard_Transient)& ent, Standard_OStream& S) const;
   
   //! Returns a string with the label attached to a given entity.
   //! Warning : While this string may be edited on the spot, if it is a read

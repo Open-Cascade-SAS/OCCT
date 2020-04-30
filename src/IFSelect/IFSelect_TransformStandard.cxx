@@ -146,7 +146,7 @@ IFSelect_TransformStandard::IFSelect_TransformStandard ()
    Interface_CopyTool& TC,    Interface_CheckIterator& checks,
    Handle(Interface_InterfaceModel)& newmod) const
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   Standard_Boolean res = Standard_True;
   Standard_Boolean chg = Standard_False;
   Standard_Integer nb = NbModifiers();
@@ -176,11 +176,11 @@ IFSelect_TransformStandard::IFSelect_TransformStandard ()
     Interface_CheckIterator checklist = ctx.CheckList();
     if (!checklist.IsEmpty(Standard_False)) {
       checks.Merge(checklist);
-      sout<<"IFSelect_TransformStandard :  Messages from Modifier n0 "<<i<<" of "<<nb<<Message_EndLine;
+      sout<<"IFSelect_TransformStandard :  Messages from Modifier n0 "<<i<<" of "<<nb<<std::endl;
       checklist.Print(sout,newmod,Standard_False);
     }
     if (!checklist.IsEmpty(Standard_True)) {
-      sout<<" --  Abandon TransformStandard  --"<<Message_EndLine;
+      sout<<" --  Abandon TransformStandard  --"<<std::endl;
       res = Standard_False;  break;
     }
   }

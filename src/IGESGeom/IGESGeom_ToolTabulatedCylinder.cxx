@@ -34,7 +34,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
@@ -133,16 +132,15 @@ void IGESGeom_ToolTabulatedCylinder::OwnCheck
 
 void IGESGeom_ToolTabulatedCylinder::OwnDump
   (const Handle(IGESGeom_TabulatedCylinder)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGeom_TabulatedCylinder" << Message_EndLine;
-
-  S << "Directrix       : ";
+  S << "IGESGeom_TabulatedCylinder\n"
+    << "Directrix       : ";
   dumper.Dump(ent->Directrix(),S, sublevel);
-  S << Message_EndLine;
-  S << "Terminate Point : ";
+  S << "\n"
+    << "Terminate Point : ";
   IGESData_DumpXYZL(S,level, ent->EndPoint(), ent->Location());
-  S << Message_EndLine;
+  S << std::endl;
 }

@@ -109,11 +109,10 @@ void IGESGraph_ToolIntercharacterSpacing::OwnCheck
 
 void IGESGraph_ToolIntercharacterSpacing::OwnDump
   (const Handle(IGESGraph_IntercharacterSpacing)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
+   Standard_OStream& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_IntercharacterSpacing" << Message_EndLine;
-
-  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Intercharacter space in % of text height : " << ent->ISpace() << Message_EndLine;
-  S << Message_EndLine;
+  S << "IGESGraph_IntercharacterSpacing\n"
+    << "No. of property values : " << ent->NbPropertyValues() << "\n"
+    << "Intercharacter space in % of text height : " << ent->ISpace() << "\n"
+    << std::endl;
 }

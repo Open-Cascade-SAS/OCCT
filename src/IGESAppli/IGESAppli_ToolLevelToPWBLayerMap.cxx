@@ -158,30 +158,30 @@ void  IGESAppli_ToolLevelToPWBLayerMap::OwnCheck
 
 void  IGESAppli_ToolLevelToPWBLayerMap::OwnDump
   (const Handle(IGESAppli_LevelToPWBLayerMap)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer i, num;
-  S << "IGESAppli_LevelToPWBLayerMap" << Message_EndLine;
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Exchange File Level Number : " << Message_EndLine;
-  S << "Native Level Identification : " << Message_EndLine;
-  S << "Physical Layer Number : " << Message_EndLine;
+  S << "IGESAppli_LevelToPWBLayerMap\n";
+  S << "Number of property values : " << ent->NbPropertyValues() << "\n";
+  S << "Exchange File Level Number :\n";
+  S << "Native Level Identification :\n";
+  S << "Physical Layer Number :\n";
   S << "Exchange File Level Identification : ";
   IGESData_DumpStrings
     (S,-level,1, ent->NbLevelToLayerDefs(),ent->ExchangeFileLevelIdent);
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4)
     for ( num = ent->NbLevelToLayerDefs(), i = 1; i <= num; i++ )
       {
-	S << "[" << i << "]: " << Message_EndLine;
+	S << "[" << i << "]:\n";
 	S << "Exchange File Level Number : "
-	  << ent->ExchangeFileLevelNumber(i) << Message_EndLine;
+	  << ent->ExchangeFileLevelNumber(i) << "\n";
 	S << "Native Level Identification : ";
 	IGESData_DumpString(S,ent->NativeLevel(i));
-	S << Message_EndLine;
-	S << "Physical Layer Number : " << ent->PhysicalLayerNumber(i) << Message_EndLine;
+	S << "\n";
+	S << "Physical Layer Number : " << ent->PhysicalLayerNumber(i) << "\n";
 	S << "Exchange File Level Identification : ";
 	IGESData_DumpString(S,ent->ExchangeFileLevelIdent(i));
-	S << Message_EndLine;
+	S << "\n";
       }
 }

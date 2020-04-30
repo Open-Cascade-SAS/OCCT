@@ -346,29 +346,29 @@ void IGESSolid_ToolEdgeList::OwnCheck(const Handle(IGESSolid_EdgeList)& ent,
 
 void IGESSolid_ToolEdgeList::OwnDump(const Handle(IGESSolid_EdgeList)& ent,
                                      const IGESData_IGESDumper& dumper,
-                                     const Handle(Message_Messenger)& S,
+                                     Standard_OStream& S,
                                      const Standard_Integer level) const
 {
   Standard_Integer i, length = ent->NbEdges();
 
-  S << "IGESSolid_EdgeList" << Message_EndLine;
-  S << "Number of edge tuples : " << length << Message_EndLine;
+  S << "IGESSolid_EdgeList\n"
+    << "Number of edge tuples : " << length << "\n";
   switch (level)
     {
     case 4 :
-      S << "Curves : ";
-      S << "Start Vertex List : ";
-      S << "Start Vertex Index : ";
-      IGESData_DumpVals(S ,level,1, length,ent->StartVertexIndex);
-      S << Message_EndLine;
-      S << "End Vertex List : ";
-      S << "End Vertex Index : ";
-      IGESData_DumpVals(S ,level,1, length,ent->EndVertexIndex);
-      S << Message_EndLine;
+      S << "Curves : "
+        << "Start Vertex List : "
+        << "Start Vertex Index : ";
+      IGESData_DumpVals(S,level,1, length,ent->StartVertexIndex);
+      S << "\n"
+        << "End Vertex List : "
+        << "End Vertex Index : ";
+      IGESData_DumpVals(S,level,1, length,ent->EndVertexIndex);
+      S << "\n";
       break;
     case 5 :
     case 6 :
-      S<<" Curve - Vertices. Start : (VertexList,Index)  End : (VertexList,Index)"<<Message_EndLine;
+      S <<" Curve - Vertices. Start : (VertexList,Index)  End : (VertexList,Index)\n";
       for (i = 1; i <= length; i ++)
 	{
 //[123]:Curve : #1234 - Vertices. Start = (#5678 , 3467)  End = (#1234 , 4664)
@@ -376,15 +376,15 @@ void IGESSolid_ToolEdgeList::OwnDump(const Handle(IGESSolid_EdgeList)& ent,
 	  dumper.Dump (ent->Curve(i),S, level-5);
 	  S <<" - Vertices. Start : (";
 	  dumper.Dump (ent->StartVertexList(i),S, 0);
-	  S << " , " << ent->StartVertexIndex(i);
-	  S << ")  End : (";
+	  S << " , " << ent->StartVertexIndex(i)
+	    << ")  End : (";
 	  dumper.Dump (ent->EndVertexList(i),S, 0);
-	  S << " , " << ent->EndVertexIndex(i);
-	  S << ")"   << Message_EndLine;
+	  S << " , " << ent->EndVertexIndex(i)
+	    << ")"   << "\n";
 	}
       break;
       default :
 	break;
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

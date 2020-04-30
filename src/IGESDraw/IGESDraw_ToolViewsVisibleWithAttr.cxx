@@ -38,7 +38,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
@@ -337,48 +336,46 @@ void IGESDraw_ToolViewsVisibleWithAttr::OwnWhenDelete
 
 void IGESDraw_ToolViewsVisibleWithAttr::OwnDump
   (const Handle(IGESDraw_ViewsVisibleWithAttr)& ent, const IGESData_IGESDumper& dumper,
-  const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer tempSubLevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_ViewsVisibleWithAttr" << Message_EndLine;
-
-  S << "View Entities            : " << Message_EndLine
-    << "Line Font Values         : " << Message_EndLine
-    << "Line Font Definitions    : " << Message_EndLine
-    << "Color Number/Definitions : " << Message_EndLine
-    << "Line Weights             : " << Message_EndLine;
-  S << "Count of View Blocks : "     << ent->NbViews() << Message_EndLine;
+  S << "IGESDraw_ViewsVisibleWithAttr\n"
+    << "View Entities            :\n"
+    << "Line Font Values         :\n"
+    << "Line Font Definitions    :\n"
+    << "Color Number/Definitions :\n"
+    << "Line Weights             :\n"
+    << "Count of View Blocks : "     << ent->NbViews() << "\n";
   if (level > 4) {   // Level = 4 : nothing to Dump. Level = 5 & 6 : same Dump
     Standard_Integer I;
     Standard_Integer upper  = ent->NbViews();
     for (I = 1; I <= upper; I++) {
-      S << "[" << I << "]: " << Message_EndLine;
-      S << "View Entity : ";
+      S << "[" << I << "]:\n"
+        << "View Entity : ";
       dumper.Dump (ent->ViewItem(I),S, tempSubLevel);
-      S << Message_EndLine;
+      S << "\n";
 
       if (ent->IsFontDefinition(I)) {
 	S << "Line Font Definition  : ";
 	dumper.Dump (ent->FontDefinition(I),S, tempSubLevel);
-	S << Message_EndLine;
+	S << "\n";
       }
-      else S << "Line Font Value       : " << ent->LineFontValue(I) << Message_EndLine;
+      else S << "Line Font Value       : " << ent->LineFontValue(I) << "\n";
 
       if (ent->IsColorDefinition(I)) {
 	S << "Color Definition : ";
 	dumper.Dump (ent->ColorDefinition(I),S, tempSubLevel);
-	S << Message_EndLine;
+	S << std::endl;
       }
-      else S << "Color Value      : " << ent->ColorValue(I) << Message_EndLine;
+      else S << "Color Value      : " << ent->ColorValue(I) << "\n";
 
-      S      << "Line Weight      : " << ent->LineWeightItem(I) << Message_EndLine;
+      S << "Line Weight      : " << ent->LineWeightItem(I) << "\n";
     }
   }
   S << "Displayed Entities : ";
-  IGESData_DumpEntities
-    (S,dumper ,level,1, ent->NbDisplayedEntities(),ent->DisplayedEntity);
-  S << Message_EndLine;
+  IGESData_DumpEntities(S,dumper ,level,1, ent->NbDisplayedEntities(),ent->DisplayedEntity);
+  S << std::endl;
 }
 
 Standard_Boolean  IGESDraw_ToolViewsVisibleWithAttr::OwnCorrect

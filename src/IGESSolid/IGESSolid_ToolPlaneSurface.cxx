@@ -254,23 +254,23 @@ void IGESSolid_ToolPlaneSurface::OwnCheck(const Handle(IGESSolid_PlaneSurface)& 
 
 void IGESSolid_ToolPlaneSurface::OwnDump(const Handle(IGESSolid_PlaneSurface)& ent,
                                          const IGESData_IGESDumper& dumper,
-                                         const Handle(Message_Messenger)& S,
+                                         Standard_OStream& S,
                                          const Standard_Integer level) const
 {
-  S << "IGESSolid_PlaneSurface" << Message_EndLine;
+  S << "IGESSolid_PlaneSurface\n";
 
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
   S << "Point on axis    : ";
   dumper.Dump(ent->LocationPoint(),S, sublevel);
-  S << Message_EndLine;
-  S << "Normal direction : ";
+  S << "\n"
+    << "Normal direction : ";
   dumper.Dump(ent->Normal(),S, sublevel);
-  S << Message_EndLine;
+  S << "\n";
   if (ent->IsParametrised())
     {
       S << "Surface is Parametrised  -  Reference direction : ";
       dumper.Dump(ent->ReferenceDir(),S, sublevel);
-      S << Message_EndLine;
+      S << std::endl;
     }
-  else S << "Surface is UnParametrised" << Message_EndLine;
+  else S << "Surface is UnParametrised" << std::endl;
 }

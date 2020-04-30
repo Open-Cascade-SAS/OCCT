@@ -153,30 +153,30 @@ void  IGESDimen_ToolCurveDimension::OwnCheck
 
 void  IGESDimen_ToolCurveDimension::OwnDump
   (const Handle(IGESDimen_CurveDimension)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_CurveDimension" << Message_EndLine;
-  S << "General Note Entity   : ";
+  S << "IGESDimen_CurveDimension\n"
+    << "General Note Entity   : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
-  S << "First  Curve   Entity : ";
+  S << "\n"
+    << "First  Curve   Entity : ";
   dumper.Dump(ent->FirstCurve(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Curve   Entity : ";
+  S << "\n"
+    << "Second Curve   Entity : ";
   dumper.Dump(ent->SecondCurve(),S, sublevel);
-  S << Message_EndLine;
-  S << "First  Leader  Entity : ";
+  S << "\n"
+    << "First  Leader  Entity : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Leader  Entity : ";
+  S << "\n"
+    << "Second Leader  Entity : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << Message_EndLine;
-  S << "First  Witness Entity : ";
+  S << "\n"
+    << "First  Witness Entity : ";
   dumper.Dump(ent->FirstWitnessLine(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Witness Entity : ";
+  S << "\n"
+    << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitnessLine(),S, sublevel);
-  S << Message_EndLine;
+  S << std::endl;
 }

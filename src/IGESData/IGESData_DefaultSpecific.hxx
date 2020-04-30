@@ -24,8 +24,6 @@
 #include <Standard_Integer.hxx>
 class IGESData_IGESEntity;
 class IGESData_IGESDumper;
-class Message_Messenger;
-
 
 class IGESData_DefaultSpecific;
 DEFINE_STANDARD_HANDLE(IGESData_DefaultSpecific, IGESData_SpecificModule)
@@ -43,7 +41,7 @@ public:
   //! Specific Dump for UndefinedEntity : it concerns only
   //! own parameters, the general data (Directory Part, Lists) are
   //! taken into account by the IGESDumper
-  Standard_EXPORT void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S, const Standard_Integer own) const Standard_OVERRIDE;
+  Standard_EXPORT void OwnDump (const Standard_Integer CN, const Handle(IGESData_IGESEntity)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const Standard_OVERRIDE;
 
 
 

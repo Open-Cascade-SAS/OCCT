@@ -32,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Standard_DomainError.hxx>
 
@@ -164,18 +163,17 @@ void IGESGeom_ToolSurfaceOfRevolution::OwnCheck
 
 void IGESGeom_ToolSurfaceOfRevolution::OwnDump
   (const Handle(IGESGeom_SurfaceOfRevolution)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-
-  S << "IGESGeom_SurfaceOfRevolution" << Message_EndLine << Message_EndLine;
+  S << "IGESGeom_SurfaceOfRevolution\n\n";
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "Axis Of Revolution : ";
   dumper.Dump(ent->AxisOfRevolution(),S, sublevel);
-  S << Message_EndLine;
-  S << "Generatrix         : ";
+  S << "\n"
+    << "Generatrix         : ";
   dumper.Dump(ent->Generatrix(),S, sublevel);
-  S << Message_EndLine;
-  S << "Start Angle        : " << ent->StartAngle() << "  ";
-  S << "End Angle   : " << ent->EndAngle() << Message_EndLine;
+  S << "\n"
+    << "Start Angle        : " << ent->StartAngle() << "  "
+    << "End Angle   : " << ent->EndAngle() << std::endl;
 }

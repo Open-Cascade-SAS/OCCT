@@ -96,7 +96,7 @@
 
 #define IGESData_DumpString(S,str) \
 if (str.IsNull()) S << "(undefined)";\
-  else {  S << '"' << str << '"';  }
+  else {  S << '"' << str->String() << '"';  }
 
 #define IGESData_DumpXY(S,XYval) \
  S << " (" << XYval.X() << "," << XYval.Y() << ")"
@@ -211,8 +211,8 @@ if (str.IsNull()) S << "(undefined)";\
     S << " :";\
     for (Standard_Integer iopa = lo; iopa <= up; iopa ++) IGESData_DumpXY(S,item(iopa));\
     if (Trsf.Form() != gp_Identity) {\
-      S<< "\n Transformed :";\
-      if (Level == 5) S<<" [ask level > 5]";\
+      S << "\n Transformed :";\
+      if (Level == 5) S <<" [ask level > 5]";\
       else\
 	for (Standard_Integer jopa = lo; jopa <= up; jopa ++)\
 	  IGESData_DumpXYT(S,item(jopa),Trsf);\
@@ -231,8 +231,8 @@ if (str.IsNull()) S << "(undefined)";\
     S << " :";\
     for (Standard_Integer iopa = lo; iopa <= up; iopa ++) IGESData_DumpXY(S,item(iopa));\
     if (Trsf.Form() != gp_Identity) {\
-      S<< "\n Transformed :";\
-      if (Level == 5) S<<" [ask level > 5]";\
+      S << "\n Transformed :";\
+      if (Level == 5) S <<" [ask level > 5]";\
       else\
 	for (Standard_Integer jopa = lo; jopa <= up; jopa ++)\
 	  IGESData_DumpXYTZ(S,item(jopa),Trsf,Z);\
@@ -252,8 +252,8 @@ if (str.IsNull()) S << "(undefined)";\
     S << " :";\
     for (Standard_Integer iopa = lo; iopa <= up; iopa ++) IGESData_DumpXYZ(S,item(iopa));\
     if (Trsf.Form() != gp_Identity) {\
-      S<< "\n Transformed :";\
-      if (Level == 5) S<<" [ask level > 5]";\
+      S << "\n Transformed :";\
+      if (Level == 5) S <<" [ask level > 5]";\
       else\
 	for (Standard_Integer jopa = lo; jopa <= up; jopa ++)\
 	  IGESData_DumpXYZT(S,item(jopa),Trsf);\
@@ -271,7 +271,7 @@ if (str.IsNull()) S << "(undefined)";\
   else if (Level > 0) {\
     S << " :";\
     for (Standard_Integer iopa = lo; iopa <= up; iopa ++)\
-      {  S << "\n["<<Interface_MSG::Blanks(iopa,3)<<iopa<<"]:\"" << item(iopa) << '"';  }\
+      {  S << "\n["<<Interface_MSG::Blanks(iopa,3)<<iopa<<"]:\"" << item(iopa)->String() << '"';  }\
     S << "\n";\
   }\
 }

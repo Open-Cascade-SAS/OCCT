@@ -157,16 +157,16 @@ void  IGESDimen_ToolCenterLine::OwnCheck
 
 void  IGESDimen_ToolCenterLine::OwnDump
   (const Handle(IGESDimen_CenterLine)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_CenterLine" << Message_EndLine;
-  if (ent->IsCrossHair()) S << "Cross Hair" << Message_EndLine;
-  else                    S << "Through Circle Centers" << Message_EndLine;
-  S << "Data Type : "             << ent->Datatype() << "  ";
-  S << "Number of Data Points : " << ent->NbPoints()  << "  ";
-  S << "Common Z displacement : " << ent->ZDisplacement() << "  ";
-  S << "Data Points : " << Message_EndLine;
-  IGESData_DumpListXYLZ(S ,level,1, ent->NbPoints(),ent->Point,
+  S << "IGESDimen_CenterLine\n";
+  if (ent->IsCrossHair()) S << "Cross Hair\n";
+  else                    S << "Through Circle Centers\n";
+  S << "Data Type : "             << ent->Datatype() << "  "
+    << "Number of Data Points : " << ent->NbPoints()  << "  "
+    << "Common Z displacement : " << ent->ZDisplacement() << "  "
+    << "Data Points :\n";
+  IGESData_DumpListXYLZ(S,level,1, ent->NbPoints(),ent->Point,
 			ent->Location(), ent->ZDisplacement());
-  S << Message_EndLine;
+  S << std::endl;
 }

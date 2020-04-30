@@ -182,14 +182,13 @@ void IGESGraph_ToolTextDisplayTemplate::OwnCheck
 
 void IGESGraph_ToolTextDisplayTemplate::OwnDump
   (const Handle(IGESGraph_TextDisplayTemplate)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESGraph_TextDisplayTemplate" << Message_EndLine;
-
-  S << "Character box width  : "  << ent->BoxWidth() << "  ";
-  S << "Character box height : "  << ent->BoxHeight() << Message_EndLine;
+  S << "IGESGraph_TextDisplayTemplate\n"
+    << "Character box width  : "  << ent->BoxWidth() << "  "
+    << "Character box height : "  << ent->BoxHeight() << "\n";
   if ( ent->IsFontEntity() )
     {
       S << "Font Entity : ";
@@ -197,15 +196,16 @@ void IGESGraph_ToolTextDisplayTemplate::OwnDump
     }
   else
     S << "Font code : " << ent->FontCode();
-  S << Message_EndLine;
-  S << "Slant angle    : "  << ent->SlantAngle() << "  ";
-  S << "Rotation angle : "  << ent->RotationAngle() << Message_EndLine;
-  S << "Mirror flag    : "  << ent->MirrorFlag() << "  ";
-  S << "Rotate flag    : "  << ent->RotateFlag() << Message_EndLine;
+
+  S << "\n"
+    << "Slant angle    : "  << ent->SlantAngle() << "  "
+    << "Rotation angle : "  << ent->RotationAngle() << "\n"
+    << "Mirror flag    : "  << ent->MirrorFlag() << "  "
+    << "Rotate flag    : "  << ent->RotateFlag() << "\n";
   if ( ent->FormNumber() == 0 )
     S << "Lower Left Corner coordinates : ";
   else
     S << "Increments from coordinates : "; 
   IGESData_DumpXYZL(S,level, ent->StartingCorner(), ent->Location());
-  S << Message_EndLine;
+  S << std::endl;
 }

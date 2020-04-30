@@ -204,39 +204,38 @@ void IGESDraw_ToolLabelDisplay::OwnCheck
 
 void IGESDraw_ToolLabelDisplay::OwnDump
   (const Handle(IGESDraw_LabelDisplay)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_LabelDisplay" << Message_EndLine;
-
-  S << "View Entities       : " << Message_EndLine
-    << "Text Locations      : " << Message_EndLine
-    << "Leader Entities     : " << Message_EndLine
-    << "Label Level Numbers : " << Message_EndLine
-    << "Displayed Entities  : ";
-  S << "Count = "      << ent->NbLabels() << Message_EndLine;
+  S << "IGESDraw_LabelDisplay\n"
+    << "View Entities       :\n"
+    << "Text Locations      :\n"
+    << "Leader Entities     :\n"
+    << "Label Level Numbers :\n"
+    << "Displayed Entities  : "
+    << "Count = "      << ent->NbLabels() << "\n";
   if (level > 4)  // Level = 4 : no Dump. Level = 5 & 6 : same Dump
     {
       Standard_Integer I;
       Standard_Integer up  = ent->NbLabels();
       for (I = 1; I <= up; I ++)
 	{
-	  S << "[" << I << "]:" << Message_EndLine;
-	  S << "View Entity : ";
+	  S << "[" << I << "]:\n"
+	    << "View Entity : ";
 	  dumper.Dump (ent->ViewItem(I),S, sublevel);
-	  S << Message_EndLine;
-	  S << "Text Location in View : ";
+	  S << "\n"
+	    << "Text Location in View : ";
 	  IGESData_DumpXYZL(S,level, ent->TextLocation(I), ent->Location());
 	  S << "  Leader Entity in View : ";
 	  dumper.Dump (ent->LeaderEntity(I),S, sublevel);
-	  S << Message_EndLine;
-	  S << "Entity Label Level Number : ";
-	  S << ent->LabelLevel(I) << "  ";
-	  S << "Displayed Entity : ";
+	  S << "\n"
+	    << "Entity Label Level Number : "
+	    << ent->LabelLevel(I) << "  "
+	    << "Displayed Entity : ";
 	  dumper.Dump (ent->DisplayedEntity(I),S, sublevel);
-	  S << Message_EndLine;
+	  S << "\n";
 	}
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

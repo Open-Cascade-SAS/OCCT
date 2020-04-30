@@ -27,8 +27,6 @@ class IGESData_IGESModel;
 class Interface_InterfaceError;
 class IGESData_Protocol;
 class IGESData_IGESEntity;
-class Message_Messenger;
-
 
 //! Provides a way to obtain a clear Dump of an IGESEntity
 //! (distinct from normalized output). It works with tools
@@ -55,18 +53,18 @@ public:
   //! Prints onto an output, the "Number of Directory Entry" which
   //! corresponds to an IGESEntity in the IGESModel, under the form
   //! "D#nnn" (a Null Handle gives D#0)
-  Standard_EXPORT void PrintDNum (const Handle(IGESData_IGESEntity)& ent, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintDNum (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S) const;
   
   //! Prints onto an output, the "Number of Directory Entry" (see
   //! PrintDNum) plus IGES Type and Form Numbers, which gives
   //! "D#nnn  Type nnn  Form nnn"
-  Standard_EXPORT void PrintShort (const Handle(IGESData_IGESEntity)& ent, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintShort (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S) const;
   
-  Standard_EXPORT void Dump (const Handle(IGESData_IGESEntity)& ent, const Handle(Message_Messenger)& S, const Standard_Integer own, const Standard_Integer attached = -1) const;
+  Standard_EXPORT void Dump (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S, const Standard_Integer own, const Standard_Integer attached = -1) const;
   
   //! Specific Dump for each IGES Entity, call by Dump (just above)
   //! <own> is the parameter <own> from Dump
-  Standard_EXPORT void OwnDump (const Handle(IGESData_IGESEntity)& ent, const Handle(Message_Messenger)& S, const Standard_Integer own) const;
+  Standard_EXPORT void OwnDump (const Handle(IGESData_IGESEntity)& ent, Standard_OStream& S, const Standard_Integer own) const;
 
 
 

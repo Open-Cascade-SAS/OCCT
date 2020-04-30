@@ -33,7 +33,6 @@
 #include <NCollection_DataMap.hxx>
 class Standard_OutOfRange;
 class Interface_TypedValue;
-class Message_Messenger;
 class IFSelect_EditForm;
 class TCollection_HAsciiString;
 class IFSelect_ListEditor;
@@ -91,9 +90,9 @@ public:
   //! complete. If not found, returns 0
   Standard_EXPORT Standard_Integer NameNumber (const Standard_CString name) const;
   
-  Standard_EXPORT void PrintNames (const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintNames (Standard_OStream& S) const;
   
-  Standard_EXPORT void PrintDefs (const Handle(Message_Messenger)& S, const Standard_Boolean labels = Standard_False) const;
+  Standard_EXPORT void PrintDefs (Standard_OStream& S, const Standard_Boolean labels = Standard_False) const;
   
   //! Returns the MaxLength of, according to what :
   //! <what> = -1 : length of short names

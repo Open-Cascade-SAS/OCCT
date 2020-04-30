@@ -168,34 +168,33 @@ void IGESDraw_ToolPerspectiveView::OwnCheck
 
 void IGESDraw_ToolPerspectiveView::OwnDump
   (const Handle(IGESDraw_PerspectiveView)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
-  S << "IGESDraw_PerspectiveView" << Message_EndLine;
-
-  S << "View Number  : " << ent->ViewNumber()  << "  ";
-  S << "Scale Factor : " << ent->ScaleFactor() << Message_EndLine;
-  S         << "View Plane Normal Vector : ";
+  S << "IGESDraw_PerspectiveView\n"
+    << "View Number  : " << ent->ViewNumber()  << "  "
+    << "Scale Factor : " << ent->ScaleFactor() << "\n"
+    << "View Plane Normal Vector : ";
   IGESData_DumpXYZL(S,level, ent->ViewNormalVector(), ent->Location());
-  S << Message_EndLine << "View Reference Point     : ";
+  S << "\nView Reference Point     : ";
   IGESData_DumpXYZL(S,level, ent->ViewReferencePoint() , ent->Location());
-  S << Message_EndLine << "Center Of Projection     : ";
+  S << "\nCenter Of Projection     : ";
   IGESData_DumpXYZL(S,level, ent->CenterOfProjection() , ent->Location());
-  S << Message_EndLine << "View Up Vector           : ";
+  S << "\nView Up Vector           : ";
   IGESData_DumpXYZL(S,level, ent->ViewUpVector() , ent->Location());
-  S << Message_EndLine << "View Plane Distance      : " << ent->ViewPlaneDistance()<<Message_EndLine;
-  S << "Left   Side Of Clipping Window : " << ent->TopLeft().X()     << Message_EndLine;
-  S << "Right  Side Of Clipping Window : " << ent->BottomRight().X() << Message_EndLine;
-  S << "Bottom Side Of Clipping Window : " << ent->BottomRight().Y() << Message_EndLine;
-  S << "Top    Side Of Clipping Window : " << ent->TopLeft().Y()     << Message_EndLine;
-  S << "Depth Clipping : " << ent->DepthClip();
+  S << "\nView Plane Distance      : " << ent->ViewPlaneDistance()<< "\n"
+    << "Left   Side Of Clipping Window : " << ent->TopLeft().X()     << "\n"
+    << "Right  Side Of Clipping Window : " << ent->BottomRight().X() << "\n"
+    << "Bottom Side Of Clipping Window : " << ent->BottomRight().Y() << "\n"
+    << "Top    Side Of Clipping Window : " << ent->TopLeft().Y()     << "\n"
+    << "Depth Clipping : " << ent->DepthClip();
   switch (ent->DepthClip()) {
-    case 0 :  S << " (No Depth Clipping)" << Message_EndLine;                    break;
-    case 1 :  S << " (Back Clipping Plane ON)" << Message_EndLine;               break;
-    case 2 :  S << " (Front Clipping Plane ON)" << Message_EndLine;              break;
-    case 3 :  S << " (Front and Back Clipping Planes ON)" << Message_EndLine;    break;
-    default : S << " (Invalid Value)" << Message_EndLine;                        break;
+    case 0 :  S << " (No Depth Clipping)\n";                 break;
+    case 1 :  S << " (Back Clipping Plane ON)\n";            break;
+    case 2 :  S << " (Front Clipping Plane ON)\n";           break;
+    case 3 :  S << " (Front and Back Clipping Planes ON)\n"; break;
+    default : S << " (Invalid Value)\n";                     break;
   }
-  S << "Back Plane Distance  : " << ent->BackPlaneDistance()  << "  ";
-  S << "Front Plane Distance : " << ent->FrontPlaneDistance() << Message_EndLine;
-  S << Message_EndLine;
+  S << "Back Plane Distance  : " << ent->BackPlaneDistance()  << "  "
+    << "Front Plane Distance : " << ent->FrontPlaneDistance() << "\n"
+    << std::endl;
 }

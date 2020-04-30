@@ -176,14 +176,14 @@ IGESSelect_Activator::IGESSelect_Activator()
         std::cout<<sets->NbEntities(i)<<" ent.s:"<<std::endl;
 	if (listmode == 0) continue;
 	iter = sets->Entities(i);
-	WS->ListEntities (iter,0);
+	WS->ListEntities (iter, 0, std::cout);
       }
 
       std::cout <<" --  Remaining Entities (not yet sorted) :"
 	<<sets->NbDuplicated(0,Standard_False)<<std::endl;
       if (listmode < 2) return IFSelect_RetVoid;
       iter = sets->Duplicated(0,Standard_False);
-      WS->ListEntities(iter,0);
+      WS->ListEntities (iter, 0, std::cout);
       return IFSelect_RetVoid;
     }
 

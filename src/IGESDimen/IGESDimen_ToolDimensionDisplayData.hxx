@@ -34,8 +34,6 @@ class Interface_ShareTool;
 class Interface_Check;
 class Interface_CopyTool;
 class IGESData_IGESDumper;
-class Message_Messenger;
-
 
 //! Tool to work on a DimensionDisplayData. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
@@ -74,7 +72,7 @@ public:
   Standard_EXPORT void OwnCopy (const Handle(IGESDimen_DimensionDisplayData)& entfrom, const Handle(IGESDimen_DimensionDisplayData)& entto, Interface_CopyTool& TC) const;
   
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDimen_DimensionDisplayData)& ent, const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S, const Standard_Integer own) const;
+  Standard_EXPORT void OwnDump (const Handle(IGESDimen_DimensionDisplayData)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
 
 
 

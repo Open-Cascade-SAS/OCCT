@@ -132,23 +132,23 @@ void  IGESBasic_ToolExternalRefFileIndex::OwnCheck
 
 void  IGESBasic_ToolExternalRefFileIndex::OwnDump
   (const Handle(IGESBasic_ExternalRefFileIndex)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer i, num;
-  S << "IGESBasic_ExternalRefFileIndex" << Message_EndLine;
-  S << "External Reference Names : " << Message_EndLine;
-  S << "Internal Entities : ";
+  S << "IGESBasic_ExternalRefFileIndex\n"
+    << "External Reference Names :\n"
+    << "Internal Entities : ";
   IGESData_DumpEntities(S,dumper,-level,1, ent->NbEntries(),ent->Entity);
-  S << Message_EndLine;
+  S << "\n";
   if (level > 4)
     for ( num = ent->NbEntries(), i = 1; i <= num; i++ )
       {
-	S << "[" << i << "]: ";
-	S << "External Reference Name : ";
+	S << "[" << i << "]: "
+	  << "External Reference Name : ";
 	IGESData_DumpString(S,ent->Name(i));
 	S << "  Internal Entity : ";
 	dumper.Dump (ent->Entity(i),S, 1);
-	S << Message_EndLine;
+	S << "\n";
       }
-  S << Message_EndLine;
+  S << std::endl;
 }

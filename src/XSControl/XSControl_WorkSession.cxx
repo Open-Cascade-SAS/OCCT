@@ -177,7 +177,7 @@ void XSControl_WorkSession::ClearContext ()
 
 Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Integer num,
                                                              const Standard_Boolean wri,
-                                                             const Handle(Message_Messenger)& S) const
+                                                             Standard_OStream& S) const
 {
   const Handle(Transfer_FinderProcess)    &FP = myTransferWriter->FinderProcess();
   Handle(Transfer_TransientProcess) TP = myTransferReader->TransientProcess();
@@ -209,16 +209,16 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
     {
       S<<"  ** Transfer Root n0."<<ne;
     }
-    S<<Message_EndLine;
+    S<<std::endl;
     ent = FP->FindTransient(finder);
-    S<<" -> Type "<<finder->DynamicType()->Name()<<Message_EndLine;
+    S<<" -> Type "<<finder->DynamicType()->Name()<<std::endl;
     FP->StartTrace (binder,finder,0,0);  // pb sout/S
     if (!ent.IsNull()) {
       S<<" ** Resultat Transient, type "<<ent->DynamicType()->Name();
       const Handle(Interface_InterfaceModel) &model = Model();
       if (!model.IsNull())
-	{  S<<" In output Model, Entity ";  model->Print(ent,S);  }
-      S<<Message_EndLine;
+	{  S<<" In output Model, Entity ";  model->Print(ent, S);  }
+      S<<std::endl;
     }
   }
 
@@ -248,10 +248,10 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
     {
       S<<"  ** Transfer Root n0."<<ne;
     }
-    S<<Message_EndLine;
-    if (!model.IsNull())  {  S<<" In Model, Entity ";  model->Print(ent,S); }
+    S<<std::endl;
+    if (!model.IsNull())  {  S<<" In Model, Entity ";  model->Print(ent, S); }
     binder = TP->MapItem (ne);
-    S<<Message_EndLine;
+    S<<std::endl;
     TP->StartTrace (binder,ent,0,0);
 
   }
@@ -262,11 +262,11 @@ Standard_Boolean  XSControl_WorkSession::PrintTransferStatus(const Standard_Inte
     Standard_Integer i,nbw = ch->NbWarnings(), nbf = ch->NbFails();
     if (nbw > 0) {
       S<<" - Warnings : "<<nbw<<" :\n";
-      for (i = 1; i <= nbw; i ++) S<<ch->CWarning(i)<<Message_EndLine;
+      for (i = 1; i <= nbw; i ++) S<<ch->CWarning(i)<<std::endl;
     }
     if (nbf > 0) {
       S<<" - Fails : "<<nbf<<" :\n";
-      for (i = 1; i <= nbf; i ++) S<<ch->CFail(i)<<Message_EndLine;
+      for (i = 1; i <= nbf; i ++) S<<ch->CFail(i)<<std::endl;
     }
   }
   return Standard_True;

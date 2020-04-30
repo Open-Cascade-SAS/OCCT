@@ -128,16 +128,16 @@ void  IGESAppli_ToolDrilledHole::OwnCheck
 
 void  IGESAppli_ToolDrilledHole::OwnDump
   (const Handle(IGESAppli_DrilledHole)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/) const
+   Standard_OStream& S, const Standard_Integer /*level*/) const
 {
-  S << "IGESAppli_DrilledHole" << Message_EndLine;
+  S << "IGESAppli_DrilledHole" << std::endl;
 
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "Number of property values : " << ent->NbPropertyValues() << std::endl;
   S << "Drill  diameter size :" << ent->DrillDiaSize() << "  ";
-  S << "Finish diameter size : "  << ent->FinishDiaSize() << Message_EndLine;
+  S << "Finish diameter size : "  << ent->FinishDiaSize() << std::endl;
   S << "Plating indication flag : ";
   if (!ent->IsPlating())   S << "NO"  << "  -  ";
   else                     S << "YES  -  ";
   S << "Lower Numbered Layer  : " << ent->NbLowerLayer() << "  ";
-  S << "Higher Numbered Layer : " << ent->NbHigherLayer() << Message_EndLine;
+  S << "Higher Numbered Layer : " << ent->NbHigherLayer() << std::endl;
 }

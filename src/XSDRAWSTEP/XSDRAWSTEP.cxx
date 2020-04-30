@@ -162,7 +162,9 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
       di<<"NbRootsForTransfer="<<num<<" :\n";
       for (i = 1; i <= num; i ++) {
         di<<"Root."<<i<<", Ent. ";
-        sr.Model()->Print (sr.RootForTransfer(i), Message::DefaultMessenger());
+        Standard_SStream aTmpStream;
+        sr.Model()->Print (sr.RootForTransfer(i), aTmpStream);
+        di << aTmpStream.str().c_str();
         di<<" Type:"<<sr.RootForTransfer(i)->DynamicType()->Name()<<"\n";
       }
 

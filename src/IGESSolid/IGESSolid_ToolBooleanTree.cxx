@@ -174,35 +174,33 @@ void  IGESSolid_ToolBooleanTree::OwnCheck
 
 void  IGESSolid_ToolBooleanTree::OwnDump
   (const Handle(IGESSolid_BooleanTree)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
   Standard_Integer i, length = ent->Length();
 
-  S << "IGESSolid_Boolean Tree" << Message_EndLine;
-
-  S << "Length of the post-order notation :" << length << Message_EndLine;
-
+  S << "IGESSolid_Boolean Tree\n"
+    << "Length of the post-order notation :" << length << "\n";
   if (level > 4)
     {
-      S << "Post-order notation of the Boolean Tree :" << Message_EndLine;
+      S << "Post-order notation of the Boolean Tree :\n";
       for (i = 1; i <= length; i++)
 	{
           if (ent->IsOperand(i))
 	    {
               S << "[" << i << "] Operand : ";
               dumper.Dump (ent->Operand(i),S, 1);
-              S << Message_EndLine;
+              S << "\n";
 	    }
           else
 	    {
 	      Standard_Integer opcode = ent->Operation(i);
 	      S << "[" << i << "] Operator : " << opcode;
 	      if      (opcode == 1) S << " (Union)";
-	      else if (opcode == 2) S << " (Intersection)" << Message_EndLine;
-	      else if (opcode == 3) S << " (Difference)" << Message_EndLine;
-	      else                  S << " (incorrect value)" << Message_EndLine;
+	      else if (opcode == 2) S << " (Intersection)\n";
+	      else if (opcode == 3) S << " (Difference)\n";
+	      else                  S << " (incorrect value)\n";
 	    }
 	}
     }
-//  S << std::endl;
+//  aSender << std::endl;
 }

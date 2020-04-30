@@ -32,7 +32,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColgp_HArray1OfXY.hxx>
 
@@ -142,17 +141,17 @@ void  IGESDimen_ToolLeaderArrow::OwnCheck
 
 void  IGESDimen_ToolLeaderArrow::OwnDump
   (const Handle(IGESDimen_LeaderArrow)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
-  S << "IGESDimen_LeaderArrow" << Message_EndLine;
-  S << "Number of Segments : " << ent->NbSegments() << Message_EndLine;
-  S << "Arrowhead Height   : " << ent->ArrowHeadHeight() << Message_EndLine;
-  S << "Arrowhead Width    : " << ent->ArrowHeadWidth() << Message_EndLine;
-  S << "Z depth            : " << ent->ZDepth() << Message_EndLine;
-  S << "Arrowhead co-ords  : ";
+  S << "IGESDimen_LeaderArrow\n"
+    << "Number of Segments : " << ent->NbSegments() << "\n"
+    << "Arrowhead Height   : " << ent->ArrowHeadHeight() << "\n"
+    << "Arrowhead Width    : " << ent->ArrowHeadWidth() << "\n"
+    << "Z depth            : " << ent->ZDepth() << "\n"
+    << "Arrowhead co-ords  : ";
   IGESData_DumpXYLZ(S,level,ent->ArrowHead(),ent->Location(),ent->ZDepth());
-  S << Message_EndLine << "Segment Tails : "; 
-  IGESData_DumpListXYLZ(S ,level,1, ent->NbSegments(),ent->SegmentTail,
+  S << "\nSegment Tails : "; 
+  IGESData_DumpListXYLZ(S,level,1, ent->NbSegments(),ent->SegmentTail,
 			ent->Location(), ent->ZDepth());
-  S << Message_EndLine;
+  S << std::endl;
 }

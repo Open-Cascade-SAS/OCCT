@@ -111,21 +111,21 @@ void IGESDimen_ToolPointDimension::OwnCheck
 
 void IGESDimen_ToolPointDimension::OwnDump
   (const Handle(IGESDimen_PointDimension)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESDimen_PointDimension" << Message_EndLine;
+  S << "IGESDimen_PointDimension\n";
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
   S << "General Note : ";
   dumper.Dump(ent->Note(),S , sublevel);
-  S << Message_EndLine;
-  S << "Leader Arrow : ";
+  S << "\n"
+    << "Leader Arrow : ";
   dumper.Dump(ent->LeaderArrow(),S , sublevel);
-  S << Message_EndLine;
+  S << "\n";
   if (!ent->Geom().IsNull())
     {
       S << "Enclosing Entity : ";
       dumper.Dump(ent->Geom(),S , sublevel);
-      S << Message_EndLine;
+      S << "\n";
     }
 }

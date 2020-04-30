@@ -194,7 +194,7 @@ void IGESToBRep_CurveAndSurface::SetModel(const Handle(IGESData_IGESModel)& mode
   if (unitfactor != 1.)
     {
       if ( myTP->TraceLevel() > 2 )
-	myTP->Messenger() << "UnitFactor = "<< unitfactor << Message_EndLine;
+	myTP->Messenger()->SendInfo() << "UnitFactor = "<< unitfactor << std::endl;
       myUnitFactor = unitfactor;
     }
   UpdateMinMaxTol();

@@ -30,7 +30,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -130,21 +129,21 @@ void  IGESAppli_ToolPartNumber::OwnCheck
 
 void  IGESAppli_ToolPartNumber::OwnDump
   (const Handle(IGESAppli_PartNumber)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
   //Standard_Integer sublevel = (level > 4) ? 1 : 0; //szv#4:S4163:12Mar99 unused
-  S << "IGESAppli_PartNumber" << Message_EndLine;
-  S << "Number of property values : " << ent->NbPropertyValues() << Message_EndLine;
+  S << "IGESAppli_PartNumber\n";
+  S << "Number of property values : " << ent->NbPropertyValues() << "\n";
   S << "Generic  Number or Name : ";
   IGESData_DumpString(S,ent->GenericNumber());
-  S << Message_EndLine;
+  S << "\n";
   S << "Military Number or Name : ";
   IGESData_DumpString(S,ent->MilitaryNumber());
-  S << Message_EndLine;
+  S << "\n";
   S << "Vendor   Number or Name : ";
   IGESData_DumpString(S,ent->VendorNumber());
-  S << Message_EndLine;
+  S << "\n";
   S << "Internal Number or Name : ";
   IGESData_DumpString(S,ent->InternalNumber());
-  S << Message_EndLine;
+  S << std::endl;
 }

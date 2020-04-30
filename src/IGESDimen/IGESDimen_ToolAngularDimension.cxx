@@ -143,28 +143,28 @@ void  IGESDimen_ToolAngularDimension::OwnCheck
 
 void  IGESDimen_ToolAngularDimension::OwnDump
   (const Handle(IGESDimen_AngularDimension)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const 
+   Standard_OStream& S, const Standard_Integer level) const 
 { 
   Standard_Integer sublevel  = (level > 4) ? 1 : 0;
 
-  S << "IGESDimen_AngularDimension" << Message_EndLine;
-  S << "General Note Entity   : ";
+  S << "IGESDimen_AngularDimension\n"
+    << "General Note Entity   : ";
   dumper.Dump(ent->Note(),S, sublevel);
-  S << Message_EndLine;
-  S << "First  Witness Entity : ";
+  S << "\n"
+    << "First  Witness Entity : ";
   dumper.Dump(ent->FirstWitnessLine(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Witness Entity : ";
+  S << "\n"
+    << "Second Witness Entity : ";
   dumper.Dump(ent->SecondWitnessLine(),S, sublevel);
-  S << Message_EndLine;
-  S << "Vertex Point Co-ords  : ";
-  IGESData_DumpXYL(S,level, ent->Vertex(), ent->Location());  S << Message_EndLine;
-  S << "Radius of Leader arcs : " << ent->Radius() << Message_EndLine;
-  S << "First  Leader Entity  : ";
+  S << "\n"
+    << "Vertex Point Co-ords  : ";
+  IGESData_DumpXYL(S,level, ent->Vertex(), ent->Location());  S << "\n";
+  S << "Radius of Leader arcs : " << ent->Radius() << "\n"
+    << "First  Leader Entity  : ";
   dumper.Dump(ent->FirstLeader(),S, sublevel);
-  S << Message_EndLine;
-  S << "Second Leader Entity  : ";
+  S << "\n"
+    << "Second Leader Entity  : ";
   dumper.Dump(ent->SecondLeader(),S, sublevel);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

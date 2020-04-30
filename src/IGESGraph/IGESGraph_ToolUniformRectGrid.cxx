@@ -32,7 +32,6 @@
 #include <Interface_CopyTool.hxx>
 #include <Interface_EntityIterator.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 
 IGESGraph_ToolUniformRectGrid::IGESGraph_ToolUniformRectGrid ()    {  }
@@ -159,19 +158,18 @@ void IGESGraph_ToolUniformRectGrid::OwnCheck
 
 void IGESGraph_ToolUniformRectGrid::OwnDump
   (const Handle(IGESGraph_UniformRectGrid)& ent, const IGESData_IGESDumper& /*dumper*/,
-   const Handle(Message_Messenger)& S, const Standard_Integer /*level*/)  const
+   Standard_OStream& S, const Standard_Integer /*level*/)  const
 {
-  S << "IGESGraph_UniformRectGrid" << Message_EndLine;
-
-  S << "No. of property values : " << ent->NbPropertyValues() << Message_EndLine;
-  S << "Grid         : " << ( ent->IsFinite() ? "Finite" : "Infinite");
-  S << "  -  Composed of " << ( ent->IsLine() ? "Lines" : "Points");
-  S << "  -  " << ( ent->IsWeighted() ? "Weighted" : "Unweighted") << Message_EndLine;
-  S << "Grid Point   : ";
+  S << "IGESGraph_UniformRectGrid\n"
+    << "No. of property values : " << ent->NbPropertyValues() << "\n"
+    << "Grid         : " << ( ent->IsFinite() ? "Finite" : "Infinite")
+    << "  -  Composed of " << ( ent->IsLine() ? "Lines" : "Points")
+    << "  -  " << ( ent->IsWeighted() ? "Weighted" : "Unweighted") << "\n"
+    << "Grid Point   : ";
   IGESData_DumpXY(S, ent->GridPoint());
   S << "  Grid Spacing : ";
-  IGESData_DumpXY(S, ent->GridSpacing());  S << Message_EndLine;
+  IGESData_DumpXY(S, ent->GridSpacing());  S << "\n";
   if (ent->IsFinite())
     S << "No. of points/lines in direction :  X : " << ent->NbPointsX()
-      << "  -  Y : " << ent->NbPointsY() << Message_EndLine;
+      << "  -  Y : " << ent->NbPointsY() << std::endl;
 }

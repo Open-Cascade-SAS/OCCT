@@ -112,12 +112,12 @@ void  IGESBasic_ToolAssocGroupType::OwnCheck
 
 void  IGESBasic_ToolAssocGroupType::OwnDump
   (const Handle(IGESBasic_AssocGroupType)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer /* level */) const
+   Standard_OStream& S, const Standard_Integer /* level */) const
 {
-  S << "IGESBasic_AssocGroupType" << Message_EndLine;
-  S << "Number of data fields : " << ent->NbData() << Message_EndLine;
-  S << "Type of attached associativity : " << ent->AssocType() << Message_EndLine;
-  S << "Name of attached associativity : ";
+  S << "IGESBasic_AssocGroupType\n"
+    << "Number of data fields : " << ent->NbData() << "\n"
+    << "Type of attached associativity : " << ent->AssocType() << "\n"
+    << "Name of attached associativity : ";
   IGESData_DumpString(S,ent->Name());
-  S << Message_EndLine;
+  S << std::endl;
 }

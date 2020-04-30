@@ -17,18 +17,11 @@
 #ifndef _IGESData_IGESModel_HeaderFile
 #define _IGESData_IGESModel_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
 #include <TColStd_HSequenceOfHAsciiString.hxx>
 #include <IGESData_GlobalSection.hxx>
 #include <Interface_InterfaceModel.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
+
 class Interface_InterfaceError;
-class Message_Messenger;
 class IGESData_GlobalSection;
 class IGESData_IGESEntity;
 class Interface_InterfaceModel;
@@ -67,7 +60,7 @@ public:
   //! Prints the IGES file header
   //! (Start and Global Sections) to the log file. The integer
   //! parameter is intended to be used as a level indicator but is not used at present.
-  Standard_EXPORT void DumpHeader (const Handle(Message_Messenger)& S, const Standard_Integer level = 0) const Standard_OVERRIDE;
+  Standard_EXPORT void DumpHeader (Standard_OStream& S, const Standard_Integer level = 0) const Standard_OVERRIDE;
   
   //! Returns Model's Start Section (list of comment lines)
   Standard_EXPORT Handle(TColStd_HSequenceOfHAsciiString) StartSection() const;
@@ -144,16 +137,16 @@ public:
   
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
-  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
+  Standard_EXPORT void PrintLabel (const Handle(Standard_Transient)& ent, Standard_OStream& S) const Standard_OVERRIDE;
   
   //! Prints label specific to IGES norm  for a given -- --
   //! entity,  i.e.  its directory entry number (2*Number-1)
   //! in the log file format.
-  Standard_EXPORT virtual void PrintToLog (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const Standard_OVERRIDE;
+  Standard_EXPORT virtual void PrintToLog (const Handle(Standard_Transient)& ent, Standard_OStream& S) const Standard_OVERRIDE;
   
   //! Prints label specific to IGES norm for a given entity, i.e.
   //! its directory entry number (2*Number-1)
-  Standard_EXPORT void PrintInfo (const Handle(Standard_Transient)& ent, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void PrintInfo (const Handle(Standard_Transient)& ent, Standard_OStream& S) const;
   
   //! Returns a string with the label attached to a given entity,
   //! i.e. a string "Dnn" with nn = directory entry number (2*N-1)

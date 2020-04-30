@@ -203,13 +203,13 @@ Interface_ShareTool::Interface_ShareTool (const Handle(Interface_HGraph)& ahgrap
   return list;
 }
 
-    void  Interface_ShareTool::Print
-  (const Interface_EntityIterator& iter, const Handle(Message_Messenger)& S) const
+void  Interface_ShareTool::Print (const Interface_EntityIterator& iter, Standard_OStream& S) const
 {
   S << " Nb.Entities : " << iter.NbEntities() << " : ";
   for (iter.Start(); iter.More(); iter.Next()) {
     Handle(Standard_Transient) ent = iter.Value();
-    S << " n0/id:"; Model()->Print(ent,S);
+    S << " n0/id:"; 
+    Model()->Print (ent, S);
   }
-  S<<Message_EndLine;
+  S <<std::endl;
 }

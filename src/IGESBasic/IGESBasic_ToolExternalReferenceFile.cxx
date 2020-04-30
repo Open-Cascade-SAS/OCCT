@@ -105,10 +105,10 @@ void  IGESBasic_ToolExternalReferenceFile::OwnCheck
 
 void  IGESBasic_ToolExternalReferenceFile::OwnDump
   (const Handle(IGESBasic_ExternalReferenceFile)& ent, const IGESData_IGESDumper& /* dumper */,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_ExternalReferenceFile" << Message_EndLine;
-  S << "External Reference Names : ";
-  IGESData_DumpStrings(S ,level,1, ent->NbListEntries(),ent->Name);
-  S << Message_EndLine;
+  S << "IGESBasic_ExternalReferenceFile\n"
+    << "External Reference Names : ";
+  IGESData_DumpStrings(S,level,1, ent->NbListEntries(),ent->Name);
+  S << std::endl;
 }

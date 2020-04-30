@@ -282,11 +282,11 @@ void  IGESAppli_ToolPipingFlow::OwnCheck
 
 void  IGESAppli_ToolPipingFlow::OwnDump
   (const Handle(IGESAppli_PipingFlow)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESAppli_PipingFlow" << Message_EndLine;
-  S << "Number of Context Flags : " << ent->NbContextFlags() << Message_EndLine;
-  S << "Type of Flow : " << ent->TypeOfFlow() << Message_EndLine;
+  S << "IGESAppli_PipingFlow\n";
+  S << "Number of Context Flags : " << ent->NbContextFlags() << "\n";
+  S << "Type of Flow : " << ent->TypeOfFlow() << "\n";
   S << "Flow Associativities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbFlowAssociativities(),
 			ent->FlowAssociativity);
@@ -303,6 +303,6 @@ void  IGESAppli_ToolPipingFlow::OwnDump
   S << "Continuation Flow Associativities : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbContFlowAssociativities(),
 			ent->ContFlowAssociativity);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

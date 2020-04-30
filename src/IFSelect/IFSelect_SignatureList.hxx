@@ -31,7 +31,6 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 class TCollection_HAsciiString;
-class Message_Messenger;
 class Interface_InterfaceModel;
 
 
@@ -117,7 +116,7 @@ public:
   Standard_EXPORT virtual Standard_CString Name() const;
   
   //! Prints the counts of items (not the list)
-  Standard_EXPORT virtual void PrintCount (const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT virtual void PrintCount (Standard_OStream& S) const;
   
   //! Prints the lists of items, if they are present (else, prints
   //! a message "no list available")
@@ -129,13 +128,13 @@ public:
   //! - ShortByItem(D) complete list of entity numbers (0: "Global")
   //! - EntitiesByItem : list of (entity number/PrintLabel from the model)
   //! other modes are ignored
-  Standard_EXPORT virtual void PrintList (const Handle(Message_Messenger)& S, const Handle(Interface_InterfaceModel)& model, const IFSelect_PrintCount mod = IFSelect_ListByItem) const;
+  Standard_EXPORT virtual void PrintList (Standard_OStream& S, const Handle(Interface_InterfaceModel)& model, const IFSelect_PrintCount mod = IFSelect_ListByItem) const;
   
   //! Prints a summary
   //! Item which has the greatest count of entities
   //! For items which are numeric values : their count, maximum,
   //! minimum values, cumul, average
-  Standard_EXPORT virtual void PrintSum (const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT virtual void PrintSum (Standard_OStream& S) const;
 
 
 

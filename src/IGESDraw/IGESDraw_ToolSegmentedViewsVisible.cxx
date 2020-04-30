@@ -35,7 +35,6 @@
 #include <Interface_EntityIterator.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_ShareTool.hxx>
-#include <Message_Messenger.hxx>
 #include <Standard_DomainError.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
@@ -277,24 +276,23 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnCheck
 
 void IGESDraw_ToolSegmentedViewsVisible::OwnDump
   (const Handle(IGESDraw_SegmentedViewsVisible)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level)  const
+   Standard_OStream& S, const Standard_Integer level)  const
 {
   Standard_Integer sublevel = (level <= 4) ? 0 : 1;
 
-  S << "IGESDraw_SegmentedViewsVisible" << Message_EndLine;
-
-  S << "View Entities            : " << Message_EndLine
-    << "Breakpoint parameters    : " << Message_EndLine
-    << "Display flags            : " << Message_EndLine
-    << "Color Values             : " << Message_EndLine
-    << "Color Definitions        : " << Message_EndLine
-    << "LineFont Values          : " << Message_EndLine
-    << "LineFont Definitions     : " << Message_EndLine
-    << "Line Weights : " << Message_EndLine;
-  S << "Count Of Blocks = "      << ent->NbSegmentBlocks() << Message_EndLine;
+  S << "IGESDraw_SegmentedViewsVisible\n"
+    << "View Entities            :\n"
+    << "Breakpoint parameters    :\n"
+    << "Display flags            :\n"
+    << "Color Values             :\n"
+    << "Color Definitions        :\n"
+    << "LineFont Values          :\n"
+    << "LineFont Definitions     :\n"
+    << "Line Weights :\n"
+    << "Count Of Blocks = "      << ent->NbSegmentBlocks() << "\n";
   switch (level)
     {
-    case 4 : S << " [ for content, ask level > 4 ]" << Message_EndLine;
+    case 4 : S << " [ for content, ask level > 4 ]\n";
       break; // Nothing to be dumped here
     case 5 :        // Presently level 5 and 6 have the same Dump
     case 6 :
@@ -303,23 +301,22 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump
 	Standard_Integer up  = ent->NbSegmentBlocks();
 	for (I = 1; I <= up; I++)
           {
-	    S << "[" << I << "]:" << Message_EndLine;
-	    S << "View Entity : ";
+	    S << "[" << I << "]:\n"
+	      << "View Entity : ";
 	    dumper.Dump (ent->ViewItem(I),S, sublevel);
-	    S << Message_EndLine;
-	    S << "Breakpoint parameter : " <<ent->BreakpointParameter(I)<<Message_EndLine;
-	    S << "Display Flag : " << ent->DisplayFlag(I) << Message_EndLine;
+	    S << "\n"
+	      << "Breakpoint parameter : " <<ent->BreakpointParameter(I)<< "\n"
+	      << "Display Flag : " << ent->DisplayFlag(I) << "\n";
 	    if ( (ent->ColorDefinition(I)).IsNull() )
               {
-		S << "Color Value : ";
-		S << ent->ColorValue(I);
+		S << "Color Value : " << ent->ColorValue(I);
               }
 	    else
               {
 		S << "Color Definition : ";
 		dumper.Dump (ent->ColorDefinition(I),S, sublevel);
               }
-	    S << Message_EndLine;
+	    S << "\n";
 	    if ( (ent->LineFontDefinition(I)).IsNull() )
               {
 		S << "LineFont Value : " << ent->LineFontValue(I);
@@ -329,11 +326,11 @@ void IGESDraw_ToolSegmentedViewsVisible::OwnDump
 		S << "LineFont Definition : ";
 		dumper.Dump (ent->LineFontDefinition(I),S, sublevel);
               }
-	    S << Message_EndLine;
-	    S << "Line Weight : " << ent->LineWeightItem(I) << Message_EndLine;
+	    S << "\n"
+	      << "Line Weight : " << ent->LineWeightItem(I) << "\n";
           }
       }
       break;
     }
-  S << Message_EndLine;
+  S << std::endl;
 }

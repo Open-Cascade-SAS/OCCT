@@ -151,12 +151,11 @@ void  IGESBasic_ToolOrderedGroup::OwnCheck
 
 void  IGESBasic_ToolOrderedGroup::OwnDump
   (const Handle(IGESBasic_OrderedGroup)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESBasic_OrderedGroup" << Message_EndLine;
-
-  S << "Entries in the Group : ";
+  S << "IGESBasic_OrderedGroup\n"
+    << "Entries in the Group : ";
   IGESData_DumpEntities(S,dumper ,level,1, ent->NbEntities(),ent->Entity);
-  S << Message_EndLine;
+  S << std::endl;
 }
 

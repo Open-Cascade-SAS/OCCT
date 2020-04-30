@@ -33,8 +33,6 @@ class Interface_ShareTool;
 class Interface_Check;
 class Interface_CopyTool;
 class IGESData_IGESDumper;
-class Message_Messenger;
-
 
 //! Tool to work on a SectionedArea. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
@@ -69,7 +67,7 @@ public:
   Standard_EXPORT void OwnCopy (const Handle(IGESDimen_SectionedArea)& entfrom, const Handle(IGESDimen_SectionedArea)& entto, Interface_CopyTool& TC) const;
   
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDimen_SectionedArea)& ent, const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S, const Standard_Integer own) const;
+  Standard_EXPORT void OwnDump (const Handle(IGESDimen_SectionedArea)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
 
 
 

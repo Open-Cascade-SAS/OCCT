@@ -34,8 +34,6 @@ class Interface_ShareTool;
 class Interface_Check;
 class Interface_CopyTool;
 class IGESData_IGESDumper;
-class Message_Messenger;
-
 
 //! Tool to work on a ViewsVisibleWithAttr. Called by various Modules
 //! (ReadWriteModule, GeneralModule, SpecificModule)
@@ -84,7 +82,7 @@ public:
   Standard_EXPORT void OwnWhenDelete (const Handle(IGESDraw_ViewsVisibleWithAttr)& ent) const;
   
   //! Dump of Specific Parameters
-  Standard_EXPORT void OwnDump (const Handle(IGESDraw_ViewsVisibleWithAttr)& ent, const IGESData_IGESDumper& dumper, const Handle(Message_Messenger)& S, const Standard_Integer own) const;
+  Standard_EXPORT void OwnDump (const Handle(IGESDraw_ViewsVisibleWithAttr)& ent, const IGESData_IGESDumper& dumper, Standard_OStream& S, const Standard_Integer own) const;
   
   //! Sets automatic unambiguous Correction on a ViewsVisibleWithAttr
   //! (all displayed entities must refer to <ent> in directory part,

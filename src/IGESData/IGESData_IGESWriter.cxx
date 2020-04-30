@@ -116,7 +116,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
     void IGESData_IGESWriter::SendModel
   (const Handle(IGESData_Protocol)& protocol)
 {
-  Handle(Message_Messenger) sout = Message::DefaultMessenger();
+  Message_Messenger::StreamBuffer sout = Message::SendInfo();
   IGESData_WriterLib lib(protocol);
 
   Standard_Integer nb = themodel->NbEntities();
@@ -137,7 +137,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
 #endif
 //  Attention aux cas d erreur : contenu redefini
     if (themodel->IsRedefinedContent(i)) {
-      sout << " --  IGESWriter : Erroneous Entity N0."<<i<<"  --"<<Message_EndLine;
+      sout << " --  IGESWriter : Erroneous Entity N0."<<i<<"  --"<<std::endl;
       Handle(Interface_ReportEntity) rep = themodel->ReportEntity(i);
       if (!rep.IsNull()) cnt = GetCasted(IGESData_IGESEntity,rep->Content());
       if (cnt.IsNull())  cnt = ent;    // secours
@@ -156,7 +156,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
       undent->WriteOwnParams (*this);
     }
     else sout<<" -- IGESWriter : Not Processed for n0."<<i<<" in file,  Type "
-      <<cnt->TypeNumber()<<"  Form "<<cnt->FormNumber()<<Message_EndLine;
+      <<cnt->TypeNumber()<<"  Form "<<cnt->FormNumber()<<std::endl;
 
     Associativities (cnt);
     Properties      (cnt);
@@ -505,7 +505,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
       S << "                              ***  EUCLID/STRIM  DESKTOP CLIPBOARD  ***"<<std::endl;
       writefnes (S,"                                                                        S0000001");
     }
-    else S<<"                                                                        S0000001";
+    else S <<"                                                                        S0000001";
 //      123456789 123456789 123456789 123456789 123456789 123456789 123456789 12
     S << std::endl;
   } else {
@@ -517,7 +517,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 
       if (fnes) writefnes (S,line->ToCString());
       else S << line->ToCString();
-//    for (Standard_Integer k = line->Length()+1; k <= MaxcarsG; k ++)  S<<' ';
+//    for (Standard_Integer k = line->Length()+1; k <= MaxcarsG; k ++)  aSender <<' ';
       S << &blancs[line->Length()];
       if (fnes) writefnes (S,finlin);
       else S << finlin;
@@ -537,7 +537,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 
     if (fnes) writefnes (S,line->ToCString());
     else S << line->ToCString();
-//    for (Standard_Integer k = line->Length()+1; k <= MaxcarsG; k ++)  S<<' ';
+//    for (Standard_Integer k = line->Length()+1; k <= MaxcarsG; k ++)  aSender <<' ';
     S << &blancs[line->Length()];
     if (fnes) writefnes (S,finlin);
     else S << finlin;
@@ -567,16 +567,16 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 	    v[8],v[9],v[10],v[11] ,2*i-1);
     if (fnes) writefnes (S,ligne);
     else S << ligne;
-    S<< "\n";
+    S << "\n";
     sprintf(ligne,"%8d%8d%8d%8d%8d%8s%8s%8s%8sD%7.7d",
 	    v[0],v[13],v[14],v[15],v[16],res1,res2,lab,num,2*i);
     if (fnes) writefnes (S,ligne);
     else S << ligne;
-    S<< "\n";
+    S << "\n";
 //    std::cout << "Ent.no "<<i<<" No en P "<<thepnum.Value(i)<<
 //      " Lignes P:"<<thepnum.Value(i+1)-thepnum.Value(i)<<std::endl;
-//    for (j = 0; j < 17; j ++) S<<v[j]<<" ";
-//    S<<res1<<res2<<" label:"<<lab<<" subnum:"<<num<<std::endl;
+//    for (j = 0; j < 17; j ++) S <<v[j]<<" ";
+//    S <<res1<<res2<<" label:"<<lab<<" subnum:"<<num<<std::endl;
     isGood = S.good();
   }
   if(!isGood)
@@ -597,7 +597,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 
       if (fnes) writefnes (S,line->ToCString());
       else S << line->ToCString();
-//      for (Standard_Integer k = line->Length()+1; k <= MaxcarsP; k ++)S<<' ';
+//      for (Standard_Integer k = line->Length()+1; k <= MaxcarsP; k ++)aSender <<' ';
       S << &blancs[line->Length()];
       if (fnes) writefnes (S,finlin);
       else S << finlin;
@@ -618,7 +618,7 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
 //   12345678- 16- 24- 32  56789 123456789 123456789 123456789 12
   if (fnes) writefnes (S,ligne);
   else S << ligne;
-  S<< "\n";
+  S << "\n";
   S.flush();
   isGood = S.good();
 #ifdef PATIENCELOG

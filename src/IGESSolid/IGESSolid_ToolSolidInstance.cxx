@@ -91,11 +91,10 @@ void  IGESSolid_ToolSolidInstance::OwnCheck
 
 void  IGESSolid_ToolSolidInstance::OwnDump
   (const Handle(IGESSolid_SolidInstance)& ent, const IGESData_IGESDumper& dumper,
-   const Handle(Message_Messenger)& S, const Standard_Integer level) const
+   Standard_OStream& S, const Standard_Integer level) const
 {
-  S << "IGESSolid_SolidInstance" << Message_EndLine;
-
-  S << "Solid entity : ";
+  S << "IGESSolid_SolidInstance\n"
+    << "Solid entity : ";
   dumper.Dump(ent->Entity(),S, (level <= 4) ? 0 : 1);
-  S << Message_EndLine;
+  S << std::endl;
 }

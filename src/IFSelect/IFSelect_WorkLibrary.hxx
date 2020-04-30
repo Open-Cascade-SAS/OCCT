@@ -31,8 +31,6 @@ class IFSelect_ContextWrite;
 class Interface_EntityIterator;
 class Interface_CopyTool;
 class Standard_Transient;
-class Message_Messenger;
-
 
 class IFSelect_WorkLibrary;
 DEFINE_STANDARD_HANDLE(IFSelect_WorkLibrary, Standard_Transient)
@@ -98,10 +96,10 @@ public:
   //! for each norm. <model> helps to identify, number ... entities.
   //! <level> is to be interpreted for each norm (because of the
   //! formats which can be very different)
-  Standard_EXPORT virtual void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, const Handle(Message_Messenger)& S, const Standard_Integer level) const = 0;
+  Standard_EXPORT virtual void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, Standard_OStream& S, const Standard_Integer level) const = 0;
   
   //! Calls deferred DumpEntity with the recorded default level
-  Standard_EXPORT void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, const Handle(Message_Messenger)& S) const;
+  Standard_EXPORT void DumpEntity (const Handle(Interface_InterfaceModel)& model, const Handle(Interface_Protocol)& protocol, const Handle(Standard_Transient)& entity, Standard_OStream& S) const;
   
   //! Records a default level and a maximum value for level
   //! level for DumpEntity can go between 0 and <max>
