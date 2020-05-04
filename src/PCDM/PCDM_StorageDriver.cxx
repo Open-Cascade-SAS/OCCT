@@ -91,10 +91,10 @@ void PCDM_StorageDriver::Write(const Handle(CDM_Document)& aDocument, const TCol
     theData->AddToComments(aComments(i));
   }
 
-  FSD_CmpFile theFile;
+  Handle(FSD_CmpFile) theFile = new FSD_CmpFile;
   PCDM_ReadWriter::Open(theFile,aFileName,Storage_VSWrite);
   theSchema->Write(theFile,theData);
-  theFile.Close();
+  theFile->Close();
 
   if ( theData->ErrorStatus() != Storage_VSOk )
     throw PCDM_DriverError(theData->ErrorStatusExtension().ToCString());

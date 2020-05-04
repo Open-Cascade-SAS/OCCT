@@ -30,6 +30,8 @@ const Standard_Integer SIZEOFNORMALEXTENDEDSECTION = 16;
 
 #define USEOSDREAL 1
 
+IMPLEMENT_STANDARD_RTTIEXT(FSD_File, Storage_BaseDriver)
+
 //=======================================================================
 //function : FSD_File
 //purpose  : 

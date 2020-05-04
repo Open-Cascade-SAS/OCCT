@@ -12,5 +12,5 @@ checknbshapes a -face 14 -solid 0 -edge 39 -vertex 26
 
 puts ""
 puts "# Check that reading fails with expected message on truncated file"
-puts "REQUIRED 29355 ALL: Error : 6"
+puts "REQUIRED 29355 ALL: Storage error: the section is not found"
 catch {fsdread [locate_data_file bug29355_truncated.fsd] a}

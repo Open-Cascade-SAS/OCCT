@@ -1,0 +1,19 @@
+puts "==========="
+puts "0031546: Application Framework - Memory leak (100 bytes) on Load / Close OCAF document"
+puts "==========="
+
+puts "Preparing empty document"
+set docname ${imagedir}/${casename}.cbf
+NewDocument D BinOcaf
+SaveAs D $docname
+Close D
+
+puts "Executing Load / Close in cycle to see if allocated heap memory grows"
+set listmem {}
+for {set i 1} {$i < 10} {incr i} {
+  Open $docname D
+  Close D
+
+  lappend listmem [meminfo h]
+  checktrend $listmem 0 0 "Memory leak"
+}

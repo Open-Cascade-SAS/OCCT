@@ -46,7 +46,9 @@ public:
   
   Standard_EXPORT static TCollection_ExtendedString xgetenv (const Standard_CString aCString);
   
-  Standard_EXPORT static Storage_Error OpenFile (Storage_BaseDriver& aFile, const TCollection_ExtendedString& aName, const Storage_OpenMode aMode);
+  Standard_EXPORT static Storage_Error OpenFile (const Handle(Storage_BaseDriver)& aFile, 
+                                                 const TCollection_ExtendedString& aName, 
+                                                 const Storage_OpenMode aMode);
   
   Standard_EXPORT static void AddToUserInfo (const Handle(Storage_Data)& aData, const TCollection_ExtendedString& anInfo);
   

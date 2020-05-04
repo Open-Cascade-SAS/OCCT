@@ -21,6 +21,8 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(Storage_BaseDriver, Standard_Transient)
+
 Storage_BaseDriver::Storage_BaseDriver() : myOpenMode(Storage_VSNone)
 {
 }

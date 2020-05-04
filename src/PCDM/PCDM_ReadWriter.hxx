@@ -62,7 +62,9 @@ public:
   
   Standard_EXPORT virtual Standard_Integer ReadDocumentVersion (const TCollection_ExtendedString& aFileName, const Handle(Message_Messenger)& theMsgDriver) const = 0;
   
-  Standard_EXPORT static void Open (Storage_BaseDriver& aDriver, const TCollection_ExtendedString& aFileName, const Storage_OpenMode anOpenMode);
+  Standard_EXPORT static void Open (const Handle(Storage_BaseDriver)& aDriver, 
+                                    const TCollection_ExtendedString& aFileName, 
+                                    const Storage_OpenMode anOpenMode);
   
   //! returns the convenient Reader for a File.
   Standard_EXPORT static Handle(PCDM_ReadWriter) Reader (const TCollection_ExtendedString& aFileName);

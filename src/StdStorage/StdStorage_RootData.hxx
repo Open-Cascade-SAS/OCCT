@@ -48,13 +48,13 @@ public:
   //! Returns Standard_True in case of success. Otherwise, one need to get 
   //! an error code and description using ErrorStatus and ErrorStatusExtension
   //! functions correspondingly.
-  Standard_EXPORT Standard_Boolean Read(Storage_BaseDriver& theDriver);
+  Standard_EXPORT Standard_Boolean Read(const Handle(Storage_BaseDriver)& theDriver);
 
   //! Writes the root data section to the container defined by theDriver. 
   //! Returns Standard_True in case of success. Otherwise, one need to get 
   //! an error code and description using ErrorStatus and ErrorStatusExtension
   //! functions correspondingly.
-  Standard_EXPORT Standard_Boolean Write(Storage_BaseDriver& theDriver);
+  Standard_EXPORT Standard_Boolean Write(const Handle(Storage_BaseDriver)& theDriver);
 
   //! Returns the number of roots.
   Standard_EXPORT Standard_Integer NumberOfRoots() const;

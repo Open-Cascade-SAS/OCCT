@@ -20,6 +20,8 @@
 
 const Standard_CString MAGICNUMBER = "CMPFILE";
 
+IMPLEMENT_STANDARD_RTTIEXT(FSD_CmpFile, FSD_File)
+
 //=======================================================================
 //function : FSD_CmpFile
 //purpose  : 

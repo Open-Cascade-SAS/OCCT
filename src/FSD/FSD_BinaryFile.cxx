@@ -32,6 +32,8 @@
 
 const Standard_CString MAGICNUMBER = "BINFILE";
 
+IMPLEMENT_STANDARD_RTTIEXT(FSD_BinaryFile,Storage_BaseDriver)
+
 //=======================================================================
 //function : FSD_BinaryFile
 //purpose  : 

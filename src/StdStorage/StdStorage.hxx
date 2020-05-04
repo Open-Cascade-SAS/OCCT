@@ -57,14 +57,14 @@ public:
   //! These data are aggregated in a StdStorage_Data object which may be 
   //! browsed in order to extract the root objects from the container.
   //! Note: - theData object will be created if it is null or cleared otherwise.
-  Standard_EXPORT static Storage_Error Read(Storage_BaseDriver&      theDriver,
+  Standard_EXPORT static Storage_Error Read(const Handle(Storage_BaseDriver)& theDriver,
                                             Handle(StdStorage_Data)& theData);
 
   //! Writes the data aggregated in theData object into the container defined by 
   //! theDriver. The storage format is compartible with legacy persistent one.
   //! Note: - theData may aggregate several root objects to be stored together.
   //!       - createion date specified in the srorage header will be overwritten.
-  Standard_EXPORT static Storage_Error Write(Storage_BaseDriver&            theDriver,
+  Standard_EXPORT static Storage_Error Write(const Handle(Storage_BaseDriver)& theDriver,
                                              const Handle(StdStorage_Data)& theData);
 
 };

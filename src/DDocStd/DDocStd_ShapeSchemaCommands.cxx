@@ -30,6 +30,57 @@
 #include <StdStorage_TypeData.hxx>
 #include <ShapePersistent_TopoDS.hxx>
 
+//==========================================================
+// ErrorMessage
+//==========================================================
+
+static void DDocStd_StorageErrorMessage (Draw_Interpretor& theDI, const Storage_Error theStatus)
+{
+  switch (theStatus) {
+  case Storage_VSOk:
+    break;
+  case Storage_VSOpenError:
+    theDI << "Storage error: failed to open the stream";
+    break;
+  case Storage_VSModeError:
+    theDI << "Storage error: the stream is opened with a wrong mode for operation ";
+    break;
+  case Storage_VSCloseError:
+    theDI << "Storage error: failed to closing the stream";
+    break;
+  case Storage_VSAlreadyOpen:
+    theDI << "Storage error: stream is already opened";
+    break;
+  case Storage_VSNotOpen:
+    theDI << "Storage error: stream not opened";
+    break;
+  case Storage_VSSectionNotFound:
+    theDI << "Storage error: the section is not found";
+    break;
+  case Storage_VSWriteError:
+    theDI << "Storage error: error during writing";
+    break;
+  case Storage_VSFormatError:
+    theDI << "Storage error: wrong format error occured while reading";
+    break;
+  case Storage_VSUnknownType:
+    theDI << "Storage error: try to read an unknown type";
+    break;
+  case Storage_VSTypeMismatch:
+    theDI << "Storage error: try to read a wrong primitive type (read a char while expecting a real)";
+    break;
+  case Storage_VSInternalError:
+    theDI << "Storage error: internal error";
+    break;
+  case Storage_VSExtCharParityError:
+    theDI << "Storage error: parity error";
+    break;
+  default:
+    theDI << "Storage error: unknown error code";
+    break;
+  }
+}
+
 //=======================================================================
 //function : DDocStd_ShapeSchema_Write 
 //=======================================================================
@@ -51,7 +102,7 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
     return 1;
   }
 
-  NCollection_Handle<Storage_BaseDriver> aFileDriver(new FSD_File);
+  Handle(Storage_BaseDriver) aFileDriver(new FSD_File);
 
   Standard_Boolean hasStorageDriver = Standard_False;
   Standard_Integer iArgN = theArgNb - 1;
@@ -76,8 +127,9 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
 
   Storage_Error aStatus = aFileDriver->Open(theArgs[iArgN], Storage_VSWrite);
   if (aStatus != Storage_VSOk) {
-    theDI << "Error : couldn't open file '" << "' for writing (" << aStatus << ")\n";
-    return 1;
+    theDI << "Error: cannot  open file '" << "' for writing (" << aStatus << ")\n";
+    DDocStd_StorageErrorMessage (theDI, aStatus);
+    return 0;
   }
 
   TopTools_SequenceOfShape aShapes;
@@ -129,15 +181,9 @@ static Standard_Integer DDocStd_fsdwrite(Draw_Interpretor& theDI,
     aData->RootData()->AddRoot(aRoot);
   }
 
-  Storage_Error anError = StdStorage::Write(*aFileDriver, aData);
-
+  Storage_Error anError = StdStorage::Write(aFileDriver, aData);
   aFileDriver->Close();
-
-  if (anError != Storage_VSOk)
-  {
-    theDI << "Error : " << anError << "\n";
-    return 1;
-  }
+  DDocStd_StorageErrorMessage(theDI, anError);
 
   return 0;
 }
@@ -170,8 +216,8 @@ static Standard_Integer DDocStd_fsdread(Draw_Interpretor& theDI,
   Storage_Error anError = StdStorage::Read(TCollection_AsciiString(theArgs[1]), aData);
   if (anError != Storage_VSOk)
   {
-    theDI << "Error : " << anError << "\n";
-    return 1;
+    DDocStd_StorageErrorMessage(theDI, anError);
+    return 0;
   }
 
   TopTools_SequenceOfShape aShapes;

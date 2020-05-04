@@ -45,7 +45,7 @@ public:
   
   Standard_EXPORT Storage_HeaderData();
 
-  Standard_EXPORT Standard_Boolean Read (Storage_BaseDriver& theDriver);
+  Standard_EXPORT Standard_Boolean Read (const Handle(Storage_BaseDriver)& theDriver);
   
   //! return the creation date
   Standard_EXPORT TCollection_AsciiString CreationDate() const;

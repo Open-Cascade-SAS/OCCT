@@ -18,8 +18,8 @@
 
 
 StdObjMgt_ReadData::StdObjMgt_ReadData
-  (Storage_BaseDriver& theDriver, const Standard_Integer theNumberOfObjects)
-    : myDriver (&theDriver)
+  (const Handle(Storage_BaseDriver)& theDriver, const Standard_Integer theNumberOfObjects)
+    : myDriver (theDriver)
     , myPersistentObjects (1, theNumberOfObjects) {}
 
 void StdObjMgt_ReadData::ReadPersistentObject (const Standard_Integer theRef)

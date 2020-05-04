@@ -4,7 +4,6 @@ Storage_ArrayOfCallBack.hxx
 Storage_ArrayOfSchema.hxx
 Storage_BaseDriver.cxx
 Storage_BaseDriver.hxx
-Storage_BaseDriver.lxx
 Storage_BucketOfPersistent.hxx
 Storage_CallBack.cxx
 Storage_CallBack.hxx
@@ -36,7 +35,6 @@ Storage_RootData.cxx
 Storage_RootData.hxx
 Storage_Schema.cxx
 Storage_Schema.hxx
-Storage_Schema.lxx
 Storage_SeqOfRoot.hxx
 Storage_SolveMode.hxx
 Storage_StreamExtCharParityError.hxx

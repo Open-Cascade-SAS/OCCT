@@ -54,31 +54,29 @@ Storage_Error StdStorage::Read(const TCollection_AsciiString& theFileName,
                                Handle(StdStorage_Data)&       theData)
 {
   // Create a driver appropriate for the given file
-  PCDM_BaseDriverPointer aDriverPtr;
-  if (PCDM::FileDriverType(theFileName, aDriverPtr) == PCDM_TOFD_Unknown)
+  Handle(Storage_BaseDriver) aDriver;
+  if (PCDM::FileDriverType(theFileName, aDriver) == PCDM_TOFD_Unknown)
     return Storage_VSWrongFileDriver;
-
-  NCollection_Handle<Storage_BaseDriver> aDriver(aDriverPtr);
 
   // Try to open the file
   try
   {
     OCC_CATCH_SIGNALS
-    PCDM_ReadWriter::Open(*aDriver, theFileName, Storage_VSRead);
+    PCDM_ReadWriter::Open(aDriver, theFileName, Storage_VSRead);
   }
   catch (Standard_Failure const&)
   {
     return Storage_VSOpenError;
   }
 
-  return Read(*aDriver, theData);
+  return Read(aDriver, theData);
 }
 
 //=======================================================================
 // StdStorage::Read
 // Reads data from a pre-opened for reading driver
 //=======================================================================
-Storage_Error StdStorage::Read(Storage_BaseDriver&      theDriver, 
+Storage_Error StdStorage::Read(const Handle(Storage_BaseDriver)& theDriver, 
                                Handle(StdStorage_Data)& theData)
 {
   if (theData.IsNull())
@@ -120,18 +118,18 @@ Storage_Error StdStorage::Read(Storage_BaseDriver&      theDriver,
   // Read and parse reference section
   StdObjMgt_ReadData aReadData(theDriver, aHeaderData->NumberOfObjects());
 
-  anError = theDriver.BeginReadRefSection();
+  anError = theDriver->BeginReadRefSection();
   if (anError != Storage_VSOk)
     return anError;
 
-  Standard_Integer aNbRefs = theDriver.RefSectionSize();
+  Standard_Integer aNbRefs = theDriver->RefSectionSize();
   for (Standard_Integer i = 1; i <= aNbRefs; i++)
   {
     Standard_Integer aRef = 0, aType = 0;
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver.ReadReferenceType(aRef, aType);
+      theDriver->ReadReferenceType(aRef, aType);
       anError = Storage_VSOk;
     }
     catch (Storage_StreamTypeMismatchError const&)
@@ -145,12 +143,12 @@ Storage_Error StdStorage::Read(Storage_BaseDriver&      theDriver,
     aReadData.CreatePersistentObject(aRef, anInstantiators(aType));
   }
 
-  anError = theDriver.EndReadRefSection();
+  anError = theDriver->EndReadRefSection();
   if (anError != Storage_VSOk)
     return anError;
 
   // Read and parse data section
-  anError = theDriver.BeginReadDataSection();
+  anError = theDriver->BeginReadDataSection();
   if (anError != Storage_VSOk)
     return anError;
 
@@ -170,7 +168,7 @@ Storage_Error StdStorage::Read(Storage_BaseDriver&      theDriver,
       return anError;
   }
 
-  anError = theDriver.EndReadDataSection();
+  anError = theDriver->EndReadDataSection();
   if (anError != Storage_VSOk)
     return anError;
 
@@ -211,7 +209,7 @@ static TCollection_AsciiString currentDate()
 //=======================================================================
 // StdStorage::Write
 //=======================================================================
-Storage_Error StdStorage::Write(Storage_BaseDriver&            theDriver, 
+Storage_Error StdStorage::Write(const Handle(Storage_BaseDriver)& theDriver, 
                                 const Handle(StdStorage_Data)& theData)
 {
   Standard_NullObject_Raise_if(theData.IsNull(), "Null storage data");
@@ -278,24 +276,24 @@ Storage_Error StdStorage::Write(Storage_BaseDriver&            theDriver,
     Storage_Error anError;
 
     // Write reference section
-    anError = theDriver.BeginWriteRefSection();
+    anError = theDriver->BeginWriteRefSection();
     if (anError != Storage_VSOk)
       return anError;
 
-    theDriver.SetRefSectionSize(aPObjs.Length());
+    theDriver->SetRefSectionSize(aPObjs.Length());
     for (StdStorage_BucketIterator anIt(&aPObjs); anIt.More(); anIt.Next())
     {
       Handle(StdObjMgt_Persistent) aPObj = anIt.Value();
       if (!aPObj.IsNull())
-        theDriver.WriteReferenceType(aPObj->RefNum(), aPObj->TypeNum());
+        theDriver->WriteReferenceType(aPObj->RefNum(), aPObj->TypeNum());
     }
 
-    anError = theDriver.EndWriteRefSection();
+    anError = theDriver->EndWriteRefSection();
     if (anError != Storage_VSOk)
       return anError;
 
     // Write data section
-    anError = theDriver.BeginWriteDataSection();
+    anError = theDriver->BeginWriteDataSection();
     if (anError != Storage_VSOk)
       return anError;
 
@@ -307,7 +305,7 @@ Storage_Error StdStorage::Write(Storage_BaseDriver&            theDriver,
         aWriteData.WritePersistentObject(aPObj);
     }
 
-    anError = theDriver.EndWriteDataSection();
+    anError = theDriver->EndWriteDataSection();
     if (anError != Storage_VSOk)
       return anError;
   }

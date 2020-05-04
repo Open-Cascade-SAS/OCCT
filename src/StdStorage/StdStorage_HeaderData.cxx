@@ -26,11 +26,11 @@ StdStorage_HeaderData::StdStorage_HeaderData()
 {
 }
 
-Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
+Standard_Boolean StdStorage_HeaderData::Read(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver.OpenMode() != Storage_VSRead
-    && theDriver.OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSRead
+    && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
@@ -38,7 +38,7 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
   }
 
   // Read info section
-  myErrorStatus = theDriver.BeginReadInfoSection();
+  myErrorStatus = theDriver->BeginReadInfoSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadInfoSection";
@@ -48,15 +48,8 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
   try
   {
     OCC_CATCH_SIGNALS
-    theDriver.ReadInfo(myNBObj,
-                        myStorageVersion,
-                        myDate,
-                        mySchemaName,
-                        mySchemaVersion,
-                        myApplicationName,
-                        myApplicationVersion,
-                        myDataType,
-                        myUserInfo);
+    theDriver->ReadInfo(myNBObj, myStorageVersion, myDate, mySchemaName, mySchemaVersion,
+                        myApplicationName, myApplicationVersion, myDataType, myUserInfo);
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
@@ -71,7 +64,7 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
     return Standard_False;
   }
 
-  myErrorStatus = theDriver.EndReadInfoSection();
+  myErrorStatus = theDriver->EndReadInfoSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadInfoSection";
@@ -79,7 +72,7 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
   }
 
   // Read comment section
-  myErrorStatus = theDriver.BeginReadCommentSection();
+  myErrorStatus = theDriver->BeginReadCommentSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadCommentSection";
@@ -89,7 +82,7 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
   try
   {
     OCC_CATCH_SIGNALS
-    theDriver.ReadComment(myComments);
+    theDriver->ReadComment(myComments);
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
@@ -104,7 +97,7 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
     return Standard_False;
   }
 
-  myErrorStatus = theDriver.EndReadCommentSection();
+  myErrorStatus = theDriver->EndReadCommentSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadCommentSection";
@@ -114,11 +107,11 @@ Standard_Boolean StdStorage_HeaderData::Read(Storage_BaseDriver& theDriver)
   return Standard_True;
 }
 
-Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
+Standard_Boolean StdStorage_HeaderData::Write(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver.OpenMode() != Storage_VSWrite
-    && theDriver.OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSWrite
+    && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
@@ -126,7 +119,7 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
   }
 
   // Write info section
-  myErrorStatus = theDriver.BeginWriteInfoSection();
+  myErrorStatus = theDriver->BeginWriteInfoSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginWriteInfoSection";
@@ -136,15 +129,8 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
   try
   {
     OCC_CATCH_SIGNALS
-    theDriver.WriteInfo(myNBObj,
-                        myStorageVersion,
-                        myDate,
-                        mySchemaName,
-                        mySchemaVersion,
-                        myApplicationName,
-                        myApplicationVersion,
-                        myDataType,
-                        myUserInfo);
+    theDriver->WriteInfo(myNBObj, myStorageVersion, myDate, mySchemaName, mySchemaVersion,
+                        myApplicationName, myApplicationVersion, myDataType, myUserInfo);
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
@@ -159,7 +145,7 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
     return Standard_False;
   }
 
-  myErrorStatus = theDriver.EndWriteInfoSection();
+  myErrorStatus = theDriver->EndWriteInfoSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndWriteInfoSection";
@@ -167,7 +153,7 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
   }
 
   // Write comment section
-  myErrorStatus = theDriver.BeginWriteCommentSection();
+  myErrorStatus = theDriver->BeginWriteCommentSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginWriteCommentSection";
@@ -177,7 +163,7 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
   try
   {
     OCC_CATCH_SIGNALS
-    theDriver.WriteComment(myComments);
+    theDriver->WriteComment(myComments);
   }
   catch (Storage_StreamTypeMismatchError const&)
   {
@@ -192,7 +178,7 @@ Standard_Boolean StdStorage_HeaderData::Write(Storage_BaseDriver& theDriver)
     return Standard_False;
   }
 
-  myErrorStatus = theDriver.EndWriteCommentSection();
+  myErrorStatus = theDriver->EndWriteCommentSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndWriteCommentSection";

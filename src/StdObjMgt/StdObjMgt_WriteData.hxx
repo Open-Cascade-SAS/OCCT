@@ -44,11 +44,9 @@ public:
     ObjectSentry& operator = (const ObjectSentry&);
   };
 
-  Standard_EXPORT StdObjMgt_WriteData 
-    (Storage_BaseDriver& theDriver);
+  Standard_EXPORT StdObjMgt_WriteData (const Handle(Storage_BaseDriver)& theDriver);
 
-  Standard_EXPORT void WritePersistentObject
-    (const Handle(StdObjMgt_Persistent)& thePersistent);
+  Standard_EXPORT void WritePersistentObject (const Handle(StdObjMgt_Persistent)& thePersistent);
 
   template <class Persistent>
   StdObjMgt_WriteData& operator << (const Handle(Persistent)& thePersistent)
@@ -85,7 +83,7 @@ public:
     { return WriteValue(theValue); }
 
 private:
-  Storage_BaseDriver* myDriver;
+  Handle(Storage_BaseDriver) myDriver;
 };
 
 Standard_EXPORT StdObjMgt_WriteData& operator <<

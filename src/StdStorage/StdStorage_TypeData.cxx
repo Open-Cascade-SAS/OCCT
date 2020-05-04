@@ -28,11 +28,11 @@ StdStorage_TypeData::StdStorage_TypeData()
   StdDrivers::BindTypes(myMapOfPInst);
 }
 
-Standard_Boolean StdStorage_TypeData::Read(Storage_BaseDriver& theDriver)
+Standard_Boolean StdStorage_TypeData::Read(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver.OpenMode() != Storage_VSRead
-   && theDriver.OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSRead
+   && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
@@ -40,7 +40,7 @@ Standard_Boolean StdStorage_TypeData::Read(Storage_BaseDriver& theDriver)
   }
 
   // Read type section
-  myErrorStatus = theDriver.BeginReadTypeSection();
+  myErrorStatus = theDriver->BeginReadTypeSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadTypeSection";
@@ -50,13 +50,13 @@ Standard_Boolean StdStorage_TypeData::Read(Storage_BaseDriver& theDriver)
   Standard_Integer        aTypeNum;
   TCollection_AsciiString aTypeName;
 
-  Standard_Integer len = theDriver.TypeSectionSize();
+  Standard_Integer len = theDriver->TypeSectionSize();
   for (Standard_Integer i = 1; i <= len; i++)
   {
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver.ReadTypeInformations (aTypeNum, aTypeName);
+      theDriver->ReadTypeInformations (aTypeNum, aTypeName);
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
@@ -68,7 +68,7 @@ Standard_Boolean StdStorage_TypeData::Read(Storage_BaseDriver& theDriver)
     myPt.Add (aTypeName, aTypeNum);
   }
 
-  myErrorStatus = theDriver.EndReadTypeSection();
+  myErrorStatus = theDriver->EndReadTypeSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadTypeSection";
@@ -78,11 +78,11 @@ Standard_Boolean StdStorage_TypeData::Read(Storage_BaseDriver& theDriver)
   return Standard_True;
 }
 
-Standard_Boolean StdStorage_TypeData::Write(Storage_BaseDriver& theDriver)
+Standard_Boolean StdStorage_TypeData::Write(const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver.OpenMode() != Storage_VSWrite
-    && theDriver.OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSWrite
+    && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
@@ -90,7 +90,7 @@ Standard_Boolean StdStorage_TypeData::Write(Storage_BaseDriver& theDriver)
   }
 
   // Write type section
-  myErrorStatus = theDriver.BeginWriteTypeSection();
+  myErrorStatus = theDriver->BeginWriteTypeSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginWriteTypeSection";
@@ -98,13 +98,13 @@ Standard_Boolean StdStorage_TypeData::Write(Storage_BaseDriver& theDriver)
   }
 
   Standard_Integer len = NumberOfTypes();
-  theDriver.SetTypeSectionSize(len);
+  theDriver->SetTypeSectionSize(len);
   for (Standard_Integer i = 1; i <= len; i++)
   {
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver.WriteTypeInformations(i, Type(i));
+      theDriver->WriteTypeInformations(i, Type(i));
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
@@ -114,7 +114,7 @@ Standard_Boolean StdStorage_TypeData::Write(Storage_BaseDriver& theDriver)
     }
   }
 
-  myErrorStatus = theDriver.EndWriteTypeSection();
+  myErrorStatus = theDriver->EndWriteTypeSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndWriteTypeSection";

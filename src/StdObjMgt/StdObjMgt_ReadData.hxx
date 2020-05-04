@@ -46,7 +46,7 @@ public:
   };
 
   Standard_EXPORT StdObjMgt_ReadData
-    (Storage_BaseDriver& theDriver, const Standard_Integer theNumberOfObjects);
+    (const Handle(Storage_BaseDriver)& theDriver, const Standard_Integer theNumberOfObjects);
 
   template <class Instantiator>
   void CreatePersistentObject
@@ -101,7 +101,7 @@ public:
     { return ReadValue (theValue); }
 
 private:
-  Storage_BaseDriver* myDriver;
+  Handle(Storage_BaseDriver) myDriver;
   NCollection_Array1<Handle(StdObjMgt_Persistent)> myPersistentObjects;
 };
 

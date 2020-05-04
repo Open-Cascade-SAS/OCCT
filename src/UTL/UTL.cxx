@@ -50,11 +50,11 @@ TCollection_ExtendedString UTL::Extension(const TCollection_ExtendedString& aFil
   return TCollection_ExtendedString(theExtension);
 }
 
-Storage_Error UTL::OpenFile(Storage_BaseDriver& aDriver, 
+Storage_Error UTL::OpenFile(const Handle(Storage_BaseDriver)& aDriver, 
                             const TCollection_ExtendedString& aFileName, 
                             const Storage_OpenMode aMode) 
 {
-  return aDriver.Open(TCollection_AsciiString(aFileName),aMode);
+  return aDriver->Open(TCollection_AsciiString(aFileName),aMode);
 }
 
 void UTL::AddToUserInfo(const Handle(Storage_Data)& aData, 

@@ -17,23 +17,16 @@
 #ifndef _Storage_BaseDriver_HeaderFile
 #define _Storage_BaseDriver_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Standard_Type.hxx>
 
 #include <Storage_OpenMode.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <Storage_Error.hxx>
-#include <Standard_Boolean.hxx>
 #include <Storage_Data.hxx>
 #include <Storage_Position.hxx>
-#include <Standard_Integer.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
-#include <Standard_Character.hxx>
-#include <Standard_ExtCharacter.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_ShortReal.hxx>
+
 class Storage_StreamTypeMismatchError;
 class Storage_StreamFormatError;
 class Storage_StreamWriteError;
@@ -41,27 +34,32 @@ class Storage_StreamExtCharParityError;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
 
+DEFINE_STANDARD_HANDLE(Storage_BaseDriver,Standard_Transient)
 
 //! Root class for drivers. A driver assigns a physical container
 //! to data to be stored or retrieved, for instance a file.
 //! The FSD package provides two derived concrete classes :
 //! -   FSD_File is a general driver which defines a
 //! file as the container of data.
-class Storage_BaseDriver 
+class Storage_BaseDriver : public Standard_Transient
 {
 public:
+  DEFINE_STANDARD_RTTIEXT(Storage_BaseDriver,Standard_Transient)
 
-  DEFINE_STANDARD_ALLOC
+public:
 
   Standard_EXPORT virtual ~Storage_BaseDriver();
   
-  Standard_EXPORT virtual Storage_Error Open (const TCollection_AsciiString& aName, const Storage_OpenMode aMode) = 0;
+  TCollection_AsciiString Name() const { return myName; }
   
-    TCollection_AsciiString Name() const;
-  
-    Storage_OpenMode OpenMode() const;
+  Storage_OpenMode OpenMode() const { return myOpenMode; }
 
-    Standard_EXPORT static TCollection_AsciiString ReadMagicNumber (Standard_IStream& theIStream);
+  Standard_EXPORT static TCollection_AsciiString ReadMagicNumber(Standard_IStream& theIStream);
+  
+public:
+  //!@name Virtual methods, to be provided by descendants
+
+  Standard_EXPORT virtual Storage_Error Open (const TCollection_AsciiString& aName, const Storage_OpenMode aMode) = 0;
   
   //! returns True if we are at end of the stream
   Standard_EXPORT virtual Standard_Boolean IsEnd() = 0;
@@ -173,114 +171,102 @@ public:
   
   Standard_EXPORT virtual void SkipObject() = 0;
   
+  Standard_EXPORT virtual Storage_Error Close() = 0;
+
+public:
+  //!@name Ouput methods
+
   Standard_EXPORT virtual Storage_BaseDriver& PutReference (const Standard_Integer aValue) = 0;
   
   Standard_EXPORT virtual Storage_BaseDriver& PutCharacter (const Standard_Character aValue) = 0;
-Storage_BaseDriver& operator << (const Standard_Character aValue)
-{
-  return PutCharacter(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& PutExtCharacter (const Standard_ExtCharacter aValue) = 0;
-Storage_BaseDriver& operator << (const Standard_ExtCharacter aValue)
-{
-  return PutExtCharacter(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& PutInteger (const Standard_Integer aValue) = 0;
-Storage_BaseDriver& operator << (const Standard_Integer aValue)
-{
-  return PutInteger(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& PutBoolean (const Standard_Boolean aValue) = 0;
-Storage_BaseDriver& operator << (const Standard_Boolean aValue)
-{
-  return PutBoolean(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& PutReal (const Standard_Real aValue) = 0;
-Storage_BaseDriver& operator << (const Standard_Real aValue)
-{
-  return PutReal(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& PutShortReal (const Standard_ShortReal aValue) = 0;
-Storage_BaseDriver& operator << (const Standard_ShortReal aValue)
-{
-  return PutShortReal(aValue);
-}
-  
+  Storage_BaseDriver& operator << (const Standard_Character aValue)
+  {
+    return PutCharacter(aValue);
+  }
+
+  Standard_EXPORT virtual Storage_BaseDriver& PutExtCharacter(const Standard_ExtCharacter aValue) = 0;
+  Storage_BaseDriver& operator << (const Standard_ExtCharacter aValue)
+  {
+    return PutExtCharacter(aValue);
+  }
+
+  Standard_EXPORT virtual Storage_BaseDriver& PutInteger(const Standard_Integer aValue) = 0;
+  Storage_BaseDriver& operator << (const Standard_Integer aValue)
+  {
+    return PutInteger(aValue);
+  }
+
+  Standard_EXPORT virtual Storage_BaseDriver& PutBoolean(const Standard_Boolean aValue) = 0;
+  Storage_BaseDriver& operator << (const Standard_Boolean aValue)
+  {
+    return PutBoolean(aValue);
+  }
+
+  Standard_EXPORT virtual Storage_BaseDriver& PutReal(const Standard_Real aValue) = 0;
+  Storage_BaseDriver& operator << (const Standard_Real aValue)
+  {
+    return PutReal(aValue);
+  }
+
+  Standard_EXPORT virtual Storage_BaseDriver& PutShortReal(const Standard_ShortReal aValue) = 0;
+  Storage_BaseDriver& operator << (const Standard_ShortReal aValue)
+  {
+    return PutShortReal(aValue);
+  }
+
+public:
+  //!@name Input methods
+
   Standard_EXPORT virtual Storage_BaseDriver& GetReference (Standard_Integer& aValue) = 0;
   
   Standard_EXPORT virtual Storage_BaseDriver& GetCharacter (Standard_Character& aValue) = 0;
-Storage_BaseDriver& operator >> (Standard_Character& aValue)
-{
-  return GetCharacter(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& GetExtCharacter (Standard_ExtCharacter& aValue) = 0;
-Storage_BaseDriver& operator >> (Standard_ExtCharacter& aValue)
-{
-  return GetExtCharacter(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& GetInteger (Standard_Integer& aValue) = 0;
-Storage_BaseDriver& operator >> (Standard_Integer& aValue)
-{
-  return GetInteger(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& GetBoolean (Standard_Boolean& aValue) = 0;
-Storage_BaseDriver& operator >> (Standard_Boolean& aValue)
-{
-  return GetBoolean(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& GetReal (Standard_Real& aValue) = 0;
-Storage_BaseDriver& operator >> (Standard_Real& aValue)
-{
-  return GetReal(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_BaseDriver& GetShortReal (Standard_ShortReal& aValue) = 0;
-Storage_BaseDriver& operator >> (Standard_ShortReal& aValue)
-{
-  return GetShortReal(aValue);
-}
-  
-  Standard_EXPORT virtual Storage_Error Close() = 0;
+  Storage_BaseDriver& operator >> (Standard_Character& aValue)
+  {
+    return GetCharacter(aValue);
+  }
 
+  Standard_EXPORT virtual Storage_BaseDriver& GetExtCharacter(Standard_ExtCharacter& aValue) = 0;
+  Storage_BaseDriver& operator >> (Standard_ExtCharacter& aValue)
+  {
+    return GetExtCharacter(aValue);
+  }
 
+  Standard_EXPORT virtual Storage_BaseDriver& GetInteger(Standard_Integer& aValue) = 0;
+  Storage_BaseDriver& operator >> (Standard_Integer& aValue)
+  {
+    return GetInteger(aValue);
+  }
 
+  Standard_EXPORT virtual Storage_BaseDriver& GetBoolean(Standard_Boolean& aValue) = 0;
+  Storage_BaseDriver& operator >> (Standard_Boolean& aValue)
+  {
+    return GetBoolean(aValue);
+  }
+
+  Standard_EXPORT virtual Storage_BaseDriver& GetReal(Standard_Real& aValue) = 0;
+  Storage_BaseDriver& operator >> (Standard_Real& aValue)
+  {
+    return GetReal(aValue);
+  }
+
+  Standard_EXPORT virtual Storage_BaseDriver& GetShortReal(Standard_ShortReal& aValue) = 0;
+  Storage_BaseDriver& operator >> (Standard_ShortReal& aValue)
+  {
+    return GetShortReal(aValue);
+  }
 
 protected:
-
   
   Standard_EXPORT Storage_BaseDriver();
   
-    void SetName (const TCollection_AsciiString& aName);
-  
-    void SetOpenMode (const Storage_OpenMode aMode);
+  void SetName(const TCollection_AsciiString& aName) { myName = aName; }
 
-
-
+  void SetOpenMode(const Storage_OpenMode aMode) { myOpenMode = aMode; }
 
 private:
 
-
-
   Storage_OpenMode myOpenMode;
   TCollection_AsciiString myName;
-
-
 };
-
-
-#include <Storage_BaseDriver.lxx>
-
-
-
-
 
 #endif // _Storage_BaseDriver_HeaderFile

@@ -230,7 +230,7 @@ Standard_Integer PCDM_ReadWriter_1::ReadReferenceCounter(const TCollection_Exten
   theReferencesCounter=0;
   static Standard_Integer i ;
 
-  PCDM_BaseDriverPointer theFileDriver;
+  Handle(Storage_BaseDriver) theFileDriver;
   TCollection_AsciiString aFileNameU(aFileName);
   if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown)
     return theReferencesCounter;
@@ -240,12 +240,12 @@ Standard_Integer PCDM_ReadWriter_1::ReadReferenceCounter(const TCollection_Exten
 
   try {
     OCC_CATCH_SIGNALS
-    PCDM_ReadWriter::Open(*theFileDriver,aFileName,Storage_VSRead);
+    PCDM_ReadWriter::Open(theFileDriver,aFileName,Storage_VSRead);
     theFileIsOpen=Standard_True;
    
     Handle(Storage_Schema) s = new Storage_Schema;
     Storage_HeaderData hd;
-    hd.Read (*theFileDriver);
+    hd.Read (theFileDriver);
     const TColStd_SequenceOfAsciiString &refUserInfo = hd.UserInfo();
     
     for ( i =1; i<=  refUserInfo.Length() ; i++) {
@@ -264,9 +264,11 @@ Standard_Integer PCDM_ReadWriter_1::ReadReferenceCounter(const TCollection_Exten
   }
   catch (Standard_Failure const&) {}
 
-  if(theFileIsOpen)  theFileDriver->Close();
+  if(theFileIsOpen)
+  {
+    theFileDriver->Close();
+  }
 
-  delete theFileDriver;
   return theReferencesCounter;
 }
   
@@ -338,18 +340,18 @@ void PCDM_ReadWriter_1::ReadUserInfo(const TCollection_ExtendedString& aFileName
                                      const TCollection_AsciiString& Start,
                                      const TCollection_AsciiString& End,
                                      TColStd_SequenceOfExtendedString& theUserInfo,
-                                     const Handle(Message_Messenger)&) {
-
+                                     const Handle(Message_Messenger)&)
+{
   static Standard_Integer i ;
-  PCDM_BaseDriverPointer theFileDriver;
+  Handle(Storage_BaseDriver) theFileDriver;
   TCollection_AsciiString aFileNameU(aFileName);
   if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown)
     return;
 
-  PCDM_ReadWriter::Open(*theFileDriver,aFileName,Storage_VSRead);
+  PCDM_ReadWriter::Open(theFileDriver,aFileName,Storage_VSRead);
   Handle(Storage_Schema) s = new Storage_Schema;
   Storage_HeaderData hd;
-  hd.Read (*theFileDriver);
+  hd.Read (theFileDriver);
   const TColStd_SequenceOfAsciiString &refUserInfo = hd.UserInfo();
 
   Standard_Integer debut=0,fin=0;
@@ -366,7 +368,6 @@ void PCDM_ReadWriter_1::ReadUserInfo(const TCollection_ExtendedString& aFileName
     }
   }
   theFileDriver->Close();
-  delete theFileDriver;
 }
 
 //=======================================================================
@@ -379,7 +380,7 @@ Standard_Integer PCDM_ReadWriter_1::ReadDocumentVersion(const TCollection_Extend
   static Standard_Integer theVersion ;
   theVersion=-1;
 
-  PCDM_BaseDriverPointer theFileDriver;
+  Handle(Storage_BaseDriver) theFileDriver;
   TCollection_AsciiString aFileNameU(aFileName);
   if(PCDM::FileDriverType(aFileNameU, theFileDriver) == PCDM_TOFD_Unknown)
     return theVersion;
@@ -389,11 +390,11 @@ Standard_Integer PCDM_ReadWriter_1::ReadDocumentVersion(const TCollection_Extend
 
   try {
     OCC_CATCH_SIGNALS
-    PCDM_ReadWriter::Open(*theFileDriver,aFileName,Storage_VSRead);
+    PCDM_ReadWriter::Open(theFileDriver,aFileName,Storage_VSRead);
     theFileIsOpen=Standard_True;
     Handle(Storage_Schema) s = new Storage_Schema;
     Storage_HeaderData hd;
-    hd.Read (*theFileDriver);
+    hd.Read (theFileDriver);
     const TColStd_SequenceOfAsciiString &refUserInfo = hd.UserInfo();
 
     static Standard_Integer i ;
@@ -414,7 +415,10 @@ Standard_Integer PCDM_ReadWriter_1::ReadDocumentVersion(const TCollection_Extend
 
   catch (Standard_Failure const&) {}
 
-  if(theFileIsOpen) theFileDriver->Close();
-  delete theFileDriver;
+  if(theFileIsOpen)
+  {
+    theFileDriver->Close();
+  }
+
   return theVersion;
 }

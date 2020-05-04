@@ -45,7 +45,7 @@ public:
   
   Standard_EXPORT Storage_TypeData();
 
-  Standard_EXPORT Standard_Boolean Read (Storage_BaseDriver& theDriver);
+  Standard_EXPORT Standard_Boolean Read (const Handle(Storage_BaseDriver)& theDriver);
   
   Standard_EXPORT Standard_Integer NumberOfTypes() const;
 

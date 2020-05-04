@@ -37,10 +37,10 @@ public:
 public:
 
   //! Empty constructor
-  Standard_Transient() : count(0) {}
+  Standard_Transient() : myRefCount_(0) {}
 
   //! Copy constructor -- does nothing
-  Standard_Transient (const Standard_Transient&) : count(0) {}
+  Standard_Transient (const Standard_Transient&) : myRefCount_(0) {}
 
   //! Assignment operator, needed to avoid copying reference counter
   Standard_Transient& operator= (const Standard_Transient&) { return *this; }
@@ -90,7 +90,7 @@ public:
   //!@name Reference counting, for use by handle<>
 
   //! Get the reference counter of this object
-  Standard_Integer GetRefCount() const { return count; }
+  Standard_Integer GetRefCount() const { return myRefCount_; }
 
   //! Increments the reference counter of this object
   Standard_EXPORT void IncrementRefCounter() const;
@@ -101,8 +101,10 @@ public:
 
 private:
 
-  //! Reference counter
-  mutable volatile Standard_Integer count;
+  //! Reference counter.
+  //! Note use of underscore, aimed to reduce probability 
+  //! of conflict with names of members of derived classes.
+  mutable volatile Standard_Integer myRefCount_;
 };
 
 

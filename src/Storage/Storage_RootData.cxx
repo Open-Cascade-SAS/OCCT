@@ -29,11 +29,11 @@ Storage_RootData::Storage_RootData() : myErrorStatus(Storage_VSOk)
 {
 }
 
-Standard_Boolean Storage_RootData::Read (Storage_BaseDriver& theDriver)
+Standard_Boolean Storage_RootData::Read (const Handle(Storage_BaseDriver)& theDriver)
 {
   // Check driver open mode
-  if (theDriver.OpenMode() != Storage_VSRead
-   && theDriver.OpenMode() != Storage_VSReadWrite)
+  if (theDriver->OpenMode() != Storage_VSRead
+   && theDriver->OpenMode() != Storage_VSReadWrite)
   {
     myErrorStatus = Storage_VSModeError;
     myErrorStatusExt = "OpenMode";
@@ -41,7 +41,7 @@ Standard_Boolean Storage_RootData::Read (Storage_BaseDriver& theDriver)
   }
 
   // Read root section
-  myErrorStatus = theDriver.BeginReadRootSection();
+  myErrorStatus = theDriver->BeginReadRootSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "BeginReadRootSection";
@@ -51,13 +51,13 @@ Standard_Boolean Storage_RootData::Read (Storage_BaseDriver& theDriver)
   TCollection_AsciiString aRootName, aTypeName;
   Standard_Integer aRef;
 
-  Standard_Integer len = theDriver.RootSectionSize();
+  Standard_Integer len = theDriver->RootSectionSize();
   for (Standard_Integer i = 1; i <= len; i++)
   {
     try
     {
       OCC_CATCH_SIGNALS
-      theDriver.ReadRoot (aRootName, aRef, aTypeName);
+      theDriver->ReadRoot (aRootName, aRef, aTypeName);
     }
     catch (Storage_StreamTypeMismatchError const&)
     {
@@ -70,7 +70,7 @@ Standard_Boolean Storage_RootData::Read (Storage_BaseDriver& theDriver)
     myObjects.Bind (aRootName, aRoot);
   }
 
-  myErrorStatus = theDriver.EndReadRootSection();
+  myErrorStatus = theDriver->EndReadRootSection();
   if (myErrorStatus != Storage_VSOk)
   {
     myErrorStatusExt = "EndReadRootSection";

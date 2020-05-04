@@ -47,13 +47,13 @@ public:
   //! Returns Standard_True in case of success. Otherwise, one need to get 
   //! an error code and description using ErrorStatus and ErrorStatusExtension
   //! functions correspondingly.
-  Standard_EXPORT Standard_Boolean Read(Storage_BaseDriver& theDriver);
+  Standard_EXPORT Standard_Boolean Read(const Handle(Storage_BaseDriver)& theDriver);
 
   //! Writes the header data section to the container defined by theDriver. 
   //! Returns Standard_True in case of success. Otherwise, one need to get 
   //! an error code and description using ErrorStatus and ErrorStatusExtension
   //! functions correspondingly.
-  Standard_EXPORT Standard_Boolean Write(Storage_BaseDriver& theDriver);
+  Standard_EXPORT Standard_Boolean Write(const Handle(Storage_BaseDriver)& theDriver);
 
   //! Return the creation date
   Standard_EXPORT TCollection_AsciiString CreationDate() const;

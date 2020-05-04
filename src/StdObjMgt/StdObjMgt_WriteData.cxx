@@ -17,8 +17,8 @@
 #include <Standard_GUID.hxx>
 
 
-StdObjMgt_WriteData::StdObjMgt_WriteData (Storage_BaseDriver& theDriver)
-    : myDriver (&theDriver)
+StdObjMgt_WriteData::StdObjMgt_WriteData (const Handle(Storage_BaseDriver)& theDriver)
+    : myDriver (theDriver)
 {
 }
 

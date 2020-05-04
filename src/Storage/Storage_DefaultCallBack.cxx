@@ -36,11 +36,15 @@ void Storage_DefaultCallBack::Add(const Handle(Standard_Persistent)&, const Hand
 {
 }
 
-void Storage_DefaultCallBack::Write(const Handle(Standard_Persistent)&,Storage_BaseDriver&,const Handle(Storage_Schema)&) const
+void Storage_DefaultCallBack::Write(const Handle(Standard_Persistent)&,
+                                    const Handle(Storage_BaseDriver)&,
+                                    const Handle(Storage_Schema)&) const
 {
 }
 
-void Storage_DefaultCallBack::Read(const Handle(Standard_Persistent)&,Storage_BaseDriver& f,const Handle(Storage_Schema)&) const
+void Storage_DefaultCallBack::Read(const Handle(Standard_Persistent)&,
+                                   const Handle(Storage_BaseDriver)& theDriver,
+                                   const Handle(Storage_Schema)&) const
 {
-  f.SkipObject();
+  theDriver->SkipObject();
 }

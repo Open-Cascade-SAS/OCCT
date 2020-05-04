@@ -47,7 +47,7 @@ public:
   
   Standard_EXPORT Storage_RootData();
 
-  Standard_EXPORT Standard_Boolean Read (Storage_BaseDriver& theDriver);
+  Standard_EXPORT Standard_Boolean Read (const Handle(Storage_BaseDriver)& theDriver);
   
   //! returns the number of roots.
   Standard_EXPORT Standard_Integer NumberOfRoots() const;

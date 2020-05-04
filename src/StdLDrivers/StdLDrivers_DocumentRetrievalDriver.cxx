@@ -79,20 +79,18 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   Standard_Integer i;
 
   // Create a driver appropriate for the given file
-  PCDM_BaseDriverPointer aFileDriverPtr;
-  if (PCDM::FileDriverType (TCollection_AsciiString (theFileName), aFileDriverPtr) == PCDM_TOFD_Unknown)
+  Handle(Storage_BaseDriver) aFileDriver;
+  if (PCDM::FileDriverType (TCollection_AsciiString (theFileName), aFileDriver) == PCDM_TOFD_Unknown)
   {
     myReaderStatus = PCDM_RS_UnknownFileDriver;
     return NULL;
   }
 
-  NCollection_Handle<Storage_BaseDriver> aFileDriver (aFileDriverPtr);
-
   // Try to open the file
   try
   {
     OCC_CATCH_SIGNALS
-    PCDM_ReadWriter::Open (*aFileDriver, theFileName, Storage_VSRead);
+    PCDM_ReadWriter::Open (aFileDriver, theFileName, Storage_VSRead);
     myReaderStatus = PCDM_RS_OK;
   } 
   catch (Standard_Failure const& anException)
@@ -105,17 +103,17 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   }
   
   // Read header section
-  if (!theHeaderData.Read (*aFileDriver))
+  if (!theHeaderData.Read (aFileDriver))
     raiseOnStorageError (theHeaderData.ErrorStatus());
 
   // Read type section
   Storage_TypeData aTypeData;
-  if (!aTypeData.Read (*aFileDriver))
+  if (!aTypeData.Read (aFileDriver))
     raiseOnStorageError (aTypeData.ErrorStatus());
 
   // Read root section
   Storage_RootData aRootData;
-  if (!aRootData.Read (*aFileDriver))
+  if (!aRootData.Read (aFileDriver))
     raiseOnStorageError (aRootData.ErrorStatus());
 
   if (aRootData.NumberOfRoots() < 1)
@@ -169,7 +167,7 @@ Handle(StdObjMgt_Persistent) StdLDrivers_DocumentRetrievalDriver::read (
   }
 
   // Read and parse reference section
-  StdObjMgt_ReadData aReadData (*aFileDriver, theHeaderData.NumberOfObjects());
+  StdObjMgt_ReadData aReadData (aFileDriver, theHeaderData.NumberOfObjects());
 
   raiseOnStorageError (aFileDriver->BeginReadRefSection());
 

@@ -17,26 +17,21 @@
 #ifndef _PCDM_HeaderFile
 #define _PCDM_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
-#include <Standard_IStream.hxx>
-
-#include <Standard_Boolean.hxx>
+#include <Storage_BaseDriver.hxx>
 #include <PCDM_TypeOfFileDriver.hxx>
-#include <PCDM_BaseDriverPointer.hxx>
+
 class CDM_Document;
 class PCDM_StorageDriver;
 class TCollection_AsciiString;
 
-
 class PCDM 
 {
 public:
-  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (const TCollection_AsciiString& aFileName, PCDM_BaseDriverPointer& aBaseDriver);
+  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (const TCollection_AsciiString& aFileName, 
+                                                               Handle(Storage_BaseDriver)& aBaseDriver);
   
-  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (Standard_IStream& theIStream, PCDM_BaseDriverPointer& theBaseDriver);
+  Standard_EXPORT static PCDM_TypeOfFileDriver FileDriverType (Standard_IStream& theIStream, 
+                                                               Handle(Storage_BaseDriver)& theBaseDriver);
 
   DEFINE_STANDARD_ALLOC
 };

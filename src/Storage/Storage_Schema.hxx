@@ -17,18 +17,15 @@
 #ifndef _Storage_Schema_HeaderFile
 #define _Storage_Schema_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Storage_MapOfCallBack.hxx>
-#include <Standard_Boolean.hxx>
-#include <TCollection_AsciiString.hxx>
+#include <Storage_BaseDriver.hxx>
 #include <Storage_HArrayOfSchema.hxx>
-#include <Standard_Transient.hxx>
+#include <Storage_InternalData.hxx>
+#include <Storage_MapOfCallBack.hxx>
+#include <Storage_SolveMode.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
-#include <Storage_SolveMode.hxx>
-#include <Standard_CString.hxx>
+
 class Storage_CallBack;
 class Storage_StreamFormatError;
 class TCollection_AsciiString;
@@ -105,7 +102,7 @@ public:
   //! schema with which this algorithm is working.
   //! Note: aData may aggregate several root objects
   //! to be stored together.
-  Standard_EXPORT void Write (Storage_BaseDriver& s, const Handle(Storage_Data)& aData) const;
+  Standard_EXPORT void Write (const Handle(Storage_BaseDriver)& s, const Handle(Storage_Data)& aData) const;
   
   //! return a current date string
   Standard_EXPORT static TCollection_AsciiString ICreationDate();
@@ -160,22 +157,28 @@ public:
   //! UseDefaultCallBack() is set.
   Standard_EXPORT Handle(Storage_CallBack) DefaultCallBack() const;
   
-    void WritePersistentObjectHeader (const Handle(Standard_Persistent)& sp, Storage_BaseDriver& s);
-  
-    void WritePersistentReference (const Handle(Standard_Persistent)& sp, Storage_BaseDriver& s);
+  void WritePersistentObjectHeader(const Handle(Standard_Persistent)& sp, const Handle(Storage_BaseDriver)& theDriver)
+  {
+    theDriver->WritePersistentObjectHeader(sp->_refnum, sp->_typenum);
+  }
+
+  void WritePersistentReference(const Handle(Standard_Persistent)& sp, const Handle(Storage_BaseDriver)& theDriver)
+  {
+    theDriver->PutReference(sp.IsNull() ? 0 : sp->_refnum);
+  }
   
   Standard_EXPORT Standard_Boolean AddPersistent (const Handle(Standard_Persistent)& sp, const Standard_CString tName) const;
   
   Standard_EXPORT Standard_Boolean PersistentToAdd (const Handle(Standard_Persistent)& sp) const;
 
-
-
-
   DEFINE_STANDARD_RTTIEXT(Storage_Schema,Standard_Transient)
 
 protected:
   
-    Standard_Boolean HasTypeBinding (const TCollection_AsciiString& aTypeName) const;
+  Standard_Boolean HasTypeBinding(const TCollection_AsciiString& aTypeName) const
+  {
+    return Storage_Schema::ICurrentData()->InternalData()->myTypeBinding.IsBound(aTypeName);
+  }
   
   Standard_EXPORT void BindType (const TCollection_AsciiString& aTypeName, const Handle(Storage_CallBack)& aCallBack) const;
   
@@ -197,12 +200,5 @@ private:
   TCollection_AsciiString myName;
   TCollection_AsciiString myVersion;
 };
-
-
-#include <Storage_Schema.lxx>
-
-
-
-
 
 #endif // _Storage_Schema_HeaderFile

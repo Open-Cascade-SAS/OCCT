@@ -55,9 +55,6 @@
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
 
-#include <DDF_IOStream.hxx>
-
-
 //=======================================================================
 //function : Children
 //purpose  : Returns a list of sub-label entries.
@@ -166,66 +163,6 @@ static Standard_Integer DDF_ForgetAttribute(Draw_Interpretor& di,
   aLabel.ForgetAttribute(guid);
   return 0;
 }
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// save/restore & Store/Retrieve commands
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-//==========================================================
-// ErrorMessage
-//==========================================================
-
-void ErrorMessage (const Storage_Error n) 
-{
-  std::cout << "Storage Error: " << std::flush;
-
-  switch (n) {
-  case Storage_VSOk:
-    std::cout << "no problem" << std::endl;
-    break;
-  case Storage_VSOpenError:
-    std::cout << "while opening the stream" << std::endl;
-    break;
-  case Storage_VSModeError:
-    std::cout << "the stream is opened with a wrong mode for operation " << std::endl;
-    break;
-  case Storage_VSCloseError:
-    std::cout << "while closing the stream" << std::endl;
-    break;
-  case Storage_VSAlreadyOpen:
-    std::cout << "stream is already opened" << std::endl;
-    break;
-  case Storage_VSNotOpen:
-    std::cout << "stream not opened" << std::endl;
-    break;
-  case Storage_VSSectionNotFound:
-    std::cout << "the section is not found" << std::endl;
-    break;
-  case Storage_VSWriteError:
-    std::cout << "error during writing" << std::endl;
-    break;
-  case Storage_VSFormatError:
-    std::cout << "wrong format error occured while reading" << std::endl;
-    break;
-  case Storage_VSUnknownType:
-    std::cout << "try to read an unknown type" << std::endl;
-    break;
-  case Storage_VSTypeMismatch:
-    std::cout << "try to read a wrong primitive type (read a char while expecting a real)" << std::endl;
-    break;
-  case Storage_VSInternalError:
-    std::cout << "internal error" << std::endl;
-    break;
-  case Storage_VSExtCharParityError:      std::cout << "parity error" << std::endl;
-    break;
-  default:
-    std::cout << "unknown error code" << std::endl;
-    break;
-  }
-}
-
 
 //=======================================================================
 //function : DDF_SetTagger
