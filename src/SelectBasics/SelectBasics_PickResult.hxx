@@ -55,6 +55,7 @@ public:
   {
     myDepth = RealLast();
     myObjPickedPnt = gp_Pnt (RealLast(), 0.0, 0.0);
+    myNormal.SetValues (0.0f, 0.0f, 0.0f);
   }
 
   //! Return depth along picking ray.
@@ -79,10 +80,24 @@ public:
   //! Set distance to geometry center.
   void SetDistToGeomCenter (Standard_Real theDistToCenter) { myDistToCenter = theDistToCenter; }
 
+  //! Return (unnormalized) surface normal at picked point or zero vector if undefined.
+  //! WARNING! Normal is defined in local coordinate system and should be translated into World System before usage!
+  const NCollection_Vec3<float>& SurfaceNormal() const { return myNormal; }
+
+  //! Set surface normal at picked point.
+  void SetSurfaceNormal (const NCollection_Vec3<float>& theNormal) { myNormal = theNormal; }
+
+  //! Set surface normal at picked point.
+  void SetSurfaceNormal (const gp_Vec& theNormal)
+  {
+    myNormal.SetValues ((float )theNormal.X(), (float )theNormal.Y(), (float )theNormal.Z());
+  }
+
 private:
-  gp_Pnt        myObjPickedPnt; //!< User-picked selection point onto object
-  Standard_Real myDepth;        //!< Depth to detected point
-  Standard_Real myDistToCenter; //!< Distance from 3d projection user-picked selection point to entity's geometry center
+  gp_Pnt                  myObjPickedPnt; //!< User-picked selection point onto object
+  NCollection_Vec3<float> myNormal;       //!< surface normal
+  Standard_Real           myDepth;        //!< Depth to detected point
+  Standard_Real           myDistToCenter; //!< Distance from 3d projection user-picked selection point to entity's geometry center
 };
 
 #endif // _SelectBasics_PickResult_HeaderFile

@@ -76,9 +76,17 @@ void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriter
     return;
   }
 
+  bool hasNormal = false;
   if (thePickResult.HasPickedPoint())
   {
-    theCriterion.Point = thePickResult.PickedPoint();
+    theCriterion.Point  = thePickResult.PickedPoint();
+    theCriterion.Normal = thePickResult.SurfaceNormal();
+    const float aNormLen2 = theCriterion.Normal.SquareModulus();
+    if (aNormLen2 > ShortRealEpsilon())
+    {
+      hasNormal = true;
+      theCriterion.Normal *= 1.0f / sqrtf (aNormLen2);
+    }
   }
   else if (!thePickResult.IsValid())
   {
@@ -97,7 +105,15 @@ void SelectMgr_ViewerSelector::updatePoint3d (SelectMgr_SortCriterion& theCriter
   }
   if (anInvTrsf.Form() != gp_Identity)
   {
-    anInvTrsf.Inverted().Transforms (theCriterion.Point.ChangeCoord());
+    const gp_GTrsf anInvInvTrsd = anInvTrsf.Inverted();
+    anInvInvTrsd.Transforms (theCriterion.Point.ChangeCoord());
+    if (hasNormal)
+    {
+      Graphic3d_Mat4d aMat4;
+      anInvInvTrsd.GetMat4 (aMat4);
+      const Graphic3d_Vec4d aNormRes = aMat4 * Graphic3d_Vec4d (Graphic3d_Vec3d (theCriterion.Normal), 0.0);
+      theCriterion.Normal = Graphic3d_Vec3 (aNormRes.xyz());
+    }
   }
 
   if (mySelectingVolumeMgr.Camera().IsNull())

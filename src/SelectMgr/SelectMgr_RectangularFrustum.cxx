@@ -669,6 +669,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
       const gp_XYZ aDiff = myNearPickedPnt.XYZ() - thePnt1.XYZ();
       thePickResult.SetDepth (aTriangleNormal.Dot (aDiff) * myScale);
       thePickResult.SetPickedPoint (thePnt1);
+      thePickResult.SetSurfaceNormal (aTriangleNormal);
       return !theClipRange.IsClipped (thePickResult.Depth());
     }
 
@@ -687,6 +688,7 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
     {
       thePickResult.SetDepth (myNearPickedPnt.Distance (aPtOnPlane) * myScale);
       thePickResult.SetPickedPoint (aPtOnPlane);
+      thePickResult.SetSurfaceNormal (aTriangleNormal);
       return !theClipRange.IsClipped (thePickResult.Depth());
     }
 

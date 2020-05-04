@@ -17,6 +17,7 @@
 #ifndef _SelectMgr_SortCriterion_HeaderFile
 #define _SelectMgr_SortCriterion_HeaderFile
 
+#include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_ZLayerId.hxx>
 #include <Precision.hxx>
 #include <Select3D_SensitiveEntity.hxx>
@@ -29,6 +30,7 @@ public:
 
   Handle(Select3D_SensitiveEntity) Entity; //!< detected entity
   gp_Pnt             Point;           //!< 3D point
+  Graphic3d_Vec3     Normal;          //!< surface normal or 0 vector if undefined
   Standard_Real      Depth;           //!< distance from the view plane to the entity
   Standard_Real      MinDist;         //!< distance from the clicked point to the entity on the view plane
   Standard_Real      Tolerance;       //!< tolerance used for selecting candidates

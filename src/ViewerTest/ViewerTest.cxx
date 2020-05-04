@@ -5591,11 +5591,23 @@ static Standard_Integer VState (Draw_Interpretor& theDI,
       GetMapOfAIS().Find1 (anObj, aName);
       aName.LeftJustify (20, ' ');
       char anInfoStr[512];
-      Sprintf (anInfoStr,
-               " Depth: %g Distance: %g Point: %g %g %g",
-               aPickData.Depth,
-               aPickData.MinDist,
-               aPickData.Point.X(), aPickData.Point.Y(), aPickData.Point.Z());
+      if (aPickData.Normal.SquareModulus() > ShortRealEpsilon())
+      {
+        Sprintf (anInfoStr,
+                 " Depth: %g Distance: %g Point: %g %g %g Normal: %g %g %g",
+                 aPickData.Depth,
+                 aPickData.MinDist,
+                 aPickData.Point.X(), aPickData.Point.Y(), aPickData.Point.Z(),
+                 aPickData.Normal.x(), aPickData.Normal.y(), aPickData.Normal.z());
+      }
+      else
+      {
+        Sprintf (anInfoStr,
+                 " Depth: %g Distance: %g Point: %g %g %g",
+                 aPickData.Depth,
+                 aPickData.MinDist,
+                 aPickData.Point.X(), aPickData.Point.Y(), aPickData.Point.Z());
+      }
       theDI << "  " << aName
             << anInfoStr
             << " (" << anEntity->DynamicType()->Name() << ")"
