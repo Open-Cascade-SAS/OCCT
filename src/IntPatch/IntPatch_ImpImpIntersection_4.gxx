@@ -2691,7 +2691,62 @@ static IntPatch_ImpImpIntersection::IntStatus
     if ((aRangeS1.Delta() > aMaxV1Range) || (aRangeS2.Delta() > aMaxV2Range))
       return IntPatch_ImpImpIntersection::IntStatus_InfiniteSectionCurve;
   }
+  //
+  Standard_Boolean isGoodIntersection = Standard_False;
+  Standard_Real anOptdu = 0.;
+  do
+  {
+    //Checking parameters of cylinders in order to define "good intersection"
+    //"Good intersection" means that axes of cylinders are almost perpendicular and
+    // one radius is much smaller than the other and small cylinder is "inside" big one.
+    const Standard_Real aToMuchCoeff = 3.;
+    const Standard_Real aCritAngle = M_PI / 18.; // 10 degree
+    Standard_Real anR1 = theCyl1.Radius();
+    Standard_Real anR2 = theCyl2.Radius();
+    Standard_Real anRmin = 0., anRmax = 0.;
+    //Radius criterion
+    if (anR1 > aToMuchCoeff * anR2)
+    {
+      anRmax = anR1; anRmin = anR2;
+    }
+    else if (anR2 > aToMuchCoeff * anR1)
+    {
+      anRmax = anR2; anRmin = anR1;
+    }
+    else
+    {
+      break;
+    }
+    //Angle criterion
+    const gp_Ax1& anAx1 = theCyl1.Axis();
+    const gp_Ax1& anAx2 = theCyl2.Axis();
+    if (!anAx1.IsNormal(anAx2, aCritAngle))
+    {
+      break;
+    }
+    //Placement criterion
+    gp_Lin anL1(anAx1), anL2(anAx2);
+    Standard_Real aDist = anL1.Distance(anL2);
+    if (aDist > anRmax / 2.)
+    {
+      break;
+    }
 
+    isGoodIntersection = Standard_True;
+    //Estimation of "optimal" du
+    //Relative deflection, absolut deflection is Rmin*aDeflection
+    Standard_Real aDeflection = 0.001;
+    Standard_Integer aNbP = 3;
+    if (anRmin * aDeflection > 1.e-3)
+    {
+      Standard_Real anAngle = 1.0e0 - aDeflection;
+      anAngle = 2.0e0 * ACos(anAngle);
+      aNbP = (Standard_Integer)(2. * M_PI / anAngle) + 1;
+    }
+    anOptdu = 2. * M_PI_2 / (Standard_Real)(aNbP - 1);
+
+  } while (0);
+//
   const ComputationMethods::stCoeffsValue &anEquationCoeffs = theBW.SICoeffs();
   const IntSurf_Quadric& aQuad1 = theBW.GetQSurface(1);
   const IntSurf_Quadric& aQuad2 = theBW.GetQSurface(2);
@@ -2699,15 +2754,27 @@ static IntPatch_ImpImpIntersection::IntStatus
   const Standard_Real aTol2D = theBW.Get2dTolerance();
   const Standard_Real aTol3D = theBW.Get3dTolerance();
   const Standard_Real aPeriod = 2.0*M_PI;
-  const Standard_Integer aNbMaxPoints = 2000;
-  const Standard_Integer aNbMinPoints = 200;
-  const Standard_Integer aNbPoints = Min(Max(aNbMinPoints,
-                                  RealToInt(20.0*theCyl1.Radius())), aNbMaxPoints);
-  const Standard_Real aStepMin = aTol2D,
-                                  aStepMax = (aUSurf1l - aUSurf1f > M_PI / 100.0) ?
-                                  (aUSurf1l - aUSurf1f) / IntToReal(aNbPoints) :
-                                  aUSurf1l - aUSurf1f;
+  Standard_Integer aNbMaxPoints = 1000;
+  Standard_Integer aNbMinPoints = 200;
+  Standard_Real du;
+  if (isGoodIntersection)
+  {
+    du = anOptdu;
+    aNbMaxPoints = 200;
+    aNbMinPoints = 50;
+  }
+  else
+  {
+    du = 2. * M_PI / aNbMaxPoints;
+  }
+  Standard_Integer aNbPts = Min(RealToInt((aUSurf1l - aUSurf1f) / du) + 1, 
+                                RealToInt(20.0*theCyl1.Radius()));
+  const Standard_Integer aNbPoints = Min(Max(aNbMinPoints, aNbPts), aNbMaxPoints);
+  const Standard_Real aStepMin = Max(aTol2D, Precision::PConfusion()), 
+    aStepMax = (aUSurf1l - aUSurf1f > M_PI / 100.0) ?
+    (aUSurf1l - aUSurf1f) / IntToReal(aNbPoints) : aUSurf1l - aUSurf1f;
 
+ 
   //The main idea of the algorithm is to change U1-parameter
   //(U-parameter of theCyl1) from aU1f to aU1l with some step
   //(step is adaptive) and to obtain set of intersection points.
@@ -3279,6 +3346,16 @@ static IntPatch_ImpImpIntersection::IntStatus
               aMinUexp = Min(aMinUexp, anUexpect[i]);
               continue;
             }
+            //
+            if (isGoodIntersection)
+            {
+              //Use constant step
+              anUexpect[i] += aStepMax;
+              aMinUexp = Min(aMinUexp, anUexpect[i]);
+
+              continue;
+            }
+            //
 
             Standard_Real aStepTmp = aStepMax;
 

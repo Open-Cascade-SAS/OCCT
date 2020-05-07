@@ -6,7 +6,7 @@ puts ""
 # Very slow boolean cut operations on cylinders
 #################################################
 
-set ExpTol 3.32e-07
+set ExpTol 3.05e-07
 
 set GoodNbCurv 4
 
