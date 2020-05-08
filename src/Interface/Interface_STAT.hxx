@@ -97,7 +97,14 @@ public:
   
   //! used when starting
   Standard_EXPORT Interface_STAT(const Interface_STAT& other);
-  
+
+  //! Assignment
+  Interface_STAT& operator= (const Interface_STAT& theOther)
+  {
+    theOther.Internals (thetitle, thetotal, thephnam, thephw, thephdeb,thephfin, thestw);
+    return *this;
+  }
+
   //! Returns fields in once, without copying them, used for copy
   //! when starting
   Standard_EXPORT void Internals (Handle(TCollection_HAsciiString)& tit, Standard_Real& total, Handle(TColStd_HSequenceOfAsciiString)& phn, Handle(TColStd_HSequenceOfReal)& phw, Handle(TColStd_HSequenceOfInteger)& phdeb, Handle(TColStd_HSequenceOfInteger)& phfin, Handle(TColStd_HSequenceOfReal)& stw) const;

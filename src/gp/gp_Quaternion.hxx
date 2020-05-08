@@ -48,9 +48,6 @@ public:
   //! Creates quaternion directly from component values
   gp_Quaternion(const Standard_Real x, const Standard_Real y, const Standard_Real z, const Standard_Real w);
   
-  //! Creates copy of another quaternion
-  gp_Quaternion(const gp_Quaternion& theToCopy);
-  
   //! Creates quaternion representing shortest-arc rotation
   //! operator producing vector theVecTo from vector theVecFrom.
   gp_Quaternion(const gp_Vec& theVecFrom, const gp_Vec& theVecTo);

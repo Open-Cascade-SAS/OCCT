@@ -244,7 +244,7 @@ void AdvApp2Var_ApproxAFunc2Var::InitGrid(const Standard_Integer NbInt)
 {
   Standard_Integer iu=myConditions.UOrder(),iv=myConditions.VOrder(),iint;
 
-  AdvApp2Var_Patch M0(myFirstParInU,myLastParInU,myFirstParInV,myLastParInV,iu,iv);
+  Handle(AdvApp2Var_Patch) M0 = new AdvApp2Var_Patch (myFirstParInU,myLastParInU,myFirstParInV,myLastParInV,iu,iv);
 
   AdvApp2Var_SequenceOfPatch Net;
   Net.Append(M0);
@@ -259,29 +259,29 @@ void AdvApp2Var_ApproxAFunc2Var::InitGrid(const Standard_Integer NbInt)
 
 
   gp_XY UV1(myFirstParInU,myFirstParInV);
-  AdvApp2Var_Node C1(UV1,iu,iv);
+  Handle(AdvApp2Var_Node) C1 = new AdvApp2Var_Node (UV1,iu,iv);
   gp_XY UV2(myLastParInU,myFirstParInV);
-  AdvApp2Var_Node C2(UV2,iu,iv);
+  Handle(AdvApp2Var_Node) C2 = new AdvApp2Var_Node (UV2,iu,iv);
   gp_XY UV4(myLastParInU,myLastParInV);
-  AdvApp2Var_Node C4(UV4,iu,iv);
+  Handle(AdvApp2Var_Node) C4 = new AdvApp2Var_Node (UV4,iu,iv);
   gp_XY UV3(myFirstParInU,myLastParInV);
-  AdvApp2Var_Node C3(UV3,iu,iv);
+  Handle(AdvApp2Var_Node) C3 = new AdvApp2Var_Node (UV3,iu,iv);
   AdvApp2Var_SequenceOfNode Bag;
   Bag.Append(C1);
   Bag.Append(C2);
   Bag.Append(C3);
   Bag.Append(C4);
 
-  AdvApp2Var_Iso V0(GeomAbs_IsoV,myFirstParInV,
+  Handle(AdvApp2Var_Iso) V0 = new AdvApp2Var_Iso (GeomAbs_IsoV,myFirstParInV,
 		    myFirstParInU,myLastParInU,myFirstParInV,myLastParInV,
 		    1,iu,iv);
-  AdvApp2Var_Iso V1(GeomAbs_IsoV,myLastParInV,
+  Handle(AdvApp2Var_Iso) V1 = new AdvApp2Var_Iso (GeomAbs_IsoV,myLastParInV,
 		    myFirstParInU,myLastParInU,myFirstParInV,myLastParInV,
 		    2,iu,iv);
-  AdvApp2Var_Iso U0(GeomAbs_IsoU,myFirstParInU,
+  Handle(AdvApp2Var_Iso) U0 = new AdvApp2Var_Iso (GeomAbs_IsoU,myFirstParInU,
 		    myFirstParInU,myLastParInU,myFirstParInV,myLastParInV,
 		    3,iu,iv);
-  AdvApp2Var_Iso U1(GeomAbs_IsoU,myLastParInU,
+  Handle(AdvApp2Var_Iso) U1 = new AdvApp2Var_Iso (GeomAbs_IsoU,myLastParInU,
 		    myFirstParInU,myLastParInU,myFirstParInV,myLastParInV,
 		    4,iu,iv);
 
@@ -557,68 +557,74 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
   Standard_Real dec;
   Standard_Boolean more;
   Standard_Integer ind1, ind2, NbPatch, NbU, NbV;
-  AdvApp2Var_Iso Is;
-  Standard_Integer indN1, indN2;
   Standard_Integer iu = myConditions.UOrder(), iv = myConditions.VOrder();
   AdvApp2Var_Node N1(iu,iv), N2(iu,iv);
 
-  while ( myConstraints.FirstNotApprox(ind1, ind2, Is) ) {
+  for (Handle(AdvApp2Var_Iso) anIso = myConstraints.FirstNotApprox(ind1, ind2); !anIso.IsNull(); anIso = myConstraints.FirstNotApprox(ind1, ind2))
+  {
+    // approximation of iso and calculation of constraints at extremities
+    const Standard_Integer indN1 = myConstraints.FirstNode(anIso->Type(),ind1,ind2);
+    N1 = *myConstraints.Node(indN1);
+    const Standard_Integer indN2 = myConstraints.LastNode(anIso->Type(),ind1,ind2);
+    N2 = *myConstraints.Node(indN2);
 
-// approximation of iso and calculation of constraints at extremities
-    indN1 = myConstraints.FirstNode(Is.Type(),ind1,ind2);
-    N1 = myConstraints.Node(indN1);
-    indN2 = myConstraints.LastNode(Is.Type(),ind1,ind2);
-    N2 = myConstraints.Node(indN2);
-
-    Is.MakeApprox(myConditions,
-		  myFirstParInU, myLastParInU,
-		  myFirstParInV, myLastParInV,
-		  Func, N1 , N2);
-
-    if (Is.IsApproximated()) {
-// iso is approached at the required tolerance
-      myConstraints.ChangeIso(ind1,ind2,Is);
-      myConstraints.ChangeNode(indN1) = N1;
-      myConstraints.ChangeNode(indN2) = N2;
+    // note that old code attempted to make copy of anIso here (but copy was incomplete)
+    anIso->MakeApprox (myConditions,
+                       myFirstParInU, myLastParInU,
+                       myFirstParInV, myLastParInV,
+                       Func, N1 , N2);
+    if (anIso->IsApproximated())
+    {
+      // iso is approached at the required tolerance
+      myConstraints.ChangeIso(ind1,ind2,anIso);
+      *myConstraints.Node(indN1) = N1;
+      *myConstraints.Node(indN2) = N2;
     }
-
-    else {
-// Approximation is not satisfactory
+    else
+    {
+      // Approximation is not satisfactory
       NbU = myResult.NbPatchInU();
       NbV = myResult.NbPatchInV();
-      if (Is.Type()==GeomAbs_IsoV) {
-	NbPatch = (NbU+1)*NbV;
-	more = UChoice.Value(Is.T0(),Is.T1(),dec);
+      if (anIso->Type()==GeomAbs_IsoV)
+      {
+        NbPatch = (NbU+1)*NbV;
+        more = UChoice.Value(anIso->T0(), anIso->T1(), dec);
       }
-      else {
-	NbPatch = (NbV+1)*NbU;
-	more = VChoice.Value(Is.T0(),Is.T1(),dec);
-      }
-
-      if (NbPatch<=myMaxPatches && more) {
-//	It is possible to cut iso
-	if (Is.Type()==GeomAbs_IsoV) {
-	  myResult.UpdateInU(dec);
-	  myConstraints.UpdateInU(dec);
-	}
-	else {
-	  myResult.UpdateInV(dec);
-	  myConstraints.UpdateInV(dec);
-	}
+      else
+      {
+        NbPatch = (NbV+1)*NbU;
+        more = VChoice.Value(anIso->T0(),anIso->T1(),dec);
       }
 
-      else {
-//	It is not possible to cut : the result is preserved
-	if (Is.HasResult()) {
-	  Is.OverwriteApprox();
-	  myConstraints.ChangeIso(ind1,ind2,Is);
-	  myConstraints.ChangeNode(indN1) = N1;
-	  myConstraints.ChangeNode(indN2) = N2;	
-	}
-	else {
-	  myHasResult =  myDone = Standard_False;
-	  throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
-	}
+      if (NbPatch<=myMaxPatches && more)
+      {
+        // It is possible to cut iso
+        if (anIso->Type()==GeomAbs_IsoV)
+        {
+          myResult.UpdateInU(dec);
+          myConstraints.UpdateInU(dec);
+        }
+        else
+        {
+          myResult.UpdateInV(dec);
+          myConstraints.UpdateInV(dec);
+        }
+      }
+      else
+      {
+        // It is not possible to cut : the result is preserved
+        if (anIso->HasResult())
+        {
+          anIso->OverwriteApprox();
+          myConstraints.ChangeIso(ind1,ind2,anIso);
+          *myConstraints.Node(indN1) = N1;
+          *myConstraints.Node(indN2) = N2;
+        }
+        else
+        {
+          myHasResult =  myDone = Standard_False;
+          throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
+        }
       }
     }
   }
@@ -638,74 +644,82 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting& UCh
   Standard_Real dec;
   Standard_Boolean more, CritRel = (Crit.Type() == AdvApp2Var_Relative);
   Standard_Integer ind1, ind2, NbPatch, NbU, NbV;
-  AdvApp2Var_Iso Is;
   Standard_Integer indN1, indN2;
   Standard_Integer iu = myConditions.UOrder(), iv = myConditions.VOrder();
   AdvApp2Var_Node N1(iu,iv), N2(iu,iv);
 
-    while ( myConstraints.FirstNotApprox(ind1, ind2, Is) ) {
+  for (Handle(AdvApp2Var_Iso) anIso = myConstraints.FirstNotApprox(ind1, ind2); !anIso.IsNull(); anIso = myConstraints.FirstNotApprox(ind1, ind2))
+  {
+    // approximation of the iso and calculation of constraints at the extremities
+    indN1 = myConstraints.FirstNode(anIso->Type(),ind1,ind2);
+    N1 = *myConstraints.Node(indN1);
+    indN2 = myConstraints.LastNode(anIso->Type(),ind1,ind2);
+    N2 = *myConstraints.Node(indN2);
 
-// approximation of the iso and calculation of constraints at the extremities
-      indN1 = myConstraints.FirstNode(Is.Type(),ind1,ind2);
-      N1 = myConstraints.Node(indN1);
-      indN2 = myConstraints.LastNode(Is.Type(),ind1,ind2);
-      N2 = myConstraints.Node(indN2);
+    // note that old code attempted to make copy of anIso here (but copy was incomplete)
+    anIso->MakeApprox (myConditions,
+                       myFirstParInU, myLastParInU,
+                       myFirstParInV, myLastParInV,
+                       Func, N1 , N2);
 
-      Is.MakeApprox(myConditions,
-                    myFirstParInU, myLastParInU,
-                    myFirstParInV, myLastParInV,
-                    Func, N1 , N2);
-
-      if (Is.IsApproximated()) {
-// iso is approached at the required tolerance
-	myConstraints.ChangeIso(ind1,ind2,Is);
-	myConstraints.ChangeNode(indN1) = N1;
-	myConstraints.ChangeNode(indN2) = N2;
+    if (anIso->IsApproximated())
+    {
+      // iso is approached at the required tolerance
+      myConstraints.ChangeIso(ind1,ind2,anIso);
+      *myConstraints.Node(indN1) = N1;
+      *myConstraints.Node(indN2) = N2;
+    }
+    else
+    {
+      // Approximation is not satisfactory
+      NbU = myResult.NbPatchInU();
+      NbV = myResult.NbPatchInV();
+      if (anIso->Type()==GeomAbs_IsoV)
+      {
+        NbPatch = (NbU+1)*NbV;
+        more = UChoice.Value(anIso->T0(),anIso->T1(),dec);
+      }
+      else
+      {
+        NbPatch = (NbV+1)*NbU;
+        more = VChoice.Value(anIso->T0(),anIso->T1(),dec);
       }
 
-      else {
-// Approximation is not satisfactory
-	NbU = myResult.NbPatchInU();
-	NbV = myResult.NbPatchInV();
-	if (Is.Type()==GeomAbs_IsoV) {
-	  NbPatch = (NbU+1)*NbV;
-	  more = UChoice.Value(Is.T0(),Is.T1(),dec);
-	}
-	else {
-	  NbPatch = (NbV+1)*NbU;
-	  more = VChoice.Value(Is.T0(),Is.T1(),dec);
-	}
+      // To force Overwrite if the criterion is Absolute
+      more = more && (CritRel);
 
-//      To force Overwrite if the criterion is Absolute
-	more = more && (CritRel);
-
-	if (NbPatch<=myMaxPatches && more) {
-//	It is possible to cut iso
-	  if (Is.Type()==GeomAbs_IsoV) {
-	    myResult.UpdateInU(dec);
-	    myConstraints.UpdateInU(dec);
-	  }
-	  else {
-	    myResult.UpdateInV(dec);
-	    myConstraints.UpdateInV(dec);
-	  }
-	}
-
-	else {
-//	It is not possible to cut: the result is preserved
-          if (Is.HasResult()) {
-	    Is.OverwriteApprox();
-	    myConstraints.ChangeIso(ind1,ind2,Is);
-	    myConstraints.ChangeNode(indN1) = N1;
-	    myConstraints.ChangeNode(indN2) = N2;	
-          }
-          else {
-	    myHasResult =  myDone = Standard_False;
-	    throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
-          }
-	}
+      if (NbPatch<=myMaxPatches && more)
+      {
+        // It is possible to cut iso
+        if (anIso->Type()==GeomAbs_IsoV)
+        {
+          myResult.UpdateInU(dec);
+          myConstraints.UpdateInU(dec);
+        }
+	else
+        {
+          myResult.UpdateInV(dec);
+          myConstraints.UpdateInV(dec);
+        }
+      }
+      else
+      {
+        // It is not possible to cut: the result is preserved
+        if (anIso->HasResult())
+        {
+          anIso->OverwriteApprox();
+          myConstraints.ChangeIso(ind1,ind2,anIso);
+          *myConstraints.Node(indN1) = N1;
+          *myConstraints.Node(indN2) = N2;
+        }
+        else
+        {
+          myHasResult =  myDone = Standard_False;
+          throw Standard_ConstructionError("AdvApp2Var_ApproxAFunc2Var : Curve Approximation Error");
+        }
       }
     }
+  }
 }
 
 //=======================================================================

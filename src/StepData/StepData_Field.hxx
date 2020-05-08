@@ -57,7 +57,14 @@ public:
   
   //! Gets the copy of the values of another field
   Standard_EXPORT void CopyFrom (const StepData_Field& other);
-  
+
+  //! Assignment
+  StepData_Field& operator= (const StepData_Field& theOther)
+  {
+    CopyFrom (theOther);
+    return *this;
+  }
+
   //! Clears the field, to set it as "no value defined"
   //! Just before SetList, predeclares it as "any"
   //! A Kind can be directly set here to declare a type

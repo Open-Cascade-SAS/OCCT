@@ -14,15 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AdvApp2Var_Iso.hxx>
 
 #include <AdvApp2Var_ApproxF2var.hxx>
 #include <AdvApp2Var_Context.hxx>
-#include <AdvApp2Var_Iso.hxx>
 #include <AdvApp2Var_Node.hxx>
 #include <gp_Pnt.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT(AdvApp2Var_Iso, Standard_Transient)
 
 //=======================================================================
 //function : AdvApp2Var_Iso

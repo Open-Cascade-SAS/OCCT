@@ -1027,7 +1027,9 @@ void OSD::SetSignal (OSD_SignalMode theSignalMode,
     }
     if (theSignalMode == OSD_SignalMode_SetUnhandled && retcode == 0 && anActOld.sa_handler != SIG_DFL)
     {
-      retcode = sigaction (aSignalTypes[i], &anActOld, &anActOld);
+      struct sigaction anActOld2;
+      sigemptyset(&anActOld2.sa_mask);
+      retcode = sigaction (aSignalTypes[i], &anActOld, &anActOld2);
     }
     Standard_ASSERT(retcode == 0, "sigaction() failed", std::cout << "OSD::SetSignal(): sigaction() failed for " << aSignalTypes[i] << std::endl);
   }

@@ -203,5 +203,5 @@ const Handle(TDF_RelocationTable)& TDF_CopyLabel::RelocationTable() const
 
 void TDF_CopyLabel::UseFilter(const TDF_IDFilter& aFilter) 
 {
-  myFilter = aFilter;
+  myFilter.Assign (aFilter);
 }

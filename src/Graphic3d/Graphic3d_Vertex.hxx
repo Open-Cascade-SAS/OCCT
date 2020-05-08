@@ -35,12 +35,6 @@ public:
     SetCoord (0.0f, 0.0f, 0.0f);
   }
 
-  //! Creates a point with coordinates identical to thePoint.
-  Graphic3d_Vertex (const Graphic3d_Vertex& thePoint)
-  {
-    SetCoord (thePoint.X(), thePoint.Y(), thePoint.Z());
-  }
-
   //! Creates a point with theX, theY and theZ coordinates.
   Graphic3d_Vertex (const Standard_ShortReal theX,
                     const Standard_ShortReal theY,

@@ -57,43 +57,30 @@ AdvApp2Var_Framework::AdvApp2Var_Framework(const AdvApp2Var_SequenceOfNode& Fram
 //purpose  : return the first Iso not approximated
 //==========================================================================================
 
-Standard_Boolean  AdvApp2Var_Framework::FirstNotApprox(Standard_Integer& IndexIso,
-                                                       Standard_Integer& IndexStrip,
-						       AdvApp2Var_Iso& anIso) const
+Handle(AdvApp2Var_Iso) AdvApp2Var_Framework::FirstNotApprox(Standard_Integer& IndexIso,
+                                                       Standard_Integer& IndexStrip) const
 {
-  Standard_Boolean good = Standard_True;
-  Standard_Integer i,j;
-  AdvApp2Var_Strip S;
-
-  for (i = 1; i <= myUConstraints.Length() && good ; i++) {
-    S = myUConstraints.Value(i);
-    for (j = 1; j <= S.Length() && good ; j++) {
-      good = (S.Value(j)).IsApproximated();
-      if (!good) {
-	IndexIso = j;
-	IndexStrip = i;
-	anIso = S.Value(j);
+  for (int anUVIter = 0; anUVIter < 2; ++anUVIter)
+  {
+    const AdvApp2Var_SequenceOfStrip& aSeq = anUVIter == 0 ? myUConstraints : myVConstraints;
+    Standard_Integer i = 1;
+    for (AdvApp2Var_SequenceOfStrip::Iterator aConstIter (aSeq); aConstIter.More(); aConstIter.Next(), i++)
+    {
+      const AdvApp2Var_Strip& S = aConstIter.Value();
+      Standard_Integer j = 1;
+      for (AdvApp2Var_Strip::Iterator anIsoIter (S); anIsoIter.More(); anIsoIter.Next(), j++)
+      {
+        const Handle(AdvApp2Var_Iso)& anIso = anIsoIter.Value();
+        if (!anIso->IsApproximated())
+        {
+          IndexIso = j;
+          IndexStrip = i;
+          return anIso;
+        }
       }
     }
   }
-  if (!good)  {
-    goto FINISH;
-  }
-
-  for (i = 1; i <= myVConstraints.Length() && good; i++) {
-    S = myVConstraints.Value(i);
-    for (j = 1; j <= S.Length() && good ; j++) {
-      good = (S.Value(j)).IsApproximated();
-      if (!good) {
-	IndexIso = j;
-	IndexStrip = i;
-	anIso = S.Value(j);
-      }
-    }
-  }
-
-  FINISH:
-  return !good;
+  return Handle(AdvApp2Var_Iso)();
 }
 
 //==========================================================================================
@@ -145,19 +132,12 @@ Standard_Integer AdvApp2Var_Framework::LastNode(const GeomAbs_IsoType Type,
 
 void AdvApp2Var_Framework::ChangeIso(const Standard_Integer IndexIso,
 				     const Standard_Integer IndexStrip,
-				     const AdvApp2Var_Iso& anIso)
+                     const Handle(AdvApp2Var_Iso)& theIso)
 {
-  AdvApp2Var_Strip S0;
-  if (anIso.Type()==GeomAbs_IsoV) {
-    S0 = myUConstraints.Value(IndexStrip); 
-    S0.SetValue(IndexIso,anIso);
-    myUConstraints.SetValue(IndexStrip,S0);
-  }
-  else {
-    S0 = myVConstraints.Value(IndexStrip);
-    S0.SetValue(IndexIso,anIso);
-    myVConstraints.SetValue(IndexStrip,S0);
-  }
+  AdvApp2Var_Strip& S0 = theIso->Type() == GeomAbs_IsoV
+                       ? myUConstraints.ChangeValue (IndexStrip)
+                       : myVConstraints.ChangeValue (IndexStrip);
+  S0.SetValue (IndexIso, theIso);
 }
 
 //==========================================================================================
@@ -165,16 +145,19 @@ void AdvApp2Var_Framework::ChangeIso(const Standard_Integer IndexIso,
 //purpose  : return the node of coordinates (U,V)
 //==========================================================================================
 
-const AdvApp2Var_Node& AdvApp2Var_Framework::Node(const Standard_Real U,
+const Handle(AdvApp2Var_Node)& AdvApp2Var_Framework::Node(const Standard_Real U,
 						  const Standard_Real V) const
 {
-  Standard_Integer Index=1;
-  while ( ( ((myNodeConstraints.Value(Index)).Coord()).X() != U
-	 || ((myNodeConstraints.Value(Index)).Coord()).Y() != V )
-         && (Index<myNodeConstraints.Length()) ) {
-    Index++;
+  for (AdvApp2Var_SequenceOfNode::Iterator aNodeIter (myNodeConstraints); aNodeIter.More(); aNodeIter.Next())
+  {
+    const Handle(AdvApp2Var_Node)& aNode = aNodeIter.Value();
+    if (aNode->Coord().X() == U
+     && aNode->Coord().Y() == V)
+    {
+      return aNode;
+    }
   }
-  return myNodeConstraints.Value(Index);
+  return myNodeConstraints.Last();
 }
 
 //==========================================================================================
@@ -187,17 +170,20 @@ AdvApp2Var_Framework::IsoU(const Standard_Real U,
 			      const Standard_Real V0,
 			      const Standard_Real V1) const 
 {
-  Standard_Integer IndexStrip=1,IndexIso=1;
-  while ( ( ((myVConstraints.Value(IndexStrip)).Value(1)).T0() != V0
-	 || ((myVConstraints.Value(IndexStrip)).Value(1)).T1() != V1 )
-         && (IndexStrip<myVConstraints.Length()) ) {
+  Standard_Integer IndexStrip = 1;
+  while (IndexStrip < myVConstraints.Length()
+      && (myVConstraints.Value(IndexStrip).First()->T0() != V0
+       || myVConstraints.Value(IndexStrip).First()->T1() != V1))
+  {
     IndexStrip++;
   }
-  while ( ( ((myVConstraints.Value(IndexStrip)).Value(IndexIso)).Constante() != U)
-         && (IndexIso<=myUConstraints.Length()) ) {
+  Standard_Integer IndexIso = 1;
+  while (IndexIso<=myUConstraints.Length()
+      && myVConstraints.Value(IndexStrip).Value(IndexIso)->Constante() != U)
+  {
     IndexIso++;
   }
-  return (myVConstraints.Value(IndexStrip)).Value(IndexIso);
+  return *(myVConstraints.Value(IndexStrip).Value(IndexIso));
 }
 
 //==========================================================================================
@@ -210,17 +196,20 @@ AdvApp2Var_Framework::IsoV(const Standard_Real U0,
 			      const Standard_Real U1,
 			      const Standard_Real V) const
 {
-  Standard_Integer IndexStrip=1,IndexIso=1;
-  while ( ( ((myUConstraints.Value(IndexStrip)).Value(1)).T0() != U0
-	 || ((myUConstraints.Value(IndexStrip)).Value(1)).T1() != U1 )
-         && (IndexStrip<myUConstraints.Length()) ) {
+  Standard_Integer IndexStrip = 1;
+  while (IndexStrip < myUConstraints.Length()
+      && (myUConstraints.Value(IndexStrip).First()->T0() != U0
+       || myUConstraints.Value(IndexStrip).First()->T1() != U1))
+  {
     IndexStrip++;
   }
-  while ( ( ((myUConstraints.Value(IndexStrip)).Value(IndexIso)).Constante() != V)
-         && (IndexIso<=myVConstraints.Length()) ) {
+  Standard_Integer IndexIso = 1;
+  while (IndexIso<=myVConstraints.Length()
+      && myUConstraints.Value(IndexStrip).Value(IndexIso)->Constante() != V)
+  {
     IndexIso++;
   }
-  return (myUConstraints.Value(IndexStrip)).Value(IndexIso);
+  return *(myUConstraints.Value(IndexStrip).Value(IndexIso));
 }
 
 //==========================================================================================
@@ -230,65 +219,74 @@ AdvApp2Var_Framework::IsoV(const Standard_Real U0,
 
 void AdvApp2Var_Framework::UpdateInU(const Standard_Real CuttingValue)
 {
-  Standard_Integer i=1,j;
-  while (((myUConstraints.Value(i)).Value(1)).U0()>CuttingValue
-	 || ((myUConstraints.Value(i)).Value(1)).U1()<CuttingValue) {
-    i++;
+  Standard_Integer i = 1;
+  for (AdvApp2Var_SequenceOfStrip::Iterator anUConstIter (myUConstraints); anUConstIter.More(); anUConstIter.Next(), ++i)
+  {
+    if (anUConstIter.Value().First()->U0() <= CuttingValue
+     && anUConstIter.Value().First()->U1() >= CuttingValue)
+    {
+      break;
+    }
   }
-  AdvApp2Var_Strip S0;
-  AdvApp2Var_Iso Is;
-  S0 = myUConstraints.Value(i);
-  Standard_Real Udeb = (S0.Value(1)).U0(), Ufin = (S0.Value(1)).U1(); 
 
-//  modification des Isos V de la bande en U d'indice i
-  for (j=1;j<=S0.Length();j++) {
-    Is = S0.Value(j);
-    Is.ChangeDomain(Udeb,CuttingValue);
-    Is.ResetApprox();
-    S0.SetValue(j,Is);
-  }
-  myUConstraints.SetValue(i,S0);
+  {
+    const AdvApp2Var_Strip& S0 = myUConstraints.Value(i);
+    const Standard_Real Udeb = S0.First()->U0(), Ufin = S0.First()->U1();
 
-//  insertion d'une nouvelle bande en U apres l'indice i
-  AdvApp2Var_Strip NewStrip;
-  for (j=1;j<=S0.Length();j++) {
-    AdvApp2Var_Iso NewIso((S0.Value(j)).Type(),(S0.Value(j)).Constante(),
-                          CuttingValue,Ufin,(S0.Value(j)).V0(),(S0.Value(j)).V1(),
-			  0,(S0.Value(j)).UOrder(),(S0.Value(j)).VOrder());
-    NewIso.ResetApprox();
-    NewStrip.Append(NewIso);
+    // modification des Isos V de la bande en U d'indice i
+    for (AdvApp2Var_Strip::Iterator aStripIter (S0); aStripIter.More(); aStripIter.Next())
+    {
+      const Handle(AdvApp2Var_Iso)& anIso = aStripIter.Value();
+      anIso->ChangeDomain (Udeb, CuttingValue);
+      anIso->ResetApprox();
+    }
+
+    // insertion d'une nouvelle bande en U apres l'indice i
+    AdvApp2Var_Strip aNewStrip;
+    for (AdvApp2Var_Strip::Iterator aStripIter (S0); aStripIter.More(); aStripIter.Next())
+    {
+      const Handle(AdvApp2Var_Iso)& anIso = aStripIter.Value();
+      Handle(AdvApp2Var_Iso) aNewIso = new AdvApp2Var_Iso (anIso->Type(), anIso->Constante(),
+                                                           CuttingValue, Ufin, anIso->V0(), anIso->V1(),
+                                                           0, anIso->UOrder(), anIso->VOrder());
+      aNewIso->ResetApprox();
+      aNewStrip.Append (aNewIso);
+    }
+    myUConstraints.InsertAfter (i, aNewStrip);
   }
-  myUConstraints.InsertAfter(i,NewStrip);
 
 //  insertion d'une nouvelle Iso U=U* dans chaque bande en V apres l'indice i
 //  et restriction des paves des Isos adjacentes
-  for (j=1;j<=myVConstraints.Length();j++) {
-    S0 = myVConstraints.Value(j);
-    Is = S0.Value(i);
-    Is.ChangeDomain(Is.U0(),CuttingValue,Is.V0(),Is.V1());
-    S0.SetValue(i,Is);
-    AdvApp2Var_Iso NewIso(Is.Type(),CuttingValue,Is.U0(),CuttingValue,Is.V0(),Is.V1(),
-			  0,Is.UOrder(),Is.VOrder());
-    NewIso.ResetApprox();
-    S0.InsertAfter(i,NewIso);
-    Is = S0.Value(i+2);
-    Is.ChangeDomain(CuttingValue,Is.U1(),Is.V0(),Is.V1());
-    S0.SetValue(i+2,Is);
-    myVConstraints.SetValue(j,S0);
+  for (Standard_Integer j = 1; j <= myVConstraints.Length(); j++)
+  {
+    AdvApp2Var_Strip& S0 = myVConstraints.ChangeValue(j);
+    Handle(AdvApp2Var_Iso) anIso = S0.Value(i);
+    anIso->ChangeDomain (anIso->U0(), CuttingValue, anIso->V0(), anIso->V1());
+
+    Handle(AdvApp2Var_Iso) aNewIso = new AdvApp2Var_Iso (anIso->Type(), CuttingValue, anIso->U0(), CuttingValue, anIso->V0(), anIso->V1(),
+                                                         0, anIso->UOrder(), anIso->VOrder());
+    aNewIso->ResetApprox();
+    S0.InsertAfter (i, aNewIso);
+
+    anIso = S0.Value(i+2);
+    anIso->ChangeDomain (CuttingValue, anIso->U1(), anIso->V0(), anIso->V1());
   }
 
 //  insertion des nouveaux noeuds (U*,Vj)
-  AdvApp2Var_Node Prev, Next;
-  Prev=myNodeConstraints.Value(1);
-  for (j=1;j<myNodeConstraints.Length();j++) {
-    Next=myNodeConstraints.Value(j+1);
-    if ((Prev.Coord()).X()<CuttingValue && ((Next.Coord()).X()>CuttingValue)
-	&& ((Prev.Coord()).Y()==(Next.Coord()).Y())) {
-      gp_XY NewUV(CuttingValue,(Prev.Coord()).Y());
-      AdvApp2Var_Node NewNode(NewUV,Prev.UOrder(),Prev.VOrder());
-      myNodeConstraints.InsertAfter(j,NewNode);
+  Handle(AdvApp2Var_Node) aNext;
+  Handle(AdvApp2Var_Node) aPrev = myNodeConstraints.First();
+  for (Standard_Integer j = 1; j < myNodeConstraints.Length(); j++)
+  {
+    aNext = myNodeConstraints.Value(j+1);
+    if (aPrev->Coord().X() < CuttingValue
+     && aNext->Coord().X() > CuttingValue
+     && aPrev->Coord().Y() == aNext->Coord().Y())
+    {
+      gp_XY aNewUV (CuttingValue, aPrev->Coord().Y());
+      Handle(AdvApp2Var_Node) aNewNode = new AdvApp2Var_Node (aNewUV, aPrev->UOrder(), aPrev->VOrder());
+      myNodeConstraints.InsertAfter (j, aNewNode);
     }
-    Prev=Next;
+    aPrev = aNext;
   }
 }
 
@@ -299,65 +297,69 @@ void AdvApp2Var_Framework::UpdateInU(const Standard_Real CuttingValue)
 
 void AdvApp2Var_Framework::UpdateInV(const Standard_Real CuttingValue)
 {
-  Standard_Integer i,j=1;
-  while (((myVConstraints.Value(j)).Value(1)).V0()>CuttingValue
-	 || ((myVConstraints.Value(j)).Value(1)).V1()<CuttingValue) {
+  Standard_Integer j=1;
+  while (myVConstraints.Value(j).First()->V0() > CuttingValue
+      || myVConstraints.Value(j).First()->V1() < CuttingValue)
+  {
     j++;
   }
-  AdvApp2Var_Strip S0;
-  AdvApp2Var_Iso Is;
-  S0 = myVConstraints.Value(j);
-  Standard_Real Vdeb = (S0.Value(1)).V0(), Vfin = (S0.Value(1)).V1(); 
 
-//  modification des Isos U de la bande en V d'indice j
-  for (i=1;i<=S0.Length();i++) {
-    Is = S0.Value(i);
-    Is.ChangeDomain(Vdeb,CuttingValue);
-    Is.ResetApprox();
-    S0.SetValue(i,Is);
+  {
+    AdvApp2Var_Strip& S0 = myVConstraints.ChangeValue(j);
+    const Standard_Real Vdeb = S0.First()->V0(), Vfin = S0.First()->V1();
+
+    // modification des Isos U de la bande en V d'indice j
+    for (AdvApp2Var_Strip::Iterator anIsoIter (S0); anIsoIter.More(); anIsoIter.Next())
+    {
+      const Handle(AdvApp2Var_Iso)& anIso = anIsoIter.Value();
+      anIso->ChangeDomain (Vdeb, CuttingValue);
+      anIso->ResetApprox();
+    }
+
+    // insertion d'une nouvelle bande en V apres l'indice j
+    AdvApp2Var_Strip aNewStrip;
+    for (AdvApp2Var_Strip::Iterator anIsoIter (S0); anIsoIter.More(); anIsoIter.Next())
+    {
+      const Handle(AdvApp2Var_Iso)& anIso = anIsoIter.Value();
+      Handle(AdvApp2Var_Iso) aNewIso = new AdvApp2Var_Iso (anIso->Type(), anIso->Constante(),
+                                                           anIso->U0(), anIso->U1(), CuttingValue, Vfin,
+                                                           0, anIso->UOrder(), anIso->VOrder());
+      aNewIso->ResetApprox();
+      aNewStrip.Append (aNewIso);
+    }
+    myVConstraints.InsertAfter(j, aNewStrip);
   }
-  myVConstraints.SetValue(j,S0);
 
-//  insertion d'une nouvelle bande en V apres l'indice j
-  AdvApp2Var_Strip NewStrip;
-  for (i=1;i<=S0.Length();i++) {
-    AdvApp2Var_Iso NewIso((S0.Value(i)).Type(),(S0.Value(i)).Constante(),
-                          (S0.Value(i)).U0(),(S0.Value(i)).U1(),CuttingValue,Vfin,
-			  0,(S0.Value(i)).UOrder(),(S0.Value(i)).VOrder());
-    NewIso.ResetApprox();
-    NewStrip.Append(NewIso);
-  }
-  myVConstraints.InsertAfter(j,NewStrip);
+  // insertion d'une nouvelle Iso V=V* dans chaque bande en U apres l'indice j
+  // et restriction des paves des Isos adjacentes
+  for (AdvApp2Var_SequenceOfStrip::Iterator anUConstIter (myUConstraints); anUConstIter.More(); anUConstIter.Next())
+  {
+    AdvApp2Var_Strip& S0 = anUConstIter.ChangeValue();
+    Handle(AdvApp2Var_Iso) anIso = S0.Value(j);
+    anIso->ChangeDomain (anIso->U0(), anIso->U1(), anIso->V0(), CuttingValue);
 
-//  insertion d'une nouvelle Iso V=V* dans chaque bande en U apres l'indice j
-//  et restriction des paves des Isos adjacentes
-  for (i=1;i<=myUConstraints.Length();i++) {
-    S0 = myUConstraints.Value(i);
-    Is = S0.Value(j);
-    Is.ChangeDomain(Is.U0(),Is.U1(),Is.V0(),CuttingValue);
-    S0.SetValue(j,Is);
-    AdvApp2Var_Iso NewIso(Is.Type(),CuttingValue,Is.U0(),Is.U1(),Is.V0(),CuttingValue,
-			  0,Is.UOrder(),Is.VOrder());
-    NewIso.ResetApprox();
-    S0.InsertAfter(j,NewIso);
-    Is = S0.Value(j+2);
-    Is.ChangeDomain(Is.U0(),Is.U1(),CuttingValue,Is.V1());
-    S0.SetValue(j+2,Is);
-    myUConstraints.SetValue(i,S0);
+    Handle(AdvApp2Var_Iso) aNewIso = new AdvApp2Var_Iso (anIso->Type(), CuttingValue, anIso->U0(), anIso->U1(), anIso->V0(), CuttingValue,
+                                                         0, anIso->UOrder(), anIso->VOrder());
+    aNewIso->ResetApprox();
+    S0.InsertAfter (j, aNewIso);
+
+    anIso = S0.Value (j + 2);
+    anIso->ChangeDomain (anIso->U0(), anIso->U1(), CuttingValue, anIso->V1());
   }
 
 //  insertion des nouveaux noeuds (Ui,V*)
-  i = 1;
-  while ( i<=myNodeConstraints.Length() 
-	 && ( ((myNodeConstraints.Value(i)).Coord()).Y()) < CuttingValue) {
-    i+=myUConstraints.Length()+1;
+  Standard_Integer i = 1;
+  while (i <= myNodeConstraints.Length()
+      && myNodeConstraints.Value(i)->Coord().Y() < CuttingValue)
+  {
+    i += myUConstraints.Length() + 1;
   }
-  for (j=1;j<=myUConstraints.Length()+1;j++) {
-    gp_XY NewUV(((myNodeConstraints.Value(j)).Coord()).X(),CuttingValue);
-    AdvApp2Var_Node NewNode(NewUV,
-			    (myNodeConstraints.Value(j)).UOrder(),
-			    (myNodeConstraints.Value(j)).VOrder());
-    myNodeConstraints.InsertAfter(i+j-2,NewNode);
+  for (j = 1; j <= myUConstraints.Length() + 1; j++)
+  {
+    const Handle(AdvApp2Var_Node)& aJNode = myNodeConstraints.Value(j);
+    gp_XY NewUV (aJNode->Coord().X(), CuttingValue);
+    Handle(AdvApp2Var_Node) aNewNode = new AdvApp2Var_Node (NewUV, aJNode->UOrder(), aJNode->VOrder());
+    myNodeConstraints.InsertAfter (i+j-2, aNewNode);
   }
 }
 
@@ -370,7 +372,7 @@ const Handle(TColStd_HArray1OfReal)&
 AdvApp2Var_Framework::UEquation(const Standard_Integer IndexIso,
 				const Standard_Integer IndexStrip) const
 {
-  return ((myVConstraints.Value(IndexStrip)).Value(IndexIso)).Polynom();
+  return myVConstraints.Value(IndexStrip).Value(IndexIso)->Polynom();
 }
 
 //==========================================================================================
@@ -382,6 +384,6 @@ const Handle(TColStd_HArray1OfReal)&
 AdvApp2Var_Framework::VEquation(const Standard_Integer IndexIso,
 				const Standard_Integer IndexStrip) const
 {  
-  return myUConstraints.Value(IndexStrip).Value(IndexIso).Polynom();
+  return myUConstraints.Value(IndexStrip).Value(IndexIso)->Polynom();
 }
 

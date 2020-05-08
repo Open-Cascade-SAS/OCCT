@@ -34,14 +34,13 @@
 #include <OpenGl_TextureSetPairIterator.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Aspects.hxx>
+
 #include <Graphic3d_TransformUtils.hxx>
 #include <Graphic3d_RenderingParams.hxx>
-
 #include <Message_Messenger.hxx>
-
 #include <NCollection_Vector.hxx>
-
 #include <Standard_ProgramError.hxx>
+#include <Standard_WarningDisableFunctionCast.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
 

@@ -102,6 +102,26 @@ Interface_Graph::Interface_Graph
   theflags.Initialize(agraph.BitMap(),Standard_True);
 }
 
+Interface_Graph& Interface_Graph::operator= (const Interface_Graph& theOther)
+{
+  themodel = theOther.Model();
+  thepresents = theOther.thepresents;
+  thesharings = theOther.SharingTable();
+  thestats.Nullify();
+
+  const Standard_Integer nb = theOther.NbStatuses();
+  if (nb != 0)
+  {
+    thestats = new TColStd_HArray1OfInteger(1, nb);
+    for (Standard_Integer i = 1; i <= nb; ++i)
+    {
+      thestats->SetValue (i, theOther.Status(i));
+    }
+    theflags.Initialize (theOther.BitMap(), Standard_True);
+  }
+  return *this;
+}
+
 void Interface_Graph::InitStats()
 {
   thestats = new TColStd_HArray1OfInteger(1,themodel->NbEntities()) , 

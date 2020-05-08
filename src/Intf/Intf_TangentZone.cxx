@@ -31,20 +31,6 @@ Intf_TangentZone::Intf_TangentZone       ()
   ParamOnFirstMax   = ParamOnSecondMax  = RealFirst();
 }
 
-
-//=======================================================================
-//function : Intf_TangentZone
-//purpose  : Copy
-//=======================================================================
-
-Intf_TangentZone::Intf_TangentZone (const Intf_TangentZone& Other)
-{
-  Result=Other.Result;
-  ParamOnFirstMin   = Other.ParamOnFirstMin;
-  ParamOnFirstMax   = Other.ParamOnFirstMax;
-  ParamOnSecondMin  = Other.ParamOnSecondMin;
-  ParamOnSecondMax  = Other.ParamOnSecondMax;
-}
 //=======================================================================
 //function : Append
 //purpose  : Append the section point to the tangent zone.

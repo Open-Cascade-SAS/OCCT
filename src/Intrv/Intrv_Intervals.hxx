@@ -41,11 +41,7 @@ public:
   
   //! Creates a sequence of one interval.
   Standard_EXPORT Intrv_Intervals(const Intrv_Interval& Int);
-  
-  //! Creates   by   copying  an   existing  sequence of
-  //! intervals.
-  Standard_EXPORT Intrv_Intervals(const Intrv_Intervals& Int);
-  
+
   //! Intersects the intervals with the interval <Tool>.
   Standard_EXPORT void Intersect (const Intrv_Interval& Tool);
   

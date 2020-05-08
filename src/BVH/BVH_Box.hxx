@@ -118,12 +118,6 @@ public:
     myMaxPoint (thePoint),
     myIsInited (Standard_True) {}
 
-  //! Creates copy of another bounding box.
-  BVH_Box (const BVH_Box& theBox)
-  : myMinPoint (theBox.myMinPoint),
-    myMaxPoint (theBox.myMaxPoint),
-    myIsInited (theBox.myIsInited) {}
-
   //! Creates bounding box from corner points.
   BVH_Box (const BVH_VecNt& theMinPoint,
            const BVH_VecNt& theMaxPoint)

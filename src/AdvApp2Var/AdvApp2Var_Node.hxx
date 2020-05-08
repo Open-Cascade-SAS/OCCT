@@ -17,78 +17,85 @@
 #ifndef _AdvApp2Var_Node_HeaderFile
 #define _AdvApp2Var_Node_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <gp_XY.hxx>
-#include <Standard_Integer.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <TColStd_HArray2OfReal.hxx>
-#include <Standard_Real.hxx>
-class gp_XY;
-class gp_Pnt;
-
-
+#include <Standard.hxx>
+#include <Standard_Handle.hxx>
+#include <Standard_Type.hxx>
+#include <TColgp_Array2OfPnt.hxx>
+#include <TColStd_Array2OfReal.hxx>
 
 //! used to store constraints on a (Ui,Vj) point
-class AdvApp2Var_Node 
+class AdvApp2Var_Node : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(AdvApp2Var_Node, Standard_Transient)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT AdvApp2Var_Node();
   
   Standard_EXPORT AdvApp2Var_Node(const Standard_Integer iu, const Standard_Integer iv);
   
   Standard_EXPORT AdvApp2Var_Node(const gp_XY& UV, const Standard_Integer iu, const Standard_Integer iv);
-  
-  Standard_EXPORT gp_XY Coord() const;
-  
-  Standard_EXPORT void SetCoord (const Standard_Real x1, const Standard_Real x2);
-  
-  Standard_EXPORT Standard_Integer UOrder() const;
-  
-  Standard_EXPORT Standard_Integer VOrder() const;
-  
-  Standard_EXPORT void SetPoint (const Standard_Integer iu, const Standard_Integer iv, const gp_Pnt& Cte);
-  
-  Standard_EXPORT gp_Pnt Point (const Standard_Integer iu, const Standard_Integer iv) const;
-  
-  Standard_EXPORT void SetError (const Standard_Integer iu, const Standard_Integer iv, const Standard_Real error);
-  
-  Standard_EXPORT Standard_Real Error (const Standard_Integer iu, const Standard_Integer iv) const;
 
+  //! Returns the coordinates (U,V) of the node
+  const gp_XY& Coord() const { return myCoord; }
 
+  //! changes the coordinates (U,V) to (x1,x2)
+  void SetCoord (const Standard_Real x1, const Standard_Real x2)
+  {
+    myCoord.SetX(x1);
+    myCoord.SetY(x2);
+  }
 
+  //! returns the continuity order in U of the node
+  Standard_Integer UOrder() const { return myOrdInU; }
 
-protected:
+  //! returns the continuity order in V of the node
+  Standard_Integer VOrder() const { return myOrdInV; }
 
+  //! affects the value F(U,V) or its derivates on the node (U,V)
+  void SetPoint (const Standard_Integer iu, const Standard_Integer iv, const gp_Pnt& Pt)
+  {
+    myTruePoints.SetValue(iu, iv, Pt);
+  }
 
+  //! returns the value F(U,V) or its derivates on the node (U,V)
+  const gp_Pnt& Point (const Standard_Integer iu, const Standard_Integer iv) const
+  {
+    return myTruePoints.Value(iu, iv);
+  }
 
+  //! affects the error between F(U,V) and its approximation
+  void SetError (const Standard_Integer iu, const Standard_Integer iv, const Standard_Real error)
+  {
+    myErrors.SetValue(iu, iv, error);
+  }
 
+  //! returns the error between F(U,V) and its approximation
+  Standard_Real Error (const Standard_Integer iu, const Standard_Integer iv) const { return myErrors.Value(iu, iv); }
+
+  //! Assign operator.
+  AdvApp2Var_Node& operator= (const AdvApp2Var_Node& theOther)
+  {
+    myTruePoints = theOther.myTruePoints;
+    myErrors = theOther.myErrors;
+    myCoord  = theOther.myCoord;
+    myOrdInU = theOther.myOrdInU;
+    myOrdInV = theOther.myOrdInV;
+    return *this;
+  }
 
 private:
 
-  
-  Standard_EXPORT AdvApp2Var_Node(const AdvApp2Var_Node& Other);
+  AdvApp2Var_Node (const AdvApp2Var_Node& theOther);
 
+private:
 
+  TColgp_Array2OfPnt myTruePoints;
+  TColStd_Array2OfReal myErrors;
   gp_XY myCoord;
   Standard_Integer myOrdInU;
   Standard_Integer myOrdInV;
-  Handle(TColgp_HArray2OfPnt) myTruePoints;
-  Handle(TColStd_HArray2OfReal) myErrors;
-
 
 };
-
-
-
-
-
-
 
 #endif // _AdvApp2Var_Node_HeaderFile

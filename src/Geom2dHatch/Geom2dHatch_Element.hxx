@@ -35,10 +35,7 @@ public:
 
   
   Standard_EXPORT Geom2dHatch_Element();
-  
-  //! Magic constructor.
-  Standard_EXPORT Geom2dHatch_Element(const Geom2dHatch_Element& Other);
-  
+
   //! Creates an element.
   Standard_EXPORT Geom2dHatch_Element(const Geom2dAdaptor_Curve& Curve, const TopAbs_Orientation Orientation = TopAbs_FORWARD);
   

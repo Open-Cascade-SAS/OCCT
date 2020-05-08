@@ -81,10 +81,7 @@ Standard_Boolean operator == (const Intf_TangentZone& Other) const
   
   //! Builds an empty tangent zone.
   Standard_EXPORT Intf_TangentZone();
-  
-  //! Copies a Tangent zone.
-  Standard_EXPORT Intf_TangentZone(const Intf_TangentZone& Other);
-  
+
   //! Adds a SectionPoint to the TangentZone.
   Standard_EXPORT void Append (const Intf_SectionPoint& Pi);
   

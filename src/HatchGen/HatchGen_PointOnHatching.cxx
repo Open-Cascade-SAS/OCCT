@@ -39,23 +39,6 @@ HatchGen_PointOnHatching::HatchGen_PointOnHatching () :
 // Purpose  : Constructor.
 //=======================================================================
 
-HatchGen_PointOnHatching::HatchGen_PointOnHatching (const HatchGen_PointOnHatching& Point)
-{
-  myIndex  = Point.myIndex ;
-  myParam  = Point.myParam ;
-  myPosit  = Point.myPosit ;
-  myBefore = Point.myBefore ;
-  myAfter  = Point.myAfter ;
-  mySegBeg = Point.mySegBeg ;
-  mySegEnd = Point.mySegEnd ;
-  myPoints = Point.myPoints ;
-}
-
-//=======================================================================
-// Function : HatchGen_PointOnHatching
-// Purpose  : Constructor.
-//=======================================================================
-
 HatchGen_PointOnHatching::HatchGen_PointOnHatching (const IntRes2d_IntersectionPoint& Point)
 {
   myIndex = 0 ;

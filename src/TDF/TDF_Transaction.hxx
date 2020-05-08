@@ -96,26 +96,17 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
+private:
 
-
-
-protected:
-
-
-
-
+  //! Private to avoid copy.
+  TDF_Transaction(const TDF_Transaction& aTrans);
+  TDF_Transaction& operator= (const TDF_Transaction& theOther);
 
 private:
 
-  
-  //! Private to avoid copy.
-  Standard_EXPORT TDF_Transaction(const TDF_Transaction& aTrans);
-
-
   Handle(TDF_Data) myDF;
-  Standard_Integer myUntilTransaction;
   TCollection_AsciiString myName;
-
+  Standard_Integer myUntilTransaction;
 
 };
 

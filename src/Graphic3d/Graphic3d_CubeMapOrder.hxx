@@ -138,6 +138,10 @@ public:
     return &Order;
   }
 
+  //! Copy constructor.
+  Graphic3d_ValidatedCubeMapOrder (const Graphic3d_ValidatedCubeMapOrder& theOther)
+  : Order (theOther.Order) {}
+
 public:
 
   const Graphic3d_CubeMapOrder Order; //!< Completely valid order
@@ -146,9 +150,7 @@ private:
 
   //! Only Graphic3d_CubeMapOrder can generate Graphic3d_ValidatedCubeMapOrder in 'Validated' method.
   Graphic3d_ValidatedCubeMapOrder(const Graphic3d_CubeMapOrder theOrder)
-    :
-    Order(theOrder)
-  {}
+  : Order(theOrder) {}
 
   //! Deleted 'operator='
   Graphic3d_ValidatedCubeMapOrder& operator= (const Graphic3d_ValidatedCubeMapOrder&);

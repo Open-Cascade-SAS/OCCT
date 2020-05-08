@@ -41,19 +41,9 @@
 
 TDF_Transaction::TDF_Transaction
 (const TCollection_AsciiString& aName)
-: myUntilTransaction(0),
-  myName(aName)
+: myName(aName),
+  myUntilTransaction(0)
 {}
-
-
-//=======================================================================
-//function : TDF_Transaction
-//purpose  : Private copy constructor.
-//=======================================================================
-
-TDF_Transaction::TDF_Transaction(const TDF_Transaction& /*aTrans*/)
-{}
-
 
 //=======================================================================
 //function : TDF_Transaction
@@ -64,8 +54,8 @@ TDF_Transaction::TDF_Transaction
 (const Handle(TDF_Data)& aDF,
  const TCollection_AsciiString& aName)
 : myDF(aDF),
-  myUntilTransaction(0),
-  myName(aName)
+  myName(aName),
+  myUntilTransaction(0)
 {}
 
 

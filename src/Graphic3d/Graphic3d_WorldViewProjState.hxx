@@ -141,15 +141,6 @@ public:
         && myWorldViewState  == theOther.myWorldViewState;
   }
 
-  //! Copy world view projection state.
-  void operator = (const Graphic3d_WorldViewProjState& theOther)
-  {
-    myIsValid         = theOther.myIsValid;
-    myCamera          = theOther.myCamera;
-    myProjectionState = theOther.myProjectionState;
-    myWorldViewState  = theOther.myWorldViewState;
-  }
-
 private:
 
   Standard_Boolean    myIsValid;

@@ -37,16 +37,6 @@ inline gp_Quaternion::gp_Quaternion (const Standard_Real theX, const Standard_Re
 //purpose  : 
 //=======================================================================
 
-inline gp_Quaternion::gp_Quaternion (const gp_Quaternion& theToCopy)
-: x(theToCopy.x), y(theToCopy.y), z(theToCopy.z), w(theToCopy.w)
-{
-}
-
-//=======================================================================
-//function : gp_Quaternion
-//purpose  : 
-//=======================================================================
-
 inline gp_Quaternion::gp_Quaternion (const gp_Vec& theVecFrom, const gp_Vec& theVecTo)
 {
   SetRotation (theVecFrom, theVecTo);

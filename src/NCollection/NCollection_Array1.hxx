@@ -88,14 +88,6 @@ public:
       myPtrEnd = const_cast<TheItemType*> (&theArray.Last() + 1);
     }
 
-    //! Assignment
-    Iterator& operator= (const Iterator& theOther)
-    {
-      myPtrCur = theOther.myPtrCur;
-      myPtrEnd = theOther.myPtrEnd;
-      return *this;
-    }
-
     //! Check end
     Standard_Boolean More (void) const
     { return myPtrCur < myPtrEnd; }

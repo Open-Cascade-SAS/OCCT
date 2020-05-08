@@ -31,16 +31,12 @@
 class AdvApp2Var_Context;
 class AdvApp2Var_Node;
 
-
-
 //! used to store constraints on a line U = Ui or V = Vj
-class AdvApp2Var_Iso 
+class AdvApp2Var_Iso : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(AdvApp2Var_Iso, Standard_Transient)
 public:
 
-  DEFINE_STANDARD_ALLOC
-
-  
   Standard_EXPORT AdvApp2Var_Iso();
   
   Standard_EXPORT AdvApp2Var_Iso(const GeomAbs_IsoType type, const Standard_Integer iu, const Standard_Integer iv);
@@ -99,20 +95,12 @@ public:
   
   Standard_EXPORT Handle(TColStd_HArray2OfReal) MoyErrors() const;
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
-  Standard_EXPORT AdvApp2Var_Iso(const AdvApp2Var_Iso& Other);
+  AdvApp2Var_Iso(const AdvApp2Var_Iso& Other);
+  AdvApp2Var_Iso& operator= (const AdvApp2Var_Iso& theOther);
 
+private:
 
   GeomAbs_IsoType myType;
   Standard_Real myConstPar;
@@ -132,13 +120,6 @@ private:
   Handle(TColStd_HArray1OfReal) mySomTab;
   Handle(TColStd_HArray1OfReal) myDifTab;
 
-
 };
-
-
-
-
-
-
 
 #endif // _AdvApp2Var_Iso_HeaderFile

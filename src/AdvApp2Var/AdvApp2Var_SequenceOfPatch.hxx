@@ -20,7 +20,7 @@
 #include <AdvApp2Var_Patch.hxx>
 #include <NCollection_Sequence.hxx>
 
-typedef NCollection_Sequence<AdvApp2Var_Patch> AdvApp2Var_SequenceOfPatch;
+typedef NCollection_Sequence<Handle(AdvApp2Var_Patch)> AdvApp2Var_SequenceOfPatch;
 
 
 #endif

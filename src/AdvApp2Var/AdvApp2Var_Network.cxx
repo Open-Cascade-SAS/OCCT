@@ -52,15 +52,19 @@ AdvApp2Var_Network::AdvApp2Var_Network(const AdvApp2Var_SequenceOfPatch& Net,
 //purpose  : return the first Patch not approximated
 //==========================================================================================
 
-Standard_Boolean AdvApp2Var_Network::FirstNotApprox(Standard_Integer& Index) const 
+Standard_Boolean AdvApp2Var_Network::FirstNotApprox(Standard_Integer& theIndex) const
 {
-  Standard_Boolean good = Standard_True;
-  Standard_Integer i;
-  for (i = 1; i <= myNet.Length() && good; i++) {
-    good = myNet.Value(i).IsApproximated();
-    if (!good) {Index = i;}
+  Standard_Integer anIndex = 1;
+  for (AdvApp2Var_SequenceOfPatch::Iterator aPatchIter (myNet); aPatchIter.More(); aPatchIter.Next(), ++anIndex)
+  {
+    const Handle(AdvApp2Var_Patch)& aPatch = aPatchIter.Value();
+    if (!aPatch->IsApproximated())
+    {
+      theIndex = anIndex;
+      return true;
+    }
   }
-  return !good;
+  return false;
 }
 
 //==========================================================================================
@@ -78,23 +82,20 @@ void AdvApp2Var_Network::UpdateInU(const Standard_Real CuttingValue)
   }
   myUParameters.InsertBefore(i,CuttingValue);
 
-  Standard_Integer indice;
-  for (j=1; j< myVParameters.Length() ; j++){
-
+  for (j=1; j< myVParameters.Length() ; j++)
+  {
 //    modification des patches concernes par la decoupe
-    AdvApp2Var_Patch Pat;
-    indice = (myUParameters.Length()-1) * (j-1) + i - 1;
-    Pat = myNet.Value(indice);
-    Pat.ChangeDomain(Pat.U0(), CuttingValue, Pat.V0(), Pat.V1());
-    Pat.ResetApprox();
-    myNet.SetValue(indice, Pat);
+    Standard_Integer indice = (myUParameters.Length()-1) * (j-1) + i - 1;
+    const Handle(AdvApp2Var_Patch)& aPat = myNet.Value(indice);
+    aPat->ChangeDomain (aPat->U0(), CuttingValue, aPat->V0(), aPat->V1());
+    aPat->ResetApprox();
 
 //    insertion des nouveaux patches
-    AdvApp2Var_Patch NewPat(CuttingValue,myUParameters.Value(i+1),
+    Handle(AdvApp2Var_Patch) aNewPat = new AdvApp2Var_Patch (CuttingValue,myUParameters.Value(i+1),
 			    myVParameters.Value(j),myVParameters.Value(j+1),
-			    Pat.UOrder(),Pat.VOrder());
-    NewPat.ResetApprox();
-    myNet.InsertAfter(indice, NewPat);
+                aPat->UOrder(), aPat->VOrder());
+    aNewPat->ResetApprox();
+    myNet.InsertAfter(indice, aNewPat);
   }
 
 }
@@ -108,31 +109,32 @@ void AdvApp2Var_Network::UpdateInV(const Standard_Real CuttingValue)
 {
 
 //  insertion du nouveau parametre de decoupe
-  Standard_Integer i,j=1;
-  AdvApp2Var_Patch Pat;
-  while (myVParameters.Value(j)<CuttingValue) {
+  Standard_Integer j = 1;
+  Handle(AdvApp2Var_Patch) Pat;
+  while (myVParameters.Value(j)<CuttingValue)
+  {
     j++;
   }
   myVParameters.InsertBefore(j,CuttingValue);
 
 //  modification des patches concernes par la decoupe
-  Standard_Integer indice;
-  for (i=1; i< myUParameters.Length() ; i++){
-    indice = (myUParameters.Length()-1) * (j-2) + i;
+  for (Standard_Integer i = 1; i < myUParameters.Length(); i++)
+  {
+    const Standard_Integer indice = (myUParameters.Length()-1) * (j-2) + i;
     Pat = myNet.Value(indice);
-    Pat.ChangeDomain(Pat.U0(), Pat.U1(), Pat.V0(), CuttingValue);
-    Pat.ResetApprox();
-    myNet.SetValue(indice,Pat);
+    Pat->ChangeDomain(Pat->U0(), Pat->U1(), Pat->V0(), CuttingValue);
+    Pat->ResetApprox();
   }
 
 //  insertion des nouveaux patches
-  for (i=1; i< myUParameters.Length() ; i++){
-    indice = (myUParameters.Length()-1) * (j-1) + i-1;
-    AdvApp2Var_Patch NewPat(myUParameters.Value(i), myUParameters.Value(i+1),
+  for (Standard_Integer i = 1; i < myUParameters.Length(); i++)
+  {
+    const Standard_Integer indice = (myUParameters.Length()-1) * (j-1) + i-1;
+    Handle(AdvApp2Var_Patch) aNewPat = new AdvApp2Var_Patch (myUParameters.Value(i), myUParameters.Value(i+1),
 			    CuttingValue,myVParameters.Value(j+1),
-			    Pat.UOrder(),Pat.VOrder());
-    NewPat.ResetApprox();
-    myNet.InsertAfter(indice,NewPat);
+                Pat->UOrder(),Pat->VOrder());
+    aNewPat->ResetApprox();
+    myNet.InsertAfter (indice, aNewPat);
   }
 }
 
@@ -146,22 +148,21 @@ void AdvApp2Var_Network::SameDegree(const Standard_Integer iu,
 				    Standard_Integer& ncfu,
 				    Standard_Integer& ncfv)
 {
-
 //  calcul des coeff. max avec init selon l'ordre de continuite
-  Standard_Integer IndPat;
   ncfu = 2*iu+2;
   ncfv = 2*iv+2;
-  for (IndPat=1;IndPat<=myNet.Length();IndPat++) {
-    ncfu = Max(ncfu,myNet.Value(IndPat).NbCoeffInU());
-    ncfv = Max(ncfv,myNet.Value(IndPat).NbCoeffInV());
+  for (AdvApp2Var_SequenceOfPatch::Iterator aPatIter (myNet); aPatIter.More(); aPatIter.Next())
+  {
+    const Handle(AdvApp2Var_Patch)& aPat = aPatIter.Value();
+    ncfu = Max(ncfu, aPat->NbCoeffInU());
+    ncfv = Max(ncfv, aPat->NbCoeffInV());
   }
 
 //  augmentation des nombres de coeff.
-  AdvApp2Var_Patch Pat;
-  for (IndPat=1;IndPat<=myNet.Length();IndPat++) {
-    Pat = myNet.Value(IndPat);
-    Pat.ChangeNbCoeff(ncfu,ncfv);
-    myNet.SetValue(IndPat,Pat);
+  for (AdvApp2Var_SequenceOfPatch::Iterator aPatIter (myNet); aPatIter.More(); aPatIter.Next())
+  {
+    const Handle(AdvApp2Var_Patch)& aPat = aPatIter.Value();
+    aPat->ChangeNbCoeff (ncfu, ncfv);
   }
 
 }

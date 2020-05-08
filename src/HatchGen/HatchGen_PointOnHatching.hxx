@@ -41,10 +41,7 @@ public:
   
   //! Creates an empty point.
   Standard_EXPORT HatchGen_PointOnHatching();
-  
-  //! Creates a point from an other.
-  Standard_EXPORT HatchGen_PointOnHatching(const HatchGen_PointOnHatching& Point);
-  
+
   //! Creates a point from an intersection point.
   Standard_EXPORT HatchGen_PointOnHatching(const IntRes2d_IntersectionPoint& Point);
   

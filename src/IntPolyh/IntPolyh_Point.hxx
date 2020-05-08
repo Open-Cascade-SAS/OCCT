@@ -78,19 +78,7 @@ public:
   {
     return myPOC;
   }
-  //! Assignment operator
-  void Equal (const IntPolyh_Point& Pt)
-  {
-    myX = Pt.myX;
-    myY = Pt.myY;
-    myZ = Pt.myZ;
-    myU = Pt.myU;
-    myV = Pt.myV;
-  }
-  void operator = (const IntPolyh_Point& Pt)
-  {
-    Equal(Pt);
-  }
+
   //! Sets the point
   void Set (const Standard_Real x,
             const Standard_Real y,

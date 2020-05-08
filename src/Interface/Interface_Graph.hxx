@@ -87,6 +87,9 @@ public:
   //! Remark that status are copied from <agraph>, but the other
   //! lists (sharing/shared) are copied only if <copied> = True
   Standard_EXPORT Interface_Graph(const Interface_Graph& agraph, const Standard_Boolean copied = Standard_False);
+
+  //! Assignment
+  Standard_EXPORT Interface_Graph& operator= (const Interface_Graph& theOther);
   
   //! Erases data, making graph ready to rebegin from void
   //! (also resets Shared lists redefinitions)

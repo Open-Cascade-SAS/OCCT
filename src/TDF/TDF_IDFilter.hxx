@@ -104,26 +104,24 @@ public:
   //! Writes the contents of <me> to <OS>.
   Standard_EXPORT void Dump (Standard_OStream& anOS) const;
 
-
-
-
-protected:
-
-
-
-
+  //! Assignment
+  void Assign (const TDF_IDFilter& theFilter)
+  {
+    myIgnore = theFilter.myIgnore;
+    myIDMap  = theFilter.myIDMap;
+  }
 
 private:
 
-  
   //! Private, to forbid implicit or hidden accesses to
   //! the copy constructor.
-  Standard_EXPORT TDF_IDFilter(const TDF_IDFilter& aFilter);
+  TDF_IDFilter(const TDF_IDFilter& aFilter);
+  TDF_IDFilter& operator= (const TDF_IDFilter& theOther);
 
+private:
 
   Standard_Boolean myIgnore;
   TDF_IDMap myIDMap;
-
 
 };
 

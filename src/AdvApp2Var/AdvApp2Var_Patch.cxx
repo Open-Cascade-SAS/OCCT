@@ -40,6 +40,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray2OfReal.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(AdvApp2Var_Patch, Standard_Transient)
+
 //============================================================================
 //function : AdvApp2Var_Patch
 //purpose  :
@@ -144,35 +146,35 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context& Conditions,
       rho = pow(du,iu)*pow(dv,iv);
 
 // F(U0,V0) and its derivatives normalized on (-1,1)
-      valnorm = rho * ((Constraints.Node(myU0,myV0)).Point(iu,iv)).X();
+      valnorm = rho * ((Constraints.Node(myU0,myV0))->Point(iu,iv)).X();
       HCOINS->SetValue( 1+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv , valnorm );
-      valnorm = rho * ((Constraints.Node(myU0,myV0)).Point(iu,iv)).Y();
+      valnorm = rho * ((Constraints.Node(myU0,myV0))->Point(iu,iv)).Y();
       HCOINS->SetValue( 2+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
-      valnorm = rho * ((Constraints.Node(myU0,myV0)).Point(iu,iv)).Z();
+      valnorm = rho * ((Constraints.Node(myU0,myV0))->Point(iu,iv)).Z();
       HCOINS->SetValue( 3+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
 
 // F(U1,V0) and its derivatives normalized on (-1,1)
-      valnorm = rho * ((Constraints.Node(myU1,myV0)).Point(iu,iv)).X();
+      valnorm = rho * ((Constraints.Node(myU1,myV0))->Point(iu,iv)).X();
       HCOINS->SetValue( SIZE+1+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
-      valnorm = rho * ((Constraints.Node(myU1,myV0)).Point(iu,iv)).Y();
+      valnorm = rho * ((Constraints.Node(myU1,myV0))->Point(iu,iv)).Y();
       HCOINS->SetValue( SIZE+2+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
-      valnorm = rho * ((Constraints.Node(myU1,myV0)).Point(iu,iv)).Z();
+      valnorm = rho * ((Constraints.Node(myU1,myV0))->Point(iu,iv)).Z();
       HCOINS->SetValue( SIZE+3+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
 
 // F(U0,V1) and its derivatives normalized on (-1,1)
-      valnorm = rho * ((Constraints.Node(myU0,myV1)).Point(iu,iv)).X();
+      valnorm = rho * ((Constraints.Node(myU0,myV1))->Point(iu,iv)).X();
       HCOINS->SetValue( 2*SIZE+1+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
-      valnorm = rho * ((Constraints.Node(myU0,myV1)).Point(iu,iv)).Y();
+      valnorm = rho * ((Constraints.Node(myU0,myV1))->Point(iu,iv)).Y();
       HCOINS->SetValue( 2*SIZE+2+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
-      valnorm = rho * ((Constraints.Node(myU0,myV1)).Point(iu,iv)).Z();
+      valnorm = rho * ((Constraints.Node(myU0,myV1))->Point(iu,iv)).Z();
       HCOINS->SetValue( 2*SIZE+3+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
 
 // F(U1,V1) and its derivatives normalized on (-1,1)
-      valnorm = rho * ((Constraints.Node(myU1,myV1)).Point(iu,iv)).X();
+      valnorm = rho * ((Constraints.Node(myU1,myV1))->Point(iu,iv)).X();
       HCOINS->SetValue( 3*SIZE+1+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
-      valnorm = rho * ((Constraints.Node(myU1,myV1)).Point(iu,iv)).Y();
+      valnorm = rho * ((Constraints.Node(myU1,myV1))->Point(iu,iv)).Y();
       HCOINS->SetValue( 3*SIZE+2+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
-      valnorm = rho * ((Constraints.Node(myU1,myV1)).Point(iu,iv)).Z();
+      valnorm = rho * ((Constraints.Node(myU1,myV1))->Point(iu,iv)).Z();
       HCOINS->SetValue( 3*SIZE+3+NDIMEN*iu+NDIMEN*(IORDRU+2)*iv, valnorm );
     }
   }
@@ -543,38 +545,38 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context& Conditions,
 
 // -F(U0,V0) and its derivatives normalized on (-1,1)
       ideb = HCOINS->Lower() + NDIMEN*iu+NDIMEN*(IORDRU+2)*iv - 1;
-      valnorm = -rho * ((Constraints.Node(myU0,myV0)).Point(iu,iv)).X();
+      valnorm = -rho * ((Constraints.Node(myU0,myV0))->Point(iu,iv)).X();
       HCOINS->SetValue( 1+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU0,myV0)).Point(iu,iv)).Y();
+      valnorm = -rho * ((Constraints.Node(myU0,myV0))->Point(iu,iv)).Y();
       HCOINS->SetValue( 2+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU0,myV0)).Point(iu,iv)).Z();
+      valnorm = -rho * ((Constraints.Node(myU0,myV0))->Point(iu,iv)).Z();
       HCOINS->SetValue( 3+ideb , valnorm );
 
 // -F(U1,V0) and its derivatives normalized on (-1,1)
       ideb += SIZE;
-      valnorm = -rho * ((Constraints.Node(myU1,myV0)).Point(iu,iv)).X();
+      valnorm = -rho * ((Constraints.Node(myU1,myV0))->Point(iu,iv)).X();
       HCOINS->SetValue( 1+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU1,myV0)).Point(iu,iv)).Y();
+      valnorm = -rho * ((Constraints.Node(myU1,myV0))->Point(iu,iv)).Y();
       HCOINS->SetValue( 2+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU1,myV0)).Point(iu,iv)).Z();
+      valnorm = -rho * ((Constraints.Node(myU1,myV0))->Point(iu,iv)).Z();
       HCOINS->SetValue( 3+ideb , valnorm );
 
 // -F(U0,V1) and its derivatives normalized on (-1,1)
       ideb += SIZE;
-      valnorm = -rho * ((Constraints.Node(myU0,myV1)).Point(iu,iv)).X();
+      valnorm = -rho * ((Constraints.Node(myU0,myV1))->Point(iu,iv)).X();
       HCOINS->SetValue( 1+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU0,myV1)).Point(iu,iv)).Y();
+      valnorm = -rho * ((Constraints.Node(myU0,myV1))->Point(iu,iv)).Y();
       HCOINS->SetValue( 2+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU0,myV1)).Point(iu,iv)).Z();
+      valnorm = -rho * ((Constraints.Node(myU0,myV1))->Point(iu,iv)).Z();
       HCOINS->SetValue( 3+ideb , valnorm );
 
 // -F(U1,V1) and its derivatives normalized on (-1,1)
       ideb += SIZE;
-      valnorm = -rho * ((Constraints.Node(myU1,myV1)).Point(iu,iv)).X();
+      valnorm = -rho * ((Constraints.Node(myU1,myV1))->Point(iu,iv)).X();
       HCOINS->SetValue( 1+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU1,myV1)).Point(iu,iv)).Y();
+      valnorm = -rho * ((Constraints.Node(myU1,myV1))->Point(iu,iv)).Y();
       HCOINS->SetValue( 2+ideb , valnorm );
-      valnorm = -rho * ((Constraints.Node(myU1,myV1)).Point(iu,iv)).Z();
+      valnorm = -rho * ((Constraints.Node(myU1,myV1))->Point(iu,iv)).Z();
       HCOINS->SetValue( 3+ideb , valnorm );
     }
   }
@@ -721,13 +723,13 @@ void AdvApp2Var_Patch::AddErrors(const AdvApp2Var_Framework& Constraints)
     Standard_Real emax1=0.,emax2=0.,emax3=0.,emax4=0.,err1,err2,err3,err4;
     for (iu=0;iu<=myOrdInU;iu++) {
       for (iv=0;iv<=myOrdInV;iv++) {
-	error = (Constraints.Node(myU0,myV0)).Error(iu,iv);
+    error = (Constraints.Node(myU0,myV0))->Error(iu,iv);
 	emax1 = Max(emax1,error);
-	error = (Constraints.Node(myU1,myV0)).Error(iu,iv);
+    error = (Constraints.Node(myU1,myV0))->Error(iu,iv);
 	emax2 = Max(emax2,error);
-	error = (Constraints.Node(myU0,myV1)).Error(iu,iv);
+    error = (Constraints.Node(myU0,myV1))->Error(iu,iv);
 	emax3 = Max(emax3,error);
-	error = (Constraints.Node(myU1,myV1)).Error(iu,iv);
+    error = (Constraints.Node(myU1,myV1))->Error(iu,iv);
 	emax4 = Max(emax4,error);
       }
     }

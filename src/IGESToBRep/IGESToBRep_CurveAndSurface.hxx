@@ -45,10 +45,6 @@ public:
   //! optimization of  the continuity to False.
   Standard_EXPORT IGESToBRep_CurveAndSurface();
   
-  //! Creates a tool CurveAndSurface ready to run and sets its
-  //! fields as CS's.
-  Standard_EXPORT IGESToBRep_CurveAndSurface(const IGESToBRep_CurveAndSurface& CS);
-  
   //! Creates a tool CurveAndSurface ready to run.
   Standard_EXPORT IGESToBRep_CurveAndSurface(const Standard_Real eps, const Standard_Real epsGeom, const Standard_Real epsCoeff, const Standard_Boolean mode, const Standard_Boolean modeapprox, const Standard_Boolean optimized);
   

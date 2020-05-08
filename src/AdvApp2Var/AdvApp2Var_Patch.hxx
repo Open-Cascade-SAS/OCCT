@@ -35,12 +35,10 @@ class AdvApp2Var_Criterion;
 
 
 //! used to store results on a domain [Ui,Ui+1]x[Vj,Vj+1]
-class AdvApp2Var_Patch 
+class AdvApp2Var_Patch : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(AdvApp2Var_Patch, Standard_Transient)
 public:
-
-  DEFINE_STANDARD_ALLOC
-
   
   Standard_EXPORT AdvApp2Var_Patch();
   
@@ -102,20 +100,12 @@ public:
   
   Standard_EXPORT void SetCritValue (const Standard_Real dist);
 
-
-
-
-protected:
-
-
-
-
-
 private:
 
-  
-  Standard_EXPORT AdvApp2Var_Patch(const AdvApp2Var_Patch& P);
+  AdvApp2Var_Patch(const AdvApp2Var_Patch& P);
+  AdvApp2Var_Patch& operator= (const AdvApp2Var_Patch& theOther);
 
+private:
 
   Standard_Real myU0;
   Standard_Real myU1;

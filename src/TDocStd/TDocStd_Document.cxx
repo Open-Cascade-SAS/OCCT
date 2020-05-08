@@ -76,12 +76,12 @@ TDocStd_Document::TDocStd_Document(const TCollection_ExtendedString& aStorageFor
 myStorageFormat(aStorageFormat),
 myData (new TDF_Data()),
 myUndoLimit(0),
+myUndoTransaction ("UNDO"),
 mySaveTime(0),
 myIsNestedTransactionMode(0),
 mySaveEmptyLabels(Standard_False)
 {
-  TDF_Transaction* pTr =  new TDF_Transaction (myData,"UNDO");
-  myUndoTransaction    = *pTr; delete pTr;
+  myUndoTransaction.Initialize (myData);
   TDocStd_Owner::SetDocument(myData,this);
 
 #ifdef SRN_DELTA_COMPACT
@@ -131,8 +131,7 @@ TCollection_ExtendedString TDocStd_Document::GetPath () const
 void TDocStd_Document::SetData (const Handle(TDF_Data)& D)
 {
   myData = D;
-  TDF_Transaction* pTr = new TDF_Transaction(myData,"UNDO");
-  myUndoTransaction = *pTr; delete pTr;  
+  myUndoTransaction.Initialize (myData);
 }
 
 //=======================================================================

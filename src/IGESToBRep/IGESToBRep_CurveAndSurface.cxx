@@ -77,34 +77,6 @@ IGESToBRep_CurveAndSurface::IGESToBRep_CurveAndSurface()
   UpdateMinMaxTol();
 }
 
-
-//=======================================================================
-//function : IGESToBRep_CurveAndSurface
-//purpose  : 
-//=======================================================================
-
-IGESToBRep_CurveAndSurface::IGESToBRep_CurveAndSurface
-  (const IGESToBRep_CurveAndSurface& other)
-: myEps         (other.myEps),
-  myEpsCoeff    (other.myEpsCoeff),
-  myEpsGeom     (other.myEpsGeom),
-  myMinTol      (other.myMinTol),
-  myMaxTol      (other.myMaxTol),
-  myModeIsTopo  (other.myModeIsTopo),
-  myModeApprox  (other.myModeApprox),
-  myContIsOpti  (other.myContIsOpti),
-  myUnitFactor  (other.myUnitFactor),
-  mySurfaceCurve(other.mySurfaceCurve),
-  myContinuity  (other.myContinuity),
-  mySurface     (other.mySurface),
-  myUVResolution(other.myUVResolution),
-  myIsResolCom  (other.myIsResolCom),
-  myModel       (other.myModel),
-  myTP          (other.myTP)
-{  
-}
-
-
 //=======================================================================
 //function : IGESToBRep_CurveAndSurface
 //purpose  : 

@@ -53,14 +53,6 @@ Intrv_Intervals::Intrv_Intervals (const Intrv_Interval& Int)
 { myInter.Append(Int); }
 
 //=======================================================================
-//function : Intrv_Intervals
-//purpose  :
-//=======================================================================
-
-Intrv_Intervals::Intrv_Intervals (const Intrv_Intervals& Int)
-{ myInter = Int.myInter; }
-
-//=======================================================================
 //function : Intersect
 //purpose  :
 //=======================================================================

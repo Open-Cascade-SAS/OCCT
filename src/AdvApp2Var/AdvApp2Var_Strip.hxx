@@ -22,6 +22,6 @@
 
 //! Set of constraints along a same type of Iso on the same level
 
-typedef NCollection_Sequence<AdvApp2Var_Iso> AdvApp2Var_Strip;
+typedef NCollection_Sequence<Handle(AdvApp2Var_Iso)> AdvApp2Var_Strip;
 
 #endif

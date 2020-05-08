@@ -37,17 +37,6 @@ TDF_IDFilter::TDF_IDFilter(const Standard_Boolean ignoreMode) :
 myIgnore(ignoreMode)
 {}
 
-
-//=======================================================================
-//function : TDF_IDFilter
-//purpose  : Private, to forbid implicit or hidden accesses to
-//          the copy constructor.
-//=======================================================================
-
-TDF_IDFilter::TDF_IDFilter(const TDF_IDFilter& /*aFilter*/)
-{}
-
-
 //=======================================================================
 //function : IgnoreAll
 //purpose  : 

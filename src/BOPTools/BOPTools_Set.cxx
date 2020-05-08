@@ -51,6 +51,25 @@ BOPTools_Set::BOPTools_Set
   mySum=0;  
   myUpper=432123;
 }
+
+//=======================================================================
+//function : BOPTools_Set
+//purpose  :
+//=======================================================================
+BOPTools_Set::BOPTools_Set (const BOPTools_Set& theOther)
+: myAllocator(theOther.myAllocator),
+  myShape    (theOther.myShape),
+  myNbShapes (theOther.myNbShapes),
+  mySum      (theOther.mySum),
+  myUpper    (theOther.myUpper)
+{
+  for (TopTools_ListIteratorOfListOfShape aIt (theOther.myShapes); aIt.More(); aIt.Next())
+  {
+    const TopoDS_Shape& aShape = aIt.Value();
+    myShapes.Append (aShape);
+  }
+}
+
 //=======================================================================
 //function :~ 
 //purpose  : 

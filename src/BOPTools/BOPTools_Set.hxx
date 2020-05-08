@@ -40,7 +40,10 @@ public:
 Standard_EXPORT virtual ~BOPTools_Set();
   
   Standard_EXPORT BOPTools_Set(const Handle(NCollection_BaseAllocator)& theAllocator);
-  
+
+  //! Copy constructor.
+  Standard_EXPORT BOPTools_Set (const BOPTools_Set& theOther);
+
   Standard_EXPORT BOPTools_Set& Assign (const BOPTools_Set& Other);
 BOPTools_Set& operator = (const BOPTools_Set& Other)
 {
