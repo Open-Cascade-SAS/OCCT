@@ -35,7 +35,8 @@ vtkStandardNewMacro(IVtkTools_DisplayModeFilter)
 //============================================================================
 IVtkTools_DisplayModeFilter::IVtkTools_DisplayModeFilter()
   : myDisplayMode (DM_Wireframe),
-    myDoDisplaySharedVertices (false)
+    myDoDisplaySharedVertices (false),
+  myDrawFaceBoundaries( false )
 {
   // Filter according to values in subshapes types array.
   myIdsArrayName = IVtkVTK_ShapeData::ARRNAME_MESH_TYPES();
@@ -49,20 +50,22 @@ IVtkTools_DisplayModeFilter::IVtkTools_DisplayModeFilter()
   aTypes.Add (MT_SharedEdge);
   aTypes.Add (MT_WireFrameFace);
 
-  myModesDefinition.Bind (DM_Wireframe, aTypes);
+  myModesDefinition[DM_Wireframe] = aTypes;
 
   aTypes.Clear();
   aTypes.Add (MT_FreeVertex);
   aTypes.Add (MT_ShadedFace);
 
-  myModesDefinition.Bind (DM_Shading, aTypes);
+  myModesDefinition[DM_Shading] = aTypes;
 }
 
 //============================================================================
 // Method: Destructor
 // Purpose:
 //============================================================================
-IVtkTools_DisplayModeFilter::~IVtkTools_DisplayModeFilter() { }
+IVtkTools_DisplayModeFilter::~IVtkTools_DisplayModeFilter()
+{
+}
 
 //============================================================================
 // Method: RequestData
@@ -73,7 +76,7 @@ int IVtkTools_DisplayModeFilter::RequestData (vtkInformation        *theRequest,
                                               vtkInformationVector **theInputVector,
                                               vtkInformationVector  *theOutputVector)
 {
-  SetData (myModesDefinition.Find (myDisplayMode));
+  SetData (myModesDefinition[myDisplayMode]);
   return Superclass::RequestData (theRequest, theInputVector, theOutputVector);
 }
 
@@ -104,24 +107,20 @@ void IVtkTools_DisplayModeFilter::SetDisplaySharedVertices (const bool theDoDisp
   if (myDoDisplaySharedVertices != theDoDisplay)
   {
     myDoDisplaySharedVertices = theDoDisplay;
-    vtkIdType aVertexType = MT_SharedVertex;
-    NCollection_DataMap<IVtk_DisplayMode, IVtk_IdTypeMap>::Iterator aModes (myModesDefinition);
-    NCollection_DataMap<IVtk_DisplayMode, IVtk_IdTypeMap> aNewModes;
     IVtk_IdTypeMap aModeTypes;
-    for (; aModes.More(); aModes.Next())
+    for (int i = 0; i < 2; i++)
     {
-      aModeTypes = aModes.Value();
-      if (theDoDisplay && !aModeTypes.Contains(aVertexType))
+      aModeTypes = myModesDefinition[i];
+      if (theDoDisplay && !aModeTypes.Contains(MT_SharedVertex))
       {
-        aModeTypes.Add (aVertexType);
+        aModeTypes.Add (MT_SharedVertex);
       }
-      else if (!theDoDisplay && aModeTypes.Contains (aVertexType))
+      else if (!theDoDisplay && aModeTypes.Contains (MT_SharedVertex))
       {
-        aModeTypes.Remove (aVertexType);
+        aModeTypes.Remove (MT_SharedVertex);
       }
-      aNewModes.Bind (aModes.Key(), aModeTypes);
+      myModesDefinition[i] = aModeTypes;
     }
-    myModesDefinition = aNewModes;
     Modified();
   }
 }
@@ -148,3 +147,39 @@ IVtk_DisplayMode IVtkTools_DisplayModeFilter::GetDisplayMode () const
   return myDisplayMode;
 }
 
+//============================================================================
+// Method: meshTypesForMode
+// Purpose:
+//============================================================================
+const IVtk_IdTypeMap& IVtkTools_DisplayModeFilter::MeshTypesForMode(IVtk_DisplayMode theMode) const
+{
+  return myModesDefinition[theMode];
+}
+
+//============================================================================
+// Method: setMeshTypesForMode
+// Purpose:
+//============================================================================
+void IVtkTools_DisplayModeFilter::SetMeshTypesForMode(IVtk_DisplayMode theMode, const IVtk_IdTypeMap& theMeshTypes)
+{
+  myModesDefinition[theMode] = theMeshTypes;
+  Modified();
+}
+
+//============================================================================
+// Method: SetFaceBoundaryDraw
+// Purpose:
+//============================================================================
+void IVtkTools_DisplayModeFilter::SetFaceBoundaryDraw(bool theToDraw)
+{
+  myDrawFaceBoundaries = theToDraw;
+  if (theToDraw) {
+    myModesDefinition[DM_Shading].Add(MT_BoundaryEdge);
+    myModesDefinition[DM_Shading].Add(MT_SharedEdge);
+  }
+  else {
+    myModesDefinition[DM_Shading].Remove(MT_BoundaryEdge);
+    myModesDefinition[DM_Shading].Remove(MT_SharedEdge);
+  }
+  Modified();
+}

@@ -46,6 +46,18 @@ public:
   //! Get current display mode.
   IVtk_DisplayMode GetDisplayMode() const;
 
+  //! Returns list of displaying mesh element types for the given display mode
+  const IVtk_IdTypeMap& MeshTypesForMode(IVtk_DisplayMode theMode) const;
+
+  //! Set a list of displaying mesh element types for the given display mode
+  void SetMeshTypesForMode(IVtk_DisplayMode theMode, const IVtk_IdTypeMap& theMeshTypes);
+
+  //! Draw Boundary of faces for shading mode
+  void SetFaceBoundaryDraw(bool theToDraw);
+
+  //! Returns True if drawing Boundary of faces for shading mode is defined.
+  bool FaceBoundaryDraw() const { return myDrawFaceBoundaries; }
+
 protected:
   //! Filter cells according to the given set of ids.
   virtual int RequestData (vtkInformation *, vtkInformationVector **, vtkInformationVector *);
@@ -55,9 +67,12 @@ protected:
 
 protected:
   //! Display mode defining mesh types to pass through this filter.
-  IVtk_DisplayMode                                      myDisplayMode;
-  NCollection_DataMap<IVtk_DisplayMode, IVtk_IdTypeMap> myModesDefinition;
-  bool                                                  myDoDisplaySharedVertices;
+  IVtk_DisplayMode      myDisplayMode;
+  IVtk_IdTypeMap        myModesDefinition[2];
+  bool                  myDoDisplaySharedVertices;
+
+  //! Draw Face boundaries flag is applicable only for shading display mode.
+  bool                  myDrawFaceBoundaries;
 };
 
 #ifdef _MSC_VER

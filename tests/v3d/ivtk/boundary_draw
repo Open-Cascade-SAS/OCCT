@@ -1,0 +1,20 @@
+puts "============="
+puts "boundary_draw"
+puts "============="
+puts ""
+#######################################################
+#  Tests boundary draw changing in the IVtk view
+#######################################################
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+ivtkinit
+box b 1 1 1
+ivtkdisplay b
+ivtksetdispmode 1
+ivtksetboundingdraw 1
+ivtkdump $anImage1
+
+ivtksetboundingdraw 0
+ivtkdump $anImage2

@@ -719,6 +719,93 @@ static Standard_Integer VtkSetDisplayMode (Draw_Interpretor& theDI,
 }
 
 //================================================================
+// Function  : VtkSetBoundaryDraw
+// Purpose   : 
+// Draw args : ivtksetboundingdraw [name] draw on/off(0,1)
+//================================================================
+static Standard_Integer VtkSetBoundaryDraw(Draw_Interpretor& theDI,
+  Standard_Integer theArgNum,
+  const char** theArgs)
+{
+  // Check viewer
+  if (!GetInteractor()->IsEnabled())
+  {
+    theDI << theArgs[0] << " error: call ivtkinit before\n";
+    return 1; // TCL_ERROR
+  }
+
+  // Check arguments
+  if (theArgNum != 2 && theArgNum != 3)
+  {
+    theDI << theArgs[0] << " error: expects 1 or 2 arguments\n";
+    return 1; // TCL_ERROR
+  }
+
+  vtkSmartPointer<vtkActor> anActor;
+  // Set disp mode for all objects
+  if (theArgNum == 2)
+  {
+    // Get mode
+    Standard_Integer toDraw = Draw::Atoi(theArgs[1]);
+    DoubleMapOfActorsAndNames::Iterator anIter(GetMapOfActors());
+    while (anIter.More())
+    {
+      anActor = anIter.Key1();
+      // Set Red color for boundary edges
+      vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
+      IVtkTools::SetLookupTableColor(aTable, MT_SharedEdge, 1., 0., 0., 1.);
+
+      IVtkTools_ShapeDataSource* aSrc = IVtkTools_ShapeObject::GetShapeSource(anActor);
+      if (aSrc)
+      {
+        IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
+        if (!anOccShape.IsNull())
+        {
+          IVtkTools_DisplayModeFilter* aFilter = GetPipeline(anOccShape->GetId())->GetDisplayModeFilter();
+          aFilter->SetDisplayMode(DM_Shading);
+          aFilter->SetFaceBoundaryDraw(toDraw != 0);
+          aFilter->Modified();
+          aFilter->Update();
+        }
+      }
+      anIter.Next();
+    }
+  }
+  // Set disp mode for named object
+  else
+  {
+    Standard_Integer toDraw = Draw::Atoi(theArgs[2]);
+    TCollection_AsciiString aName = theArgs[1];
+    if (GetMapOfActors().IsBound2(aName))
+    {
+      anActor = GetMapOfActors().Find2(aName);
+      // Set Red color for boundary edges
+      vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
+      IVtkTools::SetLookupTableColor(aTable, MT_SharedEdge, 1., 0., 0., 1.);
+
+      vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource(anActor);
+      if (aSrc)
+      {
+        IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
+        if (!anOccShape.IsNull())
+        {
+          IVtkTools_DisplayModeFilter* aFilter = GetPipeline(anOccShape->GetId())->GetDisplayModeFilter();
+          aFilter->SetDisplayMode(DM_Shading);
+          aFilter->SetFaceBoundaryDraw(toDraw != 0);
+          aFilter->Modified();
+          aFilter->Update();
+        }
+      }
+    }
+  }
+
+  // Redraw window
+  GetInteractor()->Render();
+  return 0;
+}
+
+
+//================================================================
 // Function  : VtkSetSelectionMode
 // Purpose   : 
 // Draw args : ivtksetselmode [name] mode on/off(0,1)
@@ -1196,6 +1283,13 @@ void IVtkDraw::Commands (Draw_Interpretor& theCommands)
     "\n\t\t: Sets or unsets display mode 'mode' to the object with name 'name' or to all objects"
     "if name is not defined.",
     __FILE__, VtkSetDisplayMode, group);
+
+  theCommands.Add("ivtksetboundingdraw",
+    "ivtksetboundingdraw usage:\n"
+    "ivtksetboundingdraw [name] draw on/off (0,1)"
+    "\n\t\t: Sets or unsets boundaries drawing for shading display mode to the object with name 'name' or to all objects"
+    "if name is not defined.",
+    __FILE__, VtkSetBoundaryDraw, group);
 
   theCommands.Add("ivtksetselmode",
     "ivtksetselmode usage:\n"
