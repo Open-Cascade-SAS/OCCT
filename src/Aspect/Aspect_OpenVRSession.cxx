@@ -227,7 +227,7 @@ public:
     if (aVrError != vr::VRRenderModelError_None
      || aVrTexture == NULL)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Unable to load render model texture: ") + theVrModelName + " - " + int(aVrError), Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("OpenVR, Unable to load render model texture: ") + theVrModelName + " - " + int(aVrError));
       return false;
     }
 
@@ -472,8 +472,7 @@ bool Aspect_OpenVRSession::Open()
   if (aVrError != vr::VRInitError_None)
   {
     myContext->System = NULL;
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Unable to init VR runtime: ") + vr::VR_GetVRInitErrorAsEnglishDescription (aVrError),
-                                       Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("OpenVR, Unable to init VR runtime: ") + vr::VR_GetVRInitErrorAsEnglishDescription (aVrError));
     Close();
     return false;
   }
@@ -481,8 +480,7 @@ bool Aspect_OpenVRSession::Open()
   /*vr::IVRRenderModels* aRenderModels = (vr::IVRRenderModels* )vr::VR_GetGenericInterface (vr::IVRRenderModels_Version, &aVrError);
   if (aRenderModels == NULL)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Unable to get render model interface: ") + vr::VR_GetVRInitErrorAsEnglishDescription (aVrError),
-                                       Message_Fail);;
+    Message::SendFail (TCollection_AsciiString ("Unable to get render model interface: ") + vr::VR_GetVRInitErrorAsEnglishDescription (aVrError));;
   }*/
 
   NCollection_Vec2<uint32_t> aRenderSize;
@@ -499,7 +497,7 @@ bool Aspect_OpenVRSession::Open()
   initInput();
   return true;
 #else
-  Message::DefaultMessenger()->Send ("Open CASCADE has been built without OpenVR support", Message_Fail);
+  Message::SendFail ("Open CASCADE has been built without OpenVR support");
   return false;
 #endif
 }
@@ -518,15 +516,15 @@ bool Aspect_OpenVRSession::initInput()
 
   if (!OSD_File (myActionsManifest).Exists())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Unable to open actions manifest '") + myActionsManifest  + "'", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("OpenVR, Unable to open actions manifest '") + myActionsManifest  + "'");
     return false;
   }
 
   vr::EVRInputError aVrError = vr::VRInput()->SetActionManifestPath (myActionsManifest.ToCString());
   if (aVrError != vr::VRInputError_None)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Unable to load actions manifest '") + myActionsManifest
-                                    + "': " + getVRInputError (aVrError), Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("OpenVR, Unable to load actions manifest '") + myActionsManifest
+                     + "': " + getVRInputError (aVrError));
     return false;
   }
 
@@ -546,8 +544,8 @@ bool Aspect_OpenVRSession::initInput()
       else
       {
         hasErrors = true;
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Unable to load action '") + anAction->Id() + "' from '" + myActionsManifest
-                                         + "': " + getVRInputError (aVrError), Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("OpenVR, Unable to load action '") + anAction->Id() + "' from '" + myActionsManifest
+                         + "': " + getVRInputError (aVrError));
       }
     }
 
@@ -560,8 +558,8 @@ bool Aspect_OpenVRSession::initInput()
     else
     {
       hasErrors = true;
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Unable to load action set '") + anActionSet->Id() + "' from '" + myActionsManifest
-                                        + "': " + getVRInputError (aVrError), Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("OpenVR, Unable to load action set '") + anActionSet->Id() + "' from '" + myActionsManifest
+                       + "': " + getVRInputError (aVrError));
     }
   }
   return !hasErrors;
@@ -660,7 +658,7 @@ Handle(Graphic3d_ArrayOfTriangles) Aspect_OpenVRSession::loadRenderModel (Standa
   }
   if (aVrError != vr::VRRenderModelError_None)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Unable to load render model: ") + aRenderModelName + " - " + int(aVrError), Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("OpenVR, Unable to load render model: ") + aRenderModelName + " - " + int(aVrError));
     return Handle(Graphic3d_ArrayOfTriangles)();
   }
 
@@ -819,7 +817,7 @@ bool Aspect_OpenVRSession::WaitPoses()
   const vr::EVRCompositorError aVRError = vr::VRCompositor()->WaitGetPoses (myContext->TrackedPoses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
   if (aVRError != vr::VRCompositorError_None)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Compositor wait poses error: ") + getVRCompositorError (aVRError), Message_Trace);
+    Message::SendTrace (TCollection_AsciiString ("Compositor wait poses error: ") + getVRCompositorError (aVRError));
   }
 
   for (Standard_Integer aPoseIter = myTrackedPoses.Lower(); aPoseIter <= myTrackedPoses.Upper(); ++aPoseIter)
@@ -860,7 +858,7 @@ Aspect_XRDigitalActionData Aspect_OpenVRSession::GetDigitalActionData (const Han
     vr::EVRInputError anInErr = vr::VRInput()->GetDigitalActionData (theAction->RawHandle(), &aNewData, sizeof(aNewData), vr::k_ulInvalidInputValueHandle);
     if (anInErr != vr::VRInputError_None)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Input Error on '") + theAction->Id() + "': " + getVRInputError (anInErr), Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("Input Error on '") + theAction->Id() + "': " + getVRInputError (anInErr));
       return anActionData;
     }
 
@@ -895,7 +893,7 @@ Aspect_XRAnalogActionData Aspect_OpenVRSession::GetAnalogActionData (const Handl
     vr::EVRInputError anInErr = vr::VRInput()->GetAnalogActionData (theAction->RawHandle(), &aNewData, sizeof(aNewData), vr::k_ulInvalidInputValueHandle);
     if (anInErr != vr::VRInputError_None)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Input Error on '") + theAction->Id() + "': " + getVRInputError (anInErr), Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("Input Error on '") + theAction->Id() + "': " + getVRInputError (anInErr));
       return anActionData;
     }
 
@@ -936,7 +934,7 @@ Aspect_XRPoseActionData Aspect_OpenVRSession::GetPoseActionDataForNextFrame (con
     vr::EVRInputError anInErr = vr::VRInput()->GetPoseActionDataForNextFrame (theAction->RawHandle(), anOrigin, &aNewData, sizeof(aNewData), vr::k_ulInvalidInputValueHandle);
     if (anInErr != vr::VRInputError_None)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Input Error on '") + theAction->Id() + "': " + getVRInputError (anInErr), Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("Input Error on '") + theAction->Id() + "': " + getVRInputError (anInErr));
       return anActionData;
     }
 
@@ -978,7 +976,7 @@ void Aspect_OpenVRSession::triggerHapticVibrationAction (const Handle(Aspect_XRA
                                                                              vr::k_ulInvalidInputValueHandle);
     if (anInErr != vr::VRInputError_None)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Output Error on '") + theAction->Id() + "': " + getVRInputError (anInErr), Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("Output Error on '") + theAction->Id() + "': " + getVRInputError (anInErr));
     }
   }
 #else
@@ -1072,7 +1070,7 @@ void Aspect_OpenVRSession::ProcessEvents()
 // =======================================================================
 void Aspect_OpenVRSession::onTrackedDeviceActivated (Standard_Integer theDeviceIndex)
 {
-  Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Device ") + theDeviceIndex + " attached", Message_Trace);
+  Message::SendTrace (TCollection_AsciiString ("OpenVR, Device ") + theDeviceIndex + " attached");
 }
 
 // =======================================================================
@@ -1081,7 +1079,7 @@ void Aspect_OpenVRSession::onTrackedDeviceActivated (Standard_Integer theDeviceI
 // =======================================================================
 void Aspect_OpenVRSession::onTrackedDeviceDeactivated (Standard_Integer theDeviceIndex)
 {
-  Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Device ") + theDeviceIndex + " detached", Message_Trace);
+  Message::SendTrace (TCollection_AsciiString ("OpenVR, Device ") + theDeviceIndex + " detached");
 }
 
 // =======================================================================
@@ -1090,7 +1088,7 @@ void Aspect_OpenVRSession::onTrackedDeviceDeactivated (Standard_Integer theDevic
 // =======================================================================
 void Aspect_OpenVRSession::onTrackedDeviceUpdated (Standard_Integer theDeviceIndex)
 {
-  Message::DefaultMessenger()->Send (TCollection_AsciiString ("OpenVR, Device ") + theDeviceIndex + " updated", Message_Trace);
+  Message::SendTrace (TCollection_AsciiString ("OpenVR, Device ") + theDeviceIndex + " updated");
 }
 
 // =======================================================================
@@ -1119,7 +1117,7 @@ bool Aspect_OpenVRSession::SubmitEye (void* theTexture,
       aVRTexture.eType = vr::TextureType_OpenGL;
       break;
     default:
-      Message::DefaultMessenger()->Send ("Compositor error: unsupported Graphics API", Message_Fail);
+      Message::SendFail ("Compositor error: unsupported Graphics API");
       return false;
   }
   switch (theColorSpace)
@@ -1133,11 +1131,11 @@ bool Aspect_OpenVRSession::SubmitEye (void* theTexture,
   {
     if (aVRError != vr::VRCompositorError_AlreadySubmitted)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Compositor Error: ") + getVRCompositorError (aVRError), Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("Compositor Error: ") + getVRCompositorError (aVRError));
     }
     else
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Compositor Error: ") + getVRCompositorError (aVRError), Message_Trace);
+      Message::SendTrace (TCollection_AsciiString ("Compositor Error: ") + getVRCompositorError (aVRError));
     }
     return false;
   }

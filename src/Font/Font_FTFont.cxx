@@ -90,7 +90,7 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
   myFontParams = theParams;
   if (!myFTLib->IsValid())
   {
-    Message::DefaultMessenger()->Send ("FreeType library is unavailable", Message_Trace);
+    Message::SendTrace ("FreeType library is unavailable");
     Release();
     return false;
   }
@@ -99,7 +99,7 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
   {
     if (FT_New_Memory_Face (myFTLib->Instance(), theData->Data(), (FT_Long )theData->Size(), (FT_Long )theFaceId, &myFTFace) != 0)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from memory", Message_Trace);
+      Message::SendTrace (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from memory");
       Release();
       return false;
     }
@@ -108,7 +108,7 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
   {
     if (FT_New_Face (myFTLib->Instance(), myFontPath.ToCString(), (FT_Long )theFaceId, &myFTFace) != 0)
     {
-      //Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from file", Message_Trace);
+      //Message::SendTrace (TCollection_AsciiString("Font '") + myFontPath + "' failed to load from file");
       Release();
       return false;
     }
@@ -116,13 +116,13 @@ bool Font_FTFont::Init (const Handle(NCollection_Buffer)& theData,
 
   if (FT_Select_Charmap (myFTFace, ft_encoding_unicode) != 0)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' doesn't contains Unicode charmap", Message_Trace);
+    Message::SendTrace (TCollection_AsciiString("Font '") + myFontPath + "' doesn't contains Unicode charmap");
     Release();
     return false;
   }
   else if (FT_Set_Char_Size (myFTFace, 0L, toFTPoints (theParams.PointSize), theParams.Resolution, theParams.Resolution) != 0)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font '") + myFontPath + "' doesn't contains Unicode charmap of requested size", Message_Trace);
+    Message::SendTrace (TCollection_AsciiString("Font '") + myFontPath + "' doesn't contains Unicode charmap of requested size");
     Release();
     return false;
   }
@@ -259,8 +259,8 @@ bool Font_FTFont::findAndInitFallback (Font_UnicodeSubset theSubset)
     const TCollection_AsciiString& aPath = aRequestedFont->FontPathAny (myFontAspect, aParams.ToSynthesizeItalic, aFaceId);
     if (myFallbackFaces[theSubset]->Init (aPath, aParams, aFaceId))
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Font_FTFont, using fallback font '") + aRequestedFont->FontName() + "'"
-                                      + " for symbols unsupported by '" + myFTFace->family_name + "'", Message_Trace);
+      Message::SendTrace (TCollection_AsciiString ("Font_FTFont, using fallback font '") + aRequestedFont->FontName() + "'"
+                        + " for symbols unsupported by '" + myFTFace->family_name + "'");
     }
   }
   return myFallbackFaces[theSubset]->IsValid();

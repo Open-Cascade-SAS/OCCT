@@ -111,13 +111,13 @@ Standard_Boolean Image_Diff::Init (const Handle(Image_PixMap)& theImageRef,
    || theImageRef->SizeY()   != theImageNew->SizeY()
    || theImageRef->Format()  != theImageNew->Format())
   {
-    Message::DefaultMessenger()->Send ("Error: Images have different format or dimensions", Message_Fail);
+    Message::SendFail ("Error: Images have different format or dimensions");
     return Standard_False;
   }
   else if (theImageRef->SizeX() >= 0xFFFF
         || theImageRef->SizeY() >= 0xFFFF)
   {
-    Message::DefaultMessenger()->Send ("Error: Images are too large", Message_Fail);
+    Message::SendFail ("Error: Images are too large");
     return Standard_False;
   }
 
@@ -144,7 +144,7 @@ Standard_Boolean Image_Diff::Init (const TCollection_AsciiString& theImgPathRef,
   if (!anImgRef->Load (theImgPathRef)
    || !anImgNew->Load (theImgPathNew))
   {
-    Message::DefaultMessenger()->Send ("Error: Failed to load image(s) file(s)", Message_Fail);
+    Message::SendFail ("Error: Failed to load image(s) file(s)");
     return Standard_False;
   }
   return Init (anImgRef, anImgNew, theToBlackWhite);

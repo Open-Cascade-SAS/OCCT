@@ -2653,15 +2653,14 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
 
       if (!theImage.InitZero (aFormat, Standard_Size(aTargetSize.x()), Standard_Size(aTargetSize.y())))
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("Fail to allocate an image ") + aTargetSize.x() + "x" + aTargetSize.y()
-                                                                 + " for view dump", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("Fail to allocate an image ") + aTargetSize.x() + "x" + aTargetSize.y() + " for view dump");
         return Standard_False;
       }
     }
   }
   if (theImage.IsEmpty())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("V3d_View::ToPixMap() has been called without image dimensions"), Message_Fail);
+    Message::SendFail ("V3d_View::ToPixMap() has been called without image dimensions");
     return Standard_False;
   }
   aTargetSize.x() = (Standard_Integer )theImage.SizeX();
@@ -2704,8 +2703,8 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
     if (theParams.TileSize > aMaxTexSizeX
      || theParams.TileSize > aMaxTexSizeY)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Image dump can not be performed - specified tile size (")
-                                                                 + theParams.TileSize + ") exceeds hardware limits (" + aMaxTexSizeX + "x" + aMaxTexSizeY + ")", Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("Image dump can not be performed - specified tile size (")
+                       + theParams.TileSize + ") exceeds hardware limits (" + aMaxTexSizeX + "x" + aMaxTexSizeY + ")");
       return Standard_False;
     }
 
@@ -2714,10 +2713,10 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
     {
       if (MyViewer->Driver()->InquireLimit (Graphic3d_TypeOfLimit_IsWorkaroundFBO))
       {
-        Message::DefaultMessenger ()->Send (TCollection_AsciiString ("Warning, workaround for Intel driver problem with empty FBO for images with big width is applyed."), Message_Warning);
+        Message::SendWarning ("Warning, workaround for Intel driver problem with empty FBO for images with big width is applied");
       }
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Info, tiling image dump is used, image size (")
-                                                                 + aFBOVPSize.x() + "x" + aFBOVPSize.y() + ") exceeds hardware limits (" + aMaxTexSizeX + "x" + aMaxTexSizeY + ")", Message_Info);
+      Message::SendInfo (TCollection_AsciiString ("Info, tiling image dump is used, image size (")
+                       + aFBOVPSize.x() + "x" + aFBOVPSize.y() + ") exceeds hardware limits (" + aMaxTexSizeX + "x" + aMaxTexSizeY + ")");
       aFBOVPSize.x() = Min (aFBOVPSize.x(), aMaxTexSizeX);
       aFBOVPSize.y() = Min (aFBOVPSize.y(), aMaxTexSizeY);
       isTiling = true;
@@ -2740,7 +2739,7 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
     }
     aFBOVPSize = aWinSize;
 
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("Warning, on screen buffer is used for image dump - content might be invalid"), Message_Warning);
+    Message::SendWarning ("Warning, on screen buffer is used for image dump - content might be invalid");
   }
 
   // backup camera parameters

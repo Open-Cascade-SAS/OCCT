@@ -141,8 +141,7 @@ void RWGltf_GltfJsonParser::GltfElementMap::Init (const TCollection_AsciiString&
       const TCollection_AsciiString aKey (aChildIter->name.GetString());
       if (!myChildren.Bind (aKey, &aChildIter->value))
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("Invalid glTF syntax - key '")
-                                         + aKey + "' is already defined in '" + theRootName + "'.", Message_Warning);
+        Message::SendWarning (TCollection_AsciiString ("Invalid glTF syntax - key '") + aKey + "' is already defined in '" + theRootName + "'.");
       }
     }
   }
@@ -169,7 +168,7 @@ void RWGltf_GltfJsonParser::GltfElementMap::Init (const TCollection_AsciiString&
 void RWGltf_GltfJsonParser::reportGltfSyntaxProblem (const TCollection_AsciiString& theMsg,
                                                     Message_Gravity theGravity)
 {
-  Message::DefaultMessenger()->Send (myErrorPrefix + theMsg, theGravity);
+  Message::Send (myErrorPrefix + theMsg, theGravity);
 }
 
 // =======================================================================
@@ -422,7 +421,7 @@ void RWGltf_GltfJsonParser::gltfBindMaterial (const Handle(RWGltf_MaterialMetall
         anAlphaMode = Graphic3d_AlphaMode_Opaque;
         if (aMatXde.BaseColor.Alpha() < 1.0f)
         {
-          Message::DefaultMessenger()->Send ("glTF reader - material with non-zero Transparency specifies Opaque AlphaMode", Message_Warning);
+          Message::SendWarning ("glTF reader - material with non-zero Transparency specifies Opaque AlphaMode");
         }
         break;
       }
@@ -810,7 +809,7 @@ bool RWGltf_GltfJsonParser::gltfParseTexture (Handle(Image_Texture)& theTexture,
         return true;
       }
     }
-    Message::DefaultMessenger()->Send ("glTF reader - embedded image has been skipped", Message_Warning);
+    Message::SendWarning ("glTF reader - embedded image has been skipped");
     return false;
   }
 
@@ -1205,9 +1204,8 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
                          aMat4.GetValue (1, 0), aMat4.GetValue (1, 1), aMat4.GetValue (1, 2), aMat4.GetValue (1, 3),
                          aMat4.GetValue (2, 0), aMat4.GetValue (2, 1), aMat4.GetValue (2, 2), aMat4.GetValue (2, 3));
 
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("glTF reader, scene node '")
-                                         + theSceneNodeId + "' defines unsupported scaling "
-                                         + aScaleVec.x() + " " + aScaleVec.y() + " " + aScaleVec.z(), Message_Warning);
+        Message::SendWarning (TCollection_AsciiString ("glTF reader, scene node '")
+                            + theSceneNodeId + "' defines unsupported scaling " + aScaleVec.x() + " " + aScaleVec.y() + " " + aScaleVec.z());
       }
       else if (Abs (aScaleVec.x() - 1.0) > Precision::Confusion())
       {
@@ -1428,8 +1426,7 @@ bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrim
   }
   if (aMode != RWGltf_GltfPrimitiveMode_Triangles)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString() + "Primitive array within Mesh '"
-                                                   + theMeshId + "' skipped due to unsupported mode.", Message_Warning);
+    Message::SendWarning (TCollection_AsciiString() + "Primitive array within Mesh '" + theMeshId + "' skipped due to unsupported mode");
     return true;
   }
   theMeshData->SetPrimitiveMode (aMode);
@@ -1935,7 +1932,7 @@ bool RWGltf_GltfJsonParser::Parse (const Handle(Message_ProgressIndicator)& theP
   }
   return true;
 #else
-  Message::DefaultMessenger()->Send ("Error: glTF reader is unavailable - OCCT has been built without RapidJSON support [HAVE_RAPIDJSON undefined].", Message_Fail);
+  Message::SendFail ("Error: glTF reader is unavailable - OCCT has been built without RapidJSON support [HAVE_RAPIDJSON undefined]");
   return false;
 #endif
 }

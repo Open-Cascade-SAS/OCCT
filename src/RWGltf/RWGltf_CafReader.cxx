@@ -124,7 +124,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
   if (!aFile.is_open()
    || !aFile.good())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' is not found!", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' is not found");
     return false;
   }
 
@@ -144,7 +144,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
     {
       if (*aLen < 20)
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' has broken glTF format!", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' has broken glTF format");
         return false;
       }
 
@@ -160,7 +160,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
       aBinBodyLen    = int64_t(*aLen) - aBinBodyOffset;
       if (*aSceneFormat != 0)
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' is written using unsupported Scene format!", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' is written using unsupported Scene format");
         return false;
       }
     }
@@ -168,7 +168,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
     {
       if (*aVer != 2)
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' is written using unknown version " + int(*aVer) + "!", Message_Warning);
+        Message::SendWarning (TCollection_AsciiString ("File '") + theFile + "' is written using unknown version " + int(*aVer));
       }
 
       for (int aChunkIter = 0; !aFile.eof() && aChunkIter < 2; ++aChunkIter)
@@ -182,7 +182,7 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
         aFile.read (aChunkHeader2, sizeof(aChunkHeader2));
         if (!aFile.good())
         {
-          Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' is written using unsupported format!", Message_Fail);
+          Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' is written using unsupported format");
           return false;
         }
 
@@ -246,12 +246,12 @@ Standard_Boolean RWGltf_CafReader::performMesh (const TCollection_AsciiString& t
   {
     if (aRes.Code() == rapidjson::kParseErrorDocumentEmpty)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' is empty!", Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' is empty");
       return false;
     }
     TCollection_AsciiString anErrDesc (RWGltf_GltfJsonParser::FormatParseError (aRes.Code()));
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFile + "' defines invalid JSON document!\n"
-                                     + anErrDesc + " [at offset " + (int )aRes.Offset() + "].", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' defines invalid JSON document!\n"
+                     + anErrDesc + " [at offset " + (int )aRes.Offset() + "].");
     return false;
   }
 #endif

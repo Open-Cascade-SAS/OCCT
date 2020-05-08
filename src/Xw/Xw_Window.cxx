@@ -162,7 +162,7 @@ Xw_Window::Xw_Window (const Handle(Aspect_DisplayConnection)& theXDisplay,
   }
   if (aVisInfo == NULL)
   {
-    Message::DefaultMessenger()->Send ("Warning: cannot choose Visual using EGL while creating Xw_Window", Message_Warning);
+    Message::SendWarning ("Warning: cannot choose Visual using EGL while creating Xw_Window");
   }
 #else
   int aDummy = 0;

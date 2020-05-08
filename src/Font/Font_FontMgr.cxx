@@ -628,7 +628,7 @@ void Font_FontMgr::InitFontDataBase()
   const OSD_Protection aProtectRead (OSD_R, OSD_R, OSD_R, OSD_R);
   if (aMapOfFontsDirs.IsEmpty())
   {
-    Message::DefaultMessenger()->Send ("Font_FontMgr, fontconfig library returns an empty folder list", Message_Alarm);
+    Message::SendAlarm ("Font_FontMgr, fontconfig library returns an empty folder list");
 
     // read fonts directories from font service config file (obsolete)
     for (Standard_Integer anIter = 0; myFontServiceConf[anIter] != NULL; ++anIter)
@@ -892,7 +892,7 @@ Handle(Font_SystemFont) Font_FontMgr::FindFallbackFont (Font_UnicodeSubset theSu
       case Font_UnicodeSubset_CJK:     aRange = "CJK";     break;
       case Font_UnicodeSubset_Arabic:  aRange = "Arabic";  break;
     }
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, error: unable to find ") + aRange + " fallback font!", Message_Fail);
+    Message::SendFail (TCollection_AsciiString("Font_FontMgr, error: unable to find ") + aRange + " fallback font!");
   }
   return aFont;
 }
@@ -968,8 +968,8 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
     {
       if (isAliasUsed && myToTraceAliases)
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, using font alias '") + aFont->FontName() + "'"
-                                            " instead of requested '" + theFontName +"'", Message_Trace);
+        Message::SendTrace (TCollection_AsciiString("Font_FontMgr, using font alias '") + aFont->FontName() + "'"
+                          " instead of requested '" + theFontName + "'");
       }
       if (isBestAlias)
       {
@@ -992,7 +992,7 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
   {
     if (theDoFailMsg)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, error: unable to find any font!"), Message_Fail);
+      Message::SendFail ("Font_FontMgr, error: unable to find any font!");
     }
     return Handle(Font_SystemFont)();
   }
@@ -1004,8 +1004,8 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const TCollection_AsciiString& t
   {
     TCollection_AsciiString aDesc = TCollection_AsciiString() + "'" + theFontName + "'"
                                   + TCollection_AsciiString() + " [" + Font_FontMgr::FontAspectToString (theFontAspect) + "]";
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Font_FontMgr, warning: unable to find font ")
-                                     + aDesc + "; " + aFont->ToString() + " is used instead");
+    Message::SendWarning (TCollection_AsciiString("Font_FontMgr, warning: unable to find font ")
+                        + aDesc + "; " + aFont->ToString() + " is used instead");
   }
   return aFont;
 }

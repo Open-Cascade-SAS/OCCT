@@ -32,7 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(RWGltf_PrimitiveArrayReader, Standard_Transient)
 // =======================================================================
 void RWGltf_PrimitiveArrayReader::reportError (const TCollection_AsciiString& theText)
 {
-  Message::DefaultMessenger()->Send (myErrorPrefix + theText, Message_Fail);
+  Message::SendFail (myErrorPrefix + theText);
 }
 
 // =======================================================================

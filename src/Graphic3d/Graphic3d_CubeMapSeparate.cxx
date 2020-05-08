@@ -127,22 +127,19 @@ Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value()
             }
             else
             {
-              Message::DefaultMessenger()->Send(TCollection_AsciiString() +
-                "'" + aFilePath + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
+              Message::SendWarning (TCollection_AsciiString() + "'" + aFilePath + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
             }
           }
         }
       }
       else
       {
-        Message::DefaultMessenger()->Send(TCollection_AsciiString() +
-          "Unable to load '" + aFilePath + "' image of Graphic3d_CubeMapSeparate");
+        Message::SendWarning (TCollection_AsciiString() + "Unable to load '" + aFilePath + "' image of Graphic3d_CubeMapSeparate");
       }
     }
     else
     {
-      Message::DefaultMessenger()->Send(TCollection_AsciiString() +
-        "[" + myCurrentSide + "] path of Graphic3d_CubeMapSeparate is invalid");
+      Message::SendWarning (TCollection_AsciiString() + "[" + myCurrentSide + "] path of Graphic3d_CubeMapSeparate is invalid");
     }
   }
 

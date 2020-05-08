@@ -142,8 +142,7 @@ bool RWMesh_MaterialMap::copyFileTo (const TCollection_AsciiString& theFileSrc,
     OSD_File aFileSrc (aSrcPath);
     if (!aFileSrc.Exists())
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString("Failed to copy file - source file '")
-                                       + theFileSrc + "' does not exist\n", Message_Fail);
+      Message::SendFail (TCollection_AsciiString("Failed to copy file - source file '") + theFileSrc + "' does not exist");
       return false;
     }
     aFileSrc.Copy (aDstPath);
@@ -151,8 +150,7 @@ bool RWMesh_MaterialMap::copyFileTo (const TCollection_AsciiString& theFileSrc,
   }
   catch (Standard_Failure const& theException)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Failed to copy file\n") +
-                                       theException.GetMessageString(), Message_Fail);
+    Message::SendFail (TCollection_AsciiString("Failed to copy file\n") + theException.GetMessageString());
     return false;
   }
 }

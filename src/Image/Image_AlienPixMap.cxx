@@ -548,8 +548,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
   }
   if ((aFIF == FIF_UNKNOWN) || !FreeImage_FIFSupportsReading (aFIF))
   {
-    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported file format.",
-                                         Message_Fail);
+    ::Message::SendFail (TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported file format");
     if (aFiMem != NULL)
     {
       FreeImage_CloseMemory (aFiMem);
@@ -586,10 +585,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
   }
   if (anImage == NULL)
   {
-    TCollection_AsciiString aMessage = "Error: image file '";
-    aMessage.AssignCat (theImagePath);
-    aMessage.AssignCat ("' is missing or invalid.");
-    ::Message::DefaultMessenger()->Send (aMessage, Message_Fail);
+    ::Message::SendFail (TCollection_AsciiString ("Error: image file '") + theImagePath  + "' is missing or invalid");
     return false;
   }
 
@@ -620,8 +616,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
   }
   if (aFormat == Image_Format_UNKNOWN)
   {
-    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported pixel format.",
-                                         Message_Fail);
+    ::Message::SendFail (TCollection_AsciiString ("Error: image '") + theImagePath + "' has unsupported pixel format");
     return false;
   }
 
@@ -650,8 +645,7 @@ bool Image_AlienPixMap::Load (std::istream& theStream,
   }
   if ((aFIF == FIF_UNKNOWN) || !FreeImage_FIFSupportsReading (aFIF))
   {
-    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image stream '") + theFileName + "' has unsupported file format.",
-                                         Message_Fail);
+    ::Message::SendFail (TCollection_AsciiString ("Error: image stream '") + theFileName + "' has unsupported file format");
     return false;
   }
 
@@ -670,8 +664,7 @@ bool Image_AlienPixMap::Load (std::istream& theStream,
   FIBITMAP* anImage = FreeImage_LoadFromHandle (aFIF, &aFiIO, &aStream, aLoadFlags);
   if (anImage == NULL)
   {
-    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image stream '") + theFileName + "' is missing or invalid.",
-                                         Message_Fail);
+    ::Message::SendFail (TCollection_AsciiString ("Error: image stream '") + theFileName + "' is missing or invalid");
     return false;
   }
 
@@ -680,8 +673,7 @@ bool Image_AlienPixMap::Load (std::istream& theStream,
                                                 FreeImage_GetBPP      (anImage));
   if (aFormat == Image_Format_UNKNOWN)
   {
-    ::Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error: image stream '") + theFileName + "' has unsupported pixel format.",
-                                         Message_Fail);
+    ::Message::SendFail (TCollection_AsciiString ("Error: image stream '") + theFileName + "' has unsupported pixel format");
     return false;
   }
 
@@ -705,7 +697,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
   CoInitializeEx (NULL, COINIT_MULTITHREADED);
   if (CoCreateInstance (CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&aWicImgFactory.ChangePtr())) != S_OK)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot initialize WIC Imaging Factory", Message_Fail);
+    Message::SendFail ("Error: cannot initialize WIC Imaging Factory");
     return false;
   }
 
@@ -716,12 +708,12 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
     if (aWicImgFactory->CreateStream (&aWicStream.ChangePtr()) != S_OK
      || aWicStream->InitializeFromMemory ((BYTE* )theData, (DWORD )theLength) != S_OK)
     {
-      Message::DefaultMessenger()->Send ("Error: cannot initialize WIC Stream", Message_Fail);
+      Message::SendFail ("Error: cannot initialize WIC Stream");
       return false;
     }
     if (aWicImgFactory->CreateDecoderFromStream (aWicStream.get(), NULL, WICDecodeMetadataCacheOnDemand, &aWicDecoder.ChangePtr()) != S_OK)
     {
-      Message::DefaultMessenger()->Send ("Error: cannot create WIC Image Decoder", Message_Fail);
+      Message::SendFail ("Error: cannot create WIC Image Decoder");
       return false;
     }
   }
@@ -730,7 +722,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
     const TCollection_ExtendedString aFileNameW (theFileName);
     if (aWicImgFactory->CreateDecoderFromFilename (aFileNameW.ToWideString(), NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &aWicDecoder.ChangePtr()) != S_OK)
     {
-      Message::DefaultMessenger()->Send ("Error: cannot create WIC Image Decoder", Message_Fail);
+      Message::SendFail ("Error: cannot create WIC Image Decoder");
       return false;
     }
   }
@@ -744,7 +736,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
    || aWicFrameDecode->GetSize (&aFrameSizeX, &aFrameSizeY) != S_OK
    || aWicFrameDecode->GetPixelFormat (&aWicPixelFormat))
   {
-    Message::DefaultMessenger()->Send ("Error: cannot get WIC Image Frame", Message_Fail);
+    Message::SendFail ("Error: cannot get WIC Image Frame");
     return false;
   }
 
@@ -756,7 +748,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
     if (aWicImgFactory->CreateFormatConverter (&aWicConvertedFrame.ChangePtr()) != S_OK
      || aWicConvertedFrame->Initialize (aWicFrameDecode.get(), convertToWicFormat (aPixelFormat), WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom) != S_OK)
     {
-      Message::DefaultMessenger()->Send ("Error: cannot convert WIC Image Frame to RGB format", Message_Fail);
+      Message::SendFail ("Error: cannot convert WIC Image Frame to RGB format");
       return false;
     }
     aWicFrameDecode.Nullify();
@@ -764,7 +756,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
 
   if (!Image_PixMap::InitTrash (aPixelFormat, aFrameSizeX, aFrameSizeY))
   {
-    Message::DefaultMessenger()->Send ("Error: cannot initialize memory for image", Message_Fail);
+    Message::SendFail ("Error: cannot initialize memory for image");
     return false;
   }
 
@@ -775,7 +767,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* theData,
   }
   if (aWicSrc->CopyPixels (NULL, (UINT )SizeRowBytes(), (UINT )SizeBytes(), ChangeData()) != S_OK)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot copy pixels from WIC Image", Message_Fail);
+    Message::SendFail ("Error: cannot copy pixels from WIC Image");
     return false;
   }
   SetTopDown (true);
@@ -793,14 +785,14 @@ bool Image_AlienPixMap::Load (std::istream& theStream,
   theStream.seekg (aStart);
   if (aLen <= 0)
   {
-    Message::DefaultMessenger()->Send ("Error: empty stream", Message_Fail);
+    Message::SendFail ("Error: empty stream");
     return false;
   }
 
   NCollection_Array1<Standard_Byte> aBuff (1, aLen);
   if (!theStream.read ((char* )&aBuff.ChangeFirst(), aBuff.Size()))
   {
-    Message::DefaultMessenger()->Send ("Error: unable to read stream", Message_Fail);
+    Message::SendFail ("Error: unable to read stream");
     return false;
   }
 
@@ -811,7 +803,7 @@ bool Image_AlienPixMap::Load (std::istream& ,
                               const TCollection_AsciiString& )
 {
   Clear();
-  Message::DefaultMessenger()->Send ("Error: no image library available", Message_Fail);
+  Message::SendFail ("Error: no image library available");
   return false;
 }
 bool Image_AlienPixMap::Load (const Standard_Byte* ,
@@ -819,7 +811,7 @@ bool Image_AlienPixMap::Load (const Standard_Byte* ,
                               const TCollection_AsciiString& )
 {
   Clear();
-  Message::DefaultMessenger()->Send ("Error: no image library available", Message_Fail);
+  Message::SendFail ("Error: no image library available");
   return false;
 }
 #endif
@@ -1059,7 +1051,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
 
   if (aFileFormat == getNullGuid())
   {
-    Message::DefaultMessenger()->Send ("Error: unsupported image format", Message_Fail);
+    Message::SendFail ("Error: unsupported image format");
     return false;
   }
 
@@ -1067,7 +1059,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
   CoInitializeEx (NULL, COINIT_MULTITHREADED);
   if (CoCreateInstance (CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&aWicImgFactory.ChangePtr())) != S_OK)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot initialize WIC Imaging Factory", Message_Fail);
+    Message::SendFail ("Error: cannot initialize WIC Imaging Factory");
     return false;
   }
 
@@ -1077,20 +1069,20 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
   if (aWicImgFactory->CreateStream (&aWicFileStream.ChangePtr()) != S_OK
    || aWicFileStream->InitializeFromFilename (aFileNameW.ToWideString(), GENERIC_WRITE) != S_OK)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot create WIC File Stream", Message_Fail);
+    Message::SendFail ("Error: cannot create WIC File Stream");
     return false;
   }
   if (aWicImgFactory->CreateEncoder (aFileFormat, NULL, &aWicEncoder.ChangePtr()) != S_OK
    || aWicEncoder->Initialize (aWicFileStream.get(), WICBitmapEncoderNoCache) != S_OK)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot create WIC Encoder", Message_Fail);
+    Message::SendFail ("Error: cannot create WIC Encoder");
     return false;
   }
 
   const WICPixelFormatGUID aWicPixelFormat = convertToWicFormat (myImgFormat);
   if (aWicPixelFormat == getNullGuid())
   {
-    Message::DefaultMessenger()->Send ("Error: unsupported pixel format", Message_Fail);
+    Message::SendFail ("Error: unsupported pixel format");
     return false;
   }
 
@@ -1101,13 +1093,13 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
    || aWicFrameEncode->SetSize ((UINT )SizeX(), (UINT )SizeY()) != S_OK
    || aWicFrameEncode->SetPixelFormat (&aWicPixelFormatRes) != S_OK)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot create WIC Frame", Message_Fail);
+    Message::SendFail ("Error: cannot create WIC Frame");
     return false;
   }
 
   if (aWicPixelFormatRes != aWicPixelFormat)
   {
-    Message::DefaultMessenger()->Send ("Error: pixel format is unsupported by image format", Message_Fail);
+    Message::SendFail ("Error: pixel format is unsupported by image format");
     return false;
   }
 
@@ -1115,7 +1107,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
   {
     if (aWicFrameEncode->WritePixels ((UINT )SizeY(), (UINT )SizeRowBytes(), (UINT )SizeBytes(), (BYTE* )Data()) != S_OK)
     {
-      Message::DefaultMessenger()->Send ("Error: cannot write pixels to WIC Frame", Message_Fail);
+      Message::SendFail ("Error: cannot write pixels to WIC Frame");
       return false;
     }
   }
@@ -1125,7 +1117,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
     {
       if (aWicFrameEncode->WritePixels (1, (UINT )SizeRowBytes(), (UINT )SizeRowBytes(), (BYTE* )Row (aRow)) != S_OK)
       {
-        Message::DefaultMessenger()->Send ("Error: cannot write pixels to WIC Frame", Message_Fail);
+        Message::SendFail ("Error: cannot write pixels to WIC Frame");
         return false;
       }
     }
@@ -1134,12 +1126,12 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
   if (aWicFrameEncode->Commit() != S_OK
    || aWicEncoder->Commit() != S_OK)
   {
-    Message::DefaultMessenger()->Send ("Error: cannot commit data to WIC Frame", Message_Fail);
+    Message::SendFail ("Error: cannot commit data to WIC Frame");
     return false;
   }
   if (aWicFileStream->Commit (STGC_DEFAULT) != S_OK)
   {
-    //Message::DefaultMessenger()->Send ("Error: cannot commit data to WIC File Stream", Message_Fail);
+    //Message::Send ("Error: cannot commit data to WIC File Stream", Message_Fail);
     //return false;
   }
   return true;
@@ -1150,9 +1142,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
   {
     return savePPM (theFileName);
   }
-#ifdef OCCT_DEBUG
-  std::cerr << "Image_PixMap, no image library available! Image saved in PPM format.\n";
-#endif
+  Message::SendTrace ("Image_PixMap, no image library available! Image saved in PPM format");
   return savePPM (theFileName);
 #endif
 }

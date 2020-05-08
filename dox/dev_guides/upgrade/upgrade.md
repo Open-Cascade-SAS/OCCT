@@ -1942,7 +1942,8 @@ a stream-like interface,  have been removed.
 This functionality is provided now by separate class *Message_Messenger::StreamBuffer*.
 That class contains a stringstream buffer which can be filled using standard stream
 operators. The string is sent to a messenger on destruction of the buffer object,
-call of its method Flush(), or using operator << with one of ostream manipulators (*std::endl, std::flush, std::ends*). Manipulator *Message_EndLine* has been removed,
+call of its method Flush(), or using operator << with one of ostream manipulators 
+(*std::endl, std::flush, std::ends*). Manipulator *Message_EndLine* has been removed,
 *std::endl* should be used instead.
 
 New methods *SendFail(), SendAlarm(), SendWarning(), SendInfo()*, and *SendTrace()* are
@@ -1955,21 +1956,21 @@ The code that used operator << for messenger, should be ported as follows.
 Before the change:
 ~~~~~
   Handle(Message_Messenger) theMessenger = ...;
-  theMessenger << "Sample string " << anInteger << ", " << Message_EndLine;
+  theMessenger << "Value = " << anInteger << Message_EndLine;
 ~~~~~
 
 After the change, single-line variant:
 ~~~~~
   Handle(Message_Messenger) theMessenger = ...;
-  theMessenger->SendInfo() << "Value = " << anInteger << ", ";
+  theMessenger->SendInfo() << "Value = " << anInteger << std::endl;
 ~~~~~
 
 After the change, extended variant:
 ~~~~~
   Handle(Message_Messenger) theMessenger = ...;
   Message_Messenger::StreamBuffer aSender = theMessenger->SendInfo();
-  aSender << "Array: [";
-  for (int i = 0; i < aNb; ++i) { aSender << anArray[i]; }
+  aSender << "Array: [ ";
+  for (int i = 0; i < aNb; ++i) { aSender << anArray[i] << " "; }
   aSender << "]" << std::endl; // aSender can be used further for other messages
 ~~~~~
 

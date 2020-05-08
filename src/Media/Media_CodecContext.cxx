@@ -92,7 +92,7 @@ bool Media_CodecContext::Init (const AVStream& theStream,
   myStreamIndex = theStream.index;
   if (avcodec_parameters_to_context (myCodecCtx, theStream.codecpar) < 0)
   {
-    Message::DefaultMessenger()->Send ("Internal error: unable to copy codec parameters", Message_Fail);
+    Message::SendFail ("Internal error: unable to copy codec parameters");
     Close();
     return false;
   }
@@ -105,7 +105,7 @@ bool Media_CodecContext::Init (const AVStream& theStream,
   myCodec = avcodec_find_decoder (aCodecId);
   if (myCodec == NULL)
   {
-    Message::DefaultMessenger()->Send ("FFmpeg: unable to find decoder", Message_Fail);
+    Message::Send ("FFmpeg: unable to find decoder", Message_Fail);
     Close();
     return false;
   }
@@ -120,7 +120,7 @@ bool Media_CodecContext::Init (const AVStream& theStream,
 
   if (avcodec_open2 (myCodecCtx, myCodec, &anOpts) < 0)
   {
-    Message::DefaultMessenger()->Send ("FFmpeg: unable to open decoder", Message_Fail);
+    Message::SendFail ("FFmpeg: unable to open decoder");
     Close();
     return false;
   }
@@ -147,7 +147,7 @@ bool Media_CodecContext::Init (const AVStream& theStream,
    && (myCodecCtx->width  <= 0
     || myCodecCtx->height <= 0))
   {
-    Message::DefaultMessenger()->Send ("FFmpeg: video stream has invalid dimensions", Message_Fail);
+    Message::SendFail ("FFmpeg: video stream has invalid dimensions");
     Close();
     return false;
   }

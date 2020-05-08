@@ -257,8 +257,8 @@ bool Media_FormatContext::OpenInput (const TCollection_AsciiString& theInput)
   const int avErrCode = avformat_open_input (&myFormatCtx, theInput.ToCString(), NULL, NULL);
   if (avErrCode != 0)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("FFmpeg: Couldn't open video file '") + theInput
-                                    + "'\nError: " + FormatAVErrorDescription (avErrCode), Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("FFmpeg: Couldn't open video file '") + theInput
+                     + "'\nError: " + FormatAVErrorDescription (avErrCode));
     Close();
     return false;
   }
@@ -266,7 +266,7 @@ bool Media_FormatContext::OpenInput (const TCollection_AsciiString& theInput)
   // retrieve stream information
   if (avformat_find_stream_info (myFormatCtx, NULL) < 0)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("FFmpeg: Couldn't find stream information in '") + theInput + "'", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("FFmpeg: Couldn't find stream information in '") + theInput + "'");
     Close();
     return false;
   }
@@ -306,7 +306,7 @@ bool Media_FormatContext::OpenInput (const TCollection_AsciiString& theInput)
 
   return true;
 #else
-  Message::DefaultMessenger()->Send ("Error: FFmpeg library is unavailable", Message_Fail);
+  Message::SendFail ("Error: FFmpeg library is unavailable");
   (void )theInput;
   return false;
 #endif
@@ -514,9 +514,8 @@ bool Media_FormatContext::SeekStream (unsigned int theStreamId,
                                       : (aStream.codecpar->codec_type == AVMEDIA_TYPE_AUDIO
                                        ? "Audio"
                                        : "");
-  Message::DefaultMessenger()->Send (TCollection_AsciiString ("Error while seeking ") + aStreamType + " stream to "
-                                   + theSeekPts + " sec (" + (theSeekPts + StreamUnitsToSeconds (aStream, aStream.start_time)) + " sec)",
-                                     Message_Warning);
+  Message::SendWarning (TCollection_AsciiString ("Error while seeking ") + aStreamType + " stream to "
+                      + theSeekPts + " sec (" + (theSeekPts + StreamUnitsToSeconds (aStream, aStream.start_time)) + " sec)");
   return false;
 #else
   (void )theStreamId;
@@ -548,7 +547,7 @@ bool Media_FormatContext::Seek (double theSeekPts,
     myFormatCtx->filename;
   #endif
 
-  Message::DefaultMessenger()->Send (TCollection_AsciiString("Disaster! Seeking to ") + theSeekPts + " [" + aFileName + "] has failed.", Message_Warning);
+  Message::SendWarning (TCollection_AsciiString("Disaster! Seeking to ") + theSeekPts + " [" + aFileName + "] has failed.");
   return false;
 #else
   (void )theSeekPts;

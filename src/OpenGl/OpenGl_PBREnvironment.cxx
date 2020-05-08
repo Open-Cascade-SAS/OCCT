@@ -455,9 +455,9 @@ void OpenGl_PBREnvironment::bake (const Handle(OpenGl_Context)& theCtx,
   if (processSpecIBLMap (theCtx, true, theEnvMap->SizeX(), theSpecNbSamples, theProbability)
    && processDiffIBLMap (theCtx, true, theDiffNbSamples))
   {
-    Message::DefaultMessenger()->Send(TCollection_AsciiString()
+    Message::SendTrace(TCollection_AsciiString()
       + "IBL " + myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizeX() + "x" + myIBLMaps[OpenGl_TypeOfIBLMap_Specular].SizeY()
-      + " is baked in " + aTimer.ElapsedTime() + " s", Message_Trace);
+      + " is baked in " + aTimer.ElapsedTime() + " s");
   }
   else
   {

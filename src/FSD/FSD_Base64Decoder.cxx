@@ -40,7 +40,7 @@ Handle(NCollection_Buffer) FSD_Base64Decoder::Decode (const Standard_Byte* theSt
   Handle(NCollection_Buffer) aData = new NCollection_Buffer (NCollection_BaseAllocator::CommonBaseAllocator());
   if (!aData->Allocate (3 * theLen / 4))
   {
-    Message::DefaultMessenger()->Send ("Fail to allocate memory.", Message_Fail);
+    Message::SendFail ("Fail to allocate memory.");
     return Handle(NCollection_Buffer)();
   }
 

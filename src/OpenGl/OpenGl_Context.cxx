@@ -2970,8 +2970,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   #endif
     if (!myIsSRgbWindow)
     {
-      Message::DefaultMessenger()->Send ("OpenGl_Context, warning: window buffer is not sRGB-ready.\n"
-                                         "Check OpenGL window creation parameters for optimal performance.", Message_Trace);
+      Message::SendTrace ("OpenGl_Context, warning: window buffer is not sRGB-ready.\n"
+                          "Check OpenGL window creation parameters for optimal performance.");
     }
   }
 

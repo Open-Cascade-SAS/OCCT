@@ -146,7 +146,7 @@ OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnectio
   int aDummy;
   if (!XQueryExtension (aDisplay, "GLX", &aDummy, &aDummy, &aDummy))
   {
-    ::Message::DefaultMessenger()->Send ("OpenGl_GraphicDriver, this system doesn't appear to support OpenGL!", Message_Warning);
+    ::Message::SendWarning ("OpenGl_GraphicDriver, this system doesn't appear to support OpenGL");
   }
 #endif
 #endif
@@ -235,7 +235,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
     {
       if (eglMakeCurrent ((EGLDisplay )myEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT) != EGL_TRUE)
       {
-        ::Message::DefaultMessenger()->Send ("OpenGl_GraphicDriver, FAILED to release OpenGL context!", Message_Warning);
+        ::Message::SendWarning ("OpenGl_GraphicDriver, FAILED to release OpenGL context");
       }
       eglDestroyContext ((EGLDisplay )myEglDisplay, (EGLContext )myEglContext);
     }
@@ -244,7 +244,7 @@ void OpenGl_GraphicDriver::ReleaseContext()
     {
       if (eglTerminate ((EGLDisplay )myEglDisplay) != EGL_TRUE)
       {
-        ::Message::DefaultMessenger()->Send ("OpenGl_GraphicDriver, EGL, eglTerminate FAILED!", Message_Warning);
+        ::Message::SendWarning ("OpenGl_GraphicDriver, EGL, eglTerminate FAILED");
       }
     }
   }
@@ -277,21 +277,21 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
 #endif
   if ((EGLDisplay )myEglDisplay == EGL_NO_DISPLAY)
   {
-    ::Message::DefaultMessenger()->Send ("Error: no EGL display!", Message_Fail);
+    ::Message::SendFail ("Error: no EGL display");
     return Standard_False;
   }
 
   EGLint aVerMajor = 0; EGLint aVerMinor = 0;
   if (eglInitialize ((EGLDisplay )myEglDisplay, &aVerMajor, &aVerMinor) != EGL_TRUE)
   {
-    ::Message::DefaultMessenger()->Send ("Error: EGL display is unavailable!", Message_Fail);
+    ::Message::SendFail ("Error: EGL display is unavailable");
     return Standard_False;
   }
 
   myEglConfig = chooseEglSurfConfig ((EGLDisplay )myEglDisplay);
   if (myEglConfig == NULL)
   {
-    ::Message::DefaultMessenger()->Send ("Error: EGL does not provide compatible configurations!", Message_Fail);
+    ::Message::SendFail ("Error: EGL does not provide compatible configurations");
     return Standard_False;
   }
 
@@ -300,7 +300,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
   EGLint anEglCtxAttribs2[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
   if (eglBindAPI (EGL_OPENGL_ES_API) != EGL_TRUE)
   {
-    ::Message::DefaultMessenger()->Send ("Error: EGL does not provide OpenGL ES client!", Message_Fail);
+    ::Message::SendFail ("Error: EGL does not provide OpenGL ES client");
     return Standard_False;
   }
   if (myCaps->contextMajorVersionUpper != 2)
@@ -315,7 +315,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
   EGLint* anEglCtxAttribs = NULL;
   if (eglBindAPI (EGL_OPENGL_API) != EGL_TRUE)
   {
-    ::Message::DefaultMessenger()->Send ("Error: EGL does not provide OpenGL client!", Message_Fail);
+    ::Message::SendFail ("Error: EGL does not provide OpenGL client");
     return Standard_False;
   }
   myEglContext = (Aspect_RenderingContext )eglCreateContext ((EGLDisplay )myEglDisplay, myEglConfig, EGL_NO_CONTEXT, anEglCtxAttribs);
@@ -323,13 +323,13 @@ Standard_Boolean OpenGl_GraphicDriver::InitContext()
 
   if ((EGLContext )myEglContext == EGL_NO_CONTEXT)
   {
-    ::Message::DefaultMessenger()->Send ("Error: EGL is unable to create OpenGL context!", Message_Fail);
+    ::Message::SendFail ("Error: EGL is unable to create OpenGL context");
     return Standard_False;
   }
   // eglMakeCurrent() fails or even crash with EGL_NO_SURFACE on some implementations
   //if (eglMakeCurrent ((EGLDisplay )myEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, (EGLContext )myEglContext) != EGL_TRUE)
   //{
-  //  ::Message::DefaultMessenger()->Send ("Error: EGL is unable bind OpenGL context!", Message_Fail);
+  //  ::Message::SendFail ("Error: EGL is unable bind OpenGL context");
   //  return Standard_False;
   //}
 #endif
@@ -367,7 +367,7 @@ Standard_Boolean OpenGl_GraphicDriver::InitEglContext (Aspect_Display          t
     myEglConfig = chooseEglSurfConfig ((EGLDisplay )myEglDisplay);
     if (myEglConfig == NULL)
     {
-      ::Message::DefaultMessenger()->Send ("Error: EGL does not provide compatible configurations!", Message_Fail);
+      ::Message::SendFail ("Error: EGL does not provide compatible configurations");
       return Standard_False;
     }
   }

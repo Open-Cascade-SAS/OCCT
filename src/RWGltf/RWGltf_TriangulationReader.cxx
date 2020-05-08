@@ -111,7 +111,7 @@ bool RWGltf_TriangulationReader::readBuffer (std::istream& theStream,
 {
   if (theMode != RWGltf_GltfPrimitiveMode_Triangles)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Buffer '") + theName + "' skipped unsupported primitive array.", Message_Warning);
+    Message::SendWarning (TCollection_AsciiString("Buffer '") + theName + "' skipped unsupported primitive array");
     return true;
   }
 

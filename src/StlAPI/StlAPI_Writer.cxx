@@ -136,7 +136,7 @@ Standard_Boolean StlAPI_Writer::Write (const TopoDS_Shape&    theShape,
       TCollection_AsciiString (aNbFacesNoTri) +
       TCollection_AsciiString ((aNbFacesNoTri == 1) ? " face has" : " faces have") +
       TCollection_AsciiString (" been skipped due to null triangulation");
-    Message::DefaultMessenger()->Send (aWarningMsg, Message_Warning);
+    Message::SendWarning (aWarningMsg);
   }
 
   return isDone;

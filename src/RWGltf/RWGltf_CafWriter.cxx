@@ -351,7 +351,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   if (!aBinFile.is_open()
    || !aBinFile.good())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be created!", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be created");
     return false;
   }
 
@@ -385,7 +385,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
 
       if (!aBinFile.good())
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written!", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
       }
 
@@ -427,7 +427,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
 
       if (!aBinFile.good())
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written!", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
       }
     }
@@ -468,7 +468,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
 
       if (!aBinFile.good())
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written!", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
       }
     }
@@ -509,7 +509,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
 
       if (!aBinFile.good())
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written!", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
         return false;
       }
     }
@@ -538,7 +538,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   aBinFile.close();
   if (!aBinFile.good())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written!", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' can not be written");
     return false;
   }
   return true;
@@ -570,7 +570,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   if (!aGltfContentFile.is_open()
    || !aGltfContentFile.good())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be created!", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be created");
     return false;
   }
   if (myIsBinary)
@@ -643,7 +643,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
     aGltfContentFile.close();
     if (!aGltfContentFile.good())
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be written!", Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be written");
       return false;
     }
     return true;
@@ -670,7 +670,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
       if (!aBinFile.is_open()
        || !aBinFile.good())
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + myBinFileNameFull + "' cannot be opened!", Message_Fail);
+        Message::SendFail (TCollection_AsciiString ("File '") + myBinFileNameFull + "' cannot be opened");
         return false;
       }
       char aBuffer[4096];
@@ -689,13 +689,12 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
     OSD_File (aBinFilePath).Remove();
     if (OSD_File (aBinFilePath).Exists())
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString ("Unable to remove temporary glTF content file '")
-                                         + myBinFileNameFull + "'!", Message_Fail);
+      Message::SendFail (TCollection_AsciiString ("Unable to remove temporary glTF content file '") + myBinFileNameFull + "'");
     }
   }
   else
   {
-    Message::DefaultMessenger()->Send ("glTF file content is too big for binary format!", Message_Fail);
+    Message::SendFail ("glTF file content is too big for binary format");
     return false;
   }
 
@@ -708,7 +707,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   aGltfContentFile.close();
   if (!aGltfContentFile.good())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be written!", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("File '") + aFileNameGltf + "' can not be written");
     return false;
   }
 
@@ -720,7 +719,7 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   (void )theLabelFilter;
   (void )theFileInfo;
   (void )theProgress;
-  Message::DefaultMessenger()->Send ("Error: glTF writer is unavailable - OCCT has been built without RapidJSON support [HAVE_RAPIDJSON undefined].", Message_Fail);
+  Message::SendFail ("Error: glTF writer is unavailable - OCCT has been built without RapidJSON support [HAVE_RAPIDJSON undefined]");
   return false;
 #endif
 }

@@ -153,9 +153,8 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       }
       catch (Standard_Failure const& anException)
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString()
-                                         + "Error: AIS_Shape::Compute() wireframe presentation builder has failed ("
-                                         + anException.GetMessageString() + ")", Message_Fail);
+        Message::SendFail (TCollection_AsciiString("Error: AIS_Shape::Compute() wireframe presentation builder has failed (")
+                         + anException.GetMessageString() + ")");
       }
       break;
     }
@@ -184,9 +183,8 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
           }
           catch (Standard_Failure const& anException)
           {
-            Message::DefaultMessenger()->Send (TCollection_AsciiString()
-                                               + "Error: AIS_Shape::Compute() shaded presentation builder has failed ("
-                                               + anException.GetMessageString() + ")", Message_Fail);
+            Message::SendFail (TCollection_AsciiString("Error: AIS_Shape::Compute() shaded presentation builder has failed (")
+                             + anException.GetMessageString() + ")");
             StdPrs_WFShape::Add (aPrs, myshape, myDrawer);
           }
         }
@@ -295,9 +293,8 @@ void AIS_Shape::computeHlrPresentation (const Handle(Graphic3d_Camera)& theProje
     }
     catch (Standard_Failure const& anException)
     {
-      Message::DefaultMessenger()->Send (TCollection_AsciiString()
-                                       + "Error: AIS_Shape::Compute() HLR Algorithm has failed ("
-                                       + anException.GetMessageString() + ")", Message_Fail);
+      Message::SendFail (TCollection_AsciiString("Error: AIS_Shape::Compute() HLR Algorithm has failed (")
+                       + anException.GetMessageString() + ")");
       StdPrs_WFShape::Add (thePrs, theShape, theDrawer);
     }
   }
@@ -339,9 +336,8 @@ void AIS_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
   }
   catch (Standard_Failure const& anException)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString()
-                                       + "Error: AIS_Shape::ComputeSelection(" + aMode + ") has failed ("
-                                       + anException.GetMessageString() + ")", Message_Fail);
+    Message::SendFail (TCollection_AsciiString("Error: AIS_Shape::ComputeSelection(") + aMode + ") has failed ("
+                     + anException.GetMessageString() + ")");
     if (aMode == 0)
     {
       aSelection->Clear();

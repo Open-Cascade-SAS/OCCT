@@ -141,9 +141,9 @@ Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFi
 
   aLoadingTimer.Stop();
 
-  Message::DefaultMessenger()->Send (TCollection_AsciiString ("Mesh ") + theFile
-                                   + "\n[" + aNbNodes + " nodes] [" + aNbElems + " 2d elements]"
-                                   + "\n[" + (!isDone ? "PARTIALLY " : "") + "read in " + aLoadingTimer.ElapsedTime() + " s]", Message_Info);
+  Message::SendInfo (TCollection_AsciiString ("Mesh ") + theFile
+                   + "\n[" + aNbNodes + " nodes] [" + aNbElems + " 2d elements]"
+                   + "\n[" + (!isDone ? "PARTIALLY " : "") + "read in " + aLoadingTimer.ElapsedTime() + " s]");
   return Standard_True;
 }
 
@@ -249,7 +249,7 @@ void RWMesh_CafReader::setShapeNamedData (const CafDocumentTools& ,
   {
     if (anOtherNamedData->Label() != aNameDataLabel)
     {
-      Message::DefaultMessenger()->Send ("Error! Different NamedData is already set to shape", Message_Alarm);
+      Message::SendAlarm ("Error! Different NamedData is already set to shape");
     }
   }
   else
@@ -260,7 +260,7 @@ void RWMesh_CafReader::setShapeNamedData (const CafDocumentTools& ,
     }
     else
     {
-      Message::DefaultMessenger()->Send ("Error! Skipped NamedData instance shared across shapes", Message_Alarm);
+      Message::SendAlarm ("Error! Skipped NamedData instance shared across shapes");
     }
   }
 }

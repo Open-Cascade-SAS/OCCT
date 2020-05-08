@@ -438,7 +438,7 @@ static bool dumpShaderSource (const TCollection_AsciiString& theFileName,
   }
   if (!aFile.IsOpen())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Error: File '") + theFileName + "' cannot be opened to save shader", Message_Fail);
+    Message::SendFail (TCollection_AsciiString("Error: File '") + theFileName + "' cannot be opened to save shader");
     return false;
   }
 
@@ -447,7 +447,7 @@ static bool dumpShaderSource (const TCollection_AsciiString& theFileName,
     aFile.Write (aSource.ToCString(), aSource.Length());
   }
   aFile.Close();
-  Message::DefaultMessenger()->Send (TCollection_AsciiString ("Shader source dumped into '") + theFileName + "'", Message_Warning);
+  Message::SendWarning (TCollection_AsciiString ("Shader source dumped into '") + theFileName + "'");
   return true;
 }
 
@@ -459,7 +459,7 @@ static bool restoreShaderSource (TCollection_AsciiString& theSource,
   aFile.Open (OSD_ReadOnly, OSD_Protection());
   if (!aFile.IsOpen())
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("File '") + theFileName + "' cannot be opened to load shader", Message_Fail);
+    Message::SendFail (TCollection_AsciiString ("File '") + theFileName + "' cannot be opened to load shader");
     return false;
   }
 
@@ -470,7 +470,7 @@ static bool restoreShaderSource (TCollection_AsciiString& theSource,
     aFile.Read (theSource, aSize);
   }
   aFile.Close();
-  Message::DefaultMessenger()->Send (TCollection_AsciiString ("Restored shader dump from '") + theFileName + "'", Message_Warning);
+  Message::SendWarning (TCollection_AsciiString ("Restored shader dump from '") + theFileName + "'");
   return true;
 }
 

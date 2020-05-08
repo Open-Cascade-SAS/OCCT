@@ -114,7 +114,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
   myFile = OSD_OpenFile (myPath.ToCString(), "rb");
   if (myFile == NULL)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString ("OBJ material file '") + myPath + "' is not found!", Message_Warning);
+    Message::Send (TCollection_AsciiString ("OBJ material file '") + myPath + "' is not found!", Message_Warning);
     return Standard_False;
   }
 
@@ -164,7 +164,7 @@ bool RWObj_MtlReader::Read (const TCollection_AsciiString& theFolder,
       aMat = RWObj_Material();
       if (!RWObj_Tools::ReadName (aPos, aMatName))
       {
-        Message::DefaultMessenger()->Send (TCollection_AsciiString("Empty OBJ material at line ") + myNbLines + " in file " + myPath, Message_Warning);
+        Message::SendWarning (TCollection_AsciiString("Empty OBJ material at line ") + myNbLines + " in file " + myPath);
       }
     }
     else if (::memcmp (aPos, "Ka", 2) == 0
@@ -319,8 +319,8 @@ void RWObj_MtlReader::processTexturePath (TCollection_AsciiString& theTexturePat
 {
   if (OSD_Path::IsAbsolutePath (theTexturePath.ToCString()))
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("OBJ file specifies absolute path to the texture image file which may be inaccessible on another device\n")
-                                      + theTexturePath, Message_Warning);
+    Message::SendWarning (TCollection_AsciiString("OBJ file specifies absolute path to the texture image file which may be inaccessible on another device\n")
+                        + theTexturePath);
     if (!OSD_File (theTexturePath).Exists())
     {
       // workaround absolute filenames - try to find the same file at the OBJ file location
@@ -346,7 +346,7 @@ bool RWObj_MtlReader::validateScalar (const Standard_Real theValue)
   if (theValue < 0.0
    || theValue > 1.0)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Invalid scalar in OBJ material at line ") + myNbLines + " in file " + myPath, Message_Warning);
+    Message::SendWarning (TCollection_AsciiString("Invalid scalar in OBJ material at line ") + myNbLines + " in file " + myPath);
     return false;
   }
   return true;
@@ -362,7 +362,7 @@ bool RWObj_MtlReader::validateColor (const Graphic3d_Vec3& theVec)
    || theVec.g() < 0.0f || theVec.g() > 1.0f
    || theVec.b() < 0.0f || theVec.b() > 1.0f)
   {
-    Message::DefaultMessenger()->Send (TCollection_AsciiString("Invalid color in OBJ material at line ") + myNbLines + " in file " + myPath, Message_Warning);
+    Message::SendWarning (TCollection_AsciiString("Invalid color in OBJ material at line ") + myNbLines + " in file " + myPath);
     return false;
   }
   return true;
