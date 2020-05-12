@@ -57,7 +57,7 @@ public:
   //! When all faces of the shape are treated the intersection vertices
   //! have to be fused using the FuseVertices method.
   //! theDMVV contains the vertices that should be fused.
-  Standard_EXPORT static void ConnexIntByInt (const TopoDS_Face& FI,
+  Standard_EXPORT static Standard_Boolean ConnexIntByInt (const TopoDS_Face& FI,
                                               BRepOffset_Offset& OFI,
                                               TopTools_DataMapOfShapeShape& MES,
                                               const TopTools_DataMapOfShapeShape& Build,
@@ -87,12 +87,12 @@ public:
   //! Fuses the chains of vertices in the theDMVV
   //! and updates AsDes by replacing the old vertices
   //! with the new ones.
-  Standard_EXPORT static void FuseVertices(const TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
-                                           const Handle(BRepAlgo_AsDes)& theAsDes);
+  Standard_EXPORT static Standard_Boolean FuseVertices (const TopTools_IndexedDataMapOfShapeListOfShape& theDMVV,
+                                                        const Handle(BRepAlgo_AsDes)& theAsDes);
   //! extents the edge
-  Standard_EXPORT static void ExtentEdge(const TopoDS_Edge& E,
-                                         TopoDS_Edge& NE,
-                                         const Standard_Real theOffset);
+  Standard_EXPORT static Standard_Boolean ExtentEdge (const TopoDS_Edge& E,
+                                                      TopoDS_Edge& NE,
+                                                      const Standard_Real theOffset);
 
 protected:
 

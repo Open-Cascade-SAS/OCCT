@@ -284,23 +284,23 @@ static
   Standard_Boolean IsPlanar(const TopoDS_Shape& theS);
 
 static
-  void TrimEdge(TopoDS_Edge&                  NE,
-                const Handle(BRepAlgo_AsDes)& AsDes2d,
-                Handle(BRepAlgo_AsDes)& AsDes,
-                TopTools_DataMapOfShapeShape& theETrimEInf);
+  Standard_Boolean TrimEdge(TopoDS_Edge& NE,
+                            const Handle(BRepAlgo_AsDes)& AsDes2d,
+                            Handle(BRepAlgo_AsDes)& AsDes,
+                            TopTools_DataMapOfShapeShape& theETrimEInf);
 
 static 
-  void TrimEdges(const TopoDS_Shape& theShape,
-                 const Standard_Real theOffset,
-                 const BRepOffset_Analyse& Analyse,
-                 BRepOffset_DataMapOfShapeOffset& theMapSF,
-                 TopTools_DataMapOfShapeShape& theMES,
-                 TopTools_DataMapOfShapeShape& theBuild,
-                 Handle(BRepAlgo_AsDes)& theAsDes,
-                 Handle(BRepAlgo_AsDes)& theAsDes2d,
-                 TopTools_IndexedMapOfShape& theNewEdges,
-                 TopTools_DataMapOfShapeShape& theETrimEInf,
-                 TopTools_DataMapOfShapeListOfShape& theEdgesOrigins);
+  Standard_Boolean TrimEdges(const TopoDS_Shape& theShape,
+                             const Standard_Real theOffset,
+                             const BRepOffset_Analyse& Analyse,
+                             BRepOffset_DataMapOfShapeOffset& theMapSF,
+                             TopTools_DataMapOfShapeShape& theMES,
+                             TopTools_DataMapOfShapeShape& theBuild,
+                             Handle(BRepAlgo_AsDes)& theAsDes,
+                             Handle(BRepAlgo_AsDes)& theAsDes2d,
+                             TopTools_IndexedMapOfShape& theNewEdges,
+                             TopTools_DataMapOfShapeShape& theETrimEInf,
+                             TopTools_DataMapOfShapeListOfShape& theEdgesOrigins);
 
 static
   void AppendToList(TopTools_ListOfShape& theL,
@@ -797,7 +797,7 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
     // Check Error() method.
     return;
   }
-
+  myError = BRepOffset_NoError;
   TopAbs_State       Side = TopAbs_IN;
   if (myOffset < 0.) Side = TopAbs_OUT;
 
@@ -826,6 +826,10 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
     BuildOffsetByArc();
   else if (myJoin == GeomAbs_Intersection) 
     BuildOffsetByInter();
+  if (myError != BRepOffset_NoError)
+  {
+    return;
+  }
   //-----------------
   // Auto unwinding.
   //-----------------
@@ -1149,15 +1153,17 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   TopTools_ListOfShape aLFaces;
   for (Exp.Init(myShape,TopAbs_FACE) ; Exp.More(); Exp.Next())
     aLFaces.Append (Exp.Current());
-
   for (TopTools_ListOfShape::Iterator it (myAnalyse.NewFaces()); it.More(); it.Next())
     aLFaces.Append (it.Value());
-
   //---------------------------------------------------------------------------------
   // Extension of neighbor edges of new edges and intersection between neighbors.
   //--------------------------------------------------------------------------------
   Handle(BRepAlgo_AsDes) AsDes2d = new BRepAlgo_AsDes();
   IntersectEdges(aLFaces, MapSF, MES, Build, AsDes, AsDes2d);
+  if (myError != BRepOffset_NoError)
+  {
+    return;
+  }
   //-----------------------------------------------------------
   // Great restriction of new edges and update of AsDes.
   //------------------------------------------ ----------------
@@ -1168,7 +1174,11 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   //Map of edges obtained after FACE-FACE (offsetted) intersection.
   //Key1 is edge trimmed by intersection points with other edges;
   //Item is not-trimmed edge. 
-  TrimEdges(myShape, myOffset, myAnalyse, MapSF, MES, Build, AsDes, AsDes2d, NewEdges, aETrimEInf, anEdgesOrigins);
+  if (!TrimEdges(myShape, myOffset, myAnalyse, MapSF, MES, Build, AsDes, AsDes2d, NewEdges, aETrimEInf, anEdgesOrigins))
+  {
+    myError = BRepOffset_CannotTrimEdges;
+    return;
+  }
   //
   //--------------------------------- 
   // Intersection 2D on //
@@ -3904,8 +3914,12 @@ void BRepOffset_MakeOffset::IntersectEdges(const TopTools_ListOfShape& theFaces,
   {
     const TopoDS_Face& aF  = TopoDS::Face (it.Value());
     aTolF = BRep_Tool::Tolerance (aF);
-    BRepOffset_Inter2d::ConnexIntByInt
-      (aF, theMapSF (aF), theMES, theBuild, theAsDes2d, myOffset, aTolF, myAnalyse, aMFV, aDMVV);
+    if (!BRepOffset_Inter2d::ConnexIntByInt(aF, theMapSF(aF), theMES, theBuild, theAsDes2d,
+                                            myOffset, aTolF, myAnalyse, aMFV, aDMVV))
+    {
+      myError = BRepOffset_CannotExtentEdge;
+      return;
+    }
   }
   // intersect edges created from vertices
   Standard_Integer i, aNbF = aMFV.Extent();
@@ -3917,24 +3931,28 @@ void BRepOffset_MakeOffset::IntersectEdges(const TopTools_ListOfShape& theFaces,
   }
   //
   // fuse vertices on edges
-  BRepOffset_Inter2d::FuseVertices(aDMVV, theAsDes2d);
+  if (!BRepOffset_Inter2d::FuseVertices(aDMVV, theAsDes2d))
+  {
+    myError = BRepOffset_CannotFuseVertices;
+    return;
+  }
 }
 
 //=======================================================================
 //function : TrimEdges
 //purpose  : 
 //=======================================================================
-void TrimEdges(const TopoDS_Shape& theShape,
-               const Standard_Real theOffset,
-               const BRepOffset_Analyse& Analyse,
-               BRepOffset_DataMapOfShapeOffset& theMapSF,
-               TopTools_DataMapOfShapeShape& theMES,
-               TopTools_DataMapOfShapeShape& theBuild,
-               Handle(BRepAlgo_AsDes)& theAsDes,
-               Handle(BRepAlgo_AsDes)& theAsDes2d,
-               TopTools_IndexedMapOfShape& theNewEdges,
-               TopTools_DataMapOfShapeShape& theETrimEInf,
-               TopTools_DataMapOfShapeListOfShape& theEdgesOrigins)
+Standard_Boolean TrimEdges(const TopoDS_Shape& theShape,
+                 const Standard_Real theOffset,
+                 const BRepOffset_Analyse& Analyse,
+                 BRepOffset_DataMapOfShapeOffset& theMapSF,
+                 TopTools_DataMapOfShapeShape& theMES,
+                 TopTools_DataMapOfShapeShape& theBuild,
+                 Handle(BRepAlgo_AsDes)& theAsDes,
+                 Handle(BRepAlgo_AsDes)& theAsDes2d,
+                 TopTools_IndexedMapOfShape& theNewEdges,
+                 TopTools_DataMapOfShapeShape& theETrimEInf,
+                 TopTools_DataMapOfShapeListOfShape& theEdgesOrigins)
 {
   TopExp_Explorer Exp,Exp2,ExpC;
   TopoDS_Shape    NE;
@@ -3992,7 +4010,8 @@ void TrimEdges(const TopoDS_Shape& theShape,
         // trim edges
         if (NE.ShapeType() == TopAbs_EDGE) {
           if (theNewEdges.Add(NE)) {
-            TrimEdge (TopoDS::Edge(NE),theAsDes2d,theAsDes, theETrimEInf);
+            if (!TrimEdge (TopoDS::Edge(NE),theAsDes2d,theAsDes, theETrimEInf))
+              return Standard_False;
           }
         }
         else {
@@ -4005,7 +4024,8 @@ void TrimEdges(const TopoDS_Shape& theShape,
             TopoDS_Edge NEC = TopoDS::Edge(ExpC.Current());
             if (theNewEdges.Add(NEC)) {
               if (!theAsDes2d->Descendant(NEC).IsEmpty()) {
-                TrimEdge (NEC,theAsDes2d, theAsDes, theETrimEInf);
+                if(!TrimEdge (NEC,theAsDes2d, theAsDes, theETrimEInf))
+                  return Standard_False;
               }
               else {
                 if (theAsDes->HasAscendant(NEC)) {
@@ -4037,7 +4057,8 @@ void TrimEdges(const TopoDS_Shape& theShape,
           NE = theMES(NE);
           NE.Orientation(aS.Orientation());
           if (theNewEdges.Add(NE)) {
-            TrimEdge (TopoDS::Edge(NE), theAsDes2d, theAsDes, theETrimEInf);
+            if (!TrimEdge (TopoDS::Edge(NE), theAsDes2d, theAsDes, theETrimEInf))
+              return Standard_False;
           } 
         }
         else {
@@ -4053,6 +4074,7 @@ void TrimEdges(const TopoDS_Shape& theShape,
       } 
     }
   }
+  return Standard_True;
 }
 
 //=======================================================================
@@ -4060,7 +4082,7 @@ void TrimEdges(const TopoDS_Shape& theShape,
 //purpose  : Trim the edge of the largest of descendants in AsDes2d.
 //           Order in AsDes two vertices that have trimmed the edge.
 //=======================================================================
-void TrimEdge(TopoDS_Edge&                  NE,
+Standard_Boolean TrimEdge(TopoDS_Edge&                  NE,
               const Handle(BRepAlgo_AsDes)& AsDes2d,
               Handle(BRepAlgo_AsDes)& AsDes,
               TopTools_DataMapOfShapeShape& theETrimEInf)
@@ -4098,7 +4120,9 @@ void TrimEdge(TopoDS_Edge&                  NE,
         gp_Pnt thePoint = BRep_Tool::Pnt(V);
         GeomAPI_ProjectPointOnCurve Projector(thePoint, theCurve);
         if (Projector.NbPoints() == 0)
-          return;
+        {
+          return Standard_False;
+        }
         U = Projector.LowerDistanceParameter();
       }
       if (U < UMin) {
@@ -4110,7 +4134,7 @@ void TrimEdge(TopoDS_Edge&                  NE,
     }
     //
     if (V1.IsNull() || V2.IsNull()) {
-      throw Standard_ConstructionError("BRepOffset_MakeOffset::TrimEdge");
+      return Standard_False;
     }
     if (!V1.IsSame(V2)) {
       NE.Free( Standard_True );
@@ -4147,6 +4171,7 @@ void TrimEdge(TopoDS_Edge&                  NE,
       theETrimEInf.Bind(NE, aSourceEdge);
     }
   }
+  return Standard_True;
 }
 
 //=======================================================================

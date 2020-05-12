@@ -380,6 +380,21 @@ static void reportOffsetState(Draw_Interpretor& theCommands,
     theCommands << "ERROR. Incorrect set of faces to remove, the remaining shell is not connected.";
     break;
   }
+  case BRepOffset_CannotTrimEdges:
+  {
+    theCommands << "ERROR. Can not trim edges.";
+    break;
+  }
+  case BRepOffset_CannotFuseVertices:
+  {
+    theCommands << "ERROR. Can not fuse vertices.";
+    break;
+  }
+  case BRepOffset_CannotExtentEdge:
+  {
+    theCommands << "ERROR. Can not extent edge.";
+    break;
+  }
   default:
   {
     theCommands << "ERROR. offsetperform operation not done.";

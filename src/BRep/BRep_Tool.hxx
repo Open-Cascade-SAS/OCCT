@@ -255,7 +255,17 @@ public:
   //! Returns the tolerance.
   Standard_EXPORT static Standard_Real Tolerance (const TopoDS_Vertex& V);
   
+  //! Finds the parameter of <theV> on <theE>.
+  //! @param theV [in] input vertex
+  //! @param theE [in] input edge
+  //! @param theParam  [out] calculated parameter on the curve
+  //! @return TRUE if done
+  Standard_EXPORT static Standard_Boolean Parameter (const TopoDS_Vertex& theV,
+	                                                   const TopoDS_Edge& theE,
+	                                                   Standard_Real &theParam);
+
   //! Returns the parameter of <V> on <E>.
+  //! Throws Standard_NoSuchObject if no parameter on edge
   Standard_EXPORT static Standard_Real Parameter (const TopoDS_Vertex& V, const TopoDS_Edge& E);
   
   //! Returns the  parameters  of   the  vertex   on the

@@ -1264,84 +1264,95 @@ Standard_Real  BRep_Tool::Tolerance(const TopoDS_Vertex& V)
 //purpose  : Returns the parameter of <V> on <E>.
 //=======================================================================
 
-Standard_Real  BRep_Tool::Parameter(const TopoDS_Vertex& V, 
-                                    const TopoDS_Edge& E)
+Standard_Boolean BRep_Tool::Parameter (const TopoDS_Vertex& theV,
+	                                     const TopoDS_Edge& theE,
+	                                     Standard_Real& theParam)
 {
-  
   // Search the vertex in the edge
 
   Standard_Boolean rev = Standard_False;
   TopoDS_Shape VF;
   TopAbs_Orientation orient = TopAbs_INTERNAL;
 
-  TopoDS_Iterator itv(E.Oriented(TopAbs_FORWARD));
+  TopoDS_Iterator itv(theE.Oriented(TopAbs_FORWARD));
 
   // if the edge has no vertices
   // and is degenerated use the vertex orientation
   // RLE, june 94
 
-  if (!itv.More() && Degenerated(E)) {
-    orient = V.Orientation();
+  if (!itv.More() && BRep_Tool::Degenerated(theE)) {
+    orient = theV.Orientation();
   }
 
   while (itv.More()) {
     const TopoDS_Shape& Vcur = itv.Value();
-    if (V.IsSame(Vcur)) {
+    if (theV.IsSame(Vcur)) {
       if (VF.IsNull()) {
         VF = Vcur;
       }
       else {
-        rev = E.Orientation() == TopAbs_REVERSED;
-        if (Vcur.Orientation() == V.Orientation()) {
+        rev = theE.Orientation() == TopAbs_REVERSED;
+        if (Vcur.Orientation() == theV.Orientation()) {
           VF = Vcur;
         }
       }
     }
     itv.Next();
   }
-  
-  if (!VF.IsNull()) orient = VF.Orientation();
- 
-  Standard_Real f,l;
 
-  if (orient ==  TopAbs_FORWARD) {
-    BRep_Tool::Range(E,f,l);
-    return (rev) ? l : f;
+  if (!VF.IsNull()) orient = VF.Orientation();
+
+  Standard_Real f, l;
+
+  if (orient == TopAbs_FORWARD) {
+    BRep_Tool::Range(theE, f, l);
+    theParam = (rev) ? l : f;
+    return Standard_True;
   }
- 
-  else if (orient ==  TopAbs_REVERSED) {
-    BRep_Tool::Range(E,f,l);
-    return (rev) ? f : l;
-   }
+
+  else if (orient == TopAbs_REVERSED) {
+    BRep_Tool::Range(theE, f, l);
+    theParam = (rev) ? f : l;
+    return Standard_True;
+  }
 
   else {
     TopLoc_Location L;
-    const Handle(Geom_Curve)& C = BRep_Tool::Curve(E,L,f,l);
-    L = L.Predivided(V.Location());
-    if (!C.IsNull() || Degenerated(E)) {
-      const BRep_TVertex* TV = static_cast<const BRep_TVertex*>(V.TShape().get());
+    const Handle(Geom_Curve)& C = BRep_Tool::Curve(theE, L, f, l);
+    L = L.Predivided(theV.Location());
+    if (!C.IsNull() || BRep_Tool::Degenerated(theE)) {
+      const BRep_TVertex* TV = static_cast<const BRep_TVertex*>(theV.TShape().get());
       BRep_ListIteratorOfListOfPointRepresentation itpr(TV->Points());
 
       while (itpr.More()) {
         const Handle(BRep_PointRepresentation)& pr = itpr.Value();
-        if (pr->IsPointOnCurve(C,L)) {
+        if (pr->IsPointOnCurve(C, L)) {
           Standard_Real p = pr->Parameter();
           Standard_Real res = p;// SVV 4 nov 99 - to avoid warnings on Linux
           if (!C.IsNull()) {
             // Closed curves RLE 16 june 94
-            if (Precision::IsNegativeInfinite(f)) return pr->Parameter();//p;
-            if (Precision::IsPositiveInfinite(l)) return pr->Parameter();//p;
+            if (Precision::IsNegativeInfinite(f))
+            {
+              theParam = pr->Parameter();//p;
+              return Standard_True;
+            };
+            if (Precision::IsPositiveInfinite(l))
+            {
+              theParam = pr->Parameter();//p;
+              return Standard_True;
+            }
             gp_Pnt Pf = C->Value(f).Transformed(L.Transformation());
             gp_Pnt Pl = C->Value(l).Transformed(L.Transformation());
-            Standard_Real tol = BRep_Tool::Tolerance(V);
+            Standard_Real tol = BRep_Tool::Tolerance(theV);
             if (Pf.Distance(Pl) < tol) {
-              if (Pf.Distance(BRep_Tool::Pnt(V)) < tol) {
-                if (V.Orientation() == TopAbs_FORWARD) res = f;//p = f;
+              if (Pf.Distance(BRep_Tool::Pnt(theV)) < tol) {
+                if (theV.Orientation() == TopAbs_FORWARD) res = f;//p = f;
                 else                                   res = l;//p = l;
               }
             }
           }
-          return res;//p;
+          theParam = res;//p;
+          return Standard_True;
         }
         itpr.Next();
       }
@@ -1351,30 +1362,44 @@ Standard_Real  BRep_Tool::Parameter(const TopoDS_Vertex& V,
       // let us try with the first pcurve
       Handle(Geom2d_Curve) PC;
       Handle(Geom_Surface) S;
-      BRep_Tool::CurveOnSurface(E,PC,S,L,f,l);
-      L = L.Predivided(V.Location());
-      const BRep_TVertex* TV = static_cast<const BRep_TVertex*>(V.TShape().get());
+      BRep_Tool::CurveOnSurface(theE, PC, S, L, f, l);
+      L = L.Predivided(theV.Location());
+      const BRep_TVertex* TV = static_cast<const BRep_TVertex*>(theV.TShape().get());
       BRep_ListIteratorOfListOfPointRepresentation itpr(TV->Points());
 
       while (itpr.More()) {
         const Handle(BRep_PointRepresentation)& pr = itpr.Value();
-        if (pr->IsPointOnCurveOnSurface(PC,S,L)) {
+        if (pr->IsPointOnCurveOnSurface(PC, S, L)) {
           Standard_Real p = pr->Parameter();
           // Closed curves RLE 16 june 94
           if (PC->IsClosed()) {
-            if ((p == PC->FirstParameter()) || 
-                (p == PC->LastParameter())) {
-              if (V.Orientation() == TopAbs_FORWARD) p = PC->FirstParameter();
-              else                                   p = PC->LastParameter();
+            if ((p == PC->FirstParameter()) ||
+              (p == PC->LastParameter())) {
+              if (theV.Orientation() == TopAbs_FORWARD) p = PC->FirstParameter();
+              else                                      p = PC->LastParameter();
             }
           }
-          return p;
+          theParam = p;
+          return Standard_True;
         }
         itpr.Next();
       }
     }
   }
-  
+
+  return Standard_False;
+}
+
+//=======================================================================
+//function : Parameter
+//purpose  : Returns the parameter of <V> on <E>.
+//=======================================================================
+
+Standard_Real  BRep_Tool::Parameter(const TopoDS_Vertex& V, 
+                                    const TopoDS_Edge& E)
+{
+  Standard_Real p;
+  if (Parameter(V, E, p)) return p;
   throw Standard_NoSuchObject("BRep_Tool:: no parameter on edge");
 }
 
