@@ -1,4 +1,3 @@
-
 puts "========"
 puts "OCC27910"
 puts "========"
@@ -13,5 +12,10 @@ offsetparameter 1e-7 p i
 offsetload s 10
 offsetperform result
 
-checkshape result
+unifysamedom result_unif result
 
+
+checkshape result
+checkprops result -s 386834
+checknbshapes result -ref [lrange [nbshapes s] 8 19]
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

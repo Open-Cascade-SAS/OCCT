@@ -4098,7 +4098,7 @@ void TrimEdge(TopoDS_Edge&                  NE,
         gp_Pnt thePoint = BRep_Tool::Pnt(V);
         GeomAPI_ProjectPointOnCurve Projector(thePoint, theCurve);
         if (Projector.NbPoints() == 0)
-          throw Standard_ConstructionError("BRepOffset_MakeOffset::TrimEdge no projection");
+          return;
         U = Projector.LowerDistanceParameter();
       }
       if (U < UMin) {

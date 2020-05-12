@@ -89,28 +89,37 @@ static void EdgeAnalyse(const TopoDS_Edge&         E,
 			                  const Standard_Real        SinTol,
 			                        BRepOffset_ListOfInterval& LI)
 {
-  
   Standard_Real   f,l;
   BRep_Tool::Range(E, F1, f, l);
   BRepOffset_Interval I;
   I.First(f); I.Last(l);
-  //
-  // Tangent if the regularity is at least G1.
-  if (BRep_Tool::HasContinuity(E,F1,F2)) {
-    if (BRep_Tool::Continuity(E,F1,F2) > GeomAbs_C0) {
-      I.Type(ChFiDS_Tangential);
-      LI.Append(I);
-      return;
-    }
-  }
-  //
-  ChFiDS_TypeOfConcavity aType = ChFi3d::DefineConnectType(E, F1, F2,
-                                                           SinTol, Standard_False);
-  if(aType != ChFiDS_Tangential)
+  //  
+  BRepAdaptor_Surface aBAsurf1(F1, Standard_False);
+  GeomAbs_SurfaceType aSurfType1 = aBAsurf1.GetType();
+
+  BRepAdaptor_Surface aBAsurf2(F2, Standard_False);
+  GeomAbs_SurfaceType aSurfType2 = aBAsurf2.GetType();
+
+  Standard_Boolean isTwoPlanes = (aSurfType1 == GeomAbs_Plane && aSurfType2 == GeomAbs_Plane);
+
+  ChFiDS_TypeOfConcavity ConnectType = ChFiDS_Other;
+
+  if (isTwoPlanes) //then use only strong condition
   {
-    aType = ChFi3d::DefineConnectType(E, F1, F2, SinTol, Standard_True);
+    if (BRep_Tool::Continuity(E,F1,F2) > GeomAbs_C0)
+      ConnectType = ChFiDS_Tangential;
+    else
+      ConnectType = ChFi3d::DefineConnectType(E, F1, F2, SinTol, Standard_False);
   }
-  I.Type(aType);
+  else
+  {
+    if (ChFi3d::IsTangentFaces(E, F1, F2)) //weak condition
+      ConnectType = ChFiDS_Tangential;
+    else
+      ConnectType = ChFi3d::DefineConnectType(E, F1, F2, SinTol, Standard_False);
+  }
+   
+  I.Type(ConnectType);
   LI.Append(I);
 }
 

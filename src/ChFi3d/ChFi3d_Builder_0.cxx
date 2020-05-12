@@ -4594,93 +4594,6 @@ void ChFi3d_ChercheBordsLibres(const  ChFiDS_Map & myVEMap,
   }
 }
 
-Standard_Boolean ChFi3d_isTangentFaces(const TopoDS_Edge &theEdge,
-                                       const TopoDS_Face &theFace1,
-                                       const TopoDS_Face &theFace2,
-                                       const GeomAbs_Shape Order)
-{
-  if (Order == GeomAbs_G1 &&
-      BRep_Tool::Continuity( theEdge, theFace1, theFace2 ) != GeomAbs_C0)
-    return Standard_True;
-
-  Standard_Real TolC0 = Max(0.001, 1.5*BRep_Tool::Tolerance(theEdge));
-
-  Standard_Real aFirst;
-  Standard_Real aLast;
-    
-// Obtaining of pcurves of edge on two faces.
-  const Handle(Geom2d_Curve) aC2d1 = BRep_Tool::CurveOnSurface
-                                                (theEdge, theFace1, aFirst, aLast);
-  //For the case of seam edge
-  TopoDS_Edge EE = theEdge;
-  if (theFace1.IsSame(theFace2))
-    EE.Reverse();
-  const Handle(Geom2d_Curve) aC2d2 = BRep_Tool::CurveOnSurface
-                                                (EE, theFace2, aFirst, aLast);
-  if (aC2d1.IsNull() || aC2d2.IsNull())
-    return Standard_False;
-
-// Obtaining of two surfaces from adjacent faces.
-  Handle(Geom_Surface) aSurf1 = BRep_Tool::Surface(theFace1);
-  Handle(Geom_Surface) aSurf2 = BRep_Tool::Surface(theFace2);
-
-  if (aSurf1.IsNull() || aSurf2.IsNull())
-    return Standard_False;
-
-// Computation of the number of samples on the edge.
-  BRepAdaptor_Surface              aBAS1(theFace1);
-  BRepAdaptor_Surface              aBAS2(theFace2);
-  Handle(BRepAdaptor_HSurface)     aBAHS1      = new BRepAdaptor_HSurface(aBAS1);
-  Handle(BRepAdaptor_HSurface)     aBAHS2      = new BRepAdaptor_HSurface(aBAS2);
-  Handle(BRepTopAdaptor_TopolTool) aTool1      = new BRepTopAdaptor_TopolTool(aBAHS1);
-  Handle(BRepTopAdaptor_TopolTool) aTool2      = new BRepTopAdaptor_TopolTool(aBAHS2);
-  Standard_Integer                 aNbSamples1 =     aTool1->NbSamples();
-  Standard_Integer                 aNbSamples2 =     aTool2->NbSamples();
-  Standard_Integer                 aNbSamples  =     Max(aNbSamples1, aNbSamples2);
-
-
-// Computation of the continuity.
-  Standard_Real    aPar;
-  Standard_Real    aDelta = (aLast - aFirst)/(aNbSamples - 1);
-  Standard_Integer i, nbNotDone = 0;
-
-  for (i = 1, aPar = aFirst; i <= aNbSamples; i++, aPar += aDelta) {
-    if (i == aNbSamples) aPar = aLast;
-
-    LocalAnalysis_SurfaceContinuity aCont(aC2d1,  aC2d2,  aPar,
-					  aSurf1, aSurf2, Order,
-					  0.001, TolC0, 0.1, 0.1, 0.1);
-    if (!aCont.IsDone())
-      {
-	nbNotDone++;
-	continue;
-      }
-    
-    if (Order == GeomAbs_G1)
-    {
-      if (!aCont.IsG1())
-        return Standard_False;
-    }
-    else if (!aCont.IsG2())
-      return Standard_False;
-  }
-  
-  if (nbNotDone == aNbSamples)
-    return Standard_False;
-
-  //Compare normals of tangent faces in the middle point
-  Standard_Real MidPar = (aFirst + aLast)/2.;
-  gp_Pnt2d uv1 = aC2d1->Value(MidPar);
-  gp_Pnt2d uv2 = aC2d2->Value(MidPar);
-  gp_Dir normal1, normal2;
-  TopOpeBRepTool_TOOL::Nt( uv1, theFace1, normal1 );
-  TopOpeBRepTool_TOOL::Nt( uv2, theFace2, normal2 );
-  Standard_Real dot = normal1.Dot(normal2);
-  if (dot < 0.)
-    return Standard_False;
-  return Standard_True;
-}
-
 //=======================================================================
 //function : NbNotDegeneratedEdges
 //purpose  : calculate the number of non-degenerated edges of Map VEMap(Vtx)
@@ -4697,6 +4610,7 @@ Standard_Integer ChFi3d_NbNotDegeneratedEdges (const TopoDS_Vertex& Vtx,
   }
   return nba;
 }
+
 
 //=======================================================================
 //function : NbSharpEdges
@@ -4716,7 +4630,7 @@ Standard_Integer ChFi3d_NbSharpEdges (const TopoDS_Vertex& Vtx,
     {
       TopoDS_Face F1, F2;
       ChFi3d_conexfaces(cur, F1, F2, EFMap);
-      if (!F2.IsNull() && ChFi3d_isTangentFaces(cur, F1, F2, GeomAbs_G2))
+      if (!F2.IsNull() && ChFi3d::IsTangentFaces(cur, F1, F2, GeomAbs_G2))
         nba--;
     }
   }

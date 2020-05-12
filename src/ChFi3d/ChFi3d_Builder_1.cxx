@@ -591,7 +591,7 @@ Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
   if(Nbf < 2) return Standard_False;
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:44:19 2001 Begin
 //if (BRep_Tool::Continuity(E1,F[0],F[1]) != GeomAbs_C0) {
-  if (ChFi3d_isTangentFaces(E1,F[0],F[1])) {
+  if (ChFi3d::IsTangentFaces(E1,F[0],F[1])) {
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:44:21 2001 End
     return Standard_False;
   }
@@ -610,7 +610,7 @@ Standard_Boolean ChFi3d_Builder::FaceTangency(const TopoDS_Edge& E0,
       if(Nbf < 2) return Standard_False;
 //  Modified by Sergey KHROMOV - Tue Dec 18 18:10:40 2001 Begin
 //    if (BRep_Tool::Continuity(Ec,F[0],F[1]) < GeomAbs_G1) {
-      if (!ChFi3d_isTangentFaces(Ec,F[0],F[1])) {
+      if (!ChFi3d::IsTangentFaces(Ec,F[0],F[1])) {
 //  Modified by Sergey KHROMOV - Tue Dec 18 18:10:41 2001 End
 	return Standard_False;
       }
@@ -736,7 +736,7 @@ void ChFi3d_Builder::PerformExtremity (const Handle(ChFiDS_Spine)& Spine)
           continue;
         TopoDS_Face F1, F2;
         ChFi3d_conexfaces(anEdge, F1, F2, myEFMap);
-        if (!F2.IsNull() && ChFi3d_isTangentFaces(anEdge, F1, F2, GeomAbs_G2)) //smooth edge
+        if (!F2.IsNull() && ChFi3d::IsTangentFaces(anEdge, F1, F2, GeomAbs_G2)) //smooth edge
         {
           if (!F1.IsSame(F2))
             NbG1Connections++;
@@ -853,7 +853,7 @@ Standard_Boolean ChFi3d_Builder::PerformElement(const Handle(ChFiDS_Spine)& Spin
   if(ff1.IsNull() || ff2.IsNull()) return 0;
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:46:22 2001 End
 //if(BRep_Tool::Continuity(Ec,ff1,ff2) != GeomAbs_C0) return 0;
-  if (ChFi3d_isTangentFaces(Ec,ff1,ff2)) return 0;
+  if (ChFi3d::IsTangentFaces(Ec,ff1,ff2)) return 0;
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:46:24 2001 Begin
 
   TopoDS_Face FirstFace = ff1;

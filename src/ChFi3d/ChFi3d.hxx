@@ -25,6 +25,7 @@
 #include <TopAbs_Orientation.hxx>
 #include <Standard_Boolean.hxx>
 #include <ChFiDS_TypeOfConcavity.hxx>
+#include <GeomAbs_Shape.hxx>
 class BRepAdaptor_Surface;
 class TopoDS_Edge;
 class TopoDS_Face;
@@ -47,7 +48,13 @@ public:
                                                                    const TopoDS_Face&     F2,
                                                                    const Standard_Real    SinTol,
                                                                    const Standard_Boolean CorrectPoint);
-  
+
+  //! Returns true if theEdge between theFace1 and theFace2 is tangent
+  Standard_EXPORT static Standard_Boolean IsTangentFaces (const TopoDS_Edge& theEdge,
+                                                          const TopoDS_Face& theFace1,
+                                                          const TopoDS_Face& theFace2,
+                                                          const GeomAbs_Shape Order = GeomAbs_G1);
+
   //! Returns  Reversed  in  Or1  and(or)  Or2  if
   //! the  concave edge  defined by the  interior of faces F1 and F2,
   //! in  the  neighbourhood of  their boundary E is of the edge opposite to  the

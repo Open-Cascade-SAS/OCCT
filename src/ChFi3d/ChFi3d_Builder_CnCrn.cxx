@@ -144,6 +144,7 @@
 #include <TopOpeBRepDS_Transition.hxx>
 #include <TopTools_Array2OfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <ChFi3d.hxx>
 
 // performances 
 #ifdef OCCT_DEBUG
@@ -1261,7 +1262,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:11:02 2001 Begin
 // 	regul.SetValue(ic,BRep_Tool::Continuity(TopoDS::Edge(Evive.Value(ic)),F1,F2)
 // 		     !=GeomAbs_C0); 
-	regul.SetValue(ic, ChFi3d_isTangentFaces(TopoDS::Edge(Evive.Value(ic)),F1,F2)); 
+	regul.SetValue(ic, ChFi3d::IsTangentFaces(TopoDS::Edge(Evive.Value(ic)),F1,F2)); 
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:11:07 2001 End
       }
     }

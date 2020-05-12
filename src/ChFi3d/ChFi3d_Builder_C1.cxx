@@ -334,7 +334,7 @@ static Standard_Boolean IntersUpdateOnSame(Handle(GeomAdaptor_HSurface)& HGs,
   if ( Update(HBs,Hc3df,FIop,CPop,FprolUV,isFirst,c3dU) )
     return Standard_True;
 
-  if (!ChFi3d_isTangentFaces(Eprol,Fprol,Fop))
+  if (!ChFi3d::IsTangentFaces(Eprol,Fprol,Fop))
     return Standard_False;
 
   Handle(Geom2d_Curve) gpcprol = BRep_Tool::CurveOnSurface(Eprol,Fprol,uf,ul);
@@ -1639,14 +1639,14 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
     ChFi3d_edge_common_faces(myEFMap(Eadj1),Fga,Fdr);
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:57:32 2001 Begin
 //  reg1=BRep_Tool::Continuity(Eadj1,Fga,Fdr)!=GeomAbs_C0;
-    reg1 = ChFi3d_isTangentFaces(Eadj1,Fga,Fdr);
+    reg1 = ChFi3d::IsTangentFaces(Eadj1,Fga,Fdr);
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:57:33 2001 End
     if (F2.IsSame(facecouture)) Eadj2=edgecouture;
     else ChFi3d_cherche_element(Vtx,EdgeSpine,F2,Eadj2,Vbid1);
     ChFi3d_edge_common_faces(myEFMap(Eadj2),Fga,Fdr);
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:58:22 2001 Begin
 //  reg2=BRep_Tool::Continuity(Eadj2,Fga,Fdr)!=GeomAbs_C0;
-    reg2 = ChFi3d_isTangentFaces(Eadj2,Fga,Fdr);
+    reg2 = ChFi3d::IsTangentFaces(Eadj2,Fga,Fdr);
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:58:24 2001 End
 
 // two faces common to the edge are found
@@ -2067,9 +2067,9 @@ void ChFi3d_Builder::PerformIntersectionAtEnd(const Standard_Integer Index)
       else if (nbarete==5) {
 	//pro15368
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:07:43 2001 End
-	Standard_Boolean isTangent0 = ChFi3d_isTangentFaces(Edge[0],F1,Face[0]);
-	Standard_Boolean isTangent1 = ChFi3d_isTangentFaces(Edge[1],Face[0],Face[1]);
-	Standard_Boolean isTangent2 = ChFi3d_isTangentFaces(Edge[2],Face[1],Face[2]);
+	Standard_Boolean isTangent0 = ChFi3d::IsTangentFaces(Edge[0],F1,Face[0]);
+	Standard_Boolean isTangent1 = ChFi3d::IsTangentFaces(Edge[1],Face[0],Face[1]);
+	Standard_Boolean isTangent2 = ChFi3d::IsTangentFaces(Edge[2],Face[1],Face[2]);
 	if ((isTangent0 || isTangent2) && isTangent1) {
 //         GeomAbs_Shape cont0,cont1,cont2;
 //         cont0=BRep_Tool::Continuity(Edge[0],F1,Face[0]);
@@ -3970,7 +3970,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     inters = Update(HBs,Hc3df,FiopArc,CPopArc,p2dbout,isfirst,wop);
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:08:27 2001 Begin
 //  if(!inters && BRep_Tool::Continuity(Arcprol,Fv,Fop) != GeomAbs_C0){
-    if(!inters && ChFi3d_isTangentFaces(Arcprol,Fv,Fop)){
+    if(!inters && ChFi3d::IsTangentFaces(Arcprol,Fv,Fop)){
 //  Modified by Sergey KHROMOV - Fri Dec 21 18:08:29 2001 End
       // Arcprol is an edge of tangency, ultimate adjustment by an extrema curve/curve is attempted.
       Standard_Real ff,ll;

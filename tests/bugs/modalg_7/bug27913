@@ -1,0 +1,20 @@
+puts "TODO OCC26577 All: Error :  is WRONG because number of EDGE entities in shape"
+puts "TODO OCC26577 All: Error :  is WRONG because number of SHELL entities in shape"
+
+
+puts "=============================================================="
+puts "0027913: Sharing between edges was lost after offset operation"
+puts "=============================================================="
+puts ""
+
+restore [locate_data_file bug27913.brep] s 
+offsetparameter 1e-7 p i
+offsetload s 10
+offsetperform result
+
+unifysamedom result_unif result
+
+checkshape result
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
+
+checknbshapes result -ref [lrange [nbshapes s] 8 19]

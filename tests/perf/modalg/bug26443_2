@@ -15,4 +15,6 @@ offsetshape r a -2
 dchrono h stop counter offsetshape
 fit
 
+checkshape r
+checknbshapes r -ref [lrange [nbshapes a] 8 19]
 checkview -screenshot -2d -path ${imagedir}/${test_image}.png

@@ -250,7 +250,7 @@ static Standard_Boolean BonVoisin(const gp_Pnt& Point,
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:12:48 2001 Begin
 // 	    Standard_Boolean istg = 
 // 	      BRep_Tool::Continuity(ecur,ff,F) != GeomAbs_C0;
- 	    Standard_Boolean istg = ChFi3d_isTangentFaces(ecur,ff,F);
+ 	    Standard_Boolean istg = ChFi3d::IsTangentFaces(ecur,ff,F);
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:12:51 2001 End
 	    if((!issame || (issame && isreallyclosed)) && istg) {
 	      found = 1;
@@ -456,7 +456,7 @@ Standard_Boolean IsG1(const ChFiDS_Map&         TheMap,
       FVoi = TopoDS::Face(It.Value());
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:09:32 2001 Begin
 //    if (BRep_Tool::Continuity(E,FRef,FVoi) != GeomAbs_C0) {
-      if (ChFi3d_isTangentFaces(E,FRef,FVoi)) {
+      if (ChFi3d::IsTangentFaces(E,FRef,FVoi)) {
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:09:33 2001 End
 	return Standard_True;
       }
@@ -476,7 +476,7 @@ Standard_Boolean IsG1(const ChFiDS_Map&         TheMap,
 	FVoi = FRef;
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:15:12 2001 Begin
 // 	if (BRep_Tool::Continuity(E,FRef,FRef) >= GeomAbs_G1) {	  
-	if (ChFi3d_isTangentFaces(E,FRef,FRef)) {
+	if (ChFi3d::IsTangentFaces(E,FRef,FRef)) {
 //  Modified by Sergey KHROMOV - Fri Dec 21 17:15:16 2001 End
 	  return Standard_True;
 	}
