@@ -1,0 +1,21 @@
+puts "# ====================================================================="
+puts "# 0026925: Data Exchange - Execeptions can be raised if assembly is empty"
+puts "# ====================================================================="
+puts ""
+
+pload DCAF
+XNewDoc D
+XNewShape D
+box a 0 0 0 10 10 10
+XAddShape D a 0
+ttranslate a 10 0 0
+XAddComponent D 0:1:1:1 a
+XGetShape s0 D 0:1:1:1
+checkshape s0 l
+XUpdateAssemblies D
+XGetShape s1 D 0:1:1:1
+
+checkshape s1 r
+checknbshapes s1 -vertex 8 -edge 12  -shape 35 -face 6 -solid 1 -shell 1
+
+Close D
