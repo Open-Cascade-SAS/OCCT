@@ -45,7 +45,7 @@ void SelectMgr_TriangularFrustumSet::Build (const TColgp_Array1OfPnt2d& thePoint
   Handle(BRepMesh_DataStructureOfDelaun) aMeshStructure = new BRepMesh_DataStructureOfDelaun (anAllocator);
   Standard_Integer aPtsLower = thePoints.Lower();
   Standard_Integer aPtsUpper = thePoints.Upper();
-  IMeshData::VectorOfInteger anIndexes(aPtsUpper - aPtsLower, anAllocator);
+  IMeshData::VectorOfInteger anIndexes (thePoints.Size(), anAllocator);
   myBoundaryPoints.Resize (aPtsLower, aPtsLower + 2 * (thePoints.Size()) - 1, Standard_False);
 
   for (Standard_Integer aPtIdx = aPtsLower; aPtIdx <= aPtsUpper; ++aPtIdx)
