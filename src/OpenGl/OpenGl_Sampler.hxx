@@ -129,13 +129,17 @@ protected:
                                             GLint  theValue);
 
   //! Apply sampler parameters.
-  //! If Sampler Object is not NULL and valid resource, the parameters will be set to it (and it is not required Sampler Object being bound).
-  //! Otherwise, parameters will be applied to currently bound Texture object.
+  //! @param theCtx     [in] active OpenGL context
+  //! @param theParams  [in] texture parameters to apply
+  //! @param theSampler [in] apply parameters to Texture object (NULL)
+  //!                        or to specified Sampler object (non-NULL, sampler is not required to be bound)
+  //! @param theTarget  [in] OpenGL texture target
+  //! @param theMaxMipLevel [in] maximum mipmap level defined within the texture
   Standard_EXPORT static void applySamplerParams (const Handle(OpenGl_Context)& theCtx,
                                                   const Handle(Graphic3d_TextureParams)& theParams,
                                                   OpenGl_Sampler* theSampler,
                                                   const GLenum theTarget,
-                                                  const bool theHasMipMaps);
+                                                  const Standard_Integer theMaxMipLevel);
 
   //! Apply global texture state for deprecated OpenGL functionality.
   Standard_EXPORT static void applyGlobalTextureParams (const Handle(OpenGl_Context)& theCtx,

@@ -506,6 +506,9 @@ public:
   #endif
   }
 
+  //! Return map of supported texture formats.
+  const Handle(Image_SupportedFormats)& SupportedTextureFormats() const { return mySupportedFormats; }
+
   //! @return maximum degree of anisotropy texture filter
   Standard_Integer MaxDegreeOfAnisotropy() const { return myAnisoMax; }
 
@@ -911,7 +914,10 @@ public: //! @name methods to alter or retrieve current state
   Standard_EXPORT void SetPointSpriteOrigin();
 
   //! Setup texture matrix to active GLSL program or to FFP global state using glMatrixMode (GL_TEXTURE).
-  Standard_EXPORT void SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams);
+  //! @param theParams    [in] texture parameters
+  //! @param theIsTopDown [in] texture top-down flag
+  Standard_EXPORT void SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams,
+                                         const Standard_Boolean theIsTopDown);
 
   //! Bind default Vertex Array Object
   Standard_EXPORT void BindDefaultVao();
@@ -1040,7 +1046,7 @@ public: //! @name extensions
   Standard_Boolean       hasUintIndex;       //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
   Standard_Boolean       hasTexRGBA8;        //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
   Standard_Boolean       hasTexFloatLinear;  //!< texture-filterable state for 32-bit floating texture formats (always on desktop, GL_OES_texture_float_linear within OpenGL ES)
-  Standard_Boolean       hasTexSRGB;         //!< sRGB texture    formats (desktop OpenGL 2.0, OpenGL ES 3.0 or GL_EXT_texture_sRGB)
+  Standard_Boolean       hasTexSRGB;         //!< sRGB texture    formats (desktop OpenGL 2.1, OpenGL ES 3.0 or GL_EXT_texture_sRGB)
   Standard_Boolean       hasFboSRGB;         //!< sRGB FBO render targets (desktop OpenGL 2.1, OpenGL ES 3.0)
   Standard_Boolean       hasSRGBControl;     //!< sRGB write control (any desktop OpenGL, OpenGL ES + GL_EXT_sRGB_write_control extension)
   OpenGl_FeatureFlag     hasFlatShading;     //!< Complex flag indicating support of Flat shading (Graphic3d_TOSM_FACET) (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_standard_derivatives)
@@ -1116,6 +1122,8 @@ private: // context info
   void*            myGlLibHandle;          //!< optional handle to GL library
   NCollection_Handle<OpenGl_GlFunctions>
                    myFuncs;                //!< mega structure for all GL functions
+  Handle(Image_SupportedFormats)
+                   mySupportedFormats;     //!< map of supported texture formats
   Standard_Integer myAnisoMax;             //!< maximum level of anisotropy texture filter
   Standard_Integer myTexClamp;             //!< either GL_CLAMP_TO_EDGE (1.2+) or GL_CLAMP (1.1)
   Standard_Integer myMaxTexDim;            //!< value for GL_MAX_TEXTURE_SIZE

@@ -43,7 +43,10 @@ public:
   }
 
   //! Image reader.
-  virtual Handle(Image_PixMap) GetImage() const Standard_OVERRIDE { return myImageSource->ReadImage(); }
+  virtual Handle(Image_PixMap) GetImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE
+  {
+    return myImageSource->ReadImage (theSupported);
+  }
 
 protected:
   Handle(Image_Texture) myImageSource;

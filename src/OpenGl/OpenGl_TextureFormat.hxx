@@ -14,6 +14,7 @@
 #ifndef _OpenGl_TextureFormat_HeaderFile
 #define _OpenGl_TextureFormat_HeaderFile
 
+#include <Image_CompressedFormat.hxx>
 #include <Image_Format.hxx>
 #include <OpenGl_GlCore13.hxx>
 #include <Standard_Handle.hxx>
@@ -46,6 +47,14 @@ public:
   //! @return found format or invalid format
   Standard_EXPORT static OpenGl_TextureFormat FindSizedFormat (const Handle(OpenGl_Context)& theCtx,
                                                                GLint theSizedFormat);
+
+  //! Find texture format suitable to specified compressed texture format.
+  //! @param theCtx [in] OpenGL context defining supported texture formats
+  //! @param theFormat [in] compressed texture format
+  //! @return found format or invalid format
+  Standard_EXPORT static OpenGl_TextureFormat FindCompressedFormat (const Handle(OpenGl_Context)& theCtx,
+                                                                    Image_CompressedFormat theFormat,
+                                                                    bool theIsColorMap);
 
 public:
 

@@ -48,6 +48,9 @@ public:
   //! Convert image to Black/White.
   Standard_EXPORT static void ToBlackWhite (Image_PixMap& theImage);
 
+  //! Return default image data allocator.
+  Standard_EXPORT static const Handle(NCollection_BaseAllocator)& DefaultAllocator();
+
 public: // high-level API
 
   Image_Format Format() const { return myImgFormat; }

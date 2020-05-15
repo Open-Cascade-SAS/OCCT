@@ -72,22 +72,22 @@ public:
   //! @param theLevel level of anisontropy texture filter.
   Standard_EXPORT void SetAnisoFilter (const Graphic3d_LevelOfTextureAnisotropy theLevel);
   
-  //! @return rotation angle in degrees
-  //! Default value is 0.
+  //! Return rotation angle in degrees; 0 by default.
+  //! Complete transformation matrix: Rotation -> Translation -> Scale.
   Standard_ShortReal Rotation() const { return myRotAngle; }
   
   //! @param theAngleDegrees rotation angle.
   Standard_EXPORT void SetRotation (const Standard_ShortReal theAngleDegrees);
   
-  //! @return scale factor
-  //! Default value is no scaling (1.0; 1.0).
+  //! Return scale factor; (1.0; 1.0) by default, which means no scaling.
+  //! Complete transformation matrix: Rotation -> Translation -> Scale.
   const Graphic3d_Vec2& Scale() const { return myScale; }
   
   //! @param theScale scale factor.
   Standard_EXPORT void SetScale (const Graphic3d_Vec2 theScale);
-  
-  //! @return translation vector
-  //! Default value is no translation (0.0; 0.0).
+
+  //! Return translation vector; (0.0; 0.0), which means no translation.
+  //! Complete transformation matrix: Rotation -> Translation -> Scale.
   const Graphic3d_Vec2& Translation() const { return myTranslation; }
   
   //! @param theVec translation vector.
@@ -109,7 +109,8 @@ public:
   //! @return base texture mipmap level; 0 by default.
   Standard_Integer BaseLevel() const { return myBaseLevel; }
 
-  //! @return maximum texture mipmap array level; 1000 by default.
+  //! Return maximum texture mipmap array level; 1000 by default.
+  //! Real rendering limit will take into account mipmap generation flags and presence of mipmaps in loaded image.
   Standard_Integer MaxLevel() const { return myMaxLevel; }
 
   //! Setups texture mipmap array levels range.

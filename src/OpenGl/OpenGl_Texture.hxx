@@ -72,9 +72,16 @@ public:
   //! Return true for GL_RED and GL_ALPHA formats.
   bool IsAlpha() const { return myIsAlpha; }
 
-  //! Setup to interprete the format as Alpha by Shader Manager
+  //! Setup to interpret the format as Alpha by Shader Manager
   //! (should be GL_ALPHA within compatible context or GL_RED otherwise).
   void SetAlpha (const bool theValue) { myIsAlpha = theValue; }
+
+  //! Return if 2D surface is defined top-down (TRUE) or bottom-up (FALSE).
+  //! Normally set from Image_PixMap::IsTopDown() within texture initialization.
+  bool IsTopDown() const { return myIsTopDown; }
+
+  //! Set if 2D surface is defined top-down (TRUE) or bottom-up (FALSE).
+  void SetTopDown (bool theIsTopDown) { myIsTopDown = theIsTopDown; }
 
   //! Creates Texture id if not yet generated.
   //! Data should be initialized by another method.
@@ -144,6 +151,11 @@ public:
   Standard_EXPORT bool Init (const Handle(OpenGl_Context)&       theCtx,
                              const Handle(Graphic3d_TextureMap)& theTextureMap);
 
+  //! Initialize the texture with Image_CompressedPixMap.
+  Standard_EXPORT bool InitCompressed (const Handle(OpenGl_Context)& theCtx,
+                                       const Image_CompressedPixMap& theImage,
+                                       const Standard_Boolean        theIsColorMap);
+
   //! Initialize the 2D multisampling texture using glTexImage2DMultisample().
   Standard_EXPORT bool Init2DMultisample (const Handle(OpenGl_Context)& theCtx,
                                           const GLsizei                 theNbSamples,
@@ -165,7 +177,10 @@ public:
                                const void*                   thePixels);
 
   //! @return true if texture was generated within mipmaps
-  Standard_Boolean HasMipmaps() const { return myHasMipmaps; }
+  Standard_Boolean HasMipmaps() const { return myMaxMipLevel > 0; }
+
+  //! Return upper mipmap level index (0 means no mipmaps).
+  Standard_Integer MaxMipmapLevel() const { return myMaxMipLevel; }
 
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
@@ -278,8 +293,9 @@ protected:
   GLenum           myTextFormat; //!< texture format - GL_RGB, GL_RGBA,...
   GLint            mySizedFormat;//!< internal (sized) texture format
   Standard_Integer myNbSamples;  //!< number of MSAA samples
-  Standard_Boolean myHasMipmaps; //!< flag indicates that texture was uploaded with mipmaps
+  Standard_Integer myMaxMipLevel;//!< upper mipmap level index (0 means no mipmaps)
   bool             myIsAlpha;    //!< indicates alpha format
+  bool             myIsTopDown;  //!< indicates if 2D surface is defined top-down (TRUE) or bottom-up (FALSE)
 
 };
 

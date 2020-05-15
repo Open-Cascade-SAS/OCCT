@@ -31,7 +31,6 @@ public:
     Graphic3d_TextureMap (theFileName, Graphic3d_TOT_CUBEMAP),
     myCurrentSide  (Graphic3d_CMS_POS_X),
     myEndIsReached (false),
-    myIsTopDown    (true),
     myZIsInverted  (false),
     myHasMipmaps   (theToGenerateMipmaps)
   {}
@@ -42,7 +41,6 @@ public:
     Graphic3d_TextureMap (thePixmap, Graphic3d_TOT_CUBEMAP),
     myCurrentSide  (Graphic3d_CMS_POS_X),
     myEndIsReached (false),
-    myIsTopDown    (true),
     myZIsInverted  (false),
     myHasMipmaps   (theToGenerateMipmaps)
   {}
@@ -67,12 +65,6 @@ public:
     }
   }
 
-  //! Returns whether row's memory layout is top-down.
-  Standard_Boolean IsTopDown() const
-  {
-    return myIsTopDown;
-  }
-
   //! Sets Z axis inversion (vertical flipping).
   void SetZInversion (Standard_Boolean theZIsInverted)
   {
@@ -91,9 +83,13 @@ public:
   //! Sets whether to generate mipmaps of cubemap or not.
   void SetMipmapsGeneration (Standard_Boolean theToGenerateMipmaps) { myHasMipmaps = theToGenerateMipmaps; }
 
+  //! Returns current cubemap side as compressed PixMap.
+  //! Returns null handle if current side is invalid or if image is not in supported compressed format.
+  virtual Handle(Image_CompressedPixMap) CompressedValue (const Handle(Image_SupportedFormats)& theSupported) = 0;
+
   //! Returns PixMap containing current side of cubemap.
   //! Returns null handle if current side is invalid.
-  virtual Handle(Image_PixMap) Value() = 0;
+  virtual Handle(Image_PixMap) Value (const Handle(Image_SupportedFormats)& theSupported) = 0;
 
   //! Sets iterator state to +X cubemap side.
   Graphic3d_CubeMap& Reset()
@@ -110,7 +106,6 @@ protected:
 
   Graphic3d_CubeMapSide myCurrentSide;  //!< Iterator state
   Standard_Boolean      myEndIsReached; //!< Indicates whether end of iteration has been reached or hasn't
-  Standard_Boolean      myIsTopDown;    //!< Stores rows's memory layout
   Standard_Boolean      myZIsInverted;  //!< Indicates whether Z axis is inverted that allows to synchronize vertical flip of cubemap
   Standard_Boolean      myHasMipmaps;   //!< Indicates whether mipmaps of cubemap will be generated or not
 

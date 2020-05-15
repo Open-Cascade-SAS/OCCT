@@ -36,10 +36,21 @@ XCAFPrs_Texture::XCAFPrs_Texture (const Image_Texture& theImageSource,
 }
 
 //=======================================================================
+//function : GetCompressedImage
+//purpose  :
+//=======================================================================
+Handle(Image_CompressedPixMap) XCAFPrs_Texture::GetCompressedImage (const Handle(Image_SupportedFormats)& theSupported)
+{
+  return myImageSource.ReadCompressedImage (theSupported);
+}
+
+//=======================================================================
 //function : GetImage
 //purpose  :
 //=======================================================================
-Handle(Image_PixMap) XCAFPrs_Texture::GetImage() const
+Handle(Image_PixMap) XCAFPrs_Texture::GetImage (const Handle(Image_SupportedFormats)& theSupported)
 {
-  return myImageSource.ReadImage();
+  Handle(Image_PixMap) anImage = myImageSource.ReadImage (theSupported);
+  convertToCompatible (theSupported, anImage);
+  return anImage;
 }

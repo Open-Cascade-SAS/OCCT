@@ -1020,7 +1020,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
     {
       if (const Handle(OpenGl_Texture)& aFirstTexture = aTextureSet->First())
       {
-        aCtx->SetTextureMatrix (aFirstTexture->Sampler()->Parameters());
+        aCtx->SetTextureMatrix (aFirstTexture->Sampler()->Parameters(), aFirstTexture->IsTopDown());
       }
     }
     aCtx->SetSampleAlphaToCoverage (aCtx->ShaderManager()->MaterialState().HasAlphaCutoff());

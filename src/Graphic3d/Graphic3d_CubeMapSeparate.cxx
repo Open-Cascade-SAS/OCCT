@@ -13,7 +13,9 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_CubeMapSeparate.hxx>
+
 #include <Image_AlienPixMap.hxx>
+#include <Image_DDSParser.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <OSD_File.hxx>
@@ -84,10 +86,54 @@ Graphic3d_CubeMapSeparate::Graphic3d_CubeMapSeparate (const NCollection_Array1<H
 }
 
 // =======================================================================
+// function : CompressedValue
+// purpose  :
+// =======================================================================
+Handle(Image_CompressedPixMap) Graphic3d_CubeMapSeparate::CompressedValue (const Handle(Image_SupportedFormats)& theSupported)
+{
+  if (!myImages[0].IsNull())
+  {
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  const Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
+  TCollection_AsciiString aFilePath;
+  myPaths[anOrder[myCurrentSide]].SystemName(aFilePath);
+  if (aFilePath.IsEmpty())
+  {
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load (theSupported, aFilePath, 0);
+  if (anImage.IsNull()
+   || anImage->SizeX() != anImage->SizeY())
+  {
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  if (myCurrentSide == 0)
+  {
+    mySize =   anImage->SizeX();
+    myFormat = anImage->BaseFormat();
+    myIsTopDown = anImage->IsTopDown();
+    return anImage;
+  }
+
+  if (anImage->BaseFormat() == myFormat
+   && anImage->SizeX() == (Standard_Integer )mySize)
+  {
+    return anImage;
+  }
+
+  Message::SendWarning (TCollection_AsciiString() + "'" + aFilePath + "' inconsistent image format or dimension in Graphic3d_CubeMapSeparate");
+  return Handle(Image_CompressedPixMap)();
+}
+
+// =======================================================================
 // function : Value
 // purpose  :
 // =======================================================================
-Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value()
+Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value (const Handle(Image_SupportedFormats)& theSupported)
 {
   Graphic3d_CubeMapOrder anOrder = Graphic3d_CubeMapOrder::Default();
   if (!myIsTopDown)
@@ -108,6 +154,7 @@ Handle(Image_PixMap) Graphic3d_CubeMapSeparate::Value()
       Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap;
       if (anImage->Load(aFilePath))
       {
+        convertToCompatible (theSupported, anImage);
         if (anImage->SizeX() == anImage->SizeY())
         {
           if (myCurrentSide == 0)

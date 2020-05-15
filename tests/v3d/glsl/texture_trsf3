@@ -1,8 +1,8 @@
 puts "========"
-puts "Texture 2D transformation (presentation trsf)"
+puts "Texture 2D transformation (presentation trsf) on DDS texture"
 puts "========"
 
-set aTexture [locate_data_file bug26122_texture_trsf_ref.png]
+set aTexture [locate_data_file bug31478_texture_trsf_ref_dxt3.dds]
 pload MODELING VISUALIZATION
 box b 1 1 1
 explode b F

@@ -31,7 +31,10 @@ public:
                                             const Graphic3d_TextureUnit theUnit);
 
   //! Image reader.
-  Standard_EXPORT virtual Handle(Image_PixMap) GetImage() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Image_CompressedPixMap) GetCompressedImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+
+  //! Image reader.
+  Standard_EXPORT virtual Handle(Image_PixMap) GetImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Return image source.
   const Image_Texture& GetImageSource() const { return myImageSource; }

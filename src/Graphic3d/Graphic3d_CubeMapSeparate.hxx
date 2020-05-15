@@ -33,13 +33,16 @@ public:
   //! @theImages - array if PixMaps (has to have size equal 6).
   Standard_EXPORT Graphic3d_CubeMapSeparate(const NCollection_Array1<Handle(Image_PixMap)>& theImages);
 
+  //! Returns current cubemap side as compressed PixMap.
+  Standard_EXPORT virtual Handle(Image_CompressedPixMap) CompressedValue (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
+
   //! Returns current side of cubemap as PixMap.
   //! Returns null handle if current side or whole cubemap is invalid.
   //! All origin images have to have the same sizes, format and quad shapes to form valid cubemap.
-  Standard_EXPORT Handle(Image_PixMap) Value() Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Image_PixMap) Value (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Returns NULL.
-  virtual Handle(Image_PixMap) GetImage() const Standard_OVERRIDE
+  virtual Handle(Image_PixMap) GetImage (const Handle(Image_SupportedFormats)& ) Standard_OVERRIDE
   {
     return Handle(Image_PixMap)();
   }

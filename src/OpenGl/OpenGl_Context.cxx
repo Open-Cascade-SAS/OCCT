@@ -37,6 +37,7 @@
 
 #include <Graphic3d_TransformUtils.hxx>
 #include <Graphic3d_RenderingParams.hxx>
+#include <Image_SupportedFormats.hxx>
 #include <Message_Messenger.hxx>
 #include <NCollection_Vector.hxx>
 #include <Standard_ProgramError.hxx>
@@ -188,6 +189,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myClippingState (),
   myGlLibHandle (NULL),
   myFuncs (new OpenGl_GlFunctions()),
+  mySupportedFormats (new Image_SupportedFormats()),
   myAnisoMax   (1),
   myTexClamp   (GL_CLAMP_TO_EDGE),
   myMaxTexDim  (1024),
@@ -1319,6 +1321,14 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myVendor = (const char* )::glGetString (GL_VENDOR);
   myVendor.LowerCase();
 
+  // standard formats
+  mySupportedFormats->Clear();
+  mySupportedFormats->Add (Image_PixMap::ImgGray);
+  mySupportedFormats->Add (Image_PixMap::ImgAlpha);
+  mySupportedFormats->Add (Image_PixMap::ImgRGB);
+  mySupportedFormats->Add (Image_PixMap::ImgRGB32);
+  mySupportedFormats->Add (Image_PixMap::ImgRGBA);
+
   if (caps->contextMajorVersionUpper != -1)
   {
     // synthetically restrict OpenGL version for testing
@@ -1467,6 +1477,13 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   }
 #endif
 
+  if (extBgra)
+  {
+    // no BGR on OpenGL ES - only BGRA as extension
+    mySupportedFormats->Add (Image_PixMap::ImgBGR32);
+    mySupportedFormats->Add (Image_PixMap::ImgBGRA);
+  }
+
   core11fwd = (OpenGl_GlCore11Fwd* )(&(*myFuncs));
   if (IsGlGreaterEqual (2, 0))
   {
@@ -1613,7 +1630,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   myTexClamp = IsGlGreaterEqual (1, 2) ? GL_CLAMP_TO_EDGE : GL_CLAMP;
 
   hasTexRGBA8 = Standard_True;
-  hasTexSRGB       = IsGlGreaterEqual (2, 0);
+  hasTexSRGB       = IsGlGreaterEqual (2, 1);
   hasFboSRGB       = IsGlGreaterEqual (2, 1);
   hasSRGBControl   = hasFboSRGB;
   arbDrawBuffers   = CheckExtension ("GL_ARB_draw_buffers");
@@ -1622,11 +1639,19 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
                   || CheckExtension ("GL_ARB_texture_float");
   hasTexFloatLinear = arbTexFloat;
   arbSampleShading = CheckExtension ("GL_ARB_sample_shading");
-  extBgra          = CheckExtension ("GL_EXT_bgra");
+  extBgra          = IsGlGreaterEqual (1, 2)
+                  || CheckExtension ("GL_EXT_bgra");
   extAnis          = CheckExtension ("GL_EXT_texture_filter_anisotropic");
   extPDS           = CheckExtension ("GL_EXT_packed_depth_stencil");
   atiMem           = CheckExtension ("GL_ATI_meminfo");
   nvxMem           = CheckExtension ("GL_NVX_gpu_memory_info");
+
+  if (extBgra)
+  {
+    mySupportedFormats->Add (Image_PixMap::ImgBGR);
+    mySupportedFormats->Add (Image_PixMap::ImgBGR32);
+    mySupportedFormats->Add (Image_PixMap::ImgBGRA);
+  }
 
   hasDrawBuffers = IsGlGreaterEqual (2, 0) ? OpenGl_FeatureInCore :
                    arbDrawBuffers ? OpenGl_FeatureInExtensions 
@@ -2974,6 +2999,59 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     }
   }
 
+  if (arbTexFloat)
+  {
+    mySupportedFormats->Add (Image_Format_GrayF);
+    mySupportedFormats->Add (Image_Format_AlphaF);
+    mySupportedFormats->Add (Image_Format_RGBF);
+    mySupportedFormats->Add (Image_Format_RGBAF);
+    if (arbTexRG)
+    {
+      mySupportedFormats->Add (Image_Format_RGF);
+    }
+    if (extBgra)
+    {
+    #if !defined(GL_ES_VERSION_2_0)
+      mySupportedFormats->Add (Image_Format_BGRF);
+    #endif
+      mySupportedFormats->Add (Image_Format_BGRAF);
+    }
+  }
+
+#ifdef __EMSCRIPTEN__
+  if (checkEnableWebGlExtension (*this, "GL_WEBGL_compressed_texture_s3tc")) // GL_WEBGL_compressed_texture_s3tc_srgb for sRGB formats
+  {
+    mySupportedFormats->Add (Image_CompressedFormat_RGB_S3TC_DXT1);
+    mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT1);
+    mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT3);
+    mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT5);
+  }
+#else
+  if (CheckExtension ("GL_EXT_texture_compression_s3tc")) // GL_EXT_texture_sRGB for sRGB formats
+  {
+    mySupportedFormats->Add (Image_CompressedFormat_RGB_S3TC_DXT1);
+    mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT1);
+    mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT3);
+    mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT5);
+  }
+  else
+  {
+    if (CheckExtension ("GL_EXT_texture_compression_dxt1"))
+    {
+      mySupportedFormats->Add (Image_CompressedFormat_RGB_S3TC_DXT1);
+      mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT1);
+    }
+    if (CheckExtension ("GL_ANGLE_texture_compression_dxt3"))
+    {
+      mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT3);
+    }
+    if (CheckExtension ("GL_ANGLE_texture_compression_dxt5"))
+    {
+      mySupportedFormats->Add (Image_CompressedFormat_RGBA_S3TC_DXT5);
+    }
+  }
+#endif
+
   // check whether PBR shading model is supported
   myHasPBR = arbFBO != NULL
           && myMaxTexCombined >= 4
@@ -3461,7 +3539,7 @@ Handle(OpenGl_TextureSet) OpenGl_Context::BindTextures (const Handle(OpenGl_Text
           }
           else
           {
-            OpenGl_Sampler::applySamplerParams (aThisCtx, aTextureNew->Sampler()->Parameters(), aTextureNew->Sampler().get(), aTextureNew->GetTarget(), aTextureNew->HasMipmaps());
+            OpenGl_Sampler::applySamplerParams (aThisCtx, aTextureNew->Sampler()->Parameters(), aTextureNew->Sampler().get(), aTextureNew->GetTarget(), aTextureNew->MaxMipmapLevel());
           }
         }
       #if !defined(GL_ES_VERSION_2_0)
@@ -3791,13 +3869,17 @@ void OpenGl_Context::SetLineWidth (const Standard_ShortReal theWidth)
 // function : SetTextureMatrix
 // purpose  :
 // =======================================================================
-void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams)
+void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& theParams,
+                                       const Standard_Boolean theIsTopDown)
 {
   if (theParams.IsNull())
   {
     return;
   }
-  else if (!myActiveProgram.IsNull())
+
+  const Graphic3d_Vec2& aScale = theParams->Scale();
+  const Graphic3d_Vec2& aTrans = theParams->Translation();
+  if (!myActiveProgram.IsNull())
   {
     const GLint aUniLoc = myActiveProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_TRSF2D);
     if (aUniLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
@@ -3808,14 +3890,17 @@ void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& th
     // pack transformation parameters
     OpenGl_Vec4 aTrsf[2] =
     {
-      OpenGl_Vec4 (-theParams->Translation().x(),
-                   -theParams->Translation().y(),
-                    theParams->Scale().x(),
-                    theParams->Scale().y()),
+      OpenGl_Vec4 (-aTrans.x(), -aTrans.y(), aScale.x(), aScale.y()),
       OpenGl_Vec4 (static_cast<float> (std::sin (-theParams->Rotation() * M_PI / 180.0)),
                    static_cast<float> (std::cos (-theParams->Rotation() * M_PI / 180.0)),
                    0.0f, 0.0f)
     };
+    if (caps->isTopDownTextureUV != theIsTopDown)
+    {
+      // flip V
+      aTrsf[0].y() = -aTrans.y() + 1.0f / aScale.y();
+      aTrsf[0].w() = -aScale.y();
+    }
     myActiveProgram->SetUniform (this, aUniLoc, 2, aTrsf);
     return;
   }
@@ -3828,11 +3913,18 @@ void OpenGl_Context::SetTextureMatrix (const Handle(Graphic3d_TextureParams)& th
 
     core11->glMatrixMode (GL_TEXTURE);
     OpenGl_Mat4 aTextureMat;
-    const Graphic3d_Vec2& aScale = theParams->Scale();
-    const Graphic3d_Vec2& aTrans = theParams->Translation();
-    Graphic3d_TransformUtils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
-    Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
-    Graphic3d_TransformUtils::Rotate    (aTextureMat, -theParams->Rotation(), 0.0f, 0.0f, 1.0f);
+    if (caps->isTopDownTextureUV != theIsTopDown)
+    {
+      // flip V
+      Graphic3d_TransformUtils::Scale     (aTextureMat,  aScale.x(), -aScale.y(), 1.0f);
+      Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y() + 1.0f / aScale.y(), 0.0f);
+    }
+    else
+    {
+      Graphic3d_TransformUtils::Scale     (aTextureMat,  aScale.x(),  aScale.y(), 1.0f);
+      Graphic3d_TransformUtils::Translate (aTextureMat, -aTrans.x(), -aTrans.y(), 0.0f);
+    }
+    Graphic3d_TransformUtils::Rotate (aTextureMat, -theParams->Rotation(), 0.0f, 0.0f, 1.0f);
     core11->glLoadMatrixf (aTextureMat);
     core11->glMatrixMode (aMatrixMode);
   }

@@ -1,0 +1,25 @@
+puts "============"
+puts "0031478: Visualization, TKOpenGl - allow uploading Cubemap in compressed DDS format when supported by GPU"
+puts "============"
+puts ""
+
+set aCubeMapPNG [locate_data_file cubemap_labels.png]
+set aCubeMapDDS [locate_data_file cubemap_labels.dds]
+
+box b 1 2 3
+psphere s 1
+
+vclear
+vinit View1 -w 512 -h 512
+vcamera -fovy 100
+vzbufftrihedron
+#vdisplay -dispMode 1 b
+vdisplay -dispMode 1 s
+vfit
+
+vrenderparams -shadingModel pbr
+vbackground -cubemap $aCubeMapPNG -invertedz
+vdump $imagedir/${casename}_png.png
+
+vbackground -cubemap $aCubeMapDDS -invertedz
+vdump $imagedir/${casename}_dds.png

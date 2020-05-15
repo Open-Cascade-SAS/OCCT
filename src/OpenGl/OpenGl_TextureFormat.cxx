@@ -13,6 +13,7 @@
 
 #include <OpenGl_TextureFormat.hxx>
 
+#include <Image_SupportedFormats.hxx>
 #include <OpenGl_Context.hxx>
 
 // =======================================================================
@@ -157,7 +158,7 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindFormat (const Handle(OpenGl_Conte
         return OpenGl_TextureFormat();
       }
       aFormat.SetNbComponents (4);
-	  aFormat.SetInternalFormat (GL_BGRA_EXT);
+      aFormat.SetInternalFormat (GL_BGRA_EXT);
     #endif
       aFormat.SetPixelFormat (GL_BGRA_EXT); // equals to GL_BGRA
       aFormat.SetDataType (GL_UNSIGNED_BYTE);
@@ -444,6 +445,82 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetInternalFormat (theSizedFormat);
       aFormat.SetPixelFormat (GL_DEPTH_COMPONENT);
       aFormat.SetDataType (GL_FLOAT);
+      return aFormat;
+    }
+  }
+  return aFormat;
+}
+
+// =======================================================================
+// function : FindCompressedFormat
+// purpose  :
+// =======================================================================
+OpenGl_TextureFormat OpenGl_TextureFormat::FindCompressedFormat (const Handle(OpenGl_Context)& theCtx,
+                                                                 Image_CompressedFormat theFormat,
+                                                                 bool theIsColorMap)
+{
+  OpenGl_TextureFormat aFormat;
+  if (!theCtx->SupportedTextureFormats()->IsSupported (theFormat))
+  {
+    return aFormat;
+  }
+
+  switch (theFormat)
+  {
+    case Image_CompressedFormat_UNKNOWN:
+    {
+      return aFormat;
+    }
+    case Image_CompressedFormat_RGB_S3TC_DXT1:
+    {
+      aFormat.SetNbComponents (3);
+      aFormat.SetPixelFormat (GL_RGB);
+      aFormat.SetDataType (GL_UNSIGNED_BYTE);
+      aFormat.SetInternalFormat (GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
+      if (theIsColorMap
+       && theCtx->ToRenderSRGB())
+      {
+        aFormat.SetInternalFormat (GL_COMPRESSED_SRGB_S3TC_DXT1_EXT);
+      }
+      return aFormat;
+    }
+    case Image_CompressedFormat_RGBA_S3TC_DXT1:
+    {
+      aFormat.SetNbComponents (4);
+      aFormat.SetPixelFormat (GL_RGBA);
+      aFormat.SetDataType (GL_UNSIGNED_BYTE);
+      aFormat.SetInternalFormat (GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+      if (theIsColorMap
+       && theCtx->ToRenderSRGB())
+      {
+        aFormat.SetInternalFormat (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT);
+      }
+      return aFormat;
+    }
+    case Image_CompressedFormat_RGBA_S3TC_DXT3:
+    {
+      aFormat.SetNbComponents (4);
+      aFormat.SetPixelFormat (GL_RGBA);
+      aFormat.SetDataType (GL_UNSIGNED_BYTE);
+      aFormat.SetInternalFormat (GL_COMPRESSED_RGBA_S3TC_DXT3_EXT);
+      if (theIsColorMap
+       && theCtx->ToRenderSRGB())
+      {
+        aFormat.SetInternalFormat (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT);
+      }
+      return aFormat;
+    }
+    case Image_CompressedFormat_RGBA_S3TC_DXT5:
+    {
+      aFormat.SetNbComponents (4);
+      aFormat.SetPixelFormat (GL_RGBA);
+      aFormat.SetDataType (GL_UNSIGNED_BYTE);
+      aFormat.SetInternalFormat (GL_COMPRESSED_RGBA_S3TC_DXT5_EXT);
+      if (theIsColorMap
+       && theCtx->ToRenderSRGB())
+      {
+        aFormat.SetInternalFormat (GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT);
+      }
       return aFormat;
     }
   }

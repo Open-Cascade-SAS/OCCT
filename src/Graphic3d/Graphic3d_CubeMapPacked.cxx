@@ -13,7 +13,9 @@
 // commercial license or contractual agreement.
 
 #include <Graphic3d_CubeMapPacked.hxx>
+
 #include <Image_AlienPixMap.hxx>
+#include <Image_DDSParser.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CubeMapPacked, Graphic3d_CubeMap)
 
@@ -40,17 +42,46 @@ Graphic3d_CubeMapPacked::Graphic3d_CubeMapPacked (const Handle(Image_PixMap)&   
   myOrder           (theOrder),
   myTileNumberX     (1)
 {
-    if (checkImage (theImage, myTileNumberX))
+  if (checkImage (theImage, myTileNumberX))
+  {
+    myPixMap = theImage;
+  }
+}
+
+// =======================================================================
+// function : CompressedValue
+// purpose  :
+// =======================================================================
+Handle(Image_CompressedPixMap) Graphic3d_CubeMapPacked::CompressedValue (const Handle(Image_SupportedFormats)& theSupported)
+{
+  if (myTileNumberX == 0
+  || !myPixMap.IsNull())
+  {
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  TCollection_AsciiString aFilePath;
+  myPath.SystemName (aFilePath);
+  if (!aFilePath.IsEmpty())
+  {
+    const unsigned int aTileIndex = myOrder[myCurrentSide];
+    Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load (theSupported, aFilePath, (Standard_Integer )aTileIndex);
+    if (!anImage.IsNull()
+      && anImage->NbFaces() == 6
+      && anImage->SizeX() == anImage->SizeY())
     {
-      myPixMap = theImage;
+      myIsTopDown = anImage->IsTopDown();
+      return anImage;
     }
+  }
+  return Handle(Image_CompressedPixMap)();
 }
 
 // =======================================================================
 // function : Value
 // purpose  :
 // =======================================================================
-Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value()
+Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value (const Handle(Image_SupportedFormats)& theSupported)
 {
   if (myTileNumberX != 0)
   {
@@ -60,7 +91,7 @@ Handle(Image_PixMap) Graphic3d_CubeMapPacked::Value()
       myPath.SystemName (aFilePath);
       if (!aFilePath.IsEmpty())
       {
-        tryLoadImage (aFilePath);
+        tryLoadImage (theSupported, aFilePath);
       }
     }
 
@@ -183,13 +214,15 @@ Standard_Boolean Graphic3d_CubeMapPacked::checkImage (const Handle(Image_PixMap)
 // function : tryLoadImage
 // purpose  :
 // =======================================================================
-void Graphic3d_CubeMapPacked::tryLoadImage (const TCollection_AsciiString& theFilePath)
+void Graphic3d_CubeMapPacked::tryLoadImage (const Handle(Image_SupportedFormats)& theSupported,
+                                            const TCollection_AsciiString& theFilePath)
 {
   Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap;
   if (anImage->Load (theFilePath))
   {
     if (checkImage (anImage, myTileNumberX))
     {
+      convertToCompatible (theSupported, anImage);
       myPixMap = anImage;
     }
   }

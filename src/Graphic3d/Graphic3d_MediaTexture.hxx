@@ -34,7 +34,7 @@ public:
                                           Standard_Integer thePlane = -1);
 
   //! Image reader.
-  Standard_EXPORT virtual Handle(Image_PixMap) GetImage() const Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Image_PixMap) GetImage (const Handle(Image_SupportedFormats)& theSupported) Standard_OVERRIDE;
 
   //! Return the frame.
   const Handle(Media_Frame)& Frame() const { return myFrame; }

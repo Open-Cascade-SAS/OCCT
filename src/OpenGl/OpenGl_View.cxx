@@ -282,7 +282,7 @@ void OpenGl_View::initTextureEnv (const Handle(OpenGl_Context)& theContext)
   }
 
   Handle(OpenGl_Texture) aTextureEnv = new OpenGl_Texture (myTextureEnvData->GetId(), myTextureEnvData->GetParams());
-  if (Handle(Image_PixMap) anImage = myTextureEnvData->GetImage())
+  if (Handle(Image_PixMap) anImage = myTextureEnvData->GetImage (theContext->SupportedTextureFormats()))
   {
     aTextureEnv->Init (theContext, *anImage, myTextureEnvData->Type(), true);
   }

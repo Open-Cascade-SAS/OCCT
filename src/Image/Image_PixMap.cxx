@@ -14,12 +14,23 @@
 // commercial license or contractual agreement.
 
 #include <Image_PixMap.hxx>
+
 #include <NCollection_AlignedAllocator.hxx>
 #include <Standard_ProgramError.hxx>
 
 #include <algorithm>
 
 IMPLEMENT_STANDARD_RTTIEXT(Image_PixMap,Standard_Transient)
+
+// =======================================================================
+// function : DefaultAllocator
+// purpose  :
+// =======================================================================
+const Handle(NCollection_BaseAllocator)& Image_PixMap::DefaultAllocator()
+{
+  static const Handle(NCollection_BaseAllocator) THE_ALLOC = new NCollection_AlignedAllocator (16);
+  return THE_ALLOC;
+}
 
 // =======================================================================
 // function : Image_PixMap
@@ -40,6 +51,10 @@ Image_PixMap::~Image_PixMap()
   Clear();
 }
 
+// =======================================================================
+// function : SizePixelBytes
+// purpose  :
+// =======================================================================
 Standard_Size Image_PixMap::SizePixelBytes (const Image_Format thePixelFormat)
 {
   switch (thePixelFormat)
@@ -135,8 +150,7 @@ bool Image_PixMap::InitTrash (Image_Format        thePixelFormat,
 
   // use argument only if it greater
   const Standard_Size aSizeRowBytes = std::max (theSizeRowBytes, theSizeX * SizePixelBytes (thePixelFormat));
-  Handle(NCollection_BaseAllocator) anAlloc = new NCollection_AlignedAllocator (16);
-  myData.Init (anAlloc, Image_PixMap::SizePixelBytes (thePixelFormat),
+  myData.Init (DefaultAllocator(), Image_PixMap::SizePixelBytes (thePixelFormat),
                theSizeX, theSizeY, aSizeRowBytes, NULL);
   return !myData.IsEmpty();
 }

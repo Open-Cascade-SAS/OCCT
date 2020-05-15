@@ -18,6 +18,8 @@
 #include <NCollection_Buffer.hxx>
 #include <TCollection_AsciiString.hxx>
 
+class Image_CompressedPixMap;
+class Image_SupportedFormats;
 class Image_PixMap;
 
 //! Texture image definition.
@@ -57,8 +59,11 @@ public:
   //! Return image file format.
   Standard_EXPORT TCollection_AsciiString ProbeImageFileFormat() const;
 
+  //! Image reader without decoding data for formats supported natively by GPUs.
+  Standard_EXPORT virtual Handle(Image_CompressedPixMap) ReadCompressedImage (const Handle(Image_SupportedFormats)& theSupported) const;
+
   //! Image reader.
-  Standard_EXPORT virtual Handle(Image_PixMap) ReadImage() const;
+  Standard_EXPORT virtual Handle(Image_PixMap) ReadImage (const Handle(Image_SupportedFormats)& theSupported) const;
 
   //! Write image to specified file without decoding data.
   Standard_EXPORT virtual Standard_Boolean WriteImage (const TCollection_AsciiString& theFile);

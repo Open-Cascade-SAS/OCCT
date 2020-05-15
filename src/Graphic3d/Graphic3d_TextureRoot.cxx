@@ -19,9 +19,12 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <Image_DDSParser.hxx>
+#include <Image_SupportedFormats.hxx>
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_File.hxx>
+#include <OSD_OpenFile.hxx>
 #include <OSD_Protection.hxx>
 #include <Standard_Atomic.hxx>
 
@@ -90,7 +93,8 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const TCollection_AsciiString& the
   myPath     (theFileName),
   myRevision (0),
   myType     (theType),
-  myIsColorMap (true)
+  myIsColorMap (true),
+  myIsTopDown  (true)
 {
   generateId();
 }
@@ -105,7 +109,8 @@ Graphic3d_TextureRoot::Graphic3d_TextureRoot (const Handle(Image_PixMap)&   theP
   myPixMap   (thePixMap),
   myRevision (0),
   myType     (theType),
-  myIsColorMap (true)
+  myIsColorMap (true),
+  myIsTopDown  (true)
 {
   generateId();
 }
@@ -130,14 +135,56 @@ void Graphic3d_TextureRoot::generateId()
 }
 
 // =======================================================================
+// function : GetCompressedImage
+// purpose  :
+// =======================================================================
+Handle(Image_CompressedPixMap) Graphic3d_TextureRoot::GetCompressedImage (const Handle(Image_SupportedFormats)& theSupported)
+{
+  if (!myPixMap.IsNull())
+  {
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  // Case 2: texture source is specified as path
+  TCollection_AsciiString aFilePath;
+  myPath.SystemName (aFilePath);
+  if (aFilePath.IsEmpty())
+  {
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  TCollection_AsciiString aFilePathLower = aFilePath;
+  aFilePathLower.LowerCase();
+  if (!aFilePathLower.EndsWith (".dds"))
+  {
+    // do not waste time on file system access in case of wrong file extension
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  if (Handle(Image_CompressedPixMap) anImage = Image_DDSParser::Load (theSupported, aFilePath, 0))
+  {
+    myIsTopDown = anImage->IsTopDown();
+    return anImage;
+  }
+  return Handle(Image_CompressedPixMap)();
+}
+
+// =======================================================================
 // function : GetImage
 // purpose  :
 // =======================================================================
-Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage() const
+Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage (const Handle(Image_SupportedFormats)& theSupported)
 {
+  if (Handle(Image_PixMap) anOldImage = GetImage())
+  {
+    myIsTopDown = anOldImage->IsTopDown();
+    return anOldImage; // compatibility with old API
+  }
+
   // Case 1: texture source is specified as pixmap
   if (!myPixMap.IsNull())
   {
+    myIsTopDown = myPixMap->IsTopDown();
     return myPixMap;
   }
 
@@ -150,12 +197,38 @@ Handle(Image_PixMap) Graphic3d_TextureRoot::GetImage() const
   }
 
   Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
-  if (!anImage->Load (aFilePath))
+  if (anImage->Load (aFilePath))
   {
-    return Handle(Image_PixMap)();
+    myIsTopDown = anImage->IsTopDown();
+    convertToCompatible (theSupported, anImage);
+    return anImage;
   }
 
-  return anImage;
+  return Handle(Image_PixMap)();
+}
+
+// =======================================================================
+// function : convertToCompatible
+// purpose  :
+// =======================================================================
+void Graphic3d_TextureRoot::convertToCompatible (const Handle(Image_SupportedFormats)& theSupported,
+                                                 const Handle(Image_PixMap)& theImage)
+{
+  if (theSupported.IsNull()
+   || theSupported->IsSupported (theImage->Format())
+   || theImage.IsNull())
+  {
+    return;
+  }
+
+  if ((theImage->Format() == Image_Format_BGR32
+    || theImage->Format() == Image_Format_BGR32))
+  {
+    Image_PixMap::SwapRgbaBgra (*theImage);
+    theImage->SetFormat (theImage->Format() == Image_Format_BGR32
+                       ? Image_Format_RGB32
+                       : Image_Format_RGBA);
+  }
 }
 
 // =======================================================================

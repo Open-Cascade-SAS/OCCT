@@ -15,6 +15,8 @@
 #include <Image_Texture.hxx>
 
 #include <Image_AlienPixMap.hxx>
+#include <Image_DDSParser.hxx>
+#include <Image_SupportedFormats.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <OSD_OpenFile.hxx>
@@ -74,10 +76,40 @@ Image_Texture::Image_Texture (const Handle(NCollection_Buffer)& theBuffer,
 }
 
 // ================================================================
+// Function : ReadCompressedImage
+// Purpose  :
+// ================================================================
+Handle(Image_CompressedPixMap) Image_Texture::ReadCompressedImage (const Handle(Image_SupportedFormats)& theSupported) const
+{
+  if (!theSupported->HasCompressed())
+  {
+    return Handle(Image_CompressedPixMap)();
+  }
+
+  if (!myBuffer.IsNull())
+  {
+    return Image_DDSParser::Load (theSupported, myBuffer, 0);
+  }
+  else if (myOffset >= 0)
+  {
+    return Image_DDSParser::Load (theSupported, myImagePath, 0, myOffset);
+  }
+
+  TCollection_AsciiString aFilePathLower = myImagePath;
+  aFilePathLower.LowerCase();
+  if (!aFilePathLower.EndsWith (".dds"))
+  {
+    // do not waste time on file system access in case of wrong file extension
+    return Handle(Image_CompressedPixMap)();
+  }
+  return Image_DDSParser::Load (theSupported, myImagePath, 0);
+}
+
+// ================================================================
 // Function : ReadImage
 // Purpose  :
 // ================================================================
-Handle(Image_PixMap) Image_Texture::ReadImage() const
+Handle(Image_PixMap) Image_Texture::ReadImage (const Handle(Image_SupportedFormats)& ) const
 {
   Handle(Image_PixMap) anImage;
   if (!myBuffer.IsNull())
@@ -239,6 +271,10 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
         && memcmp (aBuffer + 8, "WEBP", 4) == 0)
   {
     return "webp";
+  }
+  else if (memcmp (aBuffer, "DDS ", 4) == 0)
+  {
+    return "dds";
   }
   return "";
 }

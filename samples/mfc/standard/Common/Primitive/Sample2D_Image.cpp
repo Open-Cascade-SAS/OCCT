@@ -3,6 +3,7 @@
 #include "Sample2D_Image.h"
 
 #include <Graphic3d_Texture2Dmanual.hxx>
+#include <Image_AlienPixMap.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Image,AIS_Shape)
 
@@ -19,10 +20,13 @@ Sample2D_Image::Sample2D_Image(TCollection_AsciiString& aFileName,
 }
 void Sample2D_Image::MakeShape()
 {
-  Handle(Graphic3d_Texture1D) anImageTexture = 
-    new Graphic3d_Texture1Dsegment(myFilename);
-  Standard_Real coeff = (Standard_Real)(anImageTexture->GetImage()->Height())/
-    (anImageTexture->GetImage()->Width())*myScale;
+  Standard_Real coeff = 1.0;
+  Handle(Image_AlienPixMap) anImage = new Image_AlienPixMap();
+  if (anImage->Load (myFilename))
+  {
+    coeff = Standard_Real(anImage->Height()) / Standard_Real(anImage->Width()) * myScale;
+  }
+
   TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(gp_Pnt(myX,myY,0.), gp_Pnt(100*myScale+myX,myY,0.));
   TopoDS_Edge E2 = BRepBuilderAPI_MakeEdge(gp_Pnt(100*myScale+myX,myY,0.), gp_Pnt(100*myScale+myX,100*coeff+myY,0.));
   TopoDS_Edge E3 = BRepBuilderAPI_MakeEdge(gp_Pnt(100*myScale+myX,100*coeff+myY,0.), gp_Pnt(myX,100*coeff+myY,0.));

@@ -6808,6 +6808,7 @@ static int VCaps (Draw_Interpretor& theDI,
     theDI << "WinBuffer: " << (aCaps->useSystemBuffer ? "1" : "0") << "\n";
     theDI << "NoExt:"    << (aCaps->contextNoExtensions ? "1" : "0") << "\n";
     theDI << "MaxVersion:" << aCaps->contextMajorVersionUpper << "." << aCaps->contextMinorVersionUpper << "\n";
+    theDI << "CompressTextures: " << (aCaps->compressedTexturesDisable ? "0" : "1") << "\n";
     return 0;
   }
 
@@ -6861,6 +6862,16 @@ static int VCaps (Draw_Interpretor& theDI,
         --anArgIter;
       }
       aCaps->sRGBDisable = !toEnable;
+    }
+    else if (anArgCase == "-compressedtextures")
+    {
+      Standard_Boolean toEnable = Standard_True;
+      if (++anArgIter < theArgNb
+      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      {
+        --anArgIter;
+      }
+      aCaps->compressedTexturesDisable = !toEnable;
     }
     else if (anArgCase == "-vbo")
     {
@@ -14374,7 +14385,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VStereo, group);
   theCommands.Add ("vcaps",
             "vcaps [-sRGB {0|1}] [-vbo {0|1}] [-sprites {0|1}] [-ffp {0|1}] [-polygonMode {0|1}]"
-    "\n\t\t:       [-compatibleProfile {0|1}]"
+    "\n\t\t:       [-compatibleProfile {0|1}] [-compressedTextures {0|1}]"
     "\n\t\t:       [-vsync {0|1}] [-useWinBuffer {0|1}]"
     "\n\t\t:       [-quadBuffer {0|1}] [-stereo {0|1}]"
     "\n\t\t:       [-softMode {0|1}] [-noupdate|-update]"
@@ -14385,6 +14396,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:             built-in GLSL programs"
     "\n\t\t:            (requires compatible profile)"
     "\n\t\t:  polygonMode - use Polygon Mode instead of built-in GLSL programs"
+    "\n\t\t:  compressedTexture - allow uploading of GPU-supported compressed texture formats"
     "\n\t\t:  VBO      - use Vertex Buffer Object (copy vertex"
     "\n\t\t:             arrays to GPU memory)"
     "\n\t\t:  sprite   - use textured sprites instead of bitmaps"

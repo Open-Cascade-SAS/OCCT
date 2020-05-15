@@ -34,5 +34,6 @@ enum Image_Format
   Image_Format_RGBAF,       //!< 4 floats (16-bytes) RGBA image plane
   Image_Format_BGRAF,       //!< same as RGBAF but with different components order
 };
+enum { Image_Format_NB = Image_Format_BGRAF + 1 };
 
 #endif // _Image_Format_HeaderFile

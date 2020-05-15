@@ -56,7 +56,7 @@ Graphic3d_MediaTexture::Graphic3d_MediaTexture (const Handle(Media_HMutex)& theM
 // Function : GetImage
 // Purpose  :
 // ================================================================
-Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage() const
+Handle(Image_PixMap) Graphic3d_MediaTexture::GetImage (const Handle(Image_SupportedFormats)& )
 {
   Standard_Mutex::Sentry aLock (myMutex.get());
   if (myFrame.IsNull()
