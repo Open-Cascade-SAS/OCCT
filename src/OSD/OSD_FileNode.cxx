@@ -758,7 +758,7 @@ Quantity_Date OSD_FileNode::CreationMoment () {
 
  TEST_RAISE(  "CreationMoment"  );
 
- if (_get_file_time (fNameW.ToWideString(), &stCreationSystemMoment, TRUE))
+ if (_get_file_time (fNameW.ToWideString(), &stCreationSystemMoment, FALSE))
 {
   SYSTEMTIME * aSysTime = &stCreationMoment;
   BOOL aFlag = SystemTimeToTzSpecificLocalTime (NULL,
