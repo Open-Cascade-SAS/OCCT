@@ -9,6 +9,7 @@ puts ""
 restore [locate_data_file bug29580_Cylinder.brep] b1
 restore [locate_data_file bug29580_Solid.brep] b2
 
+settolerance b2 e 1.e-5
 bfuse result b1 b2
 
 foreach f [explode result f] {
@@ -21,7 +22,7 @@ foreach f [explode result f] {
 }
 
 checkshape result
-checknbshapes result -wire 11 -face 10 -shell 1 -solid 1
-checkprops result -s 865.851 -v 1622.17
+checknbshapes result -wire 14 -face 13 -shell 1 -solid 1
+checkprops result -s 866.155 -v 1622.85
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

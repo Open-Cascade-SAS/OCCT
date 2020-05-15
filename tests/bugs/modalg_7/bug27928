@@ -36,7 +36,7 @@ checkprops r2 -s 2075.44 -v 1489.33
 checknbshapes r3 -wire 5 -face 5 -shell 1 -solid 1
 checkprops r3 -s 2521.83 -v 1824.69
 
-checknbshapes r4 -vertex 12 -edge 18 -t
+checknbshapes r4 -vertex 13 -edge 19 -t
 checkprops r4 -l 825.645
 
 checkview -display r0 -2d -path ${imagedir}/${test_image}.png

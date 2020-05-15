@@ -424,8 +424,17 @@ void BOPAlgo_PaveFiller::PerformEF()
                 const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV[j]));
                 const gp_Pnt aP = BRep_Tool::Pnt(aV);
                 Standard_Real aDistPP = aP.Distance(aPnew);
-                UpdateVertex(nV[j], aDistPP);
-                myVertsToAvoidExtension.Add(nV[j]);
+                Standard_Real aTol = BRep_Tool::Tolerance(aV);
+                Standard_Real aMaxDist = 1.e4 * aTol;
+                if (aTol < .01)
+                {
+                  aMaxDist = Min(aMaxDist, 0.1);
+                }
+                if (aDistPP < aMaxDist)
+                {
+                  UpdateVertex(nV[j], aDistPP);
+                  myVertsToAvoidExtension.Add(nV[j]);
+                }
               }
             }
             continue;

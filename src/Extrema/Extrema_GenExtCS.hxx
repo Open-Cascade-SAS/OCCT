@@ -28,6 +28,7 @@
 #include <Adaptor3d_SurfacePtr.hxx>
 #include <TColgp_HArray2OfPnt.hxx>
 #include <Adaptor3d_CurvePtr.hxx>
+
 class StdFail_NotDone;
 class Standard_OutOfRange;
 class Standard_TypeMismatch;
@@ -111,6 +112,24 @@ private:
   Standard_EXPORT Adaptor3d_CurvePtr BidonCurve() const;
   
   Standard_EXPORT Adaptor3d_SurfacePtr BidonSurface() const;
+
+  Standard_EXPORT void GlobMinGenCS(const Adaptor3d_Curve& theC,
+    const Standard_Integer theNbParticles,
+    const math_Vector& theTUVinf,
+    const math_Vector& theTUVsup,
+    math_Vector& theTUV);
+
+  Standard_EXPORT void GlobMinConicS(const Adaptor3d_Curve& theC,
+    const Standard_Integer theNbParticles,
+    const math_Vector& theTUVinf,
+    const math_Vector& theTUVsup,
+    math_Vector& theTUV);
+
+  Standard_EXPORT void GlobMinCQuadric(const Adaptor3d_Curve& theC,
+    const Standard_Integer theNbParticles,
+    const math_Vector& theTUVinf,
+    const math_Vector& theTUVsup,
+    math_Vector& theTUV);
 
 
   Standard_Boolean myDone;

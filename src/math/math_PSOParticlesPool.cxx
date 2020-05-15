@@ -31,7 +31,7 @@ math_PSOParticlesPool::math_PSOParticlesPool(const Standard_Integer theParticles
 {
   myParticlesCount = theParticlesCount;
   myDimensionCount = theDimensionCount;
-
+  myMemory.Init(0.);
   // Pointers adjusting.
   Standard_Integer aParIdx, aShiftIdx;
   for(aParIdx = 1; aParIdx <= myParticlesCount; ++aParIdx)

@@ -39,6 +39,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
+#include <Extrema_ExtPS.hxx>
 
 Extrema_ExtCS::Extrema_ExtCS() 
 {
@@ -176,6 +177,27 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
             NbU = 13;
           if (myS->IsVPeriodic())
             NbV = 13;
+
+          if (clast - cfirst <= Precision::Confusion())
+          {
+            Standard_Real aCPar = (cfirst + clast) / 2.;
+            gp_Pnt aPm = C.Value(aCPar);
+            Extrema_ExtPS anExtPS(aPm, *myS, ufirst, ulast,
+              vfirst, vlast, mytolS, mytolS, Extrema_ExtFlag_MIN);
+            myDone = anExtPS.IsDone();
+            if (myDone) {
+              Standard_Integer NbExt = anExtPS.NbExt();
+              Standard_Real T = aCPar, U, V;
+              Extrema_POnCurv PC;
+              Extrema_POnSurf PS;
+              for (i = 1; i <= NbExt; i++) {
+                PS = anExtPS.Point(i);
+                PS.Parameter(U, V);
+                AddSolution(C, T, U, V, PC.Value(), PS.Value(), anExtPS.SquareDistance(i));
+              }
+            }
+            return;
+          }
 
           Extrema_GenExtCS Ext(C, *myS, NbT, NbU, NbV, cfirst, clast, ufirst, ulast,
             vfirst, vlast, mytolC, mytolS);

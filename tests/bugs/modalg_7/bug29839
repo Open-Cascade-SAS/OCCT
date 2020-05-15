@@ -1,0 +1,22 @@
+puts "================================================================="
+puts "OCC29839: Unexpected extrema behavior"
+puts "================================================================="
+puts ""
+
+restore [locate_data_file bug29839.brep] s
+
+explode s
+distmini d s_1 s_2
+checknbshapes d -edge 0 -vertex 1
+
+set dist [dval d_val]
+
+if { ${dist} > 2.e-10} {
+   puts "Error: bad distance"
+}
+
+smallview  +X+Y
+donly s_1 s_2 d
+fit
+
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png

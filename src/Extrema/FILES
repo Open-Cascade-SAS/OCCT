@@ -99,6 +99,10 @@ Extrema_GlobOptFuncCC.cxx
 Extrema_GlobOptFuncCC.hxx
 Extrema_GlobOptFuncCS.cxx
 Extrema_GlobOptFuncCS.hxx
+Extrema_GlobOptFuncConicS.cxx
+Extrema_GlobOptFuncConicS.hxx
+Extrema_GlobOptFuncCQuadric.cxx
+Extrema_GlobOptFuncCQuadric.hxx
 Extrema_GLocateExtPC.gxx
 Extrema_HArray1OfPOnCurv.hxx
 Extrema_HArray1OfPOnCurv2d.hxx
