@@ -1,0 +1,13 @@
+puts "================================================================="
+puts "0031568: Data Exchange - invalid model produced after STEP import"
+puts "================================================================="
+
+pload DCAF
+
+ReadStep D [locate_data_file bug31568_Konecranes_Sample_3D.stp]
+set ref [XGetReferredShape D 0:1:1:41:11]
+if {$ref != "0:1:1:23"} {
+  puts "Error: wrong reference in data model"
+}
+
+Close D

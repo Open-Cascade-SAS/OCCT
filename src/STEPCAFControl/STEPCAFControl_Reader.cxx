@@ -810,7 +810,9 @@ TDF_Label STEPCAFControl_Reader::AddShape(const TopoDS_Shape &S,
     TDF_Label subL = AddShape(Sub0, STool, NewShapesMap, ShapePDMap, PDFileMap, ShapeLabelMap);
     if (!subL.IsNull()) {
       TDF_Label instL = STool->AddComponent(L, subL, it.Value().Location());
-      ShapeLabelMap.Bind(it.Value(), instL);
+      if (!ShapeLabelMap.IsBound(it.Value())) {
+        ShapeLabelMap.Bind(it.Value(), instL);
+      }
     }
   }
   if (SHAS.Length() > 0) STool->SetExternRefs(L, SHAS);
