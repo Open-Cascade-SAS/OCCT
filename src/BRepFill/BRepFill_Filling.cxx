@@ -721,6 +721,7 @@ void BRepFill_Filling::Build()
       gp_Pnt aPnt = BRep_Tool::Pnt(V1);
       NewV1 = BRepLib_MakeVertex(aPnt);
       BB.UpdateVertex(NewV1, dmax);
+      myOldNewMap.Bind(V1.Oriented(TopAbs_FORWARD), NewV1);
     }
 
     if (myOldNewMap.IsBound(V2))
@@ -730,6 +731,7 @@ void BRepFill_Filling::Build()
       gp_Pnt aPnt = BRep_Tool::Pnt(V2);
       NewV2 = BRepLib_MakeVertex(aPnt);
       BB.UpdateVertex(NewV2, dmax);
+      myOldNewMap.Bind(V2.Oriented(TopAbs_FORWARD), NewV2);
     }
 
     NewV1.Orientation(TopAbs_FORWARD);
@@ -742,9 +744,6 @@ void BRepFill_Filling::Build()
     BRepLib::SameParameter(NewEdge, dmax, Standard_True);
     FinalEdges.Append(NewEdge);
     myOldNewMap.Bind(InitEdge.Oriented(TopAbs_FORWARD), NewEdge.Oriented(TopAbs_FORWARD));
-    myOldNewMap.Bind(V1.Oriented(TopAbs_FORWARD), NewV1.Oriented(TopAbs_FORWARD));
-    if (!V1.IsSame(V2))
-      myOldNewMap.Bind(V2.Oriented(TopAbs_FORWARD), NewV2.Oriented(TopAbs_FORWARD));
   }
   
   TopoDS_Wire FinalWire = WireFromList(FinalEdges);
