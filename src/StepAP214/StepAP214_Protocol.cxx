@@ -750,6 +750,11 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
 #include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
 
+#include <StepVisual_SurfaceStyleTransparent.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
+#include <StepVisual_SurfaceStyleRendering.hxx>
+#include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
+
 static int THE_StepAP214_Protocol_init = 0;
 static Interface_DataMapOfTransientInteger types(800);
 
@@ -1459,6 +1464,10 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingIntersection), 717);
   types.Bind (STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingUnion), 718);
   types.Bind (STANDARD_TYPE(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem), 719);
+  types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleTransparent), 720);
+  types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbient), 721);
+  types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleRendering), 722);
+  types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleRenderingWithProperties), 723);
 }
 
 

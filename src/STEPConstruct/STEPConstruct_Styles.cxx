@@ -66,6 +66,10 @@
 #include <StepVisual_SurfaceStyleBoundary.hxx>
 #include <StepVisual_SurfaceStyleElementSelect.hxx>
 #include <StepVisual_SurfaceStyleFillArea.hxx>
+#include <StepVisual_SurfaceStyleRendering.hxx>
+#include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
+#include <StepVisual_RenderingPropertiesSelect.hxx>
+#include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
@@ -429,6 +433,8 @@ Standard_Boolean STEPConstruct_Styles::LoadInvisStyles (Handle(TColStd_HSequence
 Handle(StepVisual_PresentationStyleAssignment) STEPConstruct_Styles::MakeColorPSA (const Handle(StepRepr_RepresentationItem) &/*item*/,
 										   const Handle(StepVisual_Colour) &SurfCol, 
 										   const Handle(StepVisual_Colour) &CurveCol,
+                                                                                   const Handle(StepVisual_Colour) &RenderCol,
+                                                                                   const Standard_Real RenderTransp,
                                                                                    const Standard_Boolean isForNAUO) const
 {  
   Handle(StepVisual_PresentationStyleAssignment) PSA;
@@ -456,10 +462,29 @@ Handle(StepVisual_PresentationStyleAssignment) STEPConstruct_Styles::MakeColorPS
     StepVisual_SurfaceStyleElementSelect SES;
     SES.SetValue ( SSFA );
   
-    Handle(StepVisual_HArray1OfSurfaceStyleElementSelect) SSESs = 
-      new StepVisual_HArray1OfSurfaceStyleElementSelect ( 1, 1 );
+    Handle(StepVisual_HArray1OfSurfaceStyleElementSelect) SSESs;
+    if (RenderTransp == 0.0) {
+      SSESs = new StepVisual_HArray1OfSurfaceStyleElementSelect ( 1, 1 );
+    } else {
+        Handle(StepVisual_SurfaceStyleTransparent) SST = new StepVisual_SurfaceStyleTransparent;
+        SST->Init(RenderTransp);
+        StepVisual_RenderingPropertiesSelect RPS;
+        RPS.SetValue(SST);
+        Handle(StepVisual_HArray1OfRenderingPropertiesSelect) HARP = new
+               StepVisual_HArray1OfRenderingPropertiesSelect (1, 1);
+        HARP->SetValue(1, RPS);
+        Handle(StepVisual_SurfaceStyleRenderingWithProperties) SSRWP = new StepVisual_SurfaceStyleRenderingWithProperties;
+
+        SSRWP->Init(StepVisual_ssmNormalShading, RenderCol, HARP);
+
+        StepVisual_SurfaceStyleElementSelect SESR;
+        SESR.SetValue (SSRWP);
+
+        SSESs = new StepVisual_HArray1OfSurfaceStyleElementSelect ( 1, 2 );
+        SSESs->SetValue ( 2, SESR );
+    }
     SSESs->SetValue ( 1, SES );
-  
+
     Handle(TCollection_HAsciiString) SSSName = new TCollection_HAsciiString ( "" );
     Handle(StepVisual_SurfaceSideStyle) SSS = new StepVisual_SurfaceSideStyle;
     SSS->Init ( SSSName, SSESs );
@@ -533,7 +558,7 @@ Handle(StepVisual_PresentationStyleAssignment) STEPConstruct_Styles::GetColorPSA
       DownCast(myMapOfStyles.FindFromKey(Col));
   }
   else {
-    PSA = MakeColorPSA ( item, Col, Col );
+    PSA = MakeColorPSA ( item, Col, Col, Col, 0.0 );
     myMapOfStyles.Add(Col,PSA);
   }
   return PSA;
@@ -549,11 +574,14 @@ Standard_Boolean STEPConstruct_Styles::GetColors (const Handle(StepVisual_Styled
 						  Handle(StepVisual_Colour) &SurfCol,
 						  Handle(StepVisual_Colour) &BoundCol,
 						  Handle(StepVisual_Colour) &CurveCol,
+                                                  Handle(StepVisual_Colour) &RenderCol,
+                                                  Standard_Real& RenderTransp,
                                                   Standard_Boolean& IsComponent) const
 {
   SurfCol.Nullify();
   BoundCol.Nullify();
   CurveCol.Nullify();
+  RenderCol.Nullify();
     
   // parse on styles
   for(Standard_Integer j=1; j<=style->NbStyles(); j++ ) {
@@ -591,6 +619,27 @@ Standard_Boolean STEPConstruct_Styles::GetColors (const Handle(StepVisual_Styled
 	    if ( ! CS.IsNull() ) BoundCol = CS->CurveColour();
 	    continue;
 	  }
+      // try rendering color and transparency
+      Handle(StepVisual_SurfaceStyleRendering) SSR = SSES.SurfaceStyleRendering();
+      if (!SSR.IsNull()) {
+          RenderCol = SSR->SurfaceColour();
+          RenderTransp = 0.0;
+          Handle(StepVisual_SurfaceStyleRenderingWithProperties) SSRWP =
+              Handle(StepVisual_SurfaceStyleRenderingWithProperties)::DownCast(SSR);
+          if (!SSRWP.IsNull()) {
+              Handle(StepVisual_HArray1OfRenderingPropertiesSelect) HARP = SSRWP->Properties();
+              if (!HARP.IsNull())
+              {
+                  for (Standard_Integer aPropIndex = 1; aPropIndex <= HARP->Length(); ++aPropIndex) {
+                      Handle(StepVisual_SurfaceStyleTransparent) SST = HARP->Value(aPropIndex).SurfaceStyleTransparent();
+                      if (!SST.IsNull()) {
+                          RenderTransp = SST->Transparency();
+                      }
+                  }
+               }
+          }
+      }
+
 	}
 	continue;
       }
@@ -600,7 +649,7 @@ Standard_Boolean STEPConstruct_Styles::GetColors (const Handle(StepVisual_Styled
       if ( ! CS.IsNull() ) CurveCol = CS->CurveColour();
     }
   }
-  return ! SurfCol.IsNull() || ! BoundCol.IsNull() || ! CurveCol.IsNull();
+  return ! SurfCol.IsNull() || ! BoundCol.IsNull() || ! CurveCol.IsNull() || ! RenderCol.IsNull();
 }
 
 

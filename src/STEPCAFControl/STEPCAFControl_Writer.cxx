@@ -1062,13 +1062,17 @@ static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
     XCAFPrs_Style own = settings.FindFromKey(S);
     if ( !own.IsVisible() ) style.SetVisibility ( Standard_False );
     if ( own.IsSetColorCurv() ) style.SetColorCurv ( own.GetColorCurv() );
-    if ( own.IsSetColorSurf() ) style.SetColorSurf ( own.GetColorSurf() );
+    if ( own.IsSetColorSurf() ) style.SetColorSurf ( own.GetColorSurfRGBA() );
   }
 
   // translate colors to STEP
   Handle(StepVisual_Colour) surfColor, curvColor;
-  if ( style.IsSetColorSurf() )
-    surfColor = Styles.EncodeColor(style.GetColorSurf(),DPDCs,ColRGBs);
+  Standard_Real RenderTransp = 0.0;
+  if ( style.IsSetColorSurf() ) {
+    Quantity_ColorRGBA sCol = style.GetColorSurfRGBA();
+    RenderTransp = 1.0 - sCol.Alpha();
+    surfColor = Styles.EncodeColor(sCol.GetRGB(),DPDCs,ColRGBs);
+  }
   if ( style.IsSetColorCurv() )
     curvColor = Styles.EncodeColor(style.GetColorCurv(),DPDCs,ColRGBs);
   
@@ -1096,12 +1100,12 @@ static void MakeSTEPStyles (STEPConstruct_Styles &Styles,
           Handle(StepRepr_RepresentationItem)::DownCast(seqRI(i));
         Handle(StepVisual_PresentationStyleAssignment) PSA;
         if ( style.IsVisible() || !surfColor.IsNull() || !curvColor.IsNull() ) {
-          PSA = Styles.MakeColorPSA ( item, surfColor, curvColor, isComponent );
+          PSA = Styles.MakeColorPSA ( item, surfColor, curvColor, surfColor, RenderTransp, isComponent );
         }
         else {
           // default white color
           surfColor = Styles.EncodeColor(Quantity_Color(Quantity_NOC_WHITE),DPDCs,ColRGBs);
-          PSA = Styles.MakeColorPSA ( item, surfColor, curvColor, isComponent );
+          PSA = Styles.MakeColorPSA ( item, surfColor, curvColor, surfColor, 0.0, isComponent );
           if ( isComponent ) 
             setDefaultInstanceColor( override, PSA);
           
@@ -1219,7 +1223,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
     for ( Standard_Integer j = 1; j <= seq.Length(); j++ ) {
       TDF_Label lab = seq.Value(j);
       XCAFPrs_Style style;
-      Quantity_Color C;
+      Quantity_ColorRGBA C;
       if ( lab == L ) {
         // check for invisible status of object on label
         if ( !CTool->IsVisible( lab ) ) {
@@ -1228,13 +1232,13 @@ Standard_Boolean STEPCAFControl_Writer::WriteColors (const Handle(XSControl_Work
         }
       }
       if ( CTool->GetColor ( lab, XCAFDoc_ColorGen, C ) ) {
-        style.SetColorCurv ( C );
+        style.SetColorCurv ( C.GetRGB() );
         style.SetColorSurf ( C );
       }
       if ( CTool->GetColor ( lab, XCAFDoc_ColorSurf, C ) )
         style.SetColorSurf ( C );
       if ( CTool->GetColor ( lab, XCAFDoc_ColorCurv, C ) )
-        style.SetColorCurv ( C );
+        style.SetColorCurv ( C.GetRGB() );
       if (!style.IsSetColorSurf())
       {
         Handle(XCAFDoc_VisMaterial) aVisMat = aMatTool->GetShapeMaterial (lab);
@@ -1872,8 +1876,12 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
   STEPConstruct_Styles Styles( WS );
   // translate colors to STEP
   Handle(StepVisual_Colour) surfColor, curvColor;
-  if ( style.IsSetColorSurf() )
-    surfColor = Styles.EncodeColor ( style.GetColorSurf() );
+  Standard_Real RenderTransp = 0.0;
+  if ( style.IsSetColorSurf() ) {
+    Quantity_ColorRGBA sCol = style.GetColorSurfRGBA();
+    RenderTransp = 1.0 - sCol.Alpha();
+    surfColor = Styles.EncodeColor ( sCol.GetRGB() );
+  }
   if ( style.IsSetColorCurv() )
     curvColor = Styles.EncodeColor ( style.GetColorCurv() );
   Standard_Boolean isComponent = Standard_True;// cause need to get PSBC
@@ -1885,7 +1893,7 @@ static Standard_Boolean createSHUOStyledItem (const XCAFPrs_Style& style,
     isSetDefaultColor = Standard_True;
   }
   Handle(StepVisual_PresentationStyleAssignment) PSA =
-    Styles.MakeColorPSA ( item, surfColor, curvColor, isComponent );
+    Styles.MakeColorPSA ( item, surfColor, curvColor, surfColor, RenderTransp, isComponent );
   Handle(StepVisual_StyledItem) override; //null styled item
   
   // find the repr item of the shape
@@ -3742,7 +3750,7 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTsAP242 (const Handle(XSControl_W
   STEPConstruct_Styles aStyles (WS);
   Handle(StepVisual_Colour) aCurvColor = aStyles.EncodeColor(Quantity_NOC_WHITE);
   Handle(StepRepr_RepresentationItem) anItem = NULL;
-  myGDTPrsCurveStyle->SetValue(1, aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor));
+  myGDTPrsCurveStyle->SetValue(1, aStyles.MakeColorPSA(anItem, aCurvColor, aCurvColor, aCurvColor, 0.0));
   Interface_EntityIterator aModelIter = aModel->Entities();
   for (; aModelIter.More() && myGDTCommonPDS.IsNull(); aModelIter.Next())
     myGDTCommonPDS = Handle(StepRepr_ProductDefinitionShape)::DownCast(aModelIter.Value());

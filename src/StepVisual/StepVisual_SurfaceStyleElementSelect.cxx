@@ -21,6 +21,7 @@
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
 #include <StepVisual_SurfaceStyleSegmentationCurve.hxx>
 #include <StepVisual_SurfaceStyleSilhouette.hxx>
+#include <StepVisual_SurfaceStyleRendering.hxx>
 
 StepVisual_SurfaceStyleElementSelect::StepVisual_SurfaceStyleElementSelect () {  }
 
@@ -33,6 +34,7 @@ Standard_Integer StepVisual_SurfaceStyleElementSelect::CaseNum(const Handle(Stan
 //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleSilhouette))) return 4;
 //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleSegmentationCurve))) return 5;
 //	if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleControlGrid))) return 6;
+    if (ent->IsKind(STANDARD_TYPE(StepVisual_SurfaceStyleRendering))) return 7;
 	return 0;
 }
 
@@ -49,4 +51,9 @@ Handle(StepVisual_SurfaceStyleBoundary) StepVisual_SurfaceStyleElementSelect::Su
 Handle(StepVisual_SurfaceStyleParameterLine) StepVisual_SurfaceStyleElementSelect::SurfaceStyleParameterLine () const
 {
 	return GetCasted(StepVisual_SurfaceStyleParameterLine,Value());
+}
+
+Handle(StepVisual_SurfaceStyleRendering) StepVisual_SurfaceStyleElementSelect::SurfaceStyleRendering () const
+{
+    return GetCasted(StepVisual_SurfaceStyleRendering,Value());
 }

@@ -433,6 +433,10 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 
 #include <StepShape_ContextDependentShapeRepresentation.hxx>
 
+#include <StepVisual_SurfaceStyleTransparent.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
+#include <StepVisual_SurfaceStyleRendering.hxx>
+#include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 
 #include <RWStepBasic_RWAddress.hxx>
 #include <RWStepShape_RWAdvancedBrepShapeRepresentation.hxx>
@@ -1405,6 +1409,10 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
 #include <RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
 
+#include <RWStepVisual_RWSurfaceStyleTransparent.hxx>
+#include <RWStepVisual_RWSurfaceStyleReflectanceAmbient.hxx>
+#include <RWStepVisual_RWSurfaceStyleRendering.hxx>
+#include <RWStepVisual_RWSurfaceStyleRenderingWithProperties.hxx>
 
 // -- General Declarations (Recognize, StepType) ---
 
@@ -2046,6 +2054,12 @@ static TCollection_AsciiString Reco_CharacterizedRepresentation("CHARACTERIZED_R
 static TCollection_AsciiString Reco_CameraModelD3MultiClipping("CAMERA_MODEL_D3_MULTI_CLIPPING");
 static TCollection_AsciiString Reco_CameraModelD3MultiClippingIntersection("CAMERA_MODEL_D3_MULTI_CLIPPING_INTERSECTION");
 static TCollection_AsciiString Reco_CameraModelD3MultiClippingUnion("CAMERA_MODEL_D3_MULTI_CLIPPING_UNION");
+
+static TCollection_AsciiString Reco_SurfaceStyleTransparent("SURFACE_STYLE_TRANSPARENT");
+static TCollection_AsciiString Reco_SurfaceStyleReflectanceAmbient("SURFACE_STYLE_REFLECTANCE_AMBIENT");
+static TCollection_AsciiString Reco_SurfaceStyleRendering("SURFACE_STYLE_RENDERING");
+static TCollection_AsciiString Reco_SurfaceStyleRenderingWithProperties("SURFACE_STYLE_RENDERING_WITH_PROPERTIES");
+
 // -- Definition of the libraries --
 
 static NCollection_DataMap<TCollection_AsciiString, Standard_Integer> typenums;
@@ -2703,7 +2717,11 @@ RWStepAP214_ReadWriteModule::RWStepAP214_ReadWriteModule ()
   typenums.Bind ( Reco_CameraModelD3MultiClippingIntersection, 717);
   typenums.Bind ( Reco_CameraModelD3MultiClippingUnion, 718);
 
-  
+  typenums.Bind (Reco_SurfaceStyleTransparent, 720);
+  typenums.Bind (Reco_SurfaceStyleReflectanceAmbient, 721);
+  typenums.Bind (Reco_SurfaceStyleRendering, 722);
+  typenums.Bind (Reco_SurfaceStyleRenderingWithProperties, 723);
+
 //    SHORT NAMES
 //    NB : la liste est celle de AP203
 //    Directement exploite pour les types simples
@@ -4557,6 +4575,11 @@ const TCollection_AsciiString& RWStepAP214_ReadWriteModule::StepType
   case 716 : return Reco_CameraModelD3MultiClipping;
   case 717 : return Reco_CameraModelD3MultiClippingIntersection;
   case 718 : return Reco_CameraModelD3MultiClippingUnion;
+
+  case 720 : return Reco_SurfaceStyleTransparent;
+  case 721 : return Reco_SurfaceStyleReflectanceAmbient;
+  case 722 : return Reco_SurfaceStyleRendering;
+  case 723 : return Reco_SurfaceStyleRenderingWithProperties;
 
   default : return PasReco;
   }
@@ -9457,7 +9480,34 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
      tool.ReadStep(data, num, ach, anent);
    }
    break;
-   
+  case 720:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleTransparent, anent, ent);
+    RWStepVisual_RWSurfaceStyleTransparent tool;
+    tool.ReadStep(data, num, ach, anent);
+  }
+  break;
+  case 721:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbient, anent, ent);
+    RWStepVisual_RWSurfaceStyleReflectanceAmbient tool;
+    tool.ReadStep(data, num, ach, anent);
+  }
+  break;
+  case 722:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleRendering, anent, ent);
+    RWStepVisual_RWSurfaceStyleRendering tool;
+    tool.ReadStep(data, num, ach, anent);
+  }
+  break;
+  case 723:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleRenderingWithProperties, anent, ent);
+    RWStepVisual_RWSurfaceStyleRenderingWithProperties tool;
+    tool.ReadStep(data, num, ach, anent);
+  }
+  break;
 
   default: 
     ach->AddFail("Type Mismatch when reading - Entity");
@@ -14314,7 +14364,34 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
       tool.WriteStep(SW, anent);
     }
       break;
-
+    case 720:
+    {
+      DeclareAndCast(StepVisual_SurfaceStyleTransparent, anent, ent);
+      RWStepVisual_RWSurfaceStyleTransparent tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+    case 721:
+    {
+      DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbient, anent, ent);
+      RWStepVisual_RWSurfaceStyleReflectanceAmbient tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+    case 722:
+    {
+      DeclareAndCast(StepVisual_SurfaceStyleRendering, anent, ent);
+      RWStepVisual_RWSurfaceStyleRendering tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
+    case 723:
+    {
+      DeclareAndCast(StepVisual_SurfaceStyleRenderingWithProperties, anent, ent);
+      RWStepVisual_RWSurfaceStyleRenderingWithProperties tool;
+      tool.WriteStep(SW, anent);
+    }
+    break;
   default: 
     return;
   }

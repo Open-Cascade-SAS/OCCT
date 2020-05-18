@@ -27,7 +27,7 @@ class Standard_Transient;
 class StepVisual_SurfaceStyleFillArea;
 class StepVisual_SurfaceStyleBoundary;
 class StepVisual_SurfaceStyleParameterLine;
-
+class StepVisual_SurfaceStyleRendering;
 
 
 class StepVisual_SurfaceStyleElementSelect  : public StepData_SelectType
@@ -47,6 +47,7 @@ public:
   //! 4 -> SurfaceStyleSilhouette
   //! 5 -> SurfaceStyleSegmentationCurve
   //! 6 -> SurfaceStyleControlGrid
+  //! 7 -> SurfaceStyleRendering
   //! 0 else
   Standard_EXPORT Standard_Integer CaseNum (const Handle(Standard_Transient)& ent) const;
   
@@ -59,6 +60,8 @@ public:
   //! returns Value as a SurfaceStyleParameterLine (Null if another type)
   Standard_EXPORT Handle(StepVisual_SurfaceStyleParameterLine) SurfaceStyleParameterLine() const;
 
+  //! returns Value as a SurfaceStyleRendering (Null if another type)
+  Standard_EXPORT Handle(StepVisual_SurfaceStyleRendering) SurfaceStyleRendering() const;
 
 
 

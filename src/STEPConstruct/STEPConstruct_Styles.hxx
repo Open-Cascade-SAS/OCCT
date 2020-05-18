@@ -117,7 +117,7 @@ public:
   //! Create a PresentationStyleAssignment entity which defines
   //! two colors (for filling surfaces and curves)
   //! if isForNAUO true then returns PresentationStyleByContext
-  Standard_EXPORT Handle(StepVisual_PresentationStyleAssignment) MakeColorPSA (const Handle(StepRepr_RepresentationItem)& item, const Handle(StepVisual_Colour)& SurfCol, const Handle(StepVisual_Colour)& CurveCol, const Standard_Boolean isForNAUO = Standard_False) const;
+  Standard_EXPORT Handle(StepVisual_PresentationStyleAssignment) MakeColorPSA (const Handle(StepRepr_RepresentationItem)& item, const Handle(StepVisual_Colour)& SurfCol, const Handle(StepVisual_Colour)& CurveCol, const Handle(StepVisual_Colour) &RenderCol, const Standard_Real RenderTransp, const Standard_Boolean isForNAUO = Standard_False) const;
   
   //! Returns a PresentationStyleAssignment entity which defines
   //! surface and curve colors as Col. This PSA is either created
@@ -129,7 +129,7 @@ public:
   //! For each type of color supported, result can be either
   //! NULL if it is not defined by that style, or last
   //! definition (if they are 1 or more)
-  Standard_EXPORT Standard_Boolean GetColors (const Handle(StepVisual_StyledItem)& style, Handle(StepVisual_Colour)& SurfCol, Handle(StepVisual_Colour)& BoundCol, Handle(StepVisual_Colour)& CurveCol, Standard_Boolean& IsComponent) const;
+  Standard_EXPORT Standard_Boolean GetColors (const Handle(StepVisual_StyledItem)& style, Handle(StepVisual_Colour)& SurfCol, Handle(StepVisual_Colour)& BoundCol, Handle(StepVisual_Colour)& CurveCol, Handle(StepVisual_Colour)& RenderCol, Standard_Real& RenderTransp, Standard_Boolean& IsComponent) const;
   
   //! Create STEP color entity by given Quantity_Color
   //! The analysis is performed for whether the color corresponds to

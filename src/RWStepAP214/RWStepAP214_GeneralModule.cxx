@@ -532,8 +532,12 @@
 #include <RWStepVisual_RWSurfaceStyleControlGrid.hxx>
 #include <RWStepVisual_RWSurfaceStyleFillArea.hxx>
 #include <RWStepVisual_RWSurfaceStyleParameterLine.hxx>
+#include <RWStepVisual_RWSurfaceStyleReflectanceAmbient.hxx>
+#include <RWStepVisual_RWSurfaceStyleRendering.hxx>
+#include <RWStepVisual_RWSurfaceStyleRenderingWithProperties.hxx>
 #include <RWStepVisual_RWSurfaceStyleSegmentationCurve.hxx>
 #include <RWStepVisual_RWSurfaceStyleSilhouette.hxx>
+#include <RWStepVisual_RWSurfaceStyleTransparent.hxx>
 #include <RWStepVisual_RWSurfaceStyleUsage.hxx>
 #include <RWStepVisual_RWTemplate.hxx>
 #include <RWStepVisual_RWTemplateInstance.hxx>
@@ -1084,8 +1088,12 @@
 #include <StepVisual_SurfaceStyleControlGrid.hxx>
 #include <StepVisual_SurfaceStyleFillArea.hxx>
 #include <StepVisual_SurfaceStyleParameterLine.hxx>
+#include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
+#include <StepVisual_SurfaceStyleRendering.hxx>
+#include <StepVisual_SurfaceStyleRenderingWithProperties.hxx>
 #include <StepVisual_SurfaceStyleSegmentationCurve.hxx>
 #include <StepVisual_SurfaceStyleSilhouette.hxx>
+#include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleUsage.hxx>
 #include <StepVisual_Template.hxx>
 #include <StepVisual_TemplateInstance.hxx>
@@ -5157,6 +5165,34 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
     tool.Share(anent, iter);
   }
   break;
+  case 720:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleTransparent, anent, ent);
+    RWStepVisual_RWSurfaceStyleTransparent tool;
+    tool.Share(anent, iter);
+  }
+  break;
+  case 721:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleReflectanceAmbient, anent, ent);
+    RWStepVisual_RWSurfaceStyleReflectanceAmbient tool;
+    tool.Share(anent, iter);
+  }
+  break;
+  case 722:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleRendering, anent, ent);
+    RWStepVisual_RWSurfaceStyleRendering tool;
+    tool.Share(anent, iter);
+  }
+  break;
+  case 723:
+  {
+    DeclareAndCast(StepVisual_SurfaceStyleRenderingWithProperties, anent, ent);
+    RWStepVisual_RWSurfaceStyleRenderingWithProperties tool;
+    tool.Share(anent, iter);
+  }
+  break;
     default : break;
     }
 }
@@ -7169,8 +7205,18 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
    case 719:
      ent = new StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem;
    break;
-
-    
+   case 720:
+     ent = new StepVisual_SurfaceStyleTransparent;
+   break;
+   case 721:
+     ent = new StepVisual_SurfaceStyleReflectanceAmbient;
+   break;
+   case 722:
+     ent = new StepVisual_SurfaceStyleRendering;
+   break;
+   case 723:
+     ent = new StepVisual_SurfaceStyleRenderingWithProperties;
+   break;
   default: 
     return Standard_False;
   }
@@ -7769,7 +7815,11 @@ Standard_Integer  RWStepAP214_GeneralModule::CategoryNumber
   case 717:
   case 718: return cataux;
   case 719: return catdr;
-    
+  case 720:
+  case 721:
+  case 722:
+  case 723: return catdr;
+
   default : break;
   }
   return 0;
