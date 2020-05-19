@@ -11556,6 +11556,8 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       case Graphic3d_RTM_BLEND_UNORDERED: theDI << "Basic blended transparency with non-commuting operator "; break;
       case Graphic3d_RTM_BLEND_OIT:       theDI << "Weighted Blended Order-Independent Transparency, depth weight factor: "
                                                 << TCollection_AsciiString (aParams.OitDepthFactor); break;
+      case Graphic3d_RTM_DEPTH_PEELING_OIT: theDI << "Depth Peeling Order-Independent Transparency, Nb.Layers: "
+                                                << TCollection_AsciiString (aParams.NbOitDepthPeelingLayers); break;
     }
     theDI << "\n";
     theDI << "msaa:           " <<  aParams.NbMsaaSamples                               << "\n";
@@ -11801,6 +11803,10 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         {
           theDI << "on, depth weight factor: " << TCollection_AsciiString (aParams.OitDepthFactor) << " ";
         }
+        else if (aParams.TransparencyMethod == Graphic3d_RTM_DEPTH_PEELING_OIT)
+        {
+          theDI << "on, depth peeling layers: " << TCollection_AsciiString (aParams.NbOitDepthPeelingLayers) << " ";
+        }
         else
         {
           theDI << "off" << " ";
@@ -11815,7 +11821,41 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       TCollection_AsciiString aParam = theArgVec[anArgIter];
       aParam.LowerCase();
-      if (aParam.IsRealValue (Standard_True))
+      if (aParam == "peeling"
+       || aParam == "peel")
+      {
+        aParams.TransparencyMethod = Graphic3d_RTM_DEPTH_PEELING_OIT;
+        if (anArgIter + 1 < theArgNb
+         && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsIntegerValue())
+        {
+          ++anArgIter;
+          const Standard_Integer aNbLayers = TCollection_AsciiString (theArgVec[anArgIter]).IntegerValue();
+          if (aNbLayers < 2)
+          {
+            Message::SendFail() << "Syntax error: invalid layers number specified for Depth Peeling OIT " << aNbLayers;
+            return 1;
+          }
+          aParams.NbOitDepthPeelingLayers = TCollection_AsciiString (theArgVec[anArgIter]).IntegerValue();
+        }
+      }
+      else if (aParam == "weighted"
+            || aParam == "weight")
+      {
+        aParams.TransparencyMethod = Graphic3d_RTM_BLEND_OIT;
+        if (anArgIter + 1 < theArgNb
+         && TCollection_AsciiString (theArgVec[anArgIter + 1]).IsRealValue())
+        {
+          ++anArgIter;
+          const Standard_ShortReal aWeight = (Standard_ShortReal)TCollection_AsciiString (theArgVec[anArgIter]).RealValue();
+          if (aWeight < 0.f || aWeight > 1.f)
+          {
+            Message::SendFail() << "Syntax error: invalid value of Weighted Order-Independent Transparency depth weight factor " << aWeight << ". Should be within range [0.0; 1.0]";
+            return 1;
+          }
+          aParams.OitDepthFactor = aWeight;
+        }
+      }
+      else if (aParam.IsRealValue())
       {
         const Standard_ShortReal aWeight = (Standard_ShortReal) Draw::Atof (theArgVec[anArgIter]);
         if (aWeight < 0.f || aWeight > 1.f)

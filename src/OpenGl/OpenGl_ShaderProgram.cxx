@@ -176,8 +176,8 @@ OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram
   myNbClipPlanesMax (0),
   myNbFragOutputs (1),
   myTextureSetBits (Graphic3d_TextureSetBits_NONE),
+  myOitOutput (Graphic3d_RTM_BLEND_UNORDERED),
   myHasAlphaTest (false),
-  myHasWeightOitOutput (false),
   myHasTessShader (false)
 {
   memset (myCurrentState, 0, sizeof (myCurrentState));
@@ -206,7 +206,17 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   myNbFragOutputs = !myProxy.IsNull() ? myProxy->NbFragmentOutputs() : 1;
   myTextureSetBits = Graphic3d_TextureSetBits_NONE;
   myHasAlphaTest  = !myProxy.IsNull() && myProxy->HasAlphaTest();
-  myHasWeightOitOutput = !myProxy.IsNull() ? myProxy->HasWeightOitOutput() && myNbFragOutputs >= 2 : 1;
+  myOitOutput = !myProxy.IsNull() ? myProxy->OitOutput() : Graphic3d_RTM_BLEND_UNORDERED;
+  if (myOitOutput == Graphic3d_RTM_BLEND_OIT
+   && myNbFragOutputs < 2)
+  {
+    myOitOutput = Graphic3d_RTM_BLEND_UNORDERED;
+  }
+  else if (myOitOutput == Graphic3d_RTM_DEPTH_PEELING_OIT
+        && myNbFragOutputs < 3)
+  {
+    myOitOutput = Graphic3d_RTM_BLEND_UNORDERED;
+  }
 
   // detect the minimum GLSL version required for defined Shader Objects
 #if defined(GL_ES_VERSION_2_0)
@@ -334,9 +344,16 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
       if (theCtx->hasDrawBuffers)
       {
         anExtensions += "#define OCC_ENABLE_draw_buffers\n";
-        if (myHasWeightOitOutput)
+        switch (myOitOutput)
         {
-          anExtensions += "#define OCC_WRITE_WEIGHT_OIT_COVERAGE\n";
+          case Graphic3d_RTM_BLEND_UNORDERED:
+            break;
+          case Graphic3d_RTM_BLEND_OIT:
+            anExtensions += "#define OCC_WRITE_WEIGHT_OIT_COVERAGE\n";
+            break;
+          case Graphic3d_RTM_DEPTH_PEELING_OIT:
+            anExtensions += "#define OCC_DEPTH_PEEL_OIT\n";
+            break;
         }
       }
       else
@@ -574,6 +591,15 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
       aShadowSamplers[aSamplerIter] = aSamplFrom + aSamplerIter;
     }
     SetUniform (theCtx, aLocSampler, myNbShadowMaps, &aShadowSamplers.front());
+  }
+
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occDepthPeelingDepth"))
+  {
+    SetUniform (theCtx, aLocSampler, GLint(theCtx->DepthPeelingDepthTexUnit()));
+  }
+  if (const OpenGl_ShaderUniformLocation aLocSampler = GetUniformLocation (theCtx, "occDepthPeelingFrontColor"))
+  {
+    SetUniform (theCtx, aLocSampler, GLint(theCtx->DepthPeelingFrontColorTexUnit()));
   }
 
   const TCollection_AsciiString aSamplerNamePrefix ("occSampler");

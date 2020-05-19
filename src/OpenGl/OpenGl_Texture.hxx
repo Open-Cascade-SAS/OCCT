@@ -182,6 +182,9 @@ public:
   //! Return upper mipmap level index (0 means no mipmaps).
   Standard_Integer MaxMipmapLevel() const { return myMaxMipLevel; }
 
+  //! Return number of MSAA samples.
+  Standard_Integer NbSamples() const { return myNbSamples; }
+
   //! Returns estimated GPU memory usage for holding data without considering overheads and allocation alignment rules.
   Standard_EXPORT virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE;
 

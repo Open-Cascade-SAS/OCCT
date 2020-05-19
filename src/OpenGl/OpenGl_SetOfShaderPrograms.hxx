@@ -38,8 +38,9 @@ enum OpenGl_ProgramOptions
   OpenGl_PO_MeshEdges       = 0x0200, //!< draw mesh edges (wireframe)
   OpenGl_PO_AlphaTest       = 0x0400, //!< discard fragment by alpha test (defined by cutoff value)
   OpenGl_PO_WriteOit        = 0x0800, //!< write coverage buffer for Blended Order-Independent Transparency
+  OpenGl_PO_OitDepthPeeling = 0x1000, //!< handle Depth Peeling OIT
   //
-  OpenGl_PO_NB              = 0x1000, //!< overall number of combinations
+  OpenGl_PO_NB              = 0x2000, //!< overall number of combinations
   OpenGl_PO_IsPoint         = OpenGl_PO_PointSimple|OpenGl_PO_PointSprite|OpenGl_PO_PointSpriteA,
   OpenGl_PO_HasTextures     = OpenGl_PO_TextureRGB|OpenGl_PO_TextureEnv,
   OpenGl_PO_NeedsGeomShader = OpenGl_PO_MeshEdges,

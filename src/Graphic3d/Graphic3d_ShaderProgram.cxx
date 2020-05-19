@@ -82,9 +82,9 @@ Graphic3d_ShaderProgram::Graphic3d_ShaderProgram()
   myNbClipPlanesMax (THE_MAX_CLIP_PLANES_DEFAULT),
   myNbFragOutputs (THE_NB_FRAG_OUTPUTS),
   myTextureSetBits (Graphic3d_TextureSetBits_NONE),
+  myOitOutput (Graphic3d_RTM_BLEND_UNORDERED),
   myHasDefSampler (true),
   myHasAlphaTest (false),
-  myHasWeightOitOutput (false),
   myIsPBR (false)
 {
   myID = TCollection_AsciiString ("Graphic3d_ShaderProgram_")

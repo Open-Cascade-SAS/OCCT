@@ -16,6 +16,7 @@
 #include <OpenGl_GlCore15.hxx>
 
 #include <BVH_LinearBuilder.hxx>
+#include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_ShaderManager.hxx>
@@ -136,6 +137,11 @@ namespace
     OpenGl_LayerFilter          myLayersToProcess;
     Standard_Boolean            myToDrawImmediate;
   };
+
+  static const Standard_Integer THE_DRAW_BUFFERS0[]   = { GL_COLOR_ATTACHMENT0 };
+  static const Standard_Integer THE_DRAW_BUFFERS01[]  = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0 + 1 };
+  static const Standard_Integer THE_DRAW_BUFFERS012[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0 + 1, GL_COLOR_ATTACHMENT0 + 2 };
+  static const float THE_DEPTH_CLEAR_VALUE = -1e15f;
 }
 
 struct OpenGl_GlobalLayerSettings
@@ -860,17 +866,6 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
                                           OpenGl_FrameBuffer*               theReadDrawFbo,
                                           OpenGl_FrameBuffer*               theOitAccumFbo) const
 {
-  // Blended order-independent transparency algorithm require several preconditions
-  // to be enabled. It should be requested by user, at least two outputs from
-  // fragment shader should be supported by GPU, so is the given framebuffer
-  // should contain two additional color buffers to handle accumulated color channels,
-  // blended alpha channel and weight factors - these accumulation buffers are required
-  // to implement commuting blend operator (at least OpenGl 2.0 should be available).
-  const bool isEnabledOit = theOitAccumFbo != NULL
-                         && theOitAccumFbo->NbColorBuffers() >= 2
-                         && theOitAccumFbo->ColorTexture (0)->IsValid()
-                         && theOitAccumFbo->ColorTexture (1)->IsValid();
-
   // Check if current iterator has already reached the end of the stack.
   // This should happen if no additional layers has been added to
   // the processing stack after last transparency pass.
@@ -879,105 +874,331 @@ void OpenGl_LayerList::renderTransparent (const Handle(OpenGl_Workspace)&   theW
     return;
   }
 
-  const Handle(OpenGl_Context) aCtx            = theWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aCtx           = theWorkspace->GetGlContext();
   const Handle(OpenGl_ShaderManager)& aManager = aCtx->ShaderManager();
+  const OpenGl_LayerStack::iterator aLayerFrom = theLayerIter;
   OpenGl_View* aView = theWorkspace->View();
-  const float aDepthFactor =  aView != NULL ? aView->RenderingParams().OitDepthFactor : 0.0f;
+
+  Graphic3d_RenderTransparentMethod anOitMode = aView != NULL
+                                              ? aView->RenderingParams().TransparencyMethod
+                                              : Graphic3d_RTM_BLEND_UNORDERED;
 
   const Standard_Integer aPrevFilter = theWorkspace->RenderFilter() & ~(Standard_Integer )(OpenGl_RenderFilter_OpaqueOnly | OpenGl_RenderFilter_TransparentOnly);
   theWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_TransparentOnly);
-
   aCtx->core11fwd->glEnable (GL_BLEND);
 
-  if (isEnabledOit)
+  const Handle(OpenGl_FrameBuffer)* aGlDepthPeelFBOs = aView->DepthPeelingFbos()->DepthPeelFbosOit();
+  const Handle(OpenGl_FrameBuffer)* aGlFrontBackColorFBOs = aView->DepthPeelingFbos()->FrontBackColorFbosOit();
+  const Handle(OpenGl_FrameBuffer)& aGlBlendBackFBO = aView->DepthPeelingFbos()->BlendBackFboOit();
+
+  // Blended order-independent transparency algorithm require several preconditions to be enabled.
+  // It should be requested by user, at least two outputs from fragment shader should be supported by GPU,
+  // so is the given framebuffer should contain two additional color buffers to handle accumulated color channels,
+  // blended alpha channel and weight factors - these accumulation buffers are required
+  // to implement commuting blend operator (at least OpenGl 2.0 should be available).
+  if (anOitMode == Graphic3d_RTM_BLEND_OIT)
   {
-    aManager->SetOitState (true, aDepthFactor);
-
-    theOitAccumFbo->BindBuffer (aCtx);
-
-    static const Standard_Integer aDrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT0 + 1 };
-    aCtx->SetDrawBuffers (2, aDrawBuffers);
-    aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
-    aCtx->core11fwd->glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
-    aCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
-    aCtx->core15fwd->glBlendFuncSeparate (GL_ONE, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+    if (theOitAccumFbo == NULL
+    ||  theOitAccumFbo->NbColorBuffers() < 2
+    || !theOitAccumFbo->ColorTexture (0)->IsValid()
+    || !theOitAccumFbo->ColorTexture (1)->IsValid())
+    {
+      anOitMode = Graphic3d_RTM_BLEND_UNORDERED;
+    }
   }
-  else
+  else if (anOitMode == Graphic3d_RTM_DEPTH_PEELING_OIT)
   {
-    aCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (!aGlBlendBackFBO->IsValid())
+    {
+      anOitMode = Graphic3d_RTM_BLEND_UNORDERED;
+    }
+  }
+  const bool isMSAA = theReadDrawFbo && theReadDrawFbo->NbSamples() > 0;
+  int aDepthPeelingDrawId = -1;
+
+  switch (anOitMode)
+  {
+    case Graphic3d_RTM_BLEND_UNORDERED:
+    {
+      aCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      break;
+    }
+    case Graphic3d_RTM_BLEND_OIT:
+    {
+      const float aDepthFactor = aView->RenderingParams().OitDepthFactor;
+      aManager->SetWeighedOitState (aDepthFactor);
+
+      theOitAccumFbo->BindBuffer (aCtx);
+
+      aCtx->SetDrawBuffers (2, THE_DRAW_BUFFERS01);
+      aCtx->SetColorMaskRGBA (NCollection_Vec4<bool> (true)); // force writes into all components, including alpha
+      aCtx->core11fwd->glClearColor (0.0f, 0.0f, 0.0f, 1.0f);
+      aCtx->core11fwd->glClear (GL_COLOR_BUFFER_BIT);
+      aCtx->core15fwd->glBlendFuncSeparate (GL_ONE, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+      break;
+    }
+    case Graphic3d_RTM_DEPTH_PEELING_OIT:
+    {
+      static const float THE_MIN_DEPTH = 0.0f;
+      static const float THE_MAX_DEPTH = 1.0f;
+
+      aView->DepthPeelingFbos()->AttachDepthTexture (aCtx, theReadDrawFbo->DepthStencilTexture());
+
+      // initialize min/max depth buffer
+      aGlBlendBackFBO->BindDrawBuffer (aCtx);
+      aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+      aCtx->core20fwd->glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+      aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
+
+      aGlDepthPeelFBOs[1]->BindDrawBuffer (aCtx);
+      aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+      aCtx->core20fwd->glClearColor(-THE_MIN_DEPTH, THE_MAX_DEPTH, 0.0f, 0.0f);
+      aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
+
+      aGlFrontBackColorFBOs[0]->BindDrawBuffer (aCtx);
+      aCtx->SetDrawBuffers (2, THE_DRAW_BUFFERS01);
+      aCtx->core20fwd->glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+      aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
+
+      aGlFrontBackColorFBOs[1]->BindDrawBuffer (aCtx);
+      aCtx->SetDrawBuffers (2, THE_DRAW_BUFFERS01);
+      aCtx->core20fwd->glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+      aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
+
+      // draw depth for first pass to peel
+      aGlDepthPeelFBOs[0]->BindBuffer (aCtx);
+
+      aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+      aCtx->core20fwd->glClearColor (THE_DEPTH_CLEAR_VALUE, THE_DEPTH_CLEAR_VALUE, 0.0f, 0.0f);
+      aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
+      aCtx->core20fwd->glBlendEquation (GL_MAX);
+
+      aManager->SetOitState (Graphic3d_RTM_DEPTH_PEELING_OIT);
+
+      aGlDepthPeelFBOs[1]->ColorTexture (0)->Bind (aCtx, aCtx->DepthPeelingDepthTexUnit());
+      aGlDepthPeelFBOs[1]->ColorTexture (1)->Bind (aCtx, aCtx->DepthPeelingFrontColorTexUnit());
+      break;
+    }
   }
 
   // During blended order-independent transparency pass the depth test
   // should be enabled to discard fragments covered by opaque geometry
   // and depth writing should be disabled, because transparent fragments
-  // overal each other with non unitary coverage factor.
+  // overall each other with non unitary coverage factor.
   OpenGl_GlobalLayerSettings aGlobalSettings = theGlobalSettings;
   aGlobalSettings.DepthMask   = GL_FALSE;
   aCtx->core11fwd->glDepthMask (GL_FALSE);
 
-  for (; theLayerIter != myTransparentToProcess.Back(); ++theLayerIter)
+  for (theLayerIter = aLayerFrom; theLayerIter != myTransparentToProcess.Back(); ++theLayerIter)
   {
     renderLayer (theWorkspace, aGlobalSettings, *(*theLayerIter));
   }
 
-  // Revert state of rendering.
-  if (isEnabledOit)
+  switch (anOitMode)
   {
-    aManager->SetOitState (false, aDepthFactor);
-    theOitAccumFbo->UnbindBuffer (aCtx);
-    if (theReadDrawFbo)
+    case Graphic3d_RTM_BLEND_UNORDERED:
     {
-      theReadDrawFbo->BindBuffer (aCtx);
+      break;
     }
+    case Graphic3d_RTM_BLEND_OIT:
+    {
+      // revert state of rendering
+      aManager->ResetOitState();
+      theOitAccumFbo->UnbindBuffer (aCtx);
+      if (theReadDrawFbo)
+      {
+        theReadDrawFbo->BindBuffer (aCtx);
+      }
 
-    static const Standard_Integer aDrawBuffers[] = { GL_COLOR_ATTACHMENT0 };
-    aCtx->SetDrawBuffers (1, aDrawBuffers);
-    aCtx->SetColorMask (true); // update writes into alpha component
+      aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+      aCtx->SetColorMask (true); // update writes into alpha component
+      break;
+    }
+    case Graphic3d_RTM_DEPTH_PEELING_OIT:
+    {
+      // Dual Depth Peeling Ping-Pong
+      const int aNbPasses = aView->RenderingParams().NbOitDepthPeelingLayers;
+      OpenGl_VertexBuffer* aQuadVerts = aView->initBlitQuad (false);
+
+      aGlDepthPeelFBOs[1]->ColorTexture (1)->Unbind (aCtx, aCtx->DepthPeelingFrontColorTexUnit());
+      aGlDepthPeelFBOs[1]->ColorTexture (0)->Unbind (aCtx, aCtx->DepthPeelingDepthTexUnit());
+
+      for (int aPass = 0; aPass < aNbPasses; ++aPass)
+      {
+        const int aReadId = aPass % 2;
+        aDepthPeelingDrawId = 1 - aReadId;
+
+        aGlDepthPeelFBOs[aDepthPeelingDrawId]->BindDrawBuffer (aCtx);
+        aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+        aCtx->core20fwd->glClearColor (THE_DEPTH_CLEAR_VALUE, THE_DEPTH_CLEAR_VALUE, 0.0f, 0.0f);
+        aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
+
+        aGlFrontBackColorFBOs[aDepthPeelingDrawId]->BindDrawBuffer (aCtx);
+        aCtx->SetDrawBuffers (2, THE_DRAW_BUFFERS01);
+        aCtx->core20fwd->glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+        aCtx->core20fwd->glClear (GL_COLOR_BUFFER_BIT);
+
+        ///aGlDepthPeelFBOs[aDepthPeelingDrawId]->BindDrawBuffer (aCtx);
+        aGlDepthPeelFBOs[aDepthPeelingDrawId]->BindBuffer (aCtx);
+        aCtx->SetDrawBuffers (3, THE_DRAW_BUFFERS012);
+        aCtx->core20fwd->glBlendEquation (GL_MAX);
+
+        aGlDepthPeelFBOs[aReadId]->ColorTexture (0)->Bind (aCtx, aCtx->DepthPeelingDepthTexUnit());
+        aGlDepthPeelFBOs[aReadId]->ColorTexture (1)->Bind (aCtx, aCtx->DepthPeelingFrontColorTexUnit());
+
+        // draw geometry
+        for (theLayerIter = aLayerFrom; theLayerIter != myTransparentToProcess.Back(); ++theLayerIter)
+        {
+          renderLayer (theWorkspace, aGlobalSettings, *(*theLayerIter));
+        }
+
+        aGlDepthPeelFBOs[aReadId]->ColorTexture (1)->Unbind (aCtx, aCtx->DepthPeelingFrontColorTexUnit());
+        aGlDepthPeelFBOs[aReadId]->ColorTexture (0)->Unbind (aCtx, aCtx->DepthPeelingDepthTexUnit());
+
+        // blend back color
+        aGlBlendBackFBO->BindDrawBuffer (aCtx);
+        aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+        if (aQuadVerts->IsValid()
+         && aManager->BindOitDepthPeelingBlendProgram (isMSAA))
+        {
+          aCtx->core20fwd->glBlendEquation (GL_FUNC_ADD);
+          aCtx->core20fwd->glBlendFuncSeparate (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+          aCtx->core20fwd->glDepthFunc (GL_ALWAYS);
+
+          aQuadVerts->BindVertexAttrib (aCtx, Graphic3d_TOA_POS);
+
+          const Handle(OpenGl_TextureSet) aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
+          aGlDepthPeelFBOs[aDepthPeelingDrawId]->ColorTexture (2)->Bind (aCtx, Graphic3d_TextureUnit_0);
+
+          aCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+
+          aQuadVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
+          aGlDepthPeelFBOs[aDepthPeelingDrawId]->ColorTexture (2)->Unbind (aCtx, Graphic3d_TextureUnit_0);
+          aCtx->BindProgram (NULL);
+
+          if (!aTextureBack.IsNull())
+          {
+            aCtx->BindTextures (aTextureBack, Handle(OpenGl_ShaderProgram)());
+          }
+
+          aCtx->core11fwd->glDepthFunc (theGlobalSettings.DepthFunc);
+        }
+        else
+        {
+          aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                             "Initialization of OIT compositing pass has failed.\n"
+                             "  Depth Peeling order-independent transparency will not be available.\n");
+          if (aView != NULL)
+          {
+            Standard_Boolean& aOITFlag = isMSAA ? aView->myToDisableOITMSAA : aView->myToDisableOIT;
+            aOITFlag = Standard_True;
+          }
+        }
+      }
+
+      aManager->ResetOitState();
+      aGlBlendBackFBO->UnbindBuffer (aCtx);
+      if (theReadDrawFbo)
+      {
+        theReadDrawFbo->BindBuffer (aCtx);
+      }
+      aCtx->SetDrawBuffers (1, THE_DRAW_BUFFERS0);
+      break;
+    }
   }
 
   theWorkspace->SetRenderFilter (aPrevFilter | OpenGl_RenderFilter_OpaqueOnly);
-  if (isEnabledOit)
+  switch (anOitMode)
   {
-    const Standard_Boolean isMSAA = theReadDrawFbo && theReadDrawFbo->NbSamples() > 0;
-    OpenGl_VertexBuffer*   aVerts = theWorkspace->View()->initBlitQuad (Standard_False);
-    if (aVerts->IsValid() && aManager->BindOitCompositingProgram (isMSAA))
+    case Graphic3d_RTM_BLEND_UNORDERED:
     {
-      aCtx->core11fwd->glDepthFunc (GL_ALWAYS);
-      aCtx->core11fwd->glDepthMask (GL_FALSE);
-
-      // Bind full screen quad buffer and framebuffer resources.
-      aVerts->BindVertexAttrib (aCtx, Graphic3d_TOA_POS);
-
-      const Handle(OpenGl_TextureSet) aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
-
-      theOitAccumFbo->ColorTexture (0)->Bind (aCtx, Graphic3d_TextureUnit_0);
-      theOitAccumFbo->ColorTexture (1)->Bind (aCtx, Graphic3d_TextureUnit_1);
-
-      // Draw full screen quad with special shader to compose the buffers.
-      aCtx->core11fwd->glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
-      aCtx->core11fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
-
-      // Unbind OpenGL texture objects and shader program.
-      aVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
-      theOitAccumFbo->ColorTexture (1)->Unbind (aCtx, Graphic3d_TextureUnit_1);
-      theOitAccumFbo->ColorTexture (0)->Unbind (aCtx, Graphic3d_TextureUnit_0);
-      aCtx->BindProgram (NULL);
-
-      if (!aTextureBack.IsNull())
-      {
-        aCtx->BindTextures (aTextureBack, Handle(OpenGl_ShaderProgram)());
-      }
+      break;
     }
-    else
+    case Graphic3d_RTM_BLEND_OIT:
     {
-      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
-                         "Initialization of OIT compositing pass has failed.\n"
-                         "  Blended order-independent transparency will not be available.\n");
-      if (aView != NULL)
+      // draw full screen quad with special shader to compose the buffers
+      OpenGl_VertexBuffer* aVerts = aView->initBlitQuad (Standard_False);
+      if (aVerts->IsValid()
+       && aManager->BindOitCompositingProgram (isMSAA))
       {
-        Standard_Boolean& aOITFlag = isMSAA ? aView->myToDisableOITMSAA : aView->myToDisableOIT;
-        aOITFlag = Standard_True;
+        aCtx->core11fwd->glDepthFunc (GL_ALWAYS);
+        aCtx->core11fwd->glDepthMask (GL_FALSE);
+
+        aVerts->BindVertexAttrib (aCtx, Graphic3d_TOA_POS);
+
+        const Handle(OpenGl_TextureSet) aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
+        theOitAccumFbo->ColorTexture (0)->Bind (aCtx, Graphic3d_TextureUnit_0);
+        theOitAccumFbo->ColorTexture (1)->Bind (aCtx, Graphic3d_TextureUnit_1);
+
+        aCtx->core11fwd->glBlendFunc (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+        aCtx->core11fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+
+        aVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
+        theOitAccumFbo->ColorTexture (1)->Unbind (aCtx, Graphic3d_TextureUnit_1);
+        theOitAccumFbo->ColorTexture (0)->Unbind (aCtx, Graphic3d_TextureUnit_0);
+        aCtx->BindProgram (NULL);
+
+        if (!aTextureBack.IsNull())
+        {
+          aCtx->BindTextures (aTextureBack, Handle(OpenGl_ShaderProgram)());
+        }
       }
+      else
+      {
+        aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "Initialization of OIT compositing pass has failed.\n"
+                           "  Blended order-independent transparency will not be available.\n");
+        if (aView != NULL)
+        {
+          Standard_Boolean& aOITFlag = isMSAA ? aView->myToDisableOITMSAA : aView->myToDisableOIT;
+          aOITFlag = Standard_True;
+        }
+      }
+      break;
+    }
+    case Graphic3d_RTM_DEPTH_PEELING_OIT:
+    {
+      // compose depth peeling results into destination FBO
+      OpenGl_VertexBuffer* aVerts = aView->initBlitQuad (Standard_False);
+      if (aVerts->IsValid()
+       && aManager->BindOitDepthPeelingFlushProgram (isMSAA))
+      {
+        aCtx->core20fwd->glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        aCtx->core20fwd->glDepthFunc (GL_ALWAYS);
+
+        aVerts->BindVertexAttrib (aCtx, Graphic3d_TOA_POS);
+
+        const Handle(OpenGl_TextureSet) aTextureBack = aCtx->BindTextures (Handle(OpenGl_TextureSet)(), Handle(OpenGl_ShaderProgram)());
+        aGlDepthPeelFBOs[aDepthPeelingDrawId]->ColorTexture (1)->Bind (aCtx, Graphic3d_TextureUnit_0);
+        aGlBlendBackFBO->ColorTexture (0)->Bind (aCtx, Graphic3d_TextureUnit_1);
+
+        aCtx->core20fwd->glDrawArrays (GL_TRIANGLE_STRIP, 0, 4);
+
+        aVerts->UnbindVertexAttrib (aCtx, Graphic3d_TOA_POS);
+        aGlBlendBackFBO->ColorTexture (0)->Unbind (aCtx, Graphic3d_TextureUnit_1);
+        aGlDepthPeelFBOs[aDepthPeelingDrawId]->ColorTexture (1)->Unbind (aCtx, Graphic3d_TextureUnit_0);
+        aCtx->BindProgram (NULL);
+
+        if (!aTextureBack.IsNull())
+        {
+          aCtx->BindTextures (aTextureBack, Handle(OpenGl_ShaderProgram)());
+        }
+
+        aCtx->core11fwd->glDepthFunc (theGlobalSettings.DepthFunc);
+      }
+      else
+      {
+        aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "Initialization of OIT compositing pass has failed.\n"
+                           "  Depth Peeling order-independent transparency will not be available.\n");
+        if (aView != NULL)
+        {
+          Standard_Boolean& aOITFlag = isMSAA ? aView->myToDisableOITMSAA : aView->myToDisableOIT;
+          aOITFlag = true;
+        }
+      }
+      aView->DepthPeelingFbos()->DetachDepthTexture (aCtx);
+      break;
     }
   }
 

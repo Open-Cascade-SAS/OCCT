@@ -1,7 +1,41 @@
 
 //! @file DeclarationsImpl.glsl includes implementation of common functions and properties accessors
 #if defined(FRAGMENT_SHADER)
-//! Output color (and coverage for accumulation by OIT algorithm).
+
+#if defined(OCC_DEPTH_PEEL_OIT)
+uniform sampler2D occDepthPeelingDepth;
+uniform sampler2D occDepthPeelingFrontColor;
+int IsFrontPeelLayer = -1;
+bool occFragEarlyReturn()
+{
+  #define THE_DEPTH_CLEAR_VALUE -1e15f
+  ivec2  aFragCoord = ivec2 (gl_FragCoord.xy);
+  vec2   aLastDepth = texelFetch (occDepthPeelingDepth, aFragCoord, 0).rg;
+  occPeelFrontColor = texelFetch (occDepthPeelingFrontColor, aFragCoord, 0);
+  occPeelDepth.rg   = vec2 (THE_DEPTH_CLEAR_VALUE); // depth value always increases, so that MAX blend equation can be used
+  occPeelBackColor  = vec4 (0.0); // back color is blend after each peeling pass
+
+  float aNearDepth = -aLastDepth.x;
+  float aFarDepth  =  aLastDepth.y;
+  float aFragDepth = gl_FragCoord.z; // 0 - 1
+  if (aFragDepth < aNearDepth || aFragDepth > aFarDepth)
+  {
+    return true; // skip peeled depth
+  }
+  else if (aFragDepth > aNearDepth && aFragDepth < aFarDepth)
+  {
+    // to be rendered at next peeling pass
+    occPeelDepth.rg = vec2 (-aFragDepth, aFragDepth);
+    return true;
+  }
+
+  IsFrontPeelLayer = (gl_FragCoord.z == aNearDepth) ? 1 : 0;
+  return false;
+}
+#else
+bool occFragEarlyReturn() { return false; }
+#endif
+
 void occSetFragColor (in vec4 theColor)
 {
 #if defined(OCC_ALPHA_TEST)
@@ -11,6 +45,18 @@ void occSetFragColor (in vec4 theColor)
   float aWeight     = theColor.a * clamp (1e+2 * pow (1.0 - gl_FragCoord.z * occOitDepthFactor, 3.0), 1e-2, 1e+2);
   occFragCoverage.r = theColor.a * aWeight;
   occFragColor      = vec4 (theColor.rgb * theColor.a * aWeight, theColor.a);
+#elif defined(OCC_DEPTH_PEEL_OIT)
+  if (IsFrontPeelLayer == 1) // front is blended directly
+  {
+    vec4 aLastColor = occPeelFrontColor;
+    float anAlphaMult = 1.0 - aLastColor.a;
+    occPeelFrontColor.rgb = aLastColor.rgb + theColor.rgb * theColor.a * anAlphaMult;
+    occPeelFrontColor.a = 1.0 - anAlphaMult * (1.0 - theColor.a);
+  }
+  else if (IsFrontPeelLayer == 0) // back is blended afterwards
+  {
+    occPeelBackColor = theColor;
+  }
 #else
   occFragColor = theColor;
 #endif

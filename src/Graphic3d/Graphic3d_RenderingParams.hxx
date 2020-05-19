@@ -104,6 +104,7 @@ public:
     PbrEnvBakingProbability     (0.99f),
     //
     OitDepthFactor              (0.0f),
+    NbOitDepthPeelingLayers     (4),
     NbMsaaSamples               (0),
     RenderResolutionScale       (1.0f),
     ShadowMapResolution         (1024),
@@ -197,7 +198,8 @@ public:
   Standard_ShortReal                PbrEnvBakingProbability;     //!< controls strength of samples reducing strategy during specular IBL map's generation
                                                                  //!  (see 'SpecIBLMapSamplesFactor' function for detail explanation) [0.0, 1.0], 0.99 by default
 
-  Standard_ShortReal                OitDepthFactor;              //!< scalar factor [0-1] controlling influence of depth of a fragment to its final coverage
+  Standard_ShortReal                OitDepthFactor;              //!< scalar factor [0-1] controlling influence of depth of a fragment to its final coverage (Graphic3d_RTM_BLEND_OIT), 0.0 by default
+  Standard_Integer                  NbOitDepthPeelingLayers;     //!< number of depth peeling (Graphic3d_RTM_DEPTH_PEELING_OIT) layers, 4 by default
   Standard_Integer                  NbMsaaSamples;               //!< number of MSAA samples (should be within 0..GL_MAX_SAMPLES, power-of-two number), 0 by default
   Standard_ShortReal                RenderResolutionScale;       //!< rendering resolution scale factor, 1 by default;
                                                                  //!  incompatible with MSAA (e.g. NbMsaaSamples should be set to 0)

@@ -25,6 +25,7 @@
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
@@ -150,6 +151,7 @@ OpenGl_View::OpenGl_View (const Handle(Graphic3d_StructureManager)& theMgr,
   myRaytraceFBO1[1]          = new OpenGl_FrameBuffer();
   myRaytraceFBO2[0]          = new OpenGl_FrameBuffer();
   myRaytraceFBO2[1]          = new OpenGl_FrameBuffer();
+  myDepthPeelingFbos = new OpenGl_DepthPeeling();
   myShadowMaps = new OpenGl_ShadowMapArray();
 }
 
@@ -217,6 +219,7 @@ void OpenGl_View::releaseSrgbResources (const Handle(OpenGl_Context)& theCtx)
   myImmediateSceneFbosOit[0]->Release (theCtx.get());
   myImmediateSceneFbosOit[1]->Release (theCtx.get());
   myXrSceneFbo              ->Release (theCtx.get());
+  myDepthPeelingFbos        ->Release (theCtx.get());
   myOpenGlFBO               ->Release (theCtx.get());
   myOpenGlFBO2              ->Release (theCtx.get());
   myFullScreenQuad           .Release (theCtx.get());
@@ -1017,7 +1020,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
     aNbSamples = OpenGl_Context::GetPowerOfTwo (aNbSamples, aCtx->MaxMsaaSamples());
   }
 
-  bool toUseOit = myRenderParams.TransparencyMethod == Graphic3d_RTM_BLEND_OIT
+  bool toUseOit = myRenderParams.TransparencyMethod != Graphic3d_RTM_BLEND_UNORDERED
                && checkOitCompatibility (aCtx, aNbSamples > 0);
 
   const bool toInitImmediateFbo = myTransientDrawToFront
@@ -1063,6 +1066,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
         }
       }
     }
+
     if (myMainSceneFbos[0]->IsValid() && (toInitImmediateFbo || myImmediateSceneFbos[0]->IsValid()))
     {
       const bool wasFailedImm0 = checkWasFailedFbo (myImmediateSceneFbos[0], myMainSceneFbos[0]);
@@ -1218,7 +1222,44 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   }
 
   // create color and coverage accumulation buffers required for OIT algorithm
-  if (toUseOit)
+  if (toUseOit
+   && myRenderParams.TransparencyMethod == Graphic3d_RTM_DEPTH_PEELING_OIT)
+  {
+    if (myDepthPeelingFbos->BlendBackFboOit()->GetSizeX() != aRendSizeX
+     || myDepthPeelingFbos->BlendBackFboOit()->GetSizeY() != aRendSizeY)
+    {
+      if (myDepthPeelingFbos->BlendBackFboOit()->Init (aCtx, aRendSizeX, aRendSizeY, GL_RGBA16F, 0))
+      {
+        for (int aPairIter = 0; aPairIter < 2; ++aPairIter)
+        {
+          OpenGl_ColorFormats aColorFormats;
+          aColorFormats.Append (GL_RG32F);
+          aColorFormats.Append (GL_RGBA16F);
+          aColorFormats.Append (GL_RGBA16F);
+          myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->Init (aCtx, aRendSizeX, aRendSizeY, aColorFormats, 0);
+
+          NCollection_Sequence<Handle(OpenGl_Texture)> anAttachments;
+          anAttachments.Append (myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->ColorTexture (1));
+          anAttachments.Append (myDepthPeelingFbos->DepthPeelFbosOit()[aPairIter]->ColorTexture (2));
+          myDepthPeelingFbos->FrontBackColorFbosOit()[aPairIter]->InitWrapper (aCtx, anAttachments);
+        }
+      }
+      else
+      {
+        toUseOit = false;
+        aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR, 0, GL_DEBUG_SEVERITY_HIGH,
+                           "Initialization of float texture framebuffer for use with\n"
+                           "  Depth-Peeling order-independent transparency rendering algorithm has failed.");
+      }
+    }
+  }
+  if (!toUseOit)
+  {
+    myDepthPeelingFbos->Release (aCtx.operator->());
+  }
+
+  if (toUseOit
+   && myRenderParams.TransparencyMethod == Graphic3d_RTM_BLEND_OIT)
   {
     Standard_Integer anFboIt = 0;
     for (; anFboIt < 2; ++anFboIt)
@@ -1295,6 +1336,7 @@ bool OpenGl_View::prepareFrameBuffers (Graphic3d_Camera::Projection& theProj)
   }
   if (!toUseOit && myMainSceneFbosOit[0]->IsValid())
   {
+    myDepthPeelingFbos->Release (aCtx.operator->());
     myMainSceneFbosOit     [0]->Release (aCtx.operator->());
     myMainSceneFbosOit     [1]->Release (aCtx.operator->());
     myImmediateSceneFbosOit[0]->Release (aCtx.operator->());

@@ -16,6 +16,7 @@
 #ifndef _Graphic3d_ShaderProgram_HeaderFile
 #define _Graphic3d_ShaderProgram_HeaderFile
 
+#include <Graphic3d_RenderTransparentMethod.hxx>
 #include <Graphic3d_ShaderAttribute.hxx>
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderVariable.hxx>
@@ -151,12 +152,13 @@ public:
   //! Set if standard program header should define default texture sampler occSampler0.
   void SetDefaultSampler (Standard_Boolean theHasDefSampler) { myHasDefSampler = theHasDefSampler; }
 
-  //! Return true if Fragment Shader color should output the weighted OIT coverage; FALSE by default.
-  Standard_Boolean HasWeightOitOutput() const { return myHasWeightOitOutput; }
+  //! Return if Fragment Shader color should output to OIT buffers; OFF by default.
+  Graphic3d_RenderTransparentMethod OitOutput() const { return myOitOutput; }
 
-  //! Set if Fragment Shader color should output the weighted OIT coverage.
-  //! Note that weighted OIT also requires at least 2 Fragment Outputs (color + coverage).
-  void SetWeightOitOutput (Standard_Boolean theOutput) { myHasWeightOitOutput = theOutput; }
+  //! Set if Fragment Shader color should output to OIT buffers.
+  //! Note that weighted OIT also requires at least 2 Fragment Outputs (color + coverage),
+  //! and Depth Peeling requires at least 3 Fragment Outputs (depth + front color + back color),
+  void SetOitOutput (Graphic3d_RenderTransparentMethod theOutput) { myOitOutput = theOutput; }
 
   //! Return TRUE if standard program header should define functions and variables used in PBR pipeline.
   //! FALSE by default.
@@ -223,9 +225,9 @@ private:
   Standard_Integer              myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer              myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
   Standard_Integer              myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits
+  Graphic3d_RenderTransparentMethod myOitOutput; //!< flag indicating that Fragment Shader includes OIT outputs
   Standard_Boolean              myHasDefSampler; //!< flag indicating that program defines default texture sampler occSampler0
   Standard_Boolean              myHasAlphaTest;       //!< flag indicating that Fragment Shader performs alpha test
-  Standard_Boolean              myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
   Standard_Boolean              myIsPBR;         //!< flag indicating that program defines functions and variables used in PBR pipeline
 
 };

@@ -216,6 +216,11 @@ public:
   //! Retrieved OpenGL objects will not be destroyed on Release.
   Standard_EXPORT Standard_Boolean InitWrapper (const Handle(OpenGl_Context)& theGlCtx);
 
+  //! Wrap existing color textures.
+  Standard_EXPORT Standard_Boolean InitWrapper (const Handle(OpenGl_Context)& theGlContext,
+                                                const NCollection_Sequence<Handle(OpenGl_Texture)>& theColorTextures,
+                                                const Handle(OpenGl_Texture)& theDepthTexture = Handle(OpenGl_Texture)());
+
   //! Setup viewport to render into FBO
   Standard_EXPORT void SetupViewport (const Handle(OpenGl_Context)& theGlCtx);
 
@@ -286,7 +291,8 @@ protected:
   GLuint                 myGlColorRBufferId;    //!< color         Render Buffer object (alternative to myColorTexture)
   GLuint                 myGlDepthRBufferId;    //!< depth-stencil Render Buffer object (alternative to myDepthStencilTexture)
   bool                   myIsOwnBuffer;         //!< flag indicating that FBO should be deallocated by this class
-  bool                   myIsOwnDepth;          //!< flag indicating that FBO should be deallocated by this class
+  bool                   myIsOwnColor;          //!< flag indicating that color textures should be deallocated by this class
+  bool                   myIsOwnDepth;          //!< flag indicating that depth texture  should be deallocated by this class
   OpenGl_TextureArray    myColorTextures;       //!< color texture objects
   Handle(OpenGl_Texture) myDepthStencilTexture; //!< depth-stencil texture object
 

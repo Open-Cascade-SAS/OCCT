@@ -220,6 +220,32 @@ public:
     return !aProgram.IsNull() && myContext->BindProgram (aProgram);
   }
 
+  //! Bind program for Depth Peeling order-independent transparency back color blending.
+  Standard_Boolean BindOitDepthPeelingBlendProgram (bool theIsMSAAEnabled)
+  {
+    const Standard_Integer aProgramIdx = theIsMSAAEnabled ? 1 : 0;
+    if (myOitDepthPeelingBlendProgram[aProgramIdx].IsNull())
+    {
+      prepareStdProgramOitDepthPeelingBlend (theIsMSAAEnabled);
+    }
+
+    const Handle(OpenGl_ShaderProgram)& aProgram = myOitDepthPeelingBlendProgram [aProgramIdx];
+    return !aProgram.IsNull() && myContext->BindProgram (aProgram);
+  }
+
+  //! Bind program for Depth Peeling order-independent transparency flush.
+  Standard_Boolean BindOitDepthPeelingFlushProgram (bool theIsMSAAEnabled)
+  {
+    const Standard_Integer aProgramIdx = theIsMSAAEnabled ? 1 : 0;
+    if (myOitDepthPeelingFlushProgram[aProgramIdx].IsNull())
+    {
+      prepareStdProgramOitDepthPeelingFlush (theIsMSAAEnabled);
+    }
+
+    const Handle(OpenGl_ShaderProgram)& aProgram = myOitDepthPeelingFlushProgram [aProgramIdx];
+    return !aProgram.IsNull() && myContext->BindProgram (aProgram);
+  }
+
   //! Bind program for rendering stereoscopic image.
   Standard_Boolean BindStereoProgram (const Graphic3d_StereoMode theStereoMode)
   {
@@ -448,12 +474,26 @@ public:
   //! Returns state of OIT uniforms.
   const OpenGl_OitState& OitState() const { return myOitState; }
 
-  //! Set the state of OIT rendering pass (only on state change).
-  //! @param theToEnableOitWrite [in] flag indicating whether the special output should be written for OIT algorithm.
-  //! @param theDepthFactor [in] the scalar factor of depth influence to the fragment's coverage.
-  void SetOitState (const bool theToEnableOitWrite, const float theDepthFactor)
+  //! Reset the state of OIT rendering pass (only on state change).
+  void ResetOitState()
   {
-    myOitState.Set (theToEnableOitWrite, theDepthFactor);
+    myOitState.Set (Graphic3d_RTM_BLEND_UNORDERED, 0.0f);
+    myOitState.Update();
+  }
+
+  //! Set the state of OIT rendering pass (only on state change).
+  //! @param theMode [in] flag indicating whether the special output should be written for OIT algorithm
+  void SetOitState (Graphic3d_RenderTransparentMethod theMode)
+  {
+    myOitState.Set (theMode, 0.0f);
+    myOitState.Update();
+  }
+
+  //! Set the state of weighed OIT rendering pass (only on state change).
+  //! @param theDepthFactor [in] the scalar factor of depth influence to the fragment's coverage
+  void SetWeighedOitState (float theDepthFactor)
+  {
+    myOitState.Set (Graphic3d_RTM_BLEND_OIT, theDepthFactor);
     myOitState.Update();
   }
 
@@ -636,9 +676,13 @@ protected:
       aBits |= OpenGl_PO_VertColor;
     }
 
-    if (myOitState.ToEnableWrite())
+    if (myOitState.ActiveMode() == Graphic3d_RTM_BLEND_OIT)
     {
       aBits |= OpenGl_PO_WriteOit;
+    }
+    else if (myOitState.ActiveMode() == Graphic3d_RTM_DEPTH_PEELING_OIT)
+    {
+      aBits |= OpenGl_PO_OitDepthPeeling;
     }
     return aBits;
   }
@@ -685,6 +729,12 @@ protected:
 
   //! Prepare standard GLSL programs for OIT compositing operation.
   Standard_EXPORT Standard_Boolean prepareStdProgramOitCompositing (const Standard_Boolean theMsaa);
+
+  //! Prepare standard GLSL programs for OIT Depth Peeling blend operation.
+  Standard_EXPORT Standard_Boolean prepareStdProgramOitDepthPeelingBlend (Standard_Boolean theMsaa);
+
+  //! Prepare standard GLSL programs for OIT Depth Peeling flush operation.
+  Standard_EXPORT Standard_Boolean prepareStdProgramOitDepthPeelingFlush (Standard_Boolean theMsaa);
 
   //! Prepare standard GLSL program without lighting.
   Standard_EXPORT Standard_Boolean prepareStdProgramUnlit (Handle(OpenGl_ShaderProgram)& theProgram,
@@ -752,6 +802,11 @@ protected:
                                                        const TCollection_AsciiString& theName,
                                                        Standard_Integer theBits,
                                                        bool theUsesDerivates = false) const;
+
+  //! Prepare GLSL version header for OIT composition programs.
+  Standard_EXPORT void defaultOitGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
+                                              const TCollection_AsciiString& theName,
+                                              bool theMsaa) const;
 
   //! Prepare GLSL source for geometry shader according to parameters.
   Standard_EXPORT TCollection_AsciiString prepareGeomMainSrc (OpenGl_ShaderObject::ShaderVariableList& theUnifoms,
@@ -824,6 +879,8 @@ protected:
                                      myBlitPrograms[2];    //!< standard program for FBO blit emulation
   Handle(OpenGl_ShaderProgram)       myBoundBoxProgram;    //!< standard program for bounding box
   Handle(OpenGl_ShaderProgram)       myOitCompositingProgram[2]; //!< standard program for OIT compositing (default and MSAA).
+  Handle(OpenGl_ShaderProgram)       myOitDepthPeelingBlendProgram[2]; //!< standard program for OIT Depth Peeling blend (default and MSAA)
+  Handle(OpenGl_ShaderProgram)       myOitDepthPeelingFlushProgram[2]; //!< standard program for OIT Depth Peeling flush (default and MSAA)
   OpenGl_MapOfShaderPrograms         myMapOfLightPrograms; //!< map of lighting programs depending on lights configuration
 
   Handle(OpenGl_ShaderProgram)       myPBREnvBakingProgram;//!< program for IBL maps generation used in PBR pipeline

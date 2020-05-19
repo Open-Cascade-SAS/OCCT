@@ -16,6 +16,7 @@
 #ifndef _OpenGl_State_HeaderFile
 #define _OpenGl_State_HeaderFile
 
+#include <Graphic3d_RenderTransparentMethod.hxx>
 #include <NCollection_List.hxx>
 #include <Graphic3d_LightSet.hxx>
 #include <OpenGl_Element.hxx>
@@ -194,23 +195,23 @@ class OpenGl_OitState : public OpenGl_StateInterface
 public:
 
   //! Creates new uniform state.
-  OpenGl_OitState() : myToEnableWrite (false), myDepthFactor (0.5f) {}
+  OpenGl_OitState() : myOitMode (Graphic3d_RTM_BLEND_UNORDERED), myDepthFactor (0.5f) {}
 
   //! Sets the uniform values.
   //! @param theToEnableWrite [in] flag indicating whether color and coverage
   //!  values for OIT processing should be written by shader program.
   //! @param theDepthFactor [in] scalar factor [0-1] defining influence of depth
   //!  component of a fragment to its final coverage coefficient.
-  void Set (const bool  theToEnableWrite,
+  void Set (Graphic3d_RenderTransparentMethod theMode,
             const float theDepthFactor)
   {
-    myToEnableWrite = theToEnableWrite;
-    myDepthFactor   = static_cast<float> (Max (0.f, Min (1.f, theDepthFactor)));
+    myOitMode = theMode;
+    myDepthFactor = static_cast<float> (Max (0.f, Min (1.f, theDepthFactor)));
   }
 
   //! Returns flag indicating whether writing of output for OIT processing
   //! should be enabled/disabled.
-  bool ToEnableWrite() const { return myToEnableWrite; }
+  Graphic3d_RenderTransparentMethod ActiveMode() const { return myOitMode; }
 
   //! Returns factor defining influence of depth component of a fragment
   //! to its final coverage coefficient.
@@ -218,8 +219,8 @@ public:
 
 private:
 
-  bool  myToEnableWrite; //!< writing color and coverage.
-  float myDepthFactor;   //!< factor of depth influence to coverage.
+  Graphic3d_RenderTransparentMethod myOitMode;     //!< active OIT method for the main GLSL program
+  float                             myDepthFactor; //!< factor of depth influence to coverage
 };
 
 #endif // _OpenGl_State_HeaderFile

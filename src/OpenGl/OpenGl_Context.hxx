@@ -633,6 +633,12 @@ public:
   //! Returns texture unit where shadow map is expected to be bound, or 0 if unavailable.
   Graphic3d_TextureUnit ShadowMapTexUnit() const { return myShadowMapTexUnit; }
 
+  //! Returns texture unit for occDepthPeelingDepth within enabled Depth Peeling.
+  Graphic3d_TextureUnit DepthPeelingDepthTexUnit() const { return myDepthPeelingDepthTexUnit; }
+
+  //! Returns texture unit for occDepthPeelingFrontColor within enabled Depth Peeling.
+  Graphic3d_TextureUnit DepthPeelingFrontColorTexUnit() const { return myDepthPeelingFrontColorTexUnit; }
+
   //! Returns true if VBO is supported and permitted.
   inline bool ToUseVbo() const
   {
@@ -1173,6 +1179,9 @@ private: // context info
                                                   //!  (0 if PBR is not supported)
   Graphic3d_TextureUnit myPBRSpecIBLMapTexUnit;   //!< samplerCube occSpecIBLMap, texture unit where specular IBL map is expected to  be binded (0 if PBR is not supported)
   Graphic3d_TextureUnit myShadowMapTexUnit;       //!< sampler2D occShadowMapSampler
+
+  Graphic3d_TextureUnit myDepthPeelingDepthTexUnit;      //!< sampler2D occDepthPeelingDepth, texture unit for Depth Peeling lookups
+  Graphic3d_TextureUnit myDepthPeelingFrontColorTexUnit; //!< sampler2D occDepthPeelingFrontColor, texture unit for Depth Peeling lookups
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 

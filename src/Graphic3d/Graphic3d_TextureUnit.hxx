@@ -67,6 +67,14 @@ enum Graphic3d_TextureUnit
   //! Note that it can be overridden to Graphic3d_TextureUnit_0 for FFP fallback on hardware without multi-texturing.
   Graphic3d_TextureUnit_PointSprite = Graphic3d_TextureUnit_1,
 
+  //! sampler2D occDepthPeelingDepth.
+  //! 1st texture unit for Depth Peeling lookups.
+  Graphic3d_TextureUnit_DepthPeelingDepth = -6,
+
+  //! sampler2D occDepthPeelingFrontColor.
+  //! 2nd texture unit for Depth Peeling lookups.
+  Graphic3d_TextureUnit_DepthPeelingFrontColor = -5,
+
   //! sampler2D occShadowMapSampler.
   //! Directional light source shadowmap texture.
   Graphic3d_TextureUnit_ShadowMap = -4,
@@ -75,10 +83,12 @@ enum Graphic3d_TextureUnit
   //! Lookup table for approximated PBR environment lighting.
   //! Configured as index at the end of available texture units - 3.
   Graphic3d_TextureUnit_PbrEnvironmentLUT = -3,
+
   //! sampler2D occDiffIBLMapSHCoeffs.
   //! Diffuse (irradiance) IBL map's spherical harmonics coefficients baked for PBR from environment cubemap image.
   //! Configured as index at the end of available texture units - 2.
   Graphic3d_TextureUnit_PbrIblDiffuseSH   = -2,
+
   //! samplerCube occSpecIBLMap.
   //! Specular IBL (Image-Based Lighting) environment map baked for PBR from environment cubemap image.
   //! Configured as index at the end of available texture units - 1.

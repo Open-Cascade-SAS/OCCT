@@ -15,6 +15,7 @@
 
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_View.hxx>
+#include <OpenGl_DepthPeeling.hxx>
 #include <OpenGl_ShadowMap.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -149,6 +150,7 @@ void OpenGl_FrameStats::updateStatistics (const Handle(Graphic3d_CView)& theView
       aMemFbos += estimatedDataSize (aView->myMainSceneFbosOit[1]);
       aMemFbos += estimatedDataSize (aView->myImmediateSceneFbosOit[0]);
       aMemFbos += estimatedDataSize (aView->myImmediateSceneFbosOit[1]);
+      aMemFbos += estimatedDataSize (aView->myDepthPeelingFbos);
       // shadowmap FBOs
       aMemFbos += aView->myShadowMaps->EstimatedDataSize();
       // dump FBO

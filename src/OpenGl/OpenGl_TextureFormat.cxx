@@ -327,6 +327,14 @@ OpenGl_TextureFormat OpenGl_TextureFormat::FindSizedFormat (const Handle(OpenGl_
       aFormat.SetDataType (GL_FLOAT);
       return aFormat;
     }
+    case GL_RG32F:
+    {
+      aFormat.SetNbComponents (1);
+      aFormat.SetInternalFormat (theSizedFormat);
+      aFormat.SetPixelFormat (GL_RG);
+      aFormat.SetDataType (GL_FLOAT);
+      return aFormat;
+    }
     case GL_RGBA16F:
     {
       aFormat.SetNbComponents (4);

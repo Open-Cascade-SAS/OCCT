@@ -301,8 +301,8 @@ public:
   //! Return true if Fragment Shader should perform alpha test; FALSE by default.
   Standard_Boolean HasAlphaTest() const { return myHasAlphaTest; }
 
-  //! Return true if Fragment Shader color should output the weighted OIT coverage; FALSE by default.
-  Standard_Boolean HasWeightOitOutput() const { return myHasWeightOitOutput; }
+  //! Return if Fragment Shader color should output the OIT values; OFF by default.
+  Graphic3d_RenderTransparentMethod OitOutput() const { return myOitOutput; }
 
   //! Return texture units declared within the program, @sa Graphic3d_TextureSetBits.
   Standard_Integer TextureSetBits() const { return myTextureSetBits; }
@@ -678,8 +678,8 @@ protected:
   Standard_Integer                myNbClipPlanesMax; //!< length of array of clipping planes (THE_MAX_CLIP_PLANES)
   Standard_Integer                myNbFragOutputs; //!< length of array of Fragment Shader outputs (THE_NB_FRAG_OUTPUTS)
   Standard_Integer                myTextureSetBits;//!< texture units declared within the program, @sa Graphic3d_TextureSetBits
+  Graphic3d_RenderTransparentMethod myOitOutput;   //!< flag indicating that Fragment Shader includes OIT outputs
   Standard_Boolean                myHasAlphaTest;  //!< flag indicating that Fragment Shader should perform alpha-test
-  Standard_Boolean                myHasWeightOitOutput; //!< flag indicating that Fragment Shader includes weighted OIT coverage
   Standard_Boolean                myHasTessShader; //!< flag indicating that program defines tessellation stage
 
 protected:

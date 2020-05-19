@@ -1216,14 +1216,11 @@ void OpenGl_ShaderManager::pushMaterialState (const Handle(OpenGl_ShaderProgram)
 // =======================================================================
 void OpenGl_ShaderManager::pushOitState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  const GLint aLocOutput = theProgram->GetStateLocation (OpenGl_OCCT_OIT_OUTPUT);
-  if (aLocOutput != OpenGl_ShaderProgram::INVALID_LOCATION)
+  if (const OpenGl_ShaderUniformLocation& aLocOutput = theProgram->GetStateLocation (OpenGl_OCCT_OIT_OUTPUT))
   {
-    theProgram->SetUniform (myContext, aLocOutput, myOitState.ToEnableWrite());
+    theProgram->SetUniform (myContext, aLocOutput, (GLint )myOitState.ActiveMode());
   }
-
-  const GLint aLocDepthFactor = theProgram->GetStateLocation (OpenGl_OCCT_OIT_DEPTH_FACTOR);
-  if (aLocDepthFactor != OpenGl_ShaderProgram::INVALID_LOCATION)
+  if (const OpenGl_ShaderUniformLocation& aLocDepthFactor = theProgram->GetStateLocation (OpenGl_OCCT_OIT_DEPTH_FACTOR))
   {
     theProgram->SetUniform (myContext, aLocDepthFactor, myOitState.DepthFactor());
   }
@@ -1542,17 +1539,6 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
       EOL"  float aWeight = occTexture2D (uWeightTexture, TexCoord).r;"
       EOL"  occSetFragColor (vec4 (aAccum.rgb / max (aWeight, 0.00001), aAccum.a));"
       EOL"}";
-  #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->IsGlGreaterEqual (3, 2))
-    {
-      aProgramSrc->SetHeader ("#version 150");
-    }
-  #else
-    if (myContext->IsGlGreaterEqual (3, 0))
-    {
-      aProgramSrc->SetHeader ("#version 300 es");
-    }
-  #endif
   }
   else
   {
@@ -1566,24 +1552,9 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
       EOL"  float aWeight = texelFetch (uWeightTexture, aTexel, gl_SampleID).r;"
       EOL"  occSetFragColor (vec4 (aAccum.rgb / max (aWeight, 0.00001), aAccum.a));"
       EOL"}";
-  #if !defined(GL_ES_VERSION_2_0)
-    if (myContext->IsGlGreaterEqual (4, 0))
-    {
-      aProgramSrc->SetHeader ("#version 400");
-    }
-  #else
-    if (myContext->IsGlGreaterEqual (3, 2))
-    {
-      aProgramSrc->SetHeader ("#version 320 es");
-    }
-    else if (myContext->IsGlGreaterEqual (3, 0))
-    {
-      aProgramSrc->SetHeader ("#version 300 es"); // with GL_OES_sample_variables extension
-    }
-  #endif
   }
+  defaultOitGlslVersion (aProgramSrc, "weight_oit", theMsaa);
 
-  aProgramSrc->SetId (theMsaa ? "occt_weight-oit-msaa" : "occt_weight-oit");
   aProgramSrc->SetDefaultSampler (false);
   aProgramSrc->SetNbLightsMax (0);
   aProgramSrc->SetNbShadowMaps (0);
@@ -1602,6 +1573,107 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitCompositing (const St
   aProgram->SetSampler (myContext, "uWeightTexture", Graphic3d_TextureUnit_1);
   myContext->BindProgram (Handle(OpenGl_ShaderProgram)());
   return Standard_True;
+}
+
+// =======================================================================
+// function : prepareStdProgramOitDepthPeelingBlend
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitDepthPeelingBlend (Standard_Boolean theMsaa)
+{
+  Handle(OpenGl_ShaderProgram)& aProgram = myOitDepthPeelingBlendProgram[theMsaa ? 1 : 0];
+  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  TCollection_AsciiString aSrcVert, aSrcFrag;
+
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aSrcVert =
+    EOL"void main()"
+    EOL"{"
+    EOL"  gl_Position = vec4 (occVertex.x, occVertex.y, 0.0, 1.0);"
+    EOL"}";
+
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable (theMsaa
+                                                       ? "sampler2DMS uDepthPeelingBackColor"
+                                                       :   "sampler2D uDepthPeelingBackColor", Graphic3d_TOS_FRAGMENT));
+  aSrcFrag = TCollection_AsciiString()
+  + EOL"void main()"
+    EOL"{"
+    EOL"  #define THE_SAMPLE_ID " + (theMsaa ? "gl_SampleID" : "0")
+  + EOL"  occFragColor = texelFetch (uDepthPeelingBackColor, ivec2 (gl_FragCoord.xy), THE_SAMPLE_ID);"
+    EOL"  if (occFragColor.a == 0.0) { discard; }"
+    EOL"}";
+
+  defaultOitGlslVersion (aProgramSrc, "oit_peeling_blend", theMsaa);
+  aProgramSrc->SetDefaultSampler (false);
+  aProgramSrc->SetNbLightsMax (0);
+  aProgramSrc->SetNbClipPlanesMax (0);
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, aProgram))
+  {
+    aProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    return false;
+  }
+
+  myContext->BindProgram (aProgram);
+  aProgram->SetSampler (myContext, "uDepthPeelingBackColor", Graphic3d_TextureUnit_0);
+  myContext->BindProgram (Handle(OpenGl_ShaderProgram)());
+  return true;
+}
+
+// =======================================================================
+// function : prepareStdProgramOitDepthPeelingFlush
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_ShaderManager::prepareStdProgramOitDepthPeelingFlush (Standard_Boolean theMsaa)
+{
+  Handle(OpenGl_ShaderProgram)& aProgram = myOitDepthPeelingFlushProgram[theMsaa ? 1 : 0];
+  Handle(Graphic3d_ShaderProgram) aProgramSrc = new Graphic3d_ShaderProgram();
+  TCollection_AsciiString aSrcVert, aSrcFrag;
+
+  OpenGl_ShaderObject::ShaderVariableList aUniforms, aStageInOuts;
+  aSrcVert =
+    EOL"void main()"
+    EOL"{"
+    EOL"  gl_Position = vec4 (occVertex.x, occVertex.y, 0.0, 1.0);"
+    EOL"}";
+
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable (theMsaa
+                                                       ? "sampler2DMS uDepthPeelingFrontColor"
+                                                       :   "sampler2D uDepthPeelingFrontColor", Graphic3d_TOS_FRAGMENT));
+  aUniforms.Append (OpenGl_ShaderObject::ShaderVariable (theMsaa
+                                                       ? "sampler2DMS uDepthPeelingBackColor"
+                                                       :   "sampler2D uDepthPeelingBackColor", Graphic3d_TOS_FRAGMENT));
+  aSrcFrag = TCollection_AsciiString()
+  + EOL"void main()"
+    EOL"{"
+    EOL"  #define THE_SAMPLE_ID " + (theMsaa ? "gl_SampleID" : "0")
+  + EOL"  ivec2 aFragCoord  = ivec2 (gl_FragCoord.xy);"
+    EOL"  vec4  aFrontColor = texelFetch (uDepthPeelingFrontColor, aFragCoord, THE_SAMPLE_ID);"
+    EOL"  vec4  aBackColor  = texelFetch (uDepthPeelingBackColor,  aFragCoord, THE_SAMPLE_ID);"
+    EOL"  float anAlphaMult = 1.0 - aFrontColor.a;"
+    EOL"  occFragColor = vec4 (aFrontColor.rgb + anAlphaMult * aBackColor.rgb, aFrontColor.a + aBackColor.a);"
+    EOL"}";
+
+  defaultOitGlslVersion (aProgramSrc, "oit_peeling_flush", theMsaa);
+  aProgramSrc->SetDefaultSampler (false);
+  aProgramSrc->SetNbLightsMax (0);
+  aProgramSrc->SetNbClipPlanesMax (0);
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcVert, Graphic3d_TOS_VERTEX,   aUniforms, aStageInOuts));
+  aProgramSrc->AttachShader (OpenGl_ShaderObject::CreateFromSource (aSrcFrag, Graphic3d_TOS_FRAGMENT, aUniforms, aStageInOuts));
+  TCollection_AsciiString aKey;
+  if (!Create (aProgramSrc, aKey, aProgram))
+  {
+    aProgram = new OpenGl_ShaderProgram(); // just mark as invalid
+    return false;
+  }
+
+  myContext->BindProgram (aProgram);
+  aProgram->SetSampler (myContext, "uDepthPeelingFrontColor", Graphic3d_TextureUnit_0);
+  aProgram->SetSampler (myContext, "uDepthPeelingBackColor",  Graphic3d_TextureUnit_1);
+  myContext->BindProgram (Handle(OpenGl_ShaderProgram)());
+  return true;
 }
 
 // =======================================================================
@@ -1698,6 +1770,7 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
       theProgram->SetHeader ("#version 300 es");
     }
     if ((theBits & OpenGl_PO_WriteOit) != 0
+     || (theBits & OpenGl_PO_OitDepthPeeling) != 0
      || (theBits & OpenGl_PO_StippleLine) != 0)
     {
       if (myContext->IsGlGreaterEqual (3, 0))
@@ -1707,6 +1780,7 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
       else
       {
         aBits = aBits & ~OpenGl_PO_WriteOit;
+        aBits = aBits & ~OpenGl_PO_OitDepthPeeling;
         if (!myContext->oesStdDerivatives)
         {
           aBits = aBits & ~OpenGl_PO_StippleLine;
@@ -1732,6 +1806,49 @@ int OpenGl_ShaderManager::defaultGlslVersion (const Handle(Graphic3d_ShaderProgr
   Sprintf (aBitsStr, "%04x", aBits);
   theProgram->SetId (TCollection_AsciiString ("occt_") + theName + aBitsStr);
   return aBits;
+}
+
+// =======================================================================
+// function : defaultOitGlslVersion
+// purpose  :
+// =======================================================================
+void OpenGl_ShaderManager::defaultOitGlslVersion (const Handle(Graphic3d_ShaderProgram)& theProgram,
+                                                  const TCollection_AsciiString& theName,
+                                                  bool theMsaa) const
+{
+  if (theMsaa)
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->IsGlGreaterEqual (4, 0))
+    {
+      theProgram->SetHeader ("#version 400");
+    }
+  #else
+    if (myContext->IsGlGreaterEqual (3, 2))
+    {
+      theProgram->SetHeader ("#version 320 es");
+    }
+    else if (myContext->IsGlGreaterEqual (3, 0))
+    {
+      theProgram->SetHeader ("#version 300 es"); // with GL_OES_sample_variables extension
+    }
+  #endif
+  }
+  else
+  {
+  #if !defined(GL_ES_VERSION_2_0)
+    if (myContext->IsGlGreaterEqual (3, 2))
+    {
+      theProgram->SetHeader ("#version 150");
+    }
+  #else
+    if (myContext->IsGlGreaterEqual (3, 0))
+    {
+      theProgram->SetHeader ("#version 300 es");
+    }
+  #endif
+  }
+  theProgram->SetId (TCollection_AsciiString ("occt_") + theName + (theMsaa ? "_msaa" : ""));
 }
 
 // =======================================================================
@@ -1968,10 +2085,15 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
                          : THE_FRAG_CLIP_PLANES_2;
     }
   }
-  if ((theBits & OpenGl_PO_WriteOit) != 0)
+  if ((theBits & OpenGl_PO_OitDepthPeeling) != 0)
+  {
+    aProgramSrc->SetNbFragmentOutputs (3);
+    aProgramSrc->SetOitOutput (Graphic3d_RTM_DEPTH_PEELING_OIT);
+  }
+  else if ((theBits & OpenGl_PO_WriteOit) != 0)
   {
     aProgramSrc->SetNbFragmentOutputs (2);
-    aProgramSrc->SetWeightOitOutput (true);
+    aProgramSrc->SetOitOutput (Graphic3d_RTM_BLEND_OIT);
   }
 
   if (theIsOutline)
@@ -2041,6 +2163,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramUnlit (Handle(OpenGl_Sha
     + aSrcGetAlpha
     + EOL"void main()"
       EOL"{"
+      EOL"  if (occFragEarlyReturn()) { return; }"
     + aSrcFragExtraMain
     + aSrcFragMainGetColor
     + EOL"}";
@@ -2417,10 +2540,15 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
                           : THE_FRAG_CLIP_PLANES_2;
     }
   }
-  if ((theBits & OpenGl_PO_WriteOit) != 0)
+  if ((theBits & OpenGl_PO_OitDepthPeeling) != 0)
+  {
+    aProgramSrc->SetNbFragmentOutputs (3);
+    aProgramSrc->SetOitOutput (Graphic3d_RTM_DEPTH_PEELING_OIT);
+  }
+  else if ((theBits & OpenGl_PO_WriteOit) != 0)
   {
     aProgramSrc->SetNbFragmentOutputs (2);
-    aProgramSrc->SetWeightOitOutput (true);
+    aProgramSrc->SetOitOutput (Graphic3d_RTM_BLEND_OIT);
   }
 
   aStageInOuts.Append (OpenGl_ShaderObject::ShaderVariable ("vec4 FrontColor", Graphic3d_TOS_VERTEX | Graphic3d_TOS_FRAGMENT));
@@ -2454,6 +2582,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramGouraud (Handle(OpenGl_S
     + aSrcFragGetColor
     + EOL"void main()"
       EOL"{"
+      EOL"  if (occFragEarlyReturn()) { return; }"
     + aSrcFragExtraMain
     + EOL"  occSetFragColor (getFinalColor());"
     + EOL"}";
@@ -2620,10 +2749,15 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
                          : THE_FRAG_CLIP_PLANES_2;
     }
   }
-  if ((theBits & OpenGl_PO_WriteOit) != 0)
+  if ((theBits & OpenGl_PO_OitDepthPeeling) != 0)
+  {
+    aProgramSrc->SetNbFragmentOutputs (3);
+    aProgramSrc->SetOitOutput (Graphic3d_RTM_DEPTH_PEELING_OIT);
+  }
+  else if ((theBits & OpenGl_PO_WriteOit) != 0)
   {
     aProgramSrc->SetNbFragmentOutputs (2);
-    aProgramSrc->SetWeightOitOutput (true);
+    aProgramSrc->SetOitOutput (Graphic3d_RTM_BLEND_OIT);
   }
 
   if (isFlatNormal)
@@ -2722,6 +2856,7 @@ Standard_Boolean OpenGl_ShaderManager::prepareStdProgramPhong (Handle(OpenGl_Sha
     + EOL
       EOL"void main()"
       EOL"{"
+      EOL"  if (occFragEarlyReturn()) { return; }"
     + aSrcFragExtraMain
     + EOL"  occSetFragColor (getFinalColor());"
     + EOL"}";

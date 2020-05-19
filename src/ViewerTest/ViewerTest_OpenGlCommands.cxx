@@ -828,7 +828,7 @@ static Standard_Integer VShaderProg (Draw_Interpretor& theDI,
     && ViewerTest::CurrentView()->RenderingParams().TransparencyMethod == Graphic3d_RTM_BLEND_OIT)
   {
     aProgram->SetNbFragmentOutputs (2);
-    aProgram->SetWeightOitOutput (true);
+    aProgram->SetOitOutput (Graphic3d_RTM_BLEND_OIT);
   }
 
   ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName aGlobalPrsIter (GetMapOfAIS());

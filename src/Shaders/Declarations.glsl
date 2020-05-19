@@ -89,6 +89,13 @@
   #define occFragColor    occFragColor0
   #define occFragCoverage occFragColor1
 
+  #define occPeelDepth      occFragColor0
+  #define occPeelFrontColor occFragColor1
+  #define occPeelBackColor  occFragColor2
+
+  //! Define the main Fragment Shader early return procedure.
+  bool occFragEarlyReturn();
+
   //! Define the main Fragment Shader output - color value.
   void occSetFragColor (in vec4 theColor);
 #endif

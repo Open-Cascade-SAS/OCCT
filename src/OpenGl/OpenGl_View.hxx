@@ -56,6 +56,7 @@
 struct OpenGl_Matrix;
 
 class Graphic3d_StructureManager;
+class OpenGl_DepthPeeling;
 class OpenGl_GraphicDriver;
 class OpenGl_PBREnvironment;
 class OpenGl_StateCounter;
@@ -205,6 +206,9 @@ public:
   Standard_EXPORT virtual void FBOChangeViewport (const Handle(Standard_Transient)& theFbo,
                                                   const Standard_Integer theWidth,
                                                   const Standard_Integer theHeight) Standard_OVERRIDE;
+
+  //! Returns additional buffers for depth peeling OIT.
+  const Handle(OpenGl_DepthPeeling)& DepthPeelingFbos() const { return myDepthPeelingFbos; }
 
 public:
 
@@ -533,7 +537,8 @@ protected: //! @name Rendering properties
   Handle(OpenGl_FrameBuffer) myMainSceneFbosOit[2];      //!< Additional buffers for transparent draw of main layer.
   Handle(OpenGl_FrameBuffer) myImmediateSceneFbos[2];    //!< Additional buffers for immediate layer in stereo mode.
   Handle(OpenGl_FrameBuffer) myImmediateSceneFbosOit[2]; //!< Additional buffers for transparency draw of immediate layer.
-  Handle(OpenGl_FrameBuffer) myXrSceneFbo;            //!< additional FBO (without MSAA) for submitting to XR
+  Handle(OpenGl_FrameBuffer) myXrSceneFbo;               //!< additional FBO (without MSAA) for submitting to XR
+  Handle(OpenGl_DepthPeeling)   myDepthPeelingFbos;   //!< additional buffers for depth peeling
   Handle(OpenGl_ShadowMapArray) myShadowMaps;         //!< additional FBOs for shadow map rendering
   OpenGl_VertexBuffer        myFullScreenQuad;        //!< Vertices for full-screen quad rendering.
   OpenGl_VertexBuffer        myFullScreenQuadFlip;

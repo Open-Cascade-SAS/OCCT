@@ -75,6 +75,8 @@ OpenGl_ClippingIterator.hxx
 OpenGl_Context.cxx
 OpenGl_Context.hxx
 OpenGl_Context_1.mm
+OpenGl_DepthPeeling.cxx
+OpenGl_DepthPeeling.hxx
 OpenGl_ExtGS.hxx
 OpenGl_GLESExtensions.hxx
 OpenGl_GlFunctions.hxx
