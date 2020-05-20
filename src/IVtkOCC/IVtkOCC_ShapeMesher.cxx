@@ -180,16 +180,16 @@ void IVtkOCC_ShapeMesher::addEdges()
                                  TopAbs_EDGE, 
                                  TopAbs_FACE,
                                  anEdgesMap);
-
   int aNbFaces;
   IVtk_MeshType aType;
   myEdgesTypes.Clear();
 
-  TopExp_Explorer anEdgeIter (GetShapeObj()->GetShape(), TopAbs_EDGE);
-  for (; anEdgeIter.More(); anEdgeIter.Next())
+  TopTools_IndexedDataMapOfShapeListOfShape::Iterator aEdgeIt(anEdgesMap);
+  for (; aEdgeIt.More(); aEdgeIt.Next())
   {
-    const TopoDS_Edge& anOcctEdge = TopoDS::Edge (anEdgeIter.Current());
-    aNbFaces = anEdgesMap.FindFromKey (anOcctEdge).Extent();
+    const TopoDS_Edge& anOcctEdge = TopoDS::Edge (aEdgeIt.Key());
+    const TopTools_ListOfShape& aFaceList = aEdgeIt.Value();
+    aNbFaces = aFaceList.Extent();
     if (aNbFaces == 0)
     {
       aType = MT_FreeEdge;
@@ -200,7 +200,8 @@ void IVtkOCC_ShapeMesher::addEdges()
     }
     else
     {
-      aType = MT_SharedEdge;
+      aType = (aNbFaces >= 2) && (BRep_Tool::MaxContinuity(anOcctEdge) > GeomAbs_G2) ?
+        MT_SeamEdge : MT_SharedEdge;
     }
     addEdge (anOcctEdge, GetShapeObj()->GetSubShapeId (anOcctEdge), aType);
     myEdgesTypes.Bind (anOcctEdge, aType);

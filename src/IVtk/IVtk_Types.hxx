@@ -86,7 +86,8 @@ typedef enum
   MT_BoundaryEdge  =  4, //!< Boundary edge (related to a single face)
   MT_SharedEdge    =  5, //!< Shared edge (related to several faces)
   MT_WireFrameFace =  6, //!< Wireframe face
-  MT_ShadedFace    =  7  //!< Shaded face
+  MT_ShadedFace    =  7, //!< Shaded face
+  MT_SeamEdge      =  8  //!< Seam edge between faces
 } IVtk_MeshType;
 
 //! @enum IVtk_DisplayMode Display modes for 3D shapes

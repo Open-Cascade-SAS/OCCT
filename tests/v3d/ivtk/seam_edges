@@ -1,0 +1,17 @@
+puts "=========="
+puts "seam_edges"
+puts "=========="
+puts ""
+#################################################################
+#  Tests boundary edges draw without seam edges in the IVtk view
+#################################################################
+
+set anImage $imagedir/${casename}.png
+
+ivtkinit
+psphere s 10 15 80
+ivtkdisplay s
+ivtksetdispmode 1
+ivtksetboundingdraw 1
+
+ivtkdump $anImage

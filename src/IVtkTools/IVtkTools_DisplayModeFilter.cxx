@@ -48,6 +48,7 @@ IVtkTools_DisplayModeFilter::IVtkTools_DisplayModeFilter()
   aTypes.Add (MT_FreeEdge);
   aTypes.Add (MT_BoundaryEdge);
   aTypes.Add (MT_SharedEdge);
+  aTypes.Add (MT_SeamEdge);
   aTypes.Add (MT_WireFrameFace);
 
   myModesDefinition[DM_Wireframe] = aTypes;
