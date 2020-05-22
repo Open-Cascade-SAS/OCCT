@@ -281,12 +281,12 @@ Standard_Boolean RWStl::writeASCII (const Handle(Poly_Triangulation)& theMesh,
   char aBuffer[512];
   memset (aBuffer, 0, sizeof(aBuffer));
 
+  const Standard_Integer NBTriangles = theMesh->NbTriangles();
   Message_ProgressSentry aPS (theProgInd, "Triangles", 0,
-                              theMesh->NbTriangles(), IND_THRESHOLD);
+                              NBTriangles, 1);
 
   const TColgp_Array1OfPnt& aNodes = theMesh->Nodes();
   const Poly_Array1OfTriangle& aTriangles = theMesh->Triangles();
-  const Standard_Integer NBTriangles = theMesh->NbTriangles();
   Standard_Integer anElem[3] = {0, 0, 0};
   for (Standard_Integer aTriIter = 1; aTriIter <= NBTriangles; ++aTriIter)
   {
@@ -330,7 +330,9 @@ Standard_Boolean RWStl::writeASCII (const Handle(Poly_Triangulation)& theMesh,
     // update progress only per 1k triangles
     if ((aTriIter % IND_THRESHOLD) == 0)
     {
-      aPS.Next();
+      if (!aPS.More())
+        return Standard_False;
+      aPS.Next(IND_THRESHOLD);
     }
   }
 
@@ -355,9 +357,10 @@ Standard_Boolean RWStl::writeBinary (const Handle(Poly_Triangulation)& theMesh,
   {
     return Standard_False;
   }
-
+  
+  const Standard_Integer aNBTriangles = theMesh->NbTriangles();
   Message_ProgressSentry aPS (theProgInd, "Triangles", 0,
-                              theMesh->NbTriangles(), IND_THRESHOLD);
+                              aNBTriangles, 1);
 
   const Standard_Size aNbChunkTriangles = 4096;
   const Standard_Size aChunkSize = aNbChunkTriangles * THE_STL_SIZEOF_FACET;
@@ -366,7 +369,6 @@ Standard_Boolean RWStl::writeBinary (const Handle(Poly_Triangulation)& theMesh,
 
   const TColgp_Array1OfPnt& aNodes = theMesh->Nodes();
   const Poly_Array1OfTriangle& aTriangles = theMesh->Triangles();
-  const Standard_Integer aNBTriangles = theMesh->NbTriangles();
 
   Standard_Character aConv[4];
   convertInteger (aNBTriangles, aConv);
@@ -431,7 +433,9 @@ Standard_Boolean RWStl::writeBinary (const Handle(Poly_Triangulation)& theMesh,
     // update progress only per 1k triangles
     if ((aTriIter % IND_THRESHOLD) == 0)
     {
-      aPS.Next();
+      if (!aPS.More())
+        return Standard_False;
+      aPS.Next(IND_THRESHOLD);
     }
   }
 

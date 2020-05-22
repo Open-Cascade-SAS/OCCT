@@ -102,8 +102,8 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
     if ( scale.GetName().IsNull() ) continue; // skip unnamed scopes
     aText << " " << scale.GetName()->ToCString() << ": ";
 
-    // if scope has subscopes, print end of subscope as its current position
-    Standard_Real locPos = ( i >1 ? GetScope ( i-1 ).GetLast() : GetPosition() );
+    // if scope has subscopes, print end of subscope as it s current position
+    Standard_Real locPos = ( (i >1 && GetPosition()!=0) ? GetScope ( i-1 ).GetLast() : GetPosition() );
     // print progress info differently for finite and infinite scopes
     if ( scale.GetInfinite() )
     {

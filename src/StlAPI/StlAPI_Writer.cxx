@@ -41,7 +41,8 @@ StlAPI_Writer::StlAPI_Writer()
 //purpose  :
 //=============================================================================
 Standard_Boolean StlAPI_Writer::Write (const TopoDS_Shape&    theShape,
-                                       const Standard_CString theFileName)
+                                       const Standard_CString theFileName,
+                                       const Handle(Message_ProgressIndicator)& theProgress)
 {
   Standard_Integer aNbNodes = 0;
   Standard_Integer aNbTriangles = 0;
@@ -125,8 +126,8 @@ Standard_Boolean StlAPI_Writer::Write (const TopoDS_Shape&    theShape,
 
   OSD_Path aPath (theFileName);
   Standard_Boolean isDone = (myASCIIMode
-       ? RWStl::WriteAscii  (aMesh, aPath)
-       : RWStl::WriteBinary (aMesh, aPath));
+    ? RWStl::WriteAscii(aMesh, aPath, theProgress)
+    : RWStl::WriteBinary(aMesh, aPath, theProgress));
 
   if (isDone && (aNbFacesNoTri > 0))
   {

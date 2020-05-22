@@ -333,7 +333,8 @@ static Standard_Integer writestl
     }
     StlAPI_Writer aWriter;
     aWriter.ASCIIMode() = isASCIIMode;
-    Standard_Boolean isOK = aWriter.Write (aShape, argv[2]);
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+    Standard_Boolean isOK = aWriter.Write (aShape, argv[2], aProgress);
     if (!isOK)
        di << "** Error **: Mesh writing has been failed.\n";
   }

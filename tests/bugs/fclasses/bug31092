@@ -8,7 +8,7 @@ pload QAcommands
 set out [OCC28478 3 2 -inf]
 
 set expected {
-  {Progress: 0% Outer: 1 / 3}
+  {Progress: 0% Outer: 0 / 3}
   {Progress: 11% Outer: 1 / 3 Inner: 1}
   {Progress: 17% Outer: 1 / 3 Inner: 2}
   {Progress: 20% Outer: 1 / 3 Inner: 3}
