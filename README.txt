@@ -1,5 +1,5 @@
-Open CASCADE Technology
-=======================
+Open CASCADE Technology forever
+===============================
 
 This directory contains sources of Open CASCADE Technology (OCCT), a software
 development platform providing services for 3D surface and solid modeling, CAD 
