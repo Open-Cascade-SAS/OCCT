@@ -8,6 +8,7 @@ if [ "$1" == "" ]; then
   echo available samples:
   echo    FuncDemo
   echo    IESample
+  echo    OCCTOverview
   echo    Tutorial
 fi
 
@@ -30,6 +31,8 @@ if [ ! -f "$EXE_PATH" ]; then
   echo "Probably you didn't compile the application."
   exit 1
 fi
+
+export CSF_OCCTOverviewSampleCodePath="${aCurrentPath}/samples/qt/OCCTOverview/code"
 
 cd ${aCurrentPath}
 "$EXE_PATH"

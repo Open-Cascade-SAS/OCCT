@@ -1,0 +1,9 @@
+#!/bin/bash
+# Rename this file to custom.sh,
+# define QTDIR variable - path to QT directory
+# and CASROOT variable - path to CasCade installation directory.
+
+aScriptPath=${BASH_SOURCE%/*}
+
+export CASROOT=${aScriptPath}/../../..
+export QTDIR=

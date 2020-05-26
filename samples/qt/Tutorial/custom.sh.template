@@ -1,0 +1,5 @@
+#!/bin/bash
+# Rename this file to custom.sh,
+# and define QTDIR variable.
+
+export QTDIR=""

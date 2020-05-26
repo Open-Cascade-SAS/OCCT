@@ -12,6 +12,7 @@ samples/samples.md
 ../samples/CSharp/ReadMe.md
 ../samples/CSharp/ReadMe_D3D.md
 ../samples/qt/AndroidQt/ReadMe.md
+../samples/qt/OCCTOverview/ReadMe.md
 ../samples/java/jniviewer/ReadMe.md
 ../samples/ios/UIKitSample/ReadMe.md
 ../samples/webgl/ReadMe.md

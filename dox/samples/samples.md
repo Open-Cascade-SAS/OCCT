@@ -46,7 +46,10 @@ See @subpage samples_mfc_standard "Readme" for details.
 Qt
 ---
 
- OCCT contains three samples based on Qt application framework
+ OCCT includes several samples based on Qt application framework.
+These samples are available on all supported desktop platforms.
+
+To start a sample on Windows use Open CASCADE Technology\\Samples\\Qt\\ item of the Start\\Programs menu.
 
  Import Export
 -------------
@@ -68,6 +71,27 @@ to enhance user's C++ tools with high performance modeling classes, methods and 
 The combination of these resources allows creating substantial applications.
 
 **See also:** @ref occt__tutorial "OCCT Tutorial"
+
+Overview
+---------
+ 
+The Qt application providing samples for basic usage of C++ API of various OCCT functionality.
+
+The samples are organized in several categories according to relevant module of OCCT:
+ 
+ * Geometry
+ * Topology,
+ * Triangulation
+ * DataExchange
+ * OCAF
+ * Viewer 2d
+ * Viewer 3d
+ 
+Each sample presents geometry view, C++ code fragment and sample output window.
+ 
+@figure{/samples/images/sample_overview_qt.png}
+ 
+See \subpage samples_qt_overview "Readme" for details.
 
 C#
 ---

@@ -1,0 +1,176 @@
+{
+  "Topology": {
+    "Topological Shape": [{
+        "text": "Vertex",
+        "function": "Vertex3dSample",
+        "description": ""
+      },
+      {
+        "text": "Edge",
+        "function": "Edge3dSample",
+        "description": ""
+      },
+      {
+        "text": "Face",
+        "function": "Face3dSample",
+        "description": ""
+      },
+      {
+        "text": "Wire",
+        "function": "Wire3dSample",
+        "description": ""
+      },
+      {
+        "text": "Shell",
+        "function": "Shell3dSample",
+        "description": ""
+      },
+      {
+        "text": "Solid",
+        "function": "Solid3dSample",
+        "description": ""
+      },
+      {
+        "text": "Edge (2D)",
+        "function": "Edge2dSample",
+        "description": ""
+      }
+    ],
+    "BRep primitive objects": [{
+        "text": "Box",
+        "function": "Box3dSample",
+        "description": ""
+      },
+      {
+        "text": "Cylinder",
+        "function": "Cylinder3dSample",
+        "description": ""
+      },
+      {
+        "text": "Revolution",
+        "function": "Revolution3dSample",
+        "description": ""
+      }
+    ],
+    "Topology access": [{
+        "text": "Topology iterator",
+        "function": "TopologyIterator3dSample",
+        "description": ""
+      },
+      {
+        "text": "Topology explorer",
+        "function": "TopologyExplorer3dSample",
+        "description": ""
+      },
+      {
+        "text": "Assess to curve",
+        "function": "AssessToCurve3dSample",
+        "description": ""
+      },
+      {
+        "text": "Assess to composite curve",
+        "function": "AssessToCompositeCurve3dSample",
+        "description": ""
+      },
+      {
+        "text": "Assess to surface",
+        "function": "AssessToSurface3dSample",
+        "description": ""
+      }
+    ],
+    "Boolean operation": [{
+        "text": "Common",
+        "function": "Common3dSample",
+        "description": ""
+      },
+      {
+        "text": "Cut",
+        "function": "Cut3dSample",
+        "description": ""
+      },
+      {
+        "text": "Fuse",
+        "function": "Fuse3dSample",
+        "description": ""
+      },
+      {
+        "text": "Section",
+        "function": "Section3dSample",
+        "description": ""
+      },
+      {
+        "text": "Splitter",
+        "function": "Splitter3dSample",
+        "description": ""
+      },
+      {
+        "text": "Defeaturing",
+        "function": "Defeaturing3dSample",
+        "description": ""
+      }
+    ],
+    "Complex modelling": [{
+        "text": "Fillet",
+        "function": "Fillet3dSample",
+        "description": ""
+      },
+      {
+        "text": "Chamfer",
+        "function": "Chamfer3dSample",
+        "description": ""
+      },
+      {
+        "text": "Offset",
+        "function": "Offset3dSample",
+        "description": ""
+      },
+      {
+        "text": "Evolved",
+        "function": "Evolved3dSample",
+        "description": ""
+      }
+    ],
+    "Modification": [{
+        "text": "Copy",
+        "function": "Copy3dSample",
+        "description": ""
+      },
+      {
+        "text": "Transform",
+        "function": "Transform3dSample",
+        "description": ""
+      },
+      {
+        "text": "Convert to NURBS",
+        "function": "ConvertToNurbs3dSample",
+        "description": ""
+      },
+      {
+        "text": "Sew contiguous faces",
+        "function": "SewContiguousFaces3dSample",
+        "description": ""
+      }
+    ],
+    "Calculation": [{
+        "text": "Check validity",
+        "function": "CheckValidity3dSample",
+        "description": ""
+      },
+      {
+        "text": "Compute linear properties",
+        "function": "ComputeLinearProperties3dSample",
+        "description": ""
+      },
+      {
+        "text": "Compute surface properties",
+        "function": "ComputeSurfaceProperties3dSample",
+        "description": ""
+      },
+      {
+        "text": "Compute volume properties",
+        "function": "ComputeVolumeProperties3dSample",
+        "description": ""
+      }
+    ]
+  }
+}

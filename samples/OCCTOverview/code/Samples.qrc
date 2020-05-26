@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/menus">
+        <file>Geometry.json</file>
+        <file>Topology.json</file>
+        <file>Triangulation.json</file>
+        <file>DataExchange.json</file>
+        <file>Viewer3d.json</file>
+        <file>Viewer2d.json</file>
+        <file>Ocaf.json</file>
+    </qresource>
+</RCC>

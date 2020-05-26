@@ -1,0 +1,5 @@
+@echo off
+rem Rename this file to custom.bat,
+rem and define QTDIR variable.
+
+set "QTDIR="

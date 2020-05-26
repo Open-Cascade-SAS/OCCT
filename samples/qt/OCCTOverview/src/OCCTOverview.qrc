@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="lamp.png">../res/lamp.png</file>
+        <file alias="view_axo.png">../res/view_axo.png</file>
+        <file alias="view_back.png">../res/view_back.png</file>
+        <file alias="view_bottom.png">../res/view_bottom.png</file>
+        <file alias="view_comp_off.png">../res/view_comp_off.png</file>
+        <file alias="view_comp_on.png">../res/view_comp_on.png</file>
+        <file alias="view_fitall.png">../res/view_fitall.png</file>
+        <file alias="view_front.png">../res/view_front.png</file>
+        <file alias="view_left.png">../res/view_left.png</file>
+        <file alias="view_reset.png">../res/view_reset.png</file>
+        <file alias="view_top.png">../res/view_top.png</file>
+        <file alias="antialiasing.png">../res/antialiasing.png</file>
+        <file alias="raytracing.png">../res/raytracing.png</file>
+        <file alias="reflections.png">../res/reflections.png</file>
+        <file alias="shadows.png">../res/shadows.png</file>
+        <file alias="view_right.png">../res/view_right.png</file>
+        <file alias="tool_material.png">../res/tool_material.png</file>
+        <file alias="tool_color.png">../res/tool_color.png</file>
+        <file alias="tool_delete.png">../res/tool_delete.png</file>
+        <file alias="tool_shading.png">../res/tool_shading.png</file>
+        <file alias="tool_transparency.png">../res/tool_transparency.png</file>
+        <file alias="tool_wireframe.png">../res/tool_wireframe.png</file>
+        <file alias="help.png">../res/help.png</file>
+        <file alias="cursor_rotate.png">../res/cursor_rotate.png</file>
+        <file alias="cursor_zoom.png">../res/cursor_zoom.png</file>
+    </qresource>
+</RCC>

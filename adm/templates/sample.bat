@@ -19,6 +19,7 @@ if ["%1"] == [""] (
   echo    AndroidQt
   echo    FuncDemo
   echo    IESample
+  echo    OCCTOverview  
   echo    Tutorial
   PAUSE
   exit /B
@@ -34,6 +35,9 @@ if not exist "%EXE_PATH%" (
   PAUSE
   exit /B
 )
+
+rem Set path to location where sample code is installed
+set "CSF_OCCTOverviewSampleCodePath=%~dp0samples\OCCTOverview\code"
 
 "%EXE_PATH%"
 

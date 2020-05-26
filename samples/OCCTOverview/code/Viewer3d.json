@@ -1,0 +1,106 @@
+{
+  "Viewer 3D": {
+    "Light source": [{
+        "text": "Spot",
+        "function": "SpotLight3dSample",
+        "description": ""
+      },
+      {
+        "text": "Positional",
+        "function": "PositionalLight3dSample",
+        "description": ""
+      },
+      {
+        "text": "Directional",
+        "function": "DirectionalLight3dSample",
+        "description": ""
+      },
+      {
+        "text": "Ambient",
+        "function": "AmbientLight3dSample",
+        "description": ""
+      },
+      {
+        "text": "Clear",
+        "function": "ClearLight3dSample",
+        "description": ""
+      }
+    ],
+
+    "Selection mode": [{
+        "text": "Vertices",
+        "function": "VerticesSelect3dSample",
+        "description": ""
+      },
+      {
+        "text": "Edges",
+        "function": "EdgesSelect3dSample",
+        "description": ""
+      },
+      {
+        "text": "Faces",
+        "function": "FacesSelect3dSample",
+        "description": ""
+      },
+      {
+        "text": "Neutral point",
+        "function": "NeutralPointSelect3dSample",
+        "description": ""
+      }
+    ],
+
+    "Shape presentation": [
+      {
+        "text": "WireFrame",
+        "function": "WireFramePresentation3dSample",
+        "description": ""
+      },
+      {
+        "text": "Shading",
+        "function": "ShadingPresentation3dSample",
+        "description": ""
+      },
+      {
+        "text": "Set color to red",
+        "function": "RedColorPresentation3dSample",
+        "description": ""
+      },
+      {
+        "text": "Set color to gray",
+        "function": "GrayColorPresentation3dSample",
+        "description": ""
+      },
+      {
+        "text": "Set plastic material",
+        "function": "PlasticPresentation3dSample",
+        "description": ""
+      },
+      {
+        "text": "Set bronze material",
+        "function": "BronzePresentation3dSample",
+        "description": ""
+      },
+      {
+        "text": "Set opaque",
+        "function": "OpaquePresentation3dSample",
+        "description": ""
+      },
+      {
+        "text": "Set half transparency",
+        "function": "HalfTransparencyPresentation3dSample",
+        "description": ""
+      }
+    ],
+    "OpenGL VBO mode": [{
+        "text": "Vertex Buffer Object mode ON",
+        "function": "VboOn3dSample",
+        "description": ""
+      },
+      {
+        "text": "Vertex Buffer Object mode OFF",
+        "function": "VboOff3dSample",
+        "description": ""
+      }
+    ]
+  }
+}

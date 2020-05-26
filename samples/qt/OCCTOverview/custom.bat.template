@@ -1,0 +1,7 @@
+@echo off
+rem Rename this file to custom.bat,
+rem define QTDIR variable - path to Qt directory
+rem and CASROOT variable - path to Open CASCADE installation directory.
+
+set "CASROOT=%~dp0../../.."
+set "QTDIR="
