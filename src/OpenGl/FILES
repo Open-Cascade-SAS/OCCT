@@ -77,6 +77,7 @@ OpenGl_Context.cxx
 OpenGl_Context.hxx
 OpenGl_Context_1.mm
 OpenGl_ExtGS.hxx
+OpenGl_GLESExtensions.hxx
 OpenGl_GlFunctions.hxx
 OpenGl_Flipper.cxx
 OpenGl_Flipper.hxx

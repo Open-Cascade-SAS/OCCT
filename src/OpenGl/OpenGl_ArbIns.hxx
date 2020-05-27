@@ -19,12 +19,14 @@
 #include <OpenGl_GlFunctions.hxx>
 
 //! Instancing is available on OpenGL 3.0+ hardware
+//! (in core since OpenGL 3.1 or GL_ARB_draw_instanced extension).
+//!
+//! Note that this structure does not include glVertexAttribDivisor(),
+//! which has been introduced in later OpenGL versions (OpenGL 3.3 or OpenGL ES 3.0).
 struct OpenGl_ArbIns : protected OpenGl_GlFunctions
 {
-#if !defined(GL_ES_VERSION_2_0)
   using OpenGl_GlFunctions::glDrawArraysInstanced;
   using OpenGl_GlFunctions::glDrawElementsInstanced;
-#endif
 };
 
 #endif // _OpenGl_ArbIns_H__

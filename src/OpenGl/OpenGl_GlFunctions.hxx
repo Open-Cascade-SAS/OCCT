@@ -65,114 +65,16 @@
   #include <GL/gl.h>
 #endif
 
-#if defined(GL_ES_VERSION_2_0)
-  // define items to unify code paths with desktop OpenGL
-  typedef double GLdouble;
-  typedef double GLclampd;
-
-  // GL_EXT_sRGB_write_control extension for OpenGL ES
-  // adds GL_FRAMEBUFFER_SRGB_EXT flag as on desktop OpenGL
-  #define GL_FRAMEBUFFER_SRGB 0x8DB9
-
-  // OpenGL ES 3.1+
-  #define GL_TEXTURE_2D_MULTISAMPLE 0x9100
-
-  // OpenGL ES 3.2+ or GL_EXT_texture_buffer for OpenGL ES 3.1+
-  #define GL_TEXTURE_BUFFER 0x8C2A
-
-  // in core since OpenGL ES 3.0, extension GL_OES_rgb8_rgba8
-  #define GL_LUMINANCE8   0x8040
-  // GL_EXT_texture_format_BGRA8888
-  #define GL_BGRA_EXT     0x80E1 // same as GL_BGRA on desktop
-
-  #define GL_R16          0x822A
-  #define GL_RGB4         0x804F
-  #define GL_RGB5         0x8050
-  #define GL_RGB10        0x8052
-  #define GL_RGB12        0x8053
-  #define GL_RGB16        0x8054
-  #define GL_RGB10_A2     0x8059
-  #define GL_RGBA12       0x805A
-  #define GL_RGBA16       0x805B
-  #define GL_ALPHA8       0x803C
-  #define GL_ALPHA16      0x803E
-  #define GL_RG16         0x822C
-
-  #define GL_R16_SNORM    0x8F98
-  #define GL_RG16_SNORM   0x8F99
-  #define GL_RGB16_SNORM  0x8F9A
-  #define GL_RGBA16_SNORM 0x8F9B
-
-  #define GL_RED_SNORM    0x8F90
-  #define GL_RG_SNORM     0x8F91
-  #define GL_RGB_SNORM    0x8F92
-  #define GL_RGBA_SNORM   0x8F93
-
-  // GL_EXT_texture_filter_anisotropic
-  #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
-  #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
-
-  // debug ARB extension
-  #define GL_DEBUG_OUTPUT               0x92E0
-  #define GL_DEBUG_OUTPUT_SYNCHRONOUS   0x8242
-  #define GL_DEBUG_NEXT_LOGGED_MESSAGE_LENGTH 0x8243
-  #define GL_DEBUG_CALLBACK_FUNCTION    0x8244
-  #define GL_DEBUG_CALLBACK_USER_PARAM  0x8245
-  #define GL_DEBUG_SOURCE_API           0x8246
-  #define GL_DEBUG_SOURCE_WINDOW_SYSTEM 0x8247
-  #define GL_DEBUG_SOURCE_SHADER_COMPILER 0x8248
-  #define GL_DEBUG_SOURCE_THIRD_PARTY   0x8249
-  #define GL_DEBUG_SOURCE_APPLICATION   0x824A
-  #define GL_DEBUG_SOURCE_OTHER         0x824B
-  #define GL_DEBUG_TYPE_ERROR           0x824C
-  #define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR 0x824D
-  #define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR  0x824E
-  #define GL_DEBUG_TYPE_PORTABILITY     0x824F
-  #define GL_DEBUG_TYPE_PERFORMANCE     0x8250
-  #define GL_DEBUG_TYPE_OTHER           0x8251
-  #define GL_MAX_DEBUG_MESSAGE_LENGTH   0x9143
-  #define GL_MAX_DEBUG_LOGGED_MESSAGES  0x9144
-  #define GL_DEBUG_LOGGED_MESSAGES      0x9145
-  #define GL_DEBUG_SEVERITY_HIGH        0x9146
-  #define GL_DEBUG_SEVERITY_MEDIUM      0x9147
-  #define GL_DEBUG_SEVERITY_LOW         0x9148
-
-  // OpenGL ES 3.0+ or OES_texture_half_float
-  #define GL_HALF_FLOAT_OES             0x8D61
-
-  // OpenGL ES 3.1+
-  #define GL_COMPUTE_SHADER             0x91B9
-
-  // OpenGL ES 3.2+
-  #define GL_GEOMETRY_SHADER            0x8DD9
-  #define GL_TESS_CONTROL_SHADER        0x8E88
-  #define GL_TESS_EVALUATION_SHADER     0x8E87
-  #define GL_LINES_ADJACENCY            0x000A
-  #define GL_LINE_STRIP_ADJACENCY       0x000B
-  #define GL_TRIANGLES_ADJACENCY        0x000C
-  #define GL_TRIANGLE_STRIP_ADJACENCY   0x000D
-  #define GL_PATCHES                    0x000E
-
-  // GL_EXT_texture_compression_s3tc extension
-  #define GL_COMPRESSED_RGB_S3TC_DXT1_EXT  0x83F0
-  #define GL_COMPRESSED_RGBA_S3TC_DXT1_EXT 0x83F1
-  #define GL_COMPRESSED_RGBA_S3TC_DXT3_EXT 0x83F2
-  #define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT 0x83F3
-  //
-  #define GL_COMPRESSED_SRGB_S3TC_DXT1_EXT  0x8C4C
-  #define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT 0x8C4D
-  #define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT 0x8C4E
-  #define GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT 0x8C4F
-#endif
-
 #if !defined(HAVE_EGL) && (defined(__ANDROID__) || defined(__QNX__) || defined(__EMSCRIPTEN__) || defined(HAVE_GLES2) || defined(OCCT_UWP))
   #define HAVE_EGL
 #endif
 
 #include <InterfaceGraphic.hxx>
 
-// GL version can be defined by system gl.h header
-#if !defined(GL_ES_VERSION_2_0)
+#if defined(GL_ES_VERSION_2_0)
+  #include <OpenGl_GLESExtensions.hxx>
+#else
+  // GL version can be defined by system gl.h header
   #undef GL_VERSION_1_2
   #undef GL_VERSION_1_3
   #undef GL_VERSION_1_4
@@ -723,75 +625,231 @@ public: //! @name OpenGL ES 2.0
 
 public: //! @name OpenGL ES 3.0
 
-  typedef void (APIENTRY *glBlitFramebuffer_t)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
-  glBlitFramebuffer_t glBlitFramebuffer;
-
-  typedef void (APIENTRY *glTexImage3D_t)(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid* data);
-  glTexImage3D_t glTexImage3D;
-
-  typedef void (APIENTRY *glDrawBuffers_t)(GLsizei n, const GLenum* bufs);
-  glDrawBuffers_t glDrawBuffers;
-
-  typedef void (APIENTRY *glGenSamplers_t)(GLsizei count, GLuint* samplers);
-  glGenSamplers_t glGenSamplers;
-
-  typedef void (APIENTRY *glDeleteSamplers_t)(GLsizei count, const GLuint* samplers);
-  glDeleteSamplers_t glDeleteSamplers;
-
-  typedef GLboolean (APIENTRY *glIsSampler_t)(GLuint sampler);
-  glIsSampler_t glIsSampler;
-
-  typedef void (APIENTRY *glBindSampler_t)(GLuint unit, GLuint sampler);
-  glBindSampler_t glBindSampler;
-
-  typedef void (APIENTRY *glSamplerParameteri_t)(GLuint sampler, GLenum pname, GLint param);
-  glSamplerParameteri_t glSamplerParameteri;
-
-  typedef void (APIENTRY *glSamplerParameteriv_t)(GLuint sampler, GLenum pname, const GLint* param);
-  glSamplerParameteriv_t glSamplerParameteriv;
-
-  typedef void (APIENTRY *glSamplerParameterf_t)(GLuint sampler, GLenum pname, GLfloat param);
-  glSamplerParameterf_t glSamplerParameterf;
-
-  typedef void (APIENTRY *glSamplerParameterfv_t)(GLuint sampler, GLenum pname, const GLfloat* param);
-  glSamplerParameterfv_t glSamplerParameterfv;
-
-  typedef void (APIENTRY *glGetSamplerParameteriv_t)(GLuint sampler, GLenum pname, GLint* params);
-  glGetSamplerParameteriv_t glGetSamplerParameteriv;
-
-  typedef void (APIENTRY *glGetSamplerParameterfv_t)(GLuint sampler, GLenum pname, GLfloat* params);
-  glGetSamplerParameterfv_t glGetSamplerParameterfv;
+  opencascade::PFNGLREADBUFFERPROC glReadBuffer;
+  opencascade::PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements;
+  opencascade::PFNGLTEXIMAGE3DPROC glTexImage3D;
+  opencascade::PFNGLTEXSUBIMAGE3DPROC glTexSubImage3D;
+  opencascade::PFNGLCOPYTEXSUBIMAGE3DPROC glCopyTexSubImage3D;
+  opencascade::PFNGLCOMPRESSEDTEXIMAGE3DPROC glCompressedTexImage3D;
+  opencascade::PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC glCompressedTexSubImage3D;
+  opencascade::PFNGLGENQUERIESPROC glGenQueries;
+  opencascade::PFNGLDELETEQUERIESPROC glDeleteQueries;
+  opencascade::PFNGLISQUERYPROC    glIsQuery;
+  opencascade::PFNGLBEGINQUERYPROC glBeginQuery;
+  opencascade::PFNGLENDQUERYPROC   glEndQuery;
+  opencascade::PFNGLGETQUERYIVPROC glGetQueryiv;
+  opencascade::PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv;
+  opencascade::PFNGLUNMAPBUFFERPROC glUnmapBuffer;
+  opencascade::PFNGLGETBUFFERPOINTERVPROC glGetBufferPointerv;
+  opencascade::PFNGLDRAWBUFFERSPROC glDrawBuffers;
+  opencascade::PFNGLUNIFORMMATRIX2X3FVPROC glUniformMatrix2x3fv;
+  opencascade::PFNGLUNIFORMMATRIX3X2FVPROC glUniformMatrix3x2fv;
+  opencascade::PFNGLUNIFORMMATRIX2X4FVPROC glUniformMatrix2x4fv;
+  opencascade::PFNGLUNIFORMMATRIX4X2FVPROC glUniformMatrix4x2fv;
+  opencascade::PFNGLUNIFORMMATRIX3X4FVPROC glUniformMatrix3x4fv;
+  opencascade::PFNGLUNIFORMMATRIX4X3FVPROC glUniformMatrix4x3fv;
+  opencascade::PFNGLBLITFRAMEBUFFERPROC glBlitFramebuffer;
+  opencascade::PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample;
+  opencascade::PFNGLFRAMEBUFFERTEXTURELAYERPROC glFramebufferTextureLayer;
+  opencascade::PFNGLMAPBUFFERRANGEPROC  glMapBufferRange;
+  opencascade::PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange;
+  opencascade::PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
+  opencascade::PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
+  opencascade::PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
+  opencascade::PFNGLISVERTEXARRAYPROC   glIsVertexArray;
+  opencascade::PFNGLGETINTEGERI_VPROC   glGetIntegeri_v;
+  opencascade::PFNGLBEGINTRANSFORMFEEDBACKPROC glBeginTransformFeedback;
+  opencascade::PFNGLENDTRANSFORMFEEDBACKPROC glEndTransformFeedback;
+  opencascade::PFNGLBINDBUFFERRANGEPROC glBindBufferRange;
+  opencascade::PFNGLBINDBUFFERBASEPROC  glBindBufferBase;
+  opencascade::PFNGLTRANSFORMFEEDBACKVARYINGSPROC glTransformFeedbackVaryings;
+  opencascade::PFNGLGETTRANSFORMFEEDBACKVARYINGPROC glGetTransformFeedbackVarying;
+  opencascade::PFNGLVERTEXATTRIBIPOINTERPROC glVertexAttribIPointer;
+  opencascade::PFNGLGETVERTEXATTRIBIIVPROC   glGetVertexAttribIiv;
+  opencascade::PFNGLGETVERTEXATTRIBIUIVPROC  glGetVertexAttribIuiv;
+  opencascade::PFNGLVERTEXATTRIBI4IPROC   glVertexAttribI4i;
+  opencascade::PFNGLVERTEXATTRIBI4UIPROC  glVertexAttribI4ui;
+  opencascade::PFNGLVERTEXATTRIBI4IVPROC  glVertexAttribI4iv;
+  opencascade::PFNGLVERTEXATTRIBI4UIVPROC glVertexAttribI4uiv;
+  opencascade::PFNGLGETUNIFORMUIVPROC glGetUniformuiv;
+  opencascade::PFNGLGETFRAGDATALOCATIONPROC glGetFragDataLocation;
+  opencascade::PFNGLUNIFORM1UIPROC glUniform1ui;
+  opencascade::PFNGLUNIFORM2UIPROC glUniform2ui;
+  opencascade::PFNGLUNIFORM3UIPROC glUniform3ui;
+  opencascade::PFNGLUNIFORM4UIPROC glUniform4ui;
+  opencascade::PFNGLUNIFORM1UIVPROC glUniform1uiv;
+  opencascade::PFNGLUNIFORM2UIVPROC glUniform2uiv;
+  opencascade::PFNGLUNIFORM3UIVPROC glUniform3uiv;
+  opencascade::PFNGLUNIFORM4UIVPROC glUniform4uiv;
+  opencascade::PFNGLCLEARBUFFERIVPROC  glClearBufferiv;
+  opencascade::PFNGLCLEARBUFFERUIVPROC glClearBufferuiv;
+  opencascade::PFNGLCLEARBUFFERFVPROC  glClearBufferfv;
+  opencascade::PFNGLCLEARBUFFERFIPROC  glClearBufferfi;
+  opencascade::PFNGLGETSTRINGIPROC glGetStringi;
+  opencascade::PFNGLCOPYBUFFERSUBDATAPROC glCopyBufferSubData;
+  opencascade::PFNGLGETUNIFORMINDICESPROC glGetUniformIndices;
+  opencascade::PFNGLGETACTIVEUNIFORMSIVPROC  glGetActiveUniformsiv;
+  opencascade::PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex;
+  opencascade::PFNGLGETACTIVEUNIFORMBLOCKIVPROC   glGetActiveUniformBlockiv;
+  opencascade::PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC glGetActiveUniformBlockName;
+  opencascade::PFNGLUNIFORMBLOCKBINDINGPROC   glUniformBlockBinding;
+  opencascade::PFNGLDRAWARRAYSINSTANCEDPROC   glDrawArraysInstanced;
+  opencascade::PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced;
+  opencascade::PFNGLFENCESYNCPROC      glFenceSync;
+  opencascade::PFNGLISSYNCPROC         glIsSync;
+  opencascade::PFNGLDELETESYNCPROC     glDeleteSync;
+  opencascade::PFNGLCLIENTWAITSYNCPROC glClientWaitSync;
+  opencascade::PFNGLWAITSYNCPROC       glWaitSync;
+  opencascade::PFNGLGETINTEGER64VPROC  glGetInteger64v;
+  opencascade::PFNGLGETSYNCIVPROC      glGetSynciv;
+  opencascade::PFNGLGETINTEGER64I_VPROC glGetInteger64i_v;
+  opencascade::PFNGLGETBUFFERPARAMETERI64VPROC glGetBufferParameteri64v;
+  opencascade::PFNGLGENSAMPLERSPROC glGenSamplers;
+  opencascade::PFNGLDELETESAMPLERSPROC glDeleteSamplers;
+  opencascade::PFNGLISSAMPLERPROC   glIsSampler;
+  opencascade::PFNGLBINDSAMPLERPROC glBindSampler;
+  opencascade::PFNGLSAMPLERPARAMETERIPROC  glSamplerParameteri;
+  opencascade::PFNGLSAMPLERPARAMETERIVPROC glSamplerParameteriv;
+  opencascade::PFNGLSAMPLERPARAMETERFPROC  glSamplerParameterf;
+  opencascade::PFNGLSAMPLERPARAMETERFVPROC glSamplerParameterfv;
+  opencascade::PFNGLGETSAMPLERPARAMETERIVPROC glGetSamplerParameteriv;
+  opencascade::PFNGLGETSAMPLERPARAMETERFVPROC glGetSamplerParameterfv;
+  opencascade::PFNGLVERTEXATTRIBDIVISORPROC glVertexAttribDivisor;
+  opencascade::PFNGLBINDTRANSFORMFEEDBACKPROC glBindTransformFeedback;
+  opencascade::PFNGLDELETETRANSFORMFEEDBACKSPROC glDeleteTransformFeedbacks;
+  opencascade::PFNGLGENTRANSFORMFEEDBACKSPROC glGenTransformFeedbacks;
+  opencascade::PFNGLISTRANSFORMFEEDBACKPROC glIsTransformFeedback;
+  opencascade::PFNGLPAUSETRANSFORMFEEDBACKPROC glPauseTransformFeedback;
+  opencascade::PFNGLRESUMETRANSFORMFEEDBACKPROC glResumeTransformFeedback;
+  opencascade::PFNGLGETPROGRAMBINARYPROC glGetProgramBinary;
+  opencascade::PFNGLPROGRAMBINARYPROC glProgramBinary;
+  opencascade::PFNGLPROGRAMPARAMETERIPROC glProgramParameteri;
+  opencascade::PFNGLINVALIDATEFRAMEBUFFERPROC glInvalidateFramebuffer;
+  opencascade::PFNGLINVALIDATESUBFRAMEBUFFERPROC glInvalidateSubFramebuffer;
+  opencascade::PFNGLTEXSTORAGE2DPROC glTexStorage2D;
+  opencascade::PFNGLTEXSTORAGE3DPROC glTexStorage3D;
+  opencascade::PFNGLGETINTERNALFORMATIVPROC glGetInternalformativ;
 
 public: //! @name OpenGL ES 3.1
 
-  typedef void (APIENTRY *glTexStorage2DMultisample_t)(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-  glTexStorage2DMultisample_t glTexStorage2DMultisample;
+  opencascade::PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
+  opencascade::PFNGLDISPATCHCOMPUTEINDIRECTPROC glDispatchComputeIndirect;
+  opencascade::PFNGLDRAWARRAYSINDIRECTPROC glDrawArraysIndirect;
+  opencascade::PFNGLDRAWELEMENTSINDIRECTPROC glDrawElementsIndirect;
+  opencascade::PFNGLFRAMEBUFFERPARAMETERIPROC glFramebufferParameteri;
+  opencascade::PFNGLGETFRAMEBUFFERPARAMETERIVPROC glGetFramebufferParameteriv;
+  opencascade::PFNGLGETPROGRAMINTERFACEIVPROC glGetProgramInterfaceiv;
+  opencascade::PFNGLGETPROGRAMRESOURCEINDEXPROC glGetProgramResourceIndex;
+  opencascade::PFNGLGETPROGRAMRESOURCENAMEPROC glGetProgramResourceName;
+  opencascade::PFNGLGETPROGRAMRESOURCEIVPROC glGetProgramResourceiv;
+  opencascade::PFNGLGETPROGRAMRESOURCELOCATIONPROC glGetProgramResourceLocation;
+  opencascade::PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;
+  opencascade::PFNGLACTIVESHADERPROGRAMPROC glActiveShaderProgram;
+  opencascade::PFNGLCREATESHADERPROGRAMVPROC glCreateShaderProgramv;
+  opencascade::PFNGLBINDPROGRAMPIPELINEPROC glBindProgramPipeline;
+  opencascade::PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines;
+  opencascade::PFNGLGENPROGRAMPIPELINESPROC glGenProgramPipelines;
+  opencascade::PFNGLISPROGRAMPIPELINEPROC glIsProgramPipeline;
+  opencascade::PFNGLGETPROGRAMPIPELINEIVPROC glGetProgramPipelineiv;
+  opencascade::PFNGLPROGRAMUNIFORM1IPROC glProgramUniform1i;
+  opencascade::PFNGLPROGRAMUNIFORM2IPROC glProgramUniform2i;
+  opencascade::PFNGLPROGRAMUNIFORM3IPROC glProgramUniform3i;
+  opencascade::PFNGLPROGRAMUNIFORM4IPROC glProgramUniform4i;
+  opencascade::PFNGLPROGRAMUNIFORM1UIPROC glProgramUniform1ui;
+  opencascade::PFNGLPROGRAMUNIFORM2UIPROC glProgramUniform2ui;
+  opencascade::PFNGLPROGRAMUNIFORM3UIPROC glProgramUniform3ui;
+  opencascade::PFNGLPROGRAMUNIFORM4UIPROC glProgramUniform4ui;
+  opencascade::PFNGLPROGRAMUNIFORM1FPROC glProgramUniform1f;
+  opencascade::PFNGLPROGRAMUNIFORM2FPROC glProgramUniform2f;
+  opencascade::PFNGLPROGRAMUNIFORM3FPROC glProgramUniform3f;
+  opencascade::PFNGLPROGRAMUNIFORM4FPROC glProgramUniform4f;
+  opencascade::PFNGLPROGRAMUNIFORM1IVPROC glProgramUniform1iv;
+  opencascade::PFNGLPROGRAMUNIFORM2IVPROC glProgramUniform2iv;
+  opencascade::PFNGLPROGRAMUNIFORM3IVPROC glProgramUniform3iv;
+  opencascade::PFNGLPROGRAMUNIFORM4IVPROC glProgramUniform4iv;
+  opencascade::PFNGLPROGRAMUNIFORM1UIVPROC glProgramUniform1uiv;
+  opencascade::PFNGLPROGRAMUNIFORM2UIVPROC glProgramUniform2uiv;
+  opencascade::PFNGLPROGRAMUNIFORM3UIVPROC glProgramUniform3uiv;
+  opencascade::PFNGLPROGRAMUNIFORM4UIVPROC glProgramUniform4uiv;
+  opencascade::PFNGLPROGRAMUNIFORM1FVPROC glProgramUniform1fv;
+  opencascade::PFNGLPROGRAMUNIFORM2FVPROC glProgramUniform2fv;
+  opencascade::PFNGLPROGRAMUNIFORM3FVPROC glProgramUniform3fv;
+  opencascade::PFNGLPROGRAMUNIFORM4FVPROC glProgramUniform4fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX2FVPROC glProgramUniformMatrix2fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX3FVPROC glProgramUniformMatrix3fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX4FVPROC glProgramUniformMatrix4fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX2X3FVPROC glProgramUniformMatrix2x3fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX3X2FVPROC glProgramUniformMatrix3x2fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX2X4FVPROC glProgramUniformMatrix2x4fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX4X2FVPROC glProgramUniformMatrix4x2fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX3X4FVPROC glProgramUniformMatrix3x4fv;
+  opencascade::PFNGLPROGRAMUNIFORMMATRIX4X3FVPROC glProgramUniformMatrix4x3fv;
+  opencascade::PFNGLVALIDATEPROGRAMPIPELINEPROC glValidateProgramPipeline;
+  opencascade::PFNGLGETPROGRAMPIPELINEINFOLOGPROC glGetProgramPipelineInfoLog;
+  opencascade::PFNGLBINDIMAGETEXTUREPROC glBindImageTexture;
+  opencascade::PFNGLGETBOOLEANI_VPROC glGetBooleani_v;
+  opencascade::PFNGLMEMORYBARRIERPROC glMemoryBarrier;
+  opencascade::PFNGLMEMORYBARRIERBYREGIONPROC glMemoryBarrierByRegion;
+  opencascade::PFNGLTEXSTORAGE2DMULTISAMPLEPROC glTexStorage2DMultisample;
+  opencascade::PFNGLGETMULTISAMPLEFVPROC glGetMultisamplefv;
+  opencascade::PFNGLSAMPLEMASKIPROC glSampleMaski;
+  opencascade::PFNGLGETTEXLEVELPARAMETERIVPROC glGetTexLevelParameteriv;
+  opencascade::PFNGLGETTEXLEVELPARAMETERFVPROC glGetTexLevelParameterfv;
+  opencascade::PFNGLBINDVERTEXBUFFERPROC glBindVertexBuffer;
+  opencascade::PFNGLVERTEXATTRIBFORMATPROC glVertexAttribFormat;
+  opencascade::PFNGLVERTEXATTRIBIFORMATPROC glVertexAttribIFormat;
+  opencascade::PFNGLVERTEXATTRIBBINDINGPROC glVertexAttribBinding;
+  opencascade::PFNGLVERTEXBINDINGDIVISORPROC glVertexBindingDivisor;
 
 public: //! @name OpenGL ES 3.2
 
-  typedef void (APIENTRY *glTexBuffer_t)(GLenum target, GLenum internalFormat, GLuint buffer);
-  glTexBuffer_t glTexBuffer;
+  opencascade::PFNGLBLENDBARRIERPROC glBlendBarrier;
+  opencascade::PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData;
+  opencascade::PFNGLPUSHDEBUGGROUPPROC glPushDebugGroup;
+  opencascade::PFNGLPOPDEBUGGROUPPROC glPopDebugGroup;
+  opencascade::PFNGLOBJECTLABELPROC glObjectLabel;
+  opencascade::PFNGLGETOBJECTLABELPROC glGetObjectLabel;
+  opencascade::PFNGLOBJECTPTRLABELPROC glObjectPtrLabel;
+  opencascade::PFNGLGETOBJECTPTRLABELPROC glGetObjectPtrLabel;
+  opencascade::PFNGLGETPOINTERVPROC glGetPointerv;
+  opencascade::PFNGLENABLEIPROC  glEnablei;
+  opencascade::PFNGLDISABLEIPROC glDisablei;
+  opencascade::PFNGLBLENDEQUATIONIPROC glBlendEquationi;
+  opencascade::PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei;
+  opencascade::PFNGLBLENDFUNCIPROC glBlendFunci;
+  opencascade::PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei;
+  opencascade::PFNGLCOLORMASKIPROC glColorMaski;
+  opencascade::PFNGLISENABLEDIPROC glIsEnabledi;
+  opencascade::PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex;
+  opencascade::PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC glDrawRangeElementsBaseVertex;
+  opencascade::PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC glDrawElementsInstancedBaseVertex;
+  opencascade::PFNGLFRAMEBUFFERTEXTUREPROC glFramebufferTexture;
+  opencascade::PFNGLPRIMITIVEBOUNDINGBOXPROC glPrimitiveBoundingBox;
+  opencascade::PFNGLGETGRAPHICSRESETSTATUSPROC glGetGraphicsResetStatus;
+  opencascade::PFNGLREADNPIXELSPROC glReadnPixels;
+  opencascade::PFNGLGETNUNIFORMFVPROC glGetnUniformfv;
+  opencascade::PFNGLGETNUNIFORMIVPROC glGetnUniformiv;
+  opencascade::PFNGLGETNUNIFORMUIVPROC glGetnUniformuiv;
+  opencascade::PFNGLMINSAMPLESHADINGPROC glMinSampleShading;
+  opencascade::PFNGLPATCHPARAMETERIPROC glPatchParameteri;
+  opencascade::PFNGLTEXPARAMETERIIVPROC glTexParameterIiv;
+  opencascade::PFNGLTEXPARAMETERIUIVPROC glTexParameterIuiv;
+  opencascade::PFNGLGETTEXPARAMETERIIVPROC glGetTexParameterIiv;
+  opencascade::PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv;
+  opencascade::PFNGLSAMPLERPARAMETERIIVPROC glSamplerParameterIiv;
+  opencascade::PFNGLSAMPLERPARAMETERIUIVPROC glSamplerParameterIuiv;
+  opencascade::PFNGLGETSAMPLERPARAMETERIIVPROC glGetSamplerParameterIiv;
+  opencascade::PFNGLGETSAMPLERPARAMETERIUIVPROC glGetSamplerParameterIuiv;
+  opencascade::PFNGLTEXBUFFERPROC glTexBuffer;
+  opencascade::PFNGLTEXBUFFERRANGEPROC glTexBufferRange;
+  opencascade::PFNGLTEXSTORAGE3DMULTISAMPLEPROC glTexStorage3DMultisample;
 
-public: //! @name GL_KHR_debug (optional)
+public: //! @name GL_KHR_debug (optional) or OpenGL ES 3.2+
 
-  typedef void   (APIENTRY  *GLDEBUGPROCARB)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
-
-  typedef void   (APIENTRYP glDebugMessageControl_t ) (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled);
-  typedef void   (APIENTRYP glDebugMessageInsert_t  ) (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* buf);
-  typedef void   (APIENTRYP glDebugMessageCallback_t) (GLDEBUGPROCARB callback, const void* userParam);
-  typedef GLuint (APIENTRYP glGetDebugMessageLog_t  ) (GLuint   count,
-                                                       GLsizei  bufSize,
-                                                       GLenum*  sources,
-                                                       GLenum*  types,
-                                                       GLuint*  ids,
-                                                       GLenum*  severities,
-                                                       GLsizei* lengths,
-                                                       GLchar*  messageLog);
-
-  glDebugMessageControl_t  glDebugMessageControl;
-  glDebugMessageInsert_t   glDebugMessageInsert;
-  glDebugMessageCallback_t glDebugMessageCallback;
-  glGetDebugMessageLog_t   glGetDebugMessageLog;
+  opencascade::PFNGLDEBUGMESSAGECONTROLPROC  glDebugMessageControl;
+  opencascade::PFNGLDEBUGMESSAGEINSERTPROC   glDebugMessageInsert;
+  opencascade::PFNGLDEBUGMESSAGECALLBACKPROC glDebugMessageCallback;
+  opencascade::PFNGLGETDEBUGMESSAGELOGPROC   glGetDebugMessageLog;
 
 #else // OpenGL ES vs. desktop
 

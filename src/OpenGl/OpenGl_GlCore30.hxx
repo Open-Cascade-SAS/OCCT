@@ -28,8 +28,6 @@ struct OpenGl_TmplCore30 : public theBaseClass_t
 
 public: //! @name GL_ARB_framebuffer_object (added to OpenGL 3.0 core)
 
-#if !defined(GL_ES_VERSION_2_0)
-
   using theBaseClass_t::glIsRenderbuffer;
   using theBaseClass_t::glBindRenderbuffer;
   using theBaseClass_t::glDeleteRenderbuffers;
@@ -41,15 +39,17 @@ public: //! @name GL_ARB_framebuffer_object (added to OpenGL 3.0 core)
   using theBaseClass_t::glDeleteFramebuffers;
   using theBaseClass_t::glGenFramebuffers;
   using theBaseClass_t::glCheckFramebufferStatus;
-  using theBaseClass_t::glFramebufferTexture1D;
   using theBaseClass_t::glFramebufferTexture2D;
-  using theBaseClass_t::glFramebufferTexture3D;
   using theBaseClass_t::glFramebufferRenderbuffer;
   using theBaseClass_t::glGetFramebufferAttachmentParameteriv;
   using theBaseClass_t::glGenerateMipmap;
   using theBaseClass_t::glBlitFramebuffer;
   using theBaseClass_t::glRenderbufferStorageMultisample;
   using theBaseClass_t::glFramebufferTextureLayer;
+#if !defined(GL_ES_VERSION_2_0)
+  using theBaseClass_t::glFramebufferTexture1D;
+  using theBaseClass_t::glFramebufferTexture3D;
+#endif
 
 public: //! @name GL_ARB_vertex_array_object (added to OpenGL 3.0 core)
 
@@ -65,46 +65,22 @@ public: //! @name GL_ARB_map_buffer_range (added to OpenGL 3.0 core)
 
 public: //! @name OpenGL 3.0 additives to 2.1
 
-  using theBaseClass_t::glColorMaski;
   using theBaseClass_t::glGetBooleani_v;
   using theBaseClass_t::glGetIntegeri_v;
-  using theBaseClass_t::glEnablei;
-  using theBaseClass_t::glDisablei;
-  using theBaseClass_t::glIsEnabledi;
   using theBaseClass_t::glBeginTransformFeedback;
   using theBaseClass_t::glEndTransformFeedback;
   using theBaseClass_t::glBindBufferRange;
   using theBaseClass_t::glBindBufferBase;
   using theBaseClass_t::glTransformFeedbackVaryings;
   using theBaseClass_t::glGetTransformFeedbackVarying;
-  using theBaseClass_t::glClampColor;
-  using theBaseClass_t::glBeginConditionalRender;
-  using theBaseClass_t::glEndConditionalRender;
   using theBaseClass_t::glVertexAttribIPointer;
   using theBaseClass_t::glGetVertexAttribIiv;
   using theBaseClass_t::glGetVertexAttribIuiv;
-  using theBaseClass_t::glVertexAttribI1i;
-  using theBaseClass_t::glVertexAttribI2i;
-  using theBaseClass_t::glVertexAttribI3i;
   using theBaseClass_t::glVertexAttribI4i;
-  using theBaseClass_t::glVertexAttribI1ui;
-  using theBaseClass_t::glVertexAttribI2ui;
-  using theBaseClass_t::glVertexAttribI3ui;
   using theBaseClass_t::glVertexAttribI4ui;
-  using theBaseClass_t::glVertexAttribI1iv;
-  using theBaseClass_t::glVertexAttribI2iv;
-  using theBaseClass_t::glVertexAttribI3iv;
   using theBaseClass_t::glVertexAttribI4iv;
-  using theBaseClass_t::glVertexAttribI1uiv;
-  using theBaseClass_t::glVertexAttribI2uiv;
-  using theBaseClass_t::glVertexAttribI3uiv;
   using theBaseClass_t::glVertexAttribI4uiv;
-  using theBaseClass_t::glVertexAttribI4bv;
-  using theBaseClass_t::glVertexAttribI4sv;
-  using theBaseClass_t::glVertexAttribI4ubv;
-  using theBaseClass_t::glVertexAttribI4usv;
   using theBaseClass_t::glGetUniformuiv;
-  using theBaseClass_t::glBindFragDataLocation;
   using theBaseClass_t::glGetFragDataLocation;
   using theBaseClass_t::glUniform1ui;
   using theBaseClass_t::glUniform2ui;
@@ -114,18 +90,48 @@ public: //! @name OpenGL 3.0 additives to 2.1
   using theBaseClass_t::glUniform2uiv;
   using theBaseClass_t::glUniform3uiv;
   using theBaseClass_t::glUniform4uiv;
-  using theBaseClass_t::glTexParameterIiv;
-  using theBaseClass_t::glTexParameterIuiv;
-  using theBaseClass_t::glGetTexParameterIiv;
-  using theBaseClass_t::glGetTexParameterIuiv;
   using theBaseClass_t::glClearBufferiv;
   using theBaseClass_t::glClearBufferuiv;
   using theBaseClass_t::glClearBufferfv;
   using theBaseClass_t::glClearBufferfi;
   using theBaseClass_t::glGetStringi;
 
+#if !defined(GL_ES_VERSION_2_0)
+  // the following have been added only in OpenGL ES 3.2
+  using theBaseClass_t::glColorMaski;
+  using theBaseClass_t::glEnablei;
+  using theBaseClass_t::glDisablei;
+  using theBaseClass_t::glIsEnabledi;
+
+  using theBaseClass_t::glTexParameterIiv;
+  using theBaseClass_t::glTexParameterIuiv;
+  using theBaseClass_t::glGetTexParameterIiv;
+  using theBaseClass_t::glGetTexParameterIuiv;
 #endif
 
+#if !defined(GL_ES_VERSION_2_0)
+  // the following are defined only on desktop OpenGL
+  using theBaseClass_t::glClampColor;
+  using theBaseClass_t::glBeginConditionalRender;
+  using theBaseClass_t::glEndConditionalRender;
+  using theBaseClass_t::glBindFragDataLocation;
+  using theBaseClass_t::glVertexAttribI1i;
+  using theBaseClass_t::glVertexAttribI2i;
+  using theBaseClass_t::glVertexAttribI3i;
+  using theBaseClass_t::glVertexAttribI1ui;
+  using theBaseClass_t::glVertexAttribI2ui;
+  using theBaseClass_t::glVertexAttribI3ui;
+  using theBaseClass_t::glVertexAttribI1iv;
+  using theBaseClass_t::glVertexAttribI2iv;
+  using theBaseClass_t::glVertexAttribI3iv;
+  using theBaseClass_t::glVertexAttribI1uiv;
+  using theBaseClass_t::glVertexAttribI2uiv;
+  using theBaseClass_t::glVertexAttribI3uiv;
+  using theBaseClass_t::glVertexAttribI4bv;
+  using theBaseClass_t::glVertexAttribI4sv;
+  using theBaseClass_t::glVertexAttribI4ubv;
+  using theBaseClass_t::glVertexAttribI4usv;
+#endif
 };
 
 //! OpenGL 3.0 core based on 2.1 version.

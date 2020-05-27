@@ -1023,6 +1023,8 @@ public: //! @name core profiles
   OpenGl_GlCore15Fwd*  core15fwd;  //!< OpenGL 1.5 without deprecated entry points
   OpenGl_GlCore20*     core20;     //!< OpenGL 2.0 core functionality (includes 1.5)
   OpenGl_GlCore20Fwd*  core20fwd;  //!< OpenGL 2.0 without deprecated entry points
+  OpenGl_GlCore30*     core30;     //!< OpenGL 3.0 core functionality
+  OpenGl_GlCore30Fwd*  core30fwd;  //!< OpenGL 3.0 without deprecated entry points
   OpenGl_GlCore32*     core32;     //!< OpenGL 3.2 core profile
   OpenGl_GlCore32Back* core32back; //!< OpenGL 3.2 backward compatibility profile
   OpenGl_GlCore33*     core33;     //!< OpenGL 3.3 core profile
@@ -1062,10 +1064,10 @@ public: //! @name extensions
   Standard_Boolean       arbTexFloat;        //!< GL_ARB_texture_float (on desktop OpenGL - since 3.0 or as extension GL_ARB_texture_float; on OpenGL ES - since 3.0); @sa hasTexFloatLinear for linear filtering support
   OpenGl_ArbSamplerObject* arbSamplerObject; //!< GL_ARB_sampler_objects (on desktop OpenGL - since 3.3 or as extension GL_ARB_sampler_objects; on OpenGL ES - since 3.0)
   OpenGl_ArbTexBindless* arbTexBindless;     //!< GL_ARB_bindless_texture
-  OpenGl_ArbTBO*         arbTBO;             //!< GL_ARB_texture_buffer_object
+  OpenGl_ArbTBO*         arbTBO;             //!< GL_ARB_texture_buffer_object (on desktop OpenGL - since 3.1 or as extension GL_ARB_texture_buffer_object; on OpenGL ES - since 3.2)
   Standard_Boolean       arbTboRGB32;        //!< GL_ARB_texture_buffer_object_rgb32 (3-component TBO), in core since 4.0
-  OpenGl_ArbIns*         arbIns;             //!< GL_ARB_draw_instanced
-  OpenGl_ArbDbg*         arbDbg;             //!< GL_ARB_debug_output
+  OpenGl_ArbIns*         arbIns;             //!< GL_ARB_draw_instanced (on desktop OpenGL - since 3.1 or as extebsion GL_ARB_draw_instanced; on OpenGL ES - since 3.0 or as extension GL_ANGLE_instanced_arrays to WebGL 1.0)
+  OpenGl_ArbDbg*         arbDbg;             //!< GL_ARB_debug_output (on desktop OpenGL - since 4.3 or as extension GL_ARB_debug_output; on OpenGL ES - since 3.2 or as extension GL_KHR_debug)
   OpenGl_ArbFBO*         arbFBO;             //!< GL_ARB_framebuffer_object
   OpenGl_ArbFBOBlit*     arbFBOBlit;         //!< glBlitFramebuffer function, moved out from OpenGl_ArbFBO structure for compatibility with OpenGL ES 2.0
   Standard_Boolean       arbSampleShading;   //!< GL_ARB_sample_shading

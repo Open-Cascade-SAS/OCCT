@@ -1056,18 +1056,25 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
                                                    GLint                         theLocation,
                                                    const OpenGl_Vec2u&           theValue)
 {
-  if (theCtx->core32 == NULL || myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
-    return Standard_False;
+    return false;
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  theCtx->core32->glUniform2uiv (theLocation, 1, theValue.GetData());
-  return Standard_True;
+  if (theCtx->core32 != NULL)
+  {
+    theCtx->core32->glUniform2uiv (theLocation, 1, theValue.GetData());
+    return true;
+  }
 #else
-  (void )theValue;
-  return Standard_False;
+  if (theCtx->core30fwd != NULL)
+  {
+    theCtx->core30fwd->glUniform2uiv (theLocation, 1, theValue.GetData());
+    return true;
+  }
 #endif
+  return false;
 }
 
 // =======================================================================
@@ -1091,19 +1098,25 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
                                                    const GLsizei                 theCount,
                                                    const OpenGl_Vec2u*           theValue)
 {
-  if (theCtx->core32 == NULL || myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
   {
-    return Standard_False;
+    return false;
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  theCtx->core32->glUniform2uiv (theLocation, theCount, theValue->GetData());
-  return Standard_True;
+  if (theCtx->core32 != NULL)
+  {
+    theCtx->core32->glUniform2uiv (theLocation, theCount, theValue->GetData());
+    return true;
+  }
 #else
-  (void )theCount;
-  (void )theValue;
-  return Standard_False;
+  if (theCtx->core30fwd != NULL)
+  {
+    theCtx->core30fwd->glUniform2uiv (theLocation, theCount, theValue->GetData());
+    return true;
+  }
 #endif
+  return false;
 }
 
 // =======================================================================

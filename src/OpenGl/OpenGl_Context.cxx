@@ -121,6 +121,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   core15fwd  (NULL),
   core20     (NULL),
   core20fwd  (NULL),
+  core30     (NULL),
+  core30fwd  (NULL),
   core32     (NULL),
   core32back (NULL),
   core33     (NULL),
@@ -1423,6 +1425,8 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   core15fwd  = NULL;
   core20     = NULL;
   core20fwd  = NULL;
+  core30     = NULL;
+  core30fwd  = NULL;
   core32     = NULL;
   core32back = NULL;
   core33     = NULL;
@@ -1542,22 +1546,233 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   hasTexFloatLinear = arbTexFloat
                    && CheckExtension ("GL_OES_texture_float_linear");
 
-  const Standard_Boolean hasTexBuffer32  = IsGlGreaterEqual (3, 2) && FindProcShort (glTexBuffer);
-  const Standard_Boolean hasExtTexBuffer = CheckExtension ("GL_EXT_texture_buffer") && FindProc ("glTexBufferEXT", myFuncs->glTexBuffer);
-
+  const bool hasTexBuffer32  = IsGlGreaterEqual (3, 2) && FindProcShort (glTexBuffer);
+  const bool hasExtTexBuffer = CheckExtension ("GL_EXT_texture_buffer") && FindProc ("glTexBufferEXT", myFuncs->glTexBuffer);
   if (hasTexBuffer32 || hasExtTexBuffer)
   {
     arbTBO = reinterpret_cast<OpenGl_ArbTBO*> (myFuncs.get());
   }
 
+  bool hasInstanced = IsGlGreaterEqual (3, 0)
+       && FindProcShort (glVertexAttribDivisor)
+       && FindProcShort (glDrawArraysInstanced)
+       && FindProcShort (glDrawElementsInstanced);
+  if (!hasInstanced)
+  {
+    hasInstanced = CheckExtension ("GL_ANGLE_instanced_arrays")
+       && FindProc ("glVertexAttribDivisorANGLE",   myFuncs->glVertexAttribDivisor)
+       && FindProc ("glDrawArraysInstancedANGLE",   myFuncs->glDrawArraysInstanced)
+       && FindProc ("glDrawElementsInstancedANGLE", myFuncs->glDrawElementsInstanced);
+  }
+  if (hasInstanced)
+  {
+    arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
+  }
+
+  const bool hasVAO = IsGlGreaterEqual (3, 0)
+       && FindProcShort (glBindVertexArray)
+       && FindProcShort (glDeleteVertexArrays)
+       && FindProcShort (glGenVertexArrays)
+       && FindProcShort (glIsVertexArray);
+  const bool hasMapBufferRange = IsGlGreaterEqual (3, 0)
+       && FindProcShort (glMapBufferRange)
+       && FindProcShort (glFlushMappedBufferRange);
+
+  // load OpenGL ES 3.0 new functions
+  const bool has30es = IsGlGreaterEqual (3, 0)
+       && hasVAO
+       && hasMapBufferRange
+       && hasInstanced
+       && arbSamplerObject != NULL
+       && arbFBOBlit != NULL
+       && FindProcShort (glReadBuffer)
+       && FindProcShort (glDrawRangeElements)
+       && FindProcShort (glTexImage3D)
+       && FindProcShort (glTexSubImage3D)
+       && FindProcShort (glCopyTexSubImage3D)
+       && FindProcShort (glCompressedTexImage3D)
+       && FindProcShort (glCompressedTexSubImage3D)
+       && FindProcShort (glGenQueries)
+       && FindProcShort (glDeleteQueries)
+       && FindProcShort (glIsQuery)
+       && FindProcShort (glBeginQuery)
+       && FindProcShort (glEndQuery)
+       && FindProcShort (glGetQueryiv)
+       && FindProcShort (glGetQueryObjectuiv)
+       && FindProcShort (glUnmapBuffer)
+       && FindProcShort (glGetBufferPointerv)
+       && FindProcShort (glDrawBuffers)
+       && FindProcShort (glUniformMatrix2x3fv)
+       && FindProcShort (glUniformMatrix3x2fv)
+       && FindProcShort (glUniformMatrix2x4fv)
+       && FindProcShort (glUniformMatrix4x2fv)
+       && FindProcShort (glUniformMatrix3x4fv)
+       && FindProcShort (glUniformMatrix4x3fv)
+       && FindProcShort (glRenderbufferStorageMultisample)
+       && FindProcShort (glFramebufferTextureLayer)
+       && FindProcShort (glGetIntegeri_v)
+       && FindProcShort (glBeginTransformFeedback)
+       && FindProcShort (glEndTransformFeedback)
+       && FindProcShort (glBindBufferRange)
+       && FindProcShort (glBindBufferBase)
+       && FindProcShort (glTransformFeedbackVaryings)
+       && FindProcShort (glGetTransformFeedbackVarying)
+       && FindProcShort (glVertexAttribIPointer)
+       && FindProcShort (glGetVertexAttribIiv)
+       && FindProcShort (glGetVertexAttribIuiv)
+       && FindProcShort (glVertexAttribI4i)
+       && FindProcShort (glVertexAttribI4ui)
+       && FindProcShort (glVertexAttribI4iv)
+       && FindProcShort (glVertexAttribI4uiv)
+       && FindProcShort (glGetUniformuiv)
+       && FindProcShort (glGetFragDataLocation)
+       && FindProcShort (glUniform1ui)
+       && FindProcShort (glUniform2ui)
+       && FindProcShort (glUniform3ui)
+       && FindProcShort (glUniform4ui)
+       && FindProcShort (glUniform1uiv)
+       && FindProcShort (glUniform2uiv)
+       && FindProcShort (glUniform3uiv)
+       && FindProcShort (glUniform4uiv)
+       && FindProcShort (glClearBufferiv)
+       && FindProcShort (glClearBufferuiv)
+       && FindProcShort (glClearBufferfv)
+       && FindProcShort (glClearBufferfi)
+       && FindProcShort (glGetStringi)
+       && FindProcShort (glCopyBufferSubData)
+       && FindProcShort (glGetUniformIndices)
+       && FindProcShort (glGetActiveUniformsiv)
+       && FindProcShort (glGetUniformBlockIndex)
+       && FindProcShort (glGetActiveUniformBlockiv)
+       && FindProcShort (glGetActiveUniformBlockName)
+       && FindProcShort (glUniformBlockBinding)
+       && FindProcShort (glFenceSync)
+       && FindProcShort (glIsSync)
+       && FindProcShort (glDeleteSync)
+       && FindProcShort (glClientWaitSync)
+       && FindProcShort (glWaitSync)
+       && FindProcShort (glGetInteger64v)
+       && FindProcShort (glGetSynciv)
+       && FindProcShort (glGetInteger64i_v)
+       && FindProcShort (glGetBufferParameteri64v)
+       && FindProcShort (glBindTransformFeedback)
+       && FindProcShort (glDeleteTransformFeedbacks)
+       && FindProcShort (glGenTransformFeedbacks)
+       && FindProcShort (glIsTransformFeedback)
+       && FindProcShort (glPauseTransformFeedback)
+       && FindProcShort (glResumeTransformFeedback)
+       && FindProcShort (glGetProgramBinary)
+       && FindProcShort (glProgramBinary)
+       && FindProcShort (glProgramParameteri)
+       && FindProcShort (glInvalidateFramebuffer)
+       && FindProcShort (glInvalidateSubFramebuffer)
+       && FindProcShort (glTexStorage2D)
+       && FindProcShort (glTexStorage3D)
+       && FindProcShort (glGetInternalformativ);
+  if (!has30es)
+  {
+    checkWrongVersion (3, 0, aLastFailedProc);
+  }
+  else
+  {
+    core30    = (OpenGl_GlCore30*    )(&(*myFuncs));
+    core30fwd = (OpenGl_GlCore30Fwd* )(&(*myFuncs));
+  }
+
+  // load OpenGL ES 3.1 new functions
+  const bool has31es = IsGlGreaterEqual (3, 1)
+       && has30es
+       && FindProcShort (glDispatchCompute)
+       && FindProcShort (glDispatchComputeIndirect)
+       && FindProcShort (glDrawArraysIndirect)
+       && FindProcShort (glDrawElementsIndirect)
+       && FindProcShort (glFramebufferParameteri)
+       && FindProcShort (glGetFramebufferParameteriv)
+       && FindProcShort (glGetProgramInterfaceiv)
+       && FindProcShort (glGetProgramResourceIndex)
+       && FindProcShort (glGetProgramResourceName)
+       && FindProcShort (glGetProgramResourceiv)
+       && FindProcShort (glGetProgramResourceLocation)
+       && FindProcShort (glUseProgramStages)
+       && FindProcShort (glActiveShaderProgram)
+       && FindProcShort (glCreateShaderProgramv)
+       && FindProcShort (glBindProgramPipeline)
+       && FindProcShort (glDeleteProgramPipelines)
+       && FindProcShort (glGenProgramPipelines)
+       && FindProcShort (glIsProgramPipeline)
+       && FindProcShort (glGetProgramPipelineiv)
+       && FindProcShort (glProgramUniform1i)
+       && FindProcShort (glProgramUniform2i)
+       && FindProcShort (glProgramUniform3i)
+       && FindProcShort (glProgramUniform4i)
+       && FindProcShort (glProgramUniform1ui)
+       && FindProcShort (glProgramUniform2ui)
+       && FindProcShort (glProgramUniform3ui)
+       && FindProcShort (glProgramUniform4ui)
+       && FindProcShort (glProgramUniform1f)
+       && FindProcShort (glProgramUniform2f)
+       && FindProcShort (glProgramUniform3f)
+       && FindProcShort (glProgramUniform4f)
+       && FindProcShort (glProgramUniform1iv)
+       && FindProcShort (glProgramUniform2iv)
+       && FindProcShort (glProgramUniform3iv)
+       && FindProcShort (glProgramUniform4iv)
+       && FindProcShort (glProgramUniform1uiv)
+       && FindProcShort (glProgramUniform2uiv)
+       && FindProcShort (glProgramUniform3uiv)
+       && FindProcShort (glProgramUniform4uiv)
+       && FindProcShort (glProgramUniform1fv)
+       && FindProcShort (glProgramUniform2fv)
+       && FindProcShort (glProgramUniform3fv)
+       && FindProcShort (glProgramUniform4fv)
+       && FindProcShort (glProgramUniformMatrix2fv)
+       && FindProcShort (glProgramUniformMatrix3fv)
+       && FindProcShort (glProgramUniformMatrix4fv)
+       && FindProcShort (glProgramUniformMatrix2x3fv)
+       && FindProcShort (glProgramUniformMatrix3x2fv)
+       && FindProcShort (glProgramUniformMatrix2x4fv)
+       && FindProcShort (glProgramUniformMatrix4x2fv)
+       && FindProcShort (glProgramUniformMatrix3x4fv)
+       && FindProcShort (glProgramUniformMatrix4x3fv)
+       && FindProcShort (glValidateProgramPipeline)
+       && FindProcShort (glGetProgramPipelineInfoLog)
+       && FindProcShort (glBindImageTexture)
+       && FindProcShort (glGetBooleani_v)
+       && FindProcShort (glMemoryBarrier)
+       && FindProcShort (glMemoryBarrierByRegion)
+       && FindProcShort (glTexStorage2DMultisample)
+       && FindProcShort (glGetMultisamplefv)
+       && FindProcShort (glSampleMaski)
+       && FindProcShort (glGetTexLevelParameteriv)
+       && FindProcShort (glGetTexLevelParameterfv)
+       && FindProcShort (glBindVertexBuffer)
+       && FindProcShort (glVertexAttribFormat)
+       && FindProcShort (glVertexAttribIFormat)
+       && FindProcShort (glVertexAttribBinding)
+       && FindProcShort (glVertexBindingDivisor);
+  if (!has31es)
+  {
+    checkWrongVersion (3, 1, aLastFailedProc);
+  }
+
   // initialize debug context extension
-  if (CheckExtension ("GL_KHR_debug"))
+  if (IsGlGreaterEqual (3, 2)
+   || CheckExtension ("GL_KHR_debug"))
   {
     // this functionality become a part of OpenGL ES 3.2
     arbDbg = NULL;
+    if (IsGlGreaterEqual (3, 2)
+     && FindProcShort (glDebugMessageControl)
+     && FindProcShort (glDebugMessageInsert)
+     && FindProcShort (glDebugMessageCallback)
+     && FindProcShort (glGetDebugMessageLog))
+    {
+      arbDbg = (OpenGl_ArbDbg* )(&(*myFuncs));
+    }
     // According to GL_KHR_debug spec, all functions should have KHR suffix.
     // However, some implementations can export these functions without suffix.
-    if (FindProc ("glDebugMessageControlKHR",  myFuncs->glDebugMessageControl)
+    else if (!IsGlGreaterEqual (3, 2)
+     && FindProc ("glDebugMessageControlKHR",  myFuncs->glDebugMessageControl)
      && FindProc ("glDebugMessageInsertKHR",   myFuncs->glDebugMessageInsert)
      && FindProc ("glDebugMessageCallbackKHR", myFuncs->glDebugMessageCallback)
      && FindProc ("glGetDebugMessageLogKHR",   myFuncs->glGetDebugMessageLog))
@@ -1578,6 +1793,55 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
         ::glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS);
       }
     }
+  }
+
+  // load OpenGL ES 3.2 new functions
+  const bool has32es = IsGlGreaterEqual (3, 2)
+       && has31es
+       && hasTexBuffer32
+       && arbDbg != NULL
+       && FindProcShort (glBlendBarrier)
+       && FindProcShort (glCopyImageSubData)
+       && FindProcShort (glPushDebugGroup)
+       && FindProcShort (glPopDebugGroup)
+       && FindProcShort (glObjectLabel)
+       && FindProcShort (glGetObjectLabel)
+       && FindProcShort (glObjectPtrLabel)
+       && FindProcShort (glGetObjectPtrLabel)
+       && FindProcShort (glGetPointerv)
+       && FindProcShort (glEnablei)
+       && FindProcShort (glDisablei)
+       && FindProcShort (glBlendEquationi)
+       && FindProcShort (glBlendEquationSeparatei)
+       && FindProcShort (glBlendFunci)
+       && FindProcShort (glBlendFuncSeparatei)
+       && FindProcShort (glColorMaski)
+       && FindProcShort (glIsEnabledi)
+       && FindProcShort (glDrawElementsBaseVertex)
+       && FindProcShort (glDrawRangeElementsBaseVertex)
+       && FindProcShort (glDrawElementsInstancedBaseVertex)
+       && FindProcShort (glFramebufferTexture)
+       && FindProcShort (glPrimitiveBoundingBox)
+       && FindProcShort (glGetGraphicsResetStatus)
+       && FindProcShort (glReadnPixels)
+       && FindProcShort (glGetnUniformfv)
+       && FindProcShort (glGetnUniformiv)
+       && FindProcShort (glGetnUniformuiv)
+       && FindProcShort (glMinSampleShading)
+       && FindProcShort (glPatchParameteri)
+       && FindProcShort (glTexParameterIiv)
+       && FindProcShort (glTexParameterIuiv)
+       && FindProcShort (glGetTexParameterIiv)
+       && FindProcShort (glGetTexParameterIuiv)
+       && FindProcShort (glSamplerParameterIiv)
+       && FindProcShort (glSamplerParameterIuiv)
+       && FindProcShort (glGetSamplerParameterIiv)
+       && FindProcShort (glGetSamplerParameterIuiv)
+       && FindProcShort (glTexBufferRange)
+       && FindProcShort (glTexStorage3DMultisample);
+  if (!has32es)
+  {
+    checkWrongVersion (3, 2, aLastFailedProc);
   }
 
   extDrawBuffers = CheckExtension ("GL_EXT_draw_buffers") && FindProc ("glDrawBuffersEXT", myFuncs->glDrawBuffers);
@@ -2183,6 +2447,12 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     // but doesn't hardware accelerated by some ancient OpenGL 2.1 hardware (GeForce FX, RadeOn 9700 etc.)
     arbNPTW  = Standard_True;
     arbTexRG = Standard_True;
+
+    if (!isCoreProfile)
+    {
+      core30 = (OpenGl_GlCore30* )(&(*myFuncs));
+    }
+    core30fwd = (OpenGl_GlCore30Fwd* )(&(*myFuncs));
   }
 
   // load OpenGL 3.1 new functions
