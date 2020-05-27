@@ -226,7 +226,10 @@ void OpenGl_Sampler::applySamplerParams (const Handle(OpenGl_Context)& theCtx,
   if (theTarget == GL_TEXTURE_3D
    || theTarget == GL_TEXTURE_CUBE_MAP)
   {
-    setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_R, aWrapMode);
+    if (theCtx->HasTextureBaseLevel())
+    {
+      setParameter (theCtx, theSampler, theTarget, GL_TEXTURE_WRAP_R, aWrapMode);
+    }
     return;
   }
 

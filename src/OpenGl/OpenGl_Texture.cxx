@@ -987,6 +987,13 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
   mySizeY = (GLsizei )theSize;
   myTextFormat  = aFormat.Format();
   mySizedFormat = aFormat.Internal();
+#if !defined(GL_ES_VERSION_2_0)
+  const GLint anIntFormat = aFormat.InternalFormat();
+#else
+  // ES 2.0 does not support sized formats and format conversions - them detected from data type
+  const GLint anIntFormat = theCtx->IsGlGreaterEqual (3, 0) ? aFormat.InternalFormat() : aFormat.PixelFormat();
+#endif
+
   Bind (theCtx);
   applyDefaultSamplerParams (theCtx);
 
@@ -1080,7 +1087,7 @@ bool OpenGl_Texture::InitCubeMap (const Handle(OpenGl_Context)&    theCtx,
     }
 
     glTexImage2D (GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-                  aFormat.InternalFormat(),
+                  anIntFormat,
                   GLsizei(theSize), GLsizei(theSize),
                   0, aFormat.PixelFormat(), aFormat.DataType(),
                   aData);
