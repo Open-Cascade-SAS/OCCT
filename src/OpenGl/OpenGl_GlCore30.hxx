@@ -132,6 +132,18 @@ public: //! @name OpenGL 3.0 additives to 2.1
   using theBaseClass_t::glVertexAttribI4ubv;
   using theBaseClass_t::glVertexAttribI4usv;
 #endif
+
+#if defined(GL_ES_VERSION_2_0)
+  // the following functions from OpenGL 1.5 have been added only in OpenGL ES 3.0
+  using theBaseClass_t::glGenQueries;
+  using theBaseClass_t::glDeleteQueries;
+  using theBaseClass_t::glIsQuery;
+  using theBaseClass_t::glBeginQuery;
+  using theBaseClass_t::glEndQuery;
+  using theBaseClass_t::glGetQueryiv;
+  using theBaseClass_t::glGetQueryObjectuiv;
+  using theBaseClass_t::glUnmapBuffer;
+#endif
 };
 
 //! OpenGL 3.0 core based on 2.1 version.

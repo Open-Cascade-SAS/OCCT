@@ -154,6 +154,20 @@ public:
     return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_FLOAT);
   }
 
+  //! Read back buffer sub-range.
+  //! Notice that VBO will be unbound after this call.
+  //! Function reads portion of data from this VBO using glGetBufferSubData().
+  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
+  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
+  //! @param theData    [out] destination pointer to GLfloat data.
+  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
+                   const GLsizei theElemFrom,
+                   const GLsizei theElemsNb,
+                   GLfloat* theData)
+  {
+    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_FLOAT);
+  }
+
   //! Notice that VBO will be unbound after this call.
   //! Function replaces portion of data within this VBO using glBufferSubData().
   //! The VBO should be initialized before call.
@@ -166,6 +180,20 @@ public:
                 const GLuint* theData)
   {
     return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_INT);
+  }
+
+  //! Read back buffer sub-range.
+  //! Notice that VBO will be unbound after this call.
+  //! Function reads portion of data from this VBO using glGetBufferSubData().
+  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
+  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
+  //! @param theData    [out] destination pointer to GLuint data.
+  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
+                   const GLsizei theElemFrom,
+                   const GLsizei theElemsNb,
+                   GLuint* theData)
+  {
+    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_INT);
   }
 
   //! Notice that VBO will be unbound after this call.
@@ -182,6 +210,20 @@ public:
     return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_SHORT);
   }
 
+  //! Read back buffer sub-range.
+  //! Notice that VBO will be unbound after this call.
+  //! Function reads portion of data from this VBO using glGetBufferSubData().
+  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
+  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
+  //! @param theData    [out] destination pointer to GLushort data.
+  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
+                   const GLsizei theElemFrom,
+                   const GLsizei theElemsNb,
+                   GLushort* theData)
+  {
+    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_SHORT);
+  }
+
   //! Notice that VBO will be unbound after this call.
   //! Function replaces portion of data within this VBO using glBufferSubData().
   //! The VBO should be initialized before call.
@@ -194,6 +236,20 @@ public:
                 const GLubyte* theData)
   {
     return subData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_BYTE);
+  }
+
+  //! Read back buffer sub-range.
+  //! Notice that VBO will be unbound after this call.
+  //! Function reads portion of data from this VBO using glGetBufferSubData().
+  //! @param theElemFrom [in] element id from which replace buffer data (>=0);
+  //! @param theElemsNb  [in] elements count (theElemFrom + theElemsNb <= GetElemsNb());
+  //! @param theData    [out] destination pointer to GLubyte data.
+  bool GetSubData (const Handle(OpenGl_Context)& theGlCtx,
+                   const GLsizei theElemFrom,
+                   const GLsizei theElemsNb,
+                   GLubyte* theData)
+  {
+    return getSubData (theGlCtx, theElemFrom, theElemsNb, theData, GL_UNSIGNED_BYTE);
   }
 
   //! Bind this VBO to active GLSL program.
@@ -285,6 +341,13 @@ public: //! @name advanced methods
                                         const GLsizei  theElemsNb,
                                         const void*    theData,
                                         const GLenum   theDataType);
+
+  //! Read back buffer sub-range.
+  Standard_EXPORT virtual bool getSubData (const Handle(OpenGl_Context)& theGlCtx,
+                                           const GLsizei theElemFrom,
+                                           const GLsizei theElemsNb,
+                                           void*         theData,
+                                           const GLenum  theDataType);
 
   //! Setup array pointer - either for active GLSL program OpenGl_Context::ActiveProgram()
   //! or for FFP using bindFixed() when no program bound.

@@ -161,6 +161,33 @@ bool OpenGl_VertexBuffer::subData (const Handle(OpenGl_Context)& theGlCtx,
 }
 
 // =======================================================================
+// function : getSubData
+// purpose  :
+// =======================================================================
+bool OpenGl_VertexBuffer::getSubData (const Handle(OpenGl_Context)& theGlCtx,
+                                      const GLsizei theElemFrom,
+                                      const GLsizei theElemsNb,
+                                      void*         theData,
+                                      const GLenum  theDataType)
+{
+  if (!IsValid() || myDataType != theDataType
+   || theElemFrom < 0 || ((theElemFrom + theElemsNb) > myElemsNb)
+   || !theGlCtx->hasGetBufferData)
+  {
+    return false;
+  }
+
+  Bind (theGlCtx);
+  const size_t  aDataSize = sizeOfGlType (theDataType);
+  const GLintptr anOffset = GLintptr (theElemFrom) * GLintptr  (myComponentsNb) * aDataSize;
+  const GLsizeiptr  aSize = GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb) * aDataSize;
+  bool isDone = theGlCtx->GetBufferSubData (GetTarget(), anOffset, aSize, theData);
+  isDone = isDone && (glGetError() == GL_NO_ERROR);
+  Unbind (theGlCtx);
+  return isDone;
+}
+
+// =======================================================================
 // function : BindVertexAttrib
 // purpose  :
 // =======================================================================

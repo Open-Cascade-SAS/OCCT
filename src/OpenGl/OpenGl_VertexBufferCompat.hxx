@@ -82,6 +82,13 @@ public: //! @name advanced methods
                                         const void*    theData,
                                         const GLenum   theDataType) Standard_OVERRIDE;
 
+  //! Read back buffer sub-range.
+  Standard_EXPORT virtual bool getSubData (const Handle(OpenGl_Context)& theGlCtx,
+                                           const GLsizei theElemFrom,
+                                           const GLsizei theElemsNb,
+                                           void* theData,
+                                           const GLenum  theDataType) Standard_OVERRIDE;
+
 protected:
 
   Handle(NCollection_Buffer) myData; //!< buffer data

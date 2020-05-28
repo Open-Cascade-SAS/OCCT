@@ -65,6 +65,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context,Standard_Transient)
 #endif
 
 #ifdef __EMSCRIPTEN__
+  #include <emscripten.h>
   #include <emscripten/html5.h>
 
   //! Check if WebGL extension is available and activate it
@@ -138,6 +139,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   core45     (NULL),
   core45back (NULL),
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
+  hasGetBufferData (Standard_False),
 #if defined(GL_ES_VERSION_2_0)
   hasHighp   (Standard_False),
   hasUintIndex(Standard_False),
@@ -1677,6 +1679,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
   {
     core30    = (OpenGl_GlCore30*    )(&(*myFuncs));
     core30fwd = (OpenGl_GlCore30Fwd* )(&(*myFuncs));
+    hasGetBufferData = true;
   }
 
   // load OpenGL ES 3.1 new functions
@@ -2183,6 +2186,7 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
       core15 = (OpenGl_GlCore15* )(&(*myFuncs));
     }
     core15fwd = (OpenGl_GlCore15Fwd* )(&(*myFuncs));
+    hasGetBufferData = true;
   }
   else
   {
@@ -4610,6 +4614,36 @@ bool OpenGl_Context::SetSampleAlphaToCoverage (bool theToEnable)
   const bool anOldValue = myAlphaToCoverage;
   myAlphaToCoverage = toEnable;
   return anOldValue;
+}
+
+// =======================================================================
+// function : GetBufferSubData
+// purpose  :
+// =======================================================================
+bool OpenGl_Context::GetBufferSubData (GLenum theTarget, GLintptr theOffset, GLsizeiptr theSize, void* theData)
+{
+  if (!hasGetBufferData)
+  {
+    return false;
+  }
+#ifdef __EMSCRIPTEN__
+  EM_ASM_(
+  {
+    Module.ctx.getBufferSubData($0, $1, HEAPU8.subarray($2, $2 + $3));
+  }, theTarget, theOffset, theData, theSize);
+  return true;
+#elif defined(GL_ES_VERSION_2_0)
+  if (void* aData = core30fwd->glMapBufferRange (theTarget, theOffset, theSize, GL_MAP_READ_BIT))
+  {
+    memcpy (theData, aData, theSize);
+    core30fwd->glUnmapBuffer (theTarget);
+    return true;
+  }
+  return false;
+#else
+  core15fwd->glGetBufferSubData (theTarget, theOffset, theSize, theData);
+  return true;
+#endif
 }
 
 // =======================================================================

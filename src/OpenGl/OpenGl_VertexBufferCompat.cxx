@@ -175,3 +175,27 @@ bool OpenGl_VertexBufferCompat::subData (const Handle(OpenGl_Context)& ,
   memcpy (myData->ChangeData() + anOffset, theData, aNbBytes);
   return true;
 }
+
+// =======================================================================
+// function : getSubData
+// purpose  :
+// =======================================================================
+bool OpenGl_VertexBufferCompat::getSubData (const Handle(OpenGl_Context)& ,
+                                            const GLsizei theElemFrom,
+                                            const GLsizei theElemsNb,
+                                            void* theData,
+                                            const GLenum  theDataType)
+{
+  if (!IsValid() || myDataType != theDataType
+   || theElemFrom < 0 || ((theElemFrom + theElemsNb) > myElemsNb)
+   || theData == NULL)
+  {
+    return false;
+  }
+
+  const size_t aDataSize = sizeOfGlType (theDataType);
+  const size_t anOffset  = size_t(theElemFrom) * size_t(myComponentsNb) * aDataSize;
+  const size_t aNbBytes  = size_t(theElemsNb)  * size_t(myComponentsNb) * aDataSize;
+  memcpy (theData, myData->Data() + anOffset, aNbBytes);
+  return true;
+}

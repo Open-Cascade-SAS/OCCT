@@ -987,6 +987,17 @@ public: //! @name methods to alter or retrieve current state
   //! Set line feater width.
   void SetLineFeather(Standard_ShortReal theValue) { myLineFeather = theValue; }
 
+  //! Wrapper over glGetBufferSubData(), implemented as:
+  //! - OpenGL 1.5+ (desktop) via glGetBufferSubData();
+  //! - OpenGL ES 3.0+ via glMapBufferRange();
+  //! - WebGL 2.0+ via gl.getBufferSubData().
+  //! @param theTarget [in] target buffer to map
+  //! @param theOffset [in] offset to the beginning of sub-data
+  //! @param theSize   [in] number of bytes to read
+  //! @param theData  [out] destination pointer to fill
+  //! @return FALSE if functionality is unavailable
+  Standard_EXPORT bool GetBufferSubData (GLenum theTarget, GLintptr theOffset, GLsizeiptr theSize, void* theData);
+
   //! Return Graphics Driver's vendor.
   const TCollection_AsciiString& Vendor() const { return myVendor; }
 
@@ -1044,6 +1055,7 @@ public: //! @name core profiles
 
 public: //! @name extensions
 
+  Standard_Boolean       hasGetBufferData;   //!< flag indicating if GetBufferSubData() is supported
   Standard_Boolean       hasHighp;           //!< highp in GLSL ES fragment shader is supported
   Standard_Boolean       hasUintIndex;       //!< GLuint for index buffer is supported (always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_element_index_uint)
   Standard_Boolean       hasTexRGBA8;        //!< always available on desktop; on OpenGL ES - since 3.0 or as extension GL_OES_rgb8_rgba8
