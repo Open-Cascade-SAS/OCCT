@@ -1417,6 +1417,39 @@ static Standard_Integer binrestore(Draw_Interpretor& di, Standard_Integer n, con
 }
 
 //=======================================================================
+// removeinternals
+//=======================================================================
+static Standard_Integer removeInternals (Draw_Interpretor& di,
+                                         Standard_Integer n,
+                                         const char** a)
+{
+  if (n < 2)
+  {
+    di.PrintHelp (a[0]);
+    return 1;
+  }
+
+  TopoDS_Shape aShape = DBRep::Get (a[1]);
+  if (aShape.IsNull())
+  {
+    di << a[1] << "is a null shape\n";
+    return 1;
+  }
+
+  Standard_Boolean isForce = Standard_False;
+  if (n > 2)
+  {
+    isForce = (Draw::Atoi (a[2]) != 0);
+  }
+
+  BRepTools::RemoveInternals (aShape, isForce);
+
+  DBRep::Set (a[1], aShape);
+
+  return 0;
+}
+
+//=======================================================================
 //function : BasicCommands
 //purpose  : 
 //=======================================================================
@@ -1487,6 +1520,12 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("binrestore", "binrestore filename shape\n"
                   "\t\trestore the shape from the binary format file",
                   __FILE__, binrestore, g);
+
+  theCommands.Add ("removeinternals", "removeinternals shape [force flag {0/1}]"
+                   "\n\t\t             Removes sub-shapes with internal orientation from the shape.\n"
+                   "\n\t\t             Force flag disables the check on topological connectivity and"
+                                       "removes all internal sub-shapes\n",
+                  __FILE__, removeInternals, g);
 }
 
 //=======================================================================

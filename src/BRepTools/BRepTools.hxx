@@ -238,6 +238,16 @@ public:
   Standard_EXPORT static TopAbs_Orientation OriEdgeInFace(const TopoDS_Edge& theEdge, 
                                                           const TopoDS_Face& theFace);
 
+  //! Removes internal sub-shapes from the shape.
+  //! The check on internal status is based on orientation of sub-shapes,
+  //! classification is not performed.
+  //! Before removal of internal sub-shapes the algorithm checks if such
+  //! removal is not going to break topological connectivity between sub-shapes.
+  //! The flag <theForce> if set to true disables the connectivity check and clears
+  //! the given shape from all sub-shapes with internal orientation.
+  Standard_EXPORT static void RemoveInternals (TopoDS_Shape& theS,
+                                               const Standard_Boolean theForce = Standard_False);
+
 
 protected:
 

@@ -1156,3 +1156,112 @@ TopAbs_Orientation BRepTools::OriEdgeInFace (const TopoDS_Edge& E,
   }
   throw Standard_ConstructionError("BRepTools::OriEdgeInFace");
 }
+
+
+namespace
+{
+  //=======================================================================
+  //function : findInternalsToKeep
+  //purpose  : Looks for internal sub-shapes which has to be kept to preserve
+  //           topological connectivity.
+  //=======================================================================
+  static void findInternalsToKeep (const TopoDS_Shape& theS,
+                                   TopTools_MapOfShape& theAllNonInternals,
+                                   TopTools_MapOfShape& theAllInternals,
+                                   TopTools_MapOfShape& theShapesToKeep)
+  {
+    for (TopoDS_Iterator it (theS, Standard_True); it.More(); it.Next())
+    {
+      const TopoDS_Shape& aSS = it.Value();
+      findInternalsToKeep (aSS, theAllNonInternals, theAllInternals, theShapesToKeep);
+
+      if (aSS.Orientation() == TopAbs_INTERNAL)
+        theAllInternals.Add (aSS);
+      else
+        theAllNonInternals.Add (aSS);
+
+      if (theAllNonInternals.Contains(aSS) && theAllInternals.Contains (aSS))
+        theShapesToKeep.Add (aSS);
+    }
+  }
+
+  //=======================================================================
+  //function : removeShapes
+  //purpose  : Removes sub-shapes from the shape
+  //=======================================================================
+  static void removeShapes (TopoDS_Shape& theS,
+                            const TopTools_ListOfShape& theLS)
+  {
+    BRep_Builder aBB;
+    Standard_Boolean isFree = theS.Free();
+    theS.Free (Standard_True);
+
+    for (TopTools_ListOfShape::Iterator it (theLS); it.More(); it.Next())
+    {
+      aBB.Remove (theS, it.Value());
+    }
+    theS.Free (isFree);
+  }
+
+  //=======================================================================
+  //function : removeInternals
+  //purpose  : Removes recursively all internal sub-shapes from the given shape.
+  //           Returns true if all sub-shapes have been removed from the shape.
+  //=======================================================================
+  static Standard_Boolean removeInternals (TopoDS_Shape& theS,
+                                           const TopTools_MapOfShape* theShapesToKeep)
+  {
+    TopTools_ListOfShape aLRemove;
+    for (TopoDS_Iterator it (theS, Standard_True); it.More(); it.Next())
+    {
+      const TopoDS_Shape& aSS = it.Value();
+      if (aSS.Orientation() == TopAbs_INTERNAL)
+      {
+        if (!theShapesToKeep || !theShapesToKeep->Contains (aSS))
+          aLRemove.Append (aSS);
+      }
+      else
+      {
+        if (removeInternals (*(TopoDS_Shape*)&aSS, theShapesToKeep))
+          aLRemove.Append (aSS);
+      }
+    }
+
+    Standard_Integer aNbSToRemove = aLRemove.Extent();
+    if (aNbSToRemove)
+    {
+      removeShapes (theS, aLRemove);
+      return (theS.NbChildren() == 0);
+    }
+    return Standard_False;
+  }
+
+}
+
+//=======================================================================
+//function : RemoveInternals
+//purpose  : 
+//=======================================================================
+void BRepTools::RemoveInternals (TopoDS_Shape& theS,
+                                 const Standard_Boolean theForce)
+{
+  TopTools_MapOfShape *pMKeep = NULL, aMKeep;
+  if (!theForce)
+  {
+    // Find all internal sub-shapes which has to be kept to preserve topological connectivity.
+    // Note that if the multi-connected shape is not directly contained in some shape,
+    // but as a part of bigger sub-shape which will be removed, the multi-connected
+    // shape is going to be removed also, breaking topological connectivity.
+    // For instance, <theS> is a compound of the face and edge, which does not
+    // belong to the face. The face contains internal wire and the edge shares
+    // the vertex with one of the vertices of that wire. The vertex is not directly
+    // contained in the face, thus will be removed as part of internal wire, and topological
+    // connectivity between edge and face will be lost.
+    TopTools_MapOfShape anAllNonInternals, anAllInternals;
+    findInternalsToKeep (theS, anAllNonInternals, anAllInternals, aMKeep);
+    if (aMKeep.Extent())
+      pMKeep = &aMKeep;
+  }
+
+  removeInternals (theS, pMKeep);
+}

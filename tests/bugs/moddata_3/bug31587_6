@@ -1,0 +1,23 @@
+puts "================"
+puts "0031587: Modeling Data - Remove internal sub-shapes from the shape"
+puts "================"
+puts ""
+
+box b 10 10 10
+polyline e1 2 2 0 8 2 0
+polyline e2 3 2 -5 3 2 0
+
+bclearobjects
+bcleartools
+baddobjects b
+baddtools e1 e2
+bfillds
+bsplit r
+
+compound r e2 c
+
+# topological connectivity is broken without force flag set to true
+removeinternals c
+
+checkshape c
+checknbshapes c -vertex 10 -edge 13 -wire 7 -face 6 -shell 1 -solid 1

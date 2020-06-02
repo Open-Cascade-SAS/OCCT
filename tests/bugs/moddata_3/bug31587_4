@@ -1,0 +1,20 @@
+puts "================"
+puts "0031587: Modeling Data - Remove internal sub-shapes from the shape"
+puts "================"
+puts ""
+
+box b 10 10 10
+box b1 2 2 0 5 5 5
+explode b1 f
+bclearobjects
+bcleartools
+baddobjects b
+baddtools b1_2 b1_3
+eval baddtools [explode b1_1 w]
+bfillds
+bsplit r
+
+removeinternals r
+
+checkshape r
+checknbshapes r -vertex 8 -edge 12 -wire 6 -face 6 -shell 1 -solid 1
