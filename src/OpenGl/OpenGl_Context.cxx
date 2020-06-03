@@ -1543,8 +1543,9 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
     hasHighp = Standard_True;
   }
 
-  arbTexFloat = IsGlGreaterEqual (3, 0)
-             && FindProcShort (glTexImage3D);
+  arbTexFloat = (IsGlGreaterEqual (3, 0)
+              && FindProcShort (glTexImage3D))
+              || CheckExtension ("GL_OES_texture_float");
   hasTexFloatLinear = arbTexFloat
                    && CheckExtension ("GL_OES_texture_float_linear");
 
