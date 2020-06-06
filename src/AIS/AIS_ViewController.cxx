@@ -2935,11 +2935,11 @@ void AIS_ViewController::HandleViewEvents (const Handle(AIS_InteractiveContext)&
   {
     theView->View()->SetupXRPosedCamera();
   }
+  handleMoveTo (theCtx, theView);
   handleCameraActions (theCtx, theView, aWalk);
   theView->View()->SynchronizeXRPosedToBaseCamera(); // handleCameraActions() may modify posed camera position - copy this modifications also to the base camera
   handleXRPresentations (theCtx, theView);
 
-  handleMoveTo (theCtx, theView);
   handleViewRedraw (theCtx, theView);
   theView->View()->UnsetXRPosedCamera();
 
