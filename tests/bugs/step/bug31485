@@ -1,0 +1,15 @@
+puts "====================================================================="
+puts "OCC31485: Export STEP in nonmanifold mode looses all faces except one"
+puts "====================================================================="
+puts ""
+
+brestore [locate_data_file bug31485.brep] a
+
+param write.step.nonmanifold 1
+
+testwritestep comp_nonmanifold.step a
+testreadstep comp_nonmanifold.step result
+
+checkshape result
+
+checknbshapes result -face 3

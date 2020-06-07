@@ -1315,7 +1315,9 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
           NonManifoldGroup->Append(aSubShell);
         }
       } 
-      else if (!isManifold && (aSubShape.ShapeType() == TopAbs_SHELL) ) {
+      else if (!isManifold &&
+               (aSubShape.ShapeType() == TopAbs_SHELL || aSubShape.ShapeType() == TopAbs_FACE))
+      {
         RepItemSeq->Append(aSubShape);
         NonManifoldGroup->Append(aSubShape);
       }
