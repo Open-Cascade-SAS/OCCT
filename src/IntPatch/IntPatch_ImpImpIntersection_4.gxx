@@ -1870,7 +1870,7 @@ static Standard_Boolean AddPointIntoWL( const IntSurf_Quadric& theQuad1,
     return Standard_False;
 
   if ((theLine->NbPoints() > 0) &&
-      ((theUlSurf1 - theUfSurf1) >= thePeriodOfSurf1) &&      
+      ((theUlSurf1 - theUfSurf1) >= (thePeriodOfSurf1 - theTol2D)) &&      
       (((aU1par + thePeriodOfSurf1 - theUlSurf1) <= theTol2D) ||
        ((aU1par - thePeriodOfSurf1 - theUfSurf1) >= theTol2D)))
   {

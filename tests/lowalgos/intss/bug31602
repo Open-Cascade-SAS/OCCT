@@ -1,0 +1,33 @@
+puts "================"
+puts "OCC31602"
+puts "================"
+puts ""
+#######################################################################
+# 0031602: [Regression vs 7.0.0] Modeling Algorithms - Invalid result of boolean operation
+#######################################################################
+
+set MaxTol 2.5e-6
+set GoodNbCurv 1
+
+restore [locate_data_file bug31602.brep] f
+explode f f
+
+set log [bopcurves f_1 f_2 -2d]
+
+regexp {Tolerance Reached=+([-0-9.+eE]+)\n+([-0-9.+eE]+)} ${log} full Toler NbCurv
+
+if {${Toler} > ${MaxTol}} {
+  puts "Error: Tolerance is too big!"
+}
+
+if {${NbCurv} != ${GoodNbCurv}} {
+  puts "Error: Curve Number is bad!"
+}
+checklength c_1 -l 1340.6982492258749
+checklength c2d1_1 -l 407.78567590999006
+checklength c2d2_1 -l 897.8658894846285
+
+smallview
+donly f* c_*
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
