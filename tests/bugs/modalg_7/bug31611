@@ -1,0 +1,13 @@
+puts "============================================================================================="
+puts "OCC31611: BRepOffsetAPI_NormalProjection - can't build wire in 720 but it was possible in 691"
+puts "============================================================================================="
+
+restore [locate_data_file bug31611.brep] d
+
+plane p 0 0 0 1 1 1 0
+mkface f p -200 200 -200 200
+nproject r d f
+eval wire w -unsorted [explode r]
+
+checknbshapes w -vertex 20 -edge 20 -wire 1
+checkprops w -l 342.576

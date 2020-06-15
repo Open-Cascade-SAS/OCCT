@@ -165,7 +165,7 @@ private:
 
     const TopTools_IndexedMapOfShape& myMapOfShape; //vertices
     gp_Pnt myP;
-    Standard_Real mySTol;
+    Standard_Real myTolP;
     Standard_Integer myVInd;
     Bnd_Box myVBox;
     NCollection_List<Standard_Integer> myResultInd; 
