@@ -1,0 +1,15 @@
+puts "============================================================================================="
+puts "OCC31616: Modeling algorithm - Section between two shells returns wire with gaps (720)"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug31616.brep] s
+
+explode s 
+
+bsection sec s_1 s_2
+
+checksection sec -r 2
+checknbshapes sec -vertex 69 -edge 68
+checkprops sec -l 20.7581
+

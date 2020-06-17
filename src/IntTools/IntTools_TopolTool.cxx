@@ -246,6 +246,20 @@ void IntTools_TopolTool::ComputeSamplePoints()
     }
     if(nbsu < 10) nbsu = 10;
     if(nbsv < 10) nbsv = 10;
+    // Check anisotropy
+    Standard_Real anULen = (usup - uinf) / myS->UResolution(1.);
+    Standard_Real anVLen = (vsup - vinf) / myS->VResolution(1.);
+    Standard_Real aRatio = anULen / anVLen;
+    if (aRatio >= 10.)
+    {
+      nbsu *= 2;
+      nbsu = Min(nbsu, aMaxNbSample);
+    }
+    else if (aRatio <= 0.1 )
+    {
+      nbsv *= 2;
+      nbsv = Min(nbsv, aMaxNbSample);
+    }
   }
     break;
   case GeomAbs_SurfaceOfExtrusion: {
