@@ -2694,7 +2694,7 @@ static IntPatch_ImpImpIntersection::IntStatus
   //
   Standard_Boolean isGoodIntersection = Standard_False;
   Standard_Real anOptdu = 0.;
-  do
+  for (;;)
   {
     //Checking parameters of cylinders in order to define "good intersection"
     //"Good intersection" means that axes of cylinders are almost perpendicular and
@@ -2744,8 +2744,8 @@ static IntPatch_ImpImpIntersection::IntStatus
       aNbP = (Standard_Integer)(2. * M_PI / anAngle) + 1;
     }
     anOptdu = 2. * M_PI_2 / (Standard_Real)(aNbP - 1);
-
-  } while (0);
+    break;
+  } 
 //
   const ComputationMethods::stCoeffsValue &anEquationCoeffs = theBW.SICoeffs();
   const IntSurf_Quadric& aQuad1 = theBW.GetQSurface(1);
