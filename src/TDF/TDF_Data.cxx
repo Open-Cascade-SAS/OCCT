@@ -110,6 +110,14 @@ myAllowModification     (Standard_True)
 void TDF_Data::Destroy()
 {
   AbortUntilTransaction(1);
+  // Forget the Owner attribute from the root label to avoid referencing document before
+  // desctuction of the framework (on custom attributes forget). Don't call ForgetAll because
+  // it may call backup.
+  while(!myRoot->FirstAttribute().IsNull()) {
+    static Handle(TDF_Attribute) anEmpty;
+    Handle(TDF_Attribute) aFirst = myRoot->FirstAttribute();
+    myRoot->RemoveAttribute(anEmpty, aFirst);
+  }
   myRoot->Destroy (myLabelNodeAllocator);
   myRoot = NULL;
 }

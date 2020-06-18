@@ -63,6 +63,9 @@ public:
   
   //! Constructs a document object defined by the
   //! string astorageformat.
+  //! If a document is created outside of an application using this constructor, it must be
+  //! managed by a Handle. Otherwise memory problems could appear: call of TDocStd_Owner::GetDocument
+  //! creates a Handle(TDocStd_Document), so, releasing it will produce a crash.
   Standard_EXPORT TDocStd_Document(const TCollection_ExtendedString& astorageformat);
   
   //! the document is saved in a file.

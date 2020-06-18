@@ -122,3 +122,5 @@ if { ${status} == 0} {
 }
 
 checkview -display result -3d -path ${imagedir}/${test_image}.png
+
+Close D

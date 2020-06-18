@@ -86,6 +86,7 @@ static Standard_Integer OCC159bug (Draw_Interpretor& di, Standard_Integer argc, 
   } else {
     di << "DocOwner1 = NOTNULL\n";
   }
+  OwnerD1.Nullify();
  
   Handle(TDocStd_Application) A = DDocStd::GetApplication();
   A->Close(D); 

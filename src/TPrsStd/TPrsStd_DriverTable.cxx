@@ -47,6 +47,8 @@ Handle(TPrsStd_DriverTable) TPrsStd_DriverTable::Get()
   if ( drivertable.IsNull() )
   {
     drivertable = new TPrsStd_DriverTable;
+    // it must be never destroyed, even this library is unloaded
+    new Handle(TPrsStd_DriverTable)(drivertable);
 #ifdef OCCT_DEBUG
     std::cout << "The new TPrsStd_DriverTable was created" << std::endl;
 #endif

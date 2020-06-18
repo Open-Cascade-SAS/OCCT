@@ -98,6 +98,9 @@ namespace {
     static registry_type theRegistry;
     return theRegistry;
   }
+
+  // To initialize theRegistry map as soon as possible to be destoryed the latest
+  Handle(Standard_Type) theType = STANDARD_TYPE(Standard_Transient);
 }
 
 Standard_Type* Standard_Type::Register (const char* theSystemName, const char* theName,

@@ -47,7 +47,9 @@ public:
   Standard_EXPORT static const Standard_GUID& GetID();
   
   Standard_EXPORT static void SetDocument (const Handle(TDF_Data)& indata, const Handle(TDocStd_Document)& doc);
-  
+
+  Standard_EXPORT static void SetDocument (const Handle(TDF_Data)& indata, TDocStd_Document* doc);
+
   //! Owner methods
   //! ===============
   Standard_EXPORT static Handle(TDocStd_Document) GetDocument (const Handle(TDF_Data)& ofdata);
@@ -55,7 +57,9 @@ public:
   Standard_EXPORT TDocStd_Owner();
   
   Standard_EXPORT void SetDocument (const Handle(TDocStd_Document)& document);
-  
+
+  Standard_EXPORT void SetDocument (TDocStd_Document* document);
+
   Standard_EXPORT Handle(TDocStd_Document) GetDocument() const;
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
@@ -83,8 +87,8 @@ protected:
 
 private:
 
-
-  Handle(TDocStd_Document) myDocument;
+  //! It keeps pointer to the document to avoid handles cyclic dependency
+  TDocStd_Document* myDocument;
 
 
 };

@@ -63,7 +63,11 @@ theList.Remove(it);
 
 Handle(TDocStd_Document) TDocStd_Document::Get (const TDF_Label& acces)
 {
-  return TDocStd_Owner::GetDocument(acces.Data());
+  // avoid creation of Handle(TDF_Data) during TDF_Data destruction
+  if (acces.Root().HasAttribute()) {
+    return TDocStd_Owner::GetDocument(acces.Data());
+  }
+  return Handle(TDocStd_Document)();
 }
 
 //=======================================================================
