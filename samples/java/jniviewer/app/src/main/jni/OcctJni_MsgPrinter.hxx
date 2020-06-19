@@ -34,7 +34,7 @@ protected:
 
   //! Main printing method
   virtual void send (const TCollection_AsciiString& theString,
-                     const Message_Gravity theGravity) const;
+                     const Message_Gravity theGravity) const override;
 
 private:
 

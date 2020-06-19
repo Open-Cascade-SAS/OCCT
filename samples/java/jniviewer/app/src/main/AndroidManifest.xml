@@ -31,6 +31,5 @@
         </activity>
     </application>
     <uses-feature android:glEsVersion="0x00020000"/>
-    <uses-sdk android:minSdkVersion="15"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

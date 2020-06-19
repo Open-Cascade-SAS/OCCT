@@ -110,11 +110,8 @@ public class OcctJniActivity extends Activity implements OnClickListener
 
     // copy OCCT resources
     String aResFolder = getFilesDir().getAbsolutePath();
-    copyAssetFolder (getAssets(), "Shaders",   aResFolder + "/Shaders");
-    copyAssetFolder (getAssets(), "SHMessage", aResFolder + "/SHMessage");
-    copyAssetFolder (getAssets(), "XSMessage", aResFolder + "/XSMessage");
-    copyAssetFolder (getAssets(), "TObj",      aResFolder + "/TObj");
-    copyAssetFolder (getAssets(), "UnitsAPI",  aResFolder + "/UnitsAPI");
+    copyAssetFolder (getAssets(), "src/SHMessage", aResFolder + "/SHMessage");
+    copyAssetFolder (getAssets(), "src/XSMessage", aResFolder + "/XSMessage");
 
     // C++ runtime
     loadLibVerbose ("gnustl_shared", aLoaded, aFailed);
@@ -204,6 +201,9 @@ public class OcctJniActivity extends Activity implements OnClickListener
     String aDataPath = aDataUrl != null ? aDataUrl.getPath() : "";
     myOcctView.open (aDataPath);
     myLastPath = aDataPath;
+
+    myContext = new android.content.ContextWrapper (this);
+    myContext.getExternalFilesDir (null);
   }
 
   //! Handle scroll events
@@ -513,6 +513,9 @@ public class OcctJniActivity extends Activity implements OnClickListener
         aClickedBtn.setBackgroundColor (getResources().getColor(R.color.pressedBtnColor));
         if (myFileOpenDialog == null)
         {
+          // should be requested on runtime since API level 26 (Android 8)
+          askUserPermission (android.Manifest.permission.WRITE_EXTERNAL_STORAGE, null); // for accessing SD card
+
           myFileOpenDialog = new OcctJniFileDialog (this, aPath);
           myFileOpenDialog.setFileEndsWith (".brep");
           myFileOpenDialog.setFileEndsWith (".rle");
@@ -760,6 +763,88 @@ public class OcctJniActivity extends Activity implements OnClickListener
     return aResultSize;
   }
 
+  //! Request user permission.
+  private void askUserPermission (String thePermission, String theRationale)
+  {
+    // Dynamically load methods introduced by API level 23.
+    // On older system this permission is granted by user during application installation.
+    java.lang.reflect.Method aMetPtrCheckSelfPermission, aMetPtrRequestPermissions, aMetPtrShouldShowRequestPermissionRationale;
+    try
+    {
+      aMetPtrCheckSelfPermission = myContext.getClass().getMethod ("checkSelfPermission", String.class);
+      aMetPtrRequestPermissions = getClass().getMethod ("requestPermissions", String[].class, int.class);
+      aMetPtrShouldShowRequestPermissionRationale = getClass().getMethod ("shouldShowRequestPermissionRationale", String.class);
+    }
+    catch (SecurityException theError)
+    {
+      postMessage ("Unable to find permission methods:\n" + theError.getMessage(), Message_Trace);
+      return;
+    }
+    catch (NoSuchMethodException theError)
+    {
+      postMessage ("Unable to find permission methods:\n" + theError.getMessage(), Message_Trace);
+      return;
+    }
+
+    try
+    {
+      int isAlreadyGranted = (Integer )aMetPtrCheckSelfPermission.invoke (myContext, thePermission);
+      if (isAlreadyGranted == android.content.pm.PackageManager.PERMISSION_GRANTED)
+      {
+        return;
+      }
+
+      boolean toShowInfo = theRationale != null && (Boolean )aMetPtrShouldShowRequestPermissionRationale.invoke (this, thePermission);
+      if (toShowInfo)
+      {
+        postMessage (theRationale, Message_Info);
+      }
+
+      // show dialog to user
+      aMetPtrRequestPermissions.invoke (this, new String[]{thePermission}, 0);
+    }
+    catch (IllegalArgumentException theError)
+    {
+      postMessage ("Internal error: Unable to call permission method:\n" + theError.getMessage(), Message_Fail);
+      return;
+    }
+    catch (IllegalAccessException theError)
+    {
+      postMessage ("Internal error: Unable to call permission method:\n" + theError.getMessage(), Message_Fail);
+      return;
+    }
+    catch (java.lang.reflect.InvocationTargetException theError)
+    {
+      postMessage ("Internal error: Unable to call permission method:\n" + theError.getMessage(), Message_Fail);
+      return;
+    }
+  }
+
+  //! Message gravity.
+  private static final int Message_Trace   = 0;
+  private static final int Message_Info    = 1;
+  private static final int Message_Warning = 2;
+  private static final int Message_Alarm   = 3;
+  private static final int Message_Fail    = 4;
+
+  //! Auxiliary method to show info message.
+  public void postMessage (String theMessage, int theGravity)
+  {
+    if (theGravity == Message_Trace)
+    {
+      return;
+    }
+
+    final String  aText = theMessage;
+    final Context aCtx  = this;
+    this.runOnUiThread (new Runnable() { public void run() {
+      android.app.AlertDialog.Builder aBuilder = new android.app.AlertDialog.Builder (aCtx);
+      aBuilder.setMessage (aText).setNegativeButton ("OK", null);
+      android.app.AlertDialog aDialog = aBuilder.create();
+      aDialog.show();
+    }});
+  }
+
   //! OCCT major version
   private native long cppOcctMajorVersion();
 
@@ -772,6 +857,7 @@ public class OcctJniActivity extends Activity implements OnClickListener
   private OcctJniView       myOcctView;
   private TextView          myMessageTextView;
   private String            myLastPath;
+  private android.content.ContextWrapper myContext = null;
   private OcctJniFileDialog myFileOpenDialog;
   private int               myButtonPreferSize = 65;
 

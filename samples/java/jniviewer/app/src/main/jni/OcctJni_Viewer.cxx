@@ -11,14 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OcctJni_Viewer.hxx>
-#include <OcctJni_MsgPrinter.hxx>
+#include "OcctJni_Viewer.hxx"
+#include "OcctJni_MsgPrinter.hxx"
 
 #include <AIS_Shape.hxx>
+#include <Aspect_NeutralWindow.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <BRepTools.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_MsgFile.hxx>
+#include <Message_PrinterSystemLog.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_Timer.hxx>
@@ -107,16 +109,19 @@ Standard_Boolean setResourceEnv (const TCollection_AsciiString& theVarName,
 // =======================================================================
 OcctJni_Viewer::OcctJni_Viewer()
 {
+#ifndef NDEBUG
+  // Register printer for logging messages into global Android log.
+  // Should never be used in production (or specify higher gravity for logging only failures).
+  Handle(Message_Messenger) aMsgMgr = Message::DefaultMessenger();
+  aMsgMgr->RemovePrinters (STANDARD_TYPE (Message_PrinterSystemLog));
+  aMsgMgr->AddPrinter (new Message_PrinterSystemLog ("OcctJni_Viewer"));
+#endif
+
   // prepare necessary environment
   TCollection_AsciiString aResRoot = "/data/data/com.opencascade.jnisample/files";
 
-  setResourceEnv ("CSF_ShadersDirectory", aResRoot + "/Shaders",   "Declarations.glsl", Standard_False);
-  setResourceEnv ("CSF_XSMessage",        aResRoot + "/XSMessage", "XSTEP.us",          Standard_False);
-  setResourceEnv ("CSF_SHMessage",        aResRoot + "/XSMessage", "SHAPE.us",          Standard_False);
-  //setResourceEnv ("CSF_PluginDefaults",   "Plugin",            Standard_False);
-
-  // make sure OCCT loads the dictionary
-  //UnitsAPI::SetLocalSystem (UnitsAPI_SI);
+  setResourceEnv ("CSF_XSMessage", aResRoot + "/XSMessage", "XSTEP.us", Standard_False);
+  setResourceEnv ("CSF_SHMessage", aResRoot + "/XSMessage", "SHAPE.us", Standard_False);
 }
 
 // =======================================================================
@@ -164,7 +169,7 @@ bool OcctJni_Viewer::init()
   if (!myViewer.IsNull())
   {
     Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (myViewer->Driver());
-    Handle(OcctJni_Window)       aWindow = Handle(OcctJni_Window)::DownCast (myView->Window());
+    Handle(Aspect_NeutralWindow) aWindow = Handle(Aspect_NeutralWindow)::DownCast (myView->Window());
     if (!aDriver->InitEglContext (anEglDisplay, anEglContext, anEglConfig))
     {
       Message::DefaultMessenger()->Send ("Error: OpenGl_GraphicDriver can not be initialized!", Message_Fail);
@@ -198,7 +203,8 @@ bool OcctJni_Viewer::init()
   //myContext->SetDisplayMode (AIS_WireFrame, false);
   myContext->SetDisplayMode (AIS_Shaded, false);
 
-  Handle(OcctJni_Window) aWindow = new OcctJni_Window (aWidth, aHeight);
+  Handle(Aspect_NeutralWindow) aWindow = new Aspect_NeutralWindow();
+  aWindow->SetSize (aWidth, aHeight);
   myView = myViewer->CreateView();
 
   myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
@@ -233,7 +239,7 @@ void OcctJni_Viewer::resize (int theWidth,
   }
 
   Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (myViewer->Driver());
-  Handle(OcctJni_Window)       aWindow = Handle(OcctJni_Window)::DownCast (myView->Window());
+  Handle(Aspect_NeutralWindow) aWindow = Handle(Aspect_NeutralWindow)::DownCast (myView->Window());
   aWindow->SetSize (theWidth, theHeight);
   //myView->MustBeResized(); // can be used instead of SetWindow() when EGLsurface has not been changed
 

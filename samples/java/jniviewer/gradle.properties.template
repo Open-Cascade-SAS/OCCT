@@ -1,0 +1,5 @@
+# customized paths
+OCCT_ROOT=c\:/android/occt-dev-android
+FREETYPE_ROOT=c\:/android/freetype-2.7.1-android
+# in case if OCCT was built with FreeImage
+#FREEIMAGE_ROOT=c\:/android/freeimage-3.17-android

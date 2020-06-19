@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "30.0.0"
+
+    defaultConfig {
+        applicationId "com.opencascade.jnisample"
+        minSdkVersion 21
+        targetSdkVersion 26
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments "-DOCCT_ROOT=" + OCCT_ROOT,
+                        "-DFREETYPE_ROOT=" + FREETYPE_ROOT,
+                        "-DANDROID_STL=gnustl_shared"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            assets.srcDirs = [OCCT_ROOT + "/src"]
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/jni/CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'java/com/opencascade/jnisample', include: ['*.jar'])
+}

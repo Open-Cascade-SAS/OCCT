@@ -11,8 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OcctJni_Window.hxx>
-
 #include <AIS_InteractiveContext.hxx>
 #include <TopoDS_Shape.hxx>
 #include <V3d_Viewer.hxx>

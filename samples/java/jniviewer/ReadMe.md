@@ -11,36 +11,22 @@ This sample demonstrates indirect method of wrapping C++ to Java using manually 
 Alternative method is available, wrapping individual OCCT classes to Java equivalents so that their full API is available to Java user
 and the code can be programmed on Java level similarly to C++ one.
 See description of OCCT Java Wrapper in Advanced Samples and Tools on OCCT web site at 
-http://www.opencascade.org/support/products/advsamples
+https://www.opencascade.com/content/advanced-samples-and-tools
 
-Run Eclipse from ADT (Android Developer Tools) for building the sample. To import sample project perform
-~~~~
-  File -> Import... -> Android -> Existing Android code into Workspace
-~~~~
-and specify this directory. The project re-build will be started immediately right after importation if "Build automatically" option is turned on (default in Eclipse).  
-Proxy library compilation and packaging is performed by NDK build script, called by "C++ Builder" configured within Eclipse project.
-The path to "ndk-build" tool from Android NDK (Native Development Kit) should be specified in Eclipse project properties:
-~~~~
-  Project -> Properties -> Builders -> C++ Builder -> Edit -> Location
-~~~~
+Install Android Studio 4.0+ and install building tools (check Tools -> SDK Manager):
+- Android SDK (API level 21 or higher).
+- Android SDK build tools.
+- Android NDK r16 or higher (coming with CMake toolchain).
+  Using NDK r18 or newer will require changing ANDROID_STL in project settings.
+- CMake 3.10+.
 
-Now paths to OCCT C++ libraries and additional components should be specified in "jni/Android.mk" file:
-~~~~
-OCCT_ROOT := $(LOCAL_PATH)/../../../..
+Specify this folder location in Android Studio for opening project.
+You might need re-entering Android SDK explicitly in File -> Project Structure -> SDK Location settings (SDK, NDK, JDK locations).
 
-FREETYPE_INC  := $(OCCT_ROOT)/../freetype/include/freetype2
-FREETYPE_LIBS := $(OCCT_ROOT)/../freetype/libs
-
-FREEIMAGE_INC  := $(OCCT_ROOT)/../FreeImage/include
-FREEIMAGE_LIBS := $(OCCT_ROOT)/../FreeImage/libs
-
-OCCT_INC  := $(OCCT_ROOT)/inc
-OCCT_LIBS := $(OCCT_ROOT)/and/libs
-~~~~
-The list of extra components (Freetype, FreeImage) depends on OCCT configuration.
-Variable $(TARGET_ARCH_ABI) is used within this script to refer to active architecture.
-E.g. for 32-bit ARM build (see variable *APP_ABI* in "jni/Application.mk")
-the folder *OCCT_LIBS* should contain sub-folder "armeabi-v7a" with OCCT libraries.
+This sample expects OCCT to be already build - please refer to appropriate CMake building instructions in OCCT documentation.
+The following variables should be added into file gradle.properties (see gradle.properties.template as template):
+- `OCCT_ROOT` - path to OCCT installation folder.
+- `FREETYPE_ROOT` - path to FreeType installation folder.
 
 FreeImage is optional and does not required for this sample, however you should include all extra libraries used for OCCT building
 and load the explicitly from Java code within OcctJniActivity::loadNatives() method, including toolkits from OCCT itself in proper order:
@@ -49,10 +35,8 @@ and load the explicitly from Java code within OcctJniActivity::loadNatives() met
      || !loadLibVerbose ("TKMath",  aLoaded, aFailed)
      || !loadLibVerbose ("TKG2d",   aLoaded, aFailed)
 ~~~~
-Note that C++ STL library is not part of Android system.
-Thus application must package this library as well as extra component.
-"gnustl_shared" STL implementation is expected within this sample.
+Note that C++ STL library is not part of Android system, and application must package this library as well as extra component ("gnustl_shared" by default - see also `ANDROID_STL`).
 
-After successful build, the application can be packaged to Android:
-- Deploy and run application on connected device or emulator directly from Eclipse using adb interface by menu items "Run" and "Debug". This would sign package with debug certificate.
-- Prepare signed end-user package using wizard File -> Export -> Android -> Export Android Application.
+After successful build via Build -> Rebuild Project, the application can be packaged to Android:
+- Deploy and run application on connected device or emulator directly from Android Studio using adb interface by menu items "Run" and "Debug". This would sign package with debug certificate.
+- Prepare signed end-user package using wizard Build -> Generate signed APK.

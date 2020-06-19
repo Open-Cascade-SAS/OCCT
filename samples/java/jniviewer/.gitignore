@@ -1,4 +1,10 @@
-/assets
-/bin
-/gen
-/libs
+/.gradle
+/.idea
+/build
+/gradle
+gradlew
+gradlew.bat
+/app/.cxx
+/app/build
+gradle.properties
+local.properties
