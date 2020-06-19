@@ -65,7 +65,6 @@ Standard_Boolean BinMDataStd_IntegerDriver::Paste
 	ok = theSource >> aGuid;	
 	if (!ok) {
 	  theSource.SetPosition(aPos);	  
-	  anAtt->SetID(TDataStd_Integer::GetID());
 	  ok = Standard_True;
 	} else {	  
 	  anAtt->SetID(aGuid);

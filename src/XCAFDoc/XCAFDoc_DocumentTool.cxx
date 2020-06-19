@@ -35,7 +35,7 @@
 #include <XCAFDoc_ViewTool.hxx>
 #include <XCAFDoc_VisMaterialTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_DocumentTool,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_DocumentTool,TDataStd_GenericEmpty,"xcaf","DocumentTool")
 
 //=======================================================================
 //function : GetID
@@ -339,36 +339,15 @@ const Standard_GUID& XCAFDoc_DocumentTool::ID() const
   return GetID();
 }
 
-
 //=======================================================================
-//function : Restore
+//function : AfterRetrieval
 //purpose  : 
 //=======================================================================
 
-void XCAFDoc_DocumentTool::Restore(const Handle(TDF_Attribute)& /* with */) 
+Standard_Boolean XCAFDoc_DocumentTool::AfterRetrieval (const Standard_Boolean /* forceIt */)
 {
-}
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_DocumentTool::NewEmpty() const
-{
-  return new XCAFDoc_DocumentTool;
-}
-
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_DocumentTool::Paste (const Handle(TDF_Attribute)& /* into */,
-				  const Handle(TDF_RelocationTable)& /* RT */) const
-{
+  Init();
+  return Standard_True;
 }
 
 
@@ -403,15 +382,4 @@ Standard_Boolean XCAFDoc_DocumentTool::IsXCAFDocument(const  Handle(TDocStd_Docu
   const Standard_GUID& aRefGuid = GetDocumentToolRefID();
   Handle(TDataStd_TreeNode) aRootNode;
   return RootL.FindAttribute (aRefGuid, aRootNode);
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_DocumentTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }

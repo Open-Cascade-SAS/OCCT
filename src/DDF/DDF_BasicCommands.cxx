@@ -54,6 +54,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_Tool.hxx>
+#include <TDF_DerivedAttribute.hxx>
 
 //=======================================================================
 //function : Children
@@ -114,6 +115,37 @@ static Standard_Integer DDF_Attributes (Draw_Interpretor& di,
   return 0;
 }
 
+//=======================================================================
+//function : SetEmptyAttribute
+//purpose  : Adds an empty attribute to the label by its dynamic type.
+//=======================================================================
+
+static Standard_Integer DDF_SetEmptyAttribute (Draw_Interpretor& di, 
+  Standard_Integer  n, 
+  const char**            a)
+{
+  if (n != 4) return 1;
+
+  Handle(TDF_Data) DF;
+
+  if (!DDF::GetDF (a[1], DF)) return 1;
+
+  TDF_Label lab;
+  TDF_Tool::Label(DF,a[2],lab);
+
+  if (lab.IsNull()) return 1;
+
+  Handle(TDF_Attribute) anAttrByType = TDF_DerivedAttribute::Attribute(a[3]);
+  if (anAttrByType.IsNull()) {
+    di<<"DDF: Not registered attribute type '"<<a[3]<<"'\n";
+    return 1;
+  }
+
+  lab.AddAttribute(anAttrByType);
+
+  return 0;
+}
+
 
 //=======================================================================
 //function : ForgetAll
@@ -140,7 +172,7 @@ static Standard_Integer DDF_ForgetAll(Draw_Interpretor& /*di*/,
 
 //=======================================================================
 //function : ForgetAttribute
-//purpose  : "ForgetAtt dfname Label guid"
+//purpose  : "ForgetAtt dfname Label guid_or_type"
 //=======================================================================
 
 static Standard_Integer DDF_ForgetAttribute(Draw_Interpretor& di,
@@ -156,6 +188,12 @@ static Standard_Integer DDF_ForgetAttribute(Draw_Interpretor& di,
   if (aLabel.IsNull()) return 1;
   if (!Standard_GUID::CheckGUIDFormat(a[3]))
   {
+    // check this may be derived attribute by its type
+    Handle(TDF_Attribute) anAttrByType = TDF_DerivedAttribute::Attribute(a[3]);
+    if (!anAttrByType.IsNull()) {
+      aLabel.ForgetAttribute(anAttrByType->ID());
+      return 0;
+    }
     di<<"DDF: The format of GUID is invalid\n";
     return 1;
   }
@@ -297,12 +335,16 @@ void DDF::BasicCommands (Draw_Interpretor& theCommands)
                    " Returns the list of label attributes: Attributes DF label",
                    __FILE__, DDF_Attributes, g);
 
+  theCommands.Add ("SetEmptyAttribute",
+                   "Sets an empty attribute by its type (like TDataStd_Tick): SetEmptyAttribute DF label type",
+                   __FILE__, DDF_SetEmptyAttribute, g);
+
   theCommands.Add ("ForgetAll",
                    "Forgets all attributes from the label: ForgetAll DF Label",
                    __FILE__, DDF_ForgetAll, g);
 
   theCommands.Add ("ForgetAtt",
-                   "Forgets the specified by guid attribute from the label: ForgetAtt DF Label guid",
+                   "Forgets the specified by guid attribute or type from the label: ForgetAtt DF Label guid_or_type",
                    __FILE__, DDF_ForgetAttribute, g);
 
   theCommands.Add ("Label",

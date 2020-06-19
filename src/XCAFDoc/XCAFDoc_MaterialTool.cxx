@@ -27,7 +27,7 @@
 #include <XCAFDoc_Material.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_MaterialTool,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_MaterialTool,TDataStd_GenericEmpty,"xcaf","MaterialTool")
 
 //=======================================================================
 //function : XCAFDoc_MaterialTool
@@ -232,38 +232,6 @@ Standard_Real XCAFDoc_MaterialTool::GetDensityForShape(const TDF_Label& ShapeL)
 const Standard_GUID& XCAFDoc_MaterialTool::ID() const
 {
   return GetID();
-}
-
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_MaterialTool::Restore(const Handle(TDF_Attribute)& /*with*/) 
-{
-}
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_MaterialTool::NewEmpty() const
-{
-  return new XCAFDoc_MaterialTool;
-}
-
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_MaterialTool::Paste(const Handle(TDF_Attribute)& /*into*/,
-                                 const Handle(TDF_RelocationTable)& /*RT*/) const
-{
 }
 
 //=======================================================================

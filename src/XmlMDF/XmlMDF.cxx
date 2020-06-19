@@ -86,9 +86,6 @@ Standard_Integer XmlMDF::WriteSubTree
   // create element "label"
   XmlObjMgt_Element aLabElem = aDoc.createElement (::LabelString());
 
-  // Extraction of the driver subset.
-  const XmlMDF_TypeADriverMap& aDriverMap = theDrivers->GetDrivers();
-
   // write attributes
   Standard_Integer count = 0;
   TDF_AttributeIterator itr1 (theLabel);
@@ -96,9 +93,9 @@ Standard_Integer XmlMDF::WriteSubTree
   {
     const Handle(TDF_Attribute)& tAtt = itr1.Value();
     const Handle(Standard_Type)& aType = tAtt->DynamicType();
-    if (aDriverMap.IsBound (aType))
+    Handle(XmlMDF_ADriver) aDriver;
+    if (theDrivers->GetDriver(aType, aDriver))
     {
-      const Handle(XmlMDF_ADriver)& aDriver = aDriverMap.Find (aType);
       count++;
 
       //    Add source to relocation table
@@ -165,7 +162,7 @@ Standard_Boolean XmlMDF::FromTo (const XmlObjMgt_Element&         theElement,
 {
   TDF_Label aRootLab = theData->Root();
   XmlMDF_MapOfDriver aDriverMap;
-  CreateDrvMap (theDrivers, aDriverMap);
+  theDrivers->CreateDrvMap (aDriverMap);
 
   Standard_Integer count = 0;
 
@@ -339,27 +336,4 @@ void XmlMDF::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable,
 {
   aDriverTable->AddDriver (new XmlMDF_TagSourceDriver(aMessageDriver)); 
   aDriverTable->AddDriver (new XmlMDF_ReferenceDriver(aMessageDriver));
-}
-
-//=======================================================================
-//function : CreateDrvMap
-//purpose  : 
-//=======================================================================
-
-void XmlMDF::CreateDrvMap (const Handle(XmlMDF_ADriverTable)& theDrivers,
-                           XmlMDF_MapOfDriver&                theAsciiDriverMap)
-{
-  const XmlMDF_TypeADriverMap& aDriverMap = theDrivers->GetDrivers();
-  XmlMDF_DataMapIteratorOfTypeADriverMap anIter (aDriverMap);
-  while (anIter.More()) {
-    const Handle(XmlMDF_ADriver)& aDriver = anIter.Value();
-    const TCollection_AsciiString aTypeName = aDriver -> TypeName();
-    if (theAsciiDriverMap.IsBound (aTypeName) == Standard_False)
-      theAsciiDriverMap.Bind (aTypeName, aDriver);
-    else
-      aDriver -> myMessageDriver->Send
-        (TCollection_ExtendedString ("Warning: skipped driver name: \"")
-         + aTypeName + '\"', Message_Warning);
-    anIter.Next();
-  }
 }

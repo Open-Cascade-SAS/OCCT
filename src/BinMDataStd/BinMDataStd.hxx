@@ -68,21 +68,17 @@ private:
 
 
 
-friend class BinMDataStd_NameDriver;
+friend class BinMDataStd_GenericExtStringDriver;
 friend class BinMDataStd_IntegerDriver;
 friend class BinMDataStd_RealDriver;
 friend class BinMDataStd_IntegerArrayDriver;
 friend class BinMDataStd_RealArrayDriver;
 friend class BinMDataStd_UAttributeDriver;
-friend class BinMDataStd_DirectoryDriver;
-friend class BinMDataStd_CommentDriver;
 friend class BinMDataStd_VariableDriver;
 friend class BinMDataStd_ExpressionDriver;
-friend class BinMDataStd_RelationDriver;
-friend class BinMDataStd_NoteBookDriver;
 friend class BinMDataStd_TreeNodeDriver;
 friend class BinMDataStd_ExtStringArrayDriver;
-friend class BinMDataStd_TickDriver;
+friend class BinMDataStd_GenericEmptyDriver;
 friend class BinMDataStd_AsciiStringDriver;
 friend class BinMDataStd_IntPackedMapDriver;
 friend class BinMDataStd_IntegerListDriver;

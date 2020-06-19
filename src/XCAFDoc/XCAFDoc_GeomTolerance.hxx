@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDF_Attribute.hxx>
+#include <TDataStd_GenericEmpty.hxx>
 class Standard_GUID;
 class TDF_Label;
 class TDF_Attribute;
@@ -32,10 +32,10 @@ class XCAFDimTolObjects_GeomToleranceObject;
 #endif
 
 class XCAFDoc_GeomTolerance;
-DEFINE_STANDARD_HANDLE(XCAFDoc_GeomTolerance, TDF_Attribute)
+DEFINE_STANDARD_HANDLE(XCAFDoc_GeomTolerance, TDataStd_GenericEmpty)
 
 //! Attribute to store dimension and tolerance
-class XCAFDoc_GeomTolerance : public TDF_Attribute
+class XCAFDoc_GeomTolerance : public TDataStd_GenericEmpty
 {
 
 public:
@@ -58,17 +58,8 @@ public:
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_GeomTolerance,TDF_Attribute)
-
+  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_GeomTolerance,TDataStd_GenericEmpty)
 };
 
 #endif

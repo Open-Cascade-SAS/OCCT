@@ -18,32 +18,18 @@
 #include <BinMNaming_NamedShapeDriver.hxx>
 #include <BinMXCAFDoc.hxx>
 #include <BinMXCAFDoc_AssemblyItemRefDriver.hxx>
-#include <BinMXCAFDoc_AreaDriver.hxx>
 #include <BinMXCAFDoc_CentroidDriver.hxx>
 #include <BinMXCAFDoc_ColorDriver.hxx>
-#include <BinMXCAFDoc_ColorToolDriver.hxx>
 #include <BinMXCAFDoc_DatumDriver.hxx>
-#include <BinMXCAFDoc_GeomToleranceDriver.hxx>
-#include <BinMXCAFDoc_DimensionDriver.hxx>
 #include <BinMXCAFDoc_DimTolDriver.hxx>
-#include <BinMXCAFDoc_DimTolToolDriver.hxx>
-#include <BinMXCAFDoc_DocumentToolDriver.hxx>
 #include <BinMXCAFDoc_GraphNodeDriver.hxx>
-#include <BinMXCAFDoc_LayerToolDriver.hxx>
 #include <BinMXCAFDoc_LocationDriver.hxx>
 #include <BinMXCAFDoc_MaterialDriver.hxx>
-#include <BinMXCAFDoc_MaterialToolDriver.hxx>
 #include <BinMXCAFDoc_NoteDriver.hxx>
-#include <BinMXCAFDoc_NoteBalloonDriver.hxx>
 #include <BinMXCAFDoc_NoteBinDataDriver.hxx>
 #include <BinMXCAFDoc_NoteCommentDriver.hxx>
-#include <BinMXCAFDoc_NotesToolDriver.hxx>
-#include <BinMXCAFDoc_ShapeToolDriver.hxx>
-#include <BinMXCAFDoc_ViewDriver.hxx>
-#include <BinMXCAFDoc_ViewToolDriver.hxx>
 #include <BinMXCAFDoc_VisMaterialDriver.hxx>
 #include <BinMXCAFDoc_VisMaterialToolDriver.hxx>
-#include <BinMXCAFDoc_VolumeDriver.hxx>
 #include <Message_Messenger.hxx>
 #include <TNaming_NamedShape.hxx>
 
@@ -54,7 +40,6 @@
 void BinMXCAFDoc::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
                              const Handle(Message_Messenger)&   theMsgDrv) 
 {
-  theDriverTable->AddDriver( new BinMXCAFDoc_AreaDriver     (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_CentroidDriver (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_ColorDriver    (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_GraphNodeDriver(theMsgDrv));
@@ -73,25 +58,11 @@ void BinMXCAFDoc::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
   
   theDriverTable->AddDriver( aLocationDriver);
   theDriverTable->AddDriver( new BinMXCAFDoc_AssemblyItemRefDriver(theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_VolumeDriver      (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_DatumDriver       (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_GeomToleranceDriver (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_DimensionDriver   (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_DimTolDriver      (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_MaterialDriver    (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_VisMaterialDriver (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_NoteBalloonDriver (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_NoteBinDataDriver (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_NoteCommentDriver (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_ViewDriver        (theMsgDrv));
-
-  theDriverTable->AddDriver( new BinMXCAFDoc_ColorToolDriver   (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_DocumentToolDriver(theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_LayerToolDriver   (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_ShapeToolDriver   (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_DimTolToolDriver  (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_MaterialToolDriver(theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_VisMaterialToolDriver(theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_NotesToolDriver   (theMsgDrv));
-  theDriverTable->AddDriver( new BinMXCAFDoc_ViewToolDriver    (theMsgDrv));
 }

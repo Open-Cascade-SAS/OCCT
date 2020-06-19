@@ -33,7 +33,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Point,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Point, TDataStd_GenericEmpty)
 
 //=======================================================================
 //function : GetID
@@ -105,34 +105,6 @@ TDataXtd_Point::TDataXtd_Point () {}
 
 const Standard_GUID& TDataXtd_Point::ID() const { return GetID ();}
 
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataXtd_Point::NewEmpty () const
-{  
-  return new TDataXtd_Point(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Point::Restore(const Handle(TDF_Attribute)&) 
-{
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Point::Paste (const Handle(TDF_Attribute)&, const Handle(TDF_RelocationTable)&) const 
-{
-}
 
 //=======================================================================
 //function : Dump

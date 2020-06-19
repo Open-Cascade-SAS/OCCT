@@ -21,13 +21,8 @@
 #include <Standard_Integer.hxx>
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMDataXtd_AxisDriver;
-class XmlMDataXtd_ShapeDriver;
-class XmlMDataXtd_PointDriver;
-class XmlMDataXtd_PlaneDriver;
 class XmlMDataXtd_GeometryDriver;
 class XmlMDataXtd_ConstraintDriver;
-class XmlMDataXtd_PlacementDriver;
 class XmlMDataXtd_PatternStdDriver;
 class XmlMDataXtd_TriangulationDriver;
 
@@ -61,13 +56,8 @@ private:
 
 
 
-friend class XmlMDataXtd_AxisDriver;
-friend class XmlMDataXtd_ShapeDriver;
-friend class XmlMDataXtd_PointDriver;
-friend class XmlMDataXtd_PlaneDriver;
 friend class XmlMDataXtd_GeometryDriver;
 friend class XmlMDataXtd_ConstraintDriver;
-friend class XmlMDataXtd_PlacementDriver;
 friend class XmlMDataXtd_PatternStdDriver;
 friend class XmlMDataXtd_TriangulationDriver;
 

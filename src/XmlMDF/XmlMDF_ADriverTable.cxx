@@ -13,10 +13,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Standard_Type.hxx>
-#include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
+
+#include <Message_Messenger.hxx>
+#include <TDF_DerivedAttribute.hxx>
+#include <TDF_AttributeList.hxx>
+#include <XmlMDF_ADriver.hxx>
+#include <XmlMDF_DerivedDriver.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriverTable,Standard_Transient)
 
@@ -42,12 +45,39 @@ void XmlMDF_ADriverTable::AddDriver (const Handle(XmlMDF_ADriver)& anHDriver)
 }
 
 //=======================================================================
-//function : GetDrivers
-//purpose  : 
+//function : AddDerivedDriver
+//purpose  :
 //=======================================================================
-const XmlMDF_TypeADriverMap& XmlMDF_ADriverTable::GetDrivers() const
+void XmlMDF_ADriverTable::AddDerivedDriver (const Handle(TDF_Attribute)& theInstance)
 {
-  return myMap;
+  const Handle(Standard_Type)& anInstanceType = theInstance->DynamicType();
+  if (!myMap.IsBound (anInstanceType)) // no direct driver, use a derived one
+  {
+    for (Handle(Standard_Type) aType = anInstanceType->Parent(); !aType.IsNull(); aType = aType->Parent())
+    {
+      if (myMap.IsBound (aType))
+      {
+        Handle(XmlMDF_ADriver) aDriver = new XmlMDF_DerivedDriver (theInstance, myMap (aType));
+        myMap.Bind (anInstanceType, aDriver);
+        return;
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : AddDerivedDriver
+//purpose  :
+//=======================================================================
+const Handle(Standard_Type)& XmlMDF_ADriverTable::AddDerivedDriver (Standard_CString theDerivedType)
+{
+  if (Handle(TDF_Attribute) anInstance = TDF_DerivedAttribute::Attribute (theDerivedType))
+  {
+    AddDerivedDriver (anInstance);
+    return anInstance->DynamicType();
+  }
+  static const Handle(Standard_Type) aNullType;
+  return aNullType;
 }
 
 //=======================================================================
@@ -56,12 +86,50 @@ const XmlMDF_TypeADriverMap& XmlMDF_ADriverTable::GetDrivers() const
 //=======================================================================
 Standard_Boolean XmlMDF_ADriverTable::GetDriver
   (const Handle(Standard_Type)& aType,
-   Handle(XmlMDF_ADriver)&      anHDriver) const
+   Handle(XmlMDF_ADriver)&      anHDriver)
 {
+  if (!myMap.IsBound (aType)) // try to assign driver for derived type
+  {
+    AddDerivedDriver (aType->Name());
+  }
   if (myMap.IsBound(aType))
   {
     anHDriver = myMap.Find(aType);
     return Standard_True;
   }
   return Standard_False;
+}
+
+//=======================================================================
+//function : CreateDrvMap
+//purpose  :
+//=======================================================================
+void XmlMDF_ADriverTable::CreateDrvMap (XmlMDF_MapOfDriver& theDriverMap)
+{
+  // add derived drivers not yet registered in the map
+  TDF_AttributeList aDerived;
+  TDF_DerivedAttribute::Attributes (aDerived);
+  for (TDF_AttributeList::Iterator aDerIter (aDerived); aDerIter.More(); aDerIter.Next())
+  {
+    if (!myMap.IsBound (aDerIter.Value()->DynamicType()))
+    {
+      AddDerivedDriver (aDerIter.Value());
+    }
+  }
+
+  // put everything to the map
+  for (XmlMDF_DataMapIteratorOfTypeADriverMap anIter (myMap); anIter.More(); anIter.Next())
+  {
+    const Handle(XmlMDF_ADriver)& aDriver = anIter.Value();
+    const TCollection_AsciiString aTypeName = aDriver->TypeName();
+    if (!theDriverMap.IsBound (aTypeName))
+    {
+      theDriverMap.Bind (aTypeName, aDriver);
+    }
+    else
+    {
+      aDriver->MessageDriver()->Send (TCollection_AsciiString ("Warning: skipped driver name: \"")
+                                    + aTypeName + "\"", Message_Warning);
+    }
+  }
 }

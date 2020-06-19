@@ -16,7 +16,7 @@
 #include <Standard_GUID.hxx>
 #include <TDF_Label.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NoteBalloon, XCAFDoc_NoteComment)
+IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_NoteBalloon, XCAFDoc_NoteComment)
 
 // =======================================================================
 // function : GetID
@@ -78,14 +78,4 @@ const Standard_GUID&
 XCAFDoc_NoteBalloon::ID() const
 {
   return GetID();
-}
-
-// =======================================================================
-// function : NewEmpty
-// purpose  :
-// =======================================================================
-Handle(TDF_Attribute)
-XCAFDoc_NoteBalloon::NewEmpty() const
-{
-  return new XCAFDoc_NoteBalloon();
 }

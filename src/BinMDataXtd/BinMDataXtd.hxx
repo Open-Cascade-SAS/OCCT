@@ -23,14 +23,9 @@
 #include <Standard_Integer.hxx>
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMDataXtd_PointDriver;
-class BinMDataXtd_AxisDriver;
-class BinMDataXtd_PlaneDriver;
 class BinMDataXtd_GeometryDriver;
 class BinMDataXtd_ConstraintDriver;
-class BinMDataXtd_PlacementDriver;
 class BinMDataXtd_PatternStdDriver;
-class BinMDataXtd_ShapeDriver;
 class BinMDataXtd_TriangulationDriver;
 
 //! Storage and Retrieval drivers for modelling attributes.
@@ -62,14 +57,9 @@ private:
 
 
 
-friend class BinMDataXtd_PointDriver;
-friend class BinMDataXtd_AxisDriver;
-friend class BinMDataXtd_PlaneDriver;
 friend class BinMDataXtd_GeometryDriver;
 friend class BinMDataXtd_ConstraintDriver;
-friend class BinMDataXtd_PlacementDriver;
 friend class BinMDataXtd_PatternStdDriver;
-friend class BinMDataXtd_ShapeDriver;
 friend class BinMDataXtd_TriangulationDriver;
 
 };

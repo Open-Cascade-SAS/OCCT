@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDF_Attribute.hxx>
+#include <TDataStd_GenericEmpty.hxx>
 #include <Standard_Boolean.hxx>
 class Standard_GUID;
 class TDF_Label;
@@ -38,12 +38,12 @@ class TDF_RelocationTable;
 
 
 class XCAFDoc_DocumentTool;
-DEFINE_STANDARD_HANDLE(XCAFDoc_DocumentTool, TDF_Attribute)
+DEFINE_STANDARD_HANDLE(XCAFDoc_DocumentTool, TDataStd_GenericEmpty)
 
 //! Defines sections structure of an XDE document.
 //! attribute marking CAF document as being DECAF document.
 //! Creates the sections structure of the document.
-class XCAFDoc_DocumentTool : public TDF_Attribute
+class XCAFDoc_DocumentTool : public TDataStd_GenericEmpty
 {
 
 public:
@@ -129,17 +129,11 @@ public:
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
+  //! To init this derived attribute after the attribute restore using the base restore-methods
+  Standard_EXPORT Standard_Boolean AfterRetrieval (const Standard_Boolean forceIt = Standard_False) Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
- 
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_DocumentTool,TDF_Attribute)
-
+  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_DocumentTool,TDataStd_GenericEmpty)
 };
 
 #endif // _XCAFDoc_DocumentTool_HeaderFile

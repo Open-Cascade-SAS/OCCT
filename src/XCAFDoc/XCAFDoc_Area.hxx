@@ -20,7 +20,7 @@
 #include <Standard_Type.hxx>
 
 #include <Standard_Real.hxx>
-#include <TDF_Attribute.hxx>
+#include <TDataStd_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 class Standard_GUID;
@@ -30,10 +30,10 @@ class TDF_RelocationTable;
 
 
 class XCAFDoc_Area;
-DEFINE_STANDARD_HANDLE(XCAFDoc_Area, TDF_Attribute)
+DEFINE_STANDARD_HANDLE(XCAFDoc_Area, TDataStd_Real)
 
 //! attribute to store area
-class XCAFDoc_Area : public TDF_Attribute
+class XCAFDoc_Area : public TDataStd_Real
 {
 
 public:
@@ -59,32 +59,13 @@ public:
   //! returns false if no such attribute at the <label>
   Standard_EXPORT static Standard_Boolean Get (const TDF_Label& label, Standard_Real& area);
   
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& With) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
   Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
   
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
 
-
-
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_Area,TDF_Attribute)
-
-protected:
-
-
-
-
-private:
-
-
-  Standard_Real myValue;
-
+  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_Area,TDataStd_Real)
 
 };
 

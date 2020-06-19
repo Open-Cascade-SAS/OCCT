@@ -35,7 +35,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Plane,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Plane, TDataStd_GenericEmpty)
 
 //=======================================================================
 //function : GetID
@@ -117,31 +117,6 @@ TDataXtd_Plane::TDataXtd_Plane () { }
 //=======================================================================
 
 const Standard_GUID& TDataXtd_Plane::ID() const { return GetID(); }
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataXtd_Plane::NewEmpty () const
-{  
-  return new TDataXtd_Plane(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Plane::Restore(const Handle(TDF_Attribute)&)  {}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Plane::Paste (const Handle(TDF_Attribute)&, const Handle(TDF_RelocationTable)&) const { }
-
 
 //=======================================================================
 //function : Dump

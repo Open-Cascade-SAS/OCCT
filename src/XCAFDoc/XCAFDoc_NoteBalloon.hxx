@@ -22,7 +22,7 @@ class XCAFDoc_NoteBalloon : public XCAFDoc_NoteComment
 {
 public:
 
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_NoteBalloon, XCAFDoc_NoteComment)
+  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_NoteBalloon, XCAFDoc_NoteComment)
 
   //! Returns default attribute GUID
   Standard_EXPORT static const Standard_GUID& GetID();
@@ -47,8 +47,6 @@ public:
 
   // Overrides TDF_Attribute virtuals
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-
 };
 
 DEFINE_STANDARD_HANDLE(XCAFDoc_NoteBalloon, XCAFDoc_NoteComment)

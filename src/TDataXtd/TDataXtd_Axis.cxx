@@ -37,7 +37,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Axis,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Axis, TDataStd_GenericEmpty)
 
 //=======================================================================
 //function : GetID
@@ -117,31 +117,6 @@ TDataXtd_Axis::TDataXtd_Axis () { }
 //=======================================================================
 
 const Standard_GUID& TDataXtd_Axis::ID() const {  return GetID(); }
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataXtd_Axis::NewEmpty () const
-{  
-  return new TDataXtd_Axis(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Axis::Restore (const Handle(TDF_Attribute)&) { }
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Axis::Paste (const Handle(TDF_Attribute)&, const Handle(TDF_RelocationTable)&) const { }
 
 
 //=======================================================================

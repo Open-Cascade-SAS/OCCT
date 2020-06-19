@@ -39,7 +39,7 @@ namespace {
 
 }
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_NotesTool, TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(XCAFDoc_NotesTool, XCAFDoc_NoteComment)
 
 enum NotesTool_RootLabels
 {
@@ -1020,35 +1020,6 @@ XCAFDoc_NotesTool::ID() const
 }
 
 // =======================================================================
-// function : NewEmpty
-// purpose  :
-// =======================================================================
-Handle(TDF_Attribute)
-XCAFDoc_NotesTool::NewEmpty() const
-{
-  return new XCAFDoc_NotesTool();
-}
-
-// =======================================================================
-// function : Restore
-// purpose  :
-// =======================================================================
-void
-XCAFDoc_NotesTool::Restore(const Handle(TDF_Attribute)& /*theAttr*/)
-{
-}
-
-// =======================================================================
-// function : Paste
-// purpose  :
-// =======================================================================
-void
-XCAFDoc_NotesTool::Paste(const Handle(TDF_Attribute)&       /*theAttrInto*/,
-                         const Handle(TDF_RelocationTable)& /*theRT*/) const
-{
-}
-
-// =======================================================================
 // function : Dump
 // purpose  :
 // =======================================================================
@@ -1060,15 +1031,4 @@ XCAFDoc_NotesTool::Dump(Standard_OStream& theOS) const
     << "Annotated items : " << NbAnnotatedItems() << "\n"
     ;
   return theOS;
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_NotesTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }

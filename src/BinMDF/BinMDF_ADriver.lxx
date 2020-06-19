@@ -16,16 +16,6 @@
 #include <TDF_Attribute.hxx>
 
 //=======================================================================
-//function : SourceType
-//purpose  : 
-//=======================================================================
-
-inline const Handle(Standard_Type)& BinMDF_ADriver::SourceType () const
-{
-  return NewEmpty() -> DynamicType();
-}
-
-//=======================================================================
 //function : TypeName
 //purpose  : 
 //=======================================================================

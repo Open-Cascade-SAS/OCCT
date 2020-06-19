@@ -128,6 +128,7 @@ void TDataStd_Expression::Restore(const Handle(TDF_Attribute)& With)
   myExpression = EXPR->GetExpression();
 
   Handle(TDataStd_Variable) V;
+  myVariables.Clear();
   for (TDF_ListIteratorOfAttributeList it (EXPR->GetVariables()); it.More(); it.Next()) {
     V = Handle(TDataStd_Variable)::DownCast(it.Value());
     myVariables.Append(V);

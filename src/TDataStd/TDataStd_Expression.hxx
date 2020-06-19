@@ -22,7 +22,7 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_AttributeList.hxx>
-#include <TDF_Attribute.hxx>
+#include <TDF_DerivedAttribute.hxx>
 #include <Standard_OStream.hxx>
 class Standard_GUID;
 class TDF_Label;
@@ -82,22 +82,12 @@ public:
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
 
-
-
   DEFINE_STANDARD_RTTIEXT(TDataStd_Expression,TDF_Attribute)
 
 protected:
 
-
-
-
-private:
-
-
   TCollection_ExtendedString myExpression;
   TDF_AttributeList myVariables;
-
-
 };
 
 

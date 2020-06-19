@@ -22,7 +22,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_Area,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_Area,TDataStd_Real,"xcaf","Area")
 
 //=======================================================================
 //function : Constructor
@@ -76,8 +76,7 @@ Handle(XCAFDoc_Area) XCAFDoc_Area::Set (const TDF_Label& L,const Standard_Real V
 
 void XCAFDoc_Area::Set (const Standard_Real V) 
 {
-  Backup();
-  myValue = V;
+  TDataStd_Real::Set(V);
 }
 
 //=======================================================================
@@ -85,7 +84,10 @@ void XCAFDoc_Area::Set (const Standard_Real V)
 //purpose  : 
 //=======================================================================
 
-Standard_Real XCAFDoc_Area::Get() const { return myValue; }
+Standard_Real XCAFDoc_Area::Get() const
+{
+  return TDataStd_Real::Get();
+}
 
 //=======================================================================
 //function : Get
@@ -100,40 +102,6 @@ Standard_Boolean XCAFDoc_Area::Get(const TDF_Label& label,Standard_Real& area)
   
   area = anArea->Get();
   return Standard_True;
-}
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_Area::NewEmpty () const
-{  
-  return new XCAFDoc_Area(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_Area::Restore(const Handle(TDF_Attribute)& With) 
-{
-  Handle(XCAFDoc_Area) R = Handle(XCAFDoc_Area)::DownCast (With);
-  myValue = R->Get();
-}
-
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_Area::Paste (const Handle(TDF_Attribute)& Into,
-			   const Handle(TDF_RelocationTable)& /* RT */) const
-{ 
-  Handle(XCAFDoc_Area) R = Handle(XCAFDoc_Area)::DownCast (Into);
-  R->Set(myValue);
 }
 
 //=======================================================================

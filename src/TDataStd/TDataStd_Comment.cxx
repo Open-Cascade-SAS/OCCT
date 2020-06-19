@@ -17,23 +17,9 @@
 #include <TDataStd_Comment.hxx>
 
 #include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
-#include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDF_ChildIDIterator.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_RelocationTable.hxx>
-#include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Comment,TDF_Attribute)
-
-#define lid1 45
-#define lid2 36
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Comment, TDataStd_GenericExtString)
 
 //=======================================================================
 //function : GetID
@@ -45,8 +31,6 @@ const Standard_GUID& TDataStd_Comment::GetID ()
   static Standard_GUID TDataStd_CommentID ("2a96b616-ec8b-11d0-bee7-080009dc3333");
   return TDataStd_CommentID;
 }
-
-
 
 //=======================================================================
 //function : Set
@@ -65,7 +49,6 @@ Handle(TDataStd_Comment) TDataStd_Comment::Set (const TDF_Label& L,
   return A;
 }
 
-
 //=======================================================================
 //function : Set
 //purpose  : 
@@ -81,78 +64,51 @@ Handle(TDataStd_Comment) TDataStd_Comment::Set (const TDF_Label& L)
   return A;
 }
 
-
 //=======================================================================
 //function : TDataStd_Comment
 //purpose  : 
 //=======================================================================
-TDataStd_Comment::TDataStd_Comment () { }
 
-
+TDataStd_Comment::TDataStd_Comment () {
+  myID = GetID();
+}
 
 //=======================================================================
 //function : Set
-//purpose  : 
+//purpose  :
 //=======================================================================
-void TDataStd_Comment::Set (const TCollection_ExtendedString& S) 
+
+void TDataStd_Comment::Set (const TCollection_ExtendedString& S)
 {
   // OCC2932 correction
   if(myString == S) return;
 
   Backup();
-
   myString = S;
 }
 
-
-
 //=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
-const TCollection_ExtendedString& TDataStd_Comment::Get () const
-{
-  return myString;
-}
-
-//=======================================================================
-//function : ID
-//purpose  : 
+//function : SetID
+//purpose  :
 //=======================================================================
 
-const Standard_GUID& TDataStd_Comment::ID () const { return GetID(); }
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataStd_Comment::NewEmpty () const
+void TDataStd_Comment::SetID( const Standard_GUID&  theGuid)
 {  
-  return new TDataStd_Comment(); 
+  if(myID == theGuid) return;
+
+  Backup();
+  myID = theGuid;
 }
 
 //=======================================================================
-//function : Restore
-//purpose  : 
+//function : SetID
+//purpose  : sets default ID
 //=======================================================================
 
-void TDataStd_Comment::Restore(const Handle(TDF_Attribute)& with) 
+void TDataStd_Comment::SetID()
 {
-  myString = Handle(TDataStd_Comment)::DownCast (with)->Get ();
-  return;
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataStd_Comment::Paste (const Handle(TDF_Attribute)& into,
-                              const Handle(TDF_RelocationTable)& /*RT*/) const
-{
-  Handle(TDataStd_Comment)::DownCast (into)->Set (myString);
+  Backup();
+  myID = GetID();
 }
 
 //=======================================================================
@@ -163,24 +119,6 @@ void TDataStd_Comment::Paste (const Handle(TDF_Attribute)& into,
 Standard_OStream& TDataStd_Comment::Dump (Standard_OStream& anOS) const
 { 
   TDF_Attribute::Dump(anOS);
-  anOS << "Comment=|"<<myString<<"|";
+  anOS << "Comment=|"<<Get()<<"|";
   return anOS;
-}
-Standard_Boolean TDataStd_Comment::
-AfterRetrieval(const Standard_Boolean)
-{
-  return Standard_True;
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDataStd_Comment::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-  
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
-  
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myString)
 }

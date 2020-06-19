@@ -12,3 +12,5 @@ XmlMDF_ReferenceDriver.hxx
 XmlMDF_TagSourceDriver.cxx
 XmlMDF_TagSourceDriver.hxx
 XmlMDF_TypeADriverMap.hxx
+XmlMDF_DerivedDriver.cxx
+XmlMDF_DerivedDriver.hxx

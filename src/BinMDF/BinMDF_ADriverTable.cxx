@@ -17,10 +17,12 @@
 #include <BinMDF_ADriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <BinMDF_DataMapIteratorOfTypeADriverMap.hxx>
+#include <BinMDF_DerivedDriver.hxx>
 #include <BinMDF_StringIdMap.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TDF_DerivedAttribute.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDF_ADriverTable,Standard_Transient)
 
@@ -42,6 +44,42 @@ void BinMDF_ADriverTable::AddDriver
 {
   const Handle(Standard_Type)& aType = theDriver->SourceType();
   myMap.Bind (aType, theDriver);
+}
+
+//=======================================================================
+//function : AddDerivedDriver
+//purpose  :
+//=======================================================================
+void BinMDF_ADriverTable::AddDerivedDriver (const Handle(TDF_Attribute)& theInstance)
+{
+  const Handle(Standard_Type)& anInstanceType = theInstance->DynamicType();
+  if (!myMap.IsBound (anInstanceType)) // no direct driver, use a derived one
+  {
+    for (Handle(Standard_Type) aType = anInstanceType->Parent(); !aType.IsNull(); aType = aType->Parent())
+    {
+      if (myMap.IsBound (aType))
+      {
+        Handle(BinMDF_DerivedDriver) aDriver = new BinMDF_DerivedDriver (theInstance, myMap (aType));
+        myMap.Bind (anInstanceType, aDriver);
+        return;
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : AddDerivedDriver
+//purpose  :
+//=======================================================================
+const Handle(Standard_Type)& BinMDF_ADriverTable::AddDerivedDriver (Standard_CString theDerivedType)
+{
+  if (Handle(TDF_Attribute) anInstance = TDF_DerivedAttribute::Attribute (theDerivedType))
+  {
+    AddDerivedDriver (anInstance);
+    return anInstance->DynamicType();
+  }
+  static const Handle(Standard_Type) aNullType;
+  return aNullType;
 }
 
 //=======================================================================
@@ -95,6 +133,18 @@ void BinMDF_ADriverTable::AssignIds
     if (aStringIdMap.IsBound(aTypeName)) {
       i = aStringIdMap(aTypeName);
       myMapId.Bind (aType, i);
+    }
+  }
+
+  // try to add derived drivers for attributes not found in myMap
+  for (BinMDF_StringIdMap::Iterator aStrId (aStringIdMap); aStrId.More(); aStrId.Next())
+  {
+    if (!myMapId.IsBound2 (aStrId.Value()))
+    {
+      if (Handle(Standard_Type) anAdded = AddDerivedDriver (aStrId.Key().ToCString()))
+      {
+        myMapId.Bind (anAdded, aStrId.Value());
+      }
     }
   }
 }

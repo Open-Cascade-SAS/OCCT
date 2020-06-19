@@ -21,21 +21,18 @@
 #include <Standard_Integer.hxx>
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMDataStd_NameDriver;
+class XmlMDataStd_GenericExtStringDriver;
 class XmlMDataStd_IntegerDriver;
 class XmlMDataStd_RealDriver;
 class XmlMDataStd_IntegerArrayDriver;
 class XmlMDataStd_RealArrayDriver;
 class XmlMDataStd_ExtStringArrayDriver;
 class XmlMDataStd_UAttributeDriver;
-class XmlMDataStd_DirectoryDriver;
-class XmlMDataStd_CommentDriver;
 class XmlMDataStd_VariableDriver;
 class XmlMDataStd_ExpressionDriver;
 class XmlMDataStd_RelationDriver;
-class XmlMDataStd_NoteBookDriver;
 class XmlMDataStd_TreeNodeDriver;
-class XmlMDataStd_TickDriver;
+class XmlMDataStd_GenericEmptyDriver;
 class XmlMDataStd_IntegerListDriver;
 class XmlMDataStd_RealListDriver;
 class XmlMDataStd_ExtStringListDriver;
@@ -73,21 +70,18 @@ private:
 
 
 
-friend class XmlMDataStd_NameDriver;
+friend class XmlMDataStd_GenericExtStringDriver;
 friend class XmlMDataStd_IntegerDriver;
 friend class XmlMDataStd_RealDriver;
 friend class XmlMDataStd_IntegerArrayDriver;
 friend class XmlMDataStd_RealArrayDriver;
 friend class XmlMDataStd_ExtStringArrayDriver;
 friend class XmlMDataStd_UAttributeDriver;
-friend class XmlMDataStd_DirectoryDriver;
-friend class XmlMDataStd_CommentDriver;
 friend class XmlMDataStd_VariableDriver;
 friend class XmlMDataStd_ExpressionDriver;
 friend class XmlMDataStd_RelationDriver;
-friend class XmlMDataStd_NoteBookDriver;
 friend class XmlMDataStd_TreeNodeDriver;
-friend class XmlMDataStd_TickDriver;
+friend class XmlMDataStd_GenericEmptyDriver;
 friend class XmlMDataStd_IntegerListDriver;
 friend class XmlMDataStd_RealListDriver;
 friend class XmlMDataStd_ExtStringListDriver;

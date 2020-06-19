@@ -16,26 +16,17 @@
 #ifndef _TDataXtd_Shape_HeaderFile
 #define _TDataXtd_Shape_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <TDF_Attribute.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_OStream.hxx>
-class TDF_Label;
+#include <TDataStd_GenericEmpty.hxx>
 class TopoDS_Shape;
-class Standard_GUID;
-class TDF_Attribute;
-class TDF_RelocationTable;
 class TDF_DataSet;
 
 
 class TDataXtd_Shape;
-DEFINE_STANDARD_HANDLE(TDataXtd_Shape, TDF_Attribute)
+DEFINE_STANDARD_HANDLE(TDataXtd_Shape, TDataStd_GenericEmpty)
 
 //! A Shape is associated in the framework with :
 //! a NamedShape attribute
-class TDataXtd_Shape : public TDF_Attribute
+class TDataXtd_Shape : public TDataStd_GenericEmpty
 {
 
 public:
@@ -68,20 +59,12 @@ public:
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
   Standard_EXPORT virtual void References (const Handle(TDF_DataSet)& DS) const Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
 
 
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataXtd_Shape,TDF_Attribute)
+  DEFINE_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
 
 protected:
 

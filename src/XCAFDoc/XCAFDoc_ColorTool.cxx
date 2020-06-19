@@ -32,7 +32,7 @@
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ColorTool,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_ColorTool,TDataStd_GenericEmpty,"xcaf","ColorTool")
 
 static Standard_Boolean XCAFDoc_ColorTool_AutoNaming = Standard_True;
 
@@ -502,37 +502,6 @@ const Standard_GUID& XCAFDoc_ColorTool::ID() const
 {
   return GetID();
 }
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_ColorTool::Restore(const Handle(TDF_Attribute)& /*with*/) 
-{
-}
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_ColorTool::NewEmpty() const
-{
-  return new XCAFDoc_ColorTool;
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_ColorTool::Paste (const Handle(TDF_Attribute)& /*into*/,
-			       const Handle(TDF_RelocationTable)& /*RT*/) const
-{
-}
-
-/**/
 
 //=======================================================================
 //function : XCAFDoc_ColorTool

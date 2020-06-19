@@ -48,7 +48,7 @@ public:
   
   //! Returns the type of source object,
   //! inheriting from Attribute from TDF.
-    const Handle(Standard_Type)& SourceType() const;
+  Standard_EXPORT virtual const Handle(Standard_Type)& SourceType() const;
   
   //! Returns the type name of the attribute object
     const TCollection_AsciiString& TypeName() const;
@@ -63,6 +63,8 @@ public:
   //! <aRelocTable> to keep the sharings.
   Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& aSource, BinObjMgt_Persistent& aTarget, BinObjMgt_SRelocationTable& aRelocTable) const = 0;
 
+  //! Returns the current message driver of this driver
+  const Handle(Message_Messenger)& MessageDriver() const { return myMessageDriver; }
 
   DEFINE_STANDARD_RTTIEXT(BinMDF_ADriver,Standard_Transient)
 

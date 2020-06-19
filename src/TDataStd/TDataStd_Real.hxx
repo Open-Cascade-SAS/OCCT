@@ -22,7 +22,7 @@
 
 #include <Standard_Real.hxx>
 #include <TDataStd_RealEnum.hxx>
-#include <TDF_Attribute.hxx>
+#include <TDF_DerivedAttribute.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_GUID.hxx>
@@ -109,17 +109,10 @@ public:
 
 protected:
 
-
-
-
-private:
-
-
   Standard_Real myValue;
   //! An obsolete field that will be removed in next versions.
   TDataStd_RealEnum myDimension;
   Standard_GUID myID;
-
 };
 
 

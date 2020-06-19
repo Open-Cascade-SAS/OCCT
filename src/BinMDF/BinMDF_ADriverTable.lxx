@@ -33,8 +33,13 @@ inline void BinMDF_ADriverTable::AssignId
 
 inline Standard_Integer BinMDF_ADriverTable::GetDriver
                 (const Handle(Standard_Type)&	theType,
-		 Handle(BinMDF_ADriver)&	theDriver) const
+		 Handle(BinMDF_ADriver)&	theDriver)
 {
+  if (!myMap.IsBound (theType)) // try to assign driver for derived type
+  {
+    AddDerivedDriver (theType->Name());
+  }
+
   Standard_Integer anId = 0;
   if (myMap.IsBound(theType)) {
     theDriver = myMap (theType);
@@ -51,7 +56,7 @@ inline Standard_Integer BinMDF_ADriverTable::GetDriver
 //=======================================================================
 
 inline Handle(BinMDF_ADriver) BinMDF_ADriverTable::GetDriver
-                (const Standard_Integer theTypeId) const
+                (const Standard_Integer theTypeId)
 {
   Handle(BinMDF_ADriver) aDriver;
   if (myMapId.IsBound2(theTypeId)) {

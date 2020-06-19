@@ -22,27 +22,16 @@
 
 class XmlMDF_ADriverTable;
 class Message_Messenger;
-class XmlMXCAFDoc_AreaDriver;
 class XmlMXCAFDoc_CentroidDriver;
 class XmlMXCAFDoc_ColorDriver;
 class XmlMXCAFDoc_GraphNodeDriver;
 class XmlMXCAFDoc_LocationDriver;
-class XmlMXCAFDoc_VolumeDriver;
 class XmlMXCAFDoc_DatumDriver;
 class XmlMXCAFDoc_DimTolDriver;
 class XmlMXCAFDoc_MaterialDriver;
-class XmlMXCAFDoc_NotesToolDriver;
 class XmlMXCAFDoc_NoteDriver;
 class XmlMXCAFDoc_NoteCommentDriver;
 class XmlMXCAFDoc_NoteBinDataDriver;
-class XmlMXCAFDoc_ClippingPlaneToolDriver;
-class XmlMXCAFDoc_ColorToolDriver;
-class XmlMXCAFDoc_DocumentToolDriver;
-class XmlMXCAFDoc_LayerToolDriver;
-class XmlMXCAFDoc_ShapeToolDriver;
-class XmlMXCAFDoc_DimTolToolDriver;
-class XmlMXCAFDoc_MaterialToolDriver;
-class XmlMXCAFDoc_ViewToolDriver;
 
 
 //! Storage and Retrieval drivers for modelling attributes.
@@ -71,23 +60,13 @@ private:
 
 
 
-friend class XmlMXCAFDoc_AreaDriver;
 friend class XmlMXCAFDoc_CentroidDriver;
 friend class XmlMXCAFDoc_ColorDriver;
 friend class XmlMXCAFDoc_GraphNodeDriver;
 friend class XmlMXCAFDoc_LocationDriver;
-friend class XmlMXCAFDoc_VolumeDriver;
 friend class XmlMXCAFDoc_DatumDriver;
 friend class XmlMXCAFDoc_DimTolDriver;
 friend class XmlMXCAFDoc_MaterialDriver;
-friend class XmlMXCAFDoc_ClippingPlaneToolDriver;
-friend class XmlMXCAFDoc_ColorToolDriver;
-friend class XmlMXCAFDoc_DocumentToolDriver;
-friend class XmlMXCAFDoc_LayerToolDriver;
-friend class XmlMXCAFDoc_ShapeToolDriver;
-friend class XmlMXCAFDoc_DimTolToolDriver;
-friend class XmlMXCAFDoc_MaterialToolDriver;
-friend class XmlMXCAFDoc_ViewToolDriver;
 
 };
 

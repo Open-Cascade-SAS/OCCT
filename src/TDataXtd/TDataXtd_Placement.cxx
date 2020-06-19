@@ -21,7 +21,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Placement,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Placement,TDataStd_GenericEmpty)
 
 //=======================================================================
 //function : GetID
@@ -66,38 +66,6 @@ TDataXtd_Placement::TDataXtd_Placement () { }
 
 const Standard_GUID& TDataXtd_Placement::ID () const { return GetID(); }
 
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataXtd_Placement::NewEmpty() const
-{ 
-  return new TDataXtd_Placement(); 
-}
-
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Placement::Restore (const Handle(TDF_Attribute)&) 
-{
-
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Placement::Paste(const Handle(TDF_Attribute)&,
-			       const Handle(TDF_RelocationTable)&) const
-{
-
-}    
 
 //=======================================================================
 //function : Dump

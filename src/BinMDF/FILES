@@ -15,3 +15,5 @@ BinMDF_TagSourceDriver.cxx
 BinMDF_TagSourceDriver.hxx
 BinMDF_TypeADriverMap.hxx
 BinMDF_TypeIdMap.hxx
+BinMDF_DerivedDriver.cxx
+BinMDF_DerivedDriver.hxx

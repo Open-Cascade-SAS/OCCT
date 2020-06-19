@@ -40,7 +40,7 @@
 #include <XCAFDoc_ShapeTool.hxx>
 
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_DimTolTool,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_DimTolTool,TDataStd_GenericEmpty,"xcaf","DimTolTool")
 
 //=======================================================================
 //function : XCAFDoc_DimTolTool
@@ -962,37 +962,6 @@ const Standard_GUID& XCAFDoc_DimTolTool::ID() const
   return GetID();
 }
 
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_DimTolTool::Restore(const Handle(TDF_Attribute)& /*with*/) 
-{
-}
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_DimTolTool::NewEmpty() const
-{
-  return new XCAFDoc_DimTolTool;
-}
-
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_DimTolTool::Paste(const Handle(TDF_Attribute)& /*into*/,
-                               const Handle(TDF_RelocationTable)& /*RT*/) const
-{
-}
 
 //=======================================================================
 //function : GetGDTPresentations

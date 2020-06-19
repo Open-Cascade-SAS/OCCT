@@ -14,6 +14,10 @@ TDataStd_Comment.cxx
 TDataStd_Comment.hxx
 TDataStd_Current.cxx
 TDataStd_Current.hxx
+TDataStd_GenericEmpty.cxx
+TDataStd_GenericEmpty.hxx
+TDataStd_GenericExtString.cxx
+TDataStd_GenericExtString.hxx
 TDataStd_DataMapIteratorOfDataMapOfStringByte.hxx
 TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger.hxx
 TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfReal.hxx

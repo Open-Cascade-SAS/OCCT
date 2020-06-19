@@ -53,7 +53,7 @@
 #include <XCAFDoc_Location.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ShapeTool,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_ShapeTool,TDataStd_GenericEmpty,"xcaf","ShapeTool")
 
 static Standard_Boolean theAutoNaming = Standard_True;
 
@@ -107,35 +107,6 @@ XCAFDoc_ShapeTool::XCAFDoc_ShapeTool()
 const Standard_GUID& XCAFDoc_ShapeTool::ID() const
 {
   return GetID();
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_ShapeTool::Restore(const Handle(TDF_Attribute)& /*with*/) 
-{
-}
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_ShapeTool::NewEmpty() const
-{
-  return new XCAFDoc_ShapeTool;
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_ShapeTool::Paste (const Handle(TDF_Attribute)& /*into*/,
-			       const Handle(TDF_RelocationTable)& /*RT*/) const
-{
 }
 
 // Auxiliary methods //////////////////////////////////////////////////

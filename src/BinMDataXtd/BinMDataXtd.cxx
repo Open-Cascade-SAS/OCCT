@@ -16,14 +16,9 @@
 // modified   13.04.2009 Sergey Zaritchny
 
 #include <BinMDataXtd.hxx>
-#include <BinMDataXtd_AxisDriver.hxx>
 #include <BinMDataXtd_ConstraintDriver.hxx>
 #include <BinMDataXtd_GeometryDriver.hxx>
 #include <BinMDataXtd_PatternStdDriver.hxx>
-#include <BinMDataXtd_PlacementDriver.hxx>
-#include <BinMDataXtd_PlaneDriver.hxx>
-#include <BinMDataXtd_PointDriver.hxx>
-#include <BinMDataXtd_ShapeDriver.hxx>
 #include <BinMDF_ADriverTable.hxx>
 #include <Message_Messenger.hxx>
 #include <BinMDataXtd_PresentationDriver.hxx>
@@ -42,11 +37,6 @@ void BinMDataXtd::AddDrivers (const Handle(BinMDF_ADriverTable)& theDriverTable,
   theDriverTable->AddDriver (new BinMDataXtd_ConstraintDriver   (theMsgDriver) );
   theDriverTable->AddDriver (new BinMDataXtd_GeometryDriver     (theMsgDriver) );
   theDriverTable->AddDriver (new BinMDataXtd_PatternStdDriver   (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_ShapeDriver        (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_PointDriver        (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_AxisDriver         (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_PlaneDriver        (theMsgDriver) );
-  theDriverTable->AddDriver (new BinMDataXtd_PlacementDriver    (theMsgDriver) );
   theDriverTable->AddDriver (new BinMDataXtd_TriangulationDriver(theMsgDriver) );
 
   theDriverTable->AddDriver (new BinMDataXtd_PresentationDriver (theMsgDriver) );

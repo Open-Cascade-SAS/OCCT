@@ -15,14 +15,10 @@
 
 #include <TDataStd_Tick.hxx>
 
-#include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
-#include <Standard_Type.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_RelocationTable.hxx>
+#include <Standard_GUID.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Tick,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Tick,TDataStd_GenericEmpty)
 
 //=======================================================================
 //function : GetID
@@ -67,34 +63,6 @@ const Standard_GUID& TDataStd_Tick::ID () const
 }
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-Handle(TDF_Attribute) TDataStd_Tick::NewEmpty() const
-{ 
-  return new TDataStd_Tick(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-void TDataStd_Tick::Restore (const Handle(TDF_Attribute)& ) 
-{
-  // There are no fields in this attribute.
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-void TDataStd_Tick::Paste(const Handle(TDF_Attribute)& ,
-			  const Handle(TDF_RelocationTable)& ) const
-{
-  // There are no fields in this attribute.
-}    
-
-//=======================================================================
 //function : Dump
 //purpose  : 
 //=======================================================================
@@ -102,15 +70,4 @@ Standard_OStream& TDataStd_Tick::Dump (Standard_OStream& anOS) const
 { 
   anOS << "Tick";
   return anOS;
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDataStd_Tick::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }

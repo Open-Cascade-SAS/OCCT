@@ -19,7 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDF_Attribute.hxx>
+#include <TDataStd_GenericEmpty.hxx>
 #include <Standard_Boolean.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <Standard_Integer.hxx>
@@ -32,7 +32,7 @@ class TDF_Attribute;
 
 
 class XCAFDoc_ViewTool;
-DEFINE_STANDARD_HANDLE(XCAFDoc_ViewTool, TDF_Attribute)
+DEFINE_STANDARD_HANDLE(XCAFDoc_ViewTool, TDataStd_GenericEmpty)
 
 //! Provides tools to store and retrieve Views
 //! in and from TDocStd_Document
@@ -40,7 +40,7 @@ DEFINE_STANDARD_HANDLE(XCAFDoc_ViewTool, TDF_Attribute)
 //! with all information about camera and view window.
 //! Also each view contain information of displayed shapes and GDTs
 //! as sets of shape and GDT labels.
-class XCAFDoc_ViewTool : public TDF_Attribute
+class XCAFDoc_ViewTool : public TDataStd_GenericEmpty
 {
 
 public:
@@ -138,17 +138,8 @@ public:
   Standard_EXPORT void Unlock(const TDF_Label& theViewL) const;
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTIEXT(XCAFDoc_ViewTool, TDF_Attribute)
 
+  DEFINE_DERIVED_ATTRIBUTE(XCAFDoc_ViewTool, TDataStd_GenericEmpty)
 };
 #endif // _XCAFDoc_ViewTool_HeaderFile

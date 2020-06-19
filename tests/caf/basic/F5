@@ -1,0 +1,70 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attributes: TDataStd_Tick TDataStd_Directory TDataStd_NoteBook TDataXtd_Axis TDataXtd_Placement TDataXtd_Plane TDataXtd_Point TDataXtd_Shape 
+#
+# Testing command:   SetEmptyAttribute
+# XmlOcaf format open/save with these attributes
+
+NewDocument DX XmlOcaf
+UndoLimit DX 2
+
+Label DX 0:2
+
+set IsGood 1
+
+NewCommand DX
+SetEmptyAttribute DX 0:2 TDataXtd_Axis
+SetEmptyAttribute DX 0:2 TDataXtd_Placement
+SetEmptyAttribute DX 0:2 TDataXtd_Plane
+SetEmptyAttribute DX 0:2 TDataXtd_Point
+SetEmptyAttribute DX 0:2 TDataXtd_Shape 
+SetEmptyAttribute DX 0:2 TDataStd_Tick
+SetEmptyAttribute DX 0:2 TDataStd_Directory
+SetEmptyAttribute DX 0:2 TDataStd_NoteBook
+CommitCommand DX
+
+set aLen1 [llength [Attributes DX 0:2]]
+if { ${aLen1} != 8 } {
+   set IsGood 0
+   puts "Not all attributes were added aLen1=${aLen1}"
+}
+
+Undo DX
+
+set aLen2 [llength [Attributes DX 0:2]]
+if { ${aLen2} != 0 } {
+   set IsGood 0
+   puts "Not all attributes were removed on Undo aLen2=${aLen2}"
+}
+
+Redo DX
+
+set aLen3 [llength [Attributes DX 0:2]]
+if { ${aLen3} != 8 } {
+   set IsGood 0
+   puts "Not all attributes were restored by Redo aLen3=${aLen3}"
+}
+
+set aFile ${imagedir}/caf001-F5.xml
+file delete ${aFile}
+SaveAs DX ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+Close DX
+
+Open ${aFile} DDX
+
+set aLen4 [llength [Attributes DDX 0:2]]
+if { ${aLen4} != 8 } {
+   set IsGood 0
+   puts "Not all attributes were restored on Open aLen4=${aLen4}"
+}
+
+if { ${IsGood} == 0} {
+  puts "Set empty attributes: Error"
+} else {
+  puts "Set empty attributes: OK"
+}

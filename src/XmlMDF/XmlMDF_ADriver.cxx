@@ -31,7 +31,8 @@ IMPLEMENT_STANDARD_RTTIEXT(XmlMDF_ADriver,Standard_Transient)
 XmlMDF_ADriver::XmlMDF_ADriver (const Handle(Message_Messenger)& theMsgDriver,
                                 const Standard_CString           theNS,
                                 const Standard_CString           theName)
-     : myMessageDriver (theMsgDriver)
+: myNamespace(theNS == NULL ? "" : theNS),
+  myMessageDriver (theMsgDriver)
 {
   if (theNS != NULL)
     if (theNS[0] != '\0') {

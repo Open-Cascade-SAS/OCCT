@@ -29,7 +29,7 @@
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_View.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ViewTool, TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_ViewTool,TDataStd_GenericEmpty,"xcaf","ViewTool")
 
 //=======================================================================
 //function : XCAFDoc_ViewTool
@@ -760,44 +760,4 @@ void XCAFDoc_ViewTool::Unlock(const TDF_Label& theViewL) const
 const Standard_GUID& XCAFDoc_ViewTool::ID() const
 {
   return GetID();
-}
-
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-void XCAFDoc_ViewTool::Restore(const Handle(TDF_Attribute)& /*with*/) 
-{
-}
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-Handle(TDF_Attribute) XCAFDoc_ViewTool::NewEmpty() const
-{
-  return new XCAFDoc_ViewTool;
-}
-
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-void XCAFDoc_ViewTool::Paste(const Handle(TDF_Attribute)& /*into*/,
-                             const Handle(TDF_RelocationTable)& /*RT*/) const
-{
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_ViewTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }

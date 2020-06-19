@@ -60,6 +60,8 @@ TDF_DeltaOnRemoval.cxx
 TDF_DeltaOnRemoval.hxx
 TDF_DeltaOnResume.cxx
 TDF_DeltaOnResume.hxx
+TDF_DerivedAttribute.cxx
+TDF_DerivedAttribute.hxx
 TDF_DoubleMapIteratorOfAttributeDoubleMap.hxx
 TDF_DoubleMapIteratorOfGUIDProgIDMap.hxx
 TDF_DoubleMapIteratorOfLabelDoubleMap.hxx

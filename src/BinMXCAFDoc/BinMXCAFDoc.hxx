@@ -22,26 +22,13 @@
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
-class BinMXCAFDoc_AreaDriver;
 class BinMXCAFDoc_CentroidDriver;
-class BinMXCAFDoc_ClippingPlaneToolDriver;
 class BinMXCAFDoc_ColorDriver;
 class BinMXCAFDoc_GraphNodeDriver;
 class BinMXCAFDoc_LocationDriver;
-class BinMXCAFDoc_VolumeDriver;
 class BinMXCAFDoc_DatumDriver;
-class BinMXCAFDoc_GeomToleranceDriver;
-class BinMXCAFDoc_DimensionDriver;
 class BinMXCAFDoc_DimTolDriver;
 class BinMXCAFDoc_MaterialDriver;
-class BinMXCAFDoc_ColorToolDriver;
-class BinMXCAFDoc_DocumentToolDriver;
-class BinMXCAFDoc_LayerToolDriver;
-class BinMXCAFDoc_ShapeToolDriver;
-class BinMXCAFDoc_DimTolToolDriver;
-class BinMXCAFDoc_MaterialToolDriver;
-class BinMXCAFDoc_ViewDriver;
-class BinMXCAFDoc_ViewToolDriver;
 
 
 
@@ -69,26 +56,13 @@ private:
 
 
 
-friend class BinMXCAFDoc_AreaDriver;
 friend class BinMXCAFDoc_CentroidDriver;
-friend class BinMXCAFDoc_ClippingPlaneToolDriver;
 friend class BinMXCAFDoc_ColorDriver;
 friend class BinMXCAFDoc_GraphNodeDriver;
 friend class BinMXCAFDoc_LocationDriver;
-friend class BinMXCAFDoc_VolumeDriver;
 friend class BinMXCAFDoc_DatumDriver;
-friend class BinMXCAFDoc_GeomToleranceDriver;
-friend class BinMXCAFDoc_DimensionDriver;
 friend class BinMXCAFDoc_DimTolDriver;
 friend class BinMXCAFDoc_MaterialDriver;
-friend class BinMXCAFDoc_ColorToolDriver;
-friend class BinMXCAFDoc_DocumentToolDriver;
-friend class BinMXCAFDoc_LayerToolDriver;
-friend class BinMXCAFDoc_ShapeToolDriver;
-friend class BinMXCAFDoc_DimTolToolDriver;
-friend class BinMXCAFDoc_MaterialToolDriver;
-friend class BinMXCAFDoc_ViewDriver;
-friend class BinMXCAFDoc_ViewToolDriver;
 
 };
 

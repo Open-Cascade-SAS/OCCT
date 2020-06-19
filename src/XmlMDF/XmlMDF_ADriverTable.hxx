@@ -23,6 +23,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
+#include <XmlMDF_MapOfDriver.hxx>
 class XmlMDF_ADriver;
 
 
@@ -45,16 +46,23 @@ public:
   
   //! Sets a translation driver: <aDriver>.
   Standard_EXPORT void AddDriver (const Handle(XmlMDF_ADriver)& anHDriver);
-  
-  //! Gets a map of drivers.
-  Standard_EXPORT const XmlMDF_TypeADriverMap& GetDrivers() const;
-  
+
+  //! Adds a translation driver for the derived attribute. The base driver must be already added.
+  //! @param theInstance is newly created attribute, detached from any label
+  Standard_EXPORT void AddDerivedDriver (const Handle(TDF_Attribute)& theInstance);
+
+  //! Adds a translation driver for the derived attribute. The base driver must be already added.
+  //! @param theDerivedType is registered attribute type using IMPLEMENT_DERIVED_ATTRIBUTE macro
+  Standard_EXPORT const Handle(Standard_Type)& AddDerivedDriver (Standard_CString theDerivedType);
+
+  //! Fills the map by all registered drivers.
+  Standard_EXPORT void CreateDrvMap (XmlMDF_MapOfDriver& theDriverMap);
+
   //! Gets a driver <aDriver> according to <aType>
   //!
   //! Returns True if a driver is found; false otherwise.
-  Standard_EXPORT Standard_Boolean GetDriver (const Handle(Standard_Type)& aType, Handle(XmlMDF_ADriver)& anHDriver) const;
-
-
+  Standard_EXPORT Standard_Boolean GetDriver (const Handle(Standard_Type)& theType,
+                                              Handle(XmlMDF_ADriver)& theDriver);
 
 
   DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriverTable,Standard_Transient)

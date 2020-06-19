@@ -66,15 +66,13 @@ Standard_Boolean XmlMDataStd_IntegerDriver::Paste
   anInt->Set(aValue);
 
   // attribute id
-  Standard_GUID aGUID;
   const XmlObjMgt_Element& anElement = theSource;
   XmlObjMgt_DOMString aGUIDStr = anElement.getAttribute(::AttributeIDString());
-  if (aGUIDStr.Type() == XmlObjMgt_DOMString::LDOM_NULL)
-    aGUID = TDataStd_Integer::GetID(); //default case
-  else
-    aGUID = Standard_GUID(Standard_CString(aGUIDStr.GetString())); // user defined case
-
-  Handle(TDataStd_Integer)::DownCast(theTarget)->SetID(aGUID);
+  if (aGUIDStr.Type() != XmlObjMgt_DOMString::LDOM_NULL)
+  {
+    const Standard_GUID aGUID (aGUIDStr.GetString()); // user defined case
+    Handle(TDataStd_Integer)::DownCast(theTarget)->SetID(aGUID);
+  }
 
   return Standard_True;
 }

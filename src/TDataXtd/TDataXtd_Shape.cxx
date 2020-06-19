@@ -31,7 +31,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataXtd_Shape,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataXtd_Shape, TDataStd_GenericEmpty)
 
 //=======================================================================
 //function : Find
@@ -144,35 +144,6 @@ TDataXtd_Shape::TDataXtd_Shape()
 const Standard_GUID& TDataXtd_Shape::ID() const
 { return GetID(); }
 
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataXtd_Shape::NewEmpty () const
-{  
-  return new TDataXtd_Shape(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Shape::Restore(const Handle(TDF_Attribute)& ) 
-{  
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataXtd_Shape::Paste (const Handle(TDF_Attribute)&,
-			   const Handle(TDF_RelocationTable)&) const
-{  
-}
 
 //=======================================================================
 //function : References

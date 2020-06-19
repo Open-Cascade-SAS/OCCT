@@ -1,0 +1,81 @@
+#INTERFACE CAF
+# Basic attributes
+#
+# Testing attributes: TDataStd_Tick TDataStd_Directory TDataStd_NoteBook TDataXtd_Axis TDataXtd_Placement TDataXtd_Plane TDataXtd_Point TDataXtd_Shape 
+#
+# Testing command:   SetEmptyAttribute
+# BinOcaf format open/save with these attributes
+
+Label D 0:2
+
+set IsGood 1
+
+NewCommand D
+SetEmptyAttribute D 0:2 TDataStd_Tick
+SetEmptyAttribute D 0:2 TDataStd_Directory
+SetEmptyAttribute D 0:2 TDataStd_NoteBook
+SetEmptyAttribute D 0:2 TDataXtd_Axis
+SetEmptyAttribute D 0:2 TDataXtd_Placement
+SetEmptyAttribute D 0:2 TDataXtd_Plane
+SetEmptyAttribute D 0:2 TDataXtd_Point
+SetEmptyAttribute D 0:2 TDataXtd_Shape 
+CommitCommand D
+
+set aLen1 [llength [Attributes D 0:2]]
+if { ${aLen1} != 8 } {
+   set IsGood 0
+   puts "Not all attributes were added aLen1=${aLen1}"
+}
+
+NewCommand D
+# check forget attribute by its type
+ForgetAtt D 0:2 TDataXtd_Point
+CommitCommand D
+
+set aLen2 [llength [Attributes D 0:2]]
+if { ${aLen2} != ${aLen1} - 1 } {
+   set IsGood 0
+   puts "TDataXtd_Point was not removed from the label"
+}
+
+Undo D
+Undo D
+
+set aLen3 [llength [Attributes D 0:2]]
+if { ${aLen3} != 0 } {
+   set IsGood 0
+   puts "Not all attributes were removed on Undo aLen3=${aLen3}"
+}
+
+Redo D
+
+set aLen4 [llength [Attributes D 0:2]]
+if { ${aLen4} != 8 } {
+   set IsGood 0
+   puts "Not all attributes were restored by Redo aLen4=${aLen4}"
+}
+
+set aFile ${imagedir}/caf001-F4.cbf
+file delete ${aFile}
+SaveAs D ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+Close D
+
+Open ${aFile} DD
+
+Label DD 0:2
+
+set aLen5 [llength [Attributes DD 0:2]]
+if { ${aLen5} != 8 } {
+   set IsGood 0
+   puts "Not all attributes were restored on Open aLen4=${aLen5}"
+}
+
+if { ${IsGood} == 0} {
+  puts "Set empty attributes: Error"
+} else {
+  puts "Set empty attributes: OK"
+}

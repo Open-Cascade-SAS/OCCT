@@ -53,11 +53,14 @@ public:
   
   //! Returns the type of source object,
   //! inheriting from Attribute from TDF.
-  Standard_EXPORT Handle(Standard_Type) SourceType() const;
+  Standard_EXPORT virtual Handle(Standard_Type) SourceType() const;
   
   //! Returns the full XML tag name (including NS prefix)
   Standard_EXPORT const TCollection_AsciiString& TypeName() const;
-  
+
+  //! Returns the namespace string
+  const TCollection_AsciiString& Namespace() const { return myNamespace; }
+
   //! Translate the contents of <aSource> and put it
   //! into <aTarget>, using the relocation table
   //! <aRelocTable> to keep the sharings.
@@ -68,6 +71,9 @@ public:
   //! <aRelocTable> to keep the sharings.
   Standard_EXPORT virtual void Paste (const Handle(TDF_Attribute)& aSource, XmlObjMgt_Persistent& aTarget, XmlObjMgt_SRelocationTable& aRelocTable) const = 0;
 
+  //! Returns the current message driver of this driver
+  const Handle(Message_Messenger)& MessageDriver() const { return myMessageDriver; }
+
   DEFINE_STANDARD_RTTIEXT(XmlMDF_ADriver,Standard_Transient)
 
 protected:
@@ -75,7 +81,7 @@ protected:
   Standard_EXPORT XmlMDF_ADriver(const Handle(Message_Messenger)& theMessageDriver, const Standard_CString theNamespace, const Standard_CString theName = NULL);
 
   TCollection_AsciiString myTypeName;
-
+  TCollection_AsciiString myNamespace;
   Handle(Message_Messenger) myMessageDriver;
 
 private:

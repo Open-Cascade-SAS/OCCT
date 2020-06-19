@@ -25,7 +25,7 @@
 #include <TDF_ChildIDIterator.hxx>
 #include <XCAFDoc.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_ClippingPlaneTool, TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_ClippingPlaneTool,TDataStd_GenericEmpty,"xcaf","ClippingPlaneTool")
 
 //=======================================================================
 //function : BaseLabel
@@ -308,35 +308,6 @@ const Standard_GUID& XCAFDoc_ClippingPlaneTool::ID() const
 }
 
 //=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_ClippingPlaneTool::Restore(const Handle(TDF_Attribute)& /*with*/)
-{
-}
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_ClippingPlaneTool::NewEmpty() const
-{
-  return new XCAFDoc_ClippingPlaneTool;
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_ClippingPlaneTool::Paste(const Handle(TDF_Attribute)& /*into*/,
-  const Handle(TDF_RelocationTable)& /*RT*/) const
-{
-}
-
-//=======================================================================
 //function : XCAFDoc_ClippingPlaneTool
 //purpose  : 
 //=======================================================================
@@ -344,15 +315,3 @@ void XCAFDoc_ClippingPlaneTool::Paste(const Handle(TDF_Attribute)& /*into*/,
 XCAFDoc_ClippingPlaneTool::XCAFDoc_ClippingPlaneTool()
 {
 }
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void XCAFDoc_ClippingPlaneTool::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
-}
-

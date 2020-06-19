@@ -22,12 +22,11 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_Real.hxx>
-#include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_RelocationTable.hxx>
 #include <TDF_TagSource.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_NoteBook,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_NoteBook,TDataStd_GenericEmpty)
 
 //=======================================================================
 //function : Find
@@ -128,35 +127,6 @@ const Standard_GUID& TDataStd_NoteBook::ID() const
 
 
 //=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataStd_NoteBook::NewEmpty () const
-{  
-  return new TDataStd_NoteBook(); 
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDataStd_NoteBook::Restore(const Handle(TDF_Attribute)& ) 
-{
-}
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataStd_NoteBook::Paste (const Handle(TDF_Attribute)& ,
-			       const Handle(TDF_RelocationTable)& ) const
-{
-}
-
-//=======================================================================
 //function : Dump
 //purpose  : 
 //=======================================================================
@@ -165,15 +135,4 @@ Standard_OStream& TDataStd_NoteBook::Dump (Standard_OStream& anOS) const
 {  
   anOS << "NoteBook";
   return anOS;
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDataStd_NoteBook::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
 }

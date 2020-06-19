@@ -20,7 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <TDF_Attribute.hxx>
+#include <TDataStd_GenericEmpty.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
@@ -34,10 +34,10 @@ class TDF_RelocationTable;
 
 
 class TDataStd_NoteBook;
-DEFINE_STANDARD_HANDLE(TDataStd_NoteBook, TDF_Attribute)
+DEFINE_STANDARD_HANDLE(TDataStd_NoteBook, TDataStd_GenericEmpty)
 
 //! NoteBook Object attribute
-class TDataStd_NoteBook : public TDF_Attribute
+class TDataStd_NoteBook : public TDataStd_GenericEmpty
 {
 
 public:
@@ -72,21 +72,11 @@ public:
   
   Standard_EXPORT const Standard_GUID& ID() const Standard_OVERRIDE;
   
-  Standard_EXPORT void Restore (const Handle(TDF_Attribute)& with) Standard_OVERRIDE;
-  
-  Standard_EXPORT Handle(TDF_Attribute) NewEmpty() const Standard_OVERRIDE;
-  
-  Standard_EXPORT void Paste (const Handle(TDF_Attribute)& into, const Handle(TDF_RelocationTable)& RT) const Standard_OVERRIDE;
-  
   Standard_EXPORT virtual Standard_OStream& Dump (Standard_OStream& anOS) const Standard_OVERRIDE;
   
-  //! Dumps the content of me into the stream
-  Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
 
-
-
-  DEFINE_STANDARD_RTTIEXT(TDataStd_NoteBook,TDF_Attribute)
+  DEFINE_DERIVED_ATTRIBUTE(TDataStd_NoteBook, TDataStd_GenericEmpty)
 
 protected:
 

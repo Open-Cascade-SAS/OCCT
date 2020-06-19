@@ -31,7 +31,7 @@
 #include <XCAFDoc_GraphNode.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(XCAFDoc_LayerTool,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_LayerTool,TDataStd_GenericEmpty,"xcaf","LayerTool")
 
 //=======================================================================
 //function : Constructor
@@ -588,38 +588,6 @@ Handle(TColStd_HSequenceOfExtendedString) XCAFDoc_LayerTool::GetLayers(const Top
 const Standard_GUID& XCAFDoc_LayerTool::ID() const
 {
   return GetID();
-}
-
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_LayerTool::Restore(const Handle(TDF_Attribute)& /* with */) 
-{
-}
-
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) XCAFDoc_LayerTool::NewEmpty() const
-{
-  return new XCAFDoc_LayerTool;
-}
-
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void XCAFDoc_LayerTool::Paste(const Handle(TDF_Attribute)& /* into */,
-			      const Handle(TDF_RelocationTable)& /* RT */) const
-{
 }
 
 //=======================================================================

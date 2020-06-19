@@ -15,21 +15,9 @@
 // commercial license or contractual agreement.
 
 #include <TDataStd_Name.hxx>
-
-#include <Standard_DomainError.hxx>
-#include <Standard_Dump.hxx>
-#include <Standard_GUID.hxx>
-#include <Standard_Type.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TDF_Attribute.hxx>
-#include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
-#include <TDF_RelocationTable.hxx>
-#include <TDF_Tool.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(TDataStd_Name,TDF_Attribute)
+IMPLEMENT_DERIVED_ATTRIBUTE(TDataStd_Name,TDataStd_GenericExtString)
 
 //=======================================================================
 //function : GetID
@@ -52,7 +40,7 @@ static Handle(TDataStd_Name) SetAttr(const TDF_Label&       label,
   Handle(TDataStd_Name) N;
   if (!label.FindAttribute(theGuid, N)) {
     N = new TDataStd_Name ();
-    N->SetID(theGuid);
+    N->SetID (theGuid);
     label.AddAttribute(N);
   }
   N->Set (theString); 
@@ -81,13 +69,15 @@ Handle(TDataStd_Name) TDataStd_Name::Set (const TDF_Label&    label,
 {
   return SetAttr(label, theString, theGuid);
 }
+
 //=======================================================================
 //function : TDataStd_Name
-//purpose  : Empty Constructor
+//purpose  :
 //=======================================================================
-
-TDataStd_Name::TDataStd_Name () : myID(GetID())
-{}
+TDataStd_Name::TDataStd_Name()
+{
+  myID = GetID();
+}
 
 //=======================================================================
 //function : Set
@@ -101,22 +91,10 @@ void TDataStd_Name::Set (const TCollection_ExtendedString& S)
   myString = S;
 }
 
-
-
-//=======================================================================
-//function : Get
-//purpose  : 
-//=======================================================================
-const TCollection_ExtendedString& TDataStd_Name::Get () const
-{
-  return myString;
-}
-
 //=======================================================================
 //function : SetID
 //purpose  :
 //=======================================================================
-
 void TDataStd_Name::SetID( const Standard_GUID&  theGuid)
 {  
   if(myID == theGuid) return;
@@ -129,6 +107,7 @@ void TDataStd_Name::SetID( const Standard_GUID&  theGuid)
 //function : SetID
 //purpose  : sets default ID
 //=======================================================================
+
 void TDataStd_Name::SetID()
 {
   Backup();
@@ -136,49 +115,6 @@ void TDataStd_Name::SetID()
 }
 
 // TDF_Attribute methods
-//=======================================================================
-//function : ID
-//purpose  : 
-//=======================================================================
-
-const Standard_GUID& TDataStd_Name::ID () const { return myID; }
-
-//=======================================================================
-//function : NewEmpty
-//purpose  : 
-//=======================================================================
-
-Handle(TDF_Attribute) TDataStd_Name::NewEmpty () const
-{
-  return new TDataStd_Name();
-}
-
-//=======================================================================
-//function : Restore
-//purpose  : 
-//=======================================================================
-
-void TDataStd_Name::Restore(const Handle(TDF_Attribute)& with) 
-{
-   Handle(TDataStd_Name) anAtt = Handle(TDataStd_Name)::DownCast (with);
-   myString = anAtt->Get();
-   myID = anAtt->ID();
-}
-
-
-//=======================================================================
-//function : Paste
-//purpose  : 
-//=======================================================================
-
-void TDataStd_Name::Paste (const Handle(TDF_Attribute)& into,
-                           const Handle(TDF_RelocationTable)&/* RT*/) const
-{
-  Handle(TDataStd_Name) anAtt = Handle(TDataStd_Name)::DownCast (into);
-  anAtt->Set (myString);
-  anAtt->SetID(myID);
-}
-
 //=======================================================================
 //function : Dump
 //purpose  : 
@@ -192,18 +128,4 @@ Standard_OStream& TDataStd_Name::Dump (Standard_OStream& anOS) const
   myID.ToCString(sguid);
   anOS << sguid << std::endl;
   return anOS;
-}
-
-//=======================================================================
-//function : DumpJson
-//purpose  : 
-//=======================================================================
-void TDataStd_Name::DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth) const
-{
-  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
-
-  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, TDF_Attribute)
-
-  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myString)
-  OCCT_DUMP_FIELD_VALUE_GUID (theOStream, myID)
 }
