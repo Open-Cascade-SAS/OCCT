@@ -38,6 +38,9 @@ class OcctJniView extends GLSurfaceView
   {
     super (theContext, theAttrs);
 
+    android.util.DisplayMetrics aDispInfo = theContext.getResources().getDisplayMetrics();
+    myScreenDensity = aDispInfo.density;
+
     setPreserveEGLContextOnPause (true);
     setEGLContextFactory (new ContextFactory());
     setEGLConfigChooser  (new ConfigChooser());
@@ -45,8 +48,9 @@ class OcctJniView extends GLSurfaceView
     RelativeLayout.LayoutParams aLParams = new RelativeLayout.LayoutParams (LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
     aLParams.addRule (RelativeLayout.ALIGN_TOP);
 
-    myRenderer = new OcctJniRenderer();
+    myRenderer = new OcctJniRenderer (this, myScreenDensity);
     setRenderer (myRenderer);
+    setRenderMode (GLSurfaceView.RENDERMODE_WHEN_DIRTY); // render on request to spare battery
   }
 
   //! Open file.
@@ -54,6 +58,7 @@ class OcctJniView extends GLSurfaceView
   {
     final String aPath = thePath;
     queueEvent (new Runnable() { public void run() { myRenderer.open (aPath); }});
+    requestRender();
   }
 
   //! Create OpenGL ES 2.0+ context
@@ -202,77 +207,44 @@ class OcctJniView extends GLSurfaceView
   //! Callback to handle touch events
   @Override public boolean onTouchEvent (MotionEvent theEvent)
   {
-    int aPointerIndex = theEvent.getActionIndex();
-    int aPointerId    = theEvent.getPointerId (aPointerIndex);
-    int aMaskedAction = theEvent.getActionMasked();
+    final int aMaskedAction = theEvent.getActionMasked();
     switch (aMaskedAction)
     {
       case MotionEvent.ACTION_DOWN:
       case MotionEvent.ACTION_POINTER_DOWN:
       {
-        PointF aPntLast = null;
-        if (myActivePointers.size() >= 1)
+        final int aPointerIndex = theEvent.getActionIndex();
+        final int aPointerId    = theEvent.getPointerId (aPointerIndex);
+        final PointF aPnt = new PointF (theEvent.getX (aPointerIndex), theEvent.getY (aPointerIndex));
+
+        if (theEvent.getPointerCount() == 1)
         {
-          aPntLast = myActivePointers.get (myActivePointers.keyAt (0));
+          mySelectPoint = aPnt;
+        }
+        else
+        {
+          mySelectPoint = null;
         }
 
-        final PointF aPnt = new PointF();
-        aPnt.x = theEvent.getX (aPointerIndex);
-        aPnt.y = theEvent.getY (aPointerIndex);
-        myActivePointers.put (aPointerId, aPnt);
-
-        switch (myActivePointers.size())
-        {
-          case 1:
-          {
-            final int aStartX = (int )aPnt.x;
-            final int aStartY = (int )aPnt.y;
-            queueEvent (new Runnable() { public void run() { myRenderer.onStartRotation (aStartX, aStartY); }});
-            break;
-          }
-          case 2:
-          {
-            myPanFrom.x = (aPntLast.x + aPnt.x) * 0.5f;
-            myPanFrom.y = (aPntLast.y + aPnt.y) * 0.5f;
-            break;
-          }
-        }
-
+        queueEvent (new Runnable() { public void run() { myRenderer.onAddTouchPoint (aPointerId, aPnt.x, aPnt.y); }});
         break;
       }
       case MotionEvent.ACTION_MOVE:
       {
         for (int aNbPointers = theEvent.getPointerCount(), aPntIter = 0; aPntIter < aNbPointers; ++aPntIter)
         {
-          PointF aPnt = myActivePointers.get (theEvent.getPointerId (aPntIter));
-          if (aPnt != null)
-          {
-            aPnt.x = theEvent.getX (aPntIter);
-            aPnt.y = theEvent.getY (aPntIter);
-          }
+          final int aPointerId = theEvent.getPointerId (aPntIter);
+          final PointF aPnt = new PointF (theEvent.getX (aPntIter), theEvent.getY (aPntIter));
+          queueEvent (new Runnable() { public void run() { myRenderer.onUpdateTouchPoint (aPointerId, aPnt.x, aPnt.y); }});
         }
-
-        switch (myActivePointers.size())
+        if (mySelectPoint != null)
         {
-          case 1:
+          final float aTouchThreshold = 5.0f * myScreenDensity;
+          final int aPointerIndex = theEvent.getActionIndex();
+          final PointF aDelta = new PointF (theEvent.getX (aPointerIndex) - mySelectPoint.x, theEvent.getY (aPointerIndex) - mySelectPoint.y);
+          if (Math.abs (aDelta.x) > aTouchThreshold || Math.abs (aDelta.y) > aTouchThreshold)
           {
-            PointF aPnt = myActivePointers.get (theEvent.getPointerId (0));
-            final int anX = (int )aPnt.x;
-            final int anY = (int )aPnt.y;
-            queueEvent (new Runnable() { public void run() { myRenderer.onRotation (anX, anY); }});
-            break;
-          }
-          case 2:
-          {
-            PointF aPnt1 = myActivePointers.get (myActivePointers.keyAt (0));
-            PointF aPnt2 = myActivePointers.get (myActivePointers.keyAt (1));
-            PointF aPntAver = new PointF ((aPnt1.x + aPnt2.x) * 0.5f,
-                                          (aPnt1.y + aPnt2.y) * 0.5f);
-            final int aDX = (int )(aPntAver.x - myPanFrom.x);
-            final int aDY = (int )(myPanFrom.y -aPntAver.y);
-            myPanFrom.x = aPntAver.x;
-            myPanFrom.y = aPntAver.y;
-            queueEvent (new Runnable() { public void run() { myRenderer.onPanning (aDX, aDY); }});
+            mySelectPoint = null;
           }
         }
         break;
@@ -281,30 +253,21 @@ class OcctJniView extends GLSurfaceView
       case MotionEvent.ACTION_POINTER_UP:
       case MotionEvent.ACTION_CANCEL:
       {
-        myActivePointers.remove (aPointerId);
-        if (myActivePointers.size() == 0)
+        if (mySelectPoint != null)
         {
-          final int aPressX      = (int )theEvent.getX (aPointerIndex);
-          final int aPressY      = (int )theEvent.getY (aPointerIndex);
-          double    aPressTimeMs = theEvent.getEventTime() - theEvent.getDownTime();
-          if (aPressTimeMs < 100.0)
-          {
-            queueEvent (new Runnable() { public void run() { myRenderer.onClick (aPressX, aPressY); }});
-            break;
-          }
+          final float aSelX = mySelectPoint.x;
+          final float aSelY = mySelectPoint.y;
+          queueEvent (new Runnable() { public void run() { myRenderer.onSelectInViewer (aSelX, aSelY); }});
+          mySelectPoint = null;
         }
-        else if (myActivePointers.size() == 1)
-        {
-          PointF    aPnt    = myActivePointers.get (myActivePointers.keyAt (0));
-          final int aStartX = (int )aPnt.x;
-          final int aStartY = (int )aPnt.y;
-          queueEvent (new Runnable() { public void run() { myRenderer.onStartRotation (aStartX, aStartY); }});
-        }
-        //queueEvent (new Runnable() { public void run() { myRenderer.onStopAction(); }});
-        break;
+
+        final int aPointerIndex = theEvent.getActionIndex();
+        final int aPointerId    = theEvent.getPointerId (aPointerIndex);
+        final PointF aPnt = new PointF (theEvent.getX (aPointerIndex), theEvent.getY (aPointerIndex));
+        queueEvent (new Runnable() { public void run() { myRenderer.onRemoveTouchPoint (aPointerId); }});
       }
     }
-    ///invalidate();
+    requestRender();
     return true;
   }
 
@@ -312,21 +275,20 @@ class OcctJniView extends GLSurfaceView
   public void fitAll()
   {
     queueEvent (new Runnable() { public void run() { myRenderer.fitAll(); }});
+    requestRender();
   }
 
   //! Move camera
   public void setProj (final OcctJniRenderer.TypeOfOrientation theProj)
   {
     queueEvent (new Runnable() { public void run() { myRenderer.setProj (theProj); }});
+    requestRender();
   }
 
   //! OCCT viewer
-  private OcctJniRenderer     myRenderer = null;
-
-  //! Touch events cache
-  private SparseArray<PointF> myActivePointers = new SparseArray<PointF>();
-
-  //! Starting point for panning event
-  private PointF              myPanFrom  = new PointF (0.0f, 0.0f);
+  private OcctJniRenderer myRenderer = null;
+  private int    mySelectId = -1;
+  private PointF mySelectPoint = null;
+  private float  myScreenDensity = 1.0f;
 
 }

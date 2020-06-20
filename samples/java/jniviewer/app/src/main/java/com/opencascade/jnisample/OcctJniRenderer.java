@@ -34,11 +34,13 @@ public class OcctJniRenderer implements GLSurfaceView.Renderer
   };
 
   //! Empty constructor.
-  OcctJniRenderer()
+  OcctJniRenderer (GLSurfaceView theView,
+                   float theScreenDensity)
   {
+    myView = theView; // this makes cyclic dependency, but it is OK for JVM
     if (OcctJniActivity.areNativeLoaded)
     {
-      myCppViewer = cppCreate();
+      myCppViewer = cppCreate (theScreenDensity);
     }
   }
 
@@ -56,7 +58,10 @@ public class OcctJniRenderer implements GLSurfaceView.Renderer
   {
     if (myCppViewer != 0)
     {
-      cppRedraw (myCppViewer);
+      if (cppRedraw (myCppViewer))
+      {
+        myView.requestRender(); // this method is allowed from any thread
+      }
     }
   }
 
@@ -77,48 +82,39 @@ public class OcctJniRenderer implements GLSurfaceView.Renderer
     }
   }
 
-  //! Initialize rotation (remember first point position)
-  public void onStartRotation (int theStartX, int theStartY)
+  //! Add touch point.
+  public void onAddTouchPoint (int theId, float theX, float theY)
   {
     if (myCppViewer != 0)
     {
-      cppStartRotation (myCppViewer, theStartX, theStartY);
+      cppAddTouchPoint (myCppViewer, theId, theX, theY);
     }
   }
 
-  //! Perform rotation (relative to first point)
-  public void onRotation (int theX, int theY)
+  //! Update touch point.
+  public void onUpdateTouchPoint (int theId, float theX, float theY)
   {
     if (myCppViewer != 0)
     {
-      cppOnRotation (myCppViewer, theX, theY);
+      cppUpdateTouchPoint (myCppViewer, theId, theX, theY);
     }
   }
 
-  //! Perform panning
-  public void onPanning (int theDX, int theDY)
+  //! Remove touch point.
+  public void onRemoveTouchPoint (int theId)
   {
     if (myCppViewer != 0)
     {
-      cppOnPanning (myCppViewer, theDX, theDY);
+      cppRemoveTouchPoint (myCppViewer, theId);
     }
   }
 
-  //! Perform selection
-  public void onClick (int theX, int theY)
+  //! Select in 3D Viewer.
+  public void onSelectInViewer (float theX, float theY)
   {
     if (myCppViewer != 0)
     {
-      cppOnClick (myCppViewer, theX, theY);
-    }
-  }
-
-  //! Stop previously active action (e.g. discard first rotation point)
-  public void onStopAction()
-  {
-    if (myCppViewer != 0)
-    {
-      cppStopAction (myCppViewer);
+      cppSelectInViewer (myCppViewer, theX, theY);
     }
   }
 
@@ -157,7 +153,7 @@ public class OcctJniRenderer implements GLSurfaceView.Renderer
   }
 
   //! Create instance of C++ class
-  private native long cppCreate();
+  private native long cppCreate (float theDispDensity);
 
   //! Destroy instance of C++ class
   private native void cppDestroy (long theCppPtr);
@@ -171,11 +167,21 @@ public class OcctJniRenderer implements GLSurfaceView.Renderer
   //! Open CAD file
   private native void cppOpen    (long theCppPtr, String thePath);
 
-  //! Handle detection in the viewer
-  private native void cppMoveTo  (long theCppPtr, int theX, int theY);
+  //! Add touch point
+  private native void cppAddTouchPoint (long theCppPtr, int theId, float theX, float theY);
+
+  //! Update touch point
+  private native void cppUpdateTouchPoint (long theCppPtr, int theId, float theX, float theY);
+
+  //! Remove touch point
+  private native void cppRemoveTouchPoint (long theCppPtr, int theId);
+
+  //! Select in 3D Viewer.
+  private native void cppSelectInViewer (long theCppPtr, float theX, float theY);
 
   //! Redraw OCCT viewer
-  private native void cppRedraw  (long theCppPtr);
+  //! Returns TRUE if more frames are requested.
+  private native boolean cppRedraw  (long theCppPtr);
 
   //! Fit All
   private native void cppFitAll  (long theCppPtr);
@@ -198,21 +204,7 @@ public class OcctJniRenderer implements GLSurfaceView.Renderer
   //! Move camera
   private native void cppSetZnegProj (long theCppPtr);
 
-  //! Initialize rotation
-  private native void cppStartRotation (long theCppPtr, int theStartX, int theStartY);
-
-  //! Perform rotation
-  private native void cppOnRotation    (long theCppPtr, int theX,  int theY);
-
-  //! Perform panning
-  private native void cppOnPanning     (long theCppPtr, int theDX, int theDY);
-
-  //! Perform selection
-  private native void cppOnClick       (long theCppPtr, int theX,  int theY);
-
-  //! Stop action (rotation / panning / scaling)
-  private native void cppStopAction    (long theCppPtr);
-
+  private GLSurfaceView myView = null; //!< back reference to the View
   private long myCppViewer = 0;   //!< pointer to c++ class instance
 
 }

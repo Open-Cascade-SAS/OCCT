@@ -12,18 +12,21 @@
 // commercial license or contractual agreement.
 
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_ViewController.hxx>
 #include <TopoDS_Shape.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 
+class AIS_ViewCube;
+
 //! Main C++ back-end for activity.
-class OcctJni_Viewer
+class OcctJni_Viewer : public AIS_ViewController
 {
 
 public:
 
   //! Empty constructor
-  OcctJni_Viewer();
+  OcctJni_Viewer (float theDispDensity);
 
   //! Initialize the viewer
   bool init();
@@ -44,43 +47,45 @@ public:
                      int theHeight = 0);
 
   //! Viewer update.
-  void redraw();
+  //! Returns TRUE if more frames should be requested.
+  bool redraw();
 
   //! Move camera
-  void setProj (V3d_TypeOfOrientation theProj) { if (!myView.IsNull()) myView->SetProj (theProj); }
+  void setProj (V3d_TypeOfOrientation theProj)
+  {
+    if (myView.IsNull())
+    {
+      return;
+    }
+
+    myView->SetProj (theProj);
+    myView->Invalidate();
+  }
 
   //! Fit All.
   void fitAll();
-
-  //! Start rotation (remember first point position)
-  void startRotation (int theStartX,
-                      int theStartY);
-
-  //! Perform rotation (relative to first point)
-  void onRotation (int theX,
-                   int theY);
-
-  //! Perform panning
-  void onPanning (int theDX,
-                  int theDY);
-
-  //! Perform selection
-  void onClick (int theX,
-                int theY);
-
-  //! Stop previously started action
-  void stopAction();
 
 protected:
 
   //! Reset viewer content.
   void initContent();
 
+  //! Print information about OpenGL ES context.
+  void dumpGlInfo (bool theIsBasic);
+
+  //! Handle redraw.
+  virtual void handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
+                                 const Handle(V3d_View)& theView) override;
+
 protected:
 
   Handle(V3d_Viewer)             myViewer;
   Handle(V3d_View)               myView;
   Handle(AIS_InteractiveContext) myContext;
+  Handle(Prs3d_TextAspect)       myTextStyle; //!< text style for OSD elements
+  Handle(AIS_ViewCube)           myViewCube;  //!< view cube object
   TopoDS_Shape                   myShape;
+  float                          myDevicePixelRatio; //!< device pixel ratio for handling high DPI displays
+  bool                           myIsJniMoreFrames; //!< need more frame flag
 
 };

@@ -14,6 +14,7 @@
 #include "OcctJni_Viewer.hxx"
 #include "OcctJni_MsgPrinter.hxx"
 
+#include <AIS_ViewCube.hxx>
 #include <AIS_Shape.hxx>
 #include <Aspect_NeutralWindow.hxx>
 #include <Image_AlienPixMap.hxx>
@@ -24,6 +25,7 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_Timer.hxx>
+#include <Prs3d_DatumAspect.hxx>
 #include <Standard_Version.hxx>
 
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -107,8 +109,11 @@ Standard_Boolean setResourceEnv (const TCollection_AsciiString& theVarName,
 // function : OcctJni_Viewer
 // purpose  :
 // =======================================================================
-OcctJni_Viewer::OcctJni_Viewer()
+OcctJni_Viewer::OcctJni_Viewer (float theDispDensity)
+: myDevicePixelRatio (theDispDensity),
+  myIsJniMoreFrames (false)
 {
+  SetTouchToleranceScale (theDispDensity);
 #ifndef NDEBUG
   // Register printer for logging messages into global Android log.
   // Should never be used in production (or specify higher gravity for logging only failures).
@@ -122,6 +127,51 @@ OcctJni_Viewer::OcctJni_Viewer()
 
   setResourceEnv ("CSF_XSMessage", aResRoot + "/XSMessage", "XSTEP.us", Standard_False);
   setResourceEnv ("CSF_SHMessage", aResRoot + "/XSMessage", "SHAPE.us", Standard_False);
+}
+
+// ================================================================
+// Function : dumpGlInfo
+// Purpose  :
+// ================================================================
+void OcctJni_Viewer::dumpGlInfo (bool theIsBasic)
+{
+  TColStd_IndexedDataMapOfStringString aGlCapsDict;
+  myView->DiagnosticInformation (aGlCapsDict, Graphic3d_DiagnosticInfo_Basic); //theIsBasic ? Graphic3d_DiagnosticInfo_Basic : Graphic3d_DiagnosticInfo_Complete);
+  if (theIsBasic)
+  {
+    TCollection_AsciiString aViewport;
+    aGlCapsDict.FindFromKey ("Viewport", aViewport);
+    aGlCapsDict.Clear();
+    aGlCapsDict.Add ("Viewport", aViewport);
+  }
+  aGlCapsDict.Add ("Display scale", TCollection_AsciiString(myDevicePixelRatio));
+
+  // beautify output
+  {
+    TCollection_AsciiString* aGlVer   = aGlCapsDict.ChangeSeek ("GLversion");
+    TCollection_AsciiString* aGlslVer = aGlCapsDict.ChangeSeek ("GLSLversion");
+    if (aGlVer   != NULL
+     && aGlslVer != NULL)
+    {
+      *aGlVer = *aGlVer + " [GLSL: " + *aGlslVer + "]";
+      aGlslVer->Clear();
+    }
+  }
+
+  TCollection_AsciiString anInfo;
+  for (TColStd_IndexedDataMapOfStringString::Iterator aValueIter (aGlCapsDict); aValueIter.More(); aValueIter.Next())
+  {
+    if (!aValueIter.Value().IsEmpty())
+    {
+      if (!anInfo.IsEmpty())
+      {
+        anInfo += "\n";
+      }
+      anInfo += aValueIter.Key() + ": " + aValueIter.Value();
+    }
+  }
+
+  Message::Send (anInfo, Message_Warning);
 }
 
 // =======================================================================
@@ -157,15 +207,6 @@ bool OcctJni_Viewer::init()
     return false;
   }
 
-  TCollection_AsciiString anEglInfo = TCollection_AsciiString()
-      + "\n  EGLVersion:     " + eglQueryString (anEglDisplay, EGL_VERSION)
-      + "\n  EGLVendor:      " + eglQueryString (anEglDisplay, EGL_VENDOR)
-      + "\n  EGLClient APIs: " + eglQueryString (anEglDisplay, EGL_CLIENT_APIS)
-      + "\n  GLvendor:       " + (const char* )glGetString (GL_VENDOR)
-      + "\n  GLdevice:       " + (const char* )glGetString (GL_RENDERER)
-      + "\n  GLversion:      " + (const char* )glGetString (GL_VERSION) + " [GLSL: " + (const char* )glGetString (GL_SHADING_LANGUAGE_VERSION) + "]";
-    ::Message::DefaultMessenger()->Send (anEglInfo, Message_Info);
-
   if (!myViewer.IsNull())
   {
     Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (myViewer->Driver());
@@ -179,6 +220,7 @@ bool OcctJni_Viewer::init()
 
     aWindow->SetSize (aWidth, aHeight);
     myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
+    dumpGlInfo (true);
     return true;
   }
 
@@ -192,6 +234,17 @@ bool OcctJni_Viewer::init()
     return false;
   }
 
+  myTextStyle = new Prs3d_TextAspect();
+  myTextStyle->SetFont (Font_NOF_ASCII_MONO);
+  myTextStyle->SetHeight (12);
+  myTextStyle->Aspect()->SetColor (Quantity_NOC_GRAY95);
+  myTextStyle->Aspect()->SetColorSubTitle (Quantity_NOC_BLACK);
+  myTextStyle->Aspect()->SetDisplayType (Aspect_TODT_SHADOW);
+  myTextStyle->Aspect()->SetTextFontAspect (Font_FA_Bold);
+  myTextStyle->Aspect()->SetTextZoomable (false);
+  myTextStyle->SetHorizontalJustification (Graphic3d_HTA_LEFT);
+  myTextStyle->SetVerticalJustification (Graphic3d_VTA_BOTTOM);
+
   // create viewer
   myViewer = new V3d_Viewer (aDriver);
   myViewer->SetDefaultBackgroundColor (Quantity_NOC_BLACK);
@@ -200,15 +253,22 @@ bool OcctJni_Viewer::init()
 
   // create AIS context
   myContext = new AIS_InteractiveContext (myViewer);
-  //myContext->SetDisplayMode (AIS_WireFrame, false);
+  myContext->SetPixelTolerance (int(myDevicePixelRatio * 6.0)); // increase tolerance and adjust to hi-dpi screens
   myContext->SetDisplayMode (AIS_Shaded, false);
 
   Handle(Aspect_NeutralWindow) aWindow = new Aspect_NeutralWindow();
   aWindow->SetSize (aWidth, aHeight);
   myView = myViewer->CreateView();
+  myView->SetImmediateUpdate (false);
+  myView->ChangeRenderingParams().Resolution = (unsigned int )(96.0 * myDevicePixelRatio + 0.5);
+  myView->ChangeRenderingParams().ToShowStats = true;
+  myView->ChangeRenderingParams().CollectedStats = (Graphic3d_RenderingParams::PerfCounters ) (Graphic3d_RenderingParams::PerfCounters_FrameRate | Graphic3d_RenderingParams::PerfCounters_Triangles);
+  myView->ChangeRenderingParams().StatsTextAspect = myTextStyle->Aspect();
+  myView->ChangeRenderingParams().StatsTextHeight = (int )myTextStyle->Height();
 
   myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
-  myView->TriedronDisplay (Aspect_TOTP_RIGHT_LOWER, Quantity_NOC_WHITE, 0.08, V3d_ZBUFFER);
+  dumpGlInfo (false);
+  //myView->TriedronDisplay (Aspect_TOTP_RIGHT_LOWER, Quantity_NOC_WHITE, 0.08 * myDevicePixelRatio, V3d_ZBUFFER);
 
   initContent();
   return true;
@@ -244,8 +304,8 @@ void OcctJni_Viewer::resize (int theWidth,
   //myView->MustBeResized(); // can be used instead of SetWindow() when EGLsurface has not been changed
 
   EGLContext anEglContext = eglGetCurrentContext();
-  myView->SetImmediateUpdate (Standard_False);
   myView->SetWindow (aWindow, (Aspect_RenderingContext )anEglContext);
+  dumpGlInfo (true);
   //saveSnapshot ("/sdcard/Download/tt.png", theWidth, theHeight);
 }
 
@@ -256,6 +316,28 @@ void OcctJni_Viewer::resize (int theWidth,
 void OcctJni_Viewer::initContent()
 {
   myContext->RemoveAll (Standard_False);
+
+  if (myViewCube.IsNull())
+  {
+    myViewCube = new AIS_ViewCube();
+    {
+      // setup view cube size
+      static const double THE_CUBE_SIZE = 60.0;
+      myViewCube->SetSize (myDevicePixelRatio * THE_CUBE_SIZE, false);
+      myViewCube->SetBoxFacetExtension (myViewCube->Size() * 0.15);
+      myViewCube->SetAxesPadding (myViewCube->Size() * 0.10);
+      myViewCube->SetFontHeight  (THE_CUBE_SIZE * 0.16);
+    }
+    // presentation parameters
+    myViewCube->SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_TriedronPers, Aspect_TOTP_RIGHT_LOWER, Graphic3d_Vec2i (200, 200)));
+    myViewCube->Attributes()->SetDatumAspect (new Prs3d_DatumAspect());
+    myViewCube->Attributes()->DatumAspect()->SetTextAspect (myTextStyle);
+    // animation parameters
+    myViewCube->SetViewAnimation (myViewAnimation);
+    myViewCube->SetFixedAnimationLoop (false);
+    myViewCube->SetAutoStartAnimation (true);
+  }
+  myContext->Display (myViewCube, false);
 
   OSD_Timer aTimer;
   aTimer.Start();
@@ -389,6 +471,10 @@ bool OcctJni_Viewer::open (const TCollection_AsciiString& thePath)
   if (!myContext.IsNull())
   {
     myContext->RemoveAll (Standard_False);
+    if (!myViewCube.IsNull())
+    {
+      myContext->Display (myViewCube, false);
+    }
   }
   if (thePath.IsEmpty())
   {
@@ -529,18 +615,33 @@ bool OcctJni_Viewer::saveSnapshot (const TCollection_AsciiString& thePath,
   return true;
 }
 
+// ================================================================
+// Function : handleViewRedraw
+// Purpose  :
+// ================================================================
+void OcctJni_Viewer::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
+                                       const Handle(V3d_View)& theView)
+{
+  AIS_ViewController::handleViewRedraw (theCtx, theView);
+  myIsJniMoreFrames = myToAskNextFrame;
+}
+
 // =======================================================================
 // function : redraw
 // purpose  :
 // =======================================================================
-void OcctJni_Viewer::redraw()
+bool OcctJni_Viewer::redraw()
 {
   if (myView.IsNull())
   {
-    return;
+    return false;
   }
 
-  myView->Redraw();
+  // handle user input
+  myIsJniMoreFrames = false;
+  myView->InvalidateImmediate();
+  FlushViewEvents (myContext, myView, true);
+  return myIsJniMoreFrames;
 }
 
 // =======================================================================
@@ -558,89 +659,13 @@ void OcctJni_Viewer::fitAll()
   myView->Invalidate();
 }
 
-// =======================================================================
-// function : startRotation
-// purpose  :
-// =======================================================================
-void OcctJni_Viewer::startRotation (int theStartX,
-                                    int theStartY)
-{
-  if (myView.IsNull())
-  {
-    return;
-  }
-
-  myView->StartRotation (theStartX, theStartY, 0.45);
-  myView->Invalidate();
-}
-
-// =======================================================================
-// function : onRotation
-// purpose  :
-// =======================================================================
-void OcctJni_Viewer::onRotation (int theX,
-                                 int theY)
-{
-  if (myView.IsNull())
-  {
-    return;
-  }
-
-  myView->Rotation (theX, theY);
-  myView->Invalidate();
-}
-
-// =======================================================================
-// function : onPanning
-// purpose  :
-// =======================================================================
-void OcctJni_Viewer::onPanning (int theDX,
-                                int theDY)
-{
-  if (myView.IsNull())
-  {
-    return;
-  }
-
-  myView->Pan (theDX, theDY);
-  myView->Invalidate();
-}
-
-// =======================================================================
-// function : onClick
-// purpose  :
-// =======================================================================
-void OcctJni_Viewer::onClick (int theX,
-                              int theY)
-{
-  if (myView.IsNull())
-  {
-    return;
-  }
-
-  myContext->MoveTo (theX, theY, myView, Standard_False);
-  myContext->Select (Standard_False);
-  myView->Invalidate();
-}
-
-// =======================================================================
-// function : stopAction
-// purpose  :
-// =======================================================================
-void OcctJni_Viewer::stopAction()
-{
-  if (myView.IsNull())
-  {
-    return;
-  }
-}
-
 #define jexp extern "C" JNIEXPORT
 
 jexp jlong JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppCreate (JNIEnv* theEnv,
-                                                                             jobject theObj)
+                                                                             jobject theObj,
+                                                                             jfloat  theDispDensity)
 {
-  return jlong(new OcctJni_Viewer());
+  return jlong(new OcctJni_Viewer (theDispDensity));
 }
 
 jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppDestroy (JNIEnv* theEnv,
@@ -690,11 +715,11 @@ jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppOpen (JNIEnv
   ((OcctJni_Viewer* )theCppPtr)->open (aPath);
 }
 
-jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppRedraw (JNIEnv* theEnv,
-                                                                            jobject theObj,
-                                                                            jlong   theCppPtr)
+jexp jboolean JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppRedraw (JNIEnv* theEnv,
+                                                                                jobject theObj,
+                                                                                jlong   theCppPtr)
 {
-  ((OcctJni_Viewer* )theCppPtr)->redraw();
+  return ((OcctJni_Viewer* )theCppPtr)->redraw() ? JNI_TRUE : JNI_FALSE;
 }
 
 jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppSetAxoProj (JNIEnv* theEnv,
@@ -753,47 +778,41 @@ jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppFitAll (JNIE
   ((OcctJni_Viewer* )theCppPtr)->fitAll();
 }
 
-jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppStartRotation (JNIEnv* theEnv,
+jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppAddTouchPoint (JNIEnv* theEnv,
                                                                                    jobject theObj,
                                                                                    jlong   theCppPtr,
-                                                                                   jint    theStartX,
-                                                                                   jint    theStartY)
+                                                                                   jint    theId,
+                                                                                   jfloat  theX,
+                                                                                   jfloat  theY)
 {
-  ((OcctJni_Viewer* )theCppPtr)->startRotation (theStartX, theStartY);
+  ((OcctJni_Viewer* )theCppPtr)->AddTouchPoint (theId, Graphic3d_Vec2d (theX, theY));
 }
 
-jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppOnRotation (JNIEnv* theEnv,
-                                                                                jobject theObj,
-                                                                                jlong   theCppPtr,
-                                                                                jint    theX,
-                                                                                jint    theY)
+jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppUpdateTouchPoint (JNIEnv* theEnv,
+                                                                                   jobject theObj,
+                                                                                   jlong   theCppPtr,
+                                                                                   jint    theId,
+                                                                                   jfloat  theX,
+                                                                                   jfloat  theY)
 {
-  ((OcctJni_Viewer* )theCppPtr)->onRotation (theX, theY);
+  ((OcctJni_Viewer* )theCppPtr)->UpdateTouchPoint (theId, Graphic3d_Vec2d (theX, theY));
 }
 
-jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppOnPanning (JNIEnv* theEnv,
-                                                                               jobject theObj,
-                                                                               jlong   theCppPtr,
-                                                                               jint    theDX,
-                                                                               jint    theDY)
+jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppRemoveTouchPoint (JNIEnv* theEnv,
+                                                                                   jobject theObj,
+                                                                                   jlong   theCppPtr,
+                                                                                   jint    theId)
 {
-  ((OcctJni_Viewer* )theCppPtr)->onPanning (theDX, theDY);
+  ((OcctJni_Viewer* )theCppPtr)->RemoveTouchPoint (theId);
 }
 
-jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppOnClick (JNIEnv* theEnv,
-                                                                             jobject theObj,
-                                                                             jlong   theCppPtr,
-                                                                             jint    theX,
-                                                                             jint    theY)
+jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppSelectInViewer (JNIEnv* theEnv,
+                                                                                    jobject theObj,
+                                                                                    jlong   theCppPtr,
+                                                                                    jfloat  theX,
+                                                                                    jfloat  theY)
 {
-  ((OcctJni_Viewer* )theCppPtr)->onClick (theX, theY);
-}
-
-jexp void JNICALL Java_com_opencascade_jnisample_OcctJniRenderer_cppStopAction (JNIEnv* theEnv,
-                                                                                jobject theObj,
-                                                                                jlong   theCppPtr)
-{
-  ((OcctJni_Viewer* )theCppPtr)->stopAction();
+  ((OcctJni_Viewer* )theCppPtr)->SelectInViewer (Graphic3d_Vec2i ((int )theX, (int )theY));
 }
 
 jexp jlong JNICALL Java_com_opencascade_jnisample_OcctJniActivity_cppOcctMajorVersion (JNIEnv* theEnv,
