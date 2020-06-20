@@ -88,6 +88,10 @@ public:
   //! Redraw the View on an Expose Event
   Standard_EXPORT virtual void ProcessExpose();
 
+  //! Handle redraw.
+  Standard_EXPORT virtual void handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
+                                                 const Handle(V3d_View)& theView) Standard_OVERRIDE;
+
   //! Resize View.
   Standard_EXPORT virtual void ProcessConfigure();
 
@@ -101,6 +105,7 @@ private:
 
   TCollection_AsciiString myPickPntArgVec[3];
   Standard_Boolean myToPickPnt;
+  Standard_Boolean myIsTmpContRedraw;
 
 };
 

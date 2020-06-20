@@ -71,6 +71,7 @@
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColStd_MapOfAsciiString.hxx>
 #include <ViewerTest_AutoUpdater.hxx>
+#include <ViewerTest_ContinuousRedrawer.hxx>
 #include <ViewerTest_EventManager.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
@@ -1639,120 +1640,6 @@ TCollection_AsciiString ViewerTest::GetCurrentViewName ()
 {
   return ViewerTest_myViews.Find2( ViewerTest::CurrentView());
 }
-
-//! Auxiliary tool performing continuous redraws of specified window.
-class ViewerTest_ContinuousRedrawer
-{
-public:
-  //! Return global instance.
-  static ViewerTest_ContinuousRedrawer& Instance()
-  {
-    static ViewerTest_ContinuousRedrawer aRedrawer;
-    return aRedrawer;
-  }
-public:
-
-  //! Destructor.
-  ~ViewerTest_ContinuousRedrawer()
-  {
-    Stop();
-  }
-
-  //! Start thread.
-  void Start (const Handle(Aspect_Window)& theWindow,
-              Standard_Real theTargetFps)
-  {
-    if (myWindow != theWindow
-     || myTargetFps != theTargetFps)
-    {
-      Stop();
-      myWindow = theWindow;
-      myTargetFps = theTargetFps;
-    }
-    if (myThread.GetId() == 0)
-    {
-      myToStop = false;
-      myThread.Run (this);
-    }
-  }
-
-  //! Stop thread.
-  void Stop (const Handle(Aspect_Window)& theWindow = NULL)
-  {
-    if (!theWindow.IsNull()
-      && myWindow != theWindow)
-    {
-      return;
-    }
-
-    {
-      Standard_Mutex::Sentry aLock (myMutex);
-      myToStop = true;
-    }
-    myThread.Wait();
-    myToStop = false;
-    myWindow.Nullify();
-  }
-
-private:
-
-  //! Thread loop.
-  void doThreadLoop()
-  {
-    Handle(Aspect_DisplayConnection) aDisp = new Aspect_DisplayConnection();
-    OSD_Timer aTimer;
-    aTimer.Start();
-    Standard_Real aTimeOld = 0.0;
-    const Standard_Real aTargetDur = myTargetFps > 0.0 ? 1.0 / myTargetFps : -1.0;
-    for (;;)
-    {
-      {
-        Standard_Mutex::Sentry aLock (myMutex);
-        if (myToStop)
-        {
-          return;
-        }
-      }
-      if (myTargetFps > 0.0)
-      {
-        const Standard_Real aTimeNew  = aTimer.ElapsedTime();
-        const Standard_Real aDuration = aTimeNew - aTimeOld;
-        if (aDuration >= aTargetDur)
-        {
-          myWindow->InvalidateContent (aDisp);
-          aTimeOld = aTimeNew;
-        }
-      }
-      else
-      {
-        myWindow->InvalidateContent (aDisp);
-      }
-
-      OSD::MilliSecSleep (1);
-    }
-  }
-
-  //! Thread creation callback.
-  static Standard_Address doThreadWrapper (Standard_Address theData)
-  {
-    ViewerTest_ContinuousRedrawer* aThis = (ViewerTest_ContinuousRedrawer* )theData;
-    aThis->doThreadLoop();
-    return 0;
-  }
-
-  //! Empty constructor.
-  ViewerTest_ContinuousRedrawer()
-  : myThread (doThreadWrapper),
-    myTargetFps (0.0),
-    myToStop (false) {}
-
-private:
-  Handle(Aspect_Window) myWindow;
-  OSD_Thread      myThread;
-  Standard_Mutex  myMutex;
-  Standard_Real   myTargetFps;
-  volatile bool   myToStop;
-};
 
 //==============================================================================
 //function : ViewerInit

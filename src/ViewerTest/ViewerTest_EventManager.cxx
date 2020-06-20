@@ -21,6 +21,7 @@
 #include <AIS_Shape.hxx>
 #include <Aspect_Grid.hxx>
 #include <Draw.hxx>
+#include <ViewerTest_ContinuousRedrawer.hxx>
 #include <ViewerTest_V3dView.hxx>
 
 Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
@@ -45,7 +46,8 @@ ViewerTest_EventManager::ViewerTest_EventManager (const Handle(V3d_View)&       
                                                   const Handle(AIS_InteractiveContext)& theCtx)
 : myCtx  (theCtx),
   myView (theView),
-  myToPickPnt (Standard_False)
+  myToPickPnt (Standard_False),
+  myIsTmpContRedraw (Standard_False)
 {
   myViewAnimation = GlobalViewAnimation();
 }
@@ -101,6 +103,40 @@ void ViewerTest_EventManager::ProcessExpose()
   {
     myView->Invalidate();
     FlushViewEvents (myCtx, myView, true);
+  }
+}
+
+//==============================================================================
+//function : handleViewRedraw
+//purpose  :
+//==============================================================================
+void ViewerTest_EventManager::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
+                                                const Handle(V3d_View)& theView)
+{
+  AIS_ViewController::handleViewRedraw (theCtx, theView);
+
+  // On non-Windows platforms Aspect_Window::InvalidateContent() from rendering thread does not work as expected
+  // as in Tcl event loop the new message might go to sleep with new event remaining in queue.
+  // As a workaround - use dedicated background thread to ping Tcl event loop.
+  if (myToAskNextFrame)
+  {
+    ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
+    if (!myIsTmpContRedraw
+     && (!aRedrawer.IsStarted() || aRedrawer.IsPaused()))
+    {
+      myIsTmpContRedraw = true;
+    #ifndef _WIN32
+      aRedrawer.Start (theView->Window(), 60.0);
+    #endif
+    }
+  }
+  else if (myIsTmpContRedraw)
+  {
+    myIsTmpContRedraw = false;
+  #ifndef _WIN32
+    ViewerTest_ContinuousRedrawer& aRedrawer = ViewerTest_ContinuousRedrawer::Instance();
+    aRedrawer.Pause();
+  #endif
   }
 }
 

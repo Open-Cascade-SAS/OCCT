@@ -4,6 +4,8 @@ ViewerTest_AutoUpdater.cxx
 ViewerTest_AutoUpdater.hxx
 ViewerTest_CmdParser.cxx
 ViewerTest_CmdParser.hxx
+ViewerTest_ContinuousRedrawer.cxx
+ViewerTest_ContinuousRedrawer.hxx
 ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx
 ViewerTest_DoubleMapOfInteractiveAndName.hxx
 ViewerTest_EventManager.cxx
