@@ -80,9 +80,6 @@ BEGIN
     BUTTON      ID_SHADING
     SEPARATOR
     BUTTON      ID_FILE_LOADGRID
-    BUTTON      ID_SENSITIVITY
-    BUTTON      ID_VIEW_DISPLAYSTATUS
-    BUTTON      ID_WALK_WALKTHRU
     SEPARATOR
     BUTTON      ID_APP_ABOUT
 END
@@ -156,11 +153,6 @@ BEGIN
     BEGIN
         MENUITEM "&About DisplayAnimation...",  ID_APP_ABOUT
     END
-    POPUP "Walk"
-    BEGIN
-        MENUITEM "Sensitivity...",              ID_SENSITIVITY
-        MENUITEM "Walkthrough",                 ID_WALK_WALKTHRU
-    END
 END
 
 
@@ -190,51 +182,6 @@ BEGIN
     GROUPBOX        "Angle increment ",IDC_STATIC,7,7,172,49
     EDITTEXT        IDC_Angle,65,27,48,16,ES_AUTOHSCROLL
 END
-
-IDD_SENS DIALOG  0, 0, 229, 50
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sensitivity"
-FONT 8, "MS Sans Serif"
-BEGIN
-    LTEXT           "Fly",IDC_STATIC,8,10,10,8
-    EDITTEXT        IDC_FLY,33,8,76,15,ES_AUTOHSCROLL
-    CONTROL         "Spin1",IDC_SPIN1,"msctls_updown32",UDS_ARROWKEYS,112,8,11,15
-    LTEXT           "Turn",IDC_STATIC,6,28,16,8
-    EDITTEXT        IDC_TURN,34,25,76,15,ES_AUTOHSCROLL
-    CONTROL         "Spin1",IDC_SPIN2,"msctls_updown32",UDS_ARROWKEYS,112,25,11,15
-    DEFPUSHBUTTON   "OK",IDOK,170,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,170,23,50,14
-END
-
-IDD_TUNE DIALOG  0, 0, 131, 154
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "Display Tuning"
-FONT 8, "MS Sans Serif"
-BEGIN
-    LTEXT           "Distance",IDC_STATIC,9,8,29,8
-    EDITTEXT        IDC_FOCDIST,46,5,57,14,ES_AUTOHSCROLL
-    CONTROL         "Spin1",IDC_SPINFOC,"msctls_updown32",UDS_ARROWKEYS,107,6,11,14
-    LTEXT           "Aperture",IDC_STATIC,9,25,28,8
-    EDITTEXT        IDC_APPERTURE,46,23,57,14,ES_AUTOHSCROLL
-    CONTROL         "Spin4",IDC_SPINANG,"msctls_updown32",UDS_ARROWKEYS,107,23,11,14
-    LTEXT           "X  :",IDC_STATIC,17,52,12,8
-    LTEXT           "0.",IDC_XEYE,31,52,66,8
-    GROUPBOX        "Eye",IDC_STATIC,9,41,110,43
-    LTEXT           "Y  :",IDC_STATIC,17,62,12,8
-    LTEXT           "0.",IDC_YEYE,31,62,66,8
-    LTEXT           "Z  :",IDC_STATIC,17,72,12,8
-    LTEXT           "0.",IDC_ZEYE,31,72,66,8
-    LTEXT           "X  :",IDC_STATIC,15,98,12,8
-    LTEXT           "0.",IDC_XAT,33,98,66,8
-    GROUPBOX        "Target",IDC_STATIC,9,86,110,45
-    LTEXT           "Y  :",IDC_STATIC,15,109,12,8
-    LTEXT           "0.",IDC_YAT,33,109,66,8
-    LTEXT           "Z  :",IDC_STATIC,15,120,12,8
-    LTEXT           "0.",IDC_ZAT,33,120,66,8
-    LTEXT           "Twist :",IDC_STATIC,11,137,22,8
-    LTEXT           "0.",IDC_TWIST,35,137,77,8
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -295,12 +242,6 @@ BEGIN
     ID_Thread               "Change the animation thread\nAnimation thread"
     ID_DESTRUCT             "Destruct the presentation\nDestruct the presentation"
     ID_FILE_LOADGRID        "Load Grid Files\nLoad Grid File"
-END
-
-STRINGTABLE 
-BEGIN
-    ID_VIEW_DISPLAYSTATUS   "Show/Hide the display status Window\nShow/Hide the display status Window"
-    ID_WALK_WALKTHRU        "Toggle Walkthru On/Off\nToggle Walkthru On/Off"
 END
 
 #endif    // English (U.S.) resources

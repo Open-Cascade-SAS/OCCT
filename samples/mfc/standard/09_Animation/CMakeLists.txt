@@ -10,19 +10,15 @@ set (Animation_HEADER_FILES ${Animation_SRC_DIR}/AnimationApp.h
                             ${Animation_SRC_DIR}/AnimationDoc.h
                             ${Animation_SRC_DIR}/AnimationView3D.h
                             ${Animation_SRC_DIR}/Fonc.hxx
-                            ${Animation_SRC_DIR}/Sensitivity.h
                             ${Animation_SRC_DIR}/ShadingDialog.h
                             ${Animation_SRC_DIR}/ThreadDialog.h
-                            ${Animation_SRC_DIR}/Tune.h
                             ${Animation_SRC_DIR}/StdAfx.h )
 set (Animation_SOURCE_FILES ${Animation_SRC_DIR}/AnimationApp.cpp
                             ${Animation_SRC_DIR}/AnimationDoc.cpp
                             ${Animation_SRC_DIR}/AnimationView3D.cpp
                             ${Animation_SRC_DIR}/Fonc.cxx
-                            ${Animation_SRC_DIR}/Sensitivity.cpp
                             ${Animation_SRC_DIR}/ShadingDialog.cpp
                             ${Animation_SRC_DIR}/ThreadDialog.cpp
-                            ${Animation_SRC_DIR}/Tune.cpp
                             ${Animation_SRC_DIR}/StdAfx.cpp )
 
 set (Animation_RESOURCE_DIR    ${MFC_STANDARD_SAMPLES_DIR}/09_Animation/res)

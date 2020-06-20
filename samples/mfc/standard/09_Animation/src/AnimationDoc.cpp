@@ -45,10 +45,6 @@ CAnimationDoc::CAnimationDoc()
 {
 	// TODO: add one-time construction code here
 
-	static Standard_Integer StaticCount=1;
-	StaticCount++;
-	myCount = StaticCount;
-
 	Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
 		((CAnimationApp*)AfxGetApp())->GetGraphicDriver();
 
@@ -60,7 +56,6 @@ CAnimationDoc::CAnimationDoc()
 
 	myDeviation = 0.0008;
 	thread = 4;
-	myAngle = 0;
 
 	BRep_Builder B;
 	TopoDS_Shape CrankArm;
@@ -184,90 +179,6 @@ void CAnimationDoc::Dump(CDumpContext& dc) const
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CAnimationDoc::DragEvent(const Standard_Integer  x        ,
-				                  const Standard_Integer  y        ,
-				                  const Standard_Integer  TheState ,
-                                  const Handle(V3d_View)& aView    )
-{
-
-    // TheState == -1  button down
-	// TheState ==  0  move
-	// TheState ==  1  button up
-
-    static Standard_Integer theButtonDownX=0;
-    static Standard_Integer theButtonDownY=0;
-
-	if (TheState == -1)
-    {
-      theButtonDownX=x;
-      theButtonDownY=y;
-    }
-
-	if (TheState == 1)
-	  myAISContext->Select (theButtonDownX, theButtonDownY, x, y, aView, Standard_True);
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------------------
-void CAnimationDoc::InputEvent(const Standard_Integer  /*x*/,
-                               const Standard_Integer  /*y*/,
-                               const Handle(V3d_View)& /*aView*/ )
-{
-    myAISContext->Select (Standard_True);
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------------------
-void CAnimationDoc::MoveEvent(const Standard_Integer  x       ,
-                                  const Standard_Integer  y       ,
-                                  const Handle(V3d_View)& aView   ) 
-{
-      myAISContext->MoveTo (x, y, aView, Standard_True);
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------------------
-void CAnimationDoc::ShiftMoveEvent(const Standard_Integer  x       ,
-                                  const Standard_Integer  y       ,
-                                  const Handle(V3d_View)& aView   ) 
-{
-      myAISContext->MoveTo (x, y, aView, Standard_True);
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------------------
-void CAnimationDoc::ShiftDragEvent(const Standard_Integer  x        ,
-									   const Standard_Integer  y        ,
-									   const Standard_Integer  TheState ,
-                                       const Handle(V3d_View)& aView    ) 
-{
-    static Standard_Integer theButtonDownX=0;
-    static Standard_Integer theButtonDownY=0;
-
-	if (TheState == -1)
-    {
-      theButtonDownX=x;
-      theButtonDownY=y;
-    }
-
-	if (TheState == 0)
-	  myAISContext->ShiftSelect (theButtonDownX, theButtonDownY, x, y, aView, Standard_True);
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------------------
-void CAnimationDoc::ShiftInputEvent(const Standard_Integer  /*x*/,
-                                    const Standard_Integer  /*y*/,
-                                    const Handle(V3d_View)& /*aView*/)
-{
-  myAISContext->ShiftSelect (Standard_True);
-}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -278,7 +189,7 @@ void  CAnimationDoc::Popup(const Standard_Integer  /*x*/,
 {
 }
 
-void CAnimationDoc::OnMyTimer() 
+void CAnimationDoc::OnMyTimer (double theTimeSec) 
 {
 	// TODO: Add your message handler code here and/or call default
 	
@@ -287,9 +198,7 @@ void CAnimationDoc::OnMyTimer()
 	Standard_Real X;
 	gp_Ax1 Ax1(gp_Pnt(0,0,0),gp_Vec(0,0,1));
 
-	myAngle++;
-
-	angleA = thread*myAngle*M_PI/180;
+	angleA = thread * theTimeSec;
 	X = Sin(angleA)*3/8;
 	angleB = atan(X / Sqrt(-X * X + 1));
 	Standard_Real decal(25*0.6);
@@ -308,8 +217,6 @@ void CAnimationDoc::OnMyTimer()
     gp_Trsf aPistonTrsf;
     aPistonTrsf.SetTranslation(gp_Vec(-3*decal*(1-Cos(angleA))-8*decal*(1-Cos(angleB)),0,0));
 	myAISContext->SetLocation(myAisPiston,aPistonTrsf);
-
-    myAISContext->UpdateCurrentViewer();
 }
 
 void CAnimationDoc::OnShading() 

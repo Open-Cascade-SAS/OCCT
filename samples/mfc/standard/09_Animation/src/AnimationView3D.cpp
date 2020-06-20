@@ -9,8 +9,6 @@
 #include "ShadingDialog.h"
 #include "AnimationDoc.h"
 
-#include "Sensitivity.h"
-
 #include <AIS_RubberBand.hxx>
 
 #ifdef _DEBUG
@@ -49,6 +47,7 @@ BEGIN_MESSAGE_MAP(CAnimationView3D, CView)
 	ON_WM_SIZE()
 	ON_COMMAND(ID_BUTTONZoomProg, OnBUTTONZoomProg)
 	ON_COMMAND(ID_BUTTONZoomWin, OnBUTTONZoomWin)
+	ON_WM_MOUSEWHEEL()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MBUTTONDOWN()
@@ -69,13 +68,10 @@ BEGIN_MESSAGE_MAP(CAnimationView3D, CView)
 	ON_COMMAND(ID_STOP, OnStop)
 	ON_COMMAND(ID_RESTART, OnRestart)
 
-	ON_COMMAND(ID_SENSITIVITY, OnSensitivity)
 	ON_COMMAND(ID_BUTTONFly, OnBUTTONFly)
 	ON_COMMAND(ID_BUTTONTurn, OnBUTTONTurn)
 	ON_UPDATE_COMMAND_UI(ID_BUTTONFly, OnUpdateBUTTONFly)
 	ON_UPDATE_COMMAND_UI(ID_BUTTONTurn, OnUpdateBUTTONTurn)
-	ON_COMMAND(ID_VIEW_DISPLAYSTATUS, OnViewDisplaystatus)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_DISPLAYSTATUS, OnUpdateViewDisplaystatus)
 	//}}AFX_MSG_MAP
 // CasCade
 
@@ -85,18 +81,13 @@ END_MESSAGE_MAP()
 // CAnimationView3D construction/destruction
 
 CAnimationView3D::CAnimationView3D()
-: myXmin (0),
-  myYmin (0),
-  myXmax (0),
-  myYmax (0),
-  myCurZoom (0.0),
+: myCurZoom (0.0),
   myHlrModeIsOn (Standard_False),
-  myCurrentMode  (CurrentAction3d_Nothing),
-  m_FlySens  (500.0),
-  m_TurnSens (M_PI / 40.0),
-  myRect (new AIS_RubberBand (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0))
+  myIsTurnStarted (Standard_False),
+  myUpdateRequests (0),
+  myCurrentMode  (CurrentAction3d_Nothing)
 {
-  // TODO: add construction code here
+  myDefaultGestures = myMouseGestureMap;
 }
 
 CAnimationView3D::~CAnimationView3D()
@@ -115,29 +106,72 @@ BOOL CAnimationView3D::PreCreateWindow(CREATESTRUCT& cs)
 /////////////////////////////////////////////////////////////////////////////
 // CAnimationView3D drawing
 
+
+// ================================================================
+// Function : update3dView
+// Purpose  :
+// ================================================================
+void CAnimationView3D::update3dView()
+{
+  if (myView.IsNull())
+  {
+    return;
+  }
+
+  if (++myUpdateRequests == 1)
+  {
+    Invalidate (FALSE);
+    UpdateWindow();
+  }
+}
+
+// ================================================================
+// Function : redraw3dView
+// Purpose  :
+// ================================================================
+void CAnimationView3D::redraw3dView()
+{
+  if (!myView.IsNull())
+  {
+    FlushViewEvents (GetDocument()->GetAISContext(), myView, true);
+  }
+}
+
+// ================================================================
+// Function : handleViewRedraw
+// Purpose  :
+// ================================================================
+void CAnimationView3D::handleViewRedraw (const Handle(AIS_InteractiveContext)& theCtx,
+                                         const Handle(V3d_View)& theView)
+{
+  myUpdateRequests = 0;
+  if (myAnimTimer.IsStarted())
+  {
+    GetDocument()->OnMyTimer (myAnimTimer.ElapsedTime());
+    setAskNextFrame();
+  }
+  AIS_ViewController::handleViewRedraw (theCtx, theView);
+}
+
 void CAnimationView3D::OnDraw(CDC* /*pDC*/)
 {
-	CAnimationDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
-
-	// TODO: add draw code for native data here
-
-	  myView->Redraw();
-
+  // always redraw immediate layer (dynamic highlighting) on Paint event,
+  // and redraw entire view content only when it is explicitly invalidated (V3d_View::Invalidate())
+  myView->InvalidateImmediate();
+  FlushViewEvents (GetDocument()->GetInteractiveContext(), myView, true);
 }
+
 void CAnimationView3D::OnInitialUpdate() 
 {
   CView::OnInitialUpdate();
 
   // TODO: Add your specialized code here and/or call the base class
   //	myView = GetDocument()->GetViewer()->CreateView();
-
-  Handle(V3d_Viewer) aViewer;
-
-  aViewer = GetDocument()->GetViewer();
+  Handle(V3d_Viewer) aViewer = GetDocument()->GetViewer();
   aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
 
   myView = aViewer->CreateView();
+  myView->SetImmediateUpdate (false);
 
   // store for restore state after rotation (witch is in Degenerated mode)
   myHlrModeIsOn = myView->ComputedMode();
@@ -148,57 +182,56 @@ void CAnimationView3D::OnInitialUpdate()
 
   // store the mode ( nothing , dynamic zooming, dynamic ... )
   myCurrentMode = CurrentAction3d_Nothing;
+
   CFrameWnd* pParentFrm = GetParentFrame();
   pParentFrm->ActivateFrame(SW_SHOWMAXIMIZED);
-
-  Standard_Integer w=100 , h=100 ;   /* Debug Matrox                         */
-  aWNTWindow->Size (w,h) ;           /* Keeps me unsatisfied (rlb).....      */
-                                   /* Resize is not supposed to be done on */
-                                   /* Matrox                               */
-                                   /* I suspect another problem elsewhere  */
-  ::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
-
-  m_Tune.Create ( IDD_TUNE , NULL ) ;
-
-  RECT dlgrect;
-  m_Tune.GetWindowRect(&dlgrect);
-  LONG width = dlgrect.right-dlgrect.left;
-  LONG height = dlgrect.bottom-dlgrect.top;
-  RECT MainWndRect;
-  AfxGetApp()->m_pMainWnd->GetWindowRect(&MainWndRect);
-  LONG left = MainWndRect.left+3;
-  LONG top = MainWndRect.top + 112;
-  m_Tune.MoveWindow(left,top,width,height);
-
-  m_Tune.m_pView = this ;
-
-  m_Tune.ShowWindow ( SW_HIDE );
-
-  // store the mode ( nothing , dynamic zooming, dynamic ... )
-
-  myCurrentMode = CurrentAction3d_Nothing;
-
-  ReloadData () ;
-
 }
 
-void CAnimationView3D::DisplayTuneDialog()
+// =======================================================================
+// function : defineMouseGestures
+// purpose  :
+// =======================================================================
+void CAnimationView3D::defineMouseGestures()
 {
-	m_Tune.Create ( IDD_TUNE , NULL ) ;
-	
-	RECT dlgrect;
-	m_Tune.GetWindowRect(&dlgrect);
-	LONG width = dlgrect.right-dlgrect.left;
-	LONG height = dlgrect.bottom-dlgrect.top;
-	RECT MainWndRect;
-	AfxGetApp()->m_pMainWnd->GetWindowRect(&MainWndRect);
-	LONG left = MainWndRect.left+3;
-	LONG top = MainWndRect.top + 112;
-	m_Tune.MoveWindow(left,top,width,height);
-	
-	m_Tune.m_pView = this ;
+  myMouseGestureMap.Clear();
+  switch (myCurrentMode)
+  {
+    case CurrentAction3d_Nothing:
+    {
+      myMouseGestureMap = myDefaultGestures;
+      break;
+    }
+    case CurrentAction3d_DynamicZooming:
+    {
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Zoom);
+      break;
+    }
+    case CurrentAction3d_GlobalPanning:
+    {
+      break;
+    }
+    case CurrentAction3d_WindowZooming:
+    {
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_ZoomWindow);
+      break;
+    }
+    case CurrentAction3d_DynamicPanning:
+    {
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Pan);
+      break;
+    }
+    case CurrentAction3d_DynamicRotation:
+    {
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_RotateOrbit);
+      break;
+    }
+    case CurrentAction3d_Fly:
+    {
+      myMouseGestureMap.Bind (Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_RotateView);
+      break;
+    }
+  }
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CAnimationView3D diagnostics
@@ -231,10 +264,15 @@ void CAnimationView3D::OnFileExportImage()
 void CAnimationView3D::OnSize(UINT nType, int cx, int cy)
 {
   CView::OnSize (nType, cx, cy);
-  m_cx = cx ;
-  m_cy = cy ;
-  if (!myView.IsNull())
+  if (cx != 0
+   && cy != 0
+   && !myView.IsNull())
+  {
+    myView->Window()->DoResize();
     myView->MustBeResized();
+    myView->Invalidate();
+    update3dView();
+  }
 }
 
 void CAnimationView3D::OnBUTTONBack() 
@@ -273,7 +311,7 @@ void CAnimationView3D::OnBUTTONHlrOn()
 
 void CAnimationView3D::OnBUTTONPan() 
 {  
-	myCurrentMode = CurrentAction3d_DynamicPanning; 
+  setCurrentAction (CurrentAction3d_DynamicPanning); 
 }
 
 void CAnimationView3D::OnBUTTONPanGlo() 
@@ -283,289 +321,159 @@ void CAnimationView3D::OnBUTTONPanGlo()
   // Do a Global Zoom 
   myView->FitAll();
   // Set the mode 
-  myCurrentMode = CurrentAction3d_GlobalPanning;
+  setCurrentAction (CurrentAction3d_GlobalPanning);
 }
 
 void CAnimationView3D::OnBUTTONReset() 
-{   myView->Reset(); 
-	ReloadData();
+{
+  myView->Reset(); 
 }
 
 void CAnimationView3D::OnBUTTONRot() 
-{   myCurrentMode = CurrentAction3d_DynamicRotation; }
+{   setCurrentAction (CurrentAction3d_DynamicRotation); }
 
 
 void CAnimationView3D::OnBUTTONZoomAll() 
 {
-	SetDimensions();
-	myView->FitAll();
-	myView->ZFitAll();
+  FitAll();
 }
 
 void CAnimationView3D::OnBUTTONZoomProg() 
-{  myCurrentMode = CurrentAction3d_DynamicZooming; }
+{  setCurrentAction (CurrentAction3d_DynamicZooming); }
 
 void CAnimationView3D::OnBUTTONZoomWin() 
-{  myCurrentMode = CurrentAction3d_WindowZooming; }
+{  setCurrentAction (CurrentAction3d_WindowZooming); }
 
 void CAnimationView3D::OnBUTTONFly() 
-{  myCurrentMode = CurrentAction3d_Fly; }
+{  setCurrentAction (CurrentAction3d_Fly); }
 
 void CAnimationView3D::OnBUTTONTurn() 
-{  myCurrentMode = CurrentAction3d_Turn; }
+{  setCurrentAction (CurrentAction3d_Turn); }
 
 
-void CAnimationView3D::OnLButtonDown(UINT nFlags, CPoint point) 
+void CAnimationView3D::OnLButtonDown(UINT theFlags, CPoint thePoint) 
 {
-  //  save the current mouse coordinate in min 
-  myXmin=point.x;  myYmin=point.y;
-  myXmax=point.x;  myYmax=point.y;
-
-  if ( nFlags & MK_CONTROL ) 
-	  {
-	    // Button MB1 down Control :start zomming 
-        // SetCursor(AfxGetApp()->LoadStandardCursor());
-	  }
-	else // if ( Ctrl )
-	  {
-        switch (myCurrentMode)
-        {
-         case CurrentAction3d_Nothing : // start a drag
-           if (nFlags & MK_SHIFT)
-       	        GetDocument()->ShiftDragEvent(myXmax,myYmax,-1,myView);
-           else
-                GetDocument()->DragEvent(myXmax,myYmax,-1,myView);
-        break;
-         break;
-         case CurrentAction3d_DynamicZooming : // noting
-             // SetCursor(AfxGetApp()->LoadStandardCursor());
-         break;
-         case CurrentAction3d_WindowZooming : // noting
-         break;
-         case CurrentAction3d_DynamicPanning :// noting
-         break;
-         case CurrentAction3d_GlobalPanning :// noting
-        break;
-        case  CurrentAction3d_DynamicRotation :
-          if (myHlrModeIsOn)
-          {
-            myView->SetComputedMode (Standard_False);
-          }
-          myView->StartRotation (point.x, point.y);
-        break;
-		case  CurrentAction3d_Fly :
-			KillTimer (1) ;
-			SetTimer ( 1 , 100 , NULL ) ;
-		break ;
-        case  CurrentAction3d_Turn :
-			KillTimer (1) ;
-			SetTimer ( 1 , 100 , NULL ) ;
-		break ;
-        default :
-           throw Standard_Failure(" incompatible Current Mode ");
-        break;
-        }
-    }
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  PressMouseButton (Graphic3d_Vec2i (thePoint.x, thePoint.y), Aspect_VKeyMouse_LeftButton, aFlags, false);
+  myClickPos.SetValues (thePoint.x, thePoint.y);
+  myIsTurnStarted = myCurrentMode == CurrentAction3d_Turn && aFlags == Aspect_VKeyFlags_NONE;
+  update3dView();
 }
 
-void CAnimationView3D::OnLButtonUp(UINT nFlags, CPoint point) 
+void CAnimationView3D::OnLButtonUp(UINT theFlags, CPoint thePoint) 
 {
-   if ( nFlags & MK_CONTROL ) 
-	  {
-        return;
-	  }
-	else // if ( Ctrl )
-	  {
-        switch (myCurrentMode)
-        {
-         case CurrentAction3d_Nothing :
-         if (point.x == myXmin && point.y == myYmin)
-         { // no offset between down and up --> selectEvent
-            myXmax=point.x;  
-            myYmax=point.y;
-            if (nFlags & MK_SHIFT )
-              GetDocument()->ShiftInputEvent(point.x,point.y,myView);
-            else
-              GetDocument()->InputEvent     (point.x,point.y,myView);
-         } else
-         {
-            DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_False);
-            myXmax=point.x;  
-            myYmax=point.y;
-		    if (nFlags & MK_SHIFT)
-				GetDocument()->ShiftDragEvent(point.x,point.y,1,myView);
-			else
-				GetDocument()->DragEvent(point.x,point.y,1,myView);
-         }
-         break;
-         case CurrentAction3d_DynamicZooming :
-             // SetCursor(AfxGetApp()->LoadStandardCursor());         
-	       myCurrentMode = CurrentAction3d_Nothing;
-         break;
-         case CurrentAction3d_WindowZooming :
-           myXmax=point.x;            myYmax=point.y;
-            DrawRectangle (myXmin, myYmin, myXmax, myYmax, Standard_False, Aspect_TOL_DASH);
-	       if ((abs(myXmin-myXmax)>ValZWMin) || (abs(myYmin-myYmax)>ValZWMin))
-					 // Test if the zoom window is greater than a minimale window.
-			{
-			  // Do the zoom window between Pmin and Pmax
-			  myView->WindowFitAll(myXmin,myYmin,myXmax,myYmax);  
-			}  
-	       myCurrentMode = CurrentAction3d_Nothing;
-         break;
-         case CurrentAction3d_DynamicPanning :
-           myCurrentMode = CurrentAction3d_Nothing;
-         break;
-         case CurrentAction3d_GlobalPanning :
-	       myView->Place(point.x,point.y,myCurZoom); 
-	       myCurrentMode = CurrentAction3d_Nothing;
-        break;
-        case  CurrentAction3d_DynamicRotation :
-	       myCurrentMode = CurrentAction3d_Nothing;
-        break;
-		case  CurrentAction3d_Fly :
-			KillTimer ( 1 ) ;
-        case  CurrentAction3d_Turn :
-			KillTimer ( 1 ) ;
-		break;
-        default :
-           throw Standard_Failure(" incompatible Current Mode ");
-        break;
-        } //switch (myCurrentMode)
-    } //	else // if ( Ctrl )
-}
-
-void CAnimationView3D::OnMButtonDown(UINT nFlags, CPoint /*point*/) 
-{
-   if ( nFlags & MK_CONTROL ) 
-	  {
-      	// Button MB2 down Control : panning init  
-        // SetCursor(AfxGetApp()->LoadStandardCursor());   
-	  }
-}
-
-void CAnimationView3D::OnMButtonUp(UINT nFlags, CPoint /*point*/) 
-{
-   if ( nFlags & MK_CONTROL ) 
-	  {
-      	// Button MB2 down Control : panning init  
-        // SetCursor(AfxGetApp()->LoadStandardCursor());   
-	  }
-}
-
-void CAnimationView3D::OnRButtonDown(UINT nFlags, CPoint point) 
-{
-  if ( nFlags & MK_CONTROL )
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  ReleaseMouseButton (Graphic3d_Vec2i (thePoint.x, thePoint.y), Aspect_VKeyMouse_LeftButton, aFlags, false);
+  if (myCurrentMode == CurrentAction3d_GlobalPanning)
   {
-    // SetCursor(AfxGetApp()->LoadStandardCursor());
-    if (myHlrModeIsOn)
-    {
-      myView->SetComputedMode (Standard_False);
-    }
-    myView->StartRotation (point.x, point.y);
+    myView->Place (thePoint.x, thePoint.y, myCurZoom);
+    myView->Invalidate();
   }
-  else // if ( Ctrl )
+  if (myCurrentMode != CurrentAction3d_Nothing)
   {
-    GetDocument()->Popup(point.x,point.y,myView);
+    setCurrentAction (CurrentAction3d_Nothing);
+    myIsTurnStarted = false;
+  }
+  update3dView();
+}
+
+void CAnimationView3D::OnMButtonDown(UINT theFlags, CPoint thePoint) 
+{
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  PressMouseButton (Graphic3d_Vec2i (thePoint.x, thePoint.y), Aspect_VKeyMouse_MiddleButton, aFlags, false);
+  update3dView();
+}
+
+void CAnimationView3D::OnMButtonUp(UINT theFlags, CPoint thePoint) 
+{
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  ReleaseMouseButton (Graphic3d_Vec2i (thePoint.x, thePoint.y), Aspect_VKeyMouse_MiddleButton, aFlags, false);
+  update3dView();
+  if (myCurrentMode != CurrentAction3d_Nothing)
+  {
+    setCurrentAction (CurrentAction3d_Nothing);
   }
 }
 
-void CAnimationView3D::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
+void CAnimationView3D::OnRButtonDown(UINT theFlags, CPoint thePoint) 
 {
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    if (myHlrModeIsOn)
-    {
-      myView->SetComputedMode (myHlrModeIsOn);
-      myView->Redraw();
-    }
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  PressMouseButton (Graphic3d_Vec2i (thePoint.x, thePoint.y), Aspect_VKeyMouse_RightButton, aFlags, false);
+  update3dView();
+  myClickPos.SetValues (thePoint.x, thePoint.y);
 }
 
-void CAnimationView3D::OnMouseMove(UINT nFlags, CPoint point) 
+void CAnimationView3D::OnRButtonUp(UINT theFlags, CPoint thePoint) 
 {
-    //   ============================  LEFT BUTTON =======================
-  m_curx = point.x ;
-  m_cury = point.y ;
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  ReleaseMouseButton (Graphic3d_Vec2i (thePoint.x, thePoint.y), Aspect_VKeyMouse_RightButton, aFlags, false);
+  update3dView();
+  if (myCurrentMode != CurrentAction3d_Nothing)
+  {
+    setCurrentAction (CurrentAction3d_Nothing);
+  }
+  if (aFlags == Aspect_VKeyFlags_NONE
+   && (myClickPos - Graphic3d_Vec2i (thePoint.x, thePoint.y)).cwiseAbs().maxComp() <= 4)
+  {
+    GetDocument()->Popup (thePoint.x, thePoint.y, myView);
+  }
+}
 
-  if ( nFlags & MK_LBUTTON)
-    {
-     if ( nFlags & MK_CONTROL ) 
-	  {
-	    // move with MB1 and Control : on the dynamic zooming  
-	    // Do the zoom in function of mouse's coordinates  
-	    myView->Zoom(myXmax,myYmax,point.x,point.y); 
-	    // save the current mouse coordinate in min 
-		myXmax = point.x; 
-        myYmax = point.y;	
-	  }
-	  else // if ( Ctrl )
-	  {
-        switch (myCurrentMode)
-        {
-         case CurrentAction3d_Nothing :
-		   myXmax = point.x;            myYmax = point.y;
-           if (nFlags & MK_SHIFT)		
-       	     GetDocument()->ShiftDragEvent(myXmax,myYmax,0,myView);
-           else
-             GetDocument()->DragEvent(myXmax,myYmax,0,myView);
-            DrawRectangle(myXmin,myYmin,myXmax,myYmax,Standard_True);
-          break;
-         case CurrentAction3d_DynamicZooming :
-	       myView->Zoom(myXmax,myYmax,point.x,point.y); 
-	       // save the current mouse coordinate in min \n";
-	       myXmax=point.x;  myYmax=point.y;
-         break;
-         case CurrentAction3d_WindowZooming :
-		   myXmax = point.x; myYmax = point.y;	
-            DrawRectangle (myXmin, myYmin, myXmax, myYmax, Standard_True, Aspect_TOL_DASH);
-         break;
-         case CurrentAction3d_DynamicPanning :
-		   myView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
-		   myXmax = point.x; myYmax = point.y;	
-         break;
-         case CurrentAction3d_GlobalPanning : // nothing           
-        break;
-        case  CurrentAction3d_DynamicRotation :
-          myView->Rotation(point.x,point.y);
-	      myView->Redraw();
-        break;
-		case CurrentAction3d_Fly :
-			break ;
-		case CurrentAction3d_Turn :
-			break ;
-        default :
-           throw Standard_Failure(" incompatible Current Mode ");
-        break;
-        }//  switch (myCurrentMode)
-      }// if ( nFlags & MK_CONTROL )  else 
-    } else //   if ( nFlags & MK_LBUTTON) 
-    //   ============================  MIDDLE BUTTON =======================
-    if ( nFlags & MK_MBUTTON)
-    {
-     if ( nFlags & MK_CONTROL ) 
-	  {
-		myView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
-		myXmax = point.x; myYmax = point.y;	
+// =======================================================================
+// function : OnMouseWheel
+// purpose  :
+// =======================================================================
+BOOL CAnimationView3D::OnMouseWheel (UINT theFlags, short theDelta, CPoint thePoint)
+{
+  const Standard_Real aDeltaF = Standard_Real(theDelta) / Standard_Real(WHEEL_DELTA);
+  CPoint aCursorPnt = thePoint;
+  ScreenToClient (&aCursorPnt);
+  const Graphic3d_Vec2i  aPos (aCursorPnt.x, aCursorPnt.y);
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  if (UpdateMouseScroll (Aspect_ScrollDelta (aPos, aDeltaF, aFlags)))
+  {
+    update3dView();
+  }
+  return true;
+}
 
-	  }
-    } else //  if ( nFlags & MK_MBUTTON)
-    //   ============================  RIGHT BUTTON =======================
-    if ( nFlags & MK_RBUTTON)
+void CAnimationView3D::OnMouseMove(UINT theFlags, CPoint thePoint) 
+{
+  TRACKMOUSEEVENT aMouseEvent;          // for WM_MOUSELEAVE
+  aMouseEvent.cbSize = sizeof(aMouseEvent);
+  aMouseEvent.dwFlags = TME_LEAVE;
+  aMouseEvent.hwndTrack = m_hWnd;
+  aMouseEvent.dwHoverTime = HOVER_DEFAULT;
+  if (!::_TrackMouseEvent (&aMouseEvent)) { TRACE("Track ERROR!\n"); }
+
+  const Graphic3d_Vec2i aNewPnt (thePoint.x, thePoint.y);
+  const Aspect_VKeyFlags aFlags = WNT_Window::MouseKeyFlagsFromEvent (theFlags);
+  if (UpdateMousePosition (aNewPnt, PressedMouseButtons(), aFlags, false))
+  {
+    update3dView();
+  }
+
+  if (myIsTurnStarted)
+  {
+    Graphic3d_Vec2i aWinSize;
+    myView->Window()->Size (aWinSize.x(), aWinSize.y());
+    const Graphic3d_Vec2i aCenter = aWinSize / 2;
+    if (myClickPos != aCenter
+     && aNewPnt != aCenter
+     && aNewPnt != myClickPos)
     {
-     if ( nFlags & MK_CONTROL ) 
-	  {
-	     rotCount++;
-      	 myView->Rotation(point.x,point.y);
-	  }
-    }else //if ( nFlags & MK_RBUTTON)
-    //   ============================  NO BUTTON =======================
-    {  // No buttons 
-	  myXmax = point.x; myYmax = point.y;	
-	  if (nFlags & MK_SHIFT)
-		GetDocument()->ShiftMoveEvent(point.x,point.y,myView);
-	  else
-		GetDocument()->MoveEvent(point.x,point.y,myView);
-   }
+      const Graphic3d_Vec2i aVecFrom = myClickPos - aCenter;
+      const Graphic3d_Vec2i aVecTo   = aNewPnt - aCenter;
+      const gp_Dir aDirFrom (aVecFrom.x() / double(aWinSize.x() / 2), aVecFrom.y() / double(aWinSize.y() / 2), 0.0);
+      const gp_Dir aDirTo   (aVecTo.x()   / double(aWinSize.x() / 2),   aVecTo.y() / double(aWinSize.y() / 2), 0.0);
+      double anAngle = aDirFrom.AngleWithRef (aDirTo, gp::DZ());
+
+      myView->SetTwist (myView->Twist() + anAngle);
+      myView->Invalidate();
+      update3dView();
+      myClickPos = aNewPnt;
+    }
+  }
 }
 
 void CAnimationView3D::OnUpdateBUTTONHlrOff(CCmdUI* pCmdUI) 
@@ -613,13 +521,13 @@ void CAnimationView3D::OnUpdateBUTTONRot(CCmdUI* pCmdUI)
 
 void CAnimationView3D::OnUpdateBUTTONFly(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(GetDocument()->m_bIsGridLoaded);
+	pCmdUI->Enable(true);
     pCmdUI->SetCheck (myCurrentMode == CurrentAction3d_Fly);
 }
 
 void CAnimationView3D::OnUpdateBUTTONTurn(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(GetDocument()->m_bIsGridLoaded);
+	pCmdUI->Enable(true);
     pCmdUI->SetCheck (myCurrentMode == CurrentAction3d_Turn);
 }
 
@@ -648,354 +556,13 @@ void CAnimationView3D::OnChangeBackground()
 //==========================================================================================
 //==========================================================================================
 
-//-----------------------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------------------
-void CAnimationView3D::DrawRectangle (Standard_Integer theMinX,
-                                      Standard_Integer theMinY,
-                                      Standard_Integer theMaxX,
-                                      Standard_Integer theMaxY,
-                                      Standard_Boolean theToDraw,
-                                      Aspect_TypeOfLine theLineType)
-{
-  const Handle(AIS_InteractiveContext)& aCtx = GetDocument()->GetAISContext();
-  if (!theToDraw)
-  {
-    aCtx->Remove (myRect, false);
-    aCtx->CurrentViewer()->RedrawImmediate();
-    return;
-  }
-
-  CRect aRect;
-  GetWindowRect (aRect);
-  myRect->SetLineType (theLineType);
-  myRect->SetRectangle (theMinX, aRect.Height() - theMinY, theMaxX, aRect.Height() - theMaxY);
-  if (!aCtx->IsDisplayed (myRect))
-  {
-    aCtx->Display (myRect, false);
-  }
-  else
-  {
-    aCtx->Redisplay (myRect, false);
-  }
-  aCtx->CurrentViewer()->RedrawImmediate();
-}
-
 void CAnimationView3D::OnStop() 
 {
-	KillTimer(GetDocument()->myCount);            
+  myAnimTimer.Pause();
 }
 
 void CAnimationView3D::OnRestart() 
 {
-	KillTimer(GetDocument()->myCount);            
-	SetTimer(GetDocument()->myCount, 1 , NULL); 
-}
-
-/*
-void CAnimationView3D::OnTimer(UINT nIDEvent) 
-{
-	// TODO: Add your message handler code here and/or call default
-	GetDocument()->OnMyTimer();
-	CView::OnTimer(nIDEvent);
-}
-*/
-
-
-/*********************************************************************************
-**************  W A L K  T H R O U G H  ******************************************
-/********************************************************************************/
-
-void CAnimationView3D::OnTimer(UINT_PTR nIDEvent) 
-{
-	if ( !GetDocument()->m_bIsGridLoaded )
-	{
-		// TODO: Add your message handler code here and/or call default
-		GetDocument()->OnMyTimer();
-		CView::OnTimer(nIDEvent);
-	}
-	else
-	{
-		CView::OnTimer(nIDEvent);
-		if ( nIDEvent == 1 ) {
-		  myView->SetImmediateUpdate ( Standard_False ) ;
-		  if ( myCurrentMode == CurrentAction3d_Fly ) {
-
-			 Fly  ( m_curx , m_cury ) ;
-			 if ( m_bShift )
-			   Roll ( m_curx , m_cury ) ;
-			 else
-			   Turn ( m_curx , m_cury ) ;
-
- 			myView->SetAt  ( m_Atx  , m_Aty  , m_Atz  ) ;
-			myView->SetEye ( m_Eyex , m_Eyey , m_Eyez ) ;
-
-		  }
-		  else if ( myCurrentMode == CurrentAction3d_Turn ) {
-			   Twist ( m_curx , m_cury ) ;
-		  }
-		  else
-			  KillTimer (1) ;
-
-
-  		  myView->SetImmediateUpdate ( Standard_True ) ;
-
-		  myView->Update ();
-		}
-
-		ReloadData () ;
-	}
-}
-
-void CAnimationView3D::OnSensitivity() 
-{
-	CSensitivity dial ;
-
-	dial.m_SensFly   = m_FlySens  ;
-	dial.m_SensTurn  = m_TurnSens ;
-	if ( dial.DoModal () ) {
-		m_FlySens  = dial.m_SensFly   ;
-        m_TurnSens = dial.m_SensTurn  ;
-	}
-}
-
-void CAnimationView3D::Fly (int /*x*/ , int y)
-{
-	double v [3] ;
-	double l ;
-	double sens ;
-	int    i     ;
-
-	sens = (double) myYmin - (double) y ;
-	sens /= (double) m_cy ;
-	sens *= m_FlySens ;
-
-	v [0] = m_Atx - m_Eyex ;
-	v [1] = m_Aty - m_Eyey ;
-	v [2] = m_Atz - m_Eyez ;
-	l = sqrt ( v[0]*v[0] + v[1]*v[1] + v[2]*v[2] ) ;
-	if ( l > 1.e-3 ) {
-		for ( i=0 ; i<3 ; i++ )
-          v [i] = v [i] / l * sens ;
-
-		m_Atx += v [0] ;
-		m_Aty += v [1] ;
-		m_Atz += v [2] ;
-
-		m_Eyex += v [0] ;
-		m_Eyey += v [1] ;
-		m_Eyez += v [2] ;
-
-	}
-}
-
-/* Rotation */
-
-void CAnimationView3D::Turn (int x , int /*y*/)
-{
-	gp_Vec z (0.,0.,1.) ;
-
-	double v [3] ;
-	double sens ;
-	double aX , aY , aZ ;
-
-	sens = (double) x - (double) myXmin ;
-	sens /= (double) m_cx ;
-	sens *= m_TurnSens ;
-
-	v [0] = m_Atx - m_Eyex ;
-	v [1] = m_Aty - m_Eyey ;
-	v [2] = m_Atz - m_Eyez ;
-
-	gp_Pnt eye ( m_Eyex , m_Eyey , m_Eyez ) ;
-
-	gp_Vec reg (v[0],v[1],v[2] );
-
-	gp_Vec vert = reg ^ z ;
-	gp_Vec haut = vert ^ reg ;
-
-	gp_Dir dh (haut) ;
-	gp_Ax1 rot (eye,dh);
-
-	reg.Rotate (rot,sens) ;
-
-	reg.Coord ( aX , aY , aZ ) ;
-
-	m_Atx = m_Eyex + aX ;
-	m_Aty = m_Eyey + aY ;
-	m_Atz = m_Eyez + aZ ;
-}
-
-void CAnimationView3D::Roll (int x , int /*y*/)
-{
-	gp_Vec z (0.,0.,1.) ;
-
-	double v [3] ;
-	double sens ;
-	double aX , aY , aZ ;
-
-	sens = (double) x - (double) myXmin ;
-	sens /= (double) m_cx ;
-	sens *= m_TurnSens ;
-
-	v [0] = m_Atx - m_Eyex ;
-	v [1] = m_Aty - m_Eyey ;
-	v [2] = m_Atz - m_Eyez ;
-
-	gp_Pnt eye ( m_Eyex , m_Eyey , m_Eyez ) ;
-
-	gp_Vec reg (v[0],v[1],v[2] );
-
-	gp_Vec vert = reg ^ z ;
-
-	gp_Dir dh (vert) ;
-	gp_Ax1 rot (eye,dh);
-
-	reg.Rotate (rot,sens) ;
-
-	reg.Coord ( aX , aY , aZ ) ;
-
-	m_Atx = m_Eyex + aX ;
-	m_Aty = m_Eyey + aY ;
-	m_Atz = m_Eyez + aZ ;
-}
-
-void CAnimationView3D::Twist (int x , int /*y*/)
-{
-	double sens ;
-	double a ;
-	
-	a = myView->Twist () ;
-
-	sens = (double) x - (double) myXmin ;
-	sens /= (double) m_cx ;
-	sens *= m_TurnSens ;
-
-	a += sens ;
-
-	myView->SetTwist (a) ;
-}
-
-//=============================================================================
-// function: SetFocal
-// purpose:
-//=============================================================================
-void CAnimationView3D::SetFocal (double theFocus, double theAngle)
-{
-
-  Handle(Graphic3d_Camera) aCamera = myView->Camera();
-
-  gp_Pnt anAt  = aCamera->Center();
-  gp_Pnt anEye = aCamera->Eye();
-
-  gp_Vec aLook (anAt, anEye);
-
-  if (aCamera->Distance() > 1.e-3)
-  {
-    aLook = aLook / aCamera->Distance() * theFocus;
-
-    m_Focus = theFocus;
-
-    anAt.SetX (aLook.X() + anEye.X());
-    anAt.SetY (aLook.Y() + anEye.Y());
-    anAt.SetZ (aLook.Z() + anEye.Z());
-
-    m_dAngle = theAngle;
-
-    aCamera->SetCenter (anAt);
-    aCamera->SetFOVy (theAngle);
-
-    myView->Update();
-  }
-}
-
-void CAnimationView3D::ReloadData()
-{
-	myView->At  ( m_Atx  , m_Aty  , m_Atz  ) ;
-	myView->Eye ( m_Eyex , m_Eyey , m_Eyez ) ;
-  double dTwist = myView->Twist() * 180. / M_PI;
-
-  CString aMsg;
-  aMsg.Format (L"%lf", m_Atx);
-	m_Tune.GetDlgItem (IDC_XAT)->SetWindowText (aMsg);
-  aMsg.Format (L"%lf", m_Aty);
-	m_Tune.GetDlgItem (IDC_YAT)->SetWindowText (aMsg);
-	aMsg.Format (L"%lf", m_Atz);
-	m_Tune.GetDlgItem (IDC_ZAT)->SetWindowText (aMsg);
-
-  aMsg.Format (L"%lf", m_Eyex);
-	m_Tune.GetDlgItem (IDC_XEYE)->SetWindowText (aMsg);
-	aMsg.Format (L"%lf", m_Eyey);
-	m_Tune.GetDlgItem (IDC_YEYE)->SetWindowText (aMsg);
-	aMsg.Format (L"%lf", m_Eyez);
-	m_Tune.GetDlgItem (IDC_ZEYE)->SetWindowText (aMsg);
-
-  aMsg.Format (L"%lf", dTwist);
-	m_Tune.GetDlgItem (IDC_TWIST)->SetWindowText (aMsg);
-
-	double dx,dy,dz ;
-	dx = m_Atx - m_Eyex ;
-	dy = m_Aty - m_Eyey ;
-	dz = m_Atz - m_Eyez ;
-
-  m_Focus = sqrt (dx * dx + dy * dy + dz * dz);
-
-  m_dAngle = myView->Camera()->FOVy();
-
-	m_Tune.m_dAngle = m_dAngle ;
-	m_Tune.m_dFocus = m_Focus  ;
-	m_Tune.UpdateData ( FALSE ) ;
-}
-
-void CAnimationView3D::SetDimensions()
-{
-
-  CAnimationDoc* pDoc = GetDocument();
-
-  myView->SetImmediateUpdate ( Standard_False ) ;
-
-  m_Atx  = ( pDoc->m_Xmin + pDoc->m_Xmax ) / 2. ;
-  m_Aty  = ( pDoc->m_Ymin + pDoc->m_Ymax ) / 2. ;
-  m_Atz  = ( pDoc->m_Zmin + pDoc->m_Zmax ) / 2. ;
-  m_Eyex = pDoc->m_Xmax ;
-  m_Eyey = pDoc->m_Ymax ;
-  m_Eyez = pDoc->m_Zmax ;
-
-  myView->SetAt    ( m_Atx  , m_Aty  , m_Atz  ) ;
-  myView->SetEye   ( m_Eyex , m_Eyey , m_Eyez ) ;
-  myView->SetTwist (0.) ;
-
-  myView->SetImmediateUpdate ( Standard_False ) ;
-  myView->FitAll();
-  myView->SetImmediateUpdate ( Standard_False ) ;
-  myView->ZFitAll();
-
-  myView->SetImmediateUpdate ( Standard_True ) ;
-
-  ReloadData () ;
-  myView->Update ();
-}
-
-void CAnimationView3D::OnViewDisplaystatus() 
-{
-	// TODO: Add your command handler code here
-
-	if ( m_Tune.IsWindowVisible () ) {
-
-	}
-	else {
-		m_Tune.ShowWindow ( SW_SHOWNORMAL ) ;
-	}
-}
-
-void CAnimationView3D::OnUpdateViewDisplaystatus(CCmdUI* pCmdUI) 
-{
-	// TODO: Add your command update UI handler code here
-
-	if ( m_Tune.IsWindowVisible () ) {
-		pCmdUI->SetCheck ( 1 ) ;
-	}
-	else {
-		pCmdUI->SetCheck ( 0 ) ;
-	}
+  myAnimTimer.Start();
+  update3dView();
 }
