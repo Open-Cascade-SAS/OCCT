@@ -490,6 +490,11 @@ public:
 
 public:
 
+  //! Perform navigation.
+  //! This method is expected to be called from rendering thread.
+  Standard_EXPORT virtual AIS_WalkDelta handleNavigationKeys (const Handle(AIS_InteractiveContext)& theCtx,
+                                                              const Handle(V3d_View)& theView);
+
   //! Perform camera actions.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual void handleCameraActions (const Handle(AIS_InteractiveContext)& theCtx,

@@ -1756,6 +1756,133 @@ gp_Pnt AIS_ViewController::GravityPoint (const Handle(AIS_InteractiveContext)& t
 }
 
 // =======================================================================
+// function : handleNavigationKeys
+// purpose  :
+// =======================================================================
+AIS_WalkDelta AIS_ViewController::handleNavigationKeys (const Handle(AIS_InteractiveContext)& ,
+                                                        const Handle(V3d_View)& theView)
+{
+  // navigation keys
+  double aCrouchRatio = 1.0, aRunRatio = 1.0;
+  if (myNavigationMode == AIS_NavigationMode_FirstPersonFlight)
+  {
+    aRunRatio = 3.0;
+  }
+
+  const double aRotSpeed = 0.5;
+  const double aWalkSpeedCoef = WalkSpeedRelative();
+  AIS_WalkDelta aWalk = FetchNavigationKeys (aCrouchRatio, aRunRatio);
+  if (aWalk.IsJumping())
+  {
+    // ask more frames
+    setAskNextFrame();
+    theView->Invalidate();
+  }
+  if (aWalk.IsEmpty())
+  {
+    return aWalk;
+  }
+  else if (myGL.OrbitRotation.ToRotate
+        || myGL.OrbitRotation.ToStart)
+  {
+    return aWalk;
+  }
+
+  gp_XYZ aMin, aMax;
+  const Bnd_Box aBndBox = theView->View()->MinMaxValues();
+  if (!aBndBox.IsVoid())
+  {
+    aMin = aBndBox.CornerMin().XYZ();
+    aMax = aBndBox.CornerMax().XYZ();
+  }
+  double aBndDiam = Max (Max (aMax.X() - aMin.X(), aMax.Y() - aMin.Y()), aMax.Z() - aMin.Z());
+  if (aBndDiam <= gp::Resolution())
+  {
+    aBndDiam = 0.001;
+  }
+
+  const double aWalkSpeed = myNavigationMode != AIS_NavigationMode_Orbit
+                         && myNavigationMode != AIS_NavigationMode_FirstPersonFlight
+                          ? theView->View()->UnitFactor() * WalkSpeedAbsolute()
+                          : aWalkSpeedCoef * aBndDiam;
+  const Handle(Graphic3d_Camera)& aCam = theView->View()->IsActiveXR()
+                                       ? theView->View()->BaseXRCamera()
+                                       : theView->Camera();
+
+  // move forward in plane XY and up along Z
+  const gp_Dir anUp = ToLockOrbitZUp() ? gp::DZ() : aCam->OrthogonalizedUp();
+  if (aWalk.ToMove()
+   && myToAllowPanning)
+  {
+    const gp_Vec aSide = -aCam->SideRight();
+    gp_XYZ aFwd = aCam->Direction().XYZ();
+    aFwd -= anUp.XYZ() * (anUp.XYZ() * aFwd);
+
+    gp_XYZ aMoveVec;
+    if (!aWalk[AIS_WalkTranslation_Forward].IsEmpty())
+    {
+      if (!aCam->IsOrthographic())
+      {
+        aMoveVec += aFwd * aWalk[AIS_WalkTranslation_Forward].Value * aWalk[AIS_WalkTranslation_Forward].Pressure * aWalkSpeed;
+      }
+    }
+    if (!aWalk[AIS_WalkTranslation_Side].IsEmpty())
+    {
+      aMoveVec += aSide.XYZ() * aWalk[AIS_WalkTranslation_Side].Value * aWalk[AIS_WalkTranslation_Side].Pressure * aWalkSpeed;
+    }
+    if (!aWalk[AIS_WalkTranslation_Up].IsEmpty())
+    {
+      aMoveVec += anUp.XYZ() * aWalk[AIS_WalkTranslation_Up].Value * aWalk[AIS_WalkTranslation_Up].Pressure * aWalkSpeed;
+    }
+    {
+      if (aCam->IsOrthographic())
+      {
+        if (!aWalk[AIS_WalkTranslation_Forward].IsEmpty())
+        {
+          const double aZoomDelta = aWalk[AIS_WalkTranslation_Forward].Value * aWalk[AIS_WalkTranslation_Forward].Pressure * aWalkSpeedCoef;
+          handleZoom (theView, Aspect_ScrollDelta (aZoomDelta * 100.0), NULL);
+        }
+      }
+
+      gp_Trsf aTrsfTranslate;
+      aTrsfTranslate.SetTranslation (aMoveVec);
+      aCam->Transform (aTrsfTranslate);
+    }
+  }
+
+  if (myNavigationMode == AIS_NavigationMode_Orbit
+   && myToAllowRotation)
+  {
+    if (!aWalk[AIS_WalkRotation_Yaw].IsEmpty())
+    {
+      gp_Trsf aTrsfRot;
+      aTrsfRot.SetRotation (gp_Ax1 (aCam->Eye(), anUp), aWalk[AIS_WalkRotation_Yaw].Value * aRotSpeed);
+      aCam->Transform (aTrsfRot);
+    }
+    if (!aWalk[AIS_WalkRotation_Pitch].IsEmpty())
+    {
+      const gp_Vec aSide = -aCam->SideRight();
+      gp_Trsf aTrsfRot;
+      aTrsfRot.SetRotation (gp_Ax1 (aCam->Eye(), aSide), -aWalk[AIS_WalkRotation_Pitch].Value * aRotSpeed);
+      aCam->Transform (aTrsfRot);
+    }
+    if (!aWalk[AIS_WalkRotation_Roll].IsEmpty()
+     && !ToLockOrbitZUp())
+    {
+      gp_Trsf aTrsfRot;
+      aTrsfRot.SetRotation (gp_Ax1 (aCam->Center(), aCam->Direction()), aWalk[AIS_WalkRotation_Roll].Value * aRotSpeed);
+      aCam->Transform (aTrsfRot);
+    }
+  }
+
+  // ask more frames
+  setAskNextFrame();
+  theView->Invalidate();
+  theView->View()->SynchronizeXRBaseToPosedCamera();
+  return aWalk;
+}
+
+// =======================================================================
 // function : handleCameraActions
 // purpose  :
 // =======================================================================
@@ -2929,7 +3056,7 @@ void AIS_ViewController::HandleViewEvents (const Handle(AIS_InteractiveContext)&
 {
   const bool wasImmediateUpdate = theView->SetImmediateUpdate (false);
 
-  const AIS_WalkDelta aWalk = FetchNavigationKeys (1.0, 1.0);
+  const AIS_WalkDelta aWalk = handleNavigationKeys (theCtx, theView);
   handleXRInput (theCtx, theView, aWalk);
   if (theView->View()->IsActiveXR())
   {

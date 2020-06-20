@@ -82,6 +82,11 @@ public:
                                                    bool theIsEmulated) Standard_OVERRIDE;
 
   //! Release key.
+  Standard_EXPORT virtual void KeyDown (Aspect_VKey theKey,
+                                        double theTime,
+                                        double thePressure = 1.0) Standard_OVERRIDE;
+
+  //! Release key.
   Standard_EXPORT virtual void KeyUp (Aspect_VKey theKey,
                                       double theTime) Standard_OVERRIDE;
 
@@ -98,10 +103,33 @@ public:
   //! Handle KeyPress event.
   Standard_EXPORT void ProcessKeyPress (Aspect_VKey theKey);
 
+protected:
+
+  //! Register hot-keys for specified Action.
+  void addActionHotKeys (Aspect_VKey theAction,
+                         unsigned int theHotKey1 = 0,
+                         unsigned int theHotKey2 = 0,
+                         unsigned int theHotKey3 = 0,
+                         unsigned int theHotKey4 = 0,
+                         unsigned int theHotKey5 = 0)
+  {
+    if (theHotKey1 != 0) { myNavKeyMap.Bind (theHotKey1, theAction); }
+    if (theHotKey2 != 0) { myNavKeyMap.Bind (theHotKey2, theAction); }
+    if (theHotKey3 != 0) { myNavKeyMap.Bind (theHotKey3, theAction); }
+    if (theHotKey4 != 0) { myNavKeyMap.Bind (theHotKey4, theAction); }
+    if (theHotKey5 != 0) { myNavKeyMap.Bind (theHotKey5, theAction); }
+  }
+
+  //! Handle modifier key changes.
+  Standard_EXPORT bool navigationKeyModifierSwitch (unsigned int theModifOld,
+                                                    unsigned int theModifNew,
+                                                    double       theTimeStamp);
+
 private:
 
   Handle(AIS_InteractiveContext) myCtx;
   Handle(V3d_View) myView;
+  NCollection_DataMap<unsigned int, Aspect_VKey> myNavKeyMap; //!< map of Hot-Key (key+modifiers) to Action
 
   TCollection_AsciiString myPickPntArgVec[3];
   Standard_Boolean myToPickPnt;

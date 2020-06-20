@@ -3021,12 +3021,19 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   di << "B : BottomView\n";
   di << "R : RightView\n";
   di << "L : LeftView\n";
-  di << "A : AxonometricView\n";
-  di << "D : ResetView\n";
+  di << "Backspace : AxonometricView\n";
 
   di << "=========================\n";
-  di << "S : Shading\n";
-  di << "W : Wireframe\n";
+  di << "W, S : Fly   forward/backward\n";
+  di << "A, D : Slide left/right\n";
+  di << "Q, E : Bank  left/right\n";
+  di << "-, + : Change flying speed\n";
+  di << "Arrows : look left/right/up/down\n";
+  di << "Arrows+Shift : slide left/right/up/down\n";
+
+  di << "=========================\n";
+  di << "S + Ctrl : Shading\n";
+  di << "W + Ctrl : Wireframe\n";
   di << "H : HiddenLineRemoval\n";
   di << "U : Unset display mode\n";
   di << "Delete : Remove selection from viewer\n";
