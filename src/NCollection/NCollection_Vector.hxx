@@ -91,6 +91,15 @@ public:
       offsetV (static_cast<int>(theOffset));
     }
 
+    // Workaround for a bug (endless compilation) occurred in MS Visual Studio 2019 / Win32 / Release configuration
+    // with DISABLED Whole Program Optimization (as it is by default in OCCT). The problem is
+    // at the line std::stable_sort(aPairList.begin(), aPairList.end(), BRepExtrema_CheckPair_Comparator);
+    // of BRepExtrema_DistShapeShape.cxx source file.
+    // To enable Whole Program Optimization use command line keys: /GL for compiler and /LTCG for linker.
+    // Remove this workaround after the bug in VS2019 will be fixed (see OCCT bug #0031628).
+#if defined (_MSC_VER) && (_MSC_VER >= 1920) && !defined (_WIN64) && !defined (_DEBUG)
+    __declspec(noinline) __declspec(deprecated("TODO remove this workaround for VS2019 compiler hanging bug"))
+#endif
     //! Difference operator.
     ptrdiff_t Differ (const Iterator& theOther) const
     {
