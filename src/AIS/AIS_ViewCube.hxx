@@ -465,11 +465,11 @@ public:
 public: //! @name animation methods
 
   //! Return duration of animation in seconds; 0.5 sec by default
-  Standard_Real Duration() const { return myDuration; }
+  Standard_EXPORT Standard_Real Duration() const;
 
   //! Set duration of animation.
   //! @param theValue [in] input value of duration in seconds
-  void SetDuration (Standard_Real theValue) { myDuration = theValue; }
+  Standard_EXPORT void SetDuration (Standard_Real theValue);
 
   //! Return TRUE if new camera Up direction should be always set to default value for a new camera Direction; FALSE by default.
   //! When this flag is FALSE, the new camera Up will be set as current Up orthogonalized to the new camera Direction,
@@ -675,7 +675,6 @@ protected: //! @name Animation options
   Handle(AIS_AnimationCamera)   myViewAnimation;     //!< Camera animation object
   Handle(Graphic3d_Camera)      myStartState;        //!< Start state of view camera
   Handle(Graphic3d_Camera)      myEndState;          //!< End state of view camera
-  Standard_Real                 myDuration;          //!< Duration of animation. By default it is half a second
   Standard_Boolean              myToAutoStartAnim;   //!< start animation automatically on click
   Standard_Boolean              myIsFixedAnimation;  //!< fixed-loop animation
   Standard_Boolean              myToFitSelected;     //!< fit selected or fit entire scene

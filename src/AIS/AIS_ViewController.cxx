@@ -28,6 +28,7 @@
 #include <Message_Messenger.hxx>
 #include <gp_Quaternion.hxx>
 #include <V3d_View.hxx>
+#include <WNT_HIDSpaceMouse.hxx>
 
 // =======================================================================
 // function : AIS_ViewController
@@ -98,9 +99,17 @@ AIS_ViewController::AIS_ViewController()
   myUpdateStartPointRot  (true),
   myUpdateStartPointZRot (true),
   //
+  my3dMouseNoRotate  (false, false, false),
+  my3dMouseToReverse (true,  false, false),
+  my3dMouseAccelTrans  (2.0f),
+  my3dMouseAccelRotate (4.0f),
+  my3dMouseIsQuadric   (true),
+  //
   myPanPnt3d (Precision::Infinite(), 0.0, 0.0)
 {
+  memset(my3dMouseButtonState, 0, sizeof(my3dMouseButtonState));
   myEventTimer.Start();
+  myViewAnimation->SetOwnDuration (0.5);
 
   myAnchorPointPrs1 = new AIS_Point (new Geom_CartesianPoint (0.0, 0.0, 0.0));
   myAnchorPointPrs1->SetZLayer (Graphic3d_ZLayerId_Top);
@@ -1093,6 +1102,112 @@ void AIS_ViewController::UpdateTouchPoint (Standard_Size theId,
 }
 
 // =======================================================================
+// function : Update3dMouse
+// purpose  :
+// =======================================================================
+bool AIS_ViewController::Update3dMouse (const WNT_HIDSpaceMouse& theEvent)
+{
+  bool toUpdate = false;
+  toUpdate = update3dMouseTranslation (theEvent) || toUpdate;
+  toUpdate = update3dMouseRotation (theEvent) || toUpdate;
+  toUpdate = update3dMouseKeys (theEvent) || toUpdate;
+  return toUpdate;
+}
+
+// =======================================================================
+// function : update3dMouseTranslation
+// purpose  :
+// =======================================================================
+bool AIS_ViewController::update3dMouseTranslation (const WNT_HIDSpaceMouse& theEvent)
+{
+  if (!theEvent.IsTranslation())
+  {
+    return false;
+  }
+
+  bool isIdle = true;
+  const double aTimeStamp = EventTime();
+  const Graphic3d_Vec3d aTrans = theEvent.Translation (isIdle, my3dMouseIsQuadric) * my3dMouseAccelTrans;
+  myKeys.KeyFromAxis (Aspect_VKey_NavSlideLeft, Aspect_VKey_NavSlideRight, aTimeStamp, aTrans.x());
+  myKeys.KeyFromAxis (Aspect_VKey_NavForward,   Aspect_VKey_NavBackward,   aTimeStamp, aTrans.y());
+  myKeys.KeyFromAxis (Aspect_VKey_NavSlideUp,   Aspect_VKey_NavSlideDown,  aTimeStamp, aTrans.z());
+  return true;
+}
+
+// =======================================================================
+// function : update3dMouseRotation
+// purpose  :
+// =======================================================================
+bool AIS_ViewController::update3dMouseRotation (const WNT_HIDSpaceMouse& theEvent)
+{
+  if (!theEvent.IsRotation()
+   || !myToAllowRotation)
+  {
+    return false;
+  }
+
+  bool isIdle = true, toUpdate = false;
+  const double aTimeStamp = EventTime();
+  const Graphic3d_Vec3d aRot3 = theEvent.Rotation (isIdle, my3dMouseIsQuadric) * my3dMouseAccelRotate;
+  if (!my3dMouseNoRotate.x())
+  {
+    KeyFromAxis (Aspect_VKey_NavLookUp,   Aspect_VKey_NavLookDown,  aTimeStamp, !my3dMouseToReverse.x() ? aRot3.x() : -aRot3.x());
+    toUpdate = true;
+  }
+  if (!my3dMouseNoRotate.y())
+  {
+    KeyFromAxis (Aspect_VKey_NavRollCW,   Aspect_VKey_NavRollCCW,   aTimeStamp, !my3dMouseToReverse.y() ? aRot3.y() : -aRot3.y());
+    toUpdate = true;
+  }
+  if (!my3dMouseNoRotate.z())
+  {
+    KeyFromAxis (Aspect_VKey_NavLookLeft, Aspect_VKey_NavLookRight, aTimeStamp, !my3dMouseToReverse.z() ? aRot3.z() : -aRot3.z());
+    toUpdate = true;
+  }
+  return toUpdate;
+}
+
+// =======================================================================
+// function : update3dMouseKeys
+// purpose  :
+// =======================================================================
+bool AIS_ViewController::update3dMouseKeys (const WNT_HIDSpaceMouse& theEvent)
+{
+  bool toUpdate = false;
+  const double aTimeStamp = EventTime();
+  if (theEvent.IsKeyState())
+  {
+    const uint32_t aKeyState = theEvent.KeyState();
+    for (unsigned short aKeyBit = 0; aKeyBit < 32; ++aKeyBit)
+    {
+      const bool isPressed  = (aKeyState & (1 << aKeyBit)) != 0;
+      const bool isReleased = my3dMouseButtonState[aKeyBit] && !isPressed;
+      //const bool isRepeated = my3dMouseButtonState[aKeyBit] &&  isPressed;
+      my3dMouseButtonState[aKeyBit] = isPressed;
+      if (!isReleased && !isPressed)
+      {
+        continue;
+      }
+
+      const Aspect_VKey aVKey = theEvent.HidToSpaceKey (aKeyBit);
+      if (aVKey != Aspect_VKey_UNKNOWN)
+      {
+        toUpdate = true;
+        if (isPressed)
+        {
+          KeyDown (aVKey, aTimeStamp);
+        }
+        else
+        {
+          KeyUp (aVKey, aTimeStamp);
+        }
+      }
+    }
+  }
+  return toUpdate;
+}
+
+// =======================================================================
 // function : SetNavigationMode
 // purpose  :
 // =======================================================================
@@ -1753,6 +1868,135 @@ gp_Pnt AIS_ViewController::GravityPoint (const Handle(AIS_InteractiveContext)& t
   }
 
   return theCtx ->GravityPoint (theView);
+}
+
+// =======================================================================
+// function : FitAllAuto
+// purpose  :
+// =======================================================================
+void AIS_ViewController::FitAllAuto (const Handle(AIS_InteractiveContext)& theCtx,
+                                     const Handle(V3d_View)& theView)
+{
+  const Bnd_Box aBoxSel = theCtx->BoundingBoxOfSelection();
+  const double aFitMargin = 0.01;
+  if (aBoxSel.IsVoid())
+  {
+    theView->FitAll (aFitMargin, false);
+    return;
+  }
+
+  // fit all algorithm is not 100% stable - so compute some precision to compare equal camera values
+  const double  aFitTol = (aBoxSel.CornerMax().XYZ() - aBoxSel.CornerMin().XYZ()).Modulus() * 0.000001;
+  const Bnd_Box aBoxAll = theView->View()->MinMaxValues();
+
+  const Handle(Graphic3d_Camera)& aCam = theView->Camera();
+  Handle(Graphic3d_Camera) aCameraSel = new Graphic3d_Camera (aCam);
+  Handle(Graphic3d_Camera) aCameraAll = new Graphic3d_Camera (aCam);
+  theView->FitMinMax (aCameraSel, aBoxSel, aFitMargin);
+  theView->FitMinMax (aCameraAll, aBoxAll, aFitMargin);
+  if (aCameraSel->Center().IsEqual (aCam->Center(),     aFitTol)
+   && Abs (aCameraSel->Scale()    - aCam->Scale())    < aFitTol
+   && Abs (aCameraSel->Distance() - aCam->Distance()) < aFitTol)
+  {
+    // fit all entire view on second FitALL request
+    aCam->Copy (aCameraAll);
+  }
+  else
+  {
+    aCam->Copy (aCameraSel);
+  }
+}
+
+// =======================================================================
+// function : handleViewOrientationKeys
+// purpose  :
+// =======================================================================
+void AIS_ViewController::handleViewOrientationKeys (const Handle(AIS_InteractiveContext)& theCtx,
+                                                    const Handle(V3d_View)& theView)
+{
+  if (myNavigationMode == AIS_NavigationMode_FirstPersonWalk)
+  {
+    return;
+  }
+
+  Handle(Graphic3d_Camera) aCameraBack;
+  struct ViewKeyAction
+  {
+    Aspect_VKey Key;
+    V3d_TypeOfOrientation Orientation;
+  };
+  static const ViewKeyAction THE_VIEW_KEYS[] =
+  {
+    { Aspect_VKey_ViewTop,          V3d_TypeOfOrientation_Zup_Top },
+    { Aspect_VKey_ViewBottom,       V3d_TypeOfOrientation_Zup_Bottom },
+    { Aspect_VKey_ViewLeft,         V3d_TypeOfOrientation_Zup_Left },
+    { Aspect_VKey_ViewRight,        V3d_TypeOfOrientation_Zup_Right },
+    { Aspect_VKey_ViewFront,        V3d_TypeOfOrientation_Zup_Front },
+    { Aspect_VKey_ViewBack,         V3d_TypeOfOrientation_Zup_Back },
+    { Aspect_VKey_ViewAxoLeftProj,  V3d_TypeOfOrientation_Zup_AxoLeft },
+    { Aspect_VKey_ViewAxoRightProj, V3d_TypeOfOrientation_Zup_AxoRight },
+    { Aspect_VKey_ViewRoll90CW,     (V3d_TypeOfOrientation )-1},
+    { Aspect_VKey_ViewRoll90CCW,    (V3d_TypeOfOrientation )-1},
+    { Aspect_VKey_ViewFitAll,       (V3d_TypeOfOrientation )-1}
+  };
+  {
+    Standard_Mutex::Sentry aLock (myKeys.Mutex());
+    const size_t aNbKeys = sizeof(THE_VIEW_KEYS) / sizeof(*THE_VIEW_KEYS);
+    const double anEventTime = EventTime();
+    for (size_t aKeyIter = 0; aKeyIter < aNbKeys; ++aKeyIter)
+    {
+      const ViewKeyAction& aKeyAction = THE_VIEW_KEYS[aKeyIter];
+      if (!myKeys.IsKeyDown (aKeyAction.Key))
+      {
+        continue;
+      }
+
+      myKeys.KeyUp (aKeyAction.Key, anEventTime);
+      if (aCameraBack.IsNull())
+      {
+        aCameraBack = theView->Camera();
+        theView->SetCamera (new Graphic3d_Camera (aCameraBack));
+      }
+      if (aKeyAction.Orientation != (V3d_TypeOfOrientation )-1)
+      {
+        theView->SetProj (aKeyAction.Orientation);
+        FitAllAuto (theCtx, theView);
+      }
+      else if (aKeyAction.Key == Aspect_VKey_ViewRoll90CW)
+      {
+        const double aTwist = theView->Twist() + M_PI / 2.0;
+        theView->SetTwist (aTwist);
+      }
+      else if (aKeyAction.Key == Aspect_VKey_ViewRoll90CCW)
+      {
+        const double aTwist = theView->Twist() - M_PI / 2.0;
+        theView->SetTwist (aTwist);
+      }
+      else if (aKeyAction.Key == Aspect_VKey_ViewFitAll)
+      {
+        FitAllAuto (theCtx, theView);
+      }
+    }
+  }
+
+  if (aCameraBack.IsNull())
+  {
+    return;
+  }
+
+  Handle(Graphic3d_Camera) aCameraNew = theView->Camera();
+  theView->SetCamera (aCameraBack);
+  const Graphic3d_Mat4d anOrientMat1 = aCameraBack->OrientationMatrix();
+  const Graphic3d_Mat4d anOrientMat2 = aCameraNew ->OrientationMatrix();
+  if (anOrientMat1 != anOrientMat2)
+  {
+    const Handle(AIS_AnimationCamera)& aCamAnim = myViewAnimation;
+    aCamAnim->SetView (theView);
+    aCamAnim->SetStartPts (0.0);
+    aCamAnim->SetCameraStart (new Graphic3d_Camera (aCameraBack));
+    aCamAnim->SetCameraEnd   (new Graphic3d_Camera (aCameraNew));
+    aCamAnim->StartTimer (0.0, 1.0, true, false);
+  }
 }
 
 // =======================================================================
@@ -2763,7 +3007,7 @@ void AIS_ViewController::handleViewRedraw (const Handle(AIS_InteractiveContext)&
   {
     const Handle(V3d_View)& aView = aViewIter.Value();
     if (aView->IsInvalidated()
-     || myToAskNextFrame)
+     || (myToAskNextFrame && aView == theView))
     {
       if (aView->ComputedMode())
       {
@@ -3056,6 +3300,7 @@ void AIS_ViewController::HandleViewEvents (const Handle(AIS_InteractiveContext)&
 {
   const bool wasImmediateUpdate = theView->SetImmediateUpdate (false);
 
+  handleViewOrientationKeys (theCtx, theView);
   const AIS_WalkDelta aWalk = handleNavigationKeys (theCtx, theView);
   handleXRInput (theCtx, theView, aWalk);
   if (theView->View()->IsActiveXR())

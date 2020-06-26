@@ -55,6 +55,7 @@
 #include <Message_ProgressSentry.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD.hxx>
 #include <OSD_Timer.hxx>
@@ -89,6 +90,7 @@
 #if defined(_WIN32)
   #include <WNT_WClass.hxx>
   #include <WNT_Window.hxx>
+  #include <WNT_HIDSpaceMouse.hxx>
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   #include <Cocoa_Window.hxx>
 #else
@@ -1831,6 +1833,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
                                     aPxLeft, aPxTop,
                                     aPxWidth, aPxHeight,
                                     Quantity_NOC_BLACK);
+  VT_GetWindow()->RegisterRawInputDevices (WNT_Window::RawInputMask_SpaceMouse);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   VT_GetWindow() = new Cocoa_Window (aTitle.ToCString(),
                                      aPxLeft, aPxTop,
@@ -3256,6 +3259,40 @@ static LRESULT WINAPI ViewerWindowProc (HWND theWinHandle,
 
       ViewerTest::CurrentEventManager()->UpdateMousePosition (aPos, aButtons, aFlags, false);
       ViewerTest::CurrentEventManager()->FlushViewEvents (ViewerTest::GetAISContext(), aView, true);
+      break;
+    }
+    case WM_INPUT:
+    {
+      UINT aSize = 0;
+      ::GetRawInputData ((HRAWINPUT )lParam, RID_INPUT, NULL, &aSize, sizeof(RAWINPUTHEADER));
+      NCollection_LocalArray<BYTE> aRawData (aSize);
+      if (aSize == 0 || ::GetRawInputData ((HRAWINPUT )lParam, RID_INPUT, aRawData, &aSize, sizeof(RAWINPUTHEADER)) != aSize)
+      {
+        break;
+      }
+
+      const RAWINPUT* aRawInput = (RAWINPUT* )(BYTE* )aRawData;
+      if (aRawInput->header.dwType != RIM_TYPEHID)
+      {
+        break;
+      }
+
+      RID_DEVICE_INFO aDevInfo;
+      aDevInfo.cbSize = sizeof(RID_DEVICE_INFO);
+      UINT aDevInfoSize = sizeof(RID_DEVICE_INFO);
+      if (::GetRawInputDeviceInfoW (aRawInput->header.hDevice, RIDI_DEVICEINFO, &aDevInfo, &aDevInfoSize) != sizeof(RID_DEVICE_INFO)
+        || (aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_LOGITECH
+         && aDevInfo.hid.dwVendorId != WNT_HIDSpaceMouse::VENDOR_ID_3DCONNEXION))
+      {
+        break;
+      }
+
+      WNT_HIDSpaceMouse aSpaceData (aDevInfo.hid.dwProductId, aRawInput->data.hid.bRawData, aRawInput->data.hid.dwSizeHid);
+      if (ViewerTest::CurrentEventManager()->Update3dMouse (aSpaceData)
+      && !VT_GetWindow().IsNull())
+      {
+        VT_GetWindow()->InvalidateContent();
+      }
       break;
     }
     default:

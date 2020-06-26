@@ -139,6 +139,20 @@ enum Aspect_VKeyBasic
   Aspect_VKey_BrowserFavorites,
   Aspect_VKey_BrowserHome,
 
+  // 3d view keys
+  Aspect_VKey_ViewTop,
+  Aspect_VKey_ViewBottom,
+  Aspect_VKey_ViewLeft,
+  Aspect_VKey_ViewRight,
+  Aspect_VKey_ViewFront,
+  Aspect_VKey_ViewBack,
+  Aspect_VKey_ViewAxoLeftProj,
+  Aspect_VKey_ViewAxoRightProj,
+  Aspect_VKey_ViewFitAll,
+  Aspect_VKey_ViewRoll90CW,
+  Aspect_VKey_ViewRoll90CCW,
+  Aspect_VKey_ViewSwitchRotate,
+
   // modifier keys, @sa Aspect_VKey_ModifiersLower and Aspect_VKey_ModifiersUpper below
   Aspect_VKey_Shift,
   Aspect_VKey_Control,

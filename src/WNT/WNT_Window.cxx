@@ -24,6 +24,7 @@
 #include <Aspect_Convert.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 #include <Aspect_WindowError.hxx>
+#include <Message.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <WNT_WClass.hxx>
@@ -641,6 +642,61 @@ Aspect_VKeyMouse WNT_Window::MouseButtonsAsync()
     aButtons |= Aspect_VKeyMouse_RightButton;
   }
   return aButtons;
+}
+
+// =======================================================================
+// function : RegisterRawInputDevices
+// purpose  :
+// =======================================================================
+int WNT_Window::RegisterRawInputDevices (unsigned int theRawDeviceMask)
+{
+  if (IsVirtual()
+   || myHWindow == NULL)
+  {
+    return 0;
+  }
+
+  // hidusage.h
+  enum HidUsagePage { THE_HID_USAGE_PAGE_GENERIC = 0x01 }; // HID_USAGE_PAGE_GENERIC
+  enum HidUsage
+  {
+    THE_HID_USAGE_GENERIC_MOUSE                 = 0x02, // HID_USAGE_GENERIC_MOUSE
+    THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER = 0x08, // HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER
+  };
+
+  int aNbDevices = 0;
+  RAWINPUTDEVICE aRawInDevList[2];
+  if ((theRawDeviceMask & RawInputMask_Mouse) != 0)
+  {
+    // mouse
+    RAWINPUTDEVICE& aRawMouse = aRawInDevList[aNbDevices++];
+    aRawMouse.usUsagePage = THE_HID_USAGE_PAGE_GENERIC;
+    aRawMouse.usUsage     = THE_HID_USAGE_GENERIC_MOUSE;
+    aRawMouse.dwFlags     = RIDEV_INPUTSINK;
+    aRawMouse.hwndTarget  = (HWND )myHWindow;
+  }
+  if ((theRawDeviceMask & RawInputMask_SpaceMouse) != 0)
+  {
+    // space mouse
+    RAWINPUTDEVICE& aRawSpace = aRawInDevList[aNbDevices++];
+    aRawSpace.usUsagePage = THE_HID_USAGE_PAGE_GENERIC;
+    aRawSpace.usUsage     = THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER;
+    aRawSpace.dwFlags     = 0; // RIDEV_DEVNOTIFY
+    aRawSpace.hwndTarget  = (HWND )myHWindow;
+  }
+
+  for (int aTryIter = aNbDevices; aTryIter > 0; --aTryIter)
+  {
+    if (::RegisterRawInputDevices (aRawInDevList, aTryIter, sizeof(aRawInDevList[0])))
+    {
+      return aTryIter;
+    }
+
+    Message::SendTrace (aRawInDevList[aTryIter - 1].usUsage == THE_HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER
+                      ? "Warning: RegisterRawInputDevices() failed to register RAW multi-axis controller input"
+                      : "Warning: RegisterRawInputDevices() failed to register RAW mouse input");
+  }
+  return 0;
 }
 
 #endif // _WIN32

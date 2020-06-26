@@ -1,5 +1,7 @@
 WNT_ClassDefinitionError.hxx
 WNT_Dword.hxx
+WNT_HIDSpaceMouse.cxx
+WNT_HIDSpaceMouse.hxx
 WNT_OrientationType.hxx
 WNT_WClass.cxx
 WNT_WClass.hxx

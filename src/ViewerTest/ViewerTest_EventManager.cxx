@@ -35,6 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_EventManager,Standard_Transient)
 const Handle(AIS_AnimationCamera)& ViewerTest_EventManager::GlobalViewAnimation()
 {
   static Handle(AIS_AnimationCamera) THE_CAMERA_ANIM = new AIS_AnimationCamera ("ViewerTest_EventManager_ViewAnimation", Handle(V3d_View)());
+  THE_CAMERA_ANIM->SetOwnDuration (0.5);
   return THE_CAMERA_ANIM;
 }
 

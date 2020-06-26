@@ -65,6 +65,11 @@ public:
     return myKeys[theKey].Status == KeyStatus_Pressed;
   }
 
+  //! Return mutex for thread-safe updates.
+  //! All operations in class implicitly locks this mutex,
+  //! so this method could be used only for batch processing of keys.
+  Standard_Mutex& Mutex() { return myLock; }
+
 public:
 
   //! Reset the key state into unpressed state.

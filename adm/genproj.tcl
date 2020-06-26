@@ -1596,11 +1596,6 @@ proc osutils:tk:units { tkloc theSrcDir } {
   return $l
 }
 
-proc osutils:justwnt { listloc } {
-  set goaway [list Xw]
-  return [osutils:juststation $goaway $listloc]
-}
-
 # remove from listloc OpenCascade units indesirables on NT
 proc osutils:juststation {goaway listloc} {
   global path
@@ -2267,17 +2262,6 @@ proc wokUtils:FILES:mkdir { d } {
     }
 }
 
-# remove from listloc OpenCascade units indesirables on Unix
-proc osutils:justunix { listloc } {
-  if { "$::tcl_platform(os)" == "Darwin" } {
-    set goaway [list Xw WNT]
-  } else {
-    set goaway [list WNT]
-  }
-  return [osutils:juststation $goaway $listloc]
-}
-
-
 ####### CODEBLOCK ###################################################################
 # Function to generate Code Blocks workspace and project files
 proc OS:MKCBP { theOutDir theModules theAllSolution thePlatform theCmpl } {
@@ -2333,13 +2317,8 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit thePlatform} {
     set listloc $theToolKit
   }
 
-  if { $thePlatform == "wnt" || $thePlatform == "uwp" } {
-    set resultloc [osutils:justwnt  $listloc]
-  } else {
-    set resultloc [osutils:justunix $listloc]
-  }
   if [array exists written] { unset written }
-  foreach fxlo $resultloc {
+  foreach fxlo $listloc {
     set xlo       $fxlo
     set aSrcFiles [osutils:tk:cxxfiles $xlo $thePlatform "src"]
     foreach aSrcFile [lsort $aSrcFiles] {
@@ -2928,9 +2907,8 @@ proc osutils:xcdtk:sources {theToolKit theTargetType theSrcFileRefSection theGro
   upvar $theIncPaths          anIncPaths
 
   set listloc [osutils:tk:units $theToolKit "src"]
-  set resultloc [osutils:justunix $listloc]
   set aBuildFileSection ""
-  set aPackages [lsort -nocase $resultloc]
+  set aPackages [lsort -nocase $listloc]
   if { "$theTargetType" == "executable" } {
     set aPackages [list "$theToolKit"]
   }

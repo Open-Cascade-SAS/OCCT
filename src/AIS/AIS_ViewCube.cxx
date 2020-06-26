@@ -149,12 +149,12 @@ AIS_ViewCube::AIS_ViewCube()
   myViewAnimation (new AIS_AnimationCamera ("AIS_ViewCube", Handle(V3d_View)())),
   myStartState(new Graphic3d_Camera()),
   myEndState  (new Graphic3d_Camera()),
-  myDuration (0.5),
   myToAutoStartAnim (true),
   myIsFixedAnimation (true),
   myToFitSelected (true),
   myToResetCameraUp (false)
 {
+  myViewAnimation->SetOwnDuration (0.5);
   myInfiniteState = true;
   myIsMutable = true;
   myDrawer->SetZLayer (Graphic3d_ZLayerId_Topmost);
@@ -825,6 +825,24 @@ void AIS_ViewCube::ComputeSelection (const Handle(SelectMgr_Selection)& theSelec
 }
 
 //=======================================================================
+//function : Duration
+//purpose  :
+//=======================================================================
+Standard_Real AIS_ViewCube::Duration() const
+{
+  return myViewAnimation->OwnDuration();
+}
+
+//=======================================================================
+//function : SetDuration
+//purpose  :
+//=======================================================================
+void AIS_ViewCube::SetDuration (Standard_Real theDurationSec)
+{
+  myViewAnimation->SetOwnDuration (theDurationSec);
+}
+
+//=======================================================================
 //function : HasAnimation
 //purpose  :
 //=======================================================================
@@ -913,7 +931,6 @@ void AIS_ViewCube::StartAnimation (const Handle(AIS_ViewCubeOwner)& theOwner)
   myViewAnimation->SetView (aView);
   myViewAnimation->SetCameraStart (myStartState);
   myViewAnimation->SetCameraEnd   (myEndState);
-  myViewAnimation->SetOwnDuration (myDuration);
   myViewAnimation->StartTimer (0.0, 1.0, true, false);
 }
 
@@ -924,7 +941,7 @@ void AIS_ViewCube::StartAnimation (const Handle(AIS_ViewCubeOwner)& theOwner)
 Standard_Boolean AIS_ViewCube::updateAnimation()
 {
   const Standard_Real aPts = myViewAnimation->UpdateTimer();
-  if (aPts >= myDuration)
+  if (aPts >= myViewAnimation->OwnDuration())
   {
     myViewAnimation->Stop();
     onAnimationFinished();

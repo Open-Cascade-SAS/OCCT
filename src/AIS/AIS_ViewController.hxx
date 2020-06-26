@@ -41,6 +41,7 @@ class AIS_RubberBand;
 class AIS_XRTrackedDevice;
 class Graphic3d_Camera;
 class V3d_View;
+class WNT_HIDSpaceMouse;
 
 //! Auxiliary structure for handling viewer events between GUI and Rendering threads.
 //!
@@ -428,6 +429,50 @@ public: //! @name multi-touch input
   Standard_EXPORT virtual void UpdateTouchPoint (Standard_Size theId,
                                                  const Graphic3d_Vec2d& thePnt);
 
+public: //! @name 3d mouse input
+
+  //! Return acceleration ratio for translation event; 2.0 by default.
+  float Get3dMouseTranslationScale() const { return my3dMouseAccelTrans; }
+
+  //! Set acceleration ratio for translation event.
+  void Set3dMouseTranslationScale (float theScale) { my3dMouseAccelTrans = theScale; }
+
+  //! Return acceleration ratio for rotation event; 4.0 by default.
+  float Get3dMouseRotationScale() const { return my3dMouseAccelRotate; }
+
+  //! Set acceleration ratio for rotation event.
+  void Set3dMouseRotationScale (float theScale) { my3dMouseAccelRotate = theScale; }
+
+  //! Return quadric acceleration flag; TRUE by default.
+  bool To3dMousePreciseInput() const { return my3dMouseIsQuadric; }
+
+  //! Set quadric acceleration flag.
+  void Set3dMousePreciseInput (bool theIsQuadric) { my3dMouseIsQuadric = theIsQuadric; }
+
+  //! Return 3d mouse rotation axes (tilt/roll/spin) ignore flag; (FALSE, FALSE, FALSE) by default.
+  const NCollection_Vec3<bool>& Get3dMouseIsNoRotate() const { return my3dMouseNoRotate; }
+
+  //! Return 3d mouse rotation axes (tilt/roll/spin) ignore flag; (FALSE, FALSE, FALSE) by default.
+  NCollection_Vec3<bool>& Change3dMouseIsNoRotate() { return my3dMouseNoRotate; }
+
+  //! Return 3d mouse rotation axes (tilt/roll/spin) reverse flag; (TRUE, FALSE, FALSE) by default.
+  const NCollection_Vec3<bool>& Get3dMouseToReverse() const { return my3dMouseToReverse; }
+
+  //! Return 3d mouse rotation axes (tilt/roll/spin) reverse flag; (TRUE, FALSE, FALSE) by default.
+  NCollection_Vec3<bool>& Change3dMouseToReverse() { return my3dMouseToReverse; }
+
+  //! Process 3d mouse input event (redirects to translation, rotation and keys).
+  Standard_EXPORT virtual bool Update3dMouse (const WNT_HIDSpaceMouse& theEvent);
+
+  //! Process 3d mouse input translation event.
+  Standard_EXPORT virtual bool update3dMouseTranslation (const WNT_HIDSpaceMouse& theEvent);
+
+  //! Process 3d mouse input rotation event.
+  Standard_EXPORT virtual bool update3dMouseRotation (const WNT_HIDSpaceMouse& theEvent);
+
+  //! Process 3d mouse input keys event.
+  Standard_EXPORT virtual bool update3dMouseKeys (const WNT_HIDSpaceMouse& theEvent);
+
 public:
 
   //! Return event time (e.g. current time).
@@ -488,14 +533,25 @@ public:
   Standard_EXPORT virtual gp_Pnt GravityPoint (const Handle(AIS_InteractiveContext)& theCtx,
                                                const Handle(V3d_View)& theView);
 
+  //! Modify view camera to fit all objects.
+  //! Default implementation fits either all visible and all selected objects (swapped on each call).
+  Standard_EXPORT virtual void FitAllAuto (const Handle(AIS_InteractiveContext)& theCtx,
+                                           const Handle(V3d_View)& theView);
+
 public:
 
-  //! Perform navigation.
+  //! Handle hot-keys defining new camera orientation (Aspect_VKey_ViewTop and similar keys).
+  //! Default implementation starts an animated transaction from the current to the target camera orientation, when specific action key was pressed.
+  //! This method is expected to be called from rendering thread.
+  Standard_EXPORT virtual void handleViewOrientationKeys (const Handle(AIS_InteractiveContext)& theCtx,
+                                                          const Handle(V3d_View)& theView);
+
+  //! Perform navigation (Aspect_VKey_NavForward and similar keys).
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual AIS_WalkDelta handleNavigationKeys (const Handle(AIS_InteractiveContext)& theCtx,
                                                               const Handle(V3d_View)& theView);
 
-  //! Perform camera actions.
+  //! Perform immediate camera actions (rotate/zoom/pan) on gesture progress.
   //! This method is expected to be called from rendering thread.
   Standard_EXPORT virtual void handleCameraActions (const Handle(AIS_InteractiveContext)& theCtx,
                                                     const Handle(V3d_View)& theView,
@@ -741,6 +797,15 @@ protected: //! @name multi-touch input variables
   Standard_Boolean    myUpdateStartPointPan;      //!< flag indicating that new anchor  point should be picked for starting panning    gesture
   Standard_Boolean    myUpdateStartPointRot;      //!< flag indicating that new gravity point should be picked for starting rotation   gesture
   Standard_Boolean    myUpdateStartPointZRot;     //!< flag indicating that new gravity point should be picked for starting Z-rotation gesture
+
+protected: //! @name 3d mouse input variables
+
+  bool                   my3dMouseButtonState[32];//!< cached button state
+  NCollection_Vec3<bool> my3dMouseNoRotate;       //!< ignore  3d mouse rotation axes
+  NCollection_Vec3<bool> my3dMouseToReverse;      //!< reverse 3d mouse rotation axes
+  float                  my3dMouseAccelTrans;     //!< acceleration ratio for translation event
+  float                  my3dMouseAccelRotate;    //!< acceleration ratio for rotation event
+  bool                   my3dMouseIsQuadric;      //!< quadric acceleration
 
 protected: //! @name rotation/panning transient state variables
 

@@ -128,6 +128,18 @@ public:
   //! Method can be called from non-window thread, and system will also automatically aggregate multiple events into single one.
   Standard_EXPORT virtual void InvalidateContent (const Handle(Aspect_DisplayConnection)& theDisp = NULL) Standard_OVERRIDE;
 
+  //! Raw input flags.
+  enum RawInputMask
+  {
+    RawInputMask_Mouse      = 0x01, //!< HID_USAGE_GENERIC_MOUSE
+    RawInputMask_SpaceMouse = 0x02, //!< HID_USAGE_GENERIC_MULTI_AXIS_CONTROLLER
+  };
+
+  //! RegisterRawInputDevices() wrapper.
+  //! @param theRawDeviceMask [in] mask of RawInputMask flags
+  //! @return number of actually registered device types
+  Standard_EXPORT int RegisterRawInputDevices (unsigned int theRawDeviceMask);
+
   DEFINE_STANDARD_RTTIEXT(WNT_Window,Aspect_Window)
 
 protected:
