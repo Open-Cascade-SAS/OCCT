@@ -1,0 +1,16 @@
+puts "========"
+puts "0031639: Modeling Algorithms - Offset algorithm incorrectly fills one of the holes"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31639_input_trim.brep] s
+offsetparameter 1e-7 c i r
+offsetload s 7
+offsetperform result
+
+checkprops result -s 7.22731e+06 -v 2.57323e+08
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 18 -face 17 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png
