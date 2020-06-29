@@ -937,10 +937,10 @@ The following steps are performed:
 **TopTools** package contains tools for exploiting the *TopoDS* data structure. It is an instantiation of the tools from *TCollection* package with the Shape classes of *TopoDS*. 
 
 
-* *TopTools_Array1OfShape, HArray1OfShape* -- instantiation of the *TCollection_Array1* and *TCollection_HArray1* with *TopoDS_Shape*. 
-* *TopTools_SequenceOfShape* -- instantiation of the *TCollection_Sequence* with *TopoDS_Shape*. 
-* *TopTools_MapOfShape* - instantiation of the *TCollection_Map*. Allows the construction of sets of shapes. 
-* *TopTools_IndexedMapOfShape* - instantiation of the *TCollection_IndexedMap*. Allows the construction of tables of shapes and other data structures. 
+* *TopTools_Array1OfShape, HArray1OfShape* -- instantiation of the *NCollection_Array1* with *TopoDS_Shape*.
+* *TopTools_SequenceOfShape* -- instantiation of the *NCollection_Sequence* with *TopoDS_Shape*.
+* *TopTools_MapOfShape* - instantiation of the *NCollection_Map*. Allows the construction of sets of shapes.
+* *TopTools_IndexedMapOfShape* - instantiation of the *NCollection_IndexedMap*. Allows the construction of tables of shapes and other data structures.
 
 With a *TopTools_Map*, a set of references to Shapes can be kept without duplication. 
 The following example counts the size of a data structure as a number of *TShapes*. 

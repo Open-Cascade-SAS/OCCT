@@ -260,12 +260,6 @@ TCollection_AsciiString=<mylength,d> <mystring,s>
 TCollection_HAsciiString=<myString.mylength,d> <myString.mystring,s>
 TCollection_ExtendedString=<mylength,d> <mystring,su>
 TCollection_HExtendedString=<myString.mylength,d> <myString.mystring,su>
-TCollection_BaseSequence=size=<Size,d> curr=<CurrentIndex,d>
-TCollection_BasicMap=size=<mySize,d>
-NCollection_BaseSequence=size=<mySize,d> curr=<myCurrentIndex,d>
-NCollection_BaseList=length=<myLength,d>
-NCollection_BaseMap=size=<mySize,d> buckets=<myNbBuckets>
-NCollection_BaseVector=length=<myLength,d>
 TDF_Label=<myLabelNode,x> tag=<myLabelNode->myTag>
 TDF_LabelNode=tag=<myTag,d>
 TDocStd_Document=format=<myStorageFormat.mystring,su> count=<count,d> <,t>

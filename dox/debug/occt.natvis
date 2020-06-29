@@ -77,13 +77,6 @@
   <Type Name="TCollection_HExtendedString">
     <DisplayString>{myString.mylength}: {(wchar_t *)myString.mystring,su}</DisplayString>
   </Type>
-  <Type Name="TCollection_BaseSequence">
-    <DisplayString>TCollection_Sequence [{Size}], curr={CurrentIndex}</DisplayString>
-  </Type>
-  <Type Name="TCollection_BasicMap">
-    <AlternativeType Name="NCollection_BaseMap"/>
-    <DisplayString>TCollection_Map [{mySize}]</DisplayString>
-  </Type>
   <Type Name="TColStd_PackedMapOfInteger">
     <DisplayString>TColStd_PackedMapOfInteger [{myExtent}]</DisplayString>
   </Type>
