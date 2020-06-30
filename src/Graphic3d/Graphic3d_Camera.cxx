@@ -139,6 +139,7 @@ Graphic3d_Camera::Graphic3d_Camera (const Handle(Graphic3d_Camera)& theOther)
 // =======================================================================
 void Graphic3d_Camera::CopyMappingData (const Handle(Graphic3d_Camera)& theOtherCamera)
 {
+  SetProjectionType (theOtherCamera->ProjectionType());
   SetFOVy           (theOtherCamera->FOVy());
   SetFOV2d          (theOtherCamera->FOV2d());
   SetZRange         (theOtherCamera->ZNear(), theOtherCamera->ZFar());
@@ -146,7 +147,6 @@ void Graphic3d_Camera::CopyMappingData (const Handle(Graphic3d_Camera)& theOther
   SetScale          (theOtherCamera->Scale());
   SetZFocus         (theOtherCamera->ZFocusType(), theOtherCamera->ZFocus());
   SetIOD            (theOtherCamera->GetIODType(), theOtherCamera->IOD());
-  SetProjectionType (theOtherCamera->ProjectionType());
   SetTile           (theOtherCamera->myTile);
 
   ResetCustomProjection();
