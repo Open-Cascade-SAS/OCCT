@@ -102,12 +102,12 @@ void PrsMgr_Presentation::Erase()
   }
 
   // Erase structure from structure manager
-  base_type::Erase();
-  base_type::Clear();
+  erase();
+  clear (true);
   // Disconnect other structures
-  base_type::DisconnectAll (Graphic3d_TOC_DESCENDANT);
+  DisconnectAll (Graphic3d_TOC_DESCENDANT);
   // Clear groups and remove graphic structure
-  base_type::Remove();
+  Remove();
 }
 
 //=======================================================================
@@ -140,7 +140,7 @@ void PrsMgr_Presentation::Unhighlight()
       base_type::SetVisible (Standard_False);
       break;
     case State_Empty:
-      base_type::Erase();
+      base_type::erase();
       break;
   }
 }
@@ -162,8 +162,8 @@ void PrsMgr_Presentation::Clear (const Standard_Boolean theWithDestruction)
     return;
   }
 
-  base_type::Clear (theWithDestruction);
-  base_type::DisconnectAll (Graphic3d_TOC_DESCENDANT);
+  clear (theWithDestruction);
+  DisconnectAll (Graphic3d_TOC_DESCENDANT);
 }
 
 //=======================================================================

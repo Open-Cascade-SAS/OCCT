@@ -66,7 +66,10 @@ public:
   //! The structure itself is conserved.
   //! The transformation and the attributes of <me> are conserved.
   //! The childs of <me> are conserved.
-  Standard_EXPORT virtual void Clear (const Standard_Boolean WithDestruction = Standard_True);
+  virtual void Clear (const Standard_Boolean WithDestruction = Standard_True)
+  {
+    clear (WithDestruction);
+  }
   
   //! Suppresses the structure <me>.
   //! It will be erased at the next screen update.
@@ -78,9 +81,8 @@ public:
   //! Returns the current display priority for this structure.
   Standard_Integer DisplayPriority() const { return myCStructure->Priority; }
   
-  //! Erases the structure <me> in all the views
-  //! of the visualiser.
-  Standard_EXPORT virtual void Erase();
+  //! Erases this structure in all the views of the visualiser.
+  virtual void Erase() { erase(); }
   
   //! Highlights the structure in all the views with the given style
   //! @param theStyle [in] the style (type of highlighting: box/color, color and opacity)
@@ -427,6 +429,12 @@ protected:
   
   //! Removes the given ancestor structure.
   Standard_EXPORT Standard_Boolean RemoveAncestor (Graphic3d_Structure* theAncestor);
+
+  //! Clears all the groups of primitives in the structure.
+  Standard_EXPORT void clear (const Standard_Boolean WithDestruction);
+
+  //! Erases this structure in all the views of the visualiser.
+  Standard_EXPORT void erase();
 
 private:
 

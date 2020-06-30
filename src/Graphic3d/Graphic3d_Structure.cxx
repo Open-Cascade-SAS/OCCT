@@ -73,10 +73,10 @@ Graphic3d_Structure::~Graphic3d_Structure()
 }
 
 //=============================================================================
-//function : Clear
+//function : clear
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Clear (const Standard_Boolean theWithDestruction)
+void Graphic3d_Structure::clear (const Standard_Boolean theWithDestruction)
 {
   if (IsDeleted()) return;
 
@@ -206,10 +206,10 @@ void Graphic3d_Structure::ResetDisplayPriority()
 }
 
 //=============================================================================
-//function : Erase
+//function : erase
 //purpose  :
 //=============================================================================
-void Graphic3d_Structure::Erase()
+void Graphic3d_Structure::erase()
 {
   if (IsDeleted())
   {
@@ -431,7 +431,7 @@ void Graphic3d_Structure::SetVisual (const Graphic3d_TypeOfStructure theVisual)
   }
   else
   {
-    Erase();
+    erase();
     myVisual = theVisual;
     SetComputeVisual (theVisual);
     Display();
