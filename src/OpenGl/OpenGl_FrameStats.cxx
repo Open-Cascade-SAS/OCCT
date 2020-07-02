@@ -61,6 +61,8 @@ bool OpenGl_FrameStats::IsFrameUpdated (Handle(OpenGl_FrameStats)& thePrev) cons
   else if (myLastFrameIndex == thePrev->myLastFrameIndex
         && Abs (aFrame.FrameRate()    - thePrev->myCountersTmp.FrameRate())    <= 0.001
         && Abs (aFrame.FrameRateCpu() - thePrev->myCountersTmp.FrameRateCpu()) <= 0.001
+        && Abs (aFrame.ImmediateFrameRate()    - thePrev->myCountersTmp.ImmediateFrameRate())    <= 0.001
+        && Abs (aFrame.ImmediateFrameRateCpu() - thePrev->myCountersTmp.ImmediateFrameRateCpu()) <= 0.001
         && aFrame[Graphic3d_FrameStatsCounter_NbLayers]           == thePrev->myCountersTmp[Graphic3d_FrameStatsCounter_NbLayers]
         && aFrame[Graphic3d_FrameStatsCounter_NbLayersNotCulled]  == thePrev->myCountersTmp[Graphic3d_FrameStatsCounter_NbLayersNotCulled]
         && aFrame[Graphic3d_FrameStatsCounter_NbStructs]          == thePrev->myCountersTmp[Graphic3d_FrameStatsCounter_NbStructs]

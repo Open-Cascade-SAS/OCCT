@@ -19,7 +19,9 @@
 // =======================================================================
 Graphic3d_FrameStatsData::Graphic3d_FrameStatsData()
 : myFps (-1.0),
-  myFpsCpu (-1.0)
+  myFpsCpu (-1.0),
+  myFpsImmediate (-1.0),
+  myFpsCpuImmediate (-1.0)
 {
   myCounters .resize (Graphic3d_FrameStatsCounter_NB, 0);
   myTimers   .resize (Graphic3d_FrameStatsTimer_NB, 0.0);
@@ -36,6 +38,8 @@ Graphic3d_FrameStatsData& Graphic3d_FrameStatsData::operator= (const Graphic3d_F
 {
   myFps         = theOther.myFps;
   myFpsCpu      = theOther.myFpsCpu;
+  myFpsImmediate    = theOther.myFpsImmediate;
+  myFpsCpuImmediate = theOther.myFpsCpuImmediate;
   myCounters    = theOther.myCounters;
   myTimers      = theOther.myTimers;
   myTimersMin   = theOther.myTimersMin;
@@ -51,6 +55,8 @@ void Graphic3d_FrameStatsData::Reset()
 {
   myFps    = -1.0;
   myFpsCpu = -1.0;
+  myFpsImmediate = -1.0;
+  myFpsCpuImmediate = -1.0;
   myCounters .assign (myCounters.size(),  0);
   myTimers   .assign (myTimers.size(),    0.0);
   myTimersMin.assign (myTimersMin.size(), RealLast());
@@ -65,6 +71,8 @@ void Graphic3d_FrameStatsData::FillMax (const Graphic3d_FrameStatsData& theOther
 {
   myFps    = Max (myFps,    theOther.myFps);
   myFpsCpu = Max (myFpsCpu, theOther.myFpsCpu);
+  myFpsImmediate    = Max (myFpsImmediate,    theOther.myFpsImmediate);
+  myFpsCpuImmediate = Max (myFpsCpuImmediate, theOther.myFpsCpuImmediate);
   for (size_t aCounterIter = 0; aCounterIter < myCounters.size(); ++aCounterIter)
   {
     myCounters[aCounterIter] = myCounters[aCounterIter] > theOther.myCounters[aCounterIter] ? myCounters[aCounterIter] : theOther.myCounters[aCounterIter];

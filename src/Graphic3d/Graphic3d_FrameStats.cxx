@@ -49,11 +49,32 @@ namespace
     else
     {
       theStream << theValue;
+      if (thePostfix == NULL)
+      {
+        theStream << " ";
+      }
     }
     if (thePostfix != NULL)
     {
       theStream << thePostfix;
     }
+    return theStream;
+  }
+
+  //! Format a pair of counters.
+  static std::ostream& formatCounterPair (std::ostream& theStream,
+                                          Standard_Integer theWidth,
+                                          const char* thePrefix,
+                                          Standard_Size theValue,
+                                          Standard_Size theImmValue,
+                                          bool theToShowImmediate)
+  {
+    formatCounter (theStream, theWidth, thePrefix, theValue, NULL);
+    if (theToShowImmediate)
+    {
+      formatCounter (theStream, 1, "(", theImmValue, ")");
+    }
+    theStream << "\n";
     return theStream;
   }
 
@@ -263,11 +284,21 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats (Graphic3d_RenderingPa
   {
     if ((theFlags & Graphic3d_RenderingParams::PerfCounters_FrameRate) != 0)
     {
-      aBuf << "FPS:     " << std::setfill(' ') << std::setw (isCompact ? aValWidth : aValWidth + 3) << std::fixed << std::setprecision (1) << aStats.FrameRate()  << "\n";
+      aBuf << "FPS:     " << std::setfill(' ') << std::setw (isCompact ? aValWidth : aValWidth + 3) << std::fixed << std::setprecision (1) << aStats.FrameRate();
+      if (aStats.ImmediateFrameRate() > 0.0)
+      {
+        aBuf << " (" << std::fixed << std::setprecision (1) << aStats.ImmediateFrameRate() << ")";
+      }
+      aBuf << "\n";
     }
     if ((theFlags & Graphic3d_RenderingParams::PerfCounters_CPU) != 0)
     {
-      aBuf << "CPU FPS: " << std::setfill(' ') << std::setw (isCompact ? aValWidth : aValWidth + 3) << std::fixed << std::setprecision (1) << aStats.FrameRateCpu() << "\n";
+      aBuf << "CPU FPS: " << std::setfill(' ') << std::setw (isCompact ? aValWidth : aValWidth + 3) << std::fixed << std::setprecision (1) << aStats.FrameRateCpu();
+      if (aStats.ImmediateFrameRateCpu() > 0.0)
+      {
+        aBuf << " (" << std::fixed << std::setprecision (1) << aStats.ImmediateFrameRateCpu() << ")";
+      }
+      aBuf << "\n";
     }
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Layers) != 0)
@@ -302,6 +333,8 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats (Graphic3d_RenderingPa
       formatCounter (aBuf, aValWidth + 3, "Structs: ", aStats[Graphic3d_FrameStatsCounter_NbStructs], "\n");
     }
   }
+
+  const bool hasImmediate = aStats[Graphic3d_FrameStatsCounter_NbLayersImmediate] != 0 || aStats.ImmediateFrameRate() > 0.0;
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Groups) != 0
    || (theFlags & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0
    || (theFlags & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0
@@ -311,41 +344,70 @@ TCollection_AsciiString Graphic3d_FrameStats::FormatStats (Graphic3d_RenderingPa
     && ((theFlags & Graphic3d_RenderingParams::PerfCounters_Structures) != 0
      || (theFlags & Graphic3d_RenderingParams::PerfCounters_Layers) != 0)))
   {
-    aBuf << "Rendered\n";
+    if (hasImmediate)
+    {
+      aBuf << "Rendered          (imm.)\n";
+    }
+    else
+    {
+      aBuf << "Rendered\n";
+    }
   }
   if (!myIsLongLineFormat
    && (theFlags & Graphic3d_RenderingParams::PerfCounters_Layers) != 0)
   {
-    formatCounter (aBuf, aValWidth, "    Layers: ", aStats[Graphic3d_FrameStatsCounter_NbLayersNotCulled], "\n");
+    formatCounterPair (aBuf, aValWidth, "    Layers: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbLayersNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbLayersImmediate], hasImmediate);
   }
   if (!myIsLongLineFormat
    && (theFlags & Graphic3d_RenderingParams::PerfCounters_Structures) != 0)
   {
-    formatCounter (aBuf, aValWidth, "   Structs: ", aStats[Graphic3d_FrameStatsCounter_NbStructsNotCulled], "\n");
+    formatCounterPair (aBuf, aValWidth, "   Structs: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbStructsNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbStructsImmediate], hasImmediate);
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Groups) != 0)
   {
-    formatCounter (aBuf, aValWidth, "    Groups: ", aStats[Graphic3d_FrameStatsCounter_NbGroupsNotCulled], "\n");
+    formatCounterPair (aBuf, aValWidth, "    Groups: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbGroupsNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbGroupsImmediate], hasImmediate);
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_GroupArrays) != 0)
   {
-    formatCounter (aBuf, aValWidth, "    Arrays: ", aStats[Graphic3d_FrameStatsCounter_NbElemsNotCulled], "\n");
-    formatCounter (aBuf, aValWidth, "    [fill]: ", aStats[Graphic3d_FrameStatsCounter_NbElemsFillNotCulled], "\n");
-    formatCounter (aBuf, aValWidth, "    [line]: ", aStats[Graphic3d_FrameStatsCounter_NbElemsLineNotCulled], "\n");
-    formatCounter (aBuf, aValWidth, "   [point]: ", aStats[Graphic3d_FrameStatsCounter_NbElemsPointNotCulled], "\n");
-    formatCounter (aBuf, aValWidth, "    [text]: ", aStats[Graphic3d_FrameStatsCounter_NbElemsTextNotCulled], "\n");
+    formatCounterPair (aBuf, aValWidth, "    Arrays: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsImmediate], hasImmediate);
+    formatCounterPair (aBuf, aValWidth, "    [fill]: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsFillNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsFillImmediate], hasImmediate);
+    formatCounterPair (aBuf, aValWidth, "    [line]: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsLineNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsLineImmediate], hasImmediate);
+    formatCounterPair (aBuf, aValWidth, "   [point]: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsPointNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsPointImmediate], hasImmediate);
+    formatCounterPair (aBuf, aValWidth, "    [text]: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsTextNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbElemsTextImmediate], hasImmediate);
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Triangles) != 0)
   {
-    formatCounter (aBuf, aValWidth, " Triangles: ", aStats[Graphic3d_FrameStatsCounter_NbTrianglesNotCulled], "\n");
+    formatCounterPair (aBuf, aValWidth, " Triangles: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbTrianglesNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbTrianglesImmediate], hasImmediate);
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Lines) != 0)
   {
-    formatCounter (aBuf, aValWidth, "     Lines: ", aStats[Graphic3d_FrameStatsCounter_NbLinesNotCulled], "\n");
+    formatCounterPair (aBuf, aValWidth, "     Lines: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbLinesNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbLinesImmediate], hasImmediate);
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_Points) != 0)
   {
-    formatCounter (aBuf, aValWidth, "    Points: ", aStats[Graphic3d_FrameStatsCounter_NbPointsNotCulled], "\n");
+    formatCounterPair (aBuf, aValWidth, "    Points: ",
+                       aStats[Graphic3d_FrameStatsCounter_NbPointsNotCulled],
+                       aStats[Graphic3d_FrameStatsCounter_NbPointsImmediate], hasImmediate);
   }
   if ((theFlags & Graphic3d_RenderingParams::PerfCounters_EstimMem) != 0)
   {
@@ -561,18 +623,33 @@ void Graphic3d_FrameStats::FrameEnd (const Handle(Graphic3d_CView)& theView,
     return;
   }
 
+  const Graphic3d_FrameStatsData& aPrevFrame = myCounters.Value (myLastFrameIndex);
   if (aTime > gp::Resolution())
   {
     // update FPS
     myFpsTimer.Stop();
     const double aCpuSec = myFpsTimer.UserTimeCPU();
-
     myCountersTmp[Graphic3d_FrameStatsTimer_ElapsedFrame]  = aTime;
     myCountersTmp[Graphic3d_FrameStatsTimer_CpuFrame]      = aCpuSec;
-    myCountersTmp.ChangeFrameRate()    = double(myFpsFrameCount) / aTime;
-    myCountersTmp.ChangeFrameRateCpu() = aCpuSec > gp::Resolution()
-                                       ? double(myFpsFrameCount) / aCpuSec
-                                       : -1.0;
+
+    if (theIsImmediateOnly)
+    {
+      myCountersTmp.ChangeImmediateFrameRate()    = double(myFpsFrameCount) / aTime;
+      myCountersTmp.ChangeImmediateFrameRateCpu() = aCpuSec > gp::Resolution()
+                                                  ? double(myFpsFrameCount) / aCpuSec
+                                                  : -1.0;
+      myCountersTmp.ChangeFrameRate()    = aPrevFrame.FrameRate();
+      myCountersTmp.ChangeFrameRateCpu() = aPrevFrame.FrameRateCpu();
+    }
+    else
+    {
+      myCountersTmp.ChangeImmediateFrameRate()    = -1.0;
+      myCountersTmp.ChangeImmediateFrameRateCpu() = -1.0;
+      myCountersTmp.ChangeFrameRate()    = double(myFpsFrameCount) / aTime;
+      myCountersTmp.ChangeFrameRateCpu() = aCpuSec > gp::Resolution()
+                                         ? double(myFpsFrameCount) / aCpuSec
+                                         : -1.0;
+    }
     myCountersTmp.FlushTimers (myFpsFrameCount, true);
     myCountersMax.FillMax (myCountersTmp);
     myFpsTimer.Reset();
@@ -593,6 +670,23 @@ void Graphic3d_FrameStats::FrameEnd (const Handle(Graphic3d_CView)& theView,
   if (++myLastFrameIndex > myCounters.Upper())
   {
     myLastFrameIndex = myCounters.Lower();
+  }
+  if (theIsImmediateOnly)
+  {
+    // copy rendered counters collected for immediate layers
+    const Standard_Integer anImmShift = Graphic3d_FrameStatsCounter_IMMEDIATE_LOWER - Graphic3d_FrameStatsCounter_RENDERED_LOWER;
+    Standard_STATIC_ASSERT((Graphic3d_FrameStatsCounter_RENDERED_UPPER - Graphic3d_FrameStatsCounter_RENDERED_LOWER) == (Graphic3d_FrameStatsCounter_IMMEDIATE_UPPER - Graphic3d_FrameStatsCounter_IMMEDIATE_LOWER))
+    for (Standard_Integer aCntIter = Graphic3d_FrameStatsCounter_RENDERED_LOWER; aCntIter <= Graphic3d_FrameStatsCounter_RENDERED_UPPER; ++aCntIter)
+    {
+      myCountersTmp.ChangeCounterValue ((Graphic3d_FrameStatsCounter )(aCntIter + anImmShift)) = myCountersTmp.CounterValue ((Graphic3d_FrameStatsCounter )aCntIter);
+    }
+
+    // copy main rendered counters from previous non-immediate frame
+    for (Standard_Integer aCntIter = Graphic3d_FrameStatsCounter_RENDERED_LOWER; aCntIter <= Graphic3d_FrameStatsCounter_RENDERED_UPPER; ++aCntIter)
+    {
+      myCountersTmp.ChangeCounterValue ((Graphic3d_FrameStatsCounter )aCntIter) = aPrevFrame.CounterValue ((Graphic3d_FrameStatsCounter )aCntIter);
+    }
+    myCountersTmp.ChangeCounterValue (Graphic3d_FrameStatsCounter_EstimatedBytesGeom) = aPrevFrame.CounterValue (Graphic3d_FrameStatsCounter_EstimatedBytesGeom);
   }
   myCounters.SetValue (myLastFrameIndex, myCountersTmp);
   myCountersTmp.Reset();

@@ -40,6 +40,12 @@ public:
   //! while values around actual frame rate indicate rendering being limited by CPU performance (GPU is stalled in-between).
   Standard_Real FrameRateCpu() const { return myFpsCpu; }
 
+  //! Returns FPS for immediate redraws.
+  Standard_Real ImmediateFrameRate() const { return myFpsImmediate; }
+
+  //! Returns CPU FPS for immediate redraws.
+  Standard_Real ImmediateFrameRateCpu() const { return myFpsCpuImmediate; }
+
   //! Get counter value.
   Standard_Size CounterValue (Graphic3d_FrameStatsCounter theIndex) const { return myCounters[theIndex]; }
 
@@ -71,6 +77,8 @@ protected:
   std::vector<Standard_Real> myTimersMax; //!< maximum values of timers
   Standard_Real              myFps;       //!< FPS     meter (frames per seconds, elapsed time)
   Standard_Real              myFpsCpu;    //!< CPU FPS meter (frames per seconds, CPU time)
+  Standard_Real              myFpsImmediate;    //!< FPS     meter for immediate redraws
+  Standard_Real              myFpsCpuImmediate; //!< CPU FPS meter for immediate redraws
 };
 
 //! Temporary data frame definition.
@@ -94,6 +102,12 @@ public:
 
   //! Returns CPU FPS (frames per seconds, CPU time).
   Standard_Real& ChangeFrameRateCpu() { return myFpsCpu; }
+
+  //! Returns FPS for immediate redraws.
+  Standard_Real& ChangeImmediateFrameRate() { return myFpsImmediate; }
+
+  //! Returns CPU FPS for immediate redraws.
+  Standard_Real& ChangeImmediateFrameRateCpu() { return myFpsCpuImmediate; }
 
   //! Return a timer object for time measurements.
   OSD_Timer& ChangeTimer (Graphic3d_FrameStatsTimer theTimer) { return myOsdTimers[theTimer]; }
