@@ -35,7 +35,7 @@ END_MESSAGE_MAP()
 
 BOOL OCC_App::InitApplication()
 {
-  OSD::SetSignal (Standard_True);
+  OSD::SetSignal (false);
   SampleName = "";
   SetSamplePath (NULL);
   try
