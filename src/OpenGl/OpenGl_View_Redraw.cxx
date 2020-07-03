@@ -74,7 +74,8 @@ namespace
 //function : drawBackground
 //purpose  :
 //=======================================================================
-void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
+void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
+                                  Graphic3d_Camera::Projection theProjection)
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   const Standard_Boolean wasUsedZBuffer = theWorkspace->SetUseZBuffer (Standard_False);
@@ -85,21 +86,12 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
 
   if (myBackgroundType == Graphic3d_TOB_CUBEMAP)
   {
-    Graphic3d_Camera aCamera (theWorkspace->View()->Camera());
-    aCamera.SetZRange (0.01, 1.0); // is needed to avoid perspective camera exception
-    aCamera.SetProjectionType (Graphic3d_Camera::Projection_Perspective);
-
-    aCtx->ProjectionState.Push();
-    aCtx->ProjectionState.SetCurrent (aCamera.ProjectionMatrixF());
-
     myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uZCoeff", myBackgroundCubeMap->ZIsInverted() ? -1 : 1);
     myCubeMapParams->Aspect()->ShaderProgram()->PushVariableInt ("uYCoeff", myBackgroundCubeMap->IsTopDown() ? 1 : -1);
     const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myCubeMapParams);
 
-    myBackgrounds[Graphic3d_TOB_CUBEMAP]->Render (theWorkspace);
+    myBackgrounds[Graphic3d_TOB_CUBEMAP]->Render (theWorkspace, theProjection);
 
-    aCtx->ProjectionState.Pop();
-    aCtx->ApplyProjectionMatrix();
     theWorkspace->SetAspects (anOldAspectFace);
   }
   else if (myBackgroundType == Graphic3d_TOB_GRADIENT
@@ -113,7 +105,7 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
         || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_CENTERED
         || myBackgrounds[Graphic3d_TOB_TEXTURE]->TextureFillMethod() == Aspect_FM_NONE))
     {
-      myBackgrounds[Graphic3d_TOB_GRADIENT]->Render(theWorkspace);
+      myBackgrounds[Graphic3d_TOB_GRADIENT]->Render(theWorkspace, theProjection);
     }
 
     // Drawing background image if it is defined
@@ -124,7 +116,7 @@ void OpenGl_View::drawBackground (const Handle(OpenGl_Workspace)& theWorkspace)
       aCtx->core11fwd->glDisable (GL_BLEND);
 
       const OpenGl_Aspects* anOldAspectFace = theWorkspace->SetAspects (myTextureParams);
-      myBackgrounds[Graphic3d_TOB_TEXTURE]->Render (theWorkspace);
+      myBackgrounds[Graphic3d_TOB_TEXTURE]->Render (theWorkspace, theProjection);
       theWorkspace->SetAspects (anOldAspectFace);
     }
   }
@@ -1097,7 +1089,7 @@ void OpenGl_View::render (Graphic3d_Camera::Projection theProjection,
   // Render background
   if (!theToDrawImmediate)
   {
-    drawBackground (myWorkspace);
+    drawBackground (myWorkspace, theProjection);
   }
 
 #if !defined(GL_ES_VERSION_2_0)

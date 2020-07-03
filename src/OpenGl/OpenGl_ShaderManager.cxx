@@ -3161,12 +3161,9 @@ const Handle(Graphic3d_ShaderProgram)& OpenGl_ShaderManager::GetBgCubeMapProgram
     + THE_FUNC_cubemap_vector_transform
     + EOL"void main()"
       EOL"{"
-      EOL"  vec4 aViewDirection = occProjectionMatrixInverse * vec4(occVertex.xy, 0.0, 1.0);"
-      EOL"  aViewDirection /= aViewDirection.w;"
-      EOL"  aViewDirection.w = 0.0;"
-      EOL"  ViewDirection = normalize((occWorldViewMatrixInverse * aViewDirection).xyz);"
-      EOL"  ViewDirection = cubemapVectorTransform (ViewDirection, uYCoeff, uZCoeff);"
-      EOL"  gl_Position = vec4(occVertex.xy, 0.0, 1.0);"
+      EOL"  ViewDirection = cubemapVectorTransform (occVertex.xyz, uYCoeff, uZCoeff);"
+      EOL"  vec4 aPos = occProjectionMatrix * occWorldViewMatrix * vec4(occVertex.xyz, 1.0);"
+      EOL"  gl_Position = aPos.xyww;"
       EOL"}";
 
     TCollection_AsciiString aSrcFrag =

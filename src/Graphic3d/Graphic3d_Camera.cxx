@@ -152,7 +152,10 @@ void Graphic3d_Camera::CopyMappingData (const Handle(Graphic3d_Camera)& theOther
   ResetCustomProjection();
   if (theOtherCamera->IsCustomStereoProjection())
   {
-    SetCustomStereoProjection (theOtherCamera->myCustomProjMatL, theOtherCamera->myCustomProjMatR);
+    SetCustomStereoProjection (theOtherCamera->myCustomProjMatL,
+                               theOtherCamera->myCustomHeadToEyeMatL,
+                               theOtherCamera->myCustomProjMatR,
+                               theOtherCamera->myCustomHeadToEyeMatR);
   }
   else if (theOtherCamera->IsCustomStereoFrustum())
   {
@@ -931,6 +934,65 @@ void Graphic3d_Camera::ResetCustomProjection()
 }
 
 // =======================================================================
+// function : StereoProjection
+// purpose  :
+// =======================================================================
+void Graphic3d_Camera::StereoProjection (Graphic3d_Mat4d& theProjL,
+                                         Graphic3d_Mat4d& theHeadToEyeL,
+                                         Graphic3d_Mat4d& theProjR,
+                                         Graphic3d_Mat4d& theHeadToEyeR) const
+{
+  stereoProjection (theProjL, theHeadToEyeL, theProjR, theHeadToEyeR);
+}
+
+// =======================================================================
+// function : StereoProjectionF
+// purpose  :
+// =======================================================================
+void Graphic3d_Camera::StereoProjectionF (Graphic3d_Mat4& theProjL,
+                                          Graphic3d_Mat4& theHeadToEyeL,
+                                          Graphic3d_Mat4& theProjR,
+                                          Graphic3d_Mat4& theHeadToEyeR) const
+{
+  stereoProjection (theProjL, theHeadToEyeL, theProjR, theHeadToEyeR);
+}
+
+// =======================================================================
+// function : stereoProjection
+// purpose  :
+// =======================================================================
+template <typename Elem_t>
+void Graphic3d_Camera::stereoProjection (NCollection_Mat4<Elem_t>& theProjL,
+                                         NCollection_Mat4<Elem_t>& theHeadToEyeL,
+                                         NCollection_Mat4<Elem_t>& theProjR,
+                                         NCollection_Mat4<Elem_t>& theHeadToEyeR) const
+{
+  if (myIsCustomProjMatLR)
+  {
+    theProjL     .ConvertFrom (myCustomProjMatL);
+    theHeadToEyeL.ConvertFrom (myCustomHeadToEyeMatL);
+    theProjR     .ConvertFrom (myCustomProjMatR);
+    theHeadToEyeR.ConvertFrom (myCustomHeadToEyeMatR);
+    return;
+  }
+
+  NCollection_Mat4<Elem_t> aDummy;
+  computeProjection (aDummy, theProjL, theProjR, false);
+
+  const Standard_Real aIOD = myIODType == IODType_Relative
+                           ? myIOD * Distance()
+                           : myIOD;
+  if (aIOD != 0.0)
+  {
+    // X translation to cancel parallax
+    theHeadToEyeL.InitIdentity();
+    theHeadToEyeL.SetColumn (3, NCollection_Vec3<Elem_t> (Elem_t ( 0.5 * aIOD), Elem_t (0.0), Elem_t (0.0)));
+    theHeadToEyeR.InitIdentity();
+    theHeadToEyeR.SetColumn (3, NCollection_Vec3<Elem_t> (Elem_t (-0.5 * aIOD), Elem_t (0.0), Elem_t (0.0)));
+  }
+}
+
+// =======================================================================
 // function : SetCustomStereoFrustums
 // purpose  :
 // =======================================================================
@@ -949,10 +1011,14 @@ void Graphic3d_Camera::SetCustomStereoFrustums (const Aspect_FrustumLRBT<Standar
 // purpose  :
 // =======================================================================
 void Graphic3d_Camera::SetCustomStereoProjection (const Graphic3d_Mat4d& theProjL,
-                                                  const Graphic3d_Mat4d& theProjR)
+                                                  const Graphic3d_Mat4d& theHeadToEyeL,
+                                                  const Graphic3d_Mat4d& theProjR,
+                                                  const Graphic3d_Mat4d& theHeadToEyeR)
 {
   myCustomProjMatL = theProjL;
   myCustomProjMatR = theProjR;
+  myCustomHeadToEyeMatL = theHeadToEyeL;
+  myCustomHeadToEyeMatR = theHeadToEyeR;
   myIsCustomProjMatLR = true;
   myIsCustomFrustomLR = false;
   InvalidateProjection();
@@ -970,19 +1036,18 @@ void Graphic3d_Camera::SetCustomMonoProjection (const Graphic3d_Mat4d& theProj)
 }
 
 // =======================================================================
-// function : UpdateProjection
+// function : computeProjection
 // purpose  :
 // =======================================================================
 template <typename Elem_t>
-Graphic3d_Camera::TransformMatrices<Elem_t>&
-  Graphic3d_Camera::UpdateProjection (TransformMatrices<Elem_t>& theMatrices) const
+void Graphic3d_Camera::computeProjection (NCollection_Mat4<Elem_t>& theProjM,
+                                          NCollection_Mat4<Elem_t>& theProjL,
+                                          NCollection_Mat4<Elem_t>& theProjR,
+                                          bool theToAddHeadToEye) const
 {
-  if (theMatrices.IsProjectionValid())
-  {
-    return theMatrices; // for inline accessors
-  }
-
-  theMatrices.InitProjection();
+  theProjM.InitIdentity();
+  theProjL.InitIdentity();
+  theProjR.InitIdentity();
 
   // sets top of frustum based on FOVy and near clipping plane
   Elem_t aScale   = static_cast<Elem_t> (myScale);
@@ -1036,7 +1101,7 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
 
   if (myIsCustomProjMatM)
   {
-    theMatrices.MProjection.ConvertFrom (myCustomProjMatM);
+    theProjM.ConvertFrom (myCustomProjMatM);
   }
   switch (myProjType)
   {
@@ -1044,7 +1109,7 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
     {
       if (!myIsCustomProjMatM)
       {
-        orthoProj (theMatrices.MProjection, anLRBT, aZNear, aZFar);
+        orthoProj (theProjM, anLRBT, aZNear, aZFar);
       }
       break;
     }
@@ -1052,7 +1117,7 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
     {
       if (!myIsCustomProjMatM)
       {
-        perspectiveProj (theMatrices.MProjection, anLRBT, aZNear, aZFar);
+        perspectiveProj (theProjM, anLRBT, aZNear, aZFar);
       }
       break;
     }
@@ -1062,51 +1127,58 @@ Graphic3d_Camera::TransformMatrices<Elem_t>&
     {
       if (!myIsCustomProjMatM)
       {
-        perspectiveProj (theMatrices.MProjection, anLRBT, aZNear, aZFar);
+        perspectiveProj (theProjM, anLRBT, aZNear, aZFar);
       }
       if (myIsCustomProjMatLR)
       {
-        theMatrices.LProjection.ConvertFrom (myCustomProjMatL);
-        theMatrices.RProjection.ConvertFrom (myCustomProjMatR);
+        if (theToAddHeadToEye)
+        {
+          theProjL.ConvertFrom (myCustomProjMatL * myCustomHeadToEyeMatL);
+          theProjR.ConvertFrom (myCustomProjMatR * myCustomHeadToEyeMatR);
+        }
+        else
+        {
+          theProjL.ConvertFrom (myCustomProjMatL);
+          theProjR.ConvertFrom (myCustomProjMatR);
+        }
       }
       else if (myIsCustomFrustomLR)
       {
         anLRBT = Aspect_FrustumLRBT<Elem_t> (myCustomFrustumL).Multiplied (aZNear);
-        perspectiveProj (theMatrices.LProjection, anLRBT, aZNear, aZFar);
-        if (aIOD != Elem_t (0.0))
-        {
-          theMatrices.LProjection.Translate (NCollection_Vec3<Elem_t> (Elem_t (0.5) * aIOD, Elem_t (0.0), Elem_t (0.0)));
-        }
+        perspectiveProj (theProjL, anLRBT, aZNear, aZFar);
 
         anLRBT = Aspect_FrustumLRBT<Elem_t> (myCustomFrustumR).Multiplied (aZNear);
-        perspectiveProj (theMatrices.RProjection, anLRBT, aZNear, aZFar);
-        if (aIOD != Elem_t (0.0))
-        {
-          theMatrices.RProjection.Translate (NCollection_Vec3<Elem_t> (Elem_t (-0.5) * aIOD, Elem_t (0.0), Elem_t (0.0)));
-        }
+        perspectiveProj (theProjR, anLRBT, aZNear, aZFar);
       }
       else
       {
-        stereoEyeProj (theMatrices.LProjection,
+        stereoEyeProj (theProjL,
                        anLRBT, aZNear, aZFar, aIOD, aFocus,
                        Aspect_Eye_Left);
-        stereoEyeProj (theMatrices.RProjection,
+        stereoEyeProj (theProjR,
                        anLRBT, aZNear, aZFar, aIOD, aFocus,
                        Aspect_Eye_Right);
+      }
+
+      if (theToAddHeadToEye
+      && !myIsCustomProjMatLR
+      &&  aIOD != Elem_t (0.0))
+      {
+        // X translation to cancel parallax
+        theProjL.Translate (NCollection_Vec3<Elem_t> (Elem_t ( 0.5) * aIOD, Elem_t (0.0), Elem_t (0.0)));
+        theProjR.Translate (NCollection_Vec3<Elem_t> (Elem_t (-0.5) * aIOD, Elem_t (0.0), Elem_t (0.0)));
       }
       break;
     }
   }
   if (myProjType == Projection_MonoLeftEye)
   {
-    theMatrices.MProjection = theMatrices.LProjection;
+    theProjM = theProjL;
   }
   else if (myProjType == Projection_MonoRightEye)
   {
-    theMatrices.MProjection = theMatrices.RProjection;
+    theProjM = theProjR;
   }
-
-  return theMatrices; // for inline accessors
 }
 
 // =======================================================================
@@ -1258,12 +1330,6 @@ void Graphic3d_Camera::stereoEyeProj (NCollection_Mat4<Elem_t>& theOutMx,
   aLRBT.Left  = theLRBT.Left  + aDXStereoShift;
   aLRBT.Right = theLRBT.Right + aDXStereoShift;
   perspectiveProj (theOutMx, aLRBT, theNear, theFar);
-
-  if (theIOD != Elem_t (0.0))
-  {
-    // X translation to cancel parallax
-    theOutMx.Translate (NCollection_Vec3<Elem_t> (aDx, Elem_t (0.0), Elem_t (0.0)));
-  }
 }
 
 // =======================================================================

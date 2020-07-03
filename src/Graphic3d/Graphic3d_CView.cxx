@@ -1225,7 +1225,7 @@ void Graphic3d_CView::ProcessXRInput()
     const Graphic3d_Mat4d aPoseR = myXRSession->HeadToEyeTransform (Aspect_Eye_Right);
     const Graphic3d_Mat4d aProjL = myXRSession->ProjectionMatrix (Aspect_Eye_Left,  myCamera->ZNear(), myCamera->ZFar());
     const Graphic3d_Mat4d aProjR = myXRSession->ProjectionMatrix (Aspect_Eye_Right, myCamera->ZNear(), myCamera->ZFar());
-    myCamera->SetCustomStereoProjection (aProjL * aPoseL, aProjR * aPoseR);
+    myCamera->SetCustomStereoProjection (aProjL, aPoseL, aProjR, aPoseR);
   }
   myBaseXRCamera = myCamera;
   if (myPosedXRCamera.IsNull())

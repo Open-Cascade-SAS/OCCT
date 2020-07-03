@@ -591,6 +591,26 @@ public:
 
 public:
 
+  //! Get stereo projection matrices.
+  //! @param theProjL      [out] left  eye projection matrix
+  //! @param theHeadToEyeL [out] left  head to eye translation matrix
+  //! @param theProjR      [out] right eye projection matrix
+  //! @param theHeadToEyeR [out] right head to eye translation matrix
+  Standard_EXPORT void StereoProjection (Graphic3d_Mat4d& theProjL,
+                                         Graphic3d_Mat4d& theHeadToEyeL,
+                                         Graphic3d_Mat4d& theProjR,
+                                         Graphic3d_Mat4d& theHeadToEyeR) const;
+
+  //! Get stereo projection matrices.
+  //! @param theProjL      [out] left  eye projection matrix
+  //! @param theHeadToEyeL [out] left  head to eye translation matrix
+  //! @param theProjR      [out] right eye projection matrix
+  //! @param theHeadToEyeR [out] right head to eye translation matrix
+  Standard_EXPORT void StereoProjectionF (Graphic3d_Mat4& theProjL,
+                                          Graphic3d_Mat4& theHeadToEyeL,
+                                          Graphic3d_Mat4& theProjR,
+                                          Graphic3d_Mat4& theHeadToEyeR) const;
+
   //! Unset all custom frustums and projection matrices.
   Standard_EXPORT void ResetCustomProjection();
 
@@ -606,8 +626,14 @@ public:
   bool IsCustomStereoProjection() const { return myIsCustomProjMatLR; }
 
   //! Set custom stereo projection matrices.
+  //! @param theProjL      [in] left  eye projection matrix
+  //! @param theHeadToEyeL [in] left  head to eye translation matrix
+  //! @param theProjR      [in] right eye projection matrix
+  //! @param theHeadToEyeR [in] right head to eye translation matrix
   Standard_EXPORT void SetCustomStereoProjection (const Graphic3d_Mat4d& theProjL,
-                                                  const Graphic3d_Mat4d& theProjR);
+                                                  const Graphic3d_Mat4d& theHeadToEyeL,
+                                                  const Graphic3d_Mat4d& theProjR,
+                                                  const Graphic3d_Mat4d& theHeadToEyeR);
 
   //! Return TRUE if custom projection matrix is set.
   bool IsCustomMonoProjection() const { return myIsCustomProjMatM; }
@@ -621,11 +647,40 @@ public:
 //! @name Managing projection and orientation cache
 private:
 
+  //! Get stereo projection matrices.
+  //! @param theProjL      [out] left  eye projection matrix
+  //! @param theHeadToEyeL [out] left  head to eye translation matrix
+  //! @param theProjR      [out] right eye projection matrix
+  //! @param theHeadToEyeR [out] right head to eye translation matrix
+  template <typename Elem_t>
+  Standard_EXPORT void stereoProjection (NCollection_Mat4<Elem_t>& theProjL,
+                                         NCollection_Mat4<Elem_t>& theHeadToEyeL,
+                                         NCollection_Mat4<Elem_t>& theProjR,
+                                         NCollection_Mat4<Elem_t>& theHeadToEyeR) const;
+
+  //! Compute projection matrices.
+  //! @param theProjM [out] mono projection matrix
+  //! @param theProjL [out] left  eye projection matrix
+  //! @param theProjR [out] right eye projection matrix
+  //! @param theToAddHeadToEye [in] flag to pre-multiply head-to-eye translation
+  template <typename Elem_t>
+  Standard_EXPORT void computeProjection (NCollection_Mat4<Elem_t>& theProjM,
+                                          NCollection_Mat4<Elem_t>& theProjL,
+                                          NCollection_Mat4<Elem_t>& theProjR,
+                                          bool theToAddHeadToEye) const;
+
   //! Compute projection matrices.
   //! @param theMatrices [in] the matrices data container.
   template <typename Elem_t>
-  Standard_EXPORT
-    TransformMatrices<Elem_t>& UpdateProjection (TransformMatrices<Elem_t>& theMatrices) const;
+  TransformMatrices<Elem_t>& UpdateProjection (TransformMatrices<Elem_t>& theMatrices) const
+  {
+    if (!theMatrices.IsProjectionValid())
+    {
+      theMatrices.InitProjection();
+      computeProjection (theMatrices.MProjection, theMatrices.LProjection, theMatrices.RProjection, true);
+    }
+    return theMatrices;
+  }
 
   //! Compute orientation matrix.
   //! @param theMatrices [in] the matrices data container.
@@ -742,6 +797,8 @@ private:
   Graphic3d_Mat4d  myCustomProjMatM;
   Graphic3d_Mat4d  myCustomProjMatL;
   Graphic3d_Mat4d  myCustomProjMatR;
+  Graphic3d_Mat4d  myCustomHeadToEyeMatL;
+  Graphic3d_Mat4d  myCustomHeadToEyeMatR;
   Aspect_FrustumLRBT<Standard_Real> myCustomFrustumL; //!< left  custom frustum
   Aspect_FrustumLRBT<Standard_Real> myCustomFrustumR; //!< right custom frustum
   Standard_Boolean myIsCustomProjMatM;  //!< flag indicating usage of custom projection matrix

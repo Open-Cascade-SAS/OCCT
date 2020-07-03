@@ -27,7 +27,6 @@
 // =======================================================================
 OpenGl_BackgroundArray::OpenGl_BackgroundArray (const Graphic3d_TypeOfBackground theType)
 : OpenGl_PrimitiveArray (NULL, Graphic3d_TOPA_TRIANGLESTRIPS, NULL, NULL, NULL),
-  myTrsfPers (Graphic3d_TMF_2d, theType == Graphic3d_TOB_TEXTURE ? Aspect_TOTP_CENTER : Aspect_TOTP_LEFT_LOWER),
   myType (theType),
   myFillMethod (Aspect_FM_NONE),
   myViewWidth (0),
@@ -399,26 +398,40 @@ Standard_Boolean OpenGl_BackgroundArray::createTextureArray (const Handle(OpenGl
 // =======================================================================
 Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
 {
-  Graphic3d_Attribute aCubeMapAttribInfo[] =
+  const Graphic3d_Attribute aCubeMapAttribInfo[] =
   {
-    { Graphic3d_TOA_POS, Graphic3d_TOD_VEC2}
+    { Graphic3d_TOA_POS, Graphic3d_TOD_VEC3 }
   };
 
   if (myAttribs.IsNull())
   {
     Handle(NCollection_AlignedAllocator) anAlloc = new NCollection_AlignedAllocator (16);
     myAttribs = new Graphic3d_Buffer (anAlloc);
+    myIndices = new Graphic3d_IndexBuffer (anAlloc);
   }
-  if (!myAttribs->Init(4, aCubeMapAttribInfo, 1))
+  if (!myAttribs->Init (8, aCubeMapAttribInfo, 1)
+   || !myIndices->Init<unsigned short> (14))
   {
     return Standard_False;
   }
 
-  OpenGl_Vec2* aData = reinterpret_cast<OpenGl_Vec2*>(myAttribs->changeValue(0));
-
-  for (unsigned int i = 0; i < 4; ++i)
   {
-    aData[i] = (OpenGl_Vec2(Standard_ShortReal(i / 2), Standard_ShortReal(i % 2)) - OpenGl_Vec2(0.5f)) * 2.f;
+    OpenGl_Vec3* aData = reinterpret_cast<OpenGl_Vec3*>(myAttribs->changeValue(0));
+    aData[0].SetValues (-1.0, -1.0,  1.0);
+    aData[1].SetValues ( 1.0, -1.0,  1.0);
+    aData[2].SetValues (-1.0,  1.0,  1.0);
+    aData[3].SetValues ( 1.0,  1.0,  1.0);
+    aData[4].SetValues (-1.0, -1.0, -1.0);
+    aData[5].SetValues ( 1.0, -1.0, -1.0);
+    aData[6].SetValues (-1.0,  1.0, -1.0);
+    aData[7].SetValues ( 1.0,  1.0, -1.0);
+  }
+  {
+    const unsigned short THE_BOX_TRISTRIP[14] = { 0, 1, 2, 3, 7, 1, 5, 4, 7, 6, 2, 4, 0, 1 };
+    for (unsigned int aVertIter = 0; aVertIter < 14; ++aVertIter)
+    {
+      myIndices->SetIndex (aVertIter, THE_BOX_TRISTRIP[aVertIter]);
+    }
   }
 
   return Standard_True;
@@ -428,7 +441,8 @@ Standard_Boolean OpenGl_BackgroundArray::createCubeMapArray() const
 // method  : Render
 // purpose :
 // =======================================================================
-void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspace,
+                                     Graphic3d_Camera::Projection theProjection) const
 {
   const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
   Standard_Integer aViewSizeX = aCtx->Viewport()[2];
@@ -457,7 +471,46 @@ void OpenGl_BackgroundArray::Render (const Handle(OpenGl_Workspace)& theWorkspac
   OpenGl_Mat4 aProjection = aCtx->ProjectionState.Current();
   OpenGl_Mat4 aWorldView  = aCtx->WorldViewState.Current();
 
-  if (myType != Graphic3d_TOB_CUBEMAP)
+  if (myType == Graphic3d_TOB_CUBEMAP)
+  {
+    Graphic3d_Camera aCamera (theWorkspace->View()->Camera());
+    aCamera.SetZRange (0.01, 1.0); // is needed to avoid perspective camera exception
+
+    // cancel translation
+    aCamera.MoveEyeTo (gp_Pnt (0.0, 0.0, 0.0));
+
+    // Handle projection matrix:
+    // - Cancel any head-to-eye translation for HMD display;
+    // - Ignore stereoscopic projection in case of non-HMD 3D display
+    //   (ideally, we would need a stereoscopic cubemap image; adding a parallax makes no sense);
+    // - Force perspective projection when orthographic camera is active
+    //   (orthographic projection makes no sense for cubemap).
+    const bool isCustomProj = aCamera.IsCustomStereoFrustum()
+                           || aCamera.IsCustomStereoProjection();
+    aCamera.SetProjectionType (theProjection == Graphic3d_Camera::Projection_Orthographic || !isCustomProj
+                             ? Graphic3d_Camera::Projection_Perspective
+                             : theProjection);
+
+    aProjection = aCamera.ProjectionMatrixF();
+    aWorldView = aCamera.OrientationMatrixF();
+    if (isCustomProj)
+    {
+      // get projection matrix without pre-multiplied stereoscopic head-to-eye translation
+      if (theProjection == Graphic3d_Camera::Projection_MonoLeftEye)
+      {
+        Graphic3d_Mat4 aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR;
+        aCamera.StereoProjectionF (aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR);
+        aProjection = aMatProjL;
+      }
+      else if (theProjection == Graphic3d_Camera::Projection_MonoRightEye)
+      {
+        Graphic3d_Mat4 aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR;
+        aCamera.StereoProjectionF (aMatProjL, aMatHeadToEyeL, aMatProjR, aMatHeadToEyeR);
+        aProjection = aMatProjR;
+      }
+    }
+  }
+  else
   {
     aProjection.InitIdentity();
     aWorldView.InitIdentity();

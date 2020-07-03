@@ -409,7 +409,8 @@ protected: //! @name Rendering of GL graphics (with prepared drawing buffer).
                                             const Standard_Boolean theToDrawImmediate);
 
   //! Draw background (gradient / image)
-  Standard_EXPORT virtual void drawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
+  Standard_EXPORT virtual void drawBackground (const Handle(OpenGl_Workspace)& theWorkspace,
+                                               Graphic3d_Camera::Projection theProjection);
 
   //! Render set of structures presented in the view.
   //! @param theProjection [in] the projection that is used for rendering.
