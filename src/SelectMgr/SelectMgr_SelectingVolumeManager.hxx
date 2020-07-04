@@ -172,10 +172,12 @@ public:
 
   //! Valid for point selection only!
   //! Computes depth range for clipping planes.
-  //! @param theViewPlanes global view planes
-  //! @param theObjPlanes  object planes
+  //! @param theViewPlanes  [in] global view planes
+  //! @param theObjPlanes   [in] object planes
+  //! @param theWorldSelMgr [in] selection volume in world space for computing clipping plane ranges
   Standard_EXPORT void SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
-                                        const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes);
+                                        const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes,
+                                        const SelectMgr_SelectingVolumeManager* theWorldSelMgr);
 
   //! Copy clipping planes from another volume manager.
   Standard_EXPORT void SetViewClipping (const SelectMgr_SelectingVolumeManager& theOther);

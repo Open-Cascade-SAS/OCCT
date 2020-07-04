@@ -453,14 +453,16 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPickedPnt() const
 // purpose  :
 //=======================================================================
 void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_SequenceOfHClipPlane)& theViewPlanes,
-                                                        const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes)
+                                                        const Handle(Graphic3d_SequenceOfHClipPlane)& theObjPlanes,
+                                                        const SelectMgr_SelectingVolumeManager* theWorldSelMgr)
 {
   myViewClipPlanes   = theViewPlanes;
   myObjectClipPlanes = theObjPlanes;
   if (myActiveSelectionType != Point)
     return;
 
-  const SelectMgr_RectangularFrustum* aFrustum = reinterpret_cast<const SelectMgr_RectangularFrustum*>(mySelectingVolumes[Frustum].get());
+  const SelectMgr_SelectingVolumeManager* aWorldSelMgr = theWorldSelMgr != NULL ? theWorldSelMgr : this;
+  const SelectMgr_RectangularFrustum* aFrustum = reinterpret_cast<const SelectMgr_RectangularFrustum*>(aWorldSelMgr->mySelectingVolumes[Frustum].get());
   myViewClipRange.SetVoid();
   if (!theViewPlanes.IsNull()
    && !theViewPlanes->IsEmpty())

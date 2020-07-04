@@ -386,7 +386,7 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
   if (!theObject->ClipPlanes().IsNull()
     && theObject->ClipPlanes()->ToOverrideGlobal())
   {
-    aMgr.SetViewClipping (Handle(Graphic3d_SequenceOfHClipPlane)(), theObject->ClipPlanes());
+    aMgr.SetViewClipping (Handle(Graphic3d_SequenceOfHClipPlane)(), theObject->ClipPlanes(), &theMgr);
   }
   else if (!theObject->TransformPersistence().IsNull())
   {
@@ -414,12 +414,12 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
       }
     }
 
-    aMgr.SetViewClipping (Handle(Graphic3d_SequenceOfHClipPlane)(), theObject->ClipPlanes());
+    aMgr.SetViewClipping (Handle(Graphic3d_SequenceOfHClipPlane)(), theObject->ClipPlanes(), &theMgr);
   }
   else if (!theObject->ClipPlanes().IsNull()
         && !theObject->ClipPlanes()->IsEmpty())
   {
-    aMgr.SetViewClipping (theMgr.ViewClipping(), theObject->ClipPlanes());
+    aMgr.SetViewClipping (theMgr.ViewClipping(), theObject->ClipPlanes(), &theMgr);
   }
 
   if (!theMgr.ViewClipping().IsNull() &&
