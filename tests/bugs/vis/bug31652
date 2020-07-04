@@ -1,0 +1,17 @@
+puts "============"
+puts "0031652: Visualization - crash on highlighting HLR Computed presentation displayed with Shaded display mode"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+psphere s 1
+vclear
+vinit View1
+vdisplay -dispMode 1 s
+vaxo
+vfit
+
+vhlr on -algoType polyAlgo
+vmoveto 351 64
+
+vdump ${imagedir}/${casename}.png

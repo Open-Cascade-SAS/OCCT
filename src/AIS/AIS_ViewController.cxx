@@ -2688,7 +2688,8 @@ void AIS_ViewController::contextLazyMoveTo (const Handle(AIS_InteractiveContext)
                                             const Handle(V3d_View)& theView,
                                             const Graphic3d_Vec2i& thePnt)
 {
-  if (myPrevMoveTo == thePnt)
+  if (myPrevMoveTo == thePnt
+   || myHasHlrOnBeforeRotation) // ignore highlighting in-between rotation of HLR view
   {
     return;
   }

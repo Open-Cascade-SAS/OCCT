@@ -49,8 +49,11 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
 {
   if (!theLinkPrs.IsNull())
   {
-    myOwner         = theLinkPrs->myOwner;
-    myVisual        = theLinkPrs->myVisual;
+    myOwner = theLinkPrs->myOwner;
+    if (theLinkPrs->myVisual != Graphic3d_TOS_COMPUTED)
+    {
+      myVisual = theLinkPrs->myVisual;
+    }
     myComputeVisual = theLinkPrs->myComputeVisual;
     myCStructure = theLinkPrs->myCStructure->ShadowLink (theManager);
   }

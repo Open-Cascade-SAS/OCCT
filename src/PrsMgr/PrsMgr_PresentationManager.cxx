@@ -368,9 +368,11 @@ void PrsMgr_PresentationManager::displayImmediate (const Handle(V3d_Viewer)& the
       Handle(Prs3d_PresentationShadow) aShadowPrs = Handle(Prs3d_PresentationShadow)::DownCast (aPrs);
       if (!aShadowPrs.IsNull() && aView->IsComputed (aShadowPrs->ParentId(), aViewDepPrs))
       {
+        const Graphic3d_ZLayerId aZLayer = aShadowPrs->GetZLayer();
         aShadowPrs.Nullify();
+
         aShadowPrs = new Prs3d_PresentationShadow (myStructureManager, aViewDepPrs);
-        aShadowPrs->SetZLayer (aViewDepPrs->CStructure()->ZLayer());
+        aShadowPrs->SetZLayer (aZLayer);
         aShadowPrs->SetClipPlanes (aViewDepPrs->ClipPlanes());
         aShadowPrs->CStructure()->IsForHighlight = 1;
         aShadowPrs->Highlight (aPrs->HighlightStyle());

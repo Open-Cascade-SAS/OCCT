@@ -189,6 +189,7 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
         const Handle(Graphic3d_Structure)& aStructComp = myStructsComputed.Value (anIndex);
         eraseStructure   (aStructComp->CStructure());
         displayStructure (aStruct->CStructure(), aStruct->DisplayPriority());
+        Update (aStruct->GetZLayer());
       }
     }
     return;
@@ -223,6 +224,10 @@ void Graphic3d_CView::SetComputedMode (const Standard_Boolean theMode)
     {
       Handle(Graphic3d_Structure) aCompStruct;
       aStruct->computeHLR (myCamera, aCompStruct);
+      if (aCompStruct.IsNull())
+      {
+        continue;
+      }
       aCompStruct->SetHLRValidation (Standard_True);
 
       const Standard_Boolean toComputeWireframe = myVisualization == Graphic3d_TOV_WIREFRAME
@@ -303,6 +308,11 @@ void Graphic3d_CView::ReCompute (const Handle(Graphic3d_Structure)& theStruct)
   Handle(Graphic3d_Structure) aCompStruct    = aCompStructOld;
   aCompStruct->SetTransformation (Handle(TopLoc_Datum3D)());
   theStruct->computeHLR (myCamera, aCompStruct);
+  if (aCompStruct.IsNull())
+  {
+    return;
+  }
+
   aCompStruct->SetHLRValidation (Standard_True);
   aCompStruct->CalculateBoundBox();
 
@@ -774,7 +784,10 @@ void Graphic3d_CView::Display (const Handle(Graphic3d_Structure)& theStructure)
     aStruct->SetTransformation (Handle(TopLoc_Datum3D)());
   }
   theStructure->computeHLR (myCamera, aStruct);
-
+  if (aStruct.IsNull())
+  {
+    return;
+  }
   aStruct->SetHLRValidation (Standard_True);
 
   // TOCOMPUTE and COMPUTED associated to sequences are added
