@@ -1,0 +1,15 @@
+puts "============================================================================================="
+puts "	0031604: Wrong result of Boolean Operation Cut"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug31604_a.brep] a
+restore [locate_data_file bug31604_b.brep] b
+
+bcut result a b
+
+checkshape result
+checknbshapes result -wire 55 -face 51 -shell 2 -solid 2
+checkprops result -s 10997.5 -v 21661.1
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
