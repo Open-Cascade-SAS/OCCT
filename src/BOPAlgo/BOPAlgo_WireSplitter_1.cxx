@@ -94,6 +94,7 @@ static
 static 
   void Path (const GeomAdaptor_Surface& aGAS,
              const TopoDS_Face& myFace,
+             const MyDataMapOfShapeBoolean& aVertMap,
              const TopoDS_Vertex& aVa,
              const TopoDS_Edge& aEOuta,
              BOPAlgo_EdgeInfo& anEdgeInfo,
@@ -101,8 +102,7 @@ static
              TopTools_SequenceOfShape& aVertVa,
              TColgp_SequenceOfPnt2d& aCoordVa,
              BOPTools_ConnexityBlock& aCB,
-             BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap,
-             MyDataMapOfShapeBoolean aVertMap);
+             BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap);
 
 static
   Standard_Real Angle (const gp_Dir2d& aDir2D);
@@ -122,7 +122,6 @@ static
 
 static
   void RefineAngles(const TopoDS_Face& myFace,
-                    const TopTools_ListOfShape&,
                     BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo&,
                     const Handle(IntTools_Context)&);
 
@@ -130,7 +129,6 @@ static
 static
   void RefineAngles(const TopoDS_Vertex& ,
                   const TopoDS_Face& ,
-                  const TopTools_MapOfShape& ,
                   BOPAlgo_ListOfEdgeInfo&,
                   const Handle(IntTools_Context)&);
 
@@ -324,7 +322,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
   //Theme: The treatment p-curves convergent in node.
   //The refining the angles of p-curves taking into account 
   //bounding curves if exist. 
-  RefineAngles(myFace, myEdges, mySmartMap, theContext);
+  RefineAngles(myFace, mySmartMap, theContext);
   //
   // 4. Do
   //
@@ -348,8 +346,8 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
         aVertVa.Clear();
         aCoordVa.Clear();
         //
-        Path(aGAS, myFace, aVa, aEOuta, aEI, aLS, 
-             aVertVa, aCoordVa, aCB, mySmartMap, aVertMap);
+        Path(aGAS, myFace, aVertMap, aVa, aEOuta, aEI, aLS, 
+             aVertVa, aCoordVa, aCB, mySmartMap);
       }
     }
   }// for (i=1; i<=aNb; ++i) {
@@ -360,6 +358,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
 //=======================================================================
 void Path (const GeomAdaptor_Surface& aGAS,
            const TopoDS_Face& myFace,
+           const MyDataMapOfShapeBoolean& aVertMap,
            const TopoDS_Vertex& aVFirst,
            const TopoDS_Edge& aEFirst,
            BOPAlgo_EdgeInfo& aEIFirst,
@@ -367,8 +366,7 @@ void Path (const GeomAdaptor_Surface& aGAS,
            TopTools_SequenceOfShape& aVertVa,
            TColgp_SequenceOfPnt2d& aCoordVa,
            BOPTools_ConnexityBlock& aCB,
-           BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap,
-           MyDataMapOfShapeBoolean aVertMap)
+           BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap)
 {
   Standard_Integer i, j, aNb, aNbj;
   Standard_Real anAngleIn, anAngleOut, anAngle, aMinAngle;
@@ -385,6 +383,8 @@ void Path (const GeomAdaptor_Surface& aGAS,
   BOPAlgo_EdgeInfo* anEdgeInfo = &aEIFirst;
   //
   aTwoPI = M_PI + M_PI;
+
+  NCollection_Sequence <BOPAlgo_EdgeInfo*> anInfoSeq;
   //
   // append block
   //
@@ -401,6 +401,7 @@ void Path (const GeomAdaptor_Surface& aGAS,
     anEdgeInfo->SetPassed(Standard_True);
     aLS.Append(aEOuta);
     aVertVa.Append(aVa);
+    anInfoSeq.Append (anEdgeInfo);
     
     TopoDS_Vertex pVa=aVa;
     pVa.Orientation(TopAbs_FORWARD);
@@ -481,6 +482,7 @@ void Path (const GeomAdaptor_Surface& aGAS,
           //
           TopTools_SequenceOfShape aLSt, aVertVat;
           TColgp_SequenceOfPnt2d aCoordVat;
+          NCollection_Sequence <BOPAlgo_EdgeInfo*> anInfoSeqTmp;
           //
           aVb=(*(TopoDS_Vertex *)(&aVertVa(i))); 
           //
@@ -488,15 +490,16 @@ void Path (const GeomAdaptor_Surface& aGAS,
             aLSt.Append(aLS(j));
             aVertVat.Append(aVertVa(j));
             aCoordVat.Append(aCoordVa(j));
+            anInfoSeqTmp.Append (anInfoSeq (j));
           }
           //
-          aLS.Clear();
-          aVertVa.Clear();
-          aCoordVa.Clear();
-          
           aLS=aLSt;
           aVertVa=aVertVat;
           aCoordVa=aCoordVat;
+          anInfoSeq = anInfoSeqTmp;
+
+          aEOuta = TopoDS::Edge (aLS.Last());
+          anEdgeInfo = anInfoSeq.Last();
           //
           break;
         }
@@ -880,48 +883,15 @@ Standard_Real VTolerance2D (const TopoDS_Vertex& aV,
 //purpose  : 
 //=======================================================================
 void RefineAngles(const TopoDS_Face& myFace,
-                  const TopTools_ListOfShape& myEdges,
                   BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo& mySmartMap,
                   const Handle(IntTools_Context)& theContext)
 {
-  Standard_Integer aNb, i;
-  NCollection_IndexedDataMap<TopoDS_Shape,
-                             Standard_Integer,
-                             TopTools_ShapeMapHasher> aMSI;
-  TopTools_MapOfShape aMBE;
-  TopTools_ListIteratorOfListOfShape aIt;
-  //
-  // 1. Boundary Edges
-  aIt.Initialize(myEdges);
-  for(; aIt.More(); aIt.Next()) {
-    const TopoDS_Shape& aE=aIt.Value();
-    if(aMSI.Contains(aE)) {
-      Standard_Integer& iCnt = aMSI.ChangeFromKey(aE);
-      ++iCnt;
-    }
-    else {
-      Standard_Integer iCnt = 1;
-      aMSI.Add(aE, iCnt);
-    }
-  }
-  //
-  aNb = aMSI.Extent();
-  for (i = 1; i <= aNb; ++i) {
-    Standard_Integer iCnt = aMSI(i);
-    if (iCnt == 1) {
-      const TopoDS_Shape& aE = aMSI.FindKey(i);
-      aMBE.Add(aE);
-    }
-  }
-  //
-  aMSI.Clear();
-  //
-  aNb = mySmartMap.Extent();
-  for (i = 1; i <= aNb; ++i) {
-    const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&mySmartMap.FindKey(i)); 
-    BOPAlgo_ListOfEdgeInfo& aLEI=mySmartMap(i);
-    //
-    RefineAngles(aV, myFace, aMBE, aLEI, theContext);
+  const Standard_Integer aNb = mySmartMap.Extent();
+  for (Standard_Integer i = 1; i <= aNb; ++i)
+  {
+    const TopoDS_Vertex& aV = *((TopoDS_Vertex*)&mySmartMap.FindKey (i));
+    BOPAlgo_ListOfEdgeInfo& aLEI = mySmartMap (i);
+    RefineAngles(aV, myFace, aLEI, theContext);
   }
 }
 //=======================================================================
@@ -937,7 +907,6 @@ typedef TopTools_DataMapOfShapeReal::Iterator \
 //=======================================================================
 void RefineAngles(const TopoDS_Vertex& aV,
                   const TopoDS_Face& myFace,
-                  const TopTools_MapOfShape& aMBE,
                   BOPAlgo_ListOfEdgeInfo& aLEI,
                   const Handle(IntTools_Context)& theContext)
 {
@@ -954,11 +923,10 @@ void RefineAngles(const TopoDS_Vertex& aV,
   aItLEI.Initialize(aLEI);
   for (; aItLEI.More(); aItLEI.Next()) {
     BOPAlgo_EdgeInfo& aEI=aItLEI.ChangeValue();
-    const TopoDS_Edge& aE=aEI.Edge();
     bIsIn=aEI.IsIn();
     aA=aEI.Angle();
     //
-    if (aMBE.Contains(aE)) {
+    if (!aEI.IsInside()) {
       ++iCntBnd;
       if (!bIsIn) {
         aA1=aA;
@@ -982,7 +950,7 @@ void RefineAngles(const TopoDS_Vertex& aV,
     BOPAlgo_EdgeInfo& aEI=aItLEI.ChangeValue();
     const TopoDS_Edge& aE=aEI.Edge();
     //
-    bIsBoundary=aMBE.Contains(aE);
+    bIsBoundary=!aEI.IsInside();
     bIsIn=aEI.IsIn();
     if (bIsBoundary || bIsIn) {
       continue;
