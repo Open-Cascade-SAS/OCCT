@@ -1,0 +1,29 @@
+puts ""
+puts "=========================================================================="
+puts "OCC31016: Projection of an ellipse or a circle is a B-spline in some cases"
+puts "=========================================================================="
+puts ""
+
+set projDir { 1 1 1 }
+
+ellipse c 0 0 0  0 0 1  2 1 0  20 10
+plane p 0 0 0  0 1 10
+projonplane r c p [lindex $projDir 0] [lindex $projDir 1] [lindex $projDir 2] 0
+
+if {![regexp {Ellipse} [dump r]]} {
+  puts "ERROR: Projected curve is not an ellipse"
+}
+
+# calculate a parametric shift on the projected curve
+set pnt [ProjectCurvePointToPlaneAlongDir c 0 p $projDir]
+parameters r [lindex $pnt 0] [lindex $pnt 1] [lindex $pnt 2] 0.1 shift
+
+if {[CheckProjectionToPlane 100 c 0 [expr 2*[dval pi]] r [dval shift] [expr [dval shift]+2*[dval pi]] p $projDir]} {
+  puts ""
+  puts "OK: All sample points are projected correctly"
+  puts ""
+} else {
+  puts ""
+  puts "ERROR: Projection is incorrect for some points"
+  puts ""
+}

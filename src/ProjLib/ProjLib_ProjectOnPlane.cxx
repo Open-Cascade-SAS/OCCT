@@ -44,6 +44,9 @@
 #include <Geom_Parabola.hxx>
 #include <Geom_Hyperbola.hxx>
 #include <Geom_Ellipse.hxx>
+#include <GeomLib_Tool.hxx>
+#include <math_Jacobi.hxx>
+#include <math_Matrix.hxx>
 
 
 
@@ -516,10 +519,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
   gp_Ax2 Axis;
   Standard_Real R1 =0., R2 =0.;
 
-  if ( Type != GeomAbs_Line)  // on garde le parametrage
-    myKeepParam = Standard_True;
-  else                        // on prend le choix utilisateur.
-    myKeepParam = KeepParametrization;
+  myKeepParam = KeepParametrization;
 
   switch ( Type) {
   case GeomAbs_Line: 
@@ -648,12 +648,14 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
 
       Standard_Real Tol2 = myTolerance*myTolerance;
       if (VDx.SquareMagnitude() < Tol2 ||
-	  VDy.SquareMagnitude() < Tol2    ) {
-	myIsApprox = Standard_True;
+          VDy.SquareMagnitude() < Tol2 ||
+          VDx.CrossSquareMagnitude(VDy) < Tol2)
+      {
+        myIsApprox = Standard_True;
       }
 
-      if (!myIsApprox && 
-	  gp_Dir(VDx).IsNormal(gp_Dir(VDy),Precision::Angular())) {
+      if (!myIsApprox)
+      {
 	Dx = gp_Dir(VDx);
 	Dy = gp_Dir(VDy);
 	gp_Pnt O    = Axis.Location();
@@ -662,39 +664,93 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
 	gp_Pnt Py   = ProjectPnt(myPlane,myDirection,O.Translated(R2*gp_Vec(Y)));
 	Standard_Real Major = P.Distance(Px);
 	Standard_Real Minor = P.Distance(Py);
-	gp_Ax2 Axe( P, Dx^Dy,Dx);
 
-	if ( Abs( Major - Minor) < Precision::Confusion()) {
-	  myType = GeomAbs_Circle;
- 	  gp_Circ Circ(Axe, Major);
-	  GeomCirclePtr  = new Geom_Circle(Circ);
+        if (myKeepParam)
+        {
+          myIsApprox = !gp_Dir(VDx).IsNormal(gp_Dir(VDy), Precision::Angular());
+        }
+        else
+        {
+          // Since it is not necessary to keep the same parameter for the point on the original and on the projected curves,
+          // we will use the following approach to find axes of the projected ellipse and provide the canonical curve:
+          // https://www.geometrictools.com/Documentation/ParallelProjectionEllipse.pdf
+          math_Matrix aMatrA(1, 2, 1, 2);
+          // A = Jp^T * Pr(Je), where
+          //   Pr(Je) - projection of axes of original ellipse to the target plane
+          //   Jp - X and Y axes of the target plane
+          aMatrA(1, 1) = myPlane.XDirection().XYZ().Dot(VDx.XYZ());
+          aMatrA(1, 2) = myPlane.XDirection().XYZ().Dot(VDy.XYZ());
+          aMatrA(2, 1) = myPlane.YDirection().XYZ().Dot(VDx.XYZ());
+          aMatrA(2, 2) = myPlane.YDirection().XYZ().Dot(VDy.XYZ());
+
+          math_Matrix aMatrDelta2(1, 2, 1, 2, 0.0);
+          //           | 1/MajorRad^2       0       |
+          // Delta^2 = |                            |
+          //           |      0        1/MajorRad^2 |
+          aMatrDelta2(1, 1) = 1.0 / (R1 * R1);
+          aMatrDelta2(2, 2) = 1.0 / (R2 * R2);
+
+          math_Matrix aMatrAInv = aMatrA.Inverse();
+          math_Matrix aMatrM = aMatrAInv.Transposed() * aMatrDelta2 * aMatrAInv;
+
+          // perform eigenvalues calculation
+          math_Jacobi anEigenCalc(aMatrM);
+          if (anEigenCalc.IsDone())
+          {
+            // radii of the projected ellipse
+            Minor = 1.0 / Sqrt(anEigenCalc.Value(1));
+            Major = 1.0 / Sqrt(anEigenCalc.Value(2));
+
+            // calculate the rotation angle for the plane axes to meet the correct axes of the projected ellipse
+            // (swap eigenvectors in respect to major and minor axes)
+            const math_Matrix& anEigenVec = anEigenCalc.Vectors();
+            gp_Trsf2d aTrsfInPlane;
+            aTrsfInPlane.SetValues(anEigenVec(1, 2), anEigenVec(1, 1), 0.0,
+                                   anEigenVec(2, 2), anEigenVec(2, 1), 0.0);
+            gp_Trsf aRot;
+            aRot.SetRotation(gp_Ax1(P, myPlane.Direction()), aTrsfInPlane.RotationPart());
+
+            Dx = myPlane.XDirection().Transformed(aRot);
+            Dy = myPlane.YDirection().Transformed(aRot);
+          }
+          else
+          {
+            myIsApprox = Standard_True;
+          }
+        }
+
+        if (!myIsApprox)
+        {
+          gp_Ax2 Axe(P, Dx^Dy, Dx);
+
+          if (Abs(Major - Minor) < Precision::Confusion()) {
+            myType = GeomAbs_Circle;
+            gp_Circ Circ(Axe, Major);
+            GeomCirclePtr  = new Geom_Circle(Circ);
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
-	  GeomAdaptor_Curve aGACurve(GeomCirclePtr);
-	  myResult = new GeomAdaptor_HCurve(aGACurve);
+            GeomAdaptor_Curve aGACurve(GeomCirclePtr);
+            myResult = new GeomAdaptor_HCurve(aGACurve);
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:30 2002 End
-	}
-	else if ( Major > Minor) {
-	  myType = GeomAbs_Ellipse;
-	  Elips  = gp_Elips( Axe, Major, Minor);
-	  
-          GeomEllipsePtr = new Geom_Ellipse(Elips) ;
+          }
+          else if ( Major > Minor) {
+            myType = GeomAbs_Ellipse;
+            Elips  = gp_Elips( Axe, Major, Minor);
+
+            GeomEllipsePtr = new Geom_Ellipse(Elips);
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
-	  GeomAdaptor_Curve aGACurve(GeomEllipsePtr);
-	  myResult = new GeomAdaptor_HCurve(aGACurve);
+            GeomAdaptor_Curve aGACurve(GeomEllipsePtr);
+            myResult = new GeomAdaptor_HCurve(aGACurve);
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:30 2002 End
-	}
-	else {
-	  myIsApprox = Standard_True;
-	  myType = GeomAbs_BSplineCurve;
-          PerformApprox(myCurve,myPlane,myDirection,ApproxCurve);
-//  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
-	  GeomAdaptor_Curve aGACurve(ApproxCurve);
-	  myResult = new GeomAdaptor_HCurve(aGACurve);
-//  Modified by Sergey KHROMOV - Tue Jan 29 16:57:30 2002 End
-	}
+          }
+          else {
+            myIsApprox = Standard_True;
+          }
+        }
       }
-      else {
-	myIsApprox = Standard_True;
+
+      // No way to build the canonical curve, approximate as B-spline
+      if (myIsApprox)
+      {
 	myType     = GeomAbs_BSplineCurve;
         PerformApprox(myCurve,myPlane,myDirection,ApproxCurve);
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:29 2002 Begin
@@ -702,10 +758,26 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
 	myResult = new GeomAdaptor_HCurve(aGACurve);
 //  Modified by Sergey KHROMOV - Tue Jan 29 16:57:30 2002 End
       }
+      else if (GeomCirclePtr || GeomEllipsePtr)
+      {
+        Handle(Geom_Curve) aResultCurve = GeomCirclePtr;
+        if (aResultCurve.IsNull())
+          aResultCurve = GeomEllipsePtr;
+        // start and end parameters of the projected curve
+        Standard_Real aParFirst = myCurve->FirstParameter();
+        Standard_Real aParLast = myCurve->LastParameter();
+        gp_Pnt aPntFirst = ProjectPnt(myPlane, myDirection, myCurve->Value(aParFirst));
+        gp_Pnt aPntLast = ProjectPnt(myPlane, myDirection, myCurve->Value(aParLast));
+        GeomLib_Tool::Parameter(aResultCurve, aPntFirst, Precision::Confusion(), myFirstPar);
+        GeomLib_Tool::Parameter(aResultCurve, aPntLast, Precision::Confusion(), myLastPar);
+        while (myLastPar <= myFirstPar)
+          myLastPar += myResult->Period();
+      }
     }
     break;
   case GeomAbs_Parabola:
     {
+      myKeepParam = Standard_True;
       //     P(u) = O + (u*u)/(4*f) * Xc + u * Yc
       // ==> Q(u) = f(P(u)) 
       //          = f(O) + (u*u)/(4*f) * f(Xc) + u * f(Yc)
@@ -757,6 +829,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
     break;
   case GeomAbs_Hyperbola:
     {
+      myKeepParam = Standard_True;
       //     P(u) = O + R1 * Cosh(u) * Xc + R2 * Sinh(u) * Yc
       // ==> Q(u) = f(P(u)) 
       //          = f(O) + R1 * Cosh(u) * f(Xc) + R2 * Sinh(u) * f(Yc)
@@ -824,6 +897,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
       Handle(Geom_BezierCurve) ProjCu = 
 	Handle(Geom_BezierCurve)::DownCast(BezierCurvePtr->Copy());
 
+      myKeepParam = Standard_True;
       myIsApprox = Standard_False;
       myType = Type;
       for ( Standard_Integer i = 1; i <= NbPoles; i++) {
@@ -847,6 +921,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
       Handle(Geom_BSplineCurve) ProjectedBSplinePtr =
 	Handle(Geom_BSplineCurve)::DownCast(BSplineCurvePtr->Copy()) ;
       
+      myKeepParam = Standard_True;
       myIsApprox = Standard_False;
       myType = Type;
       for ( Standard_Integer i = 1; i <= BSplineCurvePtr->NbPoles(); i++) {
@@ -862,6 +937,7 @@ void ProjLib_ProjectOnPlane::Load(const Handle(Adaptor3d_HCurve)&    C,
     break;
   default:
     {
+      myKeepParam = Standard_True;
       myIsApprox = Standard_True;
       myType     = GeomAbs_BSplineCurve;
       PerformApprox(myCurve,myPlane,myDirection,ApproxCurve);
