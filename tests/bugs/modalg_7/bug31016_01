@@ -1,0 +1,53 @@
+puts "========"
+puts "OCC31016"
+puts "========"
+puts ""
+###################################################################
+# Projection of an ellipse or a circle is a B-spline in some cases
+###################################################################
+
+ellipse c 0 0 0  0 0 1  2 1 0  20 10
+plane p 0 0 0  0 1 10
+projonplane r c p 0
+
+if {![regexp {Ellipse} [dump r]]} {
+  puts "ERROR: Projected curve is not an ellipse"
+}
+
+proc toPlane {pln curve param} {
+  upvar $pln p
+  upvar $curve crv
+  cvalue crv $param x y z
+  set pr [proj p x y z]
+  regexp {Parameters: ([-0-9.+eE]+) ([-0-9.+eE]+)} $pr full u v
+  svalue p $u $v x y z
+
+  set pntOnPlane {}
+  lappend pntOnPlane [dval x]
+  lappend pntOnPlane [dval y]
+  lappend pntOnPlane [dval z]
+  return $pntOnPlane
+}
+
+# calculate a parametric shift on the projected curve
+set pnt [toPlane p c 0]
+parameters r [lindex $pnt 0] [lindex $pnt 1] [lindex $pnt 2] 0.1 shift
+
+set nbPoints 100
+for {set i 0} {$i <= $nbPoints} {incr i} {
+  set par0 [expr 8*atan(1)*$i/$nbPoints]
+  set par1 [expr $par0 + [dval shift]]
+
+  set pnt [toPlane p c $par0]
+  cvalue r $par1 X Y Z
+
+  set dx [expr [lindex $pnt 0]-[dval X]]
+  set dy [expr [lindex $pnt 1]-[dval Y]]
+  set dz [expr [lindex $pnt 2]-[dval Z]]
+
+  if {[expr $dx*$dx + $dy*$dy + $dz*$dz] < 1.e-14} {
+    puts "OK: Projection correct"
+  } else {
+    puts "ERROR: Projection incorrect"
+  }
+}
