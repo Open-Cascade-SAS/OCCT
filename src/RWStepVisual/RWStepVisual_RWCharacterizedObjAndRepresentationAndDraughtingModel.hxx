@@ -13,8 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation_HeaderFile
-#define _RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation_HeaderFile
+#ifndef _RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel_HeaderFile
+#define _RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
@@ -23,29 +23,29 @@
 #include <Standard_Integer.hxx>
 class StepData_StepReaderData;
 class Interface_Check;
-class StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation;
+class StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel;
 class StepData_StepWriter;
 class Interface_EntityIterator;
 
 
 //! Read & Write Module for complex STEP entity Characterized_Object & Characterized_Representation & Draughting_Model & Representation
-class RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation
+class RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
   
-    Standard_EXPORT RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation();
+    Standard_EXPORT RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel();
   
   Standard_EXPORT void ReadStep(const Handle(StepData_StepReaderData)& data,
                                 const Standard_Integer num, Handle(Interface_Check)& ach,
-                                const Handle(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation)& ent) const;
+                                const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent) const;
   
   Standard_EXPORT void WriteStep(StepData_StepWriter& SW,
-                                 const Handle(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation)& ent) const;
+                                 const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent) const;
   
-  Standard_EXPORT void Share(const Handle(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation)& ent,
+  Standard_EXPORT void Share(const Handle(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel)& ent,
                              Interface_EntityIterator& iter) const;
 };
-#endif // _RRWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation_HeaderFile
+#endif // _RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel_HeaderFile

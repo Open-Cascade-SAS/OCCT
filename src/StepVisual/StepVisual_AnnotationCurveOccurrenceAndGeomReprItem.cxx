@@ -13,12 +13,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem, StepVisual_AnnotationCurveOccurrence)
+IMPLEMENT_STANDARD_RTTIEXT(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem, StepVisual_AnnotationCurveOccurrence)
 
 //=======================================================================
-//function : StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem
+//function : StepVisual_AnnotationCurveOccurrenceAndGeomReprItem
 //purpose  : 
 //=======================================================================
-StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem::StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem()    {  }
+StepVisual_AnnotationCurveOccurrenceAndGeomReprItem::StepVisual_AnnotationCurveOccurrenceAndGeomReprItem()    {  }

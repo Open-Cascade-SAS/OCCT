@@ -742,13 +742,13 @@ static Standard_CString schemaAP242DIS = "AP242_MANAGED_MODEL_BASED_3D_ENGINEERI
 #include <StepRepr_CharacterizedRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_ConstructiveGeometryRepresentationRelationship.hxx>
-#include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <StepVisual_CameraModelD3MultiClipping.hxx>
 #include <StepVisual_CameraModelD3MultiClippingIntersection.hxx>
 #include <StepVisual_CameraModelD3MultiClippingUnion.hxx>
-#include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
 
 #include <StepVisual_SurfaceStyleTransparent.hxx>
 #include <StepVisual_SurfaceStyleReflectanceAmbient.hxx>
@@ -1459,11 +1459,11 @@ StepAP214_Protocol::StepAP214_Protocol ()
   types.Bind (STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentation), 712);
   types.Bind (STANDARD_TYPE(StepRepr_ConstructiveGeometryRepresentationRelationship), 713);
   types.Bind (STANDARD_TYPE(StepRepr_CharacterizedRepresentation), 714);
-  types.Bind (STANDARD_TYPE(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation), 715);
+  types.Bind (STANDARD_TYPE(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel), 715);
   types.Bind (STANDARD_TYPE(StepVisual_CameraModelD3MultiClipping), 716);
   types.Bind (STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingIntersection), 717);
   types.Bind (STANDARD_TYPE(StepVisual_CameraModelD3MultiClippingUnion), 718);
-  types.Bind (STANDARD_TYPE(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem), 719);
+  types.Bind (STANDARD_TYPE(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem), 719);
   types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleTransparent), 720);
   types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleReflectanceAmbient), 721);
   types.Bind (STANDARD_TYPE(StepVisual_SurfaceStyleRendering), 722);

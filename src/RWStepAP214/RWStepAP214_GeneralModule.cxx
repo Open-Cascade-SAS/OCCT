@@ -1351,8 +1351,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <RWStepVisual_RWCoordinatesList.hxx>
 #include <StepRepr_CharacterizedRepresentation.hxx>
 #include <RWStepRepr_RWCharacterizedRepresentation.hxx>
-#include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
-#include <RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
+#include <RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <RWStepVisual_RWAnnotationFillArea.hxx>
@@ -1363,8 +1363,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_GeneralModule,StepData_GeneralModule)
 #include <RWStepVisual_RWCameraModelD3MultiClipping.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingIntersection.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingUnion.hxx>
-#include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
-#include <RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
+#include <RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem.hxx>
 
 static Standard_Integer catsh,catdr,catstr,catdsc,cataux;
 
@@ -5132,8 +5132,8 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
   break;
   case 715:
   {
-    DeclareAndCast(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, anent, ent);
-    RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation tool;
+    DeclareAndCast(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, anent, ent);
+    RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel tool;
     tool.Share(anent, iter);
   }
   break;
@@ -5160,8 +5160,8 @@ void RWStepAP214_GeneralModule::FillSharedCase(const Standard_Integer CN,
   break;
   case 719:
   {
-    DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem, anent, ent);
-    RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem tool;
+    DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem, anent, ent);
+    RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem tool;
     tool.Share(anent, iter);
   }
   break;
@@ -7191,7 +7191,7 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
    ent = new StepRepr_CharacterizedRepresentation;
    break;
    case 715:
-   ent = new StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation;
+   ent = new StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel;
    break;
    case 716:
      ent = new StepVisual_CameraModelD3MultiClipping;
@@ -7203,7 +7203,7 @@ Standard_Boolean RWStepAP214_GeneralModule::NewVoid
      ent = new StepVisual_CameraModelD3MultiClippingUnion;
    break;
    case 719:
-     ent = new StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem;
+     ent = new StepVisual_AnnotationCurveOccurrenceAndGeomReprItem;
    break;
    case 720:
      ent = new StepVisual_SurfaceStyleTransparent;

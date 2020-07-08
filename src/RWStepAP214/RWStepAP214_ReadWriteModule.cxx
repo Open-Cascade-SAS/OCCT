@@ -1394,8 +1394,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <RWStepRepr_RWCharacterizedRepresentation.hxx>
 #include <RWStepRepr_RWConstructiveGeometryRepresentation.hxx>
 #include <RWStepRepr_RWConstructiveGeometryRepresentationRelationship.hxx>
-#include <StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
-#include <RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation.hxx>
+#include <StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel.hxx>
+#include <RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel.hxx>
 #include <StepVisual_AnnotationFillArea.hxx>
 #include <StepVisual_AnnotationFillAreaOccurrence.hxx>
 #include <RWStepVisual_RWAnnotationFillArea.hxx>
@@ -1406,8 +1406,8 @@ IMPLEMENT_STANDARD_RTTIEXT(RWStepAP214_ReadWriteModule,StepData_ReadWriteModule)
 #include <RWStepVisual_RWCameraModelD3MultiClipping.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingIntersection.hxx>
 #include <RWStepVisual_RWCameraModelD3MultiClippingUnion.hxx>
-#include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
-#include <RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
+#include <RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem.hxx>
 
 #include <RWStepVisual_RWSurfaceStyleTransparent.hxx>
 #include <RWStepVisual_RWSurfaceStyleReflectanceAmbient.hxx>
@@ -9447,8 +9447,8 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
     break;
      case 715:
     {
-      DeclareAndCast(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, anent, ent);
-      RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation tool;
+      DeclareAndCast(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, anent, ent);
+      RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel tool;
       tool.ReadStep(data, num, ach, anent);
     }
     break;
@@ -9475,8 +9475,8 @@ void RWStepAP214_ReadWriteModule::ReadStep(const Standard_Integer CN,
    break;
      case 719:
    {
-     DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem, anent, ent);
-     RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem tool;
+     DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem, anent, ent);
+     RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem tool;
      tool.ReadStep(data, num, ach, anent);
    }
    break;
@@ -14331,8 +14331,8 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     break;
       case 715:
     {
-      DeclareAndCast(StepVisual_CharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation, anent, ent);
-      RWStepVisual_RWCharacterizedObjectAndCharacterizedRepresentationAndDraughtingModelAndRepresentation tool;
+      DeclareAndCast(StepVisual_CharacterizedObjAndRepresentationAndDraughtingModel, anent, ent);
+      RWStepVisual_RWCharacterizedObjAndRepresentationAndDraughtingModel tool;
       tool.WriteStep(SW, anent);
     }
     break;
@@ -14359,8 +14359,8 @@ void RWStepAP214_ReadWriteModule::WriteStep(const Standard_Integer CN,
     break;
       case 719:
     {
-      DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem, anent, ent);
-      RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem tool;
+      DeclareAndCast(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem, anent, ent);
+      RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem tool;
       tool.WriteStep(SW, anent);
     }
       break;

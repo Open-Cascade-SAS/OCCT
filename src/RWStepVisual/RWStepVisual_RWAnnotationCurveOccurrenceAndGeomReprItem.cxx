@@ -15,30 +15,30 @@
 
 #include <Interface_Check.hxx>
 #include <Interface_EntityIterator.hxx>
-#include <RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <StepData_StepWriter.hxx>
 #include <StepRepr_RepresentationItem.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
 #include <StepVisual_PresentationStyleAssignment.hxx>
-#include <StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem.hxx>
+#include <StepVisual_AnnotationCurveOccurrenceAndGeomReprItem.hxx>
 
 //=======================================================================
-//function : RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem
+//function : RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem
 //purpose  : 
 //=======================================================================
-RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem::
-  RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem () {}
+RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::
+  RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem() {}
 
 //=======================================================================
 //function : ReadStep
 //purpose  : 
 //=======================================================================
-void RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem::ReadStep
+void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::ReadStep
 (const Handle(StepData_StepReaderData)& data,
 const Standard_Integer num0,
 Handle(Interface_Check)& ach,
-const Handle(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem)& ent) const
+const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
 {
   Standard_Integer num = 0;
   data->NamedForComplex("REPRESENTATION_ITEM", "RPRITM", num0, num, ach);
@@ -73,9 +73,9 @@ const Handle(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomR
 //function : WriteStep
 //purpose  : 
 //=======================================================================
-void RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem::WriteStep
+void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::WriteStep
 (StepData_StepWriter& SW,
-const Handle(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem)& ent) const
+const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent) const
 {
   SW.StartEntity("ANNOTATION_CURVE_OCCURRENCE");
   SW.StartEntity("ANNOTATION_OCCURRENCE");
@@ -100,8 +100,8 @@ const Handle(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomR
 //function : Share
 //purpose  : 
 //=======================================================================
-void RWStepVisual_RWAnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem::Share(
-  const Handle(StepVisual_AnnotationCurveOccurrenceAndAnnotationOccurrenceAndGeomReprItemAndReprItemAndStyledItem)& ent,
+void RWStepVisual_RWAnnotationCurveOccurrenceAndGeomReprItem::Share(
+  const Handle(StepVisual_AnnotationCurveOccurrenceAndGeomReprItem)& ent,
   Interface_EntityIterator& iter) const
 {
 
