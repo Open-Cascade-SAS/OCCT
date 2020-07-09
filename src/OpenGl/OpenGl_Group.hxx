@@ -52,6 +52,9 @@ public:
          : Handle(Graphic3d_Aspects)();
   }
 
+  //! Return TRUE if group contains primitives with transform persistence.
+  bool HasPersistence() const { return myStructure != NULL && !myStructure->TransformPersistence().IsNull(); }
+
   //! Update aspect.
   Standard_EXPORT virtual void SetGroupPrimitivesAspect (const Handle(Graphic3d_Aspects)& theAspect) Standard_OVERRIDE;
 
@@ -105,6 +108,18 @@ public:
 protected:
 
   Standard_EXPORT virtual ~OpenGl_Group();
+
+private:
+
+  //! Render element if it passes the filtering procedure.
+  //! This method should be used for elements which can be used in scope of rendering algorithms.
+  //! E.g. elements of groups during recursive rendering.
+  //! If render filter is null, pure rendering is performed.
+  //! @param theWorkspace [in] the rendering workspace
+  //! @param theFilter    [in] the rendering filter to check whether the element should be rendered or not
+  //! @return True if element passes the check and renders
+  Standard_EXPORT bool renderFiltered (const Handle(OpenGl_Workspace)& theWorkspace,
+                                       OpenGl_Element* theElement) const;
 
 protected:
 

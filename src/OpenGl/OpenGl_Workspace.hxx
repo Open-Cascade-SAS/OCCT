@@ -176,8 +176,9 @@ public:
 
   //! Checks whether the element can be rendered or not.
   //! @param theElement [in] the element to check
+  //! @param theGroup   [in] the group containing the element
   //! @return True if element can be rendered
-  bool ShouldRender (const OpenGl_Element* theElement);
+  bool ShouldRender (const OpenGl_Element* theElement, const OpenGl_Group* theGroup);
 
   //! Return the number of skipped transparent elements within active OpenGl_RenderFilter_OpaqueOnly filter.
   //! @sa OpenGl_LayerList::Render()

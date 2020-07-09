@@ -557,6 +557,11 @@ namespace OpenGl_Raytrace
   // =======================================================================
   Standard_Boolean IsRaytracedGroup (const OpenGl_Group* theGroup)
   {
+    if (theGroup->HasPersistence())
+    {
+      return Standard_False;
+    }
+
     for (const OpenGl_ElementNode* aNode = theGroup->FirstNode(); aNode != NULL; aNode = aNode->next)
     {
       if (IsRaytracedElement (aNode))

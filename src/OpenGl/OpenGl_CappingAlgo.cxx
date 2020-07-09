@@ -108,7 +108,7 @@ namespace
       thePlane->Update (aContext, anObjAspectFace != NULL ? anObjAspectFace->Aspect() : Handle(Graphic3d_Aspects)());
       theWorkspace->SetAspects (thePlane->AspectFace());
       theWorkspace->SetRenderFilter (aPrevFilter);
-      if (!theWorkspace->ShouldRender (&thePlane->Primitives()))
+      if (!theWorkspace->ShouldRender (&thePlane->Primitives(), aGroupIter.Value()))
       {
         continue;
       }

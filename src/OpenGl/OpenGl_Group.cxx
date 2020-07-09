@@ -29,29 +29,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group,Graphic3d_Group)
 
-namespace
-{
-  //! Render element if it passes the filtering procedure. This method should
-  //! be used for elements which can be used in scope of rendering algorithms.
-  //! E.g. elements of groups during recursive rendering.
-  //! If render filter is null, pure rendering is performed.
-  //! @param theWorkspace [in] the rendering workspace.
-  //! @param theFilter [in] the rendering filter to check whether the element
-  //! should be rendered or not.
-  //! @return True if element passes the check and renders,
-  static bool renderFiltered (const Handle(OpenGl_Workspace)& theWorkspace,
-                              OpenGl_Element* theElement)
-  {
-    if (!theWorkspace->ShouldRender (theElement))
-    {
-      return false;
-    }
-
-    theElement->Render (theWorkspace);
-    return true;
-  }
-}
-
 // =======================================================================
 // function : OpenGl_Group
 // purpose  :
@@ -265,7 +242,7 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
   (myLast? myLast->next : myFirst) = aNode;
   myLast = aNode;
 
-  if (OpenGl_Raytrace::IsRaytracedElement (aNode))
+  if (OpenGl_Raytrace::IsRaytracedElement (aNode) && !HasPersistence())
   {
     myIsRaytracable = Standard_True;
 
@@ -275,6 +252,22 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
       aStruct->UpdateStateIfRaytracable (Standard_False);
     }
   }
+}
+
+// =======================================================================
+// function : renderFiltered
+// purpose  :
+// =======================================================================
+bool OpenGl_Group::renderFiltered (const Handle(OpenGl_Workspace)& theWorkspace,
+                                   OpenGl_Element* theElement) const
+{
+  if (!theWorkspace->ShouldRender (theElement, this))
+  {
+    return false;
+  }
+
+  theElement->Render (theWorkspace);
+  return true;
 }
 
 // =======================================================================

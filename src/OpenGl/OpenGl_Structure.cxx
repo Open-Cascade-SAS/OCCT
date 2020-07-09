@@ -162,6 +162,10 @@ void OpenGl_Structure::SetTransformation (const Handle(TopLoc_Datum3D)& theTrsf)
 // =======================================================================
 void OpenGl_Structure::SetTransformPersistence (const Handle(Graphic3d_TransformPers)& theTrsfPers)
 {
+  if ((myTrsfPers.IsNull() || theTrsfPers.IsNull()) && myTrsfPers != theTrsfPers)
+  {
+    ++myModificationState;
+  }
   myTrsfPers = theTrsfPers;
   updateLayerTransformation();
 }
@@ -226,7 +230,8 @@ void OpenGl_Structure::OnVisibilityChanged()
 Standard_Boolean OpenGl_Structure::IsRaytracable() const
 {
   if (!myGroups.IsEmpty()
-    && myIsRaytracable)
+    && myIsRaytracable
+    && myTrsfPers.IsNull())
   {
     return Standard_True;
   }
