@@ -42,7 +42,8 @@ public:
   //! Performs processing of the given face.
   Standard_EXPORT virtual void Perform(
     const IMeshData::IFaceHandle& theDFace,
-    const IMeshTools_Parameters&  theParameters) Standard_OVERRIDE;
+    const IMeshTools_Parameters&  theParameters,
+    const Message_ProgressRange&  theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTI_INLINE(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
 
@@ -103,7 +104,7 @@ protected:
   Standard_EXPORT virtual Standard_Boolean initDataStructure();
 
   //! Generates mesh for the contour stored in data structure.
-  Standard_EXPORT virtual void generateMesh() = 0;
+  Standard_EXPORT virtual void generateMesh(const Message_ProgressRange& theRange) = 0;
 
 private:
 

@@ -22,6 +22,7 @@
 #include <IMeshData_Model.hxx>
 #include <IMeshTools_Parameters.hxx>
 #include <IMeshTools_ModelAlgo.hxx>
+#include <Message_ProgressRange.hxx>
 
 //! Interface class representing context of BRepMesh algorithm.
 //! Intended to cache discrete model and instances of tools for 
@@ -64,7 +65,7 @@ public:
     }
 
     // Discretize edges of a model.
-    return myEdgeDiscret->Perform(myModel, myParameters);
+    return myEdgeDiscret->Perform(myModel, myParameters, Message_ProgressRange());
   }
 
   //! Performs healing of discrete model built by DiscretizeEdges() method
@@ -79,7 +80,7 @@ public:
 
     return myModelHealer.IsNull() ?
       Standard_True :
-      myModelHealer->Perform(myModel, myParameters);
+      myModelHealer->Perform (myModel, myParameters, Message_ProgressRange());
   }
 
   //! Performs pre-processing of discrete model using assigned algorithm.
@@ -94,12 +95,12 @@ public:
 
     return myPreProcessor.IsNull() ? 
       Standard_True :
-      myPreProcessor->Perform(myModel, myParameters);
+      myPreProcessor->Perform (myModel, myParameters, Message_ProgressRange());
   }
 
   //! Performs meshing of faces of discrete model using assigned meshing algorithm.
   //! @return True on success, False elsewhere.
-  Standard_EXPORT virtual Standard_Boolean DiscretizeFaces()
+  virtual Standard_Boolean DiscretizeFaces (const Message_ProgressRange& theRange)
   {
     if (myModel.IsNull() || myFaceDiscret.IsNull())
     {
@@ -107,7 +108,7 @@ public:
     }
 
     // Discretize faces of a model.
-    return myFaceDiscret->Perform(myModel, myParameters);
+    return myFaceDiscret->Perform (myModel, myParameters, theRange);
   }
 
   //! Performs post-processing of discrete model using assigned algorithm.
@@ -121,7 +122,7 @@ public:
 
     return myPostProcessor.IsNull() ?
       Standard_True :
-      myPostProcessor->Perform(myModel, myParameters);
+      myPostProcessor->Perform(myModel, myParameters, Message_ProgressRange());
   }
 
   //! Cleans temporary context data.

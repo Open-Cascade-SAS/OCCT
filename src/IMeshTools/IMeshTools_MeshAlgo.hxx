@@ -19,6 +19,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 #include <IMeshData_Types.hxx>
+#include <Message_ProgressRange.hxx>
 
 struct IMeshTools_Parameters;
 
@@ -35,7 +36,8 @@ public:
   //! Performs processing of the given face.
   Standard_EXPORT virtual void Perform(
     const IMeshData::IFaceHandle& theDFace,
-    const IMeshTools_Parameters&  theParameters) = 0;
+    const IMeshTools_Parameters&  theParameters,
+    const Message_ProgressRange&  theRange) = 0;
 
   DEFINE_STANDARD_RTTI_INLINE(IMeshTools_MeshAlgo, Standard_Transient)
 

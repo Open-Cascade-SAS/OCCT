@@ -370,7 +370,7 @@ void BRepMesh_Delaun::compute(IMeshData::VectorOfInteger& theVertexIndexes)
     createTriangles( theVertexIndexes( anVertexIdx ), aLoopEdges );
 
     // Add other nodes to the mesh
-    createTrianglesOnNewVertices( theVertexIndexes );
+    createTrianglesOnNewVertices (theVertexIndexes, Message_ProgressRange());
   }
 
   // Destruction of triangles containing a top of the super triangle
@@ -523,7 +523,8 @@ void BRepMesh_Delaun::createTriangles(const Standard_Integer          theVertexI
 //purpose  : Creation of triangles from the new nodes
 //=======================================================================
 void BRepMesh_Delaun::createTrianglesOnNewVertices(
-  IMeshData::VectorOfInteger& theVertexIndexes)
+  IMeshData::VectorOfInteger&   theVertexIndexes,
+  const Message_ProgressRange& theRange)
 {
   Handle(NCollection_IncAllocator) aAllocator =
     new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
@@ -537,8 +538,13 @@ void BRepMesh_Delaun::createTrianglesOnNewVertices(
   
   Standard_Integer anIndex = theVertexIndexes.Lower();
   Standard_Integer anUpper = theVertexIndexes.Upper();
-  for( ; anIndex <= anUpper; ++anIndex ) 
+  Message_ProgressScope aPS(theRange, "Create triangles on new vertices", anUpper);
+  for (; anIndex <= anUpper; ++anIndex, aPS.Next())
   {
+    if (!aPS.More())
+    {
+      return;
+    }
     aAllocator->Reset(Standard_False);
     IMeshData::MapOfIntegerInteger aLoopEdges(10, aAllocator);
     
@@ -2207,13 +2213,14 @@ void BRepMesh_Delaun::RemoveVertex( const BRepMesh_Vertex& theVertex )
 //function : AddVertices
 //purpose  : Adds some vertices in the triangulation.
 //=======================================================================
-void BRepMesh_Delaun::AddVertices(IMeshData::VectorOfInteger& theVertices)
+void BRepMesh_Delaun::AddVertices(IMeshData::VectorOfInteger&  theVertices,
+                                  const Message_ProgressRange& theRange)
 {
   ComparatorOfIndexedVertexOfDelaun aCmp(myMeshData);
   std::make_heap(theVertices.begin(), theVertices.end(), aCmp);
   std::sort_heap(theVertices.begin(), theVertices.end(), aCmp);
 
-  createTrianglesOnNewVertices(theVertices);
+  createTrianglesOnNewVertices(theVertices, theRange);
 }
 
 //=======================================================================

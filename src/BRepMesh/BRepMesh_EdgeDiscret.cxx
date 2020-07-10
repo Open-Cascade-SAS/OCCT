@@ -85,8 +85,10 @@ Handle(IMeshTools_CurveTessellator) BRepMesh_EdgeDiscret::CreateEdgeTessellation
 //=======================================================================
 Standard_Boolean BRepMesh_EdgeDiscret::performInternal (
   const Handle (IMeshData_Model)& theModel,
-  const IMeshTools_Parameters&    theParameters)
+  const IMeshTools_Parameters&    theParameters,
+  const Message_ProgressRange&    theRange)
 {
+  (void )theRange;
   myModel      = theModel;
   myParameters = theParameters;
 

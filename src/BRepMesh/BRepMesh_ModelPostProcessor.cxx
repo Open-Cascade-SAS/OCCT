@@ -179,8 +179,10 @@ BRepMesh_ModelPostProcessor::~BRepMesh_ModelPostProcessor()
 //=======================================================================
 Standard_Boolean BRepMesh_ModelPostProcessor::performInternal(
   const Handle(IMeshData_Model)& theModel,
-  const IMeshTools_Parameters&   /*theParameters*/)
+  const IMeshTools_Parameters&   /*theParameters*/,
+  const Message_ProgressRange&   theRange)
 {
+  (void )theRange;
   if (theModel.IsNull())
   {
     return Standard_False;

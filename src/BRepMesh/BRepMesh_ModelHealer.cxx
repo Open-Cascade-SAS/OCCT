@@ -117,8 +117,10 @@ BRepMesh_ModelHealer::~BRepMesh_ModelHealer()
 //=======================================================================
 Standard_Boolean BRepMesh_ModelHealer::performInternal(
   const Handle(IMeshData_Model)& theModel,
-  const IMeshTools_Parameters&   theParameters)
+  const IMeshTools_Parameters&   theParameters,
+  const Message_ProgressRange&   theRange)
 {
+  (void )theRange;
   myModel      = theModel;
   myParameters = theParameters;
   if (myModel.IsNull())

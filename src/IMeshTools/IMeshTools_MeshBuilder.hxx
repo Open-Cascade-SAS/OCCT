@@ -19,6 +19,7 @@
 #include <Message_Algorithm.hxx>
 #include <IMeshTools_Context.hxx>
 #include <Standard_Type.hxx>
+#include <Message_ProgressRange.hxx>
 
 //! Builds mesh for each face of shape without triangulation.
 //! In case if some faces of shape have already been triangulated
@@ -62,7 +63,7 @@ public:
   }
 
   //! Performs meshing ot the shape using current context.
-  Standard_EXPORT virtual void Perform ();
+  Standard_EXPORT virtual void Perform (const Message_ProgressRange& theRange);
 
   DEFINE_STANDARD_RTTI_INLINE(IMeshTools_MeshBuilder, Message_Algorithm)
 

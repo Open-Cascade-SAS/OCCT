@@ -46,7 +46,8 @@ BRepMesh_BaseMeshAlgo::~BRepMesh_BaseMeshAlgo()
 //=======================================================================
 void BRepMesh_BaseMeshAlgo::Perform(
   const IMeshData::IFaceHandle& theDFace,
-  const IMeshTools_Parameters&  theParameters)
+  const IMeshTools_Parameters&  theParameters,
+  const Message_ProgressRange&  theRange)
 {
   try
   {
@@ -61,7 +62,11 @@ void BRepMesh_BaseMeshAlgo::Perform(
 
     if (initDataStructure())
     {
-      generateMesh();
+      if (!theRange.More())
+      {
+        return;
+      }
+      generateMesh(theRange);
       commitSurfaceTriangulation();
     }
   }

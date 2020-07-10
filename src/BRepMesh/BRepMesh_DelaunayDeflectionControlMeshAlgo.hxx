@@ -47,21 +47,32 @@ public:
 protected:
 
   //! Perfroms processing of generated mesh. Generates surface nodes and inserts them into structure.
-  virtual void postProcessMesh(BRepMesh_Delaun& theMesher) Standard_OVERRIDE
+  virtual void postProcessMesh (BRepMesh_Delaun& theMesher,
+                                const Message_ProgressRange& theRange) Standard_OVERRIDE
   {
+    Message_ProgressScope aPS(theRange, "Post process mesh", 2);
     // Insert surface nodes.
-    DelaunayInsertionBaseClass::postProcessMesh(theMesher);
+    DelaunayInsertionBaseClass::postProcessMesh (theMesher, aPS.Next());
+    if (!aPS.More())
+    {
+      return;
+    }
 
     if (this->getParameters().ControlSurfaceDeflection &&
         this->getStructure()->ElementsOfDomain().Extent() > 0)
     {
-      optimizeMesh(theMesher);
+      optimizeMesh(theMesher, aPS.Next());
+    }
+    else
+    {
+      aPS.Next();
     }
   }
 
   //! Checks deviation of a mesh from geometrical surface.
   //! Inserts additional nodes in case of huge deviation.
-  virtual void optimizeMesh(BRepMesh_Delaun& theMesher)
+  virtual void optimizeMesh (BRepMesh_Delaun& theMesher,
+                             const Message_ProgressRange& theRange)
   {
     Handle(NCollection_IncAllocator) aTmpAlloc =
       new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE);
@@ -72,8 +83,13 @@ protected:
 
     const Standard_Integer aIterationsNb = 11;
     Standard_Boolean isInserted = Standard_True;
+    Message_ProgressScope aPS(theRange, "Iteration", aIterationsNb);
     for (Standard_Integer aPass = 1; aPass <= aIterationsNb && isInserted && !myIsAllDegenerated; ++aPass)
     {
+      if (!aPS.More())
+      {
+        return;
+      }
       // Reset stop condition
       myMaxSqDeflection = -1.;
       myIsAllDegenerated = Standard_True;
@@ -83,7 +99,6 @@ protected:
       {
         break;
       }
-
       // Iterate on current triangles
       IMeshData::IteratorOfMapOfInteger aTriangleIt(this->getStructure()->ElementsOfDomain());
       for (; aTriangleIt.More(); aTriangleIt.Next())
@@ -92,7 +107,7 @@ protected:
         splitTriangleGeometry(aTriangle);
       }
 
-      isInserted = this->insertNodes(myControlNodes, theMesher);
+      isInserted = this->insertNodes(myControlNodes, theMesher, aPS.Next());
     }
 
     myCouplesMap.Nullify();

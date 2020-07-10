@@ -37,7 +37,7 @@ BRepMesh_DelaunayBaseMeshAlgo::~BRepMesh_DelaunayBaseMeshAlgo()
 //function : generateMesh
 //purpose  :
 //=======================================================================
-void BRepMesh_DelaunayBaseMeshAlgo::generateMesh()
+void BRepMesh_DelaunayBaseMeshAlgo::generateMesh(const Message_ProgressRange& theRange)
 {
   const Handle(BRepMesh_DataStructureOfDelaun)& aStructure = getStructure();
   const Handle(VectorOfPnt)&                    aNodesMap  = getNodesMap();
@@ -53,5 +53,9 @@ void BRepMesh_DelaunayBaseMeshAlgo::generateMesh()
   BRepMesh_MeshTool aCleaner(aStructure);
   aCleaner.EraseFreeLinks();
 
-  postProcessMesh(aMesher);
+  if (!theRange.More())
+  {
+    return;
+  }
+  postProcessMesh(aMesher, theRange);
 }

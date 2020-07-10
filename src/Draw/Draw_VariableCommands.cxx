@@ -23,6 +23,7 @@
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Grid.hxx>
 #include <Draw_Number.hxx>
+#include <Message.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <Draw_SequenceOfDrawable3D.hxx>
 #include <Message.hxx>

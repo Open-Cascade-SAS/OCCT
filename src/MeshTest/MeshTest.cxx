@@ -32,11 +32,13 @@
 #include <CSLib.hxx>
 #include <DBRep.hxx>
 #include <Draw_Appli.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Draw_Segment2D.hxx>
 #include <DrawTrSurf.hxx>
 #include <GeometryTest.hxx>
 #include <IMeshData_Status.hxx>
 #include <Message.hxx>
+#include <Message_ProgressRange.hxx>
 #include <Poly_Connect.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
@@ -157,7 +159,8 @@ options:\n\
   di << "Incremental Mesh, multi-threading "
      << (aMeshParams.InParallel ? "ON" : "OFF") << "\n";
 
-  BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams);
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
+  BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams, aProgress->Start());
 
   di << "Meshing statuses: ";
   const Standard_Integer aStatus = aMesher.GetStatusFlags();
@@ -168,7 +171,7 @@ options:\n\
   else
   {
     Standard_Integer i;
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < 9; i++)
     {
       Standard_Integer aFlag = aStatus & (1 << i);
       if (aFlag)
@@ -198,6 +201,9 @@ options:\n\
           break;
         case IMeshData_Reused:
           di << "Reused ";
+          break;
+        case IMeshData_UserBreak:
+          di << "User break";
           break;
         case IMeshData_NoError:
         default:

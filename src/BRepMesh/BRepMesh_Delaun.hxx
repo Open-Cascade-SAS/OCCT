@@ -29,6 +29,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_MapOfInteger.hxx>
+#include <Message_ProgressRange.hxx>
 
 class Bnd_B2d;
 class Bnd_Box2d;
@@ -75,7 +76,8 @@ public:
   Standard_EXPORT void RemoveVertex (const BRepMesh_Vertex& theVertex);
 
   //! Adds some vertices into the triangulation.
-  Standard_EXPORT void AddVertices (IMeshData::VectorOfInteger& theVerticesIndices);
+  Standard_EXPORT void AddVertices (IMeshData::VectorOfInteger&  theVerticesIndices,
+                                    const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Modify mesh to use the edge.
   //! @return True if done
@@ -284,7 +286,8 @@ private:
                                                 IMeshData::SequenceOfBndB2d&  thePolyBoxes);
   
   //! Creates the triangles on new nodes.
-  void createTrianglesOnNewVertices (IMeshData::VectorOfInteger& theVertexIndices);
+  void createTrianglesOnNewVertices (IMeshData::VectorOfInteger&  theVertexIndices,
+                                     const Message_ProgressRange& theRange);
 
   //! Cleanup mesh from the free triangles.
   void cleanupMesh();

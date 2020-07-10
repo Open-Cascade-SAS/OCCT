@@ -66,11 +66,12 @@ BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh( const TopoDS_Shape&    theSh
 //=======================================================================
 BRepMesh_IncrementalMesh::BRepMesh_IncrementalMesh(
   const TopoDS_Shape&          theShape,
-  const IMeshTools_Parameters& theParameters)
+  const IMeshTools_Parameters& theParameters,
+  const Message_ProgressRange& theRange)
   : myParameters(theParameters)
 {
   myShape = theShape;
-  Perform();
+  Perform(theRange);
 }
 
 //=======================================================================
@@ -85,17 +86,17 @@ BRepMesh_IncrementalMesh::~BRepMesh_IncrementalMesh()
 //function : Perform
 //purpose  : 
 //=======================================================================
-void BRepMesh_IncrementalMesh::Perform()
+void BRepMesh_IncrementalMesh::Perform(const Message_ProgressRange& theRange)
 {
   Handle(BRepMesh_Context) aContext = new BRepMesh_Context;
-  Perform (aContext);
+  Perform (aContext, theRange);
 }
 
 //=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
-void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theContext)
+void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theContext, const Message_ProgressRange& theRange)
 {
   initParameters();
 
@@ -103,9 +104,14 @@ void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theCont
   theContext->ChangeParameters()            = myParameters;
   theContext->ChangeParameters().CleanModel = Standard_False;
 
+  Message_ProgressScope aPS(theRange, "Perform incmesh", 10);
   IMeshTools_MeshBuilder aIncMesh(theContext);
-  aIncMesh.Perform();
-
+  aIncMesh.Perform(aPS.Next(9));
+  if (!aPS.More())
+  {
+    myStatus = IMeshData_UserBreak;
+    return;
+  }
   myStatus = IMeshData_NoError;
   const Handle(IMeshData_Model)& aModel = theContext->GetModel();
   if (!aModel.IsNull())
@@ -122,7 +128,7 @@ void BRepMesh_IncrementalMesh::Perform(const Handle(IMeshTools_Context)& theCont
       }
     }
   }
-
+  aPS.Next(1);
   setDone();
 }
 

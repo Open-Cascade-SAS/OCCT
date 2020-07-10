@@ -52,7 +52,8 @@ protected:
   //! Perfroms processing of generated mesh.
   //! By default does nothing.
   //! Expected to be called from method generateMesh() in successor classes.
-  virtual void postProcessMesh (BRepMesh_Delaun& /*theMesher*/)
+  virtual void postProcessMesh (BRepMesh_Delaun&              /*theMesher*/,
+                                const Message_ProgressRange&  /*theRange*/)
   {
   }
 };

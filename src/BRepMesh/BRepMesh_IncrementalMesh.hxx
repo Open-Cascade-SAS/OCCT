@@ -50,13 +50,15 @@ public: //! @name mesher API
   //! @param theShape shape to be meshed.
   //! @param theParameters - parameters of meshing
   Standard_EXPORT BRepMesh_IncrementalMesh(const TopoDS_Shape&          theShape,
-                                           const IMeshTools_Parameters& theParameters);
+                                           const IMeshTools_Parameters& theParameters,
+                                           const Message_ProgressRange& theRange = Message_ProgressRange());
 
   //! Performs meshing ot the shape.
-  Standard_EXPORT virtual void Perform() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Performs meshing using custom context;
-  Standard_EXPORT void Perform(const Handle(IMeshTools_Context)& theContext);
+  Standard_EXPORT void Perform(const Handle(IMeshTools_Context)& theContext,
+                               const Message_ProgressRange& theRange = Message_ProgressRange());
   
 public: //! @name accessing to parameters.
 

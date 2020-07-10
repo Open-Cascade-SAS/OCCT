@@ -18,6 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Standard_Transient.hxx>
+#include <Message_ProgressRange.hxx>
 
 //! This is a common interface for meshing algorithms 
 //! instantiated by Mesh Factory and implemented by plugins.
@@ -46,7 +47,7 @@ public:
   }
 
   //! Compute triangulation for set shape.
-  virtual void Perform() = 0;
+  virtual void Perform(const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
 
 
   DEFINE_STANDARD_RTTIEXT(BRepMesh_DiscretRoot,Standard_Transient)
