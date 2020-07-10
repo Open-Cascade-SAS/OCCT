@@ -89,7 +89,8 @@ public:
   //! Default is the first one
   //! Returns True if a shape has resulted, false else
   //! Same as inherited TransferOneRoot, kept for compatibility
-  Standard_EXPORT Standard_Boolean TransferRoot (const Standard_Integer num = 1);
+  Standard_EXPORT Standard_Boolean TransferRoot (const Standard_Integer num = 1,
+                                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Determines the list of root entities from Model which are candidate for
   //! a transfer to a Shape (type of entities is PRODUCT)

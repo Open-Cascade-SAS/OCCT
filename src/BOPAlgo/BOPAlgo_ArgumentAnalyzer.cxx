@@ -357,7 +357,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
     aChecker.SetNonDestructive(Standard_True);
     aChecker.SetRunParallel(myRunParallel);
     aChecker.SetFuzzyValue(myFuzzyValue);
-    aChecker.SetProgressIndicator(myProgressIndicator);
+    aChecker.SetProgressIndicator(*myProgressScope);
     //
     aChecker.Perform();
     Standard_Boolean hasError = aChecker.HasErrors();

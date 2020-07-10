@@ -39,7 +39,7 @@
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Precision.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
@@ -178,7 +178,8 @@ void IGESToBRep_CurveAndSurface::SetModel(const Handle(IGESData_IGESModel)& mode
 //=======================================================================
 
 TopoDS_Shape IGESToBRep_CurveAndSurface::TransferCurveAndSurface
-       (const Handle(IGESData_IGESEntity)& start)
+       (const Handle(IGESData_IGESEntity)& start,
+        const Message_ProgressRange& theProgress)
 {
   TopoDS_Shape res;
   if (start.IsNull()) {
@@ -199,7 +200,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferCurveAndSurface
   }
   else if (IGESToBRep::IsBRepEntity(start)) {
     IGESToBRep_BRepEntity TS(*this);
-    res = TS.TransferBRepEntity(start);
+    res = TS.TransferBRepEntity(start, theProgress);
   }
   else {
     Message_Msg msg1015("IGES_1015");
@@ -231,7 +232,8 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferCurveAndSurface
 //=======================================================================
 
 TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
-                               (const Handle(IGESData_IGESEntity)& start)
+                               (const Handle(IGESData_IGESEntity)& start,
+                                const Message_ProgressRange& theProgress)
 {
   // Declaration of messages// 
   // DCE 22/12/98
@@ -263,7 +265,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       return res;
     try {
       OCC_CATCH_SIGNALS
-        res = TransferCurveAndSurface(start);
+        res = TransferCurveAndSurface(start, theProgress);
     }
     catch(Standard_Failure const&) {
       Message_Msg msg1015("IGES_1015");
@@ -295,7 +297,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       else {
 	try {
 	  OCC_CATCH_SIGNALS
-	  res = TransferGeometry(stsub);
+	  res = TransferGeometry(stsub, theProgress);
 	}
     catch(Standard_Failure const&) {
 	  res.Nullify();
@@ -319,8 +321,10 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       SendFail( st308, msg210);
       return res;
     }
-    Message_ProgressSentry PS ( myTP->GetProgress(), "Subfigure item", 0, st308->NbEntities(), 1 );
-    for (Standard_Integer i=1; i <= st308->NbEntities() && PS.More(); i++, PS.Next()) {
+    Message_ProgressScope PS (theProgress, "Subfigure item", st308->NbEntities());
+    for (Standard_Integer i=1; i <= st308->NbEntities() && PS.More(); i++)
+    {
+      Message_ProgressRange aRange = PS.Next();
       TopoDS_Shape item;
       if (st308->AssociatedEntity(i).IsNull()) {
 	Message_Msg msg1020("IGES_1020");
@@ -338,7 +342,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       else {
 	try {      
 	  OCC_CATCH_SIGNALS
-	  item = TransferGeometry(st308->AssociatedEntity(i));
+	  item = TransferGeometry (st308->AssociatedEntity(i), aRange);
 	}
     catch(Standard_Failure const&) {
 	  item.Nullify();
@@ -372,9 +376,11 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       SendFail(st402f1, msg202);
       return res;
     }
-    Message_ProgressSentry PS ( myTP->GetProgress(), "Group item", 0, st402f1->NbEntities(), 1 );
+    Message_ProgressScope PS (theProgress, "Group item", st402f1->NbEntities());
     Standard_Boolean ProblemInGroup = Standard_False;
-    for (Standard_Integer i=1; i <= st402f1->NbEntities() && PS.More(); i++, PS.Next()) {
+    for (Standard_Integer i=1; i <= st402f1->NbEntities() && PS.More(); i++)
+    {
+      Message_ProgressRange aRange = PS.Next();
       TopoDS_Shape item;
       if (st402f1->Entity(i).IsNull()) {
 	Message_Msg msg1020("IGES_1020");
@@ -392,7 +398,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       else {
 	try {
 	  OCC_CATCH_SIGNALS
-	  item = TransferGeometry(st402f1->Entity(i));
+	  item = TransferGeometry (st402f1->Entity(i), aRange);
 	}
     catch(Standard_Failure const&) {
 	  item.Nullify();
@@ -435,9 +441,11 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       SendFail(st402f7, msg202); 
       return res;
     }
-    Message_ProgressSentry PS ( myTP->GetProgress(), "Group item", 0, st402f7->NbEntities(), 1 );
+    Message_ProgressScope PS (theProgress, "Group item", st402f7->NbEntities());
     Standard_Boolean ProblemInGroup = Standard_False;
-    for (Standard_Integer i=1; i <= st402f7->NbEntities() && PS.More(); i++, PS.Next()) {
+    for (Standard_Integer i=1; i <= st402f7->NbEntities() && PS.More(); i++)
+    {
+      Message_ProgressRange aRange = PS.Next();
       TopoDS_Shape item;
       if (st402f7->Entity(i).IsNull()) {
 	Message_Msg msg1020("IGES_1020");
@@ -455,7 +463,7 @@ TopoDS_Shape IGESToBRep_CurveAndSurface::TransferGeometry
       else {
 	try {
 	  OCC_CATCH_SIGNALS
-	  item = TransferGeometry(st402f7->Entity(i));
+	  item = TransferGeometry (st402f7->Entity(i), aRange);
 	}
     catch(Standard_Failure const&) {
 	  item.Nullify();

@@ -27,6 +27,8 @@
 #include <STEPControl_StepModelType.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Integer.hxx>
+#include <Message_ProgressRange.hxx>
+
 class XSControl_WorkSession;
 class StepData_StepModel;
 class TopoDS_Shape;
@@ -83,7 +85,11 @@ public:
   //! shell_based_surface_model entity.
   //! - STEPControlStd_GeometricCurveSet translates a shape into a STEP
   //! geometric_curve_set entity.
-  Standard_EXPORT IFSelect_ReturnStatus Transfer (const TopoDS_Shape& sh, const STEPControl_StepModelType mode, const Standard_Boolean compgraph = Standard_True);
+  Standard_EXPORT IFSelect_ReturnStatus Transfer
+                   (const TopoDS_Shape& sh,
+                    const STEPControl_StepModelType mode,
+                    const Standard_Boolean compgraph = Standard_True,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Writes a STEP model in the file identified by filename.
   Standard_EXPORT IFSelect_ReturnStatus Write (const Standard_CString filename);

@@ -16,7 +16,7 @@
 #include <gp_Quaternion.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_File.hxx>
@@ -285,7 +285,7 @@ void RWGltf_CafWriter::saveIndices (RWGltf_GltfFace& theGltfFace,
 // =======================================================================
 bool RWGltf_CafWriter::Perform (const Handle(TDocStd_Document)& theDocument,
                                 const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                const Handle(Message_ProgressIndicator)& theProgress)
+                                const Message_ProgressRange& theProgress)
 {
   TDF_LabelSequence aRoots;
   Handle(XCAFDoc_ShapeTool) aShapeTool = XCAFDoc_DocumentTool::ShapeTool (theDocument->Main());
@@ -301,21 +301,20 @@ bool RWGltf_CafWriter::Perform (const Handle(TDocStd_Document)& theDocument,
                                 const TDF_LabelSequence& theRootLabels,
                                 const TColStd_MapOfAsciiString* theLabelFilter,
                                 const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                const Handle(Message_ProgressIndicator)& theProgress)
+                                const Message_ProgressRange& theProgress)
 {
-  Message_ProgressSentry aPSentry (theProgress, "Writing glTF file", 0, 2, 1);
-  if (!writeBinData (theDocument, theRootLabels, theLabelFilter, theProgress))
+  Message_ProgressScope aPSentry (theProgress, "Writing glTF file", 2);
+  if (!writeBinData (theDocument, theRootLabels, theLabelFilter, aPSentry.Next()))
   {
     return false;
   }
 
-  aPSentry.Next();
   if (!aPSentry.More())
   {
     return false;
   }
 
-  return writeJson (theDocument, theRootLabels, theLabelFilter, theFileInfo, theProgress);
+  return writeJson (theDocument, theRootLabels, theLabelFilter, theFileInfo, aPSentry.Next());
 }
 
 // =======================================================================
@@ -325,7 +324,7 @@ bool RWGltf_CafWriter::Perform (const Handle(TDocStd_Document)& theDocument,
 bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument,
                                      const TDF_LabelSequence& theRootLabels,
                                      const TColStd_MapOfAsciiString* theLabelFilter,
-                                     const Handle(Message_ProgressIndicator)& theProgress)
+                                     const Message_ProgressRange& theProgress)
 {
   myBuffViewPos.ByteOffset       = 0;
   myBuffViewPos.ByteLength       = 0;
@@ -355,7 +354,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
     return false;
   }
 
-  Message_ProgressSentry aPSentryBin (theProgress, "Binary data", 0, 4, 1);
+  Message_ProgressScope aPSentryBin (theProgress, "Binary data", 4);
 
   Standard_Integer aNbAccessors = 0;
 
@@ -552,13 +551,13 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
                                   const TDF_LabelSequence&         theRootLabels,
                                   const TColStd_MapOfAsciiString*  theLabelFilter,
                                   const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                  const Handle(Message_ProgressIndicator)& theProgress)
+                                  const Message_ProgressRange& theProgress)
 {
 #ifdef HAVE_RAPIDJSON
   myWriter.reset();
 
   // write vertex arrays
-  Message_ProgressSentry aPSentryBin (theProgress, "Header data", 0, 2, 1);
+  Message_ProgressScope aPSentryBin (theProgress, "Header data", 2);
 
   const Standard_Integer aBinDataBufferId = 0;
   const Standard_Integer aDefSamplerId    = 0;

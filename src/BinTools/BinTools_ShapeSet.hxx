@@ -101,7 +101,7 @@ public:
   //! Write the flags, the subshapes.
   Standard_EXPORT virtual void Write
     (Standard_OStream& OS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
+     const Message_ProgressRange& theRange = Message_ProgressRange()) const;
   
   //! Reads the content of me from the binary stream  <IS>. me
   //! is first cleared.
@@ -117,7 +117,7 @@ public:
   //! Reads the flag, the subshapes.
   Standard_EXPORT virtual void Read
     (Standard_IStream& IS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+        const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Writes   on  <OS>   the shape   <S>.    Writes the
   //! orientation, the index of the TShape and the index
@@ -128,12 +128,12 @@ public:
   //! binary format that can be read back by Read.
   Standard_EXPORT virtual void WriteGeometry
     (Standard_OStream& OS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
+        const Message_ProgressRange& theRange = Message_ProgressRange()) const;
   
   //! Reads the geometry of me from the  stream  <IS>.
   Standard_EXPORT virtual void ReadGeometry
     (Standard_IStream& IS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+        const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Reads  from <IS>  a shape  and  returns  it in  S.
   //! <NbShapes> is the number of tshapes in the set.
@@ -159,40 +159,40 @@ public:
   //! from the  stream  <IS>.
   Standard_EXPORT void ReadPolygon3D
     (Standard_IStream& IS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+        const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Writes the 3d polygons
   //! on the stream <OS> in a format that can
   //! be read back by Read.
   Standard_EXPORT void WritePolygon3D
     (Standard_OStream& OS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
+        const Message_ProgressRange& theRange = Message_ProgressRange()) const;
   
   //! Reads the triangulation of me
   //! from the  stream  <IS>.
   Standard_EXPORT void ReadTriangulation
     (Standard_IStream& IS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+        const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Writes the triangulation
   //! on the stream <OS> in a format that can
   //! be read back by Read.
   Standard_EXPORT void WriteTriangulation
     (Standard_OStream& OS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
+        const Message_ProgressRange& theRange = Message_ProgressRange()) const;
   
   //! Reads the polygons on triangulation of me
   //! from the  stream  <IS>.
   Standard_EXPORT void ReadPolygonOnTriangulation
     (Standard_IStream& IS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+        const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Writes the polygons on triangulation
   //! on the stream <OS> in a format that can
   //! be read back by Read.
   Standard_EXPORT void WritePolygonOnTriangulation
     (Standard_OStream& OS,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
+        const Message_ProgressRange& theRange = Message_ProgressRange()) const;
 
 private:
 

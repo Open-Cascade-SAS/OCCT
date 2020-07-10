@@ -62,7 +62,12 @@ public:
   //! -2 bad model (requires an IGESModel)
   //! modeshape : 0  groupe of face (version < 5.1)
   //! 1  BREP-version 5.1 of IGES
-  Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape (const TopoDS_Shape& shape, const Handle(Transfer_FinderProcess)& FP, const Handle(Interface_InterfaceModel)& model, const Standard_Integer modetrans = 0) const Standard_OVERRIDE;
+  Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape
+                   (const TopoDS_Shape& shape,
+                    const Handle(Transfer_FinderProcess)& FP,
+                    const Handle(Interface_InterfaceModel)& model,
+                    const Standard_Integer modetrans = 0,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) const Standard_OVERRIDE;
   
   //! Standard Initialisation. It creates a Controller for IGES and
   //! records it to various names, available to select it later

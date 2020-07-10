@@ -20,12 +20,12 @@
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <Transfer_HSequenceOfFinder.hxx>
 #include <Transfer_TransferMapOfProcessForFinder.hxx>
+#include <Message_ProgressRange.hxx>
 
 class Message_Messenger;
 class Transfer_Finder;
 class Transfer_Binder;
 class Transfer_ActorOfProcessForFinder;
-class Message_ProgressIndicator;
 class Interface_InterfaceError;
 class Transfer_TransferFailure;
 class Transfer_FindHasher;
@@ -324,11 +324,13 @@ public:
   //! the method TransferProduct (see below).
   //! Mapping and Roots are managed : nothing is done if a Result is
   //! already Bound, an exception is raised in case of error.
-  Standard_EXPORT Handle(Transfer_Binder) Transferring (const Handle(Transfer_Finder)& start);
+  Standard_EXPORT Handle(Transfer_Binder) Transferring (const Handle(Transfer_Finder)& start,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Same as Transferring but does not return the Binder.
   //! Simply returns True in case of success (for user call)
-  Standard_EXPORT Standard_Boolean Transfer (const Handle(Transfer_Finder)& start);
+  Standard_EXPORT Standard_Boolean Transfer (const Handle(Transfer_Finder)& start,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Allows controls if exceptions will be handled
   //! Transfer Operations
@@ -407,12 +409,6 @@ public:
   //! a check or a check-list
   //! By default, returns 0; can be redefined
   Standard_EXPORT virtual Standard_Integer CheckNum (const Handle(Transfer_Finder)& start) const;
-  
-  //! Sets Progress indicator
-  Standard_EXPORT void SetProgress (const Handle(Message_ProgressIndicator)& theProgress);
-  
-  //! Gets Progress indicator
-  Standard_EXPORT Handle(Message_ProgressIndicator) GetProgress() const;
 
 
 
@@ -439,7 +435,8 @@ private:
   //! until a Non Null Binder is produced.
   //! But keep in mind that a Null Binder can allways be returned
   //! if a Starting Entity has not been recognized at all.
-  Standard_EXPORT Handle(Transfer_Binder) TransferProduct (const Handle(Transfer_Finder)& start);
+  Standard_EXPORT Handle(Transfer_Binder) TransferProduct (const Handle(Transfer_Finder)& start,
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_Boolean theerrh;
   Standard_Integer thetrace;
@@ -453,7 +450,6 @@ private:
   Standard_Integer theindex;
   Handle(Transfer_ActorOfProcessForFinder) theactor;
   Transfer_TransferMapOfProcessForFinder themap;
-  Handle(Message_ProgressIndicator) myProgress;
 
 
 };

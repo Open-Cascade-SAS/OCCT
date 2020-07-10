@@ -277,11 +277,11 @@ void BinMNaming_NamedShapeDriver::Paste (const Handle(TDF_Attribute)& theSource,
 //=======================================================================
 
 void BinMNaming_NamedShapeDriver::WriteShapeSection (Standard_OStream& theOS,
-                                                     const Handle(Message_ProgressIndicator)& theProgress)
+                                                     const Message_ProgressRange& theRange)
 {
   theOS << SHAPESET; 
   myShapeSet.SetFormatNb(myFormatNb);
-  myShapeSet.Write (theOS, theProgress);
+  myShapeSet.Write (theOS, theRange);
   myShapeSet.Clear();
 }
 
@@ -301,7 +301,7 @@ void BinMNaming_NamedShapeDriver::Clear()
 //=======================================================================
 
 void BinMNaming_NamedShapeDriver::ReadShapeSection (Standard_IStream& theIS,
-                                                    const Handle(Message_ProgressIndicator)& theProgress)
+                                                    const Message_ProgressRange& theRange)
 {
   // check section title string; note that some versions of OCCT (up to 6.3.1) 
   // might avoid writing shape section if it is empty
@@ -310,7 +310,7 @@ void BinMNaming_NamedShapeDriver::ReadShapeSection (Standard_IStream& theIS,
   theIS >> aSectionTitle;
   if(aSectionTitle.Length() > 0 && aSectionTitle == SHAPESET) {
     myShapeSet.Clear();
-    myShapeSet.Read (theIS, theProgress);
+    myShapeSet.Read (theIS, theRange);
     SetFormatNb(myShapeSet.FormatNb());
   }
   else

@@ -16,180 +16,162 @@
 #ifndef _Message_ProgressIndicator_HeaderFile
 #define _Message_ProgressIndicator_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
+#include <Standard_TypeDef.hxx>
+#include <Standard_Mutex.hxx>
+#include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
-#include <Message_SequenceOfProgressScale.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-class TCollection_HAsciiString;
-class Message_ProgressScale;
-
-
-class Message_ProgressIndicator;
 DEFINE_STANDARD_HANDLE(Message_ProgressIndicator, Standard_Transient)
 
-//! Defines abstract interface from program to the "user".
+class Message_ProgressRange;
+class Message_ProgressScope;
+
+//! Defines abstract interface from program to the user.
 //! This includes progress indication and user break mechanisms.
 //!
-//! The process that uses the progress indicator interacts with it as
-//! with a scale whose range and step can be configured according to
-//! the nature of the process.
-//! The scale can be made "infinite", which means it will grow
-//! non-linearly, and end of scale will be approached asymptotically at
-//! infinite number of steps. In that case the range defines
-//! a number of steps corresponding to position at 1/2 of scale.
-//! The current position can be either set directly (in a range from
-//! current position to maximum scale value), or incremented step
-//! by step.
-//!
-//! Progress indication mechanism is adapted for convenient
-//! usage in hiererchical processes that require indication of
-//! progress at several levels of the process nesting.
-//! For that purpose, it is possible to create restricted sub-scope of
-//! indication by specifying part of a current scale to be
-//! used by the subprocess.
-//! When subprocess works with progress indicator in the restricted
-//! scope, it has the same interface to a scale, while actually it
-//! deals only with part of the whole scale.
+//! The progress indicator controls the progress scale with range from 0 to 1.
 //! 
-//! The recommended way to implement progress indication in the algorithm
-//! is to use class Message_ProgressSentry that provides iterator-like
-//! interface for incrementing progress and opening nested scopes.
+//! Method Start() should be called once, at the top level of the call stack,
+//! to reset progress indicator and get access to the root range:
 //!
-//! NOTE:
-//! Currently there is no support for concurrent progress
-//! indicator that could be useful in multithreaded applications.
+//! @code{.cpp}
+//! Handle(Message_ProgressIndicator) aProgress = ...;
+//! anAlgorithm.Perform (aProgress->Start());
+//! @endcode
 //!
-//! The user break is implemented as virtual function that should
-//! return True in case if break signal from the user is received.
+//! To advance the progress indicator in the algorithm,
+//! use the class Message_ProgressScope that provides iterator-like
+//! interface for incrementing progress; see documentation of that
+//! class for details.
+//! The object of class Message_ProgressRange will automatically advance 
+//! the indicator if it is not passed to any Message_ProgressScope.
 //!
-//! The derived class should take care of visualisation of the
-//! progress indicator (e.g. show total position at the graphical bar,
+//! The progress indicator supports concurrent processing and 
+//! can be used in multithreaded applications.
+//!
+//! The derived class should be created to connect this interface to 
+//! actual implementation of progress indicator, to take care of visualization
+//! of the progress (e.g. show total position at the graphical bar,
 //! print scopes in text mode, or else), and for implementation
 //! of user break mechanism (if necessary).
+//!
+//! See details in documentation of methods Show() and UserBreak().
 
 class Message_ProgressIndicator : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Message_ProgressIndicator, Standard_Transient)
 public:
+  //!@name Initialization of progress indication
 
-  
-  //! Drops all scopes and sets scale from 0 to 100, step 1
-  //! This scale has name "Step"
-  Standard_EXPORT virtual void Reset();
-  
-    void SetName (const Standard_CString name);
-  
-  //! Set (optional) name for scale
-    void SetName (const Handle(TCollection_HAsciiString)& name);
-  
-  //! Set range for current scale
-    void SetRange (const Standard_Real min, const Standard_Real max);
-  
-  //! Set step for current scale
-    void SetStep (const Standard_Real step);
-  
-  //! Set or drop infinite mode for the current scale
-    void SetInfinite (const Standard_Boolean isInf = Standard_True);
-  
-    void SetScale (const Standard_CString name, const Standard_Real min, const Standard_Real max, const Standard_Real step, const Standard_Boolean isInf = Standard_False);
-  
-  //! Set all parameters for current scale
-  Standard_EXPORT void SetScale (const Standard_Real min, const Standard_Real max, const Standard_Real step, const Standard_Boolean isInf = Standard_False);
-  
-  //! Returns all parameters for current scale
-  Standard_EXPORT void GetScale (Standard_Real& min, Standard_Real& max, Standard_Real& step, Standard_Boolean& isInf) const;
-  
-  Standard_EXPORT void SetValue (const Standard_Real val);
-  
-  //! Set and get progress value at current scale
-  //! If the value to be set is more than currently set one, or out
-  //! of range for the current scale, it is limited by that range
-  Standard_EXPORT Standard_Real GetValue() const;
-  
-    void Increment();
-  
-  //! Increment the progress value by the default of specified step
-    void Increment (const Standard_Real step);
-  
-    Standard_Boolean NewScope (const Standard_CString name = 0);
-  
-    Standard_Boolean NewScope (const Handle(TCollection_HAsciiString)& name);
-  
-    Standard_Boolean NewScope (const Standard_Real span, const Standard_CString name = 0);
-  
-  //! Creates new scope on a part of a current scale from current
-  //! position with span either equal to default step, or specified
-  //! The scale for the new scope will have specified name and
-  //! ranged from 0 to 100 with step 1
-  //! Returns False if something is wrong in arguments or in current
-  //! position of progress indicator; scope is opened anyway
-  Standard_EXPORT Standard_Boolean NewScope (const Standard_Real span, const Handle(TCollection_HAsciiString)& name);
-  
-  //! Close the current scope and thus return to previous scale
-  //! Updates position to be at the end of the closing scope
-  //! Returns False if no scope is opened
-  Standard_EXPORT Standard_Boolean EndScope();
-  
-    Standard_Boolean NextScope (const Standard_CString name = 0);
-  
-  //! Optimized version of { return EndScope() && NewScope(); }
-  Standard_EXPORT Standard_Boolean NextScope (const Standard_Real span, const Standard_CString name = 0);
-  
-  //! Should return True if user has send a break signal.
-  //! Default implementation returns False.
-  Standard_EXPORT virtual Standard_Boolean UserBreak();
-  
-  //! Update presentation of the progress indicator
-  //! Called when progress position is changed
-  //! Flag force is intended for forcing update in case if it is
-  //! optimized; all internal calls from ProgressIndicator are
-  //! done with this flag equal to False
-  Standard_EXPORT virtual Standard_Boolean Show (const Standard_Boolean force = Standard_True) = 0;
-  
-  //! Returns total progress position on the basic scale
-  //! ranged from 0. to 1.
-    Standard_Real GetPosition() const;
-  
-  //! Returns current number of opened scopes
-  //! This number is always >=1 as top-level scale is always present
-  Standard_Integer GetNbScopes() const;
-  
-  //! Returns data for scale of index-th scope
-  //! The first scope is current one, the last is the top-level one
-  const Message_ProgressScale& GetScope (const Standard_Integer index) const;
+  //! Resets the indicator to zero, calls Reset(), and returns the range.
+  //! This range refers to the scope that has no name and is initialized
+  //! with max value 1 and step 1.
+  //! Use this method to get the top level range for progress indication.
+  Standard_EXPORT Message_ProgressRange Start();
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Message_ProgressIndicator,Standard_Transient)
+  //! If argument is non-null handle, returns theProgress->Start().
+  //! Otherwise, returns dummy range that can be safely used in the algorithms
+  //! but not bound to progress indicator.
+  Standard_EXPORT static Message_ProgressRange Start
+                      (const Handle(Message_ProgressIndicator)& theProgress);
 
 protected:
+  //!@name Virtual methods to be defined by descendant.
 
+  //! Should return True if user has sent a break signal.
+  //!
+  //! This method can be called concurrently, thus implementation should
+  //! be thread-safe. It should not call Show() or Position() to
+  //! avoid possible data races. The method should return as soon
+  //! as possible to avoid delaying the calling algorithm.
+  //!
+  //! Default implementation returns False.
+  virtual Standard_Boolean UserBreak()
+  {
+    return Standard_False;
+  }
+
+  //! Virtual method to be defined by descendant.
+  //! Should update presentation of the progress indicator.
+  //!
+  //! It is called whenever progress position is changed.
+  //! Calls to this method from progress indicator are protected by mutex so that
+  //! it is never called concurrently for the same progress indicator instance.
+  //! Show() should return as soon as possible to reduce thread contention
+  //! in multithreaded algorithms.
+  //!
+  //! It is recommended to update (redraw, output etc.) only if progress advanced
+  //! by at least 1% from previous update.
+  //!
+  //! Flag isForce is intended for forcing update in case if it is
+  //! optimized; all calls to it from inside the core mechanism are
+  //! done with this flag equal to False.
+  //!
+  //! The parameter theScope is the current scope being advanced;
+  //! it can be used to show the names and ranges of the on-going scope and
+  //! its parents, providing more visibility of the current stage of the process.
+  virtual void Show (const Message_ProgressScope& theScope, 
+                     const Standard_Boolean isForce) = 0;
+
+  //! Call-back method called by Start(), can be redefined by descendants
+  //! if some actions are needed when the indicator is restarted.
+  virtual void Reset() {}
   
-  //! Constructor, just calls own Reset() (not yet redefined)
+public:
+  //!@name Auxiliary methods
+
+  //! Returns total progress position ranged from 0 to 1.
+  //! Should not be called concurrently while the progress is advancing
+  //! except from implementation of method Show().
+  Standard_Real GetPosition() const
+  {
+    return myPosition;
+  }
+
+  //! Destructor
+  Standard_EXPORT ~Message_ProgressIndicator();
+
+protected:
+  
+  //! Constructor
   Standard_EXPORT Message_ProgressIndicator();
-
-
 
 private:
 
+  //! Increment the progress value by the specified step, 
+  //! then calls Show() to update presentation.
+  //! The parameter theScope is reference to the caller object;
+  //! it is passed to Show() where can be used to track context of the process.
+  void Increment (const Standard_Real theStep, const Message_ProgressScope& theScope);
 
-  Standard_Real myPosition;
-  Message_SequenceOfProgressScale myScopes;
+private:
 
+  Standard_Real myPosition;            //!< Total progress position ranged from 0 to 1
+  Standard_Mutex myMutex;              //!< Protection of myPosition from concurrent increment
+  Message_ProgressScope* myRootScope;  //!< The root progress scope
 
+private:
+  friend class Message_ProgressScope;  //!< Friend: can call Increment()
+  friend class Message_ProgressRange;  //!< Friend: can call Increment()
 };
 
+#include <Message_ProgressScope.hxx>
 
-#include <Message_ProgressIndicator.lxx>
+//=======================================================================
+//function : Increment
+//purpose  :
+//=======================================================================
+inline void Message_ProgressIndicator::Increment(const Standard_Real theStep,
+                                                 const Message_ProgressScope& theScope)
+{
+  // protect incrementation by mutex to avoid problems in multithreaded scenarios
+  Standard_Mutex::Sentry aSentry(myMutex);
 
+  myPosition = Min(myPosition + theStep, 1.);
 
-
-
+  // show progress indicator; note that this call is protected by
+  // the same mutex to avoid concurrency and ensure that this call
+  // to Show() will see the position exactly as it was just set above
+  Show(theScope, Standard_False);
+}
 
 #endif // _Message_ProgressIndicator_HeaderFile

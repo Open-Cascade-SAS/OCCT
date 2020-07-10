@@ -188,7 +188,7 @@ public:
   Standard_EXPORT static void Repaint();
   
   //! sets progress indicator
-  Standard_EXPORT static void SetProgressBar (const Handle(Draw_ProgressIndicator)& thePI);
+  Standard_EXPORT static void SetProgressBar (const Handle(Draw_ProgressIndicator)& theProgress);
   
   //! gets progress indicator
   Standard_EXPORT static Handle(Draw_ProgressIndicator) GetProgressBar();

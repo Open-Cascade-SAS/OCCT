@@ -54,12 +54,12 @@ public:
   //! Write <theDocument> to the binary file <theFileName>
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
                                       const TCollection_ExtendedString& theFileName, 
-                                      const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                                      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Write <theDocument> to theOStream
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
                                       Standard_OStream& theOStream, 
-                                      const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                                      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
   
@@ -77,7 +77,7 @@ protected:
   //! Write the tree under <theLabel> to the stream <theOS>
   Standard_EXPORT void WriteSubTree (const TDF_Label& theData,
                                      Standard_OStream& theOS, 
-                                     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                     const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! define the procedure of writing a section to file.
   Standard_EXPORT virtual void WriteSection (const TCollection_AsciiString& theName,
@@ -87,7 +87,7 @@ protected:
   //! defines the procedure of writing a shape  section to file
   Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection,
                                                   Standard_OStream& theOS,
-                                                  const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                                  const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Handle(BinMDF_ADriverTable) myDrivers;
   BinObjMgt_SRelocationTable myRelocTable;

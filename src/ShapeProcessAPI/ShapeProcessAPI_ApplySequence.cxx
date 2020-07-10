@@ -61,7 +61,8 @@ Handle(ShapeProcess_ShapeContext)& ShapeProcessAPI_ApplySequence::Context()
 
 TopoDS_Shape ShapeProcessAPI_ApplySequence::PrepareShape(const TopoDS_Shape& shape,
                                                          const Standard_Boolean /*fillmap*/,
-                                                         const TopAbs_ShapeEnum /*until*/)
+                                                         const TopAbs_ShapeEnum /*until*/,
+                                                         const Message_ProgressRange& theProgress)
 {
   if (shape.IsNull())
     return shape;
@@ -71,7 +72,7 @@ TopoDS_Shape ShapeProcessAPI_ApplySequence::PrepareShape(const TopoDS_Shape& sha
   TCollection_AsciiString str(mySeq);
   str += ".exec.op";
   if ( rsc->Find ( str.ToCString() ) ) {
-    ShapeProcess::Perform ( myContext, mySeq.ToCString() );
+    ShapeProcess::Perform(myContext, mySeq.ToCString(), theProgress);
   }
   
   return myContext->Result();

@@ -23,7 +23,7 @@ class OSD_File;
 class Standard_GUID;
 class TCollection_AsciiString;
 class TCollection_ExtendedString;
-class TColStd_HArray1OfByte;
+#include <TColStd_HArray1OfByte.hxx>
 class TDF_RelocationTable;
 class XCAFDoc_Note;
 class XCAFDoc_AssemblyItemId;

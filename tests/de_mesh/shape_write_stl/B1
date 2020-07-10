@@ -1,30 +1,29 @@
 sphere s 10
 tessellate result s 100 100
-XProgress -tclOutput
 XProgress +t
 set out [writestl result s.stl]
 
 set expected {
-  {Progress: 0% Triangles: 0 / 20000}
-  {Progress: 5% Triangles: 1001 / 20000}
-  {Progress: 10% Triangles: 2001 / 20000}
-  {Progress: 15% Triangles: 3001 / 20000}
-  {Progress: 20% Triangles: 4001 / 20000}
-  {Progress: 25% Triangles: 5001 / 20000}
-  {Progress: 30% Triangles: 6001 / 20000}
-  {Progress: 35% Triangles: 7001 / 20000}
-  {Progress: 40% Triangles: 8001 / 20000}
-  {Progress: 45% Triangles: 9001 / 20000}
-  {Progress: 50% Triangles: 10001 / 20000}
-  {Progress: 55% Triangles: 11001 / 20000}
-  {Progress: 60% Triangles: 12001 / 20000}
-  {Progress: 65% Triangles: 13001 / 20000}
-  {Progress: 70% Triangles: 14001 / 20000}
-  {Progress: 75% Triangles: 15001 / 20000}
-  {Progress: 80% Triangles: 16001 / 20000}
-  {Progress: 85% Triangles: 17001 / 20000}
-  {Progress: 90% Triangles: 18001 / 20000}
-  {Progress: 95% Triangles: 19001 / 20000}
+  {Progress: 0%}
+  {Progress: 5% Triangles: 1000 / 20000}
+  {Progress: 10% Triangles: 2000 / 20000}
+  {Progress: 15% Triangles: 3000 / 20000}
+  {Progress: 20% Triangles: 4000 / 20000}
+  {Progress: 25% Triangles: 5000 / 20000}
+  {Progress: 30% Triangles: 6000 / 20000}
+  {Progress: 35% Triangles: 7000 / 20000}
+  {Progress: 40% Triangles: 8000 / 20000}
+  {Progress: 45% Triangles: 9000 / 20000}
+  {Progress: 50% Triangles: 10000 / 20000}
+  {Progress: 55% Triangles: 11000 / 20000}
+  {Progress: 60% Triangles: 12000 / 20000}
+  {Progress: 65% Triangles: 13000 / 20000}
+  {Progress: 70% Triangles: 14000 / 20000}
+  {Progress: 75% Triangles: 15000 / 20000}
+  {Progress: 80% Triangles: 16000 / 20000}
+  {Progress: 85% Triangles: 17000 / 20000}
+  {Progress: 90% Triangles: 18000 / 20000}
+  {Progress: 95% Triangles: 19000 / 20000}
   {Progress: 100% Triangles: 20000 / 20000}
 }
 

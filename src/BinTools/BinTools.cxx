@@ -17,7 +17,6 @@
 #include <BinTools.hxx>
 #include <BinTools_ShapeSet.hxx>
 #include <FSD_FileHeader.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <OSD_OpenFile.hxx>
 #include <Storage_StreamTypeMismatchError.hxx>
 
@@ -176,12 +175,12 @@ Standard_IStream& BinTools::GetBool(Standard_IStream& IS, Standard_Boolean& aVal
 //=======================================================================
 
 void BinTools::Write (const TopoDS_Shape& theShape, Standard_OStream& theStream,
-                      const Handle(Message_ProgressIndicator)& theProgress)
+                      const Message_ProgressRange& theRange)
 {
   BinTools_ShapeSet aShapeSet(Standard_True);
   aShapeSet.SetFormatNb (3);
   aShapeSet.Add (theShape);
-  aShapeSet.Write (theStream, theProgress);
+  aShapeSet.Write (theStream, theRange);
   aShapeSet.Write (theShape, theStream);
 }
 
@@ -191,10 +190,10 @@ void BinTools::Write (const TopoDS_Shape& theShape, Standard_OStream& theStream,
 //=======================================================================
 
 void BinTools::Read (TopoDS_Shape& theShape, Standard_IStream& theStream,
-                     const Handle(Message_ProgressIndicator)& theProgress)
+                     const Message_ProgressRange& theRange)
 {
   BinTools_ShapeSet aShapeSet(Standard_True);
-  aShapeSet.Read (theStream, theProgress);
+  aShapeSet.Read (theStream, theRange);
   aShapeSet.Read (theShape, theStream, aShapeSet.NbShapes());
 }
 
@@ -204,7 +203,7 @@ void BinTools::Read (TopoDS_Shape& theShape, Standard_IStream& theStream,
 //=======================================================================
 
 Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape, const Standard_CString theFile,
-                                  const Handle(Message_ProgressIndicator)& theProgress)
+                                  const Message_ProgressRange& theRange)
 {
   std::ofstream aStream;
   aStream.precision (15);
@@ -212,7 +211,7 @@ Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape, const Standard_C
   if (!aStream.good())
     return Standard_False;
 
-  Write (theShape, aStream, theProgress);
+  Write (theShape, aStream, theRange);
   aStream.close();
   return aStream.good();
 }
@@ -223,7 +222,7 @@ Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape, const Standard_C
 //=======================================================================
 
 Standard_Boolean BinTools::Read (TopoDS_Shape& theShape, const Standard_CString theFile,
-                                 const Handle(Message_ProgressIndicator)& theProgress)
+                                 const Message_ProgressRange& theRange)
 {
   std::filebuf aBuf;
   OSD_OpenStream (aBuf, theFile, std::ios::in | std::ios::binary);
@@ -231,6 +230,6 @@ Standard_Boolean BinTools::Read (TopoDS_Shape& theShape, const Standard_CString 
     return Standard_False;
 
   Standard_IStream aStream (&aBuf);
-  Read (theShape, aStream, theProgress);
+  Read (theShape, aStream, theRange);
   return aStream.good();
 }

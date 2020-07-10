@@ -37,7 +37,7 @@
 #include <IGESSelect_WorkLibrary.hxx>
 #include <Interface_Macros.hxx>
 #include <Interface_Static.hxx>
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 #include <OSD_OpenFile.hxx>
 #include <ShapeAnalysis_ShapeTolerance.hxx>
 #include <Standard_Stream.hxx>
@@ -82,21 +82,14 @@ IGESControl_Writer::IGESControl_Writer
        myEditor (model,IGESSelect_WorkLibrary::DefineProtocol()) ,
        myWriteMode (modecr) , myIsComputed (Standard_False)     {  }
 
-Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
+Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape,
+                                               const Message_ProgressRange& theProgress)
 {
   if (theShape.IsNull()) return Standard_False;
   
-  // for progress indication
-  Handle(Message_ProgressIndicator) progress = myTP->GetProgress();
-  if ( ! progress.IsNull() ) { 
-    Standard_Integer nbfaces=0;
-    for( TopExp_Explorer exp(theShape,TopAbs_FACE); exp.More(); exp.Next() )
-      nbfaces++;
-    progress->SetScale ( "Faces", 0, nbfaces, 1 );
-  }
-  
   XSAlgo::AlgoContainer()->PrepareForTransfer();
   
+  Message_ProgressScope aPS(theProgress, NULL, 2);
   //  modified by NIZHNY-EAP Tue Aug 29 11:16:54 2000 ___BEGIN___
   Handle(Standard_Transient) info;
   Standard_Real Tol = Interface_Static::RVal("write.precision.val");
@@ -104,11 +97,17 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
   TopoDS_Shape Shape = XSAlgo::AlgoContainer()->ProcessShape( theShape, Tol, maxTol, 
                                                               "write.iges.resource.name", 
                                                               "write.iges.sequence", info,
-                                                              progress );
+                                                              aPS.Next());
+  if (!aPS.More())
+    return Standard_False;
+
   //  modified by NIZHNY-EAP Tue Aug 29 11:17:01 2000 ___END___
   BRepToIGES_BREntity   B0;  B0.SetTransferProcess(myTP); B0.SetModel(myModel);
   BRepToIGESBRep_Entity B1;  B1.SetTransferProcess(myTP); B1.SetModel(myModel);
-  Handle(IGESData_IGESEntity) ent = myWriteMode? B1.TransferShape(Shape) : B0.TransferShape(Shape);
+  Handle(IGESData_IGESEntity) ent = myWriteMode?
+    B1.TransferShape (Shape, aPS.Next()) : B0.TransferShape(Shape, aPS.Next());
+  if (!aPS.More())
+    return Standard_False;
 
   if(ent.IsNull())
     return Standard_False;

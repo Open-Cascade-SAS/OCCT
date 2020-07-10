@@ -193,7 +193,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
   }
   else
   {
-    aReader.Perform (aFilePath, aProgress);
+    aReader.Perform (aFilePath, aProgress->Start());
     if (isNoDoc)
     {
       DBRep::Set (aDestName.ToCString(), aReader.SingleShape());
@@ -315,7 +315,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   aWriter.SetForcedUVExport (toForceUVExport);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aSystemUnitFactor);
   aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (RWMesh_CoordinateSystem_Zup);
-  aWriter.Perform (aDoc, aFileInfo, aProgress);
+  aWriter.Perform (aDoc, aFileInfo, aProgress->Start());
   return 0;
 }
 
@@ -333,8 +333,8 @@ static Standard_Integer writestl
     }
     StlAPI_Writer aWriter;
     aWriter.ASCIIMode() = isASCIIMode;
-    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
-    Standard_Boolean isOK = aWriter.Write (aShape, argv[2], aProgress);
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
+    Standard_Boolean isOK = aWriter.Write (aShape, argv[2], aProgress->Start());
     if (!isOK)
        di << "** Error **: Mesh writing has been failed.\n";
   }
@@ -389,7 +389,7 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
   {
     // Read STL file to the triangulation.
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
-    Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (aFilePath.ToCString(), aProgress);
+    Handle(Poly_Triangulation) aTriangulation = RWStl::ReadFile (aFilePath.ToCString(), aProgress->Start());
 
     TopoDS_Face aFace;
     BRep_Builder aB;
@@ -575,7 +575,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     aSimpleReader.SetSinglePrecision (isSinglePrecision);
     aSimpleReader.SetCreateShapes (Standard_False);
     aSimpleReader.SetTransformation (aReader.CoordinateSystemConverter());
-    aSimpleReader.Read (aFilePath.ToCString(), aProgress);
+    aSimpleReader.Read (aFilePath.ToCString(), aProgress->Start());
 
     Handle(Poly_Triangulation) aTriangulation = aSimpleReader.GetTriangulation();
     TopoDS_Face aFace;
@@ -596,7 +596,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
   }
   else
   {
-    aReader.Perform (aFilePath, aProgress);
+    aReader.Perform (aFilePath, aProgress->Start());
     if (isNoDoc)
     {
       DBRep::Set (aDestName.ToCString(), aReader.SingleShape());
@@ -762,7 +762,7 @@ static Standard_Integer createmesh
   // Progress indicator
   OSD_Path aFile( argv[2] );
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di, 1);
-  Handle(Poly_Triangulation) aSTLMesh = RWStl::ReadFile (aFile, aProgress);
+  Handle(Poly_Triangulation) aSTLMesh = RWStl::ReadFile (aFile, aProgress->Start());
 
   di << "Reading OK...\n";
   Handle( XSDRAWSTLVRML_DataSource ) aDS = new XSDRAWSTLVRML_DataSource( aSTLMesh );

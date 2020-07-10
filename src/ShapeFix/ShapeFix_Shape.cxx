@@ -17,8 +17,7 @@
 
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
-#include <Message_ProgressIndicator.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Precision.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeExtend_BasicMsgRegistrator.hxx>
@@ -98,7 +97,7 @@ void ShapeFix_Shape::Init(const TopoDS_Shape& shape)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)& theProgress) 
+Standard_Boolean ShapeFix_Shape::Perform(const Message_ProgressRange& theProgress) 
 {
   Standard_Integer savFixSmallAreaWireMode = 0;
   Standard_Integer savFixVertexTolMode =  myFixVertexTolMode;
@@ -138,7 +137,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   // Open progress indication scope for the following fix stages:
   // - Fix on Solid or Shell;
   // - Fix same parameterization;
-  Message_ProgressSentry aPSentry(theProgress, "Fixing stage", 0, 2, 1);
+  Message_ProgressScope aPS(theProgress, "Fixing stage", 2);
 
   switch ( st ) {
   case TopAbs_COMPOUND:  
@@ -150,14 +149,14 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
     Standard_Integer aShapesNb = S.NbChildren();
 
     // Open progress indication scope for sub-shape fixing
-    Message_ProgressSentry aPSentrySubShape(theProgress, "Fixing sub-shape", 0, aShapesNb, 1);
-    for ( TopoDS_Iterator anIter(S); anIter.More() && aPSentrySubShape.More(); anIter.Next(), aPSentrySubShape.Next() )
+    Message_ProgressScope aPSSubShape(aPS.Next(), "Fixing sub-shape", aShapesNb);
+    for ( TopoDS_Iterator anIter(S); anIter.More() && aPSSubShape.More(); anIter.Next())
     {
       myShape = anIter.Value();
-      if ( Perform(theProgress) )
+      if (Perform (aPSSubShape.Next()))
         status = Standard_True;
     }
-    if ( !aPSentrySubShape.More() )
+    if ( !aPSSubShape.More() )
       return Standard_False; // aborted execution
 
     myFixSameParameterMode = savFixSameParameterMode;
@@ -171,7 +170,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
     myFixSolid->Init(TopoDS::Solid(S)); 
     myFixSolid->SetContext(Context());
 
-    if ( myFixSolid->Perform(theProgress) )
+    if (myFixSolid->Perform (aPS.Next()))
       status = Standard_True;
 
     myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
@@ -184,7 +183,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
     sfsh->Init( TopoDS::Shell(S) ); 
     sfsh->SetContext( Context() );
 
-    if ( sfsh->Perform(theProgress) )
+    if (sfsh->Perform (aPS.Next()))
       status = Standard_True;
 
     myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
@@ -236,15 +235,16 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
   case TopAbs_SHAPE :    
   default           : break;
   }
-
-  // Switch to the second progress indication scope if it exists
-  aPSentry.Next();
+  if (!aPS.More())
+    return Standard_False; // aborted execution
 
   myResult = Context()->Apply(S);
 
   if ( NeedFix(myFixSameParameterMode) )
   {
-    SameParameter(myResult, Standard_False, theProgress);
+    SameParameter (myResult, Standard_False, aPS.Next());
+    if (!aPS.More())
+      return Standard_False; // aborted execution
   }
   if( NeedFix( myFixVertexTolMode))
   {
@@ -284,7 +284,7 @@ Standard_Boolean ShapeFix_Shape::Perform(const Handle(Message_ProgressIndicator)
 
 void ShapeFix_Shape::SameParameter(const TopoDS_Shape& sh,
                                    const Standard_Boolean enforce,
-                                   const Handle(Message_ProgressIndicator)& theProgress)
+                                   const Message_ProgressRange& theProgress)
 {
   ShapeFix::SameParameter(sh, enforce, 0.0, theProgress);
 }

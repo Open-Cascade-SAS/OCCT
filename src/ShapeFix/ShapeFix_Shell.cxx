@@ -22,8 +22,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepBndLib.hxx>
 #include <Message_Msg.hxx>
-#include <Message_ProgressIndicator.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Precision.hxx>
 #include <ShapeAnalysis_Shell.hxx>
 #include <ShapeBuild_ReShape.hxx>
@@ -105,7 +104,7 @@ void ShapeFix_Shell::Init(const TopoDS_Shell& shell)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean ShapeFix_Shell::Perform(const Handle(Message_ProgressIndicator)& theProgress) 
+Standard_Boolean ShapeFix_Shell::Perform(const Message_ProgressRange& theProgress) 
 {
   Standard_Boolean status = Standard_False;
   if ( Context().IsNull() )
@@ -120,9 +119,9 @@ Standard_Boolean ShapeFix_Shell::Perform(const Handle(Message_ProgressIndicator)
     Standard_Integer aNbFaces = S.NbChildren();
 
     // Start progress scope (no need to check if progress exists -- it is safe)
-    Message_ProgressSentry aPSentry(theProgress, "Fixing face", 0, aNbFaces, 1);
+    Message_ProgressScope aPS(theProgress, "Fixing face", aNbFaces);
 
-    for( TopoDS_Iterator iter(S); iter.More() && aPSentry.More(); iter.Next(), aPSentry.Next() )
+    for( TopoDS_Iterator iter(S); iter.More() && aPS.More(); iter.Next(), aPS.Next() )
     { 
       TopoDS_Shape sh = iter.Value();
       TopoDS_Face tmpFace = TopoDS::Face(sh);
@@ -135,7 +134,7 @@ Standard_Boolean ShapeFix_Shell::Perform(const Handle(Message_ProgressIndicator)
     }
 
     // Halt algorithm in case of user's abort
-    if ( !aPSentry.More() )
+    if ( !aPS.More() )
       return Standard_False;
   }
 

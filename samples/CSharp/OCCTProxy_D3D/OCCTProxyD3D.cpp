@@ -4,6 +4,7 @@
 // include required OCCT headers
 #include <Standard_Version.hxx>
 #include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 //for OCC graphic
 #include <WNT_Window.hxx>
 #include <WNT_WClass.hxx>

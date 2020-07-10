@@ -15,6 +15,7 @@
 #ifndef _RWMesh_CafReader_HeaderFile
 #define _RWMesh_CafReader_HeaderFile
 
+#include <Message_ProgressRange.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <RWMesh_CoordinateSystemConverter.hxx>
 #include <RWMesh_NodeAttributes.hxx>
@@ -22,7 +23,6 @@
 #include <TDF_Label.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
-class Message_ProgressIndicator;
 class TDocStd_Document;
 class XCAFDoc_ShapeTool;
 class XCAFDoc_ColorTool;
@@ -151,7 +151,7 @@ public:
   //! Read the data from specified file.
   //! The Document instance should be set beforehand.
   bool Perform (const TCollection_AsciiString& theFile,
-                const Handle(Message_ProgressIndicator)& theProgress)
+                const Message_ProgressRange& theProgress)
   {
     return perform (theFile, theProgress, Standard_False);
   }
@@ -175,7 +175,7 @@ public:
   //! The main purpose is collecting metadata and external references - for copying model into a new location, for example.
   //! Can be NOT implemented (unsupported by format / reader).
   Standard_Boolean ProbeHeader (const TCollection_AsciiString& theFile,
-                                const Handle(Message_ProgressIndicator)& theProgress = Handle(Message_ProgressIndicator)())
+                                const Message_ProgressRange& theProgress = Message_ProgressRange())
   {
     return perform (theFile, theProgress, Standard_True);
   }
@@ -188,12 +188,12 @@ protected:
   //! @param optional   progress indicator
   //! @param theToProbe flag indicating that mesh data should be skipped and only basing information to be read
   Standard_EXPORT virtual Standard_Boolean perform (const TCollection_AsciiString& theFile,
-                                                    const Handle(Message_ProgressIndicator)& theProgress,
+                                                    const Message_ProgressRange& theProgress,
                                                     const Standard_Boolean theToProbe);
 
   //! Read the mesh from specified file - interface to be implemented by sub-classes.
   Standard_EXPORT virtual Standard_Boolean performMesh (const TCollection_AsciiString& theFile,
-                                                        const Handle(Message_ProgressIndicator)& theProgress,
+                                                        const Message_ProgressRange& theProgress,
                                                         const Standard_Boolean theToProbe) = 0;
 
 //! @name tools for filling XDE document

@@ -57,7 +57,12 @@ public:
   //! Returns a status : 0 OK  1 No result  2 Fail  -1 bad modeshape
   //! -2 bad model (requires a StepModel)
   //! modeshape : 1 Facetted BRep, 2 Shell, 3 Manifold Solid
-  Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape (const TopoDS_Shape& shape, const Handle(Transfer_FinderProcess)& FP, const Handle(Interface_InterfaceModel)& model, const Standard_Integer modetrans = 0) const Standard_OVERRIDE;
+  Standard_EXPORT virtual IFSelect_ReturnStatus TransferWriteShape
+                   (const TopoDS_Shape& shape,
+                    const Handle(Transfer_FinderProcess)& FP,
+                    const Handle(Interface_InterfaceModel)& model,
+                    const Standard_Integer modetrans = 0,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) const Standard_OVERRIDE;
   
   //! Standard Initialisation. It creates a Controller for STEP
   //! and records it to various names, available to select it later

@@ -26,6 +26,8 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_OStream.hxx>
+#include <Message_ProgressRange.hxx>
+
 class Transfer_FinderProcess;
 class IGESData_IGESModel;
 class TopoDS_Shape;
@@ -85,7 +87,8 @@ public:
   
   //! Translates a Shape to IGES Entities and adds them to the model
   //! Returns True if done, False if Shape not suitable for IGES or null
-  Standard_EXPORT Standard_Boolean AddShape (const TopoDS_Shape& sh);
+  Standard_EXPORT Standard_Boolean AddShape (const TopoDS_Shape& sh,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translates a Geometry (Surface or Curve) to IGES Entities and
   //! adds them to the model

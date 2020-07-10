@@ -15,7 +15,7 @@
 #ifndef _RWObj_HeaderFile
 #define _RWObj_HeaderFile
 
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 #include <OSD_Path.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Standard_Macro.hxx>
@@ -28,7 +28,7 @@ public:
   //! Read specified OBJ file and returns its content as triangulation.
   //! In case of error, returns Null handle.
   Standard_EXPORT static Handle(Poly_Triangulation) ReadFile (const Standard_CString theFile,
-                                                              const Handle(Message_ProgressIndicator)& aProgInd = NULL);
+                                                              const Message_ProgressRange& aProgress = Message_ProgressRange());
 
 };
 

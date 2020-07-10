@@ -27,8 +27,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
-
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class TopoDS_Face;
 class TopoDS_Wire;
@@ -207,23 +206,22 @@ public:
   
   //! Writes <Sh> on <S> in an ASCII format.
   Standard_EXPORT static void Write (const TopoDS_Shape& Sh, Standard_OStream& S,
-                                     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Reads a Shape  from <S> in  returns it in  <Sh>.
   //! <B> is used to build the shape.
   Standard_EXPORT static void Read (TopoDS_Shape& Sh, Standard_IStream& S, const BRep_Builder& B,
-                                    const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Writes <Sh> in <File>.
-  Standard_EXPORT static Standard_Boolean Write
-    (const TopoDS_Shape& Sh, const Standard_CString File,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+  Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& Sh, const Standard_CString File,
+                                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Reads a Shape  from <File>,  returns it in  <Sh>.
   //! <B> is used to build the shape.
-  Standard_EXPORT static Standard_Boolean Read
-    (TopoDS_Shape& Sh, const Standard_CString File, const BRep_Builder& B,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+  Standard_EXPORT static Standard_Boolean Read (TopoDS_Shape& Sh, const Standard_CString File,
+                                                const BRep_Builder& B,
+                                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Evals real tolerance of edge  <theE>.
   //! <theC3d>, <theC2d>, <theS>, <theF>, <theL> are
@@ -253,7 +251,17 @@ public:
   Standard_EXPORT static void RemoveInternals (TopoDS_Shape& theS,
                                                const Standard_Boolean theForce = Standard_False);
 
+
+protected:
+
+
+
+
+
 private:
+
+
+
 
 friend class BRepTools_WireExplorer;
 friend class BRepTools_Modification;

@@ -43,7 +43,7 @@ public:
   Standard_EXPORT virtual Handle(XmlMDF_ADriver) ReadShapeSection
                          (const XmlObjMgt_Element& thePDoc, 
                           const Handle(Message_Messenger)& theMsgDriver,
-                          const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                          const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void ShapeSetCleaning
                          (const Handle(XmlMDF_ADriver)& theDriver) Standard_OVERRIDE;  

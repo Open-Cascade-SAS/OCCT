@@ -76,7 +76,7 @@ Handle(CDM_Document) CDF_StoreList::Value() const {
 }
 PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData, 
                                       TCollection_ExtendedString& aStatusAssociatedText, 
-                                      const Handle(Message_ProgressIndicator)& theProgress)
+                                      const Message_ProgressRange& theRange)
 {
   Handle(CDF_MetaDataDriver) theMetaDataDriver = Handle(CDF_Application)::DownCast((myMainDocument->Application()))->MetaDataDriver();
 
@@ -114,7 +114,7 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData,
           }
           TCollection_ExtendedString theName=theMetaDataDriver->BuildFileName(theDocument);
 
-          aDocumentStorageDriver->Write(theDocument, theName, theProgress);
+          aDocumentStorageDriver->Write(theDocument, theName, theRange);
           status = aDocumentStorageDriver->GetStoreStatus();
           aMetaData = theMetaDataDriver->CreateMetaData(theDocument,theName);
           theDocument->SetMetaData(aMetaData);

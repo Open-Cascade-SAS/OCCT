@@ -27,7 +27,7 @@
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlMDF_MapOfDriver.hxx>
 
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class TDF_Data;
 class XmlMDF_ADriverTable;
@@ -67,7 +67,7 @@ public:
                                       XmlObjMgt_Element& aTarget,
                                       XmlObjMgt_SRelocationTable& aReloc,
                                       const Handle(XmlMDF_ADriverTable)& aDrivers, 
-                                      const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                      const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Translates a persistent <aSource> into a transient
   //! <aTarget>.
@@ -76,7 +76,7 @@ public:
                                 (const XmlObjMgt_Element& aSource, 
                                  Handle(TDF_Data)& aTarget, XmlObjMgt_RRelocationTable& aReloc, 
                                  const Handle(XmlMDF_ADriverTable)& aDrivers, 
-                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                 const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Adds the attribute storage drivers to <aDriverSeq>.
   Standard_EXPORT static void AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable, 
@@ -89,14 +89,14 @@ private:
                                   XmlObjMgt_Element& theElement, 
                                   XmlObjMgt_SRelocationTable& aReloc, 
                                   const Handle(XmlMDF_ADriverTable)& aDrivers, 
-                                  const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                  const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT static Standard_Integer ReadSubTree
                                  (const XmlObjMgt_Element& theElement, 
                                   const TDF_Label& theLabel, 
                                   XmlObjMgt_RRelocationTable& aReloc, 
                                   const XmlMDF_MapOfDriver& aDrivers, 
-                                  const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                  const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT static void CreateDrvMap (const Handle(XmlMDF_ADriverTable)& aDriverTable,
                                             XmlMDF_MapOfDriver& anAsciiDriverMap);

@@ -26,11 +26,12 @@
 #include <Standard_Integer.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_Real.hxx>
+#include <Message_ProgressRange.hxx>
+
 class IGESData_IGESModel;
 class IGESToBRep_Actor;
 class Transfer_TransientProcess;
 class TopoDS_Shape;
-
 
 //! A simple way to read geometric IGES data.
 //! Encapsulates reading file and calling transfer tools
@@ -79,12 +80,14 @@ public:
   //! IGES file. Standard_True is the default value and means that only
   //! visible root entities are translated. Standard_False
   //! translates all of the roots (visible and invisible).
-  Standard_EXPORT void TransferRoots (const Standard_Boolean onlyvisible = Standard_True);
+  Standard_EXPORT void TransferRoots (const Standard_Boolean onlyvisible = Standard_True,
+                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers an Entity given its rank in the Model (Root or not)
   //! Returns True if it is recognized as Geom-Topol.
   //! (But it can have failed : see IsDone)
-  Standard_EXPORT Standard_Boolean Transfer (const Standard_Integer num);
+  Standard_EXPORT Standard_Boolean Transfer (const Standard_Integer num,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns True if the LAST Transfer/TransferRoots was a success
   Standard_EXPORT Standard_Boolean IsDone() const;

@@ -16,6 +16,7 @@
 
 
 #include <BRepClass3d.hxx>
+#include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_FacetedBrep.hxx>
@@ -35,7 +36,8 @@
 //=============================================================================
 TopoDSToStep_MakeFacetedBrep::
   TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& aShell,
-				    const Handle(Transfer_FinderProcess)& FP)
+                               const Handle(Transfer_FinderProcess)& FP,
+                               const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
   if (aShell.Closed()) {
@@ -43,7 +45,9 @@ TopoDSToStep_MakeFacetedBrep::
     MoniTool_DataMapOfShapeTransient aMap;
     
     TopoDSToStep_Tool    aTool(aMap, Standard_True);
-    TopoDSToStep_Builder StepB(aShell, aTool, FP);
+    TopoDSToStep_Builder StepB(aShell, aTool, FP, theProgress);
+    if (theProgress.UserBreak())
+      return;
     TopoDSToStep::AddResult ( FP, aTool );
 
     if (StepB.IsDone()) {
@@ -78,7 +82,8 @@ TopoDSToStep_MakeFacetedBrep::
 
 TopoDSToStep_MakeFacetedBrep::
   TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& aSolid,
-				    const Handle(Transfer_FinderProcess)& FP)
+                               const Handle(Transfer_FinderProcess)& FP,
+                               const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
 
@@ -91,7 +96,9 @@ TopoDSToStep_MakeFacetedBrep::
       MoniTool_DataMapOfShapeTransient aMap;
       
       TopoDSToStep_Tool    aTool(aMap, Standard_True);
-      TopoDSToStep_Builder StepB(aOuterShell, aTool, FP);
+      TopoDSToStep_Builder StepB(aOuterShell, aTool, FP, theProgress);
+      if (theProgress.UserBreak())
+        return;
       TopoDSToStep::AddResult ( FP, aTool );
       
       if (StepB.IsDone()) {

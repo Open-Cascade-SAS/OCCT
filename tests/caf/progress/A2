@@ -9,7 +9,7 @@
 puts "caf009-A2"
 
 # Configurate XProgress 
-XProgress -g +t -tcloutput
+XProgress +t
 
 # Create binary document
 NewDocument Doc XmlOcaf
@@ -27,7 +27,9 @@ Close Doc
 
 # Test data
 set ctr { "0%" "Writing sub-tree" "Writing shape section"
- "Writing Shapes" "Writing geometry" "2D Curves" "3D Curves" "Surfaces" "100%" }
+          "Writing" "Geometry" "2D Curves" "3D Curves"
+          "Polygons On Triangulation" "Surfaces"
+          "3D Polygons" "Triangulations" "100%" "Shapes" }
 
 foreach data ${ctr} {
     if ![regexp $data $output] {

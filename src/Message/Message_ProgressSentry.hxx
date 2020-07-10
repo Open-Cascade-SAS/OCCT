@@ -1,6 +1,4 @@
-// Created on: 2002-02-22
-// Created by: Andrey BETENEV
-// Copyright (c) 2002-2014 OPEN CASCADE SAS
+// Copyright (c) 2020 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,111 +11,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Message_ProgressSentry_HeaderFile
-#define _Message_ProgressSentry_HeaderFile
+#ifndef Message_ProgressSentry_HeaderFile
+#define Message_ProgressSentry_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Message_ProgressScope.hxx>
 
-#include <Standard_Boolean.hxx>
-#include <Standard_CString.hxx>
-#include <Standard_Real.hxx>
-class Message_ProgressIndicator;
-class TCollection_HAsciiString;
-
-
-//! This class is a tool allowing to manage opening/closing
-//! scopes in the ProgressIndicator in convenient and safe way.
-//!
-//! Its main features are:
-//! - Set all parameters for the current scale on the given
-//! ProgressIndicator and open a new scope at one line
-//! - Iterator-like interface to opening next scopes and
-//! check for user break
-//! - Automatic scope closing in destructor
-//! - Safe for NULL ProgressIndicator (just does nothing)
-//!
-//! Example of usage in nested process:
-//!
-//! @code{.cpp}
-//!   Handle(Draw_ProgressIndicator) aProgress = ...;
-//!
-//!   // Outer cycle
-//!   Message_ProgressSentry anOuter (aProgress, "Outer", 0, nbOuter, 1);
-//!   for (int i = 0; i < nbOuter && anOuter.More(); i++, anOuter.Next())
-//!   {
-//!     // Inner cycle
-//!     Message_ProgressSentry anInner (aProgress, "Inner", 0, nbInner, 1);
-//!     for (int j = 0; j < nbInner && anInner.More(); j++, anInner.Next())
-//!     {
-//!       // Cycle body
-//!     }
-//!   }
-//! @endcode
-
-class Message_ProgressSentry 
+//! Functionality of this class (Message_ProgressSentry) has been superseded by Message_ProgressScope.
+//! This class is kept just to simplify transition of an old code and will be removed in future.
+class Standard_DEPRECATED("Deprecated class, Message_ProgressScope should be used instead")
+Message_ProgressSentry : public Message_ProgressScope
 {
 public:
-
-  DEFINE_STANDARD_ALLOC
-
-  
-  Standard_EXPORT Message_ProgressSentry(const Handle(Message_ProgressIndicator)& PI, const Standard_CString name, const Standard_Real min, const Standard_Real max, const Standard_Real step, const Standard_Boolean isInf = Standard_False, const Standard_Real newScopeSpan = 0.0);
-  
-  //! Creates an instance of ProgressSentry attaching it to
-  //! the specified ProgressIndicator, selects parameters of
-  //! the current scale, and opens a new scope with specified
-  //! span (equal to step by default)
-  Standard_EXPORT Message_ProgressSentry(const Handle(Message_ProgressIndicator)& PI, const Handle(TCollection_HAsciiString)& name, const Standard_Real min, const Standard_Real max, const Standard_Real step, const Standard_Boolean isInf = Standard_False, const Standard_Real newScopeSpan = 0.0);
-  
-  //! Moves progress indicator to the end of the current scale
-  //! and relieves sentry from its duty. Methods other than Show()
-  //! will do nothing after this one is called.
-    void Relieve();
-~Message_ProgressSentry()
-{
-  Relieve();
-}
-  
-    void Next (const Standard_CString name = 0) const;
-  
-    void Next (const Standard_Real span, const Standard_CString name = 0) const;
-  
-  //! Closes current scope and opens next one
-  //! with either specified or default span
-    void Next (const Standard_Real span, const Handle(TCollection_HAsciiString)& name) const;
-  
-  //! Returns False if ProgressIndicator signals UserBreak
-    Standard_Boolean More() const;
-  
-  //! Forces update of progress indicator display
-    void Show() const;
-
-
-
-
-protected:
-
-
-
-
+  //! Deprecated constructor, Message_ProgressScope should be created instead.
+  Message_ProgressSentry (const Message_ProgressRange& theRange,
+                          const Standard_CString theName,
+                          const Standard_Real theMin,
+                          const Standard_Real theMax,
+                          const Standard_Real theStep,
+                          const Standard_Boolean theIsInf = Standard_False,
+                          const Standard_Real theNewScopeSpan = 0.0)
+  : Message_ProgressScope (theRange, theName, theMax, theIsInf)
+  {
+    if (theMin != 0.0 || theStep != 1.0 || theNewScopeSpan != 0.0)
+    {
+      throw Standard_ProgramError ("Message_ProgressSentry, invalid parameters");
+    }
+  }
 
 private:
-
-
-
-  Handle(Message_ProgressIndicator) myProgress;
-  Standard_Boolean myActive;
-
-
+  //! Message_ProgressRange should be passed to constructor instead of Message_ProgressIndicator.
+  Message_ProgressSentry (const Handle(Message_ProgressIndicator)& theProgress,
+                          const Standard_CString theName,
+                          const Standard_Real theMin,
+                          const Standard_Real theMax,
+                          const Standard_Real theStep,
+                          const Standard_Boolean theIsInf = Standard_False,
+                          const Standard_Real theNewScopeSpan = 0.0);
 };
 
-
-#include <Message_ProgressSentry.lxx>
-
-
-
-
-
-#endif // _Message_ProgressSentry_HeaderFile
+#endif // Message_ProgressSentry_HeaderFile

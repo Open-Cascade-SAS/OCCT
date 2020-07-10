@@ -116,7 +116,8 @@ Standard_Boolean  StepToTopoDS_MakeTransformed::Transform
 
 TopoDS_Shape  StepToTopoDS_MakeTransformed::TranslateMappedItem
 (const Handle(StepRepr_MappedItem)& mapit,
- const Handle(Transfer_TransientProcess)& TP)
+ const Handle(Transfer_TransientProcess)& TP,
+ const Message_ProgressRange& theProgress)
 {
   TopoDS_Shape theResult;
 
@@ -142,7 +143,7 @@ TopoDS_Shape  StepToTopoDS_MakeTransformed::TranslateMappedItem
   //  La Shape, et la mise en position
   Handle(StepRepr_Representation) maprep = mapit->MappingSource()->MappedRepresentation();
   Handle(Transfer_Binder) binder = TP->Find(maprep);
-  if (binder.IsNull())    binder = TP->Transferring(maprep);
+  if (binder.IsNull())    binder = TP->Transferring(maprep, theProgress);
   Handle(TransferBRep_ShapeBinder) shbinder =
     Handle(TransferBRep_ShapeBinder)::DownCast(binder);
   if (shbinder.IsNull())  TP->AddWarning(mapit,"No Shape Produced");

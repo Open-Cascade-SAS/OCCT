@@ -26,6 +26,8 @@
 #include <Standard_Transient.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Interface_CheckStatus.hxx>
+#include <Message_ProgressRange.hxx>
+
 class XSControl_Controller;
 class Interface_InterfaceModel;
 class Interface_HGraph;
@@ -36,7 +38,6 @@ class Transfer_ResultFromModel;
 class TopoDS_Shape;
 class Interface_CheckIterator;
 class Interface_Graph;
-
 
 class XSControl_TransferReader;
 DEFINE_STANDARD_HANDLE(XSControl_TransferReader, Standard_Transient)
@@ -265,20 +266,25 @@ class XSControl_TransferReader : public Standard_Transient
   //! Imagine, using the selected Actor for Read
   //! Returns count of transferred entities, ok or with fails (0/1)
   //! If <rec> is True (D), the result is recorded by RecordResult
-  Standard_EXPORT Standard_Integer TransferOne (const Handle(Standard_Transient)& theEnt, const Standard_Boolean theRec = Standard_True);
+  Standard_EXPORT Standard_Integer TransferOne (const Handle(Standard_Transient)& theEnt,
+                                                const Standard_Boolean theRec = Standard_True,
+                                                const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Commands the transfer on reading for a list of entities to
   //! data for Imagine, using the selected Actor for Read
   //! Returns count of transferred entities, ok or with fails (0/1)
   //! If <rec> is True (D), the results are recorded by RecordResult
-  Standard_EXPORT Standard_Integer TransferList (const Handle(TColStd_HSequenceOfTransient)& theList, const Standard_Boolean theRec = Standard_True);
+  Standard_EXPORT Standard_Integer TransferList (const Handle(TColStd_HSequenceOfTransient)& theList,
+                                                 const Standard_Boolean theRec = Standard_True,
+                                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers the content of the current Interface Model to
   //! data handled by Imagine, starting from its Roots (determined
   //! by the Graph <G>),  using the selected Actor for Read
   //! Returns the count of performed root transfers (i.e. 0 if none)
   //! or -1 if no actor is defined
-  Standard_EXPORT Standard_Integer TransferRoots (const Interface_Graph &theGraph);
+  Standard_EXPORT Standard_Integer TransferRoots (const Interface_Graph &theGraph,
+                                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Clears the results attached to an entity
   //! if <ents> equates the starting model, clears all results

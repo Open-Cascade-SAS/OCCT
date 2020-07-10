@@ -46,7 +46,7 @@ public:
   Standard_EXPORT virtual void WriteShapeSection
     (BinLDrivers_DocumentSection& theDocSection, 
      Standard_OStream& theOS, 
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Return true if shape should be stored with triangles.
   Standard_EXPORT Standard_Boolean IsWithTriangles() const;

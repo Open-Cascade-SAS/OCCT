@@ -1935,6 +1935,118 @@ Offset direction, which used in class Adaptor2d_OffsetCurve for evaluating value
 
 Adaptor2d_OffsetCurve aOC(BaseCurve, Offset) --> Adaptor2d_OffsetCurve aOC(BaseCurve, -Offset)
 
+subsection upgrade_750_ProgressIndicator Change of Message_ProgressIndicator
+
+The progress indication mechanism has been revised to eliminate its weak points in previous design (leading to ambiguity and unprotected from an error-prone behavior).
+Redesign also allows using progress indicator in multi-threaded algorithms in more straight-forward way with minimal overhead.
+Note, however, that multi-threaded algorithm should pre-allocate per-thread progress scopes in advance to ensure thread-safety - check new classes API for details.
+
+Classes Message_ProgressSentry and Message_ProgressScale have been removed.
+New classes Message_ProgressScope and Messge_ProgressRange replace them and should be used as main API classes to organize progress indication in the algorithms.
+Instances of the class Message_ProgressRange are used to pass the progress capability to nested levels of the algorithm
+and an instance of the class Message_ProgressScope is to be created (preferably as local variable) to manage progress at each level of the algorithm.
+The instance of Message_ProgressIndicator is not passed anymore to sub-algorithms.
+See documentation of the class Message_ProgressScope for more details and examples.
+
+Methods to deal with progress scopes and to advance progress are removed from class Message_ProgressIndicator; now it only provides interface to the application-level progress indicator.
+Virtual method Message_ProgressIndicator::Show() has changed its signature and should be updated accordingly in descendants of Message_ProgressIndicator.
+The scope passed as argument to this method can be used to obtain information on context of the current process (instead of calling method GetScope() in previous implementation).
+Methods Show(), UserBreak(), and Reset() are made protected in class Message_ProgressIndicator; method More() of Message_ProgressScope should be used to know if the cancel event has come.
+See documentation of the class Message_ProgressIndicator for more details and implementation of Draw_ProgressIndicator for an example.
+
+Lets take a look onto typical algorithm using an old API:
+@code
+class MyAlgo
+{
+public:
+  //! Algorithm entry point taking an optional Progress Indicator.
+  bool Perform (const TCollection_AsciiString& theFileName,
+                const Handle(Message_ProgressIndicator)& theProgress = Handle(Message_ProgressIndicator)())
+  {
+    Message_ProgressSentry aPSentry (theProgress, (TCollection_AsciiString("Processing ") + theFileName).ToCString(), 2);
+    {
+      Message_ProgressSentry aPSentry1 (theProgress, "Stage 1", 0, 153, 1);
+      for (int anIter = 0; anIter < 153; ++anIter, aPSentry1.Next())
+      { if (!aPSentry1.More()) { return false; } }
+    }
+    aPSentry.Next();
+    {
+      perform2 (theProgress);
+    }
+    aPSentry.Next();
+    bool wasAborted = !theProgress.IsNull() && theProgress->UserBreak();
+    return !wasAborted;
+  }
+
+private:
+  //! Nested sub-algorithm taking Progress Indicator.
+  bool perform2 (const Handle(Message_ProgressIndicator)& theProgress)
+  {
+    Message_ProgressSentry aPSentry2 (theProgress, "Stage 2", 0, 561, 1);
+    for (int anIter = 0; anIter < 561 && aPSentry2.More(); ++anIter, aPSentry2.Next()) {}
+    return aPSentry2.More();
+  }
+};
+
+// application executing an algorithm
+Handle(Message_ProgressIndicator) aProgress = new MyProgress();
+MyAlgo anAlgo;
+anAlgo.Perform ("FileName", aProgress);
+@endcode
+
+The following guidance can be used to update such code:
+- Replace `const Handle(Message_ProgressIndicator)&` with `const Message_ProgressRange&`.
+  Message_ProgressIndicator object should be now created only at place where application starts algorithms.
+- Replace `Message_ProgressSentry` with `Message_ProgressScope`.
+  Take note that Message_ProgressScope has smaller number of arguments (no "minimal value").
+  In other aspects, Message_ProgressScope mimics an iterator-style interface (with methods More() and Next())
+  close to the old Message_ProgressSentry (pay attention to extra functionality of Message_ProgressScope::Next() method below).
+- Each Message_ProgressScope should take the next Range to fill in.
+  Within old API, Message_ProgressSentry received the root Progress Indicator object and implicitly split it into ranges using error-prone logic.
+  Message_ProgressScope in new API takes Message_ProgressRange, which should be created from the Range of the parent Scope using value returned by Message_ProgressScope::Next() method.
+  Don't use the same Range passed to the algorithm for all sub-Scopes like it was possible in old API.
+- Check user abortion state using Message_ProgressScope::UserBreak() method;
+  Message_ProgressRange is a temporary object with the only purpose to create a new Message_ProgressScope,
+  and Message_ProgressIndicator should be never passed directly to algorithms.
+
+Take a look onto ported code and compare with code above to see differences:
+
+@code
+class MyAlgo
+{
+public:
+  //! Algorithm entry point taking an optional Progress Range.
+  bool Perform (const TCollection_AsciiString& theFileName,
+                const Message_ProgressRange& theProgress = Message_ProgressRange())
+  {
+    Message_ProgressScope aPSentry (theProgress, TCollection_AsciiString("Processing ") + theFileName, 2);
+    {
+      Message_ProgressScope aPSentry1 (aPSentry.Next(), "Stage 1", 153);
+      for (int anIter = 0; anIter < 153; ++anIter, aPSentry1.Next())
+      { if (!aPSentry1.More()) { return false; }; }
+    }
+    {
+      perform2 (aPSentry.Next());
+    }
+    bool wasAborted = aPSentry.UserBreak();
+    return !wasAborted;
+  }
+
+  //! Nested sub-algorithm taking Progress sub-Range.
+  bool perform2 (const Message_ProgressRange& theProgress)
+  {
+    Message_ProgressScope aPSentry2 (theProgress, "Stage 2", 561);
+    for (int anIter = 0; anIter < 561 && aPSentry2.More(); ++anIter, aPSentry2.Next()) {}
+    return aPSentry2.More();
+  }
+};
+
+// application executing an algorithm
+Handle(Message_ProgressIndicator) aProgress = new MyProgress();
+MyAlgo anAlgo;
+anAlgo.Perform ("FileName", aProgress->Start());
+@endcode
+
 @subsection upgrade_750_message_messenger Message_Messenger interface change
 
 Operators << with left argument *Handle(Message_Messenger)*, used to output messages with

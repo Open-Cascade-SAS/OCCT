@@ -24,13 +24,14 @@
 #include <gp_Trsf.hxx>
 #include <StepToTopoDS_Root.hxx>
 #include <Standard_Boolean.hxx>
+#include <Message_ProgressRange.hxx>
+
 class StepGeom_Axis2Placement3d;
 class StepGeom_CartesianTransformationOperator3d;
 class gp_Trsf;
 class TopoDS_Shape;
 class StepRepr_MappedItem;
 class Transfer_TransientProcess;
-
 
 //! Produces instances by Transformation of a basic item
 class StepToTopoDS_MakeTransformed  : public StepToTopoDS_Root
@@ -68,7 +69,9 @@ public:
   //! Hence, the transformation from MappingOrigin and MappingTarget
   //! is computed, the MappedRepr. is converted to a Shape, then
   //! transformed as an instance of this Shape
-  Standard_EXPORT TopoDS_Shape TranslateMappedItem (const Handle(StepRepr_MappedItem)& mapit, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT TopoDS_Shape TranslateMappedItem (const Handle(StepRepr_MappedItem)& mapit,
+                                                    const Handle(Transfer_TransientProcess)& TP,
+                                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 
 

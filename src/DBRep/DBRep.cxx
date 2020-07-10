@@ -27,6 +27,7 @@
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 #include <Draw_Segment3D.hxx>
 #include <gp_Ax2.hxx>
 #include <GProp.hxx>
@@ -1340,12 +1341,8 @@ static Standard_Integer XProgress (Draw_Interpretor& di, Standard_Integer argc, 
 
     TCollection_AsciiString anArgCase (argv[i]);
     anArgCase.LowerCase();
-    if (anArgCase == "-tcloutput")
-    {
-      Draw_ProgressIndicator::DefaultTclOutput() = Standard_True;
-      return 0;
-    }
-    else if ( argv[i][1] == 't' ) Draw_ProgressIndicator::DefaultTextMode() = turn;
+    if ( argv[i][1] == 't' ) Draw_ProgressIndicator::DefaultTclMode() = turn;
+    else if (argv[i][1] == 'c') Draw_ProgressIndicator::DefaultConsoleMode() = turn;
     else if ( argv[i][1] == 'g' ) Draw_ProgressIndicator::DefaultGraphMode() = turn;
     else if ( ! strcmp ( argv[i], "-stop" ) && i+1 < argc )
     {
@@ -1355,13 +1352,20 @@ static Standard_Integer XProgress (Draw_Interpretor& di, Standard_Integer argc, 
       return 0;
     }
   }
-  di << "Progress Indicator defaults: text mode is ";
-  if ( Draw_ProgressIndicator::DefaultTextMode() ) {
+  di << "Progress Indicator defaults: tcl mode is ";
+  if ( Draw_ProgressIndicator::DefaultTclMode() ) {
     di<<"ON";
   } else {
     di<<"OFF";
   }
-  di<<", graphical mode is ";
+  di<<", console mode is ";
+  if (Draw_ProgressIndicator::DefaultConsoleMode()) {
+    di << "ON";
+  }
+  else {
+    di << "OFF";
+  }
+  di << ", graphical mode is ";
   if ( Draw_ProgressIndicator::DefaultGraphMode() ) {
     di<<"ON";
   } else {
@@ -1507,11 +1511,11 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   
   // Add command for DRAW-specific ProgressIndicator
   theCommands.Add ( "XProgress",
-                    "XProgress [+|-t] [+|-g] [-tclOutput]"
-                    "\n\t\t: The options are:"
-                    "\n\t\t:   +|-t, +|-g :  switch on/off textual and graphical mode of Progress Indicator"
-                    "\n\t\t:   -tclOutput :  switch on data output mode in tcl"
-                    "\n\t\t: Allows to control the output form of Progress Indicator",
+                    "XProgress [+|-t] [+|-c] [+|-g]"
+                    "\n\t\t The options are:"
+                    "\n\t\t   +|-t :  switch on/off output to tcl of Progress Indicator"
+                    "\n\t\t   +|-c :  switch on/off output to cout of Progress Indicator"
+                    "\n\t\t   +|-g :  switch on/off graphical mode of Progress Indicator",
                     XProgress,"DE: General");
 
   theCommands.Add("binsave", "binsave shape filename\n"
@@ -1585,8 +1589,9 @@ static void ssave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
   BRep_Builder B;
   BRepTools_ShapeSet S(B);
   S.Add (N->Shape());
-  S.Write (OS, Draw::GetProgressBar());
-  if(!Draw::GetProgressBar().IsNull() && Draw::GetProgressBar()->UserBreak())
+  Handle(Draw_ProgressIndicator) aProgress = Draw::GetProgressBar();
+  S.Write(OS, Message_ProgressIndicator::Start(aProgress));
+  if (! aProgress.IsNull() && aProgress->UserBreak())
     return;
   S.Write(N->Shape(),OS);
 }
@@ -1595,9 +1600,10 @@ static Handle(Draw_Drawable3D) srestore (std::istream& IS)
 {
   BRep_Builder B;
   BRepTools_ShapeSet S(B);
-  S.Read (IS, Draw::GetProgressBar());
+  Handle(Draw_ProgressIndicator) aProgress = Draw::GetProgressBar();
+  S.Read(IS, Message_ProgressIndicator::Start(aProgress));
   Handle(DBRep_DrawableShape) N;
-  if(!Draw::GetProgressBar().IsNull() && Draw::GetProgressBar()->UserBreak())
+  if (! aProgress.IsNull() && aProgress->UserBreak())
     return N;
   TopoDS_Shape theShape;
   S.Read(theShape,IS );

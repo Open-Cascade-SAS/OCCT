@@ -89,18 +89,25 @@ public:
   //! Translates currently loaded STEP file into the document
   //! Returns True if succeeded, and False in case of fail
   //! Provided for use like single-file reader
-  Standard_EXPORT Standard_Boolean TransferOneRoot (const Standard_Integer num, Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean TransferOneRoot (const Standard_Integer num,
+                                                    Handle(TDocStd_Document)& doc,
+                                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translates currently loaded STEP file into the document
   //! Returns True if succeeded, and False in case of fail
   //! Provided for use like single-file reader
-  Standard_EXPORT Standard_Boolean Transfer (Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean Transfer (Handle(TDocStd_Document)& doc,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& filename, Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean Perform (const TCollection_AsciiString& filename,
+                                            Handle(TDocStd_Document)& doc,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translate STEP file given by filename into the document
   //! Return True if succeeded, and False in case of fail
-  Standard_EXPORT Standard_Boolean Perform (const Standard_CString filename, Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean Perform (const Standard_CString filename,
+                                            Handle(TDocStd_Document)& doc,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns data on external files
   //! Returns Null handle if no external files are read
@@ -184,7 +191,12 @@ protected:
   //! Returns True if succeeded, and False in case of fail
   //! If asOne is True, in case of multiple results composes
   //! them into assembly. Fills sequence of produced labels
-  Standard_EXPORT Standard_Boolean Transfer (STEPControl_Reader& rd, const Standard_Integer num, Handle(TDocStd_Document)& doc, TDF_LabelSequence& Lseq, const Standard_Boolean asOne = Standard_False);
+  Standard_EXPORT Standard_Boolean Transfer (STEPControl_Reader& rd,
+                                             const Standard_Integer num,
+                                             Handle(TDocStd_Document)& doc,
+                                             TDF_LabelSequence& Lseq,
+                                             const Standard_Boolean asOne = Standard_False,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Add a shape to a document
   //! Depending on a case, this shape can be added as one, or
@@ -194,7 +206,10 @@ protected:
   
   //! Reads (or if returns already read) extern file with
   //! given name
-  Standard_EXPORT Handle(STEPCAFControl_ExternFile) ReadExternFile (const Standard_CString file, const Standard_CString fullpath, Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Handle(STEPCAFControl_ExternFile) ReadExternFile (const Standard_CString file,
+                                                                    const Standard_CString fullpath,
+                                                                    Handle(TDocStd_Document)& doc,
+                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Reads style assignments from STEP model and sets
   //! corresponding color assignments in the DECAF document

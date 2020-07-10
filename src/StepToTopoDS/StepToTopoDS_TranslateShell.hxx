@@ -24,6 +24,8 @@
 #include <StepToTopoDS_TranslateShellError.hxx>
 #include <TopoDS_Shape.hxx>
 #include <StepToTopoDS_Root.hxx>
+#include <Message_ProgressRange.hxx>
+
 class StdFail_NotDone;
 class StepShape_ConnectedFaceSet;
 class StepToTopoDS_Tool;
@@ -41,9 +43,10 @@ public:
   
   Standard_EXPORT StepToTopoDS_TranslateShell();
   
-  Standard_EXPORT StepToTopoDS_TranslateShell(const Handle(StepShape_ConnectedFaceSet)& CFS, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool);
-  
-  Standard_EXPORT void Init (const Handle(StepShape_ConnectedFaceSet)& CFS, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool);
+  Standard_EXPORT void Init (const Handle(StepShape_ConnectedFaceSet)& CFS,
+                             StepToTopoDS_Tool& T,
+                             StepToTopoDS_NMTool& NMTool,
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const TopoDS_Shape& Value() const;
   

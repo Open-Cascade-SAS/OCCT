@@ -20,7 +20,7 @@
 #include <Graphic3d_Vec4.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
@@ -54,7 +54,7 @@ public:
   //! Unicode paths can be given in UTF-8 encoding.
   //! Returns true if success, false on error or user break.
   Standard_Boolean Read (const TCollection_AsciiString& theFile,
-                         const Handle(Message_ProgressIndicator)& theProgress)
+                         const Message_ProgressRange& theProgress)
   {
     return read (theFile, theProgress, Standard_False);
   }
@@ -66,7 +66,7 @@ public:
   //! @return TRUE if success, FALSE on error or user break.
   //! @sa FileComments(), ExternalFiles(), NbProbeNodes(), NbProbeElems().
   Standard_Boolean Probe (const TCollection_AsciiString& theFile,
-                          const Handle(Message_ProgressIndicator)& theProgress)
+                          const Message_ProgressRange& theProgress)
   {
     return read (theFile, theProgress, Standard_True);
   }
@@ -110,7 +110,7 @@ protected:
   //! Unicode paths can be given in UTF-8 encoding.
   //! Returns true if success, false on error or user break.
   Standard_EXPORT Standard_Boolean read (const TCollection_AsciiString& theFile,
-                                         const Handle(Message_ProgressIndicator)& theProgress,
+                                         const Message_ProgressRange& theProgress,
                                          const Standard_Boolean theToProbe);
 
 //! @name interface methods which should be implemented by sub-class

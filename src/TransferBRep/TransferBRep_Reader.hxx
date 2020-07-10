@@ -25,6 +25,8 @@
 #include <Standard_Boolean.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
+#include <Message_ProgressRange.hxx>
+
 class Interface_Protocol;
 class Transfer_ActorOfTransientProcess;
 class Interface_InterfaceModel;
@@ -33,7 +35,6 @@ class Standard_OutOfRange;
 class Interface_CheckIterator;
 class TopoDS_Shape;
 class Standard_Transient;
-
 
 //! This class offers a simple, easy to call, way of transferring
 //! data from interface files to Shapes from CasCade
@@ -123,16 +124,18 @@ public:
   //! The result will be a list of Shapes.
   //! This method calls user redefinable PrepareTransfer
   //! Remark : former result is cleared
-  Standard_EXPORT virtual void TransferRoots();
+  Standard_EXPORT virtual void TransferRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers an Entity given its rank in the Model (Root or not)
   //! Returns True if it is recognized as Geom-Topol.
   //! (But it can have failed : see IsDone)
-  Standard_EXPORT virtual Standard_Boolean Transfer (const Standard_Integer num);
+  Standard_EXPORT virtual Standard_Boolean Transfer (const Standard_Integer num,
+                                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers a list of Entities (only the ones also in the Model)
   //! Remark : former result is cleared
-  Standard_EXPORT virtual void TransferList (const Handle(TColStd_HSequenceOfTransient)& list);
+  Standard_EXPORT virtual void TransferList (const Handle(TColStd_HSequenceOfTransient)& list,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns True if the LAST Transfer/TransferRoots was a success
   Standard_EXPORT Standard_Boolean IsDone() const;

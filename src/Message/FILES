@@ -24,15 +24,10 @@ Message_PrinterSystemLog.cxx
 Message_PrinterSystemLog.hxx
 Message_ProgressIndicator.cxx
 Message_ProgressIndicator.hxx
-Message_ProgressIndicator.lxx
-Message_ProgressScale.cxx
-Message_ProgressScale.hxx
-Message_ProgressScale.lxx
-Message_ProgressSentry.cxx
+Message_ProgressRange.hxx
+Message_ProgressScope.hxx
 Message_ProgressSentry.hxx
-Message_ProgressSentry.lxx
 Message_SequenceOfPrinters.hxx
-Message_SequenceOfProgressScale.hxx
 Message_Status.hxx
 Message_StatusType.hxx
 Message_Alert.cxx

@@ -33,11 +33,11 @@
 
 #include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Message_ProgressSentry.hxx>
 
 #include <math_Vector.hxx>
 #include <math_IntegerVector.hxx>
 #include <math_Matrix.hxx>
+#include <Message_ProgressScope.hxx>
 
 namespace {
 static inline Standard_Real PYTHAG (const Standard_Real a, const Standard_Real b)
@@ -177,7 +177,7 @@ Standard_Integer LU_Decompose(math_Matrix& a,
                      Standard_Real&   d, 
                      math_Vector& vv,
                      Standard_Real    TINY,
-                     const Handle(Message_ProgressIndicator) & aProgress) { 
+                     const Message_ProgressRange& theProgress) { 
 
      Standard_Integer i, imax=0, j, k;
      Standard_Real big, dum, sum, temp;
@@ -185,7 +185,7 @@ Standard_Integer LU_Decompose(math_Matrix& a,
      Standard_Integer n = a.RowNumber();
      d = 1.0;
 
-     Message_ProgressSentry aPSentry(aProgress, "", 0, n, 1);
+     Message_ProgressScope aPS(theProgress, "", n);
 
      for(i = 1; i <= n; i++) {
        big = 0.0;
@@ -197,7 +197,7 @@ Standard_Integer LU_Decompose(math_Matrix& a,
        vv(i) = 1.0 / big;
      }
 
-     for(j = 1; j <= n && aPSentry.More(); j++, aPSentry.Next()) {
+     for(j = 1; j <= n && aPS.More(); j++, aPS.Next()) {
        for(i = 1; i < j; i++) {
          sum = a(i,j);
          for(k = 1; k < i; k++)
@@ -250,10 +250,10 @@ Standard_Integer LU_Decompose(math_Matrix& a,
                     math_IntegerVector& indx, 
                     Standard_Real&   d, 
                     Standard_Real    TINY,
-                    const Handle(Message_ProgressIndicator) & aProgress) { 
+                    const Message_ProgressRange& theProgress) { 
 
      math_Vector vv(1, a.RowNumber());
-     return LU_Decompose(a, indx, d, vv, TINY, aProgress);
+     return LU_Decompose(a, indx, d, vv, TINY, theProgress);
 }
 
 void LU_Solve(const math_Matrix& a,

@@ -100,7 +100,10 @@ class XSControl_TransferWriter : public Standard_Transient
   //! Works by calling the Controller
   //! Returns status : =0 if OK, >0 if error during transfer, <0 if
   //! transfer badly initialised
-  Standard_EXPORT IFSelect_ReturnStatus TransferWriteTransient (const Handle(Interface_InterfaceModel)& theModel, const Handle(Standard_Transient)& theObj);
+  Standard_EXPORT IFSelect_ReturnStatus TransferWriteTransient
+                   (const Handle(Interface_InterfaceModel)& theModel,
+                    const Handle(Standard_Transient)& theObj,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Tells if a Shape is valid for a transfer to a model
   //! Asks the Controller (RecognizeWriteShape)
@@ -111,7 +114,10 @@ class XSControl_TransferWriter : public Standard_Transient
   //! Works by calling the Controller
   //! Returns status : =0 if OK, >0 if error during transfer, <0 if
   //! transfer badly initialised
-  Standard_EXPORT IFSelect_ReturnStatus TransferWriteShape (const Handle(Interface_InterfaceModel)& theModel, const TopoDS_Shape& theShape);
+  Standard_EXPORT IFSelect_ReturnStatus TransferWriteShape
+                   (const Handle(Interface_InterfaceModel)& theModel,
+                    const TopoDS_Shape& theShape,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns the check-list of last transfer (write), i.e. the
   //! check-list currently recorded in the FinderProcess

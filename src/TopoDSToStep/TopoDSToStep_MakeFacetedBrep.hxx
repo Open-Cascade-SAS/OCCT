@@ -22,6 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDSToStep_Root.hxx>
+#include <Message_ProgressRange.hxx>
+
 class StepShape_FacetedBrep;
 class StdFail_NotDone;
 class TopoDS_Shell;
@@ -41,9 +43,13 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& S, const Handle(Transfer_FinderProcess)& FP);
+  Standard_EXPORT TopoDSToStep_MakeFacetedBrep(const TopoDS_Shell& S,
+                                               const Handle(Transfer_FinderProcess)& FP,
+                                               const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& S, const Handle(Transfer_FinderProcess)& FP);
+  Standard_EXPORT TopoDSToStep_MakeFacetedBrep(const TopoDS_Solid& S,
+                                               const Handle(Transfer_FinderProcess)& FP,
+                                               const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const Handle(StepShape_FacetedBrep)& Value() const;
 

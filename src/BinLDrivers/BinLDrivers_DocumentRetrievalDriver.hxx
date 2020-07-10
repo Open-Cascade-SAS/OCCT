@@ -62,13 +62,13 @@ public:
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& theFileName,
                                      const Handle(CDM_Document)& theNewDocument, 
                                      const Handle(CDM_Application)& theApplication, 
-                                     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                                     const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Read (Standard_IStream&               theIStream,
                                      const Handle(Storage_Data)&     theStorageData,
                                      const Handle(CDM_Document)&     theDoc,
                                      const Handle(CDM_Application)&  theApplication,
-                                     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                                     const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
 
@@ -84,7 +84,7 @@ protected:
   Standard_EXPORT virtual Standard_Integer ReadSubTree
     (Standard_IStream& theIS, 
      const TDF_Label& theData, 
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+        const Message_ProgressRange& theRanges = Message_ProgressRange());
   
   
   //! define the procedure of reading a section to file.
@@ -98,7 +98,7 @@ protected:
     (BinLDrivers_DocumentSection& theSection, 
      Standard_IStream& theIS, 
      const Standard_Boolean isMess = Standard_False,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+        const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! checks the shapes section can be correctly retreived.
   Standard_EXPORT virtual void CheckShapeSection (const Storage_Position& thePos, Standard_IStream& theIS);

@@ -26,7 +26,6 @@
 #include <Message_ListIteratorOfListOfMsg.hxx>
 #include <Message_ListOfMsg.hxx>
 #include <Message_Msg.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <Resource_Manager.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
@@ -97,7 +96,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
                                                  const Standard_CString prscfile,
                                                  const Standard_CString pseq,
                                                  Handle(Standard_Transient)& info,
-                                                 const Handle(Message_ProgressIndicator)& progress,
+                                                 const Message_ProgressRange& theProgress,
                                                  const Standard_Boolean NonManifold) const
 {
   if ( shape.IsNull() ) return shape;
@@ -110,8 +109,6 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
       rscfile = prscfile;
     context = new ShapeProcess_ShapeContext(shape, rscfile);
     context->SetDetalisation(TopAbs_EDGE);
-    if ( !progress.IsNull() )
-      context->SetProgress(progress);
   }
   context->SetNonManifold(NonManifold);
   info = context;
@@ -146,7 +143,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
 	sfs->SetMaxTolerance ( maxTol );
 	sfs->FixFaceTool()->FixWireTool()->FixSameParameterMode() = Standard_False;
 	sfs->FixSolidTool()->CreateOpenSolidMode() = Standard_False;
-	sfs->Perform(progress);
+	sfs->Perform(theProgress);
 
 	TopoDS_Shape S = sfs->Shape();
 	if ( ! S.IsNull() && S != shape ) {
@@ -173,7 +170,7 @@ TopoDS_Shape XSAlgo_AlgoContainer::ProcessShape (const TopoDS_Shape& shape,
   rsc->SetResource ( "Runtime.Tolerance", Prec );
   rsc->SetResource ( "Runtime.MaxTolerance", maxTol );
 
-  if ( !ShapeProcess::Perform(context, seq) )
+  if ( !ShapeProcess::Perform(context, seq, theProgress) )
     return shape; // return original shape
 
   return context->Result();

@@ -10,7 +10,6 @@ set BugNumber OCC22572
 
 catch { pload XSDRAW }
 vinit
-XProgress -tclOutput
 XProgress -t
 set List1 [meshfromstl result [locate_data_file bearing.stl]]
 puts "----------------------"

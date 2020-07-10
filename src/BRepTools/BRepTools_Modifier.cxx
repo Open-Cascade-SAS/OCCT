@@ -18,7 +18,6 @@
 
 #include <BRepTools_Modification.hxx>
 #include <BRepTools_Modifier.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
 #include <TColStd_ListIteratorOfListOfTransient.hxx>
@@ -54,7 +53,7 @@
 #include <Standard_NullObject.hxx>
 #include <gp_Trsf.hxx>
 #include <BRepTools_TrsfModification.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Geom_Surface.hxx>
 
 static void SetShapeFlags(const TopoDS_Shape& theInSh, TopoDS_Shape& theOutSh);
@@ -116,7 +115,8 @@ void BRepTools_Modifier::Init(const TopoDS_Shape& S)
 static TopTools_IndexedMapOfShape MapE, MapF;
 #endif
 
-void BRepTools_Modifier::Perform(const Handle(BRepTools_Modification)& M, const Handle(Message_ProgressIndicator) & aProgress)
+void BRepTools_Modifier::Perform(const Handle(BRepTools_Modification)& M,
+                                 const Message_ProgressRange& theProgress)
 {
   if (myShape.IsNull()) {
     throw Standard_NullObject();
@@ -128,7 +128,7 @@ void BRepTools_Modifier::Perform(const Handle(BRepTools_Modification)& M, const 
 #endif
   TopTools_DataMapIteratorOfDataMapOfShapeShape theIter(myMap);
 
-  Message_ProgressSentry aPSentry(aProgress, "Converting Shape", 0, 2, 1);
+  Message_ProgressScope aPS(theProgress, "Converting Shape", 2);
 
   TopTools_IndexedDataMapOfShapeListOfShape aMVE, aMEF;
   TopExp::MapShapesAndAncestors(myShape, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
@@ -144,15 +144,13 @@ void BRepTools_Modifier::Perform(const Handle(BRepTools_Modification)& M, const 
     CreateOtherVertices(aMVE, aMEF, M);
 
   Standard_Boolean aNewGeom;
-  Rebuild(myShape, M, aNewGeom, aProgress);
+  Rebuild(myShape, M, aNewGeom, aPS.Next());
 
-  if (!aPSentry.More())
+  if (!aPS.More())
   {
     // The processing was broken
     return;
   }
-
-  aPSentry.Next();
 
   if (myShape.ShapeType() == TopAbs_FACE) {
     if (myShape.Orientation() == TopAbs_REVERSED) {
@@ -242,7 +240,7 @@ Standard_Boolean BRepTools_Modifier::Rebuild
   (const TopoDS_Shape& S,
    const Handle(BRepTools_Modification)& M,
    Standard_Boolean& theNewGeom,
-   const Handle(Message_ProgressIndicator)& aProgress)
+   const Message_ProgressRange& theProgress)
 {
 #ifdef DEBUG_Modifier
   int iF = MapF.Contains(S) ? MapF.FindIndex(S) : 0;
@@ -357,16 +355,16 @@ Standard_Boolean BRepTools_Modifier::Rebuild
       for (it.Initialize(S, Standard_False); it.More(); it.Next()) ++aShapeCount;
     }
     
-    Message_ProgressSentry aPSentry(aProgress, "Converting SubShapes", 0, aShapeCount, 1);
+    Message_ProgressScope aPS(theProgress, "Converting SubShapes", aShapeCount);
     //
-    for (it.Initialize(S, Standard_False); it.More() && aPSentry.More(); it.Next(), aPSentry.Next()) {
+    for (it.Initialize(S, Standard_False); it.More() && aPS.More(); it.Next()) {
       // always call Rebuild
       Standard_Boolean isSubNewGeom = Standard_False;
-      Standard_Boolean subrebuilt = Rebuild(it.Value(), M, isSubNewGeom, aProgress);
+      Standard_Boolean subrebuilt = Rebuild(it.Value(), M, isSubNewGeom, aPS.Next());
       rebuild =  subrebuilt || rebuild ;
       theNewGeom = theNewGeom || isSubNewGeom;
     }
-    if (!aPSentry.More())
+    if (!aPS.More())
     {
       // The processing was broken
       return Standard_False;

@@ -26,7 +26,7 @@
 #include <Standard_ExtCharacter.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class TopoDS_Shape;
 class BinTools_ShapeSet;
@@ -65,21 +65,21 @@ public:
   
   //! Writes <theShape> on <theStream> in binary format.
   Standard_EXPORT static void Write (const TopoDS_Shape& theShape, Standard_OStream& theStream,
-                                     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                     const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Reads a shape from <theStream> and returns it in <theShape>.
   Standard_EXPORT static void Read (TopoDS_Shape& theShape, Standard_IStream& theStream,
-                                    const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                    const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Writes <theShape> in <theFile>.
   Standard_EXPORT static Standard_Boolean Write
     (const TopoDS_Shape& theShape, const Standard_CString theFile,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+     const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Reads a shape from <theFile> and returns it in <theShape>.
   Standard_EXPORT static Standard_Boolean Read
     (TopoDS_Shape& theShape, const Standard_CString theFile,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+     const Message_ProgressRange& theRange = Message_ProgressRange());
 
 protected:
 

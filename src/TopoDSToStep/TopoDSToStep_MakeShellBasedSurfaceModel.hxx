@@ -22,6 +22,8 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDSToStep_Root.hxx>
+#include <Message_ProgressRange.hxx>
+
 class StepShape_ShellBasedSurfaceModel;
 class StdFail_NotDone;
 class TopoDS_Face;
@@ -41,11 +43,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Face& F, const Handle(Transfer_FinderProcess)& FP);
+  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Face& F,
+                                                          const Handle(Transfer_FinderProcess)& FP,
+                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Shell& S, const Handle(Transfer_FinderProcess)& FP);
+  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Shell& S,
+                                                          const Handle(Transfer_FinderProcess)& FP,
+                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Solid& S, const Handle(Transfer_FinderProcess)& FP);
+  Standard_EXPORT TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Solid& S,
+                                                          const Handle(Transfer_FinderProcess)& FP,
+                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const Handle(StepShape_ShellBasedSurfaceModel)& Value() const;
 

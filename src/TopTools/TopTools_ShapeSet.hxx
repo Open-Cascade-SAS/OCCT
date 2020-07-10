@@ -34,7 +34,7 @@ class TCollection_AsciiString;
 
 
 //! A ShapeSets    contains  a  Shape    and all   its
-//! sub-shapes and locations.  It  can be dumped,  written
+//! sub-shapes and locations.  It  can be dump,  write
 //! and read.
 //!
 //! Methods to handle the geometry can be redefined.
@@ -44,6 +44,7 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  
   //! Builds an empty ShapeSet.
   Standard_EXPORT TopTools_ShapeSet();
   
@@ -108,9 +109,8 @@ public:
   //! Write the type.
   //! calls WriteGeometry(S).
   //! Write the flags, the subshapes.
-  Standard_EXPORT virtual void Write
-    (Standard_OStream& OS,
-     const Handle(Message_ProgressIndicator) &theProgress = NULL);
+  Standard_EXPORT virtual void Write (Standard_OStream& OS,
+                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Reads the content of me from the  stream  <IS>. me
   //! is first cleared.
@@ -124,9 +124,8 @@ public:
   //! Reads the type.
   //! calls ReadGeometry(T,S).
   //! Reads the flag, the subshapes.
-  Standard_EXPORT virtual void Read
-    (Standard_IStream& IS,
-     const Handle(Message_ProgressIndicator) &theProgress = NULL);
+  Standard_EXPORT virtual void Read (Standard_IStream& IS,
+                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Dumps   on  <OS>    the  shape  <S>.   Dumps   the
   //! orientation, the index of the TShape and the index
@@ -149,14 +148,12 @@ public:
   
   //! Writes the geometry of  me  on the stream <OS> in a
   //! format that can be read back by Read.
-  Standard_EXPORT virtual void WriteGeometry
-    (Standard_OStream& OS,
-     const Handle(Message_ProgressIndicator) &theProgress = NULL);
+  Standard_EXPORT virtual void WriteGeometry (Standard_OStream& OS,
+                                              const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Reads the geometry of me from the  stream  <IS>.
-  Standard_EXPORT virtual void ReadGeometry
-    (Standard_IStream& IS,
-     const Handle(Message_ProgressIndicator) &theProgress = NULL);
+  Standard_EXPORT virtual void ReadGeometry (Standard_IStream& IS,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Dumps the geometry of <S> on the stream <OS>.
   Standard_EXPORT virtual void DumpGeometry (const TopoDS_Shape& S, Standard_OStream& OS) const;
@@ -185,14 +182,16 @@ public:
   Standard_EXPORT Standard_Integer NbShapes() const;
 
 private:
-  
+
   //! Reads  from <IS>  a shape  and  returns  it in  S.
   //! <NbShapes> is the number of tshapes in the set.
   Standard_EXPORT void Read (TopoDS_Shape& S, Standard_IStream& IS, const Standard_Integer NbShapes) const;
 
+
   TopTools_IndexedMapOfShape myShapes;
   TopTools_LocationSet myLocations;
   Standard_Integer myFormatNb;
+
 };
 
 #endif // _TopTools_ShapeSet_HeaderFile

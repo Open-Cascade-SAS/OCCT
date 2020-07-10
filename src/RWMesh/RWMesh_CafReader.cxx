@@ -18,7 +18,7 @@
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 #include <BRep_Builder.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Timer.hxx>
@@ -87,7 +87,7 @@ TopoDS_Shape RWMesh_CafReader::SingleShape() const
 // purpose  :
 // =======================================================================
 Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFile,
-                                            const Handle(Message_ProgressIndicator)& theProgress,
+                                            const Message_ProgressRange& theProgress,
                                             const Standard_Boolean theToProbe)
 {
   Standard_Integer aNewRootsLower = 1;
@@ -101,8 +101,7 @@ Standard_Boolean RWMesh_CafReader::perform (const TCollection_AsciiString& theFi
   OSD_Timer aLoadingTimer;
   aLoadingTimer.Start();
   const Standard_Boolean isDone = performMesh (theFile, theProgress, theToProbe);
-  if (theToProbe
-   || (!theProgress.IsNull() && theProgress->UserBreak()))
+  if (theToProbe || theProgress.UserBreak())
   {
     return isDone;
   }

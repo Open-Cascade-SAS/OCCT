@@ -14,8 +14,6 @@
 
 #include <RWObj_CafReader.hxx>
 
-#include <Message_ProgressSentry.hxx>
-
 IMPLEMENT_STANDARD_RTTIEXT(RWObj_CafReader, RWMesh_CafReader)
 
 //================================================================
@@ -97,7 +95,7 @@ Handle(RWObj_TriangulationReader) RWObj_CafReader::createReaderContext()
 // Purpose  :
 //================================================================
 Standard_Boolean RWObj_CafReader::performMesh (const TCollection_AsciiString& theFile,
-                                               const Handle(Message_ProgressIndicator)& theProgress,
+                                               const Message_ProgressRange& theProgress,
                                                const Standard_Boolean theToProbe)
 {
   Handle(RWObj_TriangulationReader) aCtx = createReaderContext();

@@ -43,7 +43,7 @@
 #include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -106,8 +106,7 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 
   // Progress indicator
   Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );
-  progress->SetScale ( 0, 100, 1 );
-  progress->Show();
+  Message_ProgressScope aPSRoot (progress->Start(), "Reading", 100);
  
   IGESControl_Reader Reader (XSDRAW::Session(),Standard_False);
   Standard_Boolean aFullMode = Standard_True;
@@ -131,14 +130,15 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 
 
 // Reading the file
-  progress->NewScope ( 20, "Loading" ); // On average loading takes 20% 
-  progress->Show();
+  aPSRoot.SetName("Loading");
+  progress->Show(aPSRoot);
 
   if (modfic) readstat = Reader.ReadFile (fnom.ToCString());
   else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
 
-  progress->EndScope();
-  progress->Show();
+  aPSRoot.Next(20); // On average loading takes 20% 
+  if (aPSRoot.UserBreak())
+    return 1;
 
   if (readstat != IFSelect_RetDone) {
     if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
@@ -176,16 +176,16 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
       Handle(XSControl_WorkSession) thesession = Reader.WS();
       thesession->ClearContext();
       XSDRAW::SetTransferProcess (thesession->TransferReader()->TransientProcess());
-      progress->NewScope ( 80, "Translation" );
-      progress->Show();
-      thesession->TransferReader()->TransientProcess()->SetProgress ( progress );
+
+      aPSRoot.SetName("Translation");
+      progress->Show(aPSRoot);
       
       if (modepri == 1) Reader.SetReadVisible (Standard_True);
-      Reader.TransferRoots();
+      Reader.TransferRoots(aPSRoot.Next(80));
       
-      thesession->TransferReader()->TransientProcess()->SetProgress ( 0 );
-      progress->EndScope();
-      progress->Show();
+      if (aPSRoot.UserBreak())
+        return 1;
+
       // result in only one shape for all the roots
       //        or in one shape for one root.
       di<<"Count of shapes produced : "<<Reader.NbShapes()<<"\n";
@@ -251,7 +251,8 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
       std::cout << " give the number of the Entity : " << std::flush;
       nent = XSDRAW::GetEntityNumber();
 
-      if (!Reader.TransferOne (nent)) di<<"Transfer entity n0 "<<nent<<" : no result\n";
+      if (!Reader.TransferOne (nent))
+        di<<"Transfer entity n0 "<<nent<<" : no result\n";
       else {
 	nbs = Reader.NbShapes();
 	char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nent);
@@ -277,17 +278,16 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
         Handle(XSControl_WorkSession) thesession = Reader.WS();
         thesession->ClearContext();
         XSDRAW::SetTransferProcess (thesession->TransferReader()->TransientProcess());
-        progress->NewScope ( 80, "Translation" );
-        progress->Show();
-        thesession->TransferReader()->TransientProcess()->SetProgress ( progress );
+
+        aPSRoot.SetName("Translation");
+        progress->Show(aPSRoot);
       
         Reader.SetReadVisible (Standard_True);
-        Reader.TransferRoots();
+        Reader.TransferRoots(aPSRoot.Next(80));
       
-        thesession->TransferReader()->TransientProcess()->SetProgress ( 0 );
-        progress->EndScope();
-        progress->Show();
-        
+        if (aPSRoot.UserBreak())
+          return 1;
+
         // result in only one shape for all the roots
         TopoDS_Shape shape = Reader.OneShape();
         // save the shape
@@ -355,16 +355,16 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
 	  Handle(XSControl_WorkSession) thesession = Reader.WS();
 	
 	  XSDRAW::SetTransferProcess (thesession->TransferReader()->TransientProcess());
-          progress->NewScope ( 80, "Translation" );
-          progress->Show();
-          thesession->TransferReader()->TransientProcess()->SetProgress ( progress );
+          aPSRoot.SetName("Translation");
+          progress->Show(aPSRoot);
 
-          Message_ProgressSentry PSentry ( progress, "Root", 0, nbl, 1 );
-	  for (Standard_Integer ill = 1; ill <= nbl && PSentry.More(); ill ++, PSentry.Next()) {
-	  
+          Message_ProgressScope aPS(aPSRoot.Next(80), "Root", nbl);
+          for (Standard_Integer ill = 1; ill <= nbl && aPS.More(); ill++)
+          {
 	    nent = Reader.Model()->Number(list->Value(ill));
 	    if (nent == 0) continue;
-	    if (!Reader.TransferOne(nent)) di<<"Transfer entity n0 "<<nent<<" : no result\n";
+	    if (!Reader.TransferOne(nent, aPS.Next()))
+              di<<"Transfer entity n0 "<<nent<<" : no result\n";
 	    else {
 	      nbs = Reader.NbShapes();
 	      char shname[30];  Sprintf (shname,"%s_%d",rnom.ToCString(),nbs);
@@ -375,10 +375,9 @@ static Standard_Integer igesbrep (Draw_Interpretor& di, Standard_Integer argc, c
               nbt++;
 	    }
 	  }
-	  thesession->TransferReader()->TransientProcess()->SetProgress ( 0 );
-          progress->EndScope();
-          progress->Show();
-	  di<<"Nb Shapes successfully produced : "<<nbt<<"\n";
+          if (aPSRoot.UserBreak())
+            return 1;
+          di<<"Nb Shapes successfully produced : "<<nbt<<"\n";
 	  answer = 0;  // on ne reboucle pas
 	}
       }
@@ -444,16 +443,16 @@ static Standard_Integer brepiges (Draw_Interpretor& di, Standard_Integer n, cons
   Standard_Integer npris = 0;
 
   Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );
-  progress->NewScope(90,"Translating");
-  progress->Show();
-  ICW.TransferProcess()->SetProgress(progress);
+  Message_ProgressScope aPSRoot (progress->Start(), "Translating", 100);
+  progress->Show(aPSRoot);
 
-  for ( Standard_Integer i = 1; i < n; i++) {
+  Message_ProgressScope aPS(aPSRoot.Next(90), NULL, n);
+  for ( Standard_Integer i = 1; i < n && aPS.More(); i++) {
     const char* nomvar = a[i];
     if (a[i][0] == '+') nomvar = &(a[i])[1];
     else if (i > 1)  {  nomfic = a[i];  break;  }
     TopoDS_Shape Shape = DBRep::Get(nomvar);
-    if      (ICW.AddShape (Shape)) npris ++;
+    if      (ICW.AddShape (Shape, aPS.Next())) npris ++;
     else if (ICW.AddGeom (DrawTrSurf::GetCurve   (nomvar)) ) npris ++;
     else if (ICW.AddGeom (DrawTrSurf::GetSurface (nomvar)) ) npris ++;
   }
@@ -461,11 +460,10 @@ static Standard_Integer brepiges (Draw_Interpretor& di, Standard_Integer n, cons
   XSDRAW::SetModel(ICW.Model());
   XSDRAW::SetTransferProcess (ICW.TransferProcess());
     
-  ICW.TransferProcess()->SetProgress(0);
-  progress->EndScope();
-  progress->Show();
-  progress->NewScope(10,"Writing");
-  progress->Show();
+  if (aPSRoot.UserBreak())
+    return 1;
+  aPSRoot.SetName("Writing");
+  progress->Show(aPSRoot);
 
   di<<npris<<" Shapes written, giving "<<XSDRAW::Model()->NbEntities()<<" Entities\n";
 
@@ -478,9 +476,6 @@ static Standard_Integer brepiges (Draw_Interpretor& di, Standard_Integer n, cons
   // write file
   if (! ICW.Write(nomfic)) di<<" Error: could not write file " << nomfic;
   else                     di<<" File " << nomfic << " written";
-
-  progress->EndScope();
-  progress->Show();
 
   return 0;
 }

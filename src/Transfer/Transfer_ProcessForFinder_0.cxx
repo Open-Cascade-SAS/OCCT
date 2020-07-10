@@ -22,7 +22,6 @@
 #include <Transfer_Finder.hxx>
 #include <Transfer_Binder.hxx>
 #include <Transfer_ActorOfProcessForFinder.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <Interface_InterfaceError.hxx>
 #include <Transfer_TransferFailure.hxx>
 #include <Transfer_FindHasher.hxx>

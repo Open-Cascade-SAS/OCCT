@@ -15,6 +15,7 @@
 #ifndef _RWGltf_CafReader_HeaderFile
 #define _RWGltf_CafReader_HeaderFile
 
+#include <Message_ProgressRange.hxx>
 #include <NCollection_Vector.hxx>
 #include <RWMesh_CafReader.hxx>
 #include <TopoDS_Face.hxx>
@@ -52,7 +53,7 @@ protected:
 
   //! Read the mesh from specified file.
   Standard_EXPORT virtual Standard_Boolean performMesh (const TCollection_AsciiString& theFile,
-                                                        const Handle(Message_ProgressIndicator)& theProgress,
+                                                        const Message_ProgressRange& theProgress,
                                                         const Standard_Boolean theToProbe) Standard_OVERRIDE;
 
   //! Create primitive array reader context.
@@ -63,7 +64,7 @@ protected:
   //! Read late data from RWGltf_GltfLatePrimitiveArray stored as Poly_Triangulation within faces.
   Standard_EXPORT virtual Standard_Boolean readLateData (NCollection_Vector<TopoDS_Face>& theFaces,
                                                          const TCollection_AsciiString& theFile,
-                                                         const Handle(Message_ProgressIndicator)& theProgress);
+                                                         const Message_ProgressRange& theProgress);
 protected:
 
   class CafReader_GltfReaderFunctor;

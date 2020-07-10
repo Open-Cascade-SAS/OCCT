@@ -40,7 +40,7 @@
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <OSD_Timer.hxx>
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
@@ -368,7 +368,8 @@ static void TrimTolerances (const TopoDS_Shape& shape,
 //function : TransferRoots
 //purpose  : Transfers all Roots Entities
 //=======================================================================
-void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible)
+void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible,
+                                        const Message_ProgressRange& theProgress)
 {
   if (theModel.IsNull() || theProc.IsNull()) return;
 
@@ -417,8 +418,10 @@ void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible)
   // sln 11.06.2002 OCC448
   Interface_Static::SetIVal("read.iges.onlyvisible",onlyvisible);
   
-  Message_ProgressSentry PS ( theProc->GetProgress(), "Root", 0, nb, 1 );
-  for (Standard_Integer i = 1; i <= nb && PS.More(); i++, PS.Next()) {
+  Message_ProgressScope PS (theProgress, "Root", nb);
+  for (Standard_Integer i = 1; i <= nb && PS.More(); i++)
+  {
+    Message_ProgressRange aRange = PS.Next();
     Handle(IGESData_IGESEntity) ent = theModel->Entity(i);
     if ( SH.IsShared(ent) || ! theActor->Recognize (ent) ) continue;
     if (level > 0) {
@@ -433,7 +436,7 @@ void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible)
       theDone = Standard_True;
       try {
         OCC_CATCH_SIGNALS
-        TP.Transfer(ent);
+        TP.Transfer (ent, aRange);
         shape = TransferBRep::ShapeResult (theProc,ent);
       } 
       catch(Standard_Failure const&) {
@@ -478,7 +481,8 @@ void  IGESToBRep_Reader::TransferRoots (const Standard_Boolean onlyvisible)
 //function : Transfer
 //purpose  : Transfers an Entity given
 //=======================================================================
-Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
+Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num,
+                                              const Message_ProgressRange& theProgress)
 { 
   Handle(Message_Messenger) TF = theProc->Messenger();
   theDone = Standard_False;
@@ -501,7 +505,7 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
   
   Handle(IGESData_IGESEntity) ent = theModel->Entity(num);
 
-  Message_ProgressSentry PS ( theProc->GetProgress(), "OneEnt", 0, 1, 1 ); //skl
+  Message_ProgressScope aPS(theProgress, "OneEnt", 2);
 
   XSAlgo::AlgoContainer()->PrepareForTransfer();
   IGESToBRep_CurveAndSurface CAS;
@@ -543,7 +547,9 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
   {
     try {
       OCC_CATCH_SIGNALS
-      shape = CAS.TransferGeometry (ent);
+      shape = CAS.TransferGeometry (ent, aPS.Next());
+      if (aPS.UserBreak())
+        return Standard_False;
     } 
     catch(Standard_Failure const&) {
       Message_Msg msg1015("IGES_1015");
@@ -559,7 +565,10 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
     shape = XSAlgo::AlgoContainer()->ProcessShape( shape, eps*CAS.GetUnitFactor(), CAS.GetMaxTol(),
                                                    "read.iges.resource.name", 
                                                    "read.iges.sequence", info,
-                                                   theProc->GetProgress() );
+                                                   aPS.Next() );
+    if (aPS.UserBreak())
+      return Standard_False;
+
     XSAlgo::AlgoContainer()->MergeTransferInfo(theProc, info, nbTPitems);
 
     ShapeExtend_Explorer SBE;
@@ -575,8 +584,6 @@ Standard_Boolean  IGESToBRep_Reader::Transfer(const Standard_Integer num)
       }
     }
   }
-
-  PS.Relieve(); //skl
 
   char t [20];
   t[0]='\0';

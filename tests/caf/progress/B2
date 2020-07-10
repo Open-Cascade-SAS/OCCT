@@ -11,7 +11,7 @@ puts "caf009-B2"
 set xDoc [CreateXmlDoc]
 
 # Configurate XProgress 
-XProgress -g +t -tcloutput
+XProgress +t 
 
 # Open xml document
 if {${xDoc} == "" } {
@@ -25,8 +25,9 @@ set output [Open ${xDoc} Doc]
 Close Doc
 
 # Test data
-set ctr {"0%" "Reading document" "Reading geometry" "3D Curves"
- "Surfaces" "Shapes" "Reading sub-tree" "100%" }
+set ctr { "0%" "Reading document" "Reading" "3D Curves" "2D Curves"
+          "3D Polygons" "Polygons On Triangulation" "Shapes" 
+          "Triangulations" "Surfaces" "Reading sub-tree" "100%" }
 
 foreach data ${ctr} {
     if ![regexp $data $output] {

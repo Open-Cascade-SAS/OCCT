@@ -143,12 +143,13 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   //! - <ents> a HSequenceOfTransient : this list
   //! - <ents> the Model : in this specific case, all the roots,
   //! with no cumulation of former transfers (TransferReadRoots)
-  Standard_EXPORT Standard_Integer TransferReadOne (const Handle(Standard_Transient)& theEnts);
+  Standard_EXPORT Standard_Integer TransferReadOne (const Handle(Standard_Transient)& theEnts,
+                                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Commands the transfer of all the root entities of the model
   //! i.e. calls TransferRoot from the TransferReader with the Graph
   //! No cumulation with former calls to TransferReadOne
-  Standard_EXPORT Standard_Integer TransferReadRoots();
+  Standard_EXPORT Standard_Integer TransferReadRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! produces and returns a new Model well conditionned
   //! It is produced by the Norm Controller
@@ -173,7 +174,10 @@ class XSControl_WorkSession : public IFSelect_WorkSession
   //! according to the last call to SetModeWriteShape
   //! Returns status :Done if OK, Fail if error during transfer,
   //! Error if transfer badly initialised
-  Standard_EXPORT IFSelect_ReturnStatus TransferWriteShape (const TopoDS_Shape& theShape, const Standard_Boolean theCompGraph = Standard_True);
+  Standard_EXPORT IFSelect_ReturnStatus TransferWriteShape
+                   (const TopoDS_Shape& theShape,
+                    const Standard_Boolean theCompGraph = Standard_True,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns the check-list of last transfer (write)
   //! It is recorded in the FinderProcess, but it must be bound with

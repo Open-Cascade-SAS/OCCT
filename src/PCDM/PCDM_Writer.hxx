@@ -39,12 +39,12 @@ public:
 
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& aDocument,
                                       const TCollection_ExtendedString& aFileName, 
-                                      const Handle(Message_ProgressIndicator)& theProgress = NULL) = 0;
+                                      const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
 
   //! Write <theDocument> to theOStream
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument,
                                       Standard_OStream& theOStream, 
-                                      const Handle(Message_ProgressIndicator)& theProgress = NULL) = 0;
+                                      const Message_ProgressRange& theRange = Message_ProgressRange()) = 0;
 
   DEFINE_STANDARD_RTTIEXT(PCDM_Writer,Standard_Transient)
 

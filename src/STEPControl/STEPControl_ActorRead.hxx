@@ -27,6 +27,8 @@
 #include <Standard_Integer.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <Message_ProgressRange.hxx>
+
 class StepRepr_Representation;
 class Standard_Transient;
 class Transfer_Binder;
@@ -66,14 +68,18 @@ public:
   
   Standard_EXPORT virtual Standard_Boolean Recognize (const Handle(Standard_Transient)& start) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer
+                   (const Handle(Standard_Transient)& start,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
   Standard_EXPORT Handle(Transfer_Binder) TransferShape (
       const Handle(Standard_Transient)& start,
       const Handle(Transfer_TransientProcess)& TP,
       const Standard_Boolean isManifold = Standard_True,
-      const Standard_Boolean theUseTrsf = Standard_False);
+      const Standard_Boolean theUseTrsf = Standard_False,
+      const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! set units and tolerances context by given ShapeRepresentation
   Standard_EXPORT void PrepareUnits (const Handle(StepRepr_Representation)& rep, const Handle(Transfer_TransientProcess)& TP);
@@ -105,10 +111,14 @@ protected:
     Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (
       const Handle(StepBasic_ProductDefinition)& PD,
       const Handle(Transfer_TransientProcess)& TP,
-      const Standard_Boolean theUseTrsf = Standard_False);
+      const Standard_Boolean theUseTrsf = Standard_False,
+      const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers next assembly usage occurence entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
+                   (const Handle(StepRepr_NextAssemblyUsageOccurrence)& NAUO,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers shape representation entity
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
@@ -116,10 +126,14 @@ protected:
       const Handle(StepShape_ShapeRepresentation)& sr,
       const Handle(Transfer_TransientProcess)& TP,
       Standard_Boolean& isBound,
-      const Standard_Boolean theUseTrsf = Standard_False);
+      const Standard_Boolean theUseTrsf = Standard_False,
+      const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers context dependent shape representation entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
+                   (const Handle(StepShape_ContextDependentShapeRepresentation)& CDSR,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers  shape representation relationship entity
   //! theUseTrsf - special flag for using Axis2Placement from ShapeRepresentation for transform root shape
@@ -127,22 +141,36 @@ protected:
       const Handle(StepRepr_ShapeRepresentationRelationship)& und,
       const Handle(Transfer_TransientProcess)& TP,
       const Standard_Integer nbrep = 0,
-      const Standard_Boolean theUseTrsf = Standard_False);
+      const Standard_Boolean theUseTrsf = Standard_False,
+      const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers  geometric representation item entity such as ManifoldSolidBRep ,...etc
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepGeom_GeometricRepresentationItem)& git, const Handle(Transfer_TransientProcess)& TP, const Standard_Boolean isManifold);
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
+                   (const Handle(StepGeom_GeometricRepresentationItem)& git,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Standard_Boolean isManifold,
+                    const Message_ProgressRange& theProgress);
   
   //! Transfers  mapped item
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepRepr_MappedItem)& mapit, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
+                   (const Handle(StepRepr_MappedItem)& mapit,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Message_ProgressRange& theProgress);
   
   //! Transfers  FaceSurface entity
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity (const Handle(StepShape_FaceSurface)& fs, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) TransferEntity
+                   (const Handle(StepShape_FaceSurface)& fs,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Message_ProgressRange& theProgress);
 
   Handle(TransferBRep_ShapeBinder) TransferEntity( const Handle(StepRepr_ConstructiveGeometryRepresentationRelationship)& theCGRR,
     const Handle(Transfer_TransientProcess)& theTP);
   
   //! Tranlates file by old way when CDSR are roots . Acts only if "read.step.product_mode" is equal Off.
-  Standard_EXPORT Handle(TransferBRep_ShapeBinder) OldWay (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT Handle(TransferBRep_ShapeBinder) OldWay
+                   (const Handle(Standard_Transient)& start,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Message_ProgressRange& theProgress);
 
 
 

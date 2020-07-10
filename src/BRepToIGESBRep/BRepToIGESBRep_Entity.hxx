@@ -26,6 +26,8 @@
 #include <BRepToIGES_BREntity.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
+#include <Message_ProgressRange.hxx>
+
 class IGESSolid_EdgeList;
 class IGESSolid_VertexList;
 class TopoDS_Vertex;
@@ -42,7 +44,6 @@ class IGESSolid_ManifoldSolid;
 class TopoDS_Solid;
 class TopoDS_CompSolid;
 class TopoDS_Compound;
-
 
 //! provides methods to transfer BRep entity from CASCADE to IGESBRep.
 class BRepToIGESBRep_Entity  : public BRepToIGES_BREntity
@@ -80,7 +81,9 @@ public:
   
   //! Returns the result of the transfert of any Shape
   //! If  the transfer has  failed, this member return a NullEntity.
-  Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape (const TopoDS_Shape& start) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape
+                   (const TopoDS_Shape& start,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Transfert an Edge entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
@@ -101,19 +104,23 @@ public:
   
   //! Transfert an Shell entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESSolid_Shell) TransferShell (const TopoDS_Shell& start);
+  Standard_EXPORT Handle(IGESSolid_Shell) TransferShell (const TopoDS_Shell& start,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfert a Solid entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESSolid_ManifoldSolid) TransferSolid (const TopoDS_Solid& start);
+  Standard_EXPORT Handle(IGESSolid_ManifoldSolid) TransferSolid (const TopoDS_Solid& start,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfert an CompSolid entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCompSolid (const TopoDS_CompSolid& start);
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCompSolid (const TopoDS_CompSolid& start,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfert a Compound entity from TopoDS to IGES
   //! If this Entity could not be converted, this member returns a NullEntity.
-  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCompound (const TopoDS_Compound& start);
+  Standard_EXPORT Handle(IGESData_IGESEntity) TransferCompound (const TopoDS_Compound& start,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 
 

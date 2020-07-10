@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
@@ -54,10 +54,12 @@ TopoDSToStep_Builder::TopoDSToStep_Builder()
 
 TopoDSToStep_Builder::TopoDSToStep_Builder
 (const TopoDS_Shape& aShape,
- TopoDSToStep_Tool& aTool, const Handle(Transfer_FinderProcess)& FP)
+ TopoDSToStep_Tool& aTool,
+ const Handle(Transfer_FinderProcess)& FP,
+ const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
-  Init(aShape, aTool, FP);
+  Init(aShape, aTool, FP, theProgress);
 }
 
 // ============================================================================
@@ -67,7 +69,8 @@ TopoDSToStep_Builder::TopoDSToStep_Builder
 
 void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
                                 TopoDSToStep_Tool& myTool,
-                                const Handle(Transfer_FinderProcess)& FP)
+                                const Handle(Transfer_FinderProcess)& FP,
+                                const Message_ProgressRange& theProgress)
 {
   
    if (myTool.IsBound(aShape)) {
@@ -76,8 +79,6 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
     myResult = myTool.Find(aShape);
     return;
   }
-
-  Handle(Message_ProgressIndicator) progress = FP->GetProgress();
 
   switch (aShape.ShapeType()) 
     {      
@@ -107,15 +108,19 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
 
 
 
-	TopExp_Explorer myExp(myShell, TopAbs_FACE);
+	TopExp_Explorer anExp;
 
 	TopoDSToStep_MakeStepFace MkFace;
 
-	for (;myExp.More();myExp.Next()) {
-
-	  const TopoDS_Face Face = TopoDS::Face(myExp.Current());
+        Standard_Integer nbshapes = 0;
+        for (anExp.Init(myShell, TopAbs_FACE); anExp.More(); anExp.Next())
+          nbshapes++;
+        Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+        for (anExp.Init(myShell, TopAbs_FACE); anExp.More() && aPS.More(); anExp.Next(), aPS.Next())
+        {
+	  const TopoDS_Face Face = TopoDS::Face(anExp.Current());
     
-    MkFace.Init(Face, myTool, FP);
+          MkFace.Init(Face, myTool, FP);
 
 	  if (MkFace.IsDone()) {
 	    FS = Handle(StepShape_FaceSurface)::DownCast(MkFace.Value());
@@ -129,8 +134,9 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
 //	    new TransferBRep_ShapeMapper(Face);
 //	    FP->AddWarning(errShape, " a Face from a Shell has not been mapped");
 	  }
-    if (!progress.IsNull()) progress->Increment();
 	}
+        if (!aPS.More())
+          return;
 
 	Standard_Integer nbFaces = mySeq.Length();
 	if ( nbFaces >= 1) {
@@ -190,7 +196,6 @@ void TopoDSToStep_Builder::Init(const TopoDS_Shape& aShape,
 //	  FP->AddWarning(errShape, " the Face has not been mapped");
 	  done = Standard_False;
 	}
-        if (!progress.IsNull()) progress->Increment();
 	break;
       }
     default: break;

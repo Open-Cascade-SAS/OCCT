@@ -264,7 +264,7 @@ void BOPAlgo_PaveFiller::IntersectVE
       aVESolver.SetEdge(aE);
       aVESolver.SetPaveBlock(aPB);
       aVESolver.SetFuzzyValue(myFuzzyValue);
-      aVESolver.SetProgressIndicator(myProgressIndicator);
+      aVESolver.SetProgressIndicator(*myProgressScope);
     }
   }
   //

@@ -16,6 +16,7 @@
 
 
 #include <BRepClass3d.hxx>
+#include <Message_ProgressScope.hxx>
 #include <MoniTool_DataMapOfShapeTransient.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_BrepWithVoids.hxx>
@@ -49,7 +50,8 @@
 
 TopoDSToStep_MakeBrepWithVoids::
   TopoDSToStep_MakeBrepWithVoids(const TopoDS_Solid& aSolid,
-				    const Handle(Transfer_FinderProcess)& FP)
+                                 const Handle(Transfer_FinderProcess)& FP,
+                                 const Message_ProgressRange& theProgress)
 {
   done = Standard_False ;
   TopoDS_Iterator              It;
@@ -68,8 +70,13 @@ TopoDSToStep_MakeBrepWithVoids::
   TopoDSToStep_Tool    aTool;
   
   if (!aOutShell.IsNull()) {
-    It.Initialize(aSolid);
-    for ( ; It.More(); It.Next() ) {
+    Standard_Integer nbshapes = 0;
+    for (It.Initialize(aSolid); It.More(); It.Next())
+      if (It.Value().ShapeType() == TopAbs_SHELL)
+        nbshapes++;
+    Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+    for (It.Initialize(aSolid); It.More() && aPS.More(); It.Next())
+    {
       if (It.Value().ShapeType() == TopAbs_SHELL) {
 	TopoDS_Shell CurrentShell = TopoDS::Shell(It.Value());
 	if ( ! aOutShell.IsEqual(CurrentShell) ) //:e0 abv 25 Mar 98: voids should be reversed according to EXPRESS for ABSR
@@ -77,7 +84,7 @@ TopoDSToStep_MakeBrepWithVoids::
 	//:d7 abv 16 Mar 98: try to treat 'open' shells as closed since flag 
 	// IsClosed() is often incorrect (taken from MakeManifoldSolid(Solid))
 	aTool.Init(aMap, Standard_False);
-	StepB.Init(CurrentShell, aTool, FP);
+	StepB.Init(CurrentShell, aTool, FP, aPS.Next());
 	TopoDSToStep::AddResult ( FP, aTool );
 	if (StepB.IsDone()) {
 	  aCShell = Handle(StepShape_ClosedShell)::DownCast(StepB.Value());
@@ -131,6 +138,9 @@ TopoDSToStep_MakeBrepWithVoids::
 */	
       }
     }
+    if (!aPS.More())
+      return;
+
     Standard_Integer N = S.Length();
     if ( N>=1 ) {
       Handle(TCollection_HAsciiString) aName = 

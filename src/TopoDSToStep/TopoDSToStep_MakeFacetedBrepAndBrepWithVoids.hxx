@@ -22,11 +22,12 @@
 #include <Standard_Handle.hxx>
 
 #include <TopoDSToStep_Root.hxx>
+#include <Message_ProgressRange.hxx>
+
 class StepShape_FacetedBrepAndBrepWithVoids;
 class StdFail_NotDone;
 class TopoDS_Solid;
 class Transfer_FinderProcess;
-
 
 //! This class implements the mapping between classes
 //! Solid from TopoDS and FacetedBrepAndBrepWithVoids from
@@ -40,7 +41,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  Standard_EXPORT TopoDSToStep_MakeFacetedBrepAndBrepWithVoids(const TopoDS_Solid& S, const Handle(Transfer_FinderProcess)& FP);
+  Standard_EXPORT TopoDSToStep_MakeFacetedBrepAndBrepWithVoids(const TopoDS_Solid& S,
+                                                               const Handle(Transfer_FinderProcess)& FP,
+                                       const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT const Handle(StepShape_FacetedBrepAndBrepWithVoids)& Value() const;
 

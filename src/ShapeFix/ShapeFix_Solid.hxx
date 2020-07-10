@@ -28,7 +28,7 @@
 #include <Standard_Real.hxx>
 class ShapeFix_Shell;
 class TopoDS_Solid;
-class Message_ProgressIndicator;
+class Message_ProgressScope;
 class TopoDS_Shell;
 class ShapeExtend_BasicMsgRegistrator;
 
@@ -61,7 +61,7 @@ public:
   //! (calls ShapeFix_Shell for each subshell). The passed
   //! progress indicator allows user to consult the current
   //! progress stage and abort algorithm if needed.
-  Standard_EXPORT virtual Standard_Boolean Perform (const Handle(Message_ProgressIndicator)& theProgress = 0);
+  Standard_EXPORT virtual Standard_Boolean Perform (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Calls MakeSolid and orients the solid to be "not infinite"
   Standard_EXPORT TopoDS_Solid SolidFromShell (const TopoDS_Shell& shell);

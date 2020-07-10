@@ -306,7 +306,7 @@ void BOPAlgo_PaveFiller::PerformFF()
       //
       aFaceFace.SetParameters(bApprox, bCompC2D1, bCompC2D2, anApproxTol);
       aFaceFace.SetFuzzyValue(myFuzzyValue);
-      aFaceFace.SetProgressIndicator(myProgressIndicator);
+      aFaceFace.SetProgressIndicator(*myProgressScope);
     }
     else {
       // for the Glue mode just add all interferences of that type
@@ -1007,7 +1007,7 @@ void BOPAlgo_PaveFiller::PostTreatFF
   }
   //
   // 2 Fuse shapes
-  aPF.SetProgressIndicator(myProgressIndicator);
+  aPF.SetProgressIndicator(*myProgressScope);
   aPF.SetRunParallel(myRunParallel);
   aPF.SetArguments(aLS);
   aPF.Perform();

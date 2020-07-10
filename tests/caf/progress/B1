@@ -11,7 +11,7 @@ puts "caf009-B1"
 set bDoc [CreateBinDoc]
 
 # Configurate XProgress 
-XProgress -g +t -tcloutput
+XProgress +t 
 
 # Open binary document
 if {${bDoc} == "" } {

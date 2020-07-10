@@ -24,10 +24,11 @@
 #include <Standard_CString.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Integer.hxx>
+#include <Message_ProgressRange.hxx>
+
 class XSAlgo_ToolContainer;
 class TopoDS_Shape;
 class Standard_Transient;
-class Message_ProgressIndicator;
 class TopoDS_Edge;
 class TopoDS_Face;
 class Transfer_TransientProcess;
@@ -66,7 +67,7 @@ public:
   Standard_EXPORT virtual TopoDS_Shape ProcessShape (
       const TopoDS_Shape& shape, const Standard_Real Prec, const Standard_Real MaxTol,
       const Standard_CString rscfile, const Standard_CString seq, Handle(Standard_Transient)& info,
-      const Handle(Message_ProgressIndicator)& progress = 0,
+      const Message_ProgressRange& theProgress = Message_ProgressRange(),
       const Standard_Boolean NonManifold = Standard_False) const;
   
   //! Checks quality of pcurve of the edge on the given face,

@@ -51,7 +51,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressRange.hxx>
 
 #include <string.h>
 //#define MDTV_DEB 1
@@ -296,33 +296,25 @@ void BinTools_ShapeSet::AddGeometry(const TopoDS_Shape& S)
 //=======================================================================
 
 void  BinTools_ShapeSet::WriteGeometry (Standard_OStream& OS,
-                                        const Handle(Message_ProgressIndicator)& theProgress)const
+                                        const Message_ProgressRange& theRange)const
 {
-  Message_ProgressSentry aPS(theProgress, "Writing geometry", 0, 6, 1);
-  myCurves2d.Write(OS, theProgress);
+  Message_ProgressScope aPS(theRange, "Writing geometry", 6);
+  myCurves2d.Write(OS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  myCurves.Write(OS, theProgress);
+  myCurves.Write(OS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  WritePolygon3D(OS, theProgress);
+  WritePolygon3D(OS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  WritePolygonOnTriangulation(OS, theProgress);
+  WritePolygonOnTriangulation(OS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  mySurfaces.Write(OS, theProgress);
+  mySurfaces.Write(OS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  WriteTriangulation(OS, theProgress);
-  if (!aPS.More())
-    return;
-  aPS.Next();
+  WriteTriangulation(OS, aPS.Next());
 }
 
 //=======================================================================
@@ -331,7 +323,7 @@ void  BinTools_ShapeSet::WriteGeometry (Standard_OStream& OS,
 //=======================================================================
 
 void  BinTools_ShapeSet::Write (Standard_OStream& OS,
-                                const Handle(Message_ProgressIndicator)& theProgress)const
+                                const Message_ProgressRange& theRange)const
 {
 
   // write the copyright
@@ -352,23 +344,22 @@ void  BinTools_ShapeSet::Write (Standard_OStream& OS,
   // write the geometry
   //-----------------------------------------
 
-  Message_ProgressSentry aPS(theProgress, "Writing geometry", 0, 2, 1);
+  Message_ProgressScope aPS(theRange, "Writing geometry", 2);
 
-  WriteGeometry(OS, theProgress);
+  WriteGeometry(OS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-	
+
   //-----------------------------------------
   // write the shapes
   //-----------------------------------------
 
   Standard_Integer i, nbShapes = myShapes.Extent();
-  Message_ProgressSentry aPSinner(theProgress, "Writing shapes", 0, nbShapes, 1);
+  Message_ProgressScope aPSinner(aPS.Next(), "Writing shapes", nbShapes);
   OS << "\nTShapes " << nbShapes << "\n";
   
   // subshapes are written first
-  for (i = 1; i <= nbShapes && aPS.More(); i++, aPS.Next()) {
+  for (i = 1; i <= nbShapes && aPSinner.More(); i++, aPSinner.Next()) {
 
     const TopoDS_Shape& S = myShapes(i);
     
@@ -404,7 +395,7 @@ void  BinTools_ShapeSet::Write (Standard_OStream& OS,
 //=======================================================================
 
 void  BinTools_ShapeSet::Read (Standard_IStream& IS,
-                               const Handle(Message_ProgressIndicator)& theProgress)
+                               const Message_ProgressRange& theRange)
 {
 
   Clear();
@@ -440,11 +431,10 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
   //-----------------------------------------
   // read the geometry
   //-----------------------------------------
-  Message_ProgressSentry aPSouter(theProgress, "Reading", 0, 2, 1);
-  ReadGeometry(IS, theProgress);
+  Message_ProgressScope aPSouter(theRange, "Reading", 2);
+  ReadGeometry(IS, aPSouter.Next());
   if (!aPSouter.More())
     return;
-  aPSouter.Next();
   //-----------------------------------------
   // read the shapes
   //-----------------------------------------
@@ -460,7 +450,7 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
   Standard_Integer nbShapes = 0;
   IS >> nbShapes;
   IS.get();//remove lf 
-  Message_ProgressSentry aPSinner(theProgress, "Reading Shapes", 0, nbShapes, 1);
+  Message_ProgressScope aPSinner(aPSouter.Next(), "Reading Shapes", nbShapes);
   for (int i = 1; i <= nbShapes && aPSinner.More(); i++, aPSinner.Next()) {
 
     TopoDS_Shape S;
@@ -561,33 +551,25 @@ void  BinTools_ShapeSet::Read (TopoDS_Shape& S, Standard_IStream& IS,
 //=======================================================================
 
 void  BinTools_ShapeSet::ReadGeometry (Standard_IStream& IS,
-                                       const Handle(Message_ProgressIndicator)& theProgress)
+                                       const Message_ProgressRange& theRange)
 {
-  Message_ProgressSentry aPS(theProgress, "Reading geomentry", 0, 6, 1);
-  myCurves2d.Read(IS, theProgress);
+  Message_ProgressScope aPS(theRange, "Reading geomentry", 6);
+  myCurves2d.Read(IS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  myCurves.Read(IS, theProgress);
+  myCurves.Read(IS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  ReadPolygon3D(IS, theProgress);
+  ReadPolygon3D(IS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  ReadPolygonOnTriangulation(IS, theProgress);
+  ReadPolygonOnTriangulation(IS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  mySurfaces.Read(IS, theProgress);
+  mySurfaces.Read(IS, aPS.Next());
   if (!aPS.More())
     return;
-  aPS.Next();
-  ReadTriangulation(IS, theProgress);
-  if (!aPS.More())
-    return;
-  aPS.Next();
+  ReadTriangulation(IS, aPS.Next());
 }
 
 //=======================================================================
@@ -1229,14 +1211,14 @@ void  BinTools_ShapeSet::AddShapes(TopoDS_Shape&       S1,
 //=======================================================================
 void BinTools_ShapeSet::WritePolygonOnTriangulation
   (Standard_OStream& OS,
-   const Handle(Message_ProgressIndicator)& theProgress) const
+   const Message_ProgressRange& theRange) const
 {
   const Standard_Integer aNbPol = myNodes.Extent();
   OS << "PolygonOnTriangulations " << aNbPol << "\n";
   try
   {
     OCC_CATCH_SIGNALS
-    Message_ProgressSentry aPS(theProgress, "Writing polygons on triangulation", 0, aNbPol, 1);
+    Message_ProgressScope aPS(theRange, "Writing polygons on triangulation", aNbPol);
     for (Standard_Integer aPolIter = 1; aPolIter <= aNbPol && aPS.More(); ++aPolIter, aPS.Next())
     {
       const Handle(Poly_PolygonOnTriangulation)& aPoly = myNodes.FindKey (aPolIter);
@@ -1279,7 +1261,7 @@ void BinTools_ShapeSet::WritePolygonOnTriangulation
 //=======================================================================
 void BinTools_ShapeSet::ReadPolygonOnTriangulation
   (Standard_IStream& IS,
-   const Handle(Message_ProgressIndicator)& theProgress)
+   const Message_ProgressRange& theRange)
 {
   char aHeader[255];
   IS >> aHeader;
@@ -1294,7 +1276,7 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation
   try
   {
     OCC_CATCH_SIGNALS
-    Message_ProgressSentry aPS(theProgress, "Reading Polygones on triangulation", 0, aNbPol, 1);
+    Message_ProgressScope aPS(theRange, "Reading Polygones on triangulation", aNbPol);
     for (Standard_Integer aPolIter = 1; aPolIter <= aNbPol && aPS.More(); ++aPolIter, aPS.Next())
     {
       Standard_Integer aNbNodes = 0;
@@ -1336,15 +1318,15 @@ void BinTools_ShapeSet::ReadPolygonOnTriangulation
 //function : WritePolygon3D
 //purpose  :
 //=======================================================================
-void BinTools_ShapeSet::WritePolygon3D(Standard_OStream& OS,
-                                       const Handle(Message_ProgressIndicator)& theProgress)const
+void BinTools_ShapeSet::WritePolygon3D (Standard_OStream& OS,
+                                        const Message_ProgressRange& theRange)const
 {
   const Standard_Integer aNbPol = myPolygons3D.Extent();
   OS << "Polygon3D " << aNbPol << "\n";
   try
   {
     OCC_CATCH_SIGNALS
-    Message_ProgressSentry aPS(theProgress, "Writing polygons 3D", 0, aNbPol, 1);
+    Message_ProgressScope aPS(theRange, "Writing polygons 3D", aNbPol);
     for (Standard_Integer aPolIter = 1; aPolIter <= aNbPol && aPS.More(); ++aPolIter, aPS.Next())
     {
       const Handle(Poly_Polygon3D)& aPoly = myPolygons3D.FindKey (aPolIter);
@@ -1386,7 +1368,7 @@ void BinTools_ShapeSet::WritePolygon3D(Standard_OStream& OS,
 //purpose  :
 //=======================================================================
 void BinTools_ShapeSet::ReadPolygon3D (Standard_IStream& IS,
-                                       const Handle(Message_ProgressIndicator)& theProgress)
+                                       const Message_ProgressRange& theRange)
 {
   char aHeader[255];
   IS >> aHeader;
@@ -1405,7 +1387,7 @@ void BinTools_ShapeSet::ReadPolygon3D (Standard_IStream& IS,
   try
   {
     OCC_CATCH_SIGNALS
-    Message_ProgressSentry aPS(theProgress, "Reading polygones 3D", 0, aNbPol, 1);
+    Message_ProgressScope aPS(theRange, "Reading polygones 3D", aNbPol);
     for (Standard_Integer aPolIter = 1; aPolIter <= aNbPol && aPS.More(); ++aPolIter, aPS.Next())
     {
       Standard_Integer aNbNodes = 0;
@@ -1452,7 +1434,7 @@ void BinTools_ShapeSet::ReadPolygon3D (Standard_IStream& IS,
 //purpose  :
 //=======================================================================
 void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
-                                            const Handle(Message_ProgressIndicator)& theProgress) const
+                                            const Message_ProgressRange& theRange) const
 {
   const Standard_Integer aNbTriangulations = myTriangulations.Extent();
   OS << "Triangulations " << aNbTriangulations << "\n";
@@ -1460,7 +1442,7 @@ void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
   try
   {
     OCC_CATCH_SIGNALS
-    Message_ProgressSentry aPS(theProgress, "Writing triangulation", 0, aNbTriangulations, 1);
+    Message_ProgressScope aPS(theRange, "Writing triangulation", aNbTriangulations);
     for (Standard_Integer aTriangulationIter = 1; aTriangulationIter <= aNbTriangulations && aPS.More(); ++aTriangulationIter, aPS.Next())
     {
       const Handle(Poly_Triangulation)& aTriangulation = myTriangulations.FindKey (aTriangulationIter);
@@ -1515,7 +1497,7 @@ void BinTools_ShapeSet::WriteTriangulation (Standard_OStream& OS,
 //purpose  :
 //=======================================================================
 void BinTools_ShapeSet::ReadTriangulation (Standard_IStream& IS,
-                                           const Handle(Message_ProgressIndicator)& theProgress)
+                                           const Message_ProgressRange& theRange)
 {
   char aHeader[255];
   IS >> aHeader;
@@ -1531,7 +1513,7 @@ void BinTools_ShapeSet::ReadTriangulation (Standard_IStream& IS,
   try
   {
     OCC_CATCH_SIGNALS
-    Message_ProgressSentry aPS(theProgress, "Reading triangulation", 0, aNbTriangulations, 1);
+    Message_ProgressScope aPS(theRange, "Reading triangulation", aNbTriangulations);
     for (Standard_Integer aTriangulationIter = 1; aTriangulationIter <= aNbTriangulations && aPS.More(); ++aTriangulationIter, aPS.Next())
     {
       Standard_Integer aNbNodes = 0, aNbTriangles = 0;

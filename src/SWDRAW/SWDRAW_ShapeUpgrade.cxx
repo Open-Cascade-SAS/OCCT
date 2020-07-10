@@ -57,6 +57,7 @@
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <SWDRAW.hxx>
 #include <SWDRAW_ShapeUpgrade.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <TColGeom2d_HArray1OfCurve.hxx>
 #include <TColGeom_HArray1OfCurve.hxx>
 #include <TColGeom_HArray2OfSurface.hxx>

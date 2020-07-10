@@ -18,10 +18,10 @@
 #include <GeomTools.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Vec.hxx>
-#include <Message_ProgressSentry.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Stream.hxx>
+#include <Message_ProgressScope.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopTools_LocationSet.hxx>
 
@@ -171,8 +171,7 @@ void  TopTools_LocationSet::Dump(Standard_OStream& OS) const
 //purpose  : 
 //=======================================================================
 
-void  TopTools_LocationSet::Write (Standard_OStream& OS,
-                                   const Handle(Message_ProgressIndicator) &theProgress) const
+void  TopTools_LocationSet::Write(Standard_OStream& OS, const Message_ProgressRange& theProgress) const
 {
   
   std::streamsize prec = OS.precision(15);
@@ -181,7 +180,7 @@ void  TopTools_LocationSet::Write (Standard_OStream& OS,
   OS << "Locations " << nbLoc << "\n";
   
   //OCC19559
-  Message_ProgressSentry PS(theProgress, "Locations", 0, nbLoc, 1);
+  Message_ProgressScope PS(theProgress, "Locations", nbLoc);
   for (i = 1; i <= nbLoc && PS.More(); i++, PS.Next()) {
     TopLoc_Location L = myMap(i);
 
@@ -246,7 +245,7 @@ static void ReadTrsf(gp_Trsf& T,
 //purpose  : 
 //=======================================================================
 
-void  TopTools_LocationSet::Read (Standard_IStream& IS, const Handle(Message_ProgressIndicator) &theProgress)
+void  TopTools_LocationSet::Read(Standard_IStream& IS, const Message_ProgressRange& theProgress)
 {
   myMap.Clear();
 
@@ -266,7 +265,7 @@ void  TopTools_LocationSet::Read (Standard_IStream& IS, const Handle(Message_Pro
   gp_Trsf T;
     
   //OCC19559
-  Message_ProgressSentry PS(theProgress, "Locations", 0, nbLoc, 1);
+  Message_ProgressScope PS(theProgress, "Locations", nbLoc);
   for (i = 1; i <= nbLoc&& PS.More(); i++, PS.Next()) {
     Standard_Integer typLoc;
     IS >> typLoc;

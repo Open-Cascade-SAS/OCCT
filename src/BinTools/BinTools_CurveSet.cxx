@@ -37,7 +37,7 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 
 #define LINE      1
 #define CIRCLE    2
@@ -360,10 +360,10 @@ void BinTools_CurveSet::WriteCurve(const Handle(Geom_Curve)& C,
 //=======================================================================
 
 void  BinTools_CurveSet::Write (Standard_OStream& OS,
-                                const Handle(Message_ProgressIndicator)& theProgress)const
+                                const Message_ProgressRange& theRange)const
 {
   Standard_Integer i, nbcurv = myMap.Extent();
-  Message_ProgressSentry aPS(theProgress, "Writing curves", 0, nbcurv, 1);
+  Message_ProgressScope aPS(theRange, "Writing curves", nbcurv);
   OS << "Curves "<< nbcurv << "\n";
   for (i = 1; i <= nbcurv &&aPS.More(); i++, aPS.Next()) {
     WriteCurve(Handle(Geom_Curve)::DownCast(myMap(i)),OS);
@@ -715,7 +715,7 @@ Standard_IStream& BinTools_CurveSet::ReadCurve(Standard_IStream& IS,
 //=======================================================================
 
 void  BinTools_CurveSet::Read (Standard_IStream& IS,
-                               const Handle(Message_ProgressIndicator)& theProgress)
+                               const Message_ProgressRange& theRange)
 {
   char buffer[255];
   IS >> buffer;
@@ -733,7 +733,7 @@ void  BinTools_CurveSet::Read (Standard_IStream& IS,
   Standard_Integer i, nbcurve;
   IS >> nbcurve;
 
-  Message_ProgressSentry aPS(theProgress, "Reading curves", 0, nbcurve, 1);
+  Message_ProgressScope aPS(theRange, "Reading curves", nbcurve);
 
   IS.get();//remove <lf>
   for (i = 1; i <= nbcurve && aPS.More(); i++, aPS.Next()) {

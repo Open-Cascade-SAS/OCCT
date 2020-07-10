@@ -127,7 +127,8 @@ Handle(Transfer_FinderProcess) BRepToIGES_BREntity::GetTransferProcess() const
 //purpose  : 
 //=======================================================================
 Handle(IGESData_IGESEntity) BRepToIGES_BREntity::TransferShape
-(const TopoDS_Shape& start)
+(const TopoDS_Shape& start,
+ const Message_ProgressRange& theProgress)
 {
   Handle(IGESData_IGESEntity) res;
 //  TopoDS_Shape theShape;
@@ -164,31 +165,31 @@ Handle(IGESData_IGESEntity) BRepToIGES_BREntity::TransferShape
       TopoDS_Face F =  TopoDS::Face(start);
       BRepToIGES_BRShell BS(*this);
       BS.SetModel(GetModel());
-      res = BS.TransferFace(F);
+      res = BS.TransferFace(F, theProgress);
     }  
     else if (start.ShapeType() == TopAbs_SHELL) {
       TopoDS_Shell S =  TopoDS::Shell(start);
       BRepToIGES_BRShell BS(*this);
       BS.SetModel(GetModel());
-      res = BS.TransferShell(S);
+      res = BS.TransferShell(S, theProgress);
     }  
     else if (start.ShapeType() == TopAbs_SOLID) {
       TopoDS_Solid M =  TopoDS::Solid(start);
       BRepToIGES_BRSolid BS(*this);
       BS.SetModel(GetModel());
-      res = BS.TransferSolid(M);
+      res = BS.TransferSolid(M, theProgress);
     }  
     else if (start.ShapeType() == TopAbs_COMPSOLID) {
       TopoDS_CompSolid C =  TopoDS::CompSolid(start);
       BRepToIGES_BRSolid BS(*this);
       BS.SetModel(GetModel());
-      res = BS.TransferCompSolid(C);
+      res = BS.TransferCompSolid(C, theProgress);
     }  
     else if (start.ShapeType() == TopAbs_COMPOUND) {
       TopoDS_Compound C =  TopoDS::Compound(start);
       BRepToIGES_BRSolid BS(*this);
       BS.SetModel(GetModel());
-      res = BS.TransferCompound(C);
+      res = BS.TransferCompound(C, theProgress);
     }  
     else {
       // message d`erreur

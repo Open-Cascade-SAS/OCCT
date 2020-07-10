@@ -16,6 +16,7 @@
 
 
 #include <BRepClass3d.hxx>
+#include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_HArray1OfFace.hxx>
@@ -32,14 +33,17 @@
 #include <TransferBRep_ShapeMapper.hxx>
 
 static Handle(StepShape_ManifoldSolidBrep) MakeManifoldSolidBrep (const TopoDS_Shell& aShell,
-								  const Handle(Transfer_FinderProcess)& FP)
+                                                                  const Handle(Transfer_FinderProcess)& FP,
+                                                                  const Message_ProgressRange& theProgress)
 {
   Handle(StepShape_ManifoldSolidBrep) theManifoldSolidBrep;
 
   MoniTool_DataMapOfShapeTransient aMap;
   TopoDSToStep_Tool aTool(aMap, Standard_False);
   
-  TopoDSToStep_Builder StepB(aShell, aTool, FP);
+  TopoDSToStep_Builder StepB(aShell, aTool, FP, theProgress);
+  if (theProgress.UserBreak())
+    return theManifoldSolidBrep;
 
   TopoDSToStep::AddResult(FP, aTool);
 
@@ -68,11 +72,12 @@ static Handle(StepShape_ManifoldSolidBrep) MakeManifoldSolidBrep (const TopoDS_S
 
 TopoDSToStep_MakeManifoldSolidBrep::
   TopoDSToStep_MakeManifoldSolidBrep(const TopoDS_Shell& aShell,
-				     const Handle(Transfer_FinderProcess)& FP)
+                                     const Handle(Transfer_FinderProcess)& FP,
+                                     const Message_ProgressRange& theProgress)
 {
-  theManifoldSolidBrep = MakeManifoldSolidBrep(aShell, FP);
+  theManifoldSolidBrep = MakeManifoldSolidBrep(aShell, FP, theProgress);
   done = !theManifoldSolidBrep.IsNull();
-  if (!done) {
+  if (!done && !theProgress.UserBreak()) {
     Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aShell);
     FP->AddWarning(errShape, " Closed Shell not mapped to ManifoldSolidBrep");
   }
@@ -85,14 +90,15 @@ TopoDSToStep_MakeManifoldSolidBrep::
 
 TopoDSToStep_MakeManifoldSolidBrep::
   TopoDSToStep_MakeManifoldSolidBrep(const TopoDS_Solid& aSolid,
-				     const Handle(Transfer_FinderProcess)& FP)
+                                     const Handle(Transfer_FinderProcess)& FP,
+                                     const Message_ProgressRange& theProgress)
 {
   TopoDS_Shell aOuterShell = BRepClass3d::OuterShell(aSolid);
   if (!aOuterShell.IsNull()) {
 
-    theManifoldSolidBrep = MakeManifoldSolidBrep(aOuterShell, FP);
+    theManifoldSolidBrep = MakeManifoldSolidBrep(aOuterShell, FP, theProgress);
     done = !theManifoldSolidBrep.IsNull();
-    if (!done) {
+    if (!done && !theProgress.UserBreak()) {
       Handle(TransferBRep_ShapeMapper) errShape = new TransferBRep_ShapeMapper(aOuterShell);
       FP->AddWarning(errShape, " Outer Shell of Solid not mapped to ManifoldSolidBrep");
     }

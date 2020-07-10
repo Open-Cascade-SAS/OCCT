@@ -24,6 +24,8 @@
 #include <Standard_Real.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
+#include <Message_ProgressRange.hxx>
+
 class IGESData_IGESModel;
 class Transfer_FinderProcess;
 class IGESData_IGESEntity;
@@ -64,7 +66,9 @@ public:
   
   //! Returns the result of the transfert of any Shape
   //! If  the transfer has  failed, this member return a NullEntity.
-  Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape (const TopoDS_Shape& start);
+  Standard_EXPORT virtual Handle(IGESData_IGESEntity) TransferShape
+                   (const TopoDS_Shape& start,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Records a new Fail message
   Standard_EXPORT void AddFail (const TopoDS_Shape& start, const Standard_CString amess);

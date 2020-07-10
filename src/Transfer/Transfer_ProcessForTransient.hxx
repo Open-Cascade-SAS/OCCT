@@ -21,11 +21,11 @@
 #include <Transfer_TransferMapOfProcessForTransient.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <TColStd_HSequenceOfTransient.hxx>
+#include <Message_ProgressRange.hxx>
 
 class Message_Messenger;
 class Transfer_Binder;
 class Transfer_ActorOfProcessForTransient;
-class Message_ProgressIndicator;
 class Interface_InterfaceError;
 class Transfer_TransferFailure;
 class Transfer_IteratorOfProcessForTransient;
@@ -311,11 +311,13 @@ public:
   //! the method TransferProduct (see below).
   //! Mapping and Roots are managed : nothing is done if a Result is
   //! already Bound, an exception is raised in case of error.
-  Standard_EXPORT Handle(Transfer_Binder) Transferring (const Handle(Standard_Transient)& start);
+  Standard_EXPORT Handle(Transfer_Binder) Transferring (const Handle(Standard_Transient)& start,
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Same as Transferring but does not return the Binder.
   //! Simply returns True in case of success (for user call)
-  Standard_EXPORT Standard_Boolean Transfer (const Handle(Standard_Transient)& start);
+  Standard_EXPORT Standard_Boolean Transfer (const Handle(Standard_Transient)& start,
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Allows controls if exceptions will be handled
   //! Transfer Operations
@@ -394,13 +396,6 @@ public:
   //! a check or a check-list
   //! By default, returns 0; can be redefined
   Standard_EXPORT virtual Standard_Integer CheckNum (const Handle(Standard_Transient)& start) const;
-  
-  //! Sets Progress indicator
-  Standard_EXPORT void SetProgress (const Handle(Message_ProgressIndicator)& theProgress);
-  
-  //! Gets Progress indicator
-  Standard_EXPORT Handle(Message_ProgressIndicator) GetProgress() const;
-
 
 
 
@@ -426,7 +421,8 @@ private:
   //! until a Non Null Binder is produced.
   //! But keep in mind that a Null Binder can allways be returned
   //! if a Starting Entity has not been recognized at all.
-  Standard_EXPORT Handle(Transfer_Binder) TransferProduct (const Handle(Standard_Transient)& start);
+  Standard_EXPORT Handle(Transfer_Binder) TransferProduct (const Handle(Standard_Transient)& start,
+                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_Boolean theerrh;
   Standard_Integer thetrace;
@@ -440,7 +436,6 @@ private:
   Standard_Integer theindex;
   Handle(Transfer_ActorOfProcessForTransient) theactor;
   Transfer_TransferMapOfProcessForTransient themap;
-  Handle(Message_ProgressIndicator) myProgress;
 
 
 };

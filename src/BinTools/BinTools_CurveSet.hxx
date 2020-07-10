@@ -25,7 +25,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class Standard_OutOfRange;
 class Geom_Curve;
@@ -58,12 +58,12 @@ public:
   //! Writes the content of  me  on the stream <OS> in a
   //! format that can be read back by Read.
   Standard_EXPORT void Write (Standard_OStream& OS,
-                              const Handle(Message_ProgressIndicator)& theProgress = NULL) const;
+                              const Message_ProgressRange& theRange = Message_ProgressRange()) const;
   
   //! Reads the content of me from the  stream  <IS>. me
   //! is first cleared.
   Standard_EXPORT void Read (Standard_IStream& IS,
-                             const Handle(Message_ProgressIndicator) &theProgress = NULL);
+                             const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Dumps the curve on the stream in binary format
   //! that can be read back.

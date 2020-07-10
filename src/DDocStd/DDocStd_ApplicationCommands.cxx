@@ -158,11 +158,11 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
       std::ifstream aFileStream;
       OSD_OpenStream (aFileStream, path, std::ios::in | std::ios::binary);
 
-      theStatus = A->Open (aFileStream, D, aProgress);
+      theStatus = A->Open (aFileStream, D, aProgress->Start());
     }
     else
     {
-      theStatus = A->Open (path, D, aProgress);
+      theStatus = A->Open (path, D, aProgress->Start());
     }
     if (theStatus == PCDM_RS_OK && !D.IsNull())
     {
@@ -230,7 +230,7 @@ static Standard_Integer DDocStd_Save (Draw_Interpretor& di,
     }
 
     Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator(di, 1);
-    A->Save (D, aProgress);
+    A->Save (D, aProgress->Start());
     return 0; 
   }
   di << "DDocStd_Save : Error\n";
@@ -272,11 +272,11 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     {
       std::ofstream aFileStream;
       OSD_OpenStream (aFileStream, path, std::ios::out | std::ios::binary);
-      theStatus = A->SaveAs (D, aFileStream, aProgress);
+      theStatus = A->SaveAs (D, aFileStream, aProgress->Start());
     }
     else
     {
-      theStatus = A->SaveAs(D,path, aProgress);
+      theStatus = A->SaveAs(D,path, aProgress->Start());
     }
 
     if (theStatus != PCDM_SS_OK ) {

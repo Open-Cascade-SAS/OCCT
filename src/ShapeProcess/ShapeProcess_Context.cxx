@@ -16,7 +16,6 @@
 
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressIndicator.hxx>
 #include <Resource_Manager.hxx>
 #include <ShapeProcess_Context.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -401,26 +400,6 @@ void ShapeProcess_Context::SetMessenger (const Handle(Message_Messenger)& messen
 Handle(Message_Messenger) ShapeProcess_Context::Messenger () const
 {
   return myMessenger;
-}
-
-//=======================================================================
-//function : SetProgress
-//purpose  : 
-//=======================================================================
-
-void ShapeProcess_Context::SetProgress (const Handle(Message_ProgressIndicator)& progress)
-{
-  myProgress = progress;
-}
-
-//=======================================================================
-//function : Progress
-//purpose  : 
-//=======================================================================
-
-Handle(Message_ProgressIndicator) ShapeProcess_Context::Progress() const
-{
-  return myProgress;
 }
 
 //=======================================================================

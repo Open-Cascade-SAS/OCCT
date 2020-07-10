@@ -53,11 +53,11 @@ public:
   
   //! Input the shapes from Bin Document file
   Standard_EXPORT void ReadShapeSection (Standard_IStream& theIS,
-                                         const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                         const Message_ProgressRange& therange = Message_ProgressRange());
   
   //! Output the shapes into Bin Document file
   Standard_EXPORT void WriteShapeSection (Standard_OStream& theOS,
-                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                          const Message_ProgressRange& therange = Message_ProgressRange());
   
   //! Clear myShapeSet
   Standard_EXPORT void Clear();

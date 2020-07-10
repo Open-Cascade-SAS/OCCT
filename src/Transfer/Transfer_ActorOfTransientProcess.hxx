@@ -25,7 +25,7 @@ class Transfer_Binder;
 class Standard_Transient;
 class Transfer_ProcessForTransient;
 class Transfer_TransientProcess;
-
+class Message_ProgressScope;
 
 class Transfer_ActorOfTransientProcess;
 DEFINE_STANDARD_HANDLE(Transfer_ActorOfTransientProcess, Transfer_ActorOfProcessForTransient)
@@ -39,11 +39,20 @@ public:
   
   Standard_EXPORT Transfer_ActorOfTransientProcess();
   
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transferring (const Handle(Standard_Transient)& start, const Handle(Transfer_ProcessForTransient)& TP) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transferring
+                         (const Handle(Standard_Transient)& start,
+                          const Handle(Transfer_ProcessForTransient)& TP,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer
+                         (const Handle(Standard_Transient)& start,
+                          const Handle(Transfer_TransientProcess)& TP,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT virtual Handle(Standard_Transient) TransferTransient (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP);
+  Standard_EXPORT virtual Handle(Standard_Transient) TransferTransient
+                         (const Handle(Standard_Transient)& start,
+                          const Handle(Transfer_TransientProcess)& TP,
+                          const Message_ProgressRange& theProgress = Message_ProgressRange());
 
 
 

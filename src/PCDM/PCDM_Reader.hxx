@@ -24,7 +24,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_IStream.hxx>
 #include <Storage_Data.hxx>
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class PCDM_DriverError;
 class CDM_Document;
@@ -49,13 +49,13 @@ public:
   Standard_EXPORT virtual void Read (const TCollection_ExtendedString& aFileName, 
                                      const Handle(CDM_Document)& aNewDocument, 
                                      const Handle(CDM_Application)& anApplication, 
-                                     const Handle(Message_ProgressIndicator)& theProgress = NULL) = 0;
+                                     const Message_ProgressRange& theProgress = Message_ProgressRange()) = 0;
 
   Standard_EXPORT virtual void Read (Standard_IStream&               theIStream,
                                      const Handle(Storage_Data)&    theStorageData,
                                      const Handle(CDM_Document)&    theDoc,
                                      const Handle(CDM_Application)& theApplication,
-                                     const Handle(Message_ProgressIndicator)& theProgress = NULL) = 0;
+                                     const Message_ProgressRange& theProgress = Message_ProgressRange()) = 0;
   
     PCDM_ReaderStatus GetStatus() const;
 

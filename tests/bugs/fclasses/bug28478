@@ -5,10 +5,13 @@ puts ""
 puts "# Test output of progress indicator in text mode"
 
 pload QAcommands
+
+XProgress +t
+
 set out [OCC28478 3 2]
 
 set expected {
-  {Progress: 0% Outer: 0 / 3}
+  {Progress: 0%}
   {Progress: 17% Outer: 1 / 3 Inner: 1 / 2}
   {Progress: 33% Outer: 1 / 3 Inner: 2 / 2}
   {Progress: 50% Outer: 2 / 3 Inner: 1 / 2}

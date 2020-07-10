@@ -26,6 +26,7 @@
 #include <Message_Messenger.hxx>
 #include <Message_Msg.hxx>
 #include <Message.hxx>
+#include <Message_ProgressScope.hxx>
 
 #include <Transfer_VoidBinder.hxx>
 #include <Transfer_SimpleBinderOfTransient.hxx>
@@ -992,7 +993,8 @@ Standard_Boolean  Transfer_TransferProcess::Recognize(const TheStart& start) con
 //purpose  : 
 //=======================================================================
 
-Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& start)
+Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& start,
+                                                               const Message_ProgressRange& theProgress)
 {
   //   Map deja alimentee ?
   Handle(Transfer_Binder) former = FindAndMask(start);
@@ -1064,7 +1066,7 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
     Standard_Integer oldlev = thelevel;
     try {
       OCC_CATCH_SIGNALS
-      binder = TransferProduct(start);
+      binder = TransferProduct(start, theProgress);
     }
 
     //    ...  Exceptions a Rattraper : elles ne se ressemblent pas toutes ... !
@@ -1107,7 +1109,10 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
   }
 
 //   Transfert non protege (ainsi, dbx a la main en cas de plantage par Raise)
-  else  binder = TransferProduct(start);
+  else  binder = TransferProduct(start, theProgress);
+
+  if (theProgress.UserBreak())
+    return Handle(Transfer_Binder)();
 
 //  ....                Conclusion : Noter dans la Map                ....
 
@@ -1149,19 +1154,24 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 //  ##    ##        TransferProduct : Action proprement dite        ##    ##
 
     Handle(Transfer_Binder) Transfer_TransferProcess::TransferProduct
-  (const TheStart& start)
+  (const TheStart& start,
+   const Message_ProgressRange& theProgress)
 {
   thelevel ++;             // si decremente et == 0, transfert racine
   Handle(Transfer_Binder) binder;
   Handle(Transfer_Actor) actor = theactor;
 
 //   On balaie les Next jusqu a avoir un Resultat
+  Message_ProgressScope aScope (theProgress, NULL, 1, true);
   while (!actor.IsNull()) {
-    if (actor->Recognize (start)) binder = actor->Transferring(start,this);
+    if (actor->Recognize (start)) binder = actor->Transferring(start,this, aScope.Next());
     else binder.Nullify();
     if (!binder.IsNull()) break;
     actor = actor->Next();
   }
+  if (aScope.UserBreak())
+    return Handle(Transfer_Binder)();
+  
   if (binder.IsNull()) {
 //    if (thetrace) {
 //      aSender << "Transfer has produced no Result" <<endl;
@@ -1184,9 +1194,10 @@ Handle(Transfer_Binder) Transfer_TransferProcess::Transferring(const TheStart& s
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  Transfer_TransferProcess::Transfer(const TheStart& start)
+Standard_Boolean  Transfer_TransferProcess::Transfer(const TheStart& start,
+                                                     const Message_ProgressRange& theProgress)
 {
-  Handle(Transfer_Binder) binder = Transferring(start);
+  Handle(Transfer_Binder) binder = Transferring(start, theProgress);
   return (!binder.IsNull());
 }
 
@@ -1543,23 +1554,3 @@ Standard_Integer  Transfer_TransferProcess::CheckNum(const TheStart& ) const
   return 0;
 }
 
-
-//=======================================================================
-//function : SetProgress
-//purpose  : Sets Progress indicator
-//=======================================================================
-
-void Transfer_TransferProcess::SetProgress(const Handle(Message_ProgressIndicator)& theProgress)
-{
-  myProgress = theProgress;
-}
-
-//=======================================================================
-//function : GetProgress
-//purpose  : Returns Progress indicator
-//=======================================================================
-
-Handle(Message_ProgressIndicator) Transfer_TransferProcess::GetProgress() const
-{
-  return myProgress;
-}

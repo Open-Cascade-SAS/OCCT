@@ -30,7 +30,7 @@
 #include <CDF_SubComponentStatus.hxx>
 #include <TCollection_HExtendedString.hxx>
 
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class CDF_StoreList;
 class CDM_Document;
@@ -89,7 +89,7 @@ public:
   
   Standard_EXPORT Standard_Boolean SetPreviousVersion (const Standard_ExtString aPreviousVersion);
   
-  Standard_EXPORT void Realize (const Handle(Message_ProgressIndicator)& theProgress = NULL);
+  Standard_EXPORT void Realize (const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! returns the complete path of the created meta-data.
   Standard_EXPORT Standard_ExtString Path() const;

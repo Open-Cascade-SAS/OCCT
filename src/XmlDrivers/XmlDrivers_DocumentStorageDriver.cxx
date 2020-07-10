@@ -52,7 +52,7 @@ Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentStorageDriver::AttributeDrivers
 //=======================================================================
 Standard_Boolean XmlDrivers_DocumentStorageDriver::WriteShapeSection
                                          (XmlObjMgt_Element&  theElement,
-                                          const Handle(Message_ProgressIndicator)& theProgress)
+                                          const Message_ProgressRange& theRange)
 {
   Standard_Boolean isShape(Standard_False);
   Handle(XmlMDF_ADriver) aDriver;
@@ -60,7 +60,7 @@ Standard_Boolean XmlDrivers_DocumentStorageDriver::WriteShapeSection
   {
     Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
       Handle(XmlMNaming_NamedShapeDriver)::DownCast (aDriver);
-    aNamedShapeDriver->WriteShapeSection (theElement, theProgress);
+    aNamedShapeDriver->WriteShapeSection (theElement, theRange);
     isShape = Standard_True;
   }
   return isShape;

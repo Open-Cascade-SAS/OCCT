@@ -48,11 +48,11 @@ public:
   
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
                                       const TCollection_ExtendedString& theFileName,
-                  const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                                      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   Standard_EXPORT virtual void Write (const Handle(CDM_Document)& theDocument, 
                                       Standard_OStream& theOStream,
-                  const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                                      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
 
@@ -67,19 +67,19 @@ protected:
   Standard_EXPORT virtual Standard_Boolean WriteToDomDocument
                                 (const Handle(CDM_Document)& theDocument, 
                                  XmlObjMgt_Element& thePDoc,
-                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                 const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT virtual Standard_Integer MakeDocument
                                 (const Handle(CDM_Document)& theDocument,
                                  XmlObjMgt_Element& thePDoc, 
-                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                 const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT void AddNamespace (const TCollection_AsciiString& thePrefix,
                                      const TCollection_AsciiString& theURI);
   
   Standard_EXPORT virtual Standard_Boolean WriteShapeSection
                                 (XmlObjMgt_Element& thePDoc, 
-                                 const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                 const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Handle(XmlMDF_ADriverTable) myDrivers;
   XmlObjMgt_SRelocationTable  myRelocTable;

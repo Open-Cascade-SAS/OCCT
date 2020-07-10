@@ -45,8 +45,8 @@
 #include <XSControl_WorkSession.hxx>
 
 //=======================================================================
-//function : Transfer
-//purpose  : basic working method
+//function : checkColorRange
+//purpose  : 
 //=======================================================================
 static void checkColorRange (Standard_Real& theCol)
 {
@@ -143,7 +143,12 @@ static void AddCompositeShape (const Handle(XCAFDoc_ShapeTool)& theSTool,
   return;
 }
 
-Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
+//=======================================================================
+//function : Transfer
+//purpose  : basic working method
+//=======================================================================
+Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
+                                                  const Message_ProgressRange& theProgress)
 {
   // read all shapes
   Standard_Integer num;// = NbRootsForTransfer();
@@ -152,7 +157,7 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
   //  TransferOneRoot ( i );
   //}
   
-  TransferRoots(); // replaces the above
+  TransferRoots(theProgress); // replaces the above
   num = NbShapes();
   if ( num <=0 ) return Standard_False;
 
@@ -334,8 +339,9 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
 //=======================================================================
 
 Standard_Boolean IGESCAFControl_Reader::Perform (const Standard_CString filename,
-						 Handle(TDocStd_Document) &doc)
+                                                 Handle(TDocStd_Document) &doc,
+                                                 const Message_ProgressRange& theProgress)
 {
   if ( ReadFile ( filename ) != IFSelect_RetDone ) return Standard_False;
-  return Transfer ( doc );
+  return Transfer ( doc, theProgress );
 }

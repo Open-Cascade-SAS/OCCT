@@ -25,7 +25,8 @@ Transfer_Actor::Transfer_Actor ()    {  }
 
     Handle(Transfer_Binder) Transfer_Actor::Transferring
   (const TheStart& /*start*/,
-   const Handle(Transfer_TransferProcess)& /*TP*/)
+   const Handle(Transfer_TransferProcess)& /*TP*/,
+   const Message_ProgressRange& /*theProgress*/)
       {  return NullResult();  }
 
 

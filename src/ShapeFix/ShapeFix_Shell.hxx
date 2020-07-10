@@ -19,11 +19,11 @@
 
 #include <Standard.hxx>
 
-#include <Message_ProgressIndicator.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Compound.hxx>
 #include <ShapeFix_Root.hxx>
 #include <ShapeExtend_Status.hxx>
+#include <Message_ProgressRange.hxx>
 
 class ShapeFix_Face;
 class ShapeExtend_BasicMsgRegistrator;
@@ -57,7 +57,7 @@ public:
   //! then calls FixFaceOrientation). The passed progress
   //! indicator allows user to consult the current progress
   //! stage and abort algorithm if needed.
-  Standard_EXPORT Standard_Boolean Perform (const Handle(Message_ProgressIndicator)& theProgress = 0);
+  Standard_EXPORT Standard_Boolean Perform (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Fixes orientation of faces in shell.
   //! Changes orientation of face in the shell, if it is oriented opposite

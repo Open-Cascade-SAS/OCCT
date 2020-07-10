@@ -55,11 +55,11 @@ public:
   
   //! Input the shapes from DOM element
   Standard_EXPORT void ReadShapeSection (const XmlObjMgt_Element& anElement,
-                                         const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                         const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Output the shapes into DOM element
   Standard_EXPORT void WriteShapeSection (XmlObjMgt_Element& anElement,
-                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                          const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Clear myShapeSet
   Standard_EXPORT void Clear();

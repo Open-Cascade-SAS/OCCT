@@ -253,7 +253,7 @@ void BOPAlgo_PaveFiller::PerformEE()
         anEdgeEdge.SetEdge2(aE2, aT21, aT22);
         anEdgeEdge.SetBoxes (aBB1, aBB2);
         anEdgeEdge.SetFuzzyValue(myFuzzyValue);
-        anEdgeEdge.SetProgressIndicator(myProgressIndicator);
+        anEdgeEdge.SetProgressIndicator(*myProgressScope);
       }//for (; aIt2.More(); aIt2.Next()) {
     }//for (; aIt1.More(); aIt1.Next()) {
   }//for (; myIterator->More(); myIterator->Next()) {
@@ -1073,7 +1073,7 @@ void BOPAlgo_PaveFiller::ForceInterfEE()
           anEdgeEdge.SetFuzzyValue(myFuzzyValue + aTolAdd);
         else
           anEdgeEdge.SetFuzzyValue(myFuzzyValue);
-        anEdgeEdge.SetProgressIndicator(myProgressIndicator);
+        anEdgeEdge.SetProgressIndicator(*myProgressScope);
       }
     }
   }

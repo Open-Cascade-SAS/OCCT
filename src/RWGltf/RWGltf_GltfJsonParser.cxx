@@ -18,7 +18,7 @@
 #include <gp_Quaternion.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <OSD_File.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_Path.hxx>
@@ -971,7 +971,7 @@ bool RWGltf_GltfJsonParser::gltfParseTextureInBufferView (Handle(Image_Texture)&
 // function : gltfParseScene
 // purpose  :
 // =======================================================================
-bool RWGltf_GltfJsonParser::gltfParseScene (const Handle(Message_ProgressIndicator)& theProgress)
+bool RWGltf_GltfJsonParser::gltfParseScene (const Message_ProgressRange& theProgress)
 {
   // search default scene
   const RWGltf_JsonValue* aDefScene = myGltfRoots[RWGltf_GltfRootElement_Scenes].FindChild (*myGltfRoots[RWGltf_GltfRootElement_Scene].Root());
@@ -998,7 +998,7 @@ bool RWGltf_GltfJsonParser::gltfParseScene (const Handle(Message_ProgressIndicat
 // =======================================================================
 bool RWGltf_GltfJsonParser::gltfParseSceneNodes (TopTools_SequenceOfShape& theShapeSeq,
                                                  const RWGltf_JsonValue& theSceneNodes,
-                                                 const Handle(Message_ProgressIndicator)& theProgress)
+                                                 const Message_ProgressRange& theProgress)
 {
   if (!theSceneNodes.IsArray())
   {
@@ -1006,9 +1006,9 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNodes (TopTools_SequenceOfShape& theSh
     return false;
   }
 
-  Message_ProgressSentry aPSentry (theProgress, "Reading scene nodes", 0, theSceneNodes.Size(), 1);
+  Message_ProgressScope aPS (theProgress, "Reading scene nodes", theSceneNodes.Size());
   for (rapidjson::Value::ConstValueIterator aSceneNodeIter = theSceneNodes.Begin();
-       aSceneNodeIter != theSceneNodes.End() && aPSentry.More(); ++aSceneNodeIter, aPSentry.Next())
+       aSceneNodeIter != theSceneNodes.End() && aPS.More(); ++aSceneNodeIter)
   {
     const RWGltf_JsonValue* aSceneNode = myGltfRoots[RWGltf_GltfRootElement_Nodes].FindChild (*aSceneNodeIter);
     if (aSceneNode == NULL)
@@ -1018,7 +1018,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNodes (TopTools_SequenceOfShape& theSh
     }
 
     TopoDS_Shape aNodeShape;
-    if (!gltfParseSceneNode (aNodeShape, getKeyString (*aSceneNodeIter), *aSceneNode, theProgress))
+    if (!gltfParseSceneNode (aNodeShape, getKeyString (*aSceneNodeIter), *aSceneNode, aPS.Next()))
     {
       return false;
     }
@@ -1045,7 +1045,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNodes (TopTools_SequenceOfShape& theSh
 bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
                                                 const TCollection_AsciiString& theSceneNodeId,
                                                 const RWGltf_JsonValue& theSceneNode,
-                                                const Handle(Message_ProgressIndicator)& theProgress)
+                                                const Message_ProgressRange& theProgress)
 {
   const RWGltf_JsonValue* aName         = findObjectMember (theSceneNode, "name");
   //const RWGltf_JsonValue* aJointName    = findObjectMember (theSceneNode, "jointName");
@@ -1243,9 +1243,9 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
    && aMeshes_1->IsArray())
   {
     // glTF 1.0
-    Message_ProgressSentry aPSentry (theProgress, "Reading scene meshes", 0, aMeshes_1->Size(), 1);
+    Message_ProgressScope aPS (theProgress, "Reading scene meshes", aMeshes_1->Size());
     for (rapidjson::Value::ConstValueIterator aMeshIter = aMeshes_1->Begin();
-         aMeshIter != aMeshes_1->End() && aPSentry.More(); ++aMeshIter, aPSentry.Next())
+         aMeshIter != aMeshes_1->End() && aPS.More(); ++aMeshIter)
     {
       const RWGltf_JsonValue* aMesh = myGltfRoots[RWGltf_GltfRootElement_Meshes].FindChild (*aMeshIter);
       if (aMesh == NULL)
@@ -1257,7 +1257,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
       }
 
       TopoDS_Shape aMeshShape;
-      if (!gltfParseMesh (aMeshShape, getKeyString (*aMeshIter), *aMesh, theProgress))
+      if (!gltfParseMesh (aMeshShape, getKeyString (*aMeshIter), *aMesh, aPS.Next()))
       {
         theNodeShape = aNodeShape;
         bindNodeShape (theNodeShape, aNodeLoc, theSceneNodeId, aName);
@@ -1315,7 +1315,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
 bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
                                            const TCollection_AsciiString& theMeshId,
                                            const RWGltf_JsonValue& theMesh,
-                                           const Handle(Message_ProgressIndicator)& theProgress)
+                                           const Message_ProgressRange& theProgress)
 {
   const RWGltf_JsonValue* aName  = findObjectMember (theMesh, "name");
   const RWGltf_JsonValue* aPrims = findObjectMember (theMesh, "primitives");
@@ -1398,7 +1398,7 @@ bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
 bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
                                                 const TCollection_AsciiString& theMeshId,
                                                 const RWGltf_JsonValue& thePrimArray,
-                                                const Handle(Message_ProgressIndicator)& /*theProgress*/)
+                                                const Message_ProgressRange& /*theProgress*/)
 {
   const RWGltf_JsonValue* anAttribs = findObjectMember (thePrimArray, "attributes");
   const RWGltf_JsonValue* anIndices = findObjectMember (thePrimArray, "indices");
@@ -1916,9 +1916,9 @@ void RWGltf_GltfJsonParser::bindNamedShape (TopoDS_Shape& theShape,
 // function : Parse
 // purpose  :
 // =======================================================================
-bool RWGltf_GltfJsonParser::Parse (const Handle(Message_ProgressIndicator)& theProgress)
+bool RWGltf_GltfJsonParser::Parse (const Message_ProgressRange& theProgress)
 {
-  Message_ProgressSentry aPSentry (theProgress, "Reading Gltf", 0, 2, 1);
+  Message_ProgressScope aPS (theProgress, "Parsing glTF", 1);
 #ifdef HAVE_RAPIDJSON
   {
     if (!gltfParseRoots())
@@ -1928,13 +1928,12 @@ bool RWGltf_GltfJsonParser::Parse (const Handle(Message_ProgressIndicator)& theP
 
     gltfParseAsset();
     gltfParseMaterials();
-    if (!gltfParseScene (theProgress))
+    if (!gltfParseScene (aPS.Next()))
     {
       return false;
     }
   }
-  aPSentry.Next();
-  if (!aPSentry.More())
+  if (!aPS.More())
   {
     return false;
   }

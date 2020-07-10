@@ -66,10 +66,10 @@ XSControl_Writer::XSControl_Writer ()
 }
 
     IFSelect_ReturnStatus  XSControl_Writer::TransferShape
-  (const TopoDS_Shape& sh, const Standard_Integer mode)
+  (const TopoDS_Shape& sh, const Standard_Integer mode, const Message_ProgressRange& theProgress)
 {
   thesession->TransferWriter()->SetTransferMode (mode);
-  return thesession->TransferWriteShape (sh);
+  return thesession->TransferWriteShape (sh, Standard_True, theProgress);
 }
 
     IFSelect_ReturnStatus  XSControl_Writer::WriteFile

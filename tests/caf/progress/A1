@@ -9,7 +9,7 @@
 puts "caf009-A1"
 
 # Configurate XProgress 
-XProgress -g +t -tcloutput
+XProgress +t 
 
 # Create binary document
 NewDocument Doc BinOcaf

@@ -22,7 +22,7 @@
 #include <Interface_Static.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <ShapeExtend_Explorer.hxx>
 #include <Standard_Transient.hxx>
 #include <TopoDS_Compound.hxx>
@@ -213,9 +213,10 @@ Handle(Standard_Transient)  XSControl_Reader::RootForTransfer
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  XSControl_Reader::TransferOneRoot(const Standard_Integer num)
+Standard_Boolean  XSControl_Reader::TransferOneRoot(const Standard_Integer num,
+                                                    const Message_ProgressRange& theProgress)
 {
-  return TransferEntity (RootForTransfer (num));
+  return TransferEntity (RootForTransfer (num), theProgress);
 }
 
 
@@ -224,9 +225,10 @@ Standard_Boolean  XSControl_Reader::TransferOneRoot(const Standard_Integer num)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  XSControl_Reader::TransferOne(const Standard_Integer num)
+Standard_Boolean  XSControl_Reader::TransferOne(const Standard_Integer num,
+                                                const Message_ProgressRange& theProgress)
 {
-  return TransferEntity (thesession->StartingEntity (num));
+  return TransferEntity (thesession->StartingEntity (num), theProgress);
 }
 
 
@@ -236,12 +238,12 @@ Standard_Boolean  XSControl_Reader::TransferOne(const Standard_Integer num)
 //=======================================================================
 
 Standard_Boolean  XSControl_Reader::TransferEntity
-  (const Handle(Standard_Transient)& start)
+  (const Handle(Standard_Transient)& start, const Message_ProgressRange& theProgress)
 {
   if (start.IsNull()) return Standard_False;
   const Handle(XSControl_TransferReader) &TR = thesession->TransferReader();
   TR->BeginTransfer();
-  if (TR->TransferOne (start) == 0) return Standard_False;
+  if (TR->TransferOne (start, Standard_True, theProgress) == 0) return Standard_False;
   TopoDS_Shape sh = TR->ShapeResult(start);
   //ShapeExtend_Explorer STU;
   //SMH May 00: allow empty shapes (STEP CAX-IF, external references)
@@ -257,7 +259,8 @@ Standard_Boolean  XSControl_Reader::TransferEntity
 //=======================================================================
 
 Standard_Integer  XSControl_Reader::TransferList
-  (const Handle(TColStd_HSequenceOfTransient)& list)
+  (const Handle(TColStd_HSequenceOfTransient)& list,
+   const Message_ProgressRange& theProgress)
 {
   if (list.IsNull()) return 0;
   Standard_Integer nbt = 0;
@@ -266,9 +269,10 @@ Standard_Integer  XSControl_Reader::TransferList
   TR->BeginTransfer();
   ClearShapes();
   ShapeExtend_Explorer STU;
-  for (i = 1; i <= nb; i ++) {
+  Message_ProgressScope PS(theProgress, NULL, nb);
+  for (i = 1; i <= nb && PS.More(); i++) {
     Handle(Standard_Transient) start = list->Value(i);
-    if (TR->TransferOne (start) == 0) continue;
+    if (TR->TransferOne (start, Standard_True, PS.Next()) == 0) continue;
     TopoDS_Shape sh = TR->ShapeResult(start);
     if (STU.ShapeType(sh,Standard_True) == TopAbs_SHAPE) continue;  // nulle-vide
     theshapes.Append(sh);
@@ -283,7 +287,7 @@ Standard_Integer  XSControl_Reader::TransferList
 //purpose  : 
 //=======================================================================
 
-Standard_Integer  XSControl_Reader::TransferRoots ()
+Standard_Integer  XSControl_Reader::TransferRoots (const Message_ProgressRange& theProgress)
 {
   NbRootsForTransfer();
   Standard_Integer nbt = 0;
@@ -293,11 +297,10 @@ Standard_Integer  XSControl_Reader::TransferRoots ()
   TR->BeginTransfer();
   ClearShapes();
   ShapeExtend_Explorer STU;
-  const Handle(Transfer_TransientProcess) &proc = thesession->TransferReader()->TransientProcess();
-  Message_ProgressSentry PS ( proc->GetProgress(), "Root", 0, nb, 1 );
-  for (i = 1; i <= nb && PS.More(); i ++,PS.Next()) {
+  Message_ProgressScope PS (theProgress, "Root", nb);
+  for (i = 1; i <= nb && PS.More(); i ++) {
     Handle(Standard_Transient) start = theroots.Value(i);
-    if (TR->TransferOne (start) == 0) continue;
+    if (TR->TransferOne (start, Standard_True, PS.Next()) == 0) continue;
     TopoDS_Shape sh = TR->ShapeResult(start);
     if (STU.ShapeType(sh,Standard_True) == TopAbs_SHAPE) continue;  // nulle-vide
     theshapes.Append(sh);

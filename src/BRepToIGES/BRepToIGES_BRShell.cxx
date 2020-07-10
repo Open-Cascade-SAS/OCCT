@@ -43,7 +43,7 @@
 #include <IGESGeom_SurfaceOfRevolution.hxx>
 #include <IGESGeom_TrimmedSurface.hxx>
 #include <Interface_Macros.hxx>
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressScope.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_Map.hxx>
 #include <ShapeAlgo.hxx>
@@ -86,7 +86,8 @@ BRepToIGES_BRShell::BRepToIGES_BRShell
 // TransferShell
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferShell(const TopoDS_Shape& start)
+Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferShell(const TopoDS_Shape& start,
+                                                               const Message_ProgressRange& theProgress)
 {
   Handle(IGESData_IGESEntity) res;
 
@@ -94,11 +95,11 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferShell(const TopoDS_Shap
 
   if (start.ShapeType() == TopAbs_FACE) {
     TopoDS_Face F =  TopoDS::Face(start);
-    res = TransferFace(F);
+    res = TransferFace(F, theProgress);
   }  
   else if (start.ShapeType() == TopAbs_SHELL) {
     TopoDS_Shell S =  TopoDS::Shell(start);
-    res = TransferShell(S);
+    res = TransferShell(S, theProgress);
   }  
   else {
     // message d`erreur
@@ -112,15 +113,10 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferShell(const TopoDS_Shap
 // 
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face& start)
+Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face& start,
+                                                              const Message_ProgressRange&)
 {
   Handle(IGESData_IGESEntity) res;
-
-  Handle(Message_ProgressIndicator) progress = GetTransferProcess()->GetProgress();
-  if ( ! progress.IsNull() ) {
-    if ( progress->UserBreak() ) return res;
-    progress->Increment();
-  }
   
   if ( start.IsNull()) {
     return res;
@@ -340,7 +336,8 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell ::TransferFace(const TopoDS_Face&
 // TransferShell
 //=============================================================================
 
-Handle(IGESData_IGESEntity) BRepToIGES_BRShell::TransferShell(const TopoDS_Shell& start)
+Handle(IGESData_IGESEntity) BRepToIGES_BRShell::TransferShell(const TopoDS_Shell& start,
+                                                              const Message_ProgressRange& theProgress)
 {
   Handle(IGESData_IGESEntity) res;
   if ( start.IsNull()) return res;
@@ -350,13 +347,19 @@ Handle(IGESData_IGESEntity) BRepToIGES_BRShell::TransferShell(const TopoDS_Shell
   Handle(TColStd_HSequenceOfTransient) Seq = new TColStd_HSequenceOfTransient();
   Handle(IGESData_IGESEntity) IFace;
 
-  for (Ex.Init(start,TopAbs_FACE); Ex.More(); Ex.Next()) {
+  Standard_Integer nbshapes = 0;
+  for (Ex.Init(start, TopAbs_FACE); Ex.More(); Ex.Next())
+    nbshapes++;
+  Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+  for (Ex.Init(start,TopAbs_FACE); Ex.More() && aPS.More(); Ex.Next())
+  {
+    Message_ProgressRange aRange = aPS.Next();
     TopoDS_Face F = TopoDS::Face(Ex.Current());
     if (F.IsNull()) {
       AddWarning(start," a Face is a null entity");
     }
     else {
-      IFace = TransferFace(F);
+      IFace = TransferFace (F, aRange);
       if (!IFace.IsNull()) Seq->Append(IFace);
     }
   }

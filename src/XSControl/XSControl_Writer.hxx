@@ -25,10 +25,11 @@
 #include <Standard_Boolean.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <Standard_Integer.hxx>
+#include <Message_ProgressRange.hxx>
+
 class XSControl_WorkSession;
 class Interface_InterfaceModel;
 class TopoDS_Shape;
-
 
 //! This class gives a simple way to create then write a
 //! Model compliant to a given norm, from a Shape
@@ -68,7 +69,9 @@ public:
   Standard_EXPORT Handle(Interface_InterfaceModel) Model (const Standard_Boolean newone = Standard_False);
   
   //! Transfers a Shape according to the mode
-  Standard_EXPORT IFSelect_ReturnStatus TransferShape (const TopoDS_Shape& sh, const Standard_Integer mode = 0);
+  Standard_EXPORT IFSelect_ReturnStatus TransferShape (const TopoDS_Shape& sh,
+                                                       const Standard_Integer mode = 0,
+                                                       const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Writes the produced model
   Standard_EXPORT IFSelect_ReturnStatus WriteFile (const Standard_CString filename);

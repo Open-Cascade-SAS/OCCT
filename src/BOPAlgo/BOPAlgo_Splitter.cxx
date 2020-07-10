@@ -89,7 +89,7 @@ void BOPAlgo_Splitter::Perform()
   BOPAlgo_PaveFiller *pPF = new BOPAlgo_PaveFiller();
   pPF->SetArguments(aLS);
   pPF->SetRunParallel(myRunParallel);
-  pPF->SetProgressIndicator(myProgressIndicator);
+  pPF->SetProgressIndicator(*myProgressScope);
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);

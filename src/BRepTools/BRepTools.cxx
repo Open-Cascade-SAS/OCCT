@@ -667,7 +667,7 @@ void  BRepTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
 //=======================================================================
 
 void  BRepTools::Write(const TopoDS_Shape& Sh, Standard_OStream& S,
-                       const Handle(Message_ProgressIndicator)& theProgress)
+                       const Message_ProgressRange& theProgress)
 {
   BRepTools_ShapeSet SS;
   SS.Add(Sh);
@@ -684,7 +684,7 @@ void  BRepTools::Write(const TopoDS_Shape& Sh, Standard_OStream& S,
 void  BRepTools::Read(TopoDS_Shape& Sh, 
                       std::istream& S, 
                       const BRep_Builder& B,
-                      const Handle(Message_ProgressIndicator)& theProgress)
+                      const Message_ProgressRange& theProgress)
 {
   BRepTools_ShapeSet SS(B);
   SS.Read(S, theProgress);
@@ -698,7 +698,7 @@ void  BRepTools::Read(TopoDS_Shape& Sh,
 
 Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh, 
                                    const Standard_CString File,
-                                   const Handle(Message_ProgressIndicator)& theProgress)
+                                   const Message_ProgressRange& theProgress)
 {
   std::ofstream os;
   OSD_OpenStream(os, File, std::ios::out);
@@ -735,7 +735,7 @@ Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh,
 Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh, 
                                  const Standard_CString File,
                                  const BRep_Builder& B,
-                                 const Handle(Message_ProgressIndicator)& theProgress)
+                                 const Message_ProgressRange& theProgress)
 {
   std::filebuf fic;
   std::istream in(&fic);

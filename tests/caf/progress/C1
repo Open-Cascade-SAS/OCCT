@@ -22,7 +22,7 @@ box b 1 1 1
 SetShape Doc 0:2 b
  
 # Configurate XProgress 
-XProgress -g +t -tcloutput
+XProgress +t
 
 # Save
 set output [Save Doc]

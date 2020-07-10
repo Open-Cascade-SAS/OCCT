@@ -42,7 +42,7 @@ StlAPI_Writer::StlAPI_Writer()
 //=============================================================================
 Standard_Boolean StlAPI_Writer::Write (const TopoDS_Shape&    theShape,
                                        const Standard_CString theFileName,
-                                       const Handle(Message_ProgressIndicator)& theProgress)
+                                       const Message_ProgressRange& theProgress)
 {
   Standard_Integer aNbNodes = 0;
   Standard_Integer aNbTriangles = 0;

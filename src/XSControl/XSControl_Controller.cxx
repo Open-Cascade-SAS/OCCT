@@ -270,14 +270,15 @@ static IFSelect_ReturnStatus TransferFinder
    const Handle(Transfer_Finder)& theMapper,
    const Handle(Transfer_FinderProcess)& theFP,
    const Handle(Interface_InterfaceModel)& theModel,
-   const Standard_Integer theModeTrans)
+   const Standard_Integer theModeTrans,
+   const Message_ProgressRange& theProgress)
 {
   if (theActor.IsNull()) return IFSelect_RetError;
   if (theModel.IsNull()) return IFSelect_RetError;
   theActor->ModeTrans() = theModeTrans;
   theFP->SetModel (theModel);
   theFP->SetActor (theActor);
-  theFP->Transfer (theMapper);
+  theFP->Transfer (theMapper, theProgress);
 
   IFSelect_ReturnStatus stat = IFSelect_RetFail;
   Handle(Transfer_Binder) binder = theFP->Find (theMapper);
@@ -305,11 +306,12 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteTransient
   (const Handle(Standard_Transient)& theObj,
    const Handle(Transfer_FinderProcess)& theFP,
    const Handle(Interface_InterfaceModel)& theModel,
-   const Standard_Integer theModeTrans) const
+   const Standard_Integer theModeTrans,
+   const Message_ProgressRange& theProgress) const
 {
   if (theObj.IsNull()) return IFSelect_RetVoid;
   return TransferFinder
-    (myAdaptorWrite,new Transfer_TransientMapper(theObj),theFP,theModel,theModeTrans);
+    (myAdaptorWrite,new Transfer_TransientMapper(theObj),theFP,theModel,theModeTrans, theProgress);
 }
 
 //=======================================================================
@@ -335,12 +337,13 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteShape
   (const TopoDS_Shape& shape,
    const Handle(Transfer_FinderProcess)& FP,
    const Handle(Interface_InterfaceModel)& model,
-   const Standard_Integer modetrans) const
+   const Standard_Integer modetrans,
+   const Message_ProgressRange& theProgress) const
 {
   if (shape.IsNull()) return IFSelect_RetVoid;
 
   IFSelect_ReturnStatus theReturnStat = TransferFinder
-    (myAdaptorWrite,new TransferBRep_ShapeMapper(shape),FP,model,modetrans);
+    (myAdaptorWrite,new TransferBRep_ShapeMapper(shape),FP,model,modetrans, theProgress);
   return theReturnStat;
 }
 

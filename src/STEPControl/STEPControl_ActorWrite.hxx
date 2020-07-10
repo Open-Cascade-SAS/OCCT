@@ -51,13 +51,33 @@ public:
   
   Standard_EXPORT virtual Standard_Boolean Recognize (const Handle(Transfer_Finder)& start) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer (const Handle(Transfer_Finder)& start, const Handle(Transfer_FinderProcess)& FP) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer
+                   (const Handle(Transfer_Finder)& start,
+                    const Handle(Transfer_FinderProcess)& FP,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
   
-  Standard_EXPORT Handle(Transfer_Binder) TransferSubShape (const Handle(Transfer_Finder)& start, const Handle(StepShape_ShapeDefinitionRepresentation)& SDR, Handle(StepGeom_Axis2Placement3d)& AX1, const Handle(Transfer_FinderProcess)& FP, const Handle(TopTools_HSequenceOfShape)& shapeGroup = NULL, const Standard_Boolean isManifold = Standard_True);
+  Standard_EXPORT Handle(Transfer_Binder) TransferSubShape
+                   (const Handle(Transfer_Finder)& start,
+                    const Handle(StepShape_ShapeDefinitionRepresentation)& SDR,
+                    Handle(StepGeom_Axis2Placement3d)& AX1, 
+                    const Handle(Transfer_FinderProcess)& FP,
+                    const Handle(TopTools_HSequenceOfShape)& shapeGroup = NULL, 
+                    const Standard_Boolean isManifold = Standard_True,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT Handle(Transfer_Binder) TransferShape (const Handle(Transfer_Finder)& start, const Handle(StepShape_ShapeDefinitionRepresentation)& SDR, const Handle(Transfer_FinderProcess)& FP, const Handle(TopTools_HSequenceOfShape)& shapeGroup = NULL, const Standard_Boolean isManifold = Standard_True);
+  Standard_EXPORT Handle(Transfer_Binder) TransferShape
+                   (const Handle(Transfer_Finder)& start,
+                    const Handle(StepShape_ShapeDefinitionRepresentation)& SDR,
+                    const Handle(Transfer_FinderProcess)& FP,
+                    const Handle(TopTools_HSequenceOfShape)& shapeGroup = NULL,
+                    const Standard_Boolean isManifold = Standard_True,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT Handle(Transfer_Binder) TransferCompound (const Handle(Transfer_Finder)& start, const Handle(StepShape_ShapeDefinitionRepresentation)& SDR, const Handle(Transfer_FinderProcess)& FP);
+  Standard_EXPORT Handle(Transfer_Binder) TransferCompound
+                   (const Handle(Transfer_Finder)& start,
+                    const Handle(StepShape_ShapeDefinitionRepresentation)& SDR,
+                    const Handle(Transfer_FinderProcess)& FP,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT void SetMode (const STEPControl_StepModelType M);
   

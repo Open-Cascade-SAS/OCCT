@@ -18,6 +18,9 @@
 
 #include <ShapeProcess_Context.hxx>
 
-typedef Standard_Boolean (*ShapeProcess_OperFunc) (const Handle(ShapeProcess_Context)& context);
+class Message_ProgressRange;
+
+typedef Standard_Boolean (*ShapeProcess_OperFunc) (const Handle(ShapeProcess_Context)& context,
+                                                   const Message_ProgressRange& theProgress);
 
 #endif

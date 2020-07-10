@@ -24,11 +24,12 @@
 #include <Standard_Real.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Standard_Boolean.hxx>
+#include <Message_ProgressRange.hxx>
+
 class Interface_InterfaceModel;
 class Standard_Transient;
 class Transfer_Binder;
 class Transfer_TransientProcess;
-
 
 class IGESToBRep_Actor;
 DEFINE_STANDARD_HANDLE(IGESToBRep_Actor, Transfer_ActorOfTransientProcess)
@@ -58,7 +59,10 @@ public:
   
   Standard_EXPORT virtual Standard_Boolean Recognize (const Handle(Standard_Transient)& start) Standard_OVERRIDE;
   
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer (const Handle(Standard_Transient)& start, const Handle(Transfer_TransientProcess)& TP) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer
+                   (const Handle(Standard_Transient)& start,
+                    const Handle(Transfer_TransientProcess)& TP,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
   
   //! Returns the tolerance which was actually used, either from
   //! the file or from statics

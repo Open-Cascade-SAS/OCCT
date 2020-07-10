@@ -49,7 +49,7 @@ public:
     (BinLDrivers_DocumentSection& theSection, 
      Standard_IStream& theIS,
      const Standard_Boolean isMess = Standard_False, 
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT virtual void CheckShapeSection
     (const Storage_Position& thePos, Standard_IStream& theIS) Standard_OVERRIDE;

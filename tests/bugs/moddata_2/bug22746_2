@@ -11,7 +11,6 @@ set BugNumber OCC22746
 catch { pload XSDRAW }
 restore [locate_data_file OCC22746-trampafus-notfixed.brep] a
 vinit
-XProgress -tclOutput
 XProgress -t
 set List1 [fixshape result a]
 puts "----------------------"

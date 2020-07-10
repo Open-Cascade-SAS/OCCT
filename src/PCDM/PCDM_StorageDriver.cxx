@@ -44,7 +44,7 @@ IMPLEMENT_STANDARD_RTTIEXT(PCDM_StorageDriver,PCDM_Writer)
 
 void PCDM_StorageDriver::Write (const Handle(CDM_Document)& aDocument,
                                 const TCollection_ExtendedString&  aFileName, 
-                                const Handle(Message_ProgressIndicator) &/*theProgress*/) 
+                                const Message_ProgressRange &/*theRange*/) 
 {
   Handle(Storage_Schema) theSchema = new Storage_Schema;
 
@@ -108,7 +108,7 @@ void PCDM_StorageDriver::Write (const Handle(CDM_Document)& aDocument,
 //=======================================================================
 void PCDM_StorageDriver::Write (const Handle(CDM_Document)&              /*aDocument*/, 
                                 Standard_OStream&                        /*theOStream*/, 
-                                const Handle(Message_ProgressIndicator)& /*theProgress*/)
+                                const Message_ProgressRange&             /*theRange*/)
 {
   
 }

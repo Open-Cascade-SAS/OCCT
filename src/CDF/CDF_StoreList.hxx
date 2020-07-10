@@ -52,7 +52,7 @@ public:
   //! order of which they had been added.
   Standard_EXPORT PCDM_StoreStatus Store (Handle(CDM_MetaData)& aMetaData, 
                                           TCollection_ExtendedString& aStatusAssociatedText,
-                                          const Handle(Message_ProgressIndicator)& theProgress = NULL);
+                                          const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT void Init();
   

@@ -106,9 +106,10 @@ Handle(StepData_StepModel) STEPControl_Reader::StepModel () const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean STEPControl_Reader::TransferRoot (const Standard_Integer num)
+Standard_Boolean STEPControl_Reader::TransferRoot (const Standard_Integer num,
+                                                   const Message_ProgressRange& theProgress)
 {
-  return TransferOneRoot (num);
+  return TransferOneRoot(num, theProgress);
 }
 
 //=======================================================================

@@ -71,6 +71,7 @@ BOPTools::MapShapesAndAncestors TopExp::MapShapesAndAncestors
 BOPCol_Box2DBndTreeSelector BOPTools_BoxSelector<Bnd_Box2d>
 BiTgte_DataMapOfShapeBox TopTools_DataMapOfShapeBox
 CDM_MessageDriver Message_Messenger
+Message_ProgressSentry Message_ProgressScope
 
 [tcollection]
 AdvApp2Var_SequenceOfNode

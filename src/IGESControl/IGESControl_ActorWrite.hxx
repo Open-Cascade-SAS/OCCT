@@ -46,7 +46,10 @@ public:
   //!
   //! ModeTrans may be : 0 -> groups of Faces
   //! or 1 -> BRep
-  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer (const Handle(Transfer_Finder)& start, const Handle(Transfer_FinderProcess)& FP) Standard_OVERRIDE;
+  Standard_EXPORT virtual Handle(Transfer_Binder) Transfer
+                   (const Handle(Transfer_Finder)& start,
+                    const Handle(Transfer_FinderProcess)& FP,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
 
 

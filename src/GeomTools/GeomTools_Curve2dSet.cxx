@@ -33,8 +33,7 @@
 #include <gp_Hypr2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Parab2d.hxx>
-#include <Message_ProgressIndicator.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -496,16 +495,14 @@ void  GeomTools_Curve2dSet::Dump(Standard_OStream& OS)const
 //purpose  : 
 //=======================================================================
 
-void  GeomTools_Curve2dSet::Write (Standard_OStream& OS,
-                                   const Handle(Message_ProgressIndicator) &theProgress)const
+void  GeomTools_Curve2dSet::Write(Standard_OStream& OS, const Message_ProgressRange& theProgress)const
 {
   std::streamsize prec = OS.precision(17);
 
   Standard_Integer i, nbsurf = myMap.Extent();
   OS << "Curve2ds "<< nbsurf << "\n";
-  //OCC19559
-  Message_ProgressSentry PS(theProgress, "2D Curves", 0, nbsurf, 1);
-  for (i = 1; i <= nbsurf && PS.More(); i++, PS.Next()) {
+  Message_ProgressScope aPS(theProgress, "2D Curves", nbsurf);
+  for (i = 1; i <= nbsurf && aPS.More(); i++, aPS.Next()) {
     PrintCurve2d(Handle(Geom2d_Curve)::DownCast(myMap(i)),OS,Standard_True);
   }
   OS.precision(prec);
@@ -840,8 +837,7 @@ Handle(Geom2d_Curve) GeomTools_Curve2dSet::ReadCurve2d(Standard_IStream& IS)
 //purpose  : 
 //=======================================================================
 
-void  GeomTools_Curve2dSet::Read (Standard_IStream& IS,
-                                  const Handle(Message_ProgressIndicator) &theProgress)
+void  GeomTools_Curve2dSet::Read(Standard_IStream& IS, const Message_ProgressRange& theProgress)
 {
   char buffer[255];
   IS >> buffer;
@@ -852,9 +848,8 @@ void  GeomTools_Curve2dSet::Read (Standard_IStream& IS,
 
   Standard_Integer i, nbcurve;
   IS >> nbcurve;
-  //OCC19559
-  Message_ProgressSentry PS(theProgress, "2D Curves", 0, nbcurve, 1);
-  for (i = 1; i <= nbcurve && PS.More(); i++, PS.Next()) {
+  Message_ProgressScope aPS(theProgress, "2D Curves", nbcurve);
+  for (i = 1; i <= nbcurve && aPS.More(); i++, aPS.Next()) {
     Handle(Geom2d_Curve) C = GeomTools_Curve2dSet::ReadCurve2d (IS);
     myMap.Add(C);
   }

@@ -92,7 +92,7 @@ public:
     (const TCollection_ExtendedString& aFolder,
      const TCollection_ExtendedString& aName,
      const Standard_Boolean UseStorageConfiguration = Standard_True,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+     const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! This method retrieves  a  document from the database.
   //! If the  Document references other documents which have
@@ -113,7 +113,7 @@ public:
      const TCollection_ExtendedString& aName, 
      const TCollection_ExtendedString& aVersion, 
      const Standard_Boolean UseStorageConfiguration = Standard_True,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+     const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT PCDM_ReaderStatus CanRetrieve (const TCollection_ExtendedString& aFolder,
                                                  const TCollection_ExtendedString& aName);
@@ -129,7 +129,7 @@ public:
   //! the stream should support SEEK fuctionality
   Standard_EXPORT Handle(CDM_Document) Read
     (Standard_IStream& theIStream,
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+     const Message_ProgressRange& theRange = Message_ProgressRange());
  
   //! Returns instance of read driver for specified format.
   //!
@@ -201,13 +201,13 @@ private:
   Standard_EXPORT Handle(CDM_Document) Retrieve
     (const Handle(CDM_MetaData)& aMetaData, 
      const Standard_Boolean UseStorageConfiguration, 
-     const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+     const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
   
   Standard_EXPORT Handle(CDM_Document) Retrieve
     (const Handle(CDM_MetaData)& aMetaData,
      const Standard_Boolean UseStorageConfiguration, 
      const Standard_Boolean IsComponent, 
-     const Handle(Message_ProgressIndicator)& theProgress = NULL);
+     const Message_ProgressRange& theRange = Message_ProgressRange());
   
   Standard_EXPORT Standard_Integer DocumentVersion (const Handle(CDM_MetaData)& theMetaData) Standard_OVERRIDE;
   

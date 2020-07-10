@@ -29,11 +29,12 @@
 #include <TColStd_HSequenceOfTransient.hxx>
 #include <Standard_Integer.hxx>
 #include <IFSelect_PrintCount.hxx>
+#include <Message_ProgressRange.hxx>
+
 class XSControl_WorkSession;
 class Interface_InterfaceModel;
 class Standard_Transient;
 class TopoDS_Shape;
-
 
 
 //! A groundwork to convert a shape to data which complies
@@ -153,28 +154,32 @@ public:
   
   //! Translates a root identified by the rank num in the model.
   //! false is returned if no shape is produced.
-  Standard_EXPORT Standard_Boolean TransferOneRoot (const Standard_Integer num = 1);
+  Standard_EXPORT Standard_Boolean TransferOneRoot (const Standard_Integer num = 1,
+                                                    const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translates an IGES or STEP
   //! entity identified by the rank num in the model.
   //! false is returned if no shape is produced.
-  Standard_EXPORT Standard_Boolean TransferOne (const Standard_Integer num);
+  Standard_EXPORT Standard_Boolean TransferOne (const Standard_Integer num,
+                                                const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translates an IGES or STEP
   //! entity in the model. true is returned if a shape is
   //! produced; otherwise, false is returned.
-  Standard_EXPORT Standard_Boolean TransferEntity (const Handle(Standard_Transient)& start);
+  Standard_EXPORT Standard_Boolean TransferEntity (const Handle(Standard_Transient)& start,
+                                                   const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translates a list of entities.
   //! Returns the number of IGES or STEP entities that were
   //! successfully translated. The list can be produced with GiveList.
   //! Warning - This function does not clear the existing output shapes.
-  Standard_EXPORT Standard_Integer TransferList (const Handle(TColStd_HSequenceOfTransient)& list);
+  Standard_EXPORT Standard_Integer TransferList (const Handle(TColStd_HSequenceOfTransient)& list,
+                                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Translates all translatable
   //! roots and returns the number of successful translations.
   //! Warning - This function clears existing output shapes first.
-  Standard_EXPORT Standard_Integer TransferRoots();
+  Standard_EXPORT Standard_Integer TransferRoots(const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Clears the list of shapes that
   //! may have accumulated in calls to TransferOne or TransferRoot.C

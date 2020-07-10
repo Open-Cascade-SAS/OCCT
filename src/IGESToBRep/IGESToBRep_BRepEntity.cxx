@@ -59,7 +59,7 @@
 #include <IGESToBRep_TopoSurface.hxx>
 #include <Interface_Macros.hxx>
 #include <Message_Msg.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Precision.hxx>
 #include <ShapeBuild_Edge.hxx>
 #include <ShapeExtend_WireData.hxx>
@@ -128,7 +128,8 @@ IGESToBRep_BRepEntity::IGESToBRep_BRepEntity
 //purpose  : 
 //=======================================================================
 TopoDS_Shape IGESToBRep_BRepEntity::TransferBRepEntity
-  (const Handle(IGESData_IGESEntity)& start)
+  (const Handle(IGESData_IGESEntity)& start,
+   const Message_ProgressRange& theProgress)
 {
   TopoDS_Shape res;
 
@@ -138,11 +139,11 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferBRepEntity
   }
   else if (start->IsKind(STANDARD_TYPE(IGESSolid_Shell))) {
     DeclareAndCast(IGESSolid_Shell, st514, start);
-    res = TransferShell(st514);
+    res = TransferShell(st514, theProgress);
   }
   else if (start->IsKind(STANDARD_TYPE(IGESSolid_ManifoldSolid))) {
     DeclareAndCast(IGESSolid_ManifoldSolid, st186, start);
-    res = TransferManifoldSolid(st186);
+    res = TransferManifoldSolid(st186, theProgress);
   }
   else {
     Message_Msg Msg1005("IGES_1005");
@@ -531,7 +532,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace
 //purpose  : 
 //=======================================================================
 TopoDS_Shape IGESToBRep_BRepEntity::TransferShell
-  (const Handle(IGESSolid_Shell)& start)
+  (const Handle(IGESSolid_Shell)& start,
+   const Message_ProgressRange& theProgress)
 {
   TopoDS_Shape res;
 
@@ -542,13 +544,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferShell
     Standard_Integer nbfaces = start->NbFaces();
     if (nbfaces != 0) {
       Standard_Boolean closed = Standard_True; //:39
-      Handle(Message_ProgressIndicator) progress = GetTransferProcess()->GetProgress();
-      if ( ! progress.IsNull() ) progress->SetScale ( "Face", 0, nbfaces, 1 );
-      for (Standard_Integer iface = 1; iface <= nbfaces; iface++) {
-        if ( ! progress.IsNull() ) { 
-          progress->Increment(); 
-          if ( progress->UserBreak() ) break; 
-        }
+      Message_ProgressScope aPS(theProgress, "Face", nbfaces);
+      for (Standard_Integer iface = 1; iface <= nbfaces && aPS.More(); iface++, aPS.Next()) {
 	Handle(IGESSolid_Face) face = start->Face(iface);
 	Standard_Boolean orientation = start->Orientation(iface);
  	TopoDS_Shape Sh = TransferFace(face);
@@ -595,7 +592,8 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferShell
 //purpose  : 
 //=======================================================================
 TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid
-  (const Handle(IGESSolid_ManifoldSolid)& start)
+  (const Handle(IGESSolid_ManifoldSolid)& start,
+   const Message_ProgressRange& theProgress)
 {
   TopoDS_Shape res;
 
@@ -606,7 +604,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid
     Handle(IGESSolid_Shell) shell = start->Shell();
     Standard_Boolean isoriented   = start->OrientationFlag();
     Standard_Integer nbshell      = start->NbVoidShells();
-    TopoDS_Shape Sh = TransferShell(shell);
+    TopoDS_Shape Sh = TransferShell(shell, theProgress);
     if (!Sh.IsNull()) {
       if (Sh.ShapeType() == TopAbs_SHELL) {
 	TopoDS_Shell Shell = TopoDS::Shell(Sh);
@@ -616,11 +614,11 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferManifoldSolid
 
       if (nbshell != 0) {
         // progress scope without name, since usually we have single shell in solid
-        Message_ProgressSentry PS ( GetTransferProcess()->GetProgress(), 0, 0, nbshell, 1 );
-	for (Standard_Integer ishell=1; ishell<= nbshell && PS.More(); ishell++, PS.Next()) {
+        Message_ProgressScope aPS (theProgress, NULL, nbshell);
+	for (Standard_Integer ishell=1; ishell<= nbshell && aPS.More(); ishell++) {
 	  Handle(IGESSolid_Shell) voidshell= start->VoidShell(ishell);
 //	  Standard_Boolean orientation = start->VoidOrientationFlag(ishell);
-	  TopoDS_Shape aSh = TransferShell(voidshell);
+	  TopoDS_Shape aSh = TransferShell (voidshell, aPS.Next());
 	  if (!aSh.IsNull()) {
 	    if (aSh.ShapeType() == TopAbs_SHELL) {
 	      TopoDS_Shell Shell = TopoDS::Shell(aSh);

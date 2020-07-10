@@ -27,12 +27,12 @@
 #include <Standard_Real.hxx>
 #include <math_Vector.hxx>
 #include <Standard_OStream.hxx>
+#include <Message_ProgressRange.hxx>
 
 class math_NotSquare;
 class Standard_DimensionError;
 class StdFail_NotDone;
 class math_Matrix;
-class Message_ProgressIndicator;
 
 //! This class implements the Gauss LU decomposition (Crout algorithm)
 //! with partial pivoting (rows interchange) of a square matrix and
@@ -55,7 +55,7 @@ public:
   //! Exception NotSquare is raised if A is not a square matrix.
   Standard_EXPORT math_Gauss(const math_Matrix& A, 
                              const Standard_Real MinPivot = 1.0e-20, 
-                             const Handle(Message_ProgressIndicator) & aProgress = Handle(Message_ProgressIndicator)());
+                             const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns true if the computations are successful, otherwise returns false
   Standard_Boolean IsDone() const { return Done; }

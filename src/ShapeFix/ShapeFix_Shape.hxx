@@ -27,11 +27,9 @@
 #include <Standard_Boolean.hxx>
 #include <ShapeExtend_Status.hxx>
 #include <Standard_Real.hxx>
-
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class ShapeFix_Solid;
-class Message_ProgressIndicator;
 class ShapeFix_Shell;
 class ShapeFix_Face;
 class ShapeFix_Wire;
@@ -63,7 +61,7 @@ public:
   Standard_EXPORT void Init (const TopoDS_Shape& shape);
   
   //! Iterates on sub- shape and performs fixes
-  Standard_EXPORT Standard_Boolean Perform (const Handle(Message_ProgressIndicator)& theProgress = 0);
+  Standard_EXPORT Standard_Boolean Perform (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Returns resulting shape
   Standard_EXPORT TopoDS_Shape Shape() const;
@@ -144,7 +142,8 @@ protected:
   //! Fixes same parameterization problem on the passed shape
   //! by updating tolerances of the corresponding topological
   //! entitites.
-  Standard_EXPORT void SameParameter (const TopoDS_Shape& shape, const Standard_Boolean enforce, const Handle(Message_ProgressIndicator)& theProgress = 0);
+  Standard_EXPORT void SameParameter (const TopoDS_Shape& shape, const Standard_Boolean enforce,
+                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   TopoDS_Shape myResult;
   Handle(ShapeFix_Solid) myFixSolid;

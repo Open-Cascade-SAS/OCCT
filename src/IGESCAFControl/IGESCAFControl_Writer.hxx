@@ -69,21 +69,28 @@ public:
   
   //! Transfers a document to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc);
+  Standard_EXPORT Standard_Boolean Transfer (const Handle(TDocStd_Document)& doc,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers labels to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& labels);
+  Standard_EXPORT Standard_Boolean Transfer (const TDF_LabelSequence& labels,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers label to a IGES model
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean Transfer (const TDF_Label& label);
+  Standard_EXPORT Standard_Boolean Transfer (const TDF_Label& label,
+                                             const Message_ProgressRange& theProgress = Message_ProgressRange());
 
-  Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc, const TCollection_AsciiString& filename);
+  Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc,
+                                            const TCollection_AsciiString& filename,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Transfers a document and writes it to a IGES file
   //! Returns True if translation is OK
-  Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc, const Standard_CString filename);
+  Standard_EXPORT Standard_Boolean Perform (const Handle(TDocStd_Document)& doc,
+                                            const Standard_CString filename,
+                                            const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Set ColorMode for indicate write Colors or not.
   Standard_EXPORT void SetColorMode (const Standard_Boolean colormode);

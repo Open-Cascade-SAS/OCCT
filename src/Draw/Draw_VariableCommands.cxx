@@ -157,9 +157,6 @@ static Standard_Integer save(Draw_Interpretor& di, Standard_Integer n, const cha
     // find a tool
     Draw_SaveAndRestore* tool = Draw_First;
     Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );
-    progress->SetScale ( 0, 100, 1 );
-    progress->NewScope(100,"Writing");
-    progress->Show();
 
     while (tool) {
       if (tool->Test(D)) break;
@@ -176,8 +173,6 @@ static Standard_Integer save(Draw_Interpretor& di, Standard_Integer n, const cha
       return 1;
     }
     Draw::SetProgressBar( 0 );
-    progress->EndScope();
-    progress->Show();
   }
   
   os << "0\n\n";
@@ -222,8 +217,7 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
   if (!in.fail()) {
     // search a tool
     Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );
-    progress->NewScope(100,"Reading");
-    progress->Show();
+    Draw::SetProgressBar(progress);
 
     Draw_SaveAndRestore* tool = Draw_First;
     Draw_SaveAndRestore* aDBRepTool = NULL;
@@ -232,7 +226,6 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
       if (!strcmp(typ,toolName)) break;
       if (!strcmp("DBRep_DrawableShape",toolName))
         aDBRepTool = tool;
-      Draw::SetProgressBar(progress);
       tool = tool->Next();
     }
 
@@ -254,8 +247,6 @@ static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const 
       return 1;
     }
     Draw::SetProgressBar( 0 );
-    progress->EndScope();
-    progress->Show();
   }
   
   di << name;

@@ -26,7 +26,7 @@
 
 #include <memory>
 
-class Message_ProgressIndicator;
+class Message_ProgressRange;
 class RWMesh_FaceIterator;
 class RWGltf_GltfOStreamWriter;
 class RWGltf_GltfMaterialMap;
@@ -93,7 +93,7 @@ public:
                                         const TDF_LabelSequence& theRootLabels,
                                         const TColStd_MapOfAsciiString* theLabelFilter,
                                         const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                        const Handle(Message_ProgressIndicator)& theProgress);
+                                        const Message_ProgressRange& theProgress);
 
   //! Write glTF file and associated binary file.
   //! Triangulation data should be precomputed within shapes!
@@ -103,7 +103,7 @@ public:
   //! @return FALSE on file writing failure
   Standard_EXPORT virtual bool Perform (const Handle(TDocStd_Document)& theDocument,
                                         const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                        const Handle(Message_ProgressIndicator)& theProgress);
+                                        const Message_ProgressRange& theProgress);
 
 protected:
 
@@ -117,7 +117,7 @@ protected:
   Standard_EXPORT virtual bool writeBinData (const Handle(TDocStd_Document)& theDocument,
                                              const TDF_LabelSequence& theRootLabels,
                                              const TColStd_MapOfAsciiString* theLabelFilter,
-                                             const Handle(Message_ProgressIndicator)& theProgress);
+                                             const Message_ProgressRange& theProgress);
 
   //! Write JSON file with glTF structure (should be called after writeBinData()).
   //! @param theDocument    [in] input document
@@ -130,7 +130,7 @@ protected:
                                           const TDF_LabelSequence& theRootLabels,
                                           const TColStd_MapOfAsciiString* theLabelFilter,
                                           const TColStd_IndexedDataMapOfStringString& theFileInfo,
-                                          const Handle(Message_ProgressIndicator)& theProgress);
+                                          const Message_ProgressRange& theProgress);
 
 protected:
 

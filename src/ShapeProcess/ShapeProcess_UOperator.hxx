@@ -42,7 +42,9 @@ public:
   Standard_EXPORT ShapeProcess_UOperator(const ShapeProcess_OperFunc func);
   
   //! Performs operation and records changes in the context
-  Standard_EXPORT virtual Standard_Boolean Perform (const Handle(ShapeProcess_Context)& context) Standard_OVERRIDE;
+  Standard_EXPORT virtual Standard_Boolean Perform
+                   (const Handle(ShapeProcess_Context)& context,
+                    const Message_ProgressRange& theProgress = Message_ProgressRange()) Standard_OVERRIDE;
 
 
 

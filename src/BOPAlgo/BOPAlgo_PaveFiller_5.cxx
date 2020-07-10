@@ -278,7 +278,7 @@ void BOPAlgo_PaveFiller::PerformEF()
       aSR = aPBRange;
       BOPTools_AlgoTools::CorrectRange(aE, aF, aSR, aPBRange);
       aEdgeFace.SetRange (aPBRange);
-      aEdgeFace.SetProgressIndicator(myProgressIndicator);
+      aEdgeFace.SetProgressIndicator(*myProgressScope);
       // Save the pair to avoid their forced intersection
       BOPDS_MapOfPaveBlock* pMPB = myFPBDone.ChangeSeek(nF);
       if (!pMPB)
@@ -999,7 +999,7 @@ void BOPAlgo_PaveFiller::ForceInterfEF(const BOPDS_IndexedMapOfPaveBlock& theMPB
         aEdgeFace.SetFuzzyValue(myFuzzyValue + aTolAdd);
         aEdgeFace.UseQuickCoincidenceCheck(Standard_True);
         aEdgeFace.SetRange(IntTools_Range(aPB->Pave1().Parameter(), aPB->Pave2().Parameter()));
-        aEdgeFace.SetProgressIndicator(myProgressIndicator);
+        aEdgeFace.SetProgressIndicator(*myProgressScope);
       }
     }
   }

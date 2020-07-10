@@ -18,7 +18,7 @@
 #include <CDM_Document.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <LDOM_DocumentType.hxx>
 #include <LDOM_LDOMImplementation.hxx>
 #include <LDOM_XmlWriter.hxx>
@@ -94,7 +94,7 @@ void XmlLDrivers_DocumentStorageDriver::AddNamespace
 //=======================================================================
 void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&       theDocument,
                                                const TCollection_ExtendedString& theFileName,
-                                               const Handle(Message_ProgressIndicator)& theProgress)
+                                               const Message_ProgressRange&      theRange)
 {
   myFileName = theFileName;
 
@@ -103,7 +103,7 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&      
 
   if (aFileStream.is_open() && aFileStream.good())
   {
-    Write (theDocument, aFileStream, theProgress);
+    Write (theDocument, aFileStream, theRange);
   }
   else
   {
@@ -122,9 +122,9 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&      
 //function : Write
 //purpose  : 
 //=======================================================================
-void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDocument,
-                                               Standard_OStream&           theOStream,
-                                               const Handle(Message_ProgressIndicator)& theProgress)
+void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&  theDocument,
+                                               Standard_OStream&            theOStream,
+                                               const Message_ProgressRange& theRange)
 {
   Handle(Message_Messenger) aMessageDriver = theDocument->Application()->MessageDriver();
   ::take_time (~0, " +++++ Start STORAGE procedures ++++++", aMessageDriver);
@@ -135,7 +135,7 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDo
   // Fill the document with data
   XmlObjMgt_Element anElement = aDOMDoc.getDocumentElement();
 
-  if (WriteToDomDocument (theDocument, anElement, theProgress) == Standard_False) {
+  if (WriteToDomDocument (theDocument, anElement, theRange) == Standard_False) {
 
     LDOM_XmlWriter aWriter;
     aWriter.SetIndentation(1);
@@ -170,7 +170,7 @@ void XmlLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)& theDo
 Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
                           (const Handle(CDM_Document)&  theDocument,
                            XmlObjMgt_Element&           theElement,
-                           const Handle(Message_ProgressIndicator)& theProgress)
+                           const Message_ProgressRange& theRange)
 {
   SetIsError(Standard_False);
   Handle(Message_Messenger) aMessageDriver =
@@ -325,21 +325,20 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
     aCommentsElem.appendChild (aCItem);
     XmlObjMgt::SetExtendedString (aCItem, aComments(i));
   }
-  Message_ProgressSentry aPS(theProgress, "Writing", 0, 2, 1);
+  Message_ProgressScope aPS(theRange, "Writing", 2);
   // 2a. Write document contents
   Standard_Integer anObjNb = 0;
   {
     try
     {
       OCC_CATCH_SIGNALS
-      anObjNb = MakeDocument(theDocument, theElement, theProgress);
+      anObjNb = MakeDocument(theDocument, theElement, aPS.Next());
       if (!aPS.More())
       {
         SetIsError(Standard_True);
         SetStoreStatus(PCDM_SS_UserBreak);
         return IsError();
       }
-      aPS.Next();
     }
     catch (Standard_Failure const& anException)
     {
@@ -365,7 +364,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
   myRelocTable.Clear();
 
   // 4. Write Shapes section
-  if (WriteShapeSection(theElement, theProgress))
+  if (WriteShapeSection(theElement, aPS.Next()))
     ::take_time (0, " +++ Fin DOM data for Shapes : ", aMessageDriver);
   if (!aPS.More())
   {
@@ -373,7 +372,6 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
     SetStoreStatus(PCDM_SS_UserBreak);
     return IsError();
   }
-  aPS.Next();
   return IsError();
 }
 
@@ -382,9 +380,9 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
 //purpose  : 
 //=======================================================================
 Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
-                                    (const Handle(CDM_Document)& theTDoc,
-                                     XmlObjMgt_Element&          theElement,
-                                     const Handle(Message_ProgressIndicator)& theProgress)
+                                    (const Handle(CDM_Document)&  theTDoc,
+                                     XmlObjMgt_Element&           theElement,
+                                     const Message_ProgressRange& theRange)
 {  
   TCollection_ExtendedString aMessage;
   Handle(TDocStd_Document) TDOC = Handle(TDocStd_Document)::DownCast(theTDoc);  
@@ -405,7 +403,7 @@ Standard_Integer XmlLDrivers_DocumentStorageDriver::MakeDocument
     if (myDrivers.IsNull()) myDrivers = AttributeDrivers (aMessageDriver);
 
 //      Retrieve from DOM_Document
-    XmlMDF::FromTo (aTDF, theElement, myRelocTable, myDrivers, theProgress);
+    XmlMDF::FromTo (aTDF, theElement, myRelocTable, myDrivers, theRange);
 #ifdef OCCT_DEBUGXML
     aMessage = "First step successfull";
     aMessageDriver -> Send (aMessage.ToExtString(), Message_Warning);
@@ -466,8 +464,8 @@ static void take_time (const Standard_Integer isReset, const char * aHeader,
 //purpose  : defines WriteShapeSection
 //=======================================================================
 Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteShapeSection
-                                (XmlObjMgt_Element&  /*theElement*/,
-                                const Handle(Message_ProgressIndicator)& /*theProgress*/)
+                                (XmlObjMgt_Element&           /*theElement*/,
+                                const Message_ProgressRange&  /*theRange*/)
 {
   // empty; should be redefined in subclasses
   return Standard_False;

@@ -21,7 +21,7 @@
 #include <gp_XY.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <OSD_OpenFile.hxx>
 #include <OSD_Path.hxx>
@@ -117,7 +117,7 @@ RWObj_Reader::RWObj_Reader()
 // Purpose  :
 // ================================================================
 Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
-                                     const Handle(Message_ProgressIndicator)& theProgress,
+                                     const Message_ProgressRange& theProgress,
                                      const Standard_Boolean theToProbe)
 {
   myMemEstim = 0;
@@ -161,7 +161,7 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
 
   const Standard_Integer aNbMiBTotal  = Standard_Integer(aFileLen / (1024 * 1024));
   Standard_Integer       aNbMiBPassed = 0;
-  Message_ProgressSentry aPSentry (theProgress, "Reading text OBJ file", 0, aNbMiBTotal, 1);
+  Message_ProgressScope aPS (theProgress, "Reading text OBJ file", aNbMiBTotal);
   OSD_Timer aTimer;
   aTimer.Start();
 
@@ -181,13 +181,14 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
     aPosition += aReadBytes;
     if (aTimer.ElapsedTime() > 1.0)
     {
-      if (!aPSentry.More())
+      if (!aPS.More())
       {
         return false;
       }
 
       const Standard_Integer aNbMiBRead = Standard_Integer(aPosition / (1024 * 1024));
-      for (; aNbMiBPassed < aNbMiBRead; ++aNbMiBPassed) { aPSentry.Next(); }
+      aPS.Next (aNbMiBRead - aNbMiBPassed);
+      aNbMiBPassed = aNbMiBRead;
       aTimer.Reset();
       aTimer.Start();
     }
@@ -313,7 +314,6 @@ Standard_Boolean RWObj_Reader::read (const TCollection_AsciiString& theFile,
     Message::SendWarning (TCollection_AsciiString("Warning: OBJ reader, ") + myNbElemsBig + " polygon(s) have been split into triangles");
   }
 
-  for (; aNbMiBPassed < aNbMiBTotal; ++aNbMiBPassed) { aPSentry.Next(); }
   return true;
 }
 

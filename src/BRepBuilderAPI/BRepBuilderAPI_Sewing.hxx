@@ -41,13 +41,12 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
-#include <Message_ProgressIndicator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class BRepTools_ReShape;
 class Standard_OutOfRange;
 class Standard_NoSuchObject;
 class TopoDS_Shape;
-class Message_ProgressIndicator;
 class TopoDS_Edge;
 class TopoDS_Face;
 class Geom_Surface;
@@ -105,8 +104,8 @@ public:
   Standard_EXPORT void Add (const TopoDS_Shape& shape);
   
   //! Computing
-  //! thePI - progress indicator of algorithm
-  Standard_EXPORT void Perform (const Handle(Message_ProgressIndicator)& thePI = 0);
+  //! theProgress - progress indicator of algorithm
+  Standard_EXPORT void Perform (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! Gives the sewed shape
   //! a null shape if nothing constructed
@@ -248,10 +247,10 @@ protected:
 
   
   //! Performs cutting of sections
-  //! thePI - progress indicator of processing
-  Standard_EXPORT void Cutting (const Handle(Message_ProgressIndicator)& thePI = 0);
+  //! theProgress - progress indicator of processing
+  Standard_EXPORT void Cutting (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT void Merging (const Standard_Boolean passage, const Handle(Message_ProgressIndicator)& thePI = 0);
+  Standard_EXPORT void Merging (const Standard_Boolean passage, const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT Standard_Boolean IsMergedClosed (const TopoDS_Edge& Edge1, const TopoDS_Edge& Edge2, const TopoDS_Face& fase) const;
   
@@ -262,10 +261,10 @@ protected:
   //! Merged nearest edges.
   Standard_EXPORT Standard_Boolean MergedNearestEdges (const TopoDS_Shape& edge, TopTools_SequenceOfShape& SeqMergedEdge, TColStd_SequenceOfBoolean& SeqMergedOri);
   
-  Standard_EXPORT void EdgeProcessing (const Handle(Message_ProgressIndicator)& thePI = 0);
+  Standard_EXPORT void EdgeProcessing (const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Recompute regularity on merged edges
-  Standard_EXPORT void EdgeRegularity (const Handle(Message_ProgressIndicator)& thePI = 0);
+  Standard_EXPORT void EdgeRegularity (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT void CreateOutputInformations();
   
@@ -277,8 +276,8 @@ protected:
   
 
   //! This method is called from Perform only
-  //! thePI - progress indicator of processing
-  Standard_EXPORT virtual void FaceAnalysis (const Handle(Message_ProgressIndicator)& thePI = 0);
+  //! theProgress - progress indicator of processing
+  Standard_EXPORT virtual void FaceAnalysis (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
 
   //! This method is called from Perform only
@@ -286,8 +285,8 @@ protected:
   
 
   //! This method is called from Perform only
-  //! thePI - progress indicator of processing
-  Standard_EXPORT virtual void VerticesAssembling (const Handle(Message_ProgressIndicator)& thePI = 0);
+  //! theProgress - progress indicator of processing
+  Standard_EXPORT virtual void VerticesAssembling (const Message_ProgressRange& theProgress = Message_ProgressRange());
   
 
   //! This method is called from Perform only

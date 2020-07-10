@@ -19,6 +19,7 @@
 #include <Interface_Macros.hxx>
 #include <Interface_Protocol.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Transient.hxx>
 #include <TopoDS_Compound.hxx>
@@ -132,17 +133,18 @@ TransferBRep_Reader::TransferBRep_Reader ()
 
     void  TransferBRep_Reader::PrepareTransfer ()    {  }
 
-    void  TransferBRep_Reader::TransferRoots ()
+    void  TransferBRep_Reader::TransferRoots (const Message_ProgressRange& theProgress)
 {
   Clear();
   if (!BeginTransfer()) return;
   Transfer_TransferOutput TP (theProc,theModel);
 
-  TP.TransferRoots(theProto);
+  TP.TransferRoots(theProto, theProgress);
   EndTransfer();
 }
 
-    Standard_Boolean TransferBRep_Reader::Transfer (const Standard_Integer num)
+    Standard_Boolean TransferBRep_Reader::Transfer (const Standard_Integer num,
+                                                    const Message_ProgressRange& theProgress)
 {
   if (!BeginTransfer()) return Standard_False;
   if (num <= 0 || num > theModel->NbEntities()) return Standard_False;
@@ -155,14 +157,15 @@ TransferBRep_Reader::TransferBRep_Reader ()
     theModel->Print (ent, sout);
     sout<<std::endl;
   }
-  TP.Transfer(ent);
+  TP.Transfer(ent, theProgress);
   theProc->SetRoot(ent);
   EndTransfer();
   return Standard_True;
 }
 
     void  TransferBRep_Reader::TransferList
-  (const Handle(TColStd_HSequenceOfTransient)& list)
+  (const Handle(TColStd_HSequenceOfTransient)& list,
+   const Message_ProgressRange& theProgress)
 {
   if (!BeginTransfer()) return;
   if (list.IsNull()) return;
@@ -172,7 +175,9 @@ TransferBRep_Reader::TransferBRep_Reader ()
 
   if (theProc->TraceLevel() > 1) 
     sout<<"--  Transfer(Read-List) : "<<nb<<" Items"<<std::endl;
-  for (i = 1; i <= nb; i ++) {
+  Message_ProgressScope aPS(theProgress, NULL, nb);
+  for (i = 1; i <= nb && aPS.More(); i++) {
+    Message_ProgressRange aRange = aPS.Next();
     Handle(Standard_Transient) ent = list->Value(i);
     if (theModel->Number(ent) == 0) continue;
 
@@ -182,7 +187,7 @@ TransferBRep_Reader::TransferBRep_Reader ()
       theModel->Print (ent, sout);
       sout<<std::endl;
     }
-    TP.Transfer(ent);
+    TP.Transfer (ent, aRange);
     theProc->SetRoot(ent);
   }
   EndTransfer();

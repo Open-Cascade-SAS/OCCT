@@ -16,6 +16,7 @@
 
 
 #include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_ClosedShell.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
@@ -45,13 +46,16 @@
 //=============================================================================
 TopoDSToStep_MakeShellBasedSurfaceModel::
   TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Face& aFace,
-                                          const Handle(Transfer_FinderProcess)& FP)
+                                          const Handle(Transfer_FinderProcess)& FP,
+                                          const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
   MoniTool_DataMapOfShapeTransient aMap;
 
   TopoDSToStep_Tool    aTool(aMap, Standard_False);
-  TopoDSToStep_Builder StepB(aFace, aTool, FP);
+  TopoDSToStep_Builder StepB(aFace, aTool, FP, theProgress);
+  if (theProgress.UserBreak())
+    return;
 
   TopoDSToStep::AddResult ( FP, aTool );
 
@@ -89,7 +93,8 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
 
 TopoDSToStep_MakeShellBasedSurfaceModel::
   TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Shell& aShell,
-                                          const Handle(Transfer_FinderProcess)& FP)
+                                          const Handle(Transfer_FinderProcess)& FP,
+                                          const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
   StepShape_Shell                                 aShellSelect;
@@ -99,7 +104,9 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
   MoniTool_DataMapOfShapeTransient                aMap;
   
   TopoDSToStep_Tool    aTool(aMap, Standard_False);
-  TopoDSToStep_Builder StepB(aShell, aTool, FP);
+  TopoDSToStep_Builder StepB(aShell, aTool, FP, theProgress);
+  if (theProgress.UserBreak())
+    return;
   //TopoDSToStep::AddResult ( FP, aTool );
 
   if (StepB.IsDone()) {
@@ -138,7 +145,8 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
 
 TopoDSToStep_MakeShellBasedSurfaceModel::
   TopoDSToStep_MakeShellBasedSurfaceModel(const TopoDS_Solid& aSolid,
-				    const Handle(Transfer_FinderProcess)& FP)
+                                          const Handle(Transfer_FinderProcess)& FP,
+                                          const Message_ProgressRange& theProgress)
 {
   done = Standard_False;
   StepShape_Shell                  aShellSelect;
@@ -150,13 +158,18 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
   MoniTool_DataMapOfShapeTransient   aMap;
   TColStd_SequenceOfTransient  S;
   
-  It.Initialize(aSolid);
-  for (; It.More(); It.Next() ) {
+  Standard_Integer nbshapes = 0;
+  for (It.Initialize(aSolid); It.More(); It.Next())
+    if (It.Value().ShapeType() == TopAbs_SHELL)
+      nbshapes++;
+  Message_ProgressScope aPS(theProgress, NULL, nbshapes);
+  for (It.Initialize(aSolid); It.More() && aPS.More(); It.Next())
+  {
     if (It.Value().ShapeType() == TopAbs_SHELL) {
       aShell = TopoDS::Shell(It.Value());
 
       TopoDSToStep_Tool    aTool(aMap, Standard_False);
-      TopoDSToStep_Builder StepB(aShell, aTool, FP);
+      TopoDSToStep_Builder StepB(aShell, aTool, FP, aPS.Next());
       TopoDSToStep::AddResult ( FP, aTool );
 
       if (StepB.IsDone()) {
@@ -169,6 +182,8 @@ TopoDSToStep_MakeShellBasedSurfaceModel::
       }
     }
   }
+  if (!aPS.More())
+    return;
   Standard_Integer N = S.Length();
   if ( N >= 1) {
     aSbsmBoundary = new StepShape_HArray1OfShell(1,N);

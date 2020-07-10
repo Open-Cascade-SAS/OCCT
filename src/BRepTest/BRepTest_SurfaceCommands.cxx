@@ -36,6 +36,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
+#include <TCollection_AsciiString.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <TopTools_ListOfShape.hxx>
@@ -455,7 +456,7 @@ static Standard_Integer sewing (Draw_Interpretor& theDi,
     aSewing.Add(aSeq.Value(i));
   
   Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDi, 1);
-  aSewing.Perform (aProgress);
+  aSewing.Perform (aProgress->Start());
   aSewing.Dump();
 
   const TopoDS_Shape& aRes = aSewing.SewedShape();

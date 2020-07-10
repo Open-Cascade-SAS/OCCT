@@ -63,7 +63,8 @@ Transfer_ActorDispatch::Transfer_ActorDispatch
 
     Handle(Transfer_Binder)  Transfer_ActorDispatch::Transfer
   (const Handle(Standard_Transient)& start,
-   const Handle(Transfer_TransientProcess)& /*TP*/)
+   const Handle(Transfer_TransientProcess)& /*TP*/,
+   const Message_ProgressRange&)
 {
   thetool.TransferEntity(start);
   return thetool.TransientProcess()->Find(start);

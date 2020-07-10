@@ -21,7 +21,7 @@
 //purpose  :
 //=============================================================================
 Handle(Poly_Triangulation) RWObj::ReadFile (const Standard_CString theFile,
-                                            const Handle(Message_ProgressIndicator)& theProgress)
+                                            const Message_ProgressRange& theProgress)
 {
   RWObj_TriangulationReader aReader;
   aReader.SetCreateShapes (Standard_False);

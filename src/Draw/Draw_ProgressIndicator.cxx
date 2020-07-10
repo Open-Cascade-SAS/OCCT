@@ -17,8 +17,12 @@
 #include <Draw_ProgressIndicator.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
-#include <Message_ProgressScale.hxx>
+#include <Message_ProgressScope.hxx>
+#include <NCollection_List.hxx>
 #include <Precision.hxx>
+#include <OSD.hxx>
+#include <OSD_Exception_CTRL_BREAK.hxx>
+#include <OSD_Thread.hxx>
 
 #include <stdio.h>
 #include <time.h>
@@ -29,15 +33,16 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_ProgressIndicator,Message_ProgressIndicator)
 //purpose  : 
 //=======================================================================
 Draw_ProgressIndicator::Draw_ProgressIndicator (const Draw_Interpretor &di, Standard_Real theUpdateThreshold)
-: myTextMode ( DefaultTextMode() ),
+: myTclMode ( DefaultTclMode() ),
+  myConsoleMode ( DefaultConsoleMode() ),
   myGraphMode ( DefaultGraphMode() ),
-  myTclOutput ( DefaultTclOutput() ),
   myDraw ( (Draw_Interpretor*)&di ),
   myShown ( Standard_False ),
   myBreak ( Standard_False ),
   myUpdateThreshold ( 0.01 * theUpdateThreshold ),
   myLastPosition ( -1. ),
-  myStartTime ( 0 )
+  myStartTime ( 0 ),
+  myGuiThreadId (OSD_Thread::Current())
 {
 }
 
@@ -73,23 +78,27 @@ void Draw_ProgressIndicator::Reset()
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
+void Draw_ProgressIndicator::Show (const Message_ProgressScope& theScope, const Standard_Boolean force)
 {
-  if ( ! myGraphMode && ! myTextMode )
-    return Standard_False;
+  if (!myGraphMode && !myTclMode && !myConsoleMode)
+    return;
 
   // remember time of the first call to Show as process start time
   if ( ! myStartTime )
   {
-    time_t aTimeT;
-    time ( &aTimeT );
-    myStartTime = (Standard_Size)aTimeT;
+    if (!myStartTime)
+    {
+      time_t aTimeT;
+      time(&aTimeT);
+      myStartTime = (Standard_Size)aTimeT;
+    }
   }
 
   // unless show is forced, show updated state only if at least 1% progress has been reached since the last update
   Standard_Real aPosition = GetPosition();
   if ( ! force && aPosition < 1. && Abs (aPosition - myLastPosition) < myUpdateThreshold)
-    return Standard_False; // return if update interval has not elapsed
+    return; // return if update interval has not elapsed
+
   myLastPosition = aPosition;
   
   // Prepare textual progress info
@@ -97,17 +106,19 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
   aText.setf (std::ios::fixed, std:: ios::floatfield);
   aText.precision(0);
   aText << "Progress: " << 100. * GetPosition() << "%";
-  for ( Standard_Integer i=GetNbScopes(); i >=1; i-- ) {
-    const Message_ProgressScale &scale = GetScope ( i );
-    if ( scale.GetName().IsNull() ) continue; // skip unnamed scopes
-    aText << " " << scale.GetName()->ToCString() << ": ";
+  NCollection_List<const Message_ProgressScope*> aScopes;
+  for (const Message_ProgressScope* aPS = &theScope; aPS; aPS = aPS->Parent())
+    aScopes.Prepend(aPS);
+  for (NCollection_List<const Message_ProgressScope*>::Iterator it(aScopes); it.More(); it.Next())
+  {
+    const Message_ProgressScope* aPS = it.Value();
+    if (!aPS->Name()) continue; // skip unnamed scopes
+    aText << " " << aPS->Name() << ": ";
 
-    // if scope has subscopes, print end of subscope as it s current position
-    Standard_Real locPos = ( (i >1 && GetPosition()!=0) ? GetScope ( i-1 ).GetLast() : GetPosition() );
     // print progress info differently for finite and infinite scopes
-    if ( scale.GetInfinite() )
+    Standard_Real aVal = aPS->Value();
+    if (aPS->IsInfinite())
     {
-      Standard_Real aVal = scale.BaseToLocal(locPos);
       if (Precision::IsInfinite(aVal))
       {
         aText << "finished";
@@ -119,13 +130,14 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
     }
     else
     {
-      aText << scale.BaseToLocal ( locPos ) << " / " << scale.GetMax();
+      aText << aVal << " / " << aPS->MaxValue();
     }
   }
 
-  // Show graphic progress bar
-  if ( myGraphMode ) {
-
+  // Show graphic progress bar.
+  // It will be updated only within GUI thread.
+  if (myGraphMode && myGuiThreadId == OSD_Thread::Current())
+  {
     // In addition, write elapsed/estimated/remaining time
     if ( GetPosition() > 0.01 ) { 
       time_t aTimeT;
@@ -153,25 +165,21 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
     aCommand.setf(std::ios::fixed, std::ios::floatfield);
     aCommand.precision(0);
     aCommand << ".xprogress.bar coords progress 2 2 " << (1 + 400 * GetPosition()) << " 21;";
-    aCommand << ".xprogress.bar coords progress_next 2 2 " << (1 + 400 * GetScope(1).GetLast()) << " 21;";
+    aCommand << ".xprogress.bar coords progress_next 2 2 " << (1 + 400 * theScope.GetPortion()) << " 21;";
     aCommand << ".xprogress.text configure -text \"" << aText.str() << "\";";
     aCommand << "update";
     myDraw->Eval (aCommand.str().c_str());
   }
 
   // Print textual progress info
-  if (myTextMode)
+  if (myTclMode && myDraw)
   {
-    if (myTclOutput && myDraw)
-    {
-      *myDraw << aText.str().c_str() << "\n";
-    }
-    else
-    {
-      std::cout << aText.str().c_str() << "\n";
-    }
+    *myDraw << aText.str().c_str() << "\n";
   }
-  return Standard_True;
+  if (myConsoleMode)
+  {
+    std::cout << aText.str().c_str() << "\n";
+  }
 }
 
 //=======================================================================
@@ -181,32 +189,65 @@ Standard_Boolean Draw_ProgressIndicator::Show(const Standard_Boolean force)
 
 Standard_Boolean Draw_ProgressIndicator::UserBreak()
 {
-  if ( StopIndicator() == this ) {
+  if ( StopIndicator() == this )
+  {
 //    std::cout << "Progress Indicator - User Break: " << StopIndicator() << ", " << (void*)this << std::endl;
     myBreak = Standard_True;
     myDraw->Eval ( "XProgress -stop 0" );
+  }
+  else
+  {
+    // treatment of Ctrl-Break signal
+    try
+    {
+      OSD::ControlBreak();
+    }
+    catch (OSD_Exception_CTRL_BREAK)
+    {
+      myBreak = Standard_True;
+    }
   }
   return myBreak;
 }
        
 //=======================================================================
-//function : SetTextMode
-//purpose  : Sets text output mode (on/off)
+//function : SetTclMode
+//purpose  : Sets Tcl output mode (on/off)
 //=======================================================================
 
-void Draw_ProgressIndicator::SetTextMode(const Standard_Boolean theTextMode)
+void Draw_ProgressIndicator::SetTclMode(const Standard_Boolean theTclMode)
 {
-  myTextMode = theTextMode;
+  myTclMode = theTclMode;
 }
 
 //=======================================================================
-//function : GetTextMode
-//purpose  : Returns text output mode (on/off)
+//function : GetTclMode
+//purpose  : Returns Tcl output mode (on/off)
 //=======================================================================
 
-Standard_Boolean Draw_ProgressIndicator::GetTextMode() const
+Standard_Boolean Draw_ProgressIndicator::GetTclMode() const
 {
-  return myTextMode;
+  return myTclMode;
+}
+
+//=======================================================================
+//function : SetConsoleMode
+//purpose  : Sets Console output mode (on/off)
+//=======================================================================
+
+void Draw_ProgressIndicator::SetConsoleMode(const Standard_Boolean theMode)
+{
+  myConsoleMode = theMode;
+}
+
+//=======================================================================
+//function : GetConsoleMode
+//purpose  : Returns Console output mode (on/off)
+//=======================================================================
+
+Standard_Boolean Draw_ProgressIndicator::GetConsoleMode() const
+{
+  return myConsoleMode;
 }
 
 //=======================================================================
@@ -230,14 +271,25 @@ Standard_Boolean Draw_ProgressIndicator::GetGraphMode() const
 }
 
 //=======================================================================
-//function : DefaultTextMode
+//function : DefaultTclMode
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean &Draw_ProgressIndicator::DefaultTextMode()
+Standard_Boolean &Draw_ProgressIndicator::DefaultTclMode()
 {
-  static Standard_Boolean defTextMode = Standard_False;
-  return defTextMode;
+  static Standard_Boolean defTclMode = Standard_False;
+  return defTclMode;
+}
+
+//=======================================================================
+//function : DefaultConsoleMode
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean &Draw_ProgressIndicator::DefaultConsoleMode()
+{
+  static Standard_Boolean defConsoleMode = Standard_False;
+  return defConsoleMode;
 }
 
 //=======================================================================
@@ -249,17 +301,6 @@ Standard_Boolean &Draw_ProgressIndicator::DefaultGraphMode()
 {
   static Standard_Boolean defGraphMode = Standard_False;
   return defGraphMode;
-}
-
-//=======================================================================
-//function : DefaultTclOutput
-//purpose  :
-//=======================================================================
-
-Standard_Boolean &Draw_ProgressIndicator::DefaultTclOutput()
-{
-  static Standard_Boolean defTclOutput = Standard_False;
-  return defTclOutput;
 }
 
 //=======================================================================

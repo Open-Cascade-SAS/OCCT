@@ -125,7 +125,7 @@ void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const TopTools_ListOfShape& theArg
   myDSFiller->SetArguments(theArgs);
   // Set options for intersection
   myDSFiller->SetRunParallel(myRunParallel);
-  myDSFiller->SetProgressIndicator(myProgressIndicator);
+  myDSFiller->SetProgressIndicator(*myProgressScope);
   myDSFiller->SetFuzzyValue(myFuzzyValue);
   myDSFiller->SetNonDestructive(myNonDestructive);
   myDSFiller->SetGlue(myGlue);
@@ -145,7 +145,7 @@ void BRepAlgoAPI_BuilderAlgo::BuildResult()
 {
   // Set options to the builder
   myBuilder->SetRunParallel(myRunParallel);
-  myBuilder->SetProgressIndicator(myProgressIndicator);
+  myBuilder->SetProgressIndicator(*myProgressScope);
   myBuilder->SetCheckInverted(myCheckInverted);
   myBuilder->SetToFillHistory(myFillHistory);
   // Perform building of the result with pre-calculated intersections

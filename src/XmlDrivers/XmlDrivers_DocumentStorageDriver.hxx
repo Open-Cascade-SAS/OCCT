@@ -43,7 +43,7 @@ public:
   
   Standard_EXPORT virtual Standard_Boolean WriteShapeSection
                       (XmlObjMgt_Element& thePDoc, 
-                       const Handle(Message_ProgressIndicator)& theProgress = NULL) Standard_OVERRIDE;
+                       const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentStorageDriver,XmlLDrivers_DocumentStorageDriver)
 

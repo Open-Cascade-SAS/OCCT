@@ -36,7 +36,7 @@ protected:
 
   //! Read the mesh from specified file.
   Standard_EXPORT virtual Standard_Boolean performMesh (const TCollection_AsciiString& theFile,
-                                                        const Handle(Message_ProgressIndicator)& theProgress,
+                                                        const Message_ProgressRange& theProgress,
                                                         const Standard_Boolean theToProbe) Standard_OVERRIDE;
 
 protected:

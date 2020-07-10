@@ -23,8 +23,8 @@
 
 math_Gauss::math_Gauss(const math_Matrix& A, 
                        const Standard_Real MinPivot, 
-                       const Handle(Message_ProgressIndicator) & aProgress) 
-: LU   (1, A.RowNumber(), 1, A.ColNumber()),
+                       const Message_ProgressRange& theProgress) 
+                           : LU   (1, A.RowNumber(), 1, A.ColNumber()),
   Index(1, A.RowNumber()),
   D (0.0),
   Done (Standard_False)
@@ -35,7 +35,7 @@ math_Gauss::math_Gauss(const math_Matrix& A,
                                   Index, 
                                   D,
                                   MinPivot, 
-                                  aProgress);
+                                  theProgress);
       if(!Error) {
         Done = Standard_True;
       }

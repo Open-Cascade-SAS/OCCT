@@ -54,7 +54,8 @@ Standard_Boolean  IGESControl_ActorWrite::Recognize
 
 Handle(Transfer_Binder)  IGESControl_ActorWrite::Transfer
   (const Handle(Transfer_Finder)& start,
-   const Handle(Transfer_FinderProcess)& FP)
+   const Handle(Transfer_FinderProcess)& FP,
+   const Message_ProgressRange& theProgress)
 {
   XSAlgo::AlgoContainer()->PrepareForTransfer();
     
@@ -74,14 +75,14 @@ Handle(Transfer_Binder)  IGESControl_ActorWrite::Transfer
     shape = XSAlgo::AlgoContainer()->ProcessShape( shape, Tol, maxTol, 
                                                    "write.iges.resource.name", 
                                                    "write.iges.sequence", info,
-                                                   FP->GetProgress() );
+                                                   theProgress );
 //  modified by NIZHNY-EAP Tue Aug 29 11:17:01 2000 ___END___
 
     BRepToIGES_BREntity   BR0; BR0.SetModel(modl);  BR0.SetTransferProcess(FP);
     BRepToIGESBRep_Entity BR1; BR1.SetModel(modl);  BR1.SetTransferProcess(FP);
 
-    if (themodetrans == 0) ent = BR0.TransferShape(shape);
-    if (themodetrans == 1) ent = BR1.TransferShape(shape);
+    if (themodetrans == 0) ent = BR0.TransferShape(shape, theProgress);
+    if (themodetrans == 1) ent = BR1.TransferShape(shape, theProgress);
 //  modified by NIZHNY-EAP Tue Aug 29 11:37:18 2000 ___BEGIN___
     XSAlgo::AlgoContainer()->MergeTransferInfo(FP, info);
 //  modified by NIZHNY-EAP Tue Aug 29 11:37:25 2000 ___END___

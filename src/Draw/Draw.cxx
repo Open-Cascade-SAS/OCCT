@@ -74,7 +74,7 @@ std::filebuf Draw_Spyfile;
 
 static std::ostream spystream(&Draw_Spyfile);
 
-static Handle(Draw_ProgressIndicator) PInd = NULL;
+static Handle(Draw_ProgressIndicator) global_Progress = NULL;
 
 Standard_EXPORT Standard_Boolean Draw_Interprete(const char* command);
 // true if complete command
@@ -240,14 +240,14 @@ Draw_Interpretor& Draw::GetInterpretor()
 //function :
 //purpose  : Set/Get Progress Indicator
 //=======================================================================
-void Draw::SetProgressBar(const Handle(Draw_ProgressIndicator)& thePI)
+void Draw::SetProgressBar(const Handle(Draw_ProgressIndicator)& theProgress)
 {
-  PInd = thePI;
+  global_Progress = theProgress;
 }
 
 Handle(Draw_ProgressIndicator) Draw::GetProgressBar()
 {
-  return PInd;
+  return global_Progress;
 }
 
 #ifndef _WIN32

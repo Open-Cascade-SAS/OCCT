@@ -24,11 +24,10 @@
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 
-#include <Message_ProgressIndicator.hxx>
 #include <ShapeExtend_BasicMsgRegistrator.hxx>
+#include <Message_ProgressRange.hxx>
 
 class TopoDS_Shape;
-class Message_ProgressIndicator;
 class ShapeExtend_BasicMsgRegistrator;
 class ShapeBuild_ReShape;
 class ShapeFix_Root;
@@ -78,7 +77,11 @@ public:
   //! been processed. The passed progress indicator allows user
   //! to consult the current progress stage and abort algorithm
   //! if needed.
-  Standard_EXPORT static Standard_Boolean SameParameter (const TopoDS_Shape& shape, const Standard_Boolean enforce, const Standard_Real preci = 0.0, const Handle(Message_ProgressIndicator)& theProgress = 0, const Handle(ShapeExtend_BasicMsgRegistrator)& theMsgReg = 0);
+  Standard_EXPORT static Standard_Boolean SameParameter
+    (const TopoDS_Shape& shape, const Standard_Boolean enforce,
+     const Standard_Real preci = 0.0,
+     const Message_ProgressRange& theProgress = Message_ProgressRange(),
+     const Handle(ShapeExtend_BasicMsgRegistrator)& theMsgReg = 0);
   
   //! Runs EncodeRegularity from BRepLib taking into account
   //! shared components of assemblies, so that each component

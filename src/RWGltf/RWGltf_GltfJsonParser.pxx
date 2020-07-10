@@ -17,6 +17,7 @@
 
 #include <Graphic3d_Vec.hxx>
 #include <Message_Gravity.hxx>
+#include <Message_ProgressScope.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <RWGltf_GltfLatePrimitiveArray.hxx>
@@ -112,7 +113,7 @@ public:
   void SetMeshNameAsFallback (bool theToFallback) { myUseMeshNameAsFallback = theToFallback; }
 
   //! Parse glTF document.
-  Standard_EXPORT bool Parse (const Handle(Message_ProgressIndicator)& theProgress);
+  Standard_EXPORT bool Parse (const Message_ProgressRange& theProgress);
 
   //! Return face list for loading triangulation.
   NCollection_Vector<TopoDS_Face>& FaceList() { return myFaceList; }
@@ -124,7 +125,7 @@ protected:
   Standard_EXPORT bool gltfParseRoots();
 
   //! Parse default scene.
-  Standard_EXPORT bool gltfParseScene (const Handle(Message_ProgressIndicator)& theProgress);
+  Standard_EXPORT bool gltfParseScene (const Message_ProgressRange& theProgress);
 
   //! Parse document metadata.
   Standard_EXPORT void gltfParseAsset();
@@ -171,25 +172,25 @@ protected:
   //! Parse scene array of nodes recursively.
   Standard_EXPORT bool gltfParseSceneNodes (TopTools_SequenceOfShape& theShapeSeq,
                                             const RWGltf_JsonValue& theSceneNodes,
-                                            const Handle(Message_ProgressIndicator)& theProgress);
+                                            const Message_ProgressRange& theProgress);
 
   //! Parse scene node recursively.
   Standard_EXPORT bool gltfParseSceneNode (TopoDS_Shape& theNodeShape,
                                            const TCollection_AsciiString& theSceneNodeId,
                                            const RWGltf_JsonValue& theSceneNode,
-                                           const Handle(Message_ProgressIndicator)& theProgress);
+                                           const Message_ProgressRange& theProgress);
 
   //! Parse mesh element.
   Standard_EXPORT bool gltfParseMesh (TopoDS_Shape& theMeshShape,
                                       const TCollection_AsciiString& theMeshId,
                                       const RWGltf_JsonValue& theMesh,
-                                      const Handle(Message_ProgressIndicator)& theProgress);
+                                      const Message_ProgressRange& theProgress);
 
   //! Parse primitive array.
   Standard_EXPORT bool gltfParsePrimArray (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
                                            const TCollection_AsciiString& theMeshName,
                                            const RWGltf_JsonValue& thePrimArray,
-                                           const Handle(Message_ProgressIndicator)& theProgress);
+                                           const Message_ProgressRange& theProgress);
 
   //! Parse accessor.
   Standard_EXPORT bool gltfParseAccessor (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,

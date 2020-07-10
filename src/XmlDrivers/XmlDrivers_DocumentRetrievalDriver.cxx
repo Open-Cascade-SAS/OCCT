@@ -49,9 +49,9 @@ Handle(XmlMDF_ADriverTable) XmlDrivers_DocumentRetrievalDriver::AttributeDrivers
 //purpose  : Implementation of ReadShapeSection
 //=======================================================================
 Handle(XmlMDF_ADriver) XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
-                               const XmlObjMgt_Element&       theElement,
+                               const XmlObjMgt_Element&         theElement,
                                const Handle(Message_Messenger)& theMsgDriver,
-                               const Handle(Message_ProgressIndicator)& theProgress)
+                               const Message_ProgressRange&     theRange)
 {
   if (myDrivers.IsNull()) myDrivers = AttributeDrivers (theMsgDriver);
   Handle(XmlMDF_ADriver) aDriver;
@@ -59,7 +59,7 @@ Handle(XmlMDF_ADriver) XmlDrivers_DocumentRetrievalDriver::ReadShapeSection(
   {
     Handle(XmlMNaming_NamedShapeDriver) aNamedShapeDriver = 
       Handle(XmlMNaming_NamedShapeDriver)::DownCast (aDriver);
-    aNamedShapeDriver->ReadShapeSection (theElement, theProgress);
+    aNamedShapeDriver->ReadShapeSection (theElement, theRange);
   }
   return aDriver;
 }

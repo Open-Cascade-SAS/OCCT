@@ -30,6 +30,7 @@
 #include <Standard_Real.hxx>
 #include <TColgp_HArray2OfXYZ.hxx>
 #include <TColgp_SequenceOfXY.hxx>
+#include <Message_ProgressScope.hxx>
 
 class Plate_PinpointConstraint;
 class Plate_LinearXYZConstraint;
@@ -43,7 +44,6 @@ class Plate_FreeGtoCConstraint;
 class gp_XYZ;
 class gp_XY;
 class math_Matrix;
-class Message_ProgressIndicator;
 
 
 //! This class implement a variationnal spline algorithm able
@@ -86,7 +86,7 @@ Plate_Plate& operator= (const Plate_Plate& Ref)
   
   Standard_EXPORT void SolveTI (const Standard_Integer ord = 4, 
                                 const Standard_Real anisotropie = 1.0, 
-                                const Handle(Message_ProgressIndicator) & aProgress = Handle(Message_ProgressIndicator)());
+                                const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   //! returns True if all has been correctly done.
   Standard_EXPORT Standard_Boolean IsDone() const;
@@ -139,11 +139,14 @@ private:
   
     gp_XY& Points (const Standard_Integer index) const;
   
-  Standard_EXPORT void SolveTI1 (const Standard_Integer IterationNumber, const Handle(Message_ProgressIndicator) & aProgress = NULL);
+  Standard_EXPORT void SolveTI1 (const Standard_Integer IterationNumber,
+                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT void SolveTI2 (const Standard_Integer IterationNumber, const Handle(Message_ProgressIndicator) & aProgress = NULL);
+  Standard_EXPORT void SolveTI2 (const Standard_Integer IterationNumber,
+                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
   
-  Standard_EXPORT void SolveTI3 (const Standard_Integer IterationNumber, const Handle(Message_ProgressIndicator) & aProgress = NULL);
+  Standard_EXPORT void SolveTI3 (const Standard_Integer IterationNumber,
+                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
   
   Standard_EXPORT void fillXYZmatrix (math_Matrix& mat, const Standard_Integer i0, const Standard_Integer j0, const Standard_Integer ncc1, const Standard_Integer ncc2) const;
 

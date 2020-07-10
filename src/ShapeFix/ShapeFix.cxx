@@ -67,7 +67,7 @@
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopExp.hxx>
 
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <Message_Msg.hxx>
 #include <ShapeExtend_BasicMsgRegistrator.hxx>
 
@@ -79,7 +79,7 @@
 Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
                                          const Standard_Boolean enforce,
                                          const Standard_Real preci,
-                                         const Handle(Message_ProgressIndicator)& theProgress,
+                                         const Message_ProgressRange& theProgress,
                                          const Handle(ShapeExtend_BasicMsgRegistrator)& theMsgReg)
 {
   // Calculate number of edges
@@ -106,16 +106,16 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
   Message_Msg doneMsg("FixEdge.SameParameter.MSG0");
 
   // Start progress scope (no need to check if progress exists -- it is safe)
-  Message_ProgressSentry aPSentryForSameParam(theProgress, "Fixing same parameter problem", 0, 2, 1);
+  Message_ProgressScope aPSForSameParam(theProgress, "Fixing same parameter problem", 2);
 
   {
     // Start progress scope (no need to check if progress exists -- it is safe)
-    Message_ProgressSentry aPSentry(theProgress, "Fixing edge", 0, aNbEdges, 1);
+    Message_ProgressScope aPS (aPSForSameParam.Next(), "Fixing edge", aNbEdges);
 
     while ( ex.More() )
     {
       TopoDS_Edge E;
-      while ( ex.More() && aPSentry.More() )
+      while ( ex.More() && aPS.More() )
       {
         numedge ++;
         int ierr = 0;
@@ -161,25 +161,23 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
         }
 
         // Complete step in current progress scope
-        aPSentry.Next();     
+        aPS.Next();     
       } // -- end while
 
       // Halt algorithm in case of user's abort
-      if ( !aPSentry.More() )
+      if ( !aPS.More() )
         return Standard_False;
     }
 
   }
-  // Switch to "Update tolerances" step
-  aPSentryForSameParam.Next();
 
   {
     // Start progress scope (no need to check if progress exists -- it is safe)
-    Message_ProgressSentry aPSentry(theProgress, "Update tolerances", 0, aNbFaces, 1);
+    Message_ProgressScope aPS (aPSForSameParam.Next(), "Update tolerances", aNbFaces);
 
     //:i2 abv 21 Aug 98: ProSTEP TR8 Motor.rle face 710:
     // Update tolerance of edges on planes (no pcurves are stored)
-    for ( TopExp_Explorer exp ( shape, TopAbs_FACE ); exp.More() && aPSentry.More(); exp.Next(), aPSentry.Next() )
+    for ( TopExp_Explorer exp ( shape, TopAbs_FACE ); exp.More() && aPS.More(); exp.Next(), aPS.Next() )
     {
       TopoDS_Face face = TopoDS::Face ( exp.Current() );
       Handle(Geom_Surface) Surf = BRep_Tool::Surface ( face );
@@ -238,11 +236,10 @@ Standard_Boolean ShapeFix::SameParameter(const TopoDS_Shape& shape,
           }
         }
       }
-
-      // Halt algorithm in case of user's abort
-      if ( !aPSentry.More() )
-        return Standard_False;
     }
+    // Halt algorithm in case of user's abort
+    if (!aPS.More())
+      return Standard_False;
   }
 
   if (!status) {

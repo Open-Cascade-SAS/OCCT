@@ -26,10 +26,11 @@
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Boolean.hxx>
+#include <Message_ProgressRange.hxx>
+
 class TopoDS_Shape;
 class BRepTools_Modification;
 class BRepTools_Modifier;
-class Message_ProgressIndicator;
 class ShapeBuild_ReShape;
 class ShapeCustom_RestrictionParameters;
 class ShapeCustom_Surface;
@@ -66,7 +67,11 @@ public:
 
   
   //! Applies modifier to shape and checks sharing in the case assemblies.
-  Standard_EXPORT static TopoDS_Shape ApplyModifier (const TopoDS_Shape& S, const Handle(BRepTools_Modification)& M, TopTools_DataMapOfShapeShape& context, BRepTools_Modifier& MD, const Handle(Message_ProgressIndicator)& aProgress = NULL, const Handle(ShapeBuild_ReShape)& aReShape = NULL);
+  Standard_EXPORT static TopoDS_Shape ApplyModifier
+    (const TopoDS_Shape& S, const Handle(BRepTools_Modification)& M,
+     TopTools_DataMapOfShapeShape& context, BRepTools_Modifier& MD,
+     const Message_ProgressRange& theProgress = Message_ProgressRange(),
+     const Handle(ShapeBuild_ReShape)& aReShape = NULL);
   
   //! Returns a new shape without indirect surfaces.
   Standard_EXPORT static TopoDS_Shape DirectFaces (const TopoDS_Shape& S);

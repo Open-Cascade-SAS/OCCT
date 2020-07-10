@@ -86,7 +86,7 @@ void BOPAlgo_MakerVolume::Perform()
   }
   //
   pPF->SetRunParallel(myRunParallel);
-  pPF->SetProgressIndicator(myProgressIndicator);
+  pPF->SetProgressIndicator(*myProgressScope);
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);

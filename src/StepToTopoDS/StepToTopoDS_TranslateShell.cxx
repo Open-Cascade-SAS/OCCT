@@ -17,8 +17,7 @@
 //:   gka 09.04.99: S4136: improving tolerance management
 
 #include <BRep_Builder.hxx>
-#include <Message_ProgressIndicator.hxx>
-#include <Message_ProgressSentry.hxx>
+#include <Message_ProgressScope.hxx>
 #include <StdFail_NotDone.hxx>
 #include <StepShape_ConnectedFaceSet.hxx>
 #include <StepShape_FaceSurface.hxx>
@@ -43,23 +42,15 @@ StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
 }
 
 // ============================================================================
-// Method  : StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
-// Purpose : Constructor with a ConnectedFaceSet and a Tool
-// ============================================================================
-
-StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell
-(const Handle(StepShape_ConnectedFaceSet)& CFS, StepToTopoDS_Tool& T, StepToTopoDS_NMTool& NMTool)
-{
-  Init(CFS, T, NMTool);
-}
-
-// ============================================================================
 // Method  : Init
 // Purpose : Init with a ConnectedFaceSet and a Tool
 // ============================================================================
 
 void StepToTopoDS_TranslateShell::Init
-(const Handle(StepShape_ConnectedFaceSet)& CFS, StepToTopoDS_Tool& aTool, StepToTopoDS_NMTool& NMTool)
+(const Handle(StepShape_ConnectedFaceSet)& CFS,
+ StepToTopoDS_Tool& aTool,
+ StepToTopoDS_NMTool& NMTool,
+ const Message_ProgressRange& theProgress)
 {
   //bug15697
   if(CFS.IsNull())
@@ -81,7 +72,7 @@ void StepToTopoDS_TranslateShell::Init
     myTranFace.SetPrecision(Precision()); //gka
     myTranFace.SetMaxTol(MaxTol());
 
-    Message_ProgressSentry PS ( TP->GetProgress(), "Face", 0, NbFc, 1 );
+    Message_ProgressScope PS ( theProgress, "Face", NbFc);
     for (Standard_Integer i = 1; i <= NbFc && PS.More(); i++, PS.Next()) {
 #ifdef OCCT_DEBUG
       std::cout << "Processing Face : " << i << std::endl;
