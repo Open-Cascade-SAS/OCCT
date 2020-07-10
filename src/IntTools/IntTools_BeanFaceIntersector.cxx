@@ -582,10 +582,19 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
   Handle(BRepAdaptor_HSurface) aSurface = new BRepAdaptor_HSurface(mySurface);
   
   anExactIntersector.Perform(aCurve, aSurface);
-  
-  if(anExactIntersector.IsDone()) {
+
+  if (anExactIntersector.IsDone()) {
     Standard_Integer i = 0;
-    
+
+    if (anExactIntersector.NbPoints() > 1)
+    {
+      // To avoid unification of the intersection points in a single intersection
+      // range, perform exact range search considering the lowest possible tolerance
+      // for edge and face.
+      myCriteria = 3 * Precision::Confusion();
+      myCurveResolution = myCurve.Resolution (myCriteria);
+    }
+
     for(i = 1; i <= anExactIntersector.NbPoints(); i++) {
       const IntCurveSurface_IntersectionPoint& aPoint = anExactIntersector.Point(i);
       

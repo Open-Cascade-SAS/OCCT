@@ -1,0 +1,46 @@
+puts "============================================================================================="
+puts "0031655: Modeling Algorithms - Invalid result of General Fuse operation"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug31604_a.brep] a
+restore [locate_data_file bug31604_b.brep] b
+
+bclearobjects
+bcleartools
+baddobjects a
+baddtools b
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+bbuild r5
+
+checkshape r0
+checknbshapes r0 -wire 63 -face 63 -shell 1 -solid 1
+checkprops r0 -s 3567.57 -v 3621.95
+
+checkshape r1
+checknbshapes r1 -wire 61 -face 51 -shell 1 -solid 1
+checkprops r1 -s 13208 -v 28488.4
+
+checkshape r2
+checknbshapes r2 -wire 55 -face 51 -shell 2 -solid 2
+checkprops r2 -s 10997.5 -v 21661.1
+
+checkshape r3
+checknbshapes r3 -wire 69 -face 63 -shell 1 -solid 1
+checkprops r3 -s  5782.58 -v 3224.25
+
+checkshape r4
+checksection r4 -r 4
+checkprops r4 -l 470.345
+
+checkshape r5
+checknbshapes r5 -wire 124 -face 114 -shell 4 -solid 4
+checkprops r5 -s 20343.2 -v 28488.6
+
+checkview -display r3 -2d -path ${imagedir}/${test_image}.png

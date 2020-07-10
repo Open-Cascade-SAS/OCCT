@@ -16,5 +16,6 @@ checkshape tool
 bcut result shape tool
 
 checkprops result -s 3166.93
+checknbshapes result -wire 8 -face 8 -shell 1 -solid 1
 checkview -display result -2d -path ${imagedir}/${test_image}.png
 
