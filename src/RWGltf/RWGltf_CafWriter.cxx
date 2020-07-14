@@ -1226,7 +1226,14 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
   {
     const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
     const TCollection_AsciiString aNodeName = readNameAttribute (aDocNode.RefLabel);
-
+    {
+      RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), false);
+      if (!aFaceIter.More())
+      {
+        Message::SendWarning (TCollection_AsciiString("RWGltf_CafWriter skipped node '") + aNodeName + "' without triangulation data");
+        continue;
+      }
+    }
     myWriter->StartObject();
     myWriter->Key ("name");
     myWriter->String (aNodeName.ToCString());
@@ -1304,6 +1311,13 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
        aDocExplorer.More(); aDocExplorer.Next())
   {
     const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
+    {
+      RWMesh_FaceIterator aFaceIter(aDocNode.RefLabel, TopLoc_Location(), false);
+      if (!aFaceIter.More())
+      {
+        continue;
+      }
+    }
     if (theLabelFilter != NULL
     && !theLabelFilter->Contains (aDocNode.Id))
     {
