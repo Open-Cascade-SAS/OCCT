@@ -19,6 +19,13 @@
 //! Global viewer instance.
 static WasmOcctView aViewer;
 
+//! Dummy main loop callback for a single shot.
+extern "C" void onMainLoop()
+{
+  // do nothing here - viewer updates are handled on demand
+  emscripten_cancel_main_loop();
+}
+
 //! File data read event.
 extern "C" void onFileDataRead (void* theOpaque, void* theBuffer, int theDataLen)
 {
@@ -60,6 +67,10 @@ int main()
   Handle(Message_PrinterSystemLog) aJSConsolePrinter = new Message_PrinterSystemLog ("webgl-sample", Message_Trace);
   Message::DefaultMessenger()->AddPrinter (aJSConsolePrinter); // open JavaScript console within the Browser to see this output
   Message::DefaultMessenger()->Send (TCollection_AsciiString("NbLogicalProcessors: ") + OSD_Parallel::NbLogicalProcessors(), Message_Trace);
+
+  // setup a dummy single-shot main loop callback just to shut up a useless Emscripten error message on calling eglSwapInterval()
+  emscripten_set_main_loop (onMainLoop, -1, 0);
+
   aViewer.run();
   Message::DefaultMessenger()->Send (OSD_MemInfo::PrintInfo(), Message_Trace);
 

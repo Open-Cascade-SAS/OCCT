@@ -57,31 +57,24 @@
 #elif defined(__EMSCRIPTEN__)
   #include <emscripten/emscripten.h>
 
-  // actual version of Emscripten does not define these yet
-  #ifndef EM_LOG_INFO
-    #define EM_LOG_INFO 0
-  #endif
-  #ifndef EM_LOG_DEBUG
-    #define EM_LOG_DEBUG 0
-  #endif
-
-  //! Convert message gravity into emscripten_log() flags.
-  static int getEmscriptenPriority (const Message_Gravity theGravity)
-  {
-    switch (theGravity)
-    {
-      case Message_Trace:   return EM_LOG_CONSOLE | EM_LOG_DEBUG;
-      case Message_Info:    return EM_LOG_CONSOLE | EM_LOG_INFO;
-      case Message_Warning: return EM_LOG_CONSOLE | EM_LOG_WARN;
-      case Message_Alarm:   return EM_LOG_CONSOLE | EM_LOG_ERROR;
-      case Message_Fail:    return EM_LOG_CONSOLE | EM_LOG_ERROR;
-    }
-    return EM_LOG_CONSOLE;
-  }
-
   //! Print message to console.debug().
-  EM_JS(void, debugMsgToConsole, (const char* theStr), {
+  EM_JS(void, occJSConsoleDebug, (const char* theStr), {
     console.debug(UTF8ToString(theStr));
+  });
+
+  //! Print message to console.info().
+  EM_JS(void, occJSConsoleInfo, (const char* theStr), {
+    console.info(UTF8ToString(theStr));
+  });
+
+  //! Print message to console.warn().
+  EM_JS(void, occJSConsoleWarn, (const char* theStr), {
+    console.warn(UTF8ToString(theStr));
+  });
+
+  //! Print message to console.error().
+  EM_JS(void, occJSConsoleError, (const char* theStr), {
+    console.error(UTF8ToString(theStr));
   });
 #else
   #include <syslog.h>
@@ -176,14 +169,16 @@ void Message_PrinterSystemLog::send (const TCollection_AsciiString& theString,
 #elif defined(__ANDROID__)
   __android_log_write (getAndroidLogPriority (theGravity), myEventSourceName.ToCString(), theString.ToCString());
 #elif defined(__EMSCRIPTEN__)
-  if (theGravity == Message_Trace)
+  // don't use bogus emscripten_log() corrupting UNICODE strings
+  switch (theGravity)
   {
-    debugMsgToConsole (theString.ToCString());
+    case Message_Trace:   occJSConsoleDebug(theString.ToCString()); return;
+    case Message_Info:    occJSConsoleInfo (theString.ToCString()); return;
+    case Message_Warning: occJSConsoleWarn (theString.ToCString()); return;
+    case Message_Alarm:   occJSConsoleError(theString.ToCString()); return;
+    case Message_Fail:    occJSConsoleError(theString.ToCString()); return;
   }
-  else
-  {
-    emscripten_log (getEmscriptenPriority (theGravity), "%s", theString.ToCString());
-  }
+  occJSConsoleWarn (theString.ToCString());
 #else
   syslog (getSysLogPriority (theGravity), "%s", theString.ToCString());
 #endif

@@ -109,13 +109,13 @@ void WasmOcctView::initWindow()
 {
   myDevicePixelRatio = jsDevicePixelRatio();
   myCanvasId = THE_CANVAS_ID;
-  const char* aTargetId = !myCanvasId.IsEmpty() ? myCanvasId.ToCString() : NULL;
+  const char* aTargetId = !myCanvasId.IsEmpty() ? myCanvasId.ToCString() : EMSCRIPTEN_EVENT_TARGET_WINDOW;
   const EM_BOOL toUseCapture = EM_TRUE;
-  emscripten_set_resize_callback     (NULL,      this, toUseCapture, onResizeCallback);
+  emscripten_set_resize_callback     (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onResizeCallback);
 
-  emscripten_set_mousedown_callback  (NULL,      this, toUseCapture, onMouseCallback);
-  emscripten_set_mouseup_callback    (NULL,      this, toUseCapture, onMouseCallback);
-  emscripten_set_mousemove_callback  (NULL,      this, toUseCapture, onMouseCallback);
+  emscripten_set_mousedown_callback  (aTargetId, this, toUseCapture, onMouseCallback);
+  emscripten_set_mouseup_callback    (aTargetId, this, toUseCapture, onMouseCallback);
+  emscripten_set_mousemove_callback  (aTargetId, this, toUseCapture, onMouseCallback);
   emscripten_set_dblclick_callback   (aTargetId, this, toUseCapture, onMouseCallback);
   emscripten_set_click_callback      (aTargetId, this, toUseCapture, onMouseCallback);
   emscripten_set_mouseenter_callback (aTargetId, this, toUseCapture, onMouseCallback);
@@ -127,9 +127,9 @@ void WasmOcctView::initWindow()
   emscripten_set_touchmove_callback  (aTargetId, this, toUseCapture, onTouchCallback);
   emscripten_set_touchcancel_callback(aTargetId, this, toUseCapture, onTouchCallback);
 
-  //emscripten_set_keypress_callback   (NULL,      this, toUseCapture, onKeyCallback);
-  emscripten_set_keydown_callback    (NULL,      this, toUseCapture, onKeyDownCallback);
-  emscripten_set_keyup_callback      (NULL,      this, toUseCapture, onKeyUpCallback);
+  //emscripten_set_keypress_callback   (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onKeyCallback);
+  emscripten_set_keydown_callback    (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onKeyDownCallback);
+  emscripten_set_keyup_callback      (EMSCRIPTEN_EVENT_TARGET_WINDOW, this, toUseCapture, onKeyUpCallback);
 }
 
 // ================================================================
@@ -396,7 +396,7 @@ EM_BOOL WasmOcctView::onMouseEvent (int theEventType, const EmscriptenMouseEvent
 
   Graphic3d_Vec2i aWinSize;
   myView->Window()->Size (aWinSize.x(), aWinSize.y());
-  const Graphic3d_Vec2i aNewPos = convertPointToBacking (Graphic3d_Vec2i (theEvent->canvasX, theEvent->canvasY));
+  const Graphic3d_Vec2i aNewPos = convertPointToBacking (Graphic3d_Vec2i (theEvent->targetX, theEvent->targetY));
   Aspect_VKeyFlags aFlags = 0;
   if (theEvent->ctrlKey  == EM_TRUE) { aFlags |= Aspect_VKeyFlags_CTRL;  }
   if (theEvent->shiftKey == EM_TRUE) { aFlags |= Aspect_VKeyFlags_SHIFT; }
@@ -477,7 +477,7 @@ EM_BOOL WasmOcctView::onWheelEvent (int theEventType, const EmscriptenWheelEvent
 
   Graphic3d_Vec2i aWinSize;
   myView->Window()->Size (aWinSize.x(), aWinSize.y());
-  const Graphic3d_Vec2i aNewPos = convertPointToBacking (Graphic3d_Vec2i (theEvent->mouse.canvasX, theEvent->mouse.canvasY));
+  const Graphic3d_Vec2i aNewPos = convertPointToBacking (Graphic3d_Vec2i (theEvent->mouse.targetX, theEvent->mouse.targetY));
   if (aNewPos.x() < 0 || aNewPos.x() > aWinSize.x()
    || aNewPos.y() < 0 || aNewPos.y() > aWinSize.y())
   {

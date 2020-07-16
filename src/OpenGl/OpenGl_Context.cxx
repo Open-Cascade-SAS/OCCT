@@ -1577,14 +1577,20 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glDeleteVertexArrays)
        && FindProcShort (glGenVertexArrays)
        && FindProcShort (glIsVertexArray);
+#ifndef __EMSCRIPTEN__ // latest Emscripten does not pretend having / simulating mapping buffer functions
   const bool hasMapBufferRange = IsGlGreaterEqual (3, 0)
        && FindProcShort (glMapBufferRange)
+       && FindProcShort (glUnmapBuffer)
+       && FindProcShort (glGetBufferPointerv)
        && FindProcShort (glFlushMappedBufferRange);
+#endif
 
   // load OpenGL ES 3.0 new functions
   const bool has30es = IsGlGreaterEqual (3, 0)
        && hasVAO
+    #ifndef __EMSCRIPTEN__
        && hasMapBufferRange
+    #endif
        && hasInstanced
        && arbSamplerObject != NULL
        && arbFBOBlit != NULL
@@ -1602,8 +1608,6 @@ void OpenGl_Context::init (const Standard_Boolean theIsCoreProfile)
        && FindProcShort (glEndQuery)
        && FindProcShort (glGetQueryiv)
        && FindProcShort (glGetQueryObjectuiv)
-       && FindProcShort (glUnmapBuffer)
-       && FindProcShort (glGetBufferPointerv)
        && FindProcShort (glDrawBuffers)
        && FindProcShort (glUniformMatrix2x3fv)
        && FindProcShort (glUniformMatrix3x2fv)

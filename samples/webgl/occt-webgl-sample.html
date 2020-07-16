@@ -69,6 +69,7 @@ var Module =
   printErr: function(theText) {
     //var anElement = document.getElementById('output');
     //anElement.innerHTML += theText + "<br>";
+    console.warn(theText);
   },
   canvas: (function() {
     var aCanvas = document.getElementById('canvas');
@@ -85,11 +86,12 @@ fileInput.onchange = function()
   var aReader = new FileReader();
   aReader.onload = function()
   {
+    var aNameLenBytes = lengthBytesUTF8(aFile.name) + 1;
+    const aNameBuffer = Module._malloc(aNameLenBytes);
+    stringToUTF8(aFile.name, aNameBuffer, aNameLenBytes);
+
     var aDataArray = new Uint8Array (aReader.result);
-    var aNameArray = new Uint8Array (toUtf8Array (aFile.name));
     const aDataBuffer = Module._malloc(aDataArray.length);
-    const aNameBuffer = Module._malloc(aNameArray.length);
-    Module.HEAPU8.set(aNameArray, aNameBuffer);
     Module.HEAPU8.set(aDataArray, aDataBuffer);
     Module.ccall('onFileDataRead', null, ['number', 'number', 'number'], [aNameBuffer, aDataBuffer, aDataArray.length]);
     Module._free(aDataBuffer);
@@ -98,35 +100,6 @@ fileInput.onchange = function()
   };
   aReader.readAsArrayBuffer(aFile);
 };
-
-//! Convert string into UTF-8 array.
-function toUtf8Array (theText)
-{
-  var aRes = [];
-  for (var aCharIter = 0; aCharIter < theText.length; ++aCharIter)
-  {
-    var aCharCode = theText.charCodeAt (aCharIter);
-    if (aCharCode < 0x80)
-    {
-      aRes.push (aCharCode);
-    }
-    else if (aCharCode < 0x800)
-    {
-      aRes.push (0xc0 | (aCharCode >> 6), 0x80 | (aCharCode & 0x3f));
-    }
-    else if (aCharCode < 0xd800 || aCharCode >= 0xe000)
-    {
-      aRes.push (0xe0 | (aCharCode >> 12), 0x80 | ((aCharCode>>6) & 0x3f), 0x80 | (aCharCode & 0x3f));
-    }
-    else
-    {
-      ++aCharIter;
-      aCharCode = 0x10000 + (((aCharCode & 0x3ff)<<10) | (theText.charCodeAt (aCharIter) & 0x3ff));
-      aRes.push(0xf0 | (aCharCode >>18), 0x80 | ((aCharCode>>12) & 0x3f), 0x80 | ((aCharCode>>6) & 0x3f), 0x80 | (aCharCode & 0x3f));
-    }
-  }
-  return aRes;
-}
 </script>
 <script type="text/javascript" src="occt-webgl-sample.js" charset="utf-8"></script>
 </body>

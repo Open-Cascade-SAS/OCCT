@@ -60,8 +60,10 @@ public: //! @name GL_ARB_vertex_array_object (added to OpenGL 3.0 core)
 
 public: //! @name GL_ARB_map_buffer_range (added to OpenGL 3.0 core)
 
+#ifndef __EMSCRIPTEN__
   using theBaseClass_t::glMapBufferRange;
   using theBaseClass_t::glFlushMappedBufferRange;
+#endif
 
 public: //! @name OpenGL 3.0 additives to 2.1
 
@@ -142,7 +144,9 @@ public: //! @name OpenGL 3.0 additives to 2.1
   using theBaseClass_t::glEndQuery;
   using theBaseClass_t::glGetQueryiv;
   using theBaseClass_t::glGetQueryObjectuiv;
+#ifndef __EMSCRIPTEN__
   using theBaseClass_t::glUnmapBuffer;
+#endif
 #endif
 };
 
