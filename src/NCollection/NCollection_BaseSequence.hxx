@@ -75,13 +75,6 @@ public:
       myPrevious = (isStart ? NULL : theSeq.myLastItem);
     }
 
-    //! Assignment
-    Iterator& operator = (const Iterator& theOther)
-    {
-      myCurrent = theOther.myCurrent;
-      myPrevious = theOther.myPrevious;
-      return *this;
-    }
     //! Switch to previous element; note that it will reset 
     void Previous()
     {

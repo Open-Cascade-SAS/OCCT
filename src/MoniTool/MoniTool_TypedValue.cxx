@@ -443,7 +443,9 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
 
   if (theintup < num) theintup = num;
   if (theenums->Value(num).Length() == 0)
+  {
     theenums->SetValue(num,TCollection_AsciiString(val));
+  }
 //    On met AUSSI dans le dictionnaire
 //  else {
     theeadds.Bind (val,num);

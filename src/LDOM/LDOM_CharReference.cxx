@@ -23,6 +23,8 @@
 //   numerically as &#x..;
 //#define LDOM_ALLOW_LATIN_1
 
+namespace
+{
 const int NORMAL_C  = 0;
 const int CHAR_REF  = -1;
 const int ENTI_AMP  = 1;
@@ -31,12 +33,13 @@ const int ENTI_GT   = 3;
 const int ENTI_QUOT = 4;
 //const int ENTI_APOS = 5;
 
-struct entityRef {
-  const char * name;
-  const int    length;
+struct entityRef
+{
+  const char* name;
+  int         length;
   entityRef (const char * aName, const int aLen) : name(aName), length(aLen) {}
-  void operator= (const entityRef&);
 };
+}
 
 //=======================================================================
 //function : Decode

@@ -128,8 +128,12 @@ Standard_Boolean ShapeAnalysis_Geom::NearestPlane(const TColgp_Array1OfPnt& Pnts
 
   gp_GTrsf gtrsf;
   for (Standard_Integer i = 1; i <= 3; i ++)
+  {
     for (Standard_Integer j = 1; j <= 4; j ++)
+    {
       gtrsf.SetValue (i,j, coefs->Value(i,j));
+    }
+  }
 
   //try { //szv#4:S4163:12Mar99 waste try
     ////    trsf = gtrsf.Trsf();

@@ -35,27 +35,25 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_ViewerSelector, Standard_Transient)
 
-namespace {
-  // Comparison operator for sorting selection results
+namespace
+{
+  //! Comparison operator for sorting selection results
   class CompareResults
   {
   public:
-   
-    CompareResults (const SelectMgr_IndexedDataMapOfOwnerCriterion& aMapOfCriterion)
-      : myMapOfCriterion (aMapOfCriterion)
+
+    CompareResults (const SelectMgr_IndexedDataMapOfOwnerCriterion& theMapOfCriterion)
+    : myMapOfCriterion (&theMapOfCriterion)
     {
     }
 
     Standard_Boolean operator() (Standard_Integer theLeft, Standard_Integer theRight) const
     {
-      return myMapOfCriterion.FindFromIndex(theLeft) > myMapOfCriterion.FindFromIndex(theRight);
+      return myMapOfCriterion->FindFromIndex (theLeft) > myMapOfCriterion->FindFromIndex (theRight);
     }
 
   private:
-    void operator = (const CompareResults&);
-
-  private:
-    const SelectMgr_IndexedDataMapOfOwnerCriterion&  myMapOfCriterion;
+    const SelectMgr_IndexedDataMapOfOwnerCriterion* myMapOfCriterion;
   };
 
   static const Graphic3d_Mat4d SelectMgr_ViewerSelector_THE_IDENTITY_MAT;

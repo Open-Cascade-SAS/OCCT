@@ -61,21 +61,10 @@ public:
     Iterator (const NCollection_Vector& theVector, Standard_Boolean theToEnd = Standard_False)
     : NCollection_BaseVector::Iterator (theVector, theToEnd) {}
 
-    //! Copy constructor
-    Iterator (const Iterator& theOther)
-    : NCollection_BaseVector::Iterator (theOther) {}
-
     //! Initialisation
     void Init (const NCollection_Vector& theVector)
     {
       initV (theVector);
-    }
-
-    //! Assignment
-    Iterator& operator= (const Iterator& theOther)
-    {
-      copyV (theOther);
-      return *this;
     }
 
     //! Check end

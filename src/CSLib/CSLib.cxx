@@ -27,24 +27,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array2OfReal.hxx>
 
-#define D1uD1vRatioIsNull   CSLib_D1uD1vRatioIsNull 
-#define D1vD1uRatioIsNull   CSLib_D1vD1uRatioIsNull
-#define D1uIsParallelD1v    CSLib_D1uIsParallelD1v
-#define D1IsNull            CSLib_D1IsNull
-#define D1uIsNull           CSLib_D1uIsNull
-#define D1vIsNull           CSLib_D1vIsNull
-#define Done                CSLib_Done
-
-#define D1NuIsNull          CSLib_D1NuIsNull
-#define D1NvIsNull          CSLib_D1NvIsNull
-#define D1NuIsParallelD1Nv  CSLib_D1NuIsParallelD1Nv
-#define D1NIsNull           CSLib_D1NIsNull
-#define D1NuNvRatioIsNull   CSLib_D1NuNvRatioIsNull
-#define D1NvNuRatioIsNull   CSLib_D1NvNuRatioIsNull
-#define InfinityOfSolutions CSLib_InfinityOfSolutions
-#define Defined             CSLib_Defined
-#define Singular            CSLib_Singular
-
 void CSLib::Normal (
 
 const gp_Vec&        D1U, 
@@ -61,18 +43,18 @@ gp_Dir&              Normal
   gp_Vec D1UvD1V = D1U.Crossed(D1V);
 
   if (D1UMag <= gp::Resolution() && D1VMag <= gp::Resolution()) {
-     theStatus = D1IsNull;
+     theStatus = CSLib_D1IsNull;
   }
-  else if (D1UMag <= gp::Resolution())           theStatus = D1uIsNull;
-  else if (D1VMag <= gp::Resolution())           theStatus = D1vIsNull;
-//  else if ((D1VMag / D1UMag) <= RealEpsilon())   theStatus = D1vD1uRatioIsNull;
-//  else if ((D1UMag / D1VMag) <= RealEpsilon())   theStatus = D1uD1vRatioIsNull;
+  else if (D1UMag <= gp::Resolution())           theStatus = CSLib_D1uIsNull;
+  else if (D1VMag <= gp::Resolution())           theStatus = CSLib_D1vIsNull;
+//  else if ((D1VMag / D1UMag) <= RealEpsilon())   theStatus = CSLib_D1vD1uRatioIsNull;
+//  else if ((D1UMag / D1VMag) <= RealEpsilon())   theStatus = CSLib_D1uD1vRatioIsNull;
   else  {
     Standard_Real Sin2 = 
     D1UvD1V.SquareMagnitude() / (D1UMag * D1VMag);
     
-    if (Sin2 < (SinTol * SinTol))  { theStatus = D1uIsParallelD1v; }
-    else { Normal = gp_Dir (D1UvD1V);   theStatus = Done; }
+    if (Sin2 < (SinTol * SinTol))  { theStatus = CSLib_D1uIsParallelD1v; }
+    else { Normal = gp_Dir (D1UvD1V);   theStatus = CSLib_Done; }
   }
 }
 
@@ -107,25 +89,25 @@ gp_Dir&          Normal
 
 
   if (LD1Nu <= RealEpsilon() && LD1Nv <= RealEpsilon())  { 
-      theStatus = D1NIsNull;
+      theStatus = CSLib_D1NIsNull;
       Done = Standard_False;
   }
   else if (LD1Nu < RealEpsilon()) {
-      theStatus = D1NuIsNull;
+      theStatus = CSLib_D1NuIsNull;
       Done = Standard_True;
       Normal = gp_Dir (D1Nv);
   }
   else if (LD1Nv < RealEpsilon()) {
-      theStatus = D1NvIsNull;
+      theStatus = CSLib_D1NvIsNull;
       Done = Standard_True;
       Normal = gp_Dir (D1Nu);
   }
   else if ((LD1Nv / LD1Nu) <= RealEpsilon()) { 
-      theStatus = D1NvNuRatioIsNull;
+      theStatus = CSLib_D1NvNuRatioIsNull;
       Done = Standard_False;
   }
   else if ((LD1Nu / LD1Nv) <= RealEpsilon()) { 
-      theStatus = D1NuNvRatioIsNull;
+      theStatus = CSLib_D1NuNvRatioIsNull;
       Done = Standard_False;
   }
   else {
@@ -133,12 +115,12 @@ gp_Dir&          Normal
     Standard_Real Sin2 = D1NCross.SquareMagnitude() / (LD1Nu * LD1Nv);
 
     if (Sin2 < (SinTol * SinTol))  { 
-      theStatus = D1NuIsParallelD1Nv;
+      theStatus = CSLib_D1NuIsParallelD1Nv;
       Done = Standard_True;
       Normal = gp_Dir (D1Nu);
     }    
     else { 
-      theStatus = InfinityOfSolutions;
+      theStatus = CSLib_InfinityOfSolutions;
       Done = Standard_False;
     }
   }
@@ -161,7 +143,7 @@ gp_Dir&              Normal
 
   if (NMag <= MagTol || D1UMag <= MagTol || D1VMag <= MagTol ) {
 
-     theStatus = Singular;
+     theStatus = CSLib_Singular;
 //     if (D1UMag <= MagTol || D1VMag <= MagTol && NMag > MagTol) MagTol = 2* NMag;
 }
   else
@@ -170,7 +152,7 @@ gp_Dir&              Normal
     gp_Dir aD1U(D1U);
     gp_Dir aD1V(D1V);
     Normal = gp_Dir(aD1U.Crossed(aD1V));
-    theStatus = Defined;
+    theStatus = CSLib_Defined;
   }
   
 
@@ -219,7 +201,7 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
   {
      if(Order == 0) 
      {
-         theStatus = Defined;
+         theStatus = CSLib_Defined;
          Normal=D.Normalized();
      }
      else
@@ -373,16 +355,16 @@ void CSLib::Normal(const Standard_Integer MaxOrder,
                  //Polynom is always negative
                  SP=-1;
          if(SP==0)
-             theStatus = InfinityOfSolutions;
+             theStatus = CSLib_InfinityOfSolutions;
          else
          {
-            theStatus = Defined;
+            theStatus = CSLib_Defined;
             Normal=SP*Vk0.Normalized();
          }
        }
        else 
        {
-         theStatus = Defined;
+         theStatus = CSLib_Defined;
          Normal=D.Normalized();
        }
     }
@@ -439,120 +421,126 @@ gp_Vec CSLib::DNNormal(const Standard_Integer Nu,
 		       const Standard_Integer Iduref,
 		       const Standard_Integer Idvref)
 {
-Standard_Integer Kderiv;
-Kderiv=Nu+Nv;
-TColgp_Array2OfVec DerVecNor(0,Kderiv,0,Kderiv);
-TColStd_Array2OfReal TabScal(0,Kderiv,0,Kderiv);
-TColStd_Array2OfReal TabNorm(0,Kderiv,0,Kderiv);
-Standard_Integer Ideriv,Jderiv,Mderiv,Pderiv,Qderiv;
-Standard_Real Scal,Dnorm;
-gp_Vec DerNor;
-DerNor=(DerNUV.Value(Iduref,Idvref)).Normalized();
-DerVecNor.SetValue(0,0,DerNor);
-Dnorm=DerNUV.Value(Iduref,Idvref)*DerVecNor.Value(0,0);
-TabNorm.SetValue(0,0,Dnorm);
-TabScal.SetValue(0,0,0.);
-for ( Mderiv = 1;Mderiv <= Kderiv; Mderiv++)
-    for ( Pderiv = 0 ; Pderiv <= Mderiv ; Pderiv++)
+  const Standard_Integer Kderiv = Nu + Nv;
+  TColgp_Array2OfVec DerVecNor(0,Kderiv,0,Kderiv);
+  TColStd_Array2OfReal TabScal(0,Kderiv,0,Kderiv);
+  TColStd_Array2OfReal TabNorm(0,Kderiv,0,Kderiv);
+  gp_Vec DerNor = (DerNUV.Value (Iduref, Idvref)).Normalized();
+  DerVecNor.SetValue(0,0,DerNor);
+  Standard_Real Dnorm = DerNUV.Value (Iduref, Idvref) * DerVecNor.Value (0, 0);
+  TabNorm.SetValue(0,0,Dnorm);
+  TabScal.SetValue(0,0,0.);
+
+  for (Standard_Integer Mderiv = 1; Mderiv <= Kderiv; Mderiv++)
+  {
+    for (Standard_Integer Pderiv = 0; Pderiv <= Mderiv; Pderiv++)
+    {
+      const Standard_Integer Qderiv = Mderiv - Pderiv;
+      if (Pderiv > Nu || Qderiv > Nv)
+      {
+        continue;
+      }
+
+      //  Compute n . derivee(p,q) of n
+      Standard_Real Scal = 0.;
+      if (Pderiv > Qderiv)
+      {
+        for (Standard_Integer Jderiv = 1; Jderiv <= Qderiv; Jderiv++)
         {
-          Qderiv = Mderiv - Pderiv;
-          if (Pderiv <= Nu && Qderiv <= Nv)
-            {
-//
-//  Compute n . derivee(p,q) of n
-          Scal = 0.;
-          if ( Pderiv > Qderiv )
-             { 
-                   for (Jderiv=1 ; Jderiv <=Qderiv;Jderiv++)
-                         Scal=Scal
-                             -PLib::Bin(Qderiv,Jderiv)*
-                             (DerVecNor.Value(0,Jderiv)*DerVecNor.Value(Pderiv,Qderiv-Jderiv));
-                                
-                   for (Jderiv=0 ; Jderiv < Qderiv ; Jderiv++)
-                         Scal=Scal
-                             -PLib::Bin(Qderiv,Jderiv)*
-                             (DerVecNor.Value(Pderiv,Jderiv)*DerVecNor.Value(0,Qderiv-Jderiv));
-                            
-                   for (Ideriv=1 ; Ideriv < Pderiv;Ideriv++)
-                       for (Jderiv =0 ; Jderiv <=Qderiv ; Jderiv++)
-                           Scal=  Scal  
-                                - PLib::Bin(Pderiv,Ideriv)
-                                 *PLib::Bin(Qderiv,Jderiv)
-                                 *(DerVecNor.Value(Ideriv,Jderiv)
-                                 *DerVecNor.Value(Pderiv-Ideriv,Qderiv-Jderiv));
-             }
-           else
-             {
-                   for (Ideriv = 1 ; Ideriv <= Pderiv ; Ideriv++)
-                         Scal = Scal - PLib::Bin(Pderiv,Ideriv)*
-                                DerVecNor.Value(Ideriv,0)*DerVecNor.Value(Pderiv-Ideriv,Qderiv);
-                   for (Ideriv = 0 ; Ideriv < Pderiv ; Ideriv++)
-                         Scal = Scal - PLib::Bin(Pderiv,Ideriv)*
-                                DerVecNor.Value(Ideriv,Qderiv)*DerVecNor.Value(Pderiv-Ideriv,0);  
- 
-                   for (Ideriv=0 ; Ideriv <= Pderiv;Ideriv++)
-                      for (Jderiv =1 ; Jderiv <Qderiv ; Jderiv++)
-                           Scal=  Scal  
-                                - PLib::Bin(Pderiv,Ideriv)
-                                 *PLib::Bin(Qderiv,Jderiv)
-                                 *(DerVecNor.Value(Ideriv,Jderiv)
-                                 *DerVecNor.Value(Pderiv-Ideriv,Qderiv-Jderiv));
-             }  
-          TabScal.SetValue(Pderiv,Qderiv,Scal/2.); 
-//
-//        Compute the derivative (n,p) of NUV Length
-//
-          Dnorm=(DerNUV.Value(Pderiv+Iduref,Qderiv+Idvref))*DerVecNor.Value(0,0);
-             for (Jderiv = 0 ; Jderiv < Qderiv ; Jderiv++)
-                 Dnorm = Dnorm - PLib::Bin(Qderiv+Idvref,Jderiv+Idvref) 
-                                *TabNorm.Value(Pderiv,Jderiv)
-                                *TabScal.Value(0,Qderiv-Jderiv);                     
-
-             for (Ideriv = 0 ; Ideriv < Pderiv ; Ideriv++)
-               for (Jderiv = 0 ; Jderiv <= Qderiv ; Jderiv++)
-                 Dnorm = Dnorm - PLib::Bin(Pderiv+Iduref,Ideriv+Iduref)
-                                *PLib::Bin(Qderiv+Idvref,Jderiv+Idvref) 
-                                *TabNorm.Value(Ideriv,Jderiv)
-                                *TabScal.Value(Pderiv-Ideriv,Qderiv-Jderiv);  
-          TabNorm.SetValue(Pderiv,Qderiv,Dnorm);
-//
-//   Compute derivative (p,q) of n
-//
-          DerNor = DerNUV.Value(Pderiv+Iduref,Qderiv+Idvref);
-              for (Jderiv = 1 ; Jderiv <= Qderiv ; Jderiv++)
-                DerNor = DerNor - PLib::Bin(Pderiv+Iduref,Iduref)
-                                 *PLib::Bin(Qderiv+Idvref,Jderiv+Idvref)
-                                 *TabNorm.Value(0,Jderiv)
-                                 *DerVecNor.Value(Pderiv,Qderiv-Jderiv);
-
-              for (Ideriv = 1 ; Ideriv <= Pderiv ; Ideriv++)
-                   for (Jderiv = 0 ; Jderiv <= Qderiv ; Jderiv++)
-                       DerNor = DerNor - PLib::Bin(Pderiv+Iduref,Ideriv+Iduref)
-                                        *PLib::Bin(Qderiv+Idvref,Jderiv+Idvref)
-                                        *TabNorm.Value(Ideriv,Jderiv)
-                                        *DerVecNor.Value(Pderiv-Ideriv,Qderiv-Jderiv); 
-          DerNor = DerNor / PLib::Bin(Pderiv+Iduref,Iduref)
-                          / PLib::Bin(Qderiv+Idvref,Idvref) 
-                          / TabNorm.Value(0,0);
-          DerVecNor.SetValue(Pderiv,Qderiv,DerNor);
-         }                       
+          Scal = Scal - PLib::Bin (Qderiv, Jderiv)
+                      * (DerVecNor.Value (0, Jderiv) * DerVecNor.Value (Pderiv, Qderiv - Jderiv));
         }
-    return DerVecNor.Value(Nu,Nv);
+
+        for (Standard_Integer Jderiv = 0; Jderiv < Qderiv; Jderiv++)
+        {
+          Scal = Scal - PLib::Bin (Qderiv, Jderiv)
+                      * (DerVecNor.Value (Pderiv, Jderiv) * DerVecNor.Value (0, Qderiv - Jderiv));
+        }
+
+        for (Standard_Integer Ideriv = 1; Ideriv < Pderiv; Ideriv++)
+        {
+          for (Standard_Integer Jderiv = 0; Jderiv <= Qderiv; Jderiv++)
+          {
+            Scal = Scal - PLib::Bin (Pderiv, Ideriv)
+                        * PLib::Bin (Qderiv, Jderiv)
+                        * (DerVecNor.Value (Ideriv, Jderiv) * DerVecNor.Value (Pderiv - Ideriv, Qderiv - Jderiv));
+          }
+        }
+      }
+      else
+      {
+        for (Standard_Integer Ideriv = 1; Ideriv <= Pderiv; Ideriv++)
+        {
+          Scal = Scal - PLib::Bin (Pderiv, Ideriv)
+                      * DerVecNor.Value (Ideriv, 0)
+                      * DerVecNor.Value (Pderiv - Ideriv, Qderiv);
+        }
+
+        for (Standard_Integer Ideriv = 0; Ideriv < Pderiv; Ideriv++)
+        {
+          Scal = Scal - PLib::Bin (Pderiv, Ideriv)
+                      * DerVecNor.Value (Ideriv, Qderiv)
+                      * DerVecNor.Value (Pderiv - Ideriv, 0);
+        }
+
+        for (Standard_Integer Ideriv = 0; Ideriv <= Pderiv; Ideriv++)
+        {
+          for (Standard_Integer Jderiv = 1; Jderiv < Qderiv; Jderiv++)
+          {
+            Scal = Scal - PLib::Bin (Pderiv, Ideriv)
+                        * PLib::Bin (Qderiv, Jderiv)
+                        * (DerVecNor.Value (Ideriv, Jderiv) * DerVecNor.Value (Pderiv - Ideriv, Qderiv - Jderiv));
+          }
+        }
+      }
+      TabScal.SetValue (Pderiv, Qderiv, Scal/2.);
+
+      // Compute the derivative (n,p) of NUV Length
+      Dnorm = (DerNUV.Value (Pderiv + Iduref, Qderiv + Idvref)) * DerVecNor.Value (0, 0);
+      for (Standard_Integer Jderiv = 0; Jderiv < Qderiv; Jderiv++)
+      {
+        Dnorm = Dnorm - PLib::Bin (Qderiv + Idvref, Jderiv + Idvref)
+                      * TabNorm.Value (Pderiv, Jderiv)
+                      * TabScal.Value (0, Qderiv - Jderiv);
+      }
+
+      for (Standard_Integer Ideriv = 0; Ideriv < Pderiv; Ideriv++)
+      {
+        for (Standard_Integer Jderiv = 0; Jderiv <= Qderiv; Jderiv++)
+        {
+          Dnorm = Dnorm - PLib::Bin (Pderiv + Iduref, Ideriv + Iduref)
+                        * PLib::Bin (Qderiv + Idvref, Jderiv + Idvref)
+                        * TabNorm.Value (Ideriv, Jderiv)
+                        * TabScal.Value (Pderiv - Ideriv, Qderiv - Jderiv);
+        }
+      }
+      TabNorm.SetValue (Pderiv, Qderiv, Dnorm);
+
+      // Compute derivative (p,q) of n
+      DerNor = DerNUV.Value (Pderiv + Iduref, Qderiv + Idvref);
+      for (Standard_Integer Jderiv = 1; Jderiv <= Qderiv; Jderiv++)
+      {
+        DerNor = DerNor - PLib::Bin (Pderiv + Iduref, Iduref)
+                        * PLib::Bin (Qderiv + Idvref, Jderiv + Idvref)
+                        * TabNorm.Value (0, Jderiv)
+                        * DerVecNor.Value (Pderiv, Qderiv - Jderiv);
+      }
+
+      for (Standard_Integer Ideriv = 1; Ideriv <= Pderiv; Ideriv++)
+      {
+        for (Standard_Integer Jderiv = 0; Jderiv <= Qderiv; Jderiv++)
+        {
+          DerNor = DerNor - PLib::Bin (Pderiv + Iduref, Ideriv + Iduref)
+                          * PLib::Bin (Qderiv + Idvref, Jderiv + Idvref)
+                          * TabNorm.Value (Ideriv, Jderiv)
+                          * DerVecNor.Value (Pderiv - Ideriv, Qderiv - Jderiv);
+        }
+      }
+      DerNor = DerNor / PLib::Bin (Pderiv + Iduref, Iduref)
+                      / PLib::Bin (Qderiv + Idvref, Idvref)
+                      / TabNorm.Value (0, 0);
+      DerVecNor.SetValue (Pderiv, Qderiv, DerNor);
+    }
+  }
+  return DerVecNor.Value(Nu,Nv);
 }
-
-#undef D1uD1vRatioIsNull
-#undef D1vD1uRatioIsNull
-#undef D1uIsParallelD1v
-#undef D1uIsNull
-#undef D1vIsNull
-#undef D1IsNull
-#undef Done
-
-#undef D1NuIsNull
-#undef D1NvIsNull
-#undef D1NuIsParallelD1Nv
-#undef D1NIsNull
-#undef D1NuNvRatioIsNull
-#undef D1NvNuRatioIsNull
-#undef InfinityOfSolutions
-#undef Resolution

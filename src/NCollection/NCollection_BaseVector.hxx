@@ -79,14 +79,7 @@ protected:
       initV (theVector, theToEnd);
     }
 
-    Iterator (const Iterator& theVector)
-    {
-      copyV (theVector);
-    }
-
     Standard_EXPORT void initV (const NCollection_BaseVector& theVector, Standard_Boolean theToEnd = Standard_False);
-
-    Standard_EXPORT void copyV (const Iterator&);
 
     Standard_Boolean moreV() const
     {
@@ -136,6 +129,7 @@ protected:
       return &myVector->myData[myICurBlock];
     }
 
+  protected:
     const NCollection_BaseVector* myVector;    //!< the Master vector
     Standard_Integer              myICurBlock; //!< # of the current block
     Standard_Integer              myIEndBlock;

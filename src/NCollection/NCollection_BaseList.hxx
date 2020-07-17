@@ -66,23 +66,13 @@ public:
     // ******** More
     Standard_Boolean More (void) const
     { return (myCurrent!=NULL); }
-    // ******** Assignment operator
-    Iterator& operator= (const Iterator& theIt)
-    {
-      if (&theIt != this)
-      {
-        myCurrent  = theIt.myCurrent;
-        myPrevious = theIt.myPrevious;
-      }
-      return * this;
-    }
-//skt----------------------------------------------------
+
     // ******** Comparison operator
     Standard_Boolean operator== (const Iterator& theIt) const
     {
       return myCurrent == theIt.myCurrent;
     }
-//-------------------------------------------------------
+
     //! Performs comparison of two iterators
     Standard_Boolean IsEqual (const Iterator& theOther) const
     {

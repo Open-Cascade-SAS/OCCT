@@ -14,22 +14,9 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_BaseVector.hxx>
+
 #include <Standard_RangeError.hxx>
 #include <cstdlib>
-
-//=======================================================================
-//function : NCollection_BaseVector::Iterator::copyV
-//purpose  : Copy from another iterator
-//=======================================================================
-
-void NCollection_BaseVector::Iterator::copyV (const NCollection_BaseVector::Iterator& theOth)
-{
-  myVector    = theOth.myVector;
-  myICurBlock = theOth.myICurBlock;
-  myIEndBlock = theOth.myIEndBlock;
-  myCurIndex  = theOth.myCurIndex;
-  myEndIndex  = theOth.myEndIndex;
-}
 
 //=======================================================================
 //function : initV
