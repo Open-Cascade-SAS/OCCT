@@ -59,7 +59,8 @@ gp_Pnt GCPnts_UniformDeflection::Value
 //=======================================================================
 
 GCPnts_UniformDeflection::GCPnts_UniformDeflection ()
-:myDone(Standard_False)
+: myDone(Standard_False),
+  myDeflection(0.0)
 {
 } 
 

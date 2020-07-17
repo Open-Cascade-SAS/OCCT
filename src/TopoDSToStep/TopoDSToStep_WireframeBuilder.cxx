@@ -69,6 +69,7 @@
 // Purpose :
 // ============================================================================
 TopoDSToStep_WireframeBuilder::TopoDSToStep_WireframeBuilder()
+: myError(TopoDSToStep_BuilderOther)
 {
   done = Standard_False;
 }

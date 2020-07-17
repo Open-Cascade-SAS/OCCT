@@ -84,7 +84,13 @@ static StatistiquesFClass2d STAT;
 
 
 BRepTopAdaptor_FClass2d::BRepTopAdaptor_FClass2d(const TopoDS_Face& aFace,const Standard_Real TolUV) 
-: Toluv(TolUV), Face(aFace)  { 
+: Toluv(TolUV),
+  Face(aFace),
+  U1(0.0),
+  V1(0.0),
+  U2(0.0),
+  V2(0.0)
+{
   
 #if LBRCOMPT 
   STAT.NbConstrShape++;

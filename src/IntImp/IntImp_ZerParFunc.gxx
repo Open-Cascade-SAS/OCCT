@@ -27,7 +27,11 @@
 
 
 IntImp_ZerParFunc::IntImp_ZerParFunc(const ThePSurface& S1 ,
-				     const ThePSurface& S2) {
+				     const ThePSurface& S2)
+: compute(Standard_False),
+  tangent(Standard_False),
+  paramConst(0.0)
+{
     surf1 = (Standard_Address)(&S1);
     surf2 = (Standard_Address)(&S2);
 
@@ -46,7 +50,7 @@ IntImp_ZerParFunc::IntImp_ZerParFunc(const ThePSurface& S1 ,
 
     ures2 = ThePSurfaceTool::UResolution(SURF2,Precision::Confusion());
     vres2 = ThePSurfaceTool::VResolution(SURF2,Precision::Confusion());
-
+    memset (f, 0, sizeof (f));
     compute = Standard_False;  
     tangent = Standard_False;
 }

@@ -103,7 +103,16 @@ static Standard_Integer getIntervalIdx(const Standard_Real theParam,
 //purpose  : 
 //=======================================================================
 
-GCPnts_TangentialDeflection::GCPnts_TangentialDeflection () { }
+GCPnts_TangentialDeflection::GCPnts_TangentialDeflection ()
+: angularDeflection(0.0),
+  curvatureDeflection(0.0),
+  uTol(0.0),
+  minNbPnts(0),
+  myMinLen(0.0),
+  lastu(0.0),
+  firstu(0.0)
+{
+}
 
 //=======================================================================
 //function : AddPoint

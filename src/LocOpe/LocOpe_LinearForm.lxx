@@ -19,7 +19,11 @@
 //purpose  : 
 //=======================================================================
 
-inline LocOpe_LinearForm::LocOpe_LinearForm () {}
+inline LocOpe_LinearForm::LocOpe_LinearForm ()
+: myDone(Standard_False),
+  myIsTrans(Standard_False)
+{
+}
 
 
 //=======================================================================

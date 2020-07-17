@@ -43,6 +43,11 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
+    //! Empty constructor.
+    PointRepresentation()
+    : myParameter(0.0)
+    {
+    }
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
     //! Write persistent data to a file.
@@ -114,6 +119,10 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
+    PointOnSurface()
+    : myParameter2(0.0)
+    {
+    }
     virtual void Read (StdObjMgt_ReadData& theReadData);
     virtual void Write (StdObjMgt_WriteData& theWriteData) const;
     virtual Standard_CString PName() const { return "PBRep_PointOnSurface"; }
@@ -154,6 +163,11 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
+    GCurve()
+    : myFirst(0.0),
+      myLast(0.0)
+    {
+    }
     virtual void Read (StdObjMgt_ReadData& theReadData);
     virtual void Write (StdObjMgt_WriteData& theWriteData) const;
     virtual Standard_CString PName() const { return "PBRep_GCurve"; }
@@ -201,6 +215,10 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
+    CurveOnClosedSurface()
+    : myContinuity(0)
+    {
+    }
     virtual void Read (StdObjMgt_ReadData& theReadData);
     virtual void Write (StdObjMgt_WriteData& theWriteData) const;
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
@@ -296,6 +314,10 @@ public:
     friend class ShapePersistent_BRep;
 
   public:
+    CurveOn2Surfaces()
+    : myContinuity(0)
+    {
+    }
     virtual void Read (StdObjMgt_ReadData& theReadData);
     virtual void Write (StdObjMgt_WriteData& theWriteData) const;
     virtual void PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const;
@@ -315,6 +337,10 @@ private:
     friend class ShapePersistent_BRep;
 
   public:
+    pTVertex()
+    : myTolerance(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       pTBase::Read (theReadData);
@@ -347,6 +373,11 @@ private:
     friend class ShapePersistent_BRep;
 
   public:
+    pTEdge()
+    : myTolerance(0.0),
+      myFlags(0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       pTBase::Read (theReadData);
@@ -379,6 +410,11 @@ private:
     friend class ShapePersistent_BRep;
 
   public:
+    pTFace()
+    : myTolerance(0.0),
+      myNaturalRestriction(Standard_False)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       pTBase::Read (theReadData);

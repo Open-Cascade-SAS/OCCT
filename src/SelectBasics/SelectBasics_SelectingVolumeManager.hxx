@@ -38,7 +38,10 @@ public:
 
 public:
 
-  SelectBasics_SelectingVolumeManager() {}
+  SelectBasics_SelectingVolumeManager()
+  : myActiveSelectionType(Unknown)
+  {
+  }
 
   virtual ~SelectBasics_SelectingVolumeManager() {}
 

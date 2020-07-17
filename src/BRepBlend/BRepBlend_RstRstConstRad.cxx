@@ -68,10 +68,13 @@ BRepBlend_RstRstConstRad::BRepBlend_RstRstConstRad
  surf1(Surf1), surf2(Surf2), rst1(Rst1), rst2(Rst2),
  cons1(Rst1, Surf1), cons2(Rst2, Surf2), 
  guide(CGuide), tguide(CGuide),
- istangent(Standard_True), maxang(RealFirst()), minang(RealLast()),
- distmin(RealLast()),
- mySShape(BlendFunc_Rational)
-{}
+ prmrst1(0.0), prmrst2(0.0),
+ istangent(Standard_True), ray(0.0),
+ choix(0), normtg(0.0), theD(0.0),
+ maxang(RealFirst()), minang(RealLast()),
+ distmin(RealLast()), mySShape(BlendFunc_Rational)
+{
+}
 
 //=======================================================================
 //function : NbVariables

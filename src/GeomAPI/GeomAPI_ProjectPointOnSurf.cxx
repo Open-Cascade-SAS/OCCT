@@ -29,7 +29,10 @@
 //purpose  : 
 //=======================================================================
 GeomAPI_ProjectPointOnSurf::GeomAPI_ProjectPointOnSurf() 
-: myIsDone (Standard_False) { }
+: myIsDone (Standard_False),
+  myIndex(0) 
+{
+}
 
 
 //=======================================================================

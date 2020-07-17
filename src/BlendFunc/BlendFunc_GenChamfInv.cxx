@@ -28,8 +28,12 @@
 //=======================================================================
 BlendFunc_GenChamfInv::BlendFunc_GenChamfInv(const Handle(Adaptor3d_HSurface)& S1,
                                              const Handle(Adaptor3d_HSurface)& S2,
-                                             const Handle(Adaptor3d_HCurve)&   C) :
-  surf1(S1),surf2(S2),curv(C)
+                                             const Handle(Adaptor3d_HCurve)&   C)
+: surf1(S1),
+  surf2(S2),
+  curv(C),
+  choix(0),
+  first(Standard_False)
 {
 }
 

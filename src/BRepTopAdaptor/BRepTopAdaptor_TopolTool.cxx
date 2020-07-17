@@ -48,7 +48,12 @@ static
 //function : BRepTopAdaptor_TopolTool
 //purpose  : 
 //=======================================================================
-  BRepTopAdaptor_TopolTool::BRepTopAdaptor_TopolTool () : myFClass2d(NULL)
+  BRepTopAdaptor_TopolTool::BRepTopAdaptor_TopolTool ()
+  : myFClass2d(NULL),
+    myU0(0.0),
+    myV0(0.0),
+    myDU(0.0),
+    myDV(0.0)
 {
   myNbSamplesU=-1;
 }

@@ -34,8 +34,13 @@
 //purpose  : 
 //=======================================================================
 BlendFunc_Corde::BlendFunc_Corde(const Handle(Adaptor3d_HSurface)&   S,
-                                 const Handle(Adaptor3d_HCurve)&     CG) :
-    surf(S),guide(CG)
+                                 const Handle(Adaptor3d_HCurve)&     CG)
+: surf(S),
+  guide(CG),
+  dis(0.0),
+  normtg(0.0),
+  theD(0.0),
+  istangent(Standard_False)
 {
 }
 

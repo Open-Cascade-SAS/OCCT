@@ -47,6 +47,7 @@
 // Purpose :
 // ============================================================================
 StepToTopoDS_TranslatePolyLoop::StepToTopoDS_TranslatePolyLoop()
+: myError(StepToTopoDS_TranslatePolyLoopOther)
 {
   done = Standard_False;
 }

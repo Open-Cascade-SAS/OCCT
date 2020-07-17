@@ -34,7 +34,14 @@
 //function : ShapeFix_FreeBounds
 //purpose  : 
 //=======================================================================
-ShapeFix_FreeBounds::ShapeFix_FreeBounds() {}
+ShapeFix_FreeBounds::ShapeFix_FreeBounds()
+: myShared(Standard_False),
+  mySewToler(0.0),
+  myCloseToler(0.0),
+  mySplitClosed(Standard_False),
+  mySplitOpen(Standard_False)
+{
+}
 
 //=======================================================================
 //function : ShapeFix_FreeBounds

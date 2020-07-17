@@ -27,6 +27,7 @@ Extrema_LocateExtCC::Extrema_LocateExtCC (const Adaptor3d_Curve& C1,
                                           const Adaptor3d_Curve& C2,
                                           const Standard_Real U0,
                                           const Standard_Real V0)
+: mySqDist(RealLast())
 {
   Standard_Real TolU = C1.Resolution(Precision::Confusion());
   Standard_Real TolV = C2.Resolution(Precision::Confusion());

@@ -22,7 +22,13 @@
 //purpose  : 
 //=======================================================================
 HLRAlgo_Intersection::HLRAlgo_Intersection()
-{}
+: mySegIndex(0),
+  myIndex(0),
+  myLevel(0),
+  myParam(0.0),
+  myToler(0.0)
+{
+}
 
 //=======================================================================
 //function : HLRAlgo_Intersection

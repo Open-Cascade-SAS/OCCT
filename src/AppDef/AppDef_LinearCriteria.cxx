@@ -54,9 +54,16 @@ AppDef_LinearCriteria::AppDef_LinearCriteria(const AppDef_MultiLine& SSP,
 							 const Standard_Integer FirstPoint,
 							 const Standard_Integer LastPoint):
        mySSP(SSP),
+       myQuadraticWeight(0.0),
+       myQualityWeight(0.0),
        myPntWeight(FirstPoint, LastPoint),
-       myE(0)
+       myLength(0.0),
+       myE(0),
+       IF(0),
+       IL(0)
 {
+  memset (myEstimation, 0, sizeof (myEstimation));
+  memset (myPercent, 0, sizeof (myPercent));
   myPntWeight.Init(1.);
 }
 

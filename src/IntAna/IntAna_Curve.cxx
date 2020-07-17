@@ -55,10 +55,39 @@
 //purpose  : 
 //=======================================================================
 IntAna_Curve::IntAna_Curve()
+: Z0Cte(0.0),
+  Z0Sin(0.0),
+  Z0Cos(0.0),
+  Z0SinSin(0.0),
+  Z0CosCos(0.0),
+  Z0CosSin(0.0),
+  Z1Cte(0.0),
+  Z1Sin(0.0),
+  Z1Cos(0.0),
+  Z1SinSin(0.0),
+  Z1CosCos(0.0),
+  Z1CosSin(0.0),
+  Z2Cte(0.0),
+  Z2Sin(0.0),
+  Z2Cos(0.0),
+  Z2SinSin(0.0),
+  Z2CosCos(0.0),
+  Z2CosSin(0.0),
+  TwoCurves(Standard_False),
+  TakeZPositive(Standard_False),
+  Tolerance(0.0),
+  DomainInf(0.0),
+  DomainSup(0.0),
+  RestrictedInf(Standard_False),
+  RestrictedSup(Standard_False),
+  firstbounded(Standard_False),
+  lastbounded(Standard_False),
+  typequadric(GeomAbs_OtherSurface),
+  RCyl(0.0),
+  Angle(0.0),
+  myFirstParameter(0.0),
+  myLastParameter(0.0)
 {
-  typequadric=GeomAbs_OtherSurface;
-  firstbounded=Standard_False;
-  lastbounded=Standard_False;
 }
 //=======================================================================
 //function : SetConeQuadValues

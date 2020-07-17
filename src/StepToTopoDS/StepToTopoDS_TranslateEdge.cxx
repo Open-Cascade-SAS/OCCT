@@ -171,6 +171,7 @@ static TopoDS_Edge  MakeEdge
 // ============================================================================
 
 StepToTopoDS_TranslateEdge::StepToTopoDS_TranslateEdge()
+: myError(StepToTopoDS_TranslateEdgeOther)
 {
   done = Standard_False;
 }

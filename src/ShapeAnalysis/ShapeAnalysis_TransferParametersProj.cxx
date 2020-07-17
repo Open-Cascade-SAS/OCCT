@@ -58,6 +58,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeAnalysis_TransferParametersProj,ShapeAnalysis_Tr
 //purpose  : 
 //=======================================================================
 ShapeAnalysis_TransferParametersProj::ShapeAnalysis_TransferParametersProj()
+: myPrecision(0.0)
 {
   myMaxTolerance = 1; //Precision::Infinite(); ?? pdn
   myForceProj = Standard_False;

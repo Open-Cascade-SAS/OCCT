@@ -51,8 +51,12 @@ static Standard_Integer NbSECTIONS = 0;
 //=======================================================================
 
 GeomFill_SweepSectionGenerator::GeomFill_SweepSectionGenerator()
+: myRadius(0.0),
+  myIsDone(Standard_False),
+  myNbSections(0),
+  myType(-1),
+  myPolynomial(Standard_False)
 {
-  myIsDone = Standard_False;
 }
 
 

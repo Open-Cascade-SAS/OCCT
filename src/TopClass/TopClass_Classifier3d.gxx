@@ -15,7 +15,12 @@
 // commercial license or contractual agreement.
 
 //======================================================================
-TopClass_Classifier3d::TopClass_Classifier3d() : isSet(Standard_False)
+TopClass_Classifier3d::TopClass_Classifier3d()
+: isSet(Standard_False),
+  myParam(0.0),
+  myTolerance(0.0),
+  myState(TopAbs_UNKNOWN),
+  hasIntersect(Standard_False)
 {
 }
 

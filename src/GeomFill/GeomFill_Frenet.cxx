@@ -95,6 +95,7 @@ static Standard_Real CosAngle(const gp_Vec& theV1, const gp_Vec& theV2)
 //=======================================================================
 
 GeomFill_Frenet::GeomFill_Frenet()
+: isSngl(Standard_False)
 {
 }
 

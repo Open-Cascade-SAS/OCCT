@@ -28,8 +28,10 @@
 Contap_ArcFunction::Contap_ArcFunction ():
 myMean(1.),
 myType(Contap_ContourStd),
-myDir(0.,0.,1.)
-{}
+myDir(0.,0.,1.),
+myCosAng(0.0)
+{
+}
 
 
 void Contap_ArcFunction::Set(const Handle(Adaptor3d_HSurface)& S)

@@ -41,6 +41,7 @@ Geom2dGcc_Circ2d2TanOn::
 			   const Standard_Real                Param1     ,
 			   const Standard_Real                Param2     ,
 			   const Standard_Real                ParamOn    ):
+  WellDone(Standard_False),
   cirsol(1,8)   ,
   qualifier1(1,8),
   qualifier2(1,8),
@@ -53,7 +54,7 @@ Geom2dGcc_Circ2d2TanOn::
   par2sol(1,8)  ,
   pararg1(1,8)  ,
   pararg2(1,8)  ,
-  parcen3(1,8)  
+  parcen3(1,8)
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   Geom2dAdaptor_Curve C2 = Qualified2.Qualified();
@@ -374,6 +375,7 @@ Geom2dGcc_Circ2d2TanOn::
 			   const Standard_Real                Tolerance  ,
 			   const Standard_Real                Param1     ,
 			   const Standard_Real                ParamOn    ):
+  WellDone(Standard_False),
   cirsol(1,8)   ,
   qualifier1(1,8),
   qualifier2(1,8),
@@ -386,7 +388,7 @@ Geom2dGcc_Circ2d2TanOn::
   par2sol(1,8)  ,
   pararg1(1,8)  ,
   pararg2(1,8)  ,
-  parcen3(1,8)  
+  parcen3(1,8) 
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   GeomAbs_CurveType Type1 = C1.GetType();
@@ -564,6 +566,7 @@ Geom2dGcc_Circ2d2TanOn::
 			   const Handle(Geom2d_Point)&        Point2     , 
 			   const Geom2dAdaptor_Curve&         OnCurve    ,
 			   const Standard_Real                Tolerance  ):
+  WellDone(Standard_False),
   cirsol(1,8)   ,
   qualifier1(1,8),
   qualifier2(1,8),
@@ -576,8 +579,7 @@ Geom2dGcc_Circ2d2TanOn::
   par2sol(1,8)  ,
   pararg1(1,8)  ,
   pararg2(1,8)  ,
-  parcen3(1,8)  
-
+  parcen3(1,8)
 {
   GeomAbs_CurveType Type3 = OnCurve.GetType();
   Handle(Geom2d_Curve) Con = OnCurve.Curve();

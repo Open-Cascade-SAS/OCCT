@@ -40,7 +40,7 @@ Draw_Marker2D::Draw_Marker2D(const gp_Pnt2d& P, const Draw_MarkerShape T,
 
 Draw_Marker2D::Draw_Marker2D(const gp_Pnt2d& P, const Draw_MarkerShape T,
 			     const Draw_Color& C, const Standard_Real /*RSize*/) :
-       myPos(P), myCol(C), myTyp(T)
+       myPos(P), myCol(C), myTyp(T), mySiz(0)
 {
 }
 

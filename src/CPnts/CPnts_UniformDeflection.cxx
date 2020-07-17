@@ -231,9 +231,21 @@ void CPnts_UniformDeflection::Perform()
 //purpose  : 
 //=======================================================================
 
-CPnts_UniformDeflection::CPnts_UniformDeflection () 
-{ 
-  myDone = Standard_False;
+CPnts_UniformDeflection::CPnts_UniformDeflection ()
+: myDone(Standard_False),
+  my3d(Standard_False),
+  myFinish(Standard_False),
+  myTolCur(0.0),
+  myControl(Standard_False),
+  myIPoint(0),
+  myNbPoints(0),
+  myDwmax(0.0),
+  myDeflection(0.0),
+  myFirstParam(0.0),
+  myLastParam(0.0),
+  myDu(0.0)
+{
+  memset (myParams, 0, sizeof (myParams));
 } 
 
 //=======================================================================

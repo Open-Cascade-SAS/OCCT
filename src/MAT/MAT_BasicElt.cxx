@@ -30,7 +30,8 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT_BasicElt,Standard_Transient)
 MAT_BasicElt::MAT_BasicElt(const Standard_Integer anInteger)
      : startLeftArc (0),
       endLeftArc   (0),
-      index(anInteger)
+      index(anInteger),
+      geomIndex(0)
 {
 }
 

@@ -41,9 +41,20 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Extrema_ExtPS.hxx>
 
-Extrema_ExtCS::Extrema_ExtCS() 
+Extrema_ExtCS::Extrema_ExtCS()
+: myS(NULL),
+  myDone(Standard_False),
+  myIsPar(Standard_False),
+  myuinf(0.0),
+  myusup(0.0),
+  myvinf(0.0),
+  myvsup(0.0),
+  mytolC(0.0),
+  mytolS(0.0),
+  myucinf(0.0),
+  myucsup(0.0),
+  myStype(GeomAbs_OtherSurface)
 {
-  myDone = Standard_False;
 }
 
 Extrema_ExtCS::Extrema_ExtCS(const Adaptor3d_Curve&   C,

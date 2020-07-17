@@ -45,11 +45,16 @@ const IntPatch_SequenceOfLine& IntPatch_Intersection::SequenceOfLine() const { r
 //======================================================================
 IntPatch_Intersection::IntPatch_Intersection ()
  : done(Standard_False),
-   //empt, tgte, oppo,
+   empt(Standard_True),
+   tgte(Standard_False),
+   oppo(Standard_False),
    myTolArc(0.0), myTolTang(0.0),
    myUVMaxStep(0.0), myFleche(0.0),
-   myIsStartPnt(Standard_False)
-   //myU1Start, myV1Start, myU2Start, myV2Start
+   myIsStartPnt(Standard_False),
+   myU1Start(0.0),
+   myV1Start(0.0),
+   myU2Start(0.0),
+   myV2Start(0.0)
 {
 }
 
@@ -63,11 +68,16 @@ IntPatch_Intersection::IntPatch_Intersection(const Handle(Adaptor3d_HSurface)&  
                                              const Standard_Real TolArc,
                                              const Standard_Real TolTang)
  : done(Standard_False),
-   //empt, tgte, oppo,
+   empt(Standard_True),
+   tgte(Standard_False),
+   oppo(Standard_False),
    myTolArc(TolArc), myTolTang(TolTang),
    myUVMaxStep(0.0), myFleche(0.0),
-   myIsStartPnt(Standard_False)
-   //myU1Start, myV1Start, myU2Start, myV2Start
+   myIsStartPnt(Standard_False),
+   myU1Start(0.0),
+   myV1Start(0.0),
+   myU2Start(0.0),
+   myV2Start(0.0)
 {
   if(myTolArc<1e-8) myTolArc=1e-8;
   if(myTolTang<1e-8) myTolTang=1e-8;
@@ -84,11 +94,16 @@ IntPatch_Intersection::IntPatch_Intersection(const Handle(Adaptor3d_HSurface)&  
                                              const Standard_Real TolArc,
                                              const Standard_Real TolTang)
  : done(Standard_False),
-   //empt, tgte, oppo,
+   empt(Standard_True),
+   tgte(Standard_False),
+   oppo(Standard_False),
    myTolArc(TolArc), myTolTang(TolTang),
    myUVMaxStep(0.0), myFleche(0.0),
-   myIsStartPnt(Standard_False)
-   //myU1Start, myV1Start, myU2Start, myV2Start
+   myIsStartPnt(Standard_False),
+   myU1Start(0.0),
+   myV1Start(0.0),
+   myU2Start(0.0),
+   myV2Start(0.0)
 {
   Perform(S1,D1,TolArc,TolTang);
 }

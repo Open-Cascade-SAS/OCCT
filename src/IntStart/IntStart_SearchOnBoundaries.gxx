@@ -1076,7 +1076,8 @@ Standard_Integer TreatLC (const TheArc& A,
 //purpose  : 
 //=======================================================================
 IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries ()
-:  done(Standard_False) 
+:  done(Standard_False),
+   all(Standard_False)  
 {
 }  
 

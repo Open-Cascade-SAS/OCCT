@@ -39,6 +39,8 @@
 //purpose  : 
 //=======================================================================
 HLRBRep_Surface::HLRBRep_Surface ()
+: myType(GeomAbs_OtherSurface),
+  myProj(NULL)
 {
 }
 

@@ -130,6 +130,9 @@ static Standard_Boolean GetPnt2d(const TopoDS_Vertex    &theVertex,
 //purpose  : 
 //=======================================================================
 BRepCheck_Wire::BRepCheck_Wire(const TopoDS_Wire& W)
+: myCdone(Standard_False),
+  myCstat(BRepCheck_NoError),
+  myGctrl(Standard_False)
 {
   Init(W);
 }

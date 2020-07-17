@@ -173,7 +173,9 @@ static Standard_Boolean Project(const Handle(Geom2d_Curve)& C,
 //=======================================================================
 
 BRepLib_MakeEdge::BRepLib_MakeEdge()
-{}
+: myError(BRepLib_PointProjectionFailed)
+{
+}
 
 //=======================================================================
 //function : BRepLib_MakeEdge

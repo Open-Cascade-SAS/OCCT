@@ -90,6 +90,7 @@
 // Constructors
 // ----------------------------------------------------------------------------
 TopoDSToStep_MakeStepFace::TopoDSToStep_MakeStepFace()
+: myError(TopoDSToStep_FaceOther)
 {
   done = Standard_False;
 }

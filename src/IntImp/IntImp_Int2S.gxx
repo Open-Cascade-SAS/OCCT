@@ -30,6 +30,7 @@ IntImp_Int2S::IntImp_Int2S(const ThePSurface& surf1,
                            const Standard_Real TolTangency ) :
 done(Standard_True),
 empty(Standard_True),
+tangent(Standard_False),
 myZerParFunc(surf1,surf2),
 tol(TolTangency*TolTangency)
 {

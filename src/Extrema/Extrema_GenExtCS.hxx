@@ -133,7 +133,6 @@ private:
 
 
   Standard_Boolean myDone;
-  Standard_Boolean myInit;
   Standard_Real mytmin;
   Standard_Real mytsup;
   Standard_Real myumin;

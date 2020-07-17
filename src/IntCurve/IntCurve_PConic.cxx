@@ -44,19 +44,20 @@ IntCurve_PConic::IntCurve_PConic(const gp_Hypr2d& H) :
 
 IntCurve_PConic::IntCurve_PConic(const gp_Circ2d& C) :
        axe(C.Axis()) , 
-       prm1(C.Radius())      , TheEpsX(0.00000001) , TheAccuracy(20) , 
+       prm1(C.Radius()), prm2(0.0), TheEpsX(0.00000001) , TheAccuracy(20) ,
        type(GeomAbs_Circle) {
 }
      
 IntCurve_PConic::IntCurve_PConic(const gp_Parab2d& P) :
        axe(P.Axis()) ,
-       prm1(P.Focal())       , TheEpsX(0.00000001) , TheAccuracy(20) , 
+       prm1(P.Focal()), prm2(0.0), TheEpsX(0.00000001) , TheAccuracy(20) ,
        type(GeomAbs_Parabola) { 
 }
      
 
 IntCurve_PConic::IntCurve_PConic(const gp_Lin2d& L) : 
-       axe(gp_Ax22d(L.Position())) , TheEpsX(0.00000001) , 
+       axe(gp_Ax22d(L.Position())) ,
+       prm1(0.0), prm2(0.0), TheEpsX(0.00000001) ,
        TheAccuracy(20)       , type(GeomAbs_Line) { 
 }
 

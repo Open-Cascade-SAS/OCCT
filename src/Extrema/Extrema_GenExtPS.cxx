@@ -217,7 +217,16 @@ Processing:
       - update table TbSel.
 -----------------------------------------------------------------------------*/
 
-Extrema_GenExtPS::Extrema_GenExtPS() 
+Extrema_GenExtPS::Extrema_GenExtPS()
+: myumin(0.0),
+  myusup(0.0),
+  myvmin(0.0),
+  myvsup(0.0),
+  myusample(0),
+  myvsample(0),
+  mytolu(0.0),
+  mytolv(0.0),
+  myS(NULL)
 {
   myDone = Standard_False;
   myInit = Standard_False;

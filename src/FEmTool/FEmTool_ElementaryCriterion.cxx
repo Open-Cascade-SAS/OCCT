@@ -23,7 +23,13 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(FEmTool_ElementaryCriterion,Standard_Transient)
 
-void FEmTool_ElementaryCriterion::Set(const Handle(TColStd_HArray2OfReal)& Coeff) 
+FEmTool_ElementaryCriterion::FEmTool_ElementaryCriterion()
+: myFirst(0.0),
+  myLast(0.0)
+{
+}
+
+void FEmTool_ElementaryCriterion::Set(const Handle(TColStd_HArray2OfReal)& Coeff)
 {
   myCoeff = Coeff;
 }

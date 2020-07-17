@@ -31,6 +31,8 @@
 //  purpose  :
 //========================================================================
 MAT2d_Mat2d::MAT2d_Mat2d(const Standard_Boolean IsOpenResult)
+: semiInfinite(Standard_False),
+  isDone(Standard_False)
 {
   myIsOpenResult = IsOpenResult;
   thenumberofbisectors = 0;

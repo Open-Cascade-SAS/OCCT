@@ -44,7 +44,10 @@ namespace
         myParamsForbiddenToRemove(theParamsForbiddenToRemove),
         myControlParamsForbiddenToRemove(theControlParamsForbiddenToRemove),
         myAllocator(new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE)),
-        myControlParamsToRemove(new IMeshData::MapOfReal(1, myAllocator))
+        myControlParamsToRemove(new IMeshData::MapOfReal(1, myAllocator)),
+        myCurrParam(0.0),
+        myCurrControlParam(0.0),
+        myPrevControlParam(0.0)
     {
     }
 

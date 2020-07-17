@@ -234,7 +234,12 @@ Standard_Real CPnts_AbscissaPoint::Length(const Adaptor2d_Curve2d& C,
 //purpose  : 
 //=======================================================================
 
-CPnts_AbscissaPoint::CPnts_AbscissaPoint() : myDone(Standard_False)
+CPnts_AbscissaPoint::CPnts_AbscissaPoint()
+: myDone(Standard_False),
+  myL(0.0),
+  myParam(0.0),
+  myUMin(0.0),
+  myUMax(0.0)
 {
 }
 

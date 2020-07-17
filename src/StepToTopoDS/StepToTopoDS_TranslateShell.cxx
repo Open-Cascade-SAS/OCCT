@@ -37,6 +37,7 @@
 // Purpose : Empty Constructor
 // ============================================================================
 StepToTopoDS_TranslateShell::StepToTopoDS_TranslateShell()
+: myError(StepToTopoDS_TranslateShellOther)
 {
   done = Standard_False;
 }

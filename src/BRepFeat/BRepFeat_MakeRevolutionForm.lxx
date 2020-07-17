@@ -19,7 +19,16 @@
 //purpose  : 
 //=======================================================================
 
-inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm () {}
+inline BRepFeat_MakeRevolutionForm::BRepFeat_MakeRevolutionForm ()
+: myHeight1(0.0),
+  myHeight2(0.0),
+  mySliding(Standard_False),
+  myBnd(0.0),
+  myTol(0.0),
+  myAngle1(RealLast()),
+  myAngle2(RealLast())
+{
+}
 
 
 //=======================================================================

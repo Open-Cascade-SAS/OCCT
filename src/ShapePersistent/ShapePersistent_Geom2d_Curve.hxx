@@ -48,6 +48,10 @@ class ShapePersistent_Geom2d_Curve : public ShapePersistent_Geom2d
     friend class ShapePersistent_Geom2d_Curve;
 
   public:
+    pBezier()
+    : myRational(Standard_False)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myRational >> myPoles >> myWeights; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const
@@ -73,6 +77,12 @@ class ShapePersistent_Geom2d_Curve : public ShapePersistent_Geom2d
     friend class ShapePersistent_Geom2d_Curve;
 
   public:
+    pBSpline()
+    : myRational(Standard_False),
+      myPeriodic(Standard_False),
+      mySpineDegree(0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       theReadData >> myRational >> myPeriodic >> mySpineDegree;
@@ -110,6 +120,11 @@ class ShapePersistent_Geom2d_Curve : public ShapePersistent_Geom2d
     friend class ShapePersistent_Geom2d_Curve;
 
   public:
+    pTrimmed()
+    : myFirstU(0.0),
+      myLastU(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myBasisCurve >> myFirstU >> myLastU; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const
@@ -132,6 +147,10 @@ class ShapePersistent_Geom2d_Curve : public ShapePersistent_Geom2d
     friend class ShapePersistent_Geom2d_Curve;
 
   public:
+    pOffset()
+    : myOffsetValue(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myBasisCurve >> myOffsetValue; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const

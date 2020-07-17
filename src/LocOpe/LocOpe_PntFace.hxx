@@ -38,7 +38,12 @@ public:
 
   
   //! Empty constructor. Useful only for the list.
-  LocOpe_PntFace() {}
+  LocOpe_PntFace()
+  : myPar(0.0),
+    myUPar(0.0),
+    myVPar(0.0)
+  {
+  }
   
   LocOpe_PntFace (const gp_Pnt& P, const TopoDS_Face& F, const TopAbs_Orientation Or, const Standard_Real Param, const Standard_Real UPar, const Standard_Real VPar)
     : myPnt (P), myFace (F), myOri (Or), myPar (Param), myUPar (UPar), myVPar (VPar)

@@ -52,7 +52,12 @@ GeomFill_FunctionGuide::GeomFill_FunctionGuide
      (const Handle(GeomFill_SectionLaw)& S, 
       const Handle(Adaptor3d_HCurve)& C,
       const Standard_Real Param)
-: TheGuide(C), TheLaw(S), TheUonS(Param)
+: TheGuide(C),
+  TheLaw(S),
+  isconst(Standard_False),
+  First(0.0),
+  Last(0.0),
+  TheUonS(Param)  
 {
   Standard_Real Tol = Precision::Confusion();
   if (TheLaw->IsConstant(Tol)) {

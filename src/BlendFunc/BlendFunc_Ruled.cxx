@@ -35,10 +35,12 @@ BlendFunc_Ruled::BlendFunc_Ruled(const Handle(Adaptor3d_HSurface)& S1,
                                  const Handle(Adaptor3d_HSurface)& S2,
                                  const Handle(Adaptor3d_HCurve)& C) :
 
-				 surf1(S1),surf2(S2),curv(C),
-				 istangent(Standard_True),
-				 distmin(RealLast())
-{}
+                 surf1(S1),surf2(S2),curv(C),
+                 istangent(Standard_True),
+                 normtg(0.0), theD(0.0),
+                 distmin(RealLast())
+{
+}
 
 Standard_Integer BlendFunc_Ruled::NbEquations () const
 {

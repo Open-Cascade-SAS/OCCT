@@ -81,7 +81,12 @@ struct SplitDS
           NCollection_Vector<Standard_Real> &theSplits)
   : myCurve(theCurve),
     mySurface(theSurface),
-    mySplits(theSplits)
+    mySplits(theSplits),
+    myPerMinParam(0.0),
+    myPerMaxParam(0.0),
+    myPeriodicDir(0),
+    myExtCC(NULL),
+    myExtPS(NULL)
   { }
 
   // Assignment operator is forbidden.

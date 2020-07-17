@@ -182,9 +182,10 @@ static void DistMini(const Extrema_ExtPC& Ext,
 //===============================================================
 GeomFill_SectionPlacement::
 GeomFill_SectionPlacement(const Handle(GeomFill_LocationLaw)& L,
-			  const Handle(Geom_Geometry)& Section) :
-			  myLaw(L), /* myAdpSection(Section),  mySection(Section), */
-			  Dist(RealLast()), AngleMax(0.)
+              const Handle(Geom_Geometry)& Section) :
+              myLaw(L), /* myAdpSection(Section),  mySection(Section), */
+              SecParam(0.0), PathParam(0.0),
+              Dist(RealLast()), AngleMax(0.)
 {
 
   done   = Standard_False;

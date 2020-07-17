@@ -40,7 +40,14 @@
 //=======================================================================
 Intf_Tool::Intf_Tool()
      : nbSeg(0)
-{}
+{
+  memset (beginOnCurve, 0, sizeof (beginOnCurve));
+  memset (bord, 0, sizeof (bord));
+  memset (xint, 0, sizeof (xint));
+  memset (yint, 0, sizeof (yint));
+  memset (zint, 0, sizeof (zint));
+  memset (parint, 0, sizeof (parint));
+}
 
 //=======================================================================
 //function : Lin2dBox

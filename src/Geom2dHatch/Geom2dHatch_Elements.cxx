@@ -35,6 +35,10 @@ static const Standard_Real Probing_End = 0.8;
 static const Standard_Real Probing_Step = 0.2111;
 
 Geom2dHatch_Elements::Geom2dHatch_Elements(const Geom2dHatch_Elements& )
+: NumWire(0),
+  NumEdge(0),
+  myCurEdge(0),
+  myCurEdgePar(0.0)
 {
 #ifdef OCCT_DEBUG
   std::cout<<" Magic Constructor in Geom2dHatch_Elements:: "<<std::endl;

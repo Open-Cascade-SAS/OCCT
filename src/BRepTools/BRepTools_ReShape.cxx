@@ -116,6 +116,7 @@ static void CopyRanges (const TopoDS_Shape& toedge, const TopoDS_Shape& fromedge
 //=======================================================================
 
 BRepTools_ReShape::BRepTools_ReShape()
+: myStatus(-1)
 {
   myConsiderLocation = Standard_False;
 }

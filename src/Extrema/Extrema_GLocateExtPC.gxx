@@ -36,7 +36,18 @@
 //purpose  : 
 //=======================================================================
 
-Extrema_GLocateExtPC::Extrema_GLocateExtPC() { }
+Extrema_GLocateExtPC::Extrema_GLocateExtPC()
+: myC(NULL),
+  mydist2(0.0),
+  myismin(Standard_False),
+  myDone(Standard_False),
+  myumin(0.0),
+  myusup(0.0),
+  mytol(0.0),
+  type(GeomAbs_OtherCurve),
+  numberext(0)
+{
+}
 
 
 //=======================================================================

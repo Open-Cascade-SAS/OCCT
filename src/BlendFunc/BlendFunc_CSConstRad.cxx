@@ -44,9 +44,13 @@ BlendFunc_CSConstRad::BlendFunc_CSConstRad(const Handle(Adaptor3d_HSurface)& S,
                                            const Handle(Adaptor3d_HCurve)& C,
                                            const Handle(Adaptor3d_HCurve)& CG) :
 
-       surf(S),curv(C),guide(CG),istangent(Standard_True),
-       maxang(RealFirst()), minang(RealLast()),mySShape(BlendFunc_Rational)
-{}
+       surf(S),curv(C),guide(CG), prmc(0.0), 
+       istangent(Standard_True), ray(0.0),
+       choix(0), normtg(0.0), theD(0.0),
+       maxang(RealFirst()), minang(RealLast()),
+       mySShape(BlendFunc_Rational)
+{
+}
 
 
 //=======================================================================

@@ -35,7 +35,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfIntArray,TDF_DeltaOnMod
 //=======================================================================
 
 TDataStd_DeltaOnModificationOfIntArray::TDataStd_DeltaOnModificationOfIntArray(const Handle(TDataStd_IntegerArray)& OldAtt)
-: TDF_DeltaOnModification(OldAtt)
+: TDF_DeltaOnModification(OldAtt),
+  myUp1(0),
+  myUp2(0)
 {
   Handle(TDataStd_IntegerArray) CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(),CurrAtt)) {

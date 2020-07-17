@@ -35,6 +35,7 @@ Extrema_LocateExtCC2d::Extrema_LocateExtCC2d (const Adaptor2d_Curve2d&       C1,
                                               const Adaptor2d_Curve2d&       C2,
                                               const Standard_Real U0,
                                               const Standard_Real V0)
+: mySqDist(RealLast())
 {
   Standard_Real TolU = Extrema_Curve2dTool::Resolution(C1, Precision::Confusion());
   Standard_Real TolV = Extrema_Curve2dTool::Resolution(C2, Precision::Confusion());

@@ -38,6 +38,7 @@
 //purpose  : 
 //=======================================================================
 ProjLib_Projector::ProjLib_Projector()
+: myIsPeriodic(Standard_False)
 {
   isDone = Standard_False;
   myType = GeomAbs_BSplineCurve;

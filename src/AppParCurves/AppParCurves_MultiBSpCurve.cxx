@@ -46,7 +46,10 @@ static Standard_Integer ComputeDegree(const TColStd_Array1OfInteger& mults,
 //purpose  : 
 //=======================================================================
 
-AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve() {}
+AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve()
+: myDegree(0)
+{
+}
 
 
 //=======================================================================
@@ -56,7 +59,8 @@ AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve() {}
 
 AppParCurves_MultiBSpCurve::AppParCurves_MultiBSpCurve
   (const Standard_Integer NbPol): 
-  AppParCurves_MultiCurve(NbPol)
+  AppParCurves_MultiCurve(NbPol),
+  myDegree(0)
 {
 }
 

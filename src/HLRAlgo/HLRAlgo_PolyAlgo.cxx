@@ -39,6 +39,9 @@ IMPLEMENT_STANDARD_RTTIEXT(HLRAlgo_PolyAlgo,Standard_Transient)
 //=======================================================================
 
 HLRAlgo_PolyAlgo::HLRAlgo_PolyAlgo ()
+: myNbrShell(0),
+  myCurShell(0),
+  myFound(Standard_False)
 {
   myTriangle.TolParam   = 0.00000001;
   myTriangle.TolAng = 0.0001;

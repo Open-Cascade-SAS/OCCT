@@ -34,7 +34,8 @@ public:
   //! Constructor.
   BRepMesh_DelaunayDeflectionControlMeshAlgo()
     : myMaxSqDeflection(-1.),
-      myIsAllDegenerated(Standard_False)
+      myIsAllDegenerated(Standard_False),
+      myCircles(NULL)
   {
   }
 
@@ -107,6 +108,11 @@ private:
   //! Contains geometrical data related to node of triangle.
   struct TriangleNodeInfo
   {
+    TriangleNodeInfo()
+    : isFrontierLink(Standard_False)
+    {
+    }
+
     gp_XY            Point2d;
     gp_XYZ           Point;
     Standard_Boolean isFrontierLink;

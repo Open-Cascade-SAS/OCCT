@@ -133,6 +133,8 @@ Approx_CurvilinearParameter::Approx_CurvilinearParameter(const Handle(Adaptor3d_
 							 const GeomAbs_Shape Order,
 							 const Standard_Integer MaxDegree,
 							 const Standard_Integer MaxSegments)
+: myMaxError2d1(0.0),
+  myMaxError2d2(0.0)
 {
 #ifdef OCCT_DEBUG_CHRONO
   t_total = t_init = t_approx = t_uparam = 0;

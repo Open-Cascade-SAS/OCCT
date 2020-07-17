@@ -41,6 +41,8 @@ Geom2dGcc_Lin2dTanOblIter (const Geom2dGcc_QCurve&  Qualified1 ,
                            const Standard_Real      Param1     ,
                            const Standard_Real      TolAng     ,
                            const Standard_Real      Angle      )
+: par2sol(0.0),
+  pararg2(0.0)
 {
 
   par1sol = 0.;

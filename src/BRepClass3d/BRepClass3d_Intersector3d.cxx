@@ -31,7 +31,12 @@
 
 //============================================================================
 BRepClass3d_Intersector3d::BRepClass3d_Intersector3d() 
-     : done(Standard_False),hasapoint(Standard_False)
+: U(0.0),
+  V(0.0),
+  W(0.0),
+  done(Standard_False),
+  hasapoint(Standard_False),
+  state(TopAbs_UNKNOWN)
 { 
 }
 //============================================================================

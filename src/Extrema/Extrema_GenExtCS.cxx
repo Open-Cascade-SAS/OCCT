@@ -107,9 +107,20 @@ static void GetSurfMaxParamVals (const Adaptor3d_Surface& theS,
 //purpose  : 
 //=======================================================================
 Extrema_GenExtCS::Extrema_GenExtCS()
+: myDone(Standard_False),
+  mytmin(0.0),
+  mytsup(0.0),
+  myumin(0.0),
+  myusup(0.0),
+  myvmin(0.0),
+  myvsup(0.0),
+  mytsample(0),
+  myusample(0),
+  myvsample(0),
+  mytol1(0.0),
+  mytol2(0.0),
+  myS(NULL)
 {
-  myDone = Standard_False;
-  myInit = Standard_False;
 }
 
 //=======================================================================

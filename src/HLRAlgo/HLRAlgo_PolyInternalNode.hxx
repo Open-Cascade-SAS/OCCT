@@ -41,6 +41,12 @@ public:
 
   struct NodeData
   {
+    NodeData()
+    : PCu1(0.0),
+      PCu2(0.0),
+      Scal(0.0)
+    {
+    }
     gp_XYZ Point, Normal;
     gp_XY UV;
     Standard_Real PCu1, PCu2, Scal;

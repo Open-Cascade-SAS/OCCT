@@ -27,7 +27,18 @@
 //purpose  : 
 //=======================================================================
 HLRAlgo_EdgeIterator::HLRAlgo_EdgeIterator ()
-{}
+: myNbVis(0),
+  myNbHid(0),
+  EVis(NULL),
+  EHid(NULL),
+  iVis(0),
+  iHid(0),
+  myHidStart(0.0),
+  myHidEnd(0.0),
+  myHidTolStart(0.0),
+  myHidTolEnd(0.0)
+{
+}
 
 //=======================================================================
 //function : InitHidden

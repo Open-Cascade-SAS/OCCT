@@ -43,6 +43,9 @@ class MoniTool_Element : public Standard_Transient
 public:
 
   
+  //! Empty constructor
+  Standard_EXPORT MoniTool_Element();
+  
   //! Returns the HashCode which has been stored by SetHashCode
   //! (remark that HashCode could be deferred then be defined by
   //! sub-classes, the result is the same)

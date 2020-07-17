@@ -26,6 +26,10 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Drawable3D,Standard_Transient)
 //purpose  : 
 //=======================================================================
 Draw_Drawable3D::Draw_Drawable3D() :
+  myXmin(0.0),
+  myXmax(0.0),
+  myYmin(0.0),
+  myYmax(0.0),
   isVisible(Standard_False),
   isProtected(Standard_False),
   myName(NULL)

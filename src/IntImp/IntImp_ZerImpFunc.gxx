@@ -26,14 +26,30 @@
 
 
 IntImp_ZerImpFunc::IntImp_ZerImpFunc() :
+       surf(NULL),
+       func(NULL),
+       u(0.0),
+       v(0.0),
+       tol(0.0),
+       valf(0.0),
        computed(Standard_False),
+       tangent(Standard_False),
+       tgdu(0.0),
+       tgdv(0.0),
        derived(Standard_False)
 {  
 }
 
 IntImp_ZerImpFunc::IntImp_ZerImpFunc(const ThePSurface& PS ,
 				     const TheISurface& IS) :
+       u(0.0),
+       v(0.0),
+       tol(0.0),
+       valf(0.0),
        computed(Standard_False),
+       tangent(Standard_False),
+       tgdu(0.0),
+       tgdv(0.0),
        derived(Standard_False)
 { 
   surf = (Standard_Address)(&PS);
@@ -41,7 +57,15 @@ IntImp_ZerImpFunc::IntImp_ZerImpFunc(const ThePSurface& PS ,
 }
 
 IntImp_ZerImpFunc::IntImp_ZerImpFunc(const TheISurface& IS) :
+       surf(NULL),
+       u(0.0),
+       v(0.0),
+       tol(0.0),
+       valf(0.0),
        computed(Standard_False),
+       tangent(Standard_False),
+       tgdu(0.0),
+       tgdv(0.0),
        derived(Standard_False)
 {  
   func = (Standard_Address)(&IS);

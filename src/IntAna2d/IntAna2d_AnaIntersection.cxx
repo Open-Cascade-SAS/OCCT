@@ -24,9 +24,13 @@
 #include <Standard_OutOfRange.hxx>
 #include <StdFail_NotDone.hxx>
 
-IntAna2d_AnaIntersection::IntAna2d_AnaIntersection () {
-
-  done = Standard_False;
+IntAna2d_AnaIntersection::IntAna2d_AnaIntersection ()
+: done(Standard_False),
+  para(Standard_False),
+  iden(Standard_False),
+  empt(Standard_True),
+  nbp(0)
+{
 }
 
 IntAna2d_AnaIntersection::IntAna2d_AnaIntersection (const gp_Lin2d& L1,

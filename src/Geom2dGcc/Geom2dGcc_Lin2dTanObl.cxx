@@ -37,6 +37,7 @@ Geom2dGcc_Lin2dTanObl::
 			  const gp_Lin2d&                 TheLine    ,
 			  const Standard_Real             TolAng     ,
 			  const Standard_Real             Angle      ):
+  Paral2(Standard_False),
   linsol(1,2)    ,
   qualifier1(1,2),
   pnttg1sol(1,2) ,
@@ -44,7 +45,7 @@ Geom2dGcc_Lin2dTanObl::
   par1sol(1,2)   ,
   par2sol(1,2)   ,
   pararg1(1,2)   ,
-  pararg2(1,2)   
+  pararg2(1,2)
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   Handle(Geom2d_Curve) CC1 = C1.Curve();
@@ -102,6 +103,7 @@ Geom2dGcc_Lin2dTanObl::
 			  const Standard_Real             TolAng     ,
 			  const Standard_Real             Param1     ,
 			  const Standard_Real             Angle      ):
+  Paral2(Standard_False),
   linsol(1,2)    ,
   qualifier1(1,2),
   pnttg1sol(1,2) ,
@@ -109,7 +111,7 @@ Geom2dGcc_Lin2dTanObl::
   par1sol(1,2)   ,
   par2sol(1,2)   ,
   pararg1(1,2)   ,
-  pararg2(1,2)   
+  pararg2(1,2)
 {
   Geom2dAdaptor_Curve C1 = Qualified1.Qualified();
   Handle(Geom2d_Curve) CC1 = C1.Curve();

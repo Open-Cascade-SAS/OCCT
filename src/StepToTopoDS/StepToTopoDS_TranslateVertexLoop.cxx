@@ -37,6 +37,7 @@
 // Purpose : Empty Constructor
 // ============================================================================
 StepToTopoDS_TranslateVertexLoop::StepToTopoDS_TranslateVertexLoop()
+: myError(StepToTopoDS_TranslateVertexLoopOther)
 {
 }
 

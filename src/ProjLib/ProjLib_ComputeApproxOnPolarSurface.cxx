@@ -84,6 +84,14 @@
 
 struct aFuncStruct
 {
+  aFuncStruct() // Empty constructor.
+  : mySqProjOrtTol(0.0),
+    myTolU(0.0),
+    myTolV(0.0)
+  {
+    memset(myPeriod, 0, sizeof (myPeriod));
+  }
+
   Handle(Adaptor3d_HSurface) mySurf; // Surface where to project.
   Handle(Adaptor3d_HCurve)   myCurve; // Curve to project.
   Handle(Adaptor2d_HCurve2d) myInitCurve2d; // Initial 2dcurve projection.

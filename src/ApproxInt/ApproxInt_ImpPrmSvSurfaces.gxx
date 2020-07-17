@@ -329,7 +329,9 @@ static Standard_Boolean NonSingularProcessing(const gp_Vec& theDU,
 //--------------------------------------------------------------------------------
 ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const TheISurface& ISurf
 						       ,const ThePSurface& PSurf):
+       MyIsTangent(Standard_False),
        MyHasBeenComputed(Standard_False),
+       MyIsTangentbis(Standard_False),
        MyHasBeenComputedbis(Standard_False),
        MyImplicitFirst(Standard_True),
        MyZerImpFunc(PSurf,ISurf)
@@ -338,7 +340,9 @@ ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const TheISurface& ISurf
 //--------------------------------------------------------------------------------
 ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const ThePSurface& PSurf
 						       ,const TheISurface& ISurf):
+       MyIsTangent(Standard_False),
        MyHasBeenComputed(Standard_False),
+       MyIsTangentbis(Standard_False),
        MyHasBeenComputedbis(Standard_False),
        MyImplicitFirst(Standard_False),
        MyZerImpFunc(PSurf,ISurf)

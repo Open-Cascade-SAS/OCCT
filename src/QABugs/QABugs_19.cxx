@@ -393,6 +393,7 @@ static Standard_Integer OCC23774(Draw_Interpretor& di, Standard_Integer n, const
 
 struct GeomConvertTest_Data
 {
+  GeomConvertTest_Data() : nbupoles(0) {}
   Standard_Integer nbupoles;
   Handle(Geom_Surface) surf;
 };
@@ -467,6 +468,7 @@ static Standard_Integer OCC23952sweep (Draw_Interpretor& di, Standard_Integer ar
 
 struct GeomIntSSTest_Data
 {
+  GeomIntSSTest_Data() : nbsol(0) {}
   Standard_Integer nbsol;
   Handle(Geom_Surface) surf1, surf2;
 };

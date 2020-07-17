@@ -49,7 +49,25 @@ Standard_EXPORT Standard_Boolean AppBlend_GetContextApproxWithNoTgt();
 //purpose  : 
 //=======================================================================
 
-AppBlend_AppSurf::AppBlend_AppSurf ():done(Standard_False) {}
+AppBlend_AppSurf::AppBlend_AppSurf ()
+: done(Standard_False),
+  dmin(0),
+  dmax(0),
+  tol3d(0.0),
+  tol2d(0.0),
+  nbit(0),
+  udeg(0),
+  vdeg(0),
+  knownp(Standard_False),
+  tol3dreached(0.0),
+  tol2dreached(0.0),
+  paramtype(Approx_ChordLength),
+  continuity(GeomAbs_C2)
+{
+  critweights[0]=0.4;
+  critweights[1]=0.2;
+  critweights[2]=0.4;
+}
 
 
 //=======================================================================
@@ -62,12 +80,21 @@ AppBlend_AppSurf::AppBlend_AppSurf (const Standard_Integer Degmin,
 				    const Standard_Real Tol3d,
 				    const Standard_Real Tol2d,
 				    const Standard_Integer NbIt,
-				    const Standard_Boolean KnownParameters):
-       done(Standard_False),dmin(Degmin),dmax(Degmax),
-       tol3d(Tol3d),tol2d(Tol2d),nbit(NbIt),knownp(KnownParameters)
+				    const Standard_Boolean KnownParameters)
+: done(Standard_False),
+  dmin(Degmin),
+  dmax(Degmax),
+  tol3d(Tol3d),
+  tol2d(Tol2d),
+  nbit(NbIt),
+  udeg(0),
+  vdeg(0),
+  knownp(KnownParameters),
+  tol3dreached(0.0),
+  tol2dreached(0.0),
+  paramtype(Approx_ChordLength),
+  continuity(GeomAbs_C2)
 {
-  continuity = GeomAbs_C2;
-  paramtype = Approx_ChordLength;
   critweights[0]=0.4;
   critweights[1]=0.2;
   critweights[2]=0.4;

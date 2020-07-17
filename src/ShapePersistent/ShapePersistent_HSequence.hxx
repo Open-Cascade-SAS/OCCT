@@ -72,6 +72,12 @@ class ShapePersistent_HSequence
     typedef node<SequenceClass> Node;
 
   public:
+    //! Empty constructor.
+    instance()
+    : mySize(0)
+    {
+    }
+
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
 

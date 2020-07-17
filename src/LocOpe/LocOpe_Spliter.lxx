@@ -22,6 +22,7 @@
 //=======================================================================
 
 inline LocOpe_Spliter::LocOpe_Spliter()
+: myDone(Standard_False)
 {
 }
 

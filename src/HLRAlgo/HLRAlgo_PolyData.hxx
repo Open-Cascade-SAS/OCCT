@@ -43,6 +43,14 @@ class HLRAlgo_PolyData : public Standard_Transient
 public:
   struct FaceIndices
   {
+    //! The default constructor.
+    FaceIndices()
+    : Index(0),
+      Min(0),
+      Max(0)
+    {
+    }
+
     Standard_Integer Index, Min, Max;
   };
 
@@ -58,6 +66,12 @@ public:
 
     //! The default constructor.
     Box()
+    : XMin(0.0),
+      YMin(0.0),
+      ZMin(0.0),
+      XMax(0.0),
+      YMax(0.0),
+      ZMax(0.0)
     {
     }
 

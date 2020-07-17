@@ -23,7 +23,9 @@
 //=======================================================================
 GeomFill_CornerState::GeomFill_CornerState() :
  gap(RealLast()),
+ tgtang(0.0),
  isconstrained(0),
+ norang(0.0),
  scal(1.),
  coonscnd(1)
 {

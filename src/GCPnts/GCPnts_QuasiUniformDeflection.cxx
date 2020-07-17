@@ -82,7 +82,9 @@ gp_Pnt GCPnts_QuasiUniformDeflection::Value
 //=======================================================================
 
 GCPnts_QuasiUniformDeflection::GCPnts_QuasiUniformDeflection ()
-:myDone(Standard_False),myCont(GeomAbs_C1)
+: myDone(Standard_False),
+  myDeflection(0.0),
+  myCont(GeomAbs_C1)
 {
 } 
 

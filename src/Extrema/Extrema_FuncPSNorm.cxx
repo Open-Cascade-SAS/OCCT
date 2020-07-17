@@ -26,6 +26,9 @@
 #include <Standard_TypeMismatch.hxx>
 
 Extrema_FuncPSNorm::Extrema_FuncPSNorm ()
+: myS(NULL),
+  myU(0.0),
+  myV(0.0)
 {
   myPinit = Standard_False;
   mySinit = Standard_False;
@@ -34,6 +37,8 @@ Extrema_FuncPSNorm::Extrema_FuncPSNorm ()
 //=============================================================================
 Extrema_FuncPSNorm::Extrema_FuncPSNorm (const gp_Pnt& P,
                                       const Adaptor3d_Surface& S)
+: myU(0.0),
+  myV(0.0)
 {
   myP = P;
   myS = (Adaptor3d_SurfacePtr)&S;

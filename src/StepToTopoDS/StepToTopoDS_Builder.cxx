@@ -105,6 +105,7 @@ static void ResetPreci (const TopoDS_Shape& S, Standard_Real maxtol)
 // ============================================================================
 
 StepToTopoDS_Builder::StepToTopoDS_Builder()
+: myError(StepToTopoDS_BuilderOther)
 {
   done = Standard_False;
 }

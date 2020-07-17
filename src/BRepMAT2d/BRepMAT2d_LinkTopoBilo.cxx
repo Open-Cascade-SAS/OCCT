@@ -47,6 +47,8 @@
 //purpose  : 
 //=======================================================================
 BRepMAT2d_LinkTopoBilo::BRepMAT2d_LinkTopoBilo()
+: current(0),
+  isEmpty(Standard_True)
 {
 }
 

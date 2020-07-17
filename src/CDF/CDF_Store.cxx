@@ -34,7 +34,12 @@ static TCollection_ExtendedString blank("");
 
 
 
-CDF_Store::CDF_Store() {}
+CDF_Store::CDF_Store()
+: myHasSubComponents(Standard_False),
+  myIsMainDocument(Standard_False),
+  myStatus(PCDM_SS_No_Obj)
+{
+}
 CDF_Store::CDF_Store(const Handle(CDM_Document)& aDocument):myHasSubComponents(Standard_False) {
   
   myMainDocument = aDocument;

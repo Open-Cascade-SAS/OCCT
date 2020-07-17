@@ -32,7 +32,9 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitCurve,Standard_Transient)
 //function : ShapeUpgrade_SplitCurve
 //purpose  : 
 //=======================================================================
-ShapeUpgrade_SplitCurve::ShapeUpgrade_SplitCurve() : myStatus(0)
+ShapeUpgrade_SplitCurve::ShapeUpgrade_SplitCurve()
+: myNbCurves(0),
+  myStatus(0)
 {
 }
 

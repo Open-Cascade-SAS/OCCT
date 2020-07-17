@@ -24,6 +24,10 @@
 //purpose  : 
 //=======================================================================
 Hatch_Parameter::Hatch_Parameter()
+: myPar1(0.0),
+  myStart(Standard_False),
+  myIndex(0),  
+  myPar2(0.0)
 {
 }
 

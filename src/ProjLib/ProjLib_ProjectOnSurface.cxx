@@ -147,7 +147,8 @@ private:
 //=======================================================================
 
 ProjLib_ProjectOnSurface::ProjLib_ProjectOnSurface() :
-myIsDone(Standard_False) 
+myTolerance(0.0),
+myIsDone(Standard_False)
 {
 }
 
@@ -158,7 +159,8 @@ myIsDone(Standard_False)
 
 ProjLib_ProjectOnSurface::ProjLib_ProjectOnSurface
 (const Handle(Adaptor3d_HSurface)& S ) :
-myIsDone(Standard_False) 
+myTolerance(0.0),
+myIsDone(Standard_False)
 {
   mySurface = S;
 }

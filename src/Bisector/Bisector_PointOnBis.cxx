@@ -23,6 +23,11 @@
 // purpose :
 //=============================================================================
 Bisector_PointOnBis::Bisector_PointOnBis()
+: param1(0.0),
+  param2(0.0),
+  paramBis(0.0),
+  distance(0.0),
+  infinite(Standard_False)
 {
 }
 

@@ -32,6 +32,7 @@ protected:
     DEFINE_STANDARD_RTTI_INLINE(pTShape, Standard_Transient)
 
   public:
+    pTShape() : myFlags(0) {}
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myShapes >> myFlags; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const

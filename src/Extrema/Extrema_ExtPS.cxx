@@ -143,8 +143,20 @@ void Extrema_ExtPS::TreatSolution (const Extrema_POnSurf& PS,
 //=======================================================================
 
 Extrema_ExtPS::Extrema_ExtPS()
+: myS(NULL),
+  myDone(Standard_False),
+  myuinf(0.0),
+  myusup(0.0),
+  myvinf(0.0),
+  myvsup(0.0),
+  mytolu(0.0),
+  mytolv(0.0),
+  d11(0.0),
+  d12(0.0),
+  d21(0.0),
+  d22(0.0),
+  mytype(GeomAbs_OtherSurface)
 {
-  myDone = Standard_False;
 }
 
 

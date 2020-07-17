@@ -47,6 +47,8 @@ Plate_Plate::Plate_Plate()
   L (0.0)
 {
   PolynomialPartOnly = Standard_False;
+  memset (ddu, 0, sizeof (ddu));
+  memset (ddv, 0, sizeof (ddv));
 }
 
 //=======================================================================

@@ -24,6 +24,7 @@
 //purpose  : Constructor
 //=======================================================================
 BRepGProp_Sinert::BRepGProp_Sinert()
+: myEpsilon(0.0)
 {
 }
 

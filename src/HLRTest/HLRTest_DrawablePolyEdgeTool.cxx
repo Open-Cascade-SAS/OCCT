@@ -46,6 +46,8 @@ HLRTest_DrawablePolyEdgeTool (const Handle(HLRBRep_PolyAlgo)& Alg,
 			      const Standard_Integer ViewId,
 			      const Standard_Boolean Debug) :
   myAlgo(Alg),
+  myDispRg1(Standard_False),
+  myDispRgN(Standard_False),
   myDispHid(Standard_False),
   myViewId(ViewId),
   myDebug(Debug),

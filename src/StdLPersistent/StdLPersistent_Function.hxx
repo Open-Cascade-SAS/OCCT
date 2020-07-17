@@ -24,6 +24,11 @@
 class StdLPersistent_Function : public StdObjMgt_Attribute<TFunction_Function>
 {
 public:
+  //! Empty constructor.
+  StdLPersistent_Function()
+  : myFailure(0)
+  {
+  }
   //! Read persistent data from a file.
   inline void Read (StdObjMgt_ReadData& theReadData)
     { theReadData >> myDriverGUID >> myFailure; }

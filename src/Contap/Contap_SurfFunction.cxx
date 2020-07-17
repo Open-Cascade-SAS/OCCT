@@ -32,11 +32,19 @@ Contap_SurfFunction::Contap_SurfFunction ():
   myMean(1.),
   myType(Contap_ContourStd),
   myDir(0.,0.,1.),
+  myAng(0.0),
   myCosAng(0.), // PI/2 - Angle de depouille
   tol(1.e-6),
+  valf(0.0),
+  Usol(0.0),
+  Vsol(0.0),
+  Fpu(0.0),
+  Fpv(0.0),
+  tangent(Standard_False),
   computed(Standard_False),
   derived(Standard_False)
-{}
+{
+}
 
 void Contap_SurfFunction::Set(const Handle(Adaptor3d_HSurface)& S)
 {

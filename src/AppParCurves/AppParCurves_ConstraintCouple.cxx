@@ -16,7 +16,11 @@
 #include <AppParCurves_ConstraintCouple.hxx>
 
 AppParCurves_ConstraintCouple::
-  AppParCurves_ConstraintCouple() {}
+  AppParCurves_ConstraintCouple()
+: myIndex(-1),
+  myConstraint(AppParCurves_NoConstraint)
+{
+}
 
 
 AppParCurves_ConstraintCouple::

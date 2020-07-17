@@ -56,6 +56,9 @@ const AppParCurves_Constraint LastC)
   myInvOrder = Standard_True;
   myHangChecking = Standard_True;
   alldone = Standard_False;
+  tolreached = Standard_False;
+  currenttol3d = 0.0;
+  currenttol2d = 0.0;
   Perform(Line);
 }
 
@@ -84,6 +87,9 @@ const AppParCurves_Constraint LastC)
   myMaxSegments = MAXSEGM;
   myInvOrder = Standard_True;
   myHangChecking = Standard_True;
+  tolreached = Standard_False;
+  currenttol3d = 0.0;
+  currenttol2d = 0.0;
 }
 
 //=======================================================================

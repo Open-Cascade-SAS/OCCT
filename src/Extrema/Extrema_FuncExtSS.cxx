@@ -56,6 +56,12 @@
 //purpose  : 
 //=======================================================================
 Extrema_FuncExtSS::Extrema_FuncExtSS ()
+: myS1(NULL),
+  myS2(NULL),
+  myU1(0.0),
+  myV1(0.0),
+  myU2(0.0),
+  myV2(0.0)
 {
   myS1init = Standard_False;
   myS2init = Standard_False;
@@ -68,6 +74,10 @@ Extrema_FuncExtSS::Extrema_FuncExtSS ()
 
 Extrema_FuncExtSS::Extrema_FuncExtSS (const Adaptor3d_Surface& S1,
 				      const Adaptor3d_Surface& S2)
+: myU1(0.0),
+  myV1(0.0),
+  myU2(0.0),
+  myV2(0.0)
 {
   myS1 = (Adaptor3d_SurfacePtr)&S1;
   myS2 = (Adaptor3d_SurfacePtr)&S2;

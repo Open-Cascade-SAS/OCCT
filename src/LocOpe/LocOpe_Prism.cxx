@@ -42,8 +42,11 @@
 //function : LocOpe_Prism
 //purpose  : 
 //=======================================================================
-LocOpe_Prism::LocOpe_Prism(): myDone(Standard_False)
-{}
+LocOpe_Prism::LocOpe_Prism()
+: myIsTrans(Standard_False),
+  myDone(Standard_False)
+{
+}
 
 //=======================================================================
 //function : LocOpe_Prism

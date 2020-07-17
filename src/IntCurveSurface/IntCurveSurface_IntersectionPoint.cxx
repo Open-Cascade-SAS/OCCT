@@ -19,7 +19,12 @@
 #include <IntCurveSurface_IntersectionPoint.hxx>
 
 //================================================================================
-IntCurveSurface_IntersectionPoint::IntCurveSurface_IntersectionPoint() { } 
+IntCurveSurface_IntersectionPoint::IntCurveSurface_IntersectionPoint()
+: myUSurf(0.0),
+  myVSurf(0.0),
+  myUCurv(0.0)
+{
+}
 //================================================================================
 IntCurveSurface_IntersectionPoint::IntCurveSurface_IntersectionPoint(const gp_Pnt& P,
 								     const Standard_Real USurf,

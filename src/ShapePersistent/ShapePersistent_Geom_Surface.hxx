@@ -112,6 +112,11 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     friend class ShapePersistent_Geom_Surface;
 
   public:
+    pBezier()
+    : myURational(Standard_False),
+      myVRational(Standard_False)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myURational >> myVRational >> myPoles >> myWeights; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const
@@ -138,6 +143,15 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     friend class ShapePersistent_Geom_Surface;
 
   public:
+    pBSpline()
+    : myURational(Standard_False),
+      myVRational(Standard_False),
+      myUPeriodic(Standard_False),
+      myVPeriodic(Standard_False),
+      myUSpineDegree(0),
+      myVSpineDegree(0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       theReadData >> myURational >> myVRational;
@@ -192,6 +206,13 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     friend class ShapePersistent_Geom_Surface;
 
   public:
+    pRectangularTrimmed()
+    : myFirstU(0.0),
+      myLastU(0.0),
+      myFirstV(0.0),
+      myLastV(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
     {
       theReadData >> myBasisSurface;
@@ -222,6 +243,10 @@ class ShapePersistent_Geom_Surface : private ShapePersistent_Geom
     friend class ShapePersistent_Geom_Surface;
 
   public:
+    pOffset()
+    : myOffsetValue(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myBasisSurface >> myOffsetValue; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const

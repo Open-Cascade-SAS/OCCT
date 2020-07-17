@@ -46,7 +46,8 @@ FairCurve_EnergyOfMVC::FairCurve_EnergyOfMVC(const Standard_Integer BSplOrder,
                            MyPhysicalRatio(PhysicalRatio),
                            MyTension(BSplOrder, FlatKnots, Poles, 1, LengthSliding,  Law, FreeSliding, Standard_True),
                            MySagging(BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding),
-                           MyJerk(   BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding)
+                           MyJerk(   BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding),
+                           MyStatus(FairCurve_OK)
 {
   Standard_DomainError_Raise_if(PhysicalRatio < 0 || PhysicalRatio > 1, 
                                 "FairCurve_EnergyOfMVC: PhysicalRatio error" );

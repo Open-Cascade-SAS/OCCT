@@ -36,6 +36,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Law_BSpFunc,Law_Function)
 //=======================================================================
 
 Law_BSpFunc::Law_BSpFunc()
+: first(0.0),
+  last(0.0)
 {
 }
 

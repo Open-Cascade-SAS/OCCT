@@ -36,7 +36,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfRealArray,TDF_DeltaOnMo
 
 TDataStd_DeltaOnModificationOfRealArray::
   TDataStd_DeltaOnModificationOfRealArray(const Handle(TDataStd_RealArray)& OldAtt)
-: TDF_DeltaOnModification(OldAtt)
+: TDF_DeltaOnModification(OldAtt),
+  myUp1(0),
+  myUp2(0)
 {
   Handle(TDataStd_RealArray) CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(),CurrAtt)) {

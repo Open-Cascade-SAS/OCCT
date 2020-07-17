@@ -277,7 +277,8 @@ Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& p) :
   isAllocated(Standard_False),
   myInterp(p),
   myDoLog(Standard_False),
-  myDoEcho(Standard_False)
+  myDoEcho(Standard_False),
+  myFDLog(-1)
 {
 }
 

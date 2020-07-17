@@ -24,9 +24,13 @@
 
 BlendFunc_RuledInv::BlendFunc_RuledInv(const Handle(Adaptor3d_HSurface)& S1,
                                        const Handle(Adaptor3d_HSurface)& S2,
-                                       const Handle(Adaptor3d_HCurve)& C) :
-       surf1(S1),surf2(S2),curv(C)
-{}
+                                       const Handle(Adaptor3d_HCurve)& C)
+: surf1(S1),
+  surf2(S2),
+  curv(C),
+  first(Standard_False)
+{
+}
 
 void BlendFunc_RuledInv::Set(const Standard_Boolean OnFirst,
                              const Handle(Adaptor2d_HCurve2d)& C)

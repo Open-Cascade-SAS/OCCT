@@ -184,6 +184,7 @@ static void CheckPCurves (TopoDS_Wire& aWire, const TopoDS_Face& aFace,
 // ============================================================================
 
 StepToTopoDS_TranslateEdgeLoop::StepToTopoDS_TranslateEdgeLoop()
+: myError(StepToTopoDS_TranslateEdgeLoopOther)
 {
   done = Standard_False;
 }

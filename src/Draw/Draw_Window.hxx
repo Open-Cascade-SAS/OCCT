@@ -370,7 +370,13 @@ class Segment
   friend class DrawWindow;
   public :
     //constructeur
-    Segment () {}
+    Segment ()
+    : x1(0),
+      y1(0),
+      x2(0),
+      y2(0)
+    {
+    }
     //destructeur
     ~Segment () {}
 

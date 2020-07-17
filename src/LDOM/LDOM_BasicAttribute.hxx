@@ -32,7 +32,7 @@ class LDOM_BasicAttribute : public LDOM_BasicNode
  public:
   // ---------- PUBLIC METHODS ----------
 
-  LDOM_BasicAttribute () : LDOM_BasicNode (LDOM_Node::UNKNOWN) {}
+  LDOM_BasicAttribute () : LDOM_BasicNode (LDOM_Node::UNKNOWN), myName(NULL) {}
   //    Empty constructor
 
   LDOM_BasicAttribute&  operator =      (const LDOM_NullPtr * aNull);

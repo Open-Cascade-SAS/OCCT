@@ -39,7 +39,7 @@ GeomLib_Interpolate::GeomLib_Interpolate
  const Standard_Integer      NumPoints,
  const TColgp_Array1OfPnt&   PointsArray,
  const TColStd_Array1OfReal& ParametersArray) 
-					 
+: myIsDone(Standard_False)
 {
   Standard_Integer ii,
   num_knots,

@@ -34,8 +34,12 @@
 BlendFunc_GenChamfer::BlendFunc_GenChamfer(const Handle(Adaptor3d_HSurface)& S1,
                                            const Handle(Adaptor3d_HSurface)& S2,
                                            const Handle(Adaptor3d_HCurve)&   CG)
-  : surf1(S1),surf2(S2),curv(CG),
-    distmin(RealLast())
+: surf1(S1),
+  surf2(S2),
+  curv(CG),
+  choix(0),
+  tol(0.0),
+  distmin(RealLast())
 {
 }
 

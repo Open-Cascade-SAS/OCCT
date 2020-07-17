@@ -163,7 +163,10 @@ Interval::Interval(const Standard_Real a,const Standard_Real b) {
   IsNull=Standard_False;
 }
 
-Interval::Interval(const IntRes2d_Domain& Domain) {
+Interval::Interval(const IntRes2d_Domain& Domain)
+: Binf(0.0),
+  Bsup(0.0)
+{
   IsNull=Standard_False;
   if(Domain.HasFirstPoint()) {
     HasFirstBound=Standard_True;

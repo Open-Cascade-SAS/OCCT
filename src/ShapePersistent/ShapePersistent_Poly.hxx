@@ -35,6 +35,10 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     friend class ShapePersistent_Poly;
 
   public:
+    pPolygon2D()
+    : myDeflection(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myDeflection >> myNodes; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const
@@ -74,6 +78,10 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     friend class ShapePersistent_Poly;
 
   public:
+    pPolygonOnTriangulation()
+    : myDeflection(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myDeflection >> myNodes >> myParameters; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const
@@ -94,6 +102,10 @@ class ShapePersistent_Poly : private StdObjMgt_SharedObject
     friend class ShapePersistent_Poly;
 
   public:
+    pTriangulation()
+    : myDeflection(0.0)
+    {
+    }
     inline void Read (StdObjMgt_ReadData& theReadData)
       { theReadData >> myDeflection >> myNodes >> myUVNodes >> myTriangles; }
     inline void Write (StdObjMgt_WriteData& theWriteData) const

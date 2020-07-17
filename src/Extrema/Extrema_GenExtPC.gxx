@@ -26,9 +26,15 @@
 //purpose  : 
 //=======================================================================
 
-Extrema_GenExtPC::Extrema_GenExtPC () { 
-  myDone = Standard_False;
-  myInit = Standard_False;
+Extrema_GenExtPC::Extrema_GenExtPC ()
+: myDone(Standard_False),
+  myInit(Standard_False),
+  mynbsample(0),
+  myumin(0.0),
+  myusup(0.0),
+  mytolu(0.0),
+  mytolF(0.0)
+{ 
 }
 
 

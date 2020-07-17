@@ -31,9 +31,13 @@
 //purpose  : 
 //=======================================================================
 GeomAPI_ExtremaCurveCurve::GeomAPI_ExtremaCurveCurve()
+: myIsDone(Standard_False),
+  myIndex(0),
+  myTotalExt(Standard_False),
+  myIsInfinite(Standard_False),
+  myTotalDist(0.0)
 {
-  myIsDone = Standard_False;
-  myTotalExt = Standard_False;
+  memset (myTotalPars, 0, sizeof (myTotalPars));
 }
 
 

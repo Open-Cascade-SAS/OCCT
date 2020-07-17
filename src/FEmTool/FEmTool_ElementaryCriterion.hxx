@@ -39,7 +39,8 @@ class FEmTool_ElementaryCriterion : public Standard_Transient
 {
 
 public:
-
+  //! Empty constructor
+  Standard_EXPORT FEmTool_ElementaryCriterion();
   
   //! Set the coefficient of the Element (the  Curve)
   Standard_EXPORT void Set (const Handle(TColStd_HArray2OfReal)& Coeff);

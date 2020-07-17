@@ -179,6 +179,7 @@ RWGltf_GltfJsonParser::RWGltf_GltfJsonParser (TopTools_SequenceOfShape& theRootS
 : myRootShapes(&theRootShapes),
   myAttribMap (NULL),
   myExternalFiles (NULL),
+  myMetadata (NULL),
   myBinBodyOffset (0),
   myBinBodyLen (0),
   myIsBinary (false),

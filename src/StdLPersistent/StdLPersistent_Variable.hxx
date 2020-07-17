@@ -24,6 +24,11 @@
 class StdLPersistent_Variable : public StdObjMgt_Attribute<TDataStd_Variable>
 {
 public:
+  //! Empty constructor.
+  StdLPersistent_Variable()
+  : myIsConstant(Standard_False)
+  {
+  }
   //! Read persistent data from a file.
   inline void Read (StdObjMgt_ReadData& theReadData)
     { theReadData >> myIsConstant >> myUnit; }

@@ -28,6 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Law_Constant,Law_Function)
 //purpose  : 
 //=======================================================================
 Law_Constant::Law_Constant()
+: radius(0.0),
+  first(0.0),
+  last(0.0)
 {
 }
 

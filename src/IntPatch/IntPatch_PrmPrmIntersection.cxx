@@ -302,7 +302,9 @@ static void DublicateOfLinesProcessing( const IntWalk_PWalking& thePW,
 // function : 
 // purpose  : 
 //==================================================================================
-IntPatch_PrmPrmIntersection::IntPatch_PrmPrmIntersection(): done(Standard_False)
+IntPatch_PrmPrmIntersection::IntPatch_PrmPrmIntersection()
+: done(Standard_False),
+  empt(Standard_True)
 {
 }
 

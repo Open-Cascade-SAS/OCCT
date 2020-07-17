@@ -24,6 +24,7 @@
 //purpose  : 
 //=======================================================================
 GeomFill_Filling::GeomFill_Filling()
+: IsRational(Standard_False)
 {
 }
 

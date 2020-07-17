@@ -40,6 +40,7 @@ Draw_View::Draw_View(Standard_Integer theId,
   myFrameX1  (0),
   myFrameY1  (0)
 {
+  memset (myType, 0, sizeof (myType));
 }
 
 //=======================================================================
@@ -68,6 +69,7 @@ Draw_View::Draw_View(Standard_Integer theId,
   myFrameX1  (0),
   myFrameY1  (0)
 {
+  memset (myType, 0, sizeof (myType));
 }
 
 //=======================================================================
@@ -96,6 +98,7 @@ Draw_View::Draw_View(Standard_Integer theId,
   myFrameX1  (0),
   myFrameY1  (0)
 {
+  memset (myType, 0, sizeof (myType));
 }
 #endif
 
@@ -130,6 +133,7 @@ Draw_View::Draw_View(Standard_Integer theId,
   myFrameX1    (0),
   myFrameY1    (0)
 {
+  memset (myType, 0, sizeof (myType));
 }
 
 //=======================================================================

@@ -46,8 +46,19 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_CurveConstraint,Standard_Transient)
 //---------------------------------------------------------
 //         Constructeur vide
 //---------------------------------------------------------
-GeomPlate_CurveConstraint :: GeomPlate_CurveConstraint () :
-myLProp(2,1.e-4)
+GeomPlate_CurveConstraint :: GeomPlate_CurveConstraint ()
+: myNbPoints(0),
+  myOrder(0),
+  myTang(0),
+  myConstG0(Standard_False),
+  myConstG1(Standard_False),
+  myConstG2(Standard_False),
+  myLProp(2, 1.e-4),
+  myTolDist(0.0),
+  myTolAng(0.0),
+  myTolCurv(0.0),
+  myTolU(0.0),
+  myTolV(0.0)
 {
 }
 

@@ -35,7 +35,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfExtStringArray,TDF_Delt
 //=======================================================================
 
 TDataStd_DeltaOnModificationOfExtStringArray::TDataStd_DeltaOnModificationOfExtStringArray(const Handle(TDataStd_ExtStringArray)& OldAtt)
-: TDF_DeltaOnModification(OldAtt)
+: TDF_DeltaOnModification(OldAtt),
+  myUp1(0),
+  myUp2(0)
 {
   Handle(TDataStd_ExtStringArray) CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(),CurrAtt)) {

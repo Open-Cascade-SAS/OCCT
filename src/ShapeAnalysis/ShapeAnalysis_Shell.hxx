@@ -37,6 +37,9 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
+  //! Empty constructor
+  Standard_EXPORT ShapeAnalysis_Shell();
+  
   //! Clears data about loaded shells and performed checks
   Standard_EXPORT void Clear();
   

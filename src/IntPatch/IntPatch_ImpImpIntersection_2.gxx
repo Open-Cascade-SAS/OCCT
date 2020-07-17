@@ -26,7 +26,10 @@ static
 //purpose  : 
 //=======================================================================
 IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection ():
-myDone(IntStatus_Fail)
+myDone(IntStatus_Fail),
+empt(Standard_True),
+tgte(Standard_False),
+oppo(Standard_False)
 {
 }
 //=======================================================================

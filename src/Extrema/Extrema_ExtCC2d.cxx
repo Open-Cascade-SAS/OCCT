@@ -38,7 +38,19 @@
 #include <StdFail_NotDone.hxx>
 
 Extrema_ExtCC2d::Extrema_ExtCC2d()
-: myIsFindSingleSolution(Standard_False)
+: myIsFindSingleSolution(Standard_False),
+  myDone(Standard_False),
+  myIsPar(Standard_False),
+  mynbext(0),
+  inverse(Standard_False),
+  myv1(0.0),
+  myv2(0.0),
+  mytolc1(0.0),
+  mytolc2(0.0),
+  mydist11(0.0),
+  mydist12(0.0),
+  mydist21(0.0),
+  mydist22(0.0)
 {
 }
 

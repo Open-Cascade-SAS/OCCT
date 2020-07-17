@@ -28,8 +28,9 @@
 //purpose  : 
 //=======================================================================
 GeomAPI_ProjectPointOnCurve::GeomAPI_ProjectPointOnCurve()
+: myIsDone(Standard_False),
+  myIndex(0)
 {
-  myIsDone = Standard_False;
 }
 //=======================================================================
 //function : GeomAPI_ProjectPointOnCurve

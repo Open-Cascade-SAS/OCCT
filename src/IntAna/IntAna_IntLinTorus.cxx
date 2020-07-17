@@ -29,8 +29,14 @@
 #include <StdFail_NotDone.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-IntAna_IntLinTorus::IntAna_IntLinTorus () : done(Standard_False)
-{}
+IntAna_IntLinTorus::IntAna_IntLinTorus ()
+: done(Standard_False),
+  nbpt(0)
+{
+  memset (theFi, 0, sizeof (theFi));
+  memset (theParam, 0, sizeof (theParam));
+  memset (theTheta, 0, sizeof (theTheta));
+}
 
 IntAna_IntLinTorus::IntAna_IntLinTorus (const gp_Lin& L, const gp_Torus& T)  {
   Perform(L,T);

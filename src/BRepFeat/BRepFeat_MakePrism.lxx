@@ -19,7 +19,10 @@
 //purpose  : 
 //=======================================================================
 
-inline BRepFeat_MakePrism::BRepFeat_MakePrism () {}
+inline BRepFeat_MakePrism::BRepFeat_MakePrism ()
+: myStatusError(BRepFeat_OK)
+{
+}
 
 
 //=======================================================================

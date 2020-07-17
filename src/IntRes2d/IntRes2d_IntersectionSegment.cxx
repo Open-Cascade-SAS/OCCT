@@ -19,9 +19,12 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <Standard_DomainError.hxx>
 
-IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment ():
-  
-  ptfirst(),ptlast() {  }
+IntRes2d_IntersectionSegment::IntRes2d_IntersectionSegment ()
+: oppos(Standard_False),
+  first(Standard_False),
+  last(Standard_False)
+{
+}
 
 
 

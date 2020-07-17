@@ -58,7 +58,11 @@ AppParCurves_Gradient::
 	 const Standard_Real Tol3d,
 	 const Standard_Real Tol2d,
 	 const Standard_Integer NbIterations):
-	 ParError(FirstPoint, LastPoint,0.0) {
+	 ParError(FirstPoint, LastPoint,0.0),
+	 AvError(0.0),
+	 MError3d(0.0),
+	 MError2d(0.0)
+{
 
 //  Standard_Boolean grad = Standard_True;
   Standard_Integer j, k, i2, l;

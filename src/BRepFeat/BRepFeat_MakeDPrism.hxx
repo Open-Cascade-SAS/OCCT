@@ -74,7 +74,9 @@ public:
     Init (Sbase, Pbase, Skface, Angle, Fuse, Modify);
   }
   
-  BRepFeat_MakeDPrism() 
+  BRepFeat_MakeDPrism()
+  : myAngle(RealLast()),
+    myStatusError(BRepFeat_OK)
   {
   }
   

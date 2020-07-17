@@ -32,6 +32,7 @@ IMPLEMENT_STANDARD_RTTIEXT(DrawDim_Dimension,Draw_Drawable3D)
 //=======================================================================
 DrawDim_Dimension::DrawDim_Dimension()
      : is_valued(Standard_False),
+       myValue(0.0),
        myTextColor(Draw_blanc)
 {
 }

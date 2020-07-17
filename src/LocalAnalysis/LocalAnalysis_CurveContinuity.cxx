@@ -147,6 +147,16 @@ LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const Handle(Geom_C
  const Standard_Real EpsG2,
  const Standard_Real Percent,
  const Standard_Real Maxlen )
+: myContC0(0.0),
+  myContC1(0.0),
+  myContC2(0.0),
+  myContG1(0.0),
+  myContG2(0.0),
+  myCourbC1(0.0),
+  myCourbC2(0.0),
+  myG2Variation(0.0),
+  myLambda1(0.0),
+  myLambda2(0.0)
 { myTypeCont = Order;
   myepsnul= Epsnul; 
   myMaxLon=Maxlen;

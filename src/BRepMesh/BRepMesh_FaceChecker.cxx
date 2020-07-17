@@ -103,6 +103,7 @@ namespace
     BndBox2dTreeSelector(const Standard_Real theTolerance)
       : myMaxLoopSize(M_PI * theTolerance * theTolerance),
         mySelfSegmentIndex(-1),
+        mySegment(0),
         myIndices(256, new NCollection_IncAllocator(IMeshData::MEMORY_BLOCK_SIZE_HUGE))
     {
     }

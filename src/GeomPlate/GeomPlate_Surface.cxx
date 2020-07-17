@@ -44,7 +44,13 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomPlate_Surface,Geom_Surface)
 //function : GeomPlate_Surface
 //purpose  : 
 //=======================================================================
-GeomPlate_Surface::GeomPlate_Surface(const Handle(Geom_Surface)& Surfinit,const Plate_Plate& Surfinter) : mySurfinter(Surfinter),mySurfinit(Surfinit)
+GeomPlate_Surface::GeomPlate_Surface(const Handle(Geom_Surface)& Surfinit,const Plate_Plate& Surfinter)
+: mySurfinter(Surfinter),
+  mySurfinit(Surfinit),
+  myUmin(0.0),
+  myUmax(0.0),
+  myVmin(0.0),
+  myVmax(0.0)
 {
 }
 

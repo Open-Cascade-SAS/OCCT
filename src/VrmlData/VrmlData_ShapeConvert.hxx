@@ -61,7 +61,9 @@ class VrmlData_ShapeConvert
   inline VrmlData_ShapeConvert (VrmlData_Scene&     theScene,
                                 const Standard_Real theScale = 1.)
     : myScene (theScene),
-      myScale (theScale)
+      myScale (theScale),
+      myDeflection(0.0),
+      myDeflAngle(0.0)
   {}
 
   /**

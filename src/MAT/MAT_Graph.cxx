@@ -43,7 +43,13 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT_Graph,Standard_Transient)
 // =====================================================================
 // Constructeur vide.
 // =====================================================================
-MAT_Graph::MAT_Graph() {}
+MAT_Graph::MAT_Graph()
+: numberOfArcs(0),
+  numberOfNodes(0),
+  numberOfBasicElts(0),
+  numberOfInfiniteNodes(0)
+{
+}
 
 // =====================================================================
 // function : Perform

@@ -63,7 +63,8 @@ BRepBlend_Extremity::BRepBlend_Extremity (const gp_Pnt& P,
 				  const Standard_Real Tol) :
        pt(P),
        tang(gp_Vec(0,0,0)),
-       param(Param),u(W),tol(Tol),isvtx(Standard_False),
+       param(Param),u(W),v(0.0),
+       tol(Tol),isvtx(Standard_False),
        hastang(Standard_False)
 {}
 

@@ -27,6 +27,13 @@ IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Connexion,Standard_Transient)
 //purpose  :
 //=============================================================================
 MAT2d_Connexion::MAT2d_Connexion()
+: lineA(0),
+  lineB(0),
+  itemA(0),
+  itemB(0),
+  distance(0.0),
+  parameterOnA(0.0),
+  parameterOnB(0.0)
 {
 }
 

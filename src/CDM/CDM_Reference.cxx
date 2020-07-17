@@ -28,7 +28,8 @@ CDM_Reference::CDM_Reference(const Handle(CDM_Document)& aFromDocument, const Ha
 myToDocument(aToDocument),
 myFromDocument(aFromDocument.operator->()),
 myReferenceIdentifier(aReferenceIdentifier),
-myDocumentVersion(aToDocumentVersion) 
+myDocumentVersion(aToDocumentVersion),
+myUseStorageConfiguration(Standard_False)
 {}
 
 CDM_Reference::CDM_Reference(const Handle(CDM_Document)& aFromDocument, const Handle(CDM_MetaData)& aToDocument, const Standard_Integer aReferenceIdentifier, const Handle(CDM_Application)& anApplication, const Standard_Integer aToDocumentVersion, const Standard_Boolean UseStorageConfiguration):

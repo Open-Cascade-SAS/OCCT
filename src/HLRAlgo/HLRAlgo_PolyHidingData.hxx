@@ -38,6 +38,7 @@ public:
 
   struct PlaneT
   {
+    PlaneT() : D(0.0) {}
     gp_XYZ Normal;
     Standard_Real D;
   };

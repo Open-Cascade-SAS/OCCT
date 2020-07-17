@@ -18,6 +18,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(MoniTool_Element,Standard_Transient)
 
+MoniTool_Element::MoniTool_Element()
+: thecode(-1)
+{
+}
+
 void  MoniTool_Element::SetHashCode (const Standard_Integer code)
       {  thecode = code;  }
 

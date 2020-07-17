@@ -66,10 +66,12 @@ BRepBlend_SurfRstConstRad::BRepBlend_SurfRstConstRad
  const Handle(Adaptor3d_HCurve)&   CGuide):
  surf(Surf), surfrst(SurfRst), rst(Rst), cons(Rst,SurfRst), 
  guide(CGuide), tguide(CGuide),
- istangent(Standard_True), theD(0.), maxang(RealFirst()), minang(RealLast()),
- distmin(RealLast()),
- mySShape(BlendFunc_Rational)
-{}
+ prmrst(0.0), istangent(Standard_True),
+ ray(0.0), choix(0), normtg(0.0),
+ theD(0.), maxang(RealFirst()), minang(RealLast()),
+ distmin(RealLast()), mySShape(BlendFunc_Rational)
+{
+}
 
 //=======================================================================
 //function : NbVariables

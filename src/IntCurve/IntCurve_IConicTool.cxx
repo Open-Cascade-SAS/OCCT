@@ -52,7 +52,12 @@
 #define Parab_2p  prm2
 
 //======================================================================
-IntCurve_IConicTool::IntCurve_IConicTool(void) {
+IntCurve_IConicTool::IntCurve_IConicTool(void)
+: prm1(0.0),
+  prm2(0.0),
+  prm3(0.0),
+  type(GeomAbs_OtherCurve)
+{
 //###### PLACER LE TYPE NON DEFINI ######
 }
 
@@ -67,13 +72,21 @@ IntCurve_IConicTool::IntCurve_IConicTool(const IntCurve_IConicTool& ITool) {
 }
 //======================================================================
 //======================================================================
-IntCurve_IConicTool::IntCurve_IConicTool(const gp_Lin2d& Line) {
+IntCurve_IConicTool::IntCurve_IConicTool(const gp_Lin2d& Line)
+: prm1(0.0),
+  prm2(0.0),
+  prm3(0.0) 
+{
   Line.Coefficients(Line_a,Line_b,Line_c);
   Axis = gp_Ax22d(Line.Position(),Standard_True);
   type = GeomAbs_Line;
 }
 //======================================================================
-IntCurve_IConicTool::IntCurve_IConicTool(const gp_Elips2d& Elips) {
+IntCurve_IConicTool::IntCurve_IConicTool(const gp_Elips2d& Elips)
+: prm1(0.0),
+  prm2(0.0),
+  prm3(0.0) 
+{
   Elips_a = Elips.MajorRadius();
   Elips_b = Elips.MinorRadius();
   Elips_c = sqrt(Elips_a*Elips_a-Elips_b*Elips_b);
@@ -82,7 +95,11 @@ IntCurve_IConicTool::IntCurve_IConicTool(const gp_Elips2d& Elips) {
   type = GeomAbs_Ellipse;
 }
 //======================================================================
-IntCurve_IConicTool::IntCurve_IConicTool(const gp_Circ2d& C) {
+IntCurve_IConicTool::IntCurve_IConicTool(const gp_Circ2d& C)
+: prm1(0.0),
+  prm2(0.0),
+  prm3(0.0)
+{
   Circle_r=C.Radius();
   Axis=C.Axis();
   Circle_x0=Axis.Location().X();
@@ -91,7 +108,11 @@ IntCurve_IConicTool::IntCurve_IConicTool(const gp_Circ2d& C) {
   type = GeomAbs_Circle;
 }
 //======================================================================
-IntCurve_IConicTool::IntCurve_IConicTool(const gp_Parab2d& P) {
+IntCurve_IConicTool::IntCurve_IConicTool(const gp_Parab2d& P)
+: prm1(0.0),
+  prm2(0.0),
+  prm3(0.0)
+{
   Parab_f=P.Focal();
   Parab_2p=4.0*Parab_f;
   Axis=P.Axis();
@@ -99,7 +120,11 @@ IntCurve_IConicTool::IntCurve_IConicTool(const gp_Parab2d& P) {
   type = GeomAbs_Parabola;
 }
 //======================================================================
-IntCurve_IConicTool::IntCurve_IConicTool(const gp_Hypr2d& H) {
+IntCurve_IConicTool::IntCurve_IConicTool(const gp_Hypr2d& H)
+: prm1(0.0),
+  prm2(0.0),
+  prm3(0.0)
+{
   Hypr_a = H.MajorRadius();
   Hypr_b = H.MinorRadius();
   Axis = H.Axis();

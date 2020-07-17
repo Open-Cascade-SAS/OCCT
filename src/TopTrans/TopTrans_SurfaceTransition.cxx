@@ -198,7 +198,11 @@ static Standard_Integer FUN_refnearest(const Standard_Integer i,
 // ============================================================
 
 TopTrans_SurfaceTransition::TopTrans_SurfaceTransition()
-: myAng(1,2,1,2),myCurv(1,2,1,2),myOri(1,2,1,2)
+: myCurvRef(0.0),
+  myAng(1, 2, 1, 2),
+  myCurv(1, 2, 1, 2),
+  myOri(1, 2, 1, 2),
+  myTouchFlag(Standard_False)
 {
   STATIC_DEFINED = Standard_False;
 }

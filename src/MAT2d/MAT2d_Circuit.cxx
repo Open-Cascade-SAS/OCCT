@@ -75,6 +75,7 @@ static Standard_Real CrossProd(const Handle(Geom2d_Geometry)& Geom1,
 //=============================================================================
 MAT2d_Circuit::MAT2d_Circuit(const GeomAbs_JoinType aJoinType,
                              const Standard_Boolean IsOpenResult)
+: direction(0.0)
 {
   myJoinType = aJoinType;
   myIsOpenResult = IsOpenResult;

@@ -22,6 +22,9 @@
 IMPLEMENT_STANDARD_RTTIEXT(MAT_Edge,Standard_Transient)
 
 MAT_Edge::MAT_Edge()
+: theedgenumber(0),
+  thedistance(0.0),
+  theintersectionpoint(0)
 {
 }
     

@@ -51,6 +51,15 @@ IMPLEMENT_STANDARD_RTTIEXT(Bisector_BisecPC,Bisector_Curve)
 // purpose :
 //=============================================================================
 Bisector_BisecPC::Bisector_BisecPC()
+: sign(0.0),
+  bisInterval(0),
+  currentInterval(0),
+  shiftParameter(0.0),
+  distMax(0.0),
+  isEmpty(Standard_True),
+  isConvex(Standard_False),
+  extensionStart(Standard_False),
+  extensionEnd(Standard_False)
 {
 }
 

@@ -18,7 +18,12 @@
 #include <PCDM_Reference.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-PCDM_Reference::PCDM_Reference(){}
+PCDM_Reference::PCDM_Reference()
+: myReferenceIdentifier(0),
+  myDocumentVersion(0)
+{
+}
+
 PCDM_Reference::PCDM_Reference(const Standard_Integer aReferenceIdentifier, const TCollection_ExtendedString& aFileName, const Standard_Integer aDocumentVersion):myReferenceIdentifier(aReferenceIdentifier),myFileName(aFileName),myDocumentVersion(aDocumentVersion) {}
 
 

@@ -31,7 +31,7 @@
 //purpose  : 
 //=======================================================================
 TopoDSToStep_Tool::TopoDSToStep_Tool()
-     :myLowestTol(0.),myReversedSurface (Standard_False)
+     : myFacetedContext(Standard_False), myLowestTol(0.),myReversedSurface (Standard_False)
 {
   myPCurveMode = Interface_Static::IVal("write.surfacecurve.mode");
 }

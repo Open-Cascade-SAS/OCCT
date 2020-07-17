@@ -111,6 +111,11 @@ inline Standard_Boolean IsOriented(const TopoDS_Shape& S)
 //=======================================================================
 
 BRepCheck_Shell::BRepCheck_Shell(const TopoDS_Shell& S)
+: myNbori(0),
+  myCdone(Standard_False),
+  myCstat(BRepCheck_NoError),
+  myOdone(Standard_False),
+  myOstat(BRepCheck_NoError)
 {
   Init(S);
 }

@@ -63,7 +63,10 @@ static Standard_Real GetNextParamOnPC(const Handle(Geom2d_Curve)& aPC,
 //function : BRepTools_WireExplorer
 //purpose  : 
 //=======================================================================
-BRepTools_WireExplorer::BRepTools_WireExplorer() 
+BRepTools_WireExplorer::BRepTools_WireExplorer()
+: myReverse(Standard_False),
+  myTolU(0.0),
+  myTolV(0.0)
 {
 }
 

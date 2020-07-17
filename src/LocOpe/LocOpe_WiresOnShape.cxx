@@ -108,9 +108,13 @@ static void FindInternalIntersections(const TopoDS_Edge&,
 //purpose  : 
 //=======================================================================
 
-LocOpe_WiresOnShape::LocOpe_WiresOnShape(const TopoDS_Shape& S):
-  myShape(S),myCheckInterior(Standard_True),myDone(Standard_False)
-{}
+LocOpe_WiresOnShape::LocOpe_WiresOnShape(const TopoDS_Shape& S)
+: myShape(S),
+  myCheckInterior(Standard_True),
+  myDone(Standard_False),
+  myIndex(-1)
+{
+}
 
 //=======================================================================
 //function : Init

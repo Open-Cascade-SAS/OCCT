@@ -47,7 +47,10 @@
 //function : Create
 //purpose  : 
 //=======================================================================
-StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve () {}
+StepToTopoDS_TranslateCompositeCurve::StepToTopoDS_TranslateCompositeCurve ()
+: myInfiniteSegment(Standard_False)
+{
+}
 	
 //=======================================================================
 //function : Create

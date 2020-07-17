@@ -77,9 +77,14 @@ IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
       pas(Increment),
       tolerance(1,2),
       epsilon(Epsilon*Epsilon),
+      reversed(Standard_False),
       wd1 (IntWalk_VectorOfWalkingData::allocator_type (new NCollection_IncAllocator)),
       wd2 (wd1.get_allocator()),
       nbMultiplicities (wd1.get_allocator()),
+      Um(0.0),
+      UM(0.0),
+      Vm(0.0),
+      VM(0.0),
       ToFillHoles(theToFillHoles)
 {
 }

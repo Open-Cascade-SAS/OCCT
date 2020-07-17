@@ -169,6 +169,7 @@ TNaming_NamedShape::TNaming_NamedShape()
 { 
   myNode    = 0L;
   myVersion = 0;
+  myEvolution = TNaming_PRIMITIVE;
 }
 
 //=======================================================================

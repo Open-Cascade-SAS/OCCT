@@ -53,8 +53,11 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_EdgeProjAux,Standard_Transient)
 //purpose  : 
 //=======================================================================
 ShapeFix_EdgeProjAux::ShapeFix_EdgeProjAux ()
+: myFirstParam(0.0),
+  myLastParam(0.0),
+  myFirstDone(Standard_False),
+  myLastDone(Standard_False)
 {
-  myFirstDone = myLastDone = Standard_False;
 }
 
 //=======================================================================

@@ -60,8 +60,17 @@ static void GetConeApexParam(const gp_Cone& C, Standard_Real& U, Standard_Real& 
 }
 
 
-Adaptor3d_TopolTool::Adaptor3d_TopolTool () : myNbSamplesU(-1),nbRestr(0),idRestr(0)
-                                              
+Adaptor3d_TopolTool::Adaptor3d_TopolTool ()
+: myNbSamplesU(-1),
+  myNbSamplesV(-1),
+  nbRestr(0),
+  idRestr(0),
+  Uinf(0.0),
+  Usup(0.0),
+  Vinf(0.0),
+  Vsup(0.0),
+  nbVtx(0),
+  idVtx(0)
 {
 }
 

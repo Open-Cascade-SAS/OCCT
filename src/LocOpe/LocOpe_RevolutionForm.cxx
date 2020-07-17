@@ -43,9 +43,13 @@
 //function : LocOpe_Revol
 //purpose  : 
 //=======================================================================
-LocOpe_RevolutionForm::LocOpe_RevolutionForm() :  myDone(Standard_False)
-
-{}
+LocOpe_RevolutionForm::LocOpe_RevolutionForm()
+: myAngle(0.0),
+  myAngTra(0.0),
+  myDone(Standard_False),
+  myIsTrans(Standard_False)
+{
+}
 
 
 //=======================================================================

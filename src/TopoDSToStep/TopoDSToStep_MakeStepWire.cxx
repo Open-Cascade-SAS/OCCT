@@ -52,6 +52,7 @@
 // Constructors
 // ----------------------------------------------------------------------------
 TopoDSToStep_MakeStepWire::TopoDSToStep_MakeStepWire()
+: myError(TopoDSToStep_WireOther)
 {
   done = Standard_False;
 }

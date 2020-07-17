@@ -92,6 +92,7 @@ BRepMesh_Delaun::BRepMesh_Delaun (
   myCircles (new NCollection_IncAllocator(
              IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
+  memset (mySupVert, 0, sizeof (mySupVert));
   if (isFillCircles)
   {
     InitCirclesTool (theCellsCountU, theCellsCountV);
@@ -106,6 +107,7 @@ BRepMesh_Delaun::BRepMesh_Delaun(IMeshData::Array1OfVertexOfDelaun& theVertices)
 : myCircles (theVertices.Length(), new NCollection_IncAllocator(
              IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
+  memset (mySupVert, 0, sizeof (mySupVert));
   if ( theVertices.Length() > 2 )
   {
     myMeshData = new BRepMesh_DataStructureOfDelaun(
@@ -126,6 +128,7 @@ BRepMesh_Delaun::BRepMesh_Delaun(
   myCircles ( theVertices.Length(), new NCollection_IncAllocator(
              IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
+  memset (mySupVert, 0, sizeof (mySupVert));
   if ( theVertices.Length() > 2 )
   {
     Init( theVertices );
@@ -143,6 +146,7 @@ BRepMesh_Delaun::BRepMesh_Delaun(
   myCircles ( theVertexIndices.Length(), new NCollection_IncAllocator(
              IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
+  memset (mySupVert, 0, sizeof (mySupVert));
   perform(theVertexIndices);
 }
 
@@ -158,6 +162,7 @@ BRepMesh_Delaun::BRepMesh_Delaun (const Handle (BRepMesh_DataStructureOfDelaun)&
   myCircles (theVertexIndices.Length (), new NCollection_IncAllocator(
              IMeshData::MEMORY_BLOCK_SIZE_HUGE))
 {
+  memset (mySupVert, 0, sizeof (mySupVert));
   perform (theVertexIndices, theCellsCountU, theCellsCountV);
 }
 

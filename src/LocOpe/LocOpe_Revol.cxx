@@ -49,10 +49,13 @@ static Standard_Boolean FindCircle(const gp_Ax1&,
 //purpose  : 
 //=======================================================================
 
-LocOpe_Revol::LocOpe_Revol() :  myDone(Standard_False)
-
-{}
-
+LocOpe_Revol::LocOpe_Revol()
+: myAngle(0.0),
+  myAngTra(0.0),
+  myIsTrans(Standard_False),
+  myDone(Standard_False)
+{
+}
 
 //=======================================================================
 //function : Perform

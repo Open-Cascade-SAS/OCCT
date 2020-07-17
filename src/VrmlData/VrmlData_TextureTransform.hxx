@@ -29,7 +29,10 @@ class VrmlData_TextureTransform : public VrmlData_Node
   /**
    * Empty constructor
    */
-  inline VrmlData_TextureTransform () {}
+  inline VrmlData_TextureTransform ()
+  : myRotation(0.0)
+  {
+  }
 
   /**
    * Constructor

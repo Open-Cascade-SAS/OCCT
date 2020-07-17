@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Draw_Marker3D,Draw_Drawable3D)
 //=======================================================================
 Draw_Marker3D::Draw_Marker3D(const gp_Pnt& P, const Draw_MarkerShape T,
 			     const Draw_Color& C, const Standard_Integer S) :
-       myPos(P), myCol(C), myTyp(T), mySiz(S), myIsRSiz(Standard_False)
+       myPos(P), myCol(C), myTyp(T), mySiz(S), myRSiz(0.0), myIsRSiz(Standard_False)
 {
 }
 
@@ -40,7 +40,7 @@ Draw_Marker3D::Draw_Marker3D(const gp_Pnt& P, const Draw_MarkerShape T,
 
 Draw_Marker3D::Draw_Marker3D(const gp_Pnt& P, const Draw_MarkerShape T,
 			     const Draw_Color& C, const Standard_Real RSize) :
-       myPos(P), myCol(C), myTyp(T), myRSiz(RSize), myIsRSiz(Standard_True)
+       myPos(P), myCol(C), myTyp(T), mySiz(0), myRSiz(RSize), myIsRSiz(Standard_True)
 {
 }
 

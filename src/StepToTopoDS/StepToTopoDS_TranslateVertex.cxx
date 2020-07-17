@@ -40,6 +40,7 @@
 // Purpose : Empty Constructor
 // ============================================================================
 StepToTopoDS_TranslateVertex::StepToTopoDS_TranslateVertex()
+: myError(StepToTopoDS_TranslateVertexOther)
 {
   done = Standard_False;
 }

@@ -29,7 +29,9 @@
 //--------------------------------------------------------------------------------
 ApproxInt_PrmPrmSvSurfaces::ApproxInt_PrmPrmSvSurfaces( const ThePSurface& Surf1
 						       ,const ThePSurface& Surf2):
+       MyIsTangent(Standard_False),
        MyHasBeenComputed(Standard_False),
+       MyIsTangentbis(Standard_False),
        MyHasBeenComputedbis(Standard_False),
        MyIntersectionOn2S(Surf1,Surf2,TOLTANGENCY)
 { 

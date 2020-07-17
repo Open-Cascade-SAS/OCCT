@@ -24,7 +24,10 @@
 template<class T, int N>
 BVH_DistanceField<T, N>::BVH_DistanceField (const Standard_Integer theMaximumSize,
                                             const Standard_Boolean theComputeSign)
-: myMaximumSize (theMaximumSize),
+: myDimensionX(0),
+  myDimensionY(0),
+  myDimensionZ(0),
+  myMaximumSize (theMaximumSize),
   myComputeSign (theComputeSign),
   myIsParallel  (Standard_False)
 {

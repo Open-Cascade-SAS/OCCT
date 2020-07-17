@@ -771,7 +771,10 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
 //purpose  : 
 //=======================================================================
 
-BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer() 
+BRepClass3d_SolidExplorer::BRepClass3d_SolidExplorer()
+: myReject(Standard_True),
+  myFirstFace(0),
+  myParamOnEdge(0.0)
 {
 }
 

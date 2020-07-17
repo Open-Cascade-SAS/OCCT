@@ -37,7 +37,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_OsculatingSurface,Standard_Transient)
 //purpose  : 
 //=======================================================================
 Geom_OsculatingSurface::Geom_OsculatingSurface()
-  : myAlong(1,4)
+: myTol(0.0),
+  myAlong(1,4)    
 {
   myAlong.Init(Standard_False);
 }

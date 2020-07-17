@@ -174,8 +174,13 @@ BRepBlend_RstRstLineBuilder::BRepBlend_RstRstLineBuilder
  const Handle(Adaptor3d_HSurface)&  Surf2,
  const Handle(Adaptor2d_HCurve2d)&  Rst2,
  const Handle(Adaptor3d_TopolTool)& Domain2):
- sol(1,2), surf1(Surf1), domain1(Domain1),
- surf2(Surf2), domain2(Domain2), rst1(Rst1), rst2(Rst2)
+ done(Standard_False), sol(1, 2), surf1(Surf1),
+ domain1(Domain1), surf2(Surf2),
+ domain2(Domain2), rst1(Rst1), rst2(Rst2),
+ tolesp(0.0), tolgui(0.0), pasmax(0.0),
+ fleche(0.0), param(0.0), rebrou(Standard_False),
+ iscomplete(Standard_False), comptra(Standard_False), sens(0.0),
+ decrochdeb(Blend_NoDecroch), decrochfin(Blend_NoDecroch)
 {
 }
 

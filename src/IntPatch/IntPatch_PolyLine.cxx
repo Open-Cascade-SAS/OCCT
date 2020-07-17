@@ -31,8 +31,10 @@
 //=======================================================================
 
 IntPatch_PolyLine::IntPatch_PolyLine ()
-     : IntPatch_Polygo(INITDEFLE)
-{}
+     : IntPatch_Polygo(INITDEFLE),
+       onfirst(Standard_False)
+{
+}
 
 //=======================================================================
 //function : IntPatch_PolyLine
@@ -40,8 +42,10 @@ IntPatch_PolyLine::IntPatch_PolyLine ()
 //=======================================================================
 
 IntPatch_PolyLine::IntPatch_PolyLine (const Standard_Real InitDefle)
-     : IntPatch_Polygo(InitDefle)
-{}
+     : IntPatch_Polygo(InitDefle),
+       onfirst(Standard_False)       
+{
+}
 
 //=======================================================================
 //function : SetWLine

@@ -19,5 +19,9 @@
 //purpose  : 
 //=======================================================================
 
-inline BRepFeat_RibSlot::BRepFeat_RibSlot () 
-{}
+inline BRepFeat_RibSlot::BRepFeat_RibSlot ()
+: myFuse(Standard_False),
+  mySliding(Standard_False),
+  myStatusError(BRepFeat_OK)
+{
+}

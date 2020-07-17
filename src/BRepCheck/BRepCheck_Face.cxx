@@ -82,6 +82,9 @@ static Standard_Boolean CheckThin(const TopoDS_Shape& w,
 //=======================================================================
 
 BRepCheck_Face::BRepCheck_Face (const TopoDS_Face& F)
+: myIntres(BRepCheck_NoError),
+  myImbres(BRepCheck_NoError),
+  myOrires(BRepCheck_NoError)
 {
   Init(F);
   myIntdone = Standard_False;

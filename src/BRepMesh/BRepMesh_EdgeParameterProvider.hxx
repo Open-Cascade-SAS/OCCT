@@ -45,6 +45,12 @@ public:
 
   //! Constructor. Initializes empty provider.
   BRepMesh_EdgeParameterProvider()
+  : myIsSameParam(Standard_False),
+    myFirstParam(0.0),
+    myOldFirstParam(0.0),
+    myScale(0.0),
+    myCurParam(0.0),
+    myFoundParam(0.0)
   {
   }
 

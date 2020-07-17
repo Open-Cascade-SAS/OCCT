@@ -193,6 +193,24 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Standard_
 								 const Standard_Real EpsG1,
 								 const Standard_Real Percent,
 								 const Standard_Real Maxlen)
+: myContC0(0.0),
+  myContC1U(0.0),
+  myContC1V(0.0),
+  myContC2U(0.0),
+  myContC2V(0.0),
+  myContG1(0.0),
+  myLambda1U(0.0),
+  myLambda2U(0.0),
+  myLambda1V(0.0),
+  myLambda2V(0.0),
+  myETA1(0.0),
+  myETA2(0.0),
+  myETA(0.0),
+  myZETA1(0.0),
+  myZETA2(0.0),
+  myZETA(0.0),
+  myAlpha(0.0),
+  myGap(0.0)
 { myepsnul=EpsNul;
   myepsC0= EpsC0;
   myepsC1= EpsC1;
@@ -247,6 +265,24 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity( const Handle(G
                          const Standard_Real EpsG1,
                          const Standard_Real Percent,   	    
                          const Standard_Real  Maxlen )
+: myContC0(0.0),
+  myContC1U(0.0),
+  myContC1V(0.0),
+  myContC2U(0.0),
+  myContC2V(0.0),
+  myContG1(0.0),
+  myLambda1U(0.0),
+  myLambda2U(0.0),
+  myLambda1V(0.0),
+  myLambda2V(0.0),
+  myETA1(0.0),
+  myETA2(0.0),
+  myETA(0.0),
+  myZETA1(0.0),
+  myZETA2(0.0),
+  myZETA(0.0),
+  myAlpha(0.0),
+  myGap(0.0)
 { myTypeCont = Ordre;
   myepsnul=EpsNul;
   myepsC0= EpsC0;
@@ -307,6 +343,24 @@ LocalAnalysis_SurfaceContinuity::LocalAnalysis_SurfaceContinuity(const Handle(Ge
                          const Standard_Real EpsG1,
                          const Standard_Real Percent,   	    
                          const Standard_Real  Maxlen )
+: myContC0(0.0),
+  myContC1U(0.0),
+  myContC1V(0.0),
+  myContC2U(0.0),
+  myContC2V(0.0),
+  myContG1(0.0),
+  myLambda1U(0.0),
+  myLambda2U(0.0),
+  myLambda1V(0.0),
+  myLambda2V(0.0),
+  myETA1(0.0),
+  myETA2(0.0),
+  myETA(0.0),
+  myZETA1(0.0),
+  myZETA2(0.0),
+  myZETA(0.0),
+  myAlpha(0.0),
+  myGap(0.0)
 { Standard_Real pard1, parf1, pard2, parf2, u1, v1, u2, v2;
   
   myTypeCont = Ordre;

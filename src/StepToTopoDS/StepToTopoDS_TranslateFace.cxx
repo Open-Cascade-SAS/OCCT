@@ -96,6 +96,7 @@
 // Purpose : Empty Constructor
 // ============================================================================
 StepToTopoDS_TranslateFace::StepToTopoDS_TranslateFace()
+: myError(StepToTopoDS_TranslateFaceOther)
 {
   done = Standard_False;
 }

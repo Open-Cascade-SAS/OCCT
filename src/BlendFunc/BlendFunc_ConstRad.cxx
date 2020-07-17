@@ -51,16 +51,17 @@ BlendFunc_ConstRad::BlendFunc_ConstRad(const Handle(Adaptor3d_HSurface)& S1,
                                        const Handle(Adaptor3d_HSurface)& S2,
                                        const Handle(Adaptor3d_HCurve)& C)
                                  :
-				  surf1(S1),surf2(S2),
-				  curv(C), tcurv(C),
-				  istangent(Standard_True),
-				  xval(1,4), 
-				  E(1,4), DEDX(1,4,1,4),  DEDT(1,4), 
-				  D2EDX2(4,4,4),
-				  D2EDXDT(1,4,1,4), D2EDT2(1,4),
-				  maxang(RealFirst()), minang(RealLast()),
-				  distmin(RealLast()),
-				  mySShape(BlendFunc_Rational)
+                  surf1(S1),surf2(S2),
+                  curv(C), tcurv(C),
+                  istangent(Standard_True), param(0.0),
+                  ray1(0.0), ray2(0.0),
+                  choix(0), xval(1, 4),
+                  E(1,4), DEDX(1,4,1,4),  DEDT(1,4), 
+                  D2EDX2(4,4,4),
+                  D2EDXDT(1,4,1,4), D2EDT2(1,4),
+                  maxang(RealFirst()), minang(RealLast()),
+                  distmin(RealLast()),
+                  mySShape(BlendFunc_Rational)
 { 
 // Initialisaton of cash control variables.
   tval = -9.876e100;

@@ -28,9 +28,16 @@
 
 BlendFunc_ConstRadInv::BlendFunc_ConstRadInv(const Handle(Adaptor3d_HSurface)& S1,
 					     const Handle(Adaptor3d_HSurface)& S2,
-					     const Handle(Adaptor3d_HCurve)& C):
-       surf1(S1),surf2(S2),curv(C)
-{}
+					     const Handle(Adaptor3d_HCurve)& C)
+: surf1(S1),
+  surf2(S2),
+  curv(C),
+  ray1(0.0),
+  ray2(0.0),
+  choix(0),
+  first(Standard_False)
+{
+}
 
 void BlendFunc_ConstRadInv::Set(const Standard_Real R,
 				const Standard_Integer Choix)

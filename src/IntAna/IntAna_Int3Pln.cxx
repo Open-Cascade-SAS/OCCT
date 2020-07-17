@@ -28,7 +28,11 @@
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
 
-IntAna_Int3Pln::IntAna_Int3Pln () : done(Standard_False) {}
+IntAna_Int3Pln::IntAna_Int3Pln()
+: done(Standard_False),
+  empt(Standard_True)
+{
+}
 
 
 IntAna_Int3Pln::IntAna_Int3Pln (const gp_Pln& P1, const gp_Pln& P2,

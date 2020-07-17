@@ -581,8 +581,11 @@ Standard_Real BRepBuilderAPI_FastSewing::Compute3DRange()
 BRepBuilderAPI_FastSewing::NodeInspector::
                       NodeInspector(const NCollection_Vector<FS_Vertex>& theVec,
                                     const gp_Pnt& thePnt,
-                                    const Standard_Real theTol):
-myVecOfVertexes(theVec), myPoint(thePnt), myResID(-1)
+                                    const Standard_Real theTol)
+: myVecOfVertexes(theVec),
+  myPoint(thePnt),
+  myResID(-1),
+  myIsFindingEnable(Standard_False)
 {
   mySQToler = theTol*theTol;
 }

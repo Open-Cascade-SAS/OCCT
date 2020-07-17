@@ -40,9 +40,14 @@ BlendFunc_ChAsym::BlendFunc_ChAsym(const Handle(Adaptor3d_HSurface)& S1,
                                    const Handle(Adaptor3d_HCurve)& C) :
     surf1(S1),surf2(S2),
     curv(C), tcurv(C),
+    param(0),
+    dist1(RealLast()),
+    angle(RealLast()),
+    tgang(RealLast()),
     FX(1, 4),
     DX(1, 4, 1, 4),
     istangent(Standard_True),
+    choix(0),
     distmin(RealLast())
 { 
 }

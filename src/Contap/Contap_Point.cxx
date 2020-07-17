@@ -23,13 +23,18 @@
 #include <Standard_DomainError.hxx>
 
 Contap_Point::Contap_Point ():
-  onarc(Standard_False),isvtx(Standard_False),ismult(Standard_False),
-  myInternal(Standard_False)
-{}
+uparam(0.0), vparam(0.0), paraline(0.0),
+onarc(Standard_False), prmarc(0.0), isvtx(Standard_False),
+ismult(Standard_False), myInternal(Standard_False)
+{
+}
 
 Contap_Point::Contap_Point (const gp_Pnt& Pt,
                             const Standard_Real U,
                             const Standard_Real V):
-pt(Pt),uparam(U),vparam(V),onarc(Standard_False),isvtx(Standard_False),
-ismult(Standard_False),myInternal(Standard_False)
-{}
+pt(Pt),uparam(U),vparam(V),
+paraline(0.0), onarc(Standard_False),
+prmarc(0.0), isvtx(Standard_False),
+ismult(Standard_False), myInternal(Standard_False)
+{
+}

@@ -29,6 +29,10 @@
 //=======================================================================
 
 TopTrans_CurveTransition::TopTrans_CurveTransition ()
+: myCurv(0.0),
+  Init(Standard_False),
+  CurvFirst(0.0),
+  CurvLast(0.0)
 {
 }
 

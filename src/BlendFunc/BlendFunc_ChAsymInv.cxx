@@ -30,7 +30,12 @@
 BlendFunc_ChAsymInv::BlendFunc_ChAsymInv(const Handle(Adaptor3d_HSurface)& S1,
                                          const Handle(Adaptor3d_HSurface)& S2,
                                          const Handle(Adaptor3d_HCurve)&   C) :
-    surf1(S1),surf2(S2),curv(C),
+    surf1(S1),surf2(S2),
+    dist1(RealLast()),
+    angle(RealLast()),
+    tgang(RealLast()),
+    curv(C), choix(0),
+    first(Standard_False),
     FX(1, 4),
     DX(1, 4, 1, 4)
 {

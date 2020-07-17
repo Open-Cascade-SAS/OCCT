@@ -39,10 +39,9 @@ Extrema_ExtElC2d::Extrema_ExtElC2d()
   myDone = Standard_False;
   myIsPar = Standard_False;
   myNbExt = 0;
-
-  for (Standard_Integer i = 0; i < 8; i++)
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
   {
-    mySqDist[i] = RealLast();
+    mySqDist[anIdx] = RealLast();
   }
 }
 
@@ -70,6 +69,10 @@ Method:
   myDone = Standard_False;
   myIsPar = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
   gp_Vec2d D1(C1.Direction());
   gp_Vec2d D2(C2.Direction());
@@ -125,6 +128,10 @@ Method:
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
 // Calculate T1 in the reference of the circle ...
   gp_Dir2d D = C1.Direction();
@@ -172,6 +179,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1,
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
 // Calculate T1 in the reference of the ellipse ...
   gp_Dir2d D = C1.Direction();
@@ -219,6 +230,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1, const gp_Hypr2d& C2)
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
 // Calculate T1 in the reference of the parabole ...
   gp_Dir2d D = C1.Direction();
@@ -255,6 +270,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1, const gp_Parab2d& C2)
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
 // Calculate  T1 in the reference of the parabole ...
   gp_Dir2d D = C1.Direction();
@@ -289,6 +308,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Circ2d& C2)
   myDone  = Standard_False;
   myNbExt = 0;
   myDone  = Standard_True;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
   gp_Pnt2d O1 = C1.Location();
   gp_Pnt2d O2 = C2.Location();
@@ -339,6 +362,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Elips2d& C2)
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
   Standard_Integer i, j;
 
@@ -368,6 +395,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Hypr2d& C2)
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
   Standard_Integer i, j;
 
@@ -397,6 +428,10 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Circ2d& C1, const gp_Parab2d& C2)
   myIsPar = Standard_False;
   myDone = Standard_False;
   myNbExt = 0;
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 
   Standard_Integer i, j;
 

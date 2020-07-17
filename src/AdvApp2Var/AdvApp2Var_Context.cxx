@@ -62,6 +62,18 @@ static Standard_Boolean lesparam(const Standard_Integer iordre,
 
  AdvApp2Var_Context::
 AdvApp2Var_Context()
+: myFav(0),
+  myOrdU(0),
+  myOrdV(0),
+  myLimU(0),
+  myLimV(0),
+  myNb1DSS(0),
+  myNb2DSS(0),
+  myNb3DSS(0),
+  myNbURoot(0),
+  myNbVRoot(0),
+  myJDegU(0),
+  myJDegV(0)
 {
 }
 

@@ -26,7 +26,9 @@
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
 
-ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_Surface& S,const Standard_Integer Fix) : myFix(Fix)
+ProjLib_PrjResolve::ProjLib_PrjResolve(const Adaptor3d_Curve& C,const Adaptor3d_Surface& S,const Standard_Integer Fix)
+: myDone(Standard_False),
+  myFix(Fix)
 {
   if (myFix > 3 || myFix < 1) throw Standard_ConstructionError();
   mySolution = gp_Pnt2d(0.,0.);

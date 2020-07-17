@@ -24,6 +24,7 @@
 
 GProp_PEquation::GProp_PEquation(const TColgp_Array1OfPnt& Pnts, 
 				       const Standard_Real Tol) 
+: type(GProp_None)
 {
   GProp_PGProps Pmat(Pnts);
   g = Pmat.CentreOfMass(); 

@@ -28,7 +28,12 @@
 BRepBlend_SurfCurvConstRadInv::BRepBlend_SurfCurvConstRadInv
 (const Handle(Adaptor3d_HSurface)& S,
  const Handle(Adaptor3d_HCurve)& C,
- const Handle(Adaptor3d_HCurve)& Cg) : surf(S),curv(C),guide(Cg)
+ const Handle(Adaptor3d_HCurve)& Cg)
+: surf(S),
+  curv(C),
+  guide(Cg),
+  ray(0.0),
+  choix(0)
 {
 }
 

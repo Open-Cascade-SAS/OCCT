@@ -30,7 +30,9 @@ MoniTool_Stat::MoniTool_Stat (const Standard_CString title)
 }
 
     MoniTool_Stat::MoniTool_Stat (const MoniTool_Stat& )
-{  }
+    : thelev(0)
+{
+}
 
     MoniTool_Stat&  MoniTool_Stat::Current ()
 {

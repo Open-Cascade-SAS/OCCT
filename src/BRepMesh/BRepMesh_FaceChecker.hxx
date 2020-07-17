@@ -38,8 +38,9 @@ public: //! @name mesher API
     gp_Pnt2d*                Point2; // / using indices.
 
     Segment()
-      : Point1(NULL)
-      , Point2(NULL)
+    : EdgePtr(NULL),
+      Point1(NULL),
+      Point2(NULL)
     {
     }
 

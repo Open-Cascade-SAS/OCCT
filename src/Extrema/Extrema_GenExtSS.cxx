@@ -101,6 +101,19 @@ private:
 //purpose  : 
 //=======================================================================
 Extrema_GenExtSS::Extrema_GenExtSS()
+: myu1min(0.0),
+  myu1sup(0.0),
+  myv1min(0.0),
+  myv1sup(0.0),
+  myu2min(0.0),
+  myu2sup(0.0),
+  myv2min(0.0),
+  myv2sup(0.0),
+  myusample(0),
+  myvsample(0),
+  mytol1(0.0),
+  mytol2(0.0),
+  myS2(NULL)
 {
   myDone = Standard_False;
   myInit = Standard_False;

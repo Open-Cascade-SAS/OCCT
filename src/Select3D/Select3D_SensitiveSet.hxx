@@ -144,7 +144,11 @@ protected:
   public:
 
     //! Empty constructor.
-    BvhPrimitiveSet() : BVH_PrimitiveSet3d (Handle(Select3D_BVHBuilder3d)()) {}
+    BvhPrimitiveSet()
+    : BVH_PrimitiveSet3d(Handle(Select3D_BVHBuilder3d)()),
+      mySensitiveSet(NULL)
+    {
+    }
 
     //! Destructor.
     ~BvhPrimitiveSet() {}

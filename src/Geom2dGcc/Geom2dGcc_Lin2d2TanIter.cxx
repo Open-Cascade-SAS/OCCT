@@ -46,10 +46,13 @@ Geom2dGcc_Lin2d2TanIter (const GccEnt_QualifiedCirc& Qualified1 ,
 
                            par1sol = 0.;
                            pararg1 = 0.;
-
+                           par2sol = 0.0;
+                           pararg2 = 0.0;
                            //Standard_Real Tol = Abs(Tolang);
 
                            WellDone = Standard_False;
+                           qualifier1 = GccEnt_noqualifier;
+                           qualifier2 = GccEnt_noqualifier;
                            if (Qualified1.IsEnclosed()) { throw GccEnt_BadQualifier(); }
                            gp_Circ2d C1 = Qualified1.Qualified();
                            Geom2dAdaptor_Curve Cu2 = Qualified2.Qualified();
@@ -122,7 +125,11 @@ Geom2dGcc_Lin2d2TanIter (const Geom2dGcc_QCurve& Qualified1 ,
                          const Standard_Real      Tolang     ) {
                            par1sol = 0.;
                            pararg1 = 0.;
+                           par2sol = 0.0;
+                           pararg2 = 0.0;
                            WellDone = Standard_False;
+                           qualifier1 = GccEnt_noqualifier;
+                           qualifier2 = GccEnt_noqualifier;
                            if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
                              Qualified1.IsOutside() || Qualified1.IsUnqualified()) ||
                              !(Qualified2.IsEnclosed() || Qualified2.IsEnclosing() || 
@@ -196,7 +203,11 @@ Geom2dGcc_Lin2d2TanIter (const Geom2dGcc_QCurve& Qualified1 ,
 
                            par1sol = 0.;
                            pararg1 = 0.;
+                           par2sol = 0.0;
+                           pararg2 = 0.0;
                            WellDone = Standard_False;
+                           qualifier1 = GccEnt_noqualifier;
+                           qualifier2 = GccEnt_noqualifier;
                            if (!(Qualified1.IsEnclosed() || Qualified1.IsEnclosing() || 
                              Qualified1.IsOutside() || Qualified1.IsUnqualified())) {
                                throw GccEnt_BadQualifier();

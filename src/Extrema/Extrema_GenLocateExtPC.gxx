@@ -23,9 +23,12 @@
 //purpose  : 
 //=======================================================================
 
-Extrema_GenLocateExtPC::Extrema_GenLocateExtPC() 
-{ 
-  myDone = Standard_False; 
+Extrema_GenLocateExtPC::Extrema_GenLocateExtPC()
+: myDone(Standard_False),
+  mytolU(0.0),
+  myumin(0.0),
+  myusup(0.0)
+{
 }
 
 

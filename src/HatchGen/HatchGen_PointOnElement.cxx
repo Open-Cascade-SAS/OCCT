@@ -35,6 +35,7 @@ HatchGen_PointOnElement::HatchGen_PointOnElement () :
 //=======================================================================
 
 HatchGen_PointOnElement::HatchGen_PointOnElement (const IntRes2d_IntersectionPoint& Point)
+: myType(HatchGen_UNDETERMINED)
 {
   const IntRes2d_Transition& TrsH = Point.TransitionOfFirst() ;
   const IntRes2d_Transition& TrsE = Point.TransitionOfSecond() ;

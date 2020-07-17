@@ -30,7 +30,13 @@
 
 static const Standard_Real Tolpetit = 1.e-8;
 
-Contap_ContAna::Contap_ContAna (): done(Standard_False) {}
+Contap_ContAna::Contap_ContAna ()
+: done(Standard_False),
+  nbSol(0),
+  typL(GeomAbs_OtherCurve),
+  prm(0.0)
+{
+}
 
 void Contap_ContAna::Perform (const gp_Sphere& S,
                               const gp_Dir& D)

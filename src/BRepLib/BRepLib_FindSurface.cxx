@@ -161,7 +161,10 @@ static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
 //function : BRepLib_FindSurface
 //purpose  : 
 //=======================================================================
-BRepLib_FindSurface::BRepLib_FindSurface() 
+BRepLib_FindSurface::BRepLib_FindSurface()
+: myTolerance(0.0),
+  myTolReached(0.0),
+  isExisted(Standard_False)
 {
 }
 //=======================================================================

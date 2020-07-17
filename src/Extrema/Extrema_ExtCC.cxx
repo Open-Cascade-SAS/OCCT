@@ -55,7 +55,8 @@
 Extrema_ExtCC::Extrema_ExtCC (const Standard_Real TolC1,
                               const Standard_Real TolC2)
 : myIsFindSingleSolution(Standard_False),
-  myDone (Standard_False)
+  myDone (Standard_False),
+  myIsPar(Standard_False)
 {
   myC[0] = 0; myC[1] = 0;
   myInf[0] = myInf[1] = -Precision::Infinite();

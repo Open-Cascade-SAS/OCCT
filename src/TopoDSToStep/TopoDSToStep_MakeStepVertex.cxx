@@ -36,6 +36,7 @@
 // Constructors
 // ----------------------------------------------------------------------------
 TopoDSToStep_MakeStepVertex::TopoDSToStep_MakeStepVertex()
+: myError(TopoDSToStep_VertexOther)
 {
   done = Standard_False;
 }

@@ -22,7 +22,9 @@
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_HVertex,Standard_Transient)
 
 Adaptor3d_HVertex::Adaptor3d_HVertex ()
-{}
+: myTol(0.0)
+{
+}
 
 
 Adaptor3d_HVertex::Adaptor3d_HVertex (const gp_Pnt2d& P,

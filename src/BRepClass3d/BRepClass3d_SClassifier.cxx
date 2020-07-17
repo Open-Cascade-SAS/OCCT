@@ -61,7 +61,8 @@ static void Trans(Standard_Real parmin, IntCurveSurface_TransitionOnCurve& tran,
 //function : BRepClass3d_SClassifier
 //purpose  : 
 //=======================================================================
-BRepClass3d_SClassifier::BRepClass3d_SClassifier() 
+BRepClass3d_SClassifier::BRepClass3d_SClassifier()
+: myState(0)
 { 
 }
 

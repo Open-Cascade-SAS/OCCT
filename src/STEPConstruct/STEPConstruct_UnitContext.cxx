@@ -55,7 +55,13 @@
 //function : STEPConstruct_UnitContext
 //purpose  : 
 //=======================================================================
-STEPConstruct_UnitContext::STEPConstruct_UnitContext() : done(Standard_False)
+STEPConstruct_UnitContext::STEPConstruct_UnitContext()
+: done(Standard_False),
+  lengthFactor(0.0),
+  planeAngleFactor(0.0),
+  solidAngleFactor(0.0),
+  areaFactor(0.0),
+  volumeFactor(0.0)
 {
   lengthDone = planeAngleDone = solidAngleDone = hasUncertainty = 
     areaDone = volumeDone = Standard_False;

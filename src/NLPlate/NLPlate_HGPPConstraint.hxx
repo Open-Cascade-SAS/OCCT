@@ -42,6 +42,8 @@ class NLPlate_HGPPConstraint : public Standard_Transient
 public:
 
   
+  NLPlate_HGPPConstraint() : myActiveOrder(0) {}
+  
   Standard_EXPORT virtual void SetUVFreeSliding (const Standard_Boolean UVFree);
   
   Standard_EXPORT virtual void SetIncrementalLoadAllowed (const Standard_Boolean ILA);

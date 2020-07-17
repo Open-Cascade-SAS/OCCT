@@ -19,7 +19,11 @@
 //purpose  : 
 //=======================================================================
 
-inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm () {}
+inline BRepFeat_MakeLinearForm::BRepFeat_MakeLinearForm ()
+: myBnd(0.0),
+  myTol(0.0)
+{
+}
 
 
 //=======================================================================

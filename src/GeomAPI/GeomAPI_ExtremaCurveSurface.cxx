@@ -33,8 +33,9 @@
 //purpose  : 
 //=======================================================================
 GeomAPI_ExtremaCurveSurface::GeomAPI_ExtremaCurveSurface()
+: myIsDone(Standard_False),
+  myIndex(0)
 {
-  myIsDone = Standard_False;
 }
 
 

@@ -18,7 +18,10 @@
 #include <IntSurf_Transition.hxx>
 #include <Standard_DomainError.hxx>
 
-BRepBlend_PointOnRst::BRepBlend_PointOnRst () {}
+BRepBlend_PointOnRst::BRepBlend_PointOnRst ()
+: prm(0.0)
+{
+}
 
 
 BRepBlend_PointOnRst::BRepBlend_PointOnRst(const Handle(Adaptor2d_HCurve2d)& A,

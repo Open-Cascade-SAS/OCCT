@@ -34,6 +34,8 @@
 //purpose  :
 //============================================================================
 MAT2d_MiniPath::MAT2d_MiniPath()
+: theDirection(1.0),
+  indStart(0)
 {
 }
 

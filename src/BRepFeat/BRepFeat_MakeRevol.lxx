@@ -19,7 +19,10 @@
 //purpose  : 
 //=======================================================================
 
-inline BRepFeat_MakeRevol::BRepFeat_MakeRevol () {}
+inline BRepFeat_MakeRevol::BRepFeat_MakeRevol ()
+: myStatusError(BRepFeat_OK)
+{
+}
 
 
 //=======================================================================

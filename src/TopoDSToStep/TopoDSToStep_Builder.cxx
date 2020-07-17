@@ -42,6 +42,7 @@
 // Purpose :
 // ============================================================================
 TopoDSToStep_Builder::TopoDSToStep_Builder()
+: myError(TopoDSToStep_BuilderOther)
 {
   done = Standard_False;
 }

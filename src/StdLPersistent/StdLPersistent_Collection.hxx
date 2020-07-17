@@ -46,6 +46,13 @@ class StdLPersistent_Collection
   class booleanArrayBase : public Base
   {
   public:
+    //! Empty constructor.
+    booleanArrayBase()
+    : myLower(0),
+      myUpper(0)
+    {
+    }
+
     //! Read persistent data from a file.
     virtual void Read (StdObjMgt_ReadData& theReadData)
     {
@@ -116,6 +123,12 @@ class StdLPersistent_Collection
   class instance_1 : public Instance
   {
   public:
+    //! Empty constructor.
+    instance_1()
+    : myDelta(Standard_False)
+    {
+    }
+
     //! Read persistent data from a file.
     Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
 

@@ -155,6 +155,10 @@ Extrema_ExtPExtS::Extrema_ExtPExtS()
   myDone(Standard_False),
   myNbExt(0)
 {
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
 }
 
 //=============================================================================
@@ -178,6 +182,10 @@ Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                               
   myDone(Standard_False),
   myNbExt(0)
 {
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
   Initialize (theS,
               theUmin,
               theUsup,
@@ -205,6 +213,10 @@ Extrema_ExtPExtS::Extrema_ExtPExtS (const gp_Pnt&                               
   myDone(Standard_False),
   myNbExt(0)
 {
+  for (size_t anIdx = 0; anIdx < sizeof (mySqDist) / sizeof (mySqDist[0]); anIdx++)
+  {
+    mySqDist[anIdx] = RealLast();
+  }
   Initialize (theS,
               theS->FirstUParameter(),
               theS->LastUParameter(),

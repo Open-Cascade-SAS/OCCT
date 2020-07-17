@@ -34,7 +34,19 @@
 // Method  : StepToTopoDS_Tool::StepToTopoDS_Tool
 // Purpose : Empty Constructor
 // ============================================================================
-StepToTopoDS_Tool::StepToTopoDS_Tool() {}
+StepToTopoDS_Tool::StepToTopoDS_Tool()
+: myComputePC(Standard_False),
+  myNbC0Surf(0),
+  myNbC1Surf(0),
+  myNbC2Surf(0),
+  myNbC0Cur2(0),
+  myNbC1Cur2(0),
+  myNbC2Cur2(0),
+  myNbC0Cur3(0),
+  myNbC1Cur3(0),
+  myNbC2Cur3(0)
+{
+}
 
 // ============================================================================
 // Method  : StepToTopoDS_Tool::StepToTopoDS_Tool

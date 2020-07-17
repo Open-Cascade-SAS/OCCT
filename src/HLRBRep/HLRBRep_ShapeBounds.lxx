@@ -20,7 +20,15 @@
 //=======================================================================
 
 inline HLRBRep_ShapeBounds::HLRBRep_ShapeBounds ()
-{}
+: myNbIso(0),
+  myVertStart(0),
+  myVertEnd(0),
+  myEdgeStart(0),
+  myEdgeEnd(0),
+  myFaceStart(0),
+  myFaceEnd(0)
+{
+}
 
 //=======================================================================
 //function : Shape

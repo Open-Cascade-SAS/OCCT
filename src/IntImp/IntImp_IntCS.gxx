@@ -33,6 +33,9 @@ IntImp_IntCS::IntImp_IntCS(const Standard_Real U,
   done(Standard_True),
   empty(Standard_True),
   myFunction(F),
+  w(0.0),
+  u(0.0),
+  v(0.0),
   tol(TolTangency*TolTangency)
   {
     if(tol<1e-13) { tol=1e-13; } 

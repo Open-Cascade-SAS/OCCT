@@ -56,7 +56,13 @@ class SelectMgr_Frustum : public SelectMgr_BaseFrustum
 {
 public:
 
-  SelectMgr_Frustum() : SelectMgr_BaseFrustum() {};
+  SelectMgr_Frustum() : SelectMgr_BaseFrustum()
+  {
+    memset (myMaxOrthoVertsProjections, 0, sizeof (myMaxOrthoVertsProjections));
+    memset (myMinOrthoVertsProjections, 0, sizeof (myMinOrthoVertsProjections));
+    memset (myMaxVertsProjections, 0, sizeof (myMaxVertsProjections));
+    memset (myMinVertsProjections, 0, sizeof (myMinVertsProjections));
+  }
 
 protected:
 

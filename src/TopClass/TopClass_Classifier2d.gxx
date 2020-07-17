@@ -32,6 +32,10 @@
 TopClass_Classifier2d::TopClass_Classifier2d() :
        myIsSet(Standard_False),
        myFirstCompare(Standard_True),
+       myFirstTrans(Standard_True),
+       myParam(0.0),
+       myTolerance(0.0),
+       myClosest(0),
        myState(TopAbs_UNKNOWN),      // skv OCC12627
        myIsHeadOrEnd(Standard_False) // skv OCC12627
 {

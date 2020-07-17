@@ -24,6 +24,11 @@ class TDF_Data;
 class StdLPersistent_Data : public StdObjMgt_Persistent
 {
 public:
+  //! Empty constructor.
+  StdLPersistent_Data()
+  : myVersion(0)
+  {
+  }
   //! Read persistent data from a file.
   Standard_EXPORT virtual void Read (StdObjMgt_ReadData& theReadData);
   //! Write persistent data to a file.

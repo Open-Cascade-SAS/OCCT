@@ -34,6 +34,19 @@ class HLRAlgo_BiPoint
 public:
   struct IndicesT
   {
+    IndicesT()
+    : ShapeIndex(-1),
+      FaceConex1(0),
+      Face1Pt1(0),
+      Face1Pt2(0),
+      FaceConex2(0),
+      Face2Pt1(0),
+      Face2Pt2(0),
+      MinSeg(0),
+      MaxSeg(0),
+      SegFlags(0)
+    {
+    }
     Standard_Integer ShapeIndex;
     Standard_Integer FaceConex1;
     Standard_Integer Face1Pt1;

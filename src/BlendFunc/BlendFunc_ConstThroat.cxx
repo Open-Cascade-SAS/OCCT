@@ -38,7 +38,12 @@
 BlendFunc_ConstThroat::BlendFunc_ConstThroat(const Handle(Adaptor3d_HSurface)& S1,
                                              const Handle(Adaptor3d_HSurface)& S2,
                                              const Handle(Adaptor3d_HCurve)& C)
-  : BlendFunc_GenChamfer(S1,S2,C)
+: BlendFunc_GenChamfer(S1,S2,C),
+  istangent(Standard_False),
+  param(0.0),
+  Throat(0.0),
+  normtg(0.0),
+  theD(0.0)
 {
 }
 

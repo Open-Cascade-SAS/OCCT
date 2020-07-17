@@ -28,6 +28,9 @@ class StdObject_Shape
   friend class ShapePersistent_TopoDS;
 
 public:
+  //! Empty constructor.
+  StdObject_Shape() : myOrient(0) {}
+
   //! Import transient object from the persistent data.
   Standard_EXPORT TopoDS_Shape Import() const;
 

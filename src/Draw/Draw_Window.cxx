@@ -1453,7 +1453,9 @@ DrawWindow::DrawWindow() :
         next(firstWindow),
         previous(NULL),
         myMemHbm(NULL),
-        myUseBuffer(Standard_False)
+        myUseBuffer(Standard_False),
+        myCurrPen(0),
+        myCurrMode(0)
 {
   if (firstWindow) firstWindow->previous = this;
   firstWindow = this;

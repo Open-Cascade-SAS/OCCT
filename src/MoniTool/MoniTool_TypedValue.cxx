@@ -72,6 +72,7 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
    const MoniTool_ValueType type, const Standard_CString init)
     : thename (name) , thetype (type) ,
       thelims (0), themaxlen (0) , theintlow (0) , theintup (-1) ,
+      therealow(0.0), therealup(0.0),
       theinterp (NULL) , thesatisf (NULL) , 
       theival (0),
       thehval (new TCollection_HAsciiString(""))

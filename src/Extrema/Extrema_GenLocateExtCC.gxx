@@ -46,6 +46,7 @@ Methode:
 -----------------------------------------------------------------------------*/
 {
   myDone = Standard_False;
+  mySqDist = RealLast();
 
   Standard_Real Uinf = Tool1::FirstParameter(C1);
   Standard_Real Usup = Tool1::LastParameter(C1);

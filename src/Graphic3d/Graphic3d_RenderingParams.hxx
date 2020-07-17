@@ -110,6 +110,7 @@ public:
     ToEnableAlphaToCoverage     (Standard_True),
     // ray tracing parameters
     IsGlobalIlluminationEnabled (Standard_False),
+    SamplesPerPixel(0),
     RaytracingDepth             (THE_DEFAULT_DEPTH),
     IsShadowEnabled             (Standard_True),
     IsReflectionEnabled         (Standard_False),

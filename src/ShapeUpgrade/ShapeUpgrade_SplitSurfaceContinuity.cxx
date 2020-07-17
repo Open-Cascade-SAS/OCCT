@@ -40,6 +40,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeUpgrade_SplitSurfaceContinuity,ShapeUpgrade_Spli
 //purpose  : 
 //=======================================================================
 ShapeUpgrade_SplitSurfaceContinuity::ShapeUpgrade_SplitSurfaceContinuity()
+: myCont(0)
 {
   myCriterion = GeomAbs_C1;
   myTolerance = Precision::Confusion();

@@ -25,7 +25,11 @@
 #define tabPoint   Handle(TColgp_HArray1OfPnt)::DownCast (ttabPoint)
 #define tabPoint2d Handle(TColgp_HArray1OfPnt2d)::DownCast (ttabPoint2d)
 
-AppParCurves_MultiPoint::AppParCurves_MultiPoint() {}
+AppParCurves_MultiPoint::AppParCurves_MultiPoint()
+: nbP(0),
+  nbP2d(0)
+{
+}
 
 
 AppParCurves_MultiPoint::AppParCurves_MultiPoint (const Standard_Integer NbPoles, 

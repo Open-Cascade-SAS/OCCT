@@ -61,6 +61,7 @@
 // Constructors
 // ----------------------------------------------------------------------------
 TopoDSToStep_MakeStepEdge::TopoDSToStep_MakeStepEdge()
+: myError(TopoDSToStep_EdgeOther)
 {
   done = Standard_False;
 }

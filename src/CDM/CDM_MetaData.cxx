@@ -33,6 +33,7 @@ static CDM_MetaDataLookUpTable& getLookUpTable(){
 }
 CDM_MetaData::CDM_MetaData(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aPath,const TCollection_ExtendedString& aFileName,const Standard_Boolean ReadOnly):
 myIsRetrieved(Standard_False),
+myDocument(NULL),
 myFolder(aFolder),
 myName(aName),
 myHasVersion(Standard_False),
@@ -44,6 +45,7 @@ myIsReadOnly(ReadOnly)
 
 CDM_MetaData::CDM_MetaData(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aPath,const TCollection_ExtendedString& aVersion,const TCollection_ExtendedString& aFileName,const Standard_Boolean ReadOnly):
 myIsRetrieved(Standard_False),
+myDocument(NULL),
 myFolder(aFolder),
 myName(aName),
 myVersion(aVersion),

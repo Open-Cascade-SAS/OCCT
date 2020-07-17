@@ -28,7 +28,7 @@ IntAna2d_IntPoint::IntAna2d_IntPoint (const Standard_Real X, const Standard_Real
 
 IntAna2d_IntPoint::IntAna2d_IntPoint (const Standard_Real X, const Standard_Real Y, 
 				      const Standard_Real U1):
-       myu1(U1),myp(X,Y),myimplicit(Standard_True)
+       myu1(U1),myu2(RealLast()),myp(X,Y),myimplicit(Standard_True)
  {
  }
 
@@ -54,7 +54,7 @@ void IntAna2d_IntPoint::SetValue (const Standard_Real X, const Standard_Real Y, 
   myimplicit = Standard_True;
   myp.SetCoord(X,Y);
   myu1 = U1;
-
+  myu2 = RealLast();
 }
 
 

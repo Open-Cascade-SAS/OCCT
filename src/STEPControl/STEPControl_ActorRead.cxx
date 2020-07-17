@@ -203,8 +203,11 @@ namespace {
 // Purpose : Empty constructor
 // ============================================================================
 
-STEPControl_ActorRead::STEPControl_ActorRead() {}
-
+STEPControl_ActorRead::STEPControl_ActorRead()
+: myPrecision(0.0),
+  myMaxTol(0.0)
+{
+}
 // ============================================================================
 // Method  : STEPControl_ActorRead::Recognize
 // Purpose : tells if an entity is valid for transfer by this Actor
