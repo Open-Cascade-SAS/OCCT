@@ -1,0 +1,22 @@
+puts "============"
+puts "0031673: Draw Harness, ViewerTest - vlocation -rotate is applied in opposite order"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+box b -1 -1 -1 2 2 2
+explode b F
+vclear
+vinit View1
+vdisplay -dispMode 0 b_1 b_3 b_4 b_6
+vdisplay -dispMode 1 b_2 b_5
+vfit
+vzoom 0.4
+vlocation b_2 -reset
+vlocation b_5 -reset
+vlocation b_2 -rotate  1 -1 -1 0 1 0 90
+vlocation b_2 -rotate -1 -1 -1 0 1 0 90
+vlocation b_5 -rotate -1 -1 -1 0 1 0 90
+if { [vreadpixel 170 380 -rgb -name] == "BLACK" } { puts "Error: wrong rotation" }
+
+vdump ${imagedir}/${casename}.png

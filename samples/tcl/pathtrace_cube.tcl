@@ -54,16 +54,14 @@ vbsdf s -absorpCoeff 6
 # setup first inner box
 box c 0.3 0.3 0.2
 vdisplay     -noupdate c
-vlocation    -noupdate c -setLocation 0.55 0.3 0.0
-vlocation    -noupdate c -rotate 0 0 0 0 0 1 -30
+vlocation    -noupdate c -reset -rotate 0 0 0 0 0 1 -30 -translate 0.55 0.3 0.0
 vsetmaterial -noupdate c plastic
 vbsdf c -kd 1.0 0.8 0.2 -ks 0.3 -n
 
 # setup second inner box
 box g 0.15 0.15 0.3
 vdisplay     -noupdate g
-vlocation    -noupdate g -setLocation 0.7 0.25 0.2
-vlocation    -noupdate g -rotate 0 0 0 0 0 1 10
+vlocation    -noupdate g -reset -rotate 0 0 0 0 0 1 10 -translate 0.7 0.25 0.2
 vsetmaterial -noupdate g glass
 vbsdf g -absorpColor 0.8 1.0 0.8
 vbsdf g -absorpCoeff 6

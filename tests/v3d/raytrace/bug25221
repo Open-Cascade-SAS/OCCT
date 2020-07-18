@@ -43,8 +43,7 @@ vmoveto 200 200
 vdump $imagedir/${casename}_faces_closeup.png
 
 # apply transformation
-vlocation s -rotate 0 0 0 0 0 1 10
-vlocation s -translate -30 0 0
+vlocation s -reset -translate -30 0 0 -rotate 0 0 0 0 0 1 10
 vmoveto 0 0
 vmoveto 200 200
 

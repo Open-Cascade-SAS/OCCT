@@ -1,12 +1,9 @@
 puts "============"
-puts "OCC25276"
+puts "0025276: Visualization - Lighting is broken if some kinds of transformation applied to a shape"
 puts "============"
 puts ""
-#######################################################################
-# Visualization - Lighting is broken if some kinds of transformation applied to a shape
-#######################################################################
 
-pload ALL
+pload MODELING VISUALIZATION
 vinit
 box b1 1 6 1
 vsetdispmode 1
@@ -21,10 +18,10 @@ vconnect z1 0 0 0 z
 vlocation z1 -translate 10 0 0
 
 vconnect z2 0 10 0 z
-vlocation z2 -rotate 0 0 0 1 0 0 90
+vlocation z2 -prerotate 0 0 0 1 0 0 90
 
 vconnect z3 -10 0 0 z
-vlocation z3 -scale 0 0 0 0.5
+vlocation z3 -prescale 0 0 0 0.5
 
 vconnect z4 0 0 0 z
 vlocation z4 -copyFrom z3

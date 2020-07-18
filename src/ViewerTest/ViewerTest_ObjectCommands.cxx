@@ -3958,7 +3958,8 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
       ++anArgIter;
       aContext->SetLocation (anObj, anObj2->LocalTransformation());
     }
-    else if (anArg == "-rotate")
+    else if (anArg == "-rotate"
+          || anArg == "-prerotate")
     {
       toPrintInfo = Standard_False;
       if (anArgIter + 7 >= theArgNb)
@@ -3977,10 +3978,18 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
                                          Draw::Atof (theArgVec[anArgIter + 7]) * (M_PI / 180.0));
       anArgIter += 7;
 
-      aTrsf = anObj->LocalTransformation() * aTrsf;
+      if (anArg == "-prerotate")
+      {
+        aTrsf = anObj->LocalTransformation() * aTrsf;
+      }
+      else
+      {
+        aTrsf = aTrsf * anObj->LocalTransformation();
+     }
       aContext->SetLocation (anObj, aTrsf);
     }
-    else if (anArg == "-translate")
+    else if (anArg == "-translate"
+          || anArg == "-pretranslate")
     {
       toPrintInfo = Standard_False;
       gp_Vec aLocVec;
@@ -3994,10 +4003,18 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
 
       gp_Trsf aTrsf;
       aTrsf.SetTranslationPart (aLocVec);
-      aTrsf = anObj->LocalTransformation() * aTrsf;
+      if (anArg == "-pretranslate")
+      {
+        aTrsf = anObj->LocalTransformation() * aTrsf;
+      }
+      else
+      {
+        aTrsf = aTrsf * anObj->LocalTransformation();
+      }
       aContext->SetLocation (anObj, aTrsf);
     }
     else if (anArg == "-scale"
+          || anArg == "-prescale"
           || anArg == "-setscale")
     {
       toPrintInfo = Standard_False;
@@ -4050,7 +4067,8 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
 
       if (toPrintScale)
       {
-        if (anArg == "-setscale")
+        if (anArg == "-setscale"
+         || anArg == "-prescale")
         {
           Message::SendFail() << "Syntax error at '" << anArg << "'";
           return 1;
@@ -4081,17 +4099,25 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
         if (hasScaleLoc)
         {
           aTrsf.SetScale (aScaleLoc, aScale);
+        }
+        else
+        {
+          aTrsf.SetScaleFactor (aScale);
+        }
+
+        if (anArg == "-prescale")
+        {
           aTrsf = anObj->LocalTransformation() * aTrsf;
         }
         else
         {
-          aTrsf = anObj->LocalTransformation();
-          aTrsf.SetScaleFactor (aTrsf.ScaleFactor() * aScale);
+          aTrsf = aTrsf * anObj->LocalTransformation();
         }
         aContext->SetLocation (anObj, aTrsf);
       }
     }
-    else if (anArg == "-mirror")
+    else if (anArg == "-mirror"
+          || anArg == "-premirror")
     {
       toPrintInfo = Standard_False;
       if (anArgIter + 6 >= theArgNb)
@@ -4108,7 +4134,14 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
                                        Draw::Atof(theArgVec[theArgNb - 2]),
                                        Draw::Atof(theArgVec[theArgNb - 1]))));
       anArgIter += 6;
-      aTrsf = anObj->LocalTransformation() * aTrsf;
+      if (anArg == "-premirror")
+      {
+        aTrsf = anObj->LocalTransformation() * aTrsf;
+      }
+      else
+      {
+        aTrsf = aTrsf * anObj->LocalTransformation();
+      }
       aContext->SetLocation (anObj, aTrsf);
     }
     else if (anArg == "-setrotation"
@@ -4141,7 +4174,7 @@ static Standard_Integer VSetLocation (Draw_Interpretor& theDI,
                                      aQuatArgs[2].RealValue(),
                                      aQuatArgs[3].RealValue());
           gp_Trsf aTrsf = anObj->LocalTransformation();
-          aTrsf.SetRotation (aQuat);
+          aTrsf.SetRotationPart (aQuat);
           aContext->SetLocation (anObj, aTrsf);
           continue;
         }
@@ -6567,27 +6600,24 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add ("vlocation",
                 "vlocation name"
-      "\n\t\t:   [-reset]"
-      "\n\t\t:   [-copyFrom otherName]"
-      "\n\t\t:   [-translate X Y [Z]]"
-      "\n\t\t:   [-rotate x y z dx dy dz angle]"
-      "\n\t\t:   [-scale [X Y Z] scale]"
-      "\n\t\t:   [-mirror x y z dx dy dz]"
-      "\n\t\t:   [-setLocation X Y [Z]]"
-      "\n\t\t:   [-setRotation QX QY QZ QW]"
-      "\n\t\t:   [-setScale [X Y Z] scale]"
-      "\n\t\t:   [-inheritParentTrsf {on|off}]"
+      "\n\t\t:   [-reset] [-copyFrom otherName]"
+      "\n\t\t:   [-translate    X Y [Z]] [-rotate    x y z dx dy dz angle] [-scale    [X Y Z] scale]"
+      "\n\t\t:   [-pretranslate X Y [Z]] [-prerotate x y z dx dy dz angle] [-prescale [X Y Z] scale]"
+      "\n\t\t:   [-mirror x y z dx dy dz] [-premirror x y z dx dy dz]"
+      "\n\t\t:   [-setLocation X Y [Z]] [-setRotation QX QY QZ QW] [-setScale [X Y Z] scale]"
       "\n\t\t: Object local transformation management:"
-      "\n\t\t:   -reset       reset transformation to identity"
-      "\n\t\t:   -translate   translate object"
-      "\n\t\t:   -rotate      applies rotation to local transformation"
-      "\n\t\t:   -scale       applies scale    to local transformation"
-      "\n\t\t:   -mirror      applies mirror   to local transformation"
-      "\n\t\t:   -setLocation assign object location"
-      "\n\t\t:   -setRotation assign object rotation (quaternion)"
-      "\n\t\t:   -setScale    assign object scale factor"
-      "\n\t\t:   -inheritParentTrsf option to inherit parent"
-      "\n\t\t:                transformation or not (ON by default)",
+      "\n\t\t:   -reset        resets transformation to identity"
+      "\n\t\t:   -translate    applies translation vector"
+      "\n\t\t:   -rotate       applies rotation around axis"
+      "\n\t\t:   -scale        applies scale factor with optional anchor"
+      "\n\t\t:   -mirror       applies mirror transformation"
+      "\n\t\t:   -pretranslate pre-multiplies translation vector"
+      "\n\t\t:   -prerotate    pre-multiplies rotation around axis"
+      "\n\t\t:   -prescale     pre-multiplies scale  transformation"
+      "\n\t\t:   -premirror    pre-multiplies mirror transformation"
+      "\n\t\t:   -setLocation  overrides translation part"
+      "\n\t\t:   -setRotation  overrides rotation part with specified quaternion"
+      "\n\t\t:   -setScale     overrides scale factor",
         __FILE__, VSetLocation, group);
   theCommands.Add ("vsetlocation",
                    "alias for vlocation",

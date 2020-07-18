@@ -110,13 +110,14 @@ public:
   //! A1 is the rotation axis and Ang is the angular value of the
   //! rotation in radians.
   Standard_EXPORT void SetRotation (const gp_Ax1& A1, const Standard_Real Ang);
-  
 
   //! Changes the transformation into a rotation defined by quaternion.
   //! Note that rotation is performed around origin, i.e.
   //! no translation is involved.
   Standard_EXPORT void SetRotation (const gp_Quaternion& R);
-  
+
+  //! Replaces the rotation part with specified quaternion.
+  Standard_EXPORT void SetRotationPart (const gp_Quaternion& R);
 
   //! Changes the transformation into a scale.
   //! P is the center of the scale and S is the scaling value.

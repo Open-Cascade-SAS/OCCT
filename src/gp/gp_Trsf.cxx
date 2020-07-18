@@ -130,6 +130,57 @@ void gp_Trsf::SetRotation (const gp_Quaternion& R)
 }
 
 //=======================================================================
+//function : SetRotationPart
+//purpose  :
+//=======================================================================
+void gp_Trsf::SetRotationPart (const gp_Quaternion& theR)
+{
+  const bool hasRotation = !theR.IsEqual (gp_Quaternion());
+  if (hasRotation)
+  {
+    matrix = theR.GetMatrix();
+  }
+  else
+  {
+    matrix.SetIdentity();
+  }
+
+  switch (shape)
+  {
+    case gp_Identity:
+    {
+      if (hasRotation)
+      {
+        shape = gp_Rotation;
+      }
+      break;
+    }
+    case gp_Rotation:
+    {
+      if (!hasRotation)
+      {
+        shape = gp_Identity;
+      }
+      break;
+    }
+    case gp_Translation:
+    case gp_PntMirror:
+    case gp_Ax1Mirror:
+    case gp_Ax2Mirror:
+    case gp_Scale:
+    case gp_CompoundTrsf:
+    case gp_Other:
+    {
+      if (hasRotation)
+      {
+        shape = gp_CompoundTrsf;
+      }
+      break;
+    }
+  }
+}
+
+//=======================================================================
 //function : SetScale
 //purpose  : 
 //=======================================================================
