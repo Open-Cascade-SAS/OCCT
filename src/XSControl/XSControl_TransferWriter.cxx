@@ -16,6 +16,7 @@
 #include <Interface_CheckIterator.hxx>
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
@@ -29,6 +30,7 @@
 #include <XSControl_Controller.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_Utils.hxx>
+#include <ShapeUpgrade_RemoveLocations.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(XSControl_TransferWriter,Standard_Transient)
 
@@ -133,12 +135,22 @@ Standard_Boolean XSControl_TransferWriter::RecognizeShape (const TopoDS_Shape& s
 //=======================================================================
 
 IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape
-  (const Handle(Interface_InterfaceModel)& model,
-   const TopoDS_Shape& shape)
+  (const Handle(Interface_InterfaceModel)& theModel,
+   const TopoDS_Shape& theShape)
 {
   IFSelect_ReturnStatus status = IFSelect_RetVoid;
   if (myController.IsNull()) return IFSelect_RetError;
-  if (model.IsNull()) return IFSelect_RetVoid;
+  if (theModel.IsNull()) return IFSelect_RetVoid;
+
+  TopoDS_Shape aShape = theShape;
+  Standard_Boolean isNMMode = Interface_Static::IVal("write.step.nonmanifold") != 0;
+  if (isNMMode)
+  {
+    ShapeUpgrade_RemoveLocations aRemLoc;
+    aRemLoc.SetRemoveLevel(TopAbs_COMPOUND);
+    aRemLoc.Remove(aShape);
+    aShape = aRemLoc.GetResult();
+  }
 
   if (myTransferWriter.IsNull()) myTransferWriter = new Transfer_FinderProcess;
 //  effacer l actor : Controller s en charge
@@ -149,10 +161,10 @@ IFSelect_ReturnStatus XSControl_TransferWriter::TransferWriteShape
   try {
     OCC_CATCH_SIGNALS
     PrintStats(myTransferMode);
-    sout << "******        Transferring Shape, ShapeType = " << shape.ShapeType();
+    sout << "******        Transferring Shape, ShapeType = " << aShape.ShapeType();
     sout<<"                      ******"<<std::endl;
     status = myController->TransferWriteShape
-      (shape,myTransferWriter,model,myTransferMode);
+      (aShape,myTransferWriter,theModel,myTransferMode);
   }
   catch(Standard_Failure const& anException) {
     sout<<"****  ****  TransferWriteShape, EXCEPTION : "; 
