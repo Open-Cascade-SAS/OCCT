@@ -161,3 +161,11 @@ LDOM_OSStream::LDOM_OSStream (const Standard_Integer theMaxBuf)
 {
   init(&myBuffer);
 }
+
+//=======================================================================
+//function : ~LDOM_OSStream()
+//purpose  : Destructor - for g++ vtable generation in *this* translation unit
+//=======================================================================
+LDOM_OSStream::~LDOM_OSStream()
+{
+}

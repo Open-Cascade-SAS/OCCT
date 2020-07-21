@@ -102,6 +102,8 @@ public:
   //! Constructor
   Standard_EXPORT LDOM_OSStream(const Standard_Integer theMaxBuf);
 
+  Standard_EXPORT virtual ~LDOM_OSStream();
+
   Standard_CString str () const {return myBuffer.str();}
 
   Standard_Integer Length () const { return myBuffer.Length(); }
