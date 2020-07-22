@@ -119,7 +119,7 @@ AIS_ViewController::AIS_ViewController()
   myAnchorPointPrs2->SetZLayer (Graphic3d_ZLayerId_Topmost);
   myAnchorPointPrs2->SetMutable (true);
 
-  myRubberBand = new AIS_RubberBand (Quantity_NOC_LIGHTBLUE, Aspect_TOL_SOLID, Quantity_NOC_LIGHTBLUE, 0.4, 1.0);
+  myRubberBand = new AIS_RubberBand (Quantity_NOC_LIGHTBLUE, Aspect_TOL_SOLID, Quantity_NOC_LIGHTBLUE4, 0.5, 1.0);
   myRubberBand->SetZLayer (Graphic3d_ZLayerId_TopOSD);
   myRubberBand->SetTransformPersistence (new Graphic3d_TransformPers (Graphic3d_TMF_2d, Aspect_TOTP_LEFT_UPPER));
   myRubberBand->SetDisplayMode (0);

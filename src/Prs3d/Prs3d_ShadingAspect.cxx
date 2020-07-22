@@ -144,12 +144,14 @@ void Prs3d_ShadingAspect::SetTransparency (const Standard_Real theValue,
    || theModel == Aspect_TOFM_BOTH_SIDE)
   {
     myAspect->ChangeFrontMaterial().SetTransparency (Standard_ShortReal(theValue));
+    myAspect->SetInteriorColor (Quantity_ColorRGBA (myAspect->InteriorColor(), 1.0f - Standard_ShortReal(theValue)));
   }
 
   if (theModel == Aspect_TOFM_BACK_SIDE
    || theModel == Aspect_TOFM_BOTH_SIDE)
   {
     myAspect->ChangeBackMaterial().SetTransparency (Standard_ShortReal(theValue));
+    myAspect->SetBackInteriorColor (Quantity_ColorRGBA (myAspect->BackInteriorColor(), 1.0f - Standard_ShortReal(theValue)));
   }
 }
 
