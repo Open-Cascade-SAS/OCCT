@@ -11598,7 +11598,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     return 0;
   }
 
-  Standard_Boolean toPrint = Standard_False;
+  bool toPrint = false, toSyncDefaults = false, toSyncAllViews = false;
   ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), aView);
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -11614,6 +11614,32 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     {
       toPrint = Standard_True;
       anUpdateTool.Invalidate();
+    }
+    else if (aFlag == "-reset")
+    {
+      aParams = ViewerTest::GetViewerFromContext()->DefaultRenderingParams();
+    }
+    else if (aFlag == "-sync"
+          && (anArgIter + 1 < theArgNb))
+    {
+      TCollection_AsciiString aSyncFlag (theArgVec[++anArgIter]);
+      aSyncFlag.LowerCase();
+      if (aSyncFlag == "default"
+       || aSyncFlag == "defaults"
+       || aSyncFlag == "viewer")
+      {
+        toSyncDefaults = true;
+      }
+      else if (aSyncFlag == "allviews"
+            || aSyncFlag == "views")
+      {
+        toSyncAllViews = true;
+      }
+      else
+      {
+        Message::SendFail ("Syntax error: unknown parameter to -sync argument");
+        return 1;
+      }
     }
     else if (aFlag == "-mode"
           || aFlag == "-rendermode"
@@ -11643,7 +11669,13 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         continue;
       }
 
-      aParams.Method = Graphic3d_RM_RAYTRACING;
+      bool isRayTrace = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isRayTrace))
+      {
+        ++anArgIter;
+      }
+      aParams.Method = isRayTrace ? Graphic3d_RM_RAYTRACING : Graphic3d_RM_RASTERIZATION;
     }
     else if (aFlag == "-rast"
           || aFlag == "-raster"
@@ -11655,7 +11687,13 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         continue;
       }
 
-      aParams.Method = Graphic3d_RM_RASTERIZATION;
+      bool isRaster = true;
+      if (anArgIter + 1 < theArgNb
+       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isRaster))
+      {
+        ++anArgIter;
+      }
+      aParams.Method = isRaster ? Graphic3d_RM_RASTERIZATION : Graphic3d_RM_RAYTRACING;
     }
     else if (aFlag == "-msaa")
     {
@@ -12478,6 +12516,18 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
     }
   }
 
+  // set current view parameters as defaults
+  if (toSyncDefaults)
+  {
+    ViewerTest::GetViewerFromContext()->SetDefaultRenderingParams (aParams);
+  }
+  if (toSyncAllViews)
+  {
+    for (V3d_ListOfViewIterator aViewIter = ViewerTest::GetViewerFromContext()->DefinedViewIterator(); aViewIter.More(); aViewIter.Next())
+    {
+      aViewIter.Value()->ChangeRenderingParams() = aParams;
+    }
+  }
   return 0;
 }
 
@@ -14632,55 +14682,82 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:   'vraytrace 1' alias for 'vrenderparams -rayTrace'.",
     __FILE__, VRenderParams, group);
   theCommands.Add("vrenderparams",
-    "\n    Manages rendering parameters: "
-    "\n      '-raster'                   Disables GPU ray-tracing"
-    "\n      '-msaa         0..4'        Specifies number of samples for MSAA"
-    "\n      '-lineFeather  > 0'         Sets line feather factor"
-    "\n      '-oit          off|0.0-1.0' Enables/disables OIT and sets depth weight factor"
-    "\n      '-depthPrePass on|off'      Enables/disables depth pre-pass"
-    "\n      '-alphatocoverage on|off'   Enables/disables alpha to coverage (needs MSAA)"
-    "\n      '-rendScale    value        Rendering resolution scale factor"
-    "\n      '-rayTrace'                 Enables  GPU ray-tracing"
-    "\n      '-rayDepth     0..10'       Defines maximum ray-tracing depth"
-    "\n      '-shadows      on|off'      Enables/disables shadows rendering"
-    "\n      '-reflections  on|off'      Enables/disables specular reflections"
-    "\n      '-fsaa         on|off'      Enables/disables adaptive anti-aliasing"
-    "\n      '-gleam        on|off'      Enables/disables transparency shadow effects"
-    "\n      '-gi           on|off'      Enables/disables global illumination effects"
-    "\n      '-brng         on|off'      Enables/disables blocked RNG (fast coherent PT)"
-    "\n      '-env          on|off'      Enables/disables environment map background"
-    "\n      '-ignoreNormalMap on|off'   Enables/disables normal map ignoring during path tracing"
-    "\n      '-twoside      on|off'      Enables/disables two-sided BSDF models (PT mode)"
-    "\n      '-iss          on|off'      Enables/disables adaptive screen sampling (PT mode)"
-    "\n      '-issd         on|off'      Shows screen sampling distribution in ISS mode"
-    "\n      '-maxrad       > 0.0'       Value used for clamping radiance estimation (PT mode)"
-    "\n      '-tileSize     1..4096'     Specifies   size of screen tiles in ISS mode (32 by default)"
-    "\n      '-nbtiles      64..1024'    Specifies number of screen tiles per Redraw in ISS mode (256 by default)"
-    "\n      '-rebuildGlsl  on|off'      Rebuild Ray-Tracing GLSL programs (for debugging)"
-    "\n      '-shadingModel model'       Controls shading model from enumeration"
-    "\n                                  unlit, flat, gouraud, phong"
-    "\n      '-pbrEnvPow2size > 0'       Controls size of IBL maps (real size can be calculates as 2^pbrenvpow2size)"
-    "\n      '-pbrEnvSMLN > 1'           Controls number of mipmap levels used in specular IBL map"
-    "\n      '-pbrEnvBDSN > 0'           Controls number of samples in Monte-Carlo integration during diffuse IBL map's sherical harmonics calculation"
-    "\n      '-pbrEnvBSSN > 0'           Controls maximum number of samples per mipmap level in Monte-Carlo integration during specular IBL maps generation"
-    "\n      '-pbrEnvBP [0, 1]'          Controls strength of samples number reducing during specular IBL maps generation (1 disables reducing)"
-    "\n      '-resolution   value'       Sets a new pixels density (PPI), defines scaling factor for parameters like text size"
-    "\n      '-aperture     >= 0.0'      Aperture size  of perspective camera for depth-of-field effect (0 disables DOF)"
-    "\n      '-focal        >= 0.0'      Focal distance of perspective camera for depth-of-field effect"
-    "\n      '-exposure     value'       Exposure value for tone mapping (0.0 value disables the effect)"
-    "\n      '-whitepoint   value'       White point value for filmic tone mapping"
-    "\n      '-tonemapping  mode'        Tone mapping mode (disabled, filmic)"
-    "\n      '-perfCounters none|fps|cpu|layers|structures|groups|arrays|triangles|points"
-    "\n      '              |gpuMem|frameTime|basic|extended|full|nofps|skipImmediate'"
-    "\n                                  Show/hide performance counters (flags can be combined)"
-    "\n      '-perfUpdateInterval nbSeconds' Performance counters update interval"
-    "\n      '-perfChart    nbFrames'    Show frame timers chart limited by specified number of frames"
-    "\n      '-perfChartMax seconds'     Maximum time in seconds with the chart"
-    "\n      '-frustumCulling on|off|noupdate' Enable/disable objects frustum clipping or"
-    "\n                                        set state to check structures culled previously."
-    "\n    Unlike vcaps, these parameters dramatically change visual properties."
-    "\n    Command is intended to control presentation quality depending on"
-    "\n    hardware capabilities and performance.",
+    "\n\t\t: Manages rendering parameters, affecting visual appearance, quality and performance."
+    "\n\t\t: Should be applied taking into account GPU hardware capabilities and performance."
+    "\n\t\t: Common parameters:"
+    "\n\t\t: vrenderparams [-raster] [-shadingModel {unlit|facet|gouraud|phong|pbr|pbr_facet}=gouraud]"
+    "\n\t\t:               [-msaa 0..8=0] [-rendScale scale=1] [-resolution value=72]"
+    "\n\t\t:               [-oit {off|0.0-1.0}=off]"
+    "\n\t\t:               [-depthPrePass {on|off}=off] [-alphaToCoverage {on|off}=on]"
+    "\n\t\t:               [-frustumCulling {on|off|noupdate}=on] [-lineFeather width=1.0]"
+    "\n\t\t:               [-sync {default|views}] [-reset]"
+    "\n\t\t:   -raster          Disables GPU ray-tracing."
+    "\n\t\t:   -shadingModel    Controls shading model."
+    "\n\t\t:   -msaa            Specifies number of samples for MSAA."
+    "\n\t\t:   -rendScale       Rendering resolution scale factor (supersampling, alternative to MSAA)."
+    "\n\t\t:   -resolution      Sets new pixels density (PPI) used as text scaling factor."
+    "\n\t\t:   -lineFeather     Sets line feather factor while displaying mesh edges."
+    "\n\t\t:   -alphaToCoverage Enables/disables alpha to coverage (needs MSAA)."
+    "\n\t\t:   -oit             Enables/disables order-independent transparency (OIT) rendering;"
+    "\n\t\t:                    weight OIT fixes transparency artifacts at the cost of blurry result,"
+    "\n\t\t:                    it is managed by depth weight factor (0.0 value also enables weight OIT)."
+    "\n\t\t:   -depthPrePass    Enables/disables depth pre-pass."
+    "\n\t\t:   -frustumCulling  Enables/disables objects frustum clipping or"
+    "\n\t\t:                    sets state to check structures culled previously."
+    "\n\t\t:   -sync            Sets active View parameters as Viewer defaults / to other Views."
+    "\n\t\t:   -reset           Resets active View parameters to Viewer defaults."
+    "\n\t\t: Diagnostic output (on-screen overlay):"
+    "\n\t\t: vrenderparams [-perfCounters none|fps|cpu|layers|structures|groups|arrays|triangles|points"
+    "\n\t\t:                             |gpuMem|frameTime|basic|extended|full|nofps|skipImmediate]"
+    "\n\t\t:               [-perfUpdateInterval nbSeconds=1] [-perfChart nbFrames=1] [-perfChartMax seconds=0.1]"
+    "\n\t\t:   -perfCounters       Show/hide performance counters (flags can be combined)."
+    "\n\t\t:   -perfUpdateInterval Performance counters update interval."
+    "\n\t\t:   -perfChart          Show frame timers chart limited by specified number of frames."
+    "\n\t\t:   -perfChartMax       Maximum time in seconds with the chart."
+    "\n\t\t: Ray-Tracing options:"
+    "\n\t\t: vrenderparams [-rayTrace] [-rayDepth {0..10}=3] [-shadows {on|off}=on] [-reflections {on|off}=off]"
+    "\n\t\t:               [-fsaa {on|off}=off] [-gleam {on|off}=off] [-env {on|off}=off]"
+    "\n\t\t:               [-gi {on|off}=off] [-brng {on|off}=off]"
+    "\n\t\t:               [-iss {on|off}=off] [-tileSize {1..4096}=32] [-nbTiles {64..1024}=256]"
+    "\n\t\t:               [-ignoreNormalMap {on|off}=off] [-twoSide {on|off}=off]"
+    "\n\t\t:               [-maxRad {value>0}=30.0]"
+    "\n\t\t:               [-aperture {value>=0}=0.0] [-focal {value>=0.0}=1.0]"
+    "\n\t\t:               [-exposure value=0.0] [-whitePoint value=1.0] [-toneMapping {disabled|filmic}=disabled]"
+    "\n\t\t:   -rayTrace     Enables  GPU ray-tracing."
+    "\n\t\t:   -rayDepth     Defines maximum ray-tracing depth."
+    "\n\t\t:   -shadows      Enables/disables shadows rendering."
+    "\n\t\t:   -reflections  Enables/disables specular reflections."
+    "\n\t\t:   -fsaa         Enables/disables adaptive anti-aliasing."
+    "\n\t\t:   -gleam        Enables/disables transparency shadow effects."
+    "\n\t\t:   -gi           Enables/disables global illumination effects (Path-Tracing)."
+    "\n\t\t:   -env          Enables/disables environment map background."
+    "\n\t\t:   -ignoreNormalMap Enables/disables normal map ignoring during path tracing."
+    "\n\t\t:   -twoSide      Enables/disables two-sided BSDF models (PT mode)."
+    "\n\t\t:   -iss          Enables/disables adaptive screen sampling (PT mode)."
+    "\n\t\t:   -maxRad       Value used for clamping radiance estimation (PT mode)."
+    "\n\t\t:   -tileSize     Specifies   size of screen tiles in ISS mode (32 by default)."
+    "\n\t\t:   -nbTiles      Specifies number of screen tiles per Redraw in ISS mode (256 by default)."
+    "\n\t\t:   -aperture     Aperture size  of perspective camera for depth-of-field effect (0 disables DOF)."
+    "\n\t\t:   -focal        Focal distance of perspective camera for depth-of-field effect."
+    "\n\t\t:   -exposure     Exposure value for tone mapping (0.0 value disables the effect)."
+    "\n\t\t:   -whitePoint   White point value for filmic tone mapping."
+    "\n\t\t:   -toneMapping  Tone mapping mode (disabled, filmic)."
+    "\n\t\t: PBR environment baking parameters (advanced/debug):"
+    "\n\t\t: vrenderparams [-pbrEnvPow2size {power>0}=9] [-pbrEnvSMLN {levels>1}=6] [-pbrEnvBP {0..1}=0.99]"
+    "\n\t\t:               [-pbrEnvBDSN {samples>0}=1024] [-pbrEnvBSSN {samples>0}=256]"
+    "\n\t\t:   -pbrEnvPow2size Controls size of IBL maps (real size can be calculates as 2^pbrenvpow2size)."
+    "\n\t\t:   -pbrEnvSMLN     Controls number of mipmap levels used in specular IBL map."
+    "\n\t\t:   -pbrEnvBDSN     Controls number of samples in Monte-Carlo integration during"
+    "\n\t\t:                   diffuse IBL map's sherical harmonics calculation."
+    "\n\t\t:   -pbrEnvBSSN     Controls maximum number of samples per mipmap level"
+    "\n\t\t:                   in Monte-Carlo integration during specular IBL maps generation."
+    "\n\t\t:   -pbrEnvBP       Controls strength of samples number reducing"
+    "\n\t\t:                   during specular IBL maps generation (1 disables reducing)."
+    "\n\t\t: Debug options:"
+    "\n\t\t: vrenderparams [-issd {on|off}=off] [-rebuildGlsl on|off]"
+    "\n\t\t:   -issd         Shows screen sampling distribution in ISS mode."
+    "\n\t\t:   -rebuildGlsl  Rebuild Ray-Tracing GLSL programs (for debugging)."
+    "\n\t\t:   -brng         Enables/disables blocked RNG (fast coherent PT).",
     __FILE__, VRenderParams, group);
   theCommands.Add("vstatprofiler",
     "\n vstatprofiler [fps|cpu|allLayers|layers|allstructures|structures|groups"

@@ -155,7 +155,10 @@ void SelectMgr_ViewerSelector3d::ClearSensitive (const Handle(V3d_View)& theView
 {
   for (Graphic3d_SequenceOfStructure::Iterator aStructIter (myStructs); aStructIter.More(); aStructIter.Next())
   {
-    aStructIter.ChangeValue()->Remove();
+    const Handle(Graphic3d_Structure)& aPrs = aStructIter.ChangeValue();
+    aPrs->Erase();
+    aPrs->Clear();
+    aPrs->Remove();
   }
   myStructs.Clear();
 
