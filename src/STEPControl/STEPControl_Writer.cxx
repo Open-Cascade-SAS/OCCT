@@ -11,13 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <STEPControl_Writer.hxx>
 
 #include <Interface_InterfaceModel.hxx>
 #include <Interface_Macros.hxx>
 #include <Message_ProgressIndicator.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_Controller.hxx>
-#include <STEPControl_Writer.hxx>
 #include <StepData_StepModel.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>

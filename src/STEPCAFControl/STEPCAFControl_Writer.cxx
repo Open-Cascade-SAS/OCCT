@@ -20,6 +20,8 @@
 // (analysis of SDRs which the CDSR links should be done)
 // Names and validation props are supported for top-level shapes only
 
+#include <STEPCAFControl_Writer.hxx>
+
 #include <BRep_Builder.hxx>
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <GeomToStep_MakeCartesianPoint.hxx>
@@ -28,7 +30,6 @@
 #include <Interface_Static.hxx>
 #include <Message_Messenger.hxx>
 #include <MoniTool_DataMapIteratorOfDataMapOfShapeTransient.hxx>
-#include <NCollection_Vector.hxx>
 #include <OSD_Path.hxx>
 #include <Quantity_TypeOfColor.hxx>
 #include <StepAP214_Protocol.hxx>
@@ -51,7 +52,6 @@
 #include <STEPCAFControl_ActorWrite.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_ExternFile.hxx>
-#include <STEPCAFControl_Writer.hxx>
 #include <STEPConstruct.hxx>
 #include <STEPConstruct_DataMapOfAsciiStringTransient.hxx>
 #include <STEPConstruct_DataMapOfPointTransient.hxx>
@@ -60,7 +60,6 @@
 #include <STEPConstruct_Styles.hxx>
 #include <STEPConstruct_ValidationProps.hxx>
 #include <STEPControl_StepModelType.hxx>
-#include <STEPControl_Writer.hxx>
 #include <StepData_Logical.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepDimTol_AngularityTolerance.hxx>

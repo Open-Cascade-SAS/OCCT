@@ -16,19 +16,15 @@
 #ifndef _STEPCAFControl_Writer_HeaderFile
 #define _STEPCAFControl_Writer_HeaderFile
 
-#include <Standard.hxx>
+#include <IFSelect_ReturnStatus.hxx>
+#include <MoniTool_DataMapOfShapeTransient.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-
-#include <STEPControl_Writer.hxx>
 #include <STEPCAFControl_DataMapOfLabelShape.hxx>
 #include <STEPCAFControl_DataMapOfLabelExternFile.hxx>
-#include <Standard_Boolean.hxx>
-#include <MoniTool_DataMapOfShapeTransient.hxx>
-#include <IFSelect_ReturnStatus.hxx>
-#include <Standard_CString.hxx>
 #include <STEPControl_StepModelType.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <STEPControl_Writer.hxx>
 #include <StepAP242_GeometricItemSpecificUsage.hxx>
 #include <StepDimTol_Datum.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
@@ -36,14 +32,13 @@
 #include <StepRepr_ProductDefinitionShape.hxx>
 #include <StepVisual_DraughtingModel.hxx>
 #include <StepVisual_HArray1OfPresentationStyleAssignment.hxx>
+#include <TDF_LabelSequence.hxx>
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 
 class XSControl_WorkSession;
 class TDocStd_Document;
-class TDF_Label;
 class TCollection_AsciiString;
 class STEPCAFControl_ExternFile;
-class STEPControl_Writer;
 class TopoDS_Shape;
 
 //! Provides a tool to write DECAF document to the
