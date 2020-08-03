@@ -535,7 +535,7 @@ void OpenGl_PrimitiveArray::drawEdges (const Handle(OpenGl_Workspace)& theWorksp
   aGlContext->SetColor4fv (theWorkspace->EdgeColor().a() >= 0.1f
                          ? theWorkspace->EdgeColor()
                          : theWorkspace->View()->BackgroundColor());
-  aGlContext->SetLineStipple(anAspect->Aspect()->LinePattern());
+  aGlContext->SetLineStipple((float )anAspect->Aspect()->LineStippleFactor(), anAspect->Aspect()->LinePattern());
   aGlContext->SetLineWidth  (anAspect->Aspect()->EdgeWidth());
 
   if (!myVboIndices.IsNull())
@@ -1035,7 +1035,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       if (myDrawMode == GL_LINES
        || myDrawMode == GL_LINE_STRIP)
       {
-        aCtx->SetLineStipple(anAspectFace->Aspect()->LinePattern());
+        aCtx->SetLineStipple((float )anAspectFace->Aspect()->LineStippleFactor(), anAspectFace->Aspect()->LinePattern());
         aCtx->SetLineWidth  (anAspectFace->Aspect()->LineWidth());
       }
 

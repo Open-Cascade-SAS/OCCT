@@ -254,6 +254,19 @@ public:
     myLinePattern = thePattern;
   }
 
+  //! Return a multiplier for each bit in the line stipple pattern within [1, 256] range; 1 by default.
+  uint16_t LineStippleFactor() const { return myLineFactor; }
+
+  //! Set a multiplier for each bit in the line stipple pattern.
+  void SetLineStippleFactor (uint16_t theFactor)
+  {
+    if (theFactor == 0 || theFactor > 256)
+    {
+      throw Standard_OutOfRange ("Graphic3d_Aspects::SetLineStippleFactor(), bad factor value");
+    }
+    myLineFactor = theFactor;
+  }
+
   //! Return width for edges in pixels; 1.0 by default.
   Standard_ShortReal LineWidth() const { return myLineWidth; }
 
@@ -503,6 +516,7 @@ public:
         && myLineType  == theOther.myLineType
         && myEdgeColor == theOther.myEdgeColor
         && myLineWidth == theOther.myLineWidth
+        && myLineFactor == theOther.myLineFactor
         && myLinePattern == theOther.myLinePattern
         && myMarkerType == theOther.myMarkerType
         && myMarkerScale == theOther.myMarkerScale
@@ -548,6 +562,7 @@ protected:
 
   Aspect_TypeOfLine            myLineType;
   Standard_ShortReal           myLineWidth;
+  uint16_t                     myLineFactor;
   uint16_t                     myLinePattern;
 
   Aspect_TypeOfMarker          myMarkerType;

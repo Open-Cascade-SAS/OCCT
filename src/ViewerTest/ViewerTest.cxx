@@ -1863,6 +1863,7 @@ struct ViewerTest_AspectsChangeSet
 
   Standard_Integer             ToSetTypeOfLine;
   uint16_t                     StippleLinePattern;
+  uint16_t                     StippleLineFactor;
 
   Standard_Integer             ToSetTypeOfMarker;
   Aspect_TypeOfMarker          TypeOfMarker;
@@ -1949,6 +1950,7 @@ struct ViewerTest_AspectsChangeSet
     LineWidth         (1.0),
     ToSetTypeOfLine   (0),
     StippleLinePattern(0xFFFF),
+    StippleLineFactor (1),
     ToSetTypeOfMarker (0),
     TypeOfMarker      (Aspect_TOM_PLUS),
     ToSetMarkerSize   (0),
@@ -2131,10 +2133,15 @@ struct ViewerTest_AspectsChangeSet
       {
         toRecompute = theDrawer->SetOwnLineAspects() || toRecompute;
         theDrawer->LineAspect()->Aspect()->SetLinePattern (StippleLinePattern);
+        theDrawer->LineAspect()->Aspect()->SetLineStippleFactor (StippleLineFactor);
         theDrawer->WireAspect()->Aspect()->SetLinePattern (StippleLinePattern);
+        theDrawer->WireAspect()->Aspect()->SetLineStippleFactor (StippleLineFactor);
         theDrawer->FreeBoundaryAspect()->Aspect()->SetLinePattern (StippleLinePattern);
+        theDrawer->FreeBoundaryAspect()->Aspect()->SetLineStippleFactor (StippleLineFactor);
         theDrawer->UnFreeBoundaryAspect()->Aspect()->SetLinePattern (StippleLinePattern);
+        theDrawer->UnFreeBoundaryAspect()->Aspect()->SetLineStippleFactor (StippleLineFactor);
         theDrawer->SeenLineAspect()->Aspect()->SetLinePattern (StippleLinePattern);
+        theDrawer->SeenLineAspect()->Aspect()->SetLineStippleFactor (StippleLineFactor);
       }
     }
     if (ToSetTypeOfMarker != 0)
@@ -2904,6 +2911,25 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
         aChangeSet->ToSetTypeOfLine = -1;
       }
     }
+    else if (anArg == "-setstipplelinefactor"
+          || anArg == "-setstipplefactor"
+          || anArg == "-setlinefactor"
+          || anArg == "-stipplelinefactor"
+          || anArg == "-stipplefactor"
+          || anArg == "-linefactor")
+    {
+      if (aChangeSet->ToSetTypeOfLine == -1)
+      {
+        Message::SendFail() << "Error: -setStippleLineFactor requires -setLineType";
+        return 1;
+      }
+      if (++anArgIter >= theArgNb)
+      {
+        Message::SendFail() << "Error: wrong syntax at " << anArg;
+        return 1;
+      }
+      aChangeSet->StippleLineFactor = (uint16_t )Draw::Atoi (theArgVec[anArgIter]);
+    }
     else if (anArg == "-setmarkertype"
           || anArg == "-markertype"
           || anArg == "-setpointtype"
@@ -3338,6 +3364,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
       aChangeSet->LineWidth = 1.0;
       aChangeSet->ToSetTypeOfLine = -1;
       aChangeSet->StippleLinePattern = 0xFFFF;
+      aChangeSet->StippleLineFactor = 1;
       aChangeSet->ToSetTypeOfMarker = -1;
       aChangeSet->TypeOfMarker = Aspect_TOM_PLUS;
       aChangeSet->ToSetMarkerSize = -1;
@@ -6747,46 +6774,44 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VSubInt,group);
 
   theCommands.Add("vaspects",
-              "vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults]"
-      "\n\t\t:          [-setVisibility 0|1]"
-      "\n\t\t:          [-setColor ColorName] [-setcolor R G B] [-unsetColor]"
-      "\n\t\t:          [-setBackFaceColor Color]"
-      "\n\t\t:          [-setMaterial MatName] [-unsetMaterial]"
-      "\n\t\t:          [-setTransparency Transp] [-unsetTransparency]"
-      "\n\t\t:          [-setWidth LineWidth] [-unsetWidth]"
-      "\n\t\t:          [-setLineType {solid|dash|dot|dotDash|0xHexPattern}] [-unsetLineType]"
-      "\n\t\t:          [-setMarkerType {.|+|x|O|xcircle|pointcircle|ring1|ring2|ring3|ball|ImagePath}]"
+              "vaspects [-noupdate|-update] [name1 [name2 [...]] | -defaults] [-subshapes subname1 [subname2 [...]]]"
+      "\n\t\t:          [-visibility {0|1}]"
+      "\n\t\t:          [-color {ColorName | R G B}] [-unsetColor]"
+      "\n\t\t:          [-backfaceColor Color]"
+      "\n\t\t:          [-material MatName] [-unsetMaterial]"
+      "\n\t\t:          [-transparency Transp] [-unsetTransparency]"
+      "\n\t\t:          [-width LineWidth] [-unsetWidth]"
+      "\n\t\t:          [-lineType {solid|dash|dot|dotDash|0xHexPattern} [-stippleFactor factor]]"
+      "\n\t\t:          [-unsetLineType]"
+      "\n\t\t:          [-markerType {.|+|x|O|xcircle|pointcircle|ring1|ring2|ring3|ball|ImagePath}]"
       "\n\t\t:          [-unsetMarkerType]"
-      "\n\t\t:          [-setMarkerSize Scale] [-unsetMarkerSize]"
-      "\n\t\t:          [-freeBoundary {off/on | 0/1}]"
-      "\n\t\t:          [-setFreeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
-      "\n\t\t:          [-setFreeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"
-      "\n\t\t:          [-subshapes subname1 [subname2 [...]]]"
-      "\n\t\t:          [-isoontriangulation 0|1]"
-      "\n\t\t:          [-setMaxParamValue {value}]"
-      "\n\t\t:          [-setSensitivity {selection_mode} {value}]"
-      "\n\t\t:          [-setShadingModel {unlit|flat|gouraud|phong}]"
+      "\n\t\t:          [-markerSize Scale] [-unsetMarkerSize]"
+      "\n\t\t:          [-freeBoundary {0|1}]"
+      "\n\t\t:          [-freeBoundaryWidth Width] [-unsetFreeBoundaryWidth]"
+      "\n\t\t:          [-freeBoundaryColor {ColorName | R G B}] [-unsetFreeBoundaryColor]"
+      "\n\t\t:          [-isoOnTriangulation 0|1]"
+      "\n\t\t:          [-maxParamValue {value}]"
+      "\n\t\t:          [-sensitivity {selection_mode} {value}]"
+      "\n\t\t:          [-shadingModel {unlit|flat|gouraud|phong|pbr|pbr_facet}]"
       "\n\t\t:          [-unsetShadingModel]"
-      "\n\t\t:          [-setInterior {solid|hatch|hidenline|point}]"
-      "\n\t\t:          [-unsetInterior] [-setHatch HatchStyle]"
-      "\n\t\t:          [-setFaceBoundaryDraw {0|1}] [-setMostContinuity {c0|c1|c2|c3|cn}"
-      "\n\t\t:          [-setFaceBoundaryWidth LineWidth] [-setFaceBoundaryColor R G B] [-setFaceBoundaryType LineType]"
-      "\n\t\t:          [-setDrawEdges {0|1}] [-setEdgeType LineType] [-setEdgeColor R G B] [-setQuadEdges {0|1}]"
-      "\n\t\t:          [-setDrawSilhouette {0|1}]"
-      "\n\t\t:          [-setAlphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
+      "\n\t\t:          [-interior {solid|hatch|hidenline|point}] [-setHatch HatchStyle]"
+      "\n\t\t:          [-unsetInterior]"
+      "\n\t\t:          [-faceBoundaryDraw {0|1}] [-mostContinuity {c0|c1|c2|c3|cn}]"
+      "\n\t\t:          [-faceBoundaryWidth LineWidth] [-faceBoundaryColor R G B] [-faceBoundaryType LineType]"
+      "\n\t\t:          [-drawEdges {0|1}] [-edgeType LineType] [-edgeColor R G B] [-quadEdges {0|1}]"
+      "\n\t\t:          [-drawSilhouette {0|1}]"
+      "\n\t\t:          [-alphaMode {opaque|mask|blend|blendauto} [alphaCutOff=0.5]]"
       "\n\t\t:          [-dumpJson]"
       "\n\t\t:          [-dumpCompact {0|1}]"
       "\n\t\t:          [-dumpDepth depth]"
-      "\n\t\t:          [-freeBoundary {off/on | 0/1}]"
       "\n\t\t: Manage presentation properties of all, selected or named objects."
-      "\n\t\t: When -subshapes is specified than following properties will be"
-      "\n\t\t: assigned to specified sub-shapes."
+      "\n\t\t: When -subshapes is specified than following properties will be assigned to specified sub-shapes."
       "\n\t\t: When -defaults is specified than presentation properties will be"
       "\n\t\t: assigned to all objects that have not their own specified properties"
       "\n\t\t: and to all objects to be displayed in the future."
-      "\n\t\t: If -defaults is used there should not be any objects' names and -subshapes specifier."
+      "\n\t\t: If -defaults is used there should not be any objects' names nor -subshapes specifier."
       "\n\t\t: See also vlistcolors and vlistmaterials to list named colors and materials"
-      "\n\t\t: accepted by arguments -setMaterial and -setColor",
+      "\n\t\t: accepted by arguments -material and -color",
 		  __FILE__,VAspects,group);
 
   theCommands.Add("vsetcolor",
