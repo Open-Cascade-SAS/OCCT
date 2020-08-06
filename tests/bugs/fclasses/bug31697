@@ -1,0 +1,25 @@
+puts "======="
+puts "OCC31697 - Expr_GeneralExpression::Derivative does not seem to work"
+puts "======="
+puts ""
+
+
+pload QAcommands
+
+set exp Exp(2*Sin(x^2))
+set var x
+set list [OCC31697 $exp $var]
+
+set we_have [lindex $list 10]
+puts "we_have = $we_have"
+
+set must_be "Exp(2*Sin(x^2))*Cos(x^2)*x*4"
+puts "must_be = $must_be"
+
+
+if  {[string compare $we_have $must_be] == 0} {
+  puts "OCC31697 OK"
+} else {      
+   puts "OCC31697 Faulty"	 
+}
+

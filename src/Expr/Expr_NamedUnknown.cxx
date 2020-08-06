@@ -130,7 +130,7 @@ Standard_Boolean Expr_NamedUnknown::IsLinear () const
 Handle(Expr_GeneralExpression) Expr_NamedUnknown::Derivative (const Handle(Expr_NamedUnknown)& X) const
 {
   Handle(Expr_NamedUnknown) me = this;
-  if (me != X) {
+  if (!me->IsIdentical(X)) {
     if (IsAssigned()) {
       return myExpression->Derivative(X);
     }

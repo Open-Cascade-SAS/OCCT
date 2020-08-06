@@ -1673,6 +1673,7 @@ static Standard_Integer OCC921 (Draw_Interpretor& di, Standard_Integer argc, con
 #include <Expr_NamedUnknown.hxx>
 #include <Expr_GeneralExpression.hxx>
 #include <Expr_Exponential.hxx>
+#include <ExprIntrp_GenExp.hxx>
 //=======================================================================
 //function :  OCC902
 //purpose  : 
@@ -1685,16 +1686,32 @@ static Standard_Integer OCC902(Draw_Interpretor& di, Standard_Integer argc, cons
     return 1;
   }
 
- TCollection_AsciiString  myStr(argv[1]);
+  TCollection_AsciiString  anExpStr(argv[1]);
+  anExpStr.AssignCat("*x");
+  anExpStr.Prepend("Exp(");
+  anExpStr.AssignCat(")");
 
- Handle (Expr_NamedUnknown)      myNamed = new Expr_NamedUnknown(myStr);
- Handle (Expr_Exponential)       oldExpr = new Expr_Exponential(myNamed); 
- Handle (Expr_GeneralExpression) newExpr = oldExpr->Derivative(myNamed);
+  Handle(ExprIntrp_GenExp) exprIntrp = ExprIntrp_GenExp::Create();
+
+  //
+  // Create the expression
+  exprIntrp->Process(anExpStr);
+
+  if (!exprIntrp->IsDone())
+  {
+    di << "Interpretation of expression " << argv[1] << " failed\n";
+    return 1;
+  }
+
+
+  Handle(Expr_GeneralExpression) anExpr = exprIntrp->Expression();
+  Handle(Expr_NamedUnknown) aVar = new Expr_NamedUnknown("x");
+  Handle (Expr_GeneralExpression) newExpr = anExpr->Derivative(aVar);
 
  
  TCollection_AsciiString  res        = newExpr->String();
  Standard_CString         resStr     = res.ToCString();
- TCollection_AsciiString  res_old    = oldExpr->String();
+ TCollection_AsciiString  res_old    = anExpr->String();
  Standard_CString         res_oldStr = res_old.ToCString();
  
 
