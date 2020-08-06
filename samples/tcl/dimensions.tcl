@@ -46,7 +46,7 @@ vdimension ld_4 -length -shapes as_7 -plane xoy -color black -flyout -20
 vdimension ld_5 -length -shapes as_28 -plane xoy -color black -flyout -15
 vdimension ld_6 -length -shapes as_18 -plane xoy -color black -flyout 30
 vdimension ld_7 -length -shapes bs_20 -plane xoy -color black -flyout -20
-vdimension ld_8 -length -shapes as_43 -plane xoy -color black -flyout 55 -label right
+vdimension ld_8 -length -shapes as_42 -plane xoy -color black -flyout 55 -label right
 vdimension ld_9 -length -shapes as_12 -plane xoy -color black -flyout 35 -label right
 vdimension ld_10 -length -shapes as_40 -plane xoy -color black -flyout 15
 
@@ -55,7 +55,7 @@ vdimension rd_2 -radius -shapes bs_63 -color black
 
 vdimension ad_1 -angle -shapes as_38 as_49 -color black
 vdimension ad_2 -angle -shapes bs_24 bs_25 -color black
-vdimension ad_3 -angle -shapes as_48 as_43 -color black
+vdimension ad_3 -angle -shapes as_48 as_42 -color black
 
 puts "Changing text and arrow parameters of dimensions..."
 foreach i $aList {

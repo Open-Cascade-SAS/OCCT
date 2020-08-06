@@ -628,7 +628,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
         }
         //
         Standard_Integer nEOut;
-        Standard_Real aTolNew;
+        Standard_Real aTolNew = -1.;
         bExist = IsExistingPaveBlock(aPB, aNC, aLSE, nEOut, aTolNew);
         if (bExist)
         {
@@ -1646,8 +1646,13 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
   Bnd_Box aBoxPm;
   Standard_Real aTm = IntTools_Tools::IntermediatePoint (aT1, aT2);
   gp_Pnt aPm;
-  aIC.D0(aTm, aPm);
+  gp_Vec aVTgt1;
+  const Handle(Geom_Curve)& aC3d = aIC.Curve();
+  aC3d->D1(aTm, aPm, aVTgt1);
   aBoxPm.Add (aPm);
+  Standard_Boolean isVtgt1Valid = aVTgt1.SquareMagnitude() > gp::Resolution();
+  if (isVtgt1Valid)
+    aVTgt1.Normalize();
 
   // last point
   Bnd_Box aBoxP2;
@@ -1660,6 +1665,12 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
   const Standard_Real aTolV1 = Max(aTolV11, aTolV12) + myFuzzyValue;
 
   Standard_Real aTolCheck = theTolR3D + myFuzzyValue;
+
+  //Some limit values to define "thin" face when iflag1=iflag2=2 and
+  //edge has no common block with any face
+  Standard_Real aMaxTolAdd = 0.001; //Maximal tolerance of edge allowed
+  const Standard_Real aCoeffTolAdd = 10.; //Coeff to define max. tolerance with help of aTolCheck
+  aMaxTolAdd = Min(aMaxTolAdd, aCoeffTolAdd * aTolCheck);
 
   // Look for the existing pave block closest to the section curve
   Standard_Boolean bFound = Standard_False;
@@ -1686,6 +1697,10 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
       continue;
 
     Standard_Real aDist = 0.;
+    Standard_Real aCoeff = 1.; //Coeff for taking in account deflections between edge and theNC
+    //when aPB is not common block
+    Standard_Real aDistm1m2 = 0.;
+    Standard_Integer aPEStatus = 1;
 
     Standard_Real aRealTol = aTolCheck;
     if (myDS->IsCommonBlock(aPB))
@@ -1696,17 +1711,68 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
         // increase the chance to coincide with section curve
         aRealTol *= 2.;
     }
-      
+    else if (iFlag1 == 2 && iFlag2 == 2)
+    {
+      //Check, if edge could be common block with section curve
+      // and increase the chance to coincide with section curve
+      //skip processing if one edge is closed, but other is not closed
+      //such configurations can give iFlag1 == 2 && iFlag2 == 2
+      Standard_Boolean bSkipProcessing = ((nV11 == nV12) && (nV21 != nV22)) || ((nV11 != nV12) && (nV21 == nV22));
+
+      if (!bSkipProcessing)
+      {
+
+        if (isVtgt1Valid)
+        {
+          BRepAdaptor_Curve aBAC2(aSp);
+          if (aIC.Type() != GeomAbs_Line ||
+            aBAC2.GetType() != GeomAbs_Line)
+          {
+            Standard_Real aTldp;
+            Standard_Real aTolAdd = 2. * Min(aMaxTolAdd, Max(aRealTol, Max(aTolV1, aTolV2)));
+            aPEStatus = myContext->ComputePE(aPm, aTolAdd, aSp, 
+                                             aTldp, aDistm1m2);
+
+            if (aPEStatus == 0 )
+            {
+              gp_Pnt aPm2;
+              gp_Vec aVTgt2;
+              aBAC2.D1(aTldp, aPm2, aVTgt2);
+              if (aVTgt2.SquareMagnitude() > gp::Resolution())
+              {
+                // The angle should be close to zero
+                Standard_Real aCos = aVTgt1.Dot(aVTgt2.Normalized());
+                if (Abs(aCos) >= 0.9063)
+                {                                
+                  aRealTol = aTolAdd;
+                  aCoeff = 2.;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     Bnd_Box aBoxTmp = aBoxPm;
     aBoxTmp.Enlarge(aRealTol);
 
     Standard_Real aDistToSp = 0.;
     Standard_Real aTx;
-    if (aBoxSp.IsOut(aBoxTmp) || myContext->ComputePE(aPm, 
-                                                      aRealTol,
-                                                      aSp, 
-                                                      aTx, aDistToSp)) {
+    if (aBoxSp.IsOut(aBoxTmp) || aPEStatus < 0)
+    {
       continue;
+    }
+    else if(aPEStatus == 0) //aPEStatus == 0 for case iflag1 == iflag2 == 2
+    {
+      aDistToSp = aDistm1m2;
+    }
+    else if (aPEStatus == 1) //Projection has not been done yet
+    {
+      aPEStatus = myContext->ComputePE(aPm, aRealTol, aSp,
+                                       aTx, aDistToSp);
+      if (aPEStatus < 0)
+        continue;
     }
     //
     if (iFlag1 == 1) {
@@ -1726,7 +1792,7 @@ Standard_Boolean BOPAlgo_PaveFiller::IsExistingPaveBlock
       if (aDistToSp < theTolNew)
       {
         aPBOut = aPB;
-        theTolNew = aDistToSp;
+        theTolNew = aCoeff * aDistToSp;
         bFound = Standard_True;
       }
     }
