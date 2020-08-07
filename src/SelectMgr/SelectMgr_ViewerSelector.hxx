@@ -30,6 +30,7 @@
 #include <SelectMgr_SelectableObjectSet.hxx>
 #include <SelectMgr_StateOfSelection.hxx>
 #include <SelectMgr_ToleranceMap.hxx>
+#include <SelectMgr_TypeOfDepthTolerance.hxx>
 #include <Standard_OStream.hxx>
 #include <SelectMgr_BVHThreadPool.hxx>
 
@@ -99,8 +100,7 @@ public:
   Standard_Integer PixelTolerance() const { return myTolerances.Tolerance(); }
 
   //! Sorts the detected entites by priority and distance.
-  //!          to be redefined if other criterion are used...
-  Standard_EXPORT void SortResult();
+  Standard_EXPORT virtual void SortResult();
 
   //! Returns the picked element with the highest priority,
   //! and which is the closest to the last successful mouse position.
@@ -111,13 +111,32 @@ public:
          : Picked (1);
   }
 
-  //! Set preference of selecting one object for OnePicked() method:
-  //! - If True, objects with less depth (distance fron the view plane) are
-  //!   preferred regardless of priority (priority is used then to choose among
-  //!   objects with similar depth),
-  //! - If False, objects with higher priority are preferred regardless of the
-  //!   depth which is used to choose among objects of the same priority.
-  void SetPickClosest (const Standard_Boolean theToPreferClosest) { preferclosest = theToPreferClosest; }
+  //! Return the flag determining precedence of picked depth (distance from eye to entity) over entity priority in sorted results; TRUE by default.
+  //! When flag is TRUE, priority will be considered only if entities have the same depth  within the tolerance.
+  //! When flag is FALSE, entities with higher priority will be in front regardless of their depth (like x-ray).
+  bool ToPickClosest() const { return myToPreferClosest; }
+
+  //! Set flag determining precedence of picked depth over entity priority in sorted results.
+  void SetPickClosest (bool theToPreferClosest) { myToPreferClosest = theToPreferClosest; }
+
+  //! Return the type of tolerance for considering two entities having a similar depth (distance from eye to entity);
+  //! SelectMgr_TypeOfDepthTolerance_SensitivityFactor by default.
+  SelectMgr_TypeOfDepthTolerance DepthToleranceType() const { return myDepthTolType; }
+
+  //! Return the tolerance for considering two entities having a similar depth (distance from eye to entity).
+  Standard_Real DepthTolerance() const { return myDepthTolerance; }
+
+  //! Set the tolerance for considering two entities having a similar depth (distance from eye to entity).
+  //! @param theType [in] type of tolerance value
+  //! @param theTolerance [in] tolerance value in 3D scale (SelectMgr_TypeOfDepthTolerance_Uniform)
+  //!                          or in pixels (SelectMgr_TypeOfDepthTolerance_UniformPixels);
+  //!                          value is ignored in case of SelectMgr_TypeOfDepthTolerance_SensitivityFactor
+  void SetDepthTolerance (SelectMgr_TypeOfDepthTolerance theType,
+                          Standard_Real theTolerance)
+  {
+    myDepthTolType   = theType;
+    myDepthTolerance = theTolerance;
+  }
 
   //! Returns the number of detected owners.
   Standard_Integer NbPicked() const { return mystored.Extent(); }
@@ -357,7 +376,9 @@ private: // implementation of deprecated methods
 
 protected:
 
-  Standard_Boolean                              preferclosest;
+  Standard_Real                                 myDepthTolerance;
+  SelectMgr_TypeOfDepthTolerance                myDepthTolType;
+  Standard_Boolean                              myToPreferClosest;
   Standard_Boolean                              myToUpdateTolerance;
   SelectMgr_IndexedDataMapOfOwnerCriterion      mystored;
   SelectMgr_SelectingVolumeManager              mySelectingVolumeMgr;
@@ -372,12 +393,9 @@ protected:
   Standard_Boolean                              myToPrebuildBVH;
   Handle(SelectMgr_BVHThreadPool)               myBVHThreadPool;
 
-private:
-
   Handle(TColStd_HArray1OfInteger)             myIndexes;
   Standard_Integer                             myCurRank;
   Standard_Boolean                             myIsLeftChildQueuedFirst;
-  Standard_Integer                             myEntityIdx;
   SelectMgr_MapOfObjectSensitives              myMapOfObjectSensitives;
 
 };

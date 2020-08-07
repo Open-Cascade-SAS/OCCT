@@ -94,9 +94,6 @@ DEFINE_STANDARD_HANDLE (AIS_Manipulator, AIS_InteractiveObject)
 //! @endcode
 //! The last method erases manipulator object.
 //! @warning
-//! On construction an instance of AIS_Manipulator object is bound to Graphic3d_ZLayerId_Topmost layer,
-//! so make sure to call for your AIS_InteractiveContext the method MainSelector()->SetPickClosest (Standard_False)
-//! otherwise you may notice issues with activation of modes.
 class AIS_Manipulator : public AIS_InteractiveObject
 {
 public:

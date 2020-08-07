@@ -57,6 +57,7 @@ SelectMgr_TriangularFrustum.hxx
 SelectMgr_TriangularFrustumSet.cxx
 SelectMgr_TriangularFrustumSet.hxx
 SelectMgr_TypeOfBVHUpdate.hxx
+SelectMgr_TypeOfDepthTolerance.hxx
 SelectMgr_TypeOfUpdate.hxx
 SelectMgr_VectorTypes.hxx
 SelectMgr_ViewClipRange.cxx

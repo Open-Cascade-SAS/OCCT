@@ -13300,6 +13300,52 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     {
       aCtx->SetPixelTolerance (Draw::Atoi (theArgVec[++anArgIter]));
     }
+    else if (anArg == "-preferclosest")
+    {
+      bool toPreferClosest = true;
+      if (anArgIter + 1 < theArgsNb
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toPreferClosest))
+      {
+        ++anArgIter;
+      }
+      aCtx->MainSelector()->SetPickClosest (toPreferClosest);
+    }
+    else if ((anArg == "-depthtol"
+           || anArg == "-depthtolerance")
+          && anArgIter + 1 < theArgsNb)
+    {
+      TCollection_AsciiString aTolType (theArgVec[++anArgIter]);
+      aTolType.LowerCase();
+      if (aTolType == "uniform")
+      {
+        if (anArgIter + 1 >= theArgsNb)
+        {
+          Message::SendFail() << "Syntax error: wrong number of arguments";
+          return 1;
+        }
+        aCtx->MainSelector()->SetDepthTolerance (SelectMgr_TypeOfDepthTolerance_Uniform,
+                                                 Draw::Atof (theArgVec[++anArgIter]));
+      }
+      else if (aTolType == "uniformpx")
+      {
+        if (anArgIter + 1 >= theArgsNb)
+        {
+          Message::SendFail() << "Syntax error: wrong number of arguments";
+          return 1;
+        }
+        aCtx->MainSelector()->SetDepthTolerance (SelectMgr_TypeOfDepthTolerance_UniformPixels,
+                                                 Draw::Atof (theArgVec[++anArgIter]));
+      }
+      else if (aTolType == "sensfactor")
+      {
+        aCtx->MainSelector()->SetDepthTolerance (SelectMgr_TypeOfDepthTolerance_SensitivityFactor, 0.0);
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error at '" << aTolType << "'";
+        return 1;
+      }
+    }
     else if ((anArg == "-mode"
            || anArg == "-dispmode")
           && anArgIter + 1 < theArgsNb)
@@ -13429,6 +13475,7 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     else
     {
       Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
     }
   }
 
@@ -14898,6 +14945,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n                            'first'   to pick first acceptable (default)"
     "\n                            'topmost' to pick only topmost (and nothing, if topmost is rejected by filters)"
     "\n    -pixTol    value        : sets up pixel tolerance"
+    "\n    -depthTol {uniform|uniformpx} value : sets tolerance for sorting results by depth"
+    "\n    -depthTol {sensfactor}  : use sensitive factor for sorting results by depth"
+    "\n    -preferClosest {0|1}    : sets if depth should take precedence over priority while sorting results"
     "\n    -dispMode  dispMode     : sets display mode for highlighting"
     "\n    -layer     ZLayer       : sets ZLayer for highlighting"
     "\n    -color     {name|r g b} : sets highlight color"
