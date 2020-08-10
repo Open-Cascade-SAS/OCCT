@@ -1,0 +1,23 @@
+puts "============"
+puts "0031702: Visualization, TKOpenGl - hatching interior is ignored in second View within the Viewer"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION
+vclear
+vclose *
+vinit v1/v1
+box b1 100 200 300
+vdisplay -dispMode 1 b1
+vfit
+vaspects b1 -interior hatch
+if { [vreadpixel 201 200 -rgb -name] != "BLACK" } { puts "Error: no hatching in first view" }
+vdump ${imagedir}/${casename}_v1.png
+
+vinit v2/v1
+box b2 100 200 300
+vdisplay -dispMode 1 b2
+vfit
+vaspects b2 -interior hatch
+if { [vreadpixel 201 200 -rgb -name] != "BLACK" } { puts "Error: no hatching in second view" }
+vdump ${imagedir}/${casename}_v2.png

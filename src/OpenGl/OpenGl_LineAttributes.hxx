@@ -18,9 +18,6 @@
 
 #include <OpenGl_Resource.hxx>
 
-#include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfMarker.hxx>
-#include <Font_FontAspect.hxx>
 #include <Graphic3d_HatchStyle.hxx>
 #include <NCollection_DataMap.hxx>
 
@@ -28,26 +25,16 @@ typedef NCollection_DataMap<Handle(Graphic3d_HatchStyle), unsigned int> OpenGl_M
 
 class OpenGl_Context;
 
-//! Utility class to manage OpenGL state of polygon hatching rasterization
-//! and keeping its cached state. The hatching rasterization is implemented
-//! using glPolygonStipple function of OpenGL. State of hatching is controlled
-//! by two parameters - type of hatching and IsEnabled parameter.
-//! The hatching rasterization is enabled only if non-zero index pattern type
-//! is selected (zero by default is reserved for solid filling) and if
-//! IsEnabled flag is set to true. The IsEnabled parameter is useful for temporarily
-//! turning on/off the hatching rasterization without making any costly GL calls
-//! for changing the hatch pattern. This is a sharable resource class - it creates
-//! OpenGL context objects for each hatch pattern to achieve quicker switching between
-//! them, thesse GL objects are freed when the resource is released by owner context.
-//! @note The implementation is not supported by Core Profile and by ES version.
+DEFINE_STANDARD_HANDLE(OpenGl_LineAttributes, OpenGl_Resource)
+
+//! Utility class to manage OpenGL resources of polygon hatching styles.
+//! @note the implementation is not supported by Core Profile and by ES version.
 class OpenGl_LineAttributes : public OpenGl_Resource
 {
+  DEFINE_STANDARD_RTTIEXT(OpenGl_LineAttributes, OpenGl_Resource)
 public:
 
   //! Default constructor.
-  //! By default the parameters are:
-  //! - IsEnabled (true),
-  //! - TypeOfHatch (0).
   Standard_EXPORT OpenGl_LineAttributes();
 
   //! Default destructor.
@@ -59,35 +46,19 @@ public:
   //! Returns estimated GPU memory usage - not implemented.
   virtual Standard_Size EstimatedDataSize() const Standard_OVERRIDE { return 0; }
 
-  //! Index of currently selected type of hatch.
-  int TypeOfHatch() const { return myTypeOfHatch; }
-
   //! Sets type of the hatch.
-  Standard_EXPORT int SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
-                                      const Handle(Graphic3d_HatchStyle)& theStyle);
+  Standard_EXPORT bool SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
+                                       const Handle(Graphic3d_HatchStyle)& theStyle);
 
-  //! Current enabled state of the hatching rasterization.
-  bool IsEnabled() const { return myIsEnabled; }
-
-  //! Turns on/off the hatching rasterization rasterization.
-  Standard_EXPORT bool SetEnabled (const OpenGl_Context* theGlCtx, const bool theToEnable);
-
-protected:
+private:
 
   unsigned int init (const OpenGl_Context* theGlCtx,
                      const Handle(Graphic3d_HatchStyle)& theStyle);
 
 protected:
 
-  int myTypeOfHatch; //!< Currently activated type of hatch
-  bool myIsEnabled; //!< Current enabled state of hatching rasterization.
   OpenGl_MapOfHatchStylesAndIds myStyles; //!< Hatch patterns
 
-public:
-
-  DEFINE_STANDARD_RTTIEXT(OpenGl_LineAttributes,OpenGl_Resource)
 };
-
-DEFINE_STANDARD_HANDLE(OpenGl_LineAttributes, OpenGl_Resource)
 
 #endif // _OpenGl_LineAttributes_Header

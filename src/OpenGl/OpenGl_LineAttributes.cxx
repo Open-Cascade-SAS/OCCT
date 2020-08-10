@@ -25,8 +25,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_LineAttributes,OpenGl_Resource)
 // purpose  :
 // =======================================================================
 OpenGl_LineAttributes::OpenGl_LineAttributes()
-: myTypeOfHatch (0),
-  myIsEnabled (true)
 {
   //
 }
@@ -46,9 +44,9 @@ OpenGl_LineAttributes::~OpenGl_LineAttributes()
 // =======================================================================
 void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
 {
-  // Delete surface patterns
 #if !defined(GL_ES_VERSION_2_0)
-  if (theGlCtx != NULL && theGlCtx->IsValid())
+  if (theGlCtx != NULL
+   && theGlCtx->IsValid())
   {
     for (OpenGl_MapOfHatchStylesAndIds::Iterator anIter (myStyles); anIter.More(); anIter.Next())
     {
@@ -56,9 +54,9 @@ void OpenGl_LineAttributes::Release (OpenGl_Context* theGlCtx)
     }
   }
 #else
-    (void )theGlCtx;
+  (void )theGlCtx;
 #endif
-    myStyles.Clear();
+  myStyles.Clear();
 }
 
 // =======================================================================
@@ -69,12 +67,7 @@ unsigned int OpenGl_LineAttributes::init (const OpenGl_Context* theGlCtx,
                                           const Handle(Graphic3d_HatchStyle)& theStyle)
 {
 #if !defined(GL_ES_VERSION_2_0)
-  if (theGlCtx->core11 == NULL)
-  {
-    return 0;
-  }
-
-  const unsigned int aListId = glGenLists(1);
+  const unsigned int aListId = theGlCtx->core11->glGenLists(1);
   theGlCtx->core11->glNewList ((GLuint)aListId, GL_COMPILE);
   theGlCtx->core11->glPolygonStipple ((const GLubyte*)theStyle->Pattern());
   theGlCtx->core11->glEndList();
@@ -90,16 +83,15 @@ unsigned int OpenGl_LineAttributes::init (const OpenGl_Context* theGlCtx,
 // function : SetTypeOfHatch
 // purpose  :
 // =======================================================================
-int OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
-                                           const Handle(Graphic3d_HatchStyle)& theStyle)
+bool OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context*               theGlCtx,
+                                            const Handle(Graphic3d_HatchStyle)& theStyle)
 {
-  // Return if not initialized
-  if (theStyle.IsNull())
+  if (theStyle.IsNull()
+   || theStyle->HatchType() == Aspect_HS_SOLID
+   || theGlCtx->core11 == NULL)
   {
-    return 0;
+    return false;
   }
-
-  const int anOldType = myTypeOfHatch;
 
   unsigned int aGpuListId = 0;
   if (!myStyles.Find (theStyle, aGpuListId))
@@ -109,66 +101,7 @@ int OpenGl_LineAttributes::SetTypeOfHatch (const OpenGl_Context*               t
   }
 
 #if !defined(GL_ES_VERSION_2_0)
-  if (theGlCtx->core11 == NULL)
-  {
-    return 0;
-  }
-  else if (theStyle->HatchType() != 0)
-  {
-    theGlCtx->core11->glCallList ((GLuint)aGpuListId);
-
-    if (myIsEnabled)
-    {
-      theGlCtx->core11fwd->glEnable (GL_POLYGON_STIPPLE);
-    }
-  }
-  else
-  {
-    theGlCtx->core11fwd->glDisable (GL_POLYGON_STIPPLE);
-  }
-#else
-  (void )theGlCtx;
+  theGlCtx->core11->glCallList ((GLuint)aGpuListId);
 #endif
-  myTypeOfHatch = theStyle->HatchType();
-
-  return anOldType;
-}
-
-// =======================================================================
-// function : SetEnabled
-// purpose  :
-// =======================================================================
-bool OpenGl_LineAttributes::SetEnabled (const OpenGl_Context* theGlCtx,
-                                        const bool theToEnable)
-{
-  // Return if not initialized
-  if (myStyles.IsEmpty())
-  {
-    return false;
-  }
-
-  const bool anOldIsEnabled = myIsEnabled;
-
-#if !defined(GL_ES_VERSION_2_0)
-  if (theGlCtx->core11 == NULL)
-  {
-    return 0;
-  }
-  else if (theToEnable)
-  {
-    if (myTypeOfHatch != 0)
-    {
-      theGlCtx->core11fwd->glEnable (GL_POLYGON_STIPPLE);
-    }
-  }
-  else
-  {
-    theGlCtx->core11fwd->glDisable (GL_POLYGON_STIPPLE);
-  }
-#else
-  (void )theGlCtx;
-#endif
-  myIsEnabled = theToEnable;
-
-  return anOldIsEnabled;
+  return true;
 }

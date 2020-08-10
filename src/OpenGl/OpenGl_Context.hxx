@@ -652,10 +652,7 @@ public:
   Standard_EXPORT Standard_Integer SetPolygonMode (const Standard_Integer theMode);
 
   //! @return cached enabled state of polygon hatching rasterization.
-  bool IsPolygonHatchEnabled() const
-  {
-    return !myHatchStyles.IsNull() && myHatchStyles->TypeOfHatch() != 0;
-  }
+  bool IsPolygonHatchEnabled() const { return myHatchIsEnabled; }
 
   //! Sets enabled state of polygon hatching rasterization
   //! without affecting currently selected hatching pattern.
@@ -663,10 +660,7 @@ public:
   Standard_EXPORT bool SetPolygonHatchEnabled (const bool theIsEnabled);
 
   //! @return cached state of polygon hatch type.
-  Standard_Integer PolygonHatchStyle() const
-  {
-    return myHatchStyles.IsNull() ? Aspect_HS_SOLID : myHatchStyles->TypeOfHatch();
-  }
+  Standard_Integer PolygonHatchStyle() const { return myActiveHatchType; }
 
   //! Sets polygon hatch pattern.
   //! Zero-index value is a default alias for solid filling.
@@ -1180,6 +1174,8 @@ private: //! @name fields tracking current state
   Standard_Integer              myActiveMockTextures; //!< currently active mock sampler objects
   Handle(OpenGl_FrameBuffer)    myDefaultFbo;      //!< default Frame Buffer Object
   Handle(OpenGl_LineAttributes) myHatchStyles;     //!< resource holding predefined hatch styles patterns
+  Standard_Integer              myActiveHatchType; //!< currently activated type of polygon hatch
+  Standard_Boolean              myHatchIsEnabled;  //!< current enabled state of polygon hatching rasterization
   Handle(OpenGl_Texture)        myTextureRgbaBlack;//!< mock black texture returning (0, 0, 0, 0)
   Handle(OpenGl_Texture)        myTextureRgbaWhite;//!< mock white texture returning (1, 1, 1, 1)
   Standard_Integer              myViewport[4];     //!< current viewport

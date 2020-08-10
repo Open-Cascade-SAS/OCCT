@@ -221,6 +221,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myPBRSpecIBLMapTexUnit   (Graphic3d_TextureUnit_PbrIblSpecular),
   myFrameStats (new OpenGl_FrameStats()),
   myActiveMockTextures (0),
+  myActiveHatchType (Aspect_HS_SOLID),
+  myHatchIsEnabled (false),
 #if !defined(GL_ES_VERSION_2_0)
   myPointSpriteOrig (GL_UPPER_LEFT),
   myRenderMode (GL_RENDER),
@@ -4339,16 +4341,29 @@ Standard_Integer OpenGl_Context::SetPolygonMode (const Standard_Integer theMode)
 // =======================================================================
 bool OpenGl_Context::SetPolygonHatchEnabled (const bool theIsEnabled)
 {
-  if (myHatchStyles.IsNull())
+  if (core11 == NULL)
   {
     return false;
   }
-  else if (myHatchStyles->IsEnabled() == theIsEnabled)
+  else if (myHatchIsEnabled == theIsEnabled)
   {
     return theIsEnabled;
   }
 
-  return myHatchStyles->SetEnabled (this, theIsEnabled);
+  const bool anOldIsEnabled = myHatchIsEnabled;
+#if !defined(GL_ES_VERSION_2_0)
+  if (theIsEnabled
+   && myActiveHatchType != Aspect_HS_SOLID)
+  {
+    core11fwd->glEnable (GL_POLYGON_STIPPLE);
+  }
+  else
+  {
+    core11fwd->glDisable (GL_POLYGON_STIPPLE);
+  }
+#endif
+  myHatchIsEnabled = theIsEnabled;
+  return anOldIsEnabled;
 }
 
 // =======================================================================
@@ -4357,26 +4372,43 @@ bool OpenGl_Context::SetPolygonHatchEnabled (const bool theIsEnabled)
 // =======================================================================
 Standard_Integer OpenGl_Context::SetPolygonHatchStyle (const Handle(Graphic3d_HatchStyle)& theStyle)
 {
-  if (theStyle.IsNull())
+  const Standard_Integer aNewStyle = !theStyle.IsNull() ? theStyle->HatchType() : Aspect_HS_SOLID;
+  if (myActiveHatchType == aNewStyle
+   || core11 == NULL)
   {
-    return 0;
+    return myActiveHatchType;
   }
 
-  if (myHatchStyles.IsNull())
+#if !defined(GL_ES_VERSION_2_0)
+  if (aNewStyle == Aspect_HS_SOLID)
   {
-    if (!GetResource ("OpenGl_LineAttributes", myHatchStyles))
+    if (myHatchIsEnabled)
     {
-      // share and register for release once the resource is no longer used
-      myHatchStyles = new OpenGl_LineAttributes();
-      ShareResource ("OpenGl_LineAttributes", myHatchStyles);
+      core11fwd->glDisable (GL_POLYGON_STIPPLE);
     }
-  }
-  if (myHatchStyles->TypeOfHatch() == theStyle->HatchType())
-  {
-    return theStyle->HatchType();
+    return myActiveHatchType;
   }
 
-  return myHatchStyles->SetTypeOfHatch (this, theStyle);
+  if (myHatchStyles.IsNull()
+  && !GetResource ("OpenGl_LineAttributes", myHatchStyles))
+  {
+    // share and register for release once the resource is no longer used
+    myHatchStyles = new OpenGl_LineAttributes();
+    ShareResource ("OpenGl_LineAttributes", myHatchStyles);
+  }
+
+  const Standard_Integer anOldType = myActiveHatchType;
+  myActiveHatchType = aNewStyle;
+  myHatchStyles->SetTypeOfHatch (this, theStyle);
+  if (myHatchIsEnabled
+   && anOldType == Aspect_HS_SOLID)
+  {
+    core11fwd->glEnable (GL_POLYGON_STIPPLE);
+  }
+  return anOldType;
+#else
+  return myActiveHatchType;
+#endif
 }
 
 // =======================================================================
