@@ -760,8 +760,11 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
     TopoDS_Face F;
     for (ii=InitialLength+1; ii<=myFaces->ColLength(); ii++) {
       for (jj=1; jj<=myFaces->RowLength(); jj++) {
-	F = TopoDS::Face(myFaces->Value(ii, jj));
-	if (!F.IsNull()) B.Add(result, F);
+        if (myFaces->Value(ii, jj).ShapeType() == TopAbs_FACE)
+        {
+          F = TopoDS::Face(myFaces->Value(ii, jj));
+          if (!F.IsNull()) B.Add(result, F);
+        }
       }
     }
 

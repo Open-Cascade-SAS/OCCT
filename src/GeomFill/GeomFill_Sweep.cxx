@@ -953,7 +953,12 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	    // (2.2.a) Cylindre
             // si la line est orthogonale au plan de rotation
 	    SError = error;
-	    gp_Ax3 Axis(CentreOfSurf, Dir.Direction(), DS);
+      //
+      gp_Ax3 Axis(CentreOfSurf, Dir.Direction());
+      if (DS.SquareMagnitude() > gp::Resolution())
+      {
+        Axis.SetXDirection(DS);
+      }
 	    S = new (Geom_CylindricalSurface) 
 	            (Axis, L.Distance(CentreOfSurf));
 	    Ok = Standard_True;

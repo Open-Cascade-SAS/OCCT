@@ -1,10 +1,6 @@
-puts "TODO OCC26568 ALL: An exception was caught"
-puts "TODO OCC26568 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO OCC26568 ALL: TEST INCOMPLETE"
-
-puts "========"
-puts "OCC26568"
-puts "========"
+puts "============================================================="
+puts "OCC26568 - Modeling Algorithms - Crash when creating pipe"
+puts "============================================================="
 puts ""
 ################################
 # Exception when creating pipe
@@ -15,4 +11,14 @@ explode b f
 circle c 0 0 0 0 1 0 10
 mkedge e c
 wire w e
-pipe p w b_1
+pipe result w b_1
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 3 -wire 3 -edge 7 -vertex 4
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 2.e-7} {
+   puts "Error: bad tolerance of result"
+}
