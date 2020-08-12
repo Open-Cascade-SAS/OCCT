@@ -135,9 +135,9 @@ static bool parseRgbColor (Standard_Integer& theArgIter,
                            Standard_Integer  theNbArgs,
                            const char**      theArgVec)
 {
-  Standard_Integer aNbParsed = ViewerTest::ParseColor (theNbArgs - theArgIter - 1,
-                                                       theArgVec + theArgIter + 1,
-                                                       theColor);
+  Standard_Integer aNbParsed = Draw::ParseColor (theNbArgs - theArgIter - 1,
+                                                 theArgVec + theArgIter + 1,
+                                                 theColor);
   if (aNbParsed == 0)
   {
     std::cout << "Syntax error at '" << theArgVec[theArgIter] << "'\n";
@@ -204,9 +204,9 @@ static Standard_Integer setColor (Draw_Interpretor& , Standard_Integer argc, con
     else if (!isColorDefined)
     {
       isColorDefined = true;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - anArgIter,
-                                                           argv + anArgIter,
-                                                           aColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (argc - anArgIter,
+                                                     argv + anArgIter,
+                                                     aColor);
       if (aNbParsed == 0)
       {
         std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
@@ -384,7 +384,7 @@ static Standard_Integer addColor (Draw_Interpretor& di, Standard_Integer argc, c
   }
 
   Quantity_ColorRGBA aColRGBA;
-  Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - 2, argv + 2, aColRGBA);
+  Standard_Integer aNbParsed = Draw::ParseColor (argc - 2, argv + 2, aColRGBA);
   if (aNbParsed != argc - 2)
   {
     std::cout << "Syntax error at '" << argv[2] << "'\n";
@@ -444,7 +444,7 @@ static Standard_Integer findColor (Draw_Interpretor& di, Standard_Integer argc, 
   }
 
   Quantity_ColorRGBA aColRGBA;
-  Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - 2, argv + 2, aColRGBA);
+  Standard_Integer aNbParsed = Draw::ParseColor (argc - 2, argv + 2, aColRGBA);
   if (aNbParsed != argc - 2)
   {
     std::cout << "Syntax error at '" << argv[2] << "'\n";
@@ -698,9 +698,9 @@ static Standard_Integer setStyledcolor (Draw_Interpretor& , Standard_Integer arg
     }
     else
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (argc - anArgIter,
-                                                           argv + anArgIter,
-                                                           aColRGBA);
+      Standard_Integer aNbParsed = Draw::ParseColor (argc - anArgIter,
+                                                     argv + anArgIter,
+                                                     aColRGBA);
       if (aNbParsed == 0)
       {
         std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
@@ -1002,9 +1002,9 @@ static Standard_Integer XAddVisMaterial (Draw_Interpretor& , Standard_Integer th
           || anArg == "-albedo")
     {
       Quantity_ColorRGBA aColorRGBA;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theNbArgs - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           aColorRGBA);
+      Standard_Integer aNbParsed = Draw::ParseColor (theNbArgs - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     aColorRGBA);
       if (aNbParsed == 0)
       {
         std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
@@ -1119,7 +1119,7 @@ static Standard_Integer XAddVisMaterial (Draw_Interpretor& , Standard_Integer th
       aMatPbr.IsDefined = true;
       bool isDoubleSided = true;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isDoubleSided))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isDoubleSided))
       {
         ++anArgIter;
       }

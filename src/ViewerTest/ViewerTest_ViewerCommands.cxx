@@ -1964,7 +1964,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     {
       ViewerTest_EventManager::ToExitOnCloseView() = true;
       if (anArgIt + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToExitOnCloseView()))
+       && Draw::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToExitOnCloseView()))
       {
         ++anArgIt;
       }
@@ -1974,7 +1974,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     {
       ViewerTest_EventManager::ToCloseViewOnEscape() = true;
       if (anArgIt + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToCloseViewOnEscape()))
+       && Draw::ParseOnOff (theArgVec[anArgIt + 1], ViewerTest_EventManager::ToCloseViewOnEscape()))
       {
         ++anArgIt;
       }
@@ -1985,7 +1985,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     {
       bool toEnable = true;
       if (anArgIt + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIt + 1], toEnable))
       {
         ++anArgIt;
       }
@@ -2138,7 +2138,7 @@ static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     }
     else if (anArg == "-showhidden"
           && anArgIter + 1 < argc
-          && ViewerTest::ParseOnOff (argv[anArgIter + 1], toShowHidden))
+          && Draw::ParseOnOff (argv[anArgIter + 1], toShowHidden))
     {
       ++anArgIter;
       hasShowHiddenArg = Standard_True;
@@ -2154,14 +2154,14 @@ static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
       continue;
     }
     else if (!hasHlrOnArg
-          && ViewerTest::ParseOnOff (argv[anArgIter], isHLROn))
+          && Draw::ParseOnOff (argv[anArgIter], isHLROn))
     {
       hasHlrOnArg = Standard_True;
       continue;
     }
     // old syntax
     else if (!hasShowHiddenArg
-          && ViewerTest::ParseOnOff(argv[anArgIter], toShowHidden))
+          && Draw::ParseOnOff(argv[anArgIter], toShowHidden))
     {
       hasShowHiddenArg = Standard_True;
       continue;
@@ -3832,7 +3832,7 @@ static int VRepaint (Draw_Interpretor& , Standard_Integer theArgNb, const char**
     {
       isImmediateUpdate = Standard_True;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isImmediateUpdate))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isImmediateUpdate))
       {
         ++anArgIter;
       }
@@ -4133,9 +4133,9 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
     else if (aFlag == "-colorlabel"
           || aFlag == "-colorlabels")
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           aLabelsColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     aLabelsColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
@@ -4145,9 +4145,9 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
     }
     else if (aFlag == "-colorarrowx")
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           anArrowColorX);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     anArrowColorX);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
@@ -4157,9 +4157,9 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
     }
     else if (aFlag == "-colorarrowy")
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           anArrowColorY);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     anArrowColorY);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
@@ -4169,9 +4169,9 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
     }
     else if (aFlag == "-colorarrowz")
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           anArrowColorZ);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     anArrowColorZ);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
@@ -4512,7 +4512,7 @@ static int VColorScale (Draw_Interpretor& theDI,
       }
 
       Standard_Boolean IsLog;
-      if (!ViewerTest::ParseOnOff(theArgVec[++anArgIter], IsLog))
+      if (!Draw::ParseOnOff(theArgVec[++anArgIter], IsLog))
       {
         Message::SendFail() << "Syntax error at argument '" << anArg << "'";
         return 1;
@@ -4535,13 +4535,13 @@ static int VColorScale (Draw_Interpretor& theDI,
     else if (aFlag == "-colorrange")
     {
       Quantity_Color aColorMin, aColorMax;
-      Standard_Integer aNbParsed1 = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
-                                                            theArgVec + (anArgIter + 1),
-                                                            aColorMin);
+      Standard_Integer aNbParsed1 = Draw::ParseColor (theArgNb  - (anArgIter + 1),
+                                                      theArgVec + (anArgIter + 1),
+                                                      aColorMin);
       anArgIter += aNbParsed1;
-      Standard_Integer aNbParsed2 = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
-                                                            theArgVec + (anArgIter + 1),
-                                                            aColorMax);
+      Standard_Integer aNbParsed2 = Draw::ParseColor (theArgNb  - (anArgIter + 1),
+                                                      theArgVec + (anArgIter + 1),
+                                                      aColorMax);
       anArgIter += aNbParsed2;
       if (aNbParsed1 == 0
        || aNbParsed2 == 0)
@@ -4559,7 +4559,7 @@ static int VColorScale (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff(theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff(theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -4570,7 +4570,7 @@ static int VColorScale (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -4657,9 +4657,9 @@ static int VColorScale (Draw_Interpretor& theDI,
       }
 
       Quantity_Color aColor;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
-                                                           theArgVec + (anArgIter + 1),
-                                                           aColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - (anArgIter + 1),
+                                                     theArgVec + (anArgIter + 1),
+                                                     aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
@@ -4727,7 +4727,7 @@ static int VColorScale (Draw_Interpretor& theDI,
         toEnable = (aLabAtBorder == 1);
       }
       else if (anArgIter + 1 < theArgNb
-            && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+            && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -4742,9 +4742,9 @@ static int VColorScale (Draw_Interpretor& theDI,
       for (;;)
       {
         Quantity_Color aColor;
-        Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - (anArgIter + 1),
-                                                             theArgVec + (anArgIter + 1),
-                                                             aColor);
+        Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - (anArgIter + 1),
+                                                       theArgVec + (anArgIter + 1),
+                                                       aColor);
         if (aNbParsed == 0)
         {
           break;
@@ -6551,7 +6551,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toShowWarns = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toShowWarns))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toShowWarns))
       {
         --anArgIter;
       }
@@ -6567,7 +6567,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toShow = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toShow))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toShow))
       {
         --anArgIter;
       }
@@ -6583,7 +6583,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toSuppress = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toSuppress))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toSuppress))
       {
         --anArgIter;
       }
@@ -6597,7 +6597,7 @@ static int VGlDebug (Draw_Interpretor& theDI,
     {
       Standard_Boolean toSync = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toSync))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toSync))
       {
         --anArgIter;
       }
@@ -6625,13 +6625,13 @@ static int VGlDebug (Draw_Interpretor& theDI,
     else if (anArgCase == "-debug")
     {
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnableDebug))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnableDebug))
       {
         --anArgIter;
       }
       aDefCaps->contextDebug = toEnableDebug;
     }
-    else if (ViewerTest::ParseOnOff (anArg, toEnableDebug)
+    else if (Draw::ParseOnOff (anArg, toEnableDebug)
           && (anArgIter + 1 == theArgNb))
     {
       // simple alias to turn on almost everything
@@ -6758,7 +6758,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6768,7 +6768,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6778,7 +6778,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6788,7 +6788,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6798,7 +6798,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6808,7 +6808,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6819,7 +6819,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6829,7 +6829,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6843,7 +6843,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6854,7 +6854,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6867,7 +6867,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6882,7 +6882,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6897,7 +6897,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -6909,7 +6909,7 @@ static int VCaps (Draw_Interpretor& theDI,
     {
       Standard_Boolean toDisable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toDisable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toDisable))
       {
         --anArgIter;
       }
@@ -7328,7 +7328,7 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     {
       Standard_Boolean toEnable = Standard_True;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -7338,7 +7338,7 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     {
       Standard_Boolean toEnable = Standard_True;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -7348,7 +7348,7 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     {
       ViewerTest_EventManager::ToExitOnCloseView() = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], ViewerTest_EventManager::ToExitOnCloseView()))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], ViewerTest_EventManager::ToExitOnCloseView()))
       {
         ++anArgIter;
       }
@@ -7358,7 +7358,7 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     {
       ViewerTest_EventManager::ToCloseViewOnEscape() = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], ViewerTest_EventManager::ToCloseViewOnEscape()))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], ViewerTest_EventManager::ToCloseViewOnEscape()))
       {
         ++anArgIter;
       }
@@ -7555,7 +7555,7 @@ static Standard_Integer VSelect (Draw_Interpretor& ,
     {
       toAllowOverlap = true;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toAllowOverlap))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toAllowOverlap))
       {
         ++anArgIter;
       }
@@ -8115,12 +8115,12 @@ static Standard_Integer V2DMode (Draw_Interpretor&, Standard_Integer theArgsNb, 
     else if (anArgCase == "-mode")
     {
       if (anArgIt + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], is2dMode))
+       && Draw::ParseOnOff (theArgVec[anArgIt + 1], is2dMode))
       {
         ++anArgIt;
       }
     }
-    else if (ViewerTest::ParseOnOff (theArgVec[anArgIt], is2dMode))
+    else if (Draw::ParseOnOff (theArgVec[anArgIt], is2dMode))
     {
       //
     }
@@ -9418,7 +9418,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
     aChangeArg.LowerCase();
 
     Standard_Boolean toEnable = Standard_True;
-    if (ViewerTest::ParseOnOff (aChangeArgs[0], toEnable))
+    if (Draw::ParseOnOff (aChangeArgs[0], toEnable))
     {
       aClipPlane->SetOn (toEnable);
     }
@@ -9508,7 +9508,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         return 1;
       }
 
-      if (ViewerTest::ParseOnOff (aChangeArgs[1], toEnable))
+      if (Draw::ParseOnOff (aChangeArgs[1], toEnable))
       {
         aClipPlane->SetCapping (toEnable);
         anArgIter += 1;
@@ -9529,7 +9529,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         return 1;
       }
 
-      if (ViewerTest::ParseOnOff (aChangeArgs[1], toEnable))
+      if (Draw::ParseOnOff (aChangeArgs[1], toEnable))
       {
         aClipPlane->SetUseObjectMaterial (toEnable == Standard_True);
         anArgIter += 1;
@@ -9546,7 +9546,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         return 1;
       }
 
-      if (ViewerTest::ParseOnOff (aChangeArgs[1], toEnable))
+      if (Draw::ParseOnOff (aChangeArgs[1], toEnable))
       {
         aClipPlane->SetUseObjectTexture (toEnable == Standard_True);
         anArgIter += 1;
@@ -9561,7 +9561,7 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         return 1;
       }
 
-      if (ViewerTest::ParseOnOff (aChangeArgs[1], toEnable))
+      if (Draw::ParseOnOff (aChangeArgs[1], toEnable))
       {
         aClipPlane->SetUseObjectShader (toEnable == Standard_True);
         anArgIter += 1;
@@ -9571,9 +9571,9 @@ static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
           || aChangeArg == "color")
     {
       Quantity_Color aColor;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (aNbChangeArgs - 1,
-                                                           aChangeArgs + 1,
-                                                           aColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (aNbChangeArgs - 1,
+                                                     aChangeArgs + 1,
+                                                     aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail ("Syntax error: need more arguments");
@@ -10124,7 +10124,7 @@ static int VCamera (Draw_Interpretor& theDI,
     {
       bool toLockUp = true;
       if (++anArgIter < theArgsNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toLockUp))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toLockUp))
       {
         --anArgIter;
       }
@@ -10453,7 +10453,7 @@ static int VStereo (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -10464,7 +10464,7 @@ static int VStereo (Draw_Interpretor& theDI,
     {
       Standard_Boolean toDisable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toDisable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toDisable))
       {
         --anArgIter;
       }
@@ -10522,7 +10522,7 @@ static int VStereo (Draw_Interpretor& theDI,
     {
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -10636,7 +10636,7 @@ static int VDefaults (Draw_Interpretor& theDi,
       ++anArgIter;
       bool toTurnOn = true;
       if (anArgIter >= theArgsNb
-      || !ViewerTest::ParseOnOff (theArgVec[anArgIter], toTurnOn))
+      || !Draw::ParseOnOff (theArgVec[anArgIter], toTurnOn))
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
         return 1;
@@ -11062,16 +11062,17 @@ static int VLight (Draw_Interpretor& theDi,
           || anArgCase.IsEqual ("-COLOR")
           || anArgCase.IsEqual ("-COLOUR"))
     {
-      if (++anArgIt >= theArgsNb
+      Quantity_Color aColor;
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgsNb - anArgIt - 1,
+                                                     theArgVec + anArgIt + 1,
+                                                     aColor);
+      anArgIt += aNbParsed;
+      if (aNbParsed == 0
        || aLightCurr.IsNull())
       {
         Message::SendFail() << "Syntax error at argument '" << anArg << "'";
         return 1;
       }
-
-      TCollection_AsciiString anArgNext (theArgVec[anArgIt]);
-      anArgNext.UpperCase();
-      const Quantity_Color aColor = ViewerTest::GetColorFromName (anArgNext.ToCString());
       aLightCurr->SetColor (aColor);
     }
     else if (anArgCase.IsEqual ("POS")
@@ -11264,7 +11265,7 @@ static int VLight (Draw_Interpretor& theDi,
 
       Standard_Boolean isHeadLight = Standard_True;
       if (anArgIt + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIt + 1], isHeadLight))
+       && Draw::ParseOnOff (theArgVec[anArgIt + 1], isHeadLight))
       {
         ++anArgIt;
       }
@@ -11671,7 +11672,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       bool isRayTrace = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isRayTrace))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isRayTrace))
       {
         ++anArgIter;
       }
@@ -11689,7 +11690,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       bool isRaster = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isRaster))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isRaster))
       {
         ++anArgIter;
       }
@@ -11796,7 +11797,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.ToEnableDepthPrepass = Standard_True;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], aParams.ToEnableDepthPrepass))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], aParams.ToEnableDepthPrepass))
       {
         ++anArgIter;
       }
@@ -11811,7 +11812,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
       }
       aParams.ToEnableAlphaToCoverage = Standard_True;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], aParams.ToEnableAlphaToCoverage))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], aParams.ToEnableAlphaToCoverage))
       {
         ++anArgIter;
       }
@@ -11880,7 +11881,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -11897,7 +11898,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -11913,7 +11914,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -11929,7 +11930,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -11945,7 +11946,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -11966,7 +11967,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+        && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12013,7 +12014,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+        && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12029,7 +12030,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-      && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+      && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12045,7 +12046,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+        && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12109,7 +12110,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+        && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12125,7 +12126,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+        && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12141,7 +12142,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-        && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+        && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12304,7 +12305,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
 
       Standard_Boolean toEnable = Standard_True;
       if (++anArgIter < theArgNb
-          && !ViewerTest::ParseOnOff (theArgVec[anArgIter], toEnable))
+          && !Draw::ParseOnOff (theArgVec[anArgIter], toEnable))
       {
         --anArgIter;
       }
@@ -12493,7 +12494,7 @@ static Standard_Integer VRenderParams (Draw_Interpretor& theDI,
         TCollection_AsciiString aStateStr(theArgVec[anArgIter]);
         aStateStr.LowerCase();
         bool toEnable = true;
-        if (ViewerTest::ParseOnOff (aStateStr.ToCString(), toEnable))
+        if (Draw::ParseOnOff (aStateStr.ToCString(), toEnable))
         {
           aState = toEnable ? Graphic3d_RenderingParams::FrustumCulling_On : Graphic3d_RenderingParams::FrustumCulling_Off;
         }
@@ -13154,7 +13155,7 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
       return 0;
     }
     else if (theArgsNb != 2
-         || !ViewerTest::ParseOnOff (theArgVec[1], toEnable))
+         || !Draw::ParseOnOff (theArgVec[1], toEnable))
     {
       Message::SendFail ("Syntax error: wrong number of parameters");
       return 1;
@@ -13226,7 +13227,7 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     {
       Standard_Boolean toEnable = Standard_True;
       if (anArgIter + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -13239,7 +13240,7 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     {
       Standard_Boolean toEnable = Standard_True;
       if (anArgIter + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -13253,7 +13254,7 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
     {
       Standard_Boolean toEnable = Standard_True;
       if (anArgIter + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -13352,9 +13353,9 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
       }
 
       Quantity_Color aColor;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgsNb - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           aColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgsNb - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail ("Syntax error: need more arguments");
@@ -13695,9 +13696,9 @@ static int VViewCube (Draw_Interpretor& ,
           || anArg == "-innercolor"
           || anArg == "-textcolor")
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theNbArgs - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           aColorRgb);
+      Standard_Integer aNbParsed = Draw::ParseColor (theNbArgs - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     aColorRgb);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -13767,7 +13768,7 @@ static int VViewCube (Draw_Interpretor& ,
     {
       bool toShow = true;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShow))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toShow))
       {
         ++anArgIter;
       }
@@ -13793,7 +13794,7 @@ static int VViewCube (Draw_Interpretor& ,
     {
       bool isOn = true;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isOn))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isOn))
       {
         ++anArgIter;
       }

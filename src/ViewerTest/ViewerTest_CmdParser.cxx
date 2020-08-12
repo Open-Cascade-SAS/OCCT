@@ -507,9 +507,9 @@ bool ViewerTest_CmdParser::ArgColor (const ViewerTest_CommandOptionKey theOption
                           false);
   const Standard_Integer aNumberOfAvailableArguments = aNumberOfArguments - theArgumentIndex;
   TheColor               aColor;
-  const Standard_Integer aNumberOfParsedArguments = ViewerTest::ParseColor (aNumberOfAvailableArguments,
-                                                                            &aRawStringArguments[theArgumentIndex],
-                                                                            aColor);
+  const Standard_Integer aNumberOfParsedArguments = Draw::ParseColor (aNumberOfAvailableArguments,
+                                                                      &aRawStringArguments[theArgumentIndex],
+                                                                      aColor);
   if (aNumberOfParsedArguments == 0)
   {
     return false;

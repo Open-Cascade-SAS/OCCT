@@ -112,7 +112,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
     {
       toUseExistingDoc = Standard_True;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toUseExistingDoc))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toUseExistingDoc))
       {
         ++anArgIter;
       }
@@ -121,7 +121,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
     {
       isParallel = Standard_True;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isParallel))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isParallel))
       {
         ++anArgIter;
       }
@@ -241,7 +241,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
     {
       toForceUVExport = true;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toForceUVExport))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toForceUVExport))
       {
         ++anArgIter;
       }
@@ -367,7 +367,7 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
     {
       toCreateCompOfTris = true;
       if (anArgIter + 1 < theArgc
-       && ViewerTest::ParseOnOff (theArgv[anArgIter + 1], toCreateCompOfTris))
+       && Draw::ParseOnOff (theArgv[anArgIter + 1], toCreateCompOfTris))
       {
         ++anArgIter;
       }
@@ -488,7 +488,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     {
       isSinglePrecision = Standard_True;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isSinglePrecision))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isSinglePrecision))
       {
         ++anArgIter;
       }
@@ -505,7 +505,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     {
       toUseExistingDoc = Standard_True;
       if (anArgIter + 1 < theNbArgs
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toUseExistingDoc))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toUseExistingDoc))
       {
         ++anArgIter;
       }
@@ -1402,7 +1402,11 @@ static Standard_Integer meshvectors( Draw_Interpretor& di,
       }
       else if (aParam == "-color")
       {
-        aColor      = ViewerTest::GetColorFromName(argv[anIdx]);
+        if (!Quantity_Color::ColorFromName (argv[anIdx], aColor))
+        {
+          Message::SendFail() << "Syntax error at " << aParam;
+          return 1;
+        }
       }
       else if (aParam == "-arrowpart")
       {

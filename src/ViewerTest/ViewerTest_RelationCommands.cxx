@@ -399,7 +399,17 @@ static int ParseDimensionParams (Standard_Integer  theArgNum,
     }
     else if (aParam.IsEqual ("-color"))
     {
-      theAspect->SetCommonColor (Quantity_Color (ViewerTest::GetColorFromName (theArgVec[++anIt])));
+      Quantity_Color aColor;
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNum - anIt - 1,
+                                                     theArgVec + anIt + 1,
+                                                     aColor);
+      anIt += aNbParsed;
+      if (aNbParsed == 0)
+      {
+        Message::SendFail() << "Error: wrong syntax at '" << aParam << "'";
+        return 1;
+      }
+      theAspect->SetCommonColor (aColor);
     }
     else if (aParam.IsEqual ("-extension"))
     {

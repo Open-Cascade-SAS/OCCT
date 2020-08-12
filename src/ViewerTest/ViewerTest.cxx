@@ -84,161 +84,6 @@ extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 #define DEFAULT_FREEBOUNDARY_COLOR Quantity_NOC_GREEN
 #define DEFAULT_MATERIAL           Graphic3d_NOM_BRASS
 
-namespace
-{
-
-  const Standard_Integer THE_MAX_INTEGER_COLOR_COMPONENT = 255;
-
-  const Standard_ShortReal THE_MAX_REAL_COLOR_COMPONENT = 1.0f;
-
-  //! Parses string and get an integer color component (only values within range 0 .. 255 are allowed)
-  //! @param theColorComponentString the string representing the color component
-  //! @param theIntegerColorComponent an integer color component that is a result of parsing
-  //! @return true if parsing was successful, or false otherwise
-  static bool parseNumericalColorComponent (const Standard_CString theColorComponentString,
-                                            Standard_Integer&      theIntegerColorComponent)
-  {
-    Standard_Integer anIntegerColorComponent;
-    if (!Draw::ParseInteger (theColorComponentString, anIntegerColorComponent))
-    {
-      return false;
-    }
-    if ((anIntegerColorComponent < 0) || (anIntegerColorComponent > THE_MAX_INTEGER_COLOR_COMPONENT))
-    {
-      return false;
-    }
-    theIntegerColorComponent = anIntegerColorComponent;
-    return true;
-  }
-
-  //! Parses the string and gets a real color component from it (only values within range 0.0 .. 1.0 are allowed)
-  //! @param theColorComponentString the string representing the color component
-  //! @param theRealColorComponent a real color component that is a result of parsing
-  //! @return true if parsing was successful, or false otherwise
-  static bool parseNumericalColorComponent (const Standard_CString theColorComponentString,
-                                            Standard_ShortReal&    theRealColorComponent)
-  {
-    Standard_Real aRealColorComponent;
-    if (!Draw::ParseReal (theColorComponentString, aRealColorComponent))
-    {
-      return false;
-    }
-    const Standard_ShortReal aShortRealColorComponent = static_cast<Standard_ShortReal> (aRealColorComponent);
-    if ((aShortRealColorComponent < 0.0f) || (aShortRealColorComponent > THE_MAX_REAL_COLOR_COMPONENT))
-    {
-      return false;
-    }
-    theRealColorComponent = aShortRealColorComponent;
-    return true;
-  }
-
-  //! Parses the string and gets a real color component from it (integer values 2 .. 255 are scaled to the 0.0 .. 1.0
-  //! range, values 0 and 1 are leaved as they are)
-  //! @param theColorComponentString the string representing the color component
-  //! @param theColorComponent a color component that is a result of parsing
-  //! @return true if parsing was successful, or false otherwise
-  static bool parseColorComponent (const Standard_CString theColorComponentString,
-                                   Standard_ShortReal&    theColorComponent)
-  {
-    Standard_Integer anIntegerColorComponent;
-    if (parseNumericalColorComponent (theColorComponentString, anIntegerColorComponent))
-    {
-      if (anIntegerColorComponent == 1)
-      {
-        theColorComponent = THE_MAX_REAL_COLOR_COMPONENT;
-      }
-      else
-      {
-        theColorComponent = anIntegerColorComponent * 1.0f / THE_MAX_INTEGER_COLOR_COMPONENT;
-      }
-      return true;
-    }
-    return parseNumericalColorComponent (theColorComponentString, theColorComponent);
-  }
-
-  //! Parses the array of strings and gets an integer color (only values within range 0 .. 255 are allowed and at least
-  //! one of components must be greater than 1)
-  //! @tparam TheNumber the type of resulting color vector elements
-  //! @param theNumberOfColorComponents the number of color components
-  //! @param theColorComponentStrings the array of strings representing color components
-  //! @param theNumericalColor a 4-component vector that is a result of parsing
-  //! @return true if parsing was successful, or false otherwise
-  template <typename TheNumber>
-  static bool parseNumericalColor (Standard_Integer&            theNumberOfColorComponents,
-                                   const char* const* const     theColorComponentStrings,
-                                   NCollection_Vec4<TheNumber>& theNumericalColor)
-  {
-    for (Standard_Integer aColorComponentIndex = 0; aColorComponentIndex < theNumberOfColorComponents;
-         ++aColorComponentIndex)
-    {
-      const char* const aColorComponentString = theColorComponentStrings[aColorComponentIndex];
-      TheNumber         aNumericalColorComponent;
-      if (parseNumericalColorComponent (aColorComponentString, aNumericalColorComponent))
-      {
-        theNumericalColor[aColorComponentIndex] = aNumericalColorComponent;
-      }
-      else
-      {
-        if (aColorComponentIndex == 3)
-        {
-          theNumberOfColorComponents = 3;
-        }
-        else
-        {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  //! Parses an array of strings and get an integer color (only values within range 0 .. 255 are allowed and at least
-  //! one of components must be greater than 1)
-  //! @param theNumberOfColorComponents the number of color components
-  //! @param theColorComponentStrings the array of strings representing color components
-  //! @param theColor a color that is a result of parsing
-  //! @return true if parsing was successful, or false otherwise
-  static bool parseIntegerColor (Standard_Integer&        theNumberOfColorComponents,
-                                 const char* const* const theColorComponentStrings,
-                                 Quantity_ColorRGBA&      theColor)
-  {
-    const Standard_Integer THE_COLOR_COMPONENT_NOT_PARSED = -1;
-    Graphic3d_Vec4i        anIntegerColor (THE_COLOR_COMPONENT_NOT_PARSED);
-    if (!parseNumericalColor (theNumberOfColorComponents, theColorComponentStrings, anIntegerColor)
-      || anIntegerColor.maxComp() <= 1)
-    {
-      return false;
-    }
-    if (anIntegerColor.a() == THE_COLOR_COMPONENT_NOT_PARSED)
-    {
-      anIntegerColor.a() = THE_MAX_INTEGER_COLOR_COMPONENT;
-    }
-
-    const Graphic3d_Vec4 aRealColor = Graphic3d_Vec4 (anIntegerColor) / static_cast<Standard_ShortReal> (THE_MAX_INTEGER_COLOR_COMPONENT);
-    theColor = Quantity_ColorRGBA (Quantity_ColorRGBA::Convert_sRGB_To_LinearRGB (aRealColor));
-    return true;
-  }
-
-  //! Parses an array of strings and get a real color (only values within range 0.0 .. 1.0 are allowed)
-  //! @param theNumberOfColorComponents the number of color components
-  //! @param theColorComponentStrings the array of strings representing color components
-  //! @param theColor a color that is a result of parsing
-  //! @return true if parsing was successful, or false otherwise
-  static bool parseRealColor (Standard_Integer&        theNumberOfColorComponents,
-                              const char* const* const theColorComponentStrings,
-                              Quantity_ColorRGBA&      theColor)
-  {
-    Graphic3d_Vec4 aRealColor (THE_MAX_REAL_COLOR_COMPONENT);
-    if (!parseNumericalColor (theNumberOfColorComponents, theColorComponentStrings, aRealColor))
-    {
-      return false;
-    }
-    theColor = Quantity_ColorRGBA (aRealColor);
-    return true;
-  }
-
-} // namespace
-
 //=======================================================================
 // function : GetColorFromName
 // purpose  : get the Quantity_NameOfColor from a string
@@ -252,48 +97,25 @@ Quantity_NameOfColor ViewerTest::GetColorFromName (const Standard_CString theNam
 }
 
 //=======================================================================
-// function : parseColor
+// function : ParseColor
 // purpose  :
 //=======================================================================
-Standard_Integer ViewerTest::parseColor (const Standard_Integer   theArgNb,
+Standard_Integer ViewerTest::ParseColor (const Standard_Integer   theArgNb,
                                          const char* const* const theArgVec,
-                                         Quantity_ColorRGBA&      theColor,
-                                         const bool               theToParseAlpha)
+                                         Quantity_ColorRGBA&      theColor)
 {
-  if ((theArgNb >= 1) && Quantity_ColorRGBA::ColorFromHex (theArgVec[0], theColor, !theToParseAlpha))
-  {
-    return 1;
-  }
-  if (theArgNb >= 1 && Quantity_ColorRGBA::ColorFromName (theArgVec[0], theColor))
-  {
-    if (theArgNb >= 2 && theToParseAlpha)
-    {
-      const Standard_CString anAlphaStr = theArgVec[1];
-      Standard_ShortReal     anAlphaComponent;
-      if (parseColorComponent (anAlphaStr, anAlphaComponent))
-      {
-        theColor.SetAlpha (anAlphaComponent);
-        return 2;
-      }
-    }
-    return 1;
-  }
-  if (theArgNb >= 3)
-  {
-    const Standard_Integer aNumberOfColorComponentsToParse = Min (theArgNb, theToParseAlpha ? 4 : 3);
-    Standard_Integer aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
-    if (parseIntegerColor (aNumberOfColorComponentsParsed, theArgVec, theColor))
-    {
-      return aNumberOfColorComponentsParsed;
-    }
-    aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
-    if (parseRealColor (aNumberOfColorComponentsParsed, theArgVec, theColor))
-    {
-      return aNumberOfColorComponentsParsed;
-    }
-    return 0;
-  }
-  return 0;
+  return Draw::ParseColor (theArgNb, theArgVec, theColor);
+}
+
+//=======================================================================
+// function : ParseColor
+// purpose  :
+//=======================================================================
+Standard_Integer ViewerTest::ParseColor (const Standard_Integer   theArgNb,
+                                         const char* const* const theArgVec,
+                                         Quantity_Color&          theColor)
+{
+  return Draw::ParseColor (theArgNb, theArgVec, theColor);
 }
 
 //=======================================================================
@@ -303,21 +125,7 @@ Standard_Integer ViewerTest::parseColor (const Standard_Integer   theArgNb,
 Standard_Boolean ViewerTest::ParseOnOff (Standard_CString  theArg,
                                          Standard_Boolean& theIsOn)
 {
-  TCollection_AsciiString aFlag(theArg);
-  aFlag.LowerCase();
-  if (aFlag == "on"
-   || aFlag == "1")
-  {
-    theIsOn = Standard_True;
-    return Standard_True;
-  }
-  else if (aFlag == "off"
-        || aFlag == "0")
-  {
-    theIsOn = Standard_False;
-    return Standard_True;
-  }
-  return Standard_False;
+  return Draw::ParseOnOff (theArg, theIsOn);
 }
 
 //=======================================================================
@@ -2483,7 +2291,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
         aNames.Value (aNames.Upper() - 0).ToCString(),
       };
 
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (3, anArgVec, aChangeSet->Color);
+      Standard_Integer aNbParsed = Draw::ParseColor (3, anArgVec, aChangeSet->Color);
       isOk = aNbParsed == 3;
       aNames.Remove (aNames.Length());
       aNames.Remove (aNames.Length());
@@ -2805,9 +2613,9 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-boundarycolor")
     {
       Quantity_Color aColor;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           aColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -3049,7 +2857,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-fb")
     {
       bool toEnable = true;
-      if (!ViewerTest::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
+      if (!Draw::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
       {
         Message::SendFail() << "Error: wrong syntax at " << anArg;
         return 1;
@@ -3081,9 +2889,9 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-setfbcolor"
           || anArg == "-fbcolor")
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           aChangeSet->FreeBoundaryColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     aChangeSet->FreeBoundaryColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -3104,7 +2912,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-isoontriang")
     {
       bool toEnable = true;
-      if (!ViewerTest::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
+      if (!Draw::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
       {
         Message::SendFail() << "Error: wrong syntax at " << anArg;
         return 1;
@@ -3129,7 +2937,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-faceedges")
     {
       bool toEnable = true;
-      if (!ViewerTest::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
+      if (!Draw::ParseOnOff (anArgIter + 1 < theArgNb ? theArgVec[anArgIter + 1] : "", toEnable))
       {
         Message::SendFail() << "Error: wrong syntax at " << anArg;
         return 1;
@@ -3307,7 +3115,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
     {
       bool toDrawOutline = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toDrawOutline))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toDrawOutline))
       {
         ++anArgIter;
       }
@@ -3321,7 +3129,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
     {
       bool toDrawEdges = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toDrawEdges))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toDrawEdges))
       {
         ++anArgIter;
       }
@@ -3334,7 +3142,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
     {
       bool isQuadMode = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], isQuadMode))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isQuadMode))
       {
         ++anArgIter;
       }
@@ -3345,9 +3153,9 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-edgecolor"
           || anArg == "-edgescolor")
     {
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgNb  - anArgIter - 1,
-                                                           theArgVec + anArgIter + 1,
-                                                           aChangeSet->EdgeColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
+                                                     theArgVec + anArgIter + 1,
+                                                     aChangeSet->EdgeColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << anArg << "'";
@@ -3421,7 +3229,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
     else if (anArg == "-dumpcompact")
     {
       toCompactDump = Standard_False;
-      if (++anArgIter >= theArgNb && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toCompactDump))
+      if (++anArgIter >= theArgNb && Draw::ParseOnOff (theArgVec[anArgIter + 1], toCompactDump))
         ++anArgIter;
     }
     else if (anArg == "-dumpdepth")
@@ -4467,7 +4275,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
     {
       bool toModulateBool = true;
       if (anArgIter + 1 < theArgsNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toModulateBool))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toModulateBool))
       {
         ++anArgIter;
       }

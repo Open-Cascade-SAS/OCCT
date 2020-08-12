@@ -12,6 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Resource_Manager.hxx>
 
 #include <OSD_Directory.hxx>
 #include <OSD_Environment.hxx>
@@ -20,7 +21,6 @@
 #include <OSD_Protection.hxx>
 #include <Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString.hxx>
 #include <Resource_LexicalCompare.hxx>
-#include <Resource_Manager.hxx>
 #include <Resource_NoSuchResource.hxx>
 #include <Resource_Unicode.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -54,42 +54,52 @@ static Standard_Integer GetLine(OSD_File& aFile,TCollection_AsciiString& aLine);
 
 static Standard_Boolean Debug;
 
-Resource_Manager::Resource_Manager(const Standard_CString aName,
-				   TCollection_AsciiString& aDefaultsDirectory,
-				   TCollection_AsciiString& anUserDefaultsDirectory,
-				   const Standard_Boolean Verbose) : myName(aName), myVerbose(Verbose)
+// =======================================================================
+// function : Resource_Manager
+// purpose  :
+// =======================================================================
+Resource_Manager::Resource_Manager (const TCollection_AsciiString& theName,
+                                    const TCollection_AsciiString& theDefaultsDirectory,
+                                    const TCollection_AsciiString& theUserDefaultsDirectory,
+                                    const Standard_Boolean theIsVerbose)
+: myName (theName),
+  myVerbose (theIsVerbose)
 {
-  if ( !aDefaultsDirectory.IsEmpty() ) {
-    OSD_Path anOSDPath(aDefaultsDirectory);
+  if (!theDefaultsDirectory.IsEmpty())
+  {
+    OSD_Path anOSDPath (theDefaultsDirectory);
     if (!anOSDPath.Name().IsEmpty())
     {
-      anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
+      anOSDPath.DownTrek (anOSDPath.Name() + anOSDPath.Extension());
     }
-    anOSDPath.SetName(aName);
-    anOSDPath.SetExtension("");
+    anOSDPath.SetName (theName);
+    anOSDPath.SetExtension ("");
     TCollection_AsciiString aPath;
-    anOSDPath.SystemName(aPath);
-    Load(aPath,myRefMap);
+    anOSDPath.SystemName (aPath);
+    Load (aPath, myRefMap);
   }
-  else
-    if (myVerbose)
-      std::cout << "Resource Manager Warning: aDefaultsDirectory is empty." << std::endl;
+  else if (myVerbose)
+  {
+    std::cout << "Resource Manager Warning: aDefaultsDirectory is empty." << std::endl;
+  }
 
-  if ( !anUserDefaultsDirectory.IsEmpty() ) {
-    OSD_Path anOSDPath(anUserDefaultsDirectory);
+  if (!theUserDefaultsDirectory.IsEmpty())
+  {
+    OSD_Path anOSDPath (theUserDefaultsDirectory);
     if (!anOSDPath.Name().IsEmpty())
     {
-      anOSDPath.DownTrek (anOSDPath.Name () + anOSDPath.Extension ());
+      anOSDPath.DownTrek (anOSDPath.Name() + anOSDPath.Extension());
     }
-    anOSDPath.SetName(aName);
-    anOSDPath.SetExtension("");
+    anOSDPath.SetName (theName);
+    anOSDPath.SetExtension ("");
     TCollection_AsciiString aPath;
-    anOSDPath.SystemName(aPath);
-    Load(aPath,myRefMap);
+    anOSDPath.SystemName (aPath);
+    Load (aPath, myRefMap);
   }
-  else
-    if (myVerbose)
-      std::cout << "Resource Manager Warning: anUserDefaultsDirectory is empty." << std::endl;
+  else if (myVerbose)
+  {
+    std::cout << "Resource Manager Warning: anUserDefaultsDirectory is empty." << std::endl;
+  }
 }
 
 Resource_Manager::Resource_Manager(const Standard_CString aName,
@@ -119,12 +129,16 @@ Resource_Manager::Resource_Manager(const Standard_CString aName,
     std::cout << "Resource Manager Warning: Environment variable \"CSF_" << aName << "UserDefaults\" not set." << std::endl;
 }
 
-void Resource_Manager::Load(TCollection_AsciiString& aPath,
+// =======================================================================
+// function : Load
+// purpose  :
+// =======================================================================
+void Resource_Manager::Load(const TCollection_AsciiString& thePath,
                             Resource_DataMapOfAsciiStringAsciiString& aMap)
 {
   Resource_KindOfLine aKind;
   TCollection_AsciiString Token1, Token2;
-  OSD_Path Path(aPath);
+  OSD_Path Path (thePath);
   OSD_File File = Path;
   TCollection_AsciiString FileName = Path.Name();
   File.Open(OSD_ReadOnly,OSD_Protection());
@@ -480,6 +494,17 @@ Standard_Boolean Resource_Manager::Find(const Standard_CString aResource) const
   if (myUserMap.IsBound(Resource) || myRefMap.IsBound(Resource))
     return Standard_True;
   return Standard_False;
+}
+
+//=======================================================================
+//function : Find
+//purpose  :
+//=======================================================================
+Standard_Boolean Resource_Manager::Find (const TCollection_AsciiString& theResource,
+                                         TCollection_AsciiString& theValue) const
+{
+  return myUserMap.Find (theResource, theValue)
+      || myRefMap .Find (theResource, theValue);
 }
 
 //=======================================================================

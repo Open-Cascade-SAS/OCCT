@@ -170,7 +170,7 @@ namespace
       theColorValues->Size() >= 2 ? theColorValues->Value (2).ToCString() : "",
       theColorValues->Size() >= 3 ? theColorValues->Value (3).ToCString() : ""
     };
-    return ViewerTest::ParseColor (theColorValues->Size(), anArgs, theColor) != 0;
+    return Draw::ParseColor (theColorValues->Size(), anArgs, theColor) != 0;
   }
 
   static bool convertToDatumPart (const TCollection_AsciiString& theValue,
@@ -354,7 +354,7 @@ namespace
       Standard_Boolean toHideLabels = Standard_True;
       if (aValues->Size() == 1)
       {
-        ViewerTest::ParseOnOff (aValues->First().ToCString(), toHideLabels);
+        Draw::ParseOnOff (aValues->First().ToCString(), toHideLabels);
       }
       else if (aValues->Size() != 0)
       {
@@ -374,7 +374,7 @@ namespace
       Standard_Boolean toHideArrows = Standard_True;
       if (aValues->Size() == 1)
       {
-        ViewerTest::ParseOnOff (aValues->First().ToCString(), toHideArrows);
+        Draw::ParseOnOff (aValues->First().ToCString(), toHideArrows);
       }
       else if (aValues->Size() != 0)
       {
@@ -2416,9 +2416,9 @@ static int VDrawText (Draw_Interpretor& theDI,
     else if (aParam == "-color")
     {
       Quantity_Color aColor;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgsNb - anArgIt - 1,
-                                                           theArgVec + anArgIt + 1,
-                                                           aColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgsNb - anArgIt - 1,
+                                                     theArgVec + anArgIt + 1,
+                                                     aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << aParam << "'";
@@ -2610,9 +2610,9 @@ static int VDrawText (Draw_Interpretor& theDI,
           || aParam == "-subtitlecolor")
     {
       Quantity_Color aColor;
-      Standard_Integer aNbParsed = ViewerTest::ParseColor (theArgsNb - anArgIt - 1,
-                                                           theArgVec + anArgIt + 1,
-                                                           aColor);
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgsNb - anArgIt - 1,
+                                                     theArgVec + anArgIt + 1,
+                                                     aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Syntax error at '" << aParam << "'";
@@ -3124,7 +3124,7 @@ static int VComputeHLR (Draw_Interpretor& ,
     {
       toShowHiddenEdges = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShowHiddenEdges))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toShowHiddenEdges))
       {
         ++anArgIter;
       }
@@ -3135,7 +3135,7 @@ static int VComputeHLR (Draw_Interpretor& ,
     {
       toShowCNEdges = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toShowCNEdges))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toShowCNEdges))
       {
         ++anArgIter;
       }
@@ -4320,13 +4320,17 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
   const TCollection_AsciiString aName (argv[anArgIter++]);
   Handle(AIS_MultipleConnectedInteractive) aMultiConObject;
   TCollection_AsciiString aColorString (argv[argc-1]);
-  Standard_CString aColorName = "";
+  Quantity_Color aColor;
   Standard_Boolean hasColor = Standard_False;
   if (aColorString.Search ("color=") != -1)
   {
     hasColor = Standard_True;
     aColorString.Remove (1, 6);
-    aColorName = aColorString.ToCString();
+    if (!Quantity_Color::ColorFromName (aColorString.ToCString(), aColor))
+    {
+      Message::SendFail() << "Syntax error at " << aColorString;
+      return 1;
+    }
   }
 
   const Standard_Integer aNbShapes = hasColor ? (argc - 1) : argc;
@@ -4355,7 +4359,7 @@ static Standard_Integer VConnect (Draw_Interpretor& /*di*/,
       anObject = aConnectedOrig;
 
       aContext->Load (anObject);
-      anObject->SetColor (ViewerTest::GetColorFromName (aColorName));
+      anObject->SetColor (aColor);
     }
 
     if (aMultiConObject.IsNull())
@@ -4718,7 +4722,7 @@ static Standard_Integer VChild (Draw_Interpretor& ,
     {
       bool aVal = true;
       if (anArgIter + 1 < theNbArgs
-        && ViewerTest::ParseOnOff(theArgVec[anArgIter + 1], aVal))
+        && Draw::ParseOnOff(theArgVec[anArgIter + 1], aVal))
       {
         ++anArgIter;
       }
@@ -4863,7 +4867,7 @@ static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
     }
   }
   if (anObjNames.Size() < 2
-  || !ViewerTest::ParseOnOff (anObjNames.Last().ToCString(), toTurnOn))
+  || !Draw::ParseOnOff (anObjNames.Last().ToCString(), toTurnOn))
   {
     Message::SendFail ("Syntax error: wrong number of arguments");
     return 1;
@@ -5504,7 +5508,7 @@ static int TextToBRep (Draw_Interpretor& /*theDI*/,
         return 1;
       }
 
-      ViewerTest::ParseOnOff (theArgVec[anArgIt], anIsCompositeCurve);
+      Draw::ParseOnOff (theArgVec[anArgIt], anIsCompositeCurve);
     }
     else if (aParam == "-plane")
     {
@@ -5743,7 +5747,7 @@ static int VFont (Draw_Interpretor& theDI,
     {
       bool toEnable = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -5755,7 +5759,7 @@ static int VFont (Draw_Interpretor& theDI,
     {
       bool toEnable = true;
       if (anArgIter + 1 < theArgNb
-       && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toEnable))
       {
         ++anArgIter;
       }
@@ -6341,7 +6345,7 @@ static int VNormals (Draw_Interpretor& theDI,
     TCollection_AsciiString aParam (theArgs[anArgIter]);
     aParam.LowerCase();
     if (anArgIter == 2
-     && ViewerTest::ParseOnOff (aParam.ToCString(), isOn))
+     && Draw::ParseOnOff (aParam.ToCString(), isOn))
     {
       continue;
     }
@@ -6366,7 +6370,7 @@ static int VNormals (Draw_Interpretor& theDI,
     {
       isOriented = Standard_True;
       if (anArgIter + 1 < theArgNum
-        && ViewerTest::ParseOnOff (theArgs[anArgIter + 1], isOriented))
+        && Draw::ParseOnOff (theArgs[anArgIter + 1], isOriented))
       {
         ++anArgIter;
       }

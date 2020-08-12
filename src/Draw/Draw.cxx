@@ -675,31 +675,29 @@ Standard_Integer  Draw_Call (char *c)
 //=================================================================================
 //
 //=================================================================================
-void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
-		const TCollection_AsciiString& theResourceFileName,
-		TCollection_AsciiString& theDefaultsDirectory,
-		TCollection_AsciiString& theUserDefaultsDirectory,
-		const Standard_Boolean Verbose ) {
-
+void Draw::Load (Draw_Interpretor& theDI,
+                 const TCollection_AsciiString& theKey,
+                 const TCollection_AsciiString& theResourceFileName,
+                 const TCollection_AsciiString& theDefaultsDirectory,
+                 const TCollection_AsciiString& theUserDefaultsDirectory,
+                 const Standard_Boolean theIsVerbose)
+{
   static Plugin_MapOfFunctions theMapOfFunctions;
-  OSD_Function f;
-
-  if(!theMapOfFunctions.IsBound(theKey)) {
-
-    Handle(Resource_Manager) aPluginResource = new Resource_Manager(theResourceFileName.ToCString(), theDefaultsDirectory, theUserDefaultsDirectory, Verbose);
-
-    if(!aPluginResource->Find(theKey.ToCString())) {
-      Standard_SStream aMsg; aMsg << "Could not find the resource:";
-      aMsg << theKey.ToCString()<< std::endl;
-      std::cout << "could not find the resource:"<<theKey.ToCString()<< std::endl;
-      throw Draw_Failure(aMsg.str().c_str());
+  OSD_Function aFunc = NULL;
+  if (!theMapOfFunctions.Find (theKey, aFunc))
+  {
+    TCollection_AsciiString aPluginLibrary;
+    Handle(Resource_Manager) aPluginResource = new Resource_Manager (theResourceFileName, theDefaultsDirectory, theUserDefaultsDirectory, theIsVerbose);
+    if (!aPluginResource->Find (theKey, aPluginLibrary))
+    {
+      Message::SendFail() << "could not find the resource:" << theKey;
+      Standard_SStream aMsg; aMsg << "Could not find the resource:" << theKey << std::endl;
+      throw Draw_Failure (aMsg.str().c_str());
     }
 
-    TCollection_AsciiString aPluginLibrary("");
 #if !defined(_WIN32) || defined(__MINGW32__)
-    aPluginLibrary += "lib";
+    aPluginLibrary = TCollection_AsciiString ("lib") + aPluginLibrary;
 #endif
-    aPluginLibrary +=  aPluginResource->Value(theKey.ToCString());
 #ifdef _WIN32
     aPluginLibrary += ".dll";
 #elif __APPLE__
@@ -709,37 +707,251 @@ void Draw::Load(Draw_Interpretor& theDI, const TCollection_AsciiString& theKey,
 #else
     aPluginLibrary += ".so";
 #endif
-    OSD_SharedLibrary aSharedLibrary(aPluginLibrary.ToCString());
-    if(!aSharedLibrary.DlOpen(OSD_RTLD_LAZY)) {
-      TCollection_AsciiString error(aSharedLibrary.DlError());
-      Standard_SStream aMsg; aMsg << "Could not open: ";
-      aMsg << aPluginResource->Value(theKey.ToCString());
-      aMsg << "; reason: ";
-      aMsg << error.ToCString();
+    OSD_SharedLibrary aSharedLibrary (aPluginLibrary.ToCString());
+    if (!aSharedLibrary.DlOpen (OSD_RTLD_LAZY))
+    {
+      const TCollection_AsciiString anError (aSharedLibrary.DlError());
+      Standard_SStream aMsg;
+      aMsg << "Could not open: " << aPluginLibrary << "; reason: " << anError;
 #ifdef OCCT_DEBUG
-      std::cout << "could not open: "  << aPluginResource->Value(theKey.ToCString())<< " ; reason: "<< error.ToCString() << std::endl;
+      std::cout << "could not open: "  << aPluginLibrary << " ; reason: "<< anError << std::endl;
 #endif
       throw Draw_Failure(aMsg.str().c_str());
     }
-    f = aSharedLibrary.DlSymb("PLUGINFACTORY");
-    if( f == NULL ) {
-      TCollection_AsciiString error(aSharedLibrary.DlError());
-      Standard_SStream aMsg; aMsg << "Could not find the factory in: ";
-      aMsg << aPluginResource->Value(theKey.ToCString());
-      aMsg << error.ToCString();
+
+    aFunc = aSharedLibrary.DlSymb ("PLUGINFACTORY");
+    if (aFunc == NULL)
+    {
+      const TCollection_AsciiString anError (aSharedLibrary.DlError());
+      Standard_SStream aMsg;
+      aMsg << "Could not find the factory in: " << aPluginLibrary << anError;
       throw Draw_Failure(aMsg.str().c_str());
     }
-    theMapOfFunctions.Bind(theKey, f);
+    theMapOfFunctions.Bind (theKey, aFunc);
   }
-  else
-    f = theMapOfFunctions(theKey);
-
-//   void (*fp) (Draw_Interpretor&, const TCollection_AsciiString&) = NULL;
-//   fp = (void (*)(Draw_Interpretor&, const TCollection_AsciiString&)) f;
-//   (*fp) (theDI, theKey);
 
   void (*fp) (Draw_Interpretor&) = NULL;
-  fp = (void (*)(Draw_Interpretor&)) f;
+  fp = (void (*)(Draw_Interpretor&) )aFunc;
   (*fp) (theDI);
+}
 
+namespace
+{
+  const Standard_Integer THE_MAX_INTEGER_COLOR_COMPONENT = 255;
+  const Standard_ShortReal THE_MAX_REAL_COLOR_COMPONENT = 1.0f;
+
+  //! Parses string and get an integer color component (only values within range 0 .. 255 are allowed)
+  //! @param theColorComponentString the string representing the color component
+  //! @param theIntegerColorComponent an integer color component that is a result of parsing
+  //! @return true if parsing was successful, or false otherwise
+  static bool parseNumericalColorComponent (const Standard_CString theColorComponentString,
+                                            Standard_Integer&      theIntegerColorComponent)
+  {
+    Standard_Integer anIntegerColorComponent;
+    if (!Draw::ParseInteger (theColorComponentString, anIntegerColorComponent))
+    {
+      return false;
+    }
+    if ((anIntegerColorComponent < 0) || (anIntegerColorComponent > THE_MAX_INTEGER_COLOR_COMPONENT))
+    {
+      return false;
+    }
+    theIntegerColorComponent = anIntegerColorComponent;
+    return true;
+  }
+
+  //! Parses the string and gets a real color component from it (only values within range 0.0 .. 1.0 are allowed)
+  //! @param theColorComponentString the string representing the color component
+  //! @param theRealColorComponent a real color component that is a result of parsing
+  //! @return true if parsing was successful, or false otherwise
+  static bool parseNumericalColorComponent (const Standard_CString theColorComponentString,
+                                            Standard_ShortReal&    theRealColorComponent)
+  {
+    Standard_Real aRealColorComponent;
+    if (!Draw::ParseReal (theColorComponentString, aRealColorComponent))
+    {
+      return false;
+    }
+    const Standard_ShortReal aShortRealColorComponent = static_cast<Standard_ShortReal> (aRealColorComponent);
+    if ((aShortRealColorComponent < 0.0f) || (aShortRealColorComponent > THE_MAX_REAL_COLOR_COMPONENT))
+    {
+      return false;
+    }
+    theRealColorComponent = aShortRealColorComponent;
+    return true;
+  }
+
+  //! Parses the string and gets a real color component from it (integer values 2 .. 255 are scaled to the 0.0 .. 1.0
+  //! range, values 0 and 1 are leaved as they are)
+  //! @param theColorComponentString the string representing the color component
+  //! @param theColorComponent a color component that is a result of parsing
+  //! @return true if parsing was successful, or false otherwise
+  static bool parseColorComponent (const Standard_CString theColorComponentString,
+                                   Standard_ShortReal&    theColorComponent)
+  {
+    Standard_Integer anIntegerColorComponent;
+    if (parseNumericalColorComponent (theColorComponentString, anIntegerColorComponent))
+    {
+      if (anIntegerColorComponent == 1)
+      {
+        theColorComponent = THE_MAX_REAL_COLOR_COMPONENT;
+      }
+      else
+      {
+        theColorComponent = anIntegerColorComponent * 1.0f / THE_MAX_INTEGER_COLOR_COMPONENT;
+      }
+      return true;
+    }
+    return parseNumericalColorComponent (theColorComponentString, theColorComponent);
+  }
+
+  //! Parses the array of strings and gets an integer color (only values within range 0 .. 255 are allowed and at least
+  //! one of components must be greater than 1)
+  //! @tparam TheNumber the type of resulting color vector elements
+  //! @param theNumberOfColorComponents the number of color components
+  //! @param theColorComponentStrings the array of strings representing color components
+  //! @param theNumericalColor a 4-component vector that is a result of parsing
+  //! @return true if parsing was successful, or false otherwise
+  template <typename TheNumber>
+  static bool parseNumericalColor (Standard_Integer&            theNumberOfColorComponents,
+                                   const char* const* const     theColorComponentStrings,
+                                   NCollection_Vec4<TheNumber>& theNumericalColor)
+  {
+    for (Standard_Integer aColorComponentIndex = 0; aColorComponentIndex < theNumberOfColorComponents;
+         ++aColorComponentIndex)
+    {
+      const char* const aColorComponentString = theColorComponentStrings[aColorComponentIndex];
+      TheNumber         aNumericalColorComponent;
+      if (parseNumericalColorComponent (aColorComponentString, aNumericalColorComponent))
+      {
+        theNumericalColor[aColorComponentIndex] = aNumericalColorComponent;
+      }
+      else
+      {
+        if (aColorComponentIndex == 3)
+        {
+          theNumberOfColorComponents = 3;
+        }
+        else
+        {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  //! Parses an array of strings and get an integer color (only values within range 0 .. 255 are allowed and at least
+  //! one of components must be greater than 1)
+  //! @param theNumberOfColorComponents the number of color components
+  //! @param theColorComponentStrings the array of strings representing color components
+  //! @param theColor a color that is a result of parsing
+  //! @return true if parsing was successful, or false otherwise
+  static bool parseIntegerColor (Standard_Integer&        theNumberOfColorComponents,
+                                 const char* const* const theColorComponentStrings,
+                                 Quantity_ColorRGBA&      theColor)
+  {
+    const Standard_Integer THE_COLOR_COMPONENT_NOT_PARSED = -1;
+    NCollection_Vec4<int>   anIntegerColor (THE_COLOR_COMPONENT_NOT_PARSED);
+    if (!parseNumericalColor (theNumberOfColorComponents, theColorComponentStrings, anIntegerColor)
+      || anIntegerColor.maxComp() <= 1)
+    {
+      return false;
+    }
+    if (anIntegerColor.a() == THE_COLOR_COMPONENT_NOT_PARSED)
+    {
+      anIntegerColor.a() = THE_MAX_INTEGER_COLOR_COMPONENT;
+    }
+
+    const NCollection_Vec4<float> aRealColor = NCollection_Vec4<float> (anIntegerColor) / static_cast<float> (THE_MAX_INTEGER_COLOR_COMPONENT);
+    theColor = Quantity_ColorRGBA (Quantity_ColorRGBA::Convert_sRGB_To_LinearRGB (aRealColor));
+    return true;
+  }
+
+  //! Parses an array of strings and get a real color (only values within range 0.0 .. 1.0 are allowed)
+  //! @param theNumberOfColorComponents the number of color components
+  //! @param theColorComponentStrings the array of strings representing color components
+  //! @param theColor a color that is a result of parsing
+  //! @return true if parsing was successful, or false otherwise
+  static bool parseRealColor (Standard_Integer&        theNumberOfColorComponents,
+                              const char* const* const theColorComponentStrings,
+                              Quantity_ColorRGBA&      theColor)
+  {
+    NCollection_Vec4<float> aRealColor (THE_MAX_REAL_COLOR_COMPONENT);
+    if (!parseNumericalColor (theNumberOfColorComponents, theColorComponentStrings, aRealColor))
+    {
+      return false;
+    }
+    theColor = Quantity_ColorRGBA (aRealColor);
+    return true;
+  }
+}
+
+//=======================================================================
+// function : parseColor
+// purpose  :
+//=======================================================================
+Standard_Integer Draw::parseColor (const Standard_Integer   theArgNb,
+                                   const char* const* const theArgVec,
+                                   Quantity_ColorRGBA&      theColor,
+                                   const bool               theToParseAlpha)
+{
+  if ((theArgNb >= 1) && Quantity_ColorRGBA::ColorFromHex (theArgVec[0], theColor, !theToParseAlpha))
+  {
+    return 1;
+  }
+  if (theArgNb >= 1 && Quantity_ColorRGBA::ColorFromName (theArgVec[0], theColor))
+  {
+    if (theArgNb >= 2 && theToParseAlpha)
+    {
+      const Standard_CString anAlphaStr = theArgVec[1];
+      Standard_ShortReal     anAlphaComponent;
+      if (parseColorComponent (anAlphaStr, anAlphaComponent))
+      {
+        theColor.SetAlpha (anAlphaComponent);
+        return 2;
+      }
+    }
+    return 1;
+  }
+  if (theArgNb >= 3)
+  {
+    const Standard_Integer aNumberOfColorComponentsToParse = Min (theArgNb, theToParseAlpha ? 4 : 3);
+    Standard_Integer aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
+    if (parseIntegerColor (aNumberOfColorComponentsParsed, theArgVec, theColor))
+    {
+      return aNumberOfColorComponentsParsed;
+    }
+    aNumberOfColorComponentsParsed = aNumberOfColorComponentsToParse;
+    if (parseRealColor (aNumberOfColorComponentsParsed, theArgVec, theColor))
+    {
+      return aNumberOfColorComponentsParsed;
+    }
+    return 0;
+  }
+  return 0;
+}
+
+//=======================================================================
+//function : ParseOnOff
+//purpose  :
+//=======================================================================
+Standard_Boolean Draw::ParseOnOff (Standard_CString  theArg,
+                                   Standard_Boolean& theIsOn)
+{
+  TCollection_AsciiString aFlag(theArg);
+  aFlag.LowerCase();
+  if (aFlag == "on"
+   || aFlag == "1")
+  {
+    theIsOn = Standard_True;
+    return Standard_True;
+  }
+  else if (aFlag == "off"
+        || aFlag == "0")
+  {
+    theIsOn = Standard_False;
+    return Standard_True;
+  }
+  return Standard_False;
 }

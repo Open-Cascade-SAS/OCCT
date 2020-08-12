@@ -41,10 +41,9 @@ DEFINE_STANDARD_HANDLE(Resource_Manager, Standard_Transient)
 //! Defines a resource structure and its management methods.
 class Resource_Manager : public Standard_Transient
 {
-
+  DEFINE_STANDARD_RTTIEXT(Resource_Manager,Standard_Transient)
 public:
 
-  
   //! Create a Resource manager.
   //! Attempts to find the two following files:
   //! $CSF_`aName`Defaults/aName
@@ -58,8 +57,16 @@ public:
   //! lines terminated by newline characters or end of file.  The
   //! syntax of an individual resource line is:
   Standard_EXPORT Resource_Manager(const Standard_CString aName, const Standard_Boolean Verbose = Standard_False);
-  
-  Standard_EXPORT Resource_Manager(const Standard_CString aName, TCollection_AsciiString& aDefaultsDirectory, TCollection_AsciiString& anUserDefaultsDirectory, const Standard_Boolean Verbose = Standard_False);
+
+  //! Create a Resource manager.
+  //! @param theName [in] description file name
+  //! @param theDefaultsDirectory  [in] default folder for looking description file
+  //! @param theUserDefaultsDirectory [in] user folder for looking description file
+  //! @param theIsVerbose [in] print verbose messages
+  Standard_EXPORT Resource_Manager (const TCollection_AsciiString& theName,
+                                    const TCollection_AsciiString& theDefaultsDirectory,
+                                    const TCollection_AsciiString& theUserDefaultsDirectory,
+                                    const Standard_Boolean theIsVerbose = Standard_False);
   
   //! Save the user resource structure in the specified file.
   //! Creates the file if it does not exist.
@@ -67,7 +74,11 @@ public:
   
   //! returns True if the Resource does exist.
   Standard_EXPORT Standard_Boolean Find (const Standard_CString aResource) const;
-  
+
+  //! returns True if the Resource does exist.
+  Standard_EXPORT Standard_Boolean Find (const TCollection_AsciiString& theResource,
+                                         TCollection_AsciiString& theValue) const;
+
   //! Gets the value of an integer resource according to its
   //! instance and its type.
   Standard_EXPORT virtual Standard_Integer Integer (const Standard_CString aResourceName) const;
@@ -105,20 +116,12 @@ public:
   //! or file doesn't exist returns empty string.
   Standard_EXPORT static void GetResourcePath (TCollection_AsciiString& aPath, const Standard_CString aName, const Standard_Boolean isUserDefaults);
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(Resource_Manager,Standard_Transient)
-
-protected:
-
-
-
-
 private:
 
-  
-  Standard_EXPORT void Load (TCollection_AsciiString& aPath, Resource_DataMapOfAsciiStringAsciiString& aMap);
+  Standard_EXPORT void Load (const TCollection_AsciiString& thePath,
+                             Resource_DataMapOfAsciiStringAsciiString& aMap);
+
+private:
 
   TCollection_AsciiString myName;
   Resource_DataMapOfAsciiStringAsciiString myRefMap;
@@ -126,13 +129,6 @@ private:
   Resource_DataMapOfAsciiStringExtendedString myExtStrMap;
   Standard_Boolean myVerbose;
 
-
 };
-
-
-
-
-
-
 
 #endif // _Resource_Manager_HeaderFile

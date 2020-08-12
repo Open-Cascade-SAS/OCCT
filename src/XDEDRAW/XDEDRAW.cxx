@@ -748,7 +748,7 @@ private:
       {
         myToPrefixDocName = Standard_True;
         if (anArgIter + 1 < theNbArgs
-         && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], myToPrefixDocName))
+         && Draw::ParseOnOff (theArgVec[anArgIter + 1], myToPrefixDocName))
         {
           ++anArgIter;
         }
@@ -762,7 +762,7 @@ private:
       {
         myToGetNames = Standard_True;
         if (anArgIter + 1 < theNbArgs
-         && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], myToGetNames))
+         && Draw::ParseOnOff (theArgVec[anArgIter + 1], myToGetNames))
         {
           ++anArgIter;
         }
@@ -776,7 +776,7 @@ private:
       {
         myToExplore = Standard_True;
         if (anArgIter + 1 < theNbArgs
-         && ViewerTest::ParseOnOff (theArgVec[anArgIter + 1], myToExplore))
+         && Draw::ParseOnOff (theArgVec[anArgIter + 1], myToExplore))
         {
           ++anArgIter;
         }

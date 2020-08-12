@@ -13,152 +13,156 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <TCollection_AsciiString.hxx>
+#include <Draw_Interpretor.hxx>
+#include <Draw_MapOfAsciiString.hxx>
+#include <Draw.hxx>
+#include <Message.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Directory.hxx>
 #include <OSD_File.hxx>
 #include <OSD_Environment.hxx>
 #include <OSD_SharedLibrary.hxx>
 #include <Resource_Manager.hxx>
-#include <Draw_Interpretor.hxx>
-#include <Draw_MapOfAsciiString.hxx>
-#include <Draw.hxx>
+#include <TCollection_AsciiString.hxx>
 
-static Handle(Resource_Manager) myResources;
-
-//=======================================================================
-//function : FindPluginFile
-//purpose  : Searches for the existence of the plugin file according to its name thePluginName:
-//           - if thePluginName is empty then it defaults to DrawPlugin
-//           - the search directory is defined according to the variable
-//             CSF_<filename>Defaults (if it is omitted then it defaults to
-//             $CASROOT/src/DrawResources)
-//           - finally existence of the file is verified in the search directory
-//           - if the file exists but corresponding variable (CSF_...) has not been
-//             explicitly set, it is forced to (for further reuse by Resource_Manager)
-//           Returns True if the file exists, otherwise - False.
-//=======================================================================
-
-#define FAILSTR "Failed to load plugin: "
-     
-//static Standard_Boolean FindPluginFile (TCollection_AsciiString& thePluginName)
-static Standard_Boolean FindPluginFile (TCollection_AsciiString& thePluginName, TCollection_AsciiString& aPluginDir)
+//! Searches for the existence of the plugin file according to its name thePluginName:
+//! - if thePluginName is empty then it defaults to DrawPlugin
+//! - the search directory is defined according to the variable
+//!   CSF_<filename>Defaults (if it is omitted then it defaults to
+//!   $CASROOT/src/DrawResources)
+//! - finally existence of the file is verified in the search directory
+//! - if the file exists but corresponding variable (CSF_...) has not been
+//!   explicitly set, it is forced to (for further reuse by Resource_Manager)
+//! @return TRUE if the file exists, otherwise - False
+static Standard_Boolean findPluginFile (TCollection_AsciiString& thePluginName,
+                                        TCollection_AsciiString& thePluginDir)
 {
-  Standard_Boolean aResult = Standard_True;
-  
   // check if the file name has been specified and use default value if not
-  if (thePluginName.IsEmpty()) {
+  if (thePluginName.IsEmpty())
+  {
     thePluginName += "DrawPlugin";
 #ifdef OCCT_DEBUG
     std::cout << "Plugin file name has not been specified. Defaults to " << thePluginName.ToCString() << std::endl;
 #endif
   }
 
-  //TCollection_AsciiString aPluginDir; // the search directory
-  Standard_Boolean aDirFound = Standard_True, aToSetCSFVariable = Standard_False;
+  Standard_Boolean aToSetCSFVariable = Standard_False;
   
   // the order of search : by CSF_<PluginFileName>Defaults and then by CASROOT
-  TCollection_AsciiString aCSFVariable = TCollection_AsciiString ("CSF_") + thePluginName + "Defaults";
-  aPluginDir = OSD_Environment (aCSFVariable).Value();
-  if (aPluginDir.IsEmpty())
+  const TCollection_AsciiString aCSFVariable = TCollection_AsciiString ("CSF_") + thePluginName + "Defaults";
+  thePluginDir = OSD_Environment (aCSFVariable).Value();
+  if (thePluginDir.IsEmpty())
   {
-    aPluginDir = OSD_Environment ("DRAWHOME").Value();
-    if (!aPluginDir.IsEmpty())
+    thePluginDir = OSD_Environment ("DRAWHOME").Value();
+    if (!thePluginDir.IsEmpty())
     {
       aToSetCSFVariable = Standard_True; //CSF variable to be set later
     }
     else
     {
       // now try by CASROOT
-      aPluginDir = OSD_Environment ("CASROOT").Value();
-      if (!aPluginDir.IsEmpty())
+      thePluginDir = OSD_Environment ("CASROOT").Value();
+      if (!thePluginDir.IsEmpty())
       {
-        aPluginDir += "/src/DrawResources";
+        thePluginDir += "/src/DrawResources";
         aToSetCSFVariable = Standard_True; //CSF variable to be set later
       }
       else
       {
-        aResult = aDirFound = Standard_False;
-        std::cout << FAILSTR "Neither " << aCSFVariable << ", nor CASROOT variables have been set\n";
+        Message::SendFail() << "Failed to load plugin: Neither " << aCSFVariable << ", nor CASROOT variables have been set";
+        return Standard_False;
       }
     }
   }
-  
-  if (aDirFound) {
-    // search directory name has been constructed, now check whether it and the file exist
-    
-    TCollection_AsciiString aPluginFileName = aPluginDir + "/" + thePluginName;
-    OSD_File PluginFile ( aPluginFileName );
-    if ( PluginFile.Exists() ) {
-      if (aToSetCSFVariable) {
-        OSD_Environment aCSFVarEnv ( aCSFVariable, aPluginDir );
-        aCSFVarEnv.Build();
+
+  // search directory name has been constructed, now check whether it and the file exist
+  const TCollection_AsciiString aPluginFileName = thePluginDir + "/" + thePluginName;
+  OSD_File aPluginFile (aPluginFileName);
+  if (!aPluginFile.Exists())
+  {
+    Message::SendFail() << "Failed to load plugin: File " << aPluginFileName << " not found";
+    return Standard_False;
+  }
+
+  if (aToSetCSFVariable)
+  {
+    OSD_Environment aCSFVarEnv (aCSFVariable, thePluginDir);
+    aCSFVarEnv.Build();
 #ifdef OCCT_DEBUG
-        std::cout << "Variable " << aCSFVariable.ToCString() << " has not been explicitly defined. Set to " << aPluginDir.ToCString() << std::endl;
+    std::cout << "Variable " << aCSFVariable << " has not been explicitly defined. Set to " << thePluginDir << std::endl;
 #endif
-        if ( aCSFVarEnv.Failed() ) {
-          aResult = Standard_False;
-          std::cout << FAILSTR "Failed to initialize " << aCSFVariable.ToCString() << " with " << aPluginDir.ToCString() << std::endl;
-        }
-      }
-    } else {
-      aResult = Standard_False;
-      std::cout << FAILSTR "File " << aPluginFileName.ToCString() << " not found" << std::endl;
+    if (aCSFVarEnv.Failed())
+    {
+      Message::SendFail() << "Failed to load plugin: Failed to initialize " << aCSFVariable << " with " << thePluginDir;
+      return Standard_False;
     }
   }
   
-  return aResult;
+  return Standard_True;
 }
 
-//=======================================================================
-//function : Parse
-//purpose  : Parse the input keys to atomic keys (<key> --> <akey>[<akey> ..])
-//=======================================================================
-
-static void Parse (Draw_MapOfAsciiString& theMap)
+//! Resolve keys within input map (groups, aliases and toolkits) to the list of destination toolkits (plugins to load).
+//! @param theMap [in] [out] map to resolve (will be rewritten)
+//! @param theResMgr [in] resource manager to resolve keys
+static void resolveKeys (Draw_MapOfAsciiString& theMap,
+                         const Handle(Resource_Manager)& theResMgr)
 {
-  Draw_MapOfAsciiString aMap, aMap2;
-  Standard_Integer j, k;
-  Standard_Integer aMapExtent, aMap2Extent;
-  aMapExtent = theMap.Extent();
-  for(j = 1; j <= aMapExtent; j++) {
-    if (!myResources.IsNull()) {
-      const TCollection_AsciiString& aKey = theMap.FindKey(j);
-      TCollection_AsciiString aResource = aKey;
-      if(myResources->Find(aResource.ToCString())) {
-#ifdef OCCT_DEBUG
-	std::cout << "Parse Value ==> " << myResources->Value(aResource.ToCString()) << std::endl;
-#endif
-	TCollection_AsciiString aValue(myResources->Value(aResource.ToCString()));
-	// parse aValue string
-	Standard_Integer i=1;
-	for(;;) {
-	  TCollection_AsciiString aCurKey = aValue.Token(" \t,", i++);
-#ifdef OCCT_DEBUG
-	  std::cout << "Parse aCurKey = " << aCurKey.ToCString() << std::endl;
-#endif
-	  if(aCurKey.IsEmpty()) break;
-	  if(!myResources->Find(aCurKey.ToCString())) {
-	    // It is toolkit
-	    aMap.Add(aResource);
-	  }
-	  else
-	    aMap2.Add(aCurKey);
-	}
-      } else
-	std::cout <<"Pload : Resource = " << aResource << " is not found" << std::endl;
-      if(!aMap2.IsEmpty())
-	Parse(aMap2);
-      //
-      aMap2Extent = aMap2.Extent();
-      for(k = 1; k <= aMap2Extent; k++) {
-	aMap.Add(aMap2.FindKey(k));
-      }
+  if (theResMgr.IsNull())
+  {
+    return;
+  }
 
+  Draw_MapOfAsciiString aMap, aMap2;
+  const Standard_Integer aMapExtent = theMap.Extent();
+  for (Standard_Integer j = 1; j <= aMapExtent; ++j)
+  {
+    TCollection_AsciiString aValue;
+    const TCollection_AsciiString aResource = theMap.FindKey (j);
+    if (theResMgr->Find (aResource, aValue))
+    {
+    #ifdef OCCT_DEBUG
+      std::cout << "Parse Value ==> " << aValue << std::endl;
+    #endif
+      for (Standard_Integer aKeyIter = 1;; ++aKeyIter)
+      {
+        const TCollection_AsciiString aCurKey = aValue.Token (" \t,", aKeyIter);
+      #ifdef OCCT_DEBUG
+        std::cout << "Parse aCurKey = " << aCurKey << std::endl;
+      #endif
+        if (aCurKey.IsEmpty())
+        {
+          break;
+        }
+
+        if (theResMgr->Find (aCurKey.ToCString()))
+        {
+          aMap2.Add (aCurKey);
+        }
+        else
+        {
+          aMap.Add (aResource); // It is toolkit
+        }
+      }
+    }
+    else
+    {
+      Message::SendFail() << "Pload : Resource = " << aResource << " is not found";
+    }
+
+    if (!aMap2.IsEmpty())
+    {
+      resolveKeys (aMap2, theResMgr);
+    }
+
+    //
+    const Standard_Integer aMap2Extent = aMap2.Extent();
+    for (Standard_Integer k = 1; k <= aMap2Extent; ++k)
+    {
+      aMap.Add (aMap2.FindKey (k));
     }
   }
 
-  theMap.Assign(aMap);
+  theMap.Assign (aMap);
 }
 
 //=======================================================================
@@ -166,98 +170,81 @@ static void Parse (Draw_MapOfAsciiString& theMap)
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer Pload (Draw_Interpretor& di,
-                               Standard_Integer  n,
-                               const char**      argv)
+static Standard_Integer Pload (Draw_Interpretor& theDI,
+                               Standard_Integer  theNbArgs,
+                               const char**      theArgVec)
 {
-  char adef[] = "-";
-  TCollection_AsciiString aPluginFileName("");
-  TCollection_AsciiString aPluginDir(""), aPluginDir2("");
-  Standard_Integer aStart = 0;
-  Standard_Integer aFinish = n - 1;
-
-  if (n == 1) {
-    // Load DEFAULT key
-    aStart = 0;
-  } else {
-    if(argv[1][0] == adef[0]) {
-      aPluginFileName = argv[1];
-      aPluginFileName.Remove(1,1);
-      if (n == 2) {
-	// Load DEFAULT key from aPluginFileName file
-	aStart = 0;
-	aFinish = n - 2;
-      } else {
-	aStart = 2;
-      }
-    } else {
-      aStart = 1;
+  Draw_MapOfAsciiString aMap;
+  TCollection_AsciiString aPluginFileName;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    const TCollection_AsciiString aTK (theArgVec[anArgIter]);
+    if (anArgIter == 1
+     && aTK.Value (1) == '-')
+    {
+      aPluginFileName = aTK.SubString (2, aTK.Length());
+    }
+    else
+    {
+      aMap.Add (aTK);
     }
   }
+  if (aMap.IsEmpty())
+  {
+    aMap.Add ("DEFAULT"); // Load DEFAULT key
+  }
 
-  //if ( !FindPluginFile (aPluginFileName) ) {
-  if ( !FindPluginFile (aPluginFileName, aPluginDir) ) {
+  TCollection_AsciiString aPluginDir, aPluginDir2;
+  if (!findPluginFile (aPluginFileName, aPluginDir))
+  {
     return 1;
-  } 
+  }
 
-  Draw_MapOfAsciiString aMap;
-  TCollection_AsciiString aDEFAULT("DEFAULT");
-  //for(Standard_Integer i = aStart; i < n; i++) 
-  for(Standard_Integer i = aStart; i <= aFinish; i++) 
-    if (i == 0) {
-      // Load DEFAULT key
-      aMap.Add(aDEFAULT);
-    } else {
-      TCollection_AsciiString aTK(argv[i]);
-      aMap.Add(aTK);
+  Handle(Resource_Manager) aResMgr = new Resource_Manager (aPluginFileName.ToCString(), aPluginDir, aPluginDir2, Standard_False);
+  resolveKeys (aMap, aResMgr);
+
+  const Standard_Integer aMapExtent = aMap.Extent();
+  for (Standard_Integer aResIter = 1; aResIter <= aMapExtent; ++aResIter)
+  {
+    const TCollection_AsciiString aResource = aMap.FindKey (aResIter);
+  #ifdef OCCT_DEBUG
+    std::cout << "aResource = " << aResource << std::endl;
+  #endif
+    TCollection_AsciiString aValue;
+    if (!aResMgr->Find (aResource, aValue))
+    {
+      Message::SendWarning() <<"Pload : Resource = " << aResource << " is not found";
+      continue;
     }
-  
-  //myResources = new Resource_Manager(aPluginFileName.ToCString());
-  myResources = new Resource_Manager(aPluginFileName.ToCString(), aPluginDir, aPluginDir2, Standard_False);
 
-  Parse(aMap);
-  Standard_Integer j;
-  Standard_Integer aMapExtent;
-  aMapExtent = aMap.Extent();
-  for(j = 1; j <= aMapExtent; j++) {
-    const TCollection_AsciiString& aKey = aMap.FindKey(j);
-    TCollection_AsciiString aResource = aKey;
-#ifdef OCCT_DEBUG
-      std::cout << "aResource = " << aResource << std::endl;
-#endif
-    if(myResources->Find(aResource.ToCString())) {
-      const TCollection_AsciiString& aValue = myResources->Value(aResource.ToCString()); 
-#ifdef OCCT_DEBUG
-      std::cout << "Value ==> " << aValue << std::endl;
-#endif
-	
-      //Draw::Load(di, aKey, aPluginFileName);
-      Draw::Load(di, aKey, aPluginFileName, aPluginDir, aPluginDir2, Standard_False);
+  #ifdef OCCT_DEBUG
+    std::cout << "Value ==> " << aValue << std::endl;
+  #endif
 
-      // Load TclScript
-      TCollection_AsciiString aCSFVariable ("CSF_DrawPluginTclDir");
-      TCollection_AsciiString aTclScriptDir;
-      aTclScriptDir = getenv (aCSFVariable.ToCString());
-      TCollection_AsciiString aTclScriptFileName;
-      TCollection_AsciiString aTclScriptFileNameDefaults;
-      aTclScriptFileName = aTclScriptDir + "/" + aValue + ".tcl";
-      aTclScriptFileNameDefaults = aPluginDir + "/" + aValue + ".tcl";
-      OSD_File aTclScriptFile ( aTclScriptFileName );
-      OSD_File aTclScriptFileDefaults ( aTclScriptFileNameDefaults );
-      if (!aTclScriptDir.IsEmpty() && aTclScriptFile.Exists()) {
-#ifdef OCCT_DEBUG
-	std::cout << "Load " << aTclScriptFileName << " TclScript" << std::endl;
-#endif
-	di.EvalFile( aTclScriptFileName.ToCString() );
-      } else if (!aPluginDir.IsEmpty() && aTclScriptFileDefaults.Exists()) {
-#ifdef OCCT_DEBUG
-	std::cout << "Load " << aTclScriptFileNameDefaults << " TclScript" << std::endl;
-#endif
-	di.EvalFile( aTclScriptFileNameDefaults.ToCString() );
-      }
-  
-    } else 
-      std::cout <<"Pload : Resource = " << aResource << " is not found" << std::endl;
+    Draw::Load (theDI, aResource, aPluginFileName, aPluginDir, aPluginDir2, Standard_False);
+
+    // Load TclScript
+    const TCollection_AsciiString aTclScriptDir = OSD_Environment ("CSF_DrawPluginTclDir").Value();
+    const TCollection_AsciiString aTclScriptFileName         = aTclScriptDir + "/" + aValue + ".tcl";
+    const TCollection_AsciiString aTclScriptFileNameDefaults = aPluginDir    + "/" + aValue + ".tcl";
+    OSD_File aTclScriptFile (aTclScriptFileName);
+    OSD_File aTclScriptFileDefaults (aTclScriptFileNameDefaults);
+    if (!aTclScriptDir.IsEmpty()
+      && aTclScriptFile.Exists())
+    {
+    #ifdef OCCT_DEBUG
+      std::cout << "Load " << aTclScriptFileName << " TclScript" << std::endl;
+    #endif
+      theDI.EvalFile (aTclScriptFileName.ToCString());
+    }
+    else if (!aPluginDir.IsEmpty()
+           && aTclScriptFileDefaults.Exists())
+    {
+    #ifdef OCCT_DEBUG
+      std::cout << "Load " << aTclScriptFileNameDefaults << " TclScript" << std::endl;
+    #endif
+      theDI.EvalFile (aTclScriptFileNameDefaults.ToCString());
+    }
   }
   return 0;
 }
