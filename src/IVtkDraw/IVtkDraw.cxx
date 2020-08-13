@@ -13,47 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#ifdef NOMINMAX
-#undef NOMINMAX    /* avoid #define min() and max() */
-#endif
-#ifdef NOMSG
-#undef NOMSG       /* avoid #define SendMessage etc. */
-#endif
-#ifdef NODRAWTEXT
-#undef NODRAWTEXT  /* avoid #define DrawText etc. */
-#endif
-#ifdef NONLS
-#undef NONLS       /* avoid #define CompareString etc. */
-#endif
-#ifdef NOGDI
-#undef NOGDI       /* avoid #define SetPrinter (winspool.h) etc. */
-#endif
-#ifdef NOSERVICE
-#undef NOSERVICE    
-#endif
-#ifdef NOKERNEL
-#undef NOKERNEL 
-#endif
-#ifdef NOUSER
-#undef NOUSER 
-#endif
-#ifdef NOMCX
-#undef NOMCX 
-#endif
-#ifdef NOIME
-#undef NOIME 
-#endif
-
-#include <stdio.h>
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-
 #ifdef _WIN32
-#include <windows.h>
-#include <WNT_WClass.hxx>
-#include <WNT_Window.hxx>
+  #include <windows.h>
+  #include <WNT_WClass.hxx>
+  #include <WNT_Window.hxx>
 #endif
 
 #include <Draw.hxx>
@@ -69,6 +32,8 @@
 #include <NCollection_DataMap.hxx>
 #include <TopTools_DataMapOfIntegerShape.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <V3d.hxx>
+#include <V3d_TypeOfOrientation.hxx>
 #include <Aspect_DisplayConnection.hxx>
 
 #include <IVtk_Types.hxx>
@@ -113,26 +78,22 @@
 #include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
 #ifndef _WIN32
-#include <X11/X.h>
-#include <X11/Shell.h>
-#include <X11/Xlib.h>
-#include <GL/glx.h>
-#include <Xw_Window.hxx>
-#include <vtkXRenderWindowInteractor.h>
-#include <vtkXOpenGLRenderWindow.h>
-#include <X11/Xutil.h>
-#include <tk.h>
+  #include <X11/X.h>
+  #include <X11/Shell.h>
+  #include <X11/Xlib.h>
+  #include <X11/Xutil.h>
+  #include <GL/glx.h>
+  #include <Xw_Window.hxx>
+  #include <vtkXRenderWindowInteractor.h>
+  #include <vtkXOpenGLRenderWindow.h>
+  #include <tk.h>
 #endif
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
-// workaround name conflicts with OCCT methods (in class TopoDS_Shape for example)
-#ifdef Convex
-  #undef Convex
-#endif
-#ifdef Status
-  #undef Status
+#if (VTK_MAJOR_VERSION > 8) || (VTK_MAJOR_VERSION == 8 && VTK_MINOR_VERSION >= 1)
+  #define HAVE_VTK_SRGB
 #endif
 
 //================================================================
@@ -268,38 +229,30 @@ const Handle(WNT_WClass)& IVtkDraw::WClass()
 
 //==============================================================
 // Function : ViewerInit
-// Purpose  : 
+// Purpose  :
 //==============================================================
-void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
-                           Standard_Integer thePxTop,
-                           Standard_Integer thePxWidth,
-                           Standard_Integer thePxHeight)
+void IVtkDraw::ViewerInit (const IVtkWinParams& theParams)
 {
-  static Standard_Boolean isFirst = Standard_True;
+  Standard_Integer aPxLeft  =   0, aPxTop    = 460;
+  Standard_Integer aPxWidth = 409, aPxHeight = 409;
+  if (theParams.TopLeft.x() != 0)
+  {
+    aPxLeft = theParams.TopLeft.x();
+  }
+  if (theParams.TopLeft.y() != 0)
+  {
+    aPxTop = theParams.TopLeft.y();
+  }
+  if (theParams.Size.x() != 0)
+  {
+    aPxWidth = theParams.Size.x();
+  }
+  if (theParams.Size.y() != 0)
+  {
+    aPxHeight = theParams.Size.y();
+  }
 
-  Standard_Integer aPxLeft   = 0;
-  Standard_Integer aPxTop    = 460;
-  Standard_Integer aPxWidth  = 409;
-  Standard_Integer aPxHeight = 409;
-
-  if (thePxLeft != 0)
-  {
-    aPxLeft = thePxLeft;
-  }
-  if (thePxTop != 0)
-  {
-    aPxTop = thePxTop;
-  }
-  if (thePxWidth != 0)
-  {
-    aPxWidth = thePxWidth;
-  }
-  if (thePxHeight != 0)
-  {
-    aPxHeight = thePxHeight;
-  }
-  
-  if (isFirst)
+  if (!GetRenderer())
   {
     SetDisplayConnection (new Aspect_DisplayConnection ());
 #ifdef _WIN32
@@ -330,6 +283,17 @@ void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
     aRenWin->AddRenderer (GetRenderer());
     GetRenderer()->GetActiveCamera()->ParallelProjectionOn();
     aRenWin->SetSize (aPxWidth, aPxHeight);
+
+    aRenWin->SetMultiSamples (theParams.NbMsaaSample);
+    aRenWin->SetAlphaBitPlanes (1);
+  #ifdef HAVE_VTK_SRGB
+    aRenWin->SetUseSRGBColorSpace (theParams.UseSRGBColorSpace);
+  #else
+    if (theParams.UseSRGBColorSpace)
+    {
+      Message::SendWarning() << "Warning: skipped option -srgb unsupported by old VTK";
+    }
+  #endif
 
 #ifdef _WIN32
     aRenWin->SetWindowId((void*)GetWindow()->HWindow());
@@ -382,8 +346,6 @@ void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
 
     aRenWin->SetOffScreenRendering(Draw_VirtualWindows);
     aRenWin->Render();
-
-    isFirst = Standard_False;
   }
 
   GetWindow()->Map();
@@ -394,15 +356,134 @@ void IVtkDraw::ViewerInit (Standard_Integer thePxLeft,
 // Purpose  : 
 //================================================================
 static Standard_Integer VtkInit (Draw_Interpretor& ,
-                                 Standard_Integer theArgNum,
-                                 const char** theArgs)
+                                 Standard_Integer theNbArgs,
+                                 const char** theArgVec)
 {
-  Standard_Integer aPxLeft   = (theArgNum > 1) ? atoi(theArgs[1]) : 0;
-  Standard_Integer aPxTop    = (theArgNum > 2) ? atoi(theArgs[2]) : 0;
-  Standard_Integer aPxWidth  = (theArgNum > 3) ? atoi(theArgs[3]) : 0;
-  Standard_Integer aPxHeight = (theArgNum > 4) ? atoi(theArgs[4]) : 0;
+  bool hasSize = false;
+  IVtkDraw::IVtkWinParams aParams;
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-msaa"
+     && anArgIter + 1 < theNbArgs)
+    {
+      aParams.NbMsaaSample = Draw::Atoi (theArgVec[++anArgIter]);
+    }
+    else if (anArg == "-srgb")
+    {
+      aParams.UseSRGBColorSpace = true;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], aParams.UseSRGBColorSpace))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (!hasSize
+          && anArgIter + 3 < theNbArgs)
+    {
+      aParams.TopLeft.SetValues (Draw::Atoi (theArgVec[anArgIter + 0]),
+                                 Draw::Atoi (theArgVec[anArgIter + 1]));
+      aParams.Size   .SetValues (Draw::Atoi (theArgVec[anArgIter + 2]),
+                                 Draw::Atoi (theArgVec[anArgIter + 3]));
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << anArg << "'";
+      return 1;
+    }
+  }
 
-  IVtkDraw::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight);
+  IVtkDraw::ViewerInit (aParams);
+  return 0;
+}
+
+//================================================================
+// Function : VtkClose
+// Purpose  :
+//================================================================
+static Standard_Integer VtkClose (Draw_Interpretor& ,
+                                  Standard_Integer theNbArgs,
+                                  const char** )
+{
+  if (theNbArgs > 1)
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  if (GetWindow())
+  {
+    GetWindow()->Unmap();
+  }
+
+  GetWindow().Nullify();
+  if (GetInteractor())
+  {
+    GetInteractor()->GetRenderWindow()->Finalize();
+    //GetInteractor()->SetRenderWindow (NULL);
+    GetInteractor()->TerminateApp();
+  }
+
+  GetInteractor() = NULL;
+  GetRenderer() = NULL;
+  GetPicker() = NULL;
+  return 0;
+}
+
+//================================================================
+// Function : VtkRenderParams
+// Purpose  :
+//================================================================
+static Standard_Integer VtkRenderParams (Draw_Interpretor& ,
+                                         Standard_Integer theNbArgs,
+                                         const char** theArgVec)
+{
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
+  {
+    Message::SendFail() << "Syntax error: call ivtkinit before";
+    return 1;
+  }
+  else if (theNbArgs <= 1)
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-depthpeeling"
+     && anArgIter + 1 < theNbArgs)
+    {
+      Standard_Integer aNbLayers = Draw::Atoi (theArgVec[++anArgIter]);
+      GetRenderer()->SetUseDepthPeeling (aNbLayers > 0);
+      GetRenderer()->SetMaximumNumberOfPeels (aNbLayers);
+    }
+    else if (anArg == "-shadows")
+    {
+      bool toUseShadows = true;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], toUseShadows))
+      {
+        ++anArgIter;
+      }
+    #if (VTK_MAJOR_VERSION >= 7)
+      GetRenderer()->SetUseShadows (toUseShadows);
+    #else
+      Message::SendWarning() << "Warning: skipped option -shadows unsupported by old VTK";
+    #endif
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << anArg << "'";
+      return 1;
+    }
+  }
+
+  GetInteractor()->GetRenderWindow()->Render();
   return 0;
 }
 
@@ -430,22 +511,20 @@ vtkActor* CreateActor (const Standard_Integer theId,
 // Purpose  : 
 //================================================================
 
-static Standard_Integer VtkDisplay (Draw_Interpretor& theDI,
+static Standard_Integer VtkDisplay (Draw_Interpretor& ,
                                     Standard_Integer theArgNum,
                                     const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error : call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error : call ivtkinit before";
+    return 1;
   }
-
-  // Check arguments
   if (theArgNum < 2)
   {
-    theDI << theArgs[0] << " error : expects at least 1 argument\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error : expects at least 1 argument\n";
+    return 1;
   }
 
   TCollection_AsciiString aName;
@@ -517,21 +596,21 @@ static Standard_Integer VtkDisplay (Draw_Interpretor& theDI,
 // Function : VtkErase
 // Purpose  : 
 //================================================================
-static Standard_Integer VtkErase (Draw_Interpretor& theDI,
+static Standard_Integer VtkErase (Draw_Interpretor& ,
                                   Standard_Integer theArgNum,
                                   const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error : call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
   }
 
   vtkSmartPointer<vtkRenderer> aRenderer = GetRenderer();
-  // Erase all objects
   if (theArgNum == 1)
   {
+    // Erase all objects
     DoubleMapOfActorsAndNames::Iterator anIterator (GetMapOfActors());
     while (anIterator.More())
     {
@@ -539,17 +618,20 @@ static Standard_Integer VtkErase (Draw_Interpretor& theDI,
       anIterator.Next();
     }
   }
-  // Erase named objects
   else
   {
-    TCollection_AsciiString aName;
+    // Erase named objects
     for (Standard_Integer anIndex = 1; anIndex < theArgNum; ++anIndex)
     {
-      aName = theArgs[anIndex];
-      if (GetMapOfActors().IsBound2 (aName))
+      TCollection_AsciiString aName = theArgs[anIndex];
+      vtkSmartPointer<vtkActor> anActor;
+      if (!GetMapOfActors().Find2 (aName, anActor))
       {
-        PipelineByActorName (aName)->RemoveFromRenderer (aRenderer);
+        Message::SendFail() << "Syntax error: object '" << aName << "' not found";
+        return 1;
       }
+
+      PipelineByActorName (aName)->RemoveFromRenderer (aRenderer);
     }
   }
 
@@ -563,29 +645,26 @@ static Standard_Integer VtkErase (Draw_Interpretor& theDI,
 // Function : VtkRemove
 // Purpose  : Remove the actor from memory.
 //================================================================
-static Standard_Integer VtkRemove(Draw_Interpretor& theDI,
-  Standard_Integer theArgNum,
-  const char** theArgs)
+static Standard_Integer VtkRemove (Draw_Interpretor& ,
+                                   Standard_Integer theArgNum,
+                                   const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error : call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
   }
 
   vtkSmartPointer<vtkRenderer> aRenderer = GetRenderer();
-
-  // Remove all objects
   if (theArgNum == 1)
   {
     // Remove all actors from the renderer
     DoubleMapOfActorsAndNames::Iterator anIterator(GetMapOfActors());
     while (anIterator.More())
     {
-      vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc =
-        IVtkTools_ShapeObject::GetShapeSource(anIterator.Key1());
-      if (aSrc.GetPointer() != NULL && !(aSrc->GetShape().IsNull()))
+      vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource (anIterator.Key1());
+      if (aSrc.GetPointer() != NULL && !aSrc->GetShape().IsNull())
       {
         GetPicker()->RemoveSelectableObject(aSrc->GetShape());
       }
@@ -605,34 +684,35 @@ static Standard_Integer VtkRemove(Draw_Interpretor& theDI,
     GetMapOfActors().Clear();
     GetPipelines()->Clear();
   }
-  // Remove named objects
   else
   {
-    TCollection_AsciiString aName;
+    // Remove named objects
     for (Standard_Integer anIndex = 1; anIndex < theArgNum; ++anIndex)
     {
-      aName = theArgs[anIndex];
-      if (GetMapOfActors().IsBound2(aName))
+      TCollection_AsciiString aName = theArgs[anIndex];
+      vtkSmartPointer<vtkActor> anActor;
+      if (!GetMapOfActors().Find2 (aName, anActor))
       {
-        // Remove the actor and its pipeline (if found) from the renderer
-        vtkSmartPointer<vtkActor> anActor = GetMapOfActors().Find2(aName);
-        vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = 
-          IVtkTools_ShapeObject::GetShapeSource(anActor);
-        if (aSrc.GetPointer() != NULL && !(aSrc->GetShape().IsNull()))
-        {
-          IVtk_IdType aShapeID = aSrc->GetShape()->GetId();
-          GetPicker()->RemoveSelectableObject(aSrc->GetShape());
-          GetPipeline(aSrc->GetShape()->GetId())->RemoveFromRenderer(aRenderer);
-          GetPipelines()->UnBind(aShapeID); // Remove a pipepline
-        }
-        else
-        {
-          aRenderer->RemoveActor(anActor);
-        }
-        // Remove the TopoDS_Shape and the actor
-        GetMapOfShapes().UnBind2(aName); // Remove a TopoDS shape
-        GetMapOfActors().UnBind2(aName); // Remove an actor
+        Message::SendFail() << "Syntax error: object '" << aName << "' not found";
+        return 1;
       }
+
+      // Remove the actor and its pipeline (if found) from the renderer
+      vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
+      if (aSrc.GetPointer() != NULL && !aSrc->GetShape().IsNull())
+      {
+        IVtk_IdType aShapeID = aSrc->GetShape()->GetId();
+        GetPicker()->RemoveSelectableObject (aSrc->GetShape());
+        GetPipeline (aSrc->GetShape()->GetId())->RemoveFromRenderer (aRenderer);
+        GetPipelines()->UnBind (aShapeID); // Remove a pipepline
+      }
+      else
+      {
+        aRenderer->RemoveActor (anActor);
+      }
+      // Remove the TopoDS_Shape and the actor
+      GetMapOfShapes().UnBind2 (aName); // Remove a TopoDS shape
+      GetMapOfActors().UnBind2 (aName); // Remove an actor
     }
   }
 
@@ -647,34 +727,30 @@ static Standard_Integer VtkRemove(Draw_Interpretor& theDI,
 // Purpose   : 
 // Draw args : ivtksetdispmode [name] mode(0,1)
 //================================================================
-static Standard_Integer VtkSetDisplayMode (Draw_Interpretor& theDI,
+static Standard_Integer VtkSetDisplayMode (Draw_Interpretor& ,
                                            Standard_Integer theArgNum,
                                            const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error: call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
+  }
+  else if (theArgNum != 2 && theArgNum != 3)
+  {
+    Message::SendFail() << "Syntax error: expects 1 or 2 arguments";
+    return 1;
   }
 
-  // Check arguments
-  if (theArgNum != 2 && theArgNum != 3)
-  {
-    theDI << theArgs[0] << " error: expects 1 or 2 arguments\n";
-    return 1; // TCL_ERROR
-  }
-
-  vtkSmartPointer<vtkActor> anActor;
-  // Set disp mode for all objects
   if (theArgNum == 2)
   {
-    // Get mode
-    Standard_Integer aMode =  Draw::Atoi (theArgs[1]);
+    // Set disp mode for all objects
+    Standard_Integer aMode =  Draw::Atoi (theArgs[1]); // Get mode
     DoubleMapOfActorsAndNames::Iterator anIter (GetMapOfActors());
     while (anIter.More())
     {
-      anActor = anIter.Key1();
+      vtkSmartPointer<vtkActor> anActor = anIter.Key1();
       IVtkTools_ShapeDataSource* aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
       if (aSrc)
       {
@@ -693,22 +769,25 @@ static Standard_Integer VtkSetDisplayMode (Draw_Interpretor& theDI,
   // Set disp mode for named object
   else 
   {
-    Standard_Integer aMode = atoi(theArgs[2]);
     TCollection_AsciiString aName = theArgs[1];
-    if (GetMapOfActors().IsBound2 (aName))
+    vtkSmartPointer<vtkActor> anActor;
+    if (!GetMapOfActors().Find2 (aName, anActor))
     {
-      anActor = GetMapOfActors().Find2 (aName);
-      vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
-      if (aSrc)
+      Message::SendFail() << "Syntax error: object '" << aName << "' not found";
+      return 1;
+    }
+
+    Standard_Integer aMode = atoi(theArgs[2]);
+    vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
+    if (aSrc)
+    {
+      IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
+      if (!anOccShape.IsNull())
       {
-        IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
-        if (!anOccShape.IsNull())
-        {
-          IVtkTools_DisplayModeFilter* aFilter = GetPipeline (anOccShape->GetId())->GetDisplayModeFilter();
-          aFilter->SetDisplayMode ((IVtk_DisplayMode)aMode);
-          aFilter->Modified();
-          aFilter->Update();
-        }
+        IVtkTools_DisplayModeFilter* aFilter = GetPipeline (anOccShape->GetId())->GetDisplayModeFilter();
+        aFilter->SetDisplayMode ((IVtk_DisplayMode)aMode);
+        aFilter->Modified();
+        aFilter->Update();
       }
     }
   }
@@ -720,37 +799,33 @@ static Standard_Integer VtkSetDisplayMode (Draw_Interpretor& theDI,
 
 //================================================================
 // Function  : VtkSetBoundaryDraw
-// Purpose   : 
-// Draw args : ivtksetboundingdraw [name] draw on/off(0,1)
+// Purpose   :
 //================================================================
-static Standard_Integer VtkSetBoundaryDraw(Draw_Interpretor& theDI,
-  Standard_Integer theArgNum,
-  const char** theArgs)
+static Standard_Integer VtkSetBoundaryDraw (Draw_Interpretor& ,
+                                            Standard_Integer theArgNum,
+                                            const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error: call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
+  }
+  else if (theArgNum != 2 && theArgNum != 3)
+  {
+    Message::SendFail() << "Syntax error: expects 1 or 2 arguments";
+    return 1;
   }
 
-  // Check arguments
-  if (theArgNum != 2 && theArgNum != 3)
-  {
-    theDI << theArgs[0] << " error: expects 1 or 2 arguments\n";
-    return 1; // TCL_ERROR
-  }
-
-  vtkSmartPointer<vtkActor> anActor;
-  // Set disp mode for all objects
   if (theArgNum == 2)
   {
-    // Get mode
-    Standard_Integer toDraw = Draw::Atoi(theArgs[1]);
+    // Set disp mode for all objects
+    Standard_Boolean toDraw = true;
+    Draw::ParseOnOff (theArgs[1], toDraw);
     DoubleMapOfActorsAndNames::Iterator anIter(GetMapOfActors());
     while (anIter.More())
     {
-      anActor = anIter.Key1();
+      vtkSmartPointer<vtkActor> anActor = anIter.Key1();
       // Set Red color for boundary edges
       vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
       IVtkTools::SetLookupTableColor(aTable, MT_SharedEdge, 1., 0., 0., 1.);
@@ -771,30 +846,35 @@ static Standard_Integer VtkSetBoundaryDraw(Draw_Interpretor& theDI,
       anIter.Next();
     }
   }
-  // Set disp mode for named object
   else
   {
-    Standard_Integer toDraw = Draw::Atoi(theArgs[2]);
+    // Set disp mode for named object
     TCollection_AsciiString aName = theArgs[1];
-    if (GetMapOfActors().IsBound2(aName))
+    vtkSmartPointer<vtkActor> anActor;
+    if (!GetMapOfActors().Find2 (aName, anActor))
     {
-      anActor = GetMapOfActors().Find2(aName);
-      // Set Red color for boundary edges
-      vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
-      IVtkTools::SetLookupTableColor(aTable, MT_SharedEdge, 1., 0., 0., 1.);
+      Message::SendFail() << "Syntax error: object '" << aName << "' not found";
+      return 1;
+    }
 
-      vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource(anActor);
-      if (aSrc)
+    Standard_Boolean toDraw = true;
+    Draw::ParseOnOff (theArgs[2], toDraw);
+
+    // Set Red color for boundary edges
+    vtkLookupTable* aTable = (vtkLookupTable*)anActor->GetMapper()->GetLookupTable();
+    IVtkTools::SetLookupTableColor (aTable, MT_SharedEdge, 1., 0., 0., 1.);
+
+    vtkSmartPointer<IVtkTools_ShapeDataSource> aSrc = IVtkTools_ShapeObject::GetShapeSource (anActor);
+    if (aSrc)
+    {
+      IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
+      if (!anOccShape.IsNull())
       {
-        IVtkOCC_Shape::Handle anOccShape = aSrc->GetShape();
-        if (!anOccShape.IsNull())
-        {
-          IVtkTools_DisplayModeFilter* aFilter = GetPipeline(anOccShape->GetId())->GetDisplayModeFilter();
-          aFilter->SetDisplayMode(DM_Shading);
-          aFilter->SetFaceBoundaryDraw(toDraw != 0);
-          aFilter->Modified();
-          aFilter->Update();
-        }
+        IVtkTools_DisplayModeFilter* aFilter = GetPipeline (anOccShape->GetId())->GetDisplayModeFilter();
+        aFilter->SetDisplayMode (DM_Shading);
+        aFilter->SetFaceBoundaryDraw (toDraw != 0);
+        aFilter->Modified();
+        aFilter->Update();
       }
     }
   }
@@ -804,48 +884,40 @@ static Standard_Integer VtkSetBoundaryDraw(Draw_Interpretor& theDI,
   return 0;
 }
 
-
 //================================================================
 // Function  : VtkSetSelectionMode
-// Purpose   : 
-// Draw args : ivtksetselmode [name] mode on/off(0,1)
+// Purpose   :
 //================================================================
-static Standard_Integer VtkSetSelectionMode (Draw_Interpretor& theDI,
+static Standard_Integer VtkSetSelectionMode (Draw_Interpretor& ,
                                              Standard_Integer theArgNum,
                                              const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error: call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
+  }
+  else if (theArgNum != 3 && theArgNum != 4)
+  {
+    Message::SendFail() << "Syntax error: expects 2 or 3 arguments";
+    return 1;
   }
 
-  // Check arguments
-  if (theArgNum != 3 && theArgNum != 4)
-  {
-    theDI << theArgs[0] << " error: expects 2 or 3 arguments\n";
-    return 1; // TCL_ERROR
-  }
-
-  vtkSmartPointer<vtkActor> anActor;
-  Standard_Integer aMode;
-  Standard_Boolean isTurnOn;
-  // Set sel mode for all objects
   if (theArgNum == 3)
   {
-    aMode = atoi (theArgs[1]);
-    isTurnOn = (atoi (theArgs[2]) != 0);
-    if (aMode < 0 || aMode > 8)
+    // Set sel mode for all objects
+    const Standard_Integer aMode = Draw::Atoi (theArgs[1]);
+    Standard_Boolean isTurnOn = true;
+    if (aMode < 0 || aMode > 8 || !Draw::ParseOnOff (theArgs[2], isTurnOn))
     {
-      theDI << theArgs[0] << " error: only 0-8 selection modes are supported\n";
-      return 1; // TCL_ERROR
+      Message::SendFail() << "Syntax error: only 0-8 selection modes are supported";
+      return 1;
     }
     DoubleMapOfActorsAndNames::Iterator anIter (GetMapOfActors());
     while (anIter.More())
     {
-      anActor = anIter.Key1();
-
+      vtkSmartPointer<vtkActor> anActor = anIter.Key1();
       if (aMode == SM_Shape && isTurnOn)
       {
         IVtk_SelectionModeList aList = GetPicker()->GetSelectionModes (anActor);
@@ -892,23 +964,21 @@ static Standard_Integer VtkSetSelectionMode (Draw_Interpretor& theDI,
     }
   }
 
-  // Set sel mode for named object
   if (theArgNum == 4)
   {
-    aMode = atoi (theArgs[2]);
-    isTurnOn = (atoi (theArgs[3]) != 0);
-
-    if (aMode < 0 || aMode > 8)
+    // Set sel mode for named object
+    const Standard_Integer aMode = Draw::Atoi (theArgs[2]);
+    Standard_Boolean isTurnOn = true;
+    if (aMode < 0 || aMode > 8 || !Draw::ParseOnOff (theArgs[3], isTurnOn))
     {
-      theDI << theArgs[0] << " error: only 0-8 selection modes are supported\n";
-      return 1; // TCL_ERROR
+      Message::SendFail() << "Syntax error: only 0-8 selection modes are supported";
+      return 1;
     }
 
     TCollection_AsciiString aName = theArgs[1];
     if (GetMapOfActors().IsBound2 (aName))
     {
-      anActor = GetMapOfActors().Find2 (aName);
-
+      vtkSmartPointer<vtkActor> anActor = GetMapOfActors().Find2 (aName);
       if (aMode == SM_Shape && isTurnOn)
       {
         IVtk_SelectionModeList aList = GetPicker()->GetSelectionModes (anActor);
@@ -956,7 +1026,127 @@ static Standard_Integer VtkSetSelectionMode (Draw_Interpretor& theDI,
 
   // Redraw window
   GetInteractor()->Render();
+  return 0;
+}
 
+//================================================================
+// Function  : VtkSetColor
+// Purpose   :
+//================================================================
+static Standard_Integer VtkSetColor (Draw_Interpretor& ,
+                                     Standard_Integer theArgNb,
+                                     const char** theArgVec)
+{
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
+  {
+    Message::SendFail() << "Error: call ivtkinit before\n";
+    return 1;
+  }
+
+  NCollection_Sequence< vtkSmartPointer<vtkActor> > anActorSeq;
+  Quantity_Color aQColor;
+  bool hasColor = false;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    vtkSmartPointer<vtkActor> anActor;
+    if (hasColor)
+    {
+      Message::SendFail() << "Syntax error at '" << anArg << "'";
+      return 1;
+    }
+    else if (GetMapOfActors().Find2 (anArg, anActor))
+    {
+      anActorSeq.Append (anActor);
+    }
+    else
+    {
+      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter,
+                                                     theArgVec + anArgIter,
+                                                     aQColor);
+      if (aNbParsed == 0)
+      {
+        Message::SendFail() << "Syntax error at '" << anArg << "'";
+        return 1;
+      }
+      anArgIter += aNbParsed - 1;
+      hasColor = true;
+    }
+  }
+  if (!hasColor || anActorSeq.IsEmpty())
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  bool isSRGBAware = false;
+#ifdef HAVE_VTK_SRGB
+  isSRGBAware = GetRenderer()->GetRenderWindow()->GetUseSRGBColorSpace();
+#endif
+  const Graphic3d_Vec3 aColor = isSRGBAware ? (Graphic3d_Vec3 )aQColor : Quantity_Color::Convert_LinearRGB_To_sRGB ((Graphic3d_Vec3 )aQColor);
+  for (NCollection_Sequence< vtkSmartPointer<vtkActor> >::Iterator anActorIter (anActorSeq); anActorIter.More(); anActorIter.Next())
+  {
+    const vtkSmartPointer<vtkActor>& anActor = anActorIter.Value();
+    vtkLookupTable* aTable = (vtkLookupTable* )anActor->GetMapper()->GetLookupTable();
+    IVtkTools::SetLookupTableColor (aTable, MT_ShadedFace, aColor.r(), aColor.g(), aColor.b(), 1.0);
+  }
+
+  GetInteractor()->Render();
+  return 0;
+}
+
+//================================================================
+// Function  : VtkSetTransparency
+// Purpose   :
+//================================================================
+static Standard_Integer VtkSetTransparency (Draw_Interpretor& ,
+                                            Standard_Integer theArgNb,
+                                            const char** theArgVec)
+{
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
+  {
+    Message::SendFail() << "Error: call ivtkinit before\n";
+    return 1;
+  }
+
+  NCollection_Sequence< vtkSmartPointer<vtkActor> > anActorSeq;
+  Standard_Real aTransparency = -1.0;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    vtkSmartPointer<vtkActor> anActor;
+    if (aTransparency >= 0.0)
+    {
+      Message::SendFail() << "Syntax error at '" << anArg << "'";
+      return 1;
+    }
+    else if (GetMapOfActors().Find2 (anArg, anActor))
+    {
+      anActorSeq.Append (anActor);
+    }
+    else if (!Draw::ParseReal (theArgVec[anArgIter], aTransparency)
+           || aTransparency < 0.0
+           || aTransparency >= 1.0)
+    {
+      Message::SendFail() << "Syntax error at '" << anArg << "'";
+      return 1;
+    }
+  }
+  if (aTransparency < 0.0 || aTransparency >= 1)
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  for (NCollection_Sequence< vtkSmartPointer<vtkActor> >::Iterator anActorIter (anActorSeq); anActorIter.More(); anActorIter.Next())
+  {
+    const vtkSmartPointer<vtkActor>& anActor = anActorIter.Value();
+    anActor->GetProperty()->SetOpacity (1.0 - aTransparency);
+  }
+
+  GetInteractor()->Render();
   return 0;
 }
 
@@ -969,18 +1159,16 @@ static Standard_Integer VtkMoveTo(Draw_Interpretor& theDI,
                                   Standard_Integer theArgNum,
                                   const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error: call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
   }
-
-  // Check args
-  if (theArgNum != 3)
+  else if (theArgNum != 3)
   {
-    theDI << theArgs[0] << " error: expects 2 arguments\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Syntax error: expects 2 arguments";
+    return 1;
   }
 
   Standard_Integer anY = GetInteractor()->GetRenderWindow()->GetSize()[1] - atoi (theArgs[2]) - 1;
@@ -994,25 +1182,22 @@ static Standard_Integer VtkMoveTo(Draw_Interpretor& theDI,
 
 //================================================================
 // Function  : VtkSelect
-// Purpose   : 
-// Draw args : ivtkselect x y
+// Purpose   :
 //================================================================
-static Standard_Integer VtkSelect (Draw_Interpretor& theDI,
+static Standard_Integer VtkSelect (Draw_Interpretor& ,
                                    Standard_Integer theArgNum,
                                    const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error: call ivtkinit before\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
   }
-
-  // Check args
-  if (theArgNum != 3)
+  else if (theArgNum != 3)
   {
-    theDI << theArgs[0] << " error: expects 3 arguments\n";
-    return 1; // TCL_ERROR
+    Message::SendFail() << "Syntax error: expects 3 arguments";
+    return 1;
   }
 
   Standard_Integer anY = GetInteractor()->GetRenderWindow()->GetSize()[1] - atoi (theArgs[2]) - 1;
@@ -1023,20 +1208,87 @@ static Standard_Integer VtkSelect (Draw_Interpretor& theDI,
 }
 
 //===================================================================
-// Fubction  : VtkFit
+// Fubction  : VtkViewProj
 // Purpose   :
-// Draw args : ivtkfit
 //===================================================================
-
-static Standard_Integer VtkFit (Draw_Interpretor& theDI,
-                                Standard_Integer,
-                                const char** theArgs)
+static Standard_Integer VtkViewProj (Draw_Interpretor& ,
+                                     Standard_Integer theNbArgs,
+                                     const char** theArgVec)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error : call ivtkinit before \n";
-    return 1; //TCL_ERROR
+    Message::SendFail() << "Error: call ivtkinit before";
+    return 1;
+  }
+  else if (theNbArgs != 1)
+  {
+    Message::SendFail() << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  TCollection_AsciiString aCmd (theArgVec[0]);
+  aCmd.LowerCase();
+
+  V3d_TypeOfOrientation aProj = V3d_Xpos;
+  bool hasProjDir = false;
+  if (aCmd == "ivtkaxo")
+  {
+    hasProjDir = true;
+    aProj = V3d_TypeOfOrientation_Zup_AxoRight;
+  }
+  else if (aCmd == "ivtktop")
+  {
+    hasProjDir = true;
+    aProj = V3d_TypeOfOrientation_Zup_Top;
+  }
+  else if (aCmd == "ivtkbottom")
+  {
+    hasProjDir = true;
+    aProj = V3d_TypeOfOrientation_Zup_Bottom;
+  }
+  else if (aCmd == "ivtkfront")
+  {
+    hasProjDir = true;
+    aProj = V3d_TypeOfOrientation_Zup_Front;
+  }
+  else if (aCmd == "ivtkback")
+  {
+    hasProjDir = true;
+    aProj = V3d_TypeOfOrientation_Zup_Back;
+  }
+  else if (aCmd == "ivtkleft")
+  {
+    hasProjDir = true;
+    aProj = V3d_TypeOfOrientation_Zup_Left;
+  }
+  else if (aCmd == "ivtkright")
+  {
+    hasProjDir = true;
+    aProj = V3d_TypeOfOrientation_Zup_Right;
+  }
+
+  if (hasProjDir)
+  {
+    const gp_Dir aBck = V3d::GetProjAxis (aProj);
+    Graphic3d_Vec3d anUp (0.0, 0.0, 1.0);
+    if (aProj == V3d_Zpos)
+    {
+      anUp.SetValues (0.0, 1.0, 0.0);
+    }
+    else if (aProj == V3d_Zneg)
+    {
+      anUp.SetValues (0.0, -1.0, 0.0);
+    }
+
+    vtkCamera* aCam = GetRenderer()->GetActiveCamera();
+    const double aDist = aCam->GetDistance();
+
+    Graphic3d_Vec3d aNewEye = Graphic3d_Vec3d (aBck.X(), aBck.Y(), aBck.Z()) * aDist;
+    aCam->SetPosition (aNewEye.x(), aNewEye.y(), aNewEye.z());
+    aCam->SetFocalPoint (0.0, 0.0, 0.0);
+    aCam->SetViewUp (anUp.x(), anUp.y(), anUp.z());
+    aCam->OrthogonalizeViewUp();
   }
 
   GetRenderer()->ResetCamera();
@@ -1047,28 +1299,24 @@ static Standard_Integer VtkFit (Draw_Interpretor& theDI,
 //===================================================================
 // Fubction  : VtkDump
 // Purpose   :
-// Draw args : ivtkdump FullFilename.{png|bmp|jpeg|tiff|pnm} 
-//                      [buffer={rgb|rgba|depth}] [width height]
-//                      [stereoproj={L|R}]
 //===================================================================
-static Standard_Integer VtkDump (Draw_Interpretor& theDI,
+static Standard_Integer VtkDump (Draw_Interpretor& ,
                                  Standard_Integer theArgNum,
                                  const char** theArgs)
 {
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    std::cout << theArgs[0] << " error : call ivtkinit before \n";
+    Message::SendFail() << "Error : call ivtkinit before";
+    return 1;
+  }
+  else if (theArgNum < 2)
+  {
+    Message::SendFail() << "Syntax error: wrong number of parameters";
     return 1;
   }
 
-  if (theArgNum < 2)
-  {
-    theDI << theArgs[0] << " error : wrong number of parameters. Type 'help"
-          << theArgs[0] << "' for more information.\n";
-  }
   vtkSmartPointer<vtkWindowToImageFilter> anImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
-
   anImageFilter->SetInput (GetInteractor()->GetRenderWindow());
   // Set custom buffer type
   if (theArgNum > 2)
@@ -1112,7 +1360,7 @@ static Standard_Integer VtkDump (Draw_Interpretor& theDI,
     }
     else
     {
-      theDI << theArgs[0] << " error: unknown value for stereo projection.\n";
+      Message::SendFail() << "Syntax error: unknown value for stereo projection";
       return 1;
     }
   }
@@ -1149,8 +1397,8 @@ static Standard_Integer VtkDump (Draw_Interpretor& theDI,
   {
     if (aFormat.IsEmpty())
     {
-      theDI << theArgs[0] << " warning: the image format is not set.\n"
-            << "The image will be saved into PNG format.\n";
+      Message::SendWarning() << "Warning: the image format is not set.\n"
+            << "The image will be saved into PNG format.";
       anImageWriter = vtkSmartPointer<vtkPNGWriter>::New();
       aFormat = TCollection_AsciiString ("png");
       if (anExtStart != -1)
@@ -1165,8 +1413,7 @@ static Standard_Integer VtkDump (Draw_Interpretor& theDI,
     }
     else
     {
-      theDI << theArgs[0] << " error: the image format "
-            << aFormat.ToCString() <<" is not supported.\n";
+      Message::SendFail() << "Error: the image format " << aFormat << " is not supported";
       return 1;
     }
 
@@ -1195,53 +1442,55 @@ static Standard_Integer VtkDump (Draw_Interpretor& theDI,
     anImageWriter->SetInputConnection (anImageFilter->GetOutputPort());
   }
   anImageWriter->Write();
-
   return 0;
 }
 
 //===================================================================
 // Fubction  : VtkBackgroundColor
 // Purpose   :
-// Draw args : ivtkbgcolor r g b
-//             r,g,b = [0..255]
 //===================================================================
-static Standard_Integer VtkBackgroundColor (Draw_Interpretor& theDI,
+static Standard_Integer VtkBackgroundColor (Draw_Interpretor& ,
                                             Standard_Integer theArgNum,
                                             const char** theArgs)
 {
-  if (theArgNum != 4 && theArgNum != 7)
+  if (!GetInteractor()
+   || !GetInteractor()->IsEnabled())
   {
-    theDI << theArgs[0] << " error : wrong number of parameters.\n"
-          << "Type 'help " << theArgs[0] << "' for more information.\n";
+    Message::SendFail() << "Error: call ivtkinit before";
     return 1;
   }
 
-  // Check viewer
-  if (!GetInteractor()->IsEnabled())
+  Quantity_Color aQColor1;
+  const Standard_Integer aNbParsed1 = Draw::ParseColor (theArgNum - 1, theArgs + 1, aQColor1);
+  if (aNbParsed1 == 0)
   {
-    std::cout << theArgs[0] << " error : call ivtkinit before \n";
+    Message::SendFail() << "Syntax error: wrong number of parameters";
     return 1;
   }
 
-  Standard_Real aR = Draw::Atof(theArgs[1])/255.0;
-  Standard_Real aG = Draw::Atof(theArgs[2])/255.0;
-  Standard_Real aB = Draw::Atof(theArgs[3])/255.0;
-
+  bool isSRGBAware = false;
+#ifdef HAVE_VTK_SRGB
+  isSRGBAware = GetRenderer()->GetRenderWindow()->GetUseSRGBColorSpace();
+#endif
+  const Graphic3d_Vec3 aColor1 = isSRGBAware ? (Graphic3d_Vec3 )aQColor1 : Quantity_Color::Convert_LinearRGB_To_sRGB ((Graphic3d_Vec3 )aQColor1);
   GetRenderer()->SetGradientBackground(false);
-  GetRenderer()->SetBackground (aR, aG, aB);
-
-  if (theArgNum == 7)
+  GetRenderer()->SetBackground (aColor1.r(), aColor1.g(), aColor1.b());
+  if (theArgNum - 1 > aNbParsed1)
   {
-    Standard_Real aR2 = Draw::Atof(theArgs[4])/255.0;
-    Standard_Real aG2 = Draw::Atof(theArgs[5])/255.0;
-    Standard_Real aB2 = Draw::Atof(theArgs[6])/255.0;
+    Quantity_Color aQColor2;
+    const Standard_Integer aNbParsed2 = Draw::ParseColor (theArgNum - 1 - aNbParsed1, theArgs + 1 + aNbParsed1, aQColor2);
+    if (aNbParsed2 == 0)
+    {
+      Message::SendFail() << "Syntax error: wrong number of parameters";
+      return 1;
+    }
 
-    GetRenderer()->SetBackground2(aR2, aG2, aB2);
-    GetRenderer()->SetGradientBackground(true);
+    const Graphic3d_Vec3 aColor2 = isSRGBAware ? (Graphic3d_Vec3 )aQColor2 : Quantity_Color::Convert_LinearRGB_To_sRGB ((Graphic3d_Vec3 )aQColor2);
+    GetRenderer()->SetBackground2 (aColor2.r(), aColor2.g(), aColor2.b());
+    GetRenderer()->SetGradientBackground (true);
   }
 
   GetInteractor()->Render();
-
   return 0;
 }
 
@@ -1252,83 +1501,127 @@ static Standard_Integer VtkBackgroundColor (Draw_Interpretor& theDI,
 void IVtkDraw::Commands (Draw_Interpretor& theCommands)
 {
   const char *group = "VtkViewer";
-  
+
   theCommands.Add("ivtkinit",
-    "ivtkinit usage:\n"
-    "ivtkinit [leftPx topPx widthPx heightPx]"
-    "\n\t\t: Creates the Vtk window",
+              "ivtkinit [leftPx topPx widthPx heightPx] [-srgb {on|off}] [-msaa NbSamples]"
+      "\n\t\t: Creates the Vtk window."
+      "\n\t\t:  -srgb Enable/disable sRGB colorspace; OFF by default."
+      "\n\t\t:  -msaa Requests desired number of samples for multisampling buffer;"
+      "\n\t\t:        0 by default meaning no MSAA.",
     __FILE__, VtkInit, group);
 
+  theCommands.Add("ivtkclose",
+              "ivtkclose : Closes the Vtk window.",
+    __FILE__, VtkClose, group);
+
+  theCommands.Add("ivtkrenderparams",
+              "ivtkrenderparams [-depthPeeling NbLayers] [-shadows {on|off}]"
+      "\n\t\t: Sets Vtk rendering parameters."
+      "\n\t\t:  -shadows      Turn shadows on/off; OFF by default."
+      "\n\t\t:  -depthPeeling Enable/disable depth peeling for rendering transparent objects"
+      "\n\t\t:                with specified number of layers;"
+      "\n\t\t:                0 by default meaning order-dependent transparency without depth peeling.",
+    __FILE__, VtkRenderParams, group);
+
   theCommands.Add("ivtkdisplay",
-    "ivtkdisplay usage:\n"
-    "ivtkdisplay name1 name2 ..."
-    "\n\t\t: Displayes named objects in current view.",
+              "ivtkdisplay name1 [name2 ...]"
+      "\n\t\t: Displays named objects in Vtk view.",
     __FILE__, VtkDisplay, group);
 
   theCommands.Add("ivtkerase",
-    "ivtkerase usage:\n"
-    "ivtkerase [name1 name2 ...]"
-    "\n\t\t: Removes from renderer named objects or all objects.",
+              "ivtkerase [name1 name2 ...]"
+      "\n\t\t: Hides in Vtk renderer named objects or all objects.",
     __FILE__, VtkErase, group);
 
   theCommands.Add("ivtkremove",
-    "ivtkremove usage:\n"
-    "ivtkremove [name1 name2 ...]"
-    "\n\t\t: Removes from renderer and from memory named objects or all objects.",
+              "ivtkremove name1 [name2 ...]"
+      "\n\t\t: Removes from Vtk renderer named objects.",
+    __FILE__, VtkRemove, group);
+
+  theCommands.Add("ivtkclear",
+              "ivtkclear : Removes all objects from Vtk renderer.",
     __FILE__, VtkRemove, group);
 
   theCommands.Add("ivtksetdispmode",
-    "ivtksetdispmode usage:\n"
-    "ivtksetdispmode [name] mode (0,1)"
-    "\n\t\t: Sets or unsets display mode 'mode' to the object with name 'name' or to all objects"
-    "if name is not defined.",
+              "ivtksetdispmode [name] mode={0|1}"
+      "\n\t\t: Sets or unsets display mode 'mode' to the object with name 'name' or to all objects.",
     __FILE__, VtkSetDisplayMode, group);
 
   theCommands.Add("ivtksetboundingdraw",
-    "ivtksetboundingdraw usage:\n"
-    "ivtksetboundingdraw [name] draw on/off (0,1)"
-    "\n\t\t: Sets or unsets boundaries drawing for shading display mode to the object with name 'name' or to all objects"
-    "if name is not defined.",
+              "ivtksetboundingdraw [name] {on|off}"
+      "\n\t\t: Sets or unsets boundaries drawing for shading display mode"
+      "\n\t\t: to the object with name 'name' or to all objects.",
     __FILE__, VtkSetBoundaryDraw, group);
 
   theCommands.Add("ivtksetselmode",
-    "ivtksetselmode usage:\n"
-    " ivtksetselmode [name] mode on/off(0,1)"
-    "\n\t\t: Sets or unsets selection mode 'mode' to the object with name 'name' or to the all displayed objects.",
+              "ivtksetselmode [name] mode {on|off}"
+      "\n\t\t: Sets or unsets selection mode 'mode' to the object with name 'name'"
+      "\n\t\t: or to the all displayed objects.",
     __FILE__, VtkSetSelectionMode, group);
 
   theCommands.Add("ivtkmoveto",
-    "ivtkmoveto usage:\n"
-    "ivtkmoveto x y"
-    "\n\t\t: Moves position to the pixel with coordinates (x,y). The object on this position is highlighted.",
+              "ivtkmoveto x y"
+      "\n\t\t: Moves position to the pixel with coordinates (x,y). The object on this position is highlighted.",
     __FILE__, VtkMoveTo, group);
 
   theCommands.Add("ivtkselect",
-    "ivtkselect usage:\n"
-    "ivtkselect x y"
-    "\n\t\t: Selects object which correspond to the pixel with input coordinates (x,y).",
+              "ivtkselect x y"
+      "\n\t\t: Selects object which correspond to the pixel with input coordinates (x,y).",
     __FILE__, VtkSelect, group);
 
   theCommands.Add("ivtkfit",
-    "ivtkfit usage:\n"
-    "ivtkfit"
-    "\n\t\t: Fits view according all displayed objects.",
-    __FILE__, VtkFit, group);
+              "ivtkfit : Fits all displayed objects into Vtk view.",
+    __FILE__, VtkViewProj, group);
+
+  theCommands.Add("ivtkaxo",
+              "ivtkaxo : Resets Vtk view orientation to axo",
+    __FILE__, VtkViewProj, group);
+
+  theCommands.Add("ivtkfront",
+              "ivtkfront : Resets Vtk view orientation to front",
+    __FILE__, VtkViewProj, group);
+
+  theCommands.Add("ivtkback",
+              "ivtkback : Resets Vtk view orientation to back",
+    __FILE__, VtkViewProj, group);
+
+  theCommands.Add("ivtktop",
+              "ivtktop : Resets Vtk view orientation to top",
+    __FILE__, VtkViewProj, group);
+
+  theCommands.Add("ivtkbottom",
+              "ivtkbottom : Resets Vtk view orientation to bottom",
+    __FILE__, VtkViewProj, group);
+
+  theCommands.Add("ivtkleft",
+              "ivtkleft : Resets Vtk view orientation to left",
+    __FILE__, VtkViewProj, group);
+
+  theCommands.Add("ivtkright",
+              "ivtkright : Resets Vtk view orientation to right",
+    __FILE__, VtkViewProj, group);
 
   theCommands.Add("ivtkdump",
-    "ivtkdump usage:\n"
-    "ivtkdump <FullFilename>.{png|bmp|jpeg|tiff|pnm} [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]"
-    "\n\t\t: Dumps contents of viewer window to PNG, BMP, JPEG, TIFF or PNM file",
+              "ivtkdump <FullFilename>.{png|bmp|jpeg|tiff|pnm} [buffer={rgb|rgba|depth}]"
+      "\n\t\t:          [width height] [stereoproj={L|R}]"
+      "\n\t\t: Dumps contents of viewer window to PNG, BMP, JPEG, TIFF or PNM file.",
     __FILE__, VtkDump, group);
 
   theCommands.Add("ivtkbgcolor",
-    "ivtkbgcolor usage:\n"
-    "ivtkbgcolor r g b [r2 g2 b2]\n"
-    "\n\t\t: Sets uniform  background color or gradient one if second triple of paramers is set."
-    "Color parameters r,g,b = [0..255].",
+              "ivtkbgcolor Color1 [Color2]"
+      "\n\t\t: Sets uniform background color or gradient one if second triple of parameters is set.",
     __FILE__, VtkBackgroundColor, group);
-}
 
+  theCommands.Add("ivtksetcolor",
+              "ivtksetcolor name {ColorName|R G B}"
+      "\n\t\t: Sets color to the object with name 'name'.",
+    __FILE__, VtkSetColor, group);
+
+  theCommands.Add("ivtksettransparency",
+              "ivtksettransparency name 0..1"
+      "\n\t\t: Sets transparency to the object with name 'name'.",
+    __FILE__, VtkSetTransparency, group);
+}
 
 //================================================================
 // Function : Factory
@@ -1342,4 +1635,3 @@ void IVtkDraw::Factory (Draw_Interpretor& theDI)
 
 // Declare entry point PLUGINFACTORY
 DPLUGIN(IVtkDraw)
-

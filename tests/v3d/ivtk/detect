@@ -1,15 +1,11 @@
 puts "============"
-puts "detect"
+puts "detect: Tests detection of shapes in the IVtk view"
 puts "============"
 puts ""
-#######################################################
-#  Tests detection of shapes in the IVtk view
-#######################################################
 
-set anImage $imagedir/${casename}.png
-ivtkinit
 box b 1 1 1
+ivtkinit
 ivtkdisplay b
 ivtkmoveto 100 100
 
-ivtkdump $anImage
+ivtkdump $imagedir/${casename}.png

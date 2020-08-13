@@ -1,16 +1,12 @@
 puts "============"
-puts "selection_mode"
+puts "selection_mode: Tests selection modes changing in the IVtk view"
 puts "============"
 puts ""
-#######################################################
-#  Tests selection modes changing in the IVtk view
-#######################################################
 
-set anImage $imagedir/${casename}.png
-ivtkinit
 box b 1 1 1
+ivtkinit
 ivtkdisplay b
 ivtksetselmode 2 1
 ivtkselect 86 117
 
-ivtkdump $anImage
+ivtkdump $imagedir/${casename}.png

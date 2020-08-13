@@ -1,18 +1,11 @@
 puts "============"
-puts "bgcolor"
+puts "bgcolor: Tests changing of background color in the IVtk view"
 puts "============"
 puts ""
-#######################################################
-#  Tests changing of background color in the IVtk view
-#######################################################
-
-set anImage1 $imagedir/${casename}_1.png
-set anImage2 $imagedir/${casename}_2.png
 
 ivtkinit
 ivtkbgcolor 200 220 250
-ivtkdump $anImage1
+ivtkdump $imagedir/${casename}_1.png
 
 ivtkbgcolor 10 30 80 255 255 255
-ivtkdump $anImage2
-
+ivtkdump $imagedir/${casename}_2.png

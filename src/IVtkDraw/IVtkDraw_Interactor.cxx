@@ -626,7 +626,7 @@ LRESULT CALLBACK WndProc (HWND theHWnd,UINT theUMsg,
   LRESULT aRes = 0;
   IVtkDraw_Interactor *anInteractor = 0;
 
-  anInteractor = (IVtkDraw_Interactor *)GetWindowLongPtr (theHWnd, GWLP_USERDATA);
+  anInteractor = (IVtkDraw_Interactor *)GetWindowLongPtrW (theHWnd, GWLP_USERDATA);
 
   if (anInteractor && anInteractor->GetReferenceCount() > 0)
   {
@@ -715,7 +715,7 @@ LRESULT CALLBACK ViewerWindowProc (HWND theHWnd,
     theInteractor->OnTimer (theHWnd, (UINT)theWParam);
     break;
   }
-  return DefWindowProc(theHWnd, theMsg, theWParam, theLParam);
+  return DefWindowProcW (theHWnd, theMsg, theWParam, theLParam);
 }
 
 #else
