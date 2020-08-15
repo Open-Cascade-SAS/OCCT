@@ -1,6 +1,3 @@
-puts "TODO OCC26088 ALL: An exception was caught"
-puts "TODO OCC26088 ALL: TEST INCOMPLETE"
-
 puts "========"
 puts "0026088: E x c e p t i o n in pipe algorithm"
 puts "========"
@@ -9,4 +6,12 @@ puts ""
 restore [locate_data_file bug26088_path0.brep] p
 restore [locate_data_file bug26088_profile0.brep] pr
 
+# result is invalid shape (twisted surface) because of placement 
+# path and profile
 pipe result p pr
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+puts "TEST COMPLETED"

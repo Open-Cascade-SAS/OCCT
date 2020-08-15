@@ -870,6 +870,15 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	      isUReversed = Standard_True;
 	    }
 
+            if (Abs(l - f) <= Precision::PConfusion() ||
+                Abs(UlastOnSec - UfirstOnSec) > M_PI_2)
+            {
+              // l == f - "degenerated" surface
+              // UlastOnSec - UfirstOnSec > M_PI_2 - "twisted" surface,
+              // it is impossible to represent with help of trimmed sphere
+              return Ok;
+            }
+
 	    if ( (f >= -M_PI/2) && (l <= M_PI/2)) {
 	      Ok = Standard_True;
 	      myExchUV = Standard_True;
