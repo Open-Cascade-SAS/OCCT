@@ -1,0 +1,20 @@
+circle c1 0 10 0 10
+circle c2 0 -9 0 9.001
+circle c3 10 10 0 0 10 0 0.05
+
+mkedge e1 c1
+mkedge e2 c2
+mkedge profile c3
+
+bclearobjects
+baddobjects e1 e2
+bfillds
+bbuild result
+
+explode result e
+wire path result_1 result_3 result_4 result_6
+wire profile profile
+
+mksweep path
+addsweep profile 
+buildsweep result -C -R

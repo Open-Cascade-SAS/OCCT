@@ -124,7 +124,7 @@ protected:
   
   Standard_EXPORT Standard_Boolean BuildShell (const BRepFill_TransitionStyle Transition, const Standard_Integer Vf, const Standard_Integer Vl, TopTools_MapOfShape& ReversedEdges, BRepFill_DataMapOfShapeHArray2OfShape& Tapes, BRepFill_DataMapOfShapeHArray2OfShape& Rails, const Standard_Real ExtendFirst = 0.0, const Standard_Real ExtendLast = 0.0);
   
-  Standard_EXPORT void PerformCorner (const Standard_Integer Index, const BRepFill_TransitionStyle Transition, const Handle(TopTools_HArray2OfShape)& Bounds);
+  Standard_EXPORT Standard_Boolean PerformCorner (const Standard_Integer Index, const BRepFill_TransitionStyle Transition, const Handle(TopTools_HArray2OfShape)& Bounds);
   
   Standard_EXPORT Standard_Real EvalExtrapol (const Standard_Integer Index, const BRepFill_TransitionStyle Transition) const;
   

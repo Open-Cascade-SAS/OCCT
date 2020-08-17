@@ -1,0 +1,11 @@
+puts "========"
+puts "0030795: BRepOffsetAPI_MakePipeShell: hangs on the attached model and produces infinite rails"
+puts "========"
+puts ""
+
+restore [locate_data_file bug30795.brep] a
+explode a
+
+mksweep a_1 
+addsweep a_2
+buildsweep result -C -S
