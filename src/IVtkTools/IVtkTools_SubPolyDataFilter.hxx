@@ -18,7 +18,9 @@
 
 #include <IVtkTools.hxx>
 
-#include "vtkPolyDataAlgorithm.h"
+#include <Standard_WarningsDisable.hxx>
+#include <vtkPolyDataAlgorithm.h>
+#include <Standard_WarningsRestore.hxx>
 
 #ifdef _MSC_VER
 #pragma warning(push)

@@ -19,15 +19,11 @@
 #include <IVtk_IShapeData.hxx>
 
 // prevent disabling some MSVC warning messages by VTK headers 
-#ifdef _MSC_VER
-#pragma warning(push)
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkIdTypeArray.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+#include <Standard_WarningsRestore.hxx>
 
 class vtkIdTypeArray;
 

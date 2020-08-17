@@ -323,7 +323,7 @@ endif()
 
 # Update list of used VTK libraries if OpenGL2 Rendering BackEnd is used.
 # Add VTK_OPENGL2_BACKEND definition.
-if("${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL2")
+if("${VTK_RENDERING_BACKEND}" STREQUAL "OpenGL2" OR IS_VTK_9XX)
   add_definitions(-DVTK_OPENGL2_BACKEND)
   foreach (VTK_EXCLUDE_LIBRARY vtkRenderingOpenGL vtkRenderingFreeTypeOpenGL)
     list (FIND USED_TOOLKITS_BY_CURRENT_PROJECT "${VTK_EXCLUDE_LIBRARY}" IS_VTK_OPENGL_FOUND)
@@ -347,6 +347,9 @@ else()
 endif()
 
 if (BUILD_SHARED_LIBS)
+  if(IS_VTK_9XX)
+    string (REGEX REPLACE "vtk" "VTK::" USED_TOOLKITS_BY_CURRENT_PROJECT "${USED_TOOLKITS_BY_CURRENT_PROJECT}")
+  endif()
   target_link_libraries (${PROJECT_NAME} ${USED_TOOLKITS_BY_CURRENT_PROJECT} ${USED_EXTERNAL_LIBS_BY_CURRENT_PROJECT})
 endif()
 

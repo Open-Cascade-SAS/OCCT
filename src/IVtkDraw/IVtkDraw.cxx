@@ -51,10 +51,7 @@
 #include <IVtkDraw_Interactor.hxx>
 
 // prevent disabling some MSVC warning messages by VTK headers 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4244)
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <vtkAlgorithmOutput.h>
 #include <vtkAppendPolyData.h>
 #include <vtkBMPWriter.h>
@@ -88,9 +85,7 @@
   #include <vtkXOpenGLRenderWindow.h>
   #include <tk.h>
 #endif
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+#include <Standard_WarningsRestore.hxx>
 
 #if (VTK_MAJOR_VERSION > 8) || (VTK_MAJOR_VERSION == 8 && VTK_MINOR_VERSION >= 1)
   #define HAVE_VTK_SRGB

@@ -16,17 +16,13 @@
 #include <IVtkVTK_ShapeData.hxx>
 
 // prevent disabling some MSVC warning messages by VTK headers 
-#ifdef _MSC_VER
-#pragma warning(push)
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkIdList.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+#include <Standard_WarningsRestore.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkVTK_ShapeData,IVtk_IShapeData)
 

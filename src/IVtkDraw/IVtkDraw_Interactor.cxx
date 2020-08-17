@@ -14,9 +14,7 @@
 // commercial license or contractual agreement.
 
 // prevent disabling some MSVC warning messages by VTK headers 
-#ifdef _MSC_VER
-#pragma warning(push)
-#endif
+#include <Standard_WarningsDisable.hxx>
 #ifdef _WIN32
 #include <vtkWin32RenderWindowInteractor.h>
 #include <vtkWin32OpenGLRenderWindow.h>
@@ -30,12 +28,9 @@
 #include <vtkCommand.h>
 #include <vtkObjectFactory.h>
 #include <vtkSmartPointer.h>
+#include <Standard_WarningsRestore.hxx>
 
 #include <IVtkDraw_Interactor.hxx>
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>

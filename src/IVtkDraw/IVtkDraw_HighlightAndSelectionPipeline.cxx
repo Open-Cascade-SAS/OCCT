@@ -16,9 +16,7 @@
 #include <IVtkDraw_HighlightAndSelectionPipeline.hxx>
 
 // prevent disabling some MSVC warning messages by VTK headers 
-#ifdef _MSC_VER
-#pragma warning(push)
-#endif
+#include <Standard_WarningsDisable.hxx>
 #include <vtkRenderer.h>
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
@@ -26,15 +24,12 @@
 #include <vtkAppendPolyData.h>
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+#include <Standard_WarningsRestore.hxx>
 
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_DisplayModeFilter.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_ShapeObject.hxx>
-
 
 IMPLEMENT_STANDARD_RTTIEXT(IVtkDraw_HighlightAndSelectionPipeline,Standard_Transient)
 

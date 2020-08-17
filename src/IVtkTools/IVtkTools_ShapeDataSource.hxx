@@ -19,7 +19,10 @@
 #include <IVtkTools.hxx>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkVTK_ShapeData.hxx>
+
+#include <Standard_WarningsDisable.hxx>
 #include <vtkPolyDataAlgorithm.h>
+#include <Standard_WarningsRestore.hxx>
 
 class vtkIdTypeArray;
 class vtkPolyData;
