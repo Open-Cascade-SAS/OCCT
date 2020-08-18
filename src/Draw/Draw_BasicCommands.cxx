@@ -23,6 +23,7 @@
 #include <Draw_ProgressIndicator.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
+#include <Message_PrinterOStream.hxx>
 #include <OSD.hxx>
 #include <OSD_Chronometer.hxx>
 #include <OSD_Environment.hxx>
@@ -1103,6 +1104,99 @@ static int dtracelevel (Draw_Interpretor& theDI,
   return 0;
 }
 
+//==============================================================================
+//function : dputs
+//purpose  :
+//==============================================================================
+static int dputs (Draw_Interpretor& ,
+                  Standard_Integer theArgNb,
+                  const char** theArgVec)
+{
+  Standard_OStream* aStream = &std::cout;
+  bool isNoNewline = false, toIntense = false;
+  Message_ConsoleColor aColor = Message_ConsoleColor_Default;
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "-nonewline")
+    {
+      isNoNewline = true;
+    }
+    else if (anArg == "stdcout")
+    {
+      aStream = &std::cout;
+    }
+    else if (anArg == "stdcerr")
+    {
+      aStream = &std::cerr;
+    }
+    else if (anArg == "-intense")
+    {
+      toIntense = true;
+    }
+    else if (anArg == "-black")
+    {
+      aColor = Message_ConsoleColor_Black;
+    }
+    else if (anArg == "-white")
+    {
+      aColor = Message_ConsoleColor_White;
+    }
+    else if (anArg == "-red")
+    {
+      aColor = Message_ConsoleColor_Red;
+    }
+    else if (anArg == "-blue")
+    {
+      aColor = Message_ConsoleColor_Blue;
+    }
+    else if (anArg == "-green")
+    {
+      aColor = Message_ConsoleColor_Green;
+    }
+    else if (anArg == "-yellow")
+    {
+      aColor = Message_ConsoleColor_Yellow;
+    }
+    else if (anArg == "-cyan")
+    {
+      aColor = Message_ConsoleColor_Cyan;
+    }
+    else if (anArg == "-magenta")
+    {
+      aColor = Message_ConsoleColor_Magenta;
+    }
+    else if (anArgIter + 1 == theArgNb)
+    {
+      if (toIntense || aColor != Message_ConsoleColor_Default)
+      {
+        Message_PrinterOStream::SetConsoleTextColor (aStream, aColor, toIntense);
+      }
+
+      *aStream << theArgVec[anArgIter];
+      if (!isNoNewline)
+      {
+        *aStream << std::endl;
+      }
+
+      if (toIntense || aColor != Message_ConsoleColor_Default)
+      {
+        Message_PrinterOStream::SetConsoleTextColor (aStream, Message_ConsoleColor_Default, false);
+      }
+      return 0;
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << anArg << "'";
+      return 1;
+    }
+  }
+
+  Message::SendFail() << "Syntax error: wrong number of arguments";
+  return 1;
+}
+
 void Draw::BasicCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean Done = Standard_False;
@@ -1164,4 +1258,10 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,dversion,g);
   theCommands.Add("dlocale", "set and / or query locate of C subsystem (function setlocale())",
 		  __FILE__,dlocale,g);
+
+  theCommands.Add("dputs",
+            "dputs [-intense] [-black|-white|-red|-green|-blue|-yellow|-cyan|-magenta]"
+    "\n\t\t:       [-nonewline] [stdcout|stdcerr] text"
+    "\n\t\t: Puts text into console output",
+                  __FILE__,dputs,g);
 }
