@@ -135,6 +135,22 @@ protected:
   //! Calculates distance from the 3d projection of used-picked screen point to center of the geometry
   virtual Standard_Real distanceToCOG (SelectBasics_SelectingVolumeManager& theMgr) = 0;
 
+  //! Process elements overlapped by the selection volume
+  //! @param theMgr selection manager
+  //! @param theFirstElem index of the first element
+  //! @param theLastElem index of the last element
+  //! @param theIsFullInside when TRUE indicates that entire BVH node is already inside selection volume
+  //! @param thePickResult [OUT] picking result (for picking by ray)
+  //! @param theMatchesNb [OUT] number of processed elements
+  //! @return FALSE if some element is outside the selection volume (if IsOverlapAllowed is FALSE); TRUE otherwise
+  Standard_EXPORT Standard_Boolean processElements (SelectBasics_SelectingVolumeManager& theMgr,
+                                                    Standard_Integer theFirstElem,
+                                                    Standard_Integer theLastElem,
+                                                    Standard_Boolean theIsFullInside,
+                                                    Standard_Boolean theToCheckAllInside,
+                                                    SelectBasics_PickResult& thePickResult,
+                                                    Standard_Integer& theMatchesNb);
+
 protected:
 
   //! The purpose of this class is to provide a link between BVH_PrimitiveSet

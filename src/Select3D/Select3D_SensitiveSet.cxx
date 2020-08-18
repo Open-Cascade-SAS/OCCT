@@ -79,6 +79,51 @@ namespace
 }
 
 //=======================================================================
+// function : processElements
+// purpose  :
+//=======================================================================
+Standard_Boolean Select3D_SensitiveSet::processElements (SelectBasics_SelectingVolumeManager& theMgr,
+                                                         Standard_Integer theFirstElem,
+                                                         Standard_Integer theLastElem,
+                                                         Standard_Boolean theIsFullInside,
+                                                         Standard_Boolean theToCheckAllInside,
+                                                         SelectBasics_PickResult& thePickResult,
+                                                         Standard_Integer& theMatchesNb)
+{
+  SelectBasics_PickResult aPickResult;
+  for (Standard_Integer anIdx = theFirstElem; anIdx <= theLastElem; anIdx++)
+  {
+    if (!theMgr.IsOverlapAllowed()) // inclusion test
+    {
+      if (!elementIsInside (theMgr, anIdx, theIsFullInside))
+      {
+        if (theToCheckAllInside)
+        {
+          continue;
+        }
+        return Standard_False;
+      }
+    }
+    else // overlap test
+    {
+      if (!overlapsElement (aPickResult, theMgr, anIdx, theIsFullInside))
+      {
+        continue;
+      }
+
+      if (thePickResult.Depth() > aPickResult.Depth())
+      {
+        thePickResult = aPickResult;
+        myDetectedIdx = anIdx;
+      }
+    }
+    ++theMatchesNb;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
 // function : Matches
 // purpose  :
 //=======================================================================
@@ -87,116 +132,113 @@ Standard_Boolean Select3D_SensitiveSet::matches (SelectBasics_SelectingVolumeMan
                                                  Standard_Boolean theToCheckAllInside)
 {
   myDetectedIdx = -1;
-  const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
-  if (myContent.Size() < 1 || !theMgr.Overlaps (aBVH->MinPoint (0),
-                                                aBVH->MaxPoint (0)))
+  
+  if (myContent.Size() < 1)
   {
     return Standard_False;
   }
 
-  NodeInStack aStack[BVH_Constants_MaxTreeDepth];
-  NodeInStack aNode;
+  const Select3D_BndBox3d& aGlobalBox = myContent.Box();
+  Standard_Boolean isFullInside = Standard_True;
 
-  Standard_Integer aHead = -1;
+  if (!theMgr.Overlaps(aGlobalBox.CornerMin(),
+                       aGlobalBox.CornerMax(),
+                       &isFullInside))
+  {
+    return Standard_False;
+  }
 
   Standard_Integer aMatchesNb = -1;
-  SelectBasics_PickResult aPickResult;
+
   const bool toCheckFullInside = (theMgr.GetActiveSelectionType() != SelectBasics_SelectingVolumeManager::Point);
-  for (;;)
+  if (toCheckFullInside && isFullInside)
   {
-    const BVH_Vec4i& aData = aBVH->NodeInfoBuffer()[aNode.Id];
-
-    if (aData.x() == 0) // is inner node
+    Standard_Integer aSize = myContent.Size();
+    if (!processElements (theMgr, 0, aSize - 1, Standard_True, theToCheckAllInside, thePickResult, aMatchesNb))
     {
-      NodeInStack aLeft (aData.y(), toCheckFullInside), aRight(aData.z(), toCheckFullInside);
-      Standard_Boolean toCheckLft = Standard_True, toCheckRgh = Standard_True;
-      if (!aNode.IsFullInside)
-      {
-        toCheckLft = theMgr.Overlaps (aBVH->MinPoint (aLeft.Id), aBVH->MaxPoint (aLeft.Id), toCheckFullInside ? &aLeft.IsFullInside : NULL);
-        if (!toCheckLft)
-        {
-          aLeft.IsFullInside = Standard_False;
-        }
+      return Standard_False;
+    }
+  }
+  else
+  {
+    const BVH_Tree<Standard_Real, 3, BVH_BinaryTree>* aBVH = myContent.GetBVH().get();
+    NodeInStack aStack[BVH_Constants_MaxTreeDepth];
+    NodeInStack aNode;
 
-        toCheckRgh = theMgr.Overlaps (aBVH->MinPoint (aRight.Id), aBVH->MaxPoint (aRight.Id), toCheckFullInside ? &aRight.IsFullInside : NULL);
-        if (!toCheckRgh)
-        {
-          aRight.IsFullInside = Standard_False;
-        }
-      }
+    Standard_Integer aHead = -1;
 
-      if (!theMgr.IsOverlapAllowed()) // inclusion test
+    for (;;)
+    {
+      const BVH_Vec4i& aData = aBVH->NodeInfoBuffer()[aNode.Id];
+
+      if (aData.x() == 0) // is inner node
       {
-        if (!theToCheckAllInside)
+        NodeInStack aLeft (aData.y(), toCheckFullInside), aRight(aData.z(), toCheckFullInside);
+        Standard_Boolean toCheckLft = Standard_True, toCheckRgh = Standard_True;
+        if (!aNode.IsFullInside)
         {
-          if (!toCheckLft || !toCheckRgh)
+          toCheckLft = theMgr.Overlaps (aBVH->MinPoint (aLeft.Id), aBVH->MaxPoint (aLeft.Id), toCheckFullInside ? &aLeft.IsFullInside : NULL);
+          if (!toCheckLft)
           {
-            return Standard_False; // no inclusion
+            aLeft.IsFullInside = Standard_False;
           }
 
-          // skip extra checks
-          toCheckLft &= !aLeft.IsFullInside;
-          toCheckRgh &= !aRight.IsFullInside;
+          toCheckRgh = theMgr.Overlaps (aBVH->MinPoint (aRight.Id), aBVH->MaxPoint (aRight.Id), toCheckFullInside ? &aRight.IsFullInside : NULL);
+          if (!toCheckRgh)
+          {
+            aRight.IsFullInside = Standard_False;
+          }
         }
-      }
 
-      if (toCheckLft || toCheckRgh)
-      {
-        aNode = toCheckLft ? aLeft : aRight;
-        if (toCheckLft && toCheckRgh)
+        if (!theMgr.IsOverlapAllowed()) // inclusion test
         {
-          aStack[++aHead] = aRight;
+          if (!theToCheckAllInside)
+          {
+            if (!toCheckLft || !toCheckRgh)
+            {
+              return Standard_False; // no inclusion
+            }
+
+            // skip extra checks
+            toCheckLft &= !aLeft.IsFullInside;
+            toCheckRgh &= !aRight.IsFullInside;
+          }
+        }
+
+        if (toCheckLft || toCheckRgh)
+        {
+          aNode = toCheckLft ? aLeft : aRight;
+          if (toCheckLft && toCheckRgh)
+          {
+            aStack[++aHead] = aRight;
+          }
+        }
+        else
+        {
+          if (aHead < 0)
+            break;
+
+          aNode = aStack[aHead--];
         }
       }
       else
       {
+        if (!processElements (theMgr, aData.y(), aData.z(), aNode.IsFullInside, theToCheckAllInside, thePickResult, aMatchesNb))
+        {
+          return Standard_False;
+        }
+
         if (aHead < 0)
           break;
 
         aNode = aStack[aHead--];
       }
     }
-    else
-    {
-      for (Standard_Integer anElemIdx = aData.y(); anElemIdx <= aData.z(); ++anElemIdx)
-      {
-        if (!theMgr.IsOverlapAllowed()) // inclusion test
-        {
-          if (!elementIsInside (theMgr, anElemIdx, aNode.IsFullInside))
-          {
-            if (theToCheckAllInside)
-            {
-              continue;
-            }
-            return Standard_False;
-          }
-        }
-        else // overlap test
-        {
-          if (!overlapsElement (aPickResult, theMgr, anElemIdx, aNode.IsFullInside))
-          {
-            continue;
-          }
-
-          if (thePickResult.Depth() > aPickResult.Depth())
-          {
-            thePickResult = aPickResult;
-            myDetectedIdx = anElemIdx;
-          }
-        }
-        ++aMatchesNb;
-      }
-
-      if (aHead < 0)
-        break;
-
-      aNode = aStack[aHead--];
-    }
   }
 
   if (aMatchesNb != -1)
   {
-    thePickResult.SetDistToGeomCenter(distanceToCOG(theMgr));
+    thePickResult.SetDistToGeomCenter (distanceToCOG (theMgr));
   }
 
   return aMatchesNb != -1
