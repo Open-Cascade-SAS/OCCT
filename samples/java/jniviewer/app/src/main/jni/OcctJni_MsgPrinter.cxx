@@ -66,6 +66,6 @@ void OcctJni_MsgPrinter::send (const TCollection_AsciiString& theString,
   }
 
   jstring aJStr = myJEnv->NewStringUTF ((theString + "\n").ToCString());
-  myJEnv->CallObjectMethod (myJObj, myJMet, aJStr);
+  myJEnv->CallVoidMethod (myJObj, myJMet, aJStr);
   myJEnv->DeleteLocalRef (aJStr);
 }
