@@ -259,6 +259,9 @@ public:
 
   //! Fetches uniform variables from proxy shader program.
   Standard_EXPORT Standard_Boolean ApplyVariables (const Handle(OpenGl_Context)& theCtx);
+  
+  //! @return proxy shader program.
+  const Handle(Graphic3d_ShaderProgram)& Proxy() const { return myProxy; }
 
   //! @return true if current object was initialized
   inline bool IsValid() const
