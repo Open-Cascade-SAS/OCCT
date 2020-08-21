@@ -393,6 +393,7 @@ Font_FontMgr::Font_FontMgr()
   aCJK   ->Append (Font_FontAlias ("simsun"));        // Windows
   aCJK   ->Append (Font_FontAlias ("droid sans fallback")); // Android, Linux
   aCJK   ->Append (Font_FontAlias ("noto sans sc"));  // Android
+  aCJK   ->Append (Font_FontAlias ("noto sans cjk jp"));
 
 #if defined(_WIN32)
   aKorean->Append (Font_FontAlias ("malgun gothic")); // introduced since Vista
