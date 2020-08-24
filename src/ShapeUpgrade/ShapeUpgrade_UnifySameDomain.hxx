@@ -27,6 +27,7 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <Precision.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;
 
