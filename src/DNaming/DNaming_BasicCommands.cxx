@@ -461,7 +461,7 @@ static Standard_Integer DNaming_ImportShape (Draw_Interpretor& di,
     DDF::ReturnLabel(di, L);
     return 0;
   }
-  std::cout << "DNaming_NewShape : Error" << std::endl;
+  di << "DNaming_NewShape : Error";
   return 1;  
 }
 //=======================================================================

@@ -81,6 +81,7 @@
 #include <TopoDS_Shape.hxx>
 #include <DBRep.hxx>
 #include <Geom_Curve.hxx>
+#include <Message.hxx>
 
 #include <stdio.h>
 #ifdef _WIN32
@@ -1381,14 +1382,14 @@ static Standard_Integer compBsplSur (Draw_Interpretor& , Standard_Integer n, con
 {
   if (n < 2) 
   {
-    std::cout<<"Invalid number of parameters"<<std::endl;
+    Message::SendFail() << "Syntax error: Invalid number of parameters";
     return 1;
   }
 
   Handle(Geom_BSplineSurface) GBs1 = DrawTrSurf::GetBSplineSurface(a[1]);
   Handle(Geom_BSplineSurface) GBs2 = DrawTrSurf::GetBSplineSurface(a[2]);
   if (GBs1.IsNull() || GBs2.IsNull()) {
-    std::cout<<"Invalid surface"<<std::endl;
+    Message::SendFail() << "Syntax error: Invalid surface";
     return 1;
   }
    

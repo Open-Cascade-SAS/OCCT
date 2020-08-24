@@ -326,13 +326,13 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer DDocStd_Close (Draw_Interpretor& /*theDI*/,
+static Standard_Integer DDocStd_Close (Draw_Interpretor& theDI,
                                        Standard_Integer  theArgNb,
                                        const char**      theArgVec)
 {   
   if (theArgNb != 2)
   {
-    std::cout << "DDocStd_Close : Error\n";
+    theDI << "DDocStd_Close : Error\n";
     return 1;
   }
 

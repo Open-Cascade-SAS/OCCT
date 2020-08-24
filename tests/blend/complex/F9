@@ -4,7 +4,6 @@
 ## Comment : from pro13893
 ## ====================================
 puts "TODO OCC22817 All:exception.+There are no suitable edges"
-puts "TODO OCC22817 All:\\*\\* Exception \\*\\*"
 puts "TODO OCC22817 All:TEST INCOMPLETE"
 
 restore [locate_data_file pro13893.rle] a

@@ -75,6 +75,7 @@
 #include <BRepOffset_MakeOffset.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <GeomAdaptor_Curve.hxx>
+#include <Message.hxx>
 
 static 
   void SampleEdges (const TopoDS_Shape&   theShape, 
@@ -277,7 +278,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
 {
   if (n <= 2) 
   {
-    std::cout<<"Invalid input arguments. Should be: curve1 [curve2 ...] shape [result] [tol]"<<std::endl;
+    Message::SendFail() << "Invalid input arguments. Should be: curve1 [curve2 ...] shape [result] [tol]";
     return 1;
   }
   Standard_Integer indshape = 2;
@@ -290,7 +291,7 @@ Standard_Integer brepintcs(Draw_Interpretor& di, Standard_Integer n, const char*
   }
   if (S.IsNull()) 
   {
-    std::cout<<"Invalid input shape"<<std::endl;
+    Message::SendFail() << "Invalid input shape";
     return 1;
   }
 

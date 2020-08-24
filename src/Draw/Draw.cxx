@@ -59,7 +59,7 @@ extern Standard_Boolean Draw_ParseFailed;
 
 Standard_EXPORT Draw_Viewer dout;
 Standard_EXPORT Draw_Interpretor theCommands;
-Standard_EXPORT Standard_Boolean Draw_Batch;
+Standard_EXPORT Standard_Boolean Draw_Batch = Standard_False;
 Standard_EXPORT Standard_Boolean Draw_Spying = Standard_False;
 Standard_EXPORT Standard_Boolean Draw_Chrono = Standard_False;
 Standard_EXPORT Standard_Boolean Draw_VirtualWindows = Standard_False;
@@ -504,14 +504,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
     if (!isInteractiveForced)
     {
       // disable console messages colorization to avoid spoiling log with color codes
-      for (Message_SequenceOfPrinters::Iterator aPrinterIter (Message::DefaultMessenger()->Printers());
-           aPrinterIter.More(); aPrinterIter.Next())
-      {
-        if (Handle(Message_PrinterOStream) aPrinter = Handle(Message_PrinterOStream)::DownCast (aPrinterIter.Value()))
-        {
-          aPrinter->SetToColorize (Standard_False);
-        }
-      }
+      theCommands.SetToColorize (Standard_False);
     }
     ReadInitFile (aRunFile);
     // provide a clean exit, this is useful for some analysis tools
@@ -637,7 +630,15 @@ Standard_Boolean Draw_Interprete(const char* com)
 
   if (*theCommands.Result())
   {
+    if (c > 0 && theCommands.ToColorize())
+    {
+      Message_PrinterOStream::SetConsoleTextColor (&std::cout, Message_ConsoleColor_Red, true);
+    }
     std::cout << theCommands.Result() << std::endl;
+    if (c > 0 && theCommands.ToColorize())
+    {
+      Message_PrinterOStream::SetConsoleTextColor (&std::cout, Message_ConsoleColor_Default, false);
+    }
   }
 
   if (Draw_Chrono && hadchrono) {

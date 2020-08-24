@@ -258,7 +258,7 @@ static Standard_Integer dtryload (Draw_Interpretor& di, Standard_Integer n, cons
 {
   if (n != 2)
   {
-    std::cout << "Error: specify path to library to be loaded" << std::endl;
+    Message::SendFail() << "Error: specify path to library to be loaded";
     return 1;
   }
 

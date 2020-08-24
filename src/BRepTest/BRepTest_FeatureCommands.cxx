@@ -65,6 +65,7 @@
 
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <ChFi3d_FilletShape.hxx>
+#include <Message.hxx>
 
 #include <Precision.hxx>
 
@@ -756,16 +757,16 @@ static Standard_Integer SPLS(Draw_Interpretor&,
 
   if (narg < 3)
   {
-    std::cout << "Invalid number of arguments. Should be : splitshape result shape [splitedges] \
-            [face wire/edge/compound [wire/edge/compound ...] \
-            [face wire/edge/compound [wire/edge/compound...] ...] \
-            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]" << std::endl;
+    Message::SendFail() << "Invalid number of arguments. Should be : splitshape result shape [splitedges] "
+            "[face wire/edge/compound [wire/edge/compound ...] "
+            "[face wire/edge/compound [wire/edge/compound...] ...] "
+            "[@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]";
     return 1;
   }
   TopoDS_Shape S = DBRep::Get(a[2]);
   if (S.IsNull())
   {
-    std::cout << "Invalid input shape " << a[2] << std::endl;
+    Message::SendFail()  << "Invalid input shape " << a[2];
     return 1;
   }
   BRepFeat_SplitShape Spls(S);
@@ -792,7 +793,7 @@ static Standard_Integer SPLS(Draw_Interpretor&,
     TopoDS_Shape aSh = DBRep::Get(a[i]);
     if (aSh.IsNull())
     {
-      std::cout << "Invalid input shape " << a[i] << std::endl;
+      Message::SendFail()  << "Invalid input shape " << a[i];
       return 1;
     }
 
@@ -871,7 +872,7 @@ static Standard_Integer SPLS(Draw_Interpretor&,
         TopoDS_Shape aSh = DBRep::Get(a[i]);
         if (aSh.IsNull())
         {
-          std::cout << "Invalid input shape " << a[i] << std::endl;
+          Message::SendFail()  << "Invalid input shape " << a[i];
           return 1;
         }
         TopExp_Explorer aExpE(aSh, TopAbs_EDGE, TopAbs_FACE);
@@ -880,10 +881,10 @@ static Standard_Integer SPLS(Draw_Interpretor&,
       }
       else
       {
-        std::cout << "Invalid input arguments. Should be : splitshape result shape [splitedges] \
-            [face wire/edge/compound [wire/edge/compound ...] \
-            [face wire/edge/compound [wire/edge/compound...] ...] \
-            [@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]" << std::endl;
+        Message::SendFail() << "Invalid input arguments. Should be : splitshape result shape [splitedges] "
+            "[face wire/edge/compound [wire/edge/compound ...] "
+            "[face wire/edge/compound [wire/edge/compound...] ...] "
+            "[@ edgeonshape edgeonwire [edgeonshape edgeonwire...]]";
         return 1;
       }
     }
@@ -906,7 +907,7 @@ static Standard_Integer SPLS(Draw_Interpretor&,
     Ew = TopoDS::Edge(aLocalShape);
     //    Ew = TopoDS::Edge(DBRep::Get(a[i+1],TopAbs_EDGE));
     if (Ew.IsNull()) {
-      std::cout << "Invalid input shape " << a[i + 1] << std::endl;
+      Message::SendFail() << "Invalid input shape " << a[i + 1];
       return 1;
     }
     Spls.Add(TopoDS::Edge(Ew), TopoDS::Edge(Es));

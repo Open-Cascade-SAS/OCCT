@@ -1,4 +1,3 @@
-puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 puts "TODO OCC23748 ALL: ERROR. offsetperform operation not done."

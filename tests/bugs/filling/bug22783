@@ -1,14 +1,10 @@
-puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 
 puts "==========="
-puts "OCC22783"
+puts "0022783: Improvement of BRepOffsetAPI_MakeFilling: keep old and new boundary edges with all pcurves"
 puts "==========="
 puts ""
-#######################################################################
-#  Improvement of BRepOffsetAPI_MakeFilling: keep old and new boundary edges with all pcurves
-#######################################################################
 
 catch {pload XDE}
 

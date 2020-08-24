@@ -45,8 +45,9 @@
 #include <IntAna2d_Conic.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <Geom2dAdaptor_GHCurve.hxx>
-#include <memory>
+#include <Message.hxx>
 
+#include <memory>
 #include <stdio.h>
 #ifdef _WIN32
 Standard_IMPORT Draw_Viewer dout;
@@ -442,7 +443,7 @@ static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, 
 {
   if (n < 2)
   {
-    std::cout << "2dintana circle circle " << std::endl;
+    Message::SendFail() << "2dintana circle circle";
     return 1;
   }
 
@@ -483,21 +484,21 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
 {
   if( n < 2) 
   {
-    std::cout<< "intconcon con1 con2 "<<std::endl;
+    Message::SendFail() << "intconcon con1 con2";
     return 1;
   }
   
   Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
   if (C1.IsNull())
   {
-    std::cout << a[1] << " is Null " << std::endl;
+    Message::SendFail() << a[1] << " is Null";
     return 1;
   }
 
   Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[2]);
   if (C2.IsNull())
   {
-    std::cout << a[2] << " is Null " << std::endl;
+    Message::SendFail() << a[2] << " is Null";
     return 1;
   }
 
@@ -536,7 +537,7 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
     break;
   }
   default:
-    std::cout << a[2] << " is not conic " << std::endl;
+    Message::SendFail() << a[2] << " is not conic";
     return 1;
   }
 
@@ -559,7 +560,7 @@ static Standard_Integer intconcon(Draw_Interpretor& di, Standard_Integer n, cons
     Intersector.Perform(AC1.Parabola(), *pCon);
     break;
   default:
-    std::cout << a[1] << " is not conic " << std::endl;
+    Message::SendFail() << a[1] << " is not conic";
     return 1;
   }
   

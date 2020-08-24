@@ -46,6 +46,7 @@
 #include <BRepBuilderAPI_FastSewing.hxx>
 
 #include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <Message.hxx>
 
 #ifdef _WIN32
 //#define strcasecmp strcmp Already defined
@@ -75,7 +76,7 @@ static Standard_Integer mkface(Draw_Interpretor& , Standard_Integer n, const cha
   
   Handle(Geom_Surface) S = DrawTrSurf::GetSurface(a[2]);
   if (S.IsNull()) {
-    std::cout << a[2] << " is not a surface" << std::endl;
+    Message::SendFail() << a[2] << " is not a surface";
     return 1;
   }
   
@@ -580,7 +581,7 @@ static Standard_Integer getedgeregul
 {
   if( argc < 3)
   {
-    std::cout<<"Invalid number of arguments. Should be: checkedgeregularity edge face1 [face2]"<<std::endl;
+    Message::SendFail() << "Invalid number of arguments. Should be: checkedgeregularity edge face1 [face2]";
     return 1;
   }
   
@@ -589,7 +590,7 @@ static Standard_Integer getedgeregul
   TopoDS_Shape aFace2 = (argc > 3  ? DBRep::Get(argv[3],TopAbs_FACE) : aFace1);
   if( anEdge.IsNull() || aFace1.IsNull() || aFace2.IsNull())
   {
-    std::cout<<"Invalid number of arguments. Should be: getedgeregularity edge face1 [face2]"<<std::endl;
+    Message::SendFail() << "Invalid number of arguments. Should be: getedgeregularity edge face1 [face2]";
     return 1;
   }
  

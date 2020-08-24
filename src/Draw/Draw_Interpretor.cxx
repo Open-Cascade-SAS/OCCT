@@ -15,18 +15,20 @@
 // commercial license or contractual agreement.
 
 #include <Draw_Interpretor.hxx>
+
 #include <Draw_Appli.hxx>
+#include <Message.hxx>
+#include <Message_PrinterOStream.hxx>
+#include <OSD.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Path.hxx>
+#include <OSD_Process.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Macro.hxx>
-
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <OSD_Process.hxx>
-#include <OSD_Path.hxx>
-#include <OSD.hxx>
-#include <OSD_File.hxx>
 
 #include <string.h>
 #include <tcl.h>
@@ -114,8 +116,7 @@ namespace {
 
 static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp, Standard_Integer argc, const char* argv[])
 {
-  static Standard_Integer code;
-  code = TCL_OK;
+  Standard_Integer code = TCL_OK;
   Draw_Interpretor::CallBackData* aCallback = (Draw_Interpretor::CallBackData* )theClientData;
   Draw_Interpretor& di = *(aCallback->myDI);
 
@@ -143,24 +144,26 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
     dumpArgs (std::cout, argc, argv);
 
   // run command
-  try {
+  try
+  {
     OCC_CATCH_SIGNALS
 
     // get exception if control-break has been pressed 
     OSD::ControlBreak();
 
-    // OCC680: Transfer UTF-8 directly to OCC commands without locale usage
-      
     Standard_Integer fres = aCallback->Invoke ( di, argc, argv /*anArgs.GetArgv()*/ );
-    if (fres != 0) 
+    if (fres != 0)
+    {
       code = TCL_ERROR;
+    }
   }
-  catch (Standard_Failure const& anException) {
+  catch (Standard_Failure const& anException)
+  {
     // fail if Draw_ExitOnCatch is set
-    std::cout << "An exception was caught " << anException << std::endl;
     const char* toExitOnCatch = Tcl_GetVar (interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
     if (toExitOnCatch != NULL && Draw::Atoi (toExitOnCatch))
     {
+      Message::SendFail() << "An exception was caught " << anException;
 #ifdef _WIN32
       Tcl_Exit(0);
 #else      
@@ -168,18 +171,17 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
 #endif
     }
 
-    // get the error message
     Standard_SStream ss;
-    ss << "** Exception ** " << anException << std::ends;
+    ss << "An exception was caught " << anException << std::ends;
     Tcl_SetResult(interp,(char*)(ss.str().c_str()),TCL_VOLATILE);
     code = TCL_ERROR;
   }
   catch (std::exception const& theStdException)
   {
-    std::cout << "An exception was caught " << theStdException.what() << " [" << typeid(theStdException).name() << "]" << std::endl;
     const char* toExitOnCatch = Tcl_GetVar (interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
     if (toExitOnCatch != NULL && Draw::Atoi (toExitOnCatch))
     {
+      Message::SendFail() << "An exception was caught " << theStdException.what() << " [" << typeid(theStdException).name() << "]";
     #ifdef _WIN32
       Tcl_Exit (0);
     #else
@@ -187,18 +189,17 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
     #endif
     }
 
-    // get the error message
     Standard_SStream ss;
-    ss << "** Exception ** " << theStdException.what() << " [" << typeid(theStdException).name() << "]" << std::ends;
-    Tcl_SetResult (interp, (char*)(ss.str().c_str()), TCL_VOLATILE);
+    ss << "An exception was caught " << theStdException.what() << " [" << typeid(theStdException).name() << "]" << std::ends;
+    Tcl_SetResult(interp,(char*)(ss.str().c_str()),TCL_VOLATILE);
     code = TCL_ERROR;
   }
   catch (...)
   {
-    std::cout << "UNKNOWN exception was caught " << std::endl;
     const char* toExitOnCatch = Tcl_GetVar (interp, "Draw_ExitOnCatch", TCL_GLOBAL_ONLY);
     if (toExitOnCatch != NULL && Draw::Atoi (toExitOnCatch))
     {
+      Message::SendFail() << "UNKNOWN exception was caught ";
     #ifdef _WIN32
       Tcl_Exit (0);
     #else
@@ -206,10 +207,9 @@ static Standard_Integer CommandCmd (ClientData theClientData, Tcl_Interp* interp
     #endif
     }
 
-    // get the error message
     Standard_SStream ss;
-    ss << "** Exception ** UNKNOWN" << std::ends;
-    Tcl_SetResult (interp, (char* )(ss.str().c_str()), TCL_VOLATILE);
+    ss << "UNKNOWN exception was caught " << std::ends;
+    Tcl_SetResult(interp,(char*)(ss.str().c_str()),TCL_VOLATILE);
     code = TCL_ERROR;
   }
 
@@ -244,15 +244,34 @@ static void CommandDelete (ClientData theClientData)
 
 //=======================================================================
 //function : Draw_Interpretor
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Draw_Interpretor::Draw_Interpretor() :
-  isAllocated(Standard_False), myDoLog(Standard_False), myDoEcho(Standard_False), myFDLog(-1)
+Draw_Interpretor::Draw_Interpretor()
+: // the tcl interpreter is not created immediately as it is kept
+  // by a global variable and created and deleted before the main()
+  myInterp (NULL),
+  isAllocated (Standard_False),
+  myDoLog (Standard_False),
+  myDoEcho (Standard_False),
+  myToColorize (Standard_True),
+  myFDLog (-1)
 {
-// The tcl interpreter is not created immediately as it is kept 
-// by a global variable and created and deleted before the main().
-  myInterp  = NULL;
+  //
+}
+
+//=======================================================================
+//function : Draw_Interpretor
+//purpose  :
+//=======================================================================
+Draw_Interpretor::Draw_Interpretor (const Draw_PInterp& theInterp)
+: myInterp (theInterp),
+  isAllocated (Standard_False),
+  myDoLog (Standard_False),
+  myDoEcho (Standard_False),
+  myToColorize (Standard_True),
+  myFDLog (-1)
+{
+  //
 }
 
 //=======================================================================
@@ -269,17 +288,20 @@ void Draw_Interpretor::Init()
 }
 
 //=======================================================================
-//function : Draw_Interpretor
-//purpose  : 
+//function : SetToColorize
+//purpose  :
 //=======================================================================
-
-Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& p) :
-  isAllocated(Standard_False),
-  myInterp(p),
-  myDoLog(Standard_False),
-  myDoEcho(Standard_False),
-  myFDLog(-1)
+void Draw_Interpretor::SetToColorize (Standard_Boolean theToColorize)
 {
+  myToColorize = theToColorize;
+  for (Message_SequenceOfPrinters::Iterator aPrinterIter (Message::DefaultMessenger()->Printers());
+       aPrinterIter.More(); aPrinterIter.Next())
+  {
+    if (Handle(Message_PrinterOStream) aPrinter = Handle(Message_PrinterOStream)::DownCast (aPrinterIter.Value()))
+    {
+      aPrinter->SetToColorize (Standard_False);
+    }
+  }
 }
 
 //=======================================================================

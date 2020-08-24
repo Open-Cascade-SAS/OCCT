@@ -32,7 +32,7 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
-
+#include <Message.hxx>
 
 //=======================================================================
 // box
@@ -129,7 +129,7 @@ static Standard_Integer box(Draw_Interpretor& , Standard_Integer n, const char**
       }
       else
       {
-        std::cout<<"Syntax error\n";
+        Message::SendFail() << "Syntax error";
         return 1;
       }
     }

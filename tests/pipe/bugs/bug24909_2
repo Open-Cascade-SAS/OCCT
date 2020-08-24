@@ -1,15 +1,11 @@
 puts "TODO ?OCC24909 ALL: An exception was caught"
-puts "TODO ?OCC24909 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO ?OCC24909 ALL: TEST INCOMPLETE"
 puts "TODO ?OCC24909 ALL: Tcl Exception: Buildsweep : Not Done"
 
 puts "========"
-puts "OCC24909"
+puts "0024909: S I G S E G V in buildsweep"
 puts "========"
 puts ""
-##################################
-# 0024909: SIGSEGV in buildsweep
-##################################
 
 circle c1 0 0 0 40
 mkedge e1 c1

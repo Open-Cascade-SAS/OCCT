@@ -643,7 +643,7 @@ Standard_Integer fixsmallfaces (Draw_Interpretor& theDI, Standard_Integer theArg
 {
   if (theArgc < 3)
   {
-    std::cerr << "Use: " << theArgv[0] << " result shape [tolerance]" << std::endl;
+    theDI << "Use: " << theArgv[0] << " result shape [tolerance]";
     return 1;
   }
   

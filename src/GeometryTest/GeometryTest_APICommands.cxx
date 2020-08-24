@@ -35,6 +35,7 @@
 #include <Draw_Marker3D.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_MarkerShape.hxx>
+#include <Message.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -90,7 +91,7 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
 {
   if ( n < 5)
   {
-    std::cout << " Use proj curve/surf x y z [{extrema algo: g(grad)/t(tree)}|{u v}]" << std::endl;
+    Message::SendFail() << " Use proj curve/surf x y z [{extrema algo: g(grad)/t(tree)}|{u v}]";
     return 1;
   }
 

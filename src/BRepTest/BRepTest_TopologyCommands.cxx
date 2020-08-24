@@ -42,6 +42,7 @@
 #include <TopOpeBRepDS_HDataStructure.hxx>
 #include <gp.hxx>
 #include <gp_Pln.hxx>
+#include <Message.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopExp.hxx>
 
@@ -118,7 +119,7 @@ static Standard_Integer section(Draw_Interpretor& , Standard_Integer n, const ch
       Sec.Approximation(Standard_True);
     else if (strcasecmp(a[i], "-p"))
     {
-      std::cout << "Unknown option: " << a[i] << std::endl;
+      Message::SendFail() << "Unknown option: " << a[i];
       return 1;
     }
   }
@@ -170,7 +171,6 @@ static Standard_Integer halfspace(Draw_Interpretor& di,
   if ( Face.IsNull()) {
     TopoDS_Shape Shell  = DBRep::Get(a[2],TopAbs_SHELL);
     if (Shell.IsNull()) {
-      //std::cout << a[2] << " must be a face or a shell" << std::endl;
       di << a[2] << " must be a face or a shell\n";
       return 1;
     }
@@ -180,7 +180,6 @@ static Standard_Integer halfspace(Draw_Interpretor& di,
 	DBRep::Set(a[1],Half.Solid());
       }
       else {
-	//std::cout << " HalfSpace NotDone" << std::endl;
 	di << " HalfSpace NotDone\n";
 	return 1;
       }
@@ -192,7 +191,6 @@ static Standard_Integer halfspace(Draw_Interpretor& di,
       DBRep::Set(a[1],Half.Solid());
     }
     else {
-      //std::cout << " HalfSpace NotDone" << std::endl;
       di << " HalfSpace NotDone\n";
       return 1;
     }
@@ -211,14 +209,12 @@ static Standard_Integer buildfaces(Draw_Interpretor& , Standard_Integer narg, co
   
   TopoDS_Shape InputShape(DBRep::Get( a[2] ,TopAbs_FACE));
   TopoDS_Face F = TopoDS::Face(InputShape);
-//  TopoDS_Face F = TopoDS::Face(DBRep::Get(a[2],TopAbs_FACE));
   BRepAlgo_FaceRestrictor FR;
   FR.Init(F);
   
   for (Standard_Integer i = 3 ; i < narg ; i++) {
     TopoDS_Shape InputWire(DBRep::Get(a[i],TopAbs_WIRE));
     TopoDS_Wire W = TopoDS::Wire(InputWire);
-//    TopoDS_Wire W = TopoDS::Wire(DBRep::Get(a[i],TopAbs_WIRE));
     FR.Add(W);
   }
   FR.Perform();

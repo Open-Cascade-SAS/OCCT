@@ -1,14 +1,10 @@
 puts "TODO OCC26295 ALL: An exception was caught"
-puts "TODO OCC26295 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC26295 ALL: TEST INCOMPLETE"
 
 puts "========"
-puts "OCC26295"
+puts "0026295: Sweep fails with BRepFill_ContactOnBorder"
 puts "========"
 puts ""
-#############################################
-# Sweep fails with BRepFill_ContactOnBorder
-#############################################
 
 restore [locate_data_file bug26295_section.brep] section
 restore [locate_data_file bug26295_profile1.brep] profile1

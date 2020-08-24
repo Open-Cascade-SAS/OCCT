@@ -502,7 +502,7 @@ static Standard_Integer stepfileunits (Draw_Interpretor& di, Standard_Integer ar
 
   if(  argc < 2)
   {
-    std::cout<<"Error: Invalid number of parameters. Should be: getfileunits name_file"<<std::endl;
+    di << "Error: Invalid number of parameters. Should be: getfileunits name_file\n";
     return 1;
   }
   STEPControl_Reader aStepReader;

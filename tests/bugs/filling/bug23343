@@ -1,14 +1,10 @@
-puts "TODO OCC23343 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC23343 ALL: An exception was caught"
 puts "TODO OCC23343 ALL: Faulty OCC23343"
 
 puts "============"
-puts "OCC23343"
+puts "0023343: Crash (A C C E S S  V I O L A T I O N) in GeomPlate_BuildPlateSurface / MakeApprox if init Surface is set"
 puts "============"
 puts ""
-#######################################################################
-# Crash (ACCESS VIOLATION) in GeomPlate_BuildPlateSurface / MakeApprox if init Surface is set
-#######################################################################
 
 restore [locate_data_file bug23343_initFace.brep] initFace
 restore [locate_data_file bug23343_edge_constraint.brep] edge_constraint

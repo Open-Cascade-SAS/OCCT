@@ -1,13 +1,9 @@
-puts "TODO OCC23497 ALL: Exception"
 puts "TODO OCC23497 ALL: exception"
 
 puts "============"
-puts "OCC23497"
+puts "0023497: Units package raises e x c e p t i o n for composite units"
 puts "============"
 puts ""
-#######################################################################
-# Units package raises exception for composite units
-#######################################################################
 
 set UnitString "sq.km"
 

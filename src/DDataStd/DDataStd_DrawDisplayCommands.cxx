@@ -51,6 +51,7 @@
 
 #include <DDataStd_DrawPresentation.hxx>
 #include <DDataStd_DrawDriver.hxx>
+#include <Message.hxx>
 
 #ifndef _WIN32
 extern Draw_Viewer dout;
@@ -92,7 +93,7 @@ static Standard_Integer DDataStd_Rmdraw (Draw_Interpretor& ,
 {
   if (nb != 2)
   {
-    std::cout << "Syntax error: wrong number of arguments\n";
+    Message::SendFail() << "Syntax error: wrong number of arguments";
     return 1;
   }
 
@@ -103,7 +104,7 @@ static Standard_Integer DDataStd_Rmdraw (Draw_Interpretor& ,
   }
   else
   {
-    std::cout << "Syntax error: variable '" << arg[1] << "' not found\n";
+    Message::SendFail() << "Syntax error: variable '" << arg[1] << "' not found";
     return 1;
   }
 }
@@ -291,14 +292,3 @@ void DDataStd::DrawDisplayCommands (Draw_Interpretor& theCommands)
                    "update the draw viewer",
 		   __FILE__, DDataStd_DrawRepaint, g);    
 }
-
-
-
-
-
-
-
-
-
-
-

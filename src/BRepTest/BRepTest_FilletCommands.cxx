@@ -51,6 +51,7 @@
 #include <FilletSurf_ErrorTypeStatus.hxx>
 #include <TopAbs.hxx>
 #include <DrawTrSurf.hxx>
+#include <Message.hxx>
 
 #include <stdio.h>
 
@@ -333,7 +334,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   printtolblend(di);
   if(narg < 5)
   {
-    std::cout << "Use <command name> result shape1 shape2 radius [-d]" << std::endl;
+    Message::SendFail() << "Use <command name> result shape1 shape2 radius [-d]";
     return 1;
   }
 
@@ -341,7 +342,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   TopoDS_Shape S1 = DBRep::Get(a[2]);
   TopoDS_Shape S2 = DBRep::Get(a[3]);
   if (S1.IsNull() || S2.IsNull()) {
-    printf(" Null shapes are not allowed \n");
+    Message::SendFail() << " Null shapes are not allowed";
     return 1;
   }
   Standard_Real Rad = Draw::Atof(a[4]);
@@ -363,7 +364,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   //
   theDSFiller.Perform();
   if (theDSFiller.HasErrors()) {
-    printf("Check types of the arguments, please\n");
+    Message::SendFail() << "Check types of the arguments, please";
     return 1;
   }
 
@@ -377,7 +378,7 @@ Standard_Integer boptopoblend(Draw_Interpretor& di, Standard_Integer narg, const
   Standard_Boolean anIsDone = pBuilder->IsDone();
   if (!anIsDone)
   {
-    printf("boolean operation not done HasErrors()=%d\n", pBuilder->HasErrors());
+    Message::SendFail() << "boolean operation not done HasErrors()=" << pBuilder->HasErrors();
     return 1;
   }
 

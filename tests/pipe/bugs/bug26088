@@ -1,14 +1,10 @@
 puts "TODO OCC26088 ALL: An exception was caught"
-puts "TODO OCC26088 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC26088 ALL: TEST INCOMPLETE"
 
 puts "========"
-puts "OCC26088"
+puts "0026088: E x c e p t i o n in pipe algorithm"
 puts "========"
 puts ""
-###############################
-# Exception in pipe algorithm
-###############################
 
 restore [locate_data_file bug26088_path0.brep] p
 restore [locate_data_file bug26088_profile0.brep] pr

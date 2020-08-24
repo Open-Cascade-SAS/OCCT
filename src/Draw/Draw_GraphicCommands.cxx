@@ -25,6 +25,7 @@
 #include <Draw_ProgressIndicator.hxx>
 #include <Draw_Text2D.hxx>
 #include <Draw_Text3D.hxx>
+#include <Message.hxx>
 #include <Standard_Stream.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -195,12 +196,12 @@ static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const
     id = atoi(argv[1]); 
     if ((id < 0) || (id >= MAXVIEW)) 
     {
-      std::cout << "Incorrect view-id, must be in 0.."<<MAXVIEW-1<<std::endl;
+      Message::SendFail() << "Incorrect view-id, must be in 0.." << (MAXVIEW-1);
       return 1;
     }
     if (!dout.HasView(id))
     {
-      std::cout <<"View "<<id<<" does not exist."<<std::endl;
+      Message::SendFail() << "View " << id << " does not exist";
       return 1;
     }
     X1 = atoi (argv [2]);

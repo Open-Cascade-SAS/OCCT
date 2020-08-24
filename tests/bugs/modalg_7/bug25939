@@ -1,13 +1,9 @@
 puts "TODO OCC25939 ALL: An exception was caught"
-puts "TODO OCC25939 ALL: \\*\\* Exception \\*\\*.*"
 
 puts "============"
-puts "OCC25939"
+puts "0025939: S I G S E G V in MakeThickSolid"
 puts "============"
 puts ""
-######################################################
-# SIGSEGV in MakeThickSolid
-######################################################
 
 psphere Sphere 5
 pcylinder Cylinder 83 100

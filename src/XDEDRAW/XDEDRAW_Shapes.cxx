@@ -52,7 +52,7 @@ static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, c
   TopoDS_Shape aShape = DBRep::Get(argv[2]);
   if (aShape.IsNull())
   {
-    std::cout << "Syntax error: shape '" << argv[2] << "' is undefined\n";
+    di << "Syntax error: shape '" << argv[2] << "' is undefined\n";
     return 1;
   }
 
@@ -932,7 +932,7 @@ static Standard_Integer XGetProperties(Draw_Interpretor& di, Standard_Integer ar
 {
   if (argc != 3)
   {
-    std::cout << "Syntax error: wrong number of arguments\nUse: " << argv[0] << " Doc Label\n";
+    di << "Syntax error: wrong number of arguments\nUse: " << argv[0] << " Doc Label\n";
     return 1;
   }
 
@@ -940,7 +940,7 @@ static Standard_Integer XGetProperties(Draw_Interpretor& di, Standard_Integer ar
   DDocStd::GetDocument(argv[1], aDoc);
   if (aDoc.IsNull())
   {
-    std::cout << "Syntax error: " << argv[1] << " is not a document\n";
+    di << "Syntax error: " << argv[1] << " is not a document\n";
     return 1;
   }
 

@@ -1,14 +1,10 @@
 puts "TODO OCC26558 ALL: An exception was caught"
-puts "TODO OCC26558 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC26558 ALL: TEST INCOMPLETE"
 
 puts "========"
-puts "OCC26558"
+puts "0026558: Failing to build isoline for offset surface"
 puts "========"
 puts ""
-###############################################
-# Failing to build isoline for offset surface
-###############################################
 
 restore [locate_data_file bug26558_s.brep] s
 

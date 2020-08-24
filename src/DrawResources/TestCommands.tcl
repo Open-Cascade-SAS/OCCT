@@ -1319,6 +1319,7 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 
     # evaluate test case 
     set tmp_imagedir 0
+    set anExcep ""
     if [catch {
         # set variables identifying test case
         uplevel set casename [file tail $casefile]
@@ -1368,13 +1369,15 @@ proc _run_test {scriptsdir group gridname casefile echo} {
             uplevel source -encoding utf-8 $scriptsdir/$group/end
         }
     } res] {
-        puts "Tcl Exception: $res"
+        set anExcep $res
+        if { "$res" == "" } { set anExcep "EMPTY" }
     }
 
     # stop logging
     if { $dlog_exists } {
         if { $echo } {
             decho off
+            if { "$anExcep" != "" } { dputs -red -intense "Tcl Exception: $res" }
         } else {
             rename puts {}
             rename puts-saved puts

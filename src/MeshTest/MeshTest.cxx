@@ -36,6 +36,7 @@
 #include <DrawTrSurf.hxx>
 #include <GeometryTest.hxx>
 #include <IMeshData_Status.hxx>
+#include <Message.hxx>
 #include <Poly_Connect.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
@@ -217,7 +218,7 @@ static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer n
 {
   if (nbarg != 5)
   {
-    std::cerr << "Builds regular triangulation with specified number of triangles\n"
+    Message::SendFail() << "Builds regular triangulation with specified number of triangles\n"
                  "    Usage: tessellate result {surface|face} nbu nbv\n"
                  "    Triangulation is put into the face with natural bounds (result);\n"
                  "    it will have 2*nbu*nbv triangles and (nbu+1)*(nbv+1) nodes";
@@ -231,7 +232,7 @@ static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer n
 
   if (aNbU <= 0 || aNbV <= 0)
   {
-    std::cerr << "Error: Arguments nbu and nbv must be both greater than 0\n";
+    Message::SendFail() << "Error: Arguments nbu and nbv must be both greater than 0";
     return 1;
   }
 
@@ -246,14 +247,14 @@ static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer n
     TopoDS_Shape aShape = DBRep::Get(aSrcName);
     if (aShape.IsNull() || aShape.ShapeType() != TopAbs_FACE)
     {
-      std::cerr << "Error: " << aSrcName << " is not a face\n";
+      Message::SendFail() << "Error: " << aSrcName << " is not a face";
       return 1;
     }
     TopoDS_Face aFace = TopoDS::Face (aShape);
     aSurf = BRep_Tool::Surface (aFace);
     if (aSurf.IsNull())
     {
-      std::cerr << "Error: Face " << aSrcName << " has no surface\n";
+      Message::SendFail() << "Error: Face " << aSrcName << " has no surface";
       return 1;
     }
 
@@ -262,14 +263,14 @@ static Standard_Integer tessellate (Draw_Interpretor& /*di*/, Standard_Integer n
   if (Precision::IsInfinite (aUMin) || Precision::IsInfinite (aUMax) || 
       Precision::IsInfinite (aVMin) || Precision::IsInfinite (aVMax))
   {
-    std::cerr << "Error: surface has infinite parametric range, aborting\n";
+    Message::SendFail() << "Error: surface has infinite parametric range, aborting";
     return 1;
   }
 
   BRepBuilderAPI_MakeFace aFaceMaker (aSurf, aUMin, aUMax, aVMin, aVMax, Precision::Confusion());
   if (! aFaceMaker.IsDone())
   {
-    std::cerr << "Error: cannot build face with natural bounds, aborting\n";
+    Message::SendFail() << "Error: cannot build face with natural bounds, aborting";
     return 1;
   }
   TopoDS_Face aFace = aFaceMaker;

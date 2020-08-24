@@ -97,8 +97,9 @@ static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
 	  aGuid = Standard_GUID(arg[3]);
 	}
 	Handle(TDataStd_Name) N;	  
-	if( !L.FindAttribute(aGuid, N) ) {
-      std::cout << "Name attribute is not found or not set"  << std::endl;
+	if( !L.FindAttribute(aGuid, N) )
+  {
+    di << "Name attribute is not found or not set";
 	  return 1;
 	}
 #ifdef DEB_DDataStd

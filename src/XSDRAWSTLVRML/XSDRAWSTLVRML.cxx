@@ -144,13 +144,13 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
       return 1;
     }
   }
   if (aFilePath.IsEmpty())
   {
-    std::cout << "Syntax error: wrong number of arguments\n";
+    Message::SendFail() << "Syntax error: wrong number of arguments";
     return 1;
   }
 
@@ -166,14 +166,14 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
     {
       if (toUseExistingDoc)
       {
-        std::cout << "Error: document with name " << aDestName << " does not exist\n";
+        Message::SendFail() << "Error: document with name " << aDestName << " does not exist";
         return 1;
       }
       anApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), aDoc);
     }
     else if (!toUseExistingDoc)
     {
-      std::cout << "Error: document with name " << aDestName << " already exists\n";
+      Message::SendFail() << "Error: document with name " << aDestName << " already exists";
       return 1;
     }
   }
@@ -265,7 +265,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
       }
       else
       {
-        std::cout << "Syntax error at '" << anArgCase << "'\n";
+        Message::SendFail() << "Syntax error at '" << anArgCase << "'";
         return 1;
       }
     }
@@ -278,7 +278,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
         TopoDS_Shape aShape = DBRep::Get (aNameVar);
         if (aShape.IsNull())
         {
-          std::cout << "Syntax error: '" << aNameVar << "' is not a shape nor document\n";
+          Message::SendFail() << "Syntax error: '" << aNameVar << "' is not a shape nor document";
           return 1;
         }
 
@@ -293,13 +293,13 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
       return 1;
     }
   }
   if (aGltfFilePath.IsEmpty())
   {
-    std::cout << "Syntax error: wrong number of arguments\n";
+    Message::SendFail() << "Syntax error: wrong number of arguments";
     return 1;
   }
 
@@ -374,13 +374,13 @@ static Standard_Integer readstl(Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error: unknown argument '" << theArgv[anArgIter] << "'\n";
+      Message::SendFail() << "Syntax error: unknown argument '" << theArgv[anArgIter] << "'";
       return 1;
     }
   }
   if (aFilePath.IsEmpty())
   {
-    std::cout << "Syntax error: not enough arguments\n";
+    Message::SendFail() << "Syntax error: not enough arguments";
     return 1;
   }
 
@@ -456,7 +456,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
       aFileUnitFactor = UnitsAPI::AnyToSI (1.0, aUnitStr.ToCString());
       if (aFileUnitFactor <= 0.0)
       {
-        std::cout << "Syntax error: wrong length unit '" << aUnitStr << "'\n";
+        Message::SendFail() << "Syntax error: wrong length unit '" << aUnitStr << "'";
         return 1;
       }
     }
@@ -467,7 +467,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     {
       if (!parseCoordinateSystem (theArgVec[++anArgIter], aFileCoordSys))
       {
-        std::cout << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'\n";
+        Message::SendFail() << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'";
         return 1;
       }
     }
@@ -479,7 +479,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     {
       if (!parseCoordinateSystem (theArgVec[++anArgIter], aResultCoordSys))
       {
-        std::cout << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'\n";
+        Message::SendFail() << "Syntax error: unknown coordinate system '" << theArgVec[anArgIter] << "'";
         return 1;
       }
     }
@@ -528,13 +528,13 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error at '" << theArgVec[anArgIter] << "'\n";
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
       return 1;
     }
   }
   if (aFilePath.IsEmpty())
   {
-    std::cout << "Syntax error: wrong number of arguments\n";
+    Message::SendFail() << "Syntax error: wrong number of arguments";
     return 1;
   }
 
@@ -550,14 +550,14 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     {
       if (toUseExistingDoc)
       {
-        std::cout << "Error: document with name " << aDestName << " does not exist\n";
+        Message::SendFail() << "Error: document with name " << aDestName << " does not exist";
         return 1;
       }
       anApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), aDoc);
     }
     else if (!toUseExistingDoc)
     {
-      std::cout << "Error: document with name " << aDestName << " already exists\n";
+      Message::SendFail() << "Error: document with name " << aDestName << " already exists";
       return 1;
     }
   }

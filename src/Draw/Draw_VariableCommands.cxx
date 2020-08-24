@@ -25,6 +25,7 @@
 #include <Draw_Number.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <Draw_SequenceOfDrawable3D.hxx>
+#include <Message.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Stream.hxx>
@@ -388,7 +389,7 @@ static Standard_Integer draw(Draw_Interpretor& , Standard_Integer n, const char*
   if (n < 3) return 1;
   Standard_Integer id = Draw::Atoi(a[1]);
   if (!dout.HasView(id)) {
-    std::cout << "bad view number in draw"<<std::endl;
+    Message::SendFail() << "bad view number in draw";
     return 1;
   }
   Standard_Integer mo = Draw::Atoi(a[2]);
@@ -587,7 +588,7 @@ static Standard_Integer set(Draw_Interpretor& di, Standard_Integer n, const char
 static Standard_Integer dsetenv(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) {
-    std::cout << "Use: " << argv[0] << " {varname} [value]" << std::endl;
+    Message::SendFail() << "Use: " << argv[0] << " {varname} [value]";
     return 1;
   }
 
@@ -610,7 +611,7 @@ static Standard_Integer dsetenv(Draw_Interpretor& /*di*/, Standard_Integer argc,
 static Standard_Integer dgetenv(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) {
-    std::cout << "Use: " << argv[0] << " {varname}" << std::endl;
+    Message::SendFail() << "Use: " << argv[0] << " {varname}";
     return 1;
   }
 

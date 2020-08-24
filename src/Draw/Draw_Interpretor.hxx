@@ -251,6 +251,12 @@ public:
   //! Returns current value of the log file descriptor
   Standard_Integer GetLogFileDescriptor() { return myFDLog; }
 
+  //! Return TRUE if console output should be colorized; TRUE by default.
+  Standard_Boolean ToColorize() const { return myToColorize; }
+
+  //! Set if console output should be colorized.
+  Standard_EXPORT void SetToColorize (Standard_Boolean theToColorize);
+
 protected:
 
   Standard_EXPORT void add (Standard_CString theCommandName,
@@ -261,10 +267,11 @@ protected:
 
 private:
 
-  Standard_Boolean isAllocated;
   Draw_PInterp     myInterp;
+  Standard_Boolean isAllocated;
   Standard_Boolean myDoLog;
   Standard_Boolean myDoEcho;
+  Standard_Boolean myToColorize;
   Standard_Integer myFDLog;          //!< file descriptor of log file 
 
 public:

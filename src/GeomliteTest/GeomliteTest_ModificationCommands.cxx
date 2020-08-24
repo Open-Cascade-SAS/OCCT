@@ -32,6 +32,7 @@
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <Geom_BoundedSurface.hxx>
+#include <Message.hxx>
 
 #ifdef _MSC_VER
 #include <stdio.h>
@@ -143,7 +144,7 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
 {
   if (n < 4 || n > 5)
   {
-    std::cout << "Wrong parameters" << std::endl;
+    Message::SendFail() << "Syntax error: Wrong parameters";
     return 1;
   }
 
@@ -183,7 +184,7 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
   Handle(Geom_BezierSurface) aBezSurf = DrawTrSurf::GetBezierSurface(a[1]);
   if (n != 5 && (!aBSplSurf.IsNull() || !aBezSurf.IsNull()))
   {
-    std::cout << "Incorrect parameters" << std::endl;
+    Message::SendFail() << "Syntax error: Incorrect parameters";
     return 1;
   }
 
@@ -199,7 +200,7 @@ static Standard_Integer setweight(Draw_Interpretor& /*di*/, Standard_Integer n, 
     return 0;
   }
 
-  std::cout << a[1] << " is not a B-spline nor a Bezier curve/surface" << std::endl;
+  Message::SendFail() << a[1] << " is not a B-spline nor a Bezier curve/surface";
   return 1;
 }
 

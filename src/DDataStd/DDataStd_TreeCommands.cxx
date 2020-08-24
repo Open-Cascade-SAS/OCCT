@@ -22,6 +22,7 @@
 #include <Draw_Appli.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Message.hxx>
 #include <Standard_GUID.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -350,7 +351,7 @@ static Standard_Integer DDataStd_OpenNode (Draw_Interpretor& di,
   Handle(DDataStd_TreeBrowser) browser = Handle(DDataStd_TreeBrowser)::DownCast (Draw::GetExisting (a[1]));
   if (browser.IsNull())
   {
-    std::cout << "Syntax error: browser '" << a[1] << "' not found\n";
+    Message::SendFail() << "Syntax error: browser '" << a[1] << "' not found";
     return 1;
   }
 
@@ -461,11 +462,9 @@ static Standard_Integer DDataStd_ChildNodeMore (Draw_Interpretor& di,
 						const char**            /*a*/)
 {
   if (cni.More()) {
-    //std::cout<<"TRUE"<<std::endl;
     di<<"TRUE\n";
   }
   else {
-    //std::cout<<"FALSE"<<std::endl;
     di<<"FALSE\n";  
   }
   return 0;
@@ -508,7 +507,6 @@ static Standard_Integer DDataStd_ChildNodeValue (Draw_Interpretor& di,
 {
   TCollection_AsciiString entry;
   TDF_Tool::Entry(cni.Value()->Label(), entry);
-  //std::cout<<entry<<std::endl;
   di  <<entry<<"\n";
   return 0;
 }  

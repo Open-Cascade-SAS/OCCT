@@ -18,6 +18,7 @@
 #include <DDocStd_DrawDocument.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Message.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <IGESCAFControl_Reader.hxx>
 #include <IGESCAFControl_Writer.hxx>
@@ -330,7 +331,7 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
     }
     else
     {
-      std::cout << "Syntax error at '" << argv[anArgIter] << "'\n";
+      Message::SendFail() << "Syntax error at '" << argv[anArgIter] << "'";
       return 1;
     }
   }
@@ -357,7 +358,7 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
         case 'v' : reader.SetPropsMode (mode); break;
         default:
         {
-          std::cout << "Syntax error at '" << aModeStr << "'\n";
+          Message::SendFail() << "Syntax error at '" << aModeStr << "'\n";
           return 1;
         }
       }

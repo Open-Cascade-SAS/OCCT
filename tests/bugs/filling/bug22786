@@ -1,14 +1,10 @@
-puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 
 puts "============"
-puts "OCC22786"
+puts "0022786: 64bit issue in AdvApp2Var"
 puts "============"
 puts ""
-#######################################################################
-# 64bit issue in AdvApp2Var
-#######################################################################
 
 set BugNumber OCC22786
 

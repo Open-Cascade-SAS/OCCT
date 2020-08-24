@@ -1,14 +1,10 @@
-puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 
 puts "============"
-puts "OCC23870"
+puts "0023870: Integration of new options of sweeping into BRepOffsetAPI_MakePipe algorithm"
 puts "============"
 puts ""
-#######################################################################
-# Integration of new options of sweeping into BRepOffsetAPI_MakePipe algorithm.
-#######################################################################
 
 set BugNumber OCC23870
 

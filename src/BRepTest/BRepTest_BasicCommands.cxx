@@ -39,6 +39,7 @@
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
+#include <Message.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <BRepTools_WireExplorer.hxx>
@@ -176,7 +177,7 @@ static Standard_Integer transform(Draw_Interpretor& ,Standard_Integer n,const ch
       TopoDS_Shape S = DBRep::Get(a[i]);
       if (S.IsNull())
       {
-        std::cerr << "Error: " << a[i] << " is not a valid shape\n";
+        Message::SendFail() << "Error: " << a[i] << " is not a valid shape";
         return 1;
       }
       else
@@ -188,7 +189,7 @@ static Standard_Integer transform(Draw_Interpretor& ,Standard_Integer n,const ch
     for (Standard_Integer i = 1; i < last; i++) {
       TopoDS_Shape S = DBRep::Get(a[i]);
       if (S.IsNull()) {
-        std::cerr << "Error: " << a[i] << " is not a valid shape\n";
+        Message::SendFail() << "Error: " << a[i] << " is not a valid shape";
         return 1;
       }
       else {
@@ -271,9 +272,9 @@ static Standard_Integer tcopy(Draw_Interpretor& di,Standard_Integer n,const char
   }
 
   if (n < 3 || (n - iFirst) % 2) {
-    std::cout << "Use: " << a[0] << " [-n(ogeom)] [-m(esh)] shape1 copy1 [shape2 copy2 [...]]" << std::endl;
-    std::cout << "Option -n forbids copying of geometry (it will be shared)" << std::endl;
-    std::cout << "Option -m forces copying of mesh (disabled by default)" << std::endl;
+    Message::SendFail() << "Use: " << a[0] << " [-n(ogeom)] [-m(esh)] shape1 copy1 [shape2 copy2 [...]]\n"
+                        << "Option -n forbids copying of geometry (it will be shared)\n"
+                        << "Option -m forces copying of mesh (disabled by default)";
     return 1;
   }
 
@@ -584,7 +585,7 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error at argument '" << theArgVal[anArgIter] << "'.\n";
+      Message::SendFail() << "Syntax error at argument '" << theArgVal[anArgIter] << "'";
       return 1;
     }
   }
@@ -592,19 +593,19 @@ static Standard_Integer BoundBox(Draw_Interpretor& theDI,
   if (anAABB.IsVoid()
    && aShape.IsNull())
   {
-    std::cout << "Syntax error: input is not specified (neither shape nor coordinates)\n";
+    Message::SendFail() << "Syntax error: input is not specified (neither shape nor coordinates)";
     return 1;
   }
   else if (!anAABB.IsVoid()
         && (isOBB || isOptimal || isTolerUsed))
   {
-    std::cout << "Syntax error: Options -obb, -optimal and -extToler cannot be used for explicitly defined AABB.\n";
+    Message::SendFail() << "Syntax error: Options -obb, -optimal and -extToler cannot be used for explicitly defined AABB";
     return 1;
   }
   else if (isOBB
        && !anOutVars[0].IsEmpty())
   {
-    std::cout << "Error: Option -save works only with axes-aligned boxes.\n";
+    Message::SendFail() << "Error: Option -save works only with axes-aligned boxes";
     return 1;
   }
 

@@ -1,14 +1,10 @@
 puts "All exceptions is OK"
 puts "TODO OCC12345 ALL: An exception was caught"
-puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
 
 puts "========"
-puts "OCC669"
+puts "0000669: Standard_GUID(HoleFeature) cause stack overwrite"
 puts "========"
 puts ""
-#########################################
-## Standard_GUID("HoleFeature") cause stack overwrite
-#########################################
 
 pload QAcommands
 

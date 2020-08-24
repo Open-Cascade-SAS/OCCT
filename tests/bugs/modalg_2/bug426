@@ -1,18 +1,12 @@
-puts "TODO OCC24156 MacOS: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC24156 MacOS: An exception was caught"
 puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 
 pload QAcommands
 
 puts "========"
-puts "OCC426"
-puts "OCC50"
+puts "0000426: The result of fuse operation is invalid"
+puts "0000050: BRepFilletAPI_MakeFillet presents a bug on fillet computation (build())"
 puts "========"
-#############################################################################
-## The result of fuse operation is invalid
-#############################################################################
-## BRepFilletAPI_MakeFillet presents a bug on fillet computation (build())
-#############################################################################
 
 OCC426 result rs1 rs2 rs3 fuse32 fuse321 fuseUnif
 

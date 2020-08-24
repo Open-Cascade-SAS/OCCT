@@ -23,6 +23,7 @@
 #include <Draw_Appli.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Message.hxx>
 
 #include <TDF_Label.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -50,14 +51,14 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
 {
   if (n<2)
   {
-    std::cout << "Use: " << a[0] << " document [brower_name]" << std::endl;
+    Message::SendFail() << "Use: " << a[0] << " document [brower_name]";
     return 1;
   }
   
   Handle(TDF_Data) DF;
   if (!DDF::GetDF (a[1], DF)) 
   {
-    std::cout << "Error: document " << a[1] << " is not found" << std::endl;
+    Message::SendFail() << "Error: document " << a[1] << " is not found";
     return 1;
   }
 
@@ -78,8 +79,8 @@ static Standard_Integer DFBrowse (Draw_Interpretor& di,
   }
   else
   {
-    std::cout << "Error: Could not load script " << aTclScript << std::endl;
-    std::cout << "Check environment variable CSF_DrawPluginDefaults" << std::endl;
+    Message::SendFail() << "Error: Could not load script " << aTclScript << "\n"
+                        << "Check environment variable CSF_DrawPluginDefaults";
   }
 
   // Call command dftree defined in dftree.tcl
@@ -106,7 +107,7 @@ static Standard_Integer DFOpenLabel (Draw_Interpretor& di,
   Handle(DDF_Browser) browser = Handle(DDF_Browser)::DownCast (Draw::GetExisting (a[1]));
   if (browser.IsNull())
   {
-    std::cout << "Syntax error: browser '" << a[1] << "' not found\n";
+    Message::SendFail() << "Syntax error: browser '" << a[1] << "' not found";
     return 1;
   }
 
@@ -135,7 +136,7 @@ static Standard_Integer DFOpenAttributeList(Draw_Interpretor& di,
   Handle(DDF_Browser) browser = Handle(DDF_Browser)::DownCast (Draw::GetExisting (a[1]));
   if (browser.IsNull())
   {
-    std::cout << "Syntax error: browser '" << a[1] << "' not found\n";
+    Message::SendFail() << "Syntax error: browser '" << a[1] << "' not found";
     return 1;
   }
 
@@ -168,7 +169,7 @@ static Standard_Integer DFOpenAttribute (Draw_Interpretor& di,
   Handle(DDF_Browser) browser = Handle(DDF_Browser)::DownCast (Draw::GetExisting (a[1]));
   if (browser.IsNull())
   {
-    std::cout << "Syntax error: browser '" << a[1] << "' not found\n";
+    Message::SendFail() << "Syntax error: browser '" << a[1] << "' not found";
     return 1;
   }
 

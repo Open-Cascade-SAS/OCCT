@@ -259,9 +259,9 @@ static Standard_Integer dlog(Draw_Interpretor& di, Standard_Integer n, const cha
 {
   if (n != 2 && n != 3)
   {
-    std::cout << "Enable or disable logging: " << a[0] << " {on|off}" << std::endl;
-    std::cout << "Reset log: " << a[0] << " reset" << std::endl;
-    std::cout << "Get log content: " << a[0] << " get" << std::endl;
+    Message::SendFail() << "Enable or disable logging: " << a[0] << " {on|off}\n"
+                        << "Reset log: " << a[0] << " reset\n"
+                        << "Get log content: " << a[0] << " get";
     return 1;
   }
 
@@ -292,7 +292,7 @@ static Standard_Integer dlog(Draw_Interpretor& di, Standard_Integer n, const cha
     di << (di.GetDoLog() ? "on" : "off");
   }
   else {
-    std::cout << "Unrecognized option(s): " << a[1] << std::endl;
+    Message::SendFail() << "Unrecognized option(s): " << a[1];
     return 1;
   }
   return 0;
@@ -302,7 +302,7 @@ static Standard_Integer decho(Draw_Interpretor& di, Standard_Integer n, const ch
 {
   if (n != 2)
   {
-    std::cout << "Enable or disable echoing: " << a[0] << " {on|off}" << std::endl;
+    Message::SendFail() << "Enable or disable echoing: " << a[0] << " {on|off}";
     return 1;
   }
 
@@ -315,7 +315,7 @@ static Standard_Integer decho(Draw_Interpretor& di, Standard_Integer n, const ch
     di.SetDoEcho (Standard_False);
   }
   else {
-    std::cout << "Unrecognized option: " << a[1] << std::endl;
+    Message::SendFail() << "Unrecognized option: " << a[1];
     return 1;
   }
   return 0;
@@ -762,7 +762,7 @@ static int dlocale (Draw_Interpretor& di, Standard_Integer n, const char** argv)
     else if ( ! strcmp (cat, "LC_TIME") ) category = LC_TIME;
     else 
     {
-      std::cout << "Error: cannot recognize argument " << cat << " as one of LC_ macros" << std::endl;
+      Message::SendFail() << "Error: cannot recognize argument " << cat << " as one of LC_ macros";
       return 1;
     }
   }
@@ -884,7 +884,7 @@ static int dparallel (Draw_Interpretor& theDI,
       const Standard_Integer aVal = Draw::Atoi (theArgVec[++anIter]);
       if (aVal <= 0 || aVal > aDefPool->NbThreads())
       {
-        std::cout << "Syntax error: maximum number of threads to use should be <= of threads in the pool\n";
+        Message::SendFail() << "Syntax error: maximum number of threads to use should be <= of threads in the pool";
         return 1;
       }
       aDefPool->SetNbDefaultThreadsToLaunch (aVal);
@@ -915,7 +915,7 @@ static int dparallel (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Syntax error: unknown argument '" << anArg << "'\n";
+      Message::SendFail() << "Syntax error: unknown argument '" << anArg << "'";
       return 1;
     }
   }
@@ -989,7 +989,7 @@ static int dsetsignal (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
     }
     else
     {
-      std::cout << "Syntax error: unknown argument '" << anArg << "'\n";
+      Message::SendFail() << "Syntax error: unknown argument '" << anArg << "'";
       return 1;
     }
   }
@@ -1023,7 +1023,7 @@ static int dtracelevel (Draw_Interpretor& theDI,
   Message_Gravity aLevel = Message_Info;
   if (theArgNb < 1 || theArgNb > 2)
   {
-    std::cout << "Error: wrong number of arguments! See usage:\n";
+    Message::SendFail() << "Error: wrong number of arguments! See usage:";
     theDI.PrintHelp (theArgVec[0]);
     return 1;
   }
@@ -1054,7 +1054,7 @@ static int dtracelevel (Draw_Interpretor& theDI,
     }
     else
     {
-      std::cout << "Error: unknown gravity '" << theArgVec[1] << "'!\n";
+      Message::SendFail() << "Error: unknown gravity '" << theArgVec[1] << "'";
       return 1;
     }
   }
@@ -1062,14 +1062,14 @@ static int dtracelevel (Draw_Interpretor& theDI,
   Handle(Message_Messenger) aMessenger = Message::DefaultMessenger();
   if (aMessenger.IsNull())
   {
-    std::cout << "Error: default messenger is unavailable!\n";
+    Message::SendFail() << "Error: default messenger is unavailable";
     return 1;
   }
 
   Message_SequenceOfPrinters& aPrinters = aMessenger->ChangePrinters();
   if (aPrinters.Length() < 1)
   {
-    std::cout << "Error: no printers registered in default Messenger!\n";
+    Message::SendFail() << "Error: no printers registered in default Messenger";
     return 0;
   }
 
@@ -1108,7 +1108,7 @@ static int dtracelevel (Draw_Interpretor& theDI,
 //function : dputs
 //purpose  :
 //==============================================================================
-static int dputs (Draw_Interpretor& ,
+static int dputs (Draw_Interpretor& theDI,
                   Standard_Integer theArgNb,
                   const char** theArgVec)
 {
@@ -1169,6 +1169,11 @@ static int dputs (Draw_Interpretor& ,
     }
     else if (anArgIter + 1 == theArgNb)
     {
+      if (!theDI.ToColorize())
+      {
+        toIntense = false;
+        aColor = Message_ConsoleColor_Default;
+      }
       if (toIntense || aColor != Message_ConsoleColor_Default)
       {
         Message_PrinterOStream::SetConsoleTextColor (aStream, aColor, toIntense);

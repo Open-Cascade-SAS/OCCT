@@ -1,5 +1,4 @@
 puts "TODO OCC12345 ALL: An exception was caught"
-puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
 
 puts "================"
 puts "BUC60961"

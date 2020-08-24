@@ -1,13 +1,9 @@
 puts "TODO OCC12345 ALL: An exception was caught"
-puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
 puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 puts "================"
-puts "OCC346"
+puts "0000346: Avoiding e x c e p t i o n when the 2 vertices of the edge are the same"
 puts "================"
 puts ""
-#####################################################
-## Avoiding exception when the 2 vertices of the edge are the same.
-#####################################################
 
 set x 10
 set y 10

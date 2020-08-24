@@ -14,8 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// modified by mps (juillet 96) : ajout de la commande distmini
-
 #include <DBRep.hxx>
 #include <BRepTest.hxx>
 #include <BRepExtrema_Poly.hxx>
@@ -28,15 +26,13 @@
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_Compound.hxx>
 #include <Draw.hxx>
+#include <Message.hxx>
 #include <OSD_Timer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <Precision.hxx>
 
-
-//#ifdef _MSC_VER
 #include <stdio.h>
-//#endif
 
 //=======================================================================
 //function : distance
@@ -150,9 +146,7 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
 {
   if (theNbArgs < 3 || theNbArgs > 6)
   {
-    std::cout << "Usage: " << theArgs[0] <<
-      " Shape1 Shape2 [-tol <value>] [-profile]" << std::endl;
-
+    Message::SendFail() << "Usage: " << theArgs[0] << " Shape1 Shape2 [-tol <value>] [-profile]";
     return 1;
   }
 
@@ -161,7 +155,7 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
 
   if (aShape1.IsNull() || aShape2.IsNull())
   {
-    std::cout << "Error: Failed to find specified shapes" << std::endl;
+    Message::SendFail() << "Error: Failed to find specified shapes";
     return 1;
   }
 
@@ -178,14 +172,14 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
     {
       if (++anArgIdx >= theNbArgs)
       {
-        std::cout << "Error: wrong syntax at argument '" << aFlag << std::endl;
+        Message::SendFail() << "Error: wrong syntax at argument '" << aFlag;
         return 1;
       }
 
       const Standard_Real aTolerance = Draw::Atof (theArgs[anArgIdx]);
       if (aTolerance < 0.0)
       {
-        std::cout << "Error: Tolerance value should be non-negative" << std::endl;
+        Message::SendFail() << "Error: Tolerance value should be non-negative";
         return 1;
       }
       else
@@ -231,7 +225,7 @@ static int ShapeProximity (Draw_Interpretor& theDI, Standard_Integer theNbArgs, 
 
   if (!aTool.IsDone())
   {
-    std::cout << "Error: Failed to perform proximity test" << std::endl;
+    Message::SendFail() << "Error: Failed to perform proximity test";
     return 1;
   }
 
@@ -287,17 +281,14 @@ static int ShapeSelfIntersection (Draw_Interpretor& theDI, Standard_Integer theN
 {
   if (theNbArgs < 2 || theNbArgs > 5)
   {
-    std::cout << "Usage: " << theArgs[0] <<
-      " Shape [-tol <value>] [-profile]" << std::endl;
-
+    Message::SendFail() << "Usage: " << theArgs[0] << " Shape [-tol <value>] [-profile]";
     return 1;
   }
 
   TopoDS_Shape aShape = DBRep::Get (theArgs[1]);
-
   if (aShape.IsNull())
   {
-    std::cout << "Error: Failed to find specified shape" << std::endl;
+    Message::SendFail() << "Error: Failed to find specified shape";
     return 1;
   }
 
@@ -313,14 +304,14 @@ static int ShapeSelfIntersection (Draw_Interpretor& theDI, Standard_Integer theN
     {
       if (++anArgIdx >= theNbArgs)
       {
-        std::cout << "Error: wrong syntax at argument '" << aFlag << std::endl;
+        Message::SendFail() << "Error: wrong syntax at argument '" << aFlag;
         return 1;
       }
 
       const Standard_Real aValue = Draw::Atof (theArgs[anArgIdx]);
       if (aValue < 0.0)
       {
-        std::cout << "Error: Tolerance value should be non-negative" << std::endl;
+        Message::SendFail() << "Error: Tolerance value should be non-negative";
         return 1;
       }
       else
@@ -360,7 +351,7 @@ static int ShapeSelfIntersection (Draw_Interpretor& theDI, Standard_Integer theN
 
   if (!aTool.IsDone())
   {
-    std::cout << "Error: Failed to perform proximity test" << std::endl;
+    Message::SendFail() << "Error: Failed to perform proximity test";
     return 1;
   }
 

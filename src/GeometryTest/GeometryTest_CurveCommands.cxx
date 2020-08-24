@@ -98,7 +98,7 @@
 #include <Approx_CurveOnSurface.hxx>
 #include <Precision.hxx>
 #include <Geom2dAdaptor.hxx>
-
+#include <Message.hxx>
 
 #include <Precision.hxx>
 
@@ -944,7 +944,7 @@ static Standard_Integer crvpoints (Draw_Interpretor& di, Standard_Integer /*n*/,
     TopoDS_Wire aWire = TopoDS::Wire(DBRep::Get(a[2], TopAbs_WIRE));
     if (aWire.IsNull())
     {
-      std::cout << "cannot evaluate the argument " << a[2] << " as a curve" << std::endl;
+      Message::SendFail() << "cannot evaluate the argument " << a[2] << " as a curve";
       return 1;
     }
     BRepAdaptor_CompCurve aCompCurve(aWire);
@@ -1018,7 +1018,7 @@ static Standard_Integer crvtpoints (Draw_Interpretor& di, Standard_Integer n, co
     TopoDS_Wire aWire = TopoDS::Wire(DBRep::Get(a[2], TopAbs_WIRE));
     if (aWire.IsNull())
     {
-      std::cout << "cannot evaluate the argument " << a[2] << " as a curve" << std::endl;
+      Message::SendFail() << "cannot evaluate the argument " << a[2] << " as a curve";
       return 1;
     }
     BRepAdaptor_CompCurve aCompCurve(aWire);

@@ -36,6 +36,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
+#include <Message.hxx>
 #include <Precision.hxx>
 #include <ShapeBuild_ReShape.hxx>
 #include <ShapeCustom.hxx>
@@ -1401,14 +1402,14 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
 {
   if ( theArgc < 4 )
   {
-    std::cout << "Error: wrong number of arguments. Type 'help " << theArgv[0] << "'\n";
+    Message::SendFail() << "Error: wrong number of arguments. Type 'help " << theArgv[0] << "'";
     return 1;
   }
 
   TopoDS_Shape aSource = DBRep::Get(theArgv[2]);
   if ( aSource.IsNull() )
   {
-    std::cout << "Error: source shape ('" << theArgv[2] << "') is null\n";
+    Message::SendFail() << "Error: source shape ('" << theArgv[2] << "') is null";
     return 1;
   }
 
@@ -1427,21 +1428,21 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
     {
       if ( theArgc - i < 3 )
       {
-        std::cout << "Error: not enough arguments for replacement\n";
+        Message::SendFail() << "Error: not enough arguments for replacement";
         return 1;
       }
 
       TopoDS_Shape aWhat = DBRep::Get(theArgv[++i]);
       if ( aWhat.IsNull() )
       {
-        std::cout << "Error: argument shape ('" << theArgv[i] << "') is null\n";
+        Message::SendFail() << "Error: argument shape ('" << theArgv[i] << "') is null";
         return 1;
       }
 
       TopoDS_Shape aWith = DBRep::Get(theArgv[++i]);
       if ( aWith.IsNull() )
       {
-        std::cout << "Error: replacement shape ('" << theArgv[i] << "') is null\n";
+        Message::SendFail() << "Error: replacement shape ('" << theArgv[i] << "') is null";
         return 1;
       }
 
@@ -1451,14 +1452,14 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
     {
       if ( theArgc - i < 2 )
       {
-        std::cout << "Error: not enough arguments for removal\n";
+        Message::SendFail() << "Error: not enough arguments for removal";
         return 1;
       }
 
       TopoDS_Shape aWhat = DBRep::Get(theArgv[++i]);
       if ( aWhat.IsNull() )
       {
-        std::cout << "Error: shape to remove ('" << theArgv[i] << "') is null\n";
+        Message::SendFail() << "Error: shape to remove ('" << theArgv[i] << "') is null";
         return 1;
       }
 
@@ -1468,7 +1469,7 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
     {
       if (theArgc - i < 2)
       {
-        std::cout << "Error: not enough arguments for level specification\n";
+        Message::SendFail() << "Error: not enough arguments for level specification";
         return 1;
       }
 
@@ -1504,13 +1505,13 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
         aShapeLevel = TopAbs_SHAPE;
       else
       {
-        std::cout << "Error: unknown shape type '" << theArgv[i] << "'\n";
+        Message::SendFail() << "Error: unknown shape type '" << theArgv[i] << "'";
         return 1;
       }
     }
     else
     {
-      std::cout << "Error: invalid syntax at " << anOpt << "\n" ;
+      Message::SendFail() << "Error: invalid syntax at " << anOpt;
       return 1;
     }
   }
@@ -1519,7 +1520,7 @@ static Standard_Integer reshape(Draw_Interpretor& /*theDI*/,
   TopoDS_Shape aResult = aReShaper->Apply(aSource, aShapeLevel);
   if ( aResult.IsNull() )
   {
-    std::cout << "Error: result shape is null\n";
+    Message::SendFail() << "Error: result shape is null";
     return 1;
   }
 
