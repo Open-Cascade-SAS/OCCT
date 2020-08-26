@@ -29,7 +29,6 @@
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <DDocStd.hxx>
-#include <CDF.hxx>
 
 #include <Resource_Manager.hxx>
 #include <TopoDS_Wire.hxx>

@@ -74,8 +74,7 @@ void PCDM_ReadWriter::Open (const Handle(Storage_BaseDriver)&   aDriver,
 Handle(PCDM_ReadWriter) PCDM_ReadWriter::Reader
                                            (const TCollection_ExtendedString&)
 {
-  static Handle(PCDM_ReadWriter_1) theReader=new PCDM_ReadWriter_1;
-  return theReader;
+  return (new PCDM_ReadWriter_1);
 }
 
 //=======================================================================
@@ -85,8 +84,7 @@ Handle(PCDM_ReadWriter) PCDM_ReadWriter::Reader
 
 Handle(PCDM_ReadWriter) PCDM_ReadWriter::Writer ()
 {
-  static Handle(PCDM_ReadWriter_1) theWriter=new PCDM_ReadWriter_1;
-  return theWriter;
+  return (new PCDM_ReadWriter_1);
 }
  
 //=======================================================================
@@ -120,9 +118,7 @@ TCollection_ExtendedString PCDM_ReadWriter::FileFormat
   if (PCDM::FileDriverType (theFileName, theFileDriver) == PCDM_TOFD_Unknown)
     return ::TryXmlDriverType (theFileName);
 
-  static Standard_Boolean theFileIsOpen;
-  theFileIsOpen=Standard_False;
-
+  Standard_Boolean theFileIsOpen(Standard_False);
   try {
     OCC_CATCH_SIGNALS
     

@@ -14,16 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef CDM_PresentationDirectory_HeaderFile
-#define CDM_PresentationDirectory_HeaderFile
+#ifndef CDM_ApplicationDirectory_HeaderFile
+#define CDM_ApplicationDirectory_HeaderFile
 
-#include <TCollection_ExtendedString.hxx>
-#include <CDM_Document.hxx>
-#include <TCollection_ExtendedString.hxx>
+#include <CDM_Application.hxx>
+#include <TColStd_MapIntegerHasher.hxx>
 #include <NCollection_DataMap.hxx>
+#include <Standard_ThreadId.hxx>
+#include <NCollection_DefaultHasher.hxx>
 
-typedef NCollection_DataMap<TCollection_ExtendedString,Handle(CDM_Document),TCollection_ExtendedString> CDM_PresentationDirectory;
-typedef NCollection_DataMap<TCollection_ExtendedString,Handle(CDM_Document),TCollection_ExtendedString>::Iterator CDM_DataMapIteratorOfPresentationDirectory;
-
+typedef NCollection_DefaultHasher<Standard_ThreadId> CDM_MapThreadIDHasher;
+typedef NCollection_DataMap<Standard_ThreadId,Handle(CDM_Application),CDM_MapThreadIDHasher> CDM_ApplicationDirectory;
+typedef NCollection_DataMap<Standard_ThreadId,Handle(CDM_Application),CDM_MapThreadIDHasher>::Iterator CDM_DataMapIteratorOfApplicationDirectory;
 
 #endif

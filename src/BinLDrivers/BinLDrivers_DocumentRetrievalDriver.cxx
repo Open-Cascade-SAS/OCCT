@@ -91,7 +91,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read
     TCollection_ExtendedString aFormat = PCDM_ReadWriter::FileFormat (aFileStream, dData);
 
     Read(aFileStream, dData, theNewDocument, theApplication, theProgress);
-    if (theProgress->UserBreak())
+    if (!theProgress.IsNull() && theProgress->UserBreak())
     {
       myReaderStatus = PCDM_RS_UserBreak;
       return;

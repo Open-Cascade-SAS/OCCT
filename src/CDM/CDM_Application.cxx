@@ -29,6 +29,14 @@
 IMPLEMENT_STANDARD_RTTIEXT(CDM_Application,Standard_Transient)
 
 //=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+CDM_Application::CDM_Application()
+{
+  myMessenger = new Message_Messenger;
+}
+//=======================================================================
 //function : SetDocumentVersion
 //purpose  : 
 //=======================================================================
@@ -58,10 +66,7 @@ void CDM_Application::SetReferenceCounter
 
 Handle(Message_Messenger) CDM_Application::MessageDriver()
 {
-  static Handle(Message_Messenger) theMessenger;
-  if(theMessenger.IsNull()) 
-    theMessenger = Message::DefaultMessenger();
-  return theMessenger;
+  return myMessenger;
 }
 
 //=======================================================================
@@ -79,10 +84,10 @@ void CDM_Application::Write(const Standard_ExtString aString)
 //purpose  : 
 //=======================================================================
 
-void CDM_Application::BeginOfUpdate (const Handle(CDM_Document)& aDocument)
+void CDM_Application::BeginOfUpdate (const Handle(CDM_Document)& /*aDocument*/)
 {
-  TCollection_ExtendedString updating("Updating:");
-  updating+=aDocument->Presentation();
+  TCollection_ExtendedString updating("Updating: ");
+  updating += "Document";
   Write(updating.ToExtString());
 }
 
@@ -92,17 +97,17 @@ void CDM_Application::BeginOfUpdate (const Handle(CDM_Document)& aDocument)
 //=======================================================================
 
 void CDM_Application::EndOfUpdate
-                        (const Handle(CDM_Document)&       aDocument,
+                        (const Handle(CDM_Document)&       /*aDocument*/,
                          const Standard_Boolean            theStatus,
                          const TCollection_ExtendedString& /*ErrorString*/)
 {
   TCollection_ExtendedString message;
   if (theStatus)
-    message="Updated:";
+    message="Updated: ";
   else
-    message="Error during updating:";
+    message="Error during updating: ";
       
-  message+=aDocument->Presentation();
+  message+="Document";
   Write(message.ToExtString());
 }
 
@@ -126,6 +131,15 @@ TCollection_AsciiString CDM_Application::Version() const
 {
   // Default: empty
   return TCollection_AsciiString();
+}
+
+//=======================================================================
+//function : MetaDataLookUpTable
+//purpose  : returns the MetaData LookUpTable
+//=======================================================================
+CDM_MetaDataLookUpTable* CDM_Application::MetaDataLookUpTable()
+{
+  return &myMetaDataLookUpTable;
 }
 
 //=======================================================================

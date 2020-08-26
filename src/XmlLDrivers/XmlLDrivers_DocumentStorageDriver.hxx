@@ -26,6 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <XmlObjMgt_Element.hxx>
 #include <Standard_Integer.hxx>
+
 class XmlMDF_ADriverTable;
 class TCollection_ExtendedString;
 class CDM_Document;
@@ -81,8 +82,7 @@ protected:
                                  const Handle(Message_ProgressIndicator)& theProgress = NULL);
 
   Handle(XmlMDF_ADriverTable) myDrivers;
-  XmlObjMgt_SRelocationTable myRelocTable;
-
+  XmlObjMgt_SRelocationTable  myRelocTable;
 
 private:
 

@@ -78,7 +78,7 @@ PCDM_StoreStatus CDF_StoreList::Store (Handle(CDM_MetaData)& aMetaData,
                                       TCollection_ExtendedString& aStatusAssociatedText, 
                                       const Handle(Message_ProgressIndicator)& theProgress)
 {
-  Handle(CDF_MetaDataDriver) theMetaDataDriver = CDF_Session::CurrentSession()->MetaDataDriver();
+  Handle(CDF_MetaDataDriver) theMetaDataDriver = Handle(CDF_Application)::DownCast((myMainDocument->Application()))->MetaDataDriver();
 
   PCDM_StoreStatus status = PCDM_SS_OK;
   {

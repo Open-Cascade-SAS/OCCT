@@ -31,30 +31,21 @@ void CDF_Directory::Add(const Handle(CDM_Document)& aDocument) {
 }
 
 void CDF_Directory::Remove(const Handle(CDM_Document)& aDocument) {
-
-  CDM_ListIteratorOfListOfDocument it(myDocuments);
-  
-  Standard_Boolean found = Standard_False;
-  for (; it.More() && !found;) {
-    found = aDocument == it.Value();
-    if(found) 
+  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next()) {
+    if (aDocument == it.Value()) {
       myDocuments.Remove(it);
-    else
-      it.Next();
+      break;
+    }
   }
 }
-
 
 Standard_Boolean CDF_Directory::Contains(const Handle(CDM_Document)& aDocument) const {
-
-  CDM_ListIteratorOfListOfDocument it(myDocuments);
-  Standard_Boolean found = Standard_False;
-  for (; it.More() && !found; it.Next()) {
-    found = aDocument == it.Value();
+  for (CDM_ListIteratorOfListOfDocument it(myDocuments); it.More(); it.Next()) {
+    if (aDocument == it.Value())
+      return Standard_True;
   }
-  return found;
+  return Standard_False;
 }
-
 
 Standard_Integer CDF_Directory::Length() const {
   return myDocuments.Extent();
@@ -69,6 +60,7 @@ const CDM_ListOfDocument& CDF_Directory::List() const {
 Standard_Boolean CDF_Directory::IsEmpty() const {
   return myDocuments.IsEmpty();
 }
+
 Handle(CDM_Document) CDF_Directory::Last() {
   Standard_NoSuchObject_Raise_if(IsEmpty(),"CDF_Directory::Last: the directory does not contain any document");
   return myDocuments.Last();

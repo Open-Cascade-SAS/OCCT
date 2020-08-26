@@ -77,7 +77,7 @@ void DFBrowserPane_TDocStdOwner::GetValues (const Handle(TDF_Attribute)& theAttr
 
   // CDM_Document methods
   theValues << "Comments" << convertToString (aComments)
-            << "Presentation" << DFBrowserPane_Tools::ToString (aDocument->Presentation())
+   //         << "Presentation" << DFBrowserPane_Tools::ToString (aDocument->Presentation())
             << "IsStored" << DFBrowserPane_Tools::BoolToStr (aDocument->IsStored())
             << "StorageVersion" << QString::number (aDocument->StorageVersion())
             << "Folder" << (aDocument->IsStored() ? DFBrowserPane_Tools::ToString (aDocument->Folder()) : "")

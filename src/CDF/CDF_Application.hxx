@@ -19,10 +19,11 @@
 
 #include <TCollection_ExtendedString.hxx>
 #include <PCDM_ReaderStatus.hxx>
+#include <CDF_TypeOfActivation.hxx>
+#include <CDF_MetaDataDriver.hxx>
 #include <CDM_Application.hxx>
 #include <CDM_CanCloseStatus.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
-#include <CDF_TypeOfActivation.hxx>
 #include <Standard_IStream.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
@@ -35,7 +36,7 @@ class PCDM_Reader;
 class CDM_MetaData;
 class PCDM_RetrievalDriver;
 class PCDM_StorageDriver;
-
+class CDF_Directory;
 class CDF_Application;
 DEFINE_STANDARD_HANDLE(CDF_Application, CDM_Application)
 
@@ -167,12 +168,17 @@ public:
   Standard_EXPORT Standard_ExtString DefaultFolder();
   
   Standard_EXPORT Standard_Boolean SetDefaultFolder (const Standard_ExtString aFolder);
-  
+
+  //! returns MetaDatdDriver of this application
+  Standard_EXPORT Handle(CDF_MetaDataDriver) MetaDataDriver() const;
+
 friend class CDF_Session;
 
 
   DEFINE_STANDARD_RTTIEXT(CDF_Application,CDM_Application)
 
+  Handle(CDF_MetaDataDriver) myMetaDataDriver;
+  Handle(CDF_Directory) myDirectory;
 private:
 
   

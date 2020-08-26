@@ -50,8 +50,7 @@ void PCDM_StorageDriver::Write (const Handle(CDM_Document)& aDocument,
 
   Handle(Storage_Data) theData = new Storage_Data;
 
-  static Standard_Boolean Failure;
-  Failure=Standard_False;
+  Standard_Boolean Failure(Standard_False);
   Standard_SStream aMsg; aMsg << "error during Make:";
   PCDM_SequenceOfDocument thePersistentDocuments;
   {

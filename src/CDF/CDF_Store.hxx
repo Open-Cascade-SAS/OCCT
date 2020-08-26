@@ -28,6 +28,7 @@
 #include <Standard_ExtString.hxx>
 #include <CDF_StoreSetNameStatus.hxx>
 #include <CDF_SubComponentStatus.hxx>
+#include <TCollection_HExtendedString.hxx>
 
 #include <Message_ProgressIndicator.hxx>
 
@@ -48,10 +49,10 @@ public:
   Standard_EXPORT CDF_Store(const Handle(CDM_Document)& aDocument);
   
   //! returns the folder in which the current document will be stored.
-  Standard_EXPORT Standard_ExtString Folder() const;
+  Standard_EXPORT Handle(TCollection_HExtendedString) Folder() const;
   
   //! returns the name under which the current document will be stored
-  Standard_EXPORT Standard_ExtString Name() const;
+  Standard_EXPORT Handle(TCollection_HExtendedString) Name() const;
   
   //! returns true if the current document is already stored
   Standard_EXPORT Standard_Boolean IsStored() const;
@@ -64,7 +65,7 @@ public:
   
   Standard_EXPORT Standard_Boolean HasAPreviousVersion() const;
   
-  Standard_EXPORT Standard_ExtString PreviousVersion() const;
+  Standard_EXPORT Handle(TCollection_HExtendedString) PreviousVersion() const;
   
   //! returns true if the currentdocument is the main one, ie the document
   //! of the current selection.
@@ -80,7 +81,7 @@ public:
   
   Standard_EXPORT void SetComment (const Standard_ExtString aComment);
   
-  Standard_EXPORT Standard_ExtString Comment() const;
+  Standard_EXPORT Handle(TCollection_HExtendedString) Comment() const;
   
   //! defines the name under which the document should be stored.
   //! uses for example after modification of the folder.
@@ -95,29 +96,10 @@ public:
   
   //! returns the path of  the previous store is the object
   //! is already stored, otherwise an empty string;
-  Standard_EXPORT Standard_ExtString MetaDataPath() const;
+  Standard_EXPORT Handle(TCollection_HExtendedString) MetaDataPath() const;
   
   //! returns the description of the format of the main object.
-  Standard_EXPORT Standard_ExtString Description() const;
-  
-  //! Allows to Start a new Iteration from beginning
-  Standard_EXPORT void InitComponent();
-  
-  //! Returns True if there are more entries to return
-  Standard_EXPORT Standard_Boolean MoreComponent() const;
-  
-  //! Go to the next entry
-  //! (if there is not, Value will raise an exception)
-  Standard_EXPORT void NextComponent();
-  
-  Standard_EXPORT void SetCurrent();
-  
-  //! Returns item value of current entry
-  Standard_EXPORT Standard_ExtString Component() const;
-  
-  Standard_EXPORT Standard_Boolean HasSubComponents() const;
-  
-  Standard_EXPORT CDF_SubComponentStatus SubComponentStatus (const Standard_ExtString aPresentation) const;
+  Standard_EXPORT Handle(TCollection_HExtendedString) Description() const;
   
   Standard_EXPORT void SetCurrent (const Standard_ExtString aPresentation);
   

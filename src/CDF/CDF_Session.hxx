@@ -22,12 +22,13 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_Mutex.hxx>
+#include <CDM_ApplicationDirectory.hxx>
 class CDF_Directory;
 class CDF_Application;
 class CDF_MetaDataDriver;
 class Standard_NoSuchObject;
 class Standard_MultiplyDefined;
-
 
 class CDF_Session;
 DEFINE_STANDARD_HANDLE(CDF_Session, Standard_Transient)
@@ -39,29 +40,27 @@ class CDF_Session : public Standard_Transient
 public:
 
   
-  Standard_EXPORT CDF_Session();
-  
   //! returns true if a session has been created.
   Standard_EXPORT static Standard_Boolean Exists();
-  
+
+  //! Creates a session if it does not exists yet
+  Standard_EXPORT static Handle(CDF_Session) Create();
+
   //! returns the only one instance of Session
   //! that has been created.
   Standard_EXPORT static Handle(CDF_Session) CurrentSession();
   
-  //! returns the directory of the session;
-  Standard_EXPORT Handle(CDF_Directory) Directory() const;
-  
-  Standard_EXPORT Standard_Boolean HasCurrentApplication() const;
-  
-  Standard_EXPORT Handle(CDF_Application) CurrentApplication() const;
-  
-  Standard_EXPORT void SetCurrentApplication (const Handle(CDF_Application)& anApplication);
-  
-  Standard_EXPORT void UnsetCurrentApplication();
-  
-  Standard_EXPORT Handle(CDF_MetaDataDriver) MetaDataDriver() const;
-  
-  Standard_EXPORT void LoadDriver();
+  //! returns true if theApp is added to the session
+  Standard_EXPORT Standard_Boolean AddApplication(const Handle(CDF_Application)& theApp, const Standard_ThreadId theID);
+
+  //! returns true if theApp is added to the session
+  Standard_EXPORT Standard_Boolean AddApplication(const CDF_Application* theApp, const Standard_ThreadId theID);
+
+  //! returns true if theApp is removed from the session
+  Standard_EXPORT Standard_Boolean RemoveApplication(const Standard_ThreadId theID);
+
+  //! returns true if theApp is removed from the session
+  Standard_EXPORT Standard_Boolean FindApplication(const Standard_ThreadId, Handle(CDF_Application)& theApp) const;
 
 
 friend class CDF_Application;
@@ -71,18 +70,17 @@ friend class CDF_Application;
 
 protected:
 
+  //! Use "Create" session for creation of an instance
+  CDF_Session();
+
 
 
 
 private:
 
 
-  Handle(CDF_Directory) myDirectory;
-  Handle(CDF_Application) myCurrentApplication;
-  Standard_Boolean myHasCurrentApplication;
+  CDM_ApplicationDirectory myAppDirectory;
   Handle(CDF_MetaDataDriver) myMetaDataDriver;
-
-
 };
 
 

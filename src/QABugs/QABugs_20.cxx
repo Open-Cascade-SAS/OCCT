@@ -2976,6 +2976,217 @@ static Standard_Integer OCC30391(Draw_Interpretor& theDI,
   return 0;
 }
 
+#include <Standard_Mutex.hxx>
+#include <NCollection_Sequence.hxx>
+#include <BinLDrivers.hxx>
+#include <BinDrivers.hxx>
+#include <XmlLDrivers.hxx>
+#include <XmlDrivers.hxx>
+#include <StdLDrivers.hxx>
+#include <StdDrivers.hxx>
+#include <TDF_ChildIterator.hxx>
+#include <TDocStd_PathParser.hxx>
+#include <OSD.hxx>
+#include <OSD_Thread.hxx>
+#include <OSD_Environment.hxx>
+typedef NCollection_Sequence <TCollection_AsciiString> SequenceOfDocNames;
+
+typedef struct
+{
+  Standard_ThreadId ID;
+  int iThread;  
+  TCollection_AsciiString inFile[3];
+  TCollection_AsciiString outFile[2];
+  bool finished;
+  int* res;
+} Args;
+
+static void printMsg(const char* msg)
+{
+  printf("%s\n", msg);
+}
+
+static Standard_Integer nbREP(50);
+
+void* threadFunction(void* theArgs)
+{
+  Args* args = (Args*)theArgs;
+  try
+  {
+    if(args->inFile[0].IsEmpty())
+    {
+      *(args->res) = -1;
+      return args->res;
+    }
+
+    Handle(TDocStd_Application) anApp = new TDocStd_Application();
+    OCC_CATCH_SIGNALS;
+    BinLDrivers::DefineFormat(anApp);
+    BinDrivers::DefineFormat(anApp);
+    XmlLDrivers::DefineFormat(anApp);
+    XmlDrivers::DefineFormat(anApp);
+    StdLDrivers::DefineFormat(anApp);
+    StdDrivers::DefineFormat(anApp);
+
+    for (int aFileIndex = 0; aFileIndex < 3; aFileIndex++)
+    {
+      TCollection_AsciiString aDocName = args->inFile[aFileIndex];
+      Handle(TDocStd_Document) aDoc;
+      for (int i = 1; i <= nbREP; i++) {
+
+        PCDM_ReaderStatus aStatus = anApp->Open(aDocName, aDoc);
+        if (aStatus != PCDM_RS_OK) {
+          args->finished = true;
+          *(args->res) = -1;
+          return args->res;
+        }
+        else {
+          TDF_Label aLabel = aDoc->Main();
+          TDF_ChildIterator anIt(aLabel, Standard_True);
+          for (; anIt.More(); anIt.Next()) {
+            const TDF_Label& aLab = anIt.Value();
+            Handle(TDataStd_AsciiString) anAtt;
+            aLab.FindAttribute(TDataStd_AsciiString::GetID(), anAtt);
+            if (!anAtt.IsNull()) {
+              TCollection_AsciiString aStr = anAtt->Get();
+              if (aStr.IsEqual(aDocName)) {
+                *(args->res) = (int)aLab.Tag();
+                break;
+              }
+            }
+          }
+
+          if (aFileIndex != 2) {
+            TCollection_AsciiString anOutDocName = args->outFile[aFileIndex];
+            anApp->SaveAs(aDoc, anOutDocName);
+          }
+          anApp->Close(aDoc);
+        }
+      }
+    }
+    args->finished = true;
+    anApp->RemoveFromSession();
+  }
+  catch (...)
+  {
+    args->finished = true;
+    *(args->res) = -1;
+    return args->res;
+  }
+  args->finished = true;
+  return args->res;
+}
+
+int getNumCores()
+{
+#ifdef WIN32
+  SYSTEM_INFO sysinfo;
+  GetSystemInfo(&sysinfo);
+  return sysinfo.dwNumberOfProcessors;
+#elif MACOS
+  int nm[2];
+  size_t len = 4;
+  uint32_t count;
+
+  nm[0] = CTL_HW; nm[1] = HW_AVAILCPU;
+  sysctl(nm, 2, &count, &len, NULL, 0);
+
+  if (count < 1) {
+    nm[1] = HW_NCPU;
+    sysctl(nm, 2, &count, &len, NULL, 0);
+    if (count < 1) { count = 1; }
+  }
+  return count;
+#else
+  return sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+}
+
+//=======================================================================
+//function : OCC29195
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC29195(Draw_Interpretor&, Standard_Integer theArgC, const char** theArgV)
+{
+  if (theArgC < 2)
+  {
+    std::cout << "\nOCC29195 [nbRep] doc1.cbf doc1.xml doc1.std outDoc1.cbf outDoc1.xml doc2.cbf doc2.xml doc2.std outDoc2.cbf outDoc2.xml ...], where:";
+    std::cout << "\nnbRep - number repetitions of a thread function (by default - 50)";
+    std::cout << "\ndocN - names (5 in each group) of OCAF documents names (3 input files, 2 output)\n" << std::endl;
+    return 1;
+  }
+  int iThread(0), nbThreads(0), off(0);
+  if (TCollection_AsciiString(theArgV[1]).IsIntegerValue())
+  {
+    nbREP = TCollection_AsciiString(theArgV[1]).IntegerValue();
+    off = 1;
+  }
+  if (theArgC - off - 1 < 5 || (theArgC - off - 1) % 5 != 0 )
+  {
+    printMsg("TEST is FAILED: number of arguments is invalid\n");
+    return 0;
+  }
+  Standard_Integer aNbFiles = (theArgC - off - 1) / 5;
+  nbThreads = getNumCores();
+  if (aNbFiles < nbThreads)
+  {
+    nbThreads = aNbFiles;
+  }
+  // Allocate data
+  Args* args = new Args[nbThreads];
+  OSD_Thread* threads = new OSD_Thread[nbThreads];
+  while (iThread < nbThreads)
+  {
+    if (iThread < aNbFiles)
+    {      
+      args[iThread].inFile[0] = theArgV[iThread * 5 + off + 1];
+      args[iThread].inFile[1] = theArgV[iThread * 5 + off + 2];
+      args[iThread].inFile[2] = theArgV[iThread * 5 + off + 3];
+      args[iThread].outFile[0] = theArgV[iThread * 5 + off + 4];
+      args[iThread].outFile[1] = theArgV[iThread * 5 + off + 5];
+    }
+    args[iThread].iThread = iThread;
+    args[iThread].ID = threads[iThread].GetId();
+    args[iThread].finished = false;
+    args[iThread].res = new int;
+    threads[iThread].SetFunction(&threadFunction);
+    iThread++;
+  }
+  for (iThread = 0; iThread < nbThreads; iThread++)
+  {
+    args[iThread].finished = false;
+    threads[iThread].Run((void*)&(args[iThread]));
+  }
+  // Sleep while the threads are run.
+  bool finished = false;
+  while (!finished)
+  {
+    OSD::MilliSecSleep(100);
+    finished = true;
+    for (iThread = 0; iThread < nbThreads && finished; iThread++)
+    {
+      finished = args[iThread].finished;
+    }
+  }
+  OSD_Environment anEnv("Result29195");
+  for (iThread = 0; iThread < nbThreads; iThread++)
+  {
+    if (*(args[iThread].res) == -1)
+    {
+      printMsg("OCC29195 is FAILED\n");
+      anEnv.SetValue("FAILED_ERR");
+      break;
+    }
+  }
+  if (iThread == nbThreads)
+  {
+    printMsg("OCC29195 is finished OK\n");
+    anEnv.SetValue("OK");
+  }
+  anEnv.Build();
+  return 0;
+}
+
 //=======================================================================
 //function : QAStartsWith string startstring
 //=======================================================================
@@ -3620,6 +3831,7 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC29807", "OCC29807 surface1 surface2 u1 v1 u2 v2", __FILE__, OCC29807, group);
   theCommands.Add("OCC29311", "OCC29311 shape counter nbiter: check performance of OBB calculation", __FILE__, OCC29311, group);
   theCommands.Add("OCC30391", "OCC30391 result face LenBeforeUfirst LenAfterUlast LenBeforeVfirst LenAfterVlast", __FILE__, OCC30391, group);
+  theCommands.Add("OCC29195", "OCC29195 [nbRep] doc1 [doc2 [doc3 [doc4]]]", __FILE__, OCC29195, group);
   theCommands.Add("OCC30435", "OCC30435 result curve inverse nbit", __FILE__, OCC30435, group);
   theCommands.Add("OCC30990", "OCC30990 surface", __FILE__, OCC30990, group);
 

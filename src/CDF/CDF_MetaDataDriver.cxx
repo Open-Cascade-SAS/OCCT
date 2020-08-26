@@ -24,6 +24,7 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <OSD_Thread.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(CDF_MetaDataDriver,Standard_Transient)
 
@@ -68,7 +69,8 @@ void CDF_MetaDataDriver::CreateDependsOn(const Handle(CDM_MetaData)& ,
 //purpose  : 
 //=======================================================================
 
-void CDF_MetaDataDriver::CreateReference(const Handle(CDM_MetaData)& ,const Handle(CDM_MetaData)& , const Standard_Integer , const Standard_Integer ) {}
+void CDF_MetaDataDriver::CreateReference(const Handle(CDM_MetaData)& ,
+  const Handle(CDM_MetaData)& , const Standard_Integer , const Standard_Integer ) {}
 
 //=======================================================================
 //function : ReferenceIterator
@@ -76,7 +78,10 @@ void CDF_MetaDataDriver::CreateReference(const Handle(CDM_MetaData)& ,const Hand
 //=======================================================================
 
 Handle(PCDM_ReferenceIterator) CDF_MetaDataDriver::ReferenceIterator() {
-  return new PCDM_ReferenceIterator(CDF_Session::CurrentSession()->CurrentApplication()->MessageDriver());
+  Standard_ThreadId anID = OSD_Thread::Current();
+  Handle(CDF_Application) anApp; 
+  CDF_Session::CurrentSession()->FindApplication(anID, anApp);
+  return new PCDM_ReferenceIterator(anApp->MessageDriver());
 }
 
 //=======================================================================
@@ -84,7 +89,9 @@ Handle(PCDM_ReferenceIterator) CDF_MetaDataDriver::ReferenceIterator() {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName) {
+Standard_Boolean CDF_MetaDataDriver::Find(const TCollection_ExtendedString& aFolder, 
+  const TCollection_ExtendedString& aName) 
+{
   TCollection_ExtendedString aVersion;
   return Find(aFolder,aName,aVersion);
 }

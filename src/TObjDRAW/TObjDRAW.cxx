@@ -510,12 +510,11 @@ void TObjDRAW::Init(Draw_Interpretor& di)
 void TObjDRAW::Factory(Draw_Interpretor& theDI)
 {
   // Initialize TObj OCAF formats
-  Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
+  Handle(TDocStd_Application) anApp = TObj_Application::GetInstance();//DDocStd::GetApplication();
   BinTObjDrivers::DefineFormat(anApp);
   XmlTObjDrivers::DefineFormat(anApp);
 
   // define formats for TObj specific application
-  anApp = TObj_Application::GetInstance();
   BinTObjDrivers::DefineFormat(anApp);
   XmlTObjDrivers::DefineFormat(anApp);
 

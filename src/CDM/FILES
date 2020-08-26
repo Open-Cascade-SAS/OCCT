@@ -2,7 +2,6 @@ CDM_Application.cxx
 CDM_Application.hxx
 CDM_CanCloseStatus.hxx
 CDM_DataMapIteratorOfMetaDataLookUpTable.hxx
-CDM_DataMapIteratorOfPresentationDirectory.hxx
 CDM_Document.cxx
 CDM_Document.hxx
 CDM_DocumentHasher.hxx
@@ -17,7 +16,7 @@ CDM_MetaData.cxx
 CDM_MetaData.hxx
 CDM_MetaDataLookUpTable.hxx
 CDM_NamesDirectory.hxx
-CDM_PresentationDirectory.hxx
+CDM_ApplicationDirectory.hxx
 CDM_Reference.cxx
 CDM_Reference.hxx
 CDM_ReferenceIterator.cxx

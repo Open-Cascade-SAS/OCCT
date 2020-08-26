@@ -115,7 +115,7 @@ private:
   
   Standard_EXPORT void SetDocument (const Handle(CDM_Document)& aDocument);
   
-  Standard_EXPORT static const CDM_MetaDataLookUpTable& LookUpTable();
+  Standard_EXPORT static CDM_MetaDataLookUpTable* LookUpTable();
   
   Standard_EXPORT Standard_Integer DocumentVersion (const Handle(CDM_Application)& anApplication);
 
