@@ -1,0 +1,24 @@
+puts "========"
+puts "0031734: Modeling Algorithms - Incorrect result of offset operation in mode 'Complete' join type 'Intersection'"
+puts "========"
+puts ""
+
+restore [locate_data_file bug31734_input_trim.brep] s
+offsetparameter 1e-7 c i r
+offsetload s 37.97685142672564
+# nullify top faces
+foreach f [explode s f] {
+  mksurface surf $f
+  regexp {Axis   :([-0-9.+eE]*), ([-0-9.+eE]*), ([-0-9.+eE]*)} [dump surf] full x y z
+  if {abs(abs($z) - 1) < 1.e-7} {
+    offsetonface $f 0
+  }
+}
+offsetperform result
+
+checkprops result -s 3.40766e+06 -v 2.58585e+08
+
+unifysamedom result_unif result
+checknbshapes result_unif -wire 31 -face 31 -shell 1 -solid 1
+
+checkview -display result_unif -2d -path ${imagedir}/${test_image}.png

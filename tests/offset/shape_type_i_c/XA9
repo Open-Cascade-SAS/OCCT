@@ -1,8 +1,10 @@
 restore [locate_data_file bug26917_rm084_dom8810.input_trim1.brep] s
 
-OFFSETSHAPE 15.6 {} $calcul $type
+offsetparameter 1e-7 c i r
+offsetload s 15.6
+offsetperform result
 
-checkprops result -v 2.72597e+007
-checkprops result -s 742046
+checkprops result -s 742046 -v 2.72597e+007
 
-checknbshapes result -shell 1
+unifysamedom result_unif result
+checknbshapes result_unif -face 14 -shell 1

@@ -5,8 +5,11 @@ prism b2 f 6 0 0
 bcut s b1 b2
 donly s
 
-OFFSETSHAPE 2.5 {} $calcul $type
+offsetparameter 1e-7 c i r
+offsetload s 2.5
+offsetperform result
 
-checkprops result -v 2460
+checkprops result -s 1140 -v 2460
 
-checknbshapes result -shell 1
+unifysamedom result_unif result
+checknbshapes result_unif -face 10 -shell 1
