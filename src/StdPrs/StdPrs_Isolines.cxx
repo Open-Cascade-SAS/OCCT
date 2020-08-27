@@ -16,6 +16,7 @@
 #include <StdPrs_Isolines.hxx>
 
 #include <Adaptor3d_IsoCurve.hxx>
+#include <Bnd_Range.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
@@ -479,6 +480,24 @@ void StdPrs_Isolines::addOnSurface (const Handle(BRepAdaptor_HSurface)& theSurfa
       }
     }
 
+    // re-calculate UV-range basing on p-curves tessellation
+    Bnd_Range aTrimU, aTrimV;
+    for (Standard_Integer anI = 1; anI <= aTrimPoints.Length(); ++anI)
+    {
+      const gp_Pnt2d& aTrimPnt = aTrimPoints.Value (anI);
+      aTrimU.Add (aTrimPnt.X());
+      aTrimV.Add (aTrimPnt.Y());
+    }
+    // ignore p-curves tessellation under sampler deflection - it might clamp range
+    if (!aTrimU.IsVoid() && aTrimU.Delta() <= aSamplerDeflection)
+    {
+      aTrimU.SetVoid();
+    }
+    if (!aTrimV.IsVoid() && aTrimV.Delta() <= aSamplerDeflection)
+    {
+      aTrimV.SetVoid();
+    }
+
     // Compute a hatching tolerance.
     aHatchingTolerance *= 0.1;
     aHatchingTolerance = Max (Precision::Confusion(), aHatchingTolerance);
@@ -489,11 +508,21 @@ void StdPrs_Isolines::addOnSurface (const Handle(BRepAdaptor_HSurface)& theSurfa
 
     for (Standard_Integer anIso = 1; anIso <= theUIsoParams.Length(); ++anIso)
     {
-      aHatcher.AddXLine (theUIsoParams.Value (anIso));
+      const Standard_Real anIsoParamU = theUIsoParams.Value (anIso);
+      if (aTrimU.IsVoid()
+      || !aTrimU.IsOut (anIsoParamU))
+      {
+        aHatcher.AddXLine (anIsoParamU);
+      }
     }
     for (Standard_Integer anIso = 1; anIso <= theVIsoParams.Length(); ++anIso)
     {
-      aHatcher.AddYLine (theVIsoParams.Value (anIso));
+      const Standard_Real anIsoParamV = theVIsoParams.Value (anIso);
+      if (aTrimV.IsVoid()
+      || !aTrimV.IsOut (anIsoParamV))
+      {
+        aHatcher.AddYLine (anIsoParamV);
+      }
     }
 
     // Trim hatching region.

@@ -26,6 +26,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <TopAbs_Orientation.hxx>
 class BRepAdaptor_HSurface;
+class TopoDS_Edge;
 
 //! Iterator over 2D curves restricting a face (skipping internal/external edges).
 //! In addition, the algorithm skips NULL curves - IsInvalidGeometry() can be checked if this should be handled within algorithm.
@@ -63,6 +64,9 @@ public:
 
   //! Return current curve.
   const Adaptor2d_Curve2d& Value() const { return myCurve; }
+
+  //! Return current edge.
+  Standard_EXPORT const TopoDS_Edge& Edge() const;
 
   //! Return current edge orientation.
   TopAbs_Orientation Orientation() const { return myExplorer.Current().Orientation(); }
