@@ -40,6 +40,15 @@ StdPrs_ToolRFace::StdPrs_ToolRFace (const Handle(BRepAdaptor_HSurface)& theSurfa
 }
 
 //=======================================================================
+//function : Edge
+//purpose  :
+//=======================================================================
+const TopoDS_Edge& StdPrs_ToolRFace::Edge() const
+{
+  return TopoDS::Edge (myExplorer.Current());
+}
+
+//=======================================================================
 //function : next
 //purpose  :
 //=======================================================================
