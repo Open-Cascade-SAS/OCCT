@@ -100,6 +100,11 @@ private:
   template<typename Stream_T>
   char* readRawDataChunk (Stream_T& theStream)
   {
+    if (myBufferPtr == NULL)
+    {
+      return NULL;
+    }
+
     myBufferPtr += myChunkLen;
     if (myBufferPtr < myBufferEnd)
     {
