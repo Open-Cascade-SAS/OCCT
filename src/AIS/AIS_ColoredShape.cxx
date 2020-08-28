@@ -33,7 +33,6 @@
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_ShadingAspect.hxx>
-#include <Prs3d_Root.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdSelect_BRepSelectionTool.hxx>

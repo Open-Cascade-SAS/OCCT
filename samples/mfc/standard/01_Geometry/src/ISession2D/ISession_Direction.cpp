@@ -84,10 +84,10 @@ void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments (2);
   aPrims->AddVertex (myPnt);
   aPrims->AddVertex (aLastPoint);
-  Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (aPrims);
+  aPresentation->CurrentGroup()->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->AddPrimitiveArray (aPrims);
   // Draw arrow
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(),
                      aLastPoint,
                      myDir,
                      anArrowAspect->Angle(),
@@ -97,7 +97,7 @@ void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   if (myText.Length() != 0)
   {
     gp_Pnt aTextPosition = aLastPoint;
-    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation),
+    Prs3d_Text::Draw (aPresentation->CurrentGroup(),
                       myDrawer->TextAspect(),
                       myText,
                       aTextPosition);

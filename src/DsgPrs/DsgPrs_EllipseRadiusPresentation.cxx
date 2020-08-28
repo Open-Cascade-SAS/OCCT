@@ -57,7 +57,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 					    const DsgPrs_ArrowSide ArrowPrs)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
  
   const Standard_Real dist = aCenter.Distance( aPosition );
   const Standard_Boolean inside = ( dist <= theval );
@@ -66,12 +66,12 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aCenter);
   aPrims->AddVertex(EndPoint);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // value
   TCollection_ExtendedString Text(IsMaxRadius? "a = " : "b = ");
   Text += aText;
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), Text, aPosition);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), Text, aPosition);
 
   // arrows
   gp_Dir arrdir( gp_Vec( aCenter, anEndOfArrow));
@@ -99,7 +99,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 					    const DsgPrs_ArrowSide ArrowPrs)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if(!IsInDomain)
   {
@@ -115,7 +115,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
     Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (Standard_Integer i = 0 ; i < NodeNumber; i++, parFirst += delta)
 	  aPrims->AddVertex(ElCLib::Value( parFirst, anEllipse ));
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   DsgPrs_EllipseRadiusPresentation::Add(aPresentation, aDrawer, theval, aText,
                                         aPosition, anEndOfArrow, aCenter, IsMaxRadius, ArrowPrs);
@@ -141,7 +141,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 					    const DsgPrs_ArrowSide ArrowPrs)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if(!IsInDomain)
   {
@@ -167,7 +167,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 	  aCurve->D0( parFirst, p1 );
 	  aPrims->AddVertex(p1);
 	}
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   DsgPrs_EllipseRadiusPresentation::Add(aPresentation, aDrawer, theval, aText,
                                         aPosition, anEndOfArrow, aCenter, IsMaxRadius, ArrowPrs);

@@ -214,7 +214,6 @@
 #include <Precision.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>

@@ -43,7 +43,7 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 				    const gp_Pnt& OffsetPoint)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Lin L2 (AttachmentPoint2,aDirection);
   gp_Pnt Proj1 = ElCLib::Value(ElCLib::Parameter(L1,OffsetPoint),L1);
@@ -77,8 +77,8 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   aPrims->AddVertex(PointMin);
   aPrims->AddVertex(PointMax);
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   if (dist < (LA->ArrowAspect()->Length()+LA->ArrowAspect()->Length()))
     outside = Standard_True;
@@ -87,20 +87,20 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
     arrdir.Reverse();
 
   // arrow 1 : 2nd group
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   // arrow 2 : 3rd group
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), Proj2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
-  Prs3d_Root::NewGroup(aPresentation);
+  aPresentation->NewGroup();
   
   // text : 4th group
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, offp);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   // processing of call 1 : 5th group
   aPrims->AddVertex(AttachmentPoint1);
@@ -110,7 +110,7 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(Proj2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 
@@ -128,7 +128,7 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 				    const DsgPrs_ArrowSide ArrowPrs)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Lin L2 (AttachmentPoint2,aDirection);
@@ -177,10 +177,10 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(Proj2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // text 
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, offp);
   
   //arrows
   DsgPrs::ComputeSymbol(aPresentation,LA,Proj1,Proj2,arrdir,arrdir.Reversed(),ArrowPrs);

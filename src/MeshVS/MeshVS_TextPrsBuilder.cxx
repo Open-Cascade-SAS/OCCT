@@ -29,7 +29,6 @@
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_TextPrsBuilder.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>

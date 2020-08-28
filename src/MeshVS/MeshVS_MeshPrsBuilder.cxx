@@ -39,7 +39,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Select3D_SensitivePoint.hxx>
@@ -158,8 +157,7 @@ void MeshVS_MeshPrsBuilder::BuildNodes ( const Handle(Prs3d_Presentation)& Prs,
 
   if ( k>0 )
   {
-    Prs3d_Root::NewGroup ( Prs );
-    Handle (Graphic3d_Group) aNodeGroup = Prs3d_Root::CurrentGroup ( Prs );
+    Handle (Graphic3d_Group) aNodeGroup = Prs->NewGroup();
     aNodeGroup->SetPrimitivesAspect ( aNodeMark );
     aNodeGroup->AddPrimitiveArray (aNodePoints);
   }
@@ -551,8 +549,7 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs ( const Handle(Prs3d_Presentation)& 
   if ( !aSource->GetGeom ( ID, IsElement, aCoords, NbNodes, aType ) )
     return;
 
-  Prs3d_Root::NewGroup ( Prs );
-  Handle (Graphic3d_Group) aHilightGroup = Prs3d_Root::CurrentGroup ( Prs );
+  Handle (Graphic3d_Group) aHilightGroup = Prs->NewGroup();
 
   switch ( aType )
   {
@@ -1065,8 +1062,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
 
   if ( IsPolygons && theFillAsp->FrontMaterial().Transparency()<0.01 )
   {
-    Prs3d_Root::NewGroup ( Prs );
-    Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup ( Prs );
+    Handle (Graphic3d_Group) aGroup = Prs->NewGroup();
     aGroup->SetClosed (isSupressBackFaces == Standard_True);
     Handle(Graphic3d_AspectFillArea3d) aFillAsp = new Graphic3d_AspectFillArea3d (*theFillAsp);
     //if ( IsPolygonsEdgesOff )
@@ -1094,8 +1090,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
 
   if ( IsPolylines && !IsPolygonsEdgesOff )
   {
-    Prs3d_Root::NewGroup ( Prs );
-    Handle (Graphic3d_Group) aLGroup = Prs3d_Root::CurrentGroup ( Prs );
+    Handle (Graphic3d_Group) aLGroup = Prs->NewGroup();
 
     if ( IsSelected )
       aLGroup->SetPrimitivesAspect ( theLineAsp );
@@ -1110,8 +1105,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
 
   if ( IsLinkPolylines )
   {
-    Prs3d_Root::NewGroup ( Prs );
-    Handle (Graphic3d_Group) aBeamGroup = Prs3d_Root::CurrentGroup ( Prs );
+    Handle (Graphic3d_Group) aBeamGroup = Prs->NewGroup();
     if ( !IsSelected )
       aBeamGroup->SetPrimitivesAspect ( theFillAsp );
     aBeamGroup->SetPrimitivesAspect ( theLineAsp );
@@ -1120,8 +1114,7 @@ void MeshVS_MeshPrsBuilder::DrawArrays( const Handle(Prs3d_Presentation)& Prs,
 
   if ( IsPolygons && theFillAsp->FrontMaterial().Transparency()>=0.01 )
   {
-    Prs3d_Root::NewGroup ( Prs );
-    Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup ( Prs );
+    Handle (Graphic3d_Group) aGroup = Prs->NewGroup();
     aGroup->SetClosed (isSupressBackFaces == Standard_True);
     Handle(Graphic3d_AspectFillArea3d) aFillAsp = new Graphic3d_AspectFillArea3d (*theFillAsp);
     //if ( IsPolygonsEdgesOff )

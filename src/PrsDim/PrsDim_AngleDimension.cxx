@@ -41,7 +41,6 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <ProjLib.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Select3D_SensitiveGroup.hxx>
@@ -433,14 +432,14 @@ void PrsDim_AngleDimension::DrawArc (const Handle(Prs3d_Presentation)& thePresen
   // add display presentation
   if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
-    Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_True);
+    thePresentation->CurrentGroup()->SetStencilTestOptions (Standard_True);
   }
   Handle(Graphic3d_AspectLine3d) aDimensionLineStyle = myDrawer->DimensionAspect()->LineAspect()->Aspect();
-  Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionLineStyle);
-  Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
+  thePresentation->CurrentGroup()->SetPrimitivesAspect (aDimensionLineStyle);
+  thePresentation->CurrentGroup()->AddPrimitiveArray (aPrimSegments);
   if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
-    Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_False);
+    thePresentation->CurrentGroup()->SetStencilTestOptions (Standard_False);
   }
 }
 
@@ -638,7 +637,7 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
   // Parameters for presentation
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
 
-  Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
+  thePresentation->CurrentGroup()->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
 
   Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
@@ -696,7 +695,7 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
   aSecondArrowEnd   = aSecondAttach.Translated (-aSecondArrowVec);
 
   // Group1: stenciling text and the angle dimension arc
-  Prs3d_Root::NewGroup (thePresentation);
+  thePresentation->NewGroup();
 
   Standard_Integer aHPosition = aLabelPosition & LabelPosition_HMask;
 
@@ -778,7 +777,7 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
   // dimension arc without text
   if ((theMode == ComputeMode_All || theMode == ComputeMode_Line) && aHPosition != LabelPosition_HCenter)
   {
-    Prs3d_Root::NewGroup (thePresentation);
+    thePresentation->NewGroup();
 
     DrawArc (thePresentation,
              (isArrowsExternal || !isArrowVisible(PrsDim_TypeOfAngleArrowVisibility_First)) ? aFirstAttach  : aFirstArrowEnd,
@@ -791,7 +790,7 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
   // arrows and arrow extensions
   if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
   {
-    Prs3d_Root::NewGroup (thePresentation);
+    thePresentation->NewGroup();
 
     if (isArrowVisible(PrsDim_TypeOfAngleArrowVisibility_First))
       DrawArrow (thePresentation, aFirstArrowBegin,  gp_Dir (aFirstArrowVec));
@@ -801,7 +800,7 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
 
   if ((theMode == ComputeMode_All || theMode == ComputeMode_Line) && isArrowsExternal)
   {
-    Prs3d_Root::NewGroup (thePresentation);
+    thePresentation->NewGroup();
 
     if (aHPosition != LabelPosition_Left && isArrowVisible(PrsDim_TypeOfAngleArrowVisibility_First))
     {
@@ -831,7 +830,7 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
   // flyouts
   if (theMode == ComputeMode_All)
   {
-    Prs3d_Root::NewGroup (thePresentation);
+    thePresentation->NewGroup();
 
     Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments (4);
     aPrimSegments->AddVertex (myCenterPoint);
@@ -840,8 +839,8 @@ void PrsDim_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
     aPrimSegments->AddVertex (aSecondAttach);
 
     Handle(Graphic3d_AspectLine3d) aFlyoutStyle = myDrawer->DimensionAspect()->LineAspect()->Aspect();
-    Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aFlyoutStyle);
-    Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
+    thePresentation->CurrentGroup()->SetPrimitivesAspect (aFlyoutStyle);
+    thePresentation->CurrentGroup()->AddPrimitiveArray (aPrimSegments);
   }
 
   mySelectionGeom.IsComputed = Standard_True;

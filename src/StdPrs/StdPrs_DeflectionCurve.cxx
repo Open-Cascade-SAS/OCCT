@@ -288,7 +288,7 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
   Handle(Graphic3d_Group) aGroup;
   if (theToDrawCurve)
   {
-    aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+    aGroup = aPresentation->CurrentGroup();
     aGroup->SetPrimitivesAspect (aDrawer->LineAspect()->Aspect());
   }
 
@@ -332,7 +332,7 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
   Handle(Graphic3d_Group) aGroup;
   if (theToDrawCurve)
   {
-    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+    aGroup = aPresentation->CurrentGroup();
     aGroup->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
   }
 
@@ -379,7 +379,7 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
   Handle(Graphic3d_Group) aGroup;
   if (theToDrawCurve)
   {
-    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+    aGroup = aPresentation->CurrentGroup();
   }
 
   drawCurve (aCurve, aGroup, aDeflection, anAngle, U1, U2, Points);
@@ -405,7 +405,7 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
   Handle(Graphic3d_Group) aGroup;
   if (theToDrawCurve)
   {
-    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+    aGroup = aPresentation->CurrentGroup();
   }
 
   TColgp_SequenceOfPnt Points;
@@ -433,7 +433,7 @@ void StdPrs_DeflectionCurve::Add (const Handle (Prs3d_Presentation)& aPresentati
   Handle(Graphic3d_Group) aGroup;
   if (theToDrawCurve)
   {
-    aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+    aGroup = aPresentation->CurrentGroup();
   }
   drawCurve (aCurve, aGroup, aDeflection, aDrawer->DeviationAngle(), V1, V2, Points);
 }

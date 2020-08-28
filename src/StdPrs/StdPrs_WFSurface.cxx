@@ -154,7 +154,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
     //
     if (!(UClosed && VClosed))
     {
-      Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (aDrawer->FreeBoundaryAspect()->Aspect());
+      aPresentation->CurrentGroup()->SetPrimitivesAspect (aDrawer->FreeBoundaryAspect()->Aspect());
       if (!UClosed)
       {
         anIso.Load (GeomAbs_IsoU, U1, V1, V2);
@@ -187,7 +187,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
     Standard_Integer fin = aDrawer->UIsoAspect()->Number();
     if (fin != 0)
     {
-      Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (aDrawer->UIsoAspect()->Aspect());
+      aPresentation->CurrentGroup()->SetPrimitivesAspect (aDrawer->UIsoAspect()->Aspect());
 
       Standard_Real du= UClosed ? (U2-U1) / fin : (U2-U1) / (1 + fin);
       for (Standard_Integer i = 1; i <= fin; i++)
@@ -201,7 +201,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
     fin = aDrawer->VIsoAspect()->Number();
     if (fin != 0)
     {
-      Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (aDrawer->VIsoAspect()->Aspect());
+      aPresentation->CurrentGroup()->SetPrimitivesAspect (aDrawer->VIsoAspect()->Aspect());
       
       Standard_Real dv = VClosed ? (V2 - V1) / fin : (V2 - V1) / (1 + fin);
       for (Standard_Integer i = 1; i <= fin; i++)
@@ -228,7 +228,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
 	for(int i=1; i<=Pnts->Length(); i++)
 	  UIsoArray->AddVertex(Pnts->Value(i));
       }      
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+      Handle(Graphic3d_Group) TheGroup = aPresentation->NewGroup();
       TheGroup->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
       TheGroup->AddPrimitiveArray(UIsoArray);
     }
@@ -246,7 +246,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
 	for(int i=1; i<=Pnts->Length(); i++)
 	  VIsoArray->AddVertex(Pnts->Value(i));
       }
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+      Handle(Graphic3d_Group) TheGroup = aPresentation->NewGroup();
       TheGroup->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
       TheGroup->AddPrimitiveArray(VIsoArray);
     } 
@@ -263,7 +263,7 @@ void StdPrs_WFSurface::Add (const Handle(Prs3d_Presentation)& aPresentation,
 	for(int i=1; i<=Pnts->Length(); i++)
 	  freeArray->AddVertex(Pnts->Value(i));
       }
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::NewGroup(aPresentation);
+      Handle(Graphic3d_Group) TheGroup = aPresentation->NewGroup();
       TheGroup->SetPrimitivesAspect(aDrawer->FreeBoundaryAspect()->Aspect());
       TheGroup->AddPrimitiveArray(freeArray);
     }

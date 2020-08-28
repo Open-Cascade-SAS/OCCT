@@ -258,7 +258,7 @@ void AIS_Plane::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
       {
         ComputeFrame();
         Handle(Prs3d_PlaneAspect) theaspect = myDrawer->PlaneAspect();
-        Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+        Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
         TheGroup->SetPrimitivesAspect(myDrawer->ShadingAspect()->Aspect());
         gp_Pnt p1;
         const Standard_Real Xmax = 0.5*Standard_Real(theaspect->PlaneXLength());

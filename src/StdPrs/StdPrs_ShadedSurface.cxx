@@ -42,7 +42,7 @@ void StdPrs_ShadedSurface::Add (const Handle(Prs3d_Presentation)& thePrs,
   N2 = N2 < 3 ? 3 : N2;
 
   // If the surface is closed, the faces from back-side are not traced:
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePrs);
+  Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
   aGroup->SetGroupPrimitivesAspect (theDrawer->ShadingAspect()->Aspect());
   aGroup->SetClosed (theSurface.IsUClosed() && theSurface.IsVClosed());
 

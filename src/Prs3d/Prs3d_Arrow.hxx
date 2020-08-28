@@ -17,19 +17,19 @@
 #ifndef _Prs3d_Arrow_HeaderFile
 #define _Prs3d_Arrow_HeaderFile
 
-#include <Prs3d_Root.hxx>
-
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Prs3d_Presentation.hxx>
 
 class gp_Ax1;
 class gp_Pnt;
 class gp_Dir;
 
 //! Provides class methods to draw an arrow at a given location, along a given direction and using a given angle.
-class Prs3d_Arrow : public Prs3d_Root
+class Prs3d_Arrow
 {
 public:
+  DEFINE_STANDARD_ALLOC
 
   //! Defines the representation of the arrow as shaded triangulation.
   //! @param theAxis       axis definition (arrow origin and direction)
@@ -78,7 +78,7 @@ public:
                     const Standard_Real theAngle,
                     const Standard_Real theLength)
   {
-    Draw (Prs3d_Root::CurrentGroup (thePrs), theLocation, theDirection, theAngle, theLength);
+    Draw (thePrs->CurrentGroup(), theLocation, theDirection, theAngle, theLength);
   }
 
 };

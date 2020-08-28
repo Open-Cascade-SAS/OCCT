@@ -27,7 +27,7 @@ void Prs3d_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
 {
   if (!theBndBox.IsVoid())
   {
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
+    Handle(Graphic3d_Group) aGroup = thePresentation->CurrentGroup();
     aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (theDrawer->LineAspect()->Aspect()->Color(),
                                                                   Aspect_TOL_DOTDASH,
                                                                   theDrawer->LineAspect()->Aspect()->Width()));
@@ -45,7 +45,7 @@ void Prs3d_BndBox::Add (const Handle(Prs3d_Presentation)& thePresentation,
 {
   if (!theBndBox.IsVoid())
   {
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
+    Handle(Graphic3d_Group) aGroup = thePresentation->CurrentGroup();
     aGroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (theDrawer->LineAspect()->Aspect()->Color(),
                                                                   Aspect_TOL_DOTDASH,
                                                                   theDrawer->LineAspect()->Aspect()->Width()));

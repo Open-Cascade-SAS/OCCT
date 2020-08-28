@@ -42,10 +42,10 @@ void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& /*a
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments (2);
   aPrims->AddVertex (myStartPnt);
   aPrims->AddVertex (myEndPnt);
-  Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
-  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (aPrims);
+  aPresentation->CurrentGroup()->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->AddPrimitiveArray (aPrims);
   // Draw arrow
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(),
                      myEndPnt,
                      gp_Dir (gp_Vec(myStartPnt, myEndPnt)),
                      anArrowAspect->Angle(),

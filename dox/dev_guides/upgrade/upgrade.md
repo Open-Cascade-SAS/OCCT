@@ -1980,6 +1980,10 @@ Previously, sub-classes of *Message_Printer* have to provide a triplet of *Messa
 *Message_Printer* interface has been changed, so that sub-classes now have to implement only single method *Message_Printer::send()* accepting TCollection_AsciiString argument and having no Endl flag, which has been removed.
 Old three Message_Printer::Send() methods remain defined virtual with unused last argument and redirecting to new send() method by default.
 
+@subsection upgrade_750_prd3d_root Prs3d_Root deprecation
+
+Redundant class Prs3d_Root has been marked as deprecated - Prs3d_Presentation::NewGroup() should be called directly.
+
 @subsection upgrade_750_draw_hotkeys Draw Harness hotkeys
 
 Draw Harness hotkeys **W** (Wireframe) and **S** (Shaded) have been re-mapped to **Ctrl+W** and **Ctrl+S**.

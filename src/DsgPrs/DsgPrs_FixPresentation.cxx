@@ -28,7 +28,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 
 //=======================================================================
 //function : Add
@@ -43,7 +42,7 @@ void DsgPrs_FixPresentation::Add(
 		       const Standard_Real symbsize)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(10);
 
@@ -90,14 +89,14 @@ void DsgPrs_FixPresentation::Add(
   aPrims->AddVertex(PF);
   aPrims->AddVertex(PL);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
   Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
+  aPresentation->CurrentGroup()->SetPrimitivesAspect (aMarkerAsp);
   Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
   anArrayOfPoints->AddVertex (aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+  aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
 }

@@ -36,8 +36,8 @@ void StdPrs_Plane::Add (const Handle (Prs3d_Presentation)& aPresentation,
                         const Adaptor3d_Surface&           aPlane,
                         const Handle (Prs3d_Drawer)&       aDrawer)
 {
-//  Prs3d_Root::NewGroup(aPresentation);    
-  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+//  aPresentation->NewGroup();
+  Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
   if (aPlane.GetType() != GeomAbs_Plane) return;
   Handle(Geom_Plane) thegeom = new Geom_Plane(aPlane.Plane());
 
@@ -95,7 +95,7 @@ void StdPrs_Plane::Add (const Handle (Prs3d_Presentation)& aPresentation,
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
     TheGroup->AddPrimitiveArray(aPrims);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p1, norm, ang, len);
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
   }
   if (theaspect->DisplayEdgesArrows()) {
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(8);
@@ -104,25 +104,25 @@ void StdPrs_Plane::Add (const Handle (Prs3d_Presentation)& aPresentation,
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p1, norm, ang, len);
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
     thegeom->D0(-Xmax,Ymax,loc);
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p1, norm, ang, len);
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
     thegeom->D0(Xmax,Ymax,loc);
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p1, norm, ang, len);
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
     thegeom->D0(Xmax,-Ymax,loc);
     p1 = loc.Translated(trans);
     aPrims->AddVertex(loc);
     aPrims->AddVertex(p1);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p1, norm, ang, len);
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, norm, ang, len);
     //
     TheGroup->AddPrimitiveArray(aPrims);
   }

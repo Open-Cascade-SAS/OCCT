@@ -5224,9 +5224,9 @@ void ViewerTest_MarkersArrayObject::Compute (const Handle(PrsMgr_PresentationMan
   aPresentation->Clear();
   if (!myMarkerAspect.IsNull())
   {
-    Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myMarkerAspect);
+    aPresentation->CurrentGroup()->SetGroupPrimitivesAspect (myMarkerAspect);
   }
-  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (anArray);
+  aPresentation->CurrentGroup()->AddPrimitiveArray (anArray);
 }
 
 void ViewerTest_MarkersArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
@@ -6268,7 +6268,7 @@ protected:
       DBRep_DrawableShape::addSurfaceNormals (aNormalMap, myshape, NormalLength, NbAlongU, NbAlongV);
     }
 
-    Handle(Graphic3d_Group) aPrsGroup = Prs3d_Root::NewGroup (thePrs);
+    Handle(Graphic3d_Group) aPrsGroup = thePrs->NewGroup();
     aPrsGroup->SetGroupPrimitivesAspect (myDrawer->ArrowAspect()->Aspect());
 
     const Standard_Real aArrowAngle  = myDrawer->ArrowAspect()->Angle();

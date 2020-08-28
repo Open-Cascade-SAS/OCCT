@@ -50,7 +50,7 @@ void DsgPrs_PerpenPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID); // ou DOT ou DOTDASH
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   // segments
   Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfPolylines(6,2);
@@ -75,26 +75,26 @@ void DsgPrs_PerpenPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   aPrims->AddVertex(p_symb);
   aPrims->AddVertex(pAx22);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // points attache
   if (intOut1 || intOut2)
   {
     LA->LineAspect()->SetTypeOfLine(Aspect_TOL_DOT); // ou DOT ou DOTDASH
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     if (intOut1) {
       aPrims = new Graphic3d_ArrayOfSegments(2);
       aPrims->AddVertex(pAx1);
       aPrims->AddVertex(pnt1);
-      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+      aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
     if (intOut2) {
       aPrims = new Graphic3d_ArrayOfSegments(2);
       aPrims->AddVertex(pAx2);
       aPrims->AddVertex(pnt2);
-      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+      aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
   }
 }

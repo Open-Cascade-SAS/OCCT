@@ -32,7 +32,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -48,7 +47,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 					    const Handle( Geom_Plane )& Plane )
 {
   Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
+  aPresentation->CurrentGroup()->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
   // Line between two middles
   gp_Pnt Middle12( (Point1.XYZ() + Point2.XYZ()) * 0.5 ), Middle34( (Point3.XYZ() + Point4.XYZ()) * 0.5 );
@@ -56,7 +55,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(Middle12);
   aPrims->AddVertex(Middle34);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // Add presentation of arrows (points)
   gp_Dir aDir( 0, 0, 1 );
@@ -112,7 +111,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   TCollection_ExtendedString aText("==");
 
   //Draw the text
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation),LA->TextAspect(), aText, aTextPos);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(),LA->TextAspect(), aText, aTextPos);
 }
 
 
@@ -132,7 +131,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 						    gp_Pnt& aProj2) 
 {
   const Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   gp_Lin L1 (aPoint1,aDirection);
   gp_Lin L2 (aPoint2,aDirection);
@@ -144,7 +143,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   aPrims->AddVertex(aProj1);
   aPrims->AddVertex(aProj2);
   aPrims->AddVertex(aPoint2);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   //add arrows presentation
   gp_Dir aDir(aProj2.XYZ() - aProj1.XYZ());
@@ -170,7 +169,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 							      const DsgPrs_ArrowSide anArrowSide) 
 {
   const Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Standard_Real aPar11, aPar12, aPar21, aPar22;
   if(aCirc1.Radius() > Precision::Confusion()){
@@ -193,7 +192,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
   Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPoint2);
   aPrims->AddVertex(aPoint4);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   Standard_Integer i, aNodeNb;
   Standard_Real aDelta, aCurPar;
@@ -208,7 +207,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
     for (i = 1; i<= aNodeNb; aCurPar += aDelta, i++)
       aPrims->AddVertex(ElCLib::Value( aCurPar, aCirc1));
     aPrims->AddVertex(aPoint2);
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   if (aPar22 < aPar21) aPar22 += 2.*M_PI;
   if ( Abs(aPar22 - aPar21) > Precision::Confusion())
@@ -221,7 +220,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
     for (i = 1; i<= aNodeNb; aCurPar += aDelta, i++)
       aPrims->AddVertex(ElCLib::Value( aCurPar, aCirc2));
     aPrims->AddVertex(aPoint4);
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 
   //get the direction of interval

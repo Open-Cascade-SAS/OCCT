@@ -17,7 +17,6 @@
 #include <Graphic3d_Group.hxx>
 #include <MeshVS_Mesh.hxx>
 #include <MeshVS_MeshEntityOwner.hxx>
-#include <Prs3d_Root.hxx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <SelectMgr_SelectableObject.hxx>

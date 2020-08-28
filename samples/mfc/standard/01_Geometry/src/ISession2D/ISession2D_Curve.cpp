@@ -30,7 +30,7 @@ void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
                                const Handle(Prs3d_Presentation)& thePrs,
                                const Standard_Integer )
 {
-  Handle(Graphic3d_Group) aPrsGroup = Prs3d_Root::CurrentGroup (thePrs);
+  Handle(Graphic3d_Group) aPrsGroup = thePrs->CurrentGroup();
   aPrsGroup->SetGroupPrimitivesAspect (myDrawer->LineAspect()->Aspect());
   aPrsGroup->SetGroupPrimitivesAspect (myDrawer->PointAspect()->Aspect());
 

@@ -46,7 +46,7 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& OffsetPoint)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Lin L2 (AttachmentPoint2,aDirection2);
@@ -93,13 +93,13 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   aPrims->AddVertex(PointMin);
   aPrims->AddVertex(PointMax);
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if (DimNulle)
   {
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), offp, L4.Direction(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), offp, L4.Direction().Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), offp, L4.Direction(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), offp, L4.Direction().Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   }
   else
   {
@@ -110,27 +110,27 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
       arrdir.Reverse();
 
     // fleche 1 : 2eme groupe
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     
     // ball 1 : 3eme groupe
     Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
     Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
+    aPresentation->CurrentGroup()->SetPrimitivesAspect (aMarkerAsp);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
     anArrayOfPoints->AddVertex (Proj2.X(), Proj2.Y(), Proj2.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+    aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
 
-    Prs3d_Root::NewGroup(aPresentation);
+    aPresentation->NewGroup();
 
     // texte : 4eme groupe
-    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
+    Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, offp);
   }
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   // trait de rappel 1 : 5eme groupe
   aPrims->AddVertex(AttachmentPoint1);
@@ -140,7 +140,7 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(Proj2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPresentation,
@@ -165,47 +165,47 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
 
   Handle(Graphic3d_AspectLine3d) AxeAsp = new Graphic3d_AspectLine3d (acolor, atype, awidth);
   AxeAsp->SetType( Aspect_TOL_DOTDASH);
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(AxeAsp);
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(AxeAsp);
 
   // trait d'axe : 1er groupe
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(AttachmentPoint1);
   aPrims->AddVertex(Proj1);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  Prs3d_Root::NewGroup(aPresentation);
+  aPresentation->NewGroup();
 
   Handle(Graphic3d_AspectLine3d) Axe2Asp = new Graphic3d_AspectLine3d (acolor, atype, awidth);
   Axe2Asp->SetType  ( Aspect_TOL_DOTDASH);
   Axe2Asp->SetWidth ( 4.);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(Axe2Asp);
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(Axe2Asp);
 
   // trait d'axe: 2eme groupe
   aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(Proj2);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // anneau : 3eme et 4eme groupes
   Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
   anArrayOfPoints->AddVertex (Proj2.X(), Proj2.Y(), Proj2.Z());
 
-  Prs3d_Root::NewGroup(aPresentation);
+  aPresentation->NewGroup();
   Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
   MarkerAsp->SetType(Aspect_TOM_O);
   MarkerAsp->SetScale(4.);
   //MarkerAsp->SetColor(Quantity_Color(Quantity_NOC_RED));
   MarkerAsp->SetColor(acolor);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(MarkerAsp);
+  aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
 
-  Prs3d_Root::NewGroup(aPresentation);
+  aPresentation->NewGroup();
   Handle(Graphic3d_AspectMarker3d) Marker2Asp = new Graphic3d_AspectMarker3d();
   Marker2Asp->SetType(Aspect_TOM_O);
   Marker2Asp->SetScale(2.);
   //Marker2Asp->SetColor(Quantity_Color(Quantity_NOC_GREEN));
   Marker2Asp->SetColor(acolor);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(Marker2Asp);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(Marker2Asp);
+  aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
 }

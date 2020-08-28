@@ -33,23 +33,23 @@ static void AddPoles(const Handle (Prs3d_Presentation)& aPresentation,
   const Standard_Integer n = A.ColLength();
   const Standard_Integer m = A.RowLength();
 
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());    
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->UIsoAspect()->Aspect());
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(n*m,n);
   for (i=1; i<=n; i++){
     aPrims->AddBound(m);
     for (j=1; j<=m; j++)
       aPrims->AddVertex(A(i,j));
   }
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());    
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->VIsoAspect()->Aspect());
   aPrims = new Graphic3d_ArrayOfPolylines(n*m,m);
   for (j=1; j<=m; j++){
     aPrims->AddBound(n);
     for (i=1; i<=n; i++)
       aPrims->AddVertex(A(i,j));
   }
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 

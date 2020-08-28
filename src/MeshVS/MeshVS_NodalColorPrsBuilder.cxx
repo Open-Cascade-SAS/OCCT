@@ -47,7 +47,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Quantity_Array1OfColor.hxx>
@@ -465,7 +464,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   Handle(Graphic3d_AspectLine3d) anLAsp =
     new Graphic3d_AspectLine3d( anEdgeColor, anEdgeType, anEdgeWidth );
 
-  Handle(Graphic3d_Group) aGroup1 = Prs3d_Root::NewGroup (Prs);
+  Handle(Graphic3d_Group) aGroup1 = Prs->NewGroup();
 
   Standard_Boolean toSupressBackFaces = Standard_False;
   aDrawer->GetBoolean (MeshVS_DA_SupressBackFaces, toSupressBackFaces);
@@ -477,8 +476,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
   if (aShowEdges)
   {
-    Prs3d_Root::NewGroup ( Prs );
-    Handle(Graphic3d_Group) aGroup2 = Prs3d_Root::CurrentGroup ( Prs );
+    Handle(Graphic3d_Group) aGroup2 = Prs->NewGroup();
 
     Handle(Graphic3d_AspectFillArea3d) anAspCopy = new Graphic3d_AspectFillArea3d (*anAsp);
     anAspCopy->SetTextureMapOff();

@@ -299,7 +299,7 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
         if (myHasFlipping)
         {
           gp_Ax2 aFlippingAxes (aCenterOfLabel, myOrientation3D.Direction(), myOrientation3D.XDirection());
-          Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_True, aFlippingAxes);
+          thePrs->CurrentGroup()->SetFlippingOptions (Standard_True, aFlippingAxes);
         }
         gp_Ax2 anOrientation = myOrientation3D;
         anOrientation.SetLocation (aPosition);
@@ -308,15 +308,15 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
         {
           aHasOwnAnchor = Standard_False; // always not using own anchor if flipping
         }
-        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, anOrientation, aHasOwnAnchor);
+        Prs3d_Text::Draw (thePrs->CurrentGroup(), anAsp, myText, anOrientation, aHasOwnAnchor);
         if (myHasFlipping && isInit)
         {
-          Prs3d_Root::CurrentGroup (thePrs)->SetFlippingOptions (Standard_False, gp_Ax2());
+          thePrs->CurrentGroup()->SetFlippingOptions (Standard_False, gp_Ax2());
         }
       }
       else
       {
-        Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePrs), anAsp, myText, aPosition);
+        Prs3d_Text::Draw (thePrs->CurrentGroup(), anAsp, myText, aPosition);
       }
 
       if (isInit)
@@ -328,7 +328,7 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
         gp_Pnt aMinPnt = gp_Pnt (-aDx, -aDy, 0.0).Transformed (aLabelPlane);
         gp_Pnt aMaxPnt = gp_Pnt ( aDx,  aDy, 0.0).Transformed (aLabelPlane);
 
-        Graphic3d_BndBox4f& aBox = Prs3d_Root::CurrentGroup (thePrs)->ChangeBoundingBox();
+        Graphic3d_BndBox4f& aBox = thePrs->CurrentGroup()->ChangeBoundingBox();
         aBox.Add (Graphic3d_Vec4 ((float) aMinPnt.X(), (float) aMinPnt.Y(), (float) aMinPnt.Z(), 1.0));
         aBox.Add (Graphic3d_Vec4 ((float) aMaxPnt.X(), (float) aMaxPnt.Y(), (float) aMaxPnt.Z(), 1.0));
       }

@@ -52,20 +52,20 @@ void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresent
   ARR2->SetLength(length/5);
 
   // Array1OfVertex
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(p1);
   aPrims->AddVertex(p2);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // fleche 1 : 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p1, aDirection, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p1, aDirection, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   // fleche 2
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), p2, aDirection.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), p2, aDirection.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 }

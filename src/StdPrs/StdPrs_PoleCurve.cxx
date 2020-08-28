@@ -38,7 +38,7 @@ void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
 			    const Adaptor3d_Curve&               aCurve,
 			    const Handle (Prs3d_Drawer)&       aDrawer) 
 {
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
 
   GeomAbs_CurveType CType = aCurve.GetType();
   if (CType == GeomAbs_BezierCurve || CType == GeomAbs_BSplineCurve) {
@@ -49,7 +49,7 @@ void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
       Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(Nb);
       for (i = 1; i <= Nb; i++)
         aPrims->AddVertex(Bz->Pole(i));
-      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+      aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
     else if (CType == GeomAbs_BSplineCurve) {
       Handle(Geom_BSplineCurve) Bs = aCurve.BSpline();
@@ -57,7 +57,7 @@ void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
       Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(Nb);
       for (i = 1; i <= Nb; i++)
         aPrims->AddVertex(Bs->Pole(i));
-      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+      aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     }
   }
   
@@ -65,7 +65,7 @@ void StdPrs_PoleCurve::Add (const Handle (Prs3d_Presentation)& aPresentation,
     gp_Pnt Location;
     gp_Vec Direction;
     aCurve.D1(aCurve.LastParameter(),Location,Direction);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation),
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(),
 		       Location,
 		       gp_Dir(Direction),
 		       aDrawer->ArrowAspect()->Angle(),

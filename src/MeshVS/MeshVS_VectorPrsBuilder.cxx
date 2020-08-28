@@ -39,7 +39,6 @@
 #include <MeshVS_VectorPrsBuilder.hxx>
 #include <Precision.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -319,8 +318,7 @@ void MeshVS_VectorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
       }
   }
 
-  Prs3d_Root::NewGroup ( Prs );
-  Handle (Graphic3d_Group) aVGroup = Prs3d_Root::CurrentGroup ( Prs );
+  Handle (Graphic3d_Group) aVGroup = Prs->NewGroup();
 
   Quantity_Color aColor;
   aDrawer->GetColor ( MeshVS_DA_VectorColor, aColor );

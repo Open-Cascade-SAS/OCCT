@@ -5057,14 +5057,14 @@ public:
     aFillAspect->SetInteriorStyle (Aspect_IS_POINT);
 
     // create separate group for frame elements
-    Handle(Graphic3d_Group) aFrameGroup = Prs3d_Root::NewGroup (thePresentation);
+    Handle(Graphic3d_Group) aFrameGroup = thePresentation->NewGroup();
     aFrameGroup->AddPrimitiveArray (aFrame);
     aFrameGroup->SetGroupPrimitivesAspect (aFillAspect);
 
     // create separate group for text elements
-    Handle(Graphic3d_Group) aTextGroup = Prs3d_Root::NewGroup (thePresentation);
+    Handle(Graphic3d_Group) aTextGroup = thePresentation->NewGroup();
     TCollection_ExtendedString aString ("YOU SHOULD SEE THIS TEXT", Standard_True);
-    Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (thePresentation), myDrawer->TextAspect(), aString, gp_Ax2 (gp::Origin(), gp::DZ()));
+    Prs3d_Text::Draw (aTextGroup, myDrawer->TextAspect(), aString, gp_Ax2 (gp::Origin(), gp::DZ()));
   }
 
   virtual void ComputeSelection (const Handle(SelectMgr_Selection)& /*theSelection*/,

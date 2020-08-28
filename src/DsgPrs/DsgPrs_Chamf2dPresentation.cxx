@@ -38,17 +38,17 @@ void DsgPrs_Chamf2dPresentation::Add(
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPntAttach);
   aPrims->AddVertex(aPntEnd);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   gp_Dir ArrowDir(aPntAttach.XYZ()-aPntEnd.XYZ());
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPntAttach, ArrowDir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), aPntAttach, ArrowDir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 		     
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntEnd);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntEnd);
 }
 
 
@@ -67,14 +67,14 @@ void DsgPrs_Chamf2dPresentation::Add(
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(aPntAttach);
   aPrims->AddVertex(aPntEnd);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aPntEnd);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aPntEnd);
 
   gp_Dir ArrowDir(aPntAttach.XYZ()-aPntEnd.XYZ());
   gp_Dir ArrowDir1 = ArrowDir;

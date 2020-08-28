@@ -297,7 +297,7 @@ namespace
       return Standard_False;
     }
 
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePrs);
+    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
     aGroup->SetClosed (theIsClosed);
     aGroup->SetGroupPrimitivesAspect (theDrawer->ShadingAspect()->Aspect());
     aGroup->AddPrimitiveArray (aPArray);

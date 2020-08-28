@@ -34,7 +34,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -48,7 +47,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& OffsetPoint)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Lin L2 (AttachmentPoint2,aDirection);
@@ -91,20 +90,20 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     arrdir.Reverse();
 
   // arrow 1 : 2nd group
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), Proj1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   // arrow 2 : 3rd group
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Proj2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), Proj2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
-  Prs3d_Root::NewGroup(aPresentation);
+  aPresentation->NewGroup();
   
   // text : 4th group
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, offp);
   
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   // processing of call 1 : 5th group
   aPrims->AddVertex(AttachmentPoint1);
@@ -114,7 +113,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(Proj2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 //==================================================================================
@@ -133,7 +132,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
 				     const DsgPrs_ArrowSide ArrowPrs ) 
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Pnt EndOfArrow1, EndOfArrow2;
   gp_Dir DirOfArrow1;
@@ -175,7 +174,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   DsgPrs::ComputeSymbol( aPresentation, LA, EndOfArrow1, EndOfArrow2, DirOfArrow1, DirOfArrow1.Reversed(), ArrowPrs );
  
   // Drawing the text
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, OffsetPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
 
   // Line from AttachmentPoint1 to end of Arrow1
   aPrims->AddVertex(AttachmentPoint1);
@@ -185,7 +184,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(EndOfArrow2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 
@@ -204,7 +203,7 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 				     const DsgPrs_ArrowSide ArrowPrs) 
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Lin L2 (AttachmentPoint2,aDirection);
@@ -255,10 +254,10 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(Proj2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // text 
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, offp);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, offp);
 
   // symbols at the extremities of the face
   DsgPrs::ComputeSymbol(aPresentation,LA,Proj1,Proj2,arrdir,arrdir.Reversed(),ArrowPrs);
@@ -281,7 +280,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
 				     const DsgPrs_ArrowSide ArrowPrs ) 
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Pnt EndOfArrow2;
   gp_Dir DirOfArrow1;
@@ -320,13 +319,13 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(FirstPoint);
   aPrims->AddVertex(LastPoint);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // Add presentation of arrows
   DsgPrs::ComputeSymbol( aPresentation, LA, AttachmentPoint1, EndOfArrow2, DirOfArrow1, DirOfArrow1.Reversed(), ArrowPrs );
  
   // Drawing the text
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, OffsetPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
  
   // Two curves from end of Arrow2 to AttachmentPoint2
   Standard_Real Alpha, delta;
@@ -340,7 +339,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
     aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (Standard_Integer i = 1; i <= NodeNumber; i++, FirstU += delta)
       aPrims->AddVertex(VCurve->Value( FirstU ));
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   Alpha  = Abs( deltaV );
   if (Alpha > Precision::Angular() && Alpha<Precision::Infinite())
@@ -350,7 +349,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
     aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (Standard_Integer i = 1; i <= NodeNumber; i++, FirstV += delta)
       aPrims->AddVertex(UCurve->Value( FirstV ));
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 }
 
@@ -369,27 +368,27 @@ void DsgPrs_LengthPresentation::Add (const Handle(Prs3d_Presentation)& aPrs,
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(Pt1);
   aPrims->AddVertex(Pt2);
-  Prs3d_Root::CurrentGroup(aPrs)->AddPrimitiveArray(aPrims);
+  aPrs->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   gp_Vec V ;
   switch(ArrowPrs)
   {
     case DsgPrs_AS_LASTAR:
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt2, gp_Dir(gp_Vec(Pt1,Pt2)), 
+    Prs3d_Arrow::Draw (aPrs->CurrentGroup(), Pt2, gp_Dir(gp_Vec(Pt1,Pt2)), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
     break;
     case DsgPrs_AS_FIRSTAR:
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt1, gp_Dir(gp_Vec(Pt2,Pt1)), 
+    Prs3d_Arrow::Draw (aPrs->CurrentGroup(), Pt1, gp_Dir(gp_Vec(Pt2,Pt1)), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
     break;
     case DsgPrs_AS_BOTHAR:
     V = gp_Vec(Pt1,Pt2);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt2, gp_Dir(V), 
+    Prs3d_Arrow::Draw (aPrs->CurrentGroup(), Pt2, gp_Dir(V), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPrs), Pt1, gp_Dir(V.Reversed()), 
+    Prs3d_Arrow::Draw (aPrs->CurrentGroup(), Pt1, gp_Dir(V.Reversed()), 
 		      aDrawer->DimensionAspect()->ArrowAspect()->Angle(),
 		      aDrawer->DimensionAspect()->ArrowAspect()->Length());
     break;

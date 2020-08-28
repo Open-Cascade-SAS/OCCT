@@ -42,7 +42,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Quantity_Color.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
@@ -109,7 +108,7 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
       {
         Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
         anArrayOfPoints->AddVertex (pt1.X(), pt1.Y(), pt1.Z());
-        Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+        aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
       }
       break;
     }
@@ -119,7 +118,7 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
       // On dessine un rond 
       Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
       anArrayOfPoints->AddVertex (pt2.X(), pt2.Y(), pt2.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+      aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
       break;
     }
 

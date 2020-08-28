@@ -38,7 +38,6 @@
 #include <MeshVS_MeshPrsBuilder.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
@@ -250,14 +249,14 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   Handle(Graphic3d_Group) aGGroup, aGroup2, aLGroup, aSGroup;
   if (!aTwoColorsOfElements.IsEmpty())
   {
-    aGroup2 = Prs3d_Root::NewGroup (Prs);
+    aGroup2 = Prs->NewGroup();
   }
   if (!aColorsOfElements.IsEmpty())
   {
     Handle(Graphic3d_AspectFillArea3d) aGroupFillAspect = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID, anInteriorColor, anEdgeColor,
                                                                                           anEdgeType, anEdgeWidth, aMaterial[0], aMaterial[1]);
-    aGGroup = Prs3d_Root::NewGroup (Prs);
-    aLGroup = Prs3d_Root::NewGroup (Prs);
+    aGGroup = Prs->NewGroup();
+    aLGroup = Prs->NewGroup();
     aGGroup->SetClosed (toSupressBackFaces == Standard_True);
     aGGroup->SetGroupPrimitivesAspect (aGroupFillAspect);
   }
@@ -265,7 +264,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
   if (anEdgeOn)
   {
     Handle(Graphic3d_AspectLine3d) anEdgeAspect = new Graphic3d_AspectLine3d (anEdgeColor, anEdgeType, anEdgeWidth);
-    aSGroup = Prs3d_Root::NewGroup (Prs);
+    aSGroup = Prs->NewGroup();
     aSGroup->SetGroupPrimitivesAspect (anEdgeAspect);
   }
 

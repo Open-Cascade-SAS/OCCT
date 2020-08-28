@@ -19,10 +19,9 @@
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_PointAspect.hxx>
-#include <Prs3d_Root.hxx>
 
 template <class AnyPoint, class PointTool>
-class Prs3d_Point : Prs3d_Root
+class Prs3d_Point
 {
 public:
   DEFINE_STANDARD_ALLOC
@@ -41,11 +40,11 @@ private:
 
 public:
   Standard_EXPORT static void Add
-                 (const Handle (Prs3d_Presentation)& thePresentation,
+                 (const Handle (Prs3d_Presentation)& thePrs,
                   const AnyPoint& thePoint,
                   const Handle (Prs3d_Drawer)& theDrawer)
   {
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(thePresentation);
+    Handle(Graphic3d_Group) aGroup = thePrs->CurrentGroup();
     aGroup->SetPrimitivesAspect(theDrawer->PointAspect()->Aspect());
     DrawPoint(thePoint, aGroup);
   }

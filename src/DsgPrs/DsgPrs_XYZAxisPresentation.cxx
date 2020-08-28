@@ -25,7 +25,6 @@
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_TextAspect.hxx>
 
 //=======================================================================
@@ -41,7 +40,7 @@ void DsgPrs_XYZAxisPresentation::Add(
 		       const gp_Pnt& aPfirst,
 		       const gp_Pnt& aPlast)
 {
-  Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPresentation);
+  Handle(Graphic3d_Group) G = aPresentation->CurrentGroup();
   G->SetPrimitivesAspect(aLineAspect->Aspect());
 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
@@ -49,14 +48,14 @@ void DsgPrs_XYZAxisPresentation::Add(
   aPrims->AddVertex(aPlast);
   G->AddPrimitiveArray(aPrims);
  
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPlast,aDir, M_PI/180.*10., aVal/10.);
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), aPlast,aDir, M_PI/180.*10., aVal/10.);
 
   if (*theText != '\0')
   {
     Handle(Graphic3d_Text) aText = new Graphic3d_Text (1.0f/81.0f);
     aText->SetText (theText);
     aText->SetPosition (aPlast);
-    Prs3d_Root::CurrentGroup(aPresentation)->AddText (aText);
+    aPresentation->CurrentGroup()->AddText (aText);
   }
 }
 
@@ -71,7 +70,7 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& aPfirst,
 				     const gp_Pnt& aPlast)
 {
-  Handle(Graphic3d_Group) G = Prs3d_Root::CurrentGroup(aPresentation);
+  Handle(Graphic3d_Group) G = aPresentation->CurrentGroup();
   G->SetPrimitivesAspect(aLineAspect->Aspect());
 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
@@ -80,7 +79,7 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
   G->AddPrimitiveArray(aPrims);
 
   G->SetPrimitivesAspect( anArrowAspect->Aspect() );
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), aPlast, aDir, anArrowAspect->Angle(), aVal/10.);
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), aPlast, aDir, anArrowAspect->Angle(), aVal/10.);
 
   G->SetPrimitivesAspect(aTextAspect->Aspect());
 
@@ -89,6 +88,6 @@ void DsgPrs_XYZAxisPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
     Handle(Graphic3d_Text) aText = new Graphic3d_Text (1.0f/81.0f);
     aText->SetText (theText);
     aText->SetPosition (aPlast);
-    Prs3d_Root::CurrentGroup(aPresentation)->AddText(aText);
+    aPresentation->CurrentGroup()->AddText(aText);
   }
 }

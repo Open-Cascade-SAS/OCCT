@@ -24,7 +24,6 @@
 #include <Prs3d.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_DatumAspect.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_ToolDisk.hxx>
 #include <Prs3d_ToolSphere.hxx>

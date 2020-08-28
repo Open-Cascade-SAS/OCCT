@@ -249,12 +249,12 @@ void DsgPrs_ShapeDirPresentation::Add(const Handle(Prs3d_Presentation)& prs,
 
   gp_Pnt pt2(pt.XYZ()+leng*dir.XYZ());
 
-  Prs3d_Root::CurrentGroup(prs)->SetPrimitivesAspect(drawer->LineAspect()->Aspect());
+  prs->CurrentGroup()->SetPrimitivesAspect(drawer->LineAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(pt);
   aPrims->AddVertex(pt2);
-  Prs3d_Root::CurrentGroup(prs)->AddPrimitiveArray(aPrims);
+  prs->CurrentGroup()->AddPrimitiveArray(aPrims);
 
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (prs), pt2, dir, M_PI/180.*10., leng*0.3);
+  Prs3d_Arrow::Draw (prs->CurrentGroup(), pt2, dir, M_PI/180.*10., leng*0.3);
 }

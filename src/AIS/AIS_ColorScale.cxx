@@ -28,7 +28,6 @@
 #include <Graphic3d_ArrayOfTriangles.hxx>
 #include <Graphic3d_Text.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>

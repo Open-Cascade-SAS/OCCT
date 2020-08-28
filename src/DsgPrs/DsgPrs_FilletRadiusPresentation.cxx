@@ -71,7 +71,7 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
   gp_Circ FilletCirc;
   //  gp_Pnt NewPosition, EndOfArrow;
   Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
+  aPresentation->CurrentGroup()->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
   Standard_Real ArrowLength = LA->ArrowAspect()->Length();
   DsgPrs::ComputeFilletRadiusPresentation( ArrowLength,
@@ -101,7 +101,7 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
     Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(NodeNumber);
     for (Standard_Integer i = 0 ; i < NodeNumber; i++, FirstParCirc += delta)
 	  aPrims->AddVertex(ElCLib::Value( FirstParCirc, FilletCirc ));
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
     HasCircle = Standard_True;
     Handle(Geom_Circle) Circle = new Geom_Circle( FilletCirc );
@@ -116,10 +116,10 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(DrawPosition);
   aPrims->AddVertex(EndOfArrow);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // Drawing the text
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, DrawPosition);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, DrawPosition);
    
   // Add presentation of arrows
   DsgPrs::ComputeSymbol( aPresentation, LA, EndOfArrow, EndOfArrow, DirOfArrow, DirOfArrow, ArrowPrs );

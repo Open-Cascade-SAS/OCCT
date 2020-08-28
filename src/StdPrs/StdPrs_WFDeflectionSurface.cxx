@@ -170,9 +170,7 @@ void StdPrs_WFDeflectionSurface::Add (
     // *********************
     //
     if ( !(UClosed && VClosed) ) {
-	
-      (Prs3d_Root::CurrentGroup(aPresentation))->SetPrimitivesAspect
-	(aDrawer->FreeBoundaryAspect()->Aspect());
+      aPresentation->CurrentGroup()->SetPrimitivesAspect (aDrawer->FreeBoundaryAspect()->Aspect());
       if ( !UClosed ) 
 	{ 
 	  anIso.Load(GeomAbs_IsoU,U1,V1,V2);
@@ -194,9 +192,7 @@ void StdPrs_WFDeflectionSurface::Add (
     //
     Standard_Integer fin = aDrawer->UIsoAspect()->Number();
     if ( fin != 0) {
-      
-      (Prs3d_Root::CurrentGroup(aPresentation))->SetPrimitivesAspect
-	(aDrawer->UIsoAspect()->Aspect());
+      aPresentation->CurrentGroup()->SetPrimitivesAspect (aDrawer->UIsoAspect()->Aspect());
       
       Standard_Real du= UClosed ? (U2-U1)/fin : (U2-U1)/(1+fin);
       for (Standard_Integer i=1; i<=fin;i++){
@@ -206,9 +202,7 @@ void StdPrs_WFDeflectionSurface::Add (
     }
     fin = aDrawer->VIsoAspect()->Number();
     if ( fin != 0) {
-      
-      (Prs3d_Root::CurrentGroup(aPresentation))->SetPrimitivesAspect
-	(aDrawer->VIsoAspect()->Aspect());
+      aPresentation->CurrentGroup()->SetPrimitivesAspect (aDrawer->VIsoAspect()->Aspect());
       
       Standard_Real dv= VClosed ?(V2-V1)/fin : (V2-V1)/(1+fin);
       for (Standard_Integer i=1; i<=fin;i++){
@@ -217,7 +211,3 @@ void StdPrs_WFDeflectionSurface::Add (
       }
     }
   }
-
-
-
-

@@ -298,7 +298,7 @@ void AIS_Trihedron::HilightOwnerWithColor (const Handle(PrsMgr_PresentationManag
 
   aPresentation->Clear();
   const Prs3d_DatumParts aPart = anOwner->DatumPart();
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+  Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
   if (aPart >= Prs3d_DP_XOYAxis && aPart <= Prs3d_DP_XOZAxis)
   {
     // planes selection is equal in both shading and wireframe mode
@@ -443,7 +443,7 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
   // display origin
   {
     // Origin is visualized only in shading mode
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePrs);
+    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
     const Prs3d_DatumParts aPart = Prs3d_DP_Origin;
     if (anAspect->DrawDatumPart(aPart))
     {
@@ -470,7 +470,7 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
         continue;
       }
 
-      Handle(Graphic3d_Group) anAxisGroup = Prs3d_Root::NewGroup (thePrs);
+      Handle(Graphic3d_Group) anAxisGroup = thePrs->NewGroup();
       myPartToGroup.Bind (aPart, anAxisGroup);
       if (isShadingMode)
       {
@@ -489,7 +489,7 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
         continue;
       }
 
-      Handle(Graphic3d_Group) anArrowGroup = Prs3d_Root::NewGroup (thePrs);
+      Handle(Graphic3d_Group) anArrowGroup = thePrs->NewGroup();
       anArrowGroup->SetGroupPrimitivesAspect (anAspect->ArrowAspect()->Aspect());
       anArrowGroup->AddPrimitiveArray (arrayOfPrimitives (anArrowPart));
     }
@@ -518,7 +518,7 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
         case Prs3d_DP_ZAxis: aDir = aComponent->Direction();  break;
         default: break;
       }
-      Handle(Graphic3d_Group) aLabelGroup = Prs3d_Root::NewGroup (thePrs);
+      Handle(Graphic3d_Group) aLabelGroup = thePrs->NewGroup();
       const gp_Pnt aPoint = anOrigin.XYZ() + aDir.XYZ() * anAxisLength;
       Prs3d_Text::Draw (aLabelGroup, anAspect->TextAspect(), aLabel, aPoint);
     }
@@ -533,7 +533,7 @@ void AIS_Trihedron::computePresentation (const Handle(PrsMgr_PresentationManager
       continue;
     }
 
-    Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePrs);
+    Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
     myPartToGroup.Bind (aPart, aGroup);
 
     aGroup->AddPrimitiveArray (arrayOfPrimitives (aPart));

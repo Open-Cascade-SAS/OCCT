@@ -59,7 +59,7 @@ void StdPrs_HLRPolyShape::ComputeHLR (const Handle(Prs3d_Presentation)& aPresent
   aTrsf.SetTransformation (anAx3);
   const HLRAlgo_Projector aProj (aTrsf, !theProjector->IsOrthographic(), theProjector->Scale());
 
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(aPresentation);
+  Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
 
   TopExp_Explorer ex;
 

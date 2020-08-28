@@ -59,7 +59,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 					const gp_Pnt& OffsetPoint)
 { 
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Pnt ProjOffsetPoint = ElCLib::Value(ElCLib::Parameter(aAxis,OffsetPoint),aAxis);
   gp_Pnt PjAttachPnt1    = ElCLib::Value(ElCLib::Parameter(aAxis,AttachmentPoint1),aAxis);
@@ -158,8 +158,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   if(aAxis.Distance(P1) > D1*(1 + coeff) && !Cross){
 
     //==== PROCESSING OF FACE ===========
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     Pj_P1 = ElCLib::Value(ElCLib::Parameter(aAxis,P1),aAxis);
     gp_Vec Vp(Pj_P1,P1);
@@ -222,7 +222,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(Sym_pint);
     aPrims->AddVertex(P2);
 
-	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+	aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 
   /*===================================
@@ -236,8 +236,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   else if (aAxis.Distance(P1) < D1*(1 - coeff) || Cross) {
 
     //------ PROCESSING OF FACE ------------
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     Pj_P1 = ElCLib::Value(ElCLib::Parameter(aAxis,P1),aAxis);
     gp_Vec VpInf(Pj_P1,P1);
@@ -301,13 +301,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(Sym_pint);
     aPrims->AddVertex(P2);
 
-	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+	aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   else {
     
     //==== PROCESSING OF FACE ===========
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(6);
 
@@ -322,21 +322,21 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(AttachmentPoint2);
     aPrims->AddVertex(P2);
 
-	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+	aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 
   //==== ARROWS ================
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   if (dist < (LA->ArrowAspect()->Length()+LA->ArrowAspect()->Length())) outside = Standard_True;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
   // arrow 1 ----
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   
   // arrow 2 ----
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   //-------------------------------------------------------------------------------------
   //|                                SYMBOL OF SYMMETRY                                 |
@@ -371,8 +371,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   //Calculate the extremities of the symbol axis
   gp_Vec vecAxe = vecA.Multiplied(.7);
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(13,5);
 
@@ -426,7 +426,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   aPrims->AddVertex(pm.Translated(vsym));
   aPrims->AddVertex(pm.Translated(vsym.Reversed()));
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
   
 //===================================================================
@@ -442,7 +442,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 					const gp_Pnt&  OffsetPoint)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());  
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());  
 
   gp_Pnt OffsetPnt(OffsetPoint.X(),OffsetPoint.Y(),OffsetPoint.Z());
   gp_Pnt Center1 = aCircle1.Location();
@@ -491,7 +491,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(PointMin);
   aPrims->AddVertex(PointMax);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   //==== PROCESSING OF CALL 1 =====
   Standard_Integer nbp = 10;
@@ -530,7 +530,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Standard_Integer i;
   for(i = 2; i <= nbp; i++, alphaIter += Dalpha)
     aPrims->AddVertex(ElCLib::Value(ParamPAttach1 + alphaIter,aCircle1));
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   
   //==== PROCESSING OF CALL 2 =====
   gp_Pnt Center2 = ProjCenter1.Translated(Vp.Reversed());
@@ -570,20 +570,20 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   alphaIter = Dalpha;
   for(i = 2; i <= nbp; i++, alphaIter += Dalpha)
     aPrims->AddVertex(ElCLib::Value(ParamPAttach2 + alphaIter,aCircle2));
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   //==== ARROWS ================
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   if (dist < (LA->ArrowAspect()->Length()+LA->ArrowAspect()->Length())) outside = Standard_True;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside) arrdir.Reverse();
   // arrow 1 ----
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   
   // arrow 2 ----
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
 
   //-------------------------------------------------------------------------------------
   //|                                SYMBOL OF SYMMETRY                                 |
@@ -609,8 +609,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   //Calculation of extremas of the axis of the symbol
   gp_Vec vecAxe = vecA.Multiplied(.7);
 
-  Prs3d_Root::NewGroup(aPresentation);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->NewGroup();
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   aPrims = new Graphic3d_ArrayOfPolylines(13,5);
 
@@ -665,7 +665,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   aPrims->AddVertex(pm.Translated(vsym));
   aPrims->AddVertex(pm.Translated(vsym.Reversed()));
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 //===================================================================
@@ -680,7 +680,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 					const gp_Pnt&  OffsetPoint)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());  
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());  
 
   if (AttachmentPoint1.IsEqual(AttachmentPoint2,Precision::Confusion()))
   {
@@ -690,15 +690,15 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     //Marker of localisation of the face
     Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
     Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
+    aPresentation->CurrentGroup()->SetPrimitivesAspect (aMarkerAsp);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
     anArrayOfPoints->AddVertex (AttachmentPoint1.X(), AttachmentPoint1.Y(), AttachmentPoint1.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+    aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
 
 
     //Trace of the linking segment 
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(8);
 
@@ -737,7 +737,7 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(sgP21);
     aPrims->AddVertex(sgP22);
 
-	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
   //==============================================================
   //  OTHER CASES                                                 :
@@ -773,8 +773,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     gp_Pnt PointMax = ElCLib::Value(parmax,L3);
 
     //==== PROCESSING OF FACE ===========
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfSegments(6);
 
@@ -789,36 +789,36 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(AttachmentPoint2);
     aPrims->AddVertex(P2);
 
-	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
  
     //==== ARROWS ================
     if (dist < (LA->ArrowAspect()->Length()+LA->ArrowAspect()->Length())) outside = Standard_True;
     gp_Dir arrdir = L3.Direction().Reversed();
     if (outside) arrdir.Reverse();
     // arrow 1 ----
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), P1, arrdir, LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
   
     // arrow 2 ----
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), P2, arrdir.Reversed(), LA->ArrowAspect()->Angle(), LA->ArrowAspect()->Length());
     
     //==== POINTS ================
     //Marker of localization of attachment points:
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
     Quantity_Color aColor = LA->LineAspect()->Aspect()->Color();
     Handle(Graphic3d_AspectMarker3d) aMarkerAspAtt = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAspAtt);
+    aPresentation->CurrentGroup()->SetPrimitivesAspect (aMarkerAspAtt);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints1 = new Graphic3d_ArrayOfPoints (1);
     anArrayOfPoints1->AddVertex (AttachmentPoint1.X(), AttachmentPoint1.Y(), AttachmentPoint1.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints1);
+    aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints1);
 
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAspAtt);
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->CurrentGroup()->SetPrimitivesAspect (aMarkerAspAtt);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints2 = new Graphic3d_ArrayOfPoints (1);
     anArrayOfPoints2->AddVertex (AttachmentPoint2.X(), AttachmentPoint2.Y(), AttachmentPoint2.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints2);
+    aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints2);
       
     //-------------------------------------------------------------------------------------
     //|                                SYMBOL OF SYMMETRY                                 |
@@ -842,8 +842,8 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     //Calculate the extremas of the axis of the symbol
     gp_Vec vecAxe = vecA.Multiplied(.7);
 
-    Prs3d_Root::NewGroup(aPresentation);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+    aPresentation->NewGroup();
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
 	aPrims = new Graphic3d_ArrayOfPolylines(13,5);
 
@@ -898,6 +898,6 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(pm.Translated(vsym));
     aPrims->AddVertex(pm.Translated(vsym.Reversed()));
 
-	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
-  } 
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
+  }
 }

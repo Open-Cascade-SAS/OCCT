@@ -76,7 +76,7 @@ case 6: //color
 
     Handle(Graphic3d_StructureManager) aStrucMana = GetContext()->MainPrsMgr()->StructureManager();
 
-    Handle(Graphic3d_Group) mygroup = Prs3d_Root::CurrentGroup(aPresentation);
+    Handle(Graphic3d_Group) mygroup = aPresentation->CurrentGroup();
     myAspect = (new Prs3d_ShadingAspect())->Aspect();
     Graphic3d_MaterialAspect material = myAspect->FrontMaterial();
     material.SetAmbientColor (Quantity_NOC_BLACK);
@@ -281,7 +281,7 @@ case 6: //color
         } // end of "if the triangle is valid
       } // end of the "parcours" of the triangles
 
-      Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (aOP);
+      aPresentation->CurrentGroup()->AddPrimitiveArray (aOP);
 
       mygroup->SetGroupPrimitivesAspect(myAspect);
     }// end of the exploration of the shape in faces

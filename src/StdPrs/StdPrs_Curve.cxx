@@ -219,20 +219,20 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
                         const Handle (Prs3d_Drawer)&       aDrawer,
                         const Standard_Boolean drawCurve)
 {
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
 
   Standard_Real V1, V2;
   FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2);
 
   const Standard_Integer NbPoints =  aDrawer->Discretisation();
   TColgp_SequenceOfPnt Pnts;
-  DrawCurve(aCurve,Prs3d_Root::CurrentGroup(aPresentation),NbPoints,V1,V2,Pnts,drawCurve);
+  DrawCurve(aCurve,aPresentation->CurrentGroup(),NbPoints,V1,V2,Pnts,drawCurve);
 
   if (aDrawer->LineArrowDraw()) {
     gp_Pnt Location;
     gp_Vec Direction;
     aCurve.D1(aCurve.LastParameter(),Location,Direction);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Location, gp_Dir(Direction),
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), Location, gp_Dir(Direction),
                        aDrawer->ArrowAspect()->Angle(),
                        aDrawer->ArrowAspect()->Length());
   }
@@ -253,7 +253,7 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
   FindLimits(aCurve, aDrawer->MaximalParameterValue(), V1, V2);
 
   const Standard_Integer NbPoints =  aDrawer->Discretisation();
-  DrawCurve(aCurve,Prs3d_Root::CurrentGroup(aPresentation),NbPoints,V1,V2,Points,drawCurve);
+  DrawCurve(aCurve,aPresentation->CurrentGroup(),NbPoints,V1,V2,Points,drawCurve);
 }
 
 //==================================================================
@@ -268,7 +268,7 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
                         const Standard_Integer             NbPoints,
                         const Standard_Boolean             drawCurve)
 {
-  DrawCurve(aCurve,Prs3d_Root::CurrentGroup(aPresentation),NbPoints,U1,U2,Points,drawCurve);
+  DrawCurve(aCurve,aPresentation->CurrentGroup(),NbPoints,U1,U2,Points,drawCurve);
 }
 
 //==================================================================
@@ -282,7 +282,7 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
                         const Handle (Prs3d_Drawer)&       aDrawer,
                         const Standard_Boolean drawCurve)
 {
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(aDrawer->LineAspect()->Aspect());
 
   Standard_Real V1 = U1;
   Standard_Real V2 = U2;  
@@ -292,13 +292,13 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
 
   const Standard_Integer NbPoints = aDrawer->Discretisation();
   TColgp_SequenceOfPnt Pnts;
-  DrawCurve(aCurve,Prs3d_Root::CurrentGroup(aPresentation),NbPoints,V1,V2,Pnts,drawCurve);
+  DrawCurve(aCurve,aPresentation->CurrentGroup(),NbPoints,V1,V2,Pnts,drawCurve);
     
   if (aDrawer->LineArrowDraw()) {
     gp_Pnt Location;
     gp_Vec Direction;
     aCurve.D1(aCurve.LastParameter(),Location,Direction);
-    Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), Location, gp_Dir(Direction),
+    Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), Location, gp_Dir(Direction),
                        aDrawer->ArrowAspect()->Angle(),
                        aDrawer->ArrowAspect()->Length());
   }

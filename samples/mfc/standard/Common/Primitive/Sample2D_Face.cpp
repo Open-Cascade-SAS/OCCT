@@ -46,7 +46,7 @@ void Sample2D_Face::DrawMarker(const Handle(Geom2d_TrimmedCurve)& theCurve, cons
     anArrow->AddVertex(aPoint);
     anArrow->AddVertex(aRight);
 
-    Prs3d_Root::CurrentGroup(thePresentation)->AddPrimitiveArray(anArrow);
+    thePresentation->CurrentGroup()->AddPrimitiveArray(anArrow);
   }
 }
 
@@ -212,19 +212,19 @@ void Sample2D_Face::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
       {
       case TopAbs_FORWARD: {
 
-        Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_FORWARD);  
+        thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_FORWARD);  
         DrawMarker(aTrimmedCurve, thePresentation);
         break;
                            }
       case TopAbs_REVERSED: {
 
-        Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_REVERSED);  
+        thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_REVERSED);  
         DrawMarker(aTrimmedCurve, thePresentation);
         break;
                             }
       case TopAbs_INTERNAL: {
 
-        Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_INTERNAL);  
+        thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_INTERNAL);  
         DrawMarker(aTrimmedCurve, thePresentation);
 
         mySeq_INTERNAL.Append(aCurve3d);
@@ -232,7 +232,7 @@ void Sample2D_Face::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
                             }
       case TopAbs_EXTERNAL: {
 
-        Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_EXTERNAL);  
+        thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_EXTERNAL);  
         DrawMarker(aTrimmedCurve, thePresentation);
         break;
                             }
@@ -242,17 +242,17 @@ void Sample2D_Face::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
     ex.Next();
   }
   //add all primitives to the presentation
-  Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_FORWARD);  
-  Prs3d_Root::CurrentGroup(thePresentation)->AddPrimitiveArray(myForwardArray);
+  thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_FORWARD);  
+  thePresentation->CurrentGroup()->AddPrimitiveArray(myForwardArray);
 
-  Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_REVERSED);
-  Prs3d_Root::CurrentGroup(thePresentation)->AddPrimitiveArray(myReversedArray);
+  thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_REVERSED);
+  thePresentation->CurrentGroup()->AddPrimitiveArray(myReversedArray);
 
-  Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_INTERNAL);
-  Prs3d_Root::CurrentGroup(thePresentation)->AddPrimitiveArray(myInternalArray);
+  thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_INTERNAL);
+  thePresentation->CurrentGroup()->AddPrimitiveArray(myInternalArray);
 
-  Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aLineAspect_EXTERNAL);
-  Prs3d_Root::CurrentGroup(thePresentation)->AddPrimitiveArray(myExternalArray);
+  thePresentation->CurrentGroup()->SetPrimitivesAspect(aLineAspect_EXTERNAL);
+  thePresentation->CurrentGroup()->AddPrimitiveArray(myExternalArray);
 }
 
 //Method for advanced customizable selection of picked object
@@ -275,8 +275,7 @@ void Sample2D_Face::HilightSelected
   aSelectionPrs->Clear();
   FillData();
 
-  Prs3d_Root::NewGroup ( aSelectionPrs );
-  Handle (Graphic3d_Group) aSelectGroup = Prs3d_Root::CurrentGroup ( aSelectionPrs);
+  Handle (Graphic3d_Group) aSelectGroup = aSelectionPrs->NewGroup();
 
   for(Standard_Integer i=1; i<=aLength; ++i)
   {
@@ -344,8 +343,7 @@ void Sample2D_Face::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationMana
   FillData();
 
   //Direct highlighting
-  Prs3d_Root::NewGroup ( aHighlightPrs );
-  Handle (Graphic3d_Group) aHilightGroup = Prs3d_Root::CurrentGroup(aHighlightPrs);
+  Handle (Graphic3d_Group) aHilightGroup = aHighlightPrs->NewGroup();
   Handle(Graphic3d_AspectLine3d) aLineAspect =
     new Graphic3d_AspectLine3d(theStyle->Color(), Aspect_TOL_SOLID,2);
   switch(theOwner->Priority())

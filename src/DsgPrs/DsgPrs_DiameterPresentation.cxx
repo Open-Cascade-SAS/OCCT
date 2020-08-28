@@ -48,7 +48,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 				       const Standard_Boolean IsDiamSymbol )
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Standard_Real parat    = ElCLib::Parameter(aCircle, AttachmentPoint);
   gp_Pnt        ptoncirc = ElCLib::Value    (parat, aCircle);
@@ -73,13 +73,13 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(pt1);
   aPrims->AddVertex(OppositePoint);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // value
   TCollection_ExtendedString Text = aText;
   if(IsDiamSymbol) 
     Text = TCollection_ExtendedString("\330  ") +  aText; // VRO (2007-05-17) inserted a blank.
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), Text, AttachmentPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), Text, AttachmentPoint);
 
   // arrows
   gp_Dir arrdir (vecrap);
@@ -144,7 +144,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   }
 
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   Standard_Real parEndOfArrow = ElCLib::Parameter(aCircle,AttachmentPoint);
   gp_Pnt EndOfArrow;
   gp_Pnt DrawPosition = AttachmentPoint;// point of attachment
@@ -185,13 +185,13 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
   aPrims->AddVertex(DrawPosition);
   aPrims->AddVertex(EndOfArrow);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // text
   TCollection_ExtendedString Text = aText;
   if(IsDiamSymbol)
     Text = TCollection_ExtendedString("\330 ") +  Text;//  => \330 | \370?
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), Text, DrawPosition);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), Text, DrawPosition);
 
   // Add presentation of arrow 
   gp_Dir DirOfArrow(gp_Vec(DrawPosition, EndOfArrow).XYZ()); 

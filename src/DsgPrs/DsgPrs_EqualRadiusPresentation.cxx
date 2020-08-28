@@ -29,7 +29,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <TCollection_ExtendedString.hxx>
 
@@ -42,14 +41,14 @@ void DsgPrs_EqualRadiusPresentation::Add( const Handle( Prs3d_Presentation )& aP
 					  const Handle( Geom_Plane )& Plane )
 {
   Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
+  aPresentation->CurrentGroup()->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(4);
   aPrims->AddVertex(FirstPoint);
   aPrims->AddVertex(FirstCenter);
   aPrims->AddVertex(SecondCenter);
   aPrims->AddVertex(SecondPoint);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // Add presentation of arrows
   gp_Dir FirstDir = gce_MakeDir( FirstCenter, FirstPoint ), SecondDir = gce_MakeDir( SecondCenter, SecondPoint );
@@ -91,6 +90,6 @@ void DsgPrs_EqualRadiusPresentation::Add( const Handle( Prs3d_Presentation )& aP
   }
   
   //Draw the text
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, aTextPos);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, aTextPos);
 //ota === end ===     
 }

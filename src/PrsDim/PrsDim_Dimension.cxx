@@ -44,7 +44,6 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -354,7 +353,7 @@ void PrsDim_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentat
                                   const gp_Pnt& theLocation,
                                   const gp_Dir& theDirection)
 {
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePresentation);
+  Handle(Graphic3d_Group) aGroup = thePresentation->NewGroup();
 
   Standard_Real aLength = myDrawer->DimensionAspect()->ArrowAspect()->Length();
   Standard_Real anAngle = myDrawer->DimensionAspect()->ArrowAspect()->Angle();
@@ -537,7 +536,7 @@ void PrsDim_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentati
         aGroup->AddPrimitiveArray (anEdges);
       }
     }
-    Prs3d_Root::CurrentGroup (thePresentation)->SetFlippingOptions (Standard_False, gp_Ax2());
+    thePresentation->CurrentGroup()->SetFlippingOptions (Standard_False, gp_Ax2());
 
     mySelectionGeom.TextPos    = aCenterOfLabel;
     mySelectionGeom.TextDir    = aTextDir;

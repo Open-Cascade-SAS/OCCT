@@ -126,7 +126,6 @@
 #include <Plate_GtoCConstraint.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Root.hxx>
 #include <GeomPlate_Surface.hxx>
 #include <GeomProjLib.hxx>
 #include <GCE2d_MakeSegment.hxx>

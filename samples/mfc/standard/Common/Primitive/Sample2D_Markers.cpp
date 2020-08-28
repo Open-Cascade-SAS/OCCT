@@ -43,15 +43,15 @@ void Sample2D_Markers::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aP
   if(myMarkerType == Aspect_TOM_USERDEFINED)
   {
     Handle(Graphic3d_AspectMarker3d) aMarker = new Graphic3d_AspectMarker3d(Aspect_TOM_POINT,myColor,myIndex);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetGroupPrimitivesAspect(aMarker);
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (myArrayOfPoints);
+    aPresentation->CurrentGroup()->SetGroupPrimitivesAspect(aMarker);
+    aPresentation->CurrentGroup()->AddPrimitiveArray (myArrayOfPoints);
   }
   else
   {
     Handle(Graphic3d_AspectMarker3d) aMarker = new Graphic3d_AspectMarker3d(myMarkerType,myColor,myIndex);
-    Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect(aMarker);
+    aPresentation->CurrentGroup()->SetPrimitivesAspect(aMarker);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
     anArrayOfPoints->AddVertex (myXPosition, myYPosition, 0);
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+    aPresentation->CurrentGroup()->AddPrimitiveArray (anArrayOfPoints);
   }
 }

@@ -63,7 +63,6 @@
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <Select3D_SensitivePrimitiveArray.hxx>
 #include <TColStd_HSequenceOfAsciiString.hxx>
@@ -5795,7 +5794,7 @@ void V3d_LineItem::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePre
   Quantity_Color aColor (Quantity_NOC_RED);
   Standard_Integer aWidth, aHeight;
   ViewerTest::CurrentView()->Window()->Size (aWidth, aHeight);
-  Handle (Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
+  Handle(Graphic3d_Group) aGroup = thePresentation->CurrentGroup();
   Handle(Graphic3d_ArrayOfPolylines) aPrim = new Graphic3d_ArrayOfPolylines(5);
   aPrim->AddVertex(myX1, aHeight-myY1, 0.);
   aPrim->AddVertex(myX2, aHeight-myY2, 0.);

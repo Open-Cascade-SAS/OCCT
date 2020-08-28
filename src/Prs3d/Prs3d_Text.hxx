@@ -17,17 +17,16 @@
 #ifndef _Prs3d_Text_HeaderFile
 #define _Prs3d_Text_HeaderFile
 
-#include <Prs3d_Root.hxx>
-#include <Prs3d_Drawer.hxx>
-#include <Prs3d_TextAspect.hxx>
-
 #include <gp_Ax2.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_TextAspect.hxx>
 
 class TCollection_ExtendedString;
 class gp_Pnt;
 
 //! A framework to define the display of texts.
-class Prs3d_Text : public Prs3d_Root
+class Prs3d_Text
 {
 public:
 
@@ -64,7 +63,7 @@ public:
                     const TCollection_ExtendedString& theText,
                     const gp_Pnt& theAttachmentPoint)
   {
-    Draw (Prs3d_Root::CurrentGroup (thePrs), theDrawer->TextAspect(), theText, theAttachmentPoint);
+    Draw (thePrs->CurrentGroup(), theDrawer->TextAspect(), theText, theAttachmentPoint);
   }
 
   //! Alias to another method Draw() for backward compatibility.
@@ -75,7 +74,7 @@ public:
                     const gp_Ax2&                     theOrientation,
                     const Standard_Boolean            theHasOwnAnchor = Standard_True)
   {
-    Draw (Prs3d_Root::CurrentGroup (thePrs), theAspect, theText, theOrientation, theHasOwnAnchor);
+    Draw (thePrs->CurrentGroup(), theAspect, theText, theOrientation, theHasOwnAnchor);
   }
 
   //! Alias to another method Draw() for backward compatibility.
@@ -85,7 +84,7 @@ public:
                     const TCollection_ExtendedString& theText,
                     const gp_Pnt& theAttachmentPoint)
   {
-    Draw (Prs3d_Root::CurrentGroup (thePrs), theAspect, theText, theAttachmentPoint);
+    Draw (thePrs->CurrentGroup(), theAspect, theText, theAttachmentPoint);
   }
 
 };

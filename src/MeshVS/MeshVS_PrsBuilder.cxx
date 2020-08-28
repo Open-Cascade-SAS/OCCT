@@ -19,7 +19,6 @@
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_Mesh.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_PrsBuilder,Standard_Transient)

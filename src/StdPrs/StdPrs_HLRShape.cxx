@@ -48,7 +48,7 @@ void StdPrs_HLRShape::ComputeHLR (const Handle(Prs3d_Presentation)& thePresentat
   Standard_Real anU1, anU2;
   BRepAdaptor_Curve aCurve;
   Standard_Real aDeviation = theDrawer->MaximalChordialDeviation();
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(thePresentation);
+  Handle(Graphic3d_Group) aGroup = thePresentation->CurrentGroup();
 
   aGroup->SetPrimitivesAspect(theDrawer->SeenLineAspect()->Aspect());
   

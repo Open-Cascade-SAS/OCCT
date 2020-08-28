@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <DsgPrs_ConcentricPresentation.hxx>
 #include <ElCLib.hxx>
 #include <gp_Circ.hxx>
@@ -26,7 +25,6 @@
 #include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 
 void DsgPrs_ConcentricPresentation::Add(
 			   const Handle(Prs3d_Presentation)& aPresentation,
@@ -43,7 +41,7 @@ void DsgPrs_ConcentricPresentation::Add(
   const Standard_Integer nbp = 50;
   const Standard_Real dteta = (2. * M_PI)/nbp;
 
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(2*nbp+6,4);
 
@@ -90,5 +88,5 @@ void DsgPrs_ConcentricPresentation::Add(
   aPrims->AddVertex(p1);
   aPrims->AddVertex(p2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }

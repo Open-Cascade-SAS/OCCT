@@ -30,15 +30,13 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  //! Returns the current (last created) group of primititves inside graphic objects in the display.
-  //! A group also contains the attributes whose ranges are limited to the primitives in it.
+  Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::CurrentGroup() should be called instead")
   static Handle(Graphic3d_Group) CurrentGroup (const Handle(Prs3d_Presentation)& thePrs3d)
   {
     return thePrs3d->CurrentGroup();
   }
 
-  //! Returns the new group of primitives inside graphic objects in the display.
-  //! A group also contains the attributes whose ranges are limited to the primitives in it.
+  Standard_DEPRECATED("This method is deprecated - Prs3d_Presentation::NewGroup() should be called instead")
   static Handle(Graphic3d_Group) NewGroup (const Handle(Prs3d_Presentation)& thePrs3d)
   {
     return thePrs3d->NewGroup();

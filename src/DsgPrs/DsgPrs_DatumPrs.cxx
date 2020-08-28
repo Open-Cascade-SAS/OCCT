@@ -34,7 +34,7 @@ void DsgPrs_DatumPrs::Add (const Handle(Prs3d_Presentation)& thePresentation,
                            const Handle(Prs3d_Drawer)& theDrawer)
 {
   Handle(Prs3d_DatumAspect) aDatumAspect = theDrawer->DatumAspect();
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (thePresentation);
+  Handle(Graphic3d_Group) aGroup = thePresentation->CurrentGroup();
 
   gp_Ax2 anAxis (theDatum);
   gp_Pnt anOrigin = anAxis.Location();

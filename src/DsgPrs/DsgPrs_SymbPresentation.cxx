@@ -37,7 +37,7 @@ void DsgPrs_SymbPresentation::Add (const Handle(Prs3d_Presentation)& aPresentati
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Handle(Prs3d_TextAspect) TA = LA->TextAspect();
   TA->SetColor(Quantity_NOC_GREEN);
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), TA, aText, OffsetPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), TA, aText, OffsetPoint);
   
   // 2eme groupe : marker
   Handle(Geom_CartesianPoint) theP = new Geom_CartesianPoint(OffsetPoint);

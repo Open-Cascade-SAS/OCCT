@@ -11,14 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AIS_DisplayMode.hxx>
 #include <AIS_Triangulation.hxx>
+
+#include <AIS_DisplayMode.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Standard_Type.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <TShort_Array1OfShortReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
@@ -131,7 +131,7 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aP
 
       Handle(Graphic3d_ArrayOfTriangles) anArray = new Graphic3d_ArrayOfTriangles (myNbNodes, myNbTriangles * 3,
                                                                                    hasVNormals, hasVColors, Standard_False);
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+      Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
       Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
 
       Standard_Integer i;

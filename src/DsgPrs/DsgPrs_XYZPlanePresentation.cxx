@@ -22,7 +22,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 
 //=======================================================================
 //function : Add
@@ -35,7 +34,7 @@ void DsgPrs_XYZPlanePresentation::Add(
 		       const gp_Pnt& aPt2,
 		       const gp_Pnt& aPt3)
 {
-  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+  Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
   TheGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(4);

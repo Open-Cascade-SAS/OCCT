@@ -91,7 +91,7 @@ void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
     StdPrs_Point::Add(aPresentation,myComponent,myDrawer);
   else if (aMode== -99)
     {
-      Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
+      Handle(Graphic3d_Group) TheGroup = aPresentation->CurrentGroup();
       TheGroup->SetPrimitivesAspect (myHilightDrawer->PointAspect()->Aspect());
       Handle(Graphic3d_ArrayOfPoints) aPoint = new Graphic3d_ArrayOfPoints (1);
       aPoint->AddVertex (myComponent->X(),myComponent->Y(),myComponent->Z());

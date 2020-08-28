@@ -22,7 +22,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_Presentation.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 
 //=======================================================================
@@ -35,14 +34,14 @@ void DsgPrs_ShadedPlanePresentation::Add(const Handle(Prs3d_Presentation)& aPres
 					 const gp_Pnt& aPt2,
 					 const gp_Pnt& aPt3)
 {
-  Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
-  TheGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());
-  TheGroup->SetPrimitivesAspect(aDrawer->ShadingAspect()->Aspect());
+  Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
+  aGroup->SetPrimitivesAspect(aDrawer->PlaneAspect()->EdgesAspect()->Aspect());
+  aGroup->SetPrimitivesAspect(aDrawer->ShadingAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfPolygons) aPrims = new Graphic3d_ArrayOfPolygons(4);
   aPrims->AddVertex(aPt1);
   aPrims->AddVertex(aPt2);
   aPrims->AddVertex(aPt3);
   aPrims->AddVertex(aPt1);
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aGroup->AddPrimitiveArray(aPrims);
 }

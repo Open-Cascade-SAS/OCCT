@@ -21,7 +21,6 @@
 #include <gce_MakeDir.hxx>
 #include <IntAna_IntConicQuad.hxx>
 #include <Prs3d_Arrow.hxx>
-#include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_ToolDisk.hxx>
 #include <Prs3d_ToolSector.hxx>
@@ -1387,7 +1386,7 @@ void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& t
       myHighlightTranslator->Clear();
     }
     {
-      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightTranslator);
+      Handle(Graphic3d_Group) aGroup = myHighlightTranslator->CurrentGroup();
       aGroup->SetGroupPrimitivesAspect (theAspect->Aspect());
       aGroup->AddPrimitiveArray (myTriangleArray);
     }
@@ -1411,7 +1410,7 @@ void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& t
       myHighlightScaler->Clear();
     }
     {
-      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightScaler);
+      Handle(Graphic3d_Group) aGroup = myHighlightScaler->CurrentGroup();
       aGroup->SetGroupPrimitivesAspect (theAspect->Aspect());
       aGroup->AddPrimitiveArray (myCube.Array());
     }
@@ -1434,7 +1433,7 @@ void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& t
       myHighlightRotator->Clear();
     }
     {
-      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (myHighlightRotator);
+      Handle(Graphic3d_Group) aGroup = myHighlightRotator->CurrentGroup();
       aGroup->SetGroupPrimitivesAspect (theAspect->Aspect());
       aGroup->AddPrimitiveArray (myCircle.Array());
     }
@@ -1466,7 +1465,7 @@ void AIS_Manipulator::Axis::Compute (const Handle(PrsMgr_PresentationManager)& t
       myHighlightDragger->Clear();
     }
     {
-      Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup(myHighlightDragger);
+      Handle(Graphic3d_Group) aGroup = myHighlightDragger->CurrentGroup();
       aGroup->SetGroupPrimitivesAspect(aFillArea);
       aGroup->AddPrimitiveArray(mySector.Array());
     }

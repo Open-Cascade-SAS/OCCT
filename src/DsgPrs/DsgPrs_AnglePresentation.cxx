@@ -161,7 +161,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   Handle(Graphic3d_ArrayOfPrimitives) aPrims = new Graphic3d_ArrayOfPolylines(12);
   for( i = 0; i <= 11; i++ )
     aPrims->AddVertex(ElCLib::Value(param + angle/11 * i, aCircle2));
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   DsgPrs::ComputeSymbol(aPresentation, aDimensionAspect, AttachmentPnt,
                         AttachmentPnt, aDir, aDir, DsgPrs_AS_LASTAR);
@@ -171,7 +171,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   param = ElCLib::Parameter(aCircle2, tmpPnt);
   tmpPnt = ElCLib::Value(param, aCircle2);
   tmpPnt = tmpPnt.Translated(gp_Vec(0, 0, -2));
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), aDimensionAspect->TextAspect(), txt, tmpPnt);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), aDimensionAspect->TextAspect(), txt, tmpPnt);
 
   angle = 2. * M_PI - param ; 
   if( param > OppParam )
@@ -180,7 +180,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
     aPrims = new Graphic3d_ArrayOfPolylines(12);
     for( i = 11; i >= 0; i-- )
       aPrims->AddVertex(ElCLib::Value(-angle/11 * i, aCircle2));
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 
   if( AboveInBelowCone( VmaxCircle, VminCircle, myCircle ) == 1 && !IsConeTrimmed )         //above
@@ -204,7 +204,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
     aPrims->AddVertex(OppositePnt);
     aPrims->AddVertex(( aPnt.Distance(P1) < aPnt.Distance(P2) )? P11 : P12);
   }
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 
@@ -230,7 +230,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   sprintf(valcar,"%5.2f",theval);
 
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Handle(Graphic3d_Group) aGroup = Prs3d_Root::CurrentGroup (aPresentation);
+  Handle(Graphic3d_Group) aGroup = aPresentation->CurrentGroup();
   aGroup->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Ax2 ax(CenterPoint,axisdir,dir1);
@@ -343,7 +343,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   sprintf(valcar,"%5.2f",theval);
   
   Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
+  aPresentation->CurrentGroup()->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
   gp_Circ AngleCirc, AttachCirc;
   Standard_Real FirstParAngleCirc, LastParAngleCirc, FirstParAttachCirc, LastParAttachCirc;
@@ -385,7 +385,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
     for (Standard_Integer i = 0; i < NodeNumber; i++, FirstParAngleCirc += delta)
       aPrims->AddVertex(ElCLib::Value( FirstParAngleCirc, AngleCirc ));
 
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
     aPrims = new Graphic3d_ArrayOfSegments(4);
   }
   else // null angle
@@ -399,7 +399,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   DsgPrs::ComputeSymbol( aPresentation, LA, EndOfArrow1, EndOfArrow2, DirOfArrow1, DirOfArrow2, ArrowPrs );
   
   // Drawing the text
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, OffsetPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
   
   // Line from AttachmentPoint1 to end of Arrow1
   aPrims->AddVertex(AttachmentPoint1);
@@ -408,7 +408,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   aPrims->AddVertex(ProjAttachPoint2);
   aPrims->AddVertex(EndOfArrow2);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // Line or arc from AttachmentPoint2 to its "projection"
   if (AttachmentPoint2.Distance( ProjAttachPoint2 ) > Precision::Confusion())
@@ -431,7 +431,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 	  for (Standard_Integer i = 0; i < NodeNumber; i++, FirstParAttachCirc += delta)
         aPrims->AddVertex(ElCLib::Value( FirstParAttachCirc, AttachCirc ));
 	}
-    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+    aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
   }
 }
 
@@ -457,7 +457,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   sprintf(valcar,"%5.2f",theval);
   
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Dir Norm;
   if (!dir1.IsParallel(dir2, Precision::Angular())) {
@@ -515,7 +515,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   for (Standard_Integer i = 1; i<=nbp; i++)
     aPrims->AddVertex(ElCLib::Value(udeb+ dteta*(i-1),cer));
   
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText,OffsetPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText,OffsetPoint);
   
   Standard_Real length = LA->ArrowAspect()->Length();
   if (length <  Precision::Confusion()) length = 1.e-04;
@@ -534,7 +534,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   gp_Vec v2(ptarr,ptarr3);
   const Standard_Real beta = v1.Angle(v2);
   dirarr.Rotate(ax1, beta);
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, dirarr, LA->ArrowAspect()->Angle(), length);
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, dirarr, LA->ArrowAspect()->Angle(), length);
 
   aPrims->AddBound(2);
   aPrims->AddVertex(AttachmentPoint1);
@@ -545,13 +545,13 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   ax1.SetLocation(ptarr);
   gp_Dir dirarr2(vecarr);
   dirarr2.Rotate(ax1,  - beta);
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, dirarr2, LA->ArrowAspect()->Angle(), length);
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, dirarr2, LA->ArrowAspect()->Angle(), length);
   
   aPrims->AddBound(2);
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(ptarr);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 
@@ -576,7 +576,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   sprintf(valcar,"%5.2f",theval);
   
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Dir Norm = dir1.Crossed(dir2);
   if (Abs(theval) > M_PI) Norm.Reverse();
@@ -626,7 +626,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   for (Standard_Integer i = 1; i<=nbp; i++)
     aPrims->AddVertex(ElCLib::Value(udeb+ dteta*(i-1),cer));
 
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, OffsetPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
   
   Standard_Real length = LA->ArrowAspect()->Length();
   if (length <  Precision::Confusion()) length = 1.e-04;
@@ -662,7 +662,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(ptarr1);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   // One traces the arrows
   DsgPrs::ComputeSymbol(aPresentation,LA,ptarr,ptarr1,dirarr,dirarr2,ArrowPrs);
@@ -692,7 +692,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   TCollection_ExtendedString aText(valas);
 
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Dir Norm = dir1.Crossed(dir2);
   if (Abs(theval) > M_PI) Norm.Reverse();
@@ -742,7 +742,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   for (Standard_Integer i = 1; i<=nbp; i++)
     aPrims->AddVertex(ElCLib::Value(udeb+ dteta*(i-1),cer));
 
-  Prs3d_Text::Draw (Prs3d_Root::CurrentGroup (aPresentation), LA->TextAspect(), aText, OffsetPoint);
+  Prs3d_Text::Draw (aPresentation->CurrentGroup(), LA->TextAspect(), aText, OffsetPoint);
 
   Standard_Real length = LA->ArrowAspect()->Length();
   if (length <  Precision::Confusion()) length = 1.e-04;
@@ -762,7 +762,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   const Standard_Real beta = v1.Angle(v2);
   dirarr.Rotate(ax1, beta);
 
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, dirarr, LA->ArrowAspect()->Angle(), length);
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, dirarr, LA->ArrowAspect()->Angle(), length);
 
   aPrims->AddBound(2);
   aPrims->AddVertex(AttachmentPoint1);
@@ -773,13 +773,13 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   gp_Dir dirarr2(vecarr);
   dirarr2.Rotate(ax1, -beta);
 
-  Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, dirarr2, LA->ArrowAspect()->Angle(), length);
+  Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, dirarr2, LA->ArrowAspect()->Angle(), length);
   
   aPrims->AddBound(2);
   aPrims->AddVertex(AttachmentPoint2);
   aPrims->AddVertex(ptarr);
 
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 }
 
 void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
@@ -791,7 +791,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
                                     const DsgPrs_ArrowSide ArrowSide)
 {
   Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
+  aPresentation->CurrentGroup()->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   gp_Dir dir1(gp_Vec(CenterPoint, AttachmentPoint1));
   gp_Ax2 ax(CenterPoint,theAxe.Direction(),dir1);
@@ -803,7 +803,7 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(nbp);
   for (Standard_Integer i = 1; i<=nbp; i++)
     aPrims->AddVertex(ElCLib::Value(dteta*(i-1),cer));
-  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
+  aPresentation->CurrentGroup()->AddPrimitiveArray(aPrims);
 
   Standard_Real uc1 = 0.;
   Standard_Real uc2 = ElCLib::Parameter(cer,AttachmentPoint1.Rotated(theAxe,theval));
@@ -818,21 +818,21 @@ void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
     case DsgPrs_AS_FIRSTAR:
     {
       ElCLib::D1(uc1,cer,ptarr,vecarr);
-      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, gp_Dir(-vecarr), LA->ArrowAspect()->Angle(), length);
+      Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, gp_Dir(-vecarr), LA->ArrowAspect()->Angle(), length);
       break;
     }
     case DsgPrs_AS_LASTAR:
     {
       ElCLib::D1(uc2,cer,ptarr,vecarr);
-      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, gp_Dir(vecarr), LA->ArrowAspect()->Angle(), length);
+      Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, gp_Dir(vecarr), LA->ArrowAspect()->Angle(), length);
       break;
     }
     case DsgPrs_AS_BOTHAR:
     {
       ElCLib::D1(uc1,cer,ptarr,vecarr);
-      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, gp_Dir(-vecarr), LA->ArrowAspect()->Angle(), length);
+      Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, gp_Dir(-vecarr), LA->ArrowAspect()->Angle(), length);
       ElCLib::D1(uc2,cer,ptarr,vecarr);
-      Prs3d_Arrow::Draw (Prs3d_Root::CurrentGroup (aPresentation), ptarr, gp_Dir(vecarr), LA->ArrowAspect()->Angle(), length);
+      Prs3d_Arrow::Draw (aPresentation->CurrentGroup(), ptarr, gp_Dir(vecarr), LA->ArrowAspect()->Angle(), length);
       break;
     }
     default: break;
