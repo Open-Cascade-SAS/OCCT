@@ -13,42 +13,19 @@
  commercial license or contractual agreement.
 */ 
 
+%code top {
+// This file is part of Open CASCADE Technology software library.
+// This file is generated, do not modify it directly; edit source file step.yacc instead.
+}
+
 %token STEP HEADER ENDSEC DATA ENDSTEP SCOPE ENDSCOPE ENTITY TYPE INTEGER FLOAT IDENT TEXT NONDEF ENUM HEXA QUID
 %start stepf
 %{
 #include "recfile.ph"		/* definitions des types d'arguments */
 #include "recfile.pc"		/* la-dedans, tout y est */
-/*
-#define stepparse STEPparse
-#define steplex STEPlex
-#define stepwrap STEPwrap
-#define steprestart STEPrestart
-#define steplex STEPlex
-#define steplval STEPlval
-#define stepval STEPval
-#define stepchar STEPchar
-#define stepdebug STEPdebug
-#define stepnerrs STEPnerrs
-#define steperror STEPerror
-*/
+
 #define stepclearin yychar = -1
 #define steperrok yyerrflag = 0
-
-/*
-#define stepin STEPin
-#define yyerrflag STEPerrflag
-#define yyerrstatus STEPerrflag
-*/
-
-/* ABV 19.12.00: merging porting modifications by POP (for WNT, AIX) */
-#if defined(WNT) && !defined(MSDOS)
-#define MSDOS WNT
-#endif
-#if defined(_AIX)
-#include <malloc.h>
-#define alloca malloc
-#endif
-
 
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER

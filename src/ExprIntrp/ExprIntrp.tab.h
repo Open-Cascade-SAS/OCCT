@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
-# define YY_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
+#ifndef YY_EXPRINTRP_D_ABV_OCCT_OCCT_SRC_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
+# define YY_EXPRINTRP_D_ABV_OCCT_OCCT_SRC_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -95,4 +95,4 @@ int ExprIntrpparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED  */
+#endif /* !YY_EXPRINTRP_D_ABV_OCCT_OCCT_SRC_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED  */

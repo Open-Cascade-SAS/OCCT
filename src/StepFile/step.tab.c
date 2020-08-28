@@ -58,6 +58,14 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
+/* "%code top" blocks.  */
+
+
+// This file is part of Open CASCADE Technology software library.
+// This file is generated, do not modify it directly; edit source file step.yacc instead.
+
+
+
 
 /* Substitute the variable and function names.  */
 #define yyparse         stepparse
@@ -69,42 +77,13 @@
 #define yynerrs         stepnerrs
 
 /* Copy the first part of user declarations.  */
-/* Line 371 of yacc.c  */
-#line 18 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
 
 #include "recfile.ph"		/* definitions des types d'arguments */
 #include "recfile.pc"		/* la-dedans, tout y est */
-/*
-#define stepparse STEPparse
-#define steplex STEPlex
-#define stepwrap STEPwrap
-#define steprestart STEPrestart
-#define steplex STEPlex
-#define steplval STEPlval
-#define stepval STEPval
-#define stepchar STEPchar
-#define stepdebug STEPdebug
-#define stepnerrs STEPnerrs
-#define steperror STEPerror
-*/
+
 #define stepclearin yychar = -1
 #define steperrok yyerrflag = 0
-
-/*
-#define stepin STEPin
-#define yyerrflag STEPerrflag
-#define yyerrstatus STEPerrflag
-*/
-
-/* ABV 19.12.00: merging porting modifications by POP (for WNT, AIX) */
-#if defined(_WIN32) && !defined(MSDOS)
-#define MSDOS _WIN32
-#endif
-#if defined(_AIX)
-#include <malloc.h>
-#define alloca malloc
-#endif
-
 
 // disable MSVC warnings in bison code
 #ifdef _MSC_VER
@@ -114,8 +93,7 @@
 #endif
 
 
-/* Line 371 of yacc.c  */
-#line 119 "step.tab.c"
+
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -135,8 +113,8 @@
 
 /* In a future release of Bison, this section will be replaced
    by #include "step.tab.h".  */
-#ifndef YY_STEP_STEP_TAB_H_INCLUDED
-# define YY_STEP_STEP_TAB_H_INCLUDED
+#ifndef YY_STEP_D_ABV_OCCT_OCCT_SRC_STEPFILE_STEP_TAB_H_INCLUDED
+# define YY_STEP_D_ABV_OCCT_OCCT_SRC_STEPFILE_STEP_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -195,12 +173,11 @@ int stepparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_STEP_STEP_TAB_H_INCLUDED  */
+#endif /* !YY_STEP_D_ABV_OCCT_OCCT_SRC_STEPFILE_STEP_TAB_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-/* Line 390 of yacc.c  */
-#line 204 "step.tab.c"
+
 
 #ifdef short
 # undef short
@@ -507,11 +484,11 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    64,    64,    65,    66,    67,    68,    69,    70,    71,
-      71,    71,    74,    75,    77,    78,    80,    83,    84,    85,
-      86,    87,    91,    94,    97,   102,   103,   104,   106,   107,
-     108,   110,   111,   113,   114,   115,   116,   118,   119,   121,
-     122,   124,   127,   130,   131,   133,   136,   138,   143,   146
+       0,    41,    41,    42,    43,    44,    45,    46,    47,    48,
+      48,    48,    51,    52,    54,    55,    57,    60,    61,    62,
+      63,    64,    68,    71,    74,    79,    80,    81,    83,    84,
+      85,    87,    88,    90,    91,    92,    93,    95,    96,    98,
+      99,   101,   104,   107,   108,   110,   113,   115,   120,   123
 };
 #endif
 
@@ -1459,114 +1436,96 @@ yyreduce:
   switch (yyn)
     {
         case 11:
-/* Line 1792 of yacc.c  */
-#line 72 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_finfile();  return(0);  /*  fini pour celui-la  */  }
     break;
 
   case 16:
-/* Line 1792 of yacc.c  */
-#line 81 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_finhead();  }
     break;
 
   case 17:
-/* Line 1792 of yacc.c  */
-#line 83 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_typarg(rec_argIdent);     rec_newarg();  }
     break;
 
   case 18:
-/* Line 1792 of yacc.c  */
-#line 84 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  /* deja fait par lex*/ 	 rec_newarg();  }
     break;
 
   case 19:
-/* Line 1792 of yacc.c  */
-#line 85 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_newarg();  }
     break;
 
   case 20:
-/* Line 1792 of yacc.c  */
-#line 86 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_newarg();  }
     break;
 
   case 21:
-/* Line 1792 of yacc.c  */
-#line 87 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_typarg(rec_argMisc);      rec_newarg();
 			   yyerrstatus = 1; yyclearin;  }
     break;
 
   case 22:
-/* Line 1792 of yacc.c  */
-#line 92 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_listype();  }
     break;
 
   case 23:
-/* Line 1792 of yacc.c  */
-#line 95 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_deblist();  }
     break;
 
   case 24:
-/* Line 1792 of yacc.c  */
-#line 98 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  if (modeprint > 0)
 		{  printf("Record no : %d -- ",nbrec+1);  rec_print(currec);  }
 	   rec_newent ();  yyerrstatus = 0; }
     break;
 
   case 41:
-/* Line 1792 of yacc.c  */
-#line 125 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  scope_debut();  }
     break;
 
   case 42:
-/* Line 1792 of yacc.c  */
-#line 128 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_typarg(rec_argIdent);    rec_newarg();  }
     break;
 
   case 45:
-/* Line 1792 of yacc.c  */
-#line 134 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_deblist();  }
     break;
 
   case 46:
-/* Line 1792 of yacc.c  */
-#line 137 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  scope_fin();  }
     break;
 
   case 47:
-/* Line 1792 of yacc.c  */
-#line 139 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  printf("***  Warning : Export List not yet processed\n");
 	   rec_newent();  scope_fin() ; }
     break;
 
   case 48:
-/* Line 1792 of yacc.c  */
-#line 144 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_ident();  }
     break;
 
   case 49:
-/* Line 1792 of yacc.c  */
-#line 147 "D:/ABV/OCCT/occt7/src/StepFile/step.yacc"
+
     {  rec_type ();  }
     break;
 
 
-/* Line 1792 of yacc.c  */
-#line 1570 "step.tab.c"
+
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

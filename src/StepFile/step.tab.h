@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_STEP_STEP_TAB_H_INCLUDED
-# define YY_STEP_STEP_TAB_H_INCLUDED
+#ifndef YY_STEP_D_ABV_OCCT_OCCT_SRC_STEPFILE_STEP_TAB_H_INCLUDED
+# define YY_STEP_D_ABV_OCCT_OCCT_SRC_STEPFILE_STEP_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -90,4 +90,4 @@ int stepparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_STEP_STEP_TAB_H_INCLUDED  */
+#endif /* !YY_STEP_D_ABV_OCCT_OCCT_SRC_STEPFILE_STEP_TAB_H_INCLUDED  */

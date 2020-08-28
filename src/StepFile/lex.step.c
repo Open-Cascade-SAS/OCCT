@@ -28,10 +28,10 @@
 
 #include <stdio.h>
 
-#ifdef _MSC_VER
+#ifdef WNT
 # include <stdlib.h>
 # include <io.h>
-#endif  /* _MSC_VER */
+#endif  /* WNT */
 
 
 
@@ -529,7 +529,29 @@ long string in files Henri.stp and 401.stp*/
 #define YY_FATAL_ERROR(msg) StepFile_CallFailure( msg )
 
 /* abv 07.06.02: force inclusion of stdlib.h on WNT to avoid warnings */
+#ifdef _MSC_VER
+// add includes for flex 2.91 (Linux version)
 #include <stdlib.h>
+#include <io.h>
+
+// Avoid includion of unistd.h if parser is generated on Linux (flex 2.5.35)
+#ifndef YY_NO_UNISTD_H
+#define YY_NO_UNISTD_H
+#endif
+
+// disable MSVC warnings in flex 2.89 and 2.5.35 code
+// Note that Intel compiler also defines _MSC_VER but has different warning ids
+#if defined(__INTEL_COMPILER)
+#pragma warning(disable:177 1786 1736)
+#elif defined(__clang__)
+#pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Winconsistent-dllimport"
+#pragma GCC diagnostic ignored "-Wunneeded-internal-declaration"
+#else
+#pragma warning(disable:4131 4244 4273 4127 4267)
+#endif
+
+#endif /* MSC_VER */
 
 /*
 void steperror ( FILE *input_file );
@@ -544,26 +566,6 @@ void rec_typarg(int argtype);
   int  modend = 0;      /* Flag for finishing of the STEP file */
   void resultat ()           /* Resultat alloue dynamiquement, "jete" une fois lu */
       { if (modcom == 0) rec_restext(yytext,yyleng); }
-
-// MSVC specifics
-#ifdef _MSC_VER
-
-// disable MSVC warnings in flex code
-// Note that Intel compiler also defines _MSC_VER but has different warning ids
-#if defined(__INTEL_COMPILER)
-#pragma warning(disable:177 1786 1736)
-#elif defined(__clang__)
-#pragma GCC diagnostic ignored "-Wunused-function"
-#pragma GCC diagnostic ignored "-Winconsistent-dllimport"
-#pragma GCC diagnostic ignored "-Wunneeded-internal-declaration"
-#else
-#pragma warning(disable:4131 4244 4273 4267 4127)
-#endif
-
-// Avoid includion of unistd.h if parser is generated on Linux (flex 2.5.35)
-#define YY_NO_UNISTD_H
-
-#endif
 
 // disable GCC warnings in flex code
 #ifdef __GNUC__

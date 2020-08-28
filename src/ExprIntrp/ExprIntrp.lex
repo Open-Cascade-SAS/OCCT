@@ -45,7 +45,9 @@ static int yywrap()
 // provide safe error handler (exception instead of exit())
 #define YY_FATAL_ERROR(msg) ExprIntrperror(msg)
 
+// MSVC specifics
 #ifdef _MSC_VER
+
 // add includes for flex 2.91 (Linux version)
 #include <stdlib.h>
 #include <io.h>
@@ -65,7 +67,7 @@ static int yywrap()
 #pragma warning(disable:4131 4244 4273 4127 4267)
 #endif
 
-#endif
+#endif /* MSC_VER */
 
 #ifdef __GNUC__
 // add includes for flex 2.91 (Linux version)

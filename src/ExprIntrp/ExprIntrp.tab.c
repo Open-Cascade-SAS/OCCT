@@ -69,8 +69,7 @@
 #define yynerrs         ExprIntrpnerrs
 
 /* Copy the first part of user declarations.  */
-/* Line 371 of yacc.c  */
-#line 17 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
 
 #include <ExprIntrp_yaccintrf.hxx>
 
@@ -124,12 +123,10 @@ extern void ExprIntrp_EndOfEqual();
 #pragma warning(disable:4131 4244 4127 4702)
 #endif
 
-/* Line 371 of yacc.c  */
-#line 77 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
 
 
-/* Line 371 of yacc.c  */
-#line 133 "ExprIntrp.tab.c"
+
+
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -149,8 +146,8 @@ extern void ExprIntrp_EndOfEqual();
 
 /* In a future release of Bison, this section will be replaced
    by #include "ExprIntrp.tab.h".  */
-#ifndef YY_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
-# define YY_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
+#ifndef YY_EXPRINTRP_D_ABV_OCCT_OCCT_SRC_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
+# define YY_EXPRINTRP_D_ABV_OCCT_OCCT_SRC_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -214,12 +211,11 @@ int ExprIntrpparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED  */
+#endif /* !YY_EXPRINTRP_D_ABV_OCCT_OCCT_SRC_EXPRINTRP_EXPRINTRP_TAB_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-/* Line 390 of yacc.c  */
-#line 223 "ExprIntrp.tab.c"
+
 
 #ifdef short
 # undef short
@@ -1544,290 +1540,242 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-/* Line 1792 of yacc.c  */
-#line 84 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndOfFuncDef();}
     break;
 
   case 6:
-/* Line 1792 of yacc.c  */
-#line 85 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndOfRelation();}
     break;
 
   case 7:
-/* Line 1792 of yacc.c  */
-#line 88 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_AssignVariable();}
     break;
 
   case 8:
-/* Line 1792 of yacc.c  */
-#line 88 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndOfAssign();}
     break;
 
   case 9:
-/* Line 1792 of yacc.c  */
-#line 91 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_Deassign();}
     break;
 
   case 11:
-/* Line 1792 of yacc.c  */
-#line 94 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_SumOperator();}
     break;
 
   case 12:
-/* Line 1792 of yacc.c  */
-#line 95 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_MinusOperator();}
     break;
 
   case 13:
-/* Line 1792 of yacc.c  */
-#line 96 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_ProductOperator();}
     break;
 
   case 14:
-/* Line 1792 of yacc.c  */
-#line 97 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_DivideOperator();}
     break;
 
   case 15:
-/* Line 1792 of yacc.c  */
-#line 98 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_ExpOperator();}
     break;
 
   case 18:
-/* Line 1792 of yacc.c  */
-#line 101 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_UnaryMinusOperator();}
     break;
 
   case 19:
-/* Line 1792 of yacc.c  */
-#line 102 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_UnaryPlusOperator();}
     break;
 
   case 27:
-/* Line 1792 of yacc.c  */
-#line 115 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_VariableIdentifier();}
     break;
 
   case 28:
-/* Line 1792 of yacc.c  */
-#line 116 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_NumValue();}
     break;
 
   case 29:
-/* Line 1792 of yacc.c  */
-#line 119 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndFunction();}
     break;
 
   case 30:
-/* Line 1792 of yacc.c  */
-#line 120 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndDerFunction();}
     break;
 
   case 31:
-/* Line 1792 of yacc.c  */
-#line 121 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndDifferential();}
     break;
 
   case 32:
-/* Line 1792 of yacc.c  */
-#line 121 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndDiffFunction();}
     break;
 
   case 33:
-/* Line 1792 of yacc.c  */
-#line 124 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndFuncArg();}
     break;
 
   case 34:
-/* Line 1792 of yacc.c  */
-#line 125 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_NextFuncArg();}
     break;
 
   case 36:
-/* Line 1792 of yacc.c  */
-#line 128 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_StartFunction();}
     break;
 
   case 37:
-/* Line 1792 of yacc.c  */
-#line 131 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_DefineFunction();}
     break;
 
   case 39:
-/* Line 1792 of yacc.c  */
-#line 134 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_StartDerivate();}
     break;
 
   case 40:
-/* Line 1792 of yacc.c  */
-#line 134 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndDerivate();}
     break;
 
   case 41:
-/* Line 1792 of yacc.c  */
-#line 137 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_DiffVar();}
     break;
 
   case 42:
-/* Line 1792 of yacc.c  */
-#line 138 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_DiffDegree();}
     break;
 
   case 43:
-/* Line 1792 of yacc.c  */
-#line 138 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_VerDiffDegree();}
     break;
 
   case 44:
-/* Line 1792 of yacc.c  */
-#line 138 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_DiffDegreeVar();}
     break;
 
   case 45:
-/* Line 1792 of yacc.c  */
-#line 141 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_StartDifferential();}
     break;
 
   case 47:
-/* Line 1792 of yacc.c  */
-#line 145 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_StartFunction();}
     break;
 
   case 49:
-/* Line 1792 of yacc.c  */
-#line 148 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndFuncArg();}
     break;
 
   case 50:
-/* Line 1792 of yacc.c  */
-#line 149 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_NextFuncArg();}
     break;
 
   case 52:
-/* Line 1792 of yacc.c  */
-#line 152 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_VariableIdentifier();}
     break;
 
   case 53:
-/* Line 1792 of yacc.c  */
-#line 155 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_Derivation();}
     break;
 
   case 54:
-/* Line 1792 of yacc.c  */
-#line 155 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndDerivation();}
     break;
 
   case 55:
-/* Line 1792 of yacc.c  */
-#line 156 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_Derivation();}
     break;
 
   case 56:
-/* Line 1792 of yacc.c  */
-#line 156 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_DerivationValue();}
     break;
 
   case 57:
-/* Line 1792 of yacc.c  */
-#line 156 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndDerivation();}
     break;
 
   case 58:
-/* Line 1792 of yacc.c  */
-#line 159 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_ConstantIdentifier();}
     break;
 
   case 59:
-/* Line 1792 of yacc.c  */
-#line 159 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_ConstantDefinition();}
     break;
 
   case 61:
-/* Line 1792 of yacc.c  */
-#line 162 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_VariableIdentifier();}
     break;
 
   case 62:
-/* Line 1792 of yacc.c  */
-#line 162 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_NumValue();}
     break;
 
   case 63:
-/* Line 1792 of yacc.c  */
-#line 162 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_Sumator();}
     break;
 
   case 64:
-/* Line 1792 of yacc.c  */
-#line 165 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_VariableIdentifier();}
     break;
 
   case 65:
-/* Line 1792 of yacc.c  */
-#line 165 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_NumValue();}
     break;
 
   case 66:
-/* Line 1792 of yacc.c  */
-#line 165 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_Productor();}
     break;
 
   case 70:
-/* Line 1792 of yacc.c  */
-#line 173 "D:/ABV/OCCT/occt7/src/ExprIntrp/ExprIntrp.yacc"
+
     {ExprIntrp_EndOfEqual();}
     break;
 
 
-/* Line 1792 of yacc.c  */
-#line 1831 "ExprIntrp.tab.c"
+
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

@@ -2,19 +2,28 @@
 
 # execute FindBISON script by "find_package (Bison)" is required to define BISON_TARGET macro
 
-if (NOT DEFINED 3RDPARTY_BISON_EXECUTABLE)
-  set (3RDPARTY_BISON_EXECUTABLE "" CACHE FILEPATH "The path to the bison command")
+# delete obsolete 3RDPARTY_BISON_EXECUTABLE cache variable (not used anymore)
+unset (3RDPARTY_BISON_EXECUTABLE CACHE)
+
+# delete BISON_EXECUTABLE cache variable if it is empty, otherwise find_package will fail
+# without reasonable diagnostic
+if (NOT BISON_EXECUTABLE)
+  unset (BISON_EXECUTABLE CACHE)
 endif()
 
-# BISON_EXECUTABLE is required by BISON_TARGET macro and should be defined
-set (BISON_EXECUTABLE "${3RDPARTY_BISON_EXECUTABLE}" CACHE FILEPATH "path to the bison executable" FORCE)
-
-find_package (BISON)
-
-if (BISON_FOUND)
-  set (3RDPARTY_BISON_EXECUTABLE "${BISON_EXECUTABLE}" CACHE FILEPATH "The Path to the bison command" FORCE)
+# Add paths to 3rdparty subfolders containing name "bison" to CMAKE_PROGRAM_PATH variable to make
+# these paths searhed by find_package
+if (3RDPARTY_DIR)
+  file (GLOB BISON_PATHS LIST_DIRECTORIES true "${3RDPARTY_DIR}/*bison*/")
+  foreach (candidate_path ${BISON_PATHS})
+    if (IS_DIRECTORY ${candidate_path})
+      list (APPEND CMAKE_PROGRAM_PATH ${candidate_path})
+    endif()
+  endforeach()
 endif()
+ 
+find_package (BISON 2.7)
 
-if (NOT 3RDPARTY_BISON_EXECUTABLE OR NOT EXISTS "${3RDPARTY_BISON_EXECUTABLE}")
-  list (APPEND 3RDPARTY_NOT_INCLUDED 3RDPARTY_BISON_EXECUTABLE)
+if (NOT BISON_FOUND OR NOT BISON_EXECUTABLE OR NOT EXISTS "${BISON_EXECUTABLE}")
+  list (APPEND 3RDPARTY_NOT_INCLUDED BISON_EXECUTABLE)
 endif()
