@@ -3328,7 +3328,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
             Standard_Real aTolE = BRep_Tool::Tolerance(aE);
             if (aTolC < aTolE) {
               // reduce edge tolerance
-              reinterpret_cast<BRep_TEdge*>(aE.TShape().operator->())->Tolerance(aTolC);
+              static_cast<BRep_TEdge*>(aE.TShape().get())->Tolerance(aTolC);
               bIsReduced = Standard_True;
             }
           }
@@ -3446,7 +3446,7 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     }
     //
     if (aMaxTol < aTolV) {
-      reinterpret_cast<BRep_TVertex*>(aV.TShape().operator->())->Tolerance(aMaxTol);
+      static_cast<BRep_TVertex*>(aV.TShape().get())->Tolerance(aMaxTol);
     }
   }
 }

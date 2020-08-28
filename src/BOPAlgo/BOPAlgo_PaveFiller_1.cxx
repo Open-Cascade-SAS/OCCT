@@ -145,8 +145,7 @@ Standard_Integer BOPAlgo_PaveFiller::MakeSDVertices
   Standard_Integer nV;
   if (nSD != -1) {
     // update old SD vertex with new value
-    Handle(BRep_TVertex)& aTVertex =
-      reinterpret_cast<Handle(BRep_TVertex)&>(const_cast<Handle(TopoDS_TShape)&>(aVSD.TShape()));
+    BRep_TVertex* aTVertex = static_cast<BRep_TVertex*>(aVSD.TShape().get());
     aTVertex->Pnt(BRep_Tool::Pnt(aVn));
     aTVertex->Tolerance(BRep_Tool::Tolerance(aVn));
     aVn = aVSD;

@@ -415,8 +415,7 @@ const gp_Pnt* SelectMgr_SelectingVolumeManager::GetVertices() const
   if (myActiveSelectionType == Polyline)
     return NULL;
 
-  const SelectMgr_RectangularFrustum* aFr =
-    reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
+  const SelectMgr_RectangularFrustum* aFr = static_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
   return aFr->GetVertices();
 }
 
@@ -429,8 +428,7 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetNearPickedPnt() const
   if (myActiveSelectionType == Polyline)
     return gp_Pnt();
 
-   const SelectMgr_RectangularFrustum* aFr =
-     reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
+  const SelectMgr_RectangularFrustum* aFr = static_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
   return aFr->GetNearPnt();
 }
 
@@ -443,8 +441,7 @@ gp_Pnt SelectMgr_SelectingVolumeManager::GetFarPickedPnt() const
   if (myActiveSelectionType == Polyline)
     return gp_Pnt();
 
-   const SelectMgr_RectangularFrustum* aFr =
-     reinterpret_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
+  const SelectMgr_RectangularFrustum* aFr = static_cast<const SelectMgr_RectangularFrustum*> (mySelectingVolumes[myActiveSelectionType / 2].get());
   return aFr->GetFarPnt();
 }
 
@@ -462,7 +459,7 @@ void SelectMgr_SelectingVolumeManager::SetViewClipping (const Handle(Graphic3d_S
     return;
 
   const SelectMgr_SelectingVolumeManager* aWorldSelMgr = theWorldSelMgr != NULL ? theWorldSelMgr : this;
-  const SelectMgr_RectangularFrustum* aFrustum = reinterpret_cast<const SelectMgr_RectangularFrustum*>(aWorldSelMgr->mySelectingVolumes[Frustum].get());
+  const SelectMgr_RectangularFrustum* aFrustum = static_cast<const SelectMgr_RectangularFrustum*>(aWorldSelMgr->mySelectingVolumes[Frustum].get());
   myViewClipRange.SetVoid();
   if (!theViewPlanes.IsNull()
    && !theViewPlanes->IsEmpty())

@@ -782,7 +782,7 @@ void OpenGl_View::FBOChangeViewport (const Handle(Standard_Transient)& theFbo,
 void OpenGl_View::displayStructure (const Handle(Graphic3d_CStructure)& theStructure,
                                     const Standard_Integer              thePriority)
 {
-  const OpenGl_Structure*  aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure.operator->());
+  const OpenGl_Structure*  aStruct = static_cast<const OpenGl_Structure*> (theStructure.get());
   const Graphic3d_ZLayerId aZLayer = aStruct->ZLayer();
   myZLayers.AddStructure (aStruct, aZLayer, thePriority);
 }
@@ -793,7 +793,7 @@ void OpenGl_View::displayStructure (const Handle(Graphic3d_CStructure)& theStruc
 //=======================================================================
 void OpenGl_View::eraseStructure (const Handle(Graphic3d_CStructure)& theStructure)
 {
-  const OpenGl_Structure*  aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure.operator->());
+  const OpenGl_Structure* aStruct = static_cast<const OpenGl_Structure*> (theStructure.get());
   myZLayers.RemoveStructure (aStruct);
 }
 
@@ -805,7 +805,7 @@ void OpenGl_View::changeZLayer (const Handle(Graphic3d_CStructure)& theStructure
                                 const Graphic3d_ZLayerId theNewLayerId)
 {
   const Graphic3d_ZLayerId anOldLayer = theStructure->ZLayer();
-  const OpenGl_Structure* aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure.operator->());
+  const OpenGl_Structure* aStruct = static_cast<const OpenGl_Structure*> (theStructure.get());
   myZLayers.ChangeLayer (aStruct, anOldLayer, theNewLayerId);
   Update (anOldLayer);
   Update (theNewLayerId);
@@ -819,7 +819,7 @@ void OpenGl_View::changePriority (const Handle(Graphic3d_CStructure)& theStructu
                                   const Standard_Integer theNewPriority)
 {
   const Graphic3d_ZLayerId aLayerId = theStructure->ZLayer();
-  const OpenGl_Structure* aStruct = reinterpret_cast<const OpenGl_Structure*> (theStructure.operator->());
+  const OpenGl_Structure* aStruct = static_cast<const OpenGl_Structure*> (theStructure.get());
   myZLayers.ChangePriority (aStruct, aLayerId, theNewPriority);
 }
 

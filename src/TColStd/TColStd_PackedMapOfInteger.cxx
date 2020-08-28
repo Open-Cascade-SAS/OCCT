@@ -319,7 +319,7 @@ TColStd_PackedMapOfInteger& TColStd_PackedMapOfInteger::Assign
           aData[aHashCode] =
             new TColStd_intMapNode (p->Mask(), p->Data(), aData[aHashCode]);
           Increment();
-          p = reinterpret_cast <const TColStd_intMapNode*> (p->Next());
+          p = static_cast <const TColStd_intMapNode*> (p->Next());
         }
       }
 //       TColStd_MapIteratorOfPackedMapOfInteger anIt (theOther);
@@ -414,7 +414,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Add (const Standard_Integer aKey)
 //       break;
       goto finish;  // goto saves us 4 CPU clocks or 4% performance
     }
-    p = reinterpret_cast <TColStd_intMapNode*> (p->Next());
+    p = static_cast <TColStd_intMapNode*> (p->Next());
   }
 //    if (!p) {         // not needed, as long as we exit the loop by goto
     data[aHashCode] = new TColStd_intMapNode(aKey, aBucketHead);
@@ -444,7 +444,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Contains
         aResult = (p->HasValue (aKey) != 0);
         break;
       }
-      p = reinterpret_cast <TColStd_intMapNode*> (p->Next());
+      p = static_cast <TColStd_intMapNode*> (p->Next());
     }
   }
   return aResult;
@@ -472,14 +472,14 @@ Standard_Boolean TColStd_PackedMapOfInteger::Remove(const Standard_Integer aKey)
           if (p->HasValues() == Standard_False) {
             Decrement();
             if (q) q->Next() = p->Next();
-            else aBucketHead = reinterpret_cast<TColStd_intMapNode*>(p->Next());
+            else aBucketHead = static_cast<TColStd_intMapNode*>(p->Next());
             delete p;
           }
         }
         break;
       }
       q = p;
-      p = reinterpret_cast <TColStd_intMapNode*> (p->Next());
+      p = static_cast <TColStd_intMapNode*> (p->Next());
     }
   }
   return aResult;
@@ -498,11 +498,10 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMinimalMapped () const
     const TColStd_intMapNode * pFoundNode = 0L;
     for (Standard_Integer i = 0; i <= NbBuckets(); i++) {
       for (const TCollection_MapNode * p = aData[i]; p != 0L; p = p->Next()) {
-        const Standard_Integer aKey =
-          reinterpret_cast <const TColStd_intMapNode *>(p)->Key();
+        const Standard_Integer aKey = static_cast <const TColStd_intMapNode *>(p)->Key();
         if (aResult > aKey) {
           aResult = aKey;
-          pFoundNode = reinterpret_cast<const TColStd_intMapNode *>(p);
+          pFoundNode = static_cast<const TColStd_intMapNode *>(p);
         }
       }
     }
@@ -527,11 +526,10 @@ Standard_Integer TColStd_PackedMapOfInteger::GetMaximalMapped () const
     const TColStd_intMapNode * pFoundNode = 0L;
     for (Standard_Integer i = 0; i <= NbBuckets(); i++) {
       for (const TCollection_MapNode * p = aData[i]; p != 0L; p = p->Next()) {
-        const Standard_Integer aKey =
-          reinterpret_cast <const TColStd_intMapNode *>(p)->Key();
+        const Standard_Integer aKey = static_cast <const TColStd_intMapNode *>(p)->Key();
         if (aResult < aKey) {
           aResult = aKey;
-          pFoundNode = reinterpret_cast<const TColStd_intMapNode *>(p);
+          pFoundNode = static_cast<const TColStd_intMapNode *>(p);
         }
       }
     }
@@ -585,7 +583,7 @@ void TColStd_PackedMapOfInteger::Union (const TColStd_PackedMapOfInteger& theMap
             nValues = TColStd_Population (aNewMask, aNewData);
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
         // Store the block - result of operation
         if (Resizable()) {
@@ -597,7 +595,7 @@ void TColStd_PackedMapOfInteger::Union (const TColStd_PackedMapOfInteger& theMap
                                                    aData[aHashCode]);
         Increment();
         myExtent += nValues;
-        p1 = reinterpret_cast <const TColStd_intMapNode*> (p1->Next());
+        p1 = static_cast <const TColStd_intMapNode*> (p1->Next());
       }
     }
     // Iteration of the 2nd map.
@@ -610,7 +608,7 @@ void TColStd_PackedMapOfInteger::Union (const TColStd_PackedMapOfInteger& theMap
         while (p1) {
           if (p1->IsEqual(*p2))
             break;
-          p1 = reinterpret_cast <const TColStd_intMapNode*> (p1->Next());
+          p1 = static_cast <const TColStd_intMapNode*> (p1->Next());
         }
         // Add the block from the 2nd map only in the case when the similar
         // block has not been found in the 1st map
@@ -625,7 +623,7 @@ void TColStd_PackedMapOfInteger::Union (const TColStd_PackedMapOfInteger& theMap
           Increment();
           myExtent += p2->NbValues();
         }
-        p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+        p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
       }
     }
   }
@@ -669,7 +667,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Unite(const TColStd_PackedMapOfInte
             }
             break;
           }
-          p1 = reinterpret_cast <TColStd_intMapNode*> (p1->Next());
+          p1 = static_cast <TColStd_intMapNode*> (p1->Next());
         }
         // If the block is not found in the 1st map, add it to the 1st map
         if (p1 == 0L) {
@@ -683,7 +681,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Unite(const TColStd_PackedMapOfInte
           Increment();
           aNewExtent += p2->NbValues();
         }
-        p2 = reinterpret_cast <TColStd_intMapNode*> (p2->Next());
+        p2 = static_cast <TColStd_intMapNode*> (p2->Next());
       }
     }
     Standard_Boolean isChanged = ( myExtent != aNewExtent );
@@ -749,9 +747,9 @@ void TColStd_PackedMapOfInteger::Intersection
             }
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
-        p1 = reinterpret_cast <const TColStd_intMapNode*> (p1->Next());
+        p1 = static_cast <const TColStd_intMapNode*> (p1->Next());
       }
     }
   }
@@ -802,10 +800,9 @@ Standard_Boolean TColStd_PackedMapOfInteger::Intersect
             }
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
-        TColStd_intMapNode* pNext =
-          reinterpret_cast <TColStd_intMapNode*> (p1->Next());
+        TColStd_intMapNode* pNext = static_cast <TColStd_intMapNode*> (p1->Next());
         // If p2!=NULL, then the map node is kept and we move to the next one
         // Otherwise we should remove the current node
         if (p2)
@@ -870,7 +867,7 @@ void TColStd_PackedMapOfInteger::Subtraction
             nValues = TColStd_Population (aNewMask, aNewData);
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
         // Store the block - result of operation
         if (aNewData) {
@@ -884,7 +881,7 @@ void TColStd_PackedMapOfInteger::Subtraction
           Increment();
           myExtent += nValues;
         }
-        p1 = reinterpret_cast <const TColStd_intMapNode*> (p1->Next());
+        p1 = static_cast <const TColStd_intMapNode*> (p1->Next());
       }
     }
   }
@@ -915,8 +912,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Subtract
       TColStd_intMapNode * q  = 0L;
       TColStd_intMapNode * p1 = aData[i];
       while (p1 != 0L) {
-        TColStd_intMapNode* pNext =
-          reinterpret_cast <TColStd_intMapNode*> (p1->Next());
+        TColStd_intMapNode* pNext = static_cast <TColStd_intMapNode*> (p1->Next());
         // Find the corresponding block in the 2nd map
         const TColStd_intMapNode * p2 =
           aData2 [p1->HashCode (nBuckets2)];
@@ -942,7 +938,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Subtract
             }
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
         if (p2 == 0L) {
           aNewExtent += p1->NbValues();
@@ -1000,7 +996,7 @@ void TColStd_PackedMapOfInteger::Difference  (const TColStd_PackedMapOfInteger& 
             nValues = TColStd_Population (aNewMask, aNewData);
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
         // Store the block - result of operation
         if (aNewData) {
@@ -1014,7 +1010,7 @@ void TColStd_PackedMapOfInteger::Difference  (const TColStd_PackedMapOfInteger& 
           Increment();
           myExtent += nValues;
         }
-        p1 = reinterpret_cast <const TColStd_intMapNode*> (p1->Next());
+        p1 = static_cast <const TColStd_intMapNode*> (p1->Next());
       }
     }
     
@@ -1028,7 +1024,7 @@ void TColStd_PackedMapOfInteger::Difference  (const TColStd_PackedMapOfInteger& 
         while (p1) {
           if (p1->IsEqual(*p2))
             break;
-          p1 = reinterpret_cast <const TColStd_intMapNode*> (p1->Next());
+          p1 = static_cast <const TColStd_intMapNode*> (p1->Next());
         }
         // Add the block from the 2nd map only in the case when the similar
         // block has not been found in the 1st map
@@ -1043,7 +1039,7 @@ void TColStd_PackedMapOfInteger::Difference  (const TColStd_PackedMapOfInteger& 
           Increment();
           myExtent += p2->NbValues();
         }
-        p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+        p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
       }
     }
   }
@@ -1082,8 +1078,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Differ(const TColStd_PackedMapOfInt
         // Find the corresponding block in the 1st map
         TColStd_intMapNode * p1 =
           aData1[p2->HashCode (NbBuckets())];
-        TColStd_intMapNode* pNext =
-          reinterpret_cast <TColStd_intMapNode*> (p1->Next());
+        TColStd_intMapNode* pNext = static_cast <TColStd_intMapNode*> (p1->Next());
         
         while (p1) {
           if (p1->IsEqual(*p2)) {
@@ -1121,7 +1116,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Differ(const TColStd_PackedMapOfInt
           aNewExtent += p2->NbValues();
           isChanged = Standard_True;
         }
-        p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+        p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
       }
     }
     myExtent = aNewExtent;
@@ -1152,8 +1147,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::IsEqual(const TColStd_PackedMapOfIn
     for (; i <= NbBuckets(); i++) {
       const TColStd_intMapNode * p1 = aData1[i];
       while (p1 != 0L) {
-        TColStd_intMapNode* pNext =
-          reinterpret_cast <TColStd_intMapNode*> (p1->Next());
+        TColStd_intMapNode* pNext = static_cast <TColStd_intMapNode*> (p1->Next());
         // Find the corresponding block in the 2nd map
         const TColStd_intMapNode * p2 =
           aData2 [p1->HashCode (nBuckets2)];
@@ -1163,7 +1157,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::IsEqual(const TColStd_PackedMapOfIn
               return Standard_False;
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
         // if the same block not found, maps are different
         if (p2 == 0L) 
@@ -1201,8 +1195,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::IsSubset (const TColStd_PackedMapOf
     for (; i <= NbBuckets(); i++) {
       const TColStd_intMapNode * p1 = aData1[i];
       while (p1 != 0L) {
-        TColStd_intMapNode* pNext =
-          reinterpret_cast <TColStd_intMapNode*> (p1->Next());
+        TColStd_intMapNode* pNext = static_cast <TColStd_intMapNode*> (p1->Next());
         // Find the corresponding block in the 2nd map
         const TColStd_intMapNode * p2 =
           aData2 [p1->HashCode (nBuckets2)];
@@ -1214,7 +1207,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::IsSubset (const TColStd_PackedMapOf
               return Standard_False;
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
         p1 = pNext;
       }
@@ -1244,8 +1237,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::HasIntersection (const TColStd_Pack
     for (; i <= NbBuckets(); i++) {
       const TColStd_intMapNode * p1 = aData1[i];
       while (p1 != 0L) {
-        TColStd_intMapNode* pNext =
-          reinterpret_cast <TColStd_intMapNode*> (p1->Next());
+        TColStd_intMapNode* pNext = static_cast <TColStd_intMapNode*> (p1->Next());
         // Find the corresponding block in the 2nd map
         const TColStd_intMapNode * p2 =
           aData2 [p1->HashCode (nBuckets2)];
@@ -1255,7 +1247,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::HasIntersection (const TColStd_Pack
               return Standard_True;
             break;
           }
-          p2 = reinterpret_cast <const TColStd_intMapNode*> (p2->Next());
+          p2 = static_cast <const TColStd_intMapNode*> (p2->Next());
         }
         p1 = pNext;
       }
