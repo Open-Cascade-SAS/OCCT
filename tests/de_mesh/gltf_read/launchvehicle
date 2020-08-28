@@ -1,0 +1,15 @@
+puts "========"
+puts "0031706: Data Exchange, RWGltf_CafReader - imports model with incorrect transformation"
+puts "========"
+
+ReadGltf D [locate_data_file bug31706_launchvehicle.glb]
+XGetOneShape s D
+checknbshapes s -face 9 -compound 13
+checktrinfo s -tri 47640 -nod 35270
+
+if { [XDumpLocation D 0:1:1:15:5] != "Transformation (3 rows * 4 columns matrix): (1,0,0,0) (0,1,0,-3350) (0,0,1,-2700)" } {
+  puts "Error: wrong location of D:Root/CentaurBody/Fairing1"
+}
+if { [XDumpLocation D 0:1:1:15:6] != "Transformation (3 rows * 4 columns matrix): (-1,-0,-1.50996e-07,0.000407689) (0,1,0,-3350) (1.50996e-07,0,-1,2700)" } {
+  puts "Error: wrong location of D:Root/CentaurBody/FairingFlipper_180_Y"
+}
