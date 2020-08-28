@@ -13,6 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <STEPCAFControl_Reader.hxx>
 
 #include <BRep_Builder.hxx>
 #include <Geom_Axis2Placement.hxx>
@@ -50,7 +51,6 @@
 #include <STEPCAFControl_DataMapOfSDRExternFile.hxx>
 #include <STEPCAFControl_DataMapOfShapePD.hxx>
 #include <STEPCAFControl_ExternFile.hxx>
-#include <STEPCAFControl_Reader.hxx>
 #include <STEPConstruct.hxx>
 #include <STEPConstruct_Assembly.hxx>
 #include <STEPConstruct_ExternRefs.hxx>
@@ -356,6 +356,14 @@ STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)
   Init(WS, scratch);
 }
 
+//=======================================================================
+//function : ~STEPCAFControl_Reader
+//purpose  :
+//=======================================================================
+STEPCAFControl_Reader::~STEPCAFControl_Reader()
+{
+  //
+}
 
 //=======================================================================
 //function : Init

@@ -70,7 +70,10 @@ public:
   //! Creates a reader tool and attaches it to an already existing Session
   //! Clears the session if it was not yet set for STEP
   Standard_EXPORT STEPCAFControl_Reader(const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
-  
+
+  //! Destructor.
+  Standard_EXPORT virtual ~STEPCAFControl_Reader();
+
   //! Clears the internal data structures and attaches to a new session
   //! Clears the session if it was not yet set for STEP
   Standard_EXPORT void Init (const Handle(XSControl_WorkSession)& WS, const Standard_Boolean scratch = Standard_True);
