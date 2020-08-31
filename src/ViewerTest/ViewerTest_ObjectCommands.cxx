@@ -5742,6 +5742,52 @@ static int VFont (Draw_Interpretor& theDI,
       aMgr->RegisterFont (aFont, Standard_True);
       theDI << aFont->ToString();
     }
+    else if (anArgCase == "-aliases")
+    {
+      TCollection_AsciiString anAliasName;
+      TColStd_SequenceOfHAsciiString aNames;
+      if (anArgIter + 1 < theArgNb
+      && *theArgVec[anArgIter + 1] != '-')
+      {
+        anAliasName = theArgVec[++anArgIter];
+      }
+      if (!anAliasName.IsEmpty())
+      {
+        aMgr->GetFontAliases (aNames, anAliasName);
+      }
+      else
+      {
+        aMgr->GetAllAliases (aNames);
+      }
+      for (TColStd_SequenceOfHAsciiString::Iterator aNameIter (aNames); aNameIter.More(); aNameIter.Next())
+      {
+        theDI << "{" << aNameIter.Value()->String() << "} ";
+      }
+    }
+    else if (anArgIter + 2 < theArgNb
+          && anArgCase == "-addalias")
+    {
+      TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
+      TCollection_AsciiString aFontName  (theArgVec[++anArgIter]);
+      aMgr->AddFontAlias (anAliasName, aFontName);
+    }
+    else if (anArgIter + 2 < theArgNb
+          && anArgCase == "-removealias")
+    {
+      TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
+      TCollection_AsciiString aFontName  (theArgVec[++anArgIter]);
+      aMgr->RemoveFontAlias (anAliasName, aFontName);
+    }
+    else if (anArgIter + 1 < theArgNb
+          && anArgCase == "-clearalias")
+    {
+      TCollection_AsciiString anAliasName(theArgVec[++anArgIter]);
+      aMgr->RemoveFontAlias (anAliasName, "");
+    }
+    else if (anArgCase == "-clearaliases")
+    {
+      aMgr->RemoveFontAlias ("", "");
+    }
     else if (anArgCase == "-verbose"
           || anArgCase == "-trace")
     {
@@ -6755,6 +6801,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:        [-findAll fontNameMask] [-findInfo fontName]"
                    "\n\t\t:        [-unicodeFallback {on|off}]"
                    "\n\t\t:        [-clear] [-init] [-list] [-names]"
+                   "\n\t\t:        [-aliases [aliasName]] [-addAlias Alias FontName] [-removeAlias Alias FontName] [-clearAlias Alias] [-clearAliases]"
                    "\n\t\t: Work with font registry - register font, list available fonts, find font."
                    "\n\t\t: -findAll  is same as -find, but can print more than one font when mask is passed."
                    "\n\t\t: -findInfo is same as -find, but prints complete font information instead of family name.",

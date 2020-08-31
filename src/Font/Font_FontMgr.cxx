@@ -311,6 +311,114 @@ Standard_Boolean& Font_FontMgr::ToUseUnicodeSubsetFallback()
 }
 
 // =======================================================================
+// function : AddFontAlias
+// purpose  :
+// =======================================================================
+bool Font_FontMgr::AddFontAlias (const TCollection_AsciiString& theAliasName,
+                                 const TCollection_AsciiString& theFontName)
+{
+  TCollection_AsciiString anAliasName (theAliasName);
+  anAliasName.LowerCase();
+  Handle(Font_FontAliasSequence) anAliases;
+  if (!myFontAliases.Find (anAliasName, anAliases))
+  {
+    anAliases = new Font_FontAliasSequence();
+    myFontAliases.Bind (anAliasName, anAliases);
+  }
+
+  for (Font_FontAliasSequence::Iterator anAliasIter (*anAliases); anAliasIter.More(); anAliasIter.Next())
+  {
+    if (anAliasIter.Value().FontName.IsEqual (anAliasName))
+    {
+      return false;
+    }
+  }
+
+  anAliases->Append (Font_FontAlias (theFontName));
+  return true;
+}
+
+// =======================================================================
+// function : RemoveFontAlias
+// purpose  :
+// =======================================================================
+bool Font_FontMgr::RemoveFontAlias (const TCollection_AsciiString& theAliasName,
+                                    const TCollection_AsciiString& theFontName)
+{
+  if (theAliasName.IsEmpty())
+  {
+    if (myFontAliases.IsEmpty())
+    {
+      return false;
+    }
+    myFontAliases.Clear();
+    return true;
+  }
+
+  TCollection_AsciiString anAliasName (theAliasName);
+  anAliasName.LowerCase();
+  Handle(Font_FontAliasSequence) anAliases;
+  if (!myFontAliases.Find (anAliasName, anAliases))
+  {
+    return false;
+  }
+
+  if (theFontName.IsEmpty())
+  {
+    myFontAliases.UnBind (anAliasName);
+    return true;
+  }
+
+  for (Font_FontAliasSequence::Iterator aFontIter (*anAliases); aFontIter.More(); aFontIter.Next())
+  {
+    if (aFontIter.Value().FontName.IsEqual (theFontName))
+    {
+      anAliases->Remove (aFontIter);
+      if (anAliases->IsEmpty())
+      {
+        myFontAliases.UnBind (anAliasName);
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+// =======================================================================
+// function : GetAllAliases
+// purpose  :
+// =======================================================================
+void Font_FontMgr::GetAllAliases (TColStd_SequenceOfHAsciiString& theAliases) const
+{
+  for (NCollection_DataMap<TCollection_AsciiString, Handle(Font_FontAliasSequence)>::Iterator anAliasIter (myFontAliases);
+       anAliasIter.More(); anAliasIter.Next())
+  {
+    theAliases.Append (new TCollection_HAsciiString (anAliasIter.Key()));
+  }
+}
+
+// =======================================================================
+// function : GetFontAliases
+// purpose  :
+// =======================================================================
+void Font_FontMgr::GetFontAliases (TColStd_SequenceOfHAsciiString& theFontNames,
+                                   const TCollection_AsciiString& theAliasName) const
+{
+  TCollection_AsciiString anAliasName (theAliasName);
+  anAliasName.LowerCase();
+  Handle(Font_FontAliasSequence) anAliases;
+  if (!myFontAliases.Find (anAliasName, anAliases))
+  {
+    return;
+  }
+
+  for (Font_FontAliasSequence::Iterator aFontIter (*anAliases); aFontIter.More(); aFontIter.Next())
+  {
+    theFontNames.Append (new TCollection_HAsciiString (aFontIter.Value().FontName));
+  }
+}
+
+// =======================================================================
 // function : addFontAlias
 // purpose  :
 // =======================================================================

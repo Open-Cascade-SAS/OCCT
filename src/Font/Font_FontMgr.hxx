@@ -146,12 +146,52 @@ public:
     return isRegistered;
   }
 
+public:
+
   //! Return flag for tracing font aliases usage via Message_Trace messages; TRUE by default.
   Standard_Boolean ToTraceAliases() const { return myToTraceAliases; }
 
   //! Set flag for tracing font alias usage; useful to trace which fonts are actually used.
   //! Can be disabled to avoid redundant messages with Message_Trace level.
   void SetTraceAliases (Standard_Boolean theToTrace) { myToTraceAliases = theToTrace; }
+
+  //! Return font names with defined aliases.
+  //! @param theAliases [out] alias names
+  Standard_EXPORT void GetAllAliases (TColStd_SequenceOfHAsciiString& theAliases) const;
+
+  //! Return aliases to specified font name.
+  //! @param theFontNames [out] font names associated with alias name
+  //! @param theAliasName [in]  alias name
+  Standard_EXPORT void GetFontAliases (TColStd_SequenceOfHAsciiString& theFontNames,
+                                       const TCollection_AsciiString& theAliasName) const;
+
+  //! Register font alias.
+  //!
+  //! Font alias allows using predefined short-cuts like Font_NOF_MONOSPACE or Font_NOF_SANS_SERIF,
+  //! and defining several fallback fonts like Font_NOF_CJK ("cjk") or "courier" for fonts,
+  //! which availability depends on system.
+  //!
+  //! By default, Font_FontMgr registers standard aliases, which could be extended or replaced by application
+  //! basing on better knowledge of the system or basing on additional fonts packaged with application itself.
+  //! Aliases are defined "in advance", so that they could point to non-existing fonts,
+  //! and they are resolved dynamically on request - first existing font is returned in case of multiple aliases to the same name.
+  //!
+  //! @param theAliasName [in] alias name or name of another font to be used as alias
+  //! @param theFontName  [in] font to be used as substitution for alias
+  //! @return FALSE if alias has been already registered
+  Standard_EXPORT bool AddFontAlias (const TCollection_AsciiString& theAliasName,
+                                     const TCollection_AsciiString& theFontName);
+
+  //! Unregister font alias.
+  //! @param theAliasName [in] alias name or name of another font to be used as alias;
+  //!                          all aliases will be removed in case of empty name
+  //! @param theFontName  [in] font to be used as substitution for alias;
+  //!                          all fonts will be removed in case of empty name
+  //! @return TRUE if alias has been removed
+  Standard_EXPORT bool RemoveFontAlias (const TCollection_AsciiString& theAliasName,
+                                        const TCollection_AsciiString& theFontName);
+
+public:
 
   //! Collects available fonts paths.
   Standard_EXPORT void InitFontDataBase();
