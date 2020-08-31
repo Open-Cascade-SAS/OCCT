@@ -299,7 +299,7 @@ void Draw_Interpretor::SetToColorize (Standard_Boolean theToColorize)
   {
     if (Handle(Message_PrinterOStream) aPrinter = Handle(Message_PrinterOStream)::DownCast (aPrinterIter.Value()))
     {
-      aPrinter->SetToColorize (Standard_False);
+      aPrinter->SetToColorize (theToColorize);
     }
   }
 }
