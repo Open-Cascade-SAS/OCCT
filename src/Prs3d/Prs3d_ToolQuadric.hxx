@@ -23,38 +23,78 @@
 class Prs3d_ToolQuadric
 {
 public:
-
   DEFINE_STANDARD_ALLOC
 
-  //! Generate primitives for 3D quadric surface and fill the given array. Optional transformation is applied.
-  Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray, const gp_Trsf& theTrsf);
-
-  //! Generate primitives for 3D quadric surface presentation and fill the given array and poly triangulation structure. Optional transformation is applied.
-  Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray, Handle(Poly_Triangulation)& theTriangulation, const gp_Trsf& theTrsf);
-
-  //! Number of triangles for presentation with the given params.
+  //! Return number of triangles for presentation with the given params.
   static Standard_Integer TrianglesNb (const Standard_Integer theSlicesNb,
                                        const Standard_Integer theStacksNb)
   {
     return theSlicesNb * theStacksNb * 2;
   }
 
+  //! Return number of vertices for presentation with the given params.
+  static Standard_Integer VerticesNb (const Standard_Integer theSlicesNb,
+                                      const Standard_Integer theStacksNb,
+                                      const Standard_Boolean theIsIndexed = Standard_True)
+  {
+    return theIsIndexed
+      ? (theSlicesNb + 1) * (theStacksNb + 1)
+      : TrianglesNb (theSlicesNb, theStacksNb) * 3;
+  }
+
+public:
+
+  //! Generate primitives for 3D quadric surface presentation.
+  //! @param theTrsf [in] optional transformation to apply
+  //! @return generated triangulation
+  Standard_EXPORT Handle(Graphic3d_ArrayOfTriangles) CreateTriangulation (const gp_Trsf& theTrsf) const;
+
+  //! Generate primitives for 3D quadric surface presentation.
+  //! @param theTrsf [in] optional transformation to apply
+  //! @return generated triangulation
+  Standard_EXPORT Handle(Poly_Triangulation) CreatePolyTriangulation (const gp_Trsf& theTrsf) const;
+
+  //! Generate primitives for 3D quadric surface and fill the given array.
+  //! @param theArray [in][out] the array of vertices;
+  //!                           when NULL, function will create an indexed array;
+  //!                           when not NULL, triangles will be appended to the end of array
+  //!                           (will raise an exception if reserved array size is not large enough)
+  //! @param theTrsf [in] optional transformation to apply
+  Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
+                                  const gp_Trsf& theTrsf) const;
+
+public:
+
+  //! Generate primitives for 3D quadric surface presentation.
+  //! @param theArray [out] generated array of triangles
+  //! @param theTriangulation [out] generated triangulation
+  //! @param theTrsf [in] optional transformation to apply
+  Standard_DEPRECATED("Deprecated method, CreateTriangulation() and CreatePolyTriangulation() should be used instead")
+  Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
+                                  Handle(Poly_Triangulation)& theTriangulation,
+                                  const gp_Trsf& theTrsf) const;
+
 protected:
 
-  //! Method implements an algorithm to generate arrays of vertices and normals for 3D surface.
-  Standard_EXPORT void fillArrays (const gp_Trsf& theTrsf, TColgp_Array1OfPnt& theArray, NCollection_Array1<gp_Dir>& theNormals);
-
-  //! Number of triangles in generated presentation.
+  //! Return number of triangles in generated presentation.
   Standard_Integer TrianglesNb() const
   {
     return mySlicesNb * myStacksNb * 2;
   }
 
+  //! Return number of vertices in generated presentation.
+  Standard_Integer VerticesNb (const Standard_Boolean theIsIndexed = Standard_True) const
+  {
+    return theIsIndexed
+         ? (mySlicesNb + 1) * (myStacksNb + 1)
+         : TrianglesNb() * 3;
+  }
+
   //! Redefine this method to generate vertex at given parameters.
-  virtual gp_Pnt Vertex (const Standard_Real theU, const Standard_Real theV) = 0;
+  virtual gp_Pnt Vertex (const Standard_Real theU, const Standard_Real theV) const = 0;
 
   //! Redefine this method to generate normal at given parameters.
-  virtual gp_Dir Normal (const Standard_Real theU, const Standard_Real theV) = 0;
+  virtual gp_Dir Normal (const Standard_Real theU, const Standard_Real theV) const = 0;
 
 protected:
 

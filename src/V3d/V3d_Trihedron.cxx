@@ -292,6 +292,7 @@ void V3d_Trihedron::compute()
   Standard_Integer aGroupIter = myStructure->Groups().Lower();
   {
     Handle(Graphic3d_Group) aSphereGroup = addGroup (myStructure, aGroupIter);
+    aSphereGroup->SetClosed (!myIsWireframe);
 
     // Display origin.
     if (myIsWireframe)
@@ -322,6 +323,7 @@ void V3d_Trihedron::compute()
     for (Standard_Integer anIter = 0; anIter < 3; ++anIter)
     {
       Handle(Graphic3d_Group) anAxisGroup = addGroup (myStructure, aGroupIter);
+      anAxisGroup->SetClosed (!myIsWireframe);
       if (myIsWireframe)
       {
         // create a tube

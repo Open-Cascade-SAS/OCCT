@@ -36,7 +36,7 @@ Prs3d_ToolSector::Prs3d_ToolSector (const Standard_Real    theRadius,
 //function : Vertex
 //purpose  :
 //=======================================================================
-gp_Pnt Prs3d_ToolSector::Vertex (const Standard_Real theU, const Standard_Real theV)
+gp_Pnt Prs3d_ToolSector::Vertex (const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU      = theU * M_PI / 2.0;
   const Standard_Real aRadius = myRadius * theV;
@@ -46,16 +46,7 @@ gp_Pnt Prs3d_ToolSector::Vertex (const Standard_Real theU, const Standard_Real t
 }
 
 //=======================================================================
-//function : Add
-//purpose  :
-//=======================================================================
-gp_Dir Prs3d_ToolSector::Normal (const Standard_Real /*theU*/, const Standard_Real /*theV*/)
-{
-  return gp_Dir (0.0, 0.0, -1.0);
-}
-
-//=======================================================================
-//function : Perform
+//function : Create
 //purpose  :
 //=======================================================================
 Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolSector::Create (const Standard_Real    theRadius,

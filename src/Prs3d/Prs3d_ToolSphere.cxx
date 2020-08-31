@@ -36,7 +36,7 @@ Prs3d_ToolSphere::Prs3d_ToolSphere (const Standard_Real    theRadius,
 //function : Vertex
 //purpose  :
 //=======================================================================
-gp_Pnt Prs3d_ToolSphere::Vertex (const Standard_Real theU, const Standard_Real theV)
+gp_Pnt Prs3d_ToolSphere::Vertex (const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   const Standard_Real aV = theV * M_PI;
@@ -46,10 +46,10 @@ gp_Pnt Prs3d_ToolSphere::Vertex (const Standard_Real theU, const Standard_Real t
 }
 
 //=======================================================================
-//function : Add
+//function : Normal
 //purpose  :
 //=======================================================================
-gp_Dir Prs3d_ToolSphere::Normal (const Standard_Real theU, const Standard_Real theV)
+gp_Dir Prs3d_ToolSphere::Normal (const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   const Standard_Real aV = theV * M_PI;
@@ -59,7 +59,7 @@ gp_Dir Prs3d_ToolSphere::Normal (const Standard_Real theU, const Standard_Real t
 }
 
 //=======================================================================
-//function : Perform
+//function : Create
 //purpose  :
 //=======================================================================
 Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolSphere::Create (const Standard_Real    theRadius,

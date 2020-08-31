@@ -21,101 +21,120 @@
 #include <TColgp_Array1OfPnt.hxx>
 
 //=======================================================================
-//function : fillArrays
-//purpose  :
-//=======================================================================
-void Prs3d_ToolQuadric::fillArrays (const gp_Trsf& theTrsf, TColgp_Array1OfPnt& theArray, NCollection_Array1<gp_Dir>& theNormals)
-{
-  Standard_ShortReal aStepU = 1.0f / mySlicesNb;
-  Standard_ShortReal aStepV = 1.0f / myStacksNb;
-
-  for (Standard_Integer aU = 0; aU <= mySlicesNb; aU++)
-  {
-    const Standard_Real aParamU = aU * aStepU;
-    for (Standard_Integer aV = 0; aV <= myStacksNb; aV++)
-    {
-      const Standard_ShortReal aParamV = aV * aStepV;
-      const Standard_Integer   aVertId = aU * (myStacksNb + 1) + aV + 1;
-      gp_Pnt aVertex = Vertex(aParamU, aParamV);
-      gp_Dir aNormal = Normal(aParamU, aParamV);
-
-      aVertex.Transform (theTrsf);
-      aNormal.Transform (theTrsf);
-
-      theArray.SetValue (aVertId, aVertex);
-      theNormals.SetValue (aVertId, aNormal);
-    }
-  }
-}
-
-//=======================================================================
 //function : FIllArray
 //purpose  :
 //=======================================================================
-void Prs3d_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray, const gp_Trsf& theTrsf)
+void Prs3d_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
+                                   const gp_Trsf& theTrsf) const
 {
-  const Standard_Integer aTrianglesNb = TrianglesNb();
   if (theArray.IsNull())
   {
-    theArray = new Graphic3d_ArrayOfTriangles (aTrianglesNb * 3, 0, Standard_True);
+    theArray = new Graphic3d_ArrayOfTriangles (VerticesNb(), TrianglesNb() * 3, Graphic3d_ArrayFlags_VertexNormal);
   }
 
-  Poly_Array1OfTriangle aPolyTriangles (1, aTrianglesNb);
-  TColgp_Array1OfPnt anArray (1, aTrianglesNb * 3);
-  NCollection_Array1<gp_Dir> aNormals (1, aTrianglesNb * 3);
-  fillArrays (theTrsf, anArray, aNormals);
-
-  // Fill primitives
-  for (Standard_Integer aU = 0; aU < mySlicesNb; ++aU)
+  const Standard_Real aStepU = 1.0f / mySlicesNb;
+  const Standard_Real aStepV = 1.0f / myStacksNb;
+  if (theArray->EdgeNumberAllocated() > 0)
   {
-    for (Standard_Integer aV = 1; aV <= myStacksNb; ++aV)
+    // indexed array
+    for (Standard_Integer aU = 0; aU <= mySlicesNb; ++aU)
     {
-      theArray->AddVertex (anArray.Value (aU * (myStacksNb + 1) + aV), aNormals.Value (aU * (myStacksNb + 1) + aV));
-      theArray->AddVertex (anArray.Value ((aU + 1) * (myStacksNb + 1) + aV), aNormals.Value ((aU + 1) * (myStacksNb + 1) + aV));
-      theArray->AddVertex (anArray.Value ((aU + 1) * (myStacksNb + 1) + (aV + 1)), aNormals.Value ((aU + 1) * (myStacksNb + 1) + (aV + 1)));
-      theArray->AddVertex (anArray.Value ((aU + 1) * (myStacksNb + 1) + (aV + 1)), aNormals.Value ((aU + 1) * (myStacksNb + 1) + (aV + 1)));
-      theArray->AddVertex (anArray.Value (aU * (myStacksNb + 1) + (aV + 1)), aNormals.Value (aU * (myStacksNb + 1) + (aV + 1)));
-      theArray->AddVertex (anArray.Value (aU * (myStacksNb + 1) + aV), aNormals.Value (aU * (myStacksNb + 1) + aV));
+      const Standard_Real aParamU = aU * aStepU;
+      for (Standard_Integer aV = 0; aV <= myStacksNb; ++aV)
+      {
+        const Standard_Real aParamV = aV * aStepV;
+        const gp_Pnt aVertex = Vertex (aParamU, aParamV).Transformed (theTrsf);
+        const gp_Dir aNormal = Normal (aParamU, aParamV).Transformed (theTrsf);
+        theArray->AddVertex (aVertex, aNormal);
+
+        if (aU != 0 && aV != 0)
+        {
+          const int aVertId = theArray->VertexNumber();
+          theArray->AddTriangleEdges (aVertId, aVertId - myStacksNb - 2, aVertId - 1);
+          theArray->AddTriangleEdges (aVertId - myStacksNb - 2, aVertId, aVertId - myStacksNb - 1);
+        }
+      }
+    }
+  }
+  else
+  {
+    // non-indexed array
+    for (Standard_Integer aU = 0; aU < mySlicesNb; ++aU)
+    {
+      const Standard_Real aParamU = aU * aStepU;
+      for (Standard_Integer aV = 0; aV < myStacksNb; ++aV)
+      {
+        const Standard_Real aParamV = aV * aStepV;
+        theArray->AddVertex (Vertex (aParamU, aParamV).Transformed (theTrsf),
+                             Normal (aParamU, aParamV).Transformed (theTrsf));
+        theArray->AddVertex (Vertex (aParamU + aStepU, aParamV).Transformed (theTrsf),
+                             Normal (aParamU + aStepU, aParamV).Transformed (theTrsf));
+        theArray->AddVertex (Vertex (aParamU + aStepU, aParamV + aStepV).Transformed (theTrsf),
+                             Normal (aParamU + aStepU, aParamV + aStepV).Transformed (theTrsf));
+        theArray->AddVertex (Vertex (aParamU + aStepU, aParamV + aStepV).Transformed (theTrsf),
+                             Normal (aParamU + aStepU, aParamV + aStepV).Transformed (theTrsf));
+        theArray->AddVertex (Vertex (aParamU, aParamV + aStepV).Transformed (theTrsf),
+                             Normal (aParamU, aParamV + aStepV).Transformed (theTrsf));
+        theArray->AddVertex (Vertex (aParamU, aParamV).Transformed (theTrsf),
+                             Normal (aParamU, aParamV).Transformed (theTrsf));
+      }
     }
   }
 }
 
 //=======================================================================
-//function : FillTriangulation
+//function : CreateTriangulation
+//purpose  :
+//=======================================================================
+Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolQuadric::CreateTriangulation (const gp_Trsf& theTrsf) const
+{
+  Handle(Graphic3d_ArrayOfTriangles) aTriangulation;
+  FillArray (aTriangulation, theTrsf);
+  return aTriangulation;
+}
+
+//=======================================================================
+//function : CreatePolyTriangulation
+//purpose  :
+//=======================================================================
+Handle(Poly_Triangulation) Prs3d_ToolQuadric::CreatePolyTriangulation (const gp_Trsf& theTrsf) const
+{
+  Handle(Poly_Triangulation) aTriangulation = new Poly_Triangulation (VerticesNb(), TrianglesNb(), Standard_False);
+  TColgp_Array1OfPnt& aNodes = aTriangulation->ChangeNodes();
+  Poly_Array1OfTriangle& aTriangles = aTriangulation->ChangeTriangles();
+
+  Standard_ShortReal aStepU = 1.0f / mySlicesNb;
+  Standard_ShortReal aStepV = 1.0f / myStacksNb;
+
+  // Fill triangles
+  for (Standard_Integer aU = 0, anIndex = 0; aU <= mySlicesNb; ++aU)
+  {
+    const Standard_Real aParamU = aU * aStepU;
+    for (Standard_Integer aV = 0; aV <= myStacksNb; ++aV)
+    {
+      const Standard_ShortReal aParamV = aV * aStepV;
+      const Standard_Integer   aVertId = aU * (myStacksNb + 1) + (aV + 1);
+      gp_Pnt aVertex = Vertex (aParamU, aParamV).Transformed (theTrsf);
+
+      aNodes.SetValue (aVertId, aVertex);
+      if (aU != 0 && aV != 0)
+      {
+        aTriangles.SetValue (++anIndex, Poly_Triangle (aVertId, aVertId - myStacksNb - 2, aVertId - 1));
+        aTriangles.SetValue (++anIndex, Poly_Triangle (aVertId - myStacksNb - 2, aVertId, aVertId - myStacksNb - 1));
+      }
+    }
+  }
+  return aTriangulation;
+}
+
+//=======================================================================
+//function : FillArray
 //purpose  :
 //=======================================================================
 void Prs3d_ToolQuadric::FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
                                    Handle(Poly_Triangulation)& theTriangulation,
-                                   const gp_Trsf& theTrsf)
+                                   const gp_Trsf& theTrsf) const
 {
-  const Standard_Integer aTrianglesNb = TrianglesNb();
-  theArray = new Graphic3d_ArrayOfTriangles(aTrianglesNb * 3, 0, Standard_True);
-
-  Poly_Array1OfTriangle aPolyTriangles(1, aTrianglesNb);
-  TColgp_Array1OfPnt anArray(1, aTrianglesNb * 3);
-  NCollection_Array1<gp_Dir> aNormals(1, aTrianglesNb * 3);
-  fillArrays(theTrsf, anArray, aNormals);
-
-  // Fill triangles
-  for (Standard_Integer aU = 0, anIndex = 0; aU < mySlicesNb; ++aU)
-  {
-    for (Standard_Integer aV = 1; aV <= myStacksNb; ++aV)
-    {
-      theArray->AddVertex(anArray.Value(aU * (myStacksNb + 1) + aV), aNormals.Value(aU * (myStacksNb + 1) + aV));
-      theArray->AddVertex(anArray.Value((aU + 1) * (myStacksNb + 1) + aV), aNormals.Value((aU + 1) * (myStacksNb + 1) + aV));
-      theArray->AddVertex(anArray.Value((aU + 1) * (myStacksNb + 1) + (aV + 1)), aNormals.Value((aU + 1) * (myStacksNb + 1) + (aV + 1)));
-      theArray->AddVertex(anArray.Value((aU + 1) * (myStacksNb + 1) + (aV + 1)), aNormals.Value((aU + 1) * (myStacksNb + 1) + (aV + 1)));
-      theArray->AddVertex(anArray.Value(aU * (myStacksNb + 1) + (aV + 1)), aNormals.Value(aU * (myStacksNb + 1) + (aV + 1)));
-      theArray->AddVertex(anArray.Value(aU * (myStacksNb + 1) + aV), aNormals.Value(aU * (myStacksNb + 1) + aV));
-
-      aPolyTriangles.SetValue (++anIndex, Poly_Triangle(aU * (myStacksNb + 1) + aV,
-                               (aU + 1) * (myStacksNb + 1) + aV,
-                               (aU + 1) * (myStacksNb + 1) + (aV + 1)));
-      aPolyTriangles.SetValue (++anIndex, Poly_Triangle((aU + 1) * (myStacksNb + 1) + (aV + 1),
-                               aU * (myStacksNb + 1) + (aV + 1),
-                               aU * (myStacksNb + 1) + aV));
-    }
-  }
-
-  theTriangulation = new Poly_Triangulation (anArray, aPolyTriangles);
+  theArray = CreateTriangulation (theTrsf);
+  theTriangulation = CreatePolyTriangulation (theTrsf);
 }

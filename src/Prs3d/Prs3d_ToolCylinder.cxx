@@ -41,7 +41,7 @@ Prs3d_ToolCylinder::Prs3d_ToolCylinder (const Standard_Real    theBottomRad,
 //function : Vertex
 //purpose  :
 //=======================================================================
-gp_Pnt Prs3d_ToolCylinder::Vertex (const Standard_Real theU, const Standard_Real theV)
+gp_Pnt Prs3d_ToolCylinder::Vertex (const Standard_Real theU, const Standard_Real theV) const
 {
   const Standard_Real aU      = theU * M_PI * 2.0;
   const Standard_Real aRadius = myBottomRadius + (myTopRadius - myBottomRadius) * theV;
@@ -51,10 +51,10 @@ gp_Pnt Prs3d_ToolCylinder::Vertex (const Standard_Real theU, const Standard_Real
 }
 
 //=======================================================================
-//function : Add
+//function : Normal
 //purpose  :
 //=======================================================================
-gp_Dir Prs3d_ToolCylinder::Normal (const Standard_Real theU, const Standard_Real /*theV*/)
+gp_Dir Prs3d_ToolCylinder::Normal (const Standard_Real theU, const Standard_Real ) const
 {
   const Standard_Real aU = theU * M_PI * 2.0;
   return gp_Dir (Cos (aU) * myHeight,
@@ -63,7 +63,7 @@ gp_Dir Prs3d_ToolCylinder::Normal (const Standard_Real theU, const Standard_Real
 }
 
 //=======================================================================
-//function : Perform
+//function : Create
 //purpose  :
 //=======================================================================
 Handle(Graphic3d_ArrayOfTriangles) Prs3d_ToolCylinder::Create (const Standard_Real    theBottomRad,

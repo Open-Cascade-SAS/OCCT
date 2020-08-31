@@ -598,6 +598,7 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       }
 
       Handle(Graphic3d_Group) anAxisGroup = thePrs->NewGroup();
+      anAxisGroup->SetClosed (true);
       anAxisGroup->SetGroupPrimitivesAspect (aDatumAspect->ShadingAspect (aPart)->Aspect());
 
       const Standard_Real anArrowLength = 0.2 * anAxisSize;
@@ -620,6 +621,7 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
     // Display center
     {
       Handle(Graphic3d_Group) aGroup = thePrs->NewGroup();
+      aGroup->SetClosed (true);
       Handle(Prs3d_ShadingAspect) anAspectCen = new Prs3d_ShadingAspect();
       anAspectCen->SetColor (Quantity_NOC_WHITE);
       aGroup->SetGroupPrimitivesAspect (anAspectCen->Aspect());

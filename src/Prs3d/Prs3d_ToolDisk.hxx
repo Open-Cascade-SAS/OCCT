@@ -50,10 +50,13 @@ public:
 protected:
 
   //! Computes vertex at given parameter location of the surface.
-  Standard_EXPORT virtual gp_Pnt Vertex (const Standard_Real theU, const Standard_Real theV) Standard_OVERRIDE;
+  Standard_EXPORT virtual gp_Pnt Vertex (const Standard_Real theU, const Standard_Real theV) const Standard_OVERRIDE;
 
   //! Computes normal at given parameter location of the surface.
-  virtual gp_Dir Normal (const Standard_Real , const Standard_Real ) Standard_OVERRIDE { return gp_Dir (0.0, 0.0, -1.0); }
+  virtual gp_Dir Normal (const Standard_Real , const Standard_Real ) const Standard_OVERRIDE
+  {
+    return gp_Dir (0.0, 0.0, -1.0);
+  }
 
 protected:
 
