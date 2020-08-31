@@ -3519,6 +3519,70 @@ static Standard_Integer OCC31697(Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
+#include <TObj_Model.hxx>
+#include <TObj_TModel.hxx>
+#include <TObj_ObjectIterator.hxx>
+//=======================================================================
+//function :  OCC31320
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC31320(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc < 3)
+  {
+    di << "Usage : " << argv[0] << " DocName ObjName\n";
+    return 1;
+  }
+  Handle(TObj_Model) aModel;
+  Handle(TDocStd_Document) D;
+  if (!DDocStd::GetDocument (argv[1], D)) 
+  {
+    di << "Error: document " << argv[1] << " not found\n";
+    return 1;
+  }
+
+  TDF_Label aLabel = D->Main();
+  Handle(TObj_TModel) aModelAttr;
+  if (!aLabel.IsNull() && aLabel.FindAttribute (TObj_TModel::GetID(), aModelAttr))
+    aModel = aModelAttr->Model();
+
+  if (aModel.IsNull())
+  {
+    di << "Error: TObj model " << argv[1] << " not found\n";
+    return 1;
+  }
+
+  Handle(TCollection_HExtendedString) aName = new TCollection_HExtendedString (argv[2]);
+  Handle(TObj_TNameContainer) aDict;
+  Handle(TObj_Object) anObj = aModel->FindObject (aName, aDict);
+
+  if (aModel.IsNull())
+  {
+    di << "Error: object " << argv[2] << " not found\n";
+    return 1;
+  }
+
+  // do a test: find the first child of an object, remove object and get the father of this child
+  Handle(TObj_ObjectIterator) aChildrenIter = anObj->GetChildren();
+  if (!aChildrenIter->More())
+  {
+    di << "Error: object " << argv[2] << " has no children\n";
+    return 1;
+  }
+
+  Handle(TObj_Object) aChild = aChildrenIter->Value();
+  anObj->Detach();
+  Handle(TObj_Object) aFather = aChild->GetFatherObject();
+  if (!aFather.IsNull())
+  {
+    di << "Error: father is not null\n";
+    return 1;
+  }
+
+  return 0;
+
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3586,6 +3650,8 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC31294", "OCC31294", __FILE__, OCC31294, group);
 
   theCommands.Add("OCC31697", "OCC31697 expression variable", __FILE__, OCC31697, group);
+
+  theCommands.Add("OCC31320", "OCC31320 DocName ObjName : tests remove of the children GetFather method if father is removed", __FILE__, OCC31320, group);
 
   return;
 }

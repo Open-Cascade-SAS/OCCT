@@ -1,0 +1,13 @@
+puts "============"
+puts "0031320: TObj - method TObj_Object::GetFatherObject() is not protected against deleted object"
+puts "============"
+puts ""
+
+pload TOBJ QAcommands
+
+# create document with object and sub-object
+TObjNew TD1
+TObjAddObj TD1 obj
+TObjAddChild TD1 obj subobj1
+
+OCC31320 TD1 obj

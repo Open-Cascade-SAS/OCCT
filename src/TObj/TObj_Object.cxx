@@ -615,8 +615,12 @@ Standard_Boolean TObj_Object::GetObj(const TDF_Label& theLabel,
 Handle(TObj_Object) TObj_Object::GetFatherObject
                          (const Handle(Standard_Type)& theType) const
 {
-  Handle(TObj_Object) aFather, aSon(this);
+  Handle(TObj_Object) aFather;
 
+  if (myLabel.IsNull())
+    return aFather;
+
+  Handle(TObj_Object) aSon(this);
   while ( aSon->GetObj( aSon->GetLabel().Father(), aFather, Standard_True ) )
   {
     if (theType.IsNull() || aFather->IsKind( theType ))
