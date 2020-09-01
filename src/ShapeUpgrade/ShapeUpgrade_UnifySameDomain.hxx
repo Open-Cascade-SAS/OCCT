@@ -27,6 +27,8 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <Geom_Plane.hxx>
+#include <Precision.hxx>
 class ShapeBuild_ReShape;
 class TopoDS_Shape;
 
@@ -66,6 +68,9 @@ class ShapeUpgrade_UnifySameDomain : public Standard_Transient
 {
 
 public:
+
+  typedef NCollection_DataMap<TopoDS_Shape, Handle(Geom_Plane), TopTools_ShapeMapHasher> DataMapOfFacePlane;
+  
   //! Empty constructor
   Standard_EXPORT ShapeUpgrade_UnifySameDomain();
   
@@ -177,6 +182,7 @@ private:
   TopoDS_Shape myShape;
   Handle(ShapeBuild_ReShape) myContext;
   TopTools_MapOfShape myKeepShapes;
+  DataMapOfFacePlane myFacePlaneMap;
 
   Handle(BRepTools_History) myHistory; //!< The history.
 };

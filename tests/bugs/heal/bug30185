@@ -7,7 +7,7 @@ restore [locate_data_file bug30185.brep] s
 
 unifysamedom r s +b
 checkshape r
-checknbshapes r -vertex 54 -edge 78 -face 24
+checknbshapes r -vertex 50 -edge 71 -face 21
 checkmaxtol r -min_tol 2.49130e-03
 checkmaxtol s -min_tol 2.49130e-03
 

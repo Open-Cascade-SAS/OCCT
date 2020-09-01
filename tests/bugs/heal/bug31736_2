@@ -1,0 +1,17 @@
+puts "=================================================================================="
+puts "OCC31736: ShapeUpgrade_UnifySameDomain algorithm does not unify all possible faces"
+puts "=================================================================================="
+puts ""
+
+restore [locate_data_file bug31736_2.brep] a
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -vertex 17 -edge 24 -wire 9 -face 9 -shell 1 -solid 1
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.5} {
+   puts "Error: bad tolerance of result"
+}
