@@ -469,6 +469,16 @@ Handle(StepBasic_ProductDefinition) STEPConstruct_ExternRefs::ProdDef (const Sta
 }
 
 //=======================================================================
+//function : DocFile
+//purpose  : 
+//=======================================================================
+
+Handle(StepBasic_DocumentFile) STEPConstruct_ExternRefs::DocFile(const Standard_Integer num) const
+{
+  return Handle(StepBasic_DocumentFile)::DownCast(myDocFiles.Value(num));
+}
+
+//=======================================================================
 //function : Format
 //purpose  : 
 //=======================================================================

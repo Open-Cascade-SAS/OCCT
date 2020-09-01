@@ -46,6 +46,7 @@
 #include <StepBasic_SiUnit.hxx>
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepBasic_Unit.hxx>
+#include <StepBasic_DocumentFile.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_DataMapIteratorOfDataMapOfShapePD.hxx>
 #include <STEPCAFControl_DataMapOfPDExternFile.hxx>
@@ -623,8 +624,10 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
     }
   }
 
-  // get directory name of the main file
+  // get file name and directory name of the main file
   OSD_Path mainfile(reader.WS()->LoadedFile());
+  TCollection_AsciiString aMainName;
+  aMainName = mainfile.Name() + mainfile.Extension();
   mainfile.SetName("");
   mainfile.SetExtension("");
   TCollection_AsciiString dpath;
@@ -673,6 +676,13 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
     // compute true path to the extern file
     TCollection_AsciiString fullname = OSD_Path::AbsolutePath(dpath, filename);
     if (fullname.Length() <= 0) fullname = filename;
+
+    // check for not the same file
+    TCollection_AsciiString aMainFullName = OSD_Path::AbsolutePath(dpath, aMainName);
+    if (TCollection_AsciiString::IsSameString(aMainFullName,fullname,Standard_False)) {
+      TP->AddWarning(ExtRefs.DocFile(i), "External reference file is the same main file");
+      continue; // not a valid extern ref
+    }
 
     /*
         char fullname[1024];

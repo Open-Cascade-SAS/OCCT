@@ -82,6 +82,11 @@ public:
   //! is not associated to SDR in a proper way.
   Standard_EXPORT Handle(StepBasic_ProductDefinition) ProdDef (const Standard_Integer num) const;
   
+  //! Returns DocumentFile to which numth extern reference
+  //! is associated.
+  //! Returns Null if cannot be detected.
+  Standard_EXPORT Handle(StepBasic_DocumentFile) DocFile (const Standard_Integer num) const;
+
   //! Returns format identification string for the extern document
   //! Returns Null handle if format is not defined
   Standard_EXPORT Handle(TCollection_HAsciiString) Format (const Standard_Integer num) const;
