@@ -483,35 +483,71 @@ void OpenGl_View::SetGradientBackground (const Aspect_GradientBackground& theBac
 // function : SetBackgroundImage
 // purpose  :
 // =======================================================================
-void OpenGl_View::SetBackgroundImage (const TCollection_AsciiString& theFilePath)
+void OpenGl_View::SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTextureMap,
+                                      Standard_Boolean theToUpdatePBREnv)
 {
-  // Prepare aspect for texture storage
-  myBackgroundImagePath = theFilePath;
-  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
-  Handle(Graphic3d_Texture2Dmanual) aTextureMap = new Graphic3d_Texture2Dmanual (TCollection_AsciiString (theFilePath));
-  aTextureMap->EnableRepeat();
-  aTextureMap->DisableModulate();
-  aTextureMap->GetParams()->SetGenMode (Graphic3d_TOTM_MANUAL,
-                                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f),
-                                        Graphic3d_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
-  anAspect->SetTextureMap (aTextureMap);
-  anAspect->SetInteriorStyle (Aspect_IS_SOLID);
-  anAspect->SetSuppressBackFaces (false);
-  // Enable texture mapping
-  if (aTextureMap->IsDone())
+  if (theTextureMap.IsNull()
+  || !theTextureMap->IsDone())
   {
-    anAspect->SetTextureMapOn();
-  }
-  else
-  {
-    anAspect->SetTextureMapOff();
+    if (myBackgroundType == Graphic3d_TOB_TEXTURE
+     || myBackgroundType == Graphic3d_TOB_CUBEMAP)
+    {
+      myBackgroundType = Graphic3d_TOB_NONE;
+      if (theToUpdatePBREnv)
+      {
+        myPBREnvRequest = OpenGl_PBREnvRequest_CLEAR;
+      }
+    }
     return;
   }
 
-  // Set texture parameters
-  myTextureParams->SetAspect (anAspect);
+  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
+  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (theTextureMap);
+  anAspect->SetInteriorStyle (Aspect_IS_SOLID);
+  anAspect->SetSuppressBackFaces (false);
+  anAspect->SetShadingModel (Graphic3d_TOSM_UNLIT);
+  anAspect->SetTextureSet (aTextureSet);
+  anAspect->SetTextureMapOn (true);
 
-  myBackgroundType = Graphic3d_TOB_TEXTURE;
+  if (Handle(Graphic3d_Texture2D) aTextureMap = Handle(Graphic3d_Texture2D)::DownCast (theTextureMap))
+  {
+    if (theToUpdatePBREnv && myBackgroundType == Graphic3d_TOB_CUBEMAP)
+    {
+      myPBREnvRequest = OpenGl_PBREnvRequest_CLEAR;
+    }
+
+    myTextureParams->SetAspect (anAspect);
+    myBackgroundType  = Graphic3d_TOB_TEXTURE;
+    myBackgroundImage = aTextureMap;
+    return;
+  }
+
+  if (Handle(Graphic3d_CubeMap) aCubeMap = Handle(Graphic3d_CubeMap)::DownCast (theTextureMap))
+  {
+    if (theToUpdatePBREnv)
+    {
+      myPBREnvRequest = OpenGl_PBREnvRequest_BAKE;
+    }
+
+    aCubeMap->SetMipmapsGeneration (Standard_True);
+    if (const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext())
+    {
+      anAspect->SetShaderProgram (aCtx->ShaderManager()->GetBgCubeMapProgram());
+    }
+
+    myCubeMapParams->SetAspect (anAspect);
+
+    const OpenGl_Aspects* anAspectsBackup = myWorkspace->SetAspects (myCubeMapParams);
+    myWorkspace->ApplyAspects();
+    myWorkspace->SetAspects (anAspectsBackup);
+    myWorkspace->ApplyAspects();
+
+    myBackgroundType = Graphic3d_TOB_CUBEMAP;
+    myBackgroundCubeMap = aCubeMap;
+    return;
+  }
+
+  throw Standard_ProgramError ("OpenGl_View::SetBackgroundImage() - invalid texture map set for background");
 }
 
 // =======================================================================
@@ -548,54 +584,6 @@ Handle(Graphic3d_CubeMap) OpenGl_View::BackgroundCubeMap() const
 unsigned int OpenGl_View::SpecIBLMapLevels() const
 {
   return myPBREnvironment.IsNull() ? 0 : myPBREnvironment->SpecMapLevelsNumber();
-}
- 
-// =======================================================================
-// function : SetBackgroundCubeMap
-// purpose  :
-// =======================================================================
-void OpenGl_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
-                                        Standard_Boolean theToUpdatePBREnv)
-{
-  myBackgroundCubeMap = theCubeMap;
-  if (theCubeMap.IsNull())
-  {
-    if (theToUpdatePBREnv)
-    {
-      myPBREnvRequest = OpenGl_PBREnvRequest_CLEAR;
-    }
-    if (myBackgroundType == Graphic3d_TOB_CUBEMAP)
-    {
-      myBackgroundType = Graphic3d_TOB_NONE;
-    }
-    return;
-  }
-
-  theCubeMap ->SetMipmapsGeneration (Standard_True);
-  Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
-  Handle(Graphic3d_TextureSet) aTextureSet = new Graphic3d_TextureSet (myBackgroundCubeMap);
-  anAspect->SetInteriorStyle (Aspect_IS_SOLID);
-  anAspect->SetSuppressBackFaces (false);
-  anAspect->SetTextureSet (aTextureSet);
-
-  const Handle(OpenGl_Context)& aCtx = myWorkspace->GetGlContext();
-  if (!aCtx.IsNull())
-  {
-    anAspect->SetShaderProgram (aCtx->ShaderManager()->GetBgCubeMapProgram());
-  }
-  anAspect->SetTextureMapOn (theCubeMap->IsDone());
-  myCubeMapParams->SetAspect (anAspect);
-
-  if (theToUpdatePBREnv)
-  {
-    myPBREnvRequest = OpenGl_PBREnvRequest_BAKE;
-  }
-  const OpenGl_Aspects* anAspectsBackup = myWorkspace->SetAspects (myCubeMapParams);
-  myWorkspace->ApplyAspects();
-  myWorkspace->SetAspects (anAspectsBackup);
-  myWorkspace->ApplyAspects();
-
-  myBackgroundType = Graphic3d_TOB_CUBEMAP;
 }
 
 //=======================================================================

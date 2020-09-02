@@ -479,9 +479,21 @@ void V3d_View::SetBackgroundImage (const Standard_CString theFileName,
                                    const Aspect_FillMethod theFillStyle,
                                    const Standard_Boolean theToUpdate)
 {
-  myView->SetBackgroundImage (theFileName);
-  myView->SetBackgroundImageStyle (theFillStyle);
+  Handle(Graphic3d_Texture2D) aTextureMap = new Graphic3d_Texture2Dmanual (theFileName);
+  aTextureMap->DisableModulate();
+  SetBackgroundImage (aTextureMap, theFillStyle, theToUpdate);
+}
 
+//=============================================================================
+//function : SetBackgroundImage
+//purpose  :
+//=============================================================================
+void V3d_View::SetBackgroundImage (const Handle(Graphic3d_Texture2D)& theTexture,
+                                   const Aspect_FillMethod theFillStyle,
+                                   const Standard_Boolean theToUpdate)
+{
+  myView->SetBackgroundImage (theTexture);
+  myView->SetBackgroundImageStyle (theFillStyle);
   if (myImmediateUpdate || theToUpdate)
   {
     Redraw();
@@ -510,7 +522,7 @@ void V3d_View::SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap
                                      Standard_Boolean                 theToUpdatePBREnv,
                                      Standard_Boolean                 theToUpdate)
 {
-  myView->SetBackgroundCubeMap (theCubeMap, theToUpdatePBREnv);
+  myView->SetBackgroundImage (theCubeMap, theToUpdatePBREnv);
   if (myImmediateUpdate || theToUpdate)
   {
     Redraw();

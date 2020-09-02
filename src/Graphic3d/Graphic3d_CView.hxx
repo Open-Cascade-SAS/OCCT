@@ -31,6 +31,7 @@
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_SequenceOfStructure.hxx>
 #include <Graphic3d_Structure.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TypeOfAnswer.hxx>
 #include <Graphic3d_TypeOfBackfacingModel.hxx>
@@ -363,11 +364,16 @@ public:
   //! Sets gradient background fill colors.
   virtual void SetGradientBackground (const Aspect_GradientBackground& theBackground) = 0;
 
-  //! Returns background image texture file path.
-  virtual TCollection_AsciiString BackgroundImage() = 0;
+  //! Returns background image texture map.
+  virtual Handle(Graphic3d_TextureMap) BackgroundImage() = 0;
 
-  //! Sets background image texture file path.
-  virtual void SetBackgroundImage (const TCollection_AsciiString& theFilePath) = 0;
+  //! Sets image texture or environment cubemap as backround.
+  //! @param theTextureMap [in] source to set a background;
+  //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
+  //! @param theToUpdatePBREnv [in] defines whether IBL maps will be generated or not
+  //!                               (see GeneratePBREnvironment())
+  virtual void SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTextureMap,
+                                   Standard_Boolean theToUpdatePBREnv = Standard_True) = 0;
 
   //! Returns background image fill style.
   virtual Aspect_FillMethod BackgroundImageStyle() const = 0;
@@ -377,12 +383,6 @@ public:
 
   //! Returns cubemap being setted last time on background.
   virtual Handle(Graphic3d_CubeMap) BackgroundCubeMap() const = 0;
-
-  //! Sets environment cubemap as background.
-  //! @param theCubeMap cubemap source to be set as background
-  //! @param theToUpdatePBREnv defines whether IBL maps will be generated or not (see 'GeneratePBREnvironment')
-  virtual void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
-                                     Standard_Boolean theToUpdatePBREnv = Standard_True) = 0;
 
   //! Generates PBR specular probe and irradiance map
   //! in order to provide environment indirect illumination in PBR shading model (Image Based Lighting).

@@ -211,11 +211,16 @@ public:
   //! Sets gradient background fill colors.
   Standard_EXPORT virtual void SetGradientBackground (const Aspect_GradientBackground& theBackground) Standard_OVERRIDE;
 
-  //! Returns background image texture file path.
-  virtual TCollection_AsciiString BackgroundImage() Standard_OVERRIDE { return myBackgroundImagePath; }
+  //! Returns background image texture map.
+  virtual Handle(Graphic3d_TextureMap) BackgroundImage() Standard_OVERRIDE { return myBackgroundImage; }
 
-  //! Sets background image texture file path.
-  Standard_EXPORT virtual void SetBackgroundImage (const TCollection_AsciiString& theFilePath) Standard_OVERRIDE;
+  //! Sets image texture or environment cubemap as backround.
+  //! @param theTextureMap [in] source to set a background;
+  //!                           should be either Graphic3d_Texture2D or Graphic3d_CubeMap
+  //! @param theToUpdatePBREnv [in] defines whether IBL maps will be generated or not
+  //!                               (see GeneratePBREnvironment())
+  Standard_EXPORT virtual void SetBackgroundImage (const Handle(Graphic3d_TextureMap)& theTextureMap,
+                                                   Standard_Boolean theToUpdatePBREnv = Standard_True) Standard_OVERRIDE;
 
   //! Returns background image fill style.
   Standard_EXPORT virtual Aspect_FillMethod BackgroundImageStyle() const Standard_OVERRIDE;
@@ -225,12 +230,6 @@ public:
 
   //! Returns cubemap being set last time on background.
   Standard_EXPORT Handle(Graphic3d_CubeMap) BackgroundCubeMap() const Standard_OVERRIDE;
-
-  //! Sets environment cubemap as background.
-  //! @param theCubeMap cubemap source to be set as background
-  //! @param theToUpdatePBREnv defines whether IBL maps will be generated or not (see 'GeneratePBREnvironment')
-  Standard_EXPORT virtual void SetBackgroundCubeMap (const Handle(Graphic3d_CubeMap)& theCubeMap,
-                                                     Standard_Boolean theToUpdatePBREnv = Standard_True) Standard_OVERRIDE;
 
   //! Generates PBR specular probe and irradiance map
   //! in order to provide environment indirect illumination in PBR shading model (Image Based Lighting).
@@ -481,7 +480,7 @@ protected:
   gp_XYZ                          myLocalOrigin;
   Handle(OpenGl_FrameBuffer)      myFBO;
   Standard_Boolean                myToShowGradTrihedron;
-  TCollection_AsciiString         myBackgroundImagePath;
+  Handle(Graphic3d_TextureMap)    myBackgroundImage;
   Handle(Graphic3d_TextureEnv)    myTextureEnvData;
   Graphic3d_GraduatedTrihedron    myGTrihedronData;
 

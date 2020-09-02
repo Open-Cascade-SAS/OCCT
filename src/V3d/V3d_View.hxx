@@ -224,6 +224,11 @@ public:
                                            const Aspect_FillMethod theFillStyle = Aspect_FM_CENTERED,
                                            const Standard_Boolean theToUpdate = Standard_False);
 
+  //! Defines the background texture of the view by supplying the texture and fill method (centered by default)
+  Standard_EXPORT void SetBackgroundImage (const Handle(Graphic3d_Texture2D)& theTexture,
+                                           const Aspect_FillMethod theFillStyle = Aspect_FM_CENTERED,
+                                           const Standard_Boolean theToUpdate = Standard_False);
+
   //! Defines the textured background fill method of the view.
   Standard_EXPORT void SetBgImageStyle (const Aspect_FillMethod theFillStyle,
                                         const Standard_Boolean theToUpdate = Standard_False);
