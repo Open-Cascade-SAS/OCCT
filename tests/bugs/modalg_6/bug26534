@@ -1,0 +1,31 @@
+puts "========"
+puts "0026534: Boolean Cut returns empty result"
+puts "========"
+puts ""
+
+restore [locate_data_file bug26534_plate.brep] plate
+restore [locate_data_file bug26534_cutter.brep] cutter
+
+checkshape plate
+checkshape cutter
+
+bopargcheck plate
+bopargcheck cutter
+
+bclearobjects
+bcleartools
+baddobjects plate
+baddtools cutter
+bfillds
+
+bbop result 2
+checkshape result
+checknbshapes result -wire 6 -face 6 -shell 1
+checkprops result -s 5.41575e+06
+
+bbop rcommon 0
+checkshape rcommon
+checknbshapes rcommon -wire 3 -face 3 -shell 1
+checkprops rcommon -s 1.8493e+06
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
