@@ -64,6 +64,9 @@ class LDOMParser
                         GetError        (TCollection_AsciiString& aData) const;
   // Return text describing a parsing error, or Empty if no error occurred
 
+  // Returns the byte order mask defined at the start of a stream
+  Standard_EXPORT LDOM_OSStream::BOMType GetBOM() const;
+
  protected:
   // ---------- PROTECTED METHODS ----------
 

@@ -73,7 +73,8 @@ LDOM_XmlReader::LDOM_XmlReader (
   myLastChild(NULL), 
   myPtr      (&myBuffer[0]),
   myEndPtr   (&myBuffer[0]),
-  myTagPerStep (theTagPerStep)
+  myTagPerStep (theTagPerStep),
+  myBOM      (LDOM_OSStream::BOM_UNDEFINED)
 {
 }
 
@@ -92,6 +93,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStr
   LDOMBasicString anAttrName, anAttrValue;
   char anAttDelimiter = '\0';
   Standard_Boolean aHasRead = Standard_False;
+  Standard_Boolean isFileStart = !myEOF && theIStream.tellg() == std::iostream::pos_type(0);
 
   for(;;) {
     //  Check if the current file buffer is exhausted
@@ -152,6 +154,98 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStr
         myEndPtr = &myBuffer[aBytesRest + aNBytes];
         myBuffer[aBytesRest + aNBytes] = '\0';
       }
+    }
+    if (isFileStart)
+    {
+      isFileStart = Standard_False;
+      // check for BOM block
+      Standard_Utf8UChar aFirstChar = Standard_Utf8UChar(myPtr[0]);
+      switch(aFirstChar) {
+      case 0xEF:
+        if (Standard_Utf8UChar(myPtr[1]) == 0xBB && Standard_Utf8UChar(myPtr[2]) == 0xBF)
+        {
+          myBOM = LDOM_OSStream::BOM_UTF8;
+          myPtr += 3;
+        }
+        break;
+      case 0xFE:
+        if (Standard_Utf8UChar(myPtr[1]) == 0xFF)
+        {
+          myBOM = LDOM_OSStream::BOM_UTF16BE;
+          myPtr += 2;
+        }
+        break;
+      case 0xFF:
+        if (Standard_Utf8UChar(myPtr[1]) == 0xFE)
+        {
+          if (myPtr[2] == 0 && myPtr[3] == 0)
+          {
+            myBOM = LDOM_OSStream::BOM_UTF32LE;
+            myPtr += 4;
+          }
+          else
+          {
+            myBOM = LDOM_OSStream::BOM_UTF16LE;
+            myPtr += 2;
+          }
+        }
+        break;
+      case 0x00:
+        if (myPtr[1] == 0 && Standard_Utf8UChar(myPtr[2]) == 0xFE && Standard_Utf8UChar(myPtr[3]) == 0xFF)
+        {
+          myBOM = LDOM_OSStream::BOM_UTF32BE;
+          myPtr += 4;
+        }
+        break;
+      case 0x2B:
+        if (myPtr[1] == 47 && myPtr[2] == 118 &&
+            (myPtr[3] == 43 || myPtr[3] == 47 || myPtr[3] == 56 || myPtr[3] == 57))
+        {
+          myBOM = LDOM_OSStream::BOM_UTF7;
+          if (myPtr[3] == 56 && myPtr[3] == 45)
+            myPtr += 5;
+          else
+            myPtr += 4;
+        }
+        break;
+      case 0xF7:
+        if (myPtr[1] == 100 && myPtr[2] == 76)
+        {
+          myBOM = LDOM_OSStream::BOM_UTF1;
+          myPtr += 3;
+        }
+        break;
+      case 0xDD:
+        if (myPtr[1] == 115 && myPtr[2] == 102 && myPtr[3] == 115)
+        {
+          myBOM = LDOM_OSStream::BOM_UTFEBCDIC;
+          myPtr += 4;
+        }
+        break;
+      case 0x0E:
+        if (Standard_Utf8UChar(myPtr[1]) == 0xFE && Standard_Utf8UChar(myPtr[2]) == 0xFF)
+        {
+          myBOM = LDOM_OSStream::BOM_SCSU;
+          myPtr += 3;
+        }
+        break;
+      case 0xFB:
+        if (Standard_Utf8UChar(myPtr[1]) == 0xEE && myPtr[2] == 40)
+        {
+          myBOM = LDOM_OSStream::BOM_BOCU1;
+          myPtr += 3;
+        }
+        break;
+      case 0x84:
+        if (myPtr[1] == 49 && Standard_Utf8UChar(myPtr[2]) == 0x95 && myPtr[3] == 51)
+        {
+          myBOM = LDOM_OSStream::BOM_GB18030;
+          myPtr += 4;
+        }
+        break;
+      }
+      if (myBOM != LDOM_OSStream::BOM_UNDEFINED)
+        continue;
     }
 
     //  Check the character data

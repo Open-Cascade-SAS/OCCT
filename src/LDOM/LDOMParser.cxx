@@ -107,6 +107,18 @@ const TCollection_AsciiString& LDOMParser::GetError
 }
 
 //=======================================================================
+//function : GetBOM
+//purpose  : Returns the byte order mask defined at the start of a stream
+//=======================================================================
+
+LDOM_OSStream::BOMType LDOMParser::GetBOM() const
+{
+  if (myReader)
+    return myReader->GetBOM();
+  return LDOM_OSStream::BOM_UNDEFINED;
+}
+
+//=======================================================================
 //function : parse
 //purpose  :
 //=======================================================================

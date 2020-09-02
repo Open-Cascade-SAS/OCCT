@@ -674,10 +674,6 @@ static Standard_Integer  OCC983 (Draw_Interpretor& di, Standard_Integer argc, co
     di << "       AttributeValue = " << itemValue.ToCString() << "\n";
   }
 
-//  LDOM_Element element;
-//  for ( element = (const LDOM_Element&) root.getFirstChild();
-//       !element.isNull();
-//       element = (const LDOM_Element&) element.getNextSibling() ) {
   LDOM_Element element;
   LDOM_Node    node;
   for ( node = root.getFirstChild(), element = (const LDOM_Element&) node;
@@ -693,6 +689,25 @@ static Standard_Integer  OCC983 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "       AttributeName = " << itemName2.ToCString() << "\n";
       di << "       AttributeValue = " << itemValue2.ToCString() << "\n";
     }
+  }
+  if (aParser.GetBOM() != LDOM_OSStream::BOM_UNDEFINED)
+  {
+    di << "BOM is ";
+    switch (aParser.GetBOM()) {
+    case LDOM_OSStream::BOM_UTF8: di << "UTF-8"; break;
+    case LDOM_OSStream::BOM_UTF16BE: di << "UTF-16 (BE)"; break;
+    case LDOM_OSStream::BOM_UTF16LE: di << "UTF-16 (LE)"; break;
+    case LDOM_OSStream::BOM_UTF32BE: di << "UTF-32 (BE)"; break;
+    case LDOM_OSStream::BOM_UTF32LE: di << "UTF-32 (LE)"; break;
+    case LDOM_OSStream::BOM_UTF7: di << "UTF-7"; break;
+    case LDOM_OSStream::BOM_UTF1: di << "UTF-1"; break;
+    case LDOM_OSStream::BOM_UTFEBCDIC: di << "UTF-EBCDIC"; break;
+    case LDOM_OSStream::BOM_SCSU: di << "SCSU"; break;
+    case LDOM_OSStream::BOM_BOCU1: di << "BOCU-1"; break;
+    case LDOM_OSStream::BOM_GB18030: di << "GB-18030"; break;
+    default: di << "unexpected";
+    }
+    di << "\n";
   }
 
   return 0;

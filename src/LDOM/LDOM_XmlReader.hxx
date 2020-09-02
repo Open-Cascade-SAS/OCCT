@@ -23,9 +23,9 @@
 #define XML_BUFFER_SIZE 20480
 
 #include <LDOM_BasicElement.hxx>
+#include <LDOM_OSStream.hxx>
 
 class TCollection_AsciiString;
-class LDOM_OSStream;
 
 //  Class LDOM_XmlReader
 //
@@ -66,6 +66,9 @@ class LDOM_XmlReader
                                          const char             * theEnd);
   // try convert string theStart to LDOM_AsciiInteger, return False on success
 
+  // Returns the byte order mask defined at the start of a stream
+  LDOM_OSStream::BOMType GetBOM() const { return myBOM; }
+
  private:
   // ---------- PRIVATE (PROHIBITED) METHODS ----------
   LDOM_XmlReader (const LDOM_XmlReader& theOther);
@@ -86,6 +89,7 @@ class LDOM_XmlReader
   const char                    * myEndPtr;
   char                          myBuffer [XML_BUFFER_SIZE+4];
   Standard_Boolean              myTagPerStep;
+  LDOM_OSStream::BOMType        myBOM;
 };
 
 #endif
