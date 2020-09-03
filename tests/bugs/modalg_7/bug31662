@@ -21,12 +21,12 @@ checkprops r4 -l 70.3856
 bbuild rgf
 
 checkshape rgf
-checknbshapes rgf -wire 363 -face 363 -shell 2 -solid 0
+checknbshapes rgf -shell 2 -solid 0
 
 mkvolume result rgf -ni
 
 checkshape result
-checknbshapes result -wire 254 -face 254 -shell 1 -solid 1
+checknbshapes result -shell 1 -solid 1
 checkprops result -s 668.352 -v 774.749
 
 checkview -display result -2d -path ${imagedir}/${test_image}.png

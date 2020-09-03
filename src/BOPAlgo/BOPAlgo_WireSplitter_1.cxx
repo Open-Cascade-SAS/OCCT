@@ -786,7 +786,7 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
   //for case chl/927/r9
   aTX=0.05*(aLast - aFirst);//aTX=0.25*(aLast - aFirst);  
   if (aTX < 5.e-5) {
-    aTX = 5.e-5;
+    aTX = Min (5.e-5, (aLast - aFirst) / 2.);
   }
   if(dt > aTX) {
     // to save direction of the curve as much as it possible

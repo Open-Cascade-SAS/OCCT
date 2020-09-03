@@ -35,6 +35,7 @@
 #include <BOPDS_PDS.hxx>
 #include <BOPDS_PIterator.hxx>
 #include <BOPDS_VectorOfCurve.hxx>
+#include <BOPTools_BoxTree.hxx>
 #include <IntSurf_ListOfPntOn2S.hxx>
 #include <IntTools_ShrunkRange.hxx>
 #include <NCollection_BaseAllocator.hxx>
@@ -319,7 +320,9 @@ protected:
   //! created the section curve.
   Standard_EXPORT Standard_Boolean IsExistingPaveBlock
     (const Handle(BOPDS_PaveBlock)& thePB, const BOPDS_Curve& theNC,
-     const Standard_Real theTolR3D, const BOPDS_IndexedMapOfPaveBlock& theMPB,
+     const Standard_Real theTolR3D,
+     const BOPDS_IndexedMapOfPaveBlock& theMPB,
+     BOPTools_BoxTree& thePBTree,
      const BOPDS_MapOfPaveBlock& theMPBCommon,
      Handle(BOPDS_PaveBlock)& thePBOut, Standard_Real& theTolNew);
 
@@ -412,6 +415,21 @@ protected:
                                 TColStd_DataMapOfIntegerListOfInteger& aDMVLV,
                                 const Standard_Integer aType = 0);
   
+  //! Adds the existing edges for intersection with section edges
+  //! by checking the possible intersection with the faces comparing
+  //! pre-saved E-F distances with new tolerances.
+  Standard_EXPORT void ProcessExistingPaveBlocks (const Standard_Integer theInt,
+                                                  const Standard_Integer theCur,
+                                                  const Standard_Integer nF1,
+                                                  const Standard_Integer nF2,
+                                                  const TopoDS_Edge& theES,
+                                                  const BOPDS_IndexedMapOfPaveBlock& theMPBOnIn,
+                                                  BOPTools_BoxTree& thePBTree,
+                                                  BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
+                                                  TopTools_DataMapOfShapeInteger& theMVI,
+                                                  BOPDS_ListOfPaveBlock& theLPBC,
+                                                  BOPAlgo_DataMapOfPaveBlockListOfInteger& thePBFacesMap,
+                                                  BOPDS_MapOfPaveBlock& theMPB);
 
   //! Adds the existing edges from the map <theMPBOnIn> which interfere
   //! with the vertices from <theMVB> map to the post treatment of section edges.
@@ -419,12 +437,12 @@ protected:
                                                   const Standard_Integer nF1,
                                                   const Standard_Integer nF2,
                                                   const BOPDS_IndexedMapOfPaveBlock& theMPBOnIn,
+                                                  BOPTools_BoxTree& thePBTree,
                                                   const TColStd_DataMapOfIntegerListOfInteger& theDMBV,
                                                   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
                                                   TopTools_DataMapOfShapeInteger& theMVI,
                                                   BOPAlgo_DataMapOfPaveBlockListOfInteger& thePBFacesMap,
                                                   BOPDS_MapOfPaveBlock& theMPB);
-  
 
   //! Replaces existing pave block <thePB> with new pave blocks <theLPB>.
   //! The list <theLPB> contains images of <thePB> which were created in
@@ -599,6 +617,22 @@ protected:
   //! Check all edges on the micro status and remove the positive ones
   Standard_EXPORT void RemoveMicroEdges();
 
+  //! Auxiliary structure to hold the edge distance to the face
+  struct EdgeRangeDistance
+  {
+    Standard_Real First;
+    Standard_Real Last;
+    Standard_Real Distance;
+
+    EdgeRangeDistance (const Standard_Real theFirst = 0.0,
+                       const Standard_Real theLast = 0.0,
+                       const Standard_Real theDistance = RealLast())
+      : First (theFirst), Last (theLast), Distance (theDistance)
+    {}
+  };
+
+protected: //! Fields
+
   TopTools_ListOfShape myArguments;
   BOPDS_PDS myDS;
   BOPDS_PIterator myIterator;
@@ -615,6 +649,11 @@ protected:
                                                 //! which has already been extended to cover the real intersection
                                                 //! points, and should not be extended any longer to be put
                                                 //! on a section curve.
+  
+  NCollection_DataMap <BOPDS_Pair,
+                       NCollection_List<EdgeRangeDistance>,
+                       BOPDS_PairMapHasher> myDistances; //!< Map to store minimal distances between shapes
+                                                         //!  which have no real intersections
 
 };
 

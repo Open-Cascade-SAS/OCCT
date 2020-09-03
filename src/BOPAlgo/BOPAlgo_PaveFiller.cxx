@@ -57,7 +57,8 @@ BOPAlgo_PaveFiller::BOPAlgo_PaveFiller
   BOPAlgo_Algo(theAllocator),
   myFPBDone(1, theAllocator),
   myIncreasedSS(1, theAllocator),
-  myVertsToAvoidExtension(1, theAllocator)
+  myVertsToAvoidExtension(1, theAllocator),
+  myDistances(1, theAllocator)
 {
   myDS = NULL;
   myIterator = NULL;

@@ -1,0 +1,32 @@
+puts "============================================================================================="
+puts "0024789: BOPAlgo_Builder produces invalid result on planar, conical and spherical surfaces"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug24789.brep] c1
+tcopy c1 c2
+
+bclearobjects
+bcleartools
+eval baddobjects [explode c1]
+bfillds
+bbuild result1
+
+checkshape result1
+checknbshapes result1 -shell 16 -solid 16
+checkprops result1 -s 4.91964e+06 -v 6.9691e+08
+if {![regexp "This shape seems to be OK" [bopcheck result1]]} {
+  puts "Error: GF result is self-interfered shape"
+}
+
+
+mkvolume result c2 -c
+
+checkshape result
+checknbshapes result -ref [nbshapes result1]
+checkprops result -equal result1
+if {![regexp "This shape seems to be OK" [bopcheck result]]} {
+  puts "Error: GF result is self-interfered shape"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png

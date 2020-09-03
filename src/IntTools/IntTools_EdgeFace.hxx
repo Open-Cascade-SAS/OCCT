@@ -177,6 +177,11 @@ public: //! @name Obtaining results
     return mySeqOfCommonPrts;
   }
 
+  //! Returns the minimal distance found between edge and face
+  Standard_Real MinimalDistance() const
+  {
+    return myMinDistance;
+  }
 
 protected: //! @name Protected methods performing the intersection
 
@@ -210,6 +215,7 @@ protected:
   IntTools_SequenceOfCommonPrts mySeqOfCommonPrts;
   IntTools_Range myRange;
   Standard_Boolean myQuickCoincidenceCheck;
+  Standard_Real myMinDistance; //!< Minimal distance found
 };
 
 #endif // _IntTools_EdgeFace_HeaderFile

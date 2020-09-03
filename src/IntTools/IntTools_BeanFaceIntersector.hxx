@@ -130,17 +130,14 @@ public:
   
   Standard_EXPORT void Result (IntTools_SequenceOfRanges& theResults) const;
 
-
-
-
-protected:
-
-
-
+  //! Returns the minimal distance found between edge and face
+  Standard_Real MinimalSquareDistance() const
+  {
+    return myMinSqDistance;
+  }
 
 
 private:
-
   
   Standard_EXPORT void ComputeAroundExactIntersection();
   
@@ -191,6 +188,7 @@ private:
   Handle(IntTools_Context) myContext;
   IntTools_SequenceOfRanges myResults;
   Standard_Boolean myIsDone;
+  Standard_Real myMinSqDistance;
 
 };
 

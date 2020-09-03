@@ -71,6 +71,7 @@ static
   myIsDone=Standard_False;
   myErrorStatus=1;
   myQuickCoincidenceCheck=Standard_False;
+  myMinDistance = RealLast();
 }
 //=======================================================================
 //function :  IsCoincident
@@ -535,7 +536,10 @@ void IntTools_EdgeFace::Perform()
   anIntersector.SetContext(myContext);
   //
   anIntersector.Perform();
-  
+
+  if (anIntersector.MinimalSquareDistance() < RealLast())
+    myMinDistance = Sqrt (anIntersector.MinimalSquareDistance());
+
   if(!anIntersector.IsDone()) {
     return;
   }

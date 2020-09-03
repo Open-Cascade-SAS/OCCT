@@ -2164,10 +2164,6 @@ static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
     return;
   
   Standard_Integer aNbPoints = theEndPointOnLine - theStartPointOnLine + 1;
-  if(aNbPoints >= theMinNbPoints)
-  {
-    return;
-  }
 
   Standard_Real aMinDeltaParam = theTol2D;
 
@@ -2192,7 +2188,7 @@ static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
   Standard_Real U1prec = 0.0, V1prec = 0.0, U2prec = 0.0, V2prec = 0.0;
 
   Standard_Integer aNbPointsPrev = 0;
-  while(aNbPoints < theMinNbPoints && (aNbPoints != aNbPointsPrev))
+  do
   {
     aNbPointsPrev = aNbPoints;
     for(Standard_Integer fp = theStartPointOnLine, lp = 0; fp < aLastPointIndex; fp = lp + 1)
@@ -2269,7 +2265,7 @@ static void SeekAdditionalPoints( const IntSurf_Quadric& theQuad1,
     {
       return;
     }
-  }
+  } while(aNbPoints < theMinNbPoints && (aNbPoints != aNbPointsPrev));
 }
 
 //=======================================================================
@@ -3564,7 +3560,7 @@ static IntPatch_ImpImpIntersection::IntStatus
         }
 
 #ifdef INTPATCH_IMPIMPINTERSECTION_DEBUG
-        //aWLine[i]->Dump();
+        aWLine[i]->Dump(0);
 #endif
       }
     }

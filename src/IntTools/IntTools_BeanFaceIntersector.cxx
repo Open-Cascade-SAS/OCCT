@@ -125,7 +125,8 @@ myVMinParameter(0.),
 myVMaxParameter(0.),
 myBeanTolerance(0.),
 myFaceTolerance(0.),
-myIsDone(Standard_False)
+myIsDone(Standard_False),
+myMinSqDistance(RealLast())
 {
   myCriteria        = Precision::Confusion();
   myCurveResolution = Precision::PConfusion();
@@ -146,7 +147,8 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const TopoDS_Edge& th
        myVMaxParameter(0.),
        myBeanTolerance(0.),
        myFaceTolerance(0.),
-       myIsDone(Standard_False)
+       myIsDone(Standard_False),
+       myMinSqDistance(RealLast())
 {
   Init(theEdge, theFace);
 }
@@ -165,7 +167,8 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
        myUMaxParameter(0.),
        myVMinParameter(0.),
        myVMaxParameter(0.),
-       myIsDone(Standard_False)
+       myIsDone(Standard_False),
+       myMinSqDistance(RealLast())
 {
   Init(theCurve, theSurface, theBeanTolerance, theFaceTolerance);
 }
@@ -192,7 +195,8 @@ IntTools_BeanFaceIntersector::IntTools_BeanFaceIntersector(const BRepAdaptor_Cur
        myVMaxParameter(theVMaxParameter),
        myBeanTolerance(theBeanTolerance),
        myFaceTolerance(theFaceTolerance),
-       myIsDone(Standard_False)
+       myIsDone(Standard_False),
+       myMinSqDistance(RealLast())
 {
   myCurve = theCurve;
   
@@ -651,9 +655,14 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
         ComputeRangeFromStartPoint(Standard_False, aPoint.W(), U, V);
         ComputeRangeFromStartPoint(Standard_True, aPoint.W(), U, V);
         
-        if(aNbRanges == myRangeManager.Length()) {  
+        if(aNbRanges == myRangeManager.Length())
+        {
           SetEmptyResultRange(aPoint.W(), myRangeManager);
-        } // end if(aNbRanges == myRangeManager.Length())
+        }
+        else
+        {
+          myMinSqDistance = 0.0;
+        }
       }
     }
     
@@ -669,6 +678,7 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 
       ComputeRangeFromStartPoint(Standard_False, aPoint1.W(), aPoint1.U(), aPoint1.V());
       ComputeRangeFromStartPoint(Standard_True,  aPoint2.W(), aPoint2.U(), aPoint2.V());
+      myMinSqDistance = 0.0;
     }
   }
 }
@@ -940,6 +950,9 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
       
       if (myExtrema.IsParallel()) {
         
+        if (myMinSqDistance > myExtrema.SquareDistance (1))
+          myMinSqDistance = myExtrema.SquareDistance (1);
+
         if(myExtrema.SquareDistance(1) < myCriteria * myCriteria) {
           Standard_Real U1, V1, U2, V2;
           Standard_Real adistance1 = Distance(anarg1, U1, V1);
@@ -1022,6 +1035,9 @@ void IntTools_BeanFaceIntersector::ComputeUsingExtremum()
               SetEmptyResultRange(p1.Parameter(), myRangeManager);
             }
           }
+
+          if (myMinSqDistance > myExtrema.SquareDistance (j))
+            myMinSqDistance = myExtrema.SquareDistance (j);
         } //end for
         
         if(!solutionfound) {

@@ -300,12 +300,6 @@ void BOPAlgo_PaveFiller::PerformEF()
       continue;
     }
     //
-    const IntTools_SequenceOfCommonPrts& aCPrts=aEdgeFace.CommonParts();
-    aNbCPrts = aCPrts.Length();
-    if (!aNbCPrts) {
-      continue;
-    }
-    //
     aEdgeFace.Indices(nE, nF);
     //
     const TopoDS_Edge& aE=aEdgeFace.Edge();
@@ -313,6 +307,23 @@ void BOPAlgo_PaveFiller::PerformEF()
     //
     aTolE=BRep_Tool::Tolerance(aE);
     aTolF=BRep_Tool::Tolerance(aF);
+    //
+    const IntTools_SequenceOfCommonPrts& aCPrts=aEdgeFace.CommonParts();
+    aNbCPrts = aCPrts.Length();
+    if (!aNbCPrts) {
+      if (aEdgeFace.MinimalDistance() < RealLast() &&
+          aEdgeFace.MinimalDistance() > aTolE + aTolF)
+      {
+        const Handle(BOPDS_PaveBlock)& aPB=aEdgeFace.PaveBlock();
+        aPB->Range(aT1, aT2);
+        NCollection_List<EdgeRangeDistance>* pList = myDistances.ChangeSeek (BOPDS_Pair (nE, nF));
+        if (!pList)
+          pList = myDistances.Bound (BOPDS_Pair (nE, nF), NCollection_List<EdgeRangeDistance>());
+        pList->Append (EdgeRangeDistance (aT1, aT2, aEdgeFace.MinimalDistance()));
+      }
+      continue;
+    }
+    //
     const IntTools_Range& anewSR=aEdgeFace.NewSR();
     Handle(BOPDS_PaveBlock)& aPB=aEdgeFace.PaveBlock();
     //
