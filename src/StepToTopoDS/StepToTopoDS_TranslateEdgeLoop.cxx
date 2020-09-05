@@ -285,6 +285,12 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
   for (j=1; j<=NbEdge; j++) {
     OrEdge1  = EL->EdgeListValue(j);
 
+    if (OrEdge1.IsNull() || OrEdge1->EdgeElement().IsNull())
+    {
+      TP->AddWarning(OrEdge1, "Incorrect Oriented_Edge is not translated. Oriented_Edge definition is not correct");
+      continue;
+    }
+
     // see bug #29979: oriented edge contains another oriented edge
     if (OrEdge1->EdgeElement()->IsKind (STANDARD_TYPE(StepShape_OrientedEdge)))
       OrEdge1 = Handle(StepShape_OrientedEdge)::DownCast (OrEdge1->EdgeElement());
@@ -370,6 +376,9 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
   for (j=1; j<=NbEdge; j++) {
     OrEdge1  = EL->EdgeListValue (j);
     OrEdge2  = EL->EdgeListValue (j < NbEdge ? j + 1 : 1);
+    if (OrEdge1.IsNull() || OrEdge2.IsNull())
+      continue;
+
     Handle(StepShape_EdgeCurve) EC1 =
       Handle(StepShape_EdgeCurve)::DownCast (OrEdge1->EdgeElement());
     Handle(StepShape_EdgeCurve) EC2 =
@@ -425,6 +434,8 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
 #endif
 
     OrEdge1  = EL->EdgeListValue(j);
+    if (OrEdge1.IsNull() || OrEdge1->EdgeElement().IsNull())
+      continue;
 
     // see bug #29979: oriented edge contains another oriented edge
     if (OrEdge1->EdgeElement()->IsKind (STANDARD_TYPE(StepShape_OrientedEdge)))

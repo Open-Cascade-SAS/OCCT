@@ -1,0 +1,17 @@
+puts "===================================="
+puts "0031489: Data Exchange - STEP Reader can't read a big file"
+puts "===================================="
+puts ""
+
+pload DCAF
+
+# Read file
+ReadStep D [locate_data_file bug31489.stp]
+
+# Checking 
+set info [tpstat f]
+if {![regexp {Nb Total:0} $info full]} {
+ puts "Error: file was not correctly read - exception"
+}
+
+Close D

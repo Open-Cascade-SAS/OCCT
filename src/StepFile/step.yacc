@@ -78,6 +78,7 @@ finlist	: ')'
 	;
 listarg	: deblist finlist		/* liste vide (peut y en avoir) */
 	| deblist arglist finlist	/* liste normale, non vide */
+	| deblist arglist ',' finlist	/* broken list with missing last parameter, see #31756 */
 	| deblist error
 	;
 arglist	: unarg

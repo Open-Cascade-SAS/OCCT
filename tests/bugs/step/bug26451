@@ -14,15 +14,15 @@ checkshape result
 
 set nbshapes_expected "
 Number of shapes in shape
- VERTEX    : 8057
- EDGE      : 8372
- WIRE      : 1988
- FACE      : 1754
- SHELL     : 1754
+ VERTEX    : 8062
+ EDGE      : 8379
+ WIRE      : 1990
+ FACE      : 1756
+ SHELL     : 1756
  SOLID     : 0
  COMPSOLID : 0
  COMPOUND  : 1
- SHAPE     : 21926
+ SHAPE     : 21944
 "
 checknbshapes result -ref ${nbshapes_expected} -t -m "importing file"
 checkview -display result -3d -path ${imagedir}/${test_image}.png
