@@ -16,6 +16,7 @@
 #ifndef TreeModel_ItemBase_H
 #define TreeModel_ItemBase_H
 
+#include <NCollection_List.hxx>
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_Handle.hxx>
@@ -149,6 +150,7 @@ public:
   //! Returns the item properties
   const Handle(TreeModel_ItemProperties)& Properties() const { return myProperties; }
 
+  Standard_EXPORT virtual void Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations);
 protected:
 
   //! \param theParent the parent item

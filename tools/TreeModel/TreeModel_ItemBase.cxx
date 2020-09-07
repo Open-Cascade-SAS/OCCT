@@ -93,6 +93,22 @@ TreeModel_ItemBasePtr TreeModel_ItemBase::Child (int theRow, int theColumn, cons
 }
 
 // =======================================================================
+// function :  Presentations
+// purpose :
+// =======================================================================
+void TreeModel_ItemBase::Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations)
+{
+  if (Column() != 0)
+    return;
+
+  const Handle(TreeModel_ItemProperties)& anItemProperties = Properties();
+  if (anItemProperties)
+  {
+    anItemProperties->Presentations (thePresentations);
+  }
+}
+
+// =======================================================================
 // function :  currentItem
 // purpose :
 // =======================================================================

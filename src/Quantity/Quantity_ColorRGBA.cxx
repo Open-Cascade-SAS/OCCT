@@ -208,3 +208,18 @@ void Quantity_ColorRGBA::DumpJson (Standard_OStream& theOStream, Standard_Intege
 {
   OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "RGBA", 4, myRgb.Red(), myRgb.Green(), myRgb.Blue(), myAlpha)
 }
+
+//=======================================================================
+//function : InitFromJson
+//purpose  : 
+//=======================================================================
+Standard_Boolean Quantity_ColorRGBA::InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+{
+  Standard_Integer aPos = theStreamPos;
+
+  Standard_Real aRed, aGreen, aBlue, anAlpha;
+  OCCT_INIT_VECTOR_CLASS (Standard_Dump::Text (theSStream), "RGBA", aPos, 4, &aRed, &aGreen, &aBlue, &anAlpha)
+
+  SetValues ((Standard_ShortReal)aRed, (Standard_ShortReal)aGreen, (Standard_ShortReal)aBlue, (Standard_ShortReal)anAlpha);
+  return Standard_True;
+}

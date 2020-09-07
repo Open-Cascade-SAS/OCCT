@@ -676,3 +676,17 @@ void Quantity_Color::DumpJson (Standard_OStream& theOStream, Standard_Integer) c
 {
   OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "RGB", 3, myRgb.r(), myRgb.g(), myRgb.b())
 }
+
+//=======================================================================
+//function : InitFromJson
+//purpose  : 
+//=======================================================================
+Standard_Boolean Quantity_Color::InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+{
+  Standard_Integer aPos = theStreamPos;
+  Standard_Real  aRed, aGreen, aBlue;
+  OCCT_INIT_VECTOR_CLASS (Standard_Dump::Text (theSStream), "RGB", aPos, 3, &aRed, &aGreen, &aBlue)
+
+  SetValues ((Standard_ShortReal)aRed, (Standard_ShortReal)aGreen, (Standard_ShortReal)aBlue, Quantity_TOC_RGB);
+  return Standard_True;
+}

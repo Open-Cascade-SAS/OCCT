@@ -28,6 +28,7 @@ View_PreviewParameters::View_PreviewParameters()
   myDrawer = new Prs3d_Drawer();
 
   Quantity_Color aColor(Quantity_NOC_TOMATO);
+  Standard_ShortReal aTransparency = 0.8f;
 
   // point parameters
   myDrawer->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_O_PLUS, aColor, 3.0));
@@ -40,6 +41,10 @@ View_PreviewParameters::View_PreviewParameters()
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
   myDrawer->ShadingAspect()->SetColor (aColor);
   myDrawer->ShadingAspect()->SetMaterial (aShadingMaterial);
+
+  myDrawer->ShadingAspect()->Aspect()->ChangeFrontMaterial().SetTransparency (aTransparency);
+  myDrawer->ShadingAspect()->Aspect()->ChangeBackMaterial() .SetTransparency (aTransparency);
+  myDrawer->SetTransparency (aTransparency);
 
   // common parameters
   myDrawer->SetZLayer (Graphic3d_ZLayerId_Topmost);

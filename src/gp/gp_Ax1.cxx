@@ -90,3 +90,20 @@ void gp_Ax1::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
   OCCT_DUMP_VECTOR_CLASS (theOStream, "Location", 3, loc.X(), loc.Y(), loc.Z())
   OCCT_DUMP_VECTOR_CLASS (theOStream, "Direction", 3, vdir.X(), vdir.Y(), vdir.Z())
 }
+
+Standard_Boolean gp_Ax1::InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+{
+  Standard_Integer aPos = theStreamPos;
+  TCollection_AsciiString aStreamStr = Standard_Dump::Text (theSStream);
+
+  gp_XYZ& anXYZLoc = loc.ChangeCoord();
+  OCCT_INIT_VECTOR_CLASS (aStreamStr, "Location", aPos, 3,
+                          &anXYZLoc.ChangeCoord (1), &anXYZLoc.ChangeCoord (2), &anXYZLoc.ChangeCoord (3))
+  gp_XYZ aDir;
+  OCCT_INIT_VECTOR_CLASS (aStreamStr, "Direction", aPos, 3,
+                          &aDir.ChangeCoord (1), &aDir.ChangeCoord (2), &aDir.ChangeCoord (3))
+  SetDirection (aDir);
+
+  theStreamPos = aPos;
+  return Standard_True;
+}

@@ -42,3 +42,17 @@ void gp_XYZ::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_XYZ", 3, x, y, z)
 }
+
+//=======================================================================
+//function : InitFromJson
+//purpose  : 
+//=======================================================================
+Standard_Boolean gp_XYZ::InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+{
+  Standard_Integer aPos = theStreamPos;
+  OCCT_INIT_VECTOR_CLASS (Standard_Dump::Text (theSStream), "gp_XYZ", aPos, 3, &x, &y, &z)
+
+  theStreamPos = aPos;
+  return Standard_True;
+}
+

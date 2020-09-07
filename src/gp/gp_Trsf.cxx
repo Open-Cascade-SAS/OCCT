@@ -915,3 +915,39 @@ void gp_Trsf::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, shape)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, scale)
 }
+
+//=======================================================================
+//function : InitFromJson
+//purpose  : 
+//=======================================================================
+Standard_Boolean  gp_Trsf::InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+{
+  Standard_Integer aPos = theStreamPos;
+  TCollection_AsciiString aStreamStr = Standard_Dump::Text (theSStream);
+
+  gp_XYZ anXYZLoc;
+  OCCT_INIT_VECTOR_CLASS (aStreamStr, "Location", aPos, 3,
+                          &anXYZLoc.ChangeCoord (1), &anXYZLoc.ChangeCoord (2), &anXYZLoc.ChangeCoord (3))
+  SetTranslation (anXYZLoc);
+
+  Standard_Real mymatrix[3][3];
+  OCCT_INIT_VECTOR_CLASS (aStreamStr, "Matrix", aPos, 9, &mymatrix[0][0], &mymatrix[0][1], &mymatrix[0][2],
+                                                         &mymatrix[1][0], &mymatrix[1][1], &mymatrix[1][2],
+                                                         &mymatrix[2][0], &mymatrix[2][1], &mymatrix[2][2])
+  for (int i = 0; i < 3; i++)
+  {
+    for (int j = 0; j < 3; j++)
+    {
+      matrix.SetValue (i + 1, j + 1, mymatrix[i][j]);
+    }
+  }
+
+  Standard_Real ashape;
+  OCCT_INIT_FIELD_VALUE_INTEGER (aStreamStr, aPos, ashape);
+  shape = (gp_TrsfForm)((Standard_Integer)ashape);
+
+  OCCT_INIT_FIELD_VALUE_REAL (aStreamStr, aPos, scale);
+
+  theStreamPos = aPos;
+  return Standard_True;
+}

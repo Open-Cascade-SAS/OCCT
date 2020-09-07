@@ -22,7 +22,6 @@
 
 #include <inspector/TreeModel_ColumnType.hxx>
 #include <inspector/TreeModel_ContextMenu.hxx>
-#include <inspector/TreeModel_ItemProperties.hxx>
 #include <inspector/TreeModel_Tools.hxx>
 
 #include <inspector/ViewControl_MessageDialog.hxx>
@@ -392,7 +391,10 @@ void VInspector_Window::SelectedShapes (NCollection_List<Handle(Standard_Transie
     TreeModel_ItemBasePtr anItem = *anItemIt;
     VInspector_ItemBasePtr aVItem = itemDynamicCast<VInspector_ItemBase>(anItem);
     if (!aVItem /*|| aVItem->Row() == 0*/)
+    {
+      anItem->Presentations (theSelPresentations);
       continue;
+    }
 
     TopoDS_Shape aShape = aVItem->GetPresentationShape();
     if (aShape.IsNull())
@@ -595,15 +597,11 @@ void VInspector_Window::onTreeViewSelectionChanged (const QItemSelection&,
     if (!anItemBase)
       continue;
 
-    const Handle(TreeModel_ItemProperties)& anItemProperties = anItemBase->Properties();
-    if (anItemProperties)
-    {
-      anItemProperties->Presentations (aSelPresentations);
-    }
+    anItemBase->Presentations (aSelPresentations);
   }
 
   SelectedShapes (aSelPresentations);
-  displayer()->DisplayPreview()->UpdatePreview (View_DisplayActionType_DisplayId, aSelPresentations, myViewWindow->ViewWidget()->DisplayMode());
+  displayer()->UpdatePreview (View_DisplayActionType_DisplayId, aSelPresentations);
 }
 
 // =======================================================================

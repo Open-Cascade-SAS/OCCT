@@ -189,16 +189,63 @@ public:
       OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinPoint[0])
       OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMinPoint[0])
     }
-    if (n == 2)
+    else if (n == 2)
     {
       OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MinPoint", n, myMinPoint[0], myMinPoint[1])
       OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MaxPoint", n, myMaxPoint[0], myMaxPoint[1])
     }
-    if (n == 3)
+    else if (n == 3)
     {
       OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MinPoint", n, myMinPoint[0], myMinPoint[1], myMinPoint[2])
       OCCT_DUMP_FIELD_VALUES_NUMERICAL (theOStream, "MaxPoint", n, myMaxPoint[0], myMaxPoint[1], myMaxPoint[2])
     }
+  }
+
+  //! Inits the content of me from the stream
+  Standard_Boolean InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+  {
+    Standard_Integer aPos = theStreamPos;
+
+    Standard_Integer anIsInited = 0;
+    TCollection_AsciiString aStreamStr = Standard_Dump::Text (theSStream);
+
+    OCCT_INIT_FIELD_VALUE_INTEGER (aStreamStr, aPos, anIsInited);
+    myIsInited = anIsInited != 0;
+
+    int n = Min (N, 3);
+    if (n == 1)
+    {
+      Standard_Real aValue;
+      OCCT_INIT_FIELD_VALUE_REAL (aStreamStr, aPos, aValue);
+      myMinPoint[0] = (T)aValue;
+    }
+    else if (n == 2)
+    {
+      Standard_Real aValue1, aValue2;
+      OCCT_INIT_VECTOR_CLASS (aStreamStr, "MinPoint", aPos, n, &aValue1, &aValue2);
+      myMinPoint[0] = (T)aValue1;
+      myMinPoint[1] = (T)aValue2;
+
+      OCCT_INIT_VECTOR_CLASS (aStreamStr, "MaxPoint", aPos, n, &aValue1, &aValue2);
+      myMaxPoint[0] = (T)aValue1;
+      myMaxPoint[1] = (T)aValue2;
+    }
+    else if (n == 3)
+    {
+      Standard_Real aValue1, aValue2, aValue3;
+      OCCT_INIT_VECTOR_CLASS (aStreamStr, "MinPoint", aPos, n, &aValue1, &aValue2, &aValue3);
+      myMinPoint[0] = (T)aValue1;
+      myMinPoint[1] = (T)aValue2;
+      myMinPoint[2] = (T)aValue3;
+
+      OCCT_INIT_VECTOR_CLASS (aStreamStr, "MaxPoint", aPos, n, &aValue1, &aValue2, &aValue3);
+      myMaxPoint[0] = (T)aValue1;
+      myMaxPoint[1] = (T)aValue2;
+      myMaxPoint[2] = (T)aValue3;
+    }
+
+    theStreamPos = aPos;
+    return Standard_True;
   }
 
 public:

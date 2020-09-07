@@ -34,7 +34,7 @@
 // purpose :
 // =======================================================================
 View_Displayer::View_Displayer()
-: myIsKeepPresentations (false), myFitAllActive (false), myDisplayMode (-1)
+: myIsKeepPresentations (false), myFitAllActive (false), myDisplayMode (0)
 {
   myDisplayPreview = new View_DisplayPreview();
 }
@@ -78,8 +78,6 @@ void View_Displayer::SetDisplayMode (const int theDisplayMode,
 
   for (AIS_ListIteratorOfListOfInteractive aDisplayedIt (aDisplayed); aDisplayedIt.More(); aDisplayedIt.Next())
     GetContext()->SetDisplayMode (aDisplayedIt.Value(), theDisplayMode, Standard_False);
-
-  myDisplayPreview->SetDisplayMode (theDisplayMode, Standard_False);
 
   if (theToUpdateViewer)
     UpdateViewer();
@@ -270,7 +268,7 @@ bool View_Displayer::IsVisible (const TopoDS_Shape& theShape, const View_Present
 void View_Displayer::UpdatePreview (const View_DisplayActionType theType,
                                     const NCollection_List<Handle(Standard_Transient)>& thePresentations)
 {
-  myDisplayPreview->UpdatePreview (theType, thePresentations, myDisplayMode);
+  myDisplayPreview->UpdatePreview (theType, thePresentations);
   if (!myIsKeepPresentations || myFitAllActive)
     fitAllView();
 }

@@ -74,6 +74,135 @@ void Standard_Dump::DumpRealValues (Standard_OStream& theOStream, int theCount, 
   va_end(vl);
 }
 
+//=======================================================================
+//function : ProcessStreamName
+//purpose  : 
+//=======================================================================
+Standard_Boolean Standard_Dump::ProcessStreamName (const TCollection_AsciiString& theStreamStr,
+                                                   const TCollection_AsciiString& theName,
+                                                   Standard_Integer& theStreamPos)
+{
+  if (theStreamStr.IsEmpty())
+    return Standard_False;
+
+  if (theStreamStr.Length () < theStreamPos)
+    return Standard_False;
+
+  TCollection_AsciiString aSubText = theStreamStr.SubString (theStreamPos, theStreamStr.Length());
+  if (aSubText.StartsWith (JsonKeyToString (Standard_JsonKey_SeparatorValueToValue)))
+  {
+    theStreamPos += JsonKeyLength (Standard_JsonKey_SeparatorValueToValue);
+    aSubText = theStreamStr.SubString (theStreamPos, theStreamStr.Length());
+  }
+  TCollection_AsciiString aKeyName = TCollection_AsciiString (JsonKeyToString (Standard_JsonKey_Quote))
+    + theName
+    + TCollection_AsciiString (JsonKeyToString (Standard_JsonKey_Quote))
+    + JsonKeyToString (Standard_JsonKey_SeparatorKeyToValue);
+  Standard_Boolean aResult = aSubText.StartsWith (aKeyName);
+  if (aResult)
+    theStreamPos += aKeyName.Length();
+
+  return aResult;
+}
+
+//=======================================================================
+//function : ProcessFieldName
+//purpose  : 
+//=======================================================================
+Standard_Boolean Standard_Dump::ProcessFieldName (const TCollection_AsciiString& theStreamStr,
+                                                  const TCollection_AsciiString& theName,
+                                                  Standard_Integer& theStreamPos)
+{
+  if (theStreamStr.IsEmpty())
+    return Standard_False;
+
+  TCollection_AsciiString aSubText = theStreamStr.SubString (theStreamPos, theStreamStr.Length());
+  if (aSubText.StartsWith (JsonKeyToString (Standard_JsonKey_SeparatorValueToValue)))
+  {
+    theStreamPos += JsonKeyLength (Standard_JsonKey_SeparatorValueToValue);
+    aSubText = theStreamStr.SubString (theStreamPos, theStreamStr.Length());
+  }
+
+  TCollection_AsciiString aName = Standard_Dump::DumpFieldToName (theName.ToCString());
+  TCollection_AsciiString aKeyName = TCollection_AsciiString (JsonKeyToString (Standard_JsonKey_Quote))
+    + aName
+    + TCollection_AsciiString (JsonKeyToString (Standard_JsonKey_Quote))
+    + JsonKeyToString (Standard_JsonKey_SeparatorKeyToValue);
+
+  Standard_Boolean aResult = aSubText.StartsWith (aKeyName);
+  if (aResult)
+    theStreamPos += aKeyName.Length();
+
+  return aResult;
+}
+
+//=======================================================================
+//function : InitRealValues
+//purpose  : 
+//=======================================================================
+Standard_Boolean Standard_Dump::InitRealValues (const TCollection_AsciiString& theStreamStr,
+                                                Standard_Integer& theStreamPos,
+                                                int theCount, ...)
+{
+  Standard_Integer aStreamPos = theStreamPos + JsonKeyLength (Standard_JsonKey_OpenContainer);
+
+  TCollection_AsciiString aSubText = theStreamStr.SubString (aStreamPos, theStreamStr.Length());
+
+  va_list  vl;
+  va_start(vl, theCount);
+  aStreamPos = 1;
+  Standard_Integer aClosePos = aSubText.Location (JsonKeyToString (Standard_JsonKey_CloseContainer), aStreamPos, aSubText.Length());
+  for(int i = 0; i < theCount; ++i)
+  {
+    Standard_Integer aNextPos = (i < theCount-1) ? aSubText.Location (JsonKeyToString (Standard_JsonKey_SeparatorValueToValue), aStreamPos, aSubText.Length())
+      : aClosePos;
+
+    TCollection_AsciiString aValueText = aSubText.SubString (aStreamPos, aNextPos - 1);
+
+    if (!aValueText.IsRealValue())
+      return Standard_False;
+
+    Standard_Real aValue = aValueText.RealValue();
+    *(va_arg(vl, Standard_Real*)) = aValue;
+
+    aStreamPos = aNextPos + JsonKeyLength (Standard_JsonKey_SeparatorValueToValue);
+  }
+  va_end(vl);
+  aClosePos = theStreamStr.Location (JsonKeyToString (Standard_JsonKey_CloseContainer), theStreamPos, theStreamStr.Length());
+  theStreamPos = aClosePos + JsonKeyLength (Standard_JsonKey_CloseContainer);
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : InitValue
+//purpose  : 
+//=======================================================================
+Standard_Boolean Standard_Dump::InitValue (const TCollection_AsciiString& theStreamStr,
+                                           Standard_Integer& theStreamPos,
+                                           TCollection_AsciiString& theValue)
+{
+  Standard_Integer aStreamPos = theStreamPos;
+
+  TCollection_AsciiString aSubText = theStreamStr.SubString (aStreamPos, theStreamStr.Length());
+
+  aStreamPos = 1;
+  Standard_Integer aNextPos = aSubText.Location (JsonKeyToString (Standard_JsonKey_SeparatorValueToValue), aStreamPos, aSubText.Length());
+  Standard_JsonKey aNextKey = Standard_JsonKey_SeparatorValueToValue;
+
+  Standard_Integer aCloseChildPos = aSubText.Location (JsonKeyToString (Standard_JsonKey_CloseChild), aStreamPos, aSubText.Length());
+  Standard_Boolean isUseClosePos = (aNextPos > 0 && aCloseChildPos > 0 && aCloseChildPos < aNextPos) || !aNextPos;
+  if (isUseClosePos)
+  {
+    aNextPos = aCloseChildPos;
+    aNextKey = Standard_JsonKey_CloseChild;
+  }
+
+  theValue = aNextPos ? aSubText.SubString (aStreamPos, aNextPos - 1) : aSubText;
+  theStreamPos = aNextPos ? (theStreamPos + (aNextPos - aStreamPos) + JsonKeyLength (aNextKey)) : theStreamStr.Length();
+  return Standard_True;
+}
+
 // =======================================================================
 // function : GetPointerInfo
 // purpose :

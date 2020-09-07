@@ -144,3 +144,13 @@ void gp_Dir::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_VECTOR_CLASS (theOStream, "gp_Dir", 3, coord.X(), coord.Y(), coord.Z())
 }
+
+Standard_Boolean gp_Dir::InitFromJson (const Standard_SStream& theSStream, Standard_Integer& theStreamPos)
+{
+  Standard_Integer aPos = theStreamPos;
+
+  OCCT_INIT_VECTOR_CLASS (Standard_Dump::Text (theSStream), "gp_Dir", aPos, 3, &coord.ChangeCoord (1), &coord.ChangeCoord (2), &coord.ChangeCoord (3))
+
+  theStreamPos = aPos;
+  return Standard_True;
+}

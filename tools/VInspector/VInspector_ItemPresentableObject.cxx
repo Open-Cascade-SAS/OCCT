@@ -156,7 +156,7 @@ void VInspector_ItemPresentableObject::Init()
     }
     std::sort (aListOfIOSorted.begin(), aListOfIOSorted.end());
 
-    int aCurrentIndex = 0;
+    int aCurrentIndex = 1; /* Properties item of context*/
     for (std::vector<Handle(AIS_InteractiveObject)>::const_iterator anIOIt = aListOfIOSorted.begin(); anIOIt != aListOfIOSorted.end(); anIOIt++, aCurrentIndex++)
     {
       if (aCurrentIndex != aRowId)
@@ -228,9 +228,10 @@ QString VInspector_ItemPresentableObject::PointerInfo() const
 // =======================================================================
 void VInspector_ItemPresentableObject::Presentations (NCollection_List<Handle(Standard_Transient)>& thePresentations)
 {
+  TreeModel_ItemBase::Presentations (thePresentations); 
+
   if (Column() != 0)
     return;
-
   thePresentations.Append (GetInteractiveObject());
 }
 

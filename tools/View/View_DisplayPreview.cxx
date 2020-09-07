@@ -79,11 +79,12 @@ void View_DisplayPreview::SetContext (const Handle(AIS_InteractiveContext)& theC
 // purpose :
 // =======================================================================
 void View_DisplayPreview::UpdatePreview (const View_DisplayActionType,
-                                         const NCollection_List<Handle(Standard_Transient)>& thePresentations,
-                                         int theDisplayMode)
+                                         const NCollection_List<Handle(Standard_Transient)>& thePresentations)
 {
   if (myContext.IsNull())
     return;
+
+  int aPreviewDisplayMode = AIS_Shaded;
 
   // clear previous previews
   for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator anIterator (myPreviewReadyPresentations); anIterator.More(); anIterator.Next())
@@ -115,7 +116,7 @@ void View_DisplayPreview::UpdatePreview (const View_DisplayActionType,
     Handle(AIS_InteractiveObject) aPrs = Handle(AIS_InteractiveObject)::DownCast (anIterator.Value());
     if (!aPrs.IsNull() && aPrs->GetContext().IsNull()/*is not displayed in another context*/)
     {
-      myContext->Display (aPrs, theDisplayMode, -1/*does not participate in selection*/, Standard_True);
+      myContext->Display (aPrs, aPreviewDisplayMode, -1/*does not participate in selection*/, Standard_True);
       enableGlobalClipping(aPrs, false);
       myPreviewReadyPresentations.Append (aPrs);
     }
@@ -128,7 +129,7 @@ void View_DisplayPreview::UpdatePreview (const View_DisplayActionType,
     myPreviewPresentation->Attributes()->SetPointAspect (new Prs3d_PointAspect (Aspect_TOM_O_PLUS, aColor, 3.0));
     myPreviewPresentation->SetAttributes (myPreviewParameters->GetDrawer());
 
-    myContext->Display (myPreviewPresentation, theDisplayMode, -1/*does not participate in selection*/, Standard_True);
+    myContext->Display (myPreviewPresentation, aPreviewDisplayMode, -1/*does not participate in selection*/, Standard_True);
     enableGlobalClipping(myPreviewPresentation, false);
   }
   else
@@ -139,29 +140,4 @@ void View_DisplayPreview::UpdatePreview (const View_DisplayActionType,
       myPreviewPresentation->GetContext()->Redisplay (myPreviewPresentation, Standard_True);
     }
   }
-}
-
-// =======================================================================
-// function : SetDisplayMode
-// purpose :
-// =======================================================================
-void View_DisplayPreview::SetDisplayMode (const int theDisplayMode, const bool theToUpdateViewer)
-{
-  if (myContext.IsNull())
-    return;
-
-  if (!myPreviewPresentation.IsNull())
-  {
-     if (myContext == myPreviewPresentation->GetContext())
-       myContext->SetDisplayMode (myPreviewPresentation, theDisplayMode, Standard_False);
-  }
-
-  for (NCollection_List<Handle(AIS_InteractiveObject)>::Iterator aPreviewIt (myPreviewReadyPresentations); aPreviewIt.More(); aPreviewIt.Next())
-  {
-     if (myContext == aPreviewIt.Value()->GetContext())
-       myContext->SetDisplayMode (aPreviewIt.Value(), theDisplayMode, Standard_False);
-  }
-
-  if (theToUpdateViewer)
-    myContext->UpdateCurrentViewer();
 }
