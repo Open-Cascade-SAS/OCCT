@@ -20,6 +20,7 @@
 #include <Font_Rect.hxx>
 #include <Graphic3d_AspectText3d.hxx>
 #include <Graphic3d_RenderingParams.hxx>
+#include <Graphic3d_Text.hxx>
 
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -308,7 +309,9 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
         {
           aHasOwnAnchor = Standard_False; // always not using own anchor if flipping
         }
-        Prs3d_Text::Draw (thePrs->CurrentGroup(), anAsp, myText, anOrientation, aHasOwnAnchor);
+        Handle(Graphic3d_Text) aText = 
+          Prs3d_Text::Draw (thePrs->CurrentGroup(), anAsp, myText, anOrientation, aHasOwnAnchor);
+        aText->SetTextFormatter (myFormatter);
         if (myHasFlipping && isInit)
         {
           thePrs->CurrentGroup()->SetFlippingOptions (Standard_False, gp_Ax2());
@@ -316,7 +319,9 @@ void AIS_TextLabel::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePr
       }
       else
       {
-        Prs3d_Text::Draw (thePrs->CurrentGroup(), anAsp, myText, aPosition);
+        Handle(Graphic3d_Text) aText =
+          Prs3d_Text::Draw (thePrs->CurrentGroup(), anAsp, myText, aPosition);
+        aText->SetTextFormatter (myFormatter);
       }
 
       if (isInit)

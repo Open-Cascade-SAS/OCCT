@@ -37,10 +37,11 @@ public:
   //! @param theAspect presentation attributes
   //! @param theText   text to draw
   //! @param theAttachmentPoint attachment point
-  Standard_EXPORT static void Draw (const Handle(Graphic3d_Group)& theGroup,
-                                    const Handle(Prs3d_TextAspect)& theAspect,
-                                    const TCollection_ExtendedString& theText,
-                                    const gp_Pnt& theAttachmentPoint);
+  //! @return text to draw
+  Standard_EXPORT static Handle(Graphic3d_Text) Draw (const Handle(Graphic3d_Group)& theGroup,
+                                                      const Handle(Prs3d_TextAspect)& theAspect,
+                                                      const TCollection_ExtendedString& theText,
+                                                      const gp_Pnt& theAttachmentPoint);
 
   //! Draws the text label.
   //! @param theGroup       group to add primitives
@@ -48,11 +49,12 @@ public:
   //! @param theText        text to draw
   //! @param theOrientation location and orientation specified in the model 3D space
   //! @param theHasOwnAnchor 
-  Standard_EXPORT static void Draw (const Handle(Graphic3d_Group)&    theGroup,
-                                    const Handle(Prs3d_TextAspect)&   theAspect,
-                                    const TCollection_ExtendedString& theText,
-                                    const gp_Ax2&                     theOrientation,
-                                    const Standard_Boolean            theHasOwnAnchor = Standard_True);
+  //! @return text to draw
+  Standard_EXPORT static Handle(Graphic3d_Text) Draw (const Handle(Graphic3d_Group)&    theGroup,
+                                                      const Handle(Prs3d_TextAspect)&   theAspect,
+                                                      const TCollection_ExtendedString& theText,
+                                                      const gp_Ax2&                     theOrientation,
+                                                      const Standard_Boolean            theHasOwnAnchor = Standard_True);
 
 public:
 

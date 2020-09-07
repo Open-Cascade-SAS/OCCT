@@ -17,6 +17,7 @@
 #include <OpenGl_VertexBufferCompat.hxx>
 
 #include <Font_FTFont.hxx>
+#include <Font_TextFormatter.hxx>
 
 namespace
 {
@@ -44,7 +45,7 @@ OpenGl_TextBuilder::OpenGl_TextBuilder()
 // function : createGlyphs
 // purpose  :
 // =======================================================================
-void OpenGl_TextBuilder::createGlyphs (const Font_TextFormatter&                                                  theFormatter,
+void OpenGl_TextBuilder::createGlyphs (const Handle(Font_TextFormatter)&                                          theFormatter,
                                        const Handle(OpenGl_Context)&                                              theCtx,
                                        OpenGl_Font&                                                               theFont,
                                        NCollection_Vector<GLuint>&                                                theTextures,
@@ -58,51 +59,16 @@ void OpenGl_TextBuilder::createGlyphs (const Font_TextFormatter&                
   theTCrdsPerTexture.Clear();
 
   OpenGl_Font::Tile aTile = {Font_Rect(), Font_Rect(), 0u};
-  OpenGl_Vec2       aPen (0.0f, 0.0f);
-  Standard_Integer  aRectsNb = 0;
-  Standard_Integer  aSymbolsCounter = 0;
-
-  for (NCollection_Utf8Iter anIter = theFormatter.String().Iterator(); *anIter != 0;)
+  for (Font_TextFormatter::Iterator aFormatterIt (*theFormatter, Font_TextFormatter::IterationFilter_ExcludeInvisible);
+       aFormatterIt.More(); aFormatterIt.Next())
   {
-    const Standard_Utf32Char aCharThis =   *anIter;
-    const Standard_Utf32Char aCharNext = *++anIter;
+    theFont.RenderGlyph (theCtx, aFormatterIt.Symbol(), aTile);
 
-    if (aCharThis == '\x0D' // CR  (carriage return)
-     || aCharThis == '\a'   // BEL (alarm)
-     || aCharThis == '\f'   // FF  (form feed) NP (new page)
-     || aCharThis == '\b'   // BS  (backspace)
-     || aCharThis == '\v')  // VT  (vertical tab)
-    {
-      continue; // skip unsupported carriage control codes
-    }
-    else if (aCharThis == '\x0A') // LF (line feed, new line)
-    {
-      aSymbolsCounter = 0;
-      continue; // will be processed on second pass
-    }
-    else if (aCharThis == ' ')
-    {
-      ++aSymbolsCounter;
-      aPen.x() += theFont.FTFont()->AdvanceX (' ', aCharNext);
-      continue;
-    }
-    else if (aCharThis == '\t')
-    {
-      const Standard_Integer aSpacesNum = (theFormatter.TabSize() - (aSymbolsCounter - 1) % theFormatter.TabSize());
-      aPen.x() += theFont.FTFont()->AdvanceX (' ', aCharNext) * Standard_ShortReal(aSpacesNum);
-      aSymbolsCounter += aSpacesNum;
-      continue;
-    }
-
-    ++aSymbolsCounter;
-
-    theFont.RenderGlyph (theCtx, aCharThis, aTile);
-
-    const OpenGl_Vec2& aTopLeft = theFormatter.TopLeft (aRectsNb);
-    aTile.px.Right  += aTopLeft.x();
-    aTile.px.Left   += aTopLeft.x();
-    aTile.px.Bottom += aTopLeft.y();
-    aTile.px.Top    += aTopLeft.y();
+    const OpenGl_Vec2& aBottomLeft = theFormatter->BottomLeft (aFormatterIt.SymbolPosition());
+    aTile.px.Right  += aBottomLeft.x();
+    aTile.px.Left   += aBottomLeft.x();
+    aTile.px.Bottom += aBottomLeft.y();
+    aTile.px.Top    += aBottomLeft.y();
     const Font_Rect& aRectUV  = aTile.uv;
     const GLuint     aTexture = aTile.texture;
 
@@ -139,8 +105,6 @@ void OpenGl_TextBuilder::createGlyphs (const Font_TextFormatter&                
     aTCrds.Append (aRectUV.BottomRight (aVec));
     aTCrds.Append (aRectUV.TopRight    (aVec));
     aTCrds.Append (aRectUV.BottomLeft  (aVec));
-
-    ++aRectsNb;
   }
 }
 
@@ -148,7 +112,7 @@ void OpenGl_TextBuilder::createGlyphs (const Font_TextFormatter&                
 // function : CreateTextures
 // purpose  :
 // =======================================================================
-void OpenGl_TextBuilder::Perform (const Font_TextFormatter&                        theFormatter,
+void OpenGl_TextBuilder::Perform (const Handle(Font_TextFormatter)&                theFormatter,
                                   const Handle(OpenGl_Context)&                    theCtx,
                                   OpenGl_Font&                                     theFont,
                                   NCollection_Vector<GLuint>&                      theTextures,

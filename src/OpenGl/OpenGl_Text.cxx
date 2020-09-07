@@ -26,6 +26,7 @@
 
 #include <Font_FontMgr.hxx>
 #include <Font_FTFont.hxx>
+#include <Font_TextFormatter.hxx>
 #include <Graphic3d_TransformUtils.hxx>
 #include <TCollection_HAsciiString.hxx>
 
@@ -659,7 +660,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                           const OpenGl_Vec4& theColorSubs,
                           unsigned int theResolution) const
 {
-  if (myText->Text().IsEmpty())
+  if (myText->Text().IsEmpty() && myText->TextFormatter().IsNull())
   {
     return;
   }
@@ -685,13 +686,16 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
 
   if (myTextures.IsEmpty())
   {
-    Font_TextFormatter aFormatter;
+    Handle(Font_TextFormatter) aFormatter = myText->TextFormatter();
+    if (aFormatter.IsNull())
+    {
+      aFormatter = new Font_TextFormatter();
+    }
+    aFormatter->SetupAlignment (myText->HorizontalAlignment(), myText->VerticalAlignment());
+    aFormatter->Reset();
 
-    aFormatter.SetupAlignment (myText->HorizontalAlignment(), myText->VerticalAlignment());
-    aFormatter.Reset();
-
-    aFormatter.Append (myText->Text(), *myFont->FTFont());
-    aFormatter.Format();
+    aFormatter->Append (myText->Text(), *myFont->FTFont());
+    aFormatter->Format();
 
     OpenGl_TextBuilder aBuilder;
     aBuilder.Perform (aFormatter,
@@ -701,7 +705,7 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
                       myVertsVbo,
                       myTCrdsVbo);
 
-    aFormatter.BndBox (myBndBox);
+    aFormatter->BndBox (myBndBox);
     if (!myBndVertsVbo.IsNull())
     {
       myBndVertsVbo->Release (theCtx.get());

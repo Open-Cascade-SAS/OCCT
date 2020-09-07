@@ -25,13 +25,12 @@ class StdPrs_BRepTextBuilder
 {
 public:
   //! Render text as BRep shape.
-  //! @param theString text in UTF-8 encoding
+  //! @param theFormatter formatter which defines aligned text
   //! @param thePenLoc start position and orientation on the baseline
-  //! @param theFormatter formatter which defines alignment for the text
   //! @return result shape with pen transformation applied as shape location
-  Standard_EXPORT TopoDS_Shape Perform (StdPrs_BRepFont&          theFont,
-                                        const Font_TextFormatter& theFormatter,
-                                        const gp_Ax3&             thePenLoc = gp_Ax3());
+  Standard_EXPORT TopoDS_Shape Perform (StdPrs_BRepFont&                  theFont,
+                                        const Handle(Font_TextFormatter)& theFormatter,
+                                        const gp_Ax3&                     thePenLoc = gp_Ax3());
   //! Render text as BRep shape.
   //! @param theString text in UTF-8 encoding
   //! @param thePenLoc start position and orientation on the baseline

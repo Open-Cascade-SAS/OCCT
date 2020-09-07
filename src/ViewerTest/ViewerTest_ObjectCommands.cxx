@@ -2390,6 +2390,8 @@ static int VDrawText (Draw_Interpretor& theDI,
   gp_Dir           aDirection;
   gp_Pnt           aPos;
 
+
+  Handle(Font_TextFormatter) aTextFormatter;
   for (; anArgIt < theArgsNb; ++anArgIt)
   {
     TCollection_AsciiString aParam (theArgVec[anArgIt]);
@@ -2516,6 +2518,20 @@ static int VDrawText (Draw_Interpretor& theDI,
       }
 
       aTextPrs->SetHeight (Draw::Atof(theArgVec[anArgIt]));
+    }
+    else if (aParam == "-wrapping")
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        Message::SendFail() << "Syntax error: wrong number of values for parameter '" << aParam << "'";
+        return 1;
+      }
+
+      if (aTextFormatter.IsNull())
+      {
+        aTextFormatter = new Font_TextFormatter();
+      }
+      aTextFormatter->SetWrapping ((Standard_ShortReal)Draw::Atof(theArgVec[anArgIt]));
     }
     else if (aParam == "-aspect")
     {
@@ -2661,6 +2677,8 @@ static int VDrawText (Draw_Interpretor& theDI,
       return 1;
     }
   }
+
+  aTextPrs->SetTextFormatter (aTextFormatter);
 
   if (aHasPlane)
   {
@@ -6628,6 +6646,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t: [-angle angle=0]"
                    "\n\t\t: [-zoom {0|1}=0]"
                    "\n\t\t: [-height height=16]"
+                   "\n\t\t: [-wrapping width=40]"
                    "\n\t\t: [-aspect {regular|bold|italic|boldItalic}=regular]"
                    "\n\t\t: [-font font=Times]"
                    "\n\t\t: [-2d]"

@@ -15,12 +15,14 @@
 
 #include <StdPrs_BRepTextBuilder.hxx>
 
+#include <Font_TextFormatter.hxx>
+
 // =======================================================================
 // Function : Perfrom
 // Purpose  :
 // =======================================================================
 TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&          theFont,
-                                              const Font_TextFormatter& theFormatter,
+                                              const Handle(Font_TextFormatter)& theFormatter,
                                               const gp_Ax3&             thePenLoc)
 {
   gp_Trsf          aTrsf;
@@ -31,34 +33,20 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&          theFont,
 
   myBuilder.MakeCompound (aResult);
 
-  Standard_Integer aSymbolCounter = 0;
-  Standard_Real    aScaleUnits    = theFont.Scale();
-  for (NCollection_Utf8Iter anIter = theFormatter.String().Iterator(); *anIter != 0; ++anIter)
+  Standard_Real aScaleUnits    = theFont.Scale();
+  for (Font_TextFormatter::Iterator aFormatterIt (*theFormatter, Font_TextFormatter::IterationFilter_ExcludeInvisible);
+       aFormatterIt.More(); aFormatterIt.Next())
   {
-    const Standard_Utf32Char aCharCurr = *anIter;
-    if (aCharCurr == '\x0D' // CR  (carriage return)
-     || aCharCurr == '\a'   // BEL (alarm)
-     || aCharCurr == '\f'   // FF  (form feed) NP (new page)
-     || aCharCurr == '\b'   // BS  (backspace)
-     || aCharCurr == '\v'   // VT  (vertical tab)
-     || aCharCurr == ' '
-     || aCharCurr == '\t'
-     || aCharCurr == '\n')
-    {
-      continue; // skip unsupported carriage control codes
-    }
+    const NCollection_Vec2<Standard_ShortReal>& aCorner = theFormatter->BottomLeft (aFormatterIt.SymbolPosition());
 
-    const NCollection_Vec2<Standard_ShortReal>& aCorner = theFormatter.TopLeft (aSymbolCounter);
     aPen.SetCoord (aCorner.x() * aScaleUnits, aCorner.y() * aScaleUnits, 0.0);
-    aGlyphShape = theFont.RenderGlyph (aCharCurr);
+    aGlyphShape = theFont.RenderGlyph (aFormatterIt.Symbol());
     if (!aGlyphShape.IsNull())
     {
       aTrsf.SetTranslation (gp_Vec (aPen));
       aGlyphShape.Move (aTrsf);
       myBuilder.Add (aResult, aGlyphShape);
     }
-
-    ++aSymbolCounter;
   }
 
   aTrsf.SetTransformation (thePenLoc, gp_Ax3 (gp::XOY()));
@@ -77,13 +65,13 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&                  
                                               const Graphic3d_HorizontalTextAlignment theHAlign,
                                               const Graphic3d_VerticalTextAlignment   theVAlign)
 {
-  Font_TextFormatter aFormatter;
+  Handle(Font_TextFormatter) aFormatter = new Font_TextFormatter();
 
-  aFormatter.Reset();
-  aFormatter.SetupAlignment (theHAlign, theVAlign);
+  aFormatter->Reset();
+  aFormatter->SetupAlignment (theHAlign, theVAlign);
 
-  aFormatter.Append (theString, *(reinterpret_cast<Font_FTFont*> (&theFont)));
-  aFormatter.Format();
+  aFormatter->Append (theString, *(reinterpret_cast<Font_FTFont*> (&theFont)));
+  aFormatter->Format();
 
   return Perform (theFont, aFormatter, thePenLoc);
 }

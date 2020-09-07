@@ -17,6 +17,7 @@
 #include <gp_Ax2.hxx>
 
 #include <Graphic3d_Vertex.hxx>
+#include <Font_TextFormatter.hxx>
 #include <Graphic3d_HorizontalTextAlignment.hxx>
 #include <Graphic3d_VerticalTextAlignment.hxx>
 #include <NCollection_String.hxx>
@@ -31,6 +32,7 @@
 //! - text formatter. Formatter contains text, height and alignment parameter.
 //!
 //! This class also has parameters of the text height and H/V alignments.
+//! Custom formatting is available using Font_TextFormatter.
 class Graphic3d_Text : public Standard_Transient
 {
   DEFINE_STANDARD_RTTIEXT(Graphic3d_Text, Standard_Transient)
@@ -54,6 +56,12 @@ public:
 
   //! Sets text value.
   void SetText (Standard_CString theText) { myText = theText; }
+
+  //! @return text formatter; NULL by default, which means standard text formatter will be used.
+  const Handle(Font_TextFormatter)& TextFormatter() const { return myFormatter; }
+
+  //! Setup text default formatter for text within this context.
+  void SetTextFormatter (const Handle(Font_TextFormatter)& theFormatter) { myFormatter = theFormatter; }
 
   //! The 3D point of attachment is projected.
   //! If the orientation is defined, the text is written in the plane of projection.
@@ -99,6 +107,8 @@ public:
   void SetVerticalAlignment (const Graphic3d_VerticalTextAlignment theJustification) { myVAlign = theJustification; }
 
 protected:
+  Handle(Font_TextFormatter) myFormatter; //!< text formatter
+
   NCollection_String myText; //!< text value
   gp_Ax2 myOrientation; //!< Text orientation in 3D space.
 

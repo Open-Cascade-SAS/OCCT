@@ -24,6 +24,8 @@
 #include <Font_FontAspect.hxx>
 #include <TCollection_ExtendedString.hxx>
 
+class Font_TextFormatter;
+
 //! Presentation of the text.
 class AIS_TextLabel : public AIS_InteractiveObject
 {
@@ -121,6 +123,12 @@ public:
   //! and the colour of backgroubd for the TODT_DEKALE TextDisplayType.
   Standard_EXPORT void SetColorSubTitle (const Quantity_Color& theColor);
 
+  //! Returns text presentation formatter; NULL by default, which means standard text formatter will be used.
+  const Handle(Font_TextFormatter)& TextFormatter() const { return myFormatter; }
+
+  //! Setup text formatter for presentation. It's empty by default.
+  void SetTextFormatter (const Handle(Font_TextFormatter)& theFormatter) { myFormatter = theFormatter; }
+
 protected:
 
   //! Compute
@@ -143,6 +151,8 @@ protected:
                                               gp_Pnt& theCenterOfLabel) const;
 
 protected:
+
+  Handle(Font_TextFormatter) myFormatter;
 
   TCollection_ExtendedString myText;
   gp_Ax2                     myOrientation3D;

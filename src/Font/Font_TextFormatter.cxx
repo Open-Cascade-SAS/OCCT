@@ -17,6 +17,10 @@
 
 #include <Font_FTFont.hxx>
 
+#include <Precision.hxx>
+
+IMPLEMENT_STANDARD_RTTIEXT (Font_TextFormatter, Standard_Transient)
+
 namespace
 {
   typedef NCollection_Vec2<Standard_ShortReal> Vec2f;
@@ -55,16 +59,17 @@ Font_TextFormatter::Font_TextFormatter()
 : myAlignX (Graphic3d_HTA_LEFT),
   myAlignY (Graphic3d_VTA_TOP),
   myTabSize (8),
+  myWrappingWidth (0.0f),
+  myLastSymbolWidth (0.0f),
+  myMaxSymbolWidth (0.0f),
   //
   myPen (0.0f, 0.0f),
-  myRectsNb (0),
   myLineSpacing (0.0f),
   myAscender (0.0f),
   myIsFormatted (false),
   //
   myLinesNb (0),
   myRectLineStart (0),
-  myRectWordStart (0),
   myNewLineNb(0),
   myPenCurrLine (0.0f),
   myBndTop   (0.0f),
@@ -94,10 +99,12 @@ void Font_TextFormatter::Reset()
   myIsFormatted = false;
   myString.Clear();
   myPen.x() = myPen.y() = 0.0f;
-  myRectsNb = 0;
   myLineSpacing = myAscender = 0.0f;
   myCorners.Clear();
   myNewLines.Clear();
+
+  myLastSymbolWidth = 0.0f;
+  myMaxSymbolWidth = 0.0f;
 }
 
 // =======================================================================
@@ -119,16 +126,13 @@ void Font_TextFormatter::Append (const NCollection_String& theString,
   int aSymbolsCounter = 0; // special counter to process tabulation symbols
 
   // first pass - render all symbols using associated font on single ZERO baseline
-  for (NCollection_Utf8Iter anIter = theString.Iterator(); *anIter != 0;)
+  for (Font_TextFormatter::Iterator aFormatterIt (*this); aFormatterIt.More(); aFormatterIt.Next())
   {
-    const Standard_Utf32Char aCharThis =   *anIter;
-    const Standard_Utf32Char aCharNext = *++anIter;
+    const Standard_Utf32Char aCharThis = aFormatterIt.Symbol();
+    const Standard_Utf32Char aCharNext = aFormatterIt.SymbolNext();
 
-    if (aCharThis == '\x0D' // CR  (carriage return)
-     || aCharThis == '\a'   // BEL (alarm)
-     || aCharThis == '\f'   // FF  (form feed) NP (new page)
-     || aCharThis == '\b'   // BS  (backspace)
-     || aCharThis == '\v')  // VT  (vertical tab)
+    Standard_ShortReal anAdvanceX = 0;
+    if (IsCommandSymbol (aCharThis))
     {
       continue; // skip unsupported carriage control codes
     }
@@ -136,79 +140,69 @@ void Font_TextFormatter::Append (const NCollection_String& theString,
     {
       aSymbolsCounter = 0;
       myNewLines.Append (myPen.x());
-      continue; // will be processed on second pass
+      anAdvanceX = 0; // the symbol has null width
     }
     else if (aCharThis == ' ')
     {
-      ++aSymbolsCounter;
-      myPen.x() += theFont.AdvanceX (' ', aCharNext);
-      continue;
+      anAdvanceX = theFont.AdvanceX (' ', aCharNext);
     }
     else if (aCharThis == '\t')
     {
       const Standard_Integer aSpacesNum = (myTabSize - (aSymbolsCounter - 1) % myTabSize);
-      myPen.x() += theFont.AdvanceX (' ', aCharNext) * Standard_ShortReal(aSpacesNum);
+      anAdvanceX = theFont.AdvanceX (' ', aCharNext) * Standard_ShortReal(aSpacesNum);
       aSymbolsCounter += aSpacesNum;
-      continue;
     }
-
+    else
+    {
+      anAdvanceX = theFont.AdvanceX (aCharThis, aCharNext);
+    }
     ++aSymbolsCounter;
-
     myCorners.Append (myPen);
-
-    myPen.x() += theFont.AdvanceX (aCharThis, aCharNext);
-
-    ++myRectsNb;
+    myPen.x() += anAdvanceX;
+    myMaxSymbolWidth = Max (myMaxSymbolWidth, anAdvanceX);
   }
+  myLastSymbolWidth = myPen.x() - myCorners.Last().x();
 }
 
 // =======================================================================
 // function : newLine
 // purpose  :
 // =======================================================================
-void Font_TextFormatter::newLine (const Standard_Integer theLastRect)
+void Font_TextFormatter::newLine (const Standard_Integer theLastRect,
+                                  const Standard_ShortReal theMaxLineWidth)
 {
-  if (myRectLineStart >= myRectsNb)
+  Standard_Integer aFirstCornerId = myRectLineStart;
+  Standard_Integer aLastCornerId = theLastRect;
+
+  if (aFirstCornerId >= myCorners.Length())
   {
     ++myLinesNb;
     myPenCurrLine -= myLineSpacing;
     return;
   }
 
+  Standard_ShortReal aXMin = BottomLeft (aFirstCornerId).x();
+  Font_Rect aBndBox;
+  GlyphBoundingBox (aLastCornerId, aBndBox);
+  Standard_ShortReal aXMax = aBndBox.Right;
+
   myMoveVec.y() = myPenCurrLine;
   switch (myAlignX)
   {
     default:
-    case Graphic3d_HTA_LEFT:
-    {
-      myMoveVec.x() = (myNewLineNb > 0) ? -myNewLines.Value (myNewLineNb - 1) : 0.0f;
+    case Graphic3d_HTA_LEFT:   myMoveVec.x() = -aXMin;
       break;
-    }
-    case Graphic3d_HTA_RIGHT:
-    {
-      myMoveVec.x() = (myNewLineNb < myNewLines.Length())
-                    ? -myNewLines.Value (myNewLineNb)
-                    : -myPen.x();
+    case Graphic3d_HTA_RIGHT:  myMoveVec.x() = -aXMin +        (theMaxLineWidth - (aXMax - aXMin)) -        theMaxLineWidth;
       break;
-    }
-    case Graphic3d_HTA_CENTER:
-    {
-      const Standard_ShortReal aFrom = (myNewLineNb > 0)
-                                     ? myNewLines.Value (myNewLineNb - 1)
-                                     : 0.0f;
-      const Standard_ShortReal aTo   = (myNewLineNb < myNewLines.Length())
-                                     ? myNewLines.Value (myNewLineNb)
-                                     : myPen.x();
-      myMoveVec.x() = -0.5f * (aFrom + aTo);
+    case Graphic3d_HTA_CENTER: myMoveVec.x() = -aXMin + 0.5f * (theMaxLineWidth - (aXMax - aXMin)) - 0.5f * theMaxLineWidth;
       break;
-    }
   }
 
   move (myCorners, myMoveVec, myRectLineStart, theLastRect);
 
   ++myLinesNb;
   myPenCurrLine -= myLineSpacing;
-  myRectLineStart = myRectWordStart = theLastRect + 1;
+  myRectLineStart = theLastRect + 1;
 }
 
 // =======================================================================
@@ -217,13 +211,13 @@ void Font_TextFormatter::newLine (const Standard_Integer theLastRect)
 // =======================================================================
 void Font_TextFormatter::Format()
 {
-  if (myRectsNb == 0 || myIsFormatted)
+  if (myCorners.Length() == 0 || myIsFormatted)
   {
     return;
   }
 
   myIsFormatted = true;
-  myLinesNb = myRectLineStart = myRectWordStart = 0;
+  myLinesNb = myRectLineStart = 0;
   myBndTop     = 0.0f;
   myBndWidth   = 0.0f;
   myMoveVec.x() = myMoveVec.y() = 0.0f;
@@ -232,59 +226,61 @@ void Font_TextFormatter::Format()
   myPenCurrLine = -myAscender;
   Standard_Integer aRectIter = 0;
   myNewLineNb = 0;
-  Standard_ShortReal aMaxLineWidth = -1.0f;
-  for (NCollection_Utf8Iter anIter = myString.Iterator(); *anIter != 0; ++anIter)
-  {
-    const Standard_Utf32Char aCharThis = *anIter;
-    if (aCharThis == '\x0D' // CR  (carriage return)
-     || aCharThis == '\a'   // BEL (alarm)
-     || aCharThis == '\f'   // FF  (form feed) NP (new page)
-     || aCharThis == '\b'   // BS  (backspace)
-     || aCharThis == '\v')  // VT  (vertical tab)
-    {
-      continue; // skip unsupported carriage control codes
-    }
-    else if (aCharThis == '\x0A') // LF (line feed, new line)
-    {
-      // calculate max line width
-      if (myNewLineNb == 0)
-      {
-        aMaxLineWidth = myNewLines.Value(0);
-      }
-      else
-      {
-        aMaxLineWidth = Max (aMaxLineWidth, myNewLines.Value (myNewLineNb) - myNewLines.Value (myNewLineNb - 1));
-      }
 
-      const Standard_Integer aLastRect = aRectIter - 1; // last rect on current line
-      newLine (aLastRect);
+  Standard_ShortReal aMaxLineWidth = Wrapping();
+  if (HasWrapping())
+  {
+    // it is not possible to wrap less than symbol width
+    aMaxLineWidth = Max (aMaxLineWidth, MaximumSymbolWidth());
+  }
+  else
+  {
+    if (myNewLines.IsEmpty()) // If only one line
+    {
+      aMaxLineWidth = myPen.x();
+    }
+    else
+    {
+      for (int aLineIt = 0; aLineIt < myNewLines.Size(); aLineIt++)
+      {
+        aMaxLineWidth = Max (aMaxLineWidth, LineWidth (aLineIt));
+      }
+      aMaxLineWidth = Max (aMaxLineWidth, LineWidth (myNewLines.Size())); // processing the last line also
+    }
+  }
+
+  for (Font_TextFormatter::Iterator aFormatterIt(*this);
+       aFormatterIt.More(); aFormatterIt.Next())
+  {
+    const Standard_Utf32Char aCharThis = aFormatterIt.Symbol();
+    aRectIter = aFormatterIt.SymbolPosition();
+
+    if (aCharThis == '\x0A') // LF (line feed, new line)
+    {
+      const Standard_Integer aLastRect = aRectIter; // last rect on current line
+      newLine (aLastRect, aMaxLineWidth);
       ++myNewLineNb;
       continue;
     }
-    else if (aCharThis == ' '
-          || aCharThis == '\t')
+    else if (HasWrapping()) // wrap lines longer than maximum width
     {
-      myRectWordStart = aRectIter;
-      continue;
+      Standard_Integer aFirstCornerId = myRectLineStart;
+
+      Font_Rect aBndBox;
+      GlyphBoundingBox (aRectIter, aBndBox);
+      const Standard_ShortReal aNextXPos = aBndBox.Right - BottomLeft (aFirstCornerId).x();
+      if (aNextXPos > aMaxLineWidth) // wrap the line and do processing of the symbol
+      {
+        const Standard_Integer aLastRect = aRectIter - 1; // last rect on current line
+        newLine (aLastRect, aMaxLineWidth);
+      }
     }
-
-    ++aRectIter;
-  }
-
-  // If only one line
-  if (aMaxLineWidth < 0.0f)
-  {
-    aMaxLineWidth = myPen.x();
-  }
-  else // Consider last line
-  {
-    aMaxLineWidth = Max (aMaxLineWidth, myPen.x() - myNewLines.Value (myNewLineNb - 1));
   }
 
   myBndWidth = aMaxLineWidth;
 
   // move last line
-  newLine (myRectsNb - 1);
+  newLine (myCorners.Length() - 1, aMaxLineWidth);
 
   // apply vertical alignment style
   if (myAlignY == Graphic3d_VTA_BOTTOM)
@@ -302,6 +298,129 @@ void Font_TextFormatter::Format()
 
   if (myAlignY != Graphic3d_VTA_TOP)
   {
-    moveY (myCorners, myBndTop, 0, myRectsNb - 1);
+    moveY (myCorners, myBndTop, 0, myCorners.Length() - 1);
   }
+}
+
+// =======================================================================
+// function : GlyphBoundingBox
+// purpose  :
+// =======================================================================
+Standard_Boolean Font_TextFormatter::GlyphBoundingBox (const Standard_Integer theIndex,
+                                                       Font_Rect& theBndBox) const
+{
+  if (theIndex < 0 || theIndex >= Corners().Size())
+    return Standard_False;
+
+  const NCollection_Vec2<Standard_ShortReal>& aLeftCorner = BottomLeft (theIndex);
+  if (theIndex + 1 < myCorners.Length()) // not the last symbol
+  {
+    const NCollection_Vec2<Standard_ShortReal>& aNextLeftCorner = BottomLeft (theIndex + 1);
+    theBndBox.Left = aLeftCorner.x();
+    theBndBox.Bottom = aLeftCorner.y();
+    theBndBox.Top = theBndBox.Bottom + myLineSpacing;
+    if (Abs (aLeftCorner.y() - aNextLeftCorner.y()) < Precision::Confusion()) // in the same row
+    {
+      theBndBox.Right = aNextLeftCorner.x();
+    }
+    else
+    {
+      // the next symbol is on the next row either by '\n' or by wrapping
+      Standard_ShortReal aLineWidth = LineWidth (LineIndex (theIndex));
+      theBndBox.Left = aLeftCorner.x();
+      switch (myAlignX)
+      {
+        case Graphic3d_HTA_LEFT:   theBndBox.Right = aLineWidth; break;
+        case Graphic3d_HTA_RIGHT:  theBndBox.Right = myBndWidth; break;
+        case Graphic3d_HTA_CENTER: theBndBox.Right = 0.5f * (myBndWidth + aLineWidth); break;
+      }
+    }
+  }
+  else // the last symbol
+  {
+    theBndBox.Left = aLeftCorner.x();
+    theBndBox.Right = aLeftCorner.x() + myLastSymbolWidth;
+    theBndBox.Bottom = aLeftCorner.y();
+    theBndBox.Top = theBndBox.Bottom + myLineSpacing;
+  }
+  return Standard_True;
+}
+
+
+// =======================================================================
+// function : IsLFSymbol
+// purpose  :
+// =======================================================================
+Standard_Boolean Font_TextFormatter::IsLFSymbol (const Standard_Integer theIndex) const
+{
+  Font_Rect aBndBox;
+  if (!GlyphBoundingBox (theIndex, aBndBox))
+    return Standard_False;
+
+  return Abs (aBndBox.Right - aBndBox.Left) < Precision::Confusion();
+}
+
+// =======================================================================
+// function : FirstPosition
+// purpose  :
+// =======================================================================
+Standard_ShortReal Font_TextFormatter::FirstPosition() const
+{
+  switch (myAlignX)
+  {
+    default:
+    case Graphic3d_HTA_LEFT:   return 0;
+    case Graphic3d_HTA_RIGHT:  return myBndWidth;
+    case Graphic3d_HTA_CENTER: return 0.5f * myBndWidth;
+  }
+}
+
+// =======================================================================
+// function : LinePositionIndex
+// purpose  :
+// =======================================================================
+Standard_Integer Font_TextFormatter::LinePositionIndex (const Standard_Integer theIndex) const
+{
+  Standard_Integer anIndex = 0;
+
+  Standard_ShortReal anIndexHeight = BottomLeft (theIndex).y();
+  for (Standard_Integer aPrevIndex = theIndex-1; aPrevIndex >= 0; aPrevIndex--)
+  {
+    if (BottomLeft (aPrevIndex).y() > anIndexHeight)
+    {
+      break;
+    }
+    anIndex++;
+  }
+  return anIndex;
+}
+
+// =======================================================================
+// function : LineIndex
+// purpose  :
+// =======================================================================
+Standard_Integer Font_TextFormatter::LineIndex (const Standard_Integer theIndex) const
+{
+  if (myLineSpacing < 0.0f)
+    return 0;
+
+  return (Standard_Integer)Abs((BottomLeft (theIndex).y() + myAscender) / myLineSpacing);
+}
+
+// =======================================================================
+// function : LineWidth
+// purpose  :
+// =======================================================================
+Standard_ShortReal Font_TextFormatter::LineWidth (const Standard_Integer theIndex) const
+{
+  if (theIndex < 0)
+    return 0;
+
+  if (theIndex < myNewLines.Length())
+    return theIndex == 0 ? myNewLines[0] : myNewLines[theIndex] - myNewLines[theIndex -1];
+
+  if (theIndex == myNewLines.Length()) // the last line
+    return theIndex == 0 ? myPen.x() : myPen.x() - myNewLines[theIndex -1];
+
+  return 0;
 }
