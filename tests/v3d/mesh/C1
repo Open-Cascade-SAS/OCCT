@@ -1,0 +1,14 @@
+puts "========"
+puts "OCC31757: Visualization - Prebuild BVH for Select3D_SensitiveEntity in separate threads"
+puts "========"
+
+vclear
+set aShape [locate_data_file occ/Motor-c.brep]
+restore $aShape s
+vdisplay s
+vfit
+vselbvhbuild 1 -nbThreads 1
+vselmode s FACE 1
+vselbvhbuild -wait
+vselect 0 0 512 512
+vdump $imagedir/${test_image}.png

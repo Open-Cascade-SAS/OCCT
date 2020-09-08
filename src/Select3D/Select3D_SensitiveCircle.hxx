@@ -81,6 +81,9 @@ public:
   //! Builds BVH tree for a circle's edge segments if needed
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
+  //! Returns TRUE if BVH tree is in invalidated state
+  Standard_EXPORT virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE;
+
 protected:
 
   //! Calculates distance from the 3d projection of used-picked screen point

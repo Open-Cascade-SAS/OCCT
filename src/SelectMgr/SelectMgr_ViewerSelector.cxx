@@ -137,6 +137,7 @@ SelectMgr_ViewerSelector::SelectMgr_ViewerSelector():
 preferclosest(Standard_True),
 myToUpdateTolerance (Standard_True),
 myCameraScale (1.0),
+myToPrebuildBVH (Standard_False),
 myCurRank (0),
 myIsLeftChildQueuedFirst (Standard_False),
 myEntityIdx (0)
@@ -579,6 +580,8 @@ void SelectMgr_ViewerSelector::traverseObject (const Handle(SelectMgr_Selectable
 //=======================================================================
 void SelectMgr_ViewerSelector::TraverseSensitives()
 {
+  SelectMgr_BVHThreadPool::Sentry aSentry (myBVHThreadPool);
+
   mystored.Clear();
 
   Standard_Integer aWidth;
@@ -1121,4 +1124,45 @@ void SelectMgr_ViewerSelector::DumpJson (Standard_OStream& theOStream, Standard_
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myIsLeftChildQueuedFirst)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myEntityIdx)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myMapOfObjectSensitives.Extent())
+}
+
+//=======================================================================
+//function : SetToPrebuildBVH
+//purpose  : 
+//=======================================================================
+void SelectMgr_ViewerSelector::SetToPrebuildBVH (Standard_Boolean theToPrebuild, Standard_Integer theThreadsNum)
+{
+  if (!theToPrebuild && !myBVHThreadPool.IsNull())
+  {
+    myBVHThreadPool.Nullify();
+  }
+  else if (theToPrebuild)
+  {
+    myBVHThreadPool = new SelectMgr_BVHThreadPool (theThreadsNum);
+  }
+  myToPrebuildBVH = theToPrebuild;
+}
+
+//=======================================================================
+//function : QueueBVHBuild
+//purpose  : 
+//=======================================================================
+void SelectMgr_ViewerSelector::QueueBVHBuild (const Handle(Select3D_SensitiveEntity)& theEntity)
+{
+  if (myToPrebuildBVH)
+  {
+    myBVHThreadPool->AddEntity (theEntity);
+  }
+}
+
+//=======================================================================
+//function : WaitForBVHBuild
+//purpose  : 
+//=======================================================================
+void SelectMgr_ViewerSelector::WaitForBVHBuild()
+{
+  if (myToPrebuildBVH)
+  {
+    myBVHThreadPool->WaitThreads();
+  }
 }

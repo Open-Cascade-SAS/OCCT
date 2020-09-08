@@ -70,6 +70,9 @@ public:
   //! transformation is set, it will be applied
   Standard_EXPORT virtual Select3D_BndBox3d BoundingBox() Standard_OVERRIDE;
 
+  //! Returns TRUE if BVH tree is in invalidated state
+  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
+
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 

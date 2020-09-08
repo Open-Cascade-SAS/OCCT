@@ -16,8 +16,10 @@
 
 #include <SelectMgr_SelectionManager.hxx>
 
+#include <Select3D_SensitiveGroup.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
+#include <StdSelect_BRepSelectionTool.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_SelectionManager,Standard_Transient)
@@ -484,6 +486,8 @@ void SelectMgr_SelectionManager::loadMode (const Handle(SelectMgr_SelectableObje
         theObject->AddSelection (aNewSel, theMode);
         aNewSel->UpdateBVHStatus (SelectMgr_TBU_Remove);
         aNewSel->SetSelectionState (SelectMgr_SOS_Deactivated);
+
+        buildBVH (aNewSel);
       }
     }
     return;
@@ -495,6 +499,37 @@ void SelectMgr_SelectionManager::loadMode (const Handle(SelectMgr_SelectableObje
   {
     mySelector->AddSelectionToObject (theObject, aNewSel);
     aNewSel->UpdateBVHStatus (SelectMgr_TBU_None);
+  }
+
+  buildBVH (aNewSel);
+}
+
+//==================================================
+// Function: buildBVH
+// Purpose : Private Method
+//==================================================
+void SelectMgr_SelectionManager::buildBVH (const Handle(SelectMgr_Selection)& theSelection)
+{
+  if (mySelector->ToPrebuildBVH())
+  {
+    for (NCollection_Vector<Handle(SelectMgr_SensitiveEntity)>::Iterator anIter (theSelection->Entities()); anIter.More(); anIter.Next())
+    {
+      const Handle(Select3D_SensitiveEntity)& anEntity = anIter.Value()->BaseSensitive();
+      mySelector->QueueBVHBuild (anEntity);
+
+      if (Handle(Select3D_SensitiveGroup) aGroup = Handle(Select3D_SensitiveGroup)::DownCast (anEntity))
+      {
+        for (Select3D_IndexedMapOfEntity::Iterator aSubEntitiesIter (aGroup->Entities()); aSubEntitiesIter.More(); aSubEntitiesIter.Next())
+        {
+          const Handle(Select3D_SensitiveEntity)& aSubEntity = aSubEntitiesIter.Value();
+          mySelector->QueueBVHBuild (aSubEntity);
+        }
+      }
+    }
+  }
+  else
+  {
+    StdSelect_BRepSelectionTool::PreBuildBVH (theSelection);
   }
 }
 

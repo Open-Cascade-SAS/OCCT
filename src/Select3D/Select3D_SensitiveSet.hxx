@@ -75,6 +75,9 @@ public:
   //! but element by element
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
+  //! Returns TRUE if BVH tree is in invalidated state
+  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return myContent.IsDirty(); }
+
   //! Sets the method (builder) used to construct BVH.
   void SetBuilder (const Handle(Select3D_BVHBuilder3d)& theBuilder) { myContent.SetBuilder (theBuilder); }
 

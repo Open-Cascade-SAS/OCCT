@@ -192,8 +192,6 @@ void StdSelect_BRepSelectionTool::Load (const Handle(SelectMgr_Selection)& theSe
     const Handle(SelectMgr_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
     anOwner->SetSelectable (theSelectableObj);
   }
-
-  PreBuildBVH (theSelection);
 }
 
 //==================================================

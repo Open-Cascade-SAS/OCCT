@@ -518,8 +518,6 @@ void AIS_ColoredShape::ComputeSelection (const Handle(SelectMgr_Selection)& theS
     const Handle(SelectMgr_EntityOwner)& anOwner = aSelEntIter.Value()->BaseSensitive()->OwnerId();
     anOwner->SetSelectable (aThis);
   }
-
-  StdSelect_BRepSelectionTool::PreBuildBVH (theSelection);
 }
 
 //=======================================================================

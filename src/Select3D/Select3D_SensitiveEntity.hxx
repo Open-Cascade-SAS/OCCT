@@ -81,6 +81,9 @@ public:
   //! Builds BVH tree for a sensitive if needed
   virtual void BVH() {}
 
+  //! Returns TRUE if BVH tree is in invalidated state
+  virtual Standard_Boolean ToBuildBVH() const { return Standard_True; }
+
   //! Clears up all resources and memory
   virtual void Clear() { Set (Handle(SelectMgr_EntityOwner)()); }
 

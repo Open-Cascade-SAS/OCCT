@@ -6,6 +6,8 @@ SelectMgr_AndOrFilter.cxx
 SelectMgr_AndOrFilter.hxx
 SelectMgr_BaseFrustum.cxx
 SelectMgr_BaseFrustum.hxx
+SelectMgr_BVHThreadPool.cxx
+SelectMgr_BVHThreadPool.hxx
 SelectMgr_CompositionFilter.cxx
 SelectMgr_CompositionFilter.hxx
 SelectMgr_CompositionFilter.lxx

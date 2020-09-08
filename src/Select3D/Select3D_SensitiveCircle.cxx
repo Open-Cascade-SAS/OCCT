@@ -192,6 +192,20 @@ void Select3D_SensitiveCircle::BVH()
 }
 
 //=======================================================================
+// function : ToBuildBVH
+// purpose  : 
+//=======================================================================
+Standard_Boolean Select3D_SensitiveCircle::ToBuildBVH() const
+{
+  if (mySensType != Select3D_TOS_BOUNDARY)
+  {
+    return Standard_False;
+  }
+
+  return Select3D_SensitivePoly::ToBuildBVH();
+}
+
+//=======================================================================
 // function : Matches
 // purpose  : Checks whether the circle overlaps current selecting volume
 //=======================================================================

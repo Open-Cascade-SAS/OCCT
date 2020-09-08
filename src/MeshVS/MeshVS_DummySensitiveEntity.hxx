@@ -42,6 +42,8 @@ public:
 
   Standard_EXPORT virtual void BVH() Standard_OVERRIDE;
 
+  virtual Standard_Boolean ToBuildBVH() const Standard_OVERRIDE { return Standard_False; }
+
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
 
   Standard_EXPORT virtual Standard_Boolean HasInitLocation() const Standard_OVERRIDE;

@@ -59,6 +59,7 @@
 #include <NCollection_LocalArray.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD.hxx>
+#include <OSD_Parallel.hxx>
 #include <OSD_Timer.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <Prs3d_ShadingAspect.hxx>
@@ -13982,6 +13983,83 @@ static int VColorDiff (Draw_Interpretor& theDI, Standard_Integer  theNbArgs, con
   return 0;
 }
  
+//===============================================================================================
+//function : VBVHPrebuid
+//purpose  :
+//===============================================================================================
+static int VSelBvhBuild (Draw_Interpretor& /*theDI*/, Standard_Integer theNbArgs, const char** theArgVec)
+{
+  const Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
+
+  if (theNbArgs < 2)
+  {
+    Message::SendFail ("Error: command syntax is incorrect, see help");
+    return 1;
+  }
+
+  Standard_Integer toEnable = -1;
+  Standard_Integer aThreadsNb = -1;
+  Standard_Boolean toWait = Standard_False;
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+
+    if (anArg == "-nbthreads"
+        && anArgIter + 1 < theNbArgs)
+    {
+      aThreadsNb = Draw::Atoi (theArgVec[++anArgIter]);
+      if (aThreadsNb < 1)
+      {
+        aThreadsNb = Max (1, OSD_Parallel::NbLogicalProcessors() - 1);
+      }
+    }
+    else if (anArg == "-wait")
+    {
+      toWait = Standard_True;
+    }
+    else if (toEnable == -1)
+    {
+      Standard_Boolean toEnableValue = Standard_True;
+      if (Draw::ParseOnOff (anArg.ToCString(), toEnableValue))
+      {
+        toEnable = toEnableValue ? 1 : 0;
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error: unknown argument '" << anArg << "'";
+        return 1;
+      }
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error: unknown argument '" << anArg << "'";
+      return 1;
+    }
+  }
+
+  if (aThreadsNb == -1)
+  {
+    aThreadsNb = 1;
+  }
+  if (toEnable != -1)
+  {
+    aCtx->MainSelector()->SetToPrebuildBVH (toEnable == 1, aThreadsNb);
+  }
+  if (toWait)
+  {
+    aCtx->MainSelector()->WaitForBVHBuild();
+  }
+
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -14887,4 +14965,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vcolordiff" ,
                   "vcolordiff R1 G1 B1 R2 G2 B2: returns CIEDE2000 color difference between two RGB colors",
                   __FILE__,VColorDiff,group);
+  theCommands.Add("vselbvhbuild",
+                  "vselbvhbuild [{0|1}] [-nbThreads value] [-wait]"
+                  "\n\t\t: Turns on/off prebuilding of BVH within background thread(s)"
+                  "\n\t\t:   -nbThreads   number of threads, 1 by default; if < 1 then used (NbLogicalProcessors - 1)"
+                  "\n\t\t:   -wait        waits for building all of BVH",
+                  __FILE__,VSelBvhBuild,group);
 }

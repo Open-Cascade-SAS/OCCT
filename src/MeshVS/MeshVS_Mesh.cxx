@@ -652,8 +652,6 @@ void MeshVS_Mesh::ComputeSelection (const Handle(SelectMgr_Selection)& theSelect
     }
   }
 
-  StdSelect_BRepSelectionTool::PreBuildBVH (theSelection);
-
   if (toShowComputeSelectionTime)
   {
     Standard_Real sec, cpu;
