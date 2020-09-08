@@ -1332,14 +1332,7 @@ protected: //! @name internal methods
     if (myLastPicked.IsNull())
       return;
 
-    if (myLastPicked->IsAutoHilight())
-    {
-      myMainPM->ClearImmediateDraw();
-    }
-    else
-    {
-      myLastPicked->Selectable()->ClearDynamicHighlight (myMainPM);
-    }
+    myLastPicked->Selectable()->ClearDynamicHighlight (myMainPM);
   }
 
   //! Bind/Unbind status to object and its children
