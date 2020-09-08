@@ -40,6 +40,7 @@ class AIS_Point;
 class AIS_RubberBand;
 class AIS_XRTrackedDevice;
 class Graphic3d_Camera;
+class SelectMgr_EntityOwner;
 class V3d_View;
 class WNT_HIDSpaceMouse;
 
@@ -737,6 +738,7 @@ protected:
 
   Handle(AIS_AnimationCamera) myViewAnimation;    //!< view animation
   Handle(AIS_RubberBand) myRubberBand;            //!< Rubber-band presentation
+  Handle(SelectMgr_EntityOwner) myDragOwner;      //!< detected owner of currently dragged object
   Handle(AIS_InteractiveObject) myDragObject;     //!< currently dragged object
   Graphic3d_Vec2i     myPrevMoveTo;               //!< previous position of MoveTo event in 3D viewer
   Standard_Boolean    myHasHlrOnBeforeRotation;   //!< flag for restoring Computed mode after rotation

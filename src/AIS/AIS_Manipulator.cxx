@@ -640,6 +640,44 @@ Standard_Boolean AIS_Manipulator::ObjectTransformation (const Standard_Integer t
 }
 
 //=======================================================================
+//function : ProcessDragging
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_Manipulator::ProcessDragging (const Handle(AIS_InteractiveContext)&,
+                                                   const Handle(V3d_View)& theView,
+                                                   const Handle(SelectMgr_EntityOwner)&,
+                                                   const Graphic3d_Vec2i& theDragFrom,
+                                                   const Graphic3d_Vec2i& theDragTo,
+                                                   const AIS_DragAction theAction)
+{
+  switch (theAction)
+  {
+    case AIS_DragAction_Start:
+    {
+      if (HasActiveMode())
+      {
+        StartTransform (theDragFrom.x(), theDragFrom.y(), theView);
+        return Standard_True;
+      }
+      break;
+    }
+    case AIS_DragAction_Update:
+    {
+      Transform (theDragTo.x(), theDragTo.y(), theView);
+      return Standard_True;
+    }
+    case AIS_DragAction_Abort:
+    {
+      StopTransform (false);
+      return Standard_True;
+    }
+    case AIS_DragAction_Stop:
+      break;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
 //function : StartTransform
 //purpose  : 
 //=======================================================================

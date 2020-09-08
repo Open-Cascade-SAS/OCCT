@@ -57,6 +57,20 @@ void AIS_InteractiveObject::Redisplay (const Standard_Boolean AllModes)
 }
 
 //=======================================================================
+//function : ProcessDragging
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS_InteractiveObject::ProcessDragging (const Handle(AIS_InteractiveContext)&,
+                                                         const Handle(V3d_View)&,
+                                                         const Handle(SelectMgr_EntityOwner)&,
+                                                         const Graphic3d_Vec2i&,
+                                                         const Graphic3d_Vec2i&,
+                                                         const AIS_DragAction)
+{
+  return Standard_False;
+}
+
+//=======================================================================
 //function : 
 //purpose  : 
 //=======================================================================

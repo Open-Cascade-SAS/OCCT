@@ -15,7 +15,6 @@
 
 #include <AIS_AnimationCamera.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <AIS_Manipulator.hxx>
 #include <AIS_Point.hxx>
 #include <AIS_RubberBand.hxx>
 #include <AIS_XRTrackedDevice.hxx>
@@ -2611,19 +2610,20 @@ void AIS_ViewController::OnObjectDragged (const Handle(AIS_InteractiveContext)& 
     case AIS_DragAction_Start:
     {
       myDragObject.Nullify();
+      myDragOwner.Nullify();
       if (!theCtx->HasDetected())
       {
         return;
       }
 
-      Handle(AIS_InteractiveObject) aPrs = theCtx->DetectedInteractive();
-      if (Handle(AIS_Manipulator) aManip = Handle(AIS_Manipulator)::DownCast (aPrs))
+      const Handle(SelectMgr_EntityOwner)& aDetectedOwner = theCtx->DetectedOwner();
+      Handle(AIS_InteractiveObject) aDetectedPrs = Handle(AIS_InteractiveObject)::DownCast (aDetectedOwner->Selectable());
+
+      if (aDetectedPrs->ProcessDragging (theCtx, theView, aDetectedOwner, myGL.Dragging.PointStart,
+                                         myGL.Dragging.PointTo, theAction))
       {
-        if (aManip->HasActiveMode())
-        {
-          myDragObject = aManip;
-          aManip->StartTransform (myGL.Dragging.PointStart.x(), myGL.Dragging.PointStart.y(), theView);
-        }
+        myDragObject = aDetectedPrs;
+        myDragOwner = aDetectedOwner;
       }
       return;
     }
@@ -2638,10 +2638,9 @@ void AIS_ViewController::OnObjectDragged (const Handle(AIS_InteractiveContext)& 
       {
         theCtx->SetSelectedState (aGlobOwner, true);
       }
-      if (Handle(AIS_Manipulator) aManip = Handle(AIS_Manipulator)::DownCast (myDragObject))
-      {
-        aManip->Transform (myGL.Dragging.PointTo.x(), myGL.Dragging.PointTo.y(), theView);
-      }
+
+      myDragObject->ProcessDragging (theCtx, theView, myDragOwner, myGL.Dragging.PointStart,
+                                     myGL.Dragging.PointTo, theAction);
       theView->Invalidate();
       return;
     }
@@ -2655,10 +2654,8 @@ void AIS_ViewController::OnObjectDragged (const Handle(AIS_InteractiveContext)& 
       myGL.Dragging.PointTo = myGL.Dragging.PointStart;
       OnObjectDragged (theCtx, theView, AIS_DragAction_Update);
 
-      if (Handle(AIS_Manipulator) aManip = Handle(AIS_Manipulator)::DownCast (myDragObject))
-      {
-        aManip->StopTransform (false);
-      }
+      myDragObject->ProcessDragging (theCtx, theView, myDragOwner, myGL.Dragging.PointStart,
+                                     myGL.Dragging.PointTo, theAction);
       Standard_FALLTHROUGH
     }
     case AIS_DragAction_Stop:
@@ -2673,8 +2670,11 @@ void AIS_ViewController::OnObjectDragged (const Handle(AIS_InteractiveContext)& 
         theCtx->SetSelectedState (aGlobOwner, false);
       }
 
+      myDragObject->ProcessDragging (theCtx, theView, myDragOwner, myGL.Dragging.PointStart,
+                                     myGL.Dragging.PointTo, theAction);
       theView->Invalidate();
       myDragObject.Nullify();
+      myDragOwner.Nullify();
       return;
     }
   }

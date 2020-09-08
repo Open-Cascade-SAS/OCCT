@@ -18,12 +18,14 @@
 #define _AIS_InteractiveObject_HeaderFile
 
 #include <AIS_KindOfInteractive.hxx>
+#include <AIS_DragAction.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 
 class AIS_InteractiveContext;
 class Graphic3d_MaterialAspect;
 class Prs3d_BasicAspect;
 class Bnd_Box;
+class V3d_View;
 
 //! Defines a class of objects with display and selection services.
 //! Entities which are visualized and selected are Interactive Objects.
@@ -102,6 +104,21 @@ public:
   //! Each Interactive Object has methods which allow us to attribute an Owner to it in the form of a Transient.
   //! This method removes the owner from the graphic entity.
   void ClearOwner() { myOwner.Nullify(); }
+
+  //! Drag object in the viewer.
+  //! @param theCtx      [in] interactive context
+  //! @param theView     [in] active View
+  //! @param theOwner    [in] the owner of detected entity
+  //! @param theDragFrom [in] drag start point
+  //! @param theDragTo   [in] drag end point
+  //! @param theAction   [in] drag action
+  //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
+  Standard_EXPORT virtual Standard_Boolean ProcessDragging (const Handle(AIS_InteractiveContext)& theCtx,
+                                                            const Handle(V3d_View)& theView,
+                                                            const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                            const Graphic3d_Vec2i& theDragFrom,
+                                                            const Graphic3d_Vec2i& theDragTo,
+                                                            const AIS_DragAction theAction);
 
 public:
 

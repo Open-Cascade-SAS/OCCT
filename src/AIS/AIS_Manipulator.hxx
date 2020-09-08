@@ -163,6 +163,20 @@ public:
   }
 
 public:
+  //! Drag object in the viewer.
+  //! @param theCtx      [in] interactive context
+  //! @param theView     [in] active View
+  //! @param theOwner    [in] the owner of detected entity
+  //! @param theDragFrom [in] drag start point
+  //! @param theDragTo   [in] drag end point
+  //! @param theAction   [in] drag action
+  //! @return FALSE if object rejects dragging action (e.g. AIS_DragAction_Start)
+  Standard_EXPORT virtual Standard_Boolean ProcessDragging (const Handle(AIS_InteractiveContext)& theCtx,
+                                                            const Handle(V3d_View)& theView,
+                                                            const Handle(SelectMgr_EntityOwner)& theOwner,
+                                                            const Graphic3d_Vec2i& theDragFrom,
+                                                            const Graphic3d_Vec2i& theDragTo,
+                                                            const AIS_DragAction theAction) Standard_OVERRIDE;
 
   //! Init start (reference) transformation.
   //! @warning It is used in chain with StartTransform-Transform(gp_Trsf)-StopTransform
