@@ -54,6 +54,8 @@ AIS_InteractiveContext_3.cxx
 AIS_InteractiveObject.cxx
 AIS_InteractiveObject.hxx
 AIS_KindOfInteractive.hxx
+AIS_LightSource.cxx
+AIS_LightSource.hxx
 AIS_Line.cxx
 AIS_Line.hxx
 AIS_ListIteratorOfListOfInteractive.hxx

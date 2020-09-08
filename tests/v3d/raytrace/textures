@@ -73,6 +73,6 @@ vfit
 vlight -clear
 vlight -add ambient
 vlight -add directional -dir -0.577 -0.577 -0.577 -head 1
-vlight -add directional -dir  0.577, 0.577, 0.577 -head 0
+vlight -add directional -dir  0.577  0.577  0.577 -head 0
 
 vrenderparams -raytrace -raydepth 3 -shadows on -reflections -fsaa

@@ -63,6 +63,17 @@ public:
   Standard_EXPORT void FillArray (Handle(Graphic3d_ArrayOfTriangles)& theArray,
                                   const gp_Trsf& theTrsf) const;
 
+  //! Return number of triangles in generated presentation.
+  Standard_Integer TrianglesNb() const { return mySlicesNb * myStacksNb * 2; }
+
+  //! Return number of vertices in generated presentation.
+  Standard_Integer VerticesNb (bool theIsIndexed = true) const
+  {
+    return theIsIndexed
+         ? (mySlicesNb + 1) * (myStacksNb + 1)
+         : TrianglesNb() * 3;
+  }
+
 public:
 
   //! Generate primitives for 3D quadric surface presentation.
@@ -75,20 +86,6 @@ public:
                                   const gp_Trsf& theTrsf) const;
 
 protected:
-
-  //! Return number of triangles in generated presentation.
-  Standard_Integer TrianglesNb() const
-  {
-    return mySlicesNb * myStacksNb * 2;
-  }
-
-  //! Return number of vertices in generated presentation.
-  Standard_Integer VerticesNb (const Standard_Boolean theIsIndexed = Standard_True) const
-  {
-    return theIsIndexed
-         ? (mySlicesNb + 1) * (myStacksNb + 1)
-         : TrianglesNb() * 3;
-  }
 
   //! Redefine this method to generate vertex at given parameters.
   virtual gp_Pnt Vertex (const Standard_Real theU, const Standard_Real theV) const = 0;

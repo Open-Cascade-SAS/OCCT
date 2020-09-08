@@ -164,7 +164,19 @@ void Graphic3d_CLight::SetPosition (const gp_Pnt& thePosition)
 {
   Standard_ProgramError_Raise_if (myType != Graphic3d_TOLS_SPOT
                                && myType != Graphic3d_TOLS_POSITIONAL,
-                                  "Graphic3d_CLight::SetDirection(), incorrect light type");
+                                  "Graphic3d_CLight::SetPosition(), incorrect light type");
+  updateRevisionIf (!myPosition.IsEqual (thePosition, gp::Resolution()));
+  myPosition = thePosition;
+}
+
+// =======================================================================
+// function : SetDisplayPosition
+// purpose  :
+// =======================================================================
+void Graphic3d_CLight::SetDisplayPosition (const gp_Pnt& thePosition)
+{
+  Standard_ProgramError_Raise_if (myType == Graphic3d_TOLS_AMBIENT,
+                                  "Graphic3d_CLight::SetDisplayPosition(), incorrect light type");
   updateRevisionIf (!myPosition.IsEqual (thePosition, gp::Resolution()));
   myPosition = thePosition;
 }

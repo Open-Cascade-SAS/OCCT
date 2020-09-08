@@ -28,6 +28,7 @@ enum AIS_KindOfInteractive
   AIS_KindOfInteractive_Object,      //!< presentation of group of topological shapes
   AIS_KindOfInteractive_Relation,    //!< presentation of relation  (dimensions and constraints)
   AIS_KindOfInteractive_Dimension,   //!< presentation of dimension (length, radius, diameter and angle)
+  AIS_KindOfInteractive_LightSource, //!< presentation of light source
 
   // old aliases
   AIS_KOI_None = AIS_KindOfInteractive_None,

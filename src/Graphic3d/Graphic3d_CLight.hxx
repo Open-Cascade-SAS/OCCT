@@ -145,6 +145,14 @@ public:
   //! Sets direction of directional/spot light.
   void SetDirection (Standard_Real theVx, Standard_Real theVy, Standard_Real theVz) { SetDirection (gp_Dir (theVx, theVy, theVz)); }
 
+  //! Returns location of positional/spot/directional light, which is the same as returned by Position().
+  const gp_Pnt& DisplayPosition() const { return myPosition; }
+
+  //! Setup location of positional/spot/directional light,
+  //! which is the same as SetPosition() but allows directional light source
+  //! (technically having no position, but this point can be used for displaying light source presentation).
+  Standard_EXPORT void SetDisplayPosition (const gp_Pnt& thePosition);
+
 //! @name spotlight additional definition parameters
 public:
 
@@ -183,6 +191,9 @@ public:
 
   //! Modifies the smoothing angle (in radians) of directional light source; should be within range [0.0, M_PI/2].
   Standard_EXPORT void SetSmoothAngle (Standard_ShortReal theValue);
+
+  //! Returns TRUE if maximum distance of point light source is defined.
+  bool HasRange() const { return myDirection.w() != 0.0f; }
 
   //! Returns maximum distance on which point light source affects to objects and is considered during illumination calculations.
   //! 0.0 means disabling range considering at all without any distance limits.

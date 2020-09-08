@@ -73,6 +73,10 @@ public:
     {
       SetPersistence (theMode, Aspect_TOTP_LEFT_LOWER, Graphic3d_Vec2i (0, 0));
     }
+    else if (theMode == Graphic3d_TMF_CameraPers)
+    {
+      myMode = theMode;
+    }
     else
     {
       throw Standard_ProgramError("Graphic3d_TransformPers::SetPersistence(), wrong persistence mode.");
@@ -422,6 +426,10 @@ void Graphic3d_TransformPers::Apply (const Handle(Graphic3d_Camera)& theCamera,
     Graphic3d_TransformUtils::Translate (theWorldView, T(aCenter.X()), T(aCenter.Y()), T(aCenter.Z()));
     Graphic3d_TransformUtils::Scale     (theWorldView, T(aScale),      T(aScale),      T(aScale));
     return;
+  }
+  else if ((myMode & Graphic3d_TMF_CameraPers) != 0)
+  {
+    theWorldView.InitIdentity();
   }
   else
   {

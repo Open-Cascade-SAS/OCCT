@@ -441,6 +441,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
 #endif
 
   bool anOldCastShadows = false;
+#ifdef GL_DEPTH_CLAMP
+  bool toRestoreDepthClamp = false;
+#endif
   if (!myTrsfPers.IsNull())
   {
     // temporarily disable shadows on non-3d objects
@@ -461,6 +464,15 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
       {
         aCtx->SetGlNormalizeEnabled (Standard_True);
       }
+    }
+  #endif
+
+  #ifdef GL_DEPTH_CLAMP
+    if (myTrsfPers->Mode() == Graphic3d_TMF_CameraPers
+     && aCtx->arbDepthClamp)
+    {
+      toRestoreDepthClamp = true;
+      aCtx->core11fwd->glEnable (GL_DEPTH_CLAMP);
     }
   #endif
   }
@@ -613,6 +625,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &theWorkspace) con
   {
     aCtx->WorldViewState.Pop();
     aCtx->ShaderManager()->SetCastShadows (anOldCastShadows);
+  #ifdef GL_DEPTH_CLAMP
+    if (toRestoreDepthClamp) { aCtx->core11fwd->glDisable (GL_DEPTH_CLAMP); }
+  #endif
   }
 
   // Restore named status
