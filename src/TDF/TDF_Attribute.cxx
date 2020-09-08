@@ -44,7 +44,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TDF_Attribute,Standard_Transient)
 
-#undef TDF_DATA_COMMIT_OPTIMIZED
+#define TDF_DATA_COMMIT_OPTIMIZED
 
 //=======================================================================
 //function : TDF_Attribute
@@ -131,6 +131,10 @@ void TDF_Attribute::Forget (const Standard_Integer aTransaction)
   mySavedTransaction = myTransaction;
   myTransaction = aTransaction;
   myFlags = (myFlags | TDF_AttributeForgottenMsk);
+#ifdef TDF_DATA_COMMIT_OPTIMIZED
+  if (myLabelNode)
+    myLabelNode->AttributesModified(Standard_True);
+#endif
   Validate(Standard_False);
 }
 

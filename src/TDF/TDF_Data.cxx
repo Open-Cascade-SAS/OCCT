@@ -45,7 +45,7 @@ typedef NCollection_Array1<Handle(TDF_AttributeDelta)> TDF_Array1OfAttributeIDel
 IMPLEMENT_STANDARD_RTTIEXT(TDF_Data,Standard_Transient)
 
 #undef DEB_DELTA_CREATION
-#undef TDF_DATA_COMMIT_OPTIMIZED
+#define TDF_DATA_COMMIT_OPTIMIZED
 
 #ifdef OCCT_DEBUG_DELTA
 #define TDF_Data_DebugModified(ACTION) \

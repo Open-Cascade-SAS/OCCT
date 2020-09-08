@@ -1,0 +1,57 @@
+puts "==========="
+puts "0031748: Application Framework - Efficient OCAF transactions in OCCT"
+puts "==========="
+
+NewDocument D
+UndoLimit D 10
+
+# number of labels of objects in the document
+set labs 100000
+# number of sub-labels of each object
+set sublabs 10
+
+NewCommand D
+
+# store at each object-label sub-labels with two attributes at each
+set creation_time [lindex [time {
+  for {set i 1} {$i <= $labs} {incr i} {
+    set lab [Label D 0:1:${i}]
+    SetName D ${lab} Object$i
+    for {set ii 1} {$ii <= $sublabs} {incr ii} {
+      set sublab [Label D ${lab}:$ii]
+      SetInteger D ${sublab} 10
+      SetReal D ${sublab} 12.3
+    }
+  }
+}] 0]
+
+set commit_time [lindex [time {
+  CommitCommand D
+}] 0]
+
+# modify only one object one attribute
+NewCommand D
+set one_modif_time [lindex [time {
+  SetInteger D 0:1:[expr $labs/2]:[expr $sublabs/2] 20
+}] 0]
+
+set one_commit_time [lindex [time {
+  CommitCommand D
+}] 0]
+
+puts "Tree creation time $creation_time mcs"
+puts "Creation commit time $commit_time mcs"
+puts "One attribute modification time $one_modif_time mcs"
+puts "Commit of single modification time $one_commit_time mcs"
+
+if {$creation_time > $commit_time} {
+  set max_creation $creation_time
+} else {
+  set max_creation $commit_time
+}
+
+# Check that creation time (or commit) is at least 1000 times slower than commit of one modification (normally 4000).
+# Before the optimization it was only 150 times slower.
+if { [expr $max_creation/1000.] < $one_commit_time } {
+  puts "Error : one modification time commit is too big relatively to the whole document creation or commit"
+}
