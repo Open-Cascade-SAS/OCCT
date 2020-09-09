@@ -1,0 +1,11 @@
+puts "========================"
+puts "0030848: Data Exchange - Problem load step file"
+puts "========================"
+
+ReadStep D [locate_data_file bug30848.stp]
+
+set state [data c]
+
+if { [regexp "62921" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}

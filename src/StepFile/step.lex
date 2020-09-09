@@ -76,12 +76,18 @@ void resultat()
 #endif
 
 %}
-%x Com End
+%x Com End Text
 %%
 "/*"               { BEGIN(Com); }     /* start of comment - put the scanner in the "Com" state */
 <Com>[^*\n]*       {;}                 /* in comment, skip any characters except asterisk (and newline, handled by its own rule) */
 <Com>[*]+[^*/\n]*  {;}                 /* in comment, skip any sequence of asterisks followed by other symbols (except slash or newline) */
 <Com>[*]+[/]       { BEGIN(INITIAL); } /* end of comment - reset the scanner to initial state */
+
+[']                { BEGIN(Text); yymore(); }   /* start of quoted text string - put the scanner in the "Text" state, but keep ' as part of yytext */
+<Text>[\n]         { yymore(); steplineno ++; } /* newline in text string - increment line counter and keep collecting yytext */
+<Text>[']          { yymore(); }                /* single ' inside text string - keep collecting yytext*/
+<Text>[^\n']+      { yymore(); }                /* a sequence of any characters except ' and \n - keep collecting yytext */
+<Text>[']/[" "\n\r]*[\)\,]    { BEGIN(INITIAL); resultat(); rec_typarg(rec_argText); return(QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
 
 "	"	{;}
 " "		{;}
@@ -95,7 +101,6 @@ void resultat()
 [-+0-9][0-9]*	{ resultat(); rec_typarg(rec_argInteger); return(QUID); }
 [-+\.0-9][\.0-9]+	{ resultat(); rec_typarg(rec_argFloat); return(QUID); }
 [-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ resultat(); rec_typarg(rec_argFloat); return(QUID); }
-[\']([\n]|[\000\011-\046\050-\176\201-\237\240-\777]|[\047][\047])*[\']	{ resultat(); rec_typarg(rec_argText); return(QUID); }
 ["][0-9A-F]+["] 	{ resultat(); rec_typarg(rec_argHexa); return(QUID); }
 [.][A-Z0-9_]+[.]	{ resultat(); rec_typarg(rec_argEnum); return(QUID); }
 [(]		{ return ('('); }
