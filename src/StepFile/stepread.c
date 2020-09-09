@@ -85,7 +85,7 @@ FILE* stepread_setinput (char* nomfic)
 {
   FILE* newin ;
   if (strlen(nomfic) == 0) return stepin ;
-  newin = OSD_OpenFile(nomfic,"r");
+  newin = OSD_OpenFile(nomfic,"rb");
 
   if (newin == NULL) {
     return NULL ;
