@@ -55,12 +55,20 @@ void steprestart ( FILE *input_file );
 void rec_restext(char *newtext, int lentext);
 void rec_typarg(int argtype);
  
-  int  steplineno;      /* Comptage de ligne (ben oui, fait tout faire)  */
+ /* Counter of lines in the file  */
+int  steplineno;
+  
+/* Reset the lexical scanner before reading */
+void rec_inityyll()
+{ 
+  yy_init  = yy_start = 1;  
+}
 
-  int  modcom = 0;      /* Commentaires type C */
-  int  modend = 0;      /* Flag for finishing of the STEP file */
-  void resultat ()           /* Resultat alloue dynamiquement, "jete" une fois lu */
-      { if (modcom == 0) rec_restext(yytext,yyleng); }
+/* Record current match (text string) for further processing */
+void resultat()
+{ 
+  rec_restext(yytext,yyleng);
+}
 
 // disable GCC warnings in flex code
 #ifdef __GNUC__
@@ -68,43 +76,49 @@ void rec_typarg(int argtype);
 #endif
 
 %}
+%x Com End
 %%
+"/*"               { BEGIN(Com); }     /* start of comment - put the scanner in the "Com" state */
+<Com>[^*\n]*       {;}                 /* in comment, skip any characters except asterisk (and newline, handled by its own rule) */
+<Com>[*]+[^*/\n]*  {;}                 /* in comment, skip any sequence of asterisks followed by other symbols (except slash or newline) */
+<Com>[*]+[/]       { BEGIN(INITIAL); } /* end of comment - reset the scanner to initial state */
+
 "	"	{;}
 " "		{;}
-[\n]		{ steplineno ++; }
-[\r]            {;} /* abv 30.06.00: for reading DOS files */
+<*>[\n]		{ steplineno ++; } /* count lines (one rule for all start conditions) */
+[\r]    	{;} /* abv 30.06.00: for reading DOS files */
 [\0]+		{;} /* fix from C21. for test load e3i file with line 15 with null symbols */
 
-#[0-9]+/=		{ resultat();  if (modcom == 0) return(ENTITY); }
-#[0-9]+/[ 	]*=	{ resultat();  if (modcom == 0) return(ENTITY); }
-#[0-9]+		{ resultat();  if (modcom == 0) return(IDENT); }
-[-+0-9][0-9]*	{ resultat();  if (modcom == 0) { rec_typarg(rec_argInteger); return(QUID); } }
-[-+\.0-9][\.0-9]+	{ resultat();  if (modcom == 0) { rec_typarg(rec_argFloat); return(QUID); } }
-[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ resultat(); if (modcom == 0) { rec_typarg(rec_argFloat); return(QUID); } }
-[\']([\n]|[\000\011-\046\050-\176\201-\237\240-\777]|[\047][\047])*[\']	{ resultat(); if (modcom == 0) { rec_typarg(rec_argText); return(QUID); } }
-["][0-9A-F]+["] 	{ resultat();  if (modcom == 0) { rec_typarg(rec_argHexa); return(QUID); } }
-[.][A-Z0-9_]+[.]	{ resultat();  if (modcom == 0) { rec_typarg(rec_argEnum); return(QUID); } }
-[(]		{ if (modcom == 0) return ('('); }
-[)]		{ if (modcom == 0) return (')'); }
-[,]		{ if (modcom == 0) return (','); }
-[$]		{ resultat();  if (modcom == 0) { rec_typarg(rec_argNondef); return(QUID); } }
-[=]		{ if (modcom == 0) return ('='); }
-[;]		{ if (modcom == 0) return (';'); }
-"/*"		{ modcom = 1;  }
-"*/"		{ if (modend == 0) modcom = 0;  }
+#[0-9]+/=		{ resultat(); return(ENTITY); }
+#[0-9]+/[ 	]*=	{ resultat(); return(ENTITY); }
+#[0-9]+		{ resultat(); return(IDENT); }
+[-+0-9][0-9]*	{ resultat(); rec_typarg(rec_argInteger); return(QUID); }
+[-+\.0-9][\.0-9]+	{ resultat(); rec_typarg(rec_argFloat); return(QUID); }
+[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ resultat(); rec_typarg(rec_argFloat); return(QUID); }
+[\']([\n]|[\000\011-\046\050-\176\201-\237\240-\777]|[\047][\047])*[\']	{ resultat(); rec_typarg(rec_argText); return(QUID); }
+["][0-9A-F]+["] 	{ resultat(); rec_typarg(rec_argHexa); return(QUID); }
+[.][A-Z0-9_]+[.]	{ resultat(); rec_typarg(rec_argEnum); return(QUID); }
+[(]		{ return ('('); }
+[)]		{ return (')'); }
+[,]		{ return (','); }
+[$]		{ resultat(); rec_typarg(rec_argNondef); return(QUID); }
+[=]		{ return ('='); }
+[;]		{ return (';'); }
 
-STEP;		{ if (modcom == 0) return(STEP); }
-HEADER;		{ if (modcom == 0) return(HEADER); }
-ENDSEC;		{ if (modcom == 0) return(ENDSEC); }
-DATA;		{ if (modcom == 0) return(DATA); }
-ENDSTEP;	{ if (modend == 0) {modcom = 0;  return(ENDSTEP);} }
-"ENDSTEP;".*	{ if (modend == 0) {modcom = 0;  return(ENDSTEP);} }
-END-ISO[0-9\-]*; { modcom = 1; modend = 1; return(ENDSTEP); }
-ISO[0-9\-]*;	{ if (modend == 0) {modcom = 0;  return(STEP); } }
+STEP;		{ return(STEP); }
+HEADER;		{ return(HEADER); }
+ENDSEC;		{ return(ENDSEC); }
+DATA;		{ return(DATA); }
+ENDSTEP;	{ return(ENDSTEP);}
+"ENDSTEP;".*	 { return(ENDSTEP);}
+END-ISO[0-9\-]*; { BEGIN(End); return(ENDSTEP); } /* at the end of the STEP data, enter dedicated start condition "End" to skip everything that follows */
+ISO[0-9\-]*;	 { return(STEP); }
 
-[/]		{ if (modcom == 0) return ('/'); }
-&SCOPE		{ if (modcom == 0) return(SCOPE); }
-ENDSCOPE	{ if (modcom == 0) return(ENDSCOPE); }
-[a-zA-Z0-9_]+	{ resultat();  if (modcom == 0) return(TYPE); }
-![a-zA-Z0-9_]+	{ resultat();  if (modcom == 0) return(TYPE); }
-[^)]		{ resultat();  if (modcom == 0) { rec_typarg(rec_argMisc); return(QUID); } }
+[/]		{ return ('/'); }
+&SCOPE		{ return(SCOPE); }
+ENDSCOPE	{ return(ENDSCOPE); }
+[a-zA-Z0-9_]+	{ resultat(); return(TYPE); }
+![a-zA-Z0-9_]+	{ resultat(); return(TYPE); }
+[^)]		{ resultat(); rec_typarg(rec_argMisc); return(QUID); }
+
+<End>[^\n]      {;} /* skip any characters (except newlines) */

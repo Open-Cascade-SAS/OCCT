@@ -1,0 +1,10 @@
+puts "==================================================="
+puts " 0030533: STEP read fails due to comment string "
+puts "==================================================="
+puts ""
+
+pload DCAF
+
+ReadStep D [locate_data_file bug30053.stp] 
+
+Close D

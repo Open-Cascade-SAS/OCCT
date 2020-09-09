@@ -170,18 +170,7 @@ static char idzero[]   = "#0";
 void recfile_modeprint(int mode)
 {  modeprint = mode;  }
 
-static int   lastno;
-extern int   steplineno;
-extern int   modcom;
-extern int   modend;
-
-void rec_inityyll ()
-{  
-  steplineno = 0;
-  modcom = 0;
-  modend = 0;
-  lastno = -1;
-}
+void rec_inityyll ();
 
 
 /*   INITIALISATION   */
