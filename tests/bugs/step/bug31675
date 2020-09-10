@@ -1,0 +1,16 @@
+puts "===================================="
+puts "0031675: Er-ror opening the STEP-file"
+puts "===================================="
+puts ""
+
+pload DCAF
+
+# Read file
+ReadStep D [locate_data_file bug31675.stp]
+XGetOneShape res D
+
+# Checking 
+checknbshapes res -face 1036 -wire 2103 -compound 6
+checkshape res f
+
+Close D

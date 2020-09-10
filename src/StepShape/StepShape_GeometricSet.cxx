@@ -49,5 +49,7 @@ StepShape_GeometricSetSelect StepShape_GeometricSet::ElementsValue(const Standar
 
 Standard_Integer StepShape_GeometricSet::NbElements () const
 {
+	if (elements.IsNull())
+		return 0;
 	return elements->Length();
 }
