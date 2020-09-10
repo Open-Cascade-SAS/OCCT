@@ -449,7 +449,6 @@ Standard_Boolean XCAFDoc_LayerTool::SetLayer(const TopoDS_Shape& Sh,
 					     const Standard_Boolean shapeInOneLayer)
 {
   TDF_Label aLab;
-//   if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
   // PTV 22.01.2003 set layer for shape with location if it is necessary
   if (! myShapeTool->Search( Sh, aLab ) ) return Standard_False;
   SetLayer(aLab, LayerL, shapeInOneLayer);
@@ -479,7 +478,8 @@ Standard_Boolean XCAFDoc_LayerTool::SetLayer(const TopoDS_Shape& Sh,
 Standard_Boolean XCAFDoc_LayerTool::UnSetLayers(const TopoDS_Shape& Sh) 
 {
   TDF_Label aLab;
-  if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
+  if (!myShapeTool->Search(Sh, aLab) )
+    return Standard_False;
   UnSetLayers(aLab);
   return Standard_True;
 }
@@ -494,7 +494,8 @@ Standard_Boolean XCAFDoc_LayerTool::UnSetOneLayer(const TopoDS_Shape& Sh,
 						  const TCollection_ExtendedString& aLayer)
 {
   TDF_Label aLab;
-  if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
+  if (!myShapeTool->Search(Sh, aLab) )
+    return Standard_False;
   return UnSetOneLayer(aLab, aLayer);
 }
 
@@ -507,7 +508,8 @@ Standard_Boolean XCAFDoc_LayerTool::UnSetOneLayer(const TopoDS_Shape& Sh,
 						  const TDF_Label& aLayerL)
 {
   TDF_Label aLab;
-  if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
+  if (!myShapeTool->Search(Sh, aLab) )
+    return Standard_False;
   return UnSetOneLayer(aLab, aLayerL);
 }
 
@@ -520,7 +522,8 @@ Standard_Boolean XCAFDoc_LayerTool::IsSet(const TopoDS_Shape& Sh,
 					  const TCollection_ExtendedString& aLayer) 
 {
   TDF_Label aLab;
-  if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
+  if (! myShapeTool->Search(Sh, aLab) )
+    return Standard_False;
   return IsSet(aLab, aLayer);
 }
 
@@ -534,7 +537,8 @@ Standard_Boolean XCAFDoc_LayerTool::IsSet(const TopoDS_Shape& Sh,
 					  const TDF_Label& aLayerL) 
 {
   TDF_Label aLab;
-  if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
+  if (!myShapeTool->Search(Sh, aLab) )
+    return Standard_False;
   return IsSet(aLab, aLayerL);
 }
 
@@ -547,7 +551,8 @@ Standard_Boolean XCAFDoc_LayerTool::GetLayers(const TopoDS_Shape& Sh,
 					      Handle(TColStd_HSequenceOfExtendedString)& aLayerS) 
 {
   TDF_Label aLab;
-  if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
+  if (!myShapeTool->Search(Sh, aLab))
+    return Standard_False;
   return GetLayers(aLab, aLayerS);
 }
 
@@ -560,7 +565,8 @@ Standard_Boolean XCAFDoc_LayerTool::GetLayers(const TopoDS_Shape& Sh,
 					      TDF_LabelSequence& aLayerLS) 
 {
   TDF_Label aLab;
-  if (! myShapeTool->FindShape(Sh, aLab) ) return Standard_False;
+  if (!myShapeTool->Search(Sh, aLab))
+    return Standard_False;
   return GetLayers(aLab, aLayerLS);
 }
 
@@ -574,7 +580,7 @@ Handle(TColStd_HSequenceOfExtendedString) XCAFDoc_LayerTool::GetLayers(const Top
 {
   Handle(TColStd_HSequenceOfExtendedString) aLayerS = new TColStd_HSequenceOfExtendedString;
   TDF_Label aLab;
-  if ( myShapeTool->FindShape(Sh, aLab) )
+  if (myShapeTool->Search(Sh, aLab))
     aLayerS = GetLayers(aLab);
   return aLayerS;
 }

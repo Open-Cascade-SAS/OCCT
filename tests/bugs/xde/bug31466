@@ -1,0 +1,22 @@
+puts "================================================================================="
+puts "	0031466: Data Exchange - Cannot import layers from STeP file (7.4.0 regression)"
+puts "================================================================================="
+puts ""
+
+pload DCAF
+
+XNewDoc D
+box b 1 1 1
+explode b f
+XAddShape D b
+XAddSubShape D b_1 0:1:1:1
+XAddLayer D myLayer
+XSetLayer D 0:1:1:1:1 myLayer
+
+# check layer
+set layer [XGetLayers D b_1]
+if {$layer != "\"myLayer\" "} {
+  puts "Error: wrong result layer searching."
+}
+
+Close D
