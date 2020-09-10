@@ -69,8 +69,7 @@ View_Window::View_Window (QWidget* theParent,
   myActionsToolBar->setOrientation (Qt::Vertical);
 
   myActionsToolBar->addWidget (myView-> GetWidget (View_ViewActionType_FitAllId));
-  for (int anActionId = View_ViewActionType_FitAreaId; anActionId <= View_ViewActionType_DisplayModeId; anActionId++)
-    myActionsToolBar->addAction (myView->ViewAction ((View_ViewActionType)anActionId));
+  myActionsToolBar->addAction (myView->ViewAction (View_ViewActionType_DisplayModeId));
 
   aViewLayout->addWidget (myActionsToolBar, 1, 0);
   aViewLayout->addWidget (myView, 1, 1);
@@ -97,6 +96,33 @@ void View_Window::SetContext (View_ContextType /*theType*/, const Handle(AIS_Int
 }
 
 // =======================================================================
+// function : SetPredefinedSize
+// purpose :
+// =======================================================================
+void View_Window::SetPredefinedSize (int theDefaultWidth, int theDefaultHeight)
+{
+  myView->SetPredefinedSize (theDefaultWidth, theDefaultHeight);
+}
+
+// =======================================================================
+// function : SetInitProj
+// purpose :
+// =======================================================================
+void View_Window::SetInitProj (const Standard_Real theVx, const Standard_Real theVy, const Standard_Real theVz)
+{
+  myView->SetInitProj (theVx, theVy, theVz);
+}
+
+// =======================================================================
+// function : View
+// purpose :
+// =======================================================================
+Handle(V3d_View) View_Window::View() const
+{
+  return myView->GetViewer()->GetView();
+}
+
+// =======================================================================
 // function : SaveState
 // purpose :
 // =======================================================================
@@ -105,7 +131,7 @@ void View_Window::SaveState (View_Window* theView, QMap<QString, QString>& theIt
 {
   QStringList aCameraDirection;
   Standard_Real aVX, aVY, aVZ;
-  Handle(V3d_View) aView = theView->ViewWidget()->GetViewer()->GetView();
+  Handle(V3d_View) aView = theView->View();
   if (aView.IsNull())
     return;
 
@@ -135,7 +161,7 @@ bool View_Window::RestoreState (View_Window* theView, const QString& theKey, con
       Standard_Real aVY = aValues.at (1).toDouble();
       Standard_Real aVZ = aValues.at (2).toDouble();
 
-      theView->ViewWidget()->SetInitProj (aVX, aVY, aVZ);
+      theView->SetInitProj (aVX, aVY, aVZ);
     }
     return true;
   }
@@ -196,6 +222,12 @@ void View_Window::onToolBarActionClicked (const int theActionId)
       myDisplayer->DisplayDefaultTrihedron (myViewToolBar->IsActionChecked (theActionId), Standard_True);
       break;
     }
+    case View_ToolActionType_ViewCube:
+    {
+      myDisplayer->DisplayViewCube (myViewToolBar->IsActionChecked (theActionId), Standard_True);
+      break;
+    }
+
     case View_ToolActionType_KeepViewId:
     {
       myDisplayer->KeepPresentations (myViewToolBar->IsActionChecked (theActionId));

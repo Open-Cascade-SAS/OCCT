@@ -69,6 +69,13 @@ View_ToolBar::View_ToolBar (QWidget* theParent, const bool isUseKeepView)
   myActionsMap[View_ToolActionType_Trihedron]->setCheckable (true);
   myActionsMap[View_ToolActionType_Trihedron]->setChecked (false);
 
+  myActionsMap[View_ToolActionType_ViewCube] = new QToolButton (theParent);
+  myActionsMap[View_ToolActionType_ViewCube]->setIcon (QIcon (":/icons/view_cube.png"));
+  myActionsMap[View_ToolActionType_ViewCube]->setToolTip (tr ("View Cube display"));
+  myActionsMap[View_ToolActionType_ViewCube]->setCheckable (true);
+  myActionsMap[View_ToolActionType_ViewCube]->setChecked (false);
+
+
   if (isUseKeepView)
   {
     myActionsMap[View_ToolActionType_KeepViewId] = new QToolButton (theParent);

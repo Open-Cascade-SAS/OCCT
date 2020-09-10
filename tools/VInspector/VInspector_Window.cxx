@@ -17,6 +17,7 @@
 
 #include <AIS_Shape.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <V3d_Viewer.hxx>
 
 #include <inspector/Convert_Tools.hxx>
 
@@ -48,6 +49,7 @@
 #include <inspector/View_PreviewParameters.hxx>
 #include <inspector/View_Widget.hxx>
 #include <inspector/View_Window.hxx>
+#include <inspector/View_Viewer.hxx>
 
 #include <Standard_WarningsDisable.hxx>
 #include <QApplication>
@@ -892,7 +894,7 @@ Handle(AIS_InteractiveContext) VInspector_Window::createView()
   Handle(AIS_InteractiveContext) aContext = View_Viewer::CreateStandardViewer();
 
   myViewWindow = new View_Window (0, aContext, false /*for opening several BREP files*/, true);
-  myViewWindow->ViewWidget()->SetPredefinedSize (VINSPECTOR_DEFAULT_VIEW_WIDTH, VINSPECTOR_DEFAULT_VIEW_HEIGHT);
+  myViewWindow->SetPredefinedSize (VINSPECTOR_DEFAULT_VIEW_WIDTH, VINSPECTOR_DEFAULT_VIEW_HEIGHT);
   myViewWindow->move (VINSPECTOR_DEFAULT_VIEW_POSITION_X, VINSPECTOR_DEFAULT_VIEW_POSITION_Y);
   myViewWindow->show();
 

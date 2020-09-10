@@ -17,6 +17,8 @@
 #define View_View_H
 
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_ViewController.hxx>
+#include <Aspect_VKeyFlags.hxx>
 #include <V3d_View.hxx>
 #include <inspector/View_ViewActionType.hxx>
 #include <inspector/View_Viewer.hxx>
@@ -31,8 +33,6 @@
 
 class View_Viewer;
 
-class QRubberBand;
-
 //! \class View_Widget
 //! \brief It is a Qt control that visualizes content of OCCT 3D view
 //! It creates control and actions of manipulating of this view,
@@ -41,38 +41,8 @@ class QRubberBand;
 class View_Widget : public QWidget
 {
   Q_OBJECT
-protected:
-
-  //! Enumeration defines manipulating actions of the widget
-  enum View_CurrentAction3d
-  {
-    View_CurrentAction3d_Nothing, //!< Empty action
-    View_CurrentAction3d_DynamicZooming, //!< Zoom action
-    View_CurrentAction3d_WindowZooming, //!< Zoom action using rectangle
-    View_CurrentAction3d_DynamicPanning, //!< Panning action
-    View_CurrentAction3d_DynamicRotation //!< Rotation action
-  };
-
-  //! Enumeration defines cursor kind
-  enum View_CursorMode
-  {
-    View_CursorMode_DefaultCursor, //!< default Qt cursor
-    View_CursorMode_HandCursor, //!< hand cursor
-    View_CursorMode_PanCursor, //!< panning cursor
-    View_CursorMode_ZoomCursor, //!< zoom cursor
-    View_CursorMode_RotationCursor //!< onRotate cursor
-  };
-
-  //! Enumeration defines drag mode
-  enum View_DragMode
-  {
-    View_DragMode_ButtonDown, //!< theState == -1  button down
-    View_DragMode_ButtonMove, //!< theState ==  0  move
-    View_DragMode_ButtonUp //< theState ==  1  button up
-  };
 
 public:
-
   //! Constructor
   Standard_EXPORT View_Widget (QWidget* theParent,
                                const Handle(AIS_InteractiveContext)& theContext,
@@ -154,21 +124,6 @@ signals:
   //! Sends a signal about selection change if the left mouse button is pressed and current action does not process it
   void selectionChanged();
 
-  //! Sends a signal about moving to the point in the view
-  //! \param theX X mouse position in pixels
-  //! \param theY Y mouse position in pixels
-  void  moveTo (const int theX, const int theY);
-
-  //! Sends a signal about up the left mouse button down
-  //! \param theX X mouse position in pixels
-  //! \param theY Y mouse position in pixels
-  void leftButtonDown (const int theX, const int theY);
-
-  //! Sends a signal about up the left mouse button up
-  //! \param theX X mouse position in pixels
-  //! \param theY Y mouse position in pixels
-  void leftButtonUp (const int theX, const int theY);
-
   //! Sends a signal about display mode change
   void displayModeClicked();
 
@@ -182,28 +137,10 @@ public slots:
   //! Fits all the V3d view and redraw view
   void OnFitAll() { myViewer->GetView()->FitAll(); }
 
-  //! Stores state about fitting all to use it by the mouse move
-  void OnFitArea() { myCurrentMode = View_CurrentAction3d_WindowZooming; }
-
-  //! Stores state about zoom to use it by the mouse move
-  void OnZoom() { myCurrentMode = View_CurrentAction3d_DynamicZooming; }
-
-  //! Stores state about pan to use it by the mouse move
-  void OnPan() { myCurrentMode = View_CurrentAction3d_DynamicPanning; }
-
-  //! Stores state about onRotate to use it by the mouse move
-  void OnRotate() { myCurrentMode = View_CurrentAction3d_DynamicRotation; }
-
   //! Updates states of widget actions
   //! 
   //! - if the state is checked, uncheck all other actions
   Standard_EXPORT void onCheckedStateChanged (bool isOn);
-
-  //! Updates states of tool actions:
-  //! - if the action is display mode, it changes an icon for action(wireframe or shading)
-  //! - if the state is checked, uncheck all other actions
-  //! \param isOn boolean value about check
-  Standard_EXPORT void OnUpdateToggled (bool isOn);
 
 protected:
 
@@ -232,99 +169,11 @@ protected:
   //! Creates view actions and fills an internal map
   void initViewActions();
 
-  //! Creates cursors and fills an internal map
-  void initCursors();
-
-  //! Sets widget cursor by the action type
-  //! \param theMode an active action mode
-  void activateCursor (const View_CurrentAction3d theMode);
-
-  //! Activates cursor of the active operation, perform drag, onRotate depending on mode,
-  //! stores the point position in xmin/xmax and ymin/ymax
-  //! \param theFlags an event buttons and modifiers
-  //! \param thePoint a clicked point
-  void processLeftButtonDown (const int theFlags, const QPoint thePoint);
-
-  //! Activates cursor of the active operation and performs dynamic pan if it is active
-  //! \param theFlags an event buttons and modifiers
-  //! \param thePoint a clicked point
-  void processMiddleButtonDown (const int theFlags, const QPoint thePoint);
-
-  //! Activates cursor of the active operation, build popup menu
-  //! \param theFlags an event buttons and modifiers
-  //! \param thePoint a clicked point
-  void processRightButtonDown (const int theFlags, const QPoint thePoint);
-
-  //! Performs the active operation or performs Input/Drag event processing, emits selection changed signal
-  //! \param theFlags an event buttons and modifiers
-  //! \param thePoint a clicked point
-  void processLeftButtonUp (const int  theFlags, const QPoint thePoint);
-
-  //! Changes the active operation to None
-  //! \param theFlags an event buttons and modifiers
-  //! \param thePoint a clicked point
-  void processMiddleButtonUp (const int  theFlags, const QPoint thePoint);
-
-  //! Calls popup menu build and changes the active operation to None
-  //! \param theFlags an event buttons and modifiers
-  //! \param thePoint a clicked point
-  void processRightButtonUp (const int  theFlags, const QPoint thePoint);
-
-  //! Performs active operation or draws rectangle of zoom
-  //! \param theFlags an event buttons and modifiers
-  //! \param thePoint a clicked point
-  void processMouseMove (const int  theFlags, const QPoint thePoint);
-
-  //! Performs selection: store clicked point by botton down, call Select by button up
-  //! Emits signal about selection changed
-  //! \param theX a horizontal position of mouse event
-  //! \param theX a vertical position of mouse event
-  //! \param theState a mouse button state: down, move or up
-  void processDragEvent (const Standard_Integer theX, const Standard_Integer theY, const View_DragMode& theState);
-
-  //! Performs selection in context without parameter, it means the selection of picked object
-  //! \param theX a horizontal position of mouse event
-  //! \param theX a vertical position of mouse event
-  void processInputEvent (const Standard_Integer theX, const Standard_Integer theY);
-
-  //! Calls MoveTo of the context for the parameter coordinates
-  //! \param theX a horizontal position of mouse event
-  //! \param theX a vertical position of mouse event
-  void processMoveEvent (const Standard_Integer theX, const Standard_Integer theY);
-
-  //! Empty: template to process mouse move with multi selection key pressed
-  //! \param theX a horizontal position of mouse event
-  //! \param theX a vertical position of mouse event
-  void processMoveMultiEvent (const Standard_Integer theX, const Standard_Integer theY)
-  { (void)theX; (void)theY; }
-
-  //! Performs selection: store clicked point by botton down, call ShiftSelect by button move
-  //! Emits signal about selection changed
-  //! \param theX a horizontal position of mouse event
-  //! \param theX a vertical position of mouse event
-  //! \param theState a mouse button state: down, move or up
-  void processDragMultiEvent (const Standard_Integer theX, const Standard_Integer theY, const View_DragMode& theState);
-
-  //! Performs shift selection in context without parameter, it means the selection of picked object
-  //! \param theX a horizontal position of mouse event
-  //! \param theX a vertical position of mouse event
-  void processInputMultiEvent (const Standard_Integer theX, const Standard_Integer theY);
-
   //! Empty: template to create popup menu
   //! \param theX a horizontal position of mouse event
   //! \param theX a vertical position of mouse event
   void popup (const Standard_Integer theX, const Standard_Integer theY) { (void)theX; (void)theY; }
 
-  //! Draws Qt rectangle for the given area (e.g. for panning operation)
-  //! \param theMinX a minimal X coordinate
-  //! \param theMinY a minimal Y coordinate
-  //! \param theMinZ a minimal Z coordinate
-  //! \param theMaxX a maximum X coordinate
-  //! \param theMaxY a maximum Y coordinate
-  //! \param theMaxZ a maximum Z coordinate
-  //! \param theToDraw state whether the rectangle should be visualized or hidden
-  void drawRectangle (const Standard_Integer theMinX, const Standard_Integer theMinY, const Standard_Integer theMaxX,
-                      const Standard_Integer theMaxY, const Standard_Boolean theToDraw);
 private:
   //! Creates action and stores it in a map of actions
   //! \param theActionId an identifier of action in internal map
@@ -336,38 +185,32 @@ private:
                      const char* theSlot, const bool isCheckable = false,
                      const QString& theToolBar = QString(), const QString& theStatusBar = QString());
 
-  //! Sets active action cursor for application
-  //! \param theMode a cursor mode
-  void setActiveCursor (const View_CursorMode& theMode);
+private:
+  //! Converts Qt modifier key to Aspect key flag
+  //! \param theModifierId the event modifier
+  static Aspect_VKeyFlags keyFlag (const int theModifierId);
+
+  //! Converts Qt button key to Aspect key mouse
+  //! \param theButtonId the event button
+  static Aspect_VKeyMouse keyMouse (const int theButtonId);
 
 private:
 
   View_Viewer* myViewer; //!< connector to context, V3d viewer and V3d View
+  AIS_ViewController* myController; //!< controller to process view actions
+
   QToolButton* myFitAllAction; //!< widget for fit all, processed double click to perform action automatically
   QMap<View_ViewActionType, QAction*> myViewActions; //!< tool bar view actions
-  QMap<View_CursorMode, QCursor> myCursors; //!< possible cursors for view actions
 
-  View_CurrentAction3d myCurrentMode; //!< an active action mode for viewer
   Standard_Boolean myFirst; //!< flag to Init view by the first resize/paint call
   Standard_Integer myDefaultWidth; //!< default width for the first sizeHint
   Standard_Integer myDefaultHeight; //!< default height for the first sizeHint
   Standard_Boolean myViewIsEnabled; //!< flag if the view and tool bar view actions are enabled/disabled
-  Standard_Integer myXmin; //!< cached X minimal position by mouse press event
-  Standard_Integer myYmin; //!< cached Y minimal position by mouse press event
-  Standard_Integer myXmax; //!< cached X maximum position by mouse press event
-  Standard_Integer myYmax; //!< cached Y maximum position by mouse press event
-  Standard_Integer myDragButtonDownX; //!< cached X button down by drag event
-  Standard_Integer myDragButtonDownY; //!< cached Y button down by drag event
-  Standard_Integer myDragMultiButtonDownX; //!< cached X button down by multi drag event
-  Standard_Integer myDragMultiButtonDownY; //!< cached Y button down by multi drag event
-  Standard_Boolean myIsRectVisible; //!< true if rectangle is visible now
-  QRubberBand* myRectBand; //!< selection rectangle rubber band
 
   Standard_Boolean myHasInitProj; //!< is initial camera position defined
   Standard_Real myInitVx; //!< initial camera position on X
   Standard_Real myInitVy; //!< initial camera position on Y
   Standard_Real myInitVz; //!< initial camera position on Z
-
 };
 
 #endif

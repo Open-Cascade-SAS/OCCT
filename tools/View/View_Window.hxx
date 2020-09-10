@@ -64,6 +64,18 @@ public:
   //! \param theContext an AIS context
   Standard_EXPORT void SetContext (View_ContextType theType, const Handle(AIS_InteractiveContext)& theContext);
 
+  //! Sets default size that is used in sizeHint when the widget is firstly show
+  Standard_EXPORT void SetPredefinedSize (int theDefaultWidth, int theDefaultHeight);
+
+  //! Sets initial camera position
+  //! \param theVx direction on Ox
+  //! \param theVy direction on Oy
+  //! \param theVz direction on Oz
+  Standard_EXPORT void SetInitProj (const Standard_Real theVx, const Standard_Real theVy, const Standard_Real theVz);
+
+  //! Returns an active view
+  Standard_EXPORT Handle(V3d_View) View() const;
+
   //! Saves state of view window in a container in form: key, value. It saves:
   //! - visibility of columns,
   //! - columns width

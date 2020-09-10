@@ -31,7 +31,6 @@
 #include <inspector/View_Displayer.hxx>
 #include <inspector/View_PresentationType.hxx>
 #include <inspector/View_ToolBar.hxx>
-#include <inspector/View_Widget.hxx>
 #include <inspector/View_Window.hxx>
 #include <inspector/View_Viewer.hxx>
 
@@ -129,7 +128,7 @@ ShapeView_Window::ShapeView_Window (QWidget* theParent)
   connect (myViewWindow, SIGNAL(eraseAllPerformed()), this, SLOT(onEraseAllPerformed()));
   aVisibilityState->SetDisplayer (myViewWindow->Displayer());
   aVisibilityState->SetPresentationType (View_PresentationType_Main);
-  myViewWindow->ViewWidget()->SetPredefinedSize (SHAPEVIEW_DEFAULT_VIEW_WIDTH, SHAPEVIEW_DEFAULT_VIEW_HEIGHT);
+  myViewWindow->SetPredefinedSize (SHAPEVIEW_DEFAULT_VIEW_WIDTH, SHAPEVIEW_DEFAULT_VIEW_HEIGHT);
 
   QDockWidget* aViewDockWidget = new QDockWidget (tr ("View"), myMainWindow);
   aViewDockWidget->setObjectName (aViewDockWidget->windowTitle());

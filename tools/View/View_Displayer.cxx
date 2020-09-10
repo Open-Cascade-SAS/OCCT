@@ -20,6 +20,7 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Trihedron.hxx>
+#include <AIS_ViewCube.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <V3d_View.hxx>
@@ -228,6 +229,28 @@ void View_Displayer::DisplayDefaultTrihedron (const Standard_Boolean toDisplay, 
     GetContext()->Display (aTrihedron, theToUpdateViewer);
   else
     GetContext()->Erase (aTrihedron, theToUpdateViewer);
+}
+
+// =======================================================================
+// function : DisplayViewCube
+// purpose :
+// =======================================================================
+void View_Displayer::DisplayViewCube (const Standard_Boolean toDisplay, const bool theToUpdateViewer)
+{
+  if (myViewCube.IsNull() && toDisplay)
+  {
+    myViewCube = new AIS_ViewCube();
+    myViewCube->SetSize (35.0);
+    myViewCube->SetBoxColor (Quantity_NOC_GRAY50);
+  }
+
+  if (myViewCube.IsNull())
+    return;
+
+  if (toDisplay)
+    GetContext()->Display (myViewCube, theToUpdateViewer);
+  else
+    GetContext()->Erase (myViewCube, theToUpdateViewer);
 }
 
 // =======================================================================

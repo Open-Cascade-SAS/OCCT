@@ -19,11 +19,7 @@
 //! Actions of view widget
 enum View_ViewActionType
 {
-  View_ViewActionType_FitAllId,  //!< fits the view to wrap the bounding box of displayed objects
-  View_ViewActionType_FitAreaId, //!< zoom the view to the given area
-  View_ViewActionType_ZoomId,    //!< zoom in/out the view by some delta
-  View_ViewActionType_PanId,     //!< move position of the view camera
-  View_ViewActionType_RotationId, //!< rotate the view
+  View_ViewActionType_FitAllId,     //!< fits the view to wrap the bounding box of displayed objects
   View_ViewActionType_DisplayModeId //!< change display mode of visualized presentations (to wireframe or shading)
 };
 

@@ -28,6 +28,7 @@
 #include <inspector/View_DisplayActionType.hxx>
 
 class AIS_Trihedron;
+class AIS_ViewCube;
 class V3d_View;
 class View_DisplayPreview;
 
@@ -121,6 +122,11 @@ public:
   //! \param isToUpdateView boolean state if viewer should be updated
   Standard_EXPORT void DisplayDefaultTrihedron (const Standard_Boolean toDisplay, const bool theToUpdateViewer);
 
+  //! Displays presentation of view cube, create it by the first call
+  //! \param toDisplay flag to display presentation if true, or erase it
+  //! \param isToUpdateView boolean state if viewer should be updated
+  Standard_EXPORT void DisplayViewCube (const Standard_Boolean toDisplay, const bool theToUpdateViewer);
+
   //! Sets shape visible/invisible
   //! \theShape shape instance
   //! \theState visibility state
@@ -186,7 +192,8 @@ private:
   View_DisplayPreview* myDisplayPreview; //!< class for preview display
 
   Handle(AIS_InteractiveContext) myContext; //!< context, where the displayer works
-  Handle(AIS_Trihedron) myDefaultTrihedron; //!< NULL presentation until the first display
+  Handle(AIS_Trihedron) myDefaultTrihedron; //!< trihedron presentation for the current context
+  Handle(AIS_ViewCube) myViewCube; //!< view cube presentation for current context
 
   NCollection_DataMap<View_PresentationType, NCollection_Shared<AIS_ListOfInteractive>> myDisplayed; //!< visualized presentations
   NCollection_DataMap<View_PresentationType, Quantity_Color> myColorAttributes; //!< color properties of presentations
