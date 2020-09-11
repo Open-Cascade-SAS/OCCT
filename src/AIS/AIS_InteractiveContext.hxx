@@ -32,6 +32,7 @@
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_TypeOfHighlight.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
+#include <SelectMgr_AndOrFilter.hxx>
 #include <SelectMgr_IndexedMapOfOwner.hxx>
 #include <SelectMgr_ListOfFilter.hxx>
 #include <SelectMgr_PickingStrategy.hxx>
@@ -46,7 +47,6 @@
 
 class SelectMgr_SelectionManager;
 class V3d_Viewer;
-class SelectMgr_OrFilter;
 class V3d_View;
 class TopLoc_Location;
 class TCollection_ExtendedString;
@@ -736,6 +736,15 @@ public: //! @name management of active Selection Modes
 
 public: //! @name Selection Filters management
 
+  //! @return the context selection filter type.
+  SelectMgr_FilterType FilterType() const { return myFilters->FilterType(); }
+
+  //! Sets the context selection filter type.
+  //! SelectMgr_TypeFilter_OR selection filter is used by default.
+  //! @param theFilterType the filter type.
+  void SetFilterType (const SelectMgr_FilterType theFilterType)
+  { myFilters->SetFilterType (theFilterType); }
+
   //! Returns the list of filters active in a local context.
   Standard_EXPORT const SelectMgr_ListOfFilter& Filters() const;
 
@@ -1354,7 +1363,8 @@ protected: //! @name internal fields
   Handle(SelectMgr_EntityOwner) myLastPicked;
   Standard_Boolean myToHilightSelected;
   Handle(AIS_Selection) mySelection;
-  Handle(SelectMgr_OrFilter) myFilters;
+  Handle(SelectMgr_AndOrFilter) myFilters; //!< context filter (the content active filters
+                                           //!  can be applied with AND or OR operation)
   Handle(Prs3d_Drawer) myDefaultDrawer;
   Handle(Prs3d_Drawer) myStyles[Prs3d_TypeOfHighlight_NB];
   TColStd_SequenceOfInteger myDetectedSeq;

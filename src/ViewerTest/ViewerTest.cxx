@@ -5815,7 +5815,47 @@ static int VSelFilter(Draw_Interpretor& , Standard_Integer theArgc,
     {
       aContext->RemoveFilters();
     }
+    else if (anArg == "-contextfilter" && anArgIter + 1 < theArgc)
+    {
+      TCollection_AsciiString aVal (theArgv[++anArgIter]);
+      aVal.LowerCase();
+      if (aVal == "and")
+      {
+        aContext->SetFilterType (SelectMgr_FilterType_AND);
+      }
+      else if (aVal == "or")
+      {
+        aContext->SetFilterType (SelectMgr_FilterType_OR);
+      }
+      else
+      {
+        Message::SendFail() << "Syntax error: wrong command attribute value '" << aVal << "'";
+        return 1;
+      }
+    }
     else if (anArg == "-type"
+          && anArgIter + 1 < theArgc)
+    {
+      TCollection_AsciiString aVal (theArgv[++anArgIter]);
+      TopAbs_ShapeEnum aShapeType = TopAbs_COMPOUND;
+      if (!TopAbs::ShapeTypeFromString (aVal.ToCString(), aShapeType))
+      {
+        Message::SendFail() << "Syntax error: wrong command attribute value '" << aVal << "'";
+        return 1;
+      }
+
+      Handle(SelectMgr_Filter) aFilter;
+      if (aShapeType == TopAbs_SHAPE)
+      {
+        aFilter = new AIS_TypeFilter (AIS_KOI_Shape);
+      }
+      else
+      {
+        aFilter = new StdSelect_ShapeTypeFilter (aShapeType);
+      }
+      aContext->AddFilter (aFilter);
+    }
+    else if (anArg == "-secondtype"
           && anArgIter + 1 < theArgc)
     {
       TCollection_AsciiString aVal (theArgv[++anArgIter]);
@@ -6782,8 +6822,13 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,vr, group);
 
   theCommands.Add("vselfilter",
-                  "vselfilter [-type {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}] [-clear]"
+    "vselfilter [-contextfilter {AND|OR}]"
+    "\n         [-type {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}]"
+    "\n         [-secondtype {VERTEX|EDGE|WIRE|FACE|SHAPE|SHELL|SOLID}]"
+    "\n         [-clear]"
     "\nSets selection shape type filter in context or remove all filters."
+    "\n    : Option -contextfilter : To define a selection filter for two or more types of entity,"
+    "\n                              use value AND (OR by default)."
     "\n    : Option -type set type of selection filter. Filters are applyed with Or combination."
     "\n    : Option -clear remove all filters in context",
 		  __FILE__,VSelFilter,group);

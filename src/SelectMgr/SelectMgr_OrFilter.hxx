@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Graphic3d_NMapOfTransient.hxx>
 #include <SelectMgr_CompositionFilter.hxx>
 #include <Standard_Boolean.hxx>
 class SelectMgr_EntityOwner;
@@ -41,25 +40,10 @@ public:
   Standard_EXPORT SelectMgr_OrFilter();
   
   Standard_EXPORT Standard_Boolean IsOk (const Handle(SelectMgr_EntityOwner)& anobj) const Standard_OVERRIDE;
-  
-  //! Disable selection of specified objects.
-  Standard_EXPORT void SetDisabledObjects (const Handle(Graphic3d_NMapOfTransient)& theObjects);
-
-
-
 
   DEFINE_STANDARD_RTTIEXT(SelectMgr_OrFilter,SelectMgr_CompositionFilter)
 
 protected:
-
-
-
-
-private:
-
-
-  Handle(Graphic3d_NMapOfTransient) myDisabledObjects;
-
 
 };
 

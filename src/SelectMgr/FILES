@@ -2,6 +2,8 @@ SelectMgr.cxx
 SelectMgr.hxx
 SelectMgr_AndFilter.cxx
 SelectMgr_AndFilter.hxx
+SelectMgr_AndOrFilter.cxx
+SelectMgr_AndOrFilter.hxx
 SelectMgr_BaseFrustum.cxx
 SelectMgr_BaseFrustum.hxx
 SelectMgr_CompositionFilter.cxx
@@ -11,6 +13,7 @@ SelectMgr_EntityOwner.cxx
 SelectMgr_EntityOwner.hxx
 SelectMgr_Filter.cxx
 SelectMgr_Filter.hxx
+SelectMgr_FilterType.hxx
 SelectMgr_Frustum.hxx
 SelectMgr_Frustum.lxx
 SelectMgr_FrustumBuilder.cxx

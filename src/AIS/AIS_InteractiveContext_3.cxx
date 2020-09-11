@@ -23,7 +23,6 @@
 #include <Quantity_Color.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <SelectMgr_OrFilter.hxx>
 #include <SelectMgr_SelectionManager.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>

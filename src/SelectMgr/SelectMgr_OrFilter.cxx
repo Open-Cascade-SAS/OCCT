@@ -15,9 +15,7 @@
 
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Filter.hxx>
-#include <SelectMgr_ListIteratorOfListOfFilter.hxx>
 #include <SelectMgr_OrFilter.hxx>
-#include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(SelectMgr_OrFilter,SelectMgr_CompositionFilter)
@@ -31,27 +29,12 @@ SelectMgr_OrFilter::SelectMgr_OrFilter()
 }
 
 //=============================================================================
-//function : SetDisabledObjects
-//purpose  :
-//=============================================================================
-void SelectMgr_OrFilter::SetDisabledObjects (const Handle(Graphic3d_NMapOfTransient)& theObjects)
-{
-  myDisabledObjects = theObjects;
-}
-
-//=============================================================================
 //function : IsOk
 //purpose  :
 //=============================================================================
 Standard_Boolean SelectMgr_OrFilter::IsOk (const Handle(SelectMgr_EntityOwner)& theObj) const
 {
-  const SelectMgr_SelectableObject* aSelectable = theObj->Selectable().operator->();
-  if (!myDisabledObjects.IsNull()
-    && myDisabledObjects->Contains (aSelectable))
-  {
-    return Standard_False;
-  }
-  else if (myFilters.IsEmpty())
+  if (myFilters.IsEmpty())
   {
     return Standard_True;
   }

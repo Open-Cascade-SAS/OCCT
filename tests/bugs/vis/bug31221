@@ -1,0 +1,52 @@
+puts "==========="
+puts "0031221: Visualization - selection filter in context"
+puts "==========="
+puts ""
+
+vertex v 0 0 0
+
+vertex v1 1 0 0
+vertex v2 10 0 0
+edge e v1 v2
+
+vclear
+vinit View1
+vdisplay v
+vdisplay e
+vfit
+
+# 1.
+# Set composition filter AND to aplly VERTEX and EDGE filter
+# the vertex and the edge isn't selected
+vselfilter -contextfilter AND -type VERTEX -secondtype EDGE
+
+vchangeselected e
+
+set aNbSelected [vnbselected]
+if { $aNbSelected != 0 } { puts "Error: combined AND filter was not applied" }
+
+vchangeselected v
+
+set aNbSelected [vnbselected]
+if { $aNbSelected != 0 } { puts "Error: combined AND filter was not applied" }
+
+# 2.
+# Deselected the edge and the vertex
+vchangeselected e
+vchangeselected v
+
+# 3.
+# Set composition filter OR to aplly VERTEX and EDGE filter
+# the vertex and the edge is selected
+
+vselfilter -contextfilter OR -type VERTEX -secondtype EDGE
+
+vchangeselected e
+
+set aNbSelected [vnbselected]
+if { $aNbSelected != 1 } { puts "Error: combined OR filter was not applied" }
+
+vchangeselected v
+
+set aNbSelected [vnbselected]
+if { $aNbSelected != 2 } { puts "Error: combined OR filter was not applied" }
