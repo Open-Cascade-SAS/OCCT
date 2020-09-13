@@ -1,0 +1,15 @@
+puts "========================"
+puts "0031191: Data Exchange - STEP import returns empty shape for a file written by SolidWorks 2018"
+puts "========================"
+
+# Read file
+stepread [locate_data_file bug31191.stp] res *
+
+# Checking
+set state [data c]
+if { [regexp "309733 Entities, of which 9046 Root" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}
+
+checknbshapes res_1 -face 4494 -shell 26 -solid 26
+checkshape res_1 f
