@@ -1,0 +1,15 @@
+puts "========================"
+puts "0030014: Step File import does not create shapes, after transfer roots"
+puts "========================"
+
+# Read file
+stepread [locate_data_file bug30014.stp] res *
+
+# Checking
+set state [data c]
+if { [regexp "135006 Entities, of which 1704 Root" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}
+
+checknbshapes res_1 -face 3984 -shell 127 -solid 123
+checkshape res_1 f
