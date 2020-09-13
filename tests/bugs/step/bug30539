@@ -1,0 +1,15 @@
+puts "========================"
+puts "0030539: Data Exchange - Step file can't be imported"
+puts "========================"
+
+# Read file
+stepread [locate_data_file bug30539.stp] res *
+
+# Checking
+set state [data c]
+if { [regexp "32 Entities, of which 3 Root" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}
+
+checknbshapes res_1 -face 1 -shell 1 -solid 1
+checkshape res_1 f
