@@ -99,12 +99,12 @@ protected:
   //! Show() should return as soon as possible to reduce thread contention
   //! in multithreaded algorithms.
   //!
-  //! It is recommended to update (redraw, output etc.) only if progress advanced
-  //! by at least 1% from previous update.
+  //! It is recommended to update (redraw, output etc.) only if progress is
+  //! advanced by at least 1% from previous update.
   //!
-  //! Flag isForce is intended for forcing update in case if it is
-  //! optimized; all calls to it from inside the core mechanism are
-  //! done with this flag equal to False.
+  //! Flag isForce is intended for forcing update in case if it is required 
+  //! at particular step of the algorithm; all calls to it from inside the core 
+  //! mechanism (Message_Progress... classes) are done with this flag equal to False.
   //!
   //! The parameter theScope is the current scope being advanced;
   //! it can be used to show the names and ranges of the on-going scope and
@@ -120,7 +120,7 @@ public:
   //!@name Auxiliary methods
 
   //! Returns total progress position ranged from 0 to 1.
-  //! Should not be called concurrently while the progress is advancing
+  //! Should not be called concurrently while the progress is advancing,
   //! except from implementation of method Show().
   Standard_Real GetPosition() const
   {

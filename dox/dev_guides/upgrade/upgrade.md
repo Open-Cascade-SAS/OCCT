@@ -1935,26 +1935,38 @@ Offset direction, which used in class Adaptor2d_OffsetCurve for evaluating value
 
 Adaptor2d_OffsetCurve aOC(BaseCurve, Offset) --> Adaptor2d_OffsetCurve aOC(BaseCurve, -Offset)
 
-subsection upgrade_750_ProgressIndicator Change of Message_ProgressIndicator
+@subsection upgrade_750_ProgressIndicator Change of progress indication API
 
-The progress indication mechanism has been revised to eliminate its weak points in previous design (leading to ambiguity and unprotected from an error-prone behavior).
-Redesign also allows using progress indicator in multi-threaded algorithms in more straight-forward way with minimal overhead.
-Note, however, that multi-threaded algorithm should pre-allocate per-thread progress scopes in advance to ensure thread-safety - check new classes API for details.
+The progress indication mechanism has been revised to eliminate its weak points in 
+previous design (leading to implementation mistakes).
+Redesign also allows using progress indicator in multi-threaded algorithms 
+in more straight-forward way with minimal overhead.
+Note however, that multi-threaded algorithm should pre-allocate per-task 
+progress ranges in advance to ensure thread-safety - 
+see examples in documentation of class Message_ProgressScope for details.
 
 Classes Message_ProgressSentry and Message_ProgressScale have been removed.
-New classes Message_ProgressScope and Messge_ProgressRange replace them and should be used as main API classes to organize progress indication in the algorithms.
-Instances of the class Message_ProgressRange are used to pass the progress capability to nested levels of the algorithm
-and an instance of the class Message_ProgressScope is to be created (preferably as local variable) to manage progress at each level of the algorithm.
+New classes Message_ProgressScope and Message_ProgressRange should be used as main 
+API classes to organize progress indication in the algorithms.
+Instances of the class Message_ProgressRange are used to pass the progress capability to
+nested levels of the algorithm, and an instance of the class Message_ProgressScope is to
+be created (preferably as local variable) to manage progress at each level of the algorithm.
 The instance of Message_ProgressIndicator is not passed anymore to sub-algorithms.
 See documentation of the class Message_ProgressScope for more details and examples.
 
-Methods to deal with progress scopes and to advance progress are removed from class Message_ProgressIndicator; now it only provides interface to the application-level progress indicator.
-Virtual method Message_ProgressIndicator::Show() has changed its signature and should be updated accordingly in descendants of Message_ProgressIndicator.
-The scope passed as argument to this method can be used to obtain information on context of the current process (instead of calling method GetScope() in previous implementation).
-Methods Show(), UserBreak(), and Reset() are made protected in class Message_ProgressIndicator; method More() of Message_ProgressScope should be used to know if the cancel event has come.
-See documentation of the class Message_ProgressIndicator for more details and implementation of Draw_ProgressIndicator for an example.
+Methods to deal with progress scopes and to advance progress are removed from class 
+Message_ProgressIndicator; now it only provides interface to the application-level progress indicator.
+Virtual method Message_ProgressIndicator::Show() has changed its signature and should be 
+updated accordingly in descendants of Message_ProgressIndicator.
+The scope passed as argument to this method can be used to obtain information on context 
+of the current process (instead of calling method GetScope() in previous implementation).
+Methods Show(), UserBreak(), and Reset() are made protected in class Message_ProgressIndicator; 
+methods More() or UserBreak() of classes Message_ProgressScope or Message_ProgressRange should 
+be used to know if the cancel event has come.
+See documentation of the class Message_ProgressIndicator for more details and implementation 
+of Draw_ProgressIndicator for an example.
 
-Lets take a look onto typical algorithm using an old API:
+Let's take a look onto typical algorithm using an old API:
 @code
 class MyAlgo
 {
@@ -1967,7 +1979,10 @@ public:
     {
       Message_ProgressSentry aPSentry1 (theProgress, "Stage 1", 0, 153, 1);
       for (int anIter = 0; anIter < 153; ++anIter, aPSentry1.Next())
-      { if (!aPSentry1.More()) { return false; } }
+      { 
+        if (!aPSentry1.More()) { return false; } 
+        // do some job here...
+      }
     }
     aPSentry.Next();
     {
@@ -1982,9 +1997,9 @@ private:
   //! Nested sub-algorithm taking Progress Indicator.
   bool perform2 (const Handle(Message_ProgressIndicator)& theProgress)
   {
-    Message_ProgressSentry aPSentry2 (theProgress, "Stage 2", 0, 561, 1);
-    for (int anIter = 0; anIter < 561 && aPSentry2.More(); ++anIter, aPSentry2.Next()) {}
-    return aPSentry2.More();
+    Message_ProgressSentry aPSentry2 (theProgress, "Stage 2", 0, 100, 1);
+    for (int anIter = 0; anIter < 100 && aPSentry2.More(); ++anIter, aPSentry2.Next()) {}
+    return !aPSentry2.UserBreak();
   }
 };
 
@@ -1995,19 +2010,25 @@ anAlgo.Perform ("FileName", aProgress);
 @endcode
 
 The following guidance can be used to update such code:
-- Replace `const Handle(Message_ProgressIndicator)&` with `const Message_ProgressRange&`.
+- Replace `const Handle(Message_ProgressIndicator)&` with `const Message_ProgressRange&` 
+  in arguments of the methods that support progress indication.
   Message_ProgressIndicator object should be now created only at place where application starts algorithms.
 - Replace `Message_ProgressSentry` with `Message_ProgressScope`.
-  Take note that Message_ProgressScope has smaller number of arguments (no "minimal value").
-  In other aspects, Message_ProgressScope mimics an iterator-style interface (with methods More() and Next())
-  close to the old Message_ProgressSentry (pay attention to extra functionality of Message_ProgressScope::Next() method below).
-- Each Message_ProgressScope should take the next Range to fill in.
-  Within old API, Message_ProgressSentry received the root Progress Indicator object and implicitly split it into ranges using error-prone logic.
-  Message_ProgressScope in new API takes Message_ProgressRange, which should be created from the Range of the parent Scope using value returned by Message_ProgressScope::Next() method.
-  Don't use the same Range passed to the algorithm for all sub-Scopes like it was possible in old API.
-- Check user abortion state using Message_ProgressScope::UserBreak() method;
-  Message_ProgressRange is a temporary object with the only purpose to create a new Message_ProgressScope,
-  and Message_ProgressIndicator should be never passed directly to algorithms.
+  Take note that Message_ProgressScope has less arguments (no "minimal value").
+  In other aspects, Message_ProgressScope mimics an iterator-style interface 
+  (with methods More() and Next()) close to the old Message_ProgressSentry (pay attention 
+  to extra functionality of Message_ProgressScope::Next() method below).
+  Note that method Message_ProgressScope::Close() is equivalent of the method 
+  Relieve() of Message_ProgressSentry in previous version.
+  Class Message_ProgressSentry is still defined (marked as deprecated) providing
+  API more close to old one, and can be still used to reduce porting efforts.
+- Each Message_ProgressScope should take the next Range object to work with.
+  Within old API, Message_ProgressSentry received the root Progress Indicator 
+  object which mantained the sequence of ranges internally.
+  Message_ProgressScope in new API takes Message_ProgressRange, which should be
+  returned by Message_ProgressScope::Next() method of the parent scope.
+  Do not use the same Range passed to the algorithm for all sub-Scopes like 
+  it was possible in old API; each range object may be used only once.
 
 Take a look onto ported code and compare with code above to see differences:
 
@@ -2023,7 +2044,10 @@ public:
     {
       Message_ProgressScope aPSentry1 (aPSentry.Next(), "Stage 1", 153);
       for (int anIter = 0; anIter < 153; ++anIter, aPSentry1.Next())
-      { if (!aPSentry1.More()) { return false; }; }
+      { 
+        if (!aPSentry1.More()) { return false; };
+        // do some job here...
+      }
     }
     {
       perform2 (aPSentry.Next());
@@ -2035,9 +2059,9 @@ public:
   //! Nested sub-algorithm taking Progress sub-Range.
   bool perform2 (const Message_ProgressRange& theProgress)
   {
-    Message_ProgressScope aPSentry2 (theProgress, "Stage 2", 561);
-    for (int anIter = 0; anIter < 561 && aPSentry2.More(); ++anIter, aPSentry2.Next()) {}
-    return aPSentry2.More();
+    Message_ProgressScope aPSentry2 (theProgress, "Stage 2", 100);
+    for (int anIter = 0; anIter < 100 && aPSentry2.More(); ++anIter, aPSentry2.Next()) {}
+    return !aPSentry2.UserBreak();
   }
 };
 

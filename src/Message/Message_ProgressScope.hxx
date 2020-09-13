@@ -34,29 +34,48 @@ class Message_ProgressIndicator;
 //! On every level (sub-operation) in hierarchy of operations
 //! the local instance of the Message_ProgressScope class is created.
 //! It takes a part of the upper-level scope (via Message_ProgressRange) and provides 
-//! a way to consider this part as independent scale with locally defined range. 
+//! a way to consider this part as independent scale with locally defined range.
 //!
 //! The position on the local scale may be advanced using the method Next(),
 //! which allows iteration-like advancement. This method can take argument to 
-//! advance on the needed value. And, this method returns ProgressRange object
-//! that takes responsibility of making the specified step at its destruction.
-//! The ProgressRange can be used to create a new progress sub-scope.
+//! advance by the specified value (with default step equal to 1). 
+//! This method returns Message_ProgressRange object that takes responsibility 
+//! of making the specified step, either directly at its destruction or by
+//! delegating this task to another sub-scope created from that range object.
 //!
 //! It is important that sub-scope must have life time less than 
 //! the life time of its parent scope that provided the range.
+//! The usage pattern is to create scope objects as local variables in the
+//! functions that do the job, and pass range objects returned by Next() to
+//! the functions of the lower level, to allow them creating their own scopes.
 //!
 //! The scope has a name that can be used in visualization of the progress.
-//! It can be null. Note that the string is not copied, just pointer is stored.
-//! So, the pointer must point to the string with life time
-//! greater than that of the scope object.
+//! It can be null. Note that when C string literal is used as a name, then its
+//! value is not copied, just pointer is stored. In other variants (char pointer
+//! or a string class) the string is copied, which is additional overhead.
 //!
-//! In multithreaded programs, for each task running concurrently it is recommended
-//! to create a separate progress scope. The same instance of the progress scope
-//! must not be used concurrently from different threads.
+//! The same instance of the progress scope! must not be used concurrently from different threads.
+//! For the algorithm running its tasks in parallel threads, a common scope is 
+//! created before the parallel execution, and the range objects produced by method 
+//! Next() are used to initialise the data pertinent to each task. 
+//! Then the progress is advanced within each task using its own range object. 
+//! See example below.
+//!
+//! Note that while a range of the scope is specified using Standard_Real 
+//! (double) parameter, it is expected to be a positive integer value.
+//! If the range is not an integer, method Next() shall be called with
+//! explicit step argument, and the rounded value returned by method Value()
+//! may be not coherent with the step and range.
+//!
+//! A scope can be created with option "infinite". This is useful when
+//! the number of steps is not known by the time of the scope creation.
+//! In this case the progress will be advanced logarithmically, approaching
+//! the end of the scope at infinite number of steps. The parameter Max
+//! for infinite scope indicates number of steps corresponding to mid-range.
 //!
 //! A progress scope created with empty constructor is not connected to any
 //! progress indicator, and passing the range created on it to any algorithm 
-//! allows it executing safely without progress indication.
+//! allows it executing safely without actual progress indication.
 //!
 //! Example of preparation of progress indicator:
 //!
@@ -132,12 +151,11 @@ class Message_ProgressIndicator;
 //! {
 //!   void operator() (Task& theTask) const
 //!   {
-//!     // Note: it is essential that this method is executed only once
-//!     // for the same Task object
-//!     Message_ProgressScope aPS (theTask.Range, "Processing task", 1);
-//!     if (aPS.More())
+//!     // Note: it is essential that this method is executed only once for the same Task object
+//!     Message_ProgressScope aPS (theTask.Range, NULL, theTask.Data.NbItems);
+//!     for (Standard_Integer i = 0; i < theTask.Data.NbSteps && aPS.More(); i++)
 //!     {
-//!       // ... process data
+//!       do_job (theTask.Data.Item[i], aPS.Next());
 //!     }
 //!   }
 //! };
@@ -153,6 +171,24 @@ class Message_ProgressIndicator;
 //!   OSD_Parallel::ForEach (aTasks.begin(), aTasks.end(), Functor());
 //! }
 //! @endcode
+//!
+//! For lightweight algorithms that do not need advancing the progress 
+//! within individual tasks the code can be simplified to avoid inner scopes:
+//!
+//! @code
+//! struct Functor
+//! {
+//!   void operator() (Task& theTask) const
+//!   {
+//!     if (theTask.Range.More())
+//!     {
+//!       do_job (theTask.Data);
+//!       // advance the progress
+//!       theTask.Range.Close();
+//!     }
+//!   }
+//! };
+//! @endcode
 class Message_ProgressScope
 {
 public:
@@ -165,7 +201,10 @@ public: //! @name Preparation methods
   : myProgress (0),
     myParent (0),
     myName (0),
-    myPortion (1.), myMax (1.), myValue (0.),
+    myStart (0.),
+    myPortion (1.),
+    myMax (1.),
+    myValue (0.),
     myIsActive (false),
     myIsOwnName (false),
     myIsInfinite (false)
@@ -302,12 +341,16 @@ public: //! @name Auxiliary methods to use in ProgressIndicator
   }
 
   //! Returns the current value of progress in this scope.
-  //! If this scope is being advanced by sub-scoping, that value is
-  //! computed by mapping current global progress into this scope range.
-  Standard_Real Value() const
-  {
-    return myIsActive ? myValue : myMax;
-  }
+  //!
+  //! The value is computed by mapping current global progress into 
+  //! this scope range; the result is rounded up to integer.
+  //! Note that if MaxValue() is not an integer, Value() can be 
+  //! greater than MaxValue() due to that rounding.
+  //!
+  //! This method should not be called concurrently while the progress
+  //! is advancing, except from implementation of method Show() in
+  //! descendant of Message_ProgressIndicator.
+  Standard_Real Value() const;
 
   //! Returns the infinite flag
   Standard_Boolean IsInfinite() const
@@ -326,7 +369,7 @@ public: //! @name Destruction, allocation
   //! Destructor - closes the scope and adds its scale to the total progress
   ~Message_ProgressScope()
   {
-    Relieve();
+    Close();
     if (myIsOwnName)
     {
       Standard::Free (myName);
@@ -335,9 +378,9 @@ public: //! @name Destruction, allocation
     }
   }
 
-  //! Closes the scope and adds its scale to the total progress.
-  //! Relieved scope should not be used.
-  void Relieve();
+  //! Closes the scope and advances the progress to its end.
+  //! Closed scope should not be used.
+  void Close();
 
   DEFINE_STANDARD_ALLOC
 
@@ -347,11 +390,9 @@ private: //! @name Internal methods
   //! Called only by Message_ProgressIndicator constructor.
   Message_ProgressScope (Message_ProgressIndicator* theProgress);
 
-  //! Convert value from this scale to global one 
+  //! Convert value from this scope to global scale, but disregarding
+  //! start position of the scope, in the range [0, myPortion]
   Standard_Real localToGlobal(const Standard_Real theVal) const;
-
-  //! Convert value from global scale to this one 
-  Standard_Real globalToLocal(const Standard_Real theVal) const;
 
 private:
   //! Copy constructor is prohibited
@@ -366,7 +407,9 @@ private:
   const Message_ProgressScope* myParent; //!< Pointer to parent scope
   Standard_CString   myName;        //!< Name of the operation being done in this scope, or null
 
-  Standard_Real      myPortion;     //!< The portion of the global scale covered by this scope (from 0 to 1)
+  Standard_Real      myStart;       //!< Start position on the global scale [0, 1]
+  Standard_Real      myPortion;     //!< The portion of the global scale covered by this scope [0, 1]
+
   Standard_Real      myMax;         //!< Maximal value of progress in this scope
   Standard_Real      myValue;       //!< Current position advanced within this scope [0, Max]
 
@@ -389,6 +432,7 @@ inline Message_ProgressScope::Message_ProgressScope (Message_ProgressIndicator* 
 : myProgress(theProgress),
   myParent(0),
   myName(0),
+  myStart(0.),
   myPortion(1.),
   myMax(1.),
   myValue(0.),
@@ -409,6 +453,7 @@ inline Message_ProgressScope::Message_ProgressScope (const Message_ProgressRange
 : myProgress (theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
   myParent (theRange.myParentScope),
   myName (NULL),
+  myStart (theRange.myStart),
   myPortion (theRange.myDelta),
   myMax (Max (1.e-6, theMax)), // protection against zero range
   myValue (0.),
@@ -433,6 +478,7 @@ Message_ProgressScope::Message_ProgressScope (const Message_ProgressRange& theRa
 : myProgress (theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
   myParent (theRange.myParentScope),
   myName (theName),
+  myStart (theRange.myStart),
   myPortion (theRange.myDelta),
   myMax (Max (1.e-6, theMax)), // protection against zero range
   myValue (0.),
@@ -455,6 +501,7 @@ inline Message_ProgressScope::Message_ProgressScope (const Message_ProgressRange
 : myProgress (theRange.myParentScope != NULL ? theRange.myParentScope->myProgress : NULL),
   myParent (theRange.myParentScope),
   myName (NULL),
+  myStart (theRange.myStart),
   myPortion (theRange.myDelta),
   myMax (Max (1.e-6, theMax)), // protection against zero range
   myValue (0.),
@@ -467,10 +514,10 @@ inline Message_ProgressScope::Message_ProgressScope (const Message_ProgressRange
 }
 
 //=======================================================================
-//function : Relieve
+//function : Close
 //purpose  :
 //=======================================================================
-inline void Message_ProgressScope::Relieve()
+inline void Message_ProgressScope::Close()
 {
   if (!myIsActive)
   {
@@ -506,17 +553,14 @@ inline Standard_Boolean Message_ProgressScope::UserBreak() const
 //=======================================================================
 inline Message_ProgressRange Message_ProgressScope::Next (Standard_Real theStep)
 {
-  if (myIsActive)
+  if (myIsActive && theStep > 0.)
   {
-    if (theStep > 0.)
+    Standard_Real aCurr = localToGlobal(myValue);
+    Standard_Real aNext = localToGlobal(myValue += theStep);
+    Standard_Real aDelta = aNext - aCurr;
+    if (aDelta > 0.)
     {
-      Standard_Real aCurr = localToGlobal (myValue);
-      Standard_Real aNext = localToGlobal (myValue += theStep);
-      Standard_Real aDelta = aNext - aCurr;
-      if (aDelta > 0.)
-      {
-        return Message_ProgressRange (*this, aDelta);
-      }
+      return Message_ProgressRange(*this, myStart + aCurr, aDelta);
     }
   }
   return Message_ProgressRange();
@@ -557,23 +601,34 @@ inline Standard_Real Message_ProgressScope::localToGlobal (const Standard_Real t
 }
 
 //=======================================================================
-//function : globalToLocal
+//function : Value
 //purpose  :
 //=======================================================================
 
-inline Standard_Real Message_ProgressScope::globalToLocal (const Standard_Real theVal) const
+inline Standard_Real Message_ProgressScope::Value () const
 {
+  if (!myIsActive)
+  {
+    return myIsInfinite ? Precision::Infinite() : myMax;
+  }
+
+  // get current progress on the global scale counted 
+  // from the start of this scope
+  Standard_Real aVal = myProgress->GetPosition() - myStart;
+
+  // if progress has not reached yet the start of this scope, return 0
+  if (aVal <= 0.)
+    return 0.;
+
   // if at end of the scope (or behind), report the maximum
-  Standard_Real aDist = myPortion - theVal;
+  Standard_Real aDist = myPortion - aVal;
   if (aDist <= Precision::Confusion())
     return myIsInfinite ? Precision::Infinite() : myMax;
 
-  if (!myIsInfinite)
-    return myMax * theVal / myPortion;
-
-  //  Standard_Real x = log (theVal / aDist); // exponent
-  Standard_Real x = theVal / aDist;         // hyperbola
-  return x * myMax;
+  // map the value to the range of this scope [0, Max],
+  // rounding up to integer, with small correction applied
+  // to avoid rounding errors
+  return std::ceil (myMax * aVal / (myIsInfinite ? aDist : myPortion) - Precision::Confusion());
 }
 
 #endif // _Message_ProgressScope_HeaderFile

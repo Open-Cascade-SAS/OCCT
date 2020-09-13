@@ -4843,12 +4843,12 @@ namespace
   {
     void operator()(Task& theTask) const
     {
-      Message_ProgressScope aPS(theTask.Range, NULL, 1);
-      if (aPS.More())
+      if (theTask.Range.More())
       {
         if (theTask.Mat1.RowNumber() > 1)
           theTask.Mat3 = theTask.Mat1 * theTask.Mat2;
       }
+      theTask.Range.Close();
     }
   };
 }

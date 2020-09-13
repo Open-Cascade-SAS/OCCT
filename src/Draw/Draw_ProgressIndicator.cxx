@@ -202,7 +202,7 @@ Standard_Boolean Draw_ProgressIndicator::UserBreak()
     {
       OSD::ControlBreak();
     }
-    catch (OSD_Exception_CTRL_BREAK)
+    catch (const OSD_Exception_CTRL_BREAK&)
     {
       myBreak = Standard_True;
     }

@@ -32,21 +32,22 @@ class Message_ProgressScope;
 //! A range object can be copied, the responsibility for progress advancement is 
 //! then taken by the copy.
 //! The same range object may be used (either copied or used to create scope) only once.
-//! Any consequenct attempts to use range will give no result on the progress;
+//! Any consequent attempts to use range will give no result on the progress;
 //! in debug mode, an assert message will be generated.
 //!
 //! @sa Message_ProgressScope for more details
 class Message_ProgressRange
 {
 public:
-  //! Constructor of the range
+  //! Constructor of the empty range
   Message_ProgressRange()
-    : myParentScope (0), myDelta (0), myWasUsed (false)
+    : myParentScope (0), myStart(0.), myDelta (0.), myWasUsed (false)
   {}
 
-  //! Copy constructor disarms the source.
+  //! Copy constructor disarms the source
   Message_ProgressRange (const Message_ProgressRange& theOther)
     : myParentScope (theOther.myParentScope),
+      myStart (theOther.myStart),
       myDelta (theOther.myDelta),
       myWasUsed (theOther.myWasUsed)
   {
@@ -54,10 +55,11 @@ public:
     theOther.myWasUsed = true;
   }
 
-  //! Copy assignment disarms the source.
+  //! Copy assignment disarms the source
   Message_ProgressRange& operator=(const Message_ProgressRange& theOther)
   {
     myParentScope = theOther.myParentScope;
+    myStart = theOther.myStart;
     myDelta = theOther.myDelta;
     myWasUsed = theOther.myWasUsed;
     theOther.myWasUsed = true;
@@ -87,15 +89,19 @@ public:
 
 private:
   //! Constructor is private
-  Message_ProgressRange (const Message_ProgressScope& theParent, Standard_Real theDelta)
+  Message_ProgressRange (const Message_ProgressScope& theParent, 
+                         Standard_Real theStart, Standard_Real theDelta)
     : myParentScope (&theParent),
+      myStart (theStart),
       myDelta (theDelta),
       myWasUsed (false)
   {}
 
 private:
   const Message_ProgressScope* myParentScope;  //!< Pointer to parent scope
-  Standard_Real                myDelta;        //!< Step of incrementation
+  Standard_Real                myStart;        //!< Start point on the global scale
+  Standard_Real                myDelta;        //!< Step of incrementation on the global scale
+
   mutable Standard_Boolean     myWasUsed;      //!< Flag indicating that this range
                                                //!  was used to create a new scope
 
