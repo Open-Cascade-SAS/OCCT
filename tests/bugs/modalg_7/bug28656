@@ -1,5 +1,3 @@
-puts "TODO OCC28656 ALL: TopoDS_LockedShape: BRep_Builder::UpdateEdge"
-
 puts "========"
 puts "OCC28656"
 puts "========"

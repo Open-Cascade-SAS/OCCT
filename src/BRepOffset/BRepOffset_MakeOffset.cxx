@@ -77,6 +77,7 @@
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomFill_Generator.hxx>
 #include <GeomLib.hxx>
+#include <GeomLib_IsPlanarSurface.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt.hxx>
@@ -281,7 +282,8 @@ static
                      BRepAlgo_Image& theImage);
 
 static
-  Standard_Boolean IsPlanar(const TopoDS_Shape& theS);
+void RemoveSeamAndDegeneratedEdges(const TopoDS_Face& theFace,
+                                   const TopoDS_Face& theOldFace);
 
 static
   Standard_Boolean TrimEdge(TopoDS_Edge& NE,
@@ -599,6 +601,8 @@ myRemoveIntEdges(RemoveIntEdges),
 myDone     (Standard_False)
 {
   myAsDes = new BRepAlgo_AsDes();
+  myIsLinearizationAllowed = Standard_True;
+  
   MakeOffsetShape();
 }
 
@@ -627,6 +631,7 @@ void BRepOffset_MakeOffset::Initialize(const TopoDS_Shape&    S,
   myJoin       = Join;
   myThickening     = Thickening;
   myRemoveIntEdges = RemoveIntEdges;
+  myIsLinearizationAllowed = Standard_True;
   myDone     = Standard_False;
   myIsPerformSewing = Standard_False;
   myIsPlanar = Standard_False;
@@ -646,6 +651,7 @@ void BRepOffset_MakeOffset::Clear()
   myInitOffsetEdge .Clear();
   myImageOffset    .Clear();
   myFaces          .Clear();  
+  myOriginalFaces  .Clear();  
   myFaceOffset     .Clear();
   myAsDes          ->Clear();
   myDone     = Standard_False;
@@ -654,18 +660,23 @@ void BRepOffset_MakeOffset::Clear()
 }
 
 //=======================================================================
+//function : AllowLinearization
+//purpose  : 
+//=======================================================================
+
+void BRepOffset_MakeOffset::AllowLinearization(const Standard_Boolean theIsAllowed)
+{
+  myIsLinearizationAllowed = theIsAllowed;
+}
+
+//=======================================================================
 //function : AddFace
 //purpose  : 
 //=======================================================================
 
 void BRepOffset_MakeOffset::AddFace(const TopoDS_Face& F) {
-  myFaces.Add(F);    
-  //-------------
-  // MAJ SD.
-  //-------------
-  myInitOffsetFace.SetRoot (F)  ;    
-  myInitOffsetFace.Bind    (F,F);
-  myImageOffset.SetRoot    (F)  ;  
+
+  myOriginalFaces.Add(F);
 }
 
 //=======================================================================
@@ -676,8 +687,7 @@ void BRepOffset_MakeOffset::AddFace(const TopoDS_Face& F) {
 void BRepOffset_MakeOffset::SetOffsetOnFace(const TopoDS_Face&  F, 
                                             const Standard_Real Off)
 {
-  if ( myFaceOffset.IsBound(F)) myFaceOffset.UnBind(F);
-  myFaceOffset.Bind(F,Off);
+  myFaceOffset.Bind(F, Off);
 }
 
 //=======================================================================
@@ -771,6 +781,50 @@ static void EvalMax(const TopoDS_Shape& S, Standard_Real& Tol)
   }
 }
 
+//=======================================================================
+//function : SetFaces
+//purpose  : 
+//=======================================================================
+
+void BRepOffset_MakeOffset::SetFaces()
+{
+  for (Standard_Integer ii = 1; ii <= myOriginalFaces.Extent(); ii++)
+  {
+    TopoDS_Face aFace = TopoDS::Face(myOriginalFaces(ii));
+    const TopoDS_Shape* aPlanface = myFacePlanfaceMap.Seek(aFace);
+    if (aPlanface)
+      aFace = TopoDS::Face(*aPlanface);
+    
+    myFaces.Add(aFace);    
+    //-------------
+    // MAJ SD.
+    //-------------
+    myInitOffsetFace.SetRoot (aFace)  ;    
+    myInitOffsetFace.Bind    (aFace, aFace);
+    myImageOffset.SetRoot    (aFace)  ;  
+  }
+}
+
+//=======================================================================
+//function : SetFacesWithOffset
+//purpose  : 
+//=======================================================================
+
+void BRepOffset_MakeOffset::SetFacesWithOffset()
+{
+  TopTools_DataMapIteratorOfDataMapOfShapeShape anItmap(myFacePlanfaceMap);
+  for (; anItmap.More(); anItmap.Next())
+  {
+    TopoDS_Face aFace = TopoDS::Face(anItmap.Key());
+    TopoDS_Face aPlanface = TopoDS::Face(anItmap.Value());
+    if (myFaceOffset.IsBound(aFace))
+    {
+      Standard_Real anOffset = myFaceOffset(aFace);
+      myFaceOffset.UnBind(aFace);
+      myFaceOffset.Bind(aPlanface, anOffset);
+    }
+  }
+}
 
 //=======================================================================
 //function : MakeOffsetShape
@@ -781,14 +835,22 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
 {  
   myDone = Standard_False;
   //
+
   // check if shape consists of only planar faces
-  myIsPlanar = IsPlanar(myShape);
+  myIsPlanar = IsPlanar();
+
+  SetFaces();
+  SetFacesWithOffset();
+  
+  BuildFaceComp();
+  
   //------------------------------------------
   // Construction of myShape without caps.
   //------------------------------------------
   if(!myFaces.IsEmpty())
   {
-    RemoveCorks (myShape,myFaces);
+    RemoveCorks (myShape, myOriginalFaces);
+    RemoveCorks (myFaceComp, myFaces);
   }
 
   if (!CheckInputData())
@@ -813,7 +875,7 @@ void BRepOffset_MakeOffset::MakeOffsetShape()
     myAnalyse.SetOffsetValue (myOffset);
     myAnalyse.SetFaceOffsetMap (myFaceOffset);
   }
-  myAnalyse.Perform(myShape,TolAngle);
+  myAnalyse.Perform(myFaceComp,TolAngle);
   //---------------------------------------------------
   // Construction of Offset from preanalysis.
   //---------------------------------------------------  
@@ -1058,7 +1120,7 @@ void BRepOffset_MakeOffset::MakeOffsetFaces(BRepOffset_DataMapOfShapeOffset& the
   //
   Standard_Boolean OffsetOutside = (myOffset > 0.);
   //
-  BRepLib::SortFaces(myShape, aLF);
+  BRepLib::SortFaces(myFaceComp, aLF);
   //
   aItLF.Initialize(aLF);
   for (; aItLF.More(); aItLF.Next()) {
@@ -1146,12 +1208,12 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
 
   BRepOffset_Inter3d Inter3 (AsDes,Side,myTol);
   // Intersection between parallel faces
-  Inter3.ConnexIntByInt(myShape,MapSF,myAnalyse,MES,Build,Failed,myIsPlanar);
+  Inter3.ConnexIntByInt(myFaceComp,MapSF,myAnalyse,MES,Build,Failed,myIsPlanar);
   // Intersection with caps.
   Inter3.ContextIntByInt(myFaces,ExtentContext,MapSF,myAnalyse,MES,Build,Failed,myIsPlanar);
 
   TopTools_ListOfShape aLFaces;
-  for (Exp.Init(myShape,TopAbs_FACE) ; Exp.More(); Exp.Next())
+  for (Exp.Init(myFaceComp,TopAbs_FACE) ; Exp.More(); Exp.Next())
     aLFaces.Append (Exp.Current());
   for (TopTools_ListOfShape::Iterator it (myAnalyse.NewFaces()); it.More(); it.Next())
     aLFaces.Append (it.Value());
@@ -1174,7 +1236,7 @@ void BRepOffset_MakeOffset::BuildOffsetByInter()
   //Map of edges obtained after FACE-FACE (offsetted) intersection.
   //Key1 is edge trimmed by intersection points with other edges;
   //Item is not-trimmed edge. 
-  if (!TrimEdges(myShape, myOffset, myAnalyse, MapSF, MES, Build, AsDes, AsDes2d, NewEdges, aETrimEInf, anEdgesOrigins))
+  if (!TrimEdges(myFaceComp, myOffset, myAnalyse, MapSF, MES, Build, AsDes, AsDes2d, NewEdges, aETrimEInf, anEdgesOrigins))
   {
     myError = BRepOffset_CannotTrimEdges;
     return;
@@ -1483,7 +1545,7 @@ void BRepOffset_MakeOffset::ReplaceRoots()
 {
   // Replace the artificial faces and edges in InitOffset maps with the original ones.
   TopTools_MapOfShape View;
-  for (TopExp_Explorer anExpF (myShape, TopAbs_EDGE); anExpF.More(); anExpF.Next())
+  for (TopExp_Explorer anExpF (myFaceComp, TopAbs_EDGE); anExpF.More(); anExpF.Next())
   {
     const TopoDS_Shape& aF = anExpF.Current();
     for (TopExp_Explorer anExpE (aF, TopAbs_EDGE); anExpE.More(); anExpE.Next())
@@ -1511,6 +1573,26 @@ void BRepOffset_MakeOffset::ReplaceRoots()
         myInitOffsetEdge.ReplaceRoot (aEGen, aV);
       }
     }
+  }
+}
+
+//=======================================================================
+//function : BuildFaceComp
+//purpose  : Make a compound containing actual faces (including planar faces instead of their originals)
+//=======================================================================
+void BRepOffset_MakeOffset::BuildFaceComp()
+{
+  BRep_Builder aBB;
+  aBB.MakeCompound(myFaceComp);
+  TopExp_Explorer anExplo(myShape, TopAbs_FACE);
+  for (; anExplo.More(); anExplo.Next())
+  {
+    TopoDS_Shape aFace = anExplo.Current();
+    TopAbs_Orientation anOr = aFace.Orientation();
+    const TopoDS_Shape* aPlanface = myFacePlanfaceMap.Seek(aFace);
+    if (aPlanface)
+      aFace = *aPlanface;
+    aBB.Add(myFaceComp, aFace.Oriented(anOr));
   }
 }
 
@@ -1543,7 +1625,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
   ChFiDS_TypeOfConcavity OT = ChFiDS_Convex;
   if (myOffset < 0.) OT = ChFiDS_Concave; 
    
-  for (Exp.Init(myShape,TopAbs_EDGE); Exp.More(); Exp.Next()) {
+  for (Exp.Init(myFaceComp,TopAbs_EDGE); Exp.More(); Exp.Next()) {
     const TopoDS_Edge& E = TopoDS::Edge(Exp.Current());
     if (Done.Add(E)) {
       const TopTools_ListOfShape& Anc = myAnalyse.Ancestors(E);
@@ -1612,7 +1694,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
   Done.Clear();
   TopTools_ListIteratorOfListOfShape it;
 
-  for (Exp.Init(myShape,TopAbs_VERTEX); Exp.More(); Exp.Next()) {
+  for (Exp.Init(myFaceComp,TopAbs_VERTEX); Exp.More(); Exp.Next()) {
     const TopoDS_Vertex& V = TopoDS::Vertex (Exp.Current());
     if (Done.Add(V)) {
       const TopTools_ListOfShape& LA = myAnalyse.Ancestors(V);
@@ -2403,14 +2485,14 @@ void BRepOffset_MakeOffset::Intersection3D(BRepOffset_Inter3d& Inter)
     Inter.CompletInt (OffsetFaces,myInitOffsetFace);
     TopTools_IndexedMapOfShape& NewEdges = Inter.NewEdges();
     if (myJoin == GeomAbs_Intersection) {
-      BRepOffset_Tool::CorrectOrientation (myShape,NewEdges,myAsDes,myInitOffsetFace,myOffset);
+      BRepOffset_Tool::CorrectOrientation (myFaceComp,NewEdges,myAsDes,myInitOffsetFace,myOffset);
     }
   }
   else {
     //--------------------------------
     // Only between neighbor faces.
     //--------------------------------
-    Inter.ConnexIntByArc(OffsetFaces,myShape,myAnalyse,myInitOffsetFace);
+    Inter.ConnexIntByArc(OffsetFaces,myFaceComp,myAnalyse,myInitOffsetFace);
   }
 #ifdef OCCT_DEBUG
   if ( ChronBuild) Clock.Show();
@@ -2592,7 +2674,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls ()
   TopTools_DataMapOfShapeShape MapEF; //Edges of contours: edge + face
   Standard_Real OffsetVal = Abs(myOffset);
 
-  FillContours(myShape, myAnalyse, Contours, MapEF);
+  FillContours(myFaceComp, myAnalyse, Contours, MapEF);
 
   for (Standard_Integer ic = 1; ic <= Contours.Extent(); ic++)
   {
@@ -3200,7 +3282,7 @@ void BRepOffset_MakeOffset::MakeSolid ()
 void BRepOffset_MakeOffset::SelectShells ()
 {
   TopTools_MapOfShape FreeEdges;
-  TopExp_Explorer exp(myShape,TopAbs_EDGE);
+  TopExp_Explorer exp(myFaceComp,TopAbs_EDGE);
   //-------------------------------------------------------------
   // FreeEdges all edges that can have free border in the  
   // parallel shell
@@ -3510,6 +3592,7 @@ void UpdateTolerance (TopoDS_Shape& S,
         Standard_Real aFirst, aLast;
         Handle(Geom_Curve) aCrv = BRep_Tool::Curve(E, aFirst, aLast);
         Standard_Real aMaxDist = ComputeMaxDist(aBAS.Plane(), aCrv, aFirst, aLast);
+        E.Locked (Standard_False);
         B.UpdateEdge(E, aMaxDist);
         isUpdated = Standard_True;
       }
@@ -3532,6 +3615,7 @@ void UpdateTolerance (TopoDS_Shape& S,
             Handle(BRep_TVertex) TV = Handle(BRep_TVertex)::DownCast(V[i].TShape());
             TV->Tolerance(0.);
             BRepCheck_Vertex VertexCorrector(V[i]);
+            V[i].Locked (Standard_False);
             B.UpdateVertex(V[i], VertexCorrector.Tolerance());
             // use the occasion to clean the vertices.
             (TV->ChangePoints()).Clear();
@@ -3656,7 +3740,7 @@ Standard_Boolean BRepOffset_MakeOffset::CheckInputData()
   }
 
   // Connectivity of input shape.
-  if (!IsConnectedShell(myShape))
+  if (!IsConnectedShell(myFaceComp))
   {
     myError = BRepOffset_NotConnectedShell;
     return Standard_False;
@@ -3665,7 +3749,7 @@ Standard_Boolean BRepOffset_MakeOffset::CheckInputData()
   // Normals check and continuity check.
   const Standard_Integer aPntPerDim = 20; // 21 points on each dimension.
   Standard_Real aUmin, aUmax, aVmin, aVmax;
-  TopExp_Explorer anExpSF(myShape, TopAbs_FACE);
+  TopExp_Explorer anExpSF(myFaceComp, TopAbs_FACE);
   NCollection_Map<Handle(TopoDS_TShape)> aPresenceMap;
   TopLoc_Location L;
   gp_Pnt2d aPnt2d;
@@ -4490,17 +4574,127 @@ Standard_Boolean GetSubShapes(const TopoDS_Shape& theShape,
 //function : IsPlanar
 //purpose  : Checks if all the faces of the shape are planes
 //=======================================================================
-Standard_Boolean IsPlanar(const TopoDS_Shape& theS)
+Standard_Boolean BRepOffset_MakeOffset::IsPlanar()
 {
-  TopExp_Explorer aExp(theS, TopAbs_FACE);
-  for (; aExp.More(); aExp.Next()) {
+  Standard_Boolean aIsNonPlanarFound = Standard_False;
+  BRep_Builder aBB;
+  
+  TopExp_Explorer aExp(myShape, TopAbs_FACE);
+  for (; aExp.More(); aExp.Next())
+  {
     const TopoDS_Face& aF = *(TopoDS_Face*)&aExp.Current();
     BRepAdaptor_Surface aBAS(aF, Standard_False);
-    if (aBAS.GetType() != GeomAbs_Plane) {
-      break;
+    if (aBAS.GetType() == GeomAbs_Plane)
+      continue;
+    
+    if (myIsLinearizationAllowed)
+    {
+      //define the toleance
+      Standard_Real aTolForFace = BRep_Tool::Tolerance(aF);
+
+      //try to linearize
+      Handle(Geom_Surface) aSurf = BRep_Tool::Surface(aF);
+      GeomLib_IsPlanarSurface aPlanarityChecker(aSurf, Precision::Confusion());
+      if (aPlanarityChecker.IsPlanar())
+      {
+        gp_Pln aPln = aPlanarityChecker.Plan();
+        Handle(Geom_Plane) aPlane = new Geom_Plane(aPln);
+        TopoDS_Face aPlanarFace;
+        aBB.MakeFace(aPlanarFace, aPlane, aTolForFace);
+        TopoDS_Face aFaceForward = aF;
+        aFaceForward.Orientation(TopAbs_FORWARD);
+        TopoDS_Iterator anItFace(aFaceForward);
+        for (; anItFace.More(); anItFace.Next())
+        {
+          const TopoDS_Shape& aWire = anItFace.Value();
+          aBB.Add(aPlanarFace, aWire);
+        }
+        RemoveSeamAndDegeneratedEdges(aPlanarFace, aFaceForward);
+        myFacePlanfaceMap.Bind(aF, aPlanarFace);
+        if (myFaces.Contains(aF))
+        {
+          myFaces.RemoveKey(aF);
+          myFaces.Add(aPlanarFace);
+        }
+      }
+      else
+        aIsNonPlanarFound = Standard_True;
     }
+    else
+      aIsNonPlanarFound = Standard_True;
   }
-  return !aExp.More();
+  
+  return (!aIsNonPlanarFound);
+}
+
+//=======================================================================
+//function : RemoveSeamAndDegeneratedEdges
+//purpose  : Removes useless seam and degenerated edges from a face that becomes planar
+//=======================================================================
+void RemoveSeamAndDegeneratedEdges(const TopoDS_Face& theFace,
+                                   const TopoDS_Face& theOldFace)
+{
+  TopoDS_Face aFace = theFace;
+  aFace.Orientation(TopAbs_FORWARD);
+
+  Standard_Boolean aIsDegOrSeamFound = Standard_False;
+  TopTools_SequenceOfShape aEseq;
+  TopExp_Explorer anExplo(aFace, TopAbs_EDGE);
+  for (; anExplo.More(); anExplo.Next())
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anExplo.Current());
+    if (BRep_Tool::Degenerated(anEdge) ||
+        BRepTools::IsReallyClosed(anEdge, theOldFace))
+      aIsDegOrSeamFound = Standard_True;
+    else
+      aEseq.Append(anEdge);
+  }
+
+  if (!aIsDegOrSeamFound)
+    return;
+
+  //Reconstruct wires
+  BRep_Builder aBB;
+  TopTools_ListOfShape aWlist;
+  TopoDS_Iterator anItFace(aFace);
+  for (; anItFace.More(); anItFace.Next())
+    aWlist.Append(anItFace.Value());
+
+  aFace.Free(Standard_True);
+  TopTools_ListIteratorOfListOfShape anItl(aWlist);
+  for (; anItl.More(); anItl.Next())
+    aBB.Remove(aFace, anItl.Value());
+
+  while (!aEseq.IsEmpty())
+  {
+    TopoDS_Wire aNewWire;
+    aBB.MakeWire(aNewWire);
+    TopoDS_Edge aCurEdge = TopoDS::Edge(aEseq(1));
+    aBB.Add(aNewWire, aCurEdge);
+    aEseq.Remove(1);
+    TopoDS_Vertex aFirstVertex, aCurVertex;
+    TopExp::Vertices(aCurEdge, aFirstVertex, aCurVertex, Standard_True); //with orientation
+    while (!aCurVertex.IsSame(aFirstVertex))
+    {
+      TopoDS_Vertex aV1, aV2;
+      Standard_Integer ind;
+      for (ind = 1; ind <= aEseq.Length(); ind++)
+      {
+        aCurEdge = TopoDS::Edge(aEseq(ind));
+        TopExp::Vertices(aCurEdge, aV1, aV2, Standard_True); //with orientation
+        if (aV1.IsSame(aCurVertex))
+          break;
+      }
+      if (ind > aEseq.Length()) //error occured: wire is not closed
+        break;
+      
+      aBB.Add(aNewWire, aCurEdge);
+      aEseq.Remove(ind);
+      aCurVertex = aV2;
+    }
+
+    aBB.Add(aFace, aNewWire);
+  }
 }
 
 //=======================================================================

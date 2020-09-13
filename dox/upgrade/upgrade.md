@@ -1889,6 +1889,10 @@ Unexpected const-ness of Aspect_Window::DoResize() method has been removed, so t
 
 Enumeration BRepOffset_Type is renamed to ChFiDS_TypeOfConcavity.
 
+@subsection upgrade_750_BRepOffset_MakeOffset change in construction of offset faces
+
+Now by default offset faces of non-planar faces may be planar faces if their originals can be approximated by planes.
+
 @subsection upgrade_750_tkv3d TKV3d/TKService toolkits changes
 
 The following changes could be highlighted while porting:

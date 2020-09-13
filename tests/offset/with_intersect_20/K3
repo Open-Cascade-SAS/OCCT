@@ -1,7 +1,4 @@
-puts "TODO OCC26528 All: ERROR. Degenerated normal on input data."
-puts "TODO OCC26528 All: Error : command \\\"nbshapes result\\\" gives an empty result"
-puts "TODO OCC26528 All:TEST INCOMPLETE"
 restore [locate_data_file bug26663_test_offset_K3.brep] s
 OFFSETSHAPE ${off_param} {} ${calcul} ${type}
-checknbshapes result -ref [lrange [nbshapes s] 8 19]
+checknbshapes result -t -face 6 -shell 1
 

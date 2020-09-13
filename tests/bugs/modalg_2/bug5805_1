@@ -37,5 +37,5 @@ checkmaxtol result -min_tol 1.
 checkprops result -s 981.941 
 checkshape result
 
-checknbshapes result -vertex 6 -edge 10 -wire 8 -face 6 -shell 1 -solid 1 -compsolid 0 -compound 0 -shape 32
+checknbshapes result -t -wire 8 -face 6 -shell 1 -solid 1
 checkview -display result -2d -path ${imagedir}/${test_image}.png

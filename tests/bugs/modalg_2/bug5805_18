@@ -49,5 +49,5 @@ if {$index == -1} {
 }
 
 checkshape result
-checknbshapes result -vertex 4 -edge 5 -wire 5 -face 5 -shell 2 -solid 1 -compsolid 0 -compound 0 -shape 22
+checknbshapes result -t -wire 5 -face 5 -shell 2 -solid 1
 checkview -display result -2d -path ${imagedir}/${test_image}.png

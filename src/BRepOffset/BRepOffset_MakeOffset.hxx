@@ -23,6 +23,7 @@
 
 #include <Standard_Real.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Compound.hxx>
 #include <BRepOffset_Mode.hxx>
 #include <Standard_Boolean.hxx>
 #include <GeomAbs_JoinType.hxx>
@@ -50,7 +51,6 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   Standard_EXPORT BRepOffset_MakeOffset();
   
   Standard_EXPORT BRepOffset_MakeOffset(const TopoDS_Shape& S,
@@ -74,6 +74,9 @@ public:
                                    const Standard_Boolean RemoveIntEdges = Standard_False);
   
   Standard_EXPORT void Clear();
+  
+  //! Changes the flag allowing the linearization
+  Standard_EXPORT void AllowLinearization (const Standard_Boolean theIsAllowed);
   
   //! Add Closing Faces,  <F>  has to be  in  the initial
   //! shape S.
@@ -143,6 +146,19 @@ protected:
 
 private:
 
+  //! Check if shape consists of only planar faces
+  //! If <myIsLinearizationAllowed> is TRUE, try to approximate images of faces
+  //! by planar faces
+  Standard_EXPORT Standard_Boolean IsPlanar();
+  
+  //! Set the faces that are to be removed
+  Standard_EXPORT void SetFaces();
+  
+  //! Set the faces with special value of offset
+  Standard_EXPORT void SetFacesWithOffset();
+  
+  Standard_EXPORT void BuildFaceComp();
+  
   Standard_EXPORT void BuildOffsetByArc();
   
   Standard_EXPORT void BuildOffsetByInter();
@@ -216,7 +232,9 @@ private:
   Standard_Real myOffset;
   Standard_Real myTol;
   TopoDS_Shape myShape;
+  TopoDS_Compound myFaceComp;
   BRepOffset_Mode myMode;
+  Standard_Boolean myIsLinearizationAllowed;
   Standard_Boolean myInter;
   Standard_Boolean mySelfInter;
   GeomAbs_JoinType myJoin;
@@ -224,6 +242,7 @@ private:
   Standard_Boolean myRemoveIntEdges;
   TopTools_DataMapOfShapeReal myFaceOffset;
   TopTools_IndexedMapOfShape myFaces;
+  TopTools_IndexedMapOfShape myOriginalFaces;
   BRepOffset_Analyse myAnalyse;
   TopoDS_Shape myOffsetShape;
   BRepAlgo_Image myInitOffsetFace;
@@ -237,6 +256,7 @@ private:
   Standard_Boolean myIsPerformSewing; // Handle bad walls in thicksolid mode.
   Standard_Boolean myIsPlanar;
   TopoDS_Shape myBadShape;
+  TopTools_DataMapOfShapeShape myFacePlanfaceMap;
   TopTools_ListOfShape myGenerated;
   TopTools_MapOfShape myResMap;
 };
