@@ -2400,7 +2400,10 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
     Handle(XCAFDimTolObjects_DatumObject) aDatTargetObj = new XCAFDimTolObjects_DatumObject();
     XCAFDimTolObjects_DatumTargetType aType;
     if (!STEPCAFControl_GDTProperty::GetDatumTargetType(aDT->Description(), aType))
+    {
+      aTP->AddWarning(aDT, "Unknown datum target type");
       continue;
+    }
     aDatTargetObj->SetDatumTargetType(aType);
     Standard_Boolean isValidDT = Standard_False;
 
@@ -2446,13 +2449,16 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
 
     if (aType == XCAFDimTolObjects_DatumTargetType_Area) {
       // Area datum target
-      Interface_EntityIterator anIterDTF = aGraph.Shareds(aDT);
+      if (aRelationship.IsNull())
+        continue;
+      Handle(StepRepr_ShapeAspect) aSA = aRelationship->RelatingShapeAspect();
+      Interface_EntityIterator aSAIter = aGraph.Sharings(aSA);
       Handle(StepAP242_GeometricItemSpecificUsage) aGISU;
-      for (; anIterDTF.More() && aGISU.IsNull(); anIterDTF.Next()) {
-        aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(anIterDTF.Value());
+      for (; aSAIter.More() && aGISU.IsNull(); aSAIter.Next()) {
+        aGISU = Handle(StepAP242_GeometricItemSpecificUsage)::DownCast(aSAIter.Value());
       }
       Handle(StepRepr_RepresentationItem) anItem;
-      if (aGISU->NbIdentifiedItem() > 0)
+      if (!aGISU.IsNull() && aGISU->NbIdentifiedItem() > 0)
         anItem = aGISU->IdentifiedItemValue(1);
       if (anItem.IsNull())
         continue;

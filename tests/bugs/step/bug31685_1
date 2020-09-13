@@ -1,0 +1,44 @@
+puts "==================================================="
+puts " 0031685: Data Exchange, STEPCAFControl_Reader - NULL dereference on translating PLACED_DATUM_TARGET_FEATURE "
+puts "==================================================="
+puts ""
+
+pload DCAF
+
+# Read file
+ReadStep D [locate_data_file bug31685_1.stp]
+XGetOneShape res D
+
+# Checking
+checkshape res f
+set dump [XDumpNbDGTs D f]
+set info "
+
+ NbOfDimensions          : 14
+  NbOfDimensionalSize    : 7
+  NbOfDimensionalLocation: 0
+  NbOfAngular            : 0
+  NbOfWithPath           : 0
+  NbOfCommonLabels       : 0
+ NbOfTolerances          : 22
+  NbOfGTWithModifiers    : 4
+  NbOfGTWithMaxTolerance : 0
+  NbOfGTWithDatums       : 20
+ NbOfDatumFeature        : 13
+ NbOfAttachedDatum       : 70
+ NbOfDatumTarget         : 57
+"
+set isOK 1;
+set nb_ref [llength $dump]
+for { set i 0 } { $i < $nb_ref } { incr i } {
+  set refstr [lindex $info $i]
+  set curstr [lindex $dump $i]
+  if {[string equal $refstr $curstr] == 0} {
+    set isOK 0
+  }
+}
+if {$isOK == 0} {
+  puts "Error: wrong translate DGT"
+}
+
+Close D
