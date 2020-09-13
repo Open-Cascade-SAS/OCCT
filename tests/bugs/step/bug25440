@@ -1,0 +1,15 @@
+puts "========================"
+puts "0025440: Data Exchange - STEP file with Japanese unicode symbols cannot be read"
+puts "========================"
+
+# Read file
+stepread [locate_data_file bug25440_Assy.stp] res *
+
+# Checking
+set state [data c]
+if { [regexp "1350 Entities, of which 58 Root" $state] != 1 } {
+   puts "Error : wrong count of transferred roots"
+}
+
+checknbshapes res_1 -face 35 -shell 1 -solid 1
+checkshape res_1 f
