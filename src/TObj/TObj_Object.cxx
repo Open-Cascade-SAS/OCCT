@@ -1631,3 +1631,13 @@ Standard_Integer TObj_Object::GetOrder() const
     order = GetLabel().Tag();
   return order;
 }
+
+//=======================================================================
+//function : HasModifications
+//purpose  :
+//=======================================================================
+
+Standard_Boolean TObj_Object::HasModifications() const
+{
+  return (!IsAlive() ? Standard_False : GetLabel().MayBeModified() );
+}

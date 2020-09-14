@@ -448,6 +448,28 @@ static Standard_Integer getChild (Draw_Interpretor& di, Standard_Integer argc, c
 }
 
 //=======================================================================
+//function : hasModifications
+//purpose  :
+//=======================================================================
+static Standard_Integer hasModifications(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc < 3) 
+  { 
+    di << "Use " << argv[0] << "DocName ObjName\n";
+    return 1; 
+  }
+
+  Handle(TObjDRAW_Object) tObj = getObjByName(argv[1], argv[2]);
+  if (tObj.IsNull())
+  {
+    di << "Error: Object " << argv[2] << " not found\n";
+    return 1;
+  }
+  di << "Status modifications : " << (tObj->HasModifications() ? 1 : 0) << "\n";
+  
+  return 0;
+}
+//=======================================================================
 //function : Init
 //purpose  :
 //=======================================================================
@@ -500,6 +522,8 @@ void TObjDRAW::Init(Draw_Interpretor& di)
   di.Add ("TObjGetChildren","DocName ObjName \t: Returns list of children objects",
 		   __FILE__, getChild, g);
   
+  di.Add("TObjHasModifications", "DocName ObjName \t: Returns status of modification of the object (if object has been modified 1, otherwise 0)", __FILE__, hasModifications, g);
+ 
 }
 
 

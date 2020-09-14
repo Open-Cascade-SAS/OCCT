@@ -365,6 +365,14 @@ class TObj_Object : public Standard_Transient
    //! sets order of object
    virtual Standard_EXPORT Standard_Boolean SetOrder( const Standard_Integer& theIndx );
 
+   public:
+  /**
+  * Public methods to check modifications of the object since last commit
+  */
+  //! Returns true if object attributes or or his children were modified in the current open transaction
+  Standard_EXPORT Standard_Boolean HasModifications() const;
+ 
+
  protected:
   /**
   * Protected Methods copy data of object to other object
