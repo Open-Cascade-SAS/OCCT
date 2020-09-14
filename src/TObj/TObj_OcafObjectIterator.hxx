@@ -27,35 +27,28 @@
 
 class TObj_OcafObjectIterator : public TObj_LabelIterator
 {
- public:
-  /**
-  * Constructor
-  */
-
-  //! Creates the iterator on objects in the sub labels of theLabel
-  //! theType narrows a variety of iterated objects
+public:
+  //! Creates the iterator on TObj objects on the sub-labels of theLabel.
+  //! @param theLabel start label for searching
+  //! @param theType type of the found objects, or all types if Null
+  //! @param theRecursive search children recursively, not only on sub-labels of theLabel
+  //! @param theAllSubChildren do not stop at the first level of children, but search for sub-children too
   Standard_EXPORT TObj_OcafObjectIterator
                          (const TDF_Label&             theLabel,
                           const Handle(Standard_Type)& theType = NULL,
-                          const Standard_Boolean       theRecursive = Standard_False);
+                          const Standard_Boolean       theRecursive = Standard_False,
+                          const Standard_Boolean       theAllSubChildren = Standard_False);
 
- protected:
-  /*
-  * Internal methods
-  */
-
+protected:
   //! Shift iterator to the next object
   virtual Standard_EXPORT void MakeStep() Standard_OVERRIDE;
 
- protected:
-  /**
-  * fields
-  */
-
+protected:
   Handle(Standard_Type) myType; //!< type of objects to iterate on
+  Standard_Boolean myAllSubChildren; //!< to iterate all sub-children, do not stop on the first level
   
- public:
-   //! CASCADE RTTI
+public:
+  //! CASCADE RTTI
   DEFINE_STANDARD_RTTIEXT(TObj_OcafObjectIterator,TObj_LabelIterator)
 };
 

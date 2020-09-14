@@ -30,6 +30,7 @@
 #include <TObj_Model.hxx>
 #include <TObj_Object.hxx>
 #include <TObj_ObjectIterator.hxx>
+#include <TObj_OcafObjectIterator.hxx>
 #include <TObj_TModel.hxx>
 #include <TObj_TNameContainer.hxx>
 #include <TObjDRAW.hxx>
@@ -419,12 +420,17 @@ static Standard_Integer addChild (Draw_Interpretor& di, Standard_Integer argc, c
 }
 
 //=======================================================================
-//function : getChild
+//function : getChildren
 //purpose  :
 //=======================================================================
-static Standard_Integer getChild (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer getChildren (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc < 3) {di<<"Use "<< argv[0] << "DocName ObjName\n";return 1;}
+  if (argc < 3)
+  {
+    di << "Use " << argv[0] << "DocName ObjName [-all]\n";
+    di << "    -all: recurse to list children of all levels\n";
+    return 1;
+  }
 
   Handle(TObjDRAW_Object) tObj = getObjByName( argv[1], argv[2] );
   if ( tObj.IsNull() )
@@ -432,7 +438,12 @@ static Standard_Integer getChild (Draw_Interpretor& di, Standard_Integer argc, c
     di << "Error: Object " << argv[2] << " not found\n";
     return 1;
   }
-  Handle(TObj_ObjectIterator) anItr = tObj->GetChildren();
+
+  bool aGetSubs = (argc > 3 && ! strcasecmp (argv[3], "-all")); 
+  Handle(TObj_ObjectIterator) anItr = aGetSubs ?
+    new TObj_OcafObjectIterator(tObj->GetChildLabel(), NULL, Standard_True, Standard_True) :
+    tObj->GetChildren();
+
   int i = 0;
   for ( ; anItr->More(); anItr->Next(), i++ )
   {
@@ -519,8 +530,8 @@ void TObjDRAW::Init(Draw_Interpretor& di)
   di.Add ("TObjAddChild","DocName ObjName chldName \t: Add child object to indicated object",
 		   __FILE__, addChild, g);
   
-  di.Add ("TObjGetChildren","DocName ObjName \t: Returns list of children objects",
-		   __FILE__, getChild, g);
+  di.Add ("TObjGetChildren","DocName ObjName [-all]\t: Returns list of children objects (-all to recurse)",
+		   __FILE__, getChildren, g);
   
   di.Add("TObjHasModifications", "DocName ObjName \t: Returns status of modification of the object (if object has been modified 1, otherwise 0)", __FILE__, hasModifications, g);
  
