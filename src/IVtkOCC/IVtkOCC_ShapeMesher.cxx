@@ -13,6 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IVtkOCC_ShapeMesher.hxx>
+
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Bnd_Box.hxx>
 #include <BRep_Tool.hxx>
@@ -29,7 +31,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
-#include <IVtkOCC_ShapeMesher.hxx>
+#include <Message.hxx>
 #include <NCollection_Array1.hxx>
 #include <Poly_Polygon3D.hxx>
 #include <Poly_PolygonOnTriangulation.hxx>
@@ -136,8 +138,11 @@ void IVtkOCC_ShapeMesher::meshShape()
       anAlgo->Perform();
     }
   }
-  catch (Standard_Failure)
-  { }
+  catch (const Standard_Failure& anException)
+  {
+    Message::SendFail (TCollection_AsciiString("Error: IVtkOCC_ShapeMesher::meshShape() triangulation builder has failed (")
+                     + anException.GetMessageString() + ")");
+  }
 }
 
 //================================================================
@@ -230,8 +235,11 @@ void IVtkOCC_ShapeMesher::addWireFrameFaces()
       addWFFace (anOcctFace, 
                  GetShapeObj()->GetSubShapeId (anOcctFace));
     }
-    catch (Standard_Failure)
-    { }
+    catch (const Standard_Failure& anException)
+    {
+      Message::SendFail (TCollection_AsciiString("Error: addWireFrameFaces() wireframe presentation builder has failed (")
+                       + anException.GetMessageString() + ")");
+    }
   }
 }
 

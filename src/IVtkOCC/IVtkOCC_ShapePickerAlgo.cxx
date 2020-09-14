@@ -128,24 +128,26 @@ void IVtkOCC_ShapePickerAlgo::SetSelectionMode (const IVtk_IShape::Handle& theSh
 
     // Update the selection for the given mode according to its status.
     const Handle(SelectMgr_Selection)& aSel = aSelObj->Selection (theMode);
-
     switch (aSel->UpdateStatus())
     {
       case SelectMgr_TOU_Full:
+      {
         // Recompute the sensitive primitives which correspond to the mode.
         myViewerSelector->RemoveSelectionOfObject (aSelObj, aSelObj->Selection (theMode));
         aSelObj->RecomputePrimitives (theMode);
         myViewerSelector->AddSelectionToObject (aSelObj, aSelObj->Selection (theMode));
         myViewerSelector->RebuildObjectsTree();
         myViewerSelector->RebuildSensitivesTree (aSelObj);
+      }
+      Standard_FALLTHROUGH
       case SelectMgr_TOU_Partial:
+      {
+        if (aSelObj->HasTransformation())
         {
-          if (aSelObj->HasTransformation())
-          {
-            myViewerSelector->RebuildObjectsTree();
-          }
-          break;
+          myViewerSelector->RebuildObjectsTree();
         }
+        break;
+      }
       default:
         break;
     }

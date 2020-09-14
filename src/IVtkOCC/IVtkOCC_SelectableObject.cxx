@@ -13,9 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IVtkOCC_SelectableObject.hxx>
+
 #include <AIS_Shape.hxx>
 #include <BRepBndLib.hxx>
-#include <IVtkOCC_SelectableObject.hxx>
+#include <Message.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -130,14 +132,15 @@ void IVtkOCC_SelectableObject::ComputeSelection (const Handle(SelectMgr_Selectio
                                        myOCCTDrawer->DeviationAngle(),
                                        isAutoTriangulation);
   }
-  catch (Standard_Failure)
+  catch (const Standard_Failure& anException)
   {
+    Message::SendFail (TCollection_AsciiString("Error: IVtkOCC_SelectableObject::ComputeSelection(") + theMode + ") has failed ("
+                     + anException.GetMessageString() + ")");
     if (theMode == 0)
     {
       Bnd_Box aBndBox = BoundingBox();
       Handle(StdSelect_BRepOwner) aOwner = new StdSelect_BRepOwner (anOcctShape, this);
-      Handle(Select3D_SensitiveBox) aSensitiveBox = 
-        new Select3D_SensitiveBox (aOwner, aBndBox);
+      Handle(Select3D_SensitiveBox) aSensitiveBox = new Select3D_SensitiveBox (aOwner, aBndBox);
       theSelection->Add (aSensitiveBox);
     }
   }
