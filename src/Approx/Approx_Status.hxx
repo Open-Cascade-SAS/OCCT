@@ -17,7 +17,7 @@
 #ifndef _Approx_Status_HeaderFile
 #define _Approx_Status_HeaderFile
 
-
+//! It is an auxiliary flag being used in inner computations
 enum Approx_Status
 {
 Approx_PointsAdded,
