@@ -219,6 +219,12 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
  
  // Traitement des KPart
  if (myKPart)  isKPart = BuildKPart();
+
+ if (!isKPart)
+ {
+   myExchUV = Standard_False;
+   isUReversed = isVReversed = Standard_False;
+ }
  
  // Traitement des produits Formelles
  if ((!isKPart) && (Methode == GeomFill_Location)) {
@@ -876,6 +882,7 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
               // l == f - "degenerated" surface
               // UlastOnSec - UfirstOnSec > M_PI_2 - "twisted" surface,
               // it is impossible to represent with help of trimmed sphere
+	      isUReversed = Standard_False;
               return Ok;
             }
 
