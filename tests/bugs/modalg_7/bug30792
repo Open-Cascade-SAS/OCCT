@@ -1,0 +1,30 @@
+puts "============================================================================================="
+puts "0030792: Modeling Algorithms, BOP Fuse - some parts of the shape are dropped"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug30792_Corner.brep] c
+
+fixshape c c
+set exp [explode c]
+
+bclearobjects
+bcleartools
+baddobjects c_1
+eval baddtools [lrange $exp 1 end]
+bfillds
+
+bbuild rgf
+checkshape rgf
+checknbshapes rgf -wire 406 -face 338 -shell 95 -solid 95 -t
+checkprops rgf -s 7.38041e+06 -v 6.27817e+07
+if {![regexp "This shape seems to be OK" [bopcheck rgf]]} {
+  puts "Error: the GF result is self-interfered"
+}
+
+bbop result 1
+checkshape result
+checknbshapes result -wire 204 -face 136 -shell 1 -solid 1 -t
+checkprops result -s 6.70234e+06 -v 6.27812e+07
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
