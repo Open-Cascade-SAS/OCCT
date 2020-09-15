@@ -1,0 +1,31 @@
+puts "========"
+puts "OCC30921"
+puts "========"
+puts ""
+##########################################################################
+# STEPCAFControl_Reader incorrectly reads the specified stp file
+##########################################################################
+
+stepread [locate_data_file bug30921.stp] a *
+tpcompound result
+
+checkprops result -s 288180 
+puts "REQUIRED All: Faulty shapes in variables faulty_1 to faulty_39"
+checkshape result
+
+set nbshapes_expected "
+Number of shapes in shape
+ VERTEX    : 2858
+ EDGE      : 4331
+ WIRE      : 1758
+ FACE      : 1514
+ SHELL     : 21
+ SOLID     : 21
+ COMPSOLID : 0
+ COMPOUND  : 1
+ SHAPE     : 10504
+"
+
+
+checknbshapes result -ref ${nbshapes_expected} -t -m "Shape"
+checkview -display result -3d -path ${imagedir}/${test_image}.png

@@ -126,9 +126,9 @@
   BSplineCurve_retour CC;
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
     const Handle(TColStd_HArray1OfReal)& aWeight = BSCWR->WeightsData();
-    TColStd_Array1OfReal W(1,NbPoles);
-    for (i=1; i<=NbPoles; i++)
-      W.SetValue(i,aWeight->Value(i));
+    TColStd_Array1OfReal W(1, NbPoles - aSumMulDiff);
+    for (i= 1 + aFMulDiff; i<= NbPoles - aLMulDiff; i++)
+      W.SetValue(i - aFMulDiff,aWeight->Value(i));
     CC = new BSplineCurve_gen(Poles, W, Kn, Mult, Deg, shouldBePeriodic);
   }
   else
