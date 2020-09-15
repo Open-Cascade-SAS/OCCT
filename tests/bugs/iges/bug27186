@@ -1,5 +1,3 @@
-puts "TODO OCC27186 ALL: Directory Entry Error Status" 
-
 puts "========"
 puts "OCC27186"
 puts "========"

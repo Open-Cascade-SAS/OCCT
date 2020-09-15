@@ -218,7 +218,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir
   iapb = Standard_False;
   if (v[3] < -max) iapb = Standard_True;
   else if (v[3] < 0) {
-    anent = GetCasted(IGESData_IGESEntity,IR->BoundEntity((-1-v[3])/2));
+    anent = GetCasted(IGESData_IGESEntity,IR->BoundEntity((1-v[3])/2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LineFontEntity))) iapb = Standard_True;
   }
   // Sending of message : Line Font Pattern field is incorrect.
@@ -232,7 +232,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir
   iapb = Standard_False;
   if (v[4] < -max) iapb = Standard_True;
   else if (v[4] < 0) {
-    anent = GetCasted(IGESData_IGESEntity,IR->BoundEntity((-1-v[4])/2));
+    anent = GetCasted(IGESData_IGESEntity,IR->BoundEntity((1-v[4])/2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LevelListEntity))) iapb = Standard_True;
   }
 
@@ -276,7 +276,7 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir
 
   iapb = Standard_False;
   if (v[7] < 0 || v[7] > max) iapb = Standard_True;
-  else if (v[7] < 0) {
+  else if (v[7] > 0) {
     anent = GetCasted(IGESData_IGESEntity,IR->BoundEntity((1+v[7])/2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_LabelDisplayEntity))) iapb = Standard_True;
   }
@@ -290,9 +290,9 @@ Standard_Boolean IGESData_UndefinedEntity::ReadDir
   }
 
   iapb = Standard_False;
-  if (v[14] < 0 || v[14] > max) iapb = Standard_True;
+  if (v[14] < -max || v[14] > max) iapb = Standard_True;
   else if (v[14] < 0) {
-    anent = GetCasted(IGESData_IGESEntity,IR->BoundEntity((1+v[14])/2));
+    anent = GetCasted(IGESData_IGESEntity,IR->BoundEntity((1-v[14])/2));
     if (!anent->IsKind(STANDARD_TYPE(IGESData_ColorEntity)))
       {  thedstat += 512; v[14] = 0;  }
   }
