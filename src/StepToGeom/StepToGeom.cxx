@@ -623,28 +623,178 @@ Handle(Geom_BoundedSurface) StepToGeom::MakeBoundedSurface (const Handle(StepGeo
 }
 
 //=============================================================================
+// Template function for use in MakeBSplineCurve / MakeBSplineCurve2d
+//=============================================================================
+
+template
+<
+  class TPntArray,
+  class TCartesianPoint,
+  class TGpPnt,
+  class TBSplineCurve
+>
+Handle(TBSplineCurve) MakeBSplineCurveCommon
+(
+  const Handle(StepGeom_BSplineCurve)& theStepGeom_BSplineCurve,
+  TGpPnt(TCartesianPoint::* thePntGetterFunction)() const,
+  Handle(TCartesianPoint) (*thePointMakerFunction)(const Handle(StepGeom_CartesianPoint)&)
+)
+{
+  Handle(StepGeom_BSplineCurveWithKnots) aBSplineCurveWithKnots;
+  Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve) aBSplineCurveWithKnotsAndRationalBSplineCurve;
+
+  if (theStepGeom_BSplineCurve->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)))
+  {
+    aBSplineCurveWithKnotsAndRationalBSplineCurve =
+      Handle(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)::DownCast(theStepGeom_BSplineCurve);
+    aBSplineCurveWithKnots = aBSplineCurveWithKnotsAndRationalBSplineCurve->BSplineCurveWithKnots();
+  }
+  else
+    aBSplineCurveWithKnots = Handle(StepGeom_BSplineCurveWithKnots)::DownCast(theStepGeom_BSplineCurve);
+
+  const Standard_Integer aDegree = aBSplineCurveWithKnots->Degree();
+  const Standard_Integer NbPoles = aBSplineCurveWithKnots->NbControlPointsList();
+  const Standard_Integer NbKnots = aBSplineCurveWithKnots->NbKnotMultiplicities();
+
+  const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities = aBSplineCurveWithKnots->KnotMultiplicities();
+  const Handle(TColStd_HArray1OfReal)& aKnots = aBSplineCurveWithKnots->Knots();
+
+  // Count number of unique knots
+  Standard_Integer NbUniqueKnots = 0;
+  Standard_Real lastKnot = RealFirst();
+  for (Standard_Integer i = 1; i <= NbKnots; ++i)
+  {
+    if (aKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    {
+      NbUniqueKnots++;
+      lastKnot = aKnots->Value(i);
+    }
+  }
+  if (NbUniqueKnots <= 1)
+  {
+    return 0;
+  }
+  TColStd_Array1OfReal aUniqueKnots(1, NbUniqueKnots);
+  TColStd_Array1OfInteger aUniqueKnotMultiplicities(1, NbUniqueKnots);
+  lastKnot = aKnots->Value(1);
+  aUniqueKnots.SetValue(1, aKnots->Value(1));
+  aUniqueKnotMultiplicities.SetValue(1, aKnotMultiplicities->Value(1));
+  Standard_Integer aKnotPosition = 1;
+  for (Standard_Integer i = 2; i <= NbKnots; i++)
+  {
+    if (aKnots->Value(i) - lastKnot > Epsilon(Abs(lastKnot)))
+    {
+      aKnotPosition++;
+      aUniqueKnots.SetValue(aKnotPosition, aKnots->Value(i));
+      aUniqueKnotMultiplicities.SetValue(aKnotPosition, aKnotMultiplicities->Value(i));
+      lastKnot = aKnots->Value(i);
+    }
+    else
+    {
+      // Knot not unique, increase multiplicity
+      Standard_Integer aCurrentMultiplicity = aUniqueKnotMultiplicities.Value(aKnotPosition);
+      aUniqueKnotMultiplicities.SetValue(aKnotPosition, aCurrentMultiplicity + aKnotMultiplicities->Value(i));
+    }
+  }
+
+  Standard_Integer aFirstMuultypisityDifference = 0;
+  Standard_Integer aLastMuultypisityDifference = 0;
+  for (Standard_Integer i = 1; i <= NbUniqueKnots; ++i)
+  {
+    Standard_Integer aCurrentVal = aUniqueKnotMultiplicities.Value(i);
+    if (aCurrentVal > aDegree + 1)
+    {
+      if (i == 1)
+        aFirstMuultypisityDifference = aCurrentVal - aDegree - 1;
+      if (i == NbUniqueKnots)
+        aLastMuultypisityDifference = aCurrentVal - aDegree - 1;
+#ifdef OCCT_DEBUG
+      std::cout << "\nWrong multiplicity " << aCurrentVal << " on " << i
+        << " knot!" << "\nChanged to " << aDegree + 1 << std::endl;
+#endif
+      aCurrentVal = aDegree + 1;
+    }
+    aUniqueKnotMultiplicities.SetValue(i, aCurrentVal);
+  }
+
+  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList = aBSplineCurveWithKnots->ControlPointsList();
+  Standard_Integer aSummaryMuultypisityDifference = aFirstMuultypisityDifference + aLastMuultypisityDifference;
+  Standard_Integer NbUniquePoles = NbPoles - aSummaryMuultypisityDifference;
+  if (NbUniquePoles <= 0)
+  {
+    return 0;
+  }
+  TPntArray Poles(1, NbPoles - aSummaryMuultypisityDifference);
+
+  for (Standard_Integer i = 1 + aFirstMuultypisityDifference; i <= NbPoles - aLastMuultypisityDifference; ++i)
+  {
+    Handle(TCartesianPoint) aPoint = (*thePointMakerFunction)(aControlPointsList->Value(i));
+    if (!aPoint.IsNull())
+    {
+      TCartesianPoint* pPoint = aPoint.get();
+      TGpPnt aGpPnt = (pPoint->*thePntGetterFunction)();
+      Poles.SetValue(i - aFirstMuultypisityDifference, aGpPnt);
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
+  // --- Does the Curve descriptor LOOKS like a periodic descriptor ? ---
+  Standard_Integer aSummaryMuultypisity = 0;
+  for (Standard_Integer i = 1; i <= NbUniqueKnots; i++)
+  {
+    aSummaryMuultypisity += aUniqueKnotMultiplicities.Value(i);
+  }
+
+  Standard_Boolean shouldBePeriodic;
+  if (aSummaryMuultypisity == (NbPoles + aDegree + 1))
+  {
+    shouldBePeriodic = Standard_False;
+  }
+  else if ((aUniqueKnotMultiplicities.Value(1) == aUniqueKnotMultiplicities.Value(NbUniqueKnots)) &&
+    ((aSummaryMuultypisity - aUniqueKnotMultiplicities.Value(1)) == NbPoles))
+  {
+    shouldBePeriodic = Standard_True;
+  }
+  else
+  {  
+    // --- What is that ??? ---
+    shouldBePeriodic = Standard_False;
+  }
+
+  Handle(TBSplineCurve) aBSplineCurve;
+  if (theStepGeom_BSplineCurve->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve)))
+  {
+    const Handle(TColStd_HArray1OfReal)& aWeights = aBSplineCurveWithKnotsAndRationalBSplineCurve->WeightsData();
+    TColStd_Array1OfReal aUniqueWeights(1, NbPoles - aSummaryMuultypisityDifference);
+    for (Standard_Integer i = 1 + aFirstMuultypisityDifference; i <= NbPoles - aLastMuultypisityDifference; ++i)
+      aUniqueWeights.SetValue(i - aFirstMuultypisityDifference, aWeights->Value(i));
+    aBSplineCurve = new TBSplineCurve(Poles, aUniqueWeights, aUniqueKnots, aUniqueKnotMultiplicities, aDegree, shouldBePeriodic);
+  }
+  else
+  {
+    aBSplineCurve = new TBSplineCurve(Poles, aUniqueKnots, aUniqueKnotMultiplicities, aDegree, shouldBePeriodic);
+  }
+
+  // abv 04.07.00 CAX-IF TRJ4: trj4_k1_top-md-203.stp #716 (face #581):
+  // force periodicity on closed curves
+  if (theStepGeom_BSplineCurve->ClosedCurve() && aBSplineCurve->Degree() > 1 && aBSplineCurve->IsClosed())
+  {
+    aBSplineCurve->SetPeriodic();
+  }
+  return aBSplineCurve;
+}
+
+//=============================================================================
 // Creation d' une BSplineCurve de Geom a partir d' une BSplineCurve de Step
 //=============================================================================
 
-Handle(Geom_BSplineCurve) StepToGeom::MakeBSplineCurve (const Handle(StepGeom_BSplineCurve)& SC)
+Handle(Geom_BSplineCurve) StepToGeom::MakeBSplineCurve (const Handle(StepGeom_BSplineCurve)& theStepGeom_BSplineCurve)
 {
-#define Array1OfPnt_gen                  TColgp_Array1OfPnt
-#define Pnt_gen                          gp_Pnt
-#define Pnt_fonc                         Pnt
-#define CartesianPoint_gen               Handle(Geom_CartesianPoint)
-#define MakeCartesianPoint_gen MakeCartesianPoint
-#define BSplineCurve_gen                 Geom_BSplineCurve
-#define BSplineCurve_retour              Handle(Geom_BSplineCurve)
-#define MakeBSplineCurve_gen   MakeBSplineCurve
-#include "StepToGeom_MakeBSplineCurve.pxx"
-#undef Array1OfPnt_gen
-#undef Pnt_gen
-#undef Pnt_fonc
-#undef CartesianPoint_gen
-#undef MakeCartesianPoint_gen
-#undef BSplineCurve_gen
-#undef MakeBSplineCurve_gen
-#undef BSplineCurve_retour
+  return MakeBSplineCurveCommon<TColgp_Array1OfPnt, Geom_CartesianPoint, gp_Pnt, Geom_BSplineCurve>
+    (theStepGeom_BSplineCurve, &Geom_CartesianPoint::Pnt, &MakeCartesianPoint);
 }
 
 //=============================================================================
@@ -652,25 +802,10 @@ Handle(Geom_BSplineCurve) StepToGeom::MakeBSplineCurve (const Handle(StepGeom_BS
 // BSplineCurveWithKnotsAndRationalBSplineCurve de Step
 //=============================================================================
 
-Handle(Geom2d_BSplineCurve) StepToGeom::MakeBSplineCurve2d (const Handle(StepGeom_BSplineCurve)& SC)
+Handle(Geom2d_BSplineCurve) StepToGeom::MakeBSplineCurve2d (const Handle(StepGeom_BSplineCurve)& theStepGeom_BSplineCurve)
 {
-#define Array1OfPnt_gen                  TColgp_Array1OfPnt2d
-#define Pnt_gen                          gp_Pnt2d
-#define CartesianPoint_gen               Handle(Geom2d_CartesianPoint)
-#define MakeCartesianPoint_gen MakeCartesianPoint2d
-#define Pnt_fonc                         Pnt2d
-#define BSplineCurve_gen                 Geom2d_BSplineCurve
-#define BSplineCurve_retour              Handle(Geom2d_BSplineCurve)
-#define MakeBSplineCurve_gen   MakeBSplineCurve2d
-#include "StepToGeom_MakeBSplineCurve.pxx"
-#undef Array1OfPnt_gen
-#undef Pnt_gen
-#undef CartesianPoint_gen
-#undef MakeCartesianPoint_gen
-#undef Pnt_fonc
-#undef BSplineCurve_gen
-#undef MakeBSplineCurve_gen
-#undef BSplineCurve_retour
+  return MakeBSplineCurveCommon<TColgp_Array1OfPnt2d, Geom2d_CartesianPoint, gp_Pnt2d, Geom2d_BSplineCurve>
+    (theStepGeom_BSplineCurve, &Geom2d_CartesianPoint::Pnt2d, &MakeCartesianPoint2d);
 }
 
 //=============================================================================
