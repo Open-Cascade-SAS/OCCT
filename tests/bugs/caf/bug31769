@@ -1,0 +1,6 @@
+puts "==========="
+puts "0031769: Application Framework - regression : can not initialize two kinds of application in one thread"
+puts "==========="
+
+# loading of ALL initializes TDOCStd_Application, loading TOBJ initializes TObj_Application
+pload ALL TOBJ
