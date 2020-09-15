@@ -113,11 +113,11 @@ public:
   Standard_EXPORT static Standard_Boolean ToCatchFloatingSignals();
 
   //! Commands the process to sleep for a number of seconds.
-  Standard_EXPORT static void SecSleep (const Standard_Integer aDelay);
-  
+  Standard_EXPORT static void SecSleep (const Standard_Integer theSeconds);
+
   //! Commands the process to sleep for a number of milliseconds
-  Standard_EXPORT static void MilliSecSleep (const Standard_Integer aDelay);
-  
+  Standard_EXPORT static void MilliSecSleep (const Standard_Integer theMilliseconds);
+
   //! Converts aReal into aCstring in exponential format with a period as
   //! decimal point, no thousand separator and no grouping of digits.
   //! The conversion is independant from the current locale

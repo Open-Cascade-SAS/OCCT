@@ -55,48 +55,34 @@ Standard_Boolean OSD::CStringToReal(const Standard_CString aString,
   return Standard_True;
 }
 
+#ifdef _WIN32
+  #include <windows.h>
+#else
+  #include <unistd.h>
+#endif
+
 //=======================================================================
 //function : OSDSecSleep
 //purpose  : Cause the process to sleep during a amount of seconds 
 //=======================================================================
-
-#ifdef _WIN32
-# include <windows.h>
-# define SLEEP(NSEC)                 Sleep(1000*(NSEC))
-#else
-#include <unistd.h>
-# define SLEEP(NSEC)                 sleep(NSEC)
-#endif
-
-void OSD::SecSleep(const Standard_Integer aDelay)
+void OSD::SecSleep (const Standard_Integer theSeconds)
 {
-  SLEEP(aDelay);
+#ifdef _WIN32
+  Sleep (theSeconds * 1000);
+#else
+  usleep (theSeconds * 1000 * 1000);
+#endif
 }
 
 //=======================================================================
 //function : MilliSecSleep
 //purpose  : Cause the process to sleep during a amount of milliseconds  
 //=======================================================================
-
+void OSD::MilliSecSleep (const Standard_Integer theMilliseconds)
+{
 #ifdef _WIN32
-
-void OSD::MilliSecSleep(const Standard_Integer aDelay)
-{
-  Sleep(aDelay) ;
-}
-
+  Sleep (theMilliseconds);
 #else
-
-#include <sys/time.h>
-
-void OSD::MilliSecSleep(const Standard_Integer aDelay)
-{
-  struct timeval timeout ;
-
-  timeout.tv_sec = aDelay / 1000 ;
-  timeout.tv_usec = (aDelay % 1000) * 1000 ;
-
-  select(0,NULL,NULL,NULL,&timeout) ;
-}
-
+  usleep (theMilliseconds * 1000);
 #endif
+}
