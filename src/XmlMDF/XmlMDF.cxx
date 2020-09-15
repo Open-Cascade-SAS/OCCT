@@ -107,7 +107,7 @@ Standard_Integer XmlMDF::WriteSubTree
       // was replaced by TDataXtd_Presentation. Therefore, for old versions
       // we write old name of the attribute (TPrsStd_AISPresentation).
       Standard_CString typeName = aDriver->TypeName().ToCString();
-      if (XmlLDrivers::StorageVersion() < 8 &&
+      if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < 8 &&
           strcmp(typeName, "TDataXtd_Presentation") == 0)
       {
         typeName = "TPrsStd_AISPresentation";
