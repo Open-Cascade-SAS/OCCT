@@ -303,7 +303,8 @@ Handle(Transfer_Binder)  STEPControl_ActorRead::Transfer
     }
   }
   // [END] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
-  return TransferShape (start, TP, Standard_True, Standard_True, theProgress);
+  Standard_Boolean aTrsfUse = (Interface_Static::IVal("read.step.root.transformation") == 0);
+  return TransferShape(start, TP, Standard_True, aTrsfUse, theProgress);
 }
 
 

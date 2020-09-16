@@ -209,6 +209,14 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init("step","read.step.constructivegeom.relationship",'&',"eval ON");
     Interface_Static::SetCVal("read.step.constructivegeom.relationship","OFF");
 
+    // Mode to variate apply or not transformation placed in the root shape representation.
+    // Issues #29068 and #31491.
+    Interface_Static::Init("step", "read.step.root.transformation", 'e', "");
+    Interface_Static::Init("step", "read.step.root.transformation", '&', "enum 0");
+    Interface_Static::Init("step", "read.step.root.transformation", '&', "eval ON");
+    Interface_Static::Init("step", "read.step.root.transformation", '&', "eval OFF");
+    Interface_Static::SetCVal("read.step.root.transformation", "ON");
+
     init = Standard_True;
   }
 
