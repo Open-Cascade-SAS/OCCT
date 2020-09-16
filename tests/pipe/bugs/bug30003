@@ -1,0 +1,24 @@
+puts "============"
+puts "0030003: Modeling Algorithms - Construction of pipe by two circular sections and spine curve leads to crash"
+puts "============"
+puts ""
+
+beziercurve path  3  0 0 0 100 0 0 100 100 0
+clear path
+circle c1  0 0 0  1 0 0  10
+circle c2  0 0 0  1 0 0  20
+convert c1 c1 po
+convert c2 c2 po
+clear c1
+clear c2
+
+tuyau res path c1 c2
+clpoles res
+clknots res
+nbiso res 10 10
+
+smallview
+fit
+checkview -screenshot -2d -path ${imagedir}/${test_image}.png
+
+puts "TEST COMPLETED"

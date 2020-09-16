@@ -598,7 +598,8 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
       new Geom_BSplineSurface(anApprox.SurfPoles(), anApprox.SurfWeights(),
                               anApprox.SurfUKnots(), anApprox.SurfVKnots(),
                               anApprox.SurfUMults(), anApprox.SurfVMults(),
-                              anApprox.UDegree(), anApprox.VDegree());
+                              anApprox.UDegree(), anApprox.VDegree(), 
+                              section.IsPeriodic());
   }
 
   else {
