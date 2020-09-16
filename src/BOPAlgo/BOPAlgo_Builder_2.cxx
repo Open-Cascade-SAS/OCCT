@@ -17,6 +17,7 @@
 
 
 #include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_Alerts.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Tools.hxx>
@@ -383,7 +384,18 @@ void BOPAlgo_Builder::BuildSplitFaces()
         if (bIsClosed) {
           if (aMFence.Add(aSp)) {
             if (!BRep_Tool::IsClosed(aSp, aF)){
-              BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aSp, aF);
+              if (!BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aSp, aF))
+              {
+                // try different approach
+                if (!BOPTools_AlgoTools3D::DoSplitSEAMOnFace(aE, aSp, aF))
+                {
+                  TopoDS_Compound aWS;
+                  BRep_Builder().MakeCompound (aWS);
+                  BRep_Builder().Add (aWS, aF);
+                  BRep_Builder().Add (aWS, aSp);
+                  AddWarning (new BOPAlgo_AlertUnableToMakeClosedEdgeOnFace (aWS));
+                }
+              }
             }
             //
             aSp.Orientation(TopAbs_FORWARD);

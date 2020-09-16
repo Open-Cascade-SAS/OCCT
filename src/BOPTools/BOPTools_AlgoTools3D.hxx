@@ -43,11 +43,15 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
+  //! Makes the edge <theESplit> seam edge for the face <theFace> basing on the surface properties (U and V periods)
+  Standard_EXPORT static Standard_Boolean DoSplitSEAMOnFace (const TopoDS_Edge& theESplit,
+                                                             const TopoDS_Face& theFace);
 
-  //! Make the edge <aSp> seam edge for the face <aF>
-  Standard_EXPORT static void DoSplitSEAMOnFace (const TopoDS_Edge& aSp,
-                                                 const TopoDS_Face& aF);
+  //! Makes the split edge <theESplit> seam edge for the face <theFace> basing on the positions
+  //! of 2d curves of the original edge <theEOrigin>.
+  Standard_EXPORT static Standard_Boolean DoSplitSEAMOnFace (const TopoDS_Edge& theEOrigin,
+                                                             const TopoDS_Edge& theESplit,
+                                                             const TopoDS_Face& theFace);
 
   //! Computes normal to the face <aF> for the point on the edge <aE>
   //! at parameter <aT>.<br>

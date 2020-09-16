@@ -138,4 +138,7 @@ DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToGlue)
 //! The shape is not periodic
 DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertShapeIsNotPeriodic)
 
+//! Unable to make closed edge on face (to make a seam)
+DEFINE_ALERT_WITH_SHAPE(BOPAlgo_AlertUnableToMakeClosedEdgeOnFace)
+
 #endif // _BOPAlgo_Alerts_HeaderFile

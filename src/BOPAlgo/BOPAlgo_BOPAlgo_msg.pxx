@@ -126,4 +126,7 @@ static const char BOPAlgo_BOPAlgo_msg[] =
   "Unable to glue the shapes\n"
   "\n"
   ".BOPAlgo_AlertShapeIsNotPeriodic\n"
-  "The shape is not periodic\n";
+  "The shape is not periodic\n"
+  "\n"
+  ".BOPAlgo_AlertUnableToMakeClosedEdgeOnFace\n"
+  "Unable to make closed edge on face.\n";

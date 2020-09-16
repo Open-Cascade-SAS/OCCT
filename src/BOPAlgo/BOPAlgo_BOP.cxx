@@ -60,8 +60,7 @@ static
 //
 static
   void MapFacesToBuildSolids(const TopoDS_Shape& theSol,
-                             TopTools_IndexedDataMapOfShapeListOfShape& theMFS,
-                             TopTools_IndexedMapOfShape& theMFI);
+                             TopTools_IndexedDataMapOfShapeListOfShape& theMFS);
 
 //=======================================================================
 //function : 
@@ -1002,8 +1001,6 @@ void BOPAlgo_BOP::BuildSolid()
   TopTools_IndexedMapOfShape aMUSols;
   // Use map to chose the most outer faces to build result solids
   aMFS.Clear();
-  // Internal faces
-  TopTools_IndexedMapOfShape aMFI;
   //
   TopoDS_Iterator aIt(myRC);
   for (; aIt.More(); aIt.Next()) {
@@ -1015,7 +1012,7 @@ void BOPAlgo_BOP::BuildSolid()
       }
     }
     //
-    MapFacesToBuildSolids(aSx, aMFS, aMFI);
+    MapFacesToBuildSolids(aSx, aMFS);
   } // for (; aIt.More(); aIt.Next()) {
   //
   // Process possibly untouched solids.
@@ -1035,7 +1032,7 @@ void BOPAlgo_BOP::BuildSolid()
     }
     //
     if (aExp.More()) {
-      MapFacesToBuildSolids(aSx, aMFS, aMFI);
+      MapFacesToBuildSolids(aSx, aMFS);
     }
     else {
       BOPTools_Set aST;
@@ -1058,13 +1055,6 @@ void BOPAlgo_BOP::BuildSolid()
       aSFS.Append(aFx);
     }
   }
-  // Internal faces
-  aNb = aMFI.Extent();
-  for (i = 1; i <= aNb; ++i) {
-    TopoDS_Shape aFx = aMFI.FindKey(i);
-    aSFS.Append(aFx.Oriented(TopAbs_FORWARD));
-    aSFS.Append(aFx.Oriented(TopAbs_REVERSED));
-  }
   //
   TopoDS_Shape aRC;
   BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aRC);
@@ -1073,6 +1063,7 @@ void BOPAlgo_BOP::BuildSolid()
     BOPAlgo_BuilderSolid aBS;
     aBS.SetContext(myContext);
     aBS.SetShapes(aSFS);
+    aBS.SetAvoidInternalShapes (Standard_True);
     aBS.Perform();
     if (aBS.HasErrors()) {
       AddError (new BOPAlgo_AlertSolidBuilderFailed); // SolidBuilder failed
@@ -1518,19 +1509,16 @@ Standard_Integer NbCommonItemsInMap(const TopTools_MapOfShape& theM1,
 //=======================================================================
 //function : MapFacesToBuildSolids
 //purpose  : Stores the faces of the given solid into outgoing maps:
-//           <theMFS> - not internal faces with reference to solid;
-//           <theMFI> - internal faces.
+//           <theMFS> - not internal faces with reference to solid.
 //=======================================================================
 void MapFacesToBuildSolids(const TopoDS_Shape& theSol,
-                           TopTools_IndexedDataMapOfShapeListOfShape& theMFS,
-                           TopTools_IndexedMapOfShape& theMFI)
+                           TopTools_IndexedDataMapOfShapeListOfShape& theMFS)
 {
   TopExp_Explorer aExp(theSol, TopAbs_FACE);
   for (; aExp.More(); aExp.Next()) {
     const TopoDS_Shape& aF = aExp.Current();
     //
     if (aF.Orientation() == TopAbs_INTERNAL) {
-      theMFI.Add(aF);
       continue;
     }
     //
