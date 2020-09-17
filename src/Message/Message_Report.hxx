@@ -82,11 +82,14 @@ public:
   //! Dumps collected alerts with specified gravity to stream
   Standard_EXPORT void Dump (Standard_OStream& theOS, Message_Gravity theGravity);
 
-  //! Sends all collected alerts to messenger
-  Standard_EXPORT void SendMessages (const Handle(Message_Messenger)& theMessenger);
+  //! Sends all collected alerts to messenger.
+  Standard_EXPORT virtual void SendMessages (const Handle(Message_Messenger)& theMessenger);
 
-  //! Dumps collected alerts with specified gravity to messenger
-  Standard_EXPORT void SendMessages (const Handle(Message_Messenger)& theMessenger, Message_Gravity theGravity);
+  //! Dumps collected alerts with specified gravity to messenger.
+  //! Default implementation creates Message_Msg object with a message
+  //! key returned by alert, and sends it in the messenger.
+  Standard_EXPORT virtual void SendMessages (const Handle(Message_Messenger)& theMessenger, 
+                                             Message_Gravity theGravity);
 
   //! Merges data from theOther report into this
   Standard_EXPORT void Merge (const Handle(Message_Report)& theOther);

@@ -189,7 +189,7 @@ void Message_Report::Dump (Standard_OStream& theOS, Message_Gravity theGravity)
 }
 
 //=======================================================================
-//function : Dump
+//function : SendMessages
 //purpose  :
 //=======================================================================
 
@@ -202,7 +202,7 @@ void Message_Report::SendMessages (const Handle(Message_Messenger)& theMessenger
 }
 
 //=======================================================================
-//function : Dump
+//function : SendMessages
 //purpose  :
 //=======================================================================
 
