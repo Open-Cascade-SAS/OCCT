@@ -148,6 +148,9 @@
 #include <Prs3d_PointAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>
+#include <Prs3d_ToolCylinder.hxx>
+#include <Prs3d_ToolSphere.hxx>
+#include <Prs3d_ToolTorus.hxx>
 
 #include <Image_AlienPixMap.hxx>
 #include <TColStd_HArray1OfAsciiString.hxx>
@@ -5048,6 +5051,146 @@ static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
   return 0;
 }
 
+//===========================================================================
+//function : VTorus
+//purpose  : creates and displays a torus or torus segment
+//===========================================================================
+static Standard_Integer VTorus (Draw_Interpretor& /*di*/,
+                                Standard_Integer argc,
+                                const char ** argv)
+{
+  if (argc < 4 || argc > 7)
+  {
+    Message::SendFail ("Syntax error: wrong number of arguments");
+    return 1;
+  }
+
+  Standard_Real aMajorRad = Draw::Atof (argv[2]);
+  Standard_Real aMinorRad = Draw::Atof (argv[3]);
+  if (aMajorRad <= 0 || aMajorRad <= 0)
+  {
+    Message::SendFail ("Syntax error: wrong radius value");
+    return 1;
+  }
+
+  Standard_Integer aNbSlices = 100;
+  Standard_Integer aNbStacks = 100;
+  const Standard_Integer aTrianglesNb = Prs3d_ToolTorus::TrianglesNb (aNbSlices, aNbStacks);
+  const Standard_Integer aVerticesNb = Prs3d_ToolTorus::VerticesNb (aNbSlices, aNbStacks);
+  Handle(Graphic3d_ArrayOfTriangles) aTriangles
+    = new Graphic3d_ArrayOfTriangles (aVerticesNb, aTrianglesNb * 3, Graphic3d_ArrayFlags_VertexNormal);
+
+
+  if (argc == 4)
+  {
+    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad, aNbSlices, aNbStacks);
+    aTool.FillArray (aTriangles, gp_Trsf());
+  }
+  else if (argc == 5)
+  {
+    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad,
+                           Draw::Atof (argv[4]) * (M_PI / 180.0),
+                           aNbSlices, aNbStacks);
+    aTool.FillArray (aTriangles, gp_Trsf());
+  }
+  else if (argc == 6)
+  {
+    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad,
+                           Draw::Atof (argv[4]) * (M_PI / 180.0), Draw::Atof (argv[5]) * (M_PI / 180.0),
+                           aNbSlices, aNbStacks);
+    aTool.FillArray (aTriangles, gp_Trsf());
+  }
+  else if (argc == 7)
+  {
+    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad,
+                           Draw::Atof (argv[4]) * (M_PI / 180.0), Draw::Atof (argv[5]) * (M_PI / 180.0),
+                           Draw::Atof (argv[6]) * (M_PI / 180.0),
+                           aNbSlices, aNbStacks);
+    aTool.FillArray (aTriangles, gp_Trsf());
+  }
+
+  Handle(AIS_InteractiveObject) anIO = new MyPArrayObject (aTriangles);
+
+  ViewerTest::Display (argv[1], anIO);
+  return 0;
+}
+
+//===========================================================================
+//function : VCylinder
+//purpose  : creates and displays a cylinder
+//===========================================================================
+static Standard_Integer VCylinder (Draw_Interpretor& /*di*/,
+                                   Standard_Integer argc,
+                                   const char ** argv)
+{
+  if (argc != 5 )
+  {
+    Message::SendFail ("Syntax error: wrong number of arguments");
+    return 1;
+  }
+
+  Standard_Real aBotRad = Draw::Atof (argv[2]);
+  Standard_Real aTopRad = Draw::Atof (argv[3]);
+  Standard_Real aHeight = Draw::Atof (argv[4]);
+  if (aBotRad < 0 || aTopRad < 0 || aHeight < 0)
+  {
+    Message::SendFail ("Syntax error: wrong parameter values");
+    return 1;
+  }
+
+  Standard_Integer aNbSlices = 100;
+  Standard_Integer aNbStacks = 1;
+  const Standard_Integer aTrianglesNb = Prs3d_ToolCylinder::TrianglesNb (aNbSlices, aNbStacks);
+  const Standard_Integer aVerticesNb = Prs3d_ToolCylinder::VerticesNb (aNbSlices, aNbStacks);
+  Handle(Graphic3d_ArrayOfTriangles) aTriangles
+    = new Graphic3d_ArrayOfTriangles (aVerticesNb, aTrianglesNb * 3, Graphic3d_ArrayFlags_VertexNormal);
+
+  Prs3d_ToolCylinder aTool (aBotRad, aTopRad, aHeight, aNbSlices, aNbStacks);
+  aTool.FillArray (aTriangles, gp_Trsf());
+
+  Handle(AIS_InteractiveObject) anIO = new MyPArrayObject (aTriangles);
+
+  ViewerTest::Display (argv[1], anIO);
+  return 0;
+}
+
+//===========================================================================
+//function : VSphere
+//purpose  : creates and displays a sphere
+//===========================================================================
+static Standard_Integer VSphere (Draw_Interpretor& /*di*/,
+                                 Standard_Integer argc,
+                                 const char ** argv)
+{
+  if (argc != 3)
+  {
+    Message::SendFail ("Syntax error: wrong number of arguments");
+    return 1;
+  }
+
+  Standard_Real aRad = Draw::Atof (argv[2]);
+  if (aRad <= 0)
+  {
+    Message::SendFail ("Syntax error: wrong radius value");
+    return 1;
+  }
+
+  Standard_Integer aNbSlices = 100;
+  Standard_Integer aNbStacks = 100;
+  const Standard_Integer aTrianglesNb = Prs3d_ToolSphere::TrianglesNb (aNbSlices, aNbStacks);
+  const Standard_Integer aVerticesNb = Prs3d_ToolSphere::VerticesNb (aNbSlices, aNbStacks);
+  Handle(Graphic3d_ArrayOfTriangles) aTriangles
+    = new Graphic3d_ArrayOfTriangles (aVerticesNb, aTrianglesNb * 3, Graphic3d_ArrayFlags_VertexNormal);
+
+  Prs3d_ToolSphere aTool (aRad, aNbSlices, aNbStacks);
+  aTool.FillArray (aTriangles, gp_Trsf());
+
+  Handle(AIS_InteractiveObject) anIO = new MyPArrayObject (aTriangles);
+
+  ViewerTest::Display (argv[1], anIO);
+  return 0;
+}
+
 //=======================================================================
 //function : VObjZLayer
 //purpose  : Set or get z layer id for presentable object
@@ -6790,6 +6933,31 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "vsegment Name PointName PointName"
     "\n\t\t: Creates and displays a segment from named points.", 
     __FILE__, VTriangle,group);
+
+  theCommands.Add ("vtorus",
+                   "vtorus name R1 R2 [angle1 angle2] [angle]"
+                   "\n\t\t: Creates and displays a torus or torus segment."
+                   "\n\t\t: Parameters of the torus :"
+                   "\n\t\t: - R1     distance from the center of the pipe to the center of the torus"
+                   "\n\t\t: - R2     radius of the pipe"
+                   "\n\t\t: - angle1 first angle to create a torus ring segment"
+                   "\n\t\t: - angle2 second angle to create a torus ring segment"
+                   "\n\t\t: - angle  angle to create a torus pipe segment",
+                   __FILE__, VTorus, group);
+
+  theCommands.Add ("vcylinder",
+                   "vcylinder name R1 R2 height"
+                   "\n\t\t: Creates and displays a cylinder."
+                   "\n\t\t: Parameters of the cylinder :"
+                   "\n\t\t: - R1     cylinder bottom radius"
+                   "\n\t\t: - R2     cylinder top radius"
+                   "\n\t\t: - height cylinder height",
+                   __FILE__, VCylinder, group);
+
+  theCommands.Add ("vsphere",
+                   "vsphere name radius"
+                   "\n\t\t: Creates and displays a sphere.",
+                   __FILE__, VSphere, group);
 
   theCommands.Add("vobjzlayer",
     "vobjzlayer : set/get object [layerid] - set or get z layer id for the interactive object",

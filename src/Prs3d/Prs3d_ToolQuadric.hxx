@@ -98,8 +98,8 @@ protected:
 
 protected:
 
-  Standard_Integer mySlicesNb;
-  Standard_Integer myStacksNb;
+  Standard_Integer mySlicesNb; //!< number of slices within U parameter
+  Standard_Integer myStacksNb; //!< number of stacks within V parameter
 };
 
 #endif // _Prs3d_ToolQuadric_HeaderFile

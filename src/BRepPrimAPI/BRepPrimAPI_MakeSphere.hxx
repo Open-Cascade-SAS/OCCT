@@ -43,39 +43,72 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Make a sphere of radius R.
+  //! Make a sphere.
+  //! @param R [in] sphere radius
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere (spherical wedge).
+  //! @param R     [in] sphere radius
+  //! @param angle [in] angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R, const Standard_Real angle);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere (spherical segment).
+  //! @param R [in] sphere radius
+  //! @param angle1 [in] first angle defining a spherical segment
+  //! @param angle2 [in] second angle defining a spherical segment
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere (spherical segment).
+  //! @param R      [in] sphere radius
+  //! @param angle1 [in] first angle defining a spherical segment
+  //! @param angle2 [in] second angle defining a spherical segment
+  //! @param angle3 [in] angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2, const Standard_Real angle3);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere.
+  //! @param Center [in] sphere center coordinates
+  //! @param R      [in] sphere radius
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R);
   
-  //! Make a sphere of radius R.
+  //! Make a sphere (spherical wedge).
+  //! @param Center [in] sphere center coordinates
+  //! @param R      [in] sphere radius
+  //! @param angle  [in] angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R, const Standard_Real angle);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere (spherical segment).
+  //! @param Center [in] sphere center coordinates
+  //! @param R      [in] sphere radius
+  //! @param angle1 [in] first angle defining a spherical segment
+  //! @param angle2 [in] second angle defining a spherical segment
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere (spherical segment).
+  //! @param Center [in] sphere center coordinates
+  //! @param R      [in] sphere radius
+  //! @param angle1 [in] first angle defining a spherical segment
+  //! @param angle2 [in] second angle defining a spherical segment
+  //! @param angle3 [in] angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Pnt& Center, const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2, const Standard_Real angle3);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere.
+  //! @param Axis [in] coordinate system for the construction of the sphere
+  //! @param R    [in] sphere radius
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const Standard_Real R);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere (spherical wedge).
+  //! @param Axis  [in] coordinate system for the construction of the sphere
+  //! @param R     [in] sphere radius
+  //! @param angle [in] angle between the radii lying within the bounding semidisks
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const Standard_Real R, const Standard_Real angle);
-  
-  //! Make a sphere of radius R.
+
+  //! Make a sphere (spherical segment).
+  //! @param Axis   [in] coordinate system for the construction of the sphere
+  //! @param R      [in] sphere radius
+  //! @param angle1 [in] first angle defining a spherical segment
+  //! @param angle2 [in] second angle defining a spherical segment
   Standard_EXPORT BRepPrimAPI_MakeSphere(const gp_Ax2& Axis, const Standard_Real R, const Standard_Real angle1, const Standard_Real angle2);
-  
+
   //! Make a sphere of radius R.
   //! For all algorithms The resulting shape is composed of
   //! -   a lateral spherical face,

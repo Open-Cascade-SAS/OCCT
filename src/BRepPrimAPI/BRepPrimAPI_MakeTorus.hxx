@@ -41,28 +41,52 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Make a torus of radii R1 R2.
+
+  //! Make a torus.
+  //! @param R1 [in] distance from the center of the pipe to the center of the torus
+  //! @param R2 [in] radius of the pipe
   Standard_EXPORT BRepPrimAPI_MakeTorus(const Standard_Real R1, const Standard_Real R2);
-  
-  //! Make a section of a torus of radii R1 R2.
+
+  //! Make a section of a torus.
+  //! @param R1    [in] distance from the center of the pipe to the center of the torus
+  //! @param R2    [in] radius of the pipe
+  //! @param angle [in] angle to create a torus pipe segment
   Standard_EXPORT BRepPrimAPI_MakeTorus(const Standard_Real R1, const Standard_Real R2, const Standard_Real angle);
   
-  //! Make  a torus of  radii R2, R2  with angles on the
-  //! small circle.
+  //! Make  a torus with angles on the small circle.
+  //! @param R1     [in] distance from the center of the pipe to the center of the torus
+  //! @param R2     [in] radius of the pipe
+  //! @param angle1 [in] first  angle to create a torus ring segment
+  //! @param angle2 [in] second angle to create a torus ring segment
   Standard_EXPORT BRepPrimAPI_MakeTorus(const Standard_Real R1, const Standard_Real R2, const Standard_Real angle1, const Standard_Real angle2);
   
-  //! Make  a torus of  radii R2, R2  with angles on the
-  //! small circle.
+  //! Make  a torus with angles on the small circle.
+  //! @param R1     [in] distance from the center of the pipe to the center of the torus
+  //! @param R2     [in] radius of the pipe
+  //! @param angle1 [in] first  angle to create a torus ring segment
+  //! @param angle2 [in] second angle to create a torus ring segment
+  //! @param angle  [in] angle to create a torus pipe segment
   Standard_EXPORT BRepPrimAPI_MakeTorus(const Standard_Real R1, const Standard_Real R2, const Standard_Real angle1, const Standard_Real angle2, const Standard_Real angle);
   
-  //! Make a torus of radii R1 R2.
+  //! Make a torus.
+  //! @param Axes [in] coordinate system for the construction of the sphere
+  //! @param R1   [in] distance from the center of the pipe to the center of the torus
+  //! @param R2   [in] radius of the pipe
   Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2& Axes, const Standard_Real R1, const Standard_Real R2);
   
-  //! Make a section of a torus of radii R1 R2.
+  //! Make a section of a torus.
+  //! @param Axes  [in] coordinate system for the construction of the sphere
+  //! @param R1    [in] distance from the center of the pipe to the center of the torus
+  //! @param R2    [in] radius of the pipe
+  //! @param angle [in] angle to create a torus pipe segment
   Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2& Axes, const Standard_Real R1, const Standard_Real R2, const Standard_Real angle);
   
-  //! Make a torus of radii R1 R2.
+  //! Make a torus.
+  //! @param Axes   [in] coordinate system for the construction of the sphere
+  //! @param R1     [in] distance from the center of the pipe to the center of the torus
+  //! @param R2     [in] radius of the pipe
+  //! @param angle1 [in] first  angle to create a torus ring segment
+  //! @param angle2 [in] second angle to create a torus ring segment
   Standard_EXPORT BRepPrimAPI_MakeTorus(const gp_Ax2& Axes, const Standard_Real R1, const Standard_Real R2, const Standard_Real angle1, const Standard_Real angle2);
   
   //! Make a section of a torus of radii R1 R2.

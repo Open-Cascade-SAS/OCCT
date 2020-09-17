@@ -1,0 +1,10 @@
+puts "================================"
+puts "Prs3d_ToolSphere - create sphere"
+puts "================================"
+
+# complete sphere
+vsphere s 10 
+
+vfit
+
+vdump $imagedir/${casename}.png

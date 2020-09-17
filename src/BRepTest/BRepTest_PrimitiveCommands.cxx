@@ -416,10 +416,49 @@ void  BRepTest::PrimitiveCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("wedge","wedge name [Ox Oy Oz Zx Zy Zz Xx Xy Xz] dx dy dz ltx / xmin zmin xmax zmax",__FILE__,wedge,g);
   
-  theCommands.Add("pcylinder","pcylinder name [plane(ax2)] R H [angle]",__FILE__,cylinder,g);
-  theCommands.Add("pcone",    "pcone name [plane(ax2)] R1 R2 H [angle]",__FILE__,cone,g);
-  theCommands.Add("psphere",  "psphere name [plane(ax2)] R [angle1 angle2] [angle]",__FILE__,sphere,g);
-  theCommands.Add("ptorus",   "ptorus name [plane(ax2)] R1 R2 [angle1 angle2] [angle]",__FILE__,torus,g);
+  theCommands.Add("pcylinder",
+                  "pcylinder name [plane(ax2)] R H [angle]"
+                  "\n\t\t: Construct a cylinder and put result into 'name' variable."
+                  "\n\t\t: Parameters of the cylinder :"
+                  "\n\t\t: - plane coordinate system for the construction of the cylinder"
+                  "\n\t\t: - R     cylinder radius"
+                  "\n\t\t: - H     cylinder height"
+                  "\n\t\t: - angle cylinder top radius",
+                  __FILE__, cylinder, g);
+
+  theCommands.Add("pcone",
+                  "pcone name [plane(ax2)] R1 R2 H [angle]"
+                  "\n\t\t: Construct a cone, part cone or conical frustum and put result into 'name' variable."
+                  "\n\t\t: Parameters of the cone :"
+                  "\n\t\t: - plane  coordinate system for the construction of the cone"
+                  "\n\t\t: - R1     cone bottom radius"
+                  "\n\t\t: - R2     cone top radius"
+                  "\n\t\t: - H      cone height"
+                  "\n\t\t: - angle  angle to create a part cone",
+                  __FILE__, cone, g);
+
+  theCommands.Add("psphere",
+                  "psphere name [plane(ax2)] R [angle1 angle2] [angle]"
+                  "\n\t\t: Construct a sphere, spherical segment or spherical wedge and put result into 'name' variable."
+                  "\n\t\t: Parameters of the sphere :"
+                  "\n\t\t: - plane  coordinate system for the construction of the sphere"
+                  "\n\t\t: - R      sphere radius"
+                  "\n\t\t: - angle1 first angle to create a spherical segment  [-90; 90]"
+                  "\n\t\t: - angle2 second angle to create a spherical segment [-90; 90]"
+                  "\n\t\t: - angle  angle to create a spherical wedge",
+                  __FILE__, sphere, g);
+
+  theCommands.Add("ptorus",
+                  "ptorus name [plane(ax2)] R1 R2 [angle1 angle2] [angle]"
+                  "\n\t\t: Construct a torus or torus segment and put result into 'name' variable."
+                  "\n\t\t: Parameters of the torus :"
+                  "\n\t\t: - plane  coordinate system for the construction of the torus"
+                  "\n\t\t: - R1     distance from the center of the pipe to the center of the torus"
+                  "\n\t\t: - R2     radius of the pipe"
+                  "\n\t\t: - angle1 first angle to create a torus ring segment"
+                  "\n\t\t: - angle2 second angle to create a torus ring segment"
+                  "\n\t\t: - angle  angle to create a torus pipe segment",
+                  __FILE__, torus, g);
 }
 
 

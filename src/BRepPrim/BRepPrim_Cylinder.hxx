@@ -85,7 +85,7 @@ private:
   Standard_EXPORT void SetMeridian();
 
 
-  Standard_Real myRadius;
+  Standard_Real myRadius; //!< cylinder radius
 
 
 };

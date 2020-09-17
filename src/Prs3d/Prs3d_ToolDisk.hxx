@@ -23,7 +23,13 @@ class Prs3d_ToolDisk : public Prs3d_ToolQuadric
 {
 public:
 
-  //! Generate primitives for 3D quadric surface and return a filled array.
+  //! Generate primitives for 3D quadric surface.
+  //! @param theInnerRadius [in] inner disc radius
+  //! @param theOuterRadius [in] outer disc radius
+  //! @param theNbSlices    [in] number of slices within U parameter
+  //! @param theNbStacks    [in] number of stacks within V parameter
+  //! @param theTrsf        [in] optional transformation to apply
+  //! @return generated triangulation
   Standard_EXPORT static Handle(Graphic3d_ArrayOfTriangles) Create (const Standard_Real    theInnerRadius,
                                                                     const Standard_Real    theOuterRadius,
                                                                     const Standard_Integer theNbSlices,
@@ -31,7 +37,11 @@ public:
                                                                     const gp_Trsf&         theTrsf);
 public:
 
-  //! Initializes the algorithm.
+  //! Initializes the algorithm creating a disk.
+  //! @param theInnerRadius [in] inner disk radius
+  //! @param theOuterRadius [in] outer disk radius
+  //! @param theNbSlices    [in] number of slices within U parameter
+  //! @param theNbStacks    [in] number of stacks within V parameter
   Standard_EXPORT Prs3d_ToolDisk (const Standard_Real    theInnerRadius,
                                   const Standard_Real    theOuterRadius,
                                   const Standard_Integer theNbSlices,
@@ -60,8 +70,8 @@ protected:
 
 protected:
 
-  Standard_Real myInnerRadius;
-  Standard_Real myOuterRadius;
+  Standard_Real myInnerRadius; //!< Inner disk radius
+  Standard_Real myOuterRadius; //!< Outer disk radius
   Standard_Real myStartAngle;  //!< Start angle in counter clockwise order
   Standard_Real myEndAngle;    //!< End   angle in counter clockwise order
 

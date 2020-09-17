@@ -70,8 +70,8 @@ private:
   Standard_EXPORT void SetMeridian();
 
 
-  Standard_Real myMajor;
-  Standard_Real myMinor;
+  Standard_Real myMajor; //!< distance from the center of the pipe to the center of the torus
+  Standard_Real myMinor; //!< radius of the pipe
 
 
 };
