@@ -4250,9 +4250,9 @@ static Standard_Integer OCC26462 (Draw_Interpretor& theDI, Standard_Integer /*th
   aCtx->SetWidth (aBox2, 3, Standard_False);
 
   aCtx->MoveTo (305, 322, ViewerTest::CurrentView(), Standard_False);
-  aCtx->ShiftSelect (Standard_False);
+  aCtx->SelectDetected (AIS_SelectionScheme_XOR);
   aCtx->MoveTo (103, 322, ViewerTest::CurrentView(), Standard_False);
-  aCtx->ShiftSelect (Standard_False);
+  aCtx->SelectDetected (AIS_SelectionScheme_XOR);
   if (aCtx->NbSelected() != 0)
   {
     theDI << "ERROR: no boxes must be selected!\n";
@@ -4262,14 +4262,14 @@ static Standard_Integer OCC26462 (Draw_Interpretor& theDI, Standard_Integer /*th
   aCtx->SetSelectionSensitivity (aBox1, 2, 5);
 
   aCtx->MoveTo (305, 322, ViewerTest::CurrentView(), Standard_False);
-  aCtx->ShiftSelect (Standard_False);
+  aCtx->SelectDetected (AIS_SelectionScheme_XOR);
   if (aCtx->NbSelected() != 1)
   {
     theDI << "ERROR: b1 was not selected\n";
     return 1;
   }
   aCtx->MoveTo (103, 322, ViewerTest::CurrentView(), Standard_False);
-  aCtx->ShiftSelect (Standard_True);
+  aCtx->SelectDetected (AIS_SelectionScheme_XOR);
   if (aCtx->NbSelected() != 1)
   {
     theDI << "ERROR: b2 is selected after b1's tolerance increased\n";
@@ -5203,7 +5203,8 @@ static Standard_Integer OCC28310 (Draw_Interpretor& /*theDI*/, Standard_Integer 
   aCtx->Display (aBoxObj, AIS_Shaded, 0, Standard_False);
   ViewerTest::CurrentView()->FitAll();
   aCtx->MoveTo (200, 200, ViewerTest::CurrentView(), Standard_True);
-  aCtx->Select(Standard_True);
+  aCtx->SelectDetected();
+  aCtx->UpdateCurrentViewer();
 
   aCtx->Remove (aBoxObj, Standard_True);
   // nullify the object explicitly to simulate situation in project,

@@ -15,6 +15,8 @@
 #include <AIS_Selection.hxx>
 
 #include <AIS_InteractiveObject.hxx>
+#include <AIS_SelectionScheme.hxx>
+#include <SelectMgr_Filter.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Selection, Standard_Transient)
 
@@ -129,4 +131,90 @@ AIS_SelectStatus AIS_Selection::AddSelect (const Handle(SelectMgr_EntityOwner)& 
   myResultMap.Bind (theObject, aListIter);
   theObject->SetSelected (Standard_True);
   return AIS_SS_Added;
+}
+
+//=======================================================================
+//function : SelectOwners
+//purpose  :
+//=======================================================================
+void AIS_Selection::SelectOwners (const AIS_NArray1OfEntityOwner& thePickedOwners,
+                                  const AIS_SelectionScheme theSelScheme,
+                                  const Standard_Boolean theToAllowSelOverlap,
+                                  const Handle(SelectMgr_Filter)& theFilter)
+{
+  (void )theToAllowSelOverlap;
+  switch (theSelScheme)
+  {
+    case AIS_SelectionScheme_UNKNOWN:
+    {
+      return;
+    }
+    case AIS_SelectionScheme_Replace:
+    {
+      Clear();
+      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
+      {
+        appendOwner (aSelIter.Value(), theFilter);
+      }
+
+      return;
+    }
+    case AIS_SelectionScheme_Add:
+    {
+      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
+      {
+        appendOwner (aSelIter.Value(), theFilter);
+      }
+      return;
+    }
+    case AIS_SelectionScheme_Remove:
+    {
+      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
+      {
+        if (myResultMap.IsBound (aSelIter.Value()))
+        {
+          Select (aSelIter.Value());
+        }
+      }
+      return;
+    }
+    case AIS_SelectionScheme_XOR:
+    {
+      for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
+      {
+        const Handle(SelectMgr_EntityOwner)& anOwner = aSelIter.Value();
+        if (anOwner.IsNull()
+        || !anOwner->HasSelectable()
+        || !theFilter->IsOk (anOwner))
+        {
+          continue;
+        }
+
+        Select (anOwner);
+      }
+      return;
+    }
+    case AIS_SelectionScheme_Clear:
+    {
+      Clear();
+      return;
+    }
+  }
+}
+
+//=======================================================================
+//function : appendOwner
+//purpose  :
+//=======================================================================
+AIS_SelectStatus AIS_Selection::appendOwner (const Handle(SelectMgr_EntityOwner)& theOwner,
+                                             const Handle(SelectMgr_Filter)& theFilter)
+{
+  if (theOwner.IsNull()
+  || !theOwner->HasSelectable()
+  || !theFilter->IsOk (theOwner))
+  {
+    return AIS_SS_NotDone;
+  }
+
+  return AddSelect (theOwner);
 }

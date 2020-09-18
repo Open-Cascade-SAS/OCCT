@@ -111,9 +111,10 @@ void OCC_3dBaseDoc::DragEvent (const Standard_Integer theMouseX,
     }
   case 1:
     {
-      myAISContext->Select (aStartDragX, aStartDragY,
-                            theMouseX, theMouseY,
-                            theView, Standard_True);
+      myAISContext->SelectRectangle (Graphic3d_Vec2i (aStartDragX, aStartDragY),
+                                     Graphic3d_Vec2i (theMouseX, theMouseY),
+                                     theView);
+      myAISContext->UpdateCurrentViewer();
       break;
     }
   };
@@ -127,7 +128,8 @@ void OCC_3dBaseDoc::InputEvent (const Standard_Integer theMouseX,
                                 const Handle(V3d_View)& theView)
 {
   myAISContext->MoveTo (theMouseX, theMouseY, theView, Standard_False);
-  myAISContext->Select (Standard_True);
+  myAISContext->SelectDetected();
+  myAISContext->UpdateCurrentViewer();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -175,9 +177,10 @@ void OCC_3dBaseDoc::ShiftDragEvent (const Standard_Integer theMouseX,
   if (theState == 0)
   {
     // button up
-    myAISContext->ShiftSelect (aStartDragX, aStartDragY,
-                               theMouseX, theMouseY,
-                               theView, Standard_True);
+    myAISContext->SelectRectangle (Graphic3d_Vec2i (aStartDragX, aStartDragY),
+                                   Graphic3d_Vec2i (theMouseX, theMouseY),
+                                   theView, AIS_SelectionScheme_XOR);
+    myAISContext->UpdateCurrentViewer();
   }
 }
 
@@ -188,7 +191,8 @@ void OCC_3dBaseDoc::ShiftInputEvent (const Standard_Integer /*theMouseX*/,
                                      const Standard_Integer /*theMouseY*/,
                                      const Handle(V3d_View)& /*theView*/)
 {
-  myAISContext->ShiftSelect (Standard_True);
+  myAISContext->SelectDetected (AIS_SelectionScheme_XOR);
+  myAISContext->UpdateCurrentViewer();
 }
 
 //-----------------------------------------------------------------------------------------

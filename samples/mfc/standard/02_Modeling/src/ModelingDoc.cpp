@@ -4816,7 +4816,9 @@ void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
                               const Standard_Integer /*y*/,
                               const Handle(V3d_View)& /*aView*/)
 {
-    myAISContext->Select (Standard_True);
+    myAISContext->SelectDetected();
+    myAISContext->UpdateCurrentViewer();
+
 	if (myState == SELECT_EDGE_PLATE_TGTES_1) {
 		myAISContext->InitSelected();
  		if (myAISContext->MoreSelected()) {

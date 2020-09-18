@@ -26,7 +26,7 @@ class V3d_View;
 
 DEFINE_STANDARD_HANDLE(ViewerTest_EventManager, Standard_Transient)
 
-//! used to manage mouse event (move,select,shiftselect)
+//! used to manage mouse event (move,select)
 //! By default the events are transmitted to interactive context.
 class ViewerTest_EventManager : public Standard_Transient, public AIS_ViewController
 {

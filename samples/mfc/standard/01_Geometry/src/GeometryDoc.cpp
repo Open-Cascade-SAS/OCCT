@@ -244,7 +244,8 @@ void CGeometryDoc::InputEvent2D(const Standard_Integer /*x*/,
                                 const Standard_Integer /*y*/,
                                 const Handle(V3d_View)& /*aView*/)
 {
-  myAISContext2D->Select(Standard_True);
+  myAISContext2D->SelectDetected();
+  myAISContext2D->UpdateCurrentViewer();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -352,7 +353,8 @@ void CGeometryDoc::InputEvent (const Standard_Integer /*theMouseX*/,
                                 const Standard_Integer /*theMouseY*/,
                                 const Handle(V3d_View)& /*theView*/)
 {
-  myAISContext->Select (Standard_True);
+  myAISContext->SelectDetected();
+  myAISContext2D->UpdateCurrentViewer();
 }
 
 //-----------------------------------------------------------------------------------------

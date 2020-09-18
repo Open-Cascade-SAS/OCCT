@@ -188,7 +188,9 @@ static Standard_Integer BUC60774 (Draw_Interpretor& theDi,
   Standard_Integer aXPixMax = aWinWidth;
   Standard_Integer aYPixMax = aWinHeight;
 
-  AIS_StatusOfPick aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView, Standard_False);
+  AIS_StatusOfPick aPickStatus = anAISContext->SelectRectangle (Graphic3d_Vec2i (aXPixMin, aYPixMin),
+                                                                Graphic3d_Vec2i (aXPixMax, aYPixMax),
+                                                                aV3dView);
   theDi << (aPickStatus == AIS_SOP_NothingSelected
     ? "status = AIS_SOP_NothingSelected : OK"
     : "status = AIS_SOP_NothingSelected : bugged - Faulty ");
@@ -197,7 +199,9 @@ static Standard_Integer BUC60774 (Draw_Interpretor& theDi,
   theDi.Eval ("box b 10 10 10");
   theDi.Eval (" vdisplay b");
 
-  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView, Standard_False);
+  aPickStatus = anAISContext->SelectRectangle (Graphic3d_Vec2i (aXPixMin, aYPixMin),
+                                               Graphic3d_Vec2i (aXPixMax, aYPixMax),
+                                               aV3dView);
   theDi << (aPickStatus == AIS_SOP_OneSelected
     ? "status = AIS_SOP_OneSelected : OK"
     : "status = AIS_SOP_OneSelected : bugged - Faulty ");
@@ -206,7 +210,10 @@ static Standard_Integer BUC60774 (Draw_Interpretor& theDi,
   theDi.Eval ("box w 20 20 20 20 20 20");
   theDi.Eval (" vdisplay w");
 
-  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView, Standard_True);
+  aPickStatus = anAISContext->SelectRectangle (Graphic3d_Vec2i (aXPixMin, aYPixMin),
+                                               Graphic3d_Vec2i (aXPixMax, aYPixMax),
+                                               aV3dView);
+  anAISContext->UpdateCurrentViewer();
   theDi << (aPickStatus == AIS_SOP_SeveralSelected
     ? "status = AIS_SOP_SeveralSelected : OK"
     : "status = AIS_SOP_SeveralSelected : bugged - Faulty ");

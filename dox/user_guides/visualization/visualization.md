@@ -989,13 +989,10 @@ myContext->MoveTo (thePixelX, thePixelY, myView, true);
 Dynamic detection and selection are put into effect in a straightforward way.
 There are only a few conventions and functions to be familiar with:
   * *AIS_InteractiveContext::MoveTo* -- passes mouse position to Interactive Context selectors.
-  * *AIS_InteractiveContext::Select* -- stores what has been detected at the last *MoveTo*.
-    Replaces the previously selected object.
-    Empties the stack if nothing has been detected at the last move.
-  * *AIS_InteractiveContext::ShiftSelect* -- if the object detected at the last move was not already selected, it is added to the list of the selected objects.
-    If not, it is withdrawn. Nothing happens if you click on an empty area.
-  * *AIS_InteractiveContext::Select* -- selects everything found in the surrounding area.
-  * *AIS_InteractiveContext::ShiftSelect* -- selects what was not previously in the list of selected, deselects those already present.
+  * *AIS_InteractiveContext::SelectDetected* -- stores what has been detected at the last *MoveTo*.
+    Changes the previously selected object. Depending on the selection scheme, the selection is enriched, replaced or other.
+  * *AIS_InteractiveContext::SelectPoint/SelectRectangle/SelectPolygon* -- Applies selection to point, rectangular or surrounding area.
+    Changes the previously selected object. Depending on the selection scheme, the selection is enriched, replaced or other.
 
 Highlighting of detected and selected entities is automatically managed by the Interactive Context.
 The Highlight colors are those dealt with above. You can nonetheless disconnect this automatic mode if you want to manage this part yourself:
@@ -1009,7 +1006,7 @@ The following functions can be used:
   * *AIS_InteractiveContext::HasDetected* -- checks if there is a detected entity;
   * *AIS_InteractiveContext::DetectedOwner* -- returns the (currently highlighted) detected entity.
 
-After using the *Select* and *ShiftSelect* functions, you can explore the list of selections.
+After using the *Select* function, you can explore the list of selections.
 The following functions can be used:
   * *AIS_InteractiveContext::InitSelected* -- initializes an iterator;
   * *AIS_InteractiveContext::MoreSelected* -- checks if the iterator is valid;
@@ -1034,6 +1031,17 @@ for (myAISCtx->InitSelected(); myAISCtx->MoreSelected(); myAISCtx->NextSelected(
   }
 }
 ~~~~~
+
+@subsubsection occt_visu_3_4_7 Selection schemes
+
+Select* methods of AIS_InteractiveContext accept some selection scheme as parameter. The table below describes available selection schemes.
+
+| Type | Reaction on click |  | Type | Reaction on click |
+| :----- | :----- | :----- | :----- | :----- |
+| AIS_SelectionScheme_Replace | @figure{visualization_selection_scheme_replace.svg, ""} |  | AIS_SelectionScheme_XOR | @figure{visualization_selection_scheme_XOR.svg, ""} |
+| AIS_SelectionScheme_Add | @figure{visualization_selection_scheme_add.svg, ""} |  | AIS_SelectionScheme_Clear | @figure{visualization_selection_scheme_clear.svg, ""} |
+| AIS_SelectionScheme_Remove | @figure{visualization_selection_scheme_remove.svg, ""} |  |  |  |
+
 
 @subsection occt_visu_3_5 Standard Interactive Object Classes
 

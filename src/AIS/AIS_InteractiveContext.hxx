@@ -25,10 +25,12 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_Selection.hxx>
 #include <AIS_SelectionModesConcurrency.hxx>
+#include <AIS_SelectionScheme.hxx>
 #include <AIS_StatusOfDetection.hxx>
 #include <AIS_StatusOfPick.hxx>
 #include <AIS_TypeOfIso.hxx>
 #include <Aspect_TypeOfFacingModel.hxx>
+#include <Graphic3d_Vec2.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_TypeOfHighlight.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
@@ -470,8 +472,49 @@ public: //! @name Selection management
     return AddSelect (theObject->GlobalSelOwner());
   }
 
+  //! Selects objects within the bounding rectangle.
+  //! Viewer should be explicitly redrawn after selection.
+  //! @param thePntMin [in] rectangle lower point (in pixels)
+  //! @param thePntMax [in] rectangle upper point (in pixels)
+  //! @param theView   [in] active view where rectangle is defined
+  //! @param theSelScheme [in] selection scheme
+  //! @return picking status
+  //! @sa StdSelect_ViewerSelector3d::AllowOverlapDetection()
+  Standard_EXPORT AIS_StatusOfPick SelectRectangle (const Graphic3d_Vec2i&    thePntMin,
+                                                    const Graphic3d_Vec2i&    thePntMax,
+                                                    const Handle(V3d_View)&   theView,
+                                                    const AIS_SelectionScheme theSelScheme = AIS_SelectionScheme_Replace);
+
+  //! Select everything found in the polygon defined by bounding polyline.
+  //! Viewer should be explicitly redrawn after selection.
+  //! @param thePolyline  [in] polyline defining polygon bounds (in pixels)
+  //! @param theView      [in] active view where polyline is defined
+  //! @param theSelScheme [in] selection scheme
+  //! @return picking status
+  Standard_EXPORT AIS_StatusOfPick SelectPolygon (const TColgp_Array1OfPnt2d& thePolyline,
+                                                  const Handle(V3d_View)&     theView,
+                                                  const AIS_SelectionScheme   theSelScheme = AIS_SelectionScheme_Replace);
+
+  //! Selects the topmost object picked by the point in the view,
+  //! Viewer should be explicitly redrawn after selection.
+  //! @param thePnt  [in] point pixel coordinates within the view
+  //! @param theView [in] active view where point is defined
+  //! @param theSelScheme [in] selection scheme
+  //! @return picking status
+  Standard_EXPORT AIS_StatusOfPick SelectPoint (const Graphic3d_Vec2i&    thePnt,
+                                                const Handle(V3d_View)&   theView,
+                                                const AIS_SelectionScheme theSelScheme = AIS_SelectionScheme_Replace);
+
+  //! Select and hilights the previous detected via AIS_InteractiveContext::MoveTo() method;
+  //! unhilights the previous picked.
+  //! Viewer should be explicitly redrawn after selection.
+  //! @param theSelScheme [in] selection scheme
+  //! @return picking status
+  Standard_EXPORT AIS_StatusOfPick SelectDetected (const AIS_SelectionScheme theSelScheme = AIS_SelectionScheme_Replace);
+
   //! Selects everything found in the bounding rectangle defined by the pixel minima and maxima, XPMin, YPMin, XPMax, and YPMax in the view.
   //! The objects detected are passed to the main viewer, which is then updated.
+  Standard_DEPRECATED("This method is deprecated - SelectRectangle() taking AIS_SelectionScheme_Replace should be called instead")
   Standard_EXPORT AIS_StatusOfPick Select (const Standard_Integer  theXPMin,
                                            const Standard_Integer  theYPMin,
                                            const Standard_Integer  theXPMax,
@@ -480,27 +523,32 @@ public: //! @name Selection management
                                            const Standard_Boolean  theToUpdateViewer);
   
   //! polyline selection; clears the previous picked list
+  Standard_DEPRECATED("This method is deprecated - SelectPolygon() taking AIS_SelectionScheme_Replace should be called instead")
   Standard_EXPORT AIS_StatusOfPick Select (const TColgp_Array1OfPnt2d& thePolyline,
                                            const Handle(V3d_View)&     theView,
                                            const Standard_Boolean      theToUpdateViewer);
 
   //! Stores and hilights the previous detected; Unhilights the previous picked.
   //! @sa MoveTo().
+  Standard_DEPRECATED("This method is deprecated - SelectDetected() taking AIS_SelectionScheme_Replace should be called instead")
   Standard_EXPORT AIS_StatusOfPick Select (const Standard_Boolean theToUpdateViewer);
 
   //! Adds the last detected to the list of previous picked.
   //! If the last detected was already declared as picked, removes it from the Picked List.
   //! @sa MoveTo().
+  Standard_DEPRECATED("This method is deprecated - SelectDetected() taking AIS_SelectionScheme_XOR should be called instead")
   Standard_EXPORT AIS_StatusOfPick ShiftSelect (const Standard_Boolean theToUpdateViewer);
 
   //! Adds the last detected to the list of previous picked.
   //! If the last detected was already declared as picked, removes it from the Picked List.
+  Standard_DEPRECATED("This method is deprecated - SelectPolygon() taking AIS_SelectionScheme_XOR should be called instead")
   Standard_EXPORT AIS_StatusOfPick ShiftSelect (const TColgp_Array1OfPnt2d& thePolyline,
                                                 const Handle(V3d_View)&     theView,
                                                 const Standard_Boolean      theToUpdateViewer);
 
   //! Rectangle of selection; adds new detected entities into the picked list,
   //! removes the detected entities that were already stored.
+  Standard_DEPRECATED("This method is deprecated - SelectRectangle() taking AIS_SelectionScheme_XOR should be called instead")
   Standard_EXPORT AIS_StatusOfPick ShiftSelect (const Standard_Integer  theXPMin,
                                                 const Standard_Integer  theYPMin,
                                                 const Standard_Integer  theXPMax,
@@ -510,6 +558,13 @@ public: //! @name Selection management
 
   //! Returns bounding box of selected objects.
   Standard_EXPORT Bnd_Box BoundingBoxOfSelection() const;
+
+  //! Sets list of owner selected/deselected using specified selection scheme.
+  //! @param theOwners owners to change selection state
+  //! @param theSelScheme selection scheme
+  //! @return picking status
+  Standard_EXPORT AIS_StatusOfPick Select (const AIS_NArray1OfEntityOwner& theOwners,
+                                           const AIS_SelectionScheme theSelScheme);
 
   //! Fits the view correspondingly to the bounds of selected objects.
   //! Infinite objects are ignored if infinite state of AIS_InteractiveObject is set to true.

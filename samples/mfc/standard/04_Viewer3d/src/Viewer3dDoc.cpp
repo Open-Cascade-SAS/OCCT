@@ -506,7 +506,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
 
   Quantity_Color CSFColor;
   COLORREF MSColor;
-  myAISContext->Select (Standard_True);
+  myAISContext->SelectDetected();
 
   // Change the color of a selected face in a user cylinder
   if (myState == FACE_COLOR)

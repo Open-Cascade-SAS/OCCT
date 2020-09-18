@@ -327,8 +327,12 @@ void CHLRView3D::DragEvent(const Standard_Integer  x        ,
       theButtonDownY=y;
     }
 
-	if (TheState == 0)
-	  GetDocument()->GetAISContext()->Select(theButtonDownX,theButtonDownY,x,y,myView);  
+  if (TheState == 0)
+  {
+    GetDocument()->GetAISContext()->SelectRectangle (Graphic3d_Vec2i (theButtonDownX,theButtonDownY),
+                                                     Graphic3d_Vec2i (x,y),
+                                                     myView);
+  }
 }
 
 //-----------------------------------------------------------------------------------------
@@ -337,7 +341,7 @@ void CHLRView3D::DragEvent(const Standard_Integer  x        ,
 void CHLRView3D::InputEvent(const Standard_Integer  x     ,
 				                   const Standard_Integer  y     ) 
 {
-    GetDocument()->GetAISContext()->Select(); 
+  GetDocument()->GetAISContext()->SelectDetected();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -374,8 +378,13 @@ void CHLRView3D::MultiDragEvent(const Standard_Integer  x        ,
       theButtonDownY=y;
     }
 
-	if (TheState == 0)
-	  GetDocument()->GetAISContext()->ShiftSelect(theButtonDownX,theButtonDownY,x,y,myView);  
+  if (TheState == 0)
+  {
+    GetDocument()->GetAISContext()->SelectRectangle (Graphic3d_Vec2i (theButtonDownX,theButtonDownY),
+                                                     Graphic3d_Vec2i (x,y),
+                                                     myView,
+                                                     AIS_SelectionScheme_XOR);
+  }
 }
 
 
@@ -385,6 +394,6 @@ void CHLRView3D::MultiDragEvent(const Standard_Integer  x        ,
 void CHLRView3D::MultiInputEvent(const Standard_Integer  x       ,
 									    const Standard_Integer  y       ) 
 {
-	GetDocument()->GetAISContext()->ShiftSelect(); 
+  GetDocument()->GetAISContext()->SelectDetected (AIS_SelectionScheme_XOR);
 }
 
