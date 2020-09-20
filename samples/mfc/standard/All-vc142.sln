@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio 16
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Geometry", "01_Geometry\adm\win\vc10\Geometry.vcxproj", "{31E8199C-C981-4B7F-9CC2-B8502565B581}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Modeling", "02_Modeling\adm\win\vc10\Modeling.vcxproj", "{B10FC678-B9AF-4B05-B3DC-8F790C610CC3}"
