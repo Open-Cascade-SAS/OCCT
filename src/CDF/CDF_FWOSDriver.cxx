@@ -48,7 +48,10 @@ static void PutSlash (TCollection_ExtendedString& anXSTRING) {
 //function : CDF_FWOSDriver
 //purpose  :
 //==============================================================================
-CDF_FWOSDriver::CDF_FWOSDriver() {}
+CDF_FWOSDriver::CDF_FWOSDriver(CDM_MetaDataLookUpTable& theLookUpTable)
+: myLookUpTable (&theLookUpTable)
+{
+}
 
 //==============================================================================
 //function : Find
@@ -107,7 +110,7 @@ Handle(CDM_MetaData) CDF_FWOSDriver::MetaData(const TCollection_ExtendedString& 
                                                  const TCollection_ExtendedString& /*aVersion*/)
 {
   TCollection_ExtendedString p = Concatenate(aFolder,aName);
-  return CDM_MetaData::LookUp(aFolder,aName,p,p,UTL::IsReadOnly(p));
+  return CDM_MetaData::LookUp (*myLookUpTable, aFolder, aName, p, p, UTL::IsReadOnly(p));
 }
 
 //==============================================================================
@@ -117,7 +120,7 @@ Handle(CDM_MetaData) CDF_FWOSDriver::MetaData(const TCollection_ExtendedString& 
 Handle(CDM_MetaData) CDF_FWOSDriver::CreateMetaData(const Handle(CDM_Document)& aDocument,
                                                        const TCollection_ExtendedString& aFileName)
 {
-  return CDM_MetaData::LookUp(aDocument->RequestedFolder(),aDocument->RequestedName(),
+  return CDM_MetaData::LookUp(*myLookUpTable, aDocument->RequestedFolder(), aDocument->RequestedName(),
                               Concatenate(aDocument->RequestedFolder(),aDocument->RequestedName()),
                               aFileName,UTL::IsReadOnly(aFileName));
 }
@@ -191,23 +194,6 @@ TCollection_ExtendedString CDF_FWOSDriver::DefaultFolder()
 #endif
   }
   return theDefaultFolder;
-}
-
-//==============================================================================
-//function : BuildMetaData
-//purpose  :
-//==============================================================================
-Handle(CDM_MetaData) CDF_FWOSDriver::BuildMetaData(const TCollection_ExtendedString& aFileName)
-{
-
-  OSD_Path p = UTL::Path(aFileName);
-  
-  TCollection_ExtendedString f = UTL::Trek(p);
-  TCollection_ExtendedString n = UTL::Name(p);
-  n +=".";
-  n += UTL::Extension(p);
-
-  return CDM_MetaData::LookUp(f,n,aFileName,aFileName,UTL::IsReadOnly(aFileName));
 }
 
 //==============================================================================

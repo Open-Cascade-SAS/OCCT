@@ -21,14 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <PCDM_SequenceOfReference.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
+#include <CDM_MetaDataLookUpTable.hxx>
+
 class Message_Messenger;
 class CDM_Document;
 class CDM_MetaData;
 class CDM_Application;
-
 
 class PCDM_ReferenceIterator;
 DEFINE_STANDARD_HANDLE(PCDM_ReferenceIterator, Standard_Transient)
@@ -64,18 +62,18 @@ private:
   
   Standard_EXPORT virtual void Next();
   
-  Standard_EXPORT virtual Handle(CDM_MetaData) MetaData (const Standard_Boolean UseStorageConfiguration) const;
+  Standard_EXPORT virtual Handle(CDM_MetaData) MetaData (CDM_MetaDataLookUpTable& theLookUpTable,
+                                                         const Standard_Boolean UseStorageConfiguration) const;
   
   Standard_EXPORT virtual Standard_Integer ReferenceIdentifier() const;
   
   //! returns the version of the document in the reference
   Standard_EXPORT virtual Standard_Integer DocumentVersion() const;
 
+private:
   PCDM_SequenceOfReference myReferences;
   Standard_Integer myIterator;
   Handle(Message_Messenger) myMessageDriver;
-
-
 };
 
 

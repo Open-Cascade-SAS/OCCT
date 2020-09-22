@@ -17,12 +17,12 @@
 
 #include <CDF_Application.hxx>
 #include <CDF_MetaDataDriver.hxx>
-#include <CDF_Session.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>
 #include <PCDM_ReferenceIterator.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
+#include <Standard_NullObject.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_Thread.hxx>
 
@@ -77,11 +77,9 @@ void CDF_MetaDataDriver::CreateReference(const Handle(CDM_MetaData)& ,
 //purpose  : 
 //=======================================================================
 
-Handle(PCDM_ReferenceIterator) CDF_MetaDataDriver::ReferenceIterator() {
-  Standard_ThreadId anID = OSD_Thread::Current();
-  Handle(CDF_Application) anApp; 
-  CDF_Session::CurrentSession()->FindApplication(anID, anApp);
-  return new PCDM_ReferenceIterator(anApp->MessageDriver());
+Handle(PCDM_ReferenceIterator) CDF_MetaDataDriver::ReferenceIterator(const Handle(Message_Messenger)& theMessageDriver)
+{
+  return new PCDM_ReferenceIterator(theMessageDriver);
 }
 
 //=======================================================================

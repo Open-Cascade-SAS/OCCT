@@ -2120,6 +2120,26 @@ Old three Message_Printer::Send() methods remain defined virtual with unused las
 
 Redundant class Prs3d_Root has been marked as deprecated - Prs3d_Presentation::NewGroup() should be called directly.
 
+@subsection upgrade_750_cdf_session Support of multiple OCAF application instances
+
+Class *CDF_Session* has been removed.
+That class was used to store global instance of OCAF application (object of class *CDM_Application* or descendant, typically *TDataStd_Application*).
+Global directory of all opened OCAF documents has been removed as well; such directory is maintained now by each instance of the *CDM_Application* class.
+
+This allows creating programs that work with different OCAF documents concurrently in paralel threads,
+provided that each thread deals with its own instance of *TDataStd_Application* and documents managed by this instance.
+
+Note that neither *TDataStd_Application* nor *TDocStd_Document* is protected from concurrent access from several threads.
+Such protection, if necessary, shall be implemented on the application level.
+For an example, access to labels and attributes could be protected by mutex if there is a probability that different threads access the same labels / attributes:
+~~~~~
+  {
+    Standard_Mutex::Sentry aSentry (myMainLabelAccess);
+    TDF_Label aChildLab = aDocument->Main().NewChild();
+    TDataStd_Integer::Set(aChildLab, 0);
+  }
+~~~~~
+
 @subsection upgrade_750_draw_hotkeys Draw Harness hotkeys
 
 Draw Harness hotkeys **W** (Wireframe) and **S** (Shaded) have been re-mapped to **Ctrl+W** and **Ctrl+S**.

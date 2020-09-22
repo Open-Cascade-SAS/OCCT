@@ -283,20 +283,12 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
-  //! Remove this application from the current session
-  Standard_EXPORT Standard_Boolean RemoveFromSession();
-
   DEFINE_STANDARD_RTTIEXT(TDocStd_Application, CDF_Application)
 
 protected:
 
   Handle(Resource_Manager) myResources;
   Standard_Boolean myIsDriverLoaded;
-
-private:
-
-  //! Add this application to the current session (register in internal container)
-  void AddToSession();
 };
 
 #endif // _TDocStd_Application_HeaderFile

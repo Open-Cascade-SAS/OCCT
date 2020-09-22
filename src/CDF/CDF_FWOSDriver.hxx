@@ -21,6 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <CDF_MetaDataDriver.hxx>
+#include <CDM_MetaDataLookUpTable.hxx>
+
 #include <Standard_Boolean.hxx>
 class TCollection_ExtendedString;
 class CDM_MetaData;
@@ -36,9 +38,10 @@ class CDF_FWOSDriver : public CDF_MetaDataDriver
 
 public:
 
-  
-  //! initializes the MetaDatadriver with its specific name.
-  Standard_EXPORT CDF_FWOSDriver();
+  //! Initializes the MetaDatadriver connected to specified look-up table.
+  //! Note that the created driver will keep reference to the table,
+  //! thus it must have life time longer than this object.
+  Standard_EXPORT CDF_FWOSDriver(CDM_MetaDataLookUpTable& theLookUpTable);
   
   //! indicate whether a file exists corresponding to the folder and the name
   Standard_EXPORT Standard_Boolean Find (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
@@ -58,30 +61,16 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(CDF_FWOSDriver,CDF_MetaDataDriver)
 
-protected:
-
-
-
-
 private:
 
-  
   Standard_EXPORT Handle(CDM_MetaData) MetaData (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aVersion) Standard_OVERRIDE;
   
   Standard_EXPORT Handle(CDM_MetaData) CreateMetaData (const Handle(CDM_Document)& aDocument, const TCollection_ExtendedString& aFileName) Standard_OVERRIDE;
   
   Standard_EXPORT static TCollection_ExtendedString Concatenate (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName);
   
-  Standard_EXPORT Handle(CDM_MetaData) BuildMetaData (const TCollection_ExtendedString& aFileName);
-
-
-
+private:
+  CDM_MetaDataLookUpTable* myLookUpTable;
 };
-
-
-
-
-
-
 
 #endif // _CDF_FWOSDriver_HeaderFile

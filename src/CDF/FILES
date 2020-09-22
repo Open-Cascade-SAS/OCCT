@@ -11,8 +11,6 @@ CDF_MetaDataDriver.hxx
 CDF_MetaDataDriverError.hxx
 CDF_MetaDataDriverFactory.cxx
 CDF_MetaDataDriverFactory.hxx
-CDF_Session.cxx
-CDF_Session.hxx
 CDF_Store.cxx
 CDF_Store.hxx
 CDF_StoreList.cxx

@@ -396,7 +396,8 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
         theName   = UTL::Name(p); theName+= UTL::Extension(p);
 #endif  // _WIN32
         
-        Handle(CDM_MetaData) aMetaData =  CDM_MetaData::LookUp(theFolder,theName,aPath,aPath,UTL::IsReadOnly(aFileName));
+        Handle(CDM_MetaData) aMetaData =
+          CDM_MetaData::LookUp(theApplication->MetaDataLookUpTable(), theFolder, theName, aPath, aPath, UTL::IsReadOnly(aFileName));
 ////////////
         theNewDocument->CreateReference(aMetaData,aRefId,
              theApplication,aDocumentVersion,Standard_False);

@@ -16,7 +16,6 @@ CDM_MetaData.cxx
 CDM_MetaData.hxx
 CDM_MetaDataLookUpTable.hxx
 CDM_NamesDirectory.hxx
-CDM_ApplicationDirectory.hxx
 CDM_Reference.cxx
 CDM_Reference.hxx
 CDM_ReferenceIterator.cxx

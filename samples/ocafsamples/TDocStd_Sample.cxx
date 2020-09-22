@@ -19,7 +19,6 @@
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDocStd_XLinkTool.hxx> 
-#include <CDF_Session.hxx> 
 
 // ====================================================================================
 // This sample contains template for typical actions with OCAF document at application 
@@ -33,23 +32,7 @@ static void Sample()
   
   //...Creating application 
 
-  Handle(TDocStd_Application) app; 
-
-  // the application is now handled by the CDF_Session variable
-
-
-  //...Retrieving the  application
-
-
-  if (!CDF_Session::Exists()) {
-    Handle(CDF_Session) S = CDF_Session::CurrentSession();  
-    if (!S->HasCurrentApplication())  
-    Standard_DomainError::Raise("DDocStd::Find no applicative session");
-    app = Handle(TDocStd_Application)::DownCast(S->CurrentApplication());
-  }
-  else {
-    // none active application
-  }
+  Handle(TDocStd_Application) app = new TDocStd_Application;
   
   //...Creating the new document (document conatins a framework) 
 

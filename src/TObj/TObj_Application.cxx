@@ -25,8 +25,6 @@
 #include <Message_Msg.hxx>
 #include <Message_MsgFile.hxx>
 #include <Resource_Manager.hxx>
-#include <CDF_Session.hxx>
-#include <OSD_Thread.hxx>
 #include <stdio.h>
 
 #include "TObj_TObj_msg.pxx"
@@ -39,21 +37,8 @@ IMPLEMENT_STANDARD_RTTIEXT(TObj_Application,TDocStd_Application)
 //=======================================================================
 Handle(TObj_Application) TObj_Application::GetInstance()
 {
-  Handle(CDF_Session) aSession = CDF_Session::Create();
-  Handle(CDF_Application) anApp;
-  if (aSession->FindApplication(OSD_Thread::Current(), anApp))
-  {
-    Handle(TObj_Application) aTObjApp = Handle(TObj_Application)::DownCast(anApp);
-    if (!aTObjApp.IsNull())
-      return aTObjApp;
-    // If in session application of another type is already registered, use this global
-    // application, alone, outside of the session (as a workaround for DRAW scripting where
-    // many kinds of applications can be required).
-    static Handle(TObj_Application) THE_TOBJ_APP(new TObj_Application);
-    return THE_TOBJ_APP;
-  }
-  // It will register this application in the session.
-  return new TObj_Application;
+  static Handle(TObj_Application) THE_TOBJ_APP(new TObj_Application);
+  return THE_TOBJ_APP;
 }
 
 //=======================================================================

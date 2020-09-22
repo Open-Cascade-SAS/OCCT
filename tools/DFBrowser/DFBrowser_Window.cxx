@@ -19,8 +19,6 @@
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
 
-#include <CDF_Session.hxx>
-
 #include <inspector/DFBrowserPane_AttributePaneAPI.hxx>
 
 #include <inspector/DFBrowser_AttributePaneStack.hxx>
@@ -439,15 +437,6 @@ void DFBrowser_Window::Init (const NCollection_List<Handle(Standard_Transient)>&
     }
     return;
   }
-  else
-  {
-    if (anApplication.IsNull() && CDF_Session::Exists()) {
-      Standard_ThreadId anID = OSD_Thread::Current();
-      Handle(CDF_Application) anApp;
-      CDF_Session::CurrentSession()->FindApplication(anID, anApp);
-      anApplication = Handle(TDocStd_Application)::DownCast (anApp);
-    }
-  }
 
   myModule = new DFBrowser_Module();
   myModule->CreateViewModel (myMainWindow);
@@ -503,28 +492,18 @@ void DFBrowser_Window::OpenFile (const TCollection_AsciiString& theFileName)
   anOCAFViewModel->Reset();
 
   //! close previous documents to open new document
-  Handle(TDocStd_Application) anApplication;
-  if (CDF_Session::Exists())
+  Handle(TDocStd_Application) anApplication = myModule->GetTDocStdApplication();
+  if (!anApplication.IsNull())
   {
-    Handle(CDF_Session) aSession = CDF_Session::CurrentSession();
-    if (!aSession.IsNull())
+    for (int aDocId = 1, aNbDocuments = anApplication->NbDocuments(); aDocId <= aNbDocuments; aDocId++)
     {
-      Standard_ThreadId anID = OSD_Thread::Current();
-      Handle(CDF_Application) anApp;
-      CDF_Session::CurrentSession()->FindApplication(anID, anApp);
-      anApplication = Handle(TDocStd_Application)::DownCast (anApp);
-      if (!anApplication.IsNull())
-      {
-        for (int aDocId = 1, aNbDocuments = anApplication->NbDocuments(); aDocId <= aNbDocuments; aDocId++)
-        {
-          Handle(TDocStd_Document) aDocument;
-          anApplication->GetDocument (aDocId, aDocument);
-          if (!aDocument.IsNull())
-            anApplication->Close (aDocument);
-        }
-      }
+      Handle(TDocStd_Document) aDocument;
+      anApplication->GetDocument (aDocId, aDocument);
+      if (!aDocument.IsNull())
+        anApplication->Close (aDocument);
     }
   }
+
   //! open new document
   bool isSTEPFileName = false;
   anApplication = DFBrowser_OpenApplication::OpenApplication (theFileName, isSTEPFileName);

@@ -28,7 +28,6 @@
 #include <NCollection_IndexedDataMap.hxx>
 
 class Standard_NoSuchObject;
-class CDF_Session;
 class Standard_GUID;
 class CDM_Document;
 class TCollection_ExtendedString;
@@ -171,9 +170,6 @@ public:
 
   //! returns MetaDatdDriver of this application
   Standard_EXPORT Handle(CDF_MetaDataDriver) MetaDataDriver() const;
-
-friend class CDF_Session;
-
 
   DEFINE_STANDARD_RTTIEXT(CDF_Application,CDM_Application)
 

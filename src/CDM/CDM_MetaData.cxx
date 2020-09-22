@@ -20,10 +20,9 @@
 #include <CDM_MetaData.hxx>
 #include <CDM_MetaDataLookUpTable.hxx>
 #include <CDM_Reference.hxx>
-#include <CDF_Session.hxx>
 #include <Standard_Dump.hxx>
 #include <CDF_Application.hxx>
-#include <Standard_NoSuchObject.hxx>
+#include <Standard_NullObject.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <OSD_Thread.hxx>
@@ -70,33 +69,48 @@ void CDM_MetaData::SetDocument(const Handle(CDM_Document)& aDocument) {
 void CDM_MetaData::UnsetDocument() {
   myIsRetrieved = Standard_False;
 }
-Handle(CDM_MetaData) CDM_MetaData::LookUp(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aPath,const TCollection_ExtendedString& aFileName,const Standard_Boolean ReadOnly) {
+Handle(CDM_MetaData) CDM_MetaData::LookUp(CDM_MetaDataLookUpTable& theLookUpTable,
+                                          const TCollection_ExtendedString& aFolder,
+                                          const TCollection_ExtendedString& aName,
+                                          const TCollection_ExtendedString& aPath,
+                                          const TCollection_ExtendedString& aFileName,
+                                          const Standard_Boolean ReadOnly)
+{
   Handle(CDM_MetaData) theMetaData;
   TCollection_ExtendedString aConventionalPath=aPath;
   aConventionalPath.ChangeAll('\\','/');
-  CDM_MetaDataLookUpTable* aLookUpTable = LookUpTable();
-  if (!aLookUpTable) return theMetaData;
-  if(!aLookUpTable->IsBound(aConventionalPath)) {
+  if(!theLookUpTable.IsBound(aConventionalPath))
+  {
     theMetaData = new CDM_MetaData(aFolder,aName,aPath,aFileName,ReadOnly);
-    aLookUpTable->Bind(aConventionalPath, theMetaData);
+    theLookUpTable.Bind(aConventionalPath, theMetaData);
   }
   else
-    theMetaData = aLookUpTable->Find(aConventionalPath);
+  {
+    theMetaData = theLookUpTable.Find(aConventionalPath);
+  }
   
   return theMetaData;
 }
-Handle(CDM_MetaData) CDM_MetaData::LookUp(const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName, const TCollection_ExtendedString& aPath, const TCollection_ExtendedString& aVersion, const TCollection_ExtendedString& aFileName,const Standard_Boolean ReadOnly) {
+Handle(CDM_MetaData) CDM_MetaData::LookUp(CDM_MetaDataLookUpTable& theLookUpTable,
+                                          const TCollection_ExtendedString& aFolder,
+                                          const TCollection_ExtendedString& aName,
+                                          const TCollection_ExtendedString& aPath,
+                                          const TCollection_ExtendedString& aVersion,
+                                          const TCollection_ExtendedString& aFileName,
+                                          const Standard_Boolean ReadOnly)
+{
   Handle(CDM_MetaData) theMetaData;
   TCollection_ExtendedString aConventionalPath=aPath;
   aConventionalPath.ChangeAll('\\','/');
-  CDM_MetaDataLookUpTable* aLookUpTable = LookUpTable();
-  if (!aLookUpTable) return theMetaData;
-  if(!aLookUpTable->IsBound(aConventionalPath)) {
+  if(!theLookUpTable.IsBound(aConventionalPath))
+  {
     theMetaData = new CDM_MetaData(aFolder,aName,aPath,aVersion,aFileName,ReadOnly);
-    aLookUpTable->Bind(aConventionalPath,theMetaData);
+    theLookUpTable.Bind(aConventionalPath,theMetaData);
   }
   else
-    theMetaData = aLookUpTable->Find(aConventionalPath);
+  {
+    theMetaData = theLookUpTable.Find(aConventionalPath);
+  }
   
   return theMetaData;
 }
@@ -134,14 +148,6 @@ Standard_OStream& CDM_MetaData::operator << (Standard_OStream& anOStream) {
   return Print(anOStream);
 }
 
-CDM_MetaDataLookUpTable* CDM_MetaData::LookUpTable() {
-  Handle(CDF_Session) aSession = CDF_Session::Create();
-  Handle(CDF_Application) anApp;
-  CDM_MetaDataLookUpTable* pLookUpTable(NULL);
-  if (aSession->FindApplication(OSD_Thread::Current(), anApp))
-    return anApp->MetaDataLookUpTable();
-  return pLookUpTable;
-}
 Standard_Integer CDM_MetaData::DocumentVersion(const Handle(CDM_Application)& anApplication) {
   if(myDocumentVersion==0) myDocumentVersion=anApplication->DocumentVersion(this);
   return myDocumentVersion;

@@ -15,7 +15,6 @@
 
 #include <CDF_Application.hxx>
 #include <CDF_MetaDataDriver.hxx>
-#include <CDF_Session.hxx>
 #include <CDF_Store.hxx>
 #include <CDF_StoreList.hxx>
 #include <CDF_StoreSetNameStatus.hxx>

@@ -17,18 +17,14 @@
 #ifndef _CDF_MetaDataDriver_HeaderFile
 #define _CDF_MetaDataDriver_HeaderFile
 
-#include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Standard_Transient.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
 class Standard_NotImplemented;
 class CDM_MetaData;
 class TCollection_ExtendedString;
 class CDM_Document;
 class PCDM_ReferenceIterator;
-
+class Message_Messenger;
 
 class CDF_MetaDataDriver;
 DEFINE_STANDARD_HANDLE(CDF_MetaDataDriver, Standard_Transient)
@@ -100,7 +96,7 @@ public:
   
   Standard_EXPORT virtual TCollection_ExtendedString DefaultFolder() = 0;
   
-  Standard_EXPORT virtual Handle(PCDM_ReferenceIterator) ReferenceIterator();
+  Standard_EXPORT virtual Handle(PCDM_ReferenceIterator) ReferenceIterator(const Handle(Message_Messenger)& theMessageDriver);
   
   //! calls Find with an empty version
   Standard_EXPORT Standard_Boolean Find (const TCollection_ExtendedString& aFolder, const TCollection_ExtendedString& aName);

@@ -53,9 +53,10 @@ void PCDM_ReferenceIterator::LoadReferences(const Handle(CDM_Document)& aDocumen
 					    const Handle(CDM_MetaData)& aMetaData, 
 					    const Handle(CDM_Application)& anApplication, 
 					    const Standard_Boolean UseStorageConfiguration) {
-  for (Init(aMetaData);More();Next()) {
-    aDocument->CreateReference(MetaData(UseStorageConfiguration),ReferenceIdentifier(),
-			       anApplication,DocumentVersion(),UseStorageConfiguration);
+  for (Init(aMetaData);More();Next())
+  {
+    aDocument->CreateReference(MetaData(anApplication->MetaDataLookUpTable(),UseStorageConfiguration),
+                               ReferenceIdentifier(),anApplication,DocumentVersion(),UseStorageConfiguration);
   }
 }
 
@@ -96,7 +97,9 @@ void PCDM_ReferenceIterator::Next() {
 //purpose  : 
 //=======================================================================
 
-Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(const Standard_Boolean ) const {
+Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(CDM_MetaDataLookUpTable& theLookUpTable,
+                                                      const Standard_Boolean ) const
+{
   
   TCollection_ExtendedString theFolder,theName;
   TCollection_ExtendedString theFile=myReferences(myIterator).FileName();
@@ -140,8 +143,9 @@ Handle(CDM_MetaData) PCDM_ReferenceIterator::MetaData(const Standard_Boolean ) c
   theName   = UTL::Name(p); theName+= UTL::Extension(p);
 #endif  // _WIN32
   
-  return CDM_MetaData::LookUp(theFolder,theName,theFile,theFile,UTL::IsReadOnly(theFile));
+  return CDM_MetaData::LookUp(theLookUpTable, theFolder, theName, theFile, theFile, UTL::IsReadOnly(theFile));
 }
+
 //=======================================================================
 //function : ReferenceIdentifier
 //purpose  : 

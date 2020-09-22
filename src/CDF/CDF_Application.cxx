@@ -18,7 +18,6 @@
 
 #include <CDF_Application.hxx>
 #include <CDF_Directory.hxx>
-#include <CDF_Session.hxx>
 #include <CDF_FWOSDriver.hxx>
 #include <CDM_CanCloseStatus.hxx>
 #include <CDM_Document.hxx>
@@ -42,7 +41,7 @@ IMPLEMENT_STANDARD_RTTIEXT(CDF_Application,CDM_Application)
 CDF_Application::CDF_Application():myRetrievableStatus(PCDM_RS_OK) 
 {
   myDirectory      = new CDF_Directory();
-  myMetaDataDriver = new CDF_FWOSDriver;
+  myMetaDataDriver = new CDF_FWOSDriver (MetaDataLookUpTable());
 }
 
 //=======================================================================
@@ -270,7 +269,7 @@ Handle(CDM_Document) CDF_Application::Retrieve (const Handle(CDM_MetaData)& aMet
     SetReferenceCounter(theDocument,PCDM_RetrievalDriver::ReferenceCounter(aMetaData->FileName(), MessageDriver()));
     
     SetDocumentVersion(theDocument,aMetaData);
-    myMetaDataDriver->ReferenceIterator()->LoadReferences(theDocument,aMetaData,this,UseStorageConfiguration);
+    myMetaDataDriver->ReferenceIterator(MessageDriver())->LoadReferences(theDocument,aMetaData,this,UseStorageConfiguration);
 
     try {    
       OCC_CATCH_SIGNALS
@@ -284,7 +283,8 @@ Handle(CDM_Document) CDF_Application::Retrieve (const Handle(CDM_MetaData)& aMet
 	throw Standard_Failure(aMsg.str().c_str());
       }	
     }
-    myRetrievableStatus = theReader->GetStatus();    
+    myRetrievableStatus = theReader->GetStatus();
+    theDocument->Open (this); // must be done before SetMetaData
     theDocument->SetMetaData(aMetaData);
 
     theDocumentToReturn=theDocument;

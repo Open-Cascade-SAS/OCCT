@@ -70,7 +70,7 @@ public:
   Standard_EXPORT virtual TCollection_AsciiString Version() const;
   
   //! Returns MetaData LookUpTable
-  Standard_EXPORT virtual  CDM_MetaDataLookUpTable* MetaDataLookUpTable();
+  Standard_EXPORT virtual  CDM_MetaDataLookUpTable& MetaDataLookUpTable();
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;

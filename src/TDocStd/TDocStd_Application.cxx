@@ -18,7 +18,6 @@
 
 #include <CDF_Directory.hxx>
 #include <CDF_DirectoryIterator.hxx>
-#include <CDF_Session.hxx>
 #include <CDF_Store.hxx>
 #include <PCDM_RetrievalDriver.hxx>
 #include <PCDM_StorageDriver.hxx>
@@ -46,11 +45,9 @@ IMPLEMENT_STANDARD_RTTIEXT(TDocStd_Application,CDF_Application)
 TDocStd_Application::TDocStd_Application()
         : myIsDriverLoaded (Standard_True)
 {
-  AddToSession();
   if(myMetaDataDriver.IsNull())
     myIsDriverLoaded = Standard_False;
 }
-
 
 //=======================================================================
 //function : IsDriverLoaded
@@ -156,9 +153,7 @@ void TDocStd_Application::WritingFormats(TColStd_SequenceOfAsciiString &theForma
 
 Standard_Integer TDocStd_Application::NbDocuments() const
 {
-  if (!CDF_Session::Exists())
-    throw Standard_DomainError("TDocStd_Application::NbDocuments");
-  return this->myDirectory->Length();
+  return myDirectory->Length();
 }
 
 //=======================================================================
@@ -168,8 +163,6 @@ Standard_Integer TDocStd_Application::NbDocuments() const
 
 void TDocStd_Application::GetDocument(const Standard_Integer index,Handle(TDocStd_Document)& aDoc) const
 {
-  if (!CDF_Session::Exists())
-    throw Standard_DomainError("TDocStd_Application::NbDocuments");
   CDF_DirectoryIterator it (myDirectory);
   Standard_Integer current = 0;
   for (;it.MoreDocument();it.NextDocument()) {
@@ -599,19 +592,6 @@ void TDocStd_Application::OnAbortTransaction (const Handle(TDocStd_Document)&)
 void TDocStd_Application::OnCommitTransaction (const Handle(TDocStd_Document)&)
 {
   // nothing to do on this level
-}
-
-//
-void TDocStd_Application::AddToSession()
-{
-  Handle(CDF_Session) S = CDF_Session::Create();
-  S->AddApplication(this, OSD_Thread::Current());
-}
-
-Standard_Boolean TDocStd_Application::RemoveFromSession()
-{
-  Handle(CDF_Session) aSession = CDF_Session::Create();
-  return aSession->RemoveApplication(OSD_Thread::Current());
 }
 
 //=======================================================================

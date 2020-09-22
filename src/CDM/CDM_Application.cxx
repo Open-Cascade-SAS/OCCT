@@ -137,9 +137,9 @@ TCollection_AsciiString CDM_Application::Version() const
 //function : MetaDataLookUpTable
 //purpose  : returns the MetaData LookUpTable
 //=======================================================================
-CDM_MetaDataLookUpTable* CDM_Application::MetaDataLookUpTable()
+CDM_MetaDataLookUpTable& CDM_Application::MetaDataLookUpTable()
 {
-  return &myMetaDataLookUpTable;
+  return myMetaDataLookUpTable;
 }
 
 //=======================================================================

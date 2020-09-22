@@ -536,8 +536,8 @@ void CDM_Document::SetMetaData(const Handle(CDM_MetaData)& aMetaData)
 
     aMetaData->SetDocument(this);
 
-// Update the document refencing this MetaData:
-    CDM_DataMapIteratorOfMetaDataLookUpTable it(*CDM_MetaData::LookUpTable());
+    // Update the document refencing this MetaData:
+    CDM_DataMapIteratorOfMetaDataLookUpTable it(Application()->MetaDataLookUpTable());
     for(;it.More();it.Next()) {
       const Handle(CDM_MetaData)& theMetaData=it.Value();
       if(theMetaData != aMetaData && theMetaData->IsRetrieved()) {

@@ -16,7 +16,6 @@
 
 #include <inspector/DFBrowser_Communicator.hxx>
 
-#include <CDF_Session.hxx>
 #include <inspector/DFBrowser_Module.hxx>
 #include <inspector/DFBrowser_Window.hxx>
 

@@ -18,7 +18,6 @@
 #include <CDF_Application.hxx>
 #include <CDF_MetaDataDriver.hxx>
 #include <CDF_MetaDataDriverError.hxx>
-#include <CDF_Session.hxx>
 #include <CDF_StoreList.hxx>
 #include <CDM_Document.hxx>
 #include <CDM_MetaData.hxx>

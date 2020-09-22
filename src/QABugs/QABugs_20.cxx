@@ -3065,7 +3065,6 @@ void* threadFunction(void* theArgs)
       }
     }
     args->finished = true;
-    anApp->RemoveFromSession();
   }
   catch (...)
   {
@@ -3794,6 +3793,83 @@ static Standard_Integer OCC31320(Draw_Interpretor& di, Standard_Integer argc, co
 
 }
 
+#include <BinXCAFDrivers.hxx>
+#include <Message.hxx>
+namespace
+{
+  class QABugs_XdeLoader : public OSD_Thread
+  {
+  public:
+    QABugs_XdeLoader (const Handle(TDocStd_Application)& theXdeApp,
+                      const Handle(TDocStd_Document)&    theXdeDoc,
+                      const TCollection_AsciiString&     theFilePath)
+    : OSD_Thread (performThread),
+      myXdeApp (theXdeApp), myXdeDoc (theXdeDoc), myFilePath (theFilePath) {}
+
+  private:
+    void perform()
+    {
+      Handle(TDocStd_Document) aNewDoc;
+      const PCDM_ReaderStatus aReaderStatus = myXdeApp->Open (myFilePath, aNewDoc);
+      if (aReaderStatus != PCDM_RS_OK)
+      {
+        Message::SendFail ("Error occurred while reading the file");
+        return;
+      }
+      myXdeDoc = aNewDoc;
+      Message::SendInfo() << "Info: document has been opened";
+    }
+
+    static Standard_Address performThread (Standard_Address theData)
+    {
+      QABugs_XdeLoader* aLoader = (QABugs_XdeLoader* )theData;
+      OSD::SetThreadLocalSignal (OSD_SignalMode_Set, false);
+      try
+      {
+        OCC_CATCH_SIGNALS
+        aLoader->perform();
+      }
+      catch (Standard_Failure const& theExcep)
+      {
+        Message::SendFail() << "Error: unexpected exception " << theExcep;
+        return 0;
+      }
+      return 0;
+    }
+  private:
+    Handle(TDocStd_Application) myXdeApp;
+    Handle(TDocStd_Document)    myXdeDoc;
+    TCollection_AsciiString     myFilePath;
+  };
+}
+
+//=======================================================================
+//function : OCC31785
+//purpose  : Try reading XBF file in background thread
+//=======================================================================
+static Standard_Integer OCC31785 (Draw_Interpretor& theDI,
+                                  Standard_Integer theNbArgs,
+                                  const char** theArgVec)
+{
+  if (theNbArgs != 2)
+  {
+    theDI << "Syntax error: wrong number of arguments\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aFileName (theArgVec[1]);
+
+  Handle(TDocStd_Application) anXdeApp = new TDocStd_Application();
+  BinXCAFDrivers::DefineFormat (anXdeApp);
+
+  Handle(TDocStd_Document) anXdeDoc;
+  anXdeApp->NewDocument (TCollection_ExtendedString ("BinXCAF"), anXdeDoc);
+  QABugs_XdeLoader aLoader (anXdeApp, anXdeDoc, aFileName);
+  aLoader.Run (&aLoader);
+  aLoader.Wait();
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3864,6 +3940,10 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC31697", "OCC31697 expression variable", __FILE__, OCC31697, group);
 
   theCommands.Add("OCC31320", "OCC31320 DocName ObjName : tests remove of the children GetFather method if father is removed", __FILE__, OCC31320, group);
+
+  theCommands.Add("OCC31785",
+                  "OCC31785 file.xbf : test reading XBF file in another thread",
+                  __FILE__, OCC31785, group);
 
   return;
 }
