@@ -28,31 +28,31 @@ class IMeshData_ParametersListArrayAdaptor : public Standard_Transient
 public:
 
   //! Constructor. Initializes tool by the given parameters.
-  Standard_EXPORT IMeshData_ParametersListArrayAdaptor(
+  IMeshData_ParametersListArrayAdaptor(
     const ParametersListPtrType& theParameters)
     : myParameters (theParameters)
   {
   }
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshData_ParametersListArrayAdaptor()
+  virtual ~IMeshData_ParametersListArrayAdaptor()
   {
   }
 
   //! Returns lower index in parameters array.
-  Standard_EXPORT Standard_Integer Lower() const
+  Standard_Integer Lower() const
   {
     return 0;
   }
 
   //! Returns upper index in parameters array.
-  Standard_EXPORT Standard_Integer Upper() const
+  Standard_Integer Upper() const
   {
     return myParameters->ParametersNb() - 1;
   }
 
   //! Returns value of the given index.
-  Standard_EXPORT Standard_Real Value(const Standard_Integer theIndex) const
+  Standard_Real Value(const Standard_Integer theIndex) const
   {
     return myParameters->GetParameter(theIndex);
   }

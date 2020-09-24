@@ -47,7 +47,7 @@ public:
     const TopoDS_Wire&     theWire,
     const Standard_Integer theEdgeNb = 0) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMeshData_Face, IMeshData_Face)
+  DEFINE_STANDARD_RTTIEXT(BRepMeshData_Face, IMeshData_Face)
 
 private:
 

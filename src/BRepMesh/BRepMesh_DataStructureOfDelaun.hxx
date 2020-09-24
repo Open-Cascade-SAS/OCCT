@@ -42,7 +42,7 @@ public:
 public: //! @name API for accessing mesh nodes.
 
   //! Returns number of nodes.
-  inline Standard_Integer NbNodes() const
+  Standard_Integer NbNodes() const
   {
     return myNodes->Extent();
   }
@@ -68,7 +68,7 @@ public: //! @name API for accessing mesh nodes.
   //! Get node by the index.
   //! @param theIndex index of a node.
   //! @return node with the given index.
-  inline const BRepMesh_Vertex& GetNode(const Standard_Integer theIndex)
+  const BRepMesh_Vertex& GetNode(const Standard_Integer theIndex)
   {
     return myNodes->FindKey(theIndex);
   }
@@ -105,7 +105,7 @@ public: //! @name API for accessing mesh nodes.
   //! Get list of links attached to the node with the given index.
   //! @param theIndex index of node whose links should be retrieved.
   //! @return list of links attached to the node.
-  inline const IMeshData::ListOfInteger& LinksConnectedTo(
+  const IMeshData::ListOfInteger& LinksConnectedTo(
     const Standard_Integer theIndex) const
   {
     return linksConnectedTo(theIndex);
@@ -115,7 +115,7 @@ public: //! @name API for accessing mesh nodes.
 public: //! @name API for accessing mesh links.
 
   //! Returns number of links.
-  inline Standard_Integer NbLinks() const
+  Standard_Integer NbLinks() const
   {
     return myLinks.Extent();
   }
@@ -142,7 +142,7 @@ public: //! @name API for accessing mesh links.
   }
 
   //! Returns map of indices of links registered in mesh.
-  inline const IMeshData::MapOfInteger& LinksOfDomain() const
+  const IMeshData::MapOfInteger& LinksOfDomain() const
   {
     return myLinksOfDomain;
   }
@@ -176,7 +176,7 @@ public: //! @name API for accessing mesh links.
 public: //! @name API for accessing mesh elements.
 
   //! Returns number of links.
-  inline Standard_Integer NbElements() const
+  Standard_Integer NbElements() const
   {
     return myElements.Size();
   }
@@ -195,7 +195,7 @@ public: //! @name API for accessing mesh elements.
   }
 
   //! Returns map of indices of elements registered in mesh.
-  inline const IMeshData::MapOfInteger& ElementsOfDomain() const
+  const IMeshData::MapOfInteger& ElementsOfDomain() const
   {
     return myElementsOfDomain;
   }
@@ -229,13 +229,13 @@ public: //! @name Auxilary API
   Standard_EXPORT void Statistics(Standard_OStream& theStream) const;
   
   //! Returns memory allocator used by the structure.
-  inline const Handle(NCollection_IncAllocator)& Allocator() const
+  const Handle(NCollection_IncAllocator)& Allocator() const
   {
     return myAllocator;
   }
 
   //! Gives the data structure for initialization of cell size and tolerance.
-  inline const Handle(BRepMesh_VertexTool)& Data()
+  const Handle(BRepMesh_VertexTool)& Data()
   {
     return myNodes;
   }
@@ -251,14 +251,14 @@ public: //! @name Auxilary API
     clearDeletedNodes();
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_DataStructureOfDelaun, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_DataStructureOfDelaun, Standard_Transient)
 
 private: 
 
   //! Get list of links attached to the node with the given index.
   //! @param theIndex index of node whose links should be retrieved.
   //! @return list of links attached to the node.
-  inline IMeshData::ListOfInteger& linksConnectedTo(
+  IMeshData::ListOfInteger& linksConnectedTo(
     const Standard_Integer theIndex) const
   {
     return (IMeshData::ListOfInteger&)myNodeLinks.Find(theIndex);

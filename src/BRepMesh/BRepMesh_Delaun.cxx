@@ -71,7 +71,7 @@ namespace {
     Handle(BRepMesh_DataStructureOfDelaun) myStructure;
   };
 
-  inline void UpdateBndBox(const gp_XY& thePnt1, const gp_XY& thePnt2, Bnd_B2d& theBox)
+  void UpdateBndBox(const gp_XY& thePnt1, const gp_XY& thePnt2, Bnd_B2d& theBox)
   {
     theBox.Add( thePnt1 );
     theBox.Add( thePnt2 );

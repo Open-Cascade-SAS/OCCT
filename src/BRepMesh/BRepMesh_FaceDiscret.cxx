@@ -21,6 +21,8 @@
 #include <IMeshTools_MeshAlgo.hxx>
 #include <OSD_Parallel.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceDiscret, IMeshTools_ModelAlgo)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

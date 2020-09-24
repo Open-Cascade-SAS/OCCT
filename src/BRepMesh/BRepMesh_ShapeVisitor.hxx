@@ -49,7 +49,7 @@ public:
   //! Handles TopoDS_Edge object.
   Standard_EXPORT virtual void Visit (const TopoDS_Edge& theEdge) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ShapeVisitor, IMeshTools_ShapeVisitor)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_ShapeVisitor, IMeshTools_ShapeVisitor)
 
 private:
 

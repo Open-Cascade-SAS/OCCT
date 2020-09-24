@@ -32,21 +32,21 @@ class BRepMesh_CustomBaseMeshAlgo : public BRepMesh_ConstrainedBaseMeshAlgo
 public:
 
   //! Constructor.
-  Standard_EXPORT BRepMesh_CustomBaseMeshAlgo ()
+  BRepMesh_CustomBaseMeshAlgo ()
   {
   }
 
   //! Destructor.
-  Standard_EXPORT virtual ~BRepMesh_CustomBaseMeshAlgo ()
+  virtual ~BRepMesh_CustomBaseMeshAlgo ()
   {
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_CustomBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_CustomBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
 
 protected:
 
   //! Generates mesh for the contour stored in data structure.
-  Standard_EXPORT virtual void generateMesh (const Message_ProgressRange& theRange) Standard_OVERRIDE
+  virtual void generateMesh (const Message_ProgressRange& theRange) Standard_OVERRIDE
   {
     const Handle (BRepMesh_DataStructureOfDelaun)& aStructure = this->getStructure ();
     const Standard_Integer aNodesNb = aStructure->NbNodes ();

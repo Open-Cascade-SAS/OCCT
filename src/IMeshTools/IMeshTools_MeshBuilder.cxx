@@ -17,6 +17,8 @@
 #include <IMeshData_Face.hxx>
 #include <OSD_Parallel.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IMeshTools_MeshBuilder, Message_Algorithm)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

@@ -30,7 +30,7 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_Context ();
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_Context, IMeshTools_Context)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_Context, IMeshTools_Context)
 };
 
 #endif

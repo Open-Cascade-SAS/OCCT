@@ -99,15 +99,15 @@ public:
   //! @param theIsReplace if TRUE replaces existing point lying within 
   //! parameteric tolerance of the given point.
   //! @return index of new added point or found with parametric tolerance
-  inline Standard_Integer AddPoint(const gp_Pnt&           thePoint,
-                                   const Standard_Real     theParam,
-                                   const Standard_Boolean  theIsReplace = Standard_True)
+  Standard_Integer AddPoint(const gp_Pnt&           thePoint,
+                            const Standard_Real     theParam,
+                            const Standard_Boolean  theIsReplace = Standard_True)
   {
     return myDiscretTool.AddPoint(thePoint, theParam, theIsReplace);
   }
   
   //! Returns number of discretization points.
-  inline Standard_Integer NbPoints() const
+  Standard_Integer NbPoints() const
   {
     return myDiscretTool.NbPoints();
   }

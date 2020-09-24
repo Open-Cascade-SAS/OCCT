@@ -84,13 +84,13 @@ public:
   Standard_EXPORT Standard_Boolean UseEdge (const Standard_Integer theEdge);
 
   //! Gives the Mesh data structure.
-  inline const Handle(BRepMesh_DataStructureOfDelaun)& Result() const
+  const Handle(BRepMesh_DataStructureOfDelaun)& Result() const
   {
     return myMeshData;
   }
 
   //! Forces insertion of constraint edges into the base triangulation. 
-  inline void ProcessConstraints()
+  void ProcessConstraints()
   {
     insertInternalEdges();
 
@@ -99,43 +99,43 @@ public:
   }
 
   //! Gives the list of frontier edges.
-  inline Handle(IMeshData::MapOfInteger) Frontier() const
+  Handle(IMeshData::MapOfInteger) Frontier() const
   {
     return getEdgesByType (BRepMesh_Frontier);
   }
 
   //! Gives the list of internal edges.
-  inline Handle(IMeshData::MapOfInteger) InternalEdges() const
+  Handle(IMeshData::MapOfInteger) InternalEdges() const
   {
     return getEdgesByType (BRepMesh_Fixed);
   }
 
   //! Gives the list of free edges used only one time
-  inline Handle(IMeshData::MapOfInteger) FreeEdges() const
+  Handle(IMeshData::MapOfInteger) FreeEdges() const
   {
     return getEdgesByType (BRepMesh_Free);
   }
 
   //! Gives vertex with the given index
-  inline const BRepMesh_Vertex& GetVertex (const Standard_Integer theIndex) const
+  const BRepMesh_Vertex& GetVertex (const Standard_Integer theIndex) const
   {
     return myMeshData->GetNode (theIndex);
   }
 
   //! Gives edge with the given index
-  inline const BRepMesh_Edge& GetEdge (const Standard_Integer theIndex) const
+  const BRepMesh_Edge& GetEdge (const Standard_Integer theIndex) const
   {
     return myMeshData->GetLink (theIndex);
   }
 
   //! Gives triangle with the given index
-  inline const BRepMesh_Triangle& GetTriangle (const Standard_Integer theIndex) const
+  const BRepMesh_Triangle& GetTriangle (const Standard_Integer theIndex) const
   {
     return myMeshData->GetElement (theIndex);
   }
 
   //! Returns tool used to build mesh consistent to Delaunay criteria.
-  inline const BRepMesh_CircleTool& Circles() const
+  const BRepMesh_CircleTool& Circles() const
   {
     return myCircles;
   }
@@ -260,16 +260,16 @@ private:
     IMeshData::SequenceOfBndB2d&  thePolyBoxesCut);
 
   //! Triangulation of closed polygon containing only three edges.
-  inline Standard_Boolean meshElementaryPolygon (const IMeshData::SequenceOfInteger& thePolygon);
+  Standard_Boolean meshElementaryPolygon (const IMeshData::SequenceOfInteger& thePolygon);
 
   //! Creates the triangles beetween the given node and the given polyline.
   void createTriangles (const Standard_Integer         theVertexIndex,
                         IMeshData::MapOfIntegerInteger& thePoly);
 
   //! Add a triangle based on the given oriented edges into mesh
-  inline void addTriangle (const Standard_Integer (&theEdgesId)[3],
-                           const Standard_Boolean (&theEdgesOri)[3],
-                           const Standard_Integer (&theNodesId)[3]);
+  void addTriangle (const Standard_Integer (&theEdgesId)[3],
+                    const Standard_Boolean (&theEdgesOri)[3],
+                    const Standard_Integer (&theNodesId)[3]);
 
   //! Deletes the triangle with the given index and adds the free edges into the map.
   //! When an edge is suppressed more than one time it is destroyed.

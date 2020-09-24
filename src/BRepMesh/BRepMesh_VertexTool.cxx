@@ -16,6 +16,8 @@
 #include <BRepMesh_VertexTool.hxx>
 #include <Precision.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_VertexTool, Standard_Transient)
+
 //=======================================================================
 //function : Inspect
 //purpose  : 

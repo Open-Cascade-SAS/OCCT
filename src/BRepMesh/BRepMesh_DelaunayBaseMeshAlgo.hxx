@@ -35,7 +35,7 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_DelaunayBaseMeshAlgo();
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
 
 protected:
 

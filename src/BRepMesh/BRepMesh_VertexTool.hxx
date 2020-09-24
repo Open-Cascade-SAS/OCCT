@@ -99,19 +99,19 @@ public:
   Standard_EXPORT void DeleteVertex(const Standard_Integer theIndex);
 
   //! Returns set of mesh vertices.
-  inline const Handle(IMeshData::VectorOfVertex)& Vertices() const
+  const Handle(IMeshData::VectorOfVertex)& Vertices() const
   {
     return mySelector.Vertices();
   }
 
   //! Returns set of mesh vertices.
-  inline Handle(IMeshData::VectorOfVertex)& ChangeVertices()
+  Handle(IMeshData::VectorOfVertex)& ChangeVertices()
   {
     return mySelector.ChangeVertices();
   }
 
   //! Returns vertex by the given index.
-  inline const BRepMesh_Vertex& FindKey(const Standard_Integer theIndex)
+  const BRepMesh_Vertex& FindKey(const Standard_Integer theIndex)
   {
     return mySelector.GetVertex(theIndex);
   }
@@ -125,13 +125,13 @@ public:
   }
 
   //! Returns a number of vertices.
-  inline Standard_Integer Extent() const
+  Standard_Integer Extent() const
   {
     return mySelector.NbVertices();
   }
 
   //! Returns True when the map contains no keys. <br>
-  inline Standard_Boolean IsEmpty() const
+  Standard_Boolean IsEmpty() const
   {
     return (Extent() == 0);
   }
@@ -143,14 +143,14 @@ public:
                                   const BRepMesh_Vertex& theVertex);
 
   //! Remove last node from the structure.
-  inline void RemoveLast()
+  void RemoveLast()
   {
     DeleteVertex(Extent());
   }
 
   //! Returns the list with indexes of vertices that have movability attribute
   //! equal to BRepMesh_Deleted and can be replaced with another node.
-  inline const IMeshData::ListOfInteger& GetListOfDelNodes() const
+  const IMeshData::ListOfInteger& GetListOfDelNodes() const
   {
     return mySelector.GetListOfDelPoints();
   }
@@ -158,7 +158,7 @@ public:
   //! Prints statistics.
   Standard_EXPORT void Statistics(Standard_OStream& theStream) const;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_VertexTool, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_VertexTool, Standard_Transient)
 
 private:
   
@@ -166,9 +166,9 @@ private:
   //! @param thePoint point to be expanded.
   //! @param[out] theMinPoint bottom left corner of area defined by expanded point.
   //! @param[out] theMaxPoint top right corner of area defined by expanded point.
-  inline void expandPoint(const gp_XY& thePoint,
-                          gp_XY&       theMinPoint,
-                          gp_XY&       theMaxPoint)
+  void expandPoint(const gp_XY& thePoint,
+                   gp_XY&       theMinPoint,
+                   gp_XY&       theMaxPoint)
   {
     theMinPoint.SetX(thePoint.X() - myTolerance[0]);
     theMinPoint.SetY(thePoint.Y() - myTolerance[1]);

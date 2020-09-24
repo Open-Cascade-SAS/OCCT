@@ -20,6 +20,8 @@
 #include <IMeshData_PCurve.hxx>
 #include <OSD_Parallel.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelPostProcessor, IMeshTools_ModelAlgo)
+
 namespace
 {
   //! Commits 3D polygons and polygons on triangulations for corresponding edges.

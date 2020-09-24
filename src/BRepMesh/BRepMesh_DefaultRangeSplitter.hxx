@@ -70,7 +70,7 @@ public:
 
   //! Returns point in 3d space corresponded to the given 
   //! point defined in parameteric space of surface.
-  inline gp_Pnt Point(const gp_Pnt2d& thePoint2d) const
+  gp_Pnt Point(const gp_Pnt2d& thePoint2d) const
   {
     return GetSurface()->Value(thePoint2d.X(), thePoint2d.Y());
   }
@@ -85,36 +85,36 @@ protected:
 
 public:
   //! Returns face model.
-  inline const IMeshData::IFaceHandle& GetDFace() const
+  const IMeshData::IFaceHandle& GetDFace() const
   {
     return myDFace;
   }
 
   //! Returns surface.
-  inline const Handle(BRepAdaptor_HSurface)& GetSurface() const
+  const Handle(BRepAdaptor_HSurface)& GetSurface() const
   {
     return myDFace->GetSurface();
   }
 
   //! Returns U range.
-  inline const std::pair<Standard_Real, Standard_Real>& GetRangeU() const
+  const std::pair<Standard_Real, Standard_Real>& GetRangeU() const
   {
     return myRangeU;
   }
 
   //! Returns V range.
-  inline const std::pair<Standard_Real, Standard_Real>& GetRangeV() const
+  const std::pair<Standard_Real, Standard_Real>& GetRangeV() const
   {
     return myRangeV;
   }
 
   //! Returns delta.
-  inline const std::pair<Standard_Real, Standard_Real>& GetDelta () const
+  const std::pair<Standard_Real, Standard_Real>& GetDelta () const
   {
     return myDelta;
   }
 
-  inline const std::pair<Standard_Real, Standard_Real>& GetToleranceUV() const
+  const std::pair<Standard_Real, Standard_Real>& GetToleranceUV() const
   {
     return myTolerance;
   }

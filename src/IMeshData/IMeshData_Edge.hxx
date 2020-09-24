@@ -34,12 +34,12 @@ class IMeshData_Edge : public IMeshData_TessellatedShape, public IMeshData_Statu
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshData_Edge()
+  virtual ~IMeshData_Edge()
   {
   }
 
   //! Returns TopoDS_Edge attached to model.
-  inline const TopoDS_Edge& GetEdge () const
+  const TopoDS_Edge& GetEdge () const
   {
     return TopoDS::Edge (GetShape ());
   }
@@ -62,7 +62,7 @@ public:
     const Standard_Integer theIndex) const = 0;
 
   //! Clears curve and all pcurves assigned to the edge from discretization.
-  inline void Clear(const Standard_Boolean isKeepEndPoints)
+  void Clear(const Standard_Boolean isKeepEndPoints)
   {
     myCurve->Clear(isKeepEndPoints);
     for (Standard_Integer aPCurveIt = 0; aPCurveIt < PCurvesNb(); ++aPCurveIt)
@@ -72,81 +72,81 @@ public:
   }
 
   //! Returns true in case if the edge is free one, i.e. it does not have pcurves.
-  inline Standard_Boolean IsFree () const
+  Standard_Boolean IsFree () const
   {
     return (PCurvesNb () == 0);
   }
 
   //! Sets 3d curve associated with current edge.
-  inline void SetCurve (const IMeshData::ICurveHandle& theCurve)
+  void SetCurve (const IMeshData::ICurveHandle& theCurve)
   {
     myCurve = theCurve;
   }
 
   //! Returns 3d curve associated with current edge.
-  inline const IMeshData::ICurveHandle& GetCurve () const
+  const IMeshData::ICurveHandle& GetCurve () const
   {
     return myCurve;
   }
 
   //! Gets value of angular deflection for the discrete model.
-  inline Standard_Real GetAngularDeflection () const
+  Standard_Real GetAngularDeflection () const
   {
     return myAngDeflection;
   }
 
   //! Sets value of angular deflection for the discrete model.
-  inline void SetAngularDeflection (const Standard_Real theValue)
+  void SetAngularDeflection (const Standard_Real theValue)
   {
     myAngDeflection = theValue;
   }
 
   //! Returns same param flag.
   //! By default equals to flag stored in topological shape.
-  inline Standard_Boolean GetSameParam () const
+  Standard_Boolean GetSameParam () const
   {
     return mySameParam;
   }
 
   //! Updates same param flag.
-  inline void SetSameParam (const Standard_Boolean theValue)
+  void SetSameParam (const Standard_Boolean theValue)
   {
     mySameParam = theValue;
   }
 
   //! Returns same range flag.
   //! By default equals to flag stored in topological shape.
-  inline Standard_Boolean GetSameRange () const
+  Standard_Boolean GetSameRange () const
   {
     return mySameRange;
   }
 
   //! Updates same range flag.
-  inline void SetSameRange (const Standard_Boolean theValue)
+  void SetSameRange (const Standard_Boolean theValue)
   {
     mySameRange = theValue;
   }
 
   //! Returns degenerative flag.
   //! By default equals to flag stored in topological shape.
-  inline Standard_Boolean GetDegenerated () const
+  Standard_Boolean GetDegenerated () const
   {
     return myDegenerated;
   }
 
   //! Updates degenerative flag.
-  inline void SetDegenerated (const Standard_Boolean theValue)
+  void SetDegenerated (const Standard_Boolean theValue)
   {
     myDegenerated = theValue;
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshData_Edge, IMeshData_TessellatedShape)
+  DEFINE_STANDARD_RTTIEXT(IMeshData_Edge, IMeshData_TessellatedShape)
 
 protected:
 
   //! Constructor.
   //! Initializes empty model.
-  Standard_EXPORT IMeshData_Edge (const TopoDS_Edge& theEdge)
+  IMeshData_Edge (const TopoDS_Edge& theEdge)
     : IMeshData_TessellatedShape(theEdge),
       mySameParam  (BRep_Tool::SameParameter(theEdge)),
       mySameRange  (BRep_Tool::SameRange    (theEdge)),

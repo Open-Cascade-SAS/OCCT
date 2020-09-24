@@ -22,6 +22,8 @@
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

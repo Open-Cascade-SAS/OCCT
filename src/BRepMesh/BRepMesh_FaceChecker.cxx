@@ -19,6 +19,8 @@
 #include <OSD_Parallel.hxx>
 #include <BRepMesh_GeomTool.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_FaceChecker, Standard_Transient)
+
 namespace
 {
   const Standard_Real MaxTangentAngle = 5. * M_PI / 180.;

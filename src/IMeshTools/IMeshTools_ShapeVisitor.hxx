@@ -28,7 +28,7 @@ class IMeshTools_ShapeVisitor : public Standard_Transient
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshTools_ShapeVisitor()
+  virtual ~IMeshTools_ShapeVisitor()
   {
   }
 
@@ -38,12 +38,12 @@ public:
   //! Handles TopoDS_Edge object.
   Standard_EXPORT virtual void Visit (const TopoDS_Edge& theEdge) = 0;
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshTools_ShapeVisitor, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IMeshTools_ShapeVisitor, Standard_Transient)
 
 protected:
 
   //! Constructor.
-  Standard_EXPORT IMeshTools_ShapeVisitor()
+  IMeshTools_ShapeVisitor()
   {
   }
 };

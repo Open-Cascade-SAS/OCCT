@@ -49,7 +49,7 @@ public:
       mySign = myConstraint.Direction().X() > 0;
     }
 
-    inline Standard_Boolean IsAbove(const Standard_Integer theNodeIndex) const
+    Standard_Boolean IsAbove(const Standard_Integer theNodeIndex) const
     {
       const BRepMesh_Vertex& aVertex = myStructure->GetNode(theNodeIndex);
       const gp_Vec2d aNodeVec(myConstraint.Location(), aVertex.Coord());
@@ -88,7 +88,7 @@ public:
   Standard_EXPORT virtual ~BRepMesh_MeshTool();
 
   //! Returns data structure manipulated by this tool.
-  inline const Handle(BRepMesh_DataStructureOfDelaun)& GetStructure() const
+  const Handle(BRepMesh_DataStructureOfDelaun)& GetStructure() const
   {
     return myStructure;
   }
@@ -98,7 +98,7 @@ public:
 
   //! Adds new triangle with specified nodes to mesh.
   //! Legalizes triangle in case if it violates circle criteria.
-  inline void AddAndLegalizeTriangle(
+  void AddAndLegalizeTriangle(
     const Standard_Integer thePoint1,
     const Standard_Integer thePoint2,
     const Standard_Integer thePoint3)
@@ -112,7 +112,7 @@ public:
   }
 
   //! Adds new triangle with specified nodes to mesh.
-  inline void AddTriangle(
+  void AddTriangle(
     const Standard_Integer thePoint1,
     const Standard_Integer thePoint2,
     const Standard_Integer thePoint3,
@@ -128,10 +128,10 @@ public:
 
   //! Adds new link to mesh.
   //! Updates link index and link orientaion parameters.
-  inline void AddLink(const Standard_Integer theFirstNode,
-                      const Standard_Integer theLastNode,
-                      Standard_Integer&      theLinkIndex,
-                      Standard_Boolean&      theLinkOri)
+  void AddLink(const Standard_Integer theFirstNode,
+               const Standard_Integer theLastNode,
+               Standard_Integer&      theLinkIndex,
+               Standard_Boolean&      theLinkOri)
   {
     const Standard_Integer aLinkIt = myStructure->AddLink(
       BRepMesh_Edge(theFirstNode, theLastNode, BRepMesh_Free));
@@ -169,12 +169,12 @@ public:
   //! Gives the list of edges with type defined by input parameter.
   Standard_EXPORT Handle(IMeshData::MapOfInteger) GetEdgesByType(const BRepMesh_DegreeOfFreedom theEdgeType) const;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_MeshTool, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_MeshTool, Standard_Transient)
 
 private:
 
   //! Returns True if the given point lies within circumcircle of the given triangle.
-  inline Standard_Boolean checkCircle(
+  Standard_Boolean checkCircle(
     const Standard_Integer(&aNodes)[3],
     const Standard_Integer thePoint)
   {
@@ -200,7 +200,7 @@ private:
 
   //! Adds new triangle with the given nodes and updates
   //! links stack by ones are not in used map.
-  inline void addTriangleAndUpdateStack(
+  void addTriangleAndUpdateStack(
     const Standard_Integer         theNode0,
     const Standard_Integer         theNode1,
     const Standard_Integer         theNode2,

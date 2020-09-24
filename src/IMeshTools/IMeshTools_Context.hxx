@@ -32,18 +32,18 @@ class IMeshTools_Context : public IMeshData_Shape
 public:
 
   //! Constructor.
-  Standard_EXPORT IMeshTools_Context()
+  IMeshTools_Context()
   {
   }
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshTools_Context()
+  virtual ~IMeshTools_Context()
   {
   }
 
   //! Builds model using assined model builder.
   //! @return True on success, False elsewhere.
-  Standard_EXPORT virtual Standard_Boolean BuildModel ()
+  virtual Standard_Boolean BuildModel ()
   {
     if (myModelBuilder.IsNull())
     {
@@ -57,7 +57,7 @@ public:
 
   //! Performs discretization of model edges using assigned edge discret algorithm.
   //! @return True on success, False elsewhere.
-  Standard_EXPORT virtual Standard_Boolean DiscretizeEdges()
+  virtual Standard_Boolean DiscretizeEdges()
   {
     if (myModel.IsNull() || myEdgeDiscret.IsNull())
     {
@@ -71,7 +71,7 @@ public:
   //! Performs healing of discrete model built by DiscretizeEdges() method
   //! using assigned healing algorithm.
   //! @return True on success, False elsewhere.
-  Standard_EXPORT virtual Standard_Boolean HealModel()
+  virtual Standard_Boolean HealModel()
   {
     if (myModel.IsNull())
     {
@@ -86,7 +86,7 @@ public:
   //! Performs pre-processing of discrete model using assigned algorithm.
   //! Performs auxiliary actions such as cleaning shape from old triangulation.
   //! @return True on success, False elsewhere.
-  Standard_EXPORT virtual Standard_Boolean PreProcessModel()
+  virtual Standard_Boolean PreProcessModel()
   {
     if (myModel.IsNull())
     {
@@ -113,7 +113,7 @@ public:
 
   //! Performs post-processing of discrete model using assigned algorithm.
   //! @return True on success, False elsewhere.
-  Standard_EXPORT virtual Standard_Boolean PostProcessModel()
+  virtual Standard_Boolean PostProcessModel()
   {
     if (myModel.IsNull())
     {
@@ -126,7 +126,7 @@ public:
   }
 
   //! Cleans temporary context data.
-  Standard_EXPORT virtual void Clean()
+  virtual void Clean()
   {
     if (myParameters.CleanModel)
     {
@@ -135,96 +135,96 @@ public:
   }
 
   //! Gets instance of a tool to be used to build discrete model.
-  inline const Handle (IMeshTools_ModelBuilder)& GetModelBuilder () const
+  const Handle (IMeshTools_ModelBuilder)& GetModelBuilder () const
   {
     return myModelBuilder;
   }
 
   //! Sets instance of a tool to be used to build discrete model.
-  inline void SetModelBuilder (const Handle (IMeshTools_ModelBuilder)& theBuilder)
+  void SetModelBuilder (const Handle (IMeshTools_ModelBuilder)& theBuilder)
   {
     myModelBuilder = theBuilder;
   }
 
   //! Gets instance of a tool to be used to discretize edges of a model.
-  inline const Handle (IMeshTools_ModelAlgo)& GetEdgeDiscret () const
+  const Handle (IMeshTools_ModelAlgo)& GetEdgeDiscret () const
   {
     return myEdgeDiscret;
   }
 
   //! Sets instance of a tool to be used to discretize edges of a model.
-  inline void SetEdgeDiscret (const Handle (IMeshTools_ModelAlgo)& theEdgeDiscret)
+  void SetEdgeDiscret (const Handle (IMeshTools_ModelAlgo)& theEdgeDiscret)
   {
     myEdgeDiscret = theEdgeDiscret;
   }
 
   //! Gets instance of a tool to be used to heal discrete model.
-  inline const Handle(IMeshTools_ModelAlgo)& GetModelHealer() const
+  const Handle(IMeshTools_ModelAlgo)& GetModelHealer() const
   {
     return myModelHealer;
   }
 
   //! Sets instance of a tool to be used to heal discrete model.
-  inline void SetModelHealer(const Handle(IMeshTools_ModelAlgo)& theModelHealer)
+  void SetModelHealer(const Handle(IMeshTools_ModelAlgo)& theModelHealer)
   {
     myModelHealer = theModelHealer;
   }
 
   //! Gets instance of pre-processing algorithm.
-  inline const Handle(IMeshTools_ModelAlgo)& GetPreProcessor() const
+  const Handle(IMeshTools_ModelAlgo)& GetPreProcessor() const
   {
     return myPreProcessor;
   }
 
   //! Sets instance of pre-processing algorithm.
-  inline void SetPreProcessor(const Handle(IMeshTools_ModelAlgo)& thePreProcessor)
+  void SetPreProcessor(const Handle(IMeshTools_ModelAlgo)& thePreProcessor)
   {
     myPreProcessor = thePreProcessor;
   }
 
   //! Gets instance of meshing algorithm.
-  inline const Handle(IMeshTools_ModelAlgo)& GetFaceDiscret() const
+  const Handle(IMeshTools_ModelAlgo)& GetFaceDiscret() const
   {
     return myFaceDiscret;
   }
 
   //! Sets instance of meshing algorithm.
-  inline void SetFaceDiscret(const Handle(IMeshTools_ModelAlgo)& theFaceDiscret)
+  void SetFaceDiscret(const Handle(IMeshTools_ModelAlgo)& theFaceDiscret)
   {
     myFaceDiscret = theFaceDiscret;
   }
 
   //! Gets instance of post-processing algorithm.
-  inline const Handle(IMeshTools_ModelAlgo)& GetPostProcessor() const
+  const Handle(IMeshTools_ModelAlgo)& GetPostProcessor() const
   {
     return myPostProcessor;
   }
 
   //! Sets instance of post-processing algorithm.
-  inline void SetPostProcessor(const Handle(IMeshTools_ModelAlgo)& thePostProcessor)
+  void SetPostProcessor(const Handle(IMeshTools_ModelAlgo)& thePostProcessor)
   {
     myPostProcessor = thePostProcessor;
   }
 
   //! Gets parameters to be used for meshing.
-  inline const IMeshTools_Parameters& GetParameters () const 
+  const IMeshTools_Parameters& GetParameters () const 
   {
     return myParameters;
   }
 
   //! Gets reference to parameters to be used for meshing.
-  inline IMeshTools_Parameters& ChangeParameters ()
+  IMeshTools_Parameters& ChangeParameters ()
   {
     return myParameters;
   }
 
   //! Returns discrete model of a shape.
-  inline const Handle (IMeshData_Model)& GetModel () const
+  const Handle (IMeshData_Model)& GetModel () const
   {
     return myModel;
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshTools_Context, IMeshData_Shape)
+  DEFINE_STANDARD_RTTIEXT(IMeshTools_Context, IMeshData_Shape)
 
 private:
 

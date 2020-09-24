@@ -150,7 +150,7 @@ public:
     Standard_Real&          theLastParam,
     const Standard_Boolean  isConsiderOrientation = Standard_False);
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ShapeTool, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_ShapeTool, Standard_Transient)
 };
 
 #endif

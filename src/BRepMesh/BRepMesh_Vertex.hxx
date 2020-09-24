@@ -65,9 +65,9 @@ public:
   //! @param theUV position of vertex in parametric space.
   //! @param theLocation3d index of 3d point to be associated with vertex.
   //! @param theMovability movability of the vertex.
-  inline void Initialize(const gp_XY&                   theUV,
-                         const Standard_Integer         theLocation3d,
-                         const BRepMesh_DegreeOfFreedom theMovability)
+  void Initialize(const gp_XY&                   theUV,
+                  const Standard_Integer         theLocation3d,
+                  const BRepMesh_DegreeOfFreedom theMovability)
   {
     myUV         = theUV;
     myLocation3d = theLocation3d;
@@ -75,31 +75,31 @@ public:
   }
   
   //! Returns position of the vertex in parametric space.
-  inline const gp_XY& Coord() const
+  const gp_XY& Coord() const
   {
     return myUV;
   }
 
   //! Returns position of the vertex in parametric space for modification.
-  inline gp_XY& ChangeCoord()
+  gp_XY& ChangeCoord()
   {
     return myUV;
   }
   
   //! Returns index of 3d point associated with the vertex.
-  inline Standard_Integer Location3d() const
+  Standard_Integer Location3d() const
   {
     return myLocation3d;
   }
   
   //! Returns movability of the vertex.
-  inline BRepMesh_DegreeOfFreedom Movability() const
+  BRepMesh_DegreeOfFreedom Movability() const
   {
     return myMovability;
   }
   
   //! Sets movability of the vertex.
-  inline void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
+  void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
   {
     myMovability = theMovability;
   }
@@ -107,7 +107,7 @@ public:
   //! Computes a hash code for this vertex, in the range [1, theUpperBound]
   //! @param theUpperBound the upper bound of the range a computing hash code must be within
   //! @return a computed hash code, in the range [1, theUpperBound]
-  inline Standard_Integer HashCode(const Standard_Integer theUpperBound) const
+  Standard_Integer HashCode(const Standard_Integer theUpperBound) const
   {
     return ::HashCode(Floor(1e5 * myUV.X()) * Floor(1e5 * myUV.Y()), theUpperBound);
   }
@@ -115,7 +115,7 @@ public:
   //! Checks for equality with another vertex.
   //! @param theOther vertex to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  inline Standard_Boolean IsEqual(const BRepMesh_Vertex& theOther) const
+  Standard_Boolean IsEqual(const BRepMesh_Vertex& theOther) const
   {
     if (myMovability          == BRepMesh_Deleted || 
         theOther.myMovability == BRepMesh_Deleted)
@@ -127,7 +127,7 @@ public:
   }
 
   //! Alias for IsEqual.
-  inline Standard_Boolean operator ==(const BRepMesh_Vertex& Other) const
+  Standard_Boolean operator ==(const BRepMesh_Vertex& Other) const
   {
     return IsEqual(Other);
   }

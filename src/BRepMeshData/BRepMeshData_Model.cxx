@@ -21,6 +21,8 @@
 #include <BRepMesh_Vertex.hxx>
 #include <NCollection_IncAllocator.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_Model, IMeshData_Model)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

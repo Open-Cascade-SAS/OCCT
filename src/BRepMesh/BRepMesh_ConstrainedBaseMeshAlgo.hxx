@@ -39,7 +39,7 @@ public:
   {
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ConstrainedBaseMeshAlgo, BRepMesh_BaseMeshAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_ConstrainedBaseMeshAlgo, BRepMesh_BaseMeshAlgo)
 
 protected:
 

@@ -43,14 +43,14 @@ public:
   }
 
   //! Returns movability flag of the Link.
-  inline BRepMesh_DegreeOfFreedom Movability() const
+  BRepMesh_DegreeOfFreedom Movability() const
   {
     return myMovability;
   }
 
   //! Sets movability flag of the Link.
   //! @param theMovability flag to be set.
-  inline void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
+  void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
   {
     myMovability = theMovability;
   }
@@ -58,7 +58,7 @@ public:
   //! Checks if the given edge and this one have the same orientation.
   //! @param theOther edge to be checked against this one.
   //! \retrun TRUE if edges have the same orientation, FALSE if not.
-  inline Standard_Boolean IsSameOrientation(const BRepMesh_Edge& theOther) const
+  Standard_Boolean IsSameOrientation(const BRepMesh_Edge& theOther) const
   {
     return BRepMesh_OrientedEdge::IsEqual(theOther);
   }
@@ -66,7 +66,7 @@ public:
   //! Checks for equality with another edge.
   //! @param theOther edge to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  inline Standard_Boolean IsEqual(const BRepMesh_Edge& theOther) const
+  Standard_Boolean IsEqual(const BRepMesh_Edge& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
       return Standard_False;
@@ -76,7 +76,7 @@ public:
   }
 
   //! Alias for IsEqual.
-  inline Standard_Boolean operator ==(const BRepMesh_Edge& Other) const
+  Standard_Boolean operator ==(const BRepMesh_Edge& Other) const
   {
     return IsEqual(Other);
   }

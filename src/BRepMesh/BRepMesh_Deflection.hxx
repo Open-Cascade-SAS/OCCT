@@ -72,7 +72,7 @@ public:
     const Standard_Boolean theAllowDecrease,
     const Standard_Real theRatio = 0.1);
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_Deflection, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_Deflection, Standard_Transient)
 };
 
 #endif

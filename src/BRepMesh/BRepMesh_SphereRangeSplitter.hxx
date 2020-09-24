@@ -42,7 +42,7 @@ public:
 private:
 
   //! Computes step for the given range.
-  inline void computeStep(
+  void computeStep(
     const std::pair<Standard_Real, Standard_Real>& theRange,
     const Standard_Real                            theDefaultStep,
     std::pair<Standard_Real, Standard_Real>&       theStepAndOffset) const

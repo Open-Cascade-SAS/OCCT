@@ -36,7 +36,7 @@ class IMeshData_Face : public IMeshData_TessellatedShape, public IMeshData_Statu
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshData_Face()
+  virtual ~IMeshData_Face()
   {
   }
 
@@ -53,32 +53,32 @@ public:
     const Standard_Integer theIndex) const = 0;
 
   //! Returns face's surface.
-  inline const Handle(BRepAdaptor_HSurface)& GetSurface() const
+  const Handle(BRepAdaptor_HSurface)& GetSurface() const
   {
     return mySurface;
   }
 
   //! Returns TopoDS_Face attached to model.
-  inline const TopoDS_Face& GetFace () const
+  const TopoDS_Face& GetFace () const
   {
     return TopoDS::Face (GetShape ());
   }
 
   //! Returns whether the face discrete model is valid.
-  inline Standard_Boolean IsValid () const
+  Standard_Boolean IsValid () const
   {
     return (IsEqual(IMeshData_NoError) ||
             IsEqual(IMeshData_ReMesh)  ||
             IsEqual(IMeshData_UnorientedWire));
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshData_Face, IMeshData_TessellatedShape)
+  DEFINE_STANDARD_RTTIEXT(IMeshData_Face, IMeshData_TessellatedShape)
 
 protected:
 
   //! Constructor.
   //! Initializes empty model.
-  Standard_EXPORT IMeshData_Face (const TopoDS_Face& theFace)
+  IMeshData_Face (const TopoDS_Face& theFace)
     : IMeshData_TessellatedShape(theFace)
   {
     BRepAdaptor_Surface aSurfAdaptor(GetFace(), Standard_False);

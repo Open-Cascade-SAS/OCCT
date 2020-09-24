@@ -24,6 +24,8 @@
 #include <OSD_Parallel.hxx>
 #include <BRepMesh_ConeRangeSplitter.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ModelPreProcessor, IMeshTools_ModelAlgo)
+
 namespace
 {
   //! Checks consistency of triangulation stored in topological face.

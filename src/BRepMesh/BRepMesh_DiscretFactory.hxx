@@ -39,7 +39,7 @@ public:
   Standard_EXPORT static BRepMesh_DiscretFactory& Get();
   
   //! Returns the list of registered meshing algorithms.
-  inline const TColStd_MapOfAsciiString& Names() const
+  const TColStd_MapOfAsciiString& Names() const
   {
     return myNames;
   }
@@ -53,7 +53,7 @@ public:
   }
   
   //! Returns name for current meshing algorithm.
-  inline const TCollection_AsciiString& DefaultName() const
+  const TCollection_AsciiString& DefaultName() const
   {
     return myDefaultName;
   }
@@ -67,13 +67,13 @@ public:
   }
   
   //! Returns function name that should be exported by plugin.
-  inline const TCollection_AsciiString& FunctionName() const
+  const TCollection_AsciiString& FunctionName() const
   {
     return myFunctionName;
   }
   
   //! Returns error status for last meshing algorithm switch.
-  inline BRepMesh_FactoryError ErrorStatus() const
+  BRepMesh_FactoryError ErrorStatus() const
   {
     return myErrorStatus;
   }

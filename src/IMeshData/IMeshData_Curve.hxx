@@ -28,7 +28,7 @@ class IMeshData_Curve : public IMeshData_ParametersList
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshData_Curve()
+  virtual ~IMeshData_Curve()
   {
   }
 
@@ -49,12 +49,12 @@ public:
   //! Removes point with the given index.
   Standard_EXPORT virtual void RemovePoint (const Standard_Integer theIndex) = 0;
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshData_Curve, IMeshData_ParametersList)
+  DEFINE_STANDARD_RTTIEXT(IMeshData_Curve, IMeshData_ParametersList)
 
 protected:
 
   //! Constructor.
-  Standard_EXPORT IMeshData_Curve()
+  IMeshData_Curve()
   {
   }
 };

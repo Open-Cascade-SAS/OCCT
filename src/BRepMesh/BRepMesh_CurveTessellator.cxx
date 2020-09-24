@@ -28,6 +28,8 @@
 #include <Standard_Failure.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_CurveTessellator, IMeshTools_CurveTessellator)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

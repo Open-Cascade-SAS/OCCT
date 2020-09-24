@@ -20,6 +20,8 @@
 #include <IMeshData_Face.hxx>
 #include <IMeshData_Edge.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
+
 //=======================================================================
 //function : Constructor
 //purpose  : 

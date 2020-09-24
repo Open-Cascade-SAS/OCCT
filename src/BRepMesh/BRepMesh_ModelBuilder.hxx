@@ -36,7 +36,7 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_ModelBuilder ();
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_ModelBuilder, IMeshTools_ModelBuilder)
 
 protected:
 

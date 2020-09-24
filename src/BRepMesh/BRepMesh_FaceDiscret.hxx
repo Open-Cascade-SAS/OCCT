@@ -37,7 +37,7 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_FaceDiscret();
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_FaceDiscret, IMeshTools_ModelAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_FaceDiscret, IMeshTools_ModelAlgo)
 
 protected:
 

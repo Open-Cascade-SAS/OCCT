@@ -33,6 +33,8 @@
 #include <IMeshTools_Context.hxx>
 #include <BRepTools.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_ShapeVisitor, IMeshTools_ShapeVisitor)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

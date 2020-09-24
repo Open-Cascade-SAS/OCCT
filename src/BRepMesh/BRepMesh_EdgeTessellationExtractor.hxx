@@ -50,7 +50,7 @@ public:
     gp_Pnt&                thePoint,
     Standard_Real&         theParameter) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_EdgeTessellationExtractor, IMeshTools_CurveTessellator)
 
 private:
 

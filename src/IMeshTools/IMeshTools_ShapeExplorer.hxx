@@ -35,7 +35,7 @@ public:
   //! Starts exploring of a shape.
   Standard_EXPORT virtual void Accept (const Handle (IMeshTools_ShapeVisitor)& theVisitor);
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshTools_ShapeExplorer, IMeshData_Shape)
+  DEFINE_STANDARD_RTTIEXT(IMeshTools_ShapeExplorer, IMeshData_Shape)
 };
 
 #endif

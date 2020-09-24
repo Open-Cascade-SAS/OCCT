@@ -31,7 +31,7 @@ class IMeshTools_ModelAlgo : public Standard_Transient
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshTools_ModelAlgo()
+  virtual ~IMeshTools_ModelAlgo()
   {
   }
 
@@ -53,12 +53,12 @@ public:
     }
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshTools_ModelAlgo, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IMeshTools_ModelAlgo, Standard_Transient)
 
 protected:
 
   //! Constructor.
-  Standard_EXPORT IMeshTools_ModelAlgo()
+  IMeshTools_ModelAlgo()
   {
   }
 

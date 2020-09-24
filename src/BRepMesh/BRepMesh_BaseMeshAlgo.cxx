@@ -24,6 +24,8 @@
 #include <BRepMesh_ShapeTool.hxx>
 #include <Standard_ErrorHandler.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

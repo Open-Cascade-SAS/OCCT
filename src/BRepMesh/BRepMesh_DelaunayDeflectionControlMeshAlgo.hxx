@@ -193,7 +193,7 @@ private:
   };
 
   //! Returns nodes info of the given triangle.
-  inline void getTriangleInfo(
+  void getTriangleInfo(
     const BRepMesh_Triangle& theTriangle,
     const Standard_Integer (&theNodesIndices)[3],
     TriangleNodeInfo       (&theInfo)[3]) const
@@ -237,7 +237,7 @@ private:
 
   //! Updates array of links vectors.
   //! @return False on degenerative triangle.
-  inline Standard_Boolean computeTriangleGeometry(
+  Standard_Boolean computeTriangleGeometry(
     const TriangleNodeInfo(&theNodesInfo)[3],
     gp_Vec                (&theLinks)[3],
     gp_Vec                 &theNormal)
@@ -258,7 +258,7 @@ private:
 
   //! Updates array of links vectors.
   //! @return False on degenerative triangle.
-  inline Standard_Boolean checkTriangleForDegenerativityAndGetLinks(
+  Standard_Boolean checkTriangleForDegenerativityAndGetLinks(
     const TriangleNodeInfo (&theNodesInfo)[3],
     gp_Vec                 (&theLinks)[3])
   {
@@ -277,7 +277,7 @@ private:
 
   //! Checks area of triangle in parametric space for degenerativity.
   //! @return False on degenerative triangle.
-  inline Standard_Boolean checkTriangleArea2d(
+  Standard_Boolean checkTriangleArea2d(
     const TriangleNodeInfo (&theNodesInfo)[3])
   {
     const gp_Vec2d aLink2d1(theNodesInfo[0].Point2d, theNodesInfo[1].Point2d);
@@ -289,9 +289,9 @@ private:
 
   //! Computes normal using two link vectors.
   //! @return True on success, False in case of normal of null magnitude.
-  inline Standard_Boolean computeNormal(const gp_Vec& theLink1,
-                                        const gp_Vec& theLink2,
-                                        gp_Vec&       theNormal)
+  Standard_Boolean computeNormal(const gp_Vec& theLink1,
+                                 const gp_Vec& theLink2,
+                                 gp_Vec&       theNormal)
   {
     const gp_Vec aNormal(theLink1 ^ theLink2);
     if (aNormal.SquareMagnitude() > gp::Resolution())
@@ -305,7 +305,7 @@ private:
 
   //! Computes deflection of midpoints of triangles links.
   //! @return True if point fits specified deflection.
-  inline void splitLinks(
+  void splitLinks(
     const TriangleNodeInfo (&theNodesInfo)[3],
     const Standard_Integer (&theNodesIndices)[3])
   {
@@ -385,7 +385,7 @@ private:
   //! insertion in case if it overflows deflection.
   //! @return True if point has been cached for insertion.
   template<class DeflectionFunctor>
-  inline Standard_Boolean usePoint(
+  Standard_Boolean usePoint(
     const gp_XY&             thePnt2d,
     const DeflectionFunctor& theDeflectionFunctor)
   {

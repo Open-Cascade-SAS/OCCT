@@ -25,6 +25,8 @@
 #include <TopTools_MapOfShape.hxx>
 #include <Geom_Surface.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(IMeshTools_ShapeExplorer, IMeshData_Shape)
+
 namespace
 {
   //=======================================================================

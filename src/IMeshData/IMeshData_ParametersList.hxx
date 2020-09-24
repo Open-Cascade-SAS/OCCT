@@ -25,7 +25,7 @@ class IMeshData_ParametersList : public Standard_Transient
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshData_ParametersList()
+  virtual ~IMeshData_ParametersList()
   {
   }
 
@@ -38,12 +38,12 @@ public:
   //! Clears parameters list.
   Standard_EXPORT virtual void Clear(const Standard_Boolean isKeepEndPoints) = 0;
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshData_ParametersList, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(IMeshData_ParametersList, Standard_Transient)
 
 protected:
 
   //! Constructor.
-  Standard_EXPORT IMeshData_ParametersList()
+  IMeshData_ParametersList()
   {
   }
 

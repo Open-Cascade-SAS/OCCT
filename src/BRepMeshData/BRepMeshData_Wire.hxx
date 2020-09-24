@@ -52,7 +52,7 @@ public:
   Standard_EXPORT virtual TopAbs_Orientation GetEdgeOrientation (
     const Standard_Integer theIndex) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMeshData_Wire, IMeshData_Wire)
+  DEFINE_STANDARD_RTTIEXT(BRepMeshData_Wire, IMeshData_Wire)
 
 private:
 

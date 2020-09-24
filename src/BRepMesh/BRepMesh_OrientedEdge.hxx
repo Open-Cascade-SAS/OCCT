@@ -43,13 +43,13 @@ public:
   }
 
   //! Returns index of first node of the Link.
-  inline Standard_Integer FirstNode() const
+  Standard_Integer FirstNode() const
   {
     return myFirstNode;
   }
 
   //! Returns index of last node of the Link.
-  inline Standard_Integer LastNode() const
+  Standard_Integer LastNode() const
   {
     return myLastNode;
   }
@@ -57,7 +57,7 @@ public:
   //! Computes a hash code for this oriented edge, in the range [1, theUpperBound]
   //! @param theUpperBound the upper bound of the range a computing hash code must be within
   //! @return a computed hash code, in the range [1, theUpperBound]
-  inline Standard_Integer HashCode (const Standard_Integer theUpperBound) const
+  Standard_Integer HashCode (const Standard_Integer theUpperBound) const
   {
     return ::HashCode (myFirstNode + myLastNode, theUpperBound);
   }
@@ -65,13 +65,13 @@ public:
   //! Checks this and other edge for equality.
   //! @param theOther edge to be checked against this one.
   //! @retrun TRUE if edges have the same orientation, FALSE if not.
-  inline Standard_Boolean IsEqual(const BRepMesh_OrientedEdge& theOther) const
+  Standard_Boolean IsEqual(const BRepMesh_OrientedEdge& theOther) const
   {
     return (myFirstNode == theOther.myFirstNode && myLastNode == theOther.myLastNode);
   }
 
   //! Alias for IsEqual.
-  inline Standard_Boolean operator ==(const BRepMesh_OrientedEdge& Other) const
+  Standard_Boolean operator ==(const BRepMesh_OrientedEdge& Other) const
   {
     return IsEqual(Other);
   }

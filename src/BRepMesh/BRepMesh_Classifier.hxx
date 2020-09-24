@@ -58,7 +58,7 @@ public:
     const std::pair<Standard_Real, Standard_Real>& theRangeU,
     const std::pair<Standard_Real, Standard_Real>& theRangeV);
 
-  DEFINE_STANDARD_RTTI_INLINE (BRepMesh_Classifier, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_Classifier, Standard_Transient)
 
 private:
 

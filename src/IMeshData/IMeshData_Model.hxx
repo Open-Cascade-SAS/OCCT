@@ -32,14 +32,14 @@ class IMeshData_Model : public IMeshData_Shape
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshData_Model()
+  virtual ~IMeshData_Model()
   {
   }
 
   //! Returns maximum size of shape model.
   Standard_EXPORT virtual Standard_Real GetMaxSize () const = 0;
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshData_Model, IMeshData_Shape)
+  DEFINE_STANDARD_RTTIEXT(IMeshData_Model, IMeshData_Shape)
 
 public: //! @name discrete faces
 
@@ -67,7 +67,7 @@ protected:
 
   //! Constructor.
   //! Initializes empty model.
-  Standard_EXPORT IMeshData_Model (const TopoDS_Shape& theShape)
+  IMeshData_Model (const TopoDS_Shape& theShape)
     : IMeshData_Shape(theShape)
   {
   }

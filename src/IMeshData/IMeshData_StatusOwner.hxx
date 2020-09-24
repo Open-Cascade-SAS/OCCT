@@ -26,36 +26,36 @@ class IMeshData_StatusOwner
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshData_StatusOwner()
+  virtual ~IMeshData_StatusOwner()
   {
   }
 
   //! Returns true in case if status is strictly equal to the given value.
-  inline Standard_Boolean IsEqual(const IMeshData_Status theValue) const
+  Standard_Boolean IsEqual(const IMeshData_Status theValue) const
   {
     return (myStatus == theValue);
   }
 
   //! Returns true in case if status is set.
-  inline Standard_Boolean IsSet(const IMeshData_Status theValue) const
+  Standard_Boolean IsSet(const IMeshData_Status theValue) const
   {
     return (myStatus & theValue) != 0;
   }
 
   //! Adds status to status flags of a face.
-  inline void SetStatus(const IMeshData_Status theValue)
+  void SetStatus(const IMeshData_Status theValue)
   {
     myStatus |= theValue;
   }
 
   //! Adds status to status flags of a face.
-  inline void UnsetStatus(const IMeshData_Status theValue)
+  void UnsetStatus(const IMeshData_Status theValue)
   {
     myStatus &= ~theValue;
   }
 
   //! Returns complete status mask.
-  inline Standard_Integer GetStatusMask() const
+  Standard_Integer GetStatusMask() const
   {
     return myStatus;
   }
@@ -63,7 +63,7 @@ public:
 protected:
 
   //! Constructor. Initializes default status.
-  Standard_EXPORT IMeshData_StatusOwner()
+  IMeshData_StatusOwner()
     : myStatus(IMeshData_NoError)
   {
   }

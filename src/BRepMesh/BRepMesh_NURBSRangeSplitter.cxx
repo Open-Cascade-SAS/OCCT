@@ -217,7 +217,7 @@ namespace
   };
 
   //! Adds param to map if it fits specified range.
-  inline Standard_Boolean addParam(
+  Standard_Boolean addParam(
     const Standard_Real&                           theParam,
     const std::pair<Standard_Real, Standard_Real>& theRange,
     IMeshData::IMapOfReal&                         theParams)
@@ -233,7 +233,7 @@ namespace
   }
 
   //! Initializes parameters map using CN intervals.
-  inline Standard_Boolean initParamsFromIntervals(
+  Standard_Boolean initParamsFromIntervals(
     const TColStd_Array1OfReal&                    theIntervals,
     const std::pair<Standard_Real, Standard_Real>& theRange,
     const Standard_Boolean                         isSplitIntervals,

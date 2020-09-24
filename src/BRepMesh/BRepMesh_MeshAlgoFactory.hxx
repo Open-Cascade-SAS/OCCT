@@ -38,7 +38,7 @@ public:
     const GeomAbs_SurfaceType    theSurfaceType,
     const IMeshTools_Parameters& theParameters) const Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_MeshAlgoFactory, IMeshTools_MeshAlgoFactory)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_MeshAlgoFactory, IMeshTools_MeshAlgoFactory)
 };
 
 #endif

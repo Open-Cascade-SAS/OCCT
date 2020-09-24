@@ -22,6 +22,8 @@
 #include <IMeshData_Wire.hxx>
 #include <IMeshTools_MeshBuilder.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
+
 namespace
 {
   //! Default flag to control parallelization for BRepMesh_IncrementalMesh

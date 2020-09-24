@@ -78,17 +78,17 @@ public: //! @name mesher API
   }
 
   //! Checks wire with the given index for intersection with others.
-  inline void operator()(const Standard_Integer theWireIndex) const
+  void operator()(const Standard_Integer theWireIndex) const
   {
     perform(theWireIndex);
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_FaceChecker, Standard_Transient)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_FaceChecker, Standard_Transient)
 
 private:
 
   //! Returns True in case if check can be performed in parallel mode.
-  inline Standard_Boolean isParallel() const
+  Standard_Boolean isParallel() const
   {
     return (myParameters.InParallel && myDFace->WiresNb() > 1);
   }

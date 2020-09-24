@@ -24,10 +24,12 @@
 #include <BRepTools.hxx>
 #include <gp_Pln.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_MeshTool, Standard_Transient)
+
 namespace
 {
   //! Returns index of triangle node opposite to the given link.
-  inline Standard_Integer findApexIndex(
+  Standard_Integer findApexIndex(
     const Standard_Integer(&aNodes)[3],
     const BRepMesh_Edge&   theLink)
   {

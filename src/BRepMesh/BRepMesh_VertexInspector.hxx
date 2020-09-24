@@ -60,7 +60,7 @@ public:
 
   //! Sets the tolerance to be used for identification of 
   //! coincident vertices equal for both dimensions.
-  inline void SetTolerance(const Standard_Real theTolerance)
+  void SetTolerance(const Standard_Real theTolerance)
   {
     myTolerance[0] = theTolerance * theTolerance;
     myTolerance[1] = 0.;
@@ -70,15 +70,15 @@ public:
   //! coincident vertices.
   //! @param theToleranceX tolerance for X dimension.
   //! @param theToleranceY tolerance for Y dimension.
-  inline void SetTolerance(const Standard_Real theToleranceX,
-                           const Standard_Real theToleranceY)
+  void SetTolerance(const Standard_Real theToleranceX,
+                    const Standard_Real theToleranceY)
   {
     myTolerance[0] = theToleranceX * theToleranceX;
     myTolerance[1] = theToleranceY * theToleranceY;
   }
   
   //! Clear inspector's internal data structures.
-  inline void Clear()
+  void Clear()
   {
     myVertices->Clear();
     myDelNodes.Clear();
@@ -86,26 +86,26 @@ public:
 
   //! Deletes vertex with the given index.
   //! @param theIndex index of vertex to be removed.
-  inline void Delete(const Standard_Integer theIndex)
+  void Delete(const Standard_Integer theIndex)
   {
     myVertices->ChangeValue(theIndex - 1).SetMovability(BRepMesh_Deleted);
     myDelNodes.Append(theIndex);
   }
   
   //! Returns number of registered vertices.
-  inline Standard_Integer NbVertices() const
+  Standard_Integer NbVertices() const
   {
     return myVertices->Length(); 
   }
 
   //! Returns vertex with the given index.
-  inline BRepMesh_Vertex& GetVertex(Standard_Integer theIndex)
+  BRepMesh_Vertex& GetVertex(Standard_Integer theIndex)
   {
     return myVertices->ChangeValue(theIndex - 1);
   }
   
   //! Set reference point to be checked.
-  inline void SetPoint(const gp_XY& thePoint) 
+  void SetPoint(const gp_XY& thePoint) 
   { 
     myIndex     = 0;
     myMinSqDist = RealLast();
@@ -113,26 +113,26 @@ public:
   }
 
   //! Returns index of point coinciding with regerence one.
-  inline Standard_Integer GetCoincidentPoint() const
+  Standard_Integer GetCoincidentPoint() const
   {
     return myIndex;
   }
   
   //! Returns list with indexes of vertices that have movability attribute 
   //! equal to BRepMesh_Deleted and can be replaced with another node.
-  inline const IMeshData::ListOfInteger& GetListOfDelPoints() const
+  const IMeshData::ListOfInteger& GetListOfDelPoints() const
   {
     return myDelNodes;
   }
 
   //! Returns set of mesh vertices.
-  inline const Handle(IMeshData::VectorOfVertex)& Vertices() const
+  const Handle(IMeshData::VectorOfVertex)& Vertices() const
   {
     return myVertices;
   }
 
   //! Returns set of mesh vertices for modification.
-  inline Handle(IMeshData::VectorOfVertex)& ChangeVertices()
+  Handle(IMeshData::VectorOfVertex)& ChangeVertices()
   {
     return myVertices;
   }

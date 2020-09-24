@@ -26,6 +26,8 @@
 #include <BRepMesh_CurveTessellator.hxx>
 #include <OSD_Parallel.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_EdgeDiscret, IMeshTools_ModelAlgo)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

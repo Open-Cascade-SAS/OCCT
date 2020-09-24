@@ -45,16 +45,16 @@ public:
   Standard_EXPORT virtual ~BRepMesh_ModelHealer();
 
   //! Functor API to discretize the given edge.
-  inline void operator() (const Standard_Integer theEdgeIndex) const {
+  void operator() (const Standard_Integer theEdgeIndex) const {
     process(theEdgeIndex);
   }
 
   //! Functor API to discretize the given edge.
-  inline void operator() (const IMeshData::IFaceHandle& theDFace) const {
+  void operator() (const IMeshData::IFaceHandle& theDFace) const {
     process(theDFace);
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ModelHealer, IMeshTools_ModelAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_ModelHealer, IMeshTools_ModelAlgo)
 
 protected:
 
@@ -67,7 +67,7 @@ protected:
 private:
 
   //! Checks existing discretization of the face and updates data model.
-  inline void process(const Standard_Integer theFaceIndex) const
+  void process(const Standard_Integer theFaceIndex) const
   {
     const IMeshData::IFaceHandle& aDFace = myModel->GetFace(theFaceIndex);
     process(aDFace);
@@ -96,7 +96,7 @@ private:
   //! Chooses the most closest point to reference one from the given pair.
   //! Returns square distance between reference point and closest one as 
   //! well as pointer to closest point.
-  inline Standard_Real closestPoint(
+  Standard_Real closestPoint(
     gp_Pnt2d&  theRefPnt,
     gp_Pnt2d&  theFristPnt,
     gp_Pnt2d&  theSecondPnt,
@@ -118,7 +118,7 @@ private:
   //! Chooses the most closest points among the given to reference one from the given pair.
   //! Returns square distance between reference point and closest one as 
   //! well as pointer to closest point.
-  inline Standard_Real closestPoints(
+  Standard_Real closestPoints(
     gp_Pnt2d&  theFirstPnt1,
     gp_Pnt2d&  theSecondPnt1,
     gp_Pnt2d&  theFirstPnt2,
@@ -144,7 +144,7 @@ private:
   //! Adjusts the given pair of points supposed to be the same.
   //! In addition, adjusts another end-point of an edge in order
   //! to perform correct matching in case of gap.
-  inline void adjustSamePoints(
+  void adjustSamePoints(
     gp_Pnt2d*& theMajorSamePnt1,
     gp_Pnt2d*& theMinorSamePnt1,
     gp_Pnt2d*& theMajorSamePnt2,
@@ -168,7 +168,7 @@ private:
   void fixFaceBoundaries(const IMeshData::IFaceHandle& theDFace) const;
 
   //! Returns True if check can be done in parallel.
-  inline Standard_Boolean isParallel() const
+  Standard_Boolean isParallel() const
   {
     return (myParameters.InParallel && myModel->FacesNb() > 1);
   }

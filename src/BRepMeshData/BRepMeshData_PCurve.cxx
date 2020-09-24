@@ -19,6 +19,8 @@
 #include <BRepMesh_Vertex.hxx>
 #include <Standard_OutOfRange.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMeshData_PCurve, IMeshData_PCurve)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

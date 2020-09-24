@@ -60,7 +60,7 @@ public:
   //! Clears parameters list.
   Standard_EXPORT virtual void Clear(const Standard_Boolean isKeepEndPoints) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMeshData_Curve, IMeshData_Curve)
+  DEFINE_STANDARD_RTTIEXT(BRepMeshData_Curve, IMeshData_Curve)
 
 protected:
 

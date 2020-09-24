@@ -33,7 +33,7 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~BRepMesh_ModelPreProcessor();
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_ModelPreProcessor, IMeshTools_ModelAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_ModelPreProcessor, IMeshTools_ModelAlgo)
 
 protected:
 

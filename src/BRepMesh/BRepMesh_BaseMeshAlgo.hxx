@@ -45,36 +45,36 @@ public:
     const IMeshTools_Parameters&  theParameters,
     const Message_ProgressRange&  theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_BaseMeshAlgo, IMeshTools_MeshAlgo)
 
 protected:
 
   //! Gets discrete face.
-  inline const IMeshData::IFaceHandle& getDFace() const
+  const IMeshData::IFaceHandle& getDFace() const
   {
     return myDFace;
   }
 
   //! Gets meshing parameters.
-  inline const IMeshTools_Parameters& getParameters() const
+  const IMeshTools_Parameters& getParameters() const
   {
     return myParameters;
   }
 
   //! Gets common allocator.
-  inline const Handle(NCollection_IncAllocator)& getAllocator() const
+  const Handle(NCollection_IncAllocator)& getAllocator() const
   {
     return myAllocator;
   }
 
   //! Gets mesh structure.
-  inline const Handle(BRepMesh_DataStructureOfDelaun)& getStructure() const
+  const Handle(BRepMesh_DataStructureOfDelaun)& getStructure() const
   {
     return myStructure;
   }
 
   //! Gets 3d nodes map.
-  inline const Handle(VectorOfPnt)& getNodesMap() const
+  const Handle(VectorOfPnt)& getNodesMap() const
   {
     return myNodesMap;
   }

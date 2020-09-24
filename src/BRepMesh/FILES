@@ -1,6 +1,7 @@
 BRepMesh_BaseMeshAlgo.cxx
 BRepMesh_BaseMeshAlgo.hxx
 BRepMesh_ConstrainedBaseMeshAlgo.hxx
+BRepMesh_ConstrainedBaseMeshAlgo.cxx
 BRepMesh_BoundaryParamsRangeSplitter.hxx
 BRepMesh_Circle.hxx
 BRepMesh_CircleInspector.hxx
@@ -85,6 +86,7 @@ BRepMesh_VertexInspector.hxx
 BRepMesh_VertexTool.cxx
 BRepMesh_VertexTool.hxx
 BRepMesh_CustomBaseMeshAlgo.hxx
+BRepMesh_CustomBaseMeshAlgo.cxx
 BRepMesh_CustomDelaunayBaseMeshAlgo.hxx
 delabella.pxx
 delabella.cpp

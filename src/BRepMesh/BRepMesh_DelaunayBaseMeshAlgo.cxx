@@ -17,6 +17,8 @@
 #include <BRepMesh_MeshTool.hxx>
 #include <BRepMesh_Delaun.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DelaunayBaseMeshAlgo, BRepMesh_ConstrainedBaseMeshAlgo)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

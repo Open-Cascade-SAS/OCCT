@@ -42,7 +42,7 @@ public:
   }
 
   //! Returns PreProcessSurfaceNodes flag. 
-  inline Standard_Boolean IsPreProcessSurfaceNodes () const
+  Standard_Boolean IsPreProcessSurfaceNodes () const
   {
     return myIsPreProcessSurfaceNodes;
   }
@@ -50,7 +50,7 @@ public:
   //! Sets PreProcessSurfaceNodes flag.
   //! If TRUE, registers surface nodes before generation of base mesh.
   //! If FALSE, inserts surface nodes after generation of base mesh. 
-  inline void SetPreProcessSurfaceNodes (const Standard_Boolean isPreProcessSurfaceNodes)
+  void SetPreProcessSurfaceNodes (const Standard_Boolean isPreProcessSurfaceNodes)
   {
     myIsPreProcessSurfaceNodes = isPreProcessSurfaceNodes;
   }

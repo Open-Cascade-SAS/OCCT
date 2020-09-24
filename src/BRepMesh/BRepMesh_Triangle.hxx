@@ -60,7 +60,7 @@ public:
   //! @param theEdges array of edges of triangle.
   //! @param theOrientations array of edge's orientations.
   //! @param theMovability movability of triangle.
-  inline void Initialize(
+  void Initialize(
     const Standard_Integer          (&theEdges)[3],
     const Standard_Boolean          (&theOrientations)[3],
     const BRepMesh_DegreeOfFreedom  theMovability)
@@ -73,21 +73,21 @@ public:
   //! Gets edges with orientations composing the triangle.
   //! @param[out] theEdges array edges are stored to.
   //! @param[out] theOrientations array orientations are stored to.
-  inline void Edges(Standard_Integer (&theEdges)[3],
-                    Standard_Boolean (&theOrientations)[3]) const
+  void Edges(Standard_Integer (&theEdges)[3],
+             Standard_Boolean (&theOrientations)[3]) const
   {
     memcpy(theEdges, myEdges, sizeof(myEdges));
     memcpy(theOrientations, myOrientations, sizeof(myOrientations));
   }
   
   //! Returns movability of the triangle.
-  inline BRepMesh_DegreeOfFreedom Movability() const 
+  BRepMesh_DegreeOfFreedom Movability() const 
   {
     return myMovability;
   }
   
   //! Sets movability of the triangle.
-  inline void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
+  void SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
   {
     myMovability = theMovability;
   }
@@ -95,7 +95,7 @@ public:
   //! Computes a hash code for this triangle, in the range [1, theUpperBound]
   //! @param theUpperBound the upper bound of the range a computing hash code must be within
   //! @return a computed hash code, in the range [1, theUpperBound]
-  inline Standard_Integer HashCode (const Standard_Integer theUpperBound) const
+  Standard_Integer HashCode (const Standard_Integer theUpperBound) const
   {
     return ::HashCode (myEdges[0] + myEdges[1] + myEdges[2], theUpperBound);
   }
@@ -103,7 +103,7 @@ public:
   //! Checks for equality with another triangle.
   //! @param theOther triangle to be checked against this one.
   //! @return TRUE if equal, FALSE if not.
-  inline Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
+  Standard_Boolean IsEqual(const BRepMesh_Triangle& theOther) const
   {
     if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
       return Standard_False;
@@ -133,7 +133,7 @@ public:
   }
   
   //! Alias for IsEqual.
-  inline Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
+  Standard_Boolean operator ==(const BRepMesh_Triangle& theOther) const
   {
     return IsEqual(theOther);
   }

@@ -26,6 +26,8 @@
 #include <Message.hxx>
 #include <OSD_Environment.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_Context, IMeshTools_Context)
+
 //=======================================================================
 // Function: Constructor
 // Purpose : 

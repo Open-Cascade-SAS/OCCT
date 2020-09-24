@@ -35,18 +35,18 @@ public:
   Standard_EXPORT virtual ~BRepMeshData_Model ();
 
   //! Returns maximum size of shape's bounding box.
-  Standard_EXPORT virtual Standard_Real GetMaxSize () const Standard_OVERRIDE
+  virtual Standard_Real GetMaxSize () const Standard_OVERRIDE
   {
     return myMaxSize;
   }
 
   //! Sets maximum size of shape's bounding box.
-  inline void SetMaxSize (const Standard_Real theValue)
+  void SetMaxSize (const Standard_Real theValue)
   {
     myMaxSize = theValue;
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMeshData_Model, IMeshData_Model)
+  DEFINE_STANDARD_RTTIEXT(BRepMeshData_Model, IMeshData_Model)
 
 public: //! @name discrete faces
 

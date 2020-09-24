@@ -21,8 +21,8 @@
 #include <Standard_Failure.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
+#include <IMeshData_Model.hxx>
 
-class IMeshData_Model;
 struct IMeshTools_Parameters;
 
 //! Interface class represents API for tool building discrete model.
@@ -36,7 +36,7 @@ class IMeshTools_ModelBuilder : public Message_Algorithm
 public:
 
   //! Destructor.
-  Standard_EXPORT virtual ~IMeshTools_ModelBuilder()
+  virtual ~IMeshTools_ModelBuilder()
   {
   }
 
@@ -61,12 +61,12 @@ public:
     }
   }
 
-  DEFINE_STANDARD_RTTI_INLINE(IMeshTools_ModelBuilder, Message_Algorithm)
+  DEFINE_STANDARD_RTTIEXT(IMeshTools_ModelBuilder, Message_Algorithm)
 
 protected:
 
   //! Constructor.
-  Standard_EXPORT IMeshTools_ModelBuilder()
+  IMeshTools_ModelBuilder()
   {
   }
 

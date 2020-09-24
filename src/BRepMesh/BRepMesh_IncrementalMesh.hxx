@@ -63,25 +63,25 @@ public: //! @name mesher API
 public: //! @name accessing to parameters.
 
   //! Returns meshing parameters
-  inline const IMeshTools_Parameters& Parameters() const
+  const IMeshTools_Parameters& Parameters() const
   {
     return myParameters;
   }
 
   //! Returns modifiable meshing parameters
-  inline IMeshTools_Parameters& ChangeParameters()
+  IMeshTools_Parameters& ChangeParameters()
   {
     return myParameters;
   }
 
   //! Returns modified flag.
-  inline Standard_Boolean IsModified() const
+  Standard_Boolean IsModified() const
   {
     return myModified;
   }
   
   //! Returns accumulated status flags faced during meshing.
-  inline Standard_Integer GetStatusFlags() const
+  Standard_Integer GetStatusFlags() const
   {
     return myStatus;
   }
@@ -89,7 +89,7 @@ public: //! @name accessing to parameters.
 private:
 
   //! Initializes specific parameters
-  inline void initParameters()
+  void initParameters()
   {
     if (myParameters.DeflectionInterior < Precision::Confusion())
     {
@@ -131,7 +131,7 @@ public: //! @name plugin API
   //! Discret() static method (thus applied only to Mesh Factories).
   Standard_EXPORT static void SetParallelDefault(const Standard_Boolean isInParallel);
 
-  DEFINE_STANDARD_RTTI_INLINE(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
+  DEFINE_STANDARD_RTTIEXT(BRepMesh_IncrementalMesh, BRepMesh_DiscretRoot)
 
 protected:
 
