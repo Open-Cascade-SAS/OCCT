@@ -179,8 +179,10 @@ proc OCCDoc_DetectNecessarySoftware { DOXYGEN_PATH GRAPHVIZ_PATH INKSCAPE_PATH H
   }
   if {"$is_win" == "yes"} {
     set exe ".exe"
+    set com ".com"
   } else {
     set exe ""
+    set com ""
   }
 
   set g_flag "no"
@@ -224,11 +226,11 @@ proc OCCDoc_DetectNecessarySoftware { DOXYGEN_PATH GRAPHVIZ_PATH INKSCAPE_PATH H
       }
     }
     if {$i_flag == "no"} {
-      if { [file exists $path/inkscape$exe] } {
+      if { [file exists $path/inkscape$com] } {
         catch { exec $path/inkscape -V } version
         puts "Info: $version " 
         puts "      found in $path."
-        set inkscape_path "$path/inkscape$exe"
+        set inkscape_path "$path/inkscape$com"
         set i_flag "yes"
       }
     }
@@ -356,15 +358,29 @@ proc OCCDoc_DetectNecessarySoftware { DOXYGEN_PATH GRAPHVIZ_PATH INKSCAPE_PATH H
 # Convert SVG files to PDF format to allow including them to PDF
 # (requires InkScape to be in PATH)
 proc OCCDoc_ProcessSvg {latexDir verboseMode} {
+  set anSvgList [glob -nocomplain $latexDir/*.svg]
+  if { $anSvgList == {} } {
+    return
+  }
 
-  foreach file [glob -nocomplain $latexDir/*.svg] {
+  catch { exec inkscape -V } anInkVer
+  set isOldSyntax 0
+  if {[string match "Inkscape 0.*" $anInkVer]} { set isOldSyntax 1 }
+  foreach file $anSvgList {
     if {$verboseMode == "YES"} {
       puts "Info: Converting file $file..."
     }
     set pdffile "[file rootname $file].pdf"
-    if { [catch {exec inkscape -z -D --file=$file --export-pdf=$pdffile} res] } {
-      #puts "Error: $res."
-      return
+    if { $isOldSyntax == 1 } {
+      if { [catch {exec inkscape -z -D --file=$file --export-pdf=$pdffile} res] } {
+        #puts "Error: $res."
+        return
+      }
+    } else {
+      if { [catch {exec inkscape $file --export-area-drawing --export-type=pdf --export-filename=$pdffile} res] } {
+        #puts "Error: $res."
+        return
+      }
     }
   }
 }
