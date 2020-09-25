@@ -607,3 +607,17 @@ Font_Rect Font_FTFont::BoundingBox (const NCollection_String&               theS
   aFormatter.BndBox (aBndBox);
   return aBndBox;
 }
+
+// =======================================================================
+// function : renderGlyphOutline
+// purpose  :
+// =======================================================================
+const FT_Outline* Font_FTFont::renderGlyphOutline (const Standard_Utf32Char theChar)
+{
+  if (!loadGlyph (theChar)
+   || myActiveFTFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
+  {
+    return 0;
+  }
+  return &myActiveFTFace->glyph->outline;
+}

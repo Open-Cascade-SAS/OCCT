@@ -29,6 +29,7 @@
 // forward declarations to avoid including of FreeType headers
 typedef struct FT_FaceRec_* FT_Face;
 typedef struct FT_Vector_   FT_Vector;
+typedef struct FT_Outline_ FT_Outline;
 class Font_FTLibrary;
 
 //! Font initialization parameters.
@@ -231,6 +232,12 @@ public:
     return myFontParams.PointSize;
   }
 
+  //! Return glyph scaling along X-axis.
+  float WidthScaling() const
+  {
+    return myWidthScaling;
+  }
+
   //! Setup glyph scaling along X-axis.
   //! By default glyphs are not scaled (scaling factor = 1.0)
   void SetWidthScaling (const float theScaleFactor)
@@ -278,6 +285,14 @@ public:
   Standard_EXPORT Font_Rect BoundingBox (const NCollection_String&               theString,
                                          const Graphic3d_HorizontalTextAlignment theAlignX,
                                          const Graphic3d_VerticalTextAlignment   theAlignY);
+
+public:
+
+  //! Computes outline contour for the symbol.
+  //! @param theUChar    [in] the character to be loaded as current one
+  //! @param theOutline  [out] outline contour
+  //! @return true on success
+  Standard_EXPORT const FT_Outline* renderGlyphOutline(const Standard_Utf32Char theChar);
 
 public:
 

@@ -32,7 +32,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 
-DEFINE_STANDARD_HANDLE(StdPrs_BRepFont, Font_FTFont)
+DEFINE_STANDARD_HANDLE(StdPrs_BRepFont, Standard_Transient)
 
 //! This tool provides basic services for rendering of vectorized text glyphs as BRep shapes.
 //! Single instance initialize single font for sequential glyphs rendering with implicit caching of already rendered glyphs.
@@ -41,10 +41,21 @@ DEFINE_STANDARD_HANDLE(StdPrs_BRepFont, Font_FTFont)
 //! Please notice that this implementation uses mutex for thread-safety access,
 //! thus may lead to performance penalties in case of concurrent access.
 //! Although caching should eliminate this issue after rendering of sufficient number of glyphs.
-class StdPrs_BRepFont : protected Font_FTFont
+class StdPrs_BRepFont : public Standard_Transient
 {
-  DEFINE_STANDARD_RTTIEXT(StdPrs_BRepFont, Font_FTFont)
+  DEFINE_STANDARD_RTTIEXT(StdPrs_BRepFont, Standard_Transient)
 public:
+
+  //! Find the font Initialize the font.
+  //! @param theFontName    the font name
+  //! @param theFontAspect  the font style
+  //! @param theSize        the face size in model units
+  //! @param theStrictLevel search strict level for using aliases and fallback
+  //! @return true on success
+  Standard_EXPORT static Handle(StdPrs_BRepFont) FindAndCreate (const TCollection_AsciiString& theFontName,
+                                                                const Font_FontAspect     theFontAspect,
+                                                                const Standard_Real       theSize,
+                                                                const Font_StrictLevel    theStrictLevel = Font_StrictLevel_Any);
 
   //! Empty constructor
   Standard_EXPORT StdPrs_BRepFont();
@@ -68,7 +79,7 @@ public:
                                    const Font_StrictLevel    theStrictLevel = Font_StrictLevel_Any);
 
   //! Release currently loaded font.
-  Standard_EXPORT virtual void Release() Standard_OVERRIDE;
+  Standard_EXPORT virtual void Release();
 
   //! Initialize the font.
   //! @param theFontPath FULL path to the font
@@ -94,6 +105,9 @@ public:
                                     const Standard_Real    theSize,
                                     const Font_StrictLevel theStrictLevel = Font_StrictLevel_Any);
 
+  //! Return wrapper over FreeType font.
+  const Handle(Font_FTFont)& FTFont() const { return myFTFont; }
+
   //! Render single glyph as TopoDS_Shape.
   //! @param theChar glyph identifier
   //! @return rendered glyph within cache, might be NULL shape
@@ -111,7 +125,7 @@ public:
   //! By default glyphs are not scaled (scaling factor = 1.0)
   void SetWidthScaling (const float theScaleFactor)
   {
-    myWidthScaling = theScaleFactor;
+    myFTFont->SetWidthScaling (theScaleFactor);
   }
 
 public:
@@ -119,32 +133,32 @@ public:
   //! @return vertical distance from the horizontal baseline to the highest character coordinate.
   Standard_Real Ascender() const
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::Ascender());
+    return myScaleUnits * Standard_Real(myFTFont->Ascender());
   }
 
   //! @return vertical distance from the horizontal baseline to the lowest character coordinate.
   Standard_Real Descender() const
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::Descender());
+    return myScaleUnits * Standard_Real(myFTFont->Descender());
   }
 
   //! @return default line spacing (the baseline-to-baseline distance).
   Standard_Real LineSpacing() const
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::LineSpacing());
+    return myScaleUnits * Standard_Real(myFTFont->LineSpacing());
   }
 
   //! Configured point size
   Standard_Real PointSize() const
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::PointSize());
+    return myScaleUnits * Standard_Real(myFTFont->PointSize());
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered horizontally.
   Standard_Real AdvanceX (const Standard_Utf32Char theUCharNext)
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::AdvanceX (theUCharNext));
+    return myScaleUnits * Standard_Real(myFTFont->AdvanceX (theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
@@ -152,14 +166,14 @@ public:
   Standard_Real AdvanceX (const Standard_Utf32Char theUChar,
                           const Standard_Utf32Char theUCharNext)
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::AdvanceX (theUChar, theUCharNext));
+    return myScaleUnits * Standard_Real(myFTFont->AdvanceX (theUChar, theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
   //! Assuming text rendered vertically.
   Standard_Real AdvanceY (const Standard_Utf32Char theUCharNext)
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::AdvanceY (theUCharNext));
+    return myScaleUnits * Standard_Real(myFTFont->AdvanceY (theUCharNext));
   }
 
   //! Compute advance to the next character with kerning applied when applicable.
@@ -167,7 +181,7 @@ public:
   Standard_Real AdvanceY (const Standard_Utf32Char theUChar,
                           const Standard_Utf32Char theUCharNext)
   {
-    return myScaleUnits * Standard_Real(Font_FTFont::AdvanceY (theUChar, theUCharNext));
+    return myScaleUnits * Standard_Real(myFTFont->AdvanceY (theUChar, theUCharNext));
   }
 
   //! Returns scaling factor for current font size.
@@ -217,11 +231,9 @@ private:
   Standard_Boolean buildFaces (const NCollection_Sequence<TopoDS_Wire>& theWires,
                                TopoDS_Shape& theRes);
 
-  //! Hide visibility.
-  using Font_FTFont::FindAndCreate;
-
 protected: //! @name Protected fields
 
+  Handle(Font_FTFont) myFTFont;            //!< wrapper over FreeType font
   NCollection_DataMap<Standard_Utf32Char, TopoDS_Shape>
                        myCache;            //!< glyphs cache
   Standard_Mutex       myMutex;            //!< lock for thread-safety

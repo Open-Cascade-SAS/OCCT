@@ -70,7 +70,7 @@ TopoDS_Shape StdPrs_BRepTextBuilder::Perform (StdPrs_BRepFont&                  
   aFormatter->Reset();
   aFormatter->SetupAlignment (theHAlign, theVAlign);
 
-  aFormatter->Append (theString, *(reinterpret_cast<Font_FTFont*> (&theFont)));
+  aFormatter->Append (theString, *theFont.FTFont());
   aFormatter->Format();
 
   return Perform (theFont, aFormatter, thePenLoc);
