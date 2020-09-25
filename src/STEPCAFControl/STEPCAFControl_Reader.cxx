@@ -4421,8 +4421,10 @@ Standard_Boolean STEPCAFControl_Reader::ReadViews(const Handle(XSControl_WorkSes
     for (; anIter.More(); anIter.Next()) {
       if (anIter.Value()->IsKind(STANDARD_TYPE(StepRepr_MappedItem))) {
         Handle(StepRepr_MappedItem) anItem = Handle(StepRepr_MappedItem)::DownCast(anIter.Value());
-        Handle(StepRepr_Representation) aRepr = anItem->MappingSource()->MappedRepresentation();
-        collectViewShapes(theWS, theDoc, aRepr, aShapes);
+        if (Handle(StepRepr_Representation) aRepr = anItem->MappingSource()->MappedRepresentation())
+        {
+          collectViewShapes(theWS, theDoc, aRepr, aShapes);
+        }
       }
       else if (anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_AnnotationOccurrence)) ||
         anIter.Value()->IsKind(STANDARD_TYPE(StepVisual_DraughtingCallout))) {
