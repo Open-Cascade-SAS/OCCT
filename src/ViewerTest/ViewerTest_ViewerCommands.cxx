@@ -10836,7 +10836,8 @@ static Standard_Integer VRenderParams(Draw_Interpretor& theDI,
         }
         else
         {
-          theDI << "off" << " ";
+          theDI << "off"
+                << " ";
         }
         continue;
       }
@@ -10917,15 +10918,18 @@ static Standard_Integer VRenderParams(Draw_Interpretor& theDI,
       {
         if ((aParams.FontHinting & Font_Hinting_Normal) != 0)
         {
-          theDI << "normal" << " ";
+          theDI << "normal"
+                << " ";
         }
         else if ((aParams.FontHinting & Font_Hinting_Normal) != 0)
         {
-          theDI << "light" << " ";
+          theDI << "light"
+                << " ";
         }
         else
         {
-          theDI << "off" << " ";
+          theDI << "off"
+                << " ";
         }
         continue;
       }
@@ -10964,15 +10968,18 @@ static Standard_Integer VRenderParams(Draw_Interpretor& theDI,
       {
         if ((aParams.FontHinting & Font_Hinting_ForceAutohint) != 0)
         {
-          theDI << "force" << " ";
+          theDI << "force"
+                << " ";
         }
         else if ((aParams.FontHinting & Font_Hinting_NoAutohint) != 0)
         {
-          theDI << "disallow" << " ";
+          theDI << "disallow"
+                << " ";
         }
         else
         {
-          theDI << "auto" << " ";
+          theDI << "auto"
+                << " ";
         }
         continue;
       }
@@ -12098,7 +12105,7 @@ static int VManipulator(Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   TCollection_AsciiString                   aName;
   // parameters
   Standard_Integer toAutoActivate = -1, toFollowTranslation = -1, toFollowRotation = -1,
-                   toFollowDragging = -1, isZoomable = -1;
+                   toFollowDragging = -1, isZoomable = -1, isFlat = -1;
   Standard_Real                            aGap = -1.0, aSize = -1.0;
   NCollection_Sequence<ManipAxisModeOnOff> aParts;
   gp_XYZ aLocation(RealLast(), RealLast(), RealLast()), aVDir, anXDir;
@@ -12206,6 +12213,10 @@ static int VManipulator(Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     else if (anArg == "-zoomable" || anArg == "-notzoomable")
     {
       isZoomable = Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? 1 : 0;
+    }
+    else if (anArg == "-flat")
+    {
+      isFlat = Draw::ParseOnOffNoIterator(theArgsNb, theArgVec, anArgIter) ? 1 : 0;
     }
     //
     else if (anArg == "-adjustposition" || anArg == "-noadjustposition")
@@ -12430,6 +12441,16 @@ static int VManipulator(Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   if (isZoomable != -1)
   {
     aManipulator->SetZoomPersistence(isZoomable == 0);
+
+    if (ViewerTest::GetAISContext()->IsDisplayed(aManipulator))
+    {
+      ViewerTest::GetAISContext()->Remove(aManipulator, Standard_False);
+      ViewerTest::GetAISContext()->Display(aManipulator, Standard_False);
+    }
+  }
+  if (isFlat != -1)
+  {
+    aManipulator->SetSkinMode((AIS_Manipulator::ManipulatorSkin)isFlat);
 
     if (ViewerTest::GetAISContext()->IsDisplayed(aManipulator))
     {
@@ -14543,6 +14564,7 @@ Options:
  '-pos x y z [nx ny nz [xx xy xz]' - set position of manipulator
  '-size value'                     - set size of manipulator
  '-zoomable {0|1}'                 - set zoom persistence
+ '-flat {0|1}'                     - set flat skin mode",
 )" /* [vmanipulator] */);
 
   addCmd("vselprops", VSelectionProperties, /* [vselprops] */ R"(

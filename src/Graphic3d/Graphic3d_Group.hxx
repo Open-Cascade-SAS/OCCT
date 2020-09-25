@@ -131,6 +131,12 @@ public:
   Standard_EXPORT virtual void SetFlippingOptions(const Standard_Boolean theIsEnabled,
                                                   const gp_Ax2&          theRefPlane) = 0;
 
+  //! Return transformation.
+  const gp_Trsf& Transformation() const { return myTrsf; }
+
+  //! Assign transformation.
+  virtual void SetTransformation(const gp_Trsf& theTrsf) { myTrsf = theTrsf; }
+
   //! Return transformation persistence.
   const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myTrsfPers; }
 
@@ -310,6 +316,7 @@ protected:
   Handle(Graphic3d_TransformPers) myTrsfPers;  //!< current transform persistence
   Graphic3d_Structure*            myStructure; //!< pointer to the parent structure
   Graphic3d_BndBox4f              myBounds;    //!< bounding box
+  gp_Trsf                         myTrsf;      //!< group transformation
   bool                            myIsClosed;  //!< flag indicating closed volume
 };
 

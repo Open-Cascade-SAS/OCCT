@@ -309,6 +309,15 @@ public: //! @name object transformation
   //! Updates final transformation (parent + local) of presentable object and its presentations.
   Standard_EXPORT virtual void UpdateTransformation();
 
+  //! Calculates object presentation for specific camera position.
+  //! Each of the views in the viewer and every modification such as rotation, for example, entails
+  //! recalculation.
+  //! @param theProjector [in] view orientation
+  virtual void RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
+  {
+    (void)theProjector;
+  }
+
 public: //! @name clipping planes
   //! Get clip planes.
   //! @return set of previously added clip planes for all display mode presentations.

@@ -217,6 +217,14 @@ public:
   //! @warning It will does nothing if transformation is not initiated (with StartTransform() call).
   Standard_EXPORT void Transform(const gp_Trsf& aTrsf);
 
+  //! Apply camera transformation to flat skin manipulator
+  Standard_EXPORT void RecomputeTransformation(const Handle(Graphic3d_Camera)& theCamera)
+    Standard_OVERRIDE;
+
+  //! Recomputes sensitive primitives for the given selection mode.
+  //! @param theMode selection mode to recompute sensitive primitives
+  Standard_EXPORT void RecomputeSelection(const AIS_ManipulatorMode theMode);
+
   //! Reset start (reference) transformation.
   //! @param[in] theToApply  option to apply or to cancel the started transformation.
   //! @warning It is used in chain with StartTransform-Transform(gp_Trsf)-StopTransform
@@ -304,6 +312,18 @@ public: //! @name Configuration of graphical transformations
     const Handle(Graphic3d_TransformPers)& theTrsfPers) Standard_OVERRIDE;
 
 public: //! @name Setters for parameters
+  enum ManipulatorSkin
+  {
+    ManipulatorSkin_Shaded,
+    ManipulatorSkin_Flat
+  };
+
+  //! @return current manipulator skin mode.
+  ManipulatorSkin SkinMode() const { return mySkinMode; }
+
+  //! Sets skin mode for the manipulator.
+  Standard_EXPORT void SetSkinMode(const ManipulatorSkin theSkinMode);
+
   AIS_ManipulatorMode ActiveMode() const { return myCurrentMode; }
 
   Standard_Integer ActiveAxisIndex() const { return myCurrentIndex; }
@@ -468,6 +488,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     void Init(const Standard_ShortReal theInnerRadius,
               const Standard_ShortReal theOuterRadius,
               const gp_Ax1&            thePosition,
+              const Standard_Real      theAngle,
               const Standard_Integer   theSlicesNb = 20,
               const Standard_Integer   theStacksNb = 20);
 
@@ -488,6 +509,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     void Init(const Standard_ShortReal theRadius,
               const gp_Pnt&            thePosition,
+              const ManipulatorSkin    theSkinMode,
               const Standard_Integer   theSlicesNb = 20,
               const Standard_Integer   theStacksNb = 20);
 
@@ -503,7 +525,9 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     ~Cube() {}
 
-    void Init(const gp_Ax1& thePosition, const Standard_ShortReal myBoxSize);
+    void Init(const gp_Ax1&            thePosition,
+              const Standard_ShortReal myBoxSize,
+              const ManipulatorSkin    theSkinMode);
 
     const Handle(Poly_Triangulation)& Triangulation() const { return myTriangulation; }
 
@@ -535,6 +559,7 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     void Init(const Standard_ShortReal theRadius,
               const gp_Ax1&            thePosition,
               const gp_Dir&            theXDirection,
+              const ManipulatorSkin    theSkinMode,
               const Standard_Integer   theSlicesNb = 5,
               const Standard_Integer   theStacksNb = 5);
 
@@ -557,7 +582,8 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     void Compute(const Handle(PrsMgr_PresentationManager)& thePrsMgr,
                  const Handle(Prs3d_Presentation)&         thePrs,
-                 const Handle(Prs3d_ShadingAspect)&        theAspect);
+                 const Handle(Prs3d_ShadingAspect)&        theAspect,
+                 const ManipulatorSkin                     theSkinMode);
 
     const gp_Ax1& ReferenceAxis() const { return myReferenceAxis; }
 
@@ -631,7 +657,11 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
 
     Standard_ShortReal AxisLength() const { return myLength; }
 
+    Standard_ShortReal BoxSize() const { return myBoxSize; }
+
     Standard_ShortReal AxisRadius() const { return myAxisRadius; }
+
+    Standard_ShortReal Indent() const { return myIndent; }
 
     void SetAxisRadius(const Standard_ShortReal theValue) { myAxisRadius = theValue; }
 
@@ -662,6 +692,8 @@ protected: //! @name Auxiliary classes to fill presentation with proper primitiv
     {
       return myLength + myBoxSize + myDiskThickness + myIndent * 2.0f;
     }
+
+    Standard_ShortReal InnerRadius() const { return myInnerRadius + myIndent * 2.0f; }
 
     gp_Pnt ScalerCenter(const gp_Pnt& theLocation) const
     {
@@ -752,8 +784,15 @@ protected:
                     // clang-format off
   gp_Ax2 myPosition; //!< Position of the manipulator object. it displays its location and position of its axes.
 
+  Disk                    myCircle; //!< Outer circle
+  Handle(Graphic3d_Group) myCircleGroup;
+
+  Disk                    mySector; //!< Sector indicating the rotation angle
+  Handle(Graphic3d_Group) mySectorGroup;
+
   Standard_Integer myCurrentIndex; //!< Index of active axis.
   AIS_ManipulatorMode myCurrentMode; //!< Name of active manipulation mode.
+  ManipulatorSkin mySkinMode; //!< Name of active skin mode.
 
   Standard_Boolean myIsActivationOnDetection; //!< Manual activation of modes (not on parts selection).
   Standard_Boolean myIsZoomPersistentMode; //!< Zoom persistence mode activation.

@@ -203,6 +203,12 @@ public:
     (void)theStructure;
   }
 
+  //! Calculates structure transformation for specific camera position
+  virtual void RecomputeTransformation(const Handle(Graphic3d_Camera)& theProjector)
+  {
+    (void)theProjector;
+  }
+
   //! Forces a new construction of the structure <me>
   //! if <me> is displayed and TOS_COMPUTED.
   Standard_EXPORT void ReCompute();
