@@ -110,8 +110,8 @@ vmanipulator m -part 0 4 0
 vmanipulator m -part 1 4 0
 vmanipulator m -part 2 4 0
 
-set mouse_pick {223 143}
-set mouse_drag {181 141}
+set mouse_pick {223 144}
+set mouse_drag {181 140}
 
 vmoveto {*}$mouse_pick
 vselect {*}$mouse_pick

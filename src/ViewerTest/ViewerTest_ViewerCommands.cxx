@@ -12821,7 +12821,6 @@ static int VManipulator (Draw_Interpretor& theDi,
 {
   Handle(V3d_View)   aCurrentView   = ViewerTest::CurrentView();
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-  ViewerTest::GetAISContext()->MainSelector()->SetPickClosest (Standard_False);
   if (aCurrentView.IsNull()
    || aViewer.IsNull())
   {

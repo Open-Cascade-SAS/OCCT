@@ -28,7 +28,7 @@ vfit
 
 vmanipulator m1 -attach b1 -adjustPosition 1 -adjustSize 1 -enableModes 1 -zoomable 1
 
-set mouse_pick_1 {84 133}
+set mouse_pick_1 {80 133}
 set mouse_pick_2 {29 103}
 set mouse_pick_3 {29 103}
 set mouse_drag_3 {121 126}
@@ -60,7 +60,7 @@ vfit
 
 vmanipulator m2 -attach b2 -adjustPosition 1 -adjustSize 0 -enableModes 1 -zoomable 0 -size 40
 
-set mouse_pick_1 {341 282}
+set mouse_pick_1 {340 282}
 set mouse_pick_2 {277 245}
 set mouse_pick_3 {277 245}
 set mouse_drag_3 {210 210}

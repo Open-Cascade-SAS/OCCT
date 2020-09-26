@@ -93,7 +93,6 @@ DEFINE_STANDARD_HANDLE (AIS_Manipulator, AIS_InteractiveObject)
 //! aManipulator->Detach();
 //! @endcode
 //! The last method erases manipulator object.
-//! @warning
 class AIS_Manipulator : public AIS_InteractiveObject
 {
 public:

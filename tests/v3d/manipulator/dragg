@@ -58,7 +58,7 @@ vdump $anImage2
 # rotate around y axis
 # -------------------------------------------
 
-set mouse_pick {316 257}
+set mouse_pick {316 261}
 set mouse_drag {279 286}
 
 vmoveto {*}$mouse_pick
