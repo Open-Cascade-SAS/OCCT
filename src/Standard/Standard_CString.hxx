@@ -16,12 +16,13 @@
 //! Functions working with plain C strings
 
 #ifndef _Standard_CString_HeaderFile
-# define _Standard_CString_HeaderFile
+#define _Standard_CString_HeaderFile
 
 #include <Standard_Macro.hxx>
 
-# include <string.h>
-# include <stdio.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 
 # if defined(_MSC_VER) && ! defined(strcasecmp)
 #  define strcasecmp _stricmp

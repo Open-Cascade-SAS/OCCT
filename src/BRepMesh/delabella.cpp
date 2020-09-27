@@ -27,7 +27,11 @@ SOFTWARE.
 
 #include <assert.h>
 #include <stdio.h>
-#include <search.h>
+
+// gcc 4.9 for Android doesn't have search.h
+#if !defined(__ANDROID__) || defined(__clang__)
+  #include <search.h>
+#endif
 
 #if (defined(__APPLE__))
 #include <malloc/malloc.h>
