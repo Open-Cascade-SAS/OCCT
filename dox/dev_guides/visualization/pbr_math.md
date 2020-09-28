@@ -2,7 +2,7 @@ PBR math (rasterization) {#occt_dev_guides__pbr_math}
 ========================
 @tableofcontents
 
-# Preface
+@section pbr_preface Preface
 
 **Empirical** illumination models like **Phong reflection model** have been used in real-time graphics for a long time due to their simplicity, convincing look and affordable performance.
 Before programmable pipeline has been introduced, graphics cards implemented Gouraud shading as part of fixed-function Transformation & Lighting (T&L) hardware blocks.
@@ -25,7 +25,7 @@ OCCT 3D Viewer provides both kinds of PBR renderers, and although they share som
 This article describes the math underneath PBR shading in OCCT 3D Viewer and its GLSL programs.
 However, this article does not clarifies related high-level APIs nor PBR material creation pipelines, as this is another topic.
 
-# Notation
+@section pbr_notation Notation
 
 |  |  |  |
 |-:|:-|:-|
@@ -46,7 +46,7 @@ However, this article does not clarifies related high-level APIs nor PBR materia
 
 \f$\cos\theta_{vh}=(v \cdot h)\f$
 
-# Illumination model
+@section pbr_illumination_model Illumination model
 
 The main goal of illumination model is to calculate outgoing light radiance \f$L_o\f$ along the certain direction.
 The starting point of calculation might be the view direction \f$v\f$ aimed from point on surface (or in more general case just in space) to viewer position.
@@ -60,7 +60,7 @@ More general model will require to consider directions all around a whole sphere
 \f$\cos\theta_l\f$ factor appearing is caused by affection of surface area and light direction mutual orientation to the amount of radiance coming to this area.
 This is mainly due to geometric laws. The rest part of integral is the key of the whole illumination model.
 BRDF defines it's complexity and optical properties of material.
-It has to model all light and material interactions and also has to satisfy some following criteria in order to be physical correct:
+It has to model all light and material interactions and also has to satisfy some following criteria in order to be physical correct @ref ref_Duvenhage13 "[Duvenhage13]":
 * Positivity: \f$f(v,l) \geq 0\f$
 * Helmholtz reciprocity: \f$f(v,l) = f(l, v)\f$ (follows from 2<sup>nd</sup> Law of Thermodynamics)
 * Energy conservation: \f$\displaystyle \forall v \, \int\limits_H f(v,l) \cos\theta_l \, \mathrm{d}l = 1\f$ (in order not to reflect more light than came)
@@ -74,7 +74,7 @@ So that illumination equation might be rewritten as:
 
 \f[L_o=\int\limits_H (f_d(v,l)+f_s(v, l)) L_i(l) \cos\theta_l\, \mathrm{d}l\f]
 
-PBR theory is based on **Cook-Torrance specular BRDF**. It imagines surface as set of perfectly reflected micro faces distributed on area in different ways which is pretty good model approximation of real world materials.
+PBR theory is based on **Cook-Torrance specular BRDF** @ref ref_Cook81 "[Cook81]". It imagines surface as set of perfectly reflected micro faces distributed on area in different ways which is pretty good model approximation of real world materials.
 If this area is small enough not to be able to recognize separate micro surfaces the results becomes a sort of averaging or mixing of every micro plane illumination contribution.
 In that level it allows to work with micro faces in statistical manner manipulating only probabilities distributions of micro surfaces parameters such as normals, height, pattern, orientation etc.
 In computer graphics pixels are units of images and it usually covers a relatively large areas of surfaces so that micro planes can be considered to be unrecognizable.
@@ -85,7 +85,7 @@ Going back to the BRDF the Cook-Torrance approach has the following expression:
 Three parts presented in nominator have its own meaning but can have different implementation with various levels of complexity and physical accuracy.
 In that paper only one certain implementation is used. The \f$D\f$ component is responsible for **micro faces normals distribution**.
 It is the main instrument that controls reflection's shape and strength according to **roughness** \f$r\f$ parameter.
-The implementation with good visual results is **Trowbridge-Reitz GGX** approach used in Disney's RenderMan and Unreal Engine:
+The implementation with good visual results is **Trowbridge-Reitz GGX** approach used in Disney's RenderMan and Unreal Engine @ref ref_Karis13 "[Karis13]":
 
 \f[D=\frac{\alpha^2}{\pi(\cos^2\theta_h(\alpha^2-1) + 1)^2}\f]
 
@@ -93,8 +93,8 @@ Where \f$\alpha = r^2\f$. This square in needed only for smoother roughness para
 Without it the visual appearance of surface becomes rough too quickly during the parameter's increasing.
 
 The second \f$G\f$ component is called **geometric shadowing** or attenuation factor.
-The point is that micro surfaces form kind of terrain and can cast shadows over each other especially on extreme viewing angles.
-**Schlick's model** has been chosen as implementation:
+The point is that micro surfaces form kind of terrain and can cast shadows over each other especially on extreme viewing angles @ref ref_Heitz14 "[Heitz14]".
+**Smith-Schlick model** @ref ref_Heitz14 "[Heitz14]", @ref ref_Schlick94 "[Schlick94]" has been chosen as implementation:
 
 \f[\displaystyle G=\frac{\cos\theta_l \cos\theta_v}{(\cos\theta_l(1-k)+k)(\cos\theta_v(1-k)+k)}\f]
 
@@ -105,7 +105,7 @@ One of this modification will be described later in following chapters.
 The last component \f$F\f$ shows **how much light is reflected from surface** and is called **Fresnel's factor**.
 The rest amount of radiance might be absorbed or refracted by material.
 The most accurate expression of it is pretty complicate for calculation so that there is a variety of approximations.
-The good one with less computation efforts is **Schlick's implementation**:
+The good one with less computation efforts is **Schlick's implementation** @ref ref_Schlick94 "[Schlick94]":
 
 \f[F=F_0+(1-F_0)(1-\cos\theta_{vh})^5\f]
 
@@ -115,7 +115,7 @@ In order to do that it is needed to be noticed that Schlick's approximation is a
 **Index of Refraction** \f$IOR\f$ shows the proportion between light speed in vacuum (or even in air) and in material.
 The reference value of \f$IOR\f$ for plastic is **1.5**, and this value can be considered as default for all unknown dielectrics.
 In practice this parameter controls reflectance ability of material.
-Also it should be remembered that this approximation produces poor results with large \f$IOR\f$ values so that it is recommended to be kept in range of \f$[1, 3]\f$ in order to get plausible Fresnel's factor.
+Also it should be remembered that this approximation produces poor results with large \f$IOR\f$ values so that it is recommended to be kept in range of \f$[1, 3]\f$ in order to get plausible Fresnel's factor @ref ref_Lazanyi05 "[Lazanyi05]", @ref ref_Lagarde13 "[Lagarde13]".
 This formula might be further propagated onto metals by using \f$F_0\f$ measured specifically for certain metal.
 It can be considered as some kind of a 'color' of metal and can be stored as albedo parameter \f$c\f$.
 And the final step of defining Fresnel's factor formula is mixing all this \f$F_0\f$ using metallic parameter \f$m\f$ (**metalness**):
@@ -168,7 +168,7 @@ So that all parts described above can be combined into united diffuse BRDF:
 In this chapter one possible implementation of illumination model reflecting main PBR principles has been defined.
 The next step is using of it in practice.
 
-# Practical application
+@section pbr_practical_application Practical application
 
 It's time to apply deduced illumination model in practice.
 And the first step of it is separation of **direction based light sources** from illumination integral.
@@ -184,7 +184,7 @@ Having finite discrete amount of it in scene and considering only single directi
 Where \f$M\f$ is a number of sources, \f$l_j\f$ is a direction and \f$L_i^{direct}\f$ is an intensity related to this direction.
 \f$direct\f$ label means that illumination has been computed directly from sources.
 The BRDF can be used directly without any calculation problems.
-The only exception might be \f$k\f$ in \f$G\f$ factor - it is recommended to be equal \f$\frac{(r+1)^2}{8}\f$ in order to get more pleasant results (that is modification mentioned in previous chapter).
+The only exception might be \f$k\f$ in \f$G\f$ factor - it is recommended to be equal \f$\frac{(r+1)^2}{8}\f$ in order to get more pleasant results @ref ref_Karis13 "[Karis13]" (that is modification mentioned in previous chapter).
 And actually it is enough to finally see something.
 There will be correct visualization with assumption of complete dark environment and absence of other points influence.
 It is called **local illumination**. Based on this name there is also a global or **indirect illumination** and that is the rest of integral:
@@ -204,7 +204,7 @@ It is enough to get some results in terms of local illumination but without \f$L
 \f$L_{indirect}\f$ is not trivial thing for calculation and that is stumbling block for real time rendering applications.
 But it can be relatively easy implemented in case of environment illumination via some precomputational work about which will be told in details in following chapters.
 
-# Image based lighting
+@section pbr_image_based_lighting Image based lighting
 
 The next goal after \f$L_{direct}\f$ calculation is to find \f$L_{indirect}\f$.
 And it would be easier if \f$L_i^{indirect}(l)\f$ was known for every \f$l\f$.
@@ -233,7 +233,7 @@ Lets write down this separately:
 Next transformations of these expressions require understanding of numerical way to find hemisphere integral and also its performance optimization techniques.
 And that the topic of the next chapter.
 
-# Monte-Carlo numeric integration
+@section pbr_monte_carlo_integration Monte-Carlo numeric integration
 
 **Monte-Carlo** is one of numeric methods to **find integral**.
 It is based on idea of mathematical expectation calculation.
@@ -343,7 +343,7 @@ Moreover special \f$p(l)\f$ can be chosen and special pseudo-random sequences ca
 That is why this method is widely used in computer graphics and demonstrates good results.
 Also another one advantage is worth to be mentioned - possibility to iteratively accumulate computations and present intermediate results during rendering which is used in some ray tracing applications.
 
-# Split sum
+@section pbr_split_sum Split sum
 
 Lets go back to the image based lighting and the figure of specular component.
 As was defined before that is hemisphere integral with following expression:
@@ -359,7 +359,7 @@ Optimization strategies use different samples distributions for different view d
 Anyway even with all optimization techniques this algorithm continues to require too much calculations.
 Good visual results require noticeable number of samples and using this approach for every point in real time rendering becomes unrealistic.
 The way to avoid these enormous calculations is doing them beforehand somehow.
-The first trick on the way to this is split the sum separating environment light component:
+The first trick on the way to this is split the sum separating environment light component @ref ref_Karis13 "[Karis13]":
 
 \f[L_{indirect}^s \approx \frac{1}{N} \sum_{i=1}^N \frac{f_s(v, l_i) L_i^{indirect}(l_i) \cos\theta_{l_i}}{p(v, l_i)} \approx \left( \frac{1}{N} \sum_{i=1}^N L_i^{indirect}(l_i) \right) \left( \frac{1}{N} \sum_{i=1}^N \frac{f_s(v, l_i) \cos\theta_{l_i}}{p(v, l_i)} \right)\f]
 
@@ -402,7 +402,7 @@ Current result for \f$L_{indirect}^s\f$ is computing it using 2D image for BRDF 
 There were a lot of words about Monte-Carlo optimizations techniques and about PDF choice which is important not only in terms of numeric integration but in terms of visual results correctness.
 It's time to talk about that.
 
-# Importance sampling
+@section pbr_importance_sampling Importance sampling
 
 Current goal is to speed up Monte-Carlo integration of Cook-Torrance like integrals with following expression:
 
@@ -424,7 +424,7 @@ Anyway that is good starting point and lets generate \f$h\f$ vectors first.
 
 Frankly speaking \f$D(h)\f$ is called normal distribution but cannot be directly used as hemisphere distribution.
 Originally it is statistical factor used to define total area of micro faces \f$\mathrm{d}A_h\f$
-whose normals lie withing given infinitesimal solid angle \f$\mathrm{d}h\f$ centered on \f$h\f$ direction using the original small enough area of macro surface \f$\mathrm{d}A\f$:
+whose normals lie withing given infinitesimal solid angle \f$\mathrm{d}h\f$ centered on \f$h\f$ direction using the original small enough area of macro surface \f$\mathrm{d}A\f$ @ref ref_Walter07 "[Walter07]":
 
 \f[dA_h = D(h)\,\mathrm{d}h\, \mathrm{d}A\f]
 
@@ -460,7 +460,7 @@ Lets strict to samples generation procedure and find partial probability densiti
 
 \f$p(\phi_h)\f$ is unnecessary to be calculated analytically.
 The fact of independency from \f$\phi\f$ is enough to figure out that this coordinate is uniformly distributed.
-Anyway the \f$F(\theta_h)\f$ is next step:
+Anyway the \f$F(\theta_h)\f$ is next step @ref ref_Cao15 "[Cao15]":
 
 \f[F(\theta_h) = \int\limits_0^{\theta_h} \frac{2 \alpha^2 \cos\theta'_h\sin\theta'_h}{(\cos^2\theta'_h(\alpha^2-1) + 1)^2}\, \mathrm{d}\theta'_h = \int\limits_{\theta_h}^0 \frac{2 \alpha^2}{(\cos^2\theta'_h(\alpha^2-1) + 1)^2}\, \mathrm{d}(\cos^2\theta'_h) = \frac{\alpha^2}{\alpha^2-1}\int\limits_0^{\theta_h} \mathrm{d}\frac{1}{\cos^2\theta'_h(\alpha^2-1)+1} =\f]
 
@@ -494,7 +494,7 @@ Due to previous step \f$\theta_{vh}\f$ is used instead of \f$\theta_h\f$.
 In this coordinate system reflecting of \f$v\f$ relative to \f$h\f$ is just doubling \f$\theta_{vh}\f$ and Jacobian of it is equal to \f$\frac{1}{2}\f$.
 In series of transform the Jacobians are multiplied so that currently \f$|J_T| = \frac{1}{2}\sin\theta_{vh}\f$.
 And the final step is inverse transform to Cartesian coordinate system with \f$|J_T| = (\sin\theta_{vl})^{-1} = (\sin2\theta_{vh})^{-1}\f$.
-Combining this all together the following expression is obtained for reflection transform Jacobian:
+Combining this all together the following expression is obtained for reflection transform Jacobian @ref ref_Schutte18 "[Schutte18]":
 
 \f[|J_T| = \frac{\sin\theta_{vh}}{2\sin2\theta_{vh}} = \frac{\sin\theta_{vh}}{4\sin\theta_{vh}\cos\theta_{vh}} = \frac{1}{4\cos\theta_{vh}}\f]
 
@@ -517,7 +517,7 @@ Due to this transformation final form of probability density used in sum is quit
 For isotropic Cook-Torrance BRDF the \f$\cos\theta_v\f$ and roughness \f$r\f$ are enough to start generation so that all integrals of that kind can be precalculated in 2D look-up tables variating these two parameters.
 The same samples generation procedure must be used in specular map baking described in next chapter.
 
-# Specular map
+@section pbr_specular_map Specular map
 
 The situation with BRDF part of \f$L_{indirect}^s\f$ is clear now and \f$L_i^{indirect}(l)\f$ sum is left to be discussed.
 That was called **specular map** and has following form:
@@ -532,7 +532,7 @@ A couple of tricks helps to reduce dimensions.
 First of all the \f$\cos\theta_v\f$ and \f$\phi\f$ can be just excluded.
 In that way \f$v\f$ is considered to be equal to \f$n\f$.
 Of course this approach produces an error and affects the final result.
-It can be fixed more or less by \f$\cos\theta_{l_i}\f$ weighting:
+It can be fixed more or less by \f$\cos\theta_{l_i}\f$ weighting @ref ref_Karis13 "[Karis13]":
 
 \f[\frac{1}{N} \sum_{i=1}^N L_i^{indirect}(l_i) \cos\theta_{l_i}\f]
 
@@ -589,7 +589,7 @@ It wold be better to get from such direction already averaged over bigger area e
 It can be achieved using mip levels of origin \f$L_i^{indirect}\f$ whose pixels of one level is exact 4 averaged pixels from previous one.
 Also mip levels generation is build in most common graphic API so there are no problems with it.
 But first of all the area covered by one sample is needed to be found.
-And that can be done as:
+And that can be done as @ref ref_Colbert07 "[Colbert07]":
 
 \f[\Omega_s = \frac{1}{N\,p(l)} = \frac{4\cos\theta_{vh}}{ND\cos\theta_h}\f]
 
@@ -619,7 +619,7 @@ The first one can be got even without any environment.
 It was achieved using some rough approximations and assumptions but despite of that the visual result are still plausible and can be compared even with ray traced images.
 In order to complete whole image based lighting the \f$L_{indirect}^d\f$ component is left to be discussed.
 
-# Spherical harmonics
+@section pbr_spherical_harmonics Spherical harmonics
 
 Lets go back to diffuse indirect illumination component represented by following formula:
 
@@ -627,7 +627,7 @@ Lets go back to diffuse indirect illumination component represented by following
 
 Of course, Monte-Carlo algorithm can be applied directly and hemisphere integral can be precalculated for every normal direction
 but dependence from \f$v\f$ in Fresnel's factor does not allow to do it efficiently (every \f$v\f$ direction is needed to be considered again).
-In order to resolve it modified version of Schlick's approximation has been created:
+In order to resolve it modified version of Schlick's approximation has been created [[?](TODO)]:
 
 \f[F \approx F_{ss}=F_0+(\max(1-r, F_0))(1-\cos\theta_v)^5\f]
 
@@ -658,7 +658,7 @@ Dot product on a sphere is defined as integral of functions multiplication. In o
 
 \f[\int\limits_S y_i^j(l)\, y_{i'}^{j'}(l)\, \mathrm{d}l = \begin{cases} 1 & \quad i,j = i',j' \\ 0 & \quad \mathrm{otherwise}\end{cases}\f]
 
-Function basis with such traits is known and is described by following formulas:
+Function basis with such traits is known and is described by following formulas @ref ref_Guy18 "[Guy18]":
 
 \f[y_i^{j > 0}(\theta, \phi) = \sqrt{2}K_i^j\cos(j\phi)P_i^j(\cos\theta)\f]
 \f[y_i^{j<0}(\theta, \phi) = \sqrt{2}K_i^j\sin(j\phi)P_i^{|j|}(\cos\theta)\f]
@@ -691,7 +691,7 @@ Where \f$\overline{\cos}\f$ is cosine clamped to zero which can be expressed as:
 Resulted expression can be considered as convolution in terms of spherical functions where \f$L_i^{indirect}(l)\f$ is target and \f$\overline{\cos}\theta_l\f$ is core.
 This integral may seem independent but in fact hemisphere is oriented related to \f$n\f$ therefore \f$\overline{\cos}\theta_l\f$ depends on it too and became a kind of 'oriented' version of cosine.
 That is pretty tricky and explanation about meaning of convolution on sphere is out of scope of this paper.
-Fact that this is convolution analogue related to \f$n\f$ is enough for now.
+Fact that this is convolution analogue related to \f$n\f$ is enough for now @ref ref_Aguilar17 "[Aguilar17]", @ref ref_Ramamoorthi01 "[Ramamoorthi01]".
 The goal of looking at integral from this angle is using of convolution's trait allowing to compute decomposition using just only coefficients of function and core.
 \f$\overline{\cos}\theta_l\f$ is independent from \f$\phi_l\f$ and in case of such radial symmetric cores the resulting coefficients boil down to following formula:
 
@@ -720,7 +720,7 @@ There is an analytical solution for this expressions:
 Starting from about the third \f$c_i\f$ the coefficients become less and less valuable so that only couple of them is enough in order to approximate \f$\overline{\cos}\theta\f$ with appropriate accuracy.
 The same principle is true for convolution too because its coefficients are multiplied by \f$c_i\f$.
 So there is no need to use more than even three bands (\f$i = 0, 1, 2\f$) of basis functions.
-Lets write down them all in Cartesian coordinate system:
+Lets write down them all in Cartesian coordinate @ref ref_Ramamoorthi01 "[Ramamoorthi01]":
 
 \f[y_0^0 = \frac{1}{2}\sqrt{\frac{1}{\pi}} = Y_0^0\f]
 
@@ -749,7 +749,7 @@ Moreover, texture is not needed at all in that case and only 9 colors representi
 The Monte-Carlo algorithm can be applied with just uniform samples distribution without importance sampling at all.
 \f$Y_i^j\f$ are used twice: in \f$L_i^j\f$ calculations and in sum after that.
 So there is sense to store only squares of it.
-All tables with constants presented below:
+All tables with constants presented below [[14](#(14))]:
 
 | |
 |-|
@@ -768,10 +768,69 @@ All tables with constants presented below:
 Summarizing all mathematics above spherical harmonics decomposition boils down irradiance map to only 9 values which is needed to be precalculated as integrals.
 As practice shows this is very good approximation of diffuse indirect illumination component.
 
-# Transparent materials
+@section pbr_transparency Transparent materials
 
 TODO
 
-# Low discrepancy sequence
+@section pbr_low_discrepancy Low discrepancy sequence
 
 TODO
+
+@section pbr_references References
+
+* @anchor ref_Duvenhage13 **[Duvenhage13]**
+Bernardt Duvenhage, Kadi Bouatouch, D.G. Kourie,
+"Numerical Verification of Bidirectional Reflectance Distribution Functions for Physical Plausibility",
+*Proceedings of the South African Institute for Computer Scientists and Information Technologists Conference*,
+October 2013.
+
+* @anchor ref_Cook81 **[Cook81]**
+Robert Cook, Kenneth Torrance,
+"A Refectance Model for Computer Graphics",
+*SIGGRAPH '81: Proceedings of the 8th annual conference on Computer graphics and interactive techniques*,
+August 1981, pp. 307-316.
+
+* @anchor ref_Karis13 **[Karis13]**
+Brian Karis, "Real Shading in Unreal Engine 4", *SIGGRAPH 2013 Presentation Notes*.
+
+* @anchor ref_Heitz14 **[Heitz14]**
+Eric Heitz, "Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs",
+*Journal of Computer Graphics Techniques*, Vol. 3, No. 2, 2014.
+
+* @anchor ref_Schlick94 **[Schlick94]**
+Christophe Schlick, "An inexpensive brdf model for physically-based rendering",
+*Computer Graphics Forum 13*, 1994, pp. 233-246.
+
+* @anchor ref_Lazanyi05 **[Lazanyi05]**
+Istvan Lazanyi, Lazslo Szirmay-Kalos, "Fresnel term approximations for Metals", January 2005.
+
+* @anchor ref_Lagarde13 **[Lagarde13]**
+Sebastien Lagarde, "Memo on Fresnel equations",
+*Blog post*: [https://seblagarde.wordpress.com/2013/04/29/memo-on-fresnel-equations/](https://seblagarde.wordpress.com/2013/04/29/memo-on-fresnel-equations/).
+
+* @anchor ref_Walter07 **[Walter07]**
+Bruce Walter, Stephen Marschner, Hongsong Li, Kenneth Torrance,
+"Microfacet Models for Refraction through Rough Surfaces", *Proceedings of Eurographics Symposium on Rendering*, 2007.
+
+* @anchor ref_Cao15 **[Cao15]**
+Jiayin Cao, "Sampling microfacet BRDF", November 1, 2015,
+*Blog post*: [https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf/](https://agraphicsguy.wordpress.com/2015/11/01/sampling-microfacet-brdf/).
+
+* @anchor ref_Schutte18 **[Schutte18]**
+Joe Schutte, "Sampling techniques for GGX with Smith Masking-Shadowing: Part 1", March 7, 2018,
+*Blog post*: [https://schuttejoe.github.io/post/ggximportancesamplingpart1/](https://schuttejoe.github.io/post/ggximportancesamplingpart1/).
+
+* @anchor ref_Colbert07 **[Colbert07]**
+Mark Colbert, Jaroslav Krivanek, "GPU-Based Importance Sampling", *NVIDIA GPU Gems 3*, Chapter 20, 2007.
+
+* @anchor ref_Guy18 **[Guy18]**
+Romain Guy, Mathias Agopian, "Physically Based Rendering in Filament", *Part of Google's Filament project documentation*:
+[https://google.github.io/filament/](https://google.github.io/filament/Filament.md.html)
+
+* @anchor ref_Aguilar17 **[Aguilar17]**
+Orlando Aguilar, "Spherical Harmonics", *Blog post*:
+[http://orlandoaguilar.github.io/sh/spherical/harmonics/irradiance/map/2017/02/12/SphericalHarmonics.html](http://orlandoaguilar.github.io/sh/spherical/harmonics/irradiance/map/2017/02/12/SphericalHarmonics.html)
+
+* @anchor ref_Ramamoorthi01 **[Ramamoorthi01]**
+Ravi Ramamoorthi, Pat Hanrahan, "An Efficient Representation for Irradiance Environment Maps",
+*SIGGRAPH '01: Proceedings of the 28th annual conference on Computer graphics and interactive techniques*, August 2001, pp. 497-500
