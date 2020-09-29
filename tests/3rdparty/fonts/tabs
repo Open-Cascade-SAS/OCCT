@@ -1,0 +1,27 @@
+puts "============"
+puts "0031762: Visualization, Font_TextFormatter - tabulation length is respected with one extra symbol shift"
+puts "============"
+puts ""
+pload VISUALIZATION
+
+vfont add [locate_data_file DejaVuSans.ttf] SansFont
+vinit View1
+vtop
+vdrawtext tm1 "1234567890\n1\t90\n12\t90\n123\t90\n1234\t90" -pos  0 0 0 -font MONOSPACE
+vdrawtext ts1 "1234567890\n1\t90\n12\t90\n123\t90\n1234\t90" -pos 50 0 0 -font SansFont
+#	1234567890
+#	1	9
+
+vdrawtext tm2 "1234567890\n#1\t90\n#12\t90\n#123\t90\n#1234\t90" -pos  0 -25 0 -font MONOSPACE
+vdrawtext ts2 "1234567890\n#1\t90\n#12\t90\n#123\t90\n#1234\t90" -pos 50 -25 0 -font SansFont
+#	1234567890
+#	#1 	9
+
+vdrawtext tm3 "1234567890\n1\t 90\n12\t 90\n123\t 90\n1234\t 90" -pos  0 -50 0 -font MONOSPACE
+vdrawtext ts3 "1234567890\n1\t 90\n12\t 90\n123\t 90\n1234\t 90" -pos 50 -50 0 -font SansFont
+#	1234567890
+#	1 	9
+
+vviewparams -scale 11.5 -proj 0 0 1 -up 0 1 0 -at 36 -18 0
+
+vdump $imagedir/${casename}.png
