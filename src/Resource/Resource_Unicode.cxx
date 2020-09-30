@@ -15,14 +15,16 @@
 // commercial license or contractual agreement.
 
 
-#include <NCollection_UtfString.hxx>
-#include <Resource_Big5.h>
 #include <Resource_ConvertUnicode.hxx>
-#include <Resource_GBK.h>
 #include <Resource_Manager.hxx>
 #include <Resource_Unicode.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <NCollection_UtfString.hxx>
+#include <Standard_NotImplemented.hxx>
+#include "Resource_ANSI.pxx"
+#include "Resource_GBK.pxx"
+#include "Resource_Big5.pxx"
 
 #define isjis(c) (((c)>=0x21 && (c)<=0x7e))
 #define iseuc(c) (((c)>=0xa1 && (c)<=0xfe))
@@ -355,14 +357,6 @@ Standard_Boolean Resource_Unicode::ConvertBig5ToUnicode(const Standard_CString f
   return Standard_True;
 }
 
-void Resource_Unicode::ConvertANSIToUnicode(const Standard_CString fromstr,TCollection_ExtendedString& tostr)
-{
-  tostr.Clear();
-
-  TCollection_ExtendedString curext(fromstr);
-  tostr.AssignCat(curext);
-}
-
 Standard_Boolean Resource_Unicode::ConvertUnicodeToSJIS(const TCollection_ExtendedString& fromstr,
 							Standard_PCharacter& tostr,
 							const Standard_Integer maxsize)
@@ -618,9 +612,39 @@ void Resource_Unicode::ConvertFormatToUnicode (const Resource_FormatType theForm
       break;
     }
     case Resource_FormatType_ANSI:
+    {
+      theToStr = TCollection_ExtendedString(theFromStr, Standard_False);
+      break;
+    }
+    case Resource_FormatType_CP1250:
+    case Resource_FormatType_CP1251:
+    case Resource_FormatType_CP1252:
+    case Resource_FormatType_CP1253:
+    case Resource_FormatType_CP1254:
+    case Resource_FormatType_CP1255:
+    case Resource_FormatType_CP1256:
+    case Resource_FormatType_CP1257:
+    case Resource_FormatType_CP1258:
+    {
+      const int aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
+      const Standard_ExtString aCodePage = THE_CODEPAGES_ANSI[aCodePageIndex];
+      theToStr.Clear();
+      for (const char* anInputPntr = theFromStr; *anInputPntr != '\0'; ++anInputPntr)
+      {
+        Standard_ExtCharacter aRes = (*anInputPntr & 0x80) != 0
+          ? aCodePage[(0x7f & *anInputPntr)]
+          : *anInputPntr;
+        if (aRes == (Standard_ExtCharacter)0x0)
+        {
+          aRes = '?';
+        }
+        theToStr.Insert(theToStr.Length() + 1, aRes);
+      }
+      break;
+    }
     case Resource_FormatType_UTF8:
     {
-      theToStr = TCollection_ExtendedString (theFromStr, theFormat == Resource_FormatType_UTF8);
+      theToStr = TCollection_ExtendedString (theFromStr, Standard_True);
       break;
     }
     case Resource_FormatType_SystemLocale:
@@ -654,7 +678,19 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(const Resource_FormatT
     }
     case Resource_FormatType_ANSI:
     {
-      return ConvertUnicodeToANSI (theFromStr, theToStr, theMaxSize);
+      return ConvertUnicodeToANSI(theFromStr, theToStr, theMaxSize);
+    }
+    case Resource_FormatType_CP1250:
+    case Resource_FormatType_CP1251:
+    case Resource_FormatType_CP1252:
+    case Resource_FormatType_CP1253:
+    case Resource_FormatType_CP1254:
+    case Resource_FormatType_CP1255:
+    case Resource_FormatType_CP1256:
+    case Resource_FormatType_CP1257:
+    case Resource_FormatType_CP1258:
+    {
+      throw Standard_NotImplemented("Resource_Unicode::ConvertUnicodeToFormat - conversion from CP1250 - CP1258 to Unicode is not implemented");
     }
     case Resource_FormatType_UTF8:
     {

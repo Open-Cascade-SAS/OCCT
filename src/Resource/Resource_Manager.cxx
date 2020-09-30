@@ -19,7 +19,6 @@
 #include <OSD_File.hxx>
 #include <OSD_Path.hxx>
 #include <OSD_Protection.hxx>
-#include <Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString.hxx>
 #include <Resource_LexicalCompare.hxx>
 #include <Resource_NoSuchResource.hxx>
 #include <Resource_Unicode.hxx>

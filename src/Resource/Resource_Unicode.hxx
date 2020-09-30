@@ -59,10 +59,6 @@ public:
   //! to Unicode ExtendedString <tostr>.
   Standard_EXPORT static Standard_Boolean ConvertBig5ToUnicode (const Standard_CString fromstr, TCollection_ExtendedString& tostr);
   
-  //! Converts non-ASCII CString <fromstr> in ANSI format
-  //! to Unicode ExtendedString <tostr>.
-  Standard_EXPORT static void ConvertANSIToUnicode (const Standard_CString fromstr, TCollection_ExtendedString& tostr);
-  
   //! Converts Unicode ExtendedString <fromstr> to non-ASCII
   //! CString <tostr> in SJIS format, limited to <maxsize>
   //! characters. To translate the whole <fromstr>, use more

@@ -18,8 +18,6 @@
 #define Resource_DataMapOfAsciiStringAsciiString_HeaderFile
 
 #include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TCollection_AsciiString,TCollection_AsciiString,TCollection_AsciiString> Resource_DataMapOfAsciiStringAsciiString;
