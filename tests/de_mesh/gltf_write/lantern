@@ -1,0 +1,19 @@
+puts "========"
+puts "0031816: Data Exchange - RWMesh_MaterialMap::CopyTexture() copies glb file instead of a texture inside it"
+puts "========"
+
+catch { Close D1 }
+ReadGltf D1 [locate_data_file bug30691_Lantern.glb]
+
+set aTmpGltfBase "${imagedir}/${casename}_tmp"
+set aTmpGltf "${aTmpGltfBase}.gltf"
+lappend occ_tmp_files $aTmpGltf
+lappend occ_tmp_files "${aTmpGltfBase}.bin"
+lappend occ_tmp_files "${aTmpGltfBase}_textures"
+
+WriteGltf D1 "$aTmpGltf"
+
+ReadGltf D "$aTmpGltf"
+XGetOneShape s D
+checknbshapes s -face 3 -compound 1
+checktrinfo s -tri 5394 -nod 4145

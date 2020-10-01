@@ -167,7 +167,9 @@ bool RWMesh_MaterialMap::CopyTexture (TCollection_AsciiString& theResTexture,
 
   TCollection_AsciiString aTexFileName;
   TCollection_AsciiString aTextureSrc = theTexture->FilePath();
-  if (!aTextureSrc.IsEmpty())
+  if (!aTextureSrc.IsEmpty()
+    && theTexture->FileOffset() <= 0
+    && theTexture->FileLength() <= 0)
   {
     TCollection_AsciiString aSrcTexFolder;
     OSD_Path::FolderAndFileFromPath (aTextureSrc, aSrcTexFolder, aTexFileName);
