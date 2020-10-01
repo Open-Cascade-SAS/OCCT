@@ -1,4 +1,4 @@
-Guide to installing and using Git for OCCT development {#occt_dev_guides__git_guide}
+Guide to installing and using Git for OCCT development {#occt_contribution__git_guide}
 =================================
 
 @tableofcontents 
@@ -17,7 +17,7 @@ Guide to installing and using Git for OCCT development {#occt_dev_guides__git_gu
   For the experienced Git users it can be enough to read sections 1 and 3
    of this document to start working with the repository.
    
-  Familiarize yourselves with the @ref occt_dev_guides__contribution_workflow "Contribution Workflow document"  
+  Familiarize yourselves with the @ref occt_contribution__contribution_workflow "Contribution Workflow document"  
   that describes how Git is used for processing contributions to OCCT.
   
   This and related documents are available at the Resources page 

@@ -1,4 +1,4 @@
-Contribution Workflow {#occt_dev_guides__contribution_workflow}
+Contribution Workflow {#occt_contribution__contribution_workflow}
 ====================================
 @tableofcontents 
 
@@ -144,7 +144,7 @@ Change of layout or re-formatting of the existing code is allowed only in the pa
 
 @note If deemed useful, re-formatting or cosmetic changes affecting considerable parts of the code can be made within a dedicated issue.
 
-The changes should comply with the OCCT @ref occt_dev_guides__coding_rules "Codng Rules". 
+The changes should comply with the OCCT @ref occt_contribution__coding_rules "Codng Rules". 
 It is especially important to comment the code properly so that other people can understand it easier.
 
 The modification should be tested by running OCCT tests (on the platform and scope available to **Developer**) and ensuring absence of regressions.
@@ -163,7 +163,7 @@ When the test case cannot be provided for any reason, the maximum possible infor
 
 If the change affects a functionality described in @ref user_guides "User Guides", the corresponding user guide should be updated to reflect the change.
 
-If the change affects OCCT test system, build environment, or development tools described in @ref dev_guides "Developer Guides", the corresponding guide should be updated.
+If the change affects OCCT test system, build environment, or development tools described in @ref build_upgrade "Build, Debug and Upgrade" or @ref contribution "Contribution", the corresponding guide should be updated.
  
 The changes that break compatibility with the previous versions of OCCT (i.e. affecting API or behavior of existing functionality in the way that may require update of existing applications based on an earlier official release of OCCT to work correctly) should be described in the document @ref occt__upgrade "Upgrade from previous OCCT versions".
 It is recommended to add a sub-section for each change described.
@@ -183,7 +183,7 @@ In case if the fix is implemented on the previous release of OCCT, the branch ca
 The branch name should be composed of letters **CR** (abbreviation of "Change Request") followed by the issue ID number (without leading zeros). 
 It is possible to add an optional suffix to the branch name after the issue ID, e.g. to distinguish between several versions of the fix (see @ref occt_contribution_nonstd_rebase).
 
-See @ref occt_dev_guides__git_guide "Guide to using GIT" for help.
+See @ref occt_contribution__git_guide "Guide to using GIT" for help.
 
 @note When a branch with the name given according to the above rule is pushed to Git, a note is automatically added to the corresponding issue in Mantis, indicating the person who has made the push, the commit hash, and (for new commits) the description.
   
@@ -226,7 +226,7 @@ The possible variants are:
 
 @subsection occt_contribution_workflow_review Code review
 
-The **Reviewer** analyzes the proposed solution for applicability in accordance with OCCT @ref occt_dev_guides__coding_rules "Coding Rules" and examines all changes in the sources, test case(s), and documentation to detect obvious and possible errors, misprints, or violations of the coding style. 
+The **Reviewer** analyzes the proposed solution for applicability in accordance with OCCT @ref occt_contribution__coding_rules "Coding Rules" and examines all changes in the sources, test case(s), and documentation to detect obvious and possible errors, misprints, or violations of the coding style. 
 
 If the Reviewer detects some problems, he can either:
 

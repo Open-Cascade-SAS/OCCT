@@ -1,4 +1,4 @@
-Coding Rules {#occt_dev_guides__coding_rules}
+Coding Rules {#occt_contribution__coding_rules}
 ======================================
 
 @tableofcontents

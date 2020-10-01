@@ -1,4 +1,4 @@
- Automated Testing System  {#occt_dev_guides__tests}
+ Automated Testing System  {#occt_contribution__tests}
 ======================================
 
 @tableofcontents

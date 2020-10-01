@@ -1,15 +1,10 @@
- Developer Guides {#dev_guides}
-================
+﻿Contribution {#contribution}
+============
 
-The following documents provide information on OCCT building, development and testing:
+This chapter contains the detailed infomation about contribution procedure:
 
-* @subpage occt_contribution__documentation "Documentation system"
-* @subpage occt_dev_guides__coding_rules "Coding Rules"
-* @subpage occt_dev_guides__contribution_workflow "Contribution Workflow"
-* @subpage occt_dev_guides__git_guide "Guide to installing and using Git for OCCT development"
-* @subpage occt_dev_guides__tests "Automatic Testing system"
-* @subpage occt__debug "Debugging tools and hints"
-
-The following guide provides information relevant to upgrading applications developed with previous versions of OCCT, to recent one:
-
-* @subpage occt__upgrade "Upgrade from previous OCCT versions"
+* @subpage occt_contribution__contribution_workflow
+* @subpage occt_contribution__git_guide
+* @subpage occt_contribution__coding_rules
+* @subpage occt_contribution__tests
+* @subpage occt_contribution__documentation

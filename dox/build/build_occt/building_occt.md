@@ -6,7 +6,7 @@ Build OCCT {#build_upgrade__building_occt}
 @note Before building OCCT, make sure to have all required third-party libraries installed.
 The list of required libraries depends on what OCCT modules will be used, and your preferences.
 The typical minimum is **Freetype** (necessary for Visualization) and **Tcl/Tk** (for DRAW).
-See @ref OCCT_OVW_SECTION_2 "requirements on 3rdparty libraries" for a full list.
+See @ref intro_req "requirements on 3rdparty libraries" for a full list.
 On OS X we recommend to use native libraries.
 
 @section build_occt_windows Windows

@@ -7,14 +7,17 @@
 
 introduction/introduction.md
 
+samples/samples.md
 ../samples/mfc/standard/ReadMe.md
 ../samples/CSharp/ReadMe.md
 ../samples/CSharp/ReadMe_D3D.md
-
 ../samples/qt/AndroidQt/ReadMe.md
 ../samples/java/jniviewer/ReadMe.md
 ../samples/ios/UIKitSample/ReadMe.md
 ../samples/webgl/ReadMe.md
+samples/ocaf.md
+samples/ocaf_func.md
+samples/draw_scripts.md
 
 tutorial/tutorial.md
 
@@ -25,8 +28,6 @@ build/build_documentation/building_documentation.md
 
 debug/debug.md
 upgrade/upgrade.md
-
-technical_overview/technical_overview.md
 
 user_guides/user_guides.md
 user_guides/foundation_classes/foundation_classes.md
