@@ -1,4 +1,4 @@
- Documentation System {#occt_dev_guides__documentation}
+ Documentation System {#occt_contribution__documentation}
 ======================
 
 @tableofcontents

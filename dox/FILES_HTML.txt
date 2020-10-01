@@ -18,6 +18,14 @@ introduction/introduction.md
 
 tutorial/tutorial.md
 
+build/build_upgrade.md
+build/build_occt/building_occt.md
+build/build_3rdparty/building_3rdparty.md
+build/build_documentation/building_documentation.md
+
+debug/debug.md
+upgrade/upgrade.md
+
 technical_overview/technical_overview.md
 
 user_guides/user_guides.md
@@ -46,17 +54,5 @@ contribution/coding_rules.md
 contribution/contribution_workflow/contribution_workflow.md
 contribution/git_guide/git_guide.md
 contribution/tests/tests.md
-debug/debug.md
-upgrade/upgrade.md
-
-dev_guides/building/building.md
-dev_guides/building/3rdparty/3rdparty_windows.md
-dev_guides/building/3rdparty/3rdparty_linux.md
-dev_guides/building/3rdparty/3rdparty_osx.md
-dev_guides/building/cmake/cmake.md
-dev_guides/building/android/android.md
-dev_guides/building/code_blocks.md
-dev_guides/building/msvc.md
-dev_guides/building/xcode.md
 
 license.md

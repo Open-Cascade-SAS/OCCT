@@ -165,7 +165,7 @@ If the change affects a functionality described in @ref user_guides "User Guides
 
 If the change affects OCCT test system, build environment, or development tools described in @ref dev_guides "Developer Guides", the corresponding guide should be updated.
  
-The changes that break compatibility with the previous versions of OCCT (i.e. affecting API or behavior of existing functionality in the way that may require update of existing applications based on an earlier official release of OCCT to work correctly) should be described in the document @ref occt_dev_guides__upgrade "Upgrade from previous OCCT versions".
+The changes that break compatibility with the previous versions of OCCT (i.e. affecting API or behavior of existing functionality in the way that may require update of existing applications based on an earlier official release of OCCT to work correctly) should be described in the document @ref occt__upgrade "Upgrade from previous OCCT versions".
 It is recommended to add a sub-section for each change described.
 The description should provide the explanation of the incompatibility introduced by the change, and describe how it can be resolved (at least, in known situations).
 When feasible, the automatic upgrade procedure (adm/upgrade.tcl) can be extended by a new option to perform the required upgrade of the dependent code automatically. 

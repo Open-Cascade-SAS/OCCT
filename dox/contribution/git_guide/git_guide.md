@@ -143,7 +143,7 @@ The official repository contains:
   - Extension: <code>.svg</code>
   - External program: <code>&lt;path_to_OCCT&gt;\\adm\\svgdiff.bat %%base %%mine %%bname %%yname</code>
 
-@figure{OCCT_GitGuide_V2_svgdiff.png,"",709}
+@figure{OCCT_GitGuide_V2_svgdiff.png,"",320}
 
 @subsection occt_gitguide_2_2 Linux platform
 

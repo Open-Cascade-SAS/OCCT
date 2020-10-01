@@ -180,7 +180,7 @@ OCCT documentation is provided in several forms:
   Reference documentation is presented in **Modules --> Toolkits --> Packages --> Classes** 
   logic structure with cross-references to all OCCT classes and complete in-browser search by all classes.
 
-See @ref occt_dev_guides__documentation "OCCT Documentation Guide" for details on OCCT documentation system.
+See @ref occt_contribution__documentation "OCCT Documentation Guide" for details on OCCT documentation system.
 
 **Generation of HTML documentation**
 
@@ -261,7 +261,7 @@ Don't forget to report these bugs to vendors.
 
 In most cases you need to rebuild OCCT on your platform (OS, compiler) before
 using it in your project, to ensure binary compatibility.
-See @ref occt_dev_guides__building for instructions on
+See @ref build_upgrade for instructions on
 building OCCT from sources on supported platforms.
 
 @subsection OCCT_OVW_SECTION_4_1 Using Windows installer

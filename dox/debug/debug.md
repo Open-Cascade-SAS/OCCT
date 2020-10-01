@@ -1,4 +1,4 @@
-Debugging tools and hints {#occt_dev_guides__debug}
+Debugging tools and hints {#occt__debug}
 =========================
 
 @tableofcontents
