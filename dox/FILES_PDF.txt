@@ -25,7 +25,7 @@ dev_guides/documentation/documentation.md
 dev_guides/contribution/coding_rules.md
 dev_guides/git_guide/git_guide.md
 dev_guides/tests/tests.md
-dev_guides/upgrade/upgrade.md
+upgrade/upgrade.md
 dev_guides/visualization/pbr_math.md
 
 tutorial/tutorial.md
