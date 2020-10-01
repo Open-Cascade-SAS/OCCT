@@ -20,11 +20,12 @@ user_guides/visualization/visualization.md
 user_guides/xde/xde.md
 user_guides/vis/vis.md
 
-dev_guides/contribution_workflow/contribution_workflow.md
-dev_guides/documentation/documentation.md
-dev_guides/contribution/coding_rules.md
-dev_guides/git_guide/git_guide.md
-dev_guides/tests/tests.md
+contribution/contribution_workflow/contribution_workflow.md
+contribution/documentation/documentation.md
+contribution/coding_rules.md
+contribution/git_guide/git_guide.md
+contribution/tests/tests.md
+
 upgrade/upgrade.md
 dev_guides/visualization/pbr_math.md
 

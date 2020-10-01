@@ -37,12 +37,12 @@ user_guides/inspector/inspector.md
 user_guides/brep_wp/brep_wp.md
 user_guides/vis/vis.md
 
-dev_guides/dev_guides.md
-dev_guides/documentation/documentation.md
-dev_guides/contribution/coding_rules.md
-dev_guides/contribution_workflow/contribution_workflow.md
-dev_guides/git_guide/git_guide.md
-dev_guides/tests/tests.md
+contribution/contribution.md
+contribution/documentation/documentation.md
+contribution/coding_rules.md
+contribution/contribution_workflow/contribution_workflow.md
+contribution/git_guide/git_guide.md
+contribution/tests/tests.md
 debug/debug.md
 upgrade/upgrade.md
 dev_guides/visualization/pbr_math.md

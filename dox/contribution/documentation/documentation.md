@@ -30,7 +30,7 @@ You can use *custom.bat* file to add necessary paths to the *PATH* variable.
 Note that in the process of PDF generation MiKTeX may need some packages not installed by default.
 We recommend setting option "Install missing packages on-the-fly" to "Ask me first" (default) during MiKTeX installation:
 
-@figure{/dev_guides/documentation/images/documentation_miktex.png,"",320}
+@figure{/contribution/documentation/images/documentation_miktex.png,"",320}
 
 On the first run of **pdflatex** it will open a dialog window prompting for installation of missing packages.
 Follow the instructions to proceed (define proxy settings if needed, select a mirror site to download from, etc.).
@@ -102,7 +102,7 @@ The MarkDown files have a <i>*.md</i> extension and are based on rules described
 
 @subsection  OCCT_DM_SECTION_3_2 Directory Structure
 
-@figure{/dev_guides/documentation/images/documentation_folders.png,"",160}
+@figure{/contribution/documentation/images/documentation_folders.png,"",160}
 
 Each document has its own folder if there are any images used in it. These images are stored in *images* subfolder.
 
@@ -112,7 +112,7 @@ If you want to use the same image for several documents, you can place it in *do
 
 
 @verbatim
-@figure{/dev_guides/documentation/images/documentation_test_image.svg,"",420}
+@figure{/contribution/documentation/images/documentation_test_image.svg,"",420}
 @endverbatim
 
 
@@ -399,12 +399,12 @@ Captions are included below the image; in PDF output the images with caption are
 Example:
 
 @verbatim
-  @figure{/dev_guides/documentation/images/documentation_test_image.svg,"Test SVG image"}
+  @figure{/contribution/documentation/images/documentation_test_image.svg,"Test SVG image"}
 @endverbatim
 
 is rendered as:
 
-@figure{/dev_guides/documentation/images/documentation_test_image.svg,"Test SVG image",320}
+@figure{/contribution/documentation/images/documentation_test_image.svg,"Test SVG image",320}
 
 We recommend using **Inkscape** for creation and edition of vector graphics.
 The graphics created in MS Word Draw and some other vector editors can be copy-pasted to Inkscape and saved as SVG images.
