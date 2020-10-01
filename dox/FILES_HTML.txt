@@ -5,7 +5,7 @@
 # The order of files in this list determines order of top-level pages
 # in the generated documentation.
 
-overview/overview.md
+introduction/introduction.md
 
 ../samples/mfc/standard/ReadMe.md
 ../samples/CSharp/ReadMe.md

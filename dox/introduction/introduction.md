@@ -1,4 +1,4 @@
-﻿Overview {#mainpage}
+﻿Introduction {#mainpage}
 ========
 
 @tableofcontents
@@ -290,11 +290,11 @@ OCCT are included into binary distribution (built with Visual C++ 2010).
 When the installation is complete, you will find the directories for 3rd party products 
 (some might be absent in case of custom installation) and the main **OCCT** directory:
 
-@figure{/overview/images/overview_3rdparty.png}
+@figure{/introduction/images/overview_3rdparty.png}
 
 The contents of the OCCT-7.4.0 directory (called further "OCCT root", or $CASROOT) are as follows:
 
-@figure{/overview/images/overview_installation.png, "The directory tree"}
+@figure{/introduction/images/overview_installation.png, "The directory tree"}
 
   * **adm**   This folder contains administration files, which allow rebuilding OCCT;
   * **adm/cmake**  This folder contains files of CMake building procedure;
@@ -375,7 +375,7 @@ Draw is a command interpreter based on TCL and a graphical system used for testi
 
 Draw can be used interactively to create, display and modify objects such as curves, surfaces and topological shapes.
 
-@figure{/overview/images/overview_draw.png}
+@figure{/introduction/images/overview_draw.png}
 
 Scripts can be written to customize Draw and perform tests. 
 New types of objects and new commands can be added using C++ programming language.
@@ -492,7 +492,7 @@ The list of MFC samples:
   * Animation
   * Convert
 
-@figure{/overview/images/overview_mvc.png}
+@figure{/introduction/images/overview_mvc.png}
 
 **Remarks:**
 
@@ -511,7 +511,7 @@ OCCT contains three samples based on Qt application framework
 
  Import Export programming sample contains 3D Viewer and Import / Export functionality.
 
-@figure{/overview/images/overview_qt.png}
+@figure{/introduction/images/overview_qt.png}
 
  Tutorial
 ---------
@@ -536,7 +536,7 @@ The combination of these resources allows creating substantial applications.
 
 C# sample demonstrates integration of OCCT 3D Viewer and Import / Export functionality into .NET applications (using Windows Forms and WPF front ends).
 
-@figure{/overview/images/overview_c__ie.png}
+@figure{/introduction/images/overview_c__ie.png}
 
 Import:
 
@@ -563,18 +563,18 @@ See \subpage samples_csharp_direct3d "Direct3D C# sample Readme" for details.
 There are two samples are representing usage OCCT framework on Android mobile platform. They represent an OCCT-based 3D-viewer with CAD import support in formats BREP, STEP and IGES: jniviewer (java) and AndroidQt (qt+qml)
 
 jniviewer
-@figure{/overview/images/samples_java_android_occt.jpg}
+@figure{/introduction/images/samples_java_android_occt.jpg}
 Java -- See \subpage samples_java_android_occt "Android Java sample Readme" for details.
 
 AndroidQt
-@figure{/overview/images/samples_qml_android_occt.jpg}
+@figure{/introduction/images/samples_qml_android_occt.jpg}
 Qt -- See \subpage samples_qml_android_occt "Android Qt sample Readme" for details.
 
 @subsubsection OCCT_OVW_SECTION_7_3_5 iOS
 
 There is a sample demonstrating usage of OCCT on iOS with Apple UIKit framework.
 
-@figure{/overview/images/sample_ios_uikit.png}
+@figure{/introduction/images/sample_ios_uikit.png}
 
 See \subpage occt_samples_ios_uikit "iOS sample Readme" for details.
 
@@ -582,6 +582,6 @@ See \subpage occt_samples_ios_uikit "iOS sample Readme" for details.
 
 WebGL Viewer sample demonstrating usage of OCCT 3D Viewer in Web browser with Emscripten SDK can be found in `samples/webgl`.
 
-@figure{/overview/images/sample_webgl.png}
+@figure{/introduction/images/sample_webgl.png}
 
 See \subpage occt_samples_webgl "WebGL sample Readme" for details.
