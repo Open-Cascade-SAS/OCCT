@@ -5,7 +5,7 @@ Modeling Algorithms  {#occt_user_guides__modeling_algos}
 
 @section occt_modalg_1 Introduction
 
-This manual explains how  to use the Modeling Algorithms. It provides basic documentation on modeling  algorithms. For advanced information on Modeling Algorithms, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+This manual explains how  to use the Modeling Algorithms. It provides basic documentation on modeling  algorithms.
 
 The Modeling Algorithms module brings together a  wide range of topological algorithms used in modeling. Along with these tools,  you will find the geometric algorithms, which they call. 
 
@@ -28,7 +28,7 @@ The Intersections component is used to compute intersections between 2D or 3D ge
 
 The *Geom2dAPI_InterCurveCurve* class  allows the evaluation of the intersection points (*gp_Pnt2d*) between two  geometric curves (*Geom2d_Curve*) and the evaluation of the points  of self-intersection of a curve. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image003.png,"Intersection and self-intersection of curves",420}
+@figure{/user_guides/modeling_algos/images/modeling_algos_image003.png,"Intersection and self-intersection of curves",300}
 
 In both cases, the  algorithm requires a value for the tolerance (Standard_Real) for the confusion  between two points. The default tolerance value used in all constructors is *1.0e-6.* 
 
@@ -1050,342 +1050,6 @@ Handle(Geom_Curve) C3d = GeomAPI::To3d(C2d, Pln);
 ~~~~~
 
 
-@section occt_modalg_2_topo_tools Topological Tools
-
-Open CASCADE Technology topological tools provide algorithms to
- * Create wires from edges;
- * Create faces from wires;
- * Compute state of the shape relatively other shape;
- * Orient shapes in container;
- * Create new shapes from the existing ones;
- * Build PCurves of edges on the faces;
- * Check the validity of the shapes;
- * Take the point in the face;
- * Get the normal direction for the face.
-
-
-@subsection occt_modalg_2_topo_tools_1 Creation of the faces from wireframe model
-
-It is possible to create the planar faces from the arbitrary set of planar edges randomly located in 3D space.
-This feature might be useful if you need for instance to restore the shape from the wireframe model:
-<table align="center">
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image062.png,"Wireframe model",160}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image063.png,"Faces of the model",160}</td>
-</tr>
-</table>
-
-To make the faces from edges it is, firstly, necessary to create planar wires from the given edges and than create planar faces from each wire.
-The static methods *BOPAlgo_Tools::EdgesToWires* and *BOPAlgo_Tools::WiresToFaces* can be used for that:
-~~~~~
-TopoDS_Shape anEdges = ...; /* The input edges */
-Standard_Real anAngTol = 1.e-8; /* The angular tolerance for distinguishing the planes in which the wires are located */
-Standard_Boolean bShared = Standard_False; /* Defines whether the edges are shared or not */
-//
-TopoDS_Shape aWires; /* resulting wires */
-Standard_Integer iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
-if (iErr) {
-  cout << "Error: Unable to build wires from given edges\n";
-  return;
-}
-//
-TopoDS_Shape aFaces; /* resulting faces */
-Standard_Boolean bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
-if (!bDone) {
-  cout << "Error: Unable to build faces from wires\n";
-  return;
-}
-~~~~~
-
-These methods can also be used separately:
- * *BOPAlgo_Tools::EdgesToWires* allows creating planar wires from edges.
-The input edges may be not shared, but the output wires will be sharing the coinciding vertices and edges. For this the intersection of the edges is performed.
-Although, it is possible to skip the intersection stage (if the input edges are already shared) by passing the corresponding flag into the method.
-The input edges are expected to be planar, but the method does not check it. Thus, if the input edges are not planar, the output wires will also be not planar.
-In general, the output wires are non-manifold and may contain free vertices, as well as multi-connected vertices.
- * *BOPAlgo_Tools::WiresToFaces* allows creating planar faces from the planar wires.
-In general, the input wires are non-manifold and may be not closed, but should share the coinciding parts.
-The wires located in the same plane and completely included into other wires will create holes in the faces built from outer wires:
-
-<table align="center">
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image064.png,"Wireframe model",160}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_image065.png,"Two faces (red face has a hole)",160}</td>
-</tr>
-</table>
-
-
-@subsection occt_modalg_2_topo_tools_2 Classification of the shapes
-
-The following methods allow classifying the different shapes relatively other shapes:
- * The variety of the *BOPTools_AlgoTools::ComputState* methods classify the vertex/edge/face relatively solid;
- * *BOPTools_AlgoTools::IsHole* classifies wire relatively face;
- * *IntTools_Tools::ClassifyPointByFace* classifies point relatively face.
-
-@subsection occt_modalg_2_topo_tools_3 Orientation of the shapes in the container
-
-The following methods allow reorienting shapes in the containers:
- * *BOPTools_AlgoTools::OrientEdgesOnWire* correctly orients edges on the wire;
- * *BOPTools_AlgoTools::OrientFacesOnShell* correctly orients faces on the shell.
-
-@subsection occt_modalg_2_topo_tools_4 Making new shapes
-
-The following methods allow creating new shapes from the existing ones:
- * The variety of the *BOPTools_AlgoTools::MakeNewVertex* creates the new vertices from other vertices and edges;
- * *BOPTools_AlgoTools::MakeSplitEdge* splits the edge by the given parameters.
-
-@subsection occt_modalg_2_topo_tools_5 Building PCurves
-
-The following methods allow building PCurves of edges on faces:
- * *BOPTools_AlgoTools::BuildPCurveForEdgeOnFace* computes PCurve for the edge on the face;
- * *BOPTools_AlgoTools::BuildPCurveForEdgeOnPlane* and *BOPTools_AlgoTools::BuildPCurveForEdgesOnPlane* allow building PCurves for edges on the planar face;
- * *BOPTools_AlgoTools::AttachExistingPCurve* takes PCurve on the face from one edge and attach this PCurve to other edge coinciding with the first one.
-
-@subsection occt_modalg_2_topo_tools_6 Checking the validity of the shapes
-
-The following methods allow checking the validity of the shapes:
- * *BOPTools_AlgoTools::IsMicroEdge* detects the small edges;
- * *BOPTools_AlgoTools::ComputeTolerance* computes the correct tolerance of the edge on the face;
- * *BOPTools_AlgoTools::CorrectShapeTolerances* and *BOPTools_AlgoTools::CorrectTolerances* allow correcting the tolerances of the sub-shapes.
- * *BRepLib::FindValidRange* finds a range of 3d curve of the edge not covered by tolerance spheres of vertices.
- 
-@subsection occt_modalg_2_topo_tools_7 Taking a point inside the face
-
-The following methods allow taking a point located inside the face:
- * The variety of the *BOPTools_AlgoTools3D::PointNearEdge* allows getting a point inside the face located near the edge;
- * *BOPTools_AlgoTools3D::PointInFace* allows getting a point inside the face.
-
-@subsection occt_modalg_2_topo_tools_8 Getting normal for the face
-
-The following methods allow getting the normal direction for the face/surface:
- * *BOPTools_AlgoTools3D::GetNormalToSurface* computes the normal direction for the surface in the given point defined by UV parameters;
- * *BOPTools_AlgoTools3D::GetNormalToFaceOnEdge* computes the normal direction for the face in the point located on the edge of the face;
- * *BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge* computes the normal direction for the face in the point located near the edge of the face.
-
-
-
-@section occt_modalg_3a The Topology API
-  
-The Topology  API of Open  CASCADE Technology (**OCCT**) includes the following six packages: 
-  * *BRepAlgoAPI*
-  * *BRepBuilderAPI*
-  * *BRepFilletAPI*
-  * *BRepFeat*
-  * *BRepOffsetAPI*
-  * *BRepPrimAPI*
-
-The classes provided by the API have the following features:
-  * The constructors of classes provide different construction methods;
-  * The class retains different tools used to build objects as fields;
-  * The class provides a casting method to obtain the result automatically with a function-like call.   
-  
-Let us use the class *BRepBuilderAPI_MakeEdge* to create a linear edge from two  points. 
-
-~~~~~
-gp_Pnt P1(10,0,0), P2(20,0,0); 
-TopoDS_Edge E = BRepBuilderAPI_MakeEdge(P1,P2);
-~~~~~
-
-This is the simplest way to create edge E from two  points P1, P2, but the developer can test for errors when he is not as  confident of the data as in the previous example. 
-
-~~~~~
-#include <gp_Pnt.hxx> 
-#include <TopoDS_Edge.hxx> 
-#include <BRepBuilderAPI_MakeEdge.hxx> 
-void EdgeTest() 
-{ 
-gp_Pnt P1; 
-gp_Pnt P2; 
-BRepBuilderAPI_MakeEdge ME(P1,P2); 
-if (!ME.IsDone()) 
-{ 
-// doing ME.Edge() or E = ME here 
-// would raise StdFail_NotDone 
-Standard_DomainError::Raise 
-(“ProcessPoints::Failed to createan edge”); 
-} 
-TopoDS_Edge E = ME; 
-} 
-~~~~~
-
-In this example an  intermediary object ME has been introduced. This can be tested for the  completion of the function before accessing the result. More information on **error  handling** in the topology programming interface can be found in the next section. 
-
-*BRepBuilderAPI_MakeEdge*  provides valuable information. For example, when creating an edge from two  points, two vertices have to be created from the points. Sometimes you may be  interested in getting these vertices quickly without exploring the new edge.  Such information can be provided when using a class. The following example  shows a function creating an edge and two vertices from two points. 
-
-~~~~~
-void MakeEdgeAndVertices(const gp_Pnt& P1, 
-const gp_Pnt& P2, 
-TopoDS_Edge& E, 
-TopoDS_Vertex& V1, 
-TopoDS_Vertex& V2) 
-{ 
-BRepBuilderAPI_MakeEdge ME(P1,P2); 
-if (!ME.IsDone()) { 
-Standard_DomainError::Raise 
-(“MakeEdgeAndVerices::Failed  to create an edge”); 
-} 
-E = ME; 
-V1 = ME.Vextex1(); 
-V2 = ME.Vertex2(); 
-~~~~~
-
-The class *BRepBuilderAPI_MakeEdge*  provides two methods *Vertex1* and  *Vertex2*, which return two vertices used to create the edge. 
-
-How can *BRepBuilderAPI_MakeEdge* be both a function and a class? It can do this  because it uses the casting capabilities of C++. The *BRepBuilderAPI_MakeEdge* class has a method called Edge; in the previous  example the line <i>E = ME</i> could have been written. 
-
-~~~~~
-E = ME.Edge(); 
-~~~~~
-
-This instruction tells  the C++ compiler that there is an **implicit casting** of a *BRepBuilderAPI_MakeEdge* into a *TopoDS_Edge* using the *Edge* method. It means this method is automatically called when a *BRepBuilderAPI_MakeEdge* is found where a *TopoDS_Edge* is required. 
-
-This feature allows you  to provide classes, which have the simplicity of function calls when required  and the power of classes when advanced processing is necessary. All the  benefits of this approach are explained when describing the topology programming  interface classes. 
-
-
-@subsection occt_modalg_3a_1 Error Handling in the Topology API
-
-A method can report an  error in the two following situations: 
-  * The data or arguments of the  method are incorrect, i.e. they do not respect the restrictions specified by  the methods in its specifications. Typical example: creating a linear edge from  two identical points is likely to lead to a zero divide when computing the  direction of the line.
-  * Something unexpected  happened. This situation covers every error not included in the first category.  Including: interruption, programming errors in the method or in another method  called by the first method, bad specifications of the arguments (i.e. a set of  arguments that was not expected to fail).
-
-The second situation is  supposed to become increasingly exceptional as a system is debugged and it is  handled by the **exception mechanism**. Using exceptions avoids handling  error statuses in the call to a method: a very cumbersome style of programming. 
-
-In the first situation,  an exception is also supposed to be raised because the calling method should  have verified the arguments and if it did not do so, there is a bug. For example, if before calling *MakeEdge* you are not sure that the two points are  non-identical, this situation must be tested. 
-
-Making those validity  checks on the arguments can be tedious to program and frustrating as you have  probably correctly surmised that the method will perform the test twice. It  does not trust you. 
-As the test involves a  great deal of computation, performing it twice is also time-consuming. 
-
-Consequently, you might be tempted to adopt the highly inadvisable style of programming  illustrated in the following example: 
-
-~~~~~
-#include <Standard_ErrorHandler.hxx> 
-try { 
-TopoDS_Edge E = BRepBuilderAPI_MakeEdge(P1,P2); 
-// go on with the edge 
-} 
-catch { 
-// process the error. 
-} 
-~~~~~
-
-To help the user, the  Topology API classes only raise the exception *StdFail_NotDone*. Any other  exception means that something happened which was unforeseen in the design of  this API. 
-
-The *NotDone* exception  is only raised when the user tries to access the result of the computation and  the original data is corrupted. At the construction of the class instance, if  the algorithm cannot be completed, the internal flag *NotDone* is set. This flag  can be tested and in some situations a more complete description of the error  can be queried. If the user ignores the *NotDone* status and tries to access the  result, an exception is raised. 
-
-~~~~~
-BRepBuilderAPI_MakeEdge ME(P1,P2); 
-if (!ME.IsDone()) { 
-// doing ME.Edge() or E = ME here 
-// would raise StdFail_NotDone 
-Standard_DomainError::Raise 
-(“ProcessPoints::Failed to create an edge”); 
-} 
-TopoDS_Edge E = ME; 
-~~~~~
-
-
-@subsection occt_modalg_hist History support
-
-All topological API algorithms support the history of shape modifications (or just History) for their arguments.
-Generally, the history is available for the following types of sub-shapes of input shapes:
-* Vertex;
-* Edge;
-* Face.
-
-Some algorithms also support the history for Solids.
-
-The history information consists of the following information:
-* Information about Deleted shapes;
-* Information about Modified shapes;
-* Information about Generated shapes.
-
-The History is filled basing on the result of the operation. History cannot return any shapes not contained in the result.
-If the result of the operation is an empty shape, all input shapes will be considered as Deleted and none will have Modified and Generated shapes.
-
-The history information can be accessed by the API methods:
-* *Standard_Boolean IsDeleted(const TopoDS_Shape& theS)* - to check if the shape has been Deleted during the operation;
-* *const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)* - to get the shapes Modified from the given shape;
-* *const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)* - to get the shapes Generated from the given shape.
-
-@subsubsection occt_modalg_hist_del Deleted shapes
-
-The shape is considered as Deleted during the operation if all of the following conditions are met:
-* The shape is a part of the argument shapes of the operation;
-* The result shape does not contain the shape itself;
-* The result shape does not contain any of the splits of the shape.
-
-For example, in the CUT operation between two intersecting solids all vertices/edges/faces located completely inside the Tool solid will be Deleted during the operation.
-
-@subsubsection occt_modalg_hist_mod Modified shapes
-
-The shape is considered as Modified during the operation if the result shape contains the splits of the shape, not the shape itself. The shape can be modified only into the shapes with the same dimension.
-The splits of the shape contained in the result shape are Modified from the shape.
-The Modified shapes are created from the sub-shapes of the input shapes and, generally, repeat their geometry.
-
-The list of Modified elements will contain only those contributing to the result of the operation. If the list is empty, the shape has not been modified and it is necessary to check if it has been Deleted.
-
-For example, after translation of the shape in any direction all its sub-shapes will be modified into their translated copies.
-
-@subsubsection occt_modalg_hist_gen Generated shapes
-
-The shapes contained in the result shape are considered as Generated from the input shape if they were produced during the operation and have a different dimension from the shapes from which they were created.
-
-The list of Generated elements will contain only those included in the result of the operation. If the list is empty, no new shapes have been Generated from the shape.
-
-For example, extrusion of the edge in some direction will create a face. This face will be generated from the edge.
-
-@subsubsection occt_modalg_hist_tool BRepTools_History
-
-*BRepTools_History* is the general History tool intended for unification of the histories of different algorithms.
-
-*BRepTools_History* can be created from any algorithm supporting the standard history methods *(IsDeleted(), Modified()* and *Generated())*:
-~~~~
-// The arguments of the operation
-TopoDS_Shape aS = ...;
-
-// Perform transformation on the shape
-gp_Trsf aTrsf;
-aTrsf.SetTranslationPart(gp_Vec(0, 0, 1));
-BRepBuilderAPI_Transform aTransformer(aS, aTrsf); // Transformation API algorithm
-const TopoDS_Shape& aRes = aTransformer.Shape();
-
-// Create the translation history object
-TopTools_ListOfShape anArguments;
-anArguments.Append(aS);
-BRepTools_History aHistory(anArguments, aTransformer);
-~~~~
-
-*BRepTools_History* also allows merging histories. Thus, if you have two or more subsequent operations you can get one final history combined from histories of these operations:
-
-~~~~
-Handle(BRepTools_History) aHist1 = ...; // History of first operation
-Handle(BRepTools_History) aHist2 = ...; // History of second operation
-~~~~
-
-It is possible to merge the second history into the first one:
-~~~~
-aHist1->Merge(aHist2);
-~~~~
-
-Or create the new history keeping the two histories unmodified:
-~~~~
-Handle(BRepTools_History) aResHistory = new BRepTools_History;
-aResHistory->Merge(aHist1);
-aResHistory->Merge(aHist2);
-~~~~
-
-The possibilities of Merging histories and history creation from the API algorithms allow providing easy History support for the new algorithms.
-
-@subsubsection occt_modalg_hist_draw DRAW history support
-
-DRAW History support for the algorithms is provided by three basic commands:
-* *isdeleted*; 
-* *modified*;
-* *generated*.
-
-For more information on the Draw History mechanism, refer to the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
-
-
 @section occt_modalg_3 Standard  Topological Objects
 
 The following  standard topological objects can be created:
@@ -1797,43 +1461,6 @@ Use *BRepBuilderAPI_MakeShell* class  to build a Shell from a set of Faces. What
 The solid is a composite shape built not from a geometry, but by the assembly of shells. Use  *BRepBuilderAPI_MakeSolid* class  to build a Solid from a set of Shells. Its use is similar to the use of the  MakeWire class: shells are added to the solid in the same way that edges are  added to the wire in MakeWire. 
 
 
-@section occt_modalg_3b Object Modification
-
-@subsection occt_modalg_3b_1 Transformation
-*BRepBuilderAPI_Transform* class can be used to apply a transformation to a shape (see class  *gp_Trsf*). The methods have a boolean argument to copy or share the  original shape, as long as the transformation allows (it is only possible for  direct isometric transformations). By default, the original shape is shared. 
-
-The following example  deals with the rotation of shapes. 
-
-~~~~~
-
-TopoDS_Shape myShape1 = ...; 
-// The original shape 1 
-TopoDS_Shape myShape2 = ...; 
-// The original shape2 
-gp_Trsf T; 
-T.SetRotation(gp_Ax1(gp_Pnt(0.,0.,0.),gp_Vec(0.,0.,1.)), 
-2.*PI/5.); 
-BRepBuilderAPI_Transformation theTrsf(T); 
-theTrsf.Perform(myShape1); 
-TopoDS_Shape myNewShape1 = theTrsf.Shape() 
-theTrsf.Perform(myShape2,Standard_True); 
-// Here duplication is forced 
-TopoDS_Shape myNewShape2 = theTrsf.Shape() 
-~~~~~
-
-@subsection occt_modalg_3b_2 Duplication
-
-Use the  *BRepBuilderAPI_Copy* class to duplicate a shape. A new shape is thus created. 
-In the following example, a  solid is copied: 
-
-~~~~~
-TopoDS Solid MySolid; 
-....// Creates a solid 
-
-TopoDS_Solid myCopy = BRepBuilderAPI_Copy(mySolid); 
-~~~~~
-
-
 @section occt_modalg_4 Primitives
 
 The <i> BRepPrimAPI</i> package provides an API (Application Programming Interface) for construction of primitives such as:
@@ -2053,7 +1680,10 @@ TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang);
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image035.png,"Full and partial  rotation",420}
 
-@section occt_modalg_5 Boolean  Operations
+
+
+
+@section occt_modalg_5 Boolean Operations
 
 Boolean operations are used to create new shapes from the combinations of two groups of shapes.
 
@@ -2114,14 +1744,305 @@ TopoDS_Shape S = BRepAlgoAPI_Cut(A,B);
 
 *BRepAlgoAPI_Section* performs the section, described as a *TopoDS_Compound* made of *TopoDS_Edge*. 
 
-@figure{/user_guides/modeling_algos/images/modeling_algos_image037.png,"Section  operation",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_image037.png,"Section operation",220}
 
 ~~~~~
 TopoDS_Shape A = ...,  TopoDS_ShapeB = ...; 
 TopoDS_Shape S =  BRepAlgoAPI_Section(A,B); 
 ~~~~~
 
-@section occt_modalg_6 Fillets and  Chamfers
+
+
+
+@section occt_modalg_2_topo_tools Topological Tools
+
+Open CASCADE Technology topological tools provide algorithms to
+ * Create wires from edges;
+ * Create faces from wires;
+ * Compute state of the shape relatively other shape;
+ * Orient shapes in container;
+ * Create new shapes from the existing ones;
+ * Build PCurves of edges on the faces;
+ * Check the validity of the shapes;
+ * Take the point in the face;
+ * Get the normal direction for the face.
+
+
+@subsection occt_modalg_2_topo_tools_1 Creation of the faces from wireframe model
+
+It is possible to create the planar faces from the arbitrary set of planar edges randomly located in 3D space.
+This feature might be useful if you need for instance to restore the shape from the wireframe model:
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_image062.png,"Wireframe model",160}
+@figure{/user_guides/modeling_algos/images/modeling_algos_image063.png,"Faces of the model",160}
+
+
+To make the faces from edges it is, firstly, necessary to create planar wires from the given edges and than create planar faces from each wire.
+The static methods *BOPAlgo_Tools::EdgesToWires* and *BOPAlgo_Tools::WiresToFaces* can be used for that:
+~~~~~
+TopoDS_Shape anEdges = ...; /* The input edges */
+Standard_Real anAngTol = 1.e-8; /* The angular tolerance for distinguishing the planes in which the wires are located */
+Standard_Boolean bShared = Standard_False; /* Defines whether the edges are shared or not */
+//
+TopoDS_Shape aWires; /* resulting wires */
+Standard_Integer iErr = BOPAlgo_Tools::EdgesToWires(anEdges, aWires, bShared, anAngTol);
+if (iErr) {
+  cout << "Error: Unable to build wires from given edges\n";
+  return;
+}
+//
+TopoDS_Shape aFaces; /* resulting faces */
+Standard_Boolean bDone = BOPAlgo_Tools::WiresToFaces(aWires, aFaces, anAngTol);
+if (!bDone) {
+  cout << "Error: Unable to build faces from wires\n";
+  return;
+}
+~~~~~
+
+These methods can also be used separately:
+ * *BOPAlgo_Tools::EdgesToWires* allows creating planar wires from edges.
+The input edges may be not shared, but the output wires will be sharing the coinciding vertices and edges. For this the intersection of the edges is performed.
+Although, it is possible to skip the intersection stage (if the input edges are already shared) by passing the corresponding flag into the method.
+The input edges are expected to be planar, but the method does not check it. Thus, if the input edges are not planar, the output wires will also be not planar.
+In general, the output wires are non-manifold and may contain free vertices, as well as multi-connected vertices.
+ * *BOPAlgo_Tools::WiresToFaces* allows creating planar faces from the planar wires.
+In general, the input wires are non-manifold and may be not closed, but should share the coinciding parts.
+The wires located in the same plane and completely included into other wires will create holes in the faces built from outer wires:
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_image064.png,"Wireframe model",160}
+@figure{/user_guides/modeling_algos/images/modeling_algos_image065.png,"Two faces (red face has a hole)",160}
+
+
+
+@subsection occt_modalg_2_topo_tools_2 Classification of the shapes
+
+The following methods allow classifying the different shapes relatively other shapes:
+ * The variety of the *BOPTools_AlgoTools::ComputState* methods classify the vertex/edge/face relatively solid;
+ * *BOPTools_AlgoTools::IsHole* classifies wire relatively face;
+ * *IntTools_Tools::ClassifyPointByFace* classifies point relatively face.
+
+@subsection occt_modalg_2_topo_tools_3 Orientation of the shapes in the container
+
+The following methods allow reorienting shapes in the containers:
+ * *BOPTools_AlgoTools::OrientEdgesOnWire* correctly orients edges on the wire;
+ * *BOPTools_AlgoTools::OrientFacesOnShell* correctly orients faces on the shell.
+
+@subsection occt_modalg_2_topo_tools_4 Making new shapes
+
+The following methods allow creating new shapes from the existing ones:
+ * The variety of the *BOPTools_AlgoTools::MakeNewVertex* creates the new vertices from other vertices and edges;
+ * *BOPTools_AlgoTools::MakeSplitEdge* splits the edge by the given parameters.
+
+@subsection occt_modalg_2_topo_tools_5 Building PCurves
+
+The following methods allow building PCurves of edges on faces:
+ * *BOPTools_AlgoTools::BuildPCurveForEdgeOnFace* computes PCurve for the edge on the face;
+ * *BOPTools_AlgoTools::BuildPCurveForEdgeOnPlane* and *BOPTools_AlgoTools::BuildPCurveForEdgesOnPlane* allow building PCurves for edges on the planar face;
+ * *BOPTools_AlgoTools::AttachExistingPCurve* takes PCurve on the face from one edge and attach this PCurve to other edge coinciding with the first one.
+
+@subsection occt_modalg_2_topo_tools_6 Checking the validity of the shapes
+
+The following methods allow checking the validity of the shapes:
+ * *BOPTools_AlgoTools::IsMicroEdge* detects the small edges;
+ * *BOPTools_AlgoTools::ComputeTolerance* computes the correct tolerance of the edge on the face;
+ * *BOPTools_AlgoTools::CorrectShapeTolerances* and *BOPTools_AlgoTools::CorrectTolerances* allow correcting the tolerances of the sub-shapes.
+ * *BRepLib::FindValidRange* finds a range of 3d curve of the edge not covered by tolerance spheres of vertices.
+ 
+@subsection occt_modalg_2_topo_tools_7 Taking a point inside the face
+
+The following methods allow taking a point located inside the face:
+ * The variety of the *BOPTools_AlgoTools3D::PointNearEdge* allows getting a point inside the face located near the edge;
+ * *BOPTools_AlgoTools3D::PointInFace* allows getting a point inside the face.
+
+@subsection occt_modalg_2_topo_tools_8 Getting normal for the face
+
+The following methods allow getting the normal direction for the face/surface:
+ * *BOPTools_AlgoTools3D::GetNormalToSurface* computes the normal direction for the surface in the given point defined by UV parameters;
+ * *BOPTools_AlgoTools3D::GetNormalToFaceOnEdge* computes the normal direction for the face in the point located on the edge of the face;
+ * *BOPTools_AlgoTools3D::GetApproxNormalToFaceOnEdge* computes the normal direction for the face in the point located near the edge of the face.
+
+
+
+@section occt_modalg_3a The Topology API
+  
+The Topology  API of Open  CASCADE Technology (**OCCT**) includes the following six packages: 
+  * *BRepAlgoAPI*
+  * *BRepBuilderAPI*
+  * *BRepFilletAPI*
+  * *BRepFeat*
+  * *BRepOffsetAPI*
+  * *BRepPrimAPI*
+
+The classes provided by the API have the following features:
+  * The constructors of classes provide different construction methods;
+  * The class retains different tools used to build objects as fields;
+  * The class provides a casting method to obtain the result automatically with a function-like call.   
+  
+Let us use the class *BRepBuilderAPI_MakeEdge* to create a linear edge from two  points. 
+
+~~~~~
+gp_Pnt P1(10,0,0), P2(20,0,0); 
+TopoDS_Edge E = BRepBuilderAPI_MakeEdge(P1,P2);
+~~~~~
+
+This is the simplest way to create edge E from two  points P1, P2, but the developer can test for errors when he is not as  confident of the data as in the previous example. 
+
+~~~~~
+#include <gp_Pnt.hxx> 
+#include <TopoDS_Edge.hxx> 
+#include <BRepBuilderAPI_MakeEdge.hxx> 
+void EdgeTest() 
+{ 
+gp_Pnt P1; 
+gp_Pnt P2; 
+BRepBuilderAPI_MakeEdge ME(P1,P2); 
+if (!ME.IsDone()) 
+{ 
+// doing ME.Edge() or E = ME here 
+// would raise StdFail_NotDone 
+Standard_DomainError::Raise 
+(“ProcessPoints::Failed to createan edge”); 
+} 
+TopoDS_Edge E = ME; 
+} 
+~~~~~
+
+In this example an  intermediary object ME has been introduced. This can be tested for the  completion of the function before accessing the result. More information on **error  handling** in the topology programming interface can be found in the next section. 
+
+*BRepBuilderAPI_MakeEdge*  provides valuable information. For example, when creating an edge from two  points, two vertices have to be created from the points. Sometimes you may be  interested in getting these vertices quickly without exploring the new edge.  Such information can be provided when using a class. The following example  shows a function creating an edge and two vertices from two points. 
+
+~~~~~
+void MakeEdgeAndVertices(const gp_Pnt& P1, 
+const gp_Pnt& P2, 
+TopoDS_Edge& E, 
+TopoDS_Vertex& V1, 
+TopoDS_Vertex& V2) 
+{ 
+BRepBuilderAPI_MakeEdge ME(P1,P2); 
+if (!ME.IsDone()) { 
+Standard_DomainError::Raise 
+(“MakeEdgeAndVerices::Failed  to create an edge”); 
+} 
+E = ME; 
+V1 = ME.Vextex1(); 
+V2 = ME.Vertex2(); 
+~~~~~
+
+The class *BRepBuilderAPI_MakeEdge*  provides two methods *Vertex1* and  *Vertex2*, which return two vertices used to create the edge. 
+
+How can *BRepBuilderAPI_MakeEdge* be both a function and a class? It can do this  because it uses the casting capabilities of C++. The *BRepBuilderAPI_MakeEdge* class has a method called Edge; in the previous  example the line <i>E = ME</i> could have been written. 
+
+~~~~~
+E = ME.Edge(); 
+~~~~~
+
+This instruction tells  the C++ compiler that there is an **implicit casting** of a *BRepBuilderAPI_MakeEdge* into a *TopoDS_Edge* using the *Edge* method. It means this method is automatically called when a *BRepBuilderAPI_MakeEdge* is found where a *TopoDS_Edge* is required. 
+
+This feature allows you  to provide classes, which have the simplicity of function calls when required  and the power of classes when advanced processing is necessary. All the  benefits of this approach are explained when describing the topology programming  interface classes. 
+
+
+@subsection occt_modalg_hist History support
+
+All topological API algorithms support the history of shape modifications (or just History) for their arguments.
+Generally, the history is available for the following types of sub-shapes of input shapes:
+* Vertex;
+* Edge;
+* Face.
+
+Some algorithms also support the history for Solids.
+
+The history information consists of the following information:
+* Information about Deleted shapes;
+* Information about Modified shapes;
+* Information about Generated shapes.
+
+The History is filled basing on the result of the operation. History cannot return any shapes not contained in the result.
+If the result of the operation is an empty shape, all input shapes will be considered as Deleted and none will have Modified and Generated shapes.
+
+The history information can be accessed by the API methods:
+* *Standard_Boolean IsDeleted(const TopoDS_Shape& theS)* - to check if the shape has been Deleted during the operation;
+* *const TopTools_ListOfShape& Modified(const TopoDS_Shape& theS)* - to get the shapes Modified from the given shape;
+* *const TopTools_ListOfShape& Generated(const TopoDS_Shape& theS)* - to get the shapes Generated from the given shape.
+
+@subsubsection occt_modalg_hist_del Deleted shapes
+
+The shape is considered as Deleted during the operation if all of the following conditions are met:
+* The shape is a part of the argument shapes of the operation;
+* The result shape does not contain the shape itself;
+* The result shape does not contain any of the splits of the shape.
+
+For example, in the CUT operation between two intersecting solids all vertices/edges/faces located completely inside the Tool solid will be Deleted during the operation.
+
+@subsubsection occt_modalg_hist_mod Modified shapes
+
+The shape is considered as Modified during the operation if the result shape contains the splits of the shape, not the shape itself. The shape can be modified only into the shapes with the same dimension.
+The splits of the shape contained in the result shape are Modified from the shape.
+The Modified shapes are created from the sub-shapes of the input shapes and, generally, repeat their geometry.
+
+The list of Modified elements will contain only those contributing to the result of the operation. If the list is empty, the shape has not been modified and it is necessary to check if it has been Deleted.
+
+For example, after translation of the shape in any direction all its sub-shapes will be modified into their translated copies.
+
+@subsubsection occt_modalg_hist_gen Generated shapes
+
+The shapes contained in the result shape are considered as Generated from the input shape if they were produced during the operation and have a different dimension from the shapes from which they were created.
+
+The list of Generated elements will contain only those included in the result of the operation. If the list is empty, no new shapes have been Generated from the shape.
+
+For example, extrusion of the edge in some direction will create a face. This face will be generated from the edge.
+
+@subsubsection occt_modalg_hist_tool BRepTools_History
+
+*BRepTools_History* is the general History tool intended for unification of the histories of different algorithms.
+
+*BRepTools_History* can be created from any algorithm supporting the standard history methods *(IsDeleted(), Modified()* and *Generated())*:
+~~~~
+// The arguments of the operation
+TopoDS_Shape aS = ...;
+
+// Perform transformation on the shape
+gp_Trsf aTrsf;
+aTrsf.SetTranslationPart(gp_Vec(0, 0, 1));
+BRepBuilderAPI_Transform aTransformer(aS, aTrsf); // Transformation API algorithm
+const TopoDS_Shape& aRes = aTransformer.Shape();
+
+// Create the translation history object
+TopTools_ListOfShape anArguments;
+anArguments.Append(aS);
+BRepTools_History aHistory(anArguments, aTransformer);
+~~~~
+
+*BRepTools_History* also allows merging histories. Thus, if you have two or more subsequent operations you can get one final history combined from histories of these operations:
+
+~~~~
+Handle(BRepTools_History) aHist1 = ...; // History of first operation
+Handle(BRepTools_History) aHist2 = ...; // History of second operation
+~~~~
+
+It is possible to merge the second history into the first one:
+~~~~
+aHist1->Merge(aHist2);
+~~~~
+
+Or create the new history keeping the two histories unmodified:
+~~~~
+Handle(BRepTools_History) aResHistory = new BRepTools_History;
+aResHistory->Merge(aHist1);
+aResHistory->Merge(aHist2);
+~~~~
+
+The possibilities of Merging histories and history creation from the API algorithms allow providing easy History support for the new algorithms.
+
+@subsubsection occt_modalg_hist_draw DRAW history support
+
+DRAW History support for the algorithms is provided by three basic commands:
+* *isdeleted*; 
+* *modified*;
+* *generated*.
+
+For more information on the Draw History mechanism, refer to the corresponding chapter in the Draw users guide - @ref occt_draw_hist "History commands".
+
+@subsection occt_modalg_6 Fillets and  Chamfers
 
 This library provides algorithms to make fillets and chamfers on shape edges.
 The following cases are addressed:
@@ -2131,8 +2052,8 @@ The following cases are addressed:
 
 If there is a concavity, both surfaces that need to be extended and those, which do not, are processed.
 
-@subsection occt_modalg_6_1 Fillets  
-@subsection occt_modalg_6_1_1 Fillet on shape
+@subsubsection occt_modalg_6_1 Fillets  
+@subsubsection occt_modalg_6_1_1 Fillet on shape
 
 A fillet is a smooth  face replacing a sharp edge.
 
@@ -2206,7 +2127,7 @@ void CSampleTopologicalOperationsDoc::OnEvolvedblend1()
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image040.png,"Fillet with changing radius",360}
  
-@subsection occt_modalg_6_1_2 Chamfer
+@subsubsection occt_modalg_6_1_2 Chamfer
 
 A chamfer is a rectilinear edge  replacing a sharp vertex of the face.
 
@@ -2221,7 +2142,7 @@ Add(d1,  d2, E, F) with d1 on the face F.
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image041.png,"Chamfer",360}
 
-@subsection occt_modalg_6_1_3 Fillet on a planar face
+@subsubsection occt_modalg_6_1_3 Fillet on a planar face
 
 *BRepFilletAPI_MakeFillet2d* class allows constructing fillets and chamfers on planar faces. 
 To create a fillet on planar face: define it, indicate, which vertex is  to be deleted, and give the fillet radius with *AddFillet* method. 
@@ -2270,7 +2191,7 @@ TopoDS_Shape FilletFace(const Standard_Real a,
 } 
 ~~~~~
 
-@section occt_modalg_7 Offsets, Drafts, Pipes and Evolved shapes
+@subsection occt_modalg_7 Offsets, Drafts, Pipes and Evolved shapes
 
 These classes provide the following services:
 
@@ -2281,7 +2202,7 @@ These classes provide the following services:
   * Creation of tapered shapes using draft angles;
   * Creation of sweeps.
   
-@subsection occt_modalg_7_1 Offset computation
+@subsubsection occt_modalg_7_1 Offset computation
 
 Offset computation can be performed using *BRepOffsetAPI_MakeOffsetShape*. This class provides API to the two different offset algorithms:
 
@@ -2315,7 +2236,7 @@ The snippets below show usage examples:
       NewShape = OffsetMaker2.Shape();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@subsection occt_modalg_7_2 Shelling 
+@subsubsection occt_modalg_7_2 Shelling 
 
 Shelling is used to offset given faces of a solid by a specific value. It rounds or intersects adjacent faces along its edges depending on the convexity of the edge. 
 The MakeThickSolidByJoin method of the *BRepOffsetAPI_MakeThickSolid* takes the solid, the list of faces to remove and an offset value as input.
@@ -2353,7 +2274,7 @@ Also it is possible to create solid between shell, offset shell. This functional
       Solid = SolidMaker.Shape();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@subsection occt_modalg_7_3  Draft Angle
+@subsubsection occt_modalg_7_3  Draft Angle
 
 *BRepOffsetAPI_DraftAngle* class allows modifying a shape by applying draft angles to its planar, cylindrical and conical faces. 
 
@@ -2405,7 +2326,7 @@ else {
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image043.png,"DraftAngle",420}
 
-@subsection occt_modalg_7_4 Pipe  Constructor
+@subsubsection occt_modalg_7_4 Pipe  Constructor
 
 *BRepOffsetAPI_MakePipe* class allows creating a pipe from a Spine,  which is a Wire and a Profile which is a Shape. This implementation is limited  to spines with smooth transitions, sharp transitions are precessed by  *BRepOffsetAPI_MakePipeShell*. To be more precise the continuity must be G1,  which means that the tangent must have the same direction, though not necessarily the same magnitude, at neighboring edges. 
 
@@ -2419,7 +2340,7 @@ TopoDS_Shape Pipe =  BRepOffsetAPI_MakePipe(Spine,Profile);
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image044.png,"Example of a Pipe",320}
 
-@subsection occt_modalg_7_5 Evolved Solid
+@subsubsection occt_modalg_7_5 Evolved Solid
 
 *BRepOffsetAPI_MakeEvolved* class allows creating an evolved solid from a Spine (planar face or wire) and a profile (wire). 
 
@@ -2442,9 +2363,87 @@ TopoDS_Shape Evol =
 BRepOffsetAPI_MakeEvolved(Spine,Profile); 
 ~~~~~
 
-@section occt_modalg_8 Sewing
+@subsection occt_modalg_3b Object Modification
 
-@subsection occt_modalg_8_1 Introduction
+@subsubsection occt_modalg_3b_1 Transformation
+*BRepBuilderAPI_Transform* class can be used to apply a transformation to a shape (see class  *gp_Trsf*). The methods have a boolean argument to copy or share the  original shape, as long as the transformation allows (it is only possible for  direct isometric transformations). By default, the original shape is shared. 
+
+The following example  deals with the rotation of shapes. 
+
+~~~~~
+
+TopoDS_Shape myShape1 = ...; 
+// The original shape 1 
+TopoDS_Shape myShape2 = ...; 
+// The original shape2 
+gp_Trsf T; 
+T.SetRotation(gp_Ax1(gp_Pnt(0.,0.,0.),gp_Vec(0.,0.,1.)), 
+2.*PI/5.); 
+BRepBuilderAPI_Transformation theTrsf(T); 
+theTrsf.Perform(myShape1); 
+TopoDS_Shape myNewShape1 = theTrsf.Shape() 
+theTrsf.Perform(myShape2,Standard_True); 
+// Here duplication is forced 
+TopoDS_Shape myNewShape2 = theTrsf.Shape() 
+~~~~~
+
+@subsubsection occt_modalg_3b_2 Duplication
+
+Use the  *BRepBuilderAPI_Copy* class to duplicate a shape. A new shape is thus created. 
+In the following example, a  solid is copied: 
+
+~~~~~
+TopoDS Solid MySolid; 
+....// Creates a solid 
+
+TopoDS_Solid myCopy = BRepBuilderAPI_Copy(mySolid); 
+~~~~~
+
+@subsection occt_modalg_3a_1 Error Handling in the Topology API
+
+A method can report an  error in the two following situations: 
+  * The data or arguments of the  method are incorrect, i.e. they do not respect the restrictions specified by  the methods in its specifications. Typical example: creating a linear edge from  two identical points is likely to lead to a zero divide when computing the  direction of the line.
+  * Something unexpected  happened. This situation covers every error not included in the first category.  Including: interruption, programming errors in the method or in another method  called by the first method, bad specifications of the arguments (i.e. a set of  arguments that was not expected to fail).
+
+The second situation is  supposed to become increasingly exceptional as a system is debugged and it is  handled by the **exception mechanism**. Using exceptions avoids handling  error statuses in the call to a method: a very cumbersome style of programming. 
+
+In the first situation,  an exception is also supposed to be raised because the calling method should  have verified the arguments and if it did not do so, there is a bug. For example, if before calling *MakeEdge* you are not sure that the two points are  non-identical, this situation must be tested. 
+
+Making those validity  checks on the arguments can be tedious to program and frustrating as you have  probably correctly surmised that the method will perform the test twice. It  does not trust you. 
+As the test involves a  great deal of computation, performing it twice is also time-consuming. 
+
+Consequently, you might be tempted to adopt the highly inadvisable style of programming  illustrated in the following example: 
+
+~~~~~
+#include <Standard_ErrorHandler.hxx> 
+try { 
+TopoDS_Edge E = BRepBuilderAPI_MakeEdge(P1,P2); 
+// go on with the edge 
+} 
+catch { 
+// process the error. 
+} 
+~~~~~
+
+To help the user, the  Topology API classes only raise the exception *StdFail_NotDone*. Any other  exception means that something happened which was unforeseen in the design of  this API. 
+
+The *NotDone* exception  is only raised when the user tries to access the result of the computation and  the original data is corrupted. At the construction of the class instance, if  the algorithm cannot be completed, the internal flag *NotDone* is set. This flag  can be tested and in some situations a more complete description of the error  can be queried. If the user ignores the *NotDone* status and tries to access the  result, an exception is raised. 
+
+~~~~~
+BRepBuilderAPI_MakeEdge ME(P1,P2); 
+if (!ME.IsDone()) { 
+// doing ME.Edge() or E = ME here 
+// would raise StdFail_NotDone 
+Standard_DomainError::Raise 
+(“ProcessPoints::Failed to create an edge”); 
+} 
+TopoDS_Edge E = ME; 
+~~~~~
+
+
+@subsection occt_modalg_8 Sewing
+
+@subsubsection occt_modalg_8_1 Introduction
 
 Sewing allows creation of connected topology (shells and wires) from a set of separate topological elements (faces and edges). For example, Sewing can be used to create of shell from a compound of separate faces. 
 
@@ -2461,7 +2460,7 @@ Let us define several terms:
 * **Sewn faces** should have edges shared with each other.
 * **Sewn edges** should have vertices shared with each other.
 
-@subsection occt_modalg_8_2 Sewing Algorithm
+@subsubsection occt_modalg_8_2 Sewing Algorithm
 
 The sewing algorithm is one of the basic algorithms used for shape processing, therefore its quality is very important.
 
@@ -2500,7 +2499,7 @@ To connect a set of *n* contiguous but independent faces, do the following:
 
 If all faces have been sewn correctly, the result is a shell. Otherwise, it is a compound. After a successful sewing operation all faces have a coherent orientation.
 
-@subsection occt_modalg_8_3 Tolerance Management
+@subsubsection occt_modalg_8_3 Tolerance Management
 
 To produce a closed shell, Sewing allows specifying the value of working tolerance, exceeding the size of small faces belonging to the shape.
 
@@ -2512,7 +2511,7 @@ The following recommendations can be proposed for tuning-up the sewing process:
 - If it is expected to obtain a shell with holes (free boundaries) as a result of sewing, the working tolerance should be set to a value not greater than the size of the smallest element (edge) or smallest distance between elements of such free boundary. Otherwise the free boundary may be sewn only partially.
 - It should  be mentioned that the Sewing algorithm is unable to understand which small (less than working tolerance) free boundary should be kept and which should be sewn.
 
-@subsection occt_modalg_8_4 Manifold and Non-manifold Sewing
+@subsubsection occt_modalg_8_4 Manifold and Non-manifold Sewing
 
 To create one or several shells from a set of faces, sewing merges edges, which belong to different faces or one closed face. 
 
@@ -2524,7 +2523,7 @@ For a complex topology it is advisable to apply first the manifold sewing and th
 
 Giving a large tolerance value to non manifold sewing will cause a lot of incorrectness since all nearby geometry will be sewn.
 
-@subsection occt_modalg_8_5 Local Sewing
+@subsubsection occt_modalg_8_5 Local Sewing
 
 If a shape still has some non-sewn faces or edges after sewing, it is possible to use local sewing with a greater tolerance.
 
@@ -2558,11 +2557,11 @@ TopoDS_Shape aRes = aSewing.SewedShape();
 
 ~~~~
 
-@section occt_modalg_9 Features
+@subsection occt_modalg_9 Features
 
 This library contained in *BRepFeat* package is necessary for creation and manipulation of form and mechanical features that go beyond the classical boundary representation of shapes. In that sense, *BRepFeat* is an extension of *BRepBuilderAPI* package. 
 
-@subsection occt_modalg_9_1 Form Features
+@subsubsection occt_modalg_9_1 Form Features
 
 The form features are depressions or protrusions including the following types:
 
@@ -2593,7 +2592,7 @@ of removing unwanted matter to get the same result.
 
 The *Form* from *BRepFeat* package is a deferred class used as a root for form features. It inherits  *MakeShape* from *BRepBuilderAPI* and provides implementation of methods keep track of all sub-shapes. 
 
-@subsubsection occt_modalg_9_1_1 Prism
+**Prism**
 
 The class *BRepFeat_MakePrism* is used to build a prism interacting with a shape. It is created  or initialized from 
   * a shape (the basic shape),
@@ -2638,7 +2637,7 @@ if (thePrism.IsDone()) {
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image048.png,"Creating a prism between two faces with Perform()",320}
 
-@subsubsection occt_modalg_9_1_2 Draft Prism
+**Draft Prism**
 
 The class *BRepFeat_MakeDPrism* is used to build draft prism topologies interacting with a basis  shape. These can be depressions or protrusions. A class object is created or  initialized from: 
   * a shape (basic shape),
@@ -2691,7 +2690,7 @@ TopoDS_Shape res1 = MKDP.Shape();
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image049.png,"A tapered prism",320}
 
-@subsubsection occt_modalg_9_1_3 Revolution
+**Revolution**
 
 The class *BRepFeat_MakeRevol* is used to build a revolution interacting with a shape. It is created or initialized from:
   * a shape (the basic shape,)
@@ -2733,7 +2732,7 @@ if (theRevol.IsDone()) {
 } 
 ~~~~~
 
-@subsubsection occt_modalg_9_1_4 Pipe
+**Pipe**
 
 The class *BRepFeat_MakePipe* constructs compound  shapes with pipe features: depressions or protrusions. A class object is created or initialized from: 
   * a shape (basic shape),
@@ -2801,7 +2800,7 @@ TopoDS_Shape res1 = MKPipe.Shape();
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image050.png,"Pipe depression",240}
 
-@subsection occt_modalg_9_2 Mechanical Features
+@subsubsection occt_modalg_9_2 Mechanical Features
 
 Mechanical features include ribs, protrusions and grooves (or slots), depressions along planar (linear) surfaces or revolution surfaces. 
 
@@ -2822,7 +2821,7 @@ A class object is  created or initialized from
   * a Boolean indicating the type  of operation (fusion=rib or cut=groove) on the basic shape;
   * another Boolean indicating  if self-intersections have to be found (not used in every case).
   
-@subsubsection occt_modalg_9_2_1 Linear Form
+**Linear Form**
   
 Linear form is implemented in *MakeLinearForm* class, which creates a rib or a groove  along a planar surface. There is one *Perform()* method, which performs a  prism from the wire along the *direction1* and *direction2* interacting with base shape *Sbase*. The height of the prism is *Magnitude(Direction1)+Magnitude(direction2)*.  
 
@@ -2861,7 +2860,7 @@ TopoDS_Shape res = aform.Shape();
 
 @figure{/user_guides/modeling_algos/images/modeling_algos_image051.png,"Creating a rib",240}
 
-@subsubsection occt_modalg_9_2_3 Gluer
+**Gluer**
 
 The class *BRepFeat_Gluer* allows gluing two solids along faces. The contact faces of the glued  shape must not have parts outside the contact faces of the basic shape. Upon completion the algorithm gives the glued shape with cut out parts of faces inside the shape.
 
@@ -2921,6 +2920,328 @@ Spls.Add(Wsplit, Fsplit);
 TopoDS_Shape theResult = Spls; 
 ...
 ~~~~~
+
+@subsection occt_modalg_defeaturing 3D Model Defeaturing
+
+The Open CASCADE Technology Defeaturing algorithm is intended for removal of the unwanted parts or features from the model. These parts can be holes, protrusions, gaps, chamfers, fillets, etc.
+
+Feature detection is not performed, and all features to be removed should be defined by the user. The input shape is not modified during Defeaturing, the new shape is built in the result.
+
+On the API level the Defeaturing algorithm is implemented in the *BRepAlgoAPI_Defeaturing* class. At input the algorithm accepts the shape to remove the features from and the features (one or many) to be removed from the shape.
+Currently, the input shape should be either SOLID, or COMPSOLID, or COMPOUND of SOLIDs.
+The features to be removed are defined by the sets of faces forming them. It does not matter how the feature faces are given: as separate faces or their collections. The faces should belong to the initial shape, else they are ignored.
+
+The actual features removal is performed by the low-level *BOPAlgo_RemoveFeatures* algorithm. On the API level, all inputs are passed into the tool and the method *BOPAlgo_RemoveFeatures::Perform()* is called.
+
+Before removing features, all faces to be removed from the shape are sorted into connected blocks - each block represents a single feature to be removed.
+The features are removed from the shape one by one, which allows removing all possible features even if there are some problems with their removal (e.g. due to incorrect input data).
+
+The removed feature is filled by the extension of the faces adjacent to it. In general, the algorithm removing a single feature from the shape goes as follows:
+* Find the faces adjacent to the feature;
+* Extend the adjacent faces to cover the feature;
+* Trim the extended faces by the bounds of the original face (except for the bounds common with the feature), so that they cover the feature only;
+* Rebuild the solids with reconstructed adjacent faces avoiding the feature faces.
+
+If the single feature removal was successful, the result shape is overwritten with the new shape, otherwise the results are not kept, and the warning is given.
+Either way the process continues with the next feature.
+
+The Defeaturing algorithm has the following options:
+* History support;
+
+and the options available from base class (*BOPAlgo_Options*):
+* Error/Warning reporting system;
+* Parallel processing mode.
+
+Note that the other options of the base class are not supported here and will have no effect.
+
+<b>History support</b> allows tracking modification of the input shape in terms of Modified, IsDeleted and Generated. By default, the history is collected, but it is possible to disable it using the method *SetToFillHistory(false)*.
+On the low-level the history information is collected by the history tool *BRepTools_History*, which can be accessed through the method *BOPAlgo_RemoveFeatures::History()*. 
+
+<b>Error/Warning reporting system</b> allows obtaining the extended overview of the Errors/Warnings occurred during the operation. As soon as any error appears, the algorithm stops working. The warnings allow continuing the job and informing the user that something went wrong. The algorithm returns the following errors/warnings:
+* *BOPAlgo_AlertUnsupportedType* - the alert will be given as an error if the input shape does not contain any solids, and as a warning if the input shape contains not only solids, but also other shapes;
+* *BOPAlgo_AlertNoFacesToRemove* - the error alert is given in case there are no faces to remove from the shape (nothing to do);
+* *BOPAlgo_AlertUnableToRemoveTheFeature* - the warning alert is given to inform the user the removal of the feature is not possible. The algorithm will still try to remove the other features;
+* *BOPAlgo_AlertRemoveFeaturesFailed* - the error alert is given in case if the operation was aborted by the unknown reason.
+
+For more information on the error/warning reporting system, see the chapter @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide.
+
+<b>Parallel processing mode</b> - allows running the algorithm in parallel mode obtaining the result faster.
+
+The algorithm has certain limitations:
+* Intersection of the surfaces of the connected faces adjacent to the feature should not be empty. It means, that such faces should not be tangent to each other. 
+If the intersection of the adjacent faces will be empty, the algorithm will be unable to trim the faces correctly and, most likely, the feature will not be removed.
+* The algorithm does not process the INTERNAL parts of the solids, they are simply removed during reconstruction.
+
+Note, that for successful removal of the feature, the extended faces adjacent to the feature should cover the feature completely, otherwise the solids will not be rebuild. 
+Take a look at the simple shape on the image below:
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im001.png,"",220}
+
+Removal of all three faces of the gap is not going to work, because there will be no face to fill the transverse part of the step.
+Although, removal of only two faces, keeping one of the transverse faces, will fill the gap with the kept face:
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im002.png,"Keeping the right transverse face",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im003.png,"Keeping the left transverse face",220}
+
+@subsubsection occt_modalg_defeaturing_usage Usage
+
+Here is the example of usage of the *BRepAlgoAPI_Defeaturing* algorithm on the C++ level:
+~~~~
+TopoDS_Shape aSolid = ...;               // Input shape to remove the features from
+TopTools_ListOfShape aFeatures = ...;    // Features to remove from the shape
+Standard_Boolean bRunParallel = ...;     // Parallel processing mode
+Standard_Boolean isHistoryNeeded = ...;  // History support
+
+BRepAlgoAPI_Defeaturing aDF;             // Defeaturing algorithm
+aDF.SetShape(aSolid);                    // Set the shape
+aDF.AddFacesToRemove(aFaces);            // Add faces to remove
+aDF.SetRunParallel(bRunParallel);        // Define the processing mode (parallel or single)
+aDF.SetToFillHistory(isHistoryNeeded);   // Define whether to track the shapes modifications
+aDF.Build();                             // Perform the operation
+if (!aDF.IsDone())                       // Check for the errors
+{
+  // error treatment
+  Standard_SStream aSStream;
+  aDF.DumpErrors(aSStream);
+  return;
+}
+if (aDF.HasWarnings())                   // Check for the warnings
+{
+  // warnings treatment
+  Standard_SStream aSStream;
+  aDF.DumpWarnings(aSStream);
+}
+const TopoDS_Shape& aResult = aDF.Shape(); // Result shape
+~~~~
+
+Use the API history methods to track the history of a shape:
+~~~~
+// Obtain modification of the shape
+const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS);
+
+// Obtain shapes generated from the shape
+const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS);
+
+// Check if the shape is removed or not
+Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
+~~~~
+
+The command <b>removefeatures</b> allows using the Defeaturing algorithm on the Draw level.
+
+The @ref occt_draw_hist "standard history commands" can be used to track the history of shape modification during Defeaturing. 
+
+For more details on commands above, refer to the @ref occt_draw_defeaturing "Defeaturing commands" of the Draw test harness user guide.
+
+@subsubsection occt_modalg_defeaturing_examples Examples
+
+Here are the examples of defeaturing of the ANC101 model:
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im004.png,"ANC101 model",220}</td>
+
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im005.png,"Removing the cylindrical protrusion",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im006.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im007.png,"Removing the cylindrical holes",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im008.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im009.png,"Removing the cylindrical holes",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im010.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im011.png,"Removing the small gaps in the front",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im012.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im013.png,"Removing the gaps in the front completely",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im014.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im015.png,"Removing the cylindrical protrusion",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im016.png,"Result",220}
+
+Here are the few examples of defeaturing of the model containing boxes with blends:
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im017.png,"Box blend model",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im018.png,"Removing the blend",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im019.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im020.png,"Removing the blend",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im021.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im022.png,"Removing the blend",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im023.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im024.png,"Removing the blend",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im025.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im026.png,"Removing the blend",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im027.png,"Result",220}
+
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im028.png,"Removing the blend",220}
+@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im029.png,"Result",220}
+
+
+@subsection occt_modalg_makeperiodic 3D Model Periodicity
+
+Open CASCADE Technology provides tools for making an arbitrary 3D model (or just shape) periodic in 3D space in the specified directions.
+
+Periodicity of the shape means that the shape can be repeated in any periodic direction any number of times without creation of the new geometry or splits.
+The idea of this algorithm is to make the shape look similarly on the opposite sides or on the period bounds of periodic directions.
+It does not mean that the opposite sides of the shape will be mirrored. It just means that the opposite sides of the shape should be split by each other and obtain the same geometry on opposite sides.
+Such approach will allow repeating the shape, i.e. translating the copy of a shape on the period, without creation of new geometry because there will be no coinciding parts of different dimension.
+
+For better understanding of what periodicity means lets create a simple prism and make it periodic.
+The following draw script creates the L-shape prism with extensions 10x5x10:
+~~~~
+polyline p 0 0 0 0 0 10 5 0 10 5 0 5 10 0 5 10 0 0 0 0 0
+mkplane f p
+prism s f 0 5 0
+~~~~
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im001.png,"Shape to make periodic",220}
+
+Making this shape periodic in X, Y and Z directions with the periods matching the shape's extensions should make the splits of negative X and Z sides of the shape. The shape is already similar on opposite sides of Y directions, thus no new splits is expected.
+Here is the shape after making it periodic:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im002.png,"Periodic shape",220}
+And here is the repetition of the shape once in X and Z directions:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im003.png,"Repeated shape",220}
+
+The OCCT Shape Periodicity tools also allows making the shape periodic with the period not matching the shape's extensions. Let's make the shape periodic with 11, 6 and 11 for X, Y, Z periods accordingly.
+Such values of periods mean that there will be a gap between repeated shapes, and since during repetition the opposite sides do not touch the shape will not be split at all.
+Here is the repetition of the shape once in X and Z directions:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im004.png,"Repeated shape",220}
+As expected, the shape is not split and the repeated elements do not touch.
+
+If necessary the algorithm will trim the shape to fit into the requested period by splitting it with the planes limiting the shape's requested periods.
+E.g. let's make the L-shape periodic only in X direction with the period 2 starting at X parameter 4:
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im005.png,"Periodic trimmed shape",220}
+
+@subsubsection occt_modalg_makeperiodic_how_it_works How the shape is made periodic
+
+For making the shape periodic in certain direction the algorithm performs the following steps:
+* Creates the copy of the shape and moves it on the period into negative side of the requested direction;
+* Splits the negative side of the shape by the moved copy, ensuring copying of the geometry from positive side to negative;
+* Creates the copy of the shape (with already split negative side) and moves it on the period into the positive side of the requested direction;
+* Splits the positive side of the shape by the moved copy, ensuring copying of the geometry from negative side to positive.
+
+Repeated copying of the geometry ensures that the corner edges of the periodic shape will have the same geometry on opposite sides of all periodic directions.
+
+Thus, in the periodic shape the geometry from positive side of the shape is always copied on the negative side of periodic directions.
+
+@subsubsection occt_modalg_makeperiodic_association Opposite shapes association
+
+The algorithm also associates the identical (or twin) shapes located on the opposite sides of the periodic shape. By the construction, the twin shapes should always have the same geometry and distanced from each other on the period.
+It is possible that the shape does not have any twins. It means that when repeating this shape will not touch the opposite side of the shape. In the example when the periods of the shape are grater than its extensions, non of the sub-shapes has a twin.
+
+@subsubsection occt_modalg_makeperiodic_repetition Periodic shape repetition
+
+The algorithm also provides the methods to repeat the periodic shape in periodic directions. To repeat shape the algorithm makes the requested number of copies of the shape and translates them one by one on the time * period value.
+After all copies are made and translated they are glued to have valid shape.
+The subsequent repetitions are performed on the repeated shape, thus e.g. repeating the shape two times in any periodic direction will create result containing three shapes (original plus two copies).
+Single subsequent repetition in any direction will result already in 6 shapes.
+
+The repetitions can be cleared and started over.
+
+@subsubsection occt_modalg_makeperiodic_history History support
+
+The algorithm supports the history of shapes modifications, thus it is possible to track how the shapes have been changed to make it periodic and what new shapes have been created during repetitions.
+Both split history and history of periodic shape repetition are available here. Note, that all repeated shapes are stored as generated into the history.
+
+
+*BRepTools_History* is used for history support.
+
+@subsubsection occt_modalg_makeperiodic_errors Errors/Warnings
+
+The algorithm supports the Error/Warning reporting system which allows obtaining the extended overview of the errors and warning occurred during the operation.
+As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong.
+The algorithm returns the following alerts:
+* *BOPAlgo_AlertNoPeriodicityRequired* - Error alert is given if no periodicity has been requested in any direction;
+* *BOPAlgo_AlertUnableToTrim* - Error alert is given if the trimming of the shape for fitting it into requested period has failed;
+* *BOPAlgo_AlertUnableToMakeIdentical* - Error alert is given if splitting of the shape by its moved copies has failed;
+* *BOPAlgo_AlertUnableToRepeat* - Warning alert is given if the gluing of the repeated shapes has failed.
+
+For more information on the error/warning reporting system please see the chapter @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide.
+
+@subsubsection occt_modalg_makeperiodic_usage Usage
+
+The algorithm is implemented in the class *BOPAlgo_MakePeriodic*.
+Here is the example of its usage on the API level:
+~~~~
+TopoDS_Shape aShape = ...;                 // The shape to make periodic
+Standard_Boolean bMakeXPeriodic = ...;     // Flag for making or not the shape periodic in X direction
+Standard_Real aXPeriod = ...;              // X period for the shape
+Standard_Boolean isXTrimmed = ...;         // Flag defining whether it is necessary to trimming
+                                           // the shape to fit to X period
+Standard_Real aXFirst = ...;               // Start of the X period
+                                           // (really necessary only if the trimming is requested)
+Standard_Boolean bRunParallel = ...;       // Parallel processing mode or single
+
+BOPAlgo_MakePeriodic aPeriodicityMaker;                   // Periodicity maker
+aPeriodicityMaker.SetShape(aShape);                       // Set the shape
+aPeriodicityMaker.MakeXPeriodic(bMakePeriodic, aXPeriod); // Making the shape periodic in X direction
+aPeriodicityMaker.SetTrimmed(isXTrimmed, aXFirst);        // Trim the shape to fit X period
+aPeriodicityMaker.SetRunParallel(bRunParallel);           // Set the parallel processing mode
+aPeriodicityMaker.Perform();                              // Performing the operation
+
+if (aPeriodicityMaker.HasErrors())                        // Check for the errors
+{
+  // errors treatment
+  Standard_SStream aSStream;
+  aPeriodicityMaker.DumpErrors(aSStream);
+  return;
+}
+if (aPeriodicityMaker.HasWarnings())                      // Check for the warnings
+{
+  // warnings treatment
+  Standard_SStream aSStream;
+  aPeriodicityMaker.DumpWarnings(aSStream);
+}
+const TopoDS_Shape& aPeriodicShape = aPeriodicityMaker.Shape(); // Result periodic shape
+
+aPeriodicityMaker.XRepeat(2);                                    // Making repetitions
+const TopoDS_Shape& aRepeat = aPeriodicityMaker.RepeatedShape(); // Getting the repeated shape
+aPeriodicityMaker.ClearRepetitions();                            // Clearing the repetitions
+~~~~
+
+Please note, that the class is based on the options class *BOPAlgo_Options*, which provides the following options for the algorithm:
+* Error/Warning reporting system;
+* Parallel processing mode.
+The other options of the base class are not supported here and will have no effect.
+
+All the history information obtained during the operation is stored into *BRepTools_History* object and available through *History()* method:
+~~~~
+// Get the history object
+const Handle(BRepTools_History)& BOPAlgo_MakePeriodic::History();
+~~~~
+
+For the usage of the MakePeriodic algorithm on the Draw level the following commands have been implemented:
+* **makeperiodic**
+* **repeatshape**
+* **periodictwins**
+* **clearrepetitions**
+
+For more details on the periodicity commands please refer the @ref occt_draw_makeperiodic "Periodicity commands" of the Draw test harness user guide.
+
+To track the history of a shape modification during MakePeriodic operation the @ref occt_draw_hist "standard history commands" can be used.
+
+To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide).
+
+@subsubsection occt_modalg_makeperiodic_examples Examples
+
+Imagine that you need to make the drills in the plate on the same distance from each other. To model this process it is necessary to make a lot of cylinders (simulating the drills) and cut these cylinders from the plate.
+With the periodicity tool, the process looks very simple:
+~~~~
+# create plate 100 x 100
+box plate -50 -50 0 100 100 1
+# create a single drill with radius 1
+pcylinder drill 1 1
+# locate the drill in the left corner
+ttranslate drill -48 -48 0
+# make the drill periodic with 4 as X and Y periods, so the distance between drills will be 2
+makeperiodic drill drill -x 4 -trim -50 -y 4 -trim -50
+# repeat the drill to fill the plate, in result we get net of 25 x 25 drills
+repeatshape drills -x 24 -y 24
+# cut the drills from the plate
+bcut result plate drills
+~~~~
+@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im006.png,"Plate with drills",220}
 
 
 @section occt_modalg_10 Hidden Line  Removal
@@ -3073,570 +3394,6 @@ TopoDS_Shape OutLineHCompound =
 aPolyHLRToShape.OutLineHCompound(); 
 ~~~~~
 
-@section occt_modalg_11 Meshing 
-
-@subsection occt_modalg_11_1 Mesh presentations
-
-In addition to support of exact geometrical representation of 3D objects Open CASCADE Technology provides functionality to work with tessellated  representations of objects in form of meshes.
-
-Open CASCADE Technology mesh functionality provides:
-- data structures to store surface mesh data associated to shapes, and some basic algorithms to handle these data
-- data structures and algorithms to build surface triangular mesh from *BRep* objects (shapes).
-- tools to extend 3D visualization capabilities of Open CASCADE Technology with displaying meshes along with associated pre- and post-processor data.
-
-Open CASCADE Technology includes two mesh converters:
-- VRML converter translates Open CASCADE shapes to VRML 1.0 files (Virtual Reality Modeling Language). Open CASCADE shapes may be translated in two representations: shaded or wireframe. A shaded representation present shapes as sets of triangles computed by a mesh algorithm while a wireframe representation present shapes as sets of curves.
-- STL converter translates Open CASCADE shapes to STL files. STL (STtereoLithography) format is widely used for rapid prototyping.
-
-Open CASCADE SAS also offers Advanced Mesh Products:
-- <a href="https://www.opencascade.com/content/mesh-framework">Open CASCADE Mesh Framework (OMF)</a>
-- <a href="https://www.opencascade.com/content/express-mesh">Express Mesh</a>
-
-Besides, we can efficiently help you in the fields of surface and volume meshing algorithms, mesh optimization algorithms etc. If you require a qualified advice about meshing algorithms, do not hesitate to benefit from the expertise of our team in that domain.
-
-The projects dealing with numerical simulation can benefit from using SALOME - an Open Source Framework for CAE with CAD data interfaces, generic Pre- and Post- F.E. processors and API for integrating F.E. solvers.
-
-Learn more about SALOME platform on https://www.salome-platform.org
-
-@subsection occt_modalg_11_2 Meshing algorithm
-
-The algorithm of shape triangulation is provided by the functionality of *BRepMesh_IncrementalMesh* class, which adds a triangulation of the shape to its topological data structure. This triangulation is used to visualize the shape in shaded mode.
-
-~~~~~
-#include <IMeshData_Status.hxx>
-#include <IMeshTools_Parameters.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
-
-Standard_Boolean meshing_explicit_parameters()
-{
-  const Standard_Real aRadius = 10.0; 
-  const Standard_Real aHeight = 25.0; 
-  BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight); 
-  TopoDS_Shape aShape = aCylinder.Shape();
-
-  const Standard_Real aLinearDeflection   = 0.01;
-  const Standard_Real anAngularDeflection = 0.5;
-  BRepMesh_IncrementalMesh aMesher (aShape, aLinearDeflection, Standard_False, anAngularDeflection, Standard_True);
-  const Standard_Integer aStatus = aMesher.GetStatusFlags();
-  return !aStatus;
-}
-
-Standard_Boolean meshing_imeshtools_parameters()
-{
-  const Standard_Real aRadius = 10.0; 
-  const Standard_Real aHeight = 25.0; 
-  BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight); 
-  TopoDS_Shape aShape = aCylinder.Shape();
-  
-  IMeshTools_Parameters aMeshParams;
-  aMeshParams.Deflection               = 0.01;
-  aMeshParams.Angle                    = 0.5;
-  aMeshParams.Relative                 = Standard_False;
-  aMeshParams.InParallel               = Standard_True;
-  aMeshParams.MinSize                  = Precision::Confusion();
-  aMeshParams.InternalVerticesMode     = Standard_True;
-  aMeshParams.ControlSurfaceDeflection = Standard_True;
-
-  BRepMesh_IncrementalMesh aMesher (aShape, aMeshParams);
-  const Standard_Integer aStatus = aMesher.GetStatusFlags();
-  return !aStatus;
-}
-~~~~~
-
-The default meshing algorithm *BRepMesh_IncrementalMesh* has two major options to define triangulation -- linear and angular deflections. 
-
-At the first step all edges from a face are discretized according to the specified parameters. 
-
-At the second step, the faces are tessellated. Linear deflection limits the distance between a curve and its tessellation, whereas angular deflection limits the angle between subsequent segments in a polyline.
-
-@figure{/user_guides/modeling_algos/images/modeling_algos_image056.png,"Deflection parameters of BRepMesh_IncrementalMesh algorithm",420}
-
-There are additional options to control behavior of the meshing of face interior: *DeflectionInterior* and *AngleInterior*. *DeflectionInterior* limits the distance between triangles and the face interior. *AngleInterior* (used for tessellation of B-spline faces only) limits the angle between normals (N1, N2 and N3 in the picture) in the nodes of every link of the triangle. There is an exception for the links along the face boundary edges, "Angular Deflection" is used for them during edges discretization.
-
-@figure{/user_guides/modeling_algos/images/modeling_algos_image057.png,"Linear and angular interior deflections",420}
-
-Note that if a given value of linear deflection is less than shape tolerance then the algorithm will skip this value and will take into account the shape tolerance.
-
-The application should provide deflection parameters to compute a satisfactory mesh. Angular deflection is relatively simple and allows using a default value (12-20 degrees). Linear deflection has an absolute meaning and the application should provide the correct value for its models. Giving small values may result in a too huge mesh (consuming a lot of memory, which results in a  long computation time and slow rendering) while big values result in an ugly mesh.
-
-For an application working in dimensions known in advance it can be reasonable to use the absolute linear deflection for all models. This provides meshes according to metrics and precision used in the application (for example, it it is known that the model will be stored in meters, 0.004 m is enough for most tasks).
-
-However, an application that imports models created in other applications may not use the same deflection for all models. Note that actually this is an abnormal situation and this application is probably just a viewer for CAD models with  dimensions varying by an order of magnitude. This problem can be solved by introducing the concept of a relative linear deflection with some  LOD (level of detail). The level of detail is a scale factor for absolute deflection, which is applied to model dimensions.
-
-Meshing covers a shape with a triangular mesh. Other than hidden line removal, you can use meshing to transfer the shape to another tool: a manufacturing tool, a shading algorithm, a finite element algorithm, or a collision algorithm. 
-
-You can obtain information on the shape by first exploring it. To access triangulation of a face in the shape later, use *BRepTool::Triangulation*. To access a polygon, which is the approximation of an edge of the face, use *BRepTool::PolygonOnTriangulation*.
-
-@subsection occt_modalg_11_3 BRepMesh Architecture
-@subsubsection occt_modalg_11_3_1 Goals
-
-The main goals of the chosen architecture are:
-  * Remove tight connections between data structures, auxiliary tools and algorithms to create an extensible solution, easy for maintenance and improvements;
-  * Separate the code among several functional units responsible for specific operation for the sake of simplification of debugging and readability;
-  * Introduce new data structures enabling the possibility to manipulate a discrete model of a particular entity (edge, wire, face) in order to perform computations locally instead of processing the entire model;
-  * Implement a new triangulation algorithm replacing the existing functionality that contains overcomplicated solutions that need to be moved to the upper level. In addition, provide the possibility to change the algorithm depending on surface type (initially to speed up meshing of planes).
-
-@subsubsection occt_modalg_11_3_2 General workflow
-@figure{/user_guides/modeling_algos/images/modeling_algos_mesh_001.svg,"General workflow of BRepMesh component",500}
-
-Generally, the workflow of the component can be divided into six parts:
-  * **Creation of model data structure**: source *TopoDS_Shape* passed to algorithm is analyzed and exploded into faces and edges. The reflection corresponding to each topological entity is created in the data model. Note that underlying algorithms use the data model as input and access it via a common interface which allows creating a custom data model with necessary dependencies between particular entities (see the paragraph "Data model interface");
-  * **Discretize edges 3D & 2D curves**: 3D curve as well as an associated set of 2D curves of each model edge is discretized in order to create a coherent skeleton used as a base in face meshing process. If an edge of the source shape already contains polygonal data which suits the specified parameters, it is extracted from the shape and stored in the model as is. Each edge is processed separately, the adjacency is not taken into account;
-  * **Heal discrete model**: the source *TopoDS_Shape* can contain problems, such as open wires or self-intersections, introduced during design, exchange or modification of model. In addition, some problems like self-intersections can be introduced by roughly discretized edges. This stage is responsible for analysis of a discrete model in order to detect and repair problems or to refuse further processing of a model part in case if a problem cannot be solved;
-  * **Preprocess discrete model**: defines actions specific to the implemented approach to be performed before meshing of faces. By default, this operation iterates over model faces, checks the consistency of existing triangulations and cleans topological faces and adjacent edges from polygonal data in case of inconsistency or marks a face of the discrete model as not required for the computation;
-  * **Discretize faces**: represents the core part performing mesh generation for a particular face based on 2D discrete data. This operation caches polygonal data associated with face edges in the data model for further processing and stores the generated mesh to *TopoDS_Face*;
-  * **Postprocess discrete model**: defines actions specific for the implemented approach to be performed after meshing of faces. By default, this operation stores polygonal data obtained at the previous stage to *TopoDS_Edge* objects of the source model.
-
-@subsubsection occt_modalg_11_3_3 Common interfaces
-The component structure contains two units: <i>IMeshData</i> (see Data model interface) and <i>IMeshTools</i>, defining common interfaces for the data model and algorithmic tools correspondingly. Class *IMeshTools_Context* represents a connector between these units. The context class caches the data model as well as the tools corresponding to each of six stages of the workflow mentioned above and provides methods to call the corresponding tool safely (designed similarly to *IntTools_Context* in order to keep consistency with OCCT core tools). All stages, except for the first one, use the data model as input and perform a specific action on the entire structure. Thus, API class *IMeshTools_ModelAlgo* is defined in order to unify the interface of tools manipulating the data model. Each tool supposed to process the data model should inherit this interface enabling the possibility to cache it in context. In contrast to others, the model builder interface is defined by another class *IMeshTools_ModelBuilder* due to a different meaning of the stage. The entry point starting the entire workflow is represented by *IMeshTools_MeshBuilder*.
-
-The default implementation of *IMeshTools_Context* is given in *BRepMesh_Context* class initializing the context by instances of default algorithmic tools.
-
-The factory interface *IMeshTools_MeshAlgoFactory* gives the possibility to change the triangulation algorithm for a specific surface. The factory returns an instance of the triangulation algorithm via *IMeshTools_MeshAlgo* interface depending on the type of surface passed as parameter. It is supposed to be used at the face discretization stage.
-
-The default implementation of AlgoFactory is given in *BRepMesh_MeshAlgoFactory* returning algorithms of different complexity chosen according to the passed surface type. In its turn, it is used as the initializer of *BRepMesh_FaceDiscret* algorithm representing the starter of face discretization stage.
-
-@figure{/user_guides/modeling_algos/images/modeling_algos_mesh_002.svg,"Interface describing entry point to meshing workflow",500}
-
-Remaining interfaces describe auxiliary tools:
-  * *IMeshTools_CurveTessellator*: provides a common interface to the algorithms responsible for creation of discrete polygons on 3D and 2D curves as well as tools for extraction of existing polygons from *TopoDS_Edge* allowing to obtain discrete points and the corresponding parameters on curve regardless of the implementation details (see examples of usage of derived classes *BRepMesh_CurveTessellator*, *BRepMesh_EdgeTessellationExtractor* in *BRepMesh_EdgeDiscret*);
-  * *IMeshTools_ShapeExplorer*: the last two interfaces represent visitor design pattern and are intended to separate iteration over elements of topological shape (edges and faces) from the operations performed on a particular element;
-  * *IMeshTools_ShapeVisitor*: provides a common interface for operations on edges and faces of the target topological shape. It can be used in couple with *IMeshTools_ShapeExplorer*. The default implementation available in *BRepMesh_ShapeVisitor* performs initialization of the data model. The advantage of such approach is that the implementation of *IMeshTools_ShapeVisitor* can be changed according to the specific data model whereas the shape explorer implementation remains the same.
-
-@subsubsection occt_modalg_11_3_4 Create model data structure
-The data structures intended to keep discrete and temporary data required by underlying algorithms are created at the first stage of the meshing procedure. Generally, the model represents dependencies between entities of the source topological shape suitable for the target task.
-
-#### Data model interface
-Unit <i>IMeshData</i> provides common interfaces specifying the data model API used on different stages of the entire workflow. Dependencies and references of the designed interfaces are given in the figure below. A specific interface implementation depends on the target application which allows the developer to implement different models and use custom low-level data structures, e.g. different collections, either <i>NCollection</i> or STL. *IMeshData_Shape* is used as the base class for all data structures and tools keeping the topological shape in order to avoid possible copy-paste.
-
-The default implementation of interfaces is given in <i>BRepMeshData</i> unit. The main aim of the default data model is to provide features performing discretization of edges in a parallel mode. Thus, curve, pcurve and other classes are based on STL containers and smart-pointers as far as <i>NCollection</i> does not provide thread-safety for some cases (e.g. *NCollection_Sequence*). In addition, it closely reflects topology of the source shape, i.e. the number of edges in the data model is equal to the number of edges in the source model; each edge contains a set of pcurves associated with its adjacent faces which allows creation of discrete polygons for all pcurves or the 3D curve of a particular edge in a separate thread.
-
-**Advantages**:
-In case of necessity, the data model (probably with algorithms for its processing) can be easily substituted by another implementation supporting another kind of dependencies between elements.
-
-An additional example of a different data model is the case when it is not required to create a mesh with discrete polygons synchronized between adjacent faces, i.e. in case of necessity to speed up creation of a rough per-face tessellation used for visualization or quick computation only (the approach used in *XDEDRAW_Props*).
-
-@figure{/user_guides/modeling_algos/images/modeling_algos_mesh_003.svg,"Common API of data model",500}
-
-#### Collecting data model
-At this stage the data model is filled by entities according to the topological structure of the source shape. A default implementation of the data model is given in <i>BRepMeshData</i> unit and represents the model as two sets: a set of edges and a set of faces. Each face consists of one or several wires, the first of which always represents the outer wire, while others are internal. In its turn, each wire depicts the ordered sequence of oriented edges. Each edge is characterized by a single 3D curve and zero (in case of free edge) or more 2D curves associated with faces adjacent to this edge. Both 3D and 2D curves represent a set of pairs point-parameter defined in 3D and 2D space of the reference face correspondingly. An additional difference between a curve and a pcurve is that the latter has a reference to the face it is defined for.
-
-Model filler algorithm is represented by *BRepMesh_ShapeVisitor* class creating the model as a reflection to topological shape with help of *BRepMesh_ShapeExplorer* performing iteration over edges and faces of the target shape. Note that the algorithm operates on a common interface of the data model and creates a structure without any knowledge about the implementation details and underlying data structures. The entry point to collecting functionality is *BRepMesh_ModelBuilder* class.
-
-@subsubsection occt_modalg_11_3_5 Discretize edges 3D & 2D curves
-At this stage only the edges of the data model are considered. Each edge is processed separately (with the possibility to run processing in multiple threads). The edge is checked for existing polygonal data. In case if at least one representation exists and suits the meshing parameters, it is recuperated and used as reference data for tessellation of the whole set of pcurves as well as 3D curve assigned to the edge (see *BRepMesh_EdgeTessellationExtractor*). Otherwise, a new tessellation algorithm is created and used to generate the initial polygon (see *BRepMesh_CurveTessellator*) and the edge is marked as outdated. In addition, the model edge is updated by deflection as well as recomputed same range, same parameter and degeneracy parameters. See *BRepMesh_EdgeDiscret* for implementation details.
-
-<i>IMeshData</i> unit defines interface *IMeshData_ParametersListArrayAdaptor*, which is intended to adapt arbitrary data structures to the *NCollection_Array1* container API. This solution is made to use both *NCollection_Array1* and *IMeshData_Curve* as the source for *BRepMesh_EdgeParameterProvider* tool intended to generate a consistent parametrization taking into account the same parameter property.
-
-@subsubsection occt_modalg_11_3_6 Heal discrete model
-In general, this stage represents a set of operations performed on the entire discrete model in order to resolve inconsistencies due to the problems caused by design, translation or rough discretization. A different sequence of operations can be performed depending on the target triangulation algorithm, e.g. there are different approaches to process self-intersections – either to amplify edges discretization by decreasing the target precision or to split links at the intersection points. At this stage the whole set of edges is considered in aggregate and their adjacency is taken into account. A default implementation of the model healer is given in *BRepMesh_ModelHealer* which performs the following actions:
-  * Iterates over model faces and checks their wires for consistency, i.e. whether the wires are closed and do not contain self-intersections. The data structures are designed free of collisions, thus it is possible to run processing in a parallel mode;
-  * Forcibly connects the ends of adjacent edges in the parametric space, closing gaps between possible disconnected parts. The aim of this operation is to create a correct discrete model defined relatively to the parametric space of the target face taking into account connectivity and tolerances of 3D space only. This means that no specific computations are made to determine U and V tolerance;
-  * Registers intersections on edges forming the face shape. Two solutions are possible in order to resolve self-intersection: 
-    * Decrease deflection of a particular edge and update its discrete model. After that the workflow "intersection check – amplification" is repeated up to 5 times. As the result, target edges contain a finer tessellation and meshing continues or the face is marked by *IMeshData_SelfIntersectingWire* status and refused from further processing;
-    * Split target edges by intersection point and synchronize the updated polygon with curve and remaining pcurves associated to each edge. This operation presents a more robust solution comparing to the amplification procedure with a guaranteed result, but it is more difficult for implementation from the point of view of synchronization functionality.
-
-@subsubsection occt_modalg_11_3_7 Preprocess discrete model
-This stage implements actions to be performed before meshing of faces. Depending on target goals it can be changed or omitted. By default, *BRepMesh_ModelPreProcessor* implements the functionality checking topological faces for consistency of existing triangulation, i.e.: consistency with the target deflection parameter; indices of nodes referenced by triangles do not exceed the number of nodes stored in a triangulation. If the face fails some checks, it is cleaned from triangulation and its adjacent edges are cleaned from existing polygons. This does not affect a discrete model and does not require any recomputation as the model keeps tessellations for the whole set of edges despite consistency of their polygons.
-
-@subsubsection occt_modalg_11_3_8 Discretize faces
-Discretization of faces is the general part of meshing algorithm. At this stage edges tessellation data obtained and processed on previous steps is used to form contours of target faces and passed as input to the triangulation algorithm. Default implementation is provided by *BRepMesh_FaceDiscret* class which represents a starter for triangulation algorithm. It iterates over faces available in the data model, creates an instance of the triangulation algorithm according to the type of surface associated with each face via *IMeshTools_MeshAlgoFactory* and executes it. Each face is processed separately, thus it is possible to process faces in a parallel mode. The class diagram of face discretization is given in the figure below.
- 
-@figure{/user_guides/modeling_algos/images/modeling_algos_mesh_004.svg,"Class diagram of face discrete stage",300}
-
-In general, face meshing algorithms have the following structure:
-  * *BRepMesh_BaseMeshAlgo* implements *IMeshTools_MeshAlgo* interface and the base functionality for inherited algorithms. The main goal of this class is to initialize an instance of *BRepMesh_DataStructureOfDelaun* as well as auxiliary data structures suitable for nested algorithms using face model data passed as input parameter. Despite implementation of triangulation algorithm this structure is currently supposed as common for OCCT. However, the user is free to implement a custom algorithm and supporting data structure accessible via *IMeshTools_MeshAlgo* interface, e.g. to connect a 3-rd party meshing tool that does not support *TopoDS_Shape* out of box. For this, such structure provides the possibility to distribute connectors to various algorithms in the form of plugins;
-  * *BRepMesh_DelaunayBaseMeshAlgo* and *BRepMesh_SweepLineMeshAlgo* classes implement core meshing functionality operating directly on an instance of *BRepMesh_DataStructureOfDelaun*. The algorithms represent mesh generation tools adding new points from the data structure to the final mesh;
-  * *BRepMesh_NodeInsertionMeshAlgo* class represents a wrapper intended to extend the algorithm inherited from *BRepMesh_BaseMeshAlgo* to enable the functionality generating surface nodes and inserting them into the structure. On this level, an instance of the classification tool is created and can be used to accept-reject internal nodes. In addition, computations necessary for scaling UV coordinates of points relatively to the range specified for the corresponding direction are performed. As far as both triangulation algorithms work on static data provided by the structure, new nodes are added at the initialization stage. Surface nodes are generated by an auxiliary tool called range splitter and passed as template parameter (see Range splitter);
-  * Classes *BRepMesh_DelaunayNodeInsertionMeshAlgo* and *BRepMesh_SweepLineNodeInsertionMeshAlgo* implement algorithm-specific functionality related to addition of internal nodes supplementing functionality provided by *BRepMesh_NodeInsertionMeshAlgo*;
-  * *BRepMesh_DelaunayDeflectionControlMeshAlgo* extends functionality of *BRepMesh_DelaunayNodeInsertionMeshAlgo* by additional procedure controlling deflection of generated triangles.
-
-BRepMesh provides user a way to switch default triangulation algorithm to a custom one, either implemented by user or available worldwide.
-There are three base classes that can be currently used to integrate 3rd-party algorithms:
-  * *BRepMesh_ConstrainedBaseMeshAlgo* base class for tools providing generation of triangulations with constraints requiring no common processing by BRepMesh;
-  * *BRepMesh_CustomBaseMeshAlgo* provides the entry point for generic algorithms without support of constraints and supposed for generation of base mesh only.
-    Constraint edges are processed using standard functionality provided by the component itself upon background mesh produced by 3rd-party solver;
-  * *BRepMesh_CustomDelaunayBaseMeshAlgo* contains initialization part for tools used by BRepMesh for checks or optimizations using results of 3rd-party algorithm.
-
-Meshing algorithms could be provided by implemeting IMeshTools_MeshAlgoFactory with related interfaces and passing it to BRepMesh_Context::SetFaceDiscret().
-OCCT comes with two base 2D meshing algorithms: BRepMesh_MeshAlgoFactory (used by default) and BRepMesh_DelabellaMeshAlgoFactory.
-
-The following example demonstrates how it could be done from Draw environment:
-~~~~~
-psphere s 10
-
-### Default Algo ###
-incmesh s 0.0001 -algo default
-
-### Delabella Algo ###
-incmesh s 0.0001 -algo delabella
-~~~~~
-
-The code snippet below shows passing a custom mesh factory to BRepMesh_IncrementalMesh:
-~~~~~
-IMeshTools_Parameters aMeshParams;
-Handle(IMeshTools_Context) aContext = new BRepMesh_Context();
-aContext->SetFaceDiscret (new BRepMesh_FaceDiscret (new BRepMesh_DelabellaMeshAlgoFactory()));
-
-BRepMesh_IncrementalMesh aMesher;
-aMesher.SetShape (aShape);
-aMesher.ChangeParameters() = aMeshParams;
-
-aMesher.Perform (aContext);
-~~~~~
-
-#### Range splitter
-Range splitter tools provide functionality to generate internal surface nodes defined within the range computed using discrete model data. The base functionality is provided by *BRepMesh_DefaultRangeSplitter* which can be used without modifications in case of planar surface. The default splitter does not generate any internal node.
-
-*BRepMesh_ConeRangeSplitter*, *BRepMesh_CylinderRangeSplitter* and *BRepMesh_SphereRangeSplitter* are specializations of the default splitter intended for quick generation of internal nodes for the corresponding type of analytical surface.
-
-*BRepMesh_UVParamRangeSplitter* implements base functionality taking discretization points of face border into account for node generation. Its successors BRepMesh_TorusRangeSplitter and *BRepMesh_NURBSRangeSplitter* extend the base functionality for toroidal and NURBS surfaces correspondingly.
-
-@subsubsection occt_modalg_11_3_9 Postprocess discrete model
-This stage implements actions to be performed after meshing of faces. Depending on target goals it can be changed or omitted. By default, *BRepMesh_ModelPostProcessor* commits polygonal data stored in the data model to *TopoDS_Edge*. 
-
-
-@section occt_modalg_defeaturing 3D Model Defeaturing
-
-The Open CASCADE Technology Defeaturing algorithm is intended for removal of the unwanted parts or features from the model. These parts can be holes, protrusions, gaps, chamfers, fillets, etc.
-
-Feature detection is not performed, and all features to be removed should be defined by the user. The input shape is not modified during Defeaturing, the new shape is built in the result.
-
-On the API level the Defeaturing algorithm is implemented in the *BRepAlgoAPI_Defeaturing* class. At input the algorithm accepts the shape to remove the features from and the features (one or many) to be removed from the shape.
-Currently, the input shape should be either SOLID, or COMPSOLID, or COMPOUND of SOLIDs.
-The features to be removed are defined by the sets of faces forming them. It does not matter how the feature faces are given: as separate faces or their collections. The faces should belong to the initial shape, else they are ignored.
-
-The actual features removal is performed by the low-level *BOPAlgo_RemoveFeatures* algorithm. On the API level, all inputs are passed into the tool and the method *BOPAlgo_RemoveFeatures::Perform()* is called.
-
-Before removing features, all faces to be removed from the shape are sorted into connected blocks - each block represents a single feature to be removed.
-The features are removed from the shape one by one, which allows removing all possible features even if there are some problems with their removal (e.g. due to incorrect input data).
-
-The removed feature is filled by the extension of the faces adjacent to it. In general, the algorithm removing a single feature from the shape goes as follows:
-* Find the faces adjacent to the feature;
-* Extend the adjacent faces to cover the feature;
-* Trim the extended faces by the bounds of the original face (except for the bounds common with the feature), so that they cover the feature only;
-* Rebuild the solids with reconstructed adjacent faces avoiding the feature faces.
-
-If the single feature removal was successful, the result shape is overwritten with the new shape, otherwise the results are not kept, and the warning is given.
-Either way the process continues with the next feature.
-
-The Defeaturing algorithm has the following options:
-* History support;
-
-and the options available from base class (*BOPAlgo_Options*):
-* Error/Warning reporting system;
-* Parallel processing mode.
-
-Note that the other options of the base class are not supported here and will have no effect.
-
-<b>History support</b> allows tracking modification of the input shape in terms of Modified, IsDeleted and Generated. By default, the history is collected, but it is possible to disable it using the method *SetToFillHistory(false)*.
-On the low-level the history information is collected by the history tool *BRepTools_History*, which can be accessed through the method *BOPAlgo_RemoveFeatures::History()*. 
-
-<b>Error/Warning reporting system</b> allows obtaining the extended overview of the Errors/Warnings occurred during the operation. As soon as any error appears, the algorithm stops working. The warnings allow continuing the job and informing the user that something went wrong. The algorithm returns the following errors/warnings:
-* *BOPAlgo_AlertUnsupportedType* - the alert will be given as an error if the input shape does not contain any solids, and as a warning if the input shape contains not only solids, but also other shapes;
-* *BOPAlgo_AlertNoFacesToRemove* - the error alert is given in case there are no faces to remove from the shape (nothing to do);
-* *BOPAlgo_AlertUnableToRemoveTheFeature* - the warning alert is given to inform the user the removal of the feature is not possible. The algorithm will still try to remove the other features;
-* *BOPAlgo_AlertRemoveFeaturesFailed* - the error alert is given in case if the operation was aborted by the unknown reason.
-
-For more information on the error/warning reporting system, see the chapter @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide.
-
-<b>Parallel processing mode</b> - allows running the algorithm in parallel mode obtaining the result faster.
-
-The algorithm has certain limitations:
-* Intersection of the surfaces of the connected faces adjacent to the feature should not be empty. It means, that such faces should not be tangent to each other. 
-If the intersection of the adjacent faces will be empty, the algorithm will be unable to trim the faces correctly and, most likely, the feature will not be removed.
-* The algorithm does not process the INTERNAL parts of the solids, they are simply removed during reconstruction.
-
-Note, that for successful removal of the feature, the extended faces adjacent to the feature should cover the feature completely, otherwise the solids will not be rebuild. 
-Take a look at the simple shape on the image below:
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im001.png,"",220}
-
-Removal of all three faces of the gap is not going to work, because there will be no face to fill the transverse part of the step.
-Although, removal of only two faces, keeping one of the transverse faces, will fill the gap with the kept face:
-<table align="center">
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im002.png,"Keeping the right transverse face",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im003.png,"Keeping the left transverse face",220}</td>
-</tr>
-</table>
-
-@subsection occt_modalg_defeaturing_usage Usage
-
-Here is the example of usage of the *BRepAlgoAPI_Defeaturing* algorithm on the C++ level:
-~~~~
-TopoDS_Shape aSolid = ...;               // Input shape to remove the features from
-TopTools_ListOfShape aFeatures = ...;    // Features to remove from the shape
-Standard_Boolean bRunParallel = ...;     // Parallel processing mode
-Standard_Boolean isHistoryNeeded = ...;  // History support
-
-BRepAlgoAPI_Defeaturing aDF;             // Defeaturing algorithm
-aDF.SetShape(aSolid);                    // Set the shape
-aDF.AddFacesToRemove(aFaces);            // Add faces to remove
-aDF.SetRunParallel(bRunParallel);        // Define the processing mode (parallel or single)
-aDF.SetToFillHistory(isHistoryNeeded);   // Define whether to track the shapes modifications
-aDF.Build();                             // Perform the operation
-if (!aDF.IsDone())                       // Check for the errors
-{
-  // error treatment
-  Standard_SStream aSStream;
-  aDF.DumpErrors(aSStream);
-  return;
-}
-if (aDF.HasWarnings())                   // Check for the warnings
-{
-  // warnings treatment
-  Standard_SStream aSStream;
-  aDF.DumpWarnings(aSStream);
-}
-const TopoDS_Shape& aResult = aDF.Shape(); // Result shape
-~~~~
-
-Use the API history methods to track the history of a shape:
-~~~~
-// Obtain modification of the shape
-const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Modified(const TopoDS_Shape& theS);
-
-// Obtain shapes generated from the shape
-const TopTools_ListOfShape& BRepAlgoAPI_Defeaturing::Generated(const TopoDS_Shape& theS);
-
-// Check if the shape is removed or not
-Standard_Boolean BRepAlgoAPI_Defeaturing::IsDeleted(const TopoDS_Shape& theS);
-~~~~
-
-The command <b>removefeatures</b> allows using the Defeaturing algorithm on the Draw level.
-
-The @ref occt_draw_hist "standard history commands" can be used to track the history of shape modification during Defeaturing. 
-
-For more details on commands above, refer to the @ref occt_draw_defeaturing "Defeaturing commands" of the Draw test harness user guide.
-
-@subsection occt_modalg_defeaturing_examples Examples
-
-Here are the examples of defeaturing of the ANC101 model:
-
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im004.png,"ANC101 model",220}</td>
-
-<table align="center">
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im005.png,"Removing the cylindrical protrusion",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im006.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im007.png,"Removing the cylindrical holes",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im008.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im009.png,"Removing the cylindrical holes",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im010.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im011.png,"Removing the small gaps in the front",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im012.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im013.png,"Removing the gaps in the front completely",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im014.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im015.png,"Removing the cylindrical protrusion",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im016.png,"Result",220}</td></td>
-</tr>
-</table>
-
-Here are the few examples of defeaturing of the model containing boxes with blends:
-
-@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im017.png,"Box blend model",220}</td>
-
-<table align="center">
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im018.png,"Removing the blend",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im019.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im020.png,"Removing the blend",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im021.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im022.png,"Removing the blend",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im023.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im024.png,"Removing the blend",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im025.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im026.png,"Removing the blend",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im027.png,"Result",220}</td></td>
-</tr>
-<tr>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im028.png,"Removing the blend",220}</td>
-  <td>@figure{/user_guides/modeling_algos/images/modeling_algos_rf_im029.png,"Result",220}</td></td>
-</tr>
-</table>
-
-
-@section occt_modalg_makeperiodic 3D Model Periodicity
-
-Open CASCADE Technology provides tools for making an arbitrary 3D model (or just shape) periodic in 3D space in the specified directions.
-
-Periodicity of the shape means that the shape can be repeated in any periodic direction any number of times without creation of the new geometry or splits.
-The idea of this algorithm is to make the shape look similarly on the opposite sides or on the period bounds of periodic directions.
-It does not mean that the opposite sides of the shape will be mirrored. It just means that the opposite sides of the shape should be split by each other and obtain the same geometry on opposite sides.
-Such approach will allow repeating the shape, i.e. translating the copy of a shape on the period, without creation of new geometry because there will be no coinciding parts of different dimension.
-
-For better understanding of what periodicity means lets create a simple prism and make it periodic.
-The following draw script creates the L-shape prism with extensions 10x5x10:
-~~~~
-polyline p 0 0 0 0 0 10 5 0 10 5 0 5 10 0 5 10 0 0 0 0 0
-mkplane f p
-prism s f 0 5 0
-~~~~
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im001.png,"Shape to make periodic",220}
-
-Making this shape periodic in X, Y and Z directions with the periods matching the shape's extensions should make the splits of negative X and Z sides of the shape. The shape is already similar on opposite sides of Y directions, thus no new splits is expected.
-Here is the shape after making it periodic:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im002.png,"Periodic shape",220}
-And here is the repetition of the shape once in X and Z directions:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im003.png,"Repeated shape",220}
-
-The OCCT Shape Periodicity tools also allows making the shape periodic with the period not matching the shape's extensions. Let's make the shape periodic with 11, 6 and 11 for X, Y, Z periods accordingly.
-Such values of periods mean that there will be a gap between repeated shapes, and since during repetition the opposite sides do not touch the shape will not be split at all.
-Here is the repetition of the shape once in X and Z directions:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im004.png,"Repeated shape",220}
-As expected, the shape is not split and the repeated elements do not touch.
-
-If necessary the algorithm will trim the shape to fit into the requested period by splitting it with the planes limiting the shape's requested periods.
-E.g. let's make the L-shape periodic only in X direction with the period 2 starting at X parameter 4:
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im005.png,"Periodic trimmed shape",220}
-
-@subsection occt_modalg_makeperiodic_how_it_works How the shape is made periodic
-
-For making the shape periodic in certain direction the algorithm performs the following steps:
-* Creates the copy of the shape and moves it on the period into negative side of the requested direction;
-* Splits the negative side of the shape by the moved copy, ensuring copying of the geometry from positive side to negative;
-* Creates the copy of the shape (with already split negative side) and moves it on the period into the positive side of the requested direction;
-* Splits the positive side of the shape by the moved copy, ensuring copying of the geometry from negative side to positive.
-
-Repeated copying of the geometry ensures that the corner edges of the periodic shape will have the same geometry on opposite sides of all periodic directions.
-
-Thus, in the periodic shape the geometry from positive side of the shape is always copied on the negative side of periodic directions.
-
-@subsection occt_modalg_makeperiodic_association Opposite shapes association
-
-The algorithm also associates the identical (or twin) shapes located on the opposite sides of the periodic shape. By the construction, the twin shapes should always have the same geometry and distanced from each other on the period.
-It is possible that the shape does not have any twins. It means that when repeating this shape will not touch the opposite side of the shape. In the example when the periods of the shape are grater than its extensions, non of the sub-shapes has a twin.
-
-@subsection occt_modalg_makeperiodic_repetition Periodic shape repetition
-
-The algorithm also provides the methods to repeat the periodic shape in periodic directions. To repeat shape the algorithm makes the requested number of copies of the shape and translates them one by one on the time * period value.
-After all copies are made and translated they are glued to have valid shape.
-The subsequent repetitions are performed on the repeated shape, thus e.g. repeating the shape two times in any periodic direction will create result containing three shapes (original plus two copies).
-Single subsequent repetition in any direction will result already in 6 shapes.
-
-The repetitions can be cleared and started over.
-
-@subsection occt_modalg_makeperiodic_history History support
-
-The algorithm supports the history of shapes modifications, thus it is possible to track how the shapes have been changed to make it periodic and what new shapes have been created during repetitions.
-Both split history and history of periodic shape repetition are available here. Note, that all repeated shapes are stored as generated into the history.
-
-
-*BRepTools_History* is used for history support.
-
-@subsection occt_modalg_makeperiodic_errors Errors/Warnings
-
-The algorithm supports the Error/Warning reporting system which allows obtaining the extended overview of the errors and warning occurred during the operation.
-As soon as any error appears the algorithm stops working. The warnings allow continuing the job, informing the user that something went wrong.
-The algorithm returns the following alerts:
-* *BOPAlgo_AlertNoPeriodicityRequired* - Error alert is given if no periodicity has been requested in any direction;
-* *BOPAlgo_AlertUnableToTrim* - Error alert is given if the trimming of the shape for fitting it into requested period has failed;
-* *BOPAlgo_AlertUnableToMakeIdentical* - Error alert is given if splitting of the shape by its moved copies has failed;
-* *BOPAlgo_AlertUnableToRepeat* - Warning alert is given if the gluing of the repeated shapes has failed.
-
-For more information on the error/warning reporting system please see the chapter @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide.
-
-@subsection occt_modalg_makeperiodic_usage Usage
-
-The algorithm is implemented in the class *BOPAlgo_MakePeriodic*.
-Here is the example of its usage on the API level:
-~~~~
-TopoDS_Shape aShape = ...;                 // The shape to make periodic
-Standard_Boolean bMakeXPeriodic = ...;     // Flag for making or not the shape periodic in X direction
-Standard_Real aXPeriod = ...;              // X period for the shape
-Standard_Boolean isXTrimmed = ...;         // Flag defining whether it is necessary to trimming
-                                           // the shape to fit to X period
-Standard_Real aXFirst = ...;               // Start of the X period
-                                           // (really necessary only if the trimming is requested)
-Standard_Boolean bRunParallel = ...;       // Parallel processing mode or single
-
-BOPAlgo_MakePeriodic aPeriodicityMaker;                   // Periodicity maker
-aPeriodicityMaker.SetShape(aShape);                       // Set the shape
-aPeriodicityMaker.MakeXPeriodic(bMakePeriodic, aXPeriod); // Making the shape periodic in X direction
-aPeriodicityMaker.SetTrimmed(isXTrimmed, aXFirst);        // Trim the shape to fit X period
-aPeriodicityMaker.SetRunParallel(bRunParallel);           // Set the parallel processing mode
-aPeriodicityMaker.Perform();                              // Performing the operation
-
-if (aPeriodicityMaker.HasErrors())                        // Check for the errors
-{
-  // errors treatment
-  Standard_SStream aSStream;
-  aPeriodicityMaker.DumpErrors(aSStream);
-  return;
-}
-if (aPeriodicityMaker.HasWarnings())                      // Check for the warnings
-{
-  // warnings treatment
-  Standard_SStream aSStream;
-  aPeriodicityMaker.DumpWarnings(aSStream);
-}
-const TopoDS_Shape& aPeriodicShape = aPeriodicityMaker.Shape(); // Result periodic shape
-
-aPeriodicityMaker.XRepeat(2);                                    // Making repetitions
-const TopoDS_Shape& aRepeat = aPeriodicityMaker.RepeatedShape(); // Getting the repeated shape
-aPeriodicityMaker.ClearRepetitions();                            // Clearing the repetitions
-~~~~
-
-Please note, that the class is based on the options class *BOPAlgo_Options*, which provides the following options for the algorithm:
-* Error/Warning reporting system;
-* Parallel processing mode.
-The other options of the base class are not supported here and will have no effect.
-
-All the history information obtained during the operation is stored into *BRepTools_History* object and available through *History()* method:
-~~~~
-// Get the history object
-const Handle(BRepTools_History)& BOPAlgo_MakePeriodic::History();
-~~~~
-
-For the usage of the MakePeriodic algorithm on the Draw level the following commands have been implemented:
-* **makeperiodic**
-* **repeatshape**
-* **periodictwins**
-* **clearrepetitions**
-
-For more details on the periodicity commands please refer the @ref occt_draw_makeperiodic "Periodicity commands" of the Draw test harness user guide.
-
-To track the history of a shape modification during MakePeriodic operation the @ref occt_draw_hist "standard history commands" can be used.
-
-To have possibility to access the error/warning shapes of the operation use the *bdrawwarnshapes* command before running the algorithm (see command usage in the @ref specification__boolean_ers "Errors and warnings reporting system" of Boolean operations user guide).
-
-@subsection occt_modalg_makeperiodic_examples Examples
-
-Imagine that you need to make the drills in the plate on the same distance from each other. To model this process it is necessary to make a lot of cylinders (simulating the drills) and cut these cylinders from the plate.
-With the periodicity tool, the process looks very simple:
-~~~~
-# create plate 100 x 100
-box plate -50 -50 0 100 100 1
-# create a single drill with radius 1
-pcylinder drill 1 1
-# locate the drill in the left corner
-ttranslate drill -48 -48 0
-# make the drill periodic with 4 as X and Y periods, so the distance between drills will be 2
-makeperiodic drill drill -x 4 -trim -50 -y 4 -trim -50
-# repeat the drill to fill the plate, in result we get net of 25 x 25 drills
-repeatshape drills -x 24 -y 24
-# cut the drills from the plate
-bcut result plate drills
-~~~~
-@figure{/user_guides/modeling_algos/images/modeling_algos_mkperiodic_im006.png,"Plate with drills",220}
 
 
 @section occt_modalg_makeconnected Making touching shapes connected

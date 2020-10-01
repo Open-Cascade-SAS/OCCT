@@ -33,13 +33,13 @@ user_guides/user_guides.md
 user_guides/foundation_classes/foundation_classes.md
 user_guides/modeling_data/modeling_data.md
 user_guides/modeling_algos/modeling_algos.md
+user_guides/mesh/mesh.md
 user_guides/shape_healing/shape_healing.md
 user_guides/visualization/visualization.md
 user_guides/iges/iges.md
 user_guides/step/step.md
 user_guides/xde/xde.md
 user_guides/ocaf/ocaf.md
-user_guides/tobj/tobj.md
 user_guides/draw_test_harness/draw_test_harness.md
 user_guides/inspector/inspector.md
 user_guides/vis/vis.md

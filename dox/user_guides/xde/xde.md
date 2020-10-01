@@ -5,7 +5,7 @@
 
 @section occt_xde_1 Introduction
 
-This manual explains how to use the Extended Data Exchange (XDE). It provides basic documentation on setting up and using XDE. For advanced information on XDE and its applications, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+This manual explains how to use the Extended Data Exchange (XDE). It provides basic documentation on setting up and using XDE.
 
 The Extended Data Exchange (XDE) module allows extending the scope of exchange by translating  additional data attached to geometric BREP data, thereby improving the interoperability with external software. 
 

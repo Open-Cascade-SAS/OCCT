@@ -1,4 +1,4 @@
-STEP processor  {#occt_user_guides__step}
+STEP Translator  {#occt_user_guides__step}
 ========================
 
 @tableofcontents
@@ -22,9 +22,7 @@ File translation is performed in the programming mode, via C++ calls.
 
 @ref occt_user_guides__shape_healing "Shape Healing" toolkit provides tools to heal various problems, which may be encountered in translated shapes, and to make them valid in Open CASCADE. The Shape Healing is smoothly connected to STEP translator using the same API, only the names of API packages change.
 
-For testing the STEP component in DRAW Test Harness, a set of commands for reading and writing STEP files and analysis of relevant data are provided by the *TKXSDRAW* plugin. 
-
-See also our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+For testing the STEP component in DRAW Test Harness, a set of commands for reading and writing STEP files and analysis of relevant data are provided by the *TKXSDRAW* plugin.
 
 @subsection occt_step_1_1 STEP Exchanges in Open Cascade technology
 

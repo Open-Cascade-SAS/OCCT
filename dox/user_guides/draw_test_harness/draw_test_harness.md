@@ -6979,7 +6979,7 @@ sr is a shape COMPOUND FORWARD Free Modified
 
 The new algorithm of Boolean operations avoids a large number of weak points and limitations presented in the old Boolean operation algorithm.
 It also provides wider range of options and diagnostics.
-The algorithms of Boolean component are fully described in the @ref specification__boolean_1 "Boolean Operations" of boolean operation user guide.
+The algorithms of Boolean component are fully described in the @ref specification__boolean_operations "Boolean Operations" of boolean operation user guide.
 
 For the Draw commands to perform operations in Boolean component, read the dedicated section @ref occt_draw_bop "Boolean operations commands"
 
@@ -11733,4 +11733,3 @@ The procedure consists in defining the system variables and using the *pload* co
 Draw[]> set env(CSF_MyDrawPluginDefaults) /users/test
 Draw[]> pload -MyDrawPlugin ALL
 ~~~~
-

@@ -4,21 +4,22 @@
 # Empty spaces are allowed.
 # Strings starting with '#' are treated as comments and ignored.
 
-specification/brep_wp/brep_wp.md
+tutorial/tutorial.md
+
+upgrade/upgrade.md
+
 user_guides/foundation_classes/foundation_classes.md
-user_guides/iges/iges.md
 user_guides/modeling_data/modeling_data.md
 user_guides/modeling_algos/modeling_algos.md
-specification/boolean_operations/boolean_operations.md
-user_guides/shape_healing/shape_healing.md
+user_guides/mesh/mesh.md
 user_guides/ocaf/ocaf.md
-user_guides/step/step.md
-user_guides/draw_test_harness/draw_test_harness.md
-user_guides/inspector/inspector.md
-user_guides/tobj/tobj.md
 user_guides/visualization/visualization.md
-user_guides/xde/xde.md
 user_guides/vis/vis.md
+user_guides/iges/iges.md
+user_guides/step/step.md
+user_guides/xde/xde.md
+user_guides/inspector/inspector.md
+user_guides/draw_test_harness/draw_test_harness.md
 
 contribution/contribution_workflow/contribution_workflow.md
 contribution/documentation/documentation.md
@@ -26,7 +27,6 @@ contribution/coding_rules.md
 contribution/git_guide/git_guide.md
 contribution/tests/tests.md
 
-upgrade/upgrade.md
+specification/boolean_operations/boolean_operations.md
+specification/brep_format.md
 specification/pbr_math.md
-
-tutorial/tutorial.md

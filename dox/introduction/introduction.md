@@ -281,7 +281,7 @@ Each sub-domain of Shape Healing has its own scope of functionality:
 | Customization | Modifies the shape representation to fit specific needs. | The shape is not modified, only the mathematical form of its internal representation is changed. |
 | Processing | Mechanism of shape modification via a user-editable resource file. | |
 
-For more details, refer to @ref occt_shg "Shape Healing User's guide".
+For more details, refer to @ref occt_user_guides__shape_healing "Shape Healing User's guide".
 
 @subsection intro_overview_ocaf Application Framework
 

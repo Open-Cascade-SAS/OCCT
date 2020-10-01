@@ -7,7 +7,7 @@ Modeling Data {#occt_user_guides__modeling_data}
 
 Modeling Data supplies data structures to represent 2D and 3D geometric models. 
 
-This manual explains how to use Modeling Data. For advanced information on modeling data, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
+This manual explains how to use Modeling Data.
 
 @section occt_modat_1 Geometry Utilities
 
@@ -548,181 +548,6 @@ However, the Geom package essentially provides data structures, not algorithms.
 You can refer to the <i> GC</i> package to find more evolved construction algorithms for
 Geom objects.
 
-@section occt_modat_4 Properties of Shapes
-
-@subsection occt_modat_4_1 Local Properties of Shapes
-
-<i>BRepLProp</i> package provides the Local Properties of Shapes component, 
-which contains algorithms computing various local properties on edges and faces in a BRep model.
-
-The local properties which may be queried are:
-
-  * for a point of parameter u on a curve which supports an edge :
-    * the point,
-    * the derivative vectors, up to the third degree,
-    * the tangent vector,
-    * the normal,
-    * the curvature, and the center of curvature;
-  * for a point of parameter (u, v) on a surface which supports a face :
-    * the point,
-    * the derivative vectors, up to the second degree,
-    * the tangent vectors to the u and v isoparametric curves,
-    * the normal vector,
-    * the minimum or maximum curvature, and the corresponding directions of curvature;
-  * the degree of continuity of a curve which supports an edge, built by the concatenation of two other edges, at their junction point.
-
-Analyzed edges and faces are described as <i> BRepAdaptor</i> curves and surfaces, 
-which provide shapes with an interface for the description of their geometric support. 
-The base point for local properties is defined by its u parameter value on a curve, or its (u, v) parameter values on a surface.
-
-@subsection occt_modat_4_2 Local Properties of Curves and Surfaces
-
-The "Local Properties of Curves and Surfaces" component provides algorithms for computing various local properties on a Geom curve (in 2D or 3D space) or a surface. It is composed of:
-
-  * <i> Geom2dLProp</i> package, which allows computing Derivative and Tangent vectors (normal and curvature) of a parametric point on a 2D curve;
-  * <i> GeomLProp </i> package, which provides local properties on 3D curves and surfaces
-  * <i> LProp </i> package, which provides an enumeration used to characterize a particular point on a 2D curve.
-
-Curves are either <i> Geom_Curve </i> curves (in 3D space) or <i> Geom2d_Curve </i> curves (in the plane). 
-Surfaces are <i> Geom_Surface </i> surfaces. The point on which local properties are calculated 
-is defined by its u parameter value on a curve, and its (u,v) parameter values on a surface.
-
-It is possible to query the same local properties for points as mentioned above, and additionally for 2D curves:
-
-  * the points corresponding to a minimum or a maximum of curvature;
-  * the inflection points.
-  
-  
-#### Example: How to check the surface concavity
-
-To check the concavity of a surface, proceed as follows:
-
-  1. Sample the surface and compute at each point the Gaussian curvature.
-  2. If the value of the curvature changes of sign, the surface is concave or convex depending on the point of view.
-  3. To compute a Gaussian curvature, use the class <i> SLprops</i> from <i> GeomLProp</i>, which instantiates the generic class <i> SLProps </i>from <i> LProp</i> and use the method <i> GaussianCurvature</i>.
-
-@subsection occt_modat_4_2a Continuity of Curves and Surfaces
-
-Types of supported continuities for curves and surfaces are described in *GeomAbs_Shape* enumeration.
-
-In respect of curves, the following types of continuity are supported (see the figure below):
-  * C0 (*GeomAbs_C0*) - parametric continuity. It is the same as G0 (geometric continuity), so the last one is not represented by separate variable.
-  * G1 (*GeomAbs_G1*) - tangent vectors on left and on right are parallel.
-  * C1 (*GeomAbs_C1*) - indicates the continuity of the first derivative.
-  * G2 (*GeomAbs_G2*) - in addition to G1 continuity, the centers of curvature on left and on right are the same.
-  * C2 (*GeomAbs_C2*) - continuity of all derivatives till the second order.
-  * C3 (*GeomAbs_C3*) - continuity of all derivatives till the third order.
-  * CN (*GeomAbs_CN*) - continuity of all derivatives till the N-th order (infinite order of continuity).
-
-*Note:* Geometric continuity (G1, G2) means that the curve can be reparametrized to have parametric (C1, C2) continuity.
-
-@figure{/user_guides/modeling_data/images/modeling_data_continuity_curves.svg,"Continuity of Curves",420}
-
-The following types of surface continuity are supported:
-  * C0 (*GeomAbs_C0*) - parametric continuity (the surface has no points or curves of discontinuity).
-  * G1 (*GeomAbs_G1*) - surface has single tangent plane in each point.
-  * C1 (*GeomAbs_C1*) - indicates the continuity of the first derivatives.
-  * G2 (*GeomAbs_G2*) - in addition to G1 continuity, principal curvatures and directions are continuous.
-  * C2 (*GeomAbs_C2*) - continuity of all derivatives till the second order.
-  * C3 (*GeomAbs_C3*) - continuity of all derivatives till the third order.
-  * CN (*GeomAbs_CN*) - continuity of all derivatives till the N-th order (infinite order of continuity).
-
-@figure{/user_guides/modeling_data/images/modeling_data_continuity_surfaces.svg,"Continuity of Surfaces",420}
-
-Against single surface, the connection of two surfaces (see the figure above) defines its continuity in each intersection point only. Smoothness of connection is a minimal value of continuities on the intersection curve.
-
-
-@subsection occt_modat_4_2b Regularity of Shared Edges
-
-Regularity of an edge is a smoothness of connection of two faces sharing this edge. In other words, regularity is a minimal continuity between connected faces in each point on edge.
-
-Edge's regularity can be set by *BRep_Builder::Continuity* method. To get the regularity use *BRep_Tool::Continuity* method.
-
-Some algorithms like @ref occt_modalg_6 "Fillet" set regularity of produced edges by their own algorithms. On the other hand, some other algorithms (like @ref specification__boolean_operations "Boolean Operations", @ref occt_user_guides__shape_healing "Shape Healing", etc.) do not set regularity. If the regularity is needed to be set correctly on a shape, the method *BRepLib::EncodeRegularity* can be used. It calculates and sets correct values for all edges of the shape.
-
-The regularity flag is extensively used by the following high level algorithms: @ref occt_modalg_6_1_2 "Chamfer", @ref occt_modalg_7_3 "Draft Angle", @ref occt_modalg_10 "Hidden Line Removal", @ref occt_modalg_9_2_3 "Gluer".
-
-  
-@subsection occt_modat_4_3 Global Properties of Shapes
-
-The Global Properties of Shapes component provides algorithms for computing the global 
-properties of a composite geometric system in 3D space, and frameworks to query the computed results.
-
-The global properties computed for a system are :
-  * mass,
-  * mass center,
-  * matrix of inertia,
-  * moment about an axis,
-  * radius of gyration about an axis,
-  * principal properties of inertia such as principal axis, principal moments, and principal radius of gyration.
-
-Geometric systems are generally defined as shapes. Depending on the way they are analyzed, these shapes will give properties of:
-
-  * lines induced from the edges of the shape,
-  * surfaces induced from the faces of the shape, or
-  * volumes induced from the solid bounded by the shape.
-
-The global properties of several systems may be brought together to give the global properties of the system composed of the sum of all individual systems.
-
-The Global Properties of Shapes component is composed of:
-* seven functions for computing global properties of a shape: one function for lines, two functions for surfaces and four functions for volumes. The choice of functions depends on input parameters and algorithms used for computation (<i>BRepGProp</i> global functions),
-* a framework for computing global properties for a set of points (<i>GProp_PGProps</i>),
-* a general framework to bring together the global properties retained by several more elementary frameworks, and provide a general programming interface to consult computed global properties.
-
-Packages *GeomLProp* and *Geom2dLProp*  provide algorithms calculating the local properties of curves and surfaces
-
-A curve (for one parameter) has the following local properties: 
-- Point 
-- Derivative
-- Tangent 
-- Normal
-- Curvature
-- Center of curvature. 
-
-A surface (for two parameters U and V) has the following local properties: 
-- point
-- derivative for U and V)
-- tangent line (for U and V)
-- normal
-- max curvature 
-- min curvature 
-- main directions of curvature
-- mean curvature
-- Gaussian curvature
-
-The following methods are available:
-* *CLProps* -- calculates the local properties of a curve (tangency, curvature,normal); 
-* *CurAndInf2d* -- calculates the maximum and minimum curvatures and the inflection points of 2d curves; 
-* *SLProps* -- calculates the local properties of a surface (tangency, the normal and curvature). 
-* *Continuity* -- calculates regularity at the junction of two curves. 
-
-Note that the B-spline curve and surface are accepted but they are not cut into pieces of the desired continuity. It is the global continuity, which is seen. 
-
-@subsection occt_modat_4_4 Adaptors for Curves and Surfaces
-
-Some Open CASCADE Technology general algorithms may work theoretically on numerous types of curves or surfaces. 
-
-To do this, they simply get the services required of the analyzed  curve or surface through an interface so as to a single API,  whatever the type of curve or surface. These interfaces are called adaptors.
-
-For example, <i> Adaptor3d_Curve </i> is the abstract class which provides  the required services by an algorithm which uses any 3d curve.
-
-<i> GeomAdaptor </i> package provides interfaces:
-  * On a Geom curve;
-  * On a curve lying on a Geom surface;
-  * On a Geom surface;
-
-<i> Geom2dAdaptor</i> package provides interfaces :
-  * On a <i>Geom2d</i> curve.
-
-<i> BRepAdaptor </i> package provides interfaces:
-  * On a Face
-  * On an Edge
-
-When you write an algorithm which operates on geometric objects, use <i> Adaptor3d</i> (or <i> Adaptor2d</i>) objects. 
-
-As a result, you can use the algorithm with any kind of object, if you provide for this object an interface derived from *Adaptor3d* or *Adaptor2d*.
-These interfaces are easy to use: simply create an adapted curve or surface from a *Geom2d* curve, and then use this adapted curve as an argument for the algorithm? which requires it.
-
 
 @section occt_modat_5 Topology
 
@@ -763,39 +588,9 @@ Three additional packages provide tools to access and manipulate this abstract t
   * <i> TopTools</i> package provides basic tools to use on topological data structures.
   * <i> TopExp</i> package provides classes to explore and manipulate the topological data structures described in the TopoDS package.
   * <i> BRepTools </i> package provides classes to explore, manipulate, read and write BRep data structures. These more complex data structures combine topological descriptions with additional geometric information, and include rules for evaluating equivalence of different possible representations of the same object, for example, a point.
+ 
 
-@subsection occt_modat_5_1  Shape Location
-
-A local coordinate system can be viewed as either of the following: 
-- A right-handed trihedron with an origin and three orthonormal vectors. The *gp_Ax2* package corresponds to this definition. 
-- A transformation of a +1 determinant, allowing the transformation of coordinates between local and global references frames. This corresponds to the *gp_Trsf*. 
-
-*TopLoc* package distinguishes two notions: 
-- *TopLoc_Datum3D* class provides the elementary reference coordinate, represented by a right-handed orthonormal system of axes or by a right-handed unitary transformation. 
-- *TopLoc_Location* class provides the composite reference coordinate made from elementary ones. It is a marker composed of a chain of references to elementary markers. The resulting cumulative transformation is stored in order to avoid recalculating the sum of the transformations for the whole list. 
-
-@figure{/user_guides/modeling_data/images/modeling_data_image005.png,"Structure of TopLoc_Location",420}
-
-Two reference coordinates are equal if they are made up of the same elementary coordinates in the same order. There is no numerical comparison. Two coordinates can thus correspond to the same transformation without being equal if they were not built from the same elementary coordinates. 
-
-For example, consider three elementary coordinates: 
-R1, R2, R3 
-The composite coordinates are: 
-C1 = R1  * R2, 
-C2 = R2  * R3 
-C3 = C1  * R3 
-C4 = R1  * C2 
-
-**NOTE** C3 and C4 are equal because they are both R1 * R2 * R3.  
-
-The *TopLoc* package is chiefly targeted at the topological data structure, but it can be used for other purposes. 
-
-Change of coordinates
----------------------
-
-*TopLoc_Datum3D* class represents a change of elementary coordinates. Such changes must be shared so this class inherits from *Standard_Transient*. The coordinate is represented by a transformation *gp_Trsfpackage*. This transformation has no scaling factor. 
-
-@subsection occt_modat_5_2 Naming shapes, sub-shapes, their orientation and state
+@subsection occt_modat_5_2 Shape content
 
 The **TopAbs** package provides general enumerations describing the basic concepts of topology and methods to handle these enumerations. It contains no classes. This package has been separated from the rest of the topology because the notions it contains are sufficiently general to be used by all topological tools. This avoids redefinition of enumerations by remaining independent of modeling resources. The TopAbs package defines three notions: 
 - **Type** *TopAbs_ShapeEnum*;
@@ -878,6 +673,37 @@ The UNKNOWN term has been introduced because this enumeration is often used to e
 The State enumeration can also be used to specify various parts of an object. The following figure shows the parts of an edge intersecting a face. 
 
 @figure{/user_guides/modeling_data/images/modeling_data_image010.png,"State specifies the parts of an edge intersecting a face",420}
+
+@subsubsection occt_modat_5_1  Shape Location
+
+A local coordinate system can be viewed as either of the following: 
+- A right-handed trihedron with an origin and three orthonormal vectors. The *gp_Ax2* package corresponds to this definition. 
+- A transformation of a +1 determinant, allowing the transformation of coordinates between local and global references frames. This corresponds to the *gp_Trsf*. 
+
+*TopLoc* package distinguishes two notions: 
+- *TopLoc_Datum3D* class provides the elementary reference coordinate, represented by a right-handed orthonormal system of axes or by a right-handed unitary transformation. 
+- *TopLoc_Location* class provides the composite reference coordinate made from elementary ones. It is a marker composed of a chain of references to elementary markers. The resulting cumulative transformation is stored in order to avoid recalculating the sum of the transformations for the whole list. 
+
+@figure{/user_guides/modeling_data/images/modeling_data_image005.png,"Structure of TopLoc_Location",420}
+
+Two reference coordinates are equal if they are made up of the same elementary coordinates in the same order. There is no numerical comparison. Two coordinates can thus correspond to the same transformation without being equal if they were not built from the same elementary coordinates. 
+
+For example, consider three elementary coordinates: 
+R1, R2, R3 
+The composite coordinates are: 
+C1 = R1  * R2, 
+C2 = R2  * R3 
+C3 = C1  * R3 
+C4 = R1  * C2 
+
+**NOTE** C3 and C4 are equal because they are both R1 * R2 * R3.  
+
+The *TopLoc* package is chiefly targeted at the topological data structure, but it can be used for other purposes. 
+
+Change of coordinates
+---------------------
+
+*TopLoc_Datum3D* class represents a change of elementary coordinates. Such changes must be shared so this class inherits from *Standard_Transient*. The coordinate is represented by a transformation *gp_Trsfpackage*. This transformation has no scaling factor.
 
 @subsection occt_modat_5_3 Manipulating shapes and sub-shapes
 
@@ -1106,7 +932,7 @@ The following steps are performed:
   } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@subsection occt_modat_5_5 Lists and Maps of Shapes
+@subsubsection occt_modat_5_5 Lists and Maps of Shapes
 
 **TopTools** package contains tools for exploiting the *TopoDS* data structure. It is an instantiation of the tools from *TCollection* package with the Shape classes of *TopoDS*. 
 
@@ -1257,7 +1083,7 @@ Below is the auxiliary function, which copies the element of rank *i* from the m
   }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@subsubsection occt_modat_5_5_1 Wire Explorer
+**Wire Explorer**
 
 *BRepTools_WireExplorer* class can access edges of a wire in their order of connection. 
 
@@ -1277,22 +1103,180 @@ For example, in the wire in the image we want to recuperate the edges in the ord
   } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-@subsection occt_modat_5_6 Storage of shapes
+@section occt_modat_4 Properties of Shapes
 
-*BRepTools* and *BinTools* packages contain methods *Read* and *Write* allowing to read and write a Shape to/from a stream or a file.
-The methods provided by *BRepTools* package use ASCII storage format; *BinTools* package uses binary format.
-Each of these methods has two arguments:
-- a *TopoDS_Shape* object to be read/written;
-- a stream object or a file name to read from/write to.
+@subsection occt_modat_4_1 Local Properties of Shapes
 
-The following sample code reads a shape from ASCII file and writes it to a binary one:
+<i>BRepLProp</i> package provides the Local Properties of Shapes component, 
+which contains algorithms computing various local properties on edges and faces in a BRep model.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-  TopoDS_Shape aShape;
-  if (BRepTools::Read (aShape, "source_file.txt")) {
-    BinTools::Write (aShape, "result_file.bin");
-  }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The local properties which may be queried are:
+
+  * for a point of parameter u on a curve which supports an edge :
+    * the point,
+    * the derivative vectors, up to the third degree,
+    * the tangent vector,
+    * the normal,
+    * the curvature, and the center of curvature;
+  * for a point of parameter (u, v) on a surface which supports a face :
+    * the point,
+    * the derivative vectors, up to the second degree,
+    * the tangent vectors to the u and v isoparametric curves,
+    * the normal vector,
+    * the minimum or maximum curvature, and the corresponding directions of curvature;
+  * the degree of continuity of a curve which supports an edge, built by the concatenation of two other edges, at their junction point.
+
+Analyzed edges and faces are described as <i> BRepAdaptor</i> curves and surfaces, 
+which provide shapes with an interface for the description of their geometric support. 
+The base point for local properties is defined by its u parameter value on a curve, or its (u, v) parameter values on a surface.
+
+@subsection occt_modat_4_2 Local Properties of Curves and Surfaces
+
+The "Local Properties of Curves and Surfaces" component provides algorithms for computing various local properties on a Geom curve (in 2D or 3D space) or a surface. It is composed of:
+
+  * <i> Geom2dLProp</i> package, which allows computing Derivative and Tangent vectors (normal and curvature) of a parametric point on a 2D curve;
+  * <i> GeomLProp </i> package, which provides local properties on 3D curves and surfaces
+  * <i> LProp </i> package, which provides an enumeration used to characterize a particular point on a 2D curve.
+
+Curves are either <i> Geom_Curve </i> curves (in 3D space) or <i> Geom2d_Curve </i> curves (in the plane). 
+Surfaces are <i> Geom_Surface </i> surfaces. The point on which local properties are calculated 
+is defined by its u parameter value on a curve, and its (u,v) parameter values on a surface.
+
+It is possible to query the same local properties for points as mentioned above, and additionally for 2D curves:
+
+  * the points corresponding to a minimum or a maximum of curvature;
+  * the inflection points.
+  
+  
+#### Example: How to check the surface concavity
+
+To check the concavity of a surface, proceed as follows:
+
+  1. Sample the surface and compute at each point the Gaussian curvature.
+  2. If the value of the curvature changes of sign, the surface is concave or convex depending on the point of view.
+  3. To compute a Gaussian curvature, use the class <i> SLprops</i> from <i> GeomLProp</i>, which instantiates the generic class <i> SLProps </i>from <i> LProp</i> and use the method <i> GaussianCurvature</i>.
+
+@subsection occt_modat_4_2a Continuity of Curves and Surfaces
+
+Types of supported continuities for curves and surfaces are described in *GeomAbs_Shape* enumeration.
+
+In respect of curves, the following types of continuity are supported (see the figure below):
+  * C0 (*GeomAbs_C0*) - parametric continuity. It is the same as G0 (geometric continuity), so the last one is not represented by separate variable.
+  * G1 (*GeomAbs_G1*) - tangent vectors on left and on right are parallel.
+  * C1 (*GeomAbs_C1*) - indicates the continuity of the first derivative.
+  * G2 (*GeomAbs_G2*) - in addition to G1 continuity, the centers of curvature on left and on right are the same.
+  * C2 (*GeomAbs_C2*) - continuity of all derivatives till the second order.
+  * C3 (*GeomAbs_C3*) - continuity of all derivatives till the third order.
+  * CN (*GeomAbs_CN*) - continuity of all derivatives till the N-th order (infinite order of continuity).
+
+*Note:* Geometric continuity (G1, G2) means that the curve can be reparametrized to have parametric (C1, C2) continuity.
+
+@figure{/user_guides/modeling_data/images/modeling_data_continuity_curves.svg,"Continuity of Curves",420}
+
+The following types of surface continuity are supported:
+  * C0 (*GeomAbs_C0*) - parametric continuity (the surface has no points or curves of discontinuity).
+  * G1 (*GeomAbs_G1*) - surface has single tangent plane in each point.
+  * C1 (*GeomAbs_C1*) - indicates the continuity of the first derivatives.
+  * G2 (*GeomAbs_G2*) - in addition to G1 continuity, principal curvatures and directions are continuous.
+  * C2 (*GeomAbs_C2*) - continuity of all derivatives till the second order.
+  * C3 (*GeomAbs_C3*) - continuity of all derivatives till the third order.
+  * CN (*GeomAbs_CN*) - continuity of all derivatives till the N-th order (infinite order of continuity).
+
+@figure{/user_guides/modeling_data/images/modeling_data_continuity_surfaces.svg,"Continuity of Surfaces",420}
+
+Against single surface, the connection of two surfaces (see the figure above) defines its continuity in each intersection point only. Smoothness of connection is a minimal value of continuities on the intersection curve.
+
+
+@subsection occt_modat_4_2b Regularity of Shared Edges
+
+Regularity of an edge is a smoothness of connection of two faces sharing this edge. In other words, regularity is a minimal continuity between connected faces in each point on edge.
+
+Edge's regularity can be set by *BRep_Builder::Continuity* method. To get the regularity use *BRep_Tool::Continuity* method.
+
+Some algorithms like @ref occt_modalg_6 "Fillet" set regularity of produced edges by their own algorithms. On the other hand, some other algorithms (like @ref specification__boolean_operations "Boolean Operations", @ref occt_user_guides__shape_healing "Shape Healing", etc.) do not set regularity. If the regularity is needed to be set correctly on a shape, the method *BRepLib::EncodeRegularity* can be used. It calculates and sets correct values for all edges of the shape.
+
+The regularity flag is extensively used by the following high level algorithms: @ref occt_modalg_6_1_2 "Chamfer", @ref occt_modalg_7_3 "Draft Angle", @ref occt_modalg_10 "Hidden Line Removal", @ref occt_modalg_9_2 "Gluer".
+
+  
+@subsection occt_modat_4_3 Global Properties of Shapes
+
+The Global Properties of Shapes component provides algorithms for computing the global 
+properties of a composite geometric system in 3D space, and frameworks to query the computed results.
+
+The global properties computed for a system are :
+  * mass,
+  * mass center,
+  * matrix of inertia,
+  * moment about an axis,
+  * radius of gyration about an axis,
+  * principal properties of inertia such as principal axis, principal moments, and principal radius of gyration.
+
+Geometric systems are generally defined as shapes. Depending on the way they are analyzed, these shapes will give properties of:
+
+  * lines induced from the edges of the shape,
+  * surfaces induced from the faces of the shape, or
+  * volumes induced from the solid bounded by the shape.
+
+The global properties of several systems may be brought together to give the global properties of the system composed of the sum of all individual systems.
+
+The Global Properties of Shapes component is composed of:
+* seven functions for computing global properties of a shape: one function for lines, two functions for surfaces and four functions for volumes. The choice of functions depends on input parameters and algorithms used for computation (<i>BRepGProp</i> global functions),
+* a framework for computing global properties for a set of points (<i>GProp_PGProps</i>),
+* a general framework to bring together the global properties retained by several more elementary frameworks, and provide a general programming interface to consult computed global properties.
+
+Packages *GeomLProp* and *Geom2dLProp*  provide algorithms calculating the local properties of curves and surfaces
+
+A curve (for one parameter) has the following local properties: 
+- Point 
+- Derivative
+- Tangent 
+- Normal
+- Curvature
+- Center of curvature. 
+
+A surface (for two parameters U and V) has the following local properties: 
+- point
+- derivative for U and V)
+- tangent line (for U and V)
+- normal
+- max curvature 
+- min curvature 
+- main directions of curvature
+- mean curvature
+- Gaussian curvature
+
+The following methods are available:
+* *CLProps* -- calculates the local properties of a curve (tangency, curvature,normal); 
+* *CurAndInf2d* -- calculates the maximum and minimum curvatures and the inflection points of 2d curves; 
+* *SLProps* -- calculates the local properties of a surface (tangency, the normal and curvature). 
+* *Continuity* -- calculates regularity at the junction of two curves. 
+
+Note that the B-spline curve and surface are accepted but they are not cut into pieces of the desired continuity. It is the global continuity, which is seen. 
+
+@subsection occt_modat_4_4 Adaptors for Curves and Surfaces
+
+Some Open CASCADE Technology general algorithms may work theoretically on numerous types of curves or surfaces. 
+
+To do this, they simply get the services required of the analyzed  curve or surface through an interface so as to a single API,  whatever the type of curve or surface. These interfaces are called adaptors.
+
+For example, <i> Adaptor3d_Curve </i> is the abstract class which provides  the required services by an algorithm which uses any 3d curve.
+
+<i> GeomAdaptor </i> package provides interfaces:
+  * On a Geom curve;
+  * On a curve lying on a Geom surface;
+  * On a Geom surface;
+
+<i> Geom2dAdaptor</i> package provides interfaces :
+  * On a <i>Geom2d</i> curve.
+
+<i> BRepAdaptor </i> package provides interfaces:
+  * On a Face
+  * On an Edge
+
+When you write an algorithm which operates on geometric objects, use <i> Adaptor3d</i> (or <i> Adaptor2d</i>) objects. 
+
+As a result, you can use the algorithm with any kind of object, if you provide for this object an interface derived from *Adaptor3d* or *Adaptor2d*.
+These interfaces are easy to use: simply create an adapted curve or surface from a *Geom2d* curve, and then use this adapted curve as an argument for the algorithm? which requires it.
 
 @section occt_modat_6 Bounding boxes
 

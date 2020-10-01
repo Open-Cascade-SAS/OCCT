@@ -42,8 +42,6 @@ To answer different needs of CASCADE users, this User's Guide offers the followi
     chapter 2 @ref occt_visu_2 "Fundamental Concepts", chapter 3 @ref occt_visu_3 "AIS: Application Interactive Services", and 4 @ref occt_visu_4 "3D Presentations".
     You may want to begin with the chapter presenting AIS.
 
-For advanced information on visualization algorithms, see our <a href="https://www.opencascade.com/content/tutorial-learning">E-learning & Training</a> offerings.
-
 @section occt_visu_2 Fundamental Concepts
 
 @subsection occt_visu_2_1 Presentation
@@ -1545,28 +1543,34 @@ aViewer->SetDefaultBackgroundColor (Quantity_NOC_DARKVIOLET);
 // Create a structure in this Viewer
 Handle(Graphic3d_Structure) aStruct = new Graphic3d_Structure (aViewer->StructureManager());
 aStruct->SetVisual (Graphic3d_TOS_SHADING); // Type of structure
+
 // Create a group of primitives  in this structure
 Handle(Graphic3d_Group) aPrsGroup = aStruct->NewGroup();
+
 // Fill this group with one quad of size 100
 Handle(Graphic3d_ArrayOfTriangleStrips) aTriangles = new Graphic3d_ArrayOfTriangleStrips (4);
 aTriangles->AddVertex (-100./2., -100./2., 0.0);
 aTriangles->AddVertex (-100./2.,  100./2., 0.0);
 aTriangles->AddVertex ( 100./2., -100./2., 0.0);
 aTriangles->AddVertex ( 100./2.,  100./2., 0.0);
+
 Handle(Graphic3d_AspectFillArea3d) anAspects = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID, Quantity_NOC_RED,
                                                                                Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0f,
                                                                                Graphic3d_NOM_GOLD, Graphic3d_NOM_GOLD);
 aPrsGroup->SetGroupPrimitivesAspect (anAspects);
 aPrsGroup->AddPrimitiveArray (aTriangles);
+
 // Create Ambient and Infinite Lights in this Viewer
 Handle(V3d_AmbientLight)     aLight1 = new V3d_AmbientLight (Quantity_NOC_GRAY50);
 Handle(V3d_DirectionalLight) aLight2 = new V3d_DirectionalLight (V3d_Zneg, Quantity_NOC_WHITE, true);
 aViewer->AddLight (aLight1);
 aViewer->AddLight (aLight2);
 aViewer->SetLightOn();
+
 // Create a 3D quality  Window with the same DisplayConnection
 Handle(Xw_Window) aWindow = new Xw_Window (aDispConnection, "Test V3d", 100, 100, 500, 500);
 aWindow->Map(); // Map this Window to this screen
+
 // Create a Perspective  View in this Viewer
 Handle(V3d_View) aView = new V3d_View (aViewer);
 aView->Camera()->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
@@ -1622,7 +1626,7 @@ aView->Update(); // update the Visualization in this View
 
 @subsubsection occt_visu_4_4_5 Perspective Projection
 
-**Field of view (FOVy)** -- defines the field of camera view by y axis in degrees (45° is default).
+**Field of view (FOVy)** -- defines the field of camera view by y axis in degrees (45Â° is default).
 
 @figure{camera_perspective.png,"Perspective frustum",420}
 
@@ -1643,7 +1647,7 @@ There are two types of IOD:
 * _Graphic3d_Camera::IODType_Absolute_ : Intraocular distance is defined as an absolute value.
 * _Graphic3d_Camera::IODType_Relative_ : Intraocular distance is defined relative to the camera focal length (as its coefficient).
 
-**Field of view (FOV)** -- defines the field of camera view by y axis in degrees (45° is default).
+**Field of view (FOV)** -- defines the field of camera view by y axis in degrees (45Â° is default).
 
 **ZFocus** -- defines the distance to the point of stereographic focus.
 
