@@ -24,7 +24,6 @@ user_guides/user_guides.md
 user_guides/foundation_classes/foundation_classes.md
 user_guides/modeling_data/modeling_data.md
 user_guides/modeling_algos/modeling_algos.md
-user_guides/boolean_operations/boolean_operations.md
 user_guides/shape_healing/shape_healing.md
 user_guides/visualization/visualization.md
 user_guides/iges/iges.md
@@ -34,8 +33,12 @@ user_guides/ocaf/ocaf.md
 user_guides/tobj/tobj.md
 user_guides/draw_test_harness/draw_test_harness.md
 user_guides/inspector/inspector.md
-user_guides/brep_wp/brep_wp.md
 user_guides/vis/vis.md
+
+specification/specification.md
+specification/boolean_operations/boolean_operations.md
+specification/brep_format.md
+specification/pbr_math.md
 
 contribution/contribution.md
 contribution/documentation/documentation.md
@@ -45,7 +48,6 @@ contribution/git_guide/git_guide.md
 contribution/tests/tests.md
 debug/debug.md
 upgrade/upgrade.md
-dev_guides/visualization/pbr_math.md
 
 dev_guides/building/building.md
 dev_guides/building/3rdparty/3rdparty_windows.md

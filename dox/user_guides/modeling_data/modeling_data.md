@@ -638,7 +638,7 @@ Regularity of an edge is a smoothness of connection of two faces sharing this ed
 
 Edge's regularity can be set by *BRep_Builder::Continuity* method. To get the regularity use *BRep_Tool::Continuity* method.
 
-Some algorithms like @ref occt_modalg_6 "Fillet" set regularity of produced edges by their own algorithms. On the other hand, some other algorithms (like @ref occt_user_guides__boolean_operations "Boolean Operations", @ref occt_user_guides__shape_healing "Shape Healing", etc.) do not set regularity. If the regularity is needed to be set correctly on a shape, the method *BRepLib::EncodeRegularity* can be used. It calculates and sets correct values for all edges of the shape.
+Some algorithms like @ref occt_modalg_6 "Fillet" set regularity of produced edges by their own algorithms. On the other hand, some other algorithms (like @ref specification__boolean_operations "Boolean Operations", @ref occt_user_guides__shape_healing "Shape Healing", etc.) do not set regularity. If the regularity is needed to be set correctly on a shape, the method *BRepLib::EncodeRegularity* can be used. It calculates and sets correct values for all edges of the shape.
 
 The regularity flag is extensively used by the following high level algorithms: @ref occt_modalg_6_1_2 "Chamfer", @ref occt_modalg_7_3 "Draft Angle", @ref occt_modalg_10 "Hidden Line Removal", @ref occt_modalg_9_2_3 "Gluer".
 

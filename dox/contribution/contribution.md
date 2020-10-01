@@ -11,10 +11,6 @@ The following documents provide information on OCCT building, development and te
 * @subpage occt_dev_guides__tests "Automatic Testing system"
 * @subpage occt_dev_guides__debug "Debugging tools and hints"
 
-The following documents provide information on OCCT algorithms background:
-
-* @subpage occt_dev_guides__pbr_math "Physically-based Rendering math (PBR for rasterization)"
-
 The following guide provides information relevant to upgrading applications developed with previous versions of OCCT, to recent one:
 
 * @subpage occt_dev_guides__upgrade "Upgrade from previous OCCT versions"

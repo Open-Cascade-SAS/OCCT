@@ -1,9 +1,9 @@
- BRep Format {#occt_user_guides__brep_wp}
+BRep Format {#specification__brep_format}
 ========================
 
-@tableofcontents 
+@tableofcontents
 
-@section occt_brep_format_1 Introduction
+@section specification__brep_format_1 Introduction
 
   BREP format is used to store 3D models and allows to store a model which consists 
   of vertices, edges, wires, faces, shells, solids,  compsolids, compounds, edge triangulations, 
@@ -24,8 +24,25 @@
 Some data fields of the format have additional values, which are used in OCCT. 
 
 Some data fields of the format are specific for OCCT. 
+
+@section specification__brep_format_2 Storage of shapes
+
+*BRepTools* and *BinTools* packages contain methods *Read* and *Write* allowing to read and write a Shape to/from a stream or a file.
+The methods provided by *BRepTools* package use ASCII storage format; *BinTools* package uses binary format.
+Each of these methods has two arguments:
+- a *TopoDS_Shape* object to be read/written;
+- a stream object or a file name to read from/write to.
+
+The following sample code reads a shape from ASCII file and writes it to a binary one:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+  TopoDS_Shape aShape;
+  if (BRepTools::Read (aShape, "source_file.txt")) {
+    BinTools::Write (aShape, "result_file.bin");
+  }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
-@section occt_brep_format_2 Format Common Structure
+@section specification__brep_format_3 Format Common Structure
  
   ASCII encoding is used to read/write BREP format from/to  file. The format data are stored in a file as text data.  
    
@@ -59,7 +76,7 @@ Some data fields of the format are specific for OCCT.
  
   Sections \<locations\>, \<geometry\> and \<shapes\> are described below in separate chapters of the document.  
  
-@section occt_brep_format_3 Locations
+@section specification__brep_format_4 Locations
  
 **Example**  
 
@@ -143,7 +160,7 @@ Q\cdot(x\;y\;z\;1)^{T} =
 \<location data 2\> is interpreted as a composition of locations raised to a power and placed above this \<location data 2\> in  the section \<locations\>. \<location data 2\> is a sequence @f$l_{1}p_{1} ... l_{n}p_{n}@f$ of @f$ n \geq 0 @f$ integer pairs @f$ l_{i}p_{i} \; (1 \leq i \leq n) @f$. \<flag\> 0 is the indicator  of the sequence end. The sequence is interpreted as a composition @f$ L_{l_{1}}^{p_{1}} \cdot ... \cdot L_{l_{n}}^{p_{n}} @f$ where @f$ L_{l_{i}} @f$ is a location from @f$ l_{i} @f$-th \<location  record\> in the section locations. \<location record\> numbering  starts from 1.  
  
  
-@section occt_brep_format_4  Geometry
+@section specification__brep_format_5  Geometry
 
 @verbatim
     <geometry> =  
@@ -155,7 +172,7 @@ Q\cdot(x\;y\;z\;1)^{T} =
     <triangulations>;  
 @endverbatim 
  
-@subsection occt_brep_format_4_1  3D curves
+@subsection specification__brep_format_5_1  3D curves
  
 **Example**
 
@@ -199,7 +216,7 @@ Q\cdot(x\;y\;z\;1)^{T} =
     <3D curve record 9>;  
  @endverbatim
  
-@subsubsection occt_brep_format_4_1_1  Line - \<3D curve record 1\>
+@subsubsection specification__brep_format_5_1_1 Line - \<3D curve record 1\>
  
 **Example**  
 
@@ -222,7 +239,7 @@ Q\cdot(x\;y\;z\;1)^{T} =
 The example record is interpreted as a line which  passes through a point *P*=(1, 0, 3), has a direction *D*=(0, 1, 0) and is defined by the  following parametric equation: @f$ C(u)=(1,0,3)+u \cdot (0,1,0) @f$.  
  
  
-@subsubsection occt_brep_format_4_1_2 Circle - \<3D curve record 2\> 
+@subsubsection specification__brep_format_5_1_2 Circle - \<3D curve record 2\>
  
 **Example**  
 
@@ -255,7 +272,7 @@ The example record is interpreted as a line which  passes through a point *P*=(1
 The  example record is interpreted as a circle which has its center *P*=(1, 2, 3), is located in plane  with a normal *N*=(0, 0 ,1).  Directions for the circle are *D<sub>x</sub>*=(1, 0 ,0) and *D<sub>y</sub>*=(0, 1 ,0). The circle has a radius *r*=4 and is defined by  the following parametric equation: @f$ C(u) = (1,2,3) + 4 \cdot ( cos(u) \cdot(1,0,0) + sin(u) \cdot (0,1,0) ) @f$.  
  
  
-@subsubsection occt_brep_format_4_1_3 Ellipse - \<3D curve record 3\> 
+@subsubsection specification__brep_format_5_1_3 Ellipse - \<3D curve record 3\> 
  
 **Example**  
 
@@ -290,7 +307,7 @@ The  example record is interpreted as a circle which has its center *P*=(1, 2, 3
 The  example record is interpreted as an ellipse which has its center *P*=(1, 2, 3), is located in plane with a normal *N*=(0, 0, 1), has major and minor axis directions *D<sub>maj</sub>*=(1, 0, 0) and *D<sub>min</sub>*=(0, 1, 0), major and minor radii *r<sub>maj</sub>*=5 and *r<sub>min</sub>*=4 and is defined by  the following parametric equation: @f$ C(u) = (1,2,3) + 5 \cdot cos(u) \cdot(1,0,0) + 4 \cdot sin(u) \cdot (0,1,0) @f$.  
  
  
-@subsubsection occt_brep_format_4_1_4 Parabola - \<3D curve record 4\> 
+@subsubsection specification__brep_format_5_1_4 Parabola - \<3D curve record 4\> 
  
 **Example**  
 
@@ -324,7 +341,7 @@ The  example record is interpreted as an ellipse which has its center *P*=(1, 2,
 The  example record is interpreted as a parabola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Directions for the parabola are *D<sub>x</sub>*=(1, 0, 0) and *D<sub>y</sub>*=(0, 1, 0). The parabola has a focus length *f*=16 and is defined by the following parametric equation: @f$ C(u) = (1,2,3) + \frac{u^{2}}{64} \cdot (1,0,0) + u \cdot (0,1,0) @f$.  
  
  
-@subsubsection occt_brep_format_4_1_5 Hyperbola - \<3D curve record 5\> 
+@subsubsection specification__brep_format_5_1_5 Hyperbola - \<3D curve record 5\> 
  
 **Example**  
 
@@ -359,7 +376,7 @@ The  example record is interpreted as a parabola in plane which passes through a
 The  example record is interpreted as a hyperbola in plane which passes through a point *P*=(1, 2, 3) and has a normal *N*=(0, 0, 1). Other hyperbola data are *D<sub>x</sub>*=(1, 0, 0), *D<sub>y</sub>*=(0, 1, 0), *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined by the following parametric equation: @f$ C(u) = (1,2,3) + 5 \cdot cosh(u) \cdot (1,0,0) +4 \cdot sinh(u) \cdot (0,1,0) @f$.  
  
  
-@subsubsection occt_brep_format_4_1_6 Bezier Curve - \<3D curve record 6\> 
+@subsubsection specification__brep_format_5_1_6 Bezier Curve - \<3D curve record 6\> 
  
 **Example**  
 
@@ -399,7 +416,7 @@ The example record is interpreted as a Bezier curve with a rational flag *r*=1, 
 @f[ C(u)=\frac{(0,1,0) \cdot 4 \cdot (1-u)^{2}+(1,-2,0) \cdot 5 \cdot 2 \cdot u \cdot (1-u) + (2,3,0) \cdot 6 \cdot u^{2} )}{4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}}. @f]  
  
  
-@subsubsection occt_brep_format_4_1_7 B-spline Curve - \<3D curve record 7\>
+@subsubsection specification__brep_format_5_1_7 B-Spline Curve - \<3D curve record 7\>
  
 **Example**  
 
@@ -463,7 +480,7 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
 @f[ C(u)=\frac{(0,1,0) \cdot 4 \cdot N_{1,2}(u) + (1,-2,0) \cdot 5 \cdot N_{2,2}(u)+(2,3,0) \cdot 6 \cdot N_{3,2}(u)}{4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)}. @f]  
  
  
-@subsubsection occt_brep_format_4_1_8 Trimmed Curve - \<3D curve record 8\>
+@subsubsection specification__brep_format_5_1_8 Trimmed Curve - \<3D curve record 8\>
  
 **Example**  
 
@@ -491,7 +508,7 @@ The example record is interpreted as a B-spline curve  with a rational flag *r*=
 The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4 and *u<sub>max</sub>*=5 for the base curve @f$ B(u)=(1,2,3)+u \cdot (1,0,0) @f$. The trimmed curve is  defined by the following parametric equation: @f$ C(u)=(1,2,3)+u \cdot (1,0,0),\; u \in [-4,\; 5] @f$.  
  
  
-@subsubsection occt_brep_format_4_1_9 Offset Curve - \<3D curve record 9\> 
+@subsubsection specification__brep_format_5_1_9 Offset Curve - \<3D curve record 9\> 
  
 **Example**  
 
@@ -521,7 +538,7 @@ The  example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4�
  
 The example record is interpreted as an offset curve with a distance *d*=2, direction *D*=(0, 1, 0), base curve @f$ B(u)=(1,2,3)+u \cdot (1,0,0) @f$ and defined by the  following parametric equation: @f$ C(u)=(1,2,3)+u \cdot (1,0,0)+2 \cdot (0,0,1) @f$.  
  
-@subsection occt_brep_format_4_2  Surfaces
+@subsection specification__brep_format_5_2  Surfaces
  
 **Example**  
 
@@ -558,7 +575,7 @@ The example record is interpreted as an offset curve with a distance *d*=2, dire
 	<surface record 11>;  
 @endverbatim
  
-@subsubsection occt_brep_format_4_2_1 Plane - \< surface record 1 \> 
+@subsubsection specification__brep_format_5_2_1 Plane - \< surface record 1 \>
 
 **Example**  
 
@@ -581,7 +598,7 @@ The example record is interpreted as an offset curve with a distance *d*=2, dire
 The example record is interpreted as a plane which  passes through a point *P*=(0, 0, 3), has a normal *N*=(0, 0, 1) and is defined by the  following parametric equation: @f$ S(u,v)=(0,0,3)+u \cdot (1,0,0) + v \cdot (0,1,0) @f$.  
  
  
-@subsubsection occt_brep_format_4_2_2 Cylinder - \< surface record 2 \> 
+@subsubsection specification__brep_format_5_2_2 Cylinder - \< surface record 2 \> 
  
 **Example**  
 
@@ -604,7 +621,7 @@ The example record is interpreted as a plane which  passes through a point *P*=(
 The  example record is interpreted as a cylinder which axis passes through a point *P*=(1, 2, 3) and has a direction *D<sub>v</sub>*=(0, 0, 1). Directions for the  cylinder are *D<sub>X</sub>*=(1,0,0) and *D<sub>Y</sub>*=(0,1,0). The cylinder has a radius *r*=4 and is defined by the following  parametric equation: @f$ S(u,v)=(1,2,3)+4 \cdot ( cos(u) \cdot D_{X} + sin(u) \cdot D_{Y} ) + v \cdot D_{v}. @f$  
  
  
-@subsubsection occt_brep_format_4_2_3 Cone - \< surface record 3 \> 
+@subsubsection specification__brep_format_5_2_3 Cone - \< surface record 3 \> 
  
 **Example**  
 
@@ -629,8 +646,8 @@ The  example record is interpreted as a cylinder which axis passes through a poi
 The example record is interpreted as a cone with an axis  which passes through a point *P*=(1, 2, 3) and has a direction *D<sub>Z</sub>*=(0, 0, 1). Other cone data are *D<sub>X</sub>*=(1, 0, 0), *D<sub>Y</sub>*=(0, 1, 0), *r*=4 and @f$ \varphi = 0.75 @f$. The cone is defined by the  following parametric equation:  
 @f[ S(u,v)=(1,2,3)+( 4 + v \cdot sin(0.75)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + v \cdot cos(0.75) \cdot (0,0,1) . @f]  
  
- 
-@subsubsection occt_brep_format_4_2_4 Sphere - \< surface record 4 \> 
+
+@subsubsection specification__brep_format_5_2_4 Sphere - \< surface record 4 \> 
  
 **Example**  
 
@@ -654,7 +671,7 @@ The  example record is interpreted as a sphere with its center *P*=(1, 2, 3). Di
 @f[ S(u,v)=(1,2,3)+ 4 \cdot cos(v) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . @f]   
  
  
-@subsubsection occt_brep_format_4_2_5 Torus - \< surface record 5 \> 
+@subsubsection specification__brep_format_5_2_5 Torus - \< surface record 5 \> 
  
 **Example**  
 
@@ -678,7 +695,7 @@ The example record is interpreted as a torus with an axis which passes through a
 @f[ S(u,v)=(1,2,3)+ (8+4 \cdot cos(v)) \cdot ( cos(u) \cdot (1,0,0) + sin(u) \cdot (0,1,0) ) + 4 \cdot sin(v) \cdot (0,0,1) . @f]   
  
  
-@subsubsection occt_brep_format_4_2_6 Linear Extrusion - \< surface record 6 \> 
+@subsubsection specification__brep_format_5_2_6 Linear Extrusion - \< surface record 6 \> 
  
 **Example**  
 
@@ -704,7 +721,7 @@ The example record is interpreted as a linear  extrusion surface with a directio
 @f[ S(u,v)=(1,2,3)+4 \cdot (cos(u) \cdot (1,0,0)+sin(u) \cdot (0,1,0))+v \cdot (0, 0.6, 0.8),\; (u,v) \in [0,\; 2 \cdot \pi) \times (-\infty,\; \infty). @f]  
  
  
-@subsubsection occt_brep_format_4_2_7 Revolution Surface - \< surface record 7 \> 
+@subsubsection specification__brep_format_5_2_7 Revolution Surface - \< surface record 7 \> 
  
 **Example**  
 
@@ -734,7 +751,7 @@ The example record is interpreted as a revolution surface with an axis which pas
 where @f$ V(v)=(5,2,0)+4 \cdot (cos(v) \cdot (1,0,0)+sin(v) \cdot (0,1,0)), V_{D}(v)=((0,1,0),V(v)) \cdot (0,1,0) @f$.  
  
  
-@subsubsection occt_brep_format_4_2_8 Bezier Surface - \< surface record 8 \> 
+@subsubsection specification__brep_format_5_2_8 Bezier Surface - \< surface record 8 \> 
  
 **Example**  
 
@@ -790,7 +807,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot (1-u)^{2} \cdot (1-v)+(1,0,-4) \cdot 10 \cdot (1
 @f]
  
  
-@subsubsection occt_brep_format_4_2_9 B-spline Surface - \< surface record 9 \> 
+@subsubsection specification__brep_format_5_2_9 B-spline Surface - \< surface record 9 \> 
  
 **Example**  
 
@@ -908,7 +925,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
 \end{align} 
 @f]
  
-@subsubsection occt_brep_format_4_2_10  Rectangular Trim Surface - \< surface  record 10 \>
+@subsubsection specification__brep_format_5_2_10 Rectangular Trim Surface - \< surface  record 10 \>
  
 **Example**  
 
@@ -941,7 +958,7 @@ S(u,v)= [ (0,0,1) \cdot 7 \cdot N_{1,2}(u) \cdot M_{1,2}(v)+(1,0,-4) \cdot 10 \c
 The example record is interpreted as a rectangular  trim surface to the set [-1, 2]x[-3, 4] for the base surface @f$ B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0) @f$. The rectangular  trim surface is defined by the following parametric equation: @f$ B(u,v)=(1,2,3)+u \cdot (1,0,0)+ v \cdot (0,1,0),\; (u,v) \in [-1,2] \times [-3,4] @f$. 
  
  
-@subsubsection occt_brep_format_4_2_11 Offset Surface - \< surface record 11 \> 
+@subsubsection specification__brep_format_5_2_11 Offset Surface - \< surface record 11 \> 
  
 **Example**  
  
@@ -970,7 +987,7 @@ if @f$ [S'_{u}(u,v),S'_{v}(u,v)] \neq \vec{0} @f$.
 The example record is interpreted as an offset surface  with a distance *d*=-2 and  base surface @f$ B(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)  @f$.  The offset surface is defined by the following parametric equation: @f$ S(u,v)=(1,2,3)+u \cdot (1,0,0)+v \cdot (0,1,0)-2 \cdot (0,0,1) @f$.  
  
  
-@subsection occt_brep_format_4_3  2D curves
+@subsection specification__brep_format_5_3 2D curves
  
 **Example**  
 
@@ -1025,7 +1042,7 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
 	<2D curve record 9>;  
 @endverbatim
  
-@subsubsection occt_brep_format_4_3_1 Line - \<2D curve record 1\> 
+@subsubsection specification__brep_format_5_3_1 Line - \<2D curve record 1\> 
  
 **Example**  
 
@@ -1048,7 +1065,7 @@ The example record is interpreted as an offset surface  with a distance *d*=-2 
 The example record is interpreted as a line which  passes through a point *P*=(3,0), has a direction *D*=(0,-1) and is defined by the  following parametric equation: @f$ C(u)=(3,0)+ u \cdot (0,-1) @f$.  
  
  
-@subsubsection occt_brep_format_4_3_2 Circle - \<2D curve record 2\> 
+@subsubsection specification__brep_format_5_3_2 Circle - \<2D curve record 2\> 
  
 **Example**  
 
@@ -1079,7 +1096,7 @@ The example record is interpreted as a line which  passes through a point *P*=(3
 The example record is interpreted as a circle which  has a center *P*=(1,2).  The circle plane is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The circle has a radius *r*=3 and is defined by  the following parametric equation: @f$ C(u)=(1,2)+3 \cdot (cos(u) \cdot (1,0) + sin(u) \cdot (0,1)) @f$.  
  
  
-@subsubsection occt_brep_format_4_3_3 Ellipse - \<2D curve record 3\> 
+@subsubsection specification__brep_format_5_3_3 Ellipse - \<2D curve record 3\> 
  
 **Example**  
 
@@ -1113,7 +1130,7 @@ The example record is interpreted as a circle which  has a center *P*=(1,2).  Th
 The example record is interpreted as an ellipse which  has a center *P*=(1,2),  major and minor axis directions *D<sub>maj</sub>*=(1,0) and *D<sub>min</sub>*=(0,1), major and minor radii *r<sub>maj</sub>*=4 and *r<sub>min</sub>*=3 and is defined by  the following parametric equation: @f$ C(u)=(1,2)+4 \cdot cos(u) \cdot (1,0)+3 \cdot sin(u) \cdot (0,1) @f$.  
  
  
-@subsubsection occt_brep_format_4_3_4 Parabola - \<2D curve record 4\> 
+@subsubsection specification__brep_format_5_3_4 Parabola - \<2D curve record 4\> 
  
 **Example**  
 
@@ -1146,7 +1163,7 @@ C(u)=P+u \cdot D_{x},\; u \in (-\infty,\; \infty) \Leftarrow f = 0\; (degenerate
 The example record is interpreted as a parabola in plane which passes through a point *P*=(1,2) and is parallel to directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). The parabola has a focus length *f*=16 and  is defined by the following parametric equation: @f$ C(u)=(1,2)+ \frac{u^{2}}{64} \cdot (1,0)+u \cdot (0,1) @f$.  
  
  
-@subsubsection occt_brep_format_4_3_5 Hyperbola - \<2D curve record 5\> 
+@subsubsection specification__brep_format_5_3_5 Hyperbola - \<2D curve record 5\> 
 **Example**  
  
 5 1 2 1 0 -0 1 3 4  
@@ -1178,7 +1195,7 @@ The example record is interpreted as a parabola in plane which passes through a 
 The example record is interpreted as a hyperbola with  coordinate system which has origin *P*=(1,2) and axis directions *D<sub>x</sub>*=(1,0) and *D<sub>y</sub>*=(0,1). Other data for the hyperbola are *k<sub>x</sub>*=5 and *k<sub>y</sub>*=4. The hyperbola is defined  by the following parametric equation: @f$ C(u)=(1,2)+3 \cdot cosh(u) \cdot (1,0)+4 \cdot sinh(u) \cdot (0,1) @f$.  
  
  
-@subsubsection occt_brep_format_4_3_6 Bezier Curve - \<2D curve record 6\>
+@subsubsection specification__brep_format_5_3_6 Bezier Curve - \<2D curve record 6\>
  
 **Example**  
 
@@ -1218,7 +1235,7 @@ The example record is interpreted as a Bezier curve  with a rational flag *r*=1,
 @f[ C(u)= \frac{(0,1) \cdot 4 \cdot (1-u)^{2}+(1,-2) \cdot 5 \cdot 2 \cdot u \cdot (1-u)+(2,3) \cdot 6 \cdot u^{2}}{ 4 \cdot (1-u)^{2}+5 \cdot 2 \cdot u \cdot (1-u)+6 \cdot u^{2}} . @f]  
  
  
-@subsubsection occt_brep_format_4_3_7 B-spline Curve -  \<2D curve record 7\>
+@subsubsection specification__brep_format_5_3_7 B-spline Curve -  \<2D curve record 7\>
  
 **Example**  
 
@@ -1281,7 +1298,7 @@ The example record is interpreted as a B-spline curve with a rational flag *r*=1
 @f[ C(u)= \frac{(0,1) \cdot 4 \cdot N_{1,2}(u)+(1,-2) \cdot 5 \cdot N_{2,2}(u)+(2,3) \cdot 6 \cdot N_{3,2}(u)}{ 4 \cdot N_{1,2}(u)+5 \cdot N_{2,2}(u)+6 \cdot N_{3,2}(u)} . @f] 
  
  
-@subsubsection occt_brep_format_4_3_8 Trimmed Curve - \<2D curve record 8\> 
+@subsubsection specification__brep_format_5_3_8 Trimmed Curve - \<2D curve record 8\> 
  
 **Example**  
 
@@ -1310,7 +1327,7 @@ The example record is interpreted as a B-spline curve with a rational flag *r*=1
 The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, *u<sub>max</sub>*=5 and base curve @f$ B(u)=(1,2)+u \cdot (1,0) @f$. The trimmed curve is defined by the following parametric equation: @f$ C(u)=(1,2)+u \cdot (1,0),\; u \in [-4,5] @f$.  
  
  
-@subsubsection occt_brep_format_4_3_9 Offset Curve - \<2D curve record 9\> 
+@subsubsection specification__brep_format_5_3_9 Offset Curve - \<2D curve record 9\> 
  
 **Example**  
 
@@ -1335,7 +1352,7 @@ The example record is interpreted as a trimmed curve with *u<sub>min</sub>*=-4, 
  
 The example record is interpreted as an offset curve  with a distance *d*=2 and  base curve @f$ B(u)=(1,2)+u \cdot (1,0) @f$ and is defined by the following parametric equation: @f$ C(u)=(1,2)+u \cdot (1,0)+2 \cdot (0,-1) @f$.  
  
-@subsection occt_brep_format_4_4 3D polygons
+@subsection specification__brep_format_5_4 3D polygons
  
 **Example**  
 
@@ -1390,7 +1407,7 @@ The parameter @f$ u_{i}\; (1\leq i \leq m) @f$ is the parameter of the node *N<s
 The example record describes a polyline from *m*=2 nodes with a parameter presence flag *p*=1, a deflection *d*=0.1, nodes *N<sub>1</sub>*=(1,0,0) and *N<sub>2</sub>*=(2,0,0) and parameters *u<sub>1</sub>*=0 and *u<sub>2</sub>*=1.  
  
  
-@subsection occt_brep_format_4_5 Triangulations
+@subsection specification__brep_format_6_4 Triangulations
  
 **Example**  
 
@@ -1466,7 +1483,7 @@ Triangulation record
 describes a triangulation with *m*=4 nodes, *k*=2 triangles, parameter presence flag *p*=1, deflection *d*=0, nodes *N<sub>1</sub>*=(0,0,0), *N<sub>2</sub>*=(0,0,3), *N<sub>3</sub>*=(0,2,3) and *N<sub>4</sub>*=(0,2,0), parameters (*u<sub>1</sub>*, *v<sub>1</sub>*)=(0,0), (*u<sub>2</sub>*, *v<sub>2</sub>*)=(3,0), (*u<sub>3</sub>*, *v<sub>3</sub>*)=(3,-2) and (*u<sub>4</sub>*, *v<sub>4</sub>*)=(0,-2), and triangles (*n<sub>1,1</sub>*, *n<sub>1,2</sub>*, *n<sub>1,3</sub>*)=(2,4,3) and (*n<sub>2,1</sub>*, *n<sub>2,2</sub>*, *n<sub>2,3</sub>*)=(2,1,4). From the point (1,0,0) ((-1,0,0)) the triangles have clockwise (counterclockwise) direction of the node circular traversal.  
  
  
-@subsection occt_brep_format_4_6 Polygons on triangulations
+@subsection specification__brep_format_6_5 Polygons on triangulations
  
 **Example**  
 
@@ -1568,14 +1585,14 @@ describes a triangulation with *m*=4 nodes, *k*=2 triangles, parameter presenc
 Parameter @f$ u_{i}\; (1\leq i\leq m) @f$ is *n<sub>i</sub>*-th node *C(u<sub>i</sub>)* parameter on curve *C*.  
  
  
-@subsection occt_brep_format_4_7 Geometric Sense of a Curve
+@subsection specification__brep_format_6_6 Geometric Sense of a Curve
  
 Geometric sense of curve *C* described above is determined by the direction  of parameter *u* increasing.  
  
  
-@section occt_brep_format_5 Shapes
+@section specification__brep_format_7 Shapes
  
-An example of section shapes and a whole  *.brep file are given in chapter 7 @ref occt_brep_format_6 "Appendix".  
+An example of section shapes and a whole  *.brep file are given in chapter 7 @ref specification__brep_format_8 "Appendix".  
  
  
 **BNF-like Definition**
@@ -1655,7 +1672,7 @@ The flags are used in a special way [1].
  
 \<shape final record\> determines the orientation  and location for the whole model.  
  
-@subsection occt_brep_format_5_1  Common Terms
+@subsection specification__brep_format_7_1 Common Terms
  
 The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.  
  
@@ -1705,7 +1722,7 @@ The terms below are used by \<vertex data\>, \<edge data\> and \<face data\>.
 \<curve  values for parameter minimal and maximal values\> *u<sub>min</sub>* and *u<sub>max</sub>* are real pairs *x<sub>min</sub> y<sub>min</sub>* and *x<sub>max</sub> y<sub>max</sub>* that (*x<sub>min</sub>*, *y<sub>min</sub>*)= *C* (*u<sub>min</sub>*) and (*x<sub>max</sub>*, *y<sub>max</sub>*)= *C* (*u<sub>max</sub>*) where *C* is a parametric  equation of the curve.  
  
  
-@subsection occt_brep_format_5_2 Vertex data
+@subsection specification__brep_format_7_2 Vertex data
  
 **BNF-like Definition**
 
@@ -1754,7 +1771,7 @@ The usage of \<vertex data representation u  parameter\> *U* is  described belo
 @f[ \underset{P \in R }{max} |P-V| \leq t . @f]  
  
  
-@subsection occt_brep_format_5_3 Edge data
+@subsection specification__brep_format_7_3 Edge data
  
 **BNF-like Definition**
 
@@ -1824,7 +1841,7 @@ Flags \<edge data same parameter flag\>, \<edge data same range flag\> and \<edg
 @f[ \underset{C \in R}{max}\;\underset{P \in E}{max}\;\underset{Q \in C}{min}|Q-P| \leq t @f]  
  
  
-@subsection occt_brep_format_5_4 Face data
+@subsection specification__brep_format_7_4 Face data
  
 **BNF-like Definition**
 
@@ -1847,7 +1864,7 @@ Flags \<edge data same parameter flag\>, \<edge data same range flag\> and \<edg
 Flag \<face data natural restriction flag\> is  used in a special way [1].  
 
 
-@section occt_brep_format_6 Appendix
+@section specification__brep_format_8 Appendix
  
   This chapter contains a *.brep file example.  
  

@@ -1552,7 +1552,7 @@ Since the new version, the method *BRepAdaptor_CompCurve::IsPeriodic()* will alw
 @subsection upgrade_730_BuilderSolid Boolean Operations - Solid Builder algorithm
 
 Previously, the unclassified faces of *BOPAlgo_BuilderSolid* algorithm (i.e. the faces not used for solids creation and located outside of all created solids) were used to form an additional (not closed) solid with INTERNAL orientation.
-Since the new version, these unclassified faces are no longer added into the resulting solids. Instead, the @ref occt_algorithms_ers "warning" with a list of these faces appears.
+Since the new version, these unclassified faces are no longer added into the resulting solids. Instead, the @ref specification__boolean_ers "warning" with a list of these faces appears.
 
 The following public methods of the *BOPAlgo_BuilderSolid* class have been removed as redundant:
 * *void SetSolid(const TopoDS_Solid& theSolid);*

@@ -1,4 +1,4 @@
-PBR math (rasterization) {#occt_dev_guides__pbr_math}
+PBR math (rasterization) {#specification__pbr_math}
 ========================
 @tableofcontents
 

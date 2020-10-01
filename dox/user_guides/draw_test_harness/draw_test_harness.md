@@ -6979,7 +6979,7 @@ sr is a shape COMPOUND FORWARD Free Modified
 
 The new algorithm of Boolean operations avoids a large number of weak points and limitations presented in the old Boolean operation algorithm.
 It also provides wider range of options and diagnostics.
-The algorithms of Boolean component are fully described in the @ref occt_algorithms_1 "Boolean Operations" of boolean operation user guide.
+The algorithms of Boolean component are fully described in the @ref specification__boolean_1 "Boolean Operations" of boolean operation user guide.
 
 For the Draw commands to perform operations in Boolean component, read the dedicated section @ref occt_draw_bop "Boolean operations commands"
 
@@ -8333,7 +8333,7 @@ The defaults are:
 @section occt_draw_bop Boolean Operations Commands
 
 This chapter describes existing commands of Open CASCADE Draw Test Harness that are used for performing, analyzing, debugging the algorithm in Boolean Component.
-See @ref occt_user_guides__boolean_operations "Boolean operations" user's guide for the description of these algorithms.
+See @ref specification__boolean_operations "Boolean operations" user's guide for the description of these algorithms.
 
 @subsection occt_draw_bop_two Boolean Operations on two operands
 
@@ -8419,7 +8419,7 @@ shape1, shape2 - arguments of the operation
 The modern Boolean Operations algorithm available in Open CASCADE Technology is capable of performing a Boolean Operations not only on two shapes, but on arbitrary number of shapes.
 In terms of Boolean Operations these arguments are divided on two groups **Objects** and **Tools**. The meaning of these groups is similar to the single object and tool of Boolean Operations on two shapes.
 
-The Boolean operations are based on the General Fuse operation (see @ref occt_algorithms_7 "General Fuse algorithm") which splits all input shapes basing on the intersection results.
+The Boolean operations are based on the General Fuse operation (see @ref specification__boolean_7 "General Fuse algorithm") which splits all input shapes basing on the intersection results.
 Depending on the type of Boolean operation the BOP algorithm choses the necessary splits of the arguments.
 
 @subsection occt_draw_bop_general_com General commands for working with multiple arguments
@@ -8542,7 +8542,7 @@ bsplit result
 
 There is an alternative way to build the result of Boolean operation using the **buildbop** command, which should be run after any other building command, such as **bbuild** or **bbop** or **bsplit**.
 The command has the following features:
-* It is designed to work on open solids and thus uses the alternative approach for building the results (see @ref occt_algorithms_bop_on_opensolids "BOP on open solids" chapter of Boolean operations user guide).
+* It is designed to work on open solids and thus uses the alternative approach for building the results (see @ref specification__boolean_bop_on_opensolids "BOP on open solids" chapter of Boolean operations user guide).
 * It allows changing the groups of Objects and Tools of the operation (even excluding some of the arguments is possible).
 * History information for solids will be lost.
 
@@ -8596,7 +8596,7 @@ buildbop r11 -o b1 -t b2 b3 -op tuc
 
 @subsubsection occt_draw_bop_build_CB Cells Builder
 
-See the @ref occt_algorithms_10c_Cells_1 "Cells Builder Usage" for the Draw usage of Cells Builder algorithm.
+See the @ref specification__boolean_10c_Cells_1 "Cells Builder Usage" for the Draw usage of Cells Builder algorithm.
 
 
 @subsubsection occt_draw_bop_build_API Building result through API
