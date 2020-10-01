@@ -183,14 +183,12 @@ protected:
   //! Parse mesh element.
   Standard_EXPORT bool gltfParseMesh (TopoDS_Shape& theMeshShape,
                                       const TCollection_AsciiString& theMeshId,
-                                      const RWGltf_JsonValue& theMesh,
-                                      const Message_ProgressRange& theProgress);
+                                      const RWGltf_JsonValue& theMesh);
 
   //! Parse primitive array.
   Standard_EXPORT bool gltfParsePrimArray (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
                                            const TCollection_AsciiString& theMeshName,
-                                           const RWGltf_JsonValue& thePrimArray,
-                                           const Message_ProgressRange& theProgress);
+                                           const RWGltf_JsonValue& thePrimArray);
 
   //! Parse accessor.
   Standard_EXPORT bool gltfParseAccessor (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,

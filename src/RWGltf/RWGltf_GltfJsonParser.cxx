@@ -1243,9 +1243,8 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
    && aMeshes_1->IsArray())
   {
     // glTF 1.0
-    Message_ProgressScope aPS (theProgress, "Reading scene meshes", aMeshes_1->Size());
     for (rapidjson::Value::ConstValueIterator aMeshIter = aMeshes_1->Begin();
-         aMeshIter != aMeshes_1->End() && aPS.More(); ++aMeshIter)
+         aMeshIter != aMeshes_1->End(); ++aMeshIter)
     {
       const RWGltf_JsonValue* aMesh = myGltfRoots[RWGltf_GltfRootElement_Meshes].FindChild (*aMeshIter);
       if (aMesh == NULL)
@@ -1257,7 +1256,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
       }
 
       TopoDS_Shape aMeshShape;
-      if (!gltfParseMesh (aMeshShape, getKeyString (*aMeshIter), *aMesh, aPS.Next()))
+      if (!gltfParseMesh (aMeshShape, getKeyString (*aMeshIter), *aMesh))
       {
         theNodeShape = aNodeShape;
         bindNodeShape (theNodeShape, aNodeLoc, theSceneNodeId, aName);
@@ -1283,7 +1282,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
     }
 
     TopoDS_Shape aMeshShape;
-    if (!gltfParseMesh (aMeshShape, getKeyString (*aMesh_2), *aMesh, theProgress))
+    if (!gltfParseMesh (aMeshShape, getKeyString (*aMesh_2), *aMesh))
     {
       theNodeShape = aNodeShape;
       bindNodeShape (theNodeShape, aNodeLoc, theSceneNodeId, aName);
@@ -1314,8 +1313,7 @@ bool RWGltf_GltfJsonParser::gltfParseSceneNode (TopoDS_Shape& theNodeShape,
 // =======================================================================
 bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
                                            const TCollection_AsciiString& theMeshId,
-                                           const RWGltf_JsonValue& theMesh,
-                                           const Message_ProgressRange& theProgress)
+                                           const RWGltf_JsonValue& theMesh)
 {
   const RWGltf_JsonValue* aName  = findObjectMember (theMesh, "name");
   const RWGltf_JsonValue* aPrims = findObjectMember (theMesh, "primitives");
@@ -1344,7 +1342,7 @@ bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
     }
 
     Handle(RWGltf_GltfLatePrimitiveArray) aMeshData = new RWGltf_GltfLatePrimitiveArray (theMeshId, aUserName);
-    if (!gltfParsePrimArray (aMeshData, theMeshId, *aPrimArrIter, theProgress))
+    if (!gltfParsePrimArray (aMeshData, theMeshId, *aPrimArrIter))
     {
       return false;
     }
@@ -1397,8 +1395,7 @@ bool RWGltf_GltfJsonParser::gltfParseMesh (TopoDS_Shape& theMeshShape,
 // =======================================================================
 bool RWGltf_GltfJsonParser::gltfParsePrimArray (const Handle(RWGltf_GltfLatePrimitiveArray)& theMeshData,
                                                 const TCollection_AsciiString& theMeshId,
-                                                const RWGltf_JsonValue& thePrimArray,
-                                                const Message_ProgressRange& /*theProgress*/)
+                                                const RWGltf_JsonValue& thePrimArray)
 {
   const RWGltf_JsonValue* anAttribs = findObjectMember (thePrimArray, "attributes");
   const RWGltf_JsonValue* anIndices = findObjectMember (thePrimArray, "indices");
