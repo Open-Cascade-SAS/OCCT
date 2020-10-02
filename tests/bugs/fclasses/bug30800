@@ -1,0 +1,14 @@
+puts "# =========================================================================================="
+puts "# 0030800: Foundation Classes, UnitsAPI - poise dynamic viscosity unit is not defined correctly"
+puts "# =========================================================================================="
+puts ""
+
+puts "Check that 1 Poise is 0.1 Pa*s"
+if { [regexp {result: ([0-9.e+-]+)} [unitconvtoSI 1. Po] res poise_si] } {
+  checkreal "Poise in SI (Pa*s)" $poise_si 0.1 1e-6 1e-6
+} else {
+  puts "Error: cannot convert Poise to SI"
+}
+
+puts "Check that 1 Poise is 0.001 kg/cm/s"
+checkreal "Poise in kg/cm/s" [unit 1. Po kg/cm/s] 0.001 1e-6 1e-6
