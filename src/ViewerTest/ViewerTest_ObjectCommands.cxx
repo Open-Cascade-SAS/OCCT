@@ -701,6 +701,12 @@ static int VTrihedron (Draw_Interpretor& ,
 static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 
 {
+  if (TheAISContext().IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
+
   // Declaration de booleens
   Standard_Boolean             ThereIsName;
   Standard_Boolean             ThereIsCurrent;
@@ -853,6 +859,12 @@ static int VPlaneTrihedron (Draw_Interpretor& di, Standard_Integer argc, const c
 {
   // Verification des arguments
   if ( argc!=2) {di<<argv[0]<<" error\n"; return 1;}
+
+  if (TheAISContext().IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
 
   if (TheAISContext()->NbSelected() != 1)
   {

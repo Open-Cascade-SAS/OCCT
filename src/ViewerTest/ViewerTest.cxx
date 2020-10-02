@@ -1337,6 +1337,12 @@ static int VDispMode (Draw_Interpretor& , Standard_Integer argc, const char** ar
                             ? TypeOfDispOperation_UnsetDispMode
                             : TypeOfDispOperation_SetDispMode;
   Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
+
   if (aType == TypeOfDispOperation_UnsetDispMode)
   {
     if (argc == 1)
@@ -1402,6 +1408,11 @@ static int VSubInt(Draw_Interpretor& di, Standard_Integer argc, const char** arg
   if(argc==1) return 1;
   Standard_Integer On = Draw::Atoi(argv[1]);
   const Handle(AIS_InteractiveContext)& Ctx = ViewerTest::GetAISContext();
+  if (Ctx.IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
 
   if(argc==2)
   {
@@ -5634,6 +5645,12 @@ Standard_Boolean ViewerTest::PickShapes (const TopAbs_ShapeEnum theShapeType,
 
   // step 1: prepare the data
   Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return Standard_False;
+  }
+
   aCtx->RemoveFilters();
   AIS_ListOfInteractive aDispObjects;
   aCtx->DisplayedObjects (aDispObjects);

@@ -1,0 +1,11 @@
+puts "# ======================================================================"
+puts "# 0031877: DRAW - some Visualization commands are not protected against uninitialized viewer"
+puts "# ======================================================================"
+
+puts "REQUIRED 31877 ALL: Error: no active viewer"
+
+pload VISUALIZATION
+catch {vsetdispmode 1}
+catch {vpickshapes}
+catch {vsize}
+catch {vplanetri a}
