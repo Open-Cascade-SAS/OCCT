@@ -43,6 +43,7 @@ Draw_Marker2D.hxx
 Draw_Marker3D.cxx
 Draw_Marker3D.hxx
 Draw_MarkerShape.hxx
+Draw_MessageCommands.cxx
 Draw_Number.cxx
 Draw_Number.hxx
 Draw_PInterp.hxx

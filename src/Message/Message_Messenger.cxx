@@ -17,6 +17,7 @@
 
 #include <Message_Printer.hxx>
 #include <Message_PrinterOStream.hxx>
+#include <Standard_Dump.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_Messenger,Standard_Transient)
 
@@ -125,9 +126,25 @@ void Message_Messenger::Send (const Standard_CString theString,
 
 //=======================================================================
 //function : Send
-//purpose  : 
+//purpose  :
 //=======================================================================
+void Message_Messenger::Send (const Standard_SStream& theStream,
+                              const Message_Gravity theGravity) const
+{
+  for (Message_SequenceOfPrinters::Iterator aPrinterIter (myPrinters); aPrinterIter.More(); aPrinterIter.Next())
+  {
+    const Handle(Message_Printer)& aPrinter = aPrinterIter.Value();
+    if (!aPrinter.IsNull())
+    {
+      aPrinter->SendStringStream (theStream, theGravity);
+    }
+  }
+}
 
+//=======================================================================
+//function : Send
+//purpose  :
+//=======================================================================
 void Message_Messenger::Send (const TCollection_AsciiString& theString,
                               const Message_Gravity theGravity) const
 {
@@ -157,4 +174,32 @@ void Message_Messenger::Send (const TCollection_ExtendedString& theString,
       aPrinter->Send (theString, theGravity);
     }
   }
+}
+
+//=======================================================================
+//function : Send
+//purpose  :
+//=======================================================================
+void Message_Messenger::Send (const Handle(Standard_Transient)& theObject,
+                              const Message_Gravity theGravity) const
+{
+  for (Message_SequenceOfPrinters::Iterator aPrinterIter (myPrinters); aPrinterIter.More(); aPrinterIter.Next())
+  {
+    const Handle(Message_Printer)& aPrinter = aPrinterIter.Value();
+    if (!aPrinter.IsNull())
+    {
+      aPrinter->SendObject (theObject, theGravity);
+    }
+  }
+}
+
+//=======================================================================
+//function : DumpJson
+//purpose  :
+//=======================================================================
+void Message_Messenger::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+{
+  OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myPrinters.Size())
 }

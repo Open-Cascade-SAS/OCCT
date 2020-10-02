@@ -1,5 +1,7 @@
 TopoDS.hxx
 TopoDS.lxx
+TopoDS_AlertAttribute.hxx
+TopoDS_AlertAttribute.cxx
 TopoDS_Builder.cxx
 TopoDS_Builder.hxx
 TopoDS_Builder.lxx

@@ -76,7 +76,7 @@ public:
       {
         if (myMessenger)
         {
-          myMessenger->Send(myStream.str().c_str(), myGravity);
+          myMessenger->Send(myStream, myGravity);
         }
         myStream.str(std::string()); // empty the buffer for possible reuse
       }
@@ -178,6 +178,10 @@ public:
                              const Message_Gravity theGravity = Message_Warning) const;
   
   //! See above
+  Standard_EXPORT void Send (const Standard_SStream& theStream,
+                             const Message_Gravity theGravity = Message_Warning) const;
+
+  //! See above
   Standard_EXPORT void Send (const TCollection_AsciiString& theString,
                              const Message_Gravity theGravity = Message_Warning) const;
   
@@ -187,6 +191,9 @@ public:
 
   //! Create string buffer for message of specified type
   StreamBuffer Send (Message_Gravity theGravity) { return StreamBuffer (this, theGravity); }
+
+  //! See above
+  Standard_EXPORT void Send (const Handle(Standard_Transient)& theObject, const Message_Gravity theGravity = Message_Warning) const;
 
   //! Create string buffer for sending Fail message
   StreamBuffer SendFail () { return Send (Message_Fail); }
@@ -217,6 +224,9 @@ public:
 
   //! Short-cut to Send (theMessage, Message_Trace)
   void SendTrace (const TCollection_AsciiString& theMessage) { Send (theMessage, Message_Trace); }
+
+  //! Dumps the content of me into the stream
+  Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
 private:
 

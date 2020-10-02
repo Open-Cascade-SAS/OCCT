@@ -18,6 +18,14 @@
 #define _Message_HeaderFile
 
 #include <Message_Messenger.hxx>
+#include <Message_Gravity.hxx>
+#include <Message_MetricType.hxx>
+#include <NCollection_Vector.hxx>
+#include <OSD_MemInfo.hxx>
+
+#include <TCollection_AsciiString.hxx>
+
+class Message_Report;
 
 //! Defines
 //! - tools to work with messages
@@ -75,6 +83,45 @@ public:
   //! 2. (0,  6, 34.496 ) returns "06m:34.50s",
   //! 3. (0,  0,  4.5   ) returns "4.50s"
   Standard_EXPORT static TCollection_AsciiString FillTime (const Standard_Integer Hour, const Standard_Integer Minute, const Standard_Real Second);
+
+public:
+  //! returns the only one instance of Report
+  //! When theToCreate is true - automatically creates message report when not exist.
+  Standard_EXPORT static const Handle(Message_Report)& DefaultReport (const Standard_Boolean theToCreate = Standard_False);
+
+  //! Determines the metric from the given string identifier.
+  //! @param theString string identifier
+  //! @param theType detected type of metric
+  //! @return TRUE if string identifier is known
+  Standard_EXPORT static Standard_Boolean MetricFromString (const Standard_CString theString,
+                                                            Message_MetricType& theType);
+
+  //! Returns the string name for a given metric type.
+  //! @param theType metric type
+  //! @return string identifier from the list of Message_MetricType
+  Standard_EXPORT static Standard_CString MetricToString (const Message_MetricType theType);
+
+  //! Returns the metric type from the given string identifier.
+  //! @param theString string identifier
+  //! @return metric type or Message_MetricType_None if string identifier is invalid
+  static Message_MetricType MetricFromString (const Standard_CString theString)
+  {
+    Message_MetricType aMetric = Message_MetricType_None;
+    MetricFromString (theString, aMetric);
+    return aMetric;
+  }
+
+  //! Converts message metric to OSD memory info type.
+  //! @param theMetric [in] message metric
+  //! @param theMemInfo [out] filled memory info type
+  //! @return true if converted
+  static Standard_EXPORT Standard_Boolean ToOSDMetric (const Message_MetricType theMetric, OSD_MemInfo::Counter& theMemInfo);
+
+  //! Converts OSD memory info type to message metric.
+  //! @param theMemInfo [int] memory info type
+  //! @param theMetric [out] filled message metric
+  //! @return true if converted
+  static Standard_EXPORT Standard_Boolean ToMessageMetric (const OSD_MemInfo::Counter theMemInfo, Message_MetricType& theMetric);
 
 };
 

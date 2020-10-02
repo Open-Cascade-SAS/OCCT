@@ -425,6 +425,7 @@ void Draw_Appli(int argc, char** argv, const FDraw_InitAppli Draw_InitAppli)
   // standard commands
   // *****************************************************************
   Draw::BasicCommands(theCommands);
+  Draw::MessageCommands(theCommands);
   Draw::VariableCommands(theCommands);
   Draw::UnitCommands(theCommands);
   if (!Draw_Batch) Draw::GraphicCommands(theCommands);

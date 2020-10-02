@@ -1,6 +1,4 @@
-// Created on: 2017-06-26
-// Created by: Andrey Betenev
-// Copyright (c) 2017 OPEN CASCADE SAS
+// Copyright (c) 2020 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,48 +11,37 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_Alert.hxx>
+#include <Message_Attribute.hxx>
+
+#include <Standard_Assert.hxx>
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_Alert,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Message_Attribute, Standard_Transient)
+
+//=======================================================================
+//function : Constructor
+//purpose  :
+//=======================================================================
+Message_Attribute::Message_Attribute (const TCollection_AsciiString& theName)
+: myName (theName)
+{
+}
 
 //=======================================================================
 //function : GetMessageKey
 //purpose  :
 //=======================================================================
-
-Standard_CString Message_Alert::GetMessageKey () const
+Standard_CString Message_Attribute::GetMessageKey() const
 {
-  return DynamicType()->Name();
-}
-
-//=======================================================================
-//function : SupportsMerge
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Message_Alert::SupportsMerge () const
-{
-  // by default, support merge
-  return Standard_True;
-}
-
-//=======================================================================
-//function : Merge
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Message_Alert::Merge (const Handle(Message_Alert)& /*theTarget*/)
-{
-  // by default, merge trivially
-  return Standard_True;
+  return !myName.IsEmpty() ? myName.ToCString() : "";
 }
 
 //=======================================================================
 //function : DumpJson
 //purpose  :
 //=======================================================================
-void Message_Alert::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void Message_Attribute::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_FIELD_VALUE_STRING (theOStream, myName)
 }

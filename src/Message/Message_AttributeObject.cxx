@@ -1,6 +1,4 @@
-// Created on: 2017-06-26
-// Created by: Andrey Betenev
-// Copyright (c) 2017 OPEN CASCADE SAS
+// Copyright (c) 2020 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,48 +11,31 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_Alert.hxx>
+#include <Message_AttributeObject.hxx>
 #include <Standard_Dump.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(Message_Alert,Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Message_AttributeObject, Message_Attribute)
 
 //=======================================================================
-//function : GetMessageKey
+//function : Constructor
 //purpose  :
 //=======================================================================
-
-Standard_CString Message_Alert::GetMessageKey () const
+Message_AttributeObject::Message_AttributeObject (const Handle(Standard_Transient)& theObject,
+                                                  const TCollection_AsciiString& theName)
+: Message_Attribute(theName)
 {
-  return DynamicType()->Name();
-}
-
-//=======================================================================
-//function : SupportsMerge
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Message_Alert::SupportsMerge () const
-{
-  // by default, support merge
-  return Standard_True;
-}
-
-//=======================================================================
-//function : Merge
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Message_Alert::Merge (const Handle(Message_Alert)& /*theTarget*/)
-{
-  // by default, merge trivially
-  return Standard_True;
+  myObject = theObject;
 }
 
 //=======================================================================
 //function : DumpJson
 //purpose  :
 //=======================================================================
-void Message_Alert::DumpJson (Standard_OStream& theOStream, Standard_Integer) const
+void Message_AttributeObject::DumpJson (Standard_OStream& theOStream,
+                                        Standard_Integer theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
+  OCCT_DUMP_BASE_CLASS (theOStream, theDepth, Message_Attribute)
+
+  OCCT_DUMP_FIELD_VALUE_POINTER (theOStream, myObject.get())
 }

@@ -201,6 +201,9 @@ public: //! @name methods loading standard command sets
   //! Defines Draw basic commands
   Standard_EXPORT static void BasicCommands (Draw_Interpretor& I);
   
+  //! Defines Draw message commands
+  Standard_EXPORT static void MessageCommands (Draw_Interpretor& I);
+
   //! Defines Draw variables handling commands.
   Standard_EXPORT static void VariableCommands (Draw_Interpretor& I);
   
