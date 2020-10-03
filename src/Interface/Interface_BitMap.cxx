@@ -33,11 +33,7 @@ void Interface_BitMap::Initialize(const Standard_Integer nbitems, const Standard
   thenbitems = nbitems;
   thenbwords = nbitems/32 + 1;
   thenbflags = 0;
-  if(nbitems)
-  {
-    theflags   = new TColStd_HArray1OfInteger (0,thenbwords*(resflags+1));  
-    theflags->Init(0);
-  }
+  theflags = new TColStd_HArray1OfInteger(0, thenbwords*(resflags + 1), 0);
 }
 
 Interface_BitMap::Interface_BitMap
@@ -50,32 +46,23 @@ Interface_BitMap::Interface_BitMap
 void Interface_BitMap::Initialize(const Interface_BitMap& other,
                                   const Standard_Boolean copied)
 {
-  other.Internals (thenbitems,thenbwords,thenbflags,theflags,thenames);
-  if (!copied) return;
-  Standard_Integer nb = theflags->Upper ();
-  Handle(TColStd_HArray1OfInteger) flags = new TColStd_HArray1OfInteger(0,nb);
-  Standard_Integer i; // svv Jan11 2000 : porting on DEC
-  for (i = 0; i <= nb; i ++)
-    flags->SetValue (i,theflags->Value(i));
-  theflags = flags;
-  if (thenames.IsNull()) return;
-  nb = thenames->Length();
-  Handle(TColStd_HSequenceOfAsciiString) names = new TColStd_HSequenceOfAsciiString();
-  for (i = 1; i <= nb; i ++)
-    names->Append ( TCollection_AsciiString(thenames->Value(i)) );
-  thenames = names;
+  thenbitems = other.thenbitems;
+  thenbwords = other.thenbwords;
+  thenbflags = other.thenbflags;
+  if (!copied)
+  {
+    theflags = other.theflags;
+    thenames = other.thenames;
+  }
+  else
+  {
+    theflags = new TColStd_HArray1OfInteger(other.theflags->Array1());
+    if (! other.thenames.IsNull())
+    {
+      thenames = new TColStd_HSequenceOfAsciiString(other.thenames->Sequence());
+    }
+  }
 }
-
-void  Interface_BitMap::Internals
-(Standard_Integer& nbitems, Standard_Integer& nbwords,
- Standard_Integer& nbflags,
- Handle(TColStd_HArray1OfInteger)& flags,
- Handle(TColStd_HSequenceOfAsciiString)& names) const
-{
-  nbitems = thenbitems;  nbwords = thenbwords;  nbflags = thenbflags;
-  flags = theflags;  names = thenames;
-}
-
 
 void  Interface_BitMap::Reservate (const Standard_Integer moreflags)
 {

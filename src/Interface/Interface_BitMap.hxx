@@ -70,10 +70,6 @@ public:
   //! Initialize a BitMap from another one
   Standard_EXPORT void Initialize (const Interface_BitMap& other, const Standard_Boolean copied = Standard_False);
   
-  //! Returns internal values, used for copying
-  //! Flags values start at false
-  Standard_EXPORT void Internals (Standard_Integer& nbitems, Standard_Integer& nbwords, Standard_Integer& nbflags, Handle(TColStd_HArray1OfInteger)& flags, Handle(TColStd_HSequenceOfAsciiString)& names) const;
-  
   //! Reservates for a count of more flags
   Standard_EXPORT void Reservate (const Standard_Integer moreflags);
   
