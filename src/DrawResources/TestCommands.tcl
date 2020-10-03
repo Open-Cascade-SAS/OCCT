@@ -1319,7 +1319,6 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 
     # evaluate test case 
     set tmp_imagedir 0
-    set anExcep ""
     if [catch {
         # set variables identifying test case
         uplevel set casename [file tail $casefile]
@@ -1369,15 +1368,21 @@ proc _run_test {scriptsdir group gridname casefile echo} {
             uplevel source -encoding utf-8 $scriptsdir/$group/end
         }
     } res] {
-        set anExcep $res
-        if { "$res" == "" } { set anExcep "EMPTY" }
+        if { "$res" == "" } { set res "EMPTY" }
+        # in echo mode, output error message using dputs command to have it colored,
+        # note that doing the same in logged mode would duplicate the message
+        if { ! $dlog_exists || ! $echo } {
+            puts "Tcl Exception: $res"
+        } else {
+            decho off
+            dputs -red -intense "Tcl Exception: $res"
+        }
     }
 
     # stop logging
     if { $dlog_exists } {
         if { $echo } {
             decho off
-            if { "$anExcep" != "" } { dputs -red -intense "Tcl Exception: $res" }
         } else {
             rename puts {}
             rename puts-saved puts
