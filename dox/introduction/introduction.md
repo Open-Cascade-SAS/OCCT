@@ -353,20 +353,30 @@ for which OCCT is certified to work.
 
 1) VC++ 141 64-bit is used for regular testing and for building binary package of official release of OCCT on Windows.
 
-@subsection intro_req_libs Third-party libraries
+@subsection intro_req_libs Third-party libraries and tools
 
-| Component | Requirement |
-| --------- | ----------- |
-| Graphic library | OpenGL 3.3+, OpenGL ES 2.0+ <br> Direct3D 9 |
-| Qt (for samples and demos) | Desktop: Qt 4.8.6+ https://www.qt.io/download/ <br> Android: Qt 5.3.2+ https://www.qt.io/download/ |
-| TCL (for testing tools)    | Tcl/Tk 8.6.3+ https://www.tcl.tk/software/tcltk/download.html <br> or ActiveTcl 8.6 https://www.activestate.com/activetcl/downloads (for Windows)| 
-| Freetype (for text rendering) | FreeType 2.4.11-2.7.1 https://sourceforge.net/projects/freetype/files/ |
-| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.17.0+ https://sourceforge.net/projects/freeimage/files |
-| FFmpeg (optional, for video recording) | FFmpeg 3.1+ https://www.ffmpeg.org/download.html |
-| RapidJSON (optional, for reading glTF) | RapidJSON 1.1+ https://rapidjson.org/ |
-| Intel TBB (optional, for multithreaded algorithms) | TBB 4.x or 5.x https://www.threadingbuildingblocks.org/ |
-| VTK (for VTK Integration Services | VTK 6.1+ https://www.vtk.org/download/ |
-| Doxygen (optional for building documentation) | Doxygen 1.8.5+ https://www.stack.nl/~dimitri/doxygen/download.html |
+The following third-party libraries and tools are not included in OCCT sources but are either required or can be optionally used for the indicated components of OCCT.
+They are not needed if relevant component is not needed.
+
+Note that pe-built packages of many of the listed libraries are available at
+https://www.opencascade.com/content/3rd-party-components
+
+| Component | Where to find | Used for | Required or optional |
+| --------- | ------------- | -------- | -------------------- |
+| CMake 2.8+ | https://cmake.org/ | Build from sources | Optional |
+| Intel TBB 4.x or later | https://www.threadingbuildingblocks.org/ | All | Optional (advanced parallelization of algorithms) |
+| OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required |
+| Direct3D 9 | Windows | Visualization | Optional (integration with GUI using Direct3D) |
+| FreeType 2.4.11-2.7.1 | https://sourceforge.net/projects/freetype/files/ | Visualization | Required |
+| FreeImage 3.17.0+ | https://sourceforge.net/projects/freeimage/files | Visualization | Optional (support of common 2D graphic formats) |
+| FFmpeg 3.1+ | https://www.ffmpeg.org/download.html | Visualization | Optional (video recording) |
+| VTK 6.1+ | https://www.vtk.org/download/ | Visualization | Optional (VTK integration) |
+| Flex 2.6.4+ and Bison 3.7.1+ | https://sourceforge.net/projects/winflexbison/ | Data Exchange | Optional (update of STEP and ExprIntrp parsers) |
+| RapidJSON 1.1+ | https://rapidjson.org/ | Data Exchange | Optional (reading glTF files) |
+| Tcl/Tk 8.6.3+ <br> or ActiveTcl 8.6 | https://www.tcl.tk/software/tcltk/download.html <br> https://www.activestate.com/activetcl/downloads | DRAW Test Harness | Required |
+| Qt Desktop: Qt 4.8.6+ <br> Android: Qt 5.3.2+ | https://www.qt.io/download/ | Samples and demos | Optional (Qt samples) |
+| Doxygen 1.8.5+ | https://www.doxygen.nl/download.html | Documentation | Required |
+| Graphviz 2.38+ | https://graphviz.org/ | Documentation | Optional (dependency graphs) |
 
 @subsection intro_req_hw Hardware
 
@@ -388,18 +398,20 @@ Therefore, if you observe some unexpected visual issues - first check for OpenGL
 but beware that driver update might also come with new bugs.
 Don't forget to report these bugs to vendors.
 
-@section intro_install Installation
+@section intro_install Download and Installation
 
-In most cases you need to rebuild OCCT on your platform (OS, compiler) before
-using it in your project, to ensure binary compatibility.
+OCCT can be downloaded from https://www.opencascade.com/content/latest-release
+
+In most cases you would want to rebuild OCCT from sources on your platform (OS, compiler) before
+using it in your project, to ensure binary compatibility and appropriate configuration of the library.
 See @ref build_upgrade for instructions on building OCCT from sources on supported platforms.
 
 The following subsections describe how OCCT can be installed from ready-to-use packages on different platforms.
 
 @subsection intro_install_windows Windows
 
-On Windows Open CASCADE Technology can be installed with binaries precompiled by 
-Visual C++ 2010 with installation procedure.
+On Windows Open CASCADE Technology with binaries precompiled by Visual C++ 2017 
+can be installed using installation procedure available on official download page.
 
 **Recommendation:**
 
@@ -409,16 +421,8 @@ the previous version (using Control Panel, Add/Remove Programs) before
 the installation of this new version, to avoid possible problems 
 (conflict of system variables, paths, etc).
 
-**Attention:** For full installation OCCT requires approximately 650 Mb of disk space, 
-but during the installation process you will need 1,2 Gb of free disk space.
+Full OCCT installation with reference documentation requires 1.8 Gb on disk.
 
-OCCT installation with reference documentation requires 1,4 Gb on disk.
-
-  * Download the OCCT installer from OPEN CASCADE web site using the link. you have been provided
-  * Launch the installer and follow the instructions.
-
-The includes and binaries of third-party libraries necessary for building and launching 
-OCCT are included into binary distribution (built with Visual C++ 2010). 
 When the installation is complete, you will find the directories for 3rd party products 
 (some might be absent in case of custom installation) and the main **OCCT** directory:
 
@@ -431,6 +435,7 @@ The contents of the OCCT-7.4.0 directory (called further "OCCT root", or $CASROO
   * **adm**   This folder contains administration files, which allow rebuilding OCCT;
   * **adm/cmake**  This folder contains files of CMake building procedure;
   * **adm/msvc**  This folder contains Visual Studio projects for Visual C++ 2010, 2012, 2013, 2015, 2017 and 2019 which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
+  * **adm/scripts** This folder contains auxiliary scripts for semi-automated building and packaging of OCCT for different platforms;
   * **data**  This folder contains CAD files in different formats, which can be used to test the OCCT functionality;
   * **doc**  This folder contains OCCT documentation in HTML and PDF format;
   * **dox**  This folder contains sources of OCCT documentation in plain text (MarkDown) format;
@@ -450,7 +455,7 @@ See https://repology.org/project/opencascade/versions for overview of available 
 @subsection intro_install_mac macOS
 
 On macOS, OCCT is available in Homebrew (https://formulae.brew.sh/formula/opencascade)
-amd MacPorts (https://ports.macports.org/port/opencascade/summary) repositories.
+and MacPorts (https://ports.macports.org/port/opencascade/summary) repositories.
 
 @section intro_env Environment Variables
 
@@ -512,7 +517,7 @@ The scripts are located in the OCCT root folder.
 @section intro_license License
 
 Open CASCADE Technology and all materials, including this documentation, is 
-Copyright (c) 1999-2018 by OPEN CASCADE S.A.S. All rights reserved.
+Copyright (c) 1999-2020 by OPEN CASCADE S.A.S. All rights reserved.
 
 Open CASCADE Technology is free software; you can redistribute it and / or modify it under the terms of the 
 @ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", with additional @ref occt_lgpl_exception "exception".
@@ -601,19 +606,29 @@ FreeImage is easy to use, fast, multithreading safe, compatible with all 32-bit 
 and cross-platform (works both with Linux and Mac OS X). FreeImage is optionally used by OCCT to work
 with images, on conditions of the FreeImage Public License (FIPL) (https://freeimage.sourceforge.net/freeimage-license.txt).
 
+**FFmpeg** is an Open Source framework supporting various image, video and audio codecs.
+FFmpeg is optionally used by OCCT for video recording, on LGPL conditions (https://www.ffmpeg.org/legal.html).
+
 **David M. Gay's floating point routines** (dtoa.c) are used for fast reading of floating point values from text strings.
 These routines are available under MIT-like license (see https://www.netlib.org/fp/).
 
+**Flex** is a generator of lexical analyzers (scanners), available under BSD license (https://github.com/westes/flex).
+
+GNU **Bison** is a parser generator used (together with **Flex**) for implementation of reader of STEP file format and parser of expressions.
+It is available under GNU GPL v3 license (https://www.gnu.org/software/bison/).
+
+**Delabella** is an open-source, cross-platform implementation of the Newton Apple Wrapper algorithm producing 2D Delaunay triangulation. 
+Delabella is used by BRepMesh as one of alternative 2D triangulation algorithms. 
+Delabella is licensed under the MIT license (https://github.com/msokalski/delabella).
+
 **CMake** is an open-source, cross-platform family of tools designed to build, test and package software. CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. 
-OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. See more at https://cmake.org/
+OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. 
+See more at https://cmake.org/
 
 **Cotire** (compile time reducer) is a CMake module that speeds up the build process of CMake based build systems 
 by fully automating techniques as precompiled header usage and single compilation unit builds for C and C++.
 Cotire is included in OCCT repository and used optionally by OCCT CMake scripts to accelerate builds by use of precompiled headers.
 Cotire is licensed under the MIT license (https://github.com/sakra/cotire/blob/master/license).
-
-**FFmpeg** is an Open Source framework supporting various image, video and audio codecs.
-FFmpeg is optionally used by OCCT for video recording, on LGPL conditions (https://www.ffmpeg.org/legal.html).
 
 **MikTEX** is up-to-date implementation of TeX/LaTeX and related programs for Windows. It is used 
 for generation of User and Developer Guides in PDF format. See https://miktex.org for information
@@ -625,8 +640,6 @@ RapidJSON is optionally used by OCCT for reading glTF files (https://rapidjson.o
 **DejaVu** fonts are a font family based on the Vera Fonts under a permissive license (MIT-like, https://dejavu-fonts.github.io/License.html).
 DejaVu Sans (basic Latin sub-set) is used by OCCT as fallback font when no system font is available.
 
-**Delabella** is an open-source, cross-platform implementation of the Newton Apple Wrapper algorithm producing 2D Delaunay triangulation. Delabella is used by BRepMesh as one of alternative 2D triangulation algorithms. Delabella is licensed under the MIT license (https://github.com/msokalski/delabella).
-
 Adobe Systems, Inc. provides **Adobe Reader**, which can be used to view files in Portable Document Format (PDF). 
 
 **CAS.CADE** and **Open CASCADE** are registered trademarks of OPEN CASCADE S.A.S.
@@ -636,3 +649,5 @@ Adobe Systems, Inc. provides **Adobe Reader**, which can be used to view files i
 **Windows** is a registered trademark of Microsoft Corporation in the United States and other countries.
 
 **Mac**, **OS X**, **macOS**, and the Mac logo are trademarks of Apple Inc., registered in the U.S. and other countries.
+
+**Android** is a trademark of Google LLC.
