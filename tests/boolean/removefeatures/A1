@@ -32,7 +32,7 @@ CheckIsFeatureRemoved feature3 {v e f}
 
 removefeatures res5 s feature4
 checkshape res5
-checkprops res5 -s 2387.67 -v 1060.67 -deps 1.e-7
+checkprops res5 -s 2387.67 -v 1060.68 -deps 1.e-7
 checknbshapes res5 -vertex 67 -edge 100 -wire 35 -face 35 -shell 1 -solid 1 -t
 CheckIsFeatureRemoved feature4 {v e f}
 

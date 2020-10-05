@@ -1,0 +1,18 @@
+puts "=============================================================="
+puts "OCC32140: unify same domain calls crossed for opposite vectors"
+puts "=============================================================="
+puts ""
+
+restore [locate_data_file bug32140.brep] a
+
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -solid 1 -shell 1 -face 26 -wire 32 -edge 69 -vertex 41
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 6.e-6} {
+   puts "Error: bad tolerance of result"
+}
