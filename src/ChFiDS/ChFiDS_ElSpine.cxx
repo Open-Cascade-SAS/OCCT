@@ -39,10 +39,14 @@
 //function : ChFiDS_ElSpine
 //purpose  : 
 //=======================================================================
-ChFiDS_ElSpine::ChFiDS_ElSpine():periodic(0)
+ChFiDS_ElSpine::ChFiDS_ElSpine()
+: pfirst (0.0),
+  plast (0.0),
+  period (0.0),
+  periodic (Standard_False),
+  pfirstsav (Precision::Infinite()),
+  plastsav (Precision::Infinite())
 {
-  pfirstsav = Precision::Infinite();
-  plastsav  = Precision::Infinite();
 }
 
 

@@ -68,6 +68,7 @@ BlendFunc_ConstRad::BlendFunc_ConstRad(const Handle(Adaptor3d_HSurface)& S1,
   xval.Init(-9.876e100);
   myXOrder = -1;
   myTOrder = -1;
+  myTConv = Convert_TgtThetaOver2;
 }
 
 //=======================================================================

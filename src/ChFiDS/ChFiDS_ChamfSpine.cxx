@@ -26,12 +26,20 @@ IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_ChamfSpine,ChFiDS_Spine)
 //purpose  : 
 //=======================================================================
 ChFiDS_ChamfSpine::ChFiDS_ChamfSpine()
+: d1 (0.0),
+  d2 (0.0),
+  angle (0.0),
+  mChamf (ChFiDS_Sym)
 {
   myMode = ChFiDS_ClassicChamfer;
 }
 
-ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const Standard_Real Tol):
-ChFiDS_Spine(Tol)
+ChFiDS_ChamfSpine::ChFiDS_ChamfSpine(const Standard_Real Tol)
+: ChFiDS_Spine (Tol),
+  d1 (0.0),
+  d2 (0.0),
+  angle (0.0),
+  mChamf (ChFiDS_Sym)
 {
   myMode = ChFiDS_ClassicChamfer;
 }

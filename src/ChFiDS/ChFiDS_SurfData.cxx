@@ -24,10 +24,23 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_SurfData,Standard_Transient)
 
-ChFiDS_SurfData::ChFiDS_SurfData () : 
-indexOfS1(0),indexOfS2(0),indexOfConge(0),
-isoncurv1(0),isoncurv2(0),twistons1(0),twistons2(0)
-{}
+ChFiDS_SurfData::ChFiDS_SurfData()
+: ufspine (0.0),
+  ulspine (0.0),
+  myfirstextend (0.0),
+  mylastextend (0.0),
+  indexOfS1 (0),
+  indexOfC1 (0),
+  indexOfS2 (0),
+  indexOfC2 (0),
+  indexOfConge (0),
+  isoncurv1 (Standard_False),
+  isoncurv2 (Standard_False),
+  twistons1 (Standard_False),
+  twistons2 (Standard_False),
+  orientation (TopAbs_FORWARD)
+{
+}
 
 //=======================================================================
 //function : Copy

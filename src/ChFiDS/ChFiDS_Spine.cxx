@@ -41,16 +41,26 @@ IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_Spine,Standard_Transient)
 //purpose  : 
 //=======================================================================
 ChFiDS_Spine::ChFiDS_Spine()
-: splitdone(Standard_False),
-  myMode(ChFiDS_ClassicChamfer),
-  tolesp(Precision::Confusion()),
-  firstprolon(Standard_False), 
-  lastprolon(Standard_False),
-  firstistgt(Standard_False), 
-  lastistgt(Standard_False),
-  hasfirsttgt(Standard_False), 
-  haslasttgt(Standard_False),
-  hasref(Standard_False)
+: splitdone (Standard_False),
+  myMode (ChFiDS_ClassicChamfer),
+  indexofcurve (0),
+  myTypeOfConcavity (ChFiDS_Other),
+  firstState (ChFiDS_OnSame),
+  lastState (ChFiDS_OnSame),
+  tolesp (Precision::Confusion()),
+  firstparam (0.0),
+  lastparam (0.0),
+  firstprolon (Standard_False),
+  lastprolon (Standard_False),
+  firstistgt (Standard_False),
+  lastistgt (Standard_False),
+  firsttgtpar (0.0),
+  lasttgtpar (0.0),
+  hasfirsttgt (Standard_False),
+  haslasttgt (Standard_False),
+  valref (0.0),
+  hasref (Standard_False),
+  errorstate (ChFiDS_Ok)
 {
 }
 
@@ -59,16 +69,26 @@ ChFiDS_Spine::ChFiDS_Spine()
 //purpose  : 
 //=======================================================================
 ChFiDS_Spine::ChFiDS_Spine(const Standard_Real Tol)
-  : splitdone(Standard_False),
-    myMode(ChFiDS_ClassicChamfer),
-    tolesp(Tol),
-    firstprolon(Standard_False), 
-    lastprolon(Standard_False),
-    firstistgt(Standard_False), 
-    lastistgt(Standard_False),
-    hasfirsttgt(Standard_False), 
-    haslasttgt(Standard_False),
-    hasref(Standard_False)
+: splitdone (Standard_False),
+  myMode (ChFiDS_ClassicChamfer),
+  indexofcurve (0),
+  myTypeOfConcavity (ChFiDS_Other),
+  firstState (ChFiDS_OnSame),
+  lastState (ChFiDS_OnSame),
+  tolesp (Tol),
+  firstparam (0.0),
+  lastparam (0.0),
+  firstprolon (Standard_False),
+  lastprolon (Standard_False),
+  firstistgt (Standard_False),
+  lastistgt (Standard_False),
+  firsttgtpar (0.0),
+  lasttgtpar (0.0),
+  hasfirsttgt (Standard_False),
+  haslasttgt (Standard_False),
+  valref (0.0),
+  hasref (Standard_False),
+  errorstate (ChFiDS_Ok)
 {
 }
 

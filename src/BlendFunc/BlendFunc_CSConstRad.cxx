@@ -50,6 +50,7 @@ BlendFunc_CSConstRad::BlendFunc_CSConstRad(const Handle(Adaptor3d_HSurface)& S,
        maxang(RealFirst()), minang(RealLast()),
        mySShape(BlendFunc_Rational)
 {
+  myTConv = Convert_TgtThetaOver2;
 }
 
 

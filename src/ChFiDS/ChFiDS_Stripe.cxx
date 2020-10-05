@@ -22,12 +22,27 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ChFiDS_Stripe,Standard_Transient)
 
-ChFiDS_Stripe::ChFiDS_Stripe ():
-       begfilled(/*Standard_False*/0), // eap, Apr 29 2002, occ293
-       endfilled(/*Standard_False*/0),
-       orcurv1(TopAbs_FORWARD),
-       orcurv2(TopAbs_FORWARD)
-{}
+ChFiDS_Stripe::ChFiDS_Stripe ()
+: pardeb1 (0.0),
+  parfin1 (0.0),
+  pardeb2 (0.0),
+  parfin2 (0.0),
+  myChoix (0),
+  indexOfSolid (0),
+  indexOfcurve1 (0),
+  indexOfcurve2 (0),
+  indexfirstPOnS1 (0),
+  indexlastPOnS1 (0),
+  indexfirstPOnS2 (0),
+  indexlastPOnS2 (0),
+  begfilled(/*Standard_False*/0), // eap, Apr 29 2002, occ293
+  endfilled(/*Standard_False*/0),
+  myOr1 (TopAbs_FORWARD),
+  myOr2 (TopAbs_FORWARD),
+  orcurv1 (TopAbs_FORWARD),
+  orcurv2 (TopAbs_FORWARD)
+{
+}
 
 void ChFiDS_Stripe::Reset()
 {

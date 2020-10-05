@@ -23,6 +23,10 @@
 //purpose  : 
 //=======================================================================
 ChFiDS_FaceInterference::ChFiDS_FaceInterference()
+: firstParam (0.0),
+  lastParam (0.0),
+  lineindex (0),
+  LineTransition (TopAbs_FORWARD)
 {
 }
 

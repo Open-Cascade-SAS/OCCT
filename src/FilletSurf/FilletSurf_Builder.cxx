@@ -41,6 +41,7 @@ FilletSurf_Builder::FilletSurf_Builder(const TopoDS_Shape& S,
                                        myIntBuild(S,ChFi3d_Polynomial,Ta,Tapp3d,Tapp2d)
 {
   myisdone=FilletSurf_IsOk;
+  myerrorstatus = FilletSurf_EmptyList;
   int add =myIntBuild.Add(E,R);
   if (add!=0) { 
     myisdone=FilletSurf_IsNotOk;  

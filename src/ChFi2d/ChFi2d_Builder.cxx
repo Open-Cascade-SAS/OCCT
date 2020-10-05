@@ -70,7 +70,7 @@ static Standard_Boolean IsLineOrCircle(const TopoDS_Edge& E,
 //purpose  : 
 //=======================================================================
 
- ChFi2d_Builder::ChFi2d_Builder()
+ChFi2d_Builder::ChFi2d_Builder() : status (ChFi2d_NotPlanar)
 {
 }
 
