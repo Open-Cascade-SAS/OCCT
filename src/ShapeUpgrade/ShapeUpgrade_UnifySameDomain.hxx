@@ -27,6 +27,7 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx>
 #include <Geom_Plane.hxx>
 #include <Precision.hxx>
 class ShapeBuild_ReShape;
@@ -64,6 +65,13 @@ DEFINE_STANDARD_HANDLE(ShapeUpgrade_UnifySameDomain, Standard_Transient)
 //! The algorithm provides a place holder for the history and collects the
 //! history by default.
 //! To avoid collecting of the history the place holder should be set to null handle.
+
+struct SubSequenceOfEdges
+{
+  TopTools_SequenceOfShape SeqsEdges;
+  TopoDS_Edge UnionEdges;
+};
+
 class ShapeUpgrade_UnifySameDomain : public Standard_Transient
 {
 
@@ -166,6 +174,27 @@ protected:
   void IntUnifyFaces(const TopoDS_Shape& theInpShape,
                      TopTools_IndexedDataMapOfShapeListOfShape& theGMapEdgeFaces);
 
+  //! Splits the sequence of edges into the sequence of chains
+  Standard_Boolean MergeEdges(TopTools_SequenceOfShape& SeqEdges,
+                              const TopTools_IndexedDataMapOfShapeListOfShape& theVFmap,
+                              NCollection_Sequence<SubSequenceOfEdges>& SeqOfSubSeqOfEdges,
+                              const TopTools_MapOfShape& NonMergVrt);
+
+  //! Tries to unify the sequence of edges with the set of
+  //! another edges which lies on the same geometry
+  Standard_Boolean MergeSeq(TopTools_SequenceOfShape& SeqEdges,
+                            const TopTools_IndexedDataMapOfShapeListOfShape& theVFmap,
+                            const TopTools_MapOfShape& nonMergVert);
+
+  //! Merges a sequence of edges into one edge if possible
+  Standard_Boolean MergeSubSeq(const TopTools_SequenceOfShape& theChain,
+                               const TopTools_IndexedDataMapOfShapeListOfShape& theVFmap,
+                               TopoDS_Edge& OutEdge);
+
+  //! Unifies the pcurve of the chain into one pcurve of the edge
+  void UnionPCurves(const TopTools_SequenceOfShape& theChain,
+                    TopoDS_Edge& theEdge);
+
   //! Fills the history of the modifications during the operation.
   Standard_EXPORT void FillHistory();
 
@@ -183,6 +212,8 @@ private:
   Handle(ShapeBuild_ReShape) myContext;
   TopTools_MapOfShape myKeepShapes;
   DataMapOfFacePlane myFacePlaneMap;
+  TopTools_IndexedDataMapOfShapeListOfShape myEFmap;
+  TopTools_DataMapOfShapeShape myFaceNewFace;
 
   Handle(BRepTools_History) myHistory; //!< The history.
 };
