@@ -157,7 +157,6 @@ void  BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
 
   if (!myFace.IsNull())
   {
-    BRepTools::Update(myFace);
     TopLoc_Location aL;
     const Handle(Geom_Surface)& aSurf = BRep_Tool::Surface(myFace, aL);
     GeomAdaptor_Surface aGAS(aSurf);
