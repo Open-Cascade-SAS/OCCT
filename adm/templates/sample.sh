@@ -32,7 +32,7 @@ if [ ! -f "$EXE_PATH" ]; then
   exit 1
 fi
 
-export CSF_OCCTOverviewSampleCodePath="${aCurrentPath}/samples/qt/OCCTOverview/code"
+export CSF_OCCTOverviewSampleCodePath="${CSF_OCCTSamplesPath}/OCCTOverview/code"
 
 cd ${aCurrentPath}
 "$EXE_PATH"

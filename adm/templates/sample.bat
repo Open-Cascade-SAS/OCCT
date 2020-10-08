@@ -37,7 +37,7 @@ if not exist "%EXE_PATH%" (
 )
 
 rem Set path to location where sample code is installed
-set "CSF_OCCTOverviewSampleCodePath=%~dp0samples\OCCTOverview\code"
+set "CSF_OCCTOverviewSampleCodePath=%CSF_OCCTSamplesPath%\OCCTOverview\code"
 
 "%EXE_PATH%"
 
