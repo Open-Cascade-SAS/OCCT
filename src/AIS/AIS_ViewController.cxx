@@ -2697,8 +2697,14 @@ void AIS_ViewController::contextLazyMoveTo (const Handle(AIS_InteractiveContext)
   myPrevMoveTo = thePnt;
 
   Handle(SelectMgr_EntityOwner) aLastPicked = theCtx->DetectedOwner();
+
+  // Picking relies on the camera frustum (including Z-range) - so make temporary AutoZFit()
+  // and then restore previous frustum to avoid immediate layer rendering issues if View has not been invalidated.
+  const Standard_Real aZNear = theView->Camera()->ZNear(), aZFar = theView->Camera()->ZFar();
   theView->AutoZFit();
   theCtx->MoveTo (thePnt.x(), thePnt.y(), theView, false);
+  theView->Camera()->SetZRange (aZNear, aZFar);
+
   Handle(SelectMgr_EntityOwner) aNewPicked = theCtx->DetectedOwner();
 
   if (theView->Viewer()->Grid()->IsActive()
