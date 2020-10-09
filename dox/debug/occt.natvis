@@ -61,6 +61,9 @@
   </Type>
   <Type Name="TCollection_AsciiString">
     <DisplayString>{mylength}: {mystring,s}</DisplayString>
+    <Expand>
+      <Item Name="[utf-8]">mystring,s8</Item>
+    </Expand>
   </Type>
   <Type Name="TCollection_HAsciiString">
     <DisplayString>{myString.mylength}: {myString.mystring,s}</DisplayString>
