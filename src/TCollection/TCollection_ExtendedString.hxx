@@ -114,8 +114,9 @@ public:
 
   //! Creation by converting an Ascii string to an extended
   //! string. The string is treated as having UTF-8 coding.
-  //! If it is not a UTF-8 then each character is copied to ExtCharacter.
-  Standard_EXPORT TCollection_ExtendedString(const TCollection_AsciiString& astring);
+  //! If it is not a UTF-8 or multi byte then
+  //! each character is copied to ExtCharacter.
+  Standard_EXPORT TCollection_ExtendedString(const TCollection_AsciiString& astring, const Standard_Boolean isMultiByte = Standard_True);
   
   //! Appends the other extended string to this extended string.
   //! Note that this method is an alias of operator +=.
@@ -125,6 +126,9 @@ void operator += (const TCollection_ExtendedString& other)
 {
   AssignCat(other);
 }
+
+  //! Appends the utf16 char to this extended string.
+  Standard_EXPORT void AssignCat (const Standard_Utf16Char theChar);
   
   //! Appends <other> to me.
   Standard_EXPORT TCollection_ExtendedString Cat (const TCollection_ExtendedString& other) const;

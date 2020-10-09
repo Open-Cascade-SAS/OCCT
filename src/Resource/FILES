@@ -1,5 +1,5 @@
-Resource_ANSI.pxx
 Resource_Big5.pxx
+Resource_CodePages.pxx
 Resource_ConvertUnicode.c
 Resource_ConvertUnicode.hxx
 Resource_DataMapOfAsciiStringAsciiString.hxx

@@ -1,0 +1,122 @@
+puts "================"
+puts "0028454: Data Exchange - Names with Special Characters Cannot Be Read from STEP or IGES Files"
+puts "Target encodings: ISO 8859-1, ISO 8859-2, ISO 8859-3, ISO 8859-4, ISO 8859-5, ISO 8859-6,, ISO 8859-7, ISO 8859-8"
+puts "Test case:"
+puts "1) Creates a temporary STEP file-template using WriteStep."
+puts "2) Reads generated template and replaces @tmp_name@ entity in it with target language characters using Tcl."
+puts "3) Generates 2 STEP files in UTF-8 and ISO 8859-(N) encodings (converted by Tcl)."
+puts "4) Reads generated files using StepRead and validates entity name."
+puts "================"
+puts ""
+
+proc fileToString { thePath } {
+  set aFile [open "$thePath" r]
+  set aText [read $aFile [file size "$thePath"]]
+  close $aFile
+  return $aText
+}
+
+proc fileFromString { thePath theContent theCodePage } {
+  set aFile [open "$thePath" w]
+  fconfigure $aFile -translation lf -encoding "$theCodePage"
+  puts $aFile $theContent
+  close $aFile
+}
+
+proc fileCreateAndCompare { thePathFrom theUtfPathTo theCpPathTo theNameFrom theNameTo theCodePage } {
+  regsub -all -- $theNameFrom [fileToString "$thePathFrom"] "$theNameTo" aContent
+  set aPathTo $theCpPathTo${theCodePage}.stp
+  fileFromString "$theUtfPathTo" "$aContent" "utf-8"
+  fileFromString "$aPathTo" "$aContent" "$theCodePage"
+  
+  param read.step.codepage UTF8
+  ReadStep U "$theUtfPathTo"
+  ReadStep A "$aPathTo"
+  param read.step.codepage "$theCodePage"
+  ReadStep ISO "$aPathTo"
+  
+  if { [GetName U   0:1:1:1] != "$theNameTo" } { puts "Error: unable to read UTF-8  STEP" }
+  if { [GetName ISO 0:1:1:1] != "$theNameTo" } { puts "Error: unable to read $theCodePage STEP" }
+  if { [GetName A   0:1:1:1] == "$theNameTo" } { puts "Error: broken test case" }
+  catch { Close A }
+  catch { Close U }
+  catch { Close ISO }
+}
+
+pload XDE OCAF MODELING VISUALIZATION
+set aTmpNameTmpl "@tmp_name@"
+set aTmpFileTmpl "${imagedir}/${casename}-tmp.stp"
+set aTmpFileUtf8 "${imagedir}/${casename}-tmp-utf8.stp"
+set aTmpFileISO8859N "${imagedir}/${casename}-tmp-"
+
+# "Test" (english multi-encoding) + "Test" (encoding in the target language)
+
+# multi-encoding
+set anEngName [encoding convertfrom utf-8 "\x54\x65\x73\x74"]
+# ISO 8859-1
+set iso8859_1 [encoding convertfrom utf-8 "\x50\x72\x6f\x62\xed\x68\xe1"]
+# ISO 8859-2
+set iso8859_2 [encoding convertfrom utf-8 "\x50\x72\x6f\x62\xed\x68\xe1"]
+# ISO 8859-3
+set iso8859_3 [encoding convertfrom utf-8 "\xd6\x6c\xe7\x65\x6b"]
+# ISO 8859-4 
+set iso8859_4 [encoding convertfrom utf-8 "\x6d\xc4\x93\xc4\xa3\x69\x6e\x69\x65\x74"]
+# ISO 8859-5
+set iso8859_5 [encoding convertfrom utf-8 "\xD0\xa2\xD0\xB5\xD1\x81\xD1\x82"]
+# ISO 8859-6
+set iso8859_6 [encoding convertfrom utf-8 "\xd8\xa7\xd8\xae\xd8\xaa\xd8\xa8\xd8\xa7\xd8\xb1"]
+# ISO 8859-7
+set iso8859_7 [encoding convertfrom utf-8 "\xce\xb4\xcf\x80\xce\xa8\xce\xae"]
+# ISO 8859-8
+set iso8859_8 [encoding convertfrom utf-8 "\xc2\xb1\xd7\xa4\xd7\x9e\xd7\x9c\xd7\xa9"]
+# ISO 8859-9
+set iso8859_9 [encoding convertfrom utf-8 "\xc4\x9f\xc5\x9f\xc4\x9e\xc5\x9e\xc3\x86"]
+
+box b 1 2 3
+catch { Close A }
+catch { Close T }
+catch { Close U }
+catch { Close CP }
+
+XNewDoc   T
+XAddShape T b 0
+XSetColor T b 1 0 0
+SetName   T 0:1:1:1 "$aTmpNameTmpl"
+GetName   T 0:1:1:1
+WriteStep T "$aTmpFileTmpl"
+
+puts "ISO 8859-1"
+set aName "$anEngName $iso8859_1"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-1"
+
+puts "ISO 8859-2"
+set aName "$anEngName $iso8859_2"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-2"
+
+puts "ISO 8859-3"
+set aName "$anEngName $iso8859_3"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-3"
+
+puts "ISO 8859-4"
+set aName "$anEngName $iso8859_4"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-4"
+
+puts "ISO 8859-5"
+set aName "$anEngName $iso8859_5"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-5"
+
+puts "ISO 8859-6"
+set aName "$anEngName $iso8859_6"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-6"
+
+puts "ISO 8859-7"
+set aName "$anEngName $iso8859_7"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-7"
+
+puts "ISO 8859-8"
+set aName "$anEngName $iso8859_8"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-8"
+
+puts "ISO 8859-9"
+set aName "$anEngName $iso8859_9"
+fileCreateAndCompare "$aTmpFileTmpl" "$aTmpFileUtf8" "$aTmpFileISO8859N" "$aTmpNameTmpl" "$aName" "iso8859-9"

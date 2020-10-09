@@ -142,11 +142,11 @@ public:
   Standard_EXPORT Standard_Boolean GetNameMode() const;
 
   //! Return the encoding of STEP file for converting names into UNICODE.
-  //! Initialized from "read.stepcaf.codepage" variable by constructor, which is Resource_UTF8 by default.
-  Resource_FormatType SourceCodePage() const { return mySourceCodePage; }
+  //! Initialized from "read.step.codepage" variable by constructor, which is Resource_UTF8 by default.
+  Standard_EXPORT Resource_FormatType SourceCodePage() const;
 
   //! Return the encoding of STEP file for converting names into UNICODE.
-  void SetSourceCodePage (Resource_FormatType theCode) { mySourceCodePage = theCode; }
+  Standard_EXPORT void SetSourceCodePage (Resource_FormatType theCode);
 
   //! Set LayerMode for indicate read Layers or not.
   Standard_EXPORT void SetLayerMode (const Standard_Boolean layermode);
@@ -301,7 +301,6 @@ private:
 
   STEPControl_Reader myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;
-  Resource_FormatType mySourceCodePage;
   Standard_Boolean myColorMode;
   Standard_Boolean myNameMode;
   Standard_Boolean myLayerMode;

@@ -69,26 +69,5 @@ Standard_Boolean STEPCAFControl_Controller::Init ()
   Interface_Static::Init   ("stepcaf", "read.stepcaf.subshapes.name", '&', "eval On");  // 1
   Interface_Static::SetIVal("read.stepcaf.subshapes.name", 0); // Disabled by default
 
-  // STEP file encoding for names translation
-  // Note: the numbers should be consistent with Resource_FormatType enumeration
-  Interface_Static::Init ("step", "read.stepcaf.codepage", 'e', "");
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "enum 0");
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval SJIS");         // Resource_FormatType_SJIS
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval EUC");          // Resource_FormatType_EUC
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval ANSI");         // Resource_FormatType_ANSI
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval GB");           // Resource_FormatType_GB
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval UTF8");         // Resource_FormatType_UTF8
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval SystemLocale"); // Resource_FormatType_SystemLocale
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1250");       // Resource_FormatType_CP1250
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1251");       // Resource_FormatType_CP1251
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1252");       // Resource_FormatType_CP1252
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1253");       // Resource_FormatType_CP1253
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1254");       // Resource_FormatType_CP1254
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1255");       // Resource_FormatType_CP1255
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1256");       // Resource_FormatType_CP1256
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1257");       // Resource_FormatType_CP1257
-  Interface_Static::Init ("step", "read.stepcaf.codepage", '&', "eval CP1258");       // Resource_FormatType_CP1258
-  Interface_Static::SetCVal ("read.stepcaf.codepage", "UTF8");
-
   return Standard_True;
 }

@@ -46,10 +46,10 @@ regsub -all -- $aTmpNameTmpl [fileToString "$aTmpFileTmpl"] "$aName" aContent
 fileFromString "$aTmpFileUtf8" "$aContent" "utf-8"
 fileFromString "$aTmpFileGb"   "$aContent" "gb2312"
 
-param read.stepcaf.codepage UTF8
+param read.step.codepage UTF8
 ReadStep U "$aTmpFileUtf8"
 ReadStep A "$aTmpFileGb"
-param read.stepcaf.codepage GB
+param read.step.codepage GB
 ReadStep G "$aTmpFileGb"
 
 if { [GetName U 0:1:1:1] != "$aName" } { puts "Error: unable to read UTF-8  STEP" }

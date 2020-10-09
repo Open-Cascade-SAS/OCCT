@@ -22,7 +22,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_UtfString.hxx>
 #include <Standard_NotImplemented.hxx>
-#include "Resource_ANSI.pxx"
+#include "Resource_CodePages.pxx"
 #include "Resource_GBK.pxx"
 #include "Resource_Big5.pxx"
 
@@ -625,20 +625,30 @@ void Resource_Unicode::ConvertFormatToUnicode (const Resource_FormatType theForm
     case Resource_FormatType_CP1256:
     case Resource_FormatType_CP1257:
     case Resource_FormatType_CP1258:
+    case Resource_FormatType_iso8859_1:
+    case Resource_FormatType_iso8859_2:
+    case Resource_FormatType_iso8859_3:
+    case Resource_FormatType_iso8859_4:
+    case Resource_FormatType_iso8859_5:
+    case Resource_FormatType_iso8859_6:
+    case Resource_FormatType_iso8859_7:
+    case Resource_FormatType_iso8859_8:
+    case Resource_FormatType_iso8859_9:
     {
       const int aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
       const Standard_ExtString aCodePage = THE_CODEPAGES_ANSI[aCodePageIndex];
       theToStr.Clear();
       for (const char* anInputPntr = theFromStr; *anInputPntr != '\0'; ++anInputPntr)
       {
-        Standard_ExtCharacter aRes = (*anInputPntr & 0x80) != 0
-          ? aCodePage[(0x7f & *anInputPntr)]
-          : *anInputPntr;
-        if (aRes == (Standard_ExtCharacter)0x0)
+        unsigned char anInputChar = (unsigned char)(*anInputPntr);
+        Standard_ExtCharacter aRes = (anInputChar & 0x80) != 0
+          ? aCodePage[(0x7f & anInputChar)]
+          : anInputChar;
+        if (aRes == 0)
         {
           aRes = '?';
         }
-        theToStr.Insert(theToStr.Length() + 1, aRes);
+        theToStr.AssignCat(aRes);
       }
       break;
     }
@@ -689,8 +699,52 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(const Resource_FormatT
     case Resource_FormatType_CP1256:
     case Resource_FormatType_CP1257:
     case Resource_FormatType_CP1258:
+    case Resource_FormatType_iso8859_1:
+    case Resource_FormatType_iso8859_2:
+    case Resource_FormatType_iso8859_3:
+    case Resource_FormatType_iso8859_4:
+    case Resource_FormatType_iso8859_5:
+    case Resource_FormatType_iso8859_6:
+    case Resource_FormatType_iso8859_7:
+    case Resource_FormatType_iso8859_8:
+    case Resource_FormatType_iso8859_9:
     {
-      throw Standard_NotImplemented("Resource_Unicode::ConvertUnicodeToFormat - conversion from CP1250 - CP1258 to Unicode is not implemented");
+      if (theMaxSize < theFromStr.Length())
+      {
+        return Standard_False;
+      }
+      const int aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
+      const Standard_ExtString aCodePage = THE_CODEPAGES_ANSI[aCodePageIndex];
+      for (Standard_Integer aToCharInd = 0; aToCharInd < theMaxSize - 1; ++aToCharInd)
+      {
+        Standard_Boolean isFind = Standard_False;
+        Standard_ExtCharacter aFromChar = theFromStr.Value(aToCharInd + 1);
+        if (aFromChar == 0)
+        {
+          // zero value should be handled explicitly to avoid false conversion by
+          // selected code page that may have unused values (encoded as zero)
+          theToStr[aToCharInd] = '\0';
+        }
+        else
+        {
+          // find the character in the code page
+          for (unsigned char anIndCP = 0; aFromChar != 0 && anIndCP < 128; ++anIndCP)
+          {
+            if (aCodePage[anIndCP] == aFromChar)
+            {
+              theToStr[aToCharInd] = anIndCP | 0x80;
+              isFind = Standard_True;
+            }
+          }
+          // if character is not found, put '?'
+          if (!isFind)
+          {
+            theToStr[aToCharInd] = '?';
+          }
+        }
+      }
+      theToStr[theMaxSize - 1] = '\0';
+      return Standard_True;
     }
     case Resource_FormatType_UTF8:
     {

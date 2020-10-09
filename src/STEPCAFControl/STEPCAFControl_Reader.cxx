@@ -281,7 +281,6 @@
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <Bnd_Box.hxx>
 #include <BRepBndLib.hxx>
-#include <Resource_Unicode.hxx>
 
 // skl 21.08.2003 for reading G&DT
 //#include <StepRepr_CompoundItemDefinition.hxx>
@@ -321,8 +320,7 @@ TCollection_AsciiString AddrToString(const TopoDS_Shape& theShape)
 //=======================================================================
 
 STEPCAFControl_Reader::STEPCAFControl_Reader()
-: mySourceCodePage (Resource_FormatType_UTF8),
-  myColorMode(Standard_True),
+: myColorMode(Standard_True),
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
   myPropsMode(Standard_True),
@@ -332,7 +330,6 @@ STEPCAFControl_Reader::STEPCAFControl_Reader()
   myViewMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
-  mySourceCodePage = (Resource_FormatType )Interface_Static::IVal ("read.stepcaf.codepage");
 }
 
 
@@ -343,8 +340,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader()
 
 STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)& WS,
   const Standard_Boolean scratch)
-: mySourceCodePage (Resource_FormatType_UTF8),
-  myColorMode(Standard_True),
+: myColorMode(Standard_True),
   myNameMode(Standard_True),
   myLayerMode(Standard_True),
   myPropsMode(Standard_True),
@@ -354,7 +350,6 @@ STEPCAFControl_Reader::STEPCAFControl_Reader(const Handle(XSControl_WorkSession)
   myViewMode(Standard_True)
 {
   STEPCAFControl_Controller::Init();
-  mySourceCodePage = (Resource_FormatType )Interface_Static::IVal ("read.stepcaf.codepage");
   Init(WS, scratch);
 }
 
@@ -386,9 +381,10 @@ void STEPCAFControl_Reader::Init(const Handle(XSControl_WorkSession)& WS,
 //=======================================================================
 TCollection_ExtendedString STEPCAFControl_Reader::convertName (const TCollection_AsciiString& theName) const
 {
-  TCollection_ExtendedString aName;
-  Resource_Unicode::ConvertFormatToUnicode (mySourceCodePage, theName.ToCString(), aName);
-  return aName;
+  // If source code page is not a NoConversion
+  // the string is treated as having UTF-8 coding,
+  // else each character is copied to ExtCharacter.
+  return TCollection_ExtendedString (theName, SourceCodePage() != Resource_FormatType_NoConversion);
 }
 
 //=======================================================================
@@ -4785,6 +4781,26 @@ void STEPCAFControl_Reader::SetNameMode(const Standard_Boolean namemode)
 Standard_Boolean STEPCAFControl_Reader::GetNameMode() const
 {
   return myNameMode;
+}
+
+//=======================================================================
+//function : SourceCodePage
+//purpose  : 
+//=======================================================================
+
+Resource_FormatType STEPCAFControl_Reader::SourceCodePage() const
+{
+  return myReader.StepModel()->SourceCodePage();
+}
+
+//=======================================================================
+//function : SetSourceCodePage
+//purpose  : 
+//=======================================================================
+
+void STEPCAFControl_Reader::SetSourceCodePage(Resource_FormatType theCode)
+{
+  myReader.StepModel()->SetSourceCodePage(theCode);
 }
 
 //=======================================================================

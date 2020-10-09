@@ -20,6 +20,7 @@
 #include <Interface_EntityList.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Interface_InterfaceModel.hxx>
+#include <Resource_FormatType.hxx>
 
 class Standard_NoSuchObject;
 class Standard_Transient;
@@ -97,7 +98,12 @@ public:
   //! same form as for PrintLabel
   Standard_EXPORT Handle(TCollection_HAsciiString) StringLabel (const Handle(Standard_Transient)& ent) const Standard_OVERRIDE;
 
+  //! Return the encoding of STEP file for converting names into UNICODE.
+  //! Initialized from "read.step.codepage" variable by constructor, which is Resource_UTF8 by default.
+  Resource_FormatType SourceCodePage() const { return mySourceCodePage; }
 
+  //! Return the encoding of STEP file for converting names into UNICODE.
+  void SetSourceCodePage (Resource_FormatType theCode) { mySourceCodePage = theCode; }
 
 
   DEFINE_STANDARD_RTTIEXT(StepData_StepModel,Interface_InterfaceModel)
@@ -112,6 +118,7 @@ private:
 
   Interface_EntityList theheader;
   Handle(TColStd_HArray1OfInteger) theidnums;
+  Resource_FormatType mySourceCodePage;
 
 
 };

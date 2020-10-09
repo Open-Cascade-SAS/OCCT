@@ -258,12 +258,13 @@ TCollection_ExtendedString::TCollection_ExtendedString
 //  Create an extendedstring from an AsciiString 
 //---------------------------------------------------------------------------
 TCollection_ExtendedString::TCollection_ExtendedString
-                                (const TCollection_AsciiString& theString)
+                                (const TCollection_AsciiString& theString,
+                                 const Standard_Boolean isMultiByte)
 {
   mylength = nbSymbols (theString.ToCString());
   mystring = allocateExtChars (mylength);
   mystring[mylength] = 0;
-  if (ConvertToUnicode (theString.ToCString()))
+  if (isMultiByte && ConvertToUnicode (theString.ToCString()))
   {
     return;
   }
@@ -302,6 +303,20 @@ void TCollection_ExtendedString::AssignCat (const TCollection_ExtendedString& th
   }
   mylength = aNewlength;
   mystring[mylength] = 0;
+}
+
+// ----------------------------------------------------------------------------
+//  AssignCat
+// ----------------------------------------------------------------------------
+void TCollection_ExtendedString::AssignCat(const Standard_Utf16Char theChar)
+{
+  if (theChar != '\0')
+  {
+    mystring = reallocateExtChars(mystring, mylength + 1);
+    mystring[mylength] = theChar;
+    mylength += 1;
+    mystring[mylength] = '\0';
+  }  
 }
 
 // ----------------------------------------------------------------------------

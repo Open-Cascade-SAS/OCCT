@@ -18,6 +18,7 @@
 #include <Interface_FileParameter.hxx>
 #include <Interface_HArray1OfHAsciiString.hxx>
 #include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 #include <Interface_ParamList.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
@@ -37,6 +38,8 @@
 #include <StepData_StepModel.hxx>
 #include <StepData_StepReaderData.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <NCollection_UtfIterator.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -46,6 +49,7 @@
 #include <TColStd_IndexedMapOfInteger.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <StepData_UndefinedEntity.hxx>
+#include <Resource_Unicode.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepReaderData, Interface_FileReaderData)
@@ -61,7 +65,6 @@ static char txtmes[200];  // plus commode que redeclarer partout
 
 
 static Standard_Boolean initstr = Standard_False;
-
 #define Maxlst 64
 //static TCollection_AsciiString subl[Maxlst];          // Maxlst : minimum 10
 
@@ -69,36 +72,231 @@ static Standard_Integer acceptvoid = 0;
 
 // ----------  Fonctions Utilitaires  ----------
 
+//! Convert unsigned character to hexadecimal system, 
+//! if character hasn't representation in this system, returns 0.
+static Standard_Integer convertCharacterTo16bit(const unsigned char theCharacter)
+{
+  switch (theCharacter)
+  {
+    case '0': return 0;
+    case '1': return 1;
+    case '2': return 2;
+    case '3': return 3;
+    case '4': return 4;
+    case '5': return 5;
+    case '6': return 6;
+    case '7': return 7;
+    case '8': return 8;
+    case '9': return 9;
+    case 'A': return 10;
+    case 'B': return 11;
+    case 'C': return 12;
+    case 'D': return 13;
+    case 'E': return 14;
+    case 'F': return 15;
+    default : return 0;
+  }
+}
+
 //=======================================================================
-//function : CleanText
+//function : cleanText
 //purpose  : 
 //=======================================================================
-static void CleanText(const Handle(TCollection_HAsciiString)& val)
+
+void StepData_StepReaderData::cleanText(const Handle(TCollection_HAsciiString)& theVal) const
 {
-  Standard_Integer n = val->Length();    // avant reduction
-  val->Remove(n);
-  val->Remove(1);
-  //  Ne pas oublier de traiter les caracteres speciaux
+  Standard_Integer n = theVal->Length();    // string size before reduction
+  theVal->Remove(n);
+  theVal->Remove(1);
+  // Don't forget to treat the special characters
   for (Standard_Integer i = n - 2; i > 0; i--) {
-    char uncar = val->Value(i);
-    if (uncar == '\n')
-      {      val->Remove(i);      if (i < n-2) uncar = val->Value(i);  }
-    if (uncar == '\'' && i < n - 2) {
-      if (val->Value(i + 1) == '\'') { val->Remove(i + 1);    continue; }
+    char aChar = theVal->Value(i);
+    if (aChar == '\n')
+    { theVal->Remove(i);      if (i < n-2) aChar = theVal->Value(i);  }
+    if (aChar == '\'' && i < n - 2) {
+      if (theVal->Value(i + 1) == '\'') { theVal->Remove(i + 1);    continue; }
     }
-    if (uncar == '\\' && i < n - 2) {
-      if (val->Value(i + 1) == '\\') { val->Remove(i + 1);    continue; }
-    }
-    else if (uncar == '\\' && i < n - 3) {
-      if (val->Value(i + 2) == '\\') {
-        if (val->Value(i + 1) == 'N')
-	  {  val->SetValue(i,'\n');    val->Remove(i+1,2);  continue;  }
-        if (val->Value(i + 1) == 'T')
-	  {  val->SetValue(i,'\t');    val->Remove(i+1,2);  continue;  }
-        }
+    if (aChar == '\\' && i < n - 3) {
+      if (theVal->Value(i + 2) == '\\') {
+        if (theVal->Value(i + 1) == 'N')
+	      {  theVal->SetValue(i,'\n');    theVal->Remove(i+1,2);  continue;  }
+        if (theVal->Value(i + 1) == 'T')
+	      {  theVal->SetValue(i,'\t');    theVal->Remove(i+1,2);  continue;  }
       }
     }
   }
+
+  // pass through without conversion the control directives
+  if (mySourceCodePage == Resource_FormatType_NoConversion)
+    return;
+
+  Standard_Integer aFirstCharInd = 1; // begin index of substring to conversion before the control directives
+  Standard_Integer aLastCharInd = 1; // end index of substring to conversion before the control directives
+  TCollection_ExtendedString aTempExtString; // string for characters within control directives
+  TCollection_ExtendedString anOutputExtString; // string for conversion in UTF-8
+  Resource_FormatType aLocalFormatType = Resource_FormatType_iso8859_1; // a code page for a "\S\" control directive
+  for (Standard_Integer i = 1; i <= theVal->Length(); ++i)
+  {
+    unsigned char aChar = theVal->Value(i);
+    if (aChar != '\\' || (theVal->Length() - i) < 3) // does not contain the control directive
+    {
+      continue;
+    }
+    Standard_Integer aLocalLastCharInd = i - 1;
+    Standard_Boolean isConverted = Standard_False;
+    // Encoding ISO 8859 characters within a string;
+    // ("\P{N}\") control directive;
+    // indicates code page for ("\S\") control directive;
+    // {N}: "A", "B", "C", "D", "E", "F", "G", "H", "I";
+    // "A" identifies ISO 8859-1; "B" identifies ISO 8859-2, etc.
+    if (theVal->Value(i + 1) == 'P' && theVal->Length() - i > 3 && theVal->Value(i + 3) == '\\')
+    {
+      Standard_Character aPageId = UpperCase (theVal->Value(i + 2));
+      if (aPageId >= 'A' && aPageId <= 'I')
+      {
+        aLocalFormatType = (Resource_FormatType)(Resource_FormatType_iso8859_1 + (aPageId - 'A'));
+      }
+      else
+      {
+        thecheck->AddWarning("String control directive \\P*\\ with an unsupported symbol in place of *");
+      }
+
+      isConverted = Standard_True;
+      i += 3;
+    }
+    // Encoding ISO 8859 characters within a string;
+    // ("\S\") control directive;
+    // converts followed a LATIN CODEPOINT character.
+    else if (theVal->Value(i + 1) == 'S' && theVal->Length() - i > 2 && theVal->Value(i + 2) == '\\')
+    {
+      Standard_Character aResChar = theVal->Value(i + 3) | 0x80;
+      const char aStrForCovert[2] = { aResChar, '\0' };
+      Resource_Unicode::ConvertFormatToUnicode(aLocalFormatType, aStrForCovert, aTempExtString);
+      isConverted = Standard_True;
+      i += 3;
+    }
+    // Encoding U+0000 to U+00FF in a string
+    // ("\X\") control directive;
+    // converts followed two hexadecimal character.
+    else if (theVal->Value(i + 1) == 'X' && theVal->Length() - i > 3 && theVal->Value(i + 2) == '\\')
+    {
+      Standard_Character aResChar = (char)convertCharacterTo16bit(theVal->Value(i + 3));
+      aResChar = (aResChar << 4) | (char)convertCharacterTo16bit(theVal->Value(i + 4));
+      const char aStrForCovert[2] = { aResChar, '\0' };
+      aTempExtString = TCollection_ExtendedString(aStrForCovert, Standard_False); // pass through without conversion
+      isConverted = Standard_True;
+      i += 4;
+    }
+    // Encoding ISO 10646 characters within a string
+    // ("\X{N}\") control directive;
+    // {N}: "0", "2", "4";
+    // "\X2\" or "\X4\" converts followed a hexadecimal character sequence;
+    // "\X0\" indicate the end of the "\X2\" or "\X4\".
+    else if (theVal->Value(i + 1) == 'X' && theVal->Length() - i > 2 && theVal->Value(i + 3) == '\\')
+    {
+      Standard_Integer aFirstInd = i + 3;
+      Standard_Integer aLastInd = i;
+      Standard_Boolean isClosed = Standard_False;
+      for (; i <= theVal->Length() && !isClosed; ++i) // find the end of the "\X2\" or "\X4\" by an external "i"
+      {
+        if (theVal->Length() - i > 2 && theVal->Value(i) == '\\' && theVal->Value(i + 1) == 'X' && theVal->Value(i + 2) == '0' && theVal->Value(i + 3) == '\\')
+        {
+          aLastInd = i - 1;
+          i = i + 2;
+          isClosed = Standard_True;
+        }
+      }
+      if (!isClosed) // "\X0\" not exists
+      {
+        aLastInd = theVal->Length();
+      }
+      TCollection_AsciiString aBitString;
+      aBitString = TCollection_AsciiString(theVal->ToCString() + aFirstInd, aLastInd - aFirstInd);
+      aBitString.UpperCase(); // make valid for conversion into 16-bit
+      // "\X2\" control directive;
+      // followed by multiples of four or three hexadecimal characters. 
+      // Encoding in UTF-16
+      if (theVal->Value(aFirstInd - 1) == '2' && theVal->Length() - aFirstInd > 3)
+      {
+        Standard_Integer anIterStep = (aBitString.Length() % 4 == 0) ? 4 : 3;
+        if (aBitString.Length() % anIterStep)
+        {
+          aTempExtString.AssignCat('?');
+          thecheck->AddWarning("String control directive \\X2\\ is followed by number of digits not multiple of 4");
+        }
+        else
+        {
+          Standard_Integer aStrLen = aBitString.Length() / anIterStep;
+          Standard_Utf16Char aUtfCharacter = '\0';
+          for (Standard_Integer aCharInd = 1; aCharInd <= aStrLen * anIterStep; ++aCharInd)
+          {
+            aUtfCharacter |= convertCharacterTo16bit(aBitString.Value(aCharInd));
+            if (aCharInd % anIterStep == 0)
+            {
+              aTempExtString.AssignCat(aUtfCharacter);
+              aUtfCharacter = '\0';
+            }
+            aUtfCharacter = aUtfCharacter << 4;
+          }
+        }
+      }
+      // "\X4\" control directive;
+      // followed by multiples of eight hexadecimal characters. 
+      // Encoding in UTF-32
+      else if (theVal->Value(aFirstInd - 1) == '4' && theVal->Length() - aFirstInd  > 7)
+      {
+        if (aBitString.Length() % 8)
+        {
+          aTempExtString.AssignCat('?');
+          thecheck->AddWarning("String control directive \\X4\\ is followed by number of digits not multiple of 8");
+        }
+        else
+        {
+          Standard_Integer aStrLen = aBitString.Length() / 8;
+          Standard_Utf32Char aUtfCharacter[2] = {'\0', '\0'};
+          for (Standard_Integer aCharInd = 1; aCharInd <= aStrLen * 8; ++aCharInd)
+          {
+            aUtfCharacter[0] |= convertCharacterTo16bit(aBitString.Value(aCharInd));
+            if (aCharInd % 8 == 0)
+            {
+              NCollection_Utf32Iter aUtfIter(aUtfCharacter);
+              Standard_Utf16Char aStringBuffer[3];
+              Standard_Utf16Char* aUtfPntr = aUtfIter.GetUtf16(aStringBuffer);
+              *aUtfPntr++ = '\0';
+              TCollection_ExtendedString aUtfString(aStringBuffer);
+              aTempExtString.AssignCat(aUtfString);
+              aUtfCharacter[0] = '\0';
+            }
+            aUtfCharacter[0] = aUtfCharacter[0] << 4;
+          }
+        }
+      }
+      isConverted = Standard_True;
+    }
+    if (isConverted) // find the control directive
+    {
+      TCollection_ExtendedString anExtString;
+      if (aFirstCharInd <= aLocalLastCharInd)
+      {
+        Resource_Unicode::ConvertFormatToUnicode(mySourceCodePage, theVal->SubString(aFirstCharInd, aLocalLastCharInd)->ToCString(), anExtString);
+      }
+      anOutputExtString.AssignCat(anExtString);
+      anOutputExtString.AssignCat(aTempExtString);
+      aFirstCharInd = i + 1;
+      aLastCharInd = aFirstCharInd;
+      aTempExtString.Clear();
+    }
+  }
+  if (aLastCharInd <= theVal->Length())
+  {
+    Resource_Unicode::ConvertFormatToUnicode(mySourceCodePage, theVal->ToCString() + aLastCharInd - 1, aTempExtString);
+    anOutputExtString.AssignCat(aTempExtString);
+  }
+  theVal->Clear();
+  TCollection_AsciiString aTmpString(anOutputExtString, 0);
+  theVal->AssignCat(aTmpString.ToCString());
+}
+
 
 //  -------------  METHODES  -------------
 
@@ -109,9 +307,9 @@ static void CleanText(const Handle(TCollection_HAsciiString)& val)
 
 StepData_StepReaderData::StepData_StepReaderData
 (const Standard_Integer nbheader, const Standard_Integer nbtotal,
-  const Standard_Integer nbpar)
+  const Standard_Integer nbpar, const Resource_FormatType theSourceCodePage)
   : Interface_FileReaderData(nbtotal, nbpar), theidents(1, nbtotal),
-  thetypes(1, nbtotal) //, themults (1,nbtotal)
+  thetypes(1, nbtotal), mySourceCodePage(theSourceCodePage) //, themults (1,nbtotal)
 {
   //  char textnum[10];
   thenbscop = 0;  thenbents = 0;  thelastn = 0;  thenbhead = nbheader;
@@ -564,7 +762,9 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer numsub,
     case 6: {
       if (FT != Interface_ParamText) { kod = 0; break; }
       Handle(TCollection_HAsciiString) txt = new TCollection_HAsciiString(str);
-      CleanText(txt);  hst->SetValue(ip, txt);  break;
+      cleanText(txt);
+      hst->SetValue(ip, txt);
+      break;
     }
     case 7: {
       Handle(Standard_Transient) ent = BoundEntity(FP.EntityNumber());
@@ -636,7 +836,9 @@ Standard_Integer StepData_StepReaderData::ReadSub(const Standard_Integer numsub,
     case Interface_ParamLogical: break;
     case Interface_ParamText: {
       Handle(TCollection_HAsciiString) txt = new TCollection_HAsciiString(str);
-      CleanText(txt);  htr->SetValue(ip, txt);  break;
+      cleanText(txt);
+      htr->SetValue(ip, txt);
+      break;
     }
     case Interface_ParamSub: {
       Handle(Standard_Transient) sub;
@@ -714,7 +916,9 @@ Standard_Boolean StepData_StepReaderData::ReadField(const Standard_Integer num,
   case Interface_ParamVoid:  break;
   case Interface_ParamText:
     txt = new TCollection_HAsciiString(str);
-    CleanText(txt);  fild.Set(txt);  break;
+    cleanText(txt);
+    fild.Set(txt);
+    break;
   case Interface_ParamEnum:
     if (!strcmp(str, ".T.")) fild.SetLogical(StepData_LTrue);
     else if (!strcmp(str, ".F.")) fild.SetLogical(StepData_LFalse);
@@ -841,7 +1045,7 @@ Standard_Boolean StepData_StepReaderData::ReadAny(const Standard_Integer num,
   case Interface_ParamLogical: break;
   case Interface_ParamText: {
     Handle(TCollection_HAsciiString) txt = new TCollection_HAsciiString(str);
-    CleanText(txt);
+    cleanText(txt);
 
     // PDN May 2000: for reading SOURCE_ITEM (external references)
     if (!val.IsNull()) {
@@ -1242,7 +1446,7 @@ Standard_Boolean StepData_StepReaderData::ReadString(const Standard_Integer num,
         CleanText (val);
       }*/
       val = new TCollection_HAsciiString(FP.CValue());
-      CleanText(val);
+      cleanText(val);
     } else {
       if (acceptvoid && FP.ParamType() == Interface_ParamVoid) warn = Standard_True;
       errmess = new String("Parameter n0.%d (%s) not a quoted String");

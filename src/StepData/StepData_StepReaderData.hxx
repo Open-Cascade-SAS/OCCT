@@ -19,6 +19,7 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
+#include <Resource_FormatType.hxx>
 
 #include <TColStd_Array1OfInteger.hxx>
 #include <Interface_IndexedMapOfAsciiString.hxx>
@@ -63,7 +64,7 @@ public:
   //! creation time, because it contains arrays)
   //! nbheader is nb of records for Header, nbtotal for Header+Data
   //! and nbpar gives the total count of parameters
-  Standard_EXPORT StepData_StepReaderData(const Standard_Integer nbheader, const Standard_Integer nbtotal, const Standard_Integer nbpar);
+  Standard_EXPORT StepData_StepReaderData(const Standard_Integer nbheader, const Standard_Integer nbtotal, const Standard_Integer nbpar, const Resource_FormatType theSourceCodePage = Resource_FormatType_UTF8);
   
   //! Fills the fields of a record
   Standard_EXPORT void SetRecord (const Standard_Integer num, const Standard_CString ident, const Standard_CString type, const Standard_Integer nbpar);
@@ -349,6 +350,16 @@ private:
   //! If found, returns its EntityNumber, else returns Zero.
   Standard_EXPORT Standard_Integer FindEntityNumber (const Standard_Integer num, const Standard_Integer id) const;
 
+  //! Prepare string to use in OCCT exchange structure.
+  //! If code page is Resource_FormatType_NoConversion,
+  //! clean only special characters without conversion;
+  //! else convert a string to UTF8 using the code page
+  //! and handle the control directives.
+  Standard_EXPORT void cleanText(const Handle(TCollection_HAsciiString)& theVal) const;
+
+private:
+
+
   TColStd_Array1OfInteger theidents;
   TColStd_Array1OfInteger thetypes;
   Interface_IndexedMapOfAsciiString thenametypes;
@@ -358,6 +369,7 @@ private:
   Standard_Integer thenbhead;
   Standard_Integer thenbscop;
   Handle(Interface_Check) thecheck;
+  Resource_FormatType mySourceCodePage;
 
 
 };

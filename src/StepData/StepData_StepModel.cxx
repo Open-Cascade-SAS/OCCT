@@ -28,12 +28,14 @@
 #include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <Interface_Static.hxx>
 
 #include <stdio.h>
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepModel,Interface_InterfaceModel)
 
 // Entete de fichier : liste d entites
-StepData_StepModel::StepData_StepModel ()  {  }
+StepData_StepModel::StepData_StepModel () :mySourceCodePage((Resource_FormatType)Interface_Static::IVal("read.step.codepage"))
+{}
 
 
 Handle(Standard_Transient) StepData_StepModel::Entity

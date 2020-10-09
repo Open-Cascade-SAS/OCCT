@@ -6,7 +6,7 @@ puts ""
 pload OCAF
 
 # Read file
-param read.stepcaf.codepage CP1251
+param read.step.codepage CP1251
 ReadStep D [locate_data_file bug31670_russian.stp]
 
 # Checking 

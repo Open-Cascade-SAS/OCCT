@@ -29,10 +29,10 @@ proc fileCreateAndCompare { thePathFrom theUtfPathTo theCpPathTo theNameFrom the
   fileFromString "$theUtfPathTo" "$aContent" "utf-8"
   fileFromString "$theCpPathTo" "$aContent" "$aCodePage"
   
-  param read.stepcaf.codepage UTF8
+  param read.step.codepage UTF8
   ReadStep U "$theUtfPathTo"
   ReadStep A "$theCpPathTo"
-  param read.stepcaf.codepage "$theCodePage"
+  param read.step.codepage "$theCodePage"
   ReadStep CP "$theCpPathTo"
   
   if { [GetName U  0:1:1:1] != "$theNameTo" } { puts "Error: unable to read UTF-8  STEP" }
