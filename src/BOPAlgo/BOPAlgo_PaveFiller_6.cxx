@@ -2838,37 +2838,50 @@ void BOPAlgo_PaveFiller::UpdateExistingPaveBlocks
         else {
           // For the different original edge compute the parameters of paves
           BOPDS_Pave aPave[2];
-          for (Standard_Integer i = 0; i < 2; ++i) {
-            Standard_Integer nV = aPBValuePaves[i].Index();
-            aPave[i].SetIndex(nV);
-            if (nV == aPB2->Pave1().Index()) {
-              aPave[i].SetParameter(aPB2->Pave1().Parameter());
-            }
-            else if (nV == aPB2->Pave2().Index()) {
-              aPave[i].SetParameter(aPB2->Pave2().Parameter());
-            }
-            else {
-              // Compute the parameter by projecting the point
-              const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV));
-              const TopoDS_Edge& aEOr = TopoDS::Edge(myDS->Shape(nE));
-              Standard_Real aTOut, aDist;
-              Standard_Integer iErr = myContext->ComputeVE(aV, aEOr, aTOut, aDist, myFuzzyValue);
-              if (!iErr) {
-                aPave[i].SetParameter(aTOut);
+
+          if (aPBValuePaves[0].Index() == aPBValuePaves[1].Index() &&
+              aPB2->Pave1().Index() == aPB2->Pave2().Index())
+          {
+            // still closed
+            aPave[0].SetIndex (aPBValuePaves[0].Index());
+            aPave[0].SetParameter (aPB2->Pave1().Parameter());
+            aPave[1].SetIndex (aPBValuePaves[1].Index());
+            aPave[1].SetParameter (aPB2->Pave2().Parameter());
+          }
+          else
+          {
+            for (Standard_Integer i = 0; i < 2; ++i) {
+              Standard_Integer nV = aPBValuePaves[i].Index();
+              aPave[i].SetIndex(nV);
+              if (nV == aPB2->Pave1().Index()) {
+                aPave[i].SetParameter(aPB2->Pave1().Parameter());
+              }
+              else if (nV == aPB2->Pave2().Index()) {
+                aPave[i].SetParameter(aPB2->Pave2().Parameter());
               }
               else {
-                // Unable to project - set the parameter of the closest boundary
-                const TopoDS_Vertex& aV1 = TopoDS::Vertex(myDS->Shape(aPB2->Pave1().Index()));
-                const TopoDS_Vertex& aV2 = TopoDS::Vertex(myDS->Shape(aPB2->Pave2().Index()));
-                //
-                gp_Pnt aP = BRep_Tool::Pnt(aV);
-                gp_Pnt aP1 = BRep_Tool::Pnt(aV1);
-                gp_Pnt aP2 = BRep_Tool::Pnt(aV2);
-                //
-                Standard_Real aDist1 = aP.SquareDistance(aP1);
-                Standard_Real aDist2 = aP.SquareDistance(aP2);
-                //
-                aPave[i].SetParameter(aDist1 < aDist2 ? aPB2->Pave1().Parameter() : aPB2->Pave2().Parameter());
+                // Compute the parameter by projecting the point
+                const TopoDS_Vertex& aV = TopoDS::Vertex(myDS->Shape(nV));
+                const TopoDS_Edge& aEOr = TopoDS::Edge(myDS->Shape(nE));
+                Standard_Real aTOut, aDist;
+                Standard_Integer iErr = myContext->ComputeVE(aV, aEOr, aTOut, aDist, myFuzzyValue);
+                if (!iErr) {
+                  aPave[i].SetParameter(aTOut);
+                }
+                else {
+                  // Unable to project - set the parameter of the closest boundary
+                  const TopoDS_Vertex& aV1 = TopoDS::Vertex(myDS->Shape(aPB2->Pave1().Index()));
+                  const TopoDS_Vertex& aV2 = TopoDS::Vertex(myDS->Shape(aPB2->Pave2().Index()));
+                  //
+                  gp_Pnt aP = BRep_Tool::Pnt(aV);
+                  gp_Pnt aP1 = BRep_Tool::Pnt(aV1);
+                  gp_Pnt aP2 = BRep_Tool::Pnt(aV2);
+                  //
+                  Standard_Real aDist1 = aP.SquareDistance(aP1);
+                  Standard_Real aDist2 = aP.SquareDistance(aP2);
+                  //
+                  aPave[i].SetParameter(aDist1 < aDist2 ? aPB2->Pave1().Parameter() : aPB2->Pave2().Parameter());
+                }
               }
             }
           }
