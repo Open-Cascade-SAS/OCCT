@@ -195,7 +195,10 @@ void BOPAlgo_Builder::Perform()
   //
   pPF->SetArguments(myArguments);
   pPF->SetRunParallel(myRunParallel);
-  pPF->SetProgressIndicator(*myProgressScope);
+  if (myProgressScope != NULL)
+  {
+    pPF->SetProgressIndicator(*myProgressScope);
+  }
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);
@@ -632,7 +635,10 @@ void BOPAlgo_Builder::BuildBOP(const TopTools_ListOfShape& theObjects,
   aBS.SetRunParallel(myRunParallel);
   aBS.SetContext(myContext);
   aBS.SetFuzzyValue(myFuzzyValue);
-  aBS.SetProgressIndicator(*myProgressScope);
+  if (myProgressScope != NULL)
+  {
+    aBS.SetProgressIndicator(*myProgressScope);
+  }
   aBS.Perform();
 
   // Resulting solids

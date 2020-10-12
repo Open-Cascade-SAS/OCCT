@@ -432,7 +432,10 @@ void BOPAlgo_CheckerSI::CheckFaceSelfIntersection()
     aFaceSelfIntersect.SetFace(aF);
     aFaceSelfIntersect.SetTolF(aTolF);
     //
-    aFaceSelfIntersect.SetProgressIndicator(*myProgressScope);
+    if (myProgressScope != NULL)
+    {
+      aFaceSelfIntersect.SetProgressIndicator(*myProgressScope);
+    }
   }
   
   Standard_Integer aNbFace = aVFace.Length();

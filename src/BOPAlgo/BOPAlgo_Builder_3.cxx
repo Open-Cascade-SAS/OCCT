@@ -432,7 +432,10 @@ void BOPAlgo_Builder::BuildSplitSolids(TopTools_DataMapOfShapeShape& theDraftSol
     aBS.SetSolid(aSolid);
     aBS.SetShapes(aSFS);
     aBS.SetRunParallel(myRunParallel);
-    aBS.SetProgressIndicator(*myProgressScope);
+    if (myProgressScope != NULL)
+    {
+      aBS.SetProgressIndicator(*myProgressScope);
+    }
   }//for (i=0; i<aNbS; ++i) {
   //
   Standard_Integer k, aNbBS;

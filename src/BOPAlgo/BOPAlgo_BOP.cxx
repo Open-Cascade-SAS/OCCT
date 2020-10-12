@@ -387,7 +387,10 @@ void BOPAlgo_BOP::Perform()
   pPF=new BOPAlgo_PaveFiller(aAllocator);
   pPF->SetArguments(aLS);
   pPF->SetRunParallel(myRunParallel);
-  pPF->SetProgressIndicator(*myProgressScope);
+  if (myProgressScope != NULL)
+  {
+    pPF->SetProgressIndicator(*myProgressScope);
+  }
   pPF->SetFuzzyValue(myFuzzyValue);
   pPF->SetNonDestructive(myNonDestructive);
   pPF->SetGlue(myGlue);

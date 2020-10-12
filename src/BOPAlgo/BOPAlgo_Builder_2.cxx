@@ -450,7 +450,10 @@ void BOPAlgo_Builder::BuildSplitFaces()
     aBF.SetFace(aF);
     aBF.SetShapes(aLE);
     aBF.SetRunParallel(myRunParallel);
-    aBF.SetProgressIndicator(*myProgressScope);
+    if (myProgressScope != NULL)
+    {
+      aBF.SetProgressIndicator(*myProgressScope);
+    }
     //
   }// for (i=0; i<aNbS; ++i) {
   //
@@ -637,7 +640,10 @@ void BOPAlgo_Builder::FillSameDomainFaces()
         aPSB.Shape1() = aF1;
         aPSB.Shape2() = aF2;
         aPSB.SetFuzzyValue(myFuzzyValue);
-        aPSB.SetProgressIndicator(*myProgressScope);
+        if (myProgressScope != NULL)
+        {
+          aPSB.SetProgressIndicator(*myProgressScope);
+        }
       }
     }
   }
@@ -790,7 +796,10 @@ void BOPAlgo_Builder::FillInternalVertices()
         aVFI.SetVertex(aV);
         aVFI.SetFace(aFIm);
         aVFI.SetFuzzyValue(myFuzzyValue);
-        aVFI.SetProgressIndicator(*myProgressScope);
+        if (myProgressScope != NULL)
+        {
+          aVFI.SetProgressIndicator(*myProgressScope);
+        }
       }
     }
   }

@@ -94,7 +94,10 @@ void BRepAlgoAPI_Check::Perform()
   anAnalyzer.SelfInterMode() = myTestSI;
   // Set options from BOPAlgo_Options
   anAnalyzer.SetRunParallel(myRunParallel);
-  anAnalyzer.SetProgressIndicator(*myProgressScope);
+  if (myProgressScope != NULL)
+  {
+    anAnalyzer.SetProgressIndicator(*myProgressScope);
+  }
   anAnalyzer.SetFuzzyValue(myFuzzyValue);
   // Perform the check
   anAnalyzer.Perform();

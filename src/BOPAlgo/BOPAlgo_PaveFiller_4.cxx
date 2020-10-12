@@ -217,7 +217,10 @@ void BOPAlgo_PaveFiller::PerformVF()
     aVertexFace.SetVertex(aV);
     aVertexFace.SetFace(aF);
     aVertexFace.SetFuzzyValue(myFuzzyValue);
-    aVertexFace.SetProgressIndicator(*myProgressScope);
+    if (myProgressScope != NULL)
+    {
+      aVertexFace.SetProgressIndicator(*myProgressScope);
+    }
   }//for (; myIterator->More(); myIterator->Next()) {
   //
   aNbVF=aVVF.Length();
