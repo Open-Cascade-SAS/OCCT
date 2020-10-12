@@ -202,7 +202,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord (Standard_IStream& theIStr
             (myPtr[3] == 43 || myPtr[3] == 47 || myPtr[3] == 56 || myPtr[3] == 57))
         {
           myBOM = LDOM_OSStream::BOM_UTF7;
-          if (myPtr[3] == 56 && myPtr[3] == 45)
+          if (myPtr[3] == 56 && myPtr[4] == 45)
             myPtr += 5;
           else
             myPtr += 4;
