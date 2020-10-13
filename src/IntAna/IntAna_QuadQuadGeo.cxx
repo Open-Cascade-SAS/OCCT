@@ -63,7 +63,9 @@ static
 //=======================================================================
 class AxeOperator {
  public:
-  AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2);
+  AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2,
+              const Standard_Real theEpsDistance = 1.e-14,
+              const Standard_Real theEpsAxesPara = Precision::Angular());
 
   void Distance(Standard_Real& dist,
                 Standard_Real& Param1,
@@ -123,12 +125,15 @@ class AxeOperator {
 //function : AxeOperator::AxeOperator
 //purpose  : 
 //=======================================================================
-AxeOperator::AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2) 
+AxeOperator::AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2,
+                         const Standard_Real theEpsDistance,
+                         const Standard_Real theEpsAxesPara)
+:
+  Axe1 (A1),
+  Axe2 (A2),
+  myEPSILON_DISTANCE (theEpsDistance),
+  myEPSILON_AXES_PARA (theEpsAxesPara)
 {
-  myEPSILON_DISTANCE=1.0e-14;
-  myEPSILON_AXES_PARA=Precision::Angular();
-  Axe1=A1; 
-  Axe2=A2;
   //---------------------------------------------------------------------
   gp_Dir V1=Axe1.Direction();
   gp_Dir V2=Axe2.Direction();
@@ -162,12 +167,11 @@ AxeOperator::AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2)
       thecoplanar=Standard_True;
     }
   }
-  else {
-    thecoplanar=Standard_True;
-    thenormal=(V1.Dot(V2)==0.0)? Standard_True : Standard_False;
-  }
+
+  thenormal = Abs (V1.Dot(V2)) < myEPSILON_AXES_PARA;
+
   //--- check if the two axis are concurrent
-  if(thecoplanar && (!theparallel)) {
+  if (thecoplanar && !theparallel) {
     Standard_Real smx=P2.X() - P1.X();
     Standard_Real smy=P2.Y() - P1.Y();
     Standard_Real smz=P2.Z() - P1.Z();
@@ -949,7 +953,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
 {
   done=Standard_True;
   //---------------------------- Parallel axes -------------------------
-  AxeOperator A1A2(Cyl1.Axis(),Cyl2.Axis());
+  AxeOperator A1A2(Cyl1.Axis(),Cyl2.Axis(),
+                   myEPSILON_CYLINDER_DELTA_DISTANCE, myEPSILON_AXES_PARA);
   Standard_Real R1=Cyl1.Radius();
   Standard_Real R2=Cyl2.Radius();
   Standard_Real RmR, RmR_Relative;
@@ -1118,7 +1123,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
   }
   else { //-- No Parallel Axis ---------------------------------OK
     if((RmR_Relative<=myEPSILON_CYLINDER_DELTA_RADIUS) 
-       && (DistA1A2 <= myEPSILON_CYLINDER_DELTA_DISTANCE))
+       && A1A2.Intersect())
     {
       //-- PI/2 between the two axis   and   Intersection  
       //-- and identical radius
