@@ -5056,62 +5056,149 @@ static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
 //purpose  : creates and displays a torus or torus segment
 //===========================================================================
 static Standard_Integer VTorus (Draw_Interpretor& /*di*/,
-                                Standard_Integer argc,
-                                const char ** argv)
+                                Standard_Integer theNbArgs,
+                                const char** theArgVec)
 {
-  if (argc < 4 || argc > 7)
+  if (ViewerTest::GetAISContext().IsNull())
   {
-    Message::SendFail ("Syntax error: wrong number of arguments");
+    Message::SendFail ("Error: no active viewer");
     return 1;
   }
 
-  Standard_Real aMajorRad = Draw::Atof (argv[2]);
-  Standard_Real aMinorRad = Draw::Atof (argv[3]);
-  if (aMajorRad <= 0 || aMajorRad <= 0)
+  TCollection_AsciiString aName;
+  Standard_Integer aNbSlices = 100, aNbStacks = 100;
+  Standard_Real aMajorRad = -1.0, aMinorRad = -1.0;
+  Standard_Real aPipeAngle = 360.0, aSegAngle1 = 0.0, aSegAngle2 = 360.0;
+  Standard_Real anAngles[3] = { -1.0, -1.0, -1.0 };
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), ViewerTest::CurrentView());
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    Message::SendFail ("Syntax error: wrong radius value");
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      continue;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-nbslices"
+           || anArg == "-slices")
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aNbSlices))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-nbstacks"
+           || anArg == "-stacks")
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aNbStacks))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-radius"
+           || anArg == "-majorradius")
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aMajorRad))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-piperadius"
+           || anArg == "-minoradius")
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aMinorRad))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-pipeangle"
+           || anArg == "-angle")
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aPipeAngle))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-segmentanglefrom"
+           || anArg == "-seganglefrom"
+           || anArg == "-segmentangle1"
+           || anArg == "-segangle1")
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aSegAngle1))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-segmentangleto"
+           || anArg == "-segangleto"
+           || anArg == "-segmentangle2"
+           || anArg == "-segangle2")
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aSegAngle2))
+    {
+      ++anArgIter;
+    }
+    else if (aName.IsEmpty())
+    {
+      aName = theArgVec[anArgIter];
+    }
+    else if (aMajorRad < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], aMajorRad))
+    {
+      //
+    }
+    else if (aMinorRad < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], aMinorRad))
+    {
+      //
+    }
+    else if (anAngles[0] < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], anAngles[0]))
+    {
+      //
+    }
+    else if (anAngles[1] < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], anAngles[1]))
+    {
+      //
+    }
+    else if (anAngles[2] < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], anAngles[2]))
+    {
+      //
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+
+  if (anAngles[2] > 0.0)
+  {
+    aSegAngle1 = anAngles[0];
+    aSegAngle2 = anAngles[1];
+    aPipeAngle = anAngles[2];
+  }
+  else if (anAngles[1] > 0.0)
+  {
+    aSegAngle1 = anAngles[0];
+    aSegAngle2 = anAngles[1];
+  }
+  else if (anAngles[0] > 0.0)
+  {
+    aPipeAngle = anAngles[0];
+  }
+
+  aSegAngle1 = aSegAngle1 * (M_PI / 180.0);
+  aSegAngle2 = aSegAngle2 * (M_PI / 180.0);
+  aPipeAngle = aPipeAngle * (M_PI / 180.0);
+
+  if (aMajorRad <= 0 || aMinorRad <= 0 || aNbSlices <= 0 || aNbStacks <= 0
+   || Abs(aSegAngle2 - aSegAngle1) <= Precision::Angular()
+   || Abs(aPipeAngle) <= Precision::Angular())
+  {
+    Message::SendFail ("Syntax error: wrong parameters");
     return 1;
   }
 
-  Standard_Integer aNbSlices = 100;
-  Standard_Integer aNbStacks = 100;
-  const Standard_Integer aTrianglesNb = Prs3d_ToolTorus::TrianglesNb (aNbSlices, aNbStacks);
-  const Standard_Integer aVerticesNb = Prs3d_ToolTorus::VerticesNb (aNbSlices, aNbStacks);
-  Handle(Graphic3d_ArrayOfTriangles) aTriangles
-    = new Graphic3d_ArrayOfTriangles (aVerticesNb, aTrianglesNb * 3, Graphic3d_ArrayFlags_VertexNormal);
-
-
-  if (argc == 4)
-  {
-    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad, aNbSlices, aNbStacks);
-    aTool.FillArray (aTriangles, gp_Trsf());
-  }
-  else if (argc == 5)
-  {
-    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad,
-                           Draw::Atof (argv[4]) * (M_PI / 180.0),
-                           aNbSlices, aNbStacks);
-    aTool.FillArray (aTriangles, gp_Trsf());
-  }
-  else if (argc == 6)
-  {
-    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad,
-                           Draw::Atof (argv[4]) * (M_PI / 180.0), Draw::Atof (argv[5]) * (M_PI / 180.0),
-                           aNbSlices, aNbStacks);
-    aTool.FillArray (aTriangles, gp_Trsf());
-  }
-  else if (argc == 7)
-  {
-    Prs3d_ToolTorus aTool (aMajorRad, aMinorRad,
-                           Draw::Atof (argv[4]) * (M_PI / 180.0), Draw::Atof (argv[5]) * (M_PI / 180.0),
-                           Draw::Atof (argv[6]) * (M_PI / 180.0),
-                           aNbSlices, aNbStacks);
-    aTool.FillArray (aTriangles, gp_Trsf());
-  }
-
+  Handle(Graphic3d_ArrayOfTriangles) aTriangles = Prs3d_ToolTorus::Create (aMajorRad, aMinorRad, aSegAngle1, aSegAngle2, aPipeAngle, aNbSlices, aNbStacks, gp_Trsf());
   Handle(AIS_InteractiveObject) anIO = new MyPArrayObject (aTriangles);
-
-  ViewerTest::Display (argv[1], anIO);
+  ViewerTest::Display (aName, anIO, false);
   return 0;
 }
 
@@ -5120,37 +5207,101 @@ static Standard_Integer VTorus (Draw_Interpretor& /*di*/,
 //purpose  : creates and displays a cylinder
 //===========================================================================
 static Standard_Integer VCylinder (Draw_Interpretor& /*di*/,
-                                   Standard_Integer argc,
-                                   const char ** argv)
+                                   Standard_Integer theNbArgs,
+                                   const char** theArgVec)
 {
-  if (argc != 5 )
+  if (ViewerTest::GetAISContext().IsNull())
   {
-    Message::SendFail ("Syntax error: wrong number of arguments");
+    Message::SendFail ("Error: no active viewer");
     return 1;
   }
 
-  Standard_Real aBotRad = Draw::Atof (argv[2]);
-  Standard_Real aTopRad = Draw::Atof (argv[3]);
-  Standard_Real aHeight = Draw::Atof (argv[4]);
-  if (aBotRad < 0 || aTopRad < 0 || aHeight < 0)
+  TCollection_AsciiString aName;
+  Standard_Integer aNbSlices = 100, aNbStacks = 1;
+  Standard_Real aBotRad = -1.0, aTopRad = -1.0, aHeight = -1.0;
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), ViewerTest::CurrentView());
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    Message::SendFail ("Syntax error: wrong parameter values");
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      continue;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-nbslices"
+           || anArg == "-slices")
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aNbSlices))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-nbstacks"
+           || anArg == "-stacks")
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aNbStacks))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-radius"
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aBotRad))
+    {
+      aTopRad = aBotRad;
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-bottomradius"
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aBotRad))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-topradius"
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aTopRad))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-height"
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aHeight))
+    {
+      ++anArgIter;
+    }
+    else if (aName.IsEmpty())
+    {
+      aName = theArgVec[anArgIter];
+    }
+    else if (aBotRad < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], aBotRad))
+    {
+      //
+    }
+    else if (aTopRad < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], aTopRad))
+    {
+      //
+    }
+    else if (aHeight < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], aHeight))
+    {
+      //
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+
+  if (aBotRad < 0 || aTopRad < 0 || aHeight <= 0 || aNbSlices < 3)
+  {
+    Message::SendFail ("Syntax error: wrong parameters");
     return 1;
   }
 
-  Standard_Integer aNbSlices = 100;
-  Standard_Integer aNbStacks = 1;
-  const Standard_Integer aTrianglesNb = Prs3d_ToolCylinder::TrianglesNb (aNbSlices, aNbStacks);
-  const Standard_Integer aVerticesNb = Prs3d_ToolCylinder::VerticesNb (aNbSlices, aNbStacks);
-  Handle(Graphic3d_ArrayOfTriangles) aTriangles
-    = new Graphic3d_ArrayOfTriangles (aVerticesNb, aTrianglesNb * 3, Graphic3d_ArrayFlags_VertexNormal);
-
-  Prs3d_ToolCylinder aTool (aBotRad, aTopRad, aHeight, aNbSlices, aNbStacks);
-  aTool.FillArray (aTriangles, gp_Trsf());
-
+  Handle(Graphic3d_ArrayOfTriangles) aTriangles = Prs3d_ToolCylinder::Create (aBotRad, aTopRad, aHeight, aNbSlices, aNbStacks, gp_Trsf());
   Handle(AIS_InteractiveObject) anIO = new MyPArrayObject (aTriangles);
-
-  ViewerTest::Display (argv[1], anIO);
+  ViewerTest::Display (aName, anIO, false);
   return 0;
 }
 
@@ -5159,35 +5310,72 @@ static Standard_Integer VCylinder (Draw_Interpretor& /*di*/,
 //purpose  : creates and displays a sphere
 //===========================================================================
 static Standard_Integer VSphere (Draw_Interpretor& /*di*/,
-                                 Standard_Integer argc,
-                                 const char ** argv)
+                                 Standard_Integer theNbArgs,
+                                 const char** theArgVec)
 {
-  if (argc != 3)
+  if (ViewerTest::GetAISContext().IsNull())
   {
-    Message::SendFail ("Syntax error: wrong number of arguments");
+    Message::SendFail ("Error: no active viewer");
     return 1;
   }
 
-  Standard_Real aRad = Draw::Atof (argv[2]);
-  if (aRad <= 0)
+  TCollection_AsciiString aName;
+  Standard_Integer aNbSlices = 100, aNbStacks = 100;
+  Standard_Real aRad = -1.0;
+  ViewerTest_AutoUpdater anUpdateTool (ViewerTest::GetAISContext(), ViewerTest::CurrentView());
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
-    Message::SendFail ("Syntax error: wrong radius value");
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anUpdateTool.parseRedrawMode (anArg))
+    {
+      continue;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-nbslices"
+           || anArg == "-slices")
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aNbSlices))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && (anArg == "-nbstacks"
+           || anArg == "-stacks")
+          && Draw::ParseInteger (theArgVec[anArgIter + 1], aNbStacks))
+    {
+      ++anArgIter;
+    }
+    else if (anArgIter + 1 < theNbArgs
+          && anArg == "-radius"
+          && Draw::ParseReal (theArgVec[anArgIter + 1], aRad))
+    {
+      ++anArgIter;
+    }
+    else if (aName.IsEmpty())
+    {
+      aName = theArgVec[anArgIter];
+    }
+    else if (aRad < 0.0
+          && Draw::ParseReal (theArgVec[anArgIter], aRad))
+    {
+      //
+    }
+    else
+    {
+      Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
+      return 1;
+    }
+  }
+
+  if (aRad <= 0 || aNbSlices <= 0 || aNbStacks <= 0)
+  {
+    Message::SendFail ("Syntax error: wrong parameters");
     return 1;
   }
 
-  Standard_Integer aNbSlices = 100;
-  Standard_Integer aNbStacks = 100;
-  const Standard_Integer aTrianglesNb = Prs3d_ToolSphere::TrianglesNb (aNbSlices, aNbStacks);
-  const Standard_Integer aVerticesNb = Prs3d_ToolSphere::VerticesNb (aNbSlices, aNbStacks);
-  Handle(Graphic3d_ArrayOfTriangles) aTriangles
-    = new Graphic3d_ArrayOfTriangles (aVerticesNb, aTrianglesNb * 3, Graphic3d_ArrayFlags_VertexNormal);
-
-  Prs3d_ToolSphere aTool (aRad, aNbSlices, aNbStacks);
-  aTool.FillArray (aTriangles, gp_Trsf());
-
+  Handle(Graphic3d_ArrayOfTriangles) aTriangles = Prs3d_ToolSphere::Create (aRad, aNbSlices, aNbStacks, gp_Trsf());
   Handle(AIS_InteractiveObject) anIO = new MyPArrayObject (aTriangles);
-
-  ViewerTest::Display (argv[1], anIO);
+  ViewerTest::Display (aName, anIO, false);
   return 0;
 }
 
@@ -6935,27 +7123,32 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VTriangle,group);
 
   theCommands.Add ("vtorus",
-                   "vtorus name R1 R2 [angle1 angle2] [angle]"
+                   "vtorus name [R1 R2 [Angle1=0 Angle2=360] [Angle=360]]"
+                   "\n\t\t:             [-radius R1] [-pipeRadius R2]"
+                   "\n\t\t:             [-pipeAngle Angle=360] [-segmentAngle1 Angle1=0 -segmentAngle2 Angle2=360]"
+                   "\n\t\t:             [-nbSlices Number=100] [-nbStacks Number=100] [-noupdate]"
                    "\n\t\t: Creates and displays a torus or torus segment."
                    "\n\t\t: Parameters of the torus :"
                    "\n\t\t: - R1     distance from the center of the pipe to the center of the torus"
                    "\n\t\t: - R2     radius of the pipe"
-                   "\n\t\t: - angle1 first angle to create a torus ring segment"
-                   "\n\t\t: - angle2 second angle to create a torus ring segment"
-                   "\n\t\t: - angle  angle to create a torus pipe segment",
+                   "\n\t\t: - Angle1 first angle to create a torus ring segment"
+                   "\n\t\t: - Angle2 second angle to create a torus ring segment"
+                   "\n\t\t: - Angle  angle to create a torus pipe segment",
                    __FILE__, VTorus, group);
 
   theCommands.Add ("vcylinder",
-                   "vcylinder name R1 R2 height"
+                   "vcylinder name [R1 R2 Height] [-height H] [-radius R] [-bottomRadius R1 -topRadius R2]"
+                   "\n\t\t:                [-nbSlices Number=100] [-noupdate]"
                    "\n\t\t: Creates and displays a cylinder."
                    "\n\t\t: Parameters of the cylinder :"
                    "\n\t\t: - R1     cylinder bottom radius"
                    "\n\t\t: - R2     cylinder top radius"
-                   "\n\t\t: - height cylinder height",
+                   "\n\t\t: - Height cylinder height",
                    __FILE__, VCylinder, group);
 
   theCommands.Add ("vsphere",
-                   "vsphere name radius"
+                   "vsphere name [-radius] R"
+                   "\n\t\t:              [-nbSlices Number=100] [-nbStacks Number=100] [-noupdate]"
                    "\n\t\t: Creates and displays a sphere.",
                    __FILE__, VSphere, group);
 

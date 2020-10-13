@@ -713,7 +713,9 @@ Standard_Boolean SelectMgr_RectangularFrustum::Overlaps (const gp_Pnt& thePnt1,
       }
     }
     Standard_Integer aNearestEdgeIdx2 = (aNearestEdgeIdx1 + 1) % 3;
-    if (myViewRayDir.IsParallel (gp_Vec (aPnts[aNearestEdgeIdx1], aPnts[aNearestEdgeIdx2]), Precision::Angular()))
+    const gp_Vec aVec12 (aPnts[aNearestEdgeIdx1], aPnts[aNearestEdgeIdx2]);
+    if (aVec12.SquareMagnitude() > gp::Resolution()
+     && myViewRayDir.IsParallel (aVec12, Precision::Angular()))
     {
       aNearestEdgeIdx2 = aNearestEdgeIdx1 == 0 ? 2 : aNearestEdgeIdx1 - 1;
     }
