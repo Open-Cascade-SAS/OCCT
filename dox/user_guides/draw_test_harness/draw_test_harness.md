@@ -10990,8 +10990,6 @@ Divides surface with C1 criterion and returns the result of splitting of a given
 
 **Example:** 
 ~~~~~
-
-~~~~~
 # split surface with name "su"
 DT_SplitSurface res su 0.1 1 
 ==> single surf 
@@ -11002,7 +11000,6 @@ DT_SplitSurface res su 0.1 1
 ==> appel a Surfaces 
 ==> transfert resultat 
 ==> res1_1_1 res1_2_1 res1_3_1 res1_4_1 res1_5_1 res1_6_1 
-~~~~~
 ~~~~~
 
 @subsubsection occt_draw_9_2_8 DT_ToBspl

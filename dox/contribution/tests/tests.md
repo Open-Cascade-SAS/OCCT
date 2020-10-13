@@ -555,7 +555,31 @@ if { [expr $actual_length - $expected_length] > 0.001 } {
 
 At the end, the test script should output *TEST COMPLETED* string to mark a successful completion of the script. This is often done by the *end* script in the grid.
 
-When the test script requires a data file, use Tcl procedure *locate_data_file* to get a path to it, instead of putting the path explicitly. This will allow easy move of the data file from OCCT sources repository to the data files repository without the need to update the test script.
+During execution of a test, the following Tcl variables are defined on global level:
+
+| Variable  | Value |
+|-----------|-------|
+| dirname   | Path to the root directory of the current set of test scripts |
+| groupname | Name of the test group (subfolder of $dirname) |
+| gridname  | Name of the test grid (subfolder of $dirname/$gridname) |
+| casename  | Name of the test |
+| imagedir  | Path to folder where test log and other artifacts are saved |
+
+The test script can use some data stored in a separate file (e.g. reference results of the test execution).
+Such file can be put in subfolder *data* of the test grid directory.
+During execution of the test, location of such data file can be constructed using the variables listed above.
+
+Example:
+
+~~~~~
+checkresult $result $::dirname/$::groupname/$::gridname/data/${::casename}.txt
+~~~~~
+
+CAD models and other data files which are not going to change over time should be stored separately from the source repository.
+Use Tcl procedure *locate_data_file* to get a path to such data files, instead of coding the path explicitly. 
+For the file to be found by that procedure, add directory that contains it into the environment variable *CSF_TestDataPath* (list of paths separated by semicolons on Windows or colons on other platforms).
+The search is recursive, thus adding only root folder of a directory containing data files is sufficient.
+If the file is not found, *locate_data_file* will raise exception, and the test will be reported as SKIPPED.
 
 Example:
 
@@ -578,11 +602,11 @@ The image format (defined by extension) should be *png*.
 
 Example:
 ~~~~~
-xwd $imagedir/${casename}.png
+xwd $::imagedir/${::casename}.png
 vdisplay result; vfit
-vdump $imagedir/${casename}-axo.png
+vdump $::imagedir/${::casename}-axo.png
 vfront; vfit
-vdump $imagedir/${casename}-front.png
+vdump $::imagedir/${::casename}-front.png
 ~~~~~
 
 would produce:
@@ -593,11 +617,6 @@ A1-front.png
 ~~~~~
 
 Note that OCCT must be built with FreeImage support to be able to produce usable images.
-
-Other Tcl variables defined during the test execution are:
-- *groupname*: name of the test group;
-- *gridname*: name of the test grid;
-- *dirname*: path to the root directory of the current set of test scripts.
 
 In order to ensure that the test works as expected in different environments, observe the following additional rules:
 * Avoid using external commands such as *grep, rm,* etc., as these commands can be absent on another system (e.g. on Windows); use facilities provided by Tcl instead.
