@@ -171,16 +171,14 @@ void DDataStd_TreeBrowser::OpenNode (const Handle(TDataStd_TreeNode)& aTreeNode,
   Handle(TDataStd_Name) name;
   aList.AssignCat("\"");
   if (aTreeNode->Label().FindAttribute(TDataStd_Name::GetID(),name)) {
-    TCollection_AsciiString tmpStr(name->Get(),'?');
-    tmpStr.ChangeAll(' ','_');
-    aList.AssignCat(tmpStr);
+    aList.AssignCat(name->Get());
   }
   aList.AssignCat("\"");
   // Dynamic type.      -2
   aList.AssignCat(TDF_BrowserSeparator2);
   TCollection_ExtendedString ext;
   if (TDF::ProgIDFromGUID(aTreeNode->ID(), ext))
-    aList.AssignCat(TCollection_AsciiString(ext,'?'));
+    aList.AssignCat(ext);
   else aList.AssignCat(aTreeNode->DynamicType()->Name());
    // Executable or Forgotten?  -3
   //  aList.AssignCat(TDF_BrowserSeparator2);

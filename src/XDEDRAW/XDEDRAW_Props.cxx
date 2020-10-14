@@ -546,8 +546,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
     di << string1;
     Handle(TDataStd_Name) N;
     if ( aLabel.FindAttribute ( TDataStd_Name::GetID(), N ) && ! wholeDoc ) {
-      TCollection_AsciiString name(N->Get(), '?');
-      di << " \"" << name.ToCString() << "\"";
+      di << " \"" << N->Get() << "\"";
     }
     if ( ! wholeDoc ) di << "\n";
     
@@ -676,8 +675,7 @@ static Standard_Integer CheckProps (Draw_Interpretor& di, Standard_Integer argc,
 
     if ( wholeDoc ) {
       if ( ! N.IsNull() ) {
-	TCollection_AsciiString name(N->Get(),'?');
-	di << "  \"" << name.ToCString() << "\"";
+	di << "  \"" << N->Get() << "\"";
       }
       di << "\n";
     }

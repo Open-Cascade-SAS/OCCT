@@ -150,8 +150,7 @@ static Standard_Integer getLayers (Draw_Interpretor& di, Standard_Integer argc, 
   Standard_Integer i = 1;
   if (!aLayerS.IsNull() && aLayerS->Length()!=0)
     for (; i <= aLayerS->Length(); i++) {
-      TCollection_AsciiString Entry(aLayerS->Value(i),'?');
-      di << "\"" << Entry.ToCString() << "\" ";
+      di << "\"" << aLayerS->Value(i) << "\" ";
     }
   return 0;
 }
@@ -200,8 +199,7 @@ static Standard_Integer getOneLayer (Draw_Interpretor& di, Standard_Integer argc
   if ( !aLabel.IsNull() ) {
     TCollection_ExtendedString layerName;
     localLayerTool->GetLayer(aLabel, layerName);
-    TCollection_AsciiString Entry(layerName,'?');
-    di << "\"" << Entry.ToCString() <<"\"";
+    di << "\"" << layerName <<"\"";
   }
   return 0;
 }
@@ -260,8 +258,7 @@ static Standard_Integer getAllLayers (Draw_Interpretor& di, Standard_Integer arg
     TDF_Label L = aLabs.Value(i);
     if ( !L.IsNull() ) {
       localLayerTool->GetLayer(L, layerName);
-      TCollection_AsciiString Entry(layerName,'?');
-      di << "\"" << Entry.ToCString() <<"\"";
+      di << "\"" << layerName <<"\"";
       di << " ";
     }
   }

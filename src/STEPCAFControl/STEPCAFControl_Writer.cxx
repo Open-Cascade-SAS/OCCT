@@ -258,11 +258,10 @@ static Standard_Boolean GetLabelName (const TDF_Label &L, Handle(TCollection_HAs
   TCollection_ExtendedString name = N->Get();
   if ( name.Length() <=0 ) return Standard_False;
 
-  // set name, converting it to Ascii and removing spaces
-  TCollection_AsciiString buf ( name, '?' );
+  // set name, removing spaces around it
+  TCollection_AsciiString buf(name);
   buf.LeftAdjust();
   buf.RightAdjust();
-  buf.ChangeAll(' ','_');
   str->AssignCat ( buf.ToCString() );
   return Standard_True;
 }
@@ -2385,7 +2384,7 @@ Handle(StepRepr_ShapeAspect) STEPCAFControl_Writer::WriteShapeAspect (const Hand
   Handle(TCollection_HAsciiString) aName = new TCollection_HAsciiString();
   Handle(TDataStd_Name) aNameAttr;
   if (theLabel.FindAttribute(TDataStd_Name::GetID(), aNameAttr)) {
-    aName = new TCollection_HAsciiString(TCollection_AsciiString(aNameAttr->Get(), '?'));
+    aName = new TCollection_HAsciiString(TCollection_AsciiString(aNameAttr->Get()));
     Standard_Integer aFirstSpace = aName->Search(" ");
     if (aFirstSpace != -1)
       aName = aName->SubString(aFirstSpace + 1, aName->Length());

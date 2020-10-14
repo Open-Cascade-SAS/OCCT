@@ -65,12 +65,8 @@ static Standard_Integer DDocStd_ListDocuments (Draw_Interpretor& di,
       A->GetDocument(i,D);
       di <<"document " << i;
       if (D->IsSaved()) {
-	TCollection_AsciiString GetNameAsciiString(D->GetName().ToExtString(),'?');
-	TCollection_AsciiString GetPathAsciiString(D->GetPath().ToExtString(),'?');
-	//std::cout << " name : " << D->GetName();
-	//std::cout << " path : " << D->GetPath();
-	di << " name : " << GetNameAsciiString.ToCString();
-	di << " path : " << GetPathAsciiString.ToCString();
+	di << " name : " << D->GetName();
+	di << " path : " << D->GetPath();
       }
       else di << " not saved";
       di << "\n";
@@ -428,18 +424,10 @@ static Standard_Integer DDocStd_Path (Draw_Interpretor& di,
 {   
   if (nb == 2) { 
     TDocStd_PathParser path (a[1]);
-    //std::cout << "Trek      : " << path.Trek() << std::endl;  
-    //std::cout << "Name      : " << path.Name() << std::endl; 
-    //std::cout << "Extension : " << path.Extension() << std::endl;
-    //std::cout << "Path      : " << path.Path() << std::endl;
-    TCollection_AsciiString TrekAsciiString(path.Trek().ToExtString(),'?');
-    TCollection_AsciiString NameAsciiString(path.Name().ToExtString(),'?');
-    TCollection_AsciiString ExtensionAsciiString(path.Extension().ToExtString(),'?');
-    TCollection_AsciiString PathAsciiString(path.Path().ToExtString(),'?');
-    di << "Trek      : " << TrekAsciiString.ToCString() << "\n";  
-    di << "Name      : " << NameAsciiString.ToCString() << "\n"; 
-    di << "Extension : " << ExtensionAsciiString.ToCString() << "\n";
-    di << "Path      : " << PathAsciiString.ToCString() << "\n";
+    di << "Trek      : " << path.Trek() << "\n";  
+    di << "Name      : " << path.Name() << "\n"; 
+    di << "Extension : " << path.Extension() << "\n";
+    di << "Path      : " << path.Path() << "\n";
     return 0;
   }
   di << "DDocStd_Path : Error\n";
@@ -484,9 +472,7 @@ static Standard_Integer DDocStd_PrintComments (Draw_Interpretor& di,
 
     for (int i = 1; i <= comments.Length(); i++)
     {
-      //std::cout << comments(i) << std::endl;
-      TCollection_AsciiString commentAsciiString(comments(i).ToExtString(),'?');
-      di << commentAsciiString.ToCString() << "\n";
+      di << comments(i) << "\n";
     }
 
     return 0; 

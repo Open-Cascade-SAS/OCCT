@@ -311,7 +311,7 @@ static Standard_Integer DDocStd_DumpDocument (Draw_Interpretor& di,
     di << "\n"; 
     // document name
     if (D->IsSaved()) 
-      di << "DOCUMENT      : " << TCollection_AsciiString(D->GetName(),'?').ToCString();
+      di << "DOCUMENT      : " << D->GetName();
     else 
       di << "DOCUMENT      : not saved";
     di << "\n";

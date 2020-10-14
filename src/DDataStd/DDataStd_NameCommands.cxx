@@ -104,7 +104,7 @@ static Standard_Integer DDataStd_GetName (Draw_Interpretor& di,
 	}
 #ifdef DEB_DDataStd
 	if(!N.IsNull()) 
-      std::cout << "String = " << TCollection_AsciiString(N->Get(), '?').ToCString()  << std::endl;
+      std::cout << "String = " << N->Get() << std::endl;
 #endif
     di << N->Get();
     return 0;

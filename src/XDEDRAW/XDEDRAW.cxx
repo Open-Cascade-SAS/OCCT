@@ -287,8 +287,7 @@ static void StatAssembly(const TDF_Label L,
   if(L.FindAttribute(TDataStd_Name::GetID(), Name)) {
     NbShapesWithName++;
     if(PrintStructMode) {
-      TCollection_AsciiString AsciiStringName(Name->Get(),'?');
-      di<<" "<<AsciiStringName.ToCString()<<"  has attributes: ";
+      di << " " << Name->Get() << "  has attributes: ";
     }
   }
   else {
@@ -359,7 +358,7 @@ static void StatAssembly(const TDF_Label L,
     if(PrintStructMode) {
       di<<"Layer(";
       for(Standard_Integer i=1; i<=aLayerS->Length(); i++) {
-        TCollection_AsciiString Entry2(aLayerS->Value(i),'?');
+        TCollection_AsciiString Entry2(aLayerS->Value(i));
         if(i==1)
           di<<"\""<<Entry2.ToCString()<<"\"";
         else
@@ -456,8 +455,7 @@ static Standard_Integer statdoc (Draw_Interpretor& di, Standard_Integer argc, co
       TDF_Label aLabel = LLabels.Value(i);
       TCollection_ExtendedString layerName;
       LTool->GetLayer(aLabel, layerName);
-      TCollection_AsciiString Entry(layerName,'?');
-      di<<"\""<<Entry.ToCString() <<"\" ";
+      di << "\"" << layerName << "\" ";
     }
     di<<"\n";
   }
@@ -969,18 +967,15 @@ static Standard_Integer XAttributeValue (Draw_Interpretor& di, Standard_Integer 
   }
   else if ( att->IsKind(STANDARD_TYPE(TDataStd_Name)) ) {
     Handle(TDataStd_Name) val = Handle(TDataStd_Name)::DownCast ( att );
-    TCollection_AsciiString str ( val->Get(), '?' );
-    di << str.ToCString();
+    di << val->Get();
   }
   else if ( att->IsKind(STANDARD_TYPE(TDataStd_Comment)) ) {
     Handle(TDataStd_Comment) val = Handle(TDataStd_Comment)::DownCast ( att );
-    TCollection_AsciiString str ( val->Get(), '?' );
-    di << str.ToCString();
+    di << val->Get();
   }
   else if ( att->IsKind(STANDARD_TYPE(TDataStd_AsciiString)) ) {
     Handle(TDataStd_AsciiString) val = Handle(TDataStd_AsciiString)::DownCast ( att );
-    TCollection_AsciiString str ( val->Get(), '?' );
-    di << str.ToCString();
+    di << val->Get();
   }
   else if ( att->IsKind(STANDARD_TYPE(TDataStd_IntegerArray)) ) {
     Handle(TDataStd_IntegerArray) val = Handle(TDataStd_IntegerArray)::DownCast ( att );

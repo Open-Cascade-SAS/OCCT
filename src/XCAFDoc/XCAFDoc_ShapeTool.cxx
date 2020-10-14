@@ -1416,7 +1416,7 @@ void XCAFDoc_ShapeTool::GetExternRefs(const TDF_Label& L,
     if(tmplbl.FindAttribute(TDataStd_Name::GetID(),TDN)) {
       TCollection_ExtendedString extstr = TDN->Get();
       Handle(TCollection_HAsciiString) str = 
-	new TCollection_HAsciiString(TCollection_AsciiString(extstr, '?')); 
+	new TCollection_HAsciiString(TCollection_AsciiString(extstr)); 
       SHAS.Append(str);
     }
   }

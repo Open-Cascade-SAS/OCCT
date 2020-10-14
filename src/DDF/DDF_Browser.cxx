@@ -131,7 +131,7 @@ TCollection_AsciiString DDF_Browser::OpenRoot() const
   list.AssignCat("\"");
   if (root.FindAttribute(TDataStd_Name::GetID(),name))
   {
-    TCollection_AsciiString tmpStr(name->Get(),'?');
+    TCollection_AsciiString tmpStr(name->Get());
     tmpStr.ChangeAll(' ','_');
     list.AssignCat(tmpStr);
   }
@@ -178,7 +178,7 @@ TCollection_AsciiString DDF_Browser::OpenLabel(const TDF_Label& aLab) const
     list.AssignCat("\"");
     if (itr.Value().FindAttribute(TDataStd_Name::GetID(),name))
     {
-      TCollection_AsciiString tmpStr(name->Get(),'?');
+      TCollection_AsciiString tmpStr(name->Get());
       tmpStr.ChangeAll(' ','_');
       list.AssignCat(tmpStr);
     }
