@@ -1140,7 +1140,7 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const Standard_Boo
   Standard_Integer aValidIndex = theIndex;
   
   Standard_Real aMinDelta        = myCurveResolution * 0.5;
-  Standard_Real aDeltaRestrictor = myLastParameter - myFirstParameter;
+  Standard_Real aDeltaRestrictor = 0.1 * (myLastParameter - myFirstParameter);
 
   if(aMinDelta > aDeltaRestrictor)
     aMinDelta = aDeltaRestrictor * 0.5;
@@ -1202,7 +1202,7 @@ void IntTools_BeanFaceIntersector::ComputeRangeFromStartPoint(const Standard_Boo
     
     aDelta = (pointfound) ? (aDelta * 2.) : (aDelta * 0.5);
     aDelta = (aDelta < aDeltaRestrictor) ? aDelta : aDeltaRestrictor;
-    
+
     aCurPar = (ToIncreaseParameter) ? (aPrevPar + aDelta) : (aPrevPar - aDelta);
     
     

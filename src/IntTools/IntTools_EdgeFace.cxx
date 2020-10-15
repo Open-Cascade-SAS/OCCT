@@ -93,13 +93,18 @@ Standard_Boolean IntTools_EdgeFace::IsCoincident()
       myS.GetType() == GeomAbs_Plane)
     aNbSeg = 2; // Check only three points for Line/Plane intersection
 
-  const Standard_Real aTresh=0.5;
+  const Standard_Real aTresh = 0.5;
   const Standard_Integer aTreshIdxF = RealToInt((aNbSeg+1)*0.25),
                          aTreshIdxL = RealToInt((aNbSeg+1)*0.75);
   const Handle(Geom_Surface) aSurf = BRep_Tool::Surface(myFace);
 
   aT1=myRange.First();
   aT2=myRange.Last();
+  Standard_Real aBndShift = 0.01 * (aT2 - aT1);
+  //Shifting first and last curve points in order to avoid projection
+  //on surface boundary and rejection projection point with minimal distance
+  aT1 += aBndShift;
+  aT2 -= aBndShift;
   dT=(aT2-aT1)/aNbSeg;
   //
   Standard_Boolean isClassified = Standard_False;
@@ -115,8 +120,11 @@ Standard_Boolean IntTools_EdgeFace::IsCoincident()
     //
     
     aD=aProjector.LowerDistance();
-    if (aD>myCriteria) {
-      continue;
+    if (aD > myCriteria) {
+      if (aD > 100. * myCriteria)
+        return Standard_False;
+      else
+        continue;
     }
     //
 
