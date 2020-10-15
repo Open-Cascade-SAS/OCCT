@@ -28,9 +28,6 @@
 #include <QFont>
 #include <QFrame>
 #include <QGroupBox>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QMap>
 #include <QMdiArea>
 #include <QMdiSubWindow>
@@ -43,6 +40,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QDomDocument>
+#include <QDomAttr>
 #include <Standard_WarningsRestore.hxx>
 
 #include <OpenGl_GraphicDriver.hxx>
@@ -53,13 +52,21 @@
 
 ApplicationCommonWindow::ApplicationCommonWindow (ApplicationType theCategory)
 : QMainWindow (nullptr),
+  myAppType(theCategory),
   myStdToolBar (nullptr),
   myViewBar (nullptr),
   myCasCadeBar (nullptr),
   myFilePopup (nullptr),
   myCategoryPopup (nullptr)
 {
-  myAppType = theCategory;
+  ALL_CATEGORIES[AppType_Geometry] = "Geometry";
+  ALL_CATEGORIES[AppType_Topology] = "Topology";
+  ALL_CATEGORIES[AppType_Triangulation] = "Triangulation";
+  ALL_CATEGORIES[AppType_DataExchange] = "DataExchange";
+  ALL_CATEGORIES[AppType_Ocaf] = "OCAF";
+  ALL_CATEGORIES[AppType_Viewer3d] = "3D viewer";
+  ALL_CATEGORIES[AppType_Viewer2d] = "2D Viewer";
+
   mySampleMapper   = new QSignalMapper(this);
   myExchangeMapper = new QSignalMapper(this);
   myOcafMapper     = new QSignalMapper(this);
@@ -68,19 +75,13 @@ ApplicationCommonWindow::ApplicationCommonWindow (ApplicationType theCategory)
 
   myCategoryMapper = new QSignalMapper(this);
 
-  connect(mySampleMapper, static_cast<void (QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
-    this, &ApplicationCommonWindow::onProcessSample);
-  connect(myExchangeMapper, static_cast<void (QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
-    this, &ApplicationCommonWindow::onProcessExchange);
-  connect(myOcafMapper, static_cast<void (QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
-    this, &ApplicationCommonWindow::onProcessOcaf);
-  connect(myViewer3dMapper, static_cast<void (QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
-    this, &ApplicationCommonWindow::onProcessViewer3d);
-  connect(myViewer2dMapper, static_cast<void (QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
-    this, &ApplicationCommonWindow::onProcessViewer2d);
+  connect(mySampleMapper,   SIGNAL(mapped(const QString &)), this, SLOT(onProcessSample(const QString &)));
+  connect(myExchangeMapper, SIGNAL(mapped(const QString &)), this, SLOT(onProcessExchange(const QString &)));
+  connect(myOcafMapper,     SIGNAL(mapped(const QString &)), this, SLOT(onProcessOcaf(const QString &)));
+  connect(myViewer3dMapper, SIGNAL(mapped(const QString &)), this, SLOT(onProcessViewer3d(const QString &)));
+  connect(myViewer2dMapper, SIGNAL(mapped(const QString &)), this, SLOT(onProcessViewer2d(const QString &)));
 
-  connect(myCategoryMapper, static_cast<void (QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
-    this, &ApplicationCommonWindow::onChangeCategory);
+  connect(myCategoryMapper, SIGNAL(mapped(const QString &)), this, SLOT(onChangeCategory(const QString &)));
 
   setFocusPolicy(Qt::StrongFocus);
 
@@ -121,20 +122,25 @@ ApplicationCommonWindow::ApplicationCommonWindow (ApplicationType theCategory)
   aViewFrame->setLineWidth(3);
   QVBoxLayout* aViewLayout = new QVBoxLayout(aViewFrame);
   aViewLayout->setContentsMargins(0, 0, 0, 0);
-  myGeomWidget = new GeomWidget(myDocument3d, myDocument2d, this);
+  myGeomWidget = new GeomWidget(myDocument3d, myDocument2d, aViewFrame);
   aViewLayout->addWidget(myGeomWidget);
-  //myGeomWidget->setContentsMargins(0, 0, 0, 0);
+
+  myGeomWidget->setContentsMargins(0, 0, 0, 0);
   QSplitter* aGeomTextSplitter = new QSplitter(Qt::Horizontal);
 
   aGeomTextSplitter->addWidget(aViewFrame);
   aGeomTextSplitter->addWidget(aCodeResultSplitter);
   aGeomTextSplitter->setStretchFactor(0, 1);
   aGeomTextSplitter->setStretchFactor(1, 1);
-  QList<int> aSizeList{ 640, 640 };
+  QList<int> aSizeList;
+  aSizeList.append(640);
+  aSizeList.append(640);
   aGeomTextSplitter->setSizes(aSizeList);
   setCentralWidget(aGeomTextSplitter);
 
+#include <Standard_WarningsDisable.hxx>
   Q_INIT_RESOURCE(Samples);
+#include <Standard_WarningsRestore.hxx>
 
   TCollection_AsciiString aSampleSourcePach = getSampleSourceDir();
   myGeometrySamples      = new GeometrySamples(aSampleSourcePach,
@@ -157,13 +163,14 @@ ApplicationCommonWindow::ApplicationCommonWindow (ApplicationType theCategory)
                                                myDocument2d->getViewer(),
                                                myDocument2d->getContext());
 
-  MenuFormJson(":/menus/Geometry.json",      mySampleMapper,   myGeometryMenus);
-  MenuFormJson(":/menus/Topology.json",      mySampleMapper,   myTopologyMenus);
-  MenuFormJson(":/menus/Triangulation.json", mySampleMapper,   myTriangulationMenus);
-  MenuFormJson(":/menus/DataExchange.json",  myExchangeMapper, myDataExchangeMenus);
-  MenuFormJson(":/menus/Ocaf.json",          myOcafMapper,     myOcafMenus);
-  MenuFormJson(":/menus/Viewer3d.json",      myViewer3dMapper, myViewer3dMenus);
-  MenuFormJson(":/menus/Viewer2d.json",      myViewer2dMapper, myViewer2dMenus);
+
+  MenuFormXml(":/menus/Geometry.xml",      mySampleMapper,   myGeometryMenus);
+  MenuFormXml(":/menus/Topology.xml",      mySampleMapper,   myTopologyMenus);
+  MenuFormXml(":/menus/Triangulation.xml", mySampleMapper,   myTriangulationMenus);
+  MenuFormXml(":/menus/DataExchange.xml",  myExchangeMapper, myDataExchangeMenus);
+  MenuFormXml(":/menus/Ocaf.xml",          myOcafMapper,     myOcafMenus);
+  MenuFormXml(":/menus/Viewer3d.xml",      myViewer3dMapper, myViewer3dMenus);
+  MenuFormXml(":/menus/Viewer2d.xml",      myViewer2dMapper, myViewer2dMenus);
 
   onChangeCategory(ALL_CATEGORIES[myAppType]);
 
@@ -174,29 +181,31 @@ void ApplicationCommonWindow::RebuildMenu()
 {
   menuBar()->clear();
 
-  myStdActions[FileQuit] = CreateAction(&ApplicationCommonWindow::onCloseAllWindows, "Quit", "CTRL+Q");
-  myStdActions[HelpAbout] = CreateAction(&ApplicationCommonWindow::onAbout, "About", "F1", ":/icons/help.png");
+  myStdActions[StdActions_FileQuit] = CreateAction("Quit", "CTRL+Q");
+  connect(myStdActions[StdActions_FileQuit], SIGNAL(triggered()), this, SLOT(onCloseAllWindows()));
+  myStdActions[StdActions_HelpAbout] = CreateAction("About", "F1", ":/icons/help.png");
+  connect(myStdActions[StdActions_HelpAbout], SIGNAL(triggered()), this, SLOT(onAbout()));
 
   // populate a menu with all actions
   myFilePopup = new QMenu(this);
   myFilePopup = menuBar()->addMenu(tr("&File"));
-  myFilePopup->addAction(myStdActions[FileQuit]);
+  myFilePopup->addAction(myStdActions[StdActions_FileQuit]);
 
   myCategoryPopup = new QMenu(this);
   myCategoryPopup = menuBar()->addMenu(tr("&Category"));
 
-  for (ApplicationType aCategory: ALL_CATEGORIES.keys())
+  foreach (ApplicationType aCategory, ALL_CATEGORIES.keys())
   {
     QString aCategoryName = ALL_CATEGORIES.value(aCategory);
     QAction* anAction = myCategoryPopup->addAction(aCategoryName);
     anAction->setText(aCategoryName);
     myCategoryMapper->setMapping(anAction, aCategoryName);
-    connect(anAction, &QAction::triggered, myCategoryMapper, static_cast<void (QSignalMapper::*)()>(&QSignalMapper::map));
+    connect(anAction, SIGNAL(triggered()), myCategoryMapper, SLOT(map()));
     myCategoryPopup->addAction(anAction);
     myCategoryActions.insert(aCategory, anAction);
   }
 
-  for (QMenu* aSampleMenu : GetCurrentMenus())
+  foreach (QMenu* aSampleMenu, GetCurrentMenus())
   {
     menuBar()->addMenu(aSampleMenu);
   }
@@ -205,21 +214,21 @@ void ApplicationCommonWindow::RebuildMenu()
   QMenu* aHelp = new QMenu(this);
   menuBar()->addSeparator();
   aHelp = menuBar()->addMenu(tr("&Help"));
-  aHelp->addAction(myStdActions[HelpAbout]);
+  aHelp->addAction(myStdActions[StdActions_HelpAbout]);
 }
 
 Handle(BaseSample) ApplicationCommonWindow::GetCurrentSamples()
 {
   switch (myAppType)
   {
-    case Geometry:      return myGeometrySamples;
-    case Topology:      return myTopologySamples;
-    case Triangulation: return myTriangulationSamples;
-    case DataExchange:  return myDataExchangeSamples;
-    case Ocaf:          return myOcafSamples;
-    case Viewer2d:      return myViewer2dSamples;
-    case Viewer3d:      return myViewer3dSamples;
-    case Unknown:
+    case AppType_Geometry:      return myGeometrySamples;
+    case AppType_Topology:      return myTopologySamples;
+    case AppType_Triangulation: return myTriangulationSamples;
+    case AppType_DataExchange:  return myDataExchangeSamples;
+    case AppType_Ocaf:          return myOcafSamples;
+    case AppType_Viewer2d:      return myViewer2dSamples;
+    case AppType_Viewer3d:      return myViewer3dSamples;
+    case AppType_Unknown:
       break;
   }
   throw QString("Unknown Application type");
@@ -229,14 +238,14 @@ const QList<QMenu*>& ApplicationCommonWindow::GetCurrentMenus()
 {
   switch (myAppType)
   {
-    case Geometry:      return myGeometryMenus;
-    case Topology:      return myTopologyMenus;
-    case Triangulation: return myTriangulationMenus;
-    case DataExchange:  return myDataExchangeMenus;
-    case Ocaf:          return myOcafMenus;
-    case Viewer2d:      return myViewer2dMenus;
-    case Viewer3d:      return myViewer3dMenus;
-    case Unknown:
+    case AppType_Geometry:      return myGeometryMenus;
+    case AppType_Topology:      return myTopologyMenus;
+    case AppType_Triangulation: return myTriangulationMenus;
+    case AppType_DataExchange:  return myDataExchangeMenus;
+    case AppType_Ocaf:          return myOcafMenus;
+    case AppType_Viewer2d:      return myViewer2dMenus;
+    case AppType_Viewer3d:      return myViewer3dMenus;
+    case AppType_Unknown:
       break;
   }
   throw QString("Unknown Application type");
@@ -270,35 +279,35 @@ void ApplicationCommonWindow::onChangeCategory(const QString& theCategory)
 
   switch (myAppType)
   {
-    case DataExchange:
+    case AppType_DataExchange:
     {
       myDataExchangeSamples->AppendBottle();
       myDocument3d->SetObjects(GetCurrentSamples()->Get3dObjects());
       myGeomWidget->Show3d();
       break;
     }
-    case Ocaf:
+    case AppType_Ocaf:
     {
       onProcessOcaf("CreateOcafDocument");
       myGeomWidget->Show3d();
       break;
     }
-    case Viewer2d:
+    case AppType_Viewer2d:
     {
       myGeomWidget->Show2d();
       break;
     }
-    case Viewer3d:
+    case AppType_Viewer3d:
     {
       myViewer3dSamples->AppendBottle();
       myDocument3d->SetObjects(GetCurrentSamples()->Get3dObjects());
       myGeomWidget->Show3d();
       break;
     }
-    case Geometry:
-    case Topology:
-    case Triangulation:
-    case Unknown:
+    case AppType_Geometry:
+    case AppType_Topology:
+    case AppType_Triangulation:
+    case AppType_Unknown:
     {
       break;
     }
@@ -326,9 +335,7 @@ TCollection_AsciiString ApplicationCommonWindow::getSampleSourceDir()
   return aSampleSourceDir;
 }
 
-template <typename PointerToMemberFunction>
-QAction* ApplicationCommonWindow::CreateAction (PointerToMemberFunction theHandlerMethod,
-                                                const QString& theActionName,
+QAction* ApplicationCommonWindow::CreateAction (const QString& theActionName,
                                                 const QString& theShortcut,
                                                 const QString& theIconName)
 {
@@ -345,7 +352,7 @@ QAction* ApplicationCommonWindow::CreateAction (PointerToMemberFunction theHandl
   aAction->setToolTip(theActionName);
   aAction->setStatusTip(theActionName);
   aAction->setShortcut(theShortcut);
-  connect(aAction, &QAction::triggered, this, theHandlerMethod);
+
   return aAction;
 }
 
@@ -353,9 +360,9 @@ template <typename PointerToMemberFunction>
 QAction* ApplicationCommonWindow::CreateSample (PointerToMemberFunction theHandlerMethod,
                                                 const char* theActionName)
 {
-  QAction* aAction = new QAction(QObject::tr(theActionName), this);
-  connect(aAction, &QAction::triggered, this, theHandlerMethod);
-  return aAction;
+  QAction* anAction = new QAction(QObject::tr(theActionName), this);
+  connect(anAction, SIGNAL(triggered()), this, SLOT(theHandlerMethod()));
+  return anAction;
 }
 
 void ApplicationCommonWindow::resizeEvent(QResizeEvent* e)
@@ -608,78 +615,78 @@ TranslateDialog* ApplicationCommonWindow::getOcafDialog(const QString& theSample
   return aTranslateDialog;
 }
 
-QMenu* ApplicationCommonWindow::MenuFromJsonObject (const QJsonValue& theJsonValue,
-                                                    const QString& theKey,
-                                                    QWidget* theParent,
-                                                    QSignalMapper* theMapper)
+QMenu* ApplicationCommonWindow::MenuFromDomNode(QDomElement& theItemElement,
+                                                QWidget* theParent,
+                                                QSignalMapper* theMapper)
 {
-  QMenu* aMenu = new QMenu(theKey, theParent);
-  if (theJsonValue.isObject())
-  {
-    QJsonObject aBranchObject = theJsonValue.toObject();
-    for (const QString& aBranchKey : aBranchObject.keys())
-    {
-      aMenu->addMenu(MenuFromJsonObject(aBranchObject.value(aBranchKey), aBranchKey, aMenu, theMapper));
-    }
-  }
-  else if (theJsonValue.isArray())
-  {
-    QJsonArray aDataArray = theJsonValue.toArray();
-    for (const QJsonValue& aDataValue : aDataArray)
-    {
-      if (aDataValue.isObject())
-      {
-        QJsonObject aDataObject = aDataValue.toObject();
-        QString aSampleName = aDataObject["function"].toString();
-        QAction* anAction = aMenu->addAction(aSampleName);
-        anAction->setText(aDataObject["text"].toString());
+  QString anItemName        = theItemElement.attribute("name");
+  QMenu* aMenu = new QMenu(anItemName, theParent);
+  QDomElement anChildItemElement = theItemElement.firstChildElement("MenuItem");
+  QDomElement anSampleElement    = theItemElement.firstChildElement("Sample");
 
-        theMapper->setMapping(anAction, aSampleName);
-        connect(anAction, &QAction::triggered, theMapper,
-          static_cast<void (QSignalMapper::*)()>(&QSignalMapper::map));
-      }
-    }
+  while(anChildItemElement.isElement())
+  {
+    aMenu->addMenu(MenuFromDomNode(anChildItemElement, aMenu, theMapper));
+    anChildItemElement = anChildItemElement.nextSibling().toElement();
+  }
+
+  while(anSampleElement.isElement())
+  {
+    QString aSampleName     = anSampleElement.attribute("name");
+    QString aSampleFunction = anSampleElement.attribute("function");
+    QAction* anAction = aMenu->addAction(aSampleFunction);
+    anAction->setText(aSampleName);
+    theMapper->setMapping(anAction, aSampleFunction);
+    connect(anAction, SIGNAL(triggered()), theMapper, SLOT(map()));
+    anSampleElement = anSampleElement.nextSibling().toElement();
   }
   return aMenu;
 }
 
-void ApplicationCommonWindow::MenuFormJson (const QString& thePath,
-                                            QSignalMapper* theMapper,
-                                            QList<QMenu*>& theMunusList)
+void ApplicationCommonWindow::MenuFormXml(const QString& thePath,
+                                          QSignalMapper* theMapper,
+                                          QList<QMenu*>& theMunusList)
 {
+  QDomDocument aDomDocument;
   theMunusList.clear();
-  QFile aJsonFile(thePath);
+  QFile aXmlFile(thePath);
   QString anErrorMessage;
-  if (aJsonFile.error() != QFile::NoError)
+  if (aXmlFile.error() != QFile::NoError)
   {
-    anErrorMessage = aJsonFile.errorString();
+    anErrorMessage = aXmlFile.errorString();
     Message::SendFail() << "QFile creating error: " << anErrorMessage.toUtf8().constData();
+    aXmlFile.close();
     return;
   }
-  if (!aJsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
+  if (!aXmlFile.open(QIODevice::ReadOnly | QIODevice::Text))
   {
     Message::SendFail() << "File " << thePath.toUtf8().constData() << " could not open";
-    if (aJsonFile.error() != QFile::NoError)
+    if (aXmlFile.error() != QFile::NoError)
     {
-      anErrorMessage = aJsonFile.errorString();
+      anErrorMessage = aXmlFile.errorString();
       Message::SendFail() << "QFile opening error: " << anErrorMessage.toUtf8().constData();
     }
+    aXmlFile.close();
     return;
   }
-  QString aJsonString = aJsonFile.readAll();
-  aJsonFile.close();
-
-  QJsonDocument aJsonDoc = QJsonDocument::fromJson(aJsonString.toUtf8());
-  if (aJsonDoc.isObject())
+  bool aNamespaceProcessing(false);
+  QString anErrorMsg;
+  int anErrorLine(0);
+  int anErrorColumn(0);
+  if (!aDomDocument.setContent(&aXmlFile, aNamespaceProcessing, &anErrorMsg, &anErrorLine, &anErrorColumn))
   {
-    QJsonObject aJsonObj = aJsonDoc.object();
-    for (const QString& aKey : aJsonObj.keys())
-    {
-      QJsonValue aJsonValue = aJsonObj.value(aKey);
-      if (aJsonValue.isObject())
-      {
-        theMunusList.push_back(MenuFromJsonObject(aJsonValue.toObject(), aKey, this, theMapper));
-      }
-    }
+    Message::SendFail() << "XML file parsing error: " <<  anErrorMsg.toStdString()
+                        << " at line: " << anErrorLine << " column: " << anErrorColumn;
+    aXmlFile.close();
+    return;
+  }
+  aXmlFile.close();
+
+  QDomElement aRootElement = aDomDocument.documentElement();
+  QDomElement anItemElement = aRootElement.firstChildElement("MenuItem");
+  while(!anItemElement.isNull())
+  {
+    theMunusList.push_back(MenuFromDomNode(anItemElement, this, theMapper));
+    anItemElement = anItemElement.nextSiblingElement("MenuItem");
   }
 }

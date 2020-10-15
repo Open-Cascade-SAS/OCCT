@@ -75,7 +75,7 @@ void Viewer2dSamples::ClearExtra()
 
 void Viewer2dSamples::TextView2dSample()
 {
-  Standard_Integer aColor = Quantity_NameOfColor::Quantity_NOC_MATRABLUE;
+  Standard_Integer aColor = Quantity_NOC_MATRABLUE;
   for (Standard_Integer j = 15; j <= 20; j++)
   {
     Handle(AIS_TextLabel) aText = new AIS_TextLabel();

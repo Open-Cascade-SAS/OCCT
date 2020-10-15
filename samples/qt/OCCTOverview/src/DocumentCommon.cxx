@@ -87,8 +87,11 @@ void DocumentCommon::SetObjects (const NCollection_Vector<Handle(AIS_Interactive
 {
   myContext->RemoveAll(Standard_False);
   myContextIsEmpty = theObjects.IsEmpty();
-  for (const Handle(AIS_InteractiveObject) anObject : theObjects)
+
+  for(NCollection_Vector<Handle(AIS_InteractiveObject)>::Iterator anIter(theObjects); 
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anObject = anIter.Value();
     if (!theDisplayShaded)
     {
       myContext->Display(anObject, Standard_False);

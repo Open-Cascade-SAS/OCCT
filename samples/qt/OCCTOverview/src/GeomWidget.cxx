@@ -44,7 +44,7 @@ GeomWidget::GeomWidget (DocumentCommon* theDocument3d,
   QVBoxLayout* a2dLayout = new QVBoxLayout(my2dVidget);
   a2dLayout->setContentsMargins(0, 0, 0, 0);
   a2dLayout->setSpacing(0);
-  myView2d = new View(myDocument2d->getContext(), false, this);
+  myView2d = new View(myDocument2d->getContext(), false, my2dVidget);
   QToolBar* aToolBar2d = new QToolBar;
   aToolBar2d->addActions(myView2d->getViewActions());
   a2dLayout->addWidget(aToolBar2d);
@@ -54,7 +54,7 @@ GeomWidget::GeomWidget (DocumentCommon* theDocument3d,
   QVBoxLayout* a3dLayout = new QVBoxLayout(my3dVidget);
   a3dLayout->setContentsMargins(0, 0, 0, 0);
   a3dLayout->setSpacing(0);
-  myView3d = new View(myDocument3d->getContext(), true, this);
+  myView3d = new View(myDocument3d->getContext(), true, my3dVidget);
   QToolBar* aToolBar3d = new QToolBar;
   aToolBar3d->addActions(myView3d->getViewActions());
   aToolBar3d->addSeparator();
@@ -82,10 +82,10 @@ void GeomWidget::Show3d()
 {
   myView3d->axo();
   myView3d->fitAll();
-  QAction* aShadingAction = myView3d->getViewAction(ViewAction::Shading);
+  QAction* aShadingAction = myView3d->getViewAction(ViewAction_Shading);
   aShadingAction->trigger();
   aShadingAction->setChecked(true);
-  QAction* aHlrOffAction = myView3d->getViewAction(ViewAction::HlrOff);
+  QAction* aHlrOffAction = myView3d->getViewAction(ViewAction_HlrOff);
   aHlrOffAction->trigger();
   aHlrOffAction->setChecked(true);
   myStackWidget->setCurrentWidget(my3dVidget);

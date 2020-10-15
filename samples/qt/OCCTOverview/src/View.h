@@ -38,11 +38,45 @@
 
 class TopoDS_Shape;
 
-enum CurrentAction3d { Nothing, DynamicZooming, WindowZooming,
-                       DynamicPanning, GlobalPanning, DynamicRotation, ObjectDececting };
-enum ViewAction { FitAll, FitArea, Zoom, Pan, GlobalPan, Front, Back, Top, Bottom,
-                  Left, Right, Axo, Rotation, Reset, HlrOff, HlrOn, Shading, Wireframe, Transparency };
-enum RaytraceAction { ToolRaytracing, ToolShadows, ToolReflections, ToolAntialiasing };
+enum CurrentAction3d 
+{ 
+  CurrentAction3d_Nothing, 
+  CurrentAction3d_DynamicZooming, 
+  CurrentAction3d_WindowZooming,
+  CurrentAction3d_DynamicPanning, 
+  CurrentAction3d_GlobalPanning, 
+  CurrentAction3d_DynamicRotation, 
+  CurrentAction3d_ObjectDececting 
+};
+enum ViewAction 
+{ 
+  ViewAction_FitAll, 
+  ViewAction_FitArea, 
+  ViewAction_Zoom, 
+  ViewAction_Pan, 
+  ViewAction_GlobalPan, 
+  ViewAction_Front, 
+  ViewAction_Back, 
+  ViewAction_Top, 
+  ViewAction_Bottom,
+  ViewAction_Left, 
+  ViewAction_Right, 
+  ViewAction_Axo, 
+  ViewAction_Rotation, 
+  ViewAction_Reset, 
+  ViewAction_HlrOff, 
+  ViewAction_HlrOn, 
+  ViewAction_Shading, 
+  ViewAction_Wireframe, 
+  ViewAction_Transparency 
+};
+enum RaytraceAction 
+{ 
+  RaytraceAction_Raytracing, 
+  RaytraceAction_Shadows, 
+  RaytraceAction_Reflections, 
+  RaytraceAction_Antialiasing 
+};
 
 //! Qt widget containing V3d_View and toolbar with view manipulation buttons.
 //! Also use AIS_ViewController for redirecting user input (mouse, keyboard)
@@ -128,7 +162,7 @@ private:
   void initViewActions();
   void initRaytraceActions();
 
-  QAction* RegisterAction(QString theIconPath, QString thePromt, void (View::*theSlot)(void));
+  QAction* RegisterAction(QString theIconPath, QString thePromt);
 
 private:
   bool myIsRaytracing;

@@ -118,7 +118,7 @@ View::View (const Handle(AIS_InteractiveContext)& theContext, bool theIs3dView, 
   setAttribute(Qt::WA_NoSystemBackground);
 
   myDefaultGestures = myMouseGestureMap;
-  myCurrentMode = CurrentAction3d::Nothing;
+  myCurrentMode = CurrentAction3d_Nothing;
   setMouseTracking(true);
 
   initViewActions();
@@ -148,10 +148,12 @@ void View::init()
 
   if (myIs3dView)
   {
+    SetAllowRotation(Standard_True);
     myV3dView->SetBackgroundColor(Quantity_Color(0.0, 0.0, 0.3, Quantity_TOC_RGB));
   }
   else
   {
+    SetAllowRotation(Standard_False);
     myV3dView->SetBackgroundColor(Quantity_Color(0.0, 0.2, 0.0, Quantity_TOC_RGB));
     myV3dView->SetProj(V3d_Zpos);
   }
@@ -205,9 +207,9 @@ void View::hlrOff()
   QApplication::setOverrideCursor(Qt::WaitCursor);
   myV3dView->SetComputedMode(Standard_False);
   myV3dView->Redraw();
-  QAction* aShadingAction = getViewAction(ViewAction::Shading);
+  QAction* aShadingAction = getViewAction(ViewAction_Shading);
   aShadingAction->setEnabled(true);
-  QAction* aWireframeAction = getViewAction(ViewAction::Wireframe);
+  QAction* aWireframeAction = getViewAction(ViewAction_Wireframe);
   aWireframeAction->setEnabled(true);
   QApplication::restoreOverrideCursor();
 }
@@ -217,9 +219,9 @@ void View::hlrOn()
   QApplication::setOverrideCursor(Qt::WaitCursor);
   myV3dView->SetComputedMode(Standard_True);
   myV3dView->Redraw();
-  QAction* aShadingAction = getViewAction(ViewAction::Shading);
+  QAction* aShadingAction = getViewAction(ViewAction_Shading);
   aShadingAction->setEnabled(false);
-  QAction* aWireframeAction = getViewAction(ViewAction::Wireframe);
+  QAction* aWireframeAction = getViewAction(ViewAction_Wireframe);
   aWireframeAction->setEnabled(false);
   QApplication::restoreOverrideCursor();
 }
@@ -252,9 +254,9 @@ void View::onRaytraceAction()
 {
   QAction* aSentBy = (QAction*)sender();
 
-  if (aSentBy == myRaytraceActions.value(RaytraceAction::ToolRaytracing))
+  if (aSentBy == myRaytraceActions.value(RaytraceAction_Raytracing))
   {
-    bool aState = myRaytraceActions.value(RaytraceAction::ToolRaytracing)->isChecked();
+    bool aState = myRaytraceActions.value(RaytraceAction_Raytracing)->isChecked();
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     if (aState)
@@ -264,21 +266,21 @@ void View::onRaytraceAction()
     QApplication::restoreOverrideCursor();
   }
 
-  if (aSentBy == myRaytraceActions.value(RaytraceAction::ToolShadows))
+  if (aSentBy == myRaytraceActions.value(RaytraceAction_Shadows))
   {
-    bool aState = myRaytraceActions.value(RaytraceAction::ToolShadows)->isChecked();
+    bool aState = myRaytraceActions.value(RaytraceAction_Shadows)->isChecked();
     SetRaytracedShadows(aState);
   }
 
-  if (aSentBy == myRaytraceActions.value(RaytraceAction::ToolReflections))
+  if (aSentBy == myRaytraceActions.value(RaytraceAction_Reflections))
   {
-    bool aState = myRaytraceActions.value(RaytraceAction::ToolReflections)->isChecked();
+    bool aState = myRaytraceActions.value(RaytraceAction_Reflections)->isChecked();
     SetRaytracedReflections(aState);
   }
 
-  if (aSentBy == myRaytraceActions.value(RaytraceAction::ToolAntialiasing))
+  if (aSentBy == myRaytraceActions.value(RaytraceAction_Antialiasing))
   {
-    bool aState = myRaytraceActions.value(RaytraceAction::ToolAntialiasing)->isChecked();
+    bool aState = myRaytraceActions.value(RaytraceAction_Antialiasing)->isChecked();
     SetRaytracedAntialiasing(aState);
   }
 }
@@ -318,7 +320,7 @@ void View::updateToggled(bool isOn)
     return;
   }
 
-  for (QAction* anAction : myViewActions)
+  foreach (QAction* anAction, myViewActions)
   {
     if (anAction && (anAction != sentBy))
     {
@@ -327,15 +329,15 @@ void View::updateToggled(bool isOn)
     }
     else
     {
-      if (sentBy == myViewActions.value(ViewAction::FitArea))
+      if (sentBy == myViewActions.value(ViewAction_FitArea))
         setCursor(*handCursor);
-      else if (sentBy == myViewActions.value(ViewAction::Zoom))
+      else if (sentBy == myViewActions.value(ViewAction_Zoom))
         setCursor(*zoomCursor);
-      else if (sentBy == myViewActions.value(ViewAction::Pan))
+      else if (sentBy == myViewActions.value(ViewAction_Pan))
         setCursor(*panCursor);
-      else if (sentBy == myViewActions.value(ViewAction::GlobalPan))
+      else if (sentBy == myViewActions.value(ViewAction_GlobalPan))
         setCursor(*globPanCursor);
-      else if (sentBy == myViewActions.value(ViewAction::Rotation))
+      else if (sentBy == myViewActions.value(ViewAction_Rotation))
         setCursor(*rotCursor);
       else
         setCursor(*defCursor);
@@ -391,12 +393,11 @@ QPaintEngine* View::paintEngine() const
   return 0;
 }
 
-QAction* View::RegisterAction(QString theIconPath, QString thePromt, void (View::*theSlot)(void))
+QAction* View::RegisterAction(QString theIconPath, QString thePromt)
 {
   QAction* anAction = new QAction(QPixmap(theIconPath), thePromt, this);
   anAction->setToolTip(thePromt);
   anAction->setStatusTip(thePromt);
-  connect(anAction, &QAction::triggered, this, theSlot);
   return anAction;
 }
 
@@ -404,34 +405,40 @@ void View::initViewActions()
 {
   if (!myViewActions.empty())
     return;
-  myViewActions[ViewAction::FitAll] = RegisterAction(":/icons/view_fitall.png", tr("Fit all"), &View::fitAll);
+  myViewActions[ViewAction_FitAll] = RegisterAction(":/icons/view_fitall.png", tr("Fit all"));
+  connect(myViewActions[ViewAction_FitAll], SIGNAL(triggered()), this, SLOT(fitAll()));
   if (myIs3dView)
   {
-    myViewActions[ViewAction::Axo] = RegisterAction(":/icons/view_axo.png", tr("Isometric"), &View::axo);
+    myViewActions[ViewAction_Axo] = RegisterAction(":/icons/view_axo.png", tr("Isometric"));
+    connect(myViewActions[ViewAction_Axo], SIGNAL(triggered()), this, SLOT(axo()));
 
     QActionGroup* aShadingActionGroup = new QActionGroup(this);
-    QAction* aShadingAction = RegisterAction(":/icons/tool_shading.png", tr("Shading"), &View::shading);
+    QAction* aShadingAction = RegisterAction(":/icons/tool_shading.png", tr("Shading"));
+    connect(aShadingAction, SIGNAL(triggered()), this, SLOT(shading()));
     aShadingAction->setCheckable(true);
     aShadingActionGroup->addAction(aShadingAction);
-    myViewActions[ViewAction::Shading] = aShadingAction;
+    myViewActions[ViewAction_Shading] = aShadingAction;
 
-    QAction* aWireframeAction = RegisterAction(":/icons/tool_wireframe.png", tr("Wireframe"), &View::wireframe);
+    QAction* aWireframeAction = RegisterAction(":/icons/tool_wireframe.png", tr("Wireframe"));
+    connect(aWireframeAction, SIGNAL(triggered()), this, SLOT(wireframe()));
     aWireframeAction->setCheckable(true);
     aShadingActionGroup->addAction(aWireframeAction);
-    myViewActions[ViewAction::Wireframe] = aWireframeAction;
+    myViewActions[ViewAction_Wireframe] = aWireframeAction;
 
     QActionGroup* aHlrActionGroup = new QActionGroup(this);
-    QAction* aHlrOffAction = RegisterAction(":/icons/view_comp_off.png", tr("HLR off"), &View::hlrOff);
+    QAction* aHlrOffAction = RegisterAction(":/icons/view_comp_off.png", tr("HLR off"));
+    connect(aHlrOffAction, SIGNAL(triggered()), this, SLOT(hlrOff()));
     aHlrOffAction->setCheckable(true);
     aHlrActionGroup->addAction(aHlrOffAction);
-    myViewActions[ViewAction::HlrOff] = aHlrOffAction;
+    myViewActions[ViewAction_HlrOff] = aHlrOffAction;
 
-    QAction* aHlrOnAction = RegisterAction(":/icons/view_comp_on.png", tr("HLR on"), &View::hlrOn);
+    QAction* aHlrOnAction = RegisterAction(":/icons/view_comp_on.png", tr("HLR on"));
+    connect(aHlrOnAction, SIGNAL(triggered()), this, SLOT(hlrOn()));
     aHlrOnAction->setCheckable(true);
     aHlrActionGroup->addAction(aHlrOnAction);
-    myViewActions[ViewAction::HlrOn] = aHlrOnAction;
+    myViewActions[ViewAction_HlrOn] = aHlrOnAction;
 
-    myViewActions[ViewAction::Transparency] = RegisterAction(":/icons/tool_transparency.png", tr("Transparency"), &View::onTransparency);
+    myViewActions[ViewAction_Transparency] = RegisterAction(":/icons/tool_transparency.png", tr("Transparency"));
   }
 }
 
@@ -442,23 +449,27 @@ void View::initRaytraceActions()
     return;
   }
 
-  QAction* aRayTraceAction = RegisterAction(":/icons/raytracing.png", tr("Ray-tracing"), &View::onRaytraceAction);
-  myRaytraceActions[RaytraceAction::ToolRaytracing] = aRayTraceAction;
+  QAction* aRayTraceAction = RegisterAction(":/icons/raytracing.png", tr("Ray-tracing"));
+  connect(aRayTraceAction, SIGNAL(triggered()), this, SLOT(onRaytraceAction()));
+  myRaytraceActions[RaytraceAction_Raytracing] = aRayTraceAction;
   aRayTraceAction->setCheckable(true);
   aRayTraceAction->setChecked(false);
 
-  QAction* aShadowAction = RegisterAction(":/icons/shadows.png", tr("Shadows"), &View::onRaytraceAction);
-  myRaytraceActions[RaytraceAction::ToolShadows] = aShadowAction;
+  QAction* aShadowAction = RegisterAction(":/icons/shadows.png", tr("Shadows"));
+  connect(aShadowAction, SIGNAL(triggered()), this, SLOT(onRaytraceAction()));
+  myRaytraceActions[RaytraceAction_Shadows] = aShadowAction;
   aShadowAction->setCheckable(true);
   aShadowAction->setChecked(true);
 
-  QAction* aReflectAction = RegisterAction(":/icons/reflections.png", tr("Reflections"), &View::onRaytraceAction);
-  myRaytraceActions[RaytraceAction::ToolReflections] = aReflectAction;
+  QAction* aReflectAction = RegisterAction(":/icons/reflections.png", tr("Reflections"));
+  connect(aReflectAction, SIGNAL(triggered()), this, SLOT(onRaytraceAction()));
+  myRaytraceActions[RaytraceAction_Reflections] = aReflectAction;
   aReflectAction->setCheckable(true);
   aReflectAction->setChecked(false);
 
-  QAction* anAntiAliasingAction = RegisterAction(":/icons/antialiasing.png", tr("Anti-aliasing"), &View::onRaytraceAction);
-  myRaytraceActions[RaytraceAction::ToolAntialiasing] = anAntiAliasingAction;
+  QAction* anAntiAliasingAction = RegisterAction(":/icons/antialiasing.png", tr("Anti-aliasing"));
+  connect(anAntiAliasingAction, SIGNAL(triggered()), this, SLOT(onRaytraceAction()));
+  myRaytraceActions[RaytraceAction_Antialiasing] = anAntiAliasingAction;
   anAntiAliasingAction->setCheckable(true);
   anAntiAliasingAction->setChecked(false);
 }
@@ -468,12 +479,12 @@ void View::activateCursor(const CurrentAction3d theMode)
   QCursor* aCursor = defCursor;
   switch (theMode)
   {
-    case CurrentAction3d::DynamicPanning:  aCursor = panCursor; break;
-    case CurrentAction3d::DynamicZooming:  aCursor = zoomCursor; break;
-    case CurrentAction3d::DynamicRotation: aCursor = rotCursor; break;
-    case CurrentAction3d::GlobalPanning:   aCursor = globPanCursor; break;
-    case CurrentAction3d::WindowZooming:   aCursor = handCursor; break;
-    case CurrentAction3d::Nothing:         aCursor = defCursor; break;
+    case CurrentAction3d_DynamicPanning:  aCursor = panCursor; break;
+    case CurrentAction3d_DynamicZooming:  aCursor = zoomCursor; break;
+    case CurrentAction3d_DynamicRotation: aCursor = rotCursor; break;
+    case CurrentAction3d_GlobalPanning:   aCursor = globPanCursor; break;
+    case CurrentAction3d_WindowZooming:   aCursor = handCursor; break;
+    case CurrentAction3d_Nothing:         aCursor = defCursor; break;
     default:
       break;
   }
@@ -483,10 +494,6 @@ void View::activateCursor(const CurrentAction3d theMode)
 void View::mousePressEvent(QMouseEvent* theEvent)
 {
   Qt::MouseButtons aMouseButtons = theEvent->buttons();
-  if (!myIs3dView)
-  {
-    aMouseButtons.setFlag(Qt::LeftButton, false);
-  }
   const Graphic3d_Vec2i aPnt(theEvent->pos().x(), theEvent->pos().y());
   const Aspect_VKeyFlags aFlags = qtMouseModifiers2VKeys(theEvent->modifiers());
   if (!myV3dView.IsNull()
@@ -500,10 +507,6 @@ void View::mousePressEvent(QMouseEvent* theEvent)
 void View::mouseReleaseEvent(QMouseEvent* theEvent)
 {
   Qt::MouseButtons aMouseButtons = theEvent->buttons();
-  if (!myIs3dView)
-  {
-    aMouseButtons.setFlag(Qt::LeftButton, false);
-  }
   const Graphic3d_Vec2i aPnt(theEvent->pos().x(), theEvent->pos().y());
   const Aspect_VKeyFlags aFlags = qtMouseModifiers2VKeys(theEvent->modifiers());
   if (!myV3dView.IsNull()
@@ -512,23 +515,19 @@ void View::mouseReleaseEvent(QMouseEvent* theEvent)
     updateView();
   }
 
-  if (myCurrentMode == CurrentAction3d::GlobalPanning)
+  if (myCurrentMode == CurrentAction3d_GlobalPanning)
   {
     myV3dView->Place(aPnt.x(), aPnt.y(), myCurZoom);
   }
-  if (myCurrentMode != CurrentAction3d::Nothing)
+  if (myCurrentMode != CurrentAction3d_Nothing)
   {
-    setCurrentAction(CurrentAction3d::Nothing);
+    setCurrentAction(CurrentAction3d_Nothing);
   }
 }
 
 void View::mouseMoveEvent(QMouseEvent* theEvent)
 {
   Qt::MouseButtons aMouseButtons = theEvent->buttons();
-  if (!myIs3dView)
-  {
-    aMouseButtons.setFlag(Qt::LeftButton, false);
-  }
   const Graphic3d_Vec2i aNewPos(theEvent->pos().x(), theEvent->pos().y());
   if (!myV3dView.IsNull()
     && UpdateMousePosition(aNewPos, qtMouseButtons2VKeys(aMouseButtons), qtMouseModifiers2VKeys(theEvent->modifiers()), false))
@@ -567,31 +566,31 @@ void View::defineMouseGestures()
   activateCursor(myCurrentMode);
   switch (myCurrentMode)
   {
-    case CurrentAction3d::Nothing:
+    case CurrentAction3d_Nothing:
     {
       myMouseGestureMap = myDefaultGestures;
       break;
     }
-    case CurrentAction3d::DynamicZooming:
+    case CurrentAction3d_DynamicZooming:
     {
       myMouseGestureMap.Bind(Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Zoom);
       break;
     }
-    case CurrentAction3d::GlobalPanning:
+    case CurrentAction3d_GlobalPanning:
     {
       break;
     }
-    case CurrentAction3d::WindowZooming:
+    case CurrentAction3d_WindowZooming:
     {
       myMouseGestureMap.Bind(Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_ZoomWindow);
       break;
     }
-    case CurrentAction3d::DynamicPanning:
+    case CurrentAction3d_DynamicPanning:
     {
       myMouseGestureMap.Bind(Aspect_VKeyMouse_LeftButton, AIS_MouseGesture_Pan);
       break;
     }
-    case CurrentAction3d::DynamicRotation:
+    case CurrentAction3d_DynamicRotation:
     {
       myMouseGestureMap.Bind(Aspect_VKeyMouse_LeftButton, aRot);
       break;
@@ -667,9 +666,11 @@ void View::onTransparencyChanged(int theVal)
 {
   AIS_ListOfInteractive anAisObjectsList;
   myContext->DisplayedObjects(anAisObjectsList);
-  double aTranspValue = theVal / 10.;
-  for (Handle(AIS_InteractiveObject) anAisObject : anAisObjectsList)
+  double aTranspValue = theVal / 10.;  
+  for(AIS_ListOfInteractive::Iterator anIter(anAisObjectsList);
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anAisObject = anIter.Value();
     myContext->SetTransparency(anAisObject, aTranspValue, Standard_False);
   }
   myContext->UpdateCurrentViewer();

@@ -298,8 +298,11 @@ void OcafSamples::ModifyBoxOcafSample()
   AIS_ListOfInteractive anAisObjectsList;
   myContext->DisplayedObjects(anAisObjectsList);
   Standard_Integer aBoxCount(0);
-  for (Handle(AIS_InteractiveObject) anAisObject : anAisObjectsList)
+  for(AIS_ListOfInteractive::Iterator anIter(anAisObjectsList);
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anAisObject = anIter.Value();
+
     // Get the main label of the selected object
     Handle(TPrsStd_AISPresentation) anAisPresentation = Handle(TPrsStd_AISPresentation)::DownCast(anAisObject->GetOwner());
     TDF_Label aLabel = anAisPresentation->Label();
@@ -398,8 +401,10 @@ void OcafSamples::ModifyCylinderOcafSample()
   AIS_ListOfInteractive anAisObjectsList;
   myContext->DisplayedObjects(anAisObjectsList);
   Standard_Integer aCylCount(0);
-  for (Handle(AIS_InteractiveObject) anAisObject : anAisObjectsList)
+  for(AIS_ListOfInteractive::Iterator anIter (anAisObjectsList);
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anAisObject = anIter.Value();
     // Get the main label of the selected object
     Handle(TPrsStd_AISPresentation) anAisPresentation = Handle(TPrsStd_AISPresentation)::DownCast(anAisObject->GetOwner());
     TDF_Label aLabel = anAisPresentation->Label();
@@ -534,7 +539,7 @@ void OcafSamples::DialogOpenOcafSample()
   }
   // Open the document in the current application
   PCDM_ReaderStatus aReaderStatus = anOcaf_Application->Open(myFileName, myOcafDoc);
-  if (aReaderStatus == PCDM_ReaderStatus::PCDM_RS_OK)
+  if (aReaderStatus == PCDM_RS_OK)
   {
     // Connect the document CAF (myDoc) with the AISContext (myAISContext)
     TPrsStd_AISViewer::New(myOcafDoc->Main(), myViewer);
@@ -563,7 +568,7 @@ void OcafSamples::DialogSaveBinOcafSample()
   myOcafDoc->ChangeStorageFormat("BinOcaf");
   // Saves the document in the current application
   PCDM_StoreStatus aStoreStatus = anOcaf_Application->SaveAs(myOcafDoc, myFileName);
-  if (aStoreStatus == PCDM_StoreStatus::PCDM_SS_OK)
+  if (aStoreStatus == PCDM_SS_OK)
   {
     myResult << "The file was saved successfully" << std::endl;
   }
@@ -580,7 +585,7 @@ void OcafSamples::DialogSaveXmlOcafSample()
   myOcafDoc->ChangeStorageFormat("XmlOcaf");
   // Saves the document in the current application
   PCDM_StoreStatus aStoreStatus = anOcaf_Application->SaveAs(myOcafDoc, myFileName);
-  if (aStoreStatus == PCDM_StoreStatus::PCDM_SS_OK)
+  if (aStoreStatus == PCDM_SS_OK)
   {
     myResult << "The file was saved successfully" << std::endl;
   }

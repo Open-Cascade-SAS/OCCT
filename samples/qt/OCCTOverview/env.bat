@@ -5,8 +5,8 @@ if exist "%~dp0custom.bat" (
 )
 
 call "%CASROOT%\env.bat" %1 %2 %3
-
 if /I ["%1"] == ["vc141"] set "VCVER=vc141"
+if /I ["%1"] == ["vc142"] set "VCVER=vc142"
 set "BIN_DIR=win%ARCH%\%VCVER%\bind"
 set "LIB_DIR=win%ARCH%\%VCVER%\libd"
 
@@ -27,3 +27,5 @@ if not "%QTDIR%" == "" (
   set "PATH=%QTDIR%/bin;%PATH%"
   set "QT_QPA_PLATFORM_PLUGIN_PATH=%QTDIR%\plugins\platforms"
 )
+
+set "CSF_OCCTOverviewSampleCodePath=%~dp0..\..\OCCTOverview\code"

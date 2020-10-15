@@ -37,7 +37,7 @@ public:
                        const Handle(V3d_View)& theView,
                        const Handle(AIS_InteractiveContext)& theContext)
   : BaseSample (theSampleSourcePath, theContext),
-    myStepType (STEPControl_StepModelType::STEPControl_AsIs),
+    myStepType (STEPControl_AsIs),
     myView (theView)
   {
     //

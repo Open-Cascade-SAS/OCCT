@@ -1,0 +1,20 @@
+<Menu>
+  <MenuItem name="Viewer 2D">
+    <MenuItem name="Labels">
+      <Sample name="Text" function="TextView2dSample"/>
+      <Sample name="Marker" function="MarkerView2dSample"/>
+      <Sample name="Fill Area" function="FillAreaView2dSample"/>
+      <Sample name="Loop on face" function="LoopOnFaceView2dSample"/>
+    </MenuItem>
+    <MenuItem name="Grids">
+      <Sample name="Rectagular Lines" function="RectagularLineGrid2dSample"/>
+      <Sample name="Rectagular Points" function="RectagularPointGrid2dSample"/>
+      <Sample name="Circular Lines" function="CircularLineGrid2dSample"/>
+      <Sample name="Circular Points" function="CircularPointGrid2dSample"/>
+      <Sample name="Clear" function="ClearGrid2dSample"/>
+    </MenuItem>
+    <MenuItem name="Image">
+      <Sample name="Backgroung Image" function="BackgroungImage2dSample"/>
+    </MenuItem>
+  </MenuItem>
+</Menu>

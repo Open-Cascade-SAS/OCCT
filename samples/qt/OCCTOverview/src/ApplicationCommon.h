@@ -40,6 +40,7 @@
 #include <Standard_WarningsDisable.hxx>
 #include <QApplication>
 #include <QAction>
+#include <QDomNode>
 #include <QList>
 #include <QMainWindow>
 #include <QMdiArea>
@@ -52,36 +53,22 @@
 
 enum StdActions
 {
-  FileNew, FilePrefUseVBO, FileClose, FilePreferences, FileQuit, ViewTool, ViewStatus, HelpAbout
-};
-
-enum ToolActions
-{
-  ToolWireframe, ToolShading, ToolColor, ToolMaterial, ToolTransparency, ToolDelete
+  StdActions_FileQuit, 
+  StdActions_HelpAbout
 };
 
 enum ApplicationType
 {
-  Geometry,
-  Topology,
-  Triangulation,
-  DataExchange,
-  Ocaf,
-  Viewer2d,
-  Viewer3d,
-  Unknown
+  AppType_Geometry,
+  AppType_Topology,
+  AppType_Triangulation,
+  AppType_DataExchange,
+  AppType_Ocaf,
+  AppType_Viewer2d,
+  AppType_Viewer3d,
+  AppType_Unknown
 };
 
-const QMap<ApplicationType, QString> ALL_CATEGORIES =
-{
-  { ApplicationType::Geometry,"Geometry"},
-  { ApplicationType::Topology, "Topology"},
-  { ApplicationType::Triangulation, "Triangulation"},
-  { ApplicationType::DataExchange, "DataExchange"},
-  { ApplicationType::Ocaf, "OCAF"},
-  { ApplicationType::Viewer3d, "3D viewer"},
-  { ApplicationType::Viewer2d, "2D Viewer"}
-};
 
 //! Main application window
 class COMMONSAMPLE_EXPORT ApplicationCommonWindow: public QMainWindow
@@ -104,9 +91,7 @@ public slots:
   virtual void onChangeCategory(const QString& theCategory);
 
 protected:
-  template <typename PointerToMemberFunction>
-  QAction* CreateAction(PointerToMemberFunction theHandlerMethod,
-                        const QString& theActionName,
+  QAction* CreateAction(const QString& theActionName,
                         const QString& theShortcut = "",
                         const QString& theIconName = "");
 
@@ -118,13 +103,13 @@ protected:
   QMenu*        getFilePopup()  { return myFilePopup; }
   QToolBar*     getCasCadeBar() { return myCasCadeBar; }
 
-  QMenu* MenuFromJsonObject (const QJsonValue& theJsonValue,
-                             const QString& theKey,
-                             QWidget* theParent,
-                             QSignalMapper* theMapper);
-  void MenuFormJson (const QString& thePath,
+  void MenuFormXml (const QString& thePath,
                      QSignalMapper* theMapper,
                      QList<QMenu*>& theMunusList);
+  QMenu* MenuFromDomNode(QDomElement& theItemElement,
+                         QWidget* theParent,
+                         QSignalMapper* theMapper);
+
 
 private slots:
   void onCloseAllWindows() { qApp->closeAllWindows(); }
@@ -147,6 +132,7 @@ private:
 
 private:
   ApplicationType myAppType;
+  QMap<ApplicationType, QString> ALL_CATEGORIES;
 
   Handle(GeometrySamples)      myGeometrySamples;
   Handle(TopologySamples)      myTopologySamples;
@@ -158,7 +144,6 @@ private:
 
   QMap<StdActions,               QAction*>  myStdActions;
   QMap<ApplicationType,          QAction*>  myCategoryActions;
-  QMap<ToolActions,              QAction*>  myToolActions;
   QMap<Graphic3d_NameOfMaterial, QAction*>  myMaterialActions;
 
   QToolBar*        myStdToolBar;
@@ -167,7 +152,6 @@ private:
   QMenu*           myFilePopup;
   QMenu*           myCategoryPopup;
 
-//  QList<QMenu*>    mySamplePopups;
   QList<QMenu*>    myGeometryMenus;
   QList<QMenu*>    myTopologyMenus;
   QList<QMenu*>    myTriangulationMenus;

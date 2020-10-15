@@ -1,0 +1,21 @@
+<Menu>
+  <MenuItem name="OCAF">
+    <MenuItem name="1 Create">
+      <Sample name="Create Box" function="CreateBoxOcafSample"/>
+      <Sample name="Create Cylinder" function="CreateCylinderOcafSample"/>
+    </MenuItem>
+    <MenuItem name="2 Modify">
+      <Sample name="Modify Box" function="ModifyBoxOcafSample"/>
+      <Sample name="Modify Cylinder" function="ModifyCylinderOcafSample"/>
+    </MenuItem>
+    <MenuItem name="3 Action">
+      <Sample name="Undo" function="UndoOcafSample"/>
+      <Sample name="Redo" function="RedoOcafSample"/>
+    </MenuItem>
+    <MenuItem name="4 Data storage">
+      <Sample name="Open OCAF" function="DialogOpenOcafSample"/>
+      <Sample name="Save binary OCAF" function="DialogSaveBinOcafSample"/>
+      <Sample name="Save XML OCAF" function="DialogSaveXmlOcafSample"/>
+    </MenuItem>
+  </MenuItem>
+</Menu>

@@ -1,0 +1,92 @@
+<Menu>
+  <MenuItem name="Non Parametric">
+    <MenuItem name="Free creating">
+      <MenuItem name="3D">
+        <Sample name="Zero Dimension objects" function="ZeroDimensionObjects3dSample"/>
+        <Sample name="Vectors" function="Vectors3dSample"/>
+        <Sample name="Infinity lines" function="InfinityLines3dSample"/>
+        <Sample name="Second order curves" function="SecondOrderCurves3dSample"/>
+        <Sample name="Plane surfaces" function="PlaneSurfaces3dSample"/>
+        <Sample name="Second order surfaces" function="SecondOrderSurfaces3dSample"/>
+      </MenuItem>
+      <MenuItem name="2D">
+        <Sample name="Zero Dimension objects" function="ZeroDimensionObjects2dSample"/>
+        <Sample name="Vectors" function="Vectors2dSample"/>
+        <Sample name="Infinity lines" function="InfinityLines2dSample"/>
+        <Sample name="Second order curves" function="SecondOrderCurves2dSample"/>
+      </MenuItem>
+    </MenuItem>
+    <MenuItem name="Creating based on criteria">
+      <MenuItem name="3D">
+        <Sample name="Barycenter point" function="BarycenterPoint3dSample"/>
+        <Sample name="Rotated vector" function="RotatedVector3dSample"/>
+        <Sample name="Mirrored line" function="MirroredLine3dSample"/>
+        <Sample name="Scaled Ellipse" function="ScaledEllipse3dSample"/>
+        <Sample name="Transformed cylinder" function="TransformedCylinder3dSample"/>
+        <Sample name="Translated torus" function="TranslatedTorus3dSample"/>
+        <Sample name="Conjugate objects" function="ConjugateObjects3dSample"/>
+        <Sample name="Projection of point" function="ProjectionOfPoint3dSample"/>
+        <Sample name="Minimal distance" function="MinimalDistance3dSample"/>
+        <Sample name="Intersection" function="Intersection3dSample"/>
+      </MenuItem>
+      <MenuItem name="2D">
+        <Sample name="Translated point" function="TranslatedPoint2dSample"/>
+        <Sample name="Rotated direction" function="RotatedDirection2dSample"/>
+        <Sample name="Mirrored axis" function="MirroredAxis2dSample"/>
+        <Sample name="Transformed ellipse" function="TransformedEllipse2dSample"/>
+        <Sample name="Conjugate objects" function="ConjugateObjects2dSample"/>
+        <Sample name="Tangent to 2 cilcles" function="Tangent2dSample"/>
+        <Sample name="Projection of point" function="ProjectionOfPoint2dSample"/>
+        <Sample name="Minimal distance" function="MinimalDistance2dSample"/>
+        <Sample name="Intersection" function="Intersection2dSample"/>
+      </MenuItem>
+    </MenuItem>
+    <MenuItem name="Data extraction">
+      <MenuItem name="3D">
+        <Sample name="Point info" function="PointInfo3dSample"/>
+        <Sample name="Ellipse info" function="EllipseInfo3dSample"/>
+      </MenuItem>
+      <MenuItem name="2D">
+        <Sample name="Point info" function="PointInfo2dSample"/>
+        <Sample name="Circle info" function="CircleInfo2dSample"/>
+      </MenuItem>
+    </MenuItem>
+  </MenuItem>
+  <MenuItem name="Parametric">
+    <MenuItem name="Free creating">
+      <MenuItem name="3D">
+        <Sample name="Free style curves" function="FreeStyleCurves3dSample"/>
+        <Sample name="Analytical surfaces" function="AnalyticalSurfaces3dSample"/>
+        <Sample name="Free style surfaces" function="FreeStyleSurfaces3dSample"/>
+      </MenuItem>
+      <MenuItem name="2D">
+        <Sample name="Free style curves" function="FreeStyleCurves2dSample"/>
+      </MenuItem>
+    </MenuItem>
+    <MenuItem name="Creating based on geometry">
+      <MenuItem name="3D">
+        <Sample name="Trimmed curve" function="TrimmedCurve3dSample"/>
+        <Sample name="Offset curve" function="OffsetCurve3dSample"/>
+        <Sample name="BSpline from circle" function="BSplineFromCircle3dSample"/>
+        <Sample name="Trimmed surface" function="TrimmedSurface3dSample"/>
+        <Sample name="Offset surface" function="OffsetSurface3dSample"/>
+        <Sample name="Extrusion surface" function="ExtrusionSurface3dSample"/>
+        <Sample name="Revolution surface" function="RevolutionSurface3dSample"/>
+      </MenuItem>
+      <MenuItem name="2D">
+        <Sample name="Trimmed curve" function="TrimmedCurve2dSample"/>
+        <Sample name="Offset curve" function="OffsetCurve2dSample"/>
+      </MenuItem>
+    </MenuItem>
+    <MenuItem name="Extract geometry">
+      <Sample name="Bounding box of surface (3D)" function="BoundingBoxOfSurface3dSample"/>
+      <Sample name="Bounding box of curves (3D)" function="BoundingBoxOfCurves3dSample"/>
+      <Sample name="Bounding box of curves (2D)" function="BoundingBoxOfCurves2dSample"/>
+    </MenuItem>
+    <MenuItem name="Data extraction">
+      <Sample name="Dump circle info" function="DumpCircleInfoSample"/>
+      <Sample name="Dump BSpline curve info" function="DumpBSplineCurveInfoSample"/>
+    </MenuItem>
+
+  </MenuItem>
+</Menu>

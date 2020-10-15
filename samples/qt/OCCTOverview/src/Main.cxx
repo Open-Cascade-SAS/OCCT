@@ -25,7 +25,6 @@
 
 #include <Standard_WarningsDisable.hxx>
 #include <QApplication>
-#include <QCommandLineParser>
 #include <QLocale>
 #include <QSettings>
 #include <QStringList>
@@ -34,9 +33,11 @@
 
 int main ( int argc, char* argv[] )
 {
-  Q_INIT_RESOURCE(OCCTOverview);
-
   QApplication aQApp( argc, argv );
+
+#include <Standard_WarningsDisable.hxx>
+  Q_INIT_RESOURCE(OCCTOverview);
+#include <Standard_WarningsRestore.hxx>
 
   QSettings settings("OCCTOverview.conf", QSettings::IniFormat);
   settings.beginGroup("ApplicationSetting");

@@ -25,7 +25,7 @@
 #include <Standard_Macro.hxx>
 
 #include <Standard_WarningsDisable.hxx>
-#include <QRegularExpression>
+#include <QRegExp>
 #include <QSyntaxHighlighter>
 #include <QString>
 #include <QTextDocument>
@@ -51,15 +51,17 @@ protected:
 private:
   struct HighlightingRule
   {
-    QRegularExpression myPattern;
+    QRegExp myPattern;
     QTextCharFormat myFormat;
   };
 
 private:
   QVector<HighlightingRule> myHighlightingRules;
-
-  QRegularExpression myCommentStartExpression;
-  QRegularExpression myCommentEndExpression;
+  // QRegExp (Qt4+) introduced by the patch as alternative to QRegularExpression 
+  // (Qt5+) for compatibility reasons. QRegExp will be moved in future Qt6 to 
+  // a qt5compat module: QRegExp -> Qt5::QRegExp
+  QRegExp myCommentStartExpression;
+  QRegExp myCommentEndExpression;
 
   QTextCharFormat myKeywordFormat;
   QTextCharFormat mySingleLineCommentFormat;

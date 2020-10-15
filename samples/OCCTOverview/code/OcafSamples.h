@@ -44,8 +44,6 @@ public:
     //
   }
 
-  enum ExchangeType { None, Binary, Xml };
-
   virtual void Process (const TCollection_AsciiString& theSampleName) Standard_OVERRIDE;
 
   void ClearExtra();
@@ -75,11 +73,9 @@ private:
 
 private:
 
-  ExchangeType             myExchangeType;
   TCollection_AsciiString  myFileName;
   Handle(V3d_Viewer)       myViewer;
   Handle(TDocStd_Document) myOcafDoc;
-
 };
 
 #endif  //OCAFSAMPLES_H

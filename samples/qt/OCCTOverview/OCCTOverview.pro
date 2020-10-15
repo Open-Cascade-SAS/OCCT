@@ -2,14 +2,15 @@ TEMPLATE = app
 CONFIG += debug_and_release qt
 CONFIG += lrelease
 CONFIG += embed_translations
-QT += widgets
+QT     += xml
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+} 
 
 TARGET = OCCTOverview
 
 SAMPLESROOT = $$quote($$(CSF_OCCTSamplesPath)/qt)
 
-FREEIMAGE_DIR = $$quote($$(FREEIMAGE_DIR))
-TBB_DIR = $$quote($$(TBB_DIR))
 
 HEADERS   = ./src/*.h \
             $${SAMPLESROOT}/../OCCTOverview/code/*.h

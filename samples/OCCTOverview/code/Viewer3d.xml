@@ -1,0 +1,31 @@
+<Menu>
+  <MenuItem name="Viewer 3D">
+    <MenuItem name="Light source">
+      <Sample name="Spot" function="SpotLight3dSample"/>
+      <Sample name="Positional" function="PositionalLight3dSample"/>
+      <Sample name="Directional" function="DirectionalLight3dSample"/>
+      <Sample name="Ambient" function="AmbientLight3dSample"/>
+      <Sample name="Clear" function="ClearLight3dSample"/>
+    </MenuItem>
+    <MenuItem name="Selection mode">
+      <Sample name="Vertices" function="VerticesSelect3dSample"/>
+      <Sample name="Edges" function="EdgesSelect3dSample"/>
+      <Sample name="Faces" function="FacesSelect3dSample"/>
+      <Sample name="Neutral point" function="NeutralPointSelect3dSample"/>
+    </MenuItem>
+    <MenuItem name="Shape presentation">
+      <Sample name="WireFrame" function="WireFramePresentation3dSample"/>
+      <Sample name="Shading" function="ShadingPresentation3dSample"/>
+      <Sample name="Set color to red" function="RedColorPresentation3dSample"/>
+      <Sample name="Set color to gray" function="GrayColorPresentation3dSample"/>
+      <Sample name="Set plastic material" function="PlasticPresentation3dSample"/>
+      <Sample name="Set bronze material" function="BronzePresentation3dSample"/>
+      <Sample name="Set opaque" function="OpaquePresentation3dSample"/>
+      <Sample name="Set half transparency" function="HalfTransparencyPresentation3dSample"/>
+    </MenuItem>
+    <MenuItem name="OpenGL VBO mode">
+      <Sample name="Vertex Buffer Object mode ON" function="VboOn3dSample"/>
+      <Sample name="Vertex Buffer Object mode OFF" function="VboOff3dSample"/>
+    </MenuItem>
+  </MenuItem>
+</Menu>

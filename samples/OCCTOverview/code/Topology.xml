@@ -1,0 +1,51 @@
+<Menu>
+  <MenuItem name="Topology">
+    <MenuItem name="Topological Shape">
+      <Sample name="Vertex" function="Vertex3dSample"/>
+      <Sample name="Edge" function="Edge3dSample"/>
+      <Sample name="Face" function="Face3dSample"/>
+      <Sample name="Wire" function="Wire3dSample"/>
+      <Sample name="Shell" function="Shell3dSample"/>
+      <Sample name="Solid" function="Solid3dSample"/>
+      <Sample name="Edge (2D)" function="Edge2dSample"/>
+    </MenuItem>
+    <MenuItem name="BRep primitive objects">
+      <Sample name="Box" function="Box3dSample"/>
+      <Sample name="Cylinder" function="Cylinder3dSample"/>
+      <Sample name="Revolution" function="Revolution3dSample"/>
+    </MenuItem>
+    <MenuItem name="Topology access">
+      <Sample name="Topology iterator" function="TopologyIterator3dSample"/>
+      <Sample name="Topology explorer" function="TopologyExplorer3dSample"/>
+      <Sample name="Assess to curve" function="AssessToCurve3dSample"/>
+      <Sample name="Assess to composite curve" function="AssessToCompositeCurve3dSample"/>
+      <Sample name="Assess to surface" function="AssessToSurface3dSample"/>
+    </MenuItem>
+    <MenuItem name="Boolean operation">
+      <Sample name="Common" function="Common3dSample"/>
+      <Sample name="Cut" function="Cut3dSample"/>
+      <Sample name="Fuse" function="Fuse3dSample"/>
+      <Sample name="Section" function="Section3dSample"/>
+      <Sample name="Splitter" function="Splitter3dSample"/>
+      <Sample name="Defeaturing" function="Defeaturing3dSample"/>
+    </MenuItem>
+    <MenuItem name="Complex modelling">
+      <Sample name="Fillet" function="Fillet3dSample"/>
+      <Sample name="Chamfer" function="Chamfer3dSample"/>
+      <Sample name="Offset" function="Offset3dSample"/>
+      <Sample name="Evolved" function="Evolved3dSample"/>
+    </MenuItem>
+    <MenuItem name="Modification">
+      <Sample name="Copy" function="Copy3dSample"/>
+      <Sample name="Transform" function="Transform3dSample"/>
+      <Sample name="Convert to NURBS" function="ConvertToNurbs3dSample"/>
+      <Sample name="Sew contiguous faces" function="SewContiguousFaces3dSample"/>
+    </MenuItem>
+    <MenuItem name="Calculation">
+      <Sample name="Check validity" function="CheckValidity3dSample"/>
+      <Sample name="Compute linear properties" function="ComputeLinearProperties3dSample"/>
+      <Sample name="Compute surface properties" function="ComputeSurfaceProperties3dSample"/>
+      <Sample name="Compute volume properties" function="ComputeVolumeProperties3dSample"/>
+    </MenuItem>
+  </MenuItem>
+</Menu>

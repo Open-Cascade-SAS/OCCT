@@ -128,8 +128,10 @@ void DataExchangeSamples::ExecuteSample (const TCollection_AsciiString& theSampl
 void DataExchangeSamples::BrepExportSample()
 {
   Standard_Boolean anIsShapeExist = Standard_False;
-  for (Handle(AIS_InteractiveObject) anObject : myObject3d)
+  for(NCollection_Vector<Handle(AIS_InteractiveObject)>::Iterator anIter(myObject3d); 
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anObject = anIter.Value();
     if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anObject))
     {
       anIsShapeExist = Standard_True;
@@ -167,8 +169,10 @@ void DataExchangeSamples::StepExportSample()
   }
 
   STEPControl_Writer aStepWriter;
-  for (Handle(AIS_InteractiveObject) anObject : myObject3d)
+  for(NCollection_Vector<Handle(AIS_InteractiveObject)>::Iterator anIter(myObject3d); 
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anObject = anIter.Value();
     if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anObject))
     {
       aStatus = aStepWriter.Transfer(aShape->Shape(), myStepType);
@@ -207,8 +211,10 @@ void DataExchangeSamples::IgesExportSample()
                                   Interface_Static::IVal("XSTEP.iges.writebrep.mode"));
 
   Standard_Boolean anIsShapeExist = Standard_False;
-  for (Handle(AIS_InteractiveObject) anObject : myObject3d)
+  for(NCollection_Vector<Handle(AIS_InteractiveObject)>::Iterator anIter(myObject3d);
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anObject = anIter.Value();
     if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anObject))
     {
       anIsShapeExist = Standard_True;
@@ -240,8 +246,10 @@ void DataExchangeSamples::StlExportSample()
   aBuilder.MakeCompound(aTopoCompound);
 
   Standard_Boolean anIsShapeExist = Standard_False;
-  for (Handle(AIS_InteractiveObject) anObject : myObject3d)
+  for(NCollection_Vector<Handle(AIS_InteractiveObject)>::Iterator anIter(myObject3d);
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anObject = anIter.Value();
     if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anObject))
     {
       anIsShapeExist = Standard_True;
@@ -273,8 +281,10 @@ void DataExchangeSamples::VrmlExportSample()
   aBrepBuilder.MakeCompound(aTopoCompound);
 
   Standard_Boolean anIsShapeExist = Standard_False;
-  for (Handle(AIS_InteractiveObject) anObject : myObject3d)
+  for(NCollection_Vector<Handle(AIS_InteractiveObject)>::Iterator anIter(myObject3d);
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anObject = anIter.Value();
     if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anObject))
     {
       anIsShapeExist = Standard_True;
@@ -382,8 +392,10 @@ void DataExchangeSamples::IgesImportSample()
 Standard_Boolean DataExchangeSamples::CheckFacetedBrep()
 {
   Standard_Boolean anError = Standard_False;
-  for (Handle(AIS_InteractiveObject) anObject : myObject3d)
+  for(NCollection_Vector<Handle(AIS_InteractiveObject)>::Iterator anIter (myObject3d);
+      anIter.More(); anIter.Next())
   {
+    const Handle(AIS_InteractiveObject)& anObject = anIter.Value();
     if (Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anObject))
     {
       const TopoDS_Shape aTopoShape = aShape->Shape();

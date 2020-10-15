@@ -1,0 +1,7 @@
+<Menu>
+  <MenuItem name="Triangulation">
+    <MenuItem name="Create Triangulation">
+      <Sample name="Triangulation on shape" function="Triangulation3dSample"/>
+    </MenuItem>
+  </MenuItem>
+</Menu>

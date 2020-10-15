@@ -23,152 +23,121 @@
 
 #include <Standard_WarningsDisable.hxx>
 #include <QFont>
+#include <QStringList>
 #include <Standard_WarningsRestore.hxx>
 
-static const QString anOcctPatterns[] =
-{
-  QStringLiteral("gp_Pnt"), QStringLiteral("gp_XYZ"),  QStringLiteral("gp_Vec"),
-  QStringLiteral("gp_Dir"), QStringLiteral("gp_Ax1"), QStringLiteral("gp_Ax2"),
-  QStringLiteral("gp_Ax3"), QStringLiteral("gp_Lin"), QStringLiteral("gp_Circ"),
-  QStringLiteral("gp_Elips"), QStringLiteral("gp_Parab"), QStringLiteral("gp_Hypr"),
-  QStringLiteral("gp_Cylinder"), QStringLiteral("gp_Cone"), QStringLiteral("gp_Sphere"),
-  QStringLiteral("gp_Torus"), QStringLiteral("gp_Pnt2d"), QStringLiteral("gp_XY"),
-  QStringLiteral("gp_Ax2d"), QStringLiteral("gp_Ax22d"), QStringLiteral("gp_Lin2d"),
-  QStringLiteral("gp_Circ2d."), QStringLiteral("gp_Elips2d"), QStringLiteral("gp_Parab2d"),
-  QStringLiteral("gp_Hypr2d"), QStringLiteral("Geom2d_BSplineCurve"), QStringLiteral("Geom2d_BezierCurve"),
-  QStringLiteral("Geom2d_OffsetCurve"), QStringLiteral("ProjLib"), QStringLiteral("ElSLib"),
-  QStringLiteral("Extrema_ExtElCS"), QStringLiteral("Extrema_POnCurv"), QStringLiteral("IntAna_Quadric"),
-  QStringLiteral("IntAna_IntConicQuad"), QStringLiteral("GccAna_Lin2d2Tan"), QStringLiteral("GccEnt_QualifiedCirc"),
-  QStringLiteral("Geom2dAPI_ProjectPointOnCurve"), QStringLiteral("Geom2dAPI_ExtremaCurveCurve"),
-  QStringLiteral("Geom2dAPI_InterCurveCurve"), QStringLiteral("Geom2dAPI_PointsToBSpline"),
-  QStringLiteral("Geom_CartesianPoint"), QStringLiteral("Geom_VectorWithMagnitude"), QStringLiteral("Geom_Axis1Placement"),
-  QStringLiteral("Geom_Axis2Placement"), QStringLiteral("Geom_Line"),  QStringLiteral("Geom_Circle"),
-  QStringLiteral("Geom_Ellipse"),  QStringLiteral("Geom_Parabola"),  QStringLiteral("Geom_Hyperbola"),
-  QStringLiteral("Geom_BSplineCurve"), QStringLiteral("Geom_BezierCurve"),  QStringLiteral("Geom_TrimmedCurve"),
-  QStringLiteral("Geom_OffsetCurve"), QStringLiteral("Geom_BSplineSurface"), QStringLiteral("Geom_BezierSurface"),
-  QStringLiteral("Geom_Plane"), QStringLiteral("Geom_CylindricalSurface"), QStringLiteral("Geom_ConicalSurface"),
-  QStringLiteral("Geom_SphericalSurface"), QStringLiteral("Geom_ToroidalSurface"), QStringLiteral("Geom_RectangularTrimmedSurface"),
-  QStringLiteral("Geom_OffsetSurface"), QStringLiteral("Geom_SurfaceOfLinearExtrusion"), QStringLiteral("Geom_SurfaceOfRevolution"),
-  QStringLiteral("BndLib_Add3dCurve"), QStringLiteral("BndLib_AddSurface"), QStringLiteral("GeomAdaptor_Curve"),
-  QStringLiteral("GeomAdaptor_Surface"), QStringLiteral("GeomAPI_PointsToBSpline"), QStringLiteral("GeomAPI_PointsToBSplineSurface"),
-  QStringLiteral("GeomConvert"), QStringLiteral("Geom2d_CartesianPoint"), QStringLiteral("Geom2d_VectorWithMagnitude"),
-  QStringLiteral("Geom2d_Line"), QStringLiteral("Geom2d_Circle"), QStringLiteral("Geom2d_Ellipse"),
-  QStringLiteral("Geom2d_Parabola"), QStringLiteral("Geom2d_Hyperbola"), QStringLiteral("Geom2d_TrimmedCurve"),
-  QStringLiteral("Geom2dAdaptor_Curve"), QStringLiteral("Bnd_Box2d"), QStringLiteral("BndLib_Add2dCurve"),
-  QStringLiteral("Adaptor2d_Curve2d"), QStringLiteral("BRepBuilderAPI_MakeEdge"), QStringLiteral("BRepBuilderAPI_MakeFace"),
-  QStringLiteral("BRepPrimAPI_MakeBox"), QStringLiteral("AIS_Point"), QStringLiteral("AIS_TextLabel"), QStringLiteral("AIS_Axis"),
-  QStringLiteral("AIS_Circle"), QStringLiteral("AIS_Plane"), QStringLiteral("AIS_Shape"), QStringLiteral("AIS_ColoredShape"),
-  QStringLiteral("GProp_PEquation"), QStringLiteral("Extrema_ExtCS"), QStringLiteral("GCPnts_QuasiUniformDeflection"),
-  QStringLiteral("GProp_GProps"), QStringLiteral("GProp_PrincipalProps"), QStringLiteral("TopoDS"),
-  QStringLiteral("TopoDS_Iterator"), QStringLiteral("TopoDS_Compound"), QStringLiteral("TopoDS_Edge"), QStringLiteral("TopoDS_Face"),
-  QStringLiteral("TopoDS_Shell"), QStringLiteral("TopoDS_Solid"), QStringLiteral("TopoDS_Vertex"),
-  QStringLiteral("TopoDS_Wire"), QStringLiteral("TopExp"), QStringLiteral("TopExp_Explorer"),
-  QStringLiteral("TColgp_Array2OfPnt"), QStringLiteral("BRep_Builder"), QStringLiteral("BRepGProp"), QStringLiteral("BRep_Tool"),
-  QStringLiteral("BRepTools"), QStringLiteral("BRepTools_ReShape"), QStringLiteral("BRepAdaptor_Curve"),
-  QStringLiteral("BRepAdaptor_CompCurve"), QStringLiteral("BRepAdaptor_Surface"), QStringLiteral("BRepAlgoAPI_Common"),
-  QStringLiteral("BRepAlgoAPI_Cut"), QStringLiteral("BRepAlgoAPI_Fuse"), QStringLiteral("BRepAlgoAPI_Section"),
-  QStringLiteral("BRepAlgoAPI_Splitter"), QStringLiteral("BRepAlgoAPI_Defeaturing"), QStringLiteral("BRepBuilderAPI_Copy"),
-  QStringLiteral("BRepBuilderAPI_MakeVertex"), QStringLiteral("BRepBuilderAPI_MakeEdge"), QStringLiteral("BRepBuilderAPI_MakeFace"),
-  QStringLiteral("BRepBuilderAPI_MakePolygon"), QStringLiteral("BRepBuilderAPI_MakeShell"), QStringLiteral("BRepBuilderAPI_MakeSolid"),
-  QStringLiteral("BRepBuilderAPI_MakeWire"), QStringLiteral("BRepBuilderAPI_NurbsConvert"), QStringLiteral("BRepBuilderAPI_Sewing"),
-  QStringLiteral("BRepBuilderAPI_Transform"), QStringLiteral("BRepCheck_Analyzer"), QStringLiteral("BRepPrimAPI_MakeBox"),
-  QStringLiteral("BRepPrimAPI_MakeCylinder"), QStringLiteral("BRepPrimAPI_MakeRevol"), QStringLiteral("BRepFilletAPI_MakeChamfer"),
-  QStringLiteral("BRepFilletAPI_MakeFillet"), QStringLiteral("BRepOffsetAPI_MakeOffset"), QStringLiteral("BRepOffsetAPI_MakeEvolved.hxx"),
-  QStringLiteral("Standard_Integer"), QStringLiteral("Standard_Real"), QStringLiteral("Standard_Boolean"), QStringLiteral("Standard_ShortReal"),
-  QStringLiteral("Standard_Character"), QStringLiteral("Standard_Byte"), QStringLiteral("Standard_Address"), QStringLiteral("Standard_Size"),
-  QStringLiteral("Standard_Time"), QStringLiteral("Standard_Utf8Char"), QStringLiteral("Standard_Utf8UChar"),
-  QStringLiteral("Standard_ExtCharacter"), QStringLiteral("Standard_Utf16Char"), QStringLiteral("Standard_Utf32Char"),
-  QStringLiteral("Standard_WideChar"), QStringLiteral("Standard_CString"), QStringLiteral("Standard_ExtString"),
-  QStringLiteral("NCollection_Vector"), QStringLiteral("TCollection_AsciiString"), QStringLiteral("TCollection_BaseSequence"),
-  QStringLiteral("TCollection_BasicMap"), QStringLiteral("TCollection_BasicMapIterator"), QStringLiteral("TCollection_ExtendedString"),
-  QStringLiteral("TCollection_HAsciiString"), QStringLiteral("TCollection_HExtendedString"), QStringLiteral("TCollection_MapNode"),
-  QStringLiteral("TCollection_MapNodePtr"), QStringLiteral("TCollection_SeqNode"), QStringLiteral("TCollection_SeqNodePtr"),
-  QStringLiteral("TCollection_Side"), QStringLiteral("Standard_False"), QStringLiteral("Standard_True"),
-  QStringLiteral("TCollection"), QStringLiteral("NCollection"), QStringLiteral("gp_Trsf"), QStringLiteral("Handle"),
-  QStringLiteral("Aspect_TOL_DASH"),  QStringLiteral("Aspect_TOM_O_STAR"), QStringLiteral("Aspect_TOL_SOLID"),
-  QStringLiteral("Aspect_TOM_O_STAR"), QStringLiteral("AIS_InteractiveObject"), QStringLiteral("AIS_ListOfInteractive"),
-  QStringLiteral("Aspect_GDM_Lines"), QStringLiteral("Aspect_GDM_Points"), QStringLiteral("Aspect_TOM_POINT"),
-  QStringLiteral("Aspect_TOM_RING1"), QStringLiteral("Aspect_TOM_O"),QStringLiteral("BinDrivers"),
-  QStringLiteral("DefineFormat"), QStringLiteral("Font_FA_Bold"), QStringLiteral("Font_FA_BoldItalic"),
-  QStringLiteral("Font_FA_Italic"), QStringLiteral("Font_FA_Regular"), QStringLiteral("DownCast"),
-  QStringLiteral("gp_Pln"), QStringLiteral("Graphic3d_AspectMarker3d"), QStringLiteral("Graphic3d_HTA_LEFT"),
-  QStringLiteral("Graphic3d_NameOfMaterial"), QStringLiteral("Graphic3d_NOM_BRONZE"), QStringLiteral("Graphic3d_NOM_PLASTIC"),
-  QStringLiteral("Graphic3d_VTA_BOTTOM"), QStringLiteral("OpenGl_GraphicDriver"), QStringLiteral("PCDM_RS_OK"),
-  QStringLiteral("PCDM_SS_OK"), QStringLiteral("PCDM_ReaderStatus"), QStringLiteral("PCDM_StoreStatus"),
-  QStringLiteral("Prs3d_Drawer"), QStringLiteral("TPrsStd_AISPresentation"), QStringLiteral("Quantity_Color"),
-  QStringLiteral("Quantity_NameOfColor"), QStringLiteral("Quantity_NOC_BLUE1"), QStringLiteral("Quantity_NOC_CADETBLUE"),
-  QStringLiteral("Quantity_NOC_GREEN"), QStringLiteral("Quantity_NOC_MAGENTA1"), QStringLiteral("Quantity_NOC_RED"),
-  QStringLiteral("Quantity_NOC_YELLOW"), QStringLiteral("Quantity_NOC_WHITE"), QStringLiteral("Quantity_NOC_MATRABLUE"),
-  QStringLiteral("Quantity_TOC_RGB"), QStringLiteral("Quantity_TOC_HLS"), QStringLiteral("Standard_GUID"),
-  QStringLiteral("TColStd_ListIteratorOfListOfTransient"), QStringLiteral("TColStd_ListOfTransient"), QStringLiteral("TDataStd_Integer"),
-  QStringLiteral("TDataStd_Name"), QStringLiteral("TDataStd_Real"), QStringLiteral("TFunction_Driver"),
-  QStringLiteral("TFunction_DriverTable"), QStringLiteral("TFunction_Function"), QStringLiteral("TFunction_Logbook"),
-  QStringLiteral("TDF_Label"), QStringLiteral("TDF_TagSource"), QStringLiteral("TNaming_NamedShape"),
-  QStringLiteral("TopAbs_EDGE"), QStringLiteral("TopAbs_FACE"), QStringLiteral("TopAbs_VERTEX"),
-  QStringLiteral("TPrsStd_AISPresentation"), QStringLiteral("TPrsStd_AISViewer"), QStringLiteral("V3d_AmbientLight"),
-  QStringLiteral("V3d_DirectionalLight"), QStringLiteral("V3d_PositionalLight"), QStringLiteral("V3d_SpotLight"),
-  QStringLiteral("XmlDrivers")
-};
 
-static const QString aHelperPatterns[] =
-{
-  QStringLiteral("AdaptorCurve_AIS"), QStringLiteral("AdaptorVec_AIS"), QStringLiteral("AdaptorCurve2d_AIS"),
-  QStringLiteral("AdaptorPnt2d_AIS"), QStringLiteral("Sample2D_Image"), QStringLiteral("Sample2D_Markers"),
-  QStringLiteral("Sample2D_Face"), QStringLiteral("TOcafFunction_BoxDriver"), QStringLiteral("TOcafFunction_CylDriver"),
-  QStringLiteral("DisplayPresentation")
-};
 
-static const QString aKeywordPatterns[] =
-{
-  QStringLiteral("\\balignas\\b"), QStringLiteral("\\balignof\\b"), QStringLiteral("\\band\\b"),
-  QStringLiteral("\\band_eq\\b"), QStringLiteral("\\basm\\b"), QStringLiteral("\\bauto\\b"),
-  QStringLiteral("\\bbitand\\b"), QStringLiteral("\\bbitor\\b"), QStringLiteral("\\bbool\\b"),
-  QStringLiteral("\\bbreak\\b"), QStringLiteral("\\bcase\\b"), QStringLiteral("\\bcatch\\b"),
-  QStringLiteral("\\bchar\\b"), QStringLiteral("\\bchar16_t\\b"), QStringLiteral("\\bchar32_t\\b"),
-  QStringLiteral("\\bclass\\b"), QStringLiteral("\\bcompl\\b"), QStringLiteral("\\bconst\\b"),
-  QStringLiteral("\\bconstexpr\\b"), QStringLiteral("\\bconst_cast\\b"), QStringLiteral("\\bcontinue\\b"),
-  QStringLiteral("\\bdecltype\\b"), QStringLiteral("\\bdefault\\b"), QStringLiteral("\\bdelete\\b"),
-  QStringLiteral("\\bdo\\b"), QStringLiteral("\\bdouble\\b"), QStringLiteral("\\bdynamic_cast\\b"),
-  QStringLiteral("\\belse\\b"), QStringLiteral("\\benum\\b"), QStringLiteral("\\bexplicit\\b"),
-  QStringLiteral("\\bexport\\b"), QStringLiteral("\\bextern\\b"), QStringLiteral("\\bfalse\\b"),
-  QStringLiteral("\\bfloat\\b"), QStringLiteral("\\bfor\\b"), QStringLiteral("\\bfriend\\b"),
-  QStringLiteral("\\bgoto\\b"), QStringLiteral("\\bif\\b"), QStringLiteral("\\binline\\b"),
-  QStringLiteral("\\bint\\b"), QStringLiteral("\\blong\\b"), QStringLiteral("\\bmutable\\b"),
-  QStringLiteral("\\bnamespace\\b"), QStringLiteral("\\bnew\\b"), QStringLiteral("\\bnoexcept\\b"),
-  QStringLiteral("\\bnot\\b"), QStringLiteral("\\bnot_eq\\b"), QStringLiteral("\\bnullptr\\b"),
-  QStringLiteral("\\boperator\\b"), QStringLiteral("\\bor\\b"), QStringLiteral("\\bor_eq\\b"),
-  QStringLiteral("\\bprivate\\b"), QStringLiteral("\\bprotected\\b"), QStringLiteral("\\bpublic\\b"),
-  QStringLiteral("\\bregister\\b"), QStringLiteral("\\breinterpret_cast\\b"), QStringLiteral("\\breturn\\b"),
-  QStringLiteral("\\bshort\\b"), QStringLiteral("\\bsigned\\b"), QStringLiteral("\\bsizeof\\b"),
-  QStringLiteral("\\bstatic\\b"), QStringLiteral("\\bstatic_assert\\b"), QStringLiteral("\\bstatic_cast\\b"),
-  QStringLiteral("\\bstruct\\b"),QStringLiteral("\\bswitch\\b"), QStringLiteral("\\btemplate\\b"),
-  QStringLiteral("\\bthis\\b"), QStringLiteral("\\bthread_local\\b"), QStringLiteral("\\bthrow\\b"),
-  QStringLiteral("\\btrue\\b"), QStringLiteral("\\btry\\b"), QStringLiteral("\\btypedef\\b"),
-  QStringLiteral("\\btypeid\\b"), QStringLiteral("\\btypename\\b"),QStringLiteral("\\bunion\\b"),
-  QStringLiteral("\\bunsigned\\b"), QStringLiteral("\\busing\\b"), QStringLiteral("\\bvirtual\\b"),
-  QStringLiteral("\\bvoid\\b"), QStringLiteral("\\bvolatile\\b"), QStringLiteral("\\bwchar_t\\b"),
-  QStringLiteral("\\bwhile\\b"), QStringLiteral("\\bxor\\b"), QStringLiteral("\\bxor_eq\\b"),
-  QStringLiteral("\\boverride\\b"), QStringLiteral("\\bfinal\\b")
-};
+
 
 OcctHighlighter::OcctHighlighter(QTextDocument* theParent)
 : QSyntaxHighlighter (theParent)
 {
+  QStringList aKeywordPatterns;
+  aKeywordPatterns
+    << "\\balignas\\b" << "\\balignof\\b" << "\\band\\b" << "\\band_eq\\b" << "\\basm\\b" 
+    << "\\bauto\\b" << "\\bbitand\\b" << "\\bbitor\\b" << "\\bbool\\b" << "\\bbreak\\b" 
+    << "\\bcase\\b" << "\\bcatch\\b" << "\\bchar\\b" << "\\bchar16_t\\b" << "\\bchar32_t\\b"
+    << "\\bclass\\b" << "\\bcompl\\b" << "\\bconst\\b" << "\\bconstexpr\\b" << "\\bconst_cast\\b"
+    << "\\bcontinue\\b" << "\\bdecltype\\b" << "\\bdefault\\b" << "\\bdelete\\b" << "\\bdo\\b" 
+    << "\\bdouble\\b" << "\\bdynamic_cast\\b" << "\\belse\\b" << "\\benum\\b" << "\\bexplicit\\b"
+    << "\\bexport\\b" << "\\bextern\\b" << "\\bfalse\\b" << "\\bfloat\\b" << "\\bfor\\b" 
+    << "\\bfriend\\b" << "\\bgoto\\b" << "\\bif\\b" << "\\binline\\b" << "\\bint\\b" << "\\blong\\b" 
+    << "\\bmutable\\b" << "\\bnamespace\\b" << "\\bnew\\b" << "\\bnoexcept\\b" << "\\bnot\\b" 
+    << "\\bnot_eq\\b" << "\\bnullptr\\b" << "\\boperator\\b" << "\\bor\\b" << "\\bor_eq\\b"
+    << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b" << "\\bregister\\b" 
+    << "\\breinterpret_cast\\b" << "\\breturn\\b" << "\\bshort\\b" << "\\bsigned\\b" << "\\bsizeof\\b"
+    << "\\bstatic\\b" << "\\bstatic_assert\\b" << "\\bstatic_cast\\b" << "\\bstruct\\b" 
+    << "\\bswitch\\b" << "\\btemplate\\b" << "\\bthis\\b" << "\\bthread_local\\b" << "\\bthrow\\b"
+    << "\\btrue\\b" << "\\btry\\b" << "\\btypedef\\b" << "\\btypeid\\b" << "\\btypename\\b"
+    << "\\bunion\\b" << "\\bunsigned\\b" << "\\busing\\b" << "\\bvirtual\\b" << "\\bvoid\\b" 
+    << "\\bvolatile\\b" << "\\bwchar_t\\b" << "\\bwhile\\b" << "\\bxor\\b" << "\\bxor_eq\\b"
+    << "\\boverride\\b" << "\\bfinal\\b";
+
+  QStringList anOcctPatterns;
+  anOcctPatterns 
+    << "gp_Pnt" << "gp_XYZ" << "gp_Vec" << "gp_Dir" << "gp_Ax1" << "gp_Ax2" << "gp_Ax3" << "gp_Lin"
+    << "gp_Circ" << "gp_Elips" << "gp_Parab" << "gp_Hypr" << "gp_Cylinder" << "gp_Cone" << "gp_Sphere" 
+    << "gp_Torus" << "gp_Pnt2d" << "gp_XY" << "gp_Ax2d" << "gp_Ax22d" << "gp_Lin2d" << "gp_Circ2d" 
+    << "gp_Elips2d" << "gp_Parab2d" << "gp_Hypr2d" << "Geom2d_BSplineCurve" << "Geom2d_BezierCurve" 
+    << "Geom2d_OffsetCurve" << "ProjLib" << "ElSLib" << "IntAna_IntConicQuad" << "GccAna_Lin2d2Tan" 
+    << "GccEnt_QualifiedCirc" << "Geom2dAPI_ProjectPointOnCurve" << "Geom2dAPI_ExtremaCurveCurve" 
+    << "Geom2dAPI_InterCurveCurve" << "Geom2dAPI_PointsToBSpline" << "Geom_CartesianPoint" 
+    << "Geom_VectorWithMagnitude" << "Geom_Axis1Placement" << "Geom_Axis2Placement" << "Geom_Line" 
+    << "Geom_Circle" << "Geom_Ellipse" << "Geom_Parabola" << "Geom_Hyperbola" << "Geom_BSplineCurve" 
+    << "Geom_BezierCurve" << "Geom_TrimmedCurve" << "Geom_OffsetCurve" << "Geom_BSplineSurface" 
+    << "Geom_BezierSurface" << "Geom_Plane" << "Geom_CylindricalSurface" << "Geom_ConicalSurface" 
+    << "Geom_SphericalSurface" << "Geom_ToroidalSurface" << "Geom_RectangularTrimmedSurface" 
+    << "Geom_OffsetSurface" << "Geom_SurfaceOfLinearExtrusion" << "Geom_SurfaceOfRevolution" 
+    << "BndLib_Add3dCurve" << "BndLib_AddSurface" << "GeomAdaptor_Curve" << "GeomAdaptor_Surface" 
+    << "GeomAPI_PointsToBSpline" << "GeomAPI_PointsToBSplineSurface" << "GeomConvert" 
+    << "Geom2d_CartesianPoint" << "Geom2d_VectorWithMagnitude" << "Geom2d_Line" << "Geom2d_Circle" 
+    << "Geom2d_Ellipse" << "Geom2d_Parabola" << "Geom2d_Hyperbola" << "Geom2d_TrimmedCurve" 
+    << "Geom2dAdaptor_Curve" << "Bnd_Box2d" << "BndLib_Add2dCurve" << "Adaptor2d_Curve2d" 
+    << "BRepBuilderAPI_MakeEdge" << "BRepBuilderAPI_MakeFace" << "BRepPrimAPI_MakeBox" << "AIS_Point" 
+    << "AIS_TextLabel" << "AIS_Axis" << "AIS_Circle" << "AIS_Plane" << "AIS_Shape" 
+    << "AIS_ColoredShape" << "GProp_PEquation" << "Extrema_ExtCS" << "GCPnts_QuasiUniformDeflection" 
+    << "GProp_GProps" << "GProp_PrincipalProps" << "TopoDS" << "TopoDS_Iterator" << "TopoDS_Compound" 
+    << "TopoDS_Edge" << "TopoDS_Face" << "TopoDS_Shell" << "TopoDS_Solid" << "TopoDS_Vertex" 
+    << "TopoDS_Wire" << "TopExp" << "TopExp_Explorer" << "TColgp_Array2OfPnt" << "BRep_Builder" 
+    << "BRepGProp" << "BRep_Tool" << "BRepTools" << "BRepTools_ReShape" << "BRepAdaptor_Curve" 
+    << "BRepAdaptor_CompCurve" << "BRepAdaptor_Surface" << "BRepAlgoAPI_Common" << "BRepAlgoAPI_Cut" 
+    << "BRepAlgoAPI_Fuse" << "BRepAlgoAPI_Section" << "BRepAlgoAPI_Splitter" << "BRepAlgoAPI_Defeaturing" 
+    << "BRepBuilderAPI_Copy" << "BRepBuilderAPI_MakeVertex" << "BRepBuilderAPI_MakeEdge" 
+    << "BRepBuilderAPI_MakeFace" << "BRepBuilderAPI_MakePolygon" << "BRepBuilderAPI_MakeShell" 
+    << "BRepBuilderAPI_MakeSolid" << "BRepBuilderAPI_MakeWire" << "BRepBuilderAPI_NurbsConvert" 
+    << "BRepBuilderAPI_Sewing" << "BRepBuilderAPI_Transform" << "BRepCheck_Analyzer" 
+    << "BRepPrimAPI_MakeBox" << "BRepPrimAPI_MakeCylinder" << "BRepPrimAPI_MakeRevol" 
+    << "BRepFilletAPI_MakeChamfer" << "BRepFilletAPI_MakeFillet" << "BRepOffsetAPI_MakeOffset" 
+    << "BRepOffsetAPI_MakeEvolved.hxx" << "Standard_Integer" << "Standard_Real" << "Standard_Boolean" 
+    << "Standard_ShortReal" << "Standard_Character" << "Standard_Byte" << "Standard_Address" 
+    << "Standard_Size" << "Standard_Time" << "Standard_Utf8Char" << "Standard_Utf8UChar"
+    << "Standard_ExtCharacter" << "Standard_Utf16Char" << "Standard_Utf32Char" << "Standard_WideChar" 
+    << "Standard_CString" << "Standard_ExtString" << "NCollection_Vector" << "TCollection_AsciiString" 
+    << "TCollection_BaseSequence"<< "TCollection_BasicMap" << "TCollection_BasicMapIterator" 
+    << "TCollection_ExtendedString" << "TCollection_HAsciiString" << "TCollection_HExtendedString" 
+    << "TCollection_MapNode" << "TCollection_MapNodePtr" << "TCollection_SeqNode" 
+    << "TCollection_SeqNodePtr" << "TCollection_Side" << "Standard_False" << "Standard_True" 
+    << "TCollection" << "NCollection" << "gp_Trsf" << "Handle" << "Aspect_TOL_DASH" 
+    << "Aspect_TOM_O_STAR" << "Aspect_TOL_SOLID" << "Aspect_TOM_O_STAR" << "AIS_InteractiveObject" 
+    << "AIS_ListOfInteractive" << "Aspect_GDM_Lines" << "Aspect_GDM_Points" << "Aspect_TOM_POINT"
+    << "Aspect_TOM_RING1" << "Aspect_TOM_O" << "BinDrivers" << "DefineFormat" << "Font_FA_Bold" 
+    << "Font_FA_BoldItalic" << "Font_FA_Italic" << "Font_FA_Regular" << "DownCast" << "gp_Pln" 
+    << "Graphic3d_AspectMarker3d" << "Graphic3d_HTA_LEFT" << "Graphic3d_NameOfMaterial" 
+    << "Graphic3d_NOM_BRONZE" << "Graphic3d_NOM_PLASTIC" << "Graphic3d_VTA_BOTTOM" 
+    << "OpenGl_GraphicDriver" << "PCDM_RS_OK" << "PCDM_SS_OK" << "PCDM_ReaderStatus" 
+    << "PCDM_StoreStatus" << "Prs3d_Drawer" << "TPrsStd_AISPresentation" << "Quantity_Color"
+    << "Quantity_NameOfColor" << "Quantity_NOC_BLUE1" << "Quantity_NOC_CADETBLUE"
+    << "Quantity_NOC_GREEN" << "Quantity_NOC_MAGENTA1" << "Quantity_NOC_RED" << "Quantity_NOC_YELLOW"
+    << "Quantity_NOC_WHITE" << "Quantity_NOC_MATRABLUE" << "Quantity_TOC_RGB" << "Quantity_TOC_HLS" 
+    << "Standard_GUID" << "TColStd_ListIteratorOfListOfTransient" << "TColStd_ListOfTransient" 
+    << "TDataStd_Integer" << "TDataStd_Name" << "TDataStd_Real" << "TFunction_Driver"
+    << "TFunction_DriverTable" << "TFunction_Function" << "TFunction_Logbook" << "TDF_Label" 
+    << "TDF_TagSource" << "TNaming_NamedShape" << "TopAbs_EDGE" << "TopAbs_FACE" << "TopAbs_VERTEX"
+    << "TPrsStd_AISPresentation" << "TPrsStd_AISViewer" << "V3d_AmbientLight" 
+    << "V3d_DirectionalLight" << "V3d_PositionalLight" << "V3d_SpotLight" << "XmlDrivers";
+
+  QStringList aHelperPatterns;
+  aHelperPatterns 
+    << "AdaptorCurve_AIS" << "AdaptorVec_AIS" << "AdaptorCurve2d_AIS" << "AdaptorPnt2d_AIS"
+    << "Sample2D_Image" << "Sample2D_Markers" << "Sample2D_Face" << "TOcafFunction_BoxDriver" 
+    << "TOcafFunction_CylDriver" << "DisplayPresentation";
+
   HighlightingRule aRule;
 
   myOcctFormat.setForeground(Qt::darkCyan);
 
-  for (const QString& aPattern : anOcctPatterns)
+  foreach (const QString& aPattern, anOcctPatterns)
   {
-    aRule.myPattern = QRegularExpression(aPattern);
+    aRule.myPattern = QRegExp(aPattern);
     aRule.myFormat = myOcctFormat;
     myHighlightingRules.append(aRule);
   }
 
   myHelperFormat.setForeground(Qt::red);
-  for (const QString& aPattern : aHelperPatterns)
+  foreach (const QString& aPattern, aHelperPatterns)
   {
-    aRule.myPattern = QRegularExpression(aPattern);
+    aRule.myPattern = QRegExp(aPattern);
     aRule.myFormat = myHelperFormat;
     myHighlightingRules.append(aRule);
   }
@@ -176,54 +145,56 @@ OcctHighlighter::OcctHighlighter(QTextDocument* theParent)
 
   myKeywordFormat.setForeground(Qt::darkBlue);
   myKeywordFormat.setFontWeight(QFont::Bold);
-  for (const QString& aPattern : aKeywordPatterns)
+  foreach (const QString& aPattern, aKeywordPatterns)
   {
-    aRule.myPattern = QRegularExpression(aPattern);
+    aRule.myPattern = QRegExp(aPattern);
     aRule.myFormat = myKeywordFormat;
     myHighlightingRules.append(aRule);
   }
 
   myMemberFormat.setFontWeight(QFont::Bold);
-  aRule.myPattern = QRegularExpression(QStringLiteral("\\bmy[0-9A-Za-z]+\\b"));
+  aRule.myPattern = QRegExp(QLatin1String("\\bmy[0-9A-Za-z]+\\b"));
   aRule.myFormat = myMemberFormat;
   myHighlightingRules.append(aRule);
 
   myLocalFormat.setForeground(Qt::darkMagenta);
-  aRule.myPattern = QRegularExpression(QStringLiteral("\\ba[0-9A-Za-z]+\\b"));
+  aRule.myPattern = QRegExp(QLatin1String("\\ba[0-9A-Za-z]+\\b"));
   aRule.myFormat = myLocalFormat;
   myHighlightingRules.append(aRule);
 
   myQuotationFormat.setForeground(Qt::darkRed);
-  aRule.myPattern = QRegularExpression(QStringLiteral("\".*\""));
+  aRule.myPattern = QRegExp(QLatin1String("\".*\""));
   aRule.myFormat = myQuotationFormat;
   myHighlightingRules.append(aRule);
 
   myFunctionFormat.setFontItalic(true);
   myFunctionFormat.setForeground(Qt::blue);
-  aRule.myPattern = QRegularExpression(QStringLiteral("\\b[A-Za-z0-9_]+(?=\\()"));
+  aRule.myPattern = QRegExp(QLatin1String("\\b[A-Za-z0-9_]+(?=\\()"));
   aRule.myFormat = myFunctionFormat;
   myHighlightingRules.append(aRule);
 
   mySingleLineCommentFormat.setForeground(Qt::darkGreen);
-  aRule.myPattern = QRegularExpression(QStringLiteral("//[^\n]*"));
+  aRule.myPattern = QRegExp(QLatin1String("//[^\n]*"));
   aRule.myFormat = mySingleLineCommentFormat;
   myHighlightingRules.append(aRule);
 
   myMultiLineCommentFormat.setForeground(Qt::darkGreen);
 
-  myCommentStartExpression = QRegularExpression(QStringLiteral("/\\*"));
-  myCommentEndExpression = QRegularExpression(QStringLiteral("\\*/"));
+  myCommentStartExpression = QRegExp(QLatin1String("/\\*"));
+  myCommentEndExpression = QRegExp(QLatin1String("\\*/"));
 }
 
 void OcctHighlighter::highlightBlock (const QString& theText)
 {
-  for (const HighlightingRule& rule : qAsConst(myHighlightingRules))
+  foreach (const HighlightingRule &rule, myHighlightingRules) 
   {
-    QRegularExpressionMatchIterator matchIterator = rule.myPattern.globalMatch(theText);
-    while (matchIterator.hasNext())
+    QRegExp expression(rule.myPattern);
+    int index = expression.indexIn(theText);
+    while (index >= 0) 
     {
-      QRegularExpressionMatch match = matchIterator.next();
-      setFormat(match.capturedStart(), match.capturedLength(), rule.myFormat);
+        int length = expression.matchedLength();
+        setFormat(index, length, rule.myFormat);
+        index = expression.indexIn(theText, index + length);
     }
   }
 
@@ -233,22 +204,21 @@ void OcctHighlighter::highlightBlock (const QString& theText)
   if (previousBlockState() != 1)
     startIndex = theText.indexOf(myCommentStartExpression);
 
-  while (startIndex >= 0)
+  while (startIndex >= 0) 
   {
-    QRegularExpressionMatch match = myCommentEndExpression.match(theText, startIndex);
-    int endIndex = match.capturedStart();
-    int commentLength = 0;
-    if (endIndex == -1)
+    int endIndex = myCommentEndExpression.indexIn(theText, startIndex);
+    int commentLength;
+    if (endIndex == -1) 
     {
       setCurrentBlockState(1);
       commentLength = theText.length() - startIndex;
-    }
-    else
+    } 
+    else 
     {
       commentLength = endIndex - startIndex
-        + match.capturedLength();
+                      + myCommentEndExpression.matchedLength();
     }
     setFormat(startIndex, commentLength, myMultiLineCommentFormat);
-    startIndex = theText.indexOf(myCommentStartExpression, startIndex + commentLength);
+    startIndex = myCommentEndExpression.indexIn(theText, startIndex + commentLength);
   }
 }
