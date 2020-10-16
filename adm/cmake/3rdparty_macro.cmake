@@ -97,12 +97,12 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
     if (3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}")
       find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR NAMES ${HEADER_NAME}
                                                       PATHS ${3RDPARTY_${PRODUCT_NAME}_DIR}
-                                                      PATH_SUFFIXES include inc
+                                                      PATH_SUFFIXES include inc headers
                                                       CMAKE_FIND_ROOT_PATH_BOTH
                                                       NO_DEFAULT_PATH)
     else()
       find_path (3RDPARTY_${PRODUCT_NAME}_INCLUDE_DIR NAMES ${HEADER_NAME}
-                                                      PATH_SUFFIXES include inc
+                                                      PATH_SUFFIXES include inc headers
                                                       CMAKE_FIND_ROOT_PATH_BOTH)
     endif()
   endif()
@@ -125,9 +125,13 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
         set (${PRODUCT_NAME}_PATH_SUFFIXES lib)
         if (WIN32)
           set (${PRODUCT_NAME}_PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES} win${COMPILER_BITNESS}/${COMPILER}/lib)
+          set (${PRODUCT_NAME}_PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES} lib/win${COMPILER_BITNESS})
         endif()
         if (ANDROID)
           set (${PRODUCT_NAME}_PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES} libs/${ANDROID_ABI})
+        endif()
+        if(UNIX AND NOT APPLE AND NOT ANDROID)
+          set (${PRODUCT_NAME}_PATH_SUFFIXES ${${PRODUCT_NAME}_PATH_SUFFIXES} lib/linux${COMPILER_BITNESS})
         endif()
 
         # set 3RDPARTY_${PRODUCT_NAME}_LIBRARY as notfound, otherwise find_library can't assign a new value to 3RDPARTY_${PRODUCT_NAME}_LIBRARY
@@ -184,7 +188,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
           if ((3RDPARTY_${PRODUCT_NAME}_DIR AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DIR}") OR (3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME} AND EXISTS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME}}"))
             find_library (3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX}  NAMES ${LIBRARY_NAME}
                                                                                PATHS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME}}" "${3RDPARTY_${PRODUCT_NAME}_DIR}"
-                                                                               PATH_SUFFIXES bin  win${COMPILER_BITNESS}/${COMPILER}/bin
+                                                                               PATH_SUFFIXES bin win${COMPILER_BITNESS}/${COMPILER}/bin bin/win${COMPILER_BITNESS}
                                                                                NO_DEFAULT_PATH)
             if (3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX} STREQUAL "3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX}-NOTFOUND")
               # find directory recursive
@@ -238,6 +242,7 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
       if (INSTALL_${PRODUCT_NAME})
         OCCT_MAKE_OS_WITH_BITNESS()
         OCCT_MAKE_COMPILER_SHORT_NAME()
+        set (USED_3RDPARTY_${PRODUCT_NAME}_DIR "")
 
         if (WIN32)
           if (SINGLE_GENERATOR)
@@ -280,14 +285,17 @@ macro (THIRDPARTY_PRODUCT PRODUCT_NAME HEADER_NAME LIBRARY_CSF_NAME LIBRARY_NAME
         endif()
       else()
         # the library directory for using by the executable
-      foreach (LIBRARY_NAME ${${LIBRARY_CSF_NAME}})
-        string (REPLACE "." "" LIBRARY_NAME_SUFFIX "${LIBRARY_NAME}")
+        foreach (LIBRARY_NAME ${${LIBRARY_CSF_NAME}})
+          string (REPLACE "." "" LIBRARY_NAME_SUFFIX "${LIBRARY_NAME}")
           if (WIN32)
             set (USED_3RDPARTY_${PRODUCT_NAME}_DIRS "${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME_SUFFIX}};${USED_3RDPARTY_${PRODUCT_NAME}_DIRS}")
           else()
             set (USED_3RDPARTY_${PRODUCT_NAME}_DIRS "${3RDPARTY_${PRODUCT_NAME}_LIBRARY_DIR_${LIBRARY_NAME_SUFFIX}}:${USED_3RDPARTY_${PRODUCT_NAME}_DIRS}")
           endif()
         endforeach()
+        if (WIN32)
+          set (USED_3RDPARTY_${PRODUCT_NAME}_DIR ${3RDPARTY_${PRODUCT_NAME}_DLL_DIR_${LIBRARY_NAME_SUFFIX}})
+        endif()
       endif()
 
       mark_as_advanced (3RDPARTY_${PRODUCT_NAME}_LIBRARY_${LIBRARY_NAME_SUFFIX} 3RDPARTY_${PRODUCT_NAME}_DLL_${LIBRARY_NAME_SUFFIX})

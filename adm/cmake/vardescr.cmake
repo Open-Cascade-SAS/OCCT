@@ -89,6 +89,7 @@ INSTALL_MESSAGE (INSTALL_TEST_CASES       "non-regression OCCT test scripts")
 INSTALL_MESSAGE (INSTALL_DOC_Overview     "OCCT overview documentation (HTML format)")
 INSTALL_MESSAGE (INSTALL_FFMPEG           "FFmpeg binaries")
 INSTALL_MESSAGE (INSTALL_FREEIMAGE        "FreeImage binaries")
+INSTALL_MESSAGE (INSTALL_OPENVR           "OpenVR binaries")
 INSTALL_MESSAGE (INSTALL_EIGEN            "EIGEN header files")
 INSTALL_MESSAGE (INSTALL_EGL              "EGL binaries")
 INSTALL_MESSAGE (INSTALL_GLES2            "OpenGL ES 2.0 binaries")
@@ -161,6 +162,9 @@ multimedia data handling, open-source software libraries used for video encoding
 set (USE_FREEIMAGE_DESCR
 "Indicates whether Freeimage product should be used in OCCT visualization
 module for support of popular graphics image formats (PNG, BMP etc)")
+
+set (USE_OPENVR_DESCR
+"Indicates whether OpenVR should be used in OCCT visualization module for VR support")
 
 set (USE_RAPIDJSON_DESCR
 "Indicates whether RapidJSON product should be used in OCCT DataExchange

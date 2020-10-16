@@ -42,6 +42,13 @@ else()
   endif()
 endif()
 
+# OpenVR
+if (USE_OPENVR)
+  set (CSF_OpenVR "openvr_api")
+else()
+  set (CSF_OpenVR)
+endif()
+
 # TCL/TK
 if (USE_TCL)
   if (WIN32)

@@ -565,6 +565,26 @@ else()
   OCCT_CHECK_AND_UNSET ("INSTALL_FREEIMAGE")
 endif()
 
+# OpenVR
+# search for CSF_OpenVR variable in EXTERNLIB of each being used toolkit
+OCCT_IS_PRODUCT_REQUIRED (CSF_OpenVR CAN_USE_OPENVR)
+if (CAN_USE_OPENVR)
+  set (USE_OPENVR OFF CACHE BOOL "${USE_OPENVR_DESCR}")
+
+  if (USE_OPENVR)
+    add_definitions (-DHAVE_OPENVR)
+    OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/openvr")
+  else()
+    OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENVR")
+    OCCT_CHECK_AND_UNSET ("INSTALL_OPENVR")
+  endif()
+else()
+  OCCT_CHECK_AND_UNSET ("USE_OPENVR")
+
+  OCCT_CHECK_AND_UNSET_GROUP ("3RDPARTY_OPENVR")
+  OCCT_CHECK_AND_UNSET ("INSTALL_OPENVR")
+endif()
+
 # FFmpeg
 # search for CSF_FFmpeg variable in EXTERNLIB of each being used toolkit
 OCCT_IS_PRODUCT_REQUIRED (CSF_FFmpeg CAN_USE_FFMPEG)

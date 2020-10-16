@@ -358,7 +358,7 @@ for which OCCT is certified to work.
 The following third-party libraries and tools are not included in OCCT sources but are either required or can be optionally used for the indicated components of OCCT.
 They are not needed if relevant component is not needed.
 
-Note that pe-built packages of many of the listed libraries are available at
+Note that pre-built packages of many of the listed libraries are available at
 https://www.opencascade.com/content/3rd-party-components
 
 | Component | Where to find | Used for | Required or optional |
@@ -366,6 +366,7 @@ https://www.opencascade.com/content/3rd-party-components
 | CMake 2.8+ | https://cmake.org/ | Build from sources | Optional |
 | Intel TBB 4.x or later | https://www.threadingbuildingblocks.org/ | All | Optional (advanced parallelization of algorithms) |
 | OpenGL 3.3+, OpenGL ES 2.0+ | System | Visualization | Required |
+| OpenVR 1.10+ | https://github.com/ValveSoftware/openvr | Visualization | Optional (VR support) |
 | Direct3D 9 | Windows | Visualization | Optional (integration with GUI using Direct3D) |
 | FreeType 2.4.11-2.7.1 | https://sourceforge.net/projects/freetype/files/ | Visualization | Required |
 | FreeImage 3.17.0+ | https://sourceforge.net/projects/freeimage/files | Visualization | Optional (support of common 2D graphic formats) |
@@ -583,7 +584,14 @@ implementation of 3D viewer. OpenGL specification is developed by the
 Khronos group, https://www.khronos.org/opengl/. OCCT code includes header 
 file *glext.h* obtained from Khronos web site.
 
-**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization. OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library. If you need further information on VTK, refer to VTK Homepage https://www.vtk.org/.
+**OpenVR** is an API and runtime that allows access to VR hardware from multiple vendors
+without requiring that applications have specific knowledge of the hardware they are targeting.
+OpenVR is optionally used by OCCT for VR support.
+OpenVR is released under BSD-like license (https://github.com/ValveSoftware/openvr/blob/master/LICENSE).
+
+**VTK** -- The **Visualization Toolkit (VTK)** is an open-source, freely available software system for 3D computer graphics, image processing and visualization.
+OCCT VIS component provides adaptation functionality for visualization of OCCT topological shapes by means of VTK library.
+If you need further information on VTK, refer to VTK Homepage https://www.vtk.org/.
 
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
@@ -621,7 +629,8 @@ It is available under GNU GPL v3 license (https://www.gnu.org/software/bison/).
 Delabella is used by BRepMesh as one of alternative 2D triangulation algorithms. 
 Delabella is licensed under the MIT license (https://github.com/msokalski/delabella).
 
-**CMake** is an open-source, cross-platform family of tools designed to build, test and package software. CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. 
+**CMake** is an open-source, cross-platform family of tools designed to build, test and package software.
+CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice. 
 OCCT uses CMake as a build system. CMake is available under BSD 3-Clause license. 
 See more at https://cmake.org/
 
