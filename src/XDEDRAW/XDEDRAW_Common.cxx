@@ -18,6 +18,7 @@
 #include <DDocStd_DrawDocument.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Message.hxx>
 #include <IFSelect_SessionPilot.hxx>
 #include <IGESCAFControl_Reader.hxx>
@@ -218,12 +219,31 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
       case 'l' : reader.SetLayerMode (mode); break;
       }
   }
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
+  Message_ProgressScope aRootScope (aProgress->Start(), "IGES import", modfic ? 2 : 1);
+
   IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
-  if (modfic) readstat = reader.ReadFile (fnom.ToCString());
-  else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
-  if (readstat != IFSelect_RetDone) {
-    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
-    else di<<"No model loaded\n";
+  if (modfic)
+  {
+    Message_ProgressScope aReadScope (aRootScope.Next(), "File reading", 1);
+    aReadScope.Show();
+    readstat = reader.ReadFile (fnom.ToCString());
+  }
+  else if (XSDRAW::Session()->NbStartingEntities() > 0)
+  {
+    readstat = IFSelect_RetDone;
+  }
+  if (readstat != IFSelect_RetDone)
+  {
+    if (modfic)
+    {
+      di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
+    }
+    else
+    {
+      di<<"No model loaded\n";
+    }
     return 1;
   }
 
@@ -236,7 +256,8 @@ static Standard_Integer ReadIges (Draw_Interpretor& di, Standard_Integer argc, c
     Draw::Set(argv[1],DD);       
 //     di << "Document saved with name " << argv[1];
   }
-  if ( ! reader.Transfer ( doc ) ) {
+  if (!reader.Transfer (doc, aRootScope.Next()))
+  {
     di << "Cannot read any relevant data from the IGES file\n";
     return 1;
   }
@@ -268,10 +289,16 @@ static Standard_Integer WriteIges (Draw_Interpretor& di, Standard_Integer argc, 
   }
   
   XSDRAW::SetNorm ("IGES");
-  
+
+  TCollection_AsciiString fnom, rnom;
+  const Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "IGES", fnom, rnom);
+
 //  IGESControl_Writer ICW (Interface_Static::CVal("write.iges.unit"),
 //			  Interface_Static::IVal("write.iges.brep.mode"));
     
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
+  Message_ProgressScope aRootScope (aProgress->Start(), "IGES export", modfic ? 2 : 1);
+
   IGESCAFControl_Writer writer ( XSDRAW::Session(), Standard_True );
   if (argc == 4) {
     Standard_Boolean mode = Standard_True;
@@ -284,15 +311,21 @@ static Standard_Integer WriteIges (Draw_Interpretor& di, Standard_Integer argc, 
       case 'l' : writer.SetLayerMode (mode); break;
       }
   }
-  writer.Transfer ( Doc );
+  writer.Transfer (Doc, aRootScope.Next());
 
-  TCollection_AsciiString fnom, rnom;
-  Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "IGES", fnom, rnom);
   if (modfic)
   {
-    di << "Writig IGES model to file " << argv[2] << "\n";
-    if ( writer.Write ( argv[2] ) ) di<<" Write OK\n";
-    else di<<" Write failed\n";
+    Message_ProgressScope aWriteScope (aRootScope.Next(), "File writing", 1);
+    aWriteScope.Show();
+    di << "Writing IGES model to file " << argv[2] << "\n";
+    if (writer.Write (argv[2]))
+    {
+      di << " Write OK\n";
+    }
+    else
+    {
+      di << " Write failed\n";
+    }
   }
   else
   {
@@ -365,12 +398,30 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
     }
   }
   
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
+  Message_ProgressScope aRootScope (aProgress->Start(), "STEP import", modfic ? 2 : 1);
+
   IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
-  if (modfic) readstat = reader.ReadFile (fnom.ToCString());
-  else  if (XSDRAW::Session()->NbStartingEntities() > 0) readstat = IFSelect_RetDone;
-  if (readstat != IFSelect_RetDone) {
-    if (modfic) di<<"Could not read file "<<fnom.ToCString()<<" , abandon\n";
-    else di<<"No model loaded\n";
+  if (modfic)
+  {
+    Message_ProgressScope aReadScope (aRootScope.Next(), "File reading", 1);
+    aReadScope.Show();
+    readstat = reader.ReadFile (fnom.ToCString());
+  }
+  else if (XSDRAW::Session()->NbStartingEntities() > 0)
+  {
+    readstat = IFSelect_RetDone;
+  }
+  if (readstat != IFSelect_RetDone)
+  {
+    if (modfic)
+    {
+      di << "Could not read file " << fnom << " , abandon\n";
+    }
+    else
+    {
+      di << "No model loaded\n";
+    }
     return 1;
   }
 
@@ -384,7 +435,8 @@ static Standard_Integer ReadStep (Draw_Interpretor& di, Standard_Integer argc, c
     Draw::Set (aDocName, DD);
 //     di << "Document saved with name " << aDocName;
   }
-  if ( ! reader.Transfer ( doc ) ) {
+  if (!reader.Transfer (doc, aRootScope.Next()))
+  {
     di << "Cannot read any relevant data from the STEP file\n";
     return 1;
   }
@@ -476,28 +528,34 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
       
     }
   }
-  if( !label.IsNull())
+
+  TCollection_AsciiString fnom, rnom;
+  const Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "STEP", fnom, rnom);
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
+  Message_ProgressScope aRootScope (aProgress->Start(), "STEP export", modfic ? 2 : 1);
+  if (!label.IsNull())
   {  
     di << "Translating label "<< argv[k]<<" of document " << argv[1] << " to STEP\n";
-    if(!writer.Transfer ( label, mode, multifile )) 
+    if (!writer.Transfer (label, mode, multifile, aRootScope.Next()))
     {
       di << "The label of document cannot be translated or gives no result\n";
       return 1;
     }
-
   }
   else
   {
     di << "Translating document " << argv[1] << " to STEP\n";
-    if ( ! writer.Transfer ( Doc, mode, multifile ) ) {
+    if (!writer.Transfer (Doc, mode, multifile, aRootScope.Next()))
+    {
       di << "The document cannot be translated or gives no result\n";
     }
   }
-  
-  TCollection_AsciiString fnom, rnom;
-  Standard_Boolean modfic = XSDRAW::FileAndVar(argv[2], argv[1], "STEP", fnom, rnom);
+
   if (modfic)
   {
+    Message_ProgressScope aWriteScope (aRootScope.Next(), "File writing", 1);
+    aWriteScope.Show();
     di << "Writing STEP file " << argv[2] << "\n";
     IFSelect_ReturnStatus stat = writer.Write(argv[2]);
     switch (stat) {

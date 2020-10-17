@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Draw_ProgressIndicator.hxx>
 
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Draw_ProgressIndicator.hxx>
 #include <Message.hxx>
 #include <Message_Messenger.hxx>
 #include <Message_ProgressScope.hxx>
@@ -64,8 +64,12 @@ Draw_ProgressIndicator::~Draw_ProgressIndicator()
 void Draw_ProgressIndicator::Reset()
 {
   Message_ProgressIndicator::Reset();
-  if ( myShown ) {
+  if (myShown)
+  {
+    // eval will reset current string result - backup it beforehand
+    const TCollection_AsciiString aTclResStr (myDraw->Result());
     myDraw->Eval ( "destroy .xprogress" );
+    *myDraw << aTclResStr;
     myShown = Standard_False;
   }
   myBreak = Standard_False;
@@ -147,6 +151,8 @@ void Draw_ProgressIndicator::Show (const Message_ProgressScope& theScope, const 
                "/" << ( aTime - myStartTime ) / GetPosition() << " sec";
     }
   
+    // eval will reset current string result - backup it beforehand
+    const TCollection_AsciiString aTclResStr (myDraw->Result());
     if ( ! myShown ) {
       char command[1024];
       Sprintf ( command, "toplevel .xprogress -height 100 -width 410;"
@@ -168,7 +174,9 @@ void Draw_ProgressIndicator::Show (const Message_ProgressScope& theScope, const 
     aCommand << ".xprogress.bar coords progress_next 2 2 " << (1 + 400 * theScope.GetPortion()) << " 21;";
     aCommand << ".xprogress.text configure -text \"" << aText.str() << "\";";
     aCommand << "update";
+
     myDraw->Eval (aCommand.str().c_str());
+    *myDraw << aTclResStr;
   }
 
   // Print textual progress info
@@ -313,5 +321,3 @@ Standard_Address &Draw_ProgressIndicator::StopIndicator()
   static Standard_Address stopIndicator = 0;
   return stopIndicator;
 }
-
-

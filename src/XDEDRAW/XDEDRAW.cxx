@@ -24,6 +24,7 @@
 #include <DDocStd_DrawDocument.hxx>
 #include <Draw.hxx>
 #include <Draw_PluginMacro.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -147,11 +148,13 @@ static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, co
     if (!DDocStd::GetDocument(argv[1],D)) return 1;
   }
 
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
+
   PCDM_StoreStatus aStatus = PCDM_SS_Doc_IsNull;
   if (argc == 3)
   {
     TCollection_ExtendedString path (argv[2]);
-    aStatus = A->SaveAs (D, path);
+    aStatus = A->SaveAs (D, path, aProgress->Start());
   }
   else if (!D->IsSaved())
   {
@@ -160,7 +163,7 @@ static Standard_Integer saveDoc (Draw_Interpretor& di, Standard_Integer argc, co
   }
   else
   {
-    aStatus = A->Save(D);
+    aStatus = A->Save (D, aProgress->Start());
   }
 
   switch (aStatus)
@@ -218,7 +221,8 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  if ( A->Open(Filename, D) != PCDM_RS_OK )
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (di);
+  if ( A->Open(Filename, D, aProgress->Start()) != PCDM_RS_OK )
   {
     di << "cannot open XDE document\n";
     return 1;
