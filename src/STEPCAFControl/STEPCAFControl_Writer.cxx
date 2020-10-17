@@ -3466,8 +3466,12 @@ Standard_Boolean STEPCAFControl_Writer::WriteDGTs (const Handle(XSControl_WorkSe
     Handle(XCAFDoc_Datum) DatumAttr;
     if(!DatumL.FindAttribute(XCAFDoc_Datum::GetID(),DatumAttr)) continue;
     Handle(TCollection_HAsciiString) aName = DatumAttr->GetName();
-    Handle(TCollection_HAsciiString) aDescription = DatumAttr->GetDescription();
     Handle(TCollection_HAsciiString) anIdentification = DatumAttr->GetIdentification();
+    Handle(TCollection_HAsciiString) aDescription = DatumAttr->GetDescription();
+    if (aDescription.IsNull())
+    {
+      aDescription = new TCollection_HAsciiString();
+    }
     Handle(StepDimTol_DatumFeature) DF = new StepDimTol_DatumFeature;
     Handle(StepDimTol_Datum) aDatum = new StepDimTol_Datum;
     DF->Init(aName, new TCollection_HAsciiString, PDS, StepData_LTrue);

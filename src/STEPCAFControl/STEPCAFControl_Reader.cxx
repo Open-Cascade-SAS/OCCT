@@ -2527,7 +2527,7 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
 
     // Create datum target object
     if (isValidDT) {
-      TDF_Label aDatL = aDGTTool->AddDatum();
+      TDF_Label aDatL = aDGTTool->AddDatum(theDat->Name(), theDat->Description(), theDat->Identification());
       myGDTMap.Bind(aDT, aDatL);
       aDGTTool->Lock(aDatL);
       aDat = XCAFDoc_Datum::Set(aDatL);
@@ -2549,7 +2549,7 @@ Standard_Boolean STEPCAFControl_Reader::setDatumToXCAF(const Handle(StepDimTol_D
 
   if (aShapeLabels.Length() > 0 || !isExistDatumTarget) {
     // Create object for datum
-    TDF_Label aDatL = aDGTTool->AddDatum();
+    TDF_Label aDatL = aDGTTool->AddDatum(theDat->Name(), theDat->Description(), theDat->Identification());
     myGDTMap.Bind(theDat, aDatL);
     // bind datum label with all reference datum_feature entities
     for (Standard_Integer i = 1; i <= aSAs.Length(); i++) {

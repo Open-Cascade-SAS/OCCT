@@ -1,0 +1,40 @@
+puts "================"
+puts "0031825: Data Exchange, STEP - NULL dereference while re-exporting model with empty Datum description"
+puts "================"
+puts ""
+
+pload OCAF
+param write.step.schema AP242DIS
+catch { Close D_First }
+catch { Close D_Sec }
+
+# Read file
+set Path ${imagedir}/${casename}.stp
+ReadStep D_First [locate_data_file bug26689_nist_ctc_04_asme1_ap242.stp]
+set baseDGTDump [XDumpNbDGTs D_First f]
+
+WriteStep D_First $Path
+ReadStep D_Sec $Path
+file delete $Path
+set newDGTDump [XDumpNbDGTs D_Sec f]
+XGetOneShape res D_Sec
+
+# Checking
+checkshape res
+checknbshapes res -face 518 -wire 623 -compound 1
+
+set isOK 1
+set nb_ref [llength $newDGTDump]
+for { set i 0 } { $i < $nb_ref } { incr i } {
+  set refstr [lindex $baseDGTDump $i]
+  set curstr [lindex $newDGTDump $i]
+  if {[string equal $refstr $curstr] == 0} {
+    set isOK 0
+  }
+}
+if {$isOK == 0} {
+  puts "Error: wrong export DGT and PMI"
+}
+
+# set default parameter
+param write.step.schema AP214IS
