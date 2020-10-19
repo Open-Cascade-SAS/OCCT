@@ -854,9 +854,13 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
     SurfFace = (Handle(Geom_RectangularTrimmedSurface)::DownCast(SurfFace))->BasisSurface();
 
   Standard_Boolean ToModify = Standard_False,
-    ToTranslate = Standard_False, Y_Reverse = Standard_False, ToProject = Standard_False;
+    ToTranslate = Standard_False,
+    ToRotate = Standard_False,
+    X_Reverse = Standard_False,
+    Y_Reverse = Standard_False,
+    ToProject = Standard_False;
   
-  gp_Vec2d Translation(0.,0.);
+  Standard_Real aTranslation = 0., anAngle = 0.;
 
   //Get axes of surface of face and of surface of RefFace
   Handle(Geom_ElementarySurface) ElemSurfFace = Handle(Geom_ElementarySurface)::DownCast(SurfFace);
@@ -872,27 +876,37 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
     Standard_Real aParam = ElCLib::LineParameter(AxisOfSurfFace.Axis(), OriginRefSurf);
 
     if (Abs(aParam) > Precision::PConfusion())
-      Translation.SetY(-aParam);
+      aTranslation = -aParam;
 
     gp_Dir VdirSurfFace = AxisOfSurfFace.Direction();
     gp_Dir VdirRefSurf  = AxisOfRefSurf.Direction();
     gp_Dir XdirSurfFace = AxisOfSurfFace.XDirection();
     gp_Dir XdirRefSurf  = AxisOfRefSurf.XDirection();
   
-    Standard_Real anAngle = XdirRefSurf.AngleWithRef(XdirSurfFace, VdirRefSurf);
-    if (!AxisOfRefSurf.Direct())
-      anAngle *= -1;
-
-    if (Abs(anAngle) > Precision::PConfusion())
-      Translation.SetX(anAngle);
+    gp_Dir CrossProd1 = AxisOfRefSurf.XDirection() ^ AxisOfRefSurf.YDirection();
+    gp_Dir CrossProd2 = AxisOfSurfFace.XDirection() ^ AxisOfSurfFace.YDirection();
+    if (CrossProd1 * CrossProd2 < 0.)
+      X_Reverse = Standard_True;
 
     Standard_Real ScalProd = VdirSurfFace * VdirRefSurf;
     if (ScalProd < 0.)
       Y_Reverse = Standard_True;
 
-    ToTranslate = !(Translation.XY().IsEqual(gp_XY(0.,0.), Precision::PConfusion()));
+    if (!X_Reverse && !Y_Reverse)
+    {
+      gp_Dir DirRef = VdirRefSurf;
+      if (!AxisOfRefSurf.Direct())
+        DirRef.Reverse();
+      anAngle = XdirRefSurf.AngleWithRef(XdirSurfFace, DirRef);
+    }
+    else
+      anAngle = XdirRefSurf.Angle(XdirSurfFace);
 
-    ToModify = ToTranslate || Y_Reverse;
+    ToRotate = (Abs(anAngle) > Precision::PConfusion());
+
+    ToTranslate = (Abs(aTranslation) > Precision::PConfusion());
+
+    ToModify = ToTranslate || ToRotate || X_Reverse || Y_Reverse;
   }
   else
   {
@@ -933,9 +947,16 @@ static void TransformPCurves(const TopoDS_Face& theRefFace,
       aNewPCurve = Handle(Geom2d_Curve)::DownCast(aPCurve->Copy());
     }
     if (ToTranslate)
-      aNewPCurve->Translate(Translation);
+      aNewPCurve->Translate(gp_Vec2d(0., aTranslation));
     if (Y_Reverse)
       aNewPCurve->Mirror(gp::OX2d());
+    if (X_Reverse)
+    {
+      aNewPCurve->Mirror(gp::OY2d());
+      aNewPCurve->Translate(gp_Vec2d(2*M_PI, 0.));
+    }
+    if (ToRotate)
+      aNewPCurve->Translate(gp_Vec2d(anAngle, 0.));
 
     theMapEdgesWithTemporaryPCurves.Add(anEdge);
     
@@ -2256,7 +2277,7 @@ void ShapeUpgrade_UnifySameDomain::IntUnifyFaces(const TopoDS_Shape& theInpShape
 
     // surface and location to construct result
     TopLoc_Location aBaseLocation;
-    Handle(Geom_Surface) aBaseSurface = BRep_Tool::Surface(aFace,aBaseLocation);
+    Handle(Geom_Surface) aBaseSurface = BRep_Tool::Surface(aFace);
     aBaseSurface = ClearRts(aBaseSurface);
     TopAbs_Orientation RefFaceOrientation = aFace.Orientation();
 

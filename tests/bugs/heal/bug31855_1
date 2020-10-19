@@ -1,0 +1,19 @@
+puts "================================================="
+puts "OCC31855: Regression of the unifysamedom command."
+puts "================================================="
+puts ""
+
+restore [locate_data_file bug31855_1.brep] a
+unifysamedom result a
+
+checkshape result
+
+checknbshapes result -vertex 89 -edge 134 -wire 47 -face 47 -shell 1 -solid 1
+
+set tolres [checkmaxtol result]
+
+if { ${tolres} > 0.0006} {
+   puts "Error: bad tolerance of result"
+}
+
+checkview -display result -2d -path ${imagedir}/${test_image}.png
