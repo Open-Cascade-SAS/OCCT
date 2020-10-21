@@ -1159,7 +1159,7 @@ static Standard_Integer OCC1174_2 (Draw_Interpretor& di, Standard_Integer argc, 
 
   Handle(AIS_Shape) ais = new AIS_Shape(sh); 
   AISContext->Display (ais, 1, 0, Standard_False);
-  AISContext->SetMaterial (ais, Graphic3d_NOM_SHINY_PLASTIC, Standard_False);
+  AISContext->SetMaterial (ais, Graphic3d_NameOfMaterial_ShinyPlastified, Standard_False);
 
   Quantity_Color colf(0.0, 0.4, 0.0, Quantity_TOC_sRGB);
   Quantity_Color colb(0.0, 0.0, 0.6, Quantity_TOC_sRGB);

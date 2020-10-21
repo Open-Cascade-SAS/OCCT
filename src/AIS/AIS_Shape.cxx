@@ -489,7 +489,7 @@ void AIS_Shape::UnsetColor()
         || IsTransparent()
         || myDrawer->ShadingAspect()->Aspect()->ToMapTexture())
   {
-    const Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
+    const Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NameOfMaterial_Brass);
     Graphic3d_MaterialAspect mat = aDefaultMat;
     Quantity_Color anInteriorColors[2] = {Quantity_NOC_CYAN1, Quantity_NOC_CYAN1};
     if (myDrawer->HasLink())

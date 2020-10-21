@@ -82,7 +82,7 @@ extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 
 #define DEFAULT_COLOR              Quantity_NOC_GOLDENROD
 #define DEFAULT_FREEBOUNDARY_COLOR Quantity_NOC_GREEN
-#define DEFAULT_MATERIAL           Graphic3d_NOM_BRASS
+#define DEFAULT_MATERIAL           Graphic3d_NameOfMaterial_Brass
 
 //=======================================================================
 // function : GetColorFromName
@@ -1769,7 +1769,7 @@ struct ViewerTest_AspectsChangeSet
     AlphaMode         (Graphic3d_AlphaMode_BlendAuto),
     AlphaCutoff       (0.5f),
     ToSetMaterial     (0),
-    Material          (Graphic3d_NOM_DEFAULT),
+    Material          (Graphic3d_NameOfMaterial_DEFAULT),
     ToSetShowFreeBoundary      (0),
     ToSetFreeBoundaryWidth     (0),
     FreeBoundaryWidth          (1.0),
@@ -2807,7 +2807,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
           || anArg == "-unsetmaterial")
     {
       aChangeSet->ToSetMaterial = -1;
-      aChangeSet->Material = Graphic3d_NOM_DEFAULT;
+      aChangeSet->Material = Graphic3d_NameOfMaterial_DEFAULT;
     }
     else if (anArg == "-subshape"
           || anArg == "-subshapes")
@@ -3187,7 +3187,7 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
       //aChangeSet->ToSetBackFaceColor = -1; // should be reset by ToSetColor
       //aChangeSet->BackFaceColor = DEFAULT_COLOR;
       aChangeSet->ToSetMaterial = -1;
-      aChangeSet->Material = Graphic3d_NOM_DEFAULT;
+      aChangeSet->Material = Graphic3d_NameOfMaterial_DEFAULT;
       aChangeSet->ToSetShowFreeBoundary = -1;
       aChangeSet->ToSetFreeBoundaryColor = -1;
       aChangeSet->FreeBoundaryColor = DEFAULT_FREEBOUNDARY_COLOR;

@@ -12,7 +12,7 @@
 #include "Fonc.hxx"
 
 #define DEFAULT_COLOR Quantity_NOC_CYAN1
-#define DEFAULT_MATERIAL Graphic3d_NOM_PLASTER
+#define DEFAULT_MATERIAL Graphic3d_NameOfMaterial_Plastered
 #define DEFAULT_DEVIATIONCOEFFICIENT 0.001
 #define DEFAULT_HILIGHTCOLOR Quantity_NOC_YELLOW
 
@@ -123,23 +123,23 @@ CAnimationDoc::CAnimationDoc()
 
 	myAisCylinderHead = new AIS_Shape (CylinderHead);
 	myAISContext->SetColor    (myAisCylinderHead, Quantity_NOC_WHITE, Standard_False);
-	myAISContext->SetMaterial (myAisCylinderHead, Graphic3d_NOM_PLASTIC, Standard_False);
+	myAISContext->SetMaterial (myAisCylinderHead, Graphic3d_NameOfMaterial_Plastified, Standard_False);
 	myAisEngineBlock  = new AIS_Shape (EngineBlock);
 	myAISContext->SetColor(myAisEngineBlock,   Quantity_NOC_WHITE, Standard_False);
-	myAISContext->SetMaterial(myAisEngineBlock,Graphic3d_NOM_PLASTIC, Standard_False);
+	myAISContext->SetMaterial(myAisEngineBlock,Graphic3d_NameOfMaterial_Plastified, Standard_False);
 
 	myAISContext->Display(myAisCylinderHead ,1,-1,Standard_False);
 	myAISContext->Display(myAisEngineBlock  ,1,-1,Standard_False);
 
 	myAisCrankArm     = new AIS_Shape (CrankArm);
 	myAISContext->SetColor   (myAisCrankArm, Quantity_NOC_HOTPINK, Standard_False);
-	myAISContext->SetMaterial(myAisCrankArm, Graphic3d_NOM_PLASTIC, Standard_False);
+	myAISContext->SetMaterial(myAisCrankArm, Graphic3d_NameOfMaterial_Plastified, Standard_False);
 	myAisPiston       = new AIS_Shape (Piston);
 	myAISContext->SetColor   (myAisPiston  , Quantity_NOC_WHITE, Standard_False);
-	myAISContext->SetMaterial(myAisPiston  , Graphic3d_NOM_PLASTIC, Standard_False);
+	myAISContext->SetMaterial(myAisPiston  , Graphic3d_NameOfMaterial_Plastified, Standard_False);
 	myAisPropeller    = new AIS_Shape (Propeller);
 	myAISContext->SetColor   (myAisPropeller, Quantity_NOC_RED, Standard_False);
-	myAISContext->SetMaterial(myAisPropeller, Graphic3d_NOM_PLASTIC, Standard_False);
+	myAISContext->SetMaterial(myAisPropeller, Graphic3d_NameOfMaterial_Plastified, Standard_False);
 
 	myAISContext->Display(myAisCrankArm,  1,-1,Standard_False);
 	myAISContext->Display(myAisPropeller, 1,-1,Standard_False);
@@ -316,7 +316,7 @@ void CAnimationDoc::OnFileLoadgrid()
 	  myAISContext->Display(myAISSurface, Standard_False);
 	  myAISContext->Deactivate(myAISSurface,Standard_False);
 	  myAISContext->SetColor (myAISSurface,Quantity_NOC_WHITE,Standard_False);
-	  myAISContext->SetMaterial (myAISSurface,Graphic3d_NOM_STONE,Standard_False);
+	  myAISContext->SetMaterial (myAISSurface,Graphic3d_NameOfMaterial_Stone,Standard_False);
 	  myAISContext->SetDisplayMode (myAISSurface,1,Standard_False);
 	  myAISContext->SetDeviationCoefficient (0.001);
   	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;

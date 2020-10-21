@@ -215,7 +215,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
             PolygonVerticesFor3D, PolygonBoundsFor3D );
   }
 
-  Graphic3d_MaterialAspect aMaterial[2] = { Graphic3d_NOM_PLASTIC, Graphic3d_NOM_PLASTIC };
+  Graphic3d_MaterialAspect aMaterial[2] = { Graphic3d_NameOfMaterial_Plastified, Graphic3d_NameOfMaterial_Plastified };
   for (Standard_Integer i = 0; i < 2; i++)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"
@@ -478,7 +478,7 @@ void MeshVS_ElementalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& 
       CustomBuild(Prs, aCustomElements, IDsToExclude, DisplayMode);
   }
 
-  Graphic3d_MaterialAspect aMaterial2[2] = { Graphic3d_NOM_PLASTIC, Graphic3d_NOM_PLASTIC };
+  Graphic3d_MaterialAspect aMaterial2[2] = { Graphic3d_NameOfMaterial_Plastified, Graphic3d_NameOfMaterial_Plastified };
   for (Standard_Integer i = 0; i < 2; i++)
   {
     // OCC20644 "plastic" is most suitable here, as it is "non-physic"

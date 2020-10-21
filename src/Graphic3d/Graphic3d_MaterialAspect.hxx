@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns the number of predefined textures.
-  static Standard_Integer NumberOfMaterials() { return Graphic3d_NOM_DEFAULT; }
+  static Standard_Integer NumberOfMaterials() { return Graphic3d_NameOfMaterial_DEFAULT; }
 
   //! Returns the name of the predefined material of specified rank within range [1, NumberOfMaterials()].
   Standard_EXPORT static Standard_CString MaterialName (const Standard_Integer theRank);
@@ -50,10 +50,10 @@ public:
   Standard_EXPORT static Standard_Boolean MaterialFromName (const Standard_CString theName,
                                                             Graphic3d_NameOfMaterial& theMat);
 
-  //! Returns the material for specified name or Graphic3d_NOM_DEFAULT if name is unknown.
+  //! Returns the material for specified name or Graphic3d_NameOfMaterial_DEFAULT if name is unknown.
   static Graphic3d_NameOfMaterial MaterialFromName (const Standard_CString theName)
   {
-    Graphic3d_NameOfMaterial aMat = Graphic3d_NOM_DEFAULT;
+    Graphic3d_NameOfMaterial aMat = Graphic3d_NameOfMaterial_DEFAULT;
     MaterialFromName (theName, aMat);
     return aMat;
   }
@@ -87,7 +87,7 @@ public:
   {
     // if a component of a "standard" material change, the
     // result is no more standard (a blue gold is not a gold)
-    myMaterialName = Graphic3d_NOM_UserDefined;
+    myMaterialName = Graphic3d_NameOfMaterial_UserDefined;
     myStringName   = theName;
   }
 
@@ -248,9 +248,9 @@ private:
   {
     // if a component of a "standard" material change, the
     // result is no more standard (a blue gold is not a gold)
-    if (myMaterialName != Graphic3d_NOM_UserDefined)
+    if (myMaterialName != Graphic3d_NameOfMaterial_UserDefined)
     {
-      myMaterialName = Graphic3d_NOM_UserDefined;
+      myMaterialName = Graphic3d_NameOfMaterial_UserDefined;
       myStringName   = "UserDefined";
     }
   }

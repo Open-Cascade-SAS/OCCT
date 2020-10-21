@@ -200,7 +200,7 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
 {
   if (myCommonMat.IsDefined)
   {
-    theAspect = Graphic3d_MaterialAspect (Graphic3d_NOM_UserDefined);
+    theAspect = Graphic3d_MaterialAspect (Graphic3d_NameOfMaterial_UserDefined);
     theAspect.SetAmbientColor (myCommonMat.AmbientColor);
     theAspect.SetDiffuseColor (myCommonMat.DiffuseColor);
     theAspect.SetSpecularColor(myCommonMat.SpecularColor);
@@ -225,7 +225,7 @@ void XCAFDoc_VisMaterial::FillMaterialAspect (Graphic3d_MaterialAspect& theAspec
     if (!myCommonMat.IsDefined)
     {
       // convert metal-roughness into common
-      theAspect = Graphic3d_MaterialAspect (Graphic3d_NOM_UserDefined);
+      theAspect = Graphic3d_MaterialAspect (Graphic3d_NameOfMaterial_UserDefined);
       theAspect.SetDiffuseColor (myPbrMat.BaseColor.GetRGB());
       theAspect.SetAlpha        (myPbrMat.BaseColor.Alpha());
       theAspect.SetSpecularColor(Quantity_Color (Graphic3d_Vec3 (myPbrMat.Metallic)));

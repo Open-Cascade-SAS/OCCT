@@ -27,7 +27,7 @@ namespace
 
   static Handle(Graphic3d_AspectFillArea3d) defaultAspect()
   {
-    Graphic3d_MaterialAspect aMaterial (Graphic3d_NOM_DEFAULT);
+    Graphic3d_MaterialAspect aMaterial (Graphic3d_NameOfMaterial_DEFAULT);
     Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();
     anAspect->SetDistinguishOff();
     anAspect->SetFrontMaterial (aMaterial);

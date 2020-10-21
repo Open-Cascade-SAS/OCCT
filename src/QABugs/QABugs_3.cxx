@@ -310,7 +310,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   TopoDS_Face F1= bzf1.Face();
   ais1 = new AIS_Shape(F1);
   DBRep::Set("F1",F1);
-  aContext->SetMaterial(ais1,Graphic3d_NOM_ALUMINIUM,Standard_False);
+  aContext->SetMaterial (ais1, Graphic3d_NameOfMaterial_Aluminum, Standard_False);
   aContext->Display (ais1, Standard_False);
   BRep_Builder B;
   TopoDS_Shell shell;
@@ -347,7 +347,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   mkw.Add(*E6); 
   FP = BRepBuilderAPI_MakeFace(mkw.Wire()); 
   ais2 = new AIS_Shape( FP ); 
-  aContext->SetMaterial(ais2,Graphic3d_NOM_ALUMINIUM,Standard_False); 
+  aContext->SetMaterial (ais2, Graphic3d_NameOfMaterial_Aluminum, Standard_False);
   aContext->Display (ais2, Standard_False);
 
   DBRep::Set("FP",FP);
@@ -378,7 +378,7 @@ static Standard_Integer BUC60811(Draw_Interpretor& di, Standard_Integer argc, co
   fillet.Build(); 
   FP1 = fillet.Shape(); 
   ais2 = new AIS_Shape( FP1 ); 
-  aContext->SetMaterial(ais2,Graphic3d_NOM_ALUMINIUM,Standard_False); 
+  aContext->SetMaterial (ais2, Graphic3d_NameOfMaterial_Aluminum, Standard_False);
   aContext->Display (ais2, Standard_False);
 
   DBRep::Set("FP1",FP1);

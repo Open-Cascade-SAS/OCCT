@@ -68,7 +68,7 @@ AIS_XRTrackedDevice::AIS_XRTrackedDevice (const Handle(Graphic3d_ArrayOfTriangle
   myToShowAxes (false)
 {
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NOM_DEFAULT);
+  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_DEFAULT);
   myDrawer->ShadingAspect()->SetColor (Quantity_NOC_WHITE);
   if (!theTexture.IsNull())
   {

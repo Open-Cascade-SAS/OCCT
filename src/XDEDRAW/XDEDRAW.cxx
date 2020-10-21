@@ -508,7 +508,7 @@ static Standard_Integer setPrs (Draw_Interpretor& di, Standard_Integer argc, con
     Handle(TPrsStd_AISPresentation) prs;
     if ( ! seq.Value(i).FindAttribute ( TPrsStd_AISPresentation::GetID(), prs ) ) {
       prs = TPrsStd_AISPresentation::Set(seq.Value(i),XCAFPrs_Driver::GetID());
-      prs->SetMaterial ( Graphic3d_NOM_PLASTIC );
+      prs->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
     }
 //    Quantity_Color Col;
 //    if ( colors.GetColor ( seq.Value(i), XCAFDoc_ColorSurf, Col ) )
@@ -573,7 +573,7 @@ static Standard_Integer show (Draw_Interpretor& di, Standard_Integer argc, const
     Handle(TPrsStd_AISPresentation) prs;
     if ( ! seq.Value(i).FindAttribute ( TPrsStd_AISPresentation::GetID(), prs ) ) {
       prs = TPrsStd_AISPresentation::Set(seq.Value(i),XCAFPrs_Driver::GetID());
-      prs->SetMaterial ( Graphic3d_NOM_PLASTIC );
+      prs->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
     }
 //    Quantity_Color Col;
 //    if ( colors.GetColor ( seq.Value(i), XCAFDoc_ColorSurf, Col ) )
@@ -1218,7 +1218,7 @@ static Standard_Integer XSetTransparency (Draw_Interpretor& di, Standard_Integer
     Handle(TPrsStd_AISPresentation) prs;
     if ( ! seq.Value(i).FindAttribute ( TPrsStd_AISPresentation::GetID(), prs ) ) {
       prs = TPrsStd_AISPresentation::Set(seq.Value(i),XCAFPrs_Driver::GetID());
-      prs->SetMaterial ( Graphic3d_NOM_PLASTIC );
+      prs->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
     }
     prs->SetTransparency( aTransparency );
   }

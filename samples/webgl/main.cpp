@@ -46,7 +46,7 @@ extern "C" void onFileDataRead (void* theOpaque, void* theBuffer, int theDataLen
   BRepTools::Read (aShape, aStream, aBuilder);
 
   Handle(AIS_Shape) aShapePrs = new AIS_Shape (aShape);
-  aShapePrs->SetMaterial (Graphic3d_NOM_SILVER);
+  aShapePrs->SetMaterial (Graphic3d_NameOfMaterial_Silver);
   aViewer.Context()->Display (aShapePrs, AIS_Shaded, 0, false);
   aViewer.View()->FitAll (0.01, false);
   aViewer.View()->Redraw();

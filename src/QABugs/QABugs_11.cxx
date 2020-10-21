@@ -124,7 +124,7 @@ static Standard_Integer  OCC128 (Draw_Interpretor& di, Standard_Integer /*argc*/
   TopoDS_Shape shape1 = BRepPrimAPI_MakeBox(50,50,50).Shape();
   Handle(AIS_Shape) AS = new AIS_Shape(shape1);
   AS->SetDisplayMode(1);
-  Graphic3d_MaterialAspect mat(Graphic3d_NOM_PLASTIC);
+  Graphic3d_MaterialAspect mat (Graphic3d_NameOfMaterial_Plastified);
   AS->SetMaterial(mat);
   AS->SetColor(Quantity_NOC_RED);
   myAISContext->Display (AS, Standard_False);

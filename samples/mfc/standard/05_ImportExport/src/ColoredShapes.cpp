@@ -46,7 +46,7 @@ void CColoredShapes::Display(Handle(AIS_InteractiveContext)& anAIScontext)
 	{
 		Handle(AIS_Shape) ais = new AIS_Shape(iter.Value());
 		anAIScontext->SetColor(ais, (Quantity_NameOfColor)m_colorMap.Find(iter.Value()), Standard_False);
-    anAIScontext->SetMaterial(ais, Graphic3d_NOM_GOLD, Standard_False);
+    anAIScontext->SetMaterial(ais, Graphic3d_NameOfMaterial_Gold, Standard_False);
 		anAIScontext->Display(ais, Standard_False);
 	}
   anAIScontext->UpdateCurrentViewer();

@@ -1532,7 +1532,7 @@ Handle(AIS_InteractiveObject) CGeometryDoc::drawSurface
   Handle(AIS_Shape) aGraphicSurface = 
     new AIS_Shape(BRepBuilderAPI_MakeFace (theSurface, u1, u2, v1, v2, Precision::Confusion()));
 
-  myAISContext->SetMaterial(aGraphicSurface, Graphic3d_NOM_PLASTIC, toDisplay);
+  myAISContext->SetMaterial(aGraphicSurface, Graphic3d_NameOfMaterial_Plastified, toDisplay);
   myAISContext->SetColor(aGraphicSurface, theColor, toDisplay);
   if (toDisplay)
   {

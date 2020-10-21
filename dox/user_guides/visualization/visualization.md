@@ -1556,7 +1556,7 @@ aTriangles->AddVertex ( 100./2.,  100./2., 0.0);
 
 Handle(Graphic3d_AspectFillArea3d) anAspects = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID, Quantity_NOC_RED,
                                                                                Quantity_NOC_RED, Aspect_TOL_SOLID, 1.0f,
-                                                                               Graphic3d_NOM_GOLD, Graphic3d_NOM_GOLD);
+                                                                               Graphic3d_NameOfMaterial_Gold, Graphic3d_NameOfMaterial_Gold);
 aPrsGroup->SetGroupPrimitivesAspect (anAspects);
 aPrsGroup->AddPrimitiveArray (aTriangles);
 
@@ -2018,8 +2018,8 @@ aFirebrickMarker->SetMarkerImage (theImage)
 Create facet attributes.
 ~~~~~{.cpp}
 Handle(Graphic3d_AspectFillArea3d) aFaceAspect = new Graphic3d_AspectFillArea3d();
-Graphic3d_MaterialAspect aBrassMaterial (Graphic3d_NOM_BRASS);
-Graphic3d_MaterialAspect aGoldMaterial  (Graphic3d_NOM_GOLD);
+Graphic3d_MaterialAspect aBrassMaterial (Graphic3d_NameOfMaterial_Brass);
+Graphic3d_MaterialAspect aGoldMaterial  (Graphic3d_NameOfMaterial_Gold);
 aFaceAspect->SetInteriorStyle (Aspect_IS_SOLID_WIREFRAME);
 aFaceAspect->SetInteriorColor (aMyColor);
 aFaceAspect->SetDistinguishOn ();

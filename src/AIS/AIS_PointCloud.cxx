@@ -297,7 +297,7 @@ void AIS_PointCloud::UnsetColor()
 
   AIS_InteractiveObject::UnsetColor();
   {
-    Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
+    Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NameOfMaterial_Brass);
     Graphic3d_MaterialAspect aMat = aDefaultMat;
     Quantity_Color aColor = aDefaultMat.Color();
     if (myDrawer->HasLink())
@@ -353,7 +353,7 @@ void AIS_PointCloud::UnsetMaterial()
   }
 
   {
-    Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NOM_BRASS);
+    Graphic3d_MaterialAspect aDefaultMat (Graphic3d_NameOfMaterial_Brass);
     myDrawer->ShadingAspect()->SetMaterial (myDrawer->HasLink() ?
                                             myDrawer->Link()->ShadingAspect()->Material (myCurrentFacingModel) :
                                             aDefaultMat,

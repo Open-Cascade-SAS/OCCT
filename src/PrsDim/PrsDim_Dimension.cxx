@@ -509,7 +509,7 @@ void PrsDim_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentati
         myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
       }
 
-      Graphic3d_MaterialAspect aShadeMat (Graphic3d_NOM_DEFAULT);
+      Graphic3d_MaterialAspect aShadeMat (Graphic3d_NameOfMaterial_DEFAULT);
       aShadeMat.SetAmbientColor (Quantity_NOC_BLACK);
       aShadeMat.SetDiffuseColor (Quantity_NOC_BLACK);
       aShadeMat.SetSpecularColor(Quantity_NOC_BLACK);

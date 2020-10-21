@@ -13453,7 +13453,7 @@ static int VSelectionProperties (Draw_Interpretor& theDi,
 
       const Handle(Prs3d_Drawer)& aStyle = aCtx->HighlightStyle (aType);
       Graphic3d_NameOfMaterial aMatName = Graphic3d_MaterialAspect::MaterialFromName (theArgVec[anArgIter + 1]);
-      if (aMatName != Graphic3d_NOM_DEFAULT)
+      if (aMatName != Graphic3d_NameOfMaterial_DEFAULT)
       {
         ++anArgIter;
         Handle(Graphic3d_AspectFillArea3d) anAspect = new Graphic3d_AspectFillArea3d();

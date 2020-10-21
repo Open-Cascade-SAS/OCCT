@@ -200,7 +200,7 @@ void AIS_ViewCube::setDefaultAttributes()
   // this should be forced back-face culling regardless Closed flag
   myDrawer->TextAspect()->Aspect()->SetSuppressBackFaces (true);
 
-  Graphic3d_MaterialAspect aMat (Graphic3d_NOM_UserDefined);
+  Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_UserDefined);
   aMat.SetColor (Quantity_NOC_WHITE);
   aMat.SetAmbientColor (Quantity_NOC_GRAY60);
 

@@ -316,7 +316,7 @@ void OcctViewer::displayWithChildren (XCAFDoc_ShapeTool&             theShapeToo
     Handle(AIS_InteractiveObject) anAis;
     if (!theMapOfShapes.Find (aRefLabel, anAis))
     {
-      anAis = new CafShapePrs (aRefLabel, theParentStyle, Graphic3d_NOM_SHINY_PLASTIC);
+      anAis = new CafShapePrs (aRefLabel, theParentStyle, Graphic3d_NameOfMaterial_ShinyPlastified);
       theMapOfShapes.Bind (aRefLabel, anAis);
     }
     

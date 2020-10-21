@@ -42,32 +42,32 @@ namespace
   //! Name list of standard materials (defined within enumeration).
   static const RawMaterial THE_MATERIALS[] =
   {
-    RawMaterial (Graphic3d_NOM_BRASS,       "Brass"),
-    RawMaterial (Graphic3d_NOM_BRONZE,      "Bronze"),
-    RawMaterial (Graphic3d_NOM_COPPER,      "Copper"),
-    RawMaterial (Graphic3d_NOM_GOLD,        "Gold"),
-    RawMaterial (Graphic3d_NOM_PEWTER,      "Pewter"),
-    RawMaterial (Graphic3d_NOM_PLASTER,     "Plastered"),
-    RawMaterial (Graphic3d_NOM_PLASTIC,     "Plastified"),
-    RawMaterial (Graphic3d_NOM_SILVER,      "Silver"),
-    RawMaterial (Graphic3d_NOM_STEEL,       "Steel"),
-    RawMaterial (Graphic3d_NOM_STONE,       "Stone"),
-    RawMaterial (Graphic3d_NOM_SHINY_PLASTIC, "Shiny_plastified"),
-    RawMaterial (Graphic3d_NOM_SATIN,       "Satined"),
-    RawMaterial (Graphic3d_NOM_METALIZED,   "Metalized"),
-    RawMaterial (Graphic3d_NOM_NEON_GNC,    "Ionized"),
-    RawMaterial (Graphic3d_NOM_CHROME,      "Chrome"),
-    RawMaterial (Graphic3d_NOM_ALUMINIUM,   "Aluminium"),
-    RawMaterial (Graphic3d_NOM_OBSIDIAN,    "Obsidian"),
-    RawMaterial (Graphic3d_NOM_NEON_PHC,    "Neon"),
-    RawMaterial (Graphic3d_NOM_JADE,        "Jade"),
-    RawMaterial (Graphic3d_NOM_CHARCOAL,    "Charcoal"),
-    RawMaterial (Graphic3d_NOM_WATER,       "Water"),
-    RawMaterial (Graphic3d_NOM_GLASS,       "Glass"),
-    RawMaterial (Graphic3d_NOM_DIAMOND,     "Diamond"),
-    RawMaterial (Graphic3d_NOM_TRANSPARENT, "Transparent"),
-    RawMaterial (Graphic3d_NOM_DEFAULT,     "Default"),
-    RawMaterial (Graphic3d_NOM_UserDefined, "UserDefined")
+    RawMaterial (Graphic3d_NameOfMaterial_Brass,       "Brass"),
+    RawMaterial (Graphic3d_NameOfMaterial_Bronze,      "Bronze"),
+    RawMaterial (Graphic3d_NameOfMaterial_Copper,      "Copper"),
+    RawMaterial (Graphic3d_NameOfMaterial_Gold,        "Gold"),
+    RawMaterial (Graphic3d_NameOfMaterial_Pewter,      "Pewter"),
+    RawMaterial (Graphic3d_NameOfMaterial_Plastered,   "Plastered"),
+    RawMaterial (Graphic3d_NameOfMaterial_Plastified,  "Plastified"),
+    RawMaterial (Graphic3d_NameOfMaterial_Silver,      "Silver"),
+    RawMaterial (Graphic3d_NameOfMaterial_Steel,       "Steel"),
+    RawMaterial (Graphic3d_NameOfMaterial_Stone,       "Stone"),
+    RawMaterial (Graphic3d_NameOfMaterial_ShinyPlastified, "Shiny_plastified"),
+    RawMaterial (Graphic3d_NameOfMaterial_Satin,       "Satined"),
+    RawMaterial (Graphic3d_NameOfMaterial_Metalized,   "Metalized"),
+    RawMaterial (Graphic3d_NameOfMaterial_Ionized,     "Ionized"),
+    RawMaterial (Graphic3d_NameOfMaterial_Chrome,      "Chrome"),
+    RawMaterial (Graphic3d_NameOfMaterial_Aluminum,    "Aluminium"),
+    RawMaterial (Graphic3d_NameOfMaterial_Obsidian,    "Obsidian"),
+    RawMaterial (Graphic3d_NameOfMaterial_Neon,        "Neon"),
+    RawMaterial (Graphic3d_NameOfMaterial_Jade,        "Jade"),
+    RawMaterial (Graphic3d_NameOfMaterial_Charcoal,    "Charcoal"),
+    RawMaterial (Graphic3d_NameOfMaterial_Water,       "Water"),
+    RawMaterial (Graphic3d_NameOfMaterial_Glass,       "Glass"),
+    RawMaterial (Graphic3d_NameOfMaterial_Diamond,     "Diamond"),
+    RawMaterial (Graphic3d_NameOfMaterial_Transparent, "Transparent"),
+    RawMaterial (Graphic3d_NameOfMaterial_DEFAULT,     "Default"),
+    RawMaterial (Graphic3d_NameOfMaterial_UserDefined, "UserDefined")
   };
 }
 
@@ -88,7 +88,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
 {
   switch (theName)
   {
-    case Graphic3d_NOM_PLASTIC:
+    case Graphic3d_NameOfMaterial_Plastified:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
 
       Shininess = 0.0078125f;
@@ -102,7 +102,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Normalize();
 
       break;
-    case Graphic3d_NOM_SHINY_PLASTIC:
+    case Graphic3d_NameOfMaterial_ShinyPlastified:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
 
       Shininess = 1.00f;
@@ -115,7 +115,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Ks = Graphic3d_Vec4 (0.145f, 0.145f, 0.145f, 0.17f);
       BSDF.Normalize();
       break;
-    case Graphic3d_NOM_SATIN:
+    case Graphic3d_NameOfMaterial_Satin:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
 
       Shininess = 0.09375f;
@@ -128,7 +128,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Ks = Graphic3d_Vec4 (0.6f);
 
       break;
-    case Graphic3d_NOM_NEON_GNC:
+    case Graphic3d_NameOfMaterial_Ionized:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
 
       Shininess = 0.05f;
@@ -142,7 +142,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Le = static_cast<Graphic3d_Vec3> (Colors[Graphic3d_TOR_DIFFUSE]);
       BSDF.FresnelBase = Graphic3d_Fresnel::CreateDielectric (1.5f);
       break;
-    case Graphic3d_NOM_METALIZED:
+    case Graphic3d_NameOfMaterial_Metalized:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
 
       Shininess = 0.13f;
@@ -154,7 +154,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
                                              Graphic3d_Fresnel::CreateSchlick (Graphic3d_Vec3 (0.2f)), 0.045f);
       break;
-    case Graphic3d_NOM_BRASS:
+    case Graphic3d_NameOfMaterial_Brass:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -166,7 +166,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.992f, 0.941f, 0.808f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_BRONZE:
+    case Graphic3d_NameOfMaterial_Bronze:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -178,7 +178,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.590f, 0.408f, 0.250f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_COPPER:
+    case Graphic3d_NameOfMaterial_Copper:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -190,7 +190,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.950f, 0.640f, 0.540f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_GOLD:
+    case Graphic3d_NameOfMaterial_Gold:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -202,7 +202,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (1.000f, 0.710f, 0.290f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_PEWTER:
+    case Graphic3d_NameOfMaterial_Pewter:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -214,7 +214,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.333f, 0.333f, 0.522f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_PLASTER:
+    case Graphic3d_NameOfMaterial_Plastered:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
 
       Shininess = 0.01f;
@@ -226,7 +226,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Kd = Graphic3d_Vec3 (0.482353f, 0.482353f, 0.482353f);
 
       break;
-    case Graphic3d_NOM_SILVER:
+    case Graphic3d_NameOfMaterial_Silver:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -238,7 +238,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.950f, 0.930f, 0.880f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_STEEL:
+    case Graphic3d_NameOfMaterial_Steel:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -250,7 +250,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.560f, 0.570f, 0.580f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_STONE:
+    case Graphic3d_NameOfMaterial_Stone:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       // special case for SetColor()
@@ -267,7 +267,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Ks = Graphic3d_Vec4 (0.00392157f, 0.00392157f, 0.00392157f, 0.5f);
 
       break;
-    case Graphic3d_NOM_CHROME:
+    case Graphic3d_NameOfMaterial_Chrome:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -279,7 +279,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.975f, 0.975f, 0.975f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_ALUMINIUM:
+    case Graphic3d_NameOfMaterial_Aluminum:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       BSDF = Graphic3d_BSDF::CreateMetallic (Graphic3d_Vec3 (0.985f, 0.985f, 0.985f),
@@ -291,7 +291,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.910f, 0.920f, 0.920f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_NEON_PHC:
+    case Graphic3d_NameOfMaterial_Neon:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       Shininess = 0.05f;
@@ -305,7 +305,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Le = Graphic3d_Vec3 (0.0f, 1.0f, 0.46f);
       BSDF.FresnelBase = Graphic3d_Fresnel::CreateDielectric (1.5f);
       break;
-    case Graphic3d_NOM_OBSIDIAN:
+    case Graphic3d_NameOfMaterial_Obsidian:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       Shininess = 0.3f;
@@ -317,7 +317,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Kd = Graphic3d_Vec3 (0.023f, 0.f, 0.023f);
       BSDF.Ks = Graphic3d_Vec4 (0.0156863f, 0.0156863f, 0.0156863f, 0.1f);
       break;
-    case Graphic3d_NOM_JADE:
+    case Graphic3d_NameOfMaterial_Jade:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       Shininess = 0.10f;
@@ -330,7 +330,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Kd = Graphic3d_Vec3 (0.208658f, 0.415686f, 0.218401f);
       BSDF.Ks = Graphic3d_Vec4 (0.611765f, 0.611765f, 0.611765f, 0.06f);
       break;
-    case Graphic3d_NOM_CHARCOAL:
+    case Graphic3d_NameOfMaterial_Charcoal:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       Shininess = 0.01f;
@@ -342,7 +342,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       BSDF.Kd = Graphic3d_Vec3 (0.02f, 0.02f, 0.02f);
       BSDF.Ks = Graphic3d_Vec4 (0.1f, 0.1f, 0.1f, 0.3f);
       break;
-    case Graphic3d_NOM_WATER:
+    case Graphic3d_NameOfMaterial_Water:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       RefractionIndex  = 1.33f;
@@ -358,7 +358,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.380f, 0.380f, 0.380f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_GLASS:
+    case Graphic3d_NameOfMaterial_Glass:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       RefractionIndex  = 1.62f;
@@ -374,7 +374,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.920f, 0.920f, 0.920f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_DIAMOND:
+    case Graphic3d_NameOfMaterial_Diamond:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       RefractionIndex  = 2.42f;
@@ -391,7 +391,7 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
 
-    case Graphic3d_NOM_TRANSPARENT:
+    case Graphic3d_NameOfMaterial_Transparent:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
 
       RefractionIndex = 1.0f;
@@ -407,14 +407,14 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.970f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_UserDefined:
+    case Graphic3d_NameOfMaterial_UserDefined:
       MaterialType = Graphic3d_MATERIAL_PHYSIC;
       Colors[Graphic3d_TOR_AMBIENT]  = Quantity_Color (Graphic3d_Vec3 (0.1f));
       Colors[Graphic3d_TOR_DIFFUSE]  = Quantity_Color (Graphic3d_Vec3 (0.6f));
       Colors[Graphic3d_TOR_SPECULAR] = Quantity_Color (Graphic3d_Vec3 (0.2f));
       Colors[Graphic3d_TOR_EMISSION] = Quantity_Color (Graphic3d_Vec3 (0.0f));
       break;
-    case Graphic3d_NOM_DEFAULT:
+    case Graphic3d_NameOfMaterial_DEFAULT:
       MaterialType = Graphic3d_MATERIAL_ASPECT;
 
       Colors[Graphic3d_TOR_AMBIENT]  = Quantity_Color (Graphic3d_Vec3 (0.15f));
@@ -431,9 +431,9 @@ RawMaterial::RawMaterial (Graphic3d_NameOfMaterial theName, const char* theStrin
 // purpose  :
 // =======================================================================
 Graphic3d_MaterialAspect::Graphic3d_MaterialAspect()
-: myRequestedMaterialName (Graphic3d_NOM_DEFAULT)
+: myRequestedMaterialName (Graphic3d_NameOfMaterial_DEFAULT)
 {
-  init (Graphic3d_NOM_DEFAULT);
+  init (Graphic3d_NameOfMaterial_DEFAULT);
 }
 
 // =======================================================================
@@ -511,7 +511,7 @@ void Graphic3d_MaterialAspect::SetColor (const Quantity_Color& theColor)
   const RawMaterial& aSrcMat = THE_MATERIALS[myRequestedMaterialName];
   const Quantity_Color anAmbient((Graphic3d_Vec3 )theColor * aSrcMat.AmbientCoef);
   const Quantity_Color aDiffuse ((Graphic3d_Vec3 )theColor * aSrcMat.DiffuseCoef);
-  if (myMaterialName != Graphic3d_NOM_UserDefined
+  if (myMaterialName != Graphic3d_NameOfMaterial_UserDefined
    && (!myColors[Graphic3d_TOR_AMBIENT].IsEqual (anAmbient)
     || !myColors[Graphic3d_TOR_DIFFUSE].IsEqual (aDiffuse)))
   {
@@ -528,7 +528,7 @@ void Graphic3d_MaterialAspect::SetColor (const Quantity_Color& theColor)
 void Graphic3d_MaterialAspect::SetAmbientColor (const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
-  &&  myMaterialName != Graphic3d_NOM_UserDefined
+  &&  myMaterialName != Graphic3d_NameOfMaterial_UserDefined
   && !myColors[Graphic3d_TOR_AMBIENT].IsEqual (theColor))
   {
     setUserMaterial();
@@ -543,7 +543,7 @@ void Graphic3d_MaterialAspect::SetAmbientColor (const Quantity_Color& theColor)
 void Graphic3d_MaterialAspect::SetDiffuseColor (const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
-  &&  myMaterialName != Graphic3d_NOM_UserDefined
+  &&  myMaterialName != Graphic3d_NameOfMaterial_UserDefined
   && !myColors[Graphic3d_TOR_DIFFUSE].IsEqual (theColor))
   {
     setUserMaterial();
@@ -558,7 +558,7 @@ void Graphic3d_MaterialAspect::SetDiffuseColor (const Quantity_Color& theColor)
 void Graphic3d_MaterialAspect::SetSpecularColor (const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
-  &&  myMaterialName != Graphic3d_NOM_UserDefined
+  &&  myMaterialName != Graphic3d_NameOfMaterial_UserDefined
   && !myColors[Graphic3d_TOR_SPECULAR].IsEqual (theColor))
   {
     setUserMaterial();
@@ -573,7 +573,7 @@ void Graphic3d_MaterialAspect::SetSpecularColor (const Quantity_Color& theColor)
 void Graphic3d_MaterialAspect::SetEmissiveColor (const Quantity_Color& theColor)
 {
   if (myMaterialType == Graphic3d_MATERIAL_PHYSIC
-  &&  myMaterialName != Graphic3d_NOM_UserDefined
+  &&  myMaterialName != Graphic3d_NameOfMaterial_UserDefined
   && !myColors[Graphic3d_TOR_EMISSION].IsEqual (theColor))
   {
     setUserMaterial();
@@ -668,32 +668,32 @@ Standard_Boolean Graphic3d_MaterialAspect::MaterialFromName (const Standard_CStr
   // parse aliases
   if (aName == "Plastic")            // Plastified
   {
-    theMat = Graphic3d_NOM_PLASTIC;
+    theMat = Graphic3d_NameOfMaterial_Plastified;
     return Standard_True;
   }
   else if (aName == "Shiny_plastic") // Shiny_plastified
   {
-    theMat = Graphic3d_NOM_SHINY_PLASTIC;
+    theMat = Graphic3d_NameOfMaterial_ShinyPlastified;
     return Standard_True;
   }
   else if (aName == "Plaster")       // Plastered
   {
-    theMat = Graphic3d_NOM_PLASTER;
+    theMat = Graphic3d_NameOfMaterial_Plastered;
     return Standard_True;
   }
   else if (aName == "Satin")         // Satined
   {
-    theMat = Graphic3d_NOM_SATIN;
+    theMat = Graphic3d_NameOfMaterial_Satin;
     return Standard_True;
   }
   else if (aName == "Neon_gnc")      // Ionized
   {
-    theMat = Graphic3d_NOM_NEON_GNC;
+    theMat = Graphic3d_NameOfMaterial_Ionized;
     return Standard_True;
   }
   else if (aName == "Neon_phc") // Neon
   {
-    theMat = Graphic3d_NOM_NEON_PHC;
+    theMat = Graphic3d_NameOfMaterial_Neon;
     return Standard_True;
   }
   return Standard_False;

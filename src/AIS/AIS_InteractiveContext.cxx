@@ -2180,7 +2180,7 @@ void AIS_InteractiveContext::SetSelectionSensitivity (const Handle(AIS_Interacti
 //=======================================================================
 void AIS_InteractiveContext::InitAttributes()
 {
-  Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
+  Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_Brass);
   myDefaultDrawer->ShadingAspect()->SetMaterial (aMat);
 
 //  myDefaultDrawer->ShadingAspect()->SetColor(Quantity_NOC_GRAY70);

@@ -42,7 +42,7 @@ AIS_RubberBand::AIS_RubberBand()
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NOM_PLASTIC);
+  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
   myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_EMPTY);
   myDrawer->ShadingAspect()->Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Blend);
@@ -65,7 +65,7 @@ AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theWidth));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NOM_PLASTIC);
+  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
   myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_EMPTY);
   myDrawer->ShadingAspect()->Aspect()->SetAlphaMode (Graphic3d_AlphaMode_Blend);
@@ -90,7 +90,7 @@ AIS_RubberBand::AIS_RubberBand (const Quantity_Color& theLineColor,
 {
   myDrawer->SetLineAspect (new Prs3d_LineAspect (theLineColor, theLineType, theLineWidth));
   myDrawer->SetShadingAspect (new Prs3d_ShadingAspect());
-  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NOM_PLASTIC);
+  myDrawer->ShadingAspect()->SetMaterial (Graphic3d_NameOfMaterial_Plastified);
   myDrawer->ShadingAspect()->SetColor (theFillColor);
   myDrawer->ShadingAspect()->Aspect()->SetShadingModel (Graphic3d_TOSM_UNLIT);
   myDrawer->ShadingAspect()->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);

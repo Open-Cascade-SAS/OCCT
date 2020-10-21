@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_ShadingAspect, Prs3d_BasicAspect)
 //=======================================================================
 Prs3d_ShadingAspect::Prs3d_ShadingAspect()
 {
-  const Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
+  const Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_Brass);
   const Quantity_Color aColor = aMat.AmbientColor();
   myAspect = new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
 					     aColor,

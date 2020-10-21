@@ -113,7 +113,7 @@ protected:
   // and displays it in the viewer if toDisplay = Standard_True
 
   Handle(AIS_Shape) drawShape (const TopoDS_Shape& theShape,
-         const Graphic3d_NameOfMaterial theMaterial = Graphic3d_NOM_BRASS,
+         const Graphic3d_NameOfMaterial theMaterial = Graphic3d_NameOfMaterial_Brass,
          const Standard_Boolean toDisplay = Standard_True);
   // creates a presentation of the given shape with the given material
   // (color is default for a given material)

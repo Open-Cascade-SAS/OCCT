@@ -748,7 +748,7 @@ public:
     }
 
     Handle(AIS_Shape) aPrs = new AIS_Shape (aShape);
-    myAISContext()->SetMaterial   (aPrs, Graphic3d_NOM_GOLD, Standard_False);
+    myAISContext()->SetMaterial   (aPrs, Graphic3d_NameOfMaterial_Gold, Standard_False);
     myAISContext()->SetDisplayMode(aPrs, AIS_Shaded, Standard_False);
     myAISContext()->Display (aPrs, Standard_True);
     return true;

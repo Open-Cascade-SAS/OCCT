@@ -50,7 +50,7 @@ XCAFPrs_AISObject::XCAFPrs_AISObject (const TDF_Label& theLabel)
   myToSyncStyles (Standard_True)
 {
   // define plastic material by default for proper color reproduction
-  setMaterial (myDrawer, Graphic3d_NOM_PLASTIC, Standard_False, Standard_False);
+  setMaterial (myDrawer, Graphic3d_NameOfMaterial_Plastified, Standard_False, Standard_False);
   hasOwnMaterial = Standard_True;
 
   myLabel = theLabel;

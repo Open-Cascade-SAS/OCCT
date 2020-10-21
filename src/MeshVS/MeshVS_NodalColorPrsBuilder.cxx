@@ -189,7 +189,7 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
 
   // Draw faces with nodal color
   // OCC20644 Use "plastic" material as it is "non-physic" and so it is easier to get the required colors
-  Graphic3d_MaterialAspect aMaterial[2] = { Graphic3d_NOM_PLASTIC, Graphic3d_NOM_PLASTIC };
+  Graphic3d_MaterialAspect aMaterial[2] = { Graphic3d_NameOfMaterial_Plastified, Graphic3d_NameOfMaterial_Plastified };
   for (Standard_Integer i = 0; i < 2; ++i)
   {
     aMaterial[i].SetSpecularColor (Quantity_NOC_BLACK);

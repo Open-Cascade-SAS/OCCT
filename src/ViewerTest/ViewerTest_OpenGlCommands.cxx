@@ -923,13 +923,13 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
     anArg.LowerCase();
     Graphic3d_NameOfMaterial aMat = Graphic3d_MaterialAspect::MaterialFromName (theArgVec[anArgIter]);
-    if (aMat != Graphic3d_NOM_DEFAULT)
+    if (aMat != Graphic3d_NameOfMaterial_DEFAULT)
     {
       aMatList.Append (aMat);
     }
     else if (anArg == "*")
     {
-      for (Standard_Integer aMatIter = 0; aMatIter < (Standard_Integer )Graphic3d_NOM_DEFAULT; ++aMatIter)
+      for (Standard_Integer aMatIter = 0; aMatIter < (Standard_Integer )Graphic3d_NameOfMaterial_DEFAULT; ++aMatIter)
       {
         aMatList.Append ((Graphic3d_NameOfMaterial )aMatIter);
       }
@@ -959,7 +959,7 @@ static Standard_Integer VListMaterials (Draw_Interpretor& theDI,
       return 0;
     }
 
-    for (Standard_Integer aMatIter = 0; aMatIter < (Standard_Integer )Graphic3d_NOM_DEFAULT; ++aMatIter)
+    for (Standard_Integer aMatIter = 0; aMatIter < (Standard_Integer )Graphic3d_NameOfMaterial_DEFAULT; ++aMatIter)
     {
       aMatList.Append ((Graphic3d_NameOfMaterial )aMatIter);
     }

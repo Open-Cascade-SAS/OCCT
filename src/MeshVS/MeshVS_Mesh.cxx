@@ -82,7 +82,7 @@ MeshVS_Mesh::MeshVS_Mesh (const Standard_Boolean theIsAllowOverlapped )
   SetHilightMode( MeshVS_DMF_WireFrame ); // Wireframe as default hilight mode
 
   SetColor ( Quantity_NOC_WHITE );
-  SetMaterial ( Graphic3d_NOM_PLASTIC );
+  SetMaterial (Graphic3d_NameOfMaterial_Plastified);
 
   myCurrentDrawer = new MeshVS_Drawer();
   myCurrentDrawer->SetColor   ( MeshVS_DA_InteriorColor, Quantity_NOC_BLUE4 );
@@ -123,8 +123,8 @@ MeshVS_Mesh::MeshVS_Mesh (const Standard_Boolean theIsAllowOverlapped )
   myHilightDrawer->SetColor    ( MeshVS_DA_EdgeColor, Quantity_NOC_GREEN );
   myHilightDrawer->SetInteger  ( MeshVS_DA_EdgeType, Aspect_TOL_SOLID );
   myHilightDrawer->SetDouble   ( MeshVS_DA_EdgeWidth, 1.0 );
-  myHilightDrawer->SetMaterial ( MeshVS_DA_FrontMaterial, Graphic3d_NOM_PLASTIC );
-  myHilightDrawer->SetMaterial ( MeshVS_DA_BackMaterial, Graphic3d_NOM_PLASTIC );
+  myHilightDrawer->SetMaterial ( MeshVS_DA_FrontMaterial, Graphic3d_NameOfMaterial_Plastified );
+  myHilightDrawer->SetMaterial ( MeshVS_DA_BackMaterial,  Graphic3d_NameOfMaterial_Plastified );
 
   myHilightDrawer->SetColor   ( MeshVS_DA_BeamColor, Quantity_NOC_GRAY80 );
   myHilightDrawer->SetInteger ( MeshVS_DA_BeamType,  Aspect_TOL_SOLID );

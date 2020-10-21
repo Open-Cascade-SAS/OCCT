@@ -96,10 +96,10 @@ Handle( Graphic3d_AspectFillArea3d ) MeshVS_Tool::CreateAspectFillArea3d
 (  const Handle(MeshVS_Drawer)& theDr,
    const Standard_Boolean UseDefaults )
 {
-  Graphic3d_MaterialAspect aFrMat   = Graphic3d_NOM_BRASS;
-  Graphic3d_MaterialAspect aBackMat = Graphic3d_NOM_BRASS;
-  Standard_Integer aFrMatI = (Standard_Integer)Graphic3d_NOM_BRASS;
-  Standard_Integer aBackMatI = (Standard_Integer)Graphic3d_NOM_BRASS;
+  Graphic3d_MaterialAspect aFrMat   = Graphic3d_NameOfMaterial_Brass;
+  Graphic3d_MaterialAspect aBackMat = Graphic3d_NameOfMaterial_Brass;
+  Standard_Integer aFrMatI   = (Standard_Integer)Graphic3d_NameOfMaterial_Brass;
+  Standard_Integer aBackMatI = (Standard_Integer)Graphic3d_NameOfMaterial_Brass;
 
   if ( !theDr->GetInteger ( MeshVS_DA_FrontMaterial, aFrMatI ) && !UseDefaults )
     return 0;

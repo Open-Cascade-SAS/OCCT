@@ -53,7 +53,7 @@ public:
   //! - Equation (0.0, 0.0, 1.0, 0)
   //! - IsOn (True),
   //! - IsCapping (False),
-  //! - Material (Graphic3d_NOM_DEFAULT),
+  //! - Material (Graphic3d_NameOfMaterial_DEFAULT),
   //! - Texture (NULL),
   //! - HatchStyle (Aspect_HS_HORIZONTAL),
   //! - IsHatchOn (False)

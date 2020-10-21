@@ -451,7 +451,7 @@ public:
   //! Sets the material for the interactive object.
   virtual void UnsetMaterial() Standard_OVERRIDE
   {
-    Graphic3d_MaterialAspect aMat (Graphic3d_NOM_UserDefined);
+    Graphic3d_MaterialAspect aMat (Graphic3d_NameOfMaterial_UserDefined);
     aMat.SetColor (Quantity_NOC_WHITE);
     aMat.SetAmbientColor (Quantity_NOC_GRAY60);
     myDrawer->ShadingAspect()->SetMaterial (aMat);

@@ -402,7 +402,7 @@ public:
   //! Returns settings for shading aspects.
   //! These settings can be edited. The default values are:
   //! -   Color: Quantity_NOC_YELLOW
-  //! -   Material: Graphic3d_NOM_BRASS
+  //! -   Material: Graphic3d_NameOfMaterial_Brass
   //! Shading aspect is obtained through decomposition of
   //! 3d faces into triangles, each side of each triangle
   //! being a chord of the corresponding curved edge in the face.
