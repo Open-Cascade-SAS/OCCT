@@ -1,0 +1,56 @@
+puts "======================================================="
+puts "0031858: Modeling Algorithms - boolean operation crash between the given cylinder and torus."
+puts "======================================================="
+puts ""
+
+pcylinder c 500 200
+plane p -2.31895142368858e-15 -4.49296838339662e-15 200 0 0 1
+ptorus t p 449.367136080235 50.6328639197654
+
+bfuzzyvalue 1.e-6
+bnondestructive 1
+brunparallel 1
+setfillhistory 0
+
+bclearobjects
+bcleartools
+baddobjects c
+baddtools t
+bfillds
+
+bbop r0 0
+bbop r1 1
+bbop r2 2
+bbop r3 3
+bbop r4 4
+bbuild rgf
+
+boptions -default
+
+foreach r {r0 r1 r2 r3 r4 rgf} {
+  checkshape $r
+  if {![regexp "OK" [bopcheck $r]]} {
+    puts "Error: the $r is a self-interfering shape"
+  }
+}
+
+
+checknbshapes r0 -wire 3 -face 2 -shell 1 -solid 1 -t
+checkprops r0 -s 735041 -v 1.13701e+07
+
+checknbshapes r1 -wire 4 -face 4 -shell 1 -solid 1 -t
+checkprops r1 -s 2.36232e+06 -v 1.6845e+08
+
+checknbshapes r2 -wire 4 -face 4 -shell 1 -solid 1 -t
+checkprops r2 -s 2.36232e+06 -v 1.45709e+08
+
+checknbshapes r3 -wire 3 -face 2 -shell 1 -solid 1 -t
+checkprops r3 -s 735041 -v 1.13701e+07
+
+checkprops r4 -l 5646.91
+checksection r4 -r 0
+
+checknbshapes rgf -wire 7 -face 6 -shell 3 -solid 3 -t
+checkprops rgf -s 3.8324e+06 -v 1.6845e+08
+
+checkview -display r0 -2d -path ${imagedir}/${test_image}.png
