@@ -123,20 +123,25 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
     UOnCyl = ElCLib::InPeriod(UOnCyl,fu,fu+2*M_PI);
   ElSLib::Parameters(Pln,OrFillet,UOnPln,VOnPln);
 
-  gp_Vec XDir,OtherDir;
-  XDir     = NorF.Reversed();
-  OtherDir = gp_Dir(gp_Vec(OrFillet,ElSLib::Value(UOnCyl,VOnCyl,Cyl)));
-
-  if (!plandab) {
-    gp_Vec tmp = XDir;
-    XDir     = OtherDir;
-    OtherDir = tmp;
+  gp_Vec XDir, OtherDir;
+  if (plandab)
+  {
+    XDir = NorF.Reversed();
+    OtherDir = gp_Vec(OrFillet, ElSLib::Value(UOnCyl, VOnCyl, Cyl));
+    OtherDir.Normalize();
   }
-  gp_Ax3 AxFil (OrFillet,DirFillet,XDir);
-  // construction YDir to go from face1 to face2.
-  if ((XDir^OtherDir).Dot(DirFillet) < 0.)
+  else
+  {
+    OtherDir = NorF.Reversed();
+    XDir = gp_Vec(OrFillet, ElSLib::Value(UOnCyl, VOnCyl, Cyl));
+    XDir.Normalize();
+  }
+ 
+  gp_Ax3 AxFil (OrFillet, DirFillet, XDir);
+  gp_Vec aProd = XDir.Crossed(OtherDir);
+  if (aProd.Dot(DirFillet) < 0.)
     AxFil.YReverse();
-
+  
   Handle(Geom_CylindricalSurface) 
     Fillet = new Geom_CylindricalSurface(AxFil,Radius);
   Data->ChangeSurf(ChFiKPart_IndexSurfaceInDS(Fillet,DStr));
@@ -149,8 +154,10 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
   gp_Lin2d Lin2dPln(PPln2d,VPln2d);
   gp_Pnt   POnPln = ElSLib::Value(UOnPln,VOnPln,Pln);
   gp_Lin   C3d(POnPln,DirFillet);
+
   Standard_Real UOnFillet,V;
   ElSLib::CylinderParameters(AxFil,Radius,POnPln,UOnFillet,V);
+
   if(UOnFillet > M_PI) UOnFillet = 0.;
   gp_Lin2d LOnFillet(gp_Pnt2d(UOnFillet,V),gp::DY2d());
   Handle(Geom_Line)   L3d  = new Geom_Line  (C3d);
