@@ -2962,10 +2962,18 @@ static Standard_Integer VAspects (Draw_Interpretor& theDI,
       {
         aClass = GeomAbs_C0;
       }
+      else if (aClassArg == "g1")
+      {
+        aClass = GeomAbs_G1;
+      }
       else if (aClassArg == "c1"
             || aClassArg == "1")
       {
         aClass = GeomAbs_C1;
+      }
+      else if (aClassArg == "g2")
+      {
+        aClass = GeomAbs_G2;
       }
       else if (aClassArg == "c2"
             || aClassArg == "2")
@@ -6644,7 +6652,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t:          [-unsetShadingModel]"
       "\n\t\t:          [-interior {solid|hatch|hidenline|point}] [-setHatch HatchStyle]"
       "\n\t\t:          [-unsetInterior]"
-      "\n\t\t:          [-faceBoundaryDraw {0|1}] [-mostContinuity {c0|c1|c2|c3|cn}]"
+      "\n\t\t:          [-faceBoundaryDraw {0|1}] [-mostContinuity {c0|g1|c1|g2|c2|c3|cn}]"
       "\n\t\t:          [-faceBoundaryWidth LineWidth] [-faceBoundaryColor R G B] [-faceBoundaryType LineType]"
       "\n\t\t:          [-drawEdges {0|1}] [-edgeType LineType] [-edgeColor R G B] [-quadEdges {0|1}]"
       "\n\t\t:          [-drawSilhouette {0|1}]"
