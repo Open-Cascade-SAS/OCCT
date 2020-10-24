@@ -138,9 +138,18 @@ Handle(Graphic3d_ArrayOfTriangles) Prs3d_Arrow::DrawShaded (const gp_Ax1&       
     return Handle(Graphic3d_ArrayOfTriangles)();
   }
 
-  Standard_Integer aMaxVertexs = (aNbTrisTube > 0 ? Prs3d_ToolCylinder::VerticesNb (theNbFacettes, 1) : 0)
-                               + (aNbTrisCone > 0 ? Prs3d_ToolDisk    ::VerticesNb (theNbFacettes, 1)
-                                                  + Prs3d_ToolCylinder::VerticesNb (theNbFacettes, 1) : 0);
+  Standard_Integer aMaxVertexs = 0;
+  if (aNbTrisTube > 0)
+  {
+    aMaxVertexs += Prs3d_ToolCylinder::VerticesNb (theNbFacettes, 1);
+  }
+  if (aNbTrisCone > 0)
+  {
+    // longer syntax to workaround msvc10 32-bit optimizer bug (#0031876)
+    aMaxVertexs += Prs3d_ToolDisk::VerticesNb (theNbFacettes, 1);
+    aMaxVertexs += Prs3d_ToolCylinder::VerticesNb (theNbFacettes, 1);
+  }
+
   Handle(Graphic3d_ArrayOfTriangles) anArray = new Graphic3d_ArrayOfTriangles (aMaxVertexs, aNbTris * 3, Graphic3d_ArrayFlags_VertexNormal);
   if (aNbTrisTube != 0)
   {
