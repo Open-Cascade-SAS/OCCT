@@ -201,7 +201,7 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
     else
     {
       Handle(DDocStd_DrawDocument) aDrawDoc = new DDocStd_DrawDocument (aDoc);
-      TDataStd_Name::Set (aDoc->GetData()->Root(), aDestName.ToCString());
+      TDataStd_Name::Set (aDoc->GetData()->Root(), aDestName);
       Draw::Set (aDestName.ToCString(), aDrawDoc);
     }
   }
@@ -604,7 +604,7 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
     else
     {
       Handle(DDocStd_DrawDocument) aDrawDoc = new DDocStd_DrawDocument (aDoc);
-      TDataStd_Name::Set (aDoc->GetData()->Root(), aDestName.ToCString());
+      TDataStd_Name::Set (aDoc->GetData()->Root(), aDestName);
       Draw::Set (aDestName.ToCString(), aDrawDoc);
     }
   }

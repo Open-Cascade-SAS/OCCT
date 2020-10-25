@@ -127,7 +127,7 @@ static Standard_Integer DDocStd_Open (Draw_Interpretor& di,
                                       const char** a)
 {   
   if (nb >= 3) {
-    TCollection_ExtendedString path (a[1]); 
+    TCollection_ExtendedString path (a[1], Standard_True); 
     Handle(TDocStd_Application) A = DDocStd::GetApplication();
     Handle(TDocStd_Document) D;
     Standard_Integer insession = A->IsInSession(path);
@@ -245,7 +245,7 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
   if (nb >= 3) {
     Handle(TDocStd_Document) D;    
     if (!DDocStd::GetDocument(a[1],D)) return 1;  
-    TCollection_ExtendedString path (a[2]); 
+    TCollection_ExtendedString path (a[2], Standard_True); 
     Handle(TDocStd_Application) A = DDocStd::GetApplication();
     PCDM_StoreStatus theStatus;
 
@@ -423,7 +423,7 @@ static Standard_Integer DDocStd_Path (Draw_Interpretor& di,
 				       const char** a)
 {   
   if (nb == 2) { 
-    TDocStd_PathParser path (a[1]);
+    TDocStd_PathParser path (TCollection_ExtendedString (a[1], Standard_True));
     di << "Trek      : " << path.Trek() << "\n";  
     di << "Name      : " << path.Name() << "\n"; 
     di << "Extension : " << path.Extension() << "\n";
@@ -445,7 +445,7 @@ static Standard_Integer DDocStd_AddComment (Draw_Interpretor& di,
   if (nb == 3) {
     Handle(TDocStd_Document) D;    
     if (!DDocStd::GetDocument(a[1],D)) return 1;  
-    TCollection_ExtendedString comment (a[2]); 
+    TCollection_ExtendedString comment (a[2], Standard_True); 
 //    Handle(TDocStd_Application) A = DDocStd::GetApplication();
 //    A->AddComment(D,comment);
     D->AddComment(comment);

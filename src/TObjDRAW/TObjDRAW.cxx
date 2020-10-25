@@ -194,7 +194,7 @@ static Standard_Integer saveModel (Draw_Interpretor& di, Standard_Integer argc, 
   if ( aModel.IsNull() ) return 1;
   Standard_Boolean isSaved = Standard_False; 
   if (argc > 2 )
-    isSaved = aModel->SaveAs( argv[2] );
+    isSaved = aModel->SaveAs( TCollection_ExtendedString (argv[2], Standard_True) );
   else
     isSaved = aModel->Save();
   
@@ -215,11 +215,12 @@ static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, 
   
   Standard_Boolean isLoaded = Standard_False;
   Handle(TObj_Model) aModel = getModelByName(argv[1]);
+  TCollection_ExtendedString aPath(argv[2], Standard_True);
   if ( aModel.IsNull() )
   {
     // create new
     aModel = new TObjDRAW_Model();
-    isLoaded = aModel->Load( argv[2] );
+    isLoaded = aModel->Load(aPath);
     if ( isLoaded )
     {
       Handle(TDocStd_Document) D = aModel->GetDocument();
@@ -230,7 +231,9 @@ static Standard_Integer loadModel (Draw_Interpretor& di, Standard_Integer argc, 
     }
   }
   else
-    isLoaded = aModel->Load( argv[2] );
+  {
+    isLoaded = aModel->Load(aPath);
+  }
   
   
   if (!isLoaded) {

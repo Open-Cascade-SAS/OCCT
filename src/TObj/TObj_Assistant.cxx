@@ -76,7 +76,7 @@ Standard_Integer& TObj_Assistant::getVersion()
 Handle(TObj_Model) TObj_Assistant::FindModel
   (const Standard_CString theName)
 {
-  TCollection_ExtendedString aName( theName );
+  TCollection_ExtendedString aName(theName, Standard_True);
   Standard_Integer i = getModels().Length();
   Handle(TObj_Model) aModel;
   for(; i > 0; i --)

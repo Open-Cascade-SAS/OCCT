@@ -1,0 +1,28 @@
+puts "# ============================================================"
+puts "# 0014673: Provide true support for Unicode symbols"
+puts "# ============================================================"
+puts ""
+puts "# Check that non-Ascii text strings can be saved and restored in OCAF"
+
+puts "# Prepare OCAF document with text strings in different languages"
+set strings [list "test" "l'épreuve" "опыт" "테스트" "größten 市"]
+
+pload OCAF
+NewDocument D XmlOcaf
+set i 0
+foreach str $strings {
+   SetName D 0:[incr i] $str
+}
+
+puts "# Save it and load back, then check the strings"
+SaveAs D $imagedir/${casename}.xml
+Close D
+Open $imagedir/${casename}.xml D
+
+set i 0
+foreach str $strings {
+  set res [GetName D 0:[incr i]]
+  if { $res != $str } {
+    puts "Error: string $str was restored as $res"
+  }
+}

@@ -1,0 +1,22 @@
+puts "# ============================================================"
+puts "# 0014673: Provide true support for Unicode symbols"
+puts "# ============================================================"
+puts ""
+puts "# Check that resource file with messages saved in file with UTF-8"
+puts "# encoding is correctly loaded and processed"
+
+puts "# Prepare resource file to be used instead of standard XSTEP.us,"
+puts "# with Russian translation of one message"
+dsetenv CSF_LANGUAGE ru
+dsetenv CSF_XSMessage $imagedir
+set message "Б-сплайн поверхность не является гладкой"
+set fd [open $imagedir/XSTEP.ru w]
+fconfigure $fd -encoding utf-8
+puts $fd ".XSTEP_1\nMessage used to check file load\n.IGES_1250\n$message"
+close $fd 
+
+puts "# Load IGES file which is known to generate the message, and check it"
+puts "REQUIRED 14673 ALL: $message"
+pload XSDRAW
+igesbrep [locate_data_file hammer.iges] a *
+tpstat c

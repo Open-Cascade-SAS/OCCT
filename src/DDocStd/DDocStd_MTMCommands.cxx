@@ -109,7 +109,7 @@ static int mtmCommitTransaction (Draw_Interpretor& di, int n, const char** a)
     return 1;
   }
   if(n > 1)
-    sMultiTransactionManager->CommitCommand(a[1]);
+    sMultiTransactionManager->CommitCommand(TCollection_ExtendedString (a[1], Standard_True));
   else
     sMultiTransactionManager->CommitCommand();
   return 0;

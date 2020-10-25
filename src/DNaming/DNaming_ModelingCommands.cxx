@@ -105,7 +105,7 @@ static Standard_Integer  DNaming_AddObject(Draw_Interpretor& di,
     Handle(TDataStd_UAttribute) anObj = AddObject (aDoc);
     if(!anObj.IsNull()) {
       if(nb == 3) 
-	TDataStd_Name::Set(anObj->Label(), a[2]);    
+	TDataStd_Name::Set(anObj->Label(), TCollection_ExtendedString (a[2], Standard_True));
       DDF::ReturnLabel(di, anObj->Label());
       return 0;
     }

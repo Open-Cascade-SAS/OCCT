@@ -1,0 +1,44 @@
+puts "# ============================================================"
+puts "# 0014673: Provide true support for Unicode symbols"
+puts "# ============================================================"
+puts ""
+puts "# Check that different file open / save commands can deal with Unicode"
+
+pload ALL
+
+# Name means "Japanese"
+set filePrefix "$imagedir/${casename}_日本語"
+
+proc checkFile {filepath} {
+  if { [file exists $filepath] } {
+    puts "File $filepath is ceated, OK"
+  } else {
+    puts "Error: Could not find file $filepath"
+  }
+}
+
+puts "# OCAF documents"
+NewDocument Xml XmlOcaf
+SaveAs Xml ${filePrefix}.xml
+checkFile ${filePrefix}.xml
+Close Xml
+Open ${filePrefix}.xml Xml
+
+NewDocument Bin BinOcaf
+SaveAs Bin ${filePrefix}.cbf
+checkFile ${filePrefix}.cbf
+Close Bin
+Open ${filePrefix}.cbf Bin
+
+puts "# STEP and IGES"
+box b 10 10 10 
+NewDocument XDE BinOcaf
+XAddShape XDE b
+
+WriteStep XDE ${filePrefix}.stp
+checkFile ${filePrefix}.stp
+ReadStep Step ${filePrefix}.stp
+
+WriteIges XDE ${filePrefix}.igs
+checkFile ${filePrefix}.igs
+ReadIges Iges ${filePrefix}.igs

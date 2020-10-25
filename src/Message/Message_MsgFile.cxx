@@ -82,13 +82,17 @@ Standard_Boolean Message_MsgFile::Load (const Standard_CString theDirName,
 //Called   : from loadFile()
 //=======================================================================
 
-template <class _Char> static inline Standard_Boolean
-getString (_Char *&                     thePtr,
+template <typename CharType> struct TCollection_String;
+template <> struct TCollection_String <Standard_Character>    { typedef TCollection_AsciiString type; };
+template <> struct TCollection_String <Standard_ExtCharacter> { typedef TCollection_ExtendedString type; };
+
+template <class CharType> static inline Standard_Boolean
+getString (CharType *&                  thePtr,
            TCollection_ExtendedString&  theString,
            Standard_Integer&            theLeftSpaces)
 {
-  _Char * anEndPtr = thePtr;
-  _Char * aPtr;
+  CharType * anEndPtr = thePtr;
+  CharType * aPtr;
   Standard_Integer aLeftSpaces;
 
   do 
@@ -98,7 +102,7 @@ getString (_Char *&                     thePtr,
     aLeftSpaces = 0;
     for (;;)
     {
-      _Char aChar = * aPtr;
+      CharType aChar = * aPtr;
       if      (aChar == ' ')  aLeftSpaces++;
       else if (aChar == '\t') aLeftSpaces += 8;
       else if (aChar == '\r' || * aPtr == '\n') aLeftSpaces = 0;
@@ -121,7 +125,7 @@ getString (_Char *&                     thePtr,
   thePtr = anEndPtr;
   if (*thePtr)
     *thePtr++ = '\0';
-  theString = TCollection_ExtendedString (aPtr);
+  theString = typename TCollection_String<CharType>::type (aPtr);
   theLeftSpaces = aLeftSpaces;
   return Standard_True;
 }

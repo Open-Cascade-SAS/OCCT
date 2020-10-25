@@ -1042,7 +1042,7 @@ static Standard_Integer DDataStd_SetRelation (Draw_Interpretor& di,
 
     Standard_CString expr (arg[3]);
     Handle(TDataStd_Relation) aR = TDataStd_Relation::Set(label);
-    aR->SetRelation(expr);
+    aR->SetRelation(TCollection_ExtendedString (expr, Standard_True));
     Handle(TDataStd_Variable) aV;
 
     for (Standard_Integer i = 4; i < nb; i++)
@@ -1222,7 +1222,8 @@ static Standard_Integer DDataStd_SetExtStringArray (Draw_Interpretor& di,
     if ((!isGuid && nb > 6) || (isGuid && nb > 8)) {
       j = j + 2;
       for(Standard_Integer i = From; i<=To; ++i) {
-        A->SetValue(i, arg[j] );
+        TCollection_ExtendedString aVal (arg[j], Standard_True);
+        A->SetValue(i, aVal);
         j++;
       }
     }
@@ -1256,7 +1257,8 @@ static Standard_Integer DDataStd_SetExtStringArrayValue (Draw_Interpretor&,
   Handle(TDataStd_ExtStringArray) arr;
   if (label.FindAttribute(TDataStd_ExtStringArray::GetID(), arr))
   {
-    arr->SetValue(index, arg[4]); 
+    TCollection_ExtendedString aVal(arg[4], Standard_True);
+    arr->SetValue(index, aVal); 
     return 0;
   }
 
@@ -3444,13 +3446,14 @@ static Standard_Integer DDataStd_GetNDInteger (Draw_Interpretor& di,
     std::cout <<std::endl;
     std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     anAtt->LoadDeferredData();
-    if(!anAtt->HasInteger(arg[3])) {
+    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    if(!anAtt->HasInteger(aKey)) {
       std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
-      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetInteger(arg[3])<<std::endl;
+      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetInteger(aKey)<<std::endl;
       if(nb == 5) 
-        Draw::Set(arg[4], anAtt->GetInteger(arg[3]));
+        Draw::Set(arg[4], anAtt->GetInteger(aKey));
       return 0; 
     }
   }
@@ -3560,13 +3563,14 @@ static Standard_Integer DDataStd_GetNDReal (Draw_Interpretor& di,
     std::cout <<std::endl;
     std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     anAtt->LoadDeferredData();
-    if(!anAtt->HasReal(arg[3])) {
+    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    if(!anAtt->HasReal(aKey)) {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
       return 1;
     } else {
-      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetReal(arg[3])<<std::endl;
+      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetReal(aKey)<<std::endl;
       if(nb == 5) 
-        Draw::Set(arg[4], anAtt->GetReal(arg[3]));
+        Draw::Set(arg[4], anAtt->GetReal(aKey));
       return 0; 
     }
   }
@@ -3693,14 +3697,15 @@ static Standard_Integer DDataStd_GetNDString (Draw_Interpretor& di,
     std::cout <<std::endl;
     std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;    
     anAtt->LoadDeferredData();
-    if (!anAtt->HasString(arg[3]))
+    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    if (!anAtt->HasString(aKey))
     {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
       return 1;
     }
     else
     {
-      TCollection_AsciiString aValue (anAtt->GetString(arg[3]));
+      TCollection_AsciiString aValue (anAtt->GetString(aKey));
       std::cout << "Key = "  << arg[3]  << " Value = " << aValue.ToCString() << std::endl;
       if(nb == 5) 
         Draw::Set(arg[4], aValue.ToCString());
@@ -3815,16 +3820,17 @@ static Standard_Integer DDataStd_GetNDByte (Draw_Interpretor& di,
     std::cout <<std::endl;
     std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     anAtt->LoadDeferredData();
-    if (!anAtt->HasByte(arg[3]))
+    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    if (!anAtt->HasByte(aKey))
     {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
       return 1;
     }
     else
     {
-      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetByte(arg[3])<< std::endl;
+      std::cout << "Key = "  << arg[3]  << " Value = " <<anAtt->GetByte(aKey)<< std::endl;
       if(nb == 5) 
-        Draw::Set(arg[4], anAtt->GetByte(arg[3]));
+        Draw::Set(arg[4], anAtt->GetByte(aKey));
       return 0; 
     }
   }
@@ -3948,7 +3954,8 @@ static Standard_Integer DDataStd_GetNDIntArray (Draw_Interpretor& di,
     std::cout <<std::endl;
     std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;      
     anAtt->LoadDeferredData();
-    if (!anAtt->HasArrayOfIntegers(arg[3]))
+    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    if (!anAtt->HasArrayOfIntegers(aKey))
     {
       Message::SendFail() << "There is no data specified by Key = " << arg[3];
       return 1;
@@ -3957,7 +3964,7 @@ static Standard_Integer DDataStd_GetNDIntArray (Draw_Interpretor& di,
     {
       std::cout << "Key = "  << arg[3] <<std::endl;
 
-      Handle(TColStd_HArray1OfInteger) anArrValue = anAtt->GetArrayOfIntegers(arg[3]);      
+      Handle(TColStd_HArray1OfInteger) anArrValue = anAtt->GetArrayOfIntegers(aKey);
       if(!anArrValue.IsNull()) {
         Standard_Integer lower = anArrValue->Lower();
         Standard_Integer upper = anArrValue->Upper();
@@ -4088,13 +4095,14 @@ static Standard_Integer DDataStd_GetNDRealArray (Draw_Interpretor& di,
     std::cout <<std::endl;
     std::cout <<"NamedData attribute at Label = " << arg[2] <<std::endl;
     anAtt->LoadDeferredData();
-    if(!anAtt->HasArrayOfReals(arg[3])) {
+    TCollection_ExtendedString aKey(arg[3], Standard_True);
+    if(!anAtt->HasArrayOfReals(aKey)) {
       std::cout << "There is no data specified by Key = "<< arg[3]  << std::endl;
       return 1;
     } else {
       std::cout << "Key = "  << arg[3] <<std::endl;
 
-      Handle(TColStd_HArray1OfReal) anArrValue = anAtt->GetArrayOfReals(arg[3]);      
+      Handle(TColStd_HArray1OfReal) anArrValue = anAtt->GetArrayOfReals(aKey);
       if(!anArrValue.IsNull()) {
         Standard_Integer lower = anArrValue->Lower();
         Standard_Integer upper = anArrValue->Upper();

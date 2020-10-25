@@ -453,7 +453,7 @@ static Standard_Integer DNaming_ImportShape (Draw_Interpretor& di,
     const TopoDS_Shape& aShape = DBRep::Get(a[3]);
     if(aShape.IsNull()) return 1;
     if(nb == 5) {
-      TDataStd_Name::Set(L, a[4]);
+      TDataStd_Name::Set(L, TCollection_ExtendedString (a[4], Standard_True));
     }
     
     DNaming::LoadImportedShape(L, aShape);

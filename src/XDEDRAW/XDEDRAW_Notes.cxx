@@ -215,7 +215,7 @@ noteCreateBalloon(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: user name is expected.\n" << myCommand;
         return 1;
       }
-      aUsername = argv[iarg];
+      aUsername = TCollection_ExtendedString (argv[iarg], Standard_True);
     }
     else if (opt == "--time")
     {
@@ -224,7 +224,7 @@ noteCreateBalloon(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: timestamp is expected.\n" << myCommand;
         return 1;
       }
-      aTimestamp = argv[iarg];
+      aTimestamp = TCollection_ExtendedString (argv[iarg], Standard_True);
     }
   }
 
@@ -280,7 +280,7 @@ noteCreateComment(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: user name is expected.\n" << myCommand;
         return 1;
       }
-      aUsername = argv[iarg];
+      aUsername = TCollection_ExtendedString (argv[iarg], Standard_True);
     }
     else if (opt == "--time")
     {
@@ -289,7 +289,7 @@ noteCreateComment(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: timestamp is expected.\n" << myCommand;
         return 1;
       }
-      aTimestamp = argv[iarg];
+      aTimestamp = TCollection_ExtendedString (argv[iarg], Standard_True);
     }
   }
 
@@ -355,7 +355,7 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: file path is expected.\n" << myCommand;
         return 1;
       }
-      aFilename = argv[iarg];
+      aFilename = TCollection_ExtendedString (argv[iarg], Standard_True);
       aFromFile = Standard_True;
     }
     else if (opt == "--data")
@@ -396,7 +396,7 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: user name is expected.\n" << myCommand;
         return 1;
       }
-      aUsername = argv[iarg];
+      aUsername = TCollection_ExtendedString (argv[iarg], Standard_True);
     }
     else if (opt == "--time")
     {
@@ -405,7 +405,7 @@ noteCreateBinData(Draw_Interpretor& di, Standard_Integer argc, const char** argv
         di << "Error: timestamp is expected.\n" << myCommand;
         return 1;
       }
-      aTimestamp = argv[iarg];
+      aTimestamp = TCollection_ExtendedString (argv[iarg], Standard_True);
     }
   }
 

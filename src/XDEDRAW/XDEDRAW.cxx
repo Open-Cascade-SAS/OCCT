@@ -212,7 +212,7 @@ static Standard_Integer openDoc (Draw_Interpretor& di, Standard_Integer argc, co
     return 1;
   }
 
-  Standard_CString Filename = argv[1];
+  TCollection_AsciiString Filename = argv[1];
   Standard_CString DocName = argv[2];
 
   if ( DDocStd::GetDocument(DocName, D, Standard_False) )

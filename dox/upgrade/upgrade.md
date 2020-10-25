@@ -2149,3 +2149,10 @@ For an example, access to labels and attributes could be protected by mutex if t
 Draw Harness hotkeys **W** (Wireframe) and **S** (Shaded) have been re-mapped to **Ctrl+W** and **Ctrl+S**.
 Hotkey **A** has been remapped to **Backspace**.
 Hotkeys WASD and Arrays are now mapped for walk-through navigation in 3D Viewer.
+
+@subsection upgrade_750_msgfile_utf8 Utf-8 encoding for message files
+
+Message files (with extension .msg) are now expected to be in UTF-8 encoding (unless they have UTF-16 BOM in which case UTF-16 is expected).
+This allows using arbitrary Unicode symbols for localization of messages.
+
+Existing message files containing 8-bit characters (previously interpreted as characters from Latin-1 code block) should be converted to UTF-8.

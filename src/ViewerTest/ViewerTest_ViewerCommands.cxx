@@ -4690,7 +4690,7 @@ static int VColorScale (Draw_Interpretor& theDI,
         return 1;
       }
 
-      TCollection_ExtendedString aText (theArgVec[anArgIter + 2]);
+      TCollection_ExtendedString aText (theArgVec[anArgIter + 2], Standard_True);
       aColorScale->SetLabel     (aText, anIndex);
       aColorScale->SetLabelType (Aspect_TOCSD_USER);
       anArgIter += 2;
@@ -4797,7 +4797,7 @@ static int VColorScale (Draw_Interpretor& theDI,
       TColStd_SequenceOfExtendedString aSeq;
       for (Standard_Integer aLabelIter = 0; aLabelIter < aNbLabels; ++aLabelIter)
       {
-        aSeq.Append (TCollection_ExtendedString (theArgVec[++anArgIter]));
+        aSeq.Append (TCollection_ExtendedString (theArgVec[++anArgIter], Standard_True));
       }
       aColorScale->SetLabels (aSeq);
       aColorScale->SetLabelType (Aspect_TOCSD_USER);
@@ -4839,7 +4839,8 @@ static int VColorScale (Draw_Interpretor& theDI,
       Standard_ENABLE_DEPRECATION_WARNINGS
       }
 
-      aColorScale->SetTitle (theArgVec[anArgIter + 1]);
+      TCollection_ExtendedString aTitle(theArgVec[anArgIter + 1], Standard_True);
+      aColorScale->SetTitle (aTitle);
       if (isTwoArgs)
       {
         anArgIter += 1;
