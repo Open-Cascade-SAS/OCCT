@@ -438,7 +438,9 @@ void View::initViewActions()
     aHlrActionGroup->addAction(aHlrOnAction);
     myViewActions[ViewAction_HlrOn] = aHlrOnAction;
 
-    myViewActions[ViewAction_Transparency] = RegisterAction(":/icons/tool_transparency.png", tr("Transparency"));
+    QAction* aTransparencyAction = RegisterAction(":/icons/tool_transparency.png", tr("Transparency"));
+    connect(aTransparencyAction, SIGNAL(triggered()), this, SLOT(onTransparency()));
+    myViewActions[ViewAction_Transparency] = aTransparencyAction;
   }
 }
 

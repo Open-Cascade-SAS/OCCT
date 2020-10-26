@@ -35,7 +35,7 @@
 class ApplicationCommonWindow;
 
 //! Implements visualization of samples content
-class COMMONSAMPLE_EXPORT DocumentCommon : public QObject
+class DocumentCommon : public QObject
 {
   Q_OBJECT
 public:

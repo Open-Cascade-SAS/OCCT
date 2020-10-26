@@ -71,7 +71,7 @@ enum ApplicationType
 
 
 //! Main application window
-class COMMONSAMPLE_EXPORT ApplicationCommonWindow: public QMainWindow
+class ApplicationCommonWindow: public QMainWindow
 {
   Q_OBJECT
 
