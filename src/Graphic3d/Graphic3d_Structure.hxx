@@ -104,7 +104,10 @@ public:
   //! theXMin = theYMin = theZMin = RealFirst().
   //! theXMax = theYMax = theZMax = RealLast().
   //! By default, structure is created not infinite but empty.
-  void SetInfiniteState (const Standard_Boolean theToSet) { myCStructure->IsInfinite = theToSet ? 1 : 0; }
+  void SetInfiniteState (const Standard_Boolean theToSet)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->IsInfinite = theToSet ? 1 : 0; }
+  }
 
   //! Modifies the order of displaying the structure.
   //! Values are between 0 and 10.
@@ -140,7 +143,10 @@ public:
   
   //! Changes a sequence of clip planes slicing the structure on rendering.
   //! @param thePlanes [in] the set of clip planes.
-  void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes) { myCStructure->SetClipPlanes (thePlanes); }
+  void SetClipPlanes (const Handle(Graphic3d_SequenceOfHClipPlane)& thePlanes)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->SetClipPlanes (thePlanes); }
+  }
   
   //! Get clip planes slicing the structure on rendering.
   //! @return set of clip planes.
@@ -165,7 +171,10 @@ public:
   Standard_EXPORT void SetZoomLimit (const Standard_Real LimitInf, const Standard_Real LimitSup);
 
   //! Marks the structure <me> representing wired structure needed for highlight only so it won't be added to BVH tree.
-  void SetIsForHighlight (const Standard_Boolean isForHighlight) { myCStructure->IsForHighlight = isForHighlight; }
+  void SetIsForHighlight (const Standard_Boolean isForHighlight)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->IsForHighlight = isForHighlight; }
+  }
   
   //! Suppresses the highlight for the structure <me>
   //! in all the views of the visualiser.
@@ -222,7 +231,11 @@ public:
   Standard_Boolean IsDeleted() const { return myCStructure.IsNull(); }
   
   //! Returns the display indicator for this structure.
-  virtual Standard_Boolean IsDisplayed() const { return myCStructure->stick != 0; }
+  virtual Standard_Boolean IsDisplayed() const
+  {
+    return !myCStructure.IsNull()
+        && myCStructure->stick != 0;
+  }
   
   //! Returns Standard_True if the structure <me> is empty.
   //! Warning: A structure is empty if :
@@ -239,17 +252,26 @@ public:
   }
   
   //! Returns the highlight indicator for this structure.
-  virtual Standard_Boolean IsHighlighted() const { return myCStructure->highlight != 0; }
+  virtual Standard_Boolean IsHighlighted() const
+  {
+    return !myCStructure.IsNull()
+        && myCStructure->highlight != 0;
+  }
   
   //! Returns TRUE if the structure is transformed.
   Standard_Boolean IsTransformed() const
   {
-    return !myCStructure->Transformation().IsNull()
-         && myCStructure->Transformation()->Form() != gp_Identity;
+    return !myCStructure.IsNull()
+        && !myCStructure->Transformation().IsNull()
+        && myCStructure->Transformation()->Form() != gp_Identity;
   }
   
   //! Returns the visibility indicator for this structure.
-  Standard_Boolean IsVisible() const { return myCStructure->visible != 0; }
+  Standard_Boolean IsVisible() const
+  {
+    return !myCStructure.IsNull()
+        && myCStructure->visible != 0;
+  }
 
   //! Returns the coordinates of the boundary box of the structure <me>.
   //! If <theToIgnoreInfiniteFlag> is TRUE, the method returns actual graphical
@@ -334,7 +356,10 @@ public:
   
   Standard_Address Owner() const { return myOwner; }
   
-  void SetHLRValidation (const Standard_Boolean theFlag) { myCStructure->HLRValidation = theFlag ? 1 : 0; }
+  void SetHLRValidation (const Standard_Boolean theFlag)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->HLRValidation = theFlag ? 1 : 0; }
+  }
 
   //! Hidden parts stored in this structure are valid if:
   //! 1) the owner is defined.
@@ -361,23 +386,39 @@ public:
   const Handle(Graphic3d_TransformPers)& TransformPersistence() const { return myCStructure->TransformPersistence(); }
 
   //! Sets if the structure location has mutable nature (content or location will be changed regularly).
-  void SetMutable (const Standard_Boolean theIsMutable) { myCStructure->IsMutable = theIsMutable; }
-  
+  void SetMutable (const Standard_Boolean theIsMutable)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->IsMutable = theIsMutable; }
+  }
+
   //! Returns true if structure has mutable nature (content or location are be changed regularly).
   //! Mutable structure will be managed in different way than static onces.
-  Standard_Boolean IsMutable() const { return myCStructure->IsMutable; }
-  
+  Standard_Boolean IsMutable() const
+  {
+    return !myCStructure.IsNull()
+        && myCStructure->IsMutable;
+  }
+
   Graphic3d_TypeOfStructure ComputeVisual() const { return myComputeVisual; }
-  
+
   //! Clears the structure <me>.
   Standard_EXPORT void GraphicClear (const Standard_Boolean WithDestruction);
-  
-  void GraphicConnect (const Handle(Graphic3d_Structure)& theDaughter) { myCStructure->Connect (*theDaughter->myCStructure); }
-  
-  void GraphicDisconnect (const Handle(Graphic3d_Structure)& theDaughter) { myCStructure->Disconnect (*theDaughter->myCStructure); }
+
+  void GraphicConnect (const Handle(Graphic3d_Structure)& theDaughter)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->Connect (*theDaughter->myCStructure); }
+  }
+
+  void GraphicDisconnect (const Handle(Graphic3d_Structure)& theDaughter)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->Disconnect (*theDaughter->myCStructure); }
+  }
 
   //! Internal method which sets new transformation without calling graphic manager callbacks.
-  void GraphicTransform (const Handle(TopLoc_Datum3D)& theTrsf) { myCStructure->SetTransformation (theTrsf); }
+  void GraphicTransform (const Handle(TopLoc_Datum3D)& theTrsf)
+  {
+    if (!myCStructure.IsNull()) { myCStructure->SetTransformation (theTrsf); }
+  }
 
   //! Returns the identification number of this structure.
   Standard_Integer Identification() const { return myCStructure->Id; }
