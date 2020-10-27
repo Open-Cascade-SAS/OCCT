@@ -135,6 +135,9 @@ public:
   Standard_EXPORT BRepBuilderAPI_MakeFace(const gp_Torus& C, const TopoDS_Wire& W, const Standard_Boolean Inside = Standard_True);
   
   //! Make a face from a Surface and a wire.
+  //! If the surface S is not plane,
+  //! it must contain pcurves for all edges in W,
+  //! otherwise the wrong shape will be created.
   Standard_EXPORT BRepBuilderAPI_MakeFace(const Handle(Geom_Surface)& S, const TopoDS_Wire& W, const Standard_Boolean Inside = Standard_True);
   
   //! Adds the wire <W> in the face <F>
