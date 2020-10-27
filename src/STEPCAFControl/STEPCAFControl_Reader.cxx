@@ -384,7 +384,7 @@ TCollection_ExtendedString STEPCAFControl_Reader::convertName (const TCollection
   // If source code page is not a NoConversion
   // the string is treated as having UTF-8 coding,
   // else each character is copied to ExtCharacter.
-  return TCollection_ExtendedString (theName, SourceCodePage() != Resource_FormatType_NoConversion);
+  return TCollection_ExtendedString (theName, myReader.StepModel()->SourceCodePage() != Resource_FormatType_NoConversion);
 }
 
 //=======================================================================
@@ -4781,26 +4781,6 @@ void STEPCAFControl_Reader::SetNameMode(const Standard_Boolean namemode)
 Standard_Boolean STEPCAFControl_Reader::GetNameMode() const
 {
   return myNameMode;
-}
-
-//=======================================================================
-//function : SourceCodePage
-//purpose  : 
-//=======================================================================
-
-Resource_FormatType STEPCAFControl_Reader::SourceCodePage() const
-{
-  return myReader.StepModel()->SourceCodePage();
-}
-
-//=======================================================================
-//function : SetSourceCodePage
-//purpose  : 
-//=======================================================================
-
-void STEPCAFControl_Reader::SetSourceCodePage(Resource_FormatType theCode)
-{
-  myReader.StepModel()->SetSourceCodePage(theCode);
 }
 
 //=======================================================================

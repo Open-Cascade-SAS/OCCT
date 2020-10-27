@@ -141,13 +141,6 @@ public:
   
   Standard_EXPORT Standard_Boolean GetNameMode() const;
 
-  //! Return the encoding of STEP file for converting names into UNICODE.
-  //! Initialized from "read.step.codepage" variable by constructor, which is Resource_UTF8 by default.
-  Standard_EXPORT Resource_FormatType SourceCodePage() const;
-
-  //! Return the encoding of STEP file for converting names into UNICODE.
-  Standard_EXPORT void SetSourceCodePage (Resource_FormatType theCode);
-
   //! Set LayerMode for indicate read Layers or not.
   Standard_EXPORT void SetLayerMode (const Standard_Boolean layermode);
   
