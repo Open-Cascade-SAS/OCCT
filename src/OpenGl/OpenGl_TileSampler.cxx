@@ -31,7 +31,7 @@ OpenGl_TileSampler::OpenGl_TileSampler()
   myTileSize   (0),
   myViewSize   (0, 0)
 {
-  mySampler.initFaure();
+  //
 }
 
 //=======================================================================
