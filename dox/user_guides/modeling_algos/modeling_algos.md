@@ -1356,15 +1356,15 @@ MF.Add(W);
 TopoDS_Face F = MF; 
 ~~~~~
 
-More than one wire can  be added to a face, provided that they do not cross each other and they define  only one area on the surface. (Note that this is not checked). The edges on a Face must have a parametric curve description. 
-
-If there is no  parametric curve for an edge of the wire on the Face it is computed by  projection. 
+More than one wire can  be added to a face, provided that they do not cross each other and they define  only one area on the surface. (Note that this is not checked).  
 
 For one wire, a simple  syntax is provided to construct the face from the surface and the wire. The  above lines could be written: 
 
 ~~~~~
 TopoDS_Face F = BRepBuilderAPI_MakeFace(C,W); 
 ~~~~~
+
+The edges on a face must have a parametric curve description. If there is no parametric curve for an edge of the wire on the face it is computed by projection, moreover, the calculation is possible only for the planar face.
 
 A planar face can be  created from only a wire, provided this wire defines a plane. For example, to  create a planar face from a set of points you can use *BRepBuilderAPI_MakePolygon* and *BRepBuilderAPI_MakeFace*.
 
