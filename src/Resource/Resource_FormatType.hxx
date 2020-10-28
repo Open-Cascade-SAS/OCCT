@@ -51,6 +51,10 @@ enum Resource_FormatType
   Resource_FormatType_iso8859_8,    //!< ISO 8859-8 (Hebrew) encoding
   Resource_FormatType_iso8859_9,    //!< ISO 8859-9 (Turkish) encoding
 
+  // Addition code pages
+  Resource_FormatType_GBK,          //!< GBK  (UnifiedChinese) encoding
+  Resource_FormatType_Big5,         //!< Big5 (TradChinese) encoding
+
   // old aliases
   Resource_FormatType_ANSI = Resource_FormatType_NoConversion,
   Resource_SJIS = Resource_FormatType_SJIS,

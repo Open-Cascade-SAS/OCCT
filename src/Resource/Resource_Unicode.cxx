@@ -652,6 +652,16 @@ void Resource_Unicode::ConvertFormatToUnicode (const Resource_FormatType theForm
       }
       break;
     }
+    case Resource_FormatType_Big5:
+    {
+      ConvertBig5ToUnicode(theFromStr, theToStr);
+      break;
+    }
+    case Resource_FormatType_GBK:
+    {
+      ConvertGBKToUnicode(theFromStr, theToStr);
+      break;
+    }
     case Resource_FormatType_UTF8:
     {
       theToStr = TCollection_ExtendedString (theFromStr, Standard_True);
@@ -759,6 +769,11 @@ Standard_Boolean Resource_Unicode::ConvertUnicodeToFormat(const Resource_FormatT
     {
       const NCollection_Utf16String aString (theFromStr.ToExtString());
       return aString.ToLocale (theToStr, theMaxSize);
+    }
+    case Resource_FormatType_GBK:
+    case Resource_FormatType_Big5:
+    {
+      throw Standard_NotImplemented("Resource_Unicode::ConvertUnicodeToFormat - convert from GBK and Big5 to Unocode is not implemented");
     }
   }
   return Standard_False;
