@@ -1,0 +1,28 @@
+puts "========"
+puts "0032205:  Visualization - implementing new selection scheme in context - replace extra"
+puts "========"
+puts ""
+
+pload MODELING VISUALIZATION
+box b1  0  0  0 10 10 10
+box b2 20 20 20 30 30 30
+vclear
+vinit View1
+vaxo
+vdisplay -dispMode 1 b1 b2
+vfit
+vselprops selHighlight -dispMode -1
+vselect 0 0 400 400 -xor
+if { ![string match "*Selected*" [vstate b1]] } { puts "Error: b1 should be selected."}
+if { ![string match "*Selected*" [vstate b2]] } { puts "Error: b2 should be selected."}
+vselect 200 200 -replaceExtra
+if {  [string match "*Selected*" [vstate b1]] } { puts "Error: b1 should not be selected."}
+if { ![string match "*Selected*" [vstate b2]] } { puts "Error: b2 should be selected."}
+vselect 200 200 -replaceExtra
+if {  [string match "*Selected*" [vstate b1]] } { puts "Error: b1 should not be selected."}
+if {  [string match "*Selected*" [vstate b2]] } { puts "Error: b2 should not be selected."}
+vselect 200 200 -replaceExtra
+if {  [string match "*Selected*" [vstate b1]] } { puts "Error: b1 should not be selected."}
+if { ![string match "*Selected*" [vstate b2]] } { puts "Error: b2 should be selected."}
+
+vdump $imagedir/${casename}.png

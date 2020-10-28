@@ -149,6 +149,29 @@ void AIS_Selection::SelectOwners (const AIS_NArray1OfEntityOwner& thePickedOwner
     {
       return;
     }
+    case AIS_SelectionScheme_ReplaceExtra:
+    {
+      // If picked owners is equivalent to the selected then just clear selected
+      // Else go to AIS_SelectionScheme_Replace
+      if (thePickedOwners.Size() == myresult.Size())
+      {
+        Standard_Boolean isTheSame = Standard_True;
+        for (AIS_NArray1OfEntityOwner::Iterator aSelIter (thePickedOwners); aSelIter.More(); aSelIter.Next())
+        {
+          if (!myResultMap.IsBound (aSelIter.Value()))
+          {
+            isTheSame = Standard_False;
+            break;
+          }
+        }
+        if (isTheSame)
+        {
+          Clear();
+          return;
+        }
+      }
+    }
+    Standard_FALLTHROUGH
     case AIS_SelectionScheme_Replace:
     {
       Clear();

@@ -1040,7 +1040,7 @@ Select* methods of AIS_InteractiveContext accept some selection scheme as parame
 | :----- | :----- | :----- | :----- | :----- |
 | AIS_SelectionScheme_Replace | @figure{visualization_selection_scheme_replace.svg, ""} |  | AIS_SelectionScheme_XOR | @figure{visualization_selection_scheme_XOR.svg, ""} |
 | AIS_SelectionScheme_Add | @figure{visualization_selection_scheme_add.svg, ""} |  | AIS_SelectionScheme_Clear | @figure{visualization_selection_scheme_clear.svg, ""} |
-| AIS_SelectionScheme_Remove | @figure{visualization_selection_scheme_remove.svg, ""} |  |  |  |
+| AIS_SelectionScheme_Remove | @figure{visualization_selection_scheme_remove.svg, ""} |  | AIS_SelectionScheme_ReplaceExtra | @figure{visualization_selection_scheme_replaceExtra.svg, ""} |
 
 
 @subsection occt_visu_3_5 Standard Interactive Object Classes
