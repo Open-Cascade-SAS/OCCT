@@ -723,14 +723,14 @@ Standard_Boolean IntTools_Context::IsPointInFace
    const TopoDS_Face& aF,
    const Standard_Real aTol) 
 {
-  Standard_Boolean bIn;
+  Standard_Boolean bIn = Standard_False;
   Standard_Real aDist;
   //
   GeomAPI_ProjectPointOnSurf& aProjector=ProjPS(aF);
   aProjector.Perform(aP);
   //
-  bIn = aProjector.IsDone();
-  if (bIn) {
+  Standard_Boolean bDone = aProjector.IsDone();
+  if (bDone) {
     aDist = aProjector.LowerDistance();
     if (aDist < aTol) {
       Standard_Real U, V;
