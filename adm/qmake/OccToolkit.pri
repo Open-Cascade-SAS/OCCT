@@ -77,8 +77,8 @@ for (aCfgIter, CONFIG) {
 # Define the list of standard OCCT file extensions
 aHxxRegex = ^.*\.(hxx|h|lxx|gxx)$
 aPxxRegex = ^.*\.(pxx)$
-aCxxRegex = ^.*\.(cxx|c)$
-mac { aCxxRegex = ^.*\.(cxx|c|m|mm)$ }
+aCxxRegex = ^.*\.(cxx|cpp|c)$
+mac { aCxxRegex = ^.*\.(cxx|cpp|c|m|mm)$ }
 
 # Auxiliary function for probing file extension
 defineTest (occCheckExtension) {
