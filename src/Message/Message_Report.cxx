@@ -185,6 +185,8 @@ void Message_Report::UpdateActiveInMessenger (const Handle(Message_Messenger)& t
 //=======================================================================
 void Message_Report::AddLevel (Message_Level* theLevel, const TCollection_AsciiString& theName)
 {
+  Standard_Mutex::Sentry aSentry (myMutex);
+
   myAlertLevels.Append (theLevel);
 
   Handle(Message_AlertExtended) aLevelRootAlert = new Message_AlertExtended();
@@ -220,6 +222,8 @@ void Message_Report::AddLevel (Message_Level* theLevel, const TCollection_AsciiS
 
 void Message_Report::RemoveLevel (Message_Level* theLevel)
 {
+  Standard_Mutex::Sentry aSentry (myMutex);
+
   for (int aLevelIndex = myAlertLevels.Size(); aLevelIndex >= 1; aLevelIndex--)
   {
     Message_Level* aLevel = myAlertLevels.Value (aLevelIndex);
@@ -247,6 +251,8 @@ void Message_Report::Clear()
     return;
   }
 
+  Standard_Mutex::Sentry aSentry (myMutex);
+
   compositeAlerts()->Clear();
   myAlertLevels.Clear();
 }
@@ -262,6 +268,8 @@ void Message_Report::Clear (Message_Gravity theGravity)
     return;
   }
 
+  Standard_Mutex::Sentry aSentry (myMutex);
+
   compositeAlerts()->Clear (theGravity);
   myAlertLevels.Clear();
 }
@@ -276,6 +284,8 @@ void Message_Report::Clear (const Handle(Standard_Type)& theType)
   {
     return;
   }
+
+  Standard_Mutex::Sentry aSentry (myMutex);
 
   compositeAlerts()->Clear (theType);
   myAlertLevels.Clear();
