@@ -40,6 +40,7 @@
   #pragma GCC diagnostic ignored "-Wunused-variable"
   #pragma GCC diagnostic ignored "-Wunused-parameter"
   #pragma GCC diagnostic ignored "-Wenum-compare"
+  #pragma GCC diagnostic ignored "-Wreorder"
   #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))
   #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
   #endif
