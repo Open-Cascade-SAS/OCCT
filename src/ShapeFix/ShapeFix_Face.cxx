@@ -51,6 +51,7 @@
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_Surface.hxx>
+#include <Geom_ToroidalSurface.hxx>
 #include <GeomAdaptor_HSurface.hxx>
 #include <GProp_GProps.hxx>
 #include <IntRes2d_Domain.hxx>
@@ -118,9 +119,9 @@ static Standard_Boolean IsSurfaceUVInfinite(const Handle(Geom_Surface)& theSurf)
           Precision::IsInfinite(VMax)   );
 }
 
-static Standard_Boolean IsSurfaceUVPeriodic(const Handle(Geom_Surface)& theSurf)
+static Standard_Boolean IsSurfaceUVPeriodic(const Handle(GeomAdaptor_HSurface)& theSurf)
 {
-  return theSurf->IsUPeriodic() && theSurf->IsVPeriodic();
+	return ( (theSurf->IsUPeriodic() && theSurf->IsVPeriodic()) || theSurf->GetType() == GeomAbs_Sphere);
 }
 
 //=======================================================================
@@ -855,7 +856,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
   }
 
   // check if surface is double-closed and fix is needed
-  if ( !IsSurfaceUVPeriodic (mySurf->Surface()) || ShapeAnalysis::IsOuterBound (myFace) ) 
+  if ( !IsSurfaceUVPeriodic (mySurf->Adaptor3d()) || ShapeAnalysis::IsOuterBound (myFace) ) 
     return Standard_False;
 
   // Collect informations on free intervals in U and V
@@ -866,6 +867,7 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
   intV.Append ( gp_Pnt2d(SVF, SVL) );
   Standard_Integer nb = ws.Length();
   Standard_Integer i;
+  
   for ( i=1; i <= nb; i ++) {
     Standard_Real Umin, Vmin, Umax, Vmax;
 //     Bnd_Box2d B;
@@ -877,12 +879,13 @@ Standard_Boolean ShapeFix_Face::FixAddNaturalBound()
     BRep_Builder aB;
     aB.Add( aWireFace, aw );
     ShapeAnalysis::GetFaceUVBounds(aWireFace, Umin, Umax, Vmin, Vmax);
+    
     // PTV 01.11.2002 ACIS907, OCC921 end
     if ( mySurf->IsUClosed() ) CutInterval ( intU, gp_Pnt2d(Umin,Umax), SUL-SUF );
     if ( mySurf->IsVClosed() ) CutInterval ( intV, gp_Pnt2d(Vmin,Vmax), SVL-SVF );
     centers.Append ( gp_Pnt2d ( 0.5*(Umin+Umax), 0.5*(Vmin+Vmax) ) );
   }
-
+   
   // find best interval and thus compute shift
   gp_Pnt2d shift(0.,0.);
   if ( mySurf->IsUClosed() ) shift.SetX ( FindBestInterval ( intU ) );
@@ -1084,8 +1087,8 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
   // if no wires, just do nothing
   if ( nb <= 0) return Standard_False;
   Standard_Integer nbInternal=0;
-  Standard_Boolean isAddNaturalBounds = (NeedFix (myFixAddNaturalBoundMode) && 
-                                         IsSurfaceUVPeriodic (mySurf->Surface()));
+
+  Standard_Boolean isAddNaturalBounds = (NeedFix (myFixAddNaturalBoundMode) && IsSurfaceUVPeriodic(mySurf->Adaptor3d()));
   TColStd_SequenceOfInteger aSeqReversed;
   // if wire is only one, check its orientation
   if ( nb == 1 ) {
@@ -1095,19 +1098,17 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
     TopoDS_Face af = TopoDS::Face ( dummy );
     af.Orientation ( TopAbs_FORWARD );
     B.Add (af,ws.Value(1));
+    
     if ((myFixAddNaturalBoundMode != 1 ||
-         !IsSurfaceUVPeriodic (mySurf->Surface())    ) &&
-        !ShapeAnalysis::IsOuterBound (af)                )
+      !IsSurfaceUVPeriodic(mySurf->Adaptor3d())) &&
+      !ShapeAnalysis::IsOuterBound(af))
     {
-      Handle(ShapeExtend_WireData) sbdw = 
-        new ShapeExtend_WireData (TopoDS::Wire(ws.Value(1)));
-      sbdw->Reverse ( myFace );
-      ws.SetValue ( 1, sbdw->Wire() );
-      SendWarning ( sbdw->Wire(), Message_Msg ( "FixAdvFace.FixOrientation.MSG5" ) );// Wire on face was reversed
+      Handle(ShapeExtend_WireData) sbdw =
+        new ShapeExtend_WireData(TopoDS::Wire(ws.Value(1)));
+      sbdw->Reverse(myFace);
+      ws.SetValue(1, sbdw->Wire());
+      SendWarning(sbdw->Wire(), Message_Msg("FixAdvFace.FixOrientation.MSG5"));// Wire on face was reversed
       done = Standard_True;
-#ifdef OCCT_DEBUG
-      std::cout<<"Wire reversed"<<std::endl; // mise au point !
-#endif
     }
   }
   // in case of several wires, perform complex analysis
@@ -1318,7 +1319,7 @@ Standard_Boolean ShapeFix_Face::FixOrientation(TopTools_DataMapOfShapeListOfShap
         MW.Bind(aw,IntWires);
         if(sta==TopAbs_OUT) {
           NbOuts++;
-          if(staout==TopAbs_IN) {
+          if(staout==TopAbs_IN ) {
             // wire is OUT but InfinitePoint is IN => need to reverse
             ShapeExtend_WireData sewd (aw);
             sewd.Reverse(myFace);

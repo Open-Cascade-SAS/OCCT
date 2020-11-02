@@ -1,0 +1,15 @@
+puts "# ====================================================================="
+puts "# 0029564: In the result of translation of one face lying on the sphere two separate faces were obtained"
+puts "# ====================================================================="
+puts ""
+
+
+set filepath [locate_data_file bug29564.stp]
+stepread $filepath a *
+tpcompound result
+    
+checkshape result
+checkprops result -s 5831.82
+checknbshapes result -wire 78 -face 68 -shell 5 -solid 5 -compound 2
+
+# checkview -display result -2d -path ${imagedir}/${test_image}.png
