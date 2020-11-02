@@ -424,28 +424,48 @@ static Standard_Integer trimming (Draw_Interpretor& ,
   Standard_Real u1 = Draw::Atof(a[3]);
   Standard_Real u2 = Draw::Atof(a[4]);
 
+  Standard_Real v1 = 0., v2 = 0.;
+  Standard_Boolean USense = Standard_True, VSense = Standard_True;
+
   Handle(Geom_Geometry) result;
   Handle(Geom2d_Curve) result2d;
 
   if (!strcasecmp(a[0],"trim")) {
     if (!GS.IsNull()) {
       if (n<7) return 1;
+      v1 = Draw::Atof(a[5]);
+      v2 = Draw::Atof(a[6]);
+      if (n > 7)
+      {
+        USense = *a[7] != '0';
+        VSense = *a[8] != '0';
+      }
       result =
-	new Geom_RectangularTrimmedSurface(GS,u1,u2,Draw::Atof(a[5]),Draw::Atof(a[6]));
+	new Geom_RectangularTrimmedSurface(GS, u1, u2, v1, v2, USense, VSense);
     }
     else if (!GC.IsNull()) {
-      result = new Geom_TrimmedCurve(GC, u1, u2);
+      if (n>5)
+      {
+        USense = *a[5] != '0';
+      }
+      result = new Geom_TrimmedCurve(GC, u1, u2, USense);
     }
     else if (!GC2d.IsNull()) {
-      result2d = new Geom2d_TrimmedCurve(GC2d, u1, u2);
+      if (n > 5)
+      {
+        USense = *a[5] != '0';
+      }
+      result2d = new Geom2d_TrimmedCurve(GC2d, u1, u2, USense);
     }
     else
       return 1;
   }
   else {
     if (GS.IsNull()) return 1;
-    result =  new Geom_RectangularTrimmedSurface(GS,u1,u2,
-						 !strcasecmp(a[0],"trimu"));
+    Standard_Boolean Utrim = !strcasecmp(a[0], "trimu");
+    if (n > 5)
+      USense = *a[5] != '0';
+    result =  new Geom_RectangularTrimmedSurface(GS, u1, u2, Utrim, USense);
   }
 
   if (!result.IsNull())
@@ -1642,17 +1662,35 @@ void  GeomliteTest::SurfaceCommands(Draw_Interpretor& theCommands)
 		  offseting,g);
 
   theCommands.Add("trim",
-		  "trim newname name [u1 u2 [v1 v2]], no args remove trim",
+                  "trim newname name [u1 u2 [v1 v2] [usense=1 vsense=1]]"
+                  "\n\t\t: Creates either a new trimmed curve from a curve"
+                  "\n\t\t: or a new trimmed surface in u and v from a surface."
+                  "\n\t\t: Removes trim when called without arguments."
+                  "\n\t\t: - u1 u2   lower and upper parameters of trimming on U direction"
+                  "\n\t\t: - v1 v2   lower and upper parameters of trimming on V direction"
+                  "\n\t\t: - usense vsense   senses on U and V directions: 1 - true, 0 - false;"
+                  "\n\t\t    Senses are used for the construction only if the surface is periodic"
+                  "\n\t\t    in the corresponding parametric direction, and define the available part of the surface",
 		  __FILE__,
 		  trimming,g);
 
   theCommands.Add("trimu",
-		  "trim newname name u1 u2",
+                  "trimu newname name u1 u2 [usense=1]"
+                  "\n\t\t: Creates a u-trimmed surface."
+                  "\n\t\t: - u1 u2  lower and upper parameters of trimming on U direction"
+                  "\n\t\t: - usense sense on U direction: 1 - true, 0 - false;"
+                  "\n\t\t    usense is used for the construction only if the surface is u-periodic"
+                  "\n\t\t    in the u parametric direction, and define the available part of the surface",
 		  __FILE__,
 		  trimming,g);
 
   theCommands.Add("trimv",
-		  "trim newname name v1 v2",
+                  "trimv newname name v1 v2 [vsense=1]"
+                  "\n\t\t: Creates a v-trimmed surface."
+                  "\n\t\t: - u1 u2  lower and upper parameters of trimming on V direction"
+                  "\n\t\t: - vsense sense on V direction: 1 - true, 0 - false;"
+                  "\n\t\t    vsense is used for the construction only if the surface is v-periodic"
+                  "\n\t\t    in the v parametric direction, and define the available part of the surface",
 		  __FILE__,
 		  trimming,g);
 

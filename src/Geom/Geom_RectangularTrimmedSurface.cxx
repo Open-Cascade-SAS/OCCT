@@ -67,15 +67,15 @@ Handle(Geom_Geometry) Geom_RectangularTrimmedSurface::Copy () const {
     S = new RectangularTrimmedSurface (basisSurf,
 				       utrim1   , utrim2,
 				       vtrim1   , vtrim2,
-				       Standard_True     , Standard_True   );
+				       Standard_True, Standard_True);
   else if ( isutrimmed)
     S = new RectangularTrimmedSurface (basisSurf,
 				       utrim1   , utrim2,
-				       Standard_True,      Standard_True   );
+				       Standard_True, Standard_True);
   else if (isvtrimmed)
     S = new RectangularTrimmedSurface (basisSurf,
 				       vtrim1   , vtrim2,
-				       Standard_False    , Standard_True   );
+				       Standard_False    , Standard_True);
 
   return S;
 }
@@ -138,7 +138,6 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface (
  const Standard_Boolean               UTrim,
  const Standard_Boolean               Sense
 ) {
-
   // kill trimmed basis surfaces
   Handle(Geom_RectangularTrimmedSurface) T =
     Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
@@ -156,6 +155,20 @@ Geom_RectangularTrimmedSurface::Geom_RectangularTrimmedSurface (
     basisSurf = new Geom_OffsetSurface(S2, O->Offset(), Standard_True);
   }  
 
+  if (!T.IsNull())
+  {
+    if (UTrim && T->isvtrimmed)
+    {
+      SetTrim(Param1, Param2, T->vtrim1, T->vtrim2, Sense, Standard_True);
+      return;
+    }
+    else if (!UTrim && T->isutrimmed)
+    {
+      SetTrim(T->utrim1, T->utrim2, Param1, Param2, Standard_True, Sense);
+      return;
+    }
+  }
+
   SetTrim(Param1, Param2, UTrim, Sense);
 }
 
@@ -171,7 +184,6 @@ void Geom_RectangularTrimmedSurface::SetTrim (const Standard_Real    U1,
 					      const Standard_Real    V2, 
 					      const Standard_Boolean USense, 
 					      const Standard_Boolean VSense ) {
-
   SetTrim( U1, U2, V1, V2, Standard_True, Standard_True, USense, VSense);
 }
 
@@ -193,16 +205,36 @@ void Geom_RectangularTrimmedSurface::SetTrim (const Standard_Real    Param1,
   Standard_Boolean dummy_Sense = Standard_True;
 
   if ( UTrim) {
-    SetTrim( Param1        , Param2        , 
-	     dummy_a       , dummy_b       ,
-	     Standard_True , Standard_False,
-	     Sense         , dummy_Sense    );
+    if (isvtrimmed)
+    {
+      SetTrim (Param1, Param2,
+               vtrim1, vtrim2,
+               Standard_True, Standard_True,
+               Sense, dummy_Sense);
+    }
+    else
+    {
+      SetTrim (Param1, Param2,
+               dummy_a, dummy_b,
+               Standard_True, Standard_False,
+               Sense, dummy_Sense);
+    }
   }
   else {
-    SetTrim( dummy_a       , dummy_b      ,
-	     Param1        , Param2       ,
-	     Standard_False, Standard_True,
-	     dummy_Sense   , Sense         );
+    if (isutrimmed)
+    {
+      SetTrim (utrim1, utrim2,
+               Param1, Param2,
+               Standard_True, Standard_True,
+               dummy_Sense, Sense);
+    }
+    else
+    {
+      SetTrim (dummy_a, dummy_b,
+               Param1, Param2,
+               Standard_False, Standard_True,
+               dummy_Sense, Sense);
+    }
   }
 }
 

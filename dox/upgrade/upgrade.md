@@ -2156,3 +2156,17 @@ Message files (with extension .msg) are now expected to be in UTF-8 encoding (un
 This allows using arbitrary Unicode symbols for localization of messages.
 
 Existing message files containing 8-bit characters (previously interpreted as characters from Latin-1 code block) should be converted to UTF-8.
+
+@section upgrade_occt760 Upgrade to OCCT 7.6.0
+
+@subsection upgrade_760_trimming_surface Trimming surface
+
+Geom_RectangularTrimmedSurface sequentially trimming in U and V directions already no longer loses the first trim.
+For example:
+~~~~~
+  Handle(Geom_RectangularTrimmedSurface) ST  = new Geom_RectangularTrimmedSurface (Sbase, u1, u2, Standard_True); // trim along U
+  Handle(Geom_RectangularTrimmedSurface) ST1 = new Geom_RectangularTrimmedSurface (ST, v1, v2, Standard_False); // trim along V
+~~~~~
+gives different result.
+In current version ST1 - surface trimmed only along V, U trim is removed;
+After modification ST1 - surface trimmed along U and V, U trim is kept.

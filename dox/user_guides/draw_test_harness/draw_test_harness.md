@@ -4879,9 +4879,9 @@ bsplinesurf s \
 
 Syntax:      
 ~~~~~
-trim newname name [u1 u2 [v1 v2]] 
-trimu newname name 
-trimv newname name 
+trim newname name [u1 u2 [v1 v2] [usense vsense]]
+trimu newname name u1 u2 [usense]
+trimv newname name v1 v2 [vsense]
 ~~~~~
 
 The **trim** commands create trimmed curves or trimmed surfaces. Note that trimmed curves and surfaces are classes of the *Geom* package. 
