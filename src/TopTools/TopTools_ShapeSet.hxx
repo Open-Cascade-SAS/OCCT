@@ -27,6 +27,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopTools_FormatVersion.hxx>
 
 class TopoDS_Shape;
 class TopTools_LocationSet;
@@ -50,13 +51,10 @@ public:
   
   Standard_EXPORT virtual ~TopTools_ShapeSet();
   
+  //! Sets the TopTools_FormatVersion
   Standard_EXPORT void SetFormatNb (const Standard_Integer theFormatNb);
   
-  //! two formats available for the moment:
-  //! First: does not write CurveOnSurface UV Points into the file
-  //! on reading calls Check() method.
-  //! Second: stores CurveOnSurface UV Points.
-  //! On reading format is recognized from Version string.
+  //! Returns the TopTools_FormatVersion
   Standard_EXPORT Standard_Integer FormatNb() const;
   
   //! Clears the content of the set.  This method can be
@@ -180,6 +178,11 @@ public:
   
   //! Returns number of shapes read from file.
   Standard_EXPORT Standard_Integer NbShapes() const;
+
+public:
+
+  static Standard_CString Version_1;
+  static Standard_CString Version_2;
 
 private:
 

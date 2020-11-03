@@ -93,7 +93,7 @@ Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persisten
   }
   
   Standard_Integer aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
-  if( aFileVer > 5 && myLocations == 0 )
+  if( aFileVer >= TDocStd_FormatVersion_VERSION_6 && myLocations == 0 )
   {
     return Standard_False;
   }
@@ -101,7 +101,7 @@ Standard_Boolean BinMXCAFDoc_LocationDriver::Translate(const BinObjMgt_Persisten
   Standard_Integer aPower;
   Handle(TopLoc_Datum3D) aDatum;
   
-  if( aFileVer > 5 )
+  if( aFileVer >= TDocStd_FormatVersion_VERSION_6)
   {
     const TopLoc_Location& aLoc = myLocations->Location(anId);
     aPower = aLoc.FirstPower();

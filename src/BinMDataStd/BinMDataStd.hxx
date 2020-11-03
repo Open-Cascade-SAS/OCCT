@@ -22,6 +22,7 @@
 
 #include <Standard_Integer.hxx>
 #include <BinObjMgt_Persistent.hxx>
+#include <TDocStd_FormatVersion.hxx>
 
 class BinMDF_ADriverTable;
 class Message_Messenger;
@@ -41,7 +42,7 @@ template<class T>
 static void SetAttributeID(const BinObjMgt_Persistent& theSource, const Handle(T)& anAtt, const Standard_Integer aDocFormatVersion)
 {
   Standard_Boolean ok = Standard_True;
-  if(aDocFormatVersion > 9) { // process user defined guid
+  if(aDocFormatVersion >= TDocStd_FormatVersion_VERSION_10) { // process user defined guid
     const Standard_Integer& aPos = theSource.Position();
     Standard_GUID aGuid;
     ok = theSource >> aGuid;

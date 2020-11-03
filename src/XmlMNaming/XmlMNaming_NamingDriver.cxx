@@ -18,6 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Tool.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_ListIteratorOfListOfNamedShape.hxx>
 #include <TNaming_Name.hxx>
@@ -174,7 +175,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
   }
   aNgName.Index(aNb);
 //
-  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 3) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_4) {
     XmlObjMgt_DOMString aDomEntry = anElem.getAttribute(::ContextLabelString());
     if (aDomEntry != NULL)
     {	
@@ -203,8 +204,8 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
       std::cout << "Retrieving Context Label is NULL" <<std::endl;
 #endif
 
-    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 4 && 
-      theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < 7) {
+    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_5 &&
+      theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < TDocStd_FormatVersion_VERSION_7) {
           // Orientation processing - converting from old format
           Handle(TNaming_NamedShape) aNS;
           if (aNg->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
@@ -223,7 +224,7 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
             }
           }         
         }
-    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 6) {
+    if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_7) {
        aDOMStr = anElem.getAttribute(::OrientString());
        if (!aDOMStr.GetInteger(aNb))
        {

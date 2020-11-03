@@ -28,6 +28,7 @@
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_IntPackedMap.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntPackedMapDriver,BinMDF_ADriver)
 
@@ -87,7 +88,7 @@ Standard_Boolean BinMDataStd_IntPackedMapDriver::Paste
   }
 
   Standard_Boolean aDelta(Standard_False);
-  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
+  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
     Standard_Byte aDeltaValue;
     if (! (Source >> aDeltaValue))
       return Standard_False;

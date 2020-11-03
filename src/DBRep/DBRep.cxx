@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
+#include <BinTools_ShapeSet.hxx>
 #include <BRep_TEdge.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepGProp.hxx>
@@ -33,6 +33,7 @@
 #include <GProp.hxx>
 #include <GProp_GProps.hxx>
 #include <NCollection_Vector.hxx>
+#include <OSD_OpenFile.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
 #include <Standard.hxx>
@@ -1376,47 +1377,180 @@ static Standard_Integer XProgress (Draw_Interpretor& di, Standard_Integer argc, 
 }
 
 //=======================================================================
-// binsave
+// writebrep
 //=======================================================================
-
-static Standard_Integer binsave(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer writebrep (Draw_Interpretor& theDI,
+                                   Standard_Integer theNbArgs,
+                                   const char** theArgVec)
 {
-  if (n <= 2) return 1;
-
-  TopoDS_Shape aShape = DBRep::Get (a[1]);
-  if (aShape.IsNull())
+  Standard_Integer aVersion = -1;
+  TCollection_AsciiString aShapeName, aFileName;
+  TopoDS_Shape aShape;
+  bool isBinaryFormat = false, isWithTriangles = true;
+  if (!strcasecmp (theArgVec[0], "binsave"))
   {
-    di << a[1] << " is not a shape";
+    isBinaryFormat = true;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString aParam (theArgVec[anArgIter]);
+    aParam.LowerCase();
+    if (aParam == "-binary")
+    {
+      isBinaryFormat = true;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isBinaryFormat))
+      {
+        ++anArgIter;
+      }
+    }
+    else if (aParam == "-version"
+          && anArgIter + 1 < theNbArgs)
+    {
+      aVersion = Draw::Atoi (theArgVec[++anArgIter]);
+      if (aVersion <= 0)
+      {
+        theDI << "Syntax error: unknown version";
+        return 1;
+      }
+    }
+    else if (aParam == "-notriangles"
+          || aParam == "-triangles")
+    {
+      isWithTriangles = true;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isWithTriangles))
+      {
+        ++anArgIter;
+      }
+      if (aParam == "-notriangles")
+      {
+        isWithTriangles = !isWithTriangles;
+      }
+    }
+    else if (aShapeName.IsEmpty())
+    {
+      aShapeName = theArgVec[anArgIter];
+      aShape = DBRep::Get (aShapeName);
+      if (aShape.IsNull())
+      {
+        theDI << "Syntax error: " << aShapeName << " is not a shape";
+        return 1;
+      }
+    }
+    else if (aFileName.IsEmpty())
+    {
+      aFileName = theArgVec[anArgIter];
+    }
+    else
+    {
+      theDI << "Syntax error: unknown argument '" << aParam << "'";
+      return 1;
+    }
+  }
+  if (aFileName.IsEmpty())
+  {
+    theDI << "Syntax error: wrong number of arguments";
     return 1;
   }
 
-  if (!BinTools::Write (aShape, a[2]))
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI);
+  if (isBinaryFormat)
   {
-    di << "Cannot write to the file " << a[2];
-    return 1;
-  }
+    if (aVersion > BinTools_FormatVersion_CURRENT)
+    {
+      theDI << "Syntax error: unknown format version";
+      return 1;
+    }
 
-  di << a[1];
+    BinTools_FormatVersion aBinToolsVersion = aVersion > 0
+                                            ? static_cast<BinTools_FormatVersion> (aVersion)
+                                            : BinTools_FormatVersion_CURRENT;
+    if (!BinTools::Write (aShape, aFileName.ToCString(), isWithTriangles, aBinToolsVersion, aProgress->Start()))
+    {
+      theDI << "Cannot write to the file " << aFileName;
+      return 1;
+    }
+  }
+  else
+  {
+    if (aVersion > TopTools_FormatVersion_VERSION_2)
+    {
+      theDI << "Syntax error: unknown format version";
+      return 1;
+    }
+
+    TopTools_FormatVersion aTopToolsVersion = aVersion > 0
+                                            ? static_cast<TopTools_FormatVersion> (aVersion)
+                                            : TopTools_FormatVersion_CURRENT;
+    if (!BRepTools::Write (aShape, aFileName.ToCString(), isWithTriangles, aTopToolsVersion, aProgress->Start()))
+    {
+      theDI << "Cannot write to the file " << aFileName;
+      return 1;
+    }
+  }
+  theDI << aShapeName;
   return 0;
 }
 
 //=======================================================================
-// binrestore
+// readbrep
 //=======================================================================
-
-static Standard_Integer binrestore(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer readbrep (Draw_Interpretor& theDI,
+                                  Standard_Integer theNbArgs,
+                                  const char** theArgVec)
 {
-  if (n <= 2) return 1;
-
-  TopoDS_Shape aShape;
-  if (!BinTools::Read (aShape, a[1]))
+  if (theNbArgs != 3)
   {
-    di << "Cannot read from the file " << a[1];
+    theDI << "Syntax error: wrong number of arguments";
     return 1;
   }
 
-  DBRep::Set (a[2], aShape);
-  di << a[2];
+  Standard_CString aFileName  = theArgVec[1];
+  Standard_CString aShapeName = theArgVec[2];
+  bool isBinaryFormat = true;
+  {
+    // probe file header to recognize format
+    std::ifstream aFile;
+    OSD_OpenStream (aFile, aFileName, std::ios::in | std::ios::binary);
+    if (!aFile.is_open())
+    {
+      theDI << "Error: cannot read the file '" << aFileName << "'";
+      return 1;
+    }
+
+    char aStringBuf[255] = {};
+    aFile.read (aStringBuf, 255);
+    if (aFile.fail())
+    {
+      theDI << "Error: cannot read the file '" << aFileName << "'";
+      return 1;
+    }
+    isBinaryFormat = !(::strncmp (aStringBuf, "DBRep_DrawableShape", 19) == 0);
+  }
+
+  Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI);
+  TopoDS_Shape aShape;
+  if (isBinaryFormat)
+  {
+    if (!BinTools::Read (aShape, aFileName, aProgress->Start()))
+    {
+      theDI << "Error: cannot read from the file '" << aFileName << "'";
+      return 1;
+    }
+  }
+  else
+  {
+    if (!BRepTools::Read (aShape, aFileName, BRep_Builder(), aProgress->Start()))
+    {
+      theDI << "Error: cannot read from the file '" << aFileName << "'";
+      return 1;
+    }
+  }
+
+  DBRep::Set (aShapeName, aShape);
+  theDI << aShapeName;
   return 0;
 }
 
@@ -1517,13 +1651,23 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
                     "\n\t\t   +|-c :  switch on/off output to cout of Progress Indicator"
                     "\n\t\t   +|-g :  switch on/off graphical mode of Progress Indicator",
                     XProgress,"DE: General");
-
-  theCommands.Add("binsave", "binsave shape filename\n"
-                  "\t\tsave the shape in the binary format file",
-                  __FILE__, binsave, g);
-  theCommands.Add("binrestore", "binrestore filename shape\n"
-                  "\t\trestore the shape from the binary format file",
-                  __FILE__, binrestore, g);
+  theCommands.Add("writebrep",
+                  "writebrep shape filename [-binary] [-version Version] [-noTriangles]"
+                  "\n\t\t: Save the shape in the ASCII (default) or binary format file."
+                  "\n\t\t:  -binary  write into the binary format (ASCII when unspecified)"
+                  "\n\t\t:  -version a number of format version to save;"
+                  "\n\t\t:           ASCII  versions: 1, 2       (1 for ASCII  when unspecified);"
+                  "\n\t\t:           Binary versions: 1, 2 and 3 (3 for Binary when unspecified)."
+                  "\n\t\t:  -noTriangles skip triangulation data (OFF when unspecified).",
+                  __FILE__, writebrep, g);
+  theCommands.Add("readbrep",
+                  "readbrep filename shape"
+                  "\n\t\t: Restore the shape from the binary or ASCII format file.",
+                  __FILE__, readbrep, g);
+  theCommands.Add("binsave", "binsave shape filename", __FILE__, writebrep, g);
+  theCommands.Add("binrestore",
+                  "alias to readbrep command",
+                  __FILE__, readbrep, g);
 
   theCommands.Add ("removeinternals", "removeinternals shape [force flag {0/1}]"
                    "\n\t\t             Removes sub-shapes with internal orientation from the shape.\n"

@@ -20,6 +20,7 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <BinMDataStd.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntegerDriver,BinMDF_ADriver)
@@ -59,7 +60,7 @@ Standard_Boolean BinMDataStd_IntegerDriver::Paste
   Standard_Boolean ok = theSource >> aValue;
   if (ok)
     anAtt->Set(aValue);
-  if(theRT.GetHeaderData()->StorageVersion().IntegerValue() > 8) { // process user defined guid
+  if(theRT.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_9) { // process user defined guid
 	const Standard_Integer& aPos = theSource.Position();
 	Standard_GUID aGuid;
 	ok = theSource >> aGuid;	

@@ -141,7 +141,12 @@ static Draw_SaveAndRestore numsr("Draw_Number",
 
 static Standard_Integer save(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n <= 2) return 1;
+  if (n < 3)
+  {
+    di << "Syntax error: wrong number of arguments!\n";
+    di.PrintHelp(a[0]);
+    return 1;
+  }
 
   const char* name = a[2];
   std::ofstream os;

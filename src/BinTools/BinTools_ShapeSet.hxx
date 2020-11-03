@@ -21,6 +21,7 @@
 #include <Standard_Handle.hxx>
 
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <BinTools_FormatVersion.hxx>
 #include <BinTools_LocationSet.hxx>
 #include <Standard_Integer.hxx>
 #include <BRep_Builder.hxx>
@@ -44,11 +45,10 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Builds an empty ShapeSet.
-  //! Parameter <isWithTriangles> is added for XML Persistence
-  Standard_EXPORT BinTools_ShapeSet(const Standard_Boolean isWithTriangles = Standard_False);
-  
+  //! @param theWithTriangles [in] flag to write triangulation data
+  Standard_EXPORT BinTools_ShapeSet (const Standard_Boolean theWithTriangles = Standard_False);
+
   Standard_EXPORT virtual ~BinTools_ShapeSet();
 
   //! Return true if shape should be stored with triangles.
@@ -56,15 +56,12 @@ public:
 
   //! Define if shape will be stored with triangles.
   //! Ignored (always written) if face defines only triangulation (no surface).
-  void SetWithTriangles (const Standard_Boolean isWithTriangles) { myWithTriangles = isWithTriangles; }
+  void SetWithTriangles (const Standard_Boolean theWithTriangles) { myWithTriangles = theWithTriangles; }
 
+  //! Sets the BinTools_FormatVersion.
   Standard_EXPORT void SetFormatNb (const Standard_Integer theFormatNb);
-  
-  //! two formats available for the moment:
-  //! First: does not write CurveOnSurface UV Points into the file
-  //! on reading calls Check() method.
-  //! Second: stores CurveOnSurface UV Points.
-  //! On reading format is recognized from Version string.
+
+  //! Returns the BinTools_FormatVersion.
   Standard_EXPORT Standard_Integer FormatNb() const;
   
   //! Clears the content of the set.
@@ -193,6 +190,12 @@ public:
   Standard_EXPORT void WritePolygonOnTriangulation
     (Standard_OStream& OS,
         const Message_ProgressRange& theRange = Message_ProgressRange()) const;
+
+public:
+
+  static Standard_CString Version_1;
+  static Standard_CString Version_2;
+  static Standard_CString Version_3;
 
 private:
 

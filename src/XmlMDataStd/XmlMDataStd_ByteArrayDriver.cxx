@@ -20,10 +20,12 @@
 #include <TColStd_HArray1OfByte.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <XmlMDataStd.hxx>
 #include <XmlMDataStd_ByteArrayDriver.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_Persistent.hxx>
+
 IMPLEMENT_DOMSTRING (AttributeIDString, "bytearrattguid")
 
 IMPLEMENT_STANDARD_RTTIEXT(XmlMDataStd_ByteArrayDriver,XmlMDF_ADriver)
@@ -129,7 +131,7 @@ Standard_Boolean XmlMDataStd_ByteArrayDriver::Paste(const XmlObjMgt_Persistent& 
   
   Standard_Boolean aDelta(Standard_False);
   
-  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
     {

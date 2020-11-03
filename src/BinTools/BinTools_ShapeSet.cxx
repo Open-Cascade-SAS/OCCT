@@ -55,9 +55,10 @@
 
 #include <string.h>
 //#define MDTV_DEB 1
-const char* Version_1  = "Open CASCADE Topology V1 (c)";
-const char* Version_2  = "Open CASCADE Topology V2 (c)";
-const char* Version_3  = "Open CASCADE Topology V3 (c)";
+Standard_CString BinTools_ShapeSet::Version_1 = "Open CASCADE Topology V1 (c)";
+Standard_CString BinTools_ShapeSet::Version_2 = "Open CASCADE Topology V2 (c)";
+Standard_CString BinTools_ShapeSet::Version_3 = "Open CASCADE Topology V3 (c)";
+
 //=======================================================================
 //function : operator << (gp_Pnt)
 //purpose  : 
@@ -72,11 +73,11 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const gp_Pnt P)
 }
 //=======================================================================
 //function : BinTools_ShapeSet
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-BinTools_ShapeSet::BinTools_ShapeSet(const Standard_Boolean isWithTriangles)
-     :myFormatNb(3), myWithTriangles(isWithTriangles)
+BinTools_ShapeSet::BinTools_ShapeSet (const Standard_Boolean theWithTriangles)
+: myFormatNb (BinTools_FormatVersion_CURRENT),
+  myWithTriangles (theWithTriangles)
 {}
 
 //=======================================================================
@@ -93,6 +94,10 @@ BinTools_ShapeSet::~BinTools_ShapeSet()
 //=======================================================================
 void BinTools_ShapeSet::SetFormatNb(const Standard_Integer theFormatNb)
 {
+  Standard_ASSERT_RETURN(theFormatNb >= BinTools_FormatVersion_VERSION_1 &&
+                         theFormatNb <= BinTools_FormatVersion_CURRENT,
+    "Error: unsupported BinTools version.", );
+
   myFormatNb = theFormatNb;
 }
 
@@ -325,14 +330,19 @@ void  BinTools_ShapeSet::WriteGeometry (Standard_OStream& OS,
 void  BinTools_ShapeSet::Write (Standard_OStream& OS,
                                 const Message_ProgressRange& theRange)const
 {
-
   // write the copyright
-  if (myFormatNb == 3)
+  if (myFormatNb == BinTools_FormatVersion_VERSION_3)
+  {
     OS << "\n" << Version_3 << "\n";
-  else if (myFormatNb == 2)
+  }
+  else if (myFormatNb == BinTools_FormatVersion_VERSION_2)
+  {
     OS << "\n" << Version_2 << "\n";
+  }
   else
+  {
     OS << "\n" << Version_1 << "\n";
+  }
 
   //-----------------------------------------
   // write the locations
@@ -415,13 +425,22 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
   } while ( ! IS.fail() && strcmp(vers,Version_1) && strcmp(vers,Version_2) &&
 	   strcmp(vers,Version_3));
   if (IS.fail()) {
-    std::cout << "BinTools_ShapeSet::Read: File was not written with this version of the topology"<<std::endl;
-     return;
+    std::cout << "BinTools_ShapeSet::Read: File was not written with this version of the topology" << std::endl;
+    return;
   }
 
-  if (strcmp(vers,Version_3) == 0) SetFormatNb(3);
-  else  if (strcmp(vers,Version_2) == 0) SetFormatNb(2);    
-  else SetFormatNb(1);
+  if (strcmp (vers, Version_3) == 0)
+  {
+    SetFormatNb (BinTools_FormatVersion_VERSION_3);
+  }
+  else if (strcmp (vers, Version_2) == 0)
+  {
+    SetFormatNb (BinTools_FormatVersion_VERSION_2);
+  }
+  else
+  {
+    SetFormatNb (BinTools_FormatVersion_VERSION_1);
+  }
 
   //-----------------------------------------
   // read the locations
@@ -481,7 +500,7 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
 
     S.Free(aFree);
     S.Modified(aMod);
-     if (myFormatNb >= 2)
+     if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
        S.Checked(aChecked);
      else
        S.Checked   (Standard_False);     // force check at reading.. 
@@ -491,7 +510,7 @@ void  BinTools_ShapeSet::Read (Standard_IStream& IS,
     S.Convex    (aConv);
     // check
 
-    if (myFormatNb == 1)
+    if (myFormatNb == BinTools_FormatVersion_VERSION_1)
       if(T == TopAbs_FACE) {
 	const TopoDS_Face& F = TopoDS::Face(S);
 	BRepTools::Update(F);
@@ -684,7 +703,7 @@ void  BinTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S,
 	  BinTools::PutReal(OS, last);
 
         // Write UV Points for higher performance
-	  if (FormatNb() >= 2)
+	  if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
 	    {
 	      gp_Pnt2d Pf,Pl;
 	      if (CR->IsCurveOnClosedSurface()) {
@@ -828,7 +847,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 
 	BRep_ListOfPointRepresentation& lpr = TV->ChangePoints();
 	TopLoc_Location L;
-	Standard_Boolean aNewF = (myFormatNb > 2);
+	Standard_Boolean aNewF = (myFormatNb >= BinTools_FormatVersion_VERSION_3);
 	do {
 	  if(aNewF) {
 	    val = (Standard_Integer)IS.get();//case {0|1|2|3}
@@ -992,7 +1011,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	    BinTools::GetReal(IS, last);
 
             // read UV Points // for XML Persistence higher performance
-            if (FormatNb() >= 2)
+            if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
             {
 	      BinTools::GetReal(IS, PfX);
 	      BinTools::GetReal(IS, PfY);
@@ -1008,7 +1027,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 	      break;
 	    
             if (closed) {
-              if (FormatNb() >= 2)
+              if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      myCurves2d.Curve2d(pc2),
                                      mySurfaces.Surface(s),
@@ -1029,7 +1048,7 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
             }
             else
             {
-              if (FormatNb() >= 2)
+              if (myFormatNb >= BinTools_FormatVersion_VERSION_2)
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      mySurfaces.Surface(s),
                                      Locations().Location(l),tol,

@@ -34,7 +34,6 @@
 IMPLEMENT_STANDARD_RTTIEXT(BinMNaming_NamedShapeDriver,BinMDF_ADriver)
 
 #define SHAPESET "SHAPE_SECTION"
-#define FORMAT_NUMBER 3
 //=======================================================================
 static Standard_Character EvolutionToChar(const TNaming_Evolution theEvol)
 {
@@ -142,7 +141,9 @@ static int TranslateFrom  (const BinObjMgt_Persistent&  theSource,
 
 BinMNaming_NamedShapeDriver::BinMNaming_NamedShapeDriver
                         (const Handle(Message_Messenger)& theMsgDriver)
-     : BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name()), myShapeSet(Standard_False),myFormatNb(FORMAT_NUMBER)
+: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name()),
+  myShapeSet (Standard_False),
+  myFormatNb (BinTools_FormatVersion_VERSION_3)
 {
 }
 

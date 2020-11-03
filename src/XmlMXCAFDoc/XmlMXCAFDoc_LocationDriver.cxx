@@ -17,6 +17,7 @@
 #include <Message_Messenger.hxx>
 #include <Standard_Type.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <TopLoc_Datum3D.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopTools_LocationSet.hxx>
@@ -149,7 +150,7 @@ Standard_Boolean XmlMXCAFDoc_LocationDriver::Translate
     return Standard_False;
   
   Standard_Integer aFileVer = theMap.GetHeaderData()->StorageVersion().IntegerValue();
-  if( aFileVer > 5 && myLocations == 0 )
+  if( aFileVer >= TDocStd_FormatVersion_VERSION_6 && myLocations == 0 )
   {
     return Standard_False;
   }
@@ -157,7 +158,7 @@ Standard_Boolean XmlMXCAFDoc_LocationDriver::Translate
   Standard_Integer aPower;
   Handle(TopLoc_Datum3D) aDatum;
   
-  if( aFileVer > 5 )
+  if( aFileVer >= TDocStd_FormatVersion_VERSION_6)
   {
     //  Get Location ID
     Standard_Integer anId;

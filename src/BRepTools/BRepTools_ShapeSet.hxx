@@ -46,16 +46,24 @@ public:
 
   DEFINE_STANDARD_ALLOC
 
+  //! Builds an empty ShapeSet.
+  //! @param theWithTriangles flag to write triangulation data
+  Standard_EXPORT BRepTools_ShapeSet (const Standard_Boolean theWithTriangles = Standard_True);
   
   //! Builds an empty ShapeSet.
-  //! Parameter <isWithTriangles> is added for XML Persistence
-  Standard_EXPORT BRepTools_ShapeSet (const Standard_Boolean isWithTriangles = Standard_True);
-  
-  //! Builds an empty ShapeSet.
-  //! Parameter <isWithTriangles> is added for XML Persistence
-  Standard_EXPORT BRepTools_ShapeSet (const BRep_Builder& B,
-                                      const Standard_Boolean isWithTriangles = Standard_True);
-  
+  //! @param theWithTriangles flag to write triangulation data
+  Standard_EXPORT BRepTools_ShapeSet (const BRep_Builder& theBuilder,
+                                      const Standard_Boolean theWithTriangles = Standard_True);
+
+  Standard_EXPORT virtual ~BRepTools_ShapeSet();
+
+  //! Return true if shape should be stored with triangles.
+  Standard_Boolean IsWithTriangles() const { return myWithTriangles; }
+
+  //! Define if shape will be stored with triangles.
+  //! Ignored (always written) if face defines only triangulation (no surface).
+  void SetWithTriangles (const Standard_Boolean theWithTriangles) { myWithTriangles = theWithTriangles; }
+
   //! Clears the content of the set.
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   

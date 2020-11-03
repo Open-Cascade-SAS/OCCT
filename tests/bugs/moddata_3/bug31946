@@ -1,0 +1,49 @@
+puts "=========="
+puts "0031946: Modeling Data - replace version numbers with enumerations in TopTools and BinTools"
+puts "=========="
+puts ""
+
+pload MODELING VISUALIZATION
+
+box testBox 10 20 30
+incmesh testBox 0.1
+
+writebrep testBox "${imagedir}/${casename}_topBox1.brep"
+readbrep "${imagedir}/${casename}_topBox1.brep" topBox1
+trinfo topBox1
+checktrinfo topBox1 -tri 12
+
+writebrep testBox "${imagedir}/${casename}_topBox2.brep" -noTriangles
+readbrep "${imagedir}/${casename}_topBox2.brep" topBox2
+trinfo topBox2
+checktrinfo topBox2 -tri 0
+
+writebrep testBox "${imagedir}/${casename}_topBox3.brep" -noTriangles on -binary off
+readbrep "${imagedir}/${casename}_topBox3.brep" topBox3
+trinfo topBox3
+checktrinfo topBox3 -tri 0
+
+writebrep testBox "${imagedir}/${casename}_topBox4.brep" -noTriangles off -binary off
+readbrep "${imagedir}/${casename}_topBox4.brep" topBox4
+trinfo topBox4
+checktrinfo topBox4 -tri 12
+
+writebrep testBox "${imagedir}/${casename}_binBox1.bbrep" -binary on
+readbrep "${imagedir}/${casename}_binBox1.bbrep" binBox1
+trinfo binBox1
+checktrinfo binBox1 -tri 12
+
+writebrep testBox "${imagedir}/${casename}_binBox2.bbrep" -noTriangles -binary on
+readbrep "${imagedir}/${casename}_binBox2.bbrep" binBox2
+trinfo binBox2
+checktrinfo binBox2 -tri 0
+
+writebrep testBox "${imagedir}/${casename}_binBox3.bbrep" -noTriangles on -binary on
+readbrep "${imagedir}/${casename}_binBox3.bbrep" binBox3
+trinfo binBox3
+checktrinfo binBox3 -tri 0
+
+writebrep testBox "${imagedir}/${casename}_binBox4.bbrep" -noTriangles off -binary on
+readbrep "${imagedir}/${casename}_binBox4.bbrep" binBox4
+trinfo binBox4
+checktrinfo binBox4 -tri 12

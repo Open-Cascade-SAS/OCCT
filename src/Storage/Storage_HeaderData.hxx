@@ -111,7 +111,12 @@ public:
   Standard_EXPORT void SetNumberOfObjects (const Standard_Integer anObjectNumber);
   
   Standard_EXPORT void SetStorageVersion (const TCollection_AsciiString& aVersion);
-  
+
+  void SetStorageVersion (const Standard_Integer theVersion)
+  {
+    SetStorageVersion (TCollection_AsciiString (theVersion));
+  }
+
   Standard_EXPORT void SetCreationDate (const TCollection_AsciiString& aDate);
   
   Standard_EXPORT void SetSchemaVersion (const TCollection_AsciiString& aVersion);

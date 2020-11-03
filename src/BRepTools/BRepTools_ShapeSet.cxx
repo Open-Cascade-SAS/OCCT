@@ -82,25 +82,32 @@
 
 //=======================================================================
 //function : BRepTools_ShapeSet
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-BRepTools_ShapeSet::BRepTools_ShapeSet(const Standard_Boolean isWithTriangles)
-     :myWithTriangles(isWithTriangles)
+BRepTools_ShapeSet::BRepTools_ShapeSet (const Standard_Boolean theWithTriangles)
+: myWithTriangles (theWithTriangles)
 {
 }
 
 //=======================================================================
 //function : BRepTools_ShapeSet
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-BRepTools_ShapeSet::BRepTools_ShapeSet (const BRep_Builder& B,
-                                        const Standard_Boolean isWithTriangles) :
-       myBuilder(B), myWithTriangles(isWithTriangles)
+BRepTools_ShapeSet::BRepTools_ShapeSet (const BRep_Builder& theBuilder,
+                                        const Standard_Boolean theWithTriangles)
+: myBuilder (theBuilder),
+  myWithTriangles (theWithTriangles)
 {
 }
 
+//=======================================================================
+//function : ~BRepTools_ShapeSet
+//purpose  :
+//=======================================================================
+BRepTools_ShapeSet::~BRepTools_ShapeSet()
+{
+  //
+}
 
 //=======================================================================
 //function : Clear
@@ -592,7 +599,7 @@ void  BRepTools_ShapeSet::WriteGeometry (const TopoDS_Shape& S, Standard_OStream
         OS << "\n";
 
         // Write UV Points // for XML Persistence higher performance
-        if (FormatNb() == 2)
+        if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
         {
           gp_Pnt2d Pf,Pl;
           if (CR->IsCurveOnClosedSurface()) {
@@ -902,7 +909,7 @@ void  BRepTools_ShapeSet::ReadGeometry (const TopAbs_ShapeEnum T,
             GeomTools::GetReal(IS, last);
 
             // read UV Points // for XML Persistence higher performance
-            if (FormatNb() == 2)
+            if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
             {
               GeomTools::GetReal(IS, PfX);
               GeomTools::GetReal(IS, PfY);
@@ -920,7 +927,7 @@ void  BRepTools_ShapeSet::ReadGeometry (const TopAbs_ShapeEnum T,
 //  Modified by Sergey KHROMOV - Wed Apr 24 12:11:17 2002 End
 
             if (closed) {
-              if (FormatNb() == 2)
+              if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      myCurves2d.Curve2d(pc2),
                                      mySurfaces.Surface(s),
@@ -941,7 +948,7 @@ void  BRepTools_ShapeSet::ReadGeometry (const TopAbs_ShapeEnum T,
             }
             else
             {
-              if (FormatNb() == 2)
+              if (FormatNb() >= TopTools_FormatVersion_VERSION_2)
                 myBuilder.UpdateEdge(E,myCurves2d.Curve2d(pc),
                                      mySurfaces.Surface(s),
                                      Locations().Location(l),tol,

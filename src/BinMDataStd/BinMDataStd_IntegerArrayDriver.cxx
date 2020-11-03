@@ -22,6 +22,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_IntegerArrayDriver,BinMDF_ADriver)
 
@@ -69,7 +70,7 @@ Standard_Boolean BinMDataStd_IntegerArrayDriver::Paste
   if(!theSource.GetIntArray (&aTargetArray(aFirstInd), aLength))
     return Standard_False;
   Standard_Boolean aDelta(Standard_False);
-  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
     Standard_Byte aDeltaValue;
     if (! (theSource >> aDeltaValue))
       return Standard_False;

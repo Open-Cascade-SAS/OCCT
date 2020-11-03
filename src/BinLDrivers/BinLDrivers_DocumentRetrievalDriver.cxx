@@ -41,6 +41,7 @@
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 #include <TDocStd_Document.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <TDocStd_Owner.hxx>
 #include <Message_ProgressScope.hxx>
 
@@ -192,7 +193,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
     else if (aStr == END_TYPES)
       break;
     else if (begin) {
-      if ( aFileVer < 8 ) {
+      if ( aFileVer < TDocStd_FormatVersion_VERSION_8) {
 #ifdef DATATYPE_MIGRATION
         TCollection_AsciiString  newName;	
         if(Storage_Schema::CheckTypeMigration(aStr, newName)) {
@@ -236,7 +237,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   Message_ProgressScope aPS(theRange, "Reading data", 3);
 
   // 2b. Read the TOC of Sections
-  if (aFileVer >= 3) {
+  if (aFileVer >= TDocStd_FormatVersion_VERSION_3) {
     BinLDrivers_DocumentSection aSection;
     do {
       BinLDrivers_DocumentSection::ReadTOC (aSection, theIStream, aFileVer);
@@ -347,7 +348,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
   }
 
   // Read Sections (post-reading type)
-  if (aFileVer >= 3) {
+  if (aFileVer >= TDocStd_FormatVersion_VERSION_3) {
     BinLDrivers_VectorOfDocumentSection::Iterator aSectIter (mySections);
     for (; aSectIter.More(); aSectIter.Next()) {
       BinLDrivers_DocumentSection& aCurSection = aSectIter.ChangeValue();
@@ -569,7 +570,7 @@ Standard_Boolean BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(
                                                           const Standard_Integer theFileVersion,
                                                           const Standard_Integer theCurVersion)
 {
-  if (theFileVersion < 2 || theFileVersion > theCurVersion) {
+  if (theFileVersion < TDocStd_FormatVersion_VERSION_2 || theFileVersion > theCurVersion) {
     // file was written with another version
     return Standard_False;
   }

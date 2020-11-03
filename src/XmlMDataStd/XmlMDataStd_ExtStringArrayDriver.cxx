@@ -19,6 +19,7 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <XmlMDataStd.hxx>
 #include <XmlMDataStd_ExtStringArrayDriver.hxx>
 #include <XmlObjMgt.hxx>
@@ -195,7 +196,7 @@ Standard_Boolean XmlMDataStd_ExtStringArrayDriver::Paste
   // Read delta-flag.
   Standard_Boolean aDelta(Standard_False);
   
-  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
       {
@@ -240,7 +241,7 @@ void XmlMDataStd_ExtStringArrayDriver::Paste (const Handle(TDF_Attribute)& theSo
   // So, if the user wants to save the document under the 7th or earlier versions,
   // don't apply this improvement.
   Standard_Character c = '-';
-  if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue()  > 7)
+  if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_8)
   {
     // Preferrable symbols for the separator: - _ . : ^ ~
     // Don't use a space as a separator: XML low-level parser sometimes "eats" it.

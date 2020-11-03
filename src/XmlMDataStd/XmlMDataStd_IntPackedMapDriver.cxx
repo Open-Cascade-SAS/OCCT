@@ -22,6 +22,7 @@
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_IntPackedMap.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <XmlMDataStd.hxx>
 #include <XmlMDataStd_IntPackedMapDriver.hxx>
 #include <XmlMDF_ADriver.hxx>
@@ -106,7 +107,7 @@ Standard_Boolean XmlMDataStd_IntPackedMapDriver::Paste
     if(Ok) {
       Standard_Boolean aDelta(Standard_False);
 
-      if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
+      if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
         Standard_Integer aDeltaValue;
         if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
         {

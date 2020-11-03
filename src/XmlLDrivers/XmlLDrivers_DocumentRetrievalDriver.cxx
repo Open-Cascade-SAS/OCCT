@@ -252,22 +252,31 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
     theApplication -> MessageDriver();
   // 1. Read info // to be done
   TCollection_AsciiString anAbsoluteDirectory = GetDirFromFile(myFileName);
-  Standard_Integer aCurDocVersion = 0;
+  Standard_Integer aCurDocVersion = TDocStd_FormatVersion_VERSION_2; // minimum supported version
   TCollection_ExtendedString anInfo;
   const XmlObjMgt_Element anInfoElem =
     theElement.GetChildByTagName ("info");
   if (anInfoElem != NULL) {
     XmlObjMgt_DOMString aDocVerStr = anInfoElem.getAttribute("DocVersion");
-    if(aDocVerStr == NULL)
-      aCurDocVersion = 2;
-    else if (!aDocVerStr.GetInteger(aCurDocVersion)) {
-      TCollection_ExtendedString aMsg =
-        TCollection_ExtendedString ("Cannot retrieve the current Document version"
-                                    " attribute as \"") + aDocVerStr + "\"";
-      if(!aMsgDriver.IsNull()) 
-        aMsgDriver->Send(aMsg.ToExtString(), Message_Fail);
+    if (aDocVerStr != NULL)
+    {
+      Standard_Integer anIntegerVersion = 0;
+      if (aDocVerStr.GetInteger (anIntegerVersion))
+      {
+        aCurDocVersion = anIntegerVersion;
+      }
+      else
+      {
+        TCollection_ExtendedString aMsg =
+          TCollection_ExtendedString ("Cannot retrieve the current Document version"
+                                      " attribute as \"") + aDocVerStr + "\"";
+        if (!aMsgDriver.IsNull())
+        {
+          aMsgDriver->Send(aMsg.ToExtString(), Message_Fail);
+        }
+      }
     }
-    
+
     // oan: OCC22305 - check a document verison and if it's greater than
     // current version of storage driver set an error status and return
     if( aCurDocVersion > TDocStd_Document::CurrentStorageFormatVersion() )
@@ -282,7 +291,6 @@ void XmlLDrivers_DocumentRetrievalDriver::ReadFromDomDocument
       return;
     }
 
-    if( aCurDocVersion < 2) aCurDocVersion = 2;
     Standard_Boolean isRef = Standard_False;
     for (LDOM_Node aNode = anInfoElem.getFirstChild();
          aNode != NULL; aNode = aNode.getNextSibling()) {

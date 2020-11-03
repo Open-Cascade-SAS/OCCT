@@ -17,6 +17,7 @@
 #ifndef _BRepTools_HeaderFile
 #define _BRepTools_HeaderFile
 
+#include <TopTools_FormatVersion.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
@@ -203,20 +204,64 @@ public:
   //! Dumps the topological structure and the geometry
   //! of <Sh> on the stream <S>.
   Standard_EXPORT static void Dump (const TopoDS_Shape& Sh, Standard_OStream& S);
-  
-  //! Writes <Sh> on <S> in an ASCII format.
-  Standard_EXPORT static void Write (const TopoDS_Shape& Sh, Standard_OStream& S,
+
+  //! Writes the shape to the stream in an ASCII format TopTools_FormatVersion_VERSION_1.
+  //! This alias writes shape with triangulation data.
+  //! @param theShape [in]       the shape to write
+  //! @param theStream [in][out] the stream to output shape into
+  //! @param theRange            the range of progress indicator to fill in
+  static void Write (const TopoDS_Shape& theShape,
+                     Standard_OStream& theStream,
+                     const Message_ProgressRange& theProgress = Message_ProgressRange())
+  {
+    Write (theShape, theStream, Standard_True,
+           TopTools_FormatVersion_VERSION_1, theProgress);
+  }
+
+  //! Writes the shape to the stream in an ASCII format of specified version.
+  //! @param theShape [in]         the shape to write
+  //! @param theStream [in][out]   the stream to output shape into
+  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //!                              has no effect on triangulation-only geometry
+  //! @param theVersion [in]       the TopTools format version
+  //! @param theRange              the range of progress indicator to fill in
+  Standard_EXPORT static void Write (const TopoDS_Shape& theShape,
+                                     Standard_OStream& theStream,
+                                     const Standard_Boolean theWithTriangles,
+                                     const TopTools_FormatVersion theVersion,
                                      const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+
   //! Reads a Shape  from <S> in  returns it in  <Sh>.
   //! <B> is used to build the shape.
   Standard_EXPORT static void Read (TopoDS_Shape& Sh, Standard_IStream& S, const BRep_Builder& B,
                                     const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
-  //! Writes <Sh> in <File>.
-  Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& Sh, const Standard_CString File,
+
+  //! Writes the shape to the file in an ASCII format TopTools_FormatVersion_VERSION_1.
+  //! This alias writes shape with triangulation data.
+  //! @param theShape [in] the shape to write
+  //! @param theFile [in]  the path to file to output shape into
+  //! @param theRange      the range of progress indicator to fill in
+  static Standard_Boolean Write (const TopoDS_Shape& theShape,
+                                 const Standard_CString theFile,
+                                 const Message_ProgressRange& theProgress = Message_ProgressRange())
+  {
+    return Write (theShape, theFile, Standard_True,
+                  TopTools_FormatVersion_VERSION_1, theProgress);
+  }
+
+  //! Writes the shape to the file in an ASCII format of specified version.
+  //! @param theShape [in]         the shape to write
+  //! @param theFile [in]          the path to file to output shape into
+  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //!                              has no effect on triangulation-only geometry
+  //! @param theVersion [in]       the TopTools format version
+  //! @param theRange              the range of progress indicator to fill in
+  Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& theShape,
+                                                 const Standard_CString theFile,
+                                                 const Standard_Boolean theWithTriangles,
+                                                 const TopTools_FormatVersion theVersion,
                                                  const Message_ProgressRange& theProgress = Message_ProgressRange());
-  
+
   //! Reads a Shape  from <File>,  returns it in  <Sh>.
   //! <B> is used to build the shape.
   Standard_EXPORT static Standard_Boolean Read (TopoDS_Shape& Sh, const Standard_CString File,

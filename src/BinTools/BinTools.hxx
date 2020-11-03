@@ -16,6 +16,7 @@
 #ifndef _BinTools_HeaderFile
 #define _BinTools_HeaderFile
 
+#include <BinTools_FormatVersion.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
@@ -62,20 +63,61 @@ public:
   Standard_EXPORT static Standard_IStream& GetBool (Standard_IStream& IS, Standard_Boolean& theValue);
   
   Standard_EXPORT static Standard_IStream& GetExtChar (Standard_IStream& IS, Standard_ExtCharacter& theValue);
-  
-  //! Writes <theShape> on <theStream> in binary format.
-  Standard_EXPORT static void Write (const TopoDS_Shape& theShape, Standard_OStream& theStream,
-                                     const Message_ProgressRange& theRange = Message_ProgressRange());
-  
+
+  //! Writes the shape to the stream in binary format BinTools_FormatVersion_CURRENT.
+  //! This alias writes shape with triangulation data.
+  //! @param theShape [in]       the shape to write
+  //! @param theStream [in][out] the stream to output shape into
+  //! @param theRange            the range of progress indicator to fill in
+  static void Write (const TopoDS_Shape& theShape,
+                     Standard_OStream& theStream,
+                     const Message_ProgressRange& theRange = Message_ProgressRange())
+  {
+    Write (theShape, theStream, Standard_True,
+           BinTools_FormatVersion_CURRENT, theRange);
+  }
+
+  //! Writes the shape to the stream in binary format of specified version.
+  //! @param theShape [in]         the shape to write
+  //! @param theStream [in][out]   the stream to output shape into
+  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //!                              has no effect on triangulation-only geometry
+  //! @param theVersion [in]       the BinTools format version
+  //! @param theRange              the range of progress indicator to fill in
+  Standard_EXPORT static void Write(const TopoDS_Shape& theShape, Standard_OStream& theStream,
+                                    const Standard_Boolean theWithTriangles,
+                                    const BinTools_FormatVersion theVersion,
+                                    const Message_ProgressRange& theRange = Message_ProgressRange());
+
   //! Reads a shape from <theStream> and returns it in <theShape>.
   Standard_EXPORT static void Read (TopoDS_Shape& theShape, Standard_IStream& theStream,
                                     const Message_ProgressRange& theRange = Message_ProgressRange());
-  
-  //! Writes <theShape> in <theFile>.
-  Standard_EXPORT static Standard_Boolean Write
-    (const TopoDS_Shape& theShape, const Standard_CString theFile,
-     const Message_ProgressRange& theRange = Message_ProgressRange());
-  
+
+  //! Writes the shape to the file in binary format BinTools_FormatVersion_CURRENT.
+  //! @param theShape [in] the shape to write
+  //! @param theFile [in]  the path to file to output shape into
+  //! @param theRange      the range of progress indicator to fill in
+  static Standard_Boolean Write (const TopoDS_Shape& theShape,
+                                 const Standard_CString theFile,
+                                 const Message_ProgressRange& theRange = Message_ProgressRange())
+  {
+    return Write (theShape, theFile, Standard_True,
+                  BinTools_FormatVersion_CURRENT, theRange);
+  }
+
+  //! Writes the shape to the file in binary format of specified version.
+  //! @param theShape [in]         the shape to write
+  //! @param theFile [in]          the path to file to output shape into
+  //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
+  //!                              has no effect on triangulation-only geometry
+  //! @param theVersion [in]       the BinTools format version
+  //! @param theRange              the range of progress indicator to fill in
+  Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& theShape,
+                                                 const Standard_CString theFile,
+                                                 const Standard_Boolean theWithTriangles,
+                                                 const BinTools_FormatVersion theVersion,
+                                                 const Message_ProgressRange& theRange = Message_ProgressRange());
+
   //! Reads a shape from <theFile> and returns it in <theShape>.
   Standard_EXPORT static Standard_Boolean Read
     (TopoDS_Shape& theShape, const Standard_CString theFile,

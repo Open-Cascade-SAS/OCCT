@@ -24,6 +24,7 @@ TopTools_DataMapOfShapeListOfShape.hxx
 TopTools_DataMapOfShapeReal.hxx
 TopTools_DataMapOfShapeSequenceOfShape.hxx
 TopTools_DataMapOfShapeShape.hxx
+TopTools_FormatVersion.hxx
 TopTools_HArray1OfListOfShape.hxx
 TopTools_HArray1OfShape.hxx
 TopTools_HArray2OfShape.hxx

@@ -663,18 +663,20 @@ void  BRepTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
 
 //=======================================================================
 //function : Write
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  BRepTools::Write(const TopoDS_Shape& Sh, Standard_OStream& S,
+void BRepTools::Write (const TopoDS_Shape& theShape,
+                       Standard_OStream& theStream,
+                       const Standard_Boolean theWithTriangles,
+                       const TopTools_FormatVersion theVersion,
                        const Message_ProgressRange& theProgress)
 {
-  BRepTools_ShapeSet SS;
-  SS.Add(Sh);
-  SS.Write(S, theProgress);
-  SS.Write(Sh,S);
+  BRepTools_ShapeSet aShapeSet (theWithTriangles);
+  aShapeSet.SetFormatNb (theVersion);
+  aShapeSet.Add (theShape);
+  aShapeSet.Write (theStream, theProgress);
+  aShapeSet.Write (theShape, theStream);
 }
-
 
 //=======================================================================
 //function : Read
@@ -693,30 +695,34 @@ void  BRepTools::Read(TopoDS_Shape& Sh,
 
 //=======================================================================
 //function : Write
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Boolean  BRepTools::Write(const TopoDS_Shape& Sh, 
-                                   const Standard_CString File,
-                                   const Message_ProgressRange& theProgress)
+Standard_Boolean  BRepTools::Write (const TopoDS_Shape& theShape,
+                                    const Standard_CString theFile,
+                                    const Standard_Boolean theWithTriangles,
+                                    const TopTools_FormatVersion theVersion,
+                                    const Message_ProgressRange& theProgress)
 {
   std::ofstream os;
-  OSD_OpenStream(os, File, std::ios::out);
+  OSD_OpenStream(os, theFile, std::ios::out);
   if (!os.is_open() || !os.good())
     return Standard_False;
 
   Standard_Boolean isGood = (os.good() && !os.eof());
   if(!isGood)
     return isGood;
-  
-  BRepTools_ShapeSet SS;
-  SS.Add(Sh);
-  
+
+  BRepTools_ShapeSet SS (theWithTriangles);
+  SS.SetFormatNb (theVersion);
+  SS.Add (theShape);
+
   os << "DBRep_DrawableShape\n";  // for easy Draw read
   SS.Write(os, theProgress);
   isGood = os.good();
-  if(isGood )
-    SS.Write(Sh,os);
+  if (isGood)
+  {
+    SS.Write (theShape, os);
+  }
   os.flush();
   isGood = os.good();
 

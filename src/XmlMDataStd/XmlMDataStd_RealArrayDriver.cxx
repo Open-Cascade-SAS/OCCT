@@ -23,6 +23,7 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <XmlMDataStd.hxx>
 #include <XmlMDataStd_RealArrayDriver.hxx>
 #include <XmlObjMgt.hxx>
@@ -140,7 +141,7 @@ Standard_Boolean XmlMDataStd_RealArrayDriver::Paste
   }
   Standard_Boolean aDelta(Standard_False);
   
-  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 2) {
+  if(theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_3) {
     Standard_Integer aDeltaValue;
     if (!anElement.getAttribute(::IsDeltaOn()).GetInteger(aDeltaValue)) 
       {

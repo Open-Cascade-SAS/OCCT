@@ -274,11 +274,14 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
   if (TDocStd_Document::CurrentStorageFormatVersion() < aDoc->StorageFormatVersion())
   {
     TCollection_ExtendedString anErrorString("Unacceptable storage format version, the last verson is used");
-    aMessageDriver->Send (anErrorString.ToExtString(), Message_Warning);     
+    aMessageDriver->Send (anErrorString.ToExtString(), Message_Warning);
   }
-  else            
+  else
+  {
     aFormatVersion = aDoc->StorageFormatVersion();
-  anInfoElem.setAttribute ("DocVersion", aFormatVersion);
+  }
+  const TCollection_AsciiString aStringFormatVersion (aFormatVersion);
+  anInfoElem.setAttribute ("DocVersion", aStringFormatVersion.ToCString());
  
   // User info with Copyright
   TColStd_SequenceOfAsciiString aUserInfo;

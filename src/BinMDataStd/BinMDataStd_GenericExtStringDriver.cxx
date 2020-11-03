@@ -18,6 +18,7 @@
 #include <Standard_Type.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDF_Attribute.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <BinMDataStd.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(BinMDataStd_GenericExtStringDriver,BinMDF_ADriver)
@@ -67,7 +68,7 @@ Standard_Boolean BinMDataStd_GenericExtStringDriver::Paste
   Standard_Boolean ok = Source >> aStr;
   if (ok)
     aStrAttr->Set( aStr );
-  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() > 8) { // process user defined guid
+  if(RelocTable.GetHeaderData()->StorageVersion().IntegerValue() >= TDocStd_FormatVersion_VERSION_9) { // process user defined guid
 	const Standard_Integer& aPos = Source.Position();
 	Standard_GUID aGuid;
 	ok = Source >> aGuid;	

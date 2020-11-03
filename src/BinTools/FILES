@@ -4,6 +4,7 @@ BinTools_Curve2dSet.cxx
 BinTools_Curve2dSet.hxx
 BinTools_CurveSet.cxx
 BinTools_CurveSet.hxx
+BinTools_FormatVersion.hxx
 BinTools_LocationSet.cxx
 BinTools_LocationSet.hxx
 BinTools_LocationSetPtr.hxx

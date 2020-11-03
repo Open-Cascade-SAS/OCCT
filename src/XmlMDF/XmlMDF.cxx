@@ -25,6 +25,7 @@
 #include <TDF_Label.hxx>
 #include <TDF_TagSource.hxx>
 #include <TDF_Tool.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <XmlMDF.hxx>
 #include <XmlMDF_ADriver.hxx>
 #include <XmlMDF_ADriverTable.hxx>
@@ -107,7 +108,7 @@ Standard_Integer XmlMDF::WriteSubTree
       // was replaced by TDataXtd_Presentation. Therefore, for old versions
       // we write old name of the attribute (TPrsStd_AISPresentation).
       Standard_CString typeName = aDriver->TypeName().ToCString();
-      if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < 8 &&
+      if (theRelocTable.GetHeaderData()->StorageVersion().IntegerValue() < TDocStd_FormatVersion_VERSION_8 &&
           strcmp(typeName, "TDataXtd_Presentation") == 0)
       {
         typeName = "TPrsStd_AISPresentation";
