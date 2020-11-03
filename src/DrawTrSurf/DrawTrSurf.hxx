@@ -17,46 +17,23 @@
 #ifndef _DrawTrSurf_HeaderFile
 #define _DrawTrSurf_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
-
 #include <Draw_Interpretor.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_Surface.hxx>
 #include <Geom2d_Curve.hxx>
 
-class gp_Pnt;
-class gp_Pnt2d;
-class Poly_Triangulation;
-class Poly_Polygon3D;
-class Poly_Polygon2D;
-class Geom_Curve;
 class Geom_BezierCurve;
+class Geom_BezierSurface;
 class Geom_BSplineCurve;
+class Geom_BSplineSurface;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
-class Geom_BezierSurface;
-class Geom_BSplineSurface;
-class DrawTrSurf_Drawable;
-class DrawTrSurf_Point;
-class DrawTrSurf_Curve;
-class DrawTrSurf_BSplineCurve;
-class DrawTrSurf_BezierCurve;
-class DrawTrSurf_Curve2d;
-class DrawTrSurf_BSplineCurve2d;
-class DrawTrSurf_BezierCurve2d;
-class DrawTrSurf_Triangulation2D;
-class DrawTrSurf_Surface;
-class DrawTrSurf_BSplineSurface;
-class DrawTrSurf_BezierSurface;
-class DrawTrSurf_Triangulation;
-class DrawTrSurf_Polygon3D;
-class DrawTrSurf_Polygon2D;
+class Poly_Polygon2D;
+class Poly_Polygon3D;
+class Poly_Triangulation;
+struct DrawTrSurf_Params;
 
-
-//! This  package supports the   display of parametric
-//! curves and surfaces.
+//! This package supports the display of parametric curves and surfaces.
 //!
 //! The  Drawable deferred  classes is  inherited from
 //! the Drawable3D  class  from  the package Draw,  it
@@ -67,15 +44,13 @@ class DrawTrSurf_Polygon2D;
 //! and  can be  used  to  draw a   single  curve from
 //! packages Geom or Geom2d or a surface from Geom.
 //!
-//! The  Triangulation  and Polygon  from the  package
-//! Poly are also supported.
+//! The Triangulation and Polygon from the package Poly are also supported.
 class DrawTrSurf 
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
   //! Sets <G> in the variable <Name>.  Overwrite the
   //! variable if already set.
   Standard_EXPORT static void Set (const Standard_CString Name, const gp_Pnt& G);
@@ -169,46 +144,13 @@ template <class T> static void Set (const Standard_CString Name, const Handle(T)
   //! Get  the variable <S>.  Returns a  null  handle if
   //! none, and print a warning message.
   Standard_EXPORT static Handle(Poly_Polygon2D) GetPolygon2D (Standard_CString& Name);
-  
+
+  //! Return package global parameters.
+  Standard_EXPORT static DrawTrSurf_Params& Parameters();
+
   //! defines display commands.
   Standard_EXPORT static void BasicCommands (Draw_Interpretor& I);
 
-
-
-
-protected:
-
-
-
-
-
-private:
-
-
-
-
-friend class DrawTrSurf_Drawable;
-friend class DrawTrSurf_Point;
-friend class DrawTrSurf_Curve;
-friend class DrawTrSurf_BSplineCurve;
-friend class DrawTrSurf_BezierCurve;
-friend class DrawTrSurf_Curve2d;
-friend class DrawTrSurf_BSplineCurve2d;
-friend class DrawTrSurf_BezierCurve2d;
-friend class DrawTrSurf_Triangulation2D;
-friend class DrawTrSurf_Surface;
-friend class DrawTrSurf_BSplineSurface;
-friend class DrawTrSurf_BezierSurface;
-friend class DrawTrSurf_Triangulation;
-friend class DrawTrSurf_Polygon3D;
-friend class DrawTrSurf_Polygon2D;
-
 };
-
-
-
-
-
-
 
 #endif // _DrawTrSurf_HeaderFile

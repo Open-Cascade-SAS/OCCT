@@ -14,32 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DrawTrSurf_Triangulation.hxx>
 
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
-#include <Draw_Drawable3D.hxx>
-#include <DrawTrSurf_Triangulation.hxx>
 #include <gp_Pnt.hxx>
 #include <Poly.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 
 #include <stdio.h>
+
 IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Triangulation,Draw_Drawable3D)
 
 //=======================================================================
 //function : DrawTrSurf_Triangulation
-//purpose  : 
+//purpose  :
 //=======================================================================
-DrawTrSurf_Triangulation::DrawTrSurf_Triangulation
-(const Handle(Poly_Triangulation)& T): 
-    myTriangulation(T), 
-    myNodes(Standard_False), 
-    myTriangles(Standard_False)
+DrawTrSurf_Triangulation::DrawTrSurf_Triangulation (const Handle(Poly_Triangulation)& T)
+: myTriangulation(T),
+  myNodes(Standard_False),
+  myTriangles(Standard_False)
 {
   // Build the connect tool
   Poly_Connect pc(T);
@@ -86,61 +84,10 @@ DrawTrSurf_Triangulation::DrawTrSurf_Triangulation
 }
 
 //=======================================================================
-//function : Triangulation
-//purpose  : 
-//=======================================================================
-
-Handle(Poly_Triangulation) DrawTrSurf_Triangulation::Triangulation() const 
-{
-  return myTriangulation;
-}
-
-//=======================================================================
-//function : ShowNodes
-//purpose  : 
-//=======================================================================
-
-void DrawTrSurf_Triangulation::ShowNodes(const Standard_Boolean B)
-{
-  myNodes = B;
-}
-
-//=======================================================================
-//function : ShowNodes
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DrawTrSurf_Triangulation::ShowNodes() const 
-{
-  return myNodes;
-}
-
-//=======================================================================
-//function : ShowTriangles
-//purpose  : 
-//=======================================================================
-
-void DrawTrSurf_Triangulation::ShowTriangles(const Standard_Boolean B)
-{
-  myTriangles = B;
-}
-
-//=======================================================================
-//function : ShowTriangles
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DrawTrSurf_Triangulation::ShowTriangles() const 
-{
-  return myTriangles;
-}
-
-//=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void DrawTrSurf_Triangulation::DrawOn(Draw_Display& dis) const 
+void DrawTrSurf_Triangulation::DrawOn (Draw_Display& dis) const
 {
   // Display the edges
   Standard_Integer i,n;
@@ -196,31 +143,59 @@ void DrawTrSurf_Triangulation::DrawOn(Draw_Display& dis) const
 
 //=======================================================================
 //function : Copy
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(Draw_Drawable3D) DrawTrSurf_Triangulation::Copy() const 
+Handle(Draw_Drawable3D) DrawTrSurf_Triangulation::Copy() const
 {
   return new DrawTrSurf_Triangulation(myTriangulation);
 }
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void DrawTrSurf_Triangulation::Dump(Standard_OStream& S) const 
+void DrawTrSurf_Triangulation::Dump (Standard_OStream& S) const
 {
   Poly::Dump(myTriangulation,S);
 }
 
 //=======================================================================
-//function : Whatis
-//purpose  : 
+//function : Save
+//purpose  :
 //=======================================================================
+void DrawTrSurf_Triangulation::Save (Standard_OStream& theStream) const
+{
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
+  std::ios::fmtflags aFlags = theStream.flags();
+  theStream.setf (std::ios::scientific, std::ios::floatfield);
+  theStream.precision (15);
+#else
+  long aForm = theStream.setf (std::ios::scientific);
+  std::streamsize aPrec = theStream.precision (15);
+#endif
+  Poly::Write (myTriangulation, theStream);
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
+  theStream.setf (aFlags);
+#else
+  theStream.setf (aForm);
+  theStream.precision (aPrec);
+#endif
+}
 
-void DrawTrSurf_Triangulation::Whatis(Draw_Interpretor& I) const 
+//=======================================================================
+//function : Restore
+//purpose  :
+//=======================================================================
+Handle(Draw_Drawable3D) DrawTrSurf_Triangulation::Restore (Standard_IStream& theStream)
+{
+  return new DrawTrSurf_Triangulation (Poly::ReadTriangulation (theStream));
+}
+
+//=======================================================================
+//function : Whatis
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Triangulation::Whatis (Draw_Interpretor& I) const
 {
   I << "triangulation";
 }
-

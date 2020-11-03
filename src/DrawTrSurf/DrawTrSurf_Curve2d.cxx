@@ -12,11 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DrawTrSurf_Curve2d.hxx>
 
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
 #include <Draw_Drawable3D.hxx>
-#include <DrawTrSurf_Curve2d.hxx>
+#include <DrawTrSurf.hxx>
+#include <DrawTrSurf_Params.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
@@ -28,22 +30,20 @@
 #include <GeomTools_Curve2dSet.hxx>
 #include <gp.hxx>
 #include <Precision.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Curve2d,DrawTrSurf_Drawable)
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Curve2d, DrawTrSurf_Drawable)
 
 static Standard_Real DrawTrSurf_CurveLimit = 400;
 extern Standard_Boolean Draw_Bounds;
 
 //=======================================================================
 //function : DrawTrSurf_Curve2d
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 DrawTrSurf_Curve2d::DrawTrSurf_Curve2d (const Handle(Geom2d_Curve)& C,
-					const Standard_Boolean DispOrigin) :
-       DrawTrSurf_Drawable (50)
+                                        const Standard_Boolean DispOrigin)
+: DrawTrSurf_Drawable (50)
 {
   curv = C;
   look = Draw_vert;
@@ -53,12 +53,10 @@ DrawTrSurf_Curve2d::DrawTrSurf_Curve2d (const Handle(Geom2d_Curve)& C,
   radiusratio = 0.1;
 }
 
-
 //=======================================================================
 //function : DrawTrSurf_Curve2d
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 DrawTrSurf_Curve2d::DrawTrSurf_Curve2d (const Handle(Geom2d_Curve)& C,
 					const Draw_Color& aColor,
 					const Standard_Integer Discret,
@@ -76,13 +74,11 @@ DrawTrSurf_Curve2d::DrawTrSurf_Curve2d (const Handle(Geom2d_Curve)& C,
   radiusratio = RadiusRatio;
 }
 
-
 //=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void DrawTrSurf_Curve2d::DrawOn (Draw_Display& dis) const 
+void DrawTrSurf_Curve2d::DrawOn (Draw_Display& dis) const
 {
   
   Standard_Real First = curv->FirstParameter();
@@ -179,13 +175,11 @@ void DrawTrSurf_Curve2d::DrawOn (Draw_Display& dis) const
   }
 }
 
-
-
 //=======================================================================
 //function : Copy
-//purpose  : 
+//purpose  :
 //=======================================================================
-Handle(Draw_Drawable3D)  DrawTrSurf_Curve2d::Copy()const 
+Handle(Draw_Drawable3D) DrawTrSurf_Curve2d::Copy() const
 {
   Handle(DrawTrSurf_Curve2d) DC = new DrawTrSurf_Curve2d
     (Handle(Geom2d_Curve)::DownCast(curv->Copy()),
@@ -195,34 +189,49 @@ Handle(Draw_Drawable3D)  DrawTrSurf_Curve2d::Copy()const
   return DC;
 }
 
-
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DrawTrSurf_Curve2d::Dump(Standard_OStream& S) const 
+void DrawTrSurf_Curve2d::Dump (Standard_OStream& S) const
 {
-  GeomTools_Curve2dSet::PrintCurve2d(curv,S);
+  GeomTools_Curve2dSet::PrintCurve2d (curv, S);
 }
 
+//=======================================================================
+//function : Save
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Curve2d::Save (Standard_OStream& theStream) const
+{
+  GeomTools_Curve2dSet::PrintCurve2d (GetCurve(), theStream, true);
+}
+
+//=======================================================================
+//function : Restore
+//purpose  :
+//=======================================================================
+Handle(Draw_Drawable3D) DrawTrSurf_Curve2d::Restore (Standard_IStream& theStream)
+{
+  const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
+  Handle(Geom2d_Curve) aGeomCurve = GeomTools_Curve2dSet::ReadCurve2d (theStream);
+  Handle(DrawTrSurf_Curve2d) aDrawCurve = new DrawTrSurf_Curve2d (aGeomCurve, aParams.CurvColor, aParams.Discret);
+  return aDrawCurve;
+}
 
 //=======================================================================
 //function : Whatis
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DrawTrSurf_Curve2d::Whatis(Draw_Interpretor& S)const 
+void DrawTrSurf_Curve2d::Whatis (Draw_Interpretor& S) const
 {
   S << "2d curve";
 }
 
-
 //=======================================================================
 //function : Is3D
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 Standard_Boolean DrawTrSurf_Curve2d::Is3D() const
 {
   return Standard_False;

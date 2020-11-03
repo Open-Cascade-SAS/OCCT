@@ -17,9 +17,9 @@
 #ifndef _DBRep_HeaderFile
 #define _DBRep_HeaderFile
 
+#include <DBRep_Params.hxx>
 #include <Draw_Interpretor.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 
 //! Used to display BRep objects  using the DrawTrSurf
@@ -83,29 +83,30 @@ public:
 
   //! Defines the basic commands.
   Standard_EXPORT static void BasicCommands (Draw_Interpretor& theCommands);
-  
+
+  //! Return global parameters.
+  Standard_EXPORT static DBRep_Params& Parameters();
+
   //! True if HLR, False if wireframe.
-  Standard_EXPORT static Standard_Boolean HLRMode();
-  
+  static Standard_Boolean HLRMode() { return Parameters().WithHLR; }
+
   //! True if display Rg1Lines.
-  Standard_EXPORT static Standard_Boolean Rg1Mode();
-  
+  static Standard_Boolean Rg1Mode() { return Parameters().WithRg1; }
+
   //! True if display RgNLines.
-  Standard_EXPORT static Standard_Boolean RgNMode();
-  
+  static Standard_Boolean RgNMode() { return Parameters().WithRgN; }
+
   //! True if display HiddenLines.
-  Standard_EXPORT static Standard_Boolean HidMode();
-  
+  static Standard_Boolean HidMode() { return Parameters().WithHid; }
+
   //! discretisation angle for edges.
-  Standard_EXPORT static Standard_Real HLRAngle();
-  
+  static Standard_Real HLRAngle() { return Parameters().HLRAngle; }
+
   //! number of iso in U and V
-  Standard_EXPORT static Standard_Integer NbIsos();
-  
-  //! discretisation number of points for curves
-  //! set progress indicator
-  //! get progress indicator
-  Standard_EXPORT static Standard_Integer Discretisation();
+  static Standard_Integer NbIsos() { return Parameters().NbIsos; }
+
+  //! Discretization number of points for curves
+  static Standard_Integer Discretisation() { return Parameters().Discretization; }
 
 protected:
 

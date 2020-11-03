@@ -37,35 +37,8 @@ extern Draw_Viewer dout;
 extern Standard_Boolean Draw_Batch;
 #endif
 
-class Draw_SaveAndRestore {
-
-  public :
-
-    Standard_EXPORT Draw_SaveAndRestore 
-      (const char* name,
-       Standard_Boolean (*test)(const Handle(Draw_Drawable3D)&),
-       void (*save)(const Handle(Draw_Drawable3D)&, std::ostream&),
-       Handle(Draw_Drawable3D) (*restore) (std::istream&),
-       Standard_Boolean display = Standard_True);
 
 
-  const char* Name() const {return myName;}
-  Standard_Boolean Test(const Handle(Draw_Drawable3D)&d);
-  void Save(const Handle(Draw_Drawable3D)& d, std::ostream& os) const;
-  Handle(Draw_Drawable3D) Restore(std::istream&) const;
-  Standard_Boolean Disp() const {return myDisplay;}
-  Draw_SaveAndRestore* Next() {return myNext;}
-
-  private :
-    
-    const char* myName;
-    Standard_Boolean (*myTest)(const Handle(Draw_Drawable3D)&);
-    void (*mySave)(const Handle(Draw_Drawable3D)&, std::ostream&);
-    Handle(Draw_Drawable3D) (*myRestore) (std::istream&);
-    Standard_Boolean myDisplay;
-    Draw_SaveAndRestore* myNext;
-    
-};
 
 #endif
 

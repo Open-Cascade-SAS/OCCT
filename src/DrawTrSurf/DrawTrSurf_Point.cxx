@@ -14,52 +14,51 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DrawTrSurf_Point.hxx>
 
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
-#include <Draw_Drawable3D.hxx>
-#include <DrawTrSurf_Point.hxx>
+#include <DrawTrSurf.hxx>
+#include <DrawTrSurf_Params.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Standard_Stream.hxx>
-#include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Point,Draw_Drawable3D)
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Point, Draw_Drawable3D)
 
 //=======================================================================
 //function : DrawTrSurf_Point
-//purpose  : 
+//purpose  :
 //=======================================================================
-DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt& P, 
-				   const Draw_MarkerShape Shape,
-				   const Draw_Color& Col) :
-       myPoint(P),
-       is3D(Standard_True),
-       myShape(Shape),
-       myColor(Col)
+DrawTrSurf_Point::DrawTrSurf_Point (const gp_Pnt& P,
+                                    const Draw_MarkerShape Shape,
+                                    const Draw_Color& Col)
+: myPoint(P),
+  is3D(Standard_True),
+  myShape(Shape),
+  myColor(Col)
 {
+  //
 }
 
 //=======================================================================
 //function : DrawTrSurf_Point
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-DrawTrSurf_Point::DrawTrSurf_Point(const gp_Pnt2d& P, 
-				   const Draw_MarkerShape Shape,
-				   const Draw_Color& Col) :
-       myPoint(P.X(),P.Y(),0.),
-       is3D(Standard_False),
-       myShape(Shape),
-       myColor(Col)
+DrawTrSurf_Point::DrawTrSurf_Point (const gp_Pnt2d& P,
+                                    const Draw_MarkerShape Shape,
+                                    const Draw_Color& Col)
+: myPoint(P.X(),P.Y(),0.),
+  is3D(Standard_False),
+  myShape(Shape),
+  myColor(Col)
 {
+  //
 }
 
 //=======================================================================
 //function : Is3D
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 Standard_Boolean DrawTrSurf_Point::Is3D() const
 {
   return is3D;
@@ -67,10 +66,9 @@ Standard_Boolean DrawTrSurf_Point::Is3D() const
 
 //=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void DrawTrSurf_Point::DrawOn(Draw_Display& dis) const 
+void DrawTrSurf_Point::DrawOn (Draw_Display& dis) const 
 {
   dis.SetColor(myColor);
   if (is3D)
@@ -81,20 +79,9 @@ void DrawTrSurf_Point::DrawOn(Draw_Display& dis) const
 
 //=======================================================================
 //function : Point
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-gp_Pnt DrawTrSurf_Point::Point() const 
-{
-  return myPoint;
-}
-
-//=======================================================================
-//function : Point
-//purpose  : 
-//=======================================================================
-
-void DrawTrSurf_Point::Point(const gp_Pnt& P)
+void DrawTrSurf_Point::Point (const gp_Pnt& P)
 {
   myPoint = P;
   is3D = Standard_True;
@@ -102,19 +89,8 @@ void DrawTrSurf_Point::Point(const gp_Pnt& P)
 
 //=======================================================================
 //function : Point2d
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-gp_Pnt2d DrawTrSurf_Point::Point2d() const 
-{
-  return gp_Pnt2d(myPoint.X(),myPoint.Y());
-}
-
-//=======================================================================
-//function : Point2d
-//purpose  : 
-//=======================================================================
-
 void DrawTrSurf_Point::Point2d(const gp_Pnt2d& P)
 {
   myPoint.SetCoord(P.X(),P.Y(),0);
@@ -122,50 +98,9 @@ void DrawTrSurf_Point::Point2d(const gp_Pnt2d& P)
 }
 
 //=======================================================================
-//function : Color
-//purpose  : 
-//=======================================================================
-
-void DrawTrSurf_Point::Color(const Draw_Color& aColor)
-{
-  myColor = aColor;
-}
-
-//=======================================================================
-//function : Color
-//purpose  : 
-//=======================================================================
-
-Draw_Color DrawTrSurf_Point::Color() const 
-{
-  return myColor;
-}
-
-//=======================================================================
-//function : Shape
-//purpose  : 
-//=======================================================================
-
-void DrawTrSurf_Point::Shape(const Draw_MarkerShape S)
-{
-  myShape = S;
-}
-
-//=======================================================================
-//function : Shape
-//purpose  : 
-//=======================================================================
-
-Draw_MarkerShape DrawTrSurf_Point::Shape() const 
-{
-  return myShape;
-}
-
-//=======================================================================
 //function : Copy
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 Handle(Draw_Drawable3D) DrawTrSurf_Point::Copy() const 
 {
   Handle(DrawTrSurf_Point) P;
@@ -179,10 +114,9 @@ Handle(Draw_Drawable3D) DrawTrSurf_Point::Copy() const
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void DrawTrSurf_Point::Dump(Standard_OStream& S) const 
+void DrawTrSurf_Point::Dump (Standard_OStream& S) const
 {
 #if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
   std::ios::fmtflags F = S.flags();
@@ -205,11 +139,70 @@ void DrawTrSurf_Point::Dump(Standard_OStream& S) const
 }
 
 //=======================================================================
-//function : Whatis
-//purpose  : 
+//function : Save
+//purpose  :
 //=======================================================================
-
-void DrawTrSurf_Point::Whatis(Draw_Interpretor& S) const 
+void DrawTrSurf_Point::Save (Standard_OStream& theStream) const
 {
-    S << "point";
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
+  std::ios::fmtflags aFlags = theStream.flags();
+  theStream.setf (std::ios::scientific, std::ios::floatfield);
+  theStream.precision (15);
+#else
+  long aForm = theStream.setf (std::ios::scientific);
+  std::streamsize aPrec = theStream.precision (15);
+#endif
+  if (is3D)
+  {
+    theStream << "1 " << myPoint.X() << " " << myPoint.Y() << " " << myPoint.Z() << "\n";
+  }
+  else
+  {
+    theStream << "0 " << myPoint.X() << " " << myPoint.Y() << "\n";
+  }
+#if !defined(_MSC_VER) && !defined(__sgi) && !defined(IRIX)
+  theStream.setf (aFlags);
+#else
+  theStream.setf (aForm);
+  theStream.precision (aPrec);
+#endif
+}
+
+//=======================================================================
+//function : Restore
+//purpose  :
+//=======================================================================
+Handle(Draw_Drawable3D) DrawTrSurf_Point::Restore (Standard_IStream& theStream)
+{
+  const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
+  Standard_Integer is3d = 0;
+  theStream >> is3d;
+  Standard_Real x,y,z = 0.0;
+  if (is3d)
+  {
+    theStream >> x >> y >> z;
+  }
+  else
+  {
+    theStream >> x >> y;
+  }
+  Handle(DrawTrSurf_Point) aDrawPoint;
+  if (is3d)
+  {
+    aDrawPoint = new DrawTrSurf_Point (gp_Pnt (x, y, z), aParams.PntMarker, aParams.PntColor);
+  }
+  else
+  {
+    aDrawPoint = new DrawTrSurf_Point (gp_Pnt2d (x, y), aParams.PntMarker, aParams.PntColor);
+  }
+  return aDrawPoint;
+}
+
+//=======================================================================
+//function : Whatis
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Point::Whatis (Draw_Interpretor& S) const 
+{
+  S << "point";
 }

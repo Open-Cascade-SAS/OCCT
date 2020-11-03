@@ -563,6 +563,9 @@ static Standard_Integer hlrin2d(Draw_Interpretor& , Standard_Integer n, const ch
 
 void HLRTest::Commands (Draw_Interpretor& theCommands)
 {
+  // Register save/restore tool
+  HLRTest_Projector::RegisterFactory();
+
   const char* g = "ADVALGOS HLR Commands";
 
   theCommands.Add("hprj"     ,"hprj name [view-id = 1]"     ,__FILE__,hprj,g);
@@ -594,93 +597,3 @@ void HLRTest::Commands (Draw_Interpretor& theCommands)
   
   hider = new HLRBRep_Algo();
 }
-
-//=======================================================================
-//function : save and restore projector
-//purpose  : 
-//=======================================================================
-
-static Standard_Boolean stest(const Handle(Draw_Drawable3D)& d) 
-{
-  return d->IsInstance(STANDARD_TYPE(HLRTest_Projector));
-}
-
-//=======================================================================
-//function : ssave
-//purpose  : 
-//=======================================================================
-
-static void ssave (const Handle(Draw_Drawable3D)&d, std::ostream& OS)
-{
-  Handle(HLRTest_Projector) HP =
-    Handle(HLRTest_Projector)::DownCast(d);
-
-  const HLRAlgo_Projector& P = HP->Projector();
-  OS << (P.Perspective() ? "1" : "0") << "\n";
-  if (P.Perspective())
-    OS << P.Focus() << "\n";
-  
-  gp_Trsf T = P.Transformation();
-  gp_XYZ V = T.TranslationPart();
-  gp_Mat M = T.VectorialPart();
-
-  OS << M(1,1) << " ";
-  OS << M(1,2) << " ";
-  OS << M(1,3) << " ";
-  OS << V.Coord(1) << " ";
-  OS << "\n";
-  OS << M(2,1) << " ";
-  OS << M(2,2) << " ";
-  OS << M(2,3) << " ";
-  OS << V.Coord(2) << " ";
-  OS << "\n";
-  OS << M(3,1) << " ";
-  OS << M(3,2) << " ";
-  OS << M(3,3) << " ";
-  OS << V.Coord(3) << " ";
-  OS << "\n";
-
-}
-
-//=======================================================================
-//function : srestore
-//purpose  : 
-//=======================================================================
-
-static Handle(Draw_Drawable3D) srestore (std::istream& IS)
-{
-  Standard_Boolean pers;
-  IS >> pers;
-  Standard_Real focus = 1;
-  if (pers) IS >> focus;
-  
-  gp_Trsf T;
-  Standard_Real V1[3],V2[3],V3[3];
-  Standard_Real V[3];
-
-  IS >> V1[0] >> V1[1] >> V1[2] >> V[0];
-  IS >> V2[0] >> V2[1] >> V2[2] >> V[1];
-  IS >> V3[0] >> V3[1] >> V3[2] >> V[2];
-
-  gp_Dir D1(V1[0],V1[1],V1[2]);
-  gp_Dir D2(V2[0],V2[1],V2[2]);
-  gp_Dir D3(V3[0],V3[1],V3[2]);
-  gp_Ax3 axes(gp_Pnt(0,0,0),D3,D1);
-  D3.Cross(D1);
-  if (D3.Dot(D2) < 0) axes.YReverse();
-  T.SetTransformation(axes);
-
-  T.SetTranslationPart(gp_Vec(V[0],V[1],V[2]));
-
-  HLRAlgo_Projector P(T,pers,focus);
-  Handle(HLRTest_Projector) HP = new HLRTest_Projector(P);
-  return HP;
-}
-
-//=======================================================================
-//function : ssr
-//purpose  : 
-//=======================================================================
-
-static Draw_SaveAndRestore ssr("HLRTest_Projector",stest,ssave,srestore);
-

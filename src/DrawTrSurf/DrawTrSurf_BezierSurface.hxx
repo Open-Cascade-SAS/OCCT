@@ -17,76 +17,48 @@
 #ifndef _DrawTrSurf_BezierSurface_HeaderFile
 #define _DrawTrSurf_BezierSurface_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
 #include <Draw_Color.hxx>
 #include <DrawTrSurf_Surface.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
+
 class Geom_BezierSurface;
 class Draw_Color;
-class Draw_Display;
-class Draw_Drawable3D;
 
-
-class DrawTrSurf_BezierSurface;
 DEFINE_STANDARD_HANDLE(DrawTrSurf_BezierSurface, DrawTrSurf_Surface)
-
 
 class DrawTrSurf_BezierSurface : public DrawTrSurf_Surface
 {
-
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BezierSurface, DrawTrSurf_Surface)
+  Draw_Drawable3D_FACTORY
 public:
 
-  
+  //! creates a drawable Bezier curve from a Bezier curve of package Geom.
+  Standard_EXPORT DrawTrSurf_BezierSurface (const Handle(Geom_BezierSurface)& S);
 
-  //! creates a drawable Bezier curve from a Bezier curve of
-  //! package Geom.
-  Standard_EXPORT DrawTrSurf_BezierSurface(const Handle(Geom_BezierSurface)& S);
-  
-  Standard_EXPORT DrawTrSurf_BezierSurface(const Handle(Geom_BezierSurface)& S, const Standard_Integer NbUIsos, const Standard_Integer NbVIsos, const Draw_Color& BoundsColor, const Draw_Color& IsosColor, const Draw_Color& PolesColor, const Standard_Boolean ShowPoles, const Standard_Integer Discret, const Standard_Real Deflection, const Standard_Integer DrawMode);
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void ShowPoles();
-  
-  Standard_EXPORT void ClearPoles();
-  
+  Standard_EXPORT DrawTrSurf_BezierSurface (const Handle(Geom_BezierSurface)& S,
+                                            const Standard_Integer NbUIsos, const Standard_Integer NbVIsos, const Draw_Color& BoundsColor,
+                                            const Draw_Color& IsosColor, const Draw_Color& PolesColor, const Standard_Boolean ShowPoles,
+                                            const Standard_Integer Discret, const Standard_Real Deflection, const Standard_Integer DrawMode);
+
+  Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+
+  void ShowPoles() { drawPoles = Standard_True; }
+
+  void ClearPoles() { drawPoles = Standard_False; }
+
   Standard_EXPORT void FindPole (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec, Standard_Integer& UIndex, Standard_Integer& VIndex) const;
-  
-    void SetPolesColor (const Draw_Color& aColor);
-  
-    Draw_Color PolesColor() const;
-  
+
+  void SetPolesColor (const Draw_Color& theColor) { polesLook = theColor; }
+
+  Draw_Color PolesColor() const { return polesLook; }
+
   //! For variable copy.
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BezierSurface,DrawTrSurf_Surface)
-
-protected:
-
-
-
-
 private:
-
 
   Standard_Boolean drawPoles;
   Draw_Color polesLook;
 
-
 };
-
-
-#include <DrawTrSurf_BezierSurface.lxx>
-
-
-
-
 
 #endif // _DrawTrSurf_BezierSurface_HeaderFile

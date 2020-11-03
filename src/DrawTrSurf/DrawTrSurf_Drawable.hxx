@@ -17,20 +17,13 @@
 #ifndef _DrawTrSurf_Drawable_HeaderFile
 #define _DrawTrSurf_Drawable_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Draw_Drawable3D.hxx>
 #include <GeomAbs_IsoType.hxx>
+
 class Adaptor2d_Curve2d;
-class Draw_Display;
 class Adaptor3d_Curve;
 class Adaptor3d_IsoCurve;
 
-
-class DrawTrSurf_Drawable;
 DEFINE_STANDARD_HANDLE(DrawTrSurf_Drawable, Draw_Drawable3D)
 
 //! this  class adds   to   the Drawable3D methods  to
@@ -40,10 +33,9 @@ DEFINE_STANDARD_HANDLE(DrawTrSurf_Drawable, Draw_Drawable3D)
 //! is stored in this class.
 class DrawTrSurf_Drawable : public Draw_Drawable3D
 {
-
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Drawable, Draw_Drawable3D)
 public:
 
-  
   //! Draw a polygon of the curve on the Display
   Standard_EXPORT void DrawCurve2dOn (Adaptor2d_Curve2d& C, Draw_Display& D) const;
   
@@ -57,47 +49,30 @@ public:
   //! this is defined only to tell C++ not to complain
   //! about inheriting a pure virtual method.
   Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const Standard_OVERRIDE = 0;
-  
-    void SetDiscretisation (const Standard_Integer Discret);
-  
-    Standard_Integer GetDiscretisation() const;
-  
-    void SetDeflection (const Standard_Real Deflection);
-  
-    Standard_Real GetDeflection() const;
-  
-    void SetDrawMode (const Standard_Integer DrawMode);
-  
-    Standard_Integer GetDrawMode() const;
 
+  void SetDiscretisation (const Standard_Integer theDiscret) { myDiscret = theDiscret; }
 
+  Standard_Integer GetDiscretisation() const { return myDiscret; }
 
+  void SetDeflection (const Standard_Real theDeflection) { myDeflection = theDeflection; }
 
-  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_Drawable,Draw_Drawable3D)
+  Standard_Real GetDeflection() const { return myDeflection; }
+
+  void SetDrawMode (const Standard_Integer theDrawMode) { myDrawMode = theDrawMode; }
+
+  Standard_Integer GetDrawMode() const { return myDrawMode; }
 
 protected:
 
-  
   //! set the number of points on a curve at creation.
   Standard_EXPORT DrawTrSurf_Drawable(const Standard_Integer discret, const Standard_Real deflection = 0.01, const Standard_Integer DrawMode = 0);
 
-
-
 private:
-
 
   Standard_Integer myDrawMode;
   Standard_Integer myDiscret;
   Standard_Real myDeflection;
 
-
 };
-
-
-#include <DrawTrSurf_Drawable.lxx>
-
-
-
-
 
 #endif // _DrawTrSurf_Drawable_HeaderFile

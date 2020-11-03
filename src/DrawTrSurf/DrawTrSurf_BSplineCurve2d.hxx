@@ -17,84 +17,64 @@
 #ifndef _DrawTrSurf_BSplineCurve2d_HeaderFile
 #define _DrawTrSurf_BSplineCurve2d_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Boolean.hxx>
 #include <Draw_MarkerShape.hxx>
 #include <Draw_Color.hxx>
-#include <Standard_Integer.hxx>
 #include <DrawTrSurf_Curve2d.hxx>
-#include <Standard_Real.hxx>
+
 class Geom2d_BSplineCurve;
 class Draw_Color;
-class Draw_Display;
-class Draw_Drawable3D;
 
-
-class DrawTrSurf_BSplineCurve2d;
 DEFINE_STANDARD_HANDLE(DrawTrSurf_BSplineCurve2d, DrawTrSurf_Curve2d)
-
 
 class DrawTrSurf_BSplineCurve2d : public DrawTrSurf_Curve2d
 {
-
+  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve2d, DrawTrSurf_Curve2d)
+  Draw_Drawable3D_FACTORY
 public:
 
-  
+  //! creates a drawable BSpline curve from a BSpline curve of package Geom2d.
+  Standard_EXPORT DrawTrSurf_BSplineCurve2d (const Handle(Geom2d_BSplineCurve)& C);
 
-  //! creates a drawable BSpline curve from a BSpline curve of
-  //! package Geom2d.
-  Standard_EXPORT DrawTrSurf_BSplineCurve2d(const Handle(Geom2d_BSplineCurve)& C);
-  
-  Standard_EXPORT DrawTrSurf_BSplineCurve2d(const Handle(Geom2d_BSplineCurve)& C, const Draw_Color& CurvColor, const Draw_Color& PolesColor, const Draw_Color& KnotsColor, const Draw_MarkerShape KnotsShape, const Standard_Integer KnotsSize, const Standard_Boolean ShowPoles, const Standard_Boolean ShowKnots, const Standard_Integer Discret);
-  
-  Standard_EXPORT void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
-  
-  Standard_EXPORT void ShowPoles();
-  
-  Standard_EXPORT void ShowKnots();
-  
-  Standard_EXPORT void ClearPoles();
-  
-  Standard_EXPORT void ClearKnots();
-  
+  Standard_EXPORT DrawTrSurf_BSplineCurve2d (const Handle(Geom2d_BSplineCurve)& C,
+                                             const Draw_Color& CurvColor, const Draw_Color& PolesColor,
+                                             const Draw_Color& KnotsColor, const Draw_MarkerShape KnotsShape, const Standard_Integer KnotsSize,
+                                             const Standard_Boolean ShowPoles, const Standard_Boolean ShowKnots, const Standard_Integer Discret);
+
+  Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const Standard_OVERRIDE;
+
+  void ShowPoles() { drawPoles = Standard_True; }
+
+  void ShowKnots() { drawKnots = Standard_True; }
+
+  void ClearPoles() { drawPoles = Standard_False; }
+
+  void ClearKnots() { drawKnots = Standard_False; }
+
   //! Returns in <Index> the index of the first pole  of the
   //! curve projected by the Display <D> at a distance lower
   //! than <Prec> from <X,Y>. If no pole  is found  index is
   //! set to 0, else index is always  greater than the input
   //! value of index.
   Standard_EXPORT void FindPole (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec, Standard_Integer& Index) const;
-  
+
   Standard_EXPORT void FindKnot (const Standard_Real X, const Standard_Real Y, const Draw_Display& D, const Standard_Real Prec, Standard_Integer& Index) const;
-  
-    void SetPolesColor (const Draw_Color& aColor);
-  
-    void SetKnotsColor (const Draw_Color& aColor);
-  
-    void SetKnotsShape (const Draw_MarkerShape Shape);
-  
-    Draw_MarkerShape KnotsShape() const;
-  
-    Draw_Color KnotsColor() const;
-  
-    Draw_Color PolesColor() const;
-  
+
+  void SetPolesColor (const Draw_Color& theColor) { polesLook = theColor; }
+
+  void SetKnotsColor (const Draw_Color& theColor) { knotsLook = theColor; }
+
+  void SetKnotsShape (const Draw_MarkerShape theShape) { knotsForm = theShape; }
+
+  Draw_MarkerShape KnotsShape() const { return knotsForm; }
+
+  Draw_Color KnotsColor() const { return knotsLook; }
+
+  Draw_Color PolesColor() const { return polesLook; }
+
   //! For variable copy.
   Standard_EXPORT virtual Handle(Draw_Drawable3D) Copy() const Standard_OVERRIDE;
 
-
-
-
-  DEFINE_STANDARD_RTTIEXT(DrawTrSurf_BSplineCurve2d,DrawTrSurf_Curve2d)
-
-protected:
-
-
-
-
 private:
-
 
   Standard_Boolean drawPoles;
   Standard_Boolean drawKnots;
@@ -103,14 +83,6 @@ private:
   Standard_Integer knotsDim;
   Draw_Color polesLook;
 
-
 };
-
-
-#include <DrawTrSurf_BSplineCurve2d.lxx>
-
-
-
-
 
 #endif // _DrawTrSurf_BSplineCurve2d_HeaderFile

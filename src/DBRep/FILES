@@ -19,3 +19,4 @@ DBRep_ListIteratorOfListOfHideData.hxx
 DBRep_ListOfEdge.hxx
 DBRep_ListOfFace.hxx
 DBRep_ListOfHideData.hxx
+DBRep_Params.hxx

@@ -12,28 +12,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DrawTrSurf_Surface.hxx>
 
 #include <Adaptor3d_IsoCurve.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
-#include <Draw_Drawable3D.hxx>
-#include <DrawTrSurf_Surface.hxx>
+#include <DrawTrSurf.hxx>
+#include <DrawTrSurf_Params.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomTools_SurfaceSet.hxx>
 #include <Precision.hxx>
-#include <Standard_Type.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Surface,DrawTrSurf_Drawable)
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Surface, DrawTrSurf_Drawable)
 
 Standard_Real DrawTrSurf_SurfaceLimit = 400;
 
-
 //=======================================================================
 //function : DrawTrSurf_Surface
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 DrawTrSurf_Surface::DrawTrSurf_Surface (const Handle(Geom_Surface)& S) 
 : DrawTrSurf_Drawable (16, 0.01, 1) 
 {
@@ -44,14 +42,10 @@ DrawTrSurf_Surface::DrawTrSurf_Surface (const Handle(Geom_Surface)& S)
   nbVIsos = 1;
 }
 
-
-
-
 //=======================================================================
 //function : DrawTrSurf_Surface
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 DrawTrSurf_Surface::DrawTrSurf_Surface 
   (const Handle(Geom_Surface)& S, const Standard_Integer Nu, 
    const Standard_Integer Nv,
@@ -67,13 +61,10 @@ DrawTrSurf_Surface::DrawTrSurf_Surface
   nbVIsos = Abs(Nv);
 }
 
-
-
 //=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void DrawTrSurf_Surface::DrawOn (Draw_Display& dis) const 
 {
   DrawOn(dis,Standard_True);
@@ -81,11 +72,9 @@ void DrawTrSurf_Surface::DrawOn (Draw_Display& dis) const
 
 //=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void DrawTrSurf_Surface::DrawOn (Draw_Display& dis,
-				 const Standard_Boolean Iso) const 
+void DrawTrSurf_Surface::DrawOn (Draw_Display& dis, const Standard_Boolean Iso) const 
 {
   Standard_Real UFirst, ULast, VFirst, VLast;
   surf->Bounds (UFirst, ULast, VFirst, VLast);
@@ -208,39 +197,21 @@ void DrawTrSurf_Surface::DrawOn (Draw_Display& dis,
 		 dis);
 }
 
-
-
-//=======================================================================
-//function : ShowIsos
-//purpose  : 
-//=======================================================================
-
-void DrawTrSurf_Surface::ShowIsos ( const Standard_Integer Nu, 
-				    const Standard_Integer Nv) 
-{
-  nbUIsos = Abs(Nu);
-  nbVIsos = Abs(Nv);
-}
-
-
 //=======================================================================
 //function : ClearIsos
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void DrawTrSurf_Surface::ClearIsos () 
 {
   nbUIsos = 0;
   nbVIsos = 0;
 }
 
-
 //=======================================================================
 //function : Copy
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(Draw_Drawable3D)  DrawTrSurf_Surface::Copy() const 
+Handle(Draw_Drawable3D) DrawTrSurf_Surface::Copy() const
 {
   Handle(DrawTrSurf_Surface) DS = new DrawTrSurf_Surface
     (Handle(Geom_Surface)::DownCast(surf->Copy()),
@@ -250,24 +221,44 @@ Handle(Draw_Drawable3D)  DrawTrSurf_Surface::Copy() const
   return DS;
 }
 
-
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DrawTrSurf_Surface::Dump(Standard_OStream& S)const 
+void DrawTrSurf_Surface::Dump (Standard_OStream& S) const
 {
   GeomTools_SurfaceSet::PrintSurface(surf,S);
 }
 
+//=======================================================================
+//function : Save
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Surface::Save (Standard_OStream& theStream) const
+{
+  GeomTools_SurfaceSet::PrintSurface (surf, theStream, true);
+}
+
+//=======================================================================
+//function : Restore
+//purpose  :
+//=======================================================================
+Handle(Draw_Drawable3D) DrawTrSurf_Surface::Restore (std::istream& theStream)
+{
+  const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
+  Handle(Geom_Surface) aGeomSurface = GeomTools_SurfaceSet::ReadSurface (theStream);
+  Handle(DrawTrSurf_Surface) aDrawSurface = new DrawTrSurf_Surface (aGeomSurface,
+                                                                    aParams.NbUIsos, aParams.NbVIsos,
+                                                                    aParams.BoundsColor, aParams.IsosColor,
+                                                                    aParams.Discret, aParams.Deflection, aParams.DrawMode);
+  return aDrawSurface;
+}
 
 //=======================================================================
 //function : Whatis
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DrawTrSurf_Surface::Whatis(Draw_Interpretor& S)const 
+void DrawTrSurf_Surface::Whatis (Draw_Interpretor& S) const
 {
   S << "a surface";
 }

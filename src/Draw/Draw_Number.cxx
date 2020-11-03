@@ -14,85 +14,81 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Draw_Number.hxx>
 
 #include <Draw_Display.hxx>
-#include <Draw_Drawable3D.hxx>
-#include <Draw_Number.hxx>
-#include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Draw_Number,Draw_Drawable3D)
 
 //=======================================================================
 //function : Draw_Number
-//purpose  : 
+//purpose  :
 //=======================================================================
-Draw_Number::Draw_Number(const Standard_Real V) :
-       myValue(V)
+Draw_Number::Draw_Number (const Standard_Real theV)
+: myValue (theV)
 {
+  //
 }
-
-
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-Standard_Real  Draw_Number::Value()const 
-{
-  return myValue;
-}
-
-
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-void  Draw_Number::Value(const Standard_Real V)
-{
-  myValue = V;
-}
-
 
 //=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  Draw_Number::DrawOn(Draw_Display&)const 
+void Draw_Number::DrawOn (Draw_Display& ) const
 {
+  //
 }
-
 
 //=======================================================================
 //function : Copy
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(Draw_Drawable3D)  Draw_Number::Copy()const 
+Handle(Draw_Drawable3D) Draw_Number::Copy() const
 {
-  Handle(Draw_Number) D = new Draw_Number(myValue);
+  Handle(Draw_Number) D = new Draw_Number (myValue);
   return D;
 }
 
-
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  Draw_Number::Dump(Standard_OStream& S)const 
+void Draw_Number::Dump (Standard_OStream& S) const
 {
   S << myValue;
 }
 
+//=======================================================================
+//function : Save
+//purpose  :
+//=======================================================================
+void Draw_Number::Save (Standard_OStream& theStream) const
+{
+  std::ios::fmtflags aFlags = theStream.flags();
+  theStream.setf (std::ios::scientific);
+  theStream.precision (15);
+  theStream.width (30);
+  theStream << myValue << "\n";
+  theStream.setf (aFlags);
+}
+
+//=======================================================================
+//function : Restore
+//purpose  :
+//=======================================================================
+Handle(Draw_Drawable3D) Draw_Number::Restore (Standard_IStream& theStream)
+{
+  Standard_Real aVal = RealLast();
+  theStream >> aVal;
+  Handle(Draw_Number) aNumb = new Draw_Number (aVal);
+  return aNumb;
+}
 
 //=======================================================================
 //function : Whatis
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  Draw_Number::Whatis(Draw_Interpretor& S)const 
+void Draw_Number::Whatis (Draw_Interpretor& S) const
 {
   S << "numeric";
 }

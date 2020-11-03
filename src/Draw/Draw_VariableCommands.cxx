@@ -14,7 +14,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <Draw_Axis2D.hxx>
@@ -23,13 +22,13 @@
 #include <Draw_Drawable3D.hxx>
 #include <Draw_Grid.hxx>
 #include <Draw_Number.hxx>
-#include <Message.hxx>
 #include <Draw_ProgressIndicator.hxx>
 #include <Draw_SequenceOfDrawable3D.hxx>
 #include <Message.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_Stream.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <TCollection_AsciiString.hxx>
 
 #include <ios>
@@ -67,195 +66,119 @@ static Standard_Integer p_Y;
 static Standard_Integer p_b;
 static const char* p_Name = "";
 
-
-static Draw_SaveAndRestore* Draw_First = NULL;
-
-//=======================================================================
-//function : Draw_SaveAndRestore
-//purpose  : 
-//=======================================================================
-
-Draw_SaveAndRestore::Draw_SaveAndRestore
-  (const char* name,
-   Standard_Boolean (*test)(const Handle(Draw_Drawable3D)&),
-  void (*save)(const Handle(Draw_Drawable3D)&, std::ostream&),
-  Handle(Draw_Drawable3D) (*restore) (std::istream&),
-  Standard_Boolean display) :
-  myName(name),
-  myTest(test),
-  mySave(save), 
-  myRestore(restore),
-  myDisplay(display),
-  myNext(Draw_First)
-{
-  Draw_First = this;
-}
-
-Standard_Boolean Draw_SaveAndRestore::Test(const Handle(Draw_Drawable3D)&d)
-{return (*myTest) (d);}
-
-void Draw_SaveAndRestore::Save(const Handle(Draw_Drawable3D)& d, 
-			       std::ostream& os) const
-{ (*mySave) (d,os);}
-
-Handle(Draw_Drawable3D) Draw_SaveAndRestore::Restore(std::istream& is) const
-{return (*myRestore) (is);}
-
-//=======================================================================
-// numeric save and restore
-//=======================================================================
-
-static Standard_Boolean numtest(const Handle(Draw_Drawable3D)& d) 
-{
-  return d->IsInstance(STANDARD_TYPE(Draw_Number));
-}
-
-static void numsave (const Handle(Draw_Drawable3D)& theDrawable,
-                     std::ostream&                       theStream)
-{
-  Handle(Draw_Number) aNum = Handle(Draw_Number)::DownCast (theDrawable);
-  std::ios::fmtflags aFlags = theStream.flags();
-  theStream.setf      (std::ios::scientific);
-  theStream.precision (15);
-  theStream.width     (30);
-  theStream << aNum->Value() << "\n";
-  theStream.setf      (aFlags);
-}
-
-static Handle(Draw_Drawable3D) numrestore (std::istream& is)
-{
-  Standard_Real val;
-  is >> val;
-  Handle(Draw_Number) N = new Draw_Number(val);
-  return N;
-}
-
-
-static Draw_SaveAndRestore numsr("Draw_Number",
-				 numtest,numsave,numrestore,
-				 Standard_False);
-
 //=======================================================================
 // save
 //=======================================================================
-
-static Standard_Integer save(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer save (Draw_Interpretor& theDI,
+                              Standard_Integer theNbArgs,
+                              const char** theArgVec)
 {
-  if (n < 3)
+  if (theNbArgs != 3)
   {
-    di << "Syntax error: wrong number of arguments!\n";
-    di.PrintHelp(a[0]);
+    theDI << "Syntax error: wrong number of arguments!\n";
+    theDI.PrintHelp (theArgVec[0]);
     return 1;
   }
 
-  const char* name = a[2];
-  std::ofstream os;
-  os.precision(15);
-  OSD_OpenStream(os, name, std::ios::out);
-  if (!os.is_open() || !os.good())
+  Handle(Draw_Drawable3D) aDrawable = Draw::Get (theArgVec[1]);
+  if (aDrawable.IsNull())
   {
-    di << "Cannot open file for writing "<<name;
+    theDI << "Syntax error: '" << theArgVec[1] << "' is not a drawable";
     return 1;
   }
 
-  Handle(Draw_Drawable3D) D = Draw::Get(a[1]);
-  if (!D.IsNull()) {
-    // find a tool
-    Draw_SaveAndRestore* tool = Draw_First;
-    Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );
-
-    while (tool) {
-      if (tool->Test(D)) break;
-      tool = tool->Next();
-    }
-    if (tool) {
-      os << tool->Name() << "\n";
-      Draw::SetProgressBar(progress);
-      tool->Save(D,os);
-      os << "\n";
-    }
-    else {
-      di << "No method for saving " << a[1];
-      return 1;
-    }
-    Draw::SetProgressBar( 0 );
+  const char* aName = theArgVec[2];
+  std::ofstream aStream;
+  aStream.precision (15);
+  OSD_OpenStream (aStream, aName, std::ios::out);
+  if (!aStream.is_open() || !aStream.good())
+  {
+    theDI << "Error: cannot open file for writing " << aName;
+    return 1;
   }
-  
-  os << "0\n\n";
 
-  Standard_Boolean res = Standard_False;
+  try
+  {
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+    Standard_CString aToolTypeName = aDrawable->DynamicType()->Name();
+    aStream << aToolTypeName << "\n";
+    Draw::SetProgressBar (aProgress);
+    aDrawable->Save (aStream);
+  }
+  catch (const Standard_NotImplemented& )
+  {
+    theDI << "Error: no method for saving " << theArgVec[1];
+    return 1;
+  }
+  aStream << "\n";
+  aStream << "0\n\n";
+  Draw::SetProgressBar (Handle(Draw_ProgressIndicator)());
 
   errno = 0;
-
-  res = os.good() && !errno;
-  if( !res )
+  const Standard_Boolean aRes = aStream.good() && !errno;
+  if (!aRes)
   {
-    di<<"File has not been written";
+    theDI << "Error: file has not been written";
     return 1;
   }
 
-  di << a[1];
+  theDI << theArgVec[1];
   return 0;
 }
 
 //=======================================================================
 // read
 //=======================================================================
-
-static Standard_Integer restore(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer restore (Draw_Interpretor& theDI,
+                                 Standard_Integer theNbArgs,
+                                 const char** theArgVec)
 {
-
-  if (n <= 2) return 1;
-
-  const char* fname = a[1];
-  const char* name  = a[2];
-  
-  std::filebuf fic;
-  std::istream in(&fic);
-  OSD_OpenStream (fic, fname, std::ios::in);
-  if (!fic.is_open()) {
-    di << "Cannot open file for reading : "<<fname;
+  if (theNbArgs != 3)
+  {
     return 1;
   }
+
+  const char* aFileName = theArgVec[1];
+  const char* aVarName  = theArgVec[2];
   
-  char typ[255];
-  in >> typ;
-  if (!in.fail()) {
-    // search a tool
-    Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );
-    Draw::SetProgressBar(progress);
+  std::filebuf aFileBuf;
+  std::istream aStream (&aFileBuf);
+  OSD_OpenStream (aFileBuf, aFileName, std::ios::in);
+  if (!aFileBuf.is_open())
+  {
+    theDI << "Error: cannot open file for reading: '" << aFileName << "'";
+    return 1;
+  }
 
-    Draw_SaveAndRestore* tool = Draw_First;
-    Draw_SaveAndRestore* aDBRepTool = NULL;
-    while (tool) {
-      const char* toolName = tool->Name();
-      if (!strcmp(typ,toolName)) break;
-      if (!strcmp("DBRep_DrawableShape",toolName))
-        aDBRepTool = tool;
-      tool = tool->Next();
-    }
+  char aType[255] = {};
+  aStream >> aType;
+  if (aStream.fail())
+  {
+    theDI << "Error: cannot read file: '" << aFileName << "'";
+    return 1;
+  }
 
-    if (!tool)
+  {
+    Handle(Draw_ProgressIndicator) aProgress = new Draw_ProgressIndicator (theDI, 1);
+    Draw::SetProgressBar (aProgress);
+    Handle(Draw_Drawable3D) aDrawable = Draw_Drawable3D::Restore (aType, aStream);
+    if (aDrawable.IsNull())
     {
-      //assume that this file stores a DBRep_DrawableShape variable
-      tool = aDBRepTool;
-      in.seekg(0, std::ios::beg);
+      // assume that this file stores a DBRep_DrawableShape variable
+      aStream.seekg (0, std::ios::beg);
+      aDrawable = Draw_Drawable3D::Restore ("DBRep_DrawableShape", aStream);
     }
-
-    if (tool)
+    if (aDrawable.IsNull())
     {
-      Handle(Draw_Drawable3D) D = tool->Restore(in);
-      Draw::Set(name,D,tool->Disp() && autodisp);
-    }
-
-    else {
-      di << "Cannot restore a  " << typ;
+      theDI << "Error: cannot restore a " << aType;
       return 1;
     }
-    Draw::SetProgressBar( 0 );
+
+    Draw::Set (aVarName, aDrawable, aDrawable->IsDisplayable() && autodisp);
+    Draw::SetProgressBar (Handle(Draw_ProgressIndicator)());
   }
-  
-  di << name;
+
+  theDI << aVarName;
   return 0;
 }
 
@@ -1239,8 +1162,10 @@ void  Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
   Draw_BeforeCommand = &before;
   Draw_AfterCommand  = &after;
 
-  //  set up some variables
+  // Register save/restore tools
+  Draw_Number::RegisterFactory();
 
+  // set up some variables
   const char* n;
   Handle(Draw_Axis3D) theAxes3d = new Draw_Axis3D(gp_Pnt(0,0,0),Draw_bleu,20);
   n = "axes";

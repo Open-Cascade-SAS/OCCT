@@ -17,28 +17,46 @@
 #ifndef _Draw_Drawable3D_HeaderFile
 #define _Draw_Drawable3D_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_Type.hxx>
-
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
+#include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
+#include <Standard_IStream.hxx>
 #include <Standard_OStream.hxx>
 #include <Draw_Interpretor.hxx>
+
 class Draw_Display;
 
-
-class Draw_Drawable3D;
 DEFINE_STANDARD_HANDLE(Draw_Drawable3D, Standard_Transient)
-
 
 class Draw_Drawable3D : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(Draw_Drawable3D, Standard_Transient)
+public:
+
+  //! Function type for restoring drawable from stream.
+  typedef Handle(Draw_Drawable3D)(*FactoryFunction_t)(Standard_IStream& theStream);
+
+  //! Register factory for restoring drawable from stream (opposite to Draw_Drawable3D::Save()).
+  //! @param theType [in] class name
+  //! @param theFactory [in] factory function
+  Standard_EXPORT static void RegisterFactory (const Standard_CString theType,
+                                               const FactoryFunction_t& theFactory);
+
+  //! Restore drawable from stream (opposite to Draw_Drawable3D::Save()).
+  //! @param theType [in] class name
+  //! @param theStream [in] input stream
+  //! @return restored drawable or NULL if factory is undefined for specified class
+  Standard_EXPORT static Handle(Draw_Drawable3D) Restore (const Standard_CString theType,
+                                                          Standard_IStream& theStream);
+
+  //! @def Draw_Drawable3D_FACTORY
+  //! Auxiliary macros defining Draw_Drawable3D restoration API to sub-class.
+  #define Draw_Drawable3D_FACTORY \
+    static void RegisterFactory() { Draw_Drawable3D::RegisterFactory (get_type_name(), &Restore); } \
+    Standard_EXPORT static Handle(Draw_Drawable3D) Restore (Standard_IStream& theStream);
 
 public:
 
-  
   Standard_EXPORT virtual void DrawOn (Draw_Display& dis) const = 0;
   
   //! Returns True if the pick is outside the box
@@ -49,61 +67,63 @@ public:
   
   //! For variable dump.
   Standard_EXPORT virtual void Dump (Standard_OStream& S) const;
-  
-  //! For variable whatis command. Set  as a result  the
-  //! type of the variable.
+
+  //! Save drawable into stream; default implementation raises Standard_NotImplemented exception.
+  Standard_EXPORT virtual void Save (Standard_OStream& theStream) const;
+
+  //! For variable whatis command. Set as a result the type of the variable.
   Standard_EXPORT virtual void Whatis (Draw_Interpretor& I) const;
   
   //! Is a 3D object. (Default True).
-  Standard_EXPORT virtual Standard_Boolean Is3D() const;
-  
-  Standard_EXPORT void SetBounds (const Standard_Real xmin, const Standard_Real xmax, const Standard_Real ymin, const Standard_Real ymax);
-  
-  Standard_EXPORT void Bounds (Standard_Real& xmin, Standard_Real& xmax, Standard_Real& ymin, Standard_Real& ymax) const;
-  
-    Standard_Boolean Visible() const;
-  
-    void Visible (const Standard_Boolean V);
-  
-    Standard_Boolean Protected() const;
-  
-    void Protected (const Standard_Boolean P);
-  
-    Standard_CString Name() const;
-  
-    virtual void Name (const Standard_CString N);
+  virtual bool Is3D() const { return true; }
 
+  //! Return TRUE if object can be displayed.
+  virtual bool IsDisplayable() const { return true; }
 
+  void SetBounds (const Standard_Real theXMin, const Standard_Real theXMax,
+                  const Standard_Real theYMin, const Standard_Real theYMax)
+  {
+    myXmin = theXMin;
+    myXmax = theXMax;
+    myYmin = theYMin;
+    myYmax = theYMax;
+  }
 
+  void Bounds (Standard_Real& theXMin, Standard_Real& theXMax,
+               Standard_Real& theYMin, Standard_Real& theYMax) const
+  {
+    theXMin = myXmin;
+    theXMax = myXmax;
+    theYMin = myYmin;
+    theYMax = myYmax;
+  }
 
-  DEFINE_STANDARD_RTTIEXT(Draw_Drawable3D,Standard_Transient)
+  Standard_Boolean Visible() const { return isVisible; }
+
+  void Visible (const Standard_Boolean V) { isVisible = V; }
+
+  Standard_Boolean Protected() const { return isProtected; }
+
+  void Protected (const Standard_Boolean P) { isProtected = P; }
+
+  Standard_CString Name() const { return myName; }
+
+  virtual void Name (const Standard_CString N) { myName = N; }
 
 protected:
 
-  
   Standard_EXPORT Draw_Drawable3D();
 
-
-
 private:
-
 
   Standard_Real myXmin;
   Standard_Real myXmax;
   Standard_Real myYmin;
   Standard_Real myYmax;
+  Standard_CString myName;
   Standard_Boolean isVisible;
   Standard_Boolean isProtected;
-  Standard_CString myName;
-
 
 };
-
-
-#include <Draw_Drawable3D.lxx>
-
-
-
-
 
 #endif // _Draw_Drawable3D_HeaderFile

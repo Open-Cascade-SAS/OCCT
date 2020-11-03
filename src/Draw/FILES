@@ -27,7 +27,6 @@ Draw_Drawable2D.cxx
 Draw_Drawable2D.hxx
 Draw_Drawable3D.cxx
 Draw_Drawable3D.hxx
-Draw_Drawable3D.lxx
 Draw_Failure.hxx
 Draw_GraphicCommands.cxx
 Draw_Grid.cxx

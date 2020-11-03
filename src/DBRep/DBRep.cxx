@@ -14,7 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <BinTools_ShapeSet.hxx>
+#include <DBRep.hxx>
+
 #include <BRep_TEdge.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepGProp.hxx>
@@ -22,7 +23,6 @@
 #include <BRepTools_ShapeSet.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <BinTools.hxx>
-#include <DBRep.hxx>
 #include <DBRep_DrawableShape.hxx>
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
@@ -34,9 +34,7 @@
 #include <GProp_GProps.hxx>
 #include <NCollection_Vector.hxx>
 #include <OSD_OpenFile.hxx>
-#include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
-#include <Standard.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TopAbs.hxx>
@@ -45,7 +43,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopoDS_Shape.hxx>
 #include <TopTools_Array1OfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -97,62 +94,64 @@ Standard_EXPORT Draw_Color DBRep_ColorOrientation (const TopAbs_Orientation Or)
   return col;
 }
 
-//==========================================
-// static variables
-//==========================================
-
-static Standard_Integer nbIsos  = 2;
-static Standard_Real    size    = 100.;
-static Standard_Integer discret = 30;
-static Standard_Boolean disptriangles = Standard_False;
-static Standard_Boolean disppolygons = Standard_False;
-static Standard_Real    anglHLR = 35 * M_PI / 180;
-static Standard_Real    HAngMin =  1 * M_PI / 180;
-static Standard_Real    HAngMax = 35 * M_PI / 180;
-static Standard_Boolean withHLR = Standard_False;
-static Standard_Boolean withRg1 = Standard_True;
-static Standard_Boolean withRgN = Standard_False;
-static Standard_Boolean withHid = Standard_False;
+//=======================================================================
+//function : Parameters
+//purpose  :
+//=======================================================================
+DBRep_Params& DBRep::Parameters()
+{
+  static DBRep_Params aParams;
+  return aParams;
+}
 
 //=======================================================================
 // isos
 //=======================================================================
 
-static Standard_Integer isos (Draw_Interpretor& di,
-			      Standard_Integer NbArg, const char **Arg)
+static Standard_Integer isos(Draw_Interpretor& di, Standard_Integer NbArg, const char **Arg)
 {
+  DBRep_Params& aParams = DBRep::Parameters();
   NbArg-- ;
-  
-  if (NbArg <= 0) {
-    di << "Current number of isos : " << nbIsos << "\n" ;
+  if (NbArg <= 0)
+  {
+    di << "Current number of isos : " << aParams.NbIsos << "\n" ;
     return 0 ;
   }
 
-  Standard_Integer NbIsos = 0 ;
+  Standard_Integer aNbIsos = 0;
   Standard_Boolean Change = Standard_False ;
   if (!Characters (NbArg) && Float (NbArg)) return 1 ;
-  if (!Characters (NbArg)) {
-    NbIsos = Draw::Atoi (Arg[NbArg]) ;
+  if (!Characters (NbArg))
+  {
+    aNbIsos = Draw::Atoi (Arg[NbArg]);
     NbArg-- ;
     Change = Standard_True ;
   }
 
-  if (NbArg <= 0) {
-    nbIsos = NbIsos ;
-    di << "New current number of isos : " << nbIsos << "\n" ;
-  } else {
-    for (Standard_Integer IArg = 1 ; IArg <= NbArg ; IArg++) {
+  if (NbArg <= 0)
+  {
+    aParams.NbIsos = aNbIsos;
+    di << "New current number of isos : " << aParams.NbIsos << "\n";
+  }
+  else
+  {
+    for (Standard_Integer IArg = 1 ; IArg <= NbArg ; IArg++)
+    {
       Handle (Draw_Drawable3D) Shape1 = Draw::Get (Arg[IArg]) ;
-      if (!Shape1.IsNull()) {
-	Handle (DBRep_DrawableShape) Shape2 =
-	  Handle (DBRep_DrawableShape)::DownCast (Shape1) ;	
-	if (!Shape2.IsNull()) {
-	  if (Change) {
-	    Shape2->ChangeNbIsos (NbIsos) ;
-	  } else {
-	    di << "Number of isos for " << Arg[IArg] << " : " << Shape2->NbIsos() << "\n";
-	  }
-	}
+      if (!Shape1.IsNull())
+      {
+        Handle (DBRep_DrawableShape) Shape2 = Handle (DBRep_DrawableShape)::DownCast (Shape1);
+        if (!Shape2.IsNull())
+        {
+          if (Change)
+          {
+            Shape2->ChangeNbIsos (aNbIsos);
+          }
+          else
+          {
+            di << "Number of isos for " << Arg[IArg] << " : " << Shape2->NbIsos() << "\n";
+          }
+        }
       }
     }
     if (Change) dout.RepaintAll() ;
@@ -165,23 +164,23 @@ static Standard_Integer isos (Draw_Interpretor& di,
 // hlr
 //=======================================================================
 
-static Standard_Integer hlr (Draw_Interpretor& di,
-			     Standard_Integer n, const char **a)
+static Standard_Integer hlr (Draw_Interpretor& di, Standard_Integer n, const char **a)
 {
-  if (n <= 1) {
-    if (withHLR) {
+  DBRep_Params& aParams = DBRep::Parameters();
+  if (n <= 1)
+  {
+    if (aParams.WithHLR)
+    {
       di << " HLR";
-      if (withRgN) di << " RgNLines";
-      else {
-	if (withRg1) di << " Rg1Lines";
-	else         di << " no RegLines";
-      }
-      if (withHid) di << " HiddenLines";
-      else         di << " no HiddenLines";
+      di << (aParams.WithRgN
+           ? " RgNLines"
+           : (aParams.WithRg1 ? " Rg1Lines" : " no RegLines"));
+      di << (aParams.WithHid ? " HiddenLines" : " no HiddenLines");
       di << "\n";
-      if (withHLR) {
-	di << "Angle of discretization : ";
-	di << anglHLR * 180 / M_PI << " degrees\n";
+      if (aParams.WithHLR)
+      {
+        di << "Angle of discretization : ";
+        di << aParams.HLRAngle * 180 / M_PI << " degrees\n";
       }
     }
     else di << " wireframe";
@@ -189,102 +188,141 @@ static Standard_Integer hlr (Draw_Interpretor& di,
     return 0 ;
   }
 
-  if (n == 2) {
-    if      (!strcasecmp(a[1],"nohlr")) withHLR = Standard_False;
-    else if (!strcasecmp(a[1],"hlr"  )) withHLR = Standard_True;
-    else if (!strcasecmp(a[1],"nohid")) withHid = Standard_False;
-    else if (!strcasecmp(a[1],"hid"  )) {
-      withHLR = Standard_True;
-      withHid = Standard_True;
+  if (n == 2)
+  {
+    if (!strcasecmp(a[1], "nohlr"))
+    {
+      aParams.WithHLR = Standard_False;
     }
-    else if (!strcasecmp(a[1],"norg1")) {
-      withRg1 = Standard_False;
-      withRgN = Standard_False;
+    else if (!strcasecmp (a[1], "hlr"))
+    {
+      aParams.WithHLR = Standard_True;
     }
-    else if (!strcasecmp(a[1],"rg1"  )) {
-      withHLR = Standard_True;
-      withRg1 = Standard_True;
-      withRgN = Standard_False;
+    else if (!strcasecmp (a[1], "nohid"))
+    {
+      aParams.WithHid = Standard_False;
     }
-    else if (!strcasecmp(a[1],"norgn")) {
-      withRgN = Standard_False;
+    else if (!strcasecmp(a[1], "hid"))
+    {
+      aParams.WithHLR = Standard_True;
+      aParams.WithHid = Standard_True;
     }
-    else if (!strcasecmp(a[1],"rgn"  )) {
-      withHLR = Standard_True;
-      withRg1 = Standard_True;
-      withRgN = Standard_True;
+    else if (!strcasecmp(a[1], "norg1"))
+    {
+      aParams.WithRg1 = Standard_False;
+      aParams.WithRgN = Standard_False;
     }
-    else if (!strcasecmp(a[1],"ang"  )) {
+    else if (!strcasecmp (a[1], "rg1"))
+    {
+      aParams.WithHLR = Standard_True;
+      aParams.WithRg1 = Standard_True;
+      aParams.WithRgN = Standard_False;
+    }
+    else if (!strcasecmp (a[1], "norgn"))
+    {
+      aParams.WithRgN = Standard_False;
+    }
+    else if (!strcasecmp (a[1], "rgn"))
+    {
+      aParams.WithHLR = Standard_True;
+      aParams.WithRg1 = Standard_True;
+      aParams.WithRgN = Standard_True;
+    }
+    else if (!strcasecmp (a[1], "ang"))
+    {
       di << "Angle de discretisation : ";
-      di << anglHLR * 180 / M_PI << " degres\n";
+      di << aParams.HLRAngle * 180 / M_PI << " degres\n";
     }
     else return 1;
   }
 
   Standard_Integer nFirst = 2;
 
-  if (n >= 3 && !strcasecmp(a[1],"ang"  )) {
+  if (n >= 3 && !strcasecmp (a[1], "ang"))
+  {
     nFirst = 3;
-    if (n == 3) {
+    if(n == 3)
+    {
       Standard_Real ang = Draw::Atof(a[2]);
-      anglHLR = ang * M_PI / 180;
-      if (anglHLR < HAngMin) anglHLR = HAngMin;
-      if (anglHLR > HAngMax) anglHLR = HAngMax;
-    }
-    di << "Angle of discretization : ";
-    di << anglHLR * 180 / M_PI << " degrees\n";
-  }
-
-  if (n >= nFirst + 1) {
-
-    for (Standard_Integer i = nFirst ; i < n; i++) {
-      Handle (Draw_Drawable3D) D = Draw::Get (a[i]) ;
-      if (!D.IsNull()) {
-	Handle (DBRep_DrawableShape) S =
-	  Handle (DBRep_DrawableShape)::DownCast (D) ;	
-	if (!S.IsNull()) {
-	  Standard_Boolean localHLR, localRg1, localRgN, localHid;
-	  Standard_Real localAng;
-	  S->GetDisplayHLR(localHLR, localRg1, localRgN, localHid,
-			   localAng);
-	  if      (!strcasecmp(a[1],"nohlr")) localHLR = Standard_False;
-	  else if (!strcasecmp(a[1],"hlr"  )) localHLR = Standard_True;
-	  else if (!strcasecmp(a[1],"nohid")) localHid = Standard_False;
-	  else if (!strcasecmp(a[1],"hid"  )) {
-	    localHLR = Standard_True;
-	    localHid = Standard_True;
-	  }
-	  else if (!strcasecmp(a[1],"norg1")) {
-	    localRg1 = Standard_False;
-	    localRgN = Standard_False;
-	  }
-	  else if (!strcasecmp(a[1],"rg1"  )) {
-	    localHLR = Standard_True;
-	    localRg1 = Standard_True;
-	    localRgN = Standard_False;
-	  }
-	  else if (!strcasecmp(a[1],"norgn")) {
-	    localRgN = Standard_False;
-	  }
-	  else if (!strcasecmp(a[1],"rgn"  )) {
-	    localHLR = Standard_True;
-	    localRg1 = Standard_True;
-	    localRgN = Standard_True;
-	  }
-	  else if (!strcasecmp(a[1],"ang"  )) {
-	    Standard_Real ang = Draw::Atof(a[2]);
-	    localAng = ang * M_PI / 180;
-	  }
-	  else return 1;
-	  S->DisplayHLR(localHLR, localRg1, localRgN, localHid,
-			localAng);
-	}
+      aParams.HLRAngle = ang * M_PI / 180;
+      if(aParams.HLRAngle < aParams.HAngMin)
+      {
+        aParams.HLRAngle = aParams.HAngMin;
+      }
+      if (aParams.HLRAngle > aParams.HAngMax)
+      {
+        aParams.HLRAngle = aParams.HAngMax;
       }
     }
+    di << "Angle of discretization : ";
+    di << aParams.HLRAngle * 180 / M_PI << " degrees\n";
   }
-  dout.RepaintAll() ;
 
-  return 0 ;
+  for (Standard_Integer i = nFirst; i < n; i++)
+  {
+    Handle(Draw_Drawable3D) D = Draw::Get (a[i]);
+    Handle(DBRep_DrawableShape) S = Handle(DBRep_DrawableShape)::DownCast (D);
+    if (S.IsNull())
+    {
+      continue;
+    }
+
+    bool localHLR = false, localRg1 = false, localRgN = false, localHid = false;
+    Standard_Real localAng = 0.0;
+    S->GetDisplayHLR(localHLR, localRg1, localRgN, localHid, localAng);
+    if (!strcasecmp (a[1], "nohlr"))
+    {
+      localHLR = Standard_False;
+    }
+    else if (!strcasecmp (a[1], "hlr"))
+    {
+      localHLR = Standard_True;
+    }
+    else if (!strcasecmp (a[1], "nohid"))
+    {
+      localHid = Standard_False;
+    }
+    else if (!strcasecmp (a[1], "hid"))
+    {
+      localHLR = Standard_True;
+      localHid = Standard_True;
+    }
+    else if (!strcasecmp (a[1], "norg1"))
+    {
+      localRg1 = Standard_False;
+      localRgN = Standard_False;
+    }
+    else if (!strcasecmp (a[1], "rg1"))
+    {
+      localHLR = Standard_True;
+      localRg1 = Standard_True;
+      localRgN = Standard_False;
+    }
+    else if (!strcasecmp (a[1], "norgn"))
+    {
+      localRgN = Standard_False;
+    }
+    else if (!strcasecmp (a[1], "rgn"))
+    {
+      localHLR = Standard_True;
+      localRg1 = Standard_True;
+      localRgN = Standard_True;
+    }
+    else if (!strcasecmp (a[1], "ang"))
+    {
+      Standard_Real ang = Draw::Atof (a[2]);
+      localAng = ang * M_PI / 180;
+    }
+    else
+    {
+      di << "Syntax error";
+      return 1;
+    }
+
+    S->DisplayHLR (localHLR, localRg1, localRgN, localHid, localAng);
+  }
+  dout.RepaintAll();
+  return 0;
 }
 
 
@@ -292,24 +330,21 @@ static Standard_Integer hlr (Draw_Interpretor& di,
 // dispor, dispcon
 //=======================================================================
 
-static Standard_Integer dispor (Draw_Interpretor& ,
-				Standard_Integer n, const char** a)
+static Standard_Integer dispor (Draw_Interpretor&, Standard_Integer n, const char** a)
 {
   Standard_Boolean d = !strcasecmp(a[0],"vori");
-
   if (d)
+  {
     DBRep_WriteColorOrientation();
+  }
 
-  Standard_Integer i;
-  for (i = 1; i < n; i++) {
-    Handle(Draw_Drawable3D) d1 = Draw::Get(a[i]);
-    if (!d1.IsNull()) {
-      Handle(DBRep_DrawableShape) d2 = 
-	Handle(DBRep_DrawableShape)::DownCast(d1);
-      if (!d2.IsNull()) {
-	d2->DisplayOrientation(d);
+  for (Standard_Integer i = 1; i < n; i++)
+  {
+    Handle(Draw_Drawable3D) d1 = Draw::Get (a[i]);
+    if (Handle(DBRep_DrawableShape) d2 = Handle(DBRep_DrawableShape)::DownCast(d1))
+    {
+      d2->DisplayOrientation (d);
       Draw::Repaint();
-      }
     }
   }
   return 0;
@@ -319,13 +354,16 @@ static Standard_Integer dispor (Draw_Interpretor& ,
 // discretisation
 //=======================================================================
 
-static Standard_Integer discretisation(Draw_Interpretor& di,
-				       Standard_Integer n, const char** a)
+static Standard_Integer discretisation(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
+  DBRep_Params& aParams = DBRep::Parameters();
   if (n <= 1)
-    di << "Current number of points : "<<discret<<"\n";
-  else {
-    discret = Draw::Atoi(a[1]);
+  {
+    di << "Current number of points : "<< aParams.Discretization <<"\n";
+  }
+  else
+  {
+    aParams.Discretization = Draw::Atoi(a[1]);
   }
   return 0;
 }
@@ -335,28 +373,25 @@ static Standard_Integer discretisation(Draw_Interpretor& di,
 // triangles
 //=======================================================================
 
-static Standard_Integer triangles(Draw_Interpretor& , 
-				  Standard_Integer n, const char** a)
+static Standard_Integer triangles(Draw_Interpretor&, Standard_Integer n, const char** a)
 {
-  if (n < 1) return 1;
-
-  if (n == 1) {
-    disptriangles = !disptriangles;
-#ifdef OCCT_DEBUG
-    if (disptriangles) std::cout <<"Triangulations are always displayed"<<std::endl;
-    else std::cout <<"Triangulations are displayed only if there is no geometric representation"<<std::endl;
-#endif
+  DBRep_Params& aParams = DBRep::Parameters();
+  if (n < 1)
+  {
+    return 1;
   }
-  else {
-    Standard_Integer i;
-    for (i = 1; i <= n-1; i++) {
+  if(n == 1)
+  {
+    aParams.DispTriangles = !aParams.DispTriangles;
+  }
+  else
+  {
+    for (Standard_Integer i = 1; i <= n-1; i++)
+    {
       Handle(Draw_Drawable3D) d1 = Draw::Get(a[i]);
-      if (!d1.IsNull()) {
-	Handle(DBRep_DrawableShape) d2 = 
-	  Handle(DBRep_DrawableShape)::DownCast(d1);
-	if (!d2.IsNull()) {
-	  d2->DisplayTriangulation(!(d2->DisplayTriangulation()));
-	}
+      if (Handle(DBRep_DrawableShape) d2 = Handle(DBRep_DrawableShape)::DownCast(d1))
+      {
+        d2->DisplayTriangulation(!(d2->DisplayTriangulation()));
       }
     }
   }
@@ -426,32 +461,28 @@ static Standard_Integer tclean(Draw_Interpretor& di,
 // polygons
 //=======================================================================
 
-static Standard_Integer polygons(Draw_Interpretor& , 
-				 Standard_Integer n, const char** a)
+static Standard_Integer polygons(Draw_Interpretor&, Standard_Integer n, const char** a)
 {
-  if (n < 1)  return 1;
-
-  if (n == 1) {
-    disppolygons = !disppolygons;
-#ifdef OCCT_DEBUG
-    if (disppolygons) std::cout <<"Polygons are always displayed"<<std::endl;
-    else std::cout <<"Polygons are displayed only if there is no geometric representation"<<std::endl;
-#endif
+  DBRep_Params& aParams = DBRep::Parameters();
+  if (n < 1)
+  {
+    return 1;
   }
-  else {
-    Standard_Integer i;
-    for (i = 1; i <= n-1; i++) {
+  if (n == 1)
+  {
+    aParams.DisplayPolygons = !aParams.DisplayPolygons;
+  }
+  else
+  {
+    for (Standard_Integer i = 1; i <= n-1; i++)
+    {
       Handle(Draw_Drawable3D) d1 = Draw::Get(a[i]);
-      if (!d1.IsNull()) {
-	Handle(DBRep_DrawableShape) d2 = 
-	  Handle(DBRep_DrawableShape)::DownCast(d1);
-	if (!d2.IsNull()) {
-	  d2->DisplayPolygons(!(d2->DisplayPolygons()));
-	}
+      if (Handle(DBRep_DrawableShape) d2 = Handle(DBRep_DrawableShape)::DownCast(d1))
+      {
+        d2->DisplayPolygons(!(d2->DisplayPolygons()));
       }
     }
   }
-
   Draw::Repaint();
   return 0;
 }
@@ -1306,21 +1337,16 @@ static Standard_Integer normals (Draw_Interpretor& theDI,
 //function : Set
 //purpose  : 
 //=======================================================================
-void  DBRep::Set(const Standard_CString Name, const TopoDS_Shape& S)
+void DBRep::Set (const Standard_CString theName, const TopoDS_Shape& theShape)
 {
-  Handle(DBRep_DrawableShape) D =
-    new DBRep_DrawableShape(S,
-			    Draw_vert,
-			    Draw_jaune,
-			    Draw_rouge,
-			    Draw_bleu,
-			    size,
-			    nbIsos,
-			    discret);
-  D->DisplayTriangulation(disptriangles);
-  D->DisplayPolygons(disppolygons);
-  D->DisplayHLR(withHLR,withRg1,withRgN,withHid,anglHLR);
-  Draw::Set(Name,D);
+  DBRep_Params& aParams = DBRep::Parameters();
+  Handle(DBRep_DrawableShape) aDrawShape =
+    new DBRep_DrawableShape (theShape, Draw_vert, Draw_jaune, Draw_rouge, Draw_bleu,
+                             aParams.Size, aParams.NbIsos, aParams.Discretization);
+  aDrawShape->DisplayTriangulation (aParams.DispTriangles);
+  aDrawShape->DisplayPolygons (aParams.DisplayPolygons);
+  aDrawShape->DisplayHLR (aParams.WithHLR, aParams.WithRg1, aParams.WithRgN, aParams.WithHid, aParams.HLRAngle);
+  Draw::Set (theName, aDrawShape);
 }
 //=======================================================================
 //function : getShape
@@ -1645,6 +1671,9 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   done = Standard_True;
   Draw::Commands(theCommands);
 
+  // Register save/restore tools
+  DBRep_DrawableShape::RegisterFactory();
+
   const char* g = "Basic shape commands";
 
   theCommands.Add("isos","isos [name1 ...] [nbisos]",__FILE__,isos,g);
@@ -1724,120 +1753,3 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
                                        "removes all internal sub-shapes\n",
                   __FILE__, removeInternals, g);
 }
-
-//=======================================================================
-//function : HLRMode
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DBRep::HLRMode()
-{ return withHLR; }
-
-//=======================================================================
-//function : Rg1Mode
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DBRep::Rg1Mode()
-{ return withRg1; }
-
-//=======================================================================
-//function : RgNMode
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DBRep::RgNMode()
-{ return withRgN; }
-
-//=======================================================================
-//function : HidMode
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean DBRep::HidMode()
-{ return withHid; }
-
-//=======================================================================
-//function : HLRAngle
-//purpose  : 
-//=======================================================================
-
-Standard_Real DBRep::HLRAngle()
-{ return anglHLR; }
-
-//=======================================================================
-//function : 
-//purpose  : save and restore shapes
-//=======================================================================
-
-static Standard_Boolean stest(const Handle(Draw_Drawable3D)& d) 
-{
-  return d->IsInstance(STANDARD_TYPE(DBRep_DrawableShape));
-}
-
-static void ssave(const Handle(Draw_Drawable3D)&d, std::ostream& OS)
-{
-  Handle(DBRep_DrawableShape) 
-    N = Handle(DBRep_DrawableShape)::DownCast(d);
-  BRep_Builder B;
-  BRepTools_ShapeSet S(B);
-  S.Add (N->Shape());
-  Handle(Draw_ProgressIndicator) aProgress = Draw::GetProgressBar();
-  S.Write(OS, Message_ProgressIndicator::Start(aProgress));
-  if (! aProgress.IsNull() && aProgress->UserBreak())
-    return;
-  S.Write(N->Shape(),OS);
-}
-
-static Handle(Draw_Drawable3D) srestore (std::istream& IS)
-{
-  BRep_Builder B;
-  BRepTools_ShapeSet S(B);
-  Handle(Draw_ProgressIndicator) aProgress = Draw::GetProgressBar();
-  S.Read(IS, Message_ProgressIndicator::Start(aProgress));
-  Handle(DBRep_DrawableShape) N;
-  if (! aProgress.IsNull() && aProgress->UserBreak())
-    return N;
-  TopoDS_Shape theShape;
-  S.Read(theShape,IS );
-  N = new DBRep_DrawableShape(theShape,
-			    Draw_vert,
-			    Draw_jaune,
-			    Draw_rouge,
-			    Draw_bleu,
-			    size,
-			    nbIsos,
-			    discret);
-  N->DisplayTriangulation(disptriangles);
-  N->DisplayPolygons(disppolygons);
-  N->DisplayHLR(withHLR,withRg1,withRgN,withHid,anglHLR);
-  
-  return N;
-}
-
-
-static Draw_SaveAndRestore ssr("DBRep_DrawableShape",
-			       stest,ssave,srestore);
-
-
-void dumps (const TopoDS_Shape& S)
-{
- BRepTools::Dump(S,std::cout);
-}
-
-//=======================================================================
-//function : NbIsos
-//purpose  : 
-//=======================================================================
-
-Standard_Integer DBRep::NbIsos()
-{ return nbIsos; }
-
-
-//=======================================================================
-//function : Discretisation
-//purpose  : 
-//=======================================================================
-
-Standard_Integer DBRep::Discretisation()
-{ return discret; }

@@ -12,11 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DrawTrSurf_Curve.hxx>
 
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
-#include <Draw_Drawable3D.hxx>
-#include <DrawTrSurf_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomLProp_CLProps.hxx>
@@ -26,65 +25,61 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
+#include <DrawTrSurf.hxx>
+#include <DrawTrSurf_Params.hxx>
 #include <Precision.hxx>
-#include <Standard_Type.hxx>
 #include <TColStd_Array1OfReal.hxx>
 
-IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Curve,DrawTrSurf_Drawable)
+IMPLEMENT_STANDARD_RTTIEXT(DrawTrSurf_Curve, DrawTrSurf_Drawable)
 
 Standard_Real DrawTrSurf_CurveLimit = 400;
 extern Standard_Boolean Draw_Bounds;
 
-
 //=======================================================================
 //function : DrawTrSurf_Curve
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 DrawTrSurf_Curve::DrawTrSurf_Curve (const Handle(Geom_Curve)& C,
-				    const Standard_Boolean DispOrigin) :
-       DrawTrSurf_Drawable (16, 0.01, 1),
-       curv(C),
-       look(Draw_vert),
-       disporigin(DispOrigin),
-       dispcurvradius(Standard_False),
-       radiusmax(1.0e3),
-       radiusratio(0.1)
+                                    const Standard_Boolean DispOrigin)
+: DrawTrSurf_Drawable (16, 0.01, 1),
+  curv (C),
+  look (Draw_vert),
+  disporigin (DispOrigin),
+  dispcurvradius (Standard_False),
+  radiusmax (1.0e3),
+  radiusratio (0.1)
 {
+  //
 }
-
-
 
 //=======================================================================
 //function : DrawTrSurf_Curve
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-DrawTrSurf_Curve::DrawTrSurf_Curve (const Handle(Geom_Curve)& C, 
-				    const Draw_Color& aColor, 
-				    const Standard_Integer Discret,
-				    const Standard_Real Deflection, 
-				    const Standard_Integer DrawMode,
-				    const Standard_Boolean DispOrigin,
-				    const Standard_Boolean DispCurvRadius,
-				    const Standard_Real  RadiusMax,
-				    const Standard_Real  RadiusRatio) :
-       DrawTrSurf_Drawable (Discret,Deflection, DrawMode),
-       curv(C),
-       look(aColor),
-       disporigin(DispOrigin),
-       dispcurvradius(DispCurvRadius),
-       radiusmax(RadiusMax),
-       radiusratio(RadiusRatio)
+DrawTrSurf_Curve::DrawTrSurf_Curve (const Handle(Geom_Curve)& C,
+                                    const Draw_Color& aColor,
+                                    const Standard_Integer Discret,
+                                    const Standard_Real Deflection,
+                                    const Standard_Integer DrawMode,
+                                    const Standard_Boolean DispOrigin,
+                                    const Standard_Boolean DispCurvRadius,
+                                    const Standard_Real  RadiusMax,
+                                    const Standard_Real  RadiusRatio)
+: DrawTrSurf_Drawable (Discret,Deflection, DrawMode),
+  curv(C),
+  look(aColor),
+  disporigin(DispOrigin),
+  dispcurvradius(DispCurvRadius),
+  radiusmax(RadiusMax),
+  radiusratio(RadiusRatio)
 {
+  //
 }
-
 
 //=======================================================================
 //function : DrawOn
-//purpose  : 
+//purpose  :
 //=======================================================================
-
 void DrawTrSurf_Curve::DrawOn (Draw_Display& dis) const 
 {
   Standard_Real First = curv->FirstParameter();
@@ -184,13 +179,11 @@ void DrawTrSurf_Curve::DrawOn (Draw_Display& dis) const
   }
 }
 
-
 //=======================================================================
 //function : Copy
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Handle(Draw_Drawable3D)  DrawTrSurf_Curve::Copy()const 
+Handle(Draw_Drawable3D) DrawTrSurf_Curve::Copy() const
 {
   Handle(DrawTrSurf_Curve) DC = new DrawTrSurf_Curve
     (Handle(Geom_Curve)::DownCast(curv->Copy()),
@@ -200,24 +193,41 @@ Handle(Draw_Drawable3D)  DrawTrSurf_Curve::Copy()const
   return DC;
 }
 
-
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DrawTrSurf_Curve::Dump(Standard_OStream& S)const 
+void DrawTrSurf_Curve::Dump (Standard_OStream& S) const
 {
-  GeomTools_CurveSet::PrintCurve(curv,S);
+  GeomTools_CurveSet::PrintCurve (curv, S);
 }
 
+//=======================================================================
+//function : Save
+//purpose  :
+//=======================================================================
+void DrawTrSurf_Curve::Save (Standard_OStream& theOs) const
+{
+  GeomTools_CurveSet::PrintCurve (GetCurve(), theOs, true);
+}
+
+//=======================================================================
+//function : Restore
+//purpose  :
+//=======================================================================
+Handle(Draw_Drawable3D) DrawTrSurf_Curve::Restore (Standard_IStream& theStream)
+{
+  const DrawTrSurf_Params& aParams = DrawTrSurf::Parameters();
+  Handle(Geom_Curve) aGeomCurve = GeomTools_CurveSet::ReadCurve (theStream);
+  Handle(DrawTrSurf_Curve) aDrawCurve = new DrawTrSurf_Curve (aGeomCurve, aParams.CurvColor, aParams.Discret, aParams.Deflection, aParams.DrawMode);
+  return aDrawCurve;
+}
 
 //=======================================================================
 //function : Whatis
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DrawTrSurf_Curve::Whatis(Draw_Interpretor& S)const 
+void DrawTrSurf_Curve::Whatis (Draw_Interpretor& S) const
 {
   S << " a 3d curve";
 }

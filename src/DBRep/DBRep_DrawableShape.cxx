@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <DBRep_DrawableShape.hxx>
 
 #include <Adaptor3d_Curve.hxx>
 #include <BRep_Tool.hxx>
@@ -21,7 +22,8 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepTools.hxx>
-#include <DBRep_DrawableShape.hxx>
+#include <BRepTools_ShapeSet.hxx>
+#include <DBRep.hxx>
 #include <DBRep_Edge.hxx>
 #include <DBRep_Face.hxx>
 #include <DBRep_HideData.hxx>
@@ -32,13 +34,13 @@
 #include <Draw_Appli.hxx>
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
-#include <Draw_Drawable3D.hxx>
+#include <Draw_ProgressIndicator.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomAdaptor_Surface.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Trsf.hxx>
+#include <Message_ProgressIndicator.hxx>
 #include <HLRBRep.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Polygon3D.hxx>
@@ -1006,21 +1008,62 @@ void DBRep_DrawableShape::GetDisplayHLR(Standard_Boolean& withHLR,
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DBRep_DrawableShape::Dump(Standard_OStream& S)const 
+void DBRep_DrawableShape::Dump (Standard_OStream& S) const
 {
   BRepTools::Dump(myShape,S);
 }
 
+//=======================================================================
+//function : Save
+//purpose  :
+//=======================================================================
+void DBRep_DrawableShape::Save (Standard_OStream& theStream) const
+{
+  BRep_Builder aBuilder;
+  BRepTools_ShapeSet aShapeSet (aBuilder);
+  aShapeSet.Add (myShape);
+  Handle(Draw_ProgressIndicator) aProgress = Draw::GetProgressBar();
+  aShapeSet.Write (theStream, Message_ProgressIndicator::Start (aProgress));
+  if (aProgress.IsNull() || !aProgress->UserBreak())
+  {
+    aShapeSet.Write (myShape, theStream);
+  }
+}
+
+//=======================================================================
+//function : Restore
+//purpose  :
+//=======================================================================
+Handle(Draw_Drawable3D) DBRep_DrawableShape::Restore (Standard_IStream& theStream)
+{
+  const DBRep_Params& aParams = DBRep::Parameters();
+  BRep_Builder aBuilder;
+  BRepTools_ShapeSet aShapeSet (aBuilder);
+  Handle(Draw_ProgressIndicator) aProgress = Draw::GetProgressBar();
+  aShapeSet.Read (theStream, Message_ProgressIndicator::Start(aProgress));
+  if (!aProgress.IsNull() && aProgress->UserBreak())
+  {
+    return Handle(Draw_Drawable3D)();
+  }
+
+  TopoDS_Shape aTopoShape;
+  aShapeSet.Read (aTopoShape, theStream);
+  Handle(DBRep_DrawableShape) aDrawShape = new DBRep_DrawableShape (aTopoShape,
+                                                                    Draw_vert, Draw_jaune, Draw_rouge, Draw_bleu,
+                                                                    aParams.Size, aParams.NbIsos, aParams.Discretization);
+  aDrawShape->DisplayTriangulation (aParams.DispTriangles);
+  aDrawShape->DisplayPolygons (aParams.DisplayPolygons);
+  aDrawShape->DisplayHLR (aParams.WithHLR, aParams.WithRg1, aParams.WithRgN, aParams.WithHid, aParams.HLRAngle);
+  return aDrawShape;
+}
 
 //=======================================================================
 //function : Whatis
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void  DBRep_DrawableShape::Whatis(Draw_Interpretor& s)const 
+void DBRep_DrawableShape::Whatis (Draw_Interpretor& s) const
 {
   if (myShape.IsNull())
   {
