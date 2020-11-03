@@ -1,0 +1,8 @@
+puts "=========="
+puts "0031908: Draw Harness, TKTopTest - wavefront file path length is limited to 100 characters"
+puts "=========="
+puts ""
+pload MODELING 
+box b 10 20 30
+wavefront b the_name_of_saved_with_wavefront_command_box_that_measures_10_20_30_and_has_length_of_its_name_longer_than_100_characters
+puts "TEST COMPLETED"

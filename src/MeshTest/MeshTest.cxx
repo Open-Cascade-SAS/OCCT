@@ -39,6 +39,7 @@
 #include <IMeshData_Status.hxx>
 #include <Message.hxx>
 #include <Message_ProgressRange.hxx>
+#include <OSD_OpenFile.hxx>
 #include <Poly_Connect.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
@@ -788,17 +789,17 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
   Standard_Integer n1, n2, n3;
   Standard_Integer k1, k2, k3;
 
-  char ffile[100];
+  TCollection_AsciiString  aFile;
 
   if (nbarg == 3) {
-    strcpy(ffile, argv[2]);
-    strcat(ffile, ".obj");
+    aFile = argv[2];
+    aFile += ".obj";
   }
-  else  strcpy(ffile, "wave.obj");
-  FILE* outfile = fopen(ffile, "w");
+  else  aFile = "wave.obj";
+  FILE* outfile = OSD_OpenFile(aFile.ToCString(), "w");
 
 
-  fprintf(outfile, "%s  %s\n%s %s\n\n", "# CASCADE   ","MATRA DATAVISION", "#", ffile);
+  fprintf(outfile, "%s  %s\n%s %s\n\n", "# CASCADE   ","MATRA DATAVISION", "#", aFile.ToCString());
 
   Standard_Integer nbNodes, totalnodes = 0, nbpolygons = 0;
   for (ex.Init(S, TopAbs_FACE); ex.More(); ex.Next()) {
