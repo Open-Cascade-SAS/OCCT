@@ -1252,6 +1252,11 @@ Standard_Boolean Prs3d_Drawer::SetOwnDatumAspects (const Handle(Prs3d_Drawer)& t
   {
     isUpdateNeeded = true;
     myDatumAspect = new Prs3d_DatumAspect();
+    if (!aLink.IsNull()
+      && aLink->HasOwnDatumAspect())
+    {
+      myDatumAspect->CopyAspectsFrom (aLink->DatumAspect());
+    }
     myHasOwnDatumAspect = true;
   }
   return isUpdateNeeded;

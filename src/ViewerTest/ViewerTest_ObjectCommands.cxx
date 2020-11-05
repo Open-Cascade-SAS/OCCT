@@ -426,24 +426,59 @@ namespace
 
     if (aMapOfArgs.Find ("textcolor", aValues))
     {
+      Prs3d_DatumParts aDatumPart = Prs3d_DatumParts_None;
+      if (!aValues->IsEmpty()
+        && convertToDatumPart (aValues->First(), aDatumPart)
+        && aDatumPart >= Prs3d_DatumParts_XAxis
+        && aDatumPart <= Prs3d_DatumParts_ZAxis)
+      {
+        aValues->Remove (1); // datum part is processed
+      }
+
       Quantity_Color aColor;
       if (!convertToColor (aValues, aColor))
       {
         Message::SendFail ("Syntax error: -textcolor wrong parameters");
         return Standard_False;
       }
-      theTrihedron->SetTextColor (aColor);
+
+      if (aDatumPart != Prs3d_DatumParts_None)
+      {
+        theTrihedron->SetTextColor (aDatumPart, aColor);
+      }
+      else
+      {
+        theTrihedron->SetTextColor (aColor);
+      }
     }
 
     if (aMapOfArgs.Find ("arrowcolor", aValues))
     {
+      Prs3d_DatumParts aDatumPart = Prs3d_DatumParts_None;
+      if (!aValues->IsEmpty()
+        && convertToDatumPart (aValues->First(), aDatumPart)
+        && ((aDatumPart >= Prs3d_DatumParts_XArrow && aDatumPart <= Prs3d_DatumParts_ZArrow)
+         || (aDatumPart >= Prs3d_DatumParts_XAxis  && aDatumPart <= Prs3d_DatumParts_ZAxis)))
+      {
+        aValues->Remove (1); // datum part is processed
+      }
+
       Quantity_Color aColor;
       if (!convertToColor (aValues, aColor))
       {
         Message::SendFail ("Syntax error: -arrowcolor wrong parameters");
         return Standard_False;
       }
-      theTrihedron->SetArrowColor (aColor);
+
+      if (aDatumPart != Prs3d_DatumParts_None)
+      {
+        Prs3d_DatumParts anArrowPart = Prs3d_DatumAspect::ArrowPartForAxis (aDatumPart);
+        theTrihedron->SetArrowColor (anArrowPart, aColor);
+      }
+      else
+      {
+        theTrihedron->SetArrowColor (aColor);
+      }
     }
 
     if (aMapOfArgs.Find ("attribute", aValues))
@@ -582,6 +617,11 @@ static int VTrihedron2D (Draw_Interpretor& /*theDI*/,
                          Standard_Integer  theArgsNum,
                          const char**      theArgVec)
 {
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
   if (theArgsNum != 2)
   {
     Message::SendFail() << "Syntax error: wrong number of arguments.";
@@ -640,6 +680,11 @@ static int VTrihedron (Draw_Interpretor& ,
                        Standard_Integer theArgsNb,
                        const char** theArgVec)
 {
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    Message::SendFail ("Error: no active viewer");
+    return 1;
+  }
   if (theArgsNb < 2)
   {
     Message::SendFail ("Syntax error: the wrong number of input parameters");
@@ -6868,8 +6913,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:             |ShadingNumberOfFacettes} value]"
                    "\n\t\t: [-color {Origin|XAxis|YAxis|ZAxis|XOYAxis|YOZAxis"
                    "\n\t\t:         |XOZAxis|Whole} {r g b | colorName}]"
-                   "\n\t\t: [-textColor {r g b | colorName}]"
-                   "\n\t\t: [-arrowColor {r g b | colorName}]"
+                   "\n\t\t: [-textColor  [XAxis|YAxis|ZAxis] {r g b | colorName}]"
+                   "\n\t\t: [-arrowColor [XAxis|YAxis|ZAxis] {r g b | colorName}]"
                    "\n\t\t: [-priority {Origin|XAxis|YAxis|ZAxis|XArrow"
                    "\n\t\t:            |YArrow|ZArrow|XOYAxis|YOZAxis"
                    "\n\t\t:            |XOZAxis|Whole} value]"

@@ -286,6 +286,9 @@ public:
   //! sets the immediate update mode and returns the previous one.
   Standard_EXPORT Standard_Boolean SetImmediateUpdate (const Standard_Boolean theImmediateUpdate);
 
+  //! Returns trihedron object.
+  const Handle(V3d_Trihedron)& Trihedron() const { return myTrihedron; }
+
   //! Customization of the ZBUFFER Triedron.
   //! XColor,YColor,ZColor - colors of axis
   //! SizeRatio - ratio of decreasing of the trihedron size when its physical

@@ -43,11 +43,16 @@ public:
   //! Returns shading aspect for specified part.
   const Handle(Prs3d_ShadingAspect)& ShadingAspect (Prs3d_DatumParts thePart) const { return myShadedAspects[thePart]; }
 
-  //! Returns the text attributes for rendering labels.
-  const Handle(Prs3d_TextAspect)& TextAspect() const { return myTextAspect; }
+  //! Returns the text attributes for rendering label of specified part (Prs3d_DatumParts_XAxis/Prs3d_DatumParts_YAxis/Prs3d_DatumParts_ZAxis).
+  const Handle(Prs3d_TextAspect)& TextAspect (Prs3d_DatumParts thePart) const { return myTextAspects[thePart]; }
 
   //! Sets text attributes for rendering labels.
-  void SetTextAspect (const Handle(Prs3d_TextAspect)& theTextAspect) { myTextAspect = theTextAspect; }
+  void SetTextAspect (const Handle(Prs3d_TextAspect)& theTextAspect)
+  {
+    myTextAspects[Prs3d_DatumParts_XAxis] = theTextAspect;
+    myTextAspects[Prs3d_DatumParts_YAxis] = theTextAspect;
+    myTextAspects[Prs3d_DatumParts_ZAxis] = theTextAspect;
+  }
 
   //! Returns the point aspect of origin wireframe presentation
   const Handle(Prs3d_PointAspect)& PointAspect() const { return myPointAspect; }
@@ -55,7 +60,7 @@ public:
   //! Returns the point aspect of origin wireframe presentation
   void SetPointAspect (const Handle(Prs3d_PointAspect)& theAspect) { myPointAspect = theAspect; }
 
-  //! Returns the arrow aspect of presentation
+  //! Returns the arrow aspect of presentation.
   const Handle(Prs3d_ArrowAspect)& ArrowAspect() const { return myArrowAspect; }
 
   //! Sets the arrow aspect of presentation
@@ -100,13 +105,22 @@ public:
   //! Sets option to draw or not arrows for axes
   void SetDrawArrows (Standard_Boolean theToDraw) { myToDrawArrows = theToDraw; }
 
-  //! Returns type of arrow for a type of axis
-  Standard_EXPORT Prs3d_DatumParts ArrowPartForAxis (Prs3d_DatumParts thePart) const;
+  //! Performs deep copy of attributes from another aspect instance.
+  Standard_EXPORT void CopyAspectsFrom (const Handle(Prs3d_DatumAspect)& theOther);
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const Standard_OVERRIDE;
 
 public:
+
+  //! Returns type of arrow for a type of axis
+  Standard_EXPORT static Prs3d_DatumParts ArrowPartForAxis (Prs3d_DatumParts thePart);
+
+public:
+
+  //! Returns the text attributes for rendering labels.
+  Standard_DEPRECATED("This method is deprecated - TextAspect() with axis parameter should be called instead")
+  const Handle(Prs3d_TextAspect)& TextAspect() const { return myTextAspects[Prs3d_DatumParts_XAxis]; }
 
   //! Returns the attributes for display of the first axis.
   Standard_DEPRECATED("This method is deprecated - LineAspect() should be called instead")
@@ -152,11 +166,11 @@ public:
   Standard_DEPRECATED("This method is deprecated - AxisLength() should be called instead")
   Standard_Real ThirdAxisLength() const { return myAttributes[Prs3d_DatumAttribute_ZAxisLength]; }
 
-private:
+protected:
 
   Handle(Prs3d_ShadingAspect) myShadedAspects[Prs3d_DatumParts_NB];
   Handle(Prs3d_LineAspect)    myLineAspects[Prs3d_DatumParts_NB];
-  Handle(Prs3d_TextAspect)    myTextAspect;
+  Handle(Prs3d_TextAspect)    myTextAspects[Prs3d_DatumParts_NB];
   Handle(Prs3d_PointAspect)   myPointAspect;
   Handle(Prs3d_ArrowAspect)   myArrowAspect;
   Standard_Real               myAttributes[Prs3d_DatumAttribute_NB];

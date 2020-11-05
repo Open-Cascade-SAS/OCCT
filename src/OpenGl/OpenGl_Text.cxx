@@ -679,7 +679,8 @@ void OpenGl_Text::render (const Handle(OpenGl_Context)& theCtx,
   {
     myFont = FindFont (theCtx, theTextAspect, (Standard_Integer)myText->Height(), theResolution, aFontKey);
   }
-  if (!myFont->WasInitialized())
+  if (myFont.IsNull()
+  || !myFont->WasInitialized())
   {
     return;
   }

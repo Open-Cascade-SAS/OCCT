@@ -63,6 +63,7 @@
 #include <OSD_Timer.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <Prs3d_ShadingAspect.hxx>
+#include <Prs3d_DatumAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Text.hxx>
@@ -83,6 +84,7 @@
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_PositionalLight.hxx>
 #include <V3d_SpotLight.hxx>
+#include <V3d_Trihedron.hxx>
 
 #include <tcl.h>
 
@@ -3988,7 +3990,9 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
 
   Aspect_TypeOfTriedronPosition aPosition     = Aspect_TOTP_LEFT_LOWER;
   V3d_TypeOfVisualization       aVisType      = V3d_ZBUFFER;
-  Quantity_Color                aLabelsColor  = Quantity_NOC_WHITE;
+  Quantity_Color                aLabelsColorX = Quantity_NOC_WHITE;
+  Quantity_Color                aLabelsColorY = Quantity_NOC_WHITE;
+  Quantity_Color                aLabelsColorZ = Quantity_NOC_WHITE;
   Quantity_Color                anArrowColorX = Quantity_NOC_RED;
   Quantity_Color                anArrowColorY = Quantity_NOC_GREEN;
   Quantity_Color                anArrowColorZ = Quantity_NOC_BLUE1;
@@ -4132,51 +4136,51 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
       aNbFacets = Draw::Atoi (theArgVec[anArgIter]);
     }
     else if (aFlag == "-colorlabel"
-          || aFlag == "-colorlabels")
+          || aFlag == "-colorlabels"
+          || aFlag == "-colorlabelx"
+          || aFlag == "-colorlabely"
+          || aFlag == "-colorlabelz"
+          || aFlag == "-colorarrowx"
+          || aFlag == "-colorarrowy"
+          || aFlag == "-colorarrowz")
     {
+      Quantity_Color aColor;
       Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
                                                      theArgVec + anArgIter + 1,
-                                                     aLabelsColor);
+                                                     aColor);
       if (aNbParsed == 0)
       {
         Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
         return 1;
       }
-      anArgIter += aNbParsed;
-    }
-    else if (aFlag == "-colorarrowx")
-    {
-      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
-                                                     theArgVec + anArgIter + 1,
-                                                     anArrowColorX);
-      if (aNbParsed == 0)
+
+      if (aFlag == "-colorarrowx")
       {
-        Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
-        return 1;
+        anArrowColorX = aColor;
       }
-      anArgIter += aNbParsed;
-    }
-    else if (aFlag == "-colorarrowy")
-    {
-      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
-                                                     theArgVec + anArgIter + 1,
-                                                     anArrowColorY);
-      if (aNbParsed == 0)
+      else if (aFlag == "-colorarrowy")
       {
-        Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
-        return 1;
+        anArrowColorY = aColor;
       }
-      anArgIter += aNbParsed;
-    }
-    else if (aFlag == "-colorarrowz")
-    {
-      Standard_Integer aNbParsed = Draw::ParseColor (theArgNb  - anArgIter - 1,
-                                                     theArgVec + anArgIter + 1,
-                                                     anArrowColorZ);
-      if (aNbParsed == 0)
+      else if (aFlag == "-colorarrowz")
       {
-        Message::SendFail() << "Error: wrong syntax at '" << anArg << "'";
-        return 1;
+        anArrowColorZ = aColor;
+      }
+      else if (aFlag == "-colorlabelx")
+      {
+        aLabelsColorX = aColor;
+      }
+      else if (aFlag == "-colorlabely")
+      {
+        aLabelsColorY = aColor;
+      }
+      else if (aFlag == "-colorlabelz")
+      {
+        aLabelsColorZ = aColor;
+      }
+      else
+      {
+        aLabelsColorZ = aLabelsColorY = aLabelsColorX = aColor;
       }
       anArgIter += aNbParsed;
     }
@@ -4187,9 +4191,17 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
     }
   }
 
-  aView->ZBufferTriedronSetup (anArrowColorX, anArrowColorY, anArrowColorZ,
-                               aSizeRatio, anArrowDiam, aNbFacets);
-  aView->TriedronDisplay (aPosition, aLabelsColor, aScale, aVisType);
+  const Handle(V3d_Trihedron)& aTrihedron = aView->Trihedron();
+  aTrihedron->SetArrowsColor  (anArrowColorX, anArrowColorY, anArrowColorZ);
+  aTrihedron->SetLabelsColor  (aLabelsColorX, aLabelsColorY, aLabelsColorZ);
+  aTrihedron->SetSizeRatio    (aSizeRatio);
+  aTrihedron->SetNbFacets     (aNbFacets);
+  aTrihedron->SetArrowDiameter(anArrowDiam);
+  aTrihedron->SetScale        (aScale);
+  aTrihedron->SetPosition     (aPosition);
+  aTrihedron->SetWireframe    (aVisType == V3d_WIREFRAME);
+  aTrihedron->Display (aView);
+
   aView->ZFitAll();
   return 0;
 }
@@ -13743,7 +13755,10 @@ static int VViewCube (Draw_Interpretor& ,
           || anArg == "-boxcornercolor"
           || anArg == "-cornercolor"
           || anArg == "-innercolor"
-          || anArg == "-textcolor")
+          || anArg == "-textcolor"
+          || anArg == "-xaxistextcolor"
+          || anArg == "-yaxistextcolor"
+          || anArg == "-zaxistextcolor")
     {
       Standard_Integer aNbParsed = Draw::ParseColor (theNbArgs - anArgIter - 1,
                                                      theArgVec + anArgIter + 1,
@@ -13783,6 +13798,18 @@ static int VViewCube (Draw_Interpretor& ,
       else if (anArg == "-textcolor")
       {
         aViewCube->SetTextColor (aColorRgb);
+      }
+      else if (anArg == "-xaxistextcolor"
+            || anArg == "-yaxistextcolor"
+            || anArg == "-zaxistextcolor")
+      {
+        Prs3d_DatumParts aDatum = anArg.Value (2) == 'x'
+                                ? Prs3d_DatumParts_XAxis
+                                : (anArg.Value (2) == 'y'
+                                 ? Prs3d_DatumParts_YAxis
+                                 : Prs3d_DatumParts_ZAxis);
+        aViewCube->Attributes()->SetOwnDatumAspects();
+        aViewCube->Attributes()->DatumAspect()->TextAspect (aDatum)->SetColor (aColorRgb);
       }
       else
       {
@@ -14320,6 +14347,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "\n\t\t:       [-scale value=0.1] [-size value=0.8] [-arrowDiam value=0.05]"
     "\n\t\t:       [-colorArrowX color=RED] [-colorArrowY color=GREEN] [-colorArrowZ color=BLUE]"
     "\n\t\t:       [-nbfacets value=12] [-colorLabels color=WHITE]"
+    "\n\t\t:       [-colorLabelX color] [-colorLabelY color] [-colorLabelZ color]"
     "\n\t\t: Displays a trihedron",
     __FILE__,VZBuffTrihedron,group);
   theCommands.Add("vrotate",
@@ -14978,7 +15006,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   -reset                   reset geomertical and visual attributes'"
                    "\n\t\t:   -size Size               adapted size of View Cube"
                    "\n\t\t:   -boxSize Size            box size"
-                   "\n\t\t:   -axes {0|1 }             show/hide axes (trihedron)"
+                   "\n\t\t:   -axes  {0|1}             show/hide axes (trihedron)"
                    "\n\t\t:   -edges {0|1}             show/hide edges of View Cube"
                    "\n\t\t:   -vertices {0|1}          show/hide vertices of View Cube"
                    "\n\t\t:   -Yup {0|1} -Zup {0|1}    set Y-up or Z-up view orientation"
@@ -14991,6 +15019,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
                    "\n\t\t:   -innerColor Color        inner box color"
                    "\n\t\t:   -transparency Value      transparency of object within [0, 1] range"
                    "\n\t\t:   -boxTransparency Value   transparency of box    within [0, 1] range"
+                   "\n\t\t:   -xAxisTextColor Color    color of X axis label"
+                   "\n\t\t:   -yAxisTextColor Color    color of Y axis label"
+                   "\n\t\t:   -zAxisTextColor Color    color of Z axis label"
                    "\n\t\t:   -font Name               font name"
                    "\n\t\t:   -fontHeight Value        font height"
                    "\n\t\t:   -boxFacetExtension Value box facet extension"

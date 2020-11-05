@@ -96,14 +96,22 @@ public:
   //! Sets color of label of trihedron axes.
   Standard_EXPORT void SetTextColor (const Quantity_Color& theColor);
 
+  //! Sets color of label of trihedron axis.
+  Standard_EXPORT void SetTextColor (const Prs3d_DatumParts thePart,
+                                     const Quantity_Color& theColor);
+
   //! Returns true if trihedron has own arrow color
   Standard_Boolean HasArrowColor() const { return myHasOwnArrowColor; }
 
   //! Returns trihedron arrow color
   Standard_EXPORT Quantity_Color ArrowColor() const;
 
-  //! Sets color of arrow of trihedron axes. Used only in wireframe mode
+  //! Sets color of arrow of trihedron axes.
   Standard_EXPORT void SetArrowColor (const Quantity_Color& theColor);
+
+  //! Sets color of arrow of trihedron axes.
+  Standard_EXPORT void SetArrowColor (const Prs3d_DatumParts thePart,
+                                      const Quantity_Color& theColor);
 
   //! Returns color of datum part: origin or some of trihedron axes.
   Standard_EXPORT Quantity_Color DatumPartColor (Prs3d_DatumParts thePart);

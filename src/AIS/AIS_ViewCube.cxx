@@ -614,7 +614,7 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
         gp_Pnt aTextOrigin = anAx1.Location().Translated (gp_Vec (anAx1.Direction().X() * (anAxisSize + anArrowLength),
                                                                   anAx1.Direction().Y() * (anAxisSize + anArrowLength),
                                                                   anAx1.Direction().Z() * (anAxisSize + anArrowLength)));
-        Prs3d_Text::Draw (anAxisLabelGroup, aDatumAspect->TextAspect(), TCollection_ExtendedString (anAxisLabel), aTextOrigin);
+        Prs3d_Text::Draw (anAxisLabelGroup, aDatumAspect->TextAspect (aPart), TCollection_ExtendedString (anAxisLabel), aTextOrigin);
       }
     }
 

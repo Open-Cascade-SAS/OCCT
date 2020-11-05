@@ -23,7 +23,6 @@
 #include <Graphic3d_TransformPers.hxx>
 #include <Prs3d.hxx>
 #include <Prs3d_Arrow.hxx>
-#include <Prs3d_LineAspect.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -97,34 +96,32 @@ V3d_Trihedron::V3d_Trihedron()
   for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
   {
     myArrowShadingAspects[anIt] = new Prs3d_ShadingAspect();
-    myArrowLineAspects[anIt]    = new Prs3d_LineAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0);
+    myTextAspects[anIt]         = new Prs3d_TextAspect();
 
     // mark texture map ON to actually disable environment map
     myArrowShadingAspects[anIt]->Aspect()->SetTextureMapOn();
     myArrowShadingAspects[anIt]->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
     myArrowShadingAspects[anIt]->SetMaterial (aShadingMaterial);
+
+    myTextAspects[anIt]->SetFont (Font_NOF_ASCII_MONO);
+    myTextAspects[anIt]->SetHeight (16);
+    myTextAspects[anIt]->SetHorizontalJustification (Graphic3d_HTA_LEFT);
+    myTextAspects[anIt]->SetVerticalJustification (Graphic3d_VTA_BOTTOM);
   }
-  myArrowShadingAspects[0]->SetColor (Quantity_NOC_RED);
-  myArrowLineAspects   [0]->SetColor (Quantity_NOC_RED);
-  myArrowShadingAspects[1]->SetColor (Quantity_NOC_GREEN);
-  myArrowLineAspects   [1]->SetColor (Quantity_NOC_GREEN);
-  myArrowShadingAspects[2]->SetColor (Quantity_NOC_BLUE1);
-  myArrowLineAspects   [2]->SetColor (Quantity_NOC_BLUE1);
+  myArrowShadingAspects[V3d_X]->SetColor (Quantity_NOC_RED);
+  myArrowShadingAspects[V3d_Y]->SetColor (Quantity_NOC_GREEN);
+  myArrowShadingAspects[V3d_Z]->SetColor (Quantity_NOC_BLUE);
+
+  myLabels[V3d_X] = "X";
+  myLabels[V3d_Y] = "Y";
+  myLabels[V3d_Z] = "Z";
 
   mySphereShadingAspect = new Prs3d_ShadingAspect();
-  mySphereLineAspect    = new Prs3d_LineAspect (Quantity_NOC_WHITE, Aspect_TOL_SOLID, 1.0);
-
   // mark texture map ON to actually disable environment map
   mySphereShadingAspect->Aspect()->SetTextureMapOn();
   mySphereShadingAspect->Aspect()->SetInteriorStyle (Aspect_IS_SOLID);
   mySphereShadingAspect->SetMaterial (aShadingMaterial);
   mySphereShadingAspect->SetColor (Quantity_NOC_WHITE);
-
-  myTextAspect = new Prs3d_TextAspect();
-  myTextAspect->SetFont ("Courier");
-  myTextAspect->SetHeight (16);
-  myTextAspect->SetHorizontalJustification (Graphic3d_HTA_LEFT);
-  myTextAspect->SetVerticalJustification (Graphic3d_VTA_BOTTOM);
 }
 
 // ============================================================================
@@ -142,7 +139,41 @@ V3d_Trihedron::~V3d_Trihedron()
 // ============================================================================
 void V3d_Trihedron::SetLabelsColor (const Quantity_Color& theColor)
 {
-  myTextAspect->SetColor (theColor);
+  myTextAspects[V3d_X]->SetColor (theColor);
+  myTextAspects[V3d_Y]->SetColor (theColor);
+  myTextAspects[V3d_Z]->SetColor (theColor);
+}
+
+// ============================================================================
+// function : SetLabels
+// purpose  :
+// ============================================================================
+void V3d_Trihedron::SetLabels (const TCollection_AsciiString& theX,
+                               const TCollection_AsciiString& theY,
+                               const TCollection_AsciiString& theZ)
+{
+  if (!myLabels[V3d_X].IsEqual (theX)
+   || !myLabels[V3d_Y].IsEqual (theY)
+   || !myLabels[V3d_Z].IsEqual (theZ))
+  {
+    invalidate();
+    myLabels[V3d_X] = theX;
+    myLabels[V3d_Y] = theY;
+    myLabels[V3d_Z] = theZ;
+  }
+}
+
+// ============================================================================
+// function : SetLabelsColor
+// purpose  :
+// ============================================================================
+void V3d_Trihedron::SetLabelsColor (const Quantity_Color& theXColor,
+                                    const Quantity_Color& theYColor,
+                                    const Quantity_Color& theZColor)
+{
+  myTextAspects[V3d_X]->SetColor (theXColor);
+  myTextAspects[V3d_Y]->SetColor (theYColor);
+  myTextAspects[V3d_Z]->SetColor (theZColor);
 }
 
 // ============================================================================
@@ -157,7 +188,6 @@ void V3d_Trihedron::SetArrowsColor (const Quantity_Color& theXColor,
   for (Standard_Integer anIt = 0; anIt < 3; ++anIt)
   {
     myArrowShadingAspects[anIt]->SetColor (aColors[anIt]);
-    myArrowLineAspects   [anIt]->SetColor (aColors[anIt]);
   }
 }
 
@@ -306,7 +336,7 @@ void V3d_Trihedron::compute()
       anCircleArray->AddVertex (aRayon * Sin (THE_CIRCLE_SERMENTS_NB * THE_CIRCLE_SEGMENT_ANGLE),
                                 aRayon * Cos (THE_CIRCLE_SERMENTS_NB * THE_CIRCLE_SEGMENT_ANGLE), 0.0);
 
-      aSphereGroup->SetGroupPrimitivesAspect (mySphereLineAspect->Aspect());
+      aSphereGroup->SetGroupPrimitivesAspect (mySphereShadingAspect->Aspect());
       aSphereGroup->AddPrimitiveArray (anCircleArray);
     }
     else
@@ -331,7 +361,7 @@ void V3d_Trihedron::compute()
         anArray->AddVertex (0.0f, 0.0f, 0.0f);
         anArray->AddVertex (anAxes[anIter].Direction().XYZ() * aCylinderLength);
 
-        anAxisGroup->SetGroupPrimitivesAspect (myArrowLineAspects[anIter]->Aspect());
+        anAxisGroup->SetGroupPrimitivesAspect (myArrowShadingAspects[anIter]->Aspect());
         anAxisGroup->AddPrimitiveArray (anArray);
       }
 
@@ -349,13 +379,12 @@ void V3d_Trihedron::compute()
   // Display labels.
   {
     Handle(Graphic3d_Group) aLabelGroup = addGroup (myStructure, aGroupIter);
-    const TCollection_ExtendedString aLabels[3] = { "X", "Y", "Z" };
     const gp_Pnt aPoints[3] = { gp_Pnt (aScale + 2.0 * aRayon,                   0.0,               -aRayon),
                                 gp_Pnt (               aRayon, aScale + 3.0 * aRayon,          2.0 * aRayon),
                                 gp_Pnt (        -2.0 * aRayon,          0.5 * aRayon, aScale + 3.0 * aRayon) };
     for (Standard_Integer anAxisIter = 0; anAxisIter < 3; ++anAxisIter)
     {
-      Prs3d_Text::Draw (aLabelGroup, myTextAspect, aLabels[anAxisIter], aPoints[anAxisIter]);
+      Prs3d_Text::Draw (aLabelGroup, myTextAspects[anAxisIter], myLabels[anAxisIter], aPoints[anAxisIter]);
     }
   }
 }
@@ -369,18 +398,16 @@ void V3d_Trihedron::DumpJson (Standard_OStream& theOStream, Standard_Integer the
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN (theOStream)
   
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySphereShadingAspect.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, mySphereLineAspect.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myTextAspect.get())
 
+  for (Standard_Integer anIter = 0; anIter < 3; anIter++)
+  {
+    const Handle(Prs3d_TextAspect)& aTextAspect = myTextAspects[anIter];
+    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, aTextAspect.get())
+  }
   for (Standard_Integer anIter = 0; anIter < 3; anIter++)
   {
     const Handle(Prs3d_ShadingAspect)& anArrowShadinAspect = myArrowShadingAspects[anIter];
     OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anArrowShadinAspect.get())
-  }
-  for (Standard_Integer anIter = 0; anIter < 3; anIter++)
-  {
-    const Handle(Prs3d_LineAspect)& anArrowLineAspect = myArrowLineAspects[anIter];
-    OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, anArrowLineAspect.get())
   }
 
   OCCT_DUMP_FIELD_VALUES_DUMPED (theOStream, theDepth, myStructure.get())
