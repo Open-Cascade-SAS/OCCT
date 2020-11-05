@@ -95,7 +95,7 @@ namespace
     theDrawer->FreeBoundaryAspect()->SetColor (theColor);
     theDrawer->UnFreeBoundaryAspect()->SetColor (theColor);
     theDrawer->PointAspect()->SetColor (theColor);
-    for (Standard_Integer aPartIter = 0; aPartIter < Prs3d_DP_None; ++aPartIter)
+    for (Standard_Integer aPartIter = 0; aPartIter < Prs3d_DatumParts_None; ++aPartIter)
     {
       if (Handle(Prs3d_LineAspect) aLineAsp = theDrawer->DatumAspect()->LineAspect ((Prs3d_DatumParts )aPartIter))
       {
@@ -2197,9 +2197,9 @@ void AIS_InteractiveContext::InitAttributes()
   const Standard_Real aLength = 100.0;
   aTrihAspect->SetAxisLength (aLength, aLength, aLength);
   const Quantity_Color aColor = Quantity_NOC_LIGHTSTEELBLUE4;
-  aTrihAspect->LineAspect(Prs3d_DP_XAxis)->SetColor (aColor);
-  aTrihAspect->LineAspect(Prs3d_DP_YAxis)->SetColor (aColor);
-  aTrihAspect->LineAspect(Prs3d_DP_ZAxis)->SetColor (aColor);
+  aTrihAspect->LineAspect(Prs3d_DatumParts_XAxis)->SetColor (aColor);
+  aTrihAspect->LineAspect(Prs3d_DatumParts_YAxis)->SetColor (aColor);
+  aTrihAspect->LineAspect(Prs3d_DatumParts_ZAxis)->SetColor (aColor);
 
   Handle(Prs3d_PlaneAspect) aPlaneAspect = myDefaultDrawer->PlaneAspect();
   const Standard_Real aPlaneLength = 200.0;
@@ -2213,7 +2213,7 @@ void AIS_InteractiveContext::InitAttributes()
 //=======================================================================
 Standard_Real AIS_InteractiveContext::TrihedronSize() const
 {
-  return myDefaultDrawer->DatumAspect()->AxisLength(Prs3d_DP_XAxis);
+  return myDefaultDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
 }
 
 //=======================================================================

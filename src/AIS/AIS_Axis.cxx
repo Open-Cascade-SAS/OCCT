@@ -82,9 +82,9 @@ myIsXYZAxis(Standard_True)
   }
   DA->SetAxisLength(aLength,aLength,aLength);
   Quantity_Color col (Quantity_NOC_TURQUOISE);
-  DA->LineAspect(Prs3d_DP_XAxis)->SetColor(col);
-  DA->LineAspect(Prs3d_DP_YAxis)->SetColor(col);
-  DA->LineAspect(Prs3d_DP_ZAxis)->SetColor(col);
+  DA->LineAspect(Prs3d_DatumParts_XAxis)->SetColor(col);
+  DA->LineAspect(Prs3d_DatumParts_YAxis)->SetColor(col);
+  DA->LineAspect(Prs3d_DatumParts_ZAxis)->SetColor(col);
   myDrawer->SetDatumAspect(DA); 
   
   ComputeFields();
@@ -207,9 +207,9 @@ void AIS_Axis::SetColor(const Quantity_Color &aCol)
   myDrawer->LineAspect()->SetColor(aCol);
   
   const Handle(Prs3d_DatumAspect)& DA = myDrawer->DatumAspect();
-  DA->LineAspect(Prs3d_DP_XAxis)->SetColor(aCol);
-  DA->LineAspect(Prs3d_DP_YAxis)->SetColor(aCol);
-  DA->LineAspect(Prs3d_DP_ZAxis)->SetColor(aCol);
+  DA->LineAspect(Prs3d_DatumParts_XAxis)->SetColor(aCol);
+  DA->LineAspect(Prs3d_DatumParts_YAxis)->SetColor(aCol);
+  DA->LineAspect(Prs3d_DatumParts_ZAxis)->SetColor(aCol);
   SynchronizeAspects();
 }
 
@@ -225,9 +225,9 @@ void AIS_Axis::SetWidth(const Standard_Real aValue)
   myDrawer->LineAspect()->SetWidth(aValue);
   
   const Handle(Prs3d_DatumAspect)& DA = myDrawer->DatumAspect();
-  DA->LineAspect(Prs3d_DP_XAxis)->SetWidth(aValue);
-  DA->LineAspect(Prs3d_DP_YAxis)->SetWidth(aValue);
-  DA->LineAspect(Prs3d_DP_ZAxis)->SetWidth(aValue);
+  DA->LineAspect(Prs3d_DatumParts_XAxis)->SetWidth(aValue);
+  DA->LineAspect(Prs3d_DatumParts_YAxis)->SetWidth(aValue);
+  DA->LineAspect(Prs3d_DatumParts_ZAxis)->SetWidth(aValue);
   SynchronizeAspects();
 }
 
@@ -253,27 +253,27 @@ void AIS_Axis::ComputeFields()
     case AIS_TOAX_XAxis:
       {
 	oX.Coord(x,y,z);
-    myVal = DA->AxisLength(Prs3d_DP_XAxis);
+    myVal = DA->AxisLength(Prs3d_DatumParts_XAxis);
 	myDir = oX;
-	myLineAspect = DA->LineAspect(Prs3d_DP_XAxis);
+	myLineAspect = DA->LineAspect(Prs3d_DatumParts_XAxis);
 	myText = Standard_CString ("X");
 	break;
       }
     case AIS_TOAX_YAxis:
       {
 	oY.Coord(x,y,z);
-	myVal = DA->AxisLength(Prs3d_DP_YAxis);
+	myVal = DA->AxisLength(Prs3d_DatumParts_YAxis);
 	myDir = oY;
-	myLineAspect = DA->LineAspect(Prs3d_DP_YAxis);
+	myLineAspect = DA->LineAspect(Prs3d_DatumParts_YAxis);
 	myText = Standard_CString ("Y");
 	break;
       }
     case AIS_TOAX_ZAxis:
       {
 	oZ.Coord(x,y,z); 
-	myVal = DA->AxisLength(Prs3d_DP_ZAxis);
+	myVal = DA->AxisLength(Prs3d_DatumParts_ZAxis);
 	myDir = oZ;
-	myLineAspect = DA->LineAspect(Prs3d_DP_ZAxis);
+	myLineAspect = DA->LineAspect(Prs3d_DatumParts_ZAxis);
 	myText = Standard_CString ("Z");
 	break;
       }
@@ -306,9 +306,9 @@ void AIS_Axis::UnsetColor()
   myDrawer->LineAspect()->SetColor(Quantity_NOC_RED);
   hasOwnColor = Standard_False;
 
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(Quantity_NOC_TURQUOISE);
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_YAxis)->SetColor(Quantity_NOC_TURQUOISE);
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_ZAxis)->SetColor(Quantity_NOC_TURQUOISE);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis)->SetColor(Quantity_NOC_TURQUOISE);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_YAxis)->SetColor(Quantity_NOC_TURQUOISE);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_ZAxis)->SetColor(Quantity_NOC_TURQUOISE);
   SynchronizeAspects();
 }
 //=======================================================================
@@ -320,8 +320,8 @@ void AIS_Axis::UnsetWidth()
 {
   myOwnWidth = 0.0f;
   myDrawer->LineAspect()->SetWidth(1.);
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetWidth(1.);
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_YAxis)->SetWidth(1.);
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_ZAxis)->SetWidth(1.);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis)->SetWidth(1.);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_YAxis)->SetWidth(1.);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_ZAxis)->SetWidth(1.);
   SynchronizeAspects();
 }

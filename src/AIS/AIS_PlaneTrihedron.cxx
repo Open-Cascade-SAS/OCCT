@@ -67,9 +67,9 @@ AIS_PlaneTrihedron::AIS_PlaneTrihedron(const Handle(Geom_Plane)& aPlane)
   Standard_Real aLength = UnitsAPI::AnyToLS (100. ,"mm");
   DA->SetAxisLength(aLength,aLength,aLength);
   Quantity_Color col (Quantity_NOC_ROYALBLUE1);
-  DA->LineAspect(Prs3d_DP_XAxis)->SetColor(col);
-  DA->LineAspect(Prs3d_DP_YAxis)->SetColor(col);
-  DA->SetDrawDatumAxes(Prs3d_DA_XYAxis);
+  DA->LineAspect(Prs3d_DatumParts_XAxis)->SetColor(col);
+  DA->LineAspect(Prs3d_DatumParts_YAxis)->SetColor(col);
+  DA->SetDrawDatumAxes(Prs3d_DatumAxes_XYAxes);
   myDrawer->SetDatumAspect(DA); // odl - specific is created because it is modified
   myShapes[0] = Position();
   myShapes[1] = XAxis();
@@ -142,7 +142,7 @@ void AIS_PlaneTrihedron::SetLength(const Standard_Real theLength) {
 }
 
 Standard_Real AIS_PlaneTrihedron::GetLength() const {
-  return myDrawer->DatumAspect()->AxisLength(Prs3d_DP_XAxis);
+  return myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
 }
 
 //=======================================================================
@@ -156,7 +156,7 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   aPresentation->SetDisplayPriority(5);
   // drawing axis in X direction
   gp_Pnt first, last;
-  Standard_Real value = myDrawer->DatumAspect()->AxisLength(Prs3d_DP_XAxis);
+  Standard_Real value = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
   gp_Dir xDir = myPlane->Position().Ax2().XDirection();
 
   gp_Pnt orig = myPlane->Position().Ax2().Location();
@@ -166,15 +166,23 @@ void AIS_PlaneTrihedron::Compute(const Handle(PrsMgr_PresentationManager3d)&,
   first.SetCoord( xo, yo, zo );
   last.SetCoord( xo + x * value, yo + y * value, zo + z * value );
   
-  DsgPrs_XYZAxisPresentation::Add( aPresentation, myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis), myDrawer->ArrowAspect(), myDrawer->TextAspect(), xDir, value, myXLabel.ToCString(), first, last );
+  DsgPrs_XYZAxisPresentation::Add (aPresentation,
+                                   myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis),
+                                   myDrawer->ArrowAspect(),
+                                   myDrawer->TextAspect(),
+                                   xDir, value, myXLabel.ToCString(), first, last);
   
   // drawing axis in Y direction
-  value = myDrawer->DatumAspect()->AxisLength(Prs3d_DP_YAxis);
+  value = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_YAxis);
   gp_Dir yDir = myPlane->Position().Ax2().YDirection();
 
   yDir.Coord( x, y, z );
   last.SetCoord( xo + x * value, yo + y * value, zo + z * value );
-  DsgPrs_XYZAxisPresentation::Add( aPresentation, myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis), myDrawer->ArrowAspect(), myDrawer->TextAspect(), yDir, value, myYLabel.ToCString(), first, last );
+  DsgPrs_XYZAxisPresentation::Add (aPresentation,
+                                   myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis),
+                                   myDrawer->ArrowAspect(),
+                                   myDrawer->TextAspect(),
+                                   yDir, value, myYLabel.ToCString(), first, last);
 
   aPresentation->SetInfiniteState (Standard_True);
 }
@@ -238,8 +246,8 @@ void AIS_PlaneTrihedron::SetColor(const Quantity_Color &aCol)
 {
   hasOwnColor=Standard_True;
   myDrawer->SetColor (aCol);
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(aCol);
-  myDrawer->DatumAspect()->LineAspect(Prs3d_DP_YAxis)->SetColor(aCol);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_XAxis)->SetColor(aCol);
+  myDrawer->DatumAspect()->LineAspect(Prs3d_DatumParts_YAxis)->SetColor(aCol);
   SynchronizeAspects();
 }
 
@@ -254,12 +262,12 @@ void  ExtremityPoints(TColgp_Array1OfPnt& PP,const Handle(Geom_Plane)& myPlane,c
   gp_Ax2 theax(myPlane->Position().Ax2());
   PP(1) = theax.Location();
 
-  Standard_Real len = myDrawer->DatumAspect()->AxisLength(Prs3d_DP_XAxis);
+  Standard_Real len = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_XAxis);
   gp_Vec vec = theax.XDirection();
   vec *= len;
   PP(2) = PP(1).Translated(vec);
   
-  len = myDrawer->DatumAspect()->AxisLength(Prs3d_DP_YAxis);
+  len = myDrawer->DatumAspect()->AxisLength(Prs3d_DatumParts_YAxis);
   vec = theax.YDirection();
   vec *= len;
   PP(3) = PP(1).Translated(vec);

@@ -177,9 +177,9 @@ AIS_ViewCube::AIS_ViewCube()
   myBoxSideLabels.Bind (V3d_TypeOfOrientation_Zup_Left,   "LEFT");
   myBoxSideLabels.Bind (V3d_TypeOfOrientation_Zup_Right,  "RIGHT");
 
-  myAxesLabels.Bind (Prs3d_DP_XAxis, "X");
-  myAxesLabels.Bind (Prs3d_DP_YAxis, "Y");
-  myAxesLabels.Bind (Prs3d_DP_ZAxis, "Z");
+  myAxesLabels.Bind (Prs3d_DatumParts_XAxis, "X");
+  myAxesLabels.Bind (Prs3d_DatumParts_YAxis, "Y");
+  myAxesLabels.Bind (Prs3d_DatumParts_ZAxis, "Z");
 
   // define default size
   SetSize (70.0);
@@ -580,7 +580,7 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
   {
     const Standard_Real anAxisSize = mySize + 2.0 * myBoxFacetExtension + myAxesPadding;
     const Handle(Prs3d_DatumAspect)& aDatumAspect = myDrawer->DatumAspect();
-    for (Standard_Integer anAxisIter = Prs3d_DP_XAxis; anAxisIter <= Prs3d_DP_ZAxis; ++anAxisIter)
+    for (Standard_Integer anAxisIter = Prs3d_DatumParts_XAxis; anAxisIter <= Prs3d_DatumParts_ZAxis; ++anAxisIter)
     {
       const Prs3d_DatumParts aPart = (Prs3d_DatumParts )anAxisIter;
       if (!aDatumAspect->DrawDatumPart (aPart))
@@ -591,9 +591,9 @@ void AIS_ViewCube::Compute (const Handle(PrsMgr_PresentationManager3d)& ,
       gp_Ax1 anAx1;
       switch (aPart)
       {
-        case Prs3d_DP_XAxis: anAx1 = gp_Ax1 (aLocation, gp::DX()); break;
-        case Prs3d_DP_YAxis: anAx1 = gp_Ax1 (aLocation, gp::DY()); break;
-        case Prs3d_DP_ZAxis: anAx1 = gp_Ax1 (aLocation, gp::DZ()); break;
+        case Prs3d_DatumParts_XAxis: anAx1 = gp_Ax1 (aLocation, gp::DX()); break;
+        case Prs3d_DatumParts_YAxis: anAx1 = gp_Ax1 (aLocation, gp::DY()); break;
+        case Prs3d_DatumParts_ZAxis: anAx1 = gp_Ax1 (aLocation, gp::DZ()); break;
         default: break;
       }
 

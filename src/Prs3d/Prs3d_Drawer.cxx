@@ -1308,9 +1308,9 @@ bool Prs3d_Drawer::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theP
       }
       if (myHasOwnDatumAspect)
       {
-        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DP_XAxis));
-        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DP_YAxis));
-        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DP_ZAxis));
+        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DatumParts_XAxis));
+        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DatumParts_YAxis));
+        setAspectProgram (theProgram, true, myDatumAspect->LineAspect(Prs3d_DatumParts_ZAxis));
       }
       setAspectProgram (theProgram, myHasOwnArrowAspect, myArrowAspect);
       return isUpdateNeeded;

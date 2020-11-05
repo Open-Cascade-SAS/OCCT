@@ -4187,9 +4187,9 @@ static int VZBuffTrihedron (Draw_Interpretor& /*theDI*/,
     }
   }
 
-  aView->ZBufferTriedronSetup (anArrowColorX.Name(), anArrowColorY.Name(), anArrowColorZ.Name(),
+  aView->ZBufferTriedronSetup (anArrowColorX, anArrowColorY, anArrowColorZ,
                                aSizeRatio, anArrowDiam, aNbFacets);
-  aView->TriedronDisplay (aPosition, aLabelsColor.Name(), aScale, aVisType);
+  aView->TriedronDisplay (aPosition, aLabelsColor, aScale, aVisType);
   aView->ZFitAll();
   return 0;
 }

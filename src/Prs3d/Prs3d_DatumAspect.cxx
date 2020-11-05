@@ -23,61 +23,37 @@ IMPLEMENT_STANDARD_RTTIEXT(Prs3d_DatumAspect, Prs3d_BasicAspect)
 // purpose  :
 // =======================================================================
 Prs3d_DatumAspect::Prs3d_DatumAspect()
-: myAxes (Prs3d_DA_XYZAxis),
+: myAxes (Prs3d_DatumAxes_XYZAxes),
   myToDrawLabels (Standard_True),
   myToDrawArrows (Standard_True)
 {
-  Standard_Real aDefaultLength = 100.0; // default axis length, the same as in context
-  Quantity_Color aDefaultColor(Quantity_NOC_LIGHTSTEELBLUE4); // default axis color
+  const Standard_Real  aDefaultLength = 100.0; // default axis length, the same as in context
+  const Quantity_Color aDefaultColor (Quantity_NOC_LIGHTSTEELBLUE4); // default axis color
 
-  myAttributes.Bind (Prs3d_DA_XAxisLength, aDefaultLength);
-  myAttributes.Bind (Prs3d_DA_YAxisLength, aDefaultLength);
-  myAttributes.Bind (Prs3d_DA_ZAxisLength, aDefaultLength);
-  myAttributes.Bind (Prs3d_DP_ShadingTubeRadiusPercent,   0.02);
-  myAttributes.Bind (Prs3d_DP_ShadingConeRadiusPercent,   0.04);
-  myAttributes.Bind (Prs3d_DP_ShadingConeLengthPercent,   0.1);
-  myAttributes.Bind (Prs3d_DP_ShadingOriginRadiusPercent, 0.015);
-  myAttributes.Bind (Prs3d_DP_ShadingNumberOfFacettes,    12.0);
+  myAttributes[Prs3d_DatumAttribute_XAxisLength] = aDefaultLength;
+  myAttributes[Prs3d_DatumAttribute_YAxisLength] = aDefaultLength;
+  myAttributes[Prs3d_DatumAttribute_ZAxisLength] = aDefaultLength;
+  myAttributes[Prs3d_DatumAttribute_ShadingTubeRadiusPercent]   = 0.02;
+  myAttributes[Prs3d_DatumAttribute_ShadingConeRadiusPercent]   = 0.04;
+  myAttributes[Prs3d_DatumAttribute_ShadingConeLengthPercent]   = 0.1;
+  myAttributes[Prs3d_DatumAttribute_ShadingOriginRadiusPercent] = 0.015;
+  myAttributes[Prs3d_DatumAttribute_ShadingNumberOfFacettes]    = 12.0;
 
-  Aspect_TypeOfLine aLineType = Aspect_TOL_SOLID;
-  Standard_Real aWidth = 1.0;
-  for (int aPartIter = Prs3d_DP_Origin; aPartIter <= Prs3d_DP_XOZAxis; ++aPartIter)
+  for (int aPartIter = Prs3d_DatumParts_Origin; aPartIter <= Prs3d_DatumParts_XOZAxis; ++aPartIter)
   {
     const Prs3d_DatumParts aPart = (Prs3d_DatumParts )aPartIter;
-    if (aPart != Prs3d_DP_Origin) // origin point is used only in shading mode
+    if (aPart != Prs3d_DatumParts_Origin) // origin point is used only in shading mode
     {
-      myLineAspects.Bind (aPart, new Prs3d_LineAspect (aDefaultColor, aLineType, aWidth));
+      myLineAspects[aPart] = new Prs3d_LineAspect (aDefaultColor, Aspect_TOL_SOLID, 1.0);
     }
 
     Handle(Prs3d_ShadingAspect) aShadingAspect = new Prs3d_ShadingAspect();
     aShadingAspect->SetColor (aDefaultColor);
-    myShadedAspects.Bind (aPart, aShadingAspect);
+    myShadedAspects[aPart] = aShadingAspect;
   }
   myTextAspect  = new Prs3d_TextAspect();
   myPointAspect = new Prs3d_PointAspect (Aspect_TOM_EMPTY, aDefaultColor, 1.0);
   myArrowAspect = new Prs3d_ArrowAspect();
-}
-
-// =======================================================================
-// function : LineAspect
-// purpose  :
-// =======================================================================
-Handle(Prs3d_LineAspect) Prs3d_DatumAspect::LineAspect (Prs3d_DatumParts thePart) const
-{
-  Handle(Prs3d_LineAspect) aLineAspect;
-  myLineAspects.Find (thePart, aLineAspect);
-  return aLineAspect;
-}
-
-// =======================================================================
-// function : ShadingAspect
-// purpose  :
-// =======================================================================
-Handle(Prs3d_ShadingAspect) Prs3d_DatumAspect::ShadingAspect (Prs3d_DatumParts thePart) const
-{
-  Handle(Prs3d_ShadingAspect) aShadingAspect;
-  myShadedAspects.Find (thePart, aShadingAspect);
-  return aShadingAspect;
 }
 
 // =======================================================================
@@ -88,11 +64,11 @@ void Prs3d_DatumAspect::SetDrawFirstAndSecondAxis (Standard_Boolean theToDraw)
 {
   if (theToDraw)
   {
-    myAxes = ((myAxes & Prs3d_DA_ZAxis) != 0 ? Prs3d_DA_XYZAxis : Prs3d_DA_XYAxis);
+    myAxes = ((myAxes & Prs3d_DatumAxes_ZAxis) != 0 ? Prs3d_DatumAxes_XYZAxes : Prs3d_DatumAxes_XYAxes);
   }
   else
   {
-    myAxes = Prs3d_DA_ZAxis;
+    myAxes = Prs3d_DatumAxes_ZAxis;
   }
 }
 
@@ -104,11 +80,11 @@ void Prs3d_DatumAspect::SetDrawThirdAxis (Standard_Boolean theToDraw)
 {
   if (theToDraw)
   {
-    myAxes = ((myAxes & Prs3d_DA_XYAxis) != 0 ? Prs3d_DA_XYZAxis : Prs3d_DA_ZAxis);
+    myAxes = ((myAxes & Prs3d_DatumAxes_XYAxes) != 0 ? Prs3d_DatumAxes_XYZAxes : Prs3d_DatumAxes_ZAxis);
   }
   else
   {
-    myAxes = Prs3d_DA_XYAxis;
+    myAxes = Prs3d_DatumAxes_XYAxes;
   }
 }
 
@@ -120,19 +96,19 @@ bool Prs3d_DatumAspect::DrawDatumPart (Prs3d_DatumParts thePart) const
 {
   switch (thePart)
   {
-    case Prs3d_DP_Origin:  return true;
-    case Prs3d_DP_XAxis:   return (myAxes & Prs3d_DA_XAxis) != 0;
-    case Prs3d_DP_XArrow:  return (myAxes & Prs3d_DA_XAxis) != 0 && myToDrawArrows;
-    case Prs3d_DP_YAxis:   return (myAxes & Prs3d_DA_YAxis) != 0;
-    case Prs3d_DP_YArrow:  return (myAxes & Prs3d_DA_YAxis) != 0 && myToDrawArrows;
-    case Prs3d_DP_ZAxis:   return (myAxes & Prs3d_DA_ZAxis) != 0;
-    case Prs3d_DP_ZArrow:  return (myAxes & Prs3d_DA_ZAxis) != 0 && myToDrawArrows;
-    case Prs3d_DP_XOYAxis: return DrawDatumPart (Prs3d_DP_XAxis)
-                               && DrawDatumPart (Prs3d_DP_YAxis);
-    case Prs3d_DP_YOZAxis: return DrawDatumPart (Prs3d_DP_YAxis)
-                               && DrawDatumPart (Prs3d_DP_ZAxis);
-    case Prs3d_DP_XOZAxis: return DrawDatumPart (Prs3d_DP_XAxis)
-                               && DrawDatumPart (Prs3d_DP_ZAxis);
+    case Prs3d_DatumParts_Origin:  return true;
+    case Prs3d_DatumParts_XAxis:   return (myAxes & Prs3d_DatumAxes_XAxis) != 0;
+    case Prs3d_DatumParts_XArrow:  return (myAxes & Prs3d_DatumAxes_XAxis) != 0 && myToDrawArrows;
+    case Prs3d_DatumParts_YAxis:   return (myAxes & Prs3d_DatumAxes_YAxis) != 0;
+    case Prs3d_DatumParts_YArrow:  return (myAxes & Prs3d_DatumAxes_YAxis) != 0 && myToDrawArrows;
+    case Prs3d_DatumParts_ZAxis:   return (myAxes & Prs3d_DatumAxes_ZAxis) != 0;
+    case Prs3d_DatumParts_ZArrow:  return (myAxes & Prs3d_DatumAxes_ZAxis) != 0 && myToDrawArrows;
+    case Prs3d_DatumParts_XOYAxis: return DrawDatumPart (Prs3d_DatumParts_XAxis)
+                                       && DrawDatumPart (Prs3d_DatumParts_YAxis);
+    case Prs3d_DatumParts_YOZAxis: return DrawDatumPart (Prs3d_DatumParts_YAxis)
+                                       && DrawDatumPart (Prs3d_DatumParts_ZAxis);
+    case Prs3d_DatumParts_XOZAxis: return DrawDatumPart (Prs3d_DatumParts_XAxis)
+                                       && DrawDatumPart (Prs3d_DatumParts_ZAxis);
     default: break;
   }
   return false;
@@ -146,9 +122,9 @@ Standard_Real Prs3d_DatumAspect::AxisLength (Prs3d_DatumParts thePart) const
 {
   switch (thePart)
   {
-    case Prs3d_DP_XAxis: return myAttributes.Find (Prs3d_DA_XAxisLength);
-    case Prs3d_DP_YAxis: return myAttributes.Find (Prs3d_DA_YAxisLength);
-    case Prs3d_DP_ZAxis: return myAttributes.Find (Prs3d_DA_ZAxisLength);
+    case Prs3d_DatumParts_XAxis: return myAttributes[Prs3d_DatumAttribute_XAxisLength];
+    case Prs3d_DatumParts_YAxis: return myAttributes[Prs3d_DatumAttribute_YAxisLength];
+    case Prs3d_DatumParts_ZAxis: return myAttributes[Prs3d_DatumAttribute_ZAxisLength];
     default: break;
   }
   return 0.0;
@@ -162,12 +138,12 @@ Prs3d_DatumParts Prs3d_DatumAspect::ArrowPartForAxis (Prs3d_DatumParts thePart) 
 {
   switch (thePart)
   {
-    case Prs3d_DP_XAxis: return Prs3d_DP_XArrow;
-    case Prs3d_DP_YAxis: return Prs3d_DP_YArrow;
-    case Prs3d_DP_ZAxis: return Prs3d_DP_ZArrow;
+    case Prs3d_DatumParts_XAxis: return Prs3d_DatumParts_XArrow;
+    case Prs3d_DatumParts_YAxis: return Prs3d_DatumParts_YArrow;
+    case Prs3d_DatumParts_ZAxis: return Prs3d_DatumParts_ZArrow;
     default: break;
   }
-  return Prs3d_DP_None;
+  return Prs3d_DatumParts_None;
 }
 
 // =======================================================================

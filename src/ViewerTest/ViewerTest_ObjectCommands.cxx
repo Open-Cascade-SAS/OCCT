@@ -181,17 +181,17 @@ namespace
   {
     TCollection_AsciiString aValue = theValue;
     aValue.LowerCase();
-    if      (aValue == "origin")  theDatumPart = Prs3d_DP_Origin;
-    else if (aValue == "xaxis")   theDatumPart = Prs3d_DP_XAxis;
-    else if (aValue == "yaxis")   theDatumPart = Prs3d_DP_YAxis;
-    else if (aValue == "zaxis")   theDatumPart = Prs3d_DP_ZAxis;
-    else if (aValue == "xarrow")  theDatumPart = Prs3d_DP_XArrow;
-    else if (aValue == "yarrow")  theDatumPart = Prs3d_DP_YArrow;
-    else if (aValue == "zarrow")  theDatumPart = Prs3d_DP_ZArrow;
-    else if (aValue == "xoyaxis") theDatumPart = Prs3d_DP_XOYAxis;
-    else if (aValue == "yozaxis") theDatumPart = Prs3d_DP_YOZAxis;
-    else if (aValue == "xozaxis") theDatumPart = Prs3d_DP_XOZAxis;
-    else if (aValue == "whole")   theDatumPart = Prs3d_DP_None;
+    if      (aValue == "origin")  theDatumPart = Prs3d_DatumParts_Origin;
+    else if (aValue == "xaxis")   theDatumPart = Prs3d_DatumParts_XAxis;
+    else if (aValue == "yaxis")   theDatumPart = Prs3d_DatumParts_YAxis;
+    else if (aValue == "zaxis")   theDatumPart = Prs3d_DatumParts_ZAxis;
+    else if (aValue == "xarrow")  theDatumPart = Prs3d_DatumParts_XArrow;
+    else if (aValue == "yarrow")  theDatumPart = Prs3d_DatumParts_YArrow;
+    else if (aValue == "zarrow")  theDatumPart = Prs3d_DatumParts_ZArrow;
+    else if (aValue == "xoyaxis") theDatumPart = Prs3d_DatumParts_XOYAxis;
+    else if (aValue == "yozaxis") theDatumPart = Prs3d_DatumParts_YOZAxis;
+    else if (aValue == "xozaxis") theDatumPart = Prs3d_DatumParts_XOZAxis;
+    else if (aValue == "whole")   theDatumPart = Prs3d_DatumParts_None;
     else
     {
       return false;
@@ -204,7 +204,7 @@ namespace
   {
     TCollection_AsciiString aValue = theValue;
     const Standard_Integer aSplitPos = theValue.Search ("|");
-    Prs3d_DatumParts aPart = Prs3d_DP_None;
+    Prs3d_DatumParts aPart = Prs3d_DatumParts_None;
     if (aSplitPos > 0)
     {
       convertToDatumParts (theValue.SubString (aSplitPos + 1, theValue.Length()), theParts);
@@ -225,14 +225,14 @@ namespace
   {
     TCollection_AsciiString aValue = theValue;
     aValue.LowerCase();
-    if      (aValue == "xaxislength")       theAttribute = Prs3d_DA_XAxisLength;
-    else if (aValue == "yaxislength")       theAttribute = Prs3d_DA_YAxisLength;
-    else if (aValue == "zaxislength")       theAttribute = Prs3d_DA_ZAxisLength;
-    else if (aValue == "tuberadiuspercent") theAttribute = Prs3d_DP_ShadingTubeRadiusPercent;
-    else if (aValue == "coneradiuspercent") theAttribute = Prs3d_DP_ShadingConeRadiusPercent;
-    else if (aValue == "conelengthpercent") theAttribute = Prs3d_DP_ShadingConeLengthPercent;
-    else if (aValue == "originradiuspercent") theAttribute = Prs3d_DP_ShadingOriginRadiusPercent;
-    else if (aValue == "shadingnumberoffacettes") theAttribute = Prs3d_DP_ShadingNumberOfFacettes;
+    if      (aValue == "xaxislength")       theAttribute = Prs3d_DatumAttribute_XAxisLength;
+    else if (aValue == "yaxislength")       theAttribute = Prs3d_DatumAttribute_YAxisLength;
+    else if (aValue == "zaxislength")       theAttribute = Prs3d_DatumAttribute_ZAxisLength;
+    else if (aValue == "tuberadiuspercent") theAttribute = Prs3d_DatumAttribute_ShadingTubeRadiusPercent;
+    else if (aValue == "coneradiuspercent") theAttribute = Prs3d_DatumAttribute_ShadingConeRadiusPercent;
+    else if (aValue == "conelengthpercent") theAttribute = Prs3d_DatumAttribute_ShadingConeLengthPercent;
+    else if (aValue == "originradiuspercent") theAttribute = Prs3d_DatumAttribute_ShadingOriginRadiusPercent;
+    else if (aValue == "shadingnumberoffacettes") theAttribute = Prs3d_DatumAttribute_ShadingNumberOfFacettes;
     else
       return false;
     return true;
@@ -243,7 +243,7 @@ namespace
   {
     TCollection_AsciiString aValue = theValue;
     const Standard_Integer aSplitPos = theValue.Search ("|");
-    Prs3d_DatumAttribute anAttribute = Prs3d_DA_XAxisLength;
+    Prs3d_DatumAttribute anAttribute = Prs3d_DatumAttribute_XAxisLength;
     if (aSplitPos > 0)
     {
       convertToDatumAttributes (theValue.SubString (aSplitPos + 1, theValue.Length()), theAttributes);
@@ -264,13 +264,13 @@ namespace
   {
     TCollection_AsciiString aValue = theValue;
     aValue.LowerCase();
-    if      (aValue == "x")   theDatumAxes = Prs3d_DA_XAxis;
-    else if (aValue == "y")   theDatumAxes = Prs3d_DA_YAxis;
-    else if (aValue == "z")   theDatumAxes = Prs3d_DA_ZAxis;
-    else if (aValue == "xy")  theDatumAxes = Prs3d_DA_XYAxis;
-    else if (aValue == "zy")  theDatumAxes = Prs3d_DA_YZAxis;
-    else if (aValue == "xz")  theDatumAxes = Prs3d_DA_XZAxis;
-    else if (aValue == "xyz") theDatumAxes = Prs3d_DA_XYZAxis;
+    if      (aValue == "x")   theDatumAxes = Prs3d_DatumAxes_XAxis;
+    else if (aValue == "y")   theDatumAxes = Prs3d_DatumAxes_YAxis;
+    else if (aValue == "z")   theDatumAxes = Prs3d_DatumAxes_ZAxis;
+    else if (aValue == "xy")  theDatumAxes = Prs3d_DatumAxes_XYAxes;
+    else if (aValue == "zy")  theDatumAxes = Prs3d_DatumAxes_YZAxes;
+    else if (aValue == "xz")  theDatumAxes = Prs3d_DatumAxes_XZAxes;
+    else if (aValue == "xyz") theDatumAxes = Prs3d_DatumAxes_XYZAxes;
     else
     {
       return false;
@@ -413,7 +413,7 @@ namespace
       for (NCollection_List<Prs3d_DatumParts>::Iterator anIterator (aParts); anIterator.More(); anIterator.Next())
       {
         Prs3d_DatumParts aDatumPart = anIterator.Value();
-        if (aDatumPart == Prs3d_DP_None)
+        if (aDatumPart == Prs3d_DatumParts_None)
         {
           theTrihedron->SetColor (aColor);
         }
@@ -479,11 +479,11 @@ namespace
     if (aMapOfArgs.Find ("labels", aValues)
      || aMapOfArgs.Find ("label", aValues))
     {
-      Prs3d_DatumParts aDatumPart = Prs3d_DP_None;
+      Prs3d_DatumParts aDatumPart = Prs3d_DatumParts_None;
       if (aValues->Size() >= 2
        && convertToDatumPart(aValues->Value(1), aDatumPart)
-       && aDatumPart >= Prs3d_DP_XAxis
-       && aDatumPart <= Prs3d_DP_ZAxis) // labels are set to axes only
+       && aDatumPart >= Prs3d_DatumParts_XAxis
+       && aDatumPart <= Prs3d_DatumParts_ZAxis) // labels are set to axes only
       {
         theTrihedron->SetLabel (aDatumPart, aValues->Value (2));
       }
@@ -496,7 +496,7 @@ namespace
 
     if (aMapOfArgs.Find ("drawaxes", aValues))
     {
-      Prs3d_DatumAxes aDatumAxes = Prs3d_DA_XAxis;
+      Prs3d_DatumAxes aDatumAxes = Prs3d_DatumAxes_XAxis;
       if (aValues->Size() < 1
       || !convertToDatumAxes (aValues->Value (1), aDatumAxes))
       {

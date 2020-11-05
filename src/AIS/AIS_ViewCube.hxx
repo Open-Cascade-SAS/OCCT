@@ -402,9 +402,9 @@ public: //! @name Style management API
                       const TCollection_AsciiString& theY,
                       const TCollection_AsciiString& theZ)
   {
-    myAxesLabels.Bind (Prs3d_DP_XAxis, theX);
-    myAxesLabels.Bind (Prs3d_DP_YAxis, theY);
-    myAxesLabels.Bind (Prs3d_DP_ZAxis, theZ);
+    myAxesLabels.Bind (Prs3d_DatumParts_XAxis, theX);
+    myAxesLabels.Bind (Prs3d_DatumParts_YAxis, theY);
+    myAxesLabels.Bind (Prs3d_DatumParts_ZAxis, theZ);
     SetToUpdate();
   }
 

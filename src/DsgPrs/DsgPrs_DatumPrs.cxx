@@ -49,27 +49,27 @@ void DsgPrs_DatumPrs::Add (const Handle(Prs3d_Presentation)& thePresentation,
   Handle(Prs3d_ArrowAspect) anArrowAspect = aDatumAspect->ArrowAspect();
   Handle(Prs3d_TextAspect) aTextAspect = theDrawer->TextAspect();
 
-  if ((anAxes & Prs3d_DA_XAxis) != 0)
+  if ((anAxes & Prs3d_DatumAxes_XAxis) != 0)
   {
-    anAxisLength = aDatumAspect->Attribute (Prs3d_DA_XAxisLength);
+    anAxisLength = aDatumAspect->Attribute (Prs3d_DatumAttribute_XAxisLength);
     const gp_Pnt aPoint1 (anOrigin.XYZ() + aXDir.XYZ()*anAxisLength);
-    DsgPrs_XYZAxisPresentation::Add (thePresentation, aDatumAspect->LineAspect(Prs3d_DP_XAxis), anArrowAspect,
+    DsgPrs_XYZAxisPresentation::Add (thePresentation, aDatumAspect->LineAspect(Prs3d_DatumParts_XAxis), anArrowAspect,
                                      aTextAspect, aXDir, anAxisLength, toDrawLabels ? "X" : "", anOrigin, aPoint1);
   }
 
-  if ((anAxes & Prs3d_DA_YAxis) != 0)
+  if ((anAxes & Prs3d_DatumAxes_YAxis) != 0)
   {
-    anAxisLength = aDatumAspect->Attribute (Prs3d_DA_YAxisLength);
+    anAxisLength = aDatumAspect->Attribute (Prs3d_DatumAttribute_YAxisLength);
     const gp_Pnt aPoint2 (anOrigin.XYZ() + aYDir.XYZ()*anAxisLength);
-    DsgPrs_XYZAxisPresentation::Add (thePresentation, aDatumAspect->LineAspect(Prs3d_DP_YAxis), anArrowAspect,
+    DsgPrs_XYZAxisPresentation::Add (thePresentation, aDatumAspect->LineAspect(Prs3d_DatumParts_YAxis), anArrowAspect,
                                      aTextAspect, aYDir, anAxisLength, toDrawLabels ? "Y" : "", anOrigin, aPoint2);
   }
 
-  if ((anAxes & Prs3d_DA_ZAxis) != 0)
+  if ((anAxes & Prs3d_DatumAxes_ZAxis) != 0)
   {
-    anAxisLength = aDatumAspect->Attribute (Prs3d_DA_ZAxisLength);
+    anAxisLength = aDatumAspect->Attribute (Prs3d_DatumAttribute_ZAxisLength);
     const gp_Pnt aPoint3 (anOrigin.XYZ() + aZDir.XYZ()*anAxisLength);
-    DsgPrs_XYZAxisPresentation::Add (thePresentation, aDatumAspect->LineAspect(Prs3d_DP_ZAxis), anArrowAspect,
+    DsgPrs_XYZAxisPresentation::Add (thePresentation, aDatumAspect->LineAspect(Prs3d_DatumParts_ZAxis), anArrowAspect,
                                      aTextAspect, aZDir, anAxisLength, toDrawLabels ? "Z" : "", anOrigin, aPoint3);
   }
 }
