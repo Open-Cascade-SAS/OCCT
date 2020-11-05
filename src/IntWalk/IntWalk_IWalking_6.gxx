@@ -182,6 +182,7 @@ Standard_Boolean IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S
                                                  math_FunctionSetRoot& theSolver,
                                                  TheIWFunction& theFunc)
 {
+  const Standard_Real eps = Epsilon(1.);
   const gp_Pnt &aP3d = thePOn2S.Value();
 
   for (Standard_Integer aLIdx = 1; aLIdx <= lines.Length(); aLIdx++)
@@ -212,12 +213,10 @@ Standard_Boolean IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S
       Standard_Real aSqD = RealLast();
       if (aDP < 0.0)
       {
-        //aSqD = aP1P.SquareModulus();
         continue;
       }
       else if (aDP > aSq12)
       {
-        //aSqD = (aP3d.XYZ() - aP2.XYZ()).SquareModulus();
         continue;
       }
       else
@@ -232,6 +231,11 @@ Standard_Boolean IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S
         const Standard_Real aL1 = aDP / aSq12;
         const Standard_Real aL2 = 1.0 - aL1;
 
+        if (aL1 < eps || aL2 < eps)
+        {
+          return Standard_True;
+        }
+
         Standard_Real aU1, aV1, aU2, aV2;
         aL->Value(aPtIdx).ParametersOnSurface(reversed, aU1, aV1);
         aL->Value(aPtIdx + 1).ParametersOnSurface(reversed, aU2, aV2);
@@ -241,7 +245,7 @@ Standard_Boolean IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S
       }
     }
 
-    if (aMinSqDist == RealLast())
+    if (aMinSqDist > Precision::Infinite())
       continue;
 
     math_Vector aVecPrms(1, 2);
@@ -257,7 +261,7 @@ Standard_Boolean IntWalk_IWalking::IsPointOnLine(const IntSurf_PntOn2S& thePOn2S
                  aPb(theFunc.PSurface()->Value(aVecPrms(1), aVecPrms(2)));
     const Standard_Real aSqD1 = aPb.SquareDistance(aP3d);
     const Standard_Real aSqD2 = aPa.SquareDistance(aPb);
-
+ 
     if (aSqD1 < 4.0*aSqD2)
     {
       return Standard_True;

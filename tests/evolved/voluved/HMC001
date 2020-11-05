@@ -18,7 +18,7 @@ if {[regexp "Faulties" [bopargcheck result]]} {
 
 set tolres [checkmaxtol result]
 
-if { ${tolres} > 5.e-6} {
+if { ${tolres} > 1.e-5} {
    puts "Error: bad tolerance of result"
 }
 

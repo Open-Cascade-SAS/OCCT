@@ -585,6 +585,37 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
     break;
   }
   //
+  Standard_Real aLocalPas = Pas;
+   GeomAbs_SurfaceType aSType = reversed ? Surf1->GetType() : Surf2->GetType();
+
+  if (aSType == GeomAbs_BezierSurface || aSType == GeomAbs_BSplineSurface)
+  {
+    Standard_Real aMinRes = Precision::Infinite();
+    GeomAbs_Shape aCont = GeomAbs_C0;
+    Standard_Integer aMaxDeg = 0;
+    const Standard_Real aLimRes = 1.e-10;
+
+    if (reversed)
+    {
+      aMinRes = Min(Surf1->UResolution(Precision::Confusion()),
+        Surf1->VResolution(Precision::Confusion()));
+      aCont = (GeomAbs_Shape)Min(Surf1->UContinuity(), Surf1->VContinuity());
+      aMaxDeg = Max(Surf1->UDegree(), Surf1->VDegree());
+    }
+    else
+    {
+      aMinRes = Min(Surf2->UResolution(Precision::Confusion()),
+        Surf2->VResolution(Precision::Confusion()));
+      aCont = (GeomAbs_Shape)Min(Surf2->UContinuity(), Surf2->VContinuity());
+      aMaxDeg = Max(Surf2->UDegree(), Surf2->VDegree());
+    }
+
+    if (aMinRes < aLimRes && aCont > GeomAbs_C0 && aMaxDeg > 3)
+    {
+      aLocalPas = Min(Pas, 0.0001);
+    }
+  }
+
   Func.SetImplicitSurface(Quad);
   Func.Set(IntSurf_QuadricTool::Tolerance(Quad));
   AFunc.SetQuadric(Quad);
@@ -686,7 +717,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   NbPointDep=seqpdep.Length();
   //
   if (NbPointDep || NbPointIns) {
-    IntPatch_TheIWalking iwalk(TolTang, Fleche, Pas);
+    IntPatch_TheIWalking iwalk(TolTang, Fleche, aLocalPas);
     iwalk.Perform(seqpdep, seqpins, Func, reversed ? Surf1 : Surf2, reversed);
 
     if(!iwalk.IsDone()) {
