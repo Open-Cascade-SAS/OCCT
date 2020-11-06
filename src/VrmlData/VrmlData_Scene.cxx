@@ -821,8 +821,19 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadArrIndex
           isMore = Standard_False;
         }
         if (anIntValue >= 0)
+        {
+          if (vecInt.Length() > 2)
+          {
+            // additional check for redundant point:
+            // ignore last point which is a dublicate of first point
+            if (anIntValue == vecInt[0])
+            {
+              continue;
+            }
+          }
           // The input value is a node index, store it in the buffer vector
-          vecInt.Append (static_cast<Standard_Integer> (anIntValue));
+          vecInt.Append(static_cast<Standard_Integer> (anIntValue));
+        }
         if ((anIntValue < 0 || isMore == Standard_False)
             && vecInt.Length() > 0)
         {

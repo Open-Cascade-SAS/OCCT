@@ -94,3 +94,5 @@ BRepMesh_DelabellaBaseMeshAlgo.hxx
 BRepMesh_DelabellaBaseMeshAlgo.cxx
 BRepMesh_DelabellaMeshAlgoFactory.hxx
 BRepMesh_DelabellaMeshAlgoFactory.cxx
+BRepMesh_Triangulator.cxx
+BRepMesh_Triangulator.hxx

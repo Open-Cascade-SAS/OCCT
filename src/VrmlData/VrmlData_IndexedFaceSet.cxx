@@ -18,6 +18,7 @@
 #include <VrmlData_UnknownNode.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRep_TFace.hxx>
+#include <BRepMesh_Triangulator.hxx>
 #include <VrmlData_Coordinate.hxx>
 #include <VrmlData_Color.hxx>
 #include <VrmlData_Normal.hxx>
@@ -28,6 +29,8 @@
 #include <NCollection_DataMap.hxx>
 #include <Poly.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
+#include <TColgp_SequenceOfXYZ.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(VrmlData_IndexedFaceSet,VrmlData_Faceted)
 
@@ -78,138 +81,198 @@ VrmlData_ErrorStatus VrmlData_Faceted::readData (VrmlData_InBuffer& theBuffer)
 const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
 {
   if (myNbPolygons == 0)
+  {
     myTShape.Nullify();
-  else if (myIsModified) {
-    // Create an empty topological Face
-    const gp_XYZ * arrNodes = myCoords->Values();
-    Standard_Integer i, nTri(0);
+    return myTShape;
+  }
+  else if (!myIsModified) {
+    return myTShape;
+  }
 
-    NCollection_DataMap <int, int> mapNodeId;
+  // list of nodes:
+  const gp_XYZ * arrNodes = myCoords->Values();
+  const int nNodes = (int)myCoords->Length();
 
-    // Count non-degenerated triangles
-    const int nNodes = (int)myCoords->Length();
-    for (i = 0; i < (int)myNbPolygons; i++) {
-      const Standard_Integer * arrIndice;
-      if (Polygon(i, arrIndice) == 3) {
-        //Check indices for out of bound
-        if (arrIndice[0] < 0 ||
-            arrIndice[0] >= nNodes ||
-            arrIndice[1] >= nNodes ||
-            arrIndice[2] >= nNodes)
+  NCollection_Map <int> mapNodeId;
+  NCollection_Map <int> mapPolyId;
+  NCollection_List<TColStd_SequenceOfInteger> aPolygons;
+  NCollection_List<gp_Dir> aNorms;
+  Standard_Integer i = 0;
+  for (; i < (int)myNbPolygons; i++)
+  {
+    const Standard_Integer * arrIndice = myArrPolygons[i];
+    Standard_Integer nn = arrIndice[0];
+    if (nn < 3)
+    {
+      // bad polygon
+      continue;
+    }
+    TColStd_SequenceOfInteger aPolygon;
+    int in = 1;
+    for (; in <= nn; in++)
+    {
+      if (arrIndice[in] > nNodes)
+      {
+        break;
+      }
+      aPolygon.Append(arrIndice[in]);
+    }
+    if (in <= nn)
+    {
+      // bad index of node in polygon
+      continue;
+    }
+    // calculate normal
+    gp_XYZ aSum;
+    gp_XYZ aPrevP = arrNodes[aPolygon(1)];
+    for (in = 2; in < aPolygon.Length(); in++)
+    {
+      gp_XYZ aP1 = arrNodes[aPolygon(in)];
+      gp_XYZ aP2 = arrNodes[aPolygon(in + 1)];
+      gp_XYZ aV1 = aP1 - aPrevP;
+      gp_XYZ aV2 = aP2 - aPrevP;
+      gp_XYZ S = aV1.Crossed(aV2);
+      aSum += S;
+    }
+    if (aSum.Modulus() < Precision::Confusion())
+    {
+      // degenerate polygon
+      continue;
+    }
+    gp_Dir aNormal(aSum);
+    mapPolyId.Add(i);
+    aPolygons.Append(aPolygon);
+    aNorms.Append(aNormal);
+    // collect info about used indices
+    for (in = 1; in <= aPolygon.Length(); in++)
+    {
+      mapNodeId.Add(arrIndice[in]);
+    }
+  }
+
+  const Standard_Integer nbNodes(mapNodeId.Extent());
+  if (!nbNodes)
+  {
+    myIsModified = Standard_False;
+    myTShape.Nullify();
+    return myTShape;
+  }
+  // prepare vector of nodes
+  NCollection_Vector<gp_XYZ> aNodes;
+  NCollection_DataMap <int, int> mapIdId;
+  for (i = 0; i < nNodes; i++)
+  {
+    if(mapNodeId.Contains(i))
+    {
+      const gp_XYZ& aN1 = arrNodes[i];
+      mapIdId.Bind(i, aNodes.Length());
+      aNodes.Append(aN1);
+    }
+  }
+  // update polygon indices
+  NCollection_List<TColStd_SequenceOfInteger>::Iterator itP(aPolygons);
+  for (; itP.More(); itP.Next())
+  {
+    TColStd_SequenceOfInteger& aPolygon = itP.ChangeValue();
+    for (int in = 1; in <= aPolygon.Length(); in++)
+    {
+      Standard_Integer newIdx = mapIdId.Find(aPolygon.Value(in));
+      aPolygon.ChangeValue(in) = newIdx;
+    }
+  }
+  // calculate triangles
+  NCollection_List<Poly_Triangle> aTriangles;
+  itP.Init(aPolygons);
+  for (NCollection_List<gp_Dir>::Iterator itN(aNorms); itP.More(); itP.Next(), itN.Next())
+  {
+    NCollection_List<Poly_Triangle> aTrias;
+    try
+    {
+      NCollection_List<TColStd_SequenceOfInteger> aPList;
+      aPList.Append(itP.Value());
+      BRepMesh_Triangulator aTriangulator(aNodes, aPList, itN.Value());
+      aTriangulator.Perform(aTrias);
+      aTriangles.Append(aTrias);
+    }
+    catch (...)
+    {
+      continue;
+    }
+  }
+  if (aTriangles.IsEmpty())
+  {
+    return myTShape;
+  }
+
+  // Triangulation creation
+  Handle(Poly_Triangulation) aTriangulation =
+    new Poly_Triangulation(aNodes.Length(), aTriangles.Extent(), Standard_False);
+  // Copy the triangulation vertices
+  TColgp_Array1OfPnt& aTNodes = aTriangulation->ChangeNodes();
+  for (i = 0; i < aNodes.Length(); i++)
+  {
+    aTNodes.SetValue(i + 1, gp_Pnt(aNodes(i)));
+  }
+  // Copy the triangles.
+  Poly_Array1OfTriangle& aTTriangles = aTriangulation->ChangeTriangles();
+  NCollection_List<Poly_Triangle>::Iterator itT(aTriangles);
+  for (i = 1; itT.More(); itT.Next(), i++)
+  {
+    aTTriangles.SetValue(i, itT.Value());
+  }
+
+  Handle(BRep_TFace) aFace = new BRep_TFace();
+  aFace->Triangulation(aTriangulation);
+  myTShape = aFace;
+
+  // Normals should be defined; if they are not, compute them
+  if (myNormals.IsNull()) {
+    Poly::ComputeNormals(aTriangulation);
+  }
+  else {
+    // Copy the normals. Currently only normals-per-vertex are supported.
+    Handle(TShort_HArray1OfShortReal) Normals =
+      new TShort_HArray1OfShortReal(1, 3 * nbNodes);
+    if (myNormalPerVertex) {
+      if (myArrNormalInd == 0L) {
+        for (i = 0; i < nbNodes; i++)
         {
-            continue;
-        }
-        const gp_XYZ aVec[2] = {
-          arrNodes[arrIndice[1]] - arrNodes[arrIndice[0]],
-          arrNodes[arrIndice[2]] - arrNodes[arrIndice[0]]
-        };
-        if ((aVec[0] ^ aVec[1]).SquareModulus() >
-            Precision::SquareConfusion())
-          ++nTri;
-        else {
-          const_cast<Standard_Integer&> (arrIndice[0]) = -1;
-          continue;
+          Standard_Integer anIdx = i * 3 + 1;
+          const gp_XYZ& aNormal = myNormals->Normal(i);
+          Normals->SetValue(anIdx + 0, Standard_ShortReal(aNormal.X()));
+          Normals->SetValue(anIdx + 1, Standard_ShortReal(aNormal.Y()));
+          Normals->SetValue(anIdx + 2, Standard_ShortReal(aNormal.Z()));
         }
       }
-      if (mapNodeId.IsBound (arrIndice[0]) == Standard_False)
-        mapNodeId.Bind (arrIndice[0], 0);
-      if (mapNodeId.IsBound (arrIndice[1]) == Standard_False)
-        mapNodeId.Bind (arrIndice[1], 0);
-      if (mapNodeId.IsBound (arrIndice[2]) == Standard_False)
-        mapNodeId.Bind (arrIndice[2], 0);
-    }
-    const Standard_Integer nbNodes (mapNodeId.Extent());
-    if (!nbNodes)
-    {
-        myIsModified = Standard_False;
-        myTShape.Nullify();
-        return myTShape;
-    }
-
-    Handle(Poly_Triangulation) aTriangulation =
-      new Poly_Triangulation (nbNodes, nTri, Standard_False);
-    Handle(BRep_TFace) aFace = new BRep_TFace();
-    aFace->Triangulation (aTriangulation);
-    myTShape = aFace;
-
-    // Copy the triangulation vertices
-    TColgp_Array1OfPnt& aNodes = aTriangulation->ChangeNodes();
-    NCollection_DataMap <int, int>::Iterator anIterN(mapNodeId);
-    for (i = 1; anIterN.More(); anIterN.Next()) {
-      const int aKey = anIterN.Key();
-      const gp_XYZ& aNodePnt = arrNodes[aKey];
-      aNodes(i) = gp_Pnt (aNodePnt);
-      anIterN.ChangeValue() = i++;
-    }
-
-    // Copy the triangles. Only the triangle-type polygons are supported.
-    // In this loop we also get rid of any possible degenerated triangles.
-    Poly_Array1OfTriangle& aTriangles = aTriangulation->ChangeTriangles();
-    nTri = 0;
-    for (i = 0; i < (int)myNbPolygons; i++) {
-      const Standard_Integer * arrIndice;
-      if (Polygon (i, arrIndice) == 3)
-        if (arrIndice[0] >= 0 &&
-            arrIndice[0] < nNodes &&
-            arrIndice[1] < nNodes &&
-            arrIndice[2] < nNodes)  // check to avoid previously skipped faces
-          aTriangles(++nTri).Set (mapNodeId(arrIndice[0]),
-                                  mapNodeId(arrIndice[1]),
-                                  mapNodeId(arrIndice[2]));
-    }
-
-    // Normals should be defined; if they are not, compute them
-    if (myNormals.IsNull ()) {
-      //aTriangulation->ComputeNormals();
-      Poly::ComputeNormals(aTriangulation);
-    }
-    else {
-      // Copy the normals. Currently only normals-per-vertex are supported.
-      Handle(TShort_HArray1OfShortReal) Normals =
-        new TShort_HArray1OfShortReal (1, 3*nbNodes);
-      if (myNormalPerVertex) {
-        if (myArrNormalInd == 0L) {
-          NCollection_DataMap <int, int>::Iterator anIterNN (mapNodeId);
-          for (; anIterNN.More (); anIterNN.Next ()) {
-            Standard_Integer anIdx = (anIterNN.Value() - 1) * 3 + 1;
-            const gp_XYZ& aNormal = myNormals->Normal (anIterNN.Key ());
-            Normals->SetValue (anIdx + 0, Standard_ShortReal (aNormal.X ()));
-            Normals->SetValue (anIdx + 1, Standard_ShortReal (aNormal.Y ()));
-            Normals->SetValue (anIdx + 2, Standard_ShortReal (aNormal.Z ()));
-          }
-        }
-        else
+      else
+      {
+        for (i = 0; i < (int)myNbPolygons; i++)
         {
-          for (i = 0; i < (int)myNbPolygons; i++) 
+          if(mapPolyId.Contains(i)) // check to avoid previously skipped faces
           {
             const Standard_Integer * anArrNodes;
-            if (Polygon(i, anArrNodes) == 3 &&
-              anArrNodes[0] >= 0 &&
-              anArrNodes[0] < nNodes &&
-              anArrNodes[1] < nNodes &&
-              anArrNodes[2] < nNodes)  // check to avoid previously skipped faces
-            {
-              const Standard_Integer * arrIndice;
-              if (IndiceNormals(i, arrIndice) == 3) {
-                for (Standard_Integer j = 0; j < 3; j++) {
-                  const gp_XYZ& aNormal = myNormals->Normal (arrIndice[j]);
-                  Standard_Integer anInd = (mapNodeId(anArrNodes[j]) - 1) * 3 + 1;
-                  Normals->SetValue (anInd + 0, Standard_ShortReal (aNormal.X()));
-                  Normals->SetValue (anInd + 1, Standard_ShortReal (aNormal.Y()));
-                  Normals->SetValue (anInd + 2, Standard_ShortReal (aNormal.Z()));
-                }
-              }
+            Polygon(i, anArrNodes);
+            const Standard_Integer * arrIndice;
+            int nbn = IndiceNormals(i, arrIndice);
+            for (Standard_Integer j = 0; j < nbn; j++) {
+              const gp_XYZ& aNormal = myNormals->Normal(arrIndice[j]);
+              Standard_Integer anInd = mapIdId(anArrNodes[j]) * 3 + 1;
+              Normals->SetValue(anInd + 0, Standard_ShortReal(aNormal.X()));
+              Normals->SetValue(anInd + 1, Standard_ShortReal(aNormal.Y()));
+              Normals->SetValue(anInd + 2, Standard_ShortReal(aNormal.Z()));
             }
           }
         }
-      } else {
-        //TODO ..
       }
-      aTriangulation->SetNormals(Normals);
     }
-
-    myIsModified = Standard_False;
+    else {
+      //TODO ..
+    }
+    aTriangulation->SetNormals(Normals);
   }
+
+  myIsModified = Standard_False;
+
   return myTShape;
 }
 
@@ -279,8 +342,21 @@ VrmlData_ErrorStatus VrmlData_IndexedFaceSet::Read(VrmlData_InBuffer& theBuffer)
       aStatus = ReadBoolean (theBuffer, myColorPerVertex);
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "normalPerVertex"))
       aStatus = ReadBoolean (theBuffer, myNormalPerVertex);
-    else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "coordIndex"))
-      aStatus = aScene.ReadArrIndex (theBuffer, myArrPolygons, myNbPolygons);
+    else if (VRMLDATA_LCOMPARE(theBuffer.LinePtr, "coordIndex"))
+    {
+      aStatus = aScene.ReadArrIndex(theBuffer, myArrPolygons, myNbPolygons);
+      //for (int i = 0; i < myNbPolygons; i++)
+      //{
+      //  const Standard_Integer * anArray = myArrPolygons[i];
+      //  Standard_Integer nbPoints = anArray[0];
+      //  std::cout << "i = " << i << "  indexes:";
+      //  for (int ip = 1; ip <= nbPoints; ip++)
+      //  {
+      //    std::cout << " " << anArray[ip];
+      //  }
+      //  std::cout << std::endl;
+      //}
+    }
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "colorIndex"))
       aStatus = aScene.ReadArrIndex (theBuffer, myArrColorInd, myNbColors);
     else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "normalIndex"))
