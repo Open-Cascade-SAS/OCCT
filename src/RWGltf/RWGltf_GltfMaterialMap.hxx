@@ -15,12 +15,14 @@
 #define _RWGltf_GltfMaterialMap_HeaderFile
 
 #include <RWMesh_MaterialMap.hxx>
+#include <RWGltf_GltfBufferView.hxx>
 
 class RWGltf_GltfOStreamWriter;
 
 //! Material manager for exporting into glTF format.
 class RWGltf_GltfMaterialMap : public RWMesh_MaterialMap
 {
+  DEFINE_STANDARD_RTTIEXT(RWGltf_GltfMaterialMap, RWMesh_MaterialMap)
 public:
 
   //! Main constructor.
@@ -30,7 +32,26 @@ public:
   //! Destructor.
   Standard_EXPORT virtual ~RWGltf_GltfMaterialMap();
 
-  //! Add material images.
+public:
+
+  //! Add material images into GLB stream.
+  //! @param theBinFile [in] [out] output file stream
+  //! @param theStyle   [in] material images to add
+  Standard_EXPORT void AddGlbImages (std::ostream& theBinFile,
+                                     const XCAFPrs_Style& theStyle);
+
+  //! Add bufferView's into RWGltf_GltfRootElement_BufferViews section with images collected by AddImagesToGlb().
+  Standard_EXPORT void FlushGlbBufferViews (RWGltf_GltfOStreamWriter* theWriter,
+                                            const Standard_Integer theBinDataBufferId,
+                                            Standard_Integer& theBuffViewId);
+
+  //! Write RWGltf_GltfRootElement_Images section with images collected by AddImagesToGlb().
+  Standard_EXPORT void FlushGlbImages (RWGltf_GltfOStreamWriter* theWriter);
+
+public:
+
+  //! Add material images in case of non-GLB file
+  //! (an alternative to AddImagesToGlb() + FlushBufferViews() + FlushImagesGlb()).
   Standard_EXPORT void AddImages (RWGltf_GltfOStreamWriter* theWriter,
                                   const XCAFPrs_Style& theStyle,
                                   Standard_Boolean& theIsStarted);
@@ -62,6 +83,12 @@ protected:
                                  const Handle(Image_Texture)& theTexture,
                                  Standard_Boolean& theIsStarted);
 
+  //! Add texture image into GLB stream.
+  //! @param theBinFile [in] [out] output file stream
+  //! @param theTexture [in] texture image to add
+  Standard_EXPORT void addGlbImage (std::ostream& theBinFile,
+                                    const Handle(Image_Texture)& theTexture);
+
   //! Add texture.
   Standard_EXPORT void addTexture (RWGltf_GltfOStreamWriter* theWriter,
                                    const Handle(Image_Texture)& theTexture,
@@ -78,10 +105,10 @@ protected:
 protected:
 
   RWGltf_GltfOStreamWriter* myWriter;
-  NCollection_DoubleMap<Handle(Image_Texture), TCollection_AsciiString, Image_Texture, TCollection_AsciiString> myImageMap;
+  NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView, Image_Texture> myImageMap;
   NCollection_Map<Handle(Image_Texture), Image_Texture> myTextureMap;
+
   Standard_Integer myDefSamplerId;
-  Standard_Integer myNbImages;
 
 };
 

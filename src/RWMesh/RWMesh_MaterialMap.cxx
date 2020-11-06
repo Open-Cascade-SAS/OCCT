@@ -22,6 +22,8 @@
 #include <TDataStd_Name.hxx>
 #include <TDF_Label.hxx>
 
+IMPLEMENT_STANDARD_RTTIEXT(RWMesh_MaterialMap, Standard_Transient)
+
 // =======================================================================
 // function : RWMesh_MaterialMap
 // purpose  :

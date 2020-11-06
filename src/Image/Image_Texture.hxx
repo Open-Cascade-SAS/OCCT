@@ -56,6 +56,9 @@ public:
   //! Return buffer holding encoded image content.
   const Handle(NCollection_Buffer)& DataBuffer() const { return myBuffer; }
 
+  //! Return mime-type of image file based on ProbeImageFileFormat().
+  Standard_EXPORT TCollection_AsciiString MimeType() const;
+
   //! Return image file format.
   Standard_EXPORT TCollection_AsciiString ProbeImageFileFormat() const;
 
@@ -67,6 +70,10 @@ public:
 
   //! Write image to specified file without decoding data.
   Standard_EXPORT virtual Standard_Boolean WriteImage (const TCollection_AsciiString& theFile);
+
+  //! Write image to specified stream without decoding data.
+  Standard_EXPORT virtual Standard_Boolean WriteImage (std::ostream& theStream,
+                                                       const TCollection_AsciiString& theFile);
 
 public: //! @name hasher interface
 

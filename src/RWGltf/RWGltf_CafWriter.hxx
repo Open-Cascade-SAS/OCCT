@@ -78,6 +78,14 @@ public:
   //! Set default material definition to be used for nodes with only color defined.
   void SetDefaultStyle (const XCAFPrs_Style& theStyle) { myDefaultStyle = theStyle; }
 
+  //! Return flag to write image textures into GLB file (binary gltf export); TRUE by default.
+  //! When set to FALSE, texture images will be written as separate files.
+  //! Has no effect on writing into non-binary format.
+  Standard_Boolean ToEmbedTexturesInGlb() { return myToEmbedTexturesInGlb; }
+
+  //! Set flag to write image textures into GLB file (binary gltf export).
+  void SetToEmbedTexturesInGlb (Standard_Boolean theToEmbedTexturesInGlb) { myToEmbedTexturesInGlb = theToEmbedTexturesInGlb; }
+
   //! Write glTF file and associated binary file.
   //! Triangulation data should be precomputed within shapes!
   //! @param theDocument    [in] input document
@@ -221,20 +229,17 @@ protected:
   //! Write RWGltf_GltfRootElement_Images section.
   //! @param theSceneNodeMap [in] ordered map of scene nodes
   //! @param theMaterialMap [out] map of materials, filled with image files used by textures
-  Standard_EXPORT virtual void writeImages (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                            RWGltf_GltfMaterialMap& theMaterialMap);
+  Standard_EXPORT virtual void writeImages (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write RWGltf_GltfRootElement_Materials section.
   //! @param theSceneNodeMap [in] ordered map of scene nodes
   //! @param theMaterialMap [out] map of materials, filled with materials
-  Standard_EXPORT virtual void writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                               RWGltf_GltfMaterialMap& theMaterialMap);
+  Standard_EXPORT virtual void writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write RWGltf_GltfRootElement_Meshes section.
   //! @param theSceneNodeMap [in] ordered map of scene nodes
   //! @param theMaterialMap  [in] map of materials
-  Standard_EXPORT virtual void writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                            const RWGltf_GltfMaterialMap& theMaterialMap);
+  Standard_EXPORT virtual void writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
   //! Write RWGltf_GltfRootElement_Nodes section.
   //! @param theDocument     [in] input document
@@ -249,7 +254,7 @@ protected:
                                            NCollection_Sequence<Standard_Integer>& theSceneRootNodeInds);
 
   //! Write RWGltf_GltfRootElement_Samplers section.
-  Standard_EXPORT virtual void writeSamplers (const RWGltf_GltfMaterialMap& theMaterialMap);
+  Standard_EXPORT virtual void writeSamplers();
 
   //! Write RWGltf_GltfRootElement_Scene section.
   //! @param theDefSceneId [in] index of default scene (0)
@@ -265,8 +270,7 @@ protected:
   //! Write RWGltf_GltfRootElement_Textures section.
   //! @param theSceneNodeMap [in] ordered map of scene nodes
   //! @param theMaterialMap [out] map of materials, filled with textures
-  Standard_EXPORT virtual void writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                              RWGltf_GltfMaterialMap& theMaterialMap);
+  Standard_EXPORT virtual void writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNodeMap);
 
 protected:
 
@@ -276,11 +280,13 @@ protected:
   RWGltf_WriterTrsfFormat                       myTrsfFormat;        //!< transformation format to write into glTF file
   Standard_Boolean                              myIsBinary;          //!< flag to write into binary glTF format (.glb)
   Standard_Boolean                              myIsForcedUVExport;  //!< export UV coordinates even if there are no mapped texture
+  Standard_Boolean                              myToEmbedTexturesInGlb; //!< flag to write image textures into GLB file
   RWMesh_CoordinateSystemConverter              myCSTrsf;            //!< transformation from OCCT to glTF coordinate system
   XCAFPrs_Style                                 myDefaultStyle;      //!< default material definition to be used for nodes with only color defined
 
   opencascade::std::shared_ptr<RWGltf_GltfOStreamWriter>
                                                 myWriter;            //!< JSON writer
+  Handle(RWGltf_GltfMaterialMap)                myMaterialMap;       //!< map of defined materials
   RWGltf_GltfBufferView                         myBuffViewPos;       //!< current buffer view with nodes positions
   RWGltf_GltfBufferView                         myBuffViewNorm;      //!< current buffer view with nodes normals
   RWGltf_GltfBufferView                         myBuffViewTextCoord; //!< current buffer view with nodes UV coordinates

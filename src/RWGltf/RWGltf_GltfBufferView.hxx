@@ -24,9 +24,9 @@ struct RWGltf_GltfBufferView
   static const int INVALID_ID = -1;
 public:
 
-  int                         Id;
-  int64_t                     ByteOffset;
-  int64_t                     ByteLength;
+  int                         Id;         //!< index of bufferView in the array of bufferViews
+  int64_t                     ByteOffset; //!< offset to the beginning of the data in buffer
+  int64_t                     ByteLength; //!< length of the data
   int32_t                     ByteStride; //!< [0, 255]
   RWGltf_GltfBufferViewTarget Target;
 

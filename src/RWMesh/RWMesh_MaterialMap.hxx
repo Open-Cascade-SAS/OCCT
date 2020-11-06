@@ -21,8 +21,9 @@
 //! Material manager.
 //! Provides an interface for collecting all materials within the document before writing it into file,
 //! and for copying associated image files (textures) into sub-folder near by exported model.
-class RWMesh_MaterialMap
+class RWMesh_MaterialMap : public Standard_Transient
 {
+  DEFINE_STANDARD_RTTIEXT(RWMesh_MaterialMap, Standard_Transient)
 public:
 
   //! Main constructor.

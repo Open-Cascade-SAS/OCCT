@@ -208,6 +208,36 @@ Handle(Image_PixMap) Image_Texture::loadImageOffset (const TCollection_AsciiStri
 }
 
 // ================================================================
+// Function : MimeType
+// Purpose  :
+// ================================================================
+TCollection_AsciiString Image_Texture::MimeType() const
+{
+  const TCollection_AsciiString aType = ProbeImageFileFormat();
+  if (aType == "jpg")
+  {
+    return "image/jpeg";
+  }
+  else if (aType == "png"
+        || aType == "bmp"
+        || aType == "webp"
+        || aType == "gif"
+        || aType == "tiff")
+  {
+    return TCollection_AsciiString ("image/") + aType;
+  }
+  else if (aType == "dds")
+  {
+    return "image/vnd-ms.dds";
+  }
+  else if (!aType.IsEmpty())
+  {
+    return TCollection_AsciiString ("image/x-") + aType;
+  }
+  return TCollection_AsciiString();
+}
+
+// ================================================================
 // Function : ProbeImageFileFormat
 // Purpose  :
 // ================================================================
@@ -285,58 +315,92 @@ TCollection_AsciiString Image_Texture::ProbeImageFileFormat() const
 // ================================================================
 Standard_Boolean Image_Texture::WriteImage (const TCollection_AsciiString& theFile)
 {
-  Handle(NCollection_Buffer) aBuffer = myBuffer;
-  if (myBuffer.IsNull())
-  {
-    std::ifstream aFileIn;
-    OSD_OpenStream (aFileIn, myImagePath.ToCString(), std::ios::in | std::ios::binary);
-    if (!aFileIn)
-    {
-      Message::SendFail (TCollection_AsciiString ("Error: Unable to open file ") + myImagePath + "!");
-      return Standard_False;
-    }
-
-    Standard_Size aLen = (Standard_Size )myLength;
-    if (myOffset >= 0)
-    {
-      aFileIn.seekg ((std::streamoff )myOffset, std::ios_base::beg);
-      if (!aFileIn.good())
-      {
-        Message::SendFail (TCollection_AsciiString ("Error: Image is defined with invalid file offset '") + myImagePath + "'");
-        return Standard_False;
-      }
-    }
-    else
-    {
-      aFileIn.seekg (0, std::ios_base::end);
-      aLen = (Standard_Size )aFileIn.tellg();
-      aFileIn.seekg (0, std::ios_base::beg);
-    }
-
-    aBuffer = new NCollection_Buffer (NCollection_BaseAllocator::CommonBaseAllocator(), aLen);
-    if (!aFileIn.read ((char* )aBuffer->ChangeData(), aBuffer->Size()))
-    {
-      Message::SendFail (TCollection_AsciiString ("Error: unable to read image file '") + myImagePath + "'");
-      return Standard_False;
-    }
-  }
-
   std::ofstream aFileOut;
   OSD_OpenStream (aFileOut, theFile.ToCString(), std::ios::out | std::ios::binary | std::ios::trunc);
   if (!aFileOut)
   {
     Message::SendFail (TCollection_AsciiString ("Error: Unable to create file '") + theFile + "'");
-    return Standard_False;
+    return false;
   }
 
-  aFileOut.write ((const char* )aBuffer->Data(), aBuffer->Size());
+  if (!WriteImage (aFileOut, theFile))
+  {
+    return false;
+  }
+
   aFileOut.close();
   if (!aFileOut.good())
   {
     Message::SendFail (TCollection_AsciiString ("Error: Unable to write file '") + theFile + "'");
-    return Standard_False;
+    return false;
   }
-  return Standard_True;
+  return true;
+}
+
+// ================================================================
+// Function : WriteImage
+// Purpose  :
+// ================================================================
+Standard_Boolean Image_Texture::WriteImage (std::ostream& theStream,
+                                            const TCollection_AsciiString& theFile)
+{
+  if (!myBuffer.IsNull())
+  {
+    theStream.write ((const char* )myBuffer->Data(), myBuffer->Size());
+    if (!theStream.good())
+    {
+      Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' cannot be written");
+      return false;
+    }
+    return true;
+  }
+
+  std::ifstream aFileIn;
+  OSD_OpenStream (aFileIn, myImagePath.ToCString(), std::ios::in | std::ios::binary);
+  if (!aFileIn)
+  {
+    Message::SendFail (TCollection_AsciiString ("Error: Unable to open file ") + myImagePath + "!");
+    return false;
+  }
+
+  int64_t aLen = myLength;
+  if (myOffset >= 0)
+  {
+    aFileIn.seekg ((std::streamoff )myOffset, std::ios_base::beg);
+    if (!aFileIn.good())
+    {
+      Message::SendFail (TCollection_AsciiString ("Error: Image is defined with invalid file offset '") + myImagePath + "'");
+      return false;
+    }
+  }
+  else
+  {
+    aFileIn.seekg (0, std::ios_base::end);
+    aLen = (int64_t )aFileIn.tellg();
+    aFileIn.seekg (0, std::ios_base::beg);
+  }
+
+  Standard_Integer aChunkSize = 4096;
+  NCollection_Array1<Standard_Byte> aBuffer (0, aChunkSize - 1);
+  for (int64_t aChunkIter = 0; aChunkIter < aLen; aChunkIter += aChunkSize)
+  {
+    if (aChunkIter + aChunkSize >= aLen)
+    {
+      aChunkSize = Standard_Integer(aLen - aChunkIter);
+    }
+    if (!aFileIn.read ((char* )&aBuffer.ChangeFirst(), aChunkSize))
+    {
+      Message::SendFail (TCollection_AsciiString ("Error: unable to read image file '") + myImagePath + "'");
+      return false;
+    }
+    theStream.write ((const char* )&aBuffer.First(), aChunkSize);
+  }
+  if (!theStream.good())
+  {
+    Message::SendFail (TCollection_AsciiString ("File '") + theFile + "' can not be written");
+    return false;
+  }
+  return true;
 }
 
 //=======================================================================

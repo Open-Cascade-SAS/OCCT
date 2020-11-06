@@ -103,6 +103,8 @@ RWGltf_CafWriter::RWGltf_CafWriter (const TCollection_AsciiString& theFile,
 : myFile          (theFile),
   myTrsfFormat    (RWGltf_WriterTrsfFormat_Compact),
   myIsBinary      (theIsBinary),
+  myIsForcedUVExport (false),
+  myToEmbedTexturesInGlb (true),
   myBinDataLen64  (0)
 {
   myCSTrsf.SetOutputLengthUnit (1.0); // meters
@@ -303,6 +305,10 @@ bool RWGltf_CafWriter::Perform (const Handle(TDocStd_Document)& theDocument,
                                 const TColStd_IndexedDataMapOfStringString& theFileInfo,
                                 const Message_ProgressRange& theProgress)
 {
+  const Standard_Integer aDefSamplerId = 0;
+  myMaterialMap = new RWGltf_GltfMaterialMap (myFile, aDefSamplerId);
+  myMaterialMap->SetDefaultStyle (myDefaultStyle);
+
   Message_ProgressScope aPSentry (theProgress, "Writing glTF file", 2);
   if (!writeBinData (theDocument, theRootLabels, theLabelFilter, aPSentry.Next()))
   {
@@ -326,18 +332,25 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
                                      const TColStd_MapOfAsciiString* theLabelFilter,
                                      const Message_ProgressRange& theProgress)
 {
+  myBuffViewPos.Id               = RWGltf_GltfAccessor::INVALID_ID;
   myBuffViewPos.ByteOffset       = 0;
   myBuffViewPos.ByteLength       = 0;
   myBuffViewPos.ByteStride       = 12;
   myBuffViewPos.Target           = RWGltf_GltfBufferViewTarget_ARRAY_BUFFER;
+
+  myBuffViewNorm.Id              = RWGltf_GltfAccessor::INVALID_ID;
   myBuffViewNorm.ByteOffset      = 0;
   myBuffViewNorm.ByteLength      = 0;
   myBuffViewNorm.ByteStride      = 12;
   myBuffViewNorm.Target          = RWGltf_GltfBufferViewTarget_ARRAY_BUFFER;
+
+  myBuffViewTextCoord.Id         = RWGltf_GltfAccessor::INVALID_ID;
   myBuffViewTextCoord.ByteOffset = 0;
   myBuffViewTextCoord.ByteLength = 0;
   myBuffViewTextCoord.ByteStride = 8;
   myBuffViewTextCoord.Target     = RWGltf_GltfBufferViewTarget_ARRAY_BUFFER;
+
+  myBuffViewInd.Id               = RWGltf_GltfAccessor::INVALID_ID;
   myBuffViewInd.ByteOffset       = 0;
   myBuffViewInd.ByteLength       = 0;
   myBuffViewInd.Target           = RWGltf_GltfBufferViewTarget_ELEMENT_ARRAY_BUFFER;
@@ -515,6 +528,33 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   }
   myBuffViewInd.ByteLength = (int64_t )aBinFile.tellp() - myBuffViewInd.ByteOffset;
 
+  if (myIsBinary
+   && myToEmbedTexturesInGlb)
+  {
+    // save unique image textures
+    for (XCAFPrs_DocumentExplorer aDocExplorer (theDocument, theRootLabels, XCAFPrs_DocumentExplorerFlags_OnlyLeafNodes);
+         aDocExplorer.More() && aPSentryBin.More(); aDocExplorer.Next())
+    {
+      const XCAFPrs_DocumentNode& aDocNode = aDocExplorer.Current();
+      if (theLabelFilter != NULL
+      && !theLabelFilter->Contains (aDocNode.Id))
+      {
+        continue;
+      }
+
+      for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style);
+           aFaceIter.More(); aFaceIter.Next())
+      {
+        if (toSkipFaceMesh (aFaceIter))
+        {
+          continue;
+        }
+
+        myMaterialMap->AddGlbImages (aBinFile, aFaceIter.FaceStyle());
+      }
+    }
+  }
+
   int aBuffViewId = 0;
   if (myBuffViewPos.ByteLength > 0)
   {
@@ -532,6 +572,7 @@ bool RWGltf_CafWriter::writeBinData (const Handle(TDocStd_Document)& theDocument
   {
     myBuffViewInd.Id = aBuffViewId++;
   }
+  // myMaterialMap->FlushGlbBufferViews() will put image bufferView's IDs at the end of list
 
   myBinDataLen64 = aBinFile.tellp();
   aBinFile.close();
@@ -560,7 +601,6 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   Message_ProgressScope aPSentryBin (theProgress, "Header data", 2);
 
   const Standard_Integer aBinDataBufferId = 0;
-  const Standard_Integer aDefSamplerId    = 0;
   const Standard_Integer aDefSceneId      = 0;
 
   const TCollection_AsciiString aFileNameGltf = myFile;
@@ -612,13 +652,11 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   writeAsset (theFileInfo);
   writeBufferViews (aBinDataBufferId);
   writeBuffers();
-  writeExtensions ();
+  writeExtensions();
 
-  RWGltf_GltfMaterialMap aMaterialMap (myFile, aDefSamplerId);
-  aMaterialMap.SetDefaultStyle (myDefaultStyle);
-  writeImages    (aSceneNodeMap, aMaterialMap);
-  writeMaterials (aSceneNodeMap, aMaterialMap);
-  writeMeshes    (aSceneNodeMap, aMaterialMap);
+  writeImages    (aSceneNodeMap);
+  writeMaterials (aSceneNodeMap);
+  writeMeshes    (aSceneNodeMap);
 
   aPSentryBin.Next();
   if (!aPSentryBin.More())
@@ -629,11 +667,11 @@ bool RWGltf_CafWriter::writeJson (const Handle(TDocStd_Document)&  theDocument,
   // root nodes indices starting from 0
   NCollection_Sequence<Standard_Integer> aSceneRootNodeInds;
   writeNodes (theDocument, theRootLabels, theLabelFilter, aSceneNodeMap, aSceneRootNodeInds);
-  writeSamplers (aMaterialMap);
+  writeSamplers();
   writeScene (aDefSceneId);
   writeScenes (aSceneRootNodeInds);
   writeSkins();
-  writeTextures (aSceneNodeMap, aMaterialMap);
+  writeTextures (aSceneNodeMap);
 
   myWriter->EndObject();
 
@@ -1044,10 +1082,12 @@ void RWGltf_CafWriter::writeBufferViews (const Standard_Integer theBinDataBuffer
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if (myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeBufferViews()");
 
+  int aBuffViewId = 0;
   myWriter->Key (RWGltf_GltfRootElementName (RWGltf_GltfRootElement_BufferViews));
   myWriter->StartArray();
   if (myBuffViewPos.Id != RWGltf_GltfAccessor::INVALID_ID)
   {
+    aBuffViewId++;
     myWriter->StartObject();
     myWriter->Key    ("buffer");
     myWriter->Int    (theBinDataBufferId);
@@ -1063,6 +1103,7 @@ void RWGltf_CafWriter::writeBufferViews (const Standard_Integer theBinDataBuffer
   }
   if (myBuffViewNorm.Id != RWGltf_GltfAccessor::INVALID_ID)
   {
+    aBuffViewId++;
     myWriter->StartObject();
     myWriter->Key    ("buffer");
     myWriter->Int    (theBinDataBufferId);
@@ -1078,6 +1119,7 @@ void RWGltf_CafWriter::writeBufferViews (const Standard_Integer theBinDataBuffer
   }
   if (myBuffViewTextCoord.Id != RWGltf_GltfAccessor::INVALID_ID)
   {
+    aBuffViewId++;
     myWriter->StartObject();
     myWriter->Key    ("buffer");
     myWriter->Int    (theBinDataBufferId);
@@ -1093,6 +1135,7 @@ void RWGltf_CafWriter::writeBufferViews (const Standard_Integer theBinDataBuffer
   }
   if (myBuffViewInd.Id != RWGltf_GltfAccessor::INVALID_ID)
   {
+    aBuffViewId++;
     myWriter->StartObject();
     myWriter->Key    ("buffer");
     myWriter->Int    (theBinDataBufferId);
@@ -1104,6 +1147,9 @@ void RWGltf_CafWriter::writeBufferViews (const Standard_Integer theBinDataBuffer
     myWriter->Int    (myBuffViewInd.Target);
     myWriter->EndObject();
   }
+
+  myMaterialMap->FlushGlbBufferViews (myWriter.get(), theBinDataBufferId, aBuffViewId);
+
   myWriter->EndArray();
 #else
   (void )theBinDataBufferId;
@@ -1125,8 +1171,7 @@ void RWGltf_CafWriter::writeBuffers()
     myWriter->StartObject();
     {
       myWriter->Key   ("byteLength");
-      myWriter->Int64 (myBuffViewPos.ByteLength + myBuffViewNorm.ByteLength +
-                       myBuffViewTextCoord.ByteLength + myBuffViewInd.ByteLength);
+      myWriter->Int64 (myBinDataLen64);
       if (!myIsBinary)
       {
         myWriter->Key   ("uri");
@@ -1152,29 +1197,35 @@ void RWGltf_CafWriter::writeExtensions()
 // function : writeImages
 // purpose  :
 // =======================================================================
-void RWGltf_CafWriter::writeImages (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                    RWGltf_GltfMaterialMap& theMaterialMap)
+void RWGltf_CafWriter::writeImages (const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if (myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeImages()");
 
   // empty RWGltf_GltfRootElement_Images section should NOT be written to avoid validator errors
-  bool anIsStarted = false;
-  for (RWGltf_GltfSceneNodeMap::Iterator aSceneNodeIter (theSceneNodeMap); aSceneNodeIter.More(); aSceneNodeIter.Next())
+  if (myIsBinary
+   && myToEmbedTexturesInGlb)
   {
-    const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
-    for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style); aFaceIter.More(); aFaceIter.Next())
-    {
-      theMaterialMap.AddImages (myWriter.get(), aFaceIter.FaceStyle(), anIsStarted);
-    }
+    myMaterialMap->FlushGlbImages (myWriter.get());
   }
-  if (anIsStarted)
+  else
   {
-    myWriter->EndArray();
+    bool anIsStarted = false;
+    for (RWGltf_GltfSceneNodeMap::Iterator aSceneNodeIter(theSceneNodeMap); aSceneNodeIter.More(); aSceneNodeIter.Next())
+    {
+      const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
+      for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style); aFaceIter.More(); aFaceIter.Next())
+      {
+        myMaterialMap->AddImages (myWriter.get(), aFaceIter.FaceStyle(), anIsStarted);
+      }
+    }
+    if (anIsStarted)
+    {
+      myWriter->EndArray();
+    }
   }
 #else
   (void )theSceneNodeMap;
-  (void )theMaterialMap;
 #endif
 }
 
@@ -1182,8 +1233,7 @@ void RWGltf_CafWriter::writeImages (const RWGltf_GltfSceneNodeMap& theSceneNodeM
 // function : writeMaterials
 // purpose  :
 // =======================================================================
-void RWGltf_CafWriter::writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                       RWGltf_GltfMaterialMap& theMaterialMap)
+void RWGltf_CafWriter::writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if (myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeMaterials()");
@@ -1195,7 +1245,7 @@ void RWGltf_CafWriter::writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNo
     const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
     for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style); aFaceIter.More(); aFaceIter.Next())
     {
-      theMaterialMap.AddMaterial (myWriter.get(), aFaceIter.FaceStyle(), anIsStarted);
+      myMaterialMap->AddMaterial (myWriter.get(), aFaceIter.FaceStyle(), anIsStarted);
     }
   }
   if (anIsStarted)
@@ -1204,7 +1254,6 @@ void RWGltf_CafWriter::writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNo
   }
 #else
   (void )theSceneNodeMap;
-  (void )theMaterialMap;
 #endif
 }
 
@@ -1212,8 +1261,7 @@ void RWGltf_CafWriter::writeMaterials (const RWGltf_GltfSceneNodeMap& theSceneNo
 // function : writeMeshes
 // purpose  :
 // =======================================================================
-void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                    const RWGltf_GltfMaterialMap&  theMaterialMap)
+void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if (myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeMeshes()");
@@ -1248,7 +1296,7 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
       }
 
       const RWGltf_GltfFace& aGltfFace = myBinDataMap.Find (aFaceIter.Face());
-      const TCollection_AsciiString aMatId = theMaterialMap.FindMaterial (aFaceIter.FaceStyle());
+      const TCollection_AsciiString aMatId = myMaterialMap->FindMaterial (aFaceIter.FaceStyle());
       myWriter->StartObject();
       {
         myWriter->Key ("attributes");
@@ -1287,7 +1335,6 @@ void RWGltf_CafWriter::writeMeshes (const RWGltf_GltfSceneNodeMap& theSceneNodeM
   myWriter->EndArray();
 #else
   (void )theSceneNodeMap;
-  (void )theMaterialMap;
 #endif
 }
 
@@ -1476,11 +1523,11 @@ void RWGltf_CafWriter::writeNodes (const Handle(TDocStd_Document)&  theDocument,
 // function : writeSamplers
 // purpose  :
 // =======================================================================
-void RWGltf_CafWriter::writeSamplers (const RWGltf_GltfMaterialMap& theMaterialMap)
+void RWGltf_CafWriter::writeSamplers()
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if (myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeSamplers()");
-  if (theMaterialMap.NbImages() == 0)
+  if (myMaterialMap->NbImages() == 0)
   {
     return;
   }
@@ -1498,8 +1545,6 @@ void RWGltf_CafWriter::writeSamplers (const RWGltf_GltfMaterialMap& theMaterialM
     myWriter->EndObject();
   }
   myWriter->EndArray();
-#else
-  (void )theMaterialMap;
 #endif
 }
 
@@ -1565,8 +1610,7 @@ void RWGltf_CafWriter::writeSkins()
 // function : writeTextures
 // purpose  :
 // =======================================================================
-void RWGltf_CafWriter::writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNodeMap,
-                                      RWGltf_GltfMaterialMap& theMaterialMap)
+void RWGltf_CafWriter::writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNodeMap)
 {
 #ifdef HAVE_RAPIDJSON
   Standard_ProgramError_Raise_if (myWriter.get() == NULL, "Internal error: RWGltf_CafWriter::writeTextures()");
@@ -1578,7 +1622,7 @@ void RWGltf_CafWriter::writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNod
     const XCAFPrs_DocumentNode& aDocNode = aSceneNodeIter.Value();
     for (RWMesh_FaceIterator aFaceIter (aDocNode.RefLabel, TopLoc_Location(), true, aDocNode.Style); aFaceIter.More(); aFaceIter.Next())
     {
-      theMaterialMap.AddTextures (myWriter.get(), aFaceIter.FaceStyle(), anIsStarted);
+      myMaterialMap->AddTextures (myWriter.get(), aFaceIter.FaceStyle(), anIsStarted);
     }
   }
   if (anIsStarted)
@@ -1587,6 +1631,5 @@ void RWGltf_CafWriter::writeTextures (const RWGltf_GltfSceneNodeMap& theSceneNod
   }
 #else
  (void )theSceneNodeMap;
- (void )theMaterialMap;
 #endif
 }

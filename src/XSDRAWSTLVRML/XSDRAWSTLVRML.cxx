@@ -221,7 +221,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   Handle(TDocStd_Application) anApp = DDocStd::GetApplication();
   TColStd_IndexedDataMapOfStringString aFileInfo;
   RWGltf_WriterTrsfFormat aTrsfFormat = RWGltf_WriterTrsfFormat_Compact;
-  bool toForceUVExport = false;
+  bool toForceUVExport = false, toEmbedTexturesInGlb = true;
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
   {
     TCollection_AsciiString anArgCase (theArgVec[anArgIter]);
@@ -291,6 +291,10 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
     {
       aGltfFilePath = theArgVec[anArgIter];
     }
+    else if (anArgCase == "-texturesSeparate")
+    {
+      toEmbedTexturesInGlb = false;
+    }
     else
     {
       Message::SendFail() << "Syntax error at '" << theArgVec[anArgIter] << "'";
@@ -313,6 +317,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   RWGltf_CafWriter aWriter (aGltfFilePath, anExt.EndsWith (".glb"));
   aWriter.SetTransformationFormat (aTrsfFormat);
   aWriter.SetForcedUVExport (toForceUVExport);
+  aWriter.SetToEmbedTexturesInGlb (toEmbedTexturesInGlb);
   aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aSystemUnitFactor);
   aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (RWMesh_CoordinateSystem_Zup);
   aWriter.Perform (aDoc, aFileInfo, aProgress->Start());
@@ -1724,10 +1729,11 @@ void  XSDRAWSTLVRML::InitCommands (Draw_Interpretor& theCommands)
                    "\n\t\t: Same as ReadGltf but reads glTF file into a shape instead of a document.",
                    __FILE__, ReadGltf, g);
   theCommands.Add ("WriteGltf",
-                   "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}=compact] [-comments Text] [-author Name] [-forceUVExport]"
+                   "WriteGltf Doc file [-trsfFormat {compact|TRS|mat4}=compact] [-comments Text] [-author Name] [-forceUVExport] [-texturesSeparate]"
                    "\n\t\t: Write XDE document into glTF file."
                    "\n\t\t:   -trsfFormat preferred transformation format"
-                   "\n\t\t:   -forceUVExport always export UV coordinates",
+                   "\n\t\t:   -forceUVExport always export UV coordinates"
+                   "\n\t\t:   -texturesSeparate write textures to separate files",
                    __FILE__, WriteGltf, g);
   theCommands.Add ("writegltf",
                    "writegltf shape file",

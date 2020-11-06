@@ -13,11 +13,16 @@
 
 #include <RWGltf_GltfMaterialMap.hxx>
 
+#include <Message.hxx>
+#include <NCollection_Array1.hxx>
+#include <OSD_OpenFile.hxx>
 #include <RWGltf_GltfRootElement.hxx>
 
 #ifdef HAVE_RAPIDJSON
   #include <RWGltf_GltfOStreamWriter.hxx>
 #endif
+
+IMPLEMENT_STANDARD_RTTIEXT(RWGltf_GltfMaterialMap, RWMesh_MaterialMap)
 
 // =======================================================================
 // function : baseColorTexture
@@ -51,8 +56,7 @@ RWGltf_GltfMaterialMap::RWGltf_GltfMaterialMap (const TCollection_AsciiString& t
                                                 const Standard_Integer theDefSamplerId)
 : RWMesh_MaterialMap (theFile),
   myWriter (NULL),
-  myDefSamplerId (theDefSamplerId),
-  myNbImages (0)
+  myDefSamplerId (theDefSamplerId)
 {
   myMatNameAsKey = false;
 }
@@ -89,6 +93,26 @@ void RWGltf_GltfMaterialMap::AddImages (RWGltf_GltfOStreamWriter* theWriter,
 }
 
 // =======================================================================
+// function : AddGlbImages
+// purpose  :
+// =======================================================================
+void RWGltf_GltfMaterialMap::AddGlbImages (std::ostream& theBinFile,
+                                           const XCAFPrs_Style& theStyle)
+{
+  if (theStyle.Material().IsNull()
+   || theStyle.Material()->IsEmpty())
+  {
+    return;
+  }
+
+  addGlbImage (theBinFile, baseColorTexture (theStyle.Material()));
+  addGlbImage (theBinFile, theStyle.Material()->PbrMaterial().MetallicRoughnessTexture);
+  addGlbImage (theBinFile, theStyle.Material()->PbrMaterial().NormalTexture);
+  addGlbImage (theBinFile, theStyle.Material()->PbrMaterial().EmissiveTexture);
+  addGlbImage (theBinFile, theStyle.Material()->PbrMaterial().OcclusionTexture);
+}
+
+// =======================================================================
 // function : addImage
 // purpose  :
 // =======================================================================
@@ -98,27 +122,20 @@ void RWGltf_GltfMaterialMap::addImage (RWGltf_GltfOStreamWriter* theWriter,
 {
 #ifdef HAVE_RAPIDJSON
   if (theTexture.IsNull()
-   || myImageMap.IsBound1 (theTexture)
+   || myImageMap.Contains (theTexture)
    || myImageFailMap.Contains (theTexture))
   {
     return;
   }
 
-  TCollection_AsciiString aGltfImgKey = myNbImages;
-  ++myNbImages;
-  for (; myImageMap.IsBound2 (aGltfImgKey); ++myNbImages)
-  {
-    aGltfImgKey = myNbImages;
-  }
-
+  const TCollection_AsciiString aGltfImgKey = myImageMap.Extent();
   TCollection_AsciiString aTextureUri;
   if (!CopyTexture (aTextureUri, theTexture, aGltfImgKey))
   {
     myImageFailMap.Add (theTexture);
     return;
   }
-
-  myImageMap.Bind (theTexture, aGltfImgKey);
+  myImageMap.Add (theTexture, RWGltf_GltfBufferView());
 
   if (!theIsStarted)
   {
@@ -137,6 +154,133 @@ void RWGltf_GltfMaterialMap::addImage (RWGltf_GltfOStreamWriter* theWriter,
   (void )theWriter;
   (void )theTexture;
   (void )theIsStarted;
+#endif
+}
+
+// =======================================================================
+// function : addGlbImage
+// purpose  :
+// =======================================================================
+void RWGltf_GltfMaterialMap::addGlbImage (std::ostream& theBinFile,
+                                          const Handle(Image_Texture)& theTexture)
+{
+  if (theTexture.IsNull()
+   || myImageMap.Contains (theTexture)
+   || myImageFailMap.Contains (theTexture))
+  {
+    return;
+  }
+
+  RWGltf_GltfBufferView aBuffImage;
+  aBuffImage.ByteOffset = theBinFile.tellp();
+  if (!theTexture->WriteImage (theBinFile, myFileName))
+  {
+    myImageFailMap.Add (theTexture);
+    return;
+  }
+
+  // alignment by 4 bytes
+  int64_t aContentLen64 = (int64_t)theBinFile.tellp();
+  while (aContentLen64 % 4 != 0)
+  {
+    theBinFile.write (" ", 1);
+    ++aContentLen64;
+  }
+
+  //aBuffImage.Id = myBuffViewImages.Size(); // id will be corrected later
+  aBuffImage.ByteLength = (int64_t)theBinFile.tellp() - aBuffImage.ByteOffset;
+  if (aBuffImage.ByteLength <= 0)
+  {
+    myImageFailMap.Add (theTexture);
+    return;
+  }
+
+  myImageMap.Add (theTexture, aBuffImage);
+}
+
+// =======================================================================
+// function : FlushBufferViews
+// purpose  :
+// =======================================================================
+void RWGltf_GltfMaterialMap::FlushGlbBufferViews (RWGltf_GltfOStreamWriter* theWriter,
+                                                  const Standard_Integer theBinDataBufferId,
+                                                  Standard_Integer& theBuffViewId)
+{
+#ifdef HAVE_RAPIDJSON
+  for (NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView, Image_Texture>::Iterator aBufViewIter (myImageMap);
+       aBufViewIter.More(); aBufViewIter.Next())
+  {
+    RWGltf_GltfBufferView& aBuffView = aBufViewIter.ChangeValue();
+    if (aBuffView.ByteLength <= 0)
+    {
+      continue;
+    }
+
+    aBuffView.Id = theBuffViewId++;
+    theWriter->StartObject();
+    theWriter->Key ("buffer");
+    theWriter->Int (theBinDataBufferId);
+    theWriter->Key ("byteLength");
+    theWriter->Int64 (aBuffView.ByteLength);
+    theWriter->Key ("byteOffset");
+    theWriter->Int64 (aBuffView.ByteOffset);
+    theWriter->EndObject();
+  }
+#else
+  (void )theWriter;
+  (void )theBinDataBufferId;
+  (void )theBuffViewId;
+#endif
+}
+
+// =======================================================================
+// function : FlushGlbImages
+// purpose  :
+// =======================================================================
+void RWGltf_GltfMaterialMap::FlushGlbImages (RWGltf_GltfOStreamWriter* theWriter)
+{
+#ifdef HAVE_RAPIDJSON
+  bool isStarted = false;
+  for (NCollection_IndexedDataMap<Handle(Image_Texture), RWGltf_GltfBufferView, Image_Texture>::Iterator aBufViewIter (myImageMap);
+       aBufViewIter.More(); aBufViewIter.Next())
+  {
+    const Handle(Image_Texture)& aTexture  = aBufViewIter.Key();
+    const RWGltf_GltfBufferView& aBuffView = aBufViewIter.Value();
+    if (aBuffView.ByteLength <= 0)
+    {
+      continue;
+    }
+
+    if (!isStarted)
+    {
+      theWriter->Key (RWGltf_GltfRootElementName (RWGltf_GltfRootElement_Images));
+      theWriter->StartArray();
+      isStarted = true;
+    }
+
+    theWriter->StartObject();
+    {
+      const TCollection_AsciiString anImageFormat = aTexture->MimeType();
+      if (anImageFormat != "image/png"
+       && anImageFormat != "image/jpeg")
+      {
+        Message::SendWarning (TCollection_AsciiString ("Warning! Non-standard mime-type ")
+                              + anImageFormat + " (texture " + aTexture->TextureId()
+                              + ") within glTF file");
+      }
+      theWriter->Key ("mimeType");
+      theWriter->String (anImageFormat.ToCString());
+      theWriter->Key ("bufferView");
+      theWriter->Int (aBuffView.Id);
+    }
+    theWriter->EndObject();
+  }
+  if (isStarted)
+  {
+    theWriter->EndArray();
+  }
+#else
+  (void )theWriter;
 #endif
 }
 
@@ -205,17 +349,13 @@ void RWGltf_GltfMaterialMap::addTexture (RWGltf_GltfOStreamWriter* theWriter,
 #ifdef HAVE_RAPIDJSON
   if (theTexture.IsNull()
   ||  myTextureMap.Contains (theTexture)
-  || !myImageMap  .IsBound1 (theTexture))
+  || !myImageMap  .Contains (theTexture))
   {
     return;
   }
 
-  const TCollection_AsciiString anImgKey = myImageMap.Find1 (theTexture);
+  const Standard_Integer anImgKey = myImageMap.FindIndex (theTexture) - 1; // glTF indexation starts from 0
   myTextureMap.Add (theTexture);
-  if (anImgKey.IsEmpty())
-  {
-    return;
-  }
 
   if (!theIsStarted)
   {
@@ -229,7 +369,7 @@ void RWGltf_GltfMaterialMap::addTexture (RWGltf_GltfOStreamWriter* theWriter,
     theWriter->Key ("sampler");
     theWriter->Int (myDefSamplerId); // mandatory field by specs
     theWriter->Key ("source");
-    theWriter->Int (anImgKey.IntegerValue());
+    theWriter->Int (anImgKey);
   }
   theWriter->EndObject();
 #else
@@ -303,17 +443,14 @@ void RWGltf_GltfMaterialMap::DefineMaterial (const XCAFPrs_Style& theStyle,
 
       if (const Handle(Image_Texture)& aBaseTexture = baseColorTexture (theStyle.Material()))
       {
-        if (myImageMap.IsBound1 (aBaseTexture))
+        const Standard_Integer aBaseImageIdx = myImageMap.FindIndex (aBaseTexture) - 1;
+        if (aBaseImageIdx != -1)
         {
           myWriter->Key ("baseColorTexture");
           myWriter->StartObject();
           {
             myWriter->Key ("index");
-            const TCollection_AsciiString& anImageIdx = myImageMap.Find1 (aBaseTexture);
-            if (!anImageIdx.IsEmpty())
-            {
-              myWriter->Int (anImageIdx.IntegerValue());
-            }
+            myWriter->Int (aBaseImageIdx);
           }
           myWriter->EndObject();
         }
@@ -326,18 +463,16 @@ void RWGltf_GltfMaterialMap::DefineMaterial (const XCAFPrs_Style& theStyle,
         myWriter->Double (aPbrMat.Metallic);
       }
 
-      if (!aPbrMat.MetallicRoughnessTexture.IsNull()
-        && myImageMap.IsBound1 (aPbrMat.MetallicRoughnessTexture))
+      const Standard_Integer aMetRoughImageIdx = !aPbrMat.MetallicRoughnessTexture.IsNull()
+                                               ? myImageMap.FindIndex (aPbrMat.MetallicRoughnessTexture) - 1
+                                               : -1;
+      if (aMetRoughImageIdx != -1)
       {
         myWriter->Key ("metallicRoughnessTexture");
         myWriter->StartObject();
         {
           myWriter->Key ("index");
-          const TCollection_AsciiString& anImageIdx = myImageMap.Find1 (aPbrMat.MetallicRoughnessTexture);
-          if (!anImageIdx.IsEmpty())
-          {
-            myWriter->Int (anImageIdx.IntegerValue());
-          }
+          myWriter->Int (aMetRoughImageIdx);
         }
         myWriter->EndObject();
       }
@@ -405,50 +540,45 @@ void RWGltf_GltfMaterialMap::DefineMaterial (const XCAFPrs_Style& theStyle,
       }
       myWriter->EndArray();
     }
-    if (!aPbrMat.EmissiveTexture.IsNull()
-      && myImageMap.IsBound1 (aPbrMat.EmissiveTexture))
+
+    const Standard_Integer anEmissImageIdx = !aPbrMat.EmissiveTexture.IsNull()
+                                           ? myImageMap.FindIndex (aPbrMat.EmissiveTexture) - 1
+                                           : -1;
+    if (anEmissImageIdx != -1)
     {
       myWriter->Key ("emissiveTexture");
       myWriter->StartObject();
       {
         myWriter->Key ("index");
-        const TCollection_AsciiString& anImageIdx = myImageMap.Find1 (aPbrMat.EmissiveTexture);
-        if (!anImageIdx.IsEmpty())
-        {
-          myWriter->Int (anImageIdx.IntegerValue());
-        }
+        myWriter->Int (anEmissImageIdx);
       }
       myWriter->EndObject();
     }
 
-    if (!aPbrMat.NormalTexture.IsNull()
-      && myImageMap.IsBound1 (aPbrMat.NormalTexture))
+    const Standard_Integer aNormImageIdx = !aPbrMat.NormalTexture.IsNull()
+                                         ? myImageMap.FindIndex (aPbrMat.NormalTexture) - 1
+                                         : -1;
+    if (aNormImageIdx != -1)
     {
       myWriter->Key ("normalTexture");
       myWriter->StartObject();
       {
         myWriter->Key ("index");
-        const TCollection_AsciiString& anImageIdx = myImageMap.Find1 (aPbrMat.NormalTexture);
-        if (!anImageIdx.IsEmpty())
-        {
-          myWriter->Int (anImageIdx.IntegerValue());
-        }
+        myWriter->Int (aNormImageIdx);
       }
       myWriter->EndObject();
     }
 
-    if (!aPbrMat.OcclusionTexture.IsNull()
-      && myImageMap.IsBound1 (aPbrMat.OcclusionTexture))
+    const Standard_Integer anOcclusImageIdx = !aPbrMat.OcclusionTexture.IsNull()
+                                            ? myImageMap.FindIndex (aPbrMat.OcclusionTexture) - 1
+                                            : -1;
+    if (anOcclusImageIdx != -1)
     {
       myWriter->Key ("occlusionTexture");
       myWriter->StartObject();
       {
         myWriter->Key ("index");
-        const TCollection_AsciiString& anImageIdx = myImageMap.Find1 (aPbrMat.OcclusionTexture);
-        if (!anImageIdx.IsEmpty())
-        {
-          myWriter->Int (anImageIdx.IntegerValue());
-        }
+        myWriter->Int (anOcclusImageIdx);
       }
       myWriter->EndObject();
     }
