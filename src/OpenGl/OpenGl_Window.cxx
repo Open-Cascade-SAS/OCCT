@@ -715,27 +715,17 @@ Standard_Boolean OpenGl_Window::Activate()
 // =======================================================================
 void OpenGl_Window::Resize()
 {
-#if !defined(_WIN32) && !defined(HAVE_EGL)
-  Display* aDisp = (Display* )myGlContext->myDisplay;
-  if (aDisp == NULL)
-    return;
-#endif
-
-  Standard_Integer aWidth  = 0;
-  Standard_Integer aHeight = 0;
+  Standard_Integer aWidth = 0, aHeight = 0;
   myPlatformWindow->Size (aWidth, aHeight);
-
-  // If the size is not changed - do nothing
-  if ((myWidth == aWidth) && (myHeight == aHeight))
+  if (myWidth  == aWidth
+   && myHeight == aHeight)
+  {
+    // if the size is not changed - do nothing
     return;
+  }
 
   myWidth  = aWidth;
   myHeight = aHeight;
-
-#if !defined(_WIN32) && !defined(HAVE_EGL)
-  XResizeWindow (aDisp, myGlContext->myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
-  XSync (aDisp, False);
-#endif
 
   Init();
 }
@@ -778,18 +768,8 @@ void OpenGl_Window::Init()
     eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_WIDTH,  &myWidth);
     eglQuerySurface ((EGLDisplay )myGlContext->myDisplay, (EGLSurface )myGlContext->myWindow, EGL_HEIGHT, &myHeight);
   }
-#elif defined(_WIN32)
-  //
 #else
-  Window aRootWin;
-  int aDummy;
-  unsigned int aDummyU;
-  unsigned int aNewWidth  = 0;
-  unsigned int aNewHeight = 0;
-  Display* aDisp = (Display* )myGlContext->myDisplay;
-  XGetGeometry (aDisp, myGlContext->myWindow, &aRootWin, &aDummy, &aDummy, &aNewWidth, &aNewHeight, &aDummyU, &aDummyU);
-  myWidth  = aNewWidth;
-  myHeight = aNewHeight;
+  //
 #endif
 
   glDisable (GL_DITHER);

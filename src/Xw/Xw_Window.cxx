@@ -391,7 +391,7 @@ void Xw_Window::Unmap() const
 // =======================================================================
 Aspect_TypeOfResize Xw_Window::DoResize()
 {
-  if (myXWindow == 0)
+  if (IsVirtual() || myXWindow == 0)
   {
     return Aspect_TOR_UNKNOWN;
   }
@@ -447,9 +447,9 @@ Standard_Boolean Xw_Window::DoMapping() const
 // =======================================================================
 Standard_Real Xw_Window::Ratio() const
 {
-  if (myXWindow == 0)
+  if (IsVirtual() || myXWindow == 0)
   {
-    return 1.0;
+    return Standard_Real(myXRight - myXLeft) / Standard_Real(myYBottom - myYTop);
   }
 
   XFlush (myDisplay->GetDisplay());
@@ -462,11 +462,15 @@ Standard_Real Xw_Window::Ratio() const
 // function : Position
 // purpose  :
 // =======================================================================
-void Xw_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
-                          Standard_Integer& X2, Standard_Integer& Y2) const
+void Xw_Window::Position (Standard_Integer& theX1, Standard_Integer& theY1,
+                          Standard_Integer& theX2, Standard_Integer& theY2) const
 {
-  if (myXWindow == 0)
+  if (IsVirtual() || myXWindow == 0)
   {
+    theX1  = myXLeft;
+    theX2  = myXRight;
+    theY1  = myYTop;
+    theY2  = myYBottom;
     return;
   }
 
@@ -477,10 +481,10 @@ void Xw_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
   XTranslateCoordinates (myDisplay->GetDisplay(), anAttributes.root, myXWindow,
                          0, 0, &anAttributes.x, &anAttributes.y, &aChild);
 
-  X1 = -anAttributes.x;
-  X2 = X1 + anAttributes.width;
-  Y1 = -anAttributes.y;
-  Y2 = Y1 + anAttributes.height;
+  theX1 = -anAttributes.x;
+  theX2 = theX1 + anAttributes.width;
+  theY1 = -anAttributes.y;
+  theY2 = theY1 + anAttributes.height;
 }
 
 // =======================================================================
@@ -490,8 +494,10 @@ void Xw_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
 void Xw_Window::Size (Standard_Integer& theWidth,
                       Standard_Integer& theHeight) const
 {
-  if (myXWindow == 0)
+  if (IsVirtual() || myXWindow == 0)
   {
+    theWidth  = myXRight - myXLeft;
+    theHeight = myYBottom - myYTop;
     return;
   }
 
