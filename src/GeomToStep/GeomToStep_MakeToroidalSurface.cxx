@@ -21,7 +21,7 @@
 #include <StdFail_NotDone.hxx>
 #include <StepGeom_ToroidalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
+#include <StepData_GlobalFactors.hxx>
 
 //=============================================================================
 // Creation d' une toroidal_surface de prostep a partir d' une ToroidalSurface
@@ -41,7 +41,7 @@ GeomToStep_MakeToroidalSurface::GeomToStep_MakeToroidalSurface
   aMinorRadius = S->MinorRadius();
   Surf = new StepGeom_ToroidalSurface;
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Standard_Real fact = UnitsMethods::LengthFactor();
+  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
   Surf->Init(name, aPosition, aMajorRadius/fact, aMinorRadius/fact);
   theToroidalSurface = Surf;
   done = Standard_True;

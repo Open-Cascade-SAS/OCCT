@@ -23,11 +23,11 @@
 #include <gp_Circ.hxx>
 #include <gp_Circ2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Circle.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un cercle de prostep a partir d' un cercle 3d de gp

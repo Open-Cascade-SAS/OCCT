@@ -36,6 +36,7 @@
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeConstruct_Curve.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_Pcurve.hxx>
@@ -60,7 +61,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <Transfer_TransientProcess.hxx>
-#include <UnitsMethods.hxx>
+#include <GeomConvert_Units.hxx>
 #include <Standard_Failure.hxx>
 
 //#include <StepGeom_Polyline.hxx>
@@ -491,7 +492,8 @@ Handle(Geom2d_Curve)  StepToTopoDS_TranslateEdge::MakePCurve
     if (! C2d.IsNull()) {
     // -- if the surface is a RectangularTrimmedSurface, 
     // -- send the BasisSurface.
-     C2d = UnitsMethods::DegreeToRadian(C2d, ConvSurf);
+     C2d = GeomConvert_Units::DegreeToRadian(C2d, ConvSurf,
+       StepData_GlobalFactors::Intance().LengthFactor(), StepData_GlobalFactors::Intance().FactorDegreeRadian());
     }
     
   }

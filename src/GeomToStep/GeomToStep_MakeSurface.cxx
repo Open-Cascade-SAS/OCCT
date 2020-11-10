@@ -32,7 +32,7 @@
 #include <StepGeom_Surface.hxx>
 #include <StepGeom_SweptSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
+#include <StepData_GlobalFactors.hxx>
 
 //=============================================================================
 // Creation d' une Surface de prostep a partir d' une Surface de Geom
@@ -66,7 +66,7 @@ GeomToStep_MakeSurface::GeomToStep_MakeSurface ( const Handle(Geom_Surface)& S)
     if (!done) return;
     Handle(StepGeom_OffsetSurface) Surf = new StepGeom_OffsetSurface;
     Surf->Init (new TCollection_HAsciiString(""),
-		     MkBasis.Value(),S1->Offset()/UnitsMethods::LengthFactor(),StepData_LFalse);
+		     MkBasis.Value(),S1->Offset()/ StepData_GlobalFactors::Intance().LengthFactor(),StepData_LFalse);
     theSurface = Surf;
   }
   else {

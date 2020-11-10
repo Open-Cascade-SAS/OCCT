@@ -11,421 +11,213 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-
-#include <Geom2d_BoundedCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-#include <Geom2d_Circle.hxx>
-#include <Geom2d_Conic.hxx>
-#include <Geom2d_Curve.hxx>
-#include <Geom2d_Ellipse.hxx>
-#include <Geom2d_Hyperbola.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2d_Parabola.hxx>
-#include <Geom2dConvert.hxx>
-#include <Geom_ConicalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_SphericalSurface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_SurfaceOfRevolution.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <gp.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_GTrsf2d.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Trsf2d.hxx>
 #include <UnitsMethods.hxx>
 
-static Standard_Real theLengthFactor     = 1.;
-static Standard_Real thePlaneAngleFactor = 1.;
-static Standard_Real theSolidAngleFactor = 1.;
-static Standard_Boolean set3d            = Standard_True;
+#include <TCollection_AsciiString.hxx>
 
-static Standard_Real FactRD = 1.;
-static Standard_Real FactDR = 1.;
-
-static Standard_Real theCasCadeLengthUnit = 1.; // abv 28 Feb 00
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-void UnitsMethods::InitializeFactors(const Standard_Real LengthFactor, const Standard_Real PlaneAngleFactor, const Standard_Real SolidAngleFactor)
-{
-  theLengthFactor     = LengthFactor;
-  thePlaneAngleFactor = PlaneAngleFactor;
-  theSolidAngleFactor = SolidAngleFactor;
-  FactRD = 1./PlaneAngleFactor; 
-  FactDR = PlaneAngleFactor;
-}
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-Standard_Real UnitsMethods ::LengthFactor()
-{
-  return theLengthFactor;
-}
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-Standard_Real UnitsMethods::PlaneAngleFactor()
-{
-  return thePlaneAngleFactor;
-}
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-Standard_Real UnitsMethods::SolidAngleFactor()
-{
-  return theSolidAngleFactor;
-}
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-void UnitsMethods::Set3dConversion(const Standard_Boolean B)
-{
-  set3d = B;
-}
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-Standard_Boolean UnitsMethods::Convert3d()
-{
-  return set3d;
-}
-
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-Handle(Geom2d_Curve) UnitsMethods::RadianToDegree
-                                   (const Handle(Geom2d_Curve)  & theCurve2d,
-				    const Handle(Geom_Surface)  & theSurf)
-{
-  Handle(Geom2d_Curve) aCurve2d = Handle(Geom2d_Curve)::DownCast(theCurve2d->Copy());
-  Standard_Real uFact = 1.;
-  Standard_Real vFact = 1.; 
-  Standard_Real LengthFact  = 1. / UnitsMethods::LengthFactor();
-  Standard_Real AngleFact  = FactRD;    // 180./PI;  pilotable
-  
-  gp_Pnt2d    Pt1;
-  gp_XY       pXY;
-  gp_GTrsf2d  tMatu , tMatv;
-  
-  //  theSurf is a CylindricalSurface or a ConicalSurface or
-  //             a ToroidalSurface or a SphericalSurface or
-  //             a SurfaceOfRevolution
-  if (theSurf->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||
-      theSurf->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))) {
-    uFact = vFact = AngleFact;
-  }
-  else if (theSurf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))) {
-    uFact = AngleFact;
-    vFact = LengthFact;
-  }
-  else if ( theSurf->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))) {
-    uFact = AngleFact;
-  }
-  else if (theSurf->IsKind(STANDARD_TYPE(Geom_ConicalSurface))) {
-    Handle(Geom_ConicalSurface) conicS = 
-      Handle(Geom_ConicalSurface)::DownCast(theSurf);
-    Standard_Real semAng = conicS->SemiAngle();
-    uFact = AngleFact;
-    vFact = LengthFact * Cos(semAng);
-  }
-  else if (theSurf->IsKind(STANDARD_TYPE(Geom_Plane))) {
-    uFact = vFact = LengthFact;
-    if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
-        aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
-      gp_Trsf2d aT;
-      aT.SetScale (gp::Origin2d(), LengthFact);
-      aCurve2d->Transform (aT);
-      return aCurve2d;
-    }
-  }
-  else {
-//  debug
-//    std::cout <<"UnitsMethods: SurfType = "<< aSurface->DynamicType();
-    return aCurve2d;
-  }
-
-  if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Line))) {
-    Handle(Geom2d_Line) aLine2d = Handle(Geom2d_Line)::DownCast(aCurve2d);
-
-    gp_Pnt2d myLoc = aLine2d->Location();
-    gp_Dir2d myDir = aLine2d->Direction();
-
-    gp_Pnt2d myNewLoc;
-    myNewLoc.SetCoord(myLoc.X()*uFact, myLoc.Y()*vFact);
-
-    gp_Dir2d myNewDir;
-    myNewDir.SetCoord(myDir.X()*uFact, myDir.Y()*vFact);
-
-    Handle(Geom2d_Line) myNewLine2d = Handle(Geom2d_Line)::DownCast(aLine2d->Copy());
-    myNewLine2d->SetLocation(myNewLoc);
-    myNewLine2d->SetDirection(myNewDir);
-
-    return myNewLine2d;
-  }
-  else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
-    if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
-        aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
-      Handle(Geom2d_BSplineCurve) aBSpline2d = 
-	Geom2dConvert::CurveToBSplineCurve(aCurve2d);
-      aCurve2d = aBSpline2d;
-    } 
-    else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Parabola))) {
-#ifdef OCCT_DEBUG
-      std::cout << "PCURVE of Parabola type in U or V Periodic Surface" << std::endl;
-      std::cout << "Parameters Not transformed to Degree" << std::endl;
-#endif
-    }
-    else if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_Hyperbola))) {
-#ifdef OCCT_DEBUG
-      std::cout << "PCURVE of Hyperbola type in U or V Periodic Surface" << std::endl;
-      std::cout << "Parameters Not transformed to Degree" << std::endl;
-#endif
-    }
-    
-  }
-  
-  // Compute affinity
-  tMatu.SetAffinity(gp::OY2d(), uFact);
-  tMatv.SetAffinity(gp::OX2d(), vFact);
-  
-  if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_BoundedCurve))) {
-    if (aCurve2d->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))) {
-      Handle(Geom2d_BSplineCurve) aBSpline2d = 
-	Handle(Geom2d_BSplineCurve)::DownCast(aCurve2d);
-      Handle(Geom2d_BSplineCurve) myNewBSpline2d = 
-	Handle(Geom2d_BSplineCurve)::DownCast(aBSpline2d->Copy());
-      Standard_Integer nbPol = aBSpline2d->NbPoles();
-      for (Standard_Integer i = 1; i<=nbPol ; i++) {
-	pXY = aBSpline2d->Pole(i).XY();
-	tMatu.Transforms(pXY);
-	tMatv.Transforms(pXY);
-	Pt1.SetXY(pXY);
-	myNewBSpline2d->SetPole(i, Pt1);
-      }
-      return myNewBSpline2d;
-    }
-    else {
-#ifdef OCCT_DEBUG
-      std::cout << "PCURVE of Other Types of Bounded Curve in U or V Periodic Surface" << std::endl;
-      std::cout << "Parameters Not transformed to Degree" << std::endl;
-#endif
-    }
-  }
-  return aCurve2d;
-}
-
-//=============================================================================
-// DegreeToRadian: 1. Change definition of the pcurves according to Length
-//                     Factor                  
-//                  2. STEP cylinder, torus, cone and sphere are parametrized
-//                     from 0 to 360 degree
-//                     Then pcurves parameter have to be transformed 
-//                     from DEGREE to RADIAN
-//=============================================================================
-
-Handle(Geom2d_Curve) UnitsMethods::DegreeToRadian
-                             (const Handle(Geom2d_Curve) & thePcurve,
-			      const Handle(Geom_Surface) & aSurface)
-{
-  Handle(Geom2d_Curve)  aPcurve = Handle(Geom2d_Curve)::DownCast(thePcurve->Copy());
-  Standard_Real uFact       = 1.;
-  Standard_Real vFact       = 1.; 
-  Standard_Real LengthFact  = UnitsMethods::LengthFactor();
-  Standard_Real AngleFact   = FactDR;  // PI/180.;  pilotable
-
-  gp_Pnt2d    Pt1;
-  gp_XY       pXY;
-  gp_GTrsf2d  tMatu , tMatv;
-
-  // What to change ??
-
-  if (aSurface->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||
-      aSurface->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))) {
-    uFact = vFact = AngleFact;
-  }
-  else if (aSurface->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))) {
-    uFact = AngleFact;
-    vFact = LengthFact;
-  }
-  else if ( aSurface->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution))) {
-    uFact = AngleFact;
-  }
-  else if (aSurface->IsKind(STANDARD_TYPE(Geom_ConicalSurface))) {
-    Handle(Geom_ConicalSurface) conicS = 
-      Handle(Geom_ConicalSurface)::DownCast(aSurface);
-    Standard_Real semAng = conicS->SemiAngle();
-    uFact = AngleFact;
-    vFact = LengthFact / Cos(semAng);
-  }
-  else if (aSurface->IsKind(STANDARD_TYPE(Geom_Plane))) {
-    uFact = vFact = LengthFact;
-    if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Circle)) ||
-        aPcurve->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
-      gp_Trsf2d aT;
-      aT.SetScale (gp::Origin2d(), LengthFact);
-      aPcurve->Transform (aT);
-      return aPcurve;
-    }
-  }
-  else {
-//  debug
-//    std::cout <<"UnitsMethods: SurfType = "<< aSurface->DynamicType();
-    return aPcurve;
-  }
-
-  if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Conic))) {
-    if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Circle)) || 
-	aPcurve->IsKind(STANDARD_TYPE(Geom2d_Ellipse))) {
-      Handle(Geom2d_BSplineCurve) aBSpline2d = 
-	Geom2dConvert::CurveToBSplineCurve(aPcurve);
-      aPcurve = aBSpline2d;
-    }
-    else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Parabola))) {
-#ifdef OCCT_DEBUG
-      std::cout << "PCURVE of Parabola type" << std::endl;
-      std::cout << "Parameters Not Yet transformed according to LengthUnit" << std::endl;
-#endif
-      return aPcurve;
-    }
-    else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Hyperbola))) {
-#ifdef OCCT_DEBUG
-      std::cout << "PCURVE of Hyperbola type" << std::endl;
-      std::cout << "Parameters Not Yet transformed according to LengthUnit" << std::endl;
-#endif
-      return aPcurve;
-    }
-  }
-
-  // Compute affinity
-
-  tMatu.SetAffinity(gp::OY2d(), uFact);
-  tMatv.SetAffinity(gp::OX2d(), vFact);
-
-  if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_Line))) {
-    Handle(Geom2d_Line) aLine2d = Handle(Geom2d_Line)::DownCast(aPcurve);
-
-    gp_Pnt2d myLoc = aLine2d->Location();
-    gp_Dir2d myDir = aLine2d->Direction();
-
-    gp_Pnt2d myNewLoc;
-    myNewLoc.SetCoord(myLoc.X()*uFact, myLoc.Y()*vFact);
-
-    gp_Dir2d myNewDir;
-    myNewDir.SetCoord(myDir.X()*uFact, myDir.Y()*vFact);
-
-    aLine2d->SetLocation(myNewLoc);
-    aLine2d->SetDirection(myNewDir);
-
-    aPcurve = aLine2d;
-  }
-  else if (aPcurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))) {
-    Handle(Geom2d_BSplineCurve) aBSpline2d = 
-      Handle(Geom2d_BSplineCurve)::DownCast(aPcurve);
-
-// transform the Poles of the BSplineCurve according to AngleFact and LengthFact
-
-    Standard_Integer nbPol = aBSpline2d->NbPoles();
-    for (Standard_Integer i = 1; i<=nbPol ; i++) {
-      pXY = aBSpline2d->Pole(i).XY();
-      tMatu.Transforms(pXY);
-      tMatv.Transforms(pXY);
-      Pt1.SetXY(pXY);
-      aBSpline2d->SetPole(i, Pt1);
-    }
-    aPcurve = aBSpline2d;
-  }
-  else {
-#ifdef OCCT_DEBUG
-    std::cout << "DegreeToRadian : Type " << aPcurve->DynamicType();
-    std::cout << " not yet implemented" << std::endl;
-#endif
-  }
-  return aPcurve;
-}
-
-// ============================================================================
-// Method :
-// Purpose:
-// ============================================================================
-
-Handle(Geom2d_Curve) UnitsMethods::MirrorPCurve
-(const Handle(Geom2d_Curve) & C2d) 
-{
-  Handle(Geom2d_Curve) theMirrored = 
-    Handle(Geom2d_Curve)::DownCast(C2d->Copy());
-  
-  gp_Trsf2d T;
-  gp_Pnt2d  Loc(0.,0.);
-  gp_Dir2d  Dir(1.,0.);
-  gp_Ax2d   ax2(Loc, Dir);
-  T.SetMirror(ax2);
-  theMirrored->Transform(T);
-  return theMirrored;
-}
+static Standard_Real UnitsMethods_CascadeLengthUnit = 1.;
 
 //=======================================================================
 //function : GetCasCadeLengthUnit
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Real UnitsMethods::GetCasCadeLengthUnit () 
+Standard_Real UnitsMethods::GetCasCadeLengthUnit(const UnitsMethods_LengthUnit theBaseUnit)
 {
-  return theCasCadeLengthUnit;
+  return UnitsMethods_CascadeLengthUnit * GetLengthUnitScale(UnitsMethods_LengthUnit_Millimeter, theBaseUnit);
 }
 
 //=======================================================================
 //function : SetCasCadeLengthUnit
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-void UnitsMethods::SetCasCadeLengthUnit (const Standard_Integer unit) 
+void UnitsMethods::SetCasCadeLengthUnit(const Standard_Real theUnitValue,
+                                        const UnitsMethods_LengthUnit theBaseUnit)
 {
-  theCasCadeLengthUnit = UnitsMethods::GetLengthFactorValue ( unit );
+  UnitsMethods_CascadeLengthUnit = theUnitValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
+}
+
+//=======================================================================
+//function : SetCasCadeLengthUnit
+//purpose  :
+//=======================================================================
+void UnitsMethods::SetCasCadeLengthUnit(const Standard_Integer theUnit)
+{
+  UnitsMethods_CascadeLengthUnit = GetLengthFactorValue(theUnit);
 }
 
 //=======================================================================
 //function : GetLengthFactorValue
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-Standard_Real UnitsMethods::GetLengthFactorValue (const Standard_Integer par) 
+Standard_Real UnitsMethods::GetLengthFactorValue(const Standard_Integer theUnit)
 {
-  switch ( par ) {
-  case  1 : return 25.4; // inch
-  case  2 : return 1.; // millimeter
-  
-  case  4 : return 304.8; // foot
-  case  5 : return 1609344.; // mile
-  case  6 : return 1000.; // meter
-  case  7 : return 1000000.; // kilometer
-  case  8 : return 0.0254; // mil (0.001 inch)
-  case  9 : return 0.001; // micron
-  case 10 : return 10.; // centimeter
-  case 11 : return 0.0000254; // microinch
-  default : return 1.;
+  switch (theUnit)
+  {
+    case  1: return 25.4; // inch
+    case  2: return 1.; // millimeter
+    case  4: return 304.8; // foot
+    case  5: return 1609344.; // mile
+    case  6: return 1000.; // meter
+    case  7: return 1000000.; // kilometer
+    case  8: return 0.0254; // mil (0.001 inch)
+    case  9: return 0.001; // micron
+    case 10: return 10.; // centimeter
+    case 11: return 0.0000254; // microinch
+    default: return 1.;
   }
 }
 
+//=======================================================================
+//function : GetLengthUnitScale
+//purpose  :
+//=======================================================================
+Standard_Real UnitsMethods::GetLengthUnitScale(const UnitsMethods_LengthUnit theFromUnit,
+                                               const UnitsMethods_LengthUnit theToUnit)
+{
+  Standard_Real aVal1 = GetLengthFactorValue(theFromUnit);
+  Standard_Real aVal2 = GetLengthFactorValue(theToUnit);
+  return aVal1 / aVal2;
+}
+
+//=======================================================================
+//function : GetLengthUnitByScale
+//purpose  :
+//=======================================================================
+UnitsMethods_LengthUnit UnitsMethods::GetLengthUnitByFactorValue(const Standard_Real theFactorValue,
+                                                                 const UnitsMethods_LengthUnit theBaseUnit)
+{
+  const Standard_Real aPreci = 1.e-6;
+  const Standard_Real aValue = theFactorValue * GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Millimeter);
+  if (Abs(1. - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Millimeter;
+  }
+  else if (Abs(25.4 - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Inch;
+  }
+  else if (Abs(304.8 - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Foot;
+  }
+  else if (Abs(1609344. - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Mile;
+  }
+  else if (Abs(1000. - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Meter;
+  }
+  else if (Abs(1000000. - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Kilometer;
+  }
+  else if (Abs(0.0254 - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Mil;
+  }
+  else if (Abs(0.001 - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Micron;
+  }
+  else if (Abs(10. - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Centimeter;
+  }
+  else if (Abs(0.0000254 - aValue) < aPreci)
+  {
+    return UnitsMethods_LengthUnit_Microinch;
+  }
+  return UnitsMethods_LengthUnit_Undefined;
+}
+
+//=======================================================================
+//function : DumpLengthUnit
+//purpose  :
+//=======================================================================
+Standard_CString UnitsMethods::DumpLengthUnit(const UnitsMethods_LengthUnit theUnit)
+{
+  switch (theUnit)
+  {
+    case UnitsMethods_LengthUnit_Millimeter: return "mm";
+    case UnitsMethods_LengthUnit_Meter:      return "m";
+    case UnitsMethods_LengthUnit_Centimeter: return "cm";
+    case UnitsMethods_LengthUnit_Kilometer:  return "km";
+    case UnitsMethods_LengthUnit_Micron:     return "micron";
+    case UnitsMethods_LengthUnit_Inch:       return "in";
+    case UnitsMethods_LengthUnit_Mil:        return "min";
+    case UnitsMethods_LengthUnit_Microinch:  return "nin";
+    case UnitsMethods_LengthUnit_Foot:       return "ft";
+    case UnitsMethods_LengthUnit_Mile:       return "stat.mile";
+    default: return "UNDEFINED";
+  }
+}
+
+//=======================================================================
+//function : DumpLengthUnit
+//purpose  :
+//=======================================================================
+Standard_CString UnitsMethods::DumpLengthUnit(const Standard_Real theScaleFactor,
+                                              const UnitsMethods_LengthUnit theBaseUnit)
+{
+  const UnitsMethods_LengthUnit aUnit = GetLengthUnitByFactorValue(theScaleFactor, theBaseUnit);
+  return DumpLengthUnit(aUnit);
+}
+
+//=======================================================================
+//function : LengthUnitFromString
+//purpose  :
+//=======================================================================
+UnitsMethods_LengthUnit UnitsMethods::LengthUnitFromString(Standard_CString theStr,
+                                                           const Standard_Boolean theCaseSensitive)
+{
+  TCollection_AsciiString aStr(theStr);
+  if (!theCaseSensitive)
+  {
+    aStr.LowerCase();
+  }
+  if (aStr.IsEqual("mm"))
+  {
+    return UnitsMethods_LengthUnit_Millimeter;
+  }
+  else if (aStr.IsEqual("m"))
+  {
+    return UnitsMethods_LengthUnit_Meter;
+  }
+  else if (aStr.IsEqual("cm"))
+  {
+    return UnitsMethods_LengthUnit_Centimeter;
+  }
+  else if (aStr.IsEqual("km"))
+  {
+    return UnitsMethods_LengthUnit_Kilometer;
+  }
+  else if (aStr.IsEqual("micron"))
+  {
+    return UnitsMethods_LengthUnit_Micron;
+  }
+  else if (aStr.IsEqual("in"))
+  {
+    return UnitsMethods_LengthUnit_Inch;
+  }
+  else if (aStr.IsEqual("min"))
+  {
+    return UnitsMethods_LengthUnit_Mil;
+  }
+  else if (aStr.IsEqual("nin"))
+  {
+    return UnitsMethods_LengthUnit_Microinch;
+  }
+  else if (aStr.IsEqual("ft"))
+  {
+    return UnitsMethods_LengthUnit_Foot;
+  }
+  else if (aStr.IsEqual("stat.mile"))
+  {
+    return UnitsMethods_LengthUnit_Mile;
+  }
+  else
+  {
+    return UnitsMethods_LengthUnit_Undefined;
+  }
+}

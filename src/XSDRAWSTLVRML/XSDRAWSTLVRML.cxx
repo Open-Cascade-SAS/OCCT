@@ -74,6 +74,8 @@
 #include <VrmlData_ShapeConvert.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
@@ -179,7 +181,6 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
 {
   TCollection_AsciiString aDestName, aFilePath;
   Standard_Boolean toUseExistingDoc = Standard_False;
-  Standard_Real aSystemUnitFactor = UnitsMethods::GetCasCadeLengthUnit() * 0.001;
   Standard_Boolean toListExternalFiles = Standard_False;
   Standard_Boolean isParallel = Standard_False;
   Standard_Boolean isDoublePrec = Standard_False;
@@ -306,9 +307,14 @@ static Standard_Integer ReadGltf (Draw_Interpretor& theDI,
       return 1;
     }
   }
-
+  Standard_Real aScaleFactorM = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactorM, UnitsMethods_LengthUnit_Meter))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aScaleFactorM = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
+  }
   RWGltf_CafReader aReader;
-  aReader.SetSystemLengthUnit (aSystemUnitFactor);
+  aReader.SetSystemLengthUnit (aScaleFactorM);
   aReader.SetSystemCoordinateSystem (RWMesh_CoordinateSystem_Zup);
   aReader.SetDocument (aDoc);
   aReader.SetParallel (isParallel);
@@ -504,8 +510,12 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
 
   TCollection_AsciiString anExt = aGltfFilePath;
   anExt.LowerCase();
-
-  const Standard_Real aSystemUnitFactor = UnitsMethods::GetCasCadeLengthUnit() * 0.001;
+  Standard_Real aScaleFactorM = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactorM, UnitsMethods_LengthUnit_Meter))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aScaleFactorM = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
+  }
 
   RWGltf_CafWriter aWriter (aGltfFilePath, anExt.EndsWith (".glb"));
   aWriter.SetTransformationFormat (aTrsfFormat);
@@ -515,7 +525,7 @@ static Standard_Integer WriteGltf (Draw_Interpretor& theDI,
   aWriter.SetToEmbedTexturesInGlb (toEmbedTexturesInGlb);
   aWriter.SetMergeFaces (toMergeFaces);
   aWriter.SetSplitIndices16 (toSplitIndices16);
-  aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aSystemUnitFactor);
+  aWriter.ChangeCoordinateSystemConverter().SetInputLengthUnit (aScaleFactorM);
   aWriter.ChangeCoordinateSystemConverter().SetInputCoordinateSystem (aSystemCoordSys);
   aWriter.Perform (aDoc, aFileInfo, aProgress->Start());
   return 0;
@@ -742,10 +752,16 @@ static Standard_Integer ReadObj (Draw_Interpretor& theDI,
       return 1;
     }
   }
+  Standard_Real aScaleFactorM = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactorM, UnitsMethods_LengthUnit_Meter))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aScaleFactorM = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
+  }
 
   RWObj_CafReader aReader;
   aReader.SetSinglePrecision (isSinglePrecision);
-  aReader.SetSystemLengthUnit (UnitsMethods::GetCasCadeLengthUnit() * 0.001);
+  aReader.SetSystemLengthUnit (aScaleFactorM);
   aReader.SetSystemCoordinateSystem (aResultCoordSys);
   aReader.SetFileLengthUnit (aFileUnitFactor);
   aReader.SetFileCoordinateSystem (aFileCoordSys);
@@ -982,8 +998,8 @@ static Standard_Integer loadvrml
       }
 
       VrmlData_Scene aScene;
-      Standard_Real anOCCUnit = UnitsMethods::GetCasCadeLengthUnit();
-      aScene.SetLinearScale(1000. / anOCCUnit);
+      Standard_Real anOCCUnitMM = UnitsMethods::GetCasCadeLengthUnit();
+      aScene.SetLinearScale(1000. / anOCCUnitMM);
 
       aScene.SetVrmlDir (aVrmlDir);
       aScene << aStream;

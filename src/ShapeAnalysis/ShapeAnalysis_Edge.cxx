@@ -859,7 +859,7 @@ static Standard_Boolean IsOverlapPartEdges(const TopoDS_Edge& theFirstEdge,
                                            const Standard_Real& theTolerance,
                                            const Standard_Real& theStep,
                                            const Standard_Real& theStartLength,
-                                           const Standard_Real& theEndLenght)
+                                           const Standard_Real& theEndLength)
 {
   TColStd_SequenceOfInteger aSeqIntervals;
   BRepAdaptor_Curve aAdCurve1(theFirstEdge);
@@ -867,7 +867,7 @@ static Standard_Boolean IsOverlapPartEdges(const TopoDS_Edge& theFirstEdge,
   BRepExtrema_DistShapeShape aMinDist;
   aMinDist.LoadS1(theSecEdge);
 
-  for(Standard_Real aS = theStartLength; aS <= theEndLenght; aS+=theStep/2) {
+  for(Standard_Real aS = theStartLength; aS <= theEndLength; aS+=theStep/2) {
     
     gp_Pnt aPoint;
     if(aS <= Precision::Confusion()) {

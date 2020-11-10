@@ -23,6 +23,7 @@
 #include <BinMXCAFDoc_DatumDriver.hxx>
 #include <BinMXCAFDoc_DimTolDriver.hxx>
 #include <BinMXCAFDoc_GraphNodeDriver.hxx>
+#include <BinMXCAFDoc_LengthUnitDriver.hxx>
 #include <BinMXCAFDoc_LocationDriver.hxx>
 #include <BinMXCAFDoc_MaterialDriver.hxx>
 #include <BinMXCAFDoc_NoteDriver.hxx>
@@ -57,6 +58,7 @@ void BinMXCAFDoc::AddDrivers(const Handle(BinMDF_ADriverTable)& theDriverTable,
   }
   
   theDriverTable->AddDriver( aLocationDriver);
+  theDriverTable->AddDriver(new BinMXCAFDoc_LengthUnitDriver   (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_AssemblyItemRefDriver(theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_DatumDriver       (theMsgDrv));
   theDriverTable->AddDriver( new BinMXCAFDoc_DimTolDriver      (theMsgDrv));

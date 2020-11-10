@@ -25,7 +25,7 @@ Handle(StepGeom_Ellipse) EStep = new StepGeom_Ellipse;
   minorR = E.MinorRadius();
   Ax2.SetValue(Ax2Step);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Standard_Real fact = UnitsMethods::LengthFactor();
+  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
   EStep->Init(name, Ax2,majorR/fact,minorR/fact);
   theEllipse = EStep;
   done = Standard_True;

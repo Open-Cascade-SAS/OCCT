@@ -12,6 +12,8 @@ XmlMXCAFDoc_DimTolDriver.cxx
 XmlMXCAFDoc_DimTolDriver.hxx
 XmlMXCAFDoc_GraphNodeDriver.cxx
 XmlMXCAFDoc_GraphNodeDriver.hxx
+XmlMXCAFDoc_LengthUnitDriver.cxx
+XmlMXCAFDoc_LengthUnitDriver.hxx
 XmlMXCAFDoc_LocationDriver.cxx
 XmlMXCAFDoc_LocationDriver.hxx
 XmlMXCAFDoc_LocationDriver.lxx

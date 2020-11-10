@@ -26,6 +26,8 @@
 #include <OSD_Process.hxx>
 #include <Quantity_Date.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <UnitsMethods.hxx>
 
 #include <stdio.h>
@@ -66,6 +68,7 @@ IGESData_GlobalSection::IGESData_GlobalSection()
   theMaxPower10Double (308),
   theMaxDigitsDouble  (15),
   theScale            (1.0),
+  theCascadeUnit      (1.0),
   theUnitFlag         (0),
   theLineWeightGrad   (1),
   theMaxLineWeight    (0.0),
@@ -115,7 +118,7 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
   //Message_Msg Msg48 ("XSTEP_48");
   //Message_Msg Msg49 ("XSTEP_49");
   //======================================
-
+  XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
   theSeparator = ',';       theEndMark = ';';
   theSendName.Nullify();    theFileName.Nullify();  theSystemId.Nullify();
   theInterfaceVersion.Nullify();
@@ -131,6 +134,7 @@ void IGESData_GlobalSection::Init(const Handle(Interface_ParamSet)& params,
   theAuthorName.Nullify();  theCompanyName.Nullify();
   theIGESVersion       = 11;//3 //#66 rln Setting IGES 5.3 by default(To avoid misleading fails below)
   theDraftingStandard  = 0;
+  theCascadeUnit       = UnitsMethods::GetCasCadeLengthUnit();
   theLastChangeDate.Nullify();  // nouveaute 5.1 (peut etre absente)
   theAppliProtocol.Nullify();   // nouveaute 5.3 (peut etre absente)
 
@@ -529,6 +533,15 @@ Standard_Real IGESData_GlobalSection::Scale () const
 
 
 //=======================================================================
+//function : CascadeUnit
+//purpose  :
+//=======================================================================
+Standard_Real IGESData_GlobalSection::CascadeUnit() const
+{
+  return theCascadeUnit;
+}
+
+//=======================================================================
 //function : UnitFlag
 //purpose  : 
 //=======================================================================
@@ -802,8 +815,7 @@ Handle(TCollection_HAsciiString) IGESData_GlobalSection::NewDateString
 
 Standard_Real IGESData_GlobalSection::UnitValue () const
 {
-  return UnitsMethods::GetLengthFactorValue ( theUnitFlag ) /
-         UnitsMethods::GetCasCadeLengthUnit(); //abv 22 Feb 00: adding cascade unit factor
+  return IGESData_BasicEditor::UnitFlagValue(theUnitFlag) / theCascadeUnit;
 }
 
 
@@ -847,6 +859,9 @@ Standard_Real IGESData_GlobalSection::UnitValue () const
 
     void  IGESData_GlobalSection::SetScale       (const Standard_Real val)
       {  theScale = val;  }
+
+    void  IGESData_GlobalSection::SetCascadeUnit (const Standard_Real theUnit)
+     { theCascadeUnit = theUnit; }
 
     void  IGESData_GlobalSection::SetUnitFlag    (const Standard_Integer val)
       {  theUnitFlag = val;  }

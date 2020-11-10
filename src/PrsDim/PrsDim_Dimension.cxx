@@ -72,7 +72,6 @@
 #include <Units.hxx>
 #include <Units_UnitsDictionary.hxx>
 #include <UnitsAPI.hxx>
-#include <UnitsAPI_SystemUnits.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(PrsDim_Dimension, AIS_InteractiveObject)
 

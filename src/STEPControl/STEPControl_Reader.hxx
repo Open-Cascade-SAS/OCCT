@@ -100,7 +100,11 @@ public:
   //! found in file
   Standard_EXPORT void FileUnits (TColStd_SequenceOfAsciiString& theUnitLengthNames, TColStd_SequenceOfAsciiString& theUnitAngleNames, TColStd_SequenceOfAsciiString& theUnitSolidAngleNames);
 
+  //! Sets system length unit used by transfer process
+  Standard_EXPORT void SetSystemLengthUnit(const Standard_Real theLengthUnit);
 
+  //! Returns system length unit used by transfer process
+  Standard_EXPORT Standard_Real SystemLengthUnit() const;
 
 
 protected:

@@ -47,3 +47,4 @@ efd212f4-6dfd-11d4-b9c8-0060b0ee281b: LayerTool attribute
 efd212f5-6dfd-11d4-b9c8-0060b0ee281b: GraphNode attribute
 efd212f6-6dfd-11d4-b9c8-0060b0ee281b
 efd212f7-6dfd-11d4-b9c8-0060b0ee281b
+efd212f8-6dfd-11d4-b9c8-0060b0ee281b: LengthUnit attribute

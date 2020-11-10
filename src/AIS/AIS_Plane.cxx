@@ -50,7 +50,6 @@
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <UnitsAPI.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Plane,AIS_InteractiveObject)
 

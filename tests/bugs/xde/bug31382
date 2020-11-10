@@ -1,0 +1,81 @@
+puts "# =============================================================================="
+puts "# 0031382: Data Exchange - BinXCAF should preserve length unit information"
+puts "# =============================================================================="
+
+pload DCAF
+
+box b 10 20 30
+
+catch { Close D }
+catch { Close D1 }
+# check saving value of length unit
+NewDocument D XmlXCAF
+XAddShape D b 0
+XSetLengthUnit D in
+XSave D ${imagedir}/${casename}.xml
+XOpen ${imagedir}//${casename}.xml D1
+set LU [XGetLengthUnit D1]
+if {$LU != "in"} {
+  puts "Error: Length unit is not coincided with given1"
+}
+Close D
+Close D1
+NewDocument D BinXCAF
+XAddShape D b 0
+XSetLengthUnit D m
+XSave D ${imagedir}/${casename}.xbf
+XOpen ${imagedir}//${casename}.xbf D1
+set LU [XGetLengthUnit D1]
+if {$LU != "m"} {
+  puts "Error: Length unit is not coincided with given2"
+}
+Close D
+Close D1
+
+# if length unit is undefined in the document value from session
+# must be set to document before saving it to xml
+NewDocument D XmlXCAF
+param xstep.cascade.unit 5
+XAddShape D b 0
+XSave D ${imagedir}/${casename}.xml
+set LU [XGetLengthUnit D]
+if {$LU == "mm"} {
+  puts "Error: Length unit is not coincided with given3"
+}
+XOpen ${imagedir}//${casename}.xml D1
+set LU [XGetLengthUnit D1]
+if {$LU == "stat.mile"} {
+  puts "Length unit is coincided with given"
+} else {
+  puts "Error: Length unit is not coincided with given4"
+}
+Close D
+Close D1
+
+# if length unit is undefined in the document value from session
+# must be set to document before saving it to xbf
+NewDocument D BinXCAF
+param xstep.cascade.unit 7
+XAddShape D b 0
+XSave D ${imagedir}/${casename}.xbf
+set LU [XGetLengthUnit D]
+if {$LU == "km"} {
+  puts "Length unit is coincided with given"
+} else {
+  puts "Error: Length unit is not coincided with given"
+}
+XOpen ${imagedir}//${casename}.xbf D1
+set LU [XGetLengthUnit D1]
+if {$LU == "km"} {
+   puts "Length unit is coincided with given"
+} else {
+   puts "Error: Length unit is not coincided with given"
+}
+
+# return to default global unit
+param xstep.cascade.unit 2
+file delete ${imagedir}//${casename}.xbf
+file delete ${imagedir}//${casename}.xml
+
+Close D
+Close D1

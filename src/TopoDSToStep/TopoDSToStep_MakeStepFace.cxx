@@ -52,6 +52,7 @@
 #include <ShapeAlgo.hxx>
 #include <ShapeAlgo_AlgoContainer.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Curve.hxx>
 #include <StepGeom_DegenerateToroidalSurface.hxx>
 #include <StepGeom_GeometricRepresentationContextAndParametricRepresentationContext.hxx>
@@ -83,7 +84,7 @@
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
-#include <UnitsMethods.hxx>
+#include <GeomConvert_Units.hxx>
 
 // Processing of non-manifold topology (ssv; 10.11.2010)
 // ----------------------------------------------------------------------------
@@ -377,10 +378,12 @@ void TopoDSToStep_MakeStepFace::Init(const TopoDS_Face& aFace,
 	if (Su->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface))) {
 	  Handle(Geom_RectangularTrimmedSurface) alocalRTS =
 	    Handle(Geom_RectangularTrimmedSurface)::DownCast(Su);
-	  C2dMapped = UnitsMethods::RadianToDegree(C2d, alocalRTS->BasisSurface());
+	  C2dMapped = GeomConvert_Units::RadianToDegree(C2d, alocalRTS->BasisSurface(),
+      StepData_GlobalFactors::Intance().LengthFactor(), StepData_GlobalFactors::Intance().FactorRadianDegree());
 	}
 	else {
-	  C2dMapped = UnitsMethods::RadianToDegree(C2d, Su);
+	  C2dMapped = GeomConvert_Units::RadianToDegree(C2d, Su,
+      StepData_GlobalFactors::Intance().LengthFactor(), StepData_GlobalFactors::Intance().FactorRadianDegree());
 	}
 //
 //	C2dMapped = C2d;  // cky : en remplacement de ce qui precede

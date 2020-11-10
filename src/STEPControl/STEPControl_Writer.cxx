@@ -21,8 +21,11 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <Transfer_FinderProcess.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
+#include <UnitsMethods.hxx>
 
 //=======================================================================
 //function : STEPControl_Writer
@@ -136,7 +139,11 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer
   }
   if (mws < 0) return IFSelect_RetError;    // cas non reconnu
   thesession->TransferWriter()->SetTransferMode (mws);
-
+  if (!Model()->IsInitializedUnit())
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    Model()->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+  }
   return thesession->TransferWriteShape(sh, compgraph, theProgress);
 }
 

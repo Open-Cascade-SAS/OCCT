@@ -36,6 +36,8 @@
 #include <TDocStd_Document.hxx>
 #include <XDEDRAW.hxx>
 #include <XDEDRAW_Common.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAW_Vars.hxx>
@@ -510,7 +512,6 @@ static Standard_Integer WriteStep (Draw_Interpretor& di, Standard_Integer argc, 
       }
     k++;
   }
-
   TDF_Label label;
   if( argc > k)
   {
@@ -653,10 +654,13 @@ static Standard_Integer WriteVrml(Draw_Interpretor& di, Standard_Integer argc, c
 
   VrmlAPI_Writer writer;
   writer.SetRepresentation(VrmlAPI_ShadedRepresentation);
-  Standard_Real anOCCLengthUnit =
-      UnitsMethods::GetLengthFactorValue(Interface_Static::IVal("xstep.cascade.unit"));
-  Standard_Real aScale = 0.001*anOCCLengthUnit;
-  if (!writer.WriteDoc(aDoc, argv[2], aScale))
+  Standard_Real aScaleFactorM = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(aDoc, aScaleFactorM))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aScaleFactorM = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
+  }
+  if (!writer.WriteDoc(aDoc, argv[2], aScaleFactorM))
   {
     di << "Error: File " << argv[2] << " was not written\n";
   }

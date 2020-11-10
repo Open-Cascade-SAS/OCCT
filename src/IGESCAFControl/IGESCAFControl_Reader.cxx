@@ -19,6 +19,7 @@
 #include <IGESCAFControl.hxx>
 #include <IGESCAFControl_Reader.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESData_IGESModel.hxx>
 #include <IGESData_LevelListEntity.hxx>
 #include <IGESGraph_Color.hxx>
 #include <Interface_InterfaceModel.hxx>
@@ -41,8 +42,11 @@
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_WorkSession.hxx>
+#include <UnitsMethods.hxx>
 
 //=======================================================================
 //function : checkColorRange
@@ -157,6 +161,19 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
   //  TransferOneRoot ( i );
   //}
   
+  // set units
+  Handle(IGESData_IGESModel) aModel = Handle(IGESData_IGESModel)::DownCast(WS()->Model());
+
+  Standard_Real aScaleFactorMM = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(doc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aScaleFactorMM = UnitsMethods::GetCasCadeLengthUnit();
+    // set length unit to the document
+    XCAFDoc_DocumentTool::SetLengthUnit(doc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter);
+  }
+  aModel->ChangeGlobalSection().SetCascadeUnit(aScaleFactorMM);
+
   TransferRoots(theProgress); // replaces the above
   num = NbShapes();
   if ( num <=0 ) return Standard_False;
@@ -178,7 +195,6 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
   }
   
   // added by skl 13.10.2003
-  const Handle(Interface_InterfaceModel) &Model = WS()->Model();
   const Handle(XSControl_TransferReader) &TR = WS()->TransferReader();
   const Handle(Transfer_TransientProcess) &TP = TR->TransientProcess();
   Standard_Boolean IsCTool = Standard_True;
@@ -188,9 +204,9 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
   Handle(XCAFDoc_LayerTool) LTool = XCAFDoc_DocumentTool::LayerTool(doc->Main());
   if(LTool.IsNull()) IsLTool = Standard_False;
 
-  Standard_Integer nb = Model->NbEntities();
+  Standard_Integer nb = aModel->NbEntities();
   for(i=1; i<=nb; i++) {
-    Handle(IGESData_IGESEntity) ent = Handle(IGESData_IGESEntity)::DownCast ( Model->Value(i) );
+    Handle(IGESData_IGESEntity) ent = Handle(IGESData_IGESEntity)::DownCast (aModel->Value(i) );
     if ( ent.IsNull() ) continue;
     Handle(Transfer_Binder) binder = TP->Find ( ent );
     if ( binder.IsNull() ) continue;
@@ -323,8 +339,6 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc,
   }
 
   CTool->ReverseChainsOfTreeNodes();
-
-  // end added by skl 13.10.2003
 
   // Update assembly compounds
   STool->UpdateAssemblies();

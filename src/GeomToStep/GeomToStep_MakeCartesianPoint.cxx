@@ -21,10 +21,10 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_CartesianPoint.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_HArray1OfReal.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un cartesian_point de prostep a partir d' un point3d de gp
@@ -42,7 +42,7 @@ GeomToStep_MakeCartesianPoint::GeomToStep_MakeCartesianPoint( const gp_Pnt& P)
 //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
 //  Pstep->SetName(name);
-  Standard_Real fact = UnitsMethods::LengthFactor();
+  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
   Pstep->Init3D (name,X/fact,Y/fact,Z/fact);
   theCartesianPoint = Pstep;
   done = Standard_True;
@@ -87,7 +87,7 @@ GeomToStep_MakeCartesianPoint::
 //  Pstep->SetCoordinates(Acoord);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
 //  Pstep->SetName(name);
-  Standard_Real fact = UnitsMethods::LengthFactor();
+  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
   Pstep->Init3D (name,X/fact,Y/fact,Z/fact);
   theCartesianPoint = Pstep;
   done = Standard_True;

@@ -20,11 +20,11 @@
 #include <gp_Parab.hxx>
 #include <gp_Parab2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Parabola.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d'une Parabola de prostep a partir d'une Parabola de
@@ -70,7 +70,7 @@ GeomToStep_MakeParabola::GeomToStep_MakeParabola(const Handle(Geom2d_Parabola)& 
   focal = gpPar.Focal();
   Ax2.SetValue(Ax2Step);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  PStep->Init(name, Ax2, focal / UnitsMethods::LengthFactor());
+  PStep->Init(name, Ax2, focal / StepData_GlobalFactors::Intance().LengthFactor());
   theParabola = PStep;
   done = Standard_True;
 }

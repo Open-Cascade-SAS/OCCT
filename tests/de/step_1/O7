@@ -1,6 +1,9 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename dnc_63_050_ppv_a.stp
 
+# set in as local length unit
+set lengthunit_start "in"
+
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )

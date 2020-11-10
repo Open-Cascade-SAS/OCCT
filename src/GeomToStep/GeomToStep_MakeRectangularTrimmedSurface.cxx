@@ -25,10 +25,10 @@
 #include <GeomToStep_MakeRectangularTrimmedSurface.hxx>
 #include <GeomToStep_MakeSurface.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_RectangularTrimmedSurface.hxx>
 #include <StepGeom_Surface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une rectangular_trimmed_surface de STEP
@@ -61,7 +61,7 @@ GeomToStep_MakeRectangularTrimmedSurface::
   Standard_Real AngleFact = 180./M_PI;
   Standard_Real uFact = 1.;
   Standard_Real vFact = 1.;
-  Standard_Real LengthFact  = UnitsMethods::LengthFactor();
+  Standard_Real LengthFact  = StepData_GlobalFactors::Intance().LengthFactor();
   Handle(Geom_Surface) theSurf = RTSurf->BasisSurface();
   if (theSurf->IsKind(STANDARD_TYPE(Geom_CylindricalSurface))) {
     uFact = AngleFact;

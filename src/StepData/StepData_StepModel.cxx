@@ -25,6 +25,7 @@
 #include <Standard_Type.hxx>
 #include <StepData.hxx>
 #include <StepData_Protocol.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepData_StepWriter.hxx>
 #include <TCollection_HAsciiString.hxx>
@@ -34,8 +35,25 @@
 IMPLEMENT_STANDARD_RTTIEXT(StepData_StepModel,Interface_InterfaceModel)
 
 // Entete de fichier : liste d entites
-StepData_StepModel::StepData_StepModel () :mySourceCodePage((Resource_FormatType)Interface_Static::IVal("read.step.codepage"))
-{}
+StepData_StepModel::StepData_StepModel () :mySourceCodePage((Resource_FormatType)Interface_Static::IVal("read.step.codepage")),
+  myReadUnitIsInitialized(Standard_False), myWriteUnit (1.)
+{
+  switch (Interface_Static::IVal("write.step.unit"))
+  {
+    case  1: myWriteUnit = 25.4; break;
+    case  2: myWriteUnit = 1.; break;
+    case  4: myWriteUnit = 304.8; break;
+    case  5: myWriteUnit = 1609344.0; break;
+    case  6: myWriteUnit = 1000.0; break;
+    case  7: myWriteUnit = 1000000.0; break;
+    case  8: myWriteUnit = 0.0254; break;
+    case  9: myWriteUnit = 0.001; break;
+    case 10: myWriteUnit = 10.0; break;
+    case 11: myWriteUnit = 0.0000254; break;
+    default:
+      GlobalCheck()->AddWarning("Incorrect write.step.unit parameter, use default value");
+  }
+}
 
 
 Handle(Standard_Transient) StepData_StepModel::Entity
@@ -192,4 +210,41 @@ Handle(TCollection_HAsciiString) StepData_StepModel::StringLabel
 
   label = new TCollection_HAsciiString(text);
   return label;
+}
+
+//=======================================================================
+//function : SetLocalLengthUnit
+//purpose  :
+//=======================================================================
+void StepData_StepModel::SetLocalLengthUnit(const Standard_Real theUnit)
+{
+  StepData_GlobalFactors::Intance().SetCascadeUnit(theUnit);
+  myReadUnitIsInitialized = Standard_True;
+}
+
+//=======================================================================
+//function : LocalLengthUnit
+//purpose  :
+//=======================================================================
+Standard_Real StepData_StepModel::LocalLengthUnit() const
+{
+  return StepData_GlobalFactors::Intance().CascadeUnit();
+}
+
+//=======================================================================
+//function : SetLocalLengthUnit
+//purpose  :
+//=======================================================================
+void StepData_StepModel::SetWriteLengthUnit(const Standard_Real theUnit)
+{
+  myWriteUnit = theUnit;
+}
+
+//=======================================================================
+//function : LocalLengthUnit
+//purpose  :
+//=======================================================================
+Standard_Real StepData_StepModel::WriteLengthUnit() const
+{
+  return myWriteUnit;
 }

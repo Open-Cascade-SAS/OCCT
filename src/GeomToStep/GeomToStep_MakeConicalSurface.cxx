@@ -20,10 +20,10 @@
 #include <GeomToStep_MakeConicalSurface.hxx>
 #include <Standard_DomainError.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_ConicalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une conical_surface de prostep a partir d' une ConicalSurface
@@ -46,7 +46,7 @@ GeomToStep_MakeConicalSurface::GeomToStep_MakeConicalSurface
   }
   
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  CSstep->Init(name, aPosition, aRadius / UnitsMethods::LengthFactor(), aSemiAngle);
+  CSstep->Init(name, aPosition, aRadius / StepData_GlobalFactors::Intance().LengthFactor(), aSemiAngle);
   theConicalSurface = CSstep;
   done = Standard_True;
 }

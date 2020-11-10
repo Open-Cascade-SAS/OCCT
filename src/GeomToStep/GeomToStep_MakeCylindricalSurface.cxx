@@ -19,10 +19,10 @@
 #include <GeomToStep_MakeAxis2Placement3d.hxx>
 #include <GeomToStep_MakeCylindricalSurface.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_CylindricalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' une conical_surface de prostep a partir d' une 
@@ -41,7 +41,7 @@ GeomToStep_MakeCylindricalSurface::GeomToStep_MakeCylindricalSurface
   aRadius = CS->Radius();
   CSstep = new StepGeom_CylindricalSurface;
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  CSstep->Init(name, aPosition, aRadius / UnitsMethods::LengthFactor());
+  CSstep->Init(name, aPosition, aRadius / StepData_GlobalFactors::Intance().LengthFactor());
   theCylindricalSurface = CSstep;
   done = Standard_True;
 }

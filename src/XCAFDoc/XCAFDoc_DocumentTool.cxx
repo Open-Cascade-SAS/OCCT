@@ -29,11 +29,13 @@
 #include <XCAFDoc_ClippingPlaneTool.hxx>
 #include <XCAFDoc_DimTolTool.hxx>
 #include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_LengthUnit.hxx>
 #include <XCAFDoc_MaterialTool.hxx>
 #include <XCAFDoc_NotesTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_ViewTool.hxx>
 #include <XCAFDoc_VisMaterialTool.hxx>
+#include <UnitsMethods.hxx>
 
 IMPLEMENT_DERIVED_ATTRIBUTE_WITH_TYPE(XCAFDoc_DocumentTool,TDataStd_GenericEmpty,"xcaf","DocumentTool")
 
@@ -327,6 +329,76 @@ Handle(XCAFDoc_ClippingPlaneTool) XCAFDoc_DocumentTool::ClippingPlaneTool(const 
 Handle(XCAFDoc_NotesTool) XCAFDoc_DocumentTool::NotesTool(const TDF_Label& acces)
 {
   return XCAFDoc_NotesTool::Set(NotesLabel(acces));
+}
+
+//=======================================================================
+//function : GetLengthUnit
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                                     Standard_Real& theResult,
+                                                     const UnitsMethods_LengthUnit theBaseUnit)
+{
+  if (theDoc.IsNull())
+  {
+    return Standard_False;
+  }
+  Handle(XCAFDoc_LengthUnit) aLengthAttr;
+  if (theDoc->Main().Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aLengthAttr))
+  {
+    theResult = aLengthAttr->GetUnitValue() *
+      UnitsMethods::GetLengthUnitScale(UnitsMethods_LengthUnit_Meter, theBaseUnit);
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : GetLengthUnit
+//purpose  :
+//=======================================================================
+Standard_Boolean XCAFDoc_DocumentTool::GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                                     Standard_Real& theResult)
+{
+  if (theDoc.IsNull())
+  {
+    return Standard_False;
+  }
+  Handle(XCAFDoc_LengthUnit) aLengthAttr;
+  if (theDoc->Main().Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aLengthAttr))
+  {
+    theResult = aLengthAttr->GetUnitValue();
+    return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : SetLengthUnit
+//purpose  :
+//=======================================================================
+void XCAFDoc_DocumentTool::SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                         const Standard_Real theUnitValue,
+                                         const UnitsMethods_LengthUnit theBaseUnit)
+{
+  // Sets length unit info
+  TCollection_AsciiString aUnitName = UnitsMethods::DumpLengthUnit(theUnitValue, theBaseUnit);
+  const Standard_Real aScaleFactor = theUnitValue *
+    UnitsMethods::GetLengthUnitScale(theBaseUnit, UnitsMethods_LengthUnit_Meter);
+  XCAFDoc_LengthUnit::Set(theDoc->Main().Root(), aUnitName, aScaleFactor);
+}
+
+//=======================================================================
+//function : SetLengthUnit
+//purpose  :
+//=======================================================================
+void XCAFDoc_DocumentTool::SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                         const Standard_Real theUnitValue)
+{
+  // Sets length unit info
+  TCollection_AsciiString aUnitName =
+    UnitsMethods::DumpLengthUnit(theUnitValue, UnitsMethods_LengthUnit_Meter);
+  XCAFDoc_LengthUnit::Set(theDoc->Main().Root(), aUnitName, theUnitValue);
 }
 
 //=======================================================================

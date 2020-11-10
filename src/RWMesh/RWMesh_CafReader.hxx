@@ -71,7 +71,8 @@ public:
   const Handle(TDocStd_Document)& Document() const { return myXdeDoc; }
 
   //! Set target document.
-  void SetDocument (const Handle(TDocStd_Document)& theDoc) { myXdeDoc = theDoc; }
+  //! Set system length unit according to the units of the document
+  Standard_EXPORT void SetDocument(const Handle(TDocStd_Document)& theDoc);
 
   //! Return prefix for generating root labels names.
   const TCollection_AsciiString& RootPrefix() const { return myRootPrefix; }

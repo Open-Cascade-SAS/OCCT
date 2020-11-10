@@ -34,6 +34,9 @@
 #include <XCAFDoc_Location.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XDEDRAW_Shapes.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
+#include <UnitsMethods.hxx>
 
 #include <stdio.h>
 //=======================================================================
@@ -54,6 +57,14 @@ static Standard_Integer addShape (Draw_Interpretor& di, Standard_Integer argc, c
   {
     di << "Syntax error: shape '" << argv[2] << "' is undefined\n";
     return 1;
+  }
+
+  Standard_Real aLengthUnit = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(Doc, aLengthUnit))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aLengthUnit = UnitsMethods::GetCasCadeLengthUnit(UnitsMethods_LengthUnit_Meter);
+    XCAFDoc_DocumentTool::SetLengthUnit(Doc, aLengthUnit);
   }
 
   Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(Doc->Main());

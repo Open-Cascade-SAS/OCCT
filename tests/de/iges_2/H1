@@ -1,13 +1,16 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename waaier_para.igs
 
+# set min as local lenght unit
+set lengthunit_start "min"
+
 set ref_data {
 DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 40  ( 622 )  Summary  = 40  ( 622 )
-CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 56  ( 608 )  Summary  = 56  ( 608 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 162  ( 162 ) 
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 162  ( 162 )   FreeWire = 0  ( 0 ) 
-TOLERANCE   : MaxTol   =   0.9221218176  (   0.9410156556 )  AvgTol   =   0.01501977367  (   0.01438008679 )
+TOLERANCE   : MaxTol   =   0.4450036298  (   0.4450020791 )  AvgTol   =  0.004412017114  (  0.004434725442 )
 LABELS      : N0Labels = 162  ( 162 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 162  ( 162 )   NameLabels = 162  ( 162 )   ColorLabels = 162  ( 162 )   LayerLabels = 162  ( 162 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

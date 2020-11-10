@@ -18,3 +18,5 @@ GeomConvert_CompBezierSurfacesToBSplineSurface.hxx
 GeomConvert_CompBezierSurfacesToBSplineSurface.lxx
 GeomConvert_CompCurveToBSplineCurve.cxx
 GeomConvert_CompCurveToBSplineCurve.hxx
+GeomConvert_Units.cxx
+GeomConvert_Units.hxx

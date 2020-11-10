@@ -291,6 +291,11 @@ private:
     const Handle(TDocStd_Document)& theDoc,
     const Handle(XSControl_WorkSession)& theWS);
 
+  //! Prepares units for transfer
+  void prepareUnits(const Handle(StepData_StepModel)& theModel,
+                    const Handle(TDocStd_Document)& theDoc) const;
+
+private:
 
   STEPControl_Reader myReader;
   NCollection_DataMap<TCollection_AsciiString, Handle(STEPCAFControl_ExternFile)> myFiles;

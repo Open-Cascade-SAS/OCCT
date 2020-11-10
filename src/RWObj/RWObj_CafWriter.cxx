@@ -114,6 +114,12 @@ bool RWObj_CafWriter::Perform (const Handle(TDocStd_Document)& theDocument,
   OSD_Path::FolderAndFileFromPath (myFile, aFolder, aFileName);
   OSD_Path::FileNameAndExtension (aFileName, aShortFileNameBase, aFileExt);
 
+  Standard_Real aLengthUnit = 1.;
+  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aLengthUnit))
+  {
+    myCSTrsf.SetInputLengthUnit(aLengthUnit);
+  }
+
   if (theRootLabels.IsEmpty()
   || (theLabelFilter != NULL && theLabelFilter->IsEmpty()))
   {

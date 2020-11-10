@@ -340,6 +340,11 @@ bool RWGltf_CafWriter::Perform (const Handle(TDocStd_Document)& theDocument,
                                 const TColStd_IndexedDataMapOfStringString& theFileInfo,
                                 const Message_ProgressRange& theProgress)
 {
+  Standard_Real aLengthUnit = 1.;
+  if (XCAFDoc_DocumentTool::GetLengthUnit(theDocument, aLengthUnit))
+  {
+    myCSTrsf.SetInputLengthUnit(aLengthUnit);
+  }
   const Standard_Integer aDefSamplerId = 0;
   myMaterialMap = new RWGltf_GltfMaterialMap (myFile, aDefSamplerId);
   myMaterialMap->SetDefaultStyle (myDefaultStyle);

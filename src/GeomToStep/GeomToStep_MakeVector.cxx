@@ -24,9 +24,9 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Vector.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d' un vector de prostep a partir d' un Vec de gp
@@ -34,7 +34,7 @@
 GeomToStep_MakeVector::GeomToStep_MakeVector( const gp_Vec& V)
 {
   gp_Dir D = gp_Dir(V);
-  Standard_Real lFactor = UnitsMethods::LengthFactor();
+  Standard_Real lFactor = StepData_GlobalFactors::Intance().LengthFactor();
 #include "GeomToStep_MakeVector_gen.pxx"
 }
 //=============================================================================
@@ -58,7 +58,7 @@ GeomToStep_MakeVector::GeomToStep_MakeVector ( const Handle(Geom_Vector)&
   gp_Vec V;
   V = GVector->Vec();
   gp_Dir D = gp_Dir(V);
-  Standard_Real lFactor = UnitsMethods::LengthFactor();
+  Standard_Real lFactor = StepData_GlobalFactors::Intance().LengthFactor();
 #include "GeomToStep_MakeVector_gen.pxx"
 }
 

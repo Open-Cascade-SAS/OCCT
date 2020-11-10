@@ -1,7 +1,4 @@
-// Created on: 1994-09-29
-// Created by: Dieter THIEMANN
-// Copyright (c) 1994-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2021 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -20,79 +17,53 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <UnitsMethods_LengthUnit.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Integer.hxx>
-class Geom2d_Curve;
-class Geom_Surface;
-
-
-
-class UnitsMethods 
+//! Class for using global units variables
+class UnitsMethods
 {
 public:
 
   DEFINE_STANDARD_ALLOC
 
-  
-  //! Initializes the 3 factors for the conversion of
-  //! units
-  Standard_EXPORT static void InitializeFactors (const Standard_Real LengthFactor, const Standard_Real PlaneAngleFactor, const Standard_Real SolidAngleFactor);
-  
-  Standard_EXPORT static Standard_Real LengthFactor();
-  
-  Standard_EXPORT static Standard_Real PlaneAngleFactor();
-  
-  Standard_EXPORT static Standard_Real SolidAngleFactor();
-  
-  Standard_EXPORT static void Set3dConversion (const Standard_Boolean B);
-  
-  Standard_EXPORT static Standard_Boolean Convert3d();
-  
-  Standard_EXPORT static Handle(Geom2d_Curve) RadianToDegree (const Handle(Geom2d_Curve)& C, const Handle(Geom_Surface)& S);
-  
-  Standard_EXPORT static Handle(Geom2d_Curve) DegreeToRadian (const Handle(Geom2d_Curve)& C, const Handle(Geom_Surface)& S);
-  
-  Standard_EXPORT static Handle(Geom2d_Curve) MirrorPCurve (const Handle(Geom2d_Curve)& C);
-  
-  //! Returns value of unit encoded by parameter param
+
+  //! Returns value of unit encoded by parameter theUnit
   //! (integer value denoting unit, as described in IGES
-  //! standard) in millimeters
-  Standard_EXPORT static Standard_Real GetLengthFactorValue (const Standard_Integer param);
-  
+  //! standard) in millimeters by default
+  Standard_EXPORT static Standard_Real GetLengthFactorValue(const Standard_Integer theUnit);
+
   //! Returns value of current internal unit for CASCADE
-  //! in millemeters
-  Standard_EXPORT static Standard_Real GetCasCadeLengthUnit();
-  
+  //! in millemeters by default
+  Standard_EXPORT static Standard_Real GetCasCadeLengthUnit(const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
+
   //! Sets value of current internal unit for CASCADE
-  //! by parameter param (integer value denoting unit,
+  Standard_EXPORT static void SetCasCadeLengthUnit(const Standard_Real theUnitValue,
+    const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
+
+  //! Sets value of current internal unit for CASCADE
+  //! by parameter theUnit (integer value denoting unit,
   //! as described in IGES standard)
-  //! GetCasCadeLengthUnit() will then return value
-  //! equal to GetLengthFactorValue(param)
-  Standard_EXPORT static void SetCasCadeLengthUnit (const Standard_Integer param);
+  Standard_EXPORT static void SetCasCadeLengthUnit(const Standard_Integer theUnit);
 
+  //! Returns the scale factor for switch from first given unit to second given unit
+  Standard_EXPORT static Standard_Real GetLengthUnitScale(const UnitsMethods_LengthUnit theFromUnit,
+                                                          const UnitsMethods_LengthUnit theToUnit);
 
+  //! Returns the enumeration corresponding to the given scale factor
+  Standard_EXPORT static UnitsMethods_LengthUnit GetLengthUnitByFactorValue(const Standard_Real theFactorValue,
+    const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
 
+  //! Returns string name for the given scale factor
+  Standard_EXPORT static Standard_CString DumpLengthUnit(const Standard_Real theScaleFactor,
+    const UnitsMethods_LengthUnit theBaseUnit = UnitsMethods_LengthUnit_Millimeter);
 
-protected:
+  //! Returns string for the given value of LengthUnit
+  Standard_EXPORT static Standard_CString DumpLengthUnit(const UnitsMethods_LengthUnit theUnit);
 
-
-
-
-
-private:
-
-
-
-
+  //! Make conversion of given string to value of LengthUnit
+  Standard_EXPORT static UnitsMethods_LengthUnit LengthUnitFromString(Standard_CString theStr,
+                                                                      const Standard_Boolean theCaseSensitive);
 
 };
-
-
-
-
-
-
 
 #endif // _UnitsMethods_HeaderFile

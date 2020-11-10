@@ -135,7 +135,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 
-#include <UnitsMethods.hxx>
+#include <StepData_GlobalFactors.hxx>
 
 //=============================================================================
 // Creation d' un Ax1Placement de Geom a partir d' un axis1_placement de Step
@@ -980,7 +980,7 @@ Handle(Geom_CartesianPoint) StepToGeom::MakeCartesianPoint (const Handle(StepGeo
 {
   if (SP->NbCoordinates() == 3)
   {
-    const Standard_Real LF = UnitsMethods::LengthFactor();
+    const Standard_Real LF = StepData_GlobalFactors::Intance().LengthFactor();
     const Standard_Real X = SP->CoordinatesValue(1) * LF;
     const Standard_Real Y = SP->CoordinatesValue(2) * LF;
     const Standard_Real Z = SP->CoordinatesValue(3) * LF;
@@ -1018,7 +1018,7 @@ Handle(Geom_Circle) StepToGeom::MakeCircle (const Handle(StepGeom_Circle)& SC)
       MakeAxis2Placement (Handle(StepGeom_Axis2Placement3d)::DownCast(AxisSelect.Value()));
     if (! A.IsNull())
     {
-      return new Geom_Circle(A->Ax2(),SC->Radius() * UnitsMethods::LengthFactor());
+      return new Geom_Circle(A->Ax2(),SC->Radius() * StepData_GlobalFactors::Intance().LengthFactor());
     }
   }
   return 0;
@@ -1096,8 +1096,8 @@ Handle(Geom_ConicalSurface) StepToGeom::MakeConicalSurface (const Handle(StepGeo
   Handle(Geom_Axis2Placement) A = MakeAxis2Placement (SS->Position());
   if (! A.IsNull())
   {
-    const Standard_Real R = SS->Radius() * UnitsMethods::LengthFactor();
-    const Standard_Real Ang = SS->SemiAngle() * UnitsMethods::PlaneAngleFactor();
+    const Standard_Real R = SS->Radius() * StepData_GlobalFactors::Intance().LengthFactor();
+    const Standard_Real Ang = SS->SemiAngle() * StepData_GlobalFactors::Intance().PlaneAngleFactor();
     //#2(K3-3) rln 12/02/98 ProSTEP ct_turbine-A.stp entity #518, #3571 (gp::Resolution() is too little)
     return new Geom_ConicalSurface(A->Ax2(), Max(Ang, Precision::Angular()), R);
   }
@@ -1215,7 +1215,7 @@ Handle(Geom_CylindricalSurface) StepToGeom::MakeCylindricalSurface (const Handle
   Handle(Geom_Axis2Placement) A = MakeAxis2Placement(SS->Position());
   if (! A.IsNull())
   {
-    return new Geom_CylindricalSurface(A->Ax2(), SS->Radius() * UnitsMethods::LengthFactor());
+    return new Geom_CylindricalSurface(A->Ax2(), SS->Radius() * StepData_GlobalFactors::Intance().LengthFactor());
   }
   return 0;
 }
@@ -1301,7 +1301,7 @@ Handle(Geom_Ellipse) StepToGeom::MakeEllipse (const Handle(StepGeom_Ellipse)& SC
     if (! A1.IsNull())
     {
       gp_Ax2 A( A1->Ax2() );
-      const Standard_Real LF = UnitsMethods::LengthFactor();
+      const Standard_Real LF = StepData_GlobalFactors::Intance().LengthFactor();
       const Standard_Real majorR = SC->SemiAxis1() * LF;
       const Standard_Real minorR = SC->SemiAxis2() * LF;
       if ( majorR - minorR >= 0. ) { //:o9 abv 19 Feb 99
@@ -1357,7 +1357,7 @@ Handle(Geom_Hyperbola) StepToGeom::MakeHyperbola (const Handle(StepGeom_Hyperbol
     if (! A1.IsNull())
     {
       const gp_Ax2 A( A1->Ax2() );
-      const Standard_Real LF = UnitsMethods::LengthFactor();
+      const Standard_Real LF = StepData_GlobalFactors::Intance().LengthFactor();
       return new Geom_Hyperbola(A, SC->SemiAxis() * LF, SC->SemiImagAxis() * LF);
     }
   }
@@ -1437,7 +1437,7 @@ Handle(Geom_Parabola) StepToGeom::MakeParabola (const Handle(StepGeom_Parabola)&
     Handle(Geom_Axis2Placement) A = MakeAxis2Placement (Handle(StepGeom_Axis2Placement3d)::DownCast(AxisSelect.Value()));
     if (! A.IsNull())
     {
-      return new Geom_Parabola(A->Ax2(), SC->FocalDist() * UnitsMethods::LengthFactor());
+      return new Geom_Parabola(A->Ax2(), SC->FocalDist() * StepData_GlobalFactors::Intance().LengthFactor());
     }
   }
   return 0;
@@ -1561,8 +1561,8 @@ Handle(Geom_RectangularTrimmedSurface) StepToGeom::MakeRectangularTrimmedSurface
 
     Standard_Real uFact = 1.;
     Standard_Real vFact = 1.;
-    const Standard_Real LengthFact  = UnitsMethods::LengthFactor();
-    const Standard_Real AngleFact   = UnitsMethods::PlaneAngleFactor(); // abv 30.06.00 trj4_k1_geo-tc-214.stp #1477: PI/180.;
+    const Standard_Real LengthFact  = StepData_GlobalFactors::Intance().LengthFactor();
+    const Standard_Real AngleFact   = StepData_GlobalFactors::Intance().PlaneAngleFactor(); // abv 30.06.00 trj4_k1_geo-tc-214.stp #1477: PI/180.;
 
     if (theBasis->IsKind(STANDARD_TYPE(Geom_SphericalSurface)) ||
         theBasis->IsKind(STANDARD_TYPE(Geom_ToroidalSurface))) {
@@ -1604,7 +1604,7 @@ Handle(Geom_SphericalSurface) StepToGeom::MakeSphericalSurface (const Handle(Ste
   Handle(Geom_Axis2Placement) A = MakeAxis2Placement (SS->Position());
   if (! A.IsNull())
   {
-    return new Geom_SphericalSurface(A->Ax2(), SS->Radius() * UnitsMethods::LengthFactor());
+    return new Geom_SphericalSurface(A->Ax2(), SS->Radius() * StepData_GlobalFactors::Intance().LengthFactor());
   }
   return 0;
 }
@@ -1642,7 +1642,7 @@ Handle(Geom_Surface) StepToGeom::MakeSurface (const Handle(StepGeom_Surface)& SS
       if (! aBasisSurface.IsNull())
       {
         // sln 03.10.01. BUC61003. creation of  offset surface is corrected
-        const Standard_Real anOffset = OS->Distance() * UnitsMethods::LengthFactor();
+        const Standard_Real anOffset = OS->Distance() * StepData_GlobalFactors::Intance().LengthFactor();
         if (aBasisSurface->Continuity() == GeomAbs_C0)
         {
           const BRepBuilderAPI_MakeFace aBFace(aBasisSurface, Precision::Confusion());
@@ -1781,7 +1781,7 @@ Handle(Geom_ToroidalSurface) StepToGeom::MakeToroidalSurface (const Handle(StepG
   Handle(Geom_Axis2Placement) A = MakeAxis2Placement (SS->Position());
   if (! A.IsNull())
   {
-    const Standard_Real LF = UnitsMethods::LengthFactor();
+    const Standard_Real LF = StepData_GlobalFactors::Intance().LengthFactor();
     return new Geom_ToroidalSurface(A->Ax2(), Abs(SS->MajorRadius() * LF), Abs(SS->MinorRadius() * LF));
   }
   return 0;
@@ -2011,12 +2011,12 @@ Handle(Geom_TrimmedCurve) StepToGeom::MakeTrimmedCurve (const Handle(StepGeom_Tr
   if (theSTEPCurve->IsKind(STANDARD_TYPE(StepGeom_Line))) {
     const Handle(StepGeom_Line) theLine =
       Handle(StepGeom_Line)::DownCast(theSTEPCurve);
-    fact = theLine->Dir()->Magnitude() * UnitsMethods::LengthFactor();
+    fact = theLine->Dir()->Magnitude() * StepData_GlobalFactors::Intance().LengthFactor();
   }
   else if (theSTEPCurve->IsKind(STANDARD_TYPE(StepGeom_Circle)) ||
            theSTEPCurve->IsKind(STANDARD_TYPE(StepGeom_Ellipse))) {
 //    if (trim1 > 2.1*M_PI || trim2 > 2.1*M_PI) fact = M_PI / 180.;
-    fact = UnitsMethods::PlaneAngleFactor();
+    fact = StepData_GlobalFactors::Intance().PlaneAngleFactor();
     //:p3 abv 23 Feb 99: shift on pi/2 on ellipse with R1 < R2
     const Handle(StepGeom_Ellipse) ellipse = Handle(StepGeom_Ellipse)::DownCast(theSTEPCurve);
     if ( !ellipse.IsNull() && ellipse->SemiAxis1() - ellipse->SemiAxis2() < 0. )
@@ -2125,7 +2125,7 @@ Handle(Geom2d_BSplineCurve) StepToGeom::MakeTrimmedCurve2d (const Handle(StepGeo
     else if (BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Circle)) ||
              BasisCurve->IsKind(STANDARD_TYPE(StepGeom_Ellipse))) {
 //      if (u1 > 2.1*M_PI || u2 > 2.1*M_PI) fact = M_PI / 180.;
-      fact = UnitsMethods::PlaneAngleFactor();
+      fact = StepData_GlobalFactors::Intance().PlaneAngleFactor();
       //:p3 abv 23 Feb 99: shift on pi/2 on ellipse with R1 < R2
       const Handle(StepGeom_Ellipse) ellipse = Handle(StepGeom_Ellipse)::DownCast(BasisCurve);
       if ( !ellipse.IsNull() && ellipse->SemiAxis1() - ellipse->SemiAxis2() < 0. )
@@ -2158,7 +2158,7 @@ Handle(Geom_VectorWithMagnitude) StepToGeom::MakeVectorWithMagnitude (const Hand
   Handle(Geom_Direction) D = MakeDirection (SV->Orientation());
   if (! D.IsNull())
   {
-    const gp_Vec V(D->Dir().XYZ() * SV->Magnitude() * UnitsMethods::LengthFactor());
+    const gp_Vec V(D->Dir().XYZ() * SV->Magnitude() * StepData_GlobalFactors::Intance().LengthFactor());
     return new Geom_VectorWithMagnitude(V);
   }
   return 0;

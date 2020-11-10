@@ -443,6 +443,24 @@ void STEPControl_Reader::FileUnits( TColStd_SequenceOfAsciiString& theUnitLength
 }
 
 //=======================================================================
+//function : SetSystemLengthUnit
+//purpose  :
+//=======================================================================
+void STEPControl_Reader::SetSystemLengthUnit(const Standard_Real theLengthUnit)
+{
+  StepModel()->SetLocalLengthUnit(theLengthUnit);
+}
+
+//=======================================================================
+//function : SystemLengthUnit
+//purpose  :
+//=======================================================================
+Standard_Real STEPControl_Reader::SystemLengthUnit() const
+{
+  return StepModel()->LocalLengthUnit();
+}
+
+//=======================================================================
 //function : getSiName
 //purpose  : 
 //=======================================================================

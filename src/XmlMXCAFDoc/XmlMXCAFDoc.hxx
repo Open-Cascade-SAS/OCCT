@@ -25,6 +25,7 @@ class Message_Messenger;
 class XmlMXCAFDoc_CentroidDriver;
 class XmlMXCAFDoc_ColorDriver;
 class XmlMXCAFDoc_GraphNodeDriver;
+class XmlMXCAFDoc_LengthUnitDriver;
 class XmlMXCAFDoc_LocationDriver;
 class XmlMXCAFDoc_DatumDriver;
 class XmlMXCAFDoc_DimTolDriver;
@@ -63,6 +64,7 @@ private:
 friend class XmlMXCAFDoc_CentroidDriver;
 friend class XmlMXCAFDoc_ColorDriver;
 friend class XmlMXCAFDoc_GraphNodeDriver;
+friend class XmlMXCAFDoc_LengthUnitDriver;
 friend class XmlMXCAFDoc_LocationDriver;
 friend class XmlMXCAFDoc_DatumDriver;
 friend class XmlMXCAFDoc_DimTolDriver;

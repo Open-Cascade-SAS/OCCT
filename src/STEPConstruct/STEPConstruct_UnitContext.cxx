@@ -44,12 +44,12 @@
 #include <StepBasic_SolidAngleMeasureWithUnit.hxx>
 #include <StepBasic_SolidAngleUnit.hxx>
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <STEPConstruct_UnitContext.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
 #include <StepRepr_GlobalUncertaintyAssignedContext.hxx>
 #include <StepRepr_GlobalUnitAssignedContext.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=======================================================================
 //function : STEPConstruct_UnitContext
@@ -91,18 +91,20 @@ void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d)
   Standard_CString uName = 0;
   Standard_Boolean hasPref = Standard_True;
   StepBasic_SiPrefix siPref = StepBasic_spMilli;
-  switch ( Interface_Static::IVal ( "write.step.unit" ) ) {
-  case  1 : uName = "INCH";             break;
-  default :
-  case  2 :                             break;
-  case  4 : uName = "FOOT";             break;
-  case  5 : uName = "MILE";             break;
-  case  6 : hasPref = Standard_False;   break;
-  case  7 : siPref = StepBasic_spKilo;  break;
-  case  8 : uName = "MIL";              break;
-  case  9 : siPref = StepBasic_spMicro; break;
-  case 10 : siPref = StepBasic_spCenti; break;
-  case 11 : uName = "MICROINCH";        break;
+  Standard_Real aScale = 1.;
+  switch (Interface_Static::IVal("write.step.unit"))
+  {
+    case  1: uName = "INCH"; aScale = 25.4; break;
+    default:
+    case  2: break;
+    case  4: uName = "FOOT"; aScale = 304.8; break;
+    case  5: uName = "MILE"; aScale = 1609344.0; break;
+    case  6: hasPref = Standard_False; aScale = 1000.0; break;
+    case  7: siPref = StepBasic_spKilo; aScale = 1000000.0; break;
+    case  8: uName = "MIL"; aScale = 0.0254; break;
+    case  9: siPref = StepBasic_spMicro; aScale = 0.001; break;
+    case 10: siPref = StepBasic_spCenti; aScale = 10.0; break;
+    case 11: uName = "MICROINCH"; aScale = 0.0000254; break;
   }
   
   Handle(StepBasic_SiUnitAndLengthUnit) siUnit =
@@ -112,7 +114,7 @@ void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d)
   if ( uName ) { // for non-metric units, create conversion_based_unit
     Handle(StepBasic_MeasureValueMember) val = new StepBasic_MeasureValueMember;
     val->SetName("LENGTH_UNIT");
-    val->SetReal ( UnitsMethods::GetLengthFactorValue ( Interface_Static::IVal ( "write.step.unit" ) ) );
+    val->SetReal (aScale);
 
     Handle(StepBasic_LengthMeasureWithUnit) measure = new StepBasic_LengthMeasureWithUnit;
     StepBasic_Unit Unit;
@@ -164,7 +166,7 @@ void STEPConstruct_UnitContext::Init(const Standard_Real Tol3d)
   
   Handle(StepBasic_MeasureValueMember) mvs = new StepBasic_MeasureValueMember;
   mvs->SetName("LENGTH_MEASURE");
-  mvs->SetReal ( Tol3d / UnitsMethods::LengthFactor() );
+  mvs->SetReal ( Tol3d / StepData_GlobalFactors::Intance().LengthFactor() );
   StepBasic_Unit Unit;
   Unit.SetValue ( lengthUnit );
   theTol3d->Init(mvs, Unit, TolName, TolDesc);
@@ -388,12 +390,13 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
     return 0;
   }
   
+  const Standard_Real aCascadeUnit = StepData_GlobalFactors::Intance().CascadeUnit();
   if (aUnit->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndLengthUnit))||
       aUnit->IsKind(STANDARD_TYPE(StepBasic_SiUnitAndLengthUnit))) {
 #ifdef METER
     lengthFactor = parameter;
 #else
-    lengthFactor = parameter * 1000. / UnitsMethods::GetCasCadeLengthUnit();
+    lengthFactor = parameter * 1000. / aCascadeUnit;
 #endif    
     if(!lengthDone) 
       lengthDone = Standard_True;
@@ -420,7 +423,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
 #ifdef METER   
     af = parameter;
 #else
-    af = parameter * 1000. / UnitsMethods::GetCasCadeLengthUnit();
+    af = parameter * 1000. / aCascadeUnit;
 #endif    
     areaDone = Standard_True;
     areaFactor = pow(af,2);
@@ -431,7 +434,7 @@ Standard_Integer STEPConstruct_UnitContext::ComputeFactors(const Handle(StepBasi
 #ifdef METER   
     af = parameter;
 #else
-    af = parameter * 1000. / UnitsMethods::GetCasCadeLengthUnit();
+    af = parameter * 1000. / aCascadeUnit;
 #endif
     volumeDone = Standard_True;
     volumeFactor = pow(af,3);

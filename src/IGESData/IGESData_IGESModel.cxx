@@ -230,17 +230,6 @@ void   IGESData_IGESModel::AddStartLine
   else thestart->InsertBefore (atnum,new TCollection_HAsciiString(line));
 }
 
-
-
-//=======================================================================
-//function : GlobalSection
-//purpose  : 
-//=======================================================================
-
-const IGESData_GlobalSection& IGESData_IGESModel::GlobalSection () const
-      {  return theheader;  }
-
-
 //=======================================================================
 //function : SetGlobalSection
 //purpose  : 

@@ -38,6 +38,8 @@ set fa_Second 0; set sh_Second 0; set so_Second 0; set co_Second 0; set shpp_Sec
 ###################################### CHECKSHAPE ##################
 set chwi_First 0; set chfa_First 0; set chsh_First 0; set chso_First 0
 set chwi_Second 0; set chfa_Second 0; set chsh_Second 0; set chso_Second 0
+#################################################UNITS#############
+set lengthunit_First ""; set lengthunit_Second "";
 ###################################################################
 set ref_Compare 0
 set todo_msg ""
@@ -48,6 +50,10 @@ set end_line "\" \n"
 
 # Read original file
 if { [string length $filename] > 1} {
+    XNewDoc D_First
+    if { $lengthunit_start != "" } {
+      XSetLengthUnit D_First $lengthunit_start
+    }
     set ext [file extension $filename]
     set ReadCommand ReadStep
     set WriteCommand WriteStep
@@ -75,7 +81,9 @@ if { [string length $filename] > 1} {
 # Get information about translation
 if { $mist < 1} {           
     puts ""
-   
+    if { $lengthunit_start != "" } {
+      set lengthunit_First [XGetLengthUnit D_First]
+    }
     set tps_2 [data c]
     if { [llength $tps_2] > 0 } {
 	# Finding all strings with warnings
@@ -248,7 +256,10 @@ if { $mist < 1} {
 	set mist_w 1
     }
     if { $mist_w < 1 } {
-	
+        XNewDoc D_Second
+        if { $lengthunit_start != "" } {
+          XSetLengthUnit D_Second $lengthunit_start
+        }
         if { [catch { $ReadCommand D_Second $imagedir/${casename}_D_First$ext } catch_result] } {
 	    set err_msg "Error: Second - file was not read - exception"
 	    puts $err_msg
@@ -274,7 +285,9 @@ if { $mist_w > 0 || $mist_Second > 0 } {
 # Get information about translation
 if { $mist < 1} {           
     puts ""
-    
+    if { $lengthunit_start != "" } {
+      set lengthunit_Second [XGetLengthUnit D_Second]
+    }
     set tps_2 [data c]
     if { [llength $tps_2] > 0 } {
 	# Finding all strings with warnings
@@ -599,6 +612,13 @@ if { $dump_file == 1 } {
        puts $fd_stream "set ProductMode OFF"
     }
     puts $fd_stream "set filename $filename"
+
+    if {$lengthunit_start != ""} {
+      puts $fd_stream "" 
+      puts $fd_stream "# set $lengthunit_start as local lenght unit"
+      puts $fd_stream "set lengthunit_start \"$lengthunit_start\""
+    }
+
     if { $mist != 1 } {
         puts $fd_stream "" 
         puts $fd_stream "set ref_data \{"
@@ -718,7 +738,10 @@ if { $dump_file != 0 } {
         puts "Error : $ref_Compare differences with reference data found :\n$err_compare_ref"
     } else {
         puts "Comparison of current result with reference data - OK\n"
-    }    
+    }
+    if { $lengthunit_First != $lengthunit_Second } {
+      puts "Error: different length units $lengthunit_First & $lengthunit_Second in result documents" 
+    } 
 }
 
 puts "--------------------------------------------------------------------"

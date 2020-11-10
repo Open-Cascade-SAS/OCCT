@@ -43,12 +43,15 @@
 #include <Transfer_FinderProcess.hxx>
 #include <Transfer_TransientProcess.hxx>
 #include <TransferBRep_ShapeMapper.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_Controller.hxx>
 #include <XSControl_TransferReader.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
 #include <XSDRAW.hxx>
 #include <XSDRAWSTEP.hxx>
+#include <UnitsMethods.hxx>
 
 #include <stdio.h>
 //  Pour le transfert (write)
@@ -151,7 +154,10 @@ static Standard_Integer stepread (Draw_Interpretor& di, Standard_Integer argc, c
     else di<<"No model loaded\n";
     return 1;
   }
-  
+
+  XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+  sr.SetSystemLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+
   //   nom = "." -> fichier deja lu
   Standard_Integer i, num, nbs, modepri = 1;
   if (fromtcl) modepri = 4;
@@ -299,7 +305,9 @@ static Standard_Integer testreadstep (Draw_Interpretor& di, Standard_Integer arg
     case IFSelect_RetError : { di<<"file not found\n";   return 1; }      
     case IFSelect_RetFail  : { di<<"error during read\n";  return 1; }    
     default  :  { di<<"failure\n";   return 1; }                          
-  }  
+  }
+  XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+  Reader.SetSystemLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
   Reader.TransferRoots();
   TopoDS_Shape shape = Reader.OneShape();
   DBRep::Set(argv[2],shape); 

@@ -39,6 +39,8 @@ XCAFDoc_GraphNode.hxx
 XCAFDoc_GraphNodeSequence.hxx
 XCAFDoc_LayerTool.cxx
 XCAFDoc_LayerTool.hxx
+XCAFDoc_LengthUnit.cxx
+XCAFDoc_LengthUnit.hxx
 XCAFDoc_Location.cxx
 XCAFDoc_Location.hxx
 XCAFDoc_Material.cxx

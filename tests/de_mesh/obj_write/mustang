@@ -6,7 +6,12 @@ puts "========"
 pload XDE OCAF MODELING VISUALIZATION
 Close D  -silent
 Close D1 -silent
-ReadObj D1 [locate_data_file "P-51 Mustang.obj"]
+
+XNewDoc D1
+XSetLengthUnit D1 cm
+ReadObj D1 [locate_data_file "P-51 Mustang.obj"] -nocreatedoc -unit 1
+XGetOneShape s1 D1
+set aLProps1 [uplevel #0 sprops $s1]
 
 set aTmpObjBase "${imagedir}/${casename}_tmp"
 set aTmpObj "${aTmpObjBase}.obj"
@@ -16,10 +21,19 @@ lappend occ_tmp_files "${aTmpObjBase}_textures"
 
 WriteObj D1 "$aTmpObj"
 
-ReadObj D "$aTmpObj"
+XNewDoc D
+XSetLengthUnit D cm
+ReadObj D "$aTmpObj" -nocreatedoc -unit 1
 XGetOneShape s D
+set aLProps2 [uplevel #0 sprops $s]
 checknbshapes s -face 14 -compound 1
 checktrinfo s -tri 4309 -nod 4727
+
+regexp {Mass\s:\s*([0-9\.]+)} $aLProps1 dummy anArea1
+regexp {Mass\s:\s*([0-9\.]+)} $aLProps2 dummy anArea2
+if {abs($anArea1 - $anArea2) > 1e-8 * $anArea1} {
+  puts "Error: invalid area $anArea1 instead of $anArea2"
+}
 
 vclear
 vinit View1

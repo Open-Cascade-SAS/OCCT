@@ -228,6 +228,7 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_GeomTolerance.hxx>
 #include <XCAFDoc_GraphNode.hxx>
+#include <XCAFDoc_LengthUnit.hxx>
 #include <XCAFDoc_LayerTool.hxx>
 #include <XCAFDoc_Material.hxx>
 #include <XCAFDoc_MaterialTool.hxx>
@@ -240,8 +241,11 @@
 #include <XCAFPrs_IndexedDataMapOfShapeStyle.hxx>
 #include <XCAFPrs_DataMapOfStyleShape.hxx>
 #include <XCAFPrs_Style.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_TransferWriter.hxx>
 #include <XSControl_WorkSession.hxx>
+#include <UnitsMethods.hxx>
 
 // added by skl 15.01.2004 for D&GT writing
 //#include <StepRepr_CompoundItemDefinition.hxx>
@@ -359,6 +363,25 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::Write (const Standard_CString filen
   return status;
 }
 
+//=======================================================================
+//function : prepareUnit
+//purpose  :
+//=======================================================================
+void STEPCAFControl_Writer::prepareUnit(const TDF_Label& theLabel,
+                                        const Handle(StepData_StepModel)& theModel)
+{
+  Handle(XCAFDoc_LengthUnit) aLengthAttr;
+  if (!theLabel.IsNull() &&
+    theLabel.Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aLengthAttr))
+  {
+    theModel->SetLocalLengthUnit(aLengthAttr->GetUnitValue() * 1000); // convert to mm
+  }
+  else
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    theModel->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+  }
+}
 
 //=======================================================================
 //function : Transfer
@@ -516,6 +539,8 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
   Handle(STEPCAFControl_ActorWrite) Actor =
     Handle(STEPCAFControl_ActorWrite)::DownCast ( writer.WS()->NormAdaptor()->ActorWrite() );
 
+  const Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(writer.WS()->Model());
+  prepareUnit(labels.First(), aModel); // set local length unit to the model
   // translate free top-level shapes of the DECAF document
   Standard_Integer ap = Interface_Static::IVal ("write.step.schema");
   TDF_LabelSequence sublabels;
@@ -659,10 +684,9 @@ Standard_Boolean STEPCAFControl_Writer::Transfer (STEPControl_Writer &writer,
       WriteMaterials(writer.WS(),sublabels);
 
     // register all MDGPRs in model
-    const Handle(Interface_InterfaceModel) &Model = writer.WS()->Model();
     MoniTool_DataMapIteratorOfDataMapOfShapeTransient anItr(myMapCompMDGPR);
     for (; anItr.More(); anItr.Next())
-      Model->AddWithRefs( anItr.Value() );
+      aModel->AddWithRefs( anItr.Value() );
   }
   
   if ( multi ) { // external refs

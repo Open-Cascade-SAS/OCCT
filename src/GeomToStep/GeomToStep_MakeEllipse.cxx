@@ -23,11 +23,11 @@
 #include <gp_Elips.hxx>
 #include <gp_Elips2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Ellipse.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d'une ellipse de prostep a partir d'une ellipse 3d de gp

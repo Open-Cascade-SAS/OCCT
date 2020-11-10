@@ -226,12 +226,12 @@ void StepFile_ReadData::CreateNewText(const char* theNewText, int theLenText)
     return;
   }
   //  If error argument exists - prepare size to new text value and old result text
-  int aLenght = (myErrorArg) ? theLenText + (int)strlen(myResText) : theLenText;
+  int aLength = (myErrorArg) ? theLenText + (int)strlen(myResText) : theLenText;
 
-  if (myOneCharPage->myUsed > myMaxChar - aLenght - 1)
+  if (myOneCharPage->myUsed > myMaxChar - aLength - 1)
   {
     int aSizeOfPage = myMaxChar + 1;
-    if (aLenght >= myMaxChar) aSizeOfPage += (aLenght + 1 - myMaxChar);
+    if (aLength >= myMaxChar) aSizeOfPage += (aLength + 1 - myMaxChar);
     CharactersPage* aNewPage = new CharactersPage(aSizeOfPage);
     aNewPage->myNext = myOneCharPage;
     myOneCharPage = aNewPage;
@@ -241,7 +241,7 @@ void StepFile_ReadData::CreateNewText(const char* theNewText, int theLenText)
   char* anOldResText = myResText;
 
   myResText = myOneCharPage->myCharacters + myOneCharPage->myUsed;
-  myOneCharPage->myUsed += (aLenght + 1);
+  myOneCharPage->myUsed += (aLength + 1);
 
   // If error argument exists - append new text to old result text
   // Else create new result text

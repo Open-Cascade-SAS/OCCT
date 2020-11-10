@@ -28,6 +28,7 @@
 #include <TDataStd_ByteArray.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_Name.hxx>
+#include <XCAFDoc_LengthUnit.hxx>
 #include <TDataStd_RealArray.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_TreeNode.hxx>
@@ -394,6 +395,11 @@ TCollection_AsciiString XCAFDoc::AttributeInfo (const Handle(TDF_Attribute)& the
   else if ( theAtt->IsKind(STANDARD_TYPE(TDataStd_AsciiString)) ) {
     Handle(TDataStd_AsciiString) val = Handle(TDataStd_AsciiString)::DownCast ( theAtt );
     anInfo = TCollection_AsciiString ( val->Get(), '?' );
+  }
+  else if (theAtt->IsKind(STANDARD_TYPE(XCAFDoc_LengthUnit))) {
+    Handle(XCAFDoc_LengthUnit) aVal = Handle(XCAFDoc_LengthUnit)::DownCast(theAtt);
+    anInfo = TCollection_AsciiString(aVal->GetUnitValue());
+    anInfo += " ";  anInfo += aVal->GetUnitName();
   }
   else if ( theAtt->IsKind(STANDARD_TYPE(TDataStd_IntegerArray)) ) {
     Handle(TDataStd_IntegerArray) val = Handle(TDataStd_IntegerArray)::DownCast ( theAtt );

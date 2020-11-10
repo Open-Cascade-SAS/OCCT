@@ -82,7 +82,7 @@ XSAlgo_AlgoContainer::XSAlgo_AlgoContainer()
 
 void XSAlgo_AlgoContainer::PrepareForTransfer() const
 {
-  UnitsMethods::SetCasCadeLengthUnit ( Interface_Static::IVal("xstep.cascade.unit") );
+  UnitsMethods::SetCasCadeLengthUnit(Interface_Static::IVal("xstep.cascade.unit"));
 }
 
 //=======================================================================

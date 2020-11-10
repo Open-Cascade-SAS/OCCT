@@ -42,6 +42,7 @@
 #include <STEPConstruct_UnitContext.hxx>
 #include <STEPControl_ActorRead.hxx>
 #include <StepData_StepModel.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepDimTol_DatumFeature.hxx>
 #include <StepDimTol_GeometricTolerance.hxx>
 #include <StepDimTol_GeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol.hxx>
@@ -1752,7 +1753,7 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
     Standard_Integer anglemode = Interface_Static::IVal("step.angleunit.mode");
     Standard_Real angleFactor = ( anglemode == 0 ? myUnit.PlaneAngleFactor() :
 				  anglemode == 1 ? 1. : M_PI/180. );
-    UnitsMethods::InitializeFactors(myUnit.LengthFactor(),
+    StepData_GlobalFactors::Intance().InitializeFactors(myUnit.LengthFactor(),
 				    angleFactor,
 				    myUnit.SolidAngleFactor());
     if (stat1 != 0) TP->AddWarning (theRepCont,myUnit.StatusMessage(stat1));
@@ -1787,7 +1788,7 @@ void STEPControl_ActorRead::PrepareUnits(const Handle(StepRepr_Representation)& 
 
 void  STEPControl_ActorRead::ResetUnits ()
 {
-  UnitsMethods::InitializeFactors ( 1, 1, 1 );
+  StepData_GlobalFactors::Intance().InitializeFactors ( 1, 1, 1 );
   myPrecision = Interface_Static::RVal("read.precision.val");
   myMaxTol = Max ( myPrecision, Interface_Static::RVal("read.maxprecision.val") );
 }

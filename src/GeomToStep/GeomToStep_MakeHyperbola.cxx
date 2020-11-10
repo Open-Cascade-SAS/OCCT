@@ -20,11 +20,11 @@
 #include <gp_Hypr.hxx>
 #include <gp_Hypr2d.hxx>
 #include <StdFail_NotDone.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepGeom_Axis2Placement2d.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Hyperbola.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
 
 //=============================================================================
 // Creation d'une hyperbola de prostep a partir d'une hyperbola de
@@ -72,7 +72,7 @@ GeomToStep_MakeHyperbola::GeomToStep_MakeHyperbola(const Handle(Geom2d_Hyperbola
   minorR = gpHyp.MinorRadius();
   Ax2.SetValue(Ax2Step);
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Standard_Real fact = UnitsMethods::LengthFactor();
+  Standard_Real fact = StepData_GlobalFactors::Intance().LengthFactor();
   HStep->Init(name, Ax2,majorR/fact,minorR/fact);
   theHyperbola = HStep;
   done = Standard_True;

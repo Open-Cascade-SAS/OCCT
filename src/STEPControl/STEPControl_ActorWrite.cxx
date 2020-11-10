@@ -45,6 +45,7 @@
 #include <STEPConstruct_UnitContext.hxx>
 #include <STEPControl_ActorWrite.hxx>
 #include <STEPControl_StepModelType.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <StepData_StepModel.hxx>
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_GeomRepContextAndGlobUnitAssCtxAndGlobUncertaintyAssCtx.hxx>
@@ -231,7 +232,7 @@ static Standard_Boolean IsManifoldShape(const TopoDS_Shape& theShape) {
 STEPControl_ActorWrite::STEPControl_ActorWrite ()
 : mygroup (0) , mytoler (-1.)
 {  
-  SetMode(STEPControl_ShellBasedSurfaceModel);  
+  SetMode(STEPControl_ShellBasedSurfaceModel);
 }
 
 //=======================================================================
@@ -450,8 +451,6 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::Transfer (const Handle(Transfer_
                                                           const Handle(Transfer_FinderProcess)& FP,
                                                           const Message_ProgressRange& theProgress)
 {
-  XSAlgo::AlgoContainer()->PrepareForTransfer();
-    
   Handle(TransferBRep_ShapeMapper) mapper = Handle(TransferBRep_ShapeMapper)::DownCast(start);
 
   if (mapper.IsNull()) return NullResult();
@@ -462,12 +461,15 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::Transfer (const Handle(Transfer_
   if ( ! model.IsNull() ) myContext.SetModel ( model ); //: abv 04.11.00: take APD from model
   myContext.AddAPD ( Standard_False ); // update APD
   myContext.SetLevel ( 1 ); // set assembly level to 1 (to ensure)
-  
-  //:S4136: init UnitsMethods to reset angle unit factors (see TopoDSToStep)
-  Standard_Real lFactor = UnitsMethods::GetLengthFactorValue ( Interface_Static::IVal ( "write.step.unit" ) );
-  lFactor /= UnitsMethods::GetCasCadeLengthUnit();
+  if (!model->IsInitializedUnit())
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    model->SetLocalLengthUnit(UnitsMethods::GetCasCadeLengthUnit());
+  }
+  Standard_Real aLFactor = model->WriteLengthUnit();
+  aLFactor /= model->LocalLengthUnit();
   Standard_Integer anglemode = Interface_Static::IVal("step.angleunit.mode");
-  UnitsMethods::InitializeFactors ( lFactor, ( anglemode <= 1 ? 1. : M_PI/180. ), 1. );
+  StepData_GlobalFactors::Intance().InitializeFactors (aLFactor, ( anglemode <= 1 ? 1. : M_PI/180. ), 1. );
 
   // create SDR
   STEPConstruct_Part SDRTool;

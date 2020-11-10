@@ -47,6 +47,7 @@
 #include <StepBasic_SiUnitAndLengthUnit.hxx>
 #include <StepBasic_Unit.hxx>
 #include <StepBasic_DocumentFile.hxx>
+#include <StepData_GlobalFactors.hxx>
 #include <STEPCAFControl_Controller.hxx>
 #include <STEPCAFControl_DataMapIteratorOfDataMapOfShapePD.hxx>
 #include <STEPCAFControl_DataMapOfPDExternFile.hxx>
@@ -535,6 +536,23 @@ static void FillShapesMap(const TopoDS_Shape &S, TopTools_MapOfShape &map)
     FillShapesMap(it.Value(), map);
 }
 
+//=======================================================================
+//function : prepareUnits
+//purpose  :
+//=======================================================================
+void STEPCAFControl_Reader::prepareUnits(const Handle(StepData_StepModel)& theModel,
+                                         const Handle(TDocStd_Document)& theDoc) const
+{
+  Standard_Real aScaleFactorMM = 1.;
+  if (!XCAFDoc_DocumentTool::GetLengthUnit(theDoc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter))
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    aScaleFactorMM = UnitsMethods::GetCasCadeLengthUnit();
+    // Sets length unit to the document
+    XCAFDoc_DocumentTool::SetLengthUnit(theDoc, aScaleFactorMM, UnitsMethods_LengthUnit_Millimeter);
+  }
+  theModel->SetLocalLengthUnit(aScaleFactorMM);
+}
 
 //=======================================================================
 //function : Transfer
@@ -549,6 +567,8 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
                                                   const Message_ProgressRange& theProgress)
 {
   reader.ClearShapes();
+  Handle(StepData_StepModel) aModel = Handle(StepData_StepModel)::DownCast(reader.Model());
+  prepareUnits(aModel, doc);
   Standard_Integer i;
 
   // Read all shapes
@@ -582,14 +602,13 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
   // from the ones representing hybrid models and shape sets
   STEPCAFControl_DataMapOfShapePD ShapePDMap;
   STEPCAFControl_DataMapOfPDExternFile PDFileMap;
-  Handle(Interface_InterfaceModel) Model = reader.Model();
   const Handle(Transfer_TransientProcess) &TP = reader.WS()->TransferReader()->TransientProcess();
-  Standard_Integer nb = Model->NbEntities();
+  Standard_Integer nb = aModel->NbEntities();
 
   Handle(TColStd_HSequenceOfTransient) SeqPDS = new TColStd_HSequenceOfTransient;
 
   for (i = 1; i <= nb; i++) {
-    Handle(Standard_Transient) enti = Model->Value(i);
+    Handle(Standard_Transient) enti = aModel->Value(i);
     if (enti->IsKind(STANDARD_TYPE(StepRepr_ProductDefinitionShape))) {
       // sequence for acceleration ReadMaterials
       SeqPDS->Append(enti);
@@ -752,7 +771,6 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
 
   // Update assembly compounds
   STool->UpdateAssemblies();
-
   return Standard_True;
 }
 
@@ -1983,7 +2001,7 @@ void readAnnotation(const Handle(XSControl_TransferReader)& theTR,
   XSAlgo::AlgoContainer()->PrepareForTransfer();
   STEPControl_ActorRead anActor;
   anActor.PrepareUnits(aDModel, aTP);
-  Standard_Real aFact = UnitsMethods::LengthFactor();
+  Standard_Real aFact = StepData_GlobalFactors::Intance().LengthFactor();
 
   // retrieve AnnotationPlane
   Handle(StepRepr_RepresentationItem) aDMIAE = aDMIA->IdentifiedItemValue(1);
@@ -2090,7 +2108,7 @@ void readConnectionPoints(const Handle(XSControl_TransferReader)& theTR,
     XSAlgo::AlgoContainer()->PrepareForTransfer();
     STEPControl_ActorRead anActor;
     anActor.PrepareUnits(aSDR, aTP);
-    aFact = UnitsMethods::LengthFactor();
+    aFact = StepData_GlobalFactors::Intance().LengthFactor();
   }
   
   if (theGDT->IsKind(STANDARD_TYPE(StepShape_DimensionalSize))) {
@@ -4032,7 +4050,7 @@ Standard_Boolean STEPCAFControl_Reader::ReadGDTs(const Handle(XSControl_WorkSess
         STEPControl_ActorRead anActor;
         Handle(Transfer_TransientProcess) aTP = aTR->TransientProcess();
         anActor.PrepareUnits(aDMIA->UsedRepresentation(), aTP);
-        aFact = UnitsMethods::LengthFactor();
+        aFact = StepData_GlobalFactors::Intance().LengthFactor();
       }
 
       // Presentation
@@ -4196,8 +4214,8 @@ Standard_Boolean STEPCAFControl_Reader::ReadMaterials(const Handle(XSControl_Wor
                   aDensity = aDensity / (anUnitCtx.LengthFactor()*anUnitCtx.LengthFactor()*anUnitCtx.LengthFactor());
                   // transfer length value for Density from millimeter to santimeter
                   // in order to result density has dimension gram/(sm*sm*sm)
-                  aDensity = aDensity*1000. / (UnitsMethods::GetCasCadeLengthUnit()
-                    * UnitsMethods::GetCasCadeLengthUnit() * UnitsMethods::GetCasCadeLengthUnit());
+                  const Standard_Real aCascadeUnit = StepData_GlobalFactors::Intance().CascadeUnit();
+                  aDensity = aDensity*1000. / (aCascadeUnit * aCascadeUnit * aCascadeUnit);
                 }
                 if (NU->IsKind(STANDARD_TYPE(StepBasic_ConversionBasedUnitAndMassUnit))) {
                   Standard_Real afact = 1.;

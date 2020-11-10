@@ -8,5 +8,8 @@ cpulimit 1000
 NewDocument D BinXCAF
 UndoLimit D 100
 
+# Local length unit value
+set lengthunit_start ""
+
 # Open a transaction
 NewCommand D

@@ -22,7 +22,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_SphericalSurface.hxx>
 #include <TCollection_HAsciiString.hxx>
-#include <UnitsMethods.hxx>
+#include <StepData_GlobalFactors.hxx>
 
 //=============================================================================
 // Creation d' une conical_surface de prostep a partir d' une SphericalSurface
@@ -41,7 +41,7 @@ GeomToStep_MakeSphericalSurface::GeomToStep_MakeSphericalSurface
   aRadius = S->Radius();
   Surf = new StepGeom_SphericalSurface;
   Handle(TCollection_HAsciiString) name = new TCollection_HAsciiString("");
-  Surf->Init(name, aPosition, aRadius/UnitsMethods::LengthFactor());
+  Surf->Init(name, aPosition, aRadius/ StepData_GlobalFactors::Intance().LengthFactor());
   theSphericalSurface = Surf;
   done = Standard_True;
 }

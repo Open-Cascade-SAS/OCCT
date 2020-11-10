@@ -34,7 +34,6 @@
 #include <Interface_Static.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <UnitsMethods.hxx>
 
 IGESData_BasicEditor::IGESData_BasicEditor(const Handle(IGESData_Protocol)&  protocol)
 {
@@ -92,7 +91,7 @@ void IGESData_BasicEditor::Init (const Handle(IGESData_IGESModel)& model, const 
   (const Standard_Real val)
 {
   if (val <= 0.) return Standard_False;
-  Standard_Real vmm = val * UnitsMethods::GetCasCadeLengthUnit(); //abv 20 Feb 00: adding cascade unit factor
+  Standard_Real vmm = val * themodel->GlobalSection().CascadeUnit();
   //#73 rln 10.03.99 S4135: "read.scale.unit" does not affect GlobalSection
   //if (Interface_Static::IVal("read.scale.unit") == 1) vmm = vmm * 1000.;
 // vmm est exprime en MILLIMETRES
@@ -358,20 +357,19 @@ Standard_Integer IGESData_BasicEditor::UnitNameFlag  (const Standard_CString nam
 Standard_Real IGESData_BasicEditor::UnitFlagValue (const Standard_Integer flag)
 {
   switch (flag) {
-    case  1 : return 0.0254;
-    case  2 : return 0.001;
-    case  3 : return 1.;
-    case  4 : return 0.3048;
-    case  5 : return 1609.27;
-    case  6 : return 1.;
-    case  7 : return 1000.;
-    case  8 : return 0.0000254;
-    case  9 : return 0.000001;
-    case 10 : return 0.01;
-    case 11 : return 0.0000000254;
-    default : break;
+    case  1: return 25.4; // inch
+    case  2: return 1.; // millimeter
+    case  3: return 1.;
+    case  4: return 304.8; // foot
+    case  5: return 1609344.; // mile
+    case  6: return 1000.; // meter
+    case  7: return 1000000.; // kilometer
+    case  8: return 0.0254; // mil (0.001 inch)
+    case  9: return 0.001; // micron
+    case 10: return 10.; // centimeter
+    case 11: return 0.0000254; // microinch
+    default: return 0.;
   }
-  return 0.;
 }
 
 Standard_CString IGESData_BasicEditor::UnitFlagName (const Standard_Integer flag)

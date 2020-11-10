@@ -41,6 +41,7 @@
 #include <TDataStd_Comment.hxx>
 #include <TDataStd_Integer.hxx>
 #include <TDataStd_IntegerArray.hxx>
+#include <XCAFDoc_LengthUnit.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_RealArray.hxx>
@@ -96,6 +97,7 @@
 #include <XSDRAW.hxx>
 #include <XSDRAWIGES.hxx>
 #include <XSDRAWSTEP.hxx>
+#include <UnitsMethods.hxx>
 
 #include <BinXCAFDrivers.hxx>
 #include <XmlXCAFDrivers.hxx>
@@ -1064,6 +1066,93 @@ static Standard_Integer XSetTransparency (Draw_Interpretor& di, Standard_Integer
 }
 
 //=======================================================================
+//function : setLengthUnit
+//purpose  :
+//=======================================================================
+static Standard_Integer setLengthUnit(Draw_Interpretor& di,
+                                      Standard_Integer argc,
+                                      const char** argv)
+{
+  if (argc != 3)
+  {
+    di << "Use: " << argv[0] << " Doc {unitName|scaleFactor} \n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull())
+  {
+    di << "Error: " << argv[1] << " is not a document\n"; return 1;
+  }
+
+  TCollection_AsciiString anUnit(argv[2]);
+  Standard_Real anUnitValue = 1.;
+  TCollection_AsciiString anUnitName;
+  if (!anUnit.IsRealValue(true))
+  {
+    UnitsMethods_LengthUnit aTypeUnit = UnitsMethods::LengthUnitFromString(anUnit.ToCString(), Standard_False);
+    if (aTypeUnit == UnitsMethods_LengthUnit_Undefined)
+    {
+      di << "Error: " << anUnit
+         << " is incorrect unit, use m, mm, km, cm, micron, mille, in, min, nin, ft, stat.mile\n";
+      return 1;
+    }
+    anUnitName = anUnit;
+    anUnitValue = UnitsMethods::GetLengthFactorValue(aTypeUnit) * 0.001;
+  }
+  else
+  {
+    anUnitValue = anUnit.RealValue();
+    anUnitName = UnitsMethods::DumpLengthUnit(anUnitValue, UnitsMethods_LengthUnit_Meter);
+  }
+  XCAFDoc_LengthUnit::Set(aDoc->Main().Root(), anUnitName, anUnitValue);
+  return 0;
+}
+
+//=======================================================================
+//function : dumpLengthUnit
+//purpose  :
+//=======================================================================
+static Standard_Integer dumpLengthUnit(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 2 && argc != 3) {
+    di << "Use: " << argv[0] << " Doc [-scale]\n";
+    return 1;
+  }
+
+  Handle(TDocStd_Document) aDoc;
+  DDocStd::GetDocument(argv[1], aDoc);
+  if (aDoc.IsNull()) 
+  { 
+    di << "Error: " << argv[1] << " is not a document\n"; return 1;
+  }
+  Handle(XCAFDoc_LengthUnit) aUnits;
+  if (!aDoc->Main().Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aUnits))
+  {
+    di << "Error: Document doesn't contain a Length Unit\n";
+    return 1;
+  }
+  if (argc == 3)
+  {
+    TCollection_AsciiString anOption(argv[2]);
+    anOption.LowerCase();
+    if (anOption.IsEqual("-scale"))
+    {
+      di << aUnits->GetUnitValue();
+      return 0;
+    }
+    else
+    {
+      di << "Error: Incorrect option, use -scale\n";
+      return 1;
+    }
+  }
+  di << aUnits->GetUnitName();
+  return 0;
+}
+
+//=======================================================================
 //function : XShowFaceBoundary
 //purpose  : Set face boundaries on/off
 //=======================================================================
@@ -1328,7 +1417,18 @@ void XDEDRAW::Init(Draw_Interpretor& di)
   di.Add ("XSetTransparency", "Doc Transparency [label1 label2 ...]\t: Set transparency for given label(s) or whole doc",
 		   __FILE__, XSetTransparency, g);
 
-  di.Add ("XShowFaceBoundary", 
+  di.Add("XSetLengthUnit",
+    "Doc {unit_name|scale_factor}\t: Set value of length unit"
+    "\n\t\t: Possible unit_name: m, mm, km, cm, micron, mille, in(inch), min(microinch), nin(nano inch), ft, stat.mile"
+    "\n\t\t: Possible scale factor: any real value more then 0. Factor to meter.",
+    __FILE__, setLengthUnit, g);
+
+  di.Add("XGetLengthUnit",
+    "Doc [-scale]\t: Print name of length unit"
+    "\n\t\t: -scale : print value of the scaling factor to meter of length unit",
+    __FILE__, dumpLengthUnit, g);
+
+  di.Add ("XShowFaceBoundary",
           "Doc Label IsOn [R G B [LineWidth [LineStyle]]]:"
           "- turns on/off drawing of face boundaries and defines boundary line style",
           __FILE__, XShowFaceBoundary, g);

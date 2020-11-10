@@ -21,6 +21,8 @@
 
 #include <TDataStd_GenericEmpty.hxx>
 #include <Standard_Boolean.hxx>
+#include <UnitsMethods_LengthUnit.hxx>
+
 class Standard_GUID;
 class TDF_Label;
 class TDocStd_Document;
@@ -119,6 +121,26 @@ public:
 
   //! Creates (if it does not exist) NotesTool attribute on NotesLabel().
   Standard_EXPORT static Handle(XCAFDoc_NotesTool) NotesTool(const TDF_Label& acces);
+
+  //! Returns value of current internal unit for the document
+  //! converted to base unit type.
+  Standard_EXPORT static Standard_Boolean GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                                        Standard_Real& theResut,
+                                                        const UnitsMethods_LengthUnit theBaseUnit);
+
+  //! Returns value of current internal unit for the document in meter
+  Standard_EXPORT static Standard_Boolean GetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                                        Standard_Real& theResut);
+
+  //! Sets value of current internal unit to the document in meter
+  Standard_EXPORT static void SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                            const Standard_Real theUnitValue);
+
+  //! Sets value of current internal unit to the document
+  //! @param theUnitValue must be represented in the base unit type
+  Standard_EXPORT static void SetLengthUnit(const Handle(TDocStd_Document)& theDoc,
+                                            const Standard_Real theUnitValue,
+                                            const UnitsMethods_LengthUnit theBaseUnit);
 
 public:
 

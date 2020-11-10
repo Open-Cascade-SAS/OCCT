@@ -48,10 +48,14 @@
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_LayerTool.hxx>
+#include <XCAFDoc_LengthUnit.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFPrs.hxx>
 #include <XCAFPrs_Style.hxx>
+#include <XSAlgo.hxx>
+#include <XSAlgo_AlgoContainer.hxx>
 #include <XSControl_WorkSession.hxx>
+#include <UnitsMethods.hxx>
 
 namespace
 {
@@ -177,6 +181,7 @@ Standard_Boolean IGESCAFControl_Writer::Transfer (const TDF_LabelSequence& label
                                                   const Message_ProgressRange& theProgress)
 {  
   if ( labels.Length() <=0 ) return Standard_False;
+  prepareUnit(labels.First()); // set local length unit to the model
   Message_ProgressScope aPS(theProgress, "Labels", labels.Length());
   for ( Standard_Integer i=1; i <= labels.Length() && aPS.More(); i++ )
   {
@@ -559,6 +564,25 @@ Standard_Boolean IGESCAFControl_Writer::WriteNames (const TDF_LabelSequence& the
   }
 
   return Standard_True;
+}
+
+//=======================================================================
+//function : prepareUnit
+//purpose  :
+//=======================================================================
+void IGESCAFControl_Writer::prepareUnit(const TDF_Label& theLabel)
+{
+  Handle(XCAFDoc_LengthUnit) aLengthAttr;
+  if (!theLabel.IsNull() &&
+    theLabel.Root().FindAttribute(XCAFDoc_LengthUnit::GetID(), aLengthAttr))
+  {
+    Model()->ChangeGlobalSection().SetCascadeUnit(aLengthAttr->GetUnitValue() * 1000);
+  }
+  else
+  {
+    XSAlgo::AlgoContainer()->PrepareForTransfer(); // update unit info
+    Model()->ChangeGlobalSection().SetCascadeUnit(UnitsMethods::GetCasCadeLengthUnit());
+  }
 }
 
 //=======================================================================
