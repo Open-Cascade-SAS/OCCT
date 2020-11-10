@@ -148,6 +148,12 @@ Standard_Boolean operator != (const TopLoc_Location& Other) const
   //! Prints the contents of <me> on the stream <s>.
   Standard_EXPORT void ShallowDump (Standard_OStream& S) const;
 
+  //! Clear myItems
+  void Clear()
+  {
+    myItems.Clear();
+  }
+
 
 
 

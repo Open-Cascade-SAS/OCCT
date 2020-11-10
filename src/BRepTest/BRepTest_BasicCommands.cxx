@@ -1327,11 +1327,6 @@ static Standard_Integer compareshapes(Draw_Interpretor& di,
   // get shapes
   TopoDS_Shape aS1 = DBRep::Get(a[1]);
   TopoDS_Shape aS2 = DBRep::Get(a[2]);
-  // check shapes
-  if (aS1.IsNull() || aS2.IsNull()) {
-    di << "null shapes\n";
-    return 0;
-  }
   // compare shapes
   if (aS1.IsSame(aS2)) {
     di << "same shapes\n";

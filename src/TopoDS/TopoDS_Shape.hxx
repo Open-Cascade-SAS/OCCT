@@ -80,7 +80,12 @@ public:
 
   //! Destroys the reference to the underlying shape
   //! stored in this shape. As a result, this shape becomes null.
-  void Nullify() { myTShape.Nullify(); }
+  void Nullify() 
+  { 
+    myTShape.Nullify(); 
+    myLocation.Clear();
+    myOrient = TopAbs_EXTERNAL;
+  }
 
   //! Returns the shape local coordinate system.
   const TopLoc_Location& Location() const { return myLocation; }

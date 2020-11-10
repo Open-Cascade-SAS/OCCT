@@ -3870,6 +3870,21 @@ static Standard_Integer OCC31785 (Draw_Interpretor& theDI,
   return 0;
 }
 
+static Standard_Integer QANullifyShape(Draw_Interpretor& di,
+  Standard_Integer n,
+  const char** a)
+{
+  if (n != 2) {
+    di << "Wrong usage.\n";
+    di << "Usage: QANullifyShape shape\n";
+    return 1;
+  }
+  TopoDS_Shape aShape = DBRep::Get(a[1]);
+  aShape.Nullify();
+  DBRep::Set(a[1], aShape);
+  return 0;
+}
+
 void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -3944,6 +3959,11 @@ void QABugs::Commands_20(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC31785",
                   "OCC31785 file.xbf : test reading XBF file in another thread",
                   __FILE__, OCC31785, group);
+
+
+  theCommands.Add("QANullifyShape",
+                  "Nullify shape. Usage: QANullifyShape shape",
+                  __FILE__, QANullifyShape, group);
 
   return;
 }

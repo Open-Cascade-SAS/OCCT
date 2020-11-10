@@ -1,0 +1,26 @@
+puts "=========="
+puts "0029827: Modeling Data - TopoDS_Shape::Nullify() does not reset location"
+puts "=========="
+puts ""
+
+pload QAcommands
+
+box b1 1 2 1
+box b2 1 1 1 
+
+ttranslate b1 0 1 1
+ttranslate b2 1 1 1 
+
+QANullifyShape b1
+QANullifyShape b2
+
+set result [compare b1 b2]
+
+set ctr { "same shapes" "equal shapes" }
+
+foreach data ${ctr} {
+    if ![regexp $data $result] {
+       puts "Error: Shapes are not '$data'"
+       break; 
+    }
+}
