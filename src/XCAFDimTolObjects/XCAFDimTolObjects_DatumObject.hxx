@@ -203,7 +203,7 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(XCAFDimTolObjects_DatumObject,Standard_Transient)
 
-private: 
+private:
 
   Handle(TCollection_HAsciiString) myName;
   XCAFDimTolObjects_DatumModifiersSequence myModifiers;
@@ -214,10 +214,10 @@ private:
   Standard_Boolean myIsDTarget;
   Standard_Boolean myIsValidDT;
   XCAFDimTolObjects_DatumTargetType myDTargetType;
-  gp_Ax2 myAxis;
   Standard_Real myLength;
   Standard_Real myWidth;
   Standard_Integer myDatumTargetNumber;
+  gp_Ax2 myAxis;
   gp_Ax2 myPlane;
   gp_Pnt myPnt;
   gp_Pnt myPntText;

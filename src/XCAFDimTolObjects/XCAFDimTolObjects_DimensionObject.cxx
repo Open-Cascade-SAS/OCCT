@@ -58,6 +58,16 @@ XCAFDimTolObjects_DimensionObject::XCAFDimTolObjects_DimensionObject(const Handl
   myPlane = theObj->myPlane;
   myHasPntText = theObj->myHasPntText;
   mySemanticName = theObj->mySemanticName;
+  myPresentation = theObj->myPresentation;
+  myPresentationName = theObj->myPresentationName;
+  for (int i = 0; i < theObj->myDescriptions.Length(); i++)
+  {
+    myDescriptions.Append(theObj->myDescriptions(i));
+  }
+  for (int i = 0; i < theObj->myDescriptionNames.Length(); i++)
+  {
+    myDescriptionNames.Append(theObj->myDescriptionNames(i));
+  }
 }
 
 //=======================================================================

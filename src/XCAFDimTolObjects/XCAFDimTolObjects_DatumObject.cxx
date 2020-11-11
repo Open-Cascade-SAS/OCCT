@@ -42,17 +42,23 @@ XCAFDimTolObjects_DatumObject::XCAFDimTolObjects_DatumObject(const Handle(XCAFDi
   myModifierWithValue = theObj->myModifierWithValue;
   myValueOfModifier = theObj->myValueOfModifier;
   myDatumTarget = theObj->myDatumTarget;
+  myPosition = theObj->myPosition;
   myIsDTarget = theObj->myIsDTarget;
   myIsValidDT = theObj->myIsValidDT;
-  myAxis = theObj->myAxis;
   myDTargetType = theObj->myDTargetType;
+  myLength = theObj->myLength;
+  myWidth = theObj->myWidth;
+  myDatumTargetNumber = theObj->myDatumTargetNumber;
+  myAxis = theObj->myAxis;
   myPlane = theObj->myPlane;
   myPnt= theObj->myPnt;
   myPntText= theObj->myPntText;
   myHasPlane = theObj->myHasPlane;
   myHasPnt = theObj->myHasPnt;
   myHasPntText = theObj->myHasPntText;
+  myPresentation = theObj->myPresentation;
   mySemanticName = theObj->mySemanticName;
+  myPresentationName = theObj->myPresentationName;
 }
 
 //=======================================================================
