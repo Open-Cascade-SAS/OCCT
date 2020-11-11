@@ -34,7 +34,7 @@
 
 // Primary definitions
 #define OCC_VERSION_MAJOR         7
-#define OCC_VERSION_MINOR         5
+#define OCC_VERSION_MINOR         6
 #define OCC_VERSION_MAINTENANCE   0
 
 //! This macro must be commented in official release, and set to non-empty 
@@ -42,12 +42,12 @@
 //! - "dev" for development version between releases
 //! - "beta..." or "rc..." for beta releases or release candidates
 //! - "project..." for version containing project-specific fixes
-//#define OCC_VERSION_DEVELOPMENT   "beta"
+#define OCC_VERSION_DEVELOPMENT   "dev"
 
 // Derived (manually): version as real and string (major.minor)
-#define OCC_VERSION               7.5
-#define OCC_VERSION_STRING       "7.5"
-#define OCC_VERSION_COMPLETE     "7.5.0"
+#define OCC_VERSION               7.6
+#define OCC_VERSION_STRING       "7.6"
+#define OCC_VERSION_COMPLETE     "7.6.0"
 
 //! Derived: extended version as string ("major.minor.maintenance.dev")
 #ifdef OCC_VERSION_DEVELOPMENT
