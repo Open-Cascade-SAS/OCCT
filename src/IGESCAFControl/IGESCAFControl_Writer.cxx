@@ -333,7 +333,9 @@ void IGESCAFControl_Writer::MakeColors (const TopoDS_Shape &S,
     Handle(Transfer_FinderProcess) FP = TransferProcess();
     Handle(IGESData_IGESEntity) ent;
     Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, S );
-    if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), ent ) ) {
+    Handle(TransferBRep_ShapeMapper) aNoLocMapper = TransferBRep::ShapeMapper(FP, S.Located(TopLoc_Location()));
+    if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), ent ) || 
+         FP->FindTypedTransient(aNoLocMapper, STANDARD_TYPE(IGESData_IGESEntity), ent)) {
       ent->InitColor ( colent, rank );
       Handle(IGESSolid_Face) ent_f = Handle(IGESSolid_Face)::DownCast(ent);
       if (!ent_f.IsNull())

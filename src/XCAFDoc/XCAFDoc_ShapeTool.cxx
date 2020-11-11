@@ -491,6 +491,13 @@ TDF_Label XCAFDoc_ShapeTool::addShape (const TopoDS_Shape& S, const Standard_Boo
     {
       TopoDS_Shape aSh = A->GetMap().FindKey(i);
       mySubShapes.Bind(aSh,ShapeLabel);
+      //if shape has location, make a reference to the same shape without location
+      if (!aSh.Location().IsIdentity()) {
+        TopoDS_Shape S0 = aSh;
+        TopLoc_Location loc;
+        S0.Location(loc);
+        mySubShapes.Bind(S0, ShapeLabel);
+      }
     }
     //mySubShapes.Bind(ShapeLabel,A->GetMap());
   }
@@ -1088,19 +1095,7 @@ TDF_Label XCAFDoc_ShapeTool::AddSubShape (const TDF_Label &shapeL,
                                           const TopoDS_Shape &sub) const
 {
   TDF_Label L;
-  if (!IsSimpleShape(shapeL) || !IsTopLevel(shapeL))
-    return L;
-
-  if ( FindSubShape ( shapeL, sub, L ) ) return L;
-  
-  if (!IsSubShape(shapeL, sub))
-    return TDF_Label();
-  
-  TDF_TagSource aTag;
-  L = aTag.NewChild(shapeL);
-  
-  TNaming_Builder tnBuild(L);
-  tnBuild.Generated(sub);
+  AddSubShape(shapeL, sub, L);
 
   return L;
 }
@@ -1119,17 +1114,39 @@ Standard_Boolean XCAFDoc_ShapeTool::AddSubShape(const TDF_Label &shapeL,
   if (!IsSimpleShape(shapeL) || !IsTopLevel(shapeL))
     return Standard_False;
 
-  // Try to find already existed subshape
-  if (FindSubShape(shapeL, sub, addedSubShapeL))
+  TopoDS_Shape aSubShape = sub;
+  Standard_Boolean isDefined = Standard_True;
+  if (!IsSubShape(shapeL, sub))
+  {
+    isDefined = Standard_False;
+    // Try to find a subshape as a part of the main shape.
+    // If location of subshape has been removed,
+    // take the shape with the location from the main shape
+    if (sub.Location().IsIdentity())
+    {
+      TDF_LabelSequence aShapeLSeq;
+      for (TopoDS_Iterator it(GetShape(shapeL)); it.More() && !isDefined; it.Next())
+      {
+        TopoDS_Shape aShape = it.Value();
+        if (sub.IsSame(aShape.Located(TopLoc_Location())))
+        {
+          isDefined = Standard_True;
+          aSubShape = aShape;
+        }
+      }
+    }
+  }
+  if (!isDefined)
     return Standard_False;
 
-  if (!IsSubShape(shapeL, sub))
+  // Try to find already existed subshape
+  if (FindSubShape(shapeL, aSubShape, addedSubShapeL))
     return Standard_False;
 
   TDF_TagSource aTag;
   addedSubShapeL = aTag.NewChild(shapeL);
   TNaming_Builder tnBuild(addedSubShapeL);
-  tnBuild.Generated(sub);
+  tnBuild.Generated(aSubShape);
 
   return Standard_True;
 }
