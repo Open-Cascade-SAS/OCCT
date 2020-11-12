@@ -1576,18 +1576,19 @@ bool Graphic3d_Camera::ZFitAll (const Standard_Real theScaleFactor,
 //function : Interpolate
 //purpose  :
 //=============================================================================
-template<>
-Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (const double theT,
-                                                                              Handle(Graphic3d_Camera)& theCamera) const
+void Graphic3d_Camera::Interpolate (const Handle(Graphic3d_Camera)& theStart,
+                                    const Handle(Graphic3d_Camera)& theEnd,
+                                    const double theT,
+                                    Handle(Graphic3d_Camera)& theCamera)
 {
   if (Abs (theT - 1.0) < Precision::Confusion())
   {
     // just copy end-point transformation
-    theCamera->Copy (myEnd);
+    theCamera->Copy (theEnd);
     return;
   }
 
-  theCamera->Copy (myStart);
+  theCamera->Copy (theStart);
   if (Abs (theT - 0.0) < Precision::Confusion())
   {
     return;
@@ -1595,8 +1596,8 @@ Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (co
 
   // apply rotation
   {
-    gp_Ax3 aCamStart = cameraToAx3 (*myStart);
-    gp_Ax3 aCamEnd   = cameraToAx3 (*myEnd);
+    gp_Ax3 aCamStart = cameraToAx3 (*theStart);
+    gp_Ax3 aCamEnd   = cameraToAx3 (*theEnd);
     gp_Trsf aTrsfStart, aTrsfEnd;
     aTrsfStart.SetTransformation (aCamStart, gp::XOY());
     aTrsfEnd  .SetTransformation (aCamEnd,   gp::XOY());
@@ -1612,13 +1613,13 @@ Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (co
 
   // apply translation
   {
-    gp_XYZ aCenter  = NCollection_Lerp<gp_XYZ>::Interpolate (myStart->Center().XYZ(), myEnd->Center().XYZ(), theT);
-    gp_XYZ anEye    = NCollection_Lerp<gp_XYZ>::Interpolate (myStart->Eye().XYZ(),    myEnd->Eye().XYZ(),    theT);
+    gp_XYZ aCenter  = NCollection_Lerp<gp_XYZ>::Interpolate (theStart->Center().XYZ(), theEnd->Center().XYZ(), theT);
+    gp_XYZ anEye    = NCollection_Lerp<gp_XYZ>::Interpolate (theStart->Eye().XYZ(),    theEnd->Eye().XYZ(),    theT);
     gp_XYZ anAnchor = aCenter;
     Standard_Real aKc = 0.0;
 
-    const Standard_Real aDeltaCenter = myStart->Center().Distance (myEnd->Center());
-    const Standard_Real aDeltaEye    = myStart->Eye()   .Distance (myEnd->Eye());
+    const Standard_Real aDeltaCenter = theStart->Center().Distance (theEnd->Center());
+    const Standard_Real aDeltaEye    = theStart->Eye()   .Distance (theEnd->Eye());
     if (aDeltaEye <= gp::Resolution())
     {
       anAnchor = anEye;
@@ -1628,14 +1629,14 @@ Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (co
     {
       aKc = aDeltaCenter / (aDeltaCenter + aDeltaEye);
 
-      const gp_XYZ anAnchorStart = NCollection_Lerp<gp_XYZ>::Interpolate (myStart->Center().XYZ(), myStart->Eye().XYZ(), aKc);
-      const gp_XYZ anAnchorEnd   = NCollection_Lerp<gp_XYZ>::Interpolate (myEnd  ->Center().XYZ(), myEnd  ->Eye().XYZ(), aKc);
+      const gp_XYZ anAnchorStart = NCollection_Lerp<gp_XYZ>::Interpolate (theStart->Center().XYZ(), theStart->Eye().XYZ(), aKc);
+      const gp_XYZ anAnchorEnd   = NCollection_Lerp<gp_XYZ>::Interpolate (theEnd  ->Center().XYZ(), theEnd  ->Eye().XYZ(), aKc);
       anAnchor = NCollection_Lerp<gp_XYZ>::Interpolate (anAnchorStart, anAnchorEnd, theT);
     }
 
     const gp_Vec        aDirEyeToCenter     = theCamera->Direction();
-    const Standard_Real aDistEyeCenterStart = myStart->Eye().Distance (myStart->Center());
-    const Standard_Real aDistEyeCenterEnd   = myEnd  ->Eye().Distance (myEnd  ->Center());
+    const Standard_Real aDistEyeCenterStart = theStart->Eye().Distance (theStart->Center());
+    const Standard_Real aDistEyeCenterEnd   = theEnd  ->Eye().Distance (theEnd  ->Center());
     const Standard_Real aDistEyeCenter      = NCollection_Lerp<Standard_Real>::Interpolate (aDistEyeCenterStart, aDistEyeCenterEnd, theT);
     aCenter = anAnchor + aDirEyeToCenter.XYZ() * aDistEyeCenter * aKc;
     anEye   = anAnchor - aDirEyeToCenter.XYZ() * aDistEyeCenter * (1.0 - aKc);
@@ -1644,10 +1645,10 @@ Standard_EXPORT void NCollection_Lerp<Handle(Graphic3d_Camera)>::Interpolate (co
   }
 
   // apply scaling
-  if (Abs(myStart->Scale() - myEnd->Scale()) > Precision::Confusion()
-   && myStart->IsOrthographic())
+  if (Abs(theStart->Scale() - theEnd->Scale()) > Precision::Confusion()
+   && theStart->IsOrthographic())
   {
-    const Standard_Real aScale = NCollection_Lerp<Standard_Real>::Interpolate (myStart->Scale(), myEnd->Scale(), theT);
+    const Standard_Real aScale = NCollection_Lerp<Standard_Real>::Interpolate (theStart->Scale(), theEnd->Scale(), theT);
     theCamera->SetScale (aScale);
   }
 }
