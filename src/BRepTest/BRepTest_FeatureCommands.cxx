@@ -358,7 +358,7 @@ static void reportOffsetState(Draw_Interpretor& theCommands,
   {
   case BRepOffset_NoError:
   {
-    theCommands << "OK. Offset performed succesfully.";
+    theCommands << "OK. Offset performed successfully.";
     break;
   }
   case BRepOffset_BadNormalsOnGeometry:

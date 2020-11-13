@@ -507,7 +507,7 @@ int ChFi2d_FilletAlgo::NbResults(const gp_Pnt& thePoint)
   return nb;
 }
 
-// returns result (fillet edge, modified edge1, modified edge2), neares to the given point <thePoint>
+// returns result (fillet edge, modified edge1, modified edge2), nearest to the given point <thePoint>
 TopoDS_Edge ChFi2d_FilletAlgo::Result(const gp_Pnt& thePoint, TopoDS_Edge& theEdge1, TopoDS_Edge& theEdge2, const int iSolution) 
 {
   TopoDS_Edge aResult;

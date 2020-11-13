@@ -85,7 +85,7 @@ public:
   //! has been done, 0 if no  approximation )
   Standard_EXPORT Standard_Real MaxError() const;
   
-  //! Prints on the stream o informations on the current state of the object.
+  //! Prints on the stream o information on the current state of the object.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
 
 

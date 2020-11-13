@@ -1063,7 +1063,7 @@ void BRepBuilderAPI_Sewing::EvaluateAngulars(TopTools_SequenceOfShape& sequenceS
 //=======================================================================
 // function : EvaluateDistances
 // purpose  : internal use
-// Evaluate distance beetween edges with indice indRef and the following edges in the list
+// Evaluate distance between edges with indice indRef and the following edges in the list
 // Remarks (lengSec - indRef) must be >= 1 
 //=======================================================================
 void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequenceSec,
@@ -1397,7 +1397,7 @@ void BRepBuilderAPI_Sewing::AnalysisNearestEdges(const TopTools_SequenceOfShape&
         isRemove = Standard_True;
       }
     }
-    if(!isRemove) i++;  
+    if(!isRemove) i++;
   }
   if(seqIndCandidate.Length() == 0 || seqNotCandidate.Length() == 1) return;
   if(!evalDist) return;
@@ -1405,8 +1405,8 @@ void BRepBuilderAPI_Sewing::AnalysisNearestEdges(const TopTools_SequenceOfShape&
   TColStd_MapOfInteger MapIndex;
   TColStd_SequenceOfInteger seqForward;
 
-  // Definition and removing edges wich are not candidate for work edge 
-  // ( they have other nearest edges belonging to the work face) 
+  // Definition and removing edges which are not candidate for work edge
+  // (they have other nearest edges belonging to the work face)
   for(Standard_Integer k = 1; k<= seqNotCandidate.Length(); k++) {
     Standard_Integer index1 = seqNotCandidate.Value(k);
     TopoDS_Shape edge = sequenceSec.Value(index1);
@@ -1932,7 +1932,7 @@ void BRepBuilderAPI_Sewing::Perform(const Message_ProgressRange& theProgress)
 #endif
     }
 
-    // create edge informations for output
+    // create edge information for output
     CreateOutputInformations();
     if (!aPS.More())
     {
@@ -2201,7 +2201,7 @@ void BRepBuilderAPI_Sewing::Dump() const
     }
   }
   std::cout << " " << std::endl;
-  std::cout << "                        Informations                        " << std::endl;
+  std::cout << "                        Information                         " << std::endl;
   std::cout << " ===========================================================" << std::endl;
   std::cout << " " << std::endl;
   std::cout << " Number of input shapes      : " << myOldShapes.Extent() << std::endl;

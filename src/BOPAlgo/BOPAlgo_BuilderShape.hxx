@@ -158,7 +158,7 @@ protected: //! @name Fields
   TopoDS_Shape myShape; //!< Result of the operation
 
   TopTools_ListOfShape myHistShapes;   //!< Storer for the history shapes
-  TopTools_MapOfShape myMapShape;      //!< Cashed map of all arguments shapes
+  TopTools_MapOfShape myMapShape;      //!< cached map of all arguments shapes
 
   Standard_Boolean myFillHistory;      //!< Controls the history filling
   Handle(BRepTools_History) myHistory; //!< History tool

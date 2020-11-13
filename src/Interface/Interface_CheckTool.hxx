@@ -87,7 +87,7 @@ public:
   //! unless the argument <resest> is given True
   Standard_EXPORT void CheckSuccess (const Standard_Boolean reset = Standard_False);
   
-  //! Returns list of all "remarkable" informations, which include :
+  //! Returns list of all "remarkable" information, which include :
   //! - GlobalCheck, if not empty
   //! - Error Checks, for all Errors (Verify + Analyse)
   //! - also Corrected Entities

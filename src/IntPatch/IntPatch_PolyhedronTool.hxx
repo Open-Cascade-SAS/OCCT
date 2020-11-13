@@ -31,7 +31,7 @@ class gp_Pnt;
 
 
 //! Describe  the signature  of  a  polyedral surface with
-//! only triangular  facets and the necessary informations
+//! only triangular  facets and the necessary information
 //! to compute the interferences.
 class IntPatch_PolyhedronTool 
 {

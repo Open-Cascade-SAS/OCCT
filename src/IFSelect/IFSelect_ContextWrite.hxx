@@ -38,11 +38,11 @@ class Interface_Check;
 class Interface_CheckIterator;
 
 
-//! This class gathers various informations used by File Modifiers
+//! This class gathers various information used by File Modifiers
 //! apart from the writer object, which is specific of the norm
 //! and of the physical format
 //!
-//! These informations are controlled by an object AppliedModifiers
+//! These information are controlled by an object AppliedModifiers
 //! (if it is not defined, no modification is allowed on writing)
 //!
 //! Furthermore, in return, ContextModif can record Checks, either
@@ -54,7 +54,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Prepares a ContextWrite with these informations :
+  //! Prepares a ContextWrite with these information :
   //! - the model which is to be written
   //! - the protocol to be used
   //! - the filename

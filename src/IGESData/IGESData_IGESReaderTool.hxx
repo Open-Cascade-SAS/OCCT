@@ -76,7 +76,7 @@ public:
   //! after reading entities, true line weights can be computed
   Standard_EXPORT virtual void EndRead (const Handle(Interface_InterfaceModel)& amodel) Standard_OVERRIDE;
   
-  //! Reads directory part componants from file; DP is the litteral
+  //! Reads directory part components from file; DP is the literal
   //! directory part, IR detains entities referenced by DP
   Standard_EXPORT void ReadDir (const Handle(IGESData_IGESEntity)& ent, const Handle(IGESData_IGESReaderData)& IR, const IGESData_DirPart& DP, Handle(Interface_Check)& ach) const;
   

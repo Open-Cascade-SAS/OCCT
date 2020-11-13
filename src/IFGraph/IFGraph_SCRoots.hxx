@@ -27,7 +27,7 @@ class Interface_Graph;
 class IFGraph_StrongComponants;
 
 
-//! determines strong componants in a graph which are Roots
+//! determines strong components in a graph which are Roots
 class IFGraph_SCRoots  : public IFGraph_StrongComponants
 {
 public:

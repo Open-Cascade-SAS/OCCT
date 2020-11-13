@@ -81,14 +81,14 @@ public:
   //! number of solutions.
   Standard_EXPORT gp_Lin2d ThisSolution (const Standard_Integer Index) const;
   
-  //! Returns informations about the intersection point between
+  //! Returns information about the intersection point between
   //! the result number Index and the first argument.
   //! Raises NotDone if the construction algorithm  didn't succeed.
   //! It raises OutOfRange if Index is greater than the
   //! number of solutions.
   Standard_EXPORT void Intersection1 (const Standard_Integer Index, Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
   
-  //! Returns informations about the intersection point between
+  //! Returns information about the intersection point between
   //! the result number Index and the second argument.
   //! Raises NotDone if the construction algorithm
   //! didn't succeed.

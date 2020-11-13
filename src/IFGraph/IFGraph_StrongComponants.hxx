@@ -26,8 +26,8 @@
 class Interface_Graph;
 
 
-//! determines strong componants of a graph, that is
-//! isolated entities (single componants) or loops
+//! determines strong components of a graph, that is
+//! isolated entities (single components) or loops
 class IFGraph_StrongComponants  : public IFGraph_SubPartsIterator
 {
 public:

@@ -96,19 +96,19 @@ public:
   //! As above with 2d curve
   Standard_EXPORT CPnts_UniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Real Resolution, const Standard_Boolean WithControl);
   
-  //! Initialize the algoritms with <C>, <Deflection>, <UStep>,
+  //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <Resolution> and <WithControl>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real Resolution, const Standard_Boolean WithControl);
   
-  //! Initialize the algoritms with <C>, <Deflection>, <UStep>,
+  //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <Resolution> and <WithControl>
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real Resolution, const Standard_Boolean WithControl);
   
-  //! Initialize the algoritms with <C>, <Deflection>, <UStep>,
+  //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <U1>, <U2> and <WithControl>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Real Resolution, const Standard_Boolean WithControl);
   
-  //! Initialize the algoritms with <C>, <Deflection>, <UStep>,
+  //! Initialize the algorithms with <C>, <Deflection>, <UStep>,
   //! <U1>, <U2> and <WithControl>
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Real Resolution, const Standard_Boolean WithControl);
   

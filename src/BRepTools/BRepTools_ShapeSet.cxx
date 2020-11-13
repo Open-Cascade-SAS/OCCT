@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modifed:     Portage NT 7-5-97 DPF (strcasecmp)
+// Modified:     Portage NT 7-5-97 DPF (strcasecmp)
 
 #include <BRep_Builder.hxx>
 #include <BRep_CurveOnClosedSurface.hxx>

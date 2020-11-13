@@ -55,7 +55,7 @@ public:
   Standard_EXPORT virtual Standard_Real Value() = 0;
   
   //! To Compute J(E)  the coefficients of Hessian matrix of
-  //! J(E) wich are crossed derivatives in dimensions <Dim1>
+  //! J(E) which are crossed derivatives in dimensions <Dim1>
   //! and  <Dim2>.
   //! If DependenceTable(Dimension1,Dimension2) is False
   Standard_EXPORT virtual void Hessian (const Standard_Integer Dim1, const Standard_Integer Dim2, math_Matrix& H) = 0;

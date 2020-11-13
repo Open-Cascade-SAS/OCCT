@@ -635,7 +635,7 @@ public:
   //! -1 : Error on the spot (slight changes), data may be corrupted
   //! (remark : corruption should not be profound)
   //! -2 : Error on edition the spot, data may be corrupted
-  //! (checking them is recommanded)
+  //! (checking them is recommended)
   //! -3 : Error with a new data set, transformation ignored
   //! -4 : OK as 4, but graph of dependances count not be recomputed
   //! (the former one is kept) : check the protocol
@@ -718,7 +718,7 @@ public:
   Standard_EXPORT Standard_CString GiveFileComplete (const Standard_CString file) const;
   
   //! Erases all stored data from the File Evaluation
-  //! (i.e. ALL former naming informations are lost)
+  //! (i.e. ALL former naming information are lost)
   Standard_EXPORT void ClearFile();
   
   //! Performs and stores a File Evaluation. The Results are a List
@@ -756,7 +756,7 @@ public:
   //! and can work with File Modifiers (managed by the Model Copier)
   //! and a ModelCopier, which can work with Model Modifiers
   //! Returns False if, either WorkLibrary has failed on at least
-  //! one sub-file, or the Work Session is badly conditionned
+  //! one sub-file, or the Work Session is badly conditioned
   //! (no Model defined, or FileNaming not in phase with ShareOut)
   Standard_EXPORT Standard_Boolean SendSplit();
   
@@ -1036,7 +1036,7 @@ public:
   //! (only type ...), greater values give more and more details.
   Standard_EXPORT void DumpEntity (const Handle(Standard_Transient)& ent, const Standard_Integer level, Standard_OStream& S) const;
   
-  //! Prints main informations about an entity : its number, type,
+  //! Prints main information about an entity : its number, type,
   //! validity (and checks if any), category, shareds and sharings..
   //! mutable because it can recompute checks as necessary
   Standard_EXPORT void PrintEntityStatus (const Handle(Standard_Transient)& ent, Standard_OStream& S);

@@ -1327,7 +1327,7 @@ void AppDef_Variational::TheMotor(
 
     while(ToOptim) {
       Iter++;
-      //     (2.1) Save curent results
+      //     (2.1) Save current results
       VOCRI[0] = VALCRI[0];
       VOCRI[1] = VALCRI[1];
       VOCRI[2] = VALCRI[2];

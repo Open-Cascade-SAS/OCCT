@@ -64,7 +64,7 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron()
 
 //=======================================================================
 //function : Intf_InterferencePolygonPolyhedron
-//purpose  : Construct and compute an interference beetween a Polygon3d
+//purpose  : Construct and compute an interference between a Polygon3d
 //           and a Polyhedron.
 //=======================================================================
 
@@ -104,7 +104,7 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 
 //=======================================================================
 //function : Intf_InterferencePolygonPolyhedron
-//purpose  : Construct and compute an interference beetween a Straight
+//purpose  : Construct and compute an interference between a Straight
 //           Line and a Polyhedron.
 //=======================================================================
 
@@ -145,7 +145,7 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 
 //=======================================================================
 //function : Intf_InterferencePolygonPolyhedron
-//purpose  : Construct and compute an interference beetween the Straights
+//purpose  : Construct and compute an interference between the Straights
 //           Lines in <Obje> and the Polyhedron <thePolyh>.
 //=======================================================================
 
@@ -250,7 +250,7 @@ void Intf_InterferencePolygonPolyhedron::Perform
 
 //=======================================================================
 //function : Perform
-//purpose  : Compute an interference beetween the Straights
+//purpose  : Compute an interference between the Straights
 //           Lines in <Obje> and the Polyhedron <thePolyh>.
 //=======================================================================
 
@@ -292,7 +292,7 @@ void Intf_InterferencePolygonPolyhedron::Perform
 
 //=======================================================================
 //function : Interference
-//purpose  : Compare the boundings beetween  the segment of  <Obje>
+//purpose  : Compare the boundings between  the segment of  <Obje>
 //           and the facets of <thePolyh>.
 //=======================================================================
 
@@ -376,7 +376,7 @@ void Intf_InterferencePolygonPolyhedron::Interference
 
 //=======================================================================
 //function : Intf_InterferencePolygonPolyhedron
-//purpose  : Construct and compute an interference beetween a Straight
+//purpose  : Construct and compute an interference between a Straight
 //           Line and a Polyhedron.
 //=======================================================================
 
@@ -413,7 +413,7 @@ Intf_InterferencePolygonPolyhedron::Intf_InterferencePolygonPolyhedron
 
 //=======================================================================
 //function : Intf_InterferencePolygonPolyhedron
-//purpose  : Construct and compute an interference beetween the Straights
+//purpose  : Construct and compute an interference between the Straights
 //           Lines in <Obje> and the Polyhedron <thePolyh>.
 //=======================================================================
 
@@ -511,7 +511,7 @@ void Intf_InterferencePolygonPolyhedron::Perform
 
 //=======================================================================
 //function : Perform
-//purpose  : Compute an interference beetween the Straights
+//purpose  : Compute an interference between the Straights
 //           Lines in <Obje> and the Polyhedron <thePolyh>.
 //=======================================================================
 
@@ -551,7 +551,7 @@ void Intf_InterferencePolygonPolyhedron::Perform
 
 //=======================================================================
 //function : Interference
-//purpose  : Compare the boundings beetween  the segment of  <Obje>
+//purpose  : Compare the boundings between  the segment of  <Obje>
 //           and the facets of <thePolyh>.
 //=======================================================================
 
@@ -642,7 +642,7 @@ void Intf_InterferencePolygonPolyhedron::Interference
 
 //=======================================================================
 //function : Intersect
-//purpose  : Compute the intersection beetween the segment or the line 
+//purpose  : Compute the intersection between the segment or the line 
 //           and the triangle <TTri>.
 //=======================================================================
 #if 0 

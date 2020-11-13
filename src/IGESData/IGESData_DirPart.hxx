@@ -27,7 +27,7 @@
 class IGESData_IGESType;
 
 
-//! litteral/numeric description of an entity's directory section,
+//! literal/numeric description of an entity's directory section,
 //! taken from file
 class IGESData_DirPart 
 {

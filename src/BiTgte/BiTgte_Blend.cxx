@@ -1059,7 +1059,7 @@ void BiTgte_Blend::Perform(const Standard_Boolean BuildShape)
   ChFi3d_ResultChron(ch, t_shape);
 #endif 
 
-  // Finally construct curves 3d from edges to be transfered
+  // Finally construct curves 3d from edges to be transferred
   // since the partition is provided ( A Priori);
   BRepLib::BuildCurves3d(myResult, Precision::Confusion());
 

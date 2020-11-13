@@ -111,7 +111,7 @@ public:
   //! number of solutions.
   Standard_EXPORT gp_Lin2d ThisSolution (const Standard_Integer Index) const;
   
-  //! Returns informations about the tangency point between the
+  //! Returns information about the tangency point between the
   //! result number Index and the first argument.
   //! ParSol is the intrinsic parameter of the point on the
   //! solution curv.
@@ -123,7 +123,7 @@ public:
   //! number of solutions.
   Standard_EXPORT void Tangency1 (const Standard_Integer Index, Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& Pnt) const;
   
-  //! Returns informations about the intersection between the
+  //! Returns information about the intersection between the
   //! solution number Index and the second argument.
   //! It returns the first intersection in a case of
   //! Lin2dTanPer which is perpendicular to a circle .

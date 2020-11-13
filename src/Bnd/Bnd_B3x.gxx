@@ -363,7 +363,7 @@ Standard_Boolean Bnd_B3x::IsOut (const gp_Ax1&          theLine,
                        (Standard_Real)myCenter[1] - theLine.Location().Y(),
                        (Standard_Real)myCenter[2] - theLine.Location().Z());
 
-  // Find the parameter interval in X dimention
+  // Find the parameter interval in X dimension
   Standard_Real aHSize = (Standard_Real)myHSize[0]+theOverthickness;
   if (aDir.X() > aRes) {
     anInter0[0]= (aDiff.X() - aHSize) / aDir.X();
@@ -376,7 +376,7 @@ Standard_Boolean Bnd_B3x::IsOut (const gp_Ax1&          theLine,
     if (Abs(aDiff.X()) > aHSize)
       return Standard_True;
   
-  // Find the parameter interval in Y dimention
+  // Find the parameter interval in Y dimension
   aHSize = (Standard_Real)myHSize[1]+theOverthickness;
   if (aDir.Y() > aRes) {
     anInter1[0]= (aDiff.Y() - aHSize) / aDir.Y();
@@ -399,7 +399,7 @@ Standard_Boolean Bnd_B3x::IsOut (const gp_Ax1&          theLine,
   if (isRay && anInter0[1] < -aRes)
     return Standard_True;
 
-  // Find the parameter interval in Z dimention
+  // Find the parameter interval in Z dimension
   aHSize = (Standard_Real)myHSize[2]+theOverthickness;
   if (aDir.Z() > aRes) {
     anInter1[0]= (aDiff.Z() - aHSize) / aDir.Z();

@@ -48,7 +48,7 @@ public:
   //! generated and filled. ModelCopier has already checked the
   //! criteria (Dispatch, Model Rank, Selection) before calling it.
   //!
-  //! <ctx> detains informations about original data and selection.
+  //! <ctx> detains information about original data and selection.
   //! The result of copying, on which modifications are to be done,
   //! is <target>.
   //! <TC> allows to run additional copies as required

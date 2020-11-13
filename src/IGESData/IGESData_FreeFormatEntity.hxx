@@ -89,7 +89,7 @@ public:
   //! answers True for <num>, else returns False.
   Standard_EXPORT Standard_Boolean IsNegativePointer (const Standard_Integer num) const;
   
-  //! Returns litteral value of a Parameter, given its rank
+  //! Returns literal value of a Parameter, given its rank
   //! Error if num is out of range, or if Parameter is not literal
   Standard_EXPORT Handle(TCollection_HAsciiString) ParamValue (const Standard_Integer num) const;
   
@@ -124,8 +124,8 @@ public:
   //! which are Entities)
   Standard_EXPORT void AddNegativePointers (const Handle(TColStd_HSequenceOfInteger)& list);
   
-  //! Clears all informations about Negative Pointers, hence every
-  //! Entity kind Parameter will be send normally, as Positive
+  //! Clears all information about Negative Pointers, hence every
+  //! Entity kind Parameter will be sent normally, as Positive
   Standard_EXPORT void ClearNegativePointers();
   
   //! WriteOwnParams is redefined for FreeFormatEntity to take

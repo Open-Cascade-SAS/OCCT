@@ -1618,7 +1618,7 @@ void BRepFill_Evolved::PrepareProfile(TopTools_ListOfShape&         WorkProf,
     }
 
     if (YaModif) {
-      //Status = 0 for the begining
+      //Status = 0 for the beginning
       //         3 vertical
       //         2 horizontal
       //         1 other
@@ -2824,7 +2824,7 @@ void ComputeIntervals (const TopTools_SequenceOfShape& VOnF,
   while ( IOnF <= VOnF.Length() || IOnL <= VOnL.Length()) {
     //---------------------------------------------------------
     // Return the smallest parameter on the bissectrice
-    // correponding to the current positions IOnF,IOnL.
+    // corresponding to the current positions IOnF,IOnL.
     //---------------------------------------------------------
     if ( IOnL > VOnL.Length() ||
       (IOnF <= VOnF.Length() &&

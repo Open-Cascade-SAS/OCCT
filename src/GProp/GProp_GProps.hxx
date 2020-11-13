@@ -114,7 +114,7 @@ public:
   Standard_EXPORT GProp_GProps();
   
 
-  //! The point SystemLocation is used to compute the gobal properties
+  //! The point SystemLocation is used to compute the global properties
   //! of the system. For more accuracy it is better to define this
   //! point closed to the location of the system. For example it could
   //! be a point around the centre of mass of the system.

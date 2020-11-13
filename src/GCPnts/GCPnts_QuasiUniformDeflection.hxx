@@ -116,17 +116,17 @@ public:
   //! computation algorithm.
   Standard_EXPORT GCPnts_QuasiUniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const GeomAbs_Shape Continuity = GeomAbs_C1);
   
-  //! Initialize the algoritms with <C>, <Deflection>
+  //! Initialize the algorithms with <C>, <Deflection>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const GeomAbs_Shape Continuity = GeomAbs_C1);
   
-  //! Initialize the algoritms with <C>, <Deflection>
+  //! Initialize the algorithms with <C>, <Deflection>
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const GeomAbs_Shape Continuity = GeomAbs_C1);
   
-  //! Initialize the algoritms with <C>, <Deflection>,
+  //! Initialize the algorithms with <C>, <Deflection>,
   //! <U1>,<U2>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const GeomAbs_Shape Continuity = GeomAbs_C1);
   
-  //! Initialize  the  algoritms with <C>, <Deflection>,
+  //! Initialize  the  algorithms with <C>, <Deflection>,
   //! -- <U1>,<U2>
   //! This and the above algorithms initialize (or reinitialize)
   //! this algorithm and compute a distribution of points:

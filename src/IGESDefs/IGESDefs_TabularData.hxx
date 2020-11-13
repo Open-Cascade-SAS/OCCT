@@ -36,7 +36,7 @@ DEFINE_STANDARD_HANDLE(IGESDefs_TabularData, IGESData_IGESEntity)
 
 //! Defines IGES Tabular Data, Type <406> Form <11>,
 //! in package IGESDefs
-//! This Class is used to provide a Structure to accomodate
+//! This Class is used to provide a Structure to accommodate
 //! point form data.
 class IGESDefs_TabularData : public IGESData_IGESEntity
 {

@@ -419,7 +419,7 @@ void BRepMesh_Delaun::RemoveAuxElements ()
 
 //=======================================================================
 //function : createTriangles
-//purpose  : Creates the triangles beetween the node and the polyline.
+//purpose  : Creates the triangles between the node and the polyline.
 //=======================================================================
 void BRepMesh_Delaun::createTriangles(const Standard_Integer          theVertexIndex,  
                                       IMeshData::MapOfIntegerInteger& thePoly)

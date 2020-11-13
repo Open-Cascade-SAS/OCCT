@@ -14,8 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modifed RLE Aug 93 - Complete rewrite
-// xab  21-Mar-95  implemented cache mecanism
+// Modified RLE Aug 93 - Complete rewrite
+// xab  21-Mar-95  implemented cache mechanism
 // pmn  25-09-96   Interpolation
 // jct  25-09-96 : Correction de l'alloc de LocalArray dans RationalDerivative.
 // pmn  07-10-96 : Correction de DN dans le cas rationnal.

@@ -1783,7 +1783,7 @@ void DrawWindow::Clear()
 static Standard_Boolean SaveBitmap (HBITMAP     theHBitmap,
                                     const char* theFileName)
 {
-  // Get informations about the bitmap
+  // Get information about the bitmap
   BITMAP aBitmap;
   if (GetObjectW (theHBitmap, sizeof(BITMAP), &aBitmap) == 0)
   {

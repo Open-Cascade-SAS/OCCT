@@ -159,7 +159,7 @@ public:
   //! 1 <= Mults(i) <= Degree
   //!
   //! On a non periodic curve the first and last multiplicities
-  //! may be Degree+1 (this is even recommanded if you want the
+  //! may be Degree+1 (this is even recommended if you want the
   //! curve to start and finish on the first and last pole).
   //!
   //! On a periodic  curve the first  and  the last multicities

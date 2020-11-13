@@ -41,7 +41,7 @@ DEFINE_STANDARD_HANDLE(Bisector_BisecPC, Bisector_Curve)
 
 //! Provides the bisector between a point and a curve.
 //! the curvature on the curve has to be monoton.
-//! the point can't be on the curve exept at the extremitys.
+//! the point can't be on the curve exept at the extremities.
 class Bisector_BisecPC : public Bisector_Curve
 {
 

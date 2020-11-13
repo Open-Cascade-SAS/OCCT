@@ -179,7 +179,7 @@ public:
   //! 1 <= UMults(i) <= UDegree
   //! On a   non  uperiodic   surface    the  first and    last
   //! umultiplicities  may  be     UDegree+1  (this   is   even
-  //! recommanded if you want the curve  to start and finish on
+  //! recommended if you want the curve  to start and finish on
   //! the first and last pole).
   //! On a uperiodic     surface  the first    and   the   last
   //! umultiplicities must be the same.
@@ -204,7 +204,7 @@ public:
   //!
   //! On a   non  uperiodic   surface    the  first and    last
   //! umultiplicities  may  be     UDegree+1  (this   is   even
-  //! recommanded if you want the curve  to start and finish on
+  //! recommended if you want the curve  to start and finish on
   //! the first and last pole).
   //!
   //! On a uperiodic     surface  the first    and   the   last
@@ -549,7 +549,7 @@ public:
   //! The control points are modified, the first and the last point
   //! are not the same.
   //!
-  //! Parameters theUTolerance, theVTolerance define the possible proximity along the correponding
+  //! Parameters theUTolerance, theVTolerance define the possible proximity along the corresponding
   //! direction of the segment boundaries and B-spline knots to treat them as equal.
   //!
   //! Warnings :
@@ -574,7 +574,7 @@ public:
   //! For example, if <me> is periodic in V, it will be always periodic
   //! in V after the segmentation if the bounds in V are unchanged
   //!
-  //! Parameters theUTolerance, theVTolerance define the possible proximity along the correponding
+  //! Parameters theUTolerance, theVTolerance define the possible proximity along the corresponding
   //! direction of the segment boundaries and B-spline knots to treat them as equal.
   //!
   //! Warnings :

@@ -87,7 +87,7 @@ public:
   //! be given by ProblematicShape
   Standard_EXPORT void Perform();
   
-  //! Returns  True  if   Perform has  been  succesfully
+  //! Returns  True  if   Perform has  been  successfully
   //! called. Otherwise more information can be obtained
   //! using the methods Error() and ProblematicShape().
   Standard_EXPORT Standard_Boolean IsDone() const;

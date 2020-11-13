@@ -980,7 +980,7 @@ static Standard_Real ParseValue(char*& name)
 	char c = *p;
 	*p = '\0';
 	
-	if (Numeric(*name))   // numeric litteral
+	if (Numeric(*name))   // numeric literal
 	  x = Atof(name);
 	else if (!Draw::Get((Standard_CString) name,x)) {  // variable
 	  

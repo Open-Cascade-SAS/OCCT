@@ -969,7 +969,7 @@ private:
      for (j=index;j<=index+nb_vertexG1;j++){                //secondary loop inside each group
        Curve1=ArrayOfCurves(j);
        
-       if (index==j)                                        //initialisation at the begining of the loop
+       if (index==j)                                        //initialisation at the beginning of the loop
 	 ArrayOfConcatenated->SetValue(i,Curve1);
        else{
 	 GeomConvert_CompCurveToBSplineCurve C (ArrayOfConcatenated->Value(i));
@@ -1114,7 +1114,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
      else
        Curve1=ArrayOfCurves(j);
      
-     if (j==0)                                           //initialisation at the begining of the loop
+     if (j==0)                                           //initialisation at the beginning of the loop
        Curve2=Curve1;
      else{
        if ( (j==(nb_curve-1)) && (NeedDoubleDegRepara)){ 
@@ -1229,7 +1229,7 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
        else
 	 Curve1=ArrayOfCurves(j);
        
-       if (index==j)                                      //initialisation at the begining of the loop
+       if (index==j)                                      //initialisation at the beginning of the loop
 	 ArrayOfConcatenated->SetValue(i,Curve1);
        else
        {

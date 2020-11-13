@@ -40,12 +40,12 @@ DEFINE_STANDARD_HANDLE(IFSelect_WorkLibrary, Standard_Transient)
 //! In particular, a specific WorkLibrary must give the way for
 //! Reading a File into a Model, and Writing a Model to a File
 //! Thus, it is possible to define several Work Libraries for each
-//! norm, but recommanded to define one general class for each one :
+//! norm, but recommended to define one general class for each one :
 //! this general class will define the Read and Write methods.
 //!
 //! Also a Dump service is provided, it can produce, according the
 //! norm, either a parcel of a file for an entity, or any other
-//! kind of informations relevant for the norm,
+//! kind of information relevant for the norm,
 class IFSelect_WorkLibrary : public Standard_Transient
 {
 
@@ -72,7 +72,7 @@ public:
                                                        const Handle(Interface_Protocol)& protocol) const;
 
   //! Gives the way to Write a File from a Model.
-  //! <ctx> contains all necessary informations : the model, the
+  //! <ctx> contains all necessary information : the model, the
   //! protocol, the file name, and the list of File Modifiers to be
   //! applied, also with restricted list of selected entities for
   //! each one, if required.

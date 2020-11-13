@@ -62,17 +62,17 @@ public:
   //! It Is used for more precise calculation of curve length
   Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <Toler>
+  //! Initialize the algorithms with <C>, <Abscissa>, <Toler>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
+  //! Initialize the algorithms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <NbPoints>, <Toler> and
+  //! Initialize the algorithms with <C>, <NbPoints>, <Toler> and
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
+  //! Initialize the algorithms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>.
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
@@ -101,17 +101,17 @@ public:
   //! It Is used for more precise calculation of curve length
   Standard_EXPORT GCPnts_UniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <Toler>
+  //! Initialize the algorithms with <C>, <Abscissa>, <Toler>
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
+  //! Initialize the algorithms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Abscissa, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <NbPoints>, <Toler> and
+  //! Initialize the algorithms with <C>, <NbPoints>, <Toler> and
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real Toler = -1);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
+  //! Initialize the algorithms with <C>, <Abscissa>, <U1>,
   //! <U2>, <Toler>.
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2, const Standard_Real Toler = -1);
   

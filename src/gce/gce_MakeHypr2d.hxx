@@ -55,7 +55,7 @@ class gp_Hypr2d;
 //! An axis placement (one axis) is associated with the hyperbola.
 //! This axis is the "XAxis" or major axis of the hyperbola. It is
 //! the symmetry axis of the main branch of hyperbola.
-//! The "YAxis" is normal to this axis and pass throught its location
+//! The "YAxis" is normal to this axis and pass through its location
 //! point. It is the minor axis.
 //!
 //! The major radius is the distance between the Location point

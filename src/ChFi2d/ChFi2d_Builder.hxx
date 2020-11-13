@@ -144,19 +144,19 @@ protected:
 private:
 
   
-  //! Is internaly used by <AddFillet>.
+  //! Is internally used by <AddFillet>.
   //! Warning: <TrimE1>, <TrimE2>, <Fillet> has sense only if the
   //! status <status> is equal to <IsDone>
   Standard_EXPORT void ComputeFillet (const TopoDS_Vertex& V, const TopoDS_Edge& E1, const TopoDS_Edge& E2, const Standard_Real Radius, TopoDS_Edge& TrimE1, TopoDS_Edge& TrimE2, TopoDS_Edge& Fillet);
   
-  //! Is internaly used by  <AddChamfer>. The chamfer is
+  //! Is internally used by  <AddChamfer>. The chamfer is
   //! computed  from  a  vertex,   two  edges   and  two
   //! distances
   //! Warning: <TrimE1>, <TrimE2> and <Chamfer> has sense only if
   //! if the status <status> is equal to <IsDone>
   Standard_EXPORT void ComputeChamfer (const TopoDS_Vertex& V, const TopoDS_Edge& E1, const TopoDS_Edge& E2, const Standard_Real D1, const Standard_Real D2, TopoDS_Edge& TrimE1, TopoDS_Edge& TrimE2, TopoDS_Edge& Chamfer);
   
-  //! Is internaly used by <AddChamfer>.  The chamfer is
+  //! Is internally used by <AddChamfer>.  The chamfer is
   //! computed from   an  edge,  a  vertex,   a distance
   //! and an angle
   //! Warning: <TrimE1>,  <TrimE2>, and <Chamfer> has
@@ -164,7 +164,7 @@ private:
   //! <IsDone>
   Standard_EXPORT void ComputeChamfer (const TopoDS_Vertex& V, const TopoDS_Edge& E1, const Standard_Real D, const Standard_Real Ang, const TopoDS_Edge& E2, TopoDS_Edge& TrimE1, TopoDS_Edge& TrimE2, TopoDS_Edge& Chamfer);
   
-  //! Is   internaly  used     by  <ComputeFillet>.
+  //! Is   internally  used     by  <ComputeFillet>.
   //! <NewExtr1> and  <NewExtr2>  will  contains the new
   //! extremities of <AdjEdge1> and <AdjEdge2>
   //! Warning: The  returned  edge has sense   only if the status
@@ -175,14 +175,14 @@ private:
   //! <BothEdgesDegenerated>
   Standard_EXPORT TopoDS_Edge BuildFilletEdge (const TopoDS_Vertex& V, const TopoDS_Edge& AdjEdge1, const TopoDS_Edge& AdjEdge2, const Standard_Real Radius, TopoDS_Vertex& NewExtr1, TopoDS_Vertex& NewExtr2);
   
-  //! Is   internaly  used     by  <ComputeFillet>.
+  //! Is   internally  used     by  <ComputeFillet>.
   //! <NewExtr1> and  <NewExtr2>  will  contains the new
   //! extremities of <AdjEdge1> and <AdjEdge2>
   //! Warning: The  returned  edge has sense   only if the status
   //! <status> is equal to <IsDone>
   Standard_EXPORT TopoDS_Edge BuildChamferEdge (const TopoDS_Vertex& V, const TopoDS_Edge& AdjEdge1, const TopoDS_Edge& AdjEdge2, const Standard_Real D1, const Standard_Real D2, TopoDS_Vertex& NewExtr1, TopoDS_Vertex& NewExtr2);
   
-  //! Is   internaly  used     by  <ComputeFillet>.
+  //! Is   internally  used     by  <ComputeFillet>.
   //! <NewExtr1> and  <NewExtr2>  will  contains the new
   //! extremities of <AdjEdge1> and <AdjEdge2>
   //! Warning: The  returned  edge has sense   only if the status

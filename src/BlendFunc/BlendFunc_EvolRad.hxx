@@ -92,8 +92,8 @@ public:
   
   Standard_EXPORT Standard_Boolean IsSolution (const math_Vector& Sol, const Standard_Real Tol) Standard_OVERRIDE;
   
-  //! Returns   the    minimal  Distance  beetween   two
-  //! extremitys of calculed sections.
+  //! Returns   the    minimal  Distance  between   two
+  //! extremities of calculated sections.
   Standard_EXPORT Standard_Real GetMinimalDistance() const Standard_OVERRIDE;
   
   Standard_EXPORT const gp_Pnt& PointOnS1() const Standard_OVERRIDE;
@@ -146,7 +146,7 @@ public:
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accomodate
+  //! The array must provide  enough room to  accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const Standard_OVERRIDE;
   

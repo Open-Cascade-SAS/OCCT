@@ -70,7 +70,7 @@ public:
   //! Returns a string composed with the list of
   //! referenced attribute index of the attribute
   //! <anIndex>. For exemple, it is usefull for
-  //! TDataStd_Group. It uses a mecanism based on a
+  //! TDataStd_Group. It uses a mechanism based on a
   //! DDF_AttributeBrowser.
   Standard_EXPORT TCollection_AsciiString OpenAttribute (const Standard_Integer anIndex = 0);
   

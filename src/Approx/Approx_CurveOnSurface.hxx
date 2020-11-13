@@ -68,7 +68,7 @@ public:
   
   Standard_EXPORT Standard_Real MaxError2dU() const;
   
-  //! returns the maximum errors relativly to the  U component or the V component of the
+  //! returns the maximum errors relatively to the  U component or the V component of the
   //! 2d Curve
   Standard_EXPORT Standard_Real MaxError2dV() const;
 

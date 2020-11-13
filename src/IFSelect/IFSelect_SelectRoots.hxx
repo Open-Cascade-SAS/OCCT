@@ -47,7 +47,7 @@ public:
   
   //! Returns the list of local roots. It is redefined for a purpose
   //! of effeciency : calling a Sort routine for each Entity would
-  //! cost more ressource than to work in once using a Map
+  //! cost more resources than to work in once using a Map
   //! RootResult takes in account the Direct status
   Standard_EXPORT virtual Interface_EntityIterator RootResult (const Interface_Graph& G) const Standard_OVERRIDE;
   

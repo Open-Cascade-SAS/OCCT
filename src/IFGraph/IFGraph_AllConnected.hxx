@@ -27,7 +27,7 @@ class Interface_Graph;
 class Standard_Transient;
 
 
-//! this class gives content of the CONNECTED COMPONANT(S)
+//! this class gives content of the CONNECTED COMPONENT(S)
 //! which include specific Entity(ies)
 class IFGraph_AllConnected  : public Interface_GraphContent
 {
@@ -42,7 +42,7 @@ public:
   //! creates an AllConnected which memorizes Entities Connected to
   //! a given one, at any level : that is, itself, all Entities
   //! Shared by it and Sharing it, and so on.
-  //! In other terms, this is the content of the CONNECTED COMPONANT
+  //! In other terms, this is the content of the CONNECTED COMPONENT
   //! which include a specific Entity
   Standard_EXPORT IFGraph_AllConnected(const Interface_Graph& agraph, const Handle(Standard_Transient)& ent);
   
@@ -50,7 +50,7 @@ public:
   //! cumulate all Entities Connected by some ones)
   //! Note that if "ent" is in the already computed list,, no entity
   //! will be added, but if "ent" is not already in the list, a new
-  //! Connected Componant will be cumulated
+  //! Connected Component will be cumulated
   Standard_EXPORT void GetFromEntity (const Handle(Standard_Transient)& ent);
   
   //! Allows to restart on a new data set

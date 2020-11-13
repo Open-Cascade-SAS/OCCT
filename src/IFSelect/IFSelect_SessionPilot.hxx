@@ -149,7 +149,7 @@ public:
   //! current Line Command. If none was, returns a Null Handle
   Standard_EXPORT Handle(Standard_Transient) RecordedItem() const;
   
-  //! Clears the recorded informations (commands, objects)
+  //! Clears the recorded information (commands, objects)
   Standard_EXPORT void Clear();
   
   //! Reads commands from a Script File, named <file>. By default

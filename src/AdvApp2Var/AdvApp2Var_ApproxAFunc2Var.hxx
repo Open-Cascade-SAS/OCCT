@@ -146,7 +146,7 @@ public:
   
   Standard_EXPORT Standard_Real CritError (const Standard_Integer Dimension, const Standard_Integer Index) const;
   
-  //! Prints on the stream o informations on the current state
+  //! Prints on the stream 'o' information on the current state
   //! of the object.
   Standard_EXPORT void Dump (Standard_OStream& o) const;
 

@@ -357,7 +357,7 @@ static Standard_Integer checksection(Draw_Interpretor& di,
 
 //=======================================================================
 //function : checkdiff
-//purpose  : Checks the differences beetween a result and his arguments
+//purpose  : Checks the differences between a result and his arguments
 //=======================================================================
 static Standard_Integer checkdiff(Draw_Interpretor& di,
 				  Standard_Integer narg, const char** a)
@@ -1751,7 +1751,7 @@ void BRepTest::CheckCommands(Draw_Interpretor& theCommands)
 		  g);
 
   theCommands.Add("checkdiff", 
-		  "checks the validity of the diff beetween the shapes arg1..argn and result :\n checkdiff arg1 [arg2..argn] result [closedSolid (1/0)] [geomCtrl (1/0)]",
+		  "checks the validity of the diff between the shapes arg1..argn and result :\n checkdiff arg1 [arg2..argn] result [closedSolid (1/0)] [geomCtrl (1/0)]",
 		  __FILE__,
 		  checkdiff,
 		  g);

@@ -44,7 +44,7 @@ public:
   //! <withmap> and <withlist> are transmitted to SignCounter
   Standard_EXPORT IGESSelect_CounterOfLevelNumber(const Standard_Boolean withmap = Standard_True, const Standard_Boolean withlist = Standard_False);
   
-  //! Resets already memorized informations : also numeric data
+  //! Resets already memorized information : also numeric data
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
   
   //! Adds an entity by considering its lrvrl number(s)

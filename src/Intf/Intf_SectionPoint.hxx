@@ -75,7 +75,7 @@ public:
   Standard_EXPORT Standard_Real Incidence() const;
   
   //! Returns True if the two SectionPoint have the  same logical
-  //! informations.
+  //! information.
     Standard_Boolean IsEqual (const Intf_SectionPoint& Other) const;
   Standard_Boolean operator== (const Intf_SectionPoint& Other) const
 {

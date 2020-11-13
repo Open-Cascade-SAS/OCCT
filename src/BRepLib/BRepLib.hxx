@@ -228,7 +228,7 @@ public:
   //! is done.
   Standard_EXPORT static void EncodeRegularity(const TopoDS_Shape& S, const TopTools_ListOfShape& LE, const Standard_Real TolAng = 1.0e-10);
   
-  //! Encodes the Regularity beetween <F1> and <F2> by <E>
+  //! Encodes the Regularity between <F1> and <F2> by <E>
   //! Warning: <TolAng> is an angular tolerance, expressed in Rad.
   //! Warning: If the edge's regularity is coded before, nothing
   //! is done.

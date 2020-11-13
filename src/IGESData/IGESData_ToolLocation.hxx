@@ -82,7 +82,7 @@ public:
   //! <parent> (it must be the Parent itself, not the Associativity)
   Standard_EXPORT void SetParentAssoc (const Handle(IGESData_IGESEntity)& parent, const Handle(IGESData_IGESEntity)& child);
   
-  //! Resets all informations about dependences for <child>
+  //! Resets all information about dependences for <child>
   Standard_EXPORT void ResetDependences (const Handle(IGESData_IGESEntity)& child);
   
   //! Unitary action which defines Entities referenced by <ent>

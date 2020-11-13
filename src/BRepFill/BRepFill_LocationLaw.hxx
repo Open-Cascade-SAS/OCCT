@@ -54,7 +54,7 @@ public:
   Standard_EXPORT GeomFill_PipeError GetStatus() const;
   
   //! Apply a linear   transformation  on each law, to  have
-  //! continuity of the global law beetween the edges.
+  //! continuity of the global law between the edges.
   Standard_EXPORT virtual void TransformInG0Law();
   
   //! Apply a linear transformation on each law, to reduce
@@ -100,7 +100,7 @@ public:
   
   Standard_EXPORT Standard_Boolean IsClosed() const;
   
-  //! Compute the Law's continuity beetween 2 edges of the path
+  //! Compute the Law's continuity between 2 edges of the path
   //! The result can be :
   //! -1 : Case Not connex
   //! 0  : It is connex (G0)

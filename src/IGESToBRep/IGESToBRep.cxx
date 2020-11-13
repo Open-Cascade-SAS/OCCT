@@ -114,7 +114,7 @@ static Handle(IGESToBRep_AlgoContainer) theContainer;
 
 //=======================================================================
 //function : IsCurveAndSurface
-//purpose  : Return True if the IgesEntity can be transfered
+//purpose  : Return True if the IgesEntity can be transferred
 //           by TransferCurveAndSurface
 //=======================================================================
 Standard_Boolean IGESToBRep::IsCurveAndSurface(const Handle(IGESData_IGESEntity)& start)
@@ -130,7 +130,7 @@ Standard_Boolean IGESToBRep::IsCurveAndSurface(const Handle(IGESData_IGESEntity)
 
 //=======================================================================
 //function : IsBasicCurve
-//purpose  : Return True if the IgesEntity can be transfered
+//purpose  : Return True if the IgesEntity can be transferred
 //           by TransferBasicCurve
 //=======================================================================
 Standard_Boolean IGESToBRep::IsBasicCurve(const Handle(IGESData_IGESEntity)& start)
@@ -149,7 +149,7 @@ Standard_Boolean IGESToBRep::IsBasicCurve(const Handle(IGESData_IGESEntity)& sta
 
 //=======================================================================
 //function : IsBasicSurface
-//purpose  : Return True if the IgesEntity can be transfered
+//purpose  : Return True if the IgesEntity can be transferred
 //           by TransferBasicSurface
 //=======================================================================
 Standard_Boolean IGESToBRep::IsBasicSurface(const Handle(IGESData_IGESEntity)& start)
@@ -171,7 +171,7 @@ Standard_Boolean IGESToBRep::IsBasicSurface(const Handle(IGESData_IGESEntity)& s
 
 //=======================================================================
 //function : IsTopoCurve
-//purpose  : Return True if the IgesEntity can be transfered
+//purpose  : Return True if the IgesEntity can be transferred
 //           by TransferTopoCurve
 //=======================================================================
 Standard_Boolean IGESToBRep::IsTopoCurve(const Handle(IGESData_IGESEntity)& start)
@@ -190,7 +190,7 @@ Standard_Boolean IGESToBRep::IsTopoCurve(const Handle(IGESData_IGESEntity)& star
 
 //=======================================================================
 //function : IsTopoSurface
-//purpose  : Return True if the IgesEntity can be transfered
+//purpose  : Return True if the IgesEntity can be transferred
 //           by TransferTopoSurface
 //=======================================================================
 Standard_Boolean IGESToBRep::IsTopoSurface(const Handle(IGESData_IGESEntity)& start)
@@ -223,7 +223,7 @@ Standard_Boolean IGESToBRep::IsTopoSurface(const Handle(IGESData_IGESEntity)& st
 
 //=======================================================================
 //function : IsBRepEntity
-//purpose  : Return True if the IgesEntity can be transfered
+//purpose  : Return True if the IgesEntity can be transferred
 //           by TransferBRepEntity
 //=======================================================================
 Standard_Boolean IGESToBRep::IsBRepEntity(const Handle(IGESData_IGESEntity)& start)

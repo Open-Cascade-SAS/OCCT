@@ -582,7 +582,7 @@ void IntPatch_InterferencePolyhedron::Intersect
 
     if (nbpiOT>1) {
 
-// Sort the <nbpiOT> sections points along the intersection beetween the
+// Sort the <nbpiOT> sections points along the intersection between the
 // two triangles :
 
       gp_XYZ dir=ONor^TNor;

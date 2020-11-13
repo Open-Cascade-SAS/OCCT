@@ -61,7 +61,7 @@ public:
   Standard_EXPORT void ValAndGrad (const Standard_Real X, const Standard_Real Y, Standard_Real& Val, gp_XY& Grd) const;
   
   //! returns the coefficients of the polynomial equation
-  //! wich defines the conic:
+  //! which defines the conic:
   //! A.X**2 + B.Y**2 + 2.C.X*Y + 2.D.X + 2.E.Y + F = 0.
   Standard_EXPORT void Coefficients (Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& D, Standard_Real& E, Standard_Real& F) const;
   

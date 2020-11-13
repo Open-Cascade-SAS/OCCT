@@ -72,17 +72,17 @@ public:
   //! deflection
   Standard_EXPORT GCPnts_UniformDeflection(const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
   
-  //! Initialize the algoritms with <C>, <Deflection>
+  //! Initialize the algorithms with <C>, <Deflection>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
   
-  //! Initialize the algoritms with <C>, <Deflection>
+  //! Initialize the algorithms with <C>, <Deflection>
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Real Deflection, const Standard_Boolean WithControl = Standard_True);
   
-  //! Initialize the algoritms with <C>, <Deflection>,
+  //! Initialize the algorithms with <C>, <Deflection>,
   //! <U1>,<U2>
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Real Deflection, const Standard_Real U1, const Standard_Real U2, const Standard_Boolean WithControl = Standard_True);
   
-  //! Initialize the algoritms with <C>, <Deflection>,
+  //! Initialize the algorithms with <C>, <Deflection>,
   //! <U1>,<U2>
   //! This and the above methods initialize (or reinitialize) this algorithm and
   //! compute a distribution of points:

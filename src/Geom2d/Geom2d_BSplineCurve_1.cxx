@@ -114,7 +114,7 @@ Standard_Boolean Geom2d_BSplineCurve::IsG1 ( const Standard_Real theTf,
   if( ((aFirstParam - theTf)*(theTl - aFirstParam) < 0.0) &&
       ((aLastParam - theTf)*(theTl - aLastParam) < 0.0))
   {
-    //Range [theTf, theTl] does not intersect curve bounadries
+    //Range [theTf, theTl] does not intersect curve boundaries
     return Standard_True;
   }
 

@@ -33,7 +33,7 @@ class Draw_Display;
 class Draw_Color;
 
 
-//! This  class stores all the informations concerning
+//! This  class stores all the information  concerning
 //! hidden lines on a view.
 //!
 //! * View number

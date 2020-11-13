@@ -95,7 +95,7 @@ public:
   //! Returns Standard_False (default implementation)
   Standard_EXPORT virtual Standard_Boolean HasLastRestriction() const Standard_OVERRIDE;
   
-  //! Give the number of trace (Curves 2d wich are not restriction)
+  //! Give the number of trace (Curves 2d which are not restriction)
   //! Returns 1 (default implementation)
   Standard_EXPORT virtual Standard_Integer TraceNumber() const Standard_OVERRIDE;
   
@@ -107,7 +107,7 @@ public:
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accomodate
+  //! The array must provide  enough room to  accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT virtual void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const Standard_OVERRIDE;
   

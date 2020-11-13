@@ -29,7 +29,7 @@ class StdFail_NotDone;
 class Standard_OutOfRange;
 
 
-//! Checks for the end  tangents : wether or not those
+//! Checks for the end  tangents : whether or not those
 //! are reversed
 class GeomLib_Check2dBSplineCurve 
 {

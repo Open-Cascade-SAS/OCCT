@@ -25,7 +25,7 @@
 #include <IGESData_DefType.hxx>
 
 
-//! description of a directory componant which can be either
+//! description of a directory component which can be either
 //! undefined (let Void), defined as a Reference to an entity,
 //! or as a Rank, integer value adressing a builtin table
 //! The entity reference is not included here, only reference

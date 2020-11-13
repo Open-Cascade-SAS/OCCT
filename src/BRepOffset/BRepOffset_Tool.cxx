@@ -782,7 +782,7 @@ void BRepOffset_Tool::PipeInter(const TopoDS_Face& F1,
 
 //=======================================================================
 //function : IsAutonomVertex
-//purpose  : Checks wether a vertex is "autonom" or not
+//purpose  : Checks whether a vertex is "autonom" or not
 //=======================================================================
 
 static Standard_Boolean IsAutonomVertex(const TopoDS_Shape& theVertex,
@@ -808,7 +808,7 @@ static Standard_Boolean IsAutonomVertex(const TopoDS_Shape& theVertex,
 
 //=======================================================================
 //function : IsAutonomVertex
-//purpose  : Checks wether a vertex is "autonom" or not
+//purpose  : Checks whether a vertex is "autonom" or not
 //=======================================================================
 
 static Standard_Boolean IsAutonomVertex(const TopoDS_Shape& aVertex,

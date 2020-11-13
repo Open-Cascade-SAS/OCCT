@@ -44,7 +44,7 @@ BRep_Curve3D::BRep_Curve3D(const Handle(Geom_Curve)& C,
 
 void BRep_Curve3D::D0(const Standard_Real U, gp_Pnt& P) const
 {
-  // shoud be D0 NYI
+  // should be D0 NYI
   P = myCurve->Value(U);
 }
 

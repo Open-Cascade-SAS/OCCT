@@ -38,7 +38,7 @@ DEFINE_STANDARD_HANDLE(IGESSelect_SelectLevelNumber, IFSelect_SelectExtract)
 //!
 //! Level = 0  means entities not attached to any level
 //!
-//! Remark : the class CounterOfLevelNumber gives informations
+//! Remark : the class CounterOfLevelNumber gives information
 //! about present levels in a file.
 class IGESSelect_SelectLevelNumber : public IFSelect_SelectExtract
 {

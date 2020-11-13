@@ -127,7 +127,7 @@ public:
   }
 
   //! Adds new link to mesh.
-  //! Updates link index and link orientaion parameters.
+  //! Updates link index and link orientation parameters.
   void AddLink(const Standard_Integer theFirstNode,
                const Standard_Integer theLastNode,
                Standard_Integer&      theLinkIndex,

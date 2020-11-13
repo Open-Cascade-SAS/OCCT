@@ -98,7 +98,7 @@ public:
   //! Degree:      it is the order of energy criterion to minimize for computing
   //! the deformation of the surface.
   //! The default value is 3
-  //! The recommanded value is i+2 where i is the maximum order of the
+  //! The recommended value is i+2 where i is the maximum order of the
   //! constraints.
   //! NbPtsOnCur:  it is the average number of points for discretisation
   //! of the edges.

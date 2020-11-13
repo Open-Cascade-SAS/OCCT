@@ -71,4 +71,4 @@ IFSelect_SelectRootComps::IFSelect_SelectRootComps ()    {  }
       {  return Standard_True;  }
 
     TCollection_AsciiString  IFSelect_SelectRootComps::ExtractLabel () const 
-{  return TCollection_AsciiString("Local Root Componants");  }
+{  return TCollection_AsciiString("Local Root Components");  }

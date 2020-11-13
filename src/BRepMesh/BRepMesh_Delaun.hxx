@@ -262,7 +262,7 @@ private:
   //! Triangulation of closed polygon containing only three edges.
   Standard_Boolean meshElementaryPolygon (const IMeshData::SequenceOfInteger& thePolygon);
 
-  //! Creates the triangles beetween the given node and the given polyline.
+  //! Creates the triangles between the given node and the given polyline.
   void createTriangles (const Standard_Integer         theVertexIndex,
                         IMeshData::MapOfIntegerInteger& thePoly);
 

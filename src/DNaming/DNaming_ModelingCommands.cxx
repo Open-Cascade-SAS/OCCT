@@ -522,7 +522,7 @@ static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& /*theDI*/,
       else {
 	TDF_Tool::Entry(funLabel, entry);
 	try {
-      // We clear the logbook because the execution starts not from the begining of the function list (some functions ar skipped).
+      // We clear the logbook because the execution starts not from the beginning of the function list (some functions ar skipped).
       logbook->Clear();
 	  Standard_Integer aRes = ComputeFunction(aFun, logbook);
 	  if(aRes != 0) {

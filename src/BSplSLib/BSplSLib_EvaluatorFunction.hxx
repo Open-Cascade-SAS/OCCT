@@ -27,7 +27,7 @@
 #include <Standard_PrimitiveTypes.hxx>
 #endif
 
-// Histroy - C function pointer converted to a virtual class
+// History - C function pointer converted to a virtual class
 // in order to get rid of usage of static functions and static data
 class BSplSLib_EvaluatorFunction
 {

@@ -80,10 +80,10 @@ public:
   //! -   and those required on the curve by the computation algorithm.
   Standard_EXPORT GCPnts_QuasiUniformAbscissa(const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   
-  //! Initialize the algoritms with <C>, <NbPoints> and
+  //! Initialize the algorithms with <C>, <NbPoints> and
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
+  //! Initialize the algorithms with <C>, <Abscissa>, <U1>,
   //! <U2>.
   Standard_EXPORT void Initialize (const Adaptor3d_Curve& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   
@@ -96,10 +96,10 @@ public:
   //! on a part of the Curve2d <C>.
   Standard_EXPORT GCPnts_QuasiUniformAbscissa(const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   
-  //! Initialize the algoritms with <C>, <NbPoints> and
+  //! Initialize the algorithms with <C>, <NbPoints> and
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints);
   
-  //! Initialize the algoritms with <C>, <Abscissa>, <U1>,
+  //! Initialize the algorithms with <C>, <Abscissa>, <U1>,
   //! <U2>.
   Standard_EXPORT void Initialize (const Adaptor2d_Curve2d& C, const Standard_Integer NbPoints, const Standard_Real U1, const Standard_Real U2);
   

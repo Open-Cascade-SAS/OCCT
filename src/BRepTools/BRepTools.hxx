@@ -148,7 +148,7 @@ public:
   //! edge on the face.
   Standard_EXPORT static void UpdateFaceUVPoints (const TopoDS_Face& theF);
   
-  //! Removes all cashed polygonal representation of the shape,
+  //! Removes all cached polygonal representation of the shape,
   //! i.e. the triangulations of the faces of <S> and polygons on
   //! triangulations and polygons 3d of the edges.
   //! In case polygonal representation is the only available representation

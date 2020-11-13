@@ -323,7 +323,7 @@ public: //! @name Choosing correct orientation for the split shape
   //!
   //! @param theSplit [in] Split shape
   //! @param theShape [in] Original shape
-  //! @param theContext [in] Cashed geometrical tools
+  //! @param theContext [in] cached geometrical tools
   //! @param theError [out] Error Status of the operation
   Standard_EXPORT static Standard_Boolean IsSplitToReverse(const TopoDS_Shape& theSplit,
                                                            const TopoDS_Shape& theShape,
@@ -356,7 +356,7 @@ public: //! @name Choosing correct orientation for the split shape
   //!
   //! @param theSplit [in] Split face
   //! @param theShape [in] Original face
-  //! @param theContext [in] Cashed geometrical tools
+  //! @param theContext [in] cached geometrical tools
   //! @param theError [out] Error Status of the operation
   Standard_EXPORT static Standard_Boolean IsSplitToReverse(const TopoDS_Face& theSplit,
                                                            const TopoDS_Face& theShape,
@@ -381,7 +381,7 @@ public: //! @name Choosing correct orientation for the split shape
   //!
   //! @param theSplit [in] Split edge
   //! @param theShape [in] Original edge
-  //! @param theContext [in] Cashed geometrical tools
+  //! @param theContext [in] cached geometrical tools
   //! @param theError [out] Error Status of the operation
   Standard_EXPORT static Standard_Boolean IsSplitToReverse(const TopoDS_Edge& theSplit,
                                                            const TopoDS_Edge& theShape,

@@ -1483,7 +1483,7 @@ int mamdlng_(char *,//cmdlng,
 
 /*     FUNCTION : */
 /*     ---------- */
-/*        CONTAINS INFORMATIONS ABOUT THE COMPOSITION OF */
+/*        CONTAINS INFORMATION ABOUT THE COMPOSITION OF */
 /*        THE EXECUTABLE AND ITS ENVIRONMENT : */
 /*        - LANGUAGES */
 /*        - PRESENT APPLICATIONS */
@@ -1700,15 +1700,15 @@ int maoverf_(integer *nbentr,
 /*    NLONGR*8    specific COMMON not by a routine as */
 /*                the initialisation is done by DATA. */
 
-/*                * If NBENTR<NLONGR, a part of the buffer is transfered*/
+/*                * If NBENTR<NLONGR, a part of the buffer is transferred*/
 /*     DTABLE     in DTABLE. */
 /*   __________ */
-/*  !  amorce  !  * Otherwise, the entire buffer is transfered in DTABLE. */
+/*  !  amorce  !  * Otherwise, the entire buffer is transferred in DTABLE. */
 /*  !__________!  This initiates it. Then a loop is execute, which at each  
 */
 /*  !  temps 1 !  iteration transfers the part of the already initialized table */
 /*  !__________!  in the one that was not yet initialized. */
-/*  !          !  The size of the zone transfered by each call to MCRFILL 
+/*  !          !  The size of the zone transferred by each call to MCRFILL 
 */
 /*  !  temps 2 !  is NLONGR*2**(numero_de_l'iteration). When  
 */

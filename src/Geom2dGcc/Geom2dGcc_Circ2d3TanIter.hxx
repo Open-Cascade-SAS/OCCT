@@ -103,7 +103,7 @@ public:
   
   Standard_EXPORT void WhichQualifier (GccEnt_Position& Qualif1, GccEnt_Position& Qualif2, GccEnt_Position& Qualif3) const;
   
-  //! Returns informations about the tangency point between
+  //! Returns information about the tangency point between
   //! the result and the first argument.
   //! ParSol is the intrinsic parameter of the point PntSol
   //! on the solution curv.
@@ -113,7 +113,7 @@ public:
   //! didn't succeed.
   Standard_EXPORT void Tangency1 (Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
   
-  //! Returns informations about the tangency point between
+  //! Returns information about the tangency point between
   //! the result and the second argument.
   //! ParSol is the intrinsic parameter of the point PntSol
   //! on the solution curv.
@@ -123,7 +123,7 @@ public:
   //! didn't succeed.
   Standard_EXPORT void Tangency2 (Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
   
-  //! Returns informations about the tangency point between
+  //! Returns information about the tangency point between
   //! the result and the third argument.
   //! ParSol is the intrinsic parameter of the point PntSol
   //! on the solution curv.

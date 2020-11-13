@@ -183,7 +183,7 @@ void IGESGeom_ToolTransformationMatrix::OwnCheck
     Message_Msg Msg71("XSTEP_71");
     ach->SendFail(Msg71);
   }
-// Theses messages are transfered in the translation procedure
+// Theses messages are transferred in the translation procedure
 /*
   if (form > 1) return;    // ce qui suit : matrice orthogonale
   if (form == 0 && ent->Value().IsNegative())

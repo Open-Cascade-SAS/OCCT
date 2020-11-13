@@ -84,7 +84,7 @@ public:
     Standard_ShortReal Tolerance() const;
   
   //! end of building  of the Data and updating
-  //! all the informations linked to the projection.
+  //! all the information linked to the projection.
   Standard_EXPORT void Update (const HLRAlgo_Projector& P);
   
     HLRAlgo_Projector& Projector();

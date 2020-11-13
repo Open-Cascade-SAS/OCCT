@@ -230,7 +230,7 @@ Handle(Geom_Surface) IGESToBRep_BasicSurface::TransferBasicSurface
   }
 
   if (resurf.IsNull()) {
-    // AddFail(start,"The IGESEntity cannot be transfered");
+    // AddFail(start,"The IGESEntity cannot be transferred");
   }
   else
     resurf->Scale(gp_Pnt(0,0,0),GetUnitFactor());

@@ -29,7 +29,7 @@ class BinLDrivers_DocumentSection;
 class BinDrivers_DocumentStorageDriver;
 DEFINE_STANDARD_HANDLE(BinDrivers_DocumentStorageDriver, BinLDrivers_DocumentStorageDriver)
 
-//! persistent implemention of storage a document in a binary file
+//! persistent implementation of storage a document in a binary file
 class BinDrivers_DocumentStorageDriver : public BinLDrivers_DocumentStorageDriver
 {
 

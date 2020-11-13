@@ -406,7 +406,7 @@ static Handle(IntPatch_WLine)
   NCollection_Array1<Standard_Integer> aNewPointsHash(1, theWLine->NbPnts());
   FillPointsHash(theWLine, aNewPointsHash);
   
-  // Inital computations.
+  // Initial computations.
   Standard_Real UonS1[3], VonS1[3], UonS2[3], VonS2[3];
   theWLine->Point(1).ParametersOnS1(UonS1[0], VonS1[0]);
   theWLine->Point(2).ParametersOnS1(UonS1[1], VonS1[1]);

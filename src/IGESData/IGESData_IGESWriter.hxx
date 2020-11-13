@@ -106,7 +106,7 @@ public:
   //! error if does not follow Entities sending
   Standard_EXPORT void SectionT();
   
-  //! translates directory part of an Entity into a litteral DirPart
+  //! translates directory part of an Entity into a literal DirPart
   //! Some infos are computed after sending parameters
   //! Error if not in sections DP or Stage not "Dir"
   Standard_EXPORT void DirPart (const Handle(IGESData_IGESEntity)& anent);

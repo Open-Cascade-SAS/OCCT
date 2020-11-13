@@ -125,9 +125,9 @@ public:
   //! Possibilities are :
   //! - Give one or sevral profile
   //! - Give one profile and an homotetic law.
-  //! - Automatic compute of correspondance beetween profile, and section
+  //! - Automatic compute of correspondance between profile, and section
   //! on the sweeped shape
-  //! - correspondance beetween profile, and section on the sweeped shape
+  //! - correspondance between profile, and section on the sweeped shape
   //! defined by a vertex of the spine
   Standard_EXPORT void SetForceApproxC1 (const Standard_Boolean ForceApproxC1);
   

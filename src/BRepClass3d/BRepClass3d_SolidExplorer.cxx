@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modifed:     Porting NT 7-5-97 DPF (stdio.h)
+// Modified:     Porting NT 7-5-97 DPF (stdio.h)
 //              Apr 16 2002 eap, classification against infinite solid (occ299)
 
 

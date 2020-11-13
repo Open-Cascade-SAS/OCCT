@@ -26,7 +26,7 @@
 
 
 //! Class  (should    be  a  structure)   storing  the
-//! informations         about     continuity, normals
+//! information         about     continuity, normals
 //! parallelism,  coons conditions and bounds tangents
 //! angle on the corner of contour to be filled.
 class GeomFill_CornerState 

@@ -76,11 +76,11 @@ public:
   //! tolerance given by the resolution on support surfaces,
   //! but if this tolerance is too large Tol2d is used.
   //! TolAngular : Tolerance (in radian) to control the angle
-  //! beetween tangents on the section law and
-  //! tangent of iso-v on approximed surface
+  //! between tangents on the section law and
+  //! tangent of iso-v on approximated surface
   //! Continuity : The continuity in v waiting on the surface
-  //! Degmax     : The maximum degree in v requiered on the surface
-  //! Segmax     : The maximum number of span in v requiered on
+  //! Degmax     : The maximum degree in v required on the surface
+  //! Segmax     : The maximum number of span in v required on
   //! the surface
   //! Warning : The continuity ci can be obtained only if Ft is Ci
   Standard_EXPORT void Perform (const Standard_Real First, const Standard_Real Last, const Standard_Real Tol3d, const Standard_Real BoundTol, const Standard_Real Tol2d, const Standard_Real TolAngular, const GeomAbs_Shape Continuity = GeomAbs_C0, const Standard_Integer Degmax = 11, const Standard_Integer Segmax = 50);

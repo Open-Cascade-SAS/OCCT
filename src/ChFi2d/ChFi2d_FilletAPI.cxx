@@ -113,7 +113,7 @@ Standard_Boolean ChFi2d_FilletAPI::IsAnalytical(const TopoDS_Edge& theEdge1,
       (AC2.GetType() == GeomAbs_Line || AC2.GetType() == GeomAbs_Circle))
   {
     // The edges are lines or arcs of circle.
-    // Now check wether they have a common point.
+    // Now check whether they have a common point.
     gp_Pnt p11 = AC1.Value(AC1.FirstParameter());
     gp_Pnt p12 = AC1.Value(AC1.LastParameter());
     gp_Pnt p21 = AC2.Value(AC2.FirstParameter());

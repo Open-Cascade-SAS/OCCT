@@ -1245,7 +1245,7 @@ void BRepFeat_MakeRevolutionForm::Perform()
 
 //=======================================================================
 //function : Propagate
-//purpose  : propagation on the faces of the inital shape, find faces 
+//purpose  : propagation on the faces of the initial shape, find faces 
 // concerned by the rib
 //=======================================================================
 

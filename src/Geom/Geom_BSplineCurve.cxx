@@ -502,7 +502,7 @@ void Geom_BSplineCurve::Segment(const Standard_Real U1,
   TColStd_Array1OfReal    Knots(1,2);
   TColStd_Array1OfInteger Mults(1,2);
 
-  // define param ditance to keep (eap, Apr 18 2002, occ311)
+  // define param distance to keep (eap, Apr 18 2002, occ311)
   if (periodic) {
     Standard_Real Period = LastParameter() - FirstParameter();
     DU = U2 - U1;

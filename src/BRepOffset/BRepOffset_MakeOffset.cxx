@@ -3708,7 +3708,7 @@ void CorrectSolid(TopoDS_Solid& theSol, TopTools_ListOfShape& theSolList)
 
 //=======================================================================
 //function : CheckInputData
-//purpose  : Check input data for possiblity of offset perform.
+//purpose  : Check input data for possibility of offset perform.
 //=======================================================================
 Standard_Boolean BRepOffset_MakeOffset::CheckInputData()
 {

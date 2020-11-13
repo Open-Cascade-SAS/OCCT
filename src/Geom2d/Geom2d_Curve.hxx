@@ -131,7 +131,7 @@ public:
   //! Some Curves such as OffsetCurve can be closed or not. These curves
   //! are considered as closed if the distance between the first point
   //! and the last point of the curve is lower or equal to the Resolution
-  //! from package gp wich is a fixed criterion independant of the
+  //! from package gp which is a fixed criterion independant of the
   //! application.
   Standard_EXPORT virtual Standard_Boolean IsClosed() const = 0;
   

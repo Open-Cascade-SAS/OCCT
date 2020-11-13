@@ -56,7 +56,7 @@ public:
   //! return  the status
     FairCurve_AnalysisCode Status() const;
   
-  //! compute the variables <X> wich correspond with the field <MyPoles>
+  //! compute the variables <X> which correspond with the field <MyPoles>
   Standard_EXPORT virtual Standard_Boolean Variable (math_Vector& X) const Standard_OVERRIDE;
 
 
@@ -65,7 +65,7 @@ public:
 protected:
 
   
-  //! compute  the  poles wich correspond with the variable X
+  //! compute  the  poles which correspond with the variable X
   Standard_EXPORT virtual void ComputePoles (const math_Vector& X) Standard_OVERRIDE;
   
   //! compute the energy in intermediat format

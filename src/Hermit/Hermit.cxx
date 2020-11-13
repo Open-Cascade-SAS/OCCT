@@ -173,16 +173,16 @@ static void PolyTest(const TColStd_Array1OfReal&         Herm,
   Handle(TColStd_HArray1OfReal)  Knots;                  //array of the BSpline knots + the ones inserted
   Standard_Integer               cas=0,mark=0,dercas=0,  //loop marks
                                  min,max;                //Pole min and max indices
-  Standard_Real                  Us1,Us2,a;              //bounderies value of the knots to be inserted
+  Standard_Real                  Us1,Us2,a;              //boundaries value of the knots to be inserted
   
   U4=0.0;U5=1.0;                                         //default value
   if (Ux!=1.0){
-    BS->LocateU(Ux,0.0,I1,I2);                          //localization of the inserted knots 
+    BS->LocateU(Ux,0.0,I1,I2);                           //localization of the inserted knots
     if (Uy!=0.0)
       BS->LocateU(Uy,0.0,I3,I4);
   }
 
-  if (I1==I2)                                            //definition and filling of the 
+  if (I1==I2)                                            //definition and filling of the
     if((I3==I4)||(I3==0)){                                //array of knots
       Knots=new TColStd_HArray1OfReal(1,BS->NbKnots());
       for (i=1;i<=BS->NbKnots();i++)
@@ -384,7 +384,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
 		     const Standard_Real                TolPoles,
 //		     const Standard_Real                TolKnots,
 		     const Standard_Real                ,
-		     const Standard_Real                Ux, 
+		     const Standard_Real                Ux,
 		     const Standard_Real                Uy)
 
 {
@@ -394,7 +394,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   Handle(TColStd_HArray1OfReal)  Knots;                  //array of the BSpline knots + the ones inserted
   Standard_Integer               cas=0,mark=0,dercas=0,  //loop marks
                                  min,max;                //Pole min and max indices
-  Standard_Real                  Us1,Us2,a;              //bounderies value of the knots to be inserted
+  Standard_Real                  Us1,Us2,a;              //boundaries value of the knots to be inserted
   
   U4=0.0;U5=1.0;                                         //default value
   if (Ux!=1.0){
@@ -403,7 +403,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
       BS->LocateU(Uy,0.0,I3,I4);
   }
 
-  if (I1==I2)                                            //definition and filling of the 
+  if (I1==I2)                                            //definition and filling of the
   {
     if((I3==I4)||(I3==0)){                               //array of knots
       Knots=new TColStd_HArray1OfReal(1,BS->NbKnots());

@@ -148,7 +148,7 @@ public:
   //! Warning!  This assume that the InParameter is an increasing sequence
   //! of real number and it will not check for that : Unpredictable
   //! result can happen if this is not satisfied. It is the caller
-  //! responsability to check for that property.
+  //! responsibility to check for that property.
   //!
   //! This  method makes uniform NumPoints segments S1,...SNumPoints out
   //! of the segment defined by the first parameter and the

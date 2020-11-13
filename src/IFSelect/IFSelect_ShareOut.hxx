@@ -38,7 +38,7 @@ class TCollection_AsciiString;
 class IFSelect_ShareOut;
 DEFINE_STANDARD_HANDLE(IFSelect_ShareOut, Standard_Transient)
 
-//! This class gathers the informations required to produce one or
+//! This class gathers the information required to produce one or
 //! several file(s) from the content of an InterfaceModel (passing
 //! through the creation of intermediate Models).
 //!
@@ -71,15 +71,15 @@ public:
   Standard_EXPORT IFSelect_ShareOut();
   
   //! Removes in one operation all the Dispatches with their Idents
-  //! Also clears all informations about Names, and all Results but
-  //! naming informations which are :
+  //! Also clears all information about Names, and all Results but
+  //! naming information which are :
   //! - kept if <onlydisp> is True.
   //! - cleared if <onlydisp> is False (complete clearing)
   //! If <onlydisp> is True, that's all. Else, clears also Modifiers
   Standard_EXPORT void Clear (const Standard_Boolean onlydisp);
   
   //! Clears all data produced (apart from Dispatches, etc...)
-  //! if <alsoname> is True, all is cleared. Else, informations
+  //! if <alsoname> is True, all is cleared. Else, information
   //! about produced Names are kept (to maintain unicity of naming
   //! across clearings)
   Standard_EXPORT void ClearResult (const Standard_Boolean alsoname);
@@ -211,7 +211,7 @@ public:
   //! Returns the Default Root Name. Can be empty.
   Standard_EXPORT Handle(TCollection_HAsciiString) DefaultRootName() const;
   
-  //! Returns the general Extension. Can be empty (not recommanded)
+  //! Returns the general Extension. Can be empty (not recommended)
   Standard_EXPORT Handle(TCollection_HAsciiString) Extension() const;
   
   //! Computes the complete file name for a Packet of a Dispatch,

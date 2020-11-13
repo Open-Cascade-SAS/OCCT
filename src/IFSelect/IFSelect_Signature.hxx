@@ -40,7 +40,7 @@ DEFINE_STANDARD_HANDLE(IFSelect_Signature, Interface_SignType)
 //! signature
 //! This string has not to be unique in the model, but gives a
 //! value for such or such important feature.
-//! Exemples : Dynamic Type; Category; etc
+//! Examples : Dynamic Type; Category; etc
 class IFSelect_Signature : public Interface_SignType
 {
 

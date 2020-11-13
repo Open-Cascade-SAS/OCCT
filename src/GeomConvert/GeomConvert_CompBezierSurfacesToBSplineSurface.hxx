@@ -287,7 +287,7 @@ protected:
 private:
 
   
-  //! It used internaly by the constructors.
+  //! It used internally by the constructors.
   Standard_EXPORT void Perform (const TColGeom_Array2OfBezierSurface& Beziers);
 
 

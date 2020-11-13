@@ -177,7 +177,7 @@ public:
   //! Returns the entity on which the Check has been defined
   Standard_EXPORT const Handle(Standard_Transient)& Entity() const;
   
-  //! Clears a check, in order to receive informations from transfer
+  //! Clears a check, in order to receive information from transfer
   //! (Messages and Entity)
   Standard_EXPORT void Clear();
   

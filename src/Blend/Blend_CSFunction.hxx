@@ -106,8 +106,8 @@ public:
   //! the parameter on the guide line.
   Standard_EXPORT virtual Standard_Boolean IsSolution (const math_Vector& Sol, const Standard_Real Tol) Standard_OVERRIDE = 0;
   
-  //! Returns   the    minimal  Distance  beetween   two
-  //! extremitys of calculed sections.
+  //! Returns   the    minimal  Distance  between   two
+  //! extremities of calculated sections.
   Standard_EXPORT virtual Standard_Real GetMinimalDistance() const Standard_OVERRIDE;
   
   //! Returns the point on the first support.

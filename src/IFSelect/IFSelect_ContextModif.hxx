@@ -40,11 +40,11 @@ class Interface_Check;
 class Interface_CheckIterator;
 
 
-//! This class gathers various informations used by Model Modifiers
+//! This class gathers various information used by Model Modifiers
 //! apart from the target model itself, and the CopyTool which
 //! must be passed directly.
 //!
-//! These informations report to original data : model, entities,
+//! These information report to original data : model, entities,
 //! and the selection list if there is one : it allows to query
 //! about such or such starting entity, or result entity, or
 //! iterate on selection list ...
@@ -60,7 +60,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   
-  //! Prepares a ContextModif with these informations :
+  //! Prepares a ContextModif with these information :
   //! - the graph established from original model (target passed
   //! directly to Modifier)
   //! - the CopyTool which detains the CopyControl, which maps
@@ -71,7 +71,7 @@ public:
   //! transferred entities (no filter active)
   Standard_EXPORT IFSelect_ContextModif(const Interface_Graph& graph, const Interface_CopyTool& TC, const Standard_CString filename = "");
   
-  //! Prepares a ContextModif with these informations :
+  //! Prepares a ContextModif with these information :
   //! - the graph established from original model (target passed
   //! directly to Modifier)
   //! - an optional file name (for file output)

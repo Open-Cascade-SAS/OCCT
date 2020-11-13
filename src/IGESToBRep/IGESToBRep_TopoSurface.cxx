@@ -440,7 +440,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface
     //added by rln on 03/12/97
     //if shape1 is a wire it means that the curve1 in file was of continuity C0
     //in order to get a face instead of shell when to BRepFill shape1
-    //should be retransfered with contionuity C0 (to get an edge). Once shape1
+    //should be retransferred with contionuity C0 (to get an edge). Once shape1
     //has been built with C0, it is useless to require C1 from shape2 because
     //anyway resulting surface was of continuity C0. Thus shape2 is built with C0
 //    if (shape1.ShapeType() != TopAbs_EDGE) {
@@ -1023,7 +1023,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface
     {
       TopoDS_Iterator dabovil(igesShape);
       if (dabovil.More()) {
-        SendWarning(st, "The First Surface only will be transfered.");
+        SendWarning(st, "The First Surface only will be transferred.");
         face = TopoDS::Face(dabovil.Value());
         break;
       }

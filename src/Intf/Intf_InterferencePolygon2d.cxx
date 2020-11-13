@@ -49,7 +49,7 @@ Intf_InterferencePolygon2d::Intf_InterferencePolygon2d()
 
 //=======================================================================
 //function : Intf_InterferencePolygon2d
-//purpose  : Constructor of the interference beetween two Polygon.
+//purpose  : Constructor of the interference between two Polygon.
 //=======================================================================
 
 Intf_InterferencePolygon2d::Intf_InterferencePolygon2d

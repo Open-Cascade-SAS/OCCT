@@ -216,7 +216,7 @@ BRepCheck_Status BRepCheck_Face::IntersectWires(const Standard_Boolean Update)
     {
       const TopoDS_Edge& anEdge = TopoDS::Edge (exp2.Current());
       aC.Load (BRep_Tool::CurveOnSurface (anEdge, TopoDS::Face (myShape), aFirst, aLast));
-      // To avoid exeption in Segment if C1 is BSpline
+      // To avoid exception in Segment if C1 is BSpline
       if (aC.FirstParameter() > aFirst)
       {
         aFirst = aC.FirstParameter();
@@ -602,7 +602,7 @@ static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
       const TopoDS_Edge& edg1 = TopoDS::Edge(exp1.Current());
       //    cur1.Initialize(edg1,F);
       C1.Load( BRep_Tool::CurveOnSurface(edg1,F,first1,last1) );
-      // To avoid exeption in Segment if C1 is BSpline - IFV
+      // To avoid exception in Segment if C1 is BSpline - IFV
       if(C1.FirstParameter() > first1) first1 = C1.FirstParameter();
       if(C1.LastParameter()  < last1 ) last1  = C1.LastParameter();
 
@@ -622,7 +622,7 @@ static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
 	    {
 	      //cur2.Initialize(edg2,F);
 	      C2.Load( BRep_Tool::CurveOnSurface(edg2,F,first2,last2) );
-	      // To avoid exeption in Segment if C2 is BSpline - IFV
+	      // To avoid exception in Segment if C2 is BSpline - IFV
 	      if(C2.FirstParameter() > first2) first2 = C2.FirstParameter();
 	      if(C2.LastParameter()  < last2 ) last2  = C2.LastParameter();
 

@@ -72,7 +72,7 @@ public:
   //! Adds the segment of the line L limited by the two
   //! parameter values P1 and P2, to the bounding box B, and
   //! then enlarges B by the tolerance value Tol.
-  //! Tol is the tolerance value to enlarge the minimun and maximum dimension
+  //! Tol is the tolerance value to enlarge the minimum and maximum dimension
   //! P1 and P2 may represent infinite values.
   //! Exceptions
   //! Standard_Failure if P1 and P2 are either two negative

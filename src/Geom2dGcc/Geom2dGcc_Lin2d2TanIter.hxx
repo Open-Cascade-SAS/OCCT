@@ -83,7 +83,7 @@ public:
   
   Standard_EXPORT void WhichQualifier (GccEnt_Position& Qualif1, GccEnt_Position& Qualif2) const;
   
-  //! Returns informations about the tangency point between the
+  //! Returns information about the tangency point between the
   //! result and the first argument.
   //! ParSol is the intrinsic parameter of the point PntSol on
   //! the solution curv.

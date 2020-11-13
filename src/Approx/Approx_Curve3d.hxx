@@ -34,13 +34,13 @@ public:
 
   
   //! Approximation  of  a  curve  with respect of the
-  //! requiered tolerance Tol3D.
+  //! required tolerance Tol3D.
   Standard_EXPORT Approx_Curve3d(const Handle(Adaptor3d_HCurve)& Curve, const Standard_Real Tol3d, const GeomAbs_Shape Order, const Standard_Integer MaxSegments, const Standard_Integer MaxDegree);
   
   Standard_EXPORT Handle(Geom_BSplineCurve) Curve() const;
   
   //! returns  Standard_True  if  the  approximation  has
-  //! been  done  within  requiered tolerance
+  //! been  done  within  required tolerance
   Standard_EXPORT Standard_Boolean IsDone() const;
   
   //! returns  Standard_True if the approximation did come out

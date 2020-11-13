@@ -65,7 +65,7 @@ static  Handle(IGESData_FileProtocol) IGESProto;
   SetDumpLevels (4,6);
   SetDumpHelp (0,"Only DNum");
   SetDumpHelp (1,"DNum, IGES Type & Form");
-  SetDumpHelp (2,"Main Directory Informations");
+  SetDumpHelp (2,"Main Directory Information");
   SetDumpHelp (3,"Complete Directory Part");
   SetDumpHelp (4,"Directory + Fields (except list contents)");
   SetDumpHelp (5,"Complete (with list contents)");

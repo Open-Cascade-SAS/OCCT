@@ -27,7 +27,7 @@ class Interface_Graph;
 class IFGraph_StrongComponants;
 
 
-//! determines strong componants in a graph which are Cycles
+//! determines strong components in a graph which are Cycles
 class IFGraph_Cycles  : public IFGraph_SubPartsIterator
 {
 public:

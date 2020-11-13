@@ -60,7 +60,7 @@ public:
   //! Same as above, but works with the GTool of the Model
   Standard_EXPORT Interface_ShareFlags(const Handle(Interface_InterfaceModel)& amodel);
   
-  //! Creates a ShareFlags by querying informations from a Graph
+  //! Creates a ShareFlags by querying information from a Graph
   //! (remark that Graph also has a method IsShared)
   Standard_EXPORT Interface_ShareFlags(const Interface_Graph& agraph);
   

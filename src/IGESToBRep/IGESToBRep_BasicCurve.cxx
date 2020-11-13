@@ -225,7 +225,7 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBasicCurve
     (void)anException;
   }
   if (res.IsNull()) {
-    // AddFail(start, "The IGESEntity cannot be transfered.");
+    // AddFail(start, "The IGESEntity cannot be transferred.");
     // The more specific function have ever add a fail message for this entity
   }
   else

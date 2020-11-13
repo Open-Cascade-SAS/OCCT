@@ -221,7 +221,7 @@ void IGESGeom_ToolConicArc::OwnCheck(const Handle(IGESGeom_ConicArc)& ent,
   //Standard_Real x = ent->StartPoint().X();
   //Standard_Real y = ent->StartPoint().Y();
   //Standard_Real eq = (A*x*x + B*x*y + C*y*y + D*x + E*y + F);
-  // These messages are transfered in the translation procedure
+  // These messages are transferred in the translation procedure
 /*  if (eq < -eps || eq > eps) {
     Sprintf(mess,"Start point does not satisfy conic equation, gap over %f",
 	    Interface_MSG::Intervalled(eq));

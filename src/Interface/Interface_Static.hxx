@@ -69,7 +69,7 @@ public:
 
   
   //! Creates and records a Static, with a family and a name
-  //! family can report to a name of ressource or to a system or
+  //! family can report to a name of resource or to a system or
   //! internal definition. The name must be unique.
   //!
   //! type gives the type of the parameter, default is free text

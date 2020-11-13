@@ -68,7 +68,7 @@ public:
   Standard_EXPORT void Add (const TopoDS_Shape& ToProj);
   
   //! Sets the parameters  used  for computation
-  //! Tol3 is the requiered  tolerance between the  3d projected
+  //! Tol3 is the required  tolerance between the  3d projected
   //! curve  and     its    2d    representation
   //! InternalContinuity  is the order of constraints
   //! used for  approximation

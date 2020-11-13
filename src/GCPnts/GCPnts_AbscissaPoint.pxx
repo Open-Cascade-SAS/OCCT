@@ -158,7 +158,7 @@ static void Compute(CPnts_AbscissaPoint& theComputer,
 }
 
 // introduced by rbv for curvilinear parametrization
-// performs more apropriate tolerance managment
+// performs more appropriate tolerance managment
 
 static void AdvCompute(CPnts_AbscissaPoint& theComputer,
                     const TheCurve& C,

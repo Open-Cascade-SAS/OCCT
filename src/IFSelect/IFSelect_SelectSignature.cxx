@@ -108,7 +108,7 @@ static Standard_Integer multsign
 //  sinon : liste
 //  Analyse en sequence : si alternance prend/prend-pas, le dernier a raison
 //   en consequence, si que des prend ou que des prend-pas, c est commutatif
-//   DONC recommandation : mettre les prend-pas en fin
+//   DONC recommendation : mettre les prend-pas en fin
 
 //  AU DEPART : prendre = ne prendre que. prend-pas = prend-tout-sauf ...
 //  Donc si le premier est un prend-pas, je commence par tout prendre

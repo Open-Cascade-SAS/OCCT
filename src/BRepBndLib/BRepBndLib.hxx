@@ -70,7 +70,7 @@ public:
   Standard_EXPORT static void AddClose (const TopoDS_Shape& S, Bnd_Box& B);
 
   //! Adds the shape S to the bounding box B.
-  //! This algorith builds precise bounding box,
+  //! This algorithm builds precise bounding box,
   //! which differs from exact geometry boundaries of shape only on shape entities tolerances
   //! Algorithm is the same as for method Add(..), but uses more precise methods for building boxes 
   //! for geometry objects.

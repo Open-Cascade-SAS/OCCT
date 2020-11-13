@@ -423,7 +423,7 @@ public:
   //! Returns the identification number of this structure.
   Standard_Integer Identification() const { return myCStructure->Id; }
   
-  //! Prints informations about the network associated
+  //! Prints information about the network associated
   //! with the structure <AStructure>.
   Standard_EXPORT static void PrintNetwork (const Handle(Graphic3d_Structure)& AStructure, const Graphic3d_TypeOfConnection AType);
   

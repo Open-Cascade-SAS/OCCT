@@ -192,7 +192,7 @@ public:
   //! @param theSolids  - The solids to put internals to
   //! @param theParts   - The parts to classify relatively solids
   //! @param theImages  - Possible images of the parts that has to be classified
-  //! @param theContext - Cashed geometrical tools to speed-up classifications
+  //! @param theContext - cached geometrical tools to speed-up classifications
   Standard_EXPORT static void FillInternals(const TopTools_ListOfShape& theSolids,
                                             const TopTools_ListOfShape& theParts,
                                             const TopTools_DataMapOfShapeListOfShape& theImages,

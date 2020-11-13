@@ -147,7 +147,7 @@ public:
   //! StdFail_NotDone if the construction fails.
   Standard_EXPORT void WhichQualifier (const Standard_Integer Index, GccEnt_Position& Qualif1, GccEnt_Position& Qualif2) const;
   
-  //! Returns informations about the tangency point between the
+  //! Returns information about the tangency point between the
   //! result number Index and the first argument.
   //! ParSol is the intrinsic parameter of the point PntSol on the solution curv.
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.
@@ -155,7 +155,7 @@ public:
   //! notDone is raised if the construction algorithm did not succeed.
   Standard_EXPORT void Tangency1 (const Standard_Integer Index, Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
   
-  //! Returns informations about the tangency point between the
+  //! Returns information about the tangency point between the
   //! result number Index and the second argument.
   //! ParSol is the intrinsic parameter of the point PntSol on the solution curv.
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.

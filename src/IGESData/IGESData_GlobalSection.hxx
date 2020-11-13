@@ -64,7 +64,7 @@ public:
   
   //! Returns a string withpout its Hollerith marks (nnnH ahead).
   //! Remark : all strings stored in GlobalSection are expurged
-  //! from Hollerith informations (without nnnH)
+  //! from Hollerith information (without nnnH)
   //! If <astr> is not Hollerith form, it is simply copied
   Standard_EXPORT Handle(TCollection_HAsciiString) TranslatedFromHollerith (const Handle(TCollection_HAsciiString)& astr) const;
   

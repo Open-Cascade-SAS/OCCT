@@ -93,7 +93,7 @@ public:
   //! Returns Entity corresponding to a Param, given its rank
   Standard_EXPORT Handle(Standard_Transient) ParamEntity (const Standard_Integer num) const;
   
-  //! Returns litteral value of a Parameter, given its rank
+  //! Returns literal value of a Parameter, given its rank
   Standard_EXPORT Handle(TCollection_HAsciiString) ParamValue (const Standard_Integer num) const;
   
   //! Manages reservation for parameters (internal use)

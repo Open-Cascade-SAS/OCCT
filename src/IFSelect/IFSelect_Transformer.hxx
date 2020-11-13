@@ -69,7 +69,7 @@ public:
   //! the starting one
   //!
   //! <me> is mutable to allow results for ChangeProtocol to be
-  //! memorized if needed, and to store informations useful for
+  //! memorized if needed, and to store information useful for
   //! the method Updated
   //!
   //! Returns True if Done, False if an Error occured : in this case,

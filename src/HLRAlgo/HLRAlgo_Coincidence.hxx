@@ -26,7 +26,7 @@
 #include <TopAbs_State.hxx>
 
 //! The Coincidence class is used in an Inteference to
-//! store informations on the "hiding" edge.
+//! store information on the "hiding" edge.
 //!
 //! 2D  Data : The  tangent  and the  curvature of the
 //! projection of the edge  at the intersection point.

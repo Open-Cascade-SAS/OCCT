@@ -84,7 +84,7 @@ public:
   Standard_EXPORT void SetMode (const gp_Ax2& Axe);
   
   //! Sets a fixed BiNormal  direction to perform the --
-  //! sweeping.   Angular   relations   beetween  the
+  //! sweeping.   Angular   relations   between  the
   //! section(s) and <BiNormal> will be constant
   Standard_EXPORT void SetMode (const gp_Dir& BiNormal);
   
@@ -118,9 +118,9 @@ public:
   //! Possibilities are :
   //! - Give one or sevral section
   //! - Give one profile and an homotetic law.
-  //! - Automatic compute of correspondance beetween spine, and section
+  //! - Automatic compute of correspondance between spine, and section
   //! on the sweeped shape
-  //! - correspondance beetween spine, and section on the sweeped shape
+  //! - correspondance between spine, and section on the sweeped shape
   //! defined by a vertex of the spine
   Standard_EXPORT void SetMode (const TopoDS_Wire& AuxiliarySpine, const Standard_Boolean CurvilinearEquivalence, const BRepFill_TypeOfContact KeepContact = BRepFill_NoContact);
   

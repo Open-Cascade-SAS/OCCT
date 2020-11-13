@@ -87,18 +87,18 @@ public:
   Standard_EXPORT Standard_Boolean Perform(const Standard_Real theRadius);
 
   //! Returns number of possible solutions.
-  //! <thePoint> chooses a particular fillet in case of several fillets 
+  //! <thePoint> chooses a particular fillet in case of several fillets
   //! may be constructed (for example, a circle intersecting a segment in 2 points).
   //! Put the intersecting (or common) point of the edges.
   Standard_EXPORT Standard_Integer NbResults(const gp_Pnt& thePoint);
 
-  //! Returns result (fillet edge, modified edge1, modified edge2), 
-  //! neares to the given point <thePoint> if iSolution == -1.
-  //! <thePoint> chooses a particular fillet in case of several fillets 
+  //! Returns result (fillet edge, modified edge1, modified edge2),
+  //! nearest to the given point <thePoint> if iSolution == -1.
+  //! <thePoint> chooses a particular fillet in case of several fillets
   //! may be constructed (for example, a circle intersecting a segment in 2 points).
   //! Put the intersecting (or common) point of the edges.
-  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt& thePoint, 
-                                     TopoDS_Edge& theEdge1, TopoDS_Edge& theEdge2, 
+  Standard_EXPORT TopoDS_Edge Result(const gp_Pnt& thePoint,
+                                     TopoDS_Edge& theEdge1, TopoDS_Edge& theEdge2,
                                      const Standard_Integer iSolution = -1);
 
 private:
@@ -107,7 +107,7 @@ private:
   void FillPoint(FilletPoint*, const Standard_Real theLimit);
   //! Computes the derivative value of the function in the current point.
   //! <theDiffStep> is small step for approximate derivative computation
-  //! <theFront> is direction of the step: from or reverced
+  //! <theFront> is direction of the step: from or reversed
   void FillDiff(FilletPoint*, Standard_Real theDiffStep, Standard_Boolean theFront);
   //! Using Newton methods computes optimal point, that can be root of the
   //! function taking into account two input points, functions value and derivatives.

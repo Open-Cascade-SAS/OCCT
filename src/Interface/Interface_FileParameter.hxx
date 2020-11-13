@@ -28,7 +28,7 @@
 class TCollection_AsciiString;
 
 
-//! Auxiliary class to store a litteral parameter in a file
+//! Auxiliary class to store a literal parameter in a file
 //! intermediate directory or in an UndefinedContent : a reference
 //! type Parameter detains an Integer which is used to address a
 //! record in the directory.

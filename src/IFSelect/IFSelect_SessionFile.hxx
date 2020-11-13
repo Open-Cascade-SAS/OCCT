@@ -54,12 +54,12 @@ class Standard_Transient;
 //! SessionFile works with a library of SessionDumper type objects
 //!
 //! The File is Produced as follows :
-//! SessionFile produces all general Informations (such as Int and
+//! SessionFile produces all general Information (such as Int and
 //! Text Parameters, Types and Inputs of Selections, Dispatches,
 //! Modifiers ...) and calls the SessionDumpers to produce all
 //! the particular Data : creation arguments, parameters to be set
 //! It is Read in the same terms :
-//! SessionFile reads and interprets all general Informations,
+//! SessionFile reads and interprets all general Information,
 //! and calls the SessionDumpers to recognize Types and for a
 //! recognized Type create the corresponding Object with its
 //! particular parameters as they were written.

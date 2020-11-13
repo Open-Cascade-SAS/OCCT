@@ -30,9 +30,9 @@ class IntSurf_Transition;
 
 //! Definition of an intersection point between a line
 //! and a restriction on a surface.
-//! Such a point is contains geometrical informations (see
-//! the Value method) and logical informations.
-class BRepBlend_PointOnRst 
+//! Such a point is contains geometrical information (see
+//! the Value method) and logical information.
+class BRepBlend_PointOnRst
 {
 public:
 

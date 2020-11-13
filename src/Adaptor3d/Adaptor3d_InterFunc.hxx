@@ -31,7 +31,7 @@ class Standard_ConstructionError;
 
 //! Used to find the points U(t) = U0 or V(t) = V0 in
 //! order to determine the  Cn discontinuities of  an
-//! Adpator_CurveOnSurface  relativly  to    the
+//! Adpator_CurveOnSurface  relatively  to    the
 //! discontinuities of the surface. Used to
 //! find the roots of the functions
 class Adaptor3d_InterFunc  : public math_FunctionWithDerivative

@@ -48,7 +48,7 @@ BRep_CurveOnSurface::BRep_CurveOnSurface(const Handle(Geom2d_Curve)& PC,
 
 void BRep_CurveOnSurface::D0(const Standard_Real U, gp_Pnt& P) const
 {
-  // shoud be D0 NYI
+  // should be D0 NYI
   gp_Pnt2d P2d = myPCurve->Value(U);
   P = mySurface->Value(P2d.X(),P2d.Y());
   P.Transform(myLocation.Transformation());

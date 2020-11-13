@@ -47,7 +47,7 @@ public:
   
   //! detects if the  surface has punctual U  or  V
   //! isoparametric  curve along on  the bounds of the surface
-  //! relativly to the tolerance Tol and Builds the corresponding
+  //! relatively to the tolerance Tol and Builds the corresponding
   //! osculating surfaces.
   Standard_EXPORT Geom_OsculatingSurface(const Handle(Geom_Surface)& BS, const Standard_Real Tol);
   

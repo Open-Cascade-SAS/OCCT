@@ -110,7 +110,7 @@ public:
   //! StdFail_NotDone if the construction fails.
   Standard_EXPORT gp_Circ2d ThisSolution (const Standard_Integer Index) const;
   
-  //! It returns the informations about the qualifiers of
+  //! It returns the information about the qualifiers of
   //! the tangency
   //! arguments concerning the solution number Index.
   //! It returns the real qualifiers (the qualifiers given to the
@@ -122,13 +122,13 @@ public:
   //! StdFail_NotDone if the construction fails.
   Standard_EXPORT void WhichQualifier (const Standard_Integer Index, GccEnt_Position& Qualif1, GccEnt_Position& Qualif2) const;
   
-  //! Returns informations about the tangency point between the
+  //! Returns information about the tangency point between the
   //! result and the first argument.
   //! ParSol is the intrinsic parameter of the point PntSol on the solution curv.
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.
   Standard_EXPORT void Tangency1 (const Standard_Integer Index, Standard_Real& ParSol, Standard_Real& ParArg, gp_Pnt2d& PntSol) const;
   
-  //! Returns informations about the tangency point between the
+  //! Returns information about the tangency point between the
   //! result and the second argument.
   //! ParSol is the intrinsic parameter of the point PntSol on the solution curv.
   //! ParArg is the intrinsic parameter of the point PntSol on the argument curv.

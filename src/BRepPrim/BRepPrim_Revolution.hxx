@@ -31,7 +31,7 @@ class TopoDS_Edge;
 class gp_Pnt2d;
 
 
-//! Implement  the OneAxis algoritm   for a revolution
+//! Implement  the OneAxis algorithm   for a revolution
 //! surface.
 class BRepPrim_Revolution  : public BRepPrim_OneAxis
 {

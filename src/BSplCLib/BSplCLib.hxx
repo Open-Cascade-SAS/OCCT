@@ -68,7 +68,7 @@ class math_Matrix;
 //!
 //! Those methods have the following structure :
 //!
-//! - They extract the pole informations in a working array.
+//! - They extract the pole information in a working array.
 //!
 //! -  They      process the  working   array    with   the
 //! multi-dimension  methods. (for example  a  3d  rational
@@ -820,7 +820,7 @@ public:
   //! same as the  range of F(t)
   //!
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //!
@@ -847,7 +847,7 @@ public:
   //! same as the  range of F(t)
   //!
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //!
@@ -870,7 +870,7 @@ public:
   //! of BSplineFlatKnots which is the
   //! same as the  range of F(t)
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
@@ -892,7 +892,7 @@ public:
   //! of BSplineFlatKnots which is the
   //! same as the  range of F(t)
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
@@ -911,7 +911,7 @@ public:
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
   //! is the same as the  range of F(t)
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
@@ -930,7 +930,7 @@ public:
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
   //! is the same as the  range of F(t)
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
@@ -949,7 +949,7 @@ public:
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
   //! is the same as the  range of F(t)
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index
@@ -968,7 +968,7 @@ public:
   //! NewDegree on the knots FlatKnots 2. the range of a(t)
   //! is the same as the  range of F(t)
   //! Warning: it is
-  //! the caller's responsability to insure that conditions
+  //! the caller's responsibility to insure that conditions
   //! 1. and  2. above are  satisfied : no check whatsoever
   //! is made in this method
   //! theStatus will return 0 if OK else it will return the pivot index

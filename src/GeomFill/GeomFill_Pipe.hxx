@@ -66,11 +66,11 @@ class gp_Dir;
 //! - or a constant trihedron to have all the sections
 //! in a same plane
 //! 2.b) Define a ConstantBinormal Direction to keep the
-//! same angle beetween the Direction and the sections
+//! same angle between the Direction and the sections
 //! along the sweep surface.
 //! 2.c) Define the path by a surface and a 2dcurve,
 //! the surface is used to define the trihedron's normal.
-//! It is usefull to keep a constant angle beetween
+//! It is usefull to keep a constant angle between
 //! input surface and the pipe.                           --
 //! 3) give a  path and two sections. The section
 //! evoluate from First to Last Section.

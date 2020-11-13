@@ -118,7 +118,7 @@ public:
   Standard_EXPORT void SetConstraints (const AppParCurves_Constraint firstC, const AppParCurves_Constraint lastC);
 
   //! Sets periodic flag.
-  //! If thePeriodic = Standard_True, algorith tries to build periodic
+  //! If thePeriodic = Standard_True, algorithm tries to build periodic
   //! multicurve using corresponding C1 boundary condition for first and last multipoints.
   //! Multiline must be closed.
   Standard_EXPORT void SetPeriodic(const Standard_Boolean thePeriodic);

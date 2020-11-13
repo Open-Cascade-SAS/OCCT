@@ -35,8 +35,8 @@ class IntSurf_PntOn2S;
 
 
 //! Definition of an intersection point between two surfaces.
-//! Such a point is contains geometrical informations (see
-//! the Value method) and logical informations.
+//! Such a point is contains geometrical information (see
+//! the Value method) and logical information.
 class IntPatch_Point 
 {
 public:

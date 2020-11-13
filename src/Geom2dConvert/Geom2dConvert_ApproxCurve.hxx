@@ -64,7 +64,7 @@ public:
   Standard_EXPORT Handle(Geom2d_BSplineCurve) Curve() const;
   
   //! returns  Standard_True  if  the  approximation  has
-  //! been  done  with  within  requiered tolerance
+  //! been  done  with  within  required tolerance
   Standard_EXPORT Standard_Boolean IsDone() const;
   
   //! returns  Standard_True if the approximation did come out

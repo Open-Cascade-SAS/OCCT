@@ -86,7 +86,7 @@ public:
   //! number of solutions.
   Standard_EXPORT gp_Lin2d ThisSolution (const Standard_Integer Index) const;
   
-  //! Returns the informations about the qualifiers of the
+  //! Returns the information about the qualifiers of the
   //! tangency arguments concerning the solution number Index.
   //! It returns the real qualifiers (the qualifiers given to the
   //! constructor method in case of enclosed, enclosing and outside
@@ -97,7 +97,7 @@ public:
   //! number of solutions.
   Standard_EXPORT void WhichQualifier (const Standard_Integer Index, GccEnt_Position& Qualif1) const;
   
-  //! Returns informations about the tangency point between the
+  //! Returns information about the tangency point between the
   //! result number Index and the first argument.
   //! ParSol is the intrinsic parameter of the point on the
   //! solution curv.

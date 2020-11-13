@@ -59,7 +59,7 @@ class gp_Vec;
 //!
 //! Warnings : The  bounds of UKnots  and UMults should be the
 //! same, the bounds of VKnots and VMults should be  the same,
-//! the bounds of Poles and Weights shoud be the same.
+//! the bounds of Poles and Weights should be the same.
 //!
 //! The Control points representation is :
 //! Poles(Uorigin,Vorigin) ...................Poles(Uorigin,Vend)
@@ -399,7 +399,7 @@ public:
   //! degree U/VNewDegree  on  the knots U/VFlatKnots 2. the range
   //! of a(u,v) is   the   same as  the range   of  N(u,v)
   //! or D(u,v)
-  //! ---Warning:  it is   the caller's  responsability  to
+  //! ---Warning:  it is   the caller's  responsibility  to
   //! insure that conditions 1. and  2. above are satisfied
   //! : no  check  whatsoever is made   in  this method  --
   //! theStatus will  return 0 if  OK else it will return  the

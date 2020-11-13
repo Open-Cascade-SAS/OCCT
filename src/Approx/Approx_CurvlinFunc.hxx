@@ -67,7 +67,7 @@ public:
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accomodate
+  //! The array must provide  enough room to  accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   Standard_EXPORT void Intervals (TColStd_Array1OfReal& T, const GeomAbs_Shape S) const;
   
@@ -82,12 +82,12 @@ public:
   
   Standard_EXPORT Standard_Real GetLength() const;
   
-  //! returns  original parameter correponding S.  if
+  //! returns  original parameter corresponding S.  if
   //! Case == 1 computation is performed on myC2D1 and mySurf1,
   //! otherwise it is done on myC2D2 and mySurf2.
   Standard_EXPORT Standard_Real GetUParameter (Adaptor3d_Curve& C, const Standard_Real S, const Standard_Integer NumberOfCurve) const;
   
-  //! returns original parameter correponding S.
+  //! returns original parameter corresponding S.
   Standard_EXPORT Standard_Real GetSParameter (const Standard_Real U) const;
   
   //! if myCase != 1
@@ -116,7 +116,7 @@ private:
   
   Standard_EXPORT void Init (Adaptor3d_Curve& C, Handle(TColStd_HArray1OfReal)& Si, Handle(TColStd_HArray1OfReal)& Ui) const;
   
-  //! returns curvilinear parameter correponding U.
+  //! returns curvilinear parameter corresponding U.
   Standard_EXPORT Standard_Real GetSParameter (Adaptor3d_Curve& C, const Standard_Real U, const Standard_Real Length) const;
   
   Standard_EXPORT Standard_Boolean EvalCurOnSur (const Standard_Real S, const Standard_Integer Order, TColStd_Array1OfReal& Result, const Standard_Integer NumberOfCurve) const;

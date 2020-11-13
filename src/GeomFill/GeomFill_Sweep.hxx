@@ -70,8 +70,8 @@ public:
   //! <LocationLaw> but if this tolerance is too large Tol2d
   //! is used.
   //! TolAngular : Tolerance (in radian) to control the angle
-  //! beetween tangents on the section law and
-  //! tangent of iso-v on approximed surface
+  //! between tangents on the section law and
+  //! tangent of iso-v on approximated surface
   Standard_EXPORT void SetTolerance (const Standard_Real Tol3d, const Standard_Real BoundTol = 1.0, const Standard_Real Tol2d = 1.0e-5, const Standard_Real TolAngular = 1.0);
   
   //! Set the flag that indicates attempt to approximate
@@ -94,15 +94,15 @@ public:
   //! Build the Sweeep  Surface
   //! ApproxStyle defines Approximation Strategy
   //! - GeomFill_Section : The composed Function : Location X Section
-  //! is directly approximed.
-  //! - GeomFill_Location : The location law is approximed, and the
+  //! is directly approximated.
+  //! - GeomFill_Location : The location law is approximated, and the
   //! SweepSurface is build algebric composition
-  //! of approximed location law and section law
+  //! of approximated location law and section law
   //! This option is Ok, if Section.Surface() methode
   //! is effective.
   //! Continuity : The continuity in v waiting on the surface
-  //! Degmax     : The maximum degree in v requiered on the surface
-  //! Segmax     : The maximum number of span in v requiered on
+  //! Degmax     : The maximum degree in v required on the surface
+  //! Segmax     : The maximum number of span in v required on
   //! the surface
   //!
   //! raise If Domain are infinite or Profile not Setted.

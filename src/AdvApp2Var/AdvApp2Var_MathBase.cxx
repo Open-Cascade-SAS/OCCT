@@ -2705,7 +2705,7 @@ int AdvApp2Var_MathBase::mmcvctx_(integer *ndimen,
 /*        it is preferable to call a routine based on */
 /*        Lagrange or Hermite interpolation depending on the case. */
 /*        (for a high degree the matrix of the system can be badly */
-/*        conditionned). */
+/*        conditioned). */
 /*        This routine returns a curve defined in (-1,1). */
 /*        In general case, it is necessary to use MCVCTG. */
 /* > */

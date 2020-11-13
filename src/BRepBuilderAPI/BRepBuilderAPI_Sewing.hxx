@@ -171,7 +171,7 @@ public:
   //! Gives a modifieded subshape
   Standard_EXPORT TopoDS_Shape ModifiedSubShape (const TopoDS_Shape& shape) const;
   
-  //! print the informations
+  //! print the information
   Standard_EXPORT void Dump() const;
   
   //! Gives the number of deleted faces (faces smallest than tolerance)

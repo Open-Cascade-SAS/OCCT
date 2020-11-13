@@ -82,8 +82,8 @@ public:
   Standard_EXPORT void GetBounds (math_Vector& InfBound,
                                   math_Vector& SupBound) const Standard_OVERRIDE;
   
-  //! Returns   the    minimal  Distance  beetween   two
-  //! extremitys of calculed sections.
+  //! Returns   the    minimal  Distance  between   two
+  //! extremities of calculated sections.
   Standard_EXPORT Standard_Real GetMinimalDistance() const Standard_OVERRIDE;
   
   //! Sets the distances and the "quadrant".
@@ -105,7 +105,7 @@ public:
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accomodate
+  //! The array must provide  enough room to  accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   //! raises
   //! OutOfRange from Standard

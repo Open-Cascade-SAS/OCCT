@@ -108,8 +108,8 @@ public:
   Standard_EXPORT virtual Standard_Boolean IsSolution (const math_Vector& Sol,
                                                        const Standard_Real Tol) = 0;
   
-  //! Returns   the    minimal  Distance  beetween   two
-  //! extremitys of calculed sections.
+  //! Returns   the    minimal  Distance  between   two
+  //! extremities of calculated sections.
   Standard_EXPORT virtual Standard_Real GetMinimalDistance() const = 0;
   
   //! Returns the point on the first support.
@@ -135,7 +135,7 @@ public:
   //! Stores in <T> the  parameters bounding the intervals
   //! of continuity <S>.
   //!
-  //! The array must provide  enough room to  accomodate
+  //! The array must provide  enough room to  accommodate
   //! for the parameters. i.e. T.Length() > NbIntervals()
   //! raises
   //! OutOfRange from Standard

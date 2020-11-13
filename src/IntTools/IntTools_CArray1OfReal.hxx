@@ -51,7 +51,7 @@ public:
   //! CArray1OfItem anSharedArray1(aArray1.ChangeValue(0),aArray1.Length());
   //!
   //! Warning:
-  //! The validity of length are under the responsability
+  //! The validity of length are under the responsibility
   //! of the user.
   //! The sahred array must have a valid address during the life of
   //! the Array1.

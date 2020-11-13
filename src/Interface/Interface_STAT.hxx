@@ -37,7 +37,7 @@ class TCollection_HAsciiString;
 //! its progression. This produces a state of advancement of the
 //! process. This state can then be queried asynchronously :
 //! typically it is summarised as a percentage. There are also
-//! an identification of the current state, and informations on
+//! an identification of the current state, and information on
 //! processed volume.
 //!
 //! A STAT form can be described once for all (as static).

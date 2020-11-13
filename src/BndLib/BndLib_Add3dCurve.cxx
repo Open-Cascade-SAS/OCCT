@@ -221,7 +221,7 @@ void BndLib_Add3dCurve::Add( const Adaptor3d_Curve& C,
 	else {
 	  ////////////////////////////////////////////////
 	  //  modified by NIZHNY-EAP Fri Dec  3 14:29:14 1999 ___BEGIN___
-	  // To avoid exeption in Segment
+	  // To avoid exception in Segment
 	  if(Bsaux->FirstParameter() > U1) u1 = Bsaux->FirstParameter();
 	  if(Bsaux->LastParameter()  < U2 ) u2  = Bsaux->LastParameter();
 	  //  modified by NIZHNY-EAP Fri Dec  3 14:29:18 1999 ___END___

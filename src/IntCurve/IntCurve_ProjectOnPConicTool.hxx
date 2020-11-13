@@ -55,8 +55,8 @@ public:
   //! the implicit curve.  Tol  is the tolerance on the distance
   //! between a point and the  parametrised curve.  LowParameter
   //! and HighParameter give the  boundaries of the interval  in
-  //! wich the parameter  certainly  lies.  These parameters are
-  //! given to implement a  more efficient  algoritm. So,  it is
+  //! which the parameter certainly  lies.  These parameters are
+  //! given to implement a  more efficient  algorithm. So,  it is
   //! not necessary to check   that the returned value  verifies
   //! LowParameter <= Value <= HighParameter.
   Standard_EXPORT static Standard_Real FindParameter (const IntCurve_PConic& C, const gp_Pnt2d& Pnt, const Standard_Real LowParameter, const Standard_Real HighParameter, const Standard_Real Tol);

@@ -240,7 +240,7 @@ void IGESGeom_ToolPlane::OwnCheck(const Handle(IGESGeom_Plane)& ent,
     Message_Msg Msg137("XSTEP_137");
     ach->SendFail(Msg137);
   }
-// These messages are transfered in the translation procedure
+// These messages are transferred in the translation procedure
 //  if ( (A*A + B*B + C*C) < eps)    //  pas nul !
 //    ach.SendFail("Incorrect Coefficients for the Plane");
   if ( !ent->HasBoundingCurve()) return;

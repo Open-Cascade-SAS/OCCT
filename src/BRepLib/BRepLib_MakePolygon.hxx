@@ -74,7 +74,7 @@ public:
   Standard_EXPORT void Add (const TopoDS_Vertex& V);
   
   //! Returns  True if  the last   vertex  or point  was
-  //! succesfully added.
+  //! successfully added.
   Standard_EXPORT Standard_Boolean Added() const;
   
   Standard_EXPORT void Close();
