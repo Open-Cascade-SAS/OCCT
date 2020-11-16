@@ -22,6 +22,10 @@
 #include <TDF_HAllocator.hxx>
 #include <NCollection_DefineAlloc.hxx>
 
+#ifdef Standard_HASATOMIC
+  #include <atomic>
+#endif
+
 class TDF_Attribute;
 class TDF_AttributeIterator;
 class TDF_ChildIterator;
@@ -160,15 +164,15 @@ class TDF_LabelNode {
   // Private Fields
   // --------------------------------------------------------------------------
 
-  TDF_LabelNodePtr       myFather; 
-  TDF_LabelNodePtr       myBrother; 
-  TDF_LabelNodePtr       myFirstChild;
-  TDF_LabelNodePtr       myLastFoundChild; //jfa 10.01.2003
-  Standard_Integer       myTag;
-  Standard_Integer       myFlags; // Flags & Depth
-  Handle(TDF_Attribute)  myFirstAttribute;
+  TDF_LabelNodePtr      myFather; 
+  TDF_LabelNodePtr      myBrother; 
+  TDF_LabelNodePtr      myFirstChild;
+  Standard_ATOMIC(TDF_LabelNodePtr) myLastFoundChild; //jfa 10.01.2003
+  Standard_Integer      myTag;
+  Standard_Integer      myFlags; // Flags & Depth
+  Handle(TDF_Attribute) myFirstAttribute;
 #ifdef KEEP_LOCAL_ROOT
-  TDF_Data *             myData;
+  TDF_Data *            myData;
 #endif
 #ifdef OCCT_DEBUG
   TCollection_AsciiString myDebugEntry;

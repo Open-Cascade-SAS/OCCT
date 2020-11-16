@@ -281,4 +281,19 @@
  #endif
 #endif
 
+//! @def Standard_ATOMIC
+//! Definition of Standard_ATOMIC for C++11 or visual studio that supports it.
+//! Before usage there must be "atomic" included in the following way:
+//! #ifdef Standard_HASATOMIC
+//!   #include <atomic>
+//! #endif
+#if (defined(__cplusplus) && __cplusplus >= 201100L) || (defined(_MSC_VER) && _MSC_VER >= 1800) || \
+    (defined(__GNUC__) && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7)))
+  #define Standard_HASATOMIC
+  #define Standard_ATOMIC(theType) std::atomic<theType> 
+#else
+  #define Standard_ATOMIC(theType) theType
+#endif
+
+
 #endif
