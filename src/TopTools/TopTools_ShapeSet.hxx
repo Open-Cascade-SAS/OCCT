@@ -181,8 +181,7 @@ public:
 
 public:
 
-  static Standard_CString Version_1;
-  static Standard_CString Version_2;
+  static const Standard_CString THE_ASCII_VERSIONS[TopTools_FormatVersion_VERSION_3 + 1];
 
 private:
 

@@ -94,13 +94,58 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(Message_Me
 }
 
 //=======================================================================
+//function : IsWithNormals
+//purpose  :
+//=======================================================================
+Standard_Boolean BinDrivers_DocumentStorageDriver::IsWithNormals() const
+{
+  if (myDrivers.IsNull())
+  {
+    return Standard_False;
+  }
+
+  Handle(BinMDF_ADriver) aDriver;
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  return !aShapesDriver.IsNull()
+    && aShapesDriver->IsWithNormals();
+}
+
+//=======================================================================
+//function : SetWithNormals
+//purpose  :
+//=======================================================================
+void BinDrivers_DocumentStorageDriver::SetWithNormals(const Handle(Message_Messenger)& theMessageDriver,
+  const Standard_Boolean theWithNormals)
+{
+  if (myDrivers.IsNull())
+  {
+    myDrivers = AttributeDrivers(theMessageDriver);
+  }
+  if (myDrivers.IsNull())
+  {
+    return;
+  }
+
+  Handle(BinMDF_ADriver) aDriver;
+  myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver);
+  Handle(BinMNaming_NamedShapeDriver) aShapesDriver = Handle(BinMNaming_NamedShapeDriver)::DownCast(aDriver);
+  if (aShapesDriver.IsNull())
+  {
+    throw Standard_NotImplemented("Internal Error - TNaming_NamedShape is not found!");
+  }
+
+  aShapesDriver->SetWithNormals(theWithNormals);
+}
+
+//=======================================================================
 //function : WriteShapeSection
 //purpose  : Implements WriteShapeSection
 //=======================================================================
 void BinDrivers_DocumentStorageDriver::WriteShapeSection
                                (BinLDrivers_DocumentSection&   theSection,
                                 Standard_OStream&              theOS,
-                                const Standard_Integer         theDocVer,
+                                const TDocStd_FormatVersion    theDocVer,
                                 const Message_ProgressRange&   theRange)
 {
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
@@ -112,7 +157,7 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
       OCC_CATCH_SIGNALS
       Handle(BinMNaming_NamedShapeDriver) aNamedShapeDriver =
         Handle(BinMNaming_NamedShapeDriver)::DownCast (aDriver);
-      aNamedShapeDriver->WriteShapeSection (theOS, theRange);
+      aNamedShapeDriver->WriteShapeSection (theOS, theDocVer, theRange);
     }
     catch(Standard_Failure const& anException) {
       TCollection_ExtendedString anErrorStr ("BinDrivers_DocumentStorageDriver, Shape Section :");

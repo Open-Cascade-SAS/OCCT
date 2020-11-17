@@ -34,8 +34,14 @@
 
 #include <locale.h>
 #include <string.h>
-Standard_CString TopTools_ShapeSet::Version_1 = "CASCADE Topology V1, (c) Matra-Datavision";
-Standard_CString TopTools_ShapeSet::Version_2 = "CASCADE Topology V2, (c) Matra-Datavision";
+
+const Standard_CString TopTools_ShapeSet::THE_ASCII_VERSIONS[TopTools_FormatVersion_UPPER + 1] =
+{
+  "",
+  "CASCADE Topology V1, (c) Matra-Datavision",
+  "CASCADE Topology V2, (c) Matra-Datavision",
+  "CASCADE Topology V3, (c) Open Cascade"
+};
 
 //=======================================================================
 //function : TopTools_ShapeSet
@@ -55,8 +61,8 @@ TopTools_ShapeSet::~TopTools_ShapeSet()
 //=======================================================================
 void TopTools_ShapeSet::SetFormatNb(const Standard_Integer theFormatNb)
 {
-  Standard_ASSERT_RETURN(theFormatNb == TopTools_FormatVersion_VERSION_1 ||
-                         theFormatNb == TopTools_FormatVersion_VERSION_2,
+  Standard_ASSERT_RETURN(theFormatNb >= TopTools_FormatVersion_LOWER &&
+                         theFormatNb <= TopTools_FormatVersion_UPPER,
     "Error: unsupported TopTools version.", );
 
   myFormatNb = theFormatNb;
@@ -458,14 +464,7 @@ void  TopTools_ShapeSet::Write(Standard_OStream& OS, const Message_ProgressRange
   std::streamsize prec = OS.precision(15);
 
   // write the copyright
-  if (myFormatNb == TopTools_FormatVersion_VERSION_2)
-  {
-    OS << "\n" << Version_2 << "\n";
-  }
-  else
-  {
-    OS << "\n" << Version_1 << "\n";
-  }
+  OS << "\n" << THE_ASCII_VERSIONS[myFormatNb] << "\n";
 
   //-----------------------------------------
   // write the locations
@@ -603,6 +602,7 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange&
 
   // Check the version
   char vers[101];
+  Standard_Boolean anIsSetFormat = Standard_False;
   do {
     IS.getline(vers,100,'\n');
     // BUC60769 PTV 18.10.2000: remove possible '\r' at the end of the line
@@ -616,22 +616,26 @@ void  TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange&
       for (lv--; lv > 0 && (vers[lv] == '\r' || vers[lv] == '\n') ;lv--) 
         vers[lv] = '\0';
     }
+    for (Standard_Integer i = TopTools_FormatVersion_LOWER;
+         i <= TopTools_FormatVersion_UPPER; ++i)
+    {
+      if (!strcmp(vers, THE_ASCII_VERSIONS[i]))
+      {
+        SetFormatNb(i);
+        anIsSetFormat = Standard_True;
+        break;
+      }
+    }
+    if (anIsSetFormat)
+    {
+      break;
+    }
     
-  } while (!IS.fail()
-        && strcmp(vers, Version_1)
-        && strcmp(vers, Version_2));
+  } while (!IS.fail());
   if (IS.fail()) {
     std::cout << "File was not written with this version of the topology"<<std::endl;
     IS.imbue (anOldLocale);
     return;
-  }
-  else if (strcmp(vers, Version_2) == 0)
-  {
-    SetFormatNb(TopTools_FormatVersion_VERSION_2);
-  }
-  else
-  {
-    SetFormatNb(TopTools_FormatVersion_VERSION_1);
   }
 
   //-----------------------------------------

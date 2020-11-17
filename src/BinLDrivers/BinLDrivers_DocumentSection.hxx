@@ -25,6 +25,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Message_ProgressIndicator.hxx>
+#include <TDocStd_FormatVersion.hxx>
 
 class TCollection_AsciiString;
 
@@ -67,17 +68,17 @@ public:
   
   //! Create a Section entry in the Document TOC (list of sections)
   Standard_EXPORT void WriteTOC (Standard_OStream& theOS,
-                                 const Standard_Integer theDocFormatVersion);
+                                 const TDocStd_FormatVersion theDocFormatVersion);
   
   //! Save Offset and Length data into the Section entry
   //! in the Document TOC (list of sections)
   Standard_EXPORT void Write (Standard_OStream& theOS, const uint64_t theOffset,
-                              const Standard_Integer theDocFormatVersion);
+                              const TDocStd_FormatVersion theDocFormatVersion);
   
   //! Fill a DocumentSection instance from the data that are read
   //! from TOC.
   Standard_EXPORT static void ReadTOC (BinLDrivers_DocumentSection& theSection, Standard_IStream& theIS,
-                                       const Standard_Integer theDocFormatVersion);
+                                       const TDocStd_FormatVersion theDocFormatVersion);
 
 
 

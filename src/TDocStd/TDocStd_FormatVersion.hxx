@@ -63,7 +63,18 @@ enum TDocStd_FormatVersion
   TDocStd_FormatVersion_VERSION_10,    //!< OCCT 7.2.0
                                        //!< * BIN: ReadTOC changed to handle 64-bit file length [#0028736]
 
-  TDocStd_FormatVersion_CURRENT = TDocStd_FormatVersion_VERSION_10 //!< The latest version
+  TDocStd_FormatVersion_VERSION_11,    //!< OCCT 7.6.0
+                                       //!< * BIN, XML: TopTools_FormatVersion_CURRENT changed to 3 and 
+                                       //!< BinTools_FormatVersion_CURRENT changed to 4 to preserve per-vertex normal 
+                                       //!< information in case of triangulation-only Faces [#0031136]
+  TDocStd_FormatVersion_CURRENT = TDocStd_FormatVersion_VERSION_11 //!< Current version
 };
+
+enum
+{
+  TDocStd_FormatVersion_LOWER   = TDocStd_FormatVersion_VERSION_2,
+  TDocStd_FormatVersion_UPPER   = TDocStd_FormatVersion_VERSION_11
+};
+
 
 #endif // _TDocStdFormatVersion_HeaderFile

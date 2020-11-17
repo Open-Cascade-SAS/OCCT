@@ -47,16 +47,22 @@ public:
 
   //! Builds an empty ShapeSet.
   //! @param theWithTriangles [in] flag to write triangulation data
-  Standard_EXPORT BinTools_ShapeSet (const Standard_Boolean theWithTriangles = Standard_False);
+  Standard_EXPORT BinTools_ShapeSet ();
 
   Standard_EXPORT virtual ~BinTools_ShapeSet();
 
   //! Return true if shape should be stored with triangles.
   Standard_Boolean IsWithTriangles() const { return myWithTriangles; }
+  //! Return true if shape should be stored triangulation with normals.
+  Standard_Boolean IsWithNormals() const { return myWithNormals; }
+
 
   //! Define if shape will be stored with triangles.
   //! Ignored (always written) if face defines only triangulation (no surface).
   void SetWithTriangles (const Standard_Boolean theWithTriangles) { myWithTriangles = theWithTriangles; }
+  //! Define if shape will be stored triangulation with normals.
+  //! Ignored (always written) if face defines only triangulation (no surface).
+  void SetWithNormals(const Standard_Boolean theWithNormals) { myWithNormals = theWithNormals; }
 
   //! Sets the BinTools_FormatVersion.
   Standard_EXPORT void SetFormatNb (const Standard_Integer theFormatNb);
@@ -193,9 +199,7 @@ public:
 
 public:
 
-  static Standard_CString Version_1;
-  static Standard_CString Version_2;
-  static Standard_CString Version_3;
+  static const Standard_CString THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1];
 
 private:
 
@@ -208,9 +212,12 @@ private:
   BinTools_Curve2dSet myCurves2d;
   NCollection_IndexedMap<Handle(Poly_Polygon2D), TColStd_MapTransientHasher> myPolygons2D;
   NCollection_IndexedMap<Handle(Poly_Polygon3D), TColStd_MapTransientHasher> myPolygons3D;
-  NCollection_IndexedMap<Handle(Poly_Triangulation), TColStd_MapTransientHasher> myTriangulations;
+  NCollection_IndexedDataMap<Handle(Poly_Triangulation),
+                             Standard_Boolean> myTriangulations; //!< Contains a boolean flag with information
+                                                                 //!  to save normals for triangulation
   NCollection_IndexedMap<Handle(Poly_PolygonOnTriangulation), TColStd_MapTransientHasher> myNodes;
   Standard_Boolean myWithTriangles;
+  Standard_Boolean myWithNormals;
 
 };
 

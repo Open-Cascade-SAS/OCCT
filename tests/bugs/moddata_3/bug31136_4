@@ -1,0 +1,29 @@
+puts "=========="
+puts "0031136: BinXCAF persistence loses normals from triangulation-only Faces"
+puts "=========="
+puts ""
+
+pload MODELING XDE OCAF VISUALIZATION
+source $env(CSF_OCCTSamplesPath)/tcl/cad.tcl
+trinfo res
+wavefront res $imagedir/${test_image}
+readobj o $imagedir/${test_image}.obj
+
+
+# XML format
+set test_image_XML ${test_image}_XML
+NewDocument D1 XmlXCAF
+XAddShape D1 o
+# SetStorageFormatVersion D1 10
+SaveAs D1 $imagedir/${test_image_XML}.xml
+Close D1
+Open $imagedir/${test_image_XML}.xml D2
+vclear
+vclose ALL
+vinit v1/v1
+vbottom
+XDisplay -dispMode 1 D2
+Close D2
+vfit
+vrenderparams -shadingModel phong
+checkview -screenshot -3d -path ${imagedir}/${test_image_XML}.png

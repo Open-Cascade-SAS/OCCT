@@ -124,7 +124,7 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&  theD
     }
 
 //  2. Write the Table of Contents of Sections
-    const Standard_Integer aDocVer = aDoc->StorageFormatVersion();
+    const TDocStd_FormatVersion aDocVer = aDoc->StorageFormatVersion();
     BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
     for (; anIterS.More(); anIterS.Next())
       anIterS.ChangeValue().WriteTOC (theOStream, aDocVer);
@@ -547,7 +547,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSection
 void BinLDrivers_DocumentStorageDriver::WriteShapeSection
                                 (BinLDrivers_DocumentSection&   theSection,
                                  Standard_OStream&              theOS,
-                                 const Standard_Integer         theDocVer,
+                                 const TDocStd_FormatVersion    theDocVer,
                                  const Message_ProgressRange& /*theRange*/)
 {
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();

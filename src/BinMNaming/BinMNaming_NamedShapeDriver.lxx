@@ -13,35 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//=======================================================================
-//function : GetFormat
-//purpose  : 
-//=======================================================================
-
-inline Standard_Integer BinMNaming_NamedShapeDriver::GetFormatNb() const
-{
-  return myFormatNb;
-}
-
-//=======================================================================
-//function : SetFormat
-//purpose  : 
-//=======================================================================
-
-inline void BinMNaming_NamedShapeDriver::SetFormatNb(const Standard_Integer theFormatNb) 
-{
-  myFormatNb = theFormatNb;
-}
-
-//=======================================================================
-//function : SetWithTriangles
-//purpose  : 
-//=======================================================================
-
-inline void BinMNaming_NamedShapeDriver::SetWithTriangles(const Standard_Boolean isWithTriangles) 
-{
-  myShapeSet.SetWithTriangles(isWithTriangles);
-}
 
 //=======================================================================
 //function : GetShapesLocations

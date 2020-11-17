@@ -2202,3 +2202,11 @@ This way an application based on an old version of Open CASCADE Technology may r
 @subsection upgrade_760_createdocument New OCAF document
 
 A new OCAF document may be created only by means of the method *NewDocument()* from CDF_Application (redefined in TDocStd_Application). The methods *CreateDocument()* are deleted in all retrieval drivers.
+
+@subsection upgrade_760_changesInStorageOfShapes Changes in storage of shapes
+
+Information about per-vertex triangulations normals is now stored in BinOCAF and XmlOCAF document,
+BRep and Binary BRep Shape formats (only in case of triangulation-only Faces, with no analytical geometry to restore normals).
+
+Versions of formats have been changed (11 for BinOCAF, 10 for XmlOCAF, 4 for BRep Shape and 3 for Binary BRep Shape).
+Files written with the new version will not be readable by applications of old versions.

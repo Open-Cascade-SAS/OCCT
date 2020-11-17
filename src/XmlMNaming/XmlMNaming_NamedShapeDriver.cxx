@@ -29,6 +29,7 @@
 #include <TNaming_NamedShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_LocationSet.hxx>
+#include <XmlLDrivers.hxx>
 #include <XmlMNaming_NamedShapeDriver.hxx>
 #include <XmlMNaming_Shape1.hxx>
 #include <XmlObjMgt.hxx>
@@ -361,6 +362,7 @@ void XmlMNaming_NamedShapeDriver::ReadShapeSection (const XmlObjMgt_Element& the
 //=======================================================================
 
 void XmlMNaming_NamedShapeDriver::WriteShapeSection (XmlObjMgt_Element& theElement,
+                                                     TDocStd_FormatVersion theStorageFormatVersion,
                                                      const Message_ProgressRange& theRange)
 {
   //  Create "shapes" element and append it as child
@@ -369,8 +371,17 @@ void XmlMNaming_NamedShapeDriver::WriteShapeSection (XmlObjMgt_Element& theEleme
   theElement.appendChild (anElement);
 
   //  Add text to the "shapes" element
-  if (myShapeSet.NbShapes() > 0) {
-    myShapeSet.SetFormatNb(TopTools_FormatVersion_VERSION_1);
+  if (myShapeSet.NbShapes() > 0) 
+  {
+    if (theStorageFormatVersion >= TDocStd_FormatVersion_VERSION_11)
+    {
+      myShapeSet.SetFormatNb(TopTools_FormatVersion_VERSION_3);
+    }
+    else
+    {
+      myShapeSet.SetFormatNb(TopTools_FormatVersion_VERSION_1);
+    }
+
     LDOM_OSStream aStream (16 * 1024);
 //    ostrstream aStream;
 //    aStream.rdbuf() -> setbuf (0, 16380);

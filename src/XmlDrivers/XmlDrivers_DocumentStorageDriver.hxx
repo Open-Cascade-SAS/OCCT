@@ -42,7 +42,8 @@ public:
                       (const Handle(Message_Messenger)& theMsgDriver) Standard_OVERRIDE;
   
   Standard_EXPORT virtual Standard_Boolean WriteShapeSection
-                      (XmlObjMgt_Element& thePDoc, 
+                      (XmlObjMgt_Element& thePDoc,
+                       const TDocStd_FormatVersion theStorageFormatVersion,
                        const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   DEFINE_STANDARD_RTTIEXT(XmlDrivers_DocumentStorageDriver,XmlLDrivers_DocumentStorageDriver)

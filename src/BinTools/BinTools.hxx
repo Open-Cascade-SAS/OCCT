@@ -73,7 +73,7 @@ public:
                      Standard_OStream& theStream,
                      const Message_ProgressRange& theRange = Message_ProgressRange())
   {
-    Write (theShape, theStream, Standard_True,
+    Write (theShape, theStream, Standard_True, Standard_False,
            BinTools_FormatVersion_CURRENT, theRange);
   }
 
@@ -82,10 +82,13 @@ public:
   //! @param theStream [in][out]   the stream to output shape into
   //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
   //!                              has no effect on triangulation-only geometry
+  //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
+  //!                              has no effect on triangulation-only geometry
   //! @param theVersion [in]       the BinTools format version
   //! @param theRange              the range of progress indicator to fill in
   Standard_EXPORT static void Write(const TopoDS_Shape& theShape, Standard_OStream& theStream,
                                     const Standard_Boolean theWithTriangles,
+                                    const Standard_Boolean theWithNormals,
                                     const BinTools_FormatVersion theVersion,
                                     const Message_ProgressRange& theRange = Message_ProgressRange());
 
@@ -101,7 +104,7 @@ public:
                                  const Standard_CString theFile,
                                  const Message_ProgressRange& theRange = Message_ProgressRange())
   {
-    return Write (theShape, theFile, Standard_True,
+    return Write (theShape, theFile, Standard_True, Standard_False,
                   BinTools_FormatVersion_CURRENT, theRange);
   }
 
@@ -110,11 +113,14 @@ public:
   //! @param theFile [in]          the path to file to output shape into
   //! @param theWithTriangles [in] flag which specifies whether to save shape with (TRUE) or without (FALSE) triangles;
   //!                              has no effect on triangulation-only geometry
+  //! @param theWithNormals [in]   flag which specifies whether to save triangulation with (TRUE) or without (FALSE) normals;
+  //!                              has no effect on triangulation-only geometry
   //! @param theVersion [in]       the BinTools format version
   //! @param theRange              the range of progress indicator to fill in
   Standard_EXPORT static Standard_Boolean Write (const TopoDS_Shape& theShape,
                                                  const Standard_CString theFile,
                                                  const Standard_Boolean theWithTriangles,
+                                                 const Standard_Boolean theWithNormals,
                                                  const BinTools_FormatVersion theVersion,
                                                  const Message_ProgressRange& theRange = Message_ProgressRange());
 

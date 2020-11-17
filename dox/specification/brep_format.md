@@ -54,6 +54,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   * \<flag\>: = "0" | "1";
   * \<int\>: It is an integer number from -2<sup>31</sup> to 2<sup>31</sup>-1 which is written in  denary system;  
   * \<real\>: It is a real from -1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> to 1.7976931348623158 @f$\cdot@f$ 10<sup>308</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
+  * \<short real\>: It is a real from -3.402823 @f$\cdot@f$ 10<sup>38</sup> to 3.402823 @f$\cdot@f$ 10<sup>38</sup> which is written in decimal or E form with base 10.The point is used as a delimiter of the integer and  fractional parts;
   * \<2D point\>: = \<real\>\<_\>\<real\>;  
   * \<3D point\>: = \<real\>(\<_\>\<real)\><sup>2</sup>;  
   * \<2D direction\>: It is a \<2D point\> *x y* so that *x<sup>2</sup> + y<sup>2</sup>* = 1;  
@@ -71,7 +72,7 @@ The following sample code reads a shape from ASCII file and writes it to a binar
   \<content type\> = "DBRep_DrawableShape" \<_\\n\>\<_\\n\>;  
   \<content type\> have other values [1].  
  
-  \<version\> = ("CASCADE Topology V1, (c)  Matra-Datavision" | "CASCADE Topology V2, (c) Matra-Datavision")\<_\\n\>;  
+  \<version\> = ("CASCADE Topology V1, (c)  Matra-Datavision" | "CASCADE Topology V2, (c) Matra-Datavision" | "CASCADE Topology V3, (c) Open Cascade")\<_\\n\>;
   The difference of the versions is described in the  document.  
  
   Sections \<locations\>, \<geometry\> and \<shapes\> are described below in separate chapters of the document.  
@@ -1436,14 +1437,16 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
 
 	<triangulation records> = <triangulation record> ^ <triangulation count>;
 
-	<triangulation record> = <triangulation node count> <_> <triangulation triangle count> <_> <triangulation parameter presence flag> <_> <triangulation deflection> <_\n> 
-	<triangulation nodes> [<_> <triangulation u v parameters>] <_> <triangulation triangles> <_\n>;
+	<triangulation record> = <triangulation node count> <_> <triangulation triangle count> <_> <triangulation parameter presence flag> [<_> <need to write normals flag>] <_> <triangulation deflection> <_\n>
+	<triangulation nodes> [<_> <triangulation u v parameters>] <_> <triangulation triangles> [<_> <triangulation normals>] <_\n>;
 
 	<triangulation node count> = <int>;
 
 	<triangulation triangle count> = <int>;
 
 	<triangulation parameter presence flag> = <flag>;
+
+	<need to write normals flag> = <flag>;
 
 	<triangulation deflection> = <real>;
 
@@ -1458,10 +1461,17 @@ The example record describes a polyline from *m*=2 nodes with a parameter prese
 
 	<triangulation triangles> = (<triangulation triangle> <_>) ^ <triangulation triangle count>;
 
-	<triangulation triangle> = <int> <_> <int> <_> <int>.  
+	<triangulation triangle> = <int> <_> <int> <_> <int>;
+
+	<triangulation normals> = (<triangulation normal> <_>) ^ <triangulation node count> ^ 3;
+
+	<triangulation normal> = <short real>.
 ~~~~
  
 **Description**  
+
+\<triangulation u v parameters\> are used in version 2 or later.
+\<need to write normals flag\> and \<triangulation normals\> are used in version 3.
  
 \<triangulation record\> describes a triangulation  *T* which  approximates a surface *S*. The triangulation data consist of a node  count @f$ m \geq 3 @f$, a triangle count @f$ k \geq 1 @f$, a parameter  presence flag *p*, a deflection @f$ d \geq 0 @f$, nodes @f$ N_{i}\; (1\leq i \leq m) @f$, parameter pairs @f$ u_{i}\; v_{i}\; (1\leq i \leq m) @f$, triangles @f$ n_{j,1}\; n_{j,2}\; n_{j,3}\; (1\leq j \leq k,\; n_{j,l} \in \left \{1,...,m \right \}\; (1\leq l\leq 3)) @f$. The parameters are present  only if *p*=1. The deflection describes the triangulation deflection from the surface:  
  
@@ -1640,7 +1650,7 @@ An example of section shapes and a whole  *.brep file are given in chapter 7 @re
 
   *  @f$ f_{1} @f$ -- free;  
   *  @f$ f_{2} @f$ -- modified;  
-  *  @f$ f_{3} @f$ -- IGNORED(version 1) \\ checked (version 2);  
+  *  @f$ f_{3} @f$ -- IGNORED(version 1 only) \\ checked (version 2 or later);  
   *  @f$ f_{4} @f$ -- orientable;  
   *  @f$ f_{5} @f$ -- closed;  
   *  @f$ f_{6} @f$ -- infinite;  
@@ -1827,10 +1837,10 @@ Flags \<edge data same parameter flag\>, \<edge data same range flag\> and \<edg
 \<edge data representation data 1\> describes a 3D curve.  
  
 \<edge data representation data 2\> describes a 2D curve on a surface.  
-\<curve values for parameter minimal and maximal  values\> are used only in version 2.  
+\<curve values for parameter minimal and maximal  values\> are used in version 2 or later.  
  
 \<edge data representation data 3\> describes a 2D  curve on a closed surface.  
-\<curve values for parameter minimal and maximal  values\> are used only in version 2.  
+\<curve values for parameter minimal and maximal  values\> are used in version 2 or later.  
  
 \<edge data representation data 5\> describes a 3D polyline.  
  

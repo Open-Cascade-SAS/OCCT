@@ -46,14 +46,19 @@ public:
   Standard_EXPORT virtual void WriteShapeSection
     (BinLDrivers_DocumentSection& theDocSection, 
      Standard_OStream& theOS, 
-     const Standard_Integer theDocVer,
+     const TDocStd_FormatVersion theDocVer,
      const Message_ProgressRange& theRange = Message_ProgressRange()) Standard_OVERRIDE;
 
   //! Return true if shape should be stored with triangles.
   Standard_EXPORT Standard_Boolean IsWithTriangles() const;
+  //! Return true if shape should be stored with triangulation normals.
+  Standard_EXPORT Standard_Boolean IsWithNormals() const;
 
   //! Set if triangulation should be stored or not.
   Standard_EXPORT void SetWithTriangles (const Handle(Message_Messenger)& theMessageDriver,
+                                         const Standard_Boolean theWithTriangulation);
+  //! Set if triangulation should be stored with normals or not.
+  Standard_EXPORT void SetWithNormals(const Handle(Message_Messenger)& theMessageDriver,
                                          const Standard_Boolean theWithTriangulation);
 
   DEFINE_STANDARD_RTTIEXT(BinDrivers_DocumentStorageDriver,BinLDrivers_DocumentStorageDriver)

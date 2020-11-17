@@ -1386,10 +1386,12 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
   Standard_Integer aVersion = -1;
   TCollection_AsciiString aShapeName, aFileName;
   TopoDS_Shape aShape;
-  bool isBinaryFormat = false, isWithTriangles = true;
+  Standard_Boolean isBinaryFormat(Standard_False);
+  Standard_Boolean isWithTriangles(Standard_True);
+  Standard_Boolean isWithNormals(Standard_False);
   if (!strcasecmp (theArgVec[0], "binsave"))
   {
-    isBinaryFormat = true;
+    isBinaryFormat = Standard_True;
   }
 
   for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
@@ -1398,7 +1400,7 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
     aParam.LowerCase();
     if (aParam == "-binary")
     {
-      isBinaryFormat = true;
+      isBinaryFormat = Standard_True;
       if (anArgIter + 1 < theNbArgs
        && Draw::ParseOnOff (theArgVec[anArgIter + 1], isBinaryFormat))
       {
@@ -1418,7 +1420,7 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
     else if (aParam == "-notriangles"
           || aParam == "-triangles")
     {
-      isWithTriangles = true;
+      isWithTriangles = Standard_True;
       if (anArgIter + 1 < theNbArgs
        && Draw::ParseOnOff (theArgVec[anArgIter + 1], isWithTriangles))
       {
@@ -1427,6 +1429,20 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
       if (aParam == "-notriangles")
       {
         isWithTriangles = !isWithTriangles;
+      }
+    }
+    else if (aParam == "-nonormals"
+          || aParam == "-normals")
+    {
+      isWithNormals = Standard_True;
+      if (anArgIter + 1 < theNbArgs
+       && Draw::ParseOnOff (theArgVec[anArgIter + 1], isWithNormals))
+      {
+        ++anArgIter;
+      }
+      if (aParam == "-nonormals")
+      {
+        isWithNormals = !isWithNormals;
       }
     }
     else if (aShapeName.IsEmpty())
@@ -1467,7 +1483,7 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
     BinTools_FormatVersion aBinToolsVersion = aVersion > 0
                                             ? static_cast<BinTools_FormatVersion> (aVersion)
                                             : BinTools_FormatVersion_CURRENT;
-    if (!BinTools::Write (aShape, aFileName.ToCString(), isWithTriangles, aBinToolsVersion, aProgress->Start()))
+    if (!BinTools::Write (aShape, aFileName.ToCString(), isWithTriangles, isWithNormals, aBinToolsVersion, aProgress->Start()))
     {
       theDI << "Cannot write to the file " << aFileName;
       return 1;
@@ -1484,7 +1500,7 @@ static Standard_Integer writebrep (Draw_Interpretor& theDI,
     TopTools_FormatVersion aTopToolsVersion = aVersion > 0
                                             ? static_cast<TopTools_FormatVersion> (aVersion)
                                             : TopTools_FormatVersion_CURRENT;
-    if (!BRepTools::Write (aShape, aFileName.ToCString(), isWithTriangles, aTopToolsVersion, aProgress->Start()))
+    if (!BRepTools::Write (aShape, aFileName.ToCString(), isWithTriangles, isWithNormals, aTopToolsVersion, aProgress->Start()))
     {
       theDI << "Cannot write to the file " << aFileName;
       return 1;
@@ -1652,13 +1668,14 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
                     "\n\t\t   +|-g :  switch on/off graphical mode of Progress Indicator",
                     XProgress,"DE: General");
   theCommands.Add("writebrep",
-                  "writebrep shape filename [-binary] [-version Version] [-noTriangles]"
+                  "writebrep shape filename [-binary=off] [-version Version=4] [-noTriangles=off]"
                   "\n\t\t: Save the shape in the ASCII (default) or binary format file."
                   "\n\t\t:  -binary  write into the binary format (ASCII when unspecified)"
                   "\n\t\t:  -version a number of format version to save;"
-                  "\n\t\t:           ASCII  versions: 1, 2       (1 for ASCII  when unspecified);"
-                  "\n\t\t:           Binary versions: 1, 2 and 3 (1 for Binary when unspecified)."
-                  "\n\t\t:  -noTriangles skip triangulation data (OFF when unspecified).",
+                  "\n\t\t:           ASCII  versions: 1, 2 and 3    (3 for ASCII  when unspecified);"
+                  "\n\t\t:           Binary versions: 1, 2, 3 and 4 (4 for Binary when unspecified)."
+                  "\n\t\t:  -noTriangles skip triangulation data (OFF when unspecified)."
+                  "\n\t\t:           Ignored (always written) if face defines only triangulation (no surface).",
                   __FILE__, writebrep, g);
   theCommands.Add("readbrep",
                   "readbrep filename shape"

@@ -26,6 +26,7 @@
 #include <Standard_Boolean.hxx>
 #include <XmlObjMgt_Element.hxx>
 #include <Standard_Integer.hxx>
+#include <TDocStd_FormatVersion.hxx>
 
 class XmlMDF_ADriverTable;
 class TCollection_ExtendedString;
@@ -79,6 +80,7 @@ protected:
   
   Standard_EXPORT virtual Standard_Boolean WriteShapeSection
                                 (XmlObjMgt_Element& thePDoc, 
+                                 const TDocStd_FormatVersion theStorageFormatVersion,
                                  const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Handle(XmlMDF_ADriverTable) myDrivers;

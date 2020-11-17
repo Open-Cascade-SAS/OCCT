@@ -24,6 +24,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDF_Label.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <TNaming_Builder.hxx>
 #include <TNaming_Evolution.hxx>
 #include <TNaming_Iterator.hxx>
@@ -141,9 +142,7 @@ static int TranslateFrom  (const BinObjMgt_Persistent&  theSource,
 
 BinMNaming_NamedShapeDriver::BinMNaming_NamedShapeDriver
                         (const Handle(Message_Messenger)& theMsgDriver)
-: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name()),
-  myShapeSet (Standard_False),
-  myFormatNb (BinTools_FormatVersion_VERSION_1)
+: BinMDF_ADriver (theMsgDriver, STANDARD_TYPE(TNaming_NamedShape)->Name())
 {
 }
 
@@ -278,10 +277,19 @@ void BinMNaming_NamedShapeDriver::Paste (const Handle(TDF_Attribute)& theSource,
 //=======================================================================
 
 void BinMNaming_NamedShapeDriver::WriteShapeSection (Standard_OStream& theOS,
+                                                     const Standard_Integer theDocVer,
                                                      const Message_ProgressRange& theRange)
 {
   theOS << SHAPESET; 
-  myShapeSet.SetFormatNb(myFormatNb);
+  if (theDocVer >= TDocStd_FormatVersion_VERSION_11)
+  {
+    myShapeSet.SetFormatNb(BinTools_FormatVersion_VERSION_4);
+  }
+  else
+  {
+    myShapeSet.SetFormatNb(BinTools_FormatVersion_VERSION_1);
+  }
+
   myShapeSet.Write (theOS, theRange);
   myShapeSet.Clear();
 }
@@ -312,7 +320,6 @@ void BinMNaming_NamedShapeDriver::ReadShapeSection (Standard_IStream& theIS,
   if(aSectionTitle.Length() > 0 && aSectionTitle == SHAPESET) {
     myShapeSet.Clear();
     myShapeSet.Read (theIS, theRange);
-    SetFormatNb(myShapeSet.FormatNb());
   }
   else
     theIS.seekg(aPos); // no shape section is present, try to return to initial point

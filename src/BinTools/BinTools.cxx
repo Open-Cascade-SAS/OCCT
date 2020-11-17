@@ -176,10 +176,13 @@ Standard_IStream& BinTools::GetBool(Standard_IStream& IS, Standard_Boolean& aVal
 void BinTools::Write (const TopoDS_Shape& theShape,
                       Standard_OStream& theStream,
                       const Standard_Boolean theWithTriangles,
+                      const Standard_Boolean theWithNormals,
                       const BinTools_FormatVersion theVersion,
                       const Message_ProgressRange& theRange)
 {
-  BinTools_ShapeSet aShapeSet (theWithTriangles);
+  BinTools_ShapeSet aShapeSet;
+  aShapeSet.SetWithTriangles(theWithTriangles);
+  aShapeSet.SetWithNormals(theWithNormals);
   aShapeSet.SetFormatNb (theVersion);
   aShapeSet.Add (theShape);
   aShapeSet.Write (theStream, theRange);
@@ -194,7 +197,8 @@ void BinTools::Write (const TopoDS_Shape& theShape,
 void BinTools::Read (TopoDS_Shape& theShape, Standard_IStream& theStream,
                      const Message_ProgressRange& theRange)
 {
-  BinTools_ShapeSet aShapeSet(Standard_True);
+  BinTools_ShapeSet aShapeSet;
+  aShapeSet.SetWithTriangles(Standard_True);
   aShapeSet.Read (theStream, theRange);
   aShapeSet.Read (theShape, theStream, aShapeSet.NbShapes());
 }
@@ -206,6 +210,7 @@ void BinTools::Read (TopoDS_Shape& theShape, Standard_IStream& theStream,
 Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape,
                                   const Standard_CString theFile,
                                   const Standard_Boolean theWithTriangles,
+                                  const Standard_Boolean theWithNormals,
                                   const BinTools_FormatVersion theVersion,
                                   const Message_ProgressRange& theRange)
 {
@@ -215,7 +220,7 @@ Standard_Boolean BinTools::Write (const TopoDS_Shape& theShape,
   if (!aStream.good())
     return Standard_False;
 
-  Write (theShape, aStream, theWithTriangles, theVersion, theRange);
+  Write (theShape, aStream, theWithTriangles, theWithNormals, theVersion, theRange);
   aStream.close();
   return aStream.good();
 }

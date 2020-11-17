@@ -76,6 +76,17 @@ public:
   //! enable a 2D representation).
   Standard_EXPORT Poly_Triangulation(const Standard_Integer nbNodes, const Standard_Integer nbTriangles, const Standard_Boolean UVNodes);
 
+  //! Constructs a triangulation from a set of triangles.
+  //! The triangulation is initialized without a triangle or a node,
+  //! but capable of containing nbNodes nodes, and nbTriangles triangles.
+  //! Here the UVNodes flag indicates whether 2D nodes will be associated with 3D ones,
+  //! (i.e. to enable a 2D representation).
+  //! Here the hasNormals flag indicates whether normals will be given and associated with nodes.
+  Standard_EXPORT Poly_Triangulation(const Standard_Integer nbNodes,
+                                     const Standard_Integer nbTriangles,
+                                     const Standard_Boolean UVNodes,
+                                     const Standard_Boolean hasNormals);
+
   //! Constructs a triangulation from a set of triangles. The
   //! triangulation is initialized with 3D points from Nodes and triangles
   //! from Triangles.

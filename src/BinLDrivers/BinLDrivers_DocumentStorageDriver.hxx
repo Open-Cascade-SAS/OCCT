@@ -29,6 +29,7 @@
 #include <Standard_OStream.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Type.hxx>
+#include <TDocStd_FormatVersion.hxx>
 class BinMDF_ADriverTable;
 class Message_Messenger;
 class TCollection_ExtendedString;
@@ -87,7 +88,7 @@ protected:
   //! defines the procedure of writing a shape  section to file
   Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection,
                                                   Standard_OStream& theOS,
-                                                  const Standard_Integer theDocVer,
+                                                  const TDocStd_FormatVersion theDocVer,
                                                   const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Handle(BinMDF_ADriverTable) myDrivers;

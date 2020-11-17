@@ -111,7 +111,7 @@ void BinLDrivers_DocumentSection::SetLength (const uint64_t theLength)
 //=======================================================================
 
 void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream,
-                                            const Standard_Integer theDocFormatVersion)
+                                            const TDocStd_FormatVersion theDocFormatVersion)
 {
   char aBuf[512];
 
@@ -167,7 +167,7 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream,
 
 void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
                                          const uint64_t theOffset,
-                                         const Standard_Integer theDocFormatVersion)
+                                         const TDocStd_FormatVersion theDocFormatVersion)
 {
   const uint64_t aSectionEnd = (uint64_t) theStream.tellp();
   theStream.seekp((std::streamsize)myValue[0]);
@@ -218,7 +218,7 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
 void BinLDrivers_DocumentSection::ReadTOC
                                 (BinLDrivers_DocumentSection& theSection,
                                  Standard_IStream&            theStream,
-                                 const Standard_Integer       theDocFormatVersion)
+                                 const TDocStd_FormatVersion  theDocFormatVersion)
 {
   char aBuf[512];
   Standard_Integer aNameBufferSize;

@@ -436,15 +436,44 @@ static Standard_Integer DDocStd_StoreTriangulation (Draw_Interpretor& theDi,
     theDi << (aDriverXCaf->IsWithTriangles() ? "1" : "0");
     return 0;
   }
-  else if (theNbArgs != 2)
-  {
-    std::cout << "Syntax error: wrong number of arguments\n";
-    return 1;
-  }
 
-  const Standard_Boolean toEnable = (Draw::Atoi (theArgVec[1]) != 0);
-  aDriverXCaf->SetWithTriangles (anApp->MessageDriver(), toEnable);
-  aDriverOcaf->SetWithTriangles (anApp->MessageDriver(), toEnable);
+  for (Standard_Integer anArgIter = 1; anArgIter < theNbArgs; ++anArgIter)
+  {
+    TCollection_AsciiString aParam(theArgVec[anArgIter]);
+    aParam.LowerCase();
+
+    // toStore optional positional parameter
+    Standard_Integer aParsedIntegerValue(0);
+    if (anArgIter == 1 && Draw::ParseInteger(aParam.ToCString(), aParsedIntegerValue))
+    {
+      const Standard_Boolean toEnable = (aParsedIntegerValue != 0);
+      aDriverXCaf->SetWithTriangles(anApp->MessageDriver(), toEnable);
+      aDriverOcaf->SetWithTriangles(anApp->MessageDriver(), toEnable);
+      continue;
+    }
+
+    if (aParam == "-nonormals"
+      || aParam == "-normals")
+    {
+      Standard_Boolean isWithNormals(Standard_True);
+      if (anArgIter + 1 < theNbArgs
+        && Draw::ParseOnOff(theArgVec[anArgIter + 1], isWithNormals))
+      {
+        ++anArgIter;
+      }
+      if (aParam == "-nonormals")
+      {
+        isWithNormals = !isWithNormals;
+      }
+      aDriverXCaf->SetWithNormals(anApp->MessageDriver(), isWithNormals);
+      aDriverOcaf->SetWithNormals(anApp->MessageDriver(), isWithNormals);
+    }
+    if (aParam == "-getnormals")
+    {
+      theDi << (aDriverXCaf->IsWithNormals() ? "1" : "0");
+      continue;
+    }
+  }
   return 0;
 }
 
@@ -480,7 +509,9 @@ void DDocStd::DocumentCommands(Draw_Interpretor& theCommands)
 		   __FILE__, DDocStd_DumpDocument, g);   
 
   theCommands.Add ("StoreTriangulation",
-                   "StoreTriangulation [toStore={0|1}]"
+                   "StoreTriangulation [toStore={0|1}] [-normals=off] [-noNormals=on]"
+                   "\n\t\t:  -normals -noNormals write triangulation normals."
+                   "\n\t\t:  Ignored (always off) if toStore=0 or skipped"
                    "\nSetup BinXCAF/BinOcaf storage drivers to write triangulation",
                    __FILE__, DDocStd_StoreTriangulation, g);
 

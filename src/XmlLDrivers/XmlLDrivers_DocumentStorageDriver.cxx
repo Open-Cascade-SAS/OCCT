@@ -270,7 +270,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
 
   // Document version
   Handle(TDocStd_Document) aDoc = Handle(TDocStd_Document)::DownCast (theDocument);
-  Standard_Integer aFormatVersion = TDocStd_Document::CurrentStorageFormatVersion(); // the last version of the format
+  TDocStd_FormatVersion aFormatVersion = TDocStd_Document::CurrentStorageFormatVersion(); // the last version of the format
   if (TDocStd_Document::CurrentStorageFormatVersion() < aDoc->StorageFormatVersion())
   {
     TCollection_ExtendedString anErrorString("Unacceptable storage format version, the last verson is used");
@@ -365,7 +365,7 @@ Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteToDomDocument
   myRelocTable.Clear();
 
   // 4. Write Shapes section
-  if (WriteShapeSection(theElement, aPS.Next()))
+  if (WriteShapeSection(theElement, aFormatVersion, aPS.Next()))
     ::take_time (0, " +++ Fin DOM data for Shapes : ", aMessageDriver);
   if (!aPS.More())
   {
@@ -466,7 +466,8 @@ static void take_time (const Standard_Integer isReset, const char * aHeader,
 //=======================================================================
 Standard_Boolean XmlLDrivers_DocumentStorageDriver::WriteShapeSection
                                 (XmlObjMgt_Element&           /*theElement*/,
-                                const Message_ProgressRange&  /*theRange*/)
+                                 const TDocStd_FormatVersion /*theStorageFormatVersion*/,
+                                 const Message_ProgressRange&  /*theRange*/)
 {
   // empty; should be redefined in subclasses
   return Standard_False;

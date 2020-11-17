@@ -158,8 +158,8 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
     myReaderStatus = PCDM_RS_FormatFailure;
     return;
   }
-  Standard_Integer aFileVer = aHeaderData->StorageVersion().IntegerValue();
-  Standard_Integer aCurrVer = TDocStd_Document::CurrentStorageFormatVersion();
+  TDocStd_FormatVersion aFileVer = static_cast<TDocStd_FormatVersion>(aHeaderData->StorageVersion().IntegerValue());
+  TDocStd_FormatVersion aCurrVer = TDocStd_Document::CurrentStorageFormatVersion();
   // maintain one-way compatibility starting from version 2+
   if (!CheckDocumentVersion(aFileVer, aCurrVer)) {
     myReaderStatus = PCDM_RS_NoVersion;
@@ -560,7 +560,7 @@ Standard_Boolean BinLDrivers_DocumentRetrievalDriver::CheckDocumentVersion(
                                                           const Standard_Integer theFileVersion,
                                                           const Standard_Integer theCurVersion)
 {
-  if (theFileVersion < TDocStd_FormatVersion_VERSION_2 || theFileVersion > theCurVersion) {
+  if (theFileVersion < TDocStd_FormatVersion_LOWER || theFileVersion > theCurVersion) {
     // file was written with another version
     return Standard_False;
   }

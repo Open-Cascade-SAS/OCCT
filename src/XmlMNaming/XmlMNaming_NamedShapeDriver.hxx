@@ -22,6 +22,7 @@
 #include <BRepTools_ShapeSet.hxx>
 #include <XmlMDF_ADriver.hxx>
 #include <Standard_Boolean.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <XmlObjMgt_RRelocationTable.hxx>
 #include <XmlObjMgt_SRelocationTable.hxx>
 #include <XmlObjMgt_Element.hxx>
@@ -59,6 +60,7 @@ public:
   
   //! Output the shapes into DOM element
   Standard_EXPORT void WriteShapeSection (XmlObjMgt_Element& anElement,
+                                          TDocStd_FormatVersion theStorageFormatVersion,
                                           const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! Clear myShapeSet

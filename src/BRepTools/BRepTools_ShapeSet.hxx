@@ -48,21 +48,28 @@ public:
 
   //! Builds an empty ShapeSet.
   //! @param theWithTriangles flag to write triangulation data
-  Standard_EXPORT BRepTools_ShapeSet (const Standard_Boolean theWithTriangles = Standard_True);
+  Standard_EXPORT BRepTools_ShapeSet (const Standard_Boolean theWithTriangles = Standard_True,
+                                      const Standard_Boolean theWithNormals = Standard_False);
   
   //! Builds an empty ShapeSet.
   //! @param theWithTriangles flag to write triangulation data
   Standard_EXPORT BRepTools_ShapeSet (const BRep_Builder& theBuilder,
-                                      const Standard_Boolean theWithTriangles = Standard_True);
+                                      const Standard_Boolean theWithTriangles = Standard_True,
+                                      const Standard_Boolean theWithNormals = Standard_False);
 
   Standard_EXPORT virtual ~BRepTools_ShapeSet();
 
   //! Return true if shape should be stored with triangles.
   Standard_Boolean IsWithTriangles() const { return myWithTriangles; }
+  //! Return true if shape should be stored triangulation with normals.
+  Standard_Boolean IsWithNormals() const { return myWithNormals; }
 
   //! Define if shape will be stored with triangles.
   //! Ignored (always written) if face defines only triangulation (no surface).
   void SetWithTriangles (const Standard_Boolean theWithTriangles) { myWithTriangles = theWithTriangles; }
+  //! Define if shape will be stored triangulation with normals.
+  //! Ignored (always written) if face defines only triangulation (no surface).
+  void SetWithNormals (const Standard_Boolean theWithNormals) { myWithNormals = theWithNormals; }
 
   //! Clears the content of the set.
   Standard_EXPORT virtual void Clear() Standard_OVERRIDE;
@@ -167,9 +174,12 @@ private:
   GeomTools_Curve2dSet myCurves2d;
   TColStd_IndexedMapOfTransient myPolygons2D;
   TColStd_IndexedMapOfTransient myPolygons3D;
-  TColStd_IndexedMapOfTransient myTriangulations;
+  NCollection_IndexedDataMap<Handle(Poly_Triangulation),
+                             Standard_Boolean> myTriangulations; //!< Contains a boolean flag with information
+                                                                 //!  to save normals for triangulation
   TColStd_IndexedMapOfTransient myNodes;
   Standard_Boolean myWithTriangles;
+  Standard_Boolean myWithNormals;
 
 };
 

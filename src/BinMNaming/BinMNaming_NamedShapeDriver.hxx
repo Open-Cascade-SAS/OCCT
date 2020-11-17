@@ -56,29 +56,26 @@ public:
                                          const Message_ProgressRange& therange = Message_ProgressRange());
   
   //! Output the shapes into Bin Document file
-  Standard_EXPORT void WriteShapeSection (Standard_OStream& theOS,
-                                          const Message_ProgressRange& therange = Message_ProgressRange());
+  Standard_EXPORT void WriteShapeSection(Standard_OStream& theOS,
+                                         const Standard_Integer theDocVer,
+                                         const Message_ProgressRange& therange = Message_ProgressRange());
   
   //! Clear myShapeSet
   Standard_EXPORT void Clear();
 
   //! Return true if shape should be stored with triangles.
   Standard_Boolean IsWithTriangles() const { return myShapeSet.IsWithTriangles(); }
+  //! Return true if shape should be stored with triangulation normals.
+  Standard_Boolean IsWithNormals() const { return myShapeSet.IsWithNormals(); }
 
   //! set whether to store triangulation
-  void SetWithTriangles (const Standard_Boolean isWithTriangles);
+  void SetWithTriangles (const Standard_Boolean isWithTriangles) { myShapeSet.SetWithTriangles(isWithTriangles); }
+  //! set whether to store triangulation with normals
+  void SetWithNormals (const Standard_Boolean isWithNormals) { myShapeSet.SetWithNormals(isWithNormals); }
   
-  //! set the format of topology
-  //! First : does not write CurveOnSurface UV Points into the file
-  //! on reading calls Check() method.
-  //! Second: stores CurveOnSurface UV Points.
-    void SetFormatNb (const Standard_Integer theFormat);
   
-  //! get the format of topology
-    Standard_Integer GetFormatNb() const;
-  
-  //! get the format of topology
-    BinTools_LocationSet& GetShapesLocations();
+  //! get the shapes locations
+  BinTools_LocationSet& GetShapesLocations();
 
 
 
@@ -94,8 +91,6 @@ private:
 
 
   BinTools_ShapeSet myShapeSet;
-  Standard_Integer myFormatNb;
-
 
 };
 

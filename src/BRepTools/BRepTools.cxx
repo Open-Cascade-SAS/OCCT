@@ -668,10 +668,11 @@ void  BRepTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
 void BRepTools::Write (const TopoDS_Shape& theShape,
                        Standard_OStream& theStream,
                        const Standard_Boolean theWithTriangles,
+                       const Standard_Boolean theWithNormals,
                        const TopTools_FormatVersion theVersion,
                        const Message_ProgressRange& theProgress)
 {
-  BRepTools_ShapeSet aShapeSet (theWithTriangles);
+  BRepTools_ShapeSet aShapeSet (theWithTriangles, theWithNormals);
   aShapeSet.SetFormatNb (theVersion);
   aShapeSet.Add (theShape);
   aShapeSet.Write (theStream, theProgress);
@@ -700,6 +701,7 @@ void  BRepTools::Read(TopoDS_Shape& Sh,
 Standard_Boolean  BRepTools::Write (const TopoDS_Shape& theShape,
                                     const Standard_CString theFile,
                                     const Standard_Boolean theWithTriangles,
+                                    const Standard_Boolean theWithNormals,
                                     const TopTools_FormatVersion theVersion,
                                     const Message_ProgressRange& theProgress)
 {
@@ -712,7 +714,7 @@ Standard_Boolean  BRepTools::Write (const TopoDS_Shape& theShape,
   if(!isGood)
     return isGood;
 
-  BRepTools_ShapeSet SS (theWithTriangles);
+  BRepTools_ShapeSet SS (theWithTriangles, theWithNormals);
   SS.SetFormatNb (theVersion);
   SS.Add (theShape);
 
