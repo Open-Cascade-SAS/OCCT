@@ -611,16 +611,12 @@ Standard_Integer TCollection_ExtendedString::Length()  const
 // ----------------------------------------------------------------------------
 // Print
 // ----------------------------------------------------------------------------
-void TCollection_ExtendedString::Print(Standard_OStream& astream) const 
-{ 
-  // ASCII symbols (including extended Ascii) are printed as is;
-  // other Unicode characters are encoded as SGML numeric character references
-  for (Standard_Integer i = 0 ; i < mylength ; i++) {
-    Standard_ExtCharacter c = mystring[i];
-    if ( IsAnAscii(c) )
-      astream << ToCharacter(c);
-    else 
-      astream << "&#" << c << ";";
+void TCollection_ExtendedString::Print (Standard_OStream& theStream) const
+{
+  if (mylength > 0)
+  {
+    const TCollection_AsciiString aUtf8 (mystring);
+    theStream << aUtf8;
   }
 }
 

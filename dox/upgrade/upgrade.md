@@ -2159,6 +2159,13 @@ Existing message files containing 8-bit characters (previously interpreted as ch
 
 @section upgrade_occt760 Upgrade to OCCT 7.6.0
 
+@subsection upgrade_760_extendedstring_cout Output of TCollection_ExtendedString to stream
+
+Behavior of the method TCollection_ExtendedString::Print(Standard_OStream&) and corresponding operator << has changed.
+Previously it printed all Latin-1 symbols (those in range 0x80-0xff) as '\0' (effectively loosing them); symbols above 0xff were converted to hex representation (formatted like XML Numeric Character Reference).
+Now all symbols are sent to stream as UTF-8 byte sequences.
+Existing code relying on old behavior, if any, shall be rewritten.
+
 @subsection upgrade_760_trimming_surface Trimming surface
 
 Geom_RectangularTrimmedSurface sequentially trimming in U and V directions already no longer loses the first trim.
