@@ -46,6 +46,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
+#include <GeomLProp_SLProps.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -530,14 +531,27 @@ void Geom_OffsetSurface_VIsoEvaluator::Evaluate(Standard_Integer *,/*Dimension*/
 //=======================================================================
 //function : UIso
 //purpose  : The Uiso or the VIso of an OffsetSurface can't be clearly 
-//           exprimed as a curve from Geom. So, to extract the U or VIso
-//           an Approximation is needed. This approx always will return a 
-//           BSplineCurve from Geom.
+//           exprimed as a curve from Geom (except some particular cases).
+//           So, to extract the U or VIso an Approximation is needed.
+//           This approx always will return a BSplineCurve from Geom.
 //=======================================================================
 
 Handle(Geom_Curve) Geom_OffsetSurface::UIso (const Standard_Real UU) const 
 {
   if (equivSurf.IsNull()) {
+    GeomAdaptor_Surface aGAsurf (basisSurf);
+    if (aGAsurf.GetType() == GeomAbs_SurfaceOfExtrusion)
+    {
+      Handle(Geom_Curve) aL = basisSurf->UIso(UU);
+      GeomLProp_SLProps aSurfProps (basisSurf, UU, 0., 2, Precision::Confusion());
+     
+      gp_Vec aDir;
+      aDir = aSurfProps.Normal();
+      aDir *= offsetValue;
+
+      aL->Translate(aDir);
+      return aL;
+    }
     const Standard_Integer Num1 = 0, Num2 = 0, Num3 = 1;
     Handle(TColStd_HArray1OfReal) T1, T2, T3 = new TColStd_HArray1OfReal(1,Num3);
     T3->Init(Precision::Approximation());
