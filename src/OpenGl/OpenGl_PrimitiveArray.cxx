@@ -597,73 +597,57 @@ void OpenGl_PrimitiveArray::drawMarkers (const Handle(OpenGl_Workspace)& theWork
                          && aCtx->ActiveProgram()->HasTessellationStage()
                          ? GL_PATCHES
                          : myDrawMode;
+  if (anAspectMarker->Aspect()->MarkerType() == Aspect_TOM_POINT)
+  {
+    aCtx->SetPointSize (anAspectMarker->MarkerSize());
+    aCtx->core11fwd->glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
+    aCtx->SetPointSize (1.0f);
+    return;
+  }
+
+#if !defined(GL_ES_VERSION_2_0)
+  if (aCtx->core11 != NULL)
+  {
+    aCtx->core11fwd->glEnable (GL_ALPHA_TEST);
+    aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, 0.1f);
+  }
+#endif
+  aCtx->core11fwd->glEnable (GL_BLEND);
+  aCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   if (anAspectMarker->HasPointSprite (aCtx))
   {
     // Textured markers will be drawn with the point sprites
     aCtx->SetPointSize (anAspectMarker->MarkerSize());
     aCtx->SetPointSpriteOrigin();
-  #if !defined(GL_ES_VERSION_2_0)
-    if (aCtx->core11 != NULL)
-    {
-      aCtx->core11fwd->glEnable (GL_ALPHA_TEST);
-      aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, 0.1f);
-    }
-  #endif
-
-    aCtx->core11fwd->glEnable (GL_BLEND);
-    aCtx->core11fwd->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     aCtx->core11fwd->glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
 
-    aCtx->core11fwd->glDisable (GL_BLEND);
-  #if !defined(GL_ES_VERSION_2_0)
-    if (aCtx->core11 != NULL)
-    {
-      if (aCtx->ShaderManager()->MaterialState().AlphaCutoff() >= ShortRealLast())
-      {
-        aCtx->core11fwd->glDisable (GL_ALPHA_TEST);
-      }
-      else
-      {
-        aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, aCtx->ShaderManager()->MaterialState().AlphaCutoff());
-      }
-    }
-  #endif
-    aCtx->SetPointSize (1.0f);
-    return;
-  }
-  else if (anAspectMarker->Aspect()->MarkerType() == Aspect_TOM_POINT)
-  {
-    aCtx->SetPointSize (anAspectMarker->MarkerSize());
-    aCtx->core11fwd->glDrawArrays (aDrawMode, 0, !myVboAttribs.IsNull() ? myVboAttribs->GetElemsNb() : myAttribs->NbElements);
     aCtx->SetPointSize (1.0f);
   }
 #if !defined(GL_ES_VERSION_2_0)
   // Textured markers will be drawn with the glBitmap
-  else if (anAspectMarker->Aspect()->MarkerType() != Aspect_TOM_POINT)
+  else if (const Handle(OpenGl_PointSprite)& aSprite = anAspectMarker->SpriteRes (aCtx, theWorkspace->ToHighlight()))
   {
-    const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->SpriteRes (aCtx, false);
-    if (aSpriteNorm.IsNull())
+    for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
     {
-      return;
+      aCtx->core11->glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
+      aSprite->DrawBitmap (theWorkspace->GetGlContext());
     }
+  }
+#endif
 
-    /**if (!isHilight && (myPArray->vcolours != NULL))
+  aCtx->core11fwd->glDisable (GL_BLEND);
+#if !defined(GL_ES_VERSION_2_0)
+  if (aCtx->core11 != NULL)
+  {
+    if (aCtx->ShaderManager()->MaterialState().AlphaCutoff() >= ShortRealLast())
     {
-      for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
-      {
-        glColor4ubv    (myPArray->vcolours[anIter].GetData());
-        glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
-        aSpriteNorm->DrawBitmap (theWorkspace->GetGlContext());
-      }
+      aCtx->core11fwd->glDisable (GL_ALPHA_TEST);
     }
-    else*/
+    else
     {
-      for (Standard_Integer anIter = 0; anIter < myAttribs->NbElements; anIter++)
-      {
-        aCtx->core11->glRasterPos3fv (myAttribs->Value<Graphic3d_Vec3> (anIter).GetData());
-        aSpriteNorm->DrawBitmap (theWorkspace->GetGlContext());
-      }
+      aCtx->core11fwd->glAlphaFunc (GL_GEQUAL, aCtx->ShaderManager()->MaterialState().AlphaCutoff());
     }
   }
 #endif

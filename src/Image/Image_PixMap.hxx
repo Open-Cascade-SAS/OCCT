@@ -48,6 +48,9 @@ public:
   //! Convert image to Black/White.
   Standard_EXPORT static void ToBlackWhite (Image_PixMap& theImage);
 
+  //! Reverse line order as it draws it from bottom to top.
+  Standard_EXPORT static bool FlipY (Image_PixMap& theImage);
+
   //! Return default image data allocator.
   Standard_EXPORT static const Handle(NCollection_BaseAllocator)& DefaultAllocator();
 

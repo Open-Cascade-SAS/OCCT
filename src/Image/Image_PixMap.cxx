@@ -662,3 +662,36 @@ void Image_PixMap::ToBlackWhite (Image_PixMap& theImage)
     }
   }
 }
+
+// =======================================================================
+// function : InitCopy
+// purpose  :
+// =======================================================================
+bool Image_PixMap::FlipY (Image_PixMap& theImage)
+{
+  if (theImage.IsEmpty()
+   || theImage.SizeX() == 0
+   || theImage.SizeY() == 0)
+  {
+    return false;
+  }
+
+  NCollection_Buffer aTmp (NCollection_BaseAllocator::CommonBaseAllocator());
+  const size_t aRowSize = theImage.SizeRowBytes();
+  if (!aTmp.Allocate (aRowSize))
+  {
+    return false;
+  }
+
+  // for odd height middle row should be left as is
+  Standard_Size aNbRowsHalf = theImage.SizeY() / 2;
+  for (Standard_Size aRowT = 0, aRowB = theImage.SizeY() - 1; aRowT < aNbRowsHalf; ++aRowT, --aRowB)
+  {
+    Standard_Byte* aTop = theImage.ChangeRow (aRowT);
+    Standard_Byte* aBot = theImage.ChangeRow (aRowB);
+    memcpy (aTmp.ChangeData(), aTop, aRowSize);
+    memcpy (aTop, aBot, aRowSize);
+    memcpy (aBot, aTmp.Data(), aRowSize);
+  }
+  return true;
+}

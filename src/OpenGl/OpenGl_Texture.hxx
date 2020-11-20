@@ -49,7 +49,7 @@ public:
   Standard_EXPORT virtual ~OpenGl_Texture();
 
   //! @return true if current object was initialized
-  bool IsValid() const { return myTextureId != NO_TEXTURE; }
+  virtual bool IsValid() const { return myTextureId != NO_TEXTURE; }
 
   //! @return target to which the texture is bound (GL_TEXTURE_1D, GL_TEXTURE_2D)
   GLenum GetTarget() const { return myTarget; }

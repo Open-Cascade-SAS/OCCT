@@ -39,6 +39,13 @@ public:
   //! Returns TRUE for point sprite texture.
   virtual bool IsPointSprite() const Standard_OVERRIDE { return true; }
 
+  //! @return true if current object was initialized
+  virtual bool IsValid() const Standard_OVERRIDE
+  {
+    return myBitmapList != 0
+        || myTextureId != NO_TEXTURE;
+  }
+
   //! @return true if this is display list bitmap
   inline Standard_Boolean IsDisplayList() const
   {
