@@ -52,6 +52,7 @@ enum Resource_FormatType
   Resource_FormatType_iso8859_9,    //!< ISO 8859-9 (Turkish) encoding
 
   // Addition code pages
+  Resource_FormatType_CP850,        //!< ISO 850 (Western European) encoding
   Resource_FormatType_GBK,          //!< GBK  (UnifiedChinese) encoding
   Resource_FormatType_Big5,         //!< Big5 (TradChinese) encoding
 

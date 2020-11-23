@@ -245,9 +245,10 @@ STEPControl_Controller::STEPControl_Controller ()
     Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-7");    // Resource_FormatType_iso8859_7
     Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-8");    // Resource_FormatType_iso8859_8
     Interface_Static::Init("step", "read.step.codepage", '&', "eval iso8859-9");    // Resource_FormatType_iso8859_9
+    Interface_Static::Init("step", "read.step.codepage", '&', "eval CP850");        // Resource_FormatType_CP850
     Interface_Static::SetCVal("read.step.codepage", "UTF8");
 
-    Standard_STATIC_ASSERT((int)Resource_FormatType_iso8859_9 - (int)Resource_FormatType_CP1250 == 17); // "Error: Invalid Codepage Enumeration"
+    Standard_STATIC_ASSERT((int)Resource_FormatType_CP850 - (int)Resource_FormatType_CP1250 == 18); // "Error: Invalid Codepage Enumeration"
 
     init = Standard_True;
   }
