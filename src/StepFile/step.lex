@@ -121,23 +121,23 @@ void rec_typarg(int argtype);
 [=]		{ return ('='); }
 [;]		{ return (';'); }
 
-STEP;		{ return(token::STEP); }
-HEADER;		{ return(token::HEADER); }
-ENDSEC;		{ return(token::ENDSEC); }
-DATA;		{ return(token::DATA); }
-ENDSTEP;	{ return(token::ENDSTEP);}
-"ENDSTEP;".*	 { return(token::ENDSTEP);}
-END-ISO[0-9\-]*; { BEGIN(End); return(token::ENDSTEP); } /* at the end of the STEP data, enter dedicated start condition "End" to skip everything that follows */
-ISO[0-9\-]*;	 { return(token::STEP); }
+(?i:STEP);            { return(token::STEP); }
+(?i:HEADER);          { return(token::HEADER); }
+(?i:ENDSEC);          { return(token::ENDSEC); }
+(?i:DATA);            { return(token::DATA); }
+(?i:ENDSTEP);         { return(token::ENDSTEP);}
+(?i:ENDSTEP);.*       { return(token::ENDSTEP);}
+(?i:END-ISO)[0-9\-]*; { BEGIN(End); return(token::ENDSTEP); } /* at the end of the STEP data, enter dedicated start condition "End" to skip everything that follows */
+(?i:ISO)[0-9\-]*;     { return(token::STEP); }
 
-[/]		{ return ('/'); }
-&SCOPE		{ return(token::SCOPE); }
-ENDSCOPE	{ return(token::ENDSCOPE); }
-[a-zA-Z0-9_]+	{ rec_restext(YYText(),YYLeng()); return(token::TYPE); }
-![a-zA-Z0-9_]+	{ rec_restext(YYText(),YYLeng()); return(token::TYPE); }
-[^)]		{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argMisc); return(token::QUID); }
+[/]            { return ('/'); }
+&(?i:SCOPE)	   { return(token::SCOPE); }
+(?i:ENDSCOPE)  { return(token::ENDSCOPE); }
+[a-zA-Z0-9_]+  { rec_restext(YYText(),YYLeng()); return(token::TYPE); }
+![a-zA-Z0-9_]+ { rec_restext(YYText(),YYLeng()); return(token::TYPE); }
+[^)]           { rec_restext(YYText(),YYLeng()); rec_typarg(rec_argMisc); return(token::QUID); }
 
-<End>[^\n]      {;} /* skip any characters (except newlines) */
+<End>[^\n]     {;} /* skip any characters (except newlines) */
 
 %%
 
