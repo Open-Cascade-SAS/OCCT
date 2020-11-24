@@ -317,6 +317,11 @@ ApproxInt_MultiLine
     //-- return(*this);
   }
 
+  Standard_Boolean aSaveUseSolver = ((TheSvSurfaces *)PtrOnmySvSurfaces)->GetUseSolver();
+  if (!aSaveUseSolver)
+  {
+    ((TheSvSurfaces *)PtrOnmySvSurfaces)->SetUseSolver(Standard_True);
+  }
   Standard_Integer NbPntsToInsert=aNbPntsToInsert;
   if(NbPntsToInsert<(High-Low)) NbPntsToInsert=(High-Low);
   Standard_Integer NbPnts = NbPntsToInsert + High - Low + 1;
@@ -564,6 +569,7 @@ ApproxInt_MultiLine
 
   if((temp->NbPnts() >= NbPntsToInsert + High - Low + 1) && (CodeErreur==0))
   {
+    ((TheSvSurfaces *)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
     return (ApproxInt_MultiLine( temp, 
                                  (High-Low>10)? PtrOnmySvSurfaces : NULL,
                                  nbp3d,
@@ -579,6 +585,7 @@ ApproxInt_MultiLine
   {
     //-- cout<<" ApproxInt_MultiLine "<<endl;
     //-- cout<<" Pas de Rajout de points ds1min =  "<<minds1<<" ds2min = "<<minds2<<endl;
+    ((TheSvSurfaces *)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
     Handle(IntSurf_LineOn2S) vide1 = new IntSurf_LineOn2S();
     Handle(TheLine) vide = new TheLine(vide1,Standard_False);
     return (ApproxInt_MultiLine( vide,
@@ -607,7 +614,13 @@ Standard_Boolean
   Standard_Boolean OtherLineMade = Standard_False;
   if(PtrOnmySvSurfaces==NULL)
     return Standard_False;
-  
+
+  Standard_Boolean aSaveUseSolver = ((TheSvSurfaces *)PtrOnmySvSurfaces)->GetUseSolver();
+  if (!aSaveUseSolver)
+  {
+    ((TheSvSurfaces *)PtrOnmySvSurfaces)->SetUseSolver(Standard_True);
+  }
+
   const Standard_Real SqTol3d = Precision::SquareConfusion();
   math_Vector tolerance(1,2);
   tolerance(1) = tolerance(2) = 1.e-8;
@@ -682,7 +695,10 @@ Standard_Boolean
   }
 
   if (!OtherLineMade)
+  {
+    ((TheSvSurfaces *)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
     return Standard_False;
+  }
 
 #ifdef DRAW
   char* name = new char[100];
@@ -700,6 +716,7 @@ Standard_Boolean
   }
 #endif
   Handle(TheLine) temp = new TheLine(ResultPntOn2SLine,Standard_False);
+  ((TheSvSurfaces *)PtrOnmySvSurfaces)->SetUseSolver(aSaveUseSolver);
   theNewMultiLine = ApproxInt_MultiLine( temp, 
                                          PtrOnmySvSurfaces,
                                          nbp3d,

@@ -1,0 +1,51 @@
+puts "============"
+puts "0029441: Modeling Algorithms - Incorrect intersection curves between faces"
+puts "============"
+puts ""
+
+binrestore [locate_data_file bug28892_tools.bin] b
+
+set OK 1
+explode b so
+explode b_8 f; copy b_8_1 f1
+explode b_13 f; copy b_13_5 f2
+don f1 f2
+bopcurves f1 f2 -2d
+
+if {[isdraw c2d1_1]} {
+  puts "check extremity of 1-st pcurve x ~ 5.2714710662, |dx| ~ 0, |dy| >> |dx|"
+  2dcvalue c2d1_1 1 x y dx dy
+  set ex [expr abs([dval (x-5.2714710662)])]
+  set edxdy [expr abs([dval dx/dy])]
+  if {$ex > 1.e-8 || $edxdy > 1.e-10} {
+    puts "Extremities of 1-st pcurve are wrong"
+    set OK 0
+  } else {
+    puts "Extremities of 1-st pcurve are valid"
+  }
+} else {
+  set OK 0
+  puts "Error: 1-st pcurve is not exist"
+}
+
+if { $OK > 0 } {
+  if {[isdraw c2d1_2]} {
+    puts "check extremity of 2-nd pcurve x ~ 5.2705066089, |dx| ~ 0, |dy| >> |dx|"
+    2dcvalue c2d1_2 1 x y dx dy
+    set ex [expr abs([dval (x-5.2705066089)])]
+    set edxdy [expr abs([dval dx/dy])]
+    if {$ex > 1.e-8 || $edxdy > 1.e-10} {
+      puts "Extremities of 2-nd pcurve are wrong"
+      set OK 0
+    } else {
+      puts "Extremities of 2-nd pcurve are valid"
+    }
+  } else {
+    set OK 0
+    puts "Error: 2-nd pcurve is not exist"
+  }
+} 
+
+if { $OK < 1 } {
+  puts "Error: bad pcurves"
+}

@@ -336,6 +336,7 @@ ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const TheISurface& ISurf
        MyImplicitFirst(Standard_True),
        MyZerImpFunc(PSurf,ISurf)
 { 
+  SetUseSolver(Standard_True);
 }
 //--------------------------------------------------------------------------------
 ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const ThePSurface& PSurf
@@ -347,6 +348,7 @@ ApproxInt_ImpPrmSvSurfaces::ApproxInt_ImpPrmSvSurfaces( const ThePSurface& PSurf
        MyImplicitFirst(Standard_False),
        MyZerImpFunc(PSurf,ISurf)
 { 
+  SetUseSolver(Standard_True);
 }
 //--------------------------------------------------------------------------------
 void ApproxInt_ImpPrmSvSurfaces::Pnt(const Standard_Real u1,
@@ -517,15 +519,21 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1,
     return(Standard_False);
   }
 
+  Standard_Boolean aRsnldIsDone = Standard_False;
   Standard_Real PourTesterU = X(1);
   Standard_Real PourTesterV = X(2);
-
-  math_FunctionSetRoot  Rsnld(MyZerImpFunc);
-  Rsnld.SetTolerance(Tolerance);
-  Rsnld.Perform(MyZerImpFunc,X,BornInf,BornSup);
-  if(Rsnld.IsDone()) { 
+  if (GetUseSolver())
+  {
+    math_FunctionSetRoot  Rsnld(MyZerImpFunc);
+    Rsnld.SetTolerance(Tolerance);
+    Rsnld.Perform(MyZerImpFunc, X, BornInf, BornSup);
+    aRsnldIsDone = Rsnld.IsDone();
+    if (aRsnldIsDone)
+      Rsnld.Root(X);
+  }
+  if(aRsnldIsDone || !GetUseSolver()) 
+  {
     MyHasBeenComputed = Standard_True;
-    Rsnld.Root(X);
     
     Standard_Real DistAvantApresU = Abs(PourTesterU-X(1));
     Standard_Real DistAvantApresV = Abs(PourTesterV-X(2));
@@ -907,10 +915,15 @@ ApproxInt_ImpPrmSvSurfaces::FillInitialVectorOfSolution(const Standard_Real u1,
   //----------------------------------------------------
   //Make a small step from boundaries in order to avoid
   //finding "outboundaried" solution (Rsnld -> NotDone).
-  if(X(1)-0.0000000001 <= binfu) X(1)=X(1)+0.0000001;
-  if(X(1)+0.0000000001 >= bsupu) X(1)=X(1)-0.0000001;
-  if(X(2)-0.0000000001 <= binfv) X(2)=X(2)+0.0000001;
-  if(X(2)+0.0000000001 >= bsupv) X(2)=X(2)-0.0000001;
+  if (GetUseSolver())
+  {
+    Standard_Real du = Max(Precision::Confusion(), ThePSurfaceTool::UResolution(aPSurf, Precision::Confusion()));
+    Standard_Real dv = Max(Precision::Confusion(), ThePSurfaceTool::VResolution(aPSurf, Precision::Confusion()));
+    if (X(1) - 0.0000000001 <= binfu) X(1) = X(1) + du;
+    if (X(1) + 0.0000000001 >= bsupu) X(1) = X(1) - du;
+    if (X(2) - 0.0000000001 <= binfv) X(2) = X(2) + dv;
+    if (X(2) + 0.0000000001 >= bsupv) X(2) = X(2) - dv;
+  }
   
   return Standard_True;
 }

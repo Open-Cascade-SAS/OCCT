@@ -359,6 +359,8 @@ void ApproxInt_Approx::Perform(const TheISurface& ISurf,
                           isTheQuadFirst? ApproxInt_TheImpPrmSvSurfaces(ISurf, PSurf):
                                           ApproxInt_TheImpPrmSvSurfaces(PSurf, ISurf);
 
+  myImpPrmSvSurfaces.SetUseSolver(Standard_False);
+
   const Standard_Integer nbpntbez = indicemax-indicemin;
   if(nbpntbez < aMinNbPointsForApprox)
   {
