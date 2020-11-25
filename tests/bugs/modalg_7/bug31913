@@ -1,0 +1,25 @@
+puts "============================================================================================="
+puts "0031913: Modeling Algorithms - Invalid result of cut operation"
+puts "============================================================================================="
+puts ""
+
+restore [locate_data_file bug31913_shell_to_cut.brep] s1
+restore [locate_data_file bug31913_cutting_solid.brep] s2
+
+bclearobjects
+bcleartools
+baddobjects s1
+baddtools s2
+bfillds
+bbop rcommon 0
+bbop rcut 2
+
+checkshape rcommon
+checknbshapes rcommon -face 17 -wire 17
+checkprops rcommon -s 0.0317669
+
+checkshape rcut
+checknbshapes rcut -face 73 -wire 73
+checkprops rcut -s 39.1577
+
+checkview -display rcommon -2d -path ${imagedir}/${test_image}.png
