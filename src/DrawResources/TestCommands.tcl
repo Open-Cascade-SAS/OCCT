@@ -2109,7 +2109,7 @@ proc _diff_show_positive_ratio {value1 value2} {
     if {[expr double ($value2)] == 0.} {
         return "$value1 / $value2"
     } else {
-        return "$value1 / $value2 \[[format "%5.2f%%" [expr 100 * double($value1) / double($value2)]]\]"
+        return "$value1 / $value2 \[[format "%4.2f%%" [expr 100 * double($value1) / double($value2)]]\]"
     }
 }
 
@@ -2299,7 +2299,11 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                 set imglist2 [glob -directory $path2 -types f -tails -nocomplain ${casename}.{png,gif} ${casename}-*.{png,gif} ${casename}_*.{png,gif}]
                 _list_diff $imglist1 $imglist2 imgin1 imgin2 imgcommon
                 if { "$verbose" > 1 } {
+                    # Differences in image lists might reflect changes in test case or in list of tests (new/removed test cases),
+                    # but might also reflect image dump failures.
                     if { [llength $imgin1] > 0 } {
+                        set stat(img1) [expr $stat(img1) + [llength $imgin1]]
+                        set stat(img2) [expr $stat(img2) + [llength $imgin1]]
                         if {$image != false} {
                             _log_and_puts log_image "Only in $path1: $imgin1"
                         } else {
@@ -2307,6 +2311,7 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                         }
                     }
                     if { [llength $imgin2] > 0 } {
+                        set stat(img1) [expr $stat(img1) + [llength $imgin2]]
                         if {$image != false} {
                             _log_and_puts log_image "Only in $path2: $imgin2"
                         } else {
@@ -2322,8 +2327,8 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                     if { [catch {diffimage [file join $dir1 $basename $imgfile] \
                                            [file join $dir2 $basename $imgfile] \
                                            -toleranceOfColor 0.0 -blackWhite off -borderFilter off $diffile} diff] } {
+                        set stat(img1) [expr $stat(img1) + 1]
                         if {$image != false} {
-                            set stat(img1) [expr $stat(img1) + 1]
                             _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
                         } else {
                             _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
@@ -2336,8 +2341,8 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                             if { [catch {diffimage [file join $dir1 $basename $imgfile] \
                                                    [file join $dir2 $basename $imgfile] \
                                                    -toleranceOfColor $aCaseDiffColorTol -blackWhite off -borderFilter off $diffile} diff2] } {
+                                set stat(img1) [expr $stat(img1) + 1]
                                 if {$image != false} {
-                                    set stat(img1) [expr $stat(img1) + 1]
                                     _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
                                 } else {
                                     _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile cannot be compared"
@@ -2347,8 +2352,8 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                                 # exclude image diff within tolerance but still keep info in the log
                                 set toLogImageCase false
                                 file delete -force $diffile
+                                set stat(img1) [expr $stat(img1) + 1]
                                 if {$image != false} {
-                                    set stat(img1) [expr $stat(img1) + 1]
                                     _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile is similar \[$diff different pixels\]"
                                 } else {
                                     _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile is similar \[$diff different pixels\]"
@@ -2357,8 +2362,8 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
                             }
                         }
 
+                        set stat(img1) [expr $stat(img1) + 1]
                         if {$image != false} {
-                            set stat(img1) [expr $stat(img1) + 1]
                             _log_and_puts log_image "IMAGE [split $basename /] $casename: $imgfile differs \[$diff different pixels\]"
                         } else {
                             _log_and_puts log "IMAGE [split $basename /] $casename: $imgfile differs \[$diff different pixels\]"
@@ -2408,9 +2413,9 @@ proc _test_diff {dir1 dir2 basename image cpu memory status verbose _logvar _log
         }
         if {$image != false || ($image == false && $cpu == false && $memory == false)} {
             if {$image != false} {
-                _log_and_puts log_image "Total Image difference: [_diff_show_positive_ratio $stat(img1) $stat(img2)]"
+                _log_and_puts log_image "Total IMAGE difference: [_diff_show_positive_ratio $stat(img1) $stat(img2)]"
             } else {
-                _log_and_puts log "Total Image difference: [_diff_show_positive_ratio $stat(img1) $stat(img2)]"
+                _log_and_puts log "Total IMAGE difference: [_diff_show_positive_ratio $stat(img1) $stat(img2)]"
             }
         }
     }
@@ -2453,14 +2458,14 @@ proc _log_html_diff {file log dir1 dir2 highlight_percent} {
         if { [regexp "\[\\\[](\[0-9.e+-]+)%\[\]]" $line res value] && 
              [expr abs($value)] > ${highlight_percent} } {
             puts $fd "<table><tr><td bgcolor=\"[expr $value > 0 ? \"ff8080\" : \"lightgreen\"]\">$line</td></tr></table>"
-        } elseif { [regexp {IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+) is similar} $line res case img] } {
+        } elseif { [regexp {^IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+) is similar} $line res case img] } {
             if { [catch {eval file join "" [lrange $case 0 end-1]} gridpath] } {
                 # note: special handler for the case if test grid directoried are compared directly
                 set gridpath ""
             }
             set aCaseName [lindex $case end]
             puts $fd "<table><tr><td bgcolor=\"orange\"><a href=\"[_make_url $file [file join $dir1 $gridpath $aCaseName.html]]\">$line</a></td></tr></table>"
-        } elseif { [regexp {IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+)} $line res case img] } {
+        } elseif { [regexp {^IMAGE[ \t]+([^:]+):[ \t]+([A-Za-z0-9_.-]+)} $line res case img] } {
             # add images
             puts $fd $line
             if { [catch {eval file join "" [lrange $case 0 end-1]} gridpath] } {
