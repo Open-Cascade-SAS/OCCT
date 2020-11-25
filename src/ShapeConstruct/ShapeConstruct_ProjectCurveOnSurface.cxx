@@ -407,10 +407,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::Perform (Handle(Geom_Curv
     theParams2d->SetValue(iPnt, params(iPnt));
     thePnts2d->SetValue(iPnt, pnt2d(iPnt));
   }
-
   c2d = InterpolatePCurve (nbPini, thePnts2d, theParams2d, c3d);
-//  c2d = ApproximatePCurve (nbPini, thePnts2d, theParams2d, c3d);
-//  Faut-il aussi reprendre la C3D ?
+
+  // Faut-il aussi reprendre la C3D ?
   myStatus |= ShapeExtend::EncodeStatus (c2d.IsNull() ? ShapeExtend_FAIL1 : ShapeExtend_DONE2);
   return Status (ShapeExtend_DONE);
 }
@@ -973,6 +972,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
     //BestExtremum (valueP2,points(nbrPnt),points(nbrPnt-1));
     //}
   
+  Standard_Real Up = ul - uf;
+  Standard_Real Vp = vl - vf;
   Standard_Real gap = myPreci; //:q1
   Standard_Boolean ChangeCycle = Standard_False; //skl for OCC3430
   // auxiliaruy variables to shift 2dcurve, according to previous
@@ -982,49 +983,55 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
     //if(myCashe3d[0].Distance(points(nbrPnt))<myPreci)
     if(myCashe3d[0].Distance(points(nbrPnt))<Precision::Confusion())
       ChangeCycle = Standard_True;
+  Standard_Boolean needResolveUJump = Standard_False;
+  Standard_Boolean needResolveVJump = Standard_False;
+  gp_Pnt prevP3d;
+  gp_Pnt2d prevP2d;
   //for( i = 1; i <= nbrPnt; i ++) {
   for(Standard_Integer ii=1; ii<=nbrPnt; ii++) {
     const Standard_Integer aPntIndex = ChangeCycle ? (nbrPnt - ii + 1) : ii;
     p3d = points (aPntIndex);
     if (isoParam) {
-      
+
       if (isoPar2d3d) {
-	if (isoPar2 > isoPar1) tPar = params (aPntIndex);
-	else                   tPar = t1 + t2 - params(aPntIndex);
-      } else if (!isAnalytic) {
-	// projection to iso
-	if      (aPntIndex == 1)      tPar = isoPar1;
-	else if (aPntIndex == nbrPnt) tPar = isoPar2;
-	else {
-	  tPar = pout(aPntIndex);
-	  //:S4030  ShapeAnalysis_Curve().Project (cIso,p3d,myPreci,pt,tPar,Cf,Cl); //szv#4:S4163:12Mar99 `dist=` not needed
-	}
+        if (isoPar2 > isoPar1) tPar = params(aPntIndex);
+        else                   tPar = t1 + t2 - params(aPntIndex);
       }
-      
-      if (!isoPar2d3d && isAnalytic) {
-	if      (aPntIndex == 1)      p2d = valueP1;
-	else if (aPntIndex == nbrPnt) p2d = valueP2;
+      else if (!isAnalytic) {
+        // projection to iso
+        if (aPntIndex == 1)      tPar = isoPar1;
+        else if (aPntIndex == nbrPnt) tPar = isoPar2;
         else {
-	  p2d = mySurf->NextValueOfUV(p2d,p3d, myPreci, //%12 pdn 15.02.99 optimizing
-				      Precision::Confusion()+1000*gap); //:q1
-	  gap = mySurf->Gap();
-	}
-      } else {
-	if(isoTypeU)  {  p2d.SetX(isoValue);  p2d.SetY(tPar);     }
-	else          {  p2d.SetX(tPar);      p2d.SetY(isoValue); }
+          tPar = pout(aPntIndex);
+          //:S4030  ShapeAnalysis_Curve().Project (cIso,p3d,myPreci,pt,tPar,Cf,Cl); //szv#4:S4163:12Mar99 `dist=` not needed
+        }
+      }
+
+      if (!isoPar2d3d && isAnalytic) {
+        if (aPntIndex == 1)      p2d = valueP1;
+        else if (aPntIndex == nbrPnt) p2d = valueP2;
+        else {
+          p2d = mySurf->NextValueOfUV(p2d, p3d, myPreci, //%12 pdn 15.02.99 optimizing
+            Precision::Confusion() + 1000 * gap); //:q1
+          gap = mySurf->Gap();
+        }
+      }
+      else {
+        if (isoTypeU) { p2d.SetX(isoValue);  p2d.SetY(tPar); }
+        else { p2d.SetX(tPar);      p2d.SetY(isoValue); }
       }
     }
-    
+
     else {
-      if     ( (aPntIndex == 1)      && p1OnIso)  p2d = valueP1;
-      else if( (aPntIndex == nbrPnt) && p2OnIso)  p2d = valueP2;
-      else  {// general case (not an iso)  mais attention aux singularites !
+      if ((aPntIndex == 1) && p1OnIso)  p2d = valueP1;
+      else if ((aPntIndex == nbrPnt) && p2OnIso)  p2d = valueP2;
+      else {// general case (not an iso)  mais attention aux singularites !
         // first and last points are already computed by getLine()
         if (aPntIndex == 1 || aPntIndex == nbrPnt)
         {
           if (!isRecompute)
           {
-            p2d = pnt2d (aPntIndex);
+            p2d = pnt2d(aPntIndex);
             gap = mySurf->Gap();
             if (aPntIndex == 1) {
               isFromCashe = isFromCasheLine;
@@ -1038,9 +1045,9 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
             Standard_Integer j; // svv #1
             for (j = 0; j < myNbCashe; ++j)
             {
-              if ( myCashe3d[j].SquareDistance ( p3d ) < myPreci*myPreci )
+              if (myCashe3d[j].SquareDistance(p3d) < myPreci*myPreci)
               {
-                p2d = mySurf->NextValueOfUV (myCashe2d[j], p3d, myPreci, Precision::Confusion()+gap);
+                p2d = mySurf->NextValueOfUV(myCashe2d[j], p3d, myPreci, Precision::Confusion() + gap);
                 if (aPntIndex == 1)
                 {
                   isFromCashe = Standard_True;
@@ -1056,18 +1063,34 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
           }
         }
         else {
-          p2d = mySurf->NextValueOfUV (p2d, p3d, myPreci, //:S4030: optimizing
-                                       Precision::Confusion()+1000*gap); //:q1
+          p2d = mySurf->NextValueOfUV(p2d, p3d, myPreci, //:S4030: optimizing
+            Precision::Confusion() + 1000 * gap); //:q1
         }
-	gap = mySurf->Gap();
+        gap = mySurf->Gap();
       }
     }
-    pnt2d (aPntIndex) = p2d;
-    if ( ii > 1 ) {
-      if(ChangeCycle)
-        p2d.SetXY ( 2. * p2d.XY() - pnt2d(aPntIndex + 1).XY() );
+    pnt2d(aPntIndex) = p2d;
+    if (nbrPnt > 23 && ii > 2 && ii < nbrPnt)
+    {
+      // additional check for possible invalid jump by U or V parameter
+      if (fabs(p2d.X() - prevP2d.X()) > 0.95*Up && prevP3d.Distance(p3d) < myPreci && !mySurf->IsUClosed(myPreci)
+        && mySurf->NbSingularities(myPreci) > 0 && mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
+      {
+        needResolveUJump = Standard_True;
+      }
+      if (fabs(p2d.Y() - prevP2d.Y()) > 0.95*Vp && prevP3d.Distance(p3d) < myPreci && !mySurf->IsVClosed(myPreci)
+        && mySurf->NbSingularities(myPreci) > 0 && mySurf->Surface()->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
+      {
+        needResolveVJump = Standard_True;
+      }
+    }
+    prevP3d = p3d;
+    prevP2d = p2d;
+    if (ii > 1) {
+      if (ChangeCycle)
+        p2d.SetXY(2. * p2d.XY() - pnt2d(aPntIndex + 1).XY());
       else
-        p2d.SetXY ( 2. * p2d.XY() - pnt2d(aPntIndex - 1).XY() );
+        p2d.SetXY(2. * p2d.XY() - pnt2d(aPntIndex - 1).XY());
     }
   }
 
@@ -1120,8 +1143,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   
   // Si la surface est UCLosed et VClosed, on recadre les points
   // algo un peu complique, on retarde l implementation
-  Standard_Real Up = ul - uf;
-  Standard_Real Vp = vl - vf;
+  //Standard_Real Up = ul - uf;
+  //Standard_Real Vp = vl - vf;
   Standard_Real dist2d;
   const Standard_Real TolOnUPeriod = Precision::Confusion() * Up;
   const Standard_Real TolOnVPeriod = Precision::Confusion() * Vp;
@@ -1131,7 +1154,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   }
 #endif
   // Si la surface est UCLosed, on recadre les points
-  if (mySurf->IsUClosed(myPreci)) {//#78 rln 12.03.99 S4135
+  if (mySurf->IsUClosed(myPreci) || needResolveUJump) {//#78 rln 12.03.99 S4135
     // Premier point dans le domain [uf, ul]
     Standard_Real prevX, firstX = pnt2d (1).X();
     if (!isFromCashe) {
@@ -1198,7 +1221,8 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformByProjLib(Handle(G
   //
   //#69 rln 01.03.99 S4135 bm2_sd_t4-A.stp entity 30
   //#78 rln 12.03.99 S4135
-  if (mySurf->IsVClosed(myPreci) || mySurf->Surface()->IsKind (STANDARD_TYPE (Geom_SphericalSurface))) {
+  if (mySurf->IsVClosed(myPreci) || needResolveVJump ||
+    mySurf->Surface()->IsKind (STANDARD_TYPE (Geom_SphericalSurface))) {
     // Premier point dans le domain [vf, vl]
     Standard_Real prevY, firstY = pnt2d (1).Y();
     if (!isFromCashe) {
