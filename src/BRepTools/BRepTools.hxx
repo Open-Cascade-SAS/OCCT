@@ -154,7 +154,10 @@ public:
   //! triangulations and polygons 3d of the edges.
   //! In case polygonal representation is the only available representation
   //! for the shape (shape does not have geometry) it is not removed.
-  Standard_EXPORT static void Clean (const TopoDS_Shape& S);
+  //! @param theShape  [in] the shape to clean
+  //! @param theForce  [in] allows removing all polygonal representations from the shape,
+  //!                       including polygons on triangulations irrelevant for the faces of the given shape.
+  Standard_EXPORT static void Clean (const TopoDS_Shape& theShape, const Standard_Boolean theForce = Standard_False);
   
   //! Removes geometry (curves and surfaces) from all edges and faces of the shape
   Standard_EXPORT static void CleanGeometry(const TopoDS_Shape& theShape);

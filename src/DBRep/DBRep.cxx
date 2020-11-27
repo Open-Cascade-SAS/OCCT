@@ -369,26 +369,56 @@ static Standard_Integer triangles(Draw_Interpretor& ,
 // tclean
 //=======================================================================
 
-static Standard_Integer tclean(Draw_Interpretor& , 
-			       Standard_Integer n, const char** a)
+static Standard_Integer tclean(Draw_Interpretor& di,
+  Standard_Integer n, const char** a)
 {
-  if (n == 1) return 1;
-
-  Standard_Integer aStart = 1;
   Standard_Boolean toRemoveGeometry = Standard_False;
-  if (strcmp(a[1], "-geom") == 0)
+  Standard_Boolean isForceClean = Standard_False;
+
+  if (n <= 1)
   {
-    aStart++;
-    toRemoveGeometry = Standard_True;
+    di.PrintHelp(a[0]);
+    return 1;
+  }
+  TopoDS_Compound aCompound;
+  BRep_Builder().MakeCompound(aCompound);
+  for (Standard_Integer anArgIter = 1; anArgIter < n; ++anArgIter)
+  {
+    if (strcmp(a[anArgIter], "-geom") == 0)
+    {
+      toRemoveGeometry = Standard_True;
+    }
+    else if (strcmp(a[anArgIter], "-force") == 0)
+    {
+      isForceClean = Standard_True;
+    }
+    else
+    {
+      TopoDS_Shape aShape = DBRep::Get(a[anArgIter]);
+      if (aShape.IsNull())
+      {
+        di << "Syntax error : NULL shape '"<< a[anArgIter] << "'";
+        return 1;
+      }
+      BRep_Builder().Add(aCompound, aShape);
+    }
+  }
+  if (aCompound.NbChildren() == 0)
+  {
+    di << "Syntax error : wrong number of arguments";
+    di.PrintHelp(a[0]);
+    return 1;
+  }
+  if (isForceClean && toRemoveGeometry)
+  {
+    di << "Syntax error: wrong usage of arguments: do not use 'force' and 'geom' flags together";
+    return 1;
   }
 
-  for (Standard_Integer i = aStart; i < n; i++) {
-    TopoDS_Shape S = DBRep::Get(a[i]);
-    if (toRemoveGeometry)
-      BRepTools::CleanGeometry(S);
-    else
-      BRepTools::Clean(S);
-  }
+  if (toRemoveGeometry)
+    BRepTools::CleanGeometry(aCompound);
+  else
+    BRepTools::Clean(aCompound, isForceClean);
   return 0;
 }
 
@@ -1621,9 +1651,11 @@ void  DBRep::BasicCommands(Draw_Interpretor& theCommands)
   theCommands.Add("hlr" ,"[no]hlr, rg1, rgn, hid, ang",__FILE__,hlr ,g);
   theCommands.Add("vori","vori [name1 ...], edges are colored by orientation (see vconn)",__FILE__,dispor,g);
   theCommands.Add("triangles", "triangles [name1]..., display triangles of shapes if exists",__FILE__, triangles, g);
-  theCommands.Add("tclean", "tclean [-geom] [name1]..., depending on using or not key -geom, \n" 
-                   "\t erase geometry objects from shapes - key is used or \n"
-                   "\t erase triangulations and polygons on triangulations from shapes - key is omitted \n",
+  theCommands.Add("tclean", "tclean [-force] [-geom] [name1]..., depending on using or not key -geom, \n" 
+                   "\t\t -geom  : erase geometry\n"
+                   "\t\t          if [-geom] is omitted - erase triangulations and \n"
+                   "\t\t          polygons on triangulations from shapes \n"
+                   "\t\t -force : force delete all representations not relevant to the given shape \n",
                     __FILE__, tclean, g); 
   theCommands.Add("polygons", "polygons [name1]..., display polygons of shapes if exists",__FILE__, polygons, g);
   theCommands.Add("vconn","vconn [name1 ...] , edges are colored by number of faces (see vori)",__FILE__,dispor,g);

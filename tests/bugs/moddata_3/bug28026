@@ -1,0 +1,20 @@
+puts "========================================================================================="
+puts "OCC28026: Modeling Data - BRepTools::Clean() does not clean all triangulation from shape "
+puts "========================================================================================="
+puts ""
+
+restore [locate_data_file bug28026_Ball.brep] b
+
+set expected {"0 triangles" "0 nodes"
+              "0 polygons on triangulation"
+              "Maximal deflection 0"}
+
+tclean b -force
+set output [trinfo b]
+  
+foreach data ${expected} {
+    if ![regexp $data $output] {
+       puts "Error: Not cleanned all trinfo in '$data'"
+       break; 
+    }
+}

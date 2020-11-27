@@ -43,6 +43,9 @@
 #include <Poly_Connect.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <TopExp.hxx> 
 
 #include <BRepMesh_Context.hxx>
 #include <BRepMesh_FaceDiscret.hxx>
@@ -441,7 +444,7 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
   TopLoc_Location L;
 
   Standard_Real MaxDeflection = 0.0;
-  Standard_Integer nbtriangles = 0, nbnodes = 0;
+  Standard_Integer nbtriangles = 0, nbnodes = 0, nbrepresentations = 0;
   for (ex.Init(S, TopAbs_FACE); ex.More(); ex.Next()) {
     TopoDS_Face F = TopoDS::Face(ex.Current());
     T = BRep_Tool::Triangulation(F, L);
@@ -452,11 +455,32 @@ static Standard_Integer trianglesinfo(Draw_Interpretor& di, Standard_Integer n, 
         MaxDeflection = T->Deflection();
     }
   }
+  TopTools_IndexedMapOfShape anEdges;
+  TopExp::MapShapes(S, TopAbs_EDGE, anEdges);
+  for (int i = 1; i<=anEdges.Extent(); ++i)
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge(anEdges(i));
+    Handle(BRep_CurveRepresentation) aCR;
+    BRep_TEdge* aTE = static_cast<BRep_TEdge*>(anEdge.TShape().get());
+    const BRep_ListOfCurveRepresentation& aLCR = aTE->Curves();
+    BRep_ListIteratorOfListOfCurveRepresentation anIterCR(aLCR);
+
+    while (anIterCR.More()) {
+      aCR = anIterCR.Value();
+      if (aCR->IsPolygonOnTriangulation())
+      {
+        nbrepresentations++;
+      }
+      anIterCR.Next();
+    }
+  }
 
   di<<"\n";
-  di<<"This shape contains " <<nbtriangles<<" triangles.\n";
-  di<<"                    " <<nbnodes    <<" nodes.\n";
-  di<<"Maximal deflection " <<MaxDeflection<<"\n";
+  di << "This shape contains " << nbtriangles << " triangles.\n";
+  di << "                    " << nbnodes << " nodes.\n";
+  di << "                    " << nbrepresentations << " polygons on triangulation .\n";;
+  di << "Maximal deflection " << MaxDeflection << "\n";
+  
   di<<"\n";
 #ifdef OCCT_DEBUG_MESH_CHRONO
   Standard_Real tot, addp, unif, contr, inter;

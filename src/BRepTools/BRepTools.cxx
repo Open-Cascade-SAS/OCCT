@@ -763,7 +763,7 @@ Standard_Boolean BRepTools::Read(TopoDS_Shape& Sh,
 //purpose  : 
 //=======================================================================
 
-void BRepTools::Clean (const TopoDS_Shape& theShape)
+void BRepTools::Clean (const TopoDS_Shape& theShape, const Standard_Boolean theForce)
 {
   if (theShape.IsNull())
     return;
@@ -809,8 +809,8 @@ void BRepTools::Clean (const TopoDS_Shape& theShape)
     TopExp_Explorer aEdgeIt(aFace, TopAbs_EDGE);
     for (; aEdgeIt.More(); aEdgeIt.Next())
     {
-      const TopoDS_Edge& aEdge = TopoDS::Edge(aEdgeIt.Current());
-      aBuilder.UpdateEdge(aEdge, aNullPoly, aTriangulation, aLoc);
+      const TopoDS_Edge& anEdge = TopoDS::Edge(aEdgeIt.Current());
+      aBuilder.UpdateEdge(anEdge, aNullPoly, aTriangulation, aLoc);
     }
 
     aBuilder.UpdateFace(aFace, aNullTriangulation);
@@ -821,27 +821,50 @@ void BRepTools::Clean (const TopoDS_Shape& theShape)
   TopExp_Explorer aEdgeIt (theShape, TopAbs_EDGE);
   for (; aEdgeIt.More (); aEdgeIt.Next ())
   {
-    TopoDS_Edge anEdgeNoLoc = TopoDS::Edge (aEdgeIt.Value());
-    anEdgeNoLoc.Location (anEmptyLoc);
+    TopoDS_Edge anEdge = TopoDS::Edge(aEdgeIt.Value()); 
+    anEdge.Location(anEmptyLoc);
 
-    if (!aShapeMap.Add (anEdgeNoLoc))
+    if (!aShapeMap.Add(anEdge))
     {
       // the edge has already been processed
       continue;
     }
 
-    if (!BRep_Tool::IsGeometric (TopoDS::Edge (anEdgeNoLoc)))
+    if (!BRep_Tool::IsGeometric(TopoDS::Edge(anEdge)))
     {
       // Do not remove polygon 3d as there is no curve to recompute it.
       continue;
     }
 
     TopLoc_Location aLoc;
-    Handle (Poly_Polygon3D) aPoly3d = BRep_Tool::Polygon3D (anEdgeNoLoc, aLoc);
-    if (aPoly3d.IsNull())
-      continue;
+    Handle(Poly_Polygon3D) aPoly3d = BRep_Tool::Polygon3D(anEdge, aLoc);
 
-    aBuilder.UpdateEdge (anEdgeNoLoc, aNullPoly3d);
+    if (!aPoly3d.IsNull())
+    {
+      aBuilder.UpdateEdge(anEdge, aNullPoly3d);
+    }
+    if (theForce)
+    {
+      Handle(BRep_CurveRepresentation) aCR;
+      BRep_TEdge* aTE = static_cast<BRep_TEdge*>(anEdge.TShape().get());
+      BRep_ListOfCurveRepresentation& aLCR = aTE->ChangeCurves();
+      BRep_ListIteratorOfListOfCurveRepresentation anIterCR(aLCR);
+
+      // find and remove all representations
+      while (anIterCR.More())
+      {
+        aCR = anIterCR.Value();
+        if (aCR->IsPolygonOnTriangulation())
+        {
+          aLCR.Remove(anIterCR);
+        }
+        else
+        {
+          anIterCR.Next();
+        }
+      }
+      aTE->Modified(Standard_True);
+    }
   }
 }
 //=======================================================================
@@ -875,7 +898,6 @@ void BRepTools::CleanGeometry(const TopoDS_Shape& theShape)
   for (TopExp_Explorer aEdgeIt2(theShape, TopAbs_EDGE); aEdgeIt2.More(); aEdgeIt2.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(aEdgeIt2.Current());
-
     aBuilder.UpdateEdge(anEdge, Handle(Geom_Curve)(),
       TopLoc_Location(), BRep_Tool::Tolerance(anEdge));
   }
