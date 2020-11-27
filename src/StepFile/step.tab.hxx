@@ -49,6 +49,7 @@
 // This file is part of Open CASCADE Technology software library.
 // This file is generated, do not modify it directly; edit source file step.yacc instead.
 
+#include <StepFile_ReadData.hxx>
 namespace step {
   class scanner;
 };
@@ -809,7 +810,7 @@ namespace step {
     /// Constants.
     enum
     {
-      yylast_ = 83,     ///< Last index in yytable_.
+      yylast_ = 82,     ///< Last index in yytable_.
       yynnts_ = 27,  ///< Number of nonterminal symbols.
       yyfinal_ = 7 ///< Termination state number.
     };
@@ -823,6 +824,36 @@ namespace step {
 
 } // step
 
+
+// "%code provides" blocks.
+
+// Define stepFlexLexer class by inclusion of FlexLexer.h,
+// but only if this has not been done yet, to avoid redefinition
+#if !defined(yyFlexLexer) && !defined(FlexLexerOnce)
+#define yyFlexLexer stepFlexLexer
+#include "FlexLexer.h"
+#endif
+
+namespace step {
+
+    // To feed data back to bison, the yylex method needs yylval and
+    // yylloc parameters. Since the stepFlexLexer class is defined in the
+    // system header <FlexLexer.h> the signature of its yylex() method
+    // can not be changed anymore. This makes it necessary to derive a
+    // scanner class that provides a method with the desired signature:
+
+    class scanner : public stepFlexLexer
+    {
+    public:
+      explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = 0, std::ostream* out = 0);
+
+      int lex(step::parser::semantic_type* yylval,
+        step::parser::location_type* yylloc);
+
+      StepFile_ReadData* myDataModel;
+    };
+
+};
 
 
 

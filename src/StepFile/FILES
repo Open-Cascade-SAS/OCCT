@@ -1,12 +1,10 @@
 lex.step.cxx
-recfile.pc
-recfile.ph
 step.tab.cxx
 step.tab.hxx
+StepFile_ReadData.cxx
+StepFile_ReadData.hxx
 StepFile_Read.cxx
 StepFile_Read.hxx
-stepread.cxx
-stepread.ph
 step.lex
 step.yacc
 FlexLexer.h

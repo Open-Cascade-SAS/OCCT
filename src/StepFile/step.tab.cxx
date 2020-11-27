@@ -50,11 +50,10 @@
 
 // Unqualified %code blocks.
 
-#include "recfile.ph"		/* definitions des types d'arguments */
-#include "recfile.pc"		/* la-dedans, tout y est */
 
 #undef yylex
 #define yylex scanner->lex
+#define StepData scanner->myDataModel
 
 #define stepclearin yychar = -1
 #define steperrok yyerrflag = 0
@@ -622,75 +621,74 @@ namespace step {
           switch (yyn)
             {
   case 11: // stepf: stepf3
-                {  rec_finfile();  return(0);  /*  fini pour celui-la  */  }
+                {  return(0);  /*  fini pour celui-la  */  }
     break;
 
   case 16: // endhead: DATA
-        {  rec_finhead();  }
+        {  StepData->FinalOfHead();  }
     break;
 
   case 17: // unarg: IDENT
-                        {  rec_typarg(rec_argIdent);     rec_newarg();  }
+                        {  StepData->SetTypeArg(ArgumentType_Ident);     StepData->CreateNewArg();  }
     break;
 
   case 18: // unarg: QUID
-                        {  /* deja fait par lex*/ 	 rec_newarg();  }
+                        {  /* deja fait par lex*/ 	 StepData->CreateNewArg();  }
     break;
 
   case 19: // unarg: listarg
-                                                      {  rec_newarg();  }
+                                                      {  StepData->CreateNewArg();  }
     break;
 
   case 20: // unarg: listype listarg
-                                                      {  rec_newarg();  }
+                                                      {  StepData->CreateNewArg();  }
     break;
 
   case 21: // unarg: error
-                        {  rec_typarg(rec_argMisc);      rec_newarg();
-			   yyerrstatus_ = 1; yyclearin;  }
+                        {  StepData->CreateErrorArg();  }
     break;
 
   case 22: // listype: TYPE
-        {  rec_listype();  }
+        {  StepData->RecordTypeText();  }
     break;
 
   case 23: // deblist: '('
-        {  rec_deblist();  }
+        {  StepData->RecordListStart();  }
     break;
 
   case 24: // finlist: ')'
-        {  if (modeprint > 0)
-		{  printf("Record no : %d -- ",nbrec+1);  rec_print(currec);  }
-	   rec_newent ();  yyerrstatus_ = 0; }
+        {  if (StepData->GetModePrint() > 0)
+		{  printf("Record no : %d -- ", StepData->GetNbRecord()+1);  StepData->PrintCurrentRecord();  }
+	   StepData->RecordNewEntity ();  yyerrstatus_ = 0; }
     break;
 
-  case 42: // debscop: SCOPE
-        {  scope_debut();  }
+  case 39: // debscop: SCOPE
+        {  StepData->AddNewScope();  }
     break;
 
-  case 43: // unid: IDENT
-        {  rec_typarg(rec_argIdent);    rec_newarg();  }
+  case 40: // unid: IDENT
+        {  StepData->SetTypeArg(ArgumentType_Ident);    StepData->CreateNewArg();  }
     break;
 
-  case 46: // debexp: '/'
-        {  rec_deblist();  }
+  case 43: // debexp: '/'
+        {  StepData->RecordListStart();  }
     break;
 
-  case 47: // finscop: ENDSCOPE
-        {  scope_fin();  }
+  case 44: // finscop: ENDSCOPE
+        {  StepData->FinalOfScope();  }
     break;
 
-  case 48: // finscop: ENDSCOPE debexp export '/'
+  case 45: // finscop: ENDSCOPE debexp export '/'
         {  printf("***  Warning : Export List not yet processed\n");
-	   rec_newent();  scope_fin() ; }
+	   StepData->RecordNewEntity();  StepData->FinalOfScope() ; }
     break;
 
-  case 49: // entlab: ENTITY
-        {  rec_ident();  }
+  case 46: // entlab: ENTITY
+        {  StepData->RecordIdent();  }
     break;
 
-  case 50: // enttype: TYPE
-        {  rec_type ();  }
+  case 47: // enttype: TYPE
+        {  StepData->RecordType ();  }
     break;
 
 
@@ -884,78 +882,78 @@ namespace step {
 
   const signed char parser::yypact_ninf_ = -24;
 
-  const signed char parser::yytable_ninf_ = -29;
+  const signed char parser::yytable_ninf_ = -9;
 
   const signed char
   parser::yypact_[] =
   {
-       6,     9,   -24,   -24,   -24,    10,    30,   -24,   -24,    23,
-     -24,    31,   -24,    21,   -24,    14,    23,   -24,   -24,    11,
-      25,   -24,   -24,    52,   -24,    -8,    14,    27,   -24,   -24,
-     -24,   -24,   -24,    21,   -24,   -24,     3,   -24,    49,    44,
-     -24,    -3,    55,   -24,   -24,    36,   -24,   -24,   -24,    56,
-      45,    60,    21,    61,   -24,   -24,   -24,     0,    21,   -24,
-      48,    60,    -4,   -24,    51,   -24,   -24,    21,   -24,   -24,
-      62,    -4,    54,   -24,    57,   -24,   -24,   -24,   -10,    58,
-     -24,   -24,    62,   -24,   -24,   -24
+      26,     5,   -24,   -24,   -24,    35,    29,   -24,   -24,    41,
+     -24,    43,   -24,    36,   -24,    45,    41,   -24,   -24,     3,
+      38,   -24,   -24,    40,   -24,    32,    45,   -24,   -24,   -24,
+     -24,   -24,   -24,    36,   -24,   -24,     9,   -24,    60,    56,
+     -24,    -3,    51,   -24,    17,   -24,   -24,   -24,    53,    44,
+       6,    36,    59,   -24,     0,    36,   -24,    42,     6,     2,
+     -24,    47,   -24,   -24,    36,   -24,   -24,    55,     2,    49,
+     -24,    52,   -24,   -24,   -24,   -14,    50,   -24,   -24,    55,
+     -24,   -24,   -24
   };
 
   const signed char
   parser::yydefact_[] =
   {
        0,     0,     9,    10,    11,     0,     0,     1,    15,     0,
-      50,     0,    12,     0,    16,     0,     0,    13,    23,     0,
-       0,    37,    49,     0,    32,     0,     0,    21,    22,    17,
-      18,    24,    29,     0,    25,    19,     0,    14,    37,     0,
-      33,     0,     0,    20,    31,     0,    26,     7,    42,     0,
-       0,     0,     0,     0,    21,    30,    27,     0,     0,    34,
-      47,     0,     0,    40,     4,     6,    41,     0,    38,    46,
-       0,     0,     0,     2,     5,    39,    43,    44,     0,     0,
-      36,     3,     0,    48,    35,    45
+      47,     0,    12,     0,    16,     0,     0,    13,    23,     0,
+       0,    34,    46,     0,    29,     0,     0,    21,    22,    17,
+      18,    24,    27,     0,    25,    19,     0,    14,    34,     0,
+      30,     0,     0,    20,     0,    26,     7,    39,     0,     0,
+       0,     0,     0,    28,     0,     0,    31,    44,     0,     0,
+      37,     4,     6,    38,     0,    35,    43,     0,     0,     0,
+       2,     5,    36,    40,    41,     0,     0,    33,     3,     0,
+      45,    32,    42
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-     -24,   -24,   -24,   -24,   -24,   -24,   -24,   -24,    67,    64,
-      37,   -24,   -24,    28,   -13,   -24,   -23,   -21,   -24,     1,
-     -24,    -1,   -24,   -24,    22,   -24,    -5
+     -24,   -24,   -24,   -24,   -24,   -24,   -24,   -24,    62,    58,
+      31,   -24,   -24,    46,   -13,   -24,   -23,   -21,   -24,    -6,
+     -24,    -2,   -24,   -24,    18,   -24,    -5
   };
 
   const signed char
   parser::yydefgoto_[] =
   {
-      -1,    74,    65,     2,     3,     4,     5,    11,    12,    15,
-      32,    33,    19,    34,    35,    36,    23,    24,    57,    50,
-      51,    77,    78,    70,    62,    25,    52
+      -1,    71,    62,     2,     3,     4,     5,    11,    12,    15,
+      32,    33,    19,    34,    35,    36,    23,    24,    54,    49,
+      50,    74,    75,    67,    59,    25,    51
   };
 
   const signed char
   parser::yytable_[] =
   {
-      20,    13,    40,    42,    44,    48,    13,    10,    10,     1,
-       7,    10,    27,     6,    82,    21,    83,    41,    49,    49,
-      43,    40,    28,    66,    22,    29,    31,    45,    61,    14,
-      30,     8,     8,    18,    31,     9,    16,    54,   -28,    63,
-      40,    10,    10,    18,    58,    68,    37,    28,   -28,    -8,
-      29,    47,    67,    38,    75,    30,    21,    39,    18,    31,
-      53,    21,    22,    72,    46,    22,    59,    10,    64,    60,
-      22,    73,    79,    56,    69,    80,    76,    81,    17,    84,
-      26,    85,    55,    71
+      20,    13,    40,    42,    27,    47,    13,    21,    10,     6,
+      79,    10,    80,    10,    28,    57,    22,    29,    27,    48,
+      43,    40,    30,    63,    48,    18,    31,    58,    28,     1,
+       8,    29,    31,    44,     9,     7,    30,    40,    60,    18,
+      10,    38,    65,    55,     8,    39,    21,    14,    16,    64,
+      22,    72,    21,    69,    10,    22,    52,    41,    18,    37,
+      -8,    22,    76,    46,    10,    56,    61,    70,    66,    73,
+      77,    81,    78,    17,    26,    53,    68,    82,     0,     0,
+       0,     0,    45
   };
 
   const signed char
   parser::yycheck_[] =
   {
-      13,     6,    23,    26,     1,     8,    11,    11,    11,     3,
-       0,    11,     1,     4,    24,     1,    26,    25,    22,    22,
-      33,    42,    11,    23,    10,    14,    23,    24,    51,     6,
-      19,     1,     1,    22,    23,     5,     5,     1,    11,    52,
-      61,    11,    11,    22,    49,    58,    21,    11,    21,     0,
-      14,     7,    57,     1,    67,    19,     1,     5,    22,    23,
-       5,     1,    10,    62,    36,    10,    21,    11,     7,     9,
-      10,    20,    71,    45,    26,    21,    14,    20,    11,    21,
-      16,    82,    45,    61
+      13,     6,    23,    26,     1,     8,    11,     1,    11,     4,
+      24,    11,    26,    11,    11,     9,    10,    14,     1,    22,
+      33,    42,    19,    23,    22,    22,    23,    50,    11,     3,
+       1,    14,    23,    24,     5,     0,    19,    58,    51,    22,
+      11,     1,    55,    48,     1,     5,     1,     6,     5,    54,
+      10,    64,     1,    59,    11,    10,     5,    25,    22,    21,
+       0,    10,    68,     7,    11,    21,     7,    20,    26,    14,
+      21,    21,    20,    11,    16,    44,    58,    79,    -1,    -1,
+      -1,    -1,    36
   };
 
   const signed char
@@ -965,11 +963,11 @@ namespace step {
       11,    34,    35,    53,     6,    36,     5,    35,    22,    39,
       41,     1,    10,    43,    44,    52,    36,     1,    11,    14,
       19,    23,    37,    38,    40,    41,    42,    21,     1,     5,
-      44,    25,    43,    41,     1,    24,    40,     7,     8,    22,
-      46,    47,    53,     5,     1,    37,    40,    45,    53,    21,
-       9,    43,    51,    41,     7,    29,    23,    53,    41,    26,
-      50,    51,    46,    20,    28,    41,    14,    48,    49,    46,
-      21,    20,    24,    26,    21,    48
+      44,    25,    43,    41,    24,    40,     7,     8,    22,    46,
+      47,    53,     5,    37,    45,    53,    21,     9,    43,    51,
+      41,     7,    29,    23,    53,    41,    26,    50,    51,    46,
+      20,    28,    41,    14,    48,    49,    46,    21,    20,    24,
+      26,    21,    48
   };
 
   const signed char
@@ -977,10 +975,9 @@ namespace step {
   {
        0,    27,    28,    28,    29,    29,    30,    31,    32,    33,
       33,    33,    34,    34,    35,    35,    36,    37,    37,    37,
-      37,    37,    38,    39,    40,    41,    41,    41,    41,    42,
-      42,    42,    43,    43,    44,    44,    44,    44,    45,    45,
-      46,    46,    47,    48,    49,    49,    50,    51,    51,    52,
-      53
+      37,    37,    38,    39,    40,    41,    41,    42,    42,    43,
+      43,    44,    44,    44,    44,    45,    45,    46,    46,    47,
+      48,    49,    49,    50,    51,    51,    52,    53
   };
 
   const signed char
@@ -988,10 +985,9 @@ namespace step {
   {
        0,     2,     1,     2,     1,     2,     8,     7,     6,     1,
        1,     1,     1,     2,     3,     1,     1,     1,     1,     1,
-       2,     1,     1,     1,     1,     2,     3,     4,     2,     1,
-       3,     2,     1,     2,     4,     7,     6,     1,     2,     3,
-       2,     3,     1,     1,     1,     3,     1,     1,     4,     1,
-       1
+       2,     1,     1,     1,     1,     2,     3,     1,     3,     1,
+       2,     4,     7,     6,     1,     2,     3,     2,     3,     1,
+       1,     1,     3,     1,     1,     4,     1,     1
   };
 
 
@@ -1017,12 +1013,11 @@ namespace step {
   const unsigned char
   parser::yyrline_[] =
   {
-       0,    71,    71,    72,    73,    74,    75,    76,    77,    78,
-      78,    78,    81,    82,    84,    85,    87,    90,    91,    92,
-      93,    94,    98,   101,   104,   109,   110,   111,   112,   114,
-     115,   116,   118,   119,   121,   122,   123,   124,   126,   127,
-     129,   130,   132,   135,   138,   139,   141,   144,   146,   151,
-     154
+       0,   103,   103,   104,   105,   106,   107,   108,   109,   110,
+     110,   110,   113,   114,   116,   117,   119,   122,   123,   124,
+     125,   126,   129,   132,   135,   140,   141,   143,   144,   146,
+     147,   149,   150,   151,   152,   154,   155,   157,   158,   160,
+     163,   166,   167,   169,   172,   174,   179,   182
   };
 
   void

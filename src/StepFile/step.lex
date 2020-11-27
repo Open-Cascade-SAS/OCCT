@@ -37,8 +37,7 @@
 }
 
 %{
-#include "step.tab.hxx"
-#include "recfile.ph"
+#include <step.tab.hxx>
 #include "stdio.h"
 
 // Tell flex which function to define
@@ -79,12 +78,15 @@ long string in files Henri.stp and 401.stp*/
 
 #endif /* MSC_VER */
 
-void rec_restext(const char *constnewtext, int lentext);
-void rec_typarg(int argtype);
+#define CreateNewText myDataModel->CreateNewText
+#define SetTypeArg myDataModel->SetTypeArg
 
 // disable GCC warnings in flex code
 #ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wunused-function"
+#if (__GNUC__ > 5)
+#pragma GCC diagnostic ignored "-Wmisleading-indentation"
+#endif
 #endif
 %}
 %x Com End Text
@@ -98,7 +100,7 @@ void rec_typarg(int argtype);
 <Text>[\n]         { yymore(); yylineno ++; }   /* newline in text string - increment line counter and keep collecting yytext */
 <Text>[']          { yymore(); }                /* single ' inside text string - keep collecting yytext*/
 <Text>[^\n']+      { yymore(); }                /* a sequence of any characters except ' and \n - keep collecting yytext */
-<Text>[']/[" "\n\r]*[\)\,]    { BEGIN(INITIAL); rec_restext(YYText(),YYLeng()); rec_typarg(rec_argText); return(token::QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
+<Text>[']/[" "\n\r]*[\)\,]    { BEGIN(INITIAL); CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Text); return(token::QUID); } /* end of string (apostrophe followed by comma or closing parenthesis) - reset the scanner to initial state, record the value of all yytext collected */
 
 "	"	{;}
 " "		{;}
@@ -106,18 +108,18 @@ void rec_typarg(int argtype);
 [\r]    	{;} /* abv 30.06.00: for reading DOS files */
 [\0]+		{;} /* fix from C21. for test load e3i file with line 15 with null symbols */
 
-#[0-9]+/=		{ rec_restext(YYText(),YYLeng()); return(token::ENTITY); }
-#[0-9]+/[ 	]*=	{ rec_restext(YYText(),YYLeng()); return(token::ENTITY); }
-#[0-9]+		{ rec_restext(YYText(),YYLeng()); return(token::IDENT); }
-[-+0-9][0-9]*	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argInteger); return(token::QUID); }
-[-+\.0-9][\.0-9]+	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argFloat); return(token::QUID); }
-[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argFloat); return(token::QUID); }
-["][0-9A-F]+["] 	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argHexa); return(token::QUID); }
-[.][A-Z0-9_]+[.]	{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argEnum); return(token::QUID); }
+#[0-9]+/=		{ CreateNewText(YYText(),YYLeng()); return(token::ENTITY); }
+#[0-9]+/[ 	]*=	{ CreateNewText(YYText(),YYLeng()); return(token::ENTITY); }
+#[0-9]+		{ CreateNewText(YYText(),YYLeng()); return(token::IDENT); }
+[-+0-9][0-9]*	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Integer); return(token::QUID); }
+[-+\.0-9][\.0-9]+	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Float); return(token::QUID); }
+[-+\.0-9][\.0-9]+E[-+0-9][0-9]*	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Float); return(token::QUID); }
+["][0-9A-F]+["] 	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Hexa); return(token::QUID); }
+[.]*[A-Z0-9_]+[.]	{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Enum); return(token::QUID); }
 [(]		{ return ('('); }
 [)]		{ return (')'); }
-[,]		{ return (','); }
-[$]		{ rec_restext(YYText(),YYLeng()); rec_typarg(rec_argNondef); return(token::QUID); }
+[,]		{ myDataModel->PrepareNewArg(); return (','); }
+[$]		{ CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Nondef); return(token::QUID); }
 [=]		{ return ('='); }
 [;]		{ return (';'); }
 
@@ -133,15 +135,15 @@ void rec_typarg(int argtype);
 [/]            { return ('/'); }
 &(?i:SCOPE)	   { return(token::SCOPE); }
 (?i:ENDSCOPE)  { return(token::ENDSCOPE); }
-[a-zA-Z0-9_]+  { rec_restext(YYText(),YYLeng()); return(token::TYPE); }
-![a-zA-Z0-9_]+ { rec_restext(YYText(),YYLeng()); return(token::TYPE); }
-[^)]           { rec_restext(YYText(),YYLeng()); rec_typarg(rec_argMisc); return(token::QUID); }
+[a-zA-Z0-9_]+  { CreateNewText(YYText(),YYLeng()); return(token::TYPE); }
+![a-zA-Z0-9_]+ { CreateNewText(YYText(),YYLeng()); return(token::TYPE); }
+[^)]           { CreateNewText(YYText(),YYLeng()); SetTypeArg(ArgumentType_Misc); return(token::QUID); }
 
 <End>[^\n]     {;} /* skip any characters (except newlines) */
 
 %%
 
-step::scanner::scanner(std::istream* in, std::ostream* out)
-    : stepFlexLexer(in, out)
+step::scanner::scanner(StepFile_ReadData* theDataModel, std::istream* in, std::ostream* out)
+    : stepFlexLexer(in, out), myDataModel(theDataModel)
 {
 }

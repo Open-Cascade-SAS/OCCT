@@ -35,6 +35,7 @@
 // This file is part of Open CASCADE Technology software library.
 // This file is generated, do not modify it directly; edit source file step.yacc instead.
 
+#include <StepFile_ReadData.hxx>
 namespace step {
   class scanner;
 };
@@ -47,13 +48,12 @@ namespace step {
 #endif
 
 }
-
+ 
 %code {
-#include "recfile.ph"		/* definitions des types d'arguments */
-#include "recfile.pc"		/* la-dedans, tout y est */
 
 #undef yylex
 #define yylex scanner->lex
+#define StepData scanner->myDataModel
 
 #define stepclearin yychar = -1
 #define steperrok yyerrflag = 0
@@ -67,6 +67,36 @@ namespace step {
 void StepFile_Interrupt (char* nomfic); /* rln 13.09.00 port on HP*/
 }
 
+%code provides {
+// Define stepFlexLexer class by inclusion of FlexLexer.h,
+// but only if this has not been done yet, to avoid redefinition
+#if !defined(yyFlexLexer) && !defined(FlexLexerOnce)
+#define yyFlexLexer stepFlexLexer
+#include "FlexLexer.h"
+#endif
+
+namespace step {
+
+    // To feed data back to bison, the yylex method needs yylval and
+    // yylloc parameters. Since the stepFlexLexer class is defined in the
+    // system header <FlexLexer.h> the signature of its yylex() method
+    // can not be changed anymore. This makes it necessary to derive a
+    // scanner class that provides a method with the desired signature:
+
+    class scanner : public stepFlexLexer
+    {
+    public:
+      explicit scanner(StepFile_ReadData* theDataModel, std::istream* in = 0, std::ostream* out = 0);
+
+      int lex(step::parser::semantic_type* yylval,
+        step::parser::location_type* yylloc);
+
+      StepFile_ReadData* myDataModel;
+    };
+
+};
+}
+
 %%
 /*  N.B. : les commentaires sont filtres par LEX  */
 /*  La fin vide (selon systeme emetteur) est filtree ici  */
@@ -78,7 +108,7 @@ stepf1	: STEP HEADER headl ENDSEC endhead model ENDSEC finstep ;
 stepf2	: STEP HEADER ENDSEC endhead model ENDSEC ENDSTEP ;
 stepf3	: STEP HEADER ENDSEC endhead model error ;
 stepf	: stepf1 | stepf2 | stepf3
-		{  rec_finfile();  return(0);  /*  fini pour celui-la  */  }
+		{  return(0);  /*  fini pour celui-la  */  }
 	;
 headl	: headent
 	| headl headent
@@ -87,35 +117,31 @@ headent : enttype listarg ';'
 	| error  			/*  Erreur sur Entite : la sauter  */
 	;
 endhead : DATA
-	{  rec_finhead();  }
+	{  StepData->FinalOfHead();  }
 	;
-unarg	: IDENT		{  rec_typarg(rec_argIdent);     rec_newarg();  }
-	| QUID		{  /* deja fait par lex*/ 	 rec_newarg();  }
-	| listarg	/*  rec_newent lors du ')' */ {  rec_newarg();  }
-	| listype listarg  /*  liste typee  */        {  rec_newarg();  }
-	| error		{  rec_typarg(rec_argMisc);      rec_newarg();
-			   yyerrstatus_ = 1; yyclearin;  }
+unarg	: IDENT		{  StepData->SetTypeArg(ArgumentType_Ident);     StepData->CreateNewArg();  }
+	| QUID		{  /* deja fait par lex*/ 	 StepData->CreateNewArg();  }
+	| listarg	/*  rec_newent lors du ')' */ {  StepData->CreateNewArg();  }
+	| listype listarg  /*  liste typee  */        {  StepData->CreateNewArg();  }
+	| error		{  StepData->CreateErrorArg();  }
 /*  Erreur sur Parametre : tacher de le noter sans jeter l'Entite  */
 	;
 listype	: TYPE
-	{  rec_listype();  }
+	{  StepData->RecordTypeText();  }
 	;
 deblist	: '('
-	{  rec_deblist();  }
+	{  StepData->RecordListStart();  }
 	;
 finlist	: ')'
-	{  if (modeprint > 0)
-		{  printf("Record no : %d -- ",nbrec+1);  rec_print(currec);  }
-	   rec_newent ();  yyerrstatus_ = 0; }
+	{  if (StepData->GetModePrint() > 0)
+		{  printf("Record no : %d -- ", StepData->GetNbRecord()+1);  StepData->PrintCurrentRecord();  }
+	   StepData->RecordNewEntity ();  yyerrstatus_ = 0; }
 	;
 listarg	: deblist finlist		/* liste vide (peut y en avoir) */
 	| deblist arglist finlist	/* liste normale, non vide */
-	| deblist arglist ',' finlist	/* broken list with missing last parameter, see #31756 */
-	| deblist error
 	;
 arglist	: unarg
 	| arglist ',' unarg
-	| arglist error
 	;
 model	: bloc
 	| model bloc
@@ -132,29 +158,29 @@ unent   : enttype listarg               /*    Entite de Type Simple    */
 	| '(' plex ')'                  /*    Entite de Type Complexe  */
 	;
 debscop	: SCOPE
-	{  scope_debut();  }
+	{  StepData->AddNewScope();  }
 	;
 unid	: IDENT
-	{  rec_typarg(rec_argIdent);    rec_newarg();  }
+	{  StepData->SetTypeArg(ArgumentType_Ident);    StepData->CreateNewArg();  }
 	;
 export	: unid
 	| export ',' unid
 	;
 debexp	: '/'
-	{  rec_deblist();  }
+	{  StepData->RecordListStart();  }
 	;
 finscop	: ENDSCOPE
-	{  scope_fin();  }
+	{  StepData->FinalOfScope();  }
 	| ENDSCOPE debexp export '/'
 	{  printf("***  Warning : Export List not yet processed\n");
-	   rec_newent();  scope_fin() ; }
+	   StepData->RecordNewEntity();  StepData->FinalOfScope() ; }
 		/*  La liste Export est prise comme ARGUMENT du EndScope  */
 	;
 entlab	: ENTITY
-	{  rec_ident();  }
+	{  StepData->RecordIdent();  }
 	;
 enttype	: TYPE
-	{  rec_type ();  }
+	{  StepData->RecordType ();  }
 	;
 %%
 

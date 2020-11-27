@@ -27,8 +27,8 @@
 
 #include <stdio.h>
 #include <iostream> 
-#include "recfile.ph"
-#include "stepread.ph"
+#include <StepFile_ReadData.hxx>
+#include <step.tab.hxx>
 
 #include <Interface_ParamType.hxx>
 #include <Interface_Protocol.hxx>
@@ -76,9 +76,8 @@ static Standard_Integer StepFile_Read (const char* theName,
                                        const Handle(StepData_FileRecognizer)& recoheader,
                                        const Handle(StepData_FileRecognizer)& recodata)
 {
-  checkread->Clear();
-  recfile_modeprint ( (modepr > 0 ? modepr-1 : 0) );
-
+  StepFile_ReadData aFileDataModel;
+  aFileDataModel.SetModePrint(modepr > 0 ? modepr - 1 : 0);
   // if stream is not provided, open file stream here
   std::istream *aStreamPtr = theIStream;
   std::ifstream aFileStream;
@@ -98,11 +97,14 @@ static Standard_Integer StepFile_Read (const char* theName,
   c.Start();
   Message::SendInfo() << "      ...    Step File Reading : '" << theName << "'";
 #endif
-
   try {
     OCC_CATCH_SIGNALS
-    if (stepread(*aStreamPtr) != 0) {
-      lir_file_fin(3);
+    int aLetat = 0;
+    step::scanner aScanner(&aFileDataModel, aStreamPtr);
+    aScanner.yyrestart(aStreamPtr);
+    step::parser aParser(&aScanner);
+    aLetat = aParser.parse();
+    if (aLetat != 0) {
       return 1;
     }
   }
@@ -113,7 +115,6 @@ static Standard_Integer StepFile_Read (const char* theName,
                          << "    ...";
 #endif
     (void)anException;
-    lir_file_fin(3);  
     return 1;
   }
 
@@ -129,39 +130,39 @@ static Standard_Integer StepFile_Read (const char* theName,
 
 //  Creation du StepReaderData
 
-  LesTypes[rec_argNondef]    = Interface_ParamVoid ;
-  LesTypes[rec_argSub]       = Interface_ParamSub ;
-  LesTypes[rec_argIdent]     = Interface_ParamIdent ;
-  LesTypes[rec_argInteger]   = Interface_ParamInteger ;
-  LesTypes[rec_argFloat]     = Interface_ParamReal ;
-  LesTypes[rec_argEnum]      = Interface_ParamEnum ;
-  LesTypes[rec_argBinary]    = Interface_ParamBinary ;
-  LesTypes[rec_argText]      = Interface_ParamText ;
-  LesTypes[rec_argHexa]      = Interface_ParamHexa ;
-  LesTypes[rec_argMisc]      = Interface_ParamMisc ;
+  LesTypes[ArgumentType_Nondef]    = Interface_ParamVoid ;
+  LesTypes[ArgumentType_Sub]       = Interface_ParamSub ;
+  LesTypes[ArgumentType_Ident]     = Interface_ParamIdent ;
+  LesTypes[ArgumentType_Integer]   = Interface_ParamInteger ;
+  LesTypes[ArgumentType_Float]     = Interface_ParamReal ;
+  LesTypes[ArgumentType_Enum]      = Interface_ParamEnum ;
+  LesTypes[ArgumentType_Binary]    = Interface_ParamBinary ;
+  LesTypes[ArgumentType_Text]      = Interface_ParamText ;
+  LesTypes[ArgumentType_Hexa]      = Interface_ParamHexa ;
+  LesTypes[ArgumentType_Misc]      = Interface_ParamMisc ;
 
   Standard_Integer nbhead, nbrec, nbpar;
-  lir_file_nbr (&nbhead,&nbrec,&nbpar);  // renvoi par lex/yacc
+  aFileDataModel.GetFileNbR (&nbhead,&nbrec,&nbpar);  // renvoi par lex/yacc
   Handle(StepData_StepReaderData) undirec =
     new StepData_StepReaderData(nbhead,nbrec,nbpar, stepmodel->SourceCodePage());  // creation tableau de records
 
   for ( Standard_Integer nr = 1; nr <= nbrec; nr ++) {
     int nbarg; char* ident; char* typrec = 0;
-    lir_file_rec (&ident, &typrec, &nbarg);
+    aFileDataModel.GetRecordDescription(&ident, &typrec, &nbarg);
     undirec->SetRecord (nr, ident, typrec, nbarg);
 
     if (nbarg>0) {
-      int typa; char* val;
+      ArgumentType typa; char* val;
       Interface_ParamType newtype;
-      while(lir_file_arg (&typa, &val) == 1) {
+      while(aFileDataModel.GetArgDescription (&typa, &val) == 1) {
         newtype = LesTypes[typa] ;
         undirec->AddStepParam (nr, val, newtype);
       }
     }
     undirec->InitParams(nr);
-    lir_file_finrec();
+    aFileDataModel.NextRecord();
   }
-  lir_file_fin(1);
+  aFileDataModel.ClearRecorder(1);
 //  on a undirec pret pour la suite
 
 #ifdef CHRONOMESURE
@@ -191,7 +192,7 @@ static Standard_Integer StepFile_Read (const char* theName,
 
   readtool.LoadModel(stepmodel);
   if (stepmodel->Protocol().IsNull()) stepmodel->SetProtocol (protocol);
-  lir_file_fin(2);
+  aFileDataModel.ClearRecorder(2);
   
   readtool.Clear();
   undirec.Nullify();
