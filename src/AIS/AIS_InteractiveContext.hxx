@@ -1211,9 +1211,11 @@ protected: //! @name internal methods
   //! for AutoHighlight, e.g. is used for selection.
   Standard_EXPORT void highlightSelected (const Handle(SelectMgr_EntityOwner)& theOwner);
 
-  //! Helper function that highlights the owners with check
-  //! for AutoHighlight, e.g. is used for selection.
-  Standard_EXPORT void highlightOwners (const AIS_NListOfEntityOwner& theOwners);
+  //! Helper function that highlights the owners with check for AutoHighlight, e.g. is used for selection.
+  //! @param theOwners [in] list of owners to highlight
+  //! @param theStyle  [in] highlight style to apply or NULL to apply selection style
+  Standard_EXPORT void highlightOwners (const AIS_NListOfEntityOwner& theOwners,
+                                        const Handle(Prs3d_Drawer)& theStyle);
 
   //! Helper function that highlights global owner of the object given with <theStyle> with check
   //! for AutoHighlight, e.g. is used for selection.

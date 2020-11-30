@@ -139,58 +139,6 @@ static Standard_Integer  OCC128 (Draw_Interpretor& di, Standard_Integer /*argc*/
  return 0;
 }
 
-  // Remove as bad version of QAAddOrRemoveSelected from QADraw
-//static Standard_Integer OCC129 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-//{
-//  if( argc != 3) {
-//    di<<"Usage : " << argv[0] << " shape islocal\n";
-//    return 1;
-//  }
-//  //get AIS_Shape:
-//  Handle(AIS_InteractiveContext) anAISCtx = ViewerTest::GetAISContext();
-//
-// //   ViewerTest_DoubleMapOfInteractiveAndName& aMap =
-// //                          ViewerTest::GetDataMapOfAIS ();
-//  ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
-//
-//  TCollection_AsciiString aName(argv[1]);
-//  Handle(AIS_InteractiveObject) AISObj;
-//
-//  if(aMap.IsBound2(aName)) {
-//    AISObj = aMap.Find2(aName);
-//    if(AISObj.IsNull()){
-//      di<<"No interactive object \n";
-//      return 1;
-//    }
-//
-//    Standard_Integer aNum = -1;
-//
-//    if(Draw::Atoi(argv[2])) {
-//      aNum = anAISCtx->OpenLocalContext();
-//    }
-//
-//    if(anAISCtx->HasOpenedContext()){
-//      anAISCtx->InitSelected();
-//      anAISCtx->AddOrRemoveSelected(AISObj);
-//    }
-//    else {
-//      anAISCtx->InitCurrent();
-//      anAISCtx->AddOrRemoveCurrentObject(AISObj);
-//    }
-//
-//    if(aNum >= 0) {
-// //      anAISCtx->CloseLocalContext(aNum);
-//    }
-//
-//    return 0;
-//  }
-//  //select this shape:
-//  else {
-//    di<<"Use 'vdisplay' before";
-//    return 1;
-//  }
-//}
-
 static Standard_Integer OCC136 (Draw_Interpretor& di, Standard_Integer argc, const char ** /*argv*/)
 {
   if(argc > 1){
@@ -3019,6 +2967,20 @@ static Standard_Integer OCC7068 (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
+// Test AIS_InteractiveContext::Hilight() call.
+static Standard_Integer OCC31965 (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 2)
+  {
+    theDI << "Syntax error: wrong number of arguments";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveObject) aPrs = GetMapOfAIS().Find2 (theArgVec[1]);
+  ViewerTest::GetAISContext()->HilightWithColor (aPrs, ViewerTest::GetAISContext()->HighlightStyle (Prs3d_TypeOfHighlight_Dynamic), true);
+  return 0;
+}
+
 static Standard_Integer OCC11457 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ((argc < 9) || (((argc-3) % 3) != 0))
@@ -5014,5 +4976,7 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC31189", "OCC31189: check stream buffer interface of Message_Messenger", __FILE__, OCC31189, group);
   theCommands.Add("OCC25748", "OCC25748 [-niter val] [-matsize val] [-progr] [-parallel]\n"
                   "\t\ttest progress indicator in parallel execution", __FILE__, OCC25748, group);
+
+  theCommands.Add("OCC31965", "OCC31965 object : tests AIS_InteractiveContext::Hilight()", __FILE__, OCC31965, group);
   return;
 }

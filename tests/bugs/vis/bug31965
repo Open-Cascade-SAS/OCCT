@@ -1,0 +1,14 @@
+puts "============"
+puts "0031965: Visualization - AIS_InteractiveContext::HilightWithColor() ignores passed highlight style"
+puts "============"
+puts ""
+
+pload MODELING VISUALIZATION QAcommands
+box b 1 2 3
+vdisplay -dispMode 1 b
+vfit
+vselprops dynHighlight -dispMode 1 -color RED
+OCC31965 b
+
+if { [vreadpixel 200 200 -rgb -name] != "RED2" } { puts "Error: wrong highlight color" }
+vdump ${imagedir}/${casename}.png

@@ -107,7 +107,7 @@ void AIS_InteractiveContext::highlightSelected (const Handle(SelectMgr_EntityOwn
   {
     anOwners.Append (theOwner);
   }
-  highlightOwners (anOwners);
+  highlightOwners (anOwners, Handle(Prs3d_Drawer)());
 }
 
 //=======================================================================
@@ -148,7 +148,7 @@ void AIS_InteractiveContext::highlightGlobal (const Handle(AIS_InteractiveObject
   {
     anOwners.Append (aGlobOwner);
   }
-  highlightOwners (anOwners);
+  highlightOwners (anOwners, theStyle);
 }
 
 //=======================================================================
@@ -725,7 +725,7 @@ void AIS_InteractiveContext::HilightSelected (const Standard_Boolean theToUpdate
   // In case of selection without using local context
   clearDynamicHighlight();
 
-  highlightOwners (mySelection->Objects());
+  highlightOwners (mySelection->Objects(), Handle(Prs3d_Drawer)());
 
   if (theToUpdateViewer)
     UpdateCurrentViewer();
@@ -735,7 +735,8 @@ void AIS_InteractiveContext::HilightSelected (const Standard_Boolean theToUpdate
 //function : highlightOwners
 //purpose  :
 //=======================================================================
-void AIS_InteractiveContext::highlightOwners (const AIS_NListOfEntityOwner& theOwners)
+void AIS_InteractiveContext::highlightOwners (const AIS_NListOfEntityOwner& theOwners,
+                                              const Handle(Prs3d_Drawer)& theStyle)
 {
   AIS_MapOfObjSelectedOwners anObjOwnerMap;
   for (AIS_NListOfEntityOwner::Iterator aSelIter (theOwners); aSelIter.More(); aSelIter.Next())
@@ -745,7 +746,7 @@ void AIS_InteractiveContext::highlightOwners (const AIS_NListOfEntityOwner& theO
     if (anObj.IsNull())
       continue;
 
-    const Handle(Prs3d_Drawer)& anObjSelStyle = getSelStyle (anObj, anOwner);
+    const Handle(Prs3d_Drawer)& anObjSelStyle = !theStyle.IsNull() ? theStyle : getSelStyle (anObj, anOwner);
     Handle(AIS_GlobalStatus)* aStatusPtr = myObjects.ChangeSeek (anObj);
     if (!aStatusPtr)
     {
