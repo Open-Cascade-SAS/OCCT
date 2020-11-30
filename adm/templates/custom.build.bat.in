@@ -40,7 +40,7 @@ if /I "%VCVER%" == "@COMPILER@" (
     set "CSF_OCCTTestsPath=@CMAKE_SOURCE_DIR@/tests"
     set "CSF_OCCTDocPath=@CMAKE_SOURCE_DIR@/doc"
 
-    rem for compatability with external application using CASROOT
+    rem for compatibility with external application using CASROOT
     set "CASROOT=@CMAKE_SOURCE_DIR@"
   ) 
 )

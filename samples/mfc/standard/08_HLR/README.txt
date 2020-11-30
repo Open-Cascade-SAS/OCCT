@@ -1,5 +1,5 @@
 HLR sample demonstrates hidden line removal algorithm.
-It supports exact and polygonal HLR algorihms.
+It supports exact and polygonal HLR algorithms.
 
 To try HLR you need to follow some steps:
 1) to import model, which will displayed in 3d view.

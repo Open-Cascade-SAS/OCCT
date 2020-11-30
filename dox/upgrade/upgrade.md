@@ -1225,7 +1225,7 @@ Management of highlight attributes has been revised and might require modificati
 
 @subsection upgrade_720_implicit_viewer_update Elimination of implicit 3D Viewer updates
 
-Most AIS_InteractiveContext methods are defined with a flag to update viewer immediatly or not.
+Most AIS_InteractiveContext methods are defined with a flag to update viewer immediately or not.
 Within previous version of OCCT, this argument had default value TRUE.
 While immediate viewer updates are useful for beginners (the result is displayed as soon as possible),
 this approach is inefficent for batch viewer updates, and having default value as TRUE

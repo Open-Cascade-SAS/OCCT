@@ -63,7 +63,7 @@ set_property(TARGET uwp PROPERTY VS_WINRT_COMPONENT TRUE)
 # Set Visual Studio Windows target platform minimum version equal to OS version
 string(REGEX MATCH "^([0-9]+\.[0-9]+\.[0-9]+)$" PLATFORM_WO_DEV_VER "${CMAKE_HOST_SYSTEM_VERSION}")
 if (PLATFORM_WO_DEV_VER)
-  # Add tailing zero to platfrom version 10.0.14393 -> 10.0.14393.0 to have correct version
+  # Add tailing zero to platform version 10.0.14393 -> 10.0.14393.0 to have correct version
   set (CMAKE_HOST_SYSTEM_VERSION "${CMAKE_HOST_SYSTEM_VERSION}.0")
 endif()
 set_property(TARGET uwp PROPERTY VS_WINDOWS_TARGET_PLATFORM_MIN_VERSION "${CMAKE_HOST_SYSTEM_VERSION}")

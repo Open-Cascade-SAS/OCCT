@@ -123,7 +123,7 @@ void CResultDialog::Initialize()
 }
 
 
-// OnSize is a message handler of WM_SIZE messge, 
+// OnSize is a message handler of WM_SIZE message,
 // it is reimplemented in order to reposition the buttons
 // (keep them always in the bottom part of the dialog)
 // and resize the rich edit controls as user resized THIS dialog.

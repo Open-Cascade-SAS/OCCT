@@ -403,7 +403,7 @@ void CViewer3dDoc::OnUpdateOverlappedBox(CCmdUI* pCmdUI)
 
 void CViewer3dDoc::OnObjectRemove()
 {
-  // A small trick to avoid complier error (C2668).
+  // A small trick to avoid compiler error (C2668).
   const Handle(AIS_InteractiveObject)& aBox = myBox;
   if(myAISContext->IsSelected (aBox))
     myBox.Nullify();

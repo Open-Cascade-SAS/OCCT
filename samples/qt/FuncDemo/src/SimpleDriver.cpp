@@ -75,7 +75,7 @@ Standard_Integer SimpleDriver::Execute(Handle(TFunction_Logbook)& ) const
     int i = 0;
     while (++i < 10000 * times)
     {
-        // Call any fucntions taking much time.
+        // Call any functions taking much time.
         // It is necessary to "see" the execution of a function in real time.
         BRepPrimAPI_MakeSphere mkSphere(100.0);
         mkSphere.Build();

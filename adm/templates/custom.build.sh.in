@@ -29,7 +29,7 @@ if [ "$1" == "@BIN_LETTER@" ]; then
     export CSF_OCCTTestsPath="@CMAKE_SOURCE_DIR@/tests"
     export CSF_OCCTDocPath="@CMAKE_SOURCE_DIR@/doc"
 
-    # for compatability with external application using CASROOT
+    # for compatibility with external application using CASROOT
     export CASROOT="@CMAKE_SOURCE_DIR@"
   fi
 fi

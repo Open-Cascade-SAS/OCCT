@@ -1409,7 +1409,7 @@ void TopologySamples::Offset3dSample()
   aTria.Add(aVertC);
   aTria.Close();
   TopoDS_Wire aWire = aTria.Wire();
-  myResult << "Trianglular wire was created in yellow" << std::endl;
+  myResult << "Triangular wire was created in yellow" << std::endl;
 
   Handle(AIS_ColoredShape) anAisWire = new AIS_ColoredShape(aWire);
   anAisWire->SetColor(Quantity_Color(Quantity_NOC_YELLOW));
@@ -1430,7 +1430,7 @@ void TopologySamples::Offset3dSample()
     {
       // Get result.
       TopoDS_Shape aResult = anAlgo.Shape();
-      myResult << "#" << i << " : Offest = " << anOffset << " Altitude = " << anAltitude
+      myResult << "#" << i << " : Offset = " << anOffset << " Altitude = " << anAltitude
                << ". Result is in red." << std::endl;
 
       Handle(AIS_ColoredShape) anAisResult = new AIS_ColoredShape(aResult);

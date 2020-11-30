@@ -52,7 +52,7 @@ proc HelpInformation {} {
   loginfo "  -$ArgName(Rename)      - apply renaming of classes"
   loginfo ""
   loginfo "Advanced options:"
-  loginfo "  -$ArgName(CompatibleMode)      - preserve old RTTI macros for compatability with OCCT 6.x"
+  loginfo "  -$ArgName(CompatibleMode)      - preserve old RTTI macros for compatibility with OCCT 6.x"
   loginfo "  -$ArgName(CheckOnly)       - do check only, no modifications will be made"
   loginfo "  -$ArgName(WLog)        - show gui log of upgrade process"
   loginfo "  -$ArgName(Log)=<file path> - put the log into a file"

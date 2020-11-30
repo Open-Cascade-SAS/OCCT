@@ -91,7 +91,7 @@ public:
   //! Sets initial selection in OCAF tree view, it is an application(root) item
   Standard_EXPORT void SetInitialTreeViewSelection();
 
-  //! Returns attibute placed on the parameter index in the OCAF tree view or NULL
+  //! Returns attribute placed on the parameter index in the OCAF tree view or NULL
   //! \param theIndex an index in OCAF tree view.
   //! \return an attribute
   Standard_EXPORT Handle(TDF_Attribute) FindAttribute (const QModelIndex& theIndex);

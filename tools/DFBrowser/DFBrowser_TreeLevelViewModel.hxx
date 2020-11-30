@@ -61,7 +61,7 @@ public:
   //! \param theSection an index of value in the container 
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation,
                                                int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
@@ -76,7 +76,7 @@ public:
   //! Returns item information(short) for display role.
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex,
                                          int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 

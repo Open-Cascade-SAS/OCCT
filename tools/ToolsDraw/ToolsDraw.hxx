@@ -31,7 +31,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Loads all Draw commands of  tools. Used for plugin.
-  //! \param theDI Draw interpretor
+  //! \param theDI Draw interpreter
   Standard_EXPORT static void Factory (Draw_Interpretor& theDI);
 
   //! Adds all tools command in the Draw_Interpretor

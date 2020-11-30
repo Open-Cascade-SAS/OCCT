@@ -30,7 +30,7 @@ class QAbstractTableModel;
 //! \brief The widget that contains table view with some settings:
 //! - table grid is hidden
 //! - vertical header is hidden
-//! - stretch last column by horizonal
+//! - stretch last column by horizontal
 //! - default width of columns.
 class DFBrowserPane_TableView : public QWidget
 {

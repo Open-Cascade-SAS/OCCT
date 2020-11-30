@@ -48,7 +48,7 @@ public:
   Standard_EXPORT virtual void Init() Standard_OVERRIDE;
 
   //! Resets the item and the child items content. Sets the initialized state to false.
-  //! If the item has internal values, there should be reseted here.
+  //! If the item has internal values, they should be reset here.
   Standard_EXPORT virtual void Reset() Standard_OVERRIDE;
 
   //! Returns number of displayed presentations

@@ -31,7 +31,7 @@
 #include <Standard_WarningsRestore.hxx>
 
 //! \class ViewControl_TableModelValues
-//! \brief This is an interace for ViewControl_TableModel to give real values of the model
+//! \brief This is an interface for ViewControl_TableModel to give real values of the model
 //! It should be filled or redefined.
 class ViewControl_TableModelValues
 {
@@ -107,7 +107,7 @@ public:
   //! \param theRow a model index row
   //! \param theColumn a model index column
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant Data (const int theRow, const int theColumn, int theRole = Qt::DisplayRole) const;
 
   //! Sets content of the model index for the given role, it is applied to internal container of values
@@ -123,7 +123,7 @@ public:
   //! \param theSection an index of value in the container 
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant HeaderData (int theSection, Qt::Orientation theOrientation, int theRole = Qt::DisplayRole) const;
 
   //! Returns flags for the item: ItemIsEnabled | Qt::ItemIsSelectable

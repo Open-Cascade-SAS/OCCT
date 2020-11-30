@@ -72,7 +72,7 @@ void CImportExportDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
-		// Put the curent CColoredShape in the archive
+		// Put the current CColoredShape in the archive
 		ar << m_pcoloredshapeList;
 	}
 	else

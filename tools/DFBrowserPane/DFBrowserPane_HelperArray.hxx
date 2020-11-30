@@ -48,7 +48,7 @@ public:
   //! \param theValuesView a view of values(table view filled by myValuesModel)
   Standard_EXPORT void CreateWidget(QWidget* theParent, DFBrowserPane_TableView* theValuesView);
 
-  //! Fills bounds model by firsth and second values, fills values model by left values
+  //! Fills bounds model by first and second values, fills values model by left values
   //! \param theValues values to fill views
   Standard_EXPORT void Init(const QList<QVariant>& theValues);
 

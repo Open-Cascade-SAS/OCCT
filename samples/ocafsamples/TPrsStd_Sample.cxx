@@ -65,7 +65,7 @@ static void Sample()
 
   //Getting AIS_InteractiveContext from TPrsStd_AISViewer may be done in two ways: 
 
-  //1. If we have already gotten TPrsStd_AISViewer attribute (strored in a variable <aisviewer>)
+  //1. If we have already gotten TPrsStd_AISViewer attribute (stored in a variable <aisviewer>)
   Handle(AIS_InteractiveContext) context1 = aisviewer->GetInteractiveContext();
  
   //2. Getting AIS_InteractiveContext directly
@@ -184,16 +184,16 @@ static void Sample()
     P->Display(Standard_True); 
     TPrsStd_AISViewer::Update(ShapeLabel);  //Update presenation of the attribute in a viewer's window
 
-    //Getting Standard_GUID of attribute with which TPrsStd_AISPresentation attribute is associeted
+    //Getting Standard_GUID of attribute with which TPrsStd_AISPresentation attribute is associated
 
     Standard_GUID guid = P->GetDriverGUID();
 
-    //Setting a color to the displayd attribute
+    //Setting a color to the displayed attribute
 
     P->SetColor(Quantity_NOC_RED);
     TPrsStd_AISViewer::Update(ShapeLabel);  //Update viewer to make changes visible to user
 
-    //Getting transparency the displayd attribute
+    //Getting transparency the displayed attribute
 
     Standard_Real transparency = P->Transparency();
 

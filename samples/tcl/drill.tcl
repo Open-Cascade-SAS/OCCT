@@ -76,7 +76,7 @@ vertex vf0 x0 y0 z0
 vertex vf1 x1 y1 z1
 
 # -- variant: replace curve by arc with start at x0,y0,z0 and end at x1,y1,z1,
-# -- such that tanget at start point is along Y
+# -- such that tangent at start point is along Y
 #dset Rflute ((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0))/(2*(x1-x0))
 #circle aflute x0+Rflute y0 0  0 0 1  Rflute
 #mkedge sflute_1 aflute vf0 vf1

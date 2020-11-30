@@ -70,7 +70,7 @@ public:
   //! Destructor
   virtual ~TInspector_Window() {}
 
-  //! Appends the plugin names into internal conainer
+  //! Appends the plugin names into internal container
   //! \param thePluginName a name of the plugin
   Standard_EXPORT void RegisterPlugin (const TCollection_AsciiString& thePluginName);
 
@@ -81,7 +81,7 @@ public:
   //! Stores parameters for the plugin. If the plugin name is empty, it inits all plugins with the parameters
   //! \param thePluginName a name of the plugin
   //! \param theParameters container of parameters(e.g. AIS_InteractiveContext, TDocStd_Application)
-  //! \param theAppend boolean state whethe the parameters should be added to existing
+  //! \param theAppend boolean state whether the parameters should be added to existing
   Standard_EXPORT void Init (const TCollection_AsciiString& thePluginName,
                              const NCollection_List<Handle(Standard_Transient)>& theParameters,
                              const Standard_Boolean theAppend = Standard_False);

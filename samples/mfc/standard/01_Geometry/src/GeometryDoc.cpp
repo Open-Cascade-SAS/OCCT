@@ -19,7 +19,7 @@ static char THIS_FILE[] = __FILE__;
 
 #define WAIT_A_LITTLE WaitForInput(500)
 
-#define MAX_PARAM 1000 // if a surface parameter is infinite, it is assingned
+#define MAX_PARAM 1000 // if a surface parameter is infinite, it is assigned
 // this value in order to display the "infinit" object in the viewer.
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1134,7 +1134,7 @@ void CGeometryDoc::OnCreateSol()
 
 //================================================================
 // Function : fixParam
-// Purpose  : assings a finite value to theParam if it intinite
+// Purpose  : assigns a finite value to theParam if it's infinite
 //            (equal to +- Precision::Infinite())
 //================================================================
 static Standard_Boolean fixParam(Standard_Real& theParam)

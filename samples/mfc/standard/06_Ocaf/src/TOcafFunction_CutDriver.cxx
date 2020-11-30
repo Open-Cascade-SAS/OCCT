@@ -126,7 +126,7 @@ Standard_Integer TOcafFunction_CutDriver::Execute(Handle(TFunction_Logbook)& /*l
 // STEP 2:
 	// Let's call for algorithm computing a cut operation:
 	BRepAlgoAPI_Cut mkCut(OriginalShape, ToolShape);
-	// Let's check if the Cut has been successfull:
+	// Let's check if the Cut has been successful:
 	if (!mkCut.IsDone()) 
 	{
 		MessageBoxW (NULL, L"Cut not done.", L"Cut Function Driver", MB_ICONERROR);

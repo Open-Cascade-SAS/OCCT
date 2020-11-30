@@ -334,7 +334,7 @@ void TexturesExt_Presentation::sampleKitchen()
 
   moveScale(aShape);
 
-  // draw kitchen room whithout one wall (to better see the insides)
+  // draw kitchen room without one wall (to better see the insides)
   TopTools_IndexedMapOfShape aFaces;
   TopExp::MapShapes(aShape, TopAbs_FACE, aFaces);  
   Standard_Integer nbFaces = aFaces.Extent();

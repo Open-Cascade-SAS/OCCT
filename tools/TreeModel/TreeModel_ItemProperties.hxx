@@ -79,7 +79,7 @@ public:
   //! Fills internal containers by item stream values
   Standard_EXPORT void Init();
 
-  //! If the item has internal values, there should be reseted here.
+  //! If the item has internal values, they should be reset here.
   Standard_EXPORT virtual void Reset();
 
   //! Returns number of table rows

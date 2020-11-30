@@ -53,7 +53,7 @@ public:
 
   //! Stores parameters for the plugin
   //! \param theParameters container of parameters(e.g. AIS_InteractiveContext, TDocStd_Application)
-  //! \param theAppend boolean state whethe the parameters should be added to existing
+  //! \param theAppend boolean state whether the parameters should be added to existing
   void Init (const NCollection_List<Handle(Standard_Transient)>& theParameters,
              const Standard_Boolean theAppend = Standard_False)
     { myWindow->Init ("", theParameters, theAppend); }
@@ -61,7 +61,7 @@ public:
   //! Stores parameters for the plugin
   //! \param thePluginName a name of the plugin
   //! \param theParameters container of parameters(e.g. AIS_InteractiveContext, TDocStd_Application)
-  //! \param theAppend boolean state whethe the parameters should be added to existing
+  //! \param theAppend boolean state whether the parameters should be added to existing
   void Init (const TCollection_AsciiString& thePluginName,
              const NCollection_List<Handle(Standard_Transient)>& theParameters,
              const Standard_Boolean theAppend = Standard_False)
@@ -82,7 +82,7 @@ public:
   void Activate (const TCollection_AsciiString& thePluginName) { myWindow->ActivateTool (thePluginName); }
 
   //! Sets item selected in the active plugin
-  //! \param theItemName a containerr of name of items in plugin that should become selected
+  //! \param theItemName a container of name of items in plugin that should become selected
   void SetSelected (const NCollection_List<TCollection_AsciiString>& theItemNames) { myWindow->SetSelected (theItemNames); }
 
   //! Sets objects to be selected in the plugin

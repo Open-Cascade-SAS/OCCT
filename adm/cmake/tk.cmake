@@ -250,7 +250,7 @@ if (BUILD_SHARED_LIBS)
       # tk is required to install in lib folder (without)
       install (DIRECTORY "${3RDPARTY_TK_LIBRARY_DIR}/tk${TCL_TCLSH_VERSION}"  DESTINATION "${INSTALL_DIR_LIB}")
     else()
-      message (STATUS "\nWarning: tkX.X subdir won't be copyied during the installation process.")
+      message (STATUS "\nWarning: tkX.X subdir won't be copied during the installation process.")
       message (STATUS "Try seeking tk within another folder by changing 3RDPARTY_TK_DIR variable.")
     endif()
 

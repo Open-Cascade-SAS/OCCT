@@ -120,7 +120,7 @@ void DFBrowser_Module::SetInitialTreeViewSelection()
   if (!aModel || !aSelectionModel)
     return;
 
-  // select a parent(aplication) item
+  // select a parent(application) item
   aSelectionModel->select (aModel->index (0, 0), QItemSelectionModel::ClearAndSelect);
 }
 

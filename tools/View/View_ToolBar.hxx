@@ -77,7 +77,7 @@ public:
   //! Saves state of tool bar actions
   //! \param theToolBar a view instance
   //! \param theItems [out] properties
-  //! \param thePrefix peference item prefix
+  //! \param thePrefix preference item prefix
   Standard_EXPORT static void SaveState (View_ToolBar* theToolBar,
                                          QMap<QString, QString>& theItems,
                                          const QString& thePrefix = QString());
@@ -85,7 +85,7 @@ public:
   //! \param theToolBar a view instance
   //! \param theKey property key
   //! \param theValue property value
-  //! \param thePrefix peference item prefix
+  //! \param thePrefix preference item prefix
   //! \return boolean value whether the property is applied to the tree view
   Standard_EXPORT static bool RestoreState (View_ToolBar* theToolBar,
                                             const QString& theKey, const QString& theValue,

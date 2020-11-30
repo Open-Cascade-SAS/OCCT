@@ -207,7 +207,7 @@ namespace IE_WPF_WinForms
                 Cursor = System.Windows.Forms.Cursors.WaitCursor;
                 if ( !View.TranslateModel( aFileName, aFormat, true ) )
                 {
-                    MessageBox.Show( "Cann't read this file", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Warning );
+                    MessageBox.Show( "Can't read this file", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                 }
                 Cursor = System.Windows.Forms.Cursors.Default;
             }
@@ -570,7 +570,7 @@ namespace IE_WPF_WinForms
                 myYmax = e.Y;
                 if ( CurrentPressedKey == CurrentPressedKey.CurPressedKey_Ctrl )
                 {
-                    // start the dinamic zooming....
+                    // start the dynamic zooming....
                     CurrentMode = CurrentAction3d.CurAction3d_DynamicZooming;
                 }
                 else

@@ -2456,7 +2456,7 @@ vdimension name {-angle|-length|-radius|-diameter} -shapes shape1 [shape2 [shape
 
 Builds angle, length, radius or diameter dimension interactive object **name**.
 
-**Attension:** length dimension can't be built without working plane.
+**Attention:** length dimension can't be built without working plane.
 
 **Example:** 
 ~~~~~
@@ -6243,7 +6243,7 @@ Code letters are not case-sensitive.
 
 **Example:** 
 ~~~~~
-# to create a trianglular plane using a vertex at the 
+# to create a triangular plane using a vertex at the
 origin, in the xy plane 
 profile p O 0 0 0 X 1 Y 0 x 1 y 1 
 ~~~~~
@@ -6833,7 +6833,7 @@ trotate [name ...] x y z dx dy dz angle
 **ttranslate** translates a set of shapes by a given vector, and **trotate** rotates them by a given angle around an axis. Both commands only modify the location of the shape. 
 When creating multiple shapes, the same location is used for all the shapes. (See *toto.tcl* example below. Note that the code of this file can also be directly executed in interactive mode.) 
 
-Locations are very economic in the data structure because multiple occurences of an object share the topological description. 
+Locations are very economic in the data structure because multiple occurrences of an object share the topological description.
 
 **Example:** 
 ~~~~~
@@ -7999,7 +7999,7 @@ Computes a draft angle surface from a wire. The surface is determined by the dra
 
   * The draft angle is measured in radians.
   * The draft direction is determined by the argument -INTERNAL
-  * The argument Ri/Ro deftermines wether the corner edges of the draft surfaces are angular or rounded.
+  * The argument Ri/Ro deftermines whether the corner edges of the draft surfaces are angular or rounded.
   * Arguments that can be used to define the surface distance are:
    * length, a defined distance
    * shape, until the surface contacts a shape
@@ -10752,7 +10752,11 @@ Syntax:
 projpcurve <edge> <face>  <Tol> <X> <Y> <Z> [<start_param>]
 ~~~~~
 
-**projpcurve** returns the projection of a given point on a given curve on surface. The curve on surface is defined by giving the edge and face names. Edge must have curve 2D repesentation on the face. Optional parameter <i>\<start_param\></i> is any parameter of pcurve, which is used by algoritm as start point for searching projection of given point with help of local Extrema algorithm. If this parameter is not set, algorithm uses whole parametric interval of pcurve for searching projection.   
+**projpcurve** returns the projection of a given point on a given curve on surface.
+The curve on surface is defined by giving the edge and face names.
+Edge must have curve 2D repesentation on the face.
+Optional parameter <i>\<start_param\></i> is any parameter of pcurve, which is used by algorithm as start point for searching projection of given point with help of local Extrema algorithm.
+If this parameter is not set, algorithm uses whole parametric interval of pcurve for searching projection.
 
 **Example:** 
 

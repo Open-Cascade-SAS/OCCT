@@ -36,7 +36,7 @@ class View_Viewer;
 //! \class View_Widget
 //! \brief It is a Qt control that visualizes content of OCCT 3D view
 //! It creates control and actions of manipulating of this view,
-//! emits signal about selection happenning in the view and signal about display mode change and
+//! emits signal about selection happening in the view and signal about display mode change and
 //! changes application cursor depending on an active action.
 class View_Widget : public QWidget
 {
@@ -64,7 +64,7 @@ public:
   //! \param theActionId an action index
   QAction* ViewAction (const View_ViewActionType theActionId) const { return myViewActions[theActionId]; };
 
-  //! Retuns an action widget if exist. Implemented for fit all widget.
+  //! Returns an action widget if exist. Implemented for fit all widget.
   //! \param theActionId an action index
   QWidget* GetWidget (const View_ViewActionType theActionId) const { return theActionId == View_ViewActionType_FitAllId ? myFitAllAction : 0; };
 
@@ -104,7 +104,7 @@ public:
   //! Saves state of widget actions
   //! \param theParameters a view instance
   //! \param theItems [out] properties
-  //! \param thePrefix peference item prefix
+  //! \param thePrefix preference item prefix
   Standard_EXPORT static void SaveState (View_Widget* theWidget,
                                          QMap<QString, QString>& theItems,
                                          const QString& thePrefix = QString());
@@ -113,7 +113,7 @@ public:
   //! \param theParameters a view instance
   //! \param theKey property key
   //! \param theValue property value
-  //! \param thePrefix peference item prefix
+  //! \param thePrefix preference item prefix
   //! \return boolean value whether the property is applied to the tree view
   Standard_EXPORT static bool RestoreState (View_Widget* theWidget,
                                             const QString& theKey, const QString& theValue,

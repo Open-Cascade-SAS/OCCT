@@ -106,7 +106,7 @@ protected:
   virtual QList<QVariant> getHeaderValues (const Qt::Orientation theOrientation)
     { (void)theOrientation; return QList<QVariant>(); }
 
-  //! Retuns number of columns in internal table. By default it returns 2 : method name for method value.
+  //! Returns number of columns in internal table. By default it returns 2 : method name for method value.
   //! \return integer value
   virtual int getColumnCount() const { return 2; }
 

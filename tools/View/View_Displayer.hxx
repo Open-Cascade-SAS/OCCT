@@ -53,7 +53,7 @@ public:
   View_DisplayPreview* DisplayPreview() const { return myDisplayPreview; }
 
   //! Stores the current context where the presentations will be displayed/erased.
-  //! Erases previuously displayd presentations if there were some displayed
+  //! Erases previuously displayed presentations if there were some displayed
   //! \param theContext a context instance
   Standard_EXPORT void SetContext (const Handle(AIS_InteractiveContext)& theContext);
 
@@ -62,10 +62,10 @@ public:
   //! \param theToKeepPresentation boolean state
   void KeepPresentations (const bool theToKeepPresentations) { myIsKeepPresentations = theToKeepPresentations; }
 
-  //! Returns true if fit Fit All should be peformed automatically by each Display
+  //! Returns true if fit Fit All should be performed automatically by each Display
   bool IsFitAllActive() const { return myFitAllActive; }
 
-  //! Stores flag whether the FitAll shoud be done automatically for each display
+  //! Stores flag whether the FitAll should be done automatically for each display
   //! \param theFitAllActive boolean value
   void SetFitAllActive (const bool theFitAllActive) { myFitAllActive = theFitAllActive; }
 
@@ -199,7 +199,7 @@ private:
   NCollection_DataMap<View_PresentationType, Quantity_Color> myColorAttributes; //!< color properties of presentations
 
   bool myIsKeepPresentations; //!< flag if previously shown presentations stays in the context by displaying a new one
-  bool myFitAllActive; //!< flag if Fit All should be peformed automatically by each Display
+  bool myFitAllActive; //!< flag if Fit All should be performed automatically by each Display
   int myDisplayMode; //!< display mode: 0 - AIS_WireFrame, 1 - AIS_Shaded
 };
 

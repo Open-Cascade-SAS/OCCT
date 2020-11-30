@@ -104,7 +104,7 @@ sage " Creating a prism"
 sage "    prism rr p 0 0 20"
 sage " "
 prism rr p 0 0 20
-sage " Change some attributs : MATERIAL , TRANSPARENCY"
+sage " Change some attributes : MATERIAL , TRANSPARENCY"
 sage "    vsetmaterial rr PLASTIC"
 sage "    vsetcolor rr RED"
 sage "    vsettransparency result 0.5"
@@ -142,7 +142,7 @@ vfit
 vsetcolor r MATRABLUE
 vsettransparency r 0
 
-sage " Creating a cylinder and positionning it"
+sage " Creating a cylinder and positioning it"
 sage "    pcylinder cyl 2 300"
 sage "    trotate cyl cyl 0 0 0  1 0 0 45"
 sage "    ttranslate cyl cyl 0 7.5 0"

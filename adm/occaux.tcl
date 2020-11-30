@@ -635,7 +635,7 @@ proc OCCDoc_MakeMainPage {outDir outFile modules {theProductsDir ""} } {
     foreach mod $modules {
         puts $fd "\\li \\subpage [string tolower $module_prefix$mod]"
     }
-    # insert modules relationship diagramm
+    # insert modules relationship diagram
     puts $fd "\\dotfile [OCCDoc_CreateModulesDependencyGraph $outDir/html schema_all_modules $modules $module_prefix]"
     puts $fd "**/\n"
   }

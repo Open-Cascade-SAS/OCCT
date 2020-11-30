@@ -35,7 +35,7 @@ class TreeModel_VisibilityState;
 
 //! \class TreeModel_ModelBase
 //! \brief Implementation of the tree item based model of QAbstractItemModel.
-//! The TreeModel_ModelBase class defines the abstract model realization throught the base item architecture.
+//! The TreeModel_ModelBase class defines the abstract model realization through the base item architecture.
 //! By the model index creation, a base item is created and attached to the index.
 //! Each item contains an iformation about the item parent, position in the parent and
 //! the item's children. So, it is possible to get the model index relation from the item.
@@ -167,7 +167,7 @@ public:
                                                    const Qt::Orientation theOrientation = Qt::Horizontal);
 
   //! Returns single selected item in the cell of given orientation. If the orientation is Horizontal,
-  //! in the cell id colum, one row should be selected.
+  //! in the cell id column, one row should be selected.
   //! \param theIndices a container of selected indices
   //! \param theCellId column index if orientation is horizontal, row index otherwise
   //! \param theOrientation an orientation to apply the cell index

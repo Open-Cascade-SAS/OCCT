@@ -281,7 +281,7 @@ Handle(TopTools_HSequenceOfShape) Translate::getShapes( const Handle(AIS_Interac
 }
 
 /*!
-    Selects a file from standard dialog acoording to selection 'filter'
+    Selects a file from standard dialog according to selection 'filter'
 */
 QString Translate::selectFileName( const int format, const bool import )
 {

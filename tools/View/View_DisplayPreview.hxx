@@ -44,7 +44,7 @@ public:
   virtual ~View_DisplayPreview() {}
 
   //! Stores the current context where the presentations will be displayed/erased.
-  //! Erases previuously displayd presentations if there were some displayed
+  //! Erases previuously displayed presentations if there were some displayed
   //! \param theContext a context instance
   Standard_EXPORT void SetContext (const Handle(AIS_InteractiveContext)& theContext);
 

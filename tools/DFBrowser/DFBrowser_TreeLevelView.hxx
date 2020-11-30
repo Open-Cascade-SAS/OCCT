@@ -30,7 +30,7 @@ class QTableView;
 
 //! \class DFBrowser_TreeLevelView
 //! This is a control to visualize the current selected item of OCAF tree view in table view.
-//! The table contains two colums: name and value. The information is similar the one OCAF tree view label
+//! The table contains two columns: name and value. The information is similar the one OCAF tree view label
 //! content: children and attributes for the current label. Selection or double click of item emits
 //! signals about this event.
 class DFBrowser_TreeLevelView : public QObject

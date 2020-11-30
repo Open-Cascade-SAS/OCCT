@@ -1885,7 +1885,7 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir 
           set written([file tail $aSrcFile]) 1
           append aFilesSection [osutils:vcxproj:cxxfile $aSrcFile $needparam 3]
         } else {
-          puts "Warning : in vcproj more than one occurences for [file tail $aSrcFile]"
+          puts "Warning : in vcproj more than one occurrences for [file tail $aSrcFile]"
         }
         if { ! [info exists aVcFilesCxx($xlo)] } { lappend aVcFilesCxx(units) $xlo }
         lappend aVcFilesCxx($xlo) $aSrcFile
@@ -1895,7 +1895,7 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir 
           set written([file tail $aHxxFile]) 1
           append aFilesSection [osutils:vcxproj:hxxfile $aHxxFile]
         } else {
-          puts "Warning : in vcproj more than one occurences for [file tail $aHxxFile]"
+          puts "Warning : in vcproj more than one occurrences for [file tail $aHxxFile]"
         }
         if { ! [info exists aVcFilesHxx($xlo)] } { lappend aVcFilesHxx(units) $xlo }
         lappend aVcFilesHxx($xlo) $aHxxFile
@@ -1905,7 +1905,7 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir 
           set written([file tail $aGenFile]) 1
           append aFilesSection [osutils:vcxproj:cxxfile $aGenFile $needparam 5]
         } else {
-          puts "Warning : in vcproj more than one occurences for [file tail $aGenFile]"
+          puts "Warning : in vcproj more than one occurrences for [file tail $aGenFile]"
         }
         if { ! [info exists aVcFilesCxx($xlo)] } { lappend aVcFilesCxx(units) $xlo }
         lappend aVcFilesCxx($xlo) $aGenFile
@@ -1919,7 +1919,7 @@ proc osutils:vcproj { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir 
           set written([file tail $aSrcFile]) 1
           append aFilesSection [osutils:vcproj:file $theVcVer $aSrcFile $needparam]
         } else {
-          puts "Warning : in vcproj more than one occurences for [file tail $aSrcFile]"
+          puts "Warning : in vcproj more than one occurrences for [file tail $aSrcFile]"
         }
       }
       append aFilesSection "\t\t\t</Filter>\n"
@@ -2128,7 +2128,7 @@ proc osutils:vcprojx { theVcVer isUWP theOutDir theToolKit theGuidsMap theSrcDir
         append aFilesSection "\t\t\t</Filter>"
       }
     } else {
-      puts "Warning : in vcproj there are more than one occurences for [file tail $f]"
+      puts "Warning : in vcproj there are more than one occurrences for [file tail $f]"
     }
     #puts "$aProjTmpl $aFilesSection"
     set anIncPaths "..\\..\\..\\inc"
@@ -2326,7 +2326,7 @@ proc osutils:cbptk { theCmpl theOutDir theToolKit thePlatform} {
         set written([file tail $aSrcFile]) 1
         lappend aTKSrcFiles "../../../[wokUtils:FILES:wtail $aSrcFile 3]"
       } else {
-        puts "Warning : more than one occurences for [file tail $aSrcFile]"
+        puts "Warning : more than one occurrences for [file tail $aSrcFile]"
       }
     }
 
@@ -2446,7 +2446,7 @@ proc osutils:cbpx { theCmpl theOutDir theToolKit thePlatform } {
       set written([file tail $aSrcFile]) 1
       lappend aTKSrcFiles "../../../[wokUtils:FILES:wtail $aSrcFile 3]"
     } else {
-      puts "Warning : in cbp there are more than one occurences for [file tail $aSrcFile]"
+      puts "Warning : in cbp there are more than one occurrences for [file tail $aSrcFile]"
     }
 
     # macros for correct DLL exports
@@ -2946,7 +2946,7 @@ proc osutils:xcdtk:sources {theToolKit theTargetType theSrcFileRefSection theGro
         append aSrcFileGuids      "\t\t\t\t$aGuidsMap($aSrcFile) ,\n"
         append aSrcFileRefGuids   "\t\t\t\t$aGuidsMap($aSrcFileRef) ,\n"
       } else {
-        puts "Warning : more than one occurences for [file tail $aSrcFile]"
+        puts "Warning : more than one occurrences for [file tail $aSrcFile]"
       }
     }
 
@@ -3008,26 +3008,26 @@ proc osutils:xcdtk { theOutDir theToolKit theGuidsMap theIsStatic thePlatform {t
   set aUserDataDir "${aToolkitDir}/xcuserdata"
   wokUtils:FILES:mkdir $aUserDataDir
   if { ! [file exists $aUserDataDir] } {
-    puts stderr "Error: Could not create xcuserdata directorty in \"$aToolkitDir\""
+    puts stderr "Error: Could not create xcuserdata directory in \"$aToolkitDir\""
     return
   }
 
   set aUserDataDir "${aUserDataDir}/${aUsername}.xcuserdatad"
   wokUtils:FILES:mkdir $aUserDataDir
   if { ! [file exists $aUserDataDir] } {
-    puts stderr "Error: Could not create ${aUsername}.xcuserdatad directorty in \"$aToolkitDir\"/xcuserdata"
+    puts stderr "Error: Could not create ${aUsername}.xcuserdatad directory in \"$aToolkitDir\"/xcuserdata"
     return
   }
 
   set aSchemesDir "${aUserDataDir}/xcschemes"
   wokUtils:FILES:mkdir $aSchemesDir
   if { ! [file exists $aSchemesDir] } {
-    puts stderr "Error: Could not create xcschemes directorty in \"$aUserDataDir\""
+    puts stderr "Error: Could not create xcschemes directory in \"$aUserDataDir\""
     return
   }
   # End of folders creation.
 
-  # Generating GUID for tookit.
+  # Generating GUID for toolkit.
   upvar $theGuidsMap aGuidsMap
   if { ! [info exists aGuidsMap($theToolKit)] } {
     set aGuidsMap($theToolKit) [OS:genGUID "xcd"]
@@ -3460,26 +3460,26 @@ proc osutils:xcdx { theOutDir theExecutable theGuidsMap } {
   set aUserDataDir "${anExecutableDir}/xcuserdata"
   wokUtils:FILES:mkdir $aUserDataDir
   if { ! [file exists $aUserDataDir] } {
-    puts stderr "Error: Could not create xcuserdata directorty in \"$anExecutableDir\""
+    puts stderr "Error: Could not create xcuserdata directory in \"$anExecutableDir\""
     return
   }
 
   set aUserDataDir "${aUserDataDir}/${aUsername}.xcuserdatad"
   wokUtils:FILES:mkdir $aUserDataDir
   if { ! [file exists $aUserDataDir] } {
-    puts stderr "Error: Could not create ${aUsername}.xcuserdatad directorty in \"$anExecutableDir\"/xcuserdata"
+    puts stderr "Error: Could not create ${aUsername}.xcuserdatad directory in \"$anExecutableDir\"/xcuserdata"
     return
   }
 
   set aSchemesDir "${aUserDataDir}/xcschemes"
   wokUtils:FILES:mkdir $aSchemesDir
   if { ! [file exists $aSchemesDir] } {
-    puts stderr "Error: Could not create xcschemes directorty in \"$aUserDataDir\""
+    puts stderr "Error: Could not create xcschemes directory in \"$aUserDataDir\""
     return
   }
   # End folders creation.
 
-  # Generating GUID for tookit.
+  # Generating GUID for toolkit.
   upvar $theGuidsMap aGuidsMap
   if { ! [info exists aGuidsMap($theExecutable)] } {
     set aGuidsMap($theExecutable) [OS:genGUID "xcd"]

@@ -44,7 +44,7 @@ public:
   //! Destructor
   virtual ~DFBrowser_ThreadItemSearch() {}
 
-  //! Obtains the curent OCAF application from the current module, iterates by all documents to fill
+  //! Obtains the current OCAF application from the current module, iterates by all documents to fill
   //! internal containers for search functionality
   Standard_EXPORT virtual void Run() Standard_OVERRIDE;
 
@@ -73,7 +73,7 @@ private:
   void addLabel (const TDF_Label& theLabel, const QStringList& theCurrentPath,
                  QMap<QString, DFBrowser_SearchItemInfo>& theValues, QStringList& theInfoValues);
 
-  //! Adds attribute information, it is either attribute kind or attribure value for TDataStd_Name or TDataStd_Comment
+  //! Adds attribute information, it is either attribute kind or attribute value for TDataStd_Name or TDataStd_Comment
   //! \parm theAttribute a current attribute
   //! \param theCurrentPath it contains the current path to the label (stores in container)
   //! \param theValues container of document item values

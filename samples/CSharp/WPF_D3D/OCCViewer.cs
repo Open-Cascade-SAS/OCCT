@@ -131,7 +131,7 @@ namespace IE_WPF_D3D
 
         if (!View.TranslateModel (aFileName, aFormat, true))
         {
-          MessageBox.Show ("Cann't read this file", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          MessageBox.Show ("Can't read this file", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
       }
       View.ZoomAllView ();
@@ -453,7 +453,7 @@ namespace IE_WPF_D3D
 
         if (Keyboard.IsKeyDown (Key.LeftCtrl) || Keyboard.IsKeyDown (Key.RightCtrl))
         {
-          // start the dinamic zooming....
+          // start the dynamic zooming....
           CurrentMode = CurrentAction3d.CurAction3d_DynamicZooming;
         }
         else

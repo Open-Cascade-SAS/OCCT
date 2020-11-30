@@ -25,7 +25,7 @@
 #include <TopoDS_Shape.hxx>
 
 //! \class Convert_TransientShape
-//! \brief An interface to covert a shape into a transient object to use it in arguments
+//! \brief An interface to convert a shape into a transient object to be used in arguments
 class Convert_TransientShape : public Standard_Transient
 {
 public:

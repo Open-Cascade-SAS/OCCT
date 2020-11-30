@@ -84,7 +84,7 @@ void OCC_3dDoc::SetDialogTitle(TCollection_AsciiString theTitle)
 
 void OCC_3dDoc::OnObjectAddDimensions() 
 {
-  //Add dimentions dialog is opened here
+  //Add dimensions dialog is opened here
   myDimensionDlg.ShowWindow(SW_SHOW);
   myDimensionDlg.UpdateStandardMode ();
 }

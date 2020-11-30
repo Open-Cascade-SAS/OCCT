@@ -42,7 +42,7 @@ public:
   //! \return a boolean value
   bool HasContext() const { return !GetContext().IsNull(); }
 
-  //! Returns the current contex. It iterates up by list of parents to found context item and return context
+  //! Returns the current context. It iterates up by list of parents to found context item and return context
   //! \return a context
   Standard_EXPORT Handle(AIS_InteractiveContext) GetContext() const;
 

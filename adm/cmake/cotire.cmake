@@ -2402,7 +2402,7 @@ function (cotire_setup_target_pch_usage _languages _target _wholeTarget)
 			message (STATUS "add_custom_command: TARGET ${_target} PRE_BUILD ${_cmds}")
 		endif()
 		# because CMake PRE_BUILD command does not support dependencies,
-		# we check dependencies explicity in cotire script mode when the pre-build action is run
+		# we check dependencies explicitly in cotire script mode when the pre-build action is run
 		add_custom_command(
 			TARGET "${_target}"
 			PRE_BUILD ${_cmds}

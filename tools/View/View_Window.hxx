@@ -81,7 +81,7 @@ public:
   //! - columns width
   //! \param theTreeView a view instance
   //! \param theItems [out] properties
-  //! \param thePrefix peference item prefix
+  //! \param thePrefix preference item prefix
   Standard_EXPORT static void SaveState (View_Window* theView, QMap<QString, QString>& theItems,
                                          const QString& thePrefix = QString());
 
@@ -89,7 +89,7 @@ public:
   //! \param theTreeView a view instance
   //! \param theKey property key
   //! \param theValue property value
-  //! \param thePrefix peference item prefix
+  //! \param thePrefix preference item prefix
   //! \return boolean value whether the property is applied to the tree view
   Standard_EXPORT static bool RestoreState (View_Window* theView, const QString& theKey, const QString& theValue,
                                             const QString& thePrefix = QString());

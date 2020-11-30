@@ -74,7 +74,7 @@ public:
   //! \param theItem container of preference elements
   Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
 
-  //! Applyes parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
+  //! Applies parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
   Standard_EXPORT void UpdateContent();
 
   //! Returns main control
@@ -129,7 +129,7 @@ protected slots:
   //! Views BREP files of selected items if exist
   void onExportToBREP();
 
-  //! Convers file name to Ascii String and perform opeging file
+  //! Converts file name to Ascii String and perform opening file
   //! \param theFileName a file name to be opened
   void onOpenFile(const QString& theFileName) { OpenFile (TCollection_AsciiString (theFileName.toUtf8().data())); }
 

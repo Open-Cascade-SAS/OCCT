@@ -94,7 +94,7 @@ void WasmOcctView::run()
   myView->MustBeResized();
   myView->Redraw();
 
-  // There is no inifinite message loop, main() will return from here immediately.
+  // There is no infinite message loop, main() will return from here immediately.
   // Tell that our Module should be left loaded and handle events through callbacks.
   //emscripten_set_main_loop (redrawView, 60, 1);
   //emscripten_set_main_loop (redrawView, -1, 1);

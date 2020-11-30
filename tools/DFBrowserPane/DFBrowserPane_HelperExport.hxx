@@ -25,7 +25,7 @@
 
 //! \class DFBrowserPane_HelperExport
 //! \brief It performs export to BREP of a shape by button is pressed
-//! It contains a conainer of shapes for model indices. If button is pressed for index where the 
+//! It contains a container of shapes for model indices. If button is pressed for index where the
 //! shape exists, this shape is exported to BREP file.
 //! It contains a container of shapes, it is important to clear this helper after using.
 class DFBrowserPane_HelperExport : public QObject

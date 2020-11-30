@@ -233,7 +233,7 @@ void COcafDoc::OnCreatebox()
  \n\
 Handle(TDocStd_Document) D = GetOcafDoc(); \n\
  \n\
-//  Openning a new command (for undo/redo) \n\
+//  Opening a new command (for undo/redo) \n\
 D->NewCommand(); \n\
  \n\
 TOcaf_Commands TSC(D->Main()); \n\
@@ -290,7 +290,7 @@ void COcafDoc::OnCreatecyl()
  \n\
 Handle(TDocStd_Document) D = GetOcafDoc(); \n\
  \n\
-//  Openning a new command (for undo/redo) \n\
+//  Opening a new command (for undo/redo) \n\
 D->NewCommand(); \n\
  \n\
 TOcaf_Commands TSC(D->Main()); \n\
@@ -421,7 +421,7 @@ z=curReal->Get(); \n\
 Handle(TDataStd_Name) stdName; \n\
 LabObject.FindAttribute(TDataStd_Name::GetID(),stdName); \n\
  \n\
-//  Openning a new command \n\
+//  Opening a new command \n\
 D->NewCommand(); \n\
  \n\
 TOcaf_Commands TSC(LabObject); \n\
@@ -504,7 +504,7 @@ z=curReal->Get(); \n\
 Handle(TDataStd_Name) stdName; \n\
 LabObject.FindAttribute(TDataStd_Name::GetID(),stdName); \n\
  \n\
-//  Openning a new command \n\
+//  Opening a new command \n\
 D->NewCommand(); \n\
  \n\
 TOcaf_Commands TSC(LabObject); \n\
@@ -757,7 +757,7 @@ void COcafDoc::OnCut()
 Handle(TDocStd_Document) D = GetOcafDoc(); \n\
 TDF_Label L = D->Main(); \n\
  \n\
-//  Openning a new command\n\
+//  Opening a new command\n\
 D->NewCommand(); \n\
  \n\
 TOcaf_Commands TSC(D->Main()); \n\
@@ -839,7 +839,7 @@ void COcafDoc::OnObjectDelete()
   \n\
  Handle(TDocStd_Document) D = GetOcafDoc(); \n\
   \n\
- //  Openning a new command\n\
+ //  Opening a new command\n\
  D->NewCommand(); \n\
   \n\
  // Getting the  TPrsStd_AISPresentation of the selected object\n\
@@ -1118,7 +1118,7 @@ BOOL COcafDoc::OnOpenDocument(LPCTSTR lpszPathName)
  \n\
  Handle(TOcaf_Application) m_App= ((COcafApp*)AfxGetApp())->GetApp(); \n\
  \n\
-//  Openning the OCAF document from the TPath file\n\
+//  Opening the OCAF document from the TPath file\n\
 m_App->Open((TCollection_ExtendedString) TPath,myOcafDoc); \n\
  \n\
 //  Creation of a new TPrsStd_AISViewer connected to the current V3d_Viewer\n\

@@ -4085,7 +4085,7 @@ void CModelingDoc::OnGeometrie()
 		myAISContext->Remove (aListIterator.Value(), Standard_False);
 	}
 
-	//geometrie of a vertex
+	//geometry of a vertex
 	TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(0,120,70));
 	gp_Pnt GeometricPoint = BRep_Tool::Pnt(aVertex);
 
@@ -4094,7 +4094,7 @@ void CModelingDoc::OnGeometrie()
 	Fit();
 	Sleep (500);
 
-	//geometrie of an edge
+	//geometry of an edge
 	TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(100,50,250),gp_Pnt(-30,-100,-50));
 	Handle(AIS_Shape) yellow = new AIS_Shape(anEdge);
 	myAISContext->SetWidth(yellow,2,Standard_False);
@@ -4115,7 +4115,7 @@ void CModelingDoc::OnGeometrie()
 		Sleep (500);
 	}
 		
-	//geometrie of a face
+	//geometry of a face
 	gp_Pnt P(-20,-20,-20);
 	gp_Vec V(0,0,1);
 	Handle(Geom_Plane) Pi=new Geom_Plane(P,V);
@@ -4146,11 +4146,11 @@ void CModelingDoc::OnGeometrie()
 
    TCollection_AsciiString Message ("\
 	\n\
-///////geometrie of a vertex	\n\
+///////geometry of a vertex	\n\
 TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(0,120,70));	\n\
 gp_Pnt GeometricPoint = BRep_Tool::Pnt(aVertex);	\n\
 \n\
-///////geometrie of an edge	\n\
+///////geometry of an edge	\n\
 TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(100,50,250),gp_Pnt(-30,-100,-50));	\n\
 \n\
 TopLoc_Location location;	\n\
@@ -4163,7 +4163,7 @@ if (!aLine.IsNull()) {	\n\
 	Handle (AIS_Line) DispLine = new AIS_Line(aLine);	\n\
 }	\n\
 		\n\
-///////geometrie of a face	\n\
+///////geometry of a face	\n\
 gp_Pnt P(-20,-20,-20);	\n\
 gp_Vec V(0,0,1);	\n\
 Handle(Geom_Plane) Pi=new Geom_Plane(P,V);	\n\
@@ -4180,7 +4180,7 @@ if (!aPlane.IsNull()) {	\n\
 \n\
 \n");
 
-	PocessTextInDialog("Recover the geometrie of vertex, edge and face ", Message);
+	PocessTextInDialog("Recover the geometry of vertex, edge and face ", Message);
 
 
 }

@@ -56,7 +56,7 @@ public:
   //! \return the stacked widget
   QWidget* GetWidget() const { return myAttributesStack; }
 
-  //! Fills stackk with the information
+  //! Fills stack with the information
   //! \param theAttributeTypes a map of attribute type name to information pane
   void SetModule (DFBrowser_Module* theModule) { myModule = theModule; }
 

@@ -1,5 +1,5 @@
 # Sample model of Intel i7-4790 CPU
-# Dimensions are taken from specs and foto found in Internet
+# Dimensions are taken from specs and photo found in Internet
 
 #Category: XDE
 #Title: Intel i7-4790 CPU
@@ -170,7 +170,7 @@ for {set ipad 1; set iplace 0} {$ipad <= $nbpads && $iplace < 1600} {incr ipad; 
 }
 
 # round and square contact pads on top side
-# note re-use of rpad object used for bootom round pads
+# note re-use of rpad object used for bottom round pads
 eval compound [lrepeat 8 rpad] crpads
 set lrpad [explode crpads]
 ttranslate crpads_1 25.3  8.4  -0.1

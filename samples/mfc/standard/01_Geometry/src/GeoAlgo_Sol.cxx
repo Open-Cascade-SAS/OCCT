@@ -80,7 +80,7 @@ void GeoAlgo_Sol::Build(const TColgp_SequenceOfXYZ& seqOfXYZ)
 
   //Filling plate
   Plate_Plate myPlate;
-  std::cout<<"  * Nunber of points  = "<< nbPnt << std::endl;
+  std::cout<<"  * Number of points  = "<< nbPnt << std::endl;
   for (i=1; i<= nbPnt; i++) {
     gp_Pnt ptProj(seqOfXYZ.Value(i).X(), seqOfXYZ.Value(i).Y(), 0. );
     gp_Vec aVec( ptProj, seqOfXYZ.Value(i));

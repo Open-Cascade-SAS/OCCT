@@ -135,7 +135,7 @@ public:
   //! \return string instance
   Standard_EXPORT static TCollection_AsciiString ParametersToString (const TopoDS_Shape& theShape);
 
-  //! Converts a Shape parameters exceptin TShape into a string value
+  //! Converts a Shape parameters excepting TShape into a string value
   //! \param theValue parameters string value (without TShape information)
   //! \param theShape processed shape 
   Standard_EXPORT static void ParametersToShape (const TCollection_AsciiString& theValue, TopoDS_Shape& theShape);

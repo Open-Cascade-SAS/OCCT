@@ -27,7 +27,7 @@ public:
 
   const Handle(ISession2D_Shape) DiplayableShape() { return myDisplayableShape; }
 
-  // Updates in dialog view and main 2d nad 3d views shapes for which HLR presentations are going to be displayed in 2d view.
+  // Updates in dialog view and main 2d and 3d views shapes for which HLR presentations are going to be displayed in 2d view.
   void UpdateViews();
 
   // Dialog Data

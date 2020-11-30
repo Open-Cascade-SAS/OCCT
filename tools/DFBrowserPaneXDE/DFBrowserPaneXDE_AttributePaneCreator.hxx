@@ -47,7 +47,7 @@ public:
 
 protected:
 
-  //! Cretates pane for XCAFDoc attribute name
+  //! Creates pane for XCAFDoc attribute name
   //! \param theAttributeName a type of attribute
   //! \return an attribute pane if it can be created for this type
   DFBrowserPane_AttributePaneAPI* createXDEPane (Standard_CString theAttributeName);

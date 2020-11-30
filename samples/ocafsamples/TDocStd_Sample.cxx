@@ -34,7 +34,7 @@ static void Sample()
 
   Handle(TDocStd_Application) app = new TDocStd_Application;
   
-  //...Creating the new document (document conatins a framework) 
+  //...Creating the new document (document contains a framework)
 
   Handle(TDocStd_Document) doc;
   app->NewDocument("Standard", doc);
@@ -88,9 +88,9 @@ static void Sample()
   //Coping content of a document to another document with possibility update copy in future
 
   XLinkTool.CopyWithLink(target,source); //Now target document has a copy of source document , the copy also has
-                                                 //a link to have possibility update content of the copy if orginal changed
+                                                 //a link to have possibility update content of the copy if original changed
 
-  //...Something is chaneged in source document
+  //...Something is changed in source document
 
   //Updating copy in target document 
 

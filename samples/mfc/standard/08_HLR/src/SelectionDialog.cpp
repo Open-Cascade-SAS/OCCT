@@ -189,7 +189,7 @@ void CSelectionDialog::UpdateViews()
   Apply();
   // Update viewer
   myDoc->FitAll2DViews (Standard_False);
-  // Check the selection: if no object : disable all possiblity.
+  // Check the selection: if no object : disable all possibility.
   ShowHideButton (OneOrMoreFound);
   OnDisplay (true);
 }
@@ -227,7 +227,7 @@ void CSelectionDialog::OnGetSelectedShapes()
   // Update viewer
   myDoc->FitAll2DViews (Standard_False);
 
-  // Check the selection: if no object : disable all possiblity.
+  // Check the selection: if no object : disable all possibility.
   ShowHideButton (OneOrMoreFound);
   OnDisplay (true);
 }

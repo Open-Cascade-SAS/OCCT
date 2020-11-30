@@ -43,7 +43,7 @@ public:
   //! Sets visibility state
   //! \param theIndex tree model index
   //! \param theState visibility state
-  //! \param toEmitDataChanged boolean flag whether emit of the model should be done immediatelly
+  //! \param toEmitDataChanged boolean flag whether emit of the model should be done immediately
   //! \return true if state is changed
   virtual bool SetVisible (const QModelIndex& theIndex, const bool theState, const bool toEmitDataChanged = true) = 0;
 

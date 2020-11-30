@@ -96,7 +96,7 @@ protected:
 
 private:
 
-  Standard_GUID myAttributeGUID; //!< if attribute, stores GUID of the attibute because label can contain only one attribute of a kind
+  Standard_GUID myAttributeGUID; //!< if attribute, stores GUID of the attribute because label can contain only one attribute of a kind
 };
 
 #endif

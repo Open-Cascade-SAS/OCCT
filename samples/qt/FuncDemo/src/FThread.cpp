@@ -99,7 +99,7 @@ void FThread::run()
             const int ret = D->Execute(log);
             if (ret == 0)
             {
-                // Successfuly executed!
+                // Successfully executed!
                 itr.SetStatus(L, TFunction_ES_Succeeded);
 
                 TDF_LabelList res;

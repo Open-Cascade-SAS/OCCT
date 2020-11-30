@@ -51,7 +51,7 @@ typedef QExplicitlySharedDataPointer<TreeModel_ItemBase> TreeModel_ItemBasePtr;
 //!
 //! The goal of the item is to be an data container of a custom model, based on the
 //! QAbstractItemModel. It provides the items architecture in order to realize the model
-//! functionality to find a parent model index by a child index and vise versa.
+//! functionality to find a parent model index by a child index and vice versa.
 //!
 //! The item should be created by the model and is saved in the internal pointer of the
 //! QModelIndex. Only model knows when the index is removed/created. By this cause,
@@ -68,7 +68,7 @@ typedef QExplicitlySharedDataPointer<TreeModel_ItemBase> TreeModel_ItemBasePtr;
 //! because method data, for example, is called by the viewer repaint, in other words,
 //! constantly.
 //!
-//! It is possible to cache some information in the item. Do not give it throught the item
+//! It is possible to cache some information in the item. Do not give it through the item
 //! constructor. Realize method Init() to save the values in the item internal fields.
 //! If the information model is changed, call Reset() for this item, or the item's parent.
 //! It leads the item to non initialized state and by the next get of the item content,
@@ -94,7 +94,7 @@ public:
   Standard_EXPORT virtual const Handle(Standard_Transient)& Object() const;
 
   //! Resets the item and the child items content. Sets the initialized state to false.
-  //! If the item has internal values, there should be reseted here.
+  //! If the item has internal values, they should be reset here.
   Standard_EXPORT virtual void Reset();
 
   //! Resets the item cached value for the parameter role.
@@ -168,7 +168,7 @@ protected:
   virtual TreeModel_ItemBasePtr createChild (int theRow, int theColumn)
   { (void)theRow; (void)theColumn; return TreeModel_ItemBasePtr(); }
 
-  //! Wraps the currrent item by shared pointer
+  //! Wraps the current item by shared pointer
   //! \return the shared pointer to the current item
   Standard_EXPORT const TreeModel_ItemBasePtr currentItem();
 

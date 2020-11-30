@@ -404,7 +404,7 @@ void ToolsDraw::Commands(Draw_Interpretor& theCommands)
     "\n\t\t:  -select sets the parameter that should be selected in an active tool view."
     "\n\t\t:          Depending on active tool the parameter is:"
     "\n\t\t:          ShapeView: 'object' is an instance of TopoDS_Shape TShape,"
-    "\n\t\t:          DFBrowser: 'name' is an entry of TDF_Label and name2(optionaly) for TDF_Attribute type name,"
+    "\n\t\t:          DFBrowser: 'name' is an entry of TDF_Label and name2(optionally) for TDF_Attribute type name,"
     "\n\t\t:          VInspector: 'object' is an instance of AIS_InteractiveObject;"
     "\n\t\t:  -show sets Inspector view visible or hidden. The first call of this command will show it."
     "\n\t\t:  -directory sets Inspector temporary directory. Preferences file is stored there."

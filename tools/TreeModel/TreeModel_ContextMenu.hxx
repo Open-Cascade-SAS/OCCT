@@ -43,7 +43,7 @@ protected slots:
   //! \param thePosition a clicked point
   void onTreeViewHeaderContextMenuRequested (const QPoint& thePosition);
 
-  //! Changes clicked column visiblity
+  //! Changes clicked column visibility
   void onColumnVisibilityChanged();
 
 private:

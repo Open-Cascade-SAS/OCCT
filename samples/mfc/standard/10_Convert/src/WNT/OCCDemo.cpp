@@ -97,7 +97,7 @@ BOOL COCCDemoApp::InitInstance()
 	aDoc->GetResultDialog()->ShowWindow(SW_HIDE);
   aDoc->GetResultDialog()->Initialize();
 
-  // resize the result dialog, so no clipping occures when user
+  // resize the result dialog, so no clipping occurs when user
   // resizes the dialog manually
   // position the result dialog to the left bottom corner of the view
   CRect aDlgRect, aViewRect;

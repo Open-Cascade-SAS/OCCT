@@ -97,7 +97,7 @@ sage " "
 
 nexplode result f
 offsetshape r result -1 0.0001 result_17
-sage " Creating a cylinder and positionning it"
+sage " Creating a cylinder and positioning it"
 sage "    pcylinder cyl 2 300"
 sage "    trotate cyl cyl 0 0 0  1 0 0 45"
 sage "    ttranslate cyl cyl 0 7.5 0"

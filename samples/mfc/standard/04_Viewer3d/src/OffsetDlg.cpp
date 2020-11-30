@@ -139,7 +139,7 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
 		if (aAISContext->IsDisplayed(aAISContext->SelectedInteractive())) OneOrMoreCurrentIsDisplayed=true;
 
 	if(OneOrMoreCurrentIsDisplayed){
-		// A small trick to avoid complier error (C2668).
+		// A small trick to avoid compiler error (C2668).
 		const Handle(AIS_InteractiveObject)& anIOOverlappedBox = aOverlappedBox;
 		const Handle(AIS_InteractiveObject)& anIOBox = aBox;
 		if((aAISContext->IsSelected(anIOOverlappedBox) || aAISContext->IsSelected(anIOBox))
@@ -149,7 +149,7 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
 			//myDoc -> AddTextInDialog(Message);
 		}
 
-		// A small trick to avoid complier error (C2668).
+		// A small trick to avoid compiler error (C2668).
 		const Handle(AIS_InteractiveObject)& anIOOverlappedCylinder = aOverlappedCylinder;
 		const Handle(AIS_InteractiveObject)& anIOCylinder = aCylinder;
 		if((aAISContext->IsSelected(anIOOverlappedCylinder) || aAISContext->IsSelected(anIOCylinder))
@@ -159,7 +159,7 @@ void COffsetDlg::SetOffsets(Standard_Real theFactor, Standard_Real theUnits)
 			//myDoc -> AddTextInDialog(Message);
 		}
 
-		// A small trick to avoid complier error (C2668).
+		// A small trick to avoid compiler error (C2668).
 		const Handle(AIS_InteractiveObject)& anIOOverlappedSphere = aOverlappedSphere;
 		const Handle(AIS_InteractiveObject)& anIOSphere = aSphere;
 		if((aAISContext->IsSelected(anIOOverlappedSphere) || aAISContext->IsSelected(anIOSphere))

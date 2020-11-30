@@ -80,7 +80,7 @@ public:
   //! \param theItem container of preference elements
   Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
 
-  //! Applyes parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
+  //! Applies parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
   Standard_EXPORT void UpdateContent();
 
   //! Returns main control
@@ -176,7 +176,7 @@ private:
   //! If default view is created, it returns displayer of this view
   Standard_EXPORT View_Displayer* displayer();
 
-  //! Creates an istance of 3D view to initialize context.
+  //! Creates an instance of 3D view to initialize context.
   //! \return a context of created view.
   Handle(AIS_InteractiveContext) createView();
 

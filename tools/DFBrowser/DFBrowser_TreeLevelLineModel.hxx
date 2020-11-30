@@ -59,7 +59,7 @@ public:
   //! Returns item information(short) for display role.
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex,
                                          int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
@@ -71,11 +71,11 @@ public:
   Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation,
                                                int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
-  //! Returns number of tree level line items = colums in table view
+  //! Returns number of tree level line items = columns in table view
   virtual int columnCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return myLevelItems.size(); }
 
-  //! Returns onlly one row in table view
+  //! Returns only one row in table view
   virtual int rowCount (const QModelIndex& theParent = QModelIndex()) const Standard_OVERRIDE
   { (void)theParent; return 1; }
 

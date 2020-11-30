@@ -90,7 +90,7 @@ public:
   //! It returns value only for DisplayRole.
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant data (const QModelIndex& theIndex, int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
   //! Returns content of the model index for the given role, it is obtainer from internal container of header values
@@ -98,7 +98,7 @@ public:
   //! \param theSection an index of value in the container 
   //! \param theIndex a model index
   //! \param theRole a view role
-  //! \return value intepreted depending on the given role
+  //! \return value interpreted depending on the given role
   Standard_EXPORT virtual QVariant headerData (int theSection, Qt::Orientation theOrientation, int theRole = Qt::DisplayRole) const Standard_OVERRIDE;
 
   //! Returns flags for the item: ItemIsEnabled | Qt::ItemIsSelectable

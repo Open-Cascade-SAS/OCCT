@@ -66,11 +66,11 @@ public:
   Standard_EXPORT TopoDS_Shape Shape (const int theRowId) const;
 
   //! Returns name of BREP file for the shape if exists
-  //! \return string valuie
+  //! \return string value
   QString GetFileName() const { return myFileName; }
 
   //! Sets name of BREP file for the shape if exists
-  //! \return string valuie
+  //! \return string value
   void SetFileName (const QString& theFileName) { myFileName = theFileName; }
 
   //! Inits the item, fills internal containers

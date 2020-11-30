@@ -95,7 +95,7 @@ foreach (OCCT_PACKAGE ${USED_PACKAGES})
           # Note: files are generated in original source directory (not in patch!)
           set (FLEX_BISON_TARGET_DIR "${CMAKE_SOURCE_DIR}/${RELATIVE_SOURCES_DIR}/${OCCT_PACKAGE}")
 
-          # choose apropriate extension for generated files: "cxx" if source file contains
+          # choose appropriate extension for generated files: "cxx" if source file contains
           # instruction to generate C++ code, "c" otherwise
           set (BISON_OUTPUT_FILE_EXT "c")
           set (FLEX_OUTPUT_FILE_EXT "c")

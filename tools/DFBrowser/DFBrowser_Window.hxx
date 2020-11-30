@@ -86,7 +86,7 @@ public:
   //! \param theItem container of preference elements
   Standard_EXPORT void SetPreferences (const TInspectorAPI_PreferencesDataMap& theItem);
 
-  //! Applyes parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
+  //! Applies parameters to Init controls, opens files if there are in parameters, updates OCAF tree view model
   Standard_EXPORT void UpdateContent();
 
   //! Fills controls of the plugin by parameters:
@@ -136,7 +136,7 @@ private slots:
   //! Collapses all levels for all selected items
   void onCollapseAll();
 
-  //! Udpates all controls by changed selection in OCAF tree view
+  //! Updates all controls by changed selection in OCAF tree view
   //! \param theSelected list of selected tree view items
   //! \param theDeselected list of deselected tree view items
   void onTreeViewSelectionChanged (const QItemSelection& theSelected, const QItemSelection& theDeselected);
@@ -158,7 +158,7 @@ private slots:
   //! Updates OCAF tree model
   void onUpdateClicked();
 
-  //! Higlights OCAF tree model item
+  //! Highlights OCAF tree model item
   //! \param thePath a container of entries to the item
   //! \param theValue a label entry or attribute name
   void onSearchPathSelected (const QStringList& thePath, const QString& theValue);
@@ -168,7 +168,7 @@ private slots:
   //! \param theValue a label entry or attribute name
   void onSearchPathDoubleClicked (const QStringList& thePath, const QString& theValue);
 
-  //! Higlights OCAF tree model item
+  //! Highlights OCAF tree model item
   //! \param theIndex an OCAF tree model index
   void onLevelSelected (const QModelIndex& theIndex);
 

@@ -48,7 +48,7 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
     aDoc->Put2DOnTop(false);
 
     // both on top
-    // send the message Title Horizontaly to the child of doc main frame
+    // send the message Title Horizontally to the child of doc main frame
     CGeometryApp* TheAppli = (CGeometryApp*)AfxGetApp();
     CMainFrame* TheMainFrame= (CMainFrame*)TheAppli->m_pMainWnd;
     ::SendMessage(TheMainFrame->m_hWndMDIClient, WM_MDITILE, 0, 0);

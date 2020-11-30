@@ -343,13 +343,13 @@ BEGIN
     ID_FACE                 "Make face\nFace"
     ID_SHELL                "Make a shell from a geometric surface\nShell"
     ID_COMPOUND             "Make a compound\nCompound"
-    ID_SEWING               "Sew contigous faces\nSewing"
+    ID_SEWING               "Sew contiguous faces\nSewing"
     ID_BUILDER              "Create a shape with a builder\nBuilder"
 END
 
 STRINGTABLE 
 BEGIN
-    ID_GEOMETRIE            "Tools to recover the geometrie\nTools"
+    ID_GEOMETRIE            "Tools to recover the geometry\nTools"
     ID_EXPLORER             "Explode a shape in faces\nExplorer"
     ID_VALID                "Check Validity\nCheck Validity"
     ID_LINEAR               "Compute Linear Properties\nLinear Properties"

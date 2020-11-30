@@ -3,7 +3,7 @@
 	<!-- SimpleStyles.XAML defines a set of control styles which are simplified starting points for creating your own controls -->
 	
 	<!-- Brushes : These are used to define the color for background, foreground, selection, enabled etc of all controls
-	If you want to change the color of a control you can just chnage the brush; if you want to add a new shape or change arrangement then also edit the template -->
+	If you want to change the color of a control you can just change the brush; if you want to add a new shape or change arrangement then also edit the template -->
 	
 	<!-- NormalBrush is used as the Background for SimpleButton, SimpleRepeatButton -->
 	<LinearGradientBrush x:Key="NormalBrush" EndPoint="0,1" StartPoint="0,0">
@@ -402,7 +402,7 @@
 						</Grid.RowDefinitions>
 						<ScrollContentPresenter Grid.Column="0" Grid.Row="0" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" CanContentScroll="{TemplateBinding CanContentScroll}"/>
 						
-						<!-- The visibility of the ScrollBars is controlled by the implementation fo the control -->
+						<!-- The visibility of the ScrollBars is controlled by the implementation of the control -->
 						<ScrollBar Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Grid.Column="0" Grid.Row="1" x:Name="PART_HorizontalScrollBar" Style="{DynamicResource SimpleScrollBar}" Orientation="Horizontal" Value="{Binding Path=HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Minimum="0" Maximum="{TemplateBinding ScrollableWidth}" />
 						<ScrollBar Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Grid.Column="1" Grid.Row="0" x:Name="PART_VerticalScrollBar" Style="{DynamicResource SimpleScrollBar}" Orientation="Vertical" Value="{Binding Path=VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Minimum="0" Maximum="{TemplateBinding ScrollableHeight}" />
 					</Grid>
@@ -974,7 +974,7 @@
 	</Style>
 	
 	<!--Simple Simple Slider
-	Similiar to ScrollBar this template uses Track to layout the draggable Thumb which has an up and down repeat button
+	Similar to ScrollBar this template uses Track to layout the draggable Thumb which has an up and down repeat button
 	It uses Simple SliderThumb and SimpleScrollRepeatButtonStyle for the page up and down repeat buttons -->
 	<Style x:Key="SimpleSlider" TargetType="{x:Type Slider}">
 		<Setter Property="Background" Value="{DynamicResource LightBrush}"/>

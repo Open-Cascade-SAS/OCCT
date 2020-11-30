@@ -83,7 +83,7 @@ TDF_Label TOcaf_Commands::CreateBox(Standard_Real x, Standard_Real y, Standard_R
 	TDataStd_Name::Set(L, Name);
 
 	
-	// Instanciate a TFunction_Function attribute connected to the current box driver
+	// Instantiate a TFunction_Function attribute connected to the current box driver
 	// and attach it to the data structure as an attribute of the Box Label
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_BoxDriver::GetID());
 
@@ -138,7 +138,7 @@ TDF_Label TOcaf_Commands::CreateCyl(Standard_Real x, Standard_Real y, Standard_R
 	TDataStd_Name::Set(L, Name);
 
 
-	// Instanciate a TFunction_Function attribute connected to the current cylinder driver
+	// Instantiate a TFunction_Function attribute connected to the current cylinder driver
 	// and attach it to the data structure as an attribute of the Cylinder Label
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_CylDriver::GetID());
 
@@ -230,7 +230,7 @@ TDF_Label TOcaf_Commands::ModifyBox(Standard_Real x, Standard_Real y, Standard_R
 	myBoxDriver->Init(MainLab);
 	if (myBoxDriver->MustExecute(log))
 	{
-		// Set the box touched, it will be usefull to recompute an object which used this box as attribute
+		// Set the box touched, it will be useful to recompute an object which used this box as attribute
 		log->SetTouched(MainLab);
 		if(myBoxDriver->Execute(log))
 			MessageBox (NULL, L"Recompute failed", L"Modify box", MB_ICONEXCLAMATION);
@@ -305,7 +305,7 @@ TDF_Label TOcaf_Commands::ModifyCyl(Standard_Real x, Standard_Real y, Standard_R
 	myCylDriver->Init(MainLab);
 	if (myCylDriver->MustExecute(log))
 	{
-		// Set the cylinder touched, it will be usefull to recompute an object which used this cylinder as attribute
+		// Set the cylinder touched, it will be useful to recompute an object which used this cylinder as attribute
 		log->SetTouched(MainLab);
 		if(myCylDriver->Execute(log))
 			MessageBoxW (NULL, L"Recompute failed", L"Modify cylinder", MB_ICONEXCLAMATION);
@@ -339,7 +339,7 @@ TDF_Label TOcaf_Commands::Cut(TDF_Label ObjectLab, TDF_Label ToolObjectLab)
 	TDataStd_Name::Set(L, ObjectName->Get());
 
 
-	// Instanciate a TFunction_Function attribute connected to the current cut driver
+	// Instantiate a TFunction_Function attribute connected to the current cut driver
 	// and attach it to the data structure as an attribute of the Result Label
 	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, TOcafFunction_CutDriver::GetID());
 

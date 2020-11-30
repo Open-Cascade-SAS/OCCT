@@ -307,7 +307,7 @@ namespace IE_WinForms
           myXmin = e.X; myYmin = e.Y;
           myXmax = e.X; myYmax = e.Y;
           if (myCurrentPressedKey == CurrentPressedKey.CurPressedKey_Ctrl)
-            // start the dinamic zooming....
+            // start the dynamic zooming....
             myCurrentMode = CurrentAction3d.CurAction3d_DynamicZooming;
           else
           {
@@ -678,7 +678,7 @@ namespace IE_WinForms
           return;
         this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
         if (!myOCCTProxy.TranslateModel(filename, theformat, true))
-          MessageBox.Show("Cann't read this file", "Error!",
+          MessageBox.Show("Can't read this file", "Error!",
                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
         this.Cursor = System.Windows.Forms.Cursors.Default;
       }
@@ -734,7 +734,7 @@ namespace IE_WinForms
           return;
         this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
         if (!myOCCTProxy.TranslateModel(filename, theformat, false))
-          MessageBox.Show("Cann't write this file", "Error!",
+          MessageBox.Show("Can't write this file", "Error!",
                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
         this.Cursor = System.Windows.Forms.Cursors.Default;
       }

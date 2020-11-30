@@ -245,7 +245,7 @@ if (BUILD_SHARED_LIBS)
       install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl8"                    DESTINATION "${INSTALL_DIR_LIB}")
       install (DIRECTORY "${3RDPARTY_TCL_LIBRARY_DIR}/tcl${TCL_TCLSH_VERSION}" DESTINATION "${INSTALL_DIR_LIB}")
     else()
-      message (STATUS "\nWarning: tclX.X subdir won't be copyied during the installation process.")
+      message (STATUS "\nWarning: tclX.X subdir won't be copied during the installation process.")
       message (STATUS "Try seeking tcl within another folder by changing 3RDPARTY_TCL_DIR variable.")
     endif()
 

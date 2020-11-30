@@ -27,7 +27,7 @@
 //! objects(e.g. Interactive Context or OCAF Application). If the parameters are changed, it may be
 //! applied in UpdateContent function. The communicator can change parameters in the following cases:
 //! - the plugin removes own processed parameters (e.g. file names, that was opened by the plugin)
-//! - the plugin sends some parameters to another plugin(by name) (e.g. shape to be analized)
+//! - the plugin sends some parameters to another plugin(by name) (e.g. shape to be analyzed)
 //!   (at the same time we should be careful here to do not change essential parameters of other plugins)
 class TInspectorAPI_Communicator
 {

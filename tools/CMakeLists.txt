@@ -185,7 +185,7 @@ if (NOT DEFINED INSTALL_DIR_BIN)
   endif()
 endif()
 
-# define folder contaning all shell/batch scripts
+# define folder containing all shell/batch scripts
 if (NOT DEFINED INSTALL_DIR_SCRIPT)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     set (INSTALL_DIR_SCRIPT "${INSTALL_DIR_BIN}" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
@@ -259,7 +259,7 @@ find_package(OpenCASCADE QUIET PATHS "${OpenCASCADE_DIR}" "${OpenCASCADE_INSTALL
 include_directories ("${OpenCASCADE_INCLUDE_DIR}")
 
 if (NOT OpenCASCADE_FOUND)
-  message (FATAL_ERROR "coult not find OpenCASCADE, please set OpenCASCADE_DIR variable" )
+  message (FATAL_ERROR "could not find OpenCASCADE, please set OpenCASCADE_DIR variable" )
 else()
   set (OpenCASCADE_DIR "${OpenCASCADE_INSTALL_PREFIX}" CACHE PATH "OpenCASCADE directory" FORCE)
   message (STATUS "Using OpenCASCADE from \"${OpenCASCADE_DIR}\"" )

@@ -219,7 +219,7 @@ if (NOT DEFINED INSTALL_DIR_BIN)
   endif()
 endif()
 
-# define folder contaning all shell/batch scripts
+# define folder containing all shell/batch scripts
 if (NOT DEFINED INSTALL_DIR_SCRIPT)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     set (INSTALL_DIR_SCRIPT "${INSTALL_DIR_BIN}" CACHE PATH "${INSTALL_DIR_SCRIPT_DESCR}")
@@ -311,7 +311,7 @@ if (NOT DEFINED INSTALL_DIR_DOC)
   endif()
 endif()
 
-# define folder contaning CMake configuration files
+# define folder containing CMake configuration files
 if (NOT DEFINED INSTALL_DIR_CMAKE)
   if ("${INSTALL_DIR_LAYOUT}" STREQUAL "Unix")
     if (INSTALL_DIR_WITH_VERSION)
