@@ -145,7 +145,9 @@ void FSD_CmpFile::ReadLine(TCollection_AsciiString& buffer)
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadLine(aBuf);
   for (Standard_Integer lv = aBuf.Length(); lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n')); lv--)
-    aBuf.SetValue(lv, '\0');
+  {
+    aBuf.Trunc (lv - 1);
+  }
   buffer = aBuf;
 }
 
@@ -214,7 +216,9 @@ void FSD_CmpFile::ReadString(TCollection_AsciiString& buffer)
   TCollection_AsciiString aBuf('\0');
   FSD_File::ReadString(aBuf);
   for (Standard_Integer lv = aBuf.Length(); lv >= 1 && (aBuf.Value(lv) == '\r' || (aBuf.Value(lv) == '\n')); lv--)
-    aBuf.SetValue(lv, '\0');
+  {
+    aBuf.Trunc (lv - 1);
+  }
   buffer = aBuf;
 }
 
