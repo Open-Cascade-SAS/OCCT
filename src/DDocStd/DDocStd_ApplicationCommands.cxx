@@ -482,31 +482,31 @@ static Standard_Integer DDocStd_PrintComments (Draw_Interpretor& di,
 }
 
 //=======================================================================
-//function : SetStorageVerison
+//function : SetStorageFormatVerison
 //purpose  : 
 //=======================================================================
-static Standard_Integer DDocStd_SetStorageVersion (Draw_Interpretor& ,
-                                                   Standard_Integer nb,
-                                                   const char** a)
+static Standard_Integer DDocStd_SetStorageFormatVersion (Draw_Interpretor& ,
+                                                         Standard_Integer nb,
+                                                         const char** a)
 {  
   if (nb == 3)
   {
     Handle(TDocStd_Document) D;
     if (!DDocStd::GetDocument(a[1], D)) return 1;
     const int version = atoi(a[2]);
-    D->ChangeStorageFormatVersion(version);
+    D->ChangeStorageFormatVersion((TDocStd_FormatVersion) version);
     return 0;
   }
   return 1;
 }
 
 //=======================================================================
-//function : GetStorageVerison
+//function : GetStorageFormatVerison
 //purpose  : 
 //=======================================================================
-static Standard_Integer DDocStd_GetStorageVersion (Draw_Interpretor& di,
-                                                   Standard_Integer nb,
-                                                   const char** a)
+static Standard_Integer DDocStd_GetStorageFormatVersion (Draw_Interpretor& di,
+                                                         Standard_Integer nb,
+                                                         const char** a)
 { 
   if (nb == 2) {
     Handle(TDocStd_Document) D;
@@ -576,10 +576,12 @@ void DDocStd::ApplicationCommands(Draw_Interpretor& theCommands)
 		  "PrintComments Doc",
 		  __FILE__, DDocStd_PrintComments, g);
 
-  theCommands.Add("GetStorageVersion",
-		  "GetStorageVersion Doc",
-		  __FILE__, DDocStd_GetStorageVersion, g);
-  theCommands.Add("SetStorageVersion",
-		  "SetStorageVersion Doc Version",
-		  __FILE__, DDocStd_SetStorageVersion, g);
+  theCommands.Add("GetStorageFormatVersion",
+		  "GetStorageFormatVersion Doc"
+          "\nStorage format versions are defined in TDocStd_FormatVersion.hxx file by an enumeration",
+		  __FILE__, DDocStd_GetStorageFormatVersion, g);
+  theCommands.Add("SetStorageFormatVersion",
+		  "SetStorageFormatVersion Doc Version"
+          "\nStorage format versions are defined in TDocStd_FormatVersion.hxx file by an enumeration",
+		  __FILE__, DDocStd_SetStorageFormatVersion, g);
 }

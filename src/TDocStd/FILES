@@ -37,3 +37,4 @@ TDocStd_XLinkRoot.hxx
 TDocStd_XLinkRoot.lxx
 TDocStd_XLinkTool.cxx
 TDocStd_XLinkTool.hxx
+TDocStd_FormatVersion.hxx

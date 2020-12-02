@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <BinLDrivers_DocumentSection.hxx>
+#include <TDocStd_FormatVersion.hxx>
 #include <FSD_FileHeader.hxx>
 #include <BinMDataStd.hxx>
 
@@ -109,7 +110,8 @@ void BinLDrivers_DocumentSection::SetLength (const uint64_t theLength)
 //purpose  : 
 //=======================================================================
 
-void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream)
+void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream,
+                                            const Standard_Integer theDocFormatVersion)
 {
   char aBuf[512];
 
@@ -147,7 +149,14 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream)
     aBufSz[0] = 0;
     aBufSz[1] = 0;
     aBufSz[2] = 0;
-    theStream.write (&aBuf[0], 3*sizeof(uint64_t));
+    if (theDocFormatVersion <= TDocStd_FormatVersion_VERSION_9)
+    {
+      theStream.write(&aBuf[0], 3*sizeof(Standard_Integer));
+    }
+    else
+    {
+      theStream.write(&aBuf[0], 3*sizeof(uint64_t));
+    }
   }
 }
 
@@ -157,24 +166,47 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream)
 //=======================================================================
 
 void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
-                                         const uint64_t theOffset)
+                                         const uint64_t theOffset,
+                                         const Standard_Integer theDocFormatVersion)
 {
   const uint64_t aSectionEnd = (uint64_t) theStream.tellp();
   theStream.seekp((std::streamsize)myValue[0]);
   myValue[0] = theOffset;
   myValue[1] = aSectionEnd - theOffset;
-  uint64_t aVal[3] = {
-    myValue[0],
-    myValue[1],
-    uint64_t(myIsPostRead ? 1 : 0)
-  };
-#if DO_INVERSE
-  aVal[0] = InverseUint64(aVal[0]);
-  aVal[1] = InverseUint64(aVal[1]);
-  aVal[2] = InverseUint64(aVal[2]);
-#endif
+  if (theDocFormatVersion <= TDocStd_FormatVersion_VERSION_9)
+  {
+    // Check the limits for a 4-bytes integer.
+    if (myValue[0] > INT_MAX || myValue[1] > INT_MAX)
+      throw Standard_OutOfRange("BinLDrivers_DocumentSection::Write : file size is too big, needs int64.");
 
-  theStream.write((char *)&aVal[0], 3*sizeof(uint64_t));
+    // Old documents stored file position as 4-bytes values.
+    int32_t aValInt[3] = {
+      int32_t(myValue[0]),
+      int32_t(myValue[1]),
+      int32_t(myIsPostRead ? 1 : 0)
+    };
+#if DO_INVERSE
+    aValInt[0] = InverseInt(aValInt[0]);
+    aValInt[1] = InverseInt(aValInt[1]);
+    aValInt[2] = InverseInt(aValInt[2]);
+#endif
+    theStream.write((char *)&aValInt[0], 3*sizeof(int32_t));
+  }
+  else
+  {
+    uint64_t aVal[3] = {
+      myValue[0],
+      myValue[1],
+      uint64_t(myIsPostRead ? 1 : 0)
+    };
+#if DO_INVERSE
+    aVal[0] = InverseUint64(aVal[0]);
+    aVal[1] = InverseUint64(aVal[1]);
+    aVal[2] = InverseUint64(aVal[2]);
+#endif
+    theStream.write((char *)&aVal[0], 3*sizeof(uint64_t));
+  }
+
   theStream.seekp((std::streamsize)aSectionEnd);
 }
 
@@ -186,7 +218,7 @@ void BinLDrivers_DocumentSection::Write (Standard_OStream&   theStream,
 void BinLDrivers_DocumentSection::ReadTOC
                                 (BinLDrivers_DocumentSection& theSection,
                                  Standard_IStream&            theStream,
-                                 const Standard_Integer theDocFormatVersion)
+                                 const Standard_Integer       theDocFormatVersion)
 {
   char aBuf[512];
   Standard_Integer aNameBufferSize;
@@ -199,11 +231,11 @@ void BinLDrivers_DocumentSection::ReadTOC
     theSection.myName = (Standard_CString)&aBuf[0];
 
     uint64_t aValue[3];
-    if (theDocFormatVersion <= 9)
+    if (theDocFormatVersion <= TDocStd_FormatVersion_VERSION_9)
     {
       // Old documents stored file position as 4-bytes values.
-      Standard_Integer aValInt[3];
-      theStream.read ((char *)&aValInt[0], 3*sizeof(Standard_Integer));
+      int32_t aValInt[3];
+      theStream.read ((char *)&aValInt[0], 3*sizeof(int32_t));
 #if DO_INVERSE
       aValue[0] = InverseInt (aValInt[0]);
       aValue[1] = InverseInt (aValInt[1]);

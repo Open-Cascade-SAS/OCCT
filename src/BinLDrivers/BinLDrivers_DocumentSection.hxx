@@ -66,11 +66,13 @@ public:
   Standard_EXPORT void SetLength (const uint64_t theLength);
   
   //! Create a Section entry in the Document TOC (list of sections)
-  Standard_EXPORT void WriteTOC (Standard_OStream& theOS);
+  Standard_EXPORT void WriteTOC (Standard_OStream& theOS,
+                                 const Standard_Integer theDocFormatVersion);
   
   //! Save Offset and Length data into the Section entry
   //! in the Document TOC (list of sections)
-  Standard_EXPORT void Write (Standard_OStream& theOS, const uint64_t theOffset);
+  Standard_EXPORT void Write (Standard_OStream& theOS, const uint64_t theOffset,
+                              const Standard_Integer theDocFormatVersion);
   
   //! Fill a DocumentSection instance from the data that are read
   //! from TOC.

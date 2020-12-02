@@ -168,14 +168,14 @@ void BinLDrivers_DocumentRetrievalDriver::Read (Standard_IStream&               
     return;
   }
   Standard_Integer aFileVer = aHeaderData->StorageVersion().IntegerValue();
-  Standard_Integer aCurrVer = BinLDrivers::StorageVersion().IntegerValue();
+  Standard_Integer aCurrVer = TDocStd_Document::CurrentStorageFormatVersion();
   // maintain one-way compatibility starting from version 2+
   if (!CheckDocumentVersion(aFileVer, aCurrVer)) {
     myReaderStatus = PCDM_RS_NoVersion;
     // file was written with another version
     myMsgDriver->Send (aMethStr + "error: wrong file version: " +
                  aHeaderData->StorageVersion() + " while current is " +
-                 BinLDrivers::StorageVersion(), Message_Fail);
+                 TDocStd_Document::CurrentStorageFormatVersion(), Message_Fail);
     return;
   }
 

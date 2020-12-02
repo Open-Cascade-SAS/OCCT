@@ -2177,3 +2177,15 @@ For example:
 gives different result.
 In current version ST1 - surface trimmed only along V, U trim is removed;
 After modification ST1 - surface trimmed along U and V, U trim is kept.
+
+@subsection upgrade_760_storageformatversion Storage format version of OCAF document
+
+The methods *XmlLDrivers::StorageVersion()* and *BinLDrivers::StorageVersion()* were removed.
+Since now *TDocStd_Document* manupulates the storage format version of a document for both XML and binary file formats.
+For this the methods *StorageFormatVersion()* and *ChangeStorageFormatVersion()* were moved from *CDM_Document* to *TDocStd_Document*.
+The methods are used to get and set the storage format version of a document.
+A new enumeration *TDocStd_FormatVersion* lists the storage format versions of a document. By default, the document uses the latest (current) storage format version.
+In order to save a document in an older storage format version, call the method *ChangeStorageFormatVersion()* with one of the values from the enumeration.
+This value will be used by storage drivers of a corresponding OCAF file format (XML or binary) and the document will be saved
+following the rules of the specified storage format version (corresponding to an older version of Open CASCADE Technology).
+This way an application based on an old version of Open CASCADE Technology may read documents saved by new applications (based on newer version of Open CASCADE Technology).

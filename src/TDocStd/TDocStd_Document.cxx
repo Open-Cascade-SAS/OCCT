@@ -83,7 +83,8 @@ myUndoLimit(0),
 myUndoTransaction ("UNDO"),
 mySaveTime(0),
 myIsNestedTransactionMode(0),
-mySaveEmptyLabels(Standard_False)
+mySaveEmptyLabels(Standard_False),
+myStorageFormatVersion(TDocStd_FormatVersion_CURRENT)
 {
   myUndoTransaction.Initialize (myData);
   TDocStd_Owner::SetDocument(myData,this);
@@ -904,6 +905,33 @@ void TDocStd_Document::BeforeClose()
 }
 
 //=======================================================================
+//function : StorageFormatVersion
+//purpose  : 
+//=======================================================================
+TDocStd_FormatVersion TDocStd_Document::StorageFormatVersion() const
+{
+  return myStorageFormatVersion;
+}
+
+//=======================================================================
+//function : ChangeStorageFormatVersion
+//purpose  : Sets <theVersion> of the format to be used to store the document
+//=======================================================================
+void TDocStd_Document::ChangeStorageFormatVersion(const TDocStd_FormatVersion theVersion)
+{
+  myStorageFormatVersion = theVersion;
+}
+
+//=======================================================================
+//function : CurrentStorageFormatVersion
+//purpose  : Returns current storage format verison of the document.
+//=======================================================================
+TDocStd_FormatVersion TDocStd_Document::CurrentStorageFormatVersion()
+{
+  return TDocStd_FormatVersion_CURRENT;
+}
+
+//=======================================================================
 //function : DumpJson
 //purpose  : 
 //=======================================================================
@@ -943,4 +971,5 @@ void TDocStd_Document::DumpJson (Standard_OStream& theOStream, Standard_Integer 
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, myOnlyTransactionModification)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL (theOStream, mySaveEmptyLabels)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream,  myStorageFormatVersion)
 }

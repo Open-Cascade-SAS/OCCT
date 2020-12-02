@@ -38,9 +38,6 @@ public:
 
   //! Creates the table of drivers of types supported
   Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& MsgDrv);
-  
-  //! returns "1"
-  Standard_EXPORT static TCollection_AsciiString StorageVersion();
 };
 
 #endif // _BinDrivers_HeaderFile

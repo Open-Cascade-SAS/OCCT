@@ -41,8 +41,6 @@ public:
   Standard_EXPORT static void DefineFormat (const Handle(TDocStd_Application)& theApp);
 
   Standard_EXPORT static Handle(XmlMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& theMsgDriver);
-  
-  Standard_EXPORT static int StorageVersion();
 };
 
 #endif // _XmlLDrivers_HeaderFile

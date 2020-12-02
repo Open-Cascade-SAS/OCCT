@@ -14,9 +14,16 @@ AISSet D1 0:1 NS
 AISDisplay D1 0:1
 AISMode D1 0:1 1
 
-SaveAs D1 testmode.xml
+set aFile ${imagedir}/testmode.xml
+file delete ${aFile}
+SaveAs D1 ${aFile}
+if { ![file exists ${aFile}] } {
+	puts "There is not ${aFile} file; SaveAs command: Error"
+	return
+}
+
 Close D1
-Open testmode.xml D2
+Open ${aFile} D2
 AISInitViewer D2
 AISDisplay D2 0:1
 set mode [AISMode D2 0:1]

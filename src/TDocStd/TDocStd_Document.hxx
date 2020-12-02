@@ -28,6 +28,7 @@
 #include <CDM_Document.hxx>
 #include <TDF_LabelMap.hxx>
 #include <Standard_Address.hxx>
+#include <TDocStd_FormatVersion.hxx>
 class TDF_Data;
 class TDF_Delta;
 class TDF_Label;
@@ -248,6 +249,15 @@ public:
   //! Prepares document for closing
   Standard_EXPORT virtual void BeforeClose();
 
+  //! Returns version of the format to be used to store the document
+  Standard_EXPORT TDocStd_FormatVersion StorageFormatVersion() const;
+
+  //! Sets version of the format to be used to store the document
+  Standard_EXPORT void ChangeStorageFormatVersion(const TDocStd_FormatVersion theVersion);
+
+  //! Returns current storage format verison of the document.
+  Standard_EXPORT static TDocStd_FormatVersion CurrentStorageFormatVersion();
+
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson (Standard_OStream& theOStream, Standard_Integer theDepth = -1) const;
 
@@ -290,6 +300,7 @@ private:
   TDF_DeltaList myUndoFILO;
   Standard_Boolean myOnlyTransactionModification;
   Standard_Boolean mySaveEmptyLabels;
+  TDocStd_FormatVersion myStorageFormatVersion;
 
 };
 

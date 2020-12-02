@@ -40,9 +40,6 @@ public:
 
   //! Creates a table of the supported drivers' types
   Standard_EXPORT static Handle(BinMDF_ADriverTable) AttributeDrivers (const Handle(Message_Messenger)& MsgDrv);
-  
-  //! returns last storage version
-  Standard_EXPORT static TCollection_AsciiString StorageVersion();
 };
 
 #endif // _BinLDrivers_HeaderFile

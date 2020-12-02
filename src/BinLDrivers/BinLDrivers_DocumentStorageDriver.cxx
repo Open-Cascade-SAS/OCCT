@@ -123,17 +123,16 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&  theD
         return;
     }
 
-
-
 //  2. Write the Table of Contents of Sections
+    const Standard_Integer aDocVer = aDoc->StorageFormatVersion();
     BinLDrivers_VectorOfDocumentSection::Iterator anIterS (mySections);
     for (; anIterS.More(); anIterS.Next())
-      anIterS.ChangeValue().WriteTOC (theOStream);
+      anIterS.ChangeValue().WriteTOC (theOStream, aDocVer);
 
     // Shapes Section is the last one, it indicates the end of the table.
     BinLDrivers_DocumentSection aShapesSection (SHAPESECTION_POS,
                                                 Standard_False);
-    aShapesSection.WriteTOC (theOStream);
+    aShapesSection.WriteTOC (theOStream, aDocVer);
 
 //  3. Write document contents
     // (Storage data to the stream)
@@ -152,7 +151,7 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&  theD
     }
 
 //  4. Write Shapes section
-    WriteShapeSection (aShapesSection, theOStream, aPS.Next());
+    WriteShapeSection (aShapesSection, theOStream, aDocVer, aPS.Next());
     if (!aPS.More())
     {
        SetIsError(Standard_True);
@@ -165,7 +164,7 @@ void BinLDrivers_DocumentStorageDriver::Write (const Handle(CDM_Document)&  theD
       BinLDrivers_DocumentSection& aSection = anIterS.ChangeValue();
       const Standard_Size aSectionOffset = (Standard_Size) theOStream.tellp();
       WriteSection (aSection.Name(), aDoc, theOStream);
-      aSection.Write (theOStream, aSectionOffset);
+      aSection.Write (theOStream, aSectionOffset, aDocVer);
     }
 
     // End of processing: close structures and check the status
@@ -469,9 +468,11 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
   theData->SetApplicationVersion(theDoc->Application()->Version());
   theData->SetApplicationName(theDoc->Application()->Name());
 
+  Handle(TDocStd_Document) aDoc = Handle(TDocStd_Document)::DownCast(theDoc);
+  const Standard_Integer aDocVer = aDoc->StorageFormatVersion();
   aHeader.einfo += FSD_BinaryFile::WriteInfo (theOStream,
                                               aObjNb,
-                                              BinLDrivers::StorageVersion(),
+                                              aDocVer,
                                               Storage_Schema::ICreationDate(),
                                               "", // schema name
                                               aShemaVer,
@@ -500,7 +501,7 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
   // write info section
   FSD_BinaryFile::WriteInfo (theOStream,
                              aObjNb,
-                             BinLDrivers::StorageVersion(),
+                             aDocVer,
                              Storage_Schema::ICreationDate(),
                              "", // schema name
                              aShemaVer,
@@ -546,8 +547,9 @@ void BinLDrivers_DocumentStorageDriver::WriteSection
 void BinLDrivers_DocumentStorageDriver::WriteShapeSection
                                 (BinLDrivers_DocumentSection&   theSection,
                                  Standard_OStream&              theOS,
+                                 const Standard_Integer         theDocVer,
                                  const Message_ProgressRange& /*theRange*/)
 {
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
-  theSection.Write (theOS, aShapesSectionOffset);
+  theSection.Write (theOS, aShapesSectionOffset, theDocVer);
 }

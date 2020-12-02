@@ -95,14 +95,4 @@ Handle(BinMDF_ADriverTable) BinDrivers::AttributeDrivers
   return aTable;
 }
 
-//=======================================================================
-//function : StorageVersion
-//purpose  : 
-//=======================================================================
-
-TCollection_AsciiString BinDrivers::StorageVersion()
-{
-  return BinLDrivers::StorageVersion();
-}
-
 PLUGIN(BinDrivers)

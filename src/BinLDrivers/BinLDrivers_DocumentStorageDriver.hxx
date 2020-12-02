@@ -80,13 +80,14 @@ protected:
                                      const Message_ProgressRange& theRange = Message_ProgressRange());
   
   //! define the procedure of writing a section to file.
-  Standard_EXPORT virtual void WriteSection (const TCollection_AsciiString& theName,
-                                             const Handle(CDM_Document)& theDoc, 
-                                             Standard_OStream& theOS);
+  Standard_EXPORT virtual void WriteSection (const TCollection_AsciiString& /*theName*/,
+                                             const Handle(CDM_Document)&    /*theDoc*/, 
+                                             Standard_OStream&              /*theOS*/);
   
   //! defines the procedure of writing a shape  section to file
   Standard_EXPORT virtual void WriteShapeSection (BinLDrivers_DocumentSection& theDocSection,
                                                   Standard_OStream& theOS,
+                                                  const Standard_Integer theDocVer,
                                                   const Message_ProgressRange& theRange = Message_ProgressRange());
 
   Handle(BinMDF_ADriverTable) myDrivers;

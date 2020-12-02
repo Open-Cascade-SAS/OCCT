@@ -100,6 +100,7 @@ void BinDrivers_DocumentStorageDriver::SetWithTriangles (const Handle(Message_Me
 void BinDrivers_DocumentStorageDriver::WriteShapeSection
                                (BinLDrivers_DocumentSection&   theSection,
                                 Standard_OStream&              theOS,
+                                const Standard_Integer         theDocVer,
                                 const Message_ProgressRange&   theRange)
 {
   const Standard_Size aShapesSectionOffset = (Standard_Size) theOS.tellp();
@@ -120,5 +121,5 @@ void BinDrivers_DocumentStorageDriver::WriteShapeSection
   }
    
   // Write the section info in the TOC.
-  theSection.Write (theOS, aShapesSectionOffset);
+  theSection.Write (theOS, aShapesSectionOffset, theDocVer);
 }
